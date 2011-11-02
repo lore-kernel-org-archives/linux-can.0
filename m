@@ -1,54 +1,48 @@
-From: "Reuben Dowle" <Reuben.Dowle@navico.com>
-Subject: RE: [PATCH] flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
-Date: Wed, 2 Nov 2011 13:25:07 +1300
-Message-ID: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA5D9@exch01-aklnz.MARINE.NET.INT>
-References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA1DD@exch01-aklnz.MARINE.NET
- .INT> <4EAF21A6.702@pengutronix.de>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH] flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
+Date: Wed, 2 Nov 2011 09:04:38 +0100
+Message-ID: <20111102080438.GA324@e-circ.dyndns.org>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA1DD@exch01-aklnz.MARINE.NET.INT>
 Mime-Version: 1.0
-Content-Type: text/plain;charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
 Return-path: <netdev-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <4EAF21A6.702@pengutronix.de>
+Content-Disposition: inline
+In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA1DD@exch01-aklnz.MARINE.NET.INT>
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Reuben Dowle <Reuben.Dowle@navico.com>
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
+On Tue, Nov 01, 2011 at 11:18:03AM +1300, Reuben Dowle wrote:
+> Currently the flexcan driver uses hardware local echo. This blindly echos all transmitted frames to all receiving sockets, regardless what CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK are set to.
 > 
-> Patch looks quite good. Can you please wrap the description to about 72
-> chars?
-
-Will do.
-
-> >  	}
-> >
-> > @@ -670,6 +671,8 @@ static int flexcan_chip_start(struct net_device
-> *dev)
-> >  	int err;
-> >  	u32 reg_mcr, reg_ctrl;
-> >
-> > +	can_free_echo_skb(dev, 0);
+> This patch now submits transmitted frames to be echoed in the transmit complete interrupt, preserving the reference to the sending socket. This allows the can protocol to correctly handle the local echo.
 > 
-> what about putting this to flexcan_chip_stop? Otherwise you risk a
-> memleak if you do "ifconfig down; rmmod flexcan"
-
-I originally thought this needs to be in flexcan_chip_start, so the bus off followed by restart sequence will drop the loopback packet. I investigated a bit deeper and can_flush_echo_skb is called in can_restart(). So my call of that function is not really needed. can_flush_echo_skb is also called in close_candev, which is called by the flexcan driver. So I actually think this function does not need to be called by the driver at all. What do you think?
-
-> >
-> >  	dev->netdev_ops = &flexcan_netdev_ops;
-> >  	dev->irq = irq;
-> > -	dev->flags |= IFF_ECHO; /* we support local echo in hardware */
-> > +	
-> > +	/* Driver supports local echo.
-> > +	 * We support local echo in hardware, however this is not used
-> because
-> > +	 * hardware local echo loses the sending socket reference
-> > +	 * (thus CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK socket
-> options
-> > +	 *  would not work)
-> > +	 */
+> Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
 > 
-> IMHO, you can skip this comment. The patch description is good enough.
+> ---
+>  drivers/net/can/flexcan.c |   19 +++++++++++++++----
+>  1 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index e023379..542ada8 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -302,7 +302,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	flexcan_write(can_id, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_id);
+>  	flexcan_write(ctrl, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+>  
+> -	kfree_skb(skb);
+> +	can_put_echo_skb(skb, dev, 0);
+>  
+>  	/* tx_packets is incremented in flexcan_irq */
+>  	stats->tx_bytes += cf->can_dlc;
+Why not move the statistics to the place where the echo_skb is popped?
+When no frame gets out (due to whatever reason), the statistics may have
+incremented.
 
-Ok, I will drop the extra comments from the patch.
+Or maybe this needs a seperate patch?
+
+The rest looks good.
+
+Kurt
