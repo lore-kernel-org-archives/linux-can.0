@@ -1,63 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
-Date: Mon, 31 Oct 2011 23:49:41 +0100
-Message-ID: <4EAF2605.9090005@pengutronix.de>
-References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA1DD@exch01-aklnz.MARINE.NET .INT> <4EAF21A6.702@pengutronix.de> <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA211@exch01-aklnz.MARINE.NET.INT>
+From: "Reuben Dowle" <Reuben.Dowle@navico.com>
+Subject: RE: [PATCH] flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
+Date: Wed, 2 Nov 2011 13:25:07 +1300
+Message-ID: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA5D9@exch01-aklnz.MARINE.NET.INT>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA1DD@exch01-aklnz.MARINE.NET
+ .INT> <4EAF21A6.702@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig634FF29769D5BE5F73619BE1"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44548 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934703Ab1JaWts (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2011 18:49:48 -0400
-In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA211@exch01-aklnz.MARINE.NET.INT>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Reuben Dowle <Reuben.Dowle@navico.com>
+Content-Type: text/plain;charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
+Return-path: <netdev-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <4EAF21A6.702@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig634FF29769D5BE5F73619BE1
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+> 
+> Patch looks quite good. Can you please wrap the description to about 72
+> chars?
 
-On 10/31/2011 11:43 PM, Reuben Dowle wrote:
-> Currently the flexcan driver uses hardware local echo. This blindly
-> echoes all transmitted frames to all receiving sockets, regardless what=
+Will do.
 
-> CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK are set to.
->=20
-> This patch now submits transmitted frames to be echoed in the transmit
-> complete interrupt, preserving the reference to the sending socket.
-> This allows the can protocol to correctly handle the local echo.
->=20
-> Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
+> >  	}
+> >
+> > @@ -670,6 +671,8 @@ static int flexcan_chip_start(struct net_device
+> *dev)
+> >  	int err;
+> >  	u32 reg_mcr, reg_ctrl;
+> >
+> > +	can_free_echo_skb(dev, 0);
+> 
+> what about putting this to flexcan_chip_stop? Otherwise you risk a
+> memleak if you do "ifconfig down; rmmod flexcan"
 
-there were some comments inline in my original mail.
+I originally thought this needs to be in flexcan_chip_start, so the bus off followed by restart sequence will drop the loopback packet. I investigated a bit deeper and can_flush_echo_skb is called in can_restart(). So my call of that function is not really needed. can_flush_echo_skb is also called in close_candev, which is called by the flexcan driver. So I actually think this function does not need to be called by the driver at all. What do you think?
 
-Marc
+> >
+> >  	dev->netdev_ops = &flexcan_netdev_ops;
+> >  	dev->irq = irq;
+> > -	dev->flags |= IFF_ECHO; /* we support local echo in hardware */
+> > +	
+> > +	/* Driver supports local echo.
+> > +	 * We support local echo in hardware, however this is not used
+> because
+> > +	 * hardware local echo loses the sending socket reference
+> > +	 * (thus CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK socket
+> options
+> > +	 *  would not work)
+> > +	 */
+> 
+> IMHO, you can skip this comment. The patch description is good enough.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig634FF29769D5BE5F73619BE1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk6vJgoACgkQjTAFq1RaXHNUkACdF14ux33YGhFhmHgX67uSvXvQ
-wi0An2zj3bvjkPQFDPRwk1Gc88hPciKa
-=OCF1
------END PGP SIGNATURE-----
-
---------------enig634FF29769D5BE5F73619BE1--
+Ok, I will drop the extra comments from the patch.
