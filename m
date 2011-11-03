@@ -1,46 +1,40 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
-Date: Thu, 03 Nov 2011 11:17:57 +0100
-Message-ID: <4EB26A55.6010207@pengutronix.de>
-References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA8E0@exch01-aklnz.MARINE.NET.INT> <1320313675-30749-1-git-send-email-mkl@pengutronix.de> <1320313675-30749-3-git-send-email-mkl@pengutronix.de> <4EB26702.60506@hartkopp.net>
+Subject: Re: [PATCH 0/2] clean up tx_bytes accounting
+Date: Thu, 03 Nov 2011 11:42:46 +0100
+Message-ID: <4EB27026.90301@pengutronix.de>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA8E0@exch01-aklnz.MARINE.NET.INT> <1320313675-30749-1-git-send-email-mkl@pengutronix.de> <20111103100333.GD317@e-circ.dyndns.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig666DB3A492637A04FFAEDCBD"
+ boundary="------------enig564E1C69008B5819EDE655C7"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4EB26702.60506@hartkopp.net>
+In-Reply-To: <20111103100333.GD317@e-circ.dyndns.org>
 Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: kurt.van.dijck@eia.be, netdev@vger.kernel.org, linux-can@vger.kernel.org, Reuben.Dowle@navico.com
+To: socketcan@hartkopp.net, netdev@vger.kernel.org, linux-can@vger.kernel.org, Reuben.Dowle@navico.com
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig666DB3A492637A04FFAEDCBD
-Content-Type: text/plain; charset=ISO-8859-1
+--------------enig564E1C69008B5819EDE655C7
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/03/2011 11:03 AM, Oliver Hartkopp wrote:
-> On 03.11.2011 10:47, Marc Kleine-Budde wrote:
+On 11/03/2011 11:03 AM, Kurt Van Dijck wrote:
+> On Thu, Nov 03, 2011 at 10:47:53AM +0100, Marc Kleine-Budde wrote:
+>> Hello,
+>>
+>> what about turning can_get_echo_skb() into a helper function which ret=
+urns the number
+>> of tx'ed bytes.
+> That would work.
 >=20
->> @@ -609,9 +605,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
-_id)
->> =20
->>  	/* transmission complete interrupt */
->>  	if (reg_iflag1 & (1 << FLEXCAN_TX_BUF_ID)) {
->> -		/* tx_bytes is incremented in flexcan_start_xmit */
->> +		stats->tx_bytes +=3D can_get_echo_skb(dev, 0);
->>  		stats->tx_packets++;
->>  		flexcan_write((1 << FLEXCAN_TX_BUF_ID), &regs->iflag1);
->> +		can_get_echo_skb(dev, 0);
->>  		netif_wake_queue(dev);
->>  	}
->=20
->=20
-> What's the reason for the second can_get_echo_skb() here?
-doh!
+> Next step would be to do the statistics inside can_get_echo_skb(), but =
+that's
+> affecting all drivers using it ...
+> Kurt
+
+Interesting idea
 
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -48,7 +42,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig666DB3A492637A04FFAEDCBD
+--------------enig564E1C69008B5819EDE655C7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -57,9 +51,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk6yalcACgkQjTAFq1RaXHNpCwCgmPcg5j1RXsonn+1Vn7LUfkE8
-ibQAn0pYADO03LgK2bc9C5pKS0PmSFO5
-=hEeX
+iEYEARECAAYFAk6ycCkACgkQjTAFq1RaXHPNuACeKqWNP3E0ELafQAf1/HACOHth
+GQ8An1o2sjTdkWE/3TNyjvAXlTf4D5i4
+=PubU
 -----END PGP SIGNATURE-----
 
---------------enig666DB3A492637A04FFAEDCBD--
+--------------enig564E1C69008B5819EDE655C7--
