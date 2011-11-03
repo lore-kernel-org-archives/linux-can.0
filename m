@@ -1,58 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] net/can/mscan: add listen only mode
-Date: Thu,  3 Nov 2011 14:00:43 +0100
-Message-ID: <1320325243-24907-1-git-send-email-mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 0/2] clean up tx_bytes accounting
+Date: Thu, 03 Nov 2011 15:27:38 +0100
+Message-ID: <4EB2A4DA.6040800@hartkopp.net>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E16FAA8E0@exch01-aklnz.MARINE.NET.INT> <1320313675-30749-1-git-send-email-mkl@pengutronix.de> <20111103100333.GD317@e-circ.dyndns.org> <4EB27026.90301@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4EB27026.90301@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Reuben.Dowle@navico.com
 List-Id: linux-can.vger.kernel.org
 
-This patch adds listen only mode to the mscan controller.
+On 03.11.2011 11:42, Marc Kleine-Budde wrote:
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
+> On 11/03/2011 11:03 AM, Kurt Van Dijck wrote:
+>> On Thu, Nov 03, 2011 at 10:47:53AM +0100, Marc Kleine-Budde wrote:
+>>> Hello,
+>>>
+>>> what about turning can_get_echo_skb() into a helper function which returns the number
+>>> of tx'ed bytes.
+>> That would work.
+>>
+>> Next step would be to do the statistics inside can_get_echo_skb(), but that's
+>> affecting all drivers using it ...
+>> Kurt
+> 
+> Interesting idea
 
-...can be pulled via:
 
-The following changes since commit 8b3408f8ee994973869d8ba32c5bf482bc4ddca4:
+Yes, but then the name of the function is not appropriate anymore.
 
-  dp83640: free packet queues on remove (2011-10-24 19:14:50 -0400)
+The return value for can_get_echo_skb() gives a silent improvement that can be
+adopted by CAN drivers by the time. But hiding more functionality inside this
+function may lead to misunderstandings.
 
-are available in the git repository at:
-  git://git.pengutronix.de/git/mkl/linux-2.6.git can/mscan-listen-only-for-net-next
-
-Marc Kleine-Budde (1):
-      net/can/mscan: add listen only mode
-
- drivers/net/can/mscan/mscan.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index ec4a311..74f3b18 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -581,7 +581,10 @@ static int mscan_open(struct net_device *dev)
- 
- 	priv->open_time = jiffies;
- 
--	clrbits8(&regs->canctl1, MSCAN_LISTEN);
-+	if (ctrlmode.flags & CAN_CTRLMODE_LISTENONLY)
-+		setbits8(&regs->canctl1, MSCAN_LISTEN);
-+	else
-+		clrbits8(&regs->canctl1, MSCAN_LISTEN);
- 
- 	ret = mscan_start(dev);
- 	if (ret)
-@@ -690,7 +693,8 @@ struct net_device *alloc_mscandev(void)
- 	priv->can.bittiming_const = &mscan_bittiming_const;
- 	priv->can.do_set_bittiming = mscan_do_set_bittiming;
- 	priv->can.do_set_mode = mscan_do_set_mode;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
-+		CAN_CTRLMODE_LISTENONLY;
- 
- 	for (i = 0; i < TX_QUEUE_SIZE; i++) {
- 		priv->tx_queue[i].id = i;
--- 
-1.7.4.1
+Regards,
+Oliver
