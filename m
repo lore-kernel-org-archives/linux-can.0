@@ -1,14 +1,15 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: linux-can ML : Please re-subscribe - was: SocketCAN Mailing Lists
-	move to vger.kernel.org
-Date: Fri, 04 Nov 2011 14:22:09 +0100
-Message-ID: <4EB3E701.3020801@hartkopp.net>
-References: <4E96025D.3010501@hartkopp.net>
+From: Kurt Van Dijck <kurt.van.dijck-/BeEPy95v10@public.gmane.org>
+Subject: Re: git repos @ gitorious.org
+Date: Fri, 4 Nov 2011 17:16:55 +0100
+Message-ID: <20111104161655.GC18026@e-circ.dyndns.org>
+References: <4EB1A448.6000703@hartkopp.net> <4EB1C132.2070103@pengutronix.de>
+	<20111103130841.GG317@e-circ.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4E96025D.3010501-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20111103130841.GG317-MxZ6Iy/zr/UdbCeoMzGj59i2O/JbrIOy@public.gmane.org>
 List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
 	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
 List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
@@ -18,59 +19,22 @@ List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
 	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
 Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
 Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: socketcan-users <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>, SocketCAN Core Mailing List <socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-Accidentally the subscriptions to linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org have been dropped
-on 2011-10-31.
+On Thu, Nov 03, 2011 at 02:08:41PM +0100, Kurt Van Dijck wrote:
+> On Wed, Nov 02, 2011 at 11:16:18PM +0100, Marc Kleine-Budde wrote:
+> > On 11/02/2011 09:12 PM, Oliver Hartkopp wrote:
+> > > 
+> > > https://gitorious.org/~<kurts_account>/linux-can/can-modules-j1939
+> > > https://gitorious.org/~<kurts_account>/linux-can/can-utils-j1939
 
-So if you subscribed linux-can before that date your subscription is LOST.
+Since the can-j1939-modules require one to use a modified iproute2,
+I wanted to create an iproute-j1939 within linux-can, but I see no way
+to accomplish this.
 
-Please re-subscribe.
+Any opinions on how to proceed?
 
-Tnx,
-Oliver
-
-ps. I tried to put the guys that i've already seen on linux-can before in BCC
-
-
-On 12.10.2011 23:10, Oliver Hartkopp wrote:
-
-> Dear Linux CAN users,
-> 
-> due to the fact that BerliOS is closing it's services end of 2011, the
-> formerly two SocketCAN mailing lists.
-> 
-> - SocketCAN Core  (socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org)
-> - SocketCAN Users (socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org)
-> 
-> are moving to a single mailing list at the kernel developers email list server
-> 
->     vger.kernel.org
-> 
-> On vger.kernel.org there are many Linux lists now including a new
-> 
->     'linux-can'
-> 
-> list for Linux Kernel CAN development, see at:
-> 
->     http://vger.kernel.org/vger-lists.html#linux-can
-> 
-> Please click on the provided link to subscribe the new list for discussions on
-> Linux CAN ('SocketCAN') topics. You can ignore your E-Mail client probably
-> complaining about an 'empty subject' as the subscription is only sent in the
-> body of the subscription mail.
-> 
-> Many thanks to BerliOS and the guys from Fraunhofer FOKUS in Berlin for
-> hosting the SocketCAN development in the last years.
-> 
-> There's currently no mail archive bound to the new list. I requested
-> http://marc.info as linux-kernel and linux-netdev are also archived there (and
-> it is easy to browse even on mobile phones).
-> 
-> We should probably have a second archive (e.g. like gmane.org,
-> mail-archive.com, ...) which is presented more user friendly in the browser.
-> Any preferences out there?
-> 
-> Best regards,
-> Oliver
+Kind regards,
+Kurt
