@@ -1,64 +1,242 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] net/can/mscan: add listen only mode
-Date: Wed,  9 Nov 2011 21:50:49 +0100
-Message-ID: <1320871849-24719-1-git-send-email-mkl@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [Socketcan-users] Using sja1000_isa on a 64b system
+Date: Thu, 10 Nov 2011 09:36:13 +0100
+Message-ID: <4EBB8CFD.3050602@grandegger.com>
+References: <CAKvQZ_3HSdfOn4xGq7j8GsWJ+iHVan0Ygr=tR+cQm-tpQQWV2A@mail.gmail.com>	<4E4CA945.7080504@hartkopp.net> <4E4CC9D5.6040708@pengutronix.de>	<CAKvQZ_0raVFUsCFYA2FVH_138DCMw6ipKHdz=Dh62K4YpM5o=Q@mail.gmail.com>	<4E5CCAA5.4030009@grandegger.com>	<CAKvQZ_0TFUd4FwOvr4AXArviMYPGHH6Xex4Cjy7LxYoEuBUpxA@mail.gmail.com>	<4E6271CD.6040407@grandegger.com>	<CAKvQZ_2PyM5zo5-4PtrMGjMEML3j02MKCCJU=zpnkSK2N_XUjg@mail.gmail.com>	<4E64B6CB.8010505@grandegger.com>	<CAKvQZ_1gp9XvVmh+ZEUdEVz2TrvkhHtVKc20ViNgSx=uuPWajQ@mail.gmail.com>	<4E653775.4030503@grandegger.com> <CAKvQZ_28skey9u+rDXi8mkrYiuhTQwnUAAhNMsPNqT-ZP3VNkg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60406 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932775Ab1KIUuz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Nov 2011 15:50:55 -0500
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:52987 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755351Ab1KJIgQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Nov 2011 03:36:16 -0500
+In-Reply-To: <CAKvQZ_28skey9u+rDXi8mkrYiuhTQwnUAAhNMsPNqT-ZP3VNkg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Willy Lambert <lambert.willy@gmail.com>
+Cc: "socketcan-users@lists.berlios.de" <socketcan-users@lists.berlios.de>, linux-can@vger.kernel.org
 
-This patch adds listen only mode to the mscan controller.
+Hi Willy,
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+On 11/09/2011 07:03 PM, Willy Lambert wrote:
+> 2011/9/5 Wolfgang Grandegger <wg@grandegger.com>
+... 
+>> Ah, at a closer look, the PC/104-Plus is an extension of the PC/104 from
+>> factor with an additional connector for PCI. It therefore still supports
+>> ISA bus communication, which the IXXAT PC-I 04/104 board uses.
+>>
+>> Therefore I'm going to prepare a patch removing the "X86_32" restriction
+>> for CONFIG_ISA above. Sorry for confusion.
+>>
+> 
+> May I bump this up ? I read your conversation on other linux ML, but I
+> don't really know how it ended.
+
+Some time ago I posted a patch to the relevant mls removing the
+restriction mentioned above. But enabling CONFIG_ISA also for x86_64
+systems is not wished mainly to avoid the expected mess with old
+legacy ISA driver code. Therefore we should convert the driver to a
+platform driver. I have attached the *untested* patch below. Could you
+please give it a try? If it works fine, I will send it finally to the
+netdev ml.
+
+Thanks,
+
+Wolfgang.
+
+
+From dd2c8d7cf8f23a20aecd234a6cf7675b59f5779d Mon Sep 17 00:00:00 2001
+From: Wolfgang Grandegger <wg@grandegger.com>
+Date: Thu, 10 Nov 2011 09:10:18 +0100
+Subject: [PATCH] can: sja1000_isa: convert to platform driver to support x86_64 systems
+
+This driver is currently not supported on x86_64 systems because the
+"isa_driver" interface is used. To overcome this limitation, this
+driver is converted to a platform driver, similar to the serial 8250
+driver.
+
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
+ drivers/net/can/sja1000/Kconfig       |    1 -
+ drivers/net/can/sja1000/sja1000_isa.c |   86 ++++++++++++++++++++++-----------
+ 2 files changed, 57 insertions(+), 30 deletions(-)
 
-The patch targets net-next/master and can be pulled:
-
-The following changes since commit e56c57d0d3fdbbdf583d3af96bfb803b8dfa713e:
-
-  net: rename sk_clone to sk_clone_lock (2011-11-08 17:07:07 -0500)
-
-are available in the git repository at:
-  git://git.pengutronix.de/git/mkl/linux-2.6.git can/mscan-listen-only-for-net-next
-
-Marc Kleine-Budde (1):
-      net/can/mscan: add listen only mode
-
- drivers/net/can/mscan/mscan.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index ec4a311..74f3b18 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -581,7 +581,10 @@ static int mscan_open(struct net_device *dev)
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index fe9e64d..36e9d59 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -6,7 +6,6 @@ if CAN_SJA1000
  
- 	priv->open_time = jiffies;
+ config CAN_SJA1000_ISA
+ 	tristate "ISA Bus based legacy SJA1000 driver"
+-	depends on ISA
+ 	---help---
+ 	  This driver adds legacy support for SJA1000 chips connected to
+ 	  the ISA bus using I/O port, memory mapped or indirect access.
+diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+index 496223e..3301031 100644
+--- a/drivers/net/can/sja1000/sja1000_isa.c
++++ b/drivers/net/can/sja1000/sja1000_isa.c
+@@ -17,7 +17,7 @@
  
--	clrbits8(&regs->canctl1, MSCAN_LISTEN);
-+	if (ctrlmode.flags & CAN_CTRLMODE_LISTENONLY)
-+		setbits8(&regs->canctl1, MSCAN_LISTEN);
-+	else
-+		clrbits8(&regs->canctl1, MSCAN_LISTEN);
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/isa.h>
++#include <linux/platform_device.h>
+ #include <linux/interrupt.h>
+ #include <linux/netdevice.h>
+ #include <linux/delay.h>
+@@ -75,6 +75,8 @@ MODULE_PARM_DESC(ocr, "Output control register "
+ #define SJA1000_IOSIZE          0x20
+ #define SJA1000_IOSIZE_INDIRECT 0x02
  
- 	ret = mscan_start(dev);
- 	if (ret)
-@@ -690,7 +693,8 @@ struct net_device *alloc_mscandev(void)
- 	priv->can.bittiming_const = &mscan_bittiming_const;
- 	priv->can.do_set_bittiming = mscan_do_set_bittiming;
- 	priv->can.do_set_mode = mscan_do_set_mode;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
-+		CAN_CTRLMODE_LISTENONLY;
++static struct platform_device *sja1000_isa_devs[MAXDEV];
++
+ static u8 sja1000_isa_mem_read_reg(const struct sja1000_priv *priv, int reg)
+ {
+ 	return readb(priv->reg_base + reg);
+@@ -115,24 +117,13 @@ static void sja1000_isa_port_write_reg_indirect(const struct sja1000_priv *priv,
+ 	outb(val, base + 1);
+ }
  
- 	for (i = 0; i < TX_QUEUE_SIZE; i++) {
- 		priv->tx_queue[i].id = i;
+-static int __devinit sja1000_isa_match(struct device *pdev, unsigned int idx)
+-{
+-	if (port[idx] || mem[idx]) {
+-		if (irq[idx])
+-			return 1;
+-	} else if (idx)
+-		return 0;
+-
+-	dev_err(pdev, "insufficient parameters supplied\n");
+-	return 0;
+-}
+-
+-static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
++static int __devinit sja1000_isa_probe(struct platform_device *pdev)
+ {
+ 	struct net_device *dev;
+ 	struct sja1000_priv *priv;
+ 	void __iomem *base = NULL;
+ 	int iosize = SJA1000_IOSIZE;
++	int idx = pdev->id;
+ 	int err;
+ 
+ 	if (mem[idx]) {
+@@ -203,17 +194,17 @@ static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
+ 	else
+ 		priv->cdr = CDR_DEFAULT;
+ 
+-	dev_set_drvdata(pdev, dev);
+-	SET_NETDEV_DEV(dev, pdev);
++	dev_set_drvdata(&pdev->dev, dev);
++	SET_NETDEV_DEV(dev, &pdev->dev);
+ 
+ 	err = register_sja1000dev(dev);
+ 	if (err) {
+-		dev_err(pdev, "registering %s failed (err=%d)\n",
++		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+ 			DRV_NAME, err);
+ 		goto exit_unmap;
+ 	}
+ 
+-	dev_info(pdev, "%s device registered (reg_base=0x%p, irq=%d)\n",
++	dev_info(&pdev->dev, "%s device registered (reg_base=0x%p, irq=%d)\n",
+ 		 DRV_NAME, priv->reg_base, dev->irq);
+ 	return 0;
+ 
+@@ -229,13 +220,14 @@ static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
+ 	return err;
+ }
+ 
+-static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
++static int __devexit sja1000_isa_remove(struct platform_device *pdev)
+ {
+-	struct net_device *dev = dev_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+ 	struct sja1000_priv *priv = netdev_priv(dev);
++	int idx = pdev->id;
+ 
+ 	unregister_sja1000dev(dev);
+-	dev_set_drvdata(pdev, NULL);
++	dev_set_drvdata(&pdev->dev, NULL);
+ 
+ 	if (mem[idx]) {
+ 		iounmap(priv->reg_base);
+@@ -251,29 +243,65 @@ static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
+ 	return 0;
+ }
+ 
+-static struct isa_driver sja1000_isa_driver = {
+-	.match = sja1000_isa_match,
++static struct platform_driver sja1000_isa_driver = {
+ 	.probe = sja1000_isa_probe,
+ 	.remove = __devexit_p(sja1000_isa_remove),
+ 	.driver = {
+ 		.name = DRV_NAME,
++		.owner = THIS_MODULE,
+ 	},
+ };
+ 
+ static int __init sja1000_isa_init(void)
+ {
+-	int err = isa_register_driver(&sja1000_isa_driver, MAXDEV);
++	int idx, err;
++
++	for (idx = 0; idx < MAXDEV; idx++) {
++		if ((port[idx] || mem[idx]) && irq[idx]) {
++			sja1000_isa_devs[idx] =
++				platform_device_alloc(DRV_NAME, idx);
++			if (!sja1000_isa_devs[idx]) {
++				err = -ENOMEM;
++				goto exit_free_devices;
++			}
++			err = platform_device_add(sja1000_isa_devs[idx]);
++			if (err) {
++				platform_device_put(sja1000_isa_devs[idx]);
++				goto exit_free_devices;
++			}
++		} else {
++			pr_err("%s: insufficient parameters supplied\n",
++			       DRV_NAME);
++			goto exit_free_devices;
++	}
++
++	err = platform_driver_register(&sja1000_isa_driver);
++	if (err)
++		goto exit_free_devices;
++
++	pr_info("Legacy %s driver for max. %d devices registered\n",
++		DRV_NAME, MAXDEV);
++
++	return 0;
++
++exit_free_devices:
++	while (--idx >= 0) {
++		if (sja1000_isa_devs[idx])
++			platform_device_unregister(sja1000_isa_devs[idx]);
++	}
+ 
+-	if (!err)
+-		printk(KERN_INFO
+-		       "Legacy %s driver for max. %d devices registered\n",
+-		       DRV_NAME, MAXDEV);
+ 	return err;
+ }
+ 
+ static void __exit sja1000_isa_exit(void)
+ {
+-	isa_unregister_driver(&sja1000_isa_driver);
++	int idx;
++
++	platform_driver_unregister(&sja1000_isa_driver);
++	for (idx = 0; idx < MAXDEV; idx++) {
++		if (sja1000_isa_devs[idx])
++			platform_device_unregister(sja1000_isa_devs[idx]);
++	}
+ }
+ 
+ module_init(sja1000_isa_init);
 -- 
 1.7.4.1
 
