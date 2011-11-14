@@ -1,326 +1,193 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [Socketcan-users] Using sja1000_isa on a 64b system
-Date: Mon, 14 Nov 2011 10:51:58 +0100
-Message-ID: <4EC0E4BE.4010101@grandegger.com>
-References: <CAKvQZ_3HSdfOn4xGq7j8GsWJ+iHVan0Ygr=tR+cQm-tpQQWV2A@mail.gmail.com>	<CAKvQZ_0raVFUsCFYA2FVH_138DCMw6ipKHdz=Dh62K4YpM5o=Q@mail.gmail.com>	<4E5CCAA5.4030009@grandegger.com>	<CAKvQZ_0TFUd4FwOvr4AXArviMYPGHH6Xex4Cjy7LxYoEuBUpxA@mail.gmail.com>	<4E6271CD.6040407@grandegger.com>	<CAKvQZ_2PyM5zo5-4PtrMGjMEML3j02MKCCJU=zpnkSK2N_XUjg@mail.gmail.com>	<4E64B6CB.8010505@grandegger.com>	<CAKvQZ_1gp9XvVmh+ZEUdEVz2TrvkhHtVKc20ViNgSx=uuPWajQ@mail.gmail.com>	<4E653775.4030503@grandegger.com>	<CAKvQZ_28skey9u+rDXi8mkrYiuhTQwnUAAhNMsPNqT-ZP3VNkg@mail.gmail.com>	<4EBB8CFD.3050602@grandegger.com>	<CAKvQZ_3d=2-0+RrxkjCe7Nxvtgn42uYOS4f4B7_6TmaxEji7UQ@mail.gmail.com>	<CAKvQZ_0Ymdy1f6oUPHVxqEVp42z+OcfygQL1z_FR1aQ5Cwwmbw@mail.gmail.com>	<4EBEE043.6070601@grandegger.com>	<4EBEE1D8.7040407@grandegger.com
- >	<CAKvQZ_1QmJAPUZAEvV-2FSo2HR4byApoEqWPnOts9up90U4BVg@mail.gmail.com> <CAKvQZ_3anOf1SbE5TK6gvJf4v3gw1MBae0hw5JGr__szt7KoQQ@mail.gmail.com> <4EC01B12.5050404@grandegger.com>
+From: Willy Lambert <lambert.willy@gmail.com>
+Subject: Re: Problem with so Loved interrupts
+Date: Mon, 14 Nov 2011 14:13:01 +0100
+Message-ID: <CAKvQZ_3Xw0BW5gXnERUuDqRCB9TP8hCptLDiqO-n9vf8MCuNBw@mail.gmail.com>
+References: <CAKvQZ_1Sf8xSJ2dGC7fO+mBFPQj_rwaeuiYcpJozUD0V5P1dYA@mail.gmail.com>
+	<CAKvQZ_0XOeaEqzXvC0L7YjBpQymeEhQvDJFwG2re7VTcTXLA3Q@mail.gmail.com>
+	<CAKvQZ_0RhjE3+OBLposEBoU8UL66_3JfV237bWnL5pR0HrRMVQ@mail.gmail.com>
+	<4EBB9EC1.1040508@grandegger.com>
+	<CAKvQZ_06XxMmCzuu-3+moz12HHXcWOm1e3Jt4DuTZ1E=kGYjsQ@mail.gmail.com>
+	<4EBBBE9C.20007@grandegger.com>
+	<CAKvQZ_1dTaT1OL2Q7TVxisL9Naqg5RDefDDooT-WjNZhzci=bQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070307070409030004070002"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:57759 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754065Ab1KNJwB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Nov 2011 04:52:01 -0500
-In-Reply-To: <4EC01B12.5050404@grandegger.com>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:35420 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754549Ab1KNNND convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Nov 2011 08:13:03 -0500
+Received: by wwe5 with SMTP id 5so4354845wwe.1
+        for <linux-can@vger.kernel.org>; Mon, 14 Nov 2011 05:13:01 -0800 (PST)
+In-Reply-To: <CAKvQZ_1dTaT1OL2Q7TVxisL9Naqg5RDefDDooT-WjNZhzci=bQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Willy Lambert <lambert.willy@gmail.com>
-Cc: "socketcan-users@lists.berlios.de" <socketcan-users@lists.berlios.de>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------070307070409030004070002
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-
-On 11/13/2011 08:31 PM, Wolfgang Grandegger wrote:
-> On 11/13/2011 10:15 AM, Willy Lambert wrote:
->> 2011/11/13 Willy Lambert <lambert.willy@gmail.com>:
->>> 2011/11/12 Wolfgang Grandegger <wg@grandegger.com>:
->>>> On 11/12/2011 10:08 PM, Wolfgang Grandegger wrote:
->>>>> On 11/12/2011 10:55 AM, Willy Lambert wrote:
->>>> ...
->>>>>>> I failed to apply the patch, is it for 2.6.38.8 kernels ?
->>>>>
->>>>> No, it's for up-to-date *mainline* linux version 3.1.x. Any chance to
->>>>> switch to David Miller's "net-nex-2.6" tree?. Otherwise I'm going to
->>>>> adapt the patch to 2.6.38.8.
+2011/11/10 Willy Lambert <lambert.willy@gmail.com>:
+> 2011/11/10 Wolfgang Grandegger <wg@grandegger.com>:
+>> On 11/10/2011 11:56 AM, Willy Lambert wrote:
+>>> 2011/11/10 Wolfgang Grandegger <wg@grandegger.com>:
+>>>> On 11/10/2011 09:56 AM, Willy Lambert wrote:
+>>>>> 2011/11/9 Willy Lambert <lambert.willy@gmail.com>:
+>>>>>> ---------- Forwarded message ----------
+>>>>>> From: Willy Lambert <lambert.willy@gmail.com>
+>>>>>> Date: 2011/11/9
+>>>>>> Subject: Problem with so Loved interrupts
+>>>>>> To: linux-can <linux-can@vger.kernel.org>
+>>>>>>
+>>>>>>
+>>>>>> Hi all,
+>>>>>> I am having interruption problems again.
+>>>>>> The symptom is a /proc/interrupt or /proc/xenomia/irq not rising=
+=2E
+>>>>>> I am sure of my Hardware because I used an archive of a working =
+linux
+>>>>>> system and it works. So the wired are Ok, device is responding, =
+BIOS
+>>>>>> is well configured.
+>>>>>> I check this : http://comments.gmane.org/gmane.network.socketcan=
+=2Euser/813,
+>>>>>> and I am sure it is not the case since it worked with the old sy=
+stem
+>>>>>> and it has been electrically protected.
+>>>>>> I also recheck this
+>>>>>> http://old.nabble.com/Re%3A-Trying-to-use-socketCan-on-an-Ixxat-=
+PC-I-04-104-p30752686.html
+>>>>>> but once again, everything is ok with old software.
 >>>>
->>>> Well, the patch also applies to 2.6.38.8. Maybe you have some problems
->>>> extracting the patch. Therefore I have attached it as attachment this
->>>> time. Good luck.
+>>>> Please describe "old system" and "old software".
 >>>
->>> It's ok now :
->>> ard@ard-host:~/src/linux-2.6.38.8$ patch -p1 < wg_platform.patch
->>> patching file drivers/net/can/sja1000/Kconfig
->>> patching file drivers/net/can/sja1000/sja1000_isa.c
+>>> The system is a PC104 board with an Atom processor, on top of wich =
+a
+>>> CAN PC104 board is connected via the ISA bus. The sja1000 are acess=
+ed
+>>> by iomem. With your help we did some Bios magics and some tunings t=
+o
+>>> make it running. I currently have a fully working CAN bus with one
+>>> device (and resistors...) that is configured at the rigth baudrate.
+>>> This device has a led that change color with CAN NMT states, so I c=
+an
+>>> easily see if a CAN message is going on the bus (with a 000#01.00 N=
+MT
+>>> request for instance).
 >>>
->>> I must have done something wrong. I am going to test it now
+>>> The old system is a Debian 6.0.1 distibution with a custom 2.6.35.7
+>>> built kernel with all that was required to make it working.
+>>> The new one is the same debian with a custom 2.6.38.8 kernel with
+>>> xenomai 2.6.0 patches.
 >>>
+>>>>
+>>>>>> So what did I changed ? I was updating many of my dependencies o=
+n my
+>>>>>> target and even tried 64b, so the road have been very long. What=
+ I
+>>>>>> accuse much is my new kernel. Before it was a 2.6.35.7, now it i=
+s a
+>>>>>> 2.6.38.8 with xenomai patches. I may have forgot to select a ker=
+nel
+>>>>>> option for interrupts...
+>>>>
+>>>> Well, you get other interrupts and therefore it seem to be specifi=
+c to
+>>>> the CAN hardware and the bus/slot it is connected to. You say that=
+ it
+>>>> works with your 2.6.35.7 kernel but does not with 2.6.38.8 on the
+>>>> *identical* hardware, right? Then I would check the kernel configs=
+ for
+>>>> PNP related differences.
+>>>>
+>>>
+>>> The hardware and Bios are identical with last . I use clonezilla
+>>> (http://clonezilla.org/clonezilla-live.php) to switch between the o=
+ld
+>>> archived filesystem and the new one.
+>>>
+>>> I also seen something interesting on the new kernel system. I don't
+>>> have interrupts but the first message goes on the bus ! Because the
+>>> led of my device turn into the operationnal state afet a 000#01.00
+>>> request (tested with xenomai driver). So the message goes, but the
+>>> "ack" if any is not going back to the driver.
+>>>
+>>> There is on difference on the interrupts type. Here is the old syst=
+em
+>>> 2.6.35.7 /proc/interrupts. Note that the type is IO-APIC
+>>> root@beta:~# cat /proc/interrupts
+>>> =A0 =A0 =A0 =A0 =A0 =A0CPU0
+>>> =A0 0: =A0 =A05288851 =A0 IO-APIC-edge =A0 =A0 =A0timer
+>>> =A0 1: =A0 =A0 =A0 =A0 =A04 =A0 IO-APIC-edge =A0 =A0 =A0i8042
+>>> =A0 8: =A0 =A0 =A0 =A0 =A01 =A0 IO-APIC-edge =A0 =A0 =A0rtc0
+>>> =A0 9: =A0 =A0 =A0 =A0 =A00 =A0 IO-APIC-fasteoi =A0 acpi
+>>> =A010: =A0 =A0 =A0 =A0 =A06 =A0 IO-APIC-edge =A0 =A0 =A0can0, can1
+>>> =A012: =A0 =A0 =A0 =A0 =A07 =A0 IO-APIC-edge =A0 =A0 =A0i8042
+>>> =A014: =A0 =A0 =A0 =A0 =A00 =A0 IO-APIC-edge =A0 =A0 =A0ata_piix
+>>> =A015: =A0 =A0 =A0 3755 =A0 IO-APIC-edge =A0 =A0 =A0ata_piix
+>>> =A019: =A0 =A0 =A0 =A0232 =A0 IO-APIC-fasteoi =A0 uhci_hcd:usb3
+>>> =A023: =A0 =A0 =A0 =A0 =A02 =A0 IO-APIC-fasteoi =A0 ehci_hcd:usb1, =
+uhci_hcd:usb2
+>>> =A040: =A0 =A0 =A0 4563 =A0 PCI-MSI-edge =A0 =A0 =A0eth0
+>>> NMI: =A0 =A0 =A0 =A0 =A00 =A0 Non-maskable interrupts
+>>> LOC: =A0 =A0 =A0 5406 =A0 Local timer interrupts
+>>> SPU: =A0 =A0 =A0 =A0 =A00 =A0 Spurious interrupts
+>>> PMI: =A0 =A0 =A0 =A0 =A00 =A0 Performance monitoring interrupts
+>>> PND: =A0 =A0 =A0 =A0 =A00 =A0 Performance pending work
+>>> TRM: =A0 =A0 =A0 =A0 =A00 =A0 Thermal event interrupts
+>>> THR: =A0 =A0 =A0 =A0 =A00 =A0 Threshold APIC interrupts
+>>> MCE: =A0 =A0 =A0 =A0 =A00 =A0 Machine check exceptions
+>>> MCP: =A0 =A0 =A0 =A0 18 =A0 Machine check polls
+>>> ERR: =A0 =A0 =A0 =A0 =A00
+>>> MIS: =A0 =A0 =A0 =A0 =A00
 >>
->> arg, it doesn't compile I had a look a sources but I don't see the error :
+>> Can't tell where the difference comes from, sorry. You should first =
+try
+>> *without* Xenomai (and Xenomai patches) just to be sure that it's no=
+t
+>> related to Xenomai. If if still doesn't work, please show use the
+>> .config and /proc/modules of both setups (2.6.35 and 2.6.38).
 >>
->>   CC [M]  drivers/xenomai/can/rtcan_raw_dev.o
->> drivers/net/can/sja1000/sja1000_isa.c: In function ‘sja1000_isa_init’:
->> drivers/net/can/sja1000/sja1000_isa.c:297: error: invalid storage
->> class for function ‘sja1000_isa_exit’
->> drivers/net/can/sja1000/sja1000_isa.c:296: warning: ISO C90 forbids
->> mixed declarations and code
->> drivers/net/can/sja1000/sja1000_isa.c:307: error: invalid storage
->> class for function ‘__inittest’
->> drivers/net/can/sja1000/sja1000_isa.c:307: warning: ‘alias’ attribute ignored
->> drivers/net/can/sja1000/sja1000_isa.c:308: error: invalid storage
->> class for function ‘__exittest’
->> drivers/net/can/sja1000/sja1000_isa.c:308: warning: ISO C90 forbids
->> mixed declarations and code
->> drivers/net/can/sja1000/sja1000_isa.c:308: warning: ‘alias’ attribute ignored
->> drivers/net/can/sja1000/sja1000_isa.c:308: error: expected declaration
->> or statement at end of input
->> make[5]: *** [drivers/net/can/sja1000/sja1000_isa.o] Error 1
-> 
-> Argh, a "}" is missing, sorry. I will test the patch more carefully
-> before re-sending.
+>
+> My non working 2.6.38.8 was built from the default Debian .config fil=
+e
+> with many options included and an initrd. I didn't came from 2.5.37.5
+> because for some reason I had a kernel boot panic because of
+> filesystem/disk driver modules. But I managed to find the right optio
+> today.
+>
+> With a fresh 2.6.38.8 made from the 2.6.35.7 .config file with make
+> oldconfig, installed on the old system =A0it works ! And I still have
+> IO-APIC-edge interrupts. =A0I also made a try adding xenomai with
+> success. For completeness I tested this ligth 2.6.38.8 kernel on the
+> "new" filesystem in place of the faulty 2.6.38.8 kernel and everythin=
+g
+> seems OK.
+>
+> The IRQ type differences must be due to kernel configurations (my
+> faulty big 2.6.38.8 one and my working-now ligth 2.6.38.8 from
+> 2.5.35.7).
+> I prefere using the light kernel version that's now working so I don'=
+t
+> mind giving up with debugging this problem. If you are interested in
+> finding what's happening let me know.
+>
+>
+>
+> I'll do my personnal functionnal tests and I'll try the platform
+> driver. Thanks for help.
+>
 
-See attachment.
+=46YI some kernel configs that may be linked to the problem are :
 
-Wolfgang.
+=95	Bus options (PCI etc.) ->Interrupts on hypertransports devices
+=95	Processor type and features ->Local APIC support on uniprocessors
+=95	Processor type and features ->IO-APIC support on uniprocessors
+=95	Bus options (PCI etc.) ->PCI IOV Support
 
---------------070307070409030004070002
-Content-Type: text/x-diff;
- name="sja1000-isa-platform-x86-64.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="sja1000-isa-platform-x86-64.patch"
+I can't spend more time now on it to really find the one that is
+responsible of this IRQ type change
 
-[PATCH] can: sja1000_isa: convert to platform driver to support x86_64 systems
 
-This driver is currently not supported on x86_64 systems because the
-"isa_driver" interface is used. To overcome this limitation, this
-driver is converted to a platform driver, similar to the serial 8250
-driver.
 
-This patch also fixes some warnings: "comparison is always false due
-to limited range of data type".
-
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/net/can/sja1000/Kconfig       |    1 
- drivers/net/can/sja1000/sja1000_isa.c |  109 ++++++++++++++++++++++------------
- 2 files changed, 72 insertions(+), 38 deletions(-)
-
-Index: linux-2.6.38.8/drivers/net/can/sja1000/Kconfig
-===================================================================
---- linux-2.6.38.8.orig/drivers/net/can/sja1000/Kconfig	2011-11-13 20:24:52.447054533 +0100
-+++ linux-2.6.38.8/drivers/net/can/sja1000/Kconfig	2011-11-13 20:24:55.943071866 +0100
-@@ -6,7 +6,6 @@
- 
- config CAN_SJA1000_ISA
- 	tristate "ISA Bus based legacy SJA1000 driver"
--	depends on ISA
- 	---help---
- 	  This driver adds legacy support for SJA1000 chips connected to
- 	  the ISA bus using I/O port, memory mapped or indirect access.
-Index: linux-2.6.38.8/drivers/net/can/sja1000/sja1000_isa.c
-===================================================================
---- linux-2.6.38.8.orig/drivers/net/can/sja1000/sja1000_isa.c	2011-11-13 20:24:52.431054451 +0100
-+++ linux-2.6.38.8/drivers/net/can/sja1000/sja1000_isa.c	2011-11-14 10:44:50.026339684 +0100
-@@ -17,7 +17,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/isa.h>
-+#include <linux/platform_device.h>
- #include <linux/interrupt.h>
- #include <linux/netdevice.h>
- #include <linux/delay.h>
-@@ -44,9 +44,9 @@
- static unsigned long mem[MAXDEV];
- static int __devinitdata irq[MAXDEV];
- static int __devinitdata clk[MAXDEV];
--static char __devinitdata cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
--static char __devinitdata ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
--static char __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
-+static unsigned char __devinitdata cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
-+static unsigned char __devinitdata ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
-+static int __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
- 
- module_param_array(port, ulong, NULL, S_IRUGO);
- MODULE_PARM_DESC(port, "I/O port number");
-@@ -54,7 +54,7 @@
- module_param_array(mem, ulong, NULL, S_IRUGO);
- MODULE_PARM_DESC(mem, "I/O memory address");
- 
--module_param_array(indirect, byte, NULL, S_IRUGO);
-+module_param_array(indirect, int, NULL, S_IRUGO);
- MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
- 
- module_param_array(irq, int, NULL, S_IRUGO);
-@@ -75,6 +75,8 @@
- #define SJA1000_IOSIZE          0x20
- #define SJA1000_IOSIZE_INDIRECT 0x02
- 
-+static struct platform_device *sja1000_isa_devs[MAXDEV];
-+
- static u8 sja1000_isa_mem_read_reg(const struct sja1000_priv *priv, int reg)
- {
- 	return readb(priv->reg_base + reg);
-@@ -115,26 +117,18 @@
- 	outb(val, base + 1);
- }
- 
--static int __devinit sja1000_isa_match(struct device *pdev, unsigned int idx)
--{
--	if (port[idx] || mem[idx]) {
--		if (irq[idx])
--			return 1;
--	} else if (idx)
--		return 0;
--
--	dev_err(pdev, "insufficient parameters supplied\n");
--	return 0;
--}
--
--static int __devinit sja1000_isa_probe(struct device *pdev, unsigned int idx)
-+static int __devinit sja1000_isa_probe(struct platform_device *pdev)
- {
- 	struct net_device *dev;
- 	struct sja1000_priv *priv;
- 	void __iomem *base = NULL;
- 	int iosize = SJA1000_IOSIZE;
-+	int idx = pdev->id;
- 	int err;
- 
-+	dev_dbg(&pdev->dev, "probing idx=%d: port=%#lx, mem=%#lx, irq=%d\n",
-+		idx, port[idx], mem[idx], irq[idx]);
-+
- 	if (mem[idx]) {
- 		if (!request_mem_region(mem[idx], iosize, DRV_NAME)) {
- 			err = -EBUSY;
-@@ -189,31 +183,31 @@
- 	else
- 		priv->can.clock.freq = CLK_DEFAULT / 2;
- 
--	if (ocr[idx] != -1)
-+	if (ocr[idx] != 0xff)
- 		priv->ocr = ocr[idx] & 0xff;
--	else if (ocr[0] != -1)
-+	else if (ocr[0] != 0xff)
- 		priv->ocr = ocr[0] & 0xff;
- 	else
- 		priv->ocr = OCR_DEFAULT;
- 
--	if (cdr[idx] != -1)
-+	if (cdr[idx] != 0xff)
- 		priv->cdr = cdr[idx] & 0xff;
--	else if (cdr[0] != -1)
-+	else if (cdr[0] != 0xff)
- 		priv->cdr = cdr[0] & 0xff;
- 	else
- 		priv->cdr = CDR_DEFAULT;
- 
--	dev_set_drvdata(pdev, dev);
--	SET_NETDEV_DEV(dev, pdev);
-+	dev_set_drvdata(&pdev->dev, dev);
-+	SET_NETDEV_DEV(dev, &pdev->dev);
- 
- 	err = register_sja1000dev(dev);
- 	if (err) {
--		dev_err(pdev, "registering %s failed (err=%d)\n",
-+		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
- 			DRV_NAME, err);
- 		goto exit_unmap;
- 	}
- 
--	dev_info(pdev, "%s device registered (reg_base=0x%p, irq=%d)\n",
-+	dev_info(&pdev->dev, "%s device registered (reg_base=0x%p, irq=%d)\n",
- 		 DRV_NAME, priv->reg_base, dev->irq);
- 	return 0;
- 
-@@ -229,13 +223,14 @@
- 	return err;
- }
- 
--static int __devexit sja1000_isa_remove(struct device *pdev, unsigned int idx)
-+static int __devexit sja1000_isa_remove(struct platform_device *pdev)
- {
--	struct net_device *dev = dev_get_drvdata(pdev);
-+	struct net_device *dev = dev_get_drvdata(&pdev->dev);
- 	struct sja1000_priv *priv = netdev_priv(dev);
-+	int idx = pdev->id;
- 
- 	unregister_sja1000dev(dev);
--	dev_set_drvdata(pdev, NULL);
-+	dev_set_drvdata(&pdev->dev, NULL);
- 
- 	if (mem[idx]) {
- 		iounmap(priv->reg_base);
-@@ -251,29 +246,69 @@
- 	return 0;
- }
- 
--static struct isa_driver sja1000_isa_driver = {
--	.match = sja1000_isa_match,
-+static struct platform_driver sja1000_isa_driver = {
- 	.probe = sja1000_isa_probe,
- 	.remove = __devexit_p(sja1000_isa_remove),
- 	.driver = {
- 		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
- 	},
- };
- 
- static int __init sja1000_isa_init(void)
- {
--	int err = isa_register_driver(&sja1000_isa_driver, MAXDEV);
-+	int idx, err;
-+
-+	for (idx = 0; idx < MAXDEV; idx++) {
-+		if ((port[idx] || mem[idx]) && irq[idx]) {
-+			sja1000_isa_devs[idx] =
-+				platform_device_alloc(DRV_NAME, idx);
-+			if (!sja1000_isa_devs[idx]) {
-+				err = -ENOMEM;
-+				goto exit_free_devices;
-+			}
-+			err = platform_device_add(sja1000_isa_devs[idx]);
-+			if (err) {
-+				platform_device_put(sja1000_isa_devs[idx]);
-+				goto exit_free_devices;
-+			}
-+			pr_debug("%s: platform device %d: port=%#lx, mem=%#lx, "
-+				 "irq=%d\n",
-+				 DRV_NAME, idx, port[idx], mem[idx], irq[idx]);
-+		} else {
-+			pr_err("%s: insufficient parameters supplied\n",
-+			       DRV_NAME);
-+			goto exit_free_devices;
-+		}
-+	}
-+
-+	err = platform_driver_register(&sja1000_isa_driver);
-+	if (err)
-+		goto exit_free_devices;
-+
-+	pr_info("Legacy %s driver for max. %d devices registered\n",
-+		DRV_NAME, MAXDEV);
-+
-+	return 0;
-+
-+exit_free_devices:
-+	while (--idx >= 0) {
-+		if (sja1000_isa_devs[idx])
-+			platform_device_unregister(sja1000_isa_devs[idx]);
-+	}
- 
--	if (!err)
--		printk(KERN_INFO
--		       "Legacy %s driver for max. %d devices registered\n",
--		       DRV_NAME, MAXDEV);
- 	return err;
- }
- 
- static void __exit sja1000_isa_exit(void)
- {
--	isa_unregister_driver(&sja1000_isa_driver);
-+	int idx;
-+
-+	platform_driver_unregister(&sja1000_isa_driver);
-+	for (idx = 0; idx < MAXDEV; idx++) {
-+		if (sja1000_isa_devs[idx])
-+			platform_device_unregister(sja1000_isa_devs[idx]);
-+	}
- }
- 
- module_init(sja1000_isa_init);
-
---------------070307070409030004070002--
+>> Wolfgang.
+>>
+>
