@@ -1,29 +1,10 @@
-From: Willy Lambert <lambert.willy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: Using sja1000_isa on a 64b system
-Date: Mon, 14 Nov 2011 16:57:25 +0100
-Message-ID: <CAKvQZ_24-FqBHcyZAtf+kR26TaU-Uhji50Q6uQUvOiM=txPCiQ@mail.gmail.com>
-References: <CAKvQZ_3HSdfOn4xGq7j8GsWJ+iHVan0Ygr=tR+cQm-tpQQWV2A@mail.gmail.com>
-	<CAKvQZ_0TFUd4FwOvr4AXArviMYPGHH6Xex4Cjy7LxYoEuBUpxA@mail.gmail.com>
-	<4E6271CD.6040407@grandegger.com>
-	<CAKvQZ_2PyM5zo5-4PtrMGjMEML3j02MKCCJU=zpnkSK2N_XUjg@mail.gmail.com>
-	<4E64B6CB.8010505@grandegger.com>
-	<CAKvQZ_1gp9XvVmh+ZEUdEVz2TrvkhHtVKc20ViNgSx=uuPWajQ@mail.gmail.com>
-	<4E653775.4030503@grandegger.com>
-	<CAKvQZ_28skey9u+rDXi8mkrYiuhTQwnUAAhNMsPNqT-ZP3VNkg@mail.gmail.com>
-	<4EBB8CFD.3050602@grandegger.com>
-	<CAKvQZ_3d=2-0+RrxkjCe7Nxvtgn42uYOS4f4B7_6TmaxEji7UQ@mail.gmail.com>
-	<CAKvQZ_0Ymdy1f6oUPHVxqEVp42z+OcfygQL1z_FR1aQ5Cwwmbw@mail.gmail.com>
-	<4EBEE043.6070601@grandegger.com> <4EBEE1D8.7040407@grandegger.com>
-	<CAKvQZ_1QmJAPUZAEvV-2FSo2HR4byApoEqWPnOts9up90U4BVg@mail.gmail.com>
-	<CAKvQZ_3anOf1SbE5TK6gvJf4v3gw1MBae0hw5JGr__szt7KoQQ@mail.gmail.com>
-	<4EC01B12.5050404@grandegger.com> <4EC0E4BE.4010101@grandegger.com>
-	<CAKvQZ_2GkTqFrp-9quut0f33KL9tdD9NSTZ3btDHLZNP=a2VwQ@mail.gmail.com>
-	<4EC13191.6070901@grandegger.com>
+From: Yuriy Kiselev <kiselev.yuriy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: sja1000 BasicCAN mode
+Date: Mon, 14 Nov 2011 21:08:29 +0400
+Message-ID: <CAF8b2jKKnpUeq_x8O6V4RfdAK741HuPKTqc=3fNRU6C2SDAJ4A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=90e6ba6e819e78ed3d04b1b4eb64
 Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4EC13191.6070901-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
 List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
 	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
 List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
@@ -33,122 +14,250 @@ List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
 	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
 Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
 Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: "socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org" <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-2011/11/14 Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>:
-> On 11/14/2011 03:51 PM, Willy Lambert wrote:
->> 2011/11/14 Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>:
->>> On 11/13/2011 08:31 PM, Wolfgang Grandegger wrote:
->>>> On 11/13/2011 10:15 AM, Willy Lambert wrote:
->>>>> 2011/11/13 Willy Lambert <lambert.willy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
->>>>>> 2011/11/12 Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>:
->>>>>>> On 11/12/2011 10:08 PM, Wolfgang Grandegger wrote:
->>>>>>>> On 11/12/2011 10:55 AM, Willy Lambert wrote:
->>>>>>> ...
->>>>>>>>>> I failed to apply the patch, is it for 2.6.38.8 kernels ?
->>>>>>>>
->>>>>>>> No, it's for up-to-date *mainline* linux version 3.1.x. Any chance=
- to
->>>>>>>> switch to David Miller's "net-nex-2.6" tree?. Otherwise I'm going =
-to
->>>>>>>> adapt the patch to 2.6.38.8.
->>>>>>>
->>>>>>> Well, the patch also applies to 2.6.38.8. Maybe you have some probl=
-ems
->>>>>>> extracting the patch. Therefore I have attached it as attachment th=
-is
->>>>>>> time. Good luck.
->>>>>>
->>>>>> It's ok now :
->>>>>> ard@ard-host:~/src/linux-2.6.38.8$ patch -p1 < wg_platform.patch
->>>>>> patching file drivers/net/can/sja1000/Kconfig
->>>>>> patching file drivers/net/can/sja1000/sja1000_isa.c
->>>>>>
->>>>>> I must have done something wrong. I am going to test it now
->>>>>>
->>>>>
->>>>> arg, it doesn't compile I had a look a sources but I don't see the er=
-ror :
->>>>>
->>>>> =A0 CC [M] =A0drivers/xenomai/can/rtcan_raw_dev.o
->>>>> drivers/net/can/sja1000/sja1000_isa.c: In function =91sja1000_isa_ini=
-t=92:
->>>>> drivers/net/can/sja1000/sja1000_isa.c:297: error: invalid storage
->>>>> class for function =91sja1000_isa_exit=92
->>>>> drivers/net/can/sja1000/sja1000_isa.c:296: warning: ISO C90 forbids
->>>>> mixed declarations and code
->>>>> drivers/net/can/sja1000/sja1000_isa.c:307: error: invalid storage
->>>>> class for function =91__inittest=92
->>>>> drivers/net/can/sja1000/sja1000_isa.c:307: warning: =91alias=92 attri=
-bute ignored
->>>>> drivers/net/can/sja1000/sja1000_isa.c:308: error: invalid storage
->>>>> class for function =91__exittest=92
->>>>> drivers/net/can/sja1000/sja1000_isa.c:308: warning: ISO C90 forbids
->>>>> mixed declarations and code
->>>>> drivers/net/can/sja1000/sja1000_isa.c:308: warning: =91alias=92 attri=
-bute ignored
->>>>> drivers/net/can/sja1000/sja1000_isa.c:308: error: expected declaration
->>>>> or statement at end of input
->>>>> make[5]: *** [drivers/net/can/sja1000/sja1000_isa.o] Error 1
->>>>
->>>> Argh, a "}" is missing, sorry. I will test the patch more carefully
->>>> before re-sending.
->>>
->>> See attachment.
->>
->> Thanks, the compilation is now ok, but when I load them on my target I
->> have this in dmesg :
->> CAN device driver interface
->> sja1000 CAN netdevice driver
->> sja1000_isa: insufficient parameters supplied
->>
->> The loading command is :
->> modprobe sja1000_isa irq=3D10,10 mem=3D0xD0000,0xD0200 ocr=3D0x5e,0x5e c=
-dr=3D0,0
->> And I am sure it is the same than before, so I think there is a
->> problem when you read the parameters
->
-> Again, my fault., sorry
+--90e6ba6e819e78ed3d04b1b4eb64
+Content-Type: multipart/alternative; boundary=90e6ba6e819e78ed3b04b1b4eb62
 
-Don't be sorry, it is dev aleas and I am glad to have your time for
-this feature :)
+--90e6ba6e819e78ed3b04b1b4eb62
+Content-Type: text/plain; charset=ISO-8859-1
 
-> Could you please retry with the attached patch.
+Hello!
+Implementation of BasicCAN mode for SJA1000 is in attachment.
+Now SJA1000_PELICAN_MODE macros in sja1000.h is used for definition PeliCAN
+or BasicCAN mode. It would be nice to create some menuconfig-wrapper, I
+think.
+I use this code for a few weeks and it looks stable.
 
-It seems to work :
-CAN device driver interface
-sja1000 CAN netdevice driver
-sja1000_isa sja1000_isa.0: sja1000_isa device registered
-(reg_base=3D0xc00d0000, irq=3D10)
-sja1000_isa sja1000_isa.1: sja1000_isa device registered
-(reg_base=3D0xc00d0200, irq=3D10)
-Legacy sja1000_isa driver for max. 8 devices registered
-sja1000_isa sja1000_isa.0: setting BTR0=3D0x00 BTR1=3D0x14
-sja1000_isa sja1000_isa.1: setting BTR0=3D0x00 BTR1=3D0x14
+--90e6ba6e819e78ed3b04b1b4eb62
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+<div>Hello!<br></div><div>Implementation of BasicCAN mode for SJA1000 is in=
+ attachment.</div><div>Now SJA1000_PELICAN_MODE macros in sja1000.h is used=
+ for definition PeliCAN or BasicCAN mode. It would be nice to create some m=
+enuconfig-wrapper, I think.</div>
+<div>I use this code for a few weeks and it looks stable.</div>
 
-I did :
-cansend can1 000#81.00
-cansend can1 000#01.00
+--90e6ba6e819e78ed3b04b1b4eb62--
 
-My device "Operationnal" Led switch state and candump tells :
- (1321289653.149877)  can1    0  [2] 81 00                     '..'
- (1321289653.177209)  can1  705  [1] 00                        '.'
- (1321289653.177267)  can1  706  [1] 00                        '.'
- (1321289660.349837)  can1    0  [2] 01 00                     '..'
- (1321289660.350785)  can1  186  [2] 00 00                     '..'
- (1321289660.350846)  can1  185  [2] 02 00                     '..'
+--90e6ba6e819e78ed3d04b1b4eb64
+Content-Type: application/octet-stream;
+	name="socketcan_sja1000_basicmod_impl.patch"
+Content-Disposition: attachment;
+	filename="socketcan_sja1000_basicmod_impl.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_guzpwzfi0
 
+ZGlmZiAtcnUgdHJ1bmsub3JpZy9rZXJuZWwvMi42L2RyaXZlcnMvbmV0L2Nhbi9zamExMDAwL3Nq
+YTEwMDAuYyB0cnVuay9rZXJuZWwvMi42L2RyaXZlcnMvbmV0L2Nhbi9zamExMDAwL3NqYTEwMDAu
+YwotLS0gdHJ1bmsub3JpZy9rZXJuZWwvMi42L2RyaXZlcnMvbmV0L2Nhbi9zamExMDAwL3NqYTEw
+MDAuYwkyMDExLTExLTE0IDIwOjQ2OjM1LjA3NDczNzk1NSArMDQwMAorKysgdHJ1bmsva2VybmVs
+LzIuNi9kcml2ZXJzL25ldC9jYW4vc2phMTAwMC9zamExMDAwLmMJMjAxMS0xMS0xNCAyMDo1Njow
+MC4wODMxODM0MzEgKzA0MDAKQEAgLTExNywyMiArMTE3LDQzIEBACiBzdGF0aWMgdm9pZCBzZXRf
+cmVzZXRfbW9kZShzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQogewogCXN0cnVjdCBzamExMDAwX3By
+aXYgKnByaXYgPSBuZXRkZXZfcHJpdihkZXYpOworI2lmZGVmIFNKQTEwMDBfUEVMSUNBTl9NT0RF
+CiAJdW5zaWduZWQgY2hhciBzdGF0dXMgPSBwcml2LT5yZWFkX3JlZyhwcml2LCBSRUdfTU9EKTsK
+KyNlbHNlCisJdW5zaWduZWQgY2hhciBzdGF0dXMgPSBwcml2LT5yZWFkX3JlZyhwcml2LCBSRUdf
+Q1IpOworI2VuZGlmCiAJaW50IGk7CiAKIAkvKiBkaXNhYmxlIGludGVycnVwdHMgKi8KKyNpZmRl
+ZiBTSkExMDAwX1BFTElDQU5fTU9ERQogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfSUVSLCBJ
+UlFfT0ZGKTsKKyNlbHNlCisJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19DUiwgc3RhdHVzICYg
+SVJRX09GRik7CisjZW5kaWYKIAogCWZvciAoaSA9IDA7IGkgPCAxMDA7IGkrKykgewotCQkvKiBj
+aGVjayByZXNldCBiaXQgKi8KKwkJLy8gY2hlY2sgcmVzZXQgYml0CisjaWZkZWYgU0pBMTAwMF9Q
+RUxJQ0FOX01PREUKIAkJaWYgKHN0YXR1cyAmIE1PRF9STSkgeworI2Vsc2UKKwkJaWYgKHN0YXR1
+cyAmIENSX1JSUSkgeworI2VuZGlmCiAJCQlwcml2LT5jYW4uc3RhdGUgPSBDQU5fU1RBVEVfU1RP
+UFBFRDsKIAkJCXJldHVybjsKIAkJfQogCi0JCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfTU9E
+LCBNT0RfUk0pOwkvKiByZXNldCBjaGlwICovCisgICAgCS8qIHJlc2V0IGNoaXAgKi8KKyNpZmRl
+ZiBTSkExMDAwX1BFTElDQU5fTU9ERQorCQlwcml2LT53cml0ZV9yZWcocHJpdiwgUkVHX01PRCwg
+TU9EX1JNKTsKKyNlbHNlCisJCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfQ1IsIENSX1JSUSk7
+CisjZW5kaWYKIAkJdWRlbGF5KDEwKTsKKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERQogCQlz
+dGF0dXMgPSBwcml2LT5yZWFkX3JlZyhwcml2LCBSRUdfTU9EKTsKKyNlbHNlCisJCXN0YXR1cyA9
+IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19DUik7CisjZW5kaWYKIAl9CiAKIAlkZXZfZXJyKE5E
+MkQoZGV2KSwgInNldHRpbmcgU0pBMTAwMCBpbnRvIHJlc2V0IG1vZGUgZmFpbGVkIVxuIik7CkBA
+IC0xNDEsMjYgKzE2Miw1MCBAQAogc3RhdGljIHZvaWQgc2V0X25vcm1hbF9tb2RlKHN0cnVjdCBu
+ZXRfZGV2aWNlICpkZXYpCiB7CiAJc3RydWN0IHNqYTEwMDBfcHJpdiAqcHJpdiA9IG5ldGRldl9w
+cml2KGRldik7CisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAl1bnNpZ25lZCBjaGFyIHN0
+YXR1cyA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19NT0QpOworI2Vsc2UKKwl1bnNpZ25lZCBj
+aGFyIHN0YXR1cyA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19DUik7CisjZW5kaWYKIAlpbnQg
+aTsKIAogCWZvciAoaSA9IDA7IGkgPCAxMDA7IGkrKykgewogCQkvKiBjaGVjayByZXNldCBiaXQg
+Ki8KKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERQogCQlpZiAoKHN0YXR1cyAmIE1PRF9STSkg
+PT0gMCkgeworI2Vsc2UKKwkJaWYgKChzdGF0dXMgJiBDUl9SUlEpID09IDApIHsKKyNlbmRpZgog
+CQkJcHJpdi0+Y2FuLnN0YXRlID0gQ0FOX1NUQVRFX0VSUk9SX0FDVElWRTsKIAkJCS8qIGVuYWJs
+ZSBpbnRlcnJ1cHRzICovCisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAkJCWlmIChwcml2
+LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfQkVSUl9SRVBPUlRJTkcpCiAJCQkJcHJpdi0+
+d3JpdGVfcmVnKHByaXYsIFJFR19JRVIsIElSUV9BTEwpOworCiAJCQllbHNlCiAJCQkJcHJpdi0+
+d3JpdGVfcmVnKHByaXYsIFJFR19JRVIsCiAJCQkJCQlJUlFfQUxMICYgfklSUV9CRUkpOwogCQkJ
+cmV0dXJuOworI2Vsc2UKKwkJCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfQ1IsIHN0YXR1cyB8
+IElSUV9BTEwpOworCQkJcmV0dXJuOworI2VuZGlmCiAJCX0KIAorCiAJCS8qIHNldCBjaGlwIHRv
+IG5vcm1hbCBtb2RlICovCisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAkJcHJpdi0+d3Jp
+dGVfcmVnKHByaXYsIFJFR19NT0QsIDB4MDApOworI2Vsc2UKKwkJLy9zdGF0dXMgPSBwcml2LT5y
+ZWFkX3JlZyhwcml2LCBSRUdfQ1IpOworCQlwcml2LT53cml0ZV9yZWcocHJpdiwgUkVHX0NSLCBz
+dGF0dXMgJiB+Q1JfUlJRKTsKKyNlbmRpZgogCQl1ZGVsYXkoMTApOworI2lmZGVmIFNKQTEwMDBf
+UEVMSUNBTl9NT0RFCiAJCXN0YXR1cyA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19NT0QpOwor
+I2Vsc2UKKwkJc3RhdHVzID0gcHJpdi0+cmVhZF9yZWcocHJpdiwgUkVHX0NSKTsKKyNlbmRpZgog
+CX0KIAogCWRldl9lcnIoTkQyRChkZXYpLCAic2V0dGluZyBTSkExMDAwIGludG8gbm9ybWFsIG1v
+ZGUgZmFpbGVkIVxuIik7CkBAIC0xNzUsOSArMjIwLDExIEBACiAJCXNldF9yZXNldF9tb2RlKGRl
+dik7CiAKIAkvKiBDbGVhciBlcnJvciBjb3VudGVycyBhbmQgZXJyb3IgY29kZSBjYXB0dXJlICov
+CisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAlwcml2LT53cml0ZV9yZWcocHJpdiwgUkVH
+X1RYRVJSLCAweDApOwogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfUlhFUlIsIDB4MCk7CiAJ
+cHJpdi0+cmVhZF9yZWcocHJpdiwgUkVHX0VDQyk7CisjZW5kaWYKIAogCS8qIGxlYXZlIHJlc2V0
+IG1vZGUgKi8KIAlzZXRfbm9ybWFsX21vZGUoZGV2KTsKQEAgLTIzMCw4ICsyNzcsMTMgQEAKIHsK
+IAlzdHJ1Y3Qgc2phMTAwMF9wcml2ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsKIAorI2lmZGVm
+IFNKQTEwMDBfUEVMSUNBTl9NT0RFCiAJYmVjLT50eGVyciA9IHByaXYtPnJlYWRfcmVnKHByaXYs
+IFJFR19UWEVSUik7CiAJYmVjLT5yeGVyciA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19SWEVS
+Uik7CisjZWxzZQorCWJlYy0+dHhlcnIgPSAwOworCWJlYy0+cnhlcnIgPSAwOworI2VuZGlmCiAK
+IAlyZXR1cm4gMDsKIH0KQEAgLTI0NywxMSArMjk5LDE3IEBACiBzdGF0aWMgdm9pZCBjaGlwc2V0
+X2luaXQoc3RydWN0IG5ldF9kZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3Qgc2phMTAwMF9wcml2ICpw
+cml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsKKwlzdHJ1Y3QgY2FuX2JpdHRpbWluZyBidDsKIAogCS8q
+IHNldCBjbG9jayBkaXZpZGVyIGFuZCBvdXRwdXQgY29udHJvbCByZWdpc3RlciAqLworI2lmZGVm
+IFNKQTEwMDBfUEVMSUNBTl9NT0RFCiAJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19DRFIsIHBy
+aXYtPmNkciB8IENEUl9QRUxJQ0FOKTsKKyNlbHNlCisJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJF
+R19DRFIsIHByaXYtPmNkcik7CisjZW5kaWYKIAogCS8qIHNldCBhY2NlcHRhbmNlIGZpbHRlciAo
+YWNjZXB0IGFsbCkgKi8KKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERQogCXByaXYtPndyaXRl
+X3JlZyhwcml2LCBSRUdfQUNDQzAsIDB4MDApOwogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdf
+QUNDQzEsIDB4MDApOwogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfQUNDQzIsIDB4MDApOwpA
+QCAtMjYxLDYgKzMxOSwxMSBAQAogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfQUNDTTEsIDB4
+RkYpOwogCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfQUNDTTIsIDB4RkYpOwogCXByaXYtPndy
+aXRlX3JlZyhwcml2LCBSRUdfQUNDTTMsIDB4RkYpOworI2Vsc2UKKwlwcml2LT53cml0ZV9yZWco
+cHJpdiwgUkVHX0FDLCAweDAwKTsKKwlwcml2LT53cml0ZV9yZWcocHJpdiwgUkVHX0FNLCAweEZG
+KTsKKwkKKyNlbmRpZgogCiAJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19PQ1IsIHByaXYtPm9j
+ciB8IE9DUl9NT0RFX05PUk1BTCk7CiB9CkBAIC0yOTgsNiArMzYxLDggQEAKIAkJZmkgfD0gRklf
+UlRSOwogCiAJaWYgKGlkICYgQ0FOX0VGRl9GTEFHKSB7CisJICAgIC8qIEV4dGVuZGVkIGZyYW1l
+LiBOb3QgYXZhaWxhYmxlIGluIEJhc2ljQ0FOIG1vZGUuICovCisjaWZkZWYgU0pBMTAwMF9QRUxJ
+Q0FOX01PREUKIAkJZmkgfD0gRklfRkY7CiAJCWRyZWcgPSBFRkZfQlVGOwogCQlwcml2LT53cml0
+ZV9yZWcocHJpdiwgUkVHX0ZJLCBmaSk7CkBAIC0zMDUsMTUgKzM3MCwyNiBAQAogCQlwcml2LT53
+cml0ZV9yZWcocHJpdiwgUkVHX0lEMiwgKGlkICYgMHgwMDFmZTAwMCkgPj4gKDUgKyA4KSk7CiAJ
+CXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfSUQzLCAoaWQgJiAweDAwMDAxZmUwKSA+PiA1KTsK
+IAkJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19JRDQsIChpZCAmIDB4MDAwMDAwMWYpIDw8IDMp
+OworI2VuZGlmCiAJfSBlbHNlIHsKKwkvKiBTdGFuZGFyZCBmcmFtZSAqLworI2lmZGVmIFNKQTEw
+MDBfUEVMSUNBTl9NT0RFCiAJCWRyZWcgPSBTRkZfQlVGOwogCQlwcml2LT53cml0ZV9yZWcocHJp
+diwgUkVHX0ZJLCBmaSk7CiAJCXByaXYtPndyaXRlX3JlZyhwcml2LCBSRUdfSUQxLCAoaWQgJiAw
+eDAwMDAwN2Y4KSA+PiAzKTsKIAkJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19JRDIsIChpZCAm
+IDB4MDAwMDAwMDcpIDw8IDUpOworI2Vsc2UKKwkJcHJpdi0+d3JpdGVfcmVnKHByaXYsIFJFR19U
+WEIsIChpZCAmIDB4MDAwMDA3ZjgpID4+IDMpOworCQlwcml2LT53cml0ZV9yZWcocHJpdiwgUkVH
+X1RYQiArIDEsICgoaWQgJiAweDAwMDAwMDA3KSA8PCA1KSB8IGZpKTsKKyNlbmRpZgogCX0KIAog
+CWZvciAoaSA9IDA7IGkgPCBkbGM7IGkrKykKKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERQog
+CQlwcml2LT53cml0ZV9yZWcocHJpdiwgZHJlZysrLCBjZi0+ZGF0YVtpXSk7CisjZWxzZQorCQlw
+cml2LT53cml0ZV9yZWcocHJpdiwgUkVHX1RYQiArIDIgKyBpLCBjZi0+ZGF0YVtpXSk7CisjZW5k
+aWYKIAogCWRldi0+dHJhbnNfc3RhcnQgPSBqaWZmaWVzOwogCkBAIC0zNDQsOCArNDIwLDE0IEBA
+CiAJaWYgKHNrYiA9PSBOVUxMKQogCQlyZXR1cm47CiAKKyNpZmRlZiBTSkExMDAwX1BFTElDQU5f
+TU9ERQogCWZpID0gcHJpdi0+cmVhZF9yZWcocHJpdiwgUkVHX0ZJKTsKKyNlbHNlCisgICAgLyog
+UmVhZCBSVFIgJiBETEMgKi8KKwlmaSA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19SWEIgKyAx
+KSAmIDB4MUY7CisjZW5kaWYKIAorI2lmZGVmIFNKQTEwMDBfUEVMSUNBTl9NT0RFCiAJaWYgKGZp
+ICYgRklfRkYpIHsKIAkJLyogZXh0ZW5kZWQgZnJhbWUgZm9ybWF0IChFRkYpICovCiAJCWRyZWcg
+PSBFRkZfQlVGOwpAQCAtMzYwLDEzICs0NDIsMjIgQEAKIAkJaWQgPSAocHJpdi0+cmVhZF9yZWco
+cHJpdiwgUkVHX0lEMSkgPDwgMykKIAkJICAgIHwgKHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19J
+RDIpID4+IDUpOwogCX0KKyNlbHNlCisJaWQgPSAocHJpdi0+cmVhZF9yZWcocHJpdiwgUkVHX1JY
+QikgPDwgMykKKwkJfCAoKHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19SWEIgKyAxKSAmIDB4RTAp
+ID4+IDUpOworI2VuZGlmCiAKIAlpZiAoZmkgJiBGSV9SVFIpIHsKIAkJaWQgfD0gQ0FOX1JUUl9G
+TEFHOwogCX0gZWxzZSB7CisJCS8qIERMQyBmaWVsZCBpcyBzYW1lIGluIFRYQi9SWEIgKGJhc2lj
+Y2FuKSBhbmQgRkkgKHBlbGljYW4pIHJlZ2lzdGVycyAqLwogCQljZi0+Y2FuX2RsYyA9IGdldF9j
+YW5fZGxjKGZpICYgMHgwRik7CiAJCWZvciAoaSA9IDA7IGkgPCBjZi0+Y2FuX2RsYzsgaSsrKQor
+I2lmZGVmIFNKQTEwMDBfUEVMSUNBTl9NT0RFCiAJCQljZi0+ZGF0YVtpXSA9IHByaXYtPnJlYWRf
+cmVnKHByaXYsIGRyZWcrKyk7CisjZWxzZQorCQkJY2YtPmRhdGFbaV0gPSBwcml2LT5yZWFkX3Jl
+Zyhwcml2LCBSRUdfUlhCICsgMiArIGkpOworI2VuZGlmCiAJfQogCiAJY2YtPmNhbl9pZCA9IGlk
+OwpAQCAtNDIzLDYgKzUxNCw3IEBACiAJCX0gZWxzZQogCQkJc3RhdGUgPSBDQU5fU1RBVEVfRVJS
+T1JfQUNUSVZFOwogCX0KKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERSAvKiBCYXNpY0NBTiBt
+b2RlIGRvZXNuJ3Qgc3VwcG9ydCBCdXMgRXJyb3IgSW50ZXJydXB0ICovCiAJaWYgKGlzcmMgJiBJ
+UlFfQkVJKSB7CiAJCS8qIGJ1cyBlcnJvciBpbnRlcnJ1cHQgKi8KIAkJcHJpdi0+Y2FuLmNhbl9z
+dGF0cy5idXNfZXJyb3IrKzsKQEAgLTQ1MSw2ICs1NDMsOSBAQAogCQlpZiAoKGVjYyAmIEVDQ19E
+SVIpID09IDApCiAJCQljZi0+ZGF0YVsyXSB8PSBDQU5fRVJSX1BST1RfVFg7CiAJfQorI2VuZGlm
+CisKKyNpZmRlZiBTSkExMDAwX1BFTElDQU5fTU9ERSAvKiBCYXNpY0NBTiBtb2RlIGRvZXNuJ3Qg
+c3VwcG9ydCBFcnJvciBQYXNzaXZlIEludGVycnVwdCAqLwogCWlmIChpc3JjICYgSVJRX0VQSSkg
+ewogCQkvKiBlcnJvciBwYXNzaXZlIGludGVycnVwdCAqLwogCQlkZXZfZGJnKE5EMkQoZGV2KSwg
+ImVycm9yIHBhc3NpdmUgaW50ZXJydXB0XG4iKTsKQEAgLTQ1OSw2ICs1NTQsOSBAQAogCQllbHNl
+CiAJCQlzdGF0ZSA9IENBTl9TVEFURV9FUlJPUl9BQ1RJVkU7CiAJfQorI2VuZGlmCisKKyNpZmRl
+ZiBTSkExMDAwX1BFTElDQU5fTU9ERSAvKiBCYXNpY0NBTiBtb2RlIGRvZXNuJ3Qgc3VwcG9ydCBB
+cmJpdHJhdGlvbiBMb3N0IEludGVycnVwdCAqLwogCWlmIChpc3JjICYgSVJRX0FMSSkgewogCQkv
+KiBhcmJpdHJhdGlvbiBsb3N0IGludGVycnVwdCAqLwogCQlkZXZfZGJnKE5EMkQoZGV2KSwgImFy
+Yml0cmF0aW9uIGxvc3QgaW50ZXJydXB0XG4iKTsKQEAgLTQ2OCwxMSArNTY2LDE4IEBACiAJCWNm
+LT5jYW5faWQgfD0gQ0FOX0VSUl9MT1NUQVJCOwogCQljZi0+ZGF0YVswXSA9IGFsYyAmIDB4MWY7
+CiAJfQorI2VuZGlmCiAKIAlpZiAoc3RhdGUgIT0gcHJpdi0+Y2FuLnN0YXRlICYmIChzdGF0ZSA9
+PSBDQU5fU1RBVEVfRVJST1JfV0FSTklORyB8fAogCQkJCQkgc3RhdGUgPT0gQ0FOX1NUQVRFX0VS
+Uk9SX1BBU1NJVkUpKSB7CisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAkJdWludDhfdCBy
+eGVyciA9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19SWEVSUik7CiAJCXVpbnQ4X3QgdHhlcnIg
+PSBwcml2LT5yZWFkX3JlZyhwcml2LCBSRUdfVFhFUlIpOworI2Vsc2UKKwkJdWludDhfdCByeGVy
+ciA9IDA7CisJCXVpbnQ4X3QgdHhlcnIgPSAwOworI2VuZGlmCisKIAkJY2YtPmNhbl9pZCB8PSBD
+QU5fRVJSX0NSVEw7CiAJCWlmIChzdGF0ZSA9PSBDQU5fU1RBVEVfRVJST1JfV0FSTklORykgewog
+CQkJcHJpdi0+Y2FuLmNhbl9zdGF0cy5lcnJvcl93YXJuaW5nKys7CkBAIC01MTksNyArNjI0LDEx
+IEBACiAJaW50IG4gPSAwOwogCiAJLyogU2hhcmVkIGludGVycnVwdHMgYW5kIElSUSBvZmY/ICov
+CisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKIAlpZiAocHJpdi0+cmVhZF9yZWcocHJpdiwg
+UkVHX0lFUikgPT0gSVJRX09GRikKKyNlbHNlCisJaWYgKChwcml2LT5yZWFkX3JlZyhwcml2LCBS
+RUdfQ1IpICYgSVJRX0FMTCkgPT0gMCkKKyNlbmRpZgogCQlyZXR1cm4gSVJRX05PTkU7CiAKIAlp
+ZiAocHJpdi0+cHJlX2lycSkKQEAgLTUzNCw3ICs2NDMsMTEgQEAKIAogCQlpZiAoaXNyYyAmIElS
+UV9USSkgewogCQkJLyogdHJhbnNtaXNzaW9uIGNvbXBsZXRlIGludGVycnVwdCAqLwotCQkJc3Rh
+dHMtPnR4X2J5dGVzICs9IHByaXYtPnJlYWRfcmVnKHByaXYsIFJFR19GSSkgJiAweGY7CisjaWZk
+ZWYgU0pBMTAwMF9QRUxJQ0FOX01PREUKKwkJCXN0YXRzLT50eF9ieXRlcyArPSBwcml2LT5yZWFk
+X3JlZyhwcml2LCBSRUdfRkkpICYgMHhGOworI2Vsc2UKKwkJCXN0YXRzLT50eF9ieXRlcyArPSBw
+cml2LT5yZWFkX3JlZyhwcml2LCBSRUdfVFhCICsgMSkgJiAweEY7CisjZW5kaWYKIAkJCXN0YXRz
+LT50eF9wYWNrZXRzKys7CiAJCQljYW5fZ2V0X2VjaG9fc2tiKGRldiwgMCk7CiAJCQluZXRpZl93
+YWtlX3F1ZXVlKGRldik7CkBAIC01NDYsNyArNjU5LDExIEBACiAJCQkJc3RhdHVzID0gcHJpdi0+
+cmVhZF9yZWcocHJpdiwgUkVHX1NSKTsKIAkJCX0KIAkJfQorI2lmZGVmIFNKQTEwMDBfUEVMSUNB
+Tl9NT0RFCiAJCWlmIChpc3JjICYgKElSUV9ET0kgfCBJUlFfRUkgfCBJUlFfQkVJIHwgSVJRX0VQ
+SSB8IElSUV9BTEkpKSB7CisjZWxzZQorCQlpZiAoaXNyYyAmIChJUlFfRE9JIHwgSVJRX0VJKSkg
+eworI2VuZGlmCiAJCQkvKiBlcnJvciBpbnRlcnJ1cHQgKi8KIAkJCWlmIChzamExMDAwX2Vycihk
+ZXYsIGlzcmMsIHN0YXR1cykpCiAJCQkJYnJlYWs7CmRpZmYgLXJ1IHRydW5rLm9yaWcva2VybmVs
+LzIuNi9kcml2ZXJzL25ldC9jYW4vc2phMTAwMC9zamExMDAwLmggdHJ1bmsva2VybmVsLzIuNi9k
+cml2ZXJzL25ldC9jYW4vc2phMTAwMC9zamExMDAwLmgKLS0tIHRydW5rLm9yaWcva2VybmVsLzIu
+Ni9kcml2ZXJzL25ldC9jYW4vc2phMTAwMC9zamExMDAwLmgJMjAxMS0xMS0xNCAyMDo0OTo0NC41
+MjY0MDg1NzcgKzA0MDAKKysrIHRydW5rL2tlcm5lbC8yLjYvZHJpdmVycy9uZXQvY2FuL3NqYTEw
+MDAvc2phMTAwMC5oCTIwMTEtMTEtMTQgMjA6NTA6MjAuODEzMzk1MTA1ICswNDAwCkBAIC01MCwx
+MCArNTAsMTQgQEAKICNpbmNsdWRlIDxzb2NrZXRjYW4vY2FuL2Rldi5oPgogI2luY2x1ZGUgPHNv
+Y2tldGNhbi9jYW4vcGxhdGZvcm0vc2phMTAwMC5oPgogCisjZGVmaW5lIFNKQTEwMDBfUEVMSUNB
+Tl9NT0RFIC8qIEJhc2ljQ0FOIGFjY2VwdGVkIGlmIG5vdCBkZWZpbmVkICovCisKICNkZWZpbmUg
+U0pBMTAwMF9FQ0hPX1NLQl9NQVgJMSAvKiB0aGUgU0pBMTAwMCBoYXMgb25lIFRYIGJ1ZmZlciBv
+YmplY3QgKi8KIAogI2RlZmluZSBTSkExMDAwX01BWF9JUlEgMjAJLyogbWF4LiBudW1iZXIgb2Yg
+aW50ZXJydXB0cyBoYW5kbGVkIGluIElTUiAqLwogCisjaWZkZWYgU0pBMTAwMF9QRUxJQ0FOX01P
+REUKKwogLyogU0pBMTAwMCByZWdpc3RlcnMgLSBtYW51YWwgc2VjdGlvbiA2LjQgKFBlbGljYW4g
+TW9kZSkgKi8KICNkZWZpbmUgUkVHX01PRAkJMHgwMAogI2RlZmluZSBSRUdfQ01SCQkweDAxCkBA
+IC03NiwxOSArODAsMTAgQEAKICNkZWZpbmUgUkVHX1JNQwkJMHgxRAogI2RlZmluZSBSRUdfUkJT
+QQkweDFFCiAKLS8qIENvbW1vbiByZWdpc3RlcnMgLSBtYW51YWwgc2VjdGlvbiA2LjUgKi8KLSNk
+ZWZpbmUgUkVHX0JUUjAJMHgwNgotI2RlZmluZSBSRUdfQlRSMQkweDA3Ci0jZGVmaW5lIFJFR19P
+Q1IJCTB4MDgKLSNkZWZpbmUgUkVHX0NEUgkJMHgxRgotCiAjZGVmaW5lIFJFR19GSQkJMHgxMAog
+I2RlZmluZSBTRkZfQlVGCQkweDEzCiAjZGVmaW5lIEVGRl9CVUYJCTB4MTUKIAotI2RlZmluZSBG
+SV9GRgkJMHg4MAotI2RlZmluZSBGSV9SVFIJCTB4NDAKLQogI2RlZmluZSBSRUdfSUQxCQkweDEx
+CiAjZGVmaW5lIFJFR19JRDIJCTB4MTIKICNkZWZpbmUgUkVHX0lEMwkJMHgxMwpAQCAtOTYsNiAr
+OTEsMjcgQEAKIAogI2RlZmluZSBDQU5fUkFNCQkweDIwCiAKKyNlbHNlIC8qIFNKQTEwMDBfUEVM
+SUNBTl9NT0RFICovCisKKy8qIFNKQTEwMDAgcmVnaXN0ZXJzIC0gbWFudWFsIHNlY3Rpb24gNi4z
+IChCYXNpY2NhbiBNb2RlKSAqLworI2RlZmluZSBSRUdfQ1IJCTB4MDAKKyNkZWZpbmUgUkVHX0NN
+UgkJMHgwMQorI2RlZmluZSBSRUdfU1IJCTB4MDIKKyNkZWZpbmUgUkVHX0lSCQkweDAzCisjZGVm
+aW5lIFJFR19BQwkJMHgwNAorI2RlZmluZSBSRUdfQU0JCTB4MDUKKyNkZWZpbmUgUkVHX1RYQgkJ
+MHgwQQorI2RlZmluZSBSRUdfUlhCCQkweDE0CisKKyNlbmRpZiAvKiBTSkExMDAwX1BFTElDQU5f
+TU9ERSAqLworCisvKiBDb21tb24gcmVnaXN0ZXJzIC0gbWFudWFsIHNlY3Rpb24gNi41ICovCisj
+ZGVmaW5lIFJFR19CVFIwCTB4MDYKKyNkZWZpbmUgUkVHX0JUUjEJMHgwNworI2RlZmluZSBSRUdf
+T0NSCQkweDA4CisjZGVmaW5lIFJFR19DRFIJCTB4MUYKKworI2lmZGVmIFNKQTEwMDBfUEVMSUNB
+Tl9NT0RFCiAvKiBtb2RlIHJlZ2lzdGVyICovCiAjZGVmaW5lIE1PRF9STQkJMHgwMQogI2RlZmlu
+ZSBNT0RfTE9NCQkweDAyCkBAIC0xMzcsMTEgKzE1Myw1MyBAQAogLyogRUNDIHJlZ2lzdGVyICov
+CiAjZGVmaW5lIEVDQ19TRUcJCTB4MUYKICNkZWZpbmUgRUNDX0RJUgkJMHgyMAotI2RlZmluZSBF
+Q0NfRVJSCQk2CisjZGVmaW5lIEVDQ19FUlIJCTB4MDYKICNkZWZpbmUgRUNDX0JJVAkJMHgwMAog
+I2RlZmluZSBFQ0NfRk9STQkweDQwCiAjZGVmaW5lIEVDQ19TVFVGRgkweDgwCi0jZGVmaW5lIEVD
+Q19NQVNLCTB4YzAKKyNkZWZpbmUgRUNDX01BU0sJMHhDMAorCisjZGVmaW5lIEZJX0ZGCQkweDgw
+CisjZGVmaW5lIEZJX1JUUgkJMHg0MAorCisjZWxzZSAvKiBTSkExMDAwX1BFTElDQU5fTU9ERSAq
+LworCisvKiBjb250cm9sIHJlZ2lzdGVyICovCisjZGVmaW5lIENSX1JSUQkJMHgwMQorI2RlZmlu
+ZSBDUl9SSUUJCTB4MDIKKyNkZWZpbmUgQ1JfVElFCQkweDA0CisjZGVmaW5lIENSX0VJRQkJMHgw
+OAorI2RlZmluZSBDUl9PSUUJCTB4MTAKKyNkZWZpbmUgSVJRX09GRgkJQ1JfUlJRCisjZGVmaW5l
+IElSUV9BTEwJCShDUl9SSUUgfCBDUl9USUUgfCBDUl9FSUUgfCBDUl9PSUUpCisKKy8qIGNvbW1h
+bmQgcmVnaXN0ZXIgKi8KKyNkZWZpbmUgQ01EX1RSCQkweDAxCisjZGVmaW5lIENNRF9BVAkJMHgw
+MgorI2RlZmluZSBDTURfUlJCCQkweDA0CisjZGVmaW5lIENNRF9DRE8JCTB4MDgKKyNkZWZpbmUg
+Q01EX0dUUwkJMHgxMAorCisvKiBzdGF0dXMgcmVnaXN0ZXIgKi8KKyNkZWZpbmUgU1JfUkJTCQkw
+eDAxCisjZGVmaW5lIFNSX0RPUwkJMHgwMgorI2RlZmluZSBTUl9UQlMJCTB4MDQKKyNkZWZpbmUg
+U1JfVENTCQkweDA4CisjZGVmaW5lIFNSX1JTCQkweDEwCisjZGVmaW5lIFNSX1RTCQkweDIwCisj
+ZGVmaW5lIFNSX0VTCQkweDQwCisjZGVmaW5lIFNSX0JTCQkweDgwCisKKy8qIGludGVycnVwdCBz
+b3VyY2VzICovCisjZGVmaW5lIElSUV9SSQkJMHgwMQorI2RlZmluZSBJUlFfVEkJCTB4MDIKKyNk
+ZWZpbmUgSVJRX0VJCQkweDA0CisjZGVmaW5lIElSUV9ET0kJCTB4MDgKKyNkZWZpbmUgSVJRX1dV
+SQkJMHgxMAorCisjZGVmaW5lIEZJX1JUUgkJMHgxMAorCisjZW5kaWYgLyogU0pBMTAwMF9QRUxJ
+Q0FOX01PREUgKi8KIAogLyoKICAqIEZsYWdzIGZvciBzamExMDAwcHJpdi5mbGFncwo=
+--90e6ba6e819e78ed3d04b1b4eb64
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Do you wish any further tests ?
+_______________________________________________
+Socketcan-users mailing list
+Socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+https://lists.berlios.de/mailman/listinfo/socketcan-users
 
-
-> Could you please also enable CAN device debugging
-> (CONFIG_CAN_DEBUG_DEVICES=3Dy).
->
-> Thanks,
->
-> Wolfgang.
->
+--90e6ba6e819e78ed3d04b1b4eb64--
