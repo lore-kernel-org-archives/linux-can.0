@@ -1,33 +1,41 @@
-From: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Subject: Re: net/can/mscan: Fix buggy listen only mode setting
-Date: Mon, 14 Nov 2011 14:30:45 -0500 (EST)
-Message-ID: <20111114.143045.761000562641505401.davem@davemloft.net>
-References: <4EC11900.7030005@grandegger.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: sja1000 BasicCAN mode
+Date: Mon, 14 Nov 2011 21:02:09 +0100
+Message-ID: <4EC173C1.7020408@hartkopp.net>
+References: <4EC157FA.7080701@hartkopp.net> <CAF8b2jLH8CTOU5ZBTdH7yFhhb0=QmP2Y_Lkom80Bxfw0AvjA6g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4EC11900.7030005-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
-List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org
-Cc: Socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, Netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:57303 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754081Ab1KNUCW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Nov 2011 15:02:22 -0500
+In-Reply-To: <CAF8b2jLH8CTOU5ZBTdH7yFhhb0=QmP2Y_Lkom80Bxfw0AvjA6g@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Yuriy Kiselev <kiselev.yuriy@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Date: Mon, 14 Nov 2011 14:34:56 +0100
 
-> This patch fixes an issue introduced recently with commit
-> 452448f9283e1939408b397e87974a418825b0a8.
 > 
-> CC: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-> Signed-off-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+>     what's your motivation for the BasicCAN mode support?
+> 
+> BasicCAN is used for current version of protocol in our network.
 
-Applied, thanks.
+
+Hm, are you sure that you are not mixing up the BasicCAN mode of the SJA1000
+controller with standard frame format CAN frames??
+
+BasicCAN/FullCAN is usually a misleading and therefore outdated classification
+for CAN controllers having different filter and receive message box layouts.
+
+What kind of SJA1000 CAN controller are you using?
+
+- SJA1000
+- 82C200
+- FPGA implementaion from opencores
+- ???
+
+Regards,
+Oliver
