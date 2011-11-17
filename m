@@ -1,93 +1,52 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [Socketcan-users] Fwd:  sja1000 BasicCAN mode
-Date: Thu, 17 Nov 2011 17:24:17 +0100
-Message-ID: <4EC53531.8050707@hartkopp.net>
-References: <CAF8b2jKKnpUeq_x8O6V4RfdAK741HuPKTqc=3fNRU6C2SDAJ4A@mail.gmail.com>	<20111115082136.GB331@e-circ.dyndns.org>	<B3B3BE5A55ED7743A83865E234A22B1D1B91F2BDC5@SBSPORT.portnet.local>	<CAF8b2j+8co5T-P0CgPPeq7ViJ4DO4JrTLGj-4Y9bSpKHT7SWyQ@mail.gmail.com>	<CAF8b2jJ+eqUMEPekbPy9jwRk=5cMtmF0T3TUrj7qex=LT=LoZg@mail.gmail.com> <20111117161120.GE366@e-circ.dyndns.org>
+From: Kurt Van Dijck <kurt.van.dijck-/BeEPy95v10@public.gmane.org>
+Subject: Re: Bit rate configuration of PEAK USB devices
+Date: Thu, 17 Nov 2011 17:25:36 +0100
+Message-ID: <20111117162535.GF366@e-circ.dyndns.org>
+References: <B3B3BE5A55ED7743A83865E234A22B1D1B91F2BDFE@SBSPORT.portnet.local>
+	<4EC2AAD8.6080907@hartkopp.net> <4EC2B072.5060704@hartkopp.net>
+	<B3B3BE5A55ED7743A83865E234A22B1D1B91F2BE57@SBSPORT.portnet.local>
+	<20111117112447.GA366@e-circ.dyndns.org>
+	<4EC532E9.5050308@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:57034 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757933Ab1KQQYX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Nov 2011 11:24:23 -0500
-In-Reply-To: <20111117161120.GE366@e-circ.dyndns.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Yuriy Kiselev <kiselev.yuriy@gmail.com>
-Cc: socketcan-users@lists.berlios.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <4EC532E9.5050308-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Cc: "socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org" <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-On 17.11.2011 17:11, Kurt Van Dijck wrote:
-
-> On Thu, Nov 17, 2011 at 07:58:09PM +0400, Yuriy Kiselev wrote:
->> 2011/11/15 Heinz-J=C3=BCrgen Oertel <oe@port.de>
->>
->>>
->>>> -----Original Message-----
->>>> From: socketcan-users-bounces@lists.berlios.de [mailto:socketcan-u=
-sers-
->>>> bounces@lists.berlios.de] On Behalf Of Kurt Van Dijck
->>>> Sent: Tuesday, November 15, 2011 9:22 AM
->>>> To: Yuriy Kiselev
->>>> Cc: socketcan-users@lists.berlios.de; linux-can@vger.kernel.org
->>>> Subject: Re: [Socketcan-users] sja1000 BasicCAN mode
->>>>
->>>> On Mon, Nov 14, 2011 at 09:08:29PM +0400, Yuriy Kiselev wrote:
->>>>> Hello!
->>>>> Implementation of BasicCAN mode for SJA1000 is in attachment.
->>>>> Now SJA1000_PELICAN_MODE macros in sja1000.h is used for definiti=
-on
->>>> PeliCAN
->>>>> or BasicCAN mode. It would be nice to create some menuconfig-wrap=
-per, I
->>>>> think.
->>>>> I use this code for a few weeks and it looks stable.
->>>> I see no reason to use BasicCAN mode instead of PeliCAN mode.
->>>> Instead, I do see reasons to use PeliCAN mode:
->>>>
->>>> * no problems when 29bit frames appear on the bus
->>>> * rx queue of 64 byte.
->>>>
->>>> What is your motivation not to use PeliCAN mode?
->>>>
->>>> Kurt
->>>
->>> Kurt is correct. For my understanding, the so-called basic CAN mode=
- of the
->>> SJA1000 is a compatibility mode for the 82c200. It makes no sense t=
-o
->>> support it any more with SJA1000 devices.
->>>
->>>  Heinz
->>>
->>
->> Yes, BasicCAN mode is for specific designed devices. My device has o=
-nly
->> 5-bits address bus and I can't use PeliCAN mode.
-> Still, properly attached SJA1000 is better used in PELICAN mode. I'm =
-sure
-> you agree.
->=20
-> But I see your point.
-> Must your hardware be supported by SJA1000?
-> Or by a completely seperate 82c200 driver?
-> You probably can start from the SJA1000.
-
-
-AFAIK the SJA1000 driver only uses 32 byte of address space - so 5 bit =
-are ok!
-
-Even if the address space of the SJA1000 can be 128 bytes in PeliCAN mo=
-de,
-these addresses beyond register 31 are usually not in use.
-Registers 32 - 127 only contain a view into the internal registers and =
-=46IFOs
-nobody is using, as the FIFO is also implemented in the standard RX/TX =
-frame
-registers.
-
-Please check the SJA1000 spec, page 21/22 (PeliCAN address space layout=
-)
-
-Regards,
-Oliver
+T24gVGh1LCBOb3YgMTcsIDIwMTEgYXQgMDU6MTQ6MzNQTSArMDEwMCwgT2xpdmVyIEhhcnRrb3Bw
+IHdyb3RlOgo+IE9uIDE3LjExLjIwMTEgMTI6MjQsIEt1cnQgVmFuIERpamNrIHdyb3RlOgo+IAo+
+ID4gT24gVGh1LCBOb3YgMTcsIDIwMTEgYXQgMDc6NDk6NDNBTSArMDEwMCwgSGVpbnotSsO8cmdl
+biBPZXJ0ZWwgd3JvdGU6Cj4gPj4KPiA+PiBEYW5rZSBPbGl2ZXIsCj4gPj4KPiA+PiBmb3Igbm93
+IEkgZGVjaWRlZCB0byB1c2Ugc29tZXRoaW5nIGxpa2UKPiA+Pgo+ID4+IHN5c3RlbSgiZWNobyBc
+ImkgMHg0OTE0IGVcIiA+IC9kZXYvcGNhbjAiKTsKPiA+Pgo+ID4+IFVuZm9ydHVuYXRlbHkgYXQg
+dGhlIG1vbWVudCBJIGhhdmUgIG5vIGlkZWEgaG93IHRvIGRldGVybWluZSBpZiBJJ20ganVzdCB0
+YWxraW5nIHRvIGFuIFBlYWsgb3IgYW4gRU1TIGludGVyZmFjZSAgdG8gc2VsZWN0IHRoZSBtZXRo
+b2Qgb2Ygc2V0dGluZyB0aGUgYml0IHJhdGUuCj4gPiAKPiA+IE1heWJlCj4gPiAKPiA+ICQgaXAg
+LWQgbGluayBzaG93IGNhbjAKPiA+IAo+ID4gd2lsbCBzaG93IGRpZmZlcmVudGx5Pwo+IAo+IAo+
+IE5vLgo+IAo+IFRoZSBQRUFLIGRyaXZlciBkb2VzIG5vdCB1c2UgdGhlIGNhbmRldiBmcmFtZXdv
+cmsgKGRyaXZlcnMvbmV0L2Nhbi9kZXYuYykuCj4gVGhlcmVmb3JlIHlvdSB3b24ndCBzZWUgYW55
+dGhpbmcgYmV5b25kIHVwL2Rvd24gc3RhdGUgYW5kIHR4X3F1ZXVlX2xlbiwgZXRjLgo+IE5vdCBi
+aXRyYXRlIHNldHRpbmdzIDotKApNeSBpZGVhIHdhcyB0byB1c2UgdGhpcyAnbGFjayBvZiBpbmZv
+cm1hdGlvbicgdG8gYXV0by1kZWNpZGUgaWYgaXQncyBhbiBFTVMgb3IgUEVBSwppbnRlcmZhY2Uu
+IEJ1dCBIZWluei1Kw7xyZ2VuIGFscmVhZHkgcG9pbnRlZCBvdXQgdGhhdCB1c2luZyBzb21lIC9w
+cm9jIGZpbGUsIHlvdQpjYW4gYWxzbyBzZWUgaWYgYSBkZXZpY2UgaXMgYSBQRUFLIGRldmljZS4K
+Ckt1cnQKPiAKPiBSZWdhcmRzLAo+IE9saXZlcgo+IC0tCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0
+aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiIgaW4KPiB0aGUg
+Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+IE1vcmUgbWFq
+b3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRt
+bApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpTb2NrZXRj
+YW4tdXNlcnMgbWFpbGluZyBsaXN0ClNvY2tldGNhbi11c2Vyc0BsaXN0cy5iZXJsaW9zLmRlCmh0
+dHBzOi8vbGlzdHMuYmVybGlvcy5kZS9tYWlsbWFuL2xpc3RpbmZvL3NvY2tldGNhbi11c2Vycwo=
