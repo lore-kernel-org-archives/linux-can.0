@@ -1,49 +1,57 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] net, sja1000: Don't include version.h in peak_pci.c when
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] net, sja1000: Don't include version.h in peak_pci.c when
  not needed
-Date: Sun, 20 Nov 2011 22:07:09 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1111202204480.17195@swampdragon.chaosbits.net>
+Date: Mon, 21 Nov 2011 10:51:15 +0100
+Message-ID: <4ECA1F13.4080204@pengutronix.de>
+References: <alpine.LNX.2.00.1111202204480.17195@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigFC063C355B825F3AA1560730"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from swampdragon.chaosbits.net ([90.184.90.115]:10811 "EHLO
-	swampdragon.chaosbits.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753534Ab1KTVHL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 20 Nov 2011 16:07:11 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48461 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752355Ab1KUJvX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Nov 2011 04:51:23 -0500
+In-Reply-To: <alpine.LNX.2.00.1111202204480.17195@swampdragon.chaosbits.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Wolfgang Grandegger <wg@grandegger.com>
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-It was pointed out by "make versioncheck" that we do not need to include
-version.h in drivers/net/can/sja1000/peak_pci.c
-This patch removes the unneeded include.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigFC063C355B825F3AA1560730
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- drivers/net/can/sja1000/peak_pci.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+On 11/20/2011 10:07 PM, Jesper Juhl wrote:
+> It was pointed out by "make versioncheck" that we do not need to includ=
+e
+> version.h in drivers/net/can/sja1000/peak_pci.c
+> This patch removes the unneeded include.
+>=20
+> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
- note: patch is compile tested only.
-
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 905bce0..2c7f503 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -20,7 +20,6 @@
-  */
- 
- #include <linux/kernel.h>
--#include <linux/version.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/netdevice.h>
--- 
-1.7.7.3
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+--------------enigFC063C355B825F3AA1560730
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk7KHxYACgkQjTAFq1RaXHMS/QCfaT5o1gzpvYtEw4CVhOHLbs4Y
+NqsAnRIOPuEbu63MLKswXSuOW0PDDjsy
+=odzp
+-----END PGP SIGNATURE-----
+
+--------------enigFC063C355B825F3AA1560730--
