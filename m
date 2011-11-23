@@ -1,83 +1,58 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC PATCH] plx_pci: add Advantech PCI-1680 & UNO-2052 support
-Date: Tue, 22 Nov 2011 10:09:38 +0100
-Message-ID: <4ECB66D2.6030108@pengutronix.de>
-References: <4ECAB5E4.6010903@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [Socketcan-users] 10 CAN interfaces on ECAN-527d
+Date: Wed, 23 Nov 2011 19:56:00 +0100
+Message-ID: <4ECD41C0.6060706@hartkopp.net>
+References: <32872261.post@talk.nabble.com> <4ECCDA12.3080908@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCD37AAA9B71FEA421C446861"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49237 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753553Ab1KVJJv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Nov 2011 04:09:51 -0500
-In-Reply-To: <4ECAB5E4.6010903@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:39136 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751397Ab1KWS4J (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Nov 2011 13:56:09 -0500
+In-Reply-To: <4ECCDA12.3080908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Frank Rysanek <rysanek@fccps.cz>, Pavel Cheblakov <P.B.Cheblakov@inp.nsk.su>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: IreneV <boir1@yandex.ru>, socketcan-users@lists.berlios.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCD37AAA9B71FEA421C446861
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On 23.11.2011 12:33, Marc Kleine-Budde wrote:
 
-On 11/21/2011 09:34 PM, Oliver Hartkopp wrote:
-> Add Advantech PCI-1680 & UNO-2052 support for the SJA1000 plx_pci drive=
-r.
->=20
-> Signed-off-by: Frank Rysanek <rysanek@fccps.cz>
-
-Nitpick: When posting this patch to netdev don't forget to add your
-S-o-b line.
-
->=20
-> ---
->=20
-> Hello Frank,
->=20
-> i found your patch to support the Advantech PCI-1680 & UNO-2052 cards h=
-ere:
->=20
-> 	http://www.fccps.cz/download/adv/frr/can-notes.html
->=20
-> Are you fine with posting the changes on the netdev mailing list to bec=
-ome
-> part of the mainline Linux kernel?
->=20
-> PLEASE REVIEW: You added an mdelay(100) in plx_pci_check_sja1000() ...
-
-+1 - Such a long delay should not end up in the common code.
-
-> Are you sure this long delay is needed in plx_pci_check_sja1000() or sh=
-ould
-> we better add a shorter mdelay(10) at the end of plx_pci_reset_common()=
- ??
->=20
-> Are you sure your setup is not working without the added mdelay(100) ?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> On 11/23/2011 11:01 AM, IreneV wrote:
+>>
+>> Hello,
+>> I'm a newbie in CAN-interface and I have to write some programs for MicroPC
+>> with ECAN-527D board under Ubuntu. After installing drivers from disk 10
+>> CAN-interfaces appear in /dev/ and datasheet says that it must be so. Can
+>> anyone tell me why there are 10 interface instead of 2 (the board is
+>> dual-channel)?
+> 
+> I don't know the driver, and it's not using the official linux socketcan
+> interface. The driver you're using is probably not so well written and
+> supports up to 10 CAN interfaces this is why 10 interfaces pop up in /dev.
+> 
+> About three years ago Alexey Serov[1] (Cc'ed) was using the same board,
+> but a socketcan driver. I don't know if the driver is mainline
+> meanwhile. I suggest to use the socketcan driver and not the vendor
+> specific one.
+> 
+> cheers, Marc
+> 
+> [1] http://old.nabble.com/problem-with-82527-PC-104-board-td19020937.html
 
 
---------------enigCD37AAA9B71FEA421C446861
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I think the referenced i82527-iomem driver
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+http://svn.berlios.de/wsvn/socketcan/trunk/kernel/2.6/drivers/net/can/old/i82527/?#ac21816bb2f78cb7e7b7b1a75f2ecfed0
 
-iEYEARECAAYFAk7LZtsACgkQjTAFq1RaXHMvHQCeIkBvz3y3fBIgr5XoHop3vy9X
-bfEAoIhEc1mRIyj4A1m3IxZLHMgTEiir
-=CNkn
------END PGP SIGNATURE-----
+is *really* very old ... don't know, if it still works.
 
---------------enigCD37AAA9B71FEA421C446861--
+AFAIK Wolfgang created the CC770 driver which is the successor of the i82527:
+
+http://svn.berlios.de/wsvn/socketcan/trunk/kernel/2.6/drivers/net/can/cc770/?#a12c70fb51cbd498d785ad6d2ee65ff67
+
+This one is more up to date - but only available in the SVN and not in mainline.
+
+Regards,
+Oliver
