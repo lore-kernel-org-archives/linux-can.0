@@ -1,89 +1,81 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 11/11] can: Remove redundant spi driver bus initialization
-Date: Thu, 24 Nov 2011 16:36:47 +0100
-Message-ID: <4ECE648F.1040102@pengutronix.de>
-References: <1322148561-25138-1-git-send-email-lars@metafoo.de> <1322148561-25138-11-git-send-email-lars@metafoo.de>
+From: Frantisek Rysanek <rysanek@fccps.cz>
+Subject: Re: [RFC PATCH] plx_pci: add Advantech PCI-1680 & UNO-2052 support
+Date: Thu, 24 Nov 2011 21:35:03 +0100
+Message-ID: <4ECEAA77.1030303@fccps.cz>
+References: <4ECAB5E4.6010903@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig5AD738D33101858136AC04B6"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48137 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752995Ab1KXPg6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2011 10:36:58 -0500
-In-Reply-To: <1322148561-25138-11-git-send-email-lars@metafoo.de>
+Received: from mail2.fccps.cz ([77.104.235.122]:60375 "EHLO mail.fccps.cz"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753301Ab1KXUlD (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 24 Nov 2011 15:41:03 -0500
+In-Reply-To: <4ECAB5E4.6010903@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Pavel Cheblakov <P.B.Cheblakov@inp.nsk.su>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig5AD738D33101858136AC04B6
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On 11/24/2011 04:29 PM, Lars-Peter Clausen wrote:
-> In ancient times it was necessary to manually initialize the bus field =
-of an
-> spi_driver to spi_bus_type. These days this is done in spi_driver_regis=
-ter(),
-> so we can drop the manual assignment.
->=20
-> The patch was generated using the following coccinelle semantic patch:
-> // <smpl>
-> @@
-> identifier _driver;
-> @@
-> struct spi_driver _driver =3D {
-> 	.driver =3D {
-> -		.bus =3D &spi_bus_type,
-> 	},
-> };
-> // </smpl>
->=20
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: linux-can@vger.kernel.org
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Dne 21.11.2011 21:34, Oliver Hartkopp napsal(a):
+> Add Advantech PCI-1680 & UNO-2052 support for the SJA1000 plx_pci driver.
+> 
+> Signed-off-by: Frank Rysanek <rysanek@fccps.cz>
+> 
 > ---
->  drivers/net/can/mcp251x.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
->=20
-> diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-> index 330140e..5e10da5 100644
-> --- a/drivers/net/can/mcp251x.c
-> +++ b/drivers/net/can/mcp251x.c
-> @@ -1185,7 +1185,6 @@ MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
->  static struct spi_driver mcp251x_can_driver =3D {
->  	.driver =3D {
->  		.name =3D DEVICE_NAME,
-> -		.bus =3D &spi_bus_type,
->  		.owner =3D THIS_MODULE,
->  	},
-> =20
+> 
+> Hello Frank,
+> 
+> i found your patch to support the Advantech PCI-1680 & UNO-2052 cards here:
+> 
+> 	http://www.fccps.cz/download/adv/frr/can-notes.html
+> 
+> Are you fine with posting the changes on the netdev mailing list to become
+> part of the mainline Linux kernel?
+>
+definitely, that would be excellent :-)
+Actually I've tried to submit the patch to linux-netdev, but it didn't
+have the GIT-wise bells and whistles and I wasn't surprised that there
+was no response...
 
+> PLEASE REVIEW: You added an mdelay(100) in plx_pci_check_sja1000() ...
+> 
+> Are you sure this long delay is needed in plx_pci_check_sja1000() or should
+> we better add a shorter mdelay(10) at the end of plx_pci_reset_common() ??
+> 
+> Are you sure your setup is not working without the added mdelay(100) ?
+>
+That's a good question.
+I believe I got the time delay of 100 ms from some macro in a "character
+device driver" maintained by the people at Peak Systemtechnik - the
+macro specifies a "maximum time limit for the SJA1000 to accomplish a
+switch into the RESET MODE".
+The algorithm used by Peak was more complex than my hardwired delay:
+they would wait for the flag (sign of success) in a loop, calling just
+schedule() during every fruitless iteration.
+And, the wait for the chip to "switch into RESET mode" is not exactly
+the same as waiting for the chip to come back after a cold reset.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+I added the delay because without it, my two SJA1000 channels would
+remain undetected. It worked for me, and it didn't occur to me that
+100ms at boot would be a problem - so I didn't bother to try a shorter
+delay. As far as I can tell from the datasheet, the SJA1000 does not
+seem to contain an MCU core running some "microcode", so I see no reason
+why it shouldn't come up within a few clock cycles, rather than a 100 ms.
+I'm gonna have to take a look if we happen to have some of those boards
+in stock (they keep coming and going), stick one piece into a suitable
+PC at my workplace and try to "bisect" an appropriate interval for that
+delay...
+Or can you suggest some "sign of life" to wait for in a semi-tight loop?
 
+The problem is that at the moment I'm pretty swamped by other
+intervening activities, both at work (hunting down other people's
+hardware bugs) and in my private life (small children) - I hope to be
+able to get this check done in a few days. I'll keep you posted.
 
---------------enig5AD738D33101858136AC04B6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> Thanks for your patch,
+> Oliver
+>
+Thanks a lot for *your* time and attention :-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7OZJYACgkQjTAFq1RaXHMIwgCeKQJcFGAOfI51dGK/kUjVR913
-1s8AnAvS4Wjimv+a06fc92kNhWAh+Oo5
-=vtQM
------END PGP SIGNATURE-----
-
---------------enig5AD738D33101858136AC04B6--
+Frank Rysanek
