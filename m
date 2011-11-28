@@ -1,96 +1,39 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH net-next v2 1/4] can: cc770: add
- driver core for the Bosch CC770 and Intel AN82527
-Date: Mon, 28 Nov 2011 15:18:25 +0100
-Message-ID: <4ED39831.4060008@pengutronix.de>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
-	<1322214204-1121-2-git-send-email-wg@grandegger.com>
-	<4ED3704D.5020903@pengutronix.de> <4ED3922A.50704@grandegger.com>
-	<4ED3941D.3070302@pengutronix.de> <4ED3966E.7080609@grandegger.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH] net/can/mscan: Enable interrupts when all TX buffers
+ are occupied to get notified when they are available again
+Date: Mon, 28 Nov 2011 15:22:29 +0100
+Message-ID: <4ED39925.7080606@grandegger.com>
+References: <C3745E3C7FD07D429C54EB3D7606A5A7677E7C@ZRHEX021.ads.zuehlke.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1930834364814412534=="
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4ED3966E.7080609-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <C3745E3C7FD07D429C54EB3D7606A5A7677E7C@ZRHEX021.ads.zuehlke.com>
+Sender: netdev-owner@vger.kernel.org
+To: "Mosler, Martin" <mmo@zuehlke.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "lucas.demarchi@profusion.mobi" <lucas.demarchi@profusion.mobi>, "davem@davemloft.net" <davem@davemloft.net>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============1930834364814412534==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigD3A04D58A975B8B45DF19976"
+On 11/28/2011 02:25 PM, Mosler, Martin wrote:
+> When all TX buffers of the mscan are occupied the network layer is told to stop sending further packets. However the TX interrupts are not enabled and therefore the driver has no chance to tell the network layer when it is ready to accept further packets.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigD3A04D58A975B8B45DF19976
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Please break lines after 72 chars, or so.
 
-On 11/28/2011 03:10 PM, Wolfgang Grandegger wrote:
+> Signed-off-by: Martin Mosler <mmo@zuehlke.com>
+> 
+> --- linux-2.6/drivers/net/can/mscan/mscan.c.orig    2011-11-28 13:54:29.547850661 +0100
+> +++ linux-2.6/drivers/net/can/mscan/mscan.c 2011-11-28 13:55:52.427849601 +0100
+> @@ -214,6 +214,7 @@ static netdev_tx_t mscan_start_xmit(stru
+>     case 0:
+>         netif_stop_queue(dev);
+>         dev_err(dev->dev.parent, "Tx Ring full when queue awake!\n");
+> +       out_8(&regs->cantier, priv->tx_active);
+>         return NETDEV_TX_BUSY;
+>     case 1:
+>         /*  
 
->>>   enum {
->>> 	CC770_OBJ_RX0 =3D 0,	/* for receiving normal messages */
->>> 	CC770_OBJ_RX1,		/* for receiving normal messages */
->>> 	CC770_OBJ_RX_RTR0,	/* for receiving remote transmission requests */
->>> 	CC770_OBJ_RX_RTR1,	/* for receiving remote transmission requests */
->>> 	CC770_OBJ_TX,		/* for sending messages */
->>> 	CC770_OBJ_MAX  <=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> ...then add a "," here :P
->=20
-> Why?
+I cannot apply this patch. It is white space mangled (no tabs but
+spaces, etc.). Please fix your mail agent or, even better, use "git
+send-email".
 
-Okay - here the following argument will be not valid :), because OBJ_MAX
-will and has always to be the last element in the enum.
-
-But if you don't have a _MAX argument and a new element will be added to
-the enum, you'll have to change two lines: 1. add the missing "," 2. add
-the new element. Diff will look better if the last element always has a "=
-,".
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigD3A04D58A975B8B45DF19976
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7TmDMACgkQjTAFq1RaXHOi8gCaAo2aweSO9ERFP+Nd8MK64N46
-qGAAniLsZAZA88yX7w7A0w8mLsDnneYI
-=BX4f
------END PGP SIGNATURE-----
-
---------------enigD3A04D58A975B8B45DF19976--
-
---===============1930834364814412534==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Socketcan-users mailing list
-Socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-https://lists.berlios.de/mailman/listinfo/socketcan-users
-
---===============1930834364814412534==--
+Wolfgang.
