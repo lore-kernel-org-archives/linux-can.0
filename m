@@ -1,99 +1,290 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: [PATCH net-next v2 1/4] can: cc770: add
- driver core for the Bosch CC770 and Intel AN82527
-Date: Sat, 26 Nov 2011 16:11:09 +0100
-Message-ID: <4ED1018D.7020902@hartkopp.net>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
-	<1322214204-1121-2-git-send-email-wg@grandegger.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] net/can: convert drivers/net/can/* to use
+ module_platform_driver()
+Date: Mon, 28 Nov 2011 09:42:31 +0800
+Message-ID: <1322444551.2408.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <1322214204-1121-2-git-send-email-wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, Wolfgang Zarre <info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-yw0-f46.google.com ([209.85.213.46]:54311 "EHLO
+	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750920Ab1K1Bml (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 27 Nov 2011 20:42:41 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Bhupesh Sharma <bhupesh.sharma@st.com>, Jiri Kosina <jkosina@suse.cz>, Grant Likely <grant.likely@secretlab.ca>, Anatolij Gustschin <agust@denx.de>, Paul Bolle <pebolle@tiscali.nl>, Kurt Van Dijck <kurt.van.dijck@eia.be>, Alexey Dobriyan <adobriyan@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Hello Wolfgang,
+This patch converts the drivers in drivers/net/can/* to use the
+module_platform_driver() macro which makes the code smaller and a bit
+simpler.
 
-if you come to the point to re-post this patchset you may change this header
-information just to a standard GPL header as you used for cc770_isa.c
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Bhupesh Sharma <bhupesh.sharma@st.com> 
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Anatolij Gustschin <agust@denx.de> 
+Cc: Paul Bolle <pebolle@tiscali.nl>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Alexey Dobriyan <adobriyan@gmail.com> 
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ drivers/net/can/at91_can.c                    |   13 +------------
+ drivers/net/can/bfin_can.c                    |   12 +-----------
+ drivers/net/can/c_can/c_can_platform.c        |   12 +-----------
+ drivers/net/can/flexcan.c                     |   15 +--------------
+ drivers/net/can/janz-ican3.c                  |   13 +------------
+ drivers/net/can/mscan/mpc5xxx_can.c           |   12 +-----------
+ drivers/net/can/sja1000/sja1000_of_platform.c |   12 +-----------
+ drivers/net/can/sja1000/sja1000_platform.c    |   13 +------------
+ drivers/net/can/softing/softing_main.c        |   16 ++--------------
+ drivers/net/can/ti_hecc.c                     |   15 +--------------
+ 10 files changed, 11 insertions(+), 122 deletions(-)
 
-No need to mention
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 044ea06..6ea905c 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1383,18 +1383,7 @@ static struct platform_driver at91_can_driver = {
+ 	.id_table = at91_can_id_table,
+ };
+ 
+-static int __init at91_can_module_init(void)
+-{
+-	return platform_driver_register(&at91_can_driver);
+-}
+-
+-static void __exit at91_can_module_exit(void)
+-{
+-	platform_driver_unregister(&at91_can_driver);
+-}
+-
+-module_init(at91_can_module_init);
+-module_exit(at91_can_module_exit);
++module_platform_driver(at91_can_driver);
+ 
+ MODULE_AUTHOR("Marc Kleine-Budde <mkl@pengutronix.de>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
+index a1c5abc..349e0fa 100644
+--- a/drivers/net/can/bfin_can.c
++++ b/drivers/net/can/bfin_can.c
+@@ -676,17 +676,7 @@ static struct platform_driver bfin_can_driver = {
+ 	},
+ };
+ 
+-static int __init bfin_can_init(void)
+-{
+-	return platform_driver_register(&bfin_can_driver);
+-}
+-module_init(bfin_can_init);
+-
+-static void __exit bfin_can_exit(void)
+-{
+-	platform_driver_unregister(&bfin_can_driver);
+-}
+-module_exit(bfin_can_exit);
++module_platform_driver(bfin_can_driver);
+ 
+ MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 0b5c6f8..5e1a5ff 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -197,17 +197,7 @@ static struct platform_driver c_can_plat_driver = {
+ 	.remove = __devexit_p(c_can_plat_remove),
+ };
+ 
+-static int __init c_can_plat_init(void)
+-{
+-	return platform_driver_register(&c_can_plat_driver);
+-}
+-module_init(c_can_plat_init);
+-
+-static void __exit c_can_plat_exit(void)
+-{
+-	platform_driver_unregister(&c_can_plat_driver);
+-}
+-module_exit(c_can_plat_exit);
++module_platform_driver(c_can_plat_driver);
+ 
+ MODULE_AUTHOR("Bhupesh Sharma <bhupesh.sharma@st.com>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index e023379..165a4c7 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1060,20 +1060,7 @@ static struct platform_driver flexcan_driver = {
+ 	.remove = __devexit_p(flexcan_remove),
+ };
+ 
+-static int __init flexcan_init(void)
+-{
+-	pr_info("%s netdevice driver\n", DRV_NAME);
+-	return platform_driver_register(&flexcan_driver);
+-}
+-
+-static void __exit flexcan_exit(void)
+-{
+-	platform_driver_unregister(&flexcan_driver);
+-	pr_info("%s: driver removed\n", DRV_NAME);
+-}
+-
+-module_init(flexcan_init);
+-module_exit(flexcan_exit);
++module_platform_driver(flexcan_driver);
+ 
+ MODULE_AUTHOR("Sascha Hauer <kernel@pengutronix.de>, "
+ 	      "Marc Kleine-Budde <kernel@pengutronix.de>");
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 32778d5..08c893c 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1803,20 +1803,9 @@ static struct platform_driver ican3_driver = {
+ 	.remove		= __devexit_p(ican3_remove),
+ };
+ 
+-static int __init ican3_init(void)
+-{
+-	return platform_driver_register(&ican3_driver);
+-}
+-
+-static void __exit ican3_exit(void)
+-{
+-	platform_driver_unregister(&ican3_driver);
+-}
++module_platform_driver(ican3_driver);
+ 
+ MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
+ MODULE_DESCRIPTION("Janz MODULbus VMOD-ICAN3 Driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:janz-ican3");
+-
+-module_init(ican3_init);
+-module_exit(ican3_exit);
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index 5fedc33..5caa572 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -411,17 +411,7 @@ static struct platform_driver mpc5xxx_can_driver = {
+ #endif
+ };
+ 
+-static int __init mpc5xxx_can_init(void)
+-{
+-	return platform_driver_register(&mpc5xxx_can_driver);
+-}
+-module_init(mpc5xxx_can_init);
+-
+-static void __exit mpc5xxx_can_exit(void)
+-{
+-	platform_driver_unregister(&mpc5xxx_can_driver);
+-};
+-module_exit(mpc5xxx_can_exit);
++module_platform_driver(mpc5xxx_can_driver);
+ 
+ MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
+ MODULE_DESCRIPTION("Freescale MPC5xxx CAN driver");
+diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+index c3dd9d0..f2683eb 100644
+--- a/drivers/net/can/sja1000/sja1000_of_platform.c
++++ b/drivers/net/can/sja1000/sja1000_of_platform.c
+@@ -220,14 +220,4 @@ static struct platform_driver sja1000_ofp_driver = {
+ 	.remove = __devexit_p(sja1000_ofp_remove),
+ };
+ 
+-static int __init sja1000_ofp_init(void)
+-{
+-	return platform_driver_register(&sja1000_ofp_driver);
+-}
+-module_init(sja1000_ofp_init);
+-
+-static void __exit sja1000_ofp_exit(void)
+-{
+-	return platform_driver_unregister(&sja1000_ofp_driver);
+-};
+-module_exit(sja1000_ofp_exit);
++module_platform_driver(sja1000_ofp_driver);
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index d9fadc4..4f50145 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -185,15 +185,4 @@ static struct platform_driver sp_driver = {
+ 	},
+ };
+ 
+-static int __init sp_init(void)
+-{
+-	return platform_driver_register(&sp_driver);
+-}
+-
+-static void __exit sp_exit(void)
+-{
+-	platform_driver_unregister(&sp_driver);
+-}
+-
+-module_init(sp_init);
+-module_exit(sp_exit);
++module_platform_driver(sp_driver);
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index 09a8b86..a7c77c7 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -874,21 +874,9 @@ static struct platform_driver softing_driver = {
+ 	.remove = __devexit_p(softing_pdev_remove),
+ };
+ 
+-MODULE_ALIAS("platform:softing");
+-
+-static int __init softing_start(void)
+-{
+-	return platform_driver_register(&softing_driver);
+-}
+-
+-static void __exit softing_stop(void)
+-{
+-	platform_driver_unregister(&softing_driver);
+-}
+-
+-module_init(softing_start);
+-module_exit(softing_stop);
++module_platform_driver(softing_driver);
+ 
++MODULE_ALIAS("platform:softing");
+ MODULE_DESCRIPTION("Softing DPRAM CAN driver");
+ MODULE_AUTHOR("Kurt Van Dijck <kurt.van.dijck@eia.be>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 2adc294..df809e3 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -1037,20 +1037,7 @@ static struct platform_driver ti_hecc_driver = {
+ 	.resume = ti_hecc_resume,
+ };
+ 
+-static int __init ti_hecc_init_driver(void)
+-{
+-	printk(KERN_INFO DRV_DESC "\n");
+-	return platform_driver_register(&ti_hecc_driver);
+-}
+-
+-static void __exit ti_hecc_exit_driver(void)
+-{
+-	printk(KERN_INFO DRV_DESC " unloaded\n");
+-	platform_driver_unregister(&ti_hecc_driver);
+-}
+-
+-module_exit(ti_hecc_exit_driver);
+-module_init(ti_hecc_init_driver);
++module_platform_driver(ti_hecc_driver);
+ 
+ MODULE_AUTHOR("Anant Gole <anantgole@ti.com>");
+ MODULE_LICENSE("GPL v2");
+-- 
+1.7.5.4
 
-- Derived from the old Socket-CAN i82527 driver:
-- Copyright (c) 2002-2007 Volkswagen Group Electronic Research
-- Send feedback to <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-
-You really reworked the i82527 driver that much, that it is ok to present it
-as your originated work ... my driver really wasn't that cool to mention it
-here ;-)
-
-Thanks & best regards,
-Oliver
 
 
-> --- /dev/null
-> +++ b/drivers/net/can/cc770/cc770.c
-> @@ -0,0 +1,895 @@
-> +/*
-> + * cc770.c - Bosch CC770 and Intel AN82527 network device driver
-> + *
-> + * Copyright (C) 2009, 2011 Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-> + *
-> + * Derived from the old Socket-CAN i82527 driver:
-> + *
-> + * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
-> + * All rights reserved.
-> + *
-> + * Redistribution and use in source and binary forms, with or without
-> + * modification, are permitted provided that the following conditions
-> + * are met:
-> + * 1. Redistributions of source code must retain the above copyright
-> + *    notice, this list of conditions and the following disclaimer.
-> + * 2. Redistributions in binary form must reproduce the above copyright
-> + *    notice, this list of conditions and the following disclaimer in the
-> + *    documentation and/or other materials provided with the distribution.
-> + * 3. Neither the name of Volkswagen nor the names of its contributors
-> + *    may be used to endorse or promote products derived from this software
-> + *    without specific prior written permission.
-> + *
-> + * Alternatively, provided that this notice is retained in full, this
-> + * software may be distributed under the terms of the GNU General
-> + * Public License ("GPL") version 2, in which case the provisions of the
-> + * GPL apply INSTEAD OF those given above.
-> + *
-> + * The provided data structures and external interfaces from this code
-> + * are not restricted to be used by modules with a GPL compatible license.
-> + *
-> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-> + * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-> + * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-> + * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-> + * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-> + * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-> + * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-> + * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-> + * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> + * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-> + * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-> + * DAMAGE.
-> + *
-> + * Send feedback to <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-> + */
-> +
-
-> diff --git a/drivers/net/can/cc770/cc770.h b/drivers/net/can/cc770/cc770.h
-> new file mode 100644
-
-
-dito
