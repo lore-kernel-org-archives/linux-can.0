@@ -1,65 +1,51 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: AW: AW: [PATCH] net/can/mscan: Enable interrupts when all TX
- buffers are occupied to get notified when they are available again
-Date: Mon, 28 Nov 2011 15:31:02 +0100
-Message-ID: <4ED39B26.1070608@grandegger.com>
-References: <C3745E3C7FD07D429C54EB3D7606A5A7677E7C@ZRHEX021.ads.zuehlke.com>,<4ED38EB1.6030806@grandegger.com> <C3745E3C7FD07D429C54EB3D7606A5A7677EB2@ZRHEX021.ads.zuehlke.com>,<4ED395C8.5070009@grandegger.com> <C3745E3C7FD07D429C54EB3D7606A5A7677EDE@ZRHEX021.ads.zuehlke.com>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add
+ legacy ISA bus driver for the CC770 and AN82527
+Date: Mon, 28 Nov 2011 16:10:03 +0100
+Message-ID: <4ED3A44B.8060907@grandegger.com>
+References: <AE90C24D6B3A694183C094C60CF0A2F6D8AEE9@saturn3.aculab.com>
+	<4ED3960F.4040508@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <C3745E3C7FD07D429C54EB3D7606A5A7677EDE@ZRHEX021.ads.zuehlke.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Mosler, Martin" <mmo@zuehlke.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "lucas.demarchi@profusion.mobi" <lucas.demarchi@profusion.mobi>, "davem@davemloft.net" <davem@davemloft.net>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <4ED3960F.4040508-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, David Laight <David.Laight-ZS65k/vG3HxXrIkS9f7CXA@public.gmane.org>, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-On 11/28/2011 03:13 PM, Mosler, Martin wrote:
->>>>> When all TX buffers of the mscan are occupied the network layer is told to stop sending further packets. However the TX interrupts are not enabled and therefore the driver has no chance to tell the network layer when it is ready to accept further packets.
->>>>>
->>>>> Signed-off-by: Martin Mosler <mmo@zuehlke.com>
->>>>>
->>>>> --- linux-2.6/drivers/net/can/mscan/mscan.c.orig    2011-11-28 13:54:29.547850661 +0100
->>>>> +++ linux-2.6/drivers/net/can/mscan/mscan.c 2011-11-28 13:55:52.427849601 +0100
->>>>> @@ -214,6 +214,7 @@ static netdev_tx_t mscan_start_xmit(stru
->>>>>     case 0:
->>>>>         netif_stop_queue(dev);
->>>>>         dev_err(dev->dev.parent, "Tx Ring full when queue awake!\n");
->>>>> +       out_8(&regs->cantier, priv->tx_active);
->>>>>         return NETDEV_TX_BUSY;
->>>>>     case 1:
->>>>>         /*
->>>>
->>>> Hm, did you see the error message. Actually, it should never happen, IIRC.
->>>>
->>>> Wolfgang.
+On 11/28/2011 03:09 PM, Marc Kleine-Budde wrote:
+> On 11/28/2011 03:03 PM, David Laight wrote:
+>>>>> +	for (idx = 0; idx < MAXDEV; idx++) {
+>>>> ARRAY_SIZE?
 >>>
->>> It is in fact a very rare condition, but it was triggered during testing when pulling CAN-HI and CAN-LO lines
->>> to GND and VCC in various combinations to verify how the system is recovering. I am working with a MPC5125
->>> if this is valuable information. (This was only one issue I ran into, I had to do other modifications for other
->>> issues as well, but I think they are chip specific, I'll share them in a separate thread if you like).
+>>> Well, I think ARRAY_SIZE is useful to derive the number of 
+>>> elements from a static array of the type:
+>>>
+>>>   static const int array[] = { 1, 2, 3, 4, }
+>>>
+>>> but not if its declared as:
+>>>
+>>>   static array[MAXDEV]:
+>>>
+>>> ... or have I missed something?
 >>
->> Sounds like a problem with bus-off recovery. The software has restarted
->> the queue but the TX objects are still active. How do you handle
->> bus-offs? Manually? restart-ms = ?
->>
->> Would be great if you post patches for your other issues.
->>
->> Wolfgang.
+>> Yes - if you use ARRAY_SIZE() then someone reading the code
+>> doesn't need to find the array definition to ensure the loop
+>> upper bound is correct.
 > 
-> We are using restart-ms = 500 for now.
+> Yep, that
+> was my intention, too.
 
-OK. How the hardware recovers on bus-off on the MPC51xx and especially
-on the MPC51xx is still a mystery to me. I think the real problem is
-that the software does not wait until the hardware has fully recovered
-from bus-off by going to error active. Do you have a kernel log (dmesg
-output) with CONFIG_CAN_DEBUG_DEVICES=y and CONFIG_PRINTK_TIME=y?
-
-> I'll post the other patches after I know I did the submit process correctly for this one and when I reviewed 
-> them more closely, as it is my first submission to the kernel.
-
-I just commented on that.
-
-Thanks.
+OK, I see, and as we are all just human beings ...
 
 Wolfgang.
