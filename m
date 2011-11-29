@@ -1,31 +1,35 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] can: sja1000_isa: convert to platform driver to
- support x86_64 systems
-Date: Tue, 29 Nov 2011 18:36:13 -0500 (EST)
-Message-ID: <20111129.183613.828663777011052539.davem@davemloft.net>
-References: <4ECE153E.7090408@grandegger.com>
+Subject: Re: [PATCH next-next 0/2] can: cc770: add support for the Bosch
+ CC770 and Intel AN82527
+Date: Tue, 29 Nov 2011 18:39:50 -0500 (EST)
+Message-ID: <20111129.183950.1327835803051184146.davem@davemloft.net>
+References: <1322136448-7311-1-git-send-email-wg@grandegger.com>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([198.137.202.13]:44528 "EHLO
+Received: from shards.monkeyblade.net ([198.137.202.13]:44556 "EHLO
 	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756425Ab1K2XgR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Nov 2011 18:36:17 -0500
-In-Reply-To: <4ECE153E.7090408@grandegger.com>
+	with ESMTP id S1755941Ab1K2Xj7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Nov 2011 18:39:59 -0500
+In-Reply-To: <1322136448-7311-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com
-Cc: Netdev@vger.kernel.org, linux-can@vger.kernel.org, lambert.willy@gmail.com
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, boir1@yandex.ru, stanislavelensky@yahoo.com
 
 From: Wolfgang Grandegger <wg@grandegger.com>
-Date: Thu, 24 Nov 2011 10:58:22 +0100
+Date: Thu, 24 Nov 2011 13:07:26 +0100
 
-> This driver is currently not supported on x86_64 systems because the
-> "isa_driver" interface is used (CONFIG_ISA=y). To overcome this
-> limitation, the driver is converted to a platform driver, similar to
-> the serial 8250 driver.
+> Already since a while we have support for the Bosch CC770 and Intel
+> AN82527 CAN controllers in our out-of-tree Socket-CAN repository.
+> It would be nice if somebody could test the driver. Unfortunately,
+> I currently do not have hardware at hand. I have not yet ported the
+> OF platform driver as it needs further attaention due to the merge
+> of the platform and OF platform interface.
 > 
-> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> Wolfgang Grandegger (2):
+>   can: cc770: add driver core for the Bosch CC770 and Intel AN82527
+>   can: cc770: legacy CC770 ISA bus driver
 
-Applied to net-next.
+All applied, thank you.
