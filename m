@@ -1,42 +1,84 @@
-From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
-Subject: getting the fill level of rx and tx fifos
-Date: Tue, 29 Nov 2011 12:25:46 +0100
-Message-ID: <B3B3BE5A55ED7743A83865E234A22B1D1B91F2C105@SBSPORT.portnet.local>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [Gitorious] Activity: dschanoeh updated merge request for...
+Date: Tue, 29 Nov 2011 15:08:13 +0100
+Message-ID: <4ED4E74D.3090608@pengutronix.de>
+References: <20111129121452.B4F9F7590F@steelheart.shortcut.kunder.linpro.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig3A6CDC0E42985BCF56175248"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx.professional-internet.de ([94.125.152.3]:56856 "EHLO
-	mx.professional-internet.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751925Ab1K2LZu convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 29 Nov 2011 06:25:50 -0500
-Content-Language: de-DE
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55294 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755474Ab1K2OIS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Nov 2011 09:08:18 -0500
+In-Reply-To: <20111129121452.B4F9F7590F@steelheart.shortcut.kunder.linpro.no>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "socketcan-users@lists.berlios.de" <socketcan-users@lists.berlios.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dschanoeh@googlemail.com
 
-Hello,
-reading can.txt and list emails I could not  manage to get this informa=
-tion.
-Can please someone explain if and how it is possible to get this inform=
-ation.
-I need to know how many frames are still in the net layer and not yet h=
-andled by the application.
-And as well importand, how many not yet sent CAN Frames are in the sock=
-et layer or the driver.=20
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig3A6CDC0E42985BCF56175248
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
---
-Mit freundlichen Gr=FC=DFen / With best regards
+Hello * and dschanoeh,
 
-Heinz=20
+On 11/29/2011 01:14 PM, Gitorious wrote:
+> -----------------------------------------------------------------------=
+-
+> dschanoeh updated merge request for dschanoehs-can-utils with can-utils=
+=2E
+> The merge request is at http://gitorious.org/linux-can/can-utils/merge_=
+requests/1
+> -----------------------------------------------------------------------=
+-
 
-PS:
-I saw in candump.c getsockopt(fd, SO_SOCKET, SO_RCVBUF, &rcvbuf_size,..=
-=2E.)
-Is used.
-But what does the result mean?
-I get large numbers here : 124928
+I just received this pull request from you. It basically consists of
+* removing plain old Makefile
+* fixes for the old include directory
+
+Regarding removing Makefile, fine with me, Oliver what do you think?
+
+I've started some time ago to import the includes from the svn into the
+git, but kernel only includes were still left. Now I just updated my git
+repo which merges the includes and adopts both Makefile and autotools.
+
+There is a squashed version, which imports the includes without their
+history. This branch is called master-squashed.
+
+Please checkout the master branch (or master-squashed) of my repo and tes=
+t:
+https://gitorious.org/~bet-frogger/linux-can/mkl-can-utils
+
+There is a j1939 branch, too.
+
+Please test and comment, if everything works I want to commit either my
+master branch or master-squashed to the official repo, which branch is
+better?
+
+cheers, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enig3A6CDC0E42985BCF56175248
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk7U51AACgkQjTAFq1RaXHN3iwCfZLfr7qGbarOSpExQYRS0QRvc
+7vMAn2eSCRg0qIZ/LU2pnyoRoxqxxVrc
+=7eJG
+-----END PGP SIGNATURE-----
+
+--------------enig3A6CDC0E42985BCF56175248--
