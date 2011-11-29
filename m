@@ -1,62 +1,41 @@
-From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Subject: Re: [PATCH net-next v2 1/4] can: cc770: add
- driver core for the Bosch CC770 and Intel AN82527
-Date: Tue, 29 Nov 2011 10:20:13 +0100
-Message-ID: <4ED4A3CD.4060908@grandegger.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
-	<1322214204-1121-2-git-send-email-wg@grandegger.com>
-	<4ED3704D.5020903@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: WG: PCAN-USB: new socketCAN driver available
+Date: Tue, 29 Nov 2011 11:39:06 +0100
+Message-ID: <4ED4B64A.2070500@grandegger.com>
+References: <4E400A36.5050303@hartkopp.net> <A46279271E5345AC9BFA91C73DF57228@DA310MM05> <4E415AB2.5030102@hartkopp.net> <2CD045C79786404EA0A81CED1E59763D@DA310MM05> <4E4BFF24.2010508@hartkopp.net> <33575A72304940CE9103338BA3660CEA@DA310MM05> <26B4E6A46012A1469B4EB3BC2A7CAAEC01266CCC@vwagwox00084.vw.vwg> <4EC6597A.8040704@peak-system.com> <4EC6B080.8090808@hartkopp.net> <4ECB65D8.7050207@peak-system.com> <4ECB8E75.7@volkswagen.de> <4ECBAAFB.8080204@peak-system.com> <4ECBAE4E.8000502@volkswagen.de> <4ECBB49A.2020508@volkswagen.de> <4ED3B355.70209@peak-system.com> <26B4E6A46012A1469B4EB3BC2A7CAAECE55502@vwagwox00084.vw.vwg> <4ED3CC05.6060606@hartkopp.net> <4ED4AF93.8060309@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4ED3704D.5020903-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:49436 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753289Ab1K2KjJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Nov 2011 05:39:09 -0500
+In-Reply-To: <4ED4AF93.8060309@peak-system.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: s.grosjean@peak-system.com
+Cc: Oliver Hartkopp <peak@hartkopp.net>, "Maidhof, Michael" <m.maidhof@peak-system.com>, "U.Wilhelm (PEAK-System)" <u.wilhelm@peak-system.com>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, linux-can@vger.kernel.org
 
-Hi Marc,
-
-On 11/28/2011 12:28 PM, Marc Kleine-Budde wrote:
-> On 11/25/2011 10:43 AM, Wolfgang Grandegger wrote:
->> Signed-off-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
->> ---
->>  drivers/net/can/Kconfig            |    2 +
->>  drivers/net/can/Makefile           |    1 +
->>  drivers/net/can/cc770/Kconfig      |    3 +
->>  drivers/net/can/cc770/Makefile     |    7 +
->>  drivers/net/can/cc770/cc770.c      |  895 ++++++++++++++++++++++++++++++++++++
->>  drivers/net/can/cc770/cc770.h      |  234 ++++++++++
->>  include/linux/can/platform/cc770.h |   33 ++
->>  7 files changed, 1175 insertions(+), 0 deletions(-)
->>  create mode 100644 drivers/net/can/cc770/Kconfig
->>  create mode 100644 drivers/net/can/cc770/Makefile
->>  create mode 100644 drivers/net/can/cc770/cc770.c
->>  create mode 100644 drivers/net/can/cc770/cc770.h
->>  create mode 100644 include/linux/can/platform/cc770.h
+On 11/29/2011 11:10 AM, Grosjean Stephane wrote:
+> Hi Oliver,
 > 
-> I don't know the hardware, but the code looks good to me, some comments:
-> - The driver doesn't use NAPI, can this be added
-> - The rx-handlers have a while(1) loop
->   For NAPI you have to add accounting, for the non NAPI case it would
->   be good, too.
-> - I think you can move a large number of lines from the .h file into
->   the driver. Code that's not used in the different binding drivers.
-> 
-> More comments inline (mostly nitpicking)
+>>
+>> "The right way" (TM) would be to clone David Millers net-next git tree:
+>>
+>> http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=summary
+> $ git clone
+> http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=summary
+> Initialized empty Git repository in
+> /home/peak/linux/drivers/linux-can/net-next/.git/
+> f*atal:
+> http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git/info/refs
+> not found: did you run git update-server-info on the server?*
 
-I just sent out v4. For the sake of readability, I finally did not move
-most of the head definitions in cc770.h into cc770.c and used the
-variable name "o" consistently for the message object index (instead of
-using "i").
+Please use:
+
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next
+
+See also http://git.kernel.org/
 
 Wolfgang.
