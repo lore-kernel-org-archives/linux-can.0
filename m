@@ -1,165 +1,63 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [PATCH net-next v5 4/4] powerpc: tqm8548/tqm8xx: add and update CAN device nodes
-Date: Wed, 30 Nov 2011 13:10:35 +0100
-Message-ID: <1322655035-18809-5-git-send-email-wg@grandegger.com>
-References: <1322655035-18809-1-git-send-email-wg@grandegger.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:37725 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757743Ab1K3ML6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Nov 2011 07:11:58 -0500
-In-Reply-To: <1322655035-18809-1-git-send-email-wg@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>, devicetree-discuss@lists.ozlabs.org, linuxppc-dev@ozlabs.org, Kumar Gala <galak@kernel.crashing.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: Update logging style
+Date: Wed, 30 Nov 2011 14:43:58 +0100
+Message-ID: <4ED6331E.6020005@hartkopp.net>
+References: <30551d0a6a0f7f7799a6981c81c770a528f430d2.1322592708.git.joe@perches.com> <4ED53B47.1030703@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4ED53B47.1030703@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Joe Perches <joe@perches.com>, Urs Thuermann <urs.thuermann@volkswagen.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This patch enables or updates support for the CC770 and AN82527
-CAN controller on the TQM8548 and TQM8xx boards.
+On 29.11.2011 21:06, Marc Kleine-Budde wrote:
 
-CC: devicetree-discuss@lists.ozlabs.org
-CC: linuxppc-dev@ozlabs.org
-CC: Kumar Gala <galak@kernel.crashing.org>
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- arch/powerpc/boot/dts/tqm8548-bigflash.dts |   19 ++++++++++++++-----
- arch/powerpc/boot/dts/tqm8548.dts          |   19 ++++++++++++++-----
- arch/powerpc/boot/dts/tqm8xx.dts           |   25 +++++++++++++++++++++++++
- 3 files changed, 53 insertions(+), 10 deletions(-)
+> On 11/29/2011 07:54 PM, Joe Perches wrote:
+>> Use pr_fmt, pr_<level> and pr_<level>_ratelimited.
+>> Coalesce format strings.
+>>
+>> Signed-off-by: Joe Perches <joe@perches.com>
+> 
+> The banners will probably looking a bit different, but I think nobody is
+> screen scraping that output :)
+> 
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-diff --git a/arch/powerpc/boot/dts/tqm8548-bigflash.dts b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-index 9452c3c..d918752 100644
---- a/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-+++ b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-@@ -352,7 +352,7 @@
- 		ranges = <
- 			0 0x0 0xfc000000 0x04000000	// NOR FLASH bank 1
- 			1 0x0 0xf8000000 0x08000000	// NOR FLASH bank 0
--			2 0x0 0xa3000000 0x00008000	// CAN (2 x i82527)
-+			2 0x0 0xa3000000 0x00008000	// CAN (2 x CC770)
- 			3 0x0 0xa3010000 0x00008000	// NAND FLASH
- 
- 		>;
-@@ -393,18 +393,27 @@
- 		};
- 
- 		/* Note: CAN support needs be enabled in U-Boot */
--		can0@2,0 {
--			compatible = "intel,82527"; // Bosch CC770
-+		can@2,0 {
-+			compatible = "bosch,cc770"; // Bosch CC770
- 			reg = <2 0x0 0x100>;
- 			interrupts = <4 1>;
- 			interrupt-parent = <&mpic>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
-+			bosch,clock-out-frequency = <16000000>;
- 		};
- 
--		can1@2,100 {
--			compatible = "intel,82527"; // Bosch CC770
-+		can@2,100 {
-+			compatible = "bosch,cc770"; // Bosch CC770
- 			reg = <2 0x100 0x100>;
- 			interrupts = <4 1>;
- 			interrupt-parent = <&mpic>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
- 		};
- 
- 		/* Note: NAND support needs to be enabled in U-Boot */
-diff --git a/arch/powerpc/boot/dts/tqm8548.dts b/arch/powerpc/boot/dts/tqm8548.dts
-index 619776f..988d887 100644
---- a/arch/powerpc/boot/dts/tqm8548.dts
-+++ b/arch/powerpc/boot/dts/tqm8548.dts
-@@ -352,7 +352,7 @@
- 		ranges = <
- 			0 0x0 0xfc000000 0x04000000	// NOR FLASH bank 1
- 			1 0x0 0xf8000000 0x08000000	// NOR FLASH bank 0
--			2 0x0 0xe3000000 0x00008000	// CAN (2 x i82527)
-+			2 0x0 0xe3000000 0x00008000	// CAN (2 x CC770)
- 			3 0x0 0xe3010000 0x00008000	// NAND FLASH
- 
- 		>;
-@@ -393,18 +393,27 @@
- 		};
- 
- 		/* Note: CAN support needs be enabled in U-Boot */
--		can0@2,0 {
--			compatible = "intel,82527"; // Bosch CC770
-+		can@2,0 {
-+			compatible = "bosch,cc770"; // Bosch CC770
- 			reg = <2 0x0 0x100>;
- 			interrupts = <4 1>;
- 			interrupt-parent = <&mpic>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
-+			bosch,clock-out-frequency = <16000000>;
- 		};
- 
--		can1@2,100 {
--			compatible = "intel,82527"; // Bosch CC770
-+		can@2,100 {
-+			compatible = "bosch,cc770"; // Bosch CC770
- 			reg = <2 0x100 0x100>;
- 			interrupts = <4 1>;
- 			interrupt-parent = <&mpic>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
- 		};
- 
- 		/* Note: NAND support needs to be enabled in U-Boot */
-diff --git a/arch/powerpc/boot/dts/tqm8xx.dts b/arch/powerpc/boot/dts/tqm8xx.dts
-index f6da7ec..c3dba25 100644
---- a/arch/powerpc/boot/dts/tqm8xx.dts
-+++ b/arch/powerpc/boot/dts/tqm8xx.dts
-@@ -57,6 +57,7 @@
- 
- 		ranges = <
- 			0x0 0x0 0x40000000 0x800000
-+			0x3 0x0 0xc0000000 0x200
- 		>;
- 
- 		flash@0,0 {
-@@ -67,6 +68,30 @@
- 			bank-width = <4>;
- 			device-width = <2>;
- 		};
-+
-+		/* Note: CAN support needs be enabled in U-Boot */
-+		can@3,0 {
-+			compatible = "intc,82527";
-+			reg = <3 0x0 0x80>;
-+			interrupts = <8 1>;
-+			interrupt-parent = <&PIC>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
-+			bosch,clock-out-frequency = <16000000>;
-+		};
-+
-+		can@3,100 {
-+			compatible = "intc,82527";
-+			reg = <3 0x100 0x80>;
-+			interrupts = <8 1>;
-+			interrupt-parent = <&PIC>;
-+			bosch,external-clock-frequency = <16000000>;
-+			bosch,disconnect-rx1-input;
-+			bosch,disconnect-tx1-output;
-+			bosch,iso-low-speed-mux;
-+		};
- 	};
- 
- 	soc@fff00000 {
--- 
-1.7.4.1
 
+
+Nobody but me. Therefore it get's a NACK.
+
+Indeed the banners are pretty broken now ...
+
+Before:
+
+can: controller area network core (rev 20090105 abi 8)
+NET: Registered protocol family 29
+can: raw protocol (rev 20090105)
+can: netlink gateway (rev 20101209)
+can: broadcast manager protocol (rev 20090105 t)
+
+After Joe's patch:
+
+can: controller area network core (rev 20090105 abi 8)
+NET: Registered protocol family 29
+can_raw: raw protocol (rev 20090105)
+can_gw: netlink gateway (rev 20101209)
+can_bcm: broadcast manager protocol (rev 20090105 t)
+
+IMO if you want to use pr_fmt() it should at least look like this:
+
+can: controller area network core (rev 20090105 abi 8)
+NET: Registered protocol family 29
+can_raw: can raw protocol (rev 20090105)
+can_gw: can netlink gateway (rev 20101209)
+can_bcm: can broadcast manager protocol (rev 20090105 t)
+
+I'm fine with using pr_fmt() for error/warning output but not for the banner
+in the currently suggested way.
+
+Regards,
+Oliver
