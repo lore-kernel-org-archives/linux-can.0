@@ -1,35 +1,57 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH next-next 0/2] can: cc770: add support for the Bosch
- CC770 and Intel AN82527
-Date: Tue, 29 Nov 2011 18:39:50 -0500 (EST)
-Message-ID: <20111129.183950.1327835803051184146.davem@davemloft.net>
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Subject: Re: [PATCH next-next 0/2] can: cc770: add support
+ for the Bosch CC770 and Intel AN82527
+Date: Wed, 30 Nov 2011 07:37:08 +0100
+Message-ID: <4ED5CF14.4020502@hartkopp.net>
 References: <1322136448-7311-1-git-send-email-wg@grandegger.com>
+	<20111129.183950.1327835803051184146.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([198.137.202.13]:44556 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755941Ab1K2Xj7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Nov 2011 18:39:59 -0500
-In-Reply-To: <1322136448-7311-1-git-send-email-wg@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, boir1@yandex.ru, stanislavelensky@yahoo.com
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <20111129.183950.1327835803051184146.davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org
+Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-From: Wolfgang Grandegger <wg@grandegger.com>
-Date: Thu, 24 Nov 2011 13:07:26 +0100
+On 30.11.2011 00:39, David Miller wrote:
 
-> Already since a while we have support for the Bosch CC770 and Intel
-> AN82527 CAN controllers in our out-of-tree Socket-CAN repository.
-> It would be nice if somebody could test the driver. Unfortunately,
-> I currently do not have hardware at hand. I have not yet ported the
-> OF platform driver as it needs further attaention due to the merge
-> of the platform and OF platform interface.
+> From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+> Date: Thu, 24 Nov 2011 13:07:26 +0100
 > 
-> Wolfgang Grandegger (2):
->   can: cc770: add driver core for the Bosch CC770 and Intel AN82527
->   can: cc770: legacy CC770 ISA bus driver
+>> Already since a while we have support for the Bosch CC770 and Intel
+>> AN82527 CAN controllers in our out-of-tree Socket-CAN repository.
+>> It would be nice if somebody could test the driver. Unfortunately,
+>> I currently do not have hardware at hand. I have not yet ported the
+>> OF platform driver as it needs further attaention due to the merge
+>> of the platform and OF platform interface.
+>>
+>> Wolfgang Grandegger (2):
+>>   can: cc770: add driver core for the Bosch CC770 and Intel AN82527
+>>   can: cc770: legacy CC770 ISA bus driver
+> 
+> All applied, thank you.
 
-All applied, thank you.
+
+Hello Dave,
+
+this patchset was superseded for some time.
+
+We're currently in the v4 patchset (dated 2011-11-29).
+
+See http://patchwork.ozlabs.org/patch/128244/
+
+Do you want to revert the commit or should Wolfgang post a diff patch to get
+to v4 ??
+
+Regards,
+Oliver
