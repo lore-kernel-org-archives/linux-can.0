@@ -1,83 +1,66 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH next-next 0/2] can: cc770: add support for the Bosch CC770
- and Intel AN82527
-Date: Thu, 01 Dec 2011 08:47:35 +0100
-Message-ID: <4ED73117.1020101@hartkopp.net>
-References: <1322136448-7311-1-git-send-email-wg@grandegger.com>	<20111129.183950.1327835803051184146.davem@davemloft.net>	<4ED5CF14.4020502@hartkopp.net> <20111130.160727.1989923062226789802.davem@davemloft.net>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: git-tree, NOW!
+Date: Thu, 01 Dec 2011 09:04:46 +0100
+Message-ID: <4ED7351E.2010907@grandegger.com>
+References: <48E9EDF6.4000009@pengutronix.de> <4ED6B460.2010508@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:47425 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753107Ab1LAHr5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2011 02:47:57 -0500
-In-Reply-To: <20111130.160727.1989923062226789802.davem@davemloft.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Urs Thuermann <urs@isnogud.escape.de>
+Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <4ED6B460.2010508-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
+List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-On 30.11.2011 22:07, David Miller wrote:
+Hi Marc,
 
-> From: Oliver Hartkopp <socketcan@hartkopp.net>
-
->>>> Wolfgang Grandegger (2):
->>>>   can: cc770: add driver core for the Bosch CC770 and Intel AN82527
->>>>   can: cc770: legacy CC770 ISA bus driver
->>>
->>> All applied, thank you.
->>
->>
->> Hello Dave,
->>
->> this patchset was superseded for some time.
->>
->> We're currently in the v4 patchset (dated 2011-11-29).
->>
->> See http://patchwork.ozlabs.org/patch/128244/
->>
->> Do you want to revert the commit or should Wolfgang post a diff patch to get
->> to v4 ??
+On 11/30/2011 11:55 PM, Marc Kleine-Budde wrote:
+> Hello,
 > 
-> A not very good job was done here communicating to me what is happening.
-> Endless revisions, and not clear indication to me what should or should
-> not be applied as a result.
+> On 10/06/2008 12:52 PM, Marc Kleine-Budde wrote:
+> [...] something about git [...]
+> 
+> ...yes, old thread, but I like the subject (still).
+> 
+> I think we need a git tree. It's the second time our humble network
+> maintainer merged some patches to early. IMHO both times related to bad
+> communication.......
 
+What do you mean? Usually we do not communicate anything to Dave for the
+normal v1->v2->v3->... review and patch update process (this does not
+excuse the bad quality of my last series). The problem is that it's not
+easy for him to follow our work and therefore we need our own GIT tree.
+That's also what Dave asks for. Apart from the tree he asks for someone
+who acts as the one and only interface to him.
 
-Well in this case i was just astonished why you applied a superseded patch set
-- but i must admit that the pile-up of posted versions was a bit confusing.
-Even there were platform and devtree patches that needed to be acked by other
-maintainers - IMO we should post these patches on netdev only when they are
-already acked by the platform/devtree guys.
+> I've setup a git repo on gitorious:
+> 
+> https://gitorious.org/linux-can/linux-can
+> 
+> It's based on net-next, and currently David's net-next/master is pushing
+> there. It probably takes some time, the box pushing has just 4 mbit/s
+> upstream.
+> 
+> Comments?
 
-@Wolfgang/Marc: We should return to discuss the CAN relevant patches on
-linux-can@vger.kernel.org before posting them on netdev. Don't know why this
-established & good process has changed over the time ...
+Apart from net-next, we may also need the net tree (as branch?).
 
-> I want you guys to appoint someone to be the defacto CAN driver and
-> subsystem maintainer who collects and merges all the driver and
-> protocol patches into his tree, and acts as the one and only interface
-> for me when changes are ready to be included.
+Wolfgang.
 
-
-I'm also not very happy someone else acking changes of my maintained sources -
-sometimes it feels like Wild West to me, who's acking first :-(
-
-To make it clear:
-
-	Wolfgang Grandegger maintains drivers/net/can
-
-and
-
-	Oliver Hartkopp maintains net/can
-
-As Marc Kleine-Budde is also very active in CAN driver development we should
-probably add him to the drivers/net/can maintainers.
-
-We'll continue the discussion on linux-can ML and give an update to the
-MAINTAINERS file if we sorted out any changes. So far Wolfgang and me remain
-the 'only interface' for you. Sorry for the traffic & confusion on netdev.
-
-Regards,
-Oliver
+> cheers, Marc
+> 
+> 
+> 
+> _______________________________________________
+> Socketcan-core mailing list
+> Socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+> https://lists.berlios.de/mailman/listinfo/socketcan-core
