@@ -1,133 +1,102 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: git-tree, NOW!
-Date: Thu, 01 Dec 2011 10:37:11 +0100
-Message-ID: <4ED74AC7.40605@pengutronix.de>
-References: <48E9EDF6.4000009@pengutronix.de>
-	<4ED6B460.2010508@pengutronix.de>	<4ED7351E.2010907@grandegger.com>
-	<4ED745F6.8030302@pengutronix.de> <4ED7494F.6080603@grandegger.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4516673400014233979=="
-Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4ED7494F.6080603-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
-List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: [PATCH net-next v6 0/4] can: cc770: add support for the Bosch CC770 and Intel AN82527
+Date: Thu,  1 Dec 2011 10:41:17 +0100
+Message-ID: <1322732481-2255-1-git-send-email-wg@grandegger.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-out.m-online.net ([212.18.0.9]:56095 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751172Ab1LAJlh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2011 04:41:37 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============4516673400014233979==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig357CDE561B89C7CCFFEC2B4E"
+Already since a while we have support for the Bosch CC770 and Intel
+AN82527 CAN controllers in our out-of-tree Socket-CAN repository.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig357CDE561B89C7CCFFEC2B4E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+In the meantime I found a TQM855L board with two AN82527 on it,
+which allowed me to provide and test a generic platform driver
+as well.
 
-On 12/01/2011 10:30 AM, Wolfgang Grandegger wrote:
-> On 12/01/2011 10:16 AM, Marc Kleine-Budde wrote:
-[...]
+Changes since v1:
 
-> Yes. So far we just tried to signal "patch is now ready" by adding our
-> "acked-by"... which does not work for a series of patches, espcially if=
+- remove version.h includes
+- some minor corrections in the ISA bus driver
+- add platform header file to the driver core
+- add generic platform driver
+- add and update device tree nodes for tqm8xx and tqm8548
 
-> it touches other sub-systems as well (powerpc, devicetree).
+Changes since v2:
 
-Yes - but David sometimes merges patches if they are not reviewed. Like
-the pch-can driver, where I missed to reply to net-dev.
+- correct license text as suggest by Oliver Hartkopp
+- use the new module_platform_driver function
+- provide get_berr_counter callback for cc770
+- improve CAN error state change handling
+- more comprehensive cc770_isa driver description
 
->> I like Oliver's remark to first keep the discussion on the linux-can
->> mailinglist and post the "final" series on netdev.
->=20
-> Yes, don't ask me why I did not do that first, especially because some
-> tested-by's would have be useful. I also learned that some more serious=
+Changes since v3:
 
-> compile tests have to be done for different archs (x86, powerpc, arm, .=
-=2E.).
+- pre-define pr_fmt()
+- use KBUILD_MODNAME instead of DRV_NAME
+- use ARRAY_SIZE() whenever appropriate
+- use variable name "o" for message objects consistantly
+- use proper error code for cc770_probe_chip
+- remove unneeded member priv->open_time
+- remove unnecessary masking of u8 variables (with 0xff)
+- use "!skb" instead of "skb == NULL"
+- CC770_MSG_MAX now limits the number of messages read in the ISR
+- use "|" instead of "+" to combine bit masks
+- remove return code check of platform_get_resource() in remove function
+- remove postal address from GPL copyright text
+- fix WARNING: __packed is preferred over __attribute__((packed))
+- some more minor fixes (casts, white space, etc.)
 
->>> That's also what Dave asks for. Apart from the tree he asks for someo=
-ne
->>> who acts as the one and only interface to him.
->>
->> Yes, technically that could/should be the git tree, in persona Wolfgan=
-g
->> or/and (as Dave asked for one person) Oliver.
->=20
-> Oliver?
+Changes since v4:
 
-+1
+- cc770_isa: add missing cc770 platform include
 
->>>> I've setup a git repo on gitorious:
->>>>
->>>> https://gitorious.org/linux-can/linux-can
->>>>
->>>> It's based on net-next, and currently David's net-next/master is pus=
-hing
->>>> there. It probably takes some time, the box pushing has just 4 mbit/=
-s
->>>> upstream.
->>>>
->>>> Comments?
->>>
->>> Apart from net-next, we may also need the net tree (as branch?).
->>
->> During merge windows David merges into his net-next tree, anyway I can=
+Changes since v5:
 
->> setup linux-can and linux-can-next, based on the linux-net and
->> linux-net-next trees.
->=20
-> Do we need two trees? I thinks you can save a lot of bandwith (and disk=
+- cc770_platform: fix build issues on ARM and x86 by replacing
+  in_8/out8 with ioread8/iowrite8 amd including some missing
+  header files
+- cc770_platform: remove trailing lines
 
-> space) by using just one tree and two branches.
+It would be nice if somebody else could test the driver, especially
+the ISA driver (I don't have hardware at hand).
 
-If you want to safe bandwith on your PC, you can $(git remote add) them
-into one tree.
+Wolfgang.
 
-Meanwhile there's a linux-can and a linux-can-next on gitorious. The
-latter one is still uploading.
+Wolfgang Grandegger (4):
+  can: cc770: add driver core for the Bosch CC770 and Intel AN82527
+  can: cc770: add legacy ISA bus driver for the CC770 and AN82527
+  can: cc770: add platform bus driver for the CC770 and AN82527
+  powerpc: tqm8548/tqm8xx: add and update CAN device nodes
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ .../devicetree/bindings/net/can/cc770.txt          |   53 ++
+ arch/powerpc/boot/dts/tqm8548-bigflash.dts         |   19 +-
+ arch/powerpc/boot/dts/tqm8548.dts                  |   19 +-
+ arch/powerpc/boot/dts/tqm8xx.dts                   |   25 +
+ drivers/net/can/Kconfig                            |    2 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/cc770/Kconfig                      |   21 +
+ drivers/net/can/cc770/Makefile                     |    9 +
+ drivers/net/can/cc770/cc770.c                      |  881 ++++++++++++++++++++
+ drivers/net/can/cc770/cc770.h                      |  203 +++++
+ drivers/net/can/cc770/cc770_isa.c                  |  367 ++++++++
+ drivers/net/can/cc770/cc770_platform.c             |  272 ++++++
+ include/linux/can/platform/cc770.h                 |   33 +
+ 13 files changed, 1895 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/cc770.txt
+ create mode 100644 drivers/net/can/cc770/Kconfig
+ create mode 100644 drivers/net/can/cc770/Makefile
+ create mode 100644 drivers/net/can/cc770/cc770.c
+ create mode 100644 drivers/net/can/cc770/cc770.h
+ create mode 100644 drivers/net/can/cc770/cc770_isa.c
+ create mode 100644 drivers/net/can/cc770/cc770_platform.c
+ create mode 100644 include/linux/can/platform/cc770.h
 
+-- 
+1.7.4.1
 
---------------enig357CDE561B89C7CCFFEC2B4E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7XSscACgkQjTAFq1RaXHPs5gCeLxoJ+Cz8E/laiNSGWtlL6Rn3
-aAwAoI7C04Gw+Jh/5OKdcrMFamN2VR9E
-=6tHu
------END PGP SIGNATURE-----
-
---------------enig357CDE561B89C7CCFFEC2B4E--
-
---===============4516673400014233979==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Socketcan-core mailing list
-Socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-https://lists.berlios.de/mailman/listinfo/socketcan-core
-
---===============4516673400014233979==--
