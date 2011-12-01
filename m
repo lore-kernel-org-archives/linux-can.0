@@ -1,73 +1,47 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH next-next 0/2] can: cc770: add support for the Bosch CC770
- and Intel AN82527
-Date: Thu, 01 Dec 2011 21:04:10 +0100
-Message-ID: <4ED7DDBA.9090201@pengutronix.de>
-References: <4ED5CF14.4020502@hartkopp.net>	<20111130.160727.1989923062226789802.davem@davemloft.net>	<4ED73117.1020101@hartkopp.net> <20111201.130907.1276930495409347261.davem@davemloft.net>
+From: Wolfgang Wagner <wutz@unterderbruecke.de>
+Subject: how to apply j1939
+Date: Thu, 1 Dec 2011 20:55:36 +0000 (UTC)
+Message-ID: <loom.20111201T214040-329@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB52C85B9CAE9D423CFECF10B"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20111201.130907.1276930495409347261.davem@davemloft.net>
-Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: socketcan@hartkopp.net, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, urs@isnogud.escape.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lo.gmane.org ([80.91.229.12]:39802 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753633Ab1LAVAK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 1 Dec 2011 16:00:10 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RWDjk-0001Ci-M5
+	for linux-can@vger.kernel.org; Thu, 01 Dec 2011 22:00:08 +0100
+Received: from p549CB4C3.dip.t-dialin.net ([84.156.180.195])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 01 Dec 2011 22:00:08 +0100
+Received: from wutz by p549CB4C3.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 01 Dec 2011 22:00:08 +0100
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB52C85B9CAE9D423CFECF10B
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Good evening together,
 
-On 12/01/2011 07:09 PM, David Miller wrote:
->> We'll continue the discussion on linux-can ML and give an update to th=
-e
->> MAINTAINERS file if we sorted out any changes. So far Wolfgang and me =
-remain
->> the 'only interface' for you. Sorry for the traffic & confusion on net=
-dev.
->=20
-> I said I want one person.  One person who periodically send me GIT pull=
- requests
-> or a patch series for "CAN updates" of all kinds.
+I want to run the j1939-linux-can on my phycore MPC5121e-tiny.
+I am using the OSELAS.BSP-Phytec-phyCORE-MPC512x-tiny-PD10.1.1,
+Powerpc-603e-linux-gnu, ptxdist-2011.10.1.
 
-We're currently discussing the problem and we understood the one person
-contact policy.
+I got the kernel module 'can-j1939-modules', usertools 
+'can-j1939-utils' and the 'iproute2-j1939'. According to Mr Van Dijck,
+these 3 are necessary - thanks to you.
 
-> Just like how the wireless stuff is maintained.  They don't send me dri=
-ver vs.
-> protcol layer vs. rfcomm vs. bluetooth changes seperately, John Linvill=
-e collects
-> everything and sends me periodic pull requests.
->=20
-> And this is what I want from you guys.  One person who explicitly says =
-"Dave, please
-> take in these CAN changes" rather than the confusing manner in which ch=
-anges get
-> submitted currently.
+I am an absolutely newbie, is there anywhere a documentation
+how to apply this 3 things that CAN j1939 is enabled on my board?
+Or would be anybody so kind and tell me which steps I have to 
+do - I would be really thankful.
 
-regards, Marc
+Kind regards,
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Wolfgang
 
 
---------------enigB52C85B9CAE9D423CFECF10B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7X3b0ACgkQjTAFq1RaXHN7gwCeNJd3n0h+yBBY+WWQLv2+NphK
-xRIAn04HCHNsmYJaKDYs3cy0u3punXep
-=Q5q6
------END PGP SIGNATURE-----
-
---------------enigB52C85B9CAE9D423CFECF10B--
