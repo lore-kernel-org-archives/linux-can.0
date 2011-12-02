@@ -1,117 +1,119 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: [RFC PATCH] CAN MAINTAINERS
-Date: Fri, 02 Dec 2011 09:46:08 +0100
-Message-ID: <4ED89050.3040201@hartkopp.net>
-References: <48E9EDF6.4000009@pengutronix.de>	<4ED6B460.2010508@pengutronix.de>	<4ED7351E.2010907@grandegger.com>	<4ED745F6.8030302@pengutronix.de>
-	<4ED7494F.6080603@grandegger.com>	<4ED74AC7.40605@pengutronix.de>
-	<4ED75BD0.6070802@hartkopp.net> <4ED75EED.6010009@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: RFC: improve and consolidate state change and bus-off handling
+Date: Fri, 02 Dec 2011 10:04:14 +0100
+Message-ID: <4ED8948E.5090806@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4ED75EED.6010009-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
-List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, Urs Thuermann <urs-5sm3ckEb1NlYFmeL5InDC7NAH6kLmebB@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:34858 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752273Ab1LBJET (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2011 04:04:19 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Linux-can Mailing List <linux-can@vger.kernel.org>, SocketCAN Core Mailing List <socketcan-core@lists.berlios.de>
 
-On 01.12.2011 12:03, Marc Kleine-Budde wrote:
+Hello,
 
-> On 12/01/2011 11:49 AM, Oliver Hartkopp wrote:
+as you might know, our handling of CAN state changes and bus-off is
+not consistent, weak or even incorrect. Therefore I'm making an effort
+to improve, consolidate and *unify* it. Most things are straight-
+forward, but others need more attention and especially for the bus-off
+recovery I would appreciate some CAN expert advice (more below). I have
+already some patches implementing:
 
+- Add missing do_get_berr_counter() callbacks (for ti_hecc, etc.).
 
->> As the net tree only get's fixes i wonder why we should clone that tree?
->> Working directly on Dave's net-tree for fixes looks straight forward to me.
-> 
-> Thinking about it - yes, what about just keeping linux-can-next.
-> 
->> But the idea for a linux-can-next is great.
->>
->> This would settle the process that we discuss new drivers & changes on
->> linux-can ML and finally commit the stuff in linux-can-next, where one of us
->> can send a pull request to Dave.
-> 
-> ...you send the pull request.
-> 
->> So everything beyond fixes would go this way then.
-> 
-> +1
-> 
-> So we communicate to davem that we now have a git tree, and Oliver is
-> the one that send the pull requests. Let's ask him if he wants to see
-> the patches in the pull request.
+- Add error counters to the data fields 6..7 of *any* CAN error message
+  automatically in alloc_can_err_skb():
 
+       if (priv->do_get_berr_counter) {
+               struct can_berr_counter bec;
 
-Hey Marc,
+               priv->do_get_berr_counter(dev, &bec);
+               (*cf)->data[6] = bec.txerr;
+               (*cf)->data[7] = bec.rxerr;
+       }
 
-i'm not as good as you using git. Indeed i'm a git newbie and do not have the
-time right now to get in that deep that i dare to post correct pull requests
-to netdev.
+- Allow state changes going down including "back to error active":
 
-Following the hints from Dave i checked the MAINTAINERS file how the wireless
-guys handle their subsystem in detail. Regarding John Linville, who's
-collecting all the stuff from several people to send finally push requests to
-Dave i would suggest that you become our 'John Linville for CAN'.
+  Therefore I added:
 
-You speak git fluently and you know the project very good - so my suggestion
-to clean up the MAINTAINTERS file is this:
+    $ cat include/linux/can/error.h
+    ...
+    #define CAN_ERR_STATE_CHANGE 0x00000200U /* CAN error state change / data[1] */
+    ...
+    #define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
+ 
+  For any state change the CAN_ERR_STATE_CHANGE will be set in the
+  can_id. If the state gets worse, CAN_ERR_CRTL is set as usual
+  also for backward compatibility. The state change management will
+  be done by a common "can_change_state()" function doing all the bit
+  settings and counter increments. For the SJA1000 "candump -e" will
+  then report for recovery from the error passive state (no cable):
 
+    can0  20000204  [8] 00 08 00 00 00 00 60 00   ERRORFRAME
+	controller-problem{tx-error-warning}
+	state-change{tx-error-warning}
+	error-counter-tx-rx{{96}{0}}
+    can0  20000204  [8] 00 30 00 00 00 00 80 00   ERRORFRAME
+	controller-problem{tx-error-passive}
+	state-change{tx-error-passive}
+	error-counter-tx-rx{{128}{0}}
+    can0  124  [3] 12 34 56
+    ...
+    can0  124  [3] 12 34 56
+    can0  20000200  [8] 00 08 00 00 00 00 7F 00   ERRORFRAME
+	state-change{tx-error-warning}
+	error-counter-tx-rx{{127}{0}}
+    can0  124  [3] 12 34 56
+    ...
+    can0  124  [3] 12 34 56
+    can0  20000200  [8] 00 40 00 00 00 00 5F 00   ERRORFRAME
+	state-change{back-to-error-active}
+	error-counter-tx-rx{{95}{0}}
+ 
+   Updating all drivers correctly is a challenge, especially because I
+   do not have all hardware. Help and comments are appreciated.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 717d9e9..af8a0a9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1707,11 +1707,8 @@ F:	arch/x86/include/asm/tce.h
+- Bus-off recovery:
 
- CAN NETWORK LAYER
- M:	Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
--M:	Oliver Hartkopp <oliver.hartkopp-l29pVbxQd1IUtdQbppsyvg@public.gmane.org>
--M:	Urs Thuermann <urs.thuermann-l29pVbxQd1IUtdQbppsyvg@public.gmane.org>
- L:	linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
--L:	netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
--W:	http://developer.berlios.de/projects/socketcan/
-+W:	http://gitorious.org/linux-can
- S:	Maintained
- F:	net/can/
- F:	include/linux/can.h
-@@ -1723,8 +1720,7 @@ F:	include/linux/can/gw.h
- CAN NETWORK DRIVERS
- M:	Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
- L:	linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
--L:	netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
--W:	http://developer.berlios.de/projects/socketcan/
-+W:	http://gitorious.org/linux-can
- S:	Maintained
- F:	drivers/net/can/
- F:	include/linux/can/dev.h
-@@ -4587,6 +4583,17 @@ F:	include/linux/wireless.h
- F:	include/net/iw_handler.h
- F:	drivers/net/wireless/
+  Currently, I think, we do not handle bus-off recovery correctly for
+  most controllers. We brute-force stop and restart the controller.
+  The controller will do the recovery cycle anyway and we may send
+  messages to early. Instead the software should handle the bus-off
+  recovery cycle as shown below:
 
-+NETWORKING [CAN]
-+M:	Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-+L:	linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-+W:	http://gitorious.org/linux-can
-+T:	git://gitorious.org/linux-can/linux-can.git
-+T:	git://gitorious.org/linux-can/linux-can-next.git
-+S:	Maintained
-+F:	net/can/
-+F:	drivers/net/can/
-+F:	include/linux/can*
-+
- NETWORKING DRIVERS
- L:	netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
- W:	http://www.linuxfoundation.org/en/Net
+  * bus-off happens
+    - call netif_stop_queue() and maybe disable interrupts
 
+  * automatic or manual restart is done
+    - trigger bus-off recovery sequence by resetting the init bit
+      (on SJA1000) and maybe re-enable the interrupts
+    - await the controller going back to error-active state
+      (signaled via interrupt).
+    - call netif_wake_queue()
 
+  Here is a "candump -e" output for the SJA1000 (with delta times)
 
-Regards,
-Oliver
+    (009.832477)  can0  20000204  [8] 00 30 00 00 00 00 88 00   ERRORFRAME
+	controller-problem{tx-error-passive}
+	state-change{tx-error-passive}
+	error-counter-tx-rx{{136}{0}}
+    (000.000804)  can0  20000240  [8] 00 00 00 00 00 00 7F 00   ERRORFRAME
+	bus-off
+	state-change{}
+	error-counter-tx-rx{{127}{0}}
+    (000.099795)  can0  20000100  [8] 00 00 00 00 00 00 7F 00   ERRORFRAME
+	restarted-after-bus-off
+	error-counter-tx-rx{{127}{0}}
+    (000.003061)  can0  20000200  [8] 00 40 00 00 00 00 00 00   ERRORFRAME
+	state-change{back-to-error-active}
+
+   Before doing all the necessary code changes, which are not always
+   trivial I ask: Would that be the correct bus-off handling???
+
+Thanks for feedback.
+
+Wolfgang.
