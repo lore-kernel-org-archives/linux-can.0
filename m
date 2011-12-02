@@ -1,119 +1,56 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: RFC: improve and consolidate state change and bus-off handling
-Date: Fri, 02 Dec 2011 10:04:14 +0100
-Message-ID: <4ED8948E.5090806@grandegger.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: using can-j1939
+Date: Fri, 02 Dec 2011 10:05:51 +0100
+Message-ID: <4ED894EF.3040006@hartkopp.net>
+References: <20111201105434.214940@gmx.net> <20111201115256.GB321@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:34858 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752273Ab1LBJET (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2011 04:04:19 -0500
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:34414 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752938Ab1LBJG0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2011 04:06:26 -0500
+In-Reply-To: <20111201115256.GB321@e-circ.dyndns.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Linux-can Mailing List <linux-can@vger.kernel.org>, SocketCAN Core Mailing List <socketcan-core@lists.berlios.de>
+To: Wolfgang Wagner <wutz@unterderbruecke.de>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: linux-can@vger.kernel.org
 
-Hello,
+On 01.12.2011 12:52, Kurt Van Dijck wrote:
 
-as you might know, our handling of CAN state changes and bus-off is
-not consistent, weak or even incorrect. Therefore I'm making an effort
-to improve, consolidate and *unify* it. Most things are straight-
-forward, but others need more attention and especially for the bus-off
-recovery I would appreciate some CAN expert advice (more below). I have
-already some patches implementing:
+> On Thu, Dec 01, 2011 at 11:54:34AM +0100, Wolfgang Wagner wrote:
+>> Hi,
+>>
+>> thank you very much for your fast response. Glad that you will help me.
+>>
+>> I want to run the can-j1939 for linux on a Phytec phycore MPC5121e with kernel release 2.6.33.5-rt2x-ptx-pcm046-3.
+> I'm not that much used with specific drivers & releases. I included linux-can
+> mailing list, maybe they can help to use out-of-tree CAN modules on your system.
+>>
+>> I managed to download the 3 thing you told me, but now I don't know to move on - I am really desperated because I can't find any proper documentation.
+> Did you read Documentation/networking/can/j1939.txt from the can-j1939-modules?
+> 
+> The Documentation is a currently a weak point. I've had some busy months,
+> and j1939 dissappeared from my priorities since our system is working
+> properly.
+> 
+> Oliver Hartkopp has already proposed to work out some use-cases, but as said,
+> I've not found time for that yet.
+> Maybe this is a good opportunity to do so...
 
-- Add missing do_get_berr_counter() callbacks (for ti_hecc, etc.).
 
-- Add error counters to the data fields 6..7 of *any* CAN error message
-  automatically in alloc_can_err_skb():
+Yeah. Some things continuously pop up after some time :-)
 
-       if (priv->do_get_berr_counter) {
-               struct can_berr_counter bec;
+@Wolfgang W.: We had a quite interesting and long discussion about Kurts
+suggested implementation. Especially on how to deal with address claiming.
+Currently the AUTOSAR J1939 specifications nearly ignore the AC which provides
+the possibility of having a simple PDU interface.
+But if we want to do AC the discussion comes up how much of it we put into the
+kernel-space and how much we do in user-space (e.g. with an AC daemon).
 
-               priv->do_get_berr_counter(dev, &bec);
-               (*cf)->data[6] = bec.txerr;
-               (*cf)->data[7] = bec.rxerr;
-       }
+I think Kurt also asked you about your planned setup. Is address claiming also
+part of it?
 
-- Allow state changes going down including "back to error active":
-
-  Therefore I added:
-
-    $ cat include/linux/can/error.h
-    ...
-    #define CAN_ERR_STATE_CHANGE 0x00000200U /* CAN error state change / data[1] */
-    ...
-    #define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
- 
-  For any state change the CAN_ERR_STATE_CHANGE will be set in the
-  can_id. If the state gets worse, CAN_ERR_CRTL is set as usual
-  also for backward compatibility. The state change management will
-  be done by a common "can_change_state()" function doing all the bit
-  settings and counter increments. For the SJA1000 "candump -e" will
-  then report for recovery from the error passive state (no cable):
-
-    can0  20000204  [8] 00 08 00 00 00 00 60 00   ERRORFRAME
-	controller-problem{tx-error-warning}
-	state-change{tx-error-warning}
-	error-counter-tx-rx{{96}{0}}
-    can0  20000204  [8] 00 30 00 00 00 00 80 00   ERRORFRAME
-	controller-problem{tx-error-passive}
-	state-change{tx-error-passive}
-	error-counter-tx-rx{{128}{0}}
-    can0  124  [3] 12 34 56
-    ...
-    can0  124  [3] 12 34 56
-    can0  20000200  [8] 00 08 00 00 00 00 7F 00   ERRORFRAME
-	state-change{tx-error-warning}
-	error-counter-tx-rx{{127}{0}}
-    can0  124  [3] 12 34 56
-    ...
-    can0  124  [3] 12 34 56
-    can0  20000200  [8] 00 40 00 00 00 00 5F 00   ERRORFRAME
-	state-change{back-to-error-active}
-	error-counter-tx-rx{{95}{0}}
- 
-   Updating all drivers correctly is a challenge, especially because I
-   do not have all hardware. Help and comments are appreciated.
-
-- Bus-off recovery:
-
-  Currently, I think, we do not handle bus-off recovery correctly for
-  most controllers. We brute-force stop and restart the controller.
-  The controller will do the recovery cycle anyway and we may send
-  messages to early. Instead the software should handle the bus-off
-  recovery cycle as shown below:
-
-  * bus-off happens
-    - call netif_stop_queue() and maybe disable interrupts
-
-  * automatic or manual restart is done
-    - trigger bus-off recovery sequence by resetting the init bit
-      (on SJA1000) and maybe re-enable the interrupts
-    - await the controller going back to error-active state
-      (signaled via interrupt).
-    - call netif_wake_queue()
-
-  Here is a "candump -e" output for the SJA1000 (with delta times)
-
-    (009.832477)  can0  20000204  [8] 00 30 00 00 00 00 88 00   ERRORFRAME
-	controller-problem{tx-error-passive}
-	state-change{tx-error-passive}
-	error-counter-tx-rx{{136}{0}}
-    (000.000804)  can0  20000240  [8] 00 00 00 00 00 00 7F 00   ERRORFRAME
-	bus-off
-	state-change{}
-	error-counter-tx-rx{{127}{0}}
-    (000.099795)  can0  20000100  [8] 00 00 00 00 00 00 7F 00   ERRORFRAME
-	restarted-after-bus-off
-	error-counter-tx-rx{{127}{0}}
-    (000.003061)  can0  20000200  [8] 00 40 00 00 00 00 00 00   ERRORFRAME
-	state-change{back-to-error-active}
-
-   Before doing all the necessary code changes, which are not always
-   trivial I ask: Would that be the correct bus-off handling???
-
-Thanks for feedback.
-
-Wolfgang.
+Regards,
+Oliver
