@@ -1,78 +1,54 @@
-From: Wolfgang Zarre <info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add
- legacy ISA bus driver for the CC770 and AN82527
-Date: Sun, 04 Dec 2011 19:47:57 +0100
-Message-ID: <4EDBC05D.8070109@essax.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
-	<1322214204-1121-3-git-send-email-wg@grandegger.com>
-	<4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com>
-	<4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com>
-	<4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com>
-Reply-To: info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
+ for the CC770 and AN82527
+Date: Sun, 04 Dec 2011 19:56:29 +0100
+Message-ID: <4EDBC25D.50405@grandegger.com>
+References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4ED4A2EC.40103-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:44163 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753158Ab1LDS4j (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 4 Dec 2011 13:56:39 -0500
+In-Reply-To: <4EDBC05D.8070109@essax.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: info@essax.com
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>
 
-Hello Wolfgang,
+Hi Wolfgang,
 
-> On 11/28/2011 05:06 PM, Oliver Hartkopp wrote:
->>
->>>> ... using a reasonable default for bcr of 0x40. But you may need to
->>>> provide better values for cir, bcr and cor.
->>>>
->>>
->>> OMG, sorry that I was bothering You but You are absolutely right and with Your
->>> statement You brought be back on track and You made my day. Thank You !!!!!!
->>>
->>> I just took the values for cpu and bus I was using in my lincan driver and funny
->>> enough now it's working absolutely perfect.
->>>
->>> Module: modprobe cc770_isa irq=0xa port=0x384 indirect=1 cir=0x61 bcr=0x4A
->>>
->>> Was just sending 50000 telegrams, perfect and no problem at all.
->>>
->>> Thanks a lot again!!!!
->>>
->>
->>
->> This looks like a Tested-by :-)
->
-> Wolfgang, I just sent out v4. Any chance to give this patch a try? It
-> would be best to use a recent kernel version but I could also adapt the
-> patch to your kernel version, 2.6.39, I think!?
+On 12/04/2011 07:47 PM, Wolfgang Zarre wrote:
+> Hello Wolfgang,
+...
+>> Wolfgang, I just sent out v4. Any chance to give this patch a try? It
+>> would be best to use a recent kernel version but I could also adapt the
+>> patch to your kernel version, 2.6.39, I think!?
+> 
+> Sorry for my delayed reply, but wasn't earlier possible.
+> Yes, of course, as long as I have the hardware available I can do some
+> tests, even
+> on a recent kernel due the fact having the project so far completed,
+> just another
+> test run on the 9th of December.
+> 
+> Due the flood of emails I lost now track which version You would be
+> interested in
+> and maybe also which kernel version, so, please let me know and maybe
+> were I may
+> download the patches.
 
-Sorry for my delayed reply, but wasn't earlier possible.
-Yes, of course, as long as I have the hardware available I can do some tests, even
-on a recent kernel due the fact having the project so far completed, just another
-test run on the 9th of December.
+Well, yes, I was spinning too fast but the patches have been accepted in
+the meantime (actually v6 made it). So you just need to clone the most
+recent version of Dave's net-next tree.
 
-Due the flood of emails I lost now track which version You would be interested in
-and maybe also which kernel version, so, please let me know and maybe were I may
-download the patches.
+>> As you are using a CC770 chip, I'm especially interested in the relevant
+>> kernel log (dmesg) and "ip -d -s link show".
+> 
+> Should be not a problem at all.
 
->
-> As you are using a CC770 chip, I'm especially interested in the relevant
-> kernel log (dmesg) and "ip -d -s link show".
+Great, thanks.
 
-Should be not a problem at all.
-
->
-> Thanks,
->
-> Wolfgang.
-
-Wolfgang
+Wolfgang.
