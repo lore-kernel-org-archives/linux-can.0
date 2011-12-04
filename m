@@ -1,168 +1,78 @@
-From: Jan-Niklas Meier <dschanoeh@googlemail.com>
-Subject: Re: [Gitorious] Activity: dschanoeh updated merge request for...
-Date: Sun, 4 Dec 2011 10:57:17 +0100
-Message-ID: <CAEuXk934A1Vu_3bZ_kyhxO_XJiqoLOY0zuSRxxNxpmLXPjmRCg@mail.gmail.com>
-References: <20111129121452.B4F9F7590F@steelheart.shortcut.kunder.linpro.no>
-	<4ED4E74D.3090608@pengutronix.de>
-	<CAEuXk91Bh+Z0yTqQebmW-EmrU59c-dFz_zKj8ky0ssgFBy23bQ@mail.gmail.com>
-	<4EDA705B.1050106@pengutronix.de>
+From: Wolfgang Zarre <info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add
+ legacy ISA bus driver for the CC770 and AN82527
+Date: Sun, 04 Dec 2011 19:47:57 +0100
+Message-ID: <4EDBC05D.8070109@essax.com>
+References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
+	<1322214204-1121-3-git-send-email-wg@grandegger.com>
+	<4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com>
+	<4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com>
+	<4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com>
+Reply-To: info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:44180 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752492Ab1LDJ5T convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 4 Dec 2011 04:57:19 -0500
-Received: by ywa9 with SMTP id 9so3708214ywa.19
-        for <linux-can@vger.kernel.org>; Sun, 04 Dec 2011 01:57:18 -0800 (PST)
-In-Reply-To: <4EDA705B.1050106@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <4ED4A2EC.40103-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-2011/12/3 Marc Kleine-Budde <mkl@pengutronix.de>
->
-> Hello Jan-Niklas,
->
-> please don't top-post.
+Hello Wolfgang,
 
-I'm sorry.
+> On 11/28/2011 05:06 PM, Oliver Hartkopp wrote:
+>>
+>>>> ... using a reasonable default for bcr of 0x40. But you may need to
+>>>> provide better values for cir, bcr and cor.
+>>>>
+>>>
+>>> OMG, sorry that I was bothering You but You are absolutely right and with Your
+>>> statement You brought be back on track and You made my day. Thank You !!!!!!
+>>>
+>>> I just took the values for cpu and bus I was using in my lincan driver and funny
+>>> enough now it's working absolutely perfect.
+>>>
+>>> Module: modprobe cc770_isa irq=0xa port=0x384 indirect=1 cir=0x61 bcr=0x4A
+>>>
+>>> Was just sending 50000 telegrams, perfect and no problem at all.
+>>>
+>>> Thanks a lot again!!!!
+>>>
+>>
+>>
+>> This looks like a Tested-by :-)
+>
+> Wolfgang, I just sent out v4. Any chance to give this patch a try? It
+> would be best to use a recent kernel version but I could also adapt the
+> patch to your kernel version, 2.6.39, I think!?
 
->
-> On 12/03/2011 05:47 PM, Jan-Niklas Meier wrote:
-> > 1.
-> > I think adding the includes to the repository is a bad idea. If you=
- compile
-> > the utils for your machine which has a kernel with SocketCAN-suppor=
-t why
-> > not use the original kernel headers?
->
-> Several reasons:
-> - iputils2 package the kernel headers, too.
-> - Consider you're using an older kernel without official socketcan
-> =A0support and with the external kernel modules available on gitoriou=
-s.
-> - What about isotp and/or j1939 support? You want to use new features
-> =A0which are not part of the mainline kernel yet.
->
-> > It makes no sense to compile the can-utils on a machine which does =
-not have
-> > SocketCAN support. If you do so you should be cross-compiling for a
-> > different machine and have the kernel headers of this machine in yo=
-ur
-> > cross-environment.
-> > Also it is very unlikely that someone who installed make, gcc and t=
-he
-> > autotools does not also have his kernel includes, right?
->
-> > To be able to compile a subset of the tools I checked if the isotp.=
-h and
-> > gw.h are present in the include directory (I don't have them both) =
-and only
-> > compile the corresponding utils if the headers are present. This wa=
-y it
-> > should still be possible to compile subsets of the tools on machine=
-s with
-> > old kernels and not ending up with tools you can not use afterwards=
-=2E
->
-> What about the external kernel modules use case?
+Sorry for my delayed reply, but wasn't earlier possible.
+Yes, of course, as long as I have the hardware available I can do some tests, even
+on a recent kernel due the fact having the project so far completed, just another
+test run on the 9th of December.
 
-Thank you very much for the clarification. Now I understand why you
-did this. Still if your kernel's CAN API is much older than the
-headers included in the current can-utils the programs will compile
-fine but it is possible that some of them will fail at runtime right?
-Method signatures could have changed or some methods are not present
-in the old kernel. For example using a program with some specific
-parameters could lead to strange=A0behavior=A0for the user. Is that tru=
-e
-or am I missing something?
+Due the flood of emails I lost now track which version You would be interested in
+and maybe also which kernel version, so, please let me know and maybe were I may
+download the patches.
 
 >
-> > 2.
-> > I tried to rewrite the autoconf.ac because there are macros I'm hav=
-ing
->
-> Please don't rewrite stuff, please send incremental patches, fixing o=
-ne
-> problem at a time.
->
-> > trouble with. When I run autoconf (version 2.68, libtool and automa=
-ke
-> > installed) I get the following output:
-> >
-> > configure.ac:22: error: possibly undefined macro: AC_LIBTOOL_WIN32_=
-DLL
-> > =A0 =A0 =A0 If this token and others are legitimate, please use m4_=
-pattern_allow.
-> > =A0 =A0 =A0 See the Autoconf documentation.
-> > configure.ac:24: error: possibly undefined macro: AC_PROG_LIBTOOL
-> > configure.ac:28: error: possibly undefined macro: AM_INIT_AUTOMAKE
-> >
-> > A configure script is produced but when I try to execute it I get (=
-shtool
-> > is installed):
-> >
-> > configure: error: cannot find install-sh, install.sh, or shtool in
-> > config/autoconf "."/config/autoconf
-> >
-> > Trying to make it work (and not knowing what the macros do anyway ;=
-) I
-> > removed them and successfully ran autoconf with my configure.ac...
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-^^^^^^^^
->
-> That might be the problem, don't run autoconf, run $(./autogen.sh) in=
-stead.
+> As you are using a CC770 chip, I'm especially interested in the relevant
+> kernel log (dmesg) and "ip -d -s link show".
 
-\o/ Yay! That's the hint I needed. I didn't know that there is a
-different way to generate a ./configure that autoconf.
+Should be not a problem at all.
 
 >
+> Thanks,
 >
-> I just updated to the latest tool available on debian unstable and it=
- works:
->
-> > [frogger@hardanger:can-utils (master-squashed)]$ autoconf --version
-> > autoconf (GNU Autoconf) 2.68
-> [..]
->
-> > automake (GNU automake) 1.11.1
-> [..]
->
-> > [frogger@hardanger:can-utils (master-squashed)]$ libtoolize --versi=
-on
-> > libtoolize (GNU libtool) 2.4.2
-> [..]
->
-> > [frogger@hardanger:can-utils (master-squashed)]$ ./autogen.sh && ./=
-configure && make distcheck
-> [...]
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > can-utils-trunk archives ready for distribution:
-> > can-utils-trunk.tar.gz
-> > can-utils-trunk.tar.bz2
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->
-> I used the master-squashed branch of my can-utils repo:
-> https://gitorious.org/~bet-frogger/linux-can/mkl-can-utils, head is:
->
-> 231ed32f497a4f403a6d0ce2a61f1bb94be76ea4 gitignore: added tarballs
+> Wolfgang.
 
-I did the same and it works fine with both HEADs of your master and
-master-squashed branches. Still I get some warnings during autoreconf:
-
-configure.ac:22: warning: The macro `AC_LIBTOOL_WIN32_DLL' is obsolete.
-configure.ac:22: You should run autoupdate.
-[...]
-configure.ac:24: warning: The macro `AC_PROG_LIBTOOL' is obsolete.
-configure.ac:24: You should run autoupdate.
-
-Thank you again!
-Jan-Niklas
+Wolfgang
