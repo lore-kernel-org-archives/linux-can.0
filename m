@@ -1,72 +1,77 @@
-From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Subject: Re: using j1939
-Date: Tue, 06 Dec 2011 14:24:21 +0100
-Message-ID: <4EDE1785.9000306@volkswagen.de>
-References: <20111206104432.91170@gmx.net> <20111206121403.GB322@e-circ.dyndns.org> <loom.20111206T131950-88@post.gmane.org>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: CAN State Information
+Date: Tue, 06 Dec 2011 16:26:38 +0100
+Message-ID: <4EDE342E.8030102@grandegger.com>
+References: <166589D0B9DD2547A1319599B9BADA1FC1960C@vsv-exchange.ixxat.intranet.priv>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr1.volkswagen.de ([194.114.62.75]:57618 "EHLO
-	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933031Ab1LFNa1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Dec 2011 08:30:27 -0500
-In-Reply-To: <loom.20111206T131950-88@post.gmane.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <166589D0B9DD2547A1319599B9BADA1FC1960C-F+3lUZ2EnXJqWLKVXlbt41Kd6C4pVHazbKV4uwnAPJ4@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
+List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: kime-Z4QKGCRq86k@public.gmane.org
+Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-On 06.12.2011 13:37, Wolfgang wrote:
->> I'm afraid you lost me on this. Using your (cross)toolchain, you do
->> $ make
->> etc. to compile (&  install) the binaries.
->
-> The guys from pengutronix (I am using ptxdist 2010.07.1) told me
-> that I have to know how the things in the repositories
-> have to be built.
->
->>> But now I am facing the next problem, what type of packages do
-> I have to
-> create for each particular repository?
->> I believe you're asking something for a specific build system, but I
->> do not know which one.
->> What build system do you use?
->
-> found and using toolchain:
-> '/opt/OSELAS.Toolchain-1.99.3/powerpc-603e-linux-gnu/
-> gcc-4.3.2-glibc-2.8-binutils-2.18-kernel-2.6.27-sanitized/bin'
->
+Hello,
 
-Hello Wolfgang,
+On 12/06/2011 02:56 PM, kime-Z4QKGCRq86k@public.gmane.org wrote:
+> Hello,
+> =
 
-when you build your BSP e.g. with
-
-ptxdist images
-
-in the directory 'build-target/linux-2.6.xx' your Linux kernel is 
-unpacked, patched and compiled.
-
-For a quick hack you can just try to update the files in
-
-build-target/linux-2.6.xx/net/can/*
-build-target/linux-2.6.xx/include/linux/can/*
-
-with the files from Kurt (can-j1939-modules).
-
-The you need to drop the compile stage with
-
-pxtdist drop kernel.compile
-
-And then build the stuff again (with 'ptxdist images')
-
-Btw. the idea from Kurt with cross-compiling is also good.
-
-But you should define the KERNELDIR= .../build-target/linux-2.6.xx then 
-as THIS is the real kernel you are building for your system.
-
-Regards,
-Oliver
+> I am using socketcan with a combination of 3 passive plx cards (1 dual ch=
+annel and 2 single channel) on kernel 3.0.0-13.  I have the libsocketcan-0.=
+0.8 installed as well. I can use all 4 CAN channels but for some reason I c=
+an only use can_get_state() with the two single cards and the dual card ret=
+urns -1 for both channels.  I have attempted another setup this time with j=
+ust the two single cards and when I use the can_get_state() I am able to on=
+ly return the state on 1 of them. Then I attempted putting in the dual card=
+ alone and the same result, one channel works the other does not. =
 
 
+Hm, if "ip -d -s link" lists the state correctly, then it's most likely
+a problem with libsocketcan. Anyway, for what purpose would you like to
+use can_get_state()? It's not forseen for frequent polling of the CAN
+error state. Please use error messages instead.
 
+> I would appreciate any advice, this seems like a strange problem to me. =
+
+
+What Socket-CAN driver are you using for the IXXAT cards? There is still
+no support in mainline Linux, IIRC. Maybe there is some mismatch with
+the header files.
+
+Hope it helps.
+
+Wolfgang.
+
+PS: I added our new mailing list linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org to the CC.
+    BerliOS will be closed end of the year.
+
+
+> Mit freundlichen Gr=FCssen / Yours sincerely,
+> =
+
+> James Kime
+> Entwicklung / Development
+> --------------------------------------------
+> IXXAT Automation GmbH
+> Leibnizstr. 15, 88250 Weingarten, Germany
+> Phone +49-751-56146-181
+> Fax   +49-751-56146-29
+> mailto:kime-Z4QKGCRq86k@public.gmane.org
+> http://www.ixxat.de
+> --------------------------------------------
+> PRIVILEGED AND CONFIDENTIAL.
+> Any unauthorized use or disclosure
+> is strictly prohibited.
+
+Please drop these lines when you send to a public mailing list.
