@@ -1,115 +1,199 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC PATCH 14/14] can: cc770: consolidate bus-off handling
-Date: Wed,  7 Dec 2011 15:55:28 +0100
-Message-ID: <1323269728-17491-15-git-send-email-wg@grandegger.com>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: [RFC PATCH 01/14] can: flexcan: fix irq
+ flooding by clearing all interrupt sources
+Date: Wed, 07 Dec 2011 16:04:06 +0100
+Message-ID: <4EDF8066.4000908@grandegger.com>
 References: <1323269728-17491-1-git-send-email-wg@grandegger.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:49289 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756273Ab1LGOzm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:55:42 -0500
-In-Reply-To: <1323269728-17491-1-git-send-email-wg@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>
+	<1323269728-17491-2-git-send-email-wg@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <1323269728-17491-2-git-send-email-wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Cc: socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, Reuben Dowle <Reuben.Dowle-LjHtMTQxemvQT0dZR+AlfA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-A real bus off recovery cycle is triggered by re-setting the init
-bit and the netif queue is restarted not before the CAN error
-has returned below bus-off (passive, warning or active).
+On 12/07/2011 03:55 PM, Wolfgang Grandegger wrote:
+> As pointed out by Reuben Dowle, the TWRN_INT, RWRN_INT, BOFF_INT
+> interrupt sources need to be cleared as well to avoid interrupt
+> flooding, at least for the Flexcan on i.MX28 SOCs.
+> 
+> CC: Reuben Dowle <Reuben.Dowle-LjHtMTQxemvQT0dZR+AlfA@public.gmane.org>
+> Signed-off-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
 
-Here is an example output of "candump -candump -td -e any,0:0,#FFFFFFFF"
-for a bus-off recovery due to a short circiut (restart after 5s) for an
-Intel 82527 on a TQM855L board:
+Argh, I just realize that the commit messages have be swapped. Please
+take the one from 
 
- (000.201120)  can0   88  [8] 31 33 FE 45 58 C2 08 FE
- (000.200637)  can0  2000020C  [8] 00 0C 08 00 00 00 00 00   ERRORFRAME
-        controller-problem{rx-error-warning,tx-error-warning}
-        protocol-violation{{tx-dominant-bit-error}{}}
-        state-change{rx-error-warning,tx-error-warning}
- (000.001016)  can0  20000248  [8] 00 00 08 00 00 00 00 00   ERRORFRAME
-        protocol-violation{{tx-dominant-bit-error}{}}
-        bus-off
-        state-change{}
- (005.007273)  can0  20000100  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
-        restarted-after-bus-off
- (000.003323)  can0  20000208  [8] 00 40 08 00 00 00 00 00   ERRORFRAME
-        protocol-violation{{tx-dominant-bit-error}{}}
-        state-change{back-to-error-active}
- (000.005255)  can0   A2  [3] 50 22 B6
+[RFC PATCH 03/14] can: flexcan: only for bus error reporting enable berr interrupt
 
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/net/can/cc770/cc770.c |   24 ++++++++++++++++++++----
- 1 files changed, 20 insertions(+), 4 deletions(-)
+So far, the bus error (berr) interrupt source is always enabled,
+even if bus error reporting is not requested (via ctrlmode flag
+CAN_CTRLMODE_BERR_REPORTING). This is not necessay, at least on
+the Flexcan of the i.MX28 SOC and it avoids flooding with with
+bus error interrupts. State changes interrupts do still arrive
+as documented. The function flexcan_has_and_handle_berr() has
+been removed and error state changes and bus errors are now
+packed into one error message by a common poll function, like
+for other CAN controllers.
 
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 905a3ca..6d77bbc 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -337,7 +337,16 @@ static void cc770_start(struct net_device *dev)
- {
- 	struct cc770_priv *priv = netdev_priv(dev);
- 
--	/* leave reset mode */
-+	if (priv->can.state == CAN_STATE_BUS_OFF) {
-+		/*
-+		 * Start bus-off recovery cycle by clearing the init
-+		 * bit and re-enabling the interrupts
-+		 */
-+		cc770_write_reg(priv, control, priv->control_normal_mode);
-+		return;
-+	}
-+
-+	/* enter reset mode ? */
- 	if (priv->can.state != CAN_STATE_STOPPED)
- 		set_reset_mode(dev);
- 
-@@ -347,10 +356,13 @@ static void cc770_start(struct net_device *dev)
- 
- static int cc770_set_mode(struct net_device *dev, enum can_mode mode)
- {
-+	struct cc770_priv *priv = netdev_priv(dev);
-+
- 	switch (mode) {
- 	case CAN_MODE_START:
--		netif_wake_queue(dev);
- 		cc770_start(dev);
-+		if (priv->can.state != CAN_STATE_BUS_OFF)
-+			netif_wake_queue(dev);
- 		break;
- 
- 	default:
-@@ -529,6 +541,7 @@ static int cc770_err(struct net_device *dev, u8 status)
- 		/* Disable interrupts */
- 		cc770_write_reg(priv, control, CTRL_INI);
- 		new_state = CAN_STATE_BUS_OFF;
-+		netif_stop_queue(dev);
- 		can_bus_off(dev);
- 	} else if (status & STAT_WARN) {
- 		/* Only the CC770 does show error passive */
-@@ -541,8 +554,12 @@ static int cc770_err(struct net_device *dev, u8 status)
- 		/* Back to error avtive */
- 		new_state = CAN_STATE_ERROR_ACTIVE;
- 	}
--	if (new_state != priv->can.state)
-+	if (new_state != priv->can.state) {
-+		/* Have we recovered from bus-off? */
-+		if (priv->can.state == CAN_STATE_BUS_OFF)
-+			netif_wake_queue(dev);
- 		can_change_state(dev, cf, new_state, CAN_ERR_DIR_UNKNOWN);
-+	}
- 
- 	lec = status & STAT_LEC_MASK;
- 	if (lec < 7 && lec > 0) {
-@@ -757,7 +774,6 @@ static int cc770_open(struct net_device *dev)
- 	/* init and start chip */
- 	cc770_start(dev);
- 
--	netif_start_queue(dev);
- 	return 0;
- }
- 
--- 
-1.7.4.1
+Puh, managing 14 patches is not a trivial task, at least for me!
 
+Wolfgang.
+
+> ---
+>  drivers/net/can/flexcan.c |   67 ++++++++++++++++-----------------------------
+>  1 files changed, 24 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 165a4c7..feb8e64 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -118,6 +118,9 @@
+>  	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | FLEXCAN_ESR_BOFF_INT)
+>  #define FLEXCAN_ESR_ERR_ALL \
+>  	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
+> +#define FLEXCAN_ESR_ALL_INT \
+> +	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
+> +	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+>  
+>  /* FLEXCAN interrupt flag register (IFLAG) bits */
+>  #define FLEXCAN_TX_BUF_ID		8
+> @@ -224,13 +227,6 @@ static void flexcan_transceiver_switch(const struct flexcan_priv *priv, int on)
+>  		priv->pdata->transceiver_switch(on);
+>  }
+>  
+> -static inline int flexcan_has_and_handle_berr(const struct flexcan_priv *priv,
+> -					      u32 reg_esr)
+> -{
+> -	return (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
+> -		(reg_esr & FLEXCAN_ESR_ERR_BUS);
+> -}
+> -
+>  static inline void flexcan_chip_enable(struct flexcan_priv *priv)
+>  {
+>  	struct flexcan_regs __iomem *regs = priv->base;
+> @@ -358,24 +354,6 @@ static void do_bus_err(struct net_device *dev,
+>  		dev->stats.tx_errors++;
+>  }
+>  
+> -static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
+> -{
+> -	struct sk_buff *skb;
+> -	struct can_frame *cf;
+> -
+> -	skb = alloc_can_err_skb(dev, &cf);
+> -	if (unlikely(!skb))
+> -		return 0;
+> -
+> -	do_bus_err(dev, cf, reg_esr);
+> -	netif_receive_skb(skb);
+> -
+> -	dev->stats.rx_packets++;
+> -	dev->stats.rx_bytes += cf->can_dlc;
+> -
+> -	return 1;
+> -}
+> -
+>  static void do_state(struct net_device *dev,
+>  		     struct can_frame *cf, enum can_state new_state)
+>  {
+> @@ -442,7 +420,7 @@ static void do_state(struct net_device *dev,
+>  	}
+>  }
+>  
+> -static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+> +static int flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+>  {
+>  	struct flexcan_priv *priv = netdev_priv(dev);
+>  	struct sk_buff *skb;
+> @@ -462,16 +440,23 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+>  	else
+>  		new_state = CAN_STATE_BUS_OFF;
+>  
+> -	/* state hasn't changed */
+> -	if (likely(new_state == priv->can.state))
+> +	/* has state changed or are there bus errros? */
+> +	if (likely(new_state == priv->can.state &&
+> +		  !(reg_esr & FLEXCAN_ESR_ERR_BUS)))
+>  		return 0;
+>  
+>  	skb = alloc_can_err_skb(dev, &cf);
+>  	if (unlikely(!skb))
+>  		return 0;
+>  
+> -	do_state(dev, cf, new_state);
+> -	priv->can.state = new_state;
+> +	if (new_state != priv->can.state) {
+> +		do_state(dev, cf, new_state);
+> +		priv->can.state = new_state;
+> +	}
+> +
+> +	if (reg_esr & FLEXCAN_ESR_ERR_BUS)
+> +		do_bus_err(dev, cf, reg_esr);
+> +
+>  	netif_receive_skb(skb);
+>  
+>  	dev->stats.rx_packets++;
+> @@ -540,10 +525,10 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+>  	 * The error bits are cleared on read,
+>  	 * use saved value from irq handler.
+>  	 */
+> -	reg_esr = flexcan_read(&regs->esr) | priv->reg_esr;
+> +	reg_esr = priv->reg_esr;
+>  
+> -	/* handle state changes */
+> -	work_done += flexcan_poll_state(dev, reg_esr);
+> +	/* handle bus error amd state changes */
+> +	work_done += flexcan_poll_error_state(dev, reg_esr);
+>  
+>  	/* handle RX-FIFO */
+>  	reg_iflag1 = flexcan_read(&regs->iflag1);
+> @@ -553,10 +538,6 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+>  		reg_iflag1 = flexcan_read(&regs->iflag1);
+>  	}
+>  
+> -	/* report bus errors */
+> -	if (flexcan_has_and_handle_berr(priv, reg_esr) && work_done < quota)
+> -		work_done += flexcan_poll_bus_err(dev, reg_esr);
+> -
+>  	if (work_done < quota) {
+>  		napi_complete(napi);
+>  		/* enable IRQs */
+> @@ -577,7 +558,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>  
+>  	reg_iflag1 = flexcan_read(&regs->iflag1);
+>  	reg_esr = flexcan_read(&regs->esr);
+> -	flexcan_write(FLEXCAN_ESR_ERR_INT, &regs->esr);	/* ACK err IRQ */
+> +	/* ACK all bus error and state change IRQ sources */
+> +	if (reg_esr & FLEXCAN_ESR_ALL_INT)
+> +		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+>  
+>  	/*
+>  	 * schedule NAPI in case of:
+> @@ -586,13 +569,11 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>  	 * - bus error IRQ and bus error reporting is activated
+>  	 */
+>  	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+> -	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+> -	    flexcan_has_and_handle_berr(priv, reg_esr)) {
+> +	    (reg_esr & FLEXCAN_ESR_ALL_INT)) {
+>  		/*
+> -		 * The error bits are cleared on read,
+> -		 * save them for later use.
+> +		 * save esr at interrupt time for later use in poll function
+>  		 */
+> -		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
+> +		priv->reg_esr = reg_esr;
+>  		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
+>  			~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
+>  		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
