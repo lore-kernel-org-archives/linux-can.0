@@ -1,34 +1,172 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: using j1939: j1939.h
-Date: Wed, 7 Dec 2011 15:50:32 +0100
-Message-ID: <20111207145032.GE373@e-circ.dyndns.org>
-References: <20111206104432.91170@gmx.net>
- <20111206121403.GB322@e-circ.dyndns.org>
- <loom.20111206T131950-88@post.gmane.org>
- <20111206131815.GD322@e-circ.dyndns.org>
- <loom.20111207T093827-478@post.gmane.org>
- <20111207143333.GD373@e-circ.dyndns.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: [RFC PATCH 01/14] can: flexcan: fix irq flooding by clearing all interrupt sources
+Date: Wed,  7 Dec 2011 15:55:15 +0100
+Message-ID: <1323269728-17491-2-git-send-email-wg@grandegger.com>
+References: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:32484 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756284Ab1LGOue (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:50:34 -0500
-Content-Disposition: inline
-In-Reply-To: <20111207143333.GD373@e-circ.dyndns.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:49253 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756273Ab1LGOzi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:55:38 -0500
+In-Reply-To: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>, Reuben Dowle <Reuben.Dowle@navico.com>
 
-> I'm gonna work to indicate j1939.h status during ./configure ...
-> It's these kind of small problems that I never encountered during
-> development ...
-I pushed 1 commit to can-j1939-utils.
-$ ./autogen.sh
-must be issued again. It will now show more explicit that SAE J1939
-will be built or not.
+As pointed out by Reuben Dowle, the TWRN_INT, RWRN_INT, BOFF_INT
+interrupt sources need to be cleared as well to avoid interrupt
+flooding, at least for the Flexcan on i.MX28 SOCs.
 
-> > 
-> 
-> Kurt
+CC: Reuben Dowle <Reuben.Dowle@navico.com>
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+---
+ drivers/net/can/flexcan.c |   67 ++++++++++++++++-----------------------------
+ 1 files changed, 24 insertions(+), 43 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 165a4c7..feb8e64 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -118,6 +118,9 @@
+ 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | FLEXCAN_ESR_BOFF_INT)
+ #define FLEXCAN_ESR_ERR_ALL \
+ 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
++#define FLEXCAN_ESR_ALL_INT \
++	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
++	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+ 
+ /* FLEXCAN interrupt flag register (IFLAG) bits */
+ #define FLEXCAN_TX_BUF_ID		8
+@@ -224,13 +227,6 @@ static void flexcan_transceiver_switch(const struct flexcan_priv *priv, int on)
+ 		priv->pdata->transceiver_switch(on);
+ }
+ 
+-static inline int flexcan_has_and_handle_berr(const struct flexcan_priv *priv,
+-					      u32 reg_esr)
+-{
+-	return (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
+-		(reg_esr & FLEXCAN_ESR_ERR_BUS);
+-}
+-
+ static inline void flexcan_chip_enable(struct flexcan_priv *priv)
+ {
+ 	struct flexcan_regs __iomem *regs = priv->base;
+@@ -358,24 +354,6 @@ static void do_bus_err(struct net_device *dev,
+ 		dev->stats.tx_errors++;
+ }
+ 
+-static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
+-{
+-	struct sk_buff *skb;
+-	struct can_frame *cf;
+-
+-	skb = alloc_can_err_skb(dev, &cf);
+-	if (unlikely(!skb))
+-		return 0;
+-
+-	do_bus_err(dev, cf, reg_esr);
+-	netif_receive_skb(skb);
+-
+-	dev->stats.rx_packets++;
+-	dev->stats.rx_bytes += cf->can_dlc;
+-
+-	return 1;
+-}
+-
+ static void do_state(struct net_device *dev,
+ 		     struct can_frame *cf, enum can_state new_state)
+ {
+@@ -442,7 +420,7 @@ static void do_state(struct net_device *dev,
+ 	}
+ }
+ 
+-static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
++static int flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+ {
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct sk_buff *skb;
+@@ -462,16 +440,23 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+ 	else
+ 		new_state = CAN_STATE_BUS_OFF;
+ 
+-	/* state hasn't changed */
+-	if (likely(new_state == priv->can.state))
++	/* has state changed or are there bus errros? */
++	if (likely(new_state == priv->can.state &&
++		  !(reg_esr & FLEXCAN_ESR_ERR_BUS)))
+ 		return 0;
+ 
+ 	skb = alloc_can_err_skb(dev, &cf);
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+-	do_state(dev, cf, new_state);
+-	priv->can.state = new_state;
++	if (new_state != priv->can.state) {
++		do_state(dev, cf, new_state);
++		priv->can.state = new_state;
++	}
++
++	if (reg_esr & FLEXCAN_ESR_ERR_BUS)
++		do_bus_err(dev, cf, reg_esr);
++
+ 	netif_receive_skb(skb);
+ 
+ 	dev->stats.rx_packets++;
+@@ -540,10 +525,10 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 	 * The error bits are cleared on read,
+ 	 * use saved value from irq handler.
+ 	 */
+-	reg_esr = flexcan_read(&regs->esr) | priv->reg_esr;
++	reg_esr = priv->reg_esr;
+ 
+-	/* handle state changes */
+-	work_done += flexcan_poll_state(dev, reg_esr);
++	/* handle bus error amd state changes */
++	work_done += flexcan_poll_error_state(dev, reg_esr);
+ 
+ 	/* handle RX-FIFO */
+ 	reg_iflag1 = flexcan_read(&regs->iflag1);
+@@ -553,10 +538,6 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 		reg_iflag1 = flexcan_read(&regs->iflag1);
+ 	}
+ 
+-	/* report bus errors */
+-	if (flexcan_has_and_handle_berr(priv, reg_esr) && work_done < quota)
+-		work_done += flexcan_poll_bus_err(dev, reg_esr);
+-
+ 	if (work_done < quota) {
+ 		napi_complete(napi);
+ 		/* enable IRQs */
+@@ -577,7 +558,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 
+ 	reg_iflag1 = flexcan_read(&regs->iflag1);
+ 	reg_esr = flexcan_read(&regs->esr);
+-	flexcan_write(FLEXCAN_ESR_ERR_INT, &regs->esr);	/* ACK err IRQ */
++	/* ACK all bus error and state change IRQ sources */
++	if (reg_esr & FLEXCAN_ESR_ALL_INT)
++		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+ 
+ 	/*
+ 	 * schedule NAPI in case of:
+@@ -586,13 +569,11 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	 * - bus error IRQ and bus error reporting is activated
+ 	 */
+ 	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+-	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+-	    flexcan_has_and_handle_berr(priv, reg_esr)) {
++	    (reg_esr & FLEXCAN_ESR_ALL_INT)) {
+ 		/*
+-		 * The error bits are cleared on read,
+-		 * save them for later use.
++		 * save esr at interrupt time for later use in poll function
+ 		 */
+-		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
++		priv->reg_esr = reg_esr;
+ 		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
+ 			~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
+ 		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+-- 
+1.7.4.1
+
