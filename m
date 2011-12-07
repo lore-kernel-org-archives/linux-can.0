@@ -1,48 +1,49 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC PATCH 00/14] consolidate and unify state change and bus-off
- handling
-Date: Wed, 07 Dec 2011 21:30:57 +0100
-Message-ID: <4EDFCD01.3010900@grandegger.com>
-References: <1323269728-17491-1-git-send-email-wg@grandegger.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH net-next v6 4/4] powerpc: tqm8548/tqm8xx: add and update
+ CAN device nodes
+Date: Thu, 08 Dec 2011 09:01:11 +1100
+Message-ID: <1323295271.12793.1.camel@pasglop>
+References: <1322732481-2255-1-git-send-email-wg@grandegger.com>
+	 <1322732481-2255-5-git-send-email-wg@grandegger.com>
+	 <1323243268.660.71.camel@pasglop> <4EDF22DF.5020001@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:38853 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756579Ab1LGUa7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 15:30:59 -0500
-In-Reply-To: <1323269728-17491-1-git-send-email-wg@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4EDF22DF.5020001@grandegger.com>
+Sender: netdev-owner@vger.kernel.org
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, socketcan-users@lists.berlios.de
+Cc: netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-can@vger.kernel.org, linuxppc-dev@ozlabs.org, socketcan-users@lists.berlios.de
+List-Id: linux-can.vger.kernel.org
 
-On 12/07/2011 03:55 PM, Wolfgang Grandegger wrote:
-> As already announced, here is my first patch series to consolidate the
-> handling of CAN error state changes and bus-off.
+On Wed, 2011-12-07 at 09:25 +0100, Wolfgang Grandegger wrote:
+
+> > Also there have been at least 3 versions in a couple of days already
+> > without comments nor indication of what was changed...
 > 
-> I have also updated the Flexcan driver to behave like the other drivers,
-> especially bus error reporting is now enabled via interrupt source. This
-> works on my i.MX28 SOC. Marc, would be nice if you could test it on
-> other SOCs as well (or somebody else). Hopefully we will not need to
-> handle different hardware variants of the Flexcan controller.
+> Unfortunately, no response from those sub-system guys.
 > 
-> I separated "consolidate error state handling" and "consolidate bus-off
-> handling" to make the difference clear. The latter one is more delicate
-> as it relys on the "back to error active" change to arrive to re-enable
-> the TX queue.
+> > Can you clarify things a bit please ? It looks like they really should
+> > go to linuxppc-dev (and you can probably drop a bunch of other lists) or
+> > am I missing an important piece of the puzzle ? (Such as patch 1/4 and
+> > 2/4 ...)
 > 
-> I have also pushed these patches to my cloned Gitrorious repository
-> "wg-linux-can-next". See:
+> I have not sent the  whole series. The changes are documented in the
+> cover-letter, which I have not sent for those patches. Well, I think
+> it's better to sent the whole series to all parties instead?
+
+Well at least for linuxppc-dev, don't bother now that I know what this
+is about :-)
+
+> > Let me know if I should just remove them from powerpc patchwork.
 > 
-> https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commits/master
+> Dave has already applied all patches.
+> 
+> Sorry for the confusion. Any advice on how to handle multi subsystem
+> series of patches properly is welcome.
 
-I have now recreated the repository and push the revised patches to the
-"devel" branch:
+No specific advice. Ideally, if patchwork could track cover letters it
+would help but I don't see a non-nasty way to do it so ... :-)
 
-https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commits/devel
-
-Be aware that I will regularly rebase that branch.
-
-Wolfgang,
+Cheers,
+Ben.
