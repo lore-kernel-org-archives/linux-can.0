@@ -1,56 +1,187 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: WG: PCAN-USB: new socketCAN driver available
-Date: Tue, 06 Dec 2011 22:24:53 +0100
-Message-ID: <4EDE8825.80901@hartkopp.net>
-References: <4E400A36.5050303@hartkopp.net>	<A46279271E5345AC9BFA91C73DF57228@DA310MM05>	<4E415AB2.5030102@hartkopp.net>	<2CD045C79786404EA0A81CED1E59763D@DA310MM05>	<4E4BFF24.2010508@hartkopp.net>	<33575A72304940CE9103338BA3660CEA@DA310MM05>	<26B4E6A46012A1469B4EB3BC2A7CAAEC01266CCC@vwagwox00084.vw.vwg>	<4EC6597A.8040704@peak-system.com>	<4EC6B080.8090808@hartkopp.net>	<4ECB65D8.7050207@peak-system.com>	<4ECB8E75.7@volkswagen.de>	<4ECBAAFB.8080204@peak-system.com>	<4ECBAE4E.8000502@volkswagen.de>	<4ECBB49A.2020508@volkswagen.de>	<4ED3B355.70209@peak-system.com>	<26B4E6A46012A1469B4EB3BC2A7CAAECE55502@vwagwox00084.vw.vwg>	<4ED3CC05.6060606@hartkopp.net>	<4ED4AF93.8060309@peak-system.com>	<4EDE71B6.6090805@hartkopp.net> <CAMGS=fBKG-X_dxeqPows0fteLEEFC7ZSiWyU+_r9j8w_CYSiqA@mail.gmail.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH net-next v6 4/4] powerpc: tqm8548/tqm8xx: add and update
+ CAN device nodes
+Date: Wed, 07 Dec 2011 18:34:28 +1100
+Message-ID: <1323243268.660.71.camel@pasglop>
+References: <1322732481-2255-1-git-send-email-wg@grandegger.com>
+	 <1322732481-2255-5-git-send-email-wg@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:28669 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753605Ab1LFVYz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Dec 2011 16:24:55 -0500
-In-Reply-To: <CAMGS=fBKG-X_dxeqPows0fteLEEFC7ZSiWyU+_r9j8w_CYSiqA@mail.gmail.com>
+Received: from gate.crashing.org ([63.228.1.57]:60250 "EHLO gate.crashing.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752646Ab1LGHer (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 7 Dec 2011 02:34:47 -0500
+In-Reply-To: <1322732481-2255-5-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sam Ravnborg <sam.ravnborg@gmail.com>
-Cc: s.grosjean@peak-system.com, "Maidhof, Michael" <m.maidhof@peak-system.com>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-can@vger.kernel.org, linuxppc-dev@ozlabs.org, socketcan-users@lists.berlios.de
 
-On 06.12.2011 21:47, Sam Ravnborg wrote:
+On Thu, 2011-12-01 at 10:41 +0100, Wolfgang Grandegger wrote:
+> This patch enables or updates support for the CC770 and AN82527
+> CAN controller on the TQM8548 and TQM8xx boards.
 
-> Hi Oliver.
+I'm a bit confused by the net-next prefix here. Those patches seem to
+be only touching arch/powerpc and seem to be sent primarily toward
+netdev with a net-next prefix.
+
+Also there have been at least 3 versions in a couple of days already
+without comments nor indication of what was changed...
+
+Can you clarify things a bit please ? It looks like they really should
+go to linuxppc-dev (and you can probably drop a bunch of other lists) or
+am I missing an important piece of the puzzle ? (Such as patch 1/4 and
+2/4 ...)
+
+Let me know if I should just remove them from powerpc patchwork.
+
+Cheers,
+Ben.
+
+> CC: devicetree-discuss@lists.ozlabs.org
+> CC: linuxppc-dev@ozlabs.org
+> CC: Kumar Gala <galak@kernel.crashing.org>
+> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> ---
+>  arch/powerpc/boot/dts/tqm8548-bigflash.dts |   19 ++++++++++++++-----
+>  arch/powerpc/boot/dts/tqm8548.dts          |   19 ++++++++++++++-----
+>  arch/powerpc/boot/dts/tqm8xx.dts           |   25 +++++++++++++++++++++++++
+>  3 files changed, 53 insertions(+), 10 deletions(-)
 > 
-> One not to your comments..
-> 
->> in the linux/drivers/net/can/usb/Makefile it should look like this:
->>
->> obj-$(CONFIG_CAN_PEAK_USB) += peak_usb.o
->> peak_usb-objs := pcan_usb_core.o pcan_usb.o
->>
->> obj-$(CONFIG_CAN_PEAK_USB_PRO) += peak_usb_pro.o
->> peak_usb_pro-objs := pcan_usb_core.o pcan_usb_pro.o
-> 
-> Today it is really recommended to do:
-> 
-> obj-$(CONFIG_CAN_PEAK_USB) += peak_usb.o
-> peak_usb-y := pcan_usb_core.o pcan_usb.o
-> 
-> obj-$(CONFIG_CAN_PEAK_USB_PRO) += peak_usb_pro.o
-> peak_usb_pro-y := pcan_usb_core.o pcan_usb_pro.o
-> 
-> Both solutions will work - but the latter allows for some nice
-> "kbuild" assignments to conditional stuff.
-> 
+> diff --git a/arch/powerpc/boot/dts/tqm8548-bigflash.dts b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
+> index 9452c3c..d918752 100644
+> --- a/arch/powerpc/boot/dts/tqm8548-bigflash.dts
+> +++ b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
+> @@ -352,7 +352,7 @@
+>  		ranges = <
+>  			0 0x0 0xfc000000 0x04000000	// NOR FLASH bank 1
+>  			1 0x0 0xf8000000 0x08000000	// NOR FLASH bank 0
+> -			2 0x0 0xa3000000 0x00008000	// CAN (2 x i82527)
+> +			2 0x0 0xa3000000 0x00008000	// CAN (2 x CC770)
+>  			3 0x0 0xa3010000 0x00008000	// NAND FLASH
+>  
+>  		>;
+> @@ -393,18 +393,27 @@
+>  		};
+>  
+>  		/* Note: CAN support needs be enabled in U-Boot */
+> -		can0@2,0 {
+> -			compatible = "intel,82527"; // Bosch CC770
+> +		can@2,0 {
+> +			compatible = "bosch,cc770"; // Bosch CC770
+>  			reg = <2 0x0 0x100>;
+>  			interrupts = <4 1>;
+>  			interrupt-parent = <&mpic>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+> +			bosch,clock-out-frequency = <16000000>;
+>  		};
+>  
+> -		can1@2,100 {
+> -			compatible = "intel,82527"; // Bosch CC770
+> +		can@2,100 {
+> +			compatible = "bosch,cc770"; // Bosch CC770
+>  			reg = <2 0x100 0x100>;
+>  			interrupts = <4 1>;
+>  			interrupt-parent = <&mpic>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+>  		};
+>  
+>  		/* Note: NAND support needs to be enabled in U-Boot */
+> diff --git a/arch/powerpc/boot/dts/tqm8548.dts b/arch/powerpc/boot/dts/tqm8548.dts
+> index 619776f..988d887 100644
+> --- a/arch/powerpc/boot/dts/tqm8548.dts
+> +++ b/arch/powerpc/boot/dts/tqm8548.dts
+> @@ -352,7 +352,7 @@
+>  		ranges = <
+>  			0 0x0 0xfc000000 0x04000000	// NOR FLASH bank 1
+>  			1 0x0 0xf8000000 0x08000000	// NOR FLASH bank 0
+> -			2 0x0 0xe3000000 0x00008000	// CAN (2 x i82527)
+> +			2 0x0 0xe3000000 0x00008000	// CAN (2 x CC770)
+>  			3 0x0 0xe3010000 0x00008000	// NAND FLASH
+>  
+>  		>;
+> @@ -393,18 +393,27 @@
+>  		};
+>  
+>  		/* Note: CAN support needs be enabled in U-Boot */
+> -		can0@2,0 {
+> -			compatible = "intel,82527"; // Bosch CC770
+> +		can@2,0 {
+> +			compatible = "bosch,cc770"; // Bosch CC770
+>  			reg = <2 0x0 0x100>;
+>  			interrupts = <4 1>;
+>  			interrupt-parent = <&mpic>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+> +			bosch,clock-out-frequency = <16000000>;
+>  		};
+>  
+> -		can1@2,100 {
+> -			compatible = "intel,82527"; // Bosch CC770
+> +		can@2,100 {
+> +			compatible = "bosch,cc770"; // Bosch CC770
+>  			reg = <2 0x100 0x100>;
+>  			interrupts = <4 1>;
+>  			interrupt-parent = <&mpic>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+>  		};
+>  
+>  		/* Note: NAND support needs to be enabled in U-Boot */
+> diff --git a/arch/powerpc/boot/dts/tqm8xx.dts b/arch/powerpc/boot/dts/tqm8xx.dts
+> index f6da7ec..c3dba25 100644
+> --- a/arch/powerpc/boot/dts/tqm8xx.dts
+> +++ b/arch/powerpc/boot/dts/tqm8xx.dts
+> @@ -57,6 +57,7 @@
+>  
+>  		ranges = <
+>  			0x0 0x0 0x40000000 0x800000
+> +			0x3 0x0 0xc0000000 0x200
+>  		>;
+>  
+>  		flash@0,0 {
+> @@ -67,6 +68,30 @@
+>  			bank-width = <4>;
+>  			device-width = <2>;
+>  		};
+> +
+> +		/* Note: CAN support needs be enabled in U-Boot */
+> +		can@3,0 {
+> +			compatible = "intc,82527";
+> +			reg = <3 0x0 0x80>;
+> +			interrupts = <8 1>;
+> +			interrupt-parent = <&PIC>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+> +			bosch,clock-out-frequency = <16000000>;
+> +		};
+> +
+> +		can@3,100 {
+> +			compatible = "intc,82527";
+> +			reg = <3 0x100 0x80>;
+> +			interrupts = <8 1>;
+> +			interrupt-parent = <&PIC>;
+> +			bosch,external-clock-frequency = <16000000>;
+> +			bosch,disconnect-rx1-input;
+> +			bosch,disconnect-tx1-output;
+> +			bosch,iso-low-speed-mux;
+> +		};
+>  	};
+>  
+>  	soc@fff00000 {
 
 
-Ah ok,
-
-i picked that from here:
-
-http://patchwork.ozlabs.org/patch/129539/
-
-Good to know that it can be made 'even better' :-)
-
-Thanks,
-Oliver
