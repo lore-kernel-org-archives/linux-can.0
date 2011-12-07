@@ -1,12 +1,12 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC PATCH 06/14] can: dev: consolidate error state change handling
-Date: Wed,  7 Dec 2011 15:55:20 +0100
-Message-ID: <1323269728-17491-7-git-send-email-wg@grandegger.com>
+Subject: [RFC PATCH 07/14] can: flexcan: consolidate error state handling
+Date: Wed,  7 Dec 2011 15:55:21 +0100
+Message-ID: <1323269728-17491-8-git-send-email-wg@grandegger.com>
 References: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:49264 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:49267 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756557Ab1LGOzk (ORCPT
+	with ESMTP id S1756560Ab1LGOzk (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:55:40 -0500
 In-Reply-To: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,157 +14,172 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>
 
-This patch provides the core support to allow state changes going down
-including "back to error active".
+Allow state to decrease bus-off->passive->warning->active.
+Use the common function can_chage_state().
 
-For any state change the CAN_ERR_STATE_CHANGE bit will be set in the
-can_id. If the state gets worse, the CAN_ERR_CRTL bis is set as usual
-also for backward compatibility. If the state is back to error active,
-the data[1] field will be set to CAN_ERR_CRTL_ACTIVE. The state change
-management will be done by a common "can_change_state()" function doing
-all the necessary bit settings and counter increments.
+Here is an example output of "candump -candump -td -e any,0:0,#FFFFFFFF"
+for a recovery from error passive state due to no ack/cable (reconnect
+after 5s) for a Flexcan controller on the i.MX28 SOC:
+
+ (000.202225)  can0   07  [8] 07 B4 4F 67 3A 90 D9 E4
+ (000.200425)  can0  200002AC  [8] 00 08 00 19 00 00 65 00   ERRORFRAME
+        controller-problem{tx-error-warning}
+        protocol-violation{{}{acknowledge-slot}}
+        no-acknowledgement-on-tx
+        bus-error
+        state-change{tx-error-warning}
+        error-counter-tx-rx{{101}{0}}
+ (004.869425)  can0  200002AC  [8] 00 20 00 19 00 00 84 00   ERRORFRAME
+        controller-problem{tx-error-passive}
+        protocol-violation{{}{acknowledge-slot}}
+        no-acknowledgement-on-tx
+        bus-error
+        state-change{tx-error-passive}
+        error-counter-tx-rx{{132}{0}}
+ (000.000156)  can0    8  [2] C7 6A
+ ...
+ (000.000187)  can0  20000200  [8] 00 08 00 00 00 00 7F 00   ERRORFRAME
+        state-change{tx-error-warning}
+        error-counter-tx-rx{{127}{0}}
+ (000.000032)  can0    D  [2] 66 5B
+ ...
+ (000.200487)  can0   3A  [8] CA BC FF 2C C3 C2 1C 63
+ (000.200458)  can0  20000200  [8] 00 40 00 00 00 00 5F 00   ERRORFRAME
+        state-change{back-to-error-active}
+        error-counter-tx-rx{{95}{0}}
+ (000.000125)  can0   3B  [8] 6D 40 BC 19 EA 35 0C 58
+
+The state machine of the Flexcan is somehow buggy. The state change to
+error passive is not reported in time but when message sending
+restarted.
 
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
- drivers/net/can/dev.c     |   69 +++++++++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h   |   11 +++++++
- include/linux/can/error.h |    2 +
- 3 files changed, 82 insertions(+), 0 deletions(-)
+ drivers/net/can/flexcan.c |   86 ++++++--------------------------------------
+ 1 files changed, 12 insertions(+), 74 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 400d871..d8e4ebb 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -242,6 +242,75 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	return 0;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 095b74b..73e0597 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -354,72 +354,6 @@ static void do_bus_err(struct net_device *dev,
+ 		dev->stats.tx_errors++;
  }
  
-+void can_change_state(struct net_device *dev, struct can_frame *cf,
-+		      enum can_state state, unsigned int err_dir)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	/* Function should only be called in case of real state changes */
-+	if (state == priv->state) {
-+		netdev_warn(dev, "%s: oops, state did not change", __func__);
-+		return;
-+	}
-+
-+	/* This message reports CAN error state changes */
-+	cf->can_id |= CAN_ERR_STATE_CHANGE;
-+	/* If it get's worse, we set the controller problem bit */
-+	if (state > priv->state && state != CAN_STATE_BUS_OFF)
-+		cf->can_id |= CAN_ERR_CRTL;
-+
-+	switch (state) {
-+	case CAN_STATE_ERROR_WARNING:
-+	case CAN_STATE_ERROR_PASSIVE:
-+		/* State change triggered by TX or RX errors? */
-+		if (err_dir == CAN_ERR_DIR_UNKNOWN &&
-+		    priv->do_get_berr_counter) {
-+			if (cf->data[6] > cf->data[7])
-+				err_dir = CAN_ERR_DIR_TX;
-+			else if (cf->data[7] > cf->data[6])
-+				err_dir = CAN_ERR_DIR_RX;
-+		}
-+
-+		if (state == CAN_STATE_ERROR_WARNING) {
-+			priv->can_stats.error_warning++;
-+			if (err_dir == CAN_ERR_DIR_TX)
-+				cf->data[1] = CAN_ERR_CRTL_TX_WARNING;
-+			else if (err_dir == CAN_ERR_DIR_RX)
-+				cf->data[1] = CAN_ERR_CRTL_RX_WARNING;
-+			else
-+				cf->data[1] = CAN_ERR_CRTL_TX_WARNING |
-+					CAN_ERR_CRTL_RX_WARNING;
+-static void do_state(struct net_device *dev,
+-		     struct can_frame *cf, enum can_state new_state)
+-{
+-	struct flexcan_priv *priv = netdev_priv(dev);
+-	struct can_berr_counter bec;
+-
+-	flexcan_get_berr_counter(dev, &bec);
+-
+-	switch (priv->can.state) {
+-	case CAN_STATE_ERROR_ACTIVE:
+-		/*
+-		 * from: ERROR_ACTIVE
+-		 * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
+-		 * =>  : there was a warning int
+-		 */
+-		if (new_state >= CAN_STATE_ERROR_WARNING &&
+-		    new_state <= CAN_STATE_BUS_OFF) {
+-			netdev_dbg(dev, "Error Warning IRQ\n");
+-			priv->can.can_stats.error_warning++;
+-
+-			cf->can_id |= CAN_ERR_CRTL;
+-			cf->data[1] = (bec.txerr > bec.rxerr) ?
+-				CAN_ERR_CRTL_TX_WARNING :
+-				CAN_ERR_CRTL_RX_WARNING;
+-		}
+-	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
+-		/*
+-		 * from: ERROR_ACTIVE, ERROR_WARNING
+-		 * to  : ERROR_PASSIVE, BUS_OFF
+-		 * =>  : error passive int
+-		 */
+-		if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+-		    new_state <= CAN_STATE_BUS_OFF) {
+-			netdev_dbg(dev, "Error Passive IRQ\n");
+-			priv->can.can_stats.error_passive++;
+-
+-			cf->can_id |= CAN_ERR_CRTL;
+-			cf->data[1] = (bec.txerr > bec.rxerr) ?
+-				CAN_ERR_CRTL_TX_PASSIVE :
+-				CAN_ERR_CRTL_RX_PASSIVE;
+-		}
+-		break;
+-	case CAN_STATE_BUS_OFF:
+-		netdev_err(dev, "BUG! "
+-			   "hardware recovered automatically from BUS_OFF\n");
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	/* process state changes depending on the new state */
+-	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
+-		netdev_dbg(dev, "Error Active\n");
+-		cf->can_id |= CAN_ERR_PROT;
+-		cf->data[2] = CAN_ERR_PROT_ACTIVE;
+-		break;
+-	case CAN_STATE_BUS_OFF:
+-		cf->can_id |= CAN_ERR_BUSOFF;
+-		can_bus_off(dev);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-
+ static int flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+ {
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+@@ -431,14 +365,19 @@ static int flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+ 	flt = reg_esr & FLEXCAN_ESR_FLT_CONF_MASK;
+ 	if (likely(flt == FLEXCAN_ESR_FLT_CONF_ACTIVE)) {
+ 		if (likely(!(reg_esr & (FLEXCAN_ESR_TX_WRN |
+-					FLEXCAN_ESR_RX_WRN))))
++					FLEXCAN_ESR_RX_WRN)))) {
+ 			new_state = CAN_STATE_ERROR_ACTIVE;
+-		else
++			if (priv->can.state == CAN_STATE_BUS_OFF)
++				netif_start_queue(dev);
 +		} else {
-+			priv->can_stats.error_passive++;
-+			if (err_dir == CAN_ERR_DIR_TX)
-+				cf->data[1] = CAN_ERR_CRTL_TX_PASSIVE;
-+			else if (err_dir == CAN_ERR_DIR_RX)
-+				cf->data[1] = CAN_ERR_CRTL_RX_PASSIVE;
-+			else
-+				cf->data[1] = CAN_ERR_CRTL_TX_PASSIVE |
-+					CAN_ERR_CRTL_RX_PASSIVE;
+ 			new_state = CAN_STATE_ERROR_WARNING;
+-	} else if (unlikely(flt == FLEXCAN_ESR_FLT_CONF_PASSIVE))
 +		}
-+		break;
-+
-+	case CAN_STATE_ERROR_ACTIVE:
-+		cf->data[1] = CAN_ERR_CRTL_ACTIVE; /* back to error active */
-+		break;
-+
-+	case CAN_STATE_BUS_OFF:
-+		priv->can_stats.bus_off++;
-+		cf->can_id |= CAN_ERR_BUSOFF;
-+		break;
-+
-+	default:
-+		break;
-+
++	} else if (unlikely(flt == FLEXCAN_ESR_FLT_CONF_PASSIVE)) {
+ 		new_state = CAN_STATE_ERROR_PASSIVE;
+-	else
++	} else {
+ 		new_state = CAN_STATE_BUS_OFF;
++		can_bus_off(dev);
 +	}
-+
-+	/* Finally set new state */
-+	priv->state = state;
-+}
-+EXPORT_SYMBOL_GPL(can_change_state);
-+
- /*
-  * Local echo of CAN messages
-  *
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index a0969fc..a50862f 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -27,6 +27,13 @@ enum can_mode {
- };
  
- /*
-+ * CAN error direction
-+ */
-+#define CAN_ERR_DIR_UNKNOWN	0x0
-+#define CAN_ERR_DIR_RX		0x1
-+#define CAN_ERR_DIR_TX		0x2
+ 	/* has state changed or are there bus errros? */
+ 	if (likely(new_state == priv->can.state &&
+@@ -449,10 +388,8 @@ static int flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+-	if (new_state != priv->can.state) {
+-		do_state(dev, cf, new_state);
+-		priv->can.state = new_state;
+-	}
++	if (new_state != priv->can.state)
++		can_change_state(dev, cf, new_state, CAN_ERR_DIR_UNKNOWN);
+ 
+ 	if (reg_esr & FLEXCAN_ESR_ERR_BUS)
+ 		do_bus_err(dev, cf, reg_esr);
+@@ -839,6 +776,7 @@ static int flexcan_set_mode(struct net_device *dev, enum can_mode mode)
+ 			return err;
+ 
+ 		netif_wake_queue(dev);
 +
-+/*
-  * CAN common private data
-  */
- struct can_priv {
-@@ -90,6 +97,9 @@ void unregister_candev(struct net_device *dev);
- int can_restart_now(struct net_device *dev);
- void can_bus_off(struct net_device *dev);
+ 		break;
  
-+void can_change_state(struct net_device *dev, struct can_frame *cf,
-+		      enum can_state state, unsigned int err_dir);
-+
- void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		      unsigned int idx);
- void can_get_echo_skb(struct net_device *dev, unsigned int idx);
-@@ -99,4 +109,5 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);
- struct sk_buff *alloc_can_err_skb(struct net_device *dev,
- 				  struct can_frame **cf);
- 
-+
- #endif /* CAN_DEV_H */
-diff --git a/include/linux/can/error.h b/include/linux/can/error.h
-index 63e855e..44c893c 100644
---- a/include/linux/can/error.h
-+++ b/include/linux/can/error.h
-@@ -24,6 +24,7 @@
- #define CAN_ERR_BUSOFF       0x00000040U /* bus off */
- #define CAN_ERR_BUSERROR     0x00000080U /* bus error (may flood!) */
- #define CAN_ERR_RESTARTED    0x00000100U /* controller restarted */
-+#define CAN_ERR_STATE_CHANGE 0x00000200U /* CAN error state change / data[1] */
- 
- /* arbitration lost in bit ... / data[0] */
- #define CAN_ERR_LOSTARB_UNSPEC   0x00 /* unspecified */
-@@ -39,6 +40,7 @@
- #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status TX */
- 				      /* (at least one error counter exceeds */
- 				      /* the protocol-defined level of 127)  */
-+#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
- 
- /* error in CAN protocol (type) / data[2] */
- #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
+ 	default:
 -- 
 1.7.4.1
 
