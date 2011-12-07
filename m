@@ -1,70 +1,51 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC PATCH 00/14] consolidate and unify state change and bus-off handling
-Date: Wed,  7 Dec 2011 15:55:14 +0100
-Message-ID: <1323269728-17491-1-git-send-email-wg@grandegger.com>
+Subject: [RFC PATCH 03/14] can: flexcan: only for bus error reporting enable berr interrupt
+Date: Wed,  7 Dec 2011 15:55:17 +0100
+Message-ID: <1323269728-17491-4-git-send-email-wg@grandegger.com>
+References: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:49250 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:49257 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756255Ab1LGOzi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:55:38 -0500
+	with ESMTP id S1756284Ab1LGOzj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2011 09:55:39 -0500
+In-Reply-To: <1323269728-17491-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>
+Cc: socketcan-users@lists.berlios.de, Wolfgang Grandegger <wg@grandegger.com>, Reuben Dowle <Reuben.Dowle@navico.com>
 
-As already announced, here is my first patch series to consolidate the
-handling of CAN error state changes and bus-off.
+So far, the bus error (berr) interrupt source is always enabled,
+even if bus error reporting is not requested (via ctrlmode flag
+CAN_CTRLMODE_BERR_REPORTING). This is not necessay, at least on
+the Flexcan of the i.MX28 SOC and it avoids flooding with with
+bus error interrupts. State changes interrupts do still arrive
+as documented. The function flexcan_has_and_handle_berr() has
+been removed and error state changes and bus errors are now
+packed into one error message by a common poll function, like
+for other CAN controllers.
 
-I have also updated the Flexcan driver to behave like the other drivers,
-especially bus error reporting is now enabled via interrupt source. This
-works on my i.MX28 SOC. Marc, would be nice if you could test it on
-other SOCs as well (or somebody else). Hopefully we will not need to
-handle different hardware variants of the Flexcan controller.
+CC: Reuben Dowle <Reuben.Dowle@navico.com>
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+---
+ drivers/net/can/flexcan.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-I separated "consolidate error state handling" and "consolidate bus-off
-handling" to make the difference clear. The latter one is more delicate
-as it relys on the "back to error active" change to arrive to re-enable
-the TX queue.
-
-I have also pushed these patches to my cloned Gitrorious repository
-"wg-linux-can-next". See:
-
-https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commits/master
-
-Any comments are appreciated.
-
-Wolfgang.
-
-Wolfgang Grandegger (14):
-  can: flexcan: fix irq flooding by clearing all interrupt sources
-  can: replace the dev_dbg/info/err/... with the new netdev_xxx macros
-  can: flexcan: only for bus error reporting enable berr interrupt
-  can: bfin_can/ti_hecc/mscan: add missing do_get_berr_counter callback
-  can: add error counters to the data fields of any CAN error message
-  can: dev: consolidate error state change handling
-  can: flexcan: consolidate error state handling
-  can: flexcan: consolidate bus-off handling
-  can: sja1000: consolidate error state handling
-  can: sja1000: consolidate bus-off handling
-  can: mscan: consolidate error state handling
-  can: mscan: consolidate bus-off handling
-  can: cc770: consolidate error state handling
-  can: cc770: consolidate bus-off handling
-
- drivers/net/can/bfin_can.c        |   36 +++++---
- drivers/net/can/cc770/cc770.c     |   57 ++++++-----
- drivers/net/can/dev.c             |  103 +++++++++++++++++---
- drivers/net/can/flexcan.c         |  194 ++++++++++++-------------------------
- drivers/net/can/mcp251x.c         |    3 +-
- drivers/net/can/mscan/mscan.c     |  129 ++++++++++++-------------
- drivers/net/can/sja1000/sja1000.c |   67 ++++++-------
- drivers/net/can/ti_hecc.c         |   32 ++++--
- drivers/net/can/usb/ems_usb.c     |   57 +++++-------
- drivers/net/can/usb/esd_usb2.c    |   27 +++---
- include/linux/can/dev.h           |   11 ++
- include/linux/can/error.h         |    2 +
- 12 files changed, 369 insertions(+), 349 deletions(-)
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 0ce914a..095b74b 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -705,7 +705,10 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	reg_ctrl = flexcan_read(&regs->ctrl);
+ 	reg_ctrl &= ~FLEXCAN_CTRL_TSYN;
+ 	reg_ctrl |= FLEXCAN_CTRL_BOFF_REC | FLEXCAN_CTRL_LBUF |
+-		FLEXCAN_CTRL_ERR_STATE | FLEXCAN_CTRL_ERR_MSK;
++		FLEXCAN_CTRL_ERR_STATE;
++
++	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
++		reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
+ 
+ 	/* save for later use */
+ 	priv->reg_ctrl_default = reg_ctrl;
 -- 
 1.7.4.1
 
