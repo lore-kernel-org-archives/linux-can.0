@@ -1,31 +1,54 @@
-From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Subject: Re: iproute2-j1939
-Date: Fri, 09 Dec 2011 09:12:29 +0100
-Message-ID: <4EE1C2ED.5010100@volkswagen.de>
-References: <loom.20111207T093827-478@post.gmane.org> <20111207143333.GD373@e-circ.dyndns.org> <20111207145032.GE373@e-circ.dyndns.org> <loom.20111208T120006-91@post.gmane.org> <20111208123004.GA964@e-circ.dyndns.org> <loom.20111208T134455-791@post.gmane.org> <20111208133213.GB964@e-circ.dyndns.org> <loom.20111208T150123-262@post.gmane.org> <20111208151917.GE964@e-circ.dyndns.org> <loom.20111208T171058-366@post.gmane.org> <20111209080726.GA325@e-circ.dyndns.org>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: CAN State Information
+Date: Fri, 09 Dec 2011 09:15:59 +0100
+Message-ID: <4EE1C3BF.70104@grandegger.com>
+References: <166589D0B9DD2547A1319599B9BADA1FC1960C@vsv-exchange.ixxat.intranet.priv>
+	<4EDE342E.8030102@grandegger.com>
+	<166589D0B9DD2547A1319599B9BADA1FC1981F@vsv-exchange.ixxat.intranet.priv>
+	<4EE10CB4.2090604@grandegger.com>
+	<166589D0B9DD2547A1319599B9BADA1FC19968@vsv-exchange.ixxat.intranet.priv>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr2.volkswagen.de ([194.114.62.76]:37932 "EHLO
-	mr2.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751089Ab1LIIMd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 03:12:33 -0500
-In-Reply-To: <20111209080726.GA325@e-circ.dyndns.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>, linux-can@vger.kernel.org
+Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <166589D0B9DD2547A1319599B9BADA1FC19968-F+3lUZ2EnXJqWLKVXlbt41Kd6C4pVHazbKV4uwnAPJ4@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
+List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
+	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: kime-Z4QKGCRq86k@public.gmane.org
+Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Am 09.12.2011 09:07, schrieb Kurt Van Dijck:
->> So do you think I have to replace the can.h in the
->> kernel_header_path
-> can.h got updated (struct can_addr extended), but I'm not sure
-> exactly which paths must be updated.
+On 12/09/2011 09:03 AM, kime-Z4QKGCRq86k@public.gmane.org wrote:
+> I plan to spend some time today tracking down the problem.  I am most curious to discover if there is a problem in the msg returned from send_dump_request(). 
+> 
+> $ sudo ./canconfig can0 state
+> can0 state: STOPPED
+> $ sudo ./canconfig can1 state
+> can1 state: STOPPED
+> $ "
+> can2: failed to get state 
+> $ sudo ./canconfig can3 state
+> can3: failed to get state 
 
-Argh - right. I missed that.
+OK, what does strace tell you. Is there a system call failing with "-1"?
+Also ftrace could give some hint (assuming that ftrace and function
+tracing is enabled in you kernel):
 
-So my written ideas missed this detail :-(
+  # mount -tdebugfs none /sys/kernel/debug/
+  # cd /sys/kernel/debug/tracing/
+  # echo function > current_tracer
+  # echo "can_*" >  set_ftrace_filter
+  # cat set_ftrace_filter
+  # echo 0 > trace
 
-Sorry,
-Oliver
+What does /sys/kernel/debug/tracing/trace list after calling "sudo
+./canconfig can2 state"?
 
+Wolfgang.
