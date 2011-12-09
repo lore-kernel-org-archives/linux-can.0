@@ -1,141 +1,43 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Fri, 09 Dec 2011 11:26:51 +0100
-Message-ID: <4EE1E26B.6090308@grandegger.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: Re: iproute2-j1939
+Date: Fri, 9 Dec 2011 10:56:01 +0000 (UTC)
+Message-ID: <loom.20111209T114335-991@post.gmane.org>
+References: <20111207145032.GE373@e-circ.dyndns.org> <loom.20111208T120006-91@post.gmane.org> <20111208123004.GA964@e-circ.dyndns.org> <loom.20111208T134455-791@post.gmane.org> <20111208133213.GB964@e-circ.dyndns.org> <loom.20111208T150123-262@post.gmane.org> <20111208151917.GE964@e-circ.dyndns.org> <loom.20111208T171058-366@post.gmane.org> <20111209080726.GA325@e-circ.dyndns.org> <loom.20111209T095640-685@post.gmane.org> <20111209094856.GC325@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:34330 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750758Ab1LIK1B (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 05:27:01 -0500
-In-Reply-To: <4EDF6D54.2060503@grandegger.com>
+Received: from lo.gmane.org ([80.91.229.12]:60565 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750850Ab1LIK4P (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 9 Dec 2011 05:56:15 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RYy7h-0003g7-0r
+	for linux-can@vger.kernel.org; Fri, 09 Dec 2011 11:56:13 +0100
+Received: from fire.d-i-f.com ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 11:56:13 +0100
+Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 11:56:13 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@essax.com
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>
+To: linux-can@vger.kernel.org
 
-On 12/07/2011 02:42 PM, Wolfgang Grandegger wrote:
-> Hi Wolfgang,
-> 
-> On 12/06/2011 10:08 PM, Wolfgang Zarre wrote:
->> Hello Wolfgang,
->>
->>> Hi Wolfgang,
->>>
->>> On 12/04/2011 07:47 PM, Wolfgang Zarre wrote:
-> ...
->>>>
->>>> Should be not a problem at all.
->>>
->>> Great, thanks.
->>
->> Ok, here we go:
->>
->> uname -r: 3.2.0-rc4
->>
->> modprobe cc770_isa irq=0xa port=0x384 indirect=1 cir=0x61 bcr=0x4A
->> ip link set can0 up type can bitrate 500000;
->>
->> kern.log
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.900735] CAN device driver interface
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.903072] cc770: CAN netdevice driver
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.904692] cc770_isa: platform
->> device 0: port=0x384, mem=0x0, irq=10
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.904726] cc770_isa cc770_isa.0:
->> probing idx=0: port=0x384, mem=0x0, irq=10
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.904779] cc770_isa cc770_isa.0:
->> (unregistered net_device): i82527 mode with additional functions
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.906407] cc770_isa cc770_isa.0:
->> device registered (reg_base=0x00000384, irq=10)
->> Dec  6 20:42:19 svserv01 kernel: [ 2111.906457] cc770_isa: driver for
->> max. 8 devices registered
->>   6 20:44:17 svserv01 kernel: [ 2229.886845] cc770_isa cc770_isa.0:
->> can0: setting BTR0=0x00 BTR1=0x1c
->> Dec  6 20:44:17 svserv01 kernel: [ 2229.886920] cc770_isa cc770_isa.0:
->> can0: Message object 15 for RX data, RTR, SFF and EFF
->> Dec  6 20:44:17 svserv01 kernel: [ 2229.886937] cc770_isa cc770_isa.0:
->> can0: Message object 11 for TX data, RTR, SFF and EFF
->> Dec  6 20:52:40 svserv01 kernel: [ 2733.172845] can: controller area
->> network core (rev 20090105 abi 8)
->> Dec  6 20:52:40 svserv01 kernel: [ 2733.172967] NET: Registered protocol
->> family 29
->> Dec  6 20:52:40 svserv01 kernel: [ 2733.178187] can: raw protocol (rev
->> 20090105)
->>
->>
->> ip -d -s link show
->> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
->> qlen 10
->>     link/can
->>     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->>     bitrate 500000 sample-point 0.875
->>     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->>     cc770: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
->>     clock 8000000
->>     re-started bus-errors arbit-lost error-warn error-pass bus-off
->>     0          0          0          0          0          0
->>     RX: bytes  packets  errors  dropped overrun mcast
->>     0          0        0       0       0       0
->>     TX: bytes  packets  errors  dropped carrier collsns
->>     0          0        0       0       0       0
->>
->>
->> After rebooting the PLC with proprietary buggy kernel:
->> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
->> qlen 10
->>     link/can
->>     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->>     bitrate 500000 sample-point 0.875
->>     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->>     cc770: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
->>     clock 8000000
->>     re-started bus-errors arbit-lost error-warn error-pass bus-off
->>     0          0          0          0          0          0
->>     RX: bytes  packets  errors  dropped overrun mcast
->>     414        267      0       267     0       0
->>     TX: bytes  packets  errors  dropped carrier collsns
->>     0          0        0       0       0       0
->>
->>
->>
->> After sending 100,000 PDO's with 13ms displacement:
->> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
->> qlen 10
->>     link/can
->>     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->>     bitrate 500000 sample-point 0.875
->>     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->>     cc770: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
->>     clock 8000000
->>     re-started bus-errors arbit-lost error-warn error-pass bus-off
->>     0          0          0          0          0          0
->>     RX: bytes  packets  errors  dropped overrun mcast
->>     4544       4284     0       331     0       0
->>     TX: bytes  packets  errors  dropped carrier collsns
->>     802660     202653   0       0       0       0
->>
->>
->> The dropped ones of RX may be the not processed input packages and
->> therefore ok.
->>
->> Let me know if You need more or some other tests.
-> 
-> You could provoke some state changes or bus-off conditions to see if the
-> berr-counter shows reasonable results. I'm currently consolidating and
-> unifying error state and bus-off handling. Would be nice if you could do
-> some further tests when I have the patches ready...
+> You can safely add "#define AF_CAN 29" and "#define AF_CAN PF_CAN" in
+"sys/socket.h"
 
-I just pushed the mentioned modifications to the "devel" branch of my
-"wg-linux-can-next" [1] repository. You can get it as shown below:
+Ok, I have, done that and it worked but now the next error occured, next thing
+was not declared. So I thought, I will build the newer oselas toolchain? Does
+this make sense?
 
-  $ git clone --reference=<some-recent-net-next-tree> \
-      git://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next.git
-  $ git checkout -b devel devel
+new one:                       old one:
+gcc-4.5.2                      gcc-4.3.2
+glibc-2.13-binutils-2.21       glibc-2.8-binutils-2.18
+linux-2.6.36                   linux-2.6.27
 
-[1] https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next
 
-Wolfgang.
+--Wolfgang
+
