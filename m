@@ -1,56 +1,43 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] flexcan: Acknowledge all interrupt sources in the IRQ
- handler
-Date: Fri, 09 Dec 2011 15:35:02 +0100
-Message-ID: <4EE21C96.5010604@grandegger.com>
-References: <1323438454-6816-1-git-send-email-LW@KARO-electronics.de>	<4EE212AE.40005@pengutronix.de> <20194.5210.650914.867608@ipc1.ka-ro>
+Subject: Re: CAN State Information
+Date: Fri, 09 Dec 2011 15:49:50 +0100
+Message-ID: <4EE2200E.4060403@grandegger.com>
+References: <166589D0B9DD2547A1319599B9BADA1FC1960C@vsv-exchange.ixxat.intranet.priv> <4EDE342E.8030102@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC1981F@vsv-exchange.ixxat.intranet.priv> <4EE10CB4.2090604@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC19968@vsv-exchange.ixxat.intranet.priv> <4EE1C3BF.70104@grandegger.com> <4EE1C47A.7080507@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC1998A@vsv-exchange.ixxat.intranet.priv> <4EE1CE2B.6090909@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC19A38@vsv-exchange.ixxat.intranet.priv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:40059 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:40345 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752158Ab1LIOfW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 09:35:22 -0500
-In-Reply-To: <20194.5210.650914.867608@ipc1.ka-ro>
+	with ESMTP id S1752158Ab1LIOty (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 09:49:54 -0500
+In-Reply-To: <166589D0B9DD2547A1319599B9BADA1FC19A38@vsv-exchange.ixxat.intranet.priv>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: kime@ixxat.de
+Cc: socketcan-core@lists.berlios.de, linux-can@vger.kernel.org
 
-On 12/09/2011 02:59 PM, Lothar Wa=DFmann wrote:
-> Hi,
->=20
-> Marc Kleine-Budde writes:
->> On 12/09/2011 02:47 PM, Lothar Wa=DFmann wrote:
->>> Otherwise the handler will get stuck in an endless IRQ loop when an
->>> interrupt condition occurs that is not being acked (e.g. TWRN)
->>
->> On which CPU do you have this problem?
->>
-> on i.MX28.
+On 12/09/2011 02:41 PM, kime@ixxat.de wrote:
+> I noticed that when libsocketcan calls send_dump_request() it returns a message for me that has a length of 3424 with recvmsg().  This is not the full message, if I add a loop into the routine to again receive, I receive a second message this time with a length of 1424.  I added some prints into the routine to output strings and sizes:
+> 
+> First read:
+> nl_msg:-1073753668  u_msglen:3424
+> lo
+> nl_msg:-1073752676  u_msglen:2432
+> eth0
+> nl_msg:-1073751668  u_msglen:1424
+> can0
+> nl_msg:-1073750956  u_msglen:712
+> can1
+> 
+> Second read:
+> nl_msg:-1073753668  u_msglen:1424
+> can2
+> nl_msg:-1073752956  u_msglen:712
+> can3
+> 
+> With this loop, it seems to work.  Does this make sense?
 
-Yes, it is definitely needed on i.MX28 and I already have it in my
-series. See:
-
-https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commit/8=
-ad94fa0dd7f7728824fa8fd4479390ac3f189c7
-
-BTW: at similar patch was already sent by Reuben Dowle.
-
->> Seems that mx25/35 behave a bit different than mx28. But I had no ti=
-me
->> to dig into this, yet. BTW Wolfgang is just reworking error handling=
-,
->> can you please test his patches he recently posted on linux-can.
->>
-> The ESR of i.MX25 is completely identical to the i.MX28.
-> You should be able to reproduce the problem when trying to send a
-> message to a CAN interface with the transceiver disabled.
-> You will get a BIT0_ERR and the TWRN bit will be asserted and never
-> cleared leading to an endless interrupt loop.
-
-If you are right, the code was never working on i.MX25/35... which I do=
-ubt.
+Yes, could you send a patch (showing your modifications)?
 
 Wolfgang.
