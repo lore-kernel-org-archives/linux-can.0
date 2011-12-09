@@ -1,53 +1,40 @@
-From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Subject: Re: CAN State Information
-Date: Fri, 09 Dec 2011 10:00:27 +0100
-Message-ID: <4EE1CE2B.6090909@grandegger.com>
-References: <166589D0B9DD2547A1319599B9BADA1FC1960C@vsv-exchange.ixxat.intranet.priv>
-	<4EDE342E.8030102@grandegger.com>
-	<166589D0B9DD2547A1319599B9BADA1FC1981F@vsv-exchange.ixxat.intranet.priv>
-	<4EE10CB4.2090604@grandegger.com>
-	<166589D0B9DD2547A1319599B9BADA1FC19968@vsv-exchange.ixxat.intranet.priv>
-	<4EE1C3BF.70104@grandegger.com> <4EE1C47A.7080507@grandegger.com>
-	<166589D0B9DD2547A1319599B9BADA1FC1998A@vsv-exchange.ixxat.intranet.priv>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: Re: iproute2-j1939
+Date: Fri, 9 Dec 2011 09:02:53 +0000 (UTC)
+Message-ID: <loom.20111209T095640-685@post.gmane.org>
+References: <loom.20111207T093827-478@post.gmane.org> <20111207143333.GD373@e-circ.dyndns.org> <20111207145032.GE373@e-circ.dyndns.org> <loom.20111208T120006-91@post.gmane.org> <20111208123004.GA964@e-circ.dyndns.org> <loom.20111208T134455-791@post.gmane.org> <20111208133213.GB964@e-circ.dyndns.org> <loom.20111208T150123-262@post.gmane.org> <20111208151917.GE964@e-circ.dyndns.org> <loom.20111208T171058-366@post.gmane.org> <20111209080726.GA325@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <166589D0B9DD2547A1319599B9BADA1FC1998A-F+3lUZ2EnXJqWLKVXlbt41Kd6C4pVHazbKV4uwnAPJ4@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-core>
-List-Post: <mailto:socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-core>,
-	<mailto:socketcan-core-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-core-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: kime-Z4QKGCRq86k@public.gmane.org
-Cc: socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lo.gmane.org ([80.91.229.12]:42695 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752196Ab1LIJDM (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 9 Dec 2011 04:03:12 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RYwMD-00050X-AQ
+	for linux-can@vger.kernel.org; Fri, 09 Dec 2011 10:03:07 +0100
+Received: from fire.makon-engineering.de ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 10:03:05 +0100
+Received: from wutz by fire.makon-engineering.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 10:03:05 +0100
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On 12/09/2011 09:45 AM, kime-Z4QKGCRq86k@public.gmane.org wrote:
-> I am new to using trace, but I think this is the output you are looking for: 
-> 
-...
->        canconfig-3288  [000]  3756.163033: can_fill_xstats <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163034: can_fill_info <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163041: can_fill_xstats <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163042: can_fill_info <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163047: can_fill_xstats <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163048: can_fill_info <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163066: can_fill_xstats <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163067: can_fill_info <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163073: can_fill_xstats <-rtnl_link_fill
->        canconfig-3288  [000]  3756.163073: can_fill_info <-rtnl_link_fill
+> can.h got updated (struct can_addr extended), but I'm not sure
+> exactly which paths must be updated.
 
-Yep, I wanted to check if can_fill_info() is called at all. Actually,
-can_fill_info() does not return an error code so what I can think off is
-a mismatch in the data structure. What kernel CAN header files did you
-use when building libsocketcan?
+OK, so do you think I have to replace the existing can.h with the can.h from
+can-j1939-modules?
 
-Next step would be to use "gdb" to find out where the error happend in
-the code. Most errors while print an error message, though.
+Or is it possible that the af_can.h (found in can-j1939-modules/net/can)
+has to be included in the utils.c file (utils.c:518: error: 'AF_CAN'\
+ undeclared (first use in this function), it's just an idea?
 
-Wolfgang.
+
+
