@@ -1,43 +1,47 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: CAN State Information
-Date: Fri, 09 Dec 2011 15:49:50 +0100
-Message-ID: <4EE2200E.4060403@grandegger.com>
-References: <166589D0B9DD2547A1319599B9BADA1FC1960C@vsv-exchange.ixxat.intranet.priv> <4EDE342E.8030102@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC1981F@vsv-exchange.ixxat.intranet.priv> <4EE10CB4.2090604@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC19968@vsv-exchange.ixxat.intranet.priv> <4EE1C3BF.70104@grandegger.com> <4EE1C47A.7080507@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC1998A@vsv-exchange.ixxat.intranet.priv> <4EE1CE2B.6090909@grandegger.com> <166589D0B9DD2547A1319599B9BADA1FC19A38@vsv-exchange.ixxat.intranet.priv>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: using j1939
+Date: Fri, 9 Dec 2011 16:01:33 +0100
+Message-ID: <20111209150133.GA1470@e-circ.dyndns.org>
+References: <20111206104432.91170@gmx.net>
+ <20111206121403.GB322@e-circ.dyndns.org>
+ <loom.20111206T131950-88@post.gmane.org>
+ <4EDE1785.9000306@volkswagen.de>
+ <20111209134721.GA309@e-circ.dyndns.org>
+ <loom.20111209T145701-227@post.gmane.org>
+ <20111209143224.GB309@e-circ.dyndns.org>
+ <20111209144911.144460@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:40345 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752158Ab1LIOty (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 09:49:54 -0500
-In-Reply-To: <166589D0B9DD2547A1319599B9BADA1FC19A38@vsv-exchange.ixxat.intranet.priv>
+Received: from gate.eia.be ([194.78.71.18]:38383 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751693Ab1LIPBi convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 10:01:38 -0500
+Content-Disposition: inline
+In-Reply-To: <20111209144911.144460@gmx.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kime@ixxat.de
-Cc: socketcan-core@lists.berlios.de, linux-can@vger.kernel.org
+To: Wolfgang Wagner <wutz@unterderbruecke.de>
+Cc: linux-can@vger.kernel.org
 
-On 12/09/2011 02:41 PM, kime@ixxat.de wrote:
-> I noticed that when libsocketcan calls send_dump_request() it returns a message for me that has a length of 3424 with recvmsg().  This is not the full message, if I add a loop into the routine to again receive, I receive a second message this time with a length of 1424.  I added some prints into the routine to output strings and sizes:
-> 
-> First read:
-> nl_msg:-1073753668  u_msglen:3424
-> lo
-> nl_msg:-1073752676  u_msglen:2432
-> eth0
-> nl_msg:-1073751668  u_msglen:1424
-> can0
-> nl_msg:-1073750956  u_msglen:712
-> can1
-> 
-> Second read:
-> nl_msg:-1073753668  u_msglen:1424
-> can2
-> nl_msg:-1073752956  u_msglen:712
-> can3
-> 
-> With this loop, it seems to work.  Does this make sense?
+On Fri, Dec 09, 2011 at 03:49:11PM +0100, Wolfgang Wagner wrote:
+> > I don't understand your question.
+> > Yes, you may use it.
+>=20
+> I cloned the linux-can-j1939 repository, but how do I get it to the t=
+arget or what I have to do to get it setup for the target?
+Ok, I suppose you do not compile your kernel yourself.
+I don't know that for your system.
 
-Yes, could you send a patch (showing your modifications)?
+Let's stick to the original plan then and get can-j1939-modules working=
+ (after getting iproute2-j1939 up).
 
-Wolfgang.
+Kurt
+>=20
+> Thanks!
+>=20
+> --=20
+> NEU: FreePhone - 0ct/min Handyspartarif mit Geld-zur=C3=BCck-Garantie=
+!	=09
+> Jetzt informieren: http://www.gmx.net/de/go/freephone
