@@ -1,54 +1,113 @@
-From: Wolfgang Wagner <wutz@unterderbruecke.de>
-Subject: Re: using j1939
-Date: Fri, 9 Dec 2011 17:23:52 +0000 (UTC)
-Message-ID: <loom.20111209T175414-826@post.gmane.org>
-References: <20111206104432.91170@gmx.net> <20111206121403.GB322@e-circ.dyndns.org> <loom.20111206T131950-88@post.gmane.org> <4EDE1785.9000306@volkswagen.de> <20111209134721.GA309@e-circ.dyndns.org> <loom.20111209T145701-227@post.gmane.org> <20111209143224.GB309@e-circ.dyndns.org> <20111209144911.144460@gmx.net> <20111209150133.GA1470@e-circ.dyndns.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: PEAK CAN USB driver patch
+Date: Fri, 09 Dec 2011 19:58:12 +0100
+Message-ID: <4EE25A44.8020800@hartkopp.net>
+References: <201112091421.pB9ELIvL003552@post.webmailer.de> <4EE24089.5090300@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:36183 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752940Ab1LIRYG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 9 Dec 2011 12:24:06 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1RZ4B2-0003zO-UM
-	for linux-can@vger.kernel.org; Fri, 09 Dec 2011 18:24:05 +0100
-Received: from p549CC262.dip.t-dialin.net ([84.156.194.98])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 18:24:04 +0100
-Received: from wutz by p549CC262.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 09 Dec 2011 18:24:04 +0100
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:14025 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753037Ab1LIS6T (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 13:58:19 -0500
+In-Reply-To: <4EE24089.5090300@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: s.grosjean@peak-system.com
+Cc: linux-can@vger.kernel.org, Michael Maidhof <m.maidhof@peak-system.com>, "Uwe Wilhelm (PEAK-System)" <u.wilhelm@peak-system.com>
 
-> Ok, I suppose you do not compile your kernel yourself.
+On 09.12.2011 18:08, Grosjean Stephane wrote:
 
-Yes, ptxdist compiles everything automatic, but as Oliver suggest
-for my system I can can drop the kernel and compile it again with 
-
-$ ptxdist drop kernel compile
-$ ptxdist go
-
-So is there a possibility to modify my kernel with files of your
-linux-can-j1939 repository and compile it again?
+> Hi Oliver,
+> 
+> Please find below the patch to apply to linux-can-next, which adds support for
+> the PEAK System CAN USB adapters.
 
 
-> Let's stick to the original plan then and get can-j1939-modules working
-(after getting iproute2-j1939 up).
+Whow - thanks!
 
-So if I use the tarball iproute2-2.6.39.tar.gz, you can find everywhere,
-it should work? Or is there the possibility, that I possibly can faulty
-one?
+I already transferred your original patch into my tree by hand :-)
+
+And the first thing i stumble when compiling was here:
+
+> diff --git a/drivers/net/can/usb/pcan_usb.c b/drivers/net/can/usb/pcan_usb.c
+> new file mode 100644
+> index 0000000..eb2329d
+> --- /dev/null
+> +++ b/drivers/net/can/usb/pcan_usb.c
+> @@ -0,0 +1,740 @@
+> +/*
+> + * CAN driver for PEAK System PCAN-USB adapter
+> + *
+> + * Copyright (C) 2011-2012 PEAK-System GmbH
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published
+> + * by the Free Software Foundation; version 2 of the License.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> + * General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write to the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +#include <linux/netdevice.h>
+> +#include <linux/usb.h>
+
+
+here
+
+#include <linux/module.h>
+
+is missing to expand this:
+
+> +MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+
+> new file mode 100644
+> index 0000000..c81b42d
+> --- /dev/null
+> +++ b/drivers/net/can/usb/pcan_usb_pro.c
+> @@ -0,0 +1,1426 @@
+> +/*
+> + * CAN driver for PEAK System PCAN-USB-PRO adapter
+> + *
+> + * Copyright (C) 2011-2012 PEAK-System GmbH
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published
+> + * by the Free Software Foundation; version 2 of the License.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> + * General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write to the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +#include <linux/netdevice.h>
+> +#include <linux/usb.h>
+> +#include <linux/stringify.h>
 
 
 
+here
+
+#include <linux/module.h>
+
+is missing to expand this:
+
+> +MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB-PRO adapter");
 
 
+More remarks following soon ...
 
+Have a nice weekend,
 
+Oliver
 
