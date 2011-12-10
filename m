@@ -1,113 +1,78 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: PEAK CAN USB driver patch
-Date: Fri, 09 Dec 2011 19:58:12 +0100
-Message-ID: <4EE25A44.8020800@hartkopp.net>
-References: <201112091421.pB9ELIvL003552@post.webmailer.de> <4EE24089.5090300@peak-system.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH] flexcan: Acknowledge all interrupt sources in the IRQ
+ handler
+Date: Sat, 10 Dec 2011 21:10:28 +0100
+Message-ID: <4EE3BCB4.7060401@grandegger.com>
+References: <1323438454-6816-1-git-send-email-LW@KARO-electronics.de>	<4EE212AE.40005@pengutronix.de> <20194.5210.650914.867608@ipc1.ka-ro> <4EE21C96.5010604@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:14025 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753037Ab1LIS6T (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2011 13:58:19 -0500
-In-Reply-To: <4EE24089.5090300@peak-system.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:47955 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751619Ab1LJUKt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 10 Dec 2011 15:10:49 -0500
+In-Reply-To: <4EE21C96.5010604@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: linux-can@vger.kernel.org, Michael Maidhof <m.maidhof@peak-system.com>, "Uwe Wilhelm (PEAK-System)" <u.wilhelm@peak-system.com>
+To: =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 09.12.2011 18:08, Grosjean Stephane wrote:
+On 12/09/2011 03:35 PM, Wolfgang Grandegger wrote:
+> On 12/09/2011 02:59 PM, Lothar Wa=DFmann wrote:
+>> Hi,
+>>
+>> Marc Kleine-Budde writes:
+>>> On 12/09/2011 02:47 PM, Lothar Wa=DFmann wrote:
+>>>> Otherwise the handler will get stuck in an endless IRQ loop when a=
+n
+>>>> interrupt condition occurs that is not being acked (e.g. TWRN)
+>>>
+>>> On which CPU do you have this problem?
+>>>
+>> on i.MX28.
+>=20
+> Yes, it is definitely needed on i.MX28 and I already have it in my
+> series. See:
+>=20
+> https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commit=
+/8ad94fa0dd7f7728824fa8fd4479390ac3f189c7
+>=20
+> BTW: at similar patch was already sent by Reuben Dowle.
+>=20
+>>> Seems that mx25/35 behave a bit different than mx28. But I had no t=
+ime
+>>> to dig into this, yet. BTW Wolfgang is just reworking error handlin=
+g,
+>>> can you please test his patches he recently posted on linux-can.
+>>>
+>> The ESR of i.MX25 is completely identical to the i.MX28.
+>> You should be able to reproduce the problem when trying to send a
+>> message to a CAN interface with the transceiver disabled.
+>> You will get a BIT0_ERR and the TWRN bit will be asserted and never
+>> cleared leading to an endless interrupt loop.
+>=20
+> If you are right, the code was never working on i.MX25/35... which I =
+doubt.
 
-> Hi Oliver,
-> 
-> Please find below the patch to apply to linux-can-next, which adds support for
-> the PEAK System CAN USB adapters.
+I know remember that the old code was working on a MX35PDK board.
+Actually I did the porting some time ago. That means that we have to
+deal with two variants of the Flexcan controller, unfortunately:
 
+mx25/35: State changes *and* bus errors are both signalled via ESR ERR
+	bit. The TWRN, RWRN and BOFF bits seem not to be used. Therefore
+	bus error reporting cannot be enabled/disabled individually.
 
-Whow - thanks!
+mx28/mx53?: Bus error are signalled via ESR ERR bit and state changes
+	via TWRN, RWRN and BOFF bit. Therefore bus error reporting
+	*can* be enabled/disabled individually as implemented by this
+	patch:
 
-I already transferred your original patch into my tree by hand :-)
+	https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commit/=
+f0829d269a451c8abb99435d5a1a63cb18566668
 
-And the first thing i stumble when compiling was here:
+I will try to get a MX35PDK board for further evaluation and developmen=
+t.
 
-> diff --git a/drivers/net/can/usb/pcan_usb.c b/drivers/net/can/usb/pcan_usb.c
-> new file mode 100644
-> index 0000000..eb2329d
-> --- /dev/null
-> +++ b/drivers/net/can/usb/pcan_usb.c
-> @@ -0,0 +1,740 @@
-> +/*
-> + * CAN driver for PEAK System PCAN-USB adapter
-> + *
-> + * Copyright (C) 2011-2012 PEAK-System GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published
-> + * by the Free Software Foundation; version 2 of the License.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +#include <linux/netdevice.h>
-> +#include <linux/usb.h>
-
-
-here
-
-#include <linux/module.h>
-
-is missing to expand this:
-
-> +MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
-
-> new file mode 100644
-> index 0000000..c81b42d
-> --- /dev/null
-> +++ b/drivers/net/can/usb/pcan_usb_pro.c
-> @@ -0,0 +1,1426 @@
-> +/*
-> + * CAN driver for PEAK System PCAN-USB-PRO adapter
-> + *
-> + * Copyright (C) 2011-2012 PEAK-System GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published
-> + * by the Free Software Foundation; version 2 of the License.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +#include <linux/netdevice.h>
-> +#include <linux/usb.h>
-> +#include <linux/stringify.h>
-
-
-
-here
-
-#include <linux/module.h>
-
-is missing to expand this:
-
-> +MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB-PRO adapter");
-
-
-More remarks following soon ...
-
-Have a nice weekend,
-
-Oliver
+Wolfgang.
 
