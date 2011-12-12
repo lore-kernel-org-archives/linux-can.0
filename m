@@ -1,63 +1,66 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: using j1939
-Date: Mon, 12 Dec 2011 09:12:17 +0100
-Message-ID: <20111212081217.GA351@e-circ.dyndns.org>
-References: <20111206104432.91170@gmx.net>
- <20111206121403.GB322@e-circ.dyndns.org>
- <loom.20111206T131950-88@post.gmane.org>
- <4EDE1785.9000306@volkswagen.de>
- <20111209134721.GA309@e-circ.dyndns.org>
- <loom.20111209T145701-227@post.gmane.org>
- <20111209143224.GB309@e-circ.dyndns.org>
- <20111209144911.144460@gmx.net>
- <20111209150133.GA1470@e-circ.dyndns.org>
- <loom.20111209T175414-826@post.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: the linux-can-next tree (was: Re: [PATCH next-next 0/2] can: cc770:
+ add support for the Bosch CC770 and Intel AN82527)
+Date: Mon, 12 Dec 2011 10:13:52 +0100
+Message-ID: <4EE5C5D0.5030805@pengutronix.de>
+References: <4ED5CF14.4020502@hartkopp.net>	<20111130.160727.1989923062226789802.davem@davemloft.net>	<4ED73117.1020101@hartkopp.net> <20111201.130907.1276930495409347261.davem@davemloft.net> <4ED7DDBA.9090201@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigD3A707FC2884257BB2791722"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:28839 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751598Ab1LLIMW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 12 Dec 2011 03:12:22 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20111209T175414-826@post.gmane.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37000 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750995Ab1LLJOC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2011 04:14:02 -0500
+In-Reply-To: <4ED7DDBA.9090201@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Wagner <wutz@unterderbruecke.de>
-Cc: linux-can@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: socketcan@hartkopp.net, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, urs@isnogud.escape.de
 
-On Fri, Dec 09, 2011 at 05:23:52PM +0000, Wolfgang Wagner wrote:
-> > Ok, I suppose you do not compile your kernel yourself.
-> 
-> Yes, ptxdist compiles everything automatic, but as Oliver suggest
-> for my system I can can drop the kernel and compile it again with 
-> 
-> $ ptxdist drop kernel compile
-> $ ptxdist go
-> 
-> So is there a possibility to modify my kernel with files of your
-> linux-can-j1939 repository and compile it again?
-Yes, that must work. Take everything in net/can/*.
-I'm not sure on the drivers. They may use other subsystems (like USB)
-that have differences accross versions.
-I'd first try to core CAN itself(net/can) and leave the drivers (drivers/net/can)
-as is.
-The header is a bit a mixture:
-copy include/linux/can.h, all include/linux/can/*.h  but dev.h, and
-_no_ include/linux/can/platform/*.h
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigD3A707FC2884257BB2791722
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> 
-> > Let's stick to the original plan then and get can-j1939-modules working
-> (after getting iproute2-j1939 up).
-> 
-> So if I use the tarball iproute2-2.6.39.tar.gz, you can find everywhere,
-> it should work? Or is there the possibility, that I possibly can faulty
-> one?
-I think a iproute2-2.6.39.tar.gz should compile.
-Iproute2-j1939 did fail because of CAN definitions, that are in  a standard
-iproute2 also.
-If that one  compiles, my iproute2-j1939 should work as.
-> 
+Hello David,
 
-Kurt
+On 12/01/2011 09:04 PM, Marc Kleine-Budde wrote:
+>> I said I want one person.  One person who periodically send me GIT pul=
+l requests
+>> or a patch series for "CAN updates" of all kinds.
+>=20
+> We're currently discussing the problem and we understood the one person=
+
+> contact policy.
+
+We decided that I should be this person. Our can tree is located on
+gitorious:
+
+https://gitorious.org/linux-can/linux-can-next
+
+regards, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enigD3A707FC2884257BB2791722
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk7lxdMACgkQjTAFq1RaXHPjIgCeI4WdCMzv2W9MCs2YmTJ34wB/
+P5sAn1pu631k+JVTTS4xkXGtdfof6B6w
+=dEG2
+-----END PGP SIGNATURE-----
+
+--------------enigD3A707FC2884257BB2791722--
