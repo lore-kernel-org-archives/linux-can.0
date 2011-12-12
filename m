@@ -1,61 +1,114 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: using j1939
-Date: Mon, 12 Dec 2011 13:40:31 +0100
-Message-ID: <20111212124031.GD351@e-circ.dyndns.org>
-References: <loom.20111206T131950-88@post.gmane.org>
- <4EDE1785.9000306@volkswagen.de>
- <20111209134721.GA309@e-circ.dyndns.org>
- <loom.20111209T145701-227@post.gmane.org>
- <20111209143224.GB309@e-circ.dyndns.org>
- <20111209144911.144460@gmx.net>
- <20111209150133.GA1470@e-circ.dyndns.org>
- <loom.20111209T175414-826@post.gmane.org>
- <20111212081217.GA351@e-circ.dyndns.org>
- <loom.20111212T121257-904@post.gmane.org>
+From: <kime@ixxat.de>
+Subject: RE: [PATCH net-next] can: plx_pci: add support for IXXAT PCI cards
+Date: Mon, 12 Dec 2011 13:45:58 +0100
+Message-ID: <166589D0B9DD2547A1319599B9BADA1FC62485@vsv-exchange.ixxat.intranet.priv>
+References: <166589D0B9DD2547A1319599B9BADA1FC62431@vsv-exchange.ixxat.intranet.priv> <4EE5DF4A.80301@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:32474 "EHLO mail.eia.be"
+Received: from mail.ixxat.net ([145.253.106.66]:60045 "EHLO mail.ixxat.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752606Ab1LLMkh (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 12 Dec 2011 07:40:37 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20111212T121257-904@post.gmane.org>
+	id S1752802Ab1LLMqD convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2011 07:46:03 -0500
+Content-class: urn:content-classes:message
+In-Reply-To: <4EE5DF4A.80301@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>
-Cc: linux-can@vger.kernel.org
+To: wg@grandegger.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, socketcan-core@lists.berlios.de
 
-On Mon, Dec 12, 2011 at 11:27:33AM +0000, Wolfgang wrote:
-> > Yes, that must work. Take everything in net/can/*.
-> > I'm not sure on the drivers. They may use other subsystems (like USB)
-> > that have differences accross versions.
-> > I'd first try to core CAN itself(net/can) and leave the drivers
-> (drivers/net/can)
-> > as is.
-> > The header is a bit a mixture:
-> > copy include/linux/can.h, all include/linux/can/*.h  but dev.h, and
-> > _no_ include/linux/can/platform/*.h
+This patch adds support for IXXAT passive CAN controllers
+
+Signed-off-by: James Kime <kime@ixxat.de>
+---
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index 231385b..a0c693a 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -43,7 +43,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
+ 			"TEWS TECHNOLOGIES TPMC810, "
+ 			"esd CAN-PCI/CPCI/PCI104/200, "
+ 			"esd CAN-PCI/PMC/266, "
+-			"esd CAN-PCIe/2000")
++			"esd CAN-PCIe/2000, "
++			"IXXAT PC-I 04/PCI")
+ MODULE_LICENSE("GPL v2");
+ 
+ #define PLX_PCI_MAX_CHAN 2
+@@ -121,6 +122,10 @@ struct plx_pci_card {
+ #define ESD_PCI_SUB_SYS_ID_PCIE2000	0x0200
+ #define ESD_PCI_SUB_SYS_ID_PCI104200	0x0501
+ 
++#define IXXAT_PCI_VENDOR_ID		0x10b5
++#define IXXAT_PCI_DEVICE_ID		0x9050
++#define IXXAT_PCI_SUB_SYS_ID		0x2540
++
+ #define MARATHON_PCI_DEVICE_ID		0x2715
+ 
+ #define TEWS_PCI_VENDOR_ID		0x1498
+@@ -193,6 +198,14 @@ static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
+ 	/* based on PEX8311 */
+ };
+ 
++static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
++	"IXXAT PC-I 04/PCI", 2,
++	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
++	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x200, 0x80} },
++	&plx_pci_reset_common
++	/* based on PLX9050 */
++};
++
+ static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
+ 	"Marathon CAN-bus-PCI", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+@@ -267,6 +280,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
+ 		(kernel_ulong_t)&plx_pci_card_info_esd2000
+ 	},
+ 	{
++		/* IXXAT PC-I 04/PCI card */
++		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
++		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
++		0, 0,
++		(kernel_ulong_t)&plx_pci_card_info_ixxat
++	},
++	{
+ 		/* Marathon CAN-bus-PCI card */
+ 		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
+ 		PCI_ANY_ID, PCI_ANY_ID,
+
+
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 36e9d59..b21523d 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -71,6 +71,7 @@ config CAN_PLX_PCI
+ 	   - esd CAN-PCIe/2000
+ 	   - Marathon CAN-bus-PCI card (http://www.marathon.ru/)
+ 	   - TEWS TECHNOLOGIES TPMC810 card (http://www.tews.com/)
++	   - IXXAT Automation PC-I 04/PCI card (http://www.ixxat.com/)
+ 
+ config CAN_TSCAN1
+ 	tristate "TS-CAN1 PC104 boards"
+
+
+> > This patch adds support for IXXAT passive CAN controllers
+> >
+> > Signed-off-by: James Kime <kime@ixxat.de>
 > 
-> Ok I replaced everything as you told me, but while compiling
+> I cannot apply this patch. git am reports:
 > 
-> make[1]: Entering directory
-> `/home/wolfgang/phytec/kernel/OSELAS.BSP-Phytec-phyCORE-MPC512x-tiny-\
-> PD09.1.0/platform-phyCORE-MPC5121e/build-target/linux-2.6.31'
->   CHK     include/linux/version.h
->   CHK     include/linux/utsrelease.h
->   SYMLINK include/asm -> include/asm-powerpc
->   CALL    scripts/checksyscalls.sh
->   CHK     include/linux/compile.h
->   CALL    arch/powerpc/kernel/systbl_chk.sh
->   CC      net/can/bcm.o
-> In file included from net/can/bcm.c:55:
-> include/linux/can.h:80: error: expected specifier-qualifier-list \
-> before'__kernel_sa_family_t'
+>   Applying: can: plx_pci: add support for IXXAT PCI cards
+>   fatal: corrupt patch at line 30
+> 
+I think that it should be fixed now.
 
-I've noticed in recent kernels that 'sa_family_t' got replaced
-by '__kernel_sa_family_t'.
-I see no harm in undoing this, thus modifying the new include/linux/can.h,
-making sockaddr_can.can_family of type sa_family_t again.
+> That's because lines are wrapped, I believe. And could you please update
+> the Kconfig entry as well?
+> 
+Added above
 
-Kurt
+> Thanks,
+> 
+> Wolfgang.
