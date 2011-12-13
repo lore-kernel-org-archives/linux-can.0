@@ -1,57 +1,52 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: backporting can & can-j1939
-Date: Tue, 13 Dec 2011 16:51:10 +0100
-Message-ID: <20111213155110.GA314@e-circ.dyndns.org>
-References: <20111209143224.GB309@e-circ.dyndns.org>
- <20111209144911.144460@gmx.net>
- <20111209150133.GA1470@e-circ.dyndns.org>
- <loom.20111209T175414-826@post.gmane.org>
- <20111212081217.GA351@e-circ.dyndns.org>
- <loom.20111212T121257-904@post.gmane.org>
- <20111212124031.GD351@e-circ.dyndns.org>
- <loom.20111212T160733-221@post.gmane.org>
- <20111213095312.GC430@e-circ.dyndns.org>
- <loom.20111213T155714-170@post.gmane.org>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH] can: flexcan: fix irq flooding by clearing all interrupt
+ sources
+Date: Tue, 13 Dec 2011 17:22:06 +0100
+Message-ID: <4EE77BAE.5040702@grandegger.com>
+References: <4EE61928.10608@grandegger.com> <4EE61E3D.2090303@pengutronix.de> <4EE62141.8010305@grandegger.com> <4EE7416E.8070203@grandegger.com> <4EE74AC5.9050404@grandegger.com> <4EE74C2A.9040908@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:53015 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753886Ab1LMPvQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 13 Dec 2011 10:51:16 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20111213T155714-170@post.gmane.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:37675 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755046Ab1LMQWR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Dec 2011 11:22:17 -0500
+In-Reply-To: <4EE74C2A.9040908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Reuben Dowle <Reuben.Dowle@navico.com>, =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
 
-On Tue, Dec 13, 2011 at 03:20:24PM +0000, Wolfgang wrote:
-> > It appears quite complex. It may be better to start over
-> > with a fresh kernel, and copy those files from my
-> > can-j1939-modules, since this repository contains
-> > #if KERNEL_VERSION macros that will make it work on 2.6.31.
+On 12/13/2011 01:59 PM, Marc Kleine-Budde wrote:
+> On 12/13/2011 01:53 PM, Wolfgang Grandegger wrote:
+>>> I got my MX35PDK board working and can confirm, that the patch works on
+>>> a i.mx35 as well. My testing also confirms, that the ESR TWRN_INT,
+>>> RWRN_INT, FLEXCAN_ESR_BOFF_INT do not function as documented. These
+>>> flags do show up once, together with ERR_INT, and then, after clearing,
+>>> never again. Obviously a bug in the Flexcan logic. From the feedback we
+>>> can say, that only the i.MX28 does behave differently (==correctly). All
+>>> other seem to work with the current code:
+>>>
+>>>  Flexcan on
+>>>  - i.mx25
+>>>  - i.mx35
+>>>  - i.mx53
+>>>  - P1010/P1020
+>>
+>> But unfortunately, state change reporting looks different with this patch :)
 > 
-> I am not really sure, so I ask, should I build a new kernel and after building
-> replace the things from can-j1939-modules or should I place the things from
-> can-j1939-modules before building the kernel?
-> And what particular things should I copy?
+> Hmm - so not schedule for stable. What about your buf-off-handling, will
+> this change the reporting again?
 
-Ok, Maybe I did explain it a bit fuzzy.
+Well, as it is a serious problem on i.MX28, I would schedule this patch
+for stable as well. The error and state change reporting is bogus on the
+Flexcan anyhow. Without this patch, I get "active->warning->passive" if
+I send a message with cable disconnect (no ack). With patch just
+"active->warning". That's the same behaviour
+as on the i.MX28, also with my new state and bus-off handling. See:
 
-Like Oliver suggested earlier, you will ultimately build a new kernel.
-1. You extract the kernel source (I believe $ptxdist prepare <kernel>).
-2. You copy from can-j1939-modules into the extracted kernel sources:
-   $ cp -r <can-j1939>/net/can/* <kernel>/net/can/
-   $ cp <can-j1939>/include/socketcan/can.h <kernel>/include/linux/can.h
-   $ cp <can-j1939>/include/socketcan/can/{bcm,core,error,gw,isotp,j1939,netlink,raw}.h \
-	<kernel>/include/linux/can/
-   and replace all "#include <socketcan/xxx.h>"
-   with "#include <linux/xxx.h>".
-   This "#include" thing will appear in files you just copies (net/can/* and include/linux/can*)
-3. Continue the build process
+https://gitorious.org/~wgrandegger/linux-can/wg-linux-can-next/commit/bd3acb12dbb9551541d28ae8766c154d3cf6ed57
 
-Sorry for not making this clear the first time :-).
-I hope it is clear now?
+Wolfgang.
 
-Kurt
