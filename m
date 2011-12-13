@@ -1,75 +1,42 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: fix irq flooding by clearing all interrupt
- sources
-Date: Tue, 13 Dec 2011 13:59:22 +0100
-Message-ID: <4EE74C2A.9040908@pengutronix.de>
-References: <4EE61928.10608@grandegger.com> <4EE61E3D.2090303@pengutronix.de> <4EE62141.8010305@grandegger.com> <4EE7416E.8070203@grandegger.com> <4EE74AC5.9050404@grandegger.com>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: Re: backporting can & can-j1939
+Date: Tue, 13 Dec 2011 15:20:24 +0000 (UTC)
+Message-ID: <loom.20111213T155714-170@post.gmane.org>
+References: <20111209134721.GA309@e-circ.dyndns.org> <loom.20111209T145701-227@post.gmane.org> <20111209143224.GB309@e-circ.dyndns.org> <20111209144911.144460@gmx.net> <20111209150133.GA1470@e-circ.dyndns.org> <loom.20111209T175414-826@post.gmane.org> <20111212081217.GA351@e-circ.dyndns.org> <loom.20111212T121257-904@post.gmane.org> <20111212124031.GD351@e-circ.dyndns.org> <loom.20111212T160733-221@post.gmane.org> <20111213095312.GC430@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig61C0AC5C43E5B9EDB5EF269A"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36076 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753379Ab1LMM7Z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Dec 2011 07:59:25 -0500
-In-Reply-To: <4EE74AC5.9050404@grandegger.com>
+Received: from lo.gmane.org ([80.91.229.12]:51325 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752031Ab1LMPUk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 13 Dec 2011 10:20:40 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RaU9n-0003jN-Lb
+	for linux-can@vger.kernel.org; Tue, 13 Dec 2011 16:20:39 +0100
+Received: from fire.d-i-f.com ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 13 Dec 2011 16:20:39 +0100
+Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 13 Dec 2011 16:20:39 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Reuben Dowle <Reuben.Dowle@navico.com>, =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig61C0AC5C43E5B9EDB5EF269A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> It appears quite complex. It may be better to start over
+> with a fresh kernel, and copy those files from my
+> can-j1939-modules, since this repository contains
+> #if KERNEL_VERSION macros that will make it work on 2.6.31.
 
-On 12/13/2011 01:53 PM, Wolfgang Grandegger wrote:
->> I got my MX35PDK board working and can confirm, that the patch works o=
-n
->> a i.mx35 as well. My testing also confirms, that the ESR TWRN_INT,
->> RWRN_INT, FLEXCAN_ESR_BOFF_INT do not function as documented. These
->> flags do show up once, together with ERR_INT, and then, after clearing=
-,
->> never again. Obviously a bug in the Flexcan logic. From the feedback w=
-e
->> can say, that only the i.MX28 does behave differently (=3D=3Dcorrectly=
-). All
->> other seem to work with the current code:
->>
->>  Flexcan on
->>  - i.mx25
->>  - i.mx35
->>  - i.mx53
->>  - P1010/P1020
->=20
-> But unfortunately, state change reporting looks different with this pat=
-ch :)
+I am not really sure, so I ask, should I build a new kernel and after building
+replace the things from can-j1939-modules or should I place the things from
+can-j1939-modules before building the kernel?
+And what particular things should I copy?
 
-Hmm - so not schedule for stable. What about your buf-off-handling, will
-this change the reporting again?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+--Wolfgang
 
 
---------------enig61C0AC5C43E5B9EDB5EF269A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7nTCoACgkQjTAFq1RaXHM00ACfVvBYEoSlzU5Genm+F7zFlTk5
-t0kAnAtaQ636SCdFoi5B7MomPMirsGdm
-=AosD
------END PGP SIGNATURE-----
-
---------------enig61C0AC5C43E5B9EDB5EF269A--
