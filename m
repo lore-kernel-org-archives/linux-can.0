@@ -1,38 +1,60 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: "[PATCH] Add support for PEAK-System GmbH CAN USB adapters (v2)
- "
-Date: Tue, 20 Dec 2011 16:57:33 +0100
-Message-ID: <4EF0B06D.4040109@grandegger.com>
-References: <301939.630738588-sendEmail@ubuntu-i386> <4EEB3C66.1020303@pengutronix.de> <4EF07B1F.4040609@peak-system.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: API calls
+Date: Tue, 20 Dec 2011 17:32:47 +0100
+Message-ID: <20111220163247.GE311@e-circ.dyndns.org>
+References: <20111216083708.GA323@e-circ.dyndns.org>
+ <loom.20111216T095547-967@post.gmane.org>
+ <20111216093308.GB669@e-circ.dyndns.org>
+ <loom.20111216T150333-707@post.gmane.org>
+ <20111217192038.GA309@e-circ.dyndns.org>
+ <loom.20111220T112550-205@post.gmane.org>
+ <20111220110059.GA311@e-circ.dyndns.org>
+ <loom.20111220T150849-247@post.gmane.org>
+ <20111220150545.GC311@e-circ.dyndns.org>
+ <loom.20111220T160841-487@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:53309 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751516Ab1LTP5n (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Dec 2011 10:57:43 -0500
-In-Reply-To: <4EF07B1F.4040609@peak-system.com>
+Received: from gate.eia.be ([194.78.71.18]:40723 "EHLO eia-vsv02.eia.lan"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751193Ab1LTQcu (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 20 Dec 2011 11:32:50 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20111220T160841-487@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Wolfgang <wutz@unterderbruecke.de>
+Cc: linux-can@vger.kernel.org
 
-Hallo St=E9phane,
+On Tue, Dec 20, 2011 at 03:43:13PM +0000, Wolfgang wrote:
+> I was a bit hasty. It is not working, but I don't get it. Eclipse is saying 
+> bind failed: Invalid argument
+I went into the code. I forgot to add:
+     addr.can_family = AF_CAN;
+I think this is what is missing.
 
-On 12/20/2011 01:10 PM, Grosjean Stephane wrote:
-> Hi Marc,
->=20
-> Thanks for your review. Please, find my answers and comments below...
-=2E..
-> Le 16/12/2011 13:41, Marc Kleine-Budde a =E9crit :
->> please talk to Wolfgang for the error handling, he is the expert now=
- :)
->=20
-> ???
-> What should I talk about? Is the way errors are handling wrong?
+> send failed: Destination address required
+Yep, since bind failed, you will not be able to use the socket already (man socket).
 
-Please fix your coding style first, then I will have a closer look.
+I just pushed a commit into linux-can-j1939. You may decide to merge it into
+your kernel. I found that the test for 'bind succeeded' is wrong in sendmsg.
+Therefore, you get some error because you really did not bind yet, but
+after the patch, you will get the error ENOTCONN, which is very appropriate.
+> 
+> How is a frame send with id and data, like when you do $cansend can0 
+> -ei0x123ff80 0xFF. Because only data is sent now?
 
+The ID is composed from the address information you supplied earlier
+with bind(), connect() and/or sendto().
+This is different with CAN raw, but remind that CAN raw does not imply addressing
+on the bus neither. 
 
-Wolfgang.
+can-j1939 does export an address concept to userspace, and verifies that
+you're not cheating on the bus. And the modules thus allow to
+do transport protocol with addressing verified.
+
+So, to summarize, you may later on start using sendto(), and supply
+an address structure with destination address and/or PGN set.
+
+Kurt
+
