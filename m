@@ -1,108 +1,93 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Thu, 22 Dec 2011 10:37:03 +0100
-Message-ID: <4EF2FA3F.3010308@grandegger.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com> <4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com> <4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com> <4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: Re: using can-j1939
+Date: Thu, 22 Dec 2011 13:06:06 +0000 (UTC)
+Message-ID: <loom.20111222T115004-22@post.gmane.org>
+References: <20111217192038.GA309@e-circ.dyndns.org> <loom.20111220T112550-205@post.gmane.org> <20111220110059.GA311@e-circ.dyndns.org> <loom.20111220T150849-247@post.gmane.org> <20111220150545.GC311@e-circ.dyndns.org> <loom.20111220T160841-487@post.gmane.org> <20111220163247.GE311@e-circ.dyndns.org> <loom.20111221T111539-419@post.gmane.org> <20111221134302.GA12050@e-circ.dyndns.org> <loom.20111221T153828-216@post.gmane.org> <20111221155314.GC12050@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:36542 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754620Ab1LVJhN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Dec 2011 04:37:13 -0500
-In-Reply-To: <4EF22625.5000109@essax.com>
+Received: from lo.gmane.org ([80.91.229.12]:42086 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752403Ab1LVNGX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Dec 2011 08:06:23 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RdiLi-0000T4-Ad
+	for linux-can@vger.kernel.org; Thu, 22 Dec 2011 14:06:20 +0100
+Received: from fire.d-i-f.com ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 22 Dec 2011 14:06:18 +0100
+Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 22 Dec 2011 14:06:18 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@essax.com
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>
+To: linux-can@vger.kernel.org
 
-Hi Wolfgang,
+> You will want to create 1 socket per interface and per used source address.
 
-On 12/21/2011 07:32 PM, Wolfgang Zarre wrote:
-> Hello Wolfgang,
-...
+OK, 2 source address, 2 interfaces = 4 sockets?!
+ 
+> You bind with can_addr.j1939.addr = 0x80 and can_addr.j1939.pgn = J1939_NO_PGN
+> then you can do sendto with dest_addr.j1939.sa = DEST address &
+> dest_addr.j1939.pgn = YOUR_PGN.
 
->> It's a bug! netif_start_queue is missing at the end of the open
->> function. Got lost some how. I have just updated (rebased!) my
->> wg-linux-can-next repository.
-> 
-> Ok, I was checking out last week and since I'm running one test series
-> after the other.
-> 
-> There are several odd issues I could found and I'm trying to trace them
-> down beside some other work.
-> 
-> Even with an assumed correct configuration like I was using with the lincan
-> driver I'm loosing telegrams so around 1 till 2 in 500000 but might be a
-> different sample-point at the PLC which is opaque due the predefined
-> setting.
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <string.h>
+#include <linux/can/j1939.h>
+#include <linux/can.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <sys/types.h>
 
-In principle, messages can be lost because the cc770 does buffer only up
-to two messages in hardware. If they are not read out quickly enough,
-message loss will happen. The CAN statistics should list such overruns,
-though.
 
-> For the next test I'll set the BTR's directly.
+int main (void)
+{
+	int s;
+	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+	    
+	struct sockaddr_can addr;
 
-OK, if you do not see bus errors, everything should be fine.
+    memset(&addr, 0, sizeof(addr));
+    addr.can_ifindex = if_nametoindex("can0");
+    addr.can_addr.j1939.name = J1939_NO_NAME;    
+    addr.can_addr.j1939.addr = 0x80;
+    addr.can_addr.j1939.pgn = J1939_NO_PGN;
+    addr.can_family = AF_CAN;  
+   
+   
+    if (bind(s, (void *)&addr, sizeof(addr))<0)
+    	{
+    		perror ("bind failed");
+        	}     	
+   
+  		struct sockaddr_can dest_addr;
+  		
+  		memset(&dest_addr, 0, sizeof(dest_addr));
+		dest_addr.can_addr.j1939.name = 0x9ABCDEFULL;
+    	        dest_addr.can_addr.j1939.pgn = 0x12300;
 
-> Further sometimes I can find one in dropped but mostly not.
-> 
-> But more odd is that after an undefined time the transmission gets
-> stuck followed by a buffer overrun but can receive.
+	
+	if (sendto(s, frame.data, sizeof (frame.data), 0, (void *)&dest_addr, \
+sizeof(dest_addr))<0)
+		{
+			perror ("sendto failed");
+		       }
+  		 
+ return 0;
+}
 
-I recently found a bug. Please try this fix:
+I hope I get that right, with the new struct sockaddr_can. But anything is wrong
+$sendto failed: Invalid argument. Sure I got the solution?!?
 
-http://marc.info/?l=linux-can&m=132370253713701&w=4
 
-Did you realize related error messages in the dmesg output?
+Thanks,
+--Wolfgang
 
-> No error messages nor changes in ip -d -s link show can0.
-> 
-> Additional it seems that neither the automatic restart nor
-> the manual one works.
 
-What version are you using. I think this problem has been fixed by
-adding the missing netif_start_queue() at the end of the open
-function, as mentioned above. Do you have that in your driver?
 
-> ip link set can0 up type can restart gives me 'RTNETLINK answers: Invalid
-> argument' and ip link set can0 up type can bitrate 500000 restart a
-> RTNETLINK answers: Device or resource busy but nothing connected to can0.
 
-The error message is shown because you try to set bitrate when the
-device is up. For the restart after bus-off just type:
-
-  # ip link set can0 type can restart
-
-Anyway, if you run into a bus-off, then it's likely that you have
-electrical problems on the CAN bus, e.g. termination, mismatching
-bit-timing parameters.
-
-> So I have to perform per example  ip link set can0 down;ip link set can0 up
-> type can bitrate 500000 restart-ms 2000 sample-point 0.75
-> but this is emptying the buffer and these telegrams are lost then as well.
-> 
-> I was comparing with my lincan driver which was running so far ok also
-> to confirm a proper working PLC.
-> 
-> First I assumed that maybe the set_reset_mode procedure is responsible for
-> that misbehaviour because according to the cc770 manual we should wait for
-> a zero of bit 7 RstST of the CPU interface register but when the
-> transmission
-> gets stuck there was no call for set_reset_mode.
-> 
-> Maybe it's ending up somehow recessive.
-> 
-> Anyway, I might compare the registers of both drivers just to figure out
-> what's going on but maybe You have an idea as well.
-> 
-> Problem is just it runs always quite some time until the issues happen
-> otherwise it would be more easy.
-
-Again, please check if you have netif_start_queue() at the end of the
-open function.
-
-Wolfgang.
