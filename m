@@ -1,98 +1,110 @@
-From: Grosjean Stephane <s.grosjean@peak-system.com>
-Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Fri, 23 Dec 2011 10:33:48 +0100
-Message-ID: <4EF44AFC.60400@peak-system.com>
-References: <871799.098418222-sendEmail@ubuntu-i386> <4EF3A40E.4080206@sebastianhaas.info>
-Reply-To: s.grosjean@peak-system.com
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: using can-j1939
+Date: Fri, 23 Dec 2011 12:04:45 +0100
+Message-ID: <20111223110445.GB12091@e-circ.dyndns.org>
+References: <20111220110059.GA311@e-circ.dyndns.org>
+ <loom.20111220T150849-247@post.gmane.org>
+ <20111220150545.GC311@e-circ.dyndns.org>
+ <loom.20111220T160841-487@post.gmane.org>
+ <20111220163247.GE311@e-circ.dyndns.org>
+ <loom.20111221T111539-419@post.gmane.org>
+ <20111221134302.GA12050@e-circ.dyndns.org>
+ <loom.20111221T153828-216@post.gmane.org>
+ <20111221155314.GC12050@e-circ.dyndns.org>
+ <loom.20111222T115004-22@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-1d.bbox.fr ([194.158.122.56]:61973 "EHLO mail-1d.bbox.fr"
+Received: from gate.eia.be ([194.78.71.18]:19845 "EHLO mail.eia.be"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754050Ab1LWJdz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 23 Dec 2011 04:33:55 -0500
-In-Reply-To: <4EF3A40E.4080206@sebastianhaas.info>
+	id S1754218Ab1LWLEu (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 23 Dec 2011 06:04:50 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20111222T115004-22@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sebastian Haas <dev@sebastianhaas.info>
-Cc: Linux-can Mailing List <linux-can@vger.kernel.org>
+To: Wolfgang <wutz@unterderbruecke.de>
+Cc: linux-can@vger.kernel.org
 
-Hi Sebastian,
+On Thu, Dec 22, 2011 at 01:06:06PM +0000, Wolfgang wrote:
+> > You will want to create 1 socket per interface and per used source address.
+> 
+> OK, 2 source address, 2 interfaces = 4 sockets?!
+I assume you utilize 2 source addresses, one on each interface? In that case, you
+need only 2 sockets.
+>  
+> > You bind with can_addr.j1939.addr = 0x80 and can_addr.j1939.pgn = J1939_NO_PGN
+> > then you can do sendto with dest_addr.j1939.sa = DEST address &
+> > dest_addr.j1939.pgn = YOUR_PGN.
+> 
+> #include <sys/ioctl.h>
+> #include <net/if.h>
+> #include <string.h>
+> #include <linux/can/j1939.h>
+> #include <linux/can.h>
+> #include <unistd.h>
+> #include <sys/socket.h>
+> #include <stdio.h>
+> #include <sys/types.h>
+> 
+> 
+> int main (void)
+> {
+> 	int s;
+> 	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+> 	    
+> 	struct sockaddr_can addr;
+> 
+>     memset(&addr, 0, sizeof(addr));
+>     addr.can_ifindex = if_nametoindex("can0");
+>     addr.can_addr.j1939.name = J1939_NO_NAME;    
+>     addr.can_addr.j1939.addr = 0x80;
+>     addr.can_addr.j1939.pgn = J1939_NO_PGN;
+>     addr.can_family = AF_CAN;  
+>    
+>    
+>     if (bind(s, (void *)&addr, sizeof(addr))<0)
+>     	{
+>     		perror ("bind failed");
+>         	}     	
+>    
+>   		struct sockaddr_can dest_addr;
+>   		
+>   		memset(&dest_addr, 0, sizeof(dest_addr));
+please set the can_family type, to avoid EINVAL
+		dest_addr.can_family = AF_CAN;  
+Since I suppose you do not use dynamic address claiming, do:
+		dest_addr.can_addr.j1939.name = J1939_NO_NAME;
+for broadcasted messages:
+		dest_addr.can_addr.j1939.addr = J1939_NO_ADDR;
+for destination specific messages, set .addr to the destination address.
 
-Le 22/12/2011 22:41, Sebastian Haas a =E9crit :
-> Hi again,
->
-> some nitpicking this time. ;-)
->
-=2E.. I certainly agree with you! But it's good news anyway.
-
-Generally speaking:
-
-- ok for the two missing ending \n
-- ok for strncpy instead of strcpy()
-- but what about the followings?
-
-> +    struct can_bittiming *bt =3D&dev->can.bittiming;
-                                  ^^^ remove whitespace
-=2E..
-
-> +    if (sizeof_candev<  sizeof(struct peak_usb_device))
-                         ^^^^^^ cleanup
-
-=2E..
-
-> +    netdev->netdev_ops =3D&peak_usb_netdev_ops;
-                            ^^^^ whitespace
-=2E..
-
->> +
->> +    SET_NETDEV_DEV(netdev,&intf->dev);
->                              ^^^
->> +
->> +        dev->state&=3D ~PCAN_USB_STATE_CONNECTED;
->                          ^^^^
->> +            if (*pc<  32 || *pc>  127)
->                               ^^^^         ^^
-It looks like missing whitespaces sometimes, and sometimes there were=20
-too in your text... which is different from the patch I sent yesterday.=
-=20
-Or do I misunderstand your comments?
-
->> +
->> +    /* Last chance do send some synchronous commands here */
->> +    err =3D driver_for_each_device(&peak_usb_driver.drvwrap.driver,=
- NULL,
->> +        NULL, peak_usb_do_device_exit);
->> +    if (err)
->> +        err =3D 0;
-> \err\ is neither checked nor printed, why not removing it?
->
-
-Because of that (see <linux/device.h>):
-
-extern int __must_check driver_for_each_device(struct device_driver *dr=
-v,
-            ~~~~~~~~~~~~
-
-=2E.. Is there any other way to get around that?
-
-> You are mixing pr_*, dev_* and netdev_* please check if it is possibl=
-e=20
-> to harmonize the usage.
->
-Ok I'll try do that, whenever it is possible.
-
-> Cheers,
->  Sebastian +
-
-Thanks and regards,
-
-St=E9phane
-
-> --=20
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
+> 		dest_addr.can_addr.j1939.name = 0x9ABCDEFULL;
+>     	        dest_addr.can_addr.j1939.pgn = 0x12300;
+> 
+> 	
+> 	if (sendto(s, frame.data, sizeof (frame.data), 0, (void *)&dest_addr, \
+> sizeof(dest_addr))<0)
+> 		{
+> 			perror ("sendto failed");
+> 		       }
+>   		 
+>  return 0;
+> }
+> 
+> I hope I get that right, with the new struct sockaddr_can. But anything is wrong
+> $sendto failed: Invalid argument. Sure I got the solution?!?
+We're getting there ...
+Kurt
+> 
+> 
+> Thanks,
+> --Wolfgang
+> 
+> 
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
 > the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
