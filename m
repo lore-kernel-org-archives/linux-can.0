@@ -1,113 +1,275 @@
-From: Grosjean Stephane <s.grosjean@peak-system.com>
-Subject: peak_pci: device channels chained list issue (cont.)
-Date: Fri, 23 Dec 2011 13:11:23 +0100
-Message-ID: <4EF46FEB.3000200@peak-system.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com> <4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com> <4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com> <4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com> <4EF2FA3F.3010308@grandegger.com>
-Reply-To: s.grosjean@peak-system.com
+From: Sebastian Haas <dev@sebastianhaas.info>
+Subject: Re: [PATCH] Add support for PEAK System PCAN-USB adapter
+Date: Fri, 23 Dec 2011 20:38:09 +0100
+Message-ID: <4EF4D8A1.9060206@sebastianhaas.info>
+References: <570511.804984079-sendEmail@ubuntu-i386>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-4d.bbox.fr ([194.158.122.134]:54911 "EHLO mail-4d.bbox.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750915Ab1LWML3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 23 Dec 2011 07:11:29 -0500
-In-Reply-To: <4EF2FA3F.3010308@grandegger.com>
+Received: from smtprelay06.ispgateway.de ([80.67.31.96]:60824 "EHLO
+	smtprelay06.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757631Ab1LWTiS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 23 Dec 2011 14:38:18 -0500
+In-Reply-To: <570511.804984079-sendEmail@ubuntu-i386>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Linux-can Mailing List <linux-can@vger.kernel.org>
 
-Hi Wolfgang,
+Hi St=E9phane,
 
-Well consider this patch instead (local "prev_dev" removed since not us=
-eful)
+find a few comments from me below.
 
-Regards,
+Cheers,
+  Sebastian
 
-St=E9phane
-
-diff --git a/drivers/net/can/sja1000/peak_pci.c=20
-b/drivers/net/can/sja1000/peak_pci.c
-index 2c7f503..59f3fae 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -40,7 +40,7 @@ MODULE_LICENSE("GPL v2");
-
-  struct peak_pci_chan {
-  	void __iomem *cfg_base;	     /* Common for all channels */
--	struct net_device *next_dev; /* Chain of network devices */
-+	struct net_device *prev_dev; /* Chain of network devices */
-  	u16 icr_mask;		     /* Interrupt mask for fast ack */
-  };
-
-@@ -98,7 +98,7 @@ static int __devinit peak_pci_probe(struct pci_dev *p=
-dev,
-  {
-  	struct sja1000_priv *priv;
-  	struct peak_pci_chan *chan;
--	struct net_device *dev, *dev0 =3D NULL;
-+	struct net_device *dev;
-  	void __iomem *cfg_base, *reg_base;
-  	u16 sub_sys_id, icr;
-  	int i, err, channels;
-@@ -196,18 +196,14 @@ static int __devinit peak_pci_probe(struct pci_de=
-v=20
-*pdev,
-  		}
-
-  		/* Create chain of SJA1000 devices */
--		if (i =3D=3D 0)
--			dev0 =3D dev;
--		else
--			chan->next_dev =3D dev;
-+		chan->prev_dev =3D pci_get_drvdata(pdev);
-+		pci_set_drvdata(pdev, dev);
-
-  		dev_info(&pdev->dev,
-  			 "%s at reg_base=3D0x%p cfg_base=3D0x%p irq=3D%d\n",
-  			 dev->name, priv->reg_base, chan->cfg_base, dev->irq);
-  	}
-
--	pci_set_drvdata(pdev, dev0);
--
-  	/* Enable interrupts */
-  	writew(icr, cfg_base + PITA_ICR + 2);
-
-@@ -217,12 +213,12 @@ failure_remove_channels:
-  	/* Disable interrupts */
-  	writew(0x0, cfg_base + PITA_ICR + 2);
-
--	for (dev =3D dev0; dev; dev =3D chan->next_dev) {
-+	for (dev =3D pci_get_drvdata(pdev); dev; dev =3D chan->prev_dev) {
-  		unregister_sja1000dev(dev);
-  		free_sja1000dev(dev);
-  		priv =3D netdev_priv(dev);
-  		chan =3D priv->priv;
--		dev =3D chan->next_dev;
-+		dev =3D chan->prev_dev;
-  	}
-
-  	pci_iounmap(pdev, reg_base);
-@@ -241,7 +237,7 @@ failure_disable_pci:
-
-  static void __devexit peak_pci_remove(struct pci_dev *pdev)
-  {
--	struct net_device *dev =3D pci_get_drvdata(pdev); /* First device */
-+	struct net_device *dev =3D pci_get_drvdata(pdev); /* Last device */
-  	struct sja1000_priv *priv =3D netdev_priv(dev);
-  	struct peak_pci_chan *chan =3D priv->priv;
-  	void __iomem *cfg_base =3D chan->cfg_base;
-@@ -255,7 +251,7 @@ static void __devexit peak_pci_remove(struct pci_de=
-v=20
-*pdev)
-  		dev_info(&pdev->dev, "removing device %s\n", dev->name);
-  		unregister_sja1000dev(dev);
-  		free_sja1000dev(dev);
--		dev =3D chan->next_dev;
-+		dev =3D chan->prev_dev;
-  		if (!dev)
-  			break;
-  		priv =3D netdev_priv(dev);
-
+Am 22.12.2011 14:13, schrieb Stephane Grosjean:
+> +/*
+> + * read serial number from device
+> + */
+> +static int pcan_usb_get_serial(struct peak_usb_device *dev, u32 *ser=
+ial_number)
+> +{
+> +	u8 args[PCAN_USB_PARAMETER_LEN];
+> +	int err;
+> +
+> +	err =3D pcan_usb_wait_rsp(dev, 6, 1, args);
+> +	if (err)
+> +		netdev_err(dev->netdev, "getting serial failure: %d\n", err);
+> +
+Remove empty line an but the initial if() also in brackets.
+> +	else if (serial_number) {
+> +		u32 tmp32;
+> +		memcpy(&tmp32, args, 4);
+> +		*serial_number =3D le32_to_cpu(tmp32);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +/*
+> + * read device id from device
+> + */
+> +static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *=
+device_id)
+> +{
+> +	u8 args[PCAN_USB_PARAMETER_LEN];
+> +	int err;
+> +
+> +	err =3D pcan_usb_wait_rsp(dev, 4, 1, args);
+> +	if (err)
+> +		netdev_err(dev->netdev, "getting device id failure: %d\n", err);
+> +
+Empty line.
+> +	else if (device_id)
+> +		*device_id =3D args[0];
+> +
+> +	return err;
+> +}
+> +
+> +/*
+> + * decode non-data usb message
+> + */
+> +static int pcan_usb_decode_status(struct pcan_usb_msg_context *mc,
+> +	u8 status_len)
+> +{
+> +	u8 rec_len =3D (status_len&  PCAN_USB_STATUSLEN_DLC);
+Brackets are useless.
+> +	struct sk_buff *skb;
+> +	struct can_frame *cf;
+> +	struct timeval tv;
+> +	u8 f, n;
+> +
+> +	/* check whether function and number can be read */
+> +	if ((mc->ptr + 2)>  mc->end)
+> +		return -EINVAL;
+> +
+> +	f =3D mc->ptr[0];
+> +	n =3D mc->ptr[1];
+> +	mc->ptr +=3D 2;
+> +
+> +	if (status_len&  PCAN_USB_STATUSLEN_TIMESTAMP) {
+> +		int err =3D pcan_usb_decode_ts(mc, !mc->rec_idx);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	switch (f) {
+> +	case PCAN_USB_REC_ERROR:
+> +		/* no status flag =3D>  ignore record */
+> +		if (!n)
+> +			break;
+> +
+> +		/* ignore this error until 1st ts received */
+> +		if (n =3D=3D PCAN_USB_ERROR_QOVR)
+> +			if (!mc->pdev->time_ref.tick_count)
+> +				break;
+> +
+> +		/* allocate an skb to store the error frame */
+> +		skb =3D alloc_can_err_skb(mc->netdev,&cf);
+> +		if (!skb)
+> +			return -ENOMEM;
+> +
+> +		if (n&  (PCAN_USB_ERROR_RXQOVR | PCAN_USB_ERROR_QOVR)) {
+> +			cf->can_id |=3D CAN_ERR_CRTL;
+> +			cf->data[1] |=3D CAN_ERR_CRTL_RX_OVERFLOW;
+> +			mc->netdev->stats.rx_over_errors++;
+> +			mc->netdev->stats.rx_errors++;
+> +		}
+> +		if (n&  PCAN_USB_ERROR_BUS_OFF) {
+> +			cf->can_id |=3D CAN_ERR_BUSOFF;
+> +			can_bus_off(mc->netdev);
+> +		}
+> +		if (n&  PCAN_USB_ERROR_BUS_HEAVY) {
+> +			cf->can_id |=3D CAN_ERR_CRTL;
+> +			cf->data[1] |=3D CAN_ERR_CRTL_RX_PASSIVE;
+> +			mc->pdev->dev.can.can_stats.error_passive++;
+> +		}
+> +		if (n&  PCAN_USB_ERROR_BUS_LIGHT) {
+> +			cf->can_id |=3D CAN_ERR_CRTL;
+> +			cf->data[1] |=3D CAN_ERR_CRTL_RX_WARNING;
+> +			mc->pdev->dev.can.can_stats.error_warning++;
+> +		}
+> +
+> +		if (cf->can_id !=3D CAN_ERR_FLAG) {
+> +			if (status_len&  PCAN_USB_STATUSLEN_TIMESTAMP) {
+> +				peak_usb_get_ts_tv(&mc->pdev->time_ref,
+> +					mc->ts16,&tv);
+> +				skb->tstamp =3D timeval_to_ktime(tv);
+> +			}
+> +			netif_rx(skb);
+> +			mc->netdev->stats.rx_packets++;
+> +		} else {
+> +			kfree_skb(skb);
+> +		}
+> +
+> +		break;
+> +
+> +	case PCAN_USB_REC_ANALOG:
+> +		/* analog values (ignored) */
+> +		rec_len =3D 2;
+> +		break;
+> +
+> +	case PCAN_USB_REC_BUSLOAD:
+> +		/* bus load (ignored) */
+> +		rec_len =3D 1;
+> +		break;
+> +
+> +	case PCAN_USB_REC_TS:
+> +		/* only timestamp */
+> +		if (pcan_usb_update_ts(mc))
+> +			return -EINVAL;
+> +		break;
+> +
+> +	case PCAN_USB_REC_BUSEVT:
+> +		/* error frame/bus event */
+> +		if (n&  PCAN_USB_ERROR_TXQFULL)
+> +			netdev_info(mc->netdev, "device Tx queue full)\n");
+> +		break;
+> +
+> +	case PCAN_USB_REC_EXT:
+> +		/* future... */
+> +		break;
+> +
+> +	default:
+> +		netdev_err(mc->netdev, "unexpected function %u\n", f);
+> +		break;
+> +	}
+> +
+> +	if ((mc->ptr + rec_len)>  mc->end)
+> +		return -EINVAL;
+> +
+> +	mc->ptr +=3D rec_len;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * process incoming message
+> + */
+> +static int pcan_usb_decode_msg(struct peak_usb_device *dev,
+> +	u8 *ibuf, u32 lbuf)
+> +{
+> +	struct pcan_usb_msg_context mc =3D {
+> +		.rec_cnt =3D ibuf[1],
+> +		.ptr =3D ibuf + PCAN_USB_MSG_HEADER_LEN,
+> +		.end =3D ibuf + lbuf,
+> +		.netdev =3D dev->netdev,
+> +		.pdev =3D (struct pcan_usb *)dev,
+> +	};
+> +	int err;
+> +
+> +	for (err =3D 0; mc.rec_idx<  mc.rec_cnt&&  !err; mc.rec_idx++) {
+> +		u8 sl =3D *mc.ptr++;
+> +
+> +		/* handle status and error frames here */
+> +		if (sl&  PCAN_USB_STATUSLEN_INTERNAL) {
+> +			err =3D pcan_usb_decode_status(&mc, sl);
+> +
+Remove empty line.
+> +		/* handle normal can frames here */
+> +		} else {
+> +			err =3D pcan_usb_decode_data(&mc, sl);
+> +			mc.rec_data_idx++;
+> +		}
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +/*
+> + * process any incoming buffer
+> + */
+> +static int pcan_usb_decode_buf(struct peak_usb_device *dev, struct u=
+rb *urb)
+> +{
+> +	int err =3D 0;
+> +
+> +	if (urb->actual_length>  PCAN_USB_MSG_HEADER_LEN) {
+> +		err =3D pcan_usb_decode_msg(dev, urb->transfer_buffer,
+> +			urb->actual_length);
+> +
+Dito.
+> +	} else if (urb->actual_length>  0) {
+> +		netdev_err(dev->netdev, "usb message length error (%u)\n",
+> +			urb->actual_length);
+> +		err =3D -EINVAL;
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +/*
+> + * start interface
+> + */
+> +static int pcan_usb_start(struct peak_usb_device *dev)
+> +{
+> +	struct pcan_usb *pdev =3D (struct pcan_usb *)dev;
+> +	int err;
+Initialize err with 0 here.
+> +
+> +	/* number of bits used in timestamps read from adapter struct */
+> +	peak_usb_init_time_ref(&pdev->time_ref,&pcan_usb);
+> +
+> +	/* if revision greater than 3, can put silent mode on/off */
+> +	if (dev->device_rev>  3) {
+> +		err =3D pcan_usb_set_silent(dev,
+> +			(dev->can.ctrlmode&  CAN_CTRLMODE_LISTENONLY));
+Remove useless brackets for ctrlmode & LISTENONLY are useless.
+> +		if (err)
+> +			goto start_failed;
+Return with err.
+> +	}
+> +
+> +	err =3D pcan_usb_set_ext_vcc(dev, 0);
+> +	if (err)
+> +		goto start_failed;
+> +
+> +	return 0;
+> +
+> +start_failed:
+Remove the 6 lines above.
+> +	return err;
+> +}
