@@ -1,57 +1,98 @@
-From: Sebastian Haas <dev@sebastianhaas.info>
-Subject: [PATCH 2/2] ems_usb: Improved memory handling on ems_usb_start
-Date: Thu, 22 Dec 2011 23:58:34 +0100
-Message-ID: <4EF3B61A.5010404@sebastianhaas.info>
+From: Grosjean Stephane <s.grosjean@peak-system.com>
+Subject: Re: [PATCH] Add PEAK System USB adapters core driver
+Date: Fri, 23 Dec 2011 10:33:48 +0100
+Message-ID: <4EF44AFC.60400@peak-system.com>
+References: <871799.098418222-sendEmail@ubuntu-i386> <4EF3A40E.4080206@sebastianhaas.info>
+Reply-To: s.grosjean@peak-system.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay01.ispgateway.de ([80.67.31.24]:39093 "EHLO
-	smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753528Ab1LVW7j (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Dec 2011 17:59:39 -0500
+Received: from mail-1d.bbox.fr ([194.158.122.56]:61973 "EHLO mail-1d.bbox.fr"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754050Ab1LWJdz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 23 Dec 2011 04:33:55 -0500
+In-Reply-To: <4EF3A40E.4080206@sebastianhaas.info>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Sebastian Haas <dev@sebastianhaas.info>
+Cc: Linux-can Mailing List <linux-can@vger.kernel.org>
 
- From 9d0d92d279255eed7f14b9fd70d1f0d181d4b301 Mon Sep 17 00:00:00 2001
-From: Sebastian Haas <dev@sebastianhaas.info>
-Date: Thu, 22 Dec 2011 23:27:47 +0100
-Subject: [PATCH 2/2] ems_usb: Improved memory handling on ems_usb_start
+Hi Sebastian,
 
-Do not return from ems_usb_start if allocation fails. If not all URBs
-could be allocated use the one already submitted.
+Le 22/12/2011 22:41, Sebastian Haas a =E9crit :
+> Hi again,
+>
+> some nitpicking this time. ;-)
+>
+=2E.. I certainly agree with you! But it's good news anyway.
 
-Signed-off-by: Sebastian Haas <dev@sebastianhaas.info>
----
-  drivers/net/can/usb/ems_usb.c |    6 ++++--
-  1 files changed, 4 insertions(+), 2 deletions(-)
+Generally speaking:
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 55ab0c4..c91c9b6 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -607,7 +607,8 @@ static int ems_usb_start(struct ems_usb *dev)
-  		if (!urb) {
-  			dev_err(netdev->dev.parent,
-  				"No memory left for URBs\n");
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			break;
-  		}
+- ok for the two missing ending \n
+- ok for strncpy instead of strcpy()
+- but what about the followings?
 
-  		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
-@@ -616,7 +617,8 @@ static int ems_usb_start(struct ems_usb *dev)
-  			dev_err(netdev->dev.parent,
-  				"No memory left for USB buffer\n");
-  			usb_free_urb(urb);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			break;
-  		}
+> +    struct can_bittiming *bt =3D&dev->can.bittiming;
+                                  ^^^ remove whitespace
+=2E..
 
-  		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
--- 
-1.7.5.4
+> +    if (sizeof_candev<  sizeof(struct peak_usb_device))
+                         ^^^^^^ cleanup
 
+=2E..
+
+> +    netdev->netdev_ops =3D&peak_usb_netdev_ops;
+                            ^^^^ whitespace
+=2E..
+
+>> +
+>> +    SET_NETDEV_DEV(netdev,&intf->dev);
+>                              ^^^
+>> +
+>> +        dev->state&=3D ~PCAN_USB_STATE_CONNECTED;
+>                          ^^^^
+>> +            if (*pc<  32 || *pc>  127)
+>                               ^^^^         ^^
+It looks like missing whitespaces sometimes, and sometimes there were=20
+too in your text... which is different from the patch I sent yesterday.=
+=20
+Or do I misunderstand your comments?
+
+>> +
+>> +    /* Last chance do send some synchronous commands here */
+>> +    err =3D driver_for_each_device(&peak_usb_driver.drvwrap.driver,=
+ NULL,
+>> +        NULL, peak_usb_do_device_exit);
+>> +    if (err)
+>> +        err =3D 0;
+> \err\ is neither checked nor printed, why not removing it?
+>
+
+Because of that (see <linux/device.h>):
+
+extern int __must_check driver_for_each_device(struct device_driver *dr=
+v,
+            ~~~~~~~~~~~~
+
+=2E.. Is there any other way to get around that?
+
+> You are mixing pr_*, dev_* and netdev_* please check if it is possibl=
+e=20
+> to harmonize the usage.
+>
+Ok I'll try do that, whenever it is possible.
+
+> Cheers,
+>  Sebastian +
+
+Thanks and regards,
+
+St=E9phane
+
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
