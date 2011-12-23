@@ -1,79 +1,113 @@
-From: dev@sebastianhaas.info
-Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Fri, 23 Dec 2011 12:48:09 +0100
-Message-ID: <9ca914fe7e4c5fb6258f102903c2816f@sebastianhaas.info>
-References: <871799.098418222-sendEmail@ubuntu-i386>
- <4EF3A40E.4080206@sebastianhaas.info> <4EF44AFC.60400@peak-system.com>
+From: Grosjean Stephane <s.grosjean@peak-system.com>
+Subject: peak_pci: device channels chained list issue (cont.)
+Date: Fri, 23 Dec 2011 13:11:23 +0100
+Message-ID: <4EF46FEB.3000200@peak-system.com>
+References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com> <4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com> <4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com> <4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com> <4EF2FA3F.3010308@grandegger.com>
+Reply-To: s.grosjean@peak-system.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay02.ispgateway.de ([80.67.31.29]:35963 "EHLO
-	smtprelay02.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756551Ab1LWLsL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 23 Dec 2011 06:48:11 -0500
-In-Reply-To: <4EF44AFC.60400@peak-system.com>
+Received: from mail-4d.bbox.fr ([194.158.122.134]:54911 "EHLO mail-4d.bbox.fr"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750915Ab1LWML3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 23 Dec 2011 07:11:29 -0500
+In-Reply-To: <4EF2FA3F.3010308@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: Linux-can Mailing List <linux-can@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
-Am 23.12.2011 10:33, schrieb Grosjean Stephane:
-> - but what about the followings?
->
->> +    struct can_bittiming *bt =&dev->can.bittiming;
->                                  ^^^ remove whitespace
-Add whitespace between = and &
-> ...
->
->> +    if (sizeof_candev<  sizeof(struct peak_usb_device))
->                         ^^^^^^ cleanup
-Add whitespace between candev and <
->
-> ...
->
->> +    netdev->netdev_ops =&peak_usb_netdev_ops;
->                            ^^^^ whitespace
-Add whitespace between = and &
-> ...
->
->>> +
->>> +    SET_NETDEV_DEV(netdev,&intf->dev);
->>                              ^^^
-Add whitespace between , and &
->>> +
->>> +        dev->state&= ~PCAN_USB_STATE_CONNECTED;
->>                          ^^^^
->>> +            if (*pc<  32 || *pc>  127)
->>                               ^^^^         ^^
-Change whitespaces to pc < 32 and pc > 127
-> It looks like missing whitespaces sometimes, and sometimes there were
-> too in your text... which is different from the patch I sent
-> yesterday. Or do I misunderstand your comments?
-Yes, this is what I meant. On some places you have too many whitespaces 
-when using operators, and sometimes they are completely missing.
+Hi Wolfgang,
 
->>> +
->>> +    /* Last chance do send some synchronous commands here */
->>> +    err = driver_for_each_device(&peak_usb_driver.drvwrap.driver, 
->>> NULL,
->>> +        NULL, peak_usb_do_device_exit);
->>> +    if (err)
->>> +        err = 0;
->> \err\ is neither checked nor printed, why not removing it?
->>
->
-> Because of that (see <linux/device.h>):
->
-> extern int __must_check driver_for_each_device(struct device_driver 
-> *drv,
->            ~~~~~~~~~~~~
->
-> ... Is there any other way to get around that?
-Then I suggest to log it.
+Well consider this patch instead (local "prev_dev" removed since not us=
+eful)
 
-I hope to find time to review the other patches on evening.
+Regards,
 
-Cheers,
-  Sebastian
+St=E9phane
+
+diff --git a/drivers/net/can/sja1000/peak_pci.c=20
+b/drivers/net/can/sja1000/peak_pci.c
+index 2c7f503..59f3fae 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -40,7 +40,7 @@ MODULE_LICENSE("GPL v2");
+
+  struct peak_pci_chan {
+  	void __iomem *cfg_base;	     /* Common for all channels */
+-	struct net_device *next_dev; /* Chain of network devices */
++	struct net_device *prev_dev; /* Chain of network devices */
+  	u16 icr_mask;		     /* Interrupt mask for fast ack */
+  };
+
+@@ -98,7 +98,7 @@ static int __devinit peak_pci_probe(struct pci_dev *p=
+dev,
+  {
+  	struct sja1000_priv *priv;
+  	struct peak_pci_chan *chan;
+-	struct net_device *dev, *dev0 =3D NULL;
++	struct net_device *dev;
+  	void __iomem *cfg_base, *reg_base;
+  	u16 sub_sys_id, icr;
+  	int i, err, channels;
+@@ -196,18 +196,14 @@ static int __devinit peak_pci_probe(struct pci_de=
+v=20
+*pdev,
+  		}
+
+  		/* Create chain of SJA1000 devices */
+-		if (i =3D=3D 0)
+-			dev0 =3D dev;
+-		else
+-			chan->next_dev =3D dev;
++		chan->prev_dev =3D pci_get_drvdata(pdev);
++		pci_set_drvdata(pdev, dev);
+
+  		dev_info(&pdev->dev,
+  			 "%s at reg_base=3D0x%p cfg_base=3D0x%p irq=3D%d\n",
+  			 dev->name, priv->reg_base, chan->cfg_base, dev->irq);
+  	}
+
+-	pci_set_drvdata(pdev, dev0);
+-
+  	/* Enable interrupts */
+  	writew(icr, cfg_base + PITA_ICR + 2);
+
+@@ -217,12 +213,12 @@ failure_remove_channels:
+  	/* Disable interrupts */
+  	writew(0x0, cfg_base + PITA_ICR + 2);
+
+-	for (dev =3D dev0; dev; dev =3D chan->next_dev) {
++	for (dev =3D pci_get_drvdata(pdev); dev; dev =3D chan->prev_dev) {
+  		unregister_sja1000dev(dev);
+  		free_sja1000dev(dev);
+  		priv =3D netdev_priv(dev);
+  		chan =3D priv->priv;
+-		dev =3D chan->next_dev;
++		dev =3D chan->prev_dev;
+  	}
+
+  	pci_iounmap(pdev, reg_base);
+@@ -241,7 +237,7 @@ failure_disable_pci:
+
+  static void __devexit peak_pci_remove(struct pci_dev *pdev)
+  {
+-	struct net_device *dev =3D pci_get_drvdata(pdev); /* First device */
++	struct net_device *dev =3D pci_get_drvdata(pdev); /* Last device */
+  	struct sja1000_priv *priv =3D netdev_priv(dev);
+  	struct peak_pci_chan *chan =3D priv->priv;
+  	void __iomem *cfg_base =3D chan->cfg_base;
+@@ -255,7 +251,7 @@ static void __devexit peak_pci_remove(struct pci_de=
+v=20
+*pdev)
+  		dev_info(&pdev->dev, "removing device %s\n", dev->name);
+  		unregister_sja1000dev(dev);
+  		free_sja1000dev(dev);
+-		dev =3D chan->next_dev;
++		dev =3D chan->prev_dev;
+  		if (!dev)
+  			break;
+  		priv =3D netdev_priv(dev);
+
