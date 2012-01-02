@@ -1,131 +1,94 @@
-From: Wolfgang Zarre <info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add
- legacy ISA bus driver for the CC770 and AN82527
-Date: Sat, 31 Dec 2011 10:39:35 +0100
-Message-ID: <4EFED857.3000701@essax.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
-	<1322214204-1121-3-git-send-email-wg@grandegger.com>
-	<4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com>
-	<4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com>
-	<4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com>
-	<4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com>
-	<4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com>
-	<4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com>
-	<4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com>
-	<4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com>
-	<4EF2FA3F.3010308@grandegger.com> <4EF32E84.1080006@essax.com>
-Reply-To: info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org
+From: Sebastian Haas <dev@sebastianhaas.info>
+Subject: [ANNOUNCEMENT] CAN restbus-simulation the Node-way
+Date: Mon, 02 Jan 2012 13:59:36 +0100
+Message-ID: <4F01AA38.7010203@sebastianhaas.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <4EF32E84.1080006-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtprelay05.ispgateway.de ([80.67.31.97]:49286 "EHLO
+	smtprelay05.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751287Ab2ABM7l (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jan 2012 07:59:41 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: socketcan-users@lists.berlios.de
 
-Hello Wolfgang,
+Hello everybody,
 
-> Hello Wolfgang,
->> Hi Wolfgang,
->>
->> On 12/21/2011 07:32 PM, Wolfgang Zarre wrote:
->>> Hello Wolfgang,
->> ...
->>
->>
->> Again, please check if you have netif_start_queue() at the end of the
->> open function.
->>
->
-> As said I'm using eec921ac28fde243456078a557768808d93d94a3
->
-> However, I'll try further to investigate that issue due the fact having it
-> running with my lincan without problems and therefore it should be possible
-> to find the problem.
->
+I've recently started to work on restbus-simulation based on SocketCAN. 
+Since it is now somewhat useable I decided to announce it here to find 
+some advise and helpers to proceed even faster.
 
-I found the problem which was then at the end quite simple to understand why it
-get stuck due the fact not receiving an interrupt for TX and due that no
-reactivation of the queue.
+The preliminary name is RestCAN. It basically consists of a set of Node 
+modules (nodejs.org), which enable the user to develop the behaviour of 
+CAN node within a "simple to write" Javascript.
 
-I think that maybe also the hacks in the TX functions are obsolete with the
-fix assuming that the repeated interrupts just happen by indirect access.
+Background
+==========
+The idea was born because of my personal need to test CAN nodes by 
+simulating certain parts of a network. And I also wanted to have a 
+simple to use sandbox to implement and test new protocols or control 
+algorithms.
 
-Here my fix which worked for me:
---------------------------------------------------------------------------------------------------------
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 2d12f89..dad6707 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -460,15 +460,6 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
+I decided to use Javascript because this language is subject of current 
+optimization efforts (Webkit, V8, SpiderMonkey). To provide and powerful 
+development environment I switched to use NodeJS instead of using V8 
+from scratch. NodeJS is a asynchronous event oriented Javascript 
+environment with tons of third party modules (NPM) and a good subset of 
+builtin utilities (File I/O, TCP/UDP, HTTP, IPC, ...).
 
-  	stats->tx_bytes += dlc;
+Current status
+==============
+The current status is a Node module to work with raw channels, so a user 
+can write a script to send and receive raw CAN messages.
 
--
--	/*
--	 * HM: We had some cases of repeated IRQs so make sure the
--	 * INT is acknowledged I know it's already further up, but
--	 * doing again fixed the issue
--	 */
--	cc770_write_reg(priv, msgobj[mo].ctrl0,
--			MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
--
-  	return NETDEV_TX_OK;
-  }
+Example
+=======
+	var can = require('../build/Release/can');
+	var channel = can.createRawChannel("vcan0");
 
-@@ -689,12 +680,6 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
-  	/* Nothing more to send, switch off interrupts */
-  	cc770_write_reg(priv, msgobj[mo].ctrl0,
-  			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
--	/*
--	 * We had some cases of repeated IRQ so make sure the
--	 * INT is acknowledged
--	 */
--	cc770_write_reg(priv, msgobj[mo].ctrl0,
--			MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
+	// Start communication
+	channel.start();
 
-  	stats->tx_packets++;
-  	can_get_echo_skb(dev, 0);
-diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
-index 4be5fe2..48fc128 100644
---- a/drivers/net/can/cc770/cc770_isa.c
-+++ b/drivers/net/can/cc770/cc770_isa.c
-@@ -148,8 +148,7 @@ static void cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
-  {
-  	unsigned long base = (unsigned long)priv->reg_base;
+	// Send a CAN message in EFF
+	channel.send({ id: 12, ext: true, data: [ 1,2,3,4,5,6,7,8 ] });
 
--	outb(reg, base);
--	outb(val, base + 1);
-+	outw( reg + ( val << 8), base);
-  }
+	// Register a listener for incoming messages
+	channel.addListener("onMessage",
+		function(msg) {
+			console.log("Message received");
+			console.log(msg);
+		});
 
-  static int __devinit cc770_isa_probe(struct platform_device *pdev)
+Planned features
+================
+Next step is to support specifing Rx filters and support BCM and ISOTP 
+channels.
 
----------------------------------------------------------------------------------------------
+To make it a real restbus-simulation I plan to implement a CAN database 
+service to receive and decode signals within CAN messages and also to 
+generate CAN messages out of the CAN database.
 
+Performance
+===========
+A last note about performance, I know some people may have critic 
+thoughts one performance if they hear Javascript. I made some short test 
+here and I was able to receive roughly 9k msgs/s (cangen vcan0 -g 0 -i) 
+within a VirtualBox VM with a Core i5 running at 2.8GHz. Another script 
+was able to generate 7k msgs/s on the same machine. I'm okay with this 
+results so far since nothing is optimized yet. Since Node has already 
+proved its performance in certain setups I'm quite confident we can gain 
+more performance.
 
-Please let me know if this is OK for You, maybe You can do some tests as well.
+Help
+====
+You see it is a lot of stuff to do here, so any help is really 
+appreciated. Due to lack of real CAN hardware here, I also appreciate 
+any help to test restcan with real CAN hardware.
 
-Would continue then with further tests regarding error conditions, however
-I realised another small issue with dropped packages at reception.
+The project is hosted on github: https://github.com/sebi2k1/restcan
 
-As soon as You read the first time from the socket and then You stop reading
-the packages are not counted as 'dropped' any more which is IMHO not correct
-because as soon as You stop reading they should be counted as dropped again.
-
-
->> Wolfgang.
->
-> Wolfgang
-
-Wolfgang
+Cheers,
+  Sebastian
