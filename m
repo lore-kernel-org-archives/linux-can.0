@@ -1,34 +1,52 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] CAN MAINTAINERS update
-Date: Tue, 03 Jan 2012 11:26:56 -0800
-Message-ID: <1325618816.24257.5.camel@joe2Laptop>
-References: <4F034B9C.2030106@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH] fix CAN MAINTAINERS SCM tree type
+Date: Tue, 03 Jan 2012 20:55:58 +0100
+Message-ID: <4F035D4E.2070108@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4F034B9C.2030106@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, Urs Thuermann <urs.thuermann@volkswagen.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:55970 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751109Ab2ACT4E (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jan 2012 14:56:04 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Linux Netdev List <netdev@vger.kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, Urs Thuermann <urs.thuermann@volkswagen.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Joe Perches <joe@perches.com>
 
-On Tue, 2012-01-03 at 19:40 +0100, Oliver Hartkopp wrote:
-> Update the CAN MAINTAINERS section:
-> - add CAN development git repository URL to submit patches
-[]
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -1698,11 +1698,9 @@ F:	arch/x86/include/asm/tce.h
->  CAN NETWORK LAYER
-[]
-> +T:	git://gitorious.org/linux-can/linux-can-next.git
-[]
-> @@ -1713,9 +1711,10 @@ F:	include/linux/can/gw.h
->  CAN NETWORK DRIVERS
-[]
-> +T:	git://gitorious.org/linux-can/linux-can-next.git
+As pointed out by Joe Perches the SCM tree type was missing in my patch.
 
-Both of the "T:" lines should be:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-T:	git git://gitorious.org/linux-can/linux-can-next.git
+CC: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+CC: Urs Thuermann <urs.thuermann@volkswagen.de>
+CC: Wolfgang Grandegger <wg@grandegger.com>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: linux-can@vger.kernel.org
+
+---
+
+diff -u -r a/MAINTAINERS b/MAINTAINERS
+--- a/MAINTAINERS	2012-01-03 20:48:07.160746574 +0100
++++ b/MAINTAINERS	2012-01-03 20:48:51.208745047 +0100
+@@ -1700,7 +1700,7 @@
+ M:	Oliver Hartkopp <socketcan@hartkopp.net>
+ L:	linux-can@vger.kernel.org
+ W:	http://gitorious.org/linux-can
+-T:	git://gitorious.org/linux-can/linux-can-next.git
++T:	git git://gitorious.org/linux-can/linux-can-next.git
+ S:	Maintained
+ F:	net/can/
+ F:	include/linux/can.h
+@@ -1714,7 +1714,7 @@
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+ L:	linux-can@vger.kernel.org
+ W:	http://gitorious.org/linux-can
+-T:	git://gitorious.org/linux-can/linux-can-next.git
++T:	git git://gitorious.org/linux-can/linux-can-next.git
+ S:	Maintained
+ F:	drivers/net/can/
+ F:	include/linux/can/dev.h
+
+
