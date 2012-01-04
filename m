@@ -1,138 +1,97 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Wed, 04 Jan 2012 14:10:52 +0100
-Message-ID: <4F044FDC.60303@grandegger.com>
-References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com> <4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com> <4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com> <4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com> <4EF2FA3F.3010308@grandegger.com> <4EF32E84.1080006@essax.com> <4EFED857.3000701@essax.com>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: recv list
+Date: Wed, 4 Jan 2012 16:28:46 +0000 (UTC)
+Message-ID: <loom.20120104T160223-182@post.gmane.org>
+References: <20111220150545.GC311@e-circ.dyndns.org> <loom.20111220T160841-487@post.gmane.org> <20111220163247.GE311@e-circ.dyndns.org> <loom.20111221T111539-419@post.gmane.org> <20111221134302.GA12050@e-circ.dyndns.org> <loom.20111221T153828-216@post.gmane.org> <20111221155314.GC12050@e-circ.dyndns.org> <loom.20111222T115004-22@post.gmane.org> <20111223110445.GB12091@e-circ.dyndns.org> <loom.20111228T114009-686@post.gmane.org> <20120104094715.GB320@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:38552 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754438Ab2ADNLD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jan 2012 08:11:03 -0500
-In-Reply-To: <4EFED857.3000701@essax.com>
+Received: from lo.gmane.org ([80.91.229.12]:43086 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752224Ab2ADQ3D (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 4 Jan 2012 11:29:03 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RiTi0-00066R-Go
+	for linux-can@vger.kernel.org; Wed, 04 Jan 2012 17:29:00 +0100
+Received: from p549CDCE8.dip.t-dialin.net ([84.156.220.232])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 04 Jan 2012 17:29:00 +0100
+Received: from wutz by p549CDCE8.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 04 Jan 2012 17:29:00 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@essax.com
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>
+To: linux-can@vger.kernel.org
 
-Hi Wolfgang,
+Hi,
 
-On 12/31/2011 10:39 AM, Wolfgang Zarre wrote:
-> Hello Wolfgang,
-> 
->> Hello Wolfgang,
->>> Hi Wolfgang,
->>>
->>> On 12/21/2011 07:32 PM, Wolfgang Zarre wrote:
->>>> Hello Wolfgang,
->>> ...
->>>
->>>
->>> Again, please check if you have netif_start_queue() at the end of the
->>> open function.
->>>
->>
->> As said I'm using eec921ac28fde243456078a557768808d93d94a3
->>
->> However, I'll try further to investigate that issue due the fact
->> having it
->> running with my lincan without problems and therefore it should be
->> possible
->> to find the problem.
->>
-> 
-> I found the problem which was then at the end quite simple to understand
-> why it
-> get stuck due the fact not receiving an interrupt for TX and due that no
-> reactivation of the queue.
-> 
-> I think that maybe also the hacks in the TX functions are obsolete with the
-> fix assuming that the repeated interrupts just happen by indirect access.
+OK, I create 1 socket for one source address (what is the maximum of pgns per 
+socket?). 
+So if I use recvfrom for one specific pgn - while waiting for that specific pgn
+the other pgns from that src address are stored in the buffer of the socket and
+will be later "recvfrom"? So no can frame will be lost?
 
-OK, to understand you correctly...
+Am I right, with this, only the j1939 frame with id<0x19233000> should be
+received, but nothing is done, (just waiting for anything), what have I done 
+wrong?
 
-> Here my fix which worked for me:
-> --------------------------------------------------------------------------------------------------------
-> 
-> diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-> index 2d12f89..dad6707 100644
-> --- a/drivers/net/can/cc770/cc770.c
-> +++ b/drivers/net/can/cc770/cc770.c
-> @@ -460,15 +460,6 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff
-> *skb, struct net_device *dev)
-> 
->      stats->tx_bytes += dlc;
-> 
-> -
-> -    /*
-> -     * HM: We had some cases of repeated IRQs so make sure the
-> -     * INT is acknowledged I know it's already further up, but
-> -     * doing again fixed the issue
-> -     */
-> -    cc770_write_reg(priv, msgobj[mo].ctrl0,
-> -            MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
-> -
->      return NETDEV_TX_OK;
->  }
-> 
-> @@ -689,12 +680,6 @@ static void cc770_tx_interrupt(struct net_device
-> *dev, unsigned int o)
->      /* Nothing more to send, switch off interrupts */
->      cc770_write_reg(priv, msgobj[mo].ctrl0,
->              MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
-> -    /*
-> -     * We had some cases of repeated IRQ so make sure the
-> -     * INT is acknowledged
-> -     */
-> -    cc770_write_reg(priv, msgobj[mo].ctrl0,
-> -            MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
-> 
->      stats->tx_packets++;
->      can_get_echo_skb(dev, 0);
-> diff --git a/drivers/net/can/cc770/cc770_isa.c
-> b/drivers/net/can/cc770/cc770_isa.c
-> index 4be5fe2..48fc128 100644
-> --- a/drivers/net/can/cc770/cc770_isa.c
-> +++ b/drivers/net/can/cc770/cc770_isa.c
-> @@ -148,8 +148,7 @@ static void cc770_isa_port_write_reg_indirect(const
-> struct cc770_priv *priv,
->  {
->      unsigned long base = (unsigned long)priv->reg_base;
-> 
-> -    outb(reg, base);
-> -    outb(val, base + 1);
-> +    outw( reg + ( val << 8), base);
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <string.h>
+#include <linux/can/j1939.h>
+#include <linux/can.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <sys/types.h>
 
-That modification does fix your problem, right? The others above don't
-help nor harm but we don't know if it's really realted to the same
-problem. I wll dig a bit deeper.
 
->  }
-> 
->  static int __devinit cc770_isa_probe(struct platform_device *pdev)
-> 
-> ---------------------------------------------------------------------------------------------
-> 
-> 
-> 
-> Please let me know if this is OK for You, maybe You can do some tests as
-> well.
 
-My board does not use indirect accesses.
+int main (void)
+{
+	int s;
+	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+	    
+	struct sockaddr_can addr;
 
-> Would continue then with further tests regarding error conditions, however
-> I realised another small issue with dropped packages at reception.
-> 
-> As soon as You read the first time from the socket and then You stop
-> reading
-> the packages are not counted as 'dropped' any more which is IMHO not
-> correct
-> because as soon as You stop reading they should be counted as dropped
-> again.
+    memset(&addr, 0, sizeof(addr));
+    addr.can_ifindex = if_nametoindex("can0");
+    addr.can_addr.j1939.name = J1939_NO_NAME;    
+    addr.can_addr.j1939.addr = 0x00;
+    addr.can_addr.j1939.pgn = J1939_NO_PGN;
+    addr.can_family = AF_CAN;  
+   
+   
+    if (bind(s, (void *)&addr, sizeof(addr))<0)
+    	{
+    		perror ("bind failed");
+        	}
+   
+   
+	struct can_frame frame      	
+   
+   struct sockaddr_can dest_addr;
+   
+   memset(&dest_addr, 0, sizeof(dest_addr));
+   dest_addr.can_family = AF_CAN;
+   dest_addr.can_addr.j1939.name = J1939_NO_NAME;
+   dest_addr.can_addr.j1939.addr = 0x30;
+   dest_addr.can_addr.j1939.pgn = 0x12300;
+   
+    	if (recvfrom(s, frame.data, sizeof(frame.data), 0, (void *)&dest_addr,\
+ sizeof(dest_addr))<0)
+		{
+  	 	perror ("recvfrom failed");
+  	 	}
+   		 
+  return 0;
+}
 
-Will have a closer look now...
 
-Wolfgang.
+Wolfgang
+
+
+
