@@ -1,128 +1,115 @@
-From: Wolfgang <wutz@unterderbruecke.de>
-Subject: Re: recv list
-Date: Thu, 5 Jan 2012 10:55:19 +0000 (UTC)
-Message-ID: <loom.20120105T113439-912@post.gmane.org>
-References: <20111220163247.GE311@e-circ.dyndns.org> <loom.20111221T111539-419@post.gmane.org> <20111221134302.GA12050@e-circ.dyndns.org> <loom.20111221T153828-216@post.gmane.org> <20111221155314.GC12050@e-circ.dyndns.org> <loom.20111222T115004-22@post.gmane.org> <20111223110445.GB12091@e-circ.dyndns.org> <loom.20111228T114009-686@post.gmane.org> <20120104094715.GB320@e-circ.dyndns.org> <loom.20120104T160223-182@post.gmane.org> <20120104204151.GA306@e-circ.dyndns.org>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add
+ legacy ISA bus driver for the CC770 and AN82527
+Date: Thu, 05 Jan 2012 12:51:49 +0100
+Message-ID: <4F058ED5.2000407@grandegger.com>
+References: <1322214204-1121-1-git-send-email-wg@grandegger.com>
+	<1322214204-1121-3-git-send-email-wg@grandegger.com>
+	<4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com>
+	<4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com>
+	<4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com>
+	<4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com>
+	<4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com>
+	<4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com>
+	<4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com>
+	<4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com>
+	<4EF2FA3F.3010308@grandegger.com> <4EF32E84.1080006@essax.com>
+	<4EFED857.3000701@essax.com> <4F044FDC.60303@grandegger.com>
+	<4F051927.8010600@essax.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:51766 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754898Ab2AEKzf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 5 Jan 2012 05:55:35 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Rikyr-0006NL-Af
-	for linux-can@vger.kernel.org; Thu, 05 Jan 2012 11:55:33 +0100
-Received: from p549CCB0B.dip.t-dialin.net ([84.156.203.11])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 05 Jan 2012 11:55:33 +0100
-Received: from wutz by p549CCB0B.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 05 Jan 2012 11:55:33 +0100
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <4F051927.8010600-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: info-PyqsHJVlJN8AvxtiuMwx3w@public.gmane.org
+Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-OK, I hope I understood it right now, 'recvfrom' returns me more information 
-than 'recv', I thought I can filter with it. But I have to do this before with 
-struct 'j1939_filter' and 'setsockopt' to choose which frames from the bus are 
-cared about.
+Hi Wolfgang,
 
-So if I unterstand it right this should bridge from can0 to can1 and if the 
-sender is 0x30 it prints the first data byte?
+On 01/05/2012 04:29 AM, Wolfgang Zarre wrote:
+> Hello Wolfgang,
+> 
+>> Hi Wolfgang,
+...
+>>> diff --git a/drivers/net/can/cc770/cc770_isa.c
+>>> b/drivers/net/can/cc770/cc770_isa.c
+>>> index 4be5fe2..48fc128 100644
+>>> --- a/drivers/net/can/cc770/cc770_isa.c
+>>> +++ b/drivers/net/can/cc770/cc770_isa.c
+>>> @@ -148,8 +148,7 @@ static void cc770_isa_port_write_reg_indirect(const
+>>> struct cc770_priv *priv,
+>>>   {
+>>>       unsigned long base = (unsigned long)priv->reg_base;
+>>>
+>>> -    outb(reg, base);
+>>> -    outb(val, base + 1);
+>>> +    outw( reg + ( val<<  8), base);
+>>
+>> That modification does fix your problem, right? The others above don't
+>> help nor harm but we don't know if it's really realted to the same
+>> problem. I wll dig a bit deeper.
+> 
+> Exactly. The others above I removed because facing the opposite, even
+> missing interrupts but then just to avoid other possible side effects
+> and then assuming that they might be related.
 
+OK. My concern: Can we be sure that 16bit accesses are always supported
+by the hardware? Does a spinlock_irqsave/spinlock_irqrestore around the
+8bit accesses already help?
 
-#include <sys/ioctl.h>
-#include <net/if.h>
-#include <string.h>
-#include <linux/can/j1939.h>
-#include <linux/can.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <stdio.h>
-#include <sys/types.h>
+About the "HM:" fixes, I did not find any info in the svn log. Maybe
+Oliver knows why they have been added.
 
+>>
+>>>   }
+>>>
+>>>   static int __devinit cc770_isa_probe(struct platform_device *pdev)
+>>>
+>>> ---------------------------------------------------------------------------------------------
+>>>
+>>>
+>>>
+>>>
+>>> Please let me know if this is OK for You, maybe You can do some tests as
+>>> well.
+>>
+>> My board does not use indirect accesses.
+>>
+> 
+> Ah Ok, I see, but let me know if I may help with additional tests You would
+> like to have beside the other mentioned tests as long as I have the
+> hardware.
 
-int main (void)
-{
-	int s;
-	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
-	    
-	struct sockaddr_can addr;
+I will do some test anyway.
 
-    memset(&addr, 0, sizeof(addr));
-    addr.can_ifindex = if_nametoindex("can0");
-    addr.can_addr.j1939.name = J1939_NO_NAME;    
-    addr.can_addr.j1939.addr = 0x00;
-    addr.can_addr.j1939.pgn = J1939_NO_PGN;
-    addr.can_family = AF_CAN;  
-   
-   
-    if (bind(s, (void *)&addr, sizeof(addr))<0)
-    	{
-    		perror ("bind failed");
-        	}
-        	
-     
-    int s2;
-	s2 = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
-	
-	struct sockaddr_can addr2;	
-	   
-    memset(&addr2, 0, sizeof(addr2));
-    addr2.can_ifindex = if_nametoindex("can1");
-    addr2.can_addr.j1939.name = J1939_NO_NAME;    
-    addr2.can_addr.j1939.addr = 0x3D;
-    addr2.can_addr.j1939.pgn = J1939_NO_PGN;
-    addr2.can_family = AF_CAN;  
-   
-   
-    if (bind(s2, (void *)&addr2, sizeof(addr2))<0)
-    	{
-    		perror ("bind2 failed");
-        	}
-        	
-    int ret;
-	socklen_t len; 
-	struct sockaddr_can src_addr;
-	char buf[128];
-	src_addr.can_family = AF_CAN;
+>>> Would continue then with further tests regarding error conditions,
+>>> however
+>>> I realised another small issue with dropped packages at reception.
+>>>
+>>> As soon as You read the first time from the socket and then You stop
+>>> reading
+>>> the packages are not counted as 'dropped' any more which is IMHO not
+>>> correct
+>>> because as soon as You stop reading they should be counted as dropped
+>>> again.
+>>
+>> Will have a closer look now...
+> 
+> Thanks a lot.
+> Also I'll inform You as soon as I can continue with some further tests
+> regarding bus states and error counters and maybe also with patches in
+> case I have.
 
+No hurry... I'm first awaiting some patches to go mainline.
 
-	while (1) {
-		len = sizeof(src_addr);
-		ret = recvfrom(s, buf, sizeof(buf), 0, (void *)&src_addr, &len);
-		
-		if (ret < 0)
-		perror ("recvfrom failed");
-
-		/*if the frame is sent by 0x30 do this*/
-		if (src_addr.can_addr.j1939.addr == 0x30)
-		{
-			printf("%x\n", buf[0]);
-			
-			if (sendto(s2, buf, ret, 0, (void *)&src_addr, len) < 0)
-				perror("sendto failed");
-						
-		}
-		
-		/*else just bridge it*/
-		else 
-		{
-			if (sendto(s2, buf, ret, 0, (void *)&src_addr, len) < 0)
-				perror("sendto failed");
-		}
-
-	}
-
-  		 
-  return 0;
-}
-
-
-Thanks so far!
-
-
+Wolfgang.
