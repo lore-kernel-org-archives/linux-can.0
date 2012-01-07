@@ -1,44 +1,30 @@
-From: Wolfgang <wutz@unterderbruecke.de>
-Subject: Re: recv list
-Date: Fri, 6 Jan 2012 18:25:59 +0000 (UTC)
-Message-ID: <loom.20120106T190304-160@post.gmane.org>
-References: <20111221155314.GC12050@e-circ.dyndns.org> <loom.20111222T115004-22@post.gmane.org> <20111223110445.GB12091@e-circ.dyndns.org> <loom.20111228T114009-686@post.gmane.org> <20120104094715.GB320@e-circ.dyndns.org> <loom.20120104T160223-182@post.gmane.org> <20120104204151.GA306@e-circ.dyndns.org> <loom.20120105T113439-912@post.gmane.org> <20120105120930.GA372@e-circ.dyndns.org> <loom.20120105T215714-788@post.gmane.org> <20120106122550.GA17043@e-circ.dyndns.org>
-Mime-Version: 1.0
+From: Xi Wang <xi.wang@gmail.com>
+Subject: Re: [PATCH] pch_can: fix error passive level test
+Date: Sat, 7 Jan 2012 18:47:33 -0500
+Message-ID: <5E853DA0-2F5E-452A-8588-2B8616E971D7@gmail.com>
+References: <1323674180-16916-1-git-send-email-xi.wang@gmail.com> <4EE5B5D9.3030702@grandegger.com> <4EE5C6A7.1070506@pengutronix.de> <4EE5C9F2.7050502@grandegger.com> <4EE5CBBD.4050206@pengutronix.de> <4EE5CE71.5050004@grandegger.com>
+Mime-Version: 1.0 (Apple Message framework v1084)
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:43293 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758961Ab2AFS0Q (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 6 Jan 2012 13:26:16 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1RjEUY-00007H-Nc
-	for linux-can@vger.kernel.org; Fri, 06 Jan 2012 19:26:14 +0100
-Received: from p549CCB01.dip.t-dialin.net ([84.156.203.1])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 06 Jan 2012 19:26:14 +0100
-Received: from wutz by p549CCB01.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 06 Jan 2012 19:26:14 +0100
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:50401 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751889Ab2AGXri (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 7 Jan 2012 18:47:38 -0500
+In-Reply-To: <4EE5CE71.5050004@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Masayuki Ohtake <masa-korg@dsn.okisemi.com>, Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 
-> tried 'jspy' yet?
+On Dec 12, 2011, at 4:50 AM, Wolfgang Grandegger wrote:
+> On 12/12/2011 10:39 AM, Marc Kleine-Budde wrote:
+>> 
+>> Even for all trees which contain this driver (in a working version),
+>> which is v2.6.38 and newer.
+> 
+> OK, Well, it's not a serious fix, at least.
 
-It is not possible because at the moment I am working with a simulation tool,
-to get out how things are working, is this a problem?
+Should I resend the patch and cc to stable?  Thanks.
 
-Now I have a different question, is it possible to bind different sockets with
-different src.addr to one interface. Because it is saying 'bind failed: Device 
-or resource busy' if I want to do this ('$ip addr add j1939 0x01 dev can0' is 
-working, of course) Or do I have to do this with recvmsg()? 
-Because as you know I want keep the various src address'.
-
-Kind regards,
-Wolfgang
-
-
-
+- xi
