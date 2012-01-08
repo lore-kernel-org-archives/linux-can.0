@@ -1,30 +1,78 @@
-From: Xi Wang <xi.wang@gmail.com>
-Subject: Re: [PATCH] pch_can: fix error passive level test
-Date: Sat, 7 Jan 2012 18:47:33 -0500
-Message-ID: <5E853DA0-2F5E-452A-8588-2B8616E971D7@gmail.com>
-References: <1323674180-16916-1-git-send-email-xi.wang@gmail.com> <4EE5B5D9.3030702@grandegger.com> <4EE5C6A7.1070506@pengutronix.de> <4EE5C9F2.7050502@grandegger.com> <4EE5CBBD.4050206@pengutronix.de> <4EE5CE71.5050004@grandegger.com>
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Type: text/plain; charset=us-ascii
+From: PRIZE <Martine.Sennegon-Meslem@univ-paris1.fr>
+Subject: {Spam?}
+Date: Sun, 08 Jan 2012 17:18:29 +0100
+Message-ID: <20120108171829.bgr4m7oj23qecwsw__41206.0129260228$1326040224$gmane$org@courrier.univ-paris1.fr>
+Reply-To: googlelott_ery@hotmail.co.uk
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="=_aexiwbgnwt4"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:50401 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751889Ab2AGXri (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 7 Jan 2012 18:47:38 -0500
-In-Reply-To: <4EE5CE71.5050004@grandegger.com>
+Received: from mx1.univ-paris1.fr ([193.55.96.129]:38962 "EHLO
+	mx1.univ-paris1.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754015Ab2AHQaP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 8 Jan 2012 11:30:15 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Masayuki Ohtake <masa-korg@dsn.okisemi.com>, Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 
-On Dec 12, 2011, at 4:50 AM, Wolfgang Grandegger wrote:
-> On 12/12/2011 10:39 AM, Marc Kleine-Budde wrote:
->> 
->> Even for all trees which contain this driver (in a working version),
->> which is v2.6.38 and newer.
-> 
-> OK, Well, it's not a serious fix, at least.
+This message is in MIME format.
 
-Should I resend the patch and cc to stable?  Thanks.
+--=_aexiwbgnwt4
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
-- xi
+
+
+-- 
+Ce message a ete verifie par MailScanner
+pour des virus ou des polluriels et rien de
+suspect n'a ete trouve.
+
+
+--=_aexiwbgnwt4
+Content-Type: application/msword;
+	name="prize.rtf"
+Content-Disposition: attachment;
+	filename="prize.rtf"
+Content-Transfer-Encoding: base64
+
+e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzE2MzkzXGRl
+ZmxhbmdmZTE2Mzkze1xmb250dGJse1xmMFxmbW9kZXJuXGZwcnExXGZjaGFy
+c2V0MCBDb3VyaWVyIE5ldzt9e1xmMVxmcm9tYW5cZnBycTJcZmNoYXJzZXQw
+IFRpbWVzIE5ldyBSb21hbjt9e1xmMlxmc3dpc3NcZnBycTJcZmNoYXJzZXQw
+IEFyaWFsO317XGYzXGZzd2lzc1xmcHJxMlxmY2hhcnNldDAgQ2FsaWJyaTt9
+fQ0Ke1xjb2xvcnRibCA7XHJlZDBcZ3JlZW4wXGJsdWUwO1xyZWQyNTVcZ3Jl
+ZW4wXGJsdWUwO30NCntcKlxnZW5lcmF0b3IgTXNmdGVkaXQgNS40MS4yMS4y
+NTA5O31cdmlld2tpbmQ0XHVjMVxwYXJkXG5vd2lkY3RscGFyXHFjXGNmMVxs
+YW5nOVxiXGYwXGZzMjQgIFRoaXMgaXNcfnRvIGluZm9ybSB5b3UgdGhhdCB5
+b3VyIGVtYWlsIGFkZHJlc3MgaGFzIHdvbiBwcml6ZSBtb25leSBvZlx+KFxj
+ZjJcZnMyN1wnYTM1MDAsMDAwLjAwXGNmMVxmczI0ICkgR0JQIGZvciBiZWVu
+IGFuIGFjdGl2ZSB3ZWIgZW1haWwgdXNlci4gVGhpcyBMb3R0ZXJ5XH5wcm9t
+b3Rpb24gd2FzIG9yZ2FuaXplZCBieSBHb29nbGUgR21haWwgJiBSZWRpZmZt
+YWlsIExPVFRFUlkgSU5DICYgV0lORE9XUyBMSVZFLlxjZjBcYjBcZjFccGFy
+DQpcY2YxXGJcZjBccGFyDQpBIGNoZXF1ZSBvZiA1MDAsMDAwLjAwIEdCUCBo
+YXMgYmVlbiBpc3N1ZWQgYWdhaW5zdCB5b3VyIHdpbm5pbmcgZW1haWwgYW5k
+IGhhcyBiZWVuIGZvcndhcmQgdG8gRmFpciBXYXlzIENvdXJpZXIgQ29tcGFu
+eSBmb3IgZGVsaXZlcnkgdG8geW91ciBjb3VudHJ5IG9mIHJlc2lkZW5jZS5c
+cGFyDQpccGFyZFxub3dpZGN0bHBhciBZb3UgYXJlIHJlcXVpcmVkIHRvIGNv
+bnRhY3QgRkFJUldBWVMgQ09VUklFUiBDT01QQU5ZIHZpYSBlbWFpbCB3aXRo
+IHRoZSBkZXRhaWxzIGJlbG93IHRvIGNsYWltIHlvdXIgd2lubmluZ3NccGFy
+DQpccGFyDQoxLiBGdWxsIG5hbWU6XHBhcg0KMi4gQ29udGFjdCBBZGRyZXNz
+OlxjZjBcZnMyMiAgICAgICAgICAgICAgICAgICAgXGIwXGYxXHBhcg0KXGNm
+MVxiXGYwXGZzMjQgMy4gQWdlOlxmMVxwYXINClxmMCA0LiBUZWxlcGhvbmUg
+TnVtYmVyOlxwYXINCjUuIFNleDpccGFyDQo2LiBPY2N1cGF0aW9uOlxwYXIN
+CjcuIFN0YXRlOlxwYXINCjguIENvdW50cnk6XHBhcg0KOS4gTmF0aW9uYWxp
+dHk6XHBhcg0KICAgICAgICAgICAgICAgICBccGFyDQpOYW1lOlxjZjIgIE1y
+LkNveCBSb29uZXlcY2YxICBccGFyDQpcY2YyIENvbnRhY3Q6XGIwXGYyXGZz
+MjAgZ29vZ2xlbG90dF9lcnlAaG90bWFpbC5jby51a1xiXGYwXGZzMjRccGFy
+DQogICAgICAgICAgICAgICAgICAgIFxjZjFcYjBcZjJcZnMyMFx+XGNmMFxm
+MVxmczI0XHBhcg0KXGNmMVxiXGYwIFRoYW5rIHlvdSBhbmQgYWNjZXB0IG15
+IGhlYXJ0eSBjb25ncmF0dWxhdGlvbnMgb25jZSBhZ2FpbiFcflx+XGNmMFxi
+MFxmM1xmczIyXHBhcg0KfQ0KAA==
+
+--=_aexiwbgnwt4--
+
