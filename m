@@ -1,71 +1,45 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: What about closing the SocketCAN BerloOS mailing lists...
-Date: Tue, 10 Jan 2012 16:19:20 +0100
-Message-ID: <4F0C56F8.8010105@pengutronix.de>
-References: <4F0C2026.7070608@grandegger.com>	<20120110150706.GC2524@e-circ.dyndns.org> <4F0C5581.5050709@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] Add PEAK System USB adapters core driver
+Date: Tue, 10 Jan 2012 16:22:33 +0100
+Message-ID: <4F0C57B9.2020204@hartkopp.net>
+References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig562ABFF5BE101D3157A3FB56"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47238 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756417Ab2AJPT0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 10:19:26 -0500
-In-Reply-To: <4F0C5581.5050709@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:55508 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756390Ab2AJPXB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 10:23:01 -0500
+In-Reply-To: <4F0C102D.5060304@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, SocketCAN Core Mailing List <socketcan-core@lists.berlios.de>, Urs Thuermann <urs@isnogud.escape.de>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>, Linux CAN mailing list <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig562ABFF5BE101D3157A3FB56
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 10.01.2012 11:17, Wolfgang Grandegger wrote:
 
-On 01/10/2012 04:13 PM, Oliver Hartkopp wrote:
-> On 10.01.2012 16:07, Kurt Van Dijck wrote:
->=20
->> On Tue, Jan 10, 2012 at 12:25:26PM +0100, Wolfgang Grandegger wrote:
->>> Hello,
->>>
->>> I think we do not want to support and maintain the SocketCAN maling l=
-ist
->>> any longer, also to avoid ugly cross-posting. It would be nice if we
->>> could enable some kind of auto-responder on the BerliOS mailing lists=
-
->>> telling people to switch to the linux-can ml. Note sure if that is
->>> possible though?
->>>
->>> What do you think?
->> I agree with your opinion.
->=20
->=20
-> Me too.
-
-+1
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>>  drivers/net/can/usb/Kconfig                  |    1 +
+>>  drivers/net/can/usb/Makefile                 |    1 +
+>>  drivers/net/can/usb/peak_usb/Kconfig         |   19 +
+>>  drivers/net/can/usb/peak_usb/Makefile        |   10 +
+>>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |  893 ++++++++++++++++++++++++++
+>>  drivers/net/can/usb/peak_usb/peak_usb.h      |  149 +++++
+>>  6 files changed, 1073 insertions(+), 0 deletions(-)
+>>  create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
+>>  create mode 100644 drivers/net/can/usb/peak_usb/Makefile
+>>  create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> 
+> Why not naming the file peak_usb.c? You already use "peak_usb" for the
+> header file as function prefix inside!
 
 
---------------enig562ABFF5BE101D3157A3FB56
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+AFAIR the driver built results in peak_usb.ko
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+And the driver contains the pcan_usb.c and pcan_usb_pro.c
 
-iEYEARECAAYFAk8MVvsACgkQjTAFq1RaXHMWPACfWI4Xg0TApdto4HnpGs1kTMxO
-KYUAn2gNEAfJtbDgKTYCVJOdItX/67R4
-=9mzS
------END PGP SIGNATURE-----
+If it's possible from the build process pcan_usb_core.c should be renamed to
+peak_usb.c - that's right.
 
---------------enig562ABFF5BE101D3157A3FB56--
+Regards,
+Oliver
