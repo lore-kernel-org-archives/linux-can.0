@@ -1,52 +1,61 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Tue, 10 Jan 2012 16:35:29 +0100
-Message-ID: <4F0C5AC1.2070806@grandegger.com>
-References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com> <4F0C57B9.2020204@hartkopp.net>
+From: Wolfgang Zarre <info@essax.com>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
+ for the CC770 and AN82527
+Date: Tue, 10 Jan 2012 17:13:58 +0100
+Message-ID: <4F0C63C6.5080305@essax.com>
+References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF39@saturn3.aculab.com> <4F0C31F1.20908@essax.com> <4F0C4EA8.7060002@grandegger.com>
+Reply-To: info@essax.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:54016 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756400Ab2AJPfb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 10:35:31 -0500
-In-Reply-To: <4F0C57B9.2020204@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>, Linux CAN mailing list <linux-can@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4F0C4EA8.7060002@grandegger.com>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: David Laight <David.Laight@ACULAB.COM>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+List-Id: linux-can.vger.kernel.org
 
-On 01/10/2012 04:22 PM, Oliver Hartkopp wrote:
-> On 10.01.2012 11:17, Wolfgang Grandegger wrote:
-> 
->>>  drivers/net/can/usb/Kconfig                  |    1 +
->>>  drivers/net/can/usb/Makefile                 |    1 +
->>>  drivers/net/can/usb/peak_usb/Kconfig         |   19 +
->>>  drivers/net/can/usb/peak_usb/Makefile        |   10 +
->>>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |  893 ++++++++++++++++++++++++++
->>>  drivers/net/can/usb/peak_usb/peak_usb.h      |  149 +++++
->>>  6 files changed, 1073 insertions(+), 0 deletions(-)
->>>  create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
->>>  create mode 100644 drivers/net/can/usb/peak_usb/Makefile
->>>  create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
+Hello Wolfgang,
+
+> On 01/10/2012 01:41 PM, Wolfgang Zarre wrote:
+>> Hello David,
+>>>
+>>>> cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
+>>>>                             int reg, u8 val)
+>>>>     {
+>>>>         unsigned long base = (unsigned long)priv->reg_base;
+>>>> +    unsigned long flags;
+>>>>
+>>>> +    spin_lock_irqsave(&outb_lock, flags);
+>>>>         outb(reg, base);
+>>>>         outb(val, base + 1);
+>>>> +    spin_unlock_irqrestore(&outb_lock, flags);
+>>>
+>>> Is there a 'read_reg_indirect' function??
 >>
->> Why not naming the file peak_usb.c? You already use "peak_usb" for the
->> header file as function prefix inside!
-> 
-> 
-> AFAIR the driver built results in peak_usb.ko
-> 
-> And the driver contains the pcan_usb.c and pcan_usb_pro.c
-> 
-> If it's possible from the build process pcan_usb_core.c should be renamed to
-> peak_usb.c - that's right.
+>> Yes, there is.
+>>
+>>> If so it also needs to use the same mutex.
+>>
+>> Actually, I don't think that we have a problem with mutex
+>> beside that it's using just one inb() statement but having
+>> for sure with an interrupt between both outb() statements which
+>> seems to be critical for the cc770.
+>
+> But the indirect read function also sets the address register before
+> reading the data using inb(). This sequence should also not be
+> interrupted and therefore we need to synchronize. For the indirect
+> access of the SJA1000 we also need to add spinlocks. Wonder why nobody
+> complained so far.
 
-We should remove the device specific Kconfigs including the related
-#ifdefs. It's then *one* driver which always supports the two USB
-devices. Anything else does not really make sense. Maybe just for very
-low end devices where any byte counts. Have a look to other USB drivers.
-They supports tons of devices without any #ifdef.
+So, if I understand correct that means that inb() can be interrupted between
+setting the address and reading. If this is the case then yes, we need
+spinlock if this is not the case then IMHO we wouldn't need or am I wrong?
 
-Wolfgang.
 
+
+>
+> Wolfgang.
+>
+
+Wolfgang
