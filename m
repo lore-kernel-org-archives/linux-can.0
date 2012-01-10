@@ -1,61 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Tue, 10 Jan 2012 15:50:12 +0100
-Message-ID: <4F0C5024.1080106@hartkopp.net>
-References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF39@saturn3.aculab.com> <4F0C31F1.20908@essax.com> <4F0C4EA8.7060002@grandegger.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: Possible bug in ac_msg_is_request_for_ac
+Date: Tue, 10 Jan 2012 16:01:58 +0100
+Message-ID: <20120110150158.GB2524@e-circ.dyndns.org>
+References: <1326198848.2189.9.camel@osblap120.dev.osb-ag.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:30189 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756413Ab2AJOuc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 09:50:32 -0500
-In-Reply-To: <4F0C4EA8.7060002@grandegger.com>
+Received: from gate.eia.be ([194.78.71.18]:23065 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752239Ab2AJPC1 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 10:02:27 -0500
+Content-Disposition: inline
+In-Reply-To: <1326198848.2189.9.camel@osblap120.dev.osb-ag.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: info@essax.com, David Laight <David.Laight@ACULAB.COM>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+To: Felix Obenhuber <felix@obenhuber.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 10.01.2012 15:43, Wolfgang Grandegger wrote:
+Felix,
 
-> On 01/10/2012 01:41 PM, Wolfgang Zarre wrote:
->> Hello David,
->>>
->>>> cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
->>>>                            int reg, u8 val)
->>>>    {
->>>>        unsigned long base = (unsigned long)priv->reg_base;
->>>> +    unsigned long flags;
->>>>
->>>> +    spin_lock_irqsave(&outb_lock, flags);
->>>>        outb(reg, base);
->>>>        outb(val, base + 1);
->>>> +    spin_unlock_irqrestore(&outb_lock, flags);   
->>>
->>> Is there a 'read_reg_indirect' function??
->>
->> Yes, there is.
->>
->>> If so it also needs to use the same mutex.
->>
->> Actually, I don't think that we have a problem with mutex
->> beside that it's using just one inb() statement but having
->> for sure with an interrupt between both outb() statements which
->> seems to be critical for the cc770.
+Thanks for pointing out this issue.
+
+By a second look, this function is only used to decide if a request
+from source address 0xfe may be sent out.
+I'm sure my intent is conform to the specification, but I'm
+not sure anymore taht I should enforce such policy inside the kernel.
+
+I may as well delete the function completely ...
+
+Any opinion?
+
+Kurt
+
+On Tue, Jan 10, 2012 at 01:34:08PM +0100, Felix Obenhuber wrote:
+> Hi Kurt,
 > 
-> But the indirect read function also sets the address register before
-> reading the data using inb(). This sequence should also not be
-> interrupted and therefore we need to synchronize. For the indirect
-> access of the SJA1000 we also need to add spinlocks. Wonder why nobody
-> complained so far.
-
-
-Maybe due to old single core hardware that has SJA1000 hw with indirect
-addressing? Or this old hardware has not been 'kernel-upgraded' so far ...
-
-In any case you are right with the missing spinlocks.
-
-Regards,
-Oliver
+> just wondered about the last line in ac_msg_is_request_for_ac
+> https://gitorious.org/~kurt-vd/linux-can/can-j1939-modules/blobs/master/net/can/j1939/address-claim.c
+> 
+> static inline int ac_msg_is_request_for_ac(struct sk_buff *skb)
+> {
+>         [...]
+> 	req_pgn = skb->data[0] | (skb->data[1] << 8) | (skb->data[2] << 16);
+> 	return req_pgn = PGN_ADDRESS_CLAIMED;
+>                     ^^^^^^
+> 
+> Think here's a equal sign missing cause you always return
+> PGN_ADDRESS_CLAIMED.
+> 
+> Cheers,
+> 
+> Felix
+>               
+> 
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
