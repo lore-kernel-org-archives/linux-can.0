@@ -1,45 +1,47 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Tue, 10 Jan 2012 16:22:33 +0100
-Message-ID: <4F0C57B9.2020204@hartkopp.net>
-References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: recv list
+Date: Tue, 10 Jan 2012 16:23:42 +0100
+Message-ID: <20120110152341.GD2524@e-circ.dyndns.org>
+References: <20120109132638.GI386@e-circ.dyndns.org>
+ <loom.20120109T162926-984@post.gmane.org>
+ <20120110085105.GB330@e-circ.dyndns.org>
+ <loom.20120110T112815-928@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:55508 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756390Ab2AJPXB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 10:23:01 -0500
-In-Reply-To: <4F0C102D.5060304@grandegger.com>
+Received: from gate.eia.be ([194.78.71.18]:22852 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751756Ab2AJPXo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 10 Jan 2012 10:23:44 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20120110T112815-928@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>, Linux CAN mailing list <linux-can@vger.kernel.org>
+To: Wolfgang <wutz@unterderbruecke.de>
+Cc: linux-can@vger.kernel.org
 
-On 10.01.2012 11:17, Wolfgang Grandegger wrote:
-
->>  drivers/net/can/usb/Kconfig                  |    1 +
->>  drivers/net/can/usb/Makefile                 |    1 +
->>  drivers/net/can/usb/peak_usb/Kconfig         |   19 +
->>  drivers/net/can/usb/peak_usb/Makefile        |   10 +
->>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |  893 ++++++++++++++++++++++++++
->>  drivers/net/can/usb/peak_usb/peak_usb.h      |  149 +++++
->>  6 files changed, 1073 insertions(+), 0 deletions(-)
->>  create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
->>  create mode 100644 drivers/net/can/usb/peak_usb/Makefile
->>  create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
+On Tue, Jan 10, 2012 at 10:45:30AM +0000, Wolfgang wrote:
+> > I take back this conclusion. I looked again, and came on this:
+> > clear the src_addr.can_ifindex, since that's for sure wrong when bridging.
 > 
-> Why not naming the file peak_usb.c? You already use "peak_usb" for the
-> header file as function prefix inside!
+> It is working, thanks.
+> As far as I can judge this, your patch is also working I can bind different 
+> sockets on one interface, and then send with different src addr.
+Thanks for testing!
+> 
+> 
+> > In a later iteration, You could (if necessary, since I have no clue what kind
+> > of traffic you will bridge):
+> > * make the receiving socket (s) 'promiscuous', i.e. receiving all traffic.
+> > * fetch the original destination by using recvmsg() as illustrated in jspy
+> 
+> OK, I think I am that far, making one socket promiscuous and than depending 
+> on the source address send it with the corresponding socket.
+> Is there any 'easy' iteration, of that. Or do I have to rebuild the jspy.c, 
+> libj1939.c, libj1939.h according to my wishes?
 
+jspy just serves as illustration here. I don't think you will need the binary.
+But I consider using recvmsg() a bit complicated, easily forgotten ...
 
-AFAIR the driver built results in peak_usb.ko
-
-And the driver contains the pcan_usb.c and pcan_usb_pro.c
-
-If it's possible from the build process pcan_usb_core.c should be renamed to
-peak_usb.c - that's right.
-
-Regards,
-Oliver
+Kind regards,
+Kurt
