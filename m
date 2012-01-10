@@ -1,120 +1,92 @@
-From: Wolfgang Zarre <info@essax.com>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Tue, 10 Jan 2012 20:02:35 +0100
-Message-ID: <4F0C8B4B.8070104@essax.com>
-References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF39@saturn3.aculab.com> <4F0C31F1.20908@essax.com> <4F0C4EA8.7060002@grandegger.com> <4F0C63C6.5080305@essax.com> <4F0C661F.6030508@grandegger.com>
-Reply-To: info@essax.com
+From: Sebastian Haas <dev@sebastianhaas.info>
+Subject: Re: Bus-simulation with SocketCAN
+Date: Tue, 10 Jan 2012 22:11:42 +0100
+Message-ID: <4F0CA98E.2050400@sebastianhaas.info>
+References: <4F0B6B35.20104@sebastianhaas.info> <4F0C1304.4060309@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.essax.com.mt ([80.71.48.244]:41142 "EHLO mail.essax.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932079Ab2AJTCn (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 10 Jan 2012 14:02:43 -0500
-In-Reply-To: <4F0C661F.6030508@grandegger.com>
+Received: from smtprelay02.ispgateway.de ([80.67.31.25]:55495 "EHLO
+	smtprelay02.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751280Ab2AJVLn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2012 16:11:43 -0500
+In-Reply-To: <4F0C1304.4060309@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, David Laight <David.Laight@ACULAB.COM>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: socketcan-users@lists.berlios.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Jan-Niklas Meier <dschanoeh@googlemail.com>
 
-Hello Wolfgang,
+Hi
 
--------- Original Message  --------
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver for the CC770 and AN82527
-From: Wolfgang Grandegger <wg@grandegger.com>
-To: info@essax.com
-Cc: David Laight <David.Laight@ACULAB.COM>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, 
-socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
-Date: Tue Jan 10 2012 17:23:59 GMT+0100 (CET)
-
-> Hi Wolfgang,
+Am 10.01.2012 11:29, schrieb Oliver Hartkopp:
+> Hello Sebastian,
 >
-> On 01/10/2012 05:13 PM, Wolfgang Zarre wrote:
->> Hello Wolfgang,
+> On 09.01.2012 23:33, Sebastian Haas wrote:
+>
+>> just in case someone is interested in an easy to way to simulate CAN nodes or
+>> to test ECUs via CAN. I want to inform you that my recently started project
+>> restcan [3] reached a first milestone. Look at [1] to know what restcan is.
 >>
->>> On 01/10/2012 01:41 PM, Wolfgang Zarre wrote:
->>>> Hello David,
->>>>>
->>>>>> cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
->>>>>>                              int reg, u8 val)
->>>>>>      {
->>>>>>          unsigned long base = (unsigned long)priv->reg_base;
->>>>>> +    unsigned long flags;
->>>>>>
->>>>>> +    spin_lock_irqsave(&outb_lock, flags);
->>>>>>          outb(reg, base);
->>>>>>          outb(val, base + 1);
->>>>>> +    spin_unlock_irqrestore(&outb_lock, flags);
->>>>>
->>>>> Is there a 'read_reg_indirect' function??
->>>>
->>>> Yes, there is.
->>>>
->>>>> If so it also needs to use the same mutex.
->>>>
->>>> Actually, I don't think that we have a problem with mutex
->>>> beside that it's using just one inb() statement but having
->>>> for sure with an interrupt between both outb() statements which
->>>> seems to be critical for the cc770.
->>>
->>> But the indirect read function also sets the address register before
->>> reading the data using inb(). This sequence should also not be
->>> interrupted and therefore we need to synchronize. For the indirect
->>> access of the SJA1000 we also need to add spinlocks. Wonder why nobody
->>> complained so far.
->>
->> So, if I understand correct that means that inb() can be interrupted
->> between
->> setting the address and reading. If this is the case then yes, we need
->> spinlock if this is not the case then IMHO we wouldn't need or am I wrong?
+>> The milestone includes the following features:
+>> - support of SocketCANs' RAW channels incl. Rx filters
+>> - support of a rudimentary JSON-based message database format
 >
-> I think we speak about different things. inb() cannot be interrupted but
-> outb() followed by inb(). For indirect accesses we need something like:
 >
-> /* Spinlock for cc770_isa_port_write_reg_indirect */
-> static DEFINE_SPINLOCK(cc770_isa_port_lock);
+> Do you know the Kayak project from Jan-Niklas Meier?
 >
-> static u8 cc770_isa_port_read_reg_indirect(const struct cc770_priv *priv,
->                                               int reg)
-> {
->          unsigned long base = (unsigned long)priv->reg_base;
-> 	unsigned long flags;
-> 	u8 val;
+> Kajak is a JAVA based frontend and library, see:
 >
-> 	spin_lock_irqsave(&cc770_isa_port_lock, flags);
->          outb(reg, base);
->          val = inb(base + 1);
-> 	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
+> http://kayak.2codeornot2code.org/
 >
-> 	return val;
-> }
+> http://kayak.2codeornot2code.org/tutorial.html
 >
-> static void cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
->                                                  int reg, u8 val)
-> {
->          unsigned long base = (unsigned long)priv->reg_base;
-> 	unsigned long flags;
->
-> 	spin_lock_irqsave(&cc770_isa_port_lock, flags);
->          outb(reg, base);
->          outb(val, base + 1);
-> 	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
-> }
->
-> Hope we are in synch now.
->
+> And on github: https://github.com/dschanoeh/Kayak
+That looks quite interesting. The approach is different than mine, as 
+the logic in restcan is at the server side and the client (not yet 
+available) is an optional visualization/control component.
 
-Thanks a lot. Yes, now phase locked and in synch and sorry, by mistake
-I looked at the wrong function (cc770_isa_port_read_reg) in the heat of
-the moment.
+It is quite difficult to find active open source projects which are CAN 
+related. I hope to find some help to implement the visualization for 
+restcan. Too bad Kayak does the signal processing on its own.
 
-Absolutely clear, there we need a spinlock definitely. I'll start another test run
-just to confirm.
-
-
-> Wolfgang.
+> Implementing a restbus functionality in JAVA based on the Kajak library is
+> very easy - when  you are a JAVA developer ;-)
 >
+> I like your approach to get a restbus simulation in C.
+Well the simulation is written in Javascript, which is even easier than 
+C or Java. I want it to be easy to use. The only dependency is NodeJS 
+and you can write and run simulation and test cases from commandline 
+within few minutes.
 
-Wolfgang
+> But checking your JSON description for CAN signals i stumbled about the
+> 'intel' and 'motorola' tags which stand for 'little' and 'big' endian.
+Yeah, you are right. I will improve it.
+
+> I wonder, if it makes sense for your project to adopt the XML-based KCD
+> format for CAN signal descriptions:
+I had a look at the spec, KCD looks pretty good, I think I will use it 
+to replace the JSON description.
+
+> https://github.com/dschanoeh/Kayak/blob/ee6b459bddd1831ae99c1afcde01f315e4b454b4/Kayak-kcd/src/test/resources/can_definition_sample.kcd
+>
+> Here is the XML schema definition:
+>
+> https://github.com/dschanoeh/Kayak/blob/master/Kayak-kcd/src/main/resources/com/github/kayak/canio/kcd/schema/Definition.xsd
+>
+> Maybe you can build your JSON description with an XSLT process from the well
+> defined KCD description.
+>
+> There's also a dbc input converter on the run to create KCDs:
+> https://github.com/dschanoeh/CANBabel
+Thats create, I was afraid I need to implement the converter myself. ;-) 
+I hope they will extend to parse .sym files from Peak as well.
+
+Do you know about BUSMASTER (https://github.com/rbei-etas/busmaster). If 
+it weren't Windows (R) only it would be an interesting solution.
+
+Oliver, what must restcan provide to be useable for you in your daily 
+work? Or what do you expect from such a tool?
+
+Cheers,
+  Sebastian
