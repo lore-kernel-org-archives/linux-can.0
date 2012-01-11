@@ -1,113 +1,126 @@
-From: Grosjean Stephane <s.grosjean@peak-system.com>
-Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Wed, 11 Jan 2012 10:23:53 +0100
-Message-ID: <4F0D5529.7020208@peak-system.com>
-References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com> <4F0C57B9.2020204@hartkopp.net> <4F0C5AC1.2070806@grandegger.com>
-Reply-To: s.grosjean@peak-system.com
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
+ for the CC770 and AN82527
+Date: Wed, 11 Jan 2012 10:31:24 +0100
+Message-ID: <4F0D56EC.5080704@pengutronix.de>
+References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF39@saturn3.aculab.com> <4F0C31F1.20908@essax.com> <4F0C4EA8.7060002@grandegger.com> <4F0C63C6.5080305@essax.com> <4F0C661F.6030508@grandegger.com> <4F0C8B4B.8070104@essax.com> <4F0D50EA.6080900@essax.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig73358637B3A12DE820248150"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-4d.bbox.fr ([194.158.122.134]:38156 "EHLO mail-4d.bbox.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755599Ab2AKJX6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 11 Jan 2012 04:23:58 -0500
-In-Reply-To: <4F0C5AC1.2070806@grandegger.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42479 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756616Ab2AKJbm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 04:31:42 -0500
+In-Reply-To: <4F0D50EA.6080900@essax.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Linux CAN mailing list <linux-can@vger.kernel.org>
+To: info@essax.com
+Cc: Wolfgang Grandegger <wg@grandegger.com>, David Laight <David.Laight@ACULAB.COM>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig73358637B3A12DE820248150
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On 01/11/2012 10:05 AM, Wolfgang Zarre wrote:
+[...]
+
+The patch looks good, it has some style issues though, see comments
+inline. Please fix them, add a description to the patch, don't forget
+your S-o-b, same applies to the other patch which removes the extra IRQ
+ack. Please create a series of two patches, first this (the spinlock
+patch), the second the rermoval of the extra IRQ ack. Send this patches
+to this list. See [1] for more information about patch submitting.
+
+Marc
+
+[1] http://lxr.linux.no/linux+v3.2/Documentation/SubmittingPatches#L86
+
+> Test was successful, 2.000.000 telegrams again without problems.
+> Here so far the patch as You suggested:
+>=20
+> -------------------------------------------------------------------
+>  diff --git a/drivers/net/can/cc770/cc770_isa.c
+> b/drivers/net/can/cc770/cc770_isa.c
+> index 4be5fe2..adf3e45 100644
+> --- a/drivers/net/can/cc770/cc770_isa.c
+> +++ b/drivers/net/can/cc770/cc770_isa.c
+> @@ -110,6 +110,10 @@ MODULE_PARM_DESC(bcr, "Bus configuration register
+> (default=3D0x40 [CBY])");
+>  #define CC770_IOSIZE          0x20
+>  #define CC770_IOSIZE_INDIRECT 0x02
+>=20
+> +/* Spinlock for cc770_isa_port_write_reg_indirect */
+
+The spinlock is used in read_reg_indirect, too
+
+> +static DEFINE_SPINLOCK(cc770_isa_port_lock);
+> +
+> +
+
+Just one new blank line please.
+
+>  static struct platform_device *cc770_isa_devs[MAXDEV];
+>=20
+>  static u8 cc770_isa_mem_read_reg(const struct cc770_priv *priv, int re=
+g)
+> @@ -138,18 +142,26 @@ static u8 cc770_isa_port_read_reg_indirect(const
+> struct cc770_priv *priv,
+>                           int reg)
+>  {
+>      unsigned long base =3D (unsigned long)priv->reg_base;
+> +    unsigned long flags;
+> +    u8 val;
+>=20
+> +    spin_lock_irqsave(&cc770_isa_port_lock, flags);
+>      outb(reg, base);
+> -    return inb(base + 1);
+> +    val =3D inb(base + 1);
+> +    spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
+
+Please insert a newline before return.
+
+> +    return val;
+>  }
+>=20
+>  static void cc770_isa_port_write_reg_indirect(const struct cc770_priv
+> *priv,
+>                          int reg, u8 val)
+>  {
+>      unsigned long base =3D (unsigned long)priv->reg_base;
+> +    unsigned long flags;
+>=20
+> +    spin_lock_irqsave(&cc770_isa_port_lock, flags);
+>      outb(reg, base);
+>      outb(val, base + 1);
+> +    spin_unlock_irqrestore(&cc770_isa_port_lock, flags);   =20
+>  }
+>=20
+>  static int __devinit cc770_isa_probe(struct platform_device *pdev)
+> -------------------------------------------------------
 
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Le 10/01/2012 16:35, Wolfgang Grandegger a =E9crit :
-> On 01/10/2012 04:22 PM, Oliver Hartkopp wrote:
->> On 10.01.2012 11:17, Wolfgang Grandegger wrote:
->>
->>>>   drivers/net/can/usb/Kconfig                  |    1 +
->>>>   drivers/net/can/usb/Makefile                 |    1 +
->>>>   drivers/net/can/usb/peak_usb/Kconfig         |   19 +
->>>>   drivers/net/can/usb/peak_usb/Makefile        |   10 +
->>>>   drivers/net/can/usb/peak_usb/pcan_usb_core.c |  893 ++++++++++++=
-++++++++++++++
->>>>   drivers/net/can/usb/peak_usb/peak_usb.h      |  149 +++++
->>>>   6 files changed, 1073 insertions(+), 0 deletions(-)
->>>>   create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
->>>>   create mode 100644 drivers/net/can/usb/peak_usb/Makefile
->>>>   create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
->>> Why not naming the file peak_usb.c? You already use "peak_usb" for =
-the
->>> header file as function prefix inside!
->>
->> AFAIR the driver built results in peak_usb.ko
->>
->> And the driver contains the pcan_usb.c and pcan_usb_pro.c
->>
->> If it's possible from the build process pcan_usb_core.c should be re=
-named to
->> peak_usb.c - that's right.
 
-What I know from the build process doesn't enable to do that (that is,=20
-building module.ko from module.c **and** file.c:
+--------------enig73358637B3A12DE820248150
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb.o pcan_usb.o pcan_usb_pro.o
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-linux-can-next$
-   CHK     include/linux/version.h
-   CHK     include/generated/utsrelease.h
-   CALL    scripts/checksyscalls.sh
-   CHK     include/generated/compile.h
-   CC [M]  drivers/net/can/usb/peak_usb/pcan_usb.o
-   CC [M]  drivers/net/can/usb/peak_usb/pcan_usb_pro.o
-Kernel: arch/x86/boot/bzImage is ready  (#3)
-   Building modules, stage 2.
-   MODPOST 3012 modules
-ERROR: "pcan_usb_pro" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefi=
-ned!
-ERROR: "pcan_usb" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefined!
-ERROR: "peak_usb_set_ts_now"=20
-[drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
-ERROR: "peak_usb_get_ts_tv"=20
-[drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
-ERROR: "dump_mem" [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefi=
-ned!
-ERROR: "peak_usb_init_time_ref"=20
-[drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
-ERROR: "peak_usb_set_ts_now" [drivers/net/can/usb/peak_usb/pcan_usb.ko]=
-=20
-undefined!
-ERROR: "peak_usb_update_ts_now"=20
-[drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
-ERROR: "peak_usb_get_ts_tv" [drivers/net/can/usb/peak_usb/pcan_usb.ko]=20
-undefined!
-ERROR: "peak_usb_init_time_ref"=20
-[drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
-WARNING: modpost: Found 23 section mismatch(es).
-To see full details build your kernel with:
-'make CONFIG_DEBUG_SECTION_MISMATCH=3Dy'
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
-linux-can-next$
+iEYEARECAAYFAk8NVvEACgkQjTAFq1RaXHNODgCfREUFoeGRi4Azim0AB8LSzLD/
+UKgAnReMzXWnOhQI6AjyyAfb9OnBXxoA
+=x4mJ
+-----END PGP SIGNATURE-----
 
-=2E.. but I'm not an expert in the mainline kernel. Is there another wa=
-y=20
-to do that?
-
-> We should remove the device specific Kconfigs including the related
-> #ifdefs. It's then *one* driver which always supports the two USB
-> devices. Anything else does not really make sense. Maybe just for ver=
-y
-> low end devices where any byte counts.
-Ok I'll do a driver which supports the two usb adapters without any #if=
-def.
-
-> Have a look to other USB drivers.
-> They supports tons of devices without any #ifdef.
-=2E.. had a look to driver/net/usb  but all of these are single file=20
-module drivers, so does not help. Where are the other please?
-> Wolfgang.
->
-
-St=E9phane.
-
+--------------enig73358637B3A12DE820248150--
