@@ -1,41 +1,63 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: using git
-Date: Wed, 11 Jan 2012 13:26:09 +0100
-Message-ID: <20120111122609.GG314@e-circ.dyndns.org>
-References: <20111221091948.GC314@e-circ.dyndns.org>
- <4EF2D0F3.6080909@hartkopp.net>
- <4F0D6EA9.4070708@pengutronix.de>
- <4F0D6FB7.9090407@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/4] import kernel header files into tree
+Date: Wed, 11 Jan 2012 13:26:24 +0100
+Message-ID: <4F0D7FF0.5020306@pengutronix.de>
+References: <1322831813-9729-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig8DBBA3DD92DC2D60023A7C23"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:31171 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1757184Ab2AKM0N (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 11 Jan 2012 07:26:13 -0500
-Content-Disposition: inline
-In-Reply-To: <4F0D6FB7.9090407@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57688 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757184Ab2AKM03 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 07:26:29 -0500
+In-Reply-To: <1322831813-9729-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: socketcan-core@lists.berlios.de
 
-> > nitpick:
-> > Oliver, please don't forget to add your S-o-b if you are pushing commits
-> > to the tree.
-> 
-> 
-> Yes. I noticed myself, that i need to improve this process by reading more git
-> documentation ;-)
-> 
-> Yesterday i just cherry-picked the patch and pushed it to the repo.
-> 
-> The next time i'll do it the right(TM) way :-)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig8DBBA3DD92DC2D60023A7C23
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Oliver or Marc,
+On 12/02/2011 02:16 PM, Marc Kleine-Budde wrote:
+> Hello,
+>=20
+> this patch series imports the kernel header files into the can-utils tr=
+ee
+> and adopts both Makefile and autotools. The autotools complete the
+> "make distcheck" test and are tested for cross compildation.
+> Plain old makefile support is still working, too.
+>=20
+> Please test and comment,
+> regards, Marc
 
-just out of curiosity,
-what would be the right(TM) way?
+I've pushed the series to master + another patch replacing the contact
+email by linux-can@vger.kernel.org.
 
-regards,
-Kurt
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig8DBBA3DD92DC2D60023A7C23
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk8Nf/MACgkQjTAFq1RaXHOvvQCfSPIJ9JoLpdfMHxK9AUUffzPb
+3hAAn1KRC9QzLvZE0bt4Ythjx3W1vT71
+=/S50
+-----END PGP SIGNATURE-----
+
+--------------enig8DBBA3DD92DC2D60023A7C23--
