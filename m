@@ -1,119 +1,102 @@
-From: Grosjean Stephane <s.grosjean@peak-system.com>
-Subject: Re: Add support for PEAK PCMCIA PCAN-PC card
-Date: Wed, 11 Jan 2012 15:11:29 +0100
-Message-ID: <4F0D9891.6070901@peak-system.com>
-References: <691329.168246256-sendEmail@ubuntu-i386> <4F0C4020.8010304@grandegger.com> <4F0C53C6.1020704@hartkopp.net>
-Reply-To: s.grosjean@peak-system.com
+From: Wolfgang Zarre <info@essax.com>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
+ for the CC770 and AN82527
+Date: Wed, 11 Jan 2012 15:37:32 +0100
+Message-ID: <4F0D9EAC.9010101@essax.com>
+References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF3B@saturn3.aculab.com>
+Reply-To: info@essax.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-2d.bbox.fr ([194.158.122.57]:37054 "EHLO mail-2d.bbox.fr"
+Received: from smtp.essax.com ([80.71.48.244]:43150 "EHLO mail.essax.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755954Ab2AKOLd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 11 Jan 2012 09:11:33 -0500
-In-Reply-To: <4F0C53C6.1020704@hartkopp.net>
+	id S1751862Ab2AKOho (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 11 Jan 2012 09:37:44 -0500
+In-Reply-To: <AE90C24D6B3A694183C094C60CF0A2F6D8AF3B@saturn3.aculab.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: David Laight <David.Laight@ACULAB.COM>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
 
-
-
-Le 10/01/2012 16:05, Oliver Hartkopp a =E9crit :
-> On 10.01.2012 14:41, Wolfgang Grandegger wrote:
->
->> Nice, I have such a pcmcia card...
->
-> Yes. Me too :-)
-
-Happy to please you :-))
+Hello David,
 
 >
-> +config CAN_PEAK_PCMCIA
-> +	tristate "PEAK PCAN PC-CARD Card"
+>> @@ -689,12 +680,6 @@ static void cc770_tx_interrupt(struct
+>> net_device *dev, unsigned int o)
+>>    	/* Nothing more to send, switch off interrupts */
+>>    	cc770_write_reg(priv, msgobj[mo].ctrl0,
+>>    			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
+>> -	/*
+>> -	 * We had some cases of repeated IRQ so make sure the
+>> -	 * INT is acknowledged
+>> -	 */
+>> -	cc770_write_reg(priv, msgobj[mo].ctrl0,
+>> -			MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
 >
-> tristate "PEAK PCAN PC-Card (PCMCIA)"
+> A wild guess is that this is needed to clear an interrupt
+> that was asserted during the ISR processing.
+> So you need to ack the IRQ as well as mask it.
+
+I was digging a bit and as far as I understood by studying both
+manuals of i82527 and cc770 the procedure is in any case most
+probably not completely clean.
+
+ From my point of view there would be no need to set and reset
+TXIE/RXIE after every request because according to the description
+as below (e.g for TXIE):
+
+
+       MSB LSB    Meaning
+Write  0   0  Not allowed
+               (indeterminate)
+        0   1  reset
+        1   0  set
+        1   1  unchanged
+
+
+
+TXIE Transmit Interrupt Enable
+  one  An interrupt will be generated after a successful
+       transmission of a frame
+  zero No interrupt will be generated after a successful
+       transmission of a frame
+       The Transmit Interrupt Enable bit enables the
+       82527 to initiate an interrupt after the successful
+       transmission by the corresponding message
+       object This bit is written by the CPU
+
+In fact with that we are telling the chip if we want to have
+interrupts or not for a transmission and therefore it would
+be enough, so far I understood, to set it at _init and switch
+it of at _deinit and between just using 'unchanged'.
+
+Actually to ack the IRQ we would have to set TXOK of the
+status register to zero after reading a one for a successful
+transmission but is in fact the chip doesn't care if we
+reset TXOK or not.
+
+However, if time permits I'll try to dig deeper and doing some
+tests because it would need some changes more.
+
+
+Anyway, I might be wrong as well because sometimes I'm checking
+under heavy workload the wrong bit's as You know already ;-)
+
+
+More or less the reason for the request of removal was just because
+assuming that the repeated interrupts were caused as well not having
+spinlock's and on the other hand if obsolete to save I/O resources
+which affects mostly smaller systems with heavy load.
+
+However, maybe Wolfgang can give an advice.
+
+
 >
-> ??
-
-Please confirm: you'd like me to add the "(PCMCIA)" string at the end o=
-f=20
-the menu text, wouldn't you?
-
-> Should we probably put all PCMCIA cards into a separate
+> Not sure if the difference between the xxx_UNC and xxx_RES
+> bits though.
 >
-> linux/drivers/net/can/sja1000/pcmcia
+> 	David
 >
-> directory - like we have it for the USB devices?
-
-If my Humble Opinion may help you: not sure this will be lots of other=20
-pcmcia (can) adapters in the future...
-
->>> +	depends on PCMCIA
->>> +	---help---
->>> +	  This driver is for the PCAN PC-CARD PCMCIA card with 1 or 2 cha=
-nnels
->>> +	  from PEAK Systems (http://www.peak-system.com).
->>> +
->>>   config CAN_PEAK_PCI
->>>   	tristate "PEAK PCAN PCI/PCIe Cards"
->>>   	depends on PCI
->>> diff --git a/drivers/net/can/sja1000/Makefile b/drivers/net/can/sja=
-1000/Makefile
->>> index 0604f24..b3d05cb 100644
->>> --- a/drivers/net/can/sja1000/Makefile
->>> +++ b/drivers/net/can/sja1000/Makefile
->>> @@ -9,6 +9,7 @@ obj-$(CONFIG_CAN_SJA1000_OF_PLATFORM) +=3D sja1000_=
-of_platform.o
->>>   obj-$(CONFIG_CAN_EMS_PCMCIA) +=3D ems_pcmcia.o
->>>   obj-$(CONFIG_CAN_EMS_PCI) +=3D ems_pci.o
->>>   obj-$(CONFIG_CAN_KVASER_PCI) +=3D kvaser_pci.o
->>> +obj-$(CONFIG_CAN_PEAK_PCMCIA) +=3D peak_pcmcia.o
 >
-> This should be the module/driver name too.
->>> +
->>> +/* PEAK-System PCMCIA driver name */
->>> +#define DRV_NAME "peak_pccard"
->> I find the mix of "peak_pcmcia" and "peak_pccard" and "pcan_pccard" =
-for
->> the same hardware confusing. Please use just one name and prefix.
->
-> Yep - peak_pcmcia
-
-We just finished to talk about that and, as far as the PCAN-PC Card is =
-a=20
-PC-CARD (16bit), we'd like to use the "peak_pccard" text for the=20
-module/module file/source file names instead of "peak_pcmcia".
-Related question: I suppose I'll have to change the=20
-"CONFIG_CAN_PEAK_PCMCIA" into "CONFIG_CAN_PEAK_PCCARD" too.
-Please confirm.
-
-> +
-> +#define DRV_CHAN_MAX 2
-> +
-> +#define DRV_CAN_CLOCK (16000000 / 2)
->> Hm, the prefix DRV_ here and below does not really make sense. But w=
-ell,
->> it's a minor issue.
->
-> ack. Remove DRV_ or rename it so someting like to PCC_
-
-Ok, changed to "PCC_" prefix.
-
-> No more nitpicks in additions to Wolfgangs remarks.
-
-Just one last question: FYI, I built the peak_pcmcia.c starting from=20
-peak_pci.c, so I suppose that the DRV_ prefix should be changed into=20
-that file too.
-
-> Tnx&  best regards,
-> Oliver
-
-Many thanks for all!
-
-Best regards,
-
-St=E9phane
-
+Wolfgang
