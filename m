@@ -1,29 +1,29 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [PATCH] Add PEAK System USB adapters core driver
-Date: Wed, 11 Jan 2012 10:50:20 +0100
-Message-ID: <4F0D5B5C.2040205@pengutronix.de>
+Date: Wed, 11 Jan 2012 10:59:38 +0100
+Message-ID: <4F0D5D8A.2000408@grandegger.com>
 References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com> <4F0C57B9.2020204@hartkopp.net> <4F0C5AC1.2070806@grandegger.com> <4F0D5529.7020208@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigBE4D868C5241FD3D0B53EAF3"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43012 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756735Ab2AKJu1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 04:50:27 -0500
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:46170 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752499Ab2AKJ7n (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 04:59:43 -0500
 In-Reply-To: <4F0D5529.7020208@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: s.grosjean@peak-system.com
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Linux CAN mailing list <linux-can@vger.kernel.org>
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBE4D868C5241FD3D0B53EAF3
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Linux CAN mailing list <linux-can@vger.kernel.org>
 
 On 01/11/2012 10:23 AM, Grosjean Stephane wrote:
+>=20
+>=20
+> Le 10/01/2012 16:35, Wolfgang Grandegger a =E9crit :
+>> On 01/10/2012 04:22 PM, Oliver Hartkopp wrote:
+>>> On 10.01.2012 11:17, Wolfgang Grandegger wrote:
+>>>
 >>>>>   drivers/net/can/usb/Kconfig                  |    1 +
 >>>>>   drivers/net/can/usb/Makefile                 |    1 +
 >>>>>   drivers/net/can/usb/peak_usb/Kconfig         |   19 +
@@ -35,8 +35,8 @@ On 01/11/2012 10:23 AM, Grosjean Stephane wrote:
 >>>>>   create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
 >>>>>   create mode 100644 drivers/net/can/usb/peak_usb/Makefile
 >>>>>   create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
->>>> Why not naming the file peak_usb.c? You already use "peak_usb" for t=
-he
+>>>> Why not naming the file peak_usb.c? You already use "peak_usb" for=
+ the
 >>>> header file as function prefix inside!
 >>>
 >>> AFAIR the driver built results in peak_usb.ko
@@ -47,7 +47,8 @@ he
 >>> renamed to
 >>> peak_usb.c - that's right.
 >=20
-> What I know from the build process doesn't enable to do that (that is,
+> What I know from the build process doesn't enable to do that (that is=
+,
 > building module.ko from module.c **and** file.c:
 >=20
 > obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb.o pcan_usb.o pcan_usb_pro.o
@@ -62,24 +63,25 @@ he
 > Kernel: arch/x86/boot/bzImage is ready  (#3)
 >   Building modules, stage 2.
 >   MODPOST 3012 modules
-> ERROR: "pcan_usb_pro" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefi=
-ned!
-> ERROR: "pcan_usb" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefined!=
-
+> ERROR: "pcan_usb_pro" [drivers/net/can/usb/peak_usb/peak_usb.ko] unde=
+fined!
+> ERROR: "pcan_usb" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefine=
+d!
 > ERROR: "peak_usb_set_ts_now"
 > [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
 > ERROR: "peak_usb_get_ts_tv"
 > [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
-> ERROR: "dump_mem" [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefi=
-ned!
+> ERROR: "dump_mem" [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] unde=
+fined!
 > ERROR: "peak_usb_init_time_ref"
 > [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
-> ERROR: "peak_usb_set_ts_now" [drivers/net/can/usb/peak_usb/pcan_usb.ko]=
-
+> ERROR: "peak_usb_set_ts_now" [drivers/net/can/usb/peak_usb/pcan_usb.k=
+o]
 > undefined!
 > ERROR: "peak_usb_update_ts_now"
 > [drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
-> ERROR: "peak_usb_get_ts_tv" [drivers/net/can/usb/peak_usb/pcan_usb.ko]
+> ERROR: "peak_usb_get_ts_tv" [drivers/net/can/usb/peak_usb/pcan_usb.ko=
+]
 > undefined!
 > ERROR: "peak_usb_init_time_ref"
 > [drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
@@ -90,44 +92,35 @@ ned!
 > make: *** [modules] Error 2
 > linux-can-next$
 >=20
-> ... but I'm not an expert in the mainline kernel. Is there another way
+> ... but I'm not an expert in the mainline kernel. Is there another wa=
+y
 > to do that?
+>=20
+>> We should remove the device specific Kconfigs including the related
+>> #ifdefs. It's then *one* driver which always supports the two USB
+>> devices. Anything else does not really make sense. Maybe just for ve=
+ry
+>> low end devices where any byte counts.
+> Ok I'll do a driver which supports the two usb adapters without any #=
+ifdef.
+>=20
+>> Have a look to other USB drivers.
+>> They supports tons of devices without any #ifdef.
+> ... had a look to driver/net/usb  but all of these are single file
+> module drivers, so does not help. Where are the other please?
 
-Documentation/kbuild/makefiles.txt has this example:
+Search for drivers calling usb_register (they are not in
+"driver/net/usb"). I was looking in
+"drivers/media/dvb/dvb-usb/dib0700_devices.c".
 
-	obj-$(CONFIG_EXT2_FS) +=3D ext2.o
-	ext2-y :=3D balloc.o dir.o file.o ialloc.o inode.o ioctl.o \
-		namei.o super.o symlink.o
-	ext2-$(CONFIG_EXT2_FS_XATTR) +=3D xattr.o xattr_user.o \
-		xattr_trusted.o
+Anyway, I dislike the way you provide support for the two devices. If
+you want to separate them, you should register a driver for each using
+"usb_register" using a common infrastructure. You currently provide one
+driver for both using a homebrewn interface. Have a look to
+"drivers/media/dvb/dvb-usb". But I'm not sure if it's worth the effort.
 
-Which translates into (untested, though):
+What would be the use-case for creating a module for just one device? I=
+f
+you provide a distribution, you need to enable both anyway.
 
-	obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb.o
-	peak_usb-y :=3D peak_usb_core.o pcan_usb.o pcan_usb_pro.o
-
-With a peak_usb_core.c file.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigBE4D868C5241FD3D0B53EAF3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk8NW18ACgkQjTAFq1RaXHMl2gCfUmzcXtpYpHCmPHbWLm4uz/9E
-4m0AoJnAdmzFTIYdyaAgKfX/tuSpsrMb
-=/a6y
------END PGP SIGNATURE-----
-
---------------enigBE4D868C5241FD3D0B53EAF3--
+Wolfgang.
