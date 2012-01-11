@@ -1,89 +1,114 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
- for the CC770 and AN82527
-Date: Wed, 11 Jan 2012 10:38:54 +0100
-Message-ID: <4F0D58AE.7070601@pengutronix.de>
-References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF31@saturn3.aculab.com> <4F0B608D.6090309@essax.com> <4F0B7421.6050203@pengutronix.de> <4F0C0552.5080504@grandegger.com> <4F0C2F4A.20500@essax.com> <4F0D4FBA.1080108@essax.com>
+Subject: Re: [PATCH] Add PEAK System USB adapters core driver
+Date: Wed, 11 Jan 2012 10:50:20 +0100
+Message-ID: <4F0D5B5C.2040205@pengutronix.de>
+References: <871799.098418222-sendEmail@ubuntu-i386> <4F0C102D.5060304@grandegger.com> <4F0C57B9.2020204@hartkopp.net> <4F0C5AC1.2070806@grandegger.com> <4F0D5529.7020208@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig00B331AFBEC8F11109C88CD5"
+ boundary="------------enigBE4D868C5241FD3D0B53EAF3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55787 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43012 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757000Ab2AKJjE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 04:39:04 -0500
-In-Reply-To: <4F0D4FBA.1080108@essax.com>
+	with ESMTP id S1756735Ab2AKJu1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 04:50:27 -0500
+In-Reply-To: <4F0D5529.7020208@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@essax.com
-Cc: Wolfgang Grandegger <wg@grandegger.com>, David Laight <David.Laight@ACULAB.COM>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+To: s.grosjean@peak-system.com
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Linux CAN mailing list <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig00B331AFBEC8F11109C88CD5
+--------------enigBE4D868C5241FD3D0B53EAF3
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On 01/11/2012 10:00 AM, Wolfgang Zarre wrote:
->>> Please provide an extra patch for these unrelated changes. If we real=
-ly
->>> want to remove it.
+On 01/11/2012 10:23 AM, Grosjean Stephane wrote:
+>>>>>   drivers/net/can/usb/Kconfig                  |    1 +
+>>>>>   drivers/net/can/usb/Makefile                 |    1 +
+>>>>>   drivers/net/can/usb/peak_usb/Kconfig         |   19 +
+>>>>>   drivers/net/can/usb/peak_usb/Makefile        |   10 +
+>>>>>   drivers/net/can/usb/peak_usb/pcan_usb_core.c |  893
+>>>>> ++++++++++++++++++++++++++
+>>>>>   drivers/net/can/usb/peak_usb/peak_usb.h      |  149 +++++
+>>>>>   6 files changed, 1073 insertions(+), 0 deletions(-)
+>>>>>   create mode 100644 drivers/net/can/usb/peak_usb/Kconfig
+>>>>>   create mode 100644 drivers/net/can/usb/peak_usb/Makefile
+>>>>>   create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>>>> Why not naming the file peak_usb.c? You already use "peak_usb" for t=
+he
+>>>> header file as function prefix inside!
 >>>
->>
->> Sure, this I can do.
->>
+>>> AFAIR the driver built results in peak_usb.ko
+>>>
+>>> And the driver contains the pcan_usb.c and pcan_usb_pro.c
+>>>
+>>> If it's possible from the build process pcan_usb_core.c should be
+>>> renamed to
+>>> peak_usb.c - that's right.
 >=20
-> Ok, here the patch to remove:
+> What I know from the build process doesn't enable to do that (that is,
+> building module.ko from module.c **and** file.c:
+>=20
+> obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb.o pcan_usb.o pcan_usb_pro.o
+>=20
+> linux-can-next$
+>   CHK     include/linux/version.h
+>   CHK     include/generated/utsrelease.h
+>   CALL    scripts/checksyscalls.sh
+>   CHK     include/generated/compile.h
+>   CC [M]  drivers/net/can/usb/peak_usb/pcan_usb.o
+>   CC [M]  drivers/net/can/usb/peak_usb/pcan_usb_pro.o
+> Kernel: arch/x86/boot/bzImage is ready  (#3)
+>   Building modules, stage 2.
+>   MODPOST 3012 modules
+> ERROR: "pcan_usb_pro" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefi=
+ned!
+> ERROR: "pcan_usb" [drivers/net/can/usb/peak_usb/peak_usb.ko] undefined!=
 
-Looks good, please add a patch description and put in a patch series
-together with the spinlock patch (see other mail).
+> ERROR: "peak_usb_set_ts_now"
+> [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
+> ERROR: "peak_usb_get_ts_tv"
+> [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
+> ERROR: "dump_mem" [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefi=
+ned!
+> ERROR: "peak_usb_init_time_ref"
+> [drivers/net/can/usb/peak_usb/pcan_usb_pro.ko] undefined!
+> ERROR: "peak_usb_set_ts_now" [drivers/net/can/usb/peak_usb/pcan_usb.ko]=
+
+> undefined!
+> ERROR: "peak_usb_update_ts_now"
+> [drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
+> ERROR: "peak_usb_get_ts_tv" [drivers/net/can/usb/peak_usb/pcan_usb.ko]
+> undefined!
+> ERROR: "peak_usb_init_time_ref"
+> [drivers/net/can/usb/peak_usb/pcan_usb.ko] undefined!
+> WARNING: modpost: Found 23 section mismatch(es).
+> To see full details build your kernel with:
+> 'make CONFIG_DEBUG_SECTION_MISMATCH=3Dy'
+> make[1]: *** [__modpost] Error 1
+> make: *** [modules] Error 2
+> linux-can-next$
+>=20
+> ... but I'm not an expert in the mainline kernel. Is there another way
+> to do that?
+
+Documentation/kbuild/makefiles.txt has this example:
+
+	obj-$(CONFIG_EXT2_FS) +=3D ext2.o
+	ext2-y :=3D balloc.o dir.o file.o ialloc.o inode.o ioctl.o \
+		namei.o super.o symlink.o
+	ext2-$(CONFIG_EXT2_FS_XATTR) +=3D xattr.o xattr_user.o \
+		xattr_trusted.o
+
+Which translates into (untested, though):
+
+	obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb.o
+	peak_usb-y :=3D peak_usb_core.o pcan_usb.o pcan_usb_pro.o
+
+With a peak_usb_core.c file.
 
 Marc
-
-> --------------------------------------------------------
-> diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc77=
-0.c
-> index 2d12f89..dad6707 100644
-> --- a/drivers/net/can/cc770/cc770.c
-> +++ b/drivers/net/can/cc770/cc770.c
-> @@ -460,15 +460,6 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff=
-
-> *skb, struct net_device *dev)
->=20
->      stats->tx_bytes +=3D dlc;
->=20
-> -
-> -    /*
-> -     * HM: We had some cases of repeated IRQs so make sure the
-> -     * INT is acknowledged I know it's already further up, but
-> -     * doing again fixed the issue
-> -     */
-> -    cc770_write_reg(priv, msgobj[mo].ctrl0,
-> -            MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
-> -
->      return NETDEV_TX_OK;
->  }
->=20
-> @@ -689,12 +680,6 @@ static void cc770_tx_interrupt(struct net_device
-> *dev, unsigned int o)
->      /* Nothing more to send, switch off interrupts */
->      cc770_write_reg(priv, msgobj[mo].ctrl0,
->              MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
-> -    /*
-> -     * We had some cases of repeated IRQ so make sure the
-> -     * INT is acknowledged
-> -     */
-> -    cc770_write_reg(priv, msgobj[mo].ctrl0,
-> -            MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
->=20
->      stats->tx_packets++;
->      can_get_echo_skb(dev, 0);
-> ----------------------------------------------------------
-
-Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -91,7 +116,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig00B331AFBEC8F11109C88CD5
+--------------enigBE4D868C5241FD3D0B53EAF3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -100,9 +125,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk8NWK4ACgkQjTAFq1RaXHMPMQCeIwqiUQjpzi/ZTxyzOuFsZxKX
-qRUAoIWr7v7jWbhY/KbnzgtKBjgOT2cl
-=7qLN
+iEYEARECAAYFAk8NW18ACgkQjTAFq1RaXHMl2gCfUmzcXtpYpHCmPHbWLm4uz/9E
+4m0AoJnAdmzFTIYdyaAgKfX/tuSpsrMb
+=/a6y
 -----END PGP SIGNATURE-----
 
---------------enig00B331AFBEC8F11109C88CD5--
+--------------enigBE4D868C5241FD3D0B53EAF3--
