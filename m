@@ -1,71 +1,53 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [can-utils] canbusload: flush output at the end of each cycle
-Date: Wed, 11 Jan 2012 12:12:41 +0100
-Message-ID: <4F0D6EA9.4070708@pengutronix.de>
-References: <20111221091948.GC314@e-circ.dyndns.org> <4EF2D0F3.6080909@hartkopp.net>
+Date: Wed, 11 Jan 2012 12:17:11 +0100
+Message-ID: <4F0D6FB7.9090407@hartkopp.net>
+References: <20111221091948.GC314@e-circ.dyndns.org> <4EF2D0F3.6080909@hartkopp.net> <4F0D6EA9.4070708@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCBD7D128A1D2C8A1249C5806"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56839 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753040Ab2AKLMq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 06:12:46 -0500
-In-Reply-To: <4EF2D0F3.6080909@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:64357 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756592Ab2AKLRb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 06:17:31 -0500
+In-Reply-To: <4F0D6EA9.4070708@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCBD7D128A1D2C8A1249C5806
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 11.01.2012 12:12, Marc Kleine-Budde wrote:
 
-On 12/22/2011 07:40 AM, Oliver Hartkopp wrote:
-> On 21.12.2011 10:19, Kurt Van Dijck wrote:
->=20
->> canbusload: flush output at the end of each cycle
+> On 12/22/2011 07:40 AM, Oliver Hartkopp wrote:
+>> On 21.12.2011 10:19, Kurt Van Dijck wrote:
 >>
->> When canbusload is piped to another program, the output
->> is queued for several cycles. This patch will flush the output
->> explicitely.
+>>> canbusload: flush output at the end of each cycle
+>>>
+>>> When canbusload is piped to another program, the output
+>>> is queued for several cycles. This patch will flush the output
+>>> explicitely.
+>>>
+>>> Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
 >>
->> Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
->=20
->=20
-> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
->=20
-> Tnx Kurt.
->=20
-> I'll put it into the can-utils tree the next days.
-
-nitpick:
-Oliver, please don't forget to add your S-o-b if you are pushing commits
-to the tree.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>>
+>> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>
+>> Tnx Kurt.
+>>
+>> I'll put it into the can-utils tree the next days.
+> 
+> nitpick:
+> Oliver, please don't forget to add your S-o-b if you are pushing commits
+> to the tree.
 
 
---------------enigCBD7D128A1D2C8A1249C5806
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Yes. I noticed myself, that i need to improve this process by reading more git
+documentation ;-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Yesterday i just cherry-picked the patch and pushed it to the repo.
 
-iEYEARECAAYFAk8NbqsACgkQjTAFq1RaXHM7iQCaAxuoqTZ9JBIpBbcm761u5sXL
-nA0AnRCBA6m8XWJZ5frMzp+vgT0fPTW6
-=/LBT
------END PGP SIGNATURE-----
+The next time i'll do it the right(TM) way :-)
 
---------------enigCBD7D128A1D2C8A1249C5806--
+Regards,
+Oliver
