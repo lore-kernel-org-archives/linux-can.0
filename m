@@ -1,123 +1,56 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Add support for PEAK PCMCIA PCAN-PC card
-Date: Wed, 11 Jan 2012 16:00:25 +0100
-Message-ID: <4F0DA409.4080507@hartkopp.net>
-References: <691329.168246256-sendEmail@ubuntu-i386> <4F0C4020.8010304@grandegger.com> <4F0C53C6.1020704@hartkopp.net> <4F0D9891.6070901@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH net-next v2 2/4] can: cc770: add legacy ISA bus driver
+ for the CC770 and AN82527
+Date: Wed, 11 Jan 2012 16:02:02 +0100
+Message-ID: <4F0DA46A.6030802@pengutronix.de>
+References: <AE90C24D6B3A694183C094C60CF0A2F6D8AF31@saturn3.aculab.com> <4F0B608D.6090309@essax.com> <4F0B7421.6050203@pengutronix.de> <4F0C0552.5080504@grandegger.com> <4F0C2F4A.20500@essax.com> <4F0D4FBA.1080108@essax.com> <4F0D58AE.7070601@pengutronix.de> <4F0D9FC2.2080204@essax.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:37254 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756520Ab2AKPAv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 10:00:51 -0500
-In-Reply-To: <4F0D9891.6070901@peak-system.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig3B4CC25FABCEFA1DB366AF93"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4F0D9FC2.2080204@essax.com>
+Sender: netdev-owner@vger.kernel.org
+To: info@essax.com
+Cc: Wolfgang Grandegger <wg@grandegger.com>, David Laight <David.Laight@ACULAB.COM>, Oliver Hartkopp <socketcan@hartkopp.net>, henrik@proconx.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, socketcan-users@lists.berlios.de, IreneV <boir1@yandex.ru>, Stanislav Yelenskiy <stanislavelensky@yahoo.com>, oe@port.de, henrik@focus-sw.com
+List-Id: linux-can.vger.kernel.org
 
-On 11.01.2012 15:11, Grosjean Stephane wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig3B4CC25FABCEFA1DB366AF93
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
->> +config CAN_PEAK_PCMCIA +    tristate "PEAK PCAN PC-CARD Card"
->> 
->> tristate "PEAK PCAN PC-Card (PCMCIA)"
->> 
->> ??
-> 
-> Please confirm: you'd like me to add the "(PCMCIA)" string at the end of
-> the menu text, wouldn't you?
+On 01/11/2012 03:42 PM, Wolfgang Zarre wrote:
+> Thanks, also for the additional hints.
 
+You're welcome.
 
+> It might be that I let this patch for now until clarified if we
+> should remove or not.
 
-I read some more Kconfigs to check the current handling in other drivers.
+Yes, the just prepare the spinlock patch.
 
-I think
+Marc
 
-	tristate "PEAK PCAN PC-Card"
-
-is better - and reflects the PEAK adapter name (note the upper/lower case!).
-Although the Kconfig entry is only visible when PCMCIA is enabled.
-
-> 
->> Should we probably put all PCMCIA cards into a separate
->> 
->> linux/drivers/net/can/sja1000/pcmcia
->> 
->> directory - like we have it for the USB devices?
-> 
-> If my Humble Opinion may help you: not sure this will be lots of other
-> pcmcia (can) adapters in the future...
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-ok. Forget it :-)
+--------------enig3B4CC25FABCEFA1DB366AF93
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
->>>> +    depends on PCMCIA +    ---help--- +      This driver is for the
->>>> PCAN PC-CARD PCMCIA card with 1 or 2 channels +      from PEAK
->>>> Systems (http://www.peak-system.com). +
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
+iEYEARECAAYFAk8NpG0ACgkQjTAFq1RaXHMW4gCgjtgbHJr2bZfwzsnDHF9ha6Nz
+Zb8An1NFPkXO+fZPDCz0ueGL1JkubalG
+=d5az
+-----END PGP SIGNATURE-----
 
-(..)
-
->>>> +obj-$(CONFIG_CAN_PEAK_PCMCIA) += peak_pcmcia.o
->> 
->> This should be the module/driver name too.
->>>> + +/* PEAK-System PCMCIA driver name */ +#define DRV_NAME
->>>> "peak_pccard"
->>> I find the mix of "peak_pcmcia" and "peak_pccard" and "pcan_pccard"
->>> for the same hardware confusing. Please use just one name and prefix.
->> 
->> Yep - peak_pcmcia
-> 
-> We just finished to talk about that and, as far as the PCAN-PC Card is a 
-> PC-CARD (16bit), we'd like to use the "peak_pccard" text for the
-> module/module file/source file names instead of "peak_pcmcia". Related
-> question: I suppose I'll have to change the "CONFIG_CAN_PEAK_PCMCIA" into
-> "CONFIG_CAN_PEAK_PCCARD" too. Please confirm.
-
-
-Hm. Not that good IMO ...
-
-If you look into the Kernel config options there's a difference between PCCARD
-and PCMCIA:
-
-linux/drivers/pcmcia/Kconfig says
-
----8<--- snip
-
-if PCCARD
-
-config PCMCIA
-        tristate "16-bit PCMCIA support"
-        select CRC32
-        default y
-        ---help---
-           This option enables support for 16-bit PCMCIA cards. Most older
-           PC-cards are such 16-bit PCMCIA cards, so unless you know you're
-           only using 32-bit CardBus cards, say Y or M here.
-
-           To use 16-bit PCMCIA cards, you will need supporting software in
-           most cases. (see the file <file:Documentation/Changes> for
-           location and details).
-
-           To compile this driver as modules, choose M here: the
-           module will be called pcmcia.
-
-           If unsure, say Y.
-
----8<--- snip
-
-So your hardware is not a 32-bit Cardbus but a 16-bit PCMCIA card.
-
-Putting the "PCAN-PC card" into the Kconfig description is fine but the driver
-source and kernel module should reflect the (16 bit) pcmcia driver state.
-
-You may add to your Kconfig entry:
-
-           To compile this driver as module, choose M here: the
-           module will be called peak_pcmcia.
-
-
-Regards,
-Oliver
-
+--------------enig3B4CC25FABCEFA1DB366AF93--
