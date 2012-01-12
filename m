@@ -1,106 +1,90 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Add support for PEAK PCMCIA PCAN-PC card
-Date: Wed, 11 Jan 2012 19:35:49 +0100
-Message-ID: <4F0DD685.9070002@grandegger.com>
-References: <691329.168246256-sendEmail@ubuntu-i386> <4F0C4020.8010304@grandegger.com> <4F0DC27A.70202@peak-system.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: Softing Firmware on gitorious
+Date: Thu, 12 Jan 2012 09:25:36 +0100
+Message-ID: <20120112082536.GA380@e-circ.dyndns.org>
+References: <4F0DB66F.50509@hartkopp.net>
+ <4F0DBF90.5050906@pengutronix.de>
+ <4F0DC8BC.4040704@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:58200 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933750Ab2AKSfw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Jan 2012 13:35:52 -0500
-In-Reply-To: <4F0DC27A.70202@peak-system.com>
+Received: from gate.eia.be ([194.78.71.18]:42764 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752847Ab2ALIZj (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 12 Jan 2012 03:25:39 -0500
+Content-Disposition: inline
+In-Reply-To: <4F0DC8BC.4040704@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Stephane,
-
-On 01/11/2012 06:10 PM, Grosjean Stephane wrote:
-> Hi Wolfgang,
-
->>> +    /* wait until write enable */
->>> +    for (i = 0; i<  DRV_WRITE_MAX_LOOP; i++) {
->>> +        /* RDSR */
->> This comment does not tell me anything.
+On Wed, Jan 11, 2012 at 06:37:00PM +0100, Oliver Hartkopp wrote:
+> On 11.01.2012 17:57, Marc Kleine-Budde wrote:
 > 
-> Ok, what about these one?
+> > On 01/11/2012 05:18 PM, Oliver Hartkopp wrote:
+> >> Hello Kurt,
+> >>
+> >> i just uploaded the Softing firmware from BerliOS to our new 
+> >>
+> >> https://gitorious.org/linux-can/can-misc
+I was thinking to pick this up sooner or later. Thanks for doing this already.
+
+> >>
+> >> git repository.
+> >>
+> >> See at 
+> >>
+> >> https://gitorious.org/linux-can/can-misc/blobs/master/firmware/softing-fw-4.6-binaries.tar.gz
+> >>
+> >> Currently the only reference is in the Linux Kernel in the Softing Kconfig:
+> >>
+> >> config CAN_SOFTING_CS
+> >>         tristate "Softing Gmbh CAN pcmcia cards"
+> >>         depends on PCMCIA
+> >>         depends on CAN_SOFTING
+> >>         ---help---
+> >>           Support for PCMCIA cards from Softing Gmbh & some cards
+> >>           from Vector Gmbh.
+> >>           You need firmware for these, which you can get at
+> >>           http://developer.berlios.de/projects/socketcan/
+> >>           This version of the driver is written against
+> >>           firmware version 4.6 (softing-fw-4.6-binaries.tar.gz)
+> >>           In order to use the card as CAN device, you need the Softing generic
+> >>           support too.
+> >>
+> >>
+> >> The question is now:
+> >>
+> >> 1. change the link in the Kconfig
+Yes
+> >> 2. Add the PCMCIA firmware to the Linux Kernel (linux/firmware/*.ihex)
+If I read the READMEs well, new firmware should go into a seperate repo? Am I wrong?
+
+I admit that putting the firmware into linux/firmware/*.ihex would solve a distribution
+problem ...
+> >> 3. 1 & 2
+> > 
+> > 3.
+> > 
+> > It would be nice to have a license statement on that files. As these are
+> > in binary form, the driver would be removed from the debian kernel.
+> > What's the official source of that firmware? Do we have a contact to
+> > softing?
+The official source is softing. I only repackaged the firmware from 'unsigned char ...[]' in
+header files towards seperate blobs to be used with the firmware interface.
+> > 
 > 
-> /* write command reading the status register */
-> ...
-> /* get the status register and check write enable bit */
 > 
-> then;
+> Yes. See here:
 > 
-> /* write command reading the status register */
-> ...
-> /* get the status register and check write in progress bit */
-
-I don't know what RDSR means, sorry. Just put something human readable.
-With some meaningful macro definitions the comment might even be
-obsolete/redundant.
-
-..
-
->>> +/*
->>> + * interrupt service routine
->>> + */
->>> +static irqreturn_t pcan_isr(int irq, void *dev_id)
->>> +{
->>> +    struct pcan_pccard *card = dev_id;
->>> +    struct net_device *netdev;
->>> +    irqreturn_t retval = IRQ_NONE;
->>> +    int i, again;
->>> +
->>> +    do {
->>> +        again = 0;
->>> +
->>> +        /* Check interrupt for each channel */
->>> +        for (i = 0; i<  card->chan_count; i++) {
-
-s/i</i </
-
->>> +            netdev = card->channel[i].netdev;
->>> +            if (!netdev)
->>> +                continue;
->>> +
->>> +            if (sja1000_interrupt(irq, netdev) == IRQ_HANDLED)
->>> +                again = 1;
->>> +        }
->>> +
->>> +        /* At least one channel handled the interrupt */
->>> +        if (again)
->>> +            retval = IRQ_HANDLED;
->>> +
->>> +    } while (again);
->> I wonder if it makes sense to limit the loop count.
+> https://lists.berlios.de/pipermail/socketcan-core/2008-June/001613.html
+This convinces me as a developer that they have not problem.
 > 
-> Had a look to sja1000_interrupt(): you're right, could enter in an
-> infinite loop if one of the sja1000 failed into always sending interrupt
-> signals...
-> On my side, I wonder why entering such a do { } while (again) loop?
-
-Is it an edge or level sensitive interrupt? This custom interrupt
-handling was introduced to handle hardware which does not allow to
-handle the interrupt per device and the loop is required to avoid
-interrupt losses, IIRC. The corresponding PEAK PCAN driver has a similar
-for loop:
-
-        loop_count = 0; // restart, since all channels must respond in
-                           one pass with no interrupt pending
-
->>> +    card = kzalloc(sizeof(struct pcan_pccard), GFP_KERNEL);
->>> +    if (!card) {
->>> +        dev_err(&dev->dev, "kzalloc() failure\n");
->> Please be more specific, e.g.: "couldn't allocated card memory".
+> I'll check the mentioned driver packages for license information which i don't
+> have on my current machine here.
+I'll look too.
 > 
-> As you want, you're (one of) the chief(s) ;-)
-> Closed.
-
-Well, the messages should make sense for the user of that driver, and
-not for the developer.
-
-Wolfgang
+> Regards,
+> Oliver
+Kurt
