@@ -1,57 +1,58 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: recv list
-Date: Thu, 12 Jan 2012 16:43:53 +0100
-Message-ID: <20120112154353.GK380@e-circ.dyndns.org>
-References: <20120109132638.GI386@e-circ.dyndns.org>
- <loom.20120109T162926-984@post.gmane.org>
- <20120110085105.GB330@e-circ.dyndns.org>
- <loom.20120110T112815-928@post.gmane.org>
- <20120110152341.GD2524@e-circ.dyndns.org>
- <loom.20120112T155904-850@post.gmane.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: loopback/recv own messages option not working as expected with
+ plx_pci (Adlink Technology PCI-7841)
+Date: Thu, 12 Jan 2012 17:57:45 +0100
+Message-ID: <4F0F1109.6090300@hartkopp.net>
+References: <CAJsOQGNE959CjAJUCQzxqh_zyrLj-Ed=-RDYBvJq9OrtScMkKw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:49753 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753997Ab2ALPsy (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 12 Jan 2012 10:48:54 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20120112T155904-850@post.gmane.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:25874 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753252Ab2ALQ6H (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2012 11:58:07 -0500
+In-Reply-To: <CAJsOQGNE959CjAJUCQzxqh_zyrLj-Ed=-RDYBvJq9OrtScMkKw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>
+To: Felix Obenhuber <felix@obenhuber.de>
 Cc: linux-can@vger.kernel.org
 
-On Thu, Jan 12, 2012 at 03:23:43PM +0000, Wolfgang wrote:
-> Hi,
-> 
-> is it possible when I create a promiscuous socket with 
-> ...
-> 
-> static struct {
-> 	struct sockaddr_can src;
-> 	int pkt_len;
-> } ss = {
-> 	.pkt_len = 1024,
-> 	.src.can_addr.j1939 = {
-> 		.name = J1939_NO_NAME,
-> 		.addr = J1939_NO_ADDR,
-> 		.pgn = J1939_NO_PGN,
-> 	},
-> };
-> ....
-> addr.can_ifindex = ss.src.can_ifindex;
-> ...
-> 
-> and then receive a msg with recvfrom and  send that msg with sendto to tell 
-> the promiscuous socket to ignore the send msg. That the promiscuous socket only
-> receives 'extern' messages. I am totally floored, or am I on the wrong track?
+Hi Felix,
 
-I think you are looking to 'avoid receiving msgs that you just sent yourself'.
-We had such issue solved in can_raw some time ago, and I put the same mechanism
-in can-j1939.
-I'll come back on that tomorrow ...
+On 12.01.2012 14:53, Felix Obenhuber wrote:
 
-You may look at socket option SO_J1939_RECV_OWN, and flag MSG_DONTROUTE in recvmsg.
 
-Kurt
+> I just encountered a problem with the loopback and receive own
+> messages option in combination with the plx_pci driver serving a
+> Adlink PCI-7841. It driver behaves a the CAN_RAW_RECV_OWN_MSGS and
+> LOOPBACK option would have been set (and they aren't).
+> 
+> One box with the Adlink card connected to another host with a approved
+> and well initialized CAN card. Sending single frames from each hosts
+> works fine. When I start the canecho test from trunk/test and send a
+> frame on  the bus (from the other node) its duplicated each time
+> canecho reads/writes the frame. You would get the same result if you
+> set the CAN_RAW_RECV_OWN_MSGS and LOOPBACK option on the socket in the
+> canecho test.
+> I have the same behavior with a tool written by me and tested with the
+> latest trunk revision - same result.
+> Running canecho on a vcan or peak usb device works as expected.
+
+
+Both vcan & the PEAK driver use a fallback solution for that - so it is not a
+real statement when they work.
+
+> 
+> Has someone seen something similar with that driver? I'd just like to
+> ask before digging into it.
+
+
+No - i assume you are using a 2.6.30.x (0 <= x < 5) kernel, right?
+
+See
+
+http://old.nabble.com/Local-loopback-broken--td24108048.html
+
+Regards,
+Oliver
