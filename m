@@ -1,67 +1,44 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: Softing Firmware on gitorious
-Date: Thu, 12 Jan 2012 10:13:38 +0100
-Message-ID: <4F0EA442.8080303@pengutronix.de>
-References: <4F0DB66F.50509@hartkopp.net> <4F0DBF90.5050906@pengutronix.de> <4F0DC8BC.4040704@hartkopp.net> <20120112082536.GA380@e-circ.dyndns.org> <20120112090217.GB380@e-circ.dyndns.org>
+Date: Thu, 12 Jan 2012 10:30:09 +0100
+Message-ID: <20120112093009.GC380@e-circ.dyndns.org>
+References: <4F0DB66F.50509@hartkopp.net>
+ <4F0DBF90.5050906@pengutronix.de>
+ <4F0DC8BC.4040704@hartkopp.net>
+ <20120112082536.GA380@e-circ.dyndns.org>
+ <20120112090217.GB380@e-circ.dyndns.org>
+ <4F0EA442.8080303@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig18AC883E99D5B91BE293678B"
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57713 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753068Ab2ALJNn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2012 04:13:43 -0500
-In-Reply-To: <20120112090217.GB380@e-circ.dyndns.org>
+Received: from gate.eia.be ([194.78.71.18]:29256 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752859Ab2ALJaL (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 12 Jan 2012 04:30:11 -0500
+Content-Disposition: inline
+In-Reply-To: <4F0EA442.8080303@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig18AC883E99D5B91BE293678B
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 12, 2012 at 10:13:38AM +0100, Marc Kleine-Budde wrote:
+> On 01/12/2012 10:02 AM, Kurt Van Dijck wrote:
+> >>> https://lists.berlios.de/pipermail/socketcan-core/2008-June/001613.html
+> >> This convinces me as a developer that they have not problem.
+> >>>
+> >>> I'll check the mentioned driver packages for license information which i don't
+> >>> have on my current machine here.
+> >> I'll look too.
+> > 
+> > The 5.01 package states the binary blob (and their code) is GPLv2.
+> > The remainders of the 4.6 package I still have (only the firmware part) also
+> > state it's all released under GPLv2.
+> 
+> Do you mean the binary blob's source code is available as GPLv2? Do we
+> have access to the source code? Would be interesting for the Debian Kernel.
+Softing releases a linux driver package, with linux driver code and firmware
+under GPLv2. The firmware is packaged as array's in c files.
+The sources of the firmware itself are not available.
 
-On 01/12/2012 10:02 AM, Kurt Van Dijck wrote:
->>> https://lists.berlios.de/pipermail/socketcan-core/2008-June/001613.ht=
-ml
->> This convinces me as a developer that they have not problem.
->>>
->>> I'll check the mentioned driver packages for license information whic=
-h i don't
->>> have on my current machine here.
->> I'll look too.
->=20
-> The 5.01 package states the binary blob (and their code) is GPLv2.
-> The remainders of the 4.6 package I still have (only the firmware part)=
- also
-> state it's all released under GPLv2.
-
-Do you mean the binary blob's source code is available as GPLv2? Do we
-have access to the source code? Would be interesting for the Debian Kerne=
-l.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig18AC883E99D5B91BE293678B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk8OpEUACgkQjTAFq1RaXHP7aQCZAd8MsrX0cz0EmpOCTLfpncj3
-RcYAn3pwciqPDf254rOinXExs6K7g2b1
-=mH7r
------END PGP SIGNATURE-----
-
---------------enig18AC883E99D5B91BE293678B--
+Kurt
