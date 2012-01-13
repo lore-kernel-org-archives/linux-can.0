@@ -1,32 +1,63 @@
-From: Felix Obenhuber <felix@obenhuber.de>
-Subject: Re: loopback/recv own messages option not working as expected with
- plx_pci (Adlink Technology PCI-7841)
-Date: Fri, 13 Jan 2012 11:30:15 +0100
-Message-ID: <CAJsOQGMybFjv8bqknjEbFmj4mBB-VWQEbuQDZxS0hUF-Trfwcg@mail.gmail.com>
-References: <CAJsOQGNE959CjAJUCQzxqh_zyrLj-Ed=-RDYBvJq9OrtScMkKw@mail.gmail.com>
-	<4F0F1109.6090300@hartkopp.net>
-	<CAJsOQGMFQsgy3LGGUDjUE7Jhpr8Jv+Voa_+z0hjezh5usibDew@mail.gmail.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: bridging with can-gw
+Date: Fri, 13 Jan 2012 12:12:51 +0100
+Message-ID: <20120113111251.GD319@e-circ.dyndns.org>
+References: <20120109132638.GI386@e-circ.dyndns.org>
+ <loom.20120109T162926-984@post.gmane.org>
+ <20120110085105.GB330@e-circ.dyndns.org>
+ <loom.20120110T112815-928@post.gmane.org>
+ <20120110152341.GD2524@e-circ.dyndns.org>
+ <loom.20120112T155904-850@post.gmane.org>
+ <4F0F2195.7050109@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:63627 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752625Ab2AMKaQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Jan 2012 05:30:16 -0500
-Received: by werb13 with SMTP id b13so254907wer.19
-        for <linux-can@vger.kernel.org>; Fri, 13 Jan 2012 02:30:15 -0800 (PST)
-In-Reply-To: <CAJsOQGMFQsgy3LGGUDjUE7Jhpr8Jv+Voa_+z0hjezh5usibDew@mail.gmail.com>
+Received: from gate.eia.be ([194.78.71.18]:7006 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1757880Ab2AMLMy (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 13 Jan 2012 06:12:54 -0500
+Content-Disposition: inline
+In-Reply-To: <4F0F2195.7050109@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+Cc: Wolfgang <wutz@unterderbruecke.de>, linux-can@vger.kernel.org
 
-> I'll try a different kernel on the box that is not working.
+On Thu, Jan 12, 2012 at 07:08:21PM +0100, Oliver Hartkopp wrote:
+> On 12.01.2012 16:23, Wolfgang wrote:
+> 
+> > is it possible when I create a promiscuous socket with 
+> > ...
+> > 
+> > static struct {
+> > 	struct sockaddr_can src;
+> > 	int pkt_len;
+> > } ss = {
+> > 	.pkt_len = 1024,
+> > 	.src.can_addr.j1939 = {
+> > 		.name = J1939_NO_NAME,
+> > 		.addr = J1939_NO_ADDR,
+> > 		.pgn = J1939_NO_PGN,
+> > 	},
+> > };
+> > ....
+> > addr.can_ifindex = ss.src.can_ifindex;
+> > ...
+> > 
+> > and then receive a msg with recvfrom and  send that msg with sendto to tell 
+> > the promiscuous socket to ignore the send msg. That the promiscuous socket only
+> > receives 'extern' messages. I am totally floored, or am I on the wrong track?
+> 
+> 
+> Hello Wolfgang,
+> 
+> as you are always writing about the bridging of J1939 frames - what does this
+> mean on the bus?
+> 
+> Do you only bridge single frames?
 
-I updated to the stock ubuntu kernel
-
-3.0.0-15-generic #25-Ubuntu SMP
-
-The loopback option works as expected.
-
-Felix
+The idea has crossed my mind also that when only single frames are bridged,
+a raw cangw may suit the need.
+A cangw setup _may_ not suit when transport protocol comes in place...
+> 
+Kurt
