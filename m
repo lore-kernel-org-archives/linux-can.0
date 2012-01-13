@@ -1,47 +1,32 @@
-From: Sven Geggus <lists@fuchsschwanzdomain.de>
-Subject: OT: Comprehensive Experimental Analyses of Automotive Attack Surfaces
-Date: Fri, 13 Jan 2012 09:35:26 +0000 (UTC)
-Message-ID: <jeotsu$2vv$1@ultimate100.geggus.net>
+From: Felix Obenhuber <felix@obenhuber.de>
+Subject: Re: loopback/recv own messages option not working as expected with
+ plx_pci (Adlink Technology PCI-7841)
+Date: Fri, 13 Jan 2012 11:30:15 +0100
+Message-ID: <CAJsOQGMybFjv8bqknjEbFmj4mBB-VWQEbuQDZxS0hUF-Trfwcg@mail.gmail.com>
+References: <CAJsOQGNE959CjAJUCQzxqh_zyrLj-Ed=-RDYBvJq9OrtScMkKw@mail.gmail.com>
+	<4F0F1109.6090300@hartkopp.net>
+	<CAJsOQGMFQsgy3LGGUDjUE7Jhpr8Jv+Voa_+z0hjezh5usibDew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.gnuher.de ([78.47.12.54]:41632 "EHLO mail.gnuher.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752610Ab2AMJyU (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 13 Jan 2012 04:54:20 -0500
-Received: from ultimate100.geggus.net ([2a01:198:297:1::1])
-	by mail.gnuher.de (envelope-from
-	<news@geggus.net>)
-	with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.72)
-	id 1RldXl-0003cr-Aw
-	for linux-can@vger.kernel.org; Fri, 13 Jan 2012 10:35:29 +0100
-Received: from news  by ultimate100.geggus.net (envelope-from
-	<news@geggus.net>)
-	with local (Exim 4.72)
-	id 1RldXi-0000wi-P9
-	for linux-can@vger.kernel.org; Fri, 13 Jan 2012 10:35:26 +0100
+Received: from mail-we0-f174.google.com ([74.125.82.174]:63627 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752625Ab2AMKaQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Jan 2012 05:30:16 -0500
+Received: by werb13 with SMTP id b13so254907wer.19
+        for <linux-can@vger.kernel.org>; Fri, 13 Jan 2012 02:30:15 -0800 (PST)
+In-Reply-To: <CAJsOQGMFQsgy3LGGUDjUE7Jhpr8Jv+Voa_+z0hjezh5usibDew@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-While not particular a CANbus topic (at least not only) but probably of
-interest to subscribers of this list anyway:
+> I'll try a different kernel on the box that is not working.
 
-http://www.autosec.org/pubs/cars-usenixsec2011.pdf
+I updated to the stock ubuntu kernel
 
-At least the vulnerable "PassThru" device is almost certainly using Lin=
-ux
-CAN stack which is of course not the cause of the security problem ;)
+3.0.0-15-generic #25-Ubuntu SMP
 
-Regards
+The loopback option works as expected.
 
-Sven
-
---=20
-Unix is simple and coherent, but it takes a genius =E2=80=93 or at any =
-rate a
-programmer =E2=80=93 to understand and appreciate the simplicity
-(Dennis M. Ritchie)
-/me is giggls@ircnet, http://sven.gegg.us/ on the Web
+Felix
