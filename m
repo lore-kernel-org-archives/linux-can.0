@@ -1,55 +1,40 @@
-From: Wolfgang <wutz@unterderbruecke.de>
-Subject: =?utf-8?b?TVNHX0RPTlRST1VURQ==?=
-Date: Mon, 16 Jan 2012 10:04:17 +0000 (UTC)
-Message-ID: <loom.20120116T103812-141@post.gmane.org>
-References: <20120109132638.GI386@e-circ.dyndns.org> <loom.20120109T162926-984@post.gmane.org> <20120110085105.GB330@e-circ.dyndns.org> <loom.20120110T112815-928@post.gmane.org> <20120110152341.GD2524@e-circ.dyndns.org> <loom.20120112T155904-850@post.gmane.org> <4F0F2195.7050109@hartkopp.net> <20120113111251.GD319@e-circ.dyndns.org> <loom.20120113T122554-557@post.gmane.org>
+From: Steven Miao <realmz6@gmail.com>
+Subject: [PATCH] socket-can: bit-timing calculation
+Date: Mon, 16 Jan 2012 18:50:24 +0800
+Message-ID: <1326711025-6629-1-git-send-email-realmz6@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:36875 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751877Ab2APKE3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 16 Jan 2012 05:04:29 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1RmjQS-0001eP-Ls
-	for linux-can@vger.kernel.org; Mon, 16 Jan 2012 11:04:28 +0100
-Received: from fire.d-i-f.com ([80.152.230.22])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 16 Jan 2012 11:04:28 +0100
-Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 16 Jan 2012 11:04:28 +0100
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]:42379 "EHLO
+	TX2EHSOBE005.bigfish.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751896Ab2APKpJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Jan 2012 05:45:09 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: Steven Miao <realmz6@gmail.com>, "open list:CAN NETWORK DRIVERS" <linux-can@vger.kernel.org>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 
-What did I do wrong I want that after the reception of the message it is checked 
-whether the MSG_DONTROUTE flag is set and if it isn't set the message is bridged
-on socket s2? 
-At the moment it doesn't matter if the frame is new or created on the local host.
+just use first found best bit rate prescaler
 
-	while (1) {
-		
-		iov.iov_len = s.pkt_len;
-		msg.msg_namelen = sizeof(src);
-		msg.msg_controllen = sizeof(ctrlmsg);
-		msg.msg_flags = 0;
+Signed-off-by: Steven Miao <realmz6@gmail.com>
+---
+ drivers/net/can/dev.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-			
-		ret = recvmsg(sock, &msg, 0);
-
-
-		if ((msg.msg_flags & MSG_DONTROUTE) == 0)
-			{
-				src.can_addr.j1939.addr = J1939_NO_ADDR;
-				src.can_ifindex = if_nametoindex("can1");
-				sendmsg(s2, &msg, 0);
-			}
-
-
-Thanks for your ideas!
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 25695bd..9d4afe6 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -106,7 +106,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 		/* tseg brp biterror */
+ 		if (error < 0)
+ 			error = -error;
+-		if (error > best_error)
++		if (error >= best_error)
+ 			continue;
+ 		best_error = error;
+ 		if (error == 0) {
+-- 
+1.7.0.4
 
 
