@@ -1,94 +1,53 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: increase buffer size
-Date: Tue, 24 Jan 2012 13:01:45 +0100
-Message-ID: <4F1E9DA9.9060804@hartkopp.net>
-References: <1567213.2GCzMlGyKY@lisa>
+From: Steffen Rose <ro@emtas.de>
+Subject: Re: [Socketcan-users] increase buffer size
+Date: Tue, 24 Jan 2012 16:42 +0100
+Message-ID: <3362435.B6CXOz5dhC@lisa>
+References: <1567213.2GCzMlGyKY@lisa> <4F1E9DA9.9060804@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-In-Reply-To: <1567213.2GCzMlGyKY@lisa>
-List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
-List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
-List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
-	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
-Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
-To: Steffen Rose <ro-2q5hN/w50hk@public.gmane.org>
-Cc: socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from moutng.kundenserver.de ([212.227.126.171]:63105 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753393Ab2AXPmF convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jan 2012 10:42:05 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 74326561BDC
+	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 16:42:04 +0100 (CET)
+Received: from kolab.emtas.de ([127.0.0.1])
+	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id rConhW+CThzN for <linux-can@vger.kernel.org>;
+	Tue, 24 Jan 2012 16:42:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id BA167561B3F
+	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 16:42:03 +0100 (CET)
+Received: from lisa.localnet (lisa.emtas.de [192.168.3.54])
+	(Authenticated sender: ro@emtas.de)
+	by kolab.emtas.de (Postfix) with ESMTPSA id 79F0B5615F2
+	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 16:42:03 +0100 (CET)
+In-Reply-To: <4F1E9DA9.9060804@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Hi Steffen,
+Hello Oliver
 
-On 24.01.2012 12:18, Steffen Rose wrote:
+Am Dienstag, 24. Januar 2012, 13:01:45 schrieb Oliver Hartkopp:
+> ifconfig can0 txqueuelen 1000
+> ip link set can0 txqueuelen 1000
 
-> I want to increase the transmit quere of a can device.
+You wrote, that this command do not change the socket quere, this comma=
+nd=20
+change the quere within the can adaptation. I hope, I understand this=20
+correctly.
 
+Is there a dependency to a specific SocketCAN version? Especially I'm=20
+interested on embedded linux devices. Is the quere part of the common=20
+socketcan code or is it depend of the implementation?
 
-You can do this with ifconfig or the 'ip' tool from the iproute2 package.
-
-Examples:
-
-ifconfig can0 txqueuelen 1000
-
-or
-
-ip link set can0 txqueuelen 1000
-
-
-> 
-> As I understand, the virtual devices don't have a quere. Is it right?
-> 
-
-
-Generally yes. A vcan is a software device like the 'lo' interface for IP.
-Both (vcan & lo) transfer the packets directly back to the rx queue instantly.
-
-But you can create vcans having a tx-queue len:
-
-Here i created a virtual CAN interface 'xxx' with a txqueuelen of 10:
-
-root# ip link add xxx type vcan
-root# ip link set xxx txqueuelen 10
-root# ip link set xxx up
-root# ip link show xxx
-10: xxx: <NOARP,UP,LOWER_UP> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
-    link/can
-root#
-
-But this has no effect as long as you do not add some kind of queueing
-discipline that throttles the bandwidth on the specific interface.
-
-> As I understand, for physical devices the transmit quere is located within the 
-> sockets, not in the can device driver. Is it right?
+--=20
+Mit freundlichen Gr=FC=DFen / Regards
+Steffen Rose
+www.emtas.de
 
 
-The tx buffers of the sockets are not really used e.g. for CAN_RAW sockets.
-The tx queue len of the CAN network interface are relevant for you.
-
-> 
-> Do you have an small code snippet for the changing of the quere size?
-
-
-Better use the tools stated above.
-
-But you can (as root) modify these values e.g. with netlink sockets.
-
-Regards,
-Oliver
-
-ps.
-
-please do not use this mailing list any longer but send your questions
-to the new "linux-can" mailing list address "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org".
-For subscription or mailing list archives please have a look to:
-
-   http://vger.kernel.org/vger-lists.html#linux-can
-
-Mail archives of the new linux-can mailing list can be found at:
-
-   http://dir.gmane.org/gmane.linux.can
-   http://marc.info/?l=linux-can&r=1&w=2
