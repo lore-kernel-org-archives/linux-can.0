@@ -1,53 +1,94 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 2/3 V3.1] can/usb: PEAK-System Technik PCAN-USB specific
- part
-Date: Fri, 20 Jan 2012 18:32:15 +0100
-Message-ID: <4F19A51F.6040702@grandegger.com>
-References: <Pine.LNX.4.44L0.1201191004540.1447-100000@iolanthe.rowland.org> <4F191D44.9080101@hartkopp.net> <4F195E08.5010504@volkswagen.de> <4F195F46.6080102@grandegger.com> <4F195FD7.9070808@grandegger.com> <4F196E1A.9020005@volkswagen.de> <4F19718A.7020801@grandegger.com> <4F197FEA.10007@peak-system.com>
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Subject: Re: increase buffer size
+Date: Tue, 24 Jan 2012 13:01:45 +0100
+Message-ID: <4F1E9DA9.9060804@hartkopp.net>
+References: <1567213.2GCzMlGyKY@lisa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:48262 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753874Ab2ATRcS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Jan 2012 12:32:18 -0500
-In-Reply-To: <4F197FEA.10007@peak-system.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, linux-can Mailing List <linux-can@vger.kernel.org>, stern@rowland.harvard.edu
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <1567213.2GCzMlGyKY@lisa>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Steffen Rose <ro-2q5hN/w50hk@public.gmane.org>
+Cc: socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi Stephane,
+Hi Steffen,
 
-On 01/20/2012 03:53 PM, Stephane Grosjean wrote:
-> Hi,
-> 
-> Found time to answer to all of you:
-> 
-> - first, thanks for your review and tests
-> - next, I did a new version of the driver which fixes Alan's issue about
-> the variables in the stack, and which is *very* much less verbose too.
-> - the driver itself sets now the can state according to some usb adapter
-> events
-> 
-> When unplugging the can cable, candump displays now:
-> 
->   can4  20000004  [8] 00 30 00 00 00 00 00 00   ERRORFRAME
->         controller-problem{rx-error-passive,tx-error-passive}
->   can4  20000004  [8] 00 30 00 00 00 00 00 00   ERRORFRAME
->         controller-problem{rx-error-passive,tx-error-passive}
->   can4  20000004  [8] 00 30 00 00 00 00 00 00   ERRORFRAME
->         controller-problem{rx-error-passive,tx-error-passive}
->   can4  20000004  [8] 00 30 00 00 00 00 00 00   ERRORFRAME
->         controller-problem{rx-error-passive,tx-error-passive}
-> ...
+On 24.01.2012 12:18, Steffen Rose wrote:
 
-Does the device report state change to error *warning* as well? Also,
-the state change to error passive should only be reported *once*. Well,
-it's state change. I don't known what the hardware is actually
-reporting. If it does report the current state periodically, you need to
-handle it accordingly.
-BTW: are the error counters also availabe/readable?
+> I want to increase the transmit quere of a can device.
 
-Wolfgang.
+
+You can do this with ifconfig or the 'ip' tool from the iproute2 package.
+
+Examples:
+
+ifconfig can0 txqueuelen 1000
+
+or
+
+ip link set can0 txqueuelen 1000
+
+
+> 
+> As I understand, the virtual devices don't have a quere. Is it right?
+> 
+
+
+Generally yes. A vcan is a software device like the 'lo' interface for IP.
+Both (vcan & lo) transfer the packets directly back to the rx queue instantly.
+
+But you can create vcans having a tx-queue len:
+
+Here i created a virtual CAN interface 'xxx' with a txqueuelen of 10:
+
+root# ip link add xxx type vcan
+root# ip link set xxx txqueuelen 10
+root# ip link set xxx up
+root# ip link show xxx
+10: xxx: <NOARP,UP,LOWER_UP> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+    link/can
+root#
+
+But this has no effect as long as you do not add some kind of queueing
+discipline that throttles the bandwidth on the specific interface.
+
+> As I understand, for physical devices the transmit quere is located within the 
+> sockets, not in the can device driver. Is it right?
+
+
+The tx buffers of the sockets are not really used e.g. for CAN_RAW sockets.
+The tx queue len of the CAN network interface are relevant for you.
+
+> 
+> Do you have an small code snippet for the changing of the quere size?
+
+
+Better use the tools stated above.
+
+But you can (as root) modify these values e.g. with netlink sockets.
+
+Regards,
+Oliver
+
+ps.
+
+please do not use this mailing list any longer but send your questions
+to the new "linux-can" mailing list address "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org".
+For subscription or mailing list archives please have a look to:
+
+   http://vger.kernel.org/vger-lists.html#linux-can
+
+Mail archives of the new linux-can mailing list can be found at:
+
+   http://dir.gmane.org/gmane.linux.can
+   http://marc.info/?l=linux-can&r=1&w=2
