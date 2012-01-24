@@ -1,50 +1,62 @@
-From: Steffen Rose <ro@emtas.de>
-Subject: Re: [Socketcan-users] increase buffer size
-Date: Tue, 24 Jan 2012 17:50:47 +0100
-Message-ID: <5532811.lHVu6H1glq@lisa>
-References: <16594621.klnj3Hkir3@lisa> <2F0BDF8C-F6D0-4CCD-A08D-3D969B98BB02@t-online.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: About PCAN-USB issues
+Date: Tue, 24 Jan 2012 18:12:24 +0100
+Message-ID: <4F1EE678.2050604@peak-system.com>
+References: <1567213.2GCzMlGyKY@lisa> <4F1E9DA9.9060804@hartkopp.net>
+Reply-To: s.grosjean@peak-system.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.8]:60176 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755691Ab2AXQuv convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jan 2012 11:50:51 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by kolab.emtas.de (Postfix) with ESMTP id CF32D561BEB
-	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 17:50:50 +0100 (CET)
-Received: from kolab.emtas.de ([127.0.0.1])
-	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id n83QQ0CczU+9 for <linux-can@vger.kernel.org>;
-	Tue, 24 Jan 2012 17:50:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by kolab.emtas.de (Postfix) with ESMTP id 1EC01561BE6
-	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 17:50:50 +0100 (CET)
-Received: from lisa.localnet (lisa.emtas.de [192.168.3.54])
-	(Authenticated sender: ro@emtas.de)
-	by kolab.emtas.de (Postfix) with ESMTPSA id DF884561BB1
-	for <linux-can@vger.kernel.org>; Tue, 24 Jan 2012 17:50:49 +0100 (CET)
-In-Reply-To: <2F0BDF8C-F6D0-4CCD-A08D-3D969B98BB02@t-online.de>
+Received: from mail.peak-system.com ([213.157.13.214]:38261 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752401Ab2AXRMo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jan 2012 12:12:44 -0500
+In-Reply-To: <4F1E9DA9.9060804@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Sebastian Haas <dev@sebastianhaas.info>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Am Dienstag, 24. Januar 2012, 17:31:56 schrieb Heinz-Juergen Oertel:
-> Von meinem iPhone gesendet
->=20
-> Am 24.01.2012 um 16:36 schrieb Steffen Rose <ro@emtas.de>:
-> > Du liest sicher mit...
->=20
-> Ja, werde trotzdem nicht schlau wer die  Puffer, bes. RX verwaltet.
+Hello all,
 
-Wenn Du mich fragts:
+I'm finally back to the linux-can... I'm currently working on several=20
+projects so the peak_usb did progress slowly these last days...
 
-RX Buffer: Hier wird die Socket Quere genutzt.
-TX Buffer: Hierf=C3=BCr ist der CAN Treiber verantwortlich. Die Socket =
-Quere k=C3=B6nnte=20
-genutzt werden, wird aber typ. nicht genutzt.
-
-bye
-Steffen
+Back to the issue: I changed the way the can state is handled in the=20
+peak_usb driver and finally get an easy tesbed to create bus-off=20
+events... Now, the driver puts the candev into that state only once, no=
 =20
+more periodic error-warnings or else. I'm looking now to how the restar=
+t=20
+mechanism works.
+
+1st: since the restart can be automatic, the related do_set_mode=20
+callback is called from a timer context, in which you're not allowed to=
+=20
+sleep. So I suppose this is the reason of some Kernel hangs you (Oliver=
+)=20
+detected last week: the peak_usb driver (tries to) reset the device by=20
+sending an usb message, using usb_bulk_msg(), which usage is not allowe=
+d=20
+in such a context! To confirm, is someone able to do the same with the=20
+ems_usb driver, please? It seems that this driver acts as the peak_usb =
+does.
+
+Moreover, it seems that the "manual" restart is also called from such a=
+=20
+timer context, so the consequences are the same...
+
+I'll have to change the way that reset is done into full asynchronous m=
+ode.
+
+Regards,
+
+St=E9phane
+
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
