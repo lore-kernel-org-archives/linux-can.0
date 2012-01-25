@@ -1,73 +1,63 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [Socketcan-users] increase buffer size
-Date: Tue, 24 Jan 2012 18:55:40 +0100
-Message-ID: <4F1EF09C.8050206@hartkopp.net>
-References: <16594621.klnj3Hkir3@lisa> <2F0BDF8C-F6D0-4CCD-A08D-3D969B98BB02@t-online.de> <5532811.lHVu6H1glq@lisa>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: About PCAN-USB issues
+Date: Wed, 25 Jan 2012 11:25:31 +0100
+Message-ID: <4F1FD89B.8090401@grandegger.com>
+References: <1567213.2GCzMlGyKY@lisa> <4F1E9DA9.9060804@hartkopp.net> <4F1EE678.2050604@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:37347 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751888Ab2AXRzq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jan 2012 12:55:46 -0500
-In-Reply-To: <5532811.lHVu6H1glq@lisa>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:45065 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750894Ab2AYKZe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Jan 2012 05:25:34 -0500
+In-Reply-To: <4F1EE678.2050604@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Steffen Rose <ro@emtas.de>
-Cc: linux-can@vger.kernel.org
+To: s.grosjean@peak-system.com
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Sebastian Haas <dev@sebastianhaas.info>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 24.01.2012 17:50, Steffen Rose wrote:
+Hi Stephane,
 
-> Am Dienstag, 24. Januar 2012, 17:31:56 schrieb Heinz-Juergen Oertel:
->> Von meinem iPhone gesendet
->>
->> Am 24.01.2012 um 16:36 schrieb Steffen Rose <ro@emtas.de>:
->>> Du liest sicher mit...
->>
->> Ja, werde trotzdem nicht schlau wer die  Puffer, bes. RX verwaltet.
->=20
-> Wenn Du mich fragts:
->=20
-> RX Buffer: Hier wird die Socket Quere genutzt.
+On 01/24/2012 06:12 PM, Stephane Grosjean wrote:
+> Hello all,
+> 
+> I'm finally back to the linux-can... I'm currently working on several
+> projects so the peak_usb did progress slowly these last days...
+> 
+> Back to the issue: I changed the way the can state is handled in the
+> peak_usb driver and finally get an easy tesbed to create bus-off
+> events... Now, the driver puts the candev into that state only once, no
+> more periodic error-warnings or else. I'm looking now to how the restart
+> mechanism works.
+> 
+> 1st: since the restart can be automatic, the related do_set_mode
+> callback is called from a timer context, in which you're not allowed to
+> sleep. So I suppose this is the reason of some Kernel hangs you (Oliver)
+> detected last week: the peak_usb driver (tries to) reset the device by
+> sending an usb message, using usb_bulk_msg(), which usage is not allowed
+> in such a context! To confirm, is someone able to do the same with the
+> ems_usb driver, please? It seems that this driver acts as the peak_usb
+> does.
 
+The timer handler is called from softirq context, which is not valid for
+usb_bulk_msg().
 
-Yes. When a CAN frame is received the frame is delivered to the per-soc=
-ket
-receive queue due to the socket specific selected filter (default: rece=
-ive
-everything from the given CAN netdevice). See can.txt
+> 
+> Moreover, it seems that the "manual" restart is also called from such a
+> timer context, so the consequences are the same...
 
-http://lxr.linux.no/#linux+v3.2.1/Documentation/networking/can.txt#L245
+Yes, it uses the timer as well, see:
 
-and for the filters:
+  http://lxr.linux.no/#linux+v3.2.1/drivers/net/can/dev.c#L406
 
-http://lxr.linux.no/#linux+v3.2.1/Documentation/networking/can.txt#L377
+Otherwise it would be called from the process context, which causes
+other problems.
 
-You can play with the filters using 'candump' that allows to set up mul=
-tiple
-filters.
+> I'll have to change the way that reset is done into full asynchronous mode.
 
-> TX Buffer: Hierf=C3=BCr ist der CAN Treiber verantwortlich. Die Socke=
-t Quere k=C3=B6nnte=20
-> genutzt werden, wird aber typ. nicht genutzt.
+You will find some comments here:
 
+  http://lxr.linux.no/#linux+v3.2.1/drivers/usb/core/message.c#L192
 
-Writing to a CAN_RAW socket leads directly to the can_send() function t=
-hat
-put's the CAN frame to the CAN netdevice specific tx queue.
-
-See:
-
-http://lxr.linux.no/#linux+v3.2.1/net/can/raw.c#L640
-
-http://lxr.linux.no/#linux+v3.2.1/net/can/raw.c#L690
-
-If there's space in the queue it is stored into the FIFO.
-If the tx queue is full, you directly get an error for the write() or
-send[msg]() system call.
-
-http://lxr.linux.no/#linux+v3.2.1/net/can/af_can.c#L209
-
-Regards,
-Oliver
+Wolfgang.
