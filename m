@@ -1,51 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] can/sja1000: Add PEAK-System PCIe/PCIeC and miniPCI
- boards
-Date: Tue, 31 Jan 2012 17:55:28 +0100
-Message-ID: <4F281D00.8070909@pengutronix.de>
-References: <1328015960-14744-1-git-send-email-s.grosjean@peak-system.com> <1328015960-14744-2-git-send-email-s.grosjean@peak-system.com> <4F27EBC5.3060805@pengutronix.de> <4F280245.60809@peak-system.com>
+Subject: Re: About PCAN-USB issues
+Date: Tue, 31 Jan 2012 18:58:13 +0100
+Message-ID: <4F282BB5.40006@pengutronix.de>
+References: <1567213.2GCzMlGyKY@lisa> <4F1E9DA9.9060804@hartkopp.net> <4F1EE678.2050604@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enigCF23DCB9AB783CD2D70BCCE0"
+ boundary="------------enig1BF28993B3D63DADDB760D79"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57252 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:53076 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752444Ab2AaQza (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 11:55:30 -0500
-In-Reply-To: <4F280245.60809@peak-system.com>
+	with ESMTP id S1754141Ab2AaR6W (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 12:58:22 -0500
+In-Reply-To: <4F1EE678.2050604@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: s.grosjean@peak-system.com
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Sebastian Haas <dev@sebastianhaas.info>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCF23DCB9AB783CD2D70BCCE0
+--------------enig1BF28993B3D63DADDB760D79
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 01/31/2012 04:01 PM, Stephane Grosjean wrote:
-> Hi Marc,
+On 01/24/2012 06:12 PM, Stephane Grosjean wrote:
+> Hello all,
 >=20
-> What do you mean please? You want me to post 4 patches? One for each ne=
-w
-> board, plus one for the channels list management? For 2 of the 3 boards=
-,
-> this is as simple as adding a line into the device ids table, excepting=
+> I'm finally back to the linux-can... I'm currently working on several
+> projects so the peak_usb did progress slowly these last days...
+>=20
+> Back to the issue: I changed the way the can state is handled in the
+> peak_usb driver and finally get an easy tesbed to create bus-off
+> events... Now, the driver puts the candev into that state only once, no=
 
-> the ExpressCard for which I added the management of the funky leds.
-> Thanks for any clarification.
+> more periodic error-warnings or else. I'm looking now to how the restar=
+t
+> mechanism works.
+>=20
+> 1st: since the restart can be automatic, the related do_set_mode
+> callback is called from a timer context, in which you're not allowed to=
 
-[...]
+> sleep. So I suppose this is the reason of some Kernel hangs you (Oliver=
+)
+> detected last week: the peak_usb driver (tries to) reset the device by
+> sending an usb message, using usb_bulk_msg(), which usage is not allowe=
+d
+> in such a context! To confirm, is someone able to do the same with the
+> ems_usb driver, please? It seems that this driver acts as the peak_usb
+> does.
+>=20
+> Moreover, it seems that the "manual" restart is also called from such a=
 
-Your patch states to fix a problem:
+> timer context, so the consequences are the same...
+>=20
+> I'll have to change the way that reset is done into full asynchronous m=
+ode.
 
->>> This patch also fixes the management of the channels list.
->> Without looking further at the patch, please make it a seperate patch.=
- A
->> detailed review will follow.
-
-It would be better to fix the problem before adding new features.
+Does it make sense to replace the timer by a workqueue and schedule it
+by schedule_delayed_work(). On the downside a workqueue can only be
+delayed in jiffies granularity.
 
 Marc
 
@@ -56,7 +69,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enigCF23DCB9AB783CD2D70BCCE0
+--------------enig1BF28993B3D63DADDB760D79
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -65,9 +78,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk8oHQAACgkQjTAFq1RaXHNvkQCggoMONzZgMZD+iBCS+qg6O6n6
-mUgAoIRwdOAOwZ7Mv12Y5UPj8zOwUi+y
-=e6Yr
+iEYEARECAAYFAk8oK7sACgkQjTAFq1RaXHMhLQCdEnvx3eJOtzqvsQEK4pNWmKcK
+YtEAoIMeTtNFS+1LgVco6VJqXlxGwcA1
+=/3wk
 -----END PGP SIGNATURE-----
 
---------------enigCF23DCB9AB783CD2D70BCCE0--
+--------------enig1BF28993B3D63DADDB760D79--
