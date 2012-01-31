@@ -1,54 +1,58 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/12] ems_usb: Improved memory handling on ems_usb_start
-Date: Tue, 31 Jan 2012 22:46:50 +0100
-Message-ID: <1328046410-21392-13-git-send-email-mkl@pengutronix.de>
-References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH net-next] can: cc770: store echo skb before starting the
+ transfer
+Date: Tue, 31 Jan 2012 22:59:09 +0100
+Message-ID: <4F28642D.8040204@pengutronix.de>
+References: <4EE618A4.80104@grandegger.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig1FF18C96F42179519849E3B2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44869 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58265 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755364Ab2AaVrE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:47:04 -0500
-In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1755364Ab2AaV7L (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:59:11 -0500
+In-Reply-To: <4EE618A4.80104@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Sebastian Haas <dev@sebastianhaas.info>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
-From: Sebastian Haas <dev@sebastianhaas.info>
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig1FF18C96F42179519849E3B2
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Do not return from ems_usb_start if allocation fails. If not all URBs
-could be allocated use the one already submitted.
+On 12/12/2011 04:07 PM, Wolfgang Grandegger wrote:
+> On slow systems and high CAN bitrates, the error message
+> "can_put_echo_skb: BUG! echo_skb is occupied!" did show up because
+> can_put_echo_skb() was called after starting the transfer.
+>=20
+> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 
-Signed-off-by: Sebastian Haas <dev@sebastianhaas.info>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/ems_usb.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+Applied to can-next.
+tnx Marc
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 3af3059..7ae65fc 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -602,7 +602,8 @@ static int ems_usb_start(struct ems_usb *dev)
- 		urb = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!urb) {
- 			netdev_err(netdev, "No memory left for URBs\n");
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			break;
- 		}
- 
- 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
-@@ -610,7 +611,8 @@ static int ems_usb_start(struct ems_usb *dev)
- 		if (!buf) {
- 			netdev_err(netdev, "No memory left for USB buffer\n");
- 			usb_free_urb(urb);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			break;
- 		}
- 
- 		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
--- 
-1.7.4.1
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--------------enig1FF18C96F42179519849E3B2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk8oZC0ACgkQjTAFq1RaXHMUvgCfUvUBIs37EMXA5Py/WjC+ukCk
+mE8An27M5riZiAb0tMiuevS/XDCEkbM4
+=geeG
+-----END PGP SIGNATURE-----
+
+--------------enig1FF18C96F42179519849E3B2--
