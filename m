@@ -1,42 +1,35 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: [PATCH 2/2] Kconfig: add information
-Date: Fri, 27 Jan 2012 20:05:22 +0900
-Message-ID: <1327662322-5425-2-git-send-email-tomoya.rohm@gmail.com>
-References: <1327662322-5425-1-git-send-email-tomoya.rohm@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1327662322-5425-1-git-send-email-tomoya.rohm@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-List-Id: linux-can.vger.kernel.org
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH 0/2] can/sja1000: Add/upgrade PEAK-System sja1000 driver
+Date: Tue, 31 Jan 2012 14:19:18 +0100
+Message-ID: <1328015960-14744-1-git-send-email-s.grosjean@peak-system.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-1d.bbox.fr ([194.158.122.56]:55527 "EHLO mail-1d.bbox.fr"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752242Ab2AaNTh (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 31 Jan 2012 08:19:37 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-Current menu description, not easy to understand what the description
-means.
-So, add information about the device.
+That serie of patches upgrades the peak_pci driver and adds the peak_pcmcia
+new driver, to handle all the sja1000 PCI based from PEAK-System Technik
+(http://www.peak-system.com).
+These patches are planned for kernel v3.02.00 and above.
 
-Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
----
- drivers/net/can/Kconfig |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Stephane Grosjean (1):
+  can/sja1000: Add PEAK-System PCIe/PCIeC and miniPCI boards
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index ab45758..fb985205 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -103,11 +103,11 @@ config CAN_FLEXCAN
- 	  Say Y here if you want to support for Freescale FlexCAN.
- 
- config PCH_CAN
--	tristate "PCH CAN"
-+	tristate "Intel EG20T PCH CAN controller"
- 	depends on CAN_DEV && PCI
- 	---help---
--	  This driver is for PCH CAN of Topcliff which is an IOH for x86
--	  embedded processor.
-+	  This driver is for PCH CAN of Topcliff(Intel EG20T PCH) which
-+	  is an IOH for x86 embedded processor(Intel Atom E6xx series).
- 	  This driver can access CAN bus.
- 
- source "drivers/net/can/mscan/Kconfig"
+Stephane Grosjean (1):
+  can/sja1000: Add support of PEAK-System PCMCIA board
+
+ drivers/net/can/sja1000/Kconfig       |    9 +
+ drivers/net/can/sja1000/Makefile      |    1 +
+ drivers/net/can/sja1000/peak_pci.c    |  521 ++++++++++++++++++++++--
+ drivers/net/can/sja1000/peak_pcmcia.c |  721 +++++++++++++++++++++++++++++++++
+ 4 files changed, 1212 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/net/can/sja1000/peak_pcmcia.c
+
 -- 
-1.7.7.6
+1.7.5.4
+
