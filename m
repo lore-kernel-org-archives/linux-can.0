@@ -1,34 +1,39 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: cc770: store echo skb before starting the
- transfer
-Date: Tue, 31 Jan 2012 22:59:09 +0100
-Message-ID: <4F28642D.8040204@pengutronix.de>
-References: <4EE618A4.80104@grandegger.com>
+Subject: Re: [PATCH] can: flexcan: fix irq flooding by clearing all interrupt
+ sources
+Date: Tue, 31 Jan 2012 22:59:34 +0100
+Message-ID: <4F286446.2070706@pengutronix.de>
+References: <4EE61928.10608@grandegger.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig1FF18C96F42179519849E3B2"
+ boundary="------------enigE2DB4965E9E4A6A47F6DEDB3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58265 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58278 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755364Ab2AaV7L (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:59:11 -0500
-In-Reply-To: <4EE618A4.80104@grandegger.com>
+	with ESMTP id S1755341Ab2AaV7g (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:59:36 -0500
+In-Reply-To: <4EE61928.10608@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org
+Cc: linux-can@vger.kernel.org, Reuben Dowle <Reuben.Dowle@navico.com>, =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1FF18C96F42179519849E3B2
+--------------enigE2DB4965E9E4A6A47F6DEDB3
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 12/12/2011 04:07 PM, Wolfgang Grandegger wrote:
-> On slow systems and high CAN bitrates, the error message
-> "can_put_echo_skb: BUG! echo_skb is occupied!" did show up because
-> can_put_echo_skb() was called after starting the transfer.
+On 12/12/2011 04:09 PM, Wolfgang Grandegger wrote:
+> As pointed out by Reuben Dowle and Lothar Wa=DFmann, the TWRN_INT,
+> RWRN_INT, BOFF_INT interrupt sources need to be cleared as well
+> to avoid interrupt flooding, at least for the Flexcan on i.MX28
+> SOCs. Furthermore, the interrupts are only cleared, if really one
+> of those interrupt sources are pending (which is not the case for
+> rx and tx done).
 >=20
+> CC: Reuben Dowle <Reuben.Dowle@navico.com>
+> CC: Lothar Wa=DFmann <LW@KARO-electronics.de>
 > Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 
 Applied to can-next.
@@ -41,7 +46,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig1FF18C96F42179519849E3B2
+--------------enigE2DB4965E9E4A6A47F6DEDB3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -50,9 +55,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk8oZC0ACgkQjTAFq1RaXHMUvgCfUvUBIs37EMXA5Py/WjC+ukCk
-mE8An27M5riZiAb0tMiuevS/XDCEkbM4
-=geeG
+iEYEARECAAYFAk8oZEYACgkQjTAFq1RaXHMNUwCgiOOyKj8rzGvuUON7wbJxXXeH
+DJ0An0AN69kTcAajdezIXr5HkPcNoBhF
+=Wn95
 -----END PGP SIGNATURE-----
 
---------------enig1FF18C96F42179519849E3B2--
+--------------enigE2DB4965E9E4A6A47F6DEDB3--
