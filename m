@@ -1,42 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 07/12] pch_can: Change company name OKI SEMICONDUCTOR to LAPIS Semiconductor
-Date: Tue, 31 Jan 2012 22:46:45 +0100
-Message-ID: <1328046410-21392-8-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 12/12] ems_usb: Improved memory handling on ems_usb_start
+Date: Tue, 31 Jan 2012 22:46:50 +0100
+Message-ID: <1328046410-21392-13-git-send-email-mkl@pengutronix.de>
 References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44855 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44869 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755364Ab2AaVrD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:47:03 -0500
+	with ESMTP id S1755364Ab2AaVrE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:47:04 -0500
 In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Sebastian Haas <dev@sebastianhaas.info>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+From: Sebastian Haas <dev@sebastianhaas.info>
 
-On October 1 in 2011,
-    OKI SEMICONDUCTOR Co., Ltd. changed the company name in to LAPIS Semiconductor
+Do not return from ems_usb_start if allocation fails. If not all URBs
+could be allocated use the one already submitted.
 
-Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Signed-off-by: Sebastian Haas <dev@sebastianhaas.info>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/pch_can.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/net/can/usb/ems_usb.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 6edc25e..2bb215e 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -1,6 +1,6 @@
- /*
-  * Copyright (C) 1999 - 2010 Intel Corporation.
-- * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
-+ * Copyright (C) 2010 LAPIS SEMICONDUCTOR CO., LTD.
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 3af3059..7ae65fc 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -602,7 +602,8 @@ static int ems_usb_start(struct ems_usb *dev)
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (!urb) {
+ 			netdev_err(netdev, "No memory left for URBs\n");
+-			return -ENOMEM;
++			err = -ENOMEM;
++			break;
+ 		}
+ 
+ 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+@@ -610,7 +611,8 @@ static int ems_usb_start(struct ems_usb *dev)
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+-			return -ENOMEM;
++			err = -ENOMEM;
++			break;
+ 		}
+ 
+ 		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
 -- 
 1.7.4.1
 
