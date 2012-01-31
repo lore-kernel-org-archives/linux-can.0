@@ -1,82 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 02/12] can: cc770: Fix indirect access deadlock on ISA cards
-Date: Tue, 31 Jan 2012 22:46:40 +0100
-Message-ID: <1328046410-21392-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 01/12] can: cc770: store echo skb before starting the transfer
+Date: Tue, 31 Jan 2012 22:46:39 +0100
+Message-ID: <1328046410-21392-2-git-send-email-mkl@pengutronix.de>
 References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44832 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44829 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753441Ab2AaVqz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:55 -0500
+	with ESMTP id S1752575Ab2AaVqy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:54 -0500
 In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Wolfgang Zarre <lkdev@essax.com>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Wolfgang Zarre <lkdev@essax.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 
-This fix avoids a deadlock if an interrupt occurs
-during consecutive port operations on ISA cards
-utilising indirect access via address and data
-port.
+On slow systems and high CAN bitrates, the error message
+"can_put_echo_skb: BUG! echo_skb is occupied!" did show up because
+can_put_echo_skb() was called after starting the transfer.
 
-Tested on a B&R ISA card.
-
-CC: linux-can@vger.kernel.org
-CC: netdev@vger.kernel.org
-Signed-off-by: Wolfgang Zarre <lkdev@essax.com>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/cc770/cc770_isa.c |   16 +++++++++++++++-
- 1 files changed, 15 insertions(+), 1 deletions(-)
+ drivers/net/can/cc770/cc770.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
-index 4be5fe2..9f3a25c 100644
---- a/drivers/net/can/cc770/cc770_isa.c
-+++ b/drivers/net/can/cc770/cc770_isa.c
-@@ -110,6 +110,11 @@ MODULE_PARM_DESC(bcr, "Bus configuration register (default=0x40 [CBY])");
- #define CC770_IOSIZE          0x20
- #define CC770_IOSIZE_INDIRECT 0x02
+diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
+index 7668967..c30f0e6 100644
+--- a/drivers/net/can/cc770/cc770.c
++++ b/drivers/net/can/cc770/cc770.c
+@@ -440,12 +440,14 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	for (i = 0; i < dlc; i++)
+ 		cc770_write_reg(priv, msgobj[mo].data[i], cf->data[i]);
  
-+/* Spinlock for cc770_isa_port_write_reg_indirect
-+ * and cc770_isa_port_read_reg_indirect
-+ */
-+static DEFINE_SPINLOCK(cc770_isa_port_lock);
++	/* Store echo skb before starting the transfer */
++	can_put_echo_skb(skb, dev, 0);
 +
- static struct platform_device *cc770_isa_devs[MAXDEV];
+ 	cc770_write_reg(priv, msgobj[mo].ctrl1,
+ 			RMTPND_RES | TXRQST_SET | CPUUPD_RES | NEWDAT_UNC);
  
- static u8 cc770_isa_mem_read_reg(const struct cc770_priv *priv, int reg)
-@@ -138,18 +143,27 @@ static u8 cc770_isa_port_read_reg_indirect(const struct cc770_priv *priv,
- 					     int reg)
- {
- 	unsigned long base = (unsigned long)priv->reg_base;
-+	unsigned long flags;
-+	u8 val;
+ 	stats->tx_bytes += dlc;
  
-+	spin_lock_irqsave(&cc770_isa_port_lock, flags);
- 	outb(reg, base);
--	return inb(base + 1);
-+	val = inb(base + 1);
-+	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
-+
-+	return val;
- }
+-	can_put_echo_skb(skb, dev, 0);
  
- static void cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
- 						int reg, u8 val)
- {
- 	unsigned long base = (unsigned long)priv->reg_base;
-+	unsigned long flags;
- 
-+	spin_lock_irqsave(&cc770_isa_port_lock, flags);
- 	outb(reg, base);
- 	outb(val, base + 1);
-+	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
- }
- 
- static int __devinit cc770_isa_probe(struct platform_device *pdev)
+ 	/*
+ 	 * HM: We had some cases of repeated IRQs so make sure the
 -- 
 1.7.4.1
 
