@@ -1,27 +1,82 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 00/12] CAN updates for net-next, please review
-Date: Tue, 31 Jan 2012 22:46:38 +0100
-Message-ID: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 02/12] can: cc770: Fix indirect access deadlock on ISA cards
+Date: Tue, 31 Jan 2012 22:46:40 +0100
+Message-ID: <1328046410-21392-3-git-send-email-mkl@pengutronix.de>
+References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44828 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44832 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752466Ab2AaVqy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:54 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=hardanger.dbt.de)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1RsLXR-0004V9-IF
-	for linux-can@vger.kernel.org; Tue, 31 Jan 2012 22:46:53 +0100
+	with ESMTP id S1753441Ab2AaVqz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:55 -0500
+In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
+Cc: Wolfgang Zarre <lkdev@essax.com>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+From: Wolfgang Zarre <lkdev@essax.com>
 
-I collected all pending patches from the mailinglist in order to push to
-davem. Are there some patches missing, which are rerady to go upstream?
+This fix avoids a deadlock if an interrupt occurs
+during consecutive port operations on ISA cards
+utilising indirect access via address and data
+port.
 
-cheers, Marc
+Tested on a B&R ISA card.
 
-Marc
+CC: linux-can@vger.kernel.org
+CC: netdev@vger.kernel.org
+Signed-off-by: Wolfgang Zarre <lkdev@essax.com>
+Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/cc770/cc770_isa.c |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+index 4be5fe2..9f3a25c 100644
+--- a/drivers/net/can/cc770/cc770_isa.c
++++ b/drivers/net/can/cc770/cc770_isa.c
+@@ -110,6 +110,11 @@ MODULE_PARM_DESC(bcr, "Bus configuration register (default=0x40 [CBY])");
+ #define CC770_IOSIZE          0x20
+ #define CC770_IOSIZE_INDIRECT 0x02
+ 
++/* Spinlock for cc770_isa_port_write_reg_indirect
++ * and cc770_isa_port_read_reg_indirect
++ */
++static DEFINE_SPINLOCK(cc770_isa_port_lock);
++
+ static struct platform_device *cc770_isa_devs[MAXDEV];
+ 
+ static u8 cc770_isa_mem_read_reg(const struct cc770_priv *priv, int reg)
+@@ -138,18 +143,27 @@ static u8 cc770_isa_port_read_reg_indirect(const struct cc770_priv *priv,
+ 					     int reg)
+ {
+ 	unsigned long base = (unsigned long)priv->reg_base;
++	unsigned long flags;
++	u8 val;
+ 
++	spin_lock_irqsave(&cc770_isa_port_lock, flags);
+ 	outb(reg, base);
+-	return inb(base + 1);
++	val = inb(base + 1);
++	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
++
++	return val;
+ }
+ 
+ static void cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
+ 						int reg, u8 val)
+ {
+ 	unsigned long base = (unsigned long)priv->reg_base;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&cc770_isa_port_lock, flags);
+ 	outb(reg, base);
+ 	outb(val, base + 1);
++	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
+ }
+ 
+ static int __devinit cc770_isa_probe(struct platform_device *pdev)
+-- 
+1.7.4.1
 
