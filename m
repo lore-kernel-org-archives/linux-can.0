@@ -1,46 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] ems_usb: Improved memory handling on ems_usb_start
-Date: Tue, 31 Jan 2012 23:04:03 +0100
-Message-ID: <4F286553.3030704@pengutronix.de>
-References: <4EF3B61A.5010404@sebastianhaas.info>
+Subject: Re: peak_pci: device channels chained list issue (cont.)
+Date: Tue, 31 Jan 2012 23:12:02 +0100
+Message-ID: <4F286732.30901@pengutronix.de>
+References: <1322214204-1121-1-git-send-email-wg@grandegger.com> <1322214204-1121-3-git-send-email-wg@grandegger.com> <4ED0FEC5.3070108@hartkopp.net> <4ED34CAD.7040000@essax.com> <4ED351A8.8000102@grandegger.com> <4ED37885.8080909@essax.com> <4ED3B198.2040308@hartkopp.net> <4ED4A2EC.40103@grandegger.com> <4EDBC05D.8070109@essax.com> <4EDBC25D.50405@grandegger.com> <4EDE8435.5080100@essax.com> <4EDF6D54.2060503@grandegger.com> <4EE1E26B.6090308@grandegger.com> <4EE4F76E.3000506@essax.com> <4EE5C824.2050704@grandegger.com> <4EE5E321.8050104@essax.com> <4EE5EBBF.6080007@grandegger.com> <4EF22625.5000109@essax.com> <4EF2FA3F.3010308@grandegger.com> <4EF46FEB.3000200@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig73BEDAA12C97F2E095486C77"
+ boundary="------------enig60EA0AAB4953EF1E95EAFCEC"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46573 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57875 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753040Ab2AaWEE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 17:04:04 -0500
-In-Reply-To: <4EF3B61A.5010404@sebastianhaas.info>
+	with ESMTP id S1752916Ab2AaWMH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 17:12:07 -0500
+In-Reply-To: <4EF46FEB.3000200@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sebastian Haas <dev@sebastianhaas.info>
-Cc: Linux-can Mailing List <linux-can@vger.kernel.org>
+To: s.grosjean@peak-system.com
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig73BEDAA12C97F2E095486C77
-Content-Type: text/plain; charset=ISO-8859-15
+--------------enig60EA0AAB4953EF1E95EAFCEC
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 12/22/2011 11:58 PM, Sebastian Haas wrote:
-> From 9d0d92d279255eed7f14b9fd70d1f0d181d4b301 Mon Sep 17 00:00:00 2001
-> From: Sebastian Haas <dev@sebastianhaas.info>
-> Date: Thu, 22 Dec 2011 23:27:47 +0100
-> Subject: [PATCH 2/2] ems_usb: Improved memory handling on ems_usb_start=
+Hello Stephane,
 
+On 12/23/2011 01:11 PM, Grosjean Stephane wrote:
+> Hi Wolfgang,
 >=20
-> Do not return from ems_usb_start if allocation fails. If not all URBs
-> could be allocated use the one already submitted.
->=20
-> Signed-off-by: Sebastian Haas <dev@sebastianhaas.info>
+> Well consider this patch instead (local "prev_dev" removed since not
+> useful)
 
-Can you please send with "git send-email" the next time. Your mailer
-converts tabs to spaces. I applied your patch by hand.
+What about this patch? Is this the final fix of the "device channels
+chained list issue"? If it is, I want to apply it before adding more
+features to the driver.
 
-Applied to can-next.
-tnx Marc
+Can you please resend this patch, this one has spaces instead of tabs.
+(The patches from today are fine.)
 
+Marc
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -48,7 +46,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig73BEDAA12C97F2E095486C77
+--------------enig60EA0AAB4953EF1E95EAFCEC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -57,9 +55,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk8oZVMACgkQjTAFq1RaXHNGFgCdH6ENkpc7ncIXkRZHGro8ze/k
-Jk8An2/dcyVvpoRCJu+OV67bm50QzVqq
-=uv/t
+iEYEARECAAYFAk8oZzQACgkQjTAFq1RaXHON0gCfZoQA1y0qVBLD7mXKmBEZN3rl
+6BIAn2d8V/ggNftKGZcAT2sgQQjKB4Eh
+=bqC7
 -----END PGP SIGNATURE-----
 
---------------enig73BEDAA12C97F2E095486C77--
+--------------enig60EA0AAB4953EF1E95EAFCEC--
