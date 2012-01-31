@@ -1,51 +1,65 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/12] can: cc770: store echo skb before starting the transfer
-Date: Tue, 31 Jan 2012 22:46:39 +0100
-Message-ID: <1328046410-21392-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 03/12] can: flexcan: fix irq flooding by clearing all interrupt sources
+Date: Tue, 31 Jan 2012 22:46:41 +0100
+Message-ID: <1328046410-21392-4-git-send-email-mkl@pengutronix.de>
 References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44829 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44837 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752575Ab2AaVqy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:54 -0500
+	with ESMTP id S1755329Ab2AaVq5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:57 -0500
 In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Reuben Dowle <Reuben.Dowle@navico.com>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Wolfgang Grandegger <wg@grandegger.com>
+=46rom: Wolfgang Grandegger <wg@grandegger.com>
 
-On slow systems and high CAN bitrates, the error message
-"can_put_echo_skb: BUG! echo_skb is occupied!" did show up because
-can_put_echo_skb() was called after starting the transfer.
+As pointed out by Reuben Dowle and Lothar Wa=C3=9Fmann, the TWRN_INT,
+RWRN_INT, BOFF_INT interrupt sources need to be cleared as well
+to avoid interrupt flooding, at least for the Flexcan on i.MX28
+SOCs. Furthermore, the interrupts are only cleared, if really one
+of those interrupt sources are pending (which is not the case for
+rx and tx done).
 
+CC: Reuben Dowle <Reuben.Dowle@navico.com>
+CC: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/cc770/cc770.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ drivers/net/can/flexcan.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 7668967..c30f0e6 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -440,12 +440,14 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	for (i = 0; i < dlc; i++)
- 		cc770_write_reg(priv, msgobj[mo].data[i], cf->data[i]);
- 
-+	/* Store echo skb before starting the transfer */
-+	can_put_echo_skb(skb, dev, 0);
-+
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
- 			RMTPND_RES | TXRQST_SET | CPUUPD_RES | NEWDAT_UNC);
- 
- 	stats->tx_bytes += dlc;
- 
--	can_put_echo_skb(skb, dev, 0);
- 
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 7fd8089..96d2357 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -118,6 +118,9 @@
+ 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | FLEXCAN_ESR_BOFF_INT)
+ #define FLEXCAN_ESR_ERR_ALL \
+ 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
++#define FLEXCAN_ESR_ALL_INT \
++	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
++	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+=20
+ /* FLEXCAN interrupt flag register (IFLAG) bits */
+ #define FLEXCAN_TX_BUF_ID		8
+@@ -577,7 +580,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
+d)
+=20
+ 	reg_iflag1 =3D flexcan_read(&regs->iflag1);
+ 	reg_esr =3D flexcan_read(&regs->esr);
+-	flexcan_write(FLEXCAN_ESR_ERR_INT, &regs->esr);	/* ACK err IRQ */
++	/* ACK all bus error and state change IRQ sources */
++	if (reg_esr & FLEXCAN_ESR_ALL_INT)
++		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+=20
  	/*
- 	 * HM: We had some cases of repeated IRQs so make sure the
--- 
+ 	 * schedule NAPI in case of:
+--=20
 1.7.4.1
 
