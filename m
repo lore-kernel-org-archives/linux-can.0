@@ -1,65 +1,97 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/12] can: flexcan: fix irq flooding by clearing all interrupt sources
-Date: Tue, 31 Jan 2012 22:46:41 +0100
-Message-ID: <1328046410-21392-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 05/12] can: plx_pci: add support for IXXAT PCI cards
+Date: Tue, 31 Jan 2012 22:46:43 +0100
+Message-ID: <1328046410-21392-6-git-send-email-mkl@pengutronix.de>
 References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44837 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44844 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755329Ab2AaVq5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:57 -0500
+	with ESMTP id S1755341Ab2AaVq7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2012 16:46:59 -0500
 In-Reply-To: <1328046410-21392-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Reuben Dowle <Reuben.Dowle@navico.com>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: James Kime <kime@ixxat.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-=46rom: Wolfgang Grandegger <wg@grandegger.com>
+From: James Kime <kime@ixxat.de>
 
-As pointed out by Reuben Dowle and Lothar Wa=C3=9Fmann, the TWRN_INT,
-RWRN_INT, BOFF_INT interrupt sources need to be cleared as well
-to avoid interrupt flooding, at least for the Flexcan on i.MX28
-SOCs. Furthermore, the interrupts are only cleared, if really one
-of those interrupt sources are pending (which is not the case for
-rx and tx done).
+This patch adds support for IXXAT passive CAN controllers
 
-CC: Reuben Dowle <Reuben.Dowle@navico.com>
-CC: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: James Kime <kime@ixxat.de>
+Acked-by: Wolfgang Grandegger <wg@grandegger.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ drivers/net/can/sja1000/Kconfig   |    1 +
+ drivers/net/can/sja1000/plx_pci.c |   22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 7fd8089..96d2357 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -118,6 +118,9 @@
- 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | FLEXCAN_ESR_BOFF_INT)
- #define FLEXCAN_ESR_ERR_ALL \
- 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
-+#define FLEXCAN_ESR_ALL_INT \
-+	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
-+	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
-=20
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- #define FLEXCAN_TX_BUF_ID		8
-@@ -577,7 +580,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
-d)
-=20
- 	reg_iflag1 =3D flexcan_read(&regs->iflag1);
- 	reg_esr =3D flexcan_read(&regs->esr);
--	flexcan_write(FLEXCAN_ESR_ERR_INT, &regs->esr);	/* ACK err IRQ */
-+	/* ACK all bus error and state change IRQ sources */
-+	if (reg_esr & FLEXCAN_ESR_ALL_INT)
-+		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-=20
- 	/*
- 	 * schedule NAPI in case of:
---=20
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 36e9d59..b21523d 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -71,6 +71,7 @@ config CAN_PLX_PCI
+ 	   - esd CAN-PCIe/2000
+ 	   - Marathon CAN-bus-PCI card (http://www.marathon.ru/)
+ 	   - TEWS TECHNOLOGIES TPMC810 card (http://www.tews.com/)
++	   - IXXAT Automation PC-I 04/PCI card (http://www.ixxat.com/)
+ 
+ config CAN_TSCAN1
+ 	tristate "TS-CAN1 PC104 boards"
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index c7f3d4e..a227586 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -43,7 +43,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
+ 			"TEWS TECHNOLOGIES TPMC810, "
+ 			"esd CAN-PCI/CPCI/PCI104/200, "
+ 			"esd CAN-PCI/PMC/266, "
+-			"esd CAN-PCIe/2000")
++			"esd CAN-PCIe/2000, "
++			"IXXAT PC-I 04/PCI")
+ MODULE_LICENSE("GPL v2");
+ 
+ #define PLX_PCI_MAX_CHAN 2
+@@ -121,6 +122,10 @@ struct plx_pci_card {
+ #define ESD_PCI_SUB_SYS_ID_PCIE2000	0x0200
+ #define ESD_PCI_SUB_SYS_ID_PCI104200	0x0501
+ 
++#define IXXAT_PCI_VENDOR_ID		0x10b5
++#define IXXAT_PCI_DEVICE_ID		0x9050
++#define IXXAT_PCI_SUB_SYS_ID		0x2540
++
+ #define MARATHON_PCI_DEVICE_ID		0x2715
+ 
+ #define TEWS_PCI_VENDOR_ID		0x1498
+@@ -193,6 +198,14 @@ static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
+ 	/* based on PEX8311 */
+ };
+ 
++static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
++	"IXXAT PC-I 04/PCI", 2,
++	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
++	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x200, 0x80} },
++	&plx_pci_reset_common
++	/* based on PLX9050 */
++};
++
+ static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
+ 	"Marathon CAN-bus-PCI", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+@@ -267,6 +280,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
+ 		(kernel_ulong_t)&plx_pci_card_info_esd2000
+ 	},
+ 	{
++		/* IXXAT PC-I 04/PCI card */
++		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
++		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
++		0, 0,
++		(kernel_ulong_t)&plx_pci_card_info_ixxat
++	},
++	{
+ 		/* Marathon CAN-bus-PCI card */
+ 		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
+ 		PCI_ANY_ID, PCI_ANY_ID,
+-- 
 1.7.4.1
 
