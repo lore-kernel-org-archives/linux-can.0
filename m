@@ -1,95 +1,78 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] peak_pci: add support for PEAK-System PCIe/PCIeC/miniPCI
- cards
-Date: Wed, 01 Feb 2012 16:48:08 +0100
-Message-ID: <4F295EB8.3090202@pengutronix.de>
-References: <1328108253-25848-1-git-send-email-s.grosjean@peak-system.com> <4F295865.2040304@pengutronix.de>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH net-next] can: replace the dev_dbg/info/err/... with the new netdev_xxx macros
+Date: Wed, 1 Feb 2012 10:51:43 -0500
+Message-ID: <201202011051.45893.vapier@gentoo.org>
+References: <4EE61D71.90401@grandegger.com> <4F2864FD.8010909@pengutronix.de> <4F290FF6.4090107@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigC34EA22A9A56410B1BF8F15B"
+Content-Type: multipart/signed;
+  boundary="nextPart2179590.9VJoDG7l08";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57779 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752522Ab2BAPsP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Feb 2012 10:48:15 -0500
-In-Reply-To: <4F295865.2040304@pengutronix.de>
+Received: from smtp.gentoo.org ([140.211.166.183]:33663 "EHLO smtp.gentoo.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753043Ab2BAPvd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 1 Feb 2012 10:51:33 -0500
+In-Reply-To: <4F290FF6.4090107@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Anant Gole <anantgole@ti.com>, Chris Elston <celston@katalix.com>, Sebastian Haas <haas@ems-wuensche.com>, Matthias Fuchs <matthias.fuchs@esd.eu>, uclinux-dist-devel@blackfin.uclinux.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigC34EA22A9A56410B1BF8F15B
-Content-Type: text/plain; charset=ISO-8859-1
+--nextPart2179590.9VJoDG7l08
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On 02/01/2012 04:21 PM, Marc Kleine-Budde wrote:
-
-[...]
-
->> +/* PCIeC leds management needs I2C algobit */
->> +#if defined(CONFIG_I2C_ALGOBIT) || defined(CONFIG_I2C_ALGOBIT_MODULE)=
-
->> +#define PEAK_CONFIG_PCIEC_LEDS
->> +#endif
+On Wednesday 01 February 2012 05:12:06 Wolfgang Grandegger wrote:
+> On 01/31/2012 11:02 PM, Marc Kleine-Budde wrote:
+> > On 12/12/2011 04:27 PM, Wolfgang Grandegger wrote:
+> >> CC: Barry Song <barry.song@analog.com>
+> >> CC: Anant Gole <anantgole@ti.com>
+> >> CC: Chris Elston <celston@katalix.com>
+> >> CC: Sebastian Haas <haas@ems-wuensche.com>
+> >> CC: Matthias Fuchs <matthias.fuchs@esd.eu>
+> >> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> >=20
+> > ...removed Barry Song <barry.song@analog.com> from Cc, the address in
+> > unknown.
 >=20
-> ifdefs in the .c file are not welcome in general. What about something
-> like this:
->=20
-> #if defined(CONFIG_I2C_ALGOBIT) || defined(CONFIG_I2C_ALGOBIT_MODULE)
-> #define peak_pci_support_pcie()	(1)
-> #else
-> #define peak_pci_support_pcie()	(0)
-> #endif
->=20
-> In the probe function you can write:
->=20
-> probe() {
-> 	...
->=20
-> 	if (peak_pci_support_pcie() &&
-> 	    pdev->device =3D=3D PEAK_PCIEC_DEVICE_ID) {
-> 		...
-> 	}
-> }
->=20
-> There should be no ifdefs left in the code. One question remains, is th=
-e
-> i2c core clever enough to define no-ops if the i2c subsystem is switche=
-d
-> off?
+> Is there somebody else we should inform about patches for the bfin_can
+> driver. Maybe Mike (now on CC)?
 
-I just tried - :( - it doesn't work
+for Blackfin devs, you can CC uclinux-dist-devel@blackfin.uclinux.org to ge=
+t the=20
+relevant people.  Barry Song no longer works for ADI.
 
-drivers/net/can/sja1000/peak_pci.c: In function 'peak_pciec_write_pca9553=
-':
-drivers/net/can/sja1000/peak_pci.c:267: error: implicit declaration of fu=
-nction 'i2c_transfer'
-drivers/net/can/sja1000/peak_pci.c: In function 'peak_pciec_init':
-drivers/net/can/sja1000/peak_pci.c:491: error: implicit declaration of fu=
-nction 'i2c_del_adapter'
+the bfin_can.c changes in here look fine to me (not that i tried compiling =
+them,=20
+but looks straight forward enough):
+http://thread.gmane.org/gmane.linux.can/251/focus=3D257
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+=2Dmike
 
-
---------------enigC34EA22A9A56410B1BF8F15B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--nextPart2179590.9VJoDG7l08
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-iEYEARECAAYFAk8pXrsACgkQjTAFq1RaXHPsfwCfSRcOUZ4eVI7+9s1ETfT9AJg1
-KIwAoJPW8NCP3mHjLylAqdbnR6pPyU3+
-=+FOw
+iQIcBAABAgAGBQJPKV+RAAoJEEFjO5/oN/WBWqYQAJi61AO+StV9FvaY4LVU2qTT
+Srnxe0hdq6IEYjUYaRlN3dEY4GQ7IlXomWJzW9rpPW7QdoxLFinzvue+3EjLviZd
+hXTJTHU2UoMpQ9aB/svNxVuzJyguyWGPq597ixRZrZbsSx2VoVGEBR6UZ3rmdGT+
+z45nreqRMFMbNqVaJDpR7A1STCUW/ZcEYrBoTr+uWRu/RbszRG/+5VLmUPC3On5C
+8PLSLXkeWNgAHvHMIzSMUlb2ljQoqx6KjiptgRB8GV/UR0Ip62p7jn2zFEKH1hUK
+RzG6JE1ys6tz//yXhm2R8J6ulIIf/6IMC7alLBJMwNqRN2Y3LThaQtvNkosrTT2a
+aYU1M4FySBhBV7jfpgRuxszxpCCtsOhQ/2ibpkaGI/ukikznr9ZXX8hI0WV4O8CH
+SL9pCvv0qg8SdcxT/RzPagsYR2RbkGdcYkfNnS2cJUBGW4Wf87YbC9Y3rhagsp52
+s0vJyLqoNXfmYo0zC9M9wIzFkXM9MKc/fBLAsa+2d/4ZX/mzjR6YvlF1pF542UZV
+pzmmqYeNkidTpU80ebUYJVtXPlTPKM0uoBN4dVAnS4seGGqTrvS9QTpCmxIhQf4u
+4XubyISlDByO3UmCZ9g/SK2qOsxJKSHkosmPduHmVHXUNrVCn5Zk5bZ6lksKTQj/
+Fevx6Wt/ZnMaGUsSCR4K
+=Ch27
 -----END PGP SIGNATURE-----
 
---------------enigC34EA22A9A56410B1BF8F15B--
+--nextPart2179590.9VJoDG7l08--
