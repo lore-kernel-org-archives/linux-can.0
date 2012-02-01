@@ -1,57 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] peak_pci: Fix the way channels are linked together
-Date: Wed, 01 Feb 2012 11:16:48 +0100
-Message-ID: <4F291110.7040804@pengutronix.de>
-References: <1328090748-17459-1-git-send-email-s.grosjean@peak-system.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 00/12] CAN updates for net-next, please review
+Date: Wed, 01 Feb 2012 11:24:39 +0100
+Message-ID: <4F2912E7.6070802@grandegger.com>
+References: <1328046410-21392-1-git-send-email-mkl@pengutronix.de> <4F290933.9060202@grandegger.com> <4F290A38.8080807@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig898DC6FBB0E82FCD50EE0D68"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59354 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753986Ab2BAKQu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Feb 2012 05:16:50 -0500
-In-Reply-To: <1328090748-17459-1-git-send-email-s.grosjean@peak-system.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:56791 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754050Ab2BAKYs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Feb 2012 05:24:48 -0500
+In-Reply-To: <4F290A38.8080807@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig898DC6FBB0E82FCD50EE0D68
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 02/01/2012 10:47 AM, Marc Kleine-Budde wrote:
+> Hey,
+> 
+> On 02/01/2012 10:43 AM, Wolfgang Grandegger wrote:
+>>> I collected all pending patches from the mailinglist in order to push to
+>>> davem. Are there some patches missing, which are rerady to go upstream?
+>>
+>> The patch "[PATCH 04/12] can: replace the dev_dbg/info/err/... with the
+>> new netdev_xxx macros" does have issues. Did you already apply it to
+>> linux-can-next? Shoud I send a v2 or a followup patch? I have also
+> 
+> No, it's still in my repo. Please send a v2.
+> 
+>> another fix for the ti_hecc driver, which I will send in a few minutes.
+> 
+> Go ahead. I'll have to setup a compile time test script anyway.
 
-On 02/01/2012 11:05 AM, Stephane Grosjean wrote:
-> Change the way channels objects are linked together by peak_pci_probe()=
+Before pinging Dave, I could do some regression builds here as well.
 
-> avoiding any kernel oops when driver is removed. Side effect is that
-> the list is now browsed from last to first channel.
->=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Wolfgang.
 
-applied to can-next
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig898DC6FBB0E82FCD50EE0D68
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk8pERAACgkQjTAFq1RaXHNHowCgjVeVRnGNCdWqt+PVsK2PJ4ws
-KHIAoIf30jJ49JL/zeBqvrrJ7XDq2/N1
-=c+i5
------END PGP SIGNATURE-----
-
---------------enig898DC6FBB0E82FCD50EE0D68--
