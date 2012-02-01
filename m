@@ -1,12 +1,12 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH v2] peak_pci: add support for PEAK-SYstem PCIe/PCIeC/miniPCI boards
-Date: Wed,  1 Feb 2012 11:34:59 +0100
-Message-ID: <1328092499-17937-1-git-send-email-s.grosjean@peak-system.com>
+Subject: [PATCH v3] peak_pci: add support for PEAK-System PCIe/PCIeC/miniPCI boards
+Date: Wed,  1 Feb 2012 12:02:12 +0100
+Message-ID: <1328094132-20738-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-3d.bbox.fr ([194.158.122.58]:49567 "EHLO mail-3d.bbox.fr"
+Received: from mail-2d.bbox.fr ([194.158.122.57]:33260 "EHLO mail-2d.bbox.fr"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753443Ab2BAKeW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 1 Feb 2012 05:34:22 -0500
+	id S1753954Ab2BALB7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 1 Feb 2012 06:01:59 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
@@ -19,11 +19,34 @@ PCAN-PCI Express (1 or 2 channels)
 PCAN-ExpressCard (1 or 2 channels)
 PCAN-miniPCI (1 or 2 channels)
 
+This version also updates Kconfig.
+
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
+ drivers/net/can/sja1000/Kconfig    |    7 +-
  drivers/net/can/sja1000/peak_pci.c |  510 +++++++++++++++++++++++++++++++++--
- 1 files changed, 480 insertions(+), 30 deletions(-)
+ 2 files changed, 484 insertions(+), 33 deletions(-)
 
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 36e9d59..d178e01 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -44,11 +44,12 @@ config CAN_EMS_PCI
+ 	  (http://www.ems-wuensche.de).
+ 
+ config CAN_PEAK_PCI
+-	tristate "PEAK PCAN PCI/PCIe Cards"
++	tristate "PEAK PCAN-PCI/PCIe/PCIeC/miniPCI Cards"
+ 	depends on PCI
+ 	---help---
+-	  This driver is for the PCAN PCI/PCIe cards (1, 2, 3 or 4 channels)
+-	  from PEAK Systems (http://www.peak-system.com).
++	  This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
++	  (1, 2, 3 or 4 channels) from PEAK-System Technik
++	  (http://www.peak-system.com).
+ 
+ config CAN_KVASER_PCI
+ 	tristate "Kvaser PCIcanx and Kvaser PCIcan PCI Cards"
 diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
 index 2147959..cb798e4 100644
 --- a/drivers/net/can/sja1000/peak_pci.c
