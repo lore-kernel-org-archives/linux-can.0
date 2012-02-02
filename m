@@ -1,63 +1,82 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH 1/2] can/sja1000: Add PEAK-System PCIe/PCIeC and miniPCI
- boards
-Date: Thu, 02 Feb 2012 17:33:03 +0100
-Message-ID: <4F2ABABF.4020009@peak-system.com>
-References: <1328015960-14744-1-git-send-email-s.grosjean@peak-system.com>
- <1328015960-14744-2-git-send-email-s.grosjean@peak-system.com>
- <4F27EBC5.3060805@pengutronix.de> <4F280245.60809@peak-system.com>
- <4F2805D8.7090401@grandegger.com>
-Reply-To: s.grosjean@peak-system.com
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v4.3] peak_pci: add support for PEAK-System PCIe/PCIeC/miniPCI
+ cards
+Date: Thu, 02 Feb 2012 19:03:21 +0100
+Message-ID: <4F2ACFE9.3080602@hartkopp.net>
+References: <1328188792-2982-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:33599 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755115Ab2BBQdN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2012 11:33:13 -0500
-In-Reply-To: <4F2805D8.7090401@grandegger.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:48573 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932505Ab2BBSDj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2012 13:03:39 -0500
+In-Reply-To: <1328188792-2982-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-Hi,
+Hello Stephane et.al.
 
-I've got one question about some new patch(es) I'd like to post in the=20
-drivers/net/can/sja1000 subdir too, about a pcmcia driver.
-According to which commit should I create this new patch?
-I mean, I recently posted a patch to change the above Kconfig=20
-description. Will the new patch's Kconfig include these modifications o=
-r=20
-should I wait for some ack or else?..
+On 02.02.2012 14:19, Stephane Grosjean wrote:
+
+>  
+>  config CAN_PEAK_PCI
+> -	tristate "PEAK PCAN PCI/PCIe Cards"
+> +	tristate "PEAK PCAN-PCI/PCIe/PCIeC/miniPCI Cards"
+>  	depends on PCI
+>  	---help---
+> -	  This driver is for the PCAN PCI/PCIe cards (1, 2, 3 or 4 channels)
+> -	  from PEAK Systems (http://www.peak-system.com).
+> +	  This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
+> +	  (1, 2, 3 or 4 channels) from PEAK-System Technik
+> +	  (http://www.peak-system.com).
+> +
+> +	  The I2C bit-banging algorithm should be selected to enable
+> +	  correct LEDs management on the PCAN-ExpressCard (PCIeC) card.
+
+
+The problem is that the PCAN-ExpressCards without galvanic isolation
+(IPEH-003000, IPEH-003001) are not working at all when the I2C stuff is not
+initialized.
+
+It's not only the LED handling.
+
+What about this:
+
+ config CAN_PEAK_PCI
+	tristate "PEAK PCAN-PCI/PCIe/miniPCI Cards"
+	depends on PCI
+	---help---
+	  This driver is for the PCAN PCI/PCIe cards (1, 2, 3 or 4 channels)
+	  from PEAK Systems (http://www.peak-system.com).
+	  This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
+	  (1, 2, 3 or 4 channels) from PEAK-System Technik
+	  (http://www.peak-system.com).
+
+	  The I2C bit-banging algorithm (I2C ALGOBIT) needs to be selected to
+	  support PCAN-ExpressCard (PCIeC) cards.
+
+ config CAN_PEAK_PCIEC
+	tristate "PEAK PCAN-Express Cards"
+	depends on CAN_PEAK_PCI && CONFIG_I2C_ALGOBIT
+	---help---
+	  (bla bla)
+
+(..)
+
+
+>  
+>  MODULE_DEVICE_TABLE(pci, peak_pci_tbl);
+>  
+> +#if defined(CONFIG_I2C_ALGOBIT) || defined(CONFIG_I2C_ALGOBIT_MODULE)
+
+
+#ifdef CONFIG_CAN_PEAK_PCIEC
+
+(..)
 
 Regards,
-
-St=E9phane
-
-Le 31/01/2012 16:16, Wolfgang Grandegger a =E9crit :
-> On 01/31/2012 04:01 PM, Stephane Grosjean wrote:
->> Hi Marc,
->>
->> What do you mean please? You want me to post 4 patches? One for each=
- new
->> board, plus one for the channels list management? For 2 of the 3 boa=
-rds,
->> this is as simple as adding a line into the device ids table, except=
-ing
->> the ExpressCard for which I added the management of the funky leds.
->> Thanks for any clarification.
-> I think he wants two separate patches, instead a series of patches. O=
-ne
-> patch for peak_pci and another for peak_pcmcia. Which does make sense=
- as
-> they do not belong together.
->
-> Wolfgang.
---
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+Oliver
