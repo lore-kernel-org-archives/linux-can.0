@@ -1,75 +1,78 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [Socketcan-users] CAN Data Transfer not happening at 1Mbps
-Date: Fri, 03 Feb 2012 09:07:19 +0100
-Message-ID: <4F2B95B7.5070507@grandegger.com>
-References: <4ED62A07621E9C41B8CB2F608655EF45053759D1@POCITMSEXMB02.LntUniverse.com> <4F2AA2B4.2090906@grandegger.com> <4ED62A07621E9C41B8CB2F608655EF4505375D5A@POCITMSEXMB02.LntUniverse.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v4.3] peak_pci: add support for PEAK-System
+ PCIe/PCIeC/miniPCI cards
+Date: Fri, 03 Feb 2012 11:14:49 +0100
+Message-ID: <4F2BB399.9000802@peak-system.com>
+References: <1328188792-2982-1-git-send-email-s.grosjean@peak-system.com>
+ <4F2ACFE9.3080602@hartkopp.net> <4F2B16F9.8020903@hartkopp.net>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:46225 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752407Ab2BCIHZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 03:07:25 -0500
-In-Reply-To: <4ED62A07621E9C41B8CB2F608655EF4505375D5A@POCITMSEXMB02.LntUniverse.com>
+Received: from mail.peak-system.com ([213.157.13.214]:41911 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753199Ab2BCKO7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 05:14:59 -0500
+In-Reply-To: <4F2B16F9.8020903@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nikhil Kamath <Nikhil.Kamath@lnties.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-On 02/03/2012 05:11 AM, Nikhil Kamath wrote:
-> Hi Wolfgang,
-> Below are the details you asked for:
-> 
-> -This means you are not using a mainline kernel, right? Are you using Freescale's ltib linux-2.6.35 tree?
-> Yes , I am not using a mainline kernel , it's from the Freescale's LTIB tree.
-> 
-> 
-> - From what kernel version is the Flexcan driver derived?
-> I integrated the FlexCAN driver present in linux-2.6.38 mainline Kernel. I am not using the FlexCAN driver given by Freescale since it had issues , for e.g. I used to get the following error -RTNETLINK answers: Operation not supported.
+Le 03/02/2012 00:06, Oliver Hartkopp a =E9crit :
+> On 02.02.2012 19:03, Oliver Hartkopp wrote:
+>
+>> The problem is that the PCAN-ExpressCards without galvanic isolation
+>> (IPEH-003000, IPEH-003001) are not working at all when the I2C stuff=
+ is not
+>> initialized.
+>>
+>> It's not only the LED handling.
 
-OK.
+Yes you're right: the existing code already enables the can transceiver=
+,=20
+but I forgot that it used a led pin, sorry.
 
-> - What does "dmesg" report when you load the driver?
-> flexcan netdevice driver
-> flexcan flexcan.0: device registered (reg_base=c8978000, irq=43)
-> flexcan flexcan.0: writing ctrl=0x25292004
-> 
-> -What does "ip -d -s link show can0" report after an unsuccessful
->   transfer?
-> root@freescale ~$ ip -d -s link show can0
-> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
->     link/can
->     can state ERROR-PASSIVE restart-ms 0
->     bitrate 1007575 sample-point 0.727
->     tq 90 prop-seg 3 phase-seg1 4 phase-seg2 3 sjw 1
->     flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->     clock 66500000
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
->     0          0          0          1          1          0
->     RX: bytes  packets  errors  dropped overrun mcast
->     19         5        0       0       0       0
->     TX: bytes  packets  errors  dropped carrier collsns
->     2          0        0       0       0       0
+>> Alternatively you may just select I2C and I2C_ALGOBIT as it is done =
+by other
+>> drivers like this:
+>>
+>> http://lxr.linux.no/#linux+v3.2.2/drivers/net/ethernet/sfc/Kconfig#L=
+7
+>>
+>> config CAN_PEAK_PCI
+>> 	tristate "PEAK PCAN-PCI/PCIe/PCIeC/miniPCI Cards"
+>> 	depends on PCI
+>> 	select I2C
+>> 	select I2C_ALGOBIT
+>> 	---help---
+>> 	  This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
+>> 	  (1, 2, 3 or 4 channels) from PEAK-System Technik
+>> 	  (http://www.peak-system.com).
+>>
+>> ... which would also make the #ifdef stuff obsolete.
 
-The CAN controller has reached the error passive state. It seems that
-there are electrical problems on the CAN bus, e.g. improper termination
-or bit-timing.
+Well, if this is used in an already existing driver, we can suppose tha=
+t=20
+this is the correct way to do that.
+I personally prefer the "select" way of doing things rather than the=20
+"depends on".
 
-> -What does "candump -e any,0:0,#FFFFFFFF" report while sending
->   messages?
-> I received a message saying invalid option for 'e' in the above command, I tried using  'L' option instead to check if something gets logged , but at 1 Mbps logging was not happening.
+Do someone disagree with?
 
-Your version of candump seems to be quite old. Just try without "-e" but
-the statistics above already points to the problem.
+Moreover, no response about my question of yesterday: since I have to=20
+post another (pcmcia) driver for the sja1000 subdir (and thus, change=20
+the Kconfig again), the best solution would be to post all through a=20
+serie of patches, wouldn't it?
 
-> Further , this is the log I got when I executed the following command -
-> root@freescale ~$ ip link set can0 up type can bitrate 1000000
-> flexcan flexcan.0: bitrate error 0.7%
+Thanks for your reply,
 
-That might make the trouble. The built-in algorithm to determine the
-bit-timing parameters does not work well for your clock frequency. Try
-to add "sjw=4" to the ip command.
+St=E9phane
 
-Wolfgang.
-
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
