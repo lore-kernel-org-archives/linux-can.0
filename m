@@ -1,102 +1,48 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v4.3] peak_pci: add support for PEAK-System PCIe/PCIeC/miniPCI
- cards
-Date: Fri, 03 Feb 2012 11:59:48 +0100
-Message-ID: <4F2BBE24.5090601@grandegger.com>
-References: <1328188792-2982-1-git-send-email-s.grosjean@peak-system.com> <4F2ACFE9.3080602@hartkopp.net> <4F2B16F9.8020903@hartkopp.net> <4F2BB498.60606@grandegger.com> <4F2BBA8C.3020501@peak-system.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v4.3] peak_pci: add support for PEAK-System
+ PCIe/PCIeC/miniPCI cards
+Date: Fri, 03 Feb 2012 12:34:22 +0100
+Message-ID: <4F2BC63E.2040406@peak-system.com>
+References: <1328188792-2982-1-git-send-email-s.grosjean@peak-system.com>
+ <4F2ACFE9.3080602@hartkopp.net> <4F2B16F9.8020903@hartkopp.net>
+ <4F2BB498.60606@grandegger.com> <4F2BBA8C.3020501@peak-system.com>
+ <4F2BBE24.5090601@grandegger.com>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:50580 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755922Ab2BCK7v (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 05:59:51 -0500
-In-Reply-To: <4F2BBA8C.3020501@peak-system.com>
+Received: from mail.peak-system.com ([213.157.13.214]:59670 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751307Ab2BCLec (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 06:34:32 -0500
+In-Reply-To: <4F2BBE24.5090601@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 02/03/2012 11:44 AM, Stephane Grosjean wrote:
-> Le 03/02/2012 11:19, Wolfgang Grandegger a =E9crit :
->> On 02/03/2012 12:06 AM, Oliver Hartkopp wrote:
->>> On 02.02.2012 19:03, Oliver Hartkopp wrote:
->>>
->>>
->>> The problem is that the PCAN-ExpressCards without galvanic isolatio=
-n
->>> (IPEH-003000, IPEH-003001) are not working at all when the I2C stuf=
-f
->>> is not
->>> initialized.
->> If that is true...
->=20
-> Yes this is true but for PCAN-ExpressCard without galvanic isolation
-> only, that is, PCAN-ExpressCard with galvanic isolation won't need I2=
-C
-> stuff..
->=20
->> What about this:
->>
->>   config CAN_PEAK_PCI
->>     tristate "PEAK PCAN-PCI/PCIe/miniPCI Cards"
->>     depends on PCI
->>     ---help---
->>       This driver is for the PCAN PCI/PCIe cards (1, 2, 3 or 4 chann=
-els)
->>       from PEAK Systems (http://www.peak-system.com).
->>       This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
->>       (1, 2, 3 or 4 channels) from PEAK-System Technik
->>       (http://www.peak-system.com).
->>
->>       The I2C bit-banging algorithm (I2C ALGOBIT) needs to be select=
-ed to
->>       support PCAN-ExpressCard (PCIeC) cards.
->>
->>
->>    config CAN_PEAK_PCIEC
->>       bool "PEAK PCAN-Express Cards"
->>       depends on CAN_PEAK_PCI&&  I2C_ALGOBIT
->>       default y
->=20
-> So, I think that the following is closer to the truth:
->=20
->  config CAN_PEAK_PCI
-> -    tristate "PEAK PCAN-PCI/PCIe/miniPCI Cards"
-> +    tristate "PEAK PCAN-PCI/PCIe/PCIeC/miniPCI Cards"
->     depends on PCI
->     ---help---
->       This driver is for the PCAN-PCI/PCIe/PCIeC/miniPCI cards
->       (1, 2, 3 or 4 channels) from PEAK-System Technik
->       (http://www.peak-system.com).
->=20
->       The I2C bit-banging algorithm (I2C ALGOBIT) needs to be selecte=
-d to
-> -      support PCAN-ExpressCard (PCIeC) cards.
-> +      support PCAN-ExpressCard cards models without galvanic isolati=
-on
-> +       that is, IPEH-003000 and IPEH-003001.
->=20
->  config CAN_PEAK_PCIEC_I2C
-> +     bool "PEAK non-isolated PCAN-ExpressCard Cards"
->      depends on CAN_PEAK_PCI&&  I2C_ALGOBIT
->      default y
-> +    ---help---
-> +        Say Y here if your PEAK-System Technik PCAN-ExpressCard is n=
-ot
-> equipped
-> +        with any galvanic isolation (IPEH-003000 and IPEH-003001)  .
->=20
->=20
-> (sorry for the manual-made patch style)
+Le 03/02/2012 11:59, Wolfgang Grandegger a =E9crit :
+>
+> Well, that is even more confusing. What happens if there is no LED
+> support. If the LEDs are not blinking or illuminated users might thin=
+k
+> the card is not working. I would go for CAN_PEAK_PCIEC config enablin=
+g
+> the support for the PCIEC *explicitly*. I mean, no support for the PC=
+IEC
+> if CAN_PEAK_PCIEC is not enabled. You may want to use the select tric=
+k
+> if you prefer on that config. What do the others think?
 
-Well, that is even more confusing. What happens if there is no LED
-support. If the LEDs are not blinking or illuminated users might think
-the card is not working. I would go for CAN_PEAK_PCIEC config enabling
-the support for the PCIEC *explicitly*. I mean, no support for the PCIE=
-C
-if CAN_PEAK_PCIEC is not enabled. You may want to use the select trick
-if you prefer on that config. What do the others think?
+Ok this argument is valid. Back to Oliver proposal.
+The main reason why I generally prefer the "select" way is that the=20
+"depends on" hides the menu item/choice text to the user.
 
-Wolfgang.
+St=E9phane
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
