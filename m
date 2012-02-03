@@ -1,80 +1,112 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 0/9] can: driver updates
-Date: Fri,  3 Feb 2012 01:51:49 +0100
-Message-ID: <1328230318-8962-1-git-send-email-mkl@pengutronix.de>
+From: Nikhil Kamath <Nikhil.Kamath@lnties.com>
+Subject: RE: [Socketcan-users] CAN Data Transfer not happening at 1Mbps
+Date: Fri, 3 Feb 2012 04:11:58 +0000
+Message-ID: <4ED62A07621E9C41B8CB2F608655EF4505375D5A@POCITMSEXMB02.LntUniverse.com>
+References: <4ED62A07621E9C41B8CB2F608655EF45053759D1@POCITMSEXMB02.LntUniverse.com>
+ <4F2AA2B4.2090906@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56710 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755104Ab2BCAwH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2012 19:52:07 -0500
+Received: from mailout2.ltindia.com ([125.18.18.171]:35816 "EHLO
+	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753213Ab2BCEMB convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2012 23:12:01 -0500
+In-Reply-To: <4F2AA2B4.2090906@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: davem@davemloft.net
-Cc: Netdev@vger.kernel.org, kernel@pengutronix.de, mkl@blackshift.org, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux-CAN <linux-can@vger.kernel.org>
 
-Hello David,
+Hi Wolfgang,
+Below are the details you asked for:
 
-this patch series targets net-next. It consists of various driver updates:
-- plx_pci: add IXXAT PCI card
-- flexcan: fixes CAN specific loopback handling
-- pch_can: updates to copyright and Kconfig desciption
-- ems_usb: improve memory handling
-- add missing do_get_berr_counter to drivers
-- replace the dev_dbg/info/err/... with the new netdev_xxx
-
-The last patch (replace the dev_dbg/info/err) depends on a patch I requested
-to go into 3.3 (f84cbda can: ems_usb: Removed double netif_device_detach).
-In order to avoid merge conflicts I added this patch to this series, too.
-If this is a bad idea we can postpone this pull request until you merged
-the net/master branch and I'll respin the pull request without that patch.
-
-regards,
-Marc
-
----
-
-The following changes since commit e1f4c485cdb2b1d7aae172b731f6c2b403381ebb:
-
-  eicon: fix -Warray-bounds warning (2012-02-02 16:47:41 -0500)
-
-are available in the git repository at:
-  git://gitorious.org/linux-can/linux-can-next.git master
-
-James Kime (1):
-      can: plx_pci: add support for IXXAT PCI cards
-
-Marc Kleine-Budde (1):
-      can: dev: let can_get_echo_skb() return dlc of CAN frame
-
-Reuben Dowle (1):
-      can: flexcan: Fix CAN_RAW_RECV_OWN_MSGS and CAN_RAW_LOOPBACK
-
-Sebastian Haas (2):
-      can: ems_usb: Removed double netif_device_detach
-      can: ems_usb: Improved memory handling on ems_usb_start
-
-Tomoya MORINAGA (2):
-      can: pch_can: Change company name OKI SEMICONDUCTOR to LAPIS Semiconductor
-      can: Kconfig: add more information about Intel EG20T PCH CAN controller
-
-Wolfgang Grandegger (2):
-      can: bfin_can/ti_hecc/mscan: add missing do_get_berr_counter callback
-      can: replace the dev_dbg/info/err/... with the new netdev_xxx macros
-
- drivers/net/can/Kconfig           |    6 ++--
- drivers/net/can/bfin_can.c        |   36 ++++++++++++-------
- drivers/net/can/dev.c             |   33 ++++++++++-------
- drivers/net/can/flexcan.c         |   61 ++++++++++++++-----------------
- drivers/net/can/mcp251x.c         |    3 +-
- drivers/net/can/mscan/mscan.c     |   33 ++++++++++++-----
- drivers/net/can/pch_can.c         |    2 +-
- drivers/net/can/sja1000/Kconfig   |    1 +
- drivers/net/can/sja1000/plx_pci.c |   22 +++++++++++-
- drivers/net/can/sja1000/sja1000.c |   19 +++++-----
- drivers/net/can/ti_hecc.c         |   32 +++++++++++-----
- drivers/net/can/usb/ems_usb.c     |   72 ++++++++++++++-----------------------
- drivers/net/can/usb/esd_usb2.c    |   27 ++++++--------
- include/linux/can/dev.h           |    2 +-
- 14 files changed, 192 insertions(+), 157 deletions(-)
+-This means you are not using a mainline kernel, right? Are you using Freescale's ltib linux-2.6.35 tree?
+Yes , I am not using a mainline kernel , it's from the Freescale's LTIB tree.
 
 
+- From what kernel version is the Flexcan driver derived?
+I integrated the FlexCAN driver present in linux-2.6.38 mainline Kernel. I am not using the FlexCAN driver given by Freescale since it had issues , for e.g. I used to get the following error -RTNETLINK answers: Operation not supported.
+
+- What does "dmesg" report when you load the driver?
+flexcan netdevice driver
+flexcan flexcan.0: device registered (reg_base=c8978000, irq=43)
+flexcan flexcan.0: writing ctrl=0x25292004
+
+-What does "ip -d -s link show can0" report after an unsuccessful
+  transfer?
+root@freescale ~$ ip -d -s link show can0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+    link/can
+    can state ERROR-PASSIVE restart-ms 0
+    bitrate 1007575 sample-point 0.727
+    tq 90 prop-seg 3 phase-seg1 4 phase-seg2 3 sjw 1
+    flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+    clock 66500000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          1          1          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    19         5        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    2          0        0       0       0       0
+
+
+-What does "candump -e any,0:0,#FFFFFFFF" report while sending
+  messages?
+I received a message saying invalid option for 'e' in the above command, I tried using  'L' option instead to check if something gets logged , but at 1 Mbps logging was not happening.
+
+
+Further , this is the log I got when I executed the following command -
+root@freescale ~$ ip link set can0 up type can bitrate 1000000
+flexcan flexcan.0: bitrate error 0.7%
+flexcan flexcan.0: writing ctrl=0x051ae052
+
+Thanks and regards,
+Nikhil
+
+
+-----Original Message-----
+From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+Sent: Thursday, February 02, 2012 8:20 PM
+To: Nikhil Kamath
+Cc: socketcan-users@lists.berlios.de; Linux-CAN
+Subject: Re: [Socketcan-users] CAN Data Transfer not happening at 1Mbps
+
+On 02/02/2012 03:24 PM, Nikhil Kamath wrote:
+> Hi,
+> I am having a i.Mx35 PDK board   running linux-2.6.35 kernel. CAN communication is done using the socket CAN driver  taken from the mainline kernel.
+
+This means you are not using a mainline kernel, right? Are you using Freescale's ltib linux-2.6.35 tree?
+
+> Issue - Data transfer not happening at 1Mbps bitrate  , works fine on other bitrates.
+>
+> Please help in resolving the issue.
+
+- From what kernel version is the Flexcan driver derived?
+- What does "dmesg" report when you load the driver?
+- What does "ip -d -s link show can0" report after an unsuccessful
+  transfer?
+- What does "candump -e any,0:0,#FFFFFFFF" report while sending
+  messages?
+
+Wolfgang.
+
+PS:
+
+please do not use this mailing list any longer but send your questions to the new "linux-can" mailing list address "linux-can@vger.kernel.org".
+For subscription or mailing list archives please have a look to:
+
+   http://vger.kernel.org/vger-lists.html#linux-can
+
+Mail archives of the new linux-can mailing list can be found at:
+
+   http://dir.gmane.org/gmane.linux.can
+   http://marc.info/?l=linux-can&r=1&w=2
+
+
+Larsen & Toubro Limited
+
+www.larsentoubro.com
+
+This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
