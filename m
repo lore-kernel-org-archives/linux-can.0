@@ -1,54 +1,89 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [Socketcan-users] Message stalls in SocketCan Layer?
-Date: Fri, 03 Feb 2012 17:57:03 +0100
-Message-ID: <4F2C11DF.7010707@hartkopp.net>
-References: <4F29091F.4010908@in.tum.de> <4F2AA5DF.9080304@grandegger.com> <4F2C0675.1050808@in.tum.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [Socketcan-users] CAN Data Transfer not happening at 1Mbps
+Date: Fri, 03 Feb 2012 20:27:14 +0100
+Message-ID: <4F2C3512.8000006@grandegger.com>
+References: <4ED62A07621E9C41B8CB2F608655EF45053759D1@POCITMSEXMB02.LntUniverse.com> <4F2AA2B4.2090906@grandegger.com> <4ED62A07621E9C41B8CB2F608655EF4505375D5A@POCITMSEXMB02.LntUniverse.com> <4F2B95B7.5070507@grandegger.com>,<4F2C0158.3060409@hartkopp.net> <4ED62A07621E9C41B8CB2F608655EF450537D6D7@POCITMSEXMB02.LntUniverse.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:34426 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757136Ab2BCQ5U (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 11:57:20 -0500
-In-Reply-To: <4F2C0675.1050808@in.tum.de>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:47200 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754743Ab2BCT1U (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Feb 2012 14:27:20 -0500
+In-Reply-To: <4ED62A07621E9C41B8CB2F608655EF450537D6D7@POCITMSEXMB02.LntUniverse.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Michael_J=E4ntsch?= <michael.jaentsch@in.tum.de>
-Cc: linux-can@vger.kernel.org
+To: Nikhil Kamath <Nikhil.Kamath@lnties.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Linux-CAN <linux-can@vger.kernel.org>
 
-Hi Michael,
+On 02/03/2012 04:54 PM, Nikhil Kamath wrote:
+> Thanks a lot. I will test by applying the patch .
 
-On 03.02.2012 17:08, Michael J=E4ntsch wrote:
+For a quick try, you can also use (instead of "bitrate 1000000"):
 
+  tq 90 prop-seg 3 phase-seg1 4 phase-seg2 3 sjw 4
 
-> yes, it all started when I switched to kernel 3.0.0-15-generic. Howev=
-er,
-> weirdly enough there is one computer with this kernel where the probl=
-em
-> doesn't appear and two where it does. I think I will confirm this by
-> going back to an older kernel and seeing if the problem disappears.
+Wolfgang.
 
+> Regards,
+> Nikhil
+> ________________________________
+> From: Oliver Hartkopp
+> Sent: 03-02-2012 PM 09:19
+> To: Wolfgang Grandegger; Nikhil Kamath
+> Cc: Linux-CAN
+> Subject: Re: [Socketcan-users] CAN Data Transfer not happening at 1Mbps
+> 
+> On 03.02.2012 09:07, Wolfgang Grandegger wrote:
+> 
+>> On 02/03/2012 05:11 AM, Nikhil Kamath wrote:
+>>> Hi Wolfgang,
+>>> Below are the details you asked for:
+>>>
+>>> -This means you are not using a mainline kernel, right? Are you using Freescale's ltib linux-2.6.35 tree?
+>>> Yes , I am not using a mainline kernel , it's from the Freescale's LTIB tree.
+>>>
+>>>
+>>> - From what kernel version is the Flexcan driver derived?
+>>> I integrated the FlexCAN driver present in linux-2.6.38 mainline Kernel. I am not using the FlexCAN driver given by Freescale since it had issues , for e.g. I used to get the following error -RTNETLINK answers: Operation not supported.
+> 
+> (..)
+> 
+>>> Further , this is the log I got when I executed the following command -
+>>> root@freescale ~$ ip link set can0 up type can bitrate 1000000
+>>> flexcan flexcan.0: bitrate error 0.7%
+>>
+>> That might make the trouble. The built-in algorithm to determine the
+>> bit-timing parameters does not work well for your clock frequency. Try
+>> to add "sjw=4" to the ip command.
+> 
+> 
+> Hi Wolfgang,
+> 
+> to set the sjw value with the ip tool is not implemented in
+> linux/drivers/net/can/dev.c in 2.6.38 nor in 2.6.35 ...
+> 
+> Maybe Nikhil can update all the stuff in linux/drivers/net/can from the
+> latest 3.2 kernel.
+> 
+> Alternatively the sjw setting support can be added to older versions by
+> applying this patch:
+> 
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commitdiff;h=2e1143742789463c00ed5e7f9bf471f2b707b493
+> 
+> Regards,
+> Oliver
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> 
+> Larsen & Toubro Limited
+> 
+> www.larsentoubro.com
+> 
+> This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
+> 
 
-please consider that if it works on other machines with the same kernel=
- that
-there could be some changes within the USB subsystem or some interrupt =
-or
-ACPI/powersaving issues too.
-
-Going back to an older Kernel is a good check - don't know, if you also=
- can go
-further (3.1, 3.2) with Ubuntu 11.10 too ?!?
-
-Maybe there's some USB debugging available to check whether the URB has=
- been
-sent properly to the USB wire and if the interrupt of the USB controlle=
-r
-reached the system after sending.
-
-Generally i would not assume that there's a problem in the PF_CAN netla=
-yer in
-this special case.
-
-Regards,
-Oliver
