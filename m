@@ -1,42 +1,54 @@
-From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Subject: Re: About can/usb v4 patches serie
-Date: Tue, 07 Feb 2012 14:51:55 +0100
-Message-ID: <4F312C7B.1020907@volkswagen.de>
-References: <1328281974-11761-1-git-send-email-s.grosjean@peak-system.com> <4F2FF9EE.1060301@volkswagen.de> <4F30F691.5070307@peak-system.com> <4F31238A.9060305@volkswagen.de> <4F312A9E.60506@peak-system.com>
+From: Wolfgang <wutz@unterderbruecke.de>
+Subject: max dlc
+Date: Tue, 7 Feb 2012 14:21:14 +0000 (UTC)
+Message-ID: <loom.20120207T151158-931@post.gmane.org>
+References: <20120110085105.GB330@e-circ.dyndns.org> <loom.20120110T112815-928@post.gmane.org> <20120110152341.GD2524@e-circ.dyndns.org> <loom.20120112T155904-850@post.gmane.org> <4F0F2195.7050109@hartkopp.net> <20120113111251.GD319@e-circ.dyndns.org> <loom.20120113T122554-557@post.gmane.org> <loom.20120116T103812-141@post.gmane.org> <20120116133140.GA26427@e-circ.dyndns.org> <loom.20120116T153805-349@post.gmane.org> <20120116153644.GA7763@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr1.volkswagen.de ([194.114.62.75]:44300 "EHLO
-	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756225Ab2BGNwb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Feb 2012 08:52:31 -0500
-In-Reply-To: <4F312A9E.60506@peak-system.com>
+Received: from plane.gmane.org ([80.91.229.3]:32982 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1756483Ab2BGOVd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 7 Feb 2012 09:21:33 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1RulvF-0006Gb-F0
+	for linux-can@vger.kernel.org; Tue, 07 Feb 2012 15:21:29 +0100
+Received: from fire.d-i-f.com ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 07 Feb 2012 15:21:29 +0100
+Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 07 Feb 2012 15:21:29 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On 07.02.2012 14:43, Stephane Grosjean wrote:
+Hi Kurt,
 
-> Sorry for the typo but the above issue I talked about concerns the peak_pci
-> driver and the PCIeC card, not the PCMCIA driver!
-> So please confirm:
->
-> - pciec iissue: deadlock occurs during 1xMbps traffic, afaik it occurs with
-> the led timer
+I am back working a little my gw.
 
-Yes. This problem occurs just when you set the interface to "up" with heavy 
-traffic being on the bus.
+As the defined in the j1939-21 the maximum dlc is 1785. 
 
-> - but what about this above "eject" issue, regarding the PCMCIA cards and
-> these removal notifications? Can you give me more explanations, please?
+static struct {
+	int pkt_len;
+} s = {
+	.pkt_len = 1024,
+};
 
-Just pull out these interfaces (both PCIeC, PCMCIA) out of the notebook 
-without shutting them down before - when having full CAN rx busload.
-You'll see your laptop freezing :-)
+buf = malloc(s.pkt_len);
 
-These are just some unfriendly but possible use cases from real life.
+recvmsg(sockfd, &msg, 0);
 
-Regards,
-Oliver
+
+Did I get that right, that a dlc more than 1024 bytes is not possible with
+recvmsg or sendmsg. For my application I won't need so many data but for
+understanding the code!
+
+Kind regards,
+Wolfgang
+
+
+
