@@ -1,76 +1,87 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: sendmsg
-Date: Wed, 8 Feb 2012 09:46:02 +0100
-Message-ID: <20120208084602.GA412@e-circ.dyndns.org>
-References: <20120110152341.GD2524@e-circ.dyndns.org>
- <loom.20120112T155904-850@post.gmane.org>
- <4F0F2195.7050109@hartkopp.net>
- <20120113111251.GD319@e-circ.dyndns.org>
- <loom.20120113T122554-557@post.gmane.org>
- <loom.20120116T103812-141@post.gmane.org>
- <20120116133140.GA26427@e-circ.dyndns.org>
- <loom.20120116T153805-349@post.gmane.org>
- <20120116153644.GA7763@e-circ.dyndns.org>
- <loom.20120207T160415-497@post.gmane.org>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Antwort: Re: [Socketcan-users] socketcan in barebox bootloader
+Date: Thu, 09 Feb 2012 10:32:53 +0100
+Message-ID: <4F3392C5.2080409@grandegger.com>
+References: <OF32B6D01B.4E8430B8-ONC125799E.0055E20B-C125799E.00563FFD@o0802.rafi.inhouse> <4F3372C3.3040902@grandegger.com> <OF323BE753.A56A00D8-ONC125799F.002F6CA3-C125799F.00302BFA@o0802.rafi.inhouse>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:33712 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756396Ab2BHIqG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 8 Feb 2012 03:46:06 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20120207T160415-497@post.gmane.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:58278 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751268Ab2BIJj7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Feb 2012 04:39:59 -0500
+In-Reply-To: <OF323BE753.A56A00D8-ONC125799F.002F6CA3-C125799F.00302BFA@o0802.rafi.inhouse>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang <wutz@unterderbruecke.de>
+To: christian.buettner@rafi.de
 Cc: linux-can@vger.kernel.org
 
-Hey Wolfgang,
+On 02/09/2012 09:46 AM, christian.buettner@rafi.de wrote:
+> Hi Wolfgang,
+> 
+> i know that CAN is not the best solution for this tasks, but it is a 
+> requirement of a customer to use the can-bus :(
+> 
+> So i create a SocketCAN interface on the host side and implement a Level 2 
+> CAN receiver in the bootloader, right?
 
-On Tue, Feb 07, 2012 at 03:11:13PM +0000, Wolfgang wrote:
-> Hi Kurt,
-> 
-> I am back working a little my gw.
-> 
-> As the defined in the j1939-21 the maximum dlc is 1785. 
+Yep.
 
-Yes.
-This stack also supports the Extended Transport Protocol as defined
-in iso11783-6, which extends to several MegaBytes...
+Wolfgang.
 
 > 
-> static struct {
-> 	int pkt_len;
-> } s = {
-> 	.pkt_len = 1024,
-> };
+> Christian
 > 
-> buf = malloc(s.pkt_len);
 > 
-> recvmsg(sockfd, &msg, 0);
 > 
-> Did I get that right, that a dlc more than 1024 bytes is not possible with
-> recvmsg or sendmsg.
-That is not a limitation of recvmsg or sendmsg. 1024 in jspy.c is just
-a decent default. Via options a different (bigger) packet size can be selected.
-For a complete explanation, man 2 recvmsg, look for MSG_TRUNC.
-That will explain what happens when I supply a buffer to recvmsg that is smaller
-than the packet I'm receiving. The received packet is then truncated.
+> Von:    Wolfgang Grandegger <wg@grandegger.com>
+> An:     christian.buettner@rafi.de
+> Kopie:  socketcan-users@lists.berlios.de
+> Datum:  09.02.2012 08:47
+> Betreff:        Re: [Socketcan-users] socketcan in barebox bootloader
+> 
+> 
+> 
+> Hi Christian,
+> 
+> On 02/08/2012 04:42 PM, christian.buettner@rafi.de wrote:
+>> Hi everyone,
+>>
+>> we use the i.MX28 from freescale and need a socketcan driver 
+>> implementation in the barebox bootloader.
+> 
+> Well, a Socket-CAN implementation seems a bit heavy and overkill for a
+> boot loader.
+> 
+>> The goal is to flash a linux or rootfs image through the barebox 
+>> bootloader using a CAN bus connection.
+> 
+> CAN is slow! Seem not be a good idea to transfer megabytes of data that 
+> way.
+> 
+>> We need it to make a field update of the target possible. 
+>>
+>> Has anyone done something like that yet?
+> 
+> Not that I know of.
+> 
+> Wolfgang.
+> 
+> PS:
+> 
+> please do not use this mailing list any longer but send your questions
+> to the new "linux-can" mailing list address "linux-can@vger.kernel.org".
+> For subscription or mailing list archives please have a look to:
+> 
+>    http://vger.kernel.org/vger-lists.html#linux-can
+> 
+> Mail archives of the new linux-can mailing list can be found at:
+> 
+>    http://dir.gmane.org/gmane.linux.can
+>    http://marc.info/?l=linux-can&r=1&w=2
+> 
+> 
+> 
+> 
 
-> For my application I won't need so many data
-Most application don't need such packets ....
-> but for understanding the code!
-Very well!
-> 
-> Kind regards,
-> Wolfgang
-> 
-> 
-> I forget to mention, that I set s.pkt_len = 1785 and it seemed to work with
-> sendmsg and recvmsg. But UIO_MAXIOV is defined as 1024, so what do I get wrong?
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
