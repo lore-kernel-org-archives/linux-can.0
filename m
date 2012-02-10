@@ -1,16 +1,16 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: can/sja1000: potential issue in sja1000.c?
-Date: Fri, 10 Feb 2012 12:44:38 +0100
-Message-ID: <4F350326.30006@grandegger.com>
+Date: Fri, 10 Feb 2012 12:56:03 +0100
+Message-ID: <4F3505D3.3090701@grandegger.com>
 References: <1328281974-11761-1-git-send-email-s.grosjean@peak-system.com> <4F2FF9EE.1060301@volkswagen.de> <4F34F8BC.3030903@peak-system.com> <4F34FC8F.4000104@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:43404 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:43755 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754568Ab2BJLou (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Feb 2012 06:44:50 -0500
+	with ESMTP id S1754727Ab2BJL4a (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Feb 2012 06:56:30 -0500
 In-Reply-To: <4F34FC8F.4000104@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -45,19 +45,10 @@ On 02/10/2012 12:16 PM, Marc Kleine-Budde wrote:
 >> +                        for (i = 0; (status & SR_RBS) && (i < 10); i++) {
 >>
 >> And no more PC hang!
->>
->> Can you confirm this, please?
->>
->> @Oliver: IMHO, the 0xff (invalid) value is also the reason of the
->> "wakeup interrupt" message you got when unplugging the cards from their
->> slots...
-> 
-> Is 0xff a valid value for REG_SR in the first place? If not we can for
-> example exit the interrupt handler.
 
-Is the access to the address space of an unplugged card defined at all?
-Or may it even hang the system?
+Good catch. The loop count should be limited to avoid hanging the system.
 
 Wolfgang.
+
 
 
