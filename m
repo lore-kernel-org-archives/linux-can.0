@@ -1,70 +1,112 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v3] can/sja1000: add support for PEAK-System PCMCIA card
-Date: Mon, 13 Feb 2012 11:41:30 +0100
-Message-ID: <4F38E8DA.9060000@hartkopp.net>
-References: <1328543779-9209-1-git-send-email-s.grosjean@peak-system.com> <4F38D46D.5010406@pengutronix.de> <4F38DF75.3040000@peak-system.com> <4F38E274.4050304@grandegger.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [Socketcan-users] Message stalls in SocketCan Layer?
+Date: Mon, 13 Feb 2012 11:45:51 +0100
+Message-ID: <4F38E9DF.6030804@grandegger.com>
+References: <4F29091F.4010908@in.tum.de> <4F2AA5DF.9080304@grandegger.com> <4F2C0675.1050808@in.tum.de> <4F2C11DF.7010707@hartkopp.net> <4F2C3884.2000808@grandegger.com> <4F38DF36.9060007@in.tum.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:43420 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751422Ab2BMKlf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Feb 2012 05:41:35 -0500
-In-Reply-To: <4F38E274.4050304@grandegger.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:48342 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751422Ab2BMKpy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Feb 2012 05:45:54 -0500
+In-Reply-To: <4F38DF36.9060007@in.tum.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: =?ISO-8859-1?Q?Michael_J=E4ntsch?= <michael.jaentsch@in.tum.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-On 13.02.2012 11:14, Wolfgang Grandegger wrote:
+Hi Michael,
 
-
->>> diff --git a/drivers/net/can/sja1000/sja1000.c
->>> b/drivers/net/can/sja1000/sja1000.c
->>> index ebbcfca..f7526a7 100644
->>> --- a/drivers/net/can/sja1000/sja1000.c
->>> +++ b/drivers/net/can/sja1000/sja1000.c
->>> @@ -493,6 +493,10 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
->>>                  n++;
->>>                  status = priv->read_reg(priv, REG_SR);
+On 02/13/2012 11:00 AM, Michael J=E4ntsch wrote:
+> Hi,
+>=20
+> sorry for the late reply. I wanted to test the older kernel and
+> therefore needed to setup the OS from scratch which I didn't have tim=
+e
+> to do right away. Now, I tested it with Ubuntu 11.04 and kernel 2.6.3=
+8-13.
+> The problem appears a lot less often. From the time frame of a few
+> minutes we went to something more like half an hour. So maybe this ha=
+s
+> been there all along but did not appear frequently enough to be notic=
+ed.
+> For the reasons I already mentioned I'm still pretty sure this has
+> nothing to do with our code.
+> Does anybody have an idea how to go about debugging this?
+>=20
+> On 03.02.2012 20:41, Wolfgang Grandegger wrote:
+>> On 02/03/2012 05:57 PM, Oliver Hartkopp wrote:
+>>> please consider that if it works on other machines with the same ke=
+rnel that
+>>> there could be some changes within the USB subsystem or some interr=
+upt or
+>>> ACPI/powersaving issues too.
 >>>
->>> +               /* check for absent controller due to hw unplug */
->>> +               if (status == 0xFF)
->>> +                       break;
->>> +
->>>                  if (isrc&  IRQ_WUI)
->>>                          netdev_warn(dev, "wakeup interrupt\n");
+>>> Going back to an older Kernel is a good check - don't know, if you =
+also can go
+>>> further (3.1, 3.2) with Ubuntu 11.10 too ?!?
 >>>
->>> @@ -504,8 +508,8 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
->>>                          netif_wake_queue(dev);
->>>                  }
->>>                  if (isrc&  IRQ_RI) {
->>> -                       /* receive interrupt */
->>> -                       while (status&  SR_RBS) {
->>> +                       /* receive interrupt / check for absent controller */
->>> +                       while (status&  SR_RBS&&  status != 0xFF) {
->>>                                  sja1000_rx(dev);
->>>                                  status = priv->read_reg(priv, REG_SR);
->>>                          }
->>>
->>> @Stephane: Can you check that patch? I'm out of hw right now.
->>
->> I confirm that this patch works too...
->> So I think I should be able to post a new version of the peak_pcmcia
->> during that day (the previous should work but some calls to
->> pcmcia_dev_present() are no more useful...)
-> 
-> But that fix should not go to the common interrupt handler, if possible.
+>>> Maybe there's some USB debugging available to check whether the URB=
+ has been
+>>> sent properly to the USB wire and if the interrupt of the USB contr=
+oller
+>>> reached the system after sending.
+>> IIUC, he said that the time stamps indicated that the USB transfers =
+have
+>> happened in time. The delays occured later. That's wired, indeed.
+> Wolfgang is right, the debug output of the driver indicated that the =
+USB
+> transfers happened in time which is why I the guys from PEAK send me =
+to
+> you. This looks to me like the messages get stalled somewhere in the
+> PF_CAN netlayer, but I'm also not a hundred percent sure how to verif=
+y
+> this, as this of course not that reproducable. Any ideas?
 
+=46trace may help to find the problem. It's not too difficult to use, I
+think. I assume that function tracing is enabled in your kernel. You
+should find in your ".config":
 
-Do you have an idea how to handle the while() statement without copying the
-entire interrupt handler code for the devices that might be unplugged?
+CONFIG_DEBUG_FS=3Dy
+CONFIG_FTRACE=3Dy
+CONFIG_FUNCTION_TRACER=3Dy
+CONFIG_DYNAMIC_FTRACE=3Dy
 
-IMHO this patch is pretty cheap.
+With that kernel, activate FTRACE as shown below:
 
-Regards,
-Oliver
+Mount DebugFS file system
+# mount -t debugfs nope /sys/kernel/debug
+Stop tracing
+# echo 0 > /sys/kernel/debug/tracing/tracing_on
+Clear trace buffer
+# echo 0 > /sys/kernel/debug/tracing/trace
+If necessary, increase buffer size
+# echo 16384 > /sys/kernel/debug/tracing/buffer_size_kb
+Use function tracer
+# cat /sys/kernel/debug/tracing/available_tracers
+=2E.. function ...
+# echo function > /sys/kernel/debug/tracing/current_tracer
+=46inally enable ftracing
+# echo 1 > /sys/kernel/debug/tracing/tracing_on
+Inspect trace buffer
+# cat /sys/kernel/debug/tracing/trace
 
-ps. @Stephane: I just made a screencopy of my suggested patch - so there may
-be whitepace issues then, sorry.
+This will create a huge amount of data. In a first step, only the
+functions relevant for CAN might be enabled to debug the timing.
+
+When you realize the long delay in your application, you should call
+"echo 0 > /sys/kernel/debug/tracing/tracing_on" from the application
+context (using fopen, etc.) to freeze the trace. That should give you
+more or less detailed information on what has happened. I think it's no=
+t
+too complicated. Interpreting the traces might be harder, tough.
+
+Some useful links are:
+
+http://lxr.linux.no/#linux+v2.6.37/Documentation/trace/ftrace.txt
+
+There are also a few nice articles about Ftrace at LWN.
+
+Wolfgang.
