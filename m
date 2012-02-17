@@ -1,46 +1,35 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: How to get the DA
-Date: Thu, 16 Feb 2012 20:49:11 +0100
-Message-ID: <20120216194911.GA447@e-circ.dyndns.org>
-References: <4F0F2195.7050109@hartkopp.net>
- <20120113111251.GD319@e-circ.dyndns.org>
- <loom.20120113T122554-557@post.gmane.org>
- <loom.20120116T103812-141@post.gmane.org>
- <20120116133140.GA26427@e-circ.dyndns.org>
- <loom.20120116T153805-349@post.gmane.org>
- <20120116153644.GA7763@e-circ.dyndns.org>
- <loom.20120207T160415-497@post.gmane.org>
- <20120208084602.GA412@e-circ.dyndns.org>
- <loom.20120216T104829-444@post.gmane.org>
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: [PATCH v4.1] can/sja1000: add support for PEAK-System PCMCIA card
+Date: Fri, 17 Feb 2012 09:24:55 +0100
+Message-ID: <20120217082455.GA5648@comet.dominikbrodowski.net>
+References: <1329387042-4021-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay011.isp.belgacom.be ([195.238.6.178]:49359 "EHLO
-	mailrelay011.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751525Ab2BPTtT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Feb 2012 14:49:19 -0500
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <loom.20120216T104829-444@post.gmane.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Wagner <wutz@unterderbruecke.de>
-Cc: linux-can@vger.kernel.org
+In-Reply-To: <1329387042-4021-1-git-send-email-s.grosjean@peak-system.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-pcmcia>,
+ <mailto:linux-pcmcia-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-pcmcia/>
+List-Post: <mailto:linux-pcmcia@lists.infradead.org>
+List-Help: <mailto:linux-pcmcia-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
+ <mailto:linux-pcmcia-request@lists.infradead.org?subject=subscribe>
+Sender: linux-pcmcia-bounces@lists.infradead.org
+Errors-To: linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux pcmcia Mailing List <linux-pcmcia@lists.infradead.org>, linux-can Mailing List <linux-can@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-On Thu, Feb 16, 2012 at 09:58:27AM +0000, Wolfgang Wagner wrote:
-> Hi Kurt,
+On Thu, Feb 16, 2012 at 11:10:42AM +0100, Stephane Grosjean wrote:
+> This patch adds the support of the PCAN-PC Card (PCMCIA) card from
+> PEAK-System Technik (http://www.peak-system.com). The PCAN-PC Card is
+> sja1000 based and exists in 1 or 2 channels.
 > 
-> is there a simple way to get the destination address out of the ID, or has it to
-> be done with the struct cmsghdr, like implement in the jspy?
-There is no simpler way.
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Retreiving the original Destination address is in most cases irrelevant.
-Receiving the message means that you should process it (in most cases).
-I admit that your usecase, being a bridge, is a major exception to this
-rule.
-Like the message priority, the original destination address did not make
-it into the a simple API.
+for the PCMCIA part: Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-Looking at your attempt, I'm a bit glad I did not totally strip these
-attributes, and kept the available, altough  they're a bit hard to fetch :-)
-
-Kurt
+Best,
+	Dominik
