@@ -1,60 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: sja1000 fix isr hang when hw is unplugged under
- load
-Date: Tue, 21 Feb 2012 10:03:33 +0100
-Message-ID: <4F435DE5.8000600@pengutronix.de>
-References: <1318506157-10329-1-git-send-email-mkl@pengutronix.de> <4F3BE2AC.9020108@hartkopp.net> <4F3EB82C.7080905@pengutronix.de> <4F3FB389.7050104@hartkopp.net> <4F422841.3070901@pengutronix.de> <4F4350BB.4090408@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDE73897748DFBA5418C14A5F"
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH 1/2] pch_can: Stop netif queue if last message buffer is filled
+Date: Tue, 21 Feb 2012 17:00:01 +0100
+Message-ID: <1329840002-20746-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37516 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753086Ab2BUJHy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Feb 2012 04:07:54 -0500
-In-Reply-To: <4F4350BB.4090408@hartkopp.net>
+Received: from webbox1416.server-home.net ([77.236.96.61]:53704 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752352Ab2BUQAJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Feb 2012 11:00:09 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDE73897748DFBA5418C14A5F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+If all Tx buffers are empty and we start queuing frames (more than Tx
+buffer size) beginning at the last message buffer we will override the
+first inserted entry if it doesn't get sent meanwhile, e.g. low priority
+or ACK error. There is no stop condition when all buffers are used.
+We will get get awoken by pch_can_tx_complete when the last entry is sent.
 
-On 02/21/2012 09:07 AM, Oliver Hartkopp wrote:
-> Are you sure you sent it CC to stable?
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ drivers/net/can/pch_can.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-Something must have gone wrong there. I added a Cc: to the patch descipti=
-on.
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index 6edc25e..3af5341 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -903,9 +903,7 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 
+ 	tx_obj_no = priv->tx_obj;
+ 	if (priv->tx_obj == PCH_TX_OBJ_END) {
+-		if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
+-			netif_stop_queue(ndev);
+-
++		netif_stop_queue(ndev);
+ 		priv->tx_obj = PCH_TX_OBJ_START;
+ 	} else {
+ 		priv->tx_obj++;
+-- 
+1.7.3.4
 
-> Didn't see that in the mail.
-
-I'll resend it manually.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigDE73897748DFBA5418C14A5F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk9DXekACgkQjTAFq1RaXHNfowCfZN4ChqA4MaiUU7Er8AJP4bln
-U5kAoJne7GxrAsbhw+AZaylP2crLcdVh
-=F7Wo
------END PGP SIGNATURE-----
-
---------------enigDE73897748DFBA5418C14A5F--
