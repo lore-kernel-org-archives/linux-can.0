@@ -1,85 +1,63 @@
-From: Gabriel Manriquez <gmanriquez@wegmannusa.com>
-Subject: socketCan build fails
-Date: Thu, 23 Feb 2012 10:02:14 -0500
-Message-ID: <4F4654F6.8010201@wegmannusa.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: About peak_pci PATH v6.1
+Date: Thu, 23 Feb 2012 16:28:54 +0100
+Message-ID: <4F465B36.40904@peak-system.com>
+References: <4F422DA4.1080703@peak-system.com>
+ <4F423A2E.3030806@pengutronix.de>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrtr16.ntelos.net ([216.12.0.116]:40706 "EHLO
-	mailrtr16.ntelos.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754957Ab2BWPMy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 10:12:54 -0500
-Received: from [192.168.100.134] (226-229-46-71.biz.bhn.net [71.46.229.226] (may be forged))
-	(authenticated bits=0)
-	by mailrtr16.ntelos.net (8.14.2/8.14.2/Debian-2build1) with ESMTP id q1NF2BPL016142
-	for <linux-can@vger.kernel.org>; Thu, 23 Feb 2012 10:02:12 -0500
+Received: from mail.peak-system.com ([213.157.13.214]:58921 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751342Ab2BWP3D (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 10:29:03 -0500
+In-Reply-To: <4F423A2E.3030806@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+Hi Marc,
 
-I'm trying to install the socketcan package for the first time.  I just 
-checked out the package today.
-I'm following the instructions in the README file but when I issue the 
-command:
+Le 20/02/2012 13:18, Marc Kleine-Budde a =E9crit :
+>> @Marc: the peak_pci and peak_pcmcia patches bring modifications to t=
+he
+>> can/sja1000 dir Kconfig and Makefile, So the apply sequence order is
+>> critical (I mean, the peak_pci patch must be applied before the
+>> peak_pcmcia, because of lines numbers). How to fix that? I first
+>> proposed to use a serie of patches but this was not approved...
+> I think due to my too short answer there was a misunderstanding. IIRC=
+ in
+> one patch you 1. fixed a problem (which is already in mainline) and 2=
+=2E
+> introduced a new feature. This is why I asked for separate patches. A=
+ll
+> changes can still go into a series.
+>
+> I already added your "add support for PEAK-System PCIe/PCIeC/miniPCI
+> cards" patch to can-next/master, but If you now have a better version=
+,
+> I'll force update the branch.
+>
 
-make CC=gcc-4.3
+So what's your opinion about that new serie?
 
-I get errors.  See output below:
+0001 which contains Kconfig changes (pci+pciec+pcmcia)
+0002 contains peak_pci modifications (+pciec,...)
+0002 contains Makefile "pcmcia.o" adding + peak_pcmcia
 
-host:~/socketCan/kernel/2.6# make CC=gcc-4.3
-make -C /lib/modules/2.6.35.11/build M=/root/socketCan/kernel/2.6 
-modules TOPDIR=/root/socketCan/kernel/2.6
-make[1]: Entering directory `/usr/src/linux-2.6.35.11'
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/vcan.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/slcan.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/dev.o
-   LD [M]  /root/socketCan/kernel/2.6/drivers/net/can/can-dev.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/esd_pci331.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/mcp251x.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/cc770/cc770.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/cc770/cc770_isa.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000_isa.o
-   CC [M]  
-/root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000_platform.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ems_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ems_104m.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/esd_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ixxat_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/plx_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/peak_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/pipcan.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/kvaser_pci.o
-   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.o
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function 
-`ems_usb_write_bulk_callback':
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:525: error: 
-implicit declaration of function `usb_buffer_free'
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function 
-`ems_usb_start':
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:623: error: 
-implicit declaration of function `usb_buffer_alloc'
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:624: warning: 
-assignment makes pointer from integer without a cast
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function 
-`ems_usb_start_xmit':
-/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:790: warning: 
-assignment makes pointer from integer without a cast
-make[4]: *** [/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.o] 
-Error 1
-make[3]: *** [/root/socketCan/kernel/2.6/drivers/net/can/usb] Error 2
-make[2]: *** [/root/socketCan/kernel/2.6/drivers/net/can] Error 2
-make[1]: *** [_module_/root/socketCan/kernel/2.6] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.35.11'
-make: *** [modules] Error 2
+???
 
+Moreover, is that new format compatible with the previous pci-related=20
+patch you pushed before?
 
-Any ideas on what could be causing this??
-I'm running on Linux (Lenny) kernel version 2.6
+Regards,
 
-Thanks in advance.
-
--Gabriel
+St=E9phane
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
