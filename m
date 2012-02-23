@@ -1,43 +1,48 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
 Subject: Re: [RFC/PATCH] c_can: add driver for the PCH CAN controller
-Date: Thu, 23 Feb 2012 17:08:26 +0900
-Message-ID: <CANKRQni7j0QEmcpY17A8R84CNvUJOKk9ahYAJ1h6N2hfbv-+tQ@mail.gmail.com>
+Date: Thu, 23 Feb 2012 09:27:15 +0100
+Message-ID: <1626144.8BPv1GvbeG@ws-stein>
 References: <4F44E640.8010708@grandegger.com>
-	<CANKRQnh-gF3ZAD9_uDrqd1Bu9F82fqNRAQLEwJCCD3rC6ScxRg@mail.gmail.com>
-	<4F45EE68.60304@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pw0-f46.google.com ([209.85.160.46]:41992 "EHLO
-	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752271Ab2BWII0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 03:08:26 -0500
-Received: by pbcun15 with SMTP id un15so1145771pbc.19
-        for <linux-can@vger.kernel.org>; Thu, 23 Feb 2012 00:08:26 -0800 (PST)
-In-Reply-To: <4F45EE68.60304@grandegger.com>
+Received: from webbox1416.server-home.net ([77.236.96.61]:42626 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751065Ab2BWI1S (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 03:27:18 -0500
+In-Reply-To: <4F44E640.8010708@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, Alexander Stein <alexander.stein@systec-electronic.com>, "bhupesh.sharma" <bhupesh.sharma@st.com>
+Cc: Linux-CAN <linux-can@vger.kernel.org>, "bhupesh.sharma" <bhupesh.sharma@st.com>, Tomoya MORINAGA <tomoya.rohm@gmail.com>
 
-2012年2月23日16:44 Wolfgang Grandegger <wg@grandegger.com>:
-> On 02/23/2012 01:13 AM, Tomoya MORINAGA wrote:
->> 2012年2月22日21:57 Wolfgang Grandegger <wg@grandegger.com>:
->>> Alexander, Tomoya, or anybody else, it would be nice if you could test
->>> this patch and give some feedback. Thanks.
->>
->> Unfortunately, I'm involved another work, so I can't start soon.
->
-> There is no hurry. I think it's good practice to first add the new
-> driver and declare the other as deprecated. Then, after some time, we
-> can remove the deprecated driver safely.
->
+Hello Wolfgang,
 
-OK. If there isn't hurry,
-we will do this. Maybe within 1 or 2 moths.
+Am Mittwoch, 22. Februar 2012, 13:57:36 schrieb Wolfgang Grandegger:
+> For maintenance reasons, this diver should replace the "pch_can" driver
+> sooner than later as it uses the same CAN controller core. I named it
+> "pch_pci". Maybe "pch_can" would be more appropriate (common). This
+> patch is for 2.6.39, but likely it applies fine also to more recent
+> versions of the Linux kernel.
+> 
+> Alexander, Tomoya, or anybody else, it would be nice if you could test
+> this patch and give some feedback. Thanks.
 
-thanks,
+What is the current state of c_can? Are there known bugs/issues?
 
-ROHM Co., Ltd.
-tomoya
+Best regards,
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+
+SYS TEC electronic GmbH
+August-Bebel-Str. 29
+D-07973 Greiz
+
+Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
+eMail:    Alexander.Stein@systec-electronic.com
+Internet: http://www.systec-electronic.com
+
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Jena, HRB 205563
