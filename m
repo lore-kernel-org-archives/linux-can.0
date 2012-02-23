@@ -1,67 +1,101 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [PATCH 1/3 v6] can/usb: PEAK-System Technik USB adapters driver
- core
-Date: Thu, 23 Feb 2012 12:08:40 -0500 (EST)
-Message-ID: <Pine.LNX.4.44L0.1202231205420.1671-100000@iolanthe.rowland.org>
-References: <1329985867-11082-2-git-send-email-s.grosjean@peak-system.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: socketCan build fails
+Date: Thu, 23 Feb 2012 18:21:59 +0100
+Message-ID: <4F4675B7.4040605@hartkopp.net>
+References: <4F4654F6.8010201@wegmannusa.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1329985867-11082-2-git-send-email-s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephane Grosjean <s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
-Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can Mailing List <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux usb Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:41486 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751346Ab2BWRWO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 12:22:14 -0500
+In-Reply-To: <4F4654F6.8010201@wegmannusa.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Gabriel Manriquez <gmanriquez@wegmannusa.com>
+Cc: linux-can@vger.kernel.org
 
-On Thu, 23 Feb 2012, Stephane Grosjean wrote:
+On 23.02.2012 16:02, Gabriel Manriquez wrote:
 
-> This patch adds the core of the peak_usb driver which handles PEAK-System
-> Technik PCAN USB adapters. It defines the parts which are common to the
-> PCAN-USB adapters: can network interfaces management, network-to/from-usb
-> data path interface, timestamps management...
+> Hello,
+> 
+> I'm trying to install the socketcan package for the first time.  I just
+> checked out the package today.
+> I'm following the instructions in the README file but when I issue the command:
+> 
+> make CC=gcc-4.3
+> 
+> I get errors.  See output below:
+> 
+> host:~/socketCan/kernel/2.6# make CC=gcc-4.3
+> make -C /lib/modules/2.6.35.11/build M=/root/socketCan/kernel/2.6 modules
+> TOPDIR=/root/socketCan/kernel/2.6
+> make[1]: Entering directory `/usr/src/linux-2.6.35.11'
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/vcan.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/slcan.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/dev.o
+>   LD [M]  /root/socketCan/kernel/2.6/drivers/net/can/can-dev.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/esd_pci331.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/mcp251x.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/cc770/cc770.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/cc770/cc770_isa.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000_isa.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/sja1000_platform.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ems_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ems_104m.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/esd_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/ixxat_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/plx_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/peak_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/pipcan.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/sja1000/kvaser_pci.o
+>   CC [M]  /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.o
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function
+> `ems_usb_write_bulk_callback':
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:525: error: implicit
+> declaration of function `usb_buffer_free'
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function
+> `ems_usb_start':
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:623: error: implicit
+> declaration of function `usb_buffer_alloc'
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:624: warning:
+> assignment makes pointer from integer without a cast
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c: In function
+> `ems_usb_start_xmit':
+> /root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.c:790: warning:
+> assignment makes pointer from integer without a cast
+> make[4]: *** [/root/socketCan/kernel/2.6/drivers/net/can/usb/ems_usb.o] Error 1
+> make[3]: *** [/root/socketCan/kernel/2.6/drivers/net/can/usb] Error 2
+> make[2]: *** [/root/socketCan/kernel/2.6/drivers/net/can] Error 2
+> make[1]: *** [_module_/root/socketCan/kernel/2.6] Error 2
+> make[1]: Leaving directory `/usr/src/linux-2.6.35.11'
+> make: *** [modules] Error 2
+> 
+> 
+> Any ideas on what could be causing this??
 
-...
 
-> +/*
-> + * dump memory
-> + */
-> +#define DUMP_WIDTH	16
-> +void dump_mem(char *prompt, void *p, int l)
-> +{
-> +	char tmp[(3 * DUMP_WIDTH) + 1];
-> +	u8 *pc = p;
-> +	int i, ltmp;
-> +
-> +	pr_info("%s dumping %s (%d bytes):\n",
-> +		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
-> +	for (i = ltmp = 0; i < l; ) {
-> +		ltmp += sprintf(tmp + ltmp, "%02X ", *pc++);
-> +		if ((++i % DUMP_WIDTH) == 0) {
-> +			pr_info("%s %s\n", PCAN_USB_DRIVER_NAME, tmp);
-> +			ltmp = 0;
-> +		}
-> +	}
-> +	if (i % DUMP_WIDTH)
-> +		pr_info("%s %s\n", PCAN_USB_DRIVER_NAME, tmp);
-> +}
+Yes.
 
-Consider using print_hex_dump() instead.
+> I'm running on Linux (Lenny) kernel version 2.6
 
-> +/*
-> + * register device timestamp as now
-> + */
-> +void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now)
-> +{
-> +	if (time_ref->tv_host_0.tv_sec == 0) {
-> +		do_gettimeofday(&time_ref->tv_host_0);
 
-Instead of do_gettimeofday(), it might be better to use ktime_get().  
-Unless you have some preference for using WALL_CLOCK rather than 
-MONOTONIC_CLOCK.
+I assume that's a 2.6.32 then right?
 
-Alan Stern
+The content of the kernel/2.6 directory is mainly needed for older Kernels
+that do not have SocketCAN support (which was introduced in 2.6.25).
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Therefore not all drivers are maintained (e.g. the EMS USB driver is already
+in the mainline Kernel).
+
+Why do you need to compile these kernel/2.6 path?
+
+SocketCAN is already included in your Debian Lenny kernel.
+
+Do you need a specific CAN driver?
+
+Regards,
+Oliver
