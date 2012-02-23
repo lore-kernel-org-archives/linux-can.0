@@ -1,63 +1,67 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: About peak_pci PATH v6.1
-Date: Thu, 23 Feb 2012 16:28:54 +0100
-Message-ID: <4F465B36.40904@peak-system.com>
-References: <4F422DA4.1080703@peak-system.com>
- <4F423A2E.3030806@pengutronix.de>
-Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [PATCH 1/3 v6] can/usb: PEAK-System Technik USB adapters driver
+ core
+Date: Thu, 23 Feb 2012 12:08:40 -0500 (EST)
+Message-ID: <Pine.LNX.4.44L0.1202231205420.1671-100000@iolanthe.rowland.org>
+References: <1329985867-11082-2-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:58921 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751342Ab2BWP3D (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Feb 2012 10:29:03 -0500
-In-Reply-To: <4F423A2E.3030806@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1329985867-11082-2-git-send-email-s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephane Grosjean <s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
+Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-can Mailing List <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux usb Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+On Thu, 23 Feb 2012, Stephane Grosjean wrote:
 
-Le 20/02/2012 13:18, Marc Kleine-Budde a =E9crit :
->> @Marc: the peak_pci and peak_pcmcia patches bring modifications to t=
-he
->> can/sja1000 dir Kconfig and Makefile, So the apply sequence order is
->> critical (I mean, the peak_pci patch must be applied before the
->> peak_pcmcia, because of lines numbers). How to fix that? I first
->> proposed to use a serie of patches but this was not approved...
-> I think due to my too short answer there was a misunderstanding. IIRC=
- in
-> one patch you 1. fixed a problem (which is already in mainline) and 2=
-=2E
-> introduced a new feature. This is why I asked for separate patches. A=
-ll
-> changes can still go into a series.
->
-> I already added your "add support for PEAK-System PCIe/PCIeC/miniPCI
-> cards" patch to can-next/master, but If you now have a better version=
-,
-> I'll force update the branch.
->
+> This patch adds the core of the peak_usb driver which handles PEAK-System
+> Technik PCAN USB adapters. It defines the parts which are common to the
+> PCAN-USB adapters: can network interfaces management, network-to/from-usb
+> data path interface, timestamps management...
 
-So what's your opinion about that new serie?
+...
 
-0001 which contains Kconfig changes (pci+pciec+pcmcia)
-0002 contains peak_pci modifications (+pciec,...)
-0002 contains Makefile "pcmcia.o" adding + peak_pcmcia
+> +/*
+> + * dump memory
+> + */
+> +#define DUMP_WIDTH	16
+> +void dump_mem(char *prompt, void *p, int l)
+> +{
+> +	char tmp[(3 * DUMP_WIDTH) + 1];
+> +	u8 *pc = p;
+> +	int i, ltmp;
+> +
+> +	pr_info("%s dumping %s (%d bytes):\n",
+> +		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
+> +	for (i = ltmp = 0; i < l; ) {
+> +		ltmp += sprintf(tmp + ltmp, "%02X ", *pc++);
+> +		if ((++i % DUMP_WIDTH) == 0) {
+> +			pr_info("%s %s\n", PCAN_USB_DRIVER_NAME, tmp);
+> +			ltmp = 0;
+> +		}
+> +	}
+> +	if (i % DUMP_WIDTH)
+> +		pr_info("%s %s\n", PCAN_USB_DRIVER_NAME, tmp);
+> +}
 
-???
+Consider using print_hex_dump() instead.
 
-Moreover, is that new format compatible with the previous pci-related=20
-patch you pushed before?
+> +/*
+> + * register device timestamp as now
+> + */
+> +void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now)
+> +{
+> +	if (time_ref->tv_host_0.tv_sec == 0) {
+> +		do_gettimeofday(&time_ref->tv_host_0);
 
-Regards,
+Instead of do_gettimeofday(), it might be better to use ktime_get().  
+Unless you have some preference for using WALL_CLOCK rather than 
+MONOTONIC_CLOCK.
 
-St=E9phane
+Alan Stern
+
 --
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
