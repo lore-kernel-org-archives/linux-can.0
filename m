@@ -1,63 +1,57 @@
-From: Gabriel Manriquez <gmanriquez@wegmannusa.com>
-Subject: Re: socketCan build fails
-Date: Fri, 24 Feb 2012 08:46:45 -0500
-Message-ID: <4F4794C5.7060803@wegmannusa.com>
-References: <4F4654F6.8010201@wegmannusa.com> <4F4675B7.4040605@hartkopp.net> <4F46784C.7070104@wegmannusa.com> <4F467C03.2000607@hartkopp.net>
+From: Wolfgang Wagner <wutz@unterderbruecke.de>
+Subject: Transport Protocol
+Date: Fri, 24 Feb 2012 15:23:10 +0000 (UTC)
+Message-ID: <loom.20120224T154038-289@post.gmane.org>
+References: <4F0F2195.7050109@hartkopp.net> <20120113111251.GD319@e-circ.dyndns.org> <loom.20120113T122554-557@post.gmane.org> <loom.20120116T103812-141@post.gmane.org> <20120116133140.GA26427@e-circ.dyndns.org> <loom.20120116T153805-349@post.gmane.org> <20120116153644.GA7763@e-circ.dyndns.org> <loom.20120207T160415-497@post.gmane.org> <20120208084602.GA412@e-circ.dyndns.org> <loom.20120216T104829-444@post.gmane.org> <20120216194911.GA447@e-circ.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrtr14.ntelos.net ([216.12.0.114]:34613 "EHLO
-	mailrtr14.ntelos.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755195Ab2BXNqn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 24 Feb 2012 08:46:43 -0500
-In-Reply-To: <4F467C03.2000607@hartkopp.net>
+Received: from plane.gmane.org ([80.91.229.3]:52182 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1756055Ab2BXPX2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 24 Feb 2012 10:23:28 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1S0wzS-0001U3-4U
+	for linux-can@vger.kernel.org; Fri, 24 Feb 2012 16:23:22 +0100
+Received: from fire.d-i-f.com ([80.152.230.22])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2012 16:23:22 +0100
+Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2012 16:23:22 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Oliver,
+Hi Kurt,
 
-Thank you very much for your help.
+I try to bridge a Multi Packet Message. 
 
-I will go ahead and start testing.
 
--Gabriel
+I set can0 on j1939 and started it
 
-On 2/23/2012 12:48 PM, Oliver Hartkopp wrote:
-> On 23.02.2012 18:33, Gabriel Manriquez wrote:
->
->> Hi Oliver,
->>
->> I'm running kernel version 2.6.35.11.
->>
->> I was just following the README file which says to compile kernel/<version>
->> ... so since you're saying that I don't need to then can I just go ahead and
->> compile the utilities and test programs?
->
-> Yep! :-)
->
->> I'm trying to use socketcan in conjuction with can driver :
->> peak-linux-driver-7.4 which I already installed.
->
-> Then you are done.
->
->> At this point I just need to test communication to and from my CAN device via
->> usb and I thought I needed the socketcan utiliites/test programs to do that.
->
-> Yes - using the can-utils is the easiest way to start with SocketCAN.
->
->> The peak-linux-driver-7.4 driver comes with receive and transmit test
->> utilities but they're not suitable for my type of driver install  "NETDEV"
->
-> That's right.
->
->> I hope what I'm saying makes sense.  Otherwise please ask.
->
-> Yes. Everything makes sense.
->
-> You're on the right way :-)
->
-> Regards,
-> Oliver
+$echo can0 > /proc/net/can-j1939/net
+$ip link set can0 up type can bitrate 500000
+$ip addr add j1939 0x00 dev can0
+
+
+I am still working with the simulator software.
+Now sent the TP.CM 0x1CEC009F 0x16 0x00 0xF0 0x30 0xFF 0x00 0xEE 0x00
+
+
+Now it responses with this:
+0X1CEC9F00 0xFF 0x05 0xFF 0xFF 0xFF 0x00 0xEE 0x00
+
+and I get this message:
+$j1939xtp_rx_bad_message, pgn 0ee00
+$j1939xtp_rx_abort 2, 0ee00
+
+
+I am pretty sure I did something wrong, can you please correct?
+
+Is it possible if everything is done right to bridge the TP.CM and TP.DT
+directly with the previous implementation?
+
