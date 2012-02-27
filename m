@@ -1,57 +1,56 @@
-From: Wolfgang Wagner <wutz@unterderbruecke.de>
-Subject: Transport Protocol
-Date: Fri, 24 Feb 2012 15:23:10 +0000 (UTC)
-Message-ID: <loom.20120224T154038-289@post.gmane.org>
-References: <4F0F2195.7050109@hartkopp.net> <20120113111251.GD319@e-circ.dyndns.org> <loom.20120113T122554-557@post.gmane.org> <loom.20120116T103812-141@post.gmane.org> <20120116133140.GA26427@e-circ.dyndns.org> <loom.20120116T153805-349@post.gmane.org> <20120116153644.GA7763@e-circ.dyndns.org> <loom.20120207T160415-497@post.gmane.org> <20120208084602.GA412@e-circ.dyndns.org> <loom.20120216T104829-444@post.gmane.org> <20120216194911.GA447@e-circ.dyndns.org>
+From: Steffen Rose <ro@emtas.de>
+Subject: Re: socketCan build fails
+Date: Mon, 27 Feb 2012 10:12:46 +0100
+Message-ID: <9642069.LSMGlbII5g@lisa>
+References: <4F4654F6.8010201@wegmannusa.com> <4F4675B7.4040605@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:52182 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756055Ab2BXPX2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 24 Feb 2012 10:23:28 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1S0wzS-0001U3-4U
-	for linux-can@vger.kernel.org; Fri, 24 Feb 2012 16:23:22 +0100
-Received: from fire.d-i-f.com ([80.152.230.22])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2012 16:23:22 +0100
-Received: from wutz by fire.d-i-f.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2012 16:23:22 +0100
+Received: from moutng.kundenserver.de ([212.227.126.186]:63158 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751674Ab2B0JMv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Feb 2012 04:12:51 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 7810E561C13
+	for <linux-can@vger.kernel.org>; Mon, 27 Feb 2012 10:12:53 +0100 (CET)
+Received: from kolab.emtas.de ([127.0.0.1])
+	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id wLwdN6eVk+N1 for <linux-can@vger.kernel.org>;
+	Mon, 27 Feb 2012 10:12:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 97CAE561E10
+	for <linux-can@vger.kernel.org>; Mon, 27 Feb 2012 10:12:52 +0100 (CET)
+In-Reply-To: <4F4675B7.4040605@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Gabriel Manriquez <gmanriquez@wegmannusa.com>
 
-Hi Kurt,
+Hi,
 
-I try to bridge a Multi Packet Message. 
+> The content of the kernel/2.6 directory is mainly needed for older Ke=
+rnels
+> that do not have SocketCAN support (which was introduced in 2.6.25).
 
+differ the kernel socketCAN path from our used socketCAN?
 
-I set can0 on j1939 and started it
+Of course, I know, this both are different repositories. But I was the =
+meaning,=20
+that at the first the changes comes in our repository and later our pat=
+ches are=20
+copied to the kernel.
 
-$echo can0 > /proc/net/can-j1939/net
-$ip link set can0 up type can bitrate 500000
-$ip addr add j1939 0x00 dev can0
+Additional question:
+Are there a Kernel list with information, which socketCAN feature is in=
+cluded=20
+(e.g. 3.2 - gateway functionality)?
+Is there a "TAG" in our repository to see, which software state was cop=
+ied to=20
+which kernel version?
 
-
-I am still working with the simulator software.
-Now sent the TP.CM 0x1CEC009F 0x16 0x00 0xF0 0x30 0xFF 0x00 0xEE 0x00
-
-
-Now it responses with this:
-0X1CEC9F00 0xFF 0x05 0xFF 0xFF 0xFF 0x00 0xEE 0x00
-
-and I get this message:
-$j1939xtp_rx_bad_message, pgn 0ee00
-$j1939xtp_rx_abort 2, 0ee00
-
-
-I am pretty sure I did something wrong, can you please correct?
-
-Is it possible if everything is done right to bridge the TP.CM and TP.DT
-directly with the previous implementation?
+--=20
+Mit freundlichen Gr=FC=DFen / Regards
+Steffen Rose
+emtas - your embedded solution partner
 
