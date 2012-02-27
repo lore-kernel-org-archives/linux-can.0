@@ -1,29 +1,54 @@
-From: Yegor Yefremov <yegor_sub1@visionsystems.de>
-Subject: SocketCAN support in Android
-Date: Mon, 27 Feb 2012 10:26:31 +0100
-Message-ID: <4F4B4C47.4060601@visionsystems.de>
-Reply-To: yegor_sub1@visionsystems.de
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: socketCan build fails
+Date: Mon, 27 Feb 2012 10:32:32 +0100
+Message-ID: <4F4B4DB0.4060400@grandegger.com>
+References: <4F4654F6.8010201@wegmannusa.com> <4F4675B7.4040605@hartkopp.net> <9642069.LSMGlbII5g@lisa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hhlx01.visionsystems.de ([62.145.30.242]:54547 "EHLO
-	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751362Ab2B0J0o (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Feb 2012 04:26:44 -0500
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:42366 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752909Ab2B0Jce (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Feb 2012 04:32:34 -0500
+In-Reply-To: <9642069.LSMGlbII5g@lisa>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Steffen Rose <ro@emtas.de>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Gabriel Manriquez <gmanriquez@wegmannusa.com>
 
-I'm working with TI's am3517. The next generation 33xx is also on the way. Considering lot's of requests about SpcketCAN support in Android on various mailing lists and forums I wanted to summarize how I see this situation:
+Hi Steffen,
 
-1. ip from iproute2. Android version prior 4.0 provided only tc utility from iproute2 and due to header issues in NDK there were no easy way to get ip compiled. Ice Cream Sandwich introduced ip support, but ip/iplink_can.c symbols are missing in final ip binary, so it is not usable now. I tried to figure out what's wrong, but failed, so any help would be appreciated.
+On 02/27/2012 10:12 AM, Steffen Rose wrote:
+> Hi,
+> 
+>> The content of the kernel/2.6 directory is mainly needed for older Kernels
+>> that do not have SocketCAN support (which was introduced in 2.6.25).
+> 
+> differ the kernel socketCAN path from our used socketCAN?
 
-2. NDK: can.h is still not a part of NDK's headers, so for now can.h must be supplied to compile can-utils and user software. As one can see from this post: https://groups.google.com/d/topic/android-ndk/K1w5IqGSKCA/discussion NDK dev's don't seem to accept CAN as standard kernel protocol. Lobby work needed ;-)
+Yes, if "our used socketCAN" means the out-of-tree "SocketCAN
+repository" (formerly at BerliOS and now at gitorious.rog).
 
-3. As soon as there is solution for both issues, Java wrapper will be needed to enable App development
+> Of course, I know, this both are different repositories. But I was the meaning, 
+> that at the first the changes comes in our repository and later our patches are 
+> copied to the kernel.
 
-What do you think about this?
+Unfortunately, that's not the case. The main focus is on providing
+support for the mainline kernel. The intention is that patches/fixes are
+backported from the kernel tree but also that did not always happen.
+Both trees are not in full sync, sorry.
 
-Best regards,
-Yegor
+> Additional question:
+> Are there a Kernel list with information, which socketCAN feature is included 
+> (e.g. 3.2 - gateway functionality)?
+
+"$ git log drivers/net/can" should provide that information.
+
+> Is there a "TAG" in our repository to see, which software state was copied to 
+> which kernel version?
+
+No, see above.
+
+Wolfgang.
+
