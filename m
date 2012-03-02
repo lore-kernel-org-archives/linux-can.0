@@ -1,59 +1,46 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3 v7] can/usb: PEAK-System Technik USB adapters driver
- core
-Date: Fri, 02 Mar 2012 10:31:46 +0100
-Message-ID: <4F509382.2050109@pengutronix.de>
-References: <1330354431-12974-1-git-send-email-s.grosjean@peak-system.com> <1330354431-12974-2-git-send-email-s.grosjean@peak-system.com> <4F4FB03C.9030003@pengutronix.de> <4F5092EB.9000303@peak-system.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig125D85B92BFD4BC884D7170A"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56345 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757021Ab2CBJcH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 2 Mar 2012 04:32:07 -0500
-In-Reply-To: <4F5092EB.9000303@peak-system.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can Mailing List <linux-can@vger.kernel.org>
+From: Stephane Grosjean <s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
+Subject: [PATCH 0/3 v8] can/usb: Add PEAK-System PCAN USB adapters driver
+Date: Fri,  2 Mar 2012 16:13:03 +0100
+Message-ID: <1330701186-28734-1-git-send-email-s.grosjean@peak-system.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-can Mailing List <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: linux-usb Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Stephane Grosjean <s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig125D85B92BFD4BC884D7170A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+That serie of patches adds the peak_usb driver which handles the PCAN-USB
+and PCAN-USB Pro adapters from PEAK-System (http://www.peak-system.com).
+These patches are planned for kernel v3.03.00 and above.
 
-On 03/02/2012 10:29 AM, Stephane Grosjean wrote:
-> So, to confirm once for all:
->=20
-> a serie of patches could define several additions/changes to the same f=
-ile?
+Stephane Grosjean (3):
 
-Yes, a series of patches is applied in the given order, so multiple
-changes is no problem.
+  v8 changelog: 
+  - fix v7 patches serie non breakable issue
 
-Marc
+  can/usb: PEAK-System Technik USB adapters driver core
+  can/usb: PEAK-System Technik PCAN-USB specific part
+  can/usb: PEAK-System Technik PCAN-USB Pro specific part
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ drivers/net/can/usb/Kconfig                  |    6 +
+ drivers/net/can/usb/Makefile                 |    1 +
+ drivers/net/can/usb/peak_usb/Makefile        |    2 +
+ drivers/net/can/usb/peak_usb/pcan_usb.c      |  901 ++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  951 +++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |  146 ++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 1036 ++++++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |  178 +++++
+ 8 files changed, 3221 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/net/can/usb/peak_usb/Makefile
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb.c
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.c
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_core.h
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_pro.h
 
+-- 
+1.7.5.4
 
---------------enig125D85B92BFD4BC884D7170A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk9Qk4UACgkQjTAFq1RaXHM34gCfS8WFjhcF3ZzUWh7e48tVcfK7
-6QYAn3mAiqlbIdJ52y6P3vyHMgaVkG3A
-=5eLS
------END PGP SIGNATURE-----
-
---------------enig125D85B92BFD4BC884D7170A--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
