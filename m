@@ -1,107 +1,97 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: read() question from newbie
-Date: Mon, 05 Mar 2012 23:22:29 +0100
-Message-ID: <4F553CA5.8080704@hartkopp.net>
-References: <CABHoAvngDnUfh6w7NXQksrmeLq52_cRp809rFZ+HriwYpZqo9w@mail.gmail.com> <CABHoAvmTvVfVKfwiZdf_=htKHYa554wpcPCRoEFujqwnxp9tkg@mail.gmail.com> <4F51DEF0.9060501@hartkopp.net> <CABHoAvmiu2JY70zJ8K20n8b=ahCDe8owRRWaSLMJoTd36ub7iw@mail.gmail.com> <4F553BDA.8060106@hartkopp.net>
+From: Reuben Dowle <Reuben.Dowle@navico.com>
+Subject: [libsocketcan] Add can_get_link_stats()
+Date: Mon, 5 Mar 2012 23:00:02 +0000
+Message-ID: <6686CF564BC462488080D46D3C933CA4089576@EXCH02-AKLNZ.MARINE.NET.INT>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:42868 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756582Ab2CEWWe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 5 Mar 2012 17:22:34 -0500
-In-Reply-To: <4F553BDA.8060106@hartkopp.net>
+Received: from vw-hfger.navico.com ([81.89.228.210]:4876 "EHLO
+	VW-HFGER.navico.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757407Ab2CEXKe convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 5 Mar 2012 18:10:34 -0500
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Economides <mecono@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 05.03.2012 23:19, Oliver Hartkopp wrote:
+Add can_get_link_stats()
 
-> On 05.03.2012 18:49, Michael Economides wrote:
-> 
->> On Sat, Mar 3, 2012 at 1:05 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>> On 02.03.2012 23:09, Michael Economides wrote:
->>>
->>>> I am trying to use the cantest program to read.  It just blocks on the
->>>> read, and stays there forever.
->>>>
->>>>  I can see on my scope there are can messages coming across the bus (from a
->>>> different microcontroller attached to the bus).
->>>>
->>>> I have already verified I can write using cantest.
->>>>
->>>> In other words, this works:  ./cantest can0 1F334455#1122334455667788
->>>>
->>>> But this doesn't:  ./cantest can0
->>>>
->>>
->>>
->>> Hello Mike,
->>>
->>> where is this tool 'cantest' from?
->>>
->>> I don't know it either from the SocketCAN utils
->>>
->>> https://gitorious.org/linux-can/can-utils
->>>
->>> nor from the Pengutronix canutils
->>>
->>> http://git.pengutronix.de/?p=tools/canutils.git;a=summary
->>>
->>> Maybe you can alternatively try the SocketCAN utils to test.
->>>
->>> Regards,
->>> Oliver
->>
->> Hi Oliver,
->>
->> Thanks for your reply.
->>
->> "cantest" is a slightly modified version of cansend.c from the link
->> above.  it does a read() as well as a write().
+This function gets link_stats64 information for the can interface.
+This structure can be for any interface (not just can), but it
+seems logical to keep functions for getting any statistics relevant
+to CAN in this library.
 
+Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
 
-Ha, ha - did you read that comment in cansend?
-
-    /* disable default receive filter on this RAW socket */
-    /* This is obsolete as we do not read from the socket at all, but for */
-    /* this reason we can remove the receive list in the Kernel to save a */
-    /* little (really a very little!) CPU usage.                          */
-    setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);
-
-
->>
->>   basically what i'm seeing is CAN frames (standard format) coming
->> across the bus, but read() call just blocks as if nothing is there.
->>
->> A coworker of mine reports that the read() is responding only to
->> extended frame format.
->>
->> Can you provide any insight into this?  Specifically, how do we
->> configure our CAN socket to respond to extended vs. standard frames?
->> We would like to use standard, not extended.
-> 
-> 
-> Please just type
-> 
-> 	candump any
-> 
-> to check whether you really get anything in your system.
-> 
-> Using 'candump any' without any additional provided filter definitions
-> displays anything (EFF&SFF) which is received on the host.
-> 
-> Don't know what you've 'slightly modified' :-)
-> 
-> Therefore check with a unmodified candump first.
-> 
-> Regards,
-> Oliver
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/libsocketcan.h b/include/libsocketcan.h
+index dc52053..06b37d6 100644
+--- a/include/libsocketcan.h
++++ b/include/libsocketcan.h
+@@ -50,6 +50,7 @@ int can_get_clock(const char *name, struct can_clock *clock);
+ int can_get_bittiming_const(const char *name, struct can_bittiming_const *btc);
+ int can_get_berr_counter(const char *name, struct can_berr_counter *bc);
+ int can_get_device_stats(const char *name, struct can_device_stats *cds);
++int can_get_link_stats(const char *name, struct rtnl_link_stats64 *ls);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/src/libsocketcan.c b/src/libsocketcan.c
+index 26da338..ed33332 100644
+--- a/src/libsocketcan.c
++++ b/src/libsocketcan.c
+@@ -54,6 +54,7 @@
+ #define GET_BITTIMING_CONST 6
+ #define GET_BERR_COUNTER 7
+ #define GET_XSTATS 8
++#define GET_LINK_STATS64 9
+ 
+ struct get_req {
+ 	struct nlmsghdr n;
+@@ -380,6 +381,19 @@ static int do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
+ 		    ((char *)RTA_DATA(tb[IFLA_IFNAME]), name,
+ 		     sizeof(name)) != 0)
+ 			continue;
++		
++		if (acquire == GET_LINK_STATS64) {
++			if (!tb[IFLA_STATS64]) {
++				fprintf(stderr, "no link_stats64 data found\n");
++			}
++			else {
++				memcpy(res,
++				       RTA_DATA(tb[IFLA_STATS64]),
++				       sizeof(struct rtnl_link_stats64));
++				ret = 0;
++			}
++			continue;
++		}
+ 
+ 		if (tb[IFLA_LINKINFO])
+ 			parse_rtattr_nested(linkinfo,
+@@ -1154,3 +1168,24 @@ int can_get_device_stats(const char *name, struct can_device_stats *cds)
+ {
+ 	return get_link(name, GET_XSTATS, cds);
+ }
++
++/**
++ * @ingroup extern
++ * can_get_link_stats - get the rtnl_link_stats64.
++ *
++ * @param name name of the can device. This is the netdev name, as ifconfig -a shows
++ * in your system. usually it contains prefix "can" and the numer of the can
++ * line. e.g. "can0"
++ * @param bc pointer to the error counter struct..
++ *
++ * This one gets the current rtnl_link_stats64.
++ *
++ * Please see struct rtnl_link_stats64 for more information.
++ *
++ * @return 0 if success
++ * @return -1 if failed
++ */
++int can_get_link_stats(const char *name, struct rtnl_link_stats64 *ls)
++{
++	return get_link(name, GET_LINK_STATS64, ls);
++}
 
 
