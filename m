@@ -1,148 +1,98 @@
-From: Michael Economides <mecono@gmail.com>
-Subject: Re: read() question from newbie
-Date: Tue, 6 Mar 2012 10:53:48 -0800
-Message-ID: <CABHoAv=WuK0WZWNyi7jgBTNUbHub8AuGtPzbjL4dYaQ1ZGpu_g@mail.gmail.com>
-References: <CABHoAvngDnUfh6w7NXQksrmeLq52_cRp809rFZ+HriwYpZqo9w@mail.gmail.com>
-	<CABHoAvmTvVfVKfwiZdf_=htKHYa554wpcPCRoEFujqwnxp9tkg@mail.gmail.com>
-	<4F51DEF0.9060501@hartkopp.net>
-	<CABHoAvmiu2JY70zJ8K20n8b=ahCDe8owRRWaSLMJoTd36ub7iw@mail.gmail.com>
-	<4F553BDA.8060106@hartkopp.net>
-	<4F553CA5.8080704@hartkopp.net>
+From: Reuben Dowle <Reuben.Dowle@navico.com>
+Subject: [libsocketcan] Add can_get_link_stats() - v2
+Date: Tue, 6 Mar 2012 19:04:55 +0000
+Message-ID: <6686CF564BC462488080D46D3C933CA4089AA6@EXCH02-AKLNZ.MARINE.NET.INT>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qy0-f174.google.com ([209.85.216.174]:37905 "EHLO
-	mail-qy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965012Ab2CFSxt convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Mar 2012 13:53:49 -0500
-Received: by qcqw6 with SMTP id w6so2683918qcq.19
-        for <linux-can@vger.kernel.org>; Tue, 06 Mar 2012 10:53:48 -0800 (PST)
-In-Reply-To: <4F553CA5.8080704@hartkopp.net>
+Received: from vw-hfger.navico.com ([81.89.228.210]:4377 "EHLO
+	VW-HFGER.navico.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751453Ab2CFTFM convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Mar 2012 14:05:12 -0500
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On Mon, Mar 5, 2012 at 2:22 PM, Oliver Hartkopp <socketcan@hartkopp.net=
-> wrote:
-> On 05.03.2012 23:19, Oliver Hartkopp wrote:
->
->> On 05.03.2012 18:49, Michael Economides wrote:
->>
->>> On Sat, Mar 3, 2012 at 1:05 AM, Oliver Hartkopp <socketcan@hartkopp=
-=2Enet> wrote:
->>>> On 02.03.2012 23:09, Michael Economides wrote:
->>>>
->>>>> I am trying to use the cantest program to read. =A0It just blocks=
- on the
->>>>> read, and stays there forever.
->>>>>
->>>>> =A0I can see on my scope there are can messages coming across the=
- bus (from a
->>>>> different microcontroller attached to the bus).
->>>>>
->>>>> I have already verified I can write using cantest.
->>>>>
->>>>> In other words, this works: =A0./cantest can0 1F334455#1122334455=
-667788
->>>>>
->>>>> But this doesn't: =A0./cantest can0
->>>>>
->>>>
->>>>
->>>> Hello Mike,
->>>>
->>>> where is this tool 'cantest' from?
->>>>
->>>> I don't know it either from the SocketCAN utils
->>>>
->>>> https://gitorious.org/linux-can/can-utils
->>>>
->>>> nor from the Pengutronix canutils
->>>>
->>>> http://git.pengutronix.de/?p=3Dtools/canutils.git;a=3Dsummary
->>>>
->>>> Maybe you can alternatively try the SocketCAN utils to test.
->>>>
->>>> Regards,
->>>> Oliver
->>>
->>> Hi Oliver,
->>>
->>> Thanks for your reply.
->>>
->>> "cantest" is a slightly modified version of cansend.c from the link
->>> above. =A0it does a read() as well as a write().
->
->
-> Ha, ha - did you read that comment in cansend?
->
-> =A0 =A0/* disable default receive filter on this RAW socket */
-> =A0 =A0/* This is obsolete as we do not read from the socket at all, =
-but for */
-> =A0 =A0/* this reason we can remove the receive list in the Kernel to=
- save a */
-> =A0 =A0/* little (really a very little!) CPU usage. =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
-> =A0 =A0setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);
->
->
->>>
->>> =A0 basically what i'm seeing is CAN frames (standard format) comin=
-g
->>> across the bus, but read() call just blocks as if nothing is there.
->>>
->>> A coworker of mine reports that the read() is responding only to
->>> extended frame format.
->>>
->>> Can you provide any insight into this? =A0Specifically, how do we
->>> configure our CAN socket to respond to extended vs. standard frames=
-?
->>> We would like to use standard, not extended.
->>
->>
->> Please just type
->>
->> =A0 =A0 =A0 candump any
->>
->> to check whether you really get anything in your system.
->>
->> Using 'candump any' without any additional provided filter definitio=
-ns
->> displays anything (EFF&SFF) which is received on the host.
->>
->> Don't know what you've 'slightly modified' :-)
->>
->> Therefore check with a unmodified candump first.
->>
->> Regards,
->> Oliver
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
->
+Add can_get_link_stats()
 
-Hi Oliver,
+This function gets link_stats64 information for the can interface.
+This structure can be for any interface (not just can), but it
+seems logical to keep functions for getting any statistics relevant
+to CAN in this library.
 
-Yes, we removed that line of code with the filtering in cansend.c
+Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
 
-I ran "candump any", it just sits there, nothing is printed to the
-screen.  So it looks like it thinks nothing is coming across on the
-CAN bus(?)  But like I already stated, on the scope I can see some CAN
-frames being sent to me.
+diff --git a/include/libsocketcan.h b/include/libsocketcan.h
+index dc52053..06b37d6 100644
+--- a/include/libsocketcan.h
++++ b/include/libsocketcan.h
+@@ -50,6 +50,7 @@ int can_get_clock(const char *name, struct can_clock *clock);
+ int can_get_bittiming_const(const char *name, struct can_bittiming_const *btc);
+ int can_get_berr_counter(const char *name, struct can_berr_counter *bc);
+ int can_get_device_stats(const char *name, struct can_device_stats *cds);
++int can_get_link_stats(const char *name, struct rtnl_link_stats64 *ls);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/src/libsocketcan.c b/src/libsocketcan.c
+index 26da338..e460912 100644
+--- a/src/libsocketcan.c
++++ b/src/libsocketcan.c
+@@ -54,6 +54,7 @@
+ #define GET_BITTIMING_CONST 6
+ #define GET_BERR_COUNTER 7
+ #define GET_XSTATS 8
++#define GET_LINK_STATS64 9
+ 
+ struct get_req {
+ 	struct nlmsghdr n;
+@@ -380,6 +381,18 @@ static int do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
+ 		    ((char *)RTA_DATA(tb[IFLA_IFNAME]), name,
+ 		     sizeof(name)) != 0)
+ 			continue;
++		
++		if (acquire == GET_LINK_STATS64) {
++			if (!tb[IFLA_STATS64]) {
++				fprintf(stderr, "no link_stats64 data found\n");
++			} else {
++				memcpy(res,
++				       RTA_DATA(tb[IFLA_STATS64]),
++				       sizeof(struct rtnl_link_stats64));
++				ret = 0;
++			}
++			continue;
++		}
+ 
+ 		if (tb[IFLA_LINKINFO])
+ 			parse_rtattr_nested(linkinfo,
+@@ -1154,3 +1167,24 @@ int can_get_device_stats(const char *name, struct can_device_stats *cds)
+ {
+ 	return get_link(name, GET_XSTATS, cds);
+ }
++
++/**
++ * @ingroup extern
++ * can_get_link_stats - get the rtnl_link_stats64.
++ *
++ * @param name name of the can device. This is the netdev name, as ifconfig -a shows
++ * in your system. usually it contains prefix "can" and the numer of the can
++ * line. e.g. "can0"
++ * @param bc pointer to the error counter struct..
++ *
++ * This one gets the current rtnl_link_stats64.
++ *
++ * Please see struct rtnl_link_stats64 for more information.
++ *
++ * @return 0 if success
++ * @return -1 if failed
++ */
++int can_get_link_stats(const char *name, struct rtnl_link_stats64 *ls)
++{
++	return get_link(name, GET_LINK_STATS64, ls);
++}
 
-I will be using a Can analyzer tools today, to further my investigation=
-=2E
 
-Bascially, all I was asking of you is what could cause read() to wait
-forever... or candump to just sit there and wait?
 
-Maybe the CAN data being sent is not valid (garbage)?
-
-Thanks again for your help!
-
-Mike
