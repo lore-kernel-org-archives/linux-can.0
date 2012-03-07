@@ -1,66 +1,63 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: can: usb: PEAK-System Technik PCAN-USB specific part
-Date: Wed, 7 Mar 2012 16:36:33 +0300
-Message-ID: <20120307133633.GE674@mwanda>
-References: <20120306112108.GA4362@elgon.mountain>
- <20120307122112.GC674@mwanda>
- <4F57549F.3050309@pengutronix.de>
- <20120307131741.GD674@mwanda>
- <4F5761F2.5010301@pengutronix.de>
+Date: Wed, 07 Mar 2012 14:43:25 +0100
+Message-ID: <4F5765FD.9080100@pengutronix.de>
+References: <20120306112108.GA4362@elgon.mountain> <20120307122112.GC674@mwanda> <4F57549F.3050309@pengutronix.de> <20120307131741.GD674@mwanda> <4F5761F2.5010301@pengutronix.de> <20120307133633.GE674@mwanda>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lteA1dqeVaWQ9QQl"
+ protocol="application/pgp-signature";
+ boundary="------------enig8F539EE4A84EB2FFE27B335A"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from acsinet15.oracle.com ([141.146.126.227]:32550 "EHLO
-	acsinet15.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752336Ab2CGNeY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 08:34:24 -0500
-Content-Disposition: inline
-In-Reply-To: <4F5761F2.5010301@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56701 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757941Ab2CGNnl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 08:43:41 -0500
+In-Reply-To: <20120307133633.GE674@mwanda>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: s.grosjean@peak-system.com, linux-can@vger.kernel.org
 
-
---lteA1dqeVaWQ9QQl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig8F539EE4A84EB2FFE27B335A
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 07, 2012 at 02:26:10PM +0100, Marc Kleine-Budde wrote:
-> You're right, it odd, but it's intended to be the same. Do you want to
-> make a patch to add an annotation?
+On 03/07/2012 02:36 PM, Dan Carpenter wrote:
+> On Wed, Mar 07, 2012 at 02:26:10PM +0100, Marc Kleine-Budde wrote:
+>> You're right, it odd, but it's intended to be the same. Do you want to=
+
+>> make a patch to add an annotation?
+>>
 >=20
+> No.  I was just curious.  I should have noticed how old the
+> definitions were and realized that they were well tested at this
+> point.
 
-No.  I was just curious.  I should have noticed how old the
-definitions were and realized that they were well tested at this
-point.
+It's always good to ask, old code doesn't automatically mean it's tested =
+:)
 
-regards,
-dan carpenter
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---lteA1dqeVaWQ9QQl
+--------------enig8F539EE4A84EB2FFE27B335A
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iQIcBAEBAgAGBQJPV2RgAAoJEOnZkXI/YHqRmRQP/0dZeL/TSbN+N8588cLUyiQB
-s72675aCxf5rRYhpwgLEE6yOqY28XbXkuMEE3VY2k5A+7M7COvqit4RDOmlwNk2D
-sIfZEAt+0mPgv1OwuH2iQPh8TUnGOYXnvFtSkQ6XYyNzyorkG2Qry6ErlCxTIWYd
-PDlZGRsnWSzYXuk49+ViKx4+qn3wuXT8RamyIKRyBN3R/Cw0tqUkecSRSaZaPNo9
-X5xDBUfYbDP3WIZNsvc+2SeIczG82Gcx7WOq8t184LDPKhf5tMDpBWpy/xh3eq2l
-7lzgnqOQp8BFo4tkD4Elp2JnH0SvymmbsXGTVJssdctDTPHajx8vedONHm/rJDZr
-PMJE9c3JcD2zJL6Y+lHNt7xp7TfTFhiuoVh5hWiiyJbOKMeNgDYS/0TRvWCsuU3o
-IunLeV73uCcVFL2PZeK5rN2R95q9YKA4NfSFfkU0qbALNdELjrYdNTMYTwo+fOMA
-MxLI+/npKymn5mJEYyvsJw8L7ITyIy0Wt77RE3gxNcCQF4z+sKXj6nEgncafwTcW
-gKDYioBqMifdVzGmDcvzNp92EPi6Rj6lpq6xe+ncDUMD1Vf1yjtKLejyaHNqSj/L
-haIrPU2q3PFpUJRKgL2mopIYedaRokdtbYYcefXueZJO+9BJifpb/GWOl+HjpMCV
-lNoQ6g8UO/Q/xRJqqEud
-=1DUv
+iEYEARECAAYFAk9XZgMACgkQjTAFq1RaXHMmwQCfY1P0Z9aPksSVe76Rj7MzDJ4W
+y7MAniPBvFiw/GOvJLEQWxPbmPfPtRp6
+=H2lt
 -----END PGP SIGNATURE-----
 
---lteA1dqeVaWQ9QQl--
+--------------enig8F539EE4A84EB2FFE27B335A--
