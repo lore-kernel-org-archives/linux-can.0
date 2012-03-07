@@ -1,60 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] peak_usb: PCAN-USB specific part: fix little endian usage
-Date: Wed, 07 Mar 2012 15:55:56 +0100
-Message-ID: <4F5776FC.7000007@pengutronix.de>
-References: <1331130691-25782-1-git-send-email-s.grosjean@peak-system.com>
+From: Reuben Dowle <Reuben.Dowle@navico.com>
+Subject: RE: [libsocketcan] Add can_get_link_stats() - v2
+Date: Wed, 7 Mar 2012 23:45:39 +0000
+Message-ID: <6686CF564BC462488080D46D3C933CA408A44C@EXCH02-AKLNZ.MARINE.NET.INT>
+References: <6686CF564BC462488080D46D3C933CA4089AA6@EXCH02-AKLNZ.MARINE.NET.I
+ NT><4F572E15.2050304@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig69AB154D75E56F6B1DAE2C2F"
+Content-Type: text/plain; charset=Windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34118 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S964784Ab2CGO4O (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 09:56:14 -0500
-In-Reply-To: <1331130691-25782-1-git-send-email-s.grosjean@peak-system.com>
+Received: from vw-hfger.navico.com ([81.89.228.210]:3398 "EHLO
+	VW-HFGER.navico.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755457Ab2CGXp5 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 18:45:57 -0500
+In-Reply-To: <4F572E15.2050304@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, linux-usb Mailing List <linux-usb@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig69AB154D75E56F6B1DAE2C2F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Sounds like good change. I will re-submit a patch when I have a spare m=
+oment (probably next week).
 
-On 03/07/2012 03:31 PM, Stephane Grosjean wrote:
-> That patch fixes some bad usage of two little-endian variables, which l=
-ead to
-> some warning/error when building the peak_usb driver.
+REUBEN DOWLE | DESIGN ENGINEER | NAVICO AUCKLAND
+=A0
+Confidentiality Notice | This message may contain confidential and/or p=
+rivileged information. If you are not the addressee or authorized to re=
+ceive this for the addressee, you must not use, copy, disclose or take =
+any action based on this message or any information herein. If you have=
+ received this message in error, please advise the sender immediately b=
+y reply e-mail and delete this message. Thank you for your cooperation
+
+
+> -----Original Message-----
+> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+> Sent: Wednesday, March 07, 2012 10:45 PM
+> To: Reuben Dowle
+> Cc: linux-can@vger.kernel.org
+> Subject: Re: [libsocketcan] Add can_get_link_stats() - v2
 >=20
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> On 03/06/2012 08:04 PM, Reuben Dowle wrote:
+> > Add can_get_link_stats()
+> >
+> > This function gets link_stats64 information for the can interface.
+> > This structure can be for any interface (not just can), but it seem=
+s
+> > logical to keep functions for getting any statistics relevant to CA=
+N
+> > in this library.
+> >
+> > Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
+>=20
+> I was at iCC2012 CAN conference, now I've some more time to look at t=
+he
+> code. What about naming the function after the struct? Seems more
+> consistent to me.
+>=20
+> > +int can_get_link_stats(const char *name, struct rtnl_link_stats64
+> > +*ls)
+>=20
+> I mean "can_get_link_stats64" instead of "can_get_link_stats"?
+>=20
+> Marc
+>=20
+> --
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Thanks - looks good. Applied to can-next.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig69AB154D75E56F6B1DAE2C2F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk9Xdv8ACgkQjTAFq1RaXHOPUgCfbmTIsc0enW9TmhjQiZZ5D6qO
-kVAAniBfni6l1O5ubc6NQIcFe0Xcfosy
-=rzci
------END PGP SIGNATURE-----
-
---------------enig69AB154D75E56F6B1DAE2C2F--
