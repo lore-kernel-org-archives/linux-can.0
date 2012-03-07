@@ -1,50 +1,60 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] peak_usb: PCAN-USB specific part: fix little endian usage
-Date: Wed,  7 Mar 2012 15:31:30 +0100
-Message-ID: <1331130691-25782-1-git-send-email-s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] peak_usb: PCAN-USB specific part: fix little endian usage
+Date: Wed, 07 Mar 2012 15:55:56 +0100
+Message-ID: <4F5776FC.7000007@pengutronix.de>
+References: <1331130691-25782-1-git-send-email-s.grosjean@peak-system.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig69AB154D75E56F6B1DAE2C2F"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-4d.bbox.fr ([194.158.122.134]:44804 "EHLO mail-4d.bbox.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755894Ab2CGOa0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 7 Mar 2012 09:30:26 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34118 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S964784Ab2CGO4O (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 09:56:14 -0500
+In-Reply-To: <1331130691-25782-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, linux-usb Mailing List <linux-usb@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, linux-usb Mailing List <linux-usb@vger.kernel.org>
 
-That patch fixes some bad usage of two little-endian variables, which lead to
-some warning/error when building the peak_usb driver.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig69AB154D75E56F6B1DAE2C2F
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+On 03/07/2012 03:31 PM, Stephane Grosjean wrote:
+> That patch fixes some bad usage of two little-endian variables, which l=
+ead to
+> some warning/error when building the peak_usb driver.
+>=20
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 8a7982e..86f26a1 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -741,16 +741,14 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
- 
- 	/* can id */
- 	if (cf->can_id & CAN_EFF_FLAG) {
--		__le32 tmp32 = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
-+		__le32 tmp32 = cpu_to_le32((cf->can_id & CAN_ERR_MASK) << 3);
- 
--		tmp32 <<= 3;
- 		*pc |= PCAN_USB_STATUSLEN_EXT_ID;
- 		memcpy(++pc, &tmp32, 4);
- 		pc += 4;
- 	} else {
--		__le16 tmp16 = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
-+		__le16 tmp16 = cpu_to_le16((cf->can_id & CAN_ERR_MASK) << 5);
- 
--		tmp16 <<= 5;
- 		memcpy(++pc, &tmp16, 2);
- 		pc += 2;
- 	}
--- 
-1.7.5.4
+Thanks - looks good. Applied to can-next.
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig69AB154D75E56F6B1DAE2C2F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk9Xdv8ACgkQjTAFq1RaXHOPUgCfbmTIsc0enW9TmhjQiZZ5D6qO
+kVAAniBfni6l1O5ubc6NQIcFe0Xcfosy
+=rzci
+-----END PGP SIGNATURE-----
+
+--------------enig69AB154D75E56F6B1DAE2C2F--
