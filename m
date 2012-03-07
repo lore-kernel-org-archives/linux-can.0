@@ -1,71 +1,61 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: read() question from newbie
-Date: Tue, 06 Mar 2012 21:14:22 +0100
-Message-ID: <4F56701E.3020104@hartkopp.net>
-References: <CABHoAvngDnUfh6w7NXQksrmeLq52_cRp809rFZ+HriwYpZqo9w@mail.gmail.com> <CABHoAvmTvVfVKfwiZdf_=htKHYa554wpcPCRoEFujqwnxp9tkg@mail.gmail.com> <4F51DEF0.9060501@hartkopp.net> <CABHoAvmiu2JY70zJ8K20n8b=ahCDe8owRRWaSLMJoTd36ub7iw@mail.gmail.com> <4F553BDA.8060106@hartkopp.net> <4F553CA5.8080704@hartkopp.net> <CABHoAv=WuK0WZWNyi7jgBTNUbHub8AuGtPzbjL4dYaQ1ZGpu_g@mail.gmail.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [RFC/PATCH] c_can: add driver for the PCH CAN controller
+Date: Wed, 07 Mar 2012 08:31:40 +0100
+Message-ID: <2646233.lgKcZ8lAQj@ws-stein>
+References: <4F44E640.8010708@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:9659 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1030933Ab2CFUOj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Mar 2012 15:14:39 -0500
-In-Reply-To: <CABHoAv=WuK0WZWNyi7jgBTNUbHub8AuGtPzbjL4dYaQ1ZGpu_g@mail.gmail.com>
+Received: from webbox1416.server-home.net ([77.236.96.61]:39332 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753167Ab2CGHbq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 02:31:46 -0500
+In-Reply-To: <4F44E640.8010708@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Economides <mecono@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux-CAN <linux-can@vger.kernel.org>, "bhupesh.sharma" <bhupesh.sharma@st.com>, Tomoya MORINAGA <tomoya.rohm@gmail.com>
 
-On 06.03.2012 19:53, Michael Economides wrote:
+Hello Wolfgang,
 
-
-> Yes, we removed that line of code with the filtering in cansend.c
-
-
-fine.
-
-> I ran "candump any", it just sits there, nothing is printed to the
-> screen.  So it looks like it thinks nothing is coming across on the
-> CAN bus(?)  But like I already stated, on the scope I can see some CAN
-> frames being sent to me.
-
-
-You can check either
-
-cat /proc/net/dev
-
-and
-
-cat /proc/net/can/stats
-
-to see if really any CAN frame entered your system.
-
-I assume there is a CAN bus problem:
-
-- wiring (CAN_L/CAN_H)
-- correct CAN termination (2x 120 Ohms)
-- different bitrate
-
+Am Mittwoch, 22. Februar 2012, 13:57:36 schrieb Wolfgang Grandegger:
+> For maintenance reasons, this diver should replace the "pch_can" driver
+> sooner than later as it uses the same CAN controller core. I named it
+> "pch_pci". Maybe "pch_can" would be more appropriate (common). This
+> patch is for 2.6.39, but likely it applies fine also to more recent
+> versions of the Linux kernel.
 > 
-> I will be using a Can analyzer tools today, to further my investigation.
+> Alexander, Tomoya, or anybody else, it would be nice if you could test
+> this patch and give some feedback. Thanks.
 
+Unfortunately this doesn't work, yet. I do get a can0 interface but I don't 
+receive/send messages actually to the bus. I disabled pch_can in the kernel 
+config and enabled CONFIG_CAN_C_CAN and CONFIG_CAN_C_CAN_PCH_PCI
+All messages containging "can" (related to CAN) I get in dmesg are:
+[    0.338083] CAN device driver interface                                                                                                                                                                           
+[    0.339059] pch_pci 0000:02:0c.3: can0: Features changed: 0x00004804 -> 
+0x00004004                                                                                                                                
+[    0.827528] can: controller area network core (rev 20090105 abi 8)                                                                                                                                                
+[    0.827646] can: raw protocol (rev 20090105)                                                                                                                                                                      
+[    9.773280] pch_pci 0000:02:0c.3: can0: setting BTR=2504 BRPE=0000
 
-Adding some more CAN nodes can help too - so adding another tool and testing
-is always a good idea.
-
-> 
-> Bascially, all I was asking of you is what could cause read() to wait
-> forever... or candump to just sit there and wait?
-
-
-Well yes. It does a blocking read to get and print receive CAN frames. What do
-you expect?
-
-> Maybe the CAN data being sent is not valid (garbage)?
-
-
-Yes. Please check the three points mentioned above.
+I also noted that my system does noot reboot when using "reboot". This works 
+fine when using pch_can.
+Unfortunately I can't spend more time on testing this at the moment.
 
 Best regards,
-Oliver
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+
+SYS TEC electronic GmbH
+August-Bebel-Str. 29
+D-07973 Greiz
+
+Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
+eMail:    Alexander.Stein@systec-electronic.com
+Internet: http://www.systec-electronic.com
+
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Jena, HRB 205563
