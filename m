@@ -1,68 +1,78 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [libsocketcan] Add can_get_link_stats() - v2
-Date: Wed, 07 Mar 2012 10:44:53 +0100
-Message-ID: <4F572E15.2050304@pengutronix.de>
-References: <6686CF564BC462488080D46D3C933CA4089AA6@EXCH02-AKLNZ.MARINE.NET.INT>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: can: usb: PEAK-System Technik PCAN-USB specific part
+Date: Wed, 07 Mar 2012 12:16:52 +0100
+Message-ID: <4F5743A4.3040205@peak-system.com>
+References: <20120306112108.GA4362@elgon.mountain>
+ <4F5722C4.7030804@peak-system.com> <4F572949.9000906@pengutronix.de>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig469C1436051C6CE8DF96420F"
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57881 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750934Ab2CGJpK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 04:45:10 -0500
-In-Reply-To: <6686CF564BC462488080D46D3C933CA4089AA6@EXCH02-AKLNZ.MARINE.NET.INT>
+Received: from mail.peak-system.com ([213.157.13.214]:43882 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753067Ab2CGLQ7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Mar 2012 06:16:59 -0500
+In-Reply-To: <4F572949.9000906@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Reuben Dowle <Reuben.Dowle@navico.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig469C1436051C6CE8DF96420F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Le 07/03/2012 10:24, Marc Kleine-Budde a =E9crit :
+> On 03/07/2012 09:56 AM, Stephane Grosjean wrote:
+> Le 06/03/2012 12:21, Dan Carpenter a =E9crit :
+>>> Hello Stephane Grosjean,
+>>>
+>>> The patch 46be265d3388: "can: usb: PEAK-System Technik PCAN-USB
+>>> specific part" from Mar 2, 2012, leads to the following warning:
+>>>
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c:751 pcan_usb_encode_msg()
+>>>       error: wrong number of bits for 'cpu_to_le32' (16 vs 32)
+>>>
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c
+>>>      742          /* can id */
+>>>      743          if (cf->can_id&   CAN_EFF_FLAG) {
+>>>      744                  __le32 tmp32 =3D cpu_to_le32(cf->can_id&
+>>> CAN_ERR_MASK);
+>>>      745
+>>>      746                  tmp32<<=3D 3;
+>>>      747                  *pc |=3D PCAN_USB_STATUSLEN_EXT_ID;
+>>>      748                  memcpy(++pc,&tmp32, 4);
+>>>      749                  pc +=3D 4;
+>>>      750          } else {
+>>>      751                  __le16 tmp16 =3D cpu_to_le32(cf->can_id&
+>>> CAN_ERR_MASK);
+>>>                           ^^^^^^^^^^^^
+>>> A little endian 32 bit can't fit here.
+>>
+>> How may this error happen while it didn't before? Is this is due to =
+some
+>> (new) options of gcc, or because of a new version used? In the futur=
+e,
+>> how could I avoid that? I mean, how to synchronize with the final GC=
+C
+>> options/version?
+> There's no final gcc version. Gcc and the kernel will always evolve.
 
-On 03/06/2012 08:04 PM, Reuben Dowle wrote:
-> Add can_get_link_stats()
->=20
-> This function gets link_stats64 information for the can interface.
-> This structure can be for any interface (not just can), but it
-> seems logical to keep functions for getting any statistics relevant
-> to CAN in this library.
->=20
-> Signed-off-by: Reuben Dowle <reuben.dowle@navico.com>
 
-I was at iCC2012 CAN conference, now I've some more time to look at the
-code. What about naming the function after the struct? Seems more
-consistent to me.
+Yes I know, this is Ok... But the question is: how did that guy manage=20
+to get that error? I "git pull"ed my own linux-can-next then rebuilt my=
+=20
+drivers and don't even see that error!
+I suppose that he set some flags somewhere in the Kernel Makefile(s),=20
+but where? How can I know whether my next patch will fail or not in his=
+=20
+configuration?
 
-> +int can_get_link_stats(const char *name, struct rtnl_link_stats64 *ls)=
+Thanks for your reply,
+
+St=E9phane
 
 
-I mean "can_get_link_stats64" instead of "can_get_link_stats"?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig469C1436051C6CE8DF96420F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk9XLhcACgkQjTAFq1RaXHPDlACfXb1Iynhp67d8fjtjhBxI7+ES
-c8kAnj3QWHCgwJVSo5Wk24+NlwgSyqZ2
-=G5LX
------END PGP SIGNATURE-----
-
---------------enig469C1436051C6CE8DF96420F--
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
