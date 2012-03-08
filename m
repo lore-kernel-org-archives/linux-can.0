@@ -1,55 +1,28 @@
-From: Gianluca <gmattiroli@midsx.ch>
-Subject: Re: socketCAN mcp2515 - rx buffer overflow
-Date: Thu, 8 Mar 2012 14:35:26 +0000 (UTC)
-Message-ID: <loom.20120308T152308-549@post.gmane.org>
-References: <loom.20120308T140608-84@post.gmane.org> <4F58BE03.5030905@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull request: linux-can-next 2012-03-08
+Date: Thu, 08 Mar 2012 13:20:50 -0800 (PST)
+Message-ID: <20120308.132050.1759923507049489031.davem@davemloft.net>
+References: <1331200230-1118-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:55877 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753386Ab2CHOfn (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 8 Mar 2012 09:35:43 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1S5eRL-0002g2-K2
-	for linux-can@vger.kernel.org; Thu, 08 Mar 2012 15:35:37 +0100
-Received: from 62-48-103-138.adsl.ticino.com ([62-48-103-138.adsl.ticino.com])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 08 Mar 2012 15:35:35 +0100
-Received: from gmattiroli by 62-48-103-138.adsl.ticino.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 08 Mar 2012 15:35:35 +0100
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1331200230-1118-1-git-send-email-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-Marc Kleine-Budde <mkl <at> pengutronix.de> writes:
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu,  8 Mar 2012 10:50:29 +0100
 
-> Using an SPI attached CAN controller is a really bad choice. Try is
-> upgrading to mx53, which has as far as I know one or even two internal
-> flexcan cores, an option for you? Another option is to attach a local
-> bus capable controller like the SJA1000 to your CPU, or use an USB
-> dongle or a PCMCIA card.
+> The following changes since commit ae5d33723e325392c48bc0ff481d9ec8d646a0ed:
 > 
-> The next thing is the SPI driver on the (mainline) mx51. If I remember
-> correctly the mainline kernel doesn't support DMA for the SPI driver
-> yet. I don't know if the freescale kernel does. Depending on your kernel
-> version there are some knobs to tune the PIO SPI driver, mainly to
-> increase the priority of the SPI task.
+>   powerpc/44x: Add more changes for APM821XX EMAC driver (2012-03-06 17:07:42 -0500)
 > 
-> Last but not least, there is a not yet mainlined improved version of the
-> mcp2515 driver around.
-> 
-> regards, Marc
+> are available in the git repository at:
+>   git@gitorious.org:linux-can/linux-can-next.git master
 
-Ok, it does not sound to be stable and safe solution. Maybe using the SJA1000 
-would be a better choice for our project. Thanks for the help.
-
-Gianluca
-
-
-
-
+[davem@dokdo net-next]$ git pull git@gitorious.org:linux-can/linux-can-next.git master
+Permission denied (publickey).
+fatal: The remote end hung up unexpectedly
