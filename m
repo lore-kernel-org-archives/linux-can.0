@@ -1,12 +1,14 @@
 From: yegorslists@googlemail.com
-Subject: [PATCH 1/2] can-utils: cleanup headers
-Date: Tue, 20 Mar 2012 10:47:38 +0100
-Message-ID: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com>
+Subject: [PATCH 2/2] can-utils: add Makefile for Android build system
+Date: Tue, 20 Mar 2012 10:47:39 +0100
+Message-ID: <1332236859-22204-2-git-send-email-yegorslists@googlemail.com>
+References: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ns.visionsystems.de ([62.145.30.242]:55581 "EHLO
+Received: from hhlx01.vscom.de ([62.145.30.242]:55586 "EHLO
 	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755467Ab2CTJr4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Mar 2012 05:47:56 -0400
+	with ESMTP id S1755348Ab2CTJsI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Mar 2012 05:48:08 -0400
+In-Reply-To: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
@@ -14,116 +16,347 @@ Cc: Yegor Yefremov <yegorslists@googlemail.com>
 
 From: Yegor Yefremov <yegorslists@googlemail.com>
 
-- add missing sys/socket.h: on some systems (like Android)
-have SOCK_RAW definition directly in sys/socket.h
-
-- use sys/wait.h instead if wait.h
-
-- include termios.h explicitly (Android)
-
 Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
 ---
- canlogserver.c |    2 +-
- canplayer.c    |    1 +
- cansend.c      |    1 +
- slcan_attach.c |    2 ++
- slcand.c       |    5 +++--
- slcanpty.c     |    1 +
- 6 files changed, 9 insertions(+), 3 deletions(-)
+ Android.mk |  329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 329 insertions(+), 0 deletions(-)
+ create mode 100644 Android.mk
 
-diff --git a/canlogserver.c b/canlogserver.c
-index b5a9d73..b6fa403 100644
---- a/canlogserver.c
-+++ b/canlogserver.c
-@@ -55,6 +55,7 @@
- #include <time.h>
- 
- #include <sys/time.h>
-+#include <sys/wait.h>
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <sys/ioctl.h>
-@@ -65,7 +66,6 @@
- #include <linux/can.h>
- #include <linux/can/raw.h>
- #include <signal.h>
--#include <wait.h>
- #include <errno.h>
- 
- #include "lib.h"
-diff --git a/canplayer.c b/canplayer.c
-index ff05f0f..b0b6333 100644
---- a/canplayer.c
-+++ b/canplayer.c
-@@ -53,6 +53,7 @@
- #include <unistd.h>
- 
- #include <net/if.h>
-+#include <sys/socket.h>
- #include <sys/ioctl.h>
- #include <sys/time.h>
- #include <linux/can.h>
-diff --git a/cansend.c b/cansend.c
-index 5c71cfd..9be2163 100644
---- a/cansend.c
-+++ b/cansend.c
-@@ -52,6 +52,7 @@
- 
- #include <net/if.h>
- #include <sys/ioctl.h>
-+#include <sys/socket.h>
- 
- #include <linux/can.h>
- #include <linux/can/raw.h>
-diff --git a/slcan_attach.c b/slcan_attach.c
-index b939a10..3d6846a 100644
---- a/slcan_attach.c
-+++ b/slcan_attach.c
-@@ -51,8 +51,10 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include <getopt.h>
-+#include <sys/socket.h>
- #include <sys/ioctl.h>
- #include <net/if.h>
-+#include <termios.h>
- 
- #define LDISC_N_SLCAN 17 /* default slcan line discipline since Kernel 2.6.25 */
- 
-diff --git a/slcand.c b/slcand.c
-index 334c718..2642405 100644
---- a/slcand.c
-+++ b/slcand.c
-@@ -44,14 +44,15 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include <sys/types.h>
--#include <sys/stat.h>
- #include <fcntl.h>
- #include <syslog.h>
- #include <errno.h>
- #include <pwd.h>
- #include <signal.h>
-+#include <sys/socket.h>
- #include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
- #include <net/if.h>
- 
- /* default slcan line discipline since Kernel 2.6.25 */
-diff --git a/slcanpty.c b/slcanpty.c
-index ada6f3b..67dcf35 100644
---- a/slcanpty.c
-+++ b/slcanpty.c
-@@ -34,6 +34,7 @@
- #include <termios.h>
- 
- #include <net/if.h>
-+#include <sys/socket.h>
- #include <sys/ioctl.h>
- #include <sys/stat.h>
- #include <sys/types.h>
+diff --git a/Android.mk b/Android.mk
+new file mode 100644
+index 0000000..172ec2e
+--- /dev/null
++++ b/Android.mk
+@@ -0,0 +1,329 @@
++LOCAL_PATH := $(call my-dir)
++
++#
++# canlib
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := lib.c
++LOCAL_MODULE := libcan
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_STATIC_LIBRARY)
++
++#
++# candump
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := candump.c
++LOCAL_MODULE := candump
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# cansend
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := cansend.c
++LOCAL_MODULE := cansend
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# bcmserver
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := bcmserver.c
++LOCAL_MODULE := bcmserver
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++
++#
++# can-calc-bit-timing
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := can-calc-bit-timing.c
++LOCAL_MODULE := can-calc-bit-timing
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# canbusload
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := canbusload.c
++LOCAL_MODULE := canbusload
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# canfdtest
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := canfdtest.c
++LOCAL_MODULE := canfdtest
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# cangen
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := cangen.c
++LOCAL_MODULE := cangen
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# cangw
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := cangw.c
++LOCAL_MODULE := cangw
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# canlogserver
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := canlogserver.c
++LOCAL_MODULE := canlogserver
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# canplayer
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := canplayer.c
++LOCAL_MODULE := canplayer
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# cansniffer
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := cansniffer.c
++LOCAL_MODULE := cansniffer
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotpdump
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotpdump.c
++LOCAL_MODULE := isotpdump
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotprecv
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotprecv.c
++LOCAL_MODULE := isotprecv
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotpsend
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotpsend.c
++LOCAL_MODULE := isotpsend
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotpserver
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotpserver.c
++LOCAL_MODULE := isotpserver
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotpsniffer
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotpsniffer.c
++LOCAL_MODULE := isotpsniffer.c
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# isotptun
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := isotptun.c
++LOCAL_MODULE := isotptun
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# log2asc
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := log2asc.c
++LOCAL_MODULE := log2asc
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# log2long
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := log2long.c
++LOCAL_MODULE := log2long
++LOCAL_MODULE_TAGS := optional
++LOCAL_STATIC_LIBRARIES := libcan
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# slcan_attach
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := slcan_attach.c
++LOCAL_MODULE := slcan_attach
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# slcand
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := slcand.c
++LOCAL_MODULE := slcand
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
++
++#
++# slcanpty
++#
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := slcanpty.c
++LOCAL_MODULE := slcanpty
++LOCAL_MODULE_TAGS := optional
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
++LOCAL_CFLAGS := -O2 -g -W -Wall 
++
++include $(BUILD_EXECUTABLE)
 -- 
 1.7.7
 
