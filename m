@@ -1,362 +1,79 @@
-From: yegorslists@googlemail.com
-Subject: [PATCH 2/2] can-utils: add Makefile for Android build system
-Date: Tue, 20 Mar 2012 10:47:39 +0100
-Message-ID: <1332236859-22204-2-git-send-email-yegorslists@googlemail.com>
-References: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com>
+From: Yegor Yefremov <yegor_sub1@visionsystems.de>
+Subject: Re: SocketCAN support in Android
+Date: Tue, 20 Mar 2012 10:53:22 +0100
+Message-ID: <4F685392.40909@visionsystems.de>
+References: <4F4B4C47.4060601@visionsystems.de> <4F6743A5.8050505@visionsystems.de> <4F675A5B.3060500@hartkopp.net>
+Reply-To: yegor_sub1@visionsystems.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hhlx01.vscom.de ([62.145.30.242]:55586 "EHLO
+Received: from ns.visionsystems.de ([62.145.30.242]:34692 "EHLO
 	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755348Ab2CTJsI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Mar 2012 05:48:08 -0400
-In-Reply-To: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com>
+	with ESMTP id S1755399Ab2CTJxn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Mar 2012 05:53:43 -0400
+In-Reply-To: <4F675A5B.3060500@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Yegor Yefremov <yegorslists@googlemail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
 
-From: Yegor Yefremov <yegorslists@googlemail.com>
+Hello Oliver,
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
----
- Android.mk |  329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 329 insertions(+), 0 deletions(-)
- create mode 100644 Android.mk
+>> Am 27.02.2012 10:26, schrieb Yegor Yefremov:
+>>> I'm working with TI's am3517. The next generation 33xx is also on the way. Considering lot's of requests about SpcketCAN support in Android on various mailing lists and forums I wanted to summarize how I see this situation:
+>>>
+>>> 1. ip from iproute2. Android version prior 4.0 provided only tc utility from iproute2 and due to header issues in NDK there were no easy way to get ip compiled. Ice Cream Sandwich introduced ip support, but ip/iplink_can.c symbols are missing in final ip binary, so it is not usable now. I tried to figure out what's wrong, but failed, so any help would be appreciated.
+>> This issue is theoretically fixed (https://android-review.googlesource.com/#/c/34240/)
+>
+> Good job!
+>
+>
+>>> 2. NDK: can.h is still not a part of NDK's headers, so for now can.h must be supplied to compile can-utils and user software. As one can see from this post: https://groups.google.com/d/topic/android-ndk/K1w5IqGSKCA/discussion NDK dev's don't seem to accept CAN as standard kernel protocol. Lobby work needed ;-)
+>> what headers are necessary/usable for userspace? linux/can.h, linux/can/raw.h - what else? 
+>>
+>> I've added all of then to NDK, patches some other headers and could cross-compile candump. Now it is working. As soon as I'm finished I would like Android.mk file to be included in can-utils. I hope it will be O.K.
+>
+> candump only needs linux/can.h and linux/can/raw.h
+> cansniffer also needs linux/can/bcm.h
+>
+> So adding all includes (as it is also done by the iproute2 package too) is a
+> good idea.
+>
+> Additionally to
+>
+> linux/can.h
+>
+> there is the userspace relevant stuff from
+>
+> http://lxr.linux.no/#linux+v3.3/include/linux/can/Kbuild
+>
+> needed:
+>
+> linux/can/raw.h
+> linux/can/bcm.h
+> linux/can/gw.h
+> linux/can/error.h
+> linux/can/netlink.h
 
-diff --git a/Android.mk b/Android.mk
-new file mode 100644
-index 0000000..172ec2e
---- /dev/null
-+++ b/Android.mk
-@@ -0,0 +1,329 @@
-+LOCAL_PATH := $(call my-dir)
-+
-+#
-+# canlib
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := lib.c
-+LOCAL_MODULE := libcan
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_STATIC_LIBRARY)
-+
-+#
-+# candump
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := candump.c
-+LOCAL_MODULE := candump
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# cansend
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := cansend.c
-+LOCAL_MODULE := cansend
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# bcmserver
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := bcmserver.c
-+LOCAL_MODULE := bcmserver
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+
-+#
-+# can-calc-bit-timing
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := can-calc-bit-timing.c
-+LOCAL_MODULE := can-calc-bit-timing
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# canbusload
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := canbusload.c
-+LOCAL_MODULE := canbusload
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# canfdtest
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := canfdtest.c
-+LOCAL_MODULE := canfdtest
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# cangen
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := cangen.c
-+LOCAL_MODULE := cangen
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# cangw
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := cangw.c
-+LOCAL_MODULE := cangw
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# canlogserver
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := canlogserver.c
-+LOCAL_MODULE := canlogserver
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# canplayer
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := canplayer.c
-+LOCAL_MODULE := canplayer
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# cansniffer
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := cansniffer.c
-+LOCAL_MODULE := cansniffer
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotpdump
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotpdump.c
-+LOCAL_MODULE := isotpdump
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotprecv
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotprecv.c
-+LOCAL_MODULE := isotprecv
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotpsend
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotpsend.c
-+LOCAL_MODULE := isotpsend
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotpserver
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotpserver.c
-+LOCAL_MODULE := isotpserver
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotpsniffer
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotpsniffer.c
-+LOCAL_MODULE := isotpsniffer.c
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# isotptun
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := isotptun.c
-+LOCAL_MODULE := isotptun
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) external/can-utils/include/
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# log2asc
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := log2asc.c
-+LOCAL_MODULE := log2asc
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# log2long
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := log2long.c
-+LOCAL_MODULE := log2long
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# slcan_attach
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := slcan_attach.c
-+LOCAL_MODULE := slcan_attach
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# slcand
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := slcand.c
-+LOCAL_MODULE := slcand
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
-+
-+#
-+# slcanpty
-+#
-+
-+include $(CLEAR_VARS)
-+
-+LOCAL_SRC_FILES := slcanpty.c
-+LOCAL_MODULE := slcanpty
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
-+LOCAL_CFLAGS := -O2 -g -W -Wall 
-+
-+include $(BUILD_EXECUTABLE)
--- 
-1.7.7
+Thanks for the info. I would like to submit those headers to bionic library and would like to send only the required files.
+
+>>  
+>>> 3. As soon as there is solution for both issues, Java wrapper will be needed to enable App development
+>> Still open.
+>>
+>
+> What kind of java wrapper do you think of?
+
+Any ;-) I'm at the beginning and looking for existing solutions/ideas.
+
+> Do you know Kayak? http://2codeornot2code.org/?p=1033
+>
+> Kayak is using a socketcand which offers a network transparent interface via
+> IP to omit a JNI for SocketCAN which would also be an approach indeed.
+
+Interesting project. I'll look into it. Do we want to integrate socketcand into can-utils?
+
+Regards,
+Yegor
 
