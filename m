@@ -1,69 +1,92 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
 Subject: Re: [RFC] can: Introducing CANFD for af_can & can-raw
-Date: Wed, 21 Mar 2012 14:21:22 +0100
-Message-ID: <4F69D5D2.5080003@hartkopp.net>
-References: <20120321091055.GA433@vandijck-laurijssen.be> <E1SAIM4-0007a6-Sf@smtprelay03.ispgateway.de> <20120321110502.GA3372@vandijck-laurijssen.be> <4F69BEE3.2040705@pengutronix.de> <20120321120846.GB3372@vandijck-laurijssen.be> <4F69CA74.3020607@pengutronix.de>
+Date: Wed, 21 Mar 2012 14:29:05 +0100
+Message-ID: <1683048.Xku7xyE0R6@ws-stein>
+References: <20120321091055.GA433@vandijck-laurijssen.be> <20120321120846.GB3372@vandijck-laurijssen.be> <4F69CA74.3020607@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:37320 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758782Ab2CUNV0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Mar 2012 09:21:26 -0400
+Received: from webbox1416.server-home.net ([77.236.96.61]:58550 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932075Ab2CUN3I convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 21 Mar 2012 09:29:08 -0400
 In-Reply-To: <4F69CA74.3020607@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: dev@sebastianhaas.info, linux-can@vger.kernel.org
 
-Hi all,
+Am Mittwoch, 21. M=E4rz 2012, 13:32:52 schrieb Marc Kleine-Budde:
+> On 03/21/2012 01:08 PM, Kurt Van Dijck wrote:
+> > On Wed, Mar 21, 2012 at 12:43:31PM +0100, Marc Kleine-Budde wrote:
+> >> On 03/21/2012 12:05 PM, Kurt Van Dijck wrote:
+> >>> Hi Sebastian,
+> >>>=20
+> >>> On the ICC, Bosch presentend CANFD[1].
+> >>> I'll share my interpretation:
+> >>> * CANFD is meant as a successor of CAN.
+> >>>=20
+> >>> * it addressess data throughput in 2 ways:
+> >>>   - higher data bitrate for data using a second
+> >>>  =20
+> >>>     set of bittimings.
+> >>>  =20
+> >>>   - longer message payload (up to 64 byte).
+> >>>=20
+> >>> * it remains very compatible to CAN, although _NOT_
+> >>>=20
+> >>>   bus-compatible (ie. you put it on a seperate bus).
+> >>=20
+> >> This means:
+> >> You cannot have a Bus using one (or more) of the CAN-FD features w=
+ith
+> >> non CAN-FD compatible nodes.
+> >>=20
+> >> From my point of view this can be translated into a new property i=
+n
+> >> "can.ctrlmode_supported". A device adds "CAN_CTRLMODE_CANFD" if it
+> >> supports CAN FD mode. Then it's a global setting to put the device
+> >> into
+> >> CAN FD mode.
+> >=20
+> > Yep, good idea.
+> >=20
+> >> In the TX path the stack should refuse the new 64 byte frames at a=
+ll
+> >> or
+> >> frames with dlc > 8 byes if the device is not in CAN FD mode.
+> >=20
+> > I did not yet do such think since I did not implement CANFD on devi=
+ce
+> > level yet. I think can_send() is a good place to put such tricks.
+>=20
+> Yes, for CAN_RAW, but in the driver we must extend the
+> "can_dropped_invalid_skb()" function, too: drop frames with dlc >8 if
+> device is not in CAN FD mode.
+>=20
+> Further, there are only certain dlc values allowed for CAN FD. We mus=
+t
+> decide if the enforce these values or simply do padding with "0" some=
+where.
 
-of course i also thought about some concepts to support CAN FD ;-)
+What I understand from the proposal is that DLCs >8 are optional. So yo=
+u might=20
+get hardware which still supports only 8 bytes. How can/should this be=20
+handled?
 
-But then it melted down to the question what a potential CAN FD controller
-would support:
+Alexnder
+--=20
+Dipl.-Inf. Alexander Stein
 
-1. Will it support sending of CAN frames & CAN FD frames with one config?
-2. Is a CAN FD frame with DLC=8 different to a CAN2.0 frame with DLC=8 ?
-   (as we know CAN ID 0x123 (EFF) and CAN ID 0x123 (SFF) are different)
-3. Will these differences be visible in the CAN registers? Is this relevant?
+SYS TEC electronic GmbH
+August-Bebel-Str. 29
+D-07973 Greiz
 
-What i got from the iCC was that when you have a partly migrated network and
-you want to run e.g. a fast firmware upload between two CAN FD capable nodes,
-the other (standard CAN 2.0b) nodes have to be in listen only mode to not jam
-the bus with error frames.
+Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
+eMail:    Alexander.Stein@systec-electronic.com
+Internet: http://www.systec-electronic.com
 
-After the firmware upload all the CAN nodes switch back to CAN2.0b mode (which
-has to be done by root netlink access).
-
-IMO we need to introduce a new struct canfd_frame
-
-struct canfd_frame {
-        canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-        __u8    can_dlc; /* data length code: 0 .. F */
-        __u8    data[64] __attribute__((aligned(8)));
-};
-
-which can become the mayor internal data structure.
-
-It should be no problem to move to canfd_frame inside the kernel but if we
-come to the point that we get to the userspace ABI there should be no tricky
-way to check lengths or flags or return values are are not needed to be
-checked with the current ABI now.
-
-When there's a defined socket API that makes use of struct can_frame (like
-can_raw, can_bcm, can_gw - but not isotp! \o/ ) we need to
-
-- duplicate the socket API - like CAN_RAWFD (ugly)
-- switch the frame size (e.g. via sockopt)
-- a third unknown idea ...
-
-E.g. when having a CAN FD aware candump/cansend application, it can try to
-switch the socket to CAN FD. If it works -> use CAN FD, if not we're probably
-on an older kernel that does not support CAN FD ...
-
-I think it's much more tricky to find a proper solution here.
-
-Regards,
-Oliver
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Jena, HRB 205563
