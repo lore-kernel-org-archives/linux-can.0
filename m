@@ -1,47 +1,78 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
 Subject: Re: [RFC] can: Introducing CANFD for af_can & can-raw
-Date: Wed, 21 Mar 2012 16:26:57 +0100
-Message-ID: <4F69F341.20504@hartkopp.net>
-References: <20120321091055.GA433@vandijck-laurijssen.be> <E1SAIM4-0007a6-Sf@smtprelay03.ispgateway.de> <20120321110502.GA3372@vandijck-laurijssen.be> <4F69BEE3.2040705@pengutronix.de> <20120321120846.GB3372@vandijck-laurijssen.be> <4F69CA74.3020607@pengutronix.de> <4F69D5D2.5080003@hartkopp.net> <20120321135339.GB6428@vandijck-laurijssen.be> <4F69EA75.1070202@hartkopp.net>
+Date: Wed, 21 Mar 2012 16:47:37 +0100
+Message-ID: <2683498.lh8gVOy8oT@ws-stein>
+References: <20120321091055.GA433@vandijck-laurijssen.be> <1683048.Xku7xyE0R6@ws-stein> <4F69DCEF.20800@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:46142 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755120Ab2CUP07 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Mar 2012 11:26:59 -0400
-In-Reply-To: <4F69EA75.1070202@hartkopp.net>
+Received: from webbox1416.server-home.net ([77.236.96.61]:51049 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753015Ab2CUPrl convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 21 Mar 2012 11:47:41 -0400
+In-Reply-To: <4F69DCEF.20800@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: dev@sebastianhaas.info, linux-can@vger.kernel.org
 
-On 21.03.2012 15:49, Oliver Hartkopp wrote:
+Am Mittwoch, 21. M=C3=A4rz 2012, 14:51:43 schrieb Marc Kleine-Budde:
+> On 03/21/2012 02:29 PM, Alexander Stein wrote:
+> >> Further, there are only certain dlc values allowed for CAN FD. We =
+must
+> >> decide if the enforce these values or simply do padding with "0"
+> >> somewhere.>=20
+> > What I understand from the proposal is that DLCs >8 are optional. S=
+o you
+> > might get hardware which still supports only 8 bytes. How can/shoul=
+d
+> > this be handled?
+>=20
+> I haven't read the pdf that Kurt linked in the original mail. Is the
+> usage of dlc > 8 optional or the support of dlc > 8 in hardware?
 
-> On 21.03.2012 14:53, Kurt Van Dijck wrote:
+Quoted from section 6:
+> The CAN FD protocol allows frames with more than eight data bytes. It=
+ is
+> not required that all CAN FD implementations support longer frames, C=
+AN
+> FD implementations may be limited to a subset of DATA FIELD length. A=
+ CAN FD
+> implementation that supports only up to e.g. eight data bytes in a fr=
+ame
+> shall not treat longer received frames as an error, fault-free longer
+> frames shall be acknowledged and shall take part in acceptance filter=
+ing.
+> Received data bytes that exceed the CAN FD=E2=80=99s data handling ca=
+pacity shall
+> be discarded. A such limited CAN FD implementation that is requested =
+to
+> transmit a longer frame shall fill up the data bytes in the frame tha=
+t
+> exceed the data handling capacity with a constant byte pattern. This
+> pattern shall be chosen so that it does not cause the insertion of ST=
+UFF
+> BITS, e.g. 0xCC.
 
->>> IMO we need to introduce a new struct canfd_frame
->> IMO we need not to introduce a new struct since they are logically equivalent.
->>
->> I created an old can20b_frame just to compute the sizeof.
->> I'd go for a combined can_frame that could hold both.
-> 
-> 
-> No. You only think of CAN_RAW. There might be a way to do it with CAN_RAW but
-> changing an exported visible userspace structure breaks the ABI.
-> 
-> Expect that we can never change struct can_frame as this is written into stone.
+Sounds to me like hardware support of dlc > 8 is optional. Even in the =
+fact=20
+that you want the controller to send more than e.g. 8 bytes the control=
+ler=20
+shall insert stuff bits (0xCC) for unsupported data bytes.
 
+Alexander
+--=20
+Dipl.-Inf. Alexander Stein
 
-Answering myself, but here's a very recent statement from Linus focussing
-binary compatibility:
+SYS TEC electronic GmbH
+August-Bebel-Str. 29
+D-07973 Greiz
 
-http://thread.gmane.org/gmane.linux.kernel/1245999/focus%3D1264170
+Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
+eMail:    Alexander.Stein@systec-electronic.com
+Internet: http://www.systec-electronic.com
 
-Indeed we once broke the ABI when fixing the EFF/SFF filters reported by
-yourself. But this was a very simple thing in one bit that has not been
-handled correctly in opposite to change struct can_frame ...
-
-Regards,
-Oliver
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Jena, HRB 205563
