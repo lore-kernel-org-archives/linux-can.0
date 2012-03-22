@@ -1,40 +1,73 @@
-From: Yegor Yefremov <yegor_sub1@visionsystems.de>
-Subject: Re: [PATCH 2/2] can-utils: add Makefile for Android build system
-Date: Thu, 22 Mar 2012 11:15:42 +0100
-Message-ID: <4F6AFBCE.40305@visionsystems.de>
-References: <1332236859-22204-1-git-send-email-yegorslists@googlemail.com> <1332236859-22204-2-git-send-email-yegorslists@googlemail.com> <4F685737.6090700@pengutronix.de>
-Reply-To: yegor_sub1@visionsystems.de
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [RFC] can: Introducing CANFD for af_can & can-raw
+Date: Thu, 22 Mar 2012 11:35:15 +0100
+Message-ID: <20120322103515.GE426@vandijck-laurijssen.be>
+References: <20120321110502.GA3372@vandijck-laurijssen.be>
+ <4F69BEE3.2040705@pengutronix.de>
+ <20120321120846.GB3372@vandijck-laurijssen.be>
+ <4F69CA74.3020607@pengutronix.de>
+ <4F69D5D2.5080003@hartkopp.net>
+ <20120321135339.GB6428@vandijck-laurijssen.be>
+ <4F69EC19.7090205@grandegger.com>
+ <4F69EE38.9000904@hartkopp.net>
+ <20120322095730.GC426@vandijck-laurijssen.be>
+ <4F6AF9B4.2020002@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ns.vscom.de ([62.145.30.242]:39579 "EHLO mail.visionsystems.de"
+Received: from gate.eia.be ([194.78.71.18]:12068 "EHLO mail.eia.be"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750920Ab2CVKP7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 22 Mar 2012 06:15:59 -0400
-In-Reply-To: <4F685737.6090700@pengutronix.de>
+	id S1755503Ab2CVKfR (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Mar 2012 06:35:17 -0400
+Content-Disposition: inline
+In-Reply-To: <4F6AF9B4.2020002@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: yegorslists@googlemail.com, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, dev@sebastianhaas.info, linux-can@vger.kernel.org
 
-Am 20.03.2012 11:08, schrieb Marc Kleine-Budde:
-> On 03/20/2012 10:47 AM, yegorslists@googlemail.com wrote:
->> From: Yegor Yefremov <yegorslists@googlemail.com>
->>
->> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Hey Wolfgang,
+
+On Thu, Mar 22, 2012 at 11:06:44AM +0100, Wolfgang Grandegger wrote:
+> Hi Kurt,
 > 
-> Looks a bit ugly to me (as a non Android developer) repeating some
-> variables so many times. Is it usual to write android makefiles like this?
+> On 03/22/2012 10:57 AM, Kurt Van Dijck wrote:
+> > On Wed, Mar 21, 2012 at 04:05:28PM +0100, Oliver Hartkopp wrote:
+> >> On 21.03.2012 15:56, Wolfgang Grandegger wrote:
+> >>
+> >>>>>
+> >>>>> I think it's much more tricky to find a proper solution here.
+> >>>> As I mentioned before, I just use CAN_RAW with this. Actually, I just
+> >>>> ran a real CAN program that I wrote years ago. It still operates!
+> >>>
+> >>> Would you program still run if the payload is bigger than 8 bytes?
+> >>> I agree with Oliver.
+> >>
+> > The other side would have noticed at design time that it cannot
+> > send >8 bytes :-)
+> > 
+> > Did I miss something here? Is there a reason why existing programs
+> > may or should not work on a CANFD bus? I wanted to incorporate
+> > CANFD functionality _without_ putting an alternative API next to the
+> > current one, so to be able to use existing binaries on a future
+> > CANFD bus _without_ recompile (and thus not using the extras
+> > possibilities for that program).
+> 
+> I believe that 99% of the existing apps, including candump, do work with
+> a (hard-coded) maximum length of 8 bytes instead of a variable length.
+I agree with that (99% may even be a bit low :-) )
 
-Yes, it is really ugly :-( I'd like Android to have Buildroot like build system, so that native autotools/cmake/ etc. could be used directly. I've looked at other external packages in Android and took their Android.mk as a template.
- 
-> There are some trailing whitespaces. No need to recommit the patch, I've
-> removed them.
+I did manage to let such applications still function as expected.
 
-Working with quilt was easier regarding trailing white spaces. I'm looking for git way of removing them.
+The remaining 1% may or may not work. In case of proper coded programs,
+I'm sure they work. In other cases, I'm not sure.
+Thus the question is:
+Does the remaining 1% that we don't know, justify an alternate approach?
 
-I've seen the first patch committed, this is one is still not committed as far as I can see. Do I need to rework something?
+My initial patch mainly illustrates that this may be a reasonable question.
 
-Yegor
+As ethernet user, on a socket level, I also do not care about low-level
+technology (100Mbit, 1GBit, UTP, ...).
 
+Kind regards,
+Kurt
