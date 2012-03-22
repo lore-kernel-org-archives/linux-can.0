@@ -1,78 +1,57 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: [RFC] can: Introducing CANFD for af_can & can-raw
-Date: Wed, 21 Mar 2012 16:47:37 +0100
-Message-ID: <2683498.lh8gVOy8oT@ws-stein>
-References: <20120321091055.GA433@vandijck-laurijssen.be> <1683048.Xku7xyE0R6@ws-stein> <4F69DCEF.20800@pengutronix.de>
+Date: Thu, 22 Mar 2012 10:03:12 +0100
+Message-ID: <20120322090312.GA426@vandijck-laurijssen.be>
+References: <20120321091055.GA433@vandijck-laurijssen.be>
+ <E1SAIM4-0007a6-Sf@smtprelay03.ispgateway.de>
+ <20120321110502.GA3372@vandijck-laurijssen.be>
+ <4F69BEE3.2040705@pengutronix.de>
+ <20120321120846.GB3372@vandijck-laurijssen.be>
+ <4F69CA74.3020607@pengutronix.de>
+ <4F69D5D2.5080003@hartkopp.net>
+ <20120321135339.GB6428@vandijck-laurijssen.be>
+ <4F69EA75.1070202@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:51049 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753015Ab2CUPrl convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 21 Mar 2012 11:47:41 -0400
-In-Reply-To: <4F69DCEF.20800@pengutronix.de>
+Received: from gate.eia.be ([194.78.71.18]:50494 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S964786Ab2CVJDR (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Mar 2012 05:03:17 -0400
+Content-Disposition: inline
+In-Reply-To: <4F69EA75.1070202@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: dev@sebastianhaas.info, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-Am Mittwoch, 21. M=C3=A4rz 2012, 14:51:43 schrieb Marc Kleine-Budde:
-> On 03/21/2012 02:29 PM, Alexander Stein wrote:
-> >> Further, there are only certain dlc values allowed for CAN FD. We =
-must
-> >> decide if the enforce these values or simply do padding with "0"
-> >> somewhere.>=20
-> > What I understand from the proposal is that DLCs >8 are optional. S=
-o you
-> > might get hardware which still supports only 8 bytes. How can/shoul=
-d
-> > this be handled?
->=20
-> I haven't read the pdf that Kurt linked in the original mail. Is the
-> usage of dlc > 8 optional or the support of dlc > 8 in hardware?
+On Wed, Mar 21, 2012 at 03:49:25PM +0100, Oliver Hartkopp wrote:
+> On 21.03.2012 14:53, Kurt Van Dijck wrote:
+> 
+> > On Wed, Mar 21, 2012 at 02:21:22PM +0100, Oliver Hartkopp wrote:
+> > * ESI bit.
+> 
+> 
+> Is something that IMO needs to go into the error message when set active.
+nice idea!
 
-Quoted from section 6:
-> The CAN FD protocol allows frames with more than eight data bytes. It=
- is
-> not required that all CAN FD implementations support longer frames, C=
-AN
-> FD implementations may be limited to a subset of DATA FIELD length. A=
- CAN FD
-> implementation that supports only up to e.g. eight data bytes in a fr=
-ame
-> shall not treat longer received frames as an error, fault-free longer
-> frames shall be acknowledged and shall take part in acceptance filter=
-ing.
-> Received data bytes that exceed the CAN FD=E2=80=99s data handling ca=
-pacity shall
-> be discarded. A such limited CAN FD implementation that is requested =
-to
-> transmit a longer frame shall fill up the data bytes in the frame tha=
-t
-> exceed the data handling capacity with a constant byte pattern. This
-> pattern shall be chosen so that it does not cause the insertion of ST=
-UFF
-> BITS, e.g. 0xCC.
+[...]
+> 
+> >>
+> >> What i got from the iCC was that when you have a partly migrated network and
+> >> you want to run e.g. a fast firmware upload between two CAN FD capable nodes,
+> >> the other (standard CAN 2.0b) nodes have to be in listen only mode to not jam
+> >> the bus with error frames.
+> >>
+> >> After the firmware upload all the CAN nodes switch back to CAN2.0b mode (which
+> >> has to be done by root netlink access).
+> > Since CANFD is not bus compatible, the chip must go down & up.
+> 
+> 
+> Really? We don't know so far.
+You're right, this theory can never be proved to be right.
+At least, I'll be supprised to see some form of dynamic switch.
+> 
 
-Sounds to me like hardware support of dlc > 8 is optional. Even in the =
-fact=20
-that you want the controller to send more than e.g. 8 bytes the control=
-ler=20
-shall insert stuff bits (0xCC) for unsupported data bytes.
-
-Alexander
---=20
-Dipl.-Inf. Alexander Stein
-
-SYS TEC electronic GmbH
-August-Bebel-Str. 29
-D-07973 Greiz
-
-Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
-eMail:    Alexander.Stein@systec-electronic.com
-Internet: http://www.systec-electronic.com
-
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Jena, HRB 205563
+Regards,
+Kurt
