@@ -1,62 +1,60 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] can: fix sparse warning for cgw_list
-Date: Mon, 26 Mar 2012 06:04:40 +0200
-Message-ID: <4F6FEAD8.3090203@hartkopp.net>
+Date: Mon, 26 Mar 2012 10:19:05 +0200
+Message-ID: <4F702679.3090302@pengutronix.de>
 References: <1332716750-3455-1-git-send-email-dbaluta@ixiacom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigFABEA276012CC3FBFCD8544E"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:40333 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751621Ab2CZFEk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Mar 2012 01:04:40 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46236 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754034Ab2CZITR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Mar 2012 04:19:17 -0400
 In-Reply-To: <1332716750-3455-1-git-send-email-dbaluta@ixiacom.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: dbaluta@ixiacom.com
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, Daniel Baluta <daniel.baluta@gmail.com>
+Cc: socketcan@hartkopp.net, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, Daniel Baluta <daniel.baluta@gmail.com>
 
-On 26.03.2012 01:05, dbaluta@ixiacom.com wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigFABEA276012CC3FBFCD8544E
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+On 03/26/2012 01:05 AM, dbaluta@ixiacom.com wrote:
 > From: Daniel Baluta <daniel.baluta@gmail.com>
-> 
+>=20
 > Make cgw_list static to remove the following sparse warning:
 > net/can/gw.c:69:1: warning: symbol 'cgw_list' was not declared.
 > Should it be static?
-> 
+>=20
 > Signed-off-by: Daniel Baluta <dbaluta@ixiacom.com>
 
+Thanks, applied to can-next.
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Marc
 
-
-
-Hello Daniel,
-
-cgw_list is indeed only a local structure. Don't know why i didn't declare it
-to be static. If it silences a sparse warning the better :-)
-
-Thanks,
-Oliver
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> ---
->  net/can/gw.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/net/can/gw.c b/net/can/gw.c
-> index 3d79b12..b41acf2 100644
-> --- a/net/can/gw.c
-> +++ b/net/can/gw.c
-> @@ -66,7 +66,7 @@ MODULE_LICENSE("Dual BSD/GPL");
->  MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
->  MODULE_ALIAS("can-gw");
->  
-> -HLIST_HEAD(cgw_list);
-> +static HLIST_HEAD(cgw_list);
->  static struct notifier_block notifier;
->  
->  static struct kmem_cache *cgw_cache __read_mostly;
+--------------enigFABEA276012CC3FBFCD8544E
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
+iEYEARECAAYFAk9wJnkACgkQjTAFq1RaXHMWDwCfa/h/A41TirYRFGujPOU8us58
+c0UAn3SKaCGfNw9Kizl1DhcbAkjko3Jh
+=jxZa
+-----END PGP SIGNATURE-----
+
+--------------enigFABEA276012CC3FBFCD8544E--
