@@ -1,60 +1,28 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: fix sparse warning for cgw_list
-Date: Mon, 26 Mar 2012 10:19:05 +0200
-Message-ID: <4F702679.3090302@pengutronix.de>
-References: <1332716750-3455-1-git-send-email-dbaluta@ixiacom.com>
+From: Luka Rahne <luka.rahne@gmail.com>
+Subject: nonblocking socketcan
+Date: Thu, 29 Mar 2012 15:26:02 +0200
+Message-ID: <CAOHwv553C_wH3TkoGDdF2ibPsXArOpB+6eoeg41TJH7oXcjc7Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigFABEA276012CC3FBFCD8544E"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46236 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754034Ab2CZITR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Mar 2012 04:19:17 -0400
-In-Reply-To: <1332716750-3455-1-git-send-email-dbaluta@ixiacom.com>
+Received: from mail-lpp01m010-f46.google.com ([209.85.215.46]:59947 "EHLO
+	mail-lpp01m010-f46.google.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751903Ab2C2N0E (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Mar 2012 09:26:04 -0400
+Received: by lahj13 with SMTP id j13so2445255lah.19
+        for <linux-can@vger.kernel.org>; Thu, 29 Mar 2012 06:26:02 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: dbaluta@ixiacom.com
-Cc: socketcan@hartkopp.net, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, Daniel Baluta <daniel.baluta@gmail.com>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigFABEA276012CC3FBFCD8544E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+I do not know if this is correct address, but I have been playing whit
+socketcan using python. (Python 3.3.0a1+)
 
-On 03/26/2012 01:05 AM, dbaluta@ixiacom.com wrote:
-> From: Daniel Baluta <daniel.baluta@gmail.com>
->=20
-> Make cgw_list static to remove the following sparse warning:
-> net/can/gw.c:69:1: warning: symbol 'cgw_list' was not declared.
-> Should it be static?
->=20
-> Signed-off-by: Daniel Baluta <dbaluta@ixiacom.com>
+I was able to set socket as non-blocking but I got io.BlockingIOError
+if there is no data after calling receive.
 
-Thanks, applied to can-next.
+Putting it in try - except(io.BlockingIOError): works just fine
 
-Marc
+full working source is here http://pastebin.com/TBX85TrN
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigFABEA276012CC3FBFCD8544E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk9wJnkACgkQjTAFq1RaXHMWDwCfa/h/A41TirYRFGujPOU8us58
-c0UAn3SKaCGfNw9Kizl1DhcbAkjko3Jh
-=jxZa
------END PGP SIGNATURE-----
-
---------------enigFABEA276012CC3FBFCD8544E--
+I am just asking  if this is normal behaviour, bug or misconfiguration?
