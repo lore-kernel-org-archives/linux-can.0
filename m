@@ -1,86 +1,42 @@
-From: "AnilKumar, Chimata" <anilkumar@ti.com>
-Subject: RE: [PATCH] ARM: OMAP: AM33XX: CAN: d_can: Add support for Bosch
- D_CAN controller
-Date: Tue, 3 Apr 2012 15:58:22 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC1317D88B7@DBDE01.ent.ti.com>
-References: <1333456339-9372-1-git-send-email-anilkumar@ti.com>
- <4F7AF0C7.7020506@grandegger.com>
- <331ABD5ECB02734CA317220B2BBEABC1317D85D0@DBDE01.ent.ti.com>
- <4F7AFFEC.1010805@pengutronix.de>
- <331ABD5ECB02734CA317220B2BBEABC1317D86F7@DBDE01.ent.ti.com>
- <4F7B1854.90106@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: fix sparse warning for cgw_list
+Date: Tue, 03 Apr 2012 18:00:43 +0200
+Message-ID: <4F7B1EAB.6060504@hartkopp.net>
+References: <1332716750-3455-1-git-send-email-dbaluta@ixiacom.com> <4F702679.3090302@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:43801 "EHLO arroyo.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753001Ab2DCP6h convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Apr 2012 11:58:37 -0400
-In-Reply-To: <4F7B1854.90106@pengutronix.de>
-Content-Language: en-US
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:10306 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751872Ab2DCQAp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Apr 2012 12:00:45 -0400
+In-Reply-To: <4F702679.3090302@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "m.kleine-budde@pengutronix.de" <m.kleine-budde@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Gole, Anant" <anantgole@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
+Cc: dbaluta@ixiacom.com, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, Daniel Baluta <daniel.baluta@gmail.com>
 
-On Tue, Apr 03, 2012 at 21:03:40, Marc Kleine-Budde wrote:
-> On 04/03/2012 04:29 PM, AnilKumar, Chimata wrote:
-> >>>> Please explain why this CAN controller cannot be handled by the existing
-> >>>> C_CAN driver, eventually with some extensions. The register layout seems
-> >>>> almost identical, at least.
-> >>>>
-> >>>> Wolfgang.
-> >>>>
-> >>>
-> >>> These are the some of the pointers I can say, why I had gone for separate
-> >>> file instead of existing driver:
-> >>> * In case of D_CAN driver we can see all the registers are 32bit length
-> >>>   but in case of C_CAN registers are in 16bit length.
-> >>
-> >> How many bits in these 32 bit registers are used?
-> > 
-> > In some cases (D_CAN_TXRQ, D_CAN_INTPND, D_CAN_MSGVAL) I have used all the
-> > bits, in some cases used few bits.
-> > 
-> > Roughly I can say that its (higher 16bits) % of usages is similar as compare
-> > to 16bits 
-> > 
-> > While checking the status of TXRequest registers and INT pending register,
-> > which is a hot code path, we have to put if checks for register access.
-> 
-> The c_can already has a c_can_read_reg32() function. It's for example
-> used in the rx_poll function. You can make it a function pointer (i.e.
-> pric->read_reg32()) for easy abstraction.
+On 26.03.2012 10:19, Marc Kleine-Budde wrote:
 
-This won't fit for D_CAN case because offsets are different in c_can compared
-to d_can. For example if I read CONTROL_REG register (0x0) in case of d_can,
-which will read only control register. In case of c_can it will read
-CONTROL_REG + STATUS register values in single read
-
+> On 03/26/2012 01:05 AM, dbaluta@ixiacom.com wrote:
+>> From: Daniel Baluta <daniel.baluta@gmail.com>
+>>
+>> Make cgw_list static to remove the following sparse warning:
+>> net/can/gw.c:69:1: warning: symbol 'cgw_list' was not declared.
+>> Should it be static?
+>>
+>> Signed-off-by: Daniel Baluta <dbaluta@ixiacom.com>
 > 
-> >>> * Some of the registers, bit masks are different, so we have to add
-> >>>   checks on every API for differentiating the kind of device
-> >>
-> >> Which registers are this? Can you give us an example?
-> > 
-> > I am pointing out some of the resisters
-> > * Single registers in case of D_CAN but multiple register in case of C_CAN
-> >   So masks will change MASK, ARB, INTPND
-> > * D_CAN_IFCMD is the combination of COMM request and COMM mask registers
-> 
-> Maybe you can use the read_reg32 function on both c_can and d_can.
-
-Above comment applies here as well
-
-> 
-> regards, Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+> Thanks, applied to can-next.
 > 
 
+
+Hi Marc,
+
+it looks like that this patch is still sitting in can-next.
+
+What about a pull request for Daves net-tree for 3.4-rc1 ?
+
+Regards,
+Oliver
