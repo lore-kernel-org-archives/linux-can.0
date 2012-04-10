@@ -1,43 +1,37 @@
-From: Gary Thomas <gary@mlbassoc.com>
-Subject: Re: [PATCH] ARM: OMAP: AM33XX: CAN: d_can: Add support for Bosch
- D_CAN controller
-Date: Thu, 05 Apr 2012 10:00:48 -0600
-Message-ID: <4F7DC1B0.2070105@mlbassoc.com>
-References: <1333456339-9372-1-git-send-email-anilkumar@ti.com> <4F7AF0C7.7020506@grandegger.com> <331ABD5ECB02734CA317220B2BBEABC1317D85D0@DBDE01.ent.ti.com> <4F7AFFEC.1010805@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC1317D86F7@DBDE01.ent.ti.com> <4F7B1854.90106@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC1317D88B7@DBDE01.ent.ti.com> <4F7C7515.4070802@grandegger.com> <331ABD5ECB02734CA317220B2BBEABC1317DACC6@DBDE01.ent.ti.com> <4F7DAA11.6080109@mlbassoc.com> <3F602CD5BF1C69469B2F060E90850642BD93A9@DQHE01.ent.ti.com>
+From: Krzysztof Witkowski <Krzysztof.Witkowski@mobile.put.edu.pl>
+Subject: CPU load inhibits CAN interrupts
+Date: Tue, 10 Apr 2012 16:40:14 +0200
+Message-ID: <4F84464E.7030403@mobile.put.edu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hermes.mlbassoc.com ([64.234.241.98]:60981 "EHLO
-	mail.chez-thomas.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752446Ab2DEQAu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Apr 2012 12:00:50 -0400
-In-Reply-To: <3F602CD5BF1C69469B2F060E90850642BD93A9@DQHE01.ent.ti.com>
+Received: from seawolf.cs.put.poznan.pl ([150.254.23.147]:49130 "EHLO
+	seawolf.cs.put.poznan.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752102Ab2DJQrY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Apr 2012 12:47:24 -0400
+Received: from [150.254.24.100] (kwitkowski.secpl [150.254.24.100])
+	by seawolf.cs.put.poznan.pl (Postfix) with ESMTPSA id 6C1CE121834
+	for <linux-can@vger.kernel.org>; Tue, 10 Apr 2012 18:40:15 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Gole, Anant" <anantgole@ti.com>
-Cc: "AnilKumar, Chimata" <anilkumar@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "m.kleine-budde@pengutronix.de" <m.kleine-budde@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Nori, Sekhar" <nsekhar@ti.com>
+To: linux-can@vger.kernel.org
 
-On 2012-04-05 09:54, Gole, Anant wrote:
->>
->> Sorry to drop in late on this discussion, but what's wrong with
->> just using the d_can driver from TI?  I have successfully used
->> it on AM3874 and I'm pretty sure that maps onto AM33xx as well.
->>
->> Note: as far as I know, this driver is only in the TI PSP kernels.
->> I extracted it from an Angstrom build for the BeagleBone which
->> is AM33xx based.
->
-> It is the same driver that you picked from Angstrom done by Anil -
-> it is being submitted for upstream through this list.
+I have an Ubuntu box with 3.2 kernel, CPU with 2 cores and PEAK-PCI card 
+(SJA1000 controller attached via PCI bus)
 
-Good, thanks.  Some of the comments in this thread implied that
-it was not quite the same.
+I'm testing receive capabilities of the card on 1Mbit network using 
+peak_pci module. It can handle about ~4000 packets per second, the 
+corresponding interrupt is also raised ~4000 times per second (as 
+/proc/interrupts shows) and it does not cause high CPU load on the system.
 
-Glad to hear that this will finally make it mainstream someday.
+However, if I generate artificial CPU load with stress command:
 
--- 
-------------------------------------------------------------
-Gary Thomas                 |  Consulting for the
-MLB Associates              |    Embedded world
-------------------------------------------------------------
+    chrt --idle 0 stress -c 2
+
+the Receive Interrupts from SJA1000 are no longer raised at all and 
+therefore no messages are received. At the same time network card (e100) 
+on the same IRQ is working properly.
+
+Why CPU load inhibits hardware interrupts and what can be done about it? 
+Or should I suspect hardware malfunction?
