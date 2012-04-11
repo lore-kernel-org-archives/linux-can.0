@@ -1,80 +1,67 @@
-From: Markus Becker <mab@comnets.uni-bremen.de>
-Subject: ITP: can-utils Debian package
-Date: Wed, 11 Apr 2012 15:09:12 +0200
-Message-ID: <201204111509.12688.mab@comnets.uni-bremen.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: CPU load inhibits CAN interrupts
+Date: Wed, 11 Apr 2012 15:23:50 +0200
+Message-ID: <4F8585E6.3070901@grandegger.com>
+References: <4F84464E.7030403@mobile.put.edu.pl> <4F847253.5080507@grandegger.com> <4F85518F.9020305@mobile.put.edu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bugs.comnets.uni-bremen.de ([134.102.186.10]:50622 "EHLO
-	bugs.comnets.uni-bremen.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1760221Ab2DKNQt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Apr 2012 09:16:49 -0400
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:49265 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754289Ab2DKNYF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Apr 2012 09:24:05 -0400
+In-Reply-To: <4F85518F.9020305@mobile.put.edu.pl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: 568303@bugs.debian.org
+To: Krzysztof Witkowski <Krzysztof.Witkowski@mobile.put.edu.pl>
 Cc: linux-can@vger.kernel.org
 
-Hi,
+On 04/11/2012 11:40 AM, Krzysztof Witkowski wrote:
+> W dniu 4/10/2012 7:48 PM, Wolfgang Grandegger pisze:
+>>> However, if I generate artificial CPU load with stress command:
+>>>
+>>>     chrt --idle 0 stress -c 2
+>>
+>> What does "-c 2" do? My "chrt" command does not have that option.
+> 
+> It is an option for stress command:
+> -c, --cpu N
+>               spawn N workers spinning on sqrt()
+> 
+>>> Why CPU load inhibits hardware interrupts and what can be done about it?
+>>
+>> Hm, what does "ip -d -s can0" report while you are producing CPU load
+>> with the stress command above.
+> 
+> # ip -s -d link show can0
+> 
+> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
+> mode DEFAULT qlen 10
+>     link/can
+>     can state ERROR-PASSIVE (berr-counter tx 0 rx 128) restart-ms 100
+>     bitrate 1000000 sample-point 0.750
+>     tq 125 prop-seg 2 phase-seg1 3 phase-seg2 2 sjw 2
 
-after a long absence, I have updated the Debian packages of socketCAN.
+Why did you set sja to 2? To avoid bus errors? If yes, maybe 4 is better.
 
-Now there are two packages (for the moment) can-utils and can-modules, which 
-are based on the gitorious repositories of the same name. The package name has 
-changed from socketcan-utils to can-utils to reflect the current layout on 
-gitorious.
+>     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+>     clock 8000000
+>     re-started bus-errors arbit-lost error-warn error-pass bus-off
+>     0          0          0          1          1          0
+>     RX: bytes  packets  errors  dropped overrun mcast
+>     728        91       0       0       0       0
+>     TX: bytes  packets  errors  dropped carrier collsns
+>     0          0        0       0       0       0
+> 
+> 
+> It can occasionally deliver packets, but the rate is no more than ~2
+> packets/second.
 
+Strange, anyway, the statistics above reports electrical problems on the
+CAN bus. What do you get with the "ip" option "berr-reporting on?
+Is there an app reading the CAN messages at the same time?
 
-* can-utils is the main package with the executables.
-The gitweb of Debian for can-utils is now at:
-http://anonscm.debian.org/gitweb/?p=collab-maint/can-utils.git;a=summary
+BTW: what SJA1000 driver and kernel version do you use?
 
-The following should create and install a Debian package of can-utils for you:
-<shell>
-git clone git://anonscm.debian.org/collab-maint/can-utils.git
-cd can-utils
-git-buildpackage
-sudo dpkg -i ../can-utils_0.0.2+gitba9b189-1_i386.deb
-</shell>
-
-Have the man pages been removed intentionally from can-utils in the transition 
-from Berlios to gitorious? For the moment the packages don't include the 
-manpages therefore.
-
-
-* As we are needing Debian packages for ISO-TP and it is not yet in the 
-mainline kernel AFAIK, I have also created a package with can-bcm.ko, can-
-isotp.ko, can.ko and can-raw.ko. Please correct me, if this is already on the 
-way into the mainline kernel. (gitorious gives me lots of 500's for commit 
-overview, etc.) Once it has landed there, this package is not needed anymore.
-
-gitweb of can-modules:
-http://anonscm.debian.org/gitweb/?p=collab-maint/can-modules.git;a=summary
-
-Procedure:
-<shell>
-git clone git://anonscm.debian.org/collab-maint/can-modules.git
-cd can-modules
-git-buildpackage
-sudo dpkg -i ../can-modules_0.0.2+git6b92067-1_all.deb
-sudo m-a a-i -t can-modules
-</shell>
-
-Feedback on the packages is appreciated.
-
-BR,
-Markus
-
-------------------------------------------------
-| Dipl.-Ing. Markus Becker
-| Communication Networks
-| TZI - Center for Computing Technologies
-| University Bremen
-| Germany
-------------------------------------------------
-| web: http://www.comnets.uni-bremen.de/~mab/
-| mailto: mab@comnets.uni-bremen.de
-| telephone: +49 421 218 62379
-| building: NW1 room: N2260
-------------------------------------------------
+Wolfgang.
