@@ -1,55 +1,64 @@
-From: Krzysztof Witkowski <Krzysztof.Witkowski@mobile.put.edu.pl>
-Subject: Re: CPU load inhibits CAN interrupts
-Date: Wed, 11 Apr 2012 11:40:31 +0200
-Message-ID: <4F85518F.9020305@mobile.put.edu.pl>
-References: <4F84464E.7030403@mobile.put.edu.pl> <4F847253.5080507@grandegger.com>
+From: Markus Becker <mab@comnets.uni-bremen.de>
+Subject: Re: Re: RFS: socketcan-utils
+Date: Wed, 11 Apr 2012 15:09:18 +0200
+Message-ID: <201204111509.18993.mab@comnets.uni-bremen.de>
+References: <201105021707.01903.mab@comnets.uni-bremen.de> <201105310946.46575.mab@comnets.uni-bremen.de> <4DE5492A.4050008@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from seawolf.cs.put.poznan.pl ([150.254.23.147]:42000 "EHLO
-	seawolf.cs.put.poznan.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752327Ab2DKLke (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Apr 2012 07:40:34 -0400
-In-Reply-To: <4F847253.5080507@grandegger.com>
+Received: from bugs.comnets.uni-bremen.de ([134.102.186.10]:51194 "EHLO
+	bugs.comnets.uni-bremen.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1760270Ab2DKNQt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Apr 2012 09:16:49 -0400
+In-Reply-To: <4DE5492A.4050008@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-W dniu 4/10/2012 7:48 PM, Wolfgang Grandegger pisze:
->> However, if I generate artificial CPU load with stress command:
->>
->>     chrt --idle 0 stress -c 2
->
-> What does "-c 2" do? My "chrt" command does not have that option.
+> On 31.05.2011 09:46, Markus Becker wrote:
+> >> On 30.05.2011 09:16, Markus Becker wrote:
+> >>> Well, we explicitly need isotp, which is not included in stock debian
+> >>> images. That's actually the reason for creating the images. Any idea of
+> >>> how to get Linux mainline isotp kernel module into the Debian kernel?
+> >> 
+> >> My problem is, that we're using my isotp stuff for many purposes for
+> >> more than two years now. I'm not far from sending a patch on netdev-ML
+> >> - but i'm still missing some feedback from isotp-users (like you), if
+> >> they think the protocol and it's API are mature enough for mainline ...
+> >> is it?
+> > 
+> > Within the next two month, we will test two telematic devices against
+> > socketCAN ISO-TP and raw or J1939 frames. The Debian packages were
+> > created to get our test equipment ready. Will report to you on our
+> > experience.
 
-It is an option for stress command:
--c, --cpu N
-               spawn N workers spinning on sqrt()
+Well it took longer... But here comes the report on our experience with ISO-
+TP:
 
->> Why CPU load inhibits hardware interrupts and what can be done about it?
->
-> Hm, what does "ip -d -s can0" report while you are producing CPU load
-> with the stress command above.
+We tested successfully against two other proprietary ISO-TP CAN 
+implementations with isotpsend and isotprecv without any problems.
 
-# ip -s -d link show can0
+> Thanks! You are also working with j1939 ?? Did you check out the work of
+> Kurt van Dijck in socketcan/branches/j1939?
 
-4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN 
-mode DEFAULT qlen 10
-     link/can
-     can state ERROR-PASSIVE (berr-counter tx 0 rx 128) restart-ms 100
-     bitrate 1000000 sample-point 0.750
-     tq 125 prop-seg 2 phase-seg1 3 phase-seg2 2 sjw 2
-     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-     clock 8000000
-     re-started bus-errors arbit-lost error-warn error-pass bus-off
-     0          0          0          1          1          0
-     RX: bytes  packets  errors  dropped overrun mcast
-     728        91       0       0       0       0
-     TX: bytes  packets  errors  dropped carrier collsns
-     0          0        0       0       0       0
+We did not use the j1939 branch up to now.
 
+[...]
 
-It can occasionally deliver packets, but the rate is no more than ~2 
-packets/second.
+BR,
+Markus
+
+------------------------------------------------
+| Dipl.-Ing. Markus Becker
+| Communication Networks
+| TZI - Center for Computing Technologies
+| University Bremen
+| Germany
+------------------------------------------------
+| web: http://www.comnets.uni-bremen.de/~mab/
+| mailto: mab@comnets.uni-bremen.de
+| telephone: +49 421 218 62379
+| building: NW1 room: N2260
+------------------------------------------------
