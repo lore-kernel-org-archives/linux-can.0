@@ -1,62 +1,65 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] can: usb: PCAN-USB Pro: fix mem leaks in pcan_usb_pro_init()
- on error paths
-Date: Wed, 11 Apr 2012 23:23:41 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1204112320310.2137@swampdragon.chaosbits.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC PATCH] can: add tx/rx led trigger support
+Date: Thu, 12 Apr 2012 08:05:33 +0200
+Message-ID: <4F8670AD.1050104@hartkopp.net>
+References: <1334093965-2692-1-git-send-email-fabio.baltieri@gmail.com> <4F852161.90706@hartkopp.net> <CABkP77eNeTTwSxtKyfUmr7OC4H1nXEN4EeFH7pdR6=BcpKuE6w@mail.gmail.com> <4F85D553.2010303@hartkopp.net> <CABkP77eHcrOSG140HF++D9Gt=79gVgGZm5JX6ZVNuc4pjpujcA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from swampdragon.chaosbits.net ([90.184.90.115]:17559 "EHLO
-	swampdragon.chaosbits.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933381Ab2DKVXm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Apr 2012 17:23:42 -0400
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:26021 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750884Ab2DLGFa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Apr 2012 02:05:30 -0400
+In-Reply-To: <CABkP77eHcrOSG140HF++D9Gt=79gVgGZm5JX6ZVNuc4pjpujcA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-If either call to pcan_usb_pro_send_req() in
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c::pcan_usb_pro_init()
-fails, we'll leak the memory we allocated to 'usb_if' with kzalloc()
-when the 'usb_if' variable goes out of scope without having been
-assigned to anything as we 'return err;'.
-Fix this by adding appropriate kfree(usb_if) calls to the error paths.
+On 11.04.2012 21:36, Fabio Baltieri wrote:
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c |    2 ++
- 1 file changed, 2 insertions(+)
+> On Wed, Apr 11, 2012 at 9:02 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 5234586..629c4ba 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -875,6 +875,7 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 					    PCAN_USBPRO_INFO_FW,
- 					    &fi, sizeof(fi));
- 		if (err) {
-+			kfree(usb_if);
- 			dev_err(dev->netdev->dev.parent,
- 				"unable to read %s firmware info (err %d)\n",
- 				pcan_usb_pro.name, err);
-@@ -885,6 +886,7 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 					    PCAN_USBPRO_INFO_BL,
- 					    &bi, sizeof(bi));
- 		if (err) {
-+			kfree(usb_if);
- 			dev_err(dev->netdev->dev.parent,
- 				"unable to read %s bootloader info (err %d)\n",
- 				pcan_usb_pro.name, err);
--- 
-1.7.10
+> I should add a check to skip it entirely if led_off_delay == 0 as a
+> run-time "optimization" if the feature is not used (triggers does not
+> provide a use-counter).
 
 
+Yes. That's a good idea.
 
-(please CC me on replies)
+> Do you think it should be disabled by default?
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+The LED triggers?
 
+Yes. They should be disabled by default.
+
+So far i assume there's a very limited number of hardware having extra LEDs.
+
+> 
+>> The second question:
+>>
+>> Is the LED "blinking" on traffic or is it just "on" for some time when a CAN
+>> frame is processed?
+> 
+> It stays on for some time after each frame. Above a certain
+> packet-rate (1/led_off_delay) LED appear to be constantly on. You can
+> tell periodic packets from bursts from it but nothing more.
+
+
+Ok. That's fine.
+
+> Quick not-so-off-topic - I have a small userspace deamon on my router
+> which blinks an LED every 100kB of traffic on the WAN interface, which
+> is nice because you can almost tell the network load just by looking
+> at it! Much more useful than the standard activity LED. (sometimes I
+> think I'm taking this too seriously...)
+
+
+Don't know if traffic counting is a good idea for the first step.
+
+If we all find a really needed use-case we might think about it later.
+
+Regards,
+Oliver
