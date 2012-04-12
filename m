@@ -1,59 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: linux-can patches for vanilla kernel
-Date: Thu, 12 Apr 2012 11:42:52 +0200
-Message-ID: <4F86A39C.7080900@pengutronix.de>
-References: <jm65ct$57g$1@ultimate100.geggus.net>
+From: Martin Gysel <m.gysel@gmail.com>
+Subject: Re: [RFC PATCH] can: add tx/rx led trigger support
+Date: Thu, 12 Apr 2012 13:07:08 +0200
+Message-ID: <4F86B75C.2040006@gmail.com>
+References: <1334093965-2692-1-git-send-email-fabio.baltieri@gmail.com>	<4F852161.90706@hartkopp.net>	<CABkP77eNeTTwSxtKyfUmr7OC4H1nXEN4EeFH7pdR6=BcpKuE6w@mail.gmail.com>	<4F85D553.2010303@hartkopp.net> <CABkP77eHcrOSG140HF++D9Gt=79gVgGZm5JX6ZVNuc4pjpujcA@mail.gmail.com> <4F86862C.5020007@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigF78BE9CF4DC1B5663EF00E1B"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47657 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1762428Ab2DLJm6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Apr 2012 05:42:58 -0400
-In-Reply-To: <jm65ct$57g$1@ultimate100.geggus.net>
+Received: from mail-bk0-f46.google.com ([209.85.214.46]:64546 "EHLO
+	mail-bk0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757419Ab2DLLHM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Apr 2012 07:07:12 -0400
+Received: by bkcik5 with SMTP id ik5so1403271bkc.19
+        for <linux-can@vger.kernel.org>; Thu, 12 Apr 2012 04:07:11 -0700 (PDT)
+In-Reply-To: <4F86862C.5020007@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sven Geggus <lists@fuchsschwanzdomain.de>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF78BE9CF4DC1B5663EF00E1B
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Am 12.04.2012 09:37, schrieb Wolfgang Grandegger:
+> Concerning the LED control (on. off, blinking), could that not be
+> done/configured in the generic LED interface (via sysfs files)? That
+> seems the right place for me. Then the CAN LED software just needs to
+> send the trigger which would significantly simplify the code (without
+> timer).
+> 
+> Furthermore, if I understand your patch correctly, the LEDs with the
+> names "canX-rx" and "canX-tx" are directly assigned (hardwired). A more
+> flexible method would be appreciated, if it could be realized with just
+> a little more code.
 
-On 04/12/2012 10:57 AM, Sven Geggus wrote:
-> I'm a little bit confused which git tree I would need to clone if my ta=
-rget
-> is a vanilla stable Kernel (currently 3.3.1) but with the latest and
-> greatest can bus driver stack (peak-usb support in my case).
+maybe something familiar to the led netdev trigger (which is afaik
+'still' not mainline...)
 
-Use mainline.
-Peak usb support was added to mainline in v3.3-rc6-1180-g1ccba21 a.k.a.
-v3.4-rc1~177^2~53^2, which means that you need at least v3.4-rc1. So use
-latest v3.4.
+https://dev.openwrt.org/ticket/2776
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigF78BE9CF4DC1B5663EF00E1B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk+Go58ACgkQjTAFq1RaXHPrrgCfRV2PFP7fPvUFclgH1dnH0mts
-EH4An2A/pvjCls1i4NHtNb1Cd66gaoph
-=RUd4
------END PGP SIGNATURE-----
-
---------------enigF78BE9CF4DC1B5663EF00E1B--
+/martin
