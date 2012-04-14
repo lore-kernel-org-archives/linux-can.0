@@ -1,75 +1,145 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC PATCH] can: add tx/rx led trigger support
-Date: Fri, 13 Apr 2012 21:00:19 +0200
-Message-ID: <4F8877C3.6020702@hartkopp.net>
-References: <1334093965-2692-1-git-send-email-fabio.baltieri@gmail.com> <4F85D553.2010303@hartkopp.net> <CABkP77eHcrOSG140HF++D9Gt=79gVgGZm5JX6ZVNuc4pjpujcA@mail.gmail.com> <5882451.nUC1A4BOX5@ws-stein> <4F86FA24.9000404@hartkopp.net> <CABkP77dTiaziwkYY5bpUZ8PMpj_P7q3zg4Kye4CY=tXV-1OgwQ@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/3] net/can: use module_pci_driver
+Date: Sat, 14 Apr 2012 12:38:43 +0800
+Message-ID: <1334378323.2862.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:43460 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755979Ab2DMTAV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Apr 2012 15:00:21 -0400
-In-Reply-To: <CABkP77dTiaziwkYY5bpUZ8PMpj_P7q3zg4Kye4CY=tXV-1OgwQ@mail.gmail.com>
+Received: from mail-pz0-f52.google.com ([209.85.210.52]:62826 "EHLO
+	mail-pz0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750905Ab2DNEiw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Apr 2012 00:38:52 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org
+
+This patch converts the drivers in drivers/net/can/* to use
+module_pci_driver() macro which makes the code smaller and a bit simpler.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
 Cc: linux-can@vger.kernel.org
+---
+ drivers/net/can/pch_can.c            |   12 +-----------
+ drivers/net/can/sja1000/ems_pci.c    |   14 +-------------
+ drivers/net/can/sja1000/kvaser_pci.c |   13 +------------
+ drivers/net/can/sja1000/peak_pci.c   |   12 +-----------
+ drivers/net/can/sja1000/plx_pci.c    |   13 +------------
+ 5 files changed, 5 insertions(+), 59 deletions(-)
 
-On 12.04.2012 20:30, Fabio Baltieri wrote:
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index 2bb215e..1226297 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -1274,17 +1274,7 @@ static struct pci_driver pch_can_pci_driver = {
+ 	.resume = pch_can_resume,
+ };
+ 
+-static int __init pch_can_pci_init(void)
+-{
+-	return pci_register_driver(&pch_can_pci_driver);
+-}
+-module_init(pch_can_pci_init);
+-
+-static void __exit pch_can_pci_exit(void)
+-{
+-	pci_unregister_driver(&pch_can_pci_driver);
+-}
+-module_exit(pch_can_pci_exit);
++module_pci_driver(pch_can_pci_driver);
+ 
+ MODULE_DESCRIPTION("Intel EG20T PCH CAN(Controller Area Network) Driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
+index 36f4f97..5c6d412 100644
+--- a/drivers/net/can/sja1000/ems_pci.c
++++ b/drivers/net/can/sja1000/ems_pci.c
+@@ -371,16 +371,4 @@ static struct pci_driver ems_pci_driver = {
+ 	.remove = ems_pci_del_card,
+ };
+ 
+-static int __init ems_pci_init(void)
+-{
+-	return pci_register_driver(&ems_pci_driver);
+-}
+-
+-static void __exit ems_pci_exit(void)
+-{
+-	pci_unregister_driver(&ems_pci_driver);
+-}
+-
+-module_init(ems_pci_init);
+-module_exit(ems_pci_exit);
+-
++module_pci_driver(ems_pci_driver);
+diff --git a/drivers/net/can/sja1000/kvaser_pci.c b/drivers/net/can/sja1000/kvaser_pci.c
+index ed004ce..23ed6ea 100644
+--- a/drivers/net/can/sja1000/kvaser_pci.c
++++ b/drivers/net/can/sja1000/kvaser_pci.c
+@@ -397,15 +397,4 @@ static struct pci_driver kvaser_pci_driver = {
+ 	.remove = __devexit_p(kvaser_pci_remove_one),
+ };
+ 
+-static int __init kvaser_pci_init(void)
+-{
+-	return pci_register_driver(&kvaser_pci_driver);
+-}
+-
+-static void __exit kvaser_pci_exit(void)
+-{
+-	pci_unregister_driver(&kvaser_pci_driver);
+-}
+-
+-module_init(kvaser_pci_init);
+-module_exit(kvaser_pci_exit);
++module_pci_driver(kvaser_pci_driver);
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index 5f92b86..f0a1296 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -749,14 +749,4 @@ static struct pci_driver peak_pci_driver = {
+ 	.remove = __devexit_p(peak_pci_remove),
+ };
+ 
+-static int __init peak_pci_init(void)
+-{
+-	return pci_register_driver(&peak_pci_driver);
+-}
+-module_init(peak_pci_init);
+-
+-static void __exit peak_pci_exit(void)
+-{
+-	pci_unregister_driver(&peak_pci_driver);
+-}
+-module_exit(peak_pci_exit);
++module_pci_driver(peak_pci_driver);
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index a227586..8bc9598 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -609,15 +609,4 @@ static struct pci_driver plx_pci_driver = {
+ 	.remove = plx_pci_del_card,
+ };
+ 
+-static int __init plx_pci_init(void)
+-{
+-	return pci_register_driver(&plx_pci_driver);
+-}
+-
+-static void __exit plx_pci_exit(void)
+-{
+-	pci_unregister_driver(&plx_pci_driver);
+-}
+-
+-module_init(plx_pci_init);
+-module_exit(plx_pci_exit);
++module_pci_driver(plx_pci_driver);
+-- 
+1.7.5.4
 
 
->> the latter is implemented in my WIFI LED in my notebook:
->>
->> Interface up -> LED is ON
->>
->> Interface traffic -> LED is doing a off-on-sequence which leads to constant
->> blinking when downloading files ...
-> 
-> I like the idea too.
-> 
-> So, I'll try to recap the points posted for a v2 o the patch:
-> - move the trigger code away from the net layer and put it the drivers
-> one for direct use of the drivers, I'll keep it in a separate source
-> file with #ifdef to redefine functions as no-op, as it seems to be
-> what most other triggers do (and it looks clean to me).
 
-
-ack.
-
-> - implement functions as led_can_init, led_can_exit, led_can_event
-> with an event-id for tx, rx, error, open, stop
-> - implement event call from some driver as reference (I can only test
-> on vcan, slcan and flexcan, that's probably enough to test it out).
-
-
-Providing an example for flexcan is IMO the most relevant to demonstrate the
-implementation.
-
-> - implement blink function as follows:
->   - for tx/rx trigger, turn full-on on device open, off on device stop
-> and one cycle of "blink_delay off - blink_delay on" on event, other
-> frames are ignored until the off-on sequence is over.
-
-
-ack.
-
->   - for error trigger, just blink on-off on each error event.
-
-
-?
-
-> - keep delay time as parameter and skip triggers altogether if 0 - or
-> - use the activate/deactivate functions of the trigger subsystem to do
-> that automatically, that would cost some atomic usage counters.
-> - shorten trigger names to 16 characters (32 bytes look i bit big now
-> that I think at it).
-> 
-> Am I missing anything?
-
-
-Don't know - send a patch 8-)
-
-Tnx,
-Oliver
