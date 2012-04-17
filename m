@@ -1,30 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull request: linux-can 2012-04-16
-Date: Mon, 16 Apr 2012 21:43:07 +0200
-Message-ID: <1334605388-1549-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull request: linux-can 2012-04-16
+Date: Mon, 16 Apr 2012 23:46:47 -0400 (EDT)
+Message-ID: <20120416.234647.932244899111410722.davem@davemloft.net>
+References: <1334605388-1549-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shards.monkeyblade.net ([198.137.202.13]:50652 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753945Ab2DQDsA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Apr 2012 23:48:00 -0400
+In-Reply-To: <1334605388-1549-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 16 Apr 2012 21:43:07 +0200
 
-there's a fix targetting net/master from Jesper Juhl, fixing a mem leak
-in the error path of the pcan_usb_pro driver. 
+> Hello David,
+> 
+> there's a fix targetting net/master from Jesper Juhl, fixing a mem leak
+> in the error path of the pcan_usb_pro driver. 
+> 
+> redards,
+> Marc
+> 
+> The following changes since commit 8a9a0ea6032186e3030419262678d652b88bf6a8:
+> 
+>   net/ethernet: ks8851_mll fix rx frame buffer overflow (2012-04-14 15:21:27 -0400)
+> 
+> are available in the git repository at:
+>   git://gitorious.org/linux-can/linux-can.git master
 
-redards,
-Marc
-
-The following changes since commit 8a9a0ea6032186e3030419262678d652b88bf6a8:
-
-  net/ethernet: ks8851_mll fix rx frame buffer overflow (2012-04-14 15:21:27 -0400)
-
-are available in the git repository at:
-  git://gitorious.org/linux-can/linux-can.git master
-
-Jesper Juhl (1):
-      can: usb: PCAN-USB Pro: fix mem leaks in pcan_usb_pro_init() on error paths
-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Pulled, thanks.
