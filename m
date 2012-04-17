@@ -1,38 +1,35 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: pull request: linux-can 2012-04-16
-Date: Mon, 16 Apr 2012 23:46:47 -0400 (EDT)
-Message-ID: <20120416.234647.932244899111410722.davem@davemloft.net>
-References: <1334605388-1549-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: pull request: linux-can-next 2012-04-16
+Date: Mon, 16 Apr 2012 23:48:08 -0400 (EDT)
+Message-ID: <20120416.234808.1371491886716962986.davem@davemloft.net>
+References: <1334604746-24556-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([198.137.202.13]:50652 "EHLO
+Received: from shards.monkeyblade.net ([198.137.202.13]:50661 "EHLO
 	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753945Ab2DQDsA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Apr 2012 23:48:00 -0400
-In-Reply-To: <1334605388-1549-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1754256Ab2DQDtQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Apr 2012 23:49:16 -0400
+In-Reply-To: <1334604746-24556-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 16 Apr 2012 21:43:07 +0200
+Date: Mon, 16 Apr 2012 21:32:24 +0200
 
 > Hello David,
 > 
-> there's a fix targetting net/master from Jesper Juhl, fixing a mem leak
-> in the error path of the pcan_usb_pro driver. 
+> first round of linux-can updates for net-next, including a sparse warning
+> fix and the conversion of the pci drivers to use module_pci_driver.
 > 
-> redards,
-> Marc
+> The following changes since commit f4f9f6e75d67ddfcfea79a2108217bc654aef3af:
 > 
-> The following changes since commit 8a9a0ea6032186e3030419262678d652b88bf6a8:
-> 
->   net/ethernet: ks8851_mll fix rx frame buffer overflow (2012-04-14 15:21:27 -0400)
+>   tcp: restore formatting of macros for tcp_skb_cb sacked field (2012-04-16 14:38:16 -0400)
 > 
 > are available in the git repository at:
->   git://gitorious.org/linux-can/linux-can.git master
+>   git://gitorious.org/linux-can/linux-can-next.git master
 
-Pulled, thanks.
+Also pulled, thanks.
