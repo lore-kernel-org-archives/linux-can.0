@@ -1,50 +1,79 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] candump: resolve signedness warnings
-Date: Thu, 19 Apr 2012 17:46:42 +0200
-Message-ID: <4F903362.3070703@hartkopp.net>
-References: <1334821446-2925-1-git-send-email-yegorslists@googlemail.com> <4F8FD2C1.8010903@pengutronix.de>
+Date: Thu, 19 Apr 2012 17:57:28 +0200
+Message-ID: <4F9035E8.1020704@pengutronix.de>
+References: <1334821446-2925-1-git-send-email-yegorslists@googlemail.com> <4F8FD2C1.8010903@pengutronix.de> <4F903362.3070703@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigB9E6BE09CA6F3FF2FD4BBA32"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:48976 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755575Ab2DSPqo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Apr 2012 11:46:44 -0400
-In-Reply-To: <4F8FD2C1.8010903@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50931 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753021Ab2DSP5g (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Apr 2012 11:57:36 -0400
+In-Reply-To: <4F903362.3070703@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: yegorslists@googlemail.com, linux-can@vger.kernel.org
 
-On 19.04.2012 10:54, Marc Kleine-Budde wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB9E6BE09CA6F3FF2FD4BBA32
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On 04/19/2012 09:44 AM, yegorslists@googlemail.com wrote:
->> From: Yegor Yefremov <yegorslists@googlemail.com>
+On 04/19/2012 05:46 PM, Oliver Hartkopp wrote:
+>> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 >>
->> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> 
-> nbytes has been tested before if it's < 0, so it's safe to cast it to an
-> unsigned value.
-> 
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> 
-> Oliver do you want to take the patch?
+>> Oliver do you want to take the patch?
+
+> Yes. I applied it to the git repo.
+>=20
+> I did it with
+>=20
+> git am --signoff < candump.patch
+
+You can save some precious keystrokes:
+
+git am -s candump.patch
+
+> using the original mail from Yegor.
+>=20
+> Unfortunately that missed your Acked-by: ...
+
+No problem.
+
+> What would be the right way to apply it with your Acked-by too?
+
+I usually do a $(git commit --amend) after the $(git am -s) and paste
+the Acked-by. Maybe there are some more elaborative ways to do so :)
+
+> I assume applying your answered mail won't have made it, right?
+
+Hehe :)
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Yes. I applied it to the git repo.
+--------------enigB9E6BE09CA6F3FF2FD4BBA32
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I did it with
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-git am --signoff < candump.patch
+iEYEARECAAYFAk+QNesACgkQjTAFq1RaXHPLvQCeMs8etU6E232+IPNHwwQQCuMh
+d0gAoJns9mUqQNW3i4c+7xw2A78E17Le
+=yAr8
+-----END PGP SIGNATURE-----
 
-using the original mail from Yegor.
-
-Unfortunately that missed your Acked-by: ...
-
-What would be the right way to apply it with your Acked-by too?
-
-I assume applying your answered mail won't have made it, right?
-
-Regards,
-Oliver
+--------------enigB9E6BE09CA6F3FF2FD4BBA32--
