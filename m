@@ -1,75 +1,107 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH 1/3] can: c_can: fix "BUG! echo_skb is occupied!" during transmit
-Date: Fri, 20 Apr 2012 15:27:42 +0530
-Message-ID: <1334915862-29810-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH 2/3] can: c_can: fix an interrupt thrash issue with c_can driver
+Date: Fri, 20 Apr 2012 15:28:06 +0530
+Message-ID: <1334915886-30076-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:39253 "EHLO
-	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753670Ab2DTJ55 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Apr 2012 05:57:57 -0400
+Received: from comal.ext.ti.com ([198.47.26.152]:49590 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753670Ab2DTJ6U (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 20 Apr 2012 05:58:20 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch fixes an issue with transmit routine, which causes
-"can_put_echo_skb: BUG! echo_skb is occupied!" messgae when
-using "cansequence -p" on D_CAN controller.
+This patch fixes an interrupt thrash issue with c_can driver.
 
-In c_can driver, while transmitting packets tx_echo flag holds
-the no of can frames put for transmission into the hardware.
+In c_can_isr() function interrupts are disabled and enabled only in
+c_can_poll() function. c_can_isr() & c_can_poll() both read the
+irqstatus flag. However, irqstatus is always read as 0 in c_can_poll()
+because all C_CAN interrupts are disabled in c_can_isr(). This causes
+all interrupts to be re-enabled in c_can_poll() which in turn causes
+another interrupt since the event is not really handled. This keeps
+happening causing a flood of interrupts.
 
-As the comment above c_can_do_tx() indicates, if we find any packet
-which is not transmitted then we should stop looking for more.
-In the current implementation this is not taken care of causing the
-said message.
-
-Also, fix the condition used to find if the packet is transmitted
-or not. Current code skips the first tx message object and ends up
-checking one extra invalid object.
-
-While at it, fix the comment on top of c_can_do_tx() to use the
-terminology "packet" instead of "package" since it is more
-standard.
+To fix this, read the irqstatus register in isr and use the same cached
+value in the poll function.
 
 Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 ---
- drivers/net/can/c_can/c_can.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/can/c_can/c_can.c |   19 ++++++++-----------
+ drivers/net/can/c_can/c_can.h |    1 +
+ 2 files changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 536bda0..9ac28df 100644
+index 9ac28df..09fcc50 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -686,7 +686,7 @@ static int c_can_get_berr_counter(const struct net_device *dev,
-  *
-  * We iterate from priv->tx_echo to priv->tx_next and check if the
-  * packet has been transmitted, echo it back to the CAN framework.
-- * If we discover a not yet transmitted package, stop looking for more.
-+ * If we discover a not yet transmitted packet, stop looking for more.
-  */
- static void c_can_do_tx(struct net_device *dev)
- {
-@@ -698,7 +698,7 @@ static void c_can_do_tx(struct net_device *dev)
- 	for (/* nix */; (priv->tx_next - priv->tx_echo) > 0; priv->tx_echo++) {
- 		msg_obj_no = get_tx_echo_msg_obj(priv);
- 		val = c_can_read_reg32(priv, &priv->regs->txrqst1);
--		if (!(val & (1 << msg_obj_no))) {
-+		if (!(val & (1 << (msg_obj_no - 1)))) {
- 			can_get_echo_skb(dev,
- 					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
- 			stats->tx_bytes += priv->read_reg(priv,
-@@ -706,6 +706,8 @@ static void c_can_do_tx(struct net_device *dev)
- 					& IF_MCONT_DLC_MASK;
- 			stats->tx_packets++;
- 			c_can_inval_msg_object(dev, 0, msg_obj_no);
-+		} else {
-+			break;
- 		}
- 	}
+@@ -946,18 +946,16 @@ static int c_can_handle_bus_err(struct net_device *dev,
  
+ static int c_can_poll(struct napi_struct *napi, int quota)
+ {
+-	u16 irqstatus;
+ 	int lec_type = 0;
+ 	int work_done = 0;
+ 	struct net_device *dev = napi->dev;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
+-	if (!irqstatus)
++	if (!priv->irqstatus)
+ 		goto end;
+ 
+ 	/* status events have the highest priority */
+-	if (irqstatus == STATUS_INTERRUPT) {
++	if (priv->irqstatus == STATUS_INTERRUPT) {
+ 		priv->current_status = priv->read_reg(priv,
+ 					&priv->regs->status);
+ 
+@@ -1008,12 +1006,12 @@ static int c_can_poll(struct napi_struct *napi, int quota)
+ 		lec_type = c_can_has_and_handle_berr(priv);
+ 		if (lec_type)
+ 			work_done += c_can_handle_bus_err(dev, lec_type);
+-	} else if ((irqstatus >= C_CAN_MSG_OBJ_RX_FIRST) &&
+-			(irqstatus <= C_CAN_MSG_OBJ_RX_LAST)) {
++	} else if ((priv->irqstatus >= C_CAN_MSG_OBJ_RX_FIRST) &&
++			(priv->irqstatus <= C_CAN_MSG_OBJ_RX_LAST)) {
+ 		/* handle events corresponding to receive message objects */
+ 		work_done += c_can_do_rx_poll(dev, (quota - work_done));
+-	} else if ((irqstatus >= C_CAN_MSG_OBJ_TX_FIRST) &&
+-			(irqstatus <= C_CAN_MSG_OBJ_TX_LAST)) {
++	} else if ((priv->irqstatus >= C_CAN_MSG_OBJ_TX_FIRST) &&
++			(priv->irqstatus <= C_CAN_MSG_OBJ_TX_LAST)) {
+ 		/* handle events corresponding to transmit message objects */
+ 		c_can_do_tx(dev);
+ 	}
+@@ -1030,12 +1028,11 @@ end:
+ 
+ static irqreturn_t c_can_isr(int irq, void *dev_id)
+ {
+-	u16 irqstatus;
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
+-	if (!irqstatus)
++	priv->irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
++	if (!priv->irqstatus)
+ 		return IRQ_NONE;
+ 
+ 	/* disable all interrupts and schedule the NAPI */
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 9b7fbef..5f32d34 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -76,6 +76,7 @@ struct c_can_priv {
+ 	unsigned int tx_next;
+ 	unsigned int tx_echo;
+ 	void *priv;		/* for board-specific data */
++	u16 irqstatus;
+ };
+ 
+ struct net_device *alloc_c_can_dev(void);
 -- 
 1.7.0.4
 
