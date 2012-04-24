@@ -1,91 +1,119 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Tue, 24 Apr 2012 08:46:29 +0200
-Message-ID: <4F964C45.8010804@grandegger.com>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/3] can: c_can: fix "BUG! echo_skb is occupied!" during
+ transmit
+Date: Tue, 24 Apr 2012 09:55:25 +0200
+Message-ID: <4F965C6D.6030303@pengutronix.de>
+References: <1334915862-29810-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig873AB8E7F107DD18AC4EE474"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:34409 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751413Ab2DXGqc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 02:46:32 -0400
-In-Reply-To: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41188 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755358Ab2DXHzk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 03:55:40 -0400
+In-Reply-To: <1334915862-29810-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: AnilKumar Ch <anilkumar@ti.com>
+Cc: wg@grandegger.com, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
 
-Hi Fabio,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig873AB8E7F107DD18AC4EE474
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-On 04/23/2012 11:02 PM, Fabio Baltieri wrote:
-> This patch implements the functions to add two LED triggers, named
-> <ifname>-tx and <ifname>-rx, to a canbus device driver.
-> 
-> Triggers are called from specific handlers by each CAN device driver and
-> can be disabled altogether with a Kconfig option.
-> 
-> The implementation keeps the LED on when the interface is UP and blinks
-> the LED on network activity at a configurable rate.
-> 
-> This only supports can-dev based drivers, as it uses some support field
-> in the can_priv structure.
-> 
-> Supported drivers should call can_led_init(), can_led_exit() and
-> can_led_event() as needed.
-> 
-> Supported events are:
-> - CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
-> - CAN_LED_EVENT_STOP: turn off tx/rx LEDs
-> - CAN_LED_EVENT_TX: trigger tx LED blink
-> - CAN_LED_EVENT_RX: trigger tx LED blink
-> 
-> Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+On 04/20/2012 11:57 AM, AnilKumar Ch wrote:
+> This patch fixes an issue with transmit routine, which causes
+> "can_put_echo_skb: BUG! echo_skb is occupied!" messgae when
+> using "cansequence -p" on D_CAN controller.
+>=20
+> In c_can driver, while transmitting packets tx_echo flag holds
+> the no of can frames put for transmission into the hardware.
+>=20
+> As the comment above c_can_do_tx() indicates, if we find any packet
+> which is not transmitted then we should stop looking for more.
+> In the current implementation this is not taken care of causing the
+> said message.
+>=20
+> Also, fix the condition used to find if the packet is transmitted
+> or not. Current code skips the first tx message object and ends up
+> checking one extra invalid object.
+
+The two above listed issues can occur with the c_can hardware, too?
+Please split into two separate patches. These should go to the stable
+kernel, too. Can someone with a c_can hardware test these patches.
+
+> While at it, fix the comment on top of c_can_do_tx() to use the
+> terminology "packet" instead of "package" since it is more
+> standard.
+
+Add this to one of the above patches.
+
+> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 > ---
-> 
-> Hello again!
-> 
-> So, this is the v2 of my can-led patch. I reworked the whole code based on the
-> v1 and all the comments from the list (thanks guys!).
-> 
-> This version takes a different approach and is just an implementation of three
-> functions - can_led_{init,exit,event} - to easily add tx/rx led trigger
-> support to a netlink-based canbus driver. An implementation on flexcan is on
-> the 2/2.
-> 
-> Working principle:
-> 
-> - the driver register the triggers on probe, free on exit and add events for
->   open, close, tx, rx where appropriate
-> - both LEDs stay off when device is down, on when device is up
-> - each LED blinks for led_delay off + led_delay on on tx/rx event using a
->   kernel timer (well, that's actually the opposite to keep critical path
->   cleaner but don't tell anyone, k?).
-> - new tx/rx packets don't retrigger the timer until the blink sequence is over,
->   so that on heavy traffic the LED keeps blinking at constate rate.  
-> 
-> Notes:
-> 
-> - I considered putting all structures in can_priv to skip a couple of kzallocs
->   as suggested by Oliver, but those pointers are actually useful to check if
->   triggers registered properly, so the code now uses an internal structure with
->   timer, state and name, and add just two pointers into struct can_dev.
-> 
-> - The blink timer is implemented as:
->   * keep on for delay_time
->   * turn off and retrigger the timer
->   * turn back on after delay
->   so that the hot-path only contains a switch-case, some checks and a mod_timer.
-> 
-> This is tested on an x86 with a custom usb-can interface and on a flexcan-based
-> Freescale ARM board. I'll post some patch to implement support in other drivers
-> if anyone is interested into testing this one.
-> 
-> Any comments?
+>  drivers/net/can/c_can/c_can.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
+n.c
+> index 536bda0..9ac28df 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -686,7 +686,7 @@ static int c_can_get_berr_counter(const struct net_=
+device *dev,
+>   *
+>   * We iterate from priv->tx_echo to priv->tx_next and check if the
+>   * packet has been transmitted, echo it back to the CAN framework.
+> - * If we discover a not yet transmitted package, stop looking for more=
+=2E
+> + * If we discover a not yet transmitted packet, stop looking for more.=
 
-I still think that the blinking support should go to the timer class to
-avoid duplicated code. Any good reason against? Apart from that the
-patches look good.
+>   */
+>  static void c_can_do_tx(struct net_device *dev)
+>  {
+> @@ -698,7 +698,7 @@ static void c_can_do_tx(struct net_device *dev)
+>  	for (/* nix */; (priv->tx_next - priv->tx_echo) > 0; priv->tx_echo++)=
+ {
+>  		msg_obj_no =3D get_tx_echo_msg_obj(priv);
+>  		val =3D c_can_read_reg32(priv, &priv->regs->txrqst1);
+> -		if (!(val & (1 << msg_obj_no))) {
+> +		if (!(val & (1 << (msg_obj_no - 1)))) {
+>  			can_get_echo_skb(dev,
+>  					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
+>  			stats->tx_bytes +=3D priv->read_reg(priv,
+> @@ -706,6 +706,8 @@ static void c_can_do_tx(struct net_device *dev)
+>  					& IF_MCONT_DLC_MASK;
+>  			stats->tx_packets++;
+>  			c_can_inval_msg_object(dev, 0, msg_obj_no);
+> +		} else {
+> +			break;
+>  		}
+>  	}
+> =20
 
-Wolfgang.
+regards, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig873AB8E7F107DD18AC4EE474
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk+WXHEACgkQjTAFq1RaXHP2IwCfQeQxEgMCuFBsSietYyjaVrrJ
+2cwAn3t2PryUTisZTTxjWs81CCvgVdBV
+=NaCQ
+-----END PGP SIGNATURE-----
+
+--------------enig873AB8E7F107DD18AC4EE474--
