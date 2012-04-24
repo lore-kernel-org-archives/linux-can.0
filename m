@@ -1,99 +1,136 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] can: c_can: fix "BUG! echo_skb is occupied!" during
- transmit
-Date: Tue, 24 Apr 2012 09:55:25 +0200
-Message-ID: <4F965C6D.6030303@pengutronix.de>
-References: <1334915862-29810-1-git-send-email-anilkumar@ti.com>
+Subject: Re: [PATCH 2/3] can: c_can: fix an interrupt thrash issue with c_can
+ driver
+Date: Tue, 24 Apr 2012 10:01:27 +0200
+Message-ID: <4F965DD7.1000804@pengutronix.de>
+References: <1334915886-30076-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig873AB8E7F107DD18AC4EE474"
+ boundary="------------enig583790F167911105F02FCF44"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41188 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48892 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755358Ab2DXHzk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 03:55:40 -0400
-In-Reply-To: <1334915862-29810-1-git-send-email-anilkumar@ti.com>
+	with ESMTP id S1755810Ab2DXIBg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 04:01:36 -0400
+In-Reply-To: <1334915886-30076-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: AnilKumar Ch <anilkumar@ti.com>
 Cc: wg@grandegger.com, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig873AB8E7F107DD18AC4EE474
+--------------enig583790F167911105F02FCF44
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 04/20/2012 11:57 AM, AnilKumar Ch wrote:
-> This patch fixes an issue with transmit routine, which causes
-> "can_put_echo_skb: BUG! echo_skb is occupied!" messgae when
-> using "cansequence -p" on D_CAN controller.
+On 04/20/2012 11:58 AM, AnilKumar Ch wrote:
+> This patch fixes an interrupt thrash issue with c_can driver.
 >=20
-> In c_can driver, while transmitting packets tx_echo flag holds
-> the no of can frames put for transmission into the hardware.
->=20
-> As the comment above c_can_do_tx() indicates, if we find any packet
-> which is not transmitted then we should stop looking for more.
-> In the current implementation this is not taken care of causing the
-> said message.
->=20
-> Also, fix the condition used to find if the packet is transmitted
-> or not. Current code skips the first tx message object and ends up
-> checking one extra invalid object.
+> In c_can_isr() function interrupts are disabled and enabled only in
+> c_can_poll() function. c_can_isr() & c_can_poll() both read the
+> irqstatus flag. However, irqstatus is always read as 0 in c_can_poll()
+> because all C_CAN interrupts are disabled in c_can_isr(). This causes
+> all interrupts to be re-enabled in c_can_poll() which in turn causes
+> another interrupt since the event is not really handled. This keeps
+> happening causing a flood of interrupts.
 
-The two above listed issues can occur with the c_can hardware, too?
-Please split into two separate patches. These should go to the stable
-kernel, too. Can someone with a c_can hardware test these patches.
+Do both c_can and d_can behave the same way?
 
-> While at it, fix the comment on top of c_can_do_tx() to use the
-> terminology "packet" instead of "package" since it is more
-> standard.
+> To fix this, read the irqstatus register in isr and use the same cached=
 
-Add this to one of the above patches.
+> value in the poll function.
+
+More comments inline:
 
 > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 > ---
->  drivers/net/can/c_can/c_can.c |    6 ++++--
->  1 files changed, 4 insertions(+), 2 deletions(-)
+>  drivers/net/can/c_can/c_can.c |   19 ++++++++-----------
+>  drivers/net/can/c_can/c_can.h |    1 +
+>  2 files changed, 9 insertions(+), 11 deletions(-)
 >=20
 > diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
 n.c
-> index 536bda0..9ac28df 100644
+> index 9ac28df..09fcc50 100644
 > --- a/drivers/net/can/c_can/c_can.c
 > +++ b/drivers/net/can/c_can/c_can.c
-> @@ -686,7 +686,7 @@ static int c_can_get_berr_counter(const struct net_=
-device *dev,
->   *
->   * We iterate from priv->tx_echo to priv->tx_next and check if the
->   * packet has been transmitted, echo it back to the CAN framework.
-> - * If we discover a not yet transmitted package, stop looking for more=
-=2E
-> + * If we discover a not yet transmitted packet, stop looking for more.=
-
->   */
->  static void c_can_do_tx(struct net_device *dev)
->  {
-> @@ -698,7 +698,7 @@ static void c_can_do_tx(struct net_device *dev)
->  	for (/* nix */; (priv->tx_next - priv->tx_echo) > 0; priv->tx_echo++)=
- {
->  		msg_obj_no =3D get_tx_echo_msg_obj(priv);
->  		val =3D c_can_read_reg32(priv, &priv->regs->txrqst1);
-> -		if (!(val & (1 << msg_obj_no))) {
-> +		if (!(val & (1 << (msg_obj_no - 1)))) {
->  			can_get_echo_skb(dev,
->  					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
->  			stats->tx_bytes +=3D priv->read_reg(priv,
-> @@ -706,6 +706,8 @@ static void c_can_do_tx(struct net_device *dev)
->  					& IF_MCONT_DLC_MASK;
->  			stats->tx_packets++;
->  			c_can_inval_msg_object(dev, 0, msg_obj_no);
-> +		} else {
-> +			break;
->  		}
->  	}
+> @@ -946,18 +946,16 @@ static int c_can_handle_bus_err(struct net_device=
+ *dev,
 > =20
+>  static int c_can_poll(struct napi_struct *napi, int quota)
+>  {
+> -	u16 irqstatus;
+>  	int lec_type =3D 0;
+>  	int work_done =3D 0;
+>  	struct net_device *dev =3D napi->dev;
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> =20
+> -	irqstatus =3D priv->read_reg(priv, &priv->regs->interrupt);
 
-regards, Marc
+I suggest:
+	irqstatus =3D priv->irqstatus;
+
+This would be a quite small patch, because you can keep using irqstatus
+below.
+
+> -	if (!irqstatus)
+> +	if (!priv->irqstatus)
+>  		goto end;
+> =20
+>  	/* status events have the highest priority */
+> -	if (irqstatus =3D=3D STATUS_INTERRUPT) {
+> +	if (priv->irqstatus =3D=3D STATUS_INTERRUPT) {
+>  		priv->current_status =3D priv->read_reg(priv,
+>  					&priv->regs->status);
+> =20
+> @@ -1008,12 +1006,12 @@ static int c_can_poll(struct napi_struct *napi,=
+ int quota)
+>  		lec_type =3D c_can_has_and_handle_berr(priv);
+>  		if (lec_type)
+>  			work_done +=3D c_can_handle_bus_err(dev, lec_type);
+> -	} else if ((irqstatus >=3D C_CAN_MSG_OBJ_RX_FIRST) &&
+> -			(irqstatus <=3D C_CAN_MSG_OBJ_RX_LAST)) {
+> +	} else if ((priv->irqstatus >=3D C_CAN_MSG_OBJ_RX_FIRST) &&
+> +			(priv->irqstatus <=3D C_CAN_MSG_OBJ_RX_LAST)) {
+>  		/* handle events corresponding to receive message objects */
+>  		work_done +=3D c_can_do_rx_poll(dev, (quota - work_done));
+> -	} else if ((irqstatus >=3D C_CAN_MSG_OBJ_TX_FIRST) &&
+> -			(irqstatus <=3D C_CAN_MSG_OBJ_TX_LAST)) {
+> +	} else if ((priv->irqstatus >=3D C_CAN_MSG_OBJ_TX_FIRST) &&
+> +			(priv->irqstatus <=3D C_CAN_MSG_OBJ_TX_LAST)) {
+>  		/* handle events corresponding to transmit message objects */
+>  		c_can_do_tx(dev);
+>  	}
+> @@ -1030,12 +1028,11 @@ end:
+> =20
+>  static irqreturn_t c_can_isr(int irq, void *dev_id)
+>  {
+> -	u16 irqstatus;
+>  	struct net_device *dev =3D (struct net_device *)dev_id;
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> =20
+> -	irqstatus =3D priv->read_reg(priv, &priv->regs->interrupt);
+> -	if (!irqstatus)
+> +	priv->irqstatus =3D priv->read_reg(priv, &priv->regs->interrupt);
+> +	if (!priv->irqstatus)
+>  		return IRQ_NONE;
+> =20
+>  	/* disable all interrupts and schedule the NAPI */
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_ca=
+n.h
+> index 9b7fbef..5f32d34 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -76,6 +76,7 @@ struct c_can_priv {
+>  	unsigned int tx_next;
+>  	unsigned int tx_echo;
+>  	void *priv;		/* for board-specific data */
+> +	u16 irqstatus;
+>  };
+> =20
+>  struct net_device *alloc_c_can_dev(void);
+
+Marc
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -102,7 +139,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig873AB8E7F107DD18AC4EE474
+--------------enig583790F167911105F02FCF44
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -111,9 +148,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk+WXHEACgkQjTAFq1RaXHP2IwCfQeQxEgMCuFBsSietYyjaVrrJ
-2cwAn3t2PryUTisZTTxjWs81CCvgVdBV
-=NaCQ
+iEYEARECAAYFAk+WXdoACgkQjTAFq1RaXHNSQwCglUjF/TTx2NfR9XpLloeX8itE
+Mt4AnjcHpZzLy+jOH1J9sISJkO4WqHq9
+=a75w
 -----END PGP SIGNATURE-----
 
---------------enig873AB8E7F107DD18AC4EE474--
+--------------enig583790F167911105F02FCF44--
