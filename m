@@ -1,88 +1,106 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] can: c_can: fix "BUG! echo_skb is occupied!" during
- transmit
-Date: Tue, 24 Apr 2012 13:28:07 +0200
-Message-ID: <4F968E47.7020109@pengutronix.de>
-References: <1334915862-29810-1-git-send-email-anilkumar@ti.com> <4F965C6D.6030303@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC13E997D11@DBDE01.ent.ti.com>
+From: "AnilKumar, Chimata" <anilkumar@ti.com>
+Subject: RE: [PATCH 3/3] can: c_can: Add support for Bosch D_CAN controller
+Date: Tue, 24 Apr 2012 11:42:07 +0000
+Message-ID: <331ABD5ECB02734CA317220B2BBEABC13E997D6B@DBDE01.ent.ti.com>
+References: <1334915902-30253-1-git-send-email-anilkumar@ti.com>
+ <4F965FF6.2020201@pengutronix.de> <4F9664E9.6000403@grandegger.com>
+ <4F96660A.1030408@pengutronix.de> <4F966EDF.7010909@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigA64E4A63883785B51E692543"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52658 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752310Ab2DXL2T (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 07:28:19 -0400
-In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13E997D11@DBDE01.ent.ti.com>
+Received: from bear.ext.ti.com ([192.94.94.41]:47969 "EHLO bear.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752132Ab2DXLmS convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 07:42:18 -0400
+In-Reply-To: <4F966EDF.7010909@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "AnilKumar, Chimata" <anilkumar@ti.com>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Gole, Anant" <anantgole@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Gole, Anant" <anantgole@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigA64E4A63883785B51E692543
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 24, 2012 at 14:44:07, Wolfgang Grandegger wrote:
+> On 04/24/2012 10:36 AM, Marc Kleine-Budde wrote:
+> > On 04/24/2012 10:31 AM, Wolfgang Grandegger wrote:
+> >> On 04/24/2012 10:10 AM, Marc Kleine-Budde wrote:
+> >>> On 04/20/2012 11:58 AM, AnilKumar Ch wrote:
+> >>>> This patch adds the support for D_CAN controller driver to the existing
+> >>>> C_CAN driver.
+> >>>>
+> >>>> Bosch D_CAN controller is a full-CAN implementation which is compliant
+> >>>> to CAN protocol version 2.0 part A and B. Bosch D_CAN user manual can be
+> >>>> obtained from: http://www.semiconductors.bosch.de/media/en/pdf/
+> >>>> ipmodules_1/can/d_can_users_manual_111.pdf
+> >>>>
+> >>>> The following are the design choices made while adding D_CAN to C_CAN
+> >>>> driver:
+> >>>> A new overlay structure is added for d_can controller and care is taken
+> >>>> to make sure its member names match with equavalent c_can structure
+> >>>> members (even if the d_can specification calls them slightly differently).
+> >>>> Note that d_can controller has more registers, so structure members of
+> >>>> d_can are more than those in c_can.
+> >>>>
+> >>>> A new set if read/write macros are used to access the registers common
+> >>>> between c_can and d_can. To get the basic d_can functionality working
+> >>>> it is sufficient to access just these registers.
+> >>>
+> >>> I don't like macros. I've two further possible solutions:
+> >>
+> >> Yes, I don't like that part either, also because of the
+> >>
+> >>   "if (priv->dev_type == DEV_TYPE_D_CAN)"
+> >>
+> >> for each read/write access.
+> >>
+> >>> a) Access the registers via an array. The array index is a "virtual"
+> >>>    register, the array's value the physical offset within the c_can or
+> >>>    d_can controller.
+> >>
+> >> I was thinking about that as well but using absolute addresses. This
+> >> would avoid further calculations for 16/32 bit aligned accesses.
+> > 
+> > Yes, this way we might get rid of this calculation, too.
+> > 
 
-On 04/24/2012 01:24 PM, AnilKumar, Chimata wrote:
-> On Tue, Apr 24, 2012 at 13:25:25, Marc Kleine-Budde wrote:
->> On 04/20/2012 11:57 AM, AnilKumar Ch wrote:
->>> This patch fixes an issue with transmit routine, which causes
->>> "can_put_echo_skb: BUG! echo_skb is occupied!" messgae when
->>> using "cansequence -p" on D_CAN controller.
->>>
->>> In c_can driver, while transmitting packets tx_echo flag holds
->>> the no of can frames put for transmission into the hardware.
->>>
->>> As the comment above c_can_do_tx() indicates, if we find any packet
->>> which is not transmitted then we should stop looking for more.
->>> In the current implementation this is not taken care of causing the
->>> said message.
->>>
->>> Also, fix the condition used to find if the packet is transmitted
->>> or not. Current code skips the first tx message object and ends up
->>> checking one extra invalid object.
->>
->> The two above listed issues can occur with the c_can hardware, too?
->> Please split into two separate patches. These should go to the stable
->> kernel, too. Can someone with a c_can hardware test these patches.
->=20
-> I will split into two patches. I had clubbed both the changes in a sing=
-le
-> patch because both the changes are required to get rid of the error men=
-tioned
-> in the subject line.
+Okay. I can spin a patch with this approach. The reason I took the current
+approach is because I did not want to shift the existing code from an overlay
+structure to an array based approach.
 
-okay - then it's better to keep them together.
+> >>> b) AFAICS you need more than three registers to get the CAN core
+> >>>    working. Another possibility is to implement an accessor function
+> >>>   for each register.
+> >>
+> >> ... offsetof() might be useful for this approach.
+> > 
+> > Please elaborate.
+> 
+> #define c_can_write_reg_func(member) \
+> 	static inline void write_##reg(struct c_can_priv *priv, u32 val) \
 
-> I will add the stable tag when submitting next, but since I do not have=
- c_can
-> hardware, someone needs to confirm this actually solves a c_can issue. =
-I have
-> read through the c_can specification and see that this would indeed be =
-a problem
-> on c_can.
+You mean "write_##member" here?
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 	{ \
+> 		priv->write_reg(priv, offsetof(struct c_can_regs, member), val); \
+> 	}
+> 
+> And similar for read and d_can. Then in the init part:
+> 
+> 	if (priv->dev_type == DEV_TYPE_C_CAN) {
+> 		c_can_write_reg_func(control);
+> 		c_can_write_reg_func(status);
+> 		...
+> 	} else {
+> 		d_can_write_reg_func(control);
+> 		d_can_write_reg_func(status);
+> 		...
+> 	}
+> 
+> Maybe we could even get rid of priv->write_reg (for memory mapped i/o only!).
 
+As per my understanding the scope of these inline function definitions is within the
+if-else construct. Once defined within the if-else, I cannot see how these functions
+will be used elsewhere in the code (must be missing something?).
 
---------------enigA64E4A63883785B51E692543
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk+WjkwACgkQjTAFq1RaXHOzYACePeWu8btlKDk/lsszcwBJlDLM
-W38AmwVTXwYNWyjg29x3j6ZR6QLyzwg4
-=MG3B
------END PGP SIGNATURE-----
-
---------------enigA64E4A63883785B51E692543--
+Regards,
+AnilKumar
