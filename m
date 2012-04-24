@@ -1,81 +1,60 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
 Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Tue, 24 Apr 2012 20:57:32 +0200
-Message-ID: <4F96F79C.5090301@hartkopp.net>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com> <4F964C45.8010804@grandegger.com> <4F96C9C3.1010505@hartkopp.net> <4F96EC1D.5040200@grandegger.com>
+Date: Tue, 24 Apr 2012 21:02:26 +0200
+Message-ID: <20120424190226.GA1589@gmail.com>
+References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
+ <4F964C45.8010804@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:41664 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755427Ab2DXS5f (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 14:57:35 -0400
-In-Reply-To: <4F96EC1D.5040200@grandegger.com>
+Received: from mail-wi0-f170.google.com ([209.85.212.170]:63673 "EHLO
+	mail-wi0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756972Ab2DXTAj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 15:00:39 -0400
+Received: by wibhr17 with SMTP id hr17so3770617wib.1
+        for <linux-can@vger.kernel.org>; Tue, 24 Apr 2012 12:00:37 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <4F964C45.8010804@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
 Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, linux-can@vger.kernel.org
 
-On 24.04.2012 20:08, Wolfgang Grandegger wrote:
+Hi Wolfgang,
 
-> On 04/24/2012 05:41 PM, Oliver Hartkopp wrote:
->> On 24.04.2012 08:46, Wolfgang Grandegger wrote:
->>
->>
->>>> - The blink timer is implemented as:
->>>>   * keep on for delay_time
->>>>   * turn off and retrigger the timer
->>>>   * turn back on after delay
->>>>   so that the hot-path only contains a switch-case, some checks and a mod_timer.
->>>>
->>>> This is tested on an x86 with a custom usb-can interface and on a flexcan-based
->>>> Freescale ARM board. I'll post some patch to implement support in other drivers
->>>> if anyone is interested into testing this one.
->>>>
->>>> Any comments?
->>>
->>> I still think that the blinking support should go to the timer class to
->>> avoid duplicated code. Any good reason against? Apart from that the
->>> patches look good.
->>
->>
->> Hello Wolfgang,
->>
->> what exactly do you mean with "timer class" ??
->>
->> To me the current implementation looks like standard jiffie-based timer usage.
->>
->> IMO hrtimers are not needed here - or what are you thinking of?
+On Tue, Apr 24, 2012 at 08:46:29AM +0200, Wolfgang Grandegger wrote:
+> I still think that the blinking support should go to the timer class to
+> avoid duplicated code. Any good reason against? Apart from that the
+> patches look good.
 > 
-> I mean that the code doing that kind of blinking should go to the timer
-> class as generic function/feature, which other drivers could then use as
-> well, similar to led_trigger_event or led_trigger_blink. Should not be a
-> big deal, I think. See also my previous mail:
-> 
->   http://marc.info/?l=linux-can&m=133425656510148&w=2
-> 
+> Wolfgang.
 
+I can see you point and I considered your note about adding the
+one-shot-blink function to the led-class framework (sorry for not
+mentioning it in my first post).  Still, I ended up with this code for
+a couple of reasons:
 
-Hm - as i see from the two examples there, the LEDs have a different
-behaviour. E.g. on which use-case specific events they blink or set the LEDs
-to fixed values.
+- I think that the led_blink_set function is primarily used to configure
+  leds with hardware blinking (like i2c led drivers).  While it would be
+  possible to extend the function to get one-shot behavior and always
+  fallback on software blink, I think that that's out of the purpose of
+  the led-class, which should just translate on-off requests to
+  underlaying hardware.
 
-I can't see any real benefit for these LED users to implement a generic LED
-blinking framework. IMO using timers and the led_trigger_event stuff is the
-appropriate abstraction level.
+- I think that different drivers may want to obtain different on-off
+  behavior depending on the application.  For example in the ide-disk
+  case the user expects to see a steady-on LED on constant activity,
+  and that's how it's implemented, while in this case the on-if-up
+  keep-blinking-on-activity off-if-down makes much more sense. So I think
+  that even if a generic blink function were available, people would
+  still be using custom functions because they want to fine tune the
+  behavior for the application.  Also, maybe a function too generic may
+  impact on performance in critical paths.
 
-If you look into other networking drivers (e.g. the wireless) - they do it
-with delayed_work:
-
-http://lxr.linux.no/#linux+v3.3.1/drivers/net/wireless/ath/carl9170/led.c#L105
-
-And everyone defines a specific struct like this one:
-
-http://lxr.linux.no/#linux+v3.3.1/drivers/net/wireless/ath/carl9170/carl9170.h#L205
-
-I think it's an enormous effort to unify all the LED users ...
+- in this case, it looks to me like the implementation is as optimized
+  as it can be, in the sense that the hot-path does really only some
+  essential check and engage the timer and the timer function itself is
+  really short.  Also the final blinking effect is nice IMO :-)
 
 Regards,
-Oliver
-
+Fabio
