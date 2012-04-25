@@ -1,56 +1,31 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Wed, 25 Apr 2012 09:50:45 +0200
-Message-ID: <20120425075045.GA506@vandijck-laurijssen.be>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
- <20120424083806.GB420@vandijck-laurijssen.be>
- <20120424202200.GA1672@gmail.com>
+From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+Subject: Peak PCAN USB question
+Date: Wed, 25 Apr 2012 07:37:48 +0000
+Message-ID: <77D4E1B1D8549C4388FD52C58AC24547053FE38D@SBSPORT2.portnet.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:28515 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751392Ab2DYHus (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 25 Apr 2012 03:50:48 -0400
-Content-Disposition: inline
-In-Reply-To: <20120424202200.GA1672@gmail.com>
+Received: from mx.professional-internet.de ([94.125.152.3]:57695 "EHLO
+	mx.professional-internet.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751392Ab2DYHyP convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 25 Apr 2012 03:54:15 -0400
+Received: from business-178-015-016-250.static.arcor-ip.net ([178.15.16.250] helo=remote.port.de)
+	by mx.professional-internet.de with esmtp (Exim 4.69)
+	(envelope-from <oe@port.de>)
+	id 1SMwnU-0001o0-0u
+	for linux-can@vger.kernel.org; Wed, 25 Apr 2012 09:37:56 +0200
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Apr 24, 2012 at 10:22:00PM +0200, Fabio Baltieri wrote:
-> On Tue, Apr 24, 2012 at 10:38:06AM +0200, Kurt Van Dijck wrote:
-> > On Mon, Apr 23, 2012 at 11:02:45PM +0200, Fabio Baltieri wrote:
-> > > This patch implements the functions to add two LED triggers, named
-> > > <ifname>-tx and <ifname>-rx, to a canbus device driver.
-> > > 
-> > [...]
-> 
-> Hello Kurt,
-> 
-> > If I understand well, this function is subject to maximal optimization.
-> > > +void can_led_event(struct net_device *netdev, enum can_led_event event)
-> > > +{
-> > > +	struct can_priv *priv = netdev_priv(netdev);
-> > If the assignment is postponed to withing the differenct cases, thereby
-> > repeating this statement 3 times (not 4!), both for RX & TX path a single
-> > assignment could be saved.
-> > For stack usage, I'm not an expert, but I suspect a little less stack use.
-> > I'm not sure wether it's worth the pain of extra lines of code.
-> > I tried to illustrate my point here:
-> 
-> I'm looking at the disassembled function for both cases on ARM.  Your
-> version uses some less instructions but I think the optimizer is
-> crunching the whoole thing in some funny way and I'm not sure if it's
-> going to make a difference at all in the end.
+I'm working on a project where the application has to use can4linux and SocketCAN.
+Mainly because can4linux has no USB support yet.
+For some requests to the SocketCAN layer I use libsocketcan.
+Can someone confirm that can_get_berr_counter(), can_get_state()
+and may be some more functions are not working with the Peak PCAN USB Interface?
 
-If the benefit cannot be proven, I'd stick to the original, as the code
-is much cleaner :-)
-
-> Do you know if there are any other part of the kernel which are using
-> similar optimiziations?
-
-No, I'm not an expert on code optimization ...
-
-Kurt
+Regards
+ Heinz
