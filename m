@@ -1,48 +1,87 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Tue, 24 Apr 2012 22:34:57 +0200
-Message-ID: <20120424203457.GB1672@gmail.com>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
- <20120424084516.GC420@vandijck-laurijssen.be>
+Date: Wed, 25 Apr 2012 09:05:42 +0200
+Message-ID: <4F97A246.2050603@grandegger.com>
+References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com> <4F964C45.8010804@grandegger.com> <4F96C9C3.1010505@hartkopp.net> <4F96EC1D.5040200@grandegger.com> <4F96F79C.5090301@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:46403 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755070Ab2DXUdK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Apr 2012 16:33:10 -0400
-Received: by wejx9 with SMTP id x9so682663wej.19
-        for <linux-can@vger.kernel.org>; Tue, 24 Apr 2012 13:33:09 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120424084516.GC420@vandijck-laurijssen.be>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:58947 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750849Ab2DYHFp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Apr 2012 03:05:45 -0400
+In-Reply-To: <4F96F79C.5090301@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, linux-can@vger.kernel.org
 
-On Tue, Apr 24, 2012 at 10:45:16AM +0200, Kurt Van Dijck wrote:
-> On Mon, Apr 23, 2012 at 11:02:45PM +0200, Fabio Baltieri wrote:
-> > This patch implements the functions to add two LED triggers, named
-> > <ifname>-tx and <ifname>-rx, to a canbus device driver.
-> > 
+On 04/24/2012 08:57 PM, Oliver Hartkopp wrote:
+> On 24.04.2012 20:08, Wolfgang Grandegger wrote:
 > 
-> > +void can_led_event(struct net_device *netdev, enum can_led_event event)
+>> On 04/24/2012 05:41 PM, Oliver Hartkopp wrote:
+>>> On 24.04.2012 08:46, Wolfgang Grandegger wrote:
+>>>
+>>>
+>>>>> - The blink timer is implemented as:
+>>>>>   * keep on for delay_time
+>>>>>   * turn off and retrigger the timer
+>>>>>   * turn back on after delay
+>>>>>   so that the hot-path only contains a switch-case, some checks and a mod_timer.
+>>>>>
+>>>>> This is tested on an x86 with a custom usb-can interface and on a flexcan-based
+>>>>> Freescale ARM board. I'll post some patch to implement support in other drivers
+>>>>> if anyone is interested into testing this one.
+>>>>>
+>>>>> Any comments?
+>>>>
+>>>> I still think that the blinking support should go to the timer class to
+>>>> avoid duplicated code. Any good reason against? Apart from that the
+>>>> patches look good.
+>>>
+>>>
+>>> Hello Wolfgang,
+>>>
+>>> what exactly do you mean with "timer class" ??
+>>>
+>>> To me the current implementation looks like standard jiffie-based timer usage.
+>>>
+>>> IMO hrtimers are not needed here - or what are you thinking of?
+>>
+>> I mean that the code doing that kind of blinking should go to the timer
+>> class as generic function/feature, which other drivers could then use as
+>> well, similar to led_trigger_event or led_trigger_blink. Should not be a
+>> big deal, I think. See also my previous mail:
+>>
+>>   http://marc.info/?l=linux-can&m=133425656510148&w=2
+>>
 > 
-> > +	case CAN_LED_EVENT_TX:
-> > +		if (led_delay && likely(tx_led) &&
-> > +		    !timer_pending(&tx_led->timer))
-> > +			mod_timer(&tx_led->timer,
-> I think that the latter 2 statements need threadsafe protection
-> _OR_ strict serialization from the caller (much more likely).
-> I don't think the code needs change, but it might be worth mentioning
-> this serialization requirement in the header.
+> 
+> Hm - as i see from the two examples there, the LEDs have a different
+> behaviour. E.g. on which use-case specific events they blink or set the LEDs
+> to fixed values.
+> 
+> I can't see any real benefit for these LED users to implement a generic LED
+> blinking framework. IMO using timers and the led_trigger_event stuff is the
+> appropriate abstraction level.
 
-Sure? Each device is going to have individual timer structures, and
-each timer_list is going to be accessed only from the event function and
-by the timer handler itself for retriggering.
+It's not the task of the CAN driver to let LEDs blink! Or what should
+the LED class then be good for?
 
-Also, mod_timer() by itself should be safe.
+> If you look into other networking drivers (e.g. the wireless) - they do it
+> with delayed_work:
+> 
+> http://lxr.linux.no/#linux+v3.3.1/drivers/net/wireless/ath/carl9170/led.c#L105
+> 
+> And everyone defines a specific struct like this one:
+> 
+> http://lxr.linux.no/#linux+v3.3.1/drivers/net/wireless/ath/carl9170/carl9170.h#L205
+> 
+> I think it's an enormous effort to unify all the LED users ...
 
-http://lxr.free-electrons.com/source/kernel/timer.c#L833
+Yes, they do that because there is no generic support. I believe that
+the "one-shot-blinking" is useful in general which new drivers may use.
+I did not ask for adapting old drivers.
 
-Regards,
-Fabio
+Wolfgang.
