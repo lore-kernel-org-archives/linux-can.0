@@ -1,62 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Peak PCAN USB question
-Date: Wed, 25 Apr 2012 10:31:12 +0200
-Message-ID: <4F97B650.4080509@pengutronix.de>
-References: <77D4E1B1D8549C4388FD52C58AC24547053FE38D@SBSPORT2.portnet.local>
+From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+Subject: AW: Peak PCAN USB question
+Date: Wed, 25 Apr 2012 08:43:40 +0000
+Message-ID: <77D4E1B1D8549C4388FD52C58AC24547053FE3DA@SBSPORT2.portnet.local>
+References: <77D4E1B1D8549C4388FD52C58AC24547053FE38D@SBSPORT2.portnet.local>,<4F97B3E5.3060603@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCAC5BC8D49F42E80978584BD"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49501 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752308Ab2DYIbV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Apr 2012 04:31:21 -0400
-In-Reply-To: <77D4E1B1D8549C4388FD52C58AC24547053FE38D@SBSPORT2.portnet.local>
+Received: from mx.professional-internet.de ([94.125.152.3]:56569 "EHLO
+	mx.professional-internet.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752419Ab2DYInt convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 25 Apr 2012 04:43:49 -0400
+In-Reply-To: <4F97B3E5.3060603@grandegger.com>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+To: Wolfgang Grandegger <wg@grandegger.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCAC5BC8D49F42E80978584BD
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+
+________________________________________
+Von: Wolfgang Grandegger [wg@grandegger.com]
+Gesendet: Mittwoch, 25. April 2012 10:20
+Bis: Heinz-J=FCrgen Oertel
+Cc: linux-can@vger.kernel.org
+Betreff: Re: Peak PCAN USB question
 
 On 04/25/2012 09:37 AM, Heinz-J=FCrgen Oertel wrote:
-> I'm working on a project where the application has to use can4linux and=
- SocketCAN.
+> I'm working on a project where the application has to use can4linux a=
+nd SocketCAN.
 > Mainly because can4linux has no USB support yet.
 > For some requests to the SocketCAN layer I use libsocketcan.
 > Can someone confirm that can_get_berr_counter(), can_get_state()
-> and may be some more functions are not working with the Peak PCAN USB I=
-nterface?
+> and may be some more functions are not working with the Peak PCAN USB=
+ Interface?
 
-can_get_berr_counter ends up in the do_get_berr_counter callback, which
-isn't implemented in the peak drivers.
+Looking to the driver: can_get_berr_counter() is not supported but
+can_get_state() should work. And bus error reporting is also not suppor=
+ted.
 
-grep -R do_get_berr_counter drivers/net/can/usb/peak_usb/
+Wolfgang.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+This call:
+ ret =3D can_get_state(canh_dev_to_name(dev), &sct_state);
+    if(ret =3D=3D -1) {
+	perror("libsocketcan can_get_state");
+prints out:
+ libsocketcan can_get_state: Resource temporarily unavailable
+
+It works perfectly with EMS CPC-PCI boards.
 
 
---------------enigCAC5BC8D49F42E80978584BD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Is it pcan_netdev.c where I have to look, peak version 7.4 ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Regards
+    Heinz
 
-iEYEARECAAYFAk+XtlUACgkQjTAFq1RaXHO70QCfRGIff7gX51g8q+5ZAa/3A2ws
-f/wAnRdapKPKeFV4TBJYzKdC56TpKBDS
-=UbGl
------END PGP SIGNATURE-----
+PS: I still don't know how to quote emails correctly using Outlook :-)
 
---------------enigCAC5BC8D49F42E80978584BD--
+
+
