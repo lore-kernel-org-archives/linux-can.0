@@ -1,71 +1,29 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Thu, 26 Apr 2012 10:21:32 +0200
-Message-ID: <20120426082132.GA423@vandijck-laurijssen.be>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
- <20120424084516.GC420@vandijck-laurijssen.be>
- <20120424203457.GB1672@gmail.com>
- <20120425080004.GB506@vandijck-laurijssen.be>
- <20120425203948.GA1585@gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Configuration CAN sja1000_isa
+Date: Thu, 26 Apr 2012 10:54:08 +0200
+Message-ID: <4F990D30.3000502@grandegger.com>
+References: <CALptkFSikmR9wix-fvuD9ckxt1-PWSFQUYP3ekrZ7kL4WJ54iQ@mail.gmail.com>	<4F99015A.2050606@grandegger.com> <CALptkFSUrfcktNof43BL9anBb0SuJCye4ELd9qAWNA-F9T_svQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:41134 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754211Ab2DZIVj (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 26 Apr 2012 04:21:39 -0400
-Content-Disposition: inline
-In-Reply-To: <20120425203948.GA1585@gmail.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:35786 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755346Ab2DZIyL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Apr 2012 04:54:11 -0400
+In-Reply-To: <CALptkFSUrfcktNof43BL9anBb0SuJCye4ELd9qAWNA-F9T_svQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
+To: cedric koch-hofer <cedric.koch-hofer@snowsat.com>
 Cc: linux-can@vger.kernel.org
 
-On Wed, Apr 25, 2012 at 10:39:48PM +0200, Fabio Baltieri wrote:
-> On Wed, Apr 25, 2012 at 10:00:04AM +0200, Kurt Van Dijck wrote:
-> > On Tue, Apr 24, 2012 at 10:34:57PM +0200, Fabio Baltieri wrote:
-> > > On Tue, Apr 24, 2012 at 10:45:16AM +0200, Kurt Van Dijck wrote:
-> > > > On Mon, Apr 23, 2012 at 11:02:45PM +0200, Fabio Baltieri wrote:
-> > > > > This patch implements the functions to add two LED triggers, named
-> > > > > <ifname>-tx and <ifname>-rx, to a canbus device driver.
-> > > > > 
-> > > > 
-> > > > > +void can_led_event(struct net_device *netdev, enum can_led_event event)
-> > > > 
-> > > > > +	case CAN_LED_EVENT_TX:
-> > > > > +		if (led_delay && likely(tx_led) &&
-> > > > > +		    !timer_pending(&tx_led->timer))
-> > > > > +			mod_timer(&tx_led->timer,
-> > > > I think that the latter 2 statements need threadsafe protection
-> > > > _OR_ strict serialization from the caller (much more likely).
-> > > > I don't think the code needs change, but it might be worth mentioning
-> > > > this serialization requirement in the header.
-> > > 
-> > > Sure? Each device is going to have individual timer structures, and
-> > > each timer_list is going to be accessed only from the event function and
-> > > by the timer handler itself for retriggering.
-> > > 
-> > > Also, mod_timer() by itself should be safe.
-> > 
-> > _between_ timer_pending() & mod_timer(), which are both
-> > safe I assume, an interrupt may happen.
-> > In such case, it's important that can_led_event(CAN_LED_EVENT_TX)
-> > is only called from either some IRQ function, or the network subsystem's softirq,
-> > but NOT from both places.
-> 
-> Ok - but I can't think of a case where you would call this one outside
-> hardirq/softirq context.  Either way, I think that the only thing which
-> could happen without locks is to schedule the timer two times, which as
-> I see from mod_timer implementation is already optimized out, so I think
-> that no locking is needed on this one.
+On 04/26/2012 10:17 AM, cedric koch-hofer wrote:
+> It is wired and you can see the trace that I forget to include in my
+> previous mail 8-)
 
-I neither think that locking is needed, for reasons you also mentioned.
-I did think the proposed way of using can_led_event() is worth describing
-in the header, so that it's clear that no locking is needed.
-But maybe I'm mistaken here...
+I already saw the trace on the Socket-CAN ml. But you did not answer my
+question:
 
-> Am I missing something?
-no.
+ "Does it work with "ifconfig can0 up"?"
 
-Kind regards,
-Kurt
+Wolfgang.
