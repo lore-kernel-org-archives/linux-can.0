@@ -1,57 +1,43 @@
-From: =?iso-8859-15?q?Heinz-J=FCrgen?= Oertel <oe@port.de>
-Subject: SocketCAN version numbering
-Date: Fri, 27 Apr 2012 11:25:33 +0200
-Message-ID: <201204271125.43138.oe@port.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4746912.CW66LbBbMB";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+From: Sven Geggus <lists@fuchsschwanzdomain.de>
+Subject: ODB-II Interfaces and Linux CAN?
+Date: Fri, 27 Apr 2012 09:46:20 +0000 (UTC)
+Message-ID: <jndptc$9c5$1@ultimate100.geggus.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx.professional-internet.de ([94.125.152.3]:51816 "EHLO
-	mx.professional-internet.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755389Ab2D0JZq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Apr 2012 05:25:46 -0400
-Received: from business-178-015-016-250.static.arcor-ip.net ([178.15.16.250] helo=remote.port.de)
-	by mx.professional-internet.de with esmtp (Exim 4.69)
-	(envelope-from <oe@port.de>)
-	id 1SNhQu-0008Sj-4Y
-	for linux-can@vger.kernel.org; Fri, 27 Apr 2012 11:25:44 +0200
+Received: from mail.gnuher.de ([78.47.12.54]:45338 "EHLO mail.gnuher.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1759151Ab2D0Jq1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 27 Apr 2012 05:46:27 -0400
+Received: from ultimate100.geggus.net ([2a01:198:297:1::1])
+	by mail.gnuher.de (envelope-from
+	<news@geggus.net>)
+	with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.72)
+	id 1SNhkr-0001JD-2l
+	for linux-can@vger.kernel.org; Fri, 27 Apr 2012 11:46:21 +0200
+Received: from news  by ultimate100.geggus.net (envelope-from
+	<news@geggus.net>)
+	with local (Exim 4.72)
+	id 1SNhkq-0002Yr-FY
+	for linux-can@vger.kernel.org; Fri, 27 Apr 2012 11:46:20 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
---nextPart4746912.CW66LbBbMB
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-
 Hello,
 
-What is the suggested way to get the SocketCAN version number?
-On my two systems, according to Documentation/networking/can.txt, I always =
-get=20
+cheap ODB-II Interfaces claiming to support CAN (at least up to 500 kbps)
+are available for less than 20 Euros now.
 
- $ cat /proc/net/can/version
- rev 20090105 abi 8
+Here is one of them:
+http://www.autodia.de/produkte/autodia-e327/technische-daten
 
-on different systems.
-But one has support for error counters the other not with the same interfac=
-e board
+Will this already work with socketcan or would it be possible to implement
+support?
 
-Regards
-    Heinz
+Sven
 
---nextPart4746912.CW66LbBbMB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iD8DBQBPmmYXA8IN2dIgYc8RAgJDAKDMI65ANCWBuuOJm/EkqDypd0AfaACg8nlb
-+Yg1iofbsbH7A5XUyaHkKk0=
-=B5Wu
------END PGP SIGNATURE-----
-
---nextPart4746912.CW66LbBbMB--
+-- 
+"If you don't make lower-resolution mapping data publicly
+available, there will be people with their cars and GPS
+devices, driving around with their laptops" (Tim Berners-Lee)
+/me is giggls@ircnet, http://sven.gegg.us/ on the Web
