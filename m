@@ -1,43 +1,49 @@
-From: Sven Geggus <lists@fuchsschwanzdomain.de>
-Subject: ODB-II Interfaces and Linux CAN?
-Date: Fri, 27 Apr 2012 09:46:20 +0000 (UTC)
-Message-ID: <jndptc$9c5$1@ultimate100.geggus.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: SocketCAN version numbering
+Date: Fri, 27 Apr 2012 11:46:50 +0200
+Message-ID: <4F9A6B0A.4090504@grandegger.com>
+References: <201204271125.43138.oe@port.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.gnuher.de ([78.47.12.54]:45338 "EHLO mail.gnuher.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1759151Ab2D0Jq1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 27 Apr 2012 05:46:27 -0400
-Received: from ultimate100.geggus.net ([2a01:198:297:1::1])
-	by mail.gnuher.de (envelope-from
-	<news@geggus.net>)
-	with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.72)
-	id 1SNhkr-0001JD-2l
-	for linux-can@vger.kernel.org; Fri, 27 Apr 2012 11:46:21 +0200
-Received: from news  by ultimate100.geggus.net (envelope-from
-	<news@geggus.net>)
-	with local (Exim 4.72)
-	id 1SNhkq-0002Yr-FY
-	for linux-can@vger.kernel.org; Fri, 27 Apr 2012 11:46:20 +0200
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:32797 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760015Ab2D0Jqw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Apr 2012 05:46:52 -0400
+In-Reply-To: <201204271125.43138.oe@port.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+Cc: linux-can@vger.kernel.org
 
-Hello,
+Hello Heinz,
 
-cheap ODB-II Interfaces claiming to support CAN (at least up to 500 kbps)
-are available for less than 20 Euros now.
+On 04/27/2012 11:25 AM, Heinz-J=FCrgen Oertel wrote:
+>=20
+> Hello,
+>=20
+> What is the suggested way to get the SocketCAN version number?
+> On my two systems, according to Documentation/networking/can.txt, I a=
+lways get=20
+>=20
+>  $ cat /proc/net/can/version
+>  rev 20090105 abi 8
 
-Here is one of them:
-http://www.autodia.de/produkte/autodia-e327/technische-daten
+This is for the CAN protocol implementation but I'm not sure if it's
+well maintained...
 
-Will this already work with socketcan or would it be possible to implement
-support?
+> on different systems.
+> But one has support for error counters the other not with the same in=
+terface board
 
-Sven
+=2E.. and for CAN drives we do not maintain extra version number. Usual=
+ly,
+the kernel version is used to understand if a feature exists or is
+supported. For the bus error counter and such features, capability flag=
+s
+would be a nice to have, though Anyway, what would you like to use the
+berr_counters for? If they are not available, a netlink request will
+return an error.
 
--- 
-"If you don't make lower-resolution mapping data publicly
-available, there will be people with their cars and GPS
-devices, driving around with their laptops" (Tim Berners-Lee)
-/me is giggls@ircnet, http://sven.gegg.us/ on the Web
+Wolfgang.
