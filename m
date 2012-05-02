@@ -1,90 +1,77 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: ODB-II Interfaces and Linux CAN?
-Date: Fri, 27 Apr 2012 19:40:30 +0200
-Message-ID: <4F9ADA0E.7050408@hartkopp.net>
-References: <jndptc$9c5$1@ultimate100.geggus.net> <4F9A6DEA.5050900@pengutronix.de> <jne15j$bbr$1@ultimate100.geggus.net> <4F9A9875.50904@pengutronix.de>
+From: Marcus Liebhardt <marcus.liebhardt@yujinrobot.com>
+Subject: Support of MCP2515 and AM35x High-End CAN controller in (RT-)SocketCAN
+Date: Wed, 2 May 2012 16:51:15 +0900
+Message-ID: <CAKG=6c4wMX4ZWFKAxN81-Rnf07wG1vqL96q0e78oe+VjsLSNrA@mail.gmail.com>
+References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:40271 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1760583Ab2D0Rkc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Apr 2012 13:40:32 -0400
-In-Reply-To: <4F9A9875.50904@pengutronix.de>
+Received: from mail-ob0-f174.google.com ([209.85.214.174]:46308 "EHLO
+	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751913Ab2EBHvQ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 May 2012 03:51:16 -0400
+Received: by obbtb18 with SMTP id tb18so625412obb.19
+        for <linux-can@vger.kernel.org>; Wed, 02 May 2012 00:51:16 -0700 (PDT)
+In-Reply-To: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sven Geggus <lists@fuchsschwanzdomain.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On 27.04.2012 15:00, Marc Kleine-Budde wrote:
+Hi everybody!
 
-> On 04/27/2012 01:50 PM, Sven Geggus wrote:
->> Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->>
->>> The webpage talks about a "327 Chip" when searching for it, I find:
->>> http://www.blafusel.de/obd/obd2elm327.html
->>> http://www.elmelectronics.com/DSheets/ELM327DS.pdf
->>
->> Jepp this includes a description of the serial protocol.
-> 
+Looking for a low-cost solution for a real-time Linux system with CAN
+bus support, I am currently considering the Beaglebone [1] (similar to
+the Beagleboard) with the addition of a CAN bus cape [2]. The later
+provides two MCP2515 CAN controller and also allows the use of the
+integrated CAN controller [3] of the Beaglebone's ARM microprocessor
+(Cortex A8) .
 
+I am thinking about using a Linux kernel plus the RT-patch
+(CONFIG_PREEMPT_RT), since it seems to be less work then setting up
+Xenomai and the MCP2515 is already supported by SocketCAN. However, I
+am not sure, if this set-up will satisfy our real-time constraints,
+since SocketCAN is not real-time safe. Furthermore, I couldn't find
+information about working solutions of patched Linux kernels on the
+Beaglebord besides this paper [4].
+Hence, I am also looking into the option of using Xenomai on the
+Beaglebone for which I found working examples, such as [4]. However,
+according to this list [5] the MCP2515 is not supported by
+RTcan/RT-SocketCAN. Is this still true?
 
-Yes. It looks like that not only CAN diagnosis and transport protocols like
-j1939 and iso-tp are supported to transfer their PDUs but also it is possible
-to process bare CAN frames.
-
-Implementing e.g. the iso-tp protocol inside the ELM327 chip hides the timing
-requirements from the diagnosis application on the PC side. So the PC
-application can be pretty simple - only processing PDUs without knowing all
-the transport protocol details.
-
->>> This chip converts ODB (and CAN seems to be part of ODB) to serial. The
->>> question is how the 327 in the autodia-e327 is converted to USB. They
->>> probably use a standard USB-Serial converter chip. 
->>
->> They almost certaily do.
->>
->>> There is support for serial attached CAN adapters in mainline (IIRC), but
->>> I think it talks a different protocol.
->>
->> You are talking about slcan.c right?
-> 
-> Yes.
-> 
->> Probably I should just get me one of these cheap Interfaces.
+=46urthermore, is there support for the integrated CAN controller (AM35=
+x
+HECC) in SocketCAN and/or RT-SocketCAN?
 
 
-Good idea. Supporting all devices on earth is Greg K-Hs mission. So why not
-bringing the ELM327 to life for SocketCAN? :-)
+Best regards,
+Marcus Liebhardt
 
-> These serial CAN converters are probably quite slow, I haven't used any.
-> Maybe Oliver can comment on them.
+PS: Due to the information about SocketCAN on Gitorious, I also signed
+up on linux-can@vger.kernel.org. In which case should one use that
+list?
+-> This questions got answered the auto-reply from
+socketcan-users-bounces@lists.berlios.de (berlios mailing list is
+deprecated). :-)
 
+[1] http://beagleboard.org/bone
+[2] http://www.towertech.it/en/products/hardware/tt3201-can-cape/
+[3] http://processors.wiki.ti.com/index.php/AM35x_High-End_CAN_Controll=
+er_%28HECC%29
+[4] http://veter-project.blogspot.com/2011/09/real-time-enough-about-pw=
+ms-and-shaky.html
+[5] http://www.rts.uni-hannover.de/xenomai/lxr/source/ksrc/drivers/can/=
+README
 
-Indeed there are many of them out there - as you can see in the Kconfig entry:
-
-http://lxr.linux.no/#linux+v3.3.3/drivers/net/can/Kconfig#L21
-
-The ASCII protocol is pretty simple and there's no kind of feedback or error
-reporting - it's not my favourite CAN hardware ...
-
-There are only incoming and outgoing ASCII streams which are converted to
-struct can_frames in the slcan.c driver.
-
-The slcan encapsulation format is described here:
-
-http://lxr.linux.no/#linux+v3.3.3/drivers/net/can/slcan.c#L100
-
-Before the simple stream conversion in slcan.c can take place the SLCAN
-adapter needs to be initialized, and the bitrate needs to be set.
-
-https://gitorious.org/linux-can/can-misc/blobs/master/slcan/SLCAN-API.pdf
-
-This is done by e.g. slcan_attach tool.
-
-Don't know how to setup the ELM327 to bring it into this mode - but if you get
-one you may keep me informed.
-
-Regards,
-Oliver
+--
+Dipl.-Ing. (M.Sc.) Marcus Liebhardt
+Control Engineer
+Yujin Robot
+=C1=D6=BC=D2: =B4=EB=C7=D1=B9=CE=B1=B9 =BC=AD=BF=EF=BD=C3 =B1=DD=C3=B5=B1=
+=B8 =B0=A1=BB=EA=B5=BF 345-30 =B3=B2=BC=BA=C7=C1=B6=F3=C0=DA #601, 153-=
+023.
+Address: Door #601, Namsung-Plaza, 345-30 Gasan-dong, Guemcheon-gu,
+Seoul, 153-023, Republic of Korea
+Website: http://www.yujinrobot.com
+Email: marcus.liebhardt@yujinrobot.com
+Phone: +82-2-2104-0435
