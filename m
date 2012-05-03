@@ -1,73 +1,72 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC] CAN FD support
-Date: Thu, 03 May 2012 16:41:49 +0200
-Message-ID: <4FA2992D.6000807@hartkopp.net>
-References: <4FA2689D.5030905@hartkopp.net> <4FA26D28.80307@grandegger.com> <4FA26F65.5020804@hartkopp.net> <4FA275C1.4080905@grandegger.com> <20120503121833.GC416@vandijck-laurijssen.be> <4FA27C3C.8010806@hartkopp.net> <4FA28BAA.3000109@pengutronix.de>
+Subject: Wireshark / libpcap - was Re: [RFC] CAN FD support part 2 - ideas
+ and commented source
+Date: Thu, 03 May 2012 20:01:32 +0200
+Message-ID: <4FA2C7FC.9070103@hartkopp.net>
+References: <4FA242D0.2070604@hartkopp.net> <4FA268B2.8030109@hartkopp.net> <20120503123755.GD416@vandijck-laurijssen.be> <4FA27F18.9080106@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:58486 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:33036 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754693Ab2ECOlw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 10:41:52 -0400
-In-Reply-To: <4FA28BAA.3000109@pengutronix.de>
+	with ESMTP id S1757965Ab2ECSBf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 14:01:35 -0400
+In-Reply-To: <4FA27F18.9080106@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>, Felix Obenhuber <felix@obenhuber.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 03.05.2012 15:44, Marc Kleine-Budde wrote:
+On 03.05.2012 14:50, Oliver Hartkopp wrote:
 
-> On 05/03/2012 02:38 PM, Oliver Hartkopp wrote:
-> [...]
+> On 03.05.2012 14:37, Kurt Van Dijck wrote:
+
+
+>> I don't see benefit in introducing ETH_P_CANFD.
+>> Using the skb's payload length differentiates enough between CAN_MTU & CANFD_MTU.
+>> Why not using that info. IMHO, ETH_P_CANFD duplicates the info.
 > 
->>> I share this.
->>> I'd even prefer u16 over u8 even.
->>> No legacy issues exist when changing the meaning of can_dlc, since current
->>> CAN frames have equal values for DLC & length!
->>>
->>>> the struct is also used by the app.
->>
->>
->> Yes - that's the main problem IMO.
->>
->> What about this binary compatible introduction of cf->len ...
 > 
-> ...but it's not 100% source compatible, due to a compiler bug in gcc.
-> You cannot use C99 initializers on anonymous unions in certain gcc versions.
-
-
-ugh!
-
+> This has a big advantage when thinking about wireshark & friends.
 > 
-> [..]
-> 
->> --- a/include/linux/can.h
->> +++ b/include/linux/can.h
->> @@ -57,7 +57,10 @@ typedef __u32 can_err_mask_t;
->>   */
->>  struct can_frame {
->>  	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
->> -	__u8    can_dlc; /* data length code: 0 .. 8 */
->> +	union {
->> +		__u8    can_dlc; /* data length code: 0 .. 8 */
->> +		__u8    len; /* data length: 0 .. 8 */
->> +	};
->>  	__u8    data[8] __attribute__((aligned(8)));
->>  };
-> 
+> You can look into the eth protocol and know the skb data layout.
+> The length information is some kind of implicit knowledge.
 
 
-Thanks for the hint.
+Hi Kurt,
 
-Indeed i left the struct can_frame as is now!
+i just wanted to pick up the ETH_P_CANFD topic you asked for.
 
-There's now can_frame.can_dlc and canfd_frame.len which both contains the real
-length - even if can_frame.can_dlc is literally a data length *code* .
+As you can see in packet_sendmsg_spkt() here
 
-Btw. by having canfd_frame.len we indicate for CAN FD that we have a real
-length here.
+http://lxr.linux.no/#linux+v3.3.4/net/packet/af_packet.c#L1447
+
+the 'proto' can be set directly when creating a skb with packet sockets:
+
+http://lxr.linux.no/#linux+v3.3.4/net/packet/af_packet.c#L1466
+
+At this point the value is put into the skb:
+
+http://lxr.linux.no/#linux+v3.3.4/net/packet/af_packet.c#L1542
+
+
+So e.g. the packet socket is definitely aware of the ETH_P_xxx values, try
+'man packet' :
+
+(..)
+protocol is the IEEE 802.3 protocol number in network order.  See the
+<linux/if_ether.h> include file for a list  of allowed  protocols.
+When  protocol  is  set  to htons(ETH_P_ALL) then all protocols are received.
+All incoming packets of that protocol type will be passed to the packet socket
+before they are passed to the protocols implemented in the kernel.
+(..)
+
+For that reason and because of the reference to <linux/if_ether.h> i think
+it's pretty relevant to wireshark and libpcap - that's why i added Felix in CC.
+
+http://sourceforge.net/tracker/?func=detail&aid=2872132&group_id=53067&atid=469579
 
 Regards,
 Oliver
+
