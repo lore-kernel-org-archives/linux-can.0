@@ -1,25 +1,24 @@
-From: Yegor Yefremov <yegor_sub1@visionsystems.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [Socketcan-users] Support of MCP2515 and AM35x High-End CAN controller
  in (RT-)SocketCAN
-Date: Thu, 03 May 2012 08:42:22 +0200
-Message-ID: <4FA228CE.2080907@visionsystems.de>
-References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com> <3F602CD5BF1C69469B2F060E90850642C7E6DC@DQHE01.ent.ti.com> <CAKG=6c50e3Q-fKvfhcSzqMAC66jTg2t7+U3f7uE10_r5sC5pLg@mail.gmail.com>
-Reply-To: yegor_sub1@visionsystems.de
+Date: Thu, 03 May 2012 09:13:00 +0200
+Message-ID: <4FA22FFC.8050905@grandegger.com>
+References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com>	<3F602CD5BF1C69469B2F060E90850642C7E6DC@DQHE01.ent.ti.com> <CAKG=6c50e3Q-fKvfhcSzqMAC66jTg2t7+U3f7uE10_r5sC5pLg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=EUC-KR
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hhlx01.visionsystems.de ([62.145.30.242]:37105 "EHLO
-	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752435Ab2ECGmf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 02:42:35 -0400
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:57301 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752459Ab2ECHNG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 03:13:06 -0400
 In-Reply-To: <CAKG=6c50e3Q-fKvfhcSzqMAC66jTg2t7+U3f7uE10_r5sC5pLg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marcus Liebhardt <marcus.liebhardt@yujinrobot.com>
 Cc: Linux-CAN <linux-can@vger.kernel.org>
 
-Am 03.05.2012 07:21, schrieb Marcus Liebhardt:
+On 05/03/2012 07:21 AM, Marcus Liebhardt wrote:
 > Hi there!
 > 
 > First of all, thank you for your valuable feedback! I'll combine my
@@ -33,6 +32,9 @@ Am 03.05.2012 07:21, schrieb Marcus Liebhardt:
 > and we plan to use the 1 Mbit/s data rate. Based on what I read so
 > far, this should be feasible with SocketCAN and a _well-tuned_
 > RT-Linux.
+
+Yes, that's feasible, I believe.
+
 > And yes, set-up time is not the most important part for this decision,
 > but since I am a beginner it is not totally unimportant either.
 > 
@@ -40,7 +42,13 @@ Am 03.05.2012 07:21, schrieb Marcus Liebhardt:
 > 
 > Why exactly is the MCP2515 not suitable for real-time applications? Is
 > the SPI interface a bottleneck? (Isn't SPI fast?)
-> 
+
+For each register access a SPI transfer needs to be setup and handled
+and therefore it's much slower than memory mapped I/O. People report
+data-losses at high data rates, especially 1MBit/s. Maybe the -rt helps
+to avoid them. Also the existing SPI interface is not optimal,
+especially for -rt.
+
 >> Note that Beaglebone uses TI's AM335x SOC which has D_CAN peripheral vs the Beagleboard
 >> Which uses TI's AM37x SOC and it does not have CAN peripheral integrated. AM3517 SOC has
 >> HECC CAN peripheral which is different than D_CAN found on AM335x. Both HECC and D_CAN drivers
@@ -59,14 +67,15 @@ Am 03.05.2012 07:21, schrieb Marcus Liebhardt:
 > controllers?
 > And do you think that the whole system consisting of SocketCAN + Linux
 > + PREEMPT_RT patch + proper tuning will fulfil the requirements?
-> 
+
+I'm quite optimistic, despite the sub-optimal SPI interface.
+
 > About Linux driver support for the DCAN controller: After skimming
 > through the Linux driver guide on the TI wiki [1] I got the impression
 > that the DCAN controller is _already_ supported by the kernel. Is the
 > TI wiki ahead of time?
 
-TI wiki speaks about their own kernel repository with DCAN drivers. But the drivers are still not mainlined, i.e. you'll need to patch this repo [1] with RT-patch and I don't know if it works without problems. BTW you'll probably get problems patching kernels with both am33xx and am3517, because they are still not fully supported by mainline kernel and you'll have to do with TI's repos. Please let us know if you had success.
+The first challenge is to find and put together a good combo kernel
+version with -rt supporting that board.
 
-1. http://arago-project.org/git/projects/linux-am33x.git
-
-Yegor
+Wolfgang.
