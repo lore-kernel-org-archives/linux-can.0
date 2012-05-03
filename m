@@ -1,90 +1,86 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC] CAN FD support
-Date: Thu, 03 May 2012 14:43:52 +0200
-Message-ID: <4FA27D88.8040401@grandegger.com>
-References: <4FA2689D.5030905@hartkopp.net> <4FA26D28.80307@grandegger.com> <4FA26F65.5020804@hartkopp.net> <4FA275C1.4080905@grandegger.com> <20120503121833.GC416@vandijck-laurijssen.be> <4FA27C3C.8010806@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC] CAN FD support part 2 - ideas and commented source
+Date: Thu, 03 May 2012 14:50:32 +0200
+Message-ID: <4FA27F18.9080106@hartkopp.net>
+References: <4FA242D0.2070604@hartkopp.net> <4FA268B2.8030109@hartkopp.net> <20120503123755.GD416@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:36059 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754293Ab2ECMny (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 08:43:54 -0400
-In-Reply-To: <4FA27C3C.8010806@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:51224 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752792Ab2ECMum (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 08:50:42 -0400
+Received: from [10.251.25.131] ([134.191.244.25])
+	by smtp.strato.de (jorabe mo20) (RZmta 29.1 AUTH)
+	with ESMTPA id z03f87o43AXNfB for <linux-can@vger.kernel.org>;
+	Thu, 3 May 2012 14:50:36 +0200 (CEST)
+In-Reply-To: <20120503123755.GD416@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 05/03/2012 02:38 PM, Oliver Hartkopp wrote:
-> On 03.05.2012 14:18, Kurt Van Dijck wrote:
+On 03.05.2012 14:37, Kurt Van Dijck wrote:
+
+> Oliver,
 > 
->> On Thu, May 03, 2012 at 02:10:41PM +0200, Wolfgang Grandegger wrote:
->>> On 05/03/2012 01:43 PM, Oliver Hartkopp wrote:
->>>> On 03.05.2012 13:34, Wolfgang Grandegger wrote:
->>>>
->>>>>> diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
->>>>>> index ea2d942..bddbafb 100644
->>>>>> --- a/drivers/net/can/vcan.c
->>>>>> +++ b/drivers/net/can/vcan.c
->>>>>> @@ -74,9 +74,8 @@ static void vcan_rx(struct sk_buff *skb, struct net_device *dev)
->>>>>>  	struct net_device_stats *stats = &dev->stats;
->>>>>>  
->>>>>>  	stats->rx_packets++;
->>>>>> -	stats->rx_bytes += cf->can_dlc;
->>>>>> +	stats->rx_bytes += can_dlc2len(cf->can_dlc);
->>>>>
->>>>> Hm, I think "cf->can_dlc" should contain the *real* length. That would
->>>>> simplify things a lot. The conversion is done when the corresponding DLC
->>>>> registers are read or written.
->>>>
->>>>
->>>> I thought about this idea some time too.
->>>>
->>>> My problem was that 'can_dlc' says
->>>>
->>>> "CAN data length *code*"
->>>>
->>>> And the dlc for CAN is already well defined.
->>>>
->>>> >From a todays view cf->len would indeed be a better expression :-/
->>>
->>> Yes, definitely.
->>>
->>>>
->>>> We could generally think about a union of 'can_dlc' and 'len' though, where
->>>> can_dlc would not be part of struct canfd_frame but only the len value.
->>>
->>> Well, we do not need dlc in the struct, just len. The conversion
->>> len->dlc needs just to be done once when register is read/written.
->>>
->>>> As you can see here, i also had the idea of providing both values:
->>>>
->>>> https://gitorious.org/~hartkopp/linux-can/hartkopps-linux-can-next/commit/dc730b789cc1a6a3c04aaacde02c6a5a81988869
->>>>
->>>> But is was a bad design, as you have two APIs modifying one value - you
->>>> never know what to trust ... it was a sanity check hell.
->>>
->>> If "cf->can_dlc", or however it is named, does not contain the real
->>> length, we will end up in a dlc2len conversion nightmare. Be aware the
+> Your proposal looks more elaborate than my first one :-)
+> 
+> In this email, I'll restrict myself to discussing ETH_P_CANFD.
+> 
+> On Thu, May 03, 2012 at 01:14:58PM +0200, Oliver Hartkopp wrote:
+>> Hi all,
 >>
->> I share this.
->> I'd even prefer u16 over u8 even.
->> No legacy issues exist when changing the meaning of can_dlc, since current
->> CAN frames have equal values for DLC & length!
+>> in this mail i would like to document the ideas for CAN FD support pointing
+>> directly to the changes inside the source.
 >>
->>> the struct is also used by the app.
 > 
+> [........]
+>>
+>> That's it.
 > 
-> Yes - that's the main problem IMO.
+> using dev's MTU is a very good idea!
 
-Furthermore, the user should be allowed to specify *any* lenght below
-max, als 57 bytes. It's than up to the driver to do the necessary padding.
+
+Tnx!
 
 > 
-> What about this binary compatible introduction of cf->len ...
+> Restricting the API to use one of 2 MTU's makes life easier.
+> 
+>>
+>> Any objections / better ideas?
+> I don't see benefit in introducing ETH_P_CANFD.
+> Using the skb's payload length differentiates enough between CAN_MTU & CANFD_MTU.
+> Why not using that info. IMHO, ETH_P_CANFD duplicates the info.
 
-Looks good.
 
-Wolfgang.
+This has a big advantage when thinking about wireshark & friends.
+
+You can look into the eth protocol and know the skb data layout.
+The length information is some kind of implicit knowledge.
+
+> 
+> This part proves my point:
+> @@ -69,13 +73,23 @@ static inline int can_dropped_invalid_skb(struct net_device *dev,
+>  {
+>  	const struct can_frame *cf = (struct can_frame *)skb->data;
+>  
+> -	if (unlikely(skb->len != sizeof(*cf) || cf->can_dlc > 8)) {
+> This check should have become:
+> +	if (unlikely(skb->len != dev->mut) || (cf->can_dlc > mtu_to_max_can_dlc(dev->mtu))
+> 
+> Instead of all the if then else flows here.
+> A lookup table to use by mtu_to_max_can_dlc is quite straight-forward:
+> static const int mtu_to_max_can_dlc_table[] = {
+> 	[sizeof(struct can_frame) = CAN_MAX_DLC,
+> 	[sizeof(struct canfd_frame) = CANFD_MAX_DLC,
+> };
+
+
+Nice idea.
+
+How big is mtu_to_max_can_dlc_table ??
+sizeof(struct canfd_frame) * sizeof(int)
+
+Regards,
+Oliver
