@@ -1,82 +1,88 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Support of MCP2515 and AM35x High-End CAN controller in (RT-)SocketCAN
-Date: Wed, 02 May 2012 10:07:58 +0200
-Message-ID: <4FA0EB5E.6060205@pengutronix.de>
-References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com> <CAKG=6c4wMX4ZWFKAxN81-Rnf07wG1vqL96q0e78oe+VjsLSNrA@mail.gmail.com>
+From: Marcus Liebhardt <marcus.liebhardt@yujinrobot.com>
+Subject: Re: [Socketcan-users] Support of MCP2515 and AM35x High-End CAN
+ controller in (RT-)SocketCAN
+Date: Thu, 3 May 2012 14:21:42 +0900
+Message-ID: <CAKG=6c50e3Q-fKvfhcSzqMAC66jTg2t7+U3f7uE10_r5sC5pLg@mail.gmail.com>
+References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com>
+	<3F602CD5BF1C69469B2F060E90850642C7E6DC@DQHE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigBC81843755C4520C7EFA6E1A"
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49949 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751399Ab2EBJ3i (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 May 2012 05:29:38 -0400
-In-Reply-To: <CAKG=6c4wMX4ZWFKAxN81-Rnf07wG1vqL96q0e78oe+VjsLSNrA@mail.gmail.com>
+Received: from mail-bk0-f46.google.com ([209.85.214.46]:59455 "EHLO
+	mail-bk0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751835Ab2ECFVo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 01:21:44 -0400
+Received: by bkcji2 with SMTP id ji2so1024736bkc.19
+        for <linux-can@vger.kernel.org>; Wed, 02 May 2012 22:21:43 -0700 (PDT)
+In-Reply-To: <3F602CD5BF1C69469B2F060E90850642C7E6DC@DQHE01.ent.ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marcus Liebhardt <marcus.liebhardt@yujinrobot.com>
-Cc: linux-can@vger.kernel.org
+To: Linux-CAN <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBC81843755C4520C7EFA6E1A
-Content-Type: text/plain; charset=EUC-KR
-Content-Transfer-Encoding: quoted-printable
+Hi there!
 
-On 05/02/2012 09:51 AM, Marcus Liebhardt wrote:
-> Hi everybody!
->=20
-> Looking for a low-cost solution for a real-time Linux system with CAN
-> bus support, I am currently considering the Beaglebone [1] (similar to
-> the Beagleboard) with the addition of a CAN bus cape [2]. The later
-> provides two MCP2515 CAN controller and also allows the use of the
-> integrated CAN controller [3] of the Beaglebone's ARM microprocessor
-> (Cortex A8) .
+=46irst of all, thank you for your valuable feedback! I'll combine my
+questions and answers in one email.
 
-Don't use mcp2515, you won't have any fun with it. Consider using a SoC
-with an integrated CAN controller, like the freescale i.mx family or one
-of the TIs with an integrated (and supported) CAN cores.
+> Setup time is not a strong argument for choosing -rt vs. Xenomai.
+> [...]
+> What are your requirements concerning latency and data rate?
 
-> I am thinking about using a Linux kernel plus the RT-patch
-> (CONFIG_PREEMPT_RT), since it seems to be less work then setting up
-> Xenomai and the MCP2515 is already supported by SocketCAN. However, I
-> am not sure, if this set-up will satisfy our real-time constraints,
-> since SocketCAN is not real-time safe. Furthermore, I couldn't find
-> information about working solutions of patched Linux kernels on the
-> Beaglebord besides this paper [4].
-> Hence, I am also looking into the option of using Xenomai on the
-> Beaglebone for which I found working examples, such as [4]. However,
-> according to this list [5] the MCP2515 is not supported by
-> RTcan/RT-SocketCAN. Is this still true?
+Our real-time requirements are 10 ms cycles, latencies around 1000 us
+and we plan to use the 1 Mbit/s data rate. Based on what I read so
+far, this should be feasible with SocketCAN and a _well-tuned_
+RT-Linux.
+And yes, set-up time is not the most important part for this decision,
+but since I am a beginner it is not totally unimportant either.
 
-If you have realtime contraints, do with mainline Linux + PREEMPT_RT and
-use a proper CAN controller.
+> Don't use mcp2515, you won't have any fun with it. [...]
 
-> Furthermore, is there support for the integrated CAN controller (AM35x
-> HECC) in SocketCAN and/or RT-SocketCAN?
+Why exactly is the MCP2515 not suitable for real-time applications? Is
+the SPI interface a bottleneck? (Isn't SPI fast?)
 
-The Kconfig says that the TI HECC is supported.
+> Note that Beaglebone uses TI's AM335x SOC which has D_CAN peripheral =
+vs the Beagleboard
+> Which uses TI's AM37x SOC and it does not have CAN peripheral integra=
+ted. AM3517 SOC has
+> HECC CAN peripheral which is different than D_CAN found on AM335x. Bo=
+th HECC and D_CAN drivers
+> have been submitted to the linux-can list and HECC is already mainlin=
+e - D_CAN driver has
+> been submitted to this list and is undergoing review - it will be mer=
+ged with the C_CAN driver
+> shortly.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Thanks a lot for this clarification! It made me realise that I got
+quite confused by those many SoC variations. Hence, I checked the
+documents again and I hope I got it right this time:
+Neither the Beagleboard (OMAP3530), nor the Beagleboard-xM (DM3730)
+offer a CAN bus controller. But the Beaglebone (AM3359) offers the
+DCAN controller and the Craneboard (AM3517) the HECC.
+Are both controllers suitable for a real-time application with the
+mentioned requirements? Is there a performance difference among both
+controllers?
+And do you think that the whole system consisting of SocketCAN + Linux
++ PREEMPT_RT patch + proper tuning will fulfil the requirements?
+
+About Linux driver support for the DCAN controller: After skimming
+through the Linux driver guide on the TI wiki [1] I got the impression
+that the DCAN controller is _already_ supported by the kernel. Is the
+TI wiki ahead of time?
 
 
---------------enigBC81843755C4520C7EFA6E1A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Regards,
+Marcus
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk+g62QACgkQjTAFq1RaXHMx0ACeKl5qz+xAM68bezu6SQm2GTpA
-lR8AmQFjr0ggn9IGCutQSMYoXVgqW/eh
-=ucIg
------END PGP SIGNATURE-----
-
---------------enigBC81843755C4520C7EFA6E1A--
+--
+Dipl.-Ing. (M.Sc.) Marcus Liebhardt
+Control Engineer
+Yujin Robot
+=C1=D6=BC=D2: =B4=EB=C7=D1=B9=CE=B1=B9 =BC=AD=BF=EF=BD=C3 =B1=DD=C3=B5=B1=
+=B8 =B0=A1=BB=EA=B5=BF 345-30 =B3=B2=BC=BA=C7=C1=B6=F3=C0=DA #601, 153-=
+023.
+Address: Door #601, Namsung-Plaza, 345-30 Gasan-dong, Guemcheon-gu,
+Seoul, 153-023, Republic of Korea
+Website: http://www.yujinrobot.com
+Email: marcus.liebhardt@yujinrobot.com
+Phone: +82-2-2104-0435
