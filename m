@@ -1,96 +1,126 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: Re: [RFC PATCH v2 1/2] can: add tx/rx LED trigger support
-Date: Thu, 3 May 2012 23:49:40 +0200
-Message-ID: <20120503214940.GA1826@gmail.com>
-References: <1335214966-20478-1-git-send-email-fabio.baltieri@gmail.com>
- <4F964C45.8010804@grandegger.com>
- <20120424190226.GA1589@gmail.com>
- <4F97A735.5080708@grandegger.com>
- <4F97AA91.1020007@pengutronix.de>
- <4F97CC48.5000809@grandegger.com>
+From: Marcus Liebhardt <marcus.liebhardt@yujinrobot.com>
+Subject: Re: [Socketcan-users] Support of MCP2515 and AM35x High-End CAN
+ controller in (RT-)SocketCAN
+Date: Fri, 4 May 2012 11:27:31 +0900
+Message-ID: <CAKG=6c6wRV=-WzjNQvexurOFLxfv+EswAA02BpL6mMQALmLSpw@mail.gmail.com>
+References: <CAKG=6c5jafRAGjeQscTKLQbSjPFp7UJYwhhcpOS2QoNvy7Cggw@mail.gmail.com>
+	<3F602CD5BF1C69469B2F060E90850642C7E6DC@DQHE01.ent.ti.com>
+	<CAKG=6c50e3Q-fKvfhcSzqMAC66jTg2t7+U3f7uE10_r5sC5pLg@mail.gmail.com>
+	<4FA22FFC.8050905@grandegger.com>
+	<4FA25F16.9040602@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:34164 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754455Ab2ECVrN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 17:47:13 -0400
-Received: by were53 with SMTP id e53so1395286wer.19
-        for <linux-can@vger.kernel.org>; Thu, 03 May 2012 14:47:12 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4F97CC48.5000809@grandegger.com>
+Received: from mail-ob0-f174.google.com ([209.85.214.174]:61984 "EHLO
+	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756922Ab2EDC1c convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 May 2012 22:27:32 -0400
+Received: by obbtb18 with SMTP id tb18so3304729obb.19
+        for <linux-can@vger.kernel.org>; Thu, 03 May 2012 19:27:31 -0700 (PDT)
+In-Reply-To: <4FA25F16.9040602@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Linux-CAN <linux-can@vger.kernel.org>
 
-Hello everyone,
+2012/5/3 Wolfgang Grandegger <wg@grandegger.com>:
+> On 05/03/2012 09:13 AM, Wolfgang Grandegger wrote:
+>> On 05/03/2012 07:21 AM, Marcus Liebhardt wrote:
+>>> Hi there!
+>>>
+>>> First of all, thank you for your valuable feedback! I'll combine my
+>>> questions and answers in one email.
+>>>
+>>>> Setup time is not a strong argument for choosing -rt vs. Xenomai.
+>>>> [...]
+>>>> What are your requirements concerning latency and data rate?
+>>>
+>>> Our real-time requirements are 10 ms cycles, latencies around 1000 =
+us
+>>> and we plan to use the 1 Mbit/s data rate. Based on what I read so
+>>> far, this should be feasible with SocketCAN and a _well-tuned_
+>>> RT-Linux.
+>>
+>> Yes, that's feasible, I believe.
+>>
+>>> And yes, set-up time is not the most important part for this decisi=
+on,
+>>> but since I am a beginner it is not totally unimportant either.
+>>>
+>>>> Don't use mcp2515, you won't have any fun with it. [...]
+>>>
+>>> Why exactly is the MCP2515 not suitable for real-time applications?=
+ Is
+>>> the SPI interface a bottleneck? (Isn't SPI fast?)
+>>
+>> For each register access a SPI transfer needs to be setup and handle=
+d
+>> and therefore it's much slower than memory mapped I/O. People report
+>> data-losses at high data rates, especially 1MBit/s. Maybe the -rt he=
+lps
+>> to avoid them. Also the existing SPI interface is not optimal,
+>> especially for -rt.
+>>
+>>>> Note that Beaglebone uses TI's AM335x SOC which has D_CAN peripher=
+al vs the Beagleboard
+>>>> Which uses TI's AM37x SOC and it does not have CAN peripheral inte=
+grated. AM3517 SOC has
+>>>> HECC CAN peripheral which is different than D_CAN found on AM335x.=
+ Both HECC and D_CAN drivers
+>>>> have been submitted to the linux-can list and HECC is already main=
+line - D_CAN driver has
+>>>> been submitted to this list and is undergoing review - it will be =
+merged with the C_CAN driver
+>>>> shortly.
+>>>
+>>> Thanks a lot for this clarification! It made me realise that I got
+>>> quite confused by those many SoC variations. Hence, I checked the
+>>> documents again and I hope I got it right this time:
+>>> Neither the Beagleboard (OMAP3530), nor the Beagleboard-xM (DM3730)
+>>> offer a CAN bus controller. But the Beaglebone (AM3359) offers the
+>>> DCAN controller and the Craneboard (AM3517) the HECC.
+>>> Are both controllers suitable for a real-time application with the
+>>> mentioned requirements? Is there a performance difference among bot=
+h
+>>> controllers?
+>>> And do you think that the whole system consisting of SocketCAN + Li=
+nux
+>>> + PREEMPT_RT patch + proper tuning will fulfil the requirements?
+>>
+>> I'm quite optimistic, despite the sub-optimal SPI interface.
+>
+> To be clear, I'm optimistic for the SOC CAN controllers but not for t=
+he
+> mcp2515.
 
-I'm back on the activity-trigger subject.
+I was already suspecting that. :-)
 
-On Wed, Apr 25, 2012 at 12:04:56PM +0200, Wolfgang Grandegger wrote:
-> >>> On Tue, Apr 24, 2012 at 08:46:29AM +0200, Wolfgang Grandegger wrote:
-> >>>> I still think that the blinking support should go to the timer class to
-> >>>> avoid duplicated code. Any good reason against? Apart from that the
-> >>>> patches look good.
-> >>>>
-> >> For me it still does make sense to provide a generic
-> >> led_trigger_blink_once support. But well, go ahead if I'm the only one
-> >> with that opinion.
-> > 
-> > +1
-> > At least start a discussion on the LED list (I don't know which list
-> > that is).
-> 
-> The MAINAINERS file does not list a mailing list, therefore the LKML
-> should be used, with a CC to Richard Purdie, I think. While checking if
-> LED support is discussed, I found related mails. One shot timer LED
-> support seems to be a frequently discussed issue:
-> 
->   http://marc.info/?t=133489487700001&r=1&w=2
->   http://marc.info/?l=linux-kernel&m=133331013422467&w=4
-> 
-> As usual, it's better to send a patch than to ask a (general) questions.
-> I think we would get rather quick response.
+However, I'm confused by "[...] despite the sub-optimal SPI
+interface.". Do you mean, that the SOC CAN controllers (e.g. DCAN,
+HECC) are also using the SPI interface? If so, are they not suffering
+the same problems as external CAN controllers (e.g. the MCP2515) using
+this bus?
 
-I spent last couple of days trying to come up with a generic one-shot
-blink patch clean enough to get some chance of integration, but what I
-ended up with was these considerations in favor of framework-specific
-code:
 
-The only clean way I see to do that is to implement the function as an
-extension of the actual soft-blink code.
+Marcus
 
-That functions are used as fallback if no hw-blink is available and are
-just blindly toggling values on-off, so they have to be modified quite
-heavily to add necessary state information to support the behaviour of
-the actual code (like when a trigger is added for an already up
-interface) and the feature required by other usage cases (like the
-trigger currently discussed in the list - which is going in the way of a
-trigger-specific implemetation anyway).  This would involve adding flags
-and cases in both trigger and timer code.
+>
+> Wolfgang.
+>
+>
 
-So, I'm taking a break on this and trying to feed this argument: why the
-socketcan code would benefit from a specific implementation rather than
-a generic one?
 
-Because overall code is *much* more simple and clean!
 
-- the timer function body is just 12 lines of code, whithout special
-  cases, that's faster to execute and easy to understand (and debug).
-
-- the event function for TX and RX paths is just some checks and a
-  mod_timer, without list iterations or locking, and as it's going to be
-  called in hard-irq context, I think this is a *strong* plus for the
-  implementation (the most important thing here is to get out of the way
-  as fast as possible, right? A generic implementation would only make
-  latencies worse here).
-
-So, my point, do you still think that this feature would benefit of a
-generic triggering implementation?
-
-(of course, I'm posting a v3 with just Oliver's Kconfig notes if you
-agree with my point :-) )
-
-Regards,
-Fabio
+--=20
+Dipl.-Ing. (M.Sc.) Marcus Liebhardt
+Control Engineer
+Yujin Robot
+=C1=D6=BC=D2: =B4=EB=C7=D1=B9=CE=B1=B9 =BC=AD=BF=EF=BD=C3 =B1=DD=C3=B5=B1=
+=B8 =B0=A1=BB=EA=B5=BF 345-30 =B3=B2=BC=BA=C7=C1=B6=F3=C0=DA #601, 153-=
+023.
+Address: Door #601, Namsung-Plaza, 345-30 Gasan-dong, Guemcheon-gu,
+Seoul, 153-023, Republic of Korea
+Website: http://www.yujinrobot.com
+Email: marcus.liebhardt@yujinrobot.com
+Phone: +82-2-2104-0435
