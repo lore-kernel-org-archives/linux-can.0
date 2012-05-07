@@ -1,55 +1,45 @@
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Dong Aisheng <aisheng.dong@freescale.com>
 Subject: Re: [PATCH RESEND 0/5] Adopt pinctrl support for a few outstanding
  imx drivers
-Date: Mon, 7 May 2012 15:34:06 +0800
-Message-ID: <20120507073403.GG19389@S2101-09.ap.freescale.net>
+Date: Mon, 7 May 2012 15:53:44 +0800
+Message-ID: <20120507075344.GC23607@shlinux2.ap.freescale.net>
 References: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
  <20120507065001.GA23607@shlinux2.ap.freescale.net>
+ <20120507073403.GG19389@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:61949 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754571Ab2EGHdr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 May 2012 03:33:47 -0400
-Received: by pbbrp8 with SMTP id rp8so6341105pbb.19
-        for <linux-can@vger.kernel.org>; Mon, 07 May 2012 00:33:47 -0700 (PDT)
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-serial-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20120507065001.GA23607@shlinux2.ap.freescale.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <aisheng.dong@freescale.com>
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, linux-can@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Olof Johansson <olof@lixom.net>, spi-devel-general@lists.sourceforge.net, Dong Aisheng <dong.aisheng@linaro.org>, "David S. Miller" <davem@davemloft.net>
+In-Reply-To: <20120507073403.GG19389@S2101-09.ap.freescale.net>
+Sender: linux-serial-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Dong Aisheng-B29396 <B29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Olof Johansson <olof@lixom.net>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>, Dong Aisheng <dong.aisheng@linaro.org>, "David S. Miller" <davem@davemloft.net>
+List-Id: linux-can.vger.kernel.org
 
-On Mon, May 07, 2012 at 02:50:02PM +0800, Dong Aisheng wrote:
-> Shouldn't we add the pinctrl states in dts file at the same time
-> with this patch series or using another separate patch to add them
-> before this series to avoid breaking the exist mx6q platforms?
+On Mon, May 07, 2012 at 03:34:06PM +0800, Shawn Guo wrote:
+> On Mon, May 07, 2012 at 02:50:02PM +0800, Dong Aisheng wrote:
+> > Shouldn't we add the pinctrl states in dts file at the same time
+> > with this patch series or using another separate patch to add them
+> > before this series to avoid breaking the exist mx6q platforms?
+> > 
+> Ah, I just noticed that your patch "ARM: imx: enable pinctrl dummy
+> states" did not cover imx6q.  I think we should do the same for imx6q,
+Yes, doing that was to force people to add pinctrl states in dts file
+rather than using dummy state since mx6 supports pinctrl driver.
+
+> so that we can separate dts update from the driver change.  When all
+> imx6q boards' dts files get updated to have pins defined for the
+> devices, we can then remove dummy state for imx6q.  Doing so will ease
+> the pinctrl migration for those imx6q boards.
 > 
-Ah, I just noticed that your patch "ARM: imx: enable pinctrl dummy
-states" did not cover imx6q.  I think we should do the same for imx6q,
-so that we can separate dts update from the driver change.  When all
-imx6q boards' dts files get updated to have pins defined for the
-devices, we can then remove dummy state for imx6q.  Doing so will ease
-the pinctrl migration for those imx6q boards.
+Well, considering we have several mx6 boards, i think i can also be fine
+with this way to ease the mx6q pinctrl migration.
 
-Will update your patch on my branch to have dummy state enabled for
-imx6q.
-
-> >   net: fec: adopt pinctrl support
-> >   can: flexcan: adopt pinctrl support
-> This two also depends on another patch you sent.
-> [PATCH RESEND 1/9] ARM: mxs: enable pinctrl dummy states
-> http://www.spinics.net/lists/arm-kernel/msg173341.html
+> Will update your patch on my branch to have dummy state enabled for
+> imx6q.
 > 
-> Maybe you can put this two in the mxs convert series to avoid breaking
-> mxs platforms.
-> [PATCH 0/9] Enable pinctrl support for mach-mxs
-> http://www.spinics.net/lists/arm-kernel/msg173312.html
-> 
-Right.  I'm going to merge these two series into one since there are
-device drives shared between imx and mxs.
+Then go ahead.
 
--- 
-Regards,
-Shawn
+Regards
+Dong Aisheng
+
