@@ -1,43 +1,57 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH RESEND 0/5] Adopt pinctrl support for a few outstanding imx drivers
-Date: Mon,  7 May 2012 08:53:55 +0800
-Message-ID: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
-Return-path: <linux-serial-owner@vger.kernel.org>
-Sender: linux-serial-owner@vger.kernel.org
+Subject: [PATCH RESEND 3/5] can: flexcan: adopt pinctrl support
+Date: Mon,  7 May 2012 08:53:58 +0800
+Message-ID: <1336352040-28447-4-git-send-email-shawn.guo@linaro.org>
+References: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:33196 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755089Ab2EGAyD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 6 May 2012 20:54:03 -0400
+Received: by mail-pz0-f46.google.com with SMTP id y13so591064dad.19
+        for <linux-can@vger.kernel.org>; Sun, 06 May 2012 17:54:02 -0700 (PDT)
+In-Reply-To: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-arm-kernel@lists.infradead.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Sascha Hauer <s.hauer@pengutronix.de>, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, spi-devel-general@lists.sourceforge.net, Grant Likely <grant.likely@secretlab.ca>, linux-i2c@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-List-Id: linux-can.vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Sascha Hauer <s.hauer@pengutronix.de>, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-With patch 5b3aa5f (pinctrl: add pinctrl_provide_dummies interface for
-platforms to use) applied on pinctrl tree, and patch "ARM: imx: enable
-pinctrl dummy states" [1] being there, we are ready to adopt pinctrl
-API for imx drivers.  So let's start from a few outstanding ones.
+Cc: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ drivers/net/can/flexcan.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-I would expect to ask Arnd and Olof to pull pinctrl tree into arm-soc
-as a dependency and then have series [1] and this patch set go through
-arm-soc tree to ease the merge process.
-
-Resend to have subsystem lists Cc-ed.
-
-Regards,
-Shawn
-
-[1] http://thread.gmane.org/gmane.linux.kernel.mmc/14180
-
-Shawn Guo (5):
-  tty: serial: imx: adopt pinctrl support
-  net: fec: adopt pinctrl support
-  can: flexcan: adopt pinctrl support
-  i2c: imx: adopt pinctrl support
-  spi/imx: adopt pinctrl support
-
- drivers/i2c/busses/i2c-imx.c         |    8 ++++++++
- drivers/net/can/flexcan.c            |    6 ++++++
- drivers/net/ethernet/freescale/fec.c |    9 +++++++++
- drivers/spi/spi-imx.c                |    8 ++++++++
- drivers/tty/serial/imx.c             |    8 ++++++++
- 5 files changed, 39 insertions(+), 0 deletions(-)
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 1efb083..38c0690 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -35,6 +35,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pinctrl/consumer.h>
+ 
+ #define DRV_NAME			"flexcan"
+ 
+@@ -927,11 +928,16 @@ static int __devinit flexcan_probe(struct platform_device *pdev)
+ 	struct flexcan_priv *priv;
+ 	struct resource *mem;
+ 	struct clk *clk = NULL;
++	struct pinctrl *pinctrl;
+ 	void __iomem *base;
+ 	resource_size_t mem_size;
+ 	int err, irq;
+ 	u32 clock_freq = 0;
+ 
++	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
++	if (IS_ERR(pinctrl))
++		return PTR_ERR(pinctrl);
++
+ 	if (pdev->dev.of_node) {
+ 		const u32 *clock_freq_p;
+ 
 -- 
 1.7.5.4
 
