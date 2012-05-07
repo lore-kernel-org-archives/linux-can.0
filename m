@@ -1,57 +1,46 @@
-From: Felix Obenhuber <felix@obenhuber.de>
-Subject: Re: Wireshark / libpcap - was Re: [RFC] CAN FD support part 2 - ideas
- and commented source
-Date: Mon, 7 May 2012 14:19:25 +0200
-Message-ID: <CAJsOQGOwuMaKvizVf6rvtWevGULNmOC=tRnjr7o0+zKqVgqH4g@mail.gmail.com>
-References: <4FA242D0.2070604@hartkopp.net>
-	<4FA268B2.8030109@hartkopp.net>
-	<20120503123755.GD416@vandijck-laurijssen.be>
-	<4FA27F18.9080106@hartkopp.net>
-	<4FA2C7FC.9070103@hartkopp.net>
-	<20120504092937.GA420@vandijck-laurijssen.be>
-	<4FA3A89C.8080209@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC] CAN FD support part 2 - ideas and commented source
+Date: Mon, 07 May 2012 20:03:06 +0200
+Message-ID: <4FA80E5A.7070805@hartkopp.net>
+References: <4FA242D0.2070604@hartkopp.net> <4FA268B2.8030109@hartkopp.net> <20120503123755.GD416@vandijck-laurijssen.be> <4FA27F18.9080106@hartkopp.net> <20120503132209.GB2846@vandijck-laurijssen.be> <CAJsOQGNcdSyMjyH3XxZjhcmnZBKY_vBsb3+tEyxcuyxF7kJk1A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:42674 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754642Ab2EGMT0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 May 2012 08:19:26 -0400
-Received: by werb10 with SMTP id b10so1200098wer.19
-        for <linux-can@vger.kernel.org>; Mon, 07 May 2012 05:19:25 -0700 (PDT)
-In-Reply-To: <4FA3A89C.8080209@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:48189 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753185Ab2EGSDJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 May 2012 14:03:09 -0400
+In-Reply-To: <CAJsOQGNcdSyMjyH3XxZjhcmnZBKY_vBsb3+tEyxcuyxF7kJk1A@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Felix Obenhuber <felix@obenhuber.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
->>>> You can look into the eth protocol and know the skb data layout.
->> Again, both layouts are compatible.
->
->
-> Hm - nearly.
->
-> As the canfd_frame.flags element is new AND you have a different PDU length.
->
-> :-)
->
->>
->>>> The length information is some kind of implicit knowledge.
->> Again, there are so many checks to fix the length to one of 2 available
->> MTU's that I doubt the implicit character of the lenght information
->> for the CAN situation.
+On 07.05.2012 13:51, Felix Obenhuber wrote:
 
-If I got you right, then I think there's no need for ETH_P_CANFD from
-the pcap/wireshark point of view:
+> On Thu, May 3, 2012 at 3:22 PM, Kurt Van Dijck <kurt.van.dijck@eia.be> wrote:
+>>> This has a big advantage when thinking about wireshark & friends.
+>> I must have missed something here. ETH_P_CANFD value somewhere in struct skb
+>> is something kernel specific. Does wireshark look inside kernel?
+> 
+> No, it doesn't. The detection of a SocketCAN socket/interface is done
+> very hacky with the interface name in pcap.
+> 
+> pcap-linux.c:432:
+> 
+> #ifdef PCAP_SUPPORT_CAN
+> 	if (strstr(device, "can") || strstr(device, "vcan")) {
+> 		return can_create(device, ebuf);
+> 	}
+> #endif
 
-Both currently don't care about ETH_P_CAN. This could be improved,
-cause the detection of a CAN interface is currently done via the
-interface name. That works - but can drive people crazy when they
-setup a different naming that canXX and vcanXX.
 
-To handle the CANFD information in the Wireshark dissector, the packet
-length information is sufficient. I think it's easier to manage the
-different formats in wireshark and not down in pcap. Pcap is (almost)
-not aware of the the packet content at all. Furthermore you can save a
-the FD specific DLT.
+Oh, oh.
 
-Felix
+I like to have at least one vcan interface named 'helga' on my system.
+
+Obviously i won't have fun with pcap %-/
+
+Regards,
+Oliver
