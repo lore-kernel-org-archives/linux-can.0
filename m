@@ -1,84 +1,43 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Wireshark / libpcap - was Re: [RFC] CAN FD support part 2 - ideas
- and commented source
-Date: Fri, 04 May 2012 11:59:56 +0200
-Message-ID: <4FA3A89C.8080209@hartkopp.net>
-References: <4FA242D0.2070604@hartkopp.net> <4FA268B2.8030109@hartkopp.net> <20120503123755.GD416@vandijck-laurijssen.be> <4FA27F18.9080106@hartkopp.net> <4FA2C7FC.9070103@hartkopp.net> <20120504092937.GA420@vandijck-laurijssen.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:14419 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752318Ab2EDJ76 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 May 2012 05:59:58 -0400
-In-Reply-To: <20120504092937.GA420@vandijck-laurijssen.be>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: Felix Obenhuber <felix@obenhuber.de>, linux-can@vger.kernel.org
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH RESEND 0/5] Adopt pinctrl support for a few outstanding imx drivers
+Date: Mon,  7 May 2012 08:53:55 +0800
+Message-ID: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
+Return-path: <linux-serial-owner@vger.kernel.org>
+Sender: linux-serial-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Sascha Hauer <s.hauer@pengutronix.de>, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, spi-devel-general@lists.sourceforge.net, Grant Likely <grant.likely@secretlab.ca>, linux-i2c@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+List-Id: linux-can.vger.kernel.org
 
-On 04.05.2012 11:29, Kurt Van Dijck wrote:
+With patch 5b3aa5f (pinctrl: add pinctrl_provide_dummies interface for
+platforms to use) applied on pinctrl tree, and patch "ARM: imx: enable
+pinctrl dummy states" [1] being there, we are ready to adopt pinctrl
+API for imx drivers.  So let's start from a few outstanding ones.
 
-> On Thu, May 03, 2012 at 08:01:32PM +0200, Oliver Hartkopp wrote:
->> On 03.05.2012 14:50, Oliver Hartkopp wrote:
->>
->>> On 03.05.2012 14:37, Kurt Van Dijck wrote:
->>
->>
->>>> I don't see benefit in introducing ETH_P_CANFD.
->>>> Using the skb's payload length differentiates enough between CAN_MTU & CANFD_MTU.
->>>> Why not using that info. IMHO, ETH_P_CANFD duplicates the info.
->>>
->>>
->>> This has a big advantage when thinking about wireshark & friends.
->>>
->>> You can look into the eth protocol and know the skb data layout.
->>> The length information is some kind of implicit knowledge.
->>
-> Oliver,
-> 
-> Thanks for the explanation.
-> It shows how ETH_P_XXX values escape from kernel space.
-> It thus promotes to a part of the ABI, which I did not yet realize :-).
-> 
-> But you did not address my other concern, why you use
-> different values for CAN & CANFD.
-> 
->>> You can look into the eth protocol and know the skb data layout.
-> Again, both layouts are compatible.
+I would expect to ask Arnd and Olof to pull pinctrl tree into arm-soc
+as a dependency and then have series [1] and this patch set go through
+arm-soc tree to ease the merge process.
 
+Resend to have subsystem lists Cc-ed.
 
-Hm - nearly.
+Regards,
+Shawn
 
-As the canfd_frame.flags element is new AND you have a different PDU length.
+[1] http://thread.gmane.org/gmane.linux.kernel.mmc/14180
 
-:-)
+Shawn Guo (5):
+  tty: serial: imx: adopt pinctrl support
+  net: fec: adopt pinctrl support
+  can: flexcan: adopt pinctrl support
+  i2c: imx: adopt pinctrl support
+  spi/imx: adopt pinctrl support
 
-> 
->>> The length information is some kind of implicit knowledge.
-> Again, there are so many checks to fix the length to one of 2 available
-> MTU's that I doubt the implicit character of the lenght information
-> for the CAN situation.
-> 
-> I appreciate your effort in digging up Felix's original posts.
-> His opinions on this may be very usefull.
+ drivers/i2c/busses/i2c-imx.c         |    8 ++++++++
+ drivers/net/can/flexcan.c            |    6 ++++++
+ drivers/net/ethernet/freescale/fec.c |    9 +++++++++
+ drivers/spi/spi-imx.c                |    8 ++++++++
+ drivers/tty/serial/imx.c             |    8 ++++++++
+ 5 files changed, 39 insertions(+), 0 deletions(-)
 
-
-Yes - let's see ...
-
-> 
-> Kurt
-> 
-> [...]
->>
->> For that reason and because of the reference to <linux/if_ether.h> i think
->> it's pretty relevant to wireshark and libpcap - that's why i added Felix in CC.
->>
->> http://sourceforge.net/tracker/?func=detail&aid=2872132&group_id=53067&atid=469579
->>
->> Regards,
->> Oliver
->>
-
+-- 
+1.7.5.4
 
