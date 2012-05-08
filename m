@@ -1,46 +1,29 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC] CAN FD support part 2 - ideas and commented source
-Date: Mon, 07 May 2012 20:03:06 +0200
-Message-ID: <4FA80E5A.7070805@hartkopp.net>
-References: <4FA242D0.2070604@hartkopp.net> <4FA268B2.8030109@hartkopp.net> <20120503123755.GD416@vandijck-laurijssen.be> <4FA27F18.9080106@hartkopp.net> <20120503132209.GB2846@vandijck-laurijssen.be> <CAJsOQGNcdSyMjyH3XxZjhcmnZBKY_vBsb3+tEyxcuyxF7kJk1A@mail.gmail.com>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [PATCH RESEND 3/5] can: flexcan: adopt pinctrl support
+Date: Tue, 8 May 2012 11:44:57 +0800
+Message-ID: <20120508034456.GH23607@shlinux2.ap.freescale.net>
+References: <1336352040-28447-1-git-send-email-shawn.guo@linaro.org>
+ <1336352040-28447-4-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:48189 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753185Ab2EGSDJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 May 2012 14:03:09 -0400
-In-Reply-To: <CAJsOQGNcdSyMjyH3XxZjhcmnZBKY_vBsb3+tEyxcuyxF7kJk1A@mail.gmail.com>
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]:54831 "EHLO
+	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758174Ab2EHDiD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 May 2012 23:38:03 -0400
+Content-Disposition: inline
+In-Reply-To: <1336352040-28447-4-git-send-email-shawn.guo@linaro.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Felix Obenhuber <felix@obenhuber.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Olof Johansson <olof@lixom.net>, Dong Aisheng <dong.aisheng@linaro.org>
 
-On 07.05.2012 13:51, Felix Obenhuber wrote:
+On Mon, May 07, 2012 at 08:53:58AM +0800, Shawn Guo wrote:
+> Cc: linux-can@vger.kernel.org
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
 
-> On Thu, May 3, 2012 at 3:22 PM, Kurt Van Dijck <kurt.van.dijck@eia.be> wrote:
->>> This has a big advantage when thinking about wireshark & friends.
->> I must have missed something here. ETH_P_CANFD value somewhere in struct skb
->> is something kernel specific. Does wireshark look inside kernel?
-> 
-> No, it doesn't. The detection of a SocketCAN socket/interface is done
-> very hacky with the interface name in pcap.
-> 
-> pcap-linux.c:432:
-> 
-> #ifdef PCAP_SUPPORT_CAN
-> 	if (strstr(device, "can") || strstr(device, "vcan")) {
-> 		return can_create(device, ebuf);
-> 	}
-> #endif
+Regards
+Dong Aisheng
 
-
-Oh, oh.
-
-I like to have at least one vcan interface named 'helga' on my system.
-
-Obviously i won't have fun with pcap %-/
-
-Regards,
-Oliver
