@@ -1,78 +1,61 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [PATCH] can: trx support
-Date: Wed, 9 May 2012 16:53:11 +0200
-Message-ID: <20120509145311.GA7194@vandijck-laurijssen.be>
-References: <1336489937-29645-1-git-send-email-eric@eukrea.com>
- <4FA9394A.90303@pengutronix.de>
- <20120508173001.31ce8f0c@eb-e6520>
- <4FA93FC1.7030808@pengutronix.de>
- <20120508191459.703c4369@eb-e6520>
- <4FA95A17.8090406@hartkopp.net>
- <4FA96750.6020206@pengutronix.de>
- <20120509081650.GA426@vandijck-laurijssen.be>
- <4FAA809D.8070502@hartkopp.net>
+From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+Subject: Re: [PATCH] can: update documentation wording error frames -> error
+ messages
+Date: Wed, 9 May 2012 17:09:38 +0000
+Message-ID: <D6B800AA-023E-43AE-8D82-B7FEDF74B5F7@port.de>
+References: <1318506157-10329-1-git-send-email-mkl@pengutronix.de>
+ <4FA98011.3020600@hartkopp.net>,<4FA98441.8090308@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:50919 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758059Ab2EIOxP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 9 May 2012 10:53:15 -0400
-Content-Disposition: inline
-In-Reply-To: <4FAA809D.8070502@hartkopp.net>
+Received: from mx.professional-internet.de ([94.125.152.3]:37140 "EHLO
+	mx.professional-internet.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758439Ab2EIRJn convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 9 May 2012 13:09:43 -0400
+In-Reply-To: <4FA98441.8090308@pengutronix.de>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Eric =?utf-8?Q?B=C3=A9nard?= <eric@eukrea.com>, linux-can@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Wed, May 09, 2012 at 04:35:09PM +0200, Oliver Hartkopp wrote:
-> On 09.05.2012 10:16, Kurt Van Dijck wrote:
-> 
+Hello,=20
+I can not check before Saturday. Sorry.
+Heinz
 
-> >> In the current implementation you can register a callback via
-> >> platform_data to enable/disable the transceiver. It's up to the board to
-> >> do something useful with it.
-> > Like in: The driver must call the callback, and the board can act upon this.
-> >>
-> >> I think for now I'll take Eric's patch as it is, until we've implemented
-> >> something more complicated to support automotive style transceivers :)
-> > 
-> > To implement something more complicated:
-> > http://www.mail-archive.com/socketcan-core@lists.berlios.de/msg00269.html
-> > 
-> 
-> 
-> Wow - indeed i was not remembering your effort for these CAN transceiver class
-> support.
-> 
-> It looks interesting. Btw. i would name all the transceiver stuff with 'trx'
-> instead of 'tr' (see http://www.acronymfinder.com/TRX.html)
 
-How come that I never know such sites :-) ?
-I can live with 'trx'.
+Heinz-J=FCrgen Oertel
 
-> and i think there
-> are some more modes than
-> 
-> +
-> +/*
-> + * CAN transceiver modes
-> + */
-> +#define CANTR_MODE_OFF 0
-> +#define CANTR_MODE_ON  1
-> +
-> 
-> especially for automotive power switching.
-Yeah, I started with 2.
-Does the framework allows enough expansion?
-> 
-> Additionally a netlink config interface is preferred these days too.
-I think the netlink config may be routed via the netdev?
-> 
-> Btw. do you plan to pick the trx support up sometime?
-That depends. Does it fulfill the needs, without too much overhead?
+Am 08.05.2012 um 22:38 schrieb "Marc Kleine-Budde" <mkl@pengutronix.de>=
+:
 
-I've boards running with this, with older kernel, because I'm too lazy
-to replace it with something else (simpler).
-
-Kurt
+> On 05/08/2012 10:20 PM, Oliver Hartkopp wrote:
+>> As Heinz-Juergen Oertel pointed out 'CAN error frames' are a already=
+ defined
+>> term for the CAN protocol violation indication on the wire.
+>>=20
+>> To avoid confusion with the error messages created by CAN drivers av=
+ailable
+>> via CAN RAW sockets update the documentation and change the naming f=
+rom
+>> 'error frames' to 'error messages' or 'error message frames'.
+>>=20
+>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>=20
+> Sounds reasonable. Heinz-J=FCrgen, can I add your Acked-by: to this p=
+atch?
+> It means that you've read the patch and think this is a good change.
+>=20
+> Marc
+>=20
+> P.S.: Oliver, try to use: "git send-email", it much easier for you to
+> send patches than to copy/paste it to thunderbird.
+>=20
+> --=20
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>=20
