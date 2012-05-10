@@ -1,64 +1,83 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v2 0/4] can: c_can: Add support for Bosch D_CAN controller
-Date: Thu, 10 May 2012 17:04:13 +0530
-Message-ID: <1336649657-4152-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH v2 1/4] can: c_can: fix an interrupt thrash issue with c_can driver
+Date: Thu, 10 May 2012 17:04:14 +0530
+Message-ID: <1336649657-4152-2-git-send-email-anilkumar@ti.com>
+References: <1336649657-4152-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:57759 "EHLO arroyo.ext.ti.com"
+Received: from arroyo.ext.ti.com ([192.94.94.40]:57776 "EHLO arroyo.ext.ti.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754992Ab2EJLe4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 10 May 2012 07:34:56 -0400
+	id S1754992Ab2EJLfP (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 10 May 2012 07:35:15 -0400
+In-Reply-To: <1336649657-4152-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch series adds support for Bosch D_CAN controller to the
-existing C_CAN controller driver.
+This patch fixes an interrupt thrash issue with c_can driver.
 
-Bosch D_CAN controller is a full-CAN implementation compliant to CAN
-protocol version 2.0 part A and B. Bosch D_CAN user manual can be
-obtained from: http://www.semiconductors.bosch.de/media/
-en/pdf/ipmodules_1/can/d_can_users_manual_111.pdf
+In c_can_isr() function interrupts are disabled and enabled only in
+c_can_poll() function. c_can_isr() & c_can_poll() both read the
+irqstatus flag. However, irqstatus is always read as 0 in c_can_poll()
+because all C_CAN interrupts are disabled in c_can_isr(). This causes
+all interrupts to be re-enabled in c_can_poll() which in turn causes
+another interrupt since the event is not really handled. This keeps
+happening causing a flood of interrupts.
 
-D_CAN device is used on many SoCs like AM335x, DM8148 and DM813x EVMs
-from TI, D_CAN details on AM335x can be accessed from:
-http://www.ti.com/lit/ug/spruh73c/spruh73c.pdf
+To fix this, read the irqstatus register in isr and use the same cached
+value in the poll function.
 
-This patch series also fixes some issues in the current c_can driver.
-These issues were found while integrating d_can driver to c_can driver.
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
+Changes from v1:
+	- Incorporated Marc's comments on irqstatus usage.
 
-These patches have been tested on AM335x EVM using some additional
-patches adding runtime PM support and some code to initialize the
-AM335x D_CAN RAM. I will submit these patches once these patches are
-accepted.
+ drivers/net/can/c_can/c_can.c |    7 +++----
+ drivers/net/can/c_can/c_can.h |    1 +
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Due to lack of hardware I am not able to test c_can functionality.
-I appreciate if anyone can test C_CAN functionality with this patch
-series.
-
-Changes form v1:
-        - Changed the Macro implementation to access registers via an
-          array with virtual register index.
-        - Dropped "can: c_can: fix "BUG! echo_skb is occupied!" during
-          transmit" patch because it's accepted.
-        - Reworked on second patch (acc. to v1) based on Marc's comments.
-        - Found one more issue and added as separate patch.
-        - Third patch (acc. to v1) is split into two patches, first
-          patch only do c_can modifications to incorporate the current
-          implementation and second one adds d_can support.
-
-AnilKumar Ch (4):
-  can: c_can: fix an interrupt thrash issue with c_can driver
-  can: c_can: fix: enable CAN HW interrupts after napi_enable()
-  can: c_can: Move overlay structure to array with offset as index
-  can: c_can: Add support for Bosch D_CAN controller
-
- drivers/net/can/c_can/c_can.c          |  122 +++++++++++++++---------------
- drivers/net/can/c_can/c_can.h          |  127 ++++++++++++++++++++++----------
- drivers/net/can/c_can/c_can_platform.c |   54 ++++++++------
- include/linux/can/platform/c_can.h     |   42 +++++++++++
- 4 files changed, 223 insertions(+), 122 deletions(-)
- create mode 100644 include/linux/can/platform/c_can.h
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 9ac28df..fa01621 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -952,7 +952,7 @@ static int c_can_poll(struct napi_struct *napi, int quota)
+ 	struct net_device *dev = napi->dev;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
++	irqstatus = priv->irqstatus;
+ 	if (!irqstatus)
+ 		goto end;
+ 
+@@ -1030,12 +1030,11 @@ end:
+ 
+ static irqreturn_t c_can_isr(int irq, void *dev_id)
+ {
+-	u16 irqstatus;
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
+-	if (!irqstatus)
++	priv->irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
++	if (!priv->irqstatus)
+ 		return IRQ_NONE;
+ 
+ 	/* disable all interrupts and schedule the NAPI */
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 9b7fbef..5f32d34 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -76,6 +76,7 @@ struct c_can_priv {
+ 	unsigned int tx_next;
+ 	unsigned int tx_echo;
+ 	void *priv;		/* for board-specific data */
++	u16 irqstatus;
+ };
+ 
+ struct net_device *alloc_c_can_dev(void);
+-- 
+1.7.0.4
 
