@@ -1,83 +1,55 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v2 1/4] can: c_can: fix an interrupt thrash issue with c_can driver
-Date: Thu, 10 May 2012 17:04:14 +0530
-Message-ID: <1336649657-4152-2-git-send-email-anilkumar@ti.com>
+Subject: [PATCH v2 2/4] can: c_can: fix: enable CAN HW interrupts after napi_enable()
+Date: Thu, 10 May 2012 17:04:15 +0530
+Message-ID: <1336649657-4152-3-git-send-email-anilkumar@ti.com>
 References: <1336649657-4152-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:57776 "EHLO arroyo.ext.ti.com"
+Received: from bear.ext.ti.com ([192.94.94.41]:56889 "EHLO bear.ext.ti.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754992Ab2EJLfP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 10 May 2012 07:35:15 -0400
+	id S1755194Ab2EJLfW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 10 May 2012 07:35:22 -0400
 In-Reply-To: <1336649657-4152-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch fixes an interrupt thrash issue with c_can driver.
+Fix the issue of C_CAN interrupts getting disabled forever even though
+we do can configuration multiple times using can utils. According to
+NAPI usage we disable all the hardware interrupts in ISR and re-enable
+them in poll(). Current implementation calls napi_enable() after hardware
+interrupts are enabled. If we get any interrupts between these two steps
+then we do not process those interrupts because napi is not enabled. Mostly
+these interrupts come because of STATUS is not 0x7 or ERROR interrupts. If
+napi_enable() happens before hardware interrupts enabled then c_can_poll()
+function will be called eventual re-enabling of interrupts will happen.
 
-In c_can_isr() function interrupts are disabled and enabled only in
-c_can_poll() function. c_can_isr() & c_can_poll() both read the
-irqstatus flag. However, irqstatus is always read as 0 in c_can_poll()
-because all C_CAN interrupts are disabled in c_can_isr(). This causes
-all interrupts to be re-enabled in c_can_poll() which in turn causes
-another interrupt since the event is not really handled. This keeps
-happening causing a flood of interrupts.
-
-To fix this, read the irqstatus register in isr and use the same cached
-value in the poll function.
+This patch moves the napi_enable() call before interrupts enabled.
 
 Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 ---
-Changes from v1:
-	- Incorporated Marc's comments on irqstatus usage.
-
- drivers/net/can/c_can/c_can.c |    7 +++----
- drivers/net/can/c_can/c_can.h |    1 +
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/c_can/c_can.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 9ac28df..fa01621 100644
+index fa01621..8dc84d6 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -952,7 +952,7 @@ static int c_can_poll(struct napi_struct *napi, int quota)
- 	struct net_device *dev = napi->dev;
- 	struct c_can_priv *priv = netdev_priv(dev);
+@@ -1064,10 +1064,11 @@ static int c_can_open(struct net_device *dev)
+ 		goto exit_irq_fail;
+ 	}
  
--	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
-+	irqstatus = priv->irqstatus;
- 	if (!irqstatus)
- 		goto end;
++	napi_enable(&priv->napi);
++
+ 	/* start the c_can controller */
+ 	c_can_start(dev);
  
-@@ -1030,12 +1030,11 @@ end:
+-	napi_enable(&priv->napi);
+ 	netif_start_queue(dev);
  
- static irqreturn_t c_can_isr(int irq, void *dev_id)
- {
--	u16 irqstatus;
- 	struct net_device *dev = (struct net_device *)dev_id;
- 	struct c_can_priv *priv = netdev_priv(dev);
- 
--	irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
--	if (!irqstatus)
-+	priv->irqstatus = priv->read_reg(priv, &priv->regs->interrupt);
-+	if (!priv->irqstatus)
- 		return IRQ_NONE;
- 
- 	/* disable all interrupts and schedule the NAPI */
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 9b7fbef..5f32d34 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -76,6 +76,7 @@ struct c_can_priv {
- 	unsigned int tx_next;
- 	unsigned int tx_echo;
- 	void *priv;		/* for board-specific data */
-+	u16 irqstatus;
- };
- 
- struct net_device *alloc_c_can_dev(void);
+ 	return 0;
 -- 
 1.7.0.4
 
