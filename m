@@ -1,72 +1,58 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v3 0/4] can: c_can: Add support for Bosch D_CAN controller
-Date: Sun, 13 May 2012 15:26:11 +0530
-Message-ID: <1336902974-14269-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH v3 1/3] can: c_can: fix race condition in c_can_open()
+Date: Sun, 13 May 2012 15:26:12 +0530
+Message-ID: <1336902974-14269-2-git-send-email-anilkumar@ti.com>
+References: <1336902974-14269-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:50624 "EHLO bear.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751359Ab2EMJ4h (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 13 May 2012 05:56:37 -0400
+Received: from devils.ext.ti.com ([198.47.26.153]:38403 "EHLO
+	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751359Ab2EMJ4u (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 13 May 2012 05:56:50 -0400
+In-Reply-To: <1336902974-14269-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch series adds support for Bosch D_CAN controller to the
-existing C_CAN controller driver.
+Fix the issue of C_CAN interrupts getting disabled forever when canconfig
+utility is used multiple times. According to NAPI usage we disable all
+the hardware interrupts in ISR and re-enable them in poll(). Current
+implementation calls napi_enable() after hardware interrupts are enabled.
+If we get any interrupts between these two steps then we do not process
+those interrupts because napi is not enabled. Mostly these interrupts
+come because of STATUS is not 0x7 or ERROR interrupts. If napi_enable()
+happens before HW interrupts enabled then c_can_poll() function will be
+called eventual re-enabling.
 
-Bosch D_CAN controller is a full-CAN implementation compliant to CAN
-protocol version 2.0 part A and B. Bosch D_CAN user manual can be
-obtained from: http://www.semiconductors.bosch.de/media/
-en/pdf/ipmodules_1/can/d_can_users_manual_111.pdf
+This patch moves the napi_enable() call before interrupts enabled.
 
-D_CAN device is used on many SoCs like AM335x, DM8148 and DM813x EVMs
-from TI, D_CAN details on AM335x can be accessed from:
-http://www.ti.com/lit/ug/spruh73c/spruh73c.pdf
-
-This patch series also fixes some issues in the current c_can driver.
-These issues were found while integrating d_can driver to c_can driver.
-
-These patches have been tested on AM335x EVM using some additional
-patches adding runtime PM support and some code to initialize the
-AM335x D_CAN RAM. I will submit these patches once these patches are
-accepted.
-
-Due to lack of hardware I am not able to test c_can functionality.
-I appreciate if anyone can test C_CAN functionality with this patch
-series.
-
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
 Changes from v2:
-	- Dropped patch 1 (acc. to v2) because no update from v2. Can
-	  be found at http://permalink.gmane.org/gmane.linux.can/1081
-	- Incorporated all Marc's review comments on v2
-	  * Changed patch 2 (acc. to v2) subject line to "can: c_can:
-	    fix race condition in c_can_open()"
-	  * Moved "int reg" in patch 3 (acc. to v2) to "enum reg index"
-	  * Device registration changed by using "platform_device:
-	    id_table"
-	- Changed iface hard coded way to a macro implementation.
+	- Subject line is changed by including "race condition"
 
-Changes form v1:
-        - Changed the Macro implementation to access registers via an
-          array with virtual register index.
-        - Dropped "can: c_can: fix "BUG! echo_skb is occupied!" during
-          transmit" patch because it's accepted.
-        - Reworked on second patch (acc. to v1) based on Marc's comments.
-        - Found one more issue and added as separate patch.
-        - Third patch (acc. to v1) is split into two patches, first
-          patch only do c_can modifications to incorporate the current
-          implementation and second one adds d_can support.
+ drivers/net/can/c_can/c_can.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-AnilKumar Ch (3):
-  can: c_can: fix race condition in c_can_open()
-  can: c_can: Move overlay structure to array with offset as index
-  can: c_can: Add support for Bosch D_CAN controller
-
- drivers/net/can/c_can/c_can.c          |  123 +++++++++++++------------
- drivers/net/can/c_can/c_can.h          |  163 ++++++++++++++++++++++++--------
- drivers/net/can/c_can/c_can_platform.c |   73 ++++++++++-----
- 3 files changed, 239 insertions(+), 120 deletions(-)
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index fa01621..8dc84d6 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -1064,10 +1064,11 @@ static int c_can_open(struct net_device *dev)
+ 		goto exit_irq_fail;
+ 	}
+ 
++	napi_enable(&priv->napi);
++
+ 	/* start the c_can controller */
+ 	c_can_start(dev);
+ 
+-	napi_enable(&priv->napi);
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+-- 
+1.7.0.4
 
