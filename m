@@ -1,196 +1,202 @@
-From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v3 3/3] can: c_can: Add support for Bosch D_CAN controller
-Date: Sun, 13 May 2012 15:26:14 +0530
-Message-ID: <1336902974-14269-4-git-send-email-anilkumar@ti.com>
-References: <1336902974-14269-1-git-send-email-anilkumar@ti.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [RFC v3] CAN FD support
+Date: Mon, 14 May 2012 11:36:30 +0200
+Message-ID: <20120514093630.GA600@vandijck-laurijssen.be>
+References: <4FAD5A04.2030108@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from comal.ext.ti.com ([198.47.26.152]:48669 "EHLO comal.ext.ti.com"
+Received: from gate.eia.be ([194.78.71.18]:10050 "EHLO mail.eia.be"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751359Ab2EMJ5E (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 13 May 2012 05:57:04 -0400
-In-Reply-To: <1336902974-14269-1-git-send-email-anilkumar@ti.com>
+	id S1755093Ab2ENJge (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 14 May 2012 05:36:34 -0400
+Content-Disposition: inline
+In-Reply-To: <4FAD5A04.2030108@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This patch adds the support for D_CAN controller driver to the existing
-C_CAN driver.
+Oliver,
 
-Bosch D_CAN controller is a full-CAN implementation which is compliant
-to CAN protocol version 2.0 part A and B. Bosch D_CAN user manual can be
-obtained from: http://www.semiconductors.bosch.de/media/en/pdf/
-ipmodules_1/can/d_can_users_manual_111.pdf
+You're running fast now :-)
 
-A new array is added for accessing the d_can registers, according to d_can
-controller register space.
+I like the inversion of HDR & EDL bits. It make CAN & CANFD
+even more compatible.
 
-Current D_CAN implementation has following limitations, this is done
-to avoid large changes to the C_CAN driver.
-1. Message objects are limited to 32, 16 for RX and 16 for TX. C_CAN IP
-   supports upto 32 message objects but in case of D_CAN we can configure
-   upto 128 message objects.
-2. Using two 16bit reads/writes for accessing the 32bit D_CAN registers.
-3. These patches have been tested on little endian machine, there might
-   be some hidden endian-related issues due to the nature of the accesses
-   (32-bit registers accessed as 2 16-bit registers). However, I do not
-   have a big-endian D_CAN implementation to confirm.
+I still don't see the contribution of ETH_P_CANFD.
+I think it introduces a lot of (almost) idenctical code,
+especially compared to its benefits (cfr. 'helga').
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
----
- drivers/net/can/c_can/c_can.h          |   45 +++++++++++++++++++++++++++
- drivers/net/can/c_can/c_can_platform.c |   52 ++++++++++++++++++++++++--------
- 2 files changed, 84 insertions(+), 13 deletions(-)
+Another issue I'm still struggling with: can_raw is differentiating
+between CAN & CANFD with CAN_RAW_FD_FRAMES sockopt.
 
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index d1e141e..01a7049 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -102,6 +102,51 @@ static const u16 reg_map_c_can[] = {
- 	[C_CAN_MSGVAL2_REG]	= 0xB2,
- };
- 
-+static const u16 reg_map_d_can[] = {
-+	[C_CAN_CTRL_REG]	= 0x00,
-+	[C_CAN_STS_REG]		= 0x04,
-+	[C_CAN_ERR_CNT_REG]	= 0x08,
-+	[C_CAN_BTR_REG]		= 0x0C,
-+	[C_CAN_BRPEXT_REG]	= 0x0E,
-+	[C_CAN_INT_REG]		= 0x10,
-+	[C_CAN_TEST_REG]	= 0x14,
-+	[C_CAN_TXRQST1_REG]	= 0x88,
-+	[C_CAN_TXRQST2_REG]	= 0x8A,
-+	[C_CAN_NEWDAT1_REG]	= 0x9C,
-+	[C_CAN_NEWDAT2_REG]	= 0x9E,
-+	[C_CAN_INTPND1_REG]	= 0xB0,
-+	[C_CAN_INTPND2_REG]	= 0xB2,
-+	[C_CAN_MSGVAL1_REG]	= 0xC4,
-+	[C_CAN_MSGVAL2_REG]	= 0xC6,
-+	[C_CAN_IF1_COMREQ_REG]	= 0x100,
-+	[C_CAN_IF1_COMMSK_REG]	= 0x102,
-+	[C_CAN_IF1_MASK1_REG]	= 0x104,
-+	[C_CAN_IF1_MASK2_REG]	= 0x106,
-+	[C_CAN_IF1_ARB1_REG]	= 0x108,
-+	[C_CAN_IF1_ARB2_REG]	= 0x10A,
-+	[C_CAN_IF1_MSGCTRL_REG]	= 0x10C,
-+	[C_CAN_IF1_DATA1_REG]	= 0x110,
-+	[C_CAN_IF1_DATA2_REG]	= 0x112,
-+	[C_CAN_IF1_DATA3_REG]	= 0x114,
-+	[C_CAN_IF1_DATA4_REG]	= 0x116,
-+	[C_CAN_IF2_COMREQ_REG]	= 0x120,
-+	[C_CAN_IF2_COMMSK_REG]	= 0x122,
-+	[C_CAN_IF2_MASK1_REG]	= 0x124,
-+	[C_CAN_IF2_MASK2_REG]	= 0x126,
-+	[C_CAN_IF2_ARB1_REG]	= 0x128,
-+	[C_CAN_IF2_ARB2_REG]	= 0x12A,
-+	[C_CAN_IF2_MSGCTRL_REG]	= 0x12C,
-+	[C_CAN_IF2_DATA1_REG]	= 0x130,
-+	[C_CAN_IF2_DATA2_REG]	= 0x132,
-+	[C_CAN_IF2_DATA3_REG]	= 0x134,
-+	[C_CAN_IF2_DATA4_REG]	= 0x136,
-+};
-+
-+enum c_can_dev_id {
-+	C_CAN_DEVTYPE,
-+	D_CAN_DEVTYPE,
-+};
-+
- /* c_can private data structure */
- struct c_can_priv {
- 	struct can_priv can;	/* must be the first member */
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index a6e9b93..3b1f6c7 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -71,6 +71,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	void __iomem *addr;
- 	struct net_device *dev;
- 	struct c_can_priv *priv;
-+	const struct platform_device_id *id;
- 	struct resource *mem;
- 	int irq;
- #ifdef CONFIG_HAVE_CLK
-@@ -115,7 +116,32 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	}
- 
- 	priv = netdev_priv(dev);
--	priv->regs = reg_map_c_can;
-+	id = platform_get_device_id(pdev);
-+	switch (id->driver_data) {
-+	case C_CAN_DEVTYPE:
-+		priv->regs = reg_map_c_can;
-+		switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
-+		case IORESOURCE_MEM_32BIT:
-+			priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
-+			priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
-+			break;
-+		case IORESOURCE_MEM_16BIT:
-+		default:
-+			priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
-+			priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+			break;
-+		}
-+		break;
-+	case D_CAN_DEVTYPE:
-+		priv->regs = reg_map_d_can;
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
-+		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
-+		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto exit_free_device;
-+	}
- 
- 	dev->irq = irq;
- 	priv->base = addr;
-@@ -124,18 +150,6 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	priv->priv = clk;
- #endif
- 
--	switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
--	case IORESOURCE_MEM_32BIT:
--		priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
--		priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
--		break;
--	case IORESOURCE_MEM_16BIT:
--	default:
--		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
--		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
--		break;
--	}
--
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-@@ -189,6 +203,17 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct platform_device_id c_can_id_table[] = {
-+	{
-+		.name = "c_can_platform",
-+		.driver_data = C_CAN_DEVTYPE,
-+	}, {
-+		.name = "d_can_platform",
-+		.driver_data = D_CAN_DEVTYPE,
-+	}, {
-+	}
-+};
-+
- static struct platform_driver c_can_plat_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
-@@ -196,6 +221,7 @@ static struct platform_driver c_can_plat_driver = {
- 	},
- 	.probe = c_can_plat_probe,
- 	.remove = __devexit_p(c_can_plat_remove),
-+	.id_table = c_can_id_table,
- };
- 
- module_platform_driver(c_can_plat_driver);
--- 
-1.7.0.4
+IMO, at most 1 property/method shall exist to differentiate CAN from CANFD.
+(Preferrably, no method should have been necessary).
 
+I see that 2 struct are in place now, with sizes CAN_MTU & CANFD_MTU.
+This alone is IMO enough to differentiate.
+Next to this property, an _extra_ sockopt is introduced.
+This sockopt actually implements a filter, at can_raw level, *and*
+is a second way of telling you want to use CANFD.
+
+I understood that mixing CAN & CANFD on 1 bus is possible on CANFD chip level,
+and we do want to support those features by using 2 structs
+that in fact determine the CAN type. If an application want to mix
+CAN & CANFD, it is currently not possible without opening another
+socket, thereby loosing the proper sequence of events.
+
+IMHO, the CAN_RAW_FD_FRAMES is not justifyable towards userspace
+applications.
+
+I put my view in the code down below, besides the elimination of the 'fd_frames'
+member in struct raw_sock, and the corresponding CAN_RAW_FD_FRAMES sockopt.
+
+IMO, the old behaviour (that is written in stone) is still preserved for
+99.999%, _and_ no difficult sockopts are needed.
+Difficult means in this case: it became not straightforward to predict
+which frames got received.
+
+Kurt
+
+On Fri, May 11, 2012 at 08:27:16PM +0200, Oliver Hartkopp wrote:
+> 
+> I generated this diff by 'git diff fb7944b' on the repository
+> 
+> https://gitorious.org/~hartkopp/linux-can/hartkopps-linux-can-next
+> 
+> Regards,
+> Oliver
+> 
+>  drivers/net/can/dev.c    |   35 ++++++++++++++
+>  drivers/net/can/vcan.c   |   27 ++++++++---
+>  include/linux/can.h      |   51 ++++++++++++++++++++-
+>  include/linux/can/core.h |    4 -
+>  include/linux/can/dev.h  |   33 ++++++++++----
+>  include/linux/can/raw.h  |    3 -
+>  include/linux/if_ether.h |    3 -
+>  net/can/af_can.c         |  110 +++++++++++++++++++++++++++++++++++------------
+>  net/can/raw.c            |   41 ++++++++++++++++-
+>  9 files changed, 257 insertions(+), 50 deletions(-)
+> 
+> ---
+[...]
+> diff --git a/include/linux/can/raw.h b/include/linux/can/raw.h
+> index 781f3a3..5448c0f 100644
+> --- a/include/linux/can/raw.h
+> +++ b/include/linux/can/raw.h
+> @@ -23,7 +23,8 @@ enum {
+>  	CAN_RAW_FILTER = 1,	/* set 0 .. n can_filter(s)          */
+>  	CAN_RAW_ERR_FILTER,	/* set filter for error frames       */
+>  	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
+> -	CAN_RAW_RECV_OWN_MSGS	/* receive my own msgs (default:off) */
+> +	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
+> +	CAN_RAW_FD_FRAMES,	/* use struct canfd_frame (default:off) */
+>  };
+>  
+>  #endif
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index cde1b4a..2473e6e 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -82,6 +82,7 @@ struct raw_sock {
+>  	struct notifier_block notifier;
+>  	int loopback;
+>  	int recv_own_msgs;
+> +	int fd_frames;
+>  	int count;                 /* number of active filters */
+>  	struct can_filter dfilter; /* default/single filter */
+>  	struct can_filter *filter; /* pointer to filter(s) */
+> @@ -119,6 +120,15 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+>  	if (!ro->recv_own_msgs && oskb->sk == sk)
+>  		return;
+>  
+> +	/* only pass correct frames to the socket */
+I'm not sure to introduce such check here, but it could be as simple as:
+
+	if (unlikely((oskb->len != CAN_MTU)||(oskb->len != CANFD_MTU)))
+		return;
+
+> +	if (ro->fd_frames) {
+> +		if (unlikely(oskb->len != CANFD_MTU))
+> +			return;
+> +	} else {
+> +		if (unlikely(oskb->len != CAN_MTU))
+> +			return;
+> +	}
+> +
+>  	/* clone the given skb to be able to enqueue it into the rcv queue */
+>  	skb = skb_clone(oskb, GFP_ATOMIC);
+>  	if (!skb)
+> @@ -291,6 +301,7 @@ static int raw_init(struct sock *sk)
+>  	/* set default loopback behaviour */
+>  	ro->loopback         = 1;
+>  	ro->recv_own_msgs    = 0;
+> +	ro->fd_frames        = 0;
+>  
+>  	/* set notifier */
+>  	ro->notifier.notifier_call = raw_notifier;
+> @@ -569,6 +580,15 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>  
+>  		break;
+>  
+> +	case CAN_RAW_FD_FRAMES:
+> +		if (optlen != sizeof(ro->fd_frames))
+> +			return -EINVAL;
+> +
+> +		if (copy_from_user(&ro->fd_frames, optval, optlen))
+> +			return -EFAULT;
+> +
+> +		break;
+> +
+>  	default:
+>  		return -ENOPROTOOPT;
+>  	}
+> @@ -627,6 +647,12 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+>  		val = &ro->recv_own_msgs;
+>  		break;
+>  
+> +	case CAN_RAW_FD_FRAMES:
+> +		if (len > sizeof(int))
+> +			len = sizeof(int);
+> +		val = &ro->fd_frames;
+> +		break;
+> +
+>  	default:
+>  		return -ENOPROTOOPT;
+>  	}
+> @@ -662,13 +688,24 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
+>  	} else
+>  		ifindex = ro->ifindex;
+>  
+	if (unlikely((size != CAN_MTU)&&(size != CANFD_MTU)))
+		return -EINVAL;
+> -	if (size != sizeof(struct can_frame))
+> -		return -EINVAL;
+> +	if (ro->fd_frames) {
+> +		if (unlikely(size != CANFD_MTU))
+> +			return -EINVAL;
+> +	} else {
+> +		if (unlikely(size != CAN_MTU))
+> +			return -EINVAL;
+> +	}
+>  
+>  	dev = dev_get_by_index(&init_net, ifindex);
+>  	if (!dev)
+>  		return -ENXIO;
+>  
+> +	/* make sure the created CAN frame can pass the CAN netdevice */
+> +	if (unlikely(size > dev->mtu)) {
+> +		err = -EMSGSIZE;
+> +		goto put_dev;
+> +	}
+> +
+>  	skb = sock_alloc_send_skb(sk, size, msg->msg_flags & MSG_DONTWAIT,
+>  				  &err);
+>  	if (!skb)
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
