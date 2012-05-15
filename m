@@ -1,82 +1,113 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [RFC v3] CAN FD support
-Date: Tue, 15 May 2012 16:36:55 +0200
-Message-ID: <20120515143655.GC1414@vandijck-laurijssen.be>
-References: <4FAD5A04.2030108@hartkopp.net>
- <20120514093630.GA600@vandijck-laurijssen.be>
- <4FB16213.2000007@hartkopp.net>
- <20120515083454.GA504@vandijck-laurijssen.be>
- <4FB21FA5.8080807@hartkopp.net>
- <20120515100318.GG504@vandijck-laurijssen.be>
- <4FB253A8.3090500@hartkopp.net>
- <20120515133710.GA1414@vandijck-laurijssen.be>
- <4FB26543.5070002@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC v4] CAN FD support
+Date: Tue, 15 May 2012 17:51:20 +0200
+Message-ID: <4FB27B78.4070002@hartkopp.net>
+References: <4FB25A39.7090608@hartkopp.net> <20120515135429.GB1414@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:45534 "EHLO mail.eia.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S964815Ab2EOOg6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 15 May 2012 10:36:58 -0400
-Content-Disposition: inline
-In-Reply-To: <4FB26543.5070002@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:62890 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752612Ab2EOPvU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 May 2012 11:51:20 -0400
+In-Reply-To: <20120515135429.GB1414@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
+On 15.05.2012 15:54, Kurt Van Dijck wrote:
+
+> Oliver,
 > 
-> >> There's no reason to provide a CAN_MTU frame to a CANFD application once the
-> >> driver is switched to CANFD-mode.
-> > I think there is a reason. If a CAN2.0B frame was on the wire, generating
-> > a can_frame rather than a canfd_frame better reflects what was on the wire.
-> > 
-> > I still think a can_frame & canfd_frame with same data differ on the wire.
-> 
-> 
-> Yes. But you can express this difference with the CANFD_NOEDL bit in
-> canfd_frame.flags:
-> 
-> CANFD_NOEDL == 1 => standard CAN 2.0B frame
-> CANFD_NOEDL == 0 => CAN FD frame (whatever DLC 0-F is used)
-I see now.
-Some more pieces fall into place.
-I still haven't memorised the complete docs.
+> A few nitpicks, and 1 change of behaviour, as announced in my last reply
+> on v3.
 > 
 
+> [...]
+>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>> index 151b773..98b5604 100644
+>> --- a/net/can/bcm.c
+>> +++ b/net/can/bcm.c
+>> @@ -1357,6 +1357,13 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
+>>  
+>>  	switch (msg) {
+>>  
+>> +	case NETDEV_CHANGEMTU:
+>> +		/*
+>> +		 * Changing the MTU breaks the frame size that was formerly
+>> +		 * registered. The change can only be done when the interface
+>> +		 * ist down. Btw. make sure to get no trash from the device and
+> 'ist' sound german.
+> You have this in several places :-)
+
+
+Oh, snap! German engineering :-)
+
+http://www.youtube.com/watch?v=0I0WfnhVs2s
+
+Fixed the typo in my git repo.
+
+>> +		 * drop this device from the open sockets perspective.
+>> +		 */
+>>  	case NETDEV_UNREGISTER:
+>>  		lock_sock(sk);
+>>  
+>> diff --git a/net/can/raw.c b/net/can/raw.c
+>> index cde1b4a..a20ee8e 100644
+>> --- a/net/can/raw.c
+>> +++ b/net/can/raw.c
+> [...]
+>> @@ -119,6 +120,14 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+>>  	if (!ro->recv_own_msgs && oskb->sk == sk)
+>>  		return;
+>>  
+>> +	/* do not pass frames with DLC > 8 to a legacy socket */
+>> +	if (!ro->fd_frames) {
+>> +		struct canfd_frame *cfd = (struct canfd_frame *)oskb->data;
+>> +
+>> +		if (unlikely(cfd->len > CAN_MAX_DLEN))
+> idea:
+> 			cfd->len = CAN_MAX_LEN;
 > 
-> >> I think cutting the canfd_frames down to can_frames when
-> >> the content is generally usable for the legacy app makes the migration pretty
-> >> handy :-)
-> > My first suggestion was to also cut longer CANFD frames down to 8 bytes
-> > (thereby loosing data!).
-> > Remember it's still a compatibility mode. I think that would be acceptable.
+> but this modification must then be done _after_ the skb_clone below.
+
+
+I dislike cutting payload data, because people would not be able to detect
+that. It's better to provide nothing than to provide manipulated data.
+
+It's hard for me to follow your argument that people will get confused when
+they don't see a CANFD frame on a legacy RAW socket.
+
+Up to then CANFD capable CAN tools will be surely available too.
+
+>> +			/* return; */
+>> +	}
+>> +
+>>  	/* clone the given skb to be able to enqueue it into the rcv queue */
+>>  	skb = skb_clone(oskb, GFP_ATOMIC);
+>>  	if (!skb)
+>> @@ -246,6 +255,13 @@ static int raw_notifier(struct notifier_block *nb,
+>>  
+>>  	switch (msg) {
+>>  
+>> +	case NETDEV_CHANGEMTU:
+>> +		/*
+>> +		 * Changing the MTU breaks the frame size that was formerly
+>> +		 * registered. The change can only be done when the interface
+>> +		 * ist down. Btw. make sure to get no trash from the device and
+>> +		 * drop this device from the open sockets perspective.
+>> +		 */
 > 
-> 
-> At the point where CAN FD frames with a DLC > 8 become relevant for
-> applications a new CANFD aware application *should* come into service.
-> 
-> Silently cutting payload data is a bad idea.
+> why exactly?
 
-I'm mostly not in favor of modifying/cutting the payload,
-but I consider it here.
-Since you introduce a sockopt to switch to CANFD mode, I foresee following
-scenario:
 
-People write a brand new CANFD aware application, at least, they apply canfd_frame.
-They send frames, up to the 64 bytes, but do not see anything coming, because ....
-they forgot to do setsockopt(...).
+The MTU can only be changed when the interface is down. But the registered CAN
+device specific filters are not removed on interface DOWN/UP sequence.
 
-If they only would see their frames cut to 8 bytes, one can notice
-there might be some compatibility mode in place.
-If they don't see anything, yeah, the problem could be anywhere.
+Probably removing the registered filters is not so relevant anymore as we have
+the simultaneous access for new/legacy apps now. Will think about it.
 
-So a question comes in: I do this & that, and others say:
-is your CAN bus ok, is this, is that?
-until finally, as that is the way it goes, the code comes along,
-and someone says: of course, ...
-
-So I think it's worth considering ... due to the socket option.
-Especially since I think the impact is minimal.
-
-Kurt
+Regards,
+Oliver
