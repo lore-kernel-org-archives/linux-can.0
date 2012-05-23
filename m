@@ -1,74 +1,80 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [RESEND PATCH v3 0/5] can: c_can: Add support for Bosch D_CAN controller
-Date: Wed, 23 May 2012 15:06:23 +0530
-Message-ID: <1337765788-1169-1-git-send-email-anilkumar@ti.com>
+Subject: [RESEND PATCH v3 1/5] can: c_can: fix "BUG! echo_skb is occupied!" during transmit
+Date: Wed, 23 May 2012 15:06:24 +0530
+Message-ID: <1337765788-1169-2-git-send-email-anilkumar@ti.com>
+References: <1337765788-1169-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:45964 "EHLO bear.ext.ti.com"
+Received: from comal.ext.ti.com ([198.47.26.152]:33394 "EHLO comal.ext.ti.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751212Ab2EWJg4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 23 May 2012 05:36:56 -0400
+	id S1751212Ab2EWJhM (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 23 May 2012 05:37:12 -0400
+In-Reply-To: <1337765788-1169-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch series adds support for Bosch D_CAN controller to the
-existing C_CAN controller driver.
+This patch fixes an issue with transmit routine, which causes
+"can_put_echo_skb: BUG! echo_skb is occupied!" messgae when
+using "cansequence -p" on D_CAN controller.
 
-Bosch D_CAN controller is a full-CAN implementation compliant to CAN
-protocol version 2.0 part A and B. Bosch D_CAN user manual can be
-obtained from: http://www.semiconductors.bosch.de/media/
-en/pdf/ipmodules_1/can/d_can_users_manual_111.pdf
+In c_can driver, while transmitting packets tx_echo flag holds
+the no of can frames put for transmission into the hardware.
 
-D_CAN device is used on many SoCs like AM335x, DM8148 and DM813x EVMs
-from TI, D_CAN details on AM335x can be accessed from:
-http://www.ti.com/lit/ug/spruh73c/spruh73c.pdf
+As the comment above c_can_do_tx() indicates, if we find any packet
+which is not transmitted then we should stop looking for more.
+In the current implementation this is not taken care of causing the
+said message.
 
-This patch series also fixes some issues in the current c_can driver.
-These issues were found while integrating d_can driver to c_can driver.
+Also, fix the condition used to find if the packet is transmitted
+or not. Current code skips the first tx message object and ends up
+checking one extra invalid object.
 
-These patches have been tested on AM335x EVM using some additional
-patches adding runtime PM support and some code to initialize the
-AM335x D_CAN RAM. I will submit these patches once these patches are
-accepted.
+While at it, fix the comment on top of c_can_do_tx() to use the
+terminology "packet" instead of "package" since it is more
+standard.
 
-Due to lack of hardware I am not able to test c_can functionality.
-I appreciate if anyone can test C_CAN functionality with this patch
-series.
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
+Link to previous submission
+	http://marc.info/?t=133491608500003&r=1&w=2
 
-Changes from v2:
-        - Dropped patch 1 (acc. to v2) because no update from v2. Can
-          be found at http://permalink.gmane.org/gmane.linux.can/1081
-        - Incorporated all Marc's review comments on v2
-          * Changed patch 2 (acc. to v2) subject line to "can: c_can:
-            fix race condition in c_can_open()"
-          * Moved "int reg" in patch 3 (acc. to v2) to "enum reg index"
-          * Device registration changed by using "platform_device:
-            id_table"
-        - Changed iface hard coded way to a macro implementation.
+ drivers/net/can/c_can/c_can.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-Changes form v1:
-        - Changed the Macro implementation to access registers via an
-          array with virtual register index.
-        - Dropped "can: c_can: fix "BUG! echo_skb is occupied!" during
-          transmit" patch because it's accepted.
-        - Reworked on second patch (acc. to v1) based on Marc's comments.
-        - Found one more issue and added as separate patch.
-        - Third patch (acc. to v1) is split into two patches, first
-          patch only do c_can modifications to incorporate the current
-          implementation and second one adds d_can support
-
-AnilKumar Ch (5):
-  can: c_can: fix "BUG! echo_skb is occupied!" during transmit
-  can: c_can: fix an interrupt thrash issue with c_can driver
-  can: c_can: fix race condition in c_can_open()
-  can: c_can: Move overlay structure to array with offset as index
-  can: c_can: Add support for Bosch D_CAN controller
-
- drivers/net/can/c_can/c_can.c          |  134 ++++++++++++++------------
- drivers/net/can/c_can/c_can.h          |  164 ++++++++++++++++++++++++--------
- drivers/net/can/c_can/c_can_platform.c |   73 ++++++++++-----
- 3 files changed, 246 insertions(+), 125 deletions(-)
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 536bda0..9ac28df 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -686,7 +686,7 @@ static int c_can_get_berr_counter(const struct net_device *dev,
+  *
+  * We iterate from priv->tx_echo to priv->tx_next and check if the
+  * packet has been transmitted, echo it back to the CAN framework.
+- * If we discover a not yet transmitted package, stop looking for more.
++ * If we discover a not yet transmitted packet, stop looking for more.
+  */
+ static void c_can_do_tx(struct net_device *dev)
+ {
+@@ -698,7 +698,7 @@ static void c_can_do_tx(struct net_device *dev)
+ 	for (/* nix */; (priv->tx_next - priv->tx_echo) > 0; priv->tx_echo++) {
+ 		msg_obj_no = get_tx_echo_msg_obj(priv);
+ 		val = c_can_read_reg32(priv, &priv->regs->txrqst1);
+-		if (!(val & (1 << msg_obj_no))) {
++		if (!(val & (1 << (msg_obj_no - 1)))) {
+ 			can_get_echo_skb(dev,
+ 					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
+ 			stats->tx_bytes += priv->read_reg(priv,
+@@ -706,6 +706,8 @@ static void c_can_do_tx(struct net_device *dev)
+ 					& IF_MCONT_DLC_MASK;
+ 			stats->tx_packets++;
+ 			c_can_inval_msg_object(dev, 0, msg_obj_no);
++		} else {
++			break;
+ 		}
+ 	}
+ 
+-- 
+1.7.0.4
 
