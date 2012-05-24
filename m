@@ -1,61 +1,69 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 0/5] can: c_can: Add support for Bosch D_CAN controller
-Date: Thu, 24 May 2012 10:28:50 +0200
-Message-ID: <4FBDF142.6020805@pengutronix.de>
-References: <1337775313-28219-1-git-send-email-anilkumar@ti.com> <4FBDEF66.1050307@pengutronix.de> <4FBDF081.5070903@grandegger.com>
+From: Abdul Khan <akhan@symboticware.com>
+Subject: Re: Strange error with jspy utility
+Date: Thu, 24 May 2012 15:52:59 -0400
+Message-ID: <CA+cPUuTFWk85r2Ukd9Lm=Gz95229WXT3uJZzPzDRATbNggPF+w@mail.gmail.com>
+References: <CA+cPUuTWRQQ0qBnP1pE34wbMHF1OqXoBq5LkwQzkMgWFOyuzrA@mail.gmail.com>
+	<20120519051517.GA416@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig3FEEC6346DCB4548D7737803"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41093 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751346Ab2EXI3I (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 24 May 2012 04:29:08 -0400
-In-Reply-To: <4FBDF081.5070903@grandegger.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:34274 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932105Ab2EXTxA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 24 May 2012 15:53:00 -0400
+Received: by pbbrp8 with SMTP id rp8so708080pbb.19
+        for <linux-can@vger.kernel.org>; Thu, 24 May 2012 12:53:00 -0700 (PDT)
+In-Reply-To: <20120519051517.GA416@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: AnilKumar Ch <anilkumar@ti.com>, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3FEEC6346DCB4548D7737803
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi Kurt
 
-On 05/24/2012 10:25 AM, Wolfgang Grandegger wrote:
->>>   can: c_can: Move overlay structure to array with offset as index
->>>   can: c_can: Add support for Bosch D_CAN controller
->>
->> I'm going to add these patches to linux-can-next after we've sorted ou=
-t
->> the outstanding minor things about the id_table.
->=20
-> And the missing Kconfig name and help update.
+Thanks for your response, I was away for few days. Please see below my
+findings in-line.
 
-Right, thanks, missed that.
+> From your story, I assume you connected can0 & can1 together?
 
-Marc
+Yes, can0 and can1 are connected together.
+can0 hi   <--> can1 hi
+can0 lo   <--> can1 lo
+can0 grd <--> can1 grd
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> I cannot look on your CAN bus. I'd need a raw CAN dump too
+> if I want to really debug this remotely.
 
+./cansend can0 123#1122334455667788
 
---------------enig3FEEC6346DCB4548D7737803
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+./candump can1
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Output:
+=====
+can1 123 [8] 11 22 33 44 55 66 77 88
 
-iEYEARECAAYFAk+98UoACgkQjTAFq1RaXHPNhgCeN7QnDHyzjIHtAOpby5roGjLO
-5OwAmwVaT4yQXmmVFXfh0vmBps2dQa/r
-=elMe
------END PGP SIGNATURE-----
+> $ ./jsr can0:20,feda &
+> $ echo "hello" | ./jsr can1:40,feda
 
---------------enig3FEEC6346DCB4548D7737803--
+I did try with this.
+
+> Then, you will see the seond instance of jsr terminating
+> quite soon, after having sent 1 packet.
+
+Yes, second instance of jsr terminating, after having sent 1 packet.
+
+> The first instance of jsr will receive that (via CAN) and print
+> on stdout.
+>
+> $ jspy
+> should then show 1 packet.
+>
+
+./jspy -P -v
+
+Output:
+=====
+can0:40, 0feda - !6 [6] 68656c6c 6f0a
+                      - !6 [6] 68656c6c 6f0a
+
+Thanks
+Abdul.
