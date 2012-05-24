@@ -1,95 +1,107 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RESEND PATCH v3 5/5] can: c_can: Add support for Bosch D_CAN
- controller
-Date: Thu, 24 May 2012 09:18:57 +0200
-Message-ID: <4FBDE0E1.1030706@pengutronix.de>
-References: <1337775313-28219-1-git-send-email-anilkumar@ti.com> <1337775313-28219-6-git-send-email-anilkumar@ti.com> <4FBD3F32.3080104@grandegger.com> <4FBD4AEB.6000707@pengutronix.de> <4FBDDCC0.3020303@grandegger.com>
+Subject: Re: [PATCH v4 0/5] can: c_can: Add support for Bosch D_CAN controller
+Date: Thu, 24 May 2012 10:20:54 +0200
+Message-ID: <4FBDEF66.1050307@pengutronix.de>
+References: <1337775313-28219-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig7BE815F10D82AB5338ED7EF9"
+ boundary="------------enig93DAD4EB513223F57F0511DB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42109 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52596 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750887Ab2EXHTH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 24 May 2012 03:19:07 -0400
-In-Reply-To: <4FBDDCC0.3020303@grandegger.com>
+	with ESMTP id S1751101Ab2EXIVH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 24 May 2012 04:21:07 -0400
+In-Reply-To: <1337775313-28219-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: AnilKumar Ch <anilkumar@ti.com>, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
+To: AnilKumar Ch <anilkumar@ti.com>
+Cc: wg@grandegger.com, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig7BE815F10D82AB5338ED7EF9
+--------------enig93DAD4EB513223F57F0511DB
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 05/24/2012 09:01 AM, Wolfgang Grandegger wrote:
->>>> +static const struct platform_device_id c_can_id_table[] =3D {
->>>> +	{
->>>> +		.name =3D "c_can_platform",
->>>> +		.driver_data =3D C_CAN_DEVTYPE,
->>>> +	}, {
->>>> +		.name =3D "d_can_platform",
->>>
->>> s/_platform// !
->>
->> I thought about removing the "_platform", too:
->>
->> The driver is traditionally called KBUILD_MODNAME, which is
->> "c_can_platform" in this case. So we need for compatibility a
->> "c_can_platform" entry in the id_table.
->>
->> If we have a "c_can" and a "d_can" entry, the driver would still match=
- a
->> "c_can_platform" device. The platform bus match function will first
->> match the id_table, then the driver name [1]. However, only when
->> matching via the id_table, the id_entry is set. So the driver will oop=
-s
->> when "id" will be dereferenced above.
+Hello,
+
+Oliver just poked me, what about these patches :)
+
+On 05/23/2012 02:15 PM, AnilKumar Ch wrote:
+> This patch series adds support for Bosch D_CAN controller to the
+> existing C_CAN controller driver.
 >=20
-> Ah, I was already wondering how that works... then my comments about
-> legacy C_CAN support do not apply.
-
-It does, but you have to handle id=3DNULL. (In case you don't have the
-original driver name in the id_table).
-
->> We have these options:
->> a) use the patch as it is, with "c_can_platform" and "d_can_platform".=
-
->> b) have "c_can_platform" and "d_can", which I don't think is intuitive=
-
->> c) have "c_can_platform", "c_can" and "d_can"
->>
->> [1] http://lxr.free-electrons.com/source/drivers/base/platform.c#L660
+> Bosch D_CAN controller is a full-CAN implementation compliant to CAN
+> protocol version 2.0 part A and B. Bosch D_CAN user manual can be
+> obtained from: http://www.semiconductors.bosch.de/media/
+> en/pdf/ipmodules_1/can/d_can_users_manual_111.pdf
 >=20
-> I principle we could also use "c_can" and "d_can" and handle id=3DNULL =
-as
-> legacy C_CAN driver using the legacy enum default above. Well, it seems=
+> D_CAN device is used on many SoCs like AM335x, DM8148 and DM813x EVMs
+> from TI, D_CAN details on AM335x can be accessed from:
+> http://www.ti.com/lit/ug/spruh73c/spruh73c.pdf
+>=20
+> This patch series also fixes some issues in the current c_can driver.
+> These issues were found while integrating d_can driver to c_can driver.=
 
+>=20
+> These patches have been tested on AM335x EVM using some additional
+> patches adding runtime PM support and some code to initialize the
+> AM335x D_CAN RAM. I will submit these patches once these patches are
+> accepted.
+>=20
+> Due to lack of hardware I am not able to test c_can functionality.
+> I appreciate if anyone can test C_CAN functionality with this patch
+> series.
+>=20
+> Changes from v3:
+> 	- Incorporated all Marc's review comments on v3 (patch4)
+> 	- Resending rest of the patches, because all the patches are
+> 	  interdependent
+>=20
+> Changes from v2:
+>         - Dropped patch 1 (acc. to v2) because no update from v2. Can
+>           be found at http://permalink.gmane.org/gmane.linux.can/1081
+>         - Incorporated all Marc's review comments on v2
+>           * Changed patch 2 (acc. to v2) subject line to "can: c_can:
+>             fix race condition in c_can_open()"
+>           * Moved "int reg" in patch 3 (acc. to v2) to "enum reg index"=
 
-Yes, we could do this. But this isn't as elegant as my proposal c).
+>           * Device registration changed by using "platform_device:
+>             id_table"
+>         - Changed iface hard coded way to a macro implementation.
+>=20
+> Changes form v1:
+>         - Changed the Macro implementation to access registers via an
+>           array with virtual register index.
+>         - Dropped "can: c_can: fix "BUG! echo_skb is occupied!" during
+>           transmit" patch because it's accepted.
+>         - Reworked on second patch (acc. to v1) based on Marc's comment=
+s.
+>         - Found one more issue and added as separate patch.
+>         - Third patch (acc. to v1) is split into two patches, first
+>           patch only do c_can modifications to incorporate the current
+>           implementation and second one adds d_can support
+>=20
+> AnilKumar Ch (5):
+>   can: c_can: fix "BUG! echo_skb is occupied!" during transmit
+>   can: c_can: fix an interrupt thrash issue with c_can driver
+>   can: c_can: fix race condition in c_can_open()
 
-> not to be the for-seen way to handle legacy devices. My concern is
-> "c_can_platform" in the DTS file and therefore I would vote for c).
+I've added these three patches to the linux-can/master on gitorious [1].
+I fixed a typo in the first patch's commit message, added Wolfgang's
+Acked-by and stable to Cc. The series is compile tested only. I'm going
+to write a pull request to David. Any objections?
 
-With proposal c) the id_table looks like this:
+>   can: c_can: Move overlay structure to array with offset as index
+>   can: c_can: Add support for Bosch D_CAN controller
 
-+static const struct platform_device_id c_can_id_table[] =3D {
-+	{
-+		.name =3D KBUILD_MODNAME,
-+		.driver_data =3D C_CAN_DEVTYPE,
-+	}, {
-+		.name =3D "c_can",
-+		.driver_data =3D C_CAN_DEVTYPE,
-+	}, {
-+		.name =3D "d_can",
-+		.driver_data =3D D_CAN_DEVTYPE,
-+	}, {
-+	}
-+};
+I'm going to add these patches to linux-can-next after we've sorted out
+the outstanding minor things about the id_table.
 
-Marc
+cheers, Marc
+
+[1] https://gitorious.org/linux-can/linux-can
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -97,7 +109,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig7BE815F10D82AB5338ED7EF9
+--------------enig93DAD4EB513223F57F0511DB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -106,9 +118,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk+94OUACgkQjTAFq1RaXHPfMwCaAjC0xz4H+h3UneQjA3f/vf1F
-P0cAnjBVqHELYs424CxzPxl2EE0e5nKT
-=fM+B
+iEYEARECAAYFAk+972oACgkQjTAFq1RaXHMaRgCePZ6duY+VGlsIuYr3z2YfO1RP
+gxIAoIPwmn+f0p6qus2FsZcVte583zsB
+=Xz3S
 -----END PGP SIGNATURE-----
 
---------------enig7BE815F10D82AB5338ED7EF9--
+--------------enig93DAD4EB513223F57F0511DB--
