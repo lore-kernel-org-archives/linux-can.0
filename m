@@ -1,84 +1,43 @@
 From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Strange error with jspy utility: solved?
-Date: Tue, 29 May 2012 09:37:04 +0200
-Message-ID: <20120529073704.GA437@vandijck-laurijssen.be>
+Subject: Re: Strange error with jspy utility: Bus problems
+Date: Tue, 29 May 2012 09:40:39 +0200
+Message-ID: <20120529074039.GB437@vandijck-laurijssen.be>
 References: <CA+cPUuTWRQQ0qBnP1pE34wbMHF1OqXoBq5LkwQzkMgWFOyuzrA@mail.gmail.com>
- <20120519051517.GA416@vandijck-laurijssen.be>
+ <4FB76279.6040201@hartkopp.net>
+ <CA+cPUuTm72nWUcoK5QBEqZdKq9EjcSHcZrR1Z0s=pVV2gK25Ow@mail.gmail.com>
+ <4FBEEB87.4060902@hartkopp.net>
+ <CA+cPUuRwRE4A82AxL0LEOsPsKuu5XTR0wxcejhJMpOe3-ZpXPA@mail.gmail.com>
+ <4FC0764D.5050900@hartkopp.net>
+ <4FC07EC3.3000406@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:22016 "EHLO mail.eia.be"
+Received: from gate.eia.be ([194.78.71.18]:22035 "EHLO mail.eia.be"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752706Ab2E2HhH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 29 May 2012 03:37:07 -0400
+	id S1751253Ab2E2Hkk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 29 May 2012 03:40:40 -0400
 Content-Disposition: inline
-In-Reply-To: <20120519051517.GA416@vandijck-laurijssen.be>
+In-Reply-To: <4FC07EC3.3000406@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Abdul Khan <akhan@symboticware.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Abdul Khan <akhan@symboticware.com>, linux-can@vger.kernel.org
 
-> Hi Kurt
+On Sat, May 26, 2012 at 08:57:07AM +0200, Oliver Hartkopp wrote:
 > 
-> Thanks for your response, I was away for few days. Please see below my
-> findings in-line.
-> 
-> > From your story, I assume you connected can0 & can1 together?
-> 
-> Yes, can0 and can1 are connected together.
-> can0 hi   <--> can1 hi
-> can0 lo   <--> can1 lo
-> can0 grd <--> can1 grd
+> >>
+> >> I don't know, Why sja1000_isa driver is giving "error warning
+> >> interrupt" and "error passive interrupt" messages. As simulator
+> >> supposed to be sent properly formatted j1939 frame to can1.
+> >>
+> >> What could be possible cause for this type of behaviour ?
+> >>
 
-Very well.
-> 
-> > I cannot look on your CAN bus. I'd need a raw CAN dump too
-> > if I want to really debug this remotely.
-> 
-> ./cansend can0 123#1122334455667788
-> 
-> ./candump can1
-> 
-> Output:
-> =====
-> can1 123 [8] 11 22 33 44 55 66 77 88
-
-You proved the CAN bus is working with 11bit identifiers.
-I meant to do candump in parallel with the j1939 tests.
-
-> 
-> > $ ./jsr can0:20,feda &
-> > $ echo "hello" | ./jsr can1:40,feda
-> 
-> I did try with this.
-> 
-> > Then, you will see the seond instance of jsr terminating
-> > quite soon, after having sent 1 packet.
-> 
-> Yes, second instance of jsr terminating, after having sent 1 packet.
-> 
-> > The first instance of jsr will receive that (via CAN) and print
-> > on stdout.
-> >
-> > $ jspy
-> > should then show 1 packet.
-> >
-> 
-> ./jspy -P -v
-> 
-> Output:
-> =====
-> can0:40, 0feda - !6 [6] 68656c6c 6f0a
->                       - !6 [6] 68656c6c 6f0a
-I believe the output of
-	$ candump can0
-would have been:
-can0 18feda40 [6] 68 65 6c 6c 6f 0a
-
-I think your system is working fine.
-The problem you faced is that 'jsr's use is not very wel documented :-)
+I didn't focused on this at start, and lost the issue a bit.
+J1939 is supposed (by norm) to run 250kbit. You're operating j1939
+on 125kbit, which is (logically) possible, but beware interfacing
+with others!
+Are you sure your simulator is operating 125kbit?
 
 Regards,
 Kurt
-> 
-> Thanks
-> Abdul.
