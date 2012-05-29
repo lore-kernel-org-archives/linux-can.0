@@ -1,227 +1,84 @@
-From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v5 2/2] can: c_can: Add support for Bosch D_CAN controller
-Date: Tue, 29 May 2012 11:13:16 +0530
-Message-ID: <1338270196-7819-3-git-send-email-anilkumar@ti.com>
-References: <1338270196-7819-1-git-send-email-anilkumar@ti.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: Strange error with jspy utility: solved?
+Date: Tue, 29 May 2012 09:37:04 +0200
+Message-ID: <20120529073704.GA437@vandijck-laurijssen.be>
+References: <CA+cPUuTWRQQ0qBnP1pE34wbMHF1OqXoBq5LkwQzkMgWFOyuzrA@mail.gmail.com>
+ <20120519051517.GA416@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from comal.ext.ti.com ([198.47.26.152]:57131 "EHLO comal.ext.ti.com"
+Received: from gate.eia.be ([194.78.71.18]:22016 "EHLO mail.eia.be"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750951Ab2E2Fn7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 29 May 2012 01:43:59 -0400
-In-Reply-To: <1338270196-7819-1-git-send-email-anilkumar@ti.com>
+	id S1752706Ab2E2HhH (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 29 May 2012 03:37:07 -0400
+Content-Disposition: inline
+In-Reply-To: <20120519051517.GA416@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
+To: Abdul Khan <akhan@symboticware.com>, linux-can@vger.kernel.org
 
-This patch adds the support for D_CAN controller driver to the existing
-C_CAN driver.
+> Hi Kurt
+> 
+> Thanks for your response, I was away for few days. Please see below my
+> findings in-line.
+> 
+> > From your story, I assume you connected can0 & can1 together?
+> 
+> Yes, can0 and can1 are connected together.
+> can0 hi   <--> can1 hi
+> can0 lo   <--> can1 lo
+> can0 grd <--> can1 grd
 
-Bosch D_CAN controller is a full-CAN implementation which is compliant
-to CAN protocol version 2.0 part A and B. Bosch D_CAN user manual can be
-obtained from: http://www.semiconductors.bosch.de/media/en/pdf/
-ipmodules_1/can/d_can_users_manual_111.pdf
+Very well.
+> 
+> > I cannot look on your CAN bus. I'd need a raw CAN dump too
+> > if I want to really debug this remotely.
+> 
+> ./cansend can0 123#1122334455667788
+> 
+> ./candump can1
+> 
+> Output:
+> =====
+> can1 123 [8] 11 22 33 44 55 66 77 88
 
-A new array is added for accessing the d_can registers, according to d_can
-controller register space.
+You proved the CAN bus is working with 11bit identifiers.
+I meant to do candump in parallel with the j1939 tests.
 
-Current D_CAN implementation has following limitations, this is done
-to avoid large changes to the C_CAN driver.
-1. Message objects are limited to 32, 16 for RX and 16 for TX. C_CAN IP
-   supports upto 32 message objects but in case of D_CAN we can configure
-   upto 128 message objects.
-2. Using two 16bit reads/writes for accessing the 32bit D_CAN registers.
-3. These patches have been tested on little endian machine, there might
-   be some hidden endian-related issues due to the nature of the accesses
-   (32-bit registers accessed as 2 16-bit registers). However, I do not
-   have a big-endian D_CAN implementation to confirm.
+> 
+> > $ ./jsr can0:20,feda &
+> > $ echo "hello" | ./jsr can1:40,feda
+> 
+> I did try with this.
+> 
+> > Then, you will see the seond instance of jsr terminating
+> > quite soon, after having sent 1 packet.
+> 
+> Yes, second instance of jsr terminating, after having sent 1 packet.
+> 
+> > The first instance of jsr will receive that (via CAN) and print
+> > on stdout.
+> >
+> > $ jspy
+> > should then show 1 packet.
+> >
+> 
+> ./jspy -P -v
+> 
+> Output:
+> =====
+> can0:40, 0feda - !6 [6] 68656c6c 6f0a
+>                       - !6 [6] 68656c6c 6f0a
+I believe the output of
+	$ candump can0
+would have been:
+can0 18feda40 [6] 68 65 6c 6c 6f 0a
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
----
- drivers/net/can/c_can/Kconfig          |   13 ++++---
- drivers/net/can/c_can/c_can.h          |   45 ++++++++++++++++++++++++++
- drivers/net/can/c_can/c_can_platform.c |   55 ++++++++++++++++++++++++-------
- 3 files changed, 94 insertions(+), 19 deletions(-)
+I think your system is working fine.
+The problem you faced is that 'jsr's use is not very wel documented :-)
 
-diff --git a/drivers/net/can/c_can/Kconfig b/drivers/net/can/c_can/Kconfig
-index ffb9773..25d371c 100644
---- a/drivers/net/can/c_can/Kconfig
-+++ b/drivers/net/can/c_can/Kconfig
-@@ -1,15 +1,16 @@
- menuconfig CAN_C_CAN
--	tristate "Bosch C_CAN devices"
-+	tristate "Bosch C_CAN/D_CAN devices"
- 	depends on CAN_DEV && HAS_IOMEM
- 
- if CAN_C_CAN
- 
- config CAN_C_CAN_PLATFORM
--	tristate "Generic Platform Bus based C_CAN driver"
-+	tristate "Generic Platform Bus based C_CAN/D_CAN driver"
- 	---help---
--	  This driver adds support for the C_CAN chips connected to
--	  the "platform bus" (Linux abstraction for directly to the
-+	  This driver adds support for the C_CAN/D_CAN chips connected
-+	  to the "platform bus" (Linux abstraction for directly to the
- 	  processor attached devices) which can be found on various
--	  boards from ST Microelectronics (http://www.st.com)
--	  like the SPEAr1310 and SPEAr320 evaluation boards.
-+	  boards from ST Microelectronics (http://www.st.com) like the
-+	  SPEAr1310 and SPEAr320 evaluation boards & TI (www.ti.com)
-+	  boards like am335x, dm814x, dm813x and dm811x.
- endif
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index d1e141e..01a7049 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -102,6 +102,51 @@ static const u16 reg_map_c_can[] = {
- 	[C_CAN_MSGVAL2_REG]	= 0xB2,
- };
- 
-+static const u16 reg_map_d_can[] = {
-+	[C_CAN_CTRL_REG]	= 0x00,
-+	[C_CAN_STS_REG]		= 0x04,
-+	[C_CAN_ERR_CNT_REG]	= 0x08,
-+	[C_CAN_BTR_REG]		= 0x0C,
-+	[C_CAN_BRPEXT_REG]	= 0x0E,
-+	[C_CAN_INT_REG]		= 0x10,
-+	[C_CAN_TEST_REG]	= 0x14,
-+	[C_CAN_TXRQST1_REG]	= 0x88,
-+	[C_CAN_TXRQST2_REG]	= 0x8A,
-+	[C_CAN_NEWDAT1_REG]	= 0x9C,
-+	[C_CAN_NEWDAT2_REG]	= 0x9E,
-+	[C_CAN_INTPND1_REG]	= 0xB0,
-+	[C_CAN_INTPND2_REG]	= 0xB2,
-+	[C_CAN_MSGVAL1_REG]	= 0xC4,
-+	[C_CAN_MSGVAL2_REG]	= 0xC6,
-+	[C_CAN_IF1_COMREQ_REG]	= 0x100,
-+	[C_CAN_IF1_COMMSK_REG]	= 0x102,
-+	[C_CAN_IF1_MASK1_REG]	= 0x104,
-+	[C_CAN_IF1_MASK2_REG]	= 0x106,
-+	[C_CAN_IF1_ARB1_REG]	= 0x108,
-+	[C_CAN_IF1_ARB2_REG]	= 0x10A,
-+	[C_CAN_IF1_MSGCTRL_REG]	= 0x10C,
-+	[C_CAN_IF1_DATA1_REG]	= 0x110,
-+	[C_CAN_IF1_DATA2_REG]	= 0x112,
-+	[C_CAN_IF1_DATA3_REG]	= 0x114,
-+	[C_CAN_IF1_DATA4_REG]	= 0x116,
-+	[C_CAN_IF2_COMREQ_REG]	= 0x120,
-+	[C_CAN_IF2_COMMSK_REG]	= 0x122,
-+	[C_CAN_IF2_MASK1_REG]	= 0x124,
-+	[C_CAN_IF2_MASK2_REG]	= 0x126,
-+	[C_CAN_IF2_ARB1_REG]	= 0x128,
-+	[C_CAN_IF2_ARB2_REG]	= 0x12A,
-+	[C_CAN_IF2_MSGCTRL_REG]	= 0x12C,
-+	[C_CAN_IF2_DATA1_REG]	= 0x130,
-+	[C_CAN_IF2_DATA2_REG]	= 0x132,
-+	[C_CAN_IF2_DATA3_REG]	= 0x134,
-+	[C_CAN_IF2_DATA4_REG]	= 0x136,
-+};
-+
-+enum c_can_dev_id {
-+	C_CAN_DEVTYPE,
-+	D_CAN_DEVTYPE,
-+};
-+
- /* c_can private data structure */
- struct c_can_priv {
- 	struct can_priv can;	/* must be the first member */
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index a6e9b93..f0921d1 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -71,6 +71,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	void __iomem *addr;
- 	struct net_device *dev;
- 	struct c_can_priv *priv;
-+	const struct platform_device_id *id;
- 	struct resource *mem;
- 	int irq;
- #ifdef CONFIG_HAVE_CLK
-@@ -115,7 +116,32 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	}
- 
- 	priv = netdev_priv(dev);
--	priv->regs = reg_map_c_can;
-+	id = platform_get_device_id(pdev);
-+	switch (id->driver_data) {
-+	case C_CAN_DEVTYPE:
-+		priv->regs = reg_map_c_can;
-+		switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
-+		case IORESOURCE_MEM_32BIT:
-+			priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
-+			priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
-+			break;
-+		case IORESOURCE_MEM_16BIT:
-+		default:
-+			priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
-+			priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+			break;
-+		}
-+		break;
-+	case D_CAN_DEVTYPE:
-+		priv->regs = reg_map_d_can;
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
-+		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
-+		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto exit_free_device;
-+	}
- 
- 	dev->irq = irq;
- 	priv->base = addr;
-@@ -124,18 +150,6 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	priv->priv = clk;
- #endif
- 
--	switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
--	case IORESOURCE_MEM_32BIT:
--		priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
--		priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
--		break;
--	case IORESOURCE_MEM_16BIT:
--	default:
--		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
--		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
--		break;
--	}
--
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-@@ -189,6 +203,20 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct platform_device_id c_can_id_table[] = {
-+	{
-+		.name = KBUILD_MODNAME,
-+		.driver_data = C_CAN_DEVTYPE,
-+	}, {
-+		.name = "c_can",
-+		.driver_data = C_CAN_DEVTYPE,
-+	}, {
-+		.name = "d_can",
-+		.driver_data = D_CAN_DEVTYPE,
-+	}, {
-+	}
-+};
-+
- static struct platform_driver c_can_plat_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
-@@ -196,6 +224,7 @@ static struct platform_driver c_can_plat_driver = {
- 	},
- 	.probe = c_can_plat_probe,
- 	.remove = __devexit_p(c_can_plat_remove),
-+	.id_table = c_can_id_table,
- };
- 
- module_platform_driver(c_can_plat_driver);
--- 
-1.7.0.4
-
+Regards,
+Kurt
+> 
+> Thanks
+> Abdul.
