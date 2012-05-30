@@ -1,32 +1,35 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 0/4] treewide: Fix likely misuses of | for &
-Date: Wed, 30 May 2012 13:25:53 -0700
-Message-ID: <cover.1338408931.git.joe@perches.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from perches-mx.perches.com ([206.117.179.246]:46257 "EHLO
-	labridge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754310Ab2E3U0D (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 30 May 2012 16:26:03 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/4] can: cc770: Fix likely misuse of | for &
+Date: Wed, 30 May 2012 13:25:55 -0700
+Message-ID: <6c251b03dc626215cf696e894ac1cdda530f38d9.1338408931.git.joe@perches.com>
+References: <cover.1338408931.git.joe@perches.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1338408931.git.joe@perches.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-| with a non-zero constant is always true.
-Likely these should have been &.
+Using | with a constant is always true.
+Likely this should have be &.
 
-Joe Perches (4):
-  mac80211: Fix likely misuse of | for &
-  can: cc770: Fix likely misuse of | for &
-  brcmfmac: Fix likely misuse of | for &
-  usb: gadget: pch_udc: Fix likely misuse of | for &
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/net/can/cc770/cc770_platform.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
- drivers/net/can/cc770/cc770_platform.c           |    2 +-
- drivers/net/wireless/brcm80211/brcmfmac/bcmsdh.c |    4 ++--
- drivers/usb/gadget/pch_udc.c                     |    2 +-
- net/mac80211/cfg.c                               |    6 +++---
- 4 files changed, 7 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index 53115ee..688371c 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -154,7 +154,7 @@ static int __devinit cc770_get_platform_data(struct platform_device *pdev,
+ 	struct cc770_platform_data *pdata = pdev->dev.platform_data;
+ 
+ 	priv->can.clock.freq = pdata->osc_freq;
+-	if (priv->cpu_interface | CPUIF_DSC)
++	if (priv->cpu_interface & CPUIF_DSC)
+ 		priv->can.clock.freq /= 2;
+ 	priv->clkout = pdata->cor;
+ 	priv->bus_config = pdata->bcr;
 -- 
 1.7.8.111.gad25c.dirty
-
