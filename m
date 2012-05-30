@@ -1,43 +1,54 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Strange error with jspy utility: Bus problems
-Date: Tue, 29 May 2012 09:40:39 +0200
-Message-ID: <20120529074039.GB437@vandijck-laurijssen.be>
-References: <CA+cPUuTWRQQ0qBnP1pE34wbMHF1OqXoBq5LkwQzkMgWFOyuzrA@mail.gmail.com>
- <4FB76279.6040201@hartkopp.net>
- <CA+cPUuTm72nWUcoK5QBEqZdKq9EjcSHcZrR1Z0s=pVV2gK25Ow@mail.gmail.com>
- <4FBEEB87.4060902@hartkopp.net>
- <CA+cPUuRwRE4A82AxL0LEOsPsKuu5XTR0wxcejhJMpOe3-ZpXPA@mail.gmail.com>
- <4FC0764D.5050900@hartkopp.net>
- <4FC07EC3.3000406@hartkopp.net>
+From: Martin Kozusky <mkozusky@kkmicro.cz>
+Subject: can4linux compilation for i.mx25 under 2.6.39
+Date: Wed, 30 May 2012 13:39:26 +0200
+Message-ID: <jq50tg$55u$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.eia.be ([194.78.71.18]:22035 "EHLO mail.eia.be"
+Received: from plane.gmane.org ([80.91.229.3]:33139 "EHLO plane.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751253Ab2E2Hkk (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 29 May 2012 03:40:40 -0400
-Content-Disposition: inline
-In-Reply-To: <4FC07EC3.3000406@hartkopp.net>
+	id S1753039Ab2E3Ljq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 30 May 2012 07:39:46 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1SZhFg-0001Xk-Ku
+	for linux-can@vger.kernel.org; Wed, 30 May 2012 13:39:44 +0200
+Received: from 213.191.105.242 ([213.191.105.242])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 30 May 2012 13:39:44 +0200
+Received: from mkozusky by 213.191.105.242 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 30 May 2012 13:39:44 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Abdul Khan <akhan@symboticware.com>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On Sat, May 26, 2012 at 08:57:07AM +0200, Oliver Hartkopp wrote:
-> 
-> >>
-> >> I don't know, Why sja1000_isa driver is giving "error warning
-> >> interrupt" and "error passive interrupt" messages. As simulator
-> >> supposed to be sent properly formatted j1939 frame to can1.
-> >>
-> >> What could be possible cause for this type of behaviour ?
-> >>
+Hello,
+I downloaded latest sources of can4linux from svn and I'm trying to 
+compile it for 2.6.39 kernel (i.mx25 driver).
+I edit cross-imx25 with proper compiler settings etc then ". 
+cross-imx25" and "make"
 
-I didn't focused on this at start, and lost the issue a bit.
-J1939 is supposed (by norm) to run 250kbit. You're operating j1939
-on 125kbit, which is (logically) possible, but beware interfacing
-with others!
-Are you sure your simulator is operating 125kbit?
+There are some errors like
+core.c:441:12: error: 'CAN1_BASE_ADDR' undeclared
+core.c:452:11: error: 'MXC_INT_CAN1' undeclared
 
-Regards,
-Kurt
+I can change CAN1_BASE_ADDR to MX25_CAN1_BASE_ADDR and MXC_INT_CAN1 to 
+MX25_INT_CAN1, but there is error
+
+imx35.c:18:26: fatal error: mach/mxc_can.h: No such file or directory
+
+Does anybody have idea where do I get this file? When I comment this 
+line, compilation continues and stops at
+
+imx35.c:113:18: error: dereferencing pointer to incomplete type
+
+Does it have anything to do with Karo tx25 board? (which I'm not using)
+I already have CAN running using SocketCAN, but I also wanted to try 
+can4linux.
+
+Thanks for any help,
+Martin
+
