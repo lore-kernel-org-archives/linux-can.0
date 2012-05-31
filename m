@@ -1,80 +1,61 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/4] can: cc770: Fix likely misuse of | for &
-Date: Thu, 31 May 2012 22:54:43 +0200
-Message-ID: <4FC7DA93.1080905@pengutronix.de>
-References: <cover.1338408931.git.joe@perches.com> <6c251b03dc626215cf696e894ac1cdda530f38d9.1338408931.git.joe@perches.com>
+From: Abdul Khan <akhan@symboticware.com>
+Subject: Re: Strange error with jspy utility: Bus problems - Solved
+Date: Thu, 31 May 2012 17:53:56 -0400
+Message-ID: <CA+cPUuRbFERG6_NR9AWU93mD4MviQQezYsKaWjOCRMSm-34CaQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig63DDF846AE003BF88EFAFA75"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42755 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754646Ab2EaUyv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 31 May 2012 16:54:51 -0400
-In-Reply-To: <6c251b03dc626215cf696e894ac1cdda530f38d9.1338408931.git.joe@perches.com>
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:40041 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753380Ab2EaVx5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 31 May 2012 17:53:57 -0400
+Received: by dady13 with SMTP id y13so1860447dad.19
+        for <linux-can@vger.kernel.org>; Thu, 31 May 2012 14:53:56 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig63DDF846AE003BF88EFAFA75
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi Kurt and Oliver,
 
-On 05/30/2012 10:25 PM, Joe Perches wrote:
-> Using | with a constant is always true.
-> Likely this should have be &.
->=20
-> Signed-off-by: Joe Perches <joe@perches.com>
+Finally, I am able to get j1939 simulator packets through can0 or can1
+using candump and jspy utility.
 
-Sounds reasonable. And there are no in tree users of the platform driver
-that this fix could break.
+Problem:
+======
+It was bit rate problem as suggested by Kurt and Oliver, simulator
+supports j1939-15 ( i.e., 250kbits ), I was using 125kbits with can0
+and can1.
 
-commited to linux-can,
-Marc
+Solution:
+======
+# ./ip link set can0/1 type can bitrate 250000 triple-sampling on
 
-> ---
->  drivers/net/can/cc770/cc770_platform.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->=20
-> diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/c=
-c770/cc770_platform.c
-> index 53115ee..688371c 100644
-> --- a/drivers/net/can/cc770/cc770_platform.c
-> +++ b/drivers/net/can/cc770/cc770_platform.c
-> @@ -154,7 +154,7 @@ static int __devinit cc770_get_platform_data(struct=
- platform_device *pdev,
->  	struct cc770_platform_data *pdata =3D pdev->dev.platform_data;
-> =20
->  	priv->can.clock.freq =3D pdata->osc_freq;
-> -	if (priv->cpu_interface | CPUIF_DSC)
-> +	if (priv->cpu_interface & CPUIF_DSC)
->  		priv->can.clock.freq /=3D 2;
->  	priv->clkout =3D pdata->cor;
->  	priv->bus_config =3D pdata->bcr;
+I was not able to get hold of board having can interfaces from last
+few days, that's the reason for delayed response. My bad.
+
+I am really appreciated to Kurt and Oliver for helping me out of the problem.
+
+Thanks
+Abdul.
 
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-
---------------enig63DDF846AE003BF88EFAFA75
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk/H2pgACgkQjTAFq1RaXHNAqwCeIgt27xgLy0AE5WyKEfeNK/EY
-HSEAnRX1XvklF/b1VuIeKLJ0dithQs8H
-=G9+R
------END PGP SIGNATURE-----
-
---------------enig63DDF846AE003BF88EFAFA75--
+On Tue, May 29, 2012 at 3:40 AM, Kurt Van Dijck <kurt.van.dijck@eia.be> wrote:
+> On Sat, May 26, 2012 at 08:57:07AM +0200, Oliver Hartkopp wrote:
+>>
+>> >>
+>> >> I don't know, Why sja1000_isa driver is giving "error warning
+>> >> interrupt" and "error passive interrupt" messages. As simulator
+>> >> supposed to be sent properly formatted j1939 frame to can1.
+>> >>
+>> >> What could be possible cause for this type of behaviour ?
+>> >>
+>
+> I didn't focused on this at start, and lost the issue a bit.
+> J1939 is supposed (by norm) to run 250kbit. You're operating j1939
+> on 125kbit, which is (logically) possible, but beware interfacing
+> with others!
+> Are you sure your simulator is operating 125kbit?
+>
+> Regards,
+> Kurt
