@@ -1,74 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can-next 2012-06-04
-Date: Mon, 04 Jun 2012 17:52:08 +0200
-Message-ID: <4FCCD9A8.7030207@pengutronix.de>
-References: <4FCBEAAB.90708@pengutronix.de>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
+Date: Mon, 4 Jun 2012 16:56:19 +0100
+Message-ID: <20120604165619.15ba43bf@pyramind.ukuu.org.uk>
+References: <4FC135C6.5030206@grandegger.com>
+	<1338816766-7089-1-git-send-email-federico.vaga@gmail.com>
+	<1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig63B92FC639C11DB24969A8A6"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48871 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754056Ab2FDPwK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Jun 2012 11:52:10 -0400
-In-Reply-To: <4FCBEAAB.90708@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: davem@davemloft.net
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Federico Vaga <federico.vaga@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, Alessandro Rubini <rubini@gnudd.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig63B92FC639C11DB24969A8A6
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> +enum c_can_pci_reg_align {
+> +	C_CAN_REG_ALIGN_16,
+> +	C_CAN_REG_ALIGN_32,
+> +};
 
-On 06/04/2012 12:52 AM, Marc Kleine-Budde wrote:
-> Hello David,
->=20
-> here are the first patches for net-next, they add power management
-> support for the flexcan driver and clarify the documentation with
-> respect to error messages.
->=20
-> regards, Marc
->=20
-> ---
->=20
-> The following changes since commit 31a67102f4762df5544bc2dfb34a931233d2=
-a5b2:
->=20
->   Fix blocking allocations called very early during bootup (2012-05-21 =
-12:52:42 -0700)
->=20
-> are available in the git repository at:
->   git@gitorious.org:linux-can/linux-can-next.git master
+Anythign wrong with 
 
-That should be:
+bool aligned32;
 
-git://gitorious.org/linux-can/linux-can-next.git master
+> +
+> +struct c_can_pci_data {
+> +	unsigned int reg_align;	/* Set the register alignment in the memory */
 
-Sorry for the noise,
-Marc
+Not the enum .. indeed
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> +static u16 c_can_pci_read_reg_aligned_to_16bit(struct c_can_priv *priv,
+> +						void *reg)
+
+I'm a bit worried this function name might be too short ;)
 
 
---------------enig63B92FC639C11DB24969A8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> +	dev_info(&pdev->dev, "%s device registered (regs=%p, irq=%d)\n",
+> +		 KBUILD_MODNAME, priv->regs, dev->irq);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+dev_dbg
 
-iEYEARECAAYFAk/M2agACgkQjTAFq1RaXHPqwACeKSXPOiWZT0YQbZKqNt/sWRPI
-/n4AnA7JNQ/h9S7sSrD3qtclAIDdtuud
-=UojC
------END PGP SIGNATURE-----
+> +	 * do not call pci_disable_device on sta2x11 because it
+> +	 * break all other Bus masters on this EP
+> +	 */
+> +	if(pdev->vendor == PCI_VENDOR_ID_STMICRO &&
+> +	   pdev->device == PCI_DEVICE_ID_STMICRO_CAN)
+> +		goto out;
 
---------------enig63B92FC639C11DB24969A8A6--
+Is that the disabling or the dropping it into D3. We have a PCI quirk
+flag for the latter. See "quirk_no_ata_d3". That will also avoid any
+accidents elsewhere. Right now the quirk has "ata" in the name but the
+ata is just historically because we had to quirk various disk controllers.
