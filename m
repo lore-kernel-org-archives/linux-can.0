@@ -1,53 +1,93 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: [PATCH iproute2 0/3] CAN Filter/Classifier
-Date: Mon, 4 Jun 2012 12:13:42 -0700
-Message-ID: <20120604121342.53c57050@nehalam.linuxnetplumber.net>
-References: <1338826149-11604-1-git-send-email-lisovy@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [Socketcan-users] Flexcan on i.mx536 Infotainment Platform
+Date: Mon, 04 Jun 2012 23:52:57 +0200
+Message-ID: <4FCD2E39.3060809@pengutronix.de>
+References: <1338845698.76889.YahooMailNeo@web140802.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigEE6F2877F4686A28D6E1AE78"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.vyatta.com ([76.74.103.46]:48072 "EHLO mail.vyatta.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751490Ab2FDTNq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 4 Jun 2012 15:13:46 -0400
-In-Reply-To: <1338826149-11604-1-git-send-email-lisovy@gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49160 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760946Ab2FDVxE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Jun 2012 17:53:04 -0400
+In-Reply-To: <1338845698.76889.YahooMailNeo@web140802.mail.bf1.yahoo.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Keith Jones <keith.rjones@yahoo.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon,  4 Jun 2012 18:09:06 +0200
-Rostislav Lisovy <lisovy@gmail.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigEE6F2877F4686A28D6E1AE78
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> This classifier classifies CAN frames (AF_CAN) according to their
-> identifiers. This functionality can not be easily achieved with
-> existing classifiers, such as u32. This classifier can be used
-> with any available qdisc and it is able to classify both SFF
-> or EFF frames.
-> 
-> The filtering rules for EFF frames are stored in an array, which
-> is traversed during classification. A bitmap is used to store SFF
-> rules -- one bit for each ID.
-> 
-> More info about the project:
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
-> 
-> 
-> Rostislav Lisovy (3):
->   Add missing can.h
->   CAN Filter/Classifier -- Source code
->   CAN Filter/Classifier -- Documentation
-> 
->  include/linux/can.h     |  112 ++++++++++++++++++++++
->  include/linux/pkt_cls.h |   10 ++
->  man/man8/tc-can.8       |   97 +++++++++++++++++++
->  tc/Makefile             |    1 +
->  tc/f_can.c              |  238 +++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 458 insertions(+)
->  create mode 100644 include/linux/can.h
->  create mode 100644 man/man8/tc-can.8
->  create mode 100644 tc/f_can.c
+Hello Keith,
 
-Please resubmit these when the necessary upstream pieces are in Linus's tree.
-That will be during the 3.6 merge window.
+please switch to the "linux-can@vger.kernel.org" mailinglist, the
+berlios list is obsolete.
+
+On 06/04/2012 11:34 PM, Keith Jones wrote:
+> I booted up my new Infotainment demo board after ported 2.6.39
+> flexcan (flexcan.h flexcan.c) support into my 2.6.35 linux distro.
+
+Use v3.4 or better, this version contains some vital fixes against error
+irq floods.
+
+> After seeing flexcan driver register and performing the following
+> commands, I get constant interrupts and error packets visualized
+> using my Canoe CANbus sniffer. I am using 250K baud. Did not check
+> termination. No oscilloscope was used as yet. Can not receive any
+> packets. can state goes from ERROR-ACTIVE to ERROR-PASSIVE.
+
+Please check the Termination, do you have a second CAN member on the bus?=
+
+
+> Any clues?
+
+> root@freescale ~$ cansend can0 123#1122334455
+> root@freescale /usr/bin$ ip -d -s link show can0
+> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ qlen 10
+>     link/can
+>     can state ERROR-PASSIVE (berr-counter tx 128 rx 0) restart-ms 0
+>     bitrate 250000 sample-point 0.875
+>     tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+>     flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>     clock 24000000
+>     re-started bus-errors arbit-lost error-warn error-pass bus-off
+>     0          0          0          5          5          0
+>     RX: bytes  packets  errors  dropped overrun mcast
+>     80         10       0       0       0       0
+>     TX: bytes  packets  errors  dropped carrier collsns
+>     5          0        0       0       0       0
+
+If the tx error counter goes up, the device may be the only device on
+the CAN bus. Your sniffer is probably totally passive, which means it
+doesn't qualify as a second station.
+
+cheers, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enigEE6F2877F4686A28D6E1AE78
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk/NLj0ACgkQjTAFq1RaXHOGBgCfVZlq8Lwfe5NLhsTDnFODxJZS
+bBEAnR035DUOhWNXciRsOdYthHt6EAyf
+=VwC1
+-----END PGP SIGNATURE-----
+
+--------------enigEE6F2877F4686A28D6E1AE78--
