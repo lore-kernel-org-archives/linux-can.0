@@ -1,54 +1,46 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
-Date: Mon, 4 Jun 2012 16:56:19 +0100
-Message-ID: <20120604165619.15ba43bf@pyramind.ukuu.org.uk>
-References: <4FC135C6.5030206@grandegger.com>
-	<1338816766-7089-1-git-send-email-federico.vaga@gmail.com>
-	<1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Federico Vaga <federico.vaga@gmail.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, Alessandro Rubini <rubini@gnudd.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: Rostislav Lisovy <lisovy@gmail.com>
+Subject: [PATCH iproute2 0/3] CAN Filter/Classifier
+Date: Mon,  4 Jun 2012 18:09:06 +0200
+Message-ID: <1338826149-11604-1-git-send-email-lisovy@gmail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wi0-f178.google.com ([209.85.212.178]:37228 "EHLO
+	mail-wi0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752297Ab2FDQJ0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Jun 2012 12:09:26 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz, Rostislav Lisovy <lisovy@gmail.com>
 
-> +enum c_can_pci_reg_align {
-> +	C_CAN_REG_ALIGN_16,
-> +	C_CAN_REG_ALIGN_32,
-> +};
+This classifier classifies CAN frames (AF_CAN) according to their
+identifiers. This functionality can not be easily achieved with
+existing classifiers, such as u32. This classifier can be used
+with any available qdisc and it is able to classify both SFF
+or EFF frames.
 
-Anythign wrong with 
+The filtering rules for EFF frames are stored in an array, which
+is traversed during classification. A bitmap is used to store SFF
+rules -- one bit for each ID.
 
-bool aligned32;
-
-> +
-> +struct c_can_pci_data {
-> +	unsigned int reg_align;	/* Set the register alignment in the memory */
-
-Not the enum .. indeed
-
-> +static u16 c_can_pci_read_reg_aligned_to_16bit(struct c_can_priv *priv,
-> +						void *reg)
-
-I'm a bit worried this function name might be too short ;)
+More info about the project:
+http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
 
 
-> +	dev_info(&pdev->dev, "%s device registered (regs=%p, irq=%d)\n",
-> +		 KBUILD_MODNAME, priv->regs, dev->irq);
+Rostislav Lisovy (3):
+  Add missing can.h
+  CAN Filter/Classifier -- Source code
+  CAN Filter/Classifier -- Documentation
 
-dev_dbg
+ include/linux/can.h     |  112 ++++++++++++++++++++++
+ include/linux/pkt_cls.h |   10 ++
+ man/man8/tc-can.8       |   97 +++++++++++++++++++
+ tc/Makefile             |    1 +
+ tc/f_can.c              |  238 +++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 458 insertions(+)
+ create mode 100644 include/linux/can.h
+ create mode 100644 man/man8/tc-can.8
+ create mode 100644 tc/f_can.c
 
-> +	 * do not call pci_disable_device on sta2x11 because it
-> +	 * break all other Bus masters on this EP
-> +	 */
-> +	if(pdev->vendor == PCI_VENDOR_ID_STMICRO &&
-> +	   pdev->device == PCI_DEVICE_ID_STMICRO_CAN)
-> +		goto out;
+-- 
+1.7.9.5
 
-Is that the disabling or the dropping it into D3. We have a PCI quirk
-flag for the latter. See "quirk_no_ata_d3". That will also avoid any
-accidents elsewhere. Right now the quirk has "ata" in the name but the
-ata is just historically because we had to quirk various disk controllers.
