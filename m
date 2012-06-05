@@ -1,90 +1,64 @@
-From: Keith Jones <keith.rjones@yahoo.com>
-Subject: Re: [Socketcan-users] Flexcan on i.mx536 Infotainment Platform
-Date: Mon, 4 Jun 2012 22:00:23 -0700 (PDT)
-Message-ID: <1338872423.90411.YahooMailNeo@web140803.mail.bf1.yahoo.com>
-References: <1338845698.76889.YahooMailNeo@web140802.mail.bf1.yahoo.com> <4FCD2E39.3060809@pengutronix.de>
-Reply-To: Keith Jones <keith.rjones@yahoo.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
+Date: Tue, 05 Jun 2012 09:46:05 +0200
+Message-ID: <4FCDB93D.5030007@pengutronix.de>
+References: <1338849280.43608.YahooMailNeo@web140802.mail.bf1.yahoo.com> <1338849547.86575.YahooMailNeo@web140805.mail.bf1.yahoo.com> <1338852261.93934.YahooMailNeo@web140802.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig858EA4CE45336673BC8CD955"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from nm10-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.147]:43330 "HELO
-	nm10-vm0.bullet.mail.bf1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1755629Ab2FEFA0 convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 5 Jun 2012 01:00:26 -0400
-In-Reply-To: <4FCD2E39.3060809@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58786 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756843Ab2FEHqN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jun 2012 03:46:13 -0400
+In-Reply-To: <1338852261.93934.YahooMailNeo@web140802.mail.bf1.yahoo.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Keith Jones <keith.rjones@yahoo.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig858EA4CE45336673BC8CD955
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On 06/05/2012 01:24 AM, Keith Jones wrote:
+> My kernel does not have "flexcan_poll_error_state" function in its
+> flexcan.c file.  Is the following patch still valid?
+>=20
+> [RFC PATCH 07/14] can: flexcan: consolidate error state handling.=20
+
+This patch series hasn't been applied yet.
+
+> What would a good linux version to obtain a functioning flexcan
+> driver for imx536?  My demo board is shipped with 2.6.35. I am able
+> migrate to any version with appropriate patches.
+
+Use v3.4. Your v2.6.35 is probably a freescale kernel, with a freescale
+flexcan driver. The mainline driver should work with mx53.
+
+cheers, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-On=A0 Monday, June 4, 2012 2:52 PM, Marc Kleine-Budde wrote:
+--------------enig858EA4CE45336673BC8CD955
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Subject: Re: [Socketcan-users] Flexcan on i.mx536 Infotainment Platform
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-> Hello Keith,
+iEYEARECAAYFAk/NuUAACgkQjTAFq1RaXHPZfwCfYLLiy0cnN/A/GqK5RWBGVe+Y
+HWkAn3QHmy9nroe1fseszb6nJY0l3hWx
+=5Jlv
+-----END PGP SIGNATURE-----
 
-> please switch to the "linux-can@vger.kernel.org" mailinglist, the
-> berlios list is obsolete.
-
-> On 06/04/2012 11:34 PM, Keith Jones wrote:
->> I booted up my new Infotainment demo board after ported 2.6.39
->> flexcan (flexcan.h flexcan.c) support into my 2.6.35 linux distro.
-
-> Use v3.4 or better, this version contains some vital fixes against er=
-ror
-> irq floods.
-
-Ok moving to v3.4 kernel. I will reply with results.
-
->> After seeing flexcan driver register and performing the following
->> commands, I get constant interrupts and error packets visualized
->> using my Canoe CANbus sniffer. I am using 250K baud. Did not check
->> termination. No oscilloscope was used as yet. Can not receive any
->> packets. can state goes from ERROR-ACTIVE to ERROR-PASSIVE.
-
-> Please check the Termination, do you have a second CAN member on the =
-bus?
-
-I have performed two activities: (1) just the demo board and (2) the de=
-mo board and a terminated device. With both, I=A0 observed the same err=
-or packet results. I have also attached a scope and observed solid CAN =
-signalling on the=20
-bus when the remote is sending J1939 ids. The plan is to retest again a=
-fter moving to 3.4.
-
->> Any clues?
-
->> root@freescale ~$ cansend can0 123#1122334455
->> root@freescale /usr/bin$ ip -d -s link show can0
->> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKN=
-OWN qlen 10
->>=A0 =A0  link/can
->>=A0 =A0  can state ERROR-PASSIVE (berr-counter tx 128 rx 0) restart-m=
-s 0
->>=A0 =A0  bitrate 250000 sample-point 0.875
->>=A0 =A0  tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->>=A0 =A0  flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc =
-1
->>=A0 =A0  clock 24000000
->>=A0 =A0  re-started bus-errors arbit-lost error-warn error-pass bus-o=
-ff
->>=A0 =A0  0=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 =A0=
- 5=A0 =A0 =A0 =A0 =A0 5=A0 =A0 =A0 =A0 =A0 0
->>=A0 =A0  RX: bytes=A0 packets=A0 errors=A0 dropped overrun mcast
->>=A0 =A0  80=A0 =A0 =A0 =A0  10=A0 =A0 =A0  0=A0 =A0 =A0  0=A0 =A0 =A0=
-  0=A0 =A0 =A0  0
->>=A0 =A0  TX: bytes=A0 packets=A0 errors=A0 dropped carrier collsns
->>=A0 =A0  5=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 0=A0 =A0 =A0  0=A0 =A0=
- =A0  0=A0 =A0 =A0  0
-
-> If the tx error counter goes up, the device may be the only device on
-> the CAN bus. Your sniffer is probably totally passive, which means it
-> doesn't qualify as a second station.
-
-tx error counter does go up and yes, my sniffer is passive.
-
-> cheers, Marc
+--------------enig858EA4CE45336673BC8CD955--
