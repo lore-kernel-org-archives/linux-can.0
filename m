@@ -1,55 +1,61 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH 2/2] net/sched: CAN Filter/Classifier
-Date: Tue, 05 Jun 2012 10:09:58 +0200
-Message-ID: <1338883798.2760.2043.camel@edumazet-glaptop>
-References: <1338826176-11646-1-git-send-email-lisovy@gmail.com>
-	 <1338826176-11646-2-git-send-email-lisovy@gmail.com>
+From: Federico Vaga <federico.vaga@gmail.com>
+Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
+Date: Tue, 05 Jun 2012 13:19:26 +0200
+Message-ID: <3650428.HarNR9HfNF@harkonnen>
+References: <4FC135C6.5030206@grandegger.com> <1677842.Pq7naXsvrI@harkonnen> <D5ECB3C7A6F99444980976A8C6D896384FA5EC4B37@EAPEX1MAIL1.st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f46.google.com ([209.85.214.46]:42317 "EHLO
-	mail-bk0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757344Ab2FEIKE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jun 2012 04:10:04 -0400
-In-Reply-To: <1338826176-11646-2-git-send-email-lisovy@gmail.com>
+Received: from mail-ey0-f174.google.com ([209.85.215.174]:33702 "EHLO
+	mail-ey0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752951Ab2FELQE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jun 2012 07:16:04 -0400
+In-Reply-To: <D5ECB3C7A6F99444980976A8C6D896384FA5EC4B37@EAPEX1MAIL1.st.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Bhupesh SHARMA <bhupesh.sharma@st.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Giancarlo ASNAGHI <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, Alessandro Rubini <rubini@gnudd.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Mon, 2012-06-04 at 18:09 +0200, Rostislav Lisovy wrote:
-> This classifier classifies CAN frames (AF_CAN) according to their
-> identifiers. This functionality can not be easily achieved with
-> existing classifiers, such as u32. This classifier can be used
-> with any available qdisc and it is able to classify both SFF
-> or EFF frames.
+> In some of these SoC's the C_CAN registers which are essentially
+> 16-bit or 32-bit registers are aligned always to a 32-bit boundary
+> (i.e. even a 16-bit register is aligned to 32-bit boundary).
 > 
-> The filtering rules for EFF frames are stored in an array, which
-> is traversed during classification. A bitmap is used to store SFF
-> rules -- one bit for each ID.
-> 
-> More info about the project:
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
-> 
-> Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
-> ---
->  net/sched/Kconfig   |   10 +
->  net/sched/Makefile  |    1 +
->  net/sched/cls_can.c |  572 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 583 insertions(+)
->  create mode 100644 net/sched/cls_can.c
+> So, I had to implement two variants of the read/write reg routines. I
+> am not sure your SoC implementation needs them. If it does, I will
+> categorize it as flaky as well :)
 
-It seems a huge amount of code, and before reviewing it I would like to
-ask :
+My implementation is align to 32, but I'm trying to make a generic PCI 
+wrapper (some other could be aligned to 16)
+ 
+> See above. There was a reason for keeping these routines in
+> c_can_platform.c Simply put, every platform having a Bosch C_CAN
+> module can have it's own implementation of the bus (for example you
+> use PCI) and register bank layout (16-bit or 32-bit aligned).
 
-1) Did you try to extend cls_flow somehow ?
+I don't understand the reason to keep these functions in 
+c_can_platform.c . Two generic read/write functions could be written 
+into c_can.c by using a shift value (0 if aligned to 16, 1 if aligned to 
+32) as I showed in the previous mail:
 
-2) Adding a cls_filter (or extend cls_flow to be able to use a bpf),
-could be more generic, and thanks to bpf jit could be way faster.
+> > static u16 c_can_read_reg(struct c_can_priv *priv, enum reg index)
+> > {
+> > 
+> > 	return readw(priv->base + (priv->regs[index] << priv->offset));
+> > 
+> > }
+> > static void c_can_write_reg(struct c_can_priv *priv, enum reg index,
+> > 
+> > 						u16 val)
+> > 
+> > {
+> > 
+> > 	writew(val, priv->base + (priv->regs[index] << priv->offset));
+> > 
+> > }
 
-3) sfq/fq_codel could be CAN aware if you adapt skb_flow_dissect() ?
+Every platform having a Bosch C_CAN/D_CAN can specify its shift value (0 
+or 1) and it's done.
 
-
-
-
+-- 
+Federico Vaga
