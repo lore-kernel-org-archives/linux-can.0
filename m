@@ -1,85 +1,90 @@
-From: Bhupesh SHARMA <bhupesh.sharma@st.com>
-Subject: RE: [PATCH RFC] c_can_pci: generic module for c_can on PCI
-Date: Tue, 5 Jun 2012 11:42:50 +0800
-Message-ID: <D5ECB3C7A6F99444980976A8C6D896384FA5EC4B37@EAPEX1MAIL1.st.com>
-References: <4FC135C6.5030206@grandegger.com>
- <1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
- <20120604165619.15ba43bf@pyramind.ukuu.org.uk> <1677842.Pq7naXsvrI@harkonnen>
+From: Keith Jones <keith.rjones@yahoo.com>
+Subject: Re: [Socketcan-users] Flexcan on i.mx536 Infotainment Platform
+Date: Mon, 4 Jun 2012 22:00:23 -0700 (PDT)
+Message-ID: <1338872423.90411.YahooMailNeo@web140803.mail.bf1.yahoo.com>
+References: <1338845698.76889.YahooMailNeo@web140802.mail.bf1.yahoo.com> <4FCD2E39.3060809@pengutronix.de>
+Reply-To: Keith Jones <keith.rjones@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115]:52357 "EHLO
-	eu1sys200aog103.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1761428Ab2FEDnU convert rfc822-to-8bit
+Received: from nm10-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.147]:43330 "HELO
+	nm10-vm0.bullet.mail.bf1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1755629Ab2FEFA0 convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 4 Jun 2012 23:43:20 -0400
-In-Reply-To: <1677842.Pq7naXsvrI@harkonnen>
-Content-Language: en-US
+	Tue, 5 Jun 2012 01:00:26 -0400
+In-Reply-To: <4FCD2E39.3060809@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Federico Vaga <federico.vaga@gmail.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Giancarlo ASNAGHI <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, Alessandro Rubini <rubini@gnudd.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-
-> -----Original Message-----
-> From: linux-can-owner@vger.kernel.org [mailto:linux-can-
-> owner@vger.kernel.org] On Behalf Of Federico Vaga
-> Sent: Monday, June 04, 2012 10:16 PM
-> To: Alan Cox
-> Cc: Wolfgang Grandegger; Marc Kleine-Budde; Giancarlo ASNAGHI; Alan
-> Cox; Alessandro Rubini; linux-can@vger.kernel.org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
-> 
-> > > +static u16 c_can_pci_read_reg_aligned_to_16bit(struct c_can_priv
-> > > *priv, +						void *reg)
-> >
-> > I'm a bit worried this function name might be too short ;)
-> 
-> I know :) I was inspired by the same function in c_can_platform.c
-
-There was a purpose to keeping these long function names when I wrote
-the c_can_platform driver initially. These were kept to support the 
-SoCs (even the flaky ones) which I could trace at that time and used C_CAN controllers
-(e.g. Hynix, ST's SPEAr eMPUs, etc..) and had different register bank layouts.
-
-In some of these SoC's the C_CAN registers which are essentially 16-bit or 32-bit
-registers are aligned always to a 32-bit boundary (i.e. even a 16-bit register
-is aligned to 32-bit boundary).
-
-So, I had to implement two variants of the read/write reg routines. I am not sure your SoC implementation needs them.
-If it does, I will categorize it as flaky as well :)
- 
-> About these function I suggest to move them into c_can.c because they
-> are the same for c_can_platform.c and c_can_pci.c Then add a new field
-> c_can_priv->offset which can be used to shift the register offset
-> coherently with the memory alignment. Finally, remove c_can_priv-
-> >read_reg and c_can_priv->write_reg and use internal c_can.c function
-> to
-> read and write registers.
-
-See above. There was a reason for keeping these routines in c_can_platform.c
-Simply put, every platform having a Bosch C_CAN module can have it's own implementation
-of the bus (for example you use PCI) and register bank layout (16-bit or 32-bit aligned).
-
-I would suggest to keep the same arrangement.
-
-> static u16 c_can_read_reg(struct c_can_priv *priv, enum reg index)
-> {
-> 	return readw(priv->base + (priv->regs[index] << priv->offset));
-> }
-> static void c_can_write_reg(struct c_can_priv *priv, enum reg index,
-> 						u16 val)
-> {
-> 	writew(val, priv->base + (priv->regs[index] << priv->offset));
-> }
-> 
-> 
-> If it's ok, I can made a patch for this in the next days.
-> 
-
-[snip..]
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 
-Regards,
-Bhupesh
+
+On=A0 Monday, June 4, 2012 2:52 PM, Marc Kleine-Budde wrote:
+
+Subject: Re: [Socketcan-users] Flexcan on i.mx536 Infotainment Platform
+
+> Hello Keith,
+
+> please switch to the "linux-can@vger.kernel.org" mailinglist, the
+> berlios list is obsolete.
+
+> On 06/04/2012 11:34 PM, Keith Jones wrote:
+>> I booted up my new Infotainment demo board after ported 2.6.39
+>> flexcan (flexcan.h flexcan.c) support into my 2.6.35 linux distro.
+
+> Use v3.4 or better, this version contains some vital fixes against er=
+ror
+> irq floods.
+
+Ok moving to v3.4 kernel. I will reply with results.
+
+>> After seeing flexcan driver register and performing the following
+>> commands, I get constant interrupts and error packets visualized
+>> using my Canoe CANbus sniffer. I am using 250K baud. Did not check
+>> termination. No oscilloscope was used as yet. Can not receive any
+>> packets. can state goes from ERROR-ACTIVE to ERROR-PASSIVE.
+
+> Please check the Termination, do you have a second CAN member on the =
+bus?
+
+I have performed two activities: (1) just the demo board and (2) the de=
+mo board and a terminated device. With both, I=A0 observed the same err=
+or packet results. I have also attached a scope and observed solid CAN =
+signalling on the=20
+bus when the remote is sending J1939 ids. The plan is to retest again a=
+fter moving to 3.4.
+
+>> Any clues?
+
+>> root@freescale ~$ cansend can0 123#1122334455
+>> root@freescale /usr/bin$ ip -d -s link show can0
+>> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKN=
+OWN qlen 10
+>>=A0 =A0  link/can
+>>=A0 =A0  can state ERROR-PASSIVE (berr-counter tx 128 rx 0) restart-m=
+s 0
+>>=A0 =A0  bitrate 250000 sample-point 0.875
+>>=A0 =A0  tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+>>=A0 =A0  flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc =
+1
+>>=A0 =A0  clock 24000000
+>>=A0 =A0  re-started bus-errors arbit-lost error-warn error-pass bus-o=
+ff
+>>=A0 =A0  0=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 =A0=
+ 5=A0 =A0 =A0 =A0 =A0 5=A0 =A0 =A0 =A0 =A0 0
+>>=A0 =A0  RX: bytes=A0 packets=A0 errors=A0 dropped overrun mcast
+>>=A0 =A0  80=A0 =A0 =A0 =A0  10=A0 =A0 =A0  0=A0 =A0 =A0  0=A0 =A0 =A0=
+  0=A0 =A0 =A0  0
+>>=A0 =A0  TX: bytes=A0 packets=A0 errors=A0 dropped carrier collsns
+>>=A0 =A0  5=A0 =A0 =A0 =A0 =A0 0=A0 =A0 =A0 =A0 0=A0 =A0 =A0  0=A0 =A0=
+ =A0  0=A0 =A0 =A0  0
+
+> If the tx error counter goes up, the device may be the only device on
+> the CAN bus. Your sniffer is probably totally passive, which means it
+> doesn't qualify as a second station.
+
+tx error counter does go up and yes, my sniffer is passive.
+
+> cheers, Marc
