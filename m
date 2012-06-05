@@ -1,64 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
-Date: Tue, 05 Jun 2012 09:46:05 +0200
-Message-ID: <4FCDB93D.5030007@pengutronix.de>
-References: <1338849280.43608.YahooMailNeo@web140802.mail.bf1.yahoo.com> <1338849547.86575.YahooMailNeo@web140805.mail.bf1.yahoo.com> <1338852261.93934.YahooMailNeo@web140802.mail.bf1.yahoo.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH 2/2] net/sched: CAN Filter/Classifier
+Date: Tue, 05 Jun 2012 10:09:58 +0200
+Message-ID: <1338883798.2760.2043.camel@edumazet-glaptop>
+References: <1338826176-11646-1-git-send-email-lisovy@gmail.com>
+	 <1338826176-11646-2-git-send-email-lisovy@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig858EA4CE45336673BC8CD955"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58786 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756843Ab2FEHqN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jun 2012 03:46:13 -0400
-In-Reply-To: <1338852261.93934.YahooMailNeo@web140802.mail.bf1.yahoo.com>
+Received: from mail-bk0-f46.google.com ([209.85.214.46]:42317 "EHLO
+	mail-bk0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757344Ab2FEIKE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jun 2012 04:10:04 -0400
+In-Reply-To: <1338826176-11646-2-git-send-email-lisovy@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Keith Jones <keith.rjones@yahoo.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Rostislav Lisovy <lisovy@gmail.com>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig858EA4CE45336673BC8CD955
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Mon, 2012-06-04 at 18:09 +0200, Rostislav Lisovy wrote:
+> This classifier classifies CAN frames (AF_CAN) according to their
+> identifiers. This functionality can not be easily achieved with
+> existing classifiers, such as u32. This classifier can be used
+> with any available qdisc and it is able to classify both SFF
+> or EFF frames.
+> 
+> The filtering rules for EFF frames are stored in an array, which
+> is traversed during classification. A bitmap is used to store SFF
+> rules -- one bit for each ID.
+> 
+> More info about the project:
+> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
+> 
+> Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
+> ---
+>  net/sched/Kconfig   |   10 +
+>  net/sched/Makefile  |    1 +
+>  net/sched/cls_can.c |  572 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 583 insertions(+)
+>  create mode 100644 net/sched/cls_can.c
 
-On 06/05/2012 01:24 AM, Keith Jones wrote:
-> My kernel does not have "flexcan_poll_error_state" function in its
-> flexcan.c file.  Is the following patch still valid?
->=20
-> [RFC PATCH 07/14] can: flexcan: consolidate error state handling.=20
+It seems a huge amount of code, and before reviewing it I would like to
+ask :
 
-This patch series hasn't been applied yet.
+1) Did you try to extend cls_flow somehow ?
 
-> What would a good linux version to obtain a functioning flexcan
-> driver for imx536?  My demo board is shipped with 2.6.35. I am able
-> migrate to any version with appropriate patches.
+2) Adding a cls_filter (or extend cls_flow to be able to use a bpf),
+could be more generic, and thanks to bpf jit could be way faster.
 
-Use v3.4. Your v2.6.35 is probably a freescale kernel, with a freescale
-flexcan driver. The mainline driver should work with mx53.
-
-cheers, Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+3) sfq/fq_codel could be CAN aware if you adapt skb_flow_dissect() ?
 
 
---------------enig858EA4CE45336673BC8CD955
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk/NuUAACgkQjTAFq1RaXHPZfwCfYLLiy0cnN/A/GqK5RWBGVe+Y
-HWkAn3QHmy9nroe1fseszb6nJY0l3hWx
-=5Jlv
------END PGP SIGNATURE-----
-
---------------enig858EA4CE45336673BC8CD955--
