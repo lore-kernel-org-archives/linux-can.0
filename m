@@ -1,65 +1,35 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: David Miller <davem@davemloft.net>
 Subject: Re: pull-request: can-next 2012-06-04
-Date: Wed, 06 Jun 2012 20:02:35 +0200
-Message-ID: <4FCF9B3B.1070105@hartkopp.net>
-References: <4FCBEAAB.90708@pengutronix.de> <4FCCD9A8.7030207@pengutronix.de>
+Date: Wed, 06 Jun 2012 11:15:38 -0700 (PDT)
+Message-ID: <20120606.111538.2166268452793199990.davem@davemloft.net>
+References: <4FCBEAAB.90708@pengutronix.de>
+	<4FCCD9A8.7030207@pengutronix.de>
+	<4FCF9B3B.1070105@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:9788 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752062Ab2FFSCf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Jun 2012 14:02:35 -0400
-In-Reply-To: <4FCCD9A8.7030207@pengutronix.de>
+Received: from shards.monkeyblade.net ([149.20.54.216]:38011 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751327Ab2FFSPm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Jun 2012 14:15:42 -0400
+In-Reply-To: <4FCF9B3B.1070105@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: davem@davemloft.net
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: socketcan@hartkopp.net
+Cc: mkl@pengutronix.de, netdev@vger.kernel.org, linux-can@vger.kernel.org
 
-Hello Dave,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Wed, 06 Jun 2012 20:02:35 +0200
 
-i think there was a confusion about
-
-	linux-can and linux-can-next
-
-pull requests that overlapped in the mail traffic that day.
-
-The pull request of linux-can-next is still pending.
-
-git://gitorious.org/linux-can/linux-can-next.git master
-
-Regards,
-Oliver
-
-
-
-On 04.06.2012 17:52, Marc Kleine-Budde wrote:
-
-> On 06/04/2012 12:52 AM, Marc Kleine-Budde wrote:
->> Hello David,
->>
->> here are the first patches for net-next, they add power management
->> support for the flexcan driver and clarify the documentation with
->> respect to error messages.
->>
->> regards, Marc
->>
->> ---
->>
->> The following changes since commit 31a67102f4762df5544bc2dfb34a931233d2a5b2:
->>
->>   Fix blocking allocations called very early during bootup (2012-05-21 12:52:42 -0700)
->>
->> are available in the git repository at:
->>   git@gitorious.org:linux-can/linux-can-next.git master
+> i think there was a confusion about
 > 
-> That should be:
+> 	linux-can and linux-can-next
+> 
+> pull requests that overlapped in the mail traffic that day.
+> 
+> The pull request of linux-can-next is still pending.
 > 
 > git://gitorious.org/linux-can/linux-can-next.git master
-> 
-> Sorry for the noise,
-> Marc
-> 
 
-
+Strange, I thought I had pulled it, I've done so now, thanks.
