@@ -1,69 +1,85 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [patch] can: c_can: precedence error in c_can_chip_config()
-Date: Mon, 11 Jun 2012 19:51:53 +0200
-Message-ID: <4FD63039.4080104@pengutronix.de>
-References: <20120609155150.GA6488@elgon.mountain> <4FD4DEF2.6070802@pengutronix.de> <4FD62E21.3020209@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [RFC v5] CAN FD support
+Date: Mon, 11 Jun 2012 20:03:51 +0200
+Message-ID: <4FD63307.7020605@grandegger.com>
+References: <4FC3D9EE.4010807@hartkopp.net> <4FD60007.8070801@grandegger.com> <4FD62CBA.8050300@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDA31BE94A4B1E4AEB3931963"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4FD62E21.3020209@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Wolfgang Grandegger <wg@grandegger.com>, AnilKumar Ch <anilkumar@ti.com>, "David S. Miller" <davem@davemloft.net>, Jiri Kosina <jkosina@suse.cz>, linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDA31BE94A4B1E4AEB3931963
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:45358 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751632Ab2FKSDy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Jun 2012 14:03:54 -0400
+In-Reply-To: <4FD62CBA.8050300@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 06/11/2012 07:42 PM, Oliver Hartkopp wrote:
-> On 10.06.2012 19:52, Marc Kleine-Budde wrote:
->=20
->> On 06/09/2012 05:56 PM, Dan Carpenter wrote:
->>> (CAN_CTRLMODE_LISTENONLY & CAN_CTRLMODE_LOOPBACK) is (0x02 & 0x01) wh=
-ich
->>> is zero so the condition is never true.  The intent here was to test
->>> that both flags were set.
+On 06/11/2012 07:36 PM, Oliver Hartkopp wrote:
+> On 11.06.2012 16:26, Wolfgang Grandegger wrote:
+> 
+>> On 05/28/2012 10:02 PM, Oliver Hartkopp wrote:
+>>> Hi all,
 >>>
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> ---
->>> This is a static checker fix.  I'm not super familiar with the c_can
->>> code.
+>>> since RFC v4 - see http://marc.info/?l=linux-can&m=133708871921901&w=2 from
+>>> 2012-05-15 - i cleaned up some details and added the support of simultaneous
+>>> CAN and CANFD frame handling inside the networking code after some discussion
+>>> with Kurt. Sometimes code needs to be implemented to see that there is a more
+>>> elegant solution out there when removing that code again ;-)
+>>>
+>>> If you also feel fine with this patch i would finally create a patchset of
+>>> four patches, like 
+>>>
+>>> - adding new structures and constants
+>>> - adding CAN FD support in af_can.c
+>>> - adding CAN FD support in raw.c
+>>> - adding CAN FD support in vcan.c
+>>>
+>>> for the upcoming net-next bound for Linux 3.6 .
 >>
->> Good catch. Applied to can-next.
->>
->> Marc
->>
->=20
->=20
-> Shouldn't this fix go through the net-tree and stable instead of net-ne=
-xt?
+>> Do you have already CAN FD hardware for testing? If not, do we really
+>> want to have this patchset mainline.
+> 
+> 
+> Yes. There's a good reason for this patchset.
+> 
+> As you might remember from the old days ...
+> 
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=history;f=drivers/net/can/Kconfig
+> 
+> 2009-05-18 	Wolfgang Grandegger	can: CAN Network device driver and Netlink interface 	blob | commitdiff | diff to current
+> 
+> 2008-01-28 	Oliver Hartkopp	[CAN]: Add virtual CAN netdevice driver 	blob | commitdiff | diff to current
+> 
+> it was nearly 16 month the PF_CAN infrastructure was part of the mainline
+> kernel until the first 'real' CAN drivers have been added to the tree.
+> Meanwhile the driver development inside and outside the tree had a stable
+> environment for APIs and testing.
 
-Indeed.
+Ah, I forgot, the vcan driver allows to test the CAN FD interface as
+well, basically ==> the code is tested to some extend which calms me
+down ;).
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> Same situation here. The CAN FD patches just provide a CAN FD capable
+> infrastructure with new data structures and extended userspace API which
+> allows to develop both drivers and CAN FD applications.
+> 
+> So when the patches go the usual way, they are released in Linux 3.6
+> somewhere in November/December this year - together with the first announced
+> real CAN FD hardware silicon. Btw. i assume that the first FPGA based CAN
+> controllers will be available for tests earlier.
+> 
+> So hitting this net-next window to provide CAN FD support in the netlayer
+> infrastructure is not too fast but right in time :-)
+> 
+>> More later...
+> 
+> 
+> Reviews are welcome.
+> Please check the different postings and discussions up to v5 before.
 
+Well, I'm just back from holiday...
 
---------------enigDA31BE94A4B1E4AEB3931963
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk/WMD4ACgkQjTAFq1RaXHPkcgCeIIbQjkQ1QGsFgnk6j7+eybnT
-AIUAn1x7jjatrgp25sVlbVCPvp3KEVeC
-=adXJ
------END PGP SIGNATURE-----
-
---------------enigDA31BE94A4B1E4AEB3931963--
+Wolfgang.
