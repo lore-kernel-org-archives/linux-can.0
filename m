@@ -1,53 +1,44 @@
-From: Alessandro Rubini <rubini@gnudd.com>
-Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
-Date: Mon, 11 Jun 2012 16:23:11 +0200
-Message-ID: <20120611142311.GA28682@mail.gnudd.com>
-References: <4FD5F7F1.3010602@grandegger.com>
-  <20120604165619.15ba43bf@pyramind.ukuu.org.uk>
-  <4FC135C6.5030206@grandegger.com>
-  <1338816766-7089-1-git-send-email-federico.vaga@gmail.com>
-  <1338816766-7089-2-git-send-email-federico.vaga@gmail.com>
- <20120604164531.GA22000@mail.gnudd.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [RFC v5] CAN FD support
+Date: Mon, 11 Jun 2012 16:26:15 +0200
+Message-ID: <4FD60007.8070801@grandegger.com>
+References: <4FC3D9EE.4010807@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4FD5F7F1.3010602@grandegger.com>
-Sender: netdev-owner@vger.kernel.org
-To: wg@grandegger.com
-Cc: alan@lxorguk.ukuu.org.uk, federico.vaga@gmail.com, mkl@pengutronix.de, giancarlo.asnaghi@st.com, alan@linux.intel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:39887 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753887Ab2FKO0R (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Jun 2012 10:26:17 -0400
+In-Reply-To: <4FC3D9EE.4010807@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
->> In my opinion, it would be much better to have one less layer and no
->> exports at all. The core driver should be a platform driver, and the
->> pci driver would just build platform data and register the platform
->> device.
+On 05/28/2012 10:02 PM, Oliver Hartkopp wrote:
+> Hi all,
 > 
-> Do you have examples for that approach? Not sure yet if it really saves
-> code and makes it more readable.
+> since RFC v4 - see http://marc.info/?l=linux-can&m=133708871921901&w=2 from
+> 2012-05-15 - i cleaned up some details and added the support of simultaneous
+> CAN and CANFD frame handling inside the networking code after some discussion
+> with Kurt. Sometimes code needs to be implemented to see that there is a more
+> elegant solution out there when removing that code again ;-)
+> 
+> If you also feel fine with this patch i would finally create a patchset of
+> four patches, like 
+> 
+> - adding new structures and constants
+> - adding CAN FD support in af_can.c
+> - adding CAN FD support in raw.c
+> - adding CAN FD support in vcan.c
+> 
+> for the upcoming net-next bound for Linux 3.6 .
 
-Maybe the physmap mtd driver is a good example. Everybody's using it
-(but not from PCI). I found drivers/pcmcia/bcm63xx_pcmcia.c that
-registers a platform driver from a pci probe function, but I'm sure
-there are other ones.
+Do you have already CAN FD hardware for testing? If not, do we really
+want to have this patchset mainline.
 
-OTOH, I have another example of how not to do stuff, but I won't point
-fingers now (it's not a CAN thing).
+More later...
 
-I just think the platform bus is there just for this reason: to provide
-data to a generic driver, without module dependencies and such stuff. 
-
-> I would suggest to provide the c_can_pci driver using the *current* API,
-> even if it's not optimal. Federicos patch then already looks quite good.
-> It should use the new register access methods introduced by the D_CAN
-> support patch, though.
-
-Great. When it's in I'll show my proposal as an RFC patch, as time permits,
-so we'll see if it's better or not.
-
-> Any further improvements to the device abstraction and a more consistent
-> handling of the platform data are welcome.
-
-Good to know, thanks a lot
-
-/alessandro
+Wolfgang.
