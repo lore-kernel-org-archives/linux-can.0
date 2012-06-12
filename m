@@ -1,94 +1,87 @@
-From: Rostislav Lisovy <lisovy@gmail.com>
-Subject: Re: [RFC] net/sched/em_canid: Ematch rule to match CAN frames
- according to their CAN IDs
-Date: Tue, 12 Jun 2012 16:50:22 +0200
-Message-ID: <1339512622.8536.3.camel@lolumad>
-References: <1339508913-7784-1-git-send-email-lisovy@gmail.com>
-	 <1339509809.22704.149.camel@edumazet-glaptop>
-	 <1339511593.22704.157.camel@edumazet-glaptop>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC] net/sched/em_canid: Ematch rule to match CAN frames according
+ to their CAN IDs
+Date: Tue, 12 Jun 2012 17:42:01 +0200
+Message-ID: <4FD76349.6040407@hartkopp.net>
+References: <1339508913-7784-1-git-send-email-lisovy@gmail.com>  <1339509809.22704.149.camel@edumazet-glaptop>  <1339511593.22704.157.camel@edumazet-glaptop> <1339512622.8536.3.camel@lolumad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1339511593.22704.157.camel@edumazet-glaptop>
+In-Reply-To: <1339512622.8536.3.camel@lolumad>
 Sender: netdev-owner@vger.kernel.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
+To: Rostislav Lisovy <lisovy@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
 List-Id: linux-can.vger.kernel.org
 
-On Tue, 2012-06-12 at 16:33 +0200, Eric Dumazet wrote: 
-> On Tue, 2012-06-12 at 16:03 +0200, Eric Dumazet wrote:
-> > On Tue, 2012-06-12 at 15:48 +0200, Rostislav Lisovy wrote:
-> > > em_canid is an ematch capable of classifying CAN frames according to
-> > > their CAN IDs.
-> > > 
-> > > This RFC/Patch contains a reworked classifier initially posted in
-> > > http://www.spinics.net/lists/netdev/msg200114.html
-> > > The functionality is the same however there is almost 50% reduction
-> > > in the source code length.
-> > > 
-> > > There is a slight difference between this ematch and other available
-> > > ematches. Other ematches implement only a simple match operation and
-> > > are meant to be combined with logic conjunctions (e.g. AND, OR).
-> > > Our ematch makes it possible to use up to 32 rules in single
-> > > 'configuration statement' (with OR semantics). This allows us to take
-> > > the advantage of the bit field data-structure in the implementation of
-> > > the match function.
-> > > 
-> > > Example: canid(sff 0x123 eff 0x124 sff 0x230:0x7f0)
-> > > This ematch would match CAN SFF frames with the following IDs:
-> > > 0x123, 0x230--0x23f or EFF frame with ID 0x124.
-> > > 
-> > > Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
-> > > ---
-> > >  include/linux/can.h     |    3 +
-> > >  include/linux/pkt_cls.h |    5 +-
-> > >  net/sched/Kconfig       |   10 +++
-> > >  net/sched/Makefile      |    1 +
-> > >  net/sched/em_canid.c    |  217 +++++++++++++++++++++++++++++++++++++++++++++++
-> > >  5 files changed, 234 insertions(+), 2 deletions(-)
-> > >  create mode 100644 net/sched/em_canid.c
-> > > 
-> > > diff --git a/include/linux/can.h b/include/linux/can.h
-> > > index 9a19bcb..08d1610 100644
-> > > --- a/include/linux/can.h
-> > > +++ b/include/linux/can.h
-> > > @@ -38,6 +38,9 @@
-> > >   */
-> > >  typedef __u32 canid_t;
-> > >  
-> > > +#define CAN_SFF_ID_BITS		11
-> > > +#define CAN_EFF_ID_BITS		29
-> > > +
-> > 
-> > > +struct canid_match {
-> > > +	struct can_filter rules_raw[EM_CAN_RULES_SIZE]; /* Raw rules copied
-> > > +		from netlink message; Used for sending information to
-> > > +		userspace (when 'tc filter show' is invoked) AND when
-> > > +		matching EFF frames*/
-> > > +	DECLARE_BITMAP(match_sff, (1 << CAN_SFF_ID_BITS)); /* For each SFF CAN
-> > > +		ID (11 bit) there is one record in this	bitfield */
-> > > +	int rules_count;
-> > > +	int eff_rules_count;
-> > > +	int sff_rules_count;
-> > > +
-> > > +	struct rcu_head rcu;
-> > > +};
-> > 
-> > The size of kmalloc() blob to hold this structure is 4 Mbytes
-> > 
-> > This is a huge cost, and unlikely to succeed but shortly after boot...
-> > 
-> > (this happens to be the largest possible kmalloc() allocation by the way
-> > on x86)
-> > 
-> > 
-> 
-> Oh well, I mixed CAN_SFF_ID_BITS / CAN_EFF_ID_BITS
-> 
-> 
 
-Indeed; On x86_64 the sizeof(struct canid_match) is 544 bytes;
+Hello Rostislav, hello Eric,
 
-Regards;
-Rostislav Lisovy
+On 12.06.2012 16:50, Rostislav Lisovy wrote:
+
+> On Tue, 2012-06-12 at 16:33 +0200, Eric Dumazet wrote: 
+>> On Tue, 2012-06-12 at 16:03 +0200, Eric Dumazet wrote:
+>>> On Tue, 2012-06-12 at 15:48 +0200, Rostislav Lisovy wrote:
+>>>> em_canid is an ematch capable of classifying CAN frames according to
+>>>> their CAN IDs.
+>>>>
+>>>> This RFC/Patch contains a reworked classifier initially posted in
+>>>> http://www.spinics.net/lists/netdev/msg200114.html
+>>>> The functionality is the same however there is almost 50% reduction
+>>>> in the source code length.
+>>>>
+>>>> There is a slight difference between this ematch and other available
+>>>> ematches. Other ematches implement only a simple match operation and
+>>>> are meant to be combined with logic conjunctions (e.g. AND, OR).
+>>>> Our ematch makes it possible to use up to 32 rules in single
+>>>> 'configuration statement' (with OR semantics). This allows us to take
+>>>> the advantage of the bit field data-structure in the implementation of
+>>>> the match function.
+>>>>
+>>>> Example: canid(sff 0x123 eff 0x124 sff 0x230:0x7f0)
+>>>> This ematch would match CAN SFF frames with the following IDs:
+>>>> 0x123, 0x230--0x23f or EFF frame with ID 0x124.
+
+
+
+i tried to figure out the difference between the implementation as classifier
+(link above) and this implementation as an ematch.
+
+Do we have any disadvantages using the ematch? E.g. is it still possible to
+add additional ematches like checking for patterns inside can_frame.data[]
+(which is located in skb->data) with ematch_u32 or e.g. ematch_text ??
+
+
+...
+
+Btw.
+
+>>>> +struct canid_match {
+>>>> +	struct can_filter rules_raw[EM_CAN_RULES_SIZE]; /* Raw rules copied
+>>>> +		from netlink message; Used for sending information to
+>>>> +		userspace (when 'tc filter show' is invoked) AND when
+>>>> +		matching EFF frames*/
+>>>> +	DECLARE_BITMAP(match_sff, (1 << CAN_SFF_ID_BITS)); /* For each SFF CAN
+>>>> +		ID (11 bit) there is one record in this	bitfield */
+
+
+these comments have a styling problem :-)
+
+Additional to these checkpatch warnings:
+
+WARNING: line over 80 characters
+#144: FILE: net/sched/em_canid.c:48:
++static void em_canid_sff_match_add(struct canid_match *cm, u32 can_id, u32 can_mask)
+
+WARNING: line over 80 characters
+#231: FILE: net/sched/em_canid.c:135:
++	if (cm->rules_count > EM_CAN_RULES_SIZE) /* Be sure to fit into the array */
+
+WARNING: line over 80 characters
+#256: FILE: net/sched/em_canid.c:160:
++			memcpy(cm->rules_raw + cm->eff_rules_count + cm->sff_rules_count,
+
+
+
+Tnx & regards,
+Oliver
