@@ -1,92 +1,67 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [RFC] net/sched/em_canid: Ematch rule to match CAN frames
- according to their CAN IDs
-Date: Tue, 12 Jun 2012 16:33:13 +0200
-Message-ID: <1339511593.22704.157.camel@edumazet-glaptop>
-References: <1339508913-7784-1-git-send-email-lisovy@gmail.com>
-	 <1339509809.22704.149.camel@edumazet-glaptop>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH RFC] c_can_pci: generic module for c_can on PCI
+Date: Tue, 12 Jun 2012 16:46:32 +0200
+Message-ID: <4FD75648.7060702@pengutronix.de>
+References: <4FC135C6.5030206@grandegger.com> <1338816766-7089-2-git-send-email-federico.vaga@gmail.com> <4FCCC077.7000303@pengutronix.de> <2105333.GQGP4hKIYU@harkonnen>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig28374E933A468630350573AD"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ey0-f174.google.com ([209.85.215.174]:36852 "EHLO
-	mail-ey0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752000Ab2FLOdU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jun 2012 10:33:20 -0400
-In-Reply-To: <1339509809.22704.149.camel@edumazet-glaptop>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52617 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752388Ab2FLOrD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jun 2012 10:47:03 -0400
+In-Reply-To: <2105333.GQGP4hKIYU@harkonnen>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Federico Vaga <federico.vaga@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, Alessandro Rubini <rubini@gnudd.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, 2012-06-12 at 16:03 +0200, Eric Dumazet wrote:
-> On Tue, 2012-06-12 at 15:48 +0200, Rostislav Lisovy wrote:
-> > em_canid is an ematch capable of classifying CAN frames according to
-> > their CAN IDs.
-> > 
-> > This RFC/Patch contains a reworked classifier initially posted in
-> > http://www.spinics.net/lists/netdev/msg200114.html
-> > The functionality is the same however there is almost 50% reduction
-> > in the source code length.
-> > 
-> > There is a slight difference between this ematch and other available
-> > ematches. Other ematches implement only a simple match operation and
-> > are meant to be combined with logic conjunctions (e.g. AND, OR).
-> > Our ematch makes it possible to use up to 32 rules in single
-> > 'configuration statement' (with OR semantics). This allows us to take
-> > the advantage of the bit field data-structure in the implementation of
-> > the match function.
-> > 
-> > Example: canid(sff 0x123 eff 0x124 sff 0x230:0x7f0)
-> > This ematch would match CAN SFF frames with the following IDs:
-> > 0x123, 0x230--0x23f or EFF frame with ID 0x124.
-> > 
-> > Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
-> > ---
-> >  include/linux/can.h     |    3 +
-> >  include/linux/pkt_cls.h |    5 +-
-> >  net/sched/Kconfig       |   10 +++
-> >  net/sched/Makefile      |    1 +
-> >  net/sched/em_canid.c    |  217 +++++++++++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 234 insertions(+), 2 deletions(-)
-> >  create mode 100644 net/sched/em_canid.c
-> > 
-> > diff --git a/include/linux/can.h b/include/linux/can.h
-> > index 9a19bcb..08d1610 100644
-> > --- a/include/linux/can.h
-> > +++ b/include/linux/can.h
-> > @@ -38,6 +38,9 @@
-> >   */
-> >  typedef __u32 canid_t;
-> >  
-> > +#define CAN_SFF_ID_BITS		11
-> > +#define CAN_EFF_ID_BITS		29
-> > +
-> 
-> > +struct canid_match {
-> > +	struct can_filter rules_raw[EM_CAN_RULES_SIZE]; /* Raw rules copied
-> > +		from netlink message; Used for sending information to
-> > +		userspace (when 'tc filter show' is invoked) AND when
-> > +		matching EFF frames*/
-> > +	DECLARE_BITMAP(match_sff, (1 << CAN_SFF_ID_BITS)); /* For each SFF CAN
-> > +		ID (11 bit) there is one record in this	bitfield */
-> > +	int rules_count;
-> > +	int eff_rules_count;
-> > +	int sff_rules_count;
-> > +
-> > +	struct rcu_head rcu;
-> > +};
-> 
-> The size of kmalloc() blob to hold this structure is 4 Mbytes
-> 
-> This is a huge cost, and unlikely to succeed but shortly after boot...
-> 
-> (this happens to be the largest possible kmalloc() allocation by the way
-> on x86)
-> 
-> 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig28374E933A468630350573AD
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Oh well, I mixed CAN_SFF_ID_BITS / CAN_EFF_ID_BITS
+On 06/12/2012 04:25 PM, Federico Vaga wrote:
+>>> +out_free_clock:
+>>> +	if (!priv->priv)
+>>
+>>            ^^^
+>>
+>> looks fishy
+>=20
+> Also c_can_platform.c use priv->priv when it needs to get clk. I can ad=
+d=20
+> a comment to specify what the statement do.
+
+> +out_free_clock:
+> +	if (!priv->priv)
+> +		clk_put(priv->priv);
+
+Why do you call clk_put on priv->priv, if priv->priv is NULL?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enig28374E933A468630350573AD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk/XVkgACgkQjTAFq1RaXHPa2QCePTAWniuYkAWURBkjbmYbR7pe
+wkEAn3+b16dz+073eYLCrWilNg8AdqkD
+=VOy/
+-----END PGP SIGNATURE-----
+
+--------------enig28374E933A468630350573AD--
