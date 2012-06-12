@@ -1,64 +1,218 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: socketcan: license issues
-Date: Tue, 12 Jun 2012 10:45:57 +0200
-Message-ID: <4FD701C5.6010207@hartkopp.net>
-References: <1339484312-4281-1-git-send-email-yegorslists@googlemail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: yegorslists@googlemail.com
+Subject: [PATCH v2] socketcan: provide GPL2 notion for the headers
+Date: Tue, 12 Jun 2012 10:16:27 +0200
+Message-ID: <1339488987-5632-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:34938 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752233Ab2FLIp6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jun 2012 04:45:58 -0400
-In-Reply-To: <1339484312-4281-1-git-send-email-yegorslists@googlemail.com>
+Received: from hhlx01.visionsystems.de ([62.145.30.242]:47416 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752294Ab2FLIx2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jun 2012 04:53:28 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Yegor Yefremov <yegorslists@googlemail.com>
 
-On 12.06.2012 08:58, yegorslists@googlemail.com wrote:
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-> During my effort bringing SocketCAN to Android I encountered following issue: Android devs found out that SocketCAN headers are not licensed as GPL2. See discussion here https://android-review.googlesource.com/#/c/34510/
-> 
-> I added GPL2 notion to the headers. Is it O.K. the way I made it or should we make this consistent for all SocketCAN files including the drivers?
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+v2: remove FSF address
 
+ include/linux/can.h         |   11 +++++++++--
+ include/linux/can/bcm.h     |   11 +++++++++--
+ include/linux/can/core.h    |   11 +++++++++--
+ include/linux/can/dev.h     |    8 ++++++++
+ include/linux/can/error.h   |   11 +++++++++--
+ include/linux/can/gw.h      |   11 +++++++++--
+ include/linux/can/netlink.h |    8 ++++++++
+ include/linux/can/raw.h     |   11 +++++++++--
+ 8 files changed, 70 insertions(+), 12 deletions(-)
 
-Hello Yegor,
-
-the stuff which is inside the kernel is GPL source.
-
-No need to put any effort to change copyright notices in Kernel headers.
-
-The Android guys can pick the headers as-is. They did it with xattr.h too:
-
-See
-
-https://github.com/android/platform_bionic/blob/master/libc/kernel/common/linux/xattr.h
-
-and the original header starts with
-
-/*
-  File: linux/xattr.h
-
-  Extended attributes handling.
-
-  Copyright (C) 2001 by Andreas Gruenbacher <a.gruenbacher@computer.org>
-  Copyright (c) 2001-2002 Silicon Graphics, Inc.  All Rights Reserved.
-  Copyright (c) 2004 Red Hat, Inc., James Morris <jmorris@redhat.com>
-*/
-
-http://lxr.linux.no/#linux+v3.4.2/include/linux/xattr.h
-
-which also includes a copyright and "All rights reserved" message from SGI.
-
-So why is there any problem with can.h when there was no problem with xattr.h?
-
-The CAN subsystem is licensed by Volkswagen under GPL/BSD - the Android guys
-are hereby invited to pick the headers for their libs - even when i personally
-think, that their header cleaning process is a bad message for contributing
-developers. 
-
-Regards,
-Oliver
+diff --git a/include/linux/can.h b/include/linux/can.h
+index 9a19bcb..9c1e221 100644
+--- a/include/linux/can.h
++++ b/include/linux/can.h
+@@ -3,11 +3,18 @@
+  *
+  * Definitions for CAN network layer (socket addr / CAN frame / CAN filter)
+  *
++ * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
+- * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+- * All rights reserved.
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_H
+diff --git a/include/linux/can/bcm.h b/include/linux/can/bcm.h
+index 3ebe387..c8194be 100644
+--- a/include/linux/can/bcm.h
++++ b/include/linux/can/bcm.h
+@@ -3,10 +3,17 @@
+  *
+  * Definitions for CAN Broadcast Manager (BCM)
+  *
+- * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+- * All rights reserved.
++ * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_BCM_H
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index 0ccc1cd..0d3032f 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -3,11 +3,18 @@
+  *
+  * Protoypes and definitions for CAN protocol modules using the PF_CAN core
+  *
++ * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
+- * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+- * All rights reserved.
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_CORE_H
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 5d2efe7..b4e2a92 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -8,6 +8,14 @@
+  *
+  * Copyright (C) 2008 Wolfgang Grandegger <wg@grandegger.com>
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_DEV_H
+diff --git a/include/linux/can/error.h b/include/linux/can/error.h
+index 63e855e..e1eed88 100644
+--- a/include/linux/can/error.h
++++ b/include/linux/can/error.h
+@@ -3,10 +3,17 @@
+  *
+  * Definitions of the CAN error frame to be filtered and passed to the user.
+  *
+- * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+- * All rights reserved.
++ * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_ERROR_H
+diff --git a/include/linux/can/gw.h b/include/linux/can/gw.h
+index 8e1db18..43dc261 100644
+--- a/include/linux/can/gw.h
++++ b/include/linux/can/gw.h
+@@ -3,10 +3,17 @@
+  *
+  * Definitions for CAN frame Gateway/Router/Bridge
+  *
+- * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  * Copyright (c) 2011 Volkswagen Group Electronic Research
+- * All rights reserved.
++ * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_GW_H
+diff --git a/include/linux/can/netlink.h b/include/linux/can/netlink.h
+index 14966dd..e8eda88 100644
+--- a/include/linux/can/netlink.h
++++ b/include/linux/can/netlink.h
+@@ -5,6 +5,14 @@
+  *
+  * Copyright (c) 2009 Wolfgang Grandegger <wg@grandegger.com>
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_NETLINK_H
+diff --git a/include/linux/can/raw.h b/include/linux/can/raw.h
+index 781f3a3..2d82920 100644
+--- a/include/linux/can/raw.h
++++ b/include/linux/can/raw.h
+@@ -3,11 +3,18 @@
+  *
+  * Definitions for raw CAN sockets
+  *
++ * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
+- * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+- * All rights reserved.
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_RAW_H
+-- 
+1.7.7
 
