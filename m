@@ -1,61 +1,41 @@
-From: Michal Sojka <sojkam1@fel.cvut.cz>
-Subject: Re: [RFC] net/sched/em_canid: Ematch rule to match CAN frames according to their CAN IDs
-Date: Wed, 13 Jun 2012 11:52:10 +0200
-Message-ID: <878vfr7d4l.fsf@steelpick.2x.cz>
-References: <1339508913-7784-1-git-send-email-lisovy@gmail.com> <1339509809.22704.149.camel@edumazet-glaptop> <1339511593.22704.157.camel@edumazet-glaptop> <1339512622.8536.3.camel@lolumad> <4FD76349.6040407@hartkopp.net>
+From: Thomas Graf <tgraf@suug.ch>
+Subject: Re: [RFC] net/sched/em_canid: Ematch rule to match CAN frames
+ according to their CAN IDs
+Date: Wed, 13 Jun 2012 08:18:28 -0400
+Message-ID: <20120613121828.GP28598@canuck.infradead.org>
+References: <1339508913-7784-1-git-send-email-lisovy@gmail.com>
+ <1339509809.22704.149.camel@edumazet-glaptop>
+ <1339511593.22704.157.camel@edumazet-glaptop>
+ <1339512622.8536.3.camel@lolumad>
+ <4FD76349.6040407@hartkopp.net>
+ <878vfr7d4l.fsf@steelpick.2x.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4FD76349.6040407@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Rostislav Lisovy <lisovy@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from merlin.infradead.org ([205.233.59.134]:53478 "EHLO
+	merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753986Ab2FMMSc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Jun 2012 08:18:32 -0400
+Content-Disposition: inline
+In-Reply-To: <878vfr7d4l.fsf@steelpick.2x.cz>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Michal Sojka <sojkam1@fel.cvut.cz>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Rostislav Lisovy <lisovy@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz
 
-Hello Oliver,
+On Wed, Jun 13, 2012 at 11:52:10AM +0200, Michal Sojka wrote:
+> The performance of ematch might be slightly lower than of standalone
+> classifier. Rosta will compare the performance soon. 
 
-Oliver Hartkopp <socketcan@hartkopp.net> writes:
-> Hello Rostislav, hello Eric,
->
-> On 12.06.2012 16:50, Rostislav Lisovy wrote:
->
->> On Tue, 2012-06-12 at 16:33 +0200, Eric Dumazet wrote: 
->>> On Tue, 2012-06-12 at 16:03 +0200, Eric Dumazet wrote:
->>>> On Tue, 2012-06-12 at 15:48 +0200, Rostislav Lisovy wrote:
->>>>> em_canid is an ematch capable of classifying CAN frames according to
->>>>> their CAN IDs.
->>>>>
->>>>> This RFC/Patch contains a reworked classifier initially posted in
->>>>> http://www.spinics.net/lists/netdev/msg200114.html
->>>>> The functionality is the same however there is almost 50% reduction
->>>>> in the source code length.
->>>>>
->>>>> There is a slight difference between this ematch and other available
->>>>> ematches. Other ematches implement only a simple match operation and
->>>>> are meant to be combined with logic conjunctions (e.g. AND, OR).
->>>>> Our ematch makes it possible to use up to 32 rules in single
->>>>> 'configuration statement' (with OR semantics). This allows us to take
->>>>> the advantage of the bit field data-structure in the implementation of
->>>>> the match function.
->>>>>
->>>>> Example: canid(sff 0x123 eff 0x124 sff 0x230:0x7f0)
->>>>> This ematch would match CAN SFF frames with the following IDs:
->>>>> 0x123, 0x230--0x23f or EFF frame with ID 0x124.
->
-> i tried to figure out the difference between the implementation as classifier
-> (link above) and this implementation as an ematch.
->
-> Do we have any disadvantages using the ematch? 
+I think it doesn't make a difference, there is no additional locking
+involved. Numbers definitely welcome though.
 
-The performance of ematch might be slightly lower than of standalone
-classifier. Rosta will compare the performance soon. 
+> > E.g. is it still possible to add additional ematches like checking for
+> > patterns inside can_frame.data[] (which is located in skb->data) with
+> > ematch_u32 or e.g. ematch_text ??
+> 
+> AFAIK, this should be possible and it will be a big advantage over
+> implementation as a standalone classifier.
 
-> E.g. is it still possible to add additional ematches like checking for
-> patterns inside can_frame.data[] (which is located in skb->data) with
-> ematch_u32 or e.g. ematch_text ??
-
-AFAIK, this should be possible and it will be a big advantage over
-implementation as a standalone classifier.
-
-Regards,
--Michal
+Definitely and the real advantage is that you can combine these
+using logic operators.
