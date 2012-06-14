@@ -1,83 +1,291 @@
-From: Keith Jones <keith.rjones@yahoo.com>
-Subject: Re: flexcan_poll_error_state(struct net_device *dev, u32 reg_esr)
-Date: Wed, 13 Jun 2012 12:35:05 -0700 (PDT)
-Message-ID: <1339616105.48707.YahooMailNeo@web140804.mail.bf1.yahoo.com>
-References: <1338849280.43608.YahooMailNeo@web140802.mail.bf1.yahoo.com> <1338849547.86575.YahooMailNeo@web140805.mail.bf1.yahoo.com> <1338852261.93934.YahooMailNeo@web140802.mail.bf1.yahoo.com> <4FCDB93D.5030007@pengutronix.de> <1339086557.44691.YahooMailNeo@web140804.mail.bf1.yahoo.com> <4FD4DD58.3070302@pengutronix.de>
-Reply-To: Keith Jones <keith.rjones@yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from nm14.bullet.mail.bf1.yahoo.com ([98.139.212.173]:31008 "HELO
-	nm14.bullet.mail.bf1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1752321Ab2FMTfG convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 13 Jun 2012 15:35:06 -0400
-In-Reply-To: <4FD4DD58.3070302@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Federico Vaga <federico.vaga@gmail.com>
+Subject: [PATCH] c_can_pci: generic module for C_CAN/D_CAN on PCI
+Date: Thu, 14 Jun 2012 13:43:42 +0200
+Message-ID: <1339674222-27699-1-git-send-email-federico.vaga@gmail.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Alan Cox <alan@linux.intel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Bhupesh SHARMA <bhupesh.sharma@st.com>, AnilKumar Chimata <anilkumar@ti.com>, Alessandro Rubini <rubini@gnudd.com>, Federico Vaga <federico.vaga@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
+Signed-off-by: Federico Vaga <federico.vaga@gmail.com>
+Acked-by: Giancarlo Asnaghi <giancarlo.asnaghi@st.com>
+Cc: Alan Cox <alan@linux.intel.com>
+---
+ drivers/net/can/c_can/Kconfig     |    7 ++
+ drivers/net/can/c_can/Makefile    |    1 +
+ drivers/net/can/c_can/c_can_pci.c |  236 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 244 insertions(+)
+ create mode 100644 drivers/net/can/c_can/c_can_pci.c
 
-
-On Sunday, June 10, 2012 10:46 AM, Marc Kleine-Budde wrote:
-
-> Port the 3.4 flexcan driver to you 2.6.35 Kernel.
-
-Okay I copied into my 2.6.34 kernel the following with minimal mods des=
-cribed below:=20
-
-drivers/net/can/flexcan.c - used module_init(flexcan_init) and module_e=
-xit(flexcan_exit) from 2.6.35
-drivers/net/can/dev.c
-drivers/net/can/Kconfig=20
-drivers/net/can/Makefile - commented out c_can, cc770, and softing for =
-now
-include/linux/can/platform/flexcan.h
-drivers/net/can
-include/linux/clk.h
-
-
-I compiled, booted, and up'd=A0 can0 using:
-
-ip link set can0 type can bitrate 250000
-
-Attached a terminated DB9 (120ohm resister across pins 2 and 7) to imx_=
-ard board. On a remote terminated device I sent J1939/Nmea2000 messages=
- at 5 hertz.
-
-When sniffing the bus=A0 I again observed "ErrorFrame" messages with Co=
-de : Stuff Error.
-On the ard board, all I observe is interrupts on can0 and one or two Rx=
- packets.
-can state: ERROR-WARNING
-When I down the ard board can0 interface no error packets are sniffed o=
-n bus and J1939 signals start
-When I up the ard board can0 interface error packets are sniffed=A0 and=
- J1939 signals stop
-
-I am running at 250000 bitrate.
-
-Using flexcan driver from 2.6.35 kernel. The bitrate cannot be set dyna=
-mically using iproute tools. In addition, the BSP requires a ENGR001696=
-03-MX53-ARD-FlexCAN-Set-lp-apm patch for proper clock source.=A0 Attemp=
-ting to set the bitrate produces a "RTNETLINK answers: Operation not su=
-pported" message. I am able to send and receive packets by adding patch=
- and hard coding the bitrate.
-
-Using flexcan driver from 2.6.35. I am able to set any bitrate, but I g=
-et lots of interrupts with no packets received or sent. Note: I did not=
- use patch for this test.
-
-What is the major difference between 2.3.35 (which sort-of works) and 3=
-=2E4 which produces error frames? I would like to use the latest kernel=
- driver if I could better understand the issues I am seeing on my demo =
-ard board. Are you aware of flexcan success with 3.4 kernel on imx536?=A0=
- Why is the driver sending error frames and not passing packets up-stre=
-am?
-
-thanks
-
--keith
-Hemisphere GPS
+diff --git a/drivers/net/can/c_can/Kconfig b/drivers/net/can/c_can/Kconfig
+index 25d371c..3b83baf 100644
+--- a/drivers/net/can/c_can/Kconfig
++++ b/drivers/net/can/c_can/Kconfig
+@@ -13,4 +13,11 @@ config CAN_C_CAN_PLATFORM
+ 	  boards from ST Microelectronics (http://www.st.com) like the
+ 	  SPEAr1310 and SPEAr320 evaluation boards & TI (www.ti.com)
+ 	  boards like am335x, dm814x, dm813x and dm811x.
++
++config CAN_C_CAN_PCI
++	tristate "Generic PCI Bus based C_CAN/D_CAN driver"
++	depends on PCI
++	---help---
++	  This driver adds support for the C_CAN/D_CAN chips connected
++	  to the PCI bus.
+ endif
+diff --git a/drivers/net/can/c_can/Makefile b/drivers/net/can/c_can/Makefile
+index 9273f6d..ad1cc84 100644
+--- a/drivers/net/can/c_can/Makefile
++++ b/drivers/net/can/c_can/Makefile
+@@ -4,5 +4,6 @@
+ 
+ obj-$(CONFIG_CAN_C_CAN) += c_can.o
+ obj-$(CONFIG_CAN_C_CAN_PLATFORM) += c_can_platform.o
++obj-$(CONFIG_CAN_C_CAN_PCI) += c_can_pci.o
+ 
+ ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+new file mode 100644
+index 0000000..7bdb793
+--- /dev/null
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -0,0 +1,236 @@
++/*
++ * PCI bus driver for Bosch C_CAN/D_CAN controller
++ *
++ * Copyright (C) 2012 Federico Vaga <federico.vaga@gmail.com>
++ *
++ * Borrowed from c_can_platform.c
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2. This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/clk.h>
++#include <linux/pci.h>
++
++#include <linux/can/dev.h>
++
++#include "c_can.h"
++
++enum c_can_pci_reg_align {
++	C_CAN_REG_ALIGN_16,
++	C_CAN_REG_ALIGN_32,
++};
++
++struct c_can_pci_data {
++	/* Specify if is C_CAN or D_CAN */
++	enum c_can_dev_id type;
++	/* Set the register alignment in the memory */
++	enum c_can_pci_reg_align reg_align;
++	/* Set the frequency if clk is not usable */
++	unsigned int freq;
++};
++
++/*
++ * 16-bit c_can registers can be arranged differently in the memory
++ * architecture of different implementations. For example: 16-bit
++ * registers can be aligned to a 16-bit boundary or 32-bit boundary etc.
++ * Handle the same by providing a common read/write interface.
++ */
++static u16 c_can_pci_read_reg_aligned_to_16bit(struct c_can_priv *priv,
++						enum reg index)
++{
++	return readw(priv->base + priv->regs[index]);
++}
++
++static void c_can_pci_write_reg_aligned_to_16bit(struct c_can_priv *priv,
++						enum reg index, u16 val)
++{
++	writew(val, priv->base + priv->regs[index]);
++}
++
++static u16 c_can_pci_read_reg_aligned_to_32bit(struct c_can_priv *priv,
++						enum reg index)
++{
++	return readw(priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
++						enum reg index, u16 val)
++{
++	writew(val, priv->base + 2 * priv->regs[index]);
++}
++
++static int __devinit c_can_pci_probe(struct pci_dev *pdev,
++				     const struct pci_device_id *ent)
++{
++	struct c_can_pci_data *c_can_pci_data = (void *)ent->driver_data;
++	struct c_can_priv *priv;
++	struct net_device *dev;
++	void __iomem *addr;
++	struct clk *clk;
++	int ret;
++
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "pci_enable_device FAILED\n");
++		goto out;
++	}
++
++	ret = pci_request_regions(pdev, KBUILD_MODNAME);
++	if (ret) {
++		dev_err(&pdev->dev, "pci_request_regions FAILED\n");
++		goto out_disable_device;
++	}
++
++	pci_set_master(pdev);
++	pci_enable_msi(pdev);
++
++	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
++	if (!addr) {
++		dev_err(&pdev->dev,
++			"device has no PCI memory resources, "
++			"failing adapter\n");
++		ret = -ENOMEM;
++		goto out_release_regions;
++	}
++
++	/* allocate the c_can device */
++	dev = alloc_c_can_dev();
++	if (!dev) {
++		ret = -ENOMEM;
++		goto out_iounmap;
++	}
++
++	priv = netdev_priv(dev);
++	pci_set_drvdata(pdev, dev);
++	SET_NETDEV_DEV(dev, &pdev->dev);
++
++	dev->irq = pdev->irq;
++	priv->base = addr;
++
++	if (!c_can_pci_data->freq) {
++		/* get the appropriate clk */
++		clk = clk_get(&pdev->dev, NULL);
++		if (IS_ERR(clk)) {
++			dev_err(&pdev->dev, "no clock defined\n");
++			ret = -ENODEV;
++			goto out_free_c_can;
++		}
++		priv->can.clock.freq = clk_get_rate(clk);
++		priv->priv = clk;
++	} else {
++		priv->can.clock.freq = c_can_pci_data->freq;
++		priv->priv = NULL;
++	}
++
++	/* Configure CAN type */
++	switch (c_can_pci_data->type) {
++	case C_CAN_DEVTYPE:
++		priv->regs = reg_map_c_can;
++		break;
++	case D_CAN_DEVTYPE:
++		priv->regs = reg_map_d_can;
++		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
++		break;
++	default:
++		ret = -EINVAL;
++		goto out_free_clock;
++	}
++
++	/* Configure access to registers */
++	switch (c_can_pci_data->reg_align) {
++	case C_CAN_REG_ALIGN_32:
++		priv->read_reg = c_can_pci_read_reg_aligned_to_32bit;
++		priv->write_reg = c_can_pci_write_reg_aligned_to_32bit;
++		break;
++	case C_CAN_REG_ALIGN_16:
++		priv->read_reg = c_can_pci_read_reg_aligned_to_16bit;
++		priv->write_reg = c_can_pci_write_reg_aligned_to_16bit;
++		break;
++	default:
++		ret = -EINVAL;
++		goto out_free_clock;
++	}
++
++	ret = register_c_can_dev(dev);
++	if (ret) {
++		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
++			KBUILD_MODNAME, ret);
++		goto out_free_clock;
++	}
++
++	dev_dbg(&pdev->dev, "%s device registered (regs=%p, irq=%d)\n",
++		 KBUILD_MODNAME, priv->regs, dev->irq);
++
++	return 0;
++
++out_free_clock:
++	if (priv->priv)
++		clk_put(priv->priv);
++out_free_c_can:
++	pci_set_drvdata(pdev, NULL);
++	free_c_can_dev(dev);
++out_iounmap:
++	pci_iounmap(pdev, priv->base);
++out_release_regions:
++	pci_disable_msi(pdev);
++	pci_clear_master(pdev);
++	pci_release_regions(pdev);
++out_disable_device:
++	pci_disable_device(pdev);
++out:
++	return ret;
++}
++
++static void __devexit c_can_pci_remove(struct pci_dev *pdev)
++{
++	struct net_device *dev = pci_get_drvdata(pdev);
++	struct c_can_priv *priv = netdev_priv(dev);
++
++	unregister_c_can_dev(dev);
++
++	if (priv->priv)
++		clk_put(priv->priv);
++
++	pci_set_drvdata(pdev, NULL);
++	free_c_can_dev(dev);
++
++	pci_iounmap(pdev, priv->base);
++	pci_disable_msi(pdev);
++	pci_clear_master(pdev);
++	pci_release_regions(pdev);
++	pci_disable_device(pdev);
++}
++
++static struct c_can_pci_data c_can_sta2x11= {
++	.type = C_CAN_DEVTYPE,
++	.reg_align = C_CAN_REG_ALIGN_32,
++	.freq = 52000000, /* 52 Mhz */
++};
++
++#define C_CAN_ID(_vend, _dev, _driverdata) {		\
++	PCI_DEVICE(_vend, _dev),			\
++	.driver_data = (unsigned long)&_driverdata,	\
++}
++static DEFINE_PCI_DEVICE_TABLE(c_can_pci_tbl) = {
++	C_CAN_ID(PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_CAN,
++		 c_can_sta2x11),
++	{},
++};
++static struct pci_driver c_can_pci_driver = {
++	.name = KBUILD_MODNAME,
++	.id_table = c_can_pci_tbl,
++	.probe = c_can_pci_probe,
++	.remove = __devexit_p(c_can_pci_remove),
++};
++
++module_pci_driver(c_can_pci_driver);
++
++MODULE_AUTHOR("Federico Vaga <federico.vaga@gmail.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("PCI CAN bus driver for Bosch C_CAN/D_CAN controller");
++MODULE_DEVICE_TABLE(pci, c_can_pci_tbl);
+-- 
+1.7.10.2
