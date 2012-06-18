@@ -1,145 +1,130 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 3/6] canfd: add support for CAN FD in CAN_RAW sockets
-Date: Mon, 18 Jun 2012 19:39:43 +0200
-Message-ID: <4FDF67DF.9000905@hartkopp.net>
+Subject: [PATCH 4/6] candev: add/update helpers for CAN FD
+Date: Mon, 18 Jun 2012 19:39:51 +0200
+Message-ID: <4FDF67E7.6090704@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:52233 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:34751 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752350Ab2FRRjm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Jun 2012 13:39:42 -0400
+	with ESMTP id S1751510Ab2FRRju (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Jun 2012 13:39:50 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-- introduce a new sockopt CAN_RAW_FD_FRAMES to allow CAN FD frames
-- handle CAN frames and CAN FD frames simultaneously when enabled
+- update sanity checks
+- add DLC to length conversion helpers
+  - can_dlc2len() - get data length from can_dlc with sanitized can_dlc
+  - can_len2dlc() - map the sanitized data length to an appropriate DLC
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- include/linux/can/raw.h |    3 ++-
- net/can/raw.c           |   50 +++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 48 insertions(+), 5 deletions(-)
+ drivers/net/can/dev.c   |   35 ++++++++++++++++++++++++++++++++++-
+ include/linux/can/dev.h |   33 +++++++++++++++++++++++++--------
+ 2 files changed, 59 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/can/raw.h b/include/linux/can/raw.h
-index 781f3a3..a814062 100644
---- a/include/linux/can/raw.h
-+++ b/include/linux/can/raw.h
-@@ -23,7 +23,8 @@ enum {
- 	CAN_RAW_FILTER = 1,	/* set 0 .. n can_filter(s)          */
- 	CAN_RAW_ERR_FILTER,	/* set filter for error frames       */
- 	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
--	CAN_RAW_RECV_OWN_MSGS	/* receive my own msgs (default:off) */
-+	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
-+	CAN_RAW_FD_FRAMES,	/* allow CAN FD frames (default:off) */
- };
-  #endif
-diff --git a/net/can/raw.c b/net/can/raw.c
-index cde1b4a..44638c5 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -82,6 +82,7 @@ struct raw_sock {
- 	struct notifier_block notifier;
- 	int loopback;
- 	int recv_own_msgs;
-+	int fd_frames;
- 	int count;                 /* number of active filters */
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
-@@ -119,6 +120,14 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (!ro->recv_own_msgs && oskb->sk == sk)
- 		return;
- +	/* do not pass frames with DLC > 8 to a legacy socket */
-+	if (!ro->fd_frames) {
-+		struct canfd_frame *cfd = (struct canfd_frame *)oskb->data;
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index f03d7a4..239e4dd 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -33,6 +33,39 @@ MODULE_DESCRIPTION(MOD_DESC);
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
+ +/* CAN DLC to real data length conversion helpers */
 +
-+		if (unlikely(cfd->len > CAN_MAX_DLEN))
-+			return;
-+	}
++static const u8 dlc2len[] = {0, 1, 2, 3, 4, 5, 6, 7,
++			     8, 12, 16, 20, 24, 32, 48, 64};
 +
- 	/* clone the given skb to be able to enqueue it into the rcv queue */
- 	skb = skb_clone(oskb, GFP_ATOMIC);
- 	if (!skb)
-@@ -291,6 +300,7 @@ static int raw_init(struct sock *sk)
- 	/* set default loopback behaviour */
- 	ro->loopback         = 1;
- 	ro->recv_own_msgs    = 0;
-+	ro->fd_frames        = 0;
-  	/* set notifier */
- 	ro->notifier.notifier_call = raw_notifier;
-@@ -569,6 +579,15 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
-  		break;
- +	case CAN_RAW_FD_FRAMES:
-+		if (optlen != sizeof(ro->fd_frames))
-+			return -EINVAL;
++/* get data length from can_dlc with sanitized can_dlc */
++u8 can_dlc2len(u8 can_dlc)
++{
++	return dlc2len[can_dlc & 0x0F];
++}
++EXPORT_SYMBOL_GPL(can_dlc2len);
 +
-+		if (copy_from_user(&ro->fd_frames, optval, optlen))
-+			return -EFAULT;
++static const u8 len2dlc[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,		/* 0 - 8 */
++			     9, 9, 9, 9,			/* 9 - 12 */
++			     10, 10, 10, 10,			/* 13 - 16 */
++			     11, 11, 11, 11,			/* 17 - 20 */
++			     12, 12, 12, 12,			/* 21 - 24 */
++			     13, 13, 13, 13, 13, 13, 13, 13,	/* 25 - 32 */
++			     14, 14, 14, 14, 14, 14, 14, 14,	/* 33 - 40 */
++			     14, 14, 14, 14, 14, 14, 14, 14,	/* 41 - 48 */
++			     15, 15, 15, 15, 15, 15, 15, 15,	/* 49 - 56 */
++			     15, 15, 15, 15, 15, 15, 15, 15};	/* 57 - 64 */
 +
-+		break;
++/* map the sanitized data length to an appropriate data length code */
++u8 can_len2dlc(u8 len)
++{
++	if (unlikely(len > 64))
++		return 0xF;
 +
- 	default:
- 		return -ENOPROTOOPT;
- 	}
-@@ -627,6 +646,12 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
- 		val = &ro->recv_own_msgs;
- 		break;
- +	case CAN_RAW_FD_FRAMES:
-+		if (len > sizeof(int))
-+			len = sizeof(int);
-+		val = &ro->fd_frames;
-+		break;
++	return len2dlc[len];
++}
++EXPORT_SYMBOL_GPL(can_len2dlc);
 +
- 	default:
- 		return -ENOPROTOOPT;
- 	}
-@@ -662,8 +687,13 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
- 	} else
- 		ifindex = ro->ifindex;
- -	if (size != sizeof(struct can_frame))
--		return -EINVAL;
-+	if (ro->fd_frames) {
-+		if (unlikely(size != CANFD_MTU && size != CAN_MTU))
-+			return -EINVAL;
-+	} else {
-+		if (unlikely(size != CAN_MTU))
-+			return -EINVAL;
-+	}
-  	dev = dev_get_by_index(&init_net, ifindex);
- 	if (!dev)
-@@ -708,7 +738,9 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
- 		       struct msghdr *msg, size_t size, int flags)
+ #ifdef CONFIG_CAN_CALC_BITTIMING
+ #define CAN_CALC_MAX_ERROR 50 /* in one-tenth of a percent */
+ @@ -454,7 +487,7 @@ EXPORT_SYMBOL_GPL(can_bus_off);
+ static void can_setup(struct net_device *dev)
  {
- 	struct sock *sk = sock->sk;
-+	struct raw_sock *ro = raw_sk(sk);
- 	struct sk_buff *skb;
-+	int rxmtu;
- 	int err = 0;
- 	int noblock;
- @@ -719,10 +751,20 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
- 	if (!skb)
- 		return err;
- -	if (size < skb->len)
-+	/*
-+	 * when serving a legacy socket the DLC <= 8 is already checked inside
-+	 * raw_rcv(). Now check if we need to pass a canfd_frame to a legacy
-+	 * socket and cut the possible CANFD_MTU/CAN_MTU length to CAN_MTU
-+	 */
-+	if (!ro->fd_frames)
-+		rxmtu = CAN_MTU;
-+	else
-+		rxmtu = skb->len;
+ 	dev->type = ARPHRD_CAN;
+-	dev->mtu = sizeof(struct can_frame);
++	dev->mtu = CAN_MTU;
+ 	dev->hard_header_len = 0;
+ 	dev->addr_len = 0;
+ 	dev->tx_queue_len = 10;
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 5d2efe7..ee5a771 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -61,23 +61,40 @@ struct can_priv {
+  * To be used in the CAN netdriver receive path to ensure conformance with
+  * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
+  */
+-#define get_can_dlc(i)	(min_t(__u8, (i), 8))
++#define get_can_dlc(i)		(min_t(__u8, (i), CAN_MAX_DLC))
++#define get_canfd_dlc(i)	(min_t(__u8, (i), CANFD_MAX_DLC))
+  /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
+ static inline int can_dropped_invalid_skb(struct net_device *dev,
+ 					  struct sk_buff *skb)
+ {
+-	const struct can_frame *cf = (struct can_frame *)skb->data;
+-
+-	if (unlikely(skb->len != sizeof(*cf) || cf->can_dlc > 8)) {
+-		kfree_skb(skb);
+-		dev->stats.tx_dropped++;
+-		return 1;
+-	}
++	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
 +
-+	if (size < rxmtu)
- 		msg->msg_flags |= MSG_TRUNC;
- 	else
--		size = skb->len;
-+		size = rxmtu;
-  	err = memcpy_toiovec(msg->msg_iov, skb->data, size);
- 	if (err < 0) {
--- 
-1.7.10.4
++	if (skb->protocol == htons(ETH_P_CAN)) {
++		if (unlikely(skb->len != CAN_MTU ||
++			     cfd->len > CAN_MAX_DLEN))
++			goto inval_skb;
++	} else if (skb->protocol == htons(ETH_P_CANFD)) {
++		if (unlikely(skb->len != CANFD_MTU ||
++			     cfd->len > CANFD_MAX_DLEN))
++			goto inval_skb;
++	} else
++		goto inval_skb;
+  	return 0;
++
++inval_skb:
++	kfree_skb(skb);
++	dev->stats.tx_dropped++;
++	return 1;
+ }
+ +/* get data length from can_dlc with sanitized can_dlc */
++u8 can_dlc2len(u8 can_dlc);
++
++/* map the sanitized data length to an appropriate data length code */
++u8 can_len2dlc(u8 len);
++
+ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
+ void free_candev(struct net_device *dev);
+ -- 1.7.10.4
 
