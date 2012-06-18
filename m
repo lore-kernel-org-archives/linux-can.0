@@ -1,141 +1,211 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/6] canfd: add new data structures and constants
-Date: Mon, 18 Jun 2012 19:39:15 +0200
-Message-ID: <4FDF67C3.6020201@hartkopp.net>
+Subject: [PATCH 2/6] canfd: add support for CAN FD in PF_CAN core
+Date: Mon, 18 Jun 2012 19:39:24 +0200
+Message-ID: <4FDF67CC.6080705@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:30122 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:39775 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752350Ab2FRRjP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Jun 2012 13:39:15 -0400
+	with ESMTP id S1752350Ab2FRRjX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Jun 2012 13:39:23 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-- add new struct canfd_frame
-- check identical element offsets in struct can_frame and struct canfd_frame
-- new ETH_P_CANFD definition to tag CAN FD skbs correctly
-- add CAN_MTU and CANFD_MTU definitions for easy frame and mode detection
-- add CAN[FD]_MAX_[DLC|DLEN] helper constants to remove hard coded values
+- handle ETH_P_CAN and ETH_P_CANFD skbuffs
+- update sanity checks for CAN and CAN FD
+- make sure the CAN frame can pass the selected CAN netdevice on send
+- bump core version and abi version to indicate the new CAN FD support
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- include/linux/can.h      |   55 ++++++++++++++++++++++++++++++++++++++++++----
- include/linux/if_ether.h |    3 ++-
- net/can/af_can.c         |    7 ++++++
- 3 files changed, 60 insertions(+), 5 deletions(-)
+ include/linux/can/core.h |    4 +-
+ net/can/af_can.c         |  109 ++++++++++++++++++++++++++++++++++------------
+ 2 files changed, 84 insertions(+), 29 deletions(-)
 
-diff --git a/include/linux/can.h b/include/linux/can.h
-index 17334c0..25265e7 100644
---- a/include/linux/can.h
-+++ b/include/linux/can.h
-@@ -46,18 +46,65 @@ typedef __u32 canid_t;
-  */
- typedef __u32 can_err_mask_t;
- +#define CAN_MAX_DLC 8
-+#define CAN_MAX_DLEN 8
-+
-+#define CANFD_MAX_DLC 15
-+#define CANFD_MAX_DLEN 64
-+
- /**
-  * struct can_frame - basic CAN frame structure
-- * @can_id:  the CAN ID of the frame and CAN_*_FLAG flags, see above.
-- * @can_dlc: the data length field of the CAN frame
-- * @data:    the CAN frame payload.
-+ * @can_id:  CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-+ * @can_dlc: frame payload length in byte (0 .. 8) aka data length code
-+ *           N.B. the DLC field from ISO 11898-1 Chapter 8.4.2.3 has a 1:1
-+ *           mapping of the 'data length code' to the real payload length
-+ * @data:    CAN frame payload (up to 8 byte)
-  */
- struct can_frame {
- 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
--	__u8    can_dlc; /* data length code: 0 .. 8 */
-+	__u8    can_dlc; /* frame payload length in byte (0 .. 8) */
- 	__u8    data[8] __attribute__((aligned(8)));
- };
- +/*
-+ * defined bits for canfd_frame.flags
-+ *
-+ * As the default for CAN FD should be to support the high data rate in the
-+ * payload section of the frame (HDR) and to support up to 64 byte in the
-+ * data section (EDL) the bits are only set in the non-default case.
-+ * Btw. as long as there's no real implementation for CAN FD network driver
-+ * these bits are only preliminary.
-+ *
-+ * RX: NOHDR/NOEDL - info about received CAN FD frame
-+ *     ESI         - bit from originating CAN controller
-+ * TX: NOHDR/NOEDL - control per-frame settings if supported by CAN controller
-+ *     ESI         - bit is set by local CAN controller
-+ */
-+#define CANFD_NOHDR 0x01 /* frame without high data rate */
-+#define CANFD_NOEDL 0x02 /* frame without extended data length */
-+#define CANFD_ESI   0x04 /* error state indicator */
-+
-+/**
-+ * struct canfd_frame - CAN flexible data rate frame structure
-+ * @can_id: CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-+ * @len:    frame payload length in byte (0 .. 64)
-+ * @flags:  additional flags for CAN FD
-+ * @__res0: reserved / padding
-+ * @__res1: reserved / padding
-+ * @data:   CAN FD frame payload (up to 64 byte)
-+ */
-+struct canfd_frame {
-+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-+	__u8    len;     /* frame payload length in byte (0 .. 64) */
-+	__u8    flags;   /* additional flags for CAN FD */
-+	__u8    __res0;  /* reserved / padding */
-+	__u8    __res1;  /* reserved / padding */
-+	__u8    data[64] __attribute__((aligned(8)));
-+};
-+
-+#define CAN_MTU		(sizeof(struct can_frame))
-+#define CANFD_MTU	(sizeof(struct canfd_frame))
-+
- /* particular protocols of the protocol family PF_CAN */
- #define CAN_RAW		1 /* RAW sockets */
- #define CAN_BCM		2 /* Broadcast Manager */
-diff --git a/include/linux/if_ether.h b/include/linux/if_ether.h
-index 56d907a..260138b 100644
---- a/include/linux/if_ether.h
-+++ b/include/linux/if_ether.h
-@@ -105,7 +105,8 @@
- #define ETH_P_WAN_PPP   0x0007          /* Dummy type for WAN PPP frames*/
- #define ETH_P_PPP_MP    0x0008          /* Dummy type for PPP MP frames */
- #define ETH_P_LOCALTALK 0x0009		/* Localtalk pseudo type 	*/
--#define ETH_P_CAN	0x000C		/* Controller Area Network      */
-+#define ETH_P_CAN	0x000C		/* Controller Area Network (CAN)*/
-+#define ETH_P_CANFD	0x000D		/* CAN FD 64 byte payload frames*/
- #define ETH_P_PPPTALK	0x0010		/* Dummy type for Atalk over PPP*/
- #define ETH_P_TR_802_2	0x0011		/* 802.2 frames 		*/
- #define ETH_P_MOBITEX	0x0015		/* Mobitex (kaz@cafe.net)	*/
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 6efcd37..c96140a 100644
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index 0ccc1cd..78c6c52 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -17,10 +17,10 @@
+ #include <linux/skbuff.h>
+ #include <linux/netdevice.h>
+ -#define CAN_VERSION "20090105"
++#define CAN_VERSION "20120528"
+  /* increment this number each time you change some user-space interface */
+-#define CAN_ABI_VERSION "8"
++#define CAN_ABI_VERSION "9"
+  #define CAN_VERSION_STRING "rev " CAN_VERSION " abi " CAN_ABI_VERSION
+ diff --git a/net/can/af_can.c b/net/can/af_can.c
+index c96140a..821022a 100644
 --- a/net/can/af_can.c
 +++ b/net/can/af_can.c
-@@ -41,6 +41,7 @@
+@@ -221,30 +221,46 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+  *  -ENOBUFS on full driver queue (see net_xmit_errno())
+  *  -ENOMEM when local loopback failed at calling skb_clone()
+  *  -EPERM when trying to send on a non-CAN interface
++ *  -EMSGSIZE CAN frame size is bigger than CAN interface MTU
+  *  -EINVAL when the skb->data does not contain a valid CAN frame
   */
-  #include <linux/module.h>
-+#include <linux/stddef.h>
- #include <linux/init.h>
- #include <linux/kmod.h>
- #include <linux/slab.h>
-@@ -824,6 +825,12 @@ static struct notifier_block can_netdev_notifier __read_mostly = {
-  static __init int can_init(void)
+ int can_send(struct sk_buff *skb, int loop)
  {
-+	/* check for correct padding to be able to use the structs similarly */
-+	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
-+		     offsetof(struct canfd_frame, len) ||
-+		     offsetof(struct can_frame, data) !=
-+		     offsetof(struct canfd_frame, data));
+ 	struct sk_buff *newskb = NULL;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
+-	int err;
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++	int err = -EINVAL;
 +
- 	printk(banner);
-  	memset(&can_rx_alldev_list, 0, sizeof(can_rx_alldev_list));
++	if (skb->len == CAN_MTU) {
++		skb->protocol = htons(ETH_P_CAN);
++		if (unlikely(cfd->len > CAN_MAX_DLEN))
++			goto inval_skb;
++	} else if (skb->len == CANFD_MTU) {
++		skb->protocol = htons(ETH_P_CANFD);
++		if (unlikely(cfd->len > CANFD_MAX_DLEN))
++			goto inval_skb;
++	} else
++		goto inval_skb;
+ -	if (skb->len != sizeof(struct can_frame) || cf->can_dlc > 8) {
+-		kfree_skb(skb);
+-		return -EINVAL;
++	/*
++	 * Make sure the CAN frame can pass the selected CAN netdevice.
++	 * As structs can_frame and canfd_frame are similar, we can provide
++	 * CAN FD frames to legacy CAN drivers as long as the length is <= 8
++	 */
++	if (unlikely(skb->len > skb->dev->mtu && cfd->len > CAN_MAX_DLEN)) {
++		err = -EMSGSIZE;
++		goto inval_skb;
+ 	}
+ -	if (skb->dev->type != ARPHRD_CAN) {
+-		kfree_skb(skb);
+-		return -EPERM;
++	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
++		err = -EPERM;
++		goto inval_skb;
+ 	}
+ -	if (!(skb->dev->flags & IFF_UP)) {
+-		kfree_skb(skb);
+-		return -ENETDOWN;
++	if (unlikely(!(skb->dev->flags & IFF_UP))) {
++		err = -ENETDOWN;
++		goto inval_skb;
+ 	}
+ -	skb->protocol = htons(ETH_P_CAN);
+ 	skb_reset_network_header(skb);
+ 	skb_reset_transport_header(skb);
+ @@ -301,6 +317,10 @@ int can_send(struct sk_buff *skb, int loop)
+ 	can_stats.tx_frames_delta++;
+  	return 0;
++
++inval_skb:
++	kfree_skb(skb);
++	return err;
+ }
+ EXPORT_SYMBOL(can_send);
+ @@ -633,24 +653,11 @@ static int can_rcv_filter(struct dev_rcv_lists *d, struct sk_buff *skb)
+ 	return matches;
+ }
+ -static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+-		   struct packet_type *pt, struct net_device *orig_dev)
++static void can_receive(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct dev_rcv_lists *d;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
+ 	int matches;
+ -	if (!net_eq(dev_net(dev), &init_net))
+-		goto drop;
+-
+-	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
+-		      skb->len != sizeof(struct can_frame) ||
+-		      cf->can_dlc > 8,
+-		      "PF_CAN: dropped non conform skbuf: "
+-		      "dev type %d, len %d, can_dlc %d\n",
+-		      dev->type, skb->len, cf->can_dlc))
+-		goto drop;
+-
+ 	/* update statistics */
+ 	can_stats.rx_frames++;
+ 	can_stats.rx_frames_delta++;
+@@ -674,7 +681,49 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		can_stats.matches++;
+ 		can_stats.matches_delta++;
+ 	}
++}
++
++static int can_rcv(struct sk_buff *skb, struct net_device *dev,
++		   struct packet_type *pt, struct net_device *orig_dev)
++{
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ +	if (unlikely(!net_eq(dev_net(dev), &init_net)))
++		goto drop;
++
++	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
++		      skb->len != CAN_MTU ||
++		      cfd->len > CAN_MAX_DLEN,
++		      "PF_CAN: dropped non conform CAN skbuf: "
++		      "dev type %d, len %d, datalen %d\n",
++		      dev->type, skb->len, cfd->len))
++		goto drop;
++
++	can_receive(skb, dev);
++	return NET_RX_SUCCESS;
++
++drop:
++	kfree_skb(skb);
++	return NET_RX_DROP;
++}
++
++static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
++		   struct packet_type *pt, struct net_device *orig_dev)
++{
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++
++	if (unlikely(!net_eq(dev_net(dev), &init_net)))
++		goto drop;
++
++	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
++		      skb->len != CANFD_MTU ||
++		      cfd->len > CANFD_MAX_DLEN,
++		      "PF_CAN: dropped non conform CAN FD skbuf: "
++		      "dev type %d, len %d, datalen %d\n",
++		      dev->type, skb->len, cfd->len))
++		goto drop;
++
++	can_receive(skb, dev);
+ 	return NET_RX_SUCCESS;
+  drop:
+@@ -808,10 +857,14 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
+  static struct packet_type can_packet __read_mostly = {
+ 	.type = cpu_to_be16(ETH_P_CAN),
+-	.dev  = NULL,
+ 	.func = can_rcv,
+ };
+ +static struct packet_type canfd_packet __read_mostly = {
++	.type = cpu_to_be16(ETH_P_CANFD),
++	.func = canfd_rcv,
++};
++
+ static const struct net_proto_family can_family_ops = {
+ 	.family = PF_CAN,
+ 	.create = can_create,
+@@ -853,6 +906,7 @@ static __init int can_init(void)
+ 	sock_register(&can_family_ops);
+ 	register_netdevice_notifier(&can_netdev_notifier);
+ 	dev_add_pack(&can_packet);
++	dev_add_pack(&canfd_packet);
+  	return 0;
+ }
+@@ -867,6 +921,7 @@ static __exit void can_exit(void)
+ 	can_remove_proc();
+  	/* protocol unregister */
++	dev_remove_pack(&canfd_packet);
+ 	dev_remove_pack(&can_packet);
+ 	unregister_netdevice_notifier(&can_netdev_notifier);
+ 	sock_unregister(PF_CAN);
 -- 
 1.7.10.4
 
