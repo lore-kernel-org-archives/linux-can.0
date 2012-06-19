@@ -1,100 +1,63 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 1/6] canfd: add new data structures and constants
-Date: Tue, 19 Jun 2012 09:11:32 +0200
-Message-ID: <4FE02624.2010606@hartkopp.net>
-References: <4FDF67C3.6020201@hartkopp.net> <4FE02008.6030405@grandegger.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 0/6] CAN FD support
+Date: Tue, 19 Jun 2012 09:26:11 +0200
+Message-ID: <4FE02993.7040208@grandegger.com>
+References: <4FDF67B2.1090004@hartkopp.net> <4FDF7D0E.1000802@pengutronix.de> <4FDF7E10.9050301@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:31129 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752005Ab2FSHLb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 03:11:31 -0400
-In-Reply-To: <4FE02008.6030405@grandegger.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:36848 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752829Ab2FSH0U (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 03:26:20 -0400
+In-Reply-To: <4FDF7E10.9050301@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 19.06.2012 08:45, Wolfgang Grandegger wrote:
-
-> Hi Oliver,
+On 06/18/2012 09:14 PM, Oliver Hartkopp wrote:
+> On 18.06.2012 21:10, Marc Kleine-Budde wrote:
 > 
-> On 06/18/2012 07:39 PM, Oliver Hartkopp wrote:
->> - add new struct canfd_frame
->> - check identical element offsets in struct can_frame and struct canfd_frame
->> - new ETH_P_CANFD definition to tag CAN FD skbs correctly
->> - add CAN_MTU and CANFD_MTU definitions for easy frame and mode detection
->> - add CAN[FD]_MAX_[DLC|DLEN] helper constants to remove hard coded values
+>> On 06/18/2012 07:38 PM, Oliver Hartkopp wrote:
+>>> Hello Marc,
+>>>
+>>> here's my first real git patch series adding support for CAN with flexible
+>>> data rate (CAN FD).
+>>>
+>>> As there were no new remarks to my RFC v5 from 2012-05-28
+>>>
+>>> http://comments.gmane.org/gmane.linux.can/1297
+>>>
+>>> and it's tested and running on my machine for a while now it's IMHO time
+>>> for net-next now.
+>>>
+>>> You can also pull the series ;-)
 >>
->> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
->> ---
->>  include/linux/can.h      |   55 ++++++++++++++++++++++++++++++++++++++++++----
->>  include/linux/if_ether.h |    3 ++-
->>  net/can/af_can.c         |    7 ++++++
->>  3 files changed, 60 insertions(+), 5 deletions(-)
+>> I can pull, but David want's to have a clean tree. So I have to pull and
+>> rebase it on my tree.
+> 
+> 
+> I created a branch 'canfd' on a clone of *your* can-next.
+> 
+> What's not clean there?
+> 
+> You can pull Daves net-next and then pull the canfd branch, right?
+> 
 >>
->> diff --git a/include/linux/can.h b/include/linux/can.h
->> index 17334c0..25265e7 100644
->> --- a/include/linux/can.h
->> +++ b/include/linux/can.h
->> @@ -46,18 +46,65 @@ typedef __u32 canid_t;
->>   */
->>  typedef __u32 can_err_mask_t;
->>  +#define CAN_MAX_DLC 8
->> +#define CAN_MAX_DLEN 8
->> +
->> +#define CANFD_MAX_DLC 15
->> +#define CANFD_MAX_DLEN 64
->> +
-
-(..)
-
->>  struct can_frame {
->>  	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
->> -	__u8    can_dlc; /* data length code: 0 .. 8 */
->> +	__u8    can_dlc; /* frame payload length in byte (0 .. 8) */
->>  	__u8    data[8] __attribute__((aligned(8)));
->>  };
-
-
-(..)
-
->> + * @data:   CAN FD frame payload (up to 64 byte)
->> + */
->> +struct canfd_frame {
->> +	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
->> +	__u8    len;     /* frame payload length in byte (0 .. 64) */
->> +	__u8    flags;   /* additional flags for CAN FD */
->> +	__u8    __res0;  /* reserved / padding */
->> +	__u8    __res1;  /* reserved / padding */
->> +	__u8    data[64] __attribute__((aligned(8)));
+>>> Git is hard for newbies but i gave my very best ...
+>>
+>> Once you can use it, you don't want to code without it.
 > 
-> Shouldn't we use "CANFD_MAX_DLEN" here (... and maybe above as well)?.
-> IIRC, CANFD_MAX_DLEN might be even 128 in the finalized standard.
 > 
+> Yes -  it's getting better. Indeed it looks like Thunderbird mangles the mails
+> when editing the draft mails.
 
+I use the "Toggle Word Wrap" Extension to avoid white space mangling
+with Thunderbird and sometimes I even use it to send single patches.
+Anyway, especially for a series of patches, "git send-email" is the
+better choice.
 
-Yes. Good point.
-
-(..)
-
->> -#define ETH_P_CAN	0x000C		/* Controller Area Network      */
->> +#define ETH_P_CAN	0x000C		/* Controller Area Network (CAN)*/
->> +#define ETH_P_CANFD	0x000D		/* CAN FD 64 byte payload frames*/
-> 
-> Then hardcoding 64 here is also not be nice.
-
-
-Yes. Will change that too.
-Even if there's a little chance to have more than 64 bytes it's not the right
-place for this kind of information anyway.
-
-I would wait until this evening if there are more of these remarks and send a
-v2 then. A review of the documentation would be nice - if everything seems
-clear to you.
-
-Thanks,
-Oliver
+Wolfgang.
 
