@@ -1,54 +1,79 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 1/6] canfd: add new data structures and constants
-Date: Tue, 19 Jun 2012 09:39:38 +0200
-Message-ID: <4FE02CBA.4040400@hartkopp.net>
-References: <4FDF67C3.6020201@hartkopp.net> <4FE02008.6030405@grandegger.com> <4FE02624.2010606@hartkopp.net> <4FE02A13.4030501@grandegger.com>
+From: bruce bushby <bruce.bushby@gmail.com>
+Subject: Re: [Socketcan-users] AM335x CAN/D_CAN
+Date: Tue, 19 Jun 2012 08:58:13 +0100
+Message-ID: <CAHvj1qb0anDv8W3Jhgn5u-s+6=Kz283RJsFDonctP5qdn9fk1A@mail.gmail.com>
+References: <CAHvj1qbb9YJSBLZc1bG6MpEJcjPUtr+37wn3iJUNm_OmpH2SgA@mail.gmail.com>
+	<4FBBE272.5020807@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:65278 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751878Ab2FSHjh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 03:39:37 -0400
-In-Reply-To: <4FE02A13.4030501@grandegger.com>
+Received: from mail-qa0-f42.google.com ([209.85.216.42]:40750 "EHLO
+	mail-qa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750756Ab2FSH6O (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 03:58:14 -0400
+Received: by qafi31 with SMTP id i31so2424353qaf.1
+        for <linux-can@vger.kernel.org>; Tue, 19 Jun 2012 00:58:13 -0700 (PDT)
+In-Reply-To: <4FBBE272.5020807@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Linux-CAN <linux-can@vger.kernel.org>
+
+Hi Wolfgang/Oliver
+
+Thank you for your response, much appreciated!! Clearly I've got some
+reading to do :)
+
+Regards
+Bruce Bushby
 
 
->> I would wait until this evening if there are more of these remarks and send a
->> v2 then. A review of the documentation would be nice - if everything seems
->> clear to you.
-> 
-> Where can I pull/fetch the patches from? IIUC, the latest patch series
-> you sent is broken.
 
 
-No. It was only the mail representation which was broken.
 
-The following changes since commit 4670fd819e7f47392c7c6fc6168ea2857c66d163:
-
-  tcp: Get rid of inetpeer special cases. (2012-06-09 01:25:47 -0700)
-
-are available in the git repository at:
-
-  git://gitorious.org/~hartkopp/linux-can/ollis-can-next.git canfd
-
-for you to fetch changes up to d55c45913f93ccbd4378195e2d6ca96b2d14573b:
-
-  canfd: update documentation according to CAN FD extensions (2012-06-17 21:23:55 +0200)
-
-----------------------------------------------------------------
-
-Oliver Hartkopp (6):
-  canfd: add new data structures and constants
-  canfd: add support for CAN FD in PF_CAN core
-  canfd: add support for CAN FD in CAN_RAW sockets
-  candev: add/update helpers for CAN FD
-  vcan: add CAN FD support
-  canfd: update documentation according to CAN FD extensions
-
-
-(..)
+On Tue, May 22, 2012 at 8:01 PM, Wolfgang Grandegger <wg@grandegger.com> wrote:
+> Hello,
+>
+> I switched the discussion to the new Linux-CAN mailing list.
+>
+> On 05/22/2012 05:50 PM, bruce bushby wrote:
+>> Greetings
+>>
+>> I'm hoping a list member would be so kind as to offer some basic
+>> explanations of how one would use the CAN bus provided by AM335x. I
+>> understand Linux, but struggle with electronics.
+>>
+>> I have read this discussion: http://comments.gmane.org/gmane.linux.can/1142
+>> What is the difference between C_CAN and D_CAN?
+>
+> As I see it, the D_CAN is a more advanced variant of the C_CAN
+> controller. See also:
+>
+> http://www.semiconductors.bosch.de/en/ipmodules/can/canipmodules/c_can/c_can.asp
+> http://www.semiconductors.bosch.de/en/ipmodules/can/canipmodules/d_can/d_can.asp
+>
+> Patches to add D_CAN support to the Linux-CAN C_CAN driver have been
+> posted recently for mainline inclusion and are currently reviewed.
+>
+>> http://www.spinics.net/lists/linux-omap/msg67538.html
+>> Does D_CAN have anything to do with mcp2515?
+>
+> No, nothing apart from the fact that both are CAN controllers. The
+> mcp2515 is connected via SPI bus and from another company.
+>
+>> In order to connect the am335x CAN line to a CAN bus, would I need to
+>> add a CAN transceiver?
+>
+> Hardware-wise, yes.
+>
+>> Is the am335x an "in memory CAN" ... ie I wouldn't need to worry about
+>> SPI bus performance?
+>
+> Right. On the AM335x, the D_CAN controller is integrated into the SOC.
+> There is no SPI involved.
+>
+>> Any explanations and help much appreciated!
+>
+> Hope it's useful.
+>
+> Wolfgang.
