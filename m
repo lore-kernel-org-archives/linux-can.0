@@ -1,85 +1,41 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2012-06-19
-Date: Tue, 19 Jun 2012 22:01:56 +0200
-Message-ID: <4FE0DAB4.6080400@pengutronix.de>
+Subject: Re: pull request CAN FD support
+Date: Tue, 19 Jun 2012 22:03:48 +0200
+Message-ID: <4FE0DB24.6020300@pengutronix.de>
+References: <4FE0D0B1.2040103@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig3730D6B992A1AE3C1375DB01"
+ boundary="------------enig98E1DB6E9A6D1048A923BD84"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55586 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37986 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753650Ab2FSUCJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 16:02:09 -0400
+	with ESMTP id S1754829Ab2FSUDu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 16:03:50 -0400
+In-Reply-To: <4FE0D0B1.2040103@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: davem@davemloft.net
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3730D6B992A1AE3C1375DB01
+--------------enig98E1DB6E9A6D1048A923BD84
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hello David,
+On 06/19/2012 09:19 PM, Oliver Hartkopp wrote:
+> as there were no new remarks (and it has been hanging around on the ML =
+for
+> quite a long time) i only posted the data structures patch after some
+> cosmetics suggested by Wolfgang.
 
-here is our second pull request for net-next. In this series Federico
-Vaga adds a pci driver for c_can/d_can hardware using the existing
-generic c_can driver. The remaining 6 patches are by Oliver Hartkopp.
-He adds CANFD support to the CAN stack while keeping binary
-compatibility for existing applications. CANFD is an extension to the
-existing CAN standard, it allows longer CAN frames and/or higher data
-rates. There's no real hardware available yet, but this series adds
-CANFD support to the vcan driver.
+Thanks a lot, hopefully we can get our hands on some "real" hardware soon=
+ :)
 
-regards,
+The series is bisecable and compiles without warnings. Send pull request
+to David.
+
 Marc
-
----
-
-The following changes since commit b31525d16b50fe0eb33545afbc0be1a03f2896=
-e3:
-
-  net: lpc_eth: Driver cleanup (2012-06-19 00:27:03 -0700)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can-next.git master
-
-for you to fetch changes up to ea53fe0c667ad3cae61d4d71d2be41908ac5c0a4:
-
-  canfd: update documentation according to CAN FD extensions (2012-06-19 =
-21:40:26 +0200)
-
-----------------------------------------------------------------
-Federico Vaga (1):
-      c_can_pci: generic module for C_CAN/D_CAN on PCI
-
-Oliver Hartkopp (6):
-      canfd: add new data structures and constants
-      canfd: add support for CAN FD in PF_CAN core
-      canfd: add support for CAN FD in CAN_RAW sockets
-      candev: add/update helpers for CAN FD
-      vcan: add CAN FD support
-      canfd: update documentation according to CAN FD extensions
-
- Documentation/networking/can.txt  |  154 ++++++++++++++++++++++++++++--
- drivers/net/can/c_can/Kconfig     |    7 ++
- drivers/net/can/c_can/Makefile    |    1 +
- drivers/net/can/c_can/c_can_pci.c |  236 +++++++++++++++++++++++++++++++=
-+++++++++++++++
- drivers/net/can/dev.c             |   35 ++++++-
- drivers/net/can/vcan.c            |   27 ++++--
- include/linux/can.h               |   59 +++++++++++-
- include/linux/can/core.h          |    4 +-
- include/linux/can/dev.h           |   33 +++++--
- include/linux/can/raw.h           |    3 +-
- include/linux/if_ether.h          |    3 +-
- net/can/af_can.c                  |  116 +++++++++++++++++------
- net/can/raw.c                     |   50 +++++++++-
- 13 files changed, 664 insertions(+), 64 deletions(-)
- create mode 100644 drivers/net/can/c_can/c_can_pci.c
-
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -88,7 +44,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig3730D6B992A1AE3C1375DB01
+--------------enig98E1DB6E9A6D1048A923BD84
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -97,9 +53,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAk/g2rkACgkQjTAFq1RaXHOc6gCcCaSORY83vo4jPoy+ng9EPR2l
-UsUAn2+KSxyyIySIonsJBM1fD1CqOPIx
-=hNB4
+iEYEARECAAYFAk/g2yQACgkQjTAFq1RaXHNLyQCcDfh0YYPYLY6ZgCHgtDsuOce4
+Vp0AniUaxU7kbhx7BS04v8eu4PH3BF1O
+=08bH
 -----END PGP SIGNATURE-----
 
---------------enig3730D6B992A1AE3C1375DB01--
+--------------enig98E1DB6E9A6D1048A923BD84--
