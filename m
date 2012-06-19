@@ -1,61 +1,41 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull request CAN FD support
-Date: Tue, 19 Jun 2012 22:03:48 +0200
-Message-ID: <4FE0DB24.6020300@pengutronix.de>
-References: <4FE0D0B1.2040103@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig98E1DB6E9A6D1048A923BD84"
+Subject: [PATCH 2/3] can: dev: fix sparse warning for can_restart
+Date: Tue, 19 Jun 2012 22:05:19 +0200
+Message-ID: <1340136320-30840-3-git-send-email-mkl@pengutronix.de>
+References: <1340136320-30840-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37986 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37994 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754829Ab2FSUDu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 16:03:50 -0400
-In-Reply-To: <4FE0D0B1.2040103@hartkopp.net>
+	with ESMTP id S1754881Ab2FSUFX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jun 2012 16:05:23 -0400
+In-Reply-To: <1340136320-30840-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig98E1DB6E9A6D1048A923BD84
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Make can_restart static to fix the following sparse warning:
+drivers/net/can/dev.c:371:6: warning: symbol 'can_restart' was not
+declared. Should it be static?
 
-On 06/19/2012 09:19 PM, Oliver Hartkopp wrote:
-> as there were no new remarks (and it has been hanging around on the ML =
-for
-> quite a long time) i only posted the data structures patch after some
-> cosmetics suggested by Wolfgang.
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/dev.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks a lot, hopefully we can get our hands on some "real" hardware soon=
- :)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 239e4dd..963e2cc 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -401,7 +401,7 @@ EXPORT_SYMBOL_GPL(can_free_echo_skb);
+ /*
+  * CAN device restart for bus-off recovery
+  */
+-void can_restart(unsigned long data)
++static void can_restart(unsigned long data)
+ {
+ 	struct net_device *dev = (struct net_device *)data;
+ 	struct can_priv *priv = netdev_priv(dev);
+-- 
+1.7.10
 
-The series is bisecable and compiles without warnings. Send pull request
-to David.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig98E1DB6E9A6D1048A923BD84
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk/g2yQACgkQjTAFq1RaXHNLyQCcDfh0YYPYLY6ZgCHgtDsuOce4
-Vp0AniUaxU7kbhx7BS04v8eu4PH3BF1O
-=08bH
------END PGP SIGNATURE-----
-
---------------enig98E1DB6E9A6D1048A923BD84--
