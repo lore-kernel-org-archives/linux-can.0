@@ -1,43 +1,44 @@
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] can: c_can_pci: limit compilation to archs with clock
+ support
+Date: Wed, 20 Jun 2012 02:54:52 -0700 (PDT)
+Message-ID: <20120620.025452.2203668280120884694.davem@davemloft.net>
+References: <1340185688-9454-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:36515 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751863Ab2FTJyy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jun 2012 05:54:54 -0400
+In-Reply-To: <1340185688-9454-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, federico.vaga@gmail.com
+
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: c_can_pci: limit compilation to archs with clock support
 Date: Wed, 20 Jun 2012 11:48:08 +0200
-Message-ID: <1340185688-9454-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Federico Vaga <federico.vaga@gmail.com>
-List-Id: linux-can.vger.kernel.org
 
-In commit:
+> In commit:
+> 
+>   5b92da0 c_can_pci: generic module for C_CAN/D_CAN on PCI
+> 
+> the c_can_pci driver has been added. It uses clk_*() functions
+> unconditionally, resulting in a link error on archs without
+> clock support. This patch adds a "depends on HAVE_CLK" to the
+> Kconfig symbol.
 
-  5b92da0 c_can_pci: generic module for C_CAN/D_CAN on PCI
+This is an unreasonable change and I just explained why in my email to
+Frederico, did you not see it?
 
-the c_can_pci driver has been added. It uses clk_*() functions
-unconditionally, resulting in a link error on archs without
-clock support. This patch adds a "depends on HAVE_CLK" to the
-Kconfig symbol.
+He says that this driver was only tested on an architecture that
+currently doesn't even have clock support in any existing tree, and
+therefore completely relies upon local changes they have to add clock
+support to that platform.
 
-An upcoming patch from Viresh Kumar adds a generic dummy
-implementation. As soons as this patch has been merged, this
-Kconfig symbol can be removed.
+Which means you're change is restricting compilation of this driver to
+platforms the driver was never, ever, tested on.
 
-Cc: Federico Vaga <federico.vaga@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/c_can/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/can/c_can/Kconfig b/drivers/net/can/c_can/Kconfig
-index 3b83baf..2835277 100644
---- a/drivers/net/can/c_can/Kconfig
-+++ b/drivers/net/can/c_can/Kconfig
-@@ -17,6 +17,7 @@ config CAN_C_CAN_PLATFORM
- config CAN_C_CAN_PCI
- 	tristate "Generic PCI Bus based C_CAN/D_CAN driver"
- 	depends on PCI
-+	depends on HAVE_CLK
- 	---help---
- 	  This driver adds support for the C_CAN/D_CAN chips connected
- 	  to the PCI bus.
--- 
-1.7.10
+Can you see what a complete joke this is?
