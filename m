@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: c_can_pci: fix compilation on non HAVE_CLK archs
-Date: Wed, 20 Jun 2012 17:58:44 +0200
-Message-ID: <1340207924-19474-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2] can: c_can_pci: fix compilation on non HAVE_CLK archs
+Date: Wed, 20 Jun 2012 18:04:26 +0200
+Message-ID: <1340208266-22098-1-git-send-email-mkl@pengutronix.de>
 Return-path: <netdev-owner@vger.kernel.org>
 Sender: netdev-owner@vger.kernel.org
 To: davem@davemloft.net
@@ -20,6 +20,10 @@ are not tested.
 Cc: Federico Vaga <federico.vaga@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+Resending with the missing "v2".
+
+Marc
+
  drivers/net/can/c_can/c_can_pci.c |   29 +++++++----------------------
  1 file changed, 7 insertions(+), 22 deletions(-)
 
