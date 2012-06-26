@@ -1,55 +1,344 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: c_can_pci: fix compilation on non HAVE_CLK archs
-Date: Fri, 22 Jun 2012 13:40:12 +0200
-Message-ID: <4FE4599C.5020900@pengutronix.de>
-References: <1340187910-3437-1-git-send-email-mkl@pengutronix.de> <CAH5GJ0pGNx9qD6snF1d0J7QYpreapA2KaPdieKL_z06CdjHYVg@mail.gmail.com> <4FE2156F.8030008@pengutronix.de> <1780315.XNqJnrLyXI@harkonnen>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH net-next] em_canid: Ematch rule to match CAN frames according
+ to their CAN IDs
+Date: Tue, 26 Jun 2012 22:07:56 +0200
+Message-ID: <4FEA169C.1070709@hartkopp.net>
+References: <1340022131-7827-1-git-send-email-lisovy@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9D20328D965D3C1E70E6967C"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42494 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756580Ab2FVLkS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 22 Jun 2012 07:40:18 -0400
-In-Reply-To: <1780315.XNqJnrLyXI@harkonnen>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:47947 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752797Ab2FZUIE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 26 Jun 2012 16:08:04 -0400
+In-Reply-To: <1340022131-7827-1-git-send-email-lisovy@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Federico Vaga <federico.vaga@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Rostislav Lisovy <lisovy@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9D20328D965D3C1E70E6967C
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hello Rostislav,
 
-On 06/22/2012 01:42 PM, Federico Vaga wrote:
->> I've already sent the patch to David. However please test it.
->=20
-> It works.
+thanks for the new patch. It got indeed pretty short now :-)
 
-hooray \o/
+I found some time for a review. See details inline ...
+
+On 18.06.2012 14:22, Rostislav Lisovy wrote:
 
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+> With no extra filter/qdisc configured, median of the time spent in can_send()
+> was about 27 us -- with prio qdisc with 5 bands and 5 appropriate cls_can
+> filters (previous patch), it was about 30 us -- with prio qdisc with 5 bands
+> and 5 appropriate em_can filters (this patch), it was about 34 us.
 
 
---------------enig9D20328D965D3C1E70E6967C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Hm that's more than twice the time consumed for classification ...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+cls_can: 3 us more
+em_can:  7 us more
 
-iEYEARECAAYFAk/kWZ8ACgkQjTAFq1RaXHPBGACfYueBRrn2b0OS8gnK9BxA4TG4
-4bwAnjjVdwEhqJhKPXzrx6Sc642o1Uvp
-=R3Hr
------END PGP SIGNATURE-----
+@Eric: Is this still the better approach then?
 
---------------enig9D20328D965D3C1E70E6967C--
+
+> diff --git a/net/sched/Kconfig b/net/sched/Kconfig
+> index 75b58f8..bc0ceab 100644
+> --- a/net/sched/Kconfig
+> +++ b/net/sched/Kconfig
+> @@ -485,6 +485,16 @@ config NET_EMATCH_TEXT
+>  	  To compile this code as a module, choose M here: the
+>  	  module will be called em_text.
+>  
+> +config NET_EMATCH_CANID
+> +	tristate "CAN ID"
+
+
+i would prefer
+
+tristate "Controller Area Network Identifier"
+
+or at least
+
+tristate "CAN Identifier"
+
+> +	depends on NET_EMATCH && CAN
+> +	---help---
+> +          Say Y here if you want to be able to classify CAN frames based
+> +          on CAN ID.
+
+
+"on the CAN Identifier."
+
+(..)
+
+> +#include <net/pkt_cls.h>
+> +#include <linux/can.h>
+> +
+> +#define EM_CAN_RULES_SIZE				32
+
+
+Reduce the gap before '32' to one single space.
+
+(..)
+
+> +static int em_canid_match(struct sk_buff *skb, struct tcf_ematch *m,
+> +			 struct tcf_pkt_info *info)
+> +{
+> +	struct canid_match *cm = em_canid_priv(m);
+> +	canid_t can_id;
+> +	unsigned int match = false;
+
+
+You use test_bit() below which returns an int.
+
+Better use int instead of unsigned int ...
+
+int match = 0;
+
+
+> +	int i;
+> +
+> +	can_id = em_canid_get_id(skb);
+> +
+> +	if (can_id & CAN_EFF_FLAG) {
+> +		can_id &= CAN_EFF_MASK;
+> +
+> +		for (i = 0; i < cm->eff_rules_count; i++) {
+> +			if (!(((cm->rules_raw[i].can_id ^ can_id) &
+> +			    cm->rules_raw[i].can_mask) & CAN_EFF_MASK)) {
+
+
+Looks really tricky. I'm still pondering if it does what it should do ...
+
+> +				match = true;
+
+
+match = 1;
+
+> +				break;
+> +			}
+> +		}
+> +	} else { /* SFF */
+> +		can_id &= CAN_SFF_MASK;
+> +		match = test_bit(can_id, cm->match_sff);
+> +	}
+> +
+
+
+return match;
+
+
+> +	if (match)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int em_canid_change(struct tcf_proto *tp, void *data, int len,
+> +			  struct tcf_ematch *m)
+> +{
+> +	struct can_filter *conf = data; /* Array with rules,
+> +					 * fixed size EM_CAN_RULES_SIZE
+> +					 */
+> +	struct canid_match *cm;
+> +	int err;
+> +	int i;
+> +
+> +	if (len < sizeof(struct can_filter))
+> +		return -EINVAL;
+
+
+if (len % sizeof(struct can_filter))
+	return -EINVAL;
+
+if (len > sizeof(struct can_filter) * EM_CAN_RULES_SIZE)
+	return -EINVAL;
+
+All checks done before kzalloc() => no need for error cleanups at the end of
+the function.
+
+> +
+> +	err = -ENOBUFS;
+
+
+remove
+
+> +	cm = kzalloc(sizeof(*cm), GFP_KERNEL);
+> +	if (cm == NULL)
+
+
+if (!cm)
+	return -ENOMEM;
+
+> +		goto errout;
+
+
+The only user of errout - to be removed.
+
+> +
+> +	cm->sff_rules_count = 0;
+> +	cm->eff_rules_count = 0;
+> +	cm->rules_count = len/sizeof(struct can_filter);
+
+
+> +	err = -EINVAL;
+
+remove
+
+> +
+> +	/* Be sure to fit into the array */
+> +	if (cm->rules_count > EM_CAN_RULES_SIZE)
+> +		goto errout_free;
+
+
+already checked before => remove
+
+> +
+> +	/*
+> +	 * We need two for() loops for copying rules into
+> +	 * two contiguous areas in rules_raw
+> +	 */
+> +
+> +	/* Process EFF frame rules*/
+> +	for (i = 0; i < cm->rules_count; i++) {
+> +		if ((conf[i].can_id & CAN_EFF_FLAG) &&
+> +		    (conf[i].can_mask & CAN_EFF_FLAG)) {
+> +			memcpy(cm->rules_raw + cm->eff_rules_count,
+
+
+Oops. Shouldn't this be
+
+cm->rules_raw + cm->eff_rules_count * sizeof(struct can_filter),
+
+???
+
+> +				&conf[i],
+> +				sizeof(struct can_filter));
+> +
+> +			cm->eff_rules_count++;
+> +		} else {
+> +			continue;
+> +		}
+
+
+omit { } around continue
+
+> +	}
+> +
+> +	/* Process SFF frame rules */
+> +	for (i = 0; i < cm->rules_count; i++) {
+> +		if ((conf[i].can_id & CAN_EFF_FLAG) &&
+> +		    (conf[i].can_mask & CAN_EFF_FLAG)) {
+
+
+What if CAN_EFF_FLAG is set in can_id but not in can_mask ?
+
+> +			continue;
+> +		} else {
+> +			memcpy(cm->rules_raw
+> +				+ cm->eff_rules_count
+> +				+ cm->sff_rules_count,
+
+
+dito
+
+cm->rules_raw + (cm->eff_rules_count + cm->sff_rules_count) * sizeof(struct
+can_filter),
+
+???
+
+
+> +				&conf[i], sizeof(struct can_filter));
+> +
+> +			cm->sff_rules_count++;
+> +
+> +			em_canid_sff_match_add(cm,
+> +				conf[i].can_id, conf[i].can_mask);
+> +		}
+> +	}
+> +
+> +	m->datalen = sizeof(*cm);
+> +	m->data = (unsigned long) cm;
+> +
+> +	return 0;
+> +
+> +errout_free:
+> +	kfree(cm);
+> +errout:
+> +	return err;
+
+
+error handling can be removed with the above changes.
+
+> +}
+> +
+> +static void em_canid_destroy(struct tcf_proto *tp, struct tcf_ematch *m)
+> +{
+> +	struct canid_match *cm = em_canid_priv(m);
+> +
+
+
+Check for cm == NULL not needed ?
+
+> +	kfree(cm);
+> +}
+> +
+> +static int em_canid_dump(struct sk_buff *skb, struct tcf_ematch *m)
+> +{
+> +	struct canid_match *cm = em_canid_priv(m);
+> +
+
+
+Check for cm == NULL not needed ?
+
+Can a dump happen before the matches are added??
+
+> +	/*
+> +	 * When configuring this ematch 'rules_count' is set not to exceed
+> +	 * 'rules_raw' array size
+> +	 */
+> +	if (nla_put_nohdr(skb, sizeof(cm->rules_raw[0]) * cm->rules_count,
+
+
+better sizeof(struct can_filter) instead of sizeof(cm->rules_raw[0]) ??
+
+> +	    &cm->rules_raw) < 0)
+> +		goto nla_put_failure;
+> +
+> +	return 0;
+> +
+> +nla_put_failure:
+> +	return -1;
+> +}
+> +
+> +static struct tcf_ematch_ops em_canid_ops = {
+> +	.kind	  = TCF_EM_CANID,
+> +	.change	  = em_canid_change,
+> +	.match	  = em_canid_match,
+> +	.destroy  = em_canid_destroy,
+> +	.dump	  = em_canid_dump,
+> +	.owner	  = THIS_MODULE,
+> +	.link	  = LIST_HEAD_INIT(em_canid_ops.link)
+> +};
+> +
+> +static int __init init_em_canid(void)
+> +{
+> +	return tcf_em_register(&em_canid_ops);
+> +}
+> +
+> +static void __exit exit_em_canid(void)
+> +{
+> +	tcf_em_unregister(&em_canid_ops);
+> +}
+> +
+> +MODULE_LICENSE("GPL");
+> +
+> +module_init(init_em_canid);
+> +module_exit(exit_em_canid);
+> +
+> +MODULE_ALIAS_TCF_EMATCH(TCF_EM_CANID);
+
+
+Regards,
+Oliver
