@@ -1,100 +1,74 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [PATCH net-next] em_canid: Ematch rule to match CAN frames
- according to their CAN IDs
-Date: Wed, 27 Jun 2012 11:33:25 +0200
-Message-ID: <20120627093325.GB410@vandijck-laurijssen.be>
-References: <1340022131-7827-1-git-send-email-lisovy@gmail.com>
- <4FEA169C.1070709@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 2/4] can: flexcan: add hardware controller version support
+Date: Wed, 27 Jun 2012 11:43:43 +0200
+Message-ID: <4FEAD5CF.9070601@grandegger.com>
+References: <1340785161-3598-1-git-send-email-jason77.wang@gmail.com> <1340785161-3598-2-git-send-email-jason77.wang@gmail.com> <1340785161-3598-3-git-send-email-jason77.wang@gmail.com> <4FEAC3EF.3060606@pengutronix.de> <4FEACAAB.1000002@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:8905 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753538Ab2F0Jd3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 05:33:29 -0400
-Content-Disposition: inline
-In-Reply-To: <4FEA169C.1070709@hartkopp.net>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:58971 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753897Ab2F0Jnz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 05:43:55 -0400
+In-Reply-To: <4FEACAAB.1000002@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Rostislav Lisovy <lisovy@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Hui Wang <jason77.wang@gmail.com>, davem@davemloft.net, shawn.guo@linaro.org, linux-can@vger.kernel.org, Devicetree Discussions <devicetree-discuss@lists.ozlabs.org>
 
-Oliver, Rostislav,
+Hi Marc,
 
-I was just looking into this. I think the matching itself
-may be simplified by eliminating checks 'that have already been made'.
-
-On Tue, Jun 26, 2012 at 10:07:56PM +0200, Oliver Hartkopp wrote:
+On 06/27/2012 10:56 AM, Wolfgang Grandegger wrote:
+> On 06/27/2012 10:27 AM, Marc Kleine-Budde wrote:
+>> On 06/27/2012 10:19 AM, Hui Wang wrote:
+>>> At least in the i.MX series, the flexcan contrller divides into ver_3
+>>> and ver_10, current driver is for ver_3 controller.
+>>>
+>>> i.MX6 has ver_10 controller, it has more reigsters than ver_3 has.
+>>> The rxfgmask (Rx FIFO Global Mask) register is one of the new added.
+>>> Its reset value is 0xffffffff, this means ID Filter Table must be
+>>> checked when receive a packet, but the driver is designed to accept
+>>> everything during the chip start, we need to clear this register to
+>>> follow this design.
+>>>
+>>> Add a hw_ver entry in the device tree, this can let us distinguish
+>>> which version the controller is, if we don't set value to this entry,
+>>> the hw_ver is 3 by default, this is backward compatible for existing
+>>> platforms like powerpc and imx35.
+>>
+>> Is it possible to read this value from the hardware?
+>> Another possibility would be to introduce a new compatible device in the
+>> device tree.
 > 
-> > +static int em_canid_match(struct sk_buff *skb, struct tcf_ematch *m,
-> > +			 struct tcf_pkt_info *info)
-> > +{
-> > +	struct canid_match *cm = em_canid_priv(m);
-> > +	canid_t can_id;
-> > +	unsigned int match = false;
-> > +	int i;
-> > +
-> > +	can_id = em_canid_get_id(skb);
-> > +
-> > +	if (can_id & CAN_EFF_FLAG) {
-> > +		can_id &= CAN_EFF_MASK;
-Why clear the CAN_EFF_FLAG?
-It needs an extra read-modify-write, and the CAN_EFF_FLAG is set in
-the match rule too.
-IMHO, you could leave can_id as it is.
-> > +
-> > +		for (i = 0; i < cm->eff_rules_count; i++) {
+> I vote for the latter. IIRC, in the past we already had some discussion
+> on how to handle version dependent Flexcan hardware, e.g. by using
+> flexcan-vX.X or being expicit using fsl,p1010-flexcan. Search for "Add
+> support for powerpc" in the netdev mailing list. I added the
+> devicetree-discuss ml for that reason.
 
-to speed things up manually, I tend to use a 'const struct can_filter *lp'
-and do:
-		for (i = 0, lp = cm->rules_raw; i < cm->eff_rules_count;
-				++i, ++lp) {
-The advantage depends on the compiler's optimizations, which I'm not really
-aware of.
-The next statement would then be:
+I looked up the threads and found:
 
-			if (!((lp->can_id ^ can_id) & lp->can_mask)) {
+  http://marc.info/?w=4&r=1&s=Fix+up+fsl-flexcan+device+tree+bi&q=t
 
-for stripping & CAN_EFF_MASK, see below :-)
+In the Flexcan driver we currently only have:
+
+  static struct of_device_id flexcan_of_match[] = {
+        {
+                .compatible = "fsl,p1010-flexcan",
+        },
+        {},
+  };
+
+What compatible string do they actually use for the i.MX6Q board? Shawn
+or Hui? We need to fix that. From the discussion mentioned above I think
+"fsl,flexcan-v10" would be acceptable. Unfortunately, we do not known
+the internal version of the Flexcan controllers used in the various
+PowerPC and ARM SOCs. We already realized some differences with
+interrupts and bus error handling between i.MX28 and i.MX35. Would be
+nice if someone (from Freescale?) could finally clarify that.
+
+Wolfgang.
 
 
-> > +			if (!(((cm->rules_raw[i].can_id ^ can_id) &
-> > +			    cm->rules_raw[i].can_mask) & CAN_EFF_MASK)) {
-> 
-> 
-> Looks really tricky. I'm still pondering if it does what it should do ...
 
-I think it does, since:
-	cm->rules_raw[i].can_id ^ can_id
-gives an value where the bits that differ are set.
-then:
-	& cm->rules_raw[i].can_mask
-will strip bits that you don't care.
-
-But '& CAN_EFF_MASK' is not needed, since:
-	* can_id will have CAN_EFF_FLAG (see comment above)
-	* cm->rules_raw[i].can_id has CAN_EFF_FLAG, otherwise it would
-	  not be in the list
-	* can_id will not have CAN_ERR_FLAG
-	* cm->rules_raw should not have CAN_ERR_FLAG
-	  you can always clear CAN_ERR_FLAG from the rules during
-	  em_canid_change below
-	* maybe distinguishing on CAN_RTR_FLAG makes sense during
-	  classification.
-> 
-> > +				match = true;
-> > +				break;
-> > +			}
-> > +		}
-> > +	} else { /* SFF */
-> > +		can_id &= CAN_SFF_MASK;
-> > +		match = test_bit(can_id, cm->match_sff);
-> > +	}
-> > +
-> 
-> 
-> return match;
-> 
-> 
-> > +}
-> > +
