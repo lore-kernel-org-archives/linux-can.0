@@ -1,72 +1,71 @@
-From: Hui Wang <jason77.wang@gmail.com>
-Subject: Re: [PATCH] can: flexcan: use of_property_read_u32 to avoid endian
- problem
-Date: Thu, 28 Jun 2012 13:18:19 +0800
-Message-ID: <4FEBE91B.3020709@gmail.com>
-References: <1340852337-19840-1-git-send-email-jason77.wang@gmail.com> <CAAQ0ZWTE=sF7-bnL6RZ8BuUQEmH+YtRE5J2A+mqsMPpsf6W_vw@mail.gmail.com> <4FEBE648.7040007@hartkopp.net>
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH v2 2/2] net: flexcan: add transceiver switch gpios support
+Date: Thu, 28 Jun 2012 07:22:14 +0200
+Message-ID: <20459.59910.783086.760997@ipc1.ka-ro>
+References: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
+	<1340853701-4488-3-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.windriver.com ([147.11.1.11]:38748 "EHLO
-	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750989Ab2F1FSt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 01:18:49 -0400
-In-Reply-To: <4FEBE648.7040007@hartkopp.net>
+Received: from mail.karo-electronics.de ([81.173.242.67]:59633 "EHLO
+	mail.karo-electronics.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750789Ab2F1FWg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 01:22:36 -0400
+In-Reply-To: <1340853701-4488-3-git-send-email-shawn.guo@linaro.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Shawn Guo <shawn.guo@linaro.org>, Hui Wang <jason77.wang@gmail.com>, mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Hui Wang <jason77.wang@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
 
-Oliver Hartkopp wrote:
-> The first patch (you wanted to superseed) has already been pulled from Dave
-> Miller, see:
->
-> http://git.kernel.org/?p=linux/kernel/git/davem/net.git;a=commitdiff;h=85f2f834e85517307f13e30e630a5fc86f757cb5
->
-> If you want to update your patch you need to do this based on your already
-> accepted patch.
->   
-Got it, i will generate an incremental patch basing on it.
-> Regards,
-> Oliver
->
-> Btw. no need to put Dave Miller in all your CAN-related postings in CC. He
-> get's hundreds of mails each day ...
->   
-OK.
+Hi,
 
-Regards,
-Hui.
-> On 28.06.2012 05:32, Shawn Guo wrote:
->
->   
->> On 28 June 2012 10:58, Hui Wang <jason77.wang@gmail.com> wrote:
->>     
->>> Use of_property_read_u32() to get DT value can avoid endian problems,
->>> this is needed since this driver can run on powerpc (be) and arm (le).
->>>
->>> No need to check ret value here since we will check the got value to
->>> verify if users pass a valid value in the DT.
->>>
->>> Cc: linux-can@vger.kernel.org
->>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->>> Cc: David S. Miller <davem@davemloft.net>
->>> Cc: Shawn Guo <shawn.guo@linaro.org>
->>>       
->> Reviewed-by: Shawn Guo <shawn.guo@linaro.org>
->>
->>     
->>> Cc: Wolfgang Grandegger <wg@grandegger.com>
->>> Signed-off-by: Hui Wang <jason77.wang@gmail.com>
->>>       
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>     
->
->
->
->   
+Shawn Guo writes:
+> The flexcan driver has function pointer transceiver_switch defined in
+> flexcan_platform_data for platform codes to hook up their transceiver
+> switch implementation.  However this does not cope with device tree
+> probe.
+>=20
+> It's been observed that platforms mostly use gpios to control the
+> switch of flexcan transceiver, like enable and standby.  The patch
+> adds transceiver switch gpios support into flexcan driver, so that
+> platforms booting from device tree can just define properties
+> phy-enable-gpios and phy-standby-gpios to have flexcan driver control
+> the gpios.
+>=20
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  .../devicetree/bindings/net/can/fsl-flexcan.txt    |    2 +
+>  drivers/net/can/flexcan.c                          |   62 ++++++++++=
+++++++++++
+>  2 files changed, 64 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.tx=
+t b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+> index 8ff324e..e0dbac7 100644
+> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+> @@ -15,6 +15,8 @@ Required properties:
+>  Optional properties:
+> =20
+>  - clock-frequency : The oscillator frequency driving the flexcan dev=
+ice
+> +- phy-enable-gpios : Specify the gpio used to enable phy
+> +- phy-standby-gpios : Specify the gpio used to put phy into STANDBY =
+mode
+> =20
+Why the plural form 'gpios'? It's just one gpio.
+s/gpios/gpio/ ?
 
+
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
