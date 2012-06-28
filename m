@@ -1,44 +1,50 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 2/2] net: flexcan: add transceiver switch gpios support
-Date: Thu, 28 Jun 2012 19:41:10 +0800
-Message-ID: <20120628114108.GD22990@S2101-09.ap.freescale.net>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [PATCH v2 2/2] net: flexcan: add transceiver switch gpios
+ support
+Date: Thu, 28 Jun 2012 19:39:03 +0800
+Message-ID: <20120628113902.GK6406@shlinux2.ap.freescale.net>
 References: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
  <1340853701-4488-3-git-send-email-shawn.guo@linaro.org>
  <4FEC329C.7070004@pengutronix.de>
- <20120628112111.GC22990@S2101-09.ap.freescale.net>
- <4FEC400F.8010506@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from db3ehsobe004.messaging.microsoft.com ([213.199.154.142]:39951
+	"EHLO db3outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750789Ab2F1Lol (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 07:44:41 -0400
 Content-Disposition: inline
-In-Reply-To: <4FEC400F.8010506@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+In-Reply-To: <4FEC329C.7070004@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Hui Wang <jason77.wang@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Cc: Shawn Guo <shawn.guo@linaro.org>, Hui Wang <jason77.wang@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
 
-On Thu, Jun 28, 2012 at 01:29:19PM +0200, Marc Kleine-Budde wrote:
-> I mean which name is more precise, do these gpio enable/standy a "phy"
-> or a "transceiver". For example:
-> http://www.nxp.com/documents/application_note/AN00094.pdf, this document
-> says: TJA1041/1041A high speed CAN transceiver.
+On Thu, Jun 28, 2012 at 12:31:56PM +0200, Marc Kleine-Budde wrote:
+> On 06/28/2012 05:21 AM, Shawn Guo wrote:
+> > The flexcan driver has function pointer transceiver_switch defined in
+> > flexcan_platform_data for platform codes to hook up their transceiver
+> > switch implementation.  However this does not cope with device tree
+> > probe.
+> > 
+> > It's been observed that platforms mostly use gpios to control the
+> > switch of flexcan transceiver, like enable and standby.  The patch
+> > adds transceiver switch gpios support into flexcan driver, so that
+> > platforms booting from device tree can just define properties
+> > phy-enable-gpios and phy-standby-gpios to have flexcan driver control
+> > the gpios.
 > 
-Isn't term "phy" (physical interface) generally meant to be the same
-thing as "transceiver"?  I just happened to like the shorter one as
-what Hui did in his patch.
+> Hmm I'm wondering if transceiver or phy is the correct name here. In
+> platform_data it's called transceiver_switch.
+> 
+Hmm, i also had this wondering.
+I quote some info from the spec like:
+"The MC33902 is a high speed CAN physical interface. The device 
+includes an internal 5.0 V supply for the CAN bus transceiver, and 
+requires only a connection to a battery line."
 
-But it does not really matter to me, will change the name since you
-care about it.
+Maybe transceiver is more close to spec.
 
--- 
-Regards,
-Shawn
+Regards
+Dong Aisheng
+
