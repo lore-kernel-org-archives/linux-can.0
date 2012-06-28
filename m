@@ -1,23 +1,38 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: [RFC PATCH] can: dev: update rx state in the can_get_echo_skb()
-Date: Thu, 28 Jun 2012 12:59:35 +0200
-Message-ID: <4FEC3917.5020905@grandegger.com>
+Date: Thu, 28 Jun 2012 12:59:48 +0200
+Message-ID: <20120628105948.GC418@vandijck-laurijssen.be>
 References: <1340876540-27840-1-git-send-email-jason77.wang@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:35363 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753292Ab2F1K7p (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 06:59:45 -0400
+Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:43833 "EHLO
+	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754346Ab2F1K7w (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 06:59:52 -0400
+Content-Disposition: inline
 In-Reply-To: <1340876540-27840-1-git-send-email-jason77.wang@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Hui Wang <jason77.wang@gmail.com>
-Cc: mkl@pengutronix.de, shawn.guo@linaro.org, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, shawn.guo@linaro.org, wg@grandegger.com, linux-can@vger.kernel.org
 
-On 06/28/2012 11:42 AM, Hui Wang wrote:
+Hi,
+
+A loopback packet enters the rx interface of the CAN subsystem,
+but it had never entered the chip's receive path.
+IMHO it's bad to alter the chip's statistics the way you propose.
+
+Are you interested in the number of packets/bytes
+that you were able to receive on your socket?
+How about adding echo statistics in the CAN device stats,
+as shown in
+$ ip -d -s link show can0
+
+Kind regards,
+Kurt
+
+On Thu, Jun 28, 2012 at 05:42:20PM +0800, Hui Wang wrote:
 > After a loopback packet is routed to rx interface, we forget to update
 > rx state both in the can_get_echo_skb() and in the controller specific
 > drivers, as a result, after we sent a loopback packet and executed
@@ -31,9 +46,7 @@ On 06/28/2012 11:42 AM, Hui Wang wrote:
 > 
 > We add rx state update in the can_get_echo_skb() to solve this
 > problem.
-
-Well...
-
+> 
 > Cc: linux-can@vger.kernel.org
 > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 > Cc: Wolfgang Grandegger <wg@grandegger.com>
@@ -55,25 +68,45 @@ Well...
 >           UP RUNNING NOARP  MTU:16  Metric:1
 >           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
 >           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
-
-This means that one message has successfully been sent to the *real* CAN
-bus.
-
 >           collisions:0 txqueuelen:10
 >           RX bytes:0 (0.0 B)  TX bytes:4 (4.0 B)
 > 
->>From my understanding, i suppose it should be:
+> From my understanding, i suppose it should be:
 > can0      Link encap:UNSPEC  HWaddr 00-00-00-00-<snip>
 >           UP RUNNING NOARP  MTU:16  Metric:1
 >           RX packets:1 errors:0 dropped:0 overruns:0 frame:0
 >           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
 >           collisions:0 txqueuelen:10 
 >           RX bytes:4 (4.0 B)  TX bytes:4 (4.0 B)
+> 
+>  drivers/net/can/dev.c |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index f03d7a4..6b62f6a 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -340,6 +340,9 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+>  		netif_rx(priv->echo_skb[idx]);
+>  		priv->echo_skb[idx] = NULL;
+>  
+> +		dev->stats.rx_bytes += dlc;
+> +		dev->stats.rx_packets++;
+> +
+>  		return dlc;
+>  	}
+>  
+> -- 
+> 1.7.6
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Why, you have not received any message from the CAN bus. If you want to
-count looped back messages, it should be:
-
-          RX packets:1 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:2 errors:0 dropped:0 overruns:0 carrier:0
-
-Wolfgang.
+-- 
+Kurt Van Dijck
+GRAMMER EiA ELECTRONICS
+http://www.eia.be
+kurt.van.dijck@eia.be
++32-38708534
