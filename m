@@ -1,62 +1,45 @@
-From: Hui Wang <jason77.wang@gmail.com>
-Subject: [PATCH] can: flexcan: use of_property_read_u32 to avoid endian problem
-Date: Thu, 28 Jun 2012 10:58:57 +0800
-Message-ID: <1340852337-19840-1-git-send-email-jason77.wang@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v2 1/2] net: flexcan: clock-frequency is optional for device tree probe
+Date: Thu, 28 Jun 2012 11:21:40 +0800
+Message-ID: <1340853701-4488-2-git-send-email-shawn.guo@linaro.org>
+References: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.windriver.com ([147.11.1.11]:54390 "EHLO
-	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932243Ab2F1C7M (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 22:59:12 -0400
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]:14417
+	"EHLO ch1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753987Ab2F1DVh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 23:21:37 -0400
+In-Reply-To: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de, davem@davemloft.net, shawn.guo@linaro.org, wg@grandegger.com
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Hui Wang <jason77.wang@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
 
-Use of_property_read_u32() to get DT value can avoid endian problems,
-this is needed since this driver can run on powerpc (be) and arm (le).
+The property clock-frequency is optional for device tree probe.  When
+it's absent, the flexcan driver will try to get the frequency from clk
+system by calling clk_get_rate.
 
-No need to check ret value here since we will check the got value to
-verify if users pass a valid value in the DT.
-
-Cc: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Shawn Guo <shawn.guo@linaro.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Signed-off-by: Hui Wang <jason77.wang@gmail.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
-This is the patch to replace the one "can: flexcan: use be32_to_cpup
-to handle the value of dt entry", if you already applied that patch
-and can't revert, please ignore this patch and let me know,i will
-prepare an incremental patch basing on that one.
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
- drivers/net/can/flexcan.c |   11 +++--------
- 1 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 38c0690..f63f826 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -938,14 +938,9 @@ static int __devinit flexcan_probe(struct platform_device *pdev)
- 	if (IS_ERR(pinctrl))
- 		return PTR_ERR(pinctrl);
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index f31b686..8ff324e 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -11,6 +11,9 @@ Required properties:
  
--	if (pdev->dev.of_node) {
--		const u32 *clock_freq_p;
--
--		clock_freq_p = of_get_property(pdev->dev.of_node,
--						"clock-frequency", NULL);
--		if (clock_freq_p)
--			clock_freq = *clock_freq_p;
--	}
-+	if (pdev->dev.of_node)
-+		of_property_read_u32(pdev->dev.of_node,
-+						"clock-frequency", &clock_freq);
+ - reg : Offset and length of the register set for this device
+ - interrupts : Interrupt tuple for this device
++
++Optional properties:
++
+ - clock-frequency : The oscillator frequency driving the flexcan device
  
- 	if (!clock_freq) {
- 		clk = clk_get(&pdev->dev, NULL);
+ Example:
 -- 
-1.7.6
+1.7.5.4
+
 
