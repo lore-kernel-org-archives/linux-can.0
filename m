@@ -1,112 +1,65 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [RFC PATCH] can: dev: update rx state in the can_get_echo_skb()
-Date: Thu, 28 Jun 2012 12:59:48 +0200
-Message-ID: <20120628105948.GC418@vandijck-laurijssen.be>
-References: <1340876540-27840-1-git-send-email-jason77.wang@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 2/2] net: flexcan: add transceiver switch gpios support
+Date: Thu, 28 Jun 2012 19:21:14 +0800
+Message-ID: <20120628112111.GC22990@S2101-09.ap.freescale.net>
+References: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
+ <1340853701-4488-3-git-send-email-shawn.guo@linaro.org>
+ <4FEC329C.7070004@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:43833 "EHLO
-	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754346Ab2F1K7w (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 06:59:52 -0400
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]:38770 "EHLO
+	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753706Ab2F1LU5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 07:20:57 -0400
 Content-Disposition: inline
-In-Reply-To: <1340876540-27840-1-git-send-email-jason77.wang@gmail.com>
+In-Reply-To: <4FEC329C.7070004@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Hui Wang <jason77.wang@gmail.com>
-Cc: mkl@pengutronix.de, shawn.guo@linaro.org, wg@grandegger.com, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Hui Wang <jason77.wang@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-Hi,
+On Thu, Jun 28, 2012 at 12:31:56PM +0200, Marc Kleine-Budde wrote:
+> Hmm I'm wondering if transceiver or phy is the correct name here. In
+> platform_data it's called transceiver_switch.
 
-A loopback packet enters the rx interface of the CAN subsystem,
-but it had never entered the chip's receive path.
-IMHO it's bad to alter the chip's statistics the way you propose.
+The transceiver_switch in platform_data names a function, while we are
+naming a couple gpios which happen to be access in that function.  It
+looks all correct to me.
 
-Are you interested in the number of packets/bytes
-that you were able to receive on your socket?
-How about adding echo statistics in the CAN device stats,
-as shown in
-$ ip -d -s link show can0
-
-Kind regards,
-Kurt
-
-On Thu, Jun 28, 2012 at 05:42:20PM +0800, Hui Wang wrote:
-> After a loopback packet is routed to rx interface, we forget to update
-> rx state both in the can_get_echo_skb() and in the controller specific
-> drivers, as a result, after we sent a loopback packet and executed
-> ifconfig, following state is outputed:
-> can0      Link encap:UNSPEC  HWaddr 00-00-00-00-<snip>
->           UP RUNNING NOARP  MTU:16  Metric:1
->           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:10
->           RX bytes:0 (0.0 B)  TX bytes:4 (4.0 B)
+> > +	int phy_en_gpio = -EINVAL;
+> > +	int phy_stby_gpio = -EINVAL;
+> > +	bool phy_en_high = true;
+> > +	bool phy_stby_high = true;
+> >  
+> >  	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+> >  	if (IS_ERR(pinctrl))
+> > @@ -940,11 +962,46 @@ static int __devinit flexcan_probe(struct platform_device *pdev)
+> >  
+> >  	if (pdev->dev.of_node) {
+> >  		const u32 *clock_freq_p;
+> > +		enum of_gpio_flags flags;
+> >  
+> >  		clock_freq_p = of_get_property(pdev->dev.of_node,
+> >  						"clock-frequency", NULL);
+> >  		if (clock_freq_p)
+> >  			clock_freq = *clock_freq_p;
+> > +
+> > +		phy_en_gpio = of_get_named_gpio_flags(pdev->dev.of_node,
+> > +						      "phy-enable-gpios",
+> > +						       0, &flags);
+> > +		if (gpio_is_valid(phy_en_gpio)) {
+> > +			if (flags == OF_GPIO_ACTIVE_LOW)
+> > +				phy_en_high = false;
 > 
-> We add rx state update in the can_get_echo_skb() to solve this
-> problem.
+> I really like the "flags" solution, much better than a DT property. What
+> about keeping the term active_low instead of en_high? From my limited
+> knowledge about electronic I say, that active low is a standard term.
 > 
-> Cc: linux-can@vger.kernel.org
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Hui Wang <jason77.wang@gmail.com>
-> ---
-> I don't know if it is designed like that on purpose, please instruct
-> me if i am wrong.
-> 
-> I use following commands to let flexcan to work in the loopback mode:
-> %>ip link set can0 type can bitrate 125000
-> %>ip link set can0 type can loopback on
-> %>ip link set can0 up
-> And send a packet:
-> %>cantest can0 123#AABBCCDD
-> When i check net device state, i found tx doesn't equal rx:
-> %>ifconfig
-> can0      Link encap:UNSPEC  HWaddr 00-00-00-00-<snip>
->           UP RUNNING NOARP  MTU:16  Metric:1
->           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:10
->           RX bytes:0 (0.0 B)  TX bytes:4 (4.0 B)
-> 
-> From my understanding, i suppose it should be:
-> can0      Link encap:UNSPEC  HWaddr 00-00-00-00-<snip>
->           UP RUNNING NOARP  MTU:16  Metric:1
->           RX packets:1 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:10 
->           RX bytes:4 (4.0 B)  TX bytes:4 (4.0 B)
-> 
->  drivers/net/can/dev.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index f03d7a4..6b62f6a 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -340,6 +340,9 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
->  		netif_rx(priv->echo_skb[idx]);
->  		priv->echo_skb[idx] = NULL;
->  
-> +		dev->stats.rx_bytes += dlc;
-> +		dev->stats.rx_packets++;
-> +
->  		return dlc;
->  	}
->  
-> -- 
-> 1.7.6
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Ok, we will have these two bool variables named phy_en_active_low and
+phy_stby_active_low.  Will resend to change them.
 
 -- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+Regards,
+Shawn
+
