@@ -1,43 +1,48 @@
 From: Hui Wang <jason77.wang@gmail.com>
-Subject: Re: [PATCH 4/4] can: flexcan: add transceiver switch support when
- use device tree
-Date: Thu, 28 Jun 2012 09:53:04 +0800
-Message-ID: <4FEBB900.9020300@gmail.com>
-References: <1340785161-3598-1-git-send-email-jason77.wang@gmail.com>	<1340785161-3598-2-git-send-email-jason77.wang@gmail.com>	<1340785161-3598-3-git-send-email-jason77.wang@gmail.com>	<1340785161-3598-4-git-send-email-jason77.wang@gmail.com>	<1340785161-3598-5-git-send-email-jason77.wang@gmail.com>	<4FEAC3AA.500@pengutronix.de>	<4FEAD897.5070408@gmail.com> <CAAQ0ZWSOJog+S3780wD63ObJ6YUfC9T_zOUPzto3esF-W4fnXw@mail.gmail.com>
+Subject: Re: [PATCH] can: flexcan: use be32_to_cpup to handle the value of
+ dt entry
+Date: Thu, 28 Jun 2012 09:54:12 +0800
+Message-ID: <4FEBB944.1060701@gmail.com>
+References: <1340789236-28266-1-git-send-email-mkl@pengutronix.de> <1340789236-28266-2-git-send-email-mkl@pengutronix.de> <CAAQ0ZWT3ovG7eKZZuoSZkx4FGd+W9XvnTk8R1yuD02u4wqGNHQ@mail.gmail.com> <4FEAEFC1.4060104@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail1.windriver.com ([147.11.146.13]:55920 "EHLO
-	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751447Ab2F1BxX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 21:53:23 -0400
-In-Reply-To: <CAAQ0ZWSOJog+S3780wD63ObJ6YUfC9T_zOUPzto3esF-W4fnXw@mail.gmail.com>
+Received: from mail.windriver.com ([147.11.1.11]:47048 "EHLO
+	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757669Ab2F1Byb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jun 2012 21:54:31 -0400
+In-Reply-To: <4FEAEFC1.4060104@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Hui Wang <jason77.wang@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, davem@davemloft.net, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, davem@davemloft.net, netdev@vger.kernel.org, linux-can@vger.kernel.org, Hui Wang <jason77.wang@gmail.com>
 
-Shawn Guo wrote:
-> On 27 June 2012 17:55, Hui Wang <jason77.wang@gmail.com> wrote:
+Marc Kleine-Budde wrote:
+> On 06/27/2012 01:26 PM, Shawn Guo wrote:
 >   
->> After read and compared with his patch:
->> 1. Shawn use gpio_is_valid(gpio) instead of (gpio >= 0), it is good.
->> 2. Shawn add a flag to record active level, it is good.
->> 3. Shawn only add 1 gpio, this is not enough for imx6 sabre lite board.
->> 4. Shawn forget to call gpio_release()
+>> On 27 June 2012 17:27, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>>     
+>>> From: Hui Wang <jason77.wang@gmail.com>
+>>>
+>>> The freescale arm i.MX series platform can support this driver, and
+>>> usually the arm cpu works in the little endian mode by default, while
+>>> device tree entry value is stored in big endian format, we should use
+>>> be32_to_cpup() to handle them, after modification, it can work well
+>>> both on the le cpu and be cpu.
+>>>
+>>>       
+>> I'm wondering if you want to just use of_property_read_u32() to make
+>> it a little bit easier.
 >>     
 >
-> I'm about to resend my series to have linux-can copied and use
-> devm_gpio_request_one instead.  Do you want me to add STBY gpio
-> support into my patch?
+> Even better. Hui can you send a updated patch.
 >   
-Yes.
+OK.
 
-Thanks,
+Regards,
 Hui.
-> Regards,
-> Shawn
+> Marc
 >
 >   
 
