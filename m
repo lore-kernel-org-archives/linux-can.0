@@ -1,98 +1,89 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH v2 2/2] net: flexcan: add transceiver switch gpios
- support
-Date: Thu, 28 Jun 2012 20:47:37 +0800
-Message-ID: <20120628124736.GA5778@shlinux2.ap.freescale.net>
-References: <1340853701-4488-1-git-send-email-shawn.guo@linaro.org>
- <1340853701-4488-3-git-send-email-shawn.guo@linaro.org>
- <20120628113327.GJ6406@shlinux2.ap.freescale.net>
- <20120628114559.GE22990@S2101-09.ap.freescale.net>
- <4FEC487A.2050901@pengutronix.de>
- <20120628121817.GA5755@shlinux2.ap.freescale.net>
- <20460.20182.552394.407578@ipc1.ka-ro>
+From: Rostislav Lisovy <lisovy@gmail.com>
+Subject: Re: [PATCH net-next] em_canid: Ematch rule to match CAN frames
+ according to their CAN IDs
+Date: Thu, 28 Jun 2012 15:35:22 +0200
+Message-ID: <1340890522.6032.22.camel@lolumad>
+References: <1340022131-7827-1-git-send-email-lisovy@gmail.com>
+	 <4FEA169C.1070709@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from am1ehsobe006.messaging.microsoft.com ([213.199.154.209]:3160
-	"EHLO am1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753557Ab2F1MxT convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 28 Jun 2012 08:53:19 -0400
-Content-Disposition: inline
-In-Reply-To: <20460.20182.552394.407578@ipc1.ka-ro>
+Received: from mail-ey0-f174.google.com ([209.85.215.174]:45713 "EHLO
+	mail-ey0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751645Ab2F1NgB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Jun 2012 09:36:01 -0400
+In-Reply-To: <4FEA169C.1070709@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: Dong Aisheng-B29396 <B29396@freescale.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Hui Wang <jason77.wang@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Shawn Guo <shawn.guo@linaro.org>, "David S. Miller" <davem@davemloft.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
 
-On Thu, Jun 28, 2012 at 08:32:22PM +0800, Lothar Wa=DFmann wrote:
-> Hi,
->=20
-> Dong Aisheng writes:
-> > On Thu, Jun 28, 2012 at 08:05:14PM +0800, Marc Kleine-Budde wrote:
-> > > On 06/28/2012 01:46 PM, Shawn Guo wrote:
-> > > > On Thu, Jun 28, 2012 at 07:33:28PM +0800, Dong Aisheng wrote:
-> > > >>> +		phy_stby_gpio =3D of_get_named_gpio_flags(pdev->dev.of_nod=
-e,
-> > > >>> +							"phy-standby-gpios",
-> > > >>> +							0, &flags);
-> > > >>> +		if (gpio_is_valid(phy_stby_gpio)) {
-> > > >>> +			if (flags =3D=3D OF_GPIO_ACTIVE_LOW)
-> > > >>> +				phy_stby_high =3D false;
-> > > >>> +			err =3D devm_gpio_request_one(&pdev->dev, phy_stby_gpio,
-> > > >>> +						    GPIOF_DIR_OUT,
-> > > >>> +						    "phy-standby");
-> > > >>> +			if (err) {
-> > > >>> +				dev_err(&pdev->dev,
-> > > >>> +					"failed to request gpio %d: %d\n",
-> > > >>> +					phy_stby_gpio, err);
-> > > >>> +				goto failed_gpio;
-> > > >> I checked mx28 evk, it seems the phy only has a STB gpio and s=
-hared by both CAN0&CAN1.
-> > > >> I wonder the CAN1 probe may fail here.
-> > > >>
-> > > > It can be managed by dts.  Here is what I have in imx28-evk.dts=
-, where
-> > > > only can0 has phy-enable-gpios property.
-> > > >=20
-> > > >=20
-> > > > 	can0: can@80032000 {
-> > > > 		pinctrl-names =3D "default";
-> > > > 		pinctrl-0 =3D <&can0_pins_a>;
-> > > > 		phy-enable-gpios =3D <&gpio2 13 0>;
-> > > > 		status =3D "okay";
-> > > > 	};
-> > > >=20
-> > > > 	can1: can@80034000 {
-> > > > 		pinctrl-names =3D "default";
-> > > > 		pinctrl-0 =3D <&can1_pins_a>;
-> > > > 		status =3D "okay";
-> > > > 	};
-> > >=20
-> > > Will this work if can0 is down and can1 is up?
-> > >=20
-> > > Can we abstract the transceiver power as a regulator? Or a clock?=
- :P
-> > >=20
-> > Hmm, it may not be a power.
-> > For mx28evk, it's a STBY pin.
-> > So it may hard to abstract it as a regulator or clock.
-> >=20
-> I have created a 'gpio-switch' driver in my private tree that can be
-> used for exactly this purpose. It takes care of the pin polarity and
-> initial state of the pins and can handle shared pins like in this
-> case. The client driver does not even need to care whether an actual
-> GPIO exists for the current platform.
->=20
-> I could prepare a patch and post it here.
->=20
-Would be glad to see your patches.
-It may be useful, not only for this case,
-we also meet some other issues, i'm not sure but may have similar requi=
-rement
-like SDIO WiFi reset, usb phy reset and etc.
+Hello Oliver;
 
-Regards
-Dong Aisheng
+On Tue, 2012-06-26 at 22:07 +0200, Oliver Hartkopp wrote: 
+> I found some time for a review. See details inline ...
+> 
+I agree with quite everything except for following...
+
+
+> > +				match = true;
+> 
+> 
+> match = 1;
+> 
+egrep -r "= true;" ./linux-source | wc -l
+returns 6770 -- why don't you like "= true"?
+
+
+> > +				break;
+> > +			}
+> > +		}
+> > +	} else { /* SFF */
+> > +		can_id &= CAN_SFF_MASK;
+> > +		match = test_bit(can_id, cm->match_sff);
+> > +	}
+> > +
+> 
+> 
+> return match;
+> 
+match() function must return 1 or 0, however (from my experience)
+test_bit() returns 0 and non-0 (strictly speaking, in my case, 0 and
+-1).
+
+
+> > +				&conf[i],
+> > +				sizeof(struct can_filter));
+> > +
+> > +			cm->eff_rules_count++;
+> > +		} else {
+> > +			continue;
+> > +		}
+> 
+> 
+> omit { } around continue
+> 
+http://lxr.linux.no/#linux+v3.4.4/Documentation/CodingStyle#L169
+
+
+> > +	}
+> > +
+> > +	/* Process SFF frame rules */
+> > +	for (i = 0; i < cm->rules_count; i++) {
+> > +		if ((conf[i].can_id & CAN_EFF_FLAG) &&
+> > +		    (conf[i].can_mask & CAN_EFF_FLAG)) {
+> 
+> 
+> What if CAN_EFF_FLAG is set in can_id but not in can_mask ?
+> 
+There were small misunderstanding from my side -- this will be rewritten
+in the way that EFF_FLAG in mask will determine if we care about the
+value of EFF_FLAG in an identifier -- i.e. when EFF_FLAG is set in the
+mask, the rule will be added as SFF or EFF only depending on EFF_FLAG
+value in the identifier. If EFF_FLAG is 0 in the mask, the rule will be
+added as both SFF and EFF.
+
+Regards;
+Rostislav
 
