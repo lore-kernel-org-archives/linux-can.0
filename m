@@ -1,89 +1,58 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next] em_canid: Ematch rule to match CAN frames according
- to their identifiers
-Date: Fri, 29 Jun 2012 17:44:02 +0200
-Message-ID: <4FEDCD42.8010203@hartkopp.net>
-References: <1340903231-9561-1-git-send-email-lisovy@gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [Xenomai] RTDM driver for the Advantech 1680U CANbus Adapter
+Date: Fri, 29 Jun 2012 20:39:22 +0200
+Message-ID: <4FEDF65A.50401@grandegger.com>
+References: <4FED4948.8080906@basystemes.fr> <4FED4B42.6000808@wanadoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:40479 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755880Ab2F2PoK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 29 Jun 2012 11:44:10 -0400
-In-Reply-To: <1340903231-9561-1-git-send-email-lisovy@gmail.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:60745 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750988Ab2F2Sj0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 29 Jun 2012 14:39:26 -0400
+In-Reply-To: <4FED4B42.6000808@wanadoo.fr>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Thierry Bultel <thierry.bultel@wanadoo.fr>
+Cc: xenomai@xenomai.org, Linux-CAN <linux-can@vger.kernel.org>
 
-Hello Rostislav,
+Hi Thierry,
 
-looks really good now.
+On 06/29/2012 08:29 AM, Thierry Bultel wrote:
+> Hi,
+> 
+> I have ported the adv_pci driver from
+> http://git.toiit.sgu.ru/people/samarkinpa/public/?p=adv_pci.git;a=tree;h=a57c5d22415f8dbf92eeae0e05ff482839d8c2f3;hb=a57c5d22415f8dbf92eeae0e05ff482839d8c2f3
 
-1. Your Signed-off-by: is missing.
+Thanks for your contribution. This driver is not yet mainline and it's
+the first time that I see it. I added the Linux-CAN ML to the CC as it
+might be of general interest.
 
-2. One remark to a removed length check:
+> I has been quite intensively been tested and cycled for several days in
+> real industrial conditions.
+> 
+> The patch for 2.6.38-8 is attached to this mail.
+> 
+> Is it of interest and does is have a chance to be integrated in the
+> xenomai mainline ?
 
-(..)
+There is interest, of course. But we need a proper patch against the git
+head of xenomai-2.6. At a first glance I realized the following issues:
 
-> +static int em_canid_change(struct tcf_proto *tp, void *data, int len,
-> +			  struct tcf_ematch *m)
-> +{
-> +	struct can_filter *conf = data; /* Array with rules,
-> +					 * fixed size EM_CAN_RULES_SIZE
-> +					 */
-> +	struct canid_match *cm;
-> +	struct canid_match *cm_old = (struct canid_match *) m->data;
-> +	int i;
-> +	int rulescnt;
-> +
+- The patch does high-check and remove the plx_pci driver, please fix.
 
+- What is Advantech specific in that driver? It looks pretty generic to
+  me and it could easily support other similar devices.
 
-What about a zero length check here?
+- The Linux driver mentioned above does support much more Advantech
+  devices. Any chance to support them in your driver as well.
 
-	if (!len)
-		return -EINVAL;
+- Please send patches *inline*.
 
-???
+- Please respect the Linux coding style (check CodingStyle and use
+  checkpatch.pl).
 
-> +	if (len % sizeof(struct can_filter))
-> +		return -EINVAL;
-> +
-> +	if (len > sizeof(struct can_filter) * EM_CAN_RULES_MAX)
-> +		return -EINVAL;
-> +
-> +	rulescnt = len / sizeof(struct can_filter);
-> +
-> +	cm = kzalloc(sizeof(struct canid_match) + sizeof(struct can_filter) *
-> +		rulescnt, GFP_KERNEL);
-> +	if (!cm)
-> +		return -ENOMEM;
+Thanks in advance.
 
-
-The length could alternatively be checked here too
-
-http://lxr.linux.no/#linux+v3.4.4/net/sched/ematch.c#L235
-
-if em->ops->datalen is set.
-
-But here's no
-
-	.datalen = sizeof(struct can_filter),
-
-defined, right?
-
-> +static struct tcf_ematch_ops em_canid_ops = {
-> +	.kind	  = TCF_EM_CANID,
-> +	.change	  = em_canid_change,
-> +	.match	  = em_canid_match,
-> +	.destroy  = em_canid_destroy,
-> +	.dump	  = em_canid_dump,
-> +	.owner	  = THIS_MODULE,
-> +	.link	  = LIST_HEAD_INIT(em_canid_ops.link)
-> +};
-
-
-Regards,
-Oliver
+Wolfgang.
