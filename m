@@ -1,60 +1,65 @@
-From: Sascha Hauer <sha@pengutronix.de>
-Subject: Re: [PATCH 1/2] arm: imx: enable flexcan on imx25, imx35, imx53,
- imx6q
-Date: Mon, 2 Jul 2012 10:06:41 +0200
-Message-ID: <20120702080641.GG2698@pengutronix.de>
-References: <1341175565-13218-1-git-send-email-mkl@pengutronix.de>
- <1341175565-13218-2-git-send-email-mkl@pengutronix.de>
- <20120702075054.GF2698@pengutronix.de>
- <4FF153A0.3030404@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v2 1/2] arm: imx: enable flexcan on imx25, imx35, imx53, imx6q
+Date: Mon,  2 Jul 2012 11:03:00 +0200
+Message-ID: <1341219781-26107-2-git-send-email-mkl@pengutronix.de>
+References: <1341219781-26107-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33581 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36942 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753244Ab2GBIGo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 04:06:44 -0400
-Content-Disposition: inline
-In-Reply-To: <4FF153A0.3030404@pengutronix.de>
+	with ESMTP id S932467Ab2GBJDG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 05:03:06 -0400
+In-Reply-To: <1341219781-26107-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Sascha Hauer <sha@pengutronix.de>
 
-On Mon, Jul 02, 2012 at 09:54:08AM +0200, Marc Kleine-Budde wrote:
-> On 07/02/2012 09:50 AM, Sascha Hauer wrote:
-> > On Sun, Jul 01, 2012 at 10:46:04PM +0200, Marc Kleine-Budde wrote:
-> >> Cc: Sascha Hauer <sha@pengutronix.de>
-> >> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> >> ---
-> >>  arch/arm/mach-imx/Kconfig |    4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-> >> index eff4db5..c296851 100644
-> >> --- a/arch/arm/mach-imx/Kconfig
-> >> +++ b/arch/arm/mach-imx/Kconfig
-> >> @@ -52,6 +52,7 @@ config SOC_IMX25
-> >>  	select ARCH_MX25
-> >>  	select COMMON_CLK
-> >>  	select CPU_ARM926T
-> >> +	select HAVE_CAN_FLEXCAN if CAN
-> > 
-> > Do we need the 'if CAN' here? It seems yes, since HAVE_CAN_FLEXCAN is
-> > inside the "CAN Device Drivers" menu which depends on CAN. Shouldn't the
-> > HAVE_CAN_FLECAN be outside the menu?
-> 
-> Yes, we can move the HAVE_CAN_FLEXCAN outside of that menu, but it still
-> depends on CONFIG_NET.
+Aas the flexcan driver has DT binding for some time now. This patch makes
+the flexcan driver available in the can drivers menu if a SOC with flexcan
+is enabled.
 
-Ok, then we have no choice. I just asked because it seems unnatural that
-the presence of a hardware device depends on config options.
+Cc: Sascha Hauer <sha@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ arch/arm/mach-imx/Kconfig |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-Sascha
-
-
+diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+index eff4db5..c296851 100644
+--- a/arch/arm/mach-imx/Kconfig
++++ b/arch/arm/mach-imx/Kconfig
+@@ -52,6 +52,7 @@ config SOC_IMX25
+ 	select ARCH_MX25
+ 	select COMMON_CLK
+ 	select CPU_ARM926T
++	select HAVE_CAN_FLEXCAN if CAN
+ 	select ARCH_MXC_IOMUX_V3
+ 	select MXC_AVIC
+ 
+@@ -79,6 +80,7 @@ config SOC_IMX35
+ 	select HAVE_EPIT
+ 	select MXC_AVIC
+ 	select SMP_ON_UP if SMP
++	select HAVE_CAN_FLEXCAN if CAN
+ 
+ config SOC_IMX5
+ 	select CPU_V7
+@@ -105,6 +107,7 @@ config	SOC_IMX53
+ 	select SOC_IMX5
+ 	select ARCH_MX5
+ 	select ARCH_MX53
++	select HAVE_CAN_FLEXCAN if CAN
+ 
+ if ARCH_IMX_V4_V5
+ 
+@@ -826,6 +829,7 @@ config SOC_IMX6Q
+ 	select COMMON_CLK
+ 	select CPU_V7
+ 	select HAVE_ARM_SCU
++	select HAVE_CAN_FLEXCAN if CAN
+ 	select HAVE_IMX_GPC
+ 	select HAVE_IMX_MMDC
+ 	select HAVE_IMX_SRC
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.10
+
