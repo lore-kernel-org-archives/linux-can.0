@@ -1,86 +1,25 @@
-From: Sascha Hauer <sha@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] arm: imx: enable flexcan on imx25, imx35, imx53,
- imx6q
-Date: Mon, 2 Jul 2012 11:33:19 +0200
-Message-ID: <20120702093319.GN2698@pengutronix.de>
-References: <1341219781-26107-1-git-send-email-mkl@pengutronix.de>
- <1341219781-26107-2-git-send-email-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 0/6] upcoming pull-request to net-next
+Date: Mon,  2 Jul 2012 14:40:19 +0200
+Message-ID: <1341232825-4604-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34270 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57313 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932692Ab2GBJdV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 05:33:21 -0400
-Content-Disposition: inline
-In-Reply-To: <1341219781-26107-2-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1752408Ab2GBMk3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 08:40:29 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=hardanger.do.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1SlfvY-0002NK-3X
+	for linux-can@vger.kernel.org; Mon, 02 Jul 2012 14:40:28 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Shawn,
+Hello,
 
-In case you want to apply this one:
+I'm going to send a pull request with this patches to David. Any objections?
+Any missing Acked-by, or Tested-by?
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+regards, Marc
 
-Sascha
-
-On Mon, Jul 02, 2012 at 11:03:00AM +0200, Marc Kleine-Budde wrote:
-> Aas the flexcan driver has DT binding for some time now. This patch makes
-> the flexcan driver available in the can drivers menu if a SOC with flexcan
-> is enabled.
-> 
-> Cc: Sascha Hauer <sha@pengutronix.de>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  arch/arm/mach-imx/Kconfig |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-> index eff4db5..c296851 100644
-> --- a/arch/arm/mach-imx/Kconfig
-> +++ b/arch/arm/mach-imx/Kconfig
-> @@ -52,6 +52,7 @@ config SOC_IMX25
->  	select ARCH_MX25
->  	select COMMON_CLK
->  	select CPU_ARM926T
-> +	select HAVE_CAN_FLEXCAN if CAN
->  	select ARCH_MXC_IOMUX_V3
->  	select MXC_AVIC
->  
-> @@ -79,6 +80,7 @@ config SOC_IMX35
->  	select HAVE_EPIT
->  	select MXC_AVIC
->  	select SMP_ON_UP if SMP
-> +	select HAVE_CAN_FLEXCAN if CAN
->  
->  config SOC_IMX5
->  	select CPU_V7
-> @@ -105,6 +107,7 @@ config	SOC_IMX53
->  	select SOC_IMX5
->  	select ARCH_MX5
->  	select ARCH_MX53
-> +	select HAVE_CAN_FLEXCAN if CAN
->  
->  if ARCH_IMX_V4_V5
->  
-> @@ -826,6 +829,7 @@ config SOC_IMX6Q
->  	select COMMON_CLK
->  	select CPU_V7
->  	select HAVE_ARM_SCU
-> +	select HAVE_CAN_FLEXCAN if CAN
->  	select HAVE_IMX_GPC
->  	select HAVE_IMX_MMDC
->  	select HAVE_IMX_SRC
-> -- 
-> 1.7.10
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
