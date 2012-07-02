@@ -1,60 +1,46 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/6] can: fix sparse warning in af_can.c
-Date: Mon,  2 Jul 2012 14:40:22 +0200
-Message-ID: <1341232825-4604-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 4/6] net: flexcan: clock-frequency is optional for device tree probe
+Date: Mon,  2 Jul 2012 14:40:23 +0200
+Message-ID: <1341232825-4604-5-git-send-email-mkl@pengutronix.de>
 References: <1341232825-4604-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57318 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57320 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752606Ab2GBMk3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 08:40:29 -0400
+	with ESMTP id S1752472Ab2GBMka (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 08:40:30 -0400
 In-Reply-To: <1341232825-4604-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-Put can_rx_alldev_list into the af_can header to fix the following
-sparse warning: net/can/af_can.c:80:22: warning: symbol
-'can_rx_alldev_list' was not declared. Should it be static?
+The property clock-frequency is optional for device tree probe.  When
+it's absent, the flexcan driver will try to get the frequency from clk
+system by calling clk_get_rate.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.h |    3 +++
- net/can/proc.c   |    3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index fd882db..1dccb4c 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -104,6 +104,9 @@ struct s_pstats {
- 	unsigned long rcv_entries_max;
- };
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index f31b686..8ff324e 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -11,6 +11,9 @@ Required properties:
  
-+/* receive filters subscribed for 'all' CAN devices */
-+extern struct dev_rcv_lists can_rx_alldev_list;
+ - reg : Offset and length of the register set for this device
+ - interrupts : Interrupt tuple for this device
 +
- /* function prototypes for the CAN networklayer procfs (proc.c) */
- extern void can_init_proc(void);
- extern void can_remove_proc(void);
-diff --git a/net/can/proc.c b/net/can/proc.c
-index ba873c3..3b6dd31 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -83,9 +83,6 @@ static const char rx_list_name[][8] = {
- 	[RX_EFF] = "rx_eff",
- };
++Optional properties:
++
+ - clock-frequency : The oscillator frequency driving the flexcan device
  
--/* receive filters subscribed for 'all' CAN devices */
--extern struct dev_rcv_lists can_rx_alldev_list;
--
- /*
-  * af_can statistics stuff
-  */
+ Example:
 -- 
 1.7.10
 
