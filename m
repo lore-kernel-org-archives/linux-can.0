@@ -1,42 +1,111 @@
-From: Hui Wang <jason77.wang@gmail.com>
-Subject: Re: [RFC PATCH] can: dev: update rx state in the can_get_echo_skb()
-Date: Mon, 2 Jul 2012 11:42:18 +0800
-Message-ID: <4FF1189A.8080900@gmail.com>
-References: <1340876540-27840-1-git-send-email-jason77.wang@gmail.com> <20120628105948.GC418@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH net-next] em_canid: Ematch rule to match CAN frames according
+ to their identifiers
+Date: Mon, 02 Jul 2012 07:04:01 +0200
+Message-ID: <4FF12BC1.9030906@hartkopp.net>
+References: <1340903231-9561-1-git-send-email-lisovy@gmail.com> <4FEDCD42.8010203@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.windriver.com ([147.11.1.11]:48603 "EHLO
-	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751092Ab2GBDmb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 1 Jul 2012 23:42:31 -0400
-In-Reply-To: <20120628105948.GC418@vandijck-laurijssen.be>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:50989 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752086Ab2GBFEI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 01:04:08 -0400
+In-Reply-To: <4FEDCD42.8010203@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Hui Wang <jason77.wang@gmail.com>, mkl@pengutronix.de, shawn.guo@linaro.org, wg@grandegger.com, linux-can@vger.kernel.org
+To: Rostislav Lisovy <lisovy@gmail.com>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
 
-Kurt Van Dijck wrote:
-> Hi,
->
-> A loopback packet enters the rx interface of the CAN subsystem,
-> but it had never entered the chip's receive path.
-> IMHO it's bad to alter the chip's statistics the way you propose.
->   
-Your explanation makes sense to me.
-> Are you interested in the number of packets/bytes
-> that you were able to receive on your socket?
-> How about adding echo statistics in the CAN device stats,
-> as shown in
-> $ ip -d -s link show can0
->   
-It can work.
+One additional remark:
 
-Thanks,
-Hui.
-> Kind regards,
-> Kurt
->
-> On Thu, Jun 28, 2012 at 05:42:20PM +0800, Hui Wang wrote:
->   
+When applying your patch on Dave Millers net-next tree there are some offsets
+in the patch ...
+
+Please send the next patch based on the net-next tree, as this would be the
+tree, it will be applied to. See URLs at:
+
+http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git
+
+Tnx!
+
+Oliver
+
+On 29.06.2012 17:44, Oliver Hartkopp wrote:
+
+> Hello Rostislav,
+> 
+> looks really good now.
+> 
+> 1. Your Signed-off-by: is missing.
+> 
+> 2. One remark to a removed length check:
+> 
+> (..)
+> 
+>> +static int em_canid_change(struct tcf_proto *tp, void *data, int len,
+>> +			  struct tcf_ematch *m)
+>> +{
+>> +	struct can_filter *conf = data; /* Array with rules,
+>> +					 * fixed size EM_CAN_RULES_SIZE
+>> +					 */
+>> +	struct canid_match *cm;
+>> +	struct canid_match *cm_old = (struct canid_match *) m->data;
+>> +	int i;
+>> +	int rulescnt;
+>> +
+> 
+> 
+> What about a zero length check here?
+> 
+> 	if (!len)
+> 		return -EINVAL;
+> 
+> ???
+> 
+>> +	if (len % sizeof(struct can_filter))
+>> +		return -EINVAL;
+>> +
+>> +	if (len > sizeof(struct can_filter) * EM_CAN_RULES_MAX)
+>> +		return -EINVAL;
+>> +
+>> +	rulescnt = len / sizeof(struct can_filter);
+>> +
+>> +	cm = kzalloc(sizeof(struct canid_match) + sizeof(struct can_filter) *
+>> +		rulescnt, GFP_KERNEL);
+>> +	if (!cm)
+>> +		return -ENOMEM;
+> 
+> 
+> The length could alternatively be checked here too
+> 
+> http://lxr.linux.no/#linux+v3.4.4/net/sched/ematch.c#L235
+> 
+> if em->ops->datalen is set.
+> 
+> But here's no
+> 
+> 	.datalen = sizeof(struct can_filter),
+> 
+> defined, right?
+> 
+>> +static struct tcf_ematch_ops em_canid_ops = {
+>> +	.kind	  = TCF_EM_CANID,
+>> +	.change	  = em_canid_change,
+>> +	.match	  = em_canid_match,
+>> +	.destroy  = em_canid_destroy,
+>> +	.dump	  = em_canid_dump,
+>> +	.owner	  = THIS_MODULE,
+>> +	.link	  = LIST_HEAD_INIT(em_canid_ops.link)
+>> +};
+> 
+> 
+> Regards,
+> Oliver
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
 
