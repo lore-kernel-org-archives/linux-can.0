@@ -1,68 +1,69 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] can: flexcan: add a regulator for transceiver
-Date: Tue, 3 Jul 2012 23:28:15 +0800
-Message-ID: <20120703152813.GI22705@S2101-09.ap.freescale.net>
-References: <1341319571-27763-1-git-send-email-shawn.guo@linaro.org>
- <20120703130747.GD25995@sirena.org.uk>
- <20120703141829.GG22705@S2101-09.ap.freescale.net>
- <20120703144646.GT29030@opensource.wolfsonmicro.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Fwd: Socket CAN - ENOBUFS on write()
+Date: Tue, 03 Jul 2012 18:21:59 +0200
+Message-ID: <4FF31C27.50905@pengutronix.de>
+References: <CACJ51z3gDnDa=iVBaVd+nS8JV_fNE7Vyts38dj2ndBCFvWp17Q@mail.gmail.com> <CACJ51z0uOH3Wu1TShhVbj8hqHL-L6M8DEz0XM8o=gru01ahqqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig88AD4B26EF691034AAEDF0AA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:61101 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754755Ab2GCP1c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jul 2012 11:27:32 -0400
-Received: by mail-pb0-f46.google.com with SMTP id rp8so9390991pbb.19
-        for <linux-can@vger.kernel.org>; Tue, 03 Jul 2012 08:27:32 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120703144646.GT29030@opensource.wolfsonmicro.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35798 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752181Ab2GCQWL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jul 2012 12:22:11 -0400
+In-Reply-To: <CACJ51z0uOH3Wu1TShhVbj8hqHL-L6M8DEz0XM8o=gru01ahqqA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
+To: Andrew Bell <andrew.bell.ia@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Jul 03, 2012 at 03:46:47PM +0100, Mark Brown wrote:
-> On Tue, Jul 03, 2012 at 10:18:31PM +0800, Shawn Guo wrote:
-> > On Tue, Jul 03, 2012 at 02:07:47PM +0100, Mark Brown wrote:
-> 
-> > > No, the regulator API will stub itself out if not enabled, and if the
-> > > supply is fixed then a fixed voltage regulator will do the job.  We
-> > > shouldn't be open coding this stuff in individual users.
-> 
-> > Ah, yes.  But when you say "a fixed voltage regulator", you actually
-> > meant dummy regulator, right?
-> 
-> No, I really do mean a fixed voltage regulator.  Dummy regulators should
-> essentially never be used in production.
-> 
-In that case, my patch may need to stay unchanged.  Some systems have
-a supply controlled by gpio and we need to have it be a Linux regulator
-to switch it, while other systems have the supply non-switchable which
-can be reasonably invisible to software.  That said, the regulator is
-optional and the failure of devm_regulator_get should not make the
-driver probe fail.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig88AD4B26EF691034AAEDF0AA
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I guess your suggestion here is to make the regulator mandatory for
-the driver, which means those non-switchable supplies have to be
-also defined as Linux regulators for every single system.  I'm not
-sure we want to do that just for saving a regulator pointer check.
+Hey Andew,
 
-> >  static void flexcan_transceiver_switch(const struct flexcan_priv *priv, int on)
-> >  {
-> > +       if (on)
-> > +               regulator_enable(priv->reg_xcvr);
-> > +       else
-> > +               regulator_disable(priv->reg_xcvr);
-> > +
-> 
-> So long as the stack guarantees that you won't get unbalanced calls to
-> this and...
-> 
-> > +       priv->reg_xcvr = devm_regulator_get(&pdev->dev, "xcvr");
-> 
-> ...add error checking here the code should be fine, yes.
+please subscribe to the linux-can mailinglist linux-can@vger.kernel.org.
 
--- 
-Regards,
-Shawn
+On 07/03/2012 05:55 PM, Andrew Bell wrote:
+> I saw an old mail that you wrote about fixing the problem with receivin=
+g an
+> ENOBUFS error on write() with CAN.  I searched the latest kernel but di=
+d
+> not see the patch there.  Can you tell me what has happened with this f=
+ix?
+
+Here's no proper fix, yet. If you receive an ENOBUFS, use poll or select
+to wait until you can write again. Unfortunately poll will return too
+early, so that the next write will probably fail again. Just keep
+trying. You can work around the problem by you increasing the
+tx_queue_len of your CAN card (before ifconfig up):
+
+    ifconfig can0 txqueuelen 10000
+
+Regards, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig88AD4B26EF691034AAEDF0AA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk/zHCwACgkQjTAFq1RaXHOj5QCdFSGLcQ5E6R/JIIDW4iVBD+Rt
+mGgAnAnXcr2Moa8u57K51puBwR3Nu25C
+=HyQ/
+-----END PGP SIGNATURE-----
+
+--------------enig88AD4B26EF691034AAEDF0AA--
