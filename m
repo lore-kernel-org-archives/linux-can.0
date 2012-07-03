@@ -1,69 +1,50 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Fwd: Socket CAN - ENOBUFS on write()
-Date: Tue, 03 Jul 2012 18:21:59 +0200
-Message-ID: <4FF31C27.50905@pengutronix.de>
-References: <CACJ51z3gDnDa=iVBaVd+nS8JV_fNE7Vyts38dj2ndBCFvWp17Q@mail.gmail.com> <CACJ51z0uOH3Wu1TShhVbj8hqHL-L6M8DEz0XM8o=gru01ahqqA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] can: flexcan: add a regulator for transceiver
+Date: Tue, 3 Jul 2012 17:56:35 +0100
+Message-ID: <20120703165635.GV29030@opensource.wolfsonmicro.com>
+References: <1341319571-27763-1-git-send-email-shawn.guo@linaro.org>
+ <20120703130747.GD25995@sirena.org.uk>
+ <20120703141829.GG22705@S2101-09.ap.freescale.net>
+ <20120703144646.GT29030@opensource.wolfsonmicro.com>
+ <20120703152813.GI22705@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig88AD4B26EF691034AAEDF0AA"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35798 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752181Ab2GCQWL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jul 2012 12:22:11 -0400
-In-Reply-To: <CACJ51z0uOH3Wu1TShhVbj8hqHL-L6M8DEz0XM8o=gru01ahqqA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com ([80.75.67.52]:59126 "EHLO
+	opensource.wolfsonmicro.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752741Ab2GCQ4l (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jul 2012 12:56:41 -0400
+Content-Disposition: inline
+In-Reply-To: <20120703152813.GI22705@S2101-09.ap.freescale.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andrew Bell <andrew.bell.ia@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig88AD4B26EF691034AAEDF0AA
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 03, 2012 at 11:28:15PM +0800, Shawn Guo wrote:
+> On Tue, Jul 03, 2012 at 03:46:47PM +0100, Mark Brown wrote:
 
-Hey Andew,
+> > No, I really do mean a fixed voltage regulator.  Dummy regulators should
+> > essentially never be used in production.
 
-please subscribe to the linux-can mailinglist linux-can@vger.kernel.org.
+> In that case, my patch may need to stay unchanged.  Some systems have
+> a supply controlled by gpio and we need to have it be a Linux regulator
+> to switch it, while other systems have the supply non-switchable which
+> can be reasonably invisible to software.  That said, the regulator is
+> optional and the failure of devm_regulator_get should not make the
+> driver probe fail.
 
-On 07/03/2012 05:55 PM, Andrew Bell wrote:
-> I saw an old mail that you wrote about fixing the problem with receivin=
-g an
-> ENOBUFS error on write() with CAN.  I searched the latest kernel but di=
-d
-> not see the patch there.  Can you tell me what has happened with this f=
-ix?
+No, really.
 
-Here's no proper fix, yet. If you receive an ENOBUFS, use poll or select
-to wait until you can write again. Unfortunately poll will return too
-early, so that the next write will probably fail again. Just keep
-trying. You can work around the problem by you increasing the
-tx_queue_len of your CAN card (before ifconfig up):
+> I guess your suggestion here is to make the regulator mandatory for
+> the driver, which means those non-switchable supplies have to be
+> also defined as Linux regulators for every single system.  I'm not
+> sure we want to do that just for saving a regulator pointer check.
 
-    ifconfig can0 txqueuelen 10000
+If we go down that route what we need to do is to go through and remove
+all error checking for failure to get regulators and make the regulator
+API silently handle this since exactly the same thing applies to almost
+every supply in the system.
 
-Regards, Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig88AD4B26EF691034AAEDF0AA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk/zHCwACgkQjTAFq1RaXHOj5QCdFSGLcQ5E6R/JIIDW4iVBD+Rt
-mGgAnAnXcr2Moa8u57K51puBwR3Nu25C
-=HyQ/
------END PGP SIGNATURE-----
-
---------------enig88AD4B26EF691034AAEDF0AA--
+What we shouldn't be doing is open coding this stupidity in every single
+regulator API user, that's just a pointless waste of everyone's time.
