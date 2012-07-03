@@ -1,44 +1,35 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next v3] em_canid: Ematch rule to match CAN frames
- according to their identifiers
-Date: Mon, 02 Jul 2012 20:03:27 +0200
-Message-ID: <4FF1E26F.5000106@hartkopp.net>
-References: <1341241568-13438-1-git-send-email-lisovy@gmail.com> <4FF1DF65.5080306@hartkopp.net>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 1/2] arm: imx: enable flexcan on imx25, imx35, imx53,
+ imx6q
+Date: Tue, 3 Jul 2012 10:36:47 +0800
+Message-ID: <20120703023644.GB22106@S2101-09.ap.freescale.net>
+References: <1341219781-26107-1-git-send-email-mkl@pengutronix.de>
+ <1341219781-26107-2-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4FF1DF65.5080306@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, lartc@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-yx0-f174.google.com ([209.85.213.174]:50166 "EHLO
+	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753781Ab2GCCgE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Jul 2012 22:36:04 -0400
+Received: by yenl2 with SMTP id l2so4786319yen.19
+        for <linux-can@vger.kernel.org>; Mon, 02 Jul 2012 19:36:04 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1341219781-26107-2-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <sha@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org
 
-One more simplification:
-
-
->> +	rulescnt = len / sizeof(struct can_filter);
->> +
->> +	cm = kzalloc(sizeof(struct canid_match) + sizeof(struct can_filter) *
->> +		rulescnt, GFP_KERNEL);
-
-
-No need to multiply the value again  ... you can take the len value as-is:
-
-cm = kzalloc(sizeof(struct canid_match) + len, GFP_KERNEL);
-
-
+On Mon, Jul 02, 2012 at 11:03:00AM +0200, Marc Kleine-Budde wrote:
+> Aas the flexcan driver has DT binding for some time now. This patch makes
+> the flexcan driver available in the can drivers menu if a SOC with flexcan
+> is enabled.
 > 
-> *cm is no longer a fixed structure as it was in the first patches.
-> 
-> Must be:
-> 
-> m->datalen = sizeof(struct canid_match) + sizeof(struct can_filter) * rulescnt
+> Cc: Sascha Hauer <sha@pengutronix.de>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-
-dito:
-
-m->datalen = sizeof(struct canid_match) + len;
+Applied with subject prefix changed to "ARM: imx: ..."
 
 Regards,
-Oliver
+Shawn
