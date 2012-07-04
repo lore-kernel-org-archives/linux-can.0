@@ -1,130 +1,126 @@
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: Questions about janz-ican3 and CAN_RAW_RECV_OWN_MSGS
-Date: Tue, 3 Jul 2012 16:23:28 -0700
-Message-ID: <20120703232328.GD6616@ovro.caltech.edu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: can-next pull request for CAN ID Ematch
+Date: Wed, 04 Jul 2012 06:11:36 +0200
+Message-ID: <4FF3C278.8040200@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ovro.ovro.caltech.edu ([192.100.16.2]:38894 "EHLO
-	ovro.ovro.caltech.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752606Ab2GCXcp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Jul 2012 19:32:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by ovro.ovro.caltech.edu (Postfix) with ESMTP id D6A5E21FB5
-	for <linux-can@vger.kernel.org>; Tue,  3 Jul 2012 16:23:30 -0700 (PDT)
-Content-Disposition: inline
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:11851 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750715Ab2GDELp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jul 2012 00:11:45 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Rostislav Lisovy <lisovy@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?windows-1252?Q?Pavel_P=ED=9Aa?= <pisa@cmp.felk.cvut.cz>, Michal Sojka <sojkam1@fel.cvut.cz>
 
-Hello everyone,
+Hello Marc, hello Rostislav,
 
-I'm finally implementing SocketCAN support in our internal codebase, and
-have run across some issues. We previously used a character driver provided
-by the vendor.
+as Rostislav seems to be absent, i fixed the minor issues myself and created
+a branch for that in my ollis-can-next git repo.
 
-I myself implemented the driver for the Janz ICAN3 card. It has been in
-mainline Linux since 2.6.35.
-
-The hardware is an SJA1000 chip plus a microcontroller and some RAM. All
-messages go through the microcontroller firmware.
-
-This firmware has the following features:
-- it does have hardware-supported local loopback
-- it does NOT have any sort of "tx-complete" notification or interrupt
-- it does NOT have any indication that a frame went through the
-  hardware-supported local loopback
-
-To work around the lack of "tx-complete" interrupts, I used the hardware
-local loopback feature. Every frame has hardware loopback set, which causes
-the ican3_napi() routine to be called for each frame sent. This works fine,
-except that sockets created with the default options (loopback on,
-can_raw_recv_own_msgs off) do receive their own messages. This seems wrong.
-
-QUESTION 1:
-The functions can_(get|put)_echo_skb() are not used at all. Is this wrong?
-
-QUESTION 2:
-The socketcan test tst-rcv-own-msgs says:
-Starting PF_CAN frame flow test.
-checking socket default settings ... failure!
-
-If I understand the code correctly, this means that the sending socket
-received an echo frame when it should not have received one.
-
-This matches what I expect the code to do.
-
-How can I fix this?
-
-OBSERVATION 1:
-The following patch drops the relevant calls to netif_stop_queue() and
-netif_wake_queue(), as well as the hardware-supported local loopback.
-
-The tst-rcv-own-msgs test passes.
-
-Is dropping these API calls a reasonable thing to do?
-
-Thanks,
-Ira
+FYI the changes can be seen in the patch at the end of this mail.
 
 
+The following changes since commit 0e1aa9cfe6db4689f98b20afe808b4f9cdb0b6c0:
 
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 08c893c..b8bf972 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -845,7 +845,9 @@ static void can_frame_to_ican3(struct ican3_dev *mod,
- 	/* we always use the extended format, with the ECHO flag set */
- 	desc->command = ICAN3_CAN_TYPE_EFF;
- 	desc->data[0] |= cf->can_dlc;
-+#if 0
- 	desc->data[1] |= ICAN3_ECHO;
-+#endif
+  em_canid: Ematch rule to match CAN frames according to their identifiers (2012-07-04 05:32:03 +0200)
+
+are available in the git repository at:
+
+  git://gitorious.org/~hartkopp/linux-can/ollis-can-next.git em_can
+
+for you to fetch changes up to 0e1aa9cfe6db4689f98b20afe808b4f9cdb0b6c0:
+
+  em_canid: Ematch rule to match CAN frames according to their identifiers (2012-07-04 05:32:03 +0200)
+
+
+diff --git a/net/sched/em_canid.c b/net/sched/em_canid.c
+index d607e78..dc9f515 100644
+--- a/net/sched/em_canid.c
++++ b/net/sched/em_canid.c
+@@ -123,13 +123,10 @@ static int em_canid_match(struct sk_buff *skb, struct tcf_ematch *m,
+ static int em_canid_change(struct tcf_proto *tp, void *data, int len,
+ 			  struct tcf_ematch *m)
+ {
+-	struct can_filter *conf = data; /* Array with rules,
+-					 * fixed size EM_CAN_RULES_SIZE
+-					 */
++	struct can_filter *conf = data; /* Array with rules */
+ 	struct canid_match *cm;
+ 	struct canid_match *cm_old = (struct canid_match *)m->data;
+ 	int i;
+-	int rulescnt;
  
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		desc->data[0] |= ICAN3_EFF_RTR;
-@@ -1206,9 +1208,11 @@ static int ican3_napi(struct napi_struct *napi, int budget)
+ 	if (!len)
+ 		return -EINVAL;
+@@ -140,43 +137,37 @@ static int em_canid_change(struct tcf_proto *tp, void *data, int len,
+ 	if (len > sizeof(struct can_filter) * EM_CAN_RULES_MAX)
+ 		return -EINVAL;
  
- 	spin_lock_irqsave(&mod->lock, flags);
+-	rulescnt = len / sizeof(struct can_filter);
+-
+-	cm = kzalloc(sizeof(struct canid_match) + sizeof(struct can_filter) *
+-		rulescnt, GFP_KERNEL);
++	cm = kzalloc(sizeof(struct canid_match) + len, GFP_KERNEL);
+ 	if (!cm)
+ 		return -ENOMEM;
  
-+#if 0
- 	/* Wake up the transmit queue if necessary */
- 	if (netif_queue_stopped(mod->ndev) && ican3_txok(mod))
- 		netif_wake_queue(mod->ndev);
-+#endif
+-	cm->sff_rules_count = 0;
+-	cm->eff_rules_count = 0;
+-	cm->rules_count = rulescnt;
++	cm->rules_count = len / sizeof(struct can_filter);
  
- 	spin_unlock_irqrestore(&mod->lock, flags);
- 
-@@ -1426,8 +1430,10 @@ static int ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
- 
- 	/* check that we can actually transmit */
- 	if (!ican3_txok(mod)) {
-+#if 0
- 		dev_err(mod->dev, "no free descriptors, stopping queue\n");
- 		netif_stop_queue(ndev);
-+#endif
- 		spin_unlock_irqrestore(&mod->lock, flags);
- 		return NETDEV_TX_BUSY;
- 	}
-@@ -1471,9 +1477,11 @@ static int ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	 * It will be woken when the ECHO skb for the current packet is recv'd.
+ 	/*
+ 	 * We need two for() loops for copying rules into
+ 	 * two contiguous areas in rules_raw
  	 */
  
-+#if 0
- 	/* copy the control bits of the descriptor */
- 	if (!ican3_txok(mod))
- 		netif_stop_queue(ndev);
-+#endif
+-	/* Process EFF frame rules*/
++	/* Process EFF and mixed EFF/SFF frame rules*/
+ 	for (i = 0; i < cm->rules_count; i++) {
+-		if (((conf[i].can_id & CAN_EFF_FLAG) &&
+-		    (conf[i].can_mask & CAN_EFF_FLAG)) ||
+-		    !(conf[i].can_mask & CAN_EFF_FLAG)) {
++		if (!(conf[i].can_id & CAN_EFF_FLAG) &&
++		    (conf[i].can_mask & CAN_EFF_FLAG)) {
++			/* SFF only filter */
++			continue;
++		} else {
+ 			memcpy(cm->rules_raw + cm->eff_rules_count,
+ 				&conf[i],
+ 				sizeof(struct can_filter));
  
- 	spin_unlock_irqrestore(&mod->lock, flags);
- 	return NETDEV_TX_OK;
-@@ -1678,7 +1686,9 @@ static int __devinit ican3_probe(struct platform_device *pdev)
- 	mod->free_page = DPM_FREE_START;
+ 			cm->eff_rules_count++;
+-		} else {
+-			continue;
+ 		}
+ 	}
  
- 	ndev->netdev_ops = &ican3_netdev_ops;
-+#if 0
- 	ndev->flags |= IFF_ECHO;
-+#endif
- 	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 	/* Process SFF frame rules */
+ 	for (i = 0; i < cm->rules_count; i++) {
+-		if ((conf[i].can_id & CAN_EFF_FLAG) &&
++		if (!(conf[i].can_id & CAN_EFF_FLAG) &&
+ 		    (conf[i].can_mask & CAN_EFF_FLAG)) {
+-			continue;
+-		} else {
++			/* SFF only filter */
+ 			memcpy(cm->rules_raw
+ 				+ cm->eff_rules_count
+ 				+ cm->sff_rules_count,
+@@ -186,10 +177,12 @@ static int em_canid_change(struct tcf_proto *tp, void *data, int len,
  
- 	mod->can.clock.freq = ICAN3_CAN_CLOCK;
+ 			em_canid_sff_match_add(cm,
+ 				conf[i].can_id, conf[i].can_mask);
++		} else {
++			continue;
+ 		}
+ 	}
+ 
+-	m->datalen = sizeof(*cm);
++	m->datalen = sizeof(struct canid_match) + len;
+ 	m->data = (unsigned long)cm;
+ 
+ 	if (cm_old != NULL) {
+
