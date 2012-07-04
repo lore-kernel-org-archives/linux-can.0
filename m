@@ -1,103 +1,107 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Questions about janz-ican3 and CAN_RAW_RECV_OWN_MSGS
-Date: Wed, 4 Jul 2012 14:07:36 +0200
-Message-ID: <20120704120736.GB417@vandijck-laurijssen.be>
-References: <20120703232328.GD6616@ovro.caltech.edu>
- <4FF40A6E.1040709@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2012-07-04
+Date: Wed, 04 Jul 2012 17:00:49 +0200
+Message-ID: <4FF45AA1.2040907@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig20E4119E0561333F34AD204C"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from Mailrelay020.isp.belgacom.be ([195.238.6.95]:51479 "EHLO
-	mailrelay020.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750876Ab2GDMHk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jul 2012 08:07:40 -0400
-Content-Disposition: inline
-In-Reply-To: <4FF40A6E.1040709@grandegger.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49668 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750768Ab2GDPBA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jul 2012 11:01:00 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: "Ira W. Snyder" <iws@ovro.caltech.edu>, linux-can@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Wed, Jul 04, 2012 at 11:18:38AM +0200, Wolfgang Grandegger wrote:
-> Hi Ira,
-> 
-> On 07/04/2012 01:23 AM, Ira W. Snyder wrote:
-> > Hello everyone,
-> > 
-> > I'm finally implementing SocketCAN support in our internal codebase, and
-> > have run across some issues. We previously used a character driver provided
-> > by the vendor.
-> > 
-> > I myself implemented the driver for the Janz ICAN3 card. It has been in
-> > mainline Linux since 2.6.35.
-> > 
-> > The hardware is an SJA1000 chip plus a microcontroller and some RAM. All
-> > messages go through the microcontroller firmware.
-> > 
-> > This firmware has the following features:
-> > - it does have hardware-supported local loopback
-> > - it does NOT have any sort of "tx-complete" notification or interrupt
-> > - it does NOT have any indication that a frame went through the
-> >   hardware-supported local loopback
-> > 
-> > To work around the lack of "tx-complete" interrupts, I used the hardware
-> > local loopback feature. Every frame has hardware loopback set, which causes
-> > the ican3_napi() routine to be called for each frame sent. This works fine,
-> > except that sockets created with the default options (loopback on,
-> > can_raw_recv_own_msgs off) do receive their own messages. This seems wrong.
-> > 
-> > QUESTION 1:
-> > The functions can_(get|put)_echo_skb() are not used at all. Is this wrong?
-> 
-> Not necessarily. IIRC, the early versions of the Flexcan driver used the
-> hardware loopback as well but switched to classical echo-skb handling
-> because of the problem with recv-own-msgs.
-> 
-> > QUESTION 2:
-> > The socketcan test tst-rcv-own-msgs says:
-> > Starting PF_CAN frame flow test.
-> > checking socket default settings ... failure!
-> > 
-> > If I understand the code correctly, this means that the sending socket
-> > received an echo frame when it should not have received one.
-> > 
-> > This matches what I expect the code to do.
-> > 
-> > How can I fix this?
-> > 
-> > OBSERVATION 1:
-> > The following patch drops the relevant calls to netif_stop_queue() and
-> > netif_wake_queue(), as well as the hardware-supported local loopback.
-> > 
-> > The tst-rcv-own-msgs test passes.
-> > 
-> > Is dropping these API calls a reasonable thing to do?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig20E4119E0561333F34AD204C
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure.
-> 
-> Well, that controller will not allow to support all features and options
-> and we need to make a choice:
-> 
->  recv-own-msgs support versus proper tx-done handling (correct timing)
-> 
-> As the recv-own-msgs is not used frequently, it would not be really
-> dramatic if the feature is not available.
+Hello David,
 
-My opinion:
+our third pull request for upcoming v3.6 net-next. First Oliver and me
+fix some sparse warnings, then 3 patches by Hui Wang and Shawn Guo
+which improve flexcan support and finally the patch by Rostislav Lisovy
+that adds CAN frame classifier.
 
-1) is the correct timing of tx-done more used than recv-own-msgs?
-   I think such choices are really hard to make.
-   Avoid choosing if possible.
+regards,
+Marc
 
-2) To avoid choosing, you could:
-   a. use can_put_echo_skb()
-   b. when an rx interrupt && the frame matches the next echo_skb,
-      drop the rx frame and deliver echo_skb.
-   I realise that b. needs some code in generic can_dev (something like
-   can_peek_echo_skb()), and costs you some performance.
+---
 
-> Just my 0.02 cent.
-0.02 EUR or 2 cents, but 0.02 cents :-) ?
-   
--- 
-Kurt Van Dijck
+The following changes since commit e87183c2b5ab1f55ebad2f260a7eb4d31549ce=
+25:
+
+  Merge tag 'batman-adv-for-davem' of git://git.open-mesh.org/linux-merge=
+ (2012-07-01 17:56:33 -0700)
+
+are available in the git repository at:
+
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to f057bbb6f9ed0fb61ea11105c9ef0ed5ac1a354d:
+
+  net: em_canid: Ematch rule to match CAN frames according to their ident=
+ifiers (2012-07-04 13:07:05 +0200)
+
+----------------------------------------------------------------
+Hui Wang (2):
+      can: flexcan: use of_property_read_u32 to get DT entry value
+      can: flexcan: add hardware controller version support
+
+Marc Kleine-Budde (2):
+      can: cc770: fix sparse warning for cc770_interrupt
+      can: dev: fix sparse warning for can_restart
+
+Oliver Hartkopp (1):
+      can: fix sparse warning in af_can.c
+
+Rostislav Lisovy (1):
+      net: em_canid: Ematch rule to match CAN frames according to their i=
+dentifiers
+
+Shawn Guo (1):
+      net: flexcan: clock-frequency is optional for device tree probe
+
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |    3 +
+ drivers/net/can/cc770/cc770.c                      |    2 +-
+ drivers/net/can/dev.c                              |    2 +-
+ drivers/net/can/flexcan.c                          |   71 ++++--
+ include/linux/can.h                                |    3 +
+ include/linux/pkt_cls.h                            |    5 +-
+ net/can/af_can.h                                   |    3 +
+ net/can/proc.c                                     |    3 -
+ net/sched/Kconfig                                  |   10 +
+ net/sched/Makefile                                 |    1 +
+ net/sched/em_canid.c                               |  240 ++++++++++++++=
+++++++
+ 11 files changed, 320 insertions(+), 23 deletions(-)
+ create mode 100644 net/sched/em_canid.c
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig20E4119E0561333F34AD204C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk/0WqUACgkQjTAFq1RaXHNxagCfToJGZP9LCeSUofneRwxe3JtM
+ELoAniEtfpOVyJoGM89CYjxYNoaZggoj
+=xTaG
+-----END PGP SIGNATURE-----
+
+--------------enig20E4119E0561333F34AD204C--
