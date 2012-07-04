@@ -1,78 +1,43 @@
 From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Subject: Re: can-next pull request for CAN ID Ematch
-Date: Wed, 04 Jul 2012 13:19:10 +0200
-Message-ID: <4FF426AE.3000505@volkswagen.de>
-References: <4FF3C278.8040200@hartkopp.net> <4FF3DCBF.2040905@hartkopp.net> <4FF42468.5040901@pengutronix.de>
+Subject: [Info] CAN FD for Linux 3.6 mentioned in CAN in Automation Newsletter
+Date: Wed, 04 Jul 2012 13:34:45 +0200
+Message-ID: <4FF42A55.7000909@volkswagen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr2.volkswagen.de ([194.114.62.76]:33361 "EHLO
+Received: from mr2.volkswagen.de ([194.114.62.76]:50328 "EHLO
 	mr2.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753793Ab2GDLTW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jul 2012 07:19:22 -0400
-In-Reply-To: <4FF42468.5040901@pengutronix.de>
+	with ESMTP id S1751288Ab2GDLfC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Jul 2012 07:35:02 -0400
+Received: from [194.114.62.51] (helo=mxout1.volkswagen.de)
+	by mr2.volkswagen.de with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(envelope-from <oliver.hartkopp@volkswagen.de>)
+	id 1SmNrH-0006cM-73
+	for linux-can@vger.kernel.org; Wed, 04 Jul 2012 13:34:59 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Rostislav Lisovy <lisovy@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?windows-1252?Q?Pavel_P=ED=9Aa?= <pisa@cmp.felk.cvut.cz>, Michal Sojka <sojkam1@fel.cvut.cz>
+To: linux-can Mailing List <linux-can@vger.kernel.org>
 
-On 04.07.2012 13:09, Marc Kleine-Budde wrote:
-> On 07/04/2012 08:03 AM, Oliver Hartkopp wrote:
->> Hi all,
->>
->> the pull location is still valid :-)
->>
->> Btw. i needed to change a minor thing as the em_canid_match() function did
->> not handle the case that the same CAN-ID can be SFF or EFF ...
->>
->> The option to support the CAN_EFF_FLAG cleared in the can_mask is broken,
->> unusual and can not be handled in a simple way.
->>
->> The tc tool can handle eff and sff rules - and so i did it in the
->> em_canid_change() function now. No support for CAN_EFF_FLAG cleared in the
->> can_mask - just check the CAN_EFF_FLAG in the filter.can_id to decide the
->> rules type.
->
-> I hope I took the correct patch. Please check the for-davem branch in my
-> gitorious repo[1].
+Just for your information:
 
-Yes - it is the correct patch.
+I provided a summary of the ongoing CAN FD activities in Linux to
+"CAN in Automation" (CiA), as they are working on technical and marketing
+recommendations for CAN FD.
 
->
-> I've changed some things in the commit:
-> - credited Rostislav Lisovy as the original author.
->    (git commit --amend --author="Rostislav Lisovy<lisovy@gmail.com>")
-> - added a "net:" in the Subject line
-> - Fixed coding style issue in pkt_cls.h
->    all defines indent now with a tab
+http://can-newsletter.org/engineering/standardization/nr_stand_can-fd_linux3.6_120703/
 
-Good!
+For that reason i also did a SocketCAN logo remix for CAN FD with a green
+"F" and "D" and committed it to can-misc:
 
-I also had some whitespace issues in Kconfig i fixed this morning ...
+https://gitorious.org/linux-can/can-misc/commits/master
 
->
-> The patch currently has these S-o-bs:
->
->      Signed-off-by: Rostislav Lisovy<lisovy@gmail.com>
->      Signed-off-by: Oliver Hartkopp<socketcan@hartkopp.net>
->      Signed-off-by: Marc Kleine-Budde<mkl@pengutronix.de>
->
-> Oliver, if you want to credit your changes I can add a oneliner between
-> Rostislav's and your S-o-b, which may look like this:
->
-> [Oliver: fixed random stuff]
+https://gitorious.org/linux-can/can-misc/blobs/master/logo/SocketCANFD-logo.svg
 
-No need for that.
+I hope you are fine with the selected green color. Both gray and the CiA
+green was to dark to be recognized ...
 
-I'm pretty sure now that there are no obvious issues open now.
-At least it's getting shorter and shorter it get's easier to review ;-)
-
-Tnx!
+Have fun!
 
 Oliver
-
->
-> [1] https://gitorious.org/linux-can/linux-can-next/commits/for-davem
->
 
