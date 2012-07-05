@@ -1,20 +1,20 @@
 From: Thomas Graf <tgraf@suug.ch>
-Subject: [PATCH 1/4] can: Don't bump nlmsg_len manually
-Date: Thu,  5 Jul 2012 14:19:55 +0200
-Message-ID: <39152af25ab31194fe281c1bf9d96c8473ee7477.1341489914.git.tgraf@suug.ch>
+Subject: [PATCH 3/4] can: Properly fill the netlink header when responding to RTM_GETROUTE
+Date: Thu,  5 Jul 2012 14:19:57 +0200
+Message-ID: <f719ba361ffa7d76dc1248d41acdbe726ecd9c4c.1341489914.git.tgraf@suug.ch>
 References: <cover.1341489914.git.tgraf@suug.ch>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:40096 "EHLO mx1.redhat.com"
+Received: from mx1.redhat.com ([209.132.183.28]:24892 "EHLO mx1.redhat.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753630Ab2GEMUB (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 5 Jul 2012 08:20:01 -0400
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q65CK1vE019434
+	id S1754035Ab2GEMUE (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 5 Jul 2012 08:20:04 -0400
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com (int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q65CK4Jk032079
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:01 -0400
+	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:04 -0400
 Received: from localhost (vpn1-4-18.ams2.redhat.com [10.36.4.18])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q65CK03Z019545
-	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:01 -0400
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id q65CK30E005751
+	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:03 -0400
 In-Reply-To: <cover.1341489914.git.tgraf@suug.ch>
 In-Reply-To: <cover.1341489914.git.tgraf@suug.ch>
 References: <cover.1341489914.git.tgraf@suug.ch>
@@ -22,112 +22,46 @@ Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-nlmsg_end() will take care of this when we finalize the message.
+ - set message type to RTM_NEWROUTE
+ - relate to original request by inheriting the sequence and port number.
+ - set NLM_F_MULTI because it's a dump and more messages will follow
 
 Signed-off-by: Thomas Graf <tgraf@suug.ch>
 ---
- net/can/gw.c |   27 +--------------------------
- 1 files changed, 1 insertions(+), 26 deletions(-)
+ net/can/gw.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/gw.c b/net/can/gw.c
-index b41acf2..a3ff980 100644
+index a1c639c..20c36e1 100644
 --- a/net/can/gw.c
 +++ b/net/can/gw.c
-@@ -462,15 +462,11 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 	if (gwj->handled_frames) {
- 		if (nla_put_u32(skb, CGW_HANDLED, gwj->handled_frames) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(u32));
- 	}
+@@ -444,11 +444,14 @@ static int cgw_notifier(struct notifier_block *nb,
+ 	return NOTIFY_DONE;
+ }
  
- 	if (gwj->dropped_frames) {
- 		if (nla_put_u32(skb, CGW_DROPPED, gwj->dropped_frames) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(u32));
- 	}
+-static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
++static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
++		       u32 pid, u32 seq, int flags)
+ {
+ 	struct cgw_frame_mod mb;
+ 	struct rtcanmsg *rtcan;
+-	struct nlmsghdr *nlh = nlmsg_put(skb, 0, 0, 0, sizeof(*rtcan), 0);
++	struct nlmsghdr *nlh;
++
++	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*rtcan), flags);
+ 	if (!nlh)
+ 		return -EMSGSIZE;
  
- 	/* check non default settings of attributes */
-@@ -480,8 +476,6 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 		mb.modtype = gwj->mod.modtype.and;
- 		if (nla_put(skb, CGW_MOD_AND, sizeof(mb), &mb) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(mb));
- 	}
+@@ -546,7 +549,8 @@ static int cgw_dump_jobs(struct sk_buff *skb, struct netlink_callback *cb)
+ 		if (idx < s_idx)
+ 			goto cont;
  
- 	if (gwj->mod.modtype.or) {
-@@ -489,8 +483,6 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 		mb.modtype = gwj->mod.modtype.or;
- 		if (nla_put(skb, CGW_MOD_OR, sizeof(mb), &mb) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(mb));
- 	}
- 
- 	if (gwj->mod.modtype.xor) {
-@@ -498,8 +490,6 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 		mb.modtype = gwj->mod.modtype.xor;
- 		if (nla_put(skb, CGW_MOD_XOR, sizeof(mb), &mb) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(mb));
- 	}
- 
- 	if (gwj->mod.modtype.set) {
-@@ -507,26 +497,18 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 		mb.modtype = gwj->mod.modtype.set;
- 		if (nla_put(skb, CGW_MOD_SET, sizeof(mb), &mb) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(mb));
- 	}
- 
- 	if (gwj->mod.csumfunc.crc8) {
- 		if (nla_put(skb, CGW_CS_CRC8, CGW_CS_CRC8_LEN,
- 			    &gwj->mod.csum.crc8) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + \
--				NLA_ALIGN(CGW_CS_CRC8_LEN);
- 	}
- 
- 	if (gwj->mod.csumfunc.xor) {
- 		if (nla_put(skb, CGW_CS_XOR, CGW_CS_XOR_LEN,
- 			    &gwj->mod.csum.xor) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + \
--				NLA_ALIGN(CGW_CS_XOR_LEN);
- 	}
- 
- 	if (gwj->gwtype == CGW_TYPE_CAN_CAN) {
-@@ -535,23 +517,16 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
- 			if (nla_put(skb, CGW_FILTER, sizeof(struct can_filter),
- 				    &gwj->ccgw.filter) < 0)
- 				goto cancel;
--			else
--				nlh->nlmsg_len += NLA_HDRLEN +
--					NLA_ALIGN(sizeof(struct can_filter));
- 		}
- 
- 		if (nla_put_u32(skb, CGW_SRC_IF, gwj->ccgw.src_idx) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(u32));
- 
- 		if (nla_put_u32(skb, CGW_DST_IF, gwj->ccgw.dst_idx) < 0)
- 			goto cancel;
--		else
--			nlh->nlmsg_len += NLA_HDRLEN + NLA_ALIGN(sizeof(u32));
- 	}
- 
--	return skb->len;
-+	return nlmsg_end(skb, nlh);
- 
- cancel:
- 	nlmsg_cancel(skb, nlh);
+-		if (cgw_put_job(skb, gwj) < 0)
++		if (cgw_put_job(skb, gwj, RTM_NEWROUTE, NETLINK_CB(cb->skb).pid,
++		    cb->nlh->nlmsg_seq, NLM_F_MULTI) < 0)
+ 			break;
+ cont:
+ 		idx++;
 -- 
 1.7.7.6
 
