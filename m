@@ -1,58 +1,76 @@
-From: Thomas Graf <tgraf@suug.ch>
-Subject: [PATCH 4/4] can: Remove pointless casts
-Date: Thu,  5 Jul 2012 14:19:58 +0200
-Message-ID: <bf8c9bfa3b54af6fcfd19ab9ab8fbfabf684a3e2.1341489914.git.tgraf@suug.ch>
-References: <cover.1341489914.git.tgraf@suug.ch>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [Socketcan-users] back to back can frames.
+Date: Thu, 5 Jul 2012 15:57:26 +0200
+Message-ID: <20120705135726.GB417@vandijck-laurijssen.be>
+References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
+ <1341488146.2416.9.camel@slaptop>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:21140 "EHLO mx1.redhat.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754035Ab2GEMUF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 5 Jul 2012 08:20:05 -0400
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q65CK5kY032083
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:05 -0400
-Received: from localhost (vpn1-4-18.ams2.redhat.com [10.36.4.18])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP id q65CK4lf019558
-	for <linux-can@vger.kernel.org>; Thu, 5 Jul 2012 08:20:05 -0400
-In-Reply-To: <cover.1341489914.git.tgraf@suug.ch>
-In-Reply-To: <cover.1341489914.git.tgraf@suug.ch>
-References: <cover.1341489914.git.tgraf@suug.ch>
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176]:38443 "EHLO
+	mailrelay009.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932530Ab2GEN5x (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jul 2012 09:57:53 -0400
+Content-Disposition: inline
+In-Reply-To: <1341488146.2416.9.camel@slaptop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: "Max S." <king@greatfreeworld.org>
+Cc: linux-can@vger.kernel.org
 
-No need to cast return value of nla_data()
+Max,
 
-Signed-off-by: Thomas Graf <tgraf@suug.ch>
----
- net/can/gw.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+(please switch using linux-can@vger.kernel.org, as Oliver suggested)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 20c36e1..b54d5e6 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -661,8 +661,7 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 	if (modidx) {
- 
- 		if (tb[CGW_CS_CRC8]) {
--			struct cgw_csum_crc8 *c = (struct cgw_csum_crc8 *)\
--				nla_data(tb[CGW_CS_CRC8]);
-+			struct cgw_csum_crc8 *c = nla_data(tb[CGW_CS_CRC8]);
- 
- 			err = cgw_chk_csum_parms(c->from_idx, c->to_idx,
- 						 c->result_idx);
-@@ -686,8 +685,7 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 		}
- 
- 		if (tb[CGW_CS_XOR]) {
--			struct cgw_csum_xor *c = (struct cgw_csum_xor *)\
--				nla_data(tb[CGW_CS_XOR]);
-+			struct cgw_csum_xor *c = nla_data(tb[CGW_CS_XOR]);
- 
- 			err = cgw_chk_csum_parms(c->from_idx, c->to_idx,
- 						 c->result_idx);
+to answer your question, see below
+
+On Thu, Jul 05, 2012 at 11:35:46AM +0000, Max S. wrote:
+> Hello,
+> 
+> While trying to test a can device I wrote a short program to
+> continuously send can frames... However after a short while I get a
+> buffer overflow error. Seems the internal queue is filled and overrun...
+> 
+> How can I send can frames at maximum throughput? simply one after the
+> other, back to back.
+> 
+> what i have now is something like this:
+> 
+> 
+> do{
+> 	//prepare next frame...
+> }while(write( sfd, frame, sizeof(*arguments.frame) ) == sizeof(*frame));
+> //print error message...
+
+> 
+> since the write simply pushes the frame into the queue, it is logical
+> that the queue would fill up quickly and get overflown?overrun?full.
+
+my core loop would look like this:
+
+	int ret;
+	while (1) {
+		ret = write(sfd, frame, sizeof(*frame));
+		if ((ret < 0) && (errno == ENOBUFS)) {
+			usleep(1000);
+		} else
+			break;
+	}
+	if (ret < 0)
+		/* print error message */
+
+> 
+> Thanks,
+> Max S.
+> 
+> _______________________________________________
+> Socketcan-users mailing list
+> Socketcan-users@lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/socketcan-users
+
 -- 
-1.7.7.6
-
+Kurt Van Dijck
+GRAMMER EiA ELECTRONICS
+http://www.eia.be
+kurt.van.dijck@eia.be
++32-38708534
