@@ -1,54 +1,96 @@
-From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Subject: Re:  Problem of accuracy
-Date: Thu, 05 Jul 2012 10:38:12 +0200
-Message-ID: <4FF55274.3030006@volkswagen.de>
-References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Questions about janz-ican3 and CAN_RAW_RECV_OWN_MSGS
+Date: Thu, 05 Jul 2012 11:48:22 +0200
+Message-ID: <4FF562E6.4090808@hartkopp.net>
+References: <20120703232328.GD6616@ovro.caltech.edu> <4FF40A6E.1040709@grandegger.com> <20120704120736.GB417@vandijck-laurijssen.be> <4FF46E12.8060102@hartkopp.net> <20120704190733.GC4422@ovro.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr1.volkswagen.de ([194.114.62.75]:45169 "EHLO
-	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750770Ab2GEIiV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jul 2012 04:38:21 -0400
-In-Reply-To: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:57511 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752950Ab2GEJsX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jul 2012 05:48:23 -0400
+In-Reply-To: <20120704190733.GC4422@ovro.caltech.edu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mohamed HAMZAOUI <requinham@gmail.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: "Ira W. Snyder" <iws@ovro.caltech.edu>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, linux-can@vger.kernel.org
 
-On 05.07.2012 10:12, Mohamed HAMZAOUI wrote:
-> Hi,
->
-> i'm a new user of socketcan and, i cross compile can-utils for my craneboard
-> card (a card with CAN).
-> When i run cangen with 1 ms period, the period is not respected (1,407, 1.399,
-> ...) !
->
-> How can i fix this problem ?
->
-> my can version in /proc/net/can/version is "rev 20090105 abi 8" and i'm on
-> : Linux am3517-crane 2.6.32 #1 Mon Apr 23 00:13:28 CEST 2012 armv7l GNU/Linux
->
+On 04.07.2012 21:07, Ira W. Snyder wrote:
 
-Hello Mohamed,
 
-first please move to the new CAN mailing list (see CC) - and don't use 
-HTML-mails (text-only is better) ;-)
+> Is the following patch what you have in mind? I tested it on my board,
+> and it crashed after a few seconds, so there must be something wrong.
+> Any ideas?
+> 
+> I won't have access to the machine to do more testing until tomorrow.
+> 
+> Ira
+> 
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index c5fe3a3..f112f77 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -348,6 +348,39 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+>  EXPORT_SYMBOL_GPL(can_get_echo_skb);
+>  
+>  /*
+> + * Compare an skb with an existing echo skb
+> + *
+> + * This function will be used on devices which have a hardware loopback.
+> + * On these devices, this function can be used to compare a received skb
+> + * with the saved echo skbs so that the hardware echo skb can be dropped.
+> + *
+> + * Returns true if the skb's are identical, false otherwise.
+> + */
+> +bool can_cmp_echo_skb(struct sk_buff *skb, struct net_device *dev,
+> +		      unsigned int idx)
+> +{
+> +	struct can_priv *priv = netdev_priv(dev);
+> +	struct can_frame *cf = (struct can_frame *)skb->data;
+> +
+> +	BUG_ON(idx >= priv->echo_skb_max);
+> +
+> +	if (priv->echo_skb[idx]) {
+> +		struct sk_buff *echo_skb = priv->echo_skb[idx];
+> +		struct can_frame *echo_cf = (struct can_frame *)echo_skb->data;
+> +		if (cf->can_id != echo_cf->can_id)
+> +			return false;
+> +
+> +		if (cf->can_dlc != echo_cf->can_dlc)
+> +			return false;
+> +
+> +		return memcmp(cf->data, echo_cf->data, cf->can_dlc) == 0;
+> +	}
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL_GPL(can_cmp_echo_skb);
 
-Regarding your problem:
 
-Usually i get smaller derivations on my system - but your Linux box is 
-probably not very fast, so that you can see these scheduling influences with 
-cangen ...
+Partly :-)
 
-cangen is a userpace app and therefore it is usually not that precise as 
-hrtimers inside the Linux kernel (if you don't use any realtime Linux).
+The question is when you receive any CAN frame, how do you know to what
+echo_skb[index] this should be compared?
 
-But you may try the Broadcast-Manager to place a 'cyclic sending job' inside 
-the Linux kernel. See an example here:
+AFAIK every CAN driver manages it's echo_skb[] array itself. E.g. the sja1000
+driver only uses index '0' for that reason that i handles only one tx process
+at a time.
 
-http://svn.berlios.de/wsvn/socketcan/trunk/test/tst-bcm-cycle.c
+If you have more than one element in the echo_skb[] array, i would think of
+
+for (i = 0; i < DRVNAME_ECHO_SKB_MAX; i++) {
+
+> +	/* check if this is an ECHO frame */
+> +	if (can_cmp_echo_skb(skb, ndev, i)) {
+> +		stats->txbytes += can_get_echo_skb(ndev, i);
+> +		kfree_skb(skb);
+> +		goto some_exit;
+> +	}
+
+}
 
 Regards,
 Oliver
