@@ -1,76 +1,54 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [Socketcan-users] back to back can frames.
-Date: Thu, 5 Jul 2012 15:57:26 +0200
-Message-ID: <20120705135726.GB417@vandijck-laurijssen.be>
-References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
- <1341488146.2416.9.camel@slaptop>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 0/4] can: gw: Netlink related fixes
+Date: Thu, 05 Jul 2012 18:16:41 +0200
+Message-ID: <4FF5BDE9.7000001@hartkopp.net>
+References: <cover.1341489914.git.tgraf@suug.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay009.isp.belgacom.be ([195.238.6.176]:38443 "EHLO
-	mailrelay009.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932530Ab2GEN5x (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jul 2012 09:57:53 -0400
-Content-Disposition: inline
-In-Reply-To: <1341488146.2416.9.camel@slaptop>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:34464 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751497Ab2GEQQi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jul 2012 12:16:38 -0400
+In-Reply-To: <cover.1341489914.git.tgraf@suug.ch>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <king@greatfreeworld.org>
+To: Thomas Graf <tgraf@suug.ch>
 Cc: linux-can@vger.kernel.org
 
-Max,
+On 05.07.2012 14:19, Thomas Graf wrote:
 
-(please switch using linux-can@vger.kernel.org, as Oliver suggested)
 
-to answer your question, see below
-
-On Thu, Jul 05, 2012 at 11:35:46AM +0000, Max S. wrote:
-> Hello,
-> 
-> While trying to test a can device I wrote a short program to
-> continuously send can frames... However after a short while I get a
-> buffer overflow error. Seems the internal queue is filled and overrun...
-> 
-> How can I send can frames at maximum throughput? simply one after the
-> other, back to back.
-> 
-> what i have now is something like this:
+> These patches fix some Netlink quirks in the CAN gateway code.
+> Unfortunately I do not own any CAN hardware so this is compile
+> tested only. I'm fairly confident though as the changes are
+> mostly straight forward. I would appreciate if someone could
+> run them through a test suite or something though.
 > 
 > 
-> do{
-> 	//prepare next frame...
-> }while(write( sfd, frame, sizeof(*arguments.frame) ) == sizeof(*frame));
-> //print error message...
-
+> Thomas Graf (4):
+>   can: Don't bump nlmsg_len manually
+>   can: Use nla_policy to validate netlink attributes
+>   can: Properly fill the netlink header when responding to RTM_GETROUTE
+>   can: Remove pointless casts
 > 
-> since the write simply pushes the frame into the queue, it is logical
-> that the queue would fill up quickly and get overflown?overrun?full.
-
-my core loop would look like this:
-
-	int ret;
-	while (1) {
-		ret = write(sfd, frame, sizeof(*frame));
-		if ((ret < 0) && (errno == ENOBUFS)) {
-			usleep(1000);
-		} else
-			break;
-	}
-	if (ret < 0)
-		/* print error message */
-
+>  net/can/gw.c |   90 +++++++++++++++++++++------------------------------------
+>  1 files changed, 33 insertions(+), 57 deletions(-)
 > 
-> Thanks,
-> Max S.
-> 
-> _______________________________________________
-> Socketcan-users mailing list
-> Socketcan-users@lists.berlios.de
-> https://lists.berlios.de/mailman/listinfo/socketcan-users
 
--- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+
+Hi Thomas,
+
+thanks for the cleanups!
+
+The can-gw was my first netlink based project and i did the best i knew.
+
+From the first sight it looks good. I now also got behind the nla_policy
+trick, which checks the minimal length too.
+
+I'll test the patches this weekend with the virtual CAN interfaces (no CAN HW
+needed), so that we probably catch the current development window.
+
+Best regards,
+Oliver
