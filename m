@@ -1,35 +1,73 @@
-From: Mohamed HAMZAOUI <requinham@gmail.com>
-Subject: Re: [SocketCan] Problem of accuracy
-Date: Mon, 9 Jul 2012 17:39:13 +0200
-Message-ID: <CABMxt4iBB4aP6STAbYcgCYyvOx-JAPnP48P1k=EMGsjQPmWN-Q@mail.gmail.com>
-References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
-	<201207091519.04235.pisa@cmp.felk.cvut.cz>
-	<20120709144042.GA2671@vandijck-laurijssen.be>
-	<23562188.349Ls0e8RT@ws-stein>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/4] can: Properly fill the netlink header when responding
+ to RTM_GETROUTE
+Date: Mon, 09 Jul 2012 18:28:27 +0200
+Message-ID: <4FFB06AB.4060409@hartkopp.net>
+References: <cover.1341489914.git.tgraf@suug.ch> <f719ba361ffa7d76dc1248d41acdbe726ecd9c4c.1341489914.git.tgraf@suug.ch> <4FF74CE9.7000604@hartkopp.net> <20120709094342.GF32535@canuck.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:63904 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751710Ab2GIPjO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Jul 2012 11:39:14 -0400
-Received: by yhmm54 with SMTP id m54so10989640yhm.19
-        for <linux-can@vger.kernel.org>; Mon, 09 Jul 2012 08:39:13 -0700 (PDT)
-In-Reply-To: <23562188.349Ls0e8RT@ws-stein>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:65504 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752074Ab2GIQ2V (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Jul 2012 12:28:21 -0400
+In-Reply-To: <20120709094342.GF32535@canuck.infradead.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Wolfgang Grandegger <wg@grandegger.com>, Linux-CAN <linux-can@vger.kernel.org>
+To: Thomas Graf <tgraf@suug.ch>
+Cc: linux-can@vger.kernel.org
 
-> I compared itimer with clock_nanosleep on an ARM board and noticed the signal
-> overhead of itimer is much bigger, resulting in a higher CPU usage, than
-> clock_nanosleep upon hrtimer.
-> So I ended up using clock_nanosleep adding a constant to the last timeout.
+On 09.07.2012 11:43, Thomas Graf wrote:
 
-but my problem is that when i specify 1 ms of period i have 1.3ms and
-the problem is how to eliminate the 0.3ms. If i substitute 0.3 ms from
-all payload, what's the assurance that it does not change with CPU
-load  change ?
+> On Fri, Jul 06, 2012 at 10:39:05PM +0200, Oliver Hartkopp wrote:
+>> what about this approach which reduces the number of parameters and stack
+>> space when calling cgw_put_job() ??
+>>
+>>
+>> diff --git a/net/can/gw.c b/net/can/gw.c
+>> index b41acf2..b6b9e0a 100644
+>> --- a/net/can/gw.c
+>> +++ b/net/can/gw.c
+>> @@ -444,11 +444,15 @@ static int cgw_notifier(struct notifier_block *nb,
+>>  	return NOTIFY_DONE;
+>>  }
+>>  
+>> -static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj)
+>> +static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj,
+>> +		       struct netlink_callback *cb)
+>>  {
+>>  	struct cgw_frame_mod mb;
+>>  	struct rtcanmsg *rtcan;
+>> -	struct nlmsghdr *nlh = nlmsg_put(skb, 0, 0, 0, sizeof(*rtcan), 0);
+>> +	struct nlmsghdr *nlh;
+>> +
+>> +	nlh = nlmsg_put(skb, NETLINK_CB(cb->skb).pid, cb->nlh->nlmsg_seq,
+>> +			RTM_NEWROUTE, sizeof(*rtcan), NLM_F_MULTI);
+>>  	if (!nlh)
+>>  		return -EMSGSIZE;
+>>  
+>> @@ -571,7 +575,7 @@ static int cgw_dump_jobs(struct sk_buff *skb, struct netlink_callback *cb)
+>>  		if (idx < s_idx)
+>>  			goto cont;
+>>  
+>> -		if (cgw_put_job(skb, gwj) < 0)
+>> +		if (cgw_put_job(skb, gwj, cb) < 0)
+>>  			break;
+>>  cont:
+>>  		idx++;
+> 
+> The format I've chosen allows to implement a non-dump RTM_GETROUTE using
+> cgw_put_job() if needed and is in line with how such filling functions
+> are typically prototyped in other netlink protocol implementations.
+> 
 
-Regards,
-Mohamed
+
+Yes, i also checked that the format was commonly used, but i did not find any
+use-case for cgw_put_job() besides the full dump ...
+
+Btw. both approaches are fine to me then.
+
+Many thanks,
+Oliver
+
