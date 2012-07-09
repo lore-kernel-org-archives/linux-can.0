@@ -1,7 +1,7 @@
 From: Mohamed HAMZAOUI <requinham@gmail.com>
 Subject: Re: [SocketCan] Problem of accuracy
-Date: Mon, 9 Jul 2012 16:29:13 +0200
-Message-ID: <CABMxt4jtO5Sjc7RyMs85VwCWzMDH8t1Nh5Ef+tKwXv8vWWKkeQ@mail.gmail.com>
+Date: Mon, 9 Jul 2012 16:35:55 +0200
+Message-ID: <CABMxt4ij9wye=r6PToRR-uEFA381qoh-aLav4G_Xb46PN43gtQ@mail.gmail.com>
 References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
 	<4FFAC346.7060201@grandegger.com>
 	<CABMxt4iYNuvN14_OtTQHdcMWNs0+KaAE0PqTBCQkT6tFN=NGsQ@mail.gmail.com>
@@ -9,43 +9,20 @@ References: <CABMxt4ijuTMYFYXx0n4AYBO6-=SRD0U3F4BTA2=rWE80Z4-yOA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-gh0-f174.google.com ([209.85.160.174]:38106 "EHLO
-	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750790Ab2GIO3N (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Jul 2012 10:29:13 -0400
-Received: by ghrr11 with SMTP id r11so10117535ghr.19
-        for <linux-can@vger.kernel.org>; Mon, 09 Jul 2012 07:29:13 -0700 (PDT)
+Received: from mail-yx0-f174.google.com ([209.85.213.174]:34134 "EHLO
+	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753705Ab2GIOf4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Jul 2012 10:35:56 -0400
+Received: by yenl2 with SMTP id l2so10107622yen.19
+        for <linux-can@vger.kernel.org>; Mon, 09 Jul 2012 07:35:55 -0700 (PDT)
 In-Reply-To: <201207091519.04235.pisa@cmp.felk.cvut.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Linux-CAN <linux-can@vger.kernel.org>
 
-My loop code is there :
-
- /*change the scheduler politic for this process */
-    err = sched_setscheduler(0, SCHED_FIFO, &p);
-    if (err)
-          fprintf(stderr, "ret %d\n", err);
-       ...
-       ...
-
-i open the socket and :
-
- while (i < loop_nbr)
- {
-        /* send frame */
-        if ((nbytes = write(s, &frame, sizeof(frame))) != sizeof(frame)) {
-                perror("write frame on bus");
-                return 1;
-        }
-        /* go to sleep */
-        clock_nanosleep(CLOCK_REALTIME, 0,
-                                   &ts,
-                                   NULL);
-        i++;
-}
-
+Sorry but I don't understand your approach. This approach can increase
+the delta, no ?
 
 On Mon, Jul 9, 2012 at 3:19 PM, Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
 > Hello Mohamed,
