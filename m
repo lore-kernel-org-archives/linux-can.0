@@ -1,28 +1,40 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [PATCH 0/3] can: janz-ican3: fix support for CAN_RAW_RECV_OWN_MSGS
-Date: Tue, 10 Jul 2012 21:19:17 +0200
-Message-ID: <4FFC8035.6040101@hartkopp.net>
+Date: Tue, 10 Jul 2012 22:34:06 +0200
+Message-ID: <4FFC91BE.5010004@grandegger.com>
 References: <1341863790-5645-1-git-send-email-iws@ovro.caltech.edu> <4FFBC731.60408@grandegger.com> <4FFBD2BD.3020708@grandegger.com> <20120710152212.GA29637@ovro.caltech.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:43421 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752133Ab2GJTTL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jul 2012 15:19:11 -0400
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:59379 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752798Ab2GJUeN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Jul 2012 16:34:13 -0400
 In-Reply-To: <20120710152212.GA29637@ovro.caltech.edu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ira W. Snyder" <iws@ovro.caltech.edu>, Wolfgang Grandegger <wg@grandegger.com>
+To: "Ira W. Snyder" <iws@ovro.caltech.edu>
 Cc: linux-can@vger.kernel.org
 
-Hello Wolfgang, hello Ira,
-
-On 10.07.2012 17:22, Ira W. Snyder wrote:
-
+On 07/10/2012 05:22 PM, Ira W. Snyder wrote:
 > On Tue, Jul 10, 2012 at 08:59:09AM +0200, Wolfgang Grandegger wrote:
-
+>> On 07/10/2012 08:09 AM, Wolfgang Grandegger wrote:
+>>> Hi Ira,
+>>>
+>>> On 07/09/2012 09:56 PM, Ira W. Snyder wrote:
+>>>> From: "Ira W. Snyder" <iws@ovro.caltech.edu>
+>>>>
+>>>> This is another different approach to fixing the Janz ICAN3 support for
+>>>> CAN_RAW_RECV_OWN_MSGS.
+>>>>
+>>>> The can_put_echo_skb() function is changed to always keep all packets
+>>>> until can_get_echo_skb() is called. Previously, it would drop packets if
+>>>> they were not needed to be looped back. This makes it possible for the
+>>>> new function can_cmp_echo_skb() to work with hardware-assisted loopback
+>>>> support on the Janz ICAN3, which does not have TX-complete interrupts of
+>>>> any kind.
+>>>>
 >>>> Since we are now storing packets even in the non-loopback case, there is
 >>>> some extra memory overhead, to store the extra packets between the calls
 >>>> to can_put_echo_skb() and can_get_echo_skb().
@@ -36,15 +48,9 @@ On 10.07.2012 17:22, Ira W. Snyder wrote:
 > I understand that. If you prefer, I can copy can_put_echo_skb() and
 > can_get_echo_skb() with my modifications into the janz-ican3 driver
 > itself, and leave the generic ones alone.
-> 
 
-
-i also thought about probable impacts on other drivers and to me the idea to
-include the changes in the ican3 driver is ok.
-
-The general infrastucture of echo_skb[] can be re-used - but the access to
-these skbs can be done ican3 specific. E.g. the BUG_ON() statements may become
-obsolete then.
+Definitely, this is special handling for that device only. Till now we
+have no other device needing a similar quirk.
 
 >>>> After this patch series is applied, the SocketCAN tst-rcv-own-msgs test
 >>>> passes.
@@ -66,39 +72,39 @@ obsolete then.
 > accurate timing information by sending a packet and timing how long it
 > takes to receive it back using CAN_RAW_RECV_OWN_MSGS.
 > 
-
-
-Good choice :-)
-
-From the practical point you get into problems, when your CAN driver doesn't
-support IFF_ECHO (e.g. the slcan driver or the legacy PEAK drivers) as people
-call you on the phone and talk about traffic seen by candump but no traffic on
-the bus %-(
-
-I would suggest to have about 2-3 echo_skbs in flight. This allows to push the
-tx side of the ican3 to it's max. throughput.
-
-On the receiver side you just need to compare up to 3 frames then and when
->= 2 echo_skbs become free (NULL) you restart the tx queue.
-
-Should be feasible with low effort ...
-
-
+>>> Oops, that's a lot and a clear contra.
+>>>
+>>>> This performance drop is due to the extra overhead of receiving the echo
+>>>> packets from the card itself. This involves one extra interrupt for each
+>>>> packet sent, and the associated overhead of running ican3_napi() for
+>>>> each packet sent.
+>>>
+>>> Do we really want that. I agree that CAN_RAW_RECV_OWN_MSGS should work
+>>> as expected but we should not try hard to partially fix the timing
+>>> issue. Why do we not just use the default protocol callback (flags &=
+>>> !IFF_ECHO) if the hardware cannot do it better.
+>>
+>> Well, getting a looped back message even if it did not go out to the bus
+>> is not nice either.
+>>
+> 
+> Right. As noted above, we have decided that we like this patch, since it
+> only loops back packets that have actually made it onto the bus.
+> 
 >> What about a device specific solution where you do the dropping of
 >> looped back messages only if CAN_RAW_RECV_OWN_MSGS is off.
 >>
 > 
 > Isn't this option per-socket, rather than per-device?
-
-
-yes.
-
 > 
 > I don't have any idea how I'd implement this suggestion.
-> 
-> Thanks,
-> Ira
 
+Hm, the xmit function does know if the packet should be looped back. If
+not, the skb will be freed:
 
-Regards,
-Oliver
+  http://lxr.linux.no/#linux+v3.4.4/drivers/net/can/dev.c#L285
+
+Can't that be used to decide if the packet should be stored, restored
+and removed if it matches a looped back message?
+
+Wolfgang.
