@@ -1,71 +1,34 @@
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: [PATCH 3/3] can: janz-ican3: add support for one shot mode
-Date: Thu, 12 Jul 2012 09:15:32 -0700
-Message-ID: <1342109732-4995-4-git-send-email-iws@ovro.caltech.edu>
-References: <1342109732-4995-1-git-send-email-iws@ovro.caltech.edu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] cangen: allow double value for gap
+Date: Fri, 13 Jul 2012 07:43:08 +0200
+Message-ID: <4FFFB56C.2040909@hartkopp.net>
+References: <1342016592-1401-1-git-send-email-alexander.stein@systec-electronic.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ovro.ovro.caltech.edu ([192.100.16.2]:43747 "EHLO
-	ovro.ovro.caltech.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755191Ab2GLQPg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Jul 2012 12:15:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by ovro.ovro.caltech.edu (Postfix) with ESMTP id 77A142229C
-	for <linux-can@vger.kernel.org>; Thu, 12 Jul 2012 09:15:36 -0700 (PDT)
-In-Reply-To: <1342109732-4995-1-git-send-email-iws@ovro.caltech.edu>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:23367 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754262Ab2GMFnK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Jul 2012 01:43:10 -0400
+In-Reply-To: <1342016592-1401-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: "Ira W. Snyder" <iws@ovro.caltech.edu>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
 
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
+On 11.07.2012 16:23, Alexander Stein wrote:
 
-The Janz VMOD-ICAN3 hardware has support for one shot packet
-transmission. This means that a packet will be attempted to be sent
-once, with no automatic retries.
+> This way a user can specify a gap below 1ms. This is somehwat similar
+> to setting the gap to 0, but the ENOBUFS are greatly reduced, so a given
+> amount of CAN messages by -n is still usefull and useable.
+> 
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 
-The SocketCAN core supports this mode using CAN_CTRLMODE_ONE_SHOT.
 
-Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
----
+Applied to can-utils.
 
-This is trivial, and the driver might as well support this option.
+Nice idea!
 
- drivers/net/can/janz-ican3.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 5fff829..d42f6f6 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -116,6 +116,7 @@
- #define ICAN3_BUSERR_QUOTA_MAX	255
- 
- /* Janz ICAN3 CAN Frame Conversion */
-+#define ICAN3_SNGL	0x02
- #define ICAN3_ECHO	0x10
- #define ICAN3_EFF_RTR	0x40
- #define ICAN3_SFF_RTR	0x10
-@@ -848,6 +849,10 @@ static void can_frame_to_ican3(struct ican3_dev *mod,
- 	desc->data[0] |= cf->can_dlc;
- 	desc->data[1] |= ICAN3_ECHO;
- 
-+	/* support single transmission (no retries) mode */
-+	if (mod->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		desc->data[1] |= ICAN3_SNGL;
-+
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		desc->data[0] |= ICAN3_EFF_RTR;
- 
-@@ -1791,7 +1796,8 @@ static int __devinit ican3_probe(struct platform_device *pdev)
- 	mod->can.do_set_mode = ican3_set_mode;
- 	mod->can.do_get_berr_counter = ican3_get_berr_counter;
- 	mod->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES
--				    | CAN_CTRLMODE_BERR_REPORTING;
-+				    | CAN_CTRLMODE_BERR_REPORTING
-+				    | CAN_CTRLMODE_ONE_SHOT;
- 
- 	/* find our IRQ number */
- 	mod->irq = platform_get_irq(pdev, 0);
--- 
-1.7.8.6
-
+Regards,
+Oliver
