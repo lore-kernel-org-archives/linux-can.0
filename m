@@ -1,243 +1,381 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 3/3] can: janz-ican3: add support for one shot mode
-Date: Wed, 18 Jul 2012 00:51:03 +0200
-Message-ID: <5005EC57.7030504@pengutronix.de>
-References: <20120713230521.GD4538@ovro.caltech.edu> <1342220831-11039-1-git-send-email-iws@ovro.caltech.edu>
+Subject: Re: [PATCH] can: janz-ican3: fix support for CAN_RAW_RECV_OWN_MSGS
+Date: Wed, 18 Jul 2012 01:09:57 +0200
+Message-ID: <5005F0C5.7010109@pengutronix.de>
+References: <4FFFE3AF.4020907@pengutronix.de> <1342192830-31538-1-git-send-email-iws@ovro.caltech.edu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig626F4E7C0D93E4523CBAF70C"
+ boundary="------------enig2278EA3BBFC8D78CE67C02CE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50238 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51984 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757452Ab2GQWvQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Jul 2012 18:51:16 -0400
-In-Reply-To: <1342220831-11039-1-git-send-email-iws@ovro.caltech.edu>
+	with ESMTP id S1750962Ab2GQXKH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Jul 2012 19:10:07 -0400
+In-Reply-To: <1342192830-31538-1-git-send-email-iws@ovro.caltech.edu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "Ira W. Snyder" <iws@ovro.caltech.edu>
 Cc: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig626F4E7C0D93E4523CBAF70C
+--------------enig2278EA3BBFC8D78CE67C02CE
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 07/14/2012 01:07 AM, Ira W. Snyder wrote:
+On 07/13/2012 05:20 PM, Ira W. Snyder wrote:
 > From: "Ira W. Snyder" <iws@ovro.caltech.edu>
 >=20
-> The Janz VMOD-ICAN3 hardware has support for one shot packet
-> transmission. This means that a packet will be attempted to be sent
-> once, with no automatic retries.
+> The Janz VMOD-ICAN3 firmware does not support any sort of TX-done
+> notification or interrupt. The driver previously used the hardware
+> loopback to attempt to work around this deficiency, but this caused all=
+
+> sockets to receive all messages, even if CAN_RAW_RECV_OWN_MSGS is off.
 >=20
-> The SocketCAN core supports this mode using CAN_CTRLMODE_ONE_SHOT.
+> Using the new function ican3_cmp_echo_skb(), we can drop the loopback
+> messages and return the original skbs. This fixes the issues with
+> CAN_RAW_RECV_OWN_MSGS.
 >=20
-> Every time a packet transmission failure happens, one packet needs to b=
-e
-> dropped from the front of the ECHO queue. This hardware lacks support
-> for TX-error interrupts, and so bus error indications are used as a
-> workaround. Every time a TX bus error is received, we know a packet
-> failed to transmit. If bus error reporting is off, do not forward the
-> bus error packets to userspace.
-
-Can you please test in normal mode (i.e. non-oneshot-mode) on a proper
-terminated bus without a second CAN station on the bus. Send a single
-CAN message. How does the controller behave? What happens if you then
-add a second member to the bus? Is the original CAN message finally
-received?
-
-With the scheme "drop frame from echo queue on tx error" in the worst
-case you loose some echo messages, but at least the queue will not overfl=
-ow.
-
->=20
-> The rx_bytes and tx_bytes counters were audited to make sure they only
-> reflect actual data bytes received from the bus. They do not include
-> error packets.
->=20
-> The rx_errors and tx_errors counters were audited to make sure they are=
-
-> correct in all situations. Previously, the rx_errors counts were
-> sometimes too high.
-
-Maybe split the _byte and _error fixes into a seperate patch (both fixes
-can be in the same patch, though).
+> A private skb queue is used to store the echo skbs. This avoids the nee=
+d
+> for any index management.
 >=20
 > Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
 > ---
 >=20
-> This patch should superceed the previous patch posted with this title.
+> This is a squashed together version of the first two patches in the ser=
+ies.
 >=20
->  drivers/net/can/janz-ican3.c |   56 +++++++++++++++++++++++-----------=
--------
->  1 files changed, 31 insertions(+), 25 deletions(-)
+>  drivers/net/can/janz-ican3.c |  156 ++++++++++++++++++++++++++++++++++=
++-------
+>  1 files changed, 130 insertions(+), 26 deletions(-)
 >=20
 > diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.=
 c
-> index 5fff829..fccfc3a 100644
+> index 08c893c..5fff829 100644
 > --- a/drivers/net/can/janz-ican3.c
 > +++ b/drivers/net/can/janz-ican3.c
-> @@ -116,6 +116,7 @@
->  #define ICAN3_BUSERR_QUOTA_MAX	255
+> @@ -220,6 +220,9 @@ struct ican3_dev {
+>  	/* old and new style host interface */
+>  	unsigned int iftype;
 > =20
->  /* Janz ICAN3 CAN Frame Conversion */
-> +#define ICAN3_SNGL	0x02
->  #define ICAN3_ECHO	0x10
->  #define ICAN3_EFF_RTR	0x40
->  #define ICAN3_SFF_RTR	0x10
-> @@ -848,6 +849,10 @@ static void can_frame_to_ican3(struct ican3_dev *m=
-od,
->  	desc->data[0] |=3D cf->can_dlc;
->  	desc->data[1] |=3D ICAN3_ECHO;
-> =20
-> +	/* support single transmission (no retries) mode */
-> +	if (mod->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-> +		desc->data[1] |=3D ICAN3_SNGL;
+> +	/* queue for echo packets */
+> +	struct sk_buff_head echoq;
 > +
-
-Is this a per-CAN-message flag, not controller wide setting?
-(just curious)
-
->  	if (cf->can_id & CAN_RTR_FLAG)
->  		desc->data[0] |=3D ICAN3_EFF_RTR;
+>  	/*
+>  	 * Any function which changes the current DPM page must hold this
+>  	 * lock while it is performing data accesses. This ensures that the
+> @@ -235,7 +238,6 @@ struct ican3_dev {
 > =20
-> @@ -911,7 +916,6 @@ static void ican3_handle_msglost(struct ican3_dev *=
-mod, struct ican3_msg *msg)
->  		cf->can_id |=3D CAN_ERR_CRTL;
->  		cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
->  		stats->rx_errors++;
-> -		stats->rx_bytes +=3D cf->can_dlc;
->  		netif_rx(skb);
->  	}
+>  	/* fast host interface */
+>  	unsigned int fastrx_start;
+> -	unsigned int fastrx_int;
+>  	unsigned int fastrx_num;
+>  	unsigned int fasttx_start;
+>  	unsigned int fasttx_num;
+> @@ -454,7 +456,6 @@ static void __devinit ican3_init_fast_host_interfac=
+e(struct ican3_dev *mod)
+>  	/* save the start recv page */
+>  	mod->fastrx_start =3D mod->free_page;
+>  	mod->fastrx_num =3D 0;
+> -	mod->fastrx_int =3D 0;
+> =20
+>  	/* build a single fast tohost queue descriptor */
+>  	memset(&desc, 0, sizeof(desc));
+> @@ -1091,6 +1092,87 @@ static void ican3_handle_message(struct ican3_de=
+v *mod, struct ican3_msg *msg)
 >  }
-> @@ -928,7 +932,7 @@ static int ican3_handle_cevtind(struct ican3_dev *m=
-od, struct ican3_msg *msg)
->  	struct net_device *dev =3D mod->ndev;
->  	struct net_device_stats *stats =3D &dev->stats;
->  	enum can_state state =3D mod->can.state;
-> -	u8 status, isrc, rxerr, txerr;
-> +	u8 isrc, ecc, status, rxerr, txerr;
->  	struct can_frame *cf;
->  	struct sk_buff *skb;
 > =20
-> @@ -949,6 +953,7 @@ static int ican3_handle_cevtind(struct ican3_dev *m=
-od, struct ican3_msg *msg)
->  		return -ENOMEM;
-> =20
->  	isrc =3D msg->data[0];
-> +	ecc =3D msg->data[2];
->  	status =3D msg->data[3];
->  	rxerr =3D msg->data[4];
->  	txerr =3D msg->data[5];
-> @@ -959,7 +964,6 @@ static int ican3_handle_cevtind(struct ican3_dev *m=
-od, struct ican3_msg *msg)
->  		cf->can_id |=3D CAN_ERR_CRTL;
->  		cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
->  		stats->rx_over_errors++;
-> -		stats->rx_errors++;
->  	}
-> =20
->  	/* error warning + passive interrupt */
-> @@ -981,11 +985,28 @@ static int ican3_handle_cevtind(struct ican3_dev =
-*mod, struct ican3_msg *msg)
-> =20
->  	/* bus error interrupt */
->  	if (isrc =3D=3D CEVTIND_BEI) {
-> -		u8 ecc =3D msg->data[2];
-> -
->  		dev_dbg(mod->dev, "bus error interrupt\n");
+>  /*
+> + * The ican3 needs to store all echo skbs, and therefore cannot
+> + * use the generic infrastructure for this.
+> + */
+> +static void ican3_put_echo_skb(struct ican3_dev *mod, struct sk_buff *=
+skb)
+> +{
+> +	struct sock *srcsk =3D skb->sk;
 > +
-> +		/*
-> +		 * This hardware lacks any support other than bus error
-> +		 * messages to determine if the packet transmission failed.
-> +		 *
-> +		 * This is a TX error, so we free an echo skb from the front
-> +		 * of the queue.
-> +		 */
-> +		if ((ecc & ECC_DIR) =3D=3D 0) {
-
-maybe:
-    if (!(ecc & ECC_DIR)) {
-then it's consistent with the if (!...)
-
-> +			cf->data[2] |=3D CAN_ERR_PROT_TX;
-> +			kfree_skb(skb_dequeue(&mod->echoq));
-> +			stats->tx_errors++;
-> +		}
+> +	if (atomic_read(&skb->users) !=3D 1) {
+> +		struct sk_buff *old_skb =3D skb;
 > +
-> +		/* bus error reporting is off, drop the error skb */
-> +		if (!(mod->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
-> +			kfree_skb(skb);
-> +			return 0;
-> +		}
+> +		skb =3D skb_clone(old_skb, GFP_ATOMIC);
+> +		kfree_skb(old_skb);
+> +		if (!skb)
+> +			return;
+> +	} else
+> +		skb_orphan(skb);
 
-Can you move the "if there is a tx-bus error, free echo queue" to the
-front and return if bus error reporting is disabled? I don't like the
-idea to alloc a skb and then free it, if it's not needed.
+Please use { } on else, too
 
 > +
->  		mod->can.can_stats.bus_error++;
-> -		stats->rx_errors++;
->  		cf->can_id |=3D CAN_ERR_PROT | CAN_ERR_BUSERROR;
+> +	skb->sk =3D srcsk;
+> +
+> +	/* save this skb for tx interrupt echo handling */
+> +	skb_queue_tail(&mod->echoq, skb);
+> +}
+> +
+> +static unsigned int ican3_get_echo_skb(struct ican3_dev *mod)
+> +{
+> +	struct sk_buff *skb =3D skb_dequeue(&mod->echoq);
+> +	struct can_frame *cf;
+> +	u8 dlc;
+> +
+> +	if (!skb)
+> +		return 0;
+> +
+> +	/* check flag whether this packet has to be looped back */
+> +	if (!(mod->ndev->flags & IFF_ECHO) || skb->pkt_type !=3D PACKET_LOOPB=
+ACK) {
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Your flags have a IFF_ECHO, don't they?
+
+> +		kfree_skb(skb);
+> +		return 0;
+
+please return here the dlc here, too.
+
+> +	}
+> +
+> +	/* make settings for echo to reduce code in irq context */
+> +	skb->protocol =3D htons(ETH_P_CAN);
+> +	skb->pkt_type =3D PACKET_BROADCAST;
+> +	skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> +	skb->dev =3D mod->ndev;
+> +
+> +	cf =3D (struct can_frame *)skb->data;
+> +	dlc =3D cf->can_dlc;
+> +	netif_receive_skb(skb);
+> +
+> +	return dlc;
+> +}
+> +
+> +/*
+> + * Compare an skb with an existing echo skb
+> + *
+> + * This function will be used on devices which have a hardware loopbac=
+k.
+> + * On these devices, this function can be used to compare a received s=
+kb
+> + * with the saved echo skbs so that the hardware echo skb can be dropp=
+ed.
+> + *
+> + * Returns true if the skb's are identical, false otherwise.
+> + */
+> +static bool ican3_cmp_echo_skb(struct ican3_dev *mod, struct sk_buff *=
+skb)
+> +{
+> +	struct can_frame *cf =3D (struct can_frame *)skb->data;
+> +	struct sk_buff *echo_skb =3D skb_peek(&mod->echoq);
+> +
+> +	if (echo_skb) {
+> +		struct can_frame *echo_cf =3D (struct can_frame *)echo_skb->data;
+> +
+> +		if (cf->can_id !=3D echo_cf->can_id)
+> +			return false;
+> +
+> +		if (cf->can_dlc !=3D echo_cf->can_dlc)
+> +			return false;
+> +
+> +		return memcmp(cf->data, echo_cf->data, cf->can_dlc) =3D=3D 0;
+> +	}
+
+Please restructure like this (more common coding style):
+
+	if (!echo_skb)
+		return false
+
+	...
+> +
+> +	return false;
+> +}
+> +
+> +/*
+>   * Check that there is room in the TX ring to transmit another skb
+>   *
+>   * LOCKING: must hold mod->lock
+> @@ -1100,6 +1182,10 @@ static bool ican3_txok(struct ican3_dev *mod)
+>  	struct ican3_fast_desc __iomem *desc;
+>  	u8 control;
 > =20
->  		switch (ecc & ECC_MASK) {
-> @@ -1004,9 +1025,6 @@ static int ican3_handle_cevtind(struct ican3_dev =
-*mod, struct ican3_msg *msg)
+> +	/* check that we have echo queue space */
+> +	if (skb_queue_len(&mod->echoq) >=3D ICAN3_TX_BUFFERS)
+> +		return false;
+> +
+>  	/* copy the control bits of the descriptor */
+>  	ican3_set_page(mod, mod->fasttx_start + (mod->fasttx_num / 16));
+>  	desc =3D mod->dpm + ((mod->fasttx_num % 16) * sizeof(*desc));
+> @@ -1150,10 +1236,27 @@ static int ican3_recv_skb(struct ican3_dev *mod=
+)
+>  	/* convert the ICAN3 frame into Linux CAN format */
+>  	ican3_to_can_frame(mod, &desc, cf);
+> =20
+> -	/* receive the skb, update statistics */
+> -	netif_receive_skb(skb);
+> +	/*
+> +	 * If this is an ECHO frame received from the hardware loopback
+> +	 * feature, use the skb saved in the ECHO stack instead. This allows
+> +	 * the Linux CAN core to support CAN_RAW_RECV_OWN_MSGS correctly.
+> +	 *
+> +	 * Since this is a confirmation of a successfully transmitted packet
+> +	 * sent from this host, update the transmit statistics.
+> +	 *
+> +	 * Also, the netdevice queue needs to be allowed to send packets agai=
+n.
+> +	 */
+> +	if (ican3_cmp_echo_skb(mod, skb)) {
+> +		stats->tx_packets++;
+> +		stats->tx_bytes +=3D ican3_get_echo_skb(mod);
+> +		kfree_skb(skb);
+> +		goto err_noalloc;
+> +	}
+> +
+> +	/* update statistics, receive the skb */
+>  	stats->rx_packets++;
+>  	stats->rx_bytes +=3D cf->can_dlc;
+> +	netif_receive_skb(skb);
+> =20
+>  err_noalloc:
+>  	/* toggle the valid bit and return the descriptor to the ring */
+> @@ -1176,13 +1279,13 @@ err_noalloc:
+>  static int ican3_napi(struct napi_struct *napi, int budget)
+>  {
+>  	struct ican3_dev *mod =3D container_of(napi, struct ican3_dev, napi);=
+
+> -	struct ican3_msg msg;
+>  	unsigned long flags;
+>  	int received =3D 0;
+>  	int ret;
+> =20
+>  	/* process all communication messages */
+>  	while (true) {
+> +		struct ican3_msg msg;
+>  		ret =3D ican3_recv_msg(mod, &msg);
+>  		if (ret)
 >  			break;
->  		}
+> @@ -1199,11 +1302,6 @@ static int ican3_napi(struct napi_struct *napi, =
+int budget)
+>  		received++;
+>  	}
 > =20
-> -		if ((ecc & ECC_DIR) =3D=3D 0)
-> -			cf->data[2] |=3D CAN_ERR_PROT_TX;
+> -	/* We have processed all packets that the adapter had, but it
+> -	 * was less than our budget, stop polling */
+> -	if (received < budget)
+> -		napi_complete(napi);
 > -
->  		cf->data[6] =3D txerr;
->  		cf->data[7] =3D rxerr;
->  	}
-> @@ -1031,8 +1049,8 @@ static int ican3_handle_cevtind(struct ican3_dev =
-*mod, struct ican3_msg *msg)
->  	}
+>  	spin_lock_irqsave(&mod->lock, flags);
 > =20
->  	mod->can.state =3D state;
-> -	stats->rx_errors++;
-> -	stats->rx_bytes +=3D cf->can_dlc;
-> +	if (!(cf->data[2] & CAN_ERR_PROT_TX))
-> +		stats->rx_errors++;
->  	netif_rx(skb);
->  	return 0;
->  }
-> @@ -1467,19 +1485,6 @@ static int ican3_open(struct net_device *ndev)
+>  	/* Wake up the transmit queue if necessary */
+> @@ -1212,6 +1310,11 @@ static int ican3_napi(struct napi_struct *napi, =
+int budget)
+> =20
+>  	spin_unlock_irqrestore(&mod->lock, flags);
+> =20
+> +	/* We have processed all packets that the adapter had, but it
+> +	 * was less than our budget, stop polling */
+
+Nitpick: preferred multi line commenting style is:
+
+/*
+ * comments...
+ * ..more
+ */
+> +	if (received < budget)
+> +		napi_complete(napi);
+> +
+
+Why are you moving the napi_complete?
+
+>  	/* re-enable interrupt generation */
+>  	iowrite8(1 << mod->num, &mod->ctrl->int_enable);
+>  	return received;
+> @@ -1408,6 +1511,9 @@ static int ican3_stop(struct net_device *ndev)
 >  		return ret;
 >  	}
 > =20
-> -	/* set the bus error generation state appropriately */
-> -	if (mod->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
-> -		quota =3D ICAN3_BUSERR_QUOTA_MAX;
-> -	else
-> -		quota =3D 0;
-> -
-> -	ret =3D ican3_set_buserror(mod, quota);
-> -	if (ret) {
-> -		dev_err(mod->dev, "unable to set bus-error\n");
-> -		close_candev(ndev);
-> -		return ret;
-> -	}
-
-What happened to these two functions? Not needed anymore?
-
-> -
->  	/* bring the bus online */
->  	ret =3D ican3_set_bus_state(mod, true);
->  	if (ret) {
-> @@ -1791,7 +1796,8 @@ static int __devinit ican3_probe(struct platform_=
-device *pdev)
->  	mod->can.do_set_mode =3D ican3_set_mode;
->  	mod->can.do_get_berr_counter =3D ican3_get_berr_counter;
->  	mod->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES
-> -				    | CAN_CTRLMODE_BERR_REPORTING;
-> +				    | CAN_CTRLMODE_BERR_REPORTING
-> +				    | CAN_CTRLMODE_ONE_SHOT;
+> +	/* drop all outstanding echo skbs */
+> +	skb_queue_purge(&mod->echoq);
+> +
+>  	/* close the CAN layer */
+>  	close_candev(ndev);
+>  	return 0;
+> @@ -1416,18 +1522,19 @@ static int ican3_stop(struct net_device *ndev)
+>  static int ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  {
+>  	struct ican3_dev *mod =3D netdev_priv(ndev);
+> -	struct net_device_stats *stats =3D &ndev->stats;
+>  	struct can_frame *cf =3D (struct can_frame *)skb->data;
+>  	struct ican3_fast_desc desc;
+>  	void __iomem *desc_addr;
+>  	unsigned long flags;
 > =20
->  	/* find our IRQ number */
->  	mod->irq =3D platform_get_irq(pdev, 0);
+> +	if (can_dropped_invalid_skb(ndev, skb))
+> +		return NETDEV_TX_OK;
+> +
+>  	spin_lock_irqsave(&mod->lock, flags);
+> =20
+>  	/* check that we can actually transmit */
+>  	if (!ican3_txok(mod)) {
+> -		dev_err(mod->dev, "no free descriptors, stopping queue\n");
+> -		netif_stop_queue(ndev);
+> +		dev_err(mod->dev, "BUG: no free descriptors\n");
+>  		spin_unlock_irqrestore(&mod->lock, flags);
+>  		return NETDEV_TX_BUSY;
+>  	}
+> @@ -1442,6 +1549,14 @@ static int ican3_xmit(struct sk_buff *skb, struc=
+t net_device *ndev)
+>  	can_frame_to_ican3(mod, cf, &desc);
+> =20
+>  	/*
+> +	 * This hardware doesn't have TX-done notifications, so we'll try and=
+
+> +	 * emulate it the best we can using ECHO skbs. Add the skb to the ECH=
+O
+> +	 * stack. Upon packet reception, check if the ECHO skb and received
+> +	 * skb match, and use that to wake the queue.
+> +	 */
+> +	ican3_put_echo_skb(mod, skb);
+> +
+> +	/*
+>  	 * the programming manual says that you must set the IVALID bit, then=
+
+>  	 * interrupt, then set the valid bit. Quite weird, but it seems to be=
+
+>  	 * required for this to work
+> @@ -1459,19 +1574,7 @@ static int ican3_xmit(struct sk_buff *skb, struc=
+t net_device *ndev)
+>  	mod->fasttx_num =3D (desc.control & DESC_WRAP) ? 0
+>  						     : (mod->fasttx_num + 1);
+> =20
+> -	/* update statistics */
+> -	stats->tx_packets++;
+> -	stats->tx_bytes +=3D cf->can_dlc;
+> -	kfree_skb(skb);
+> -
+> -	/*
+> -	 * This hardware doesn't have TX-done notifications, so we'll try and=
+
+> -	 * emulate it the best we can using ECHO skbs. Get the next TX
+> -	 * descriptor, and see if we have room to send. If not, stop the queu=
+e.
+> -	 * It will be woken when the ECHO skb for the current packet is recv'=
+d.
+> -	 */
+> -
+> -	/* copy the control bits of the descriptor */
+> +	/* if there is no free descriptor space, stop the transmit queue */
+>  	if (!ican3_txok(mod))
+>  		netif_stop_queue(ndev);
+> =20
+> @@ -1667,6 +1770,7 @@ static int __devinit ican3_probe(struct platform_=
+device *pdev)
+>  	mod->dev =3D &pdev->dev;
+>  	mod->num =3D pdata->modno;
+>  	netif_napi_add(ndev, &mod->napi, ican3_napi, ICAN3_RX_BUFFERS);
+> +	skb_queue_head_init(&mod->echoq);
+>  	spin_lock_init(&mod->lock);
+>  	init_completion(&mod->termination_comp);
+>  	init_completion(&mod->buserror_comp);
 
 Marc
 
@@ -248,7 +386,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig626F4E7C0D93E4523CBAF70C
+--------------enig2278EA3BBFC8D78CE67C02CE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -257,9 +395,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAlAF7F4ACgkQjTAFq1RaXHPV4gCghRUubhBE9Kzp/5v7wgzB+2Wj
-cpQAoII6yooz6zpqNzxSVAbJk6phd1kA
-=kSXj
+iEYEARECAAYFAlAF8MoACgkQjTAFq1RaXHO9ZQCcC+Uk9H1Jqwj3ww5+OVS4Vx94
+w0MAoJX0Ax4xB6BujZpmT6vezLvoe9gT
+=chEX
 -----END PGP SIGNATURE-----
 
---------------enig626F4E7C0D93E4523CBAF70C--
+--------------enig2278EA3BBFC8D78CE67C02CE--
