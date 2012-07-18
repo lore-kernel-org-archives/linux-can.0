@@ -1,64 +1,50 @@
 From: Hui Wang <jason77.wang@gmail.com>
-Subject: Re: [PATCH] can: flexcan: add hardware controller version support
-Date: Wed, 18 Jul 2012 18:03:07 +0800
-Message-ID: <500689DB.1020505@gmail.com>
-References: <1341174085-11781-1-git-send-email-mkl@pengutronix.de> <500686DE.1050908@pengutronix.de>
+Subject: Re: [PATCH v2] can: flexcan: add 2nd clock to support imx53 and newer
+Date: Wed, 18 Jul 2012 18:05:08 +0800
+Message-ID: <50068A54.80705@gmail.com>
+References: <1342601282-1208-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail1.windriver.com ([147.11.146.13]:65118 "EHLO
+Received: from mail1.windriver.com ([147.11.146.13]:65150 "EHLO
 	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751646Ab2GRKDg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Jul 2012 06:03:36 -0400
-In-Reply-To: <500686DE.1050908@pengutronix.de>
+	with ESMTP id S1752128Ab2GRKF4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Jul 2012 06:05:56 -0400
+In-Reply-To: <1342601282-1208-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Hui Wang <jason77.wang@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, richard.zhao@freescale.com
-
-Add Richard.Zhao in, maybe he can give a help.
-
-Regards,
-Hui.
+Cc: linux-can@vger.kernel.org, Hui Wang <jason77.wang@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, kernel@pengutronix.de, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 
 Marc Kleine-Budde wrote:
-> Hello,
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 >
-> On 07/01/2012 10:21 PM, Marc Kleine-Budde wrote:
+> This patch adds support for a second clock to the flexcan driver. On
+> modern freescale ARM cores like the imx53 and imx6q two clocks ("ipg"
+> and "per") must be enabled in order to access the CAN core.
+>
+> In the original driver, the clock was requested without specifying the
+> connection id, further all mainline ARM archs with flexcan support
+> (imx28, imx25, imx35) register their flexcan clock without a
+> connection id, too.
+>
+> This patch first renames the existing clk variable to clk_ipg and
+> converts it to devm for easier error handling. The connection id "ipg"
+> is added to the devm_clk_get() call. Then a second clock "per" is
+> requested. As all archs don't specify a connection id, both clk_get
+> return the same clock. This ensures compatibility to existing flexcan
+> support and adds support for imx53 at the same time.
+>
+> After this patch hits mainline, the archs may give their existing
+> flexcan clock the "ipg" connection id and implement a dummy "per"
+> clock.
+>
+> This patch has been tested on imx28 (unmodified clk tree) and on imx53
+> with a seperate "ipg" and "per" clock.
+>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Hui Wang <jason77.wang@gmail.com>
 >   
->> From: Hui Wang <jason77.wang@gmail.com>
->>
->> At least in the i.MX series, the flexcan contrller divides into ver_3
->> and ver_10, current driver is for ver_3 controller.
->>     
->
-> Has someone access to the freescale hardware people and can figure out
-> the controller versions used on:
->
-> imx28
-> imx25
-> imx35
-> imx53
->
-> Because I noticed that the FLEXCAN_CTRL_CLK_SRC bit (bit 13 of the
-> FLEXCAN control register) is marked as reserved in the mx53 datasheet
-> (although its meaning is documented) as well as in the imx6q. Is there a
-> Changelog of this core available?
->
->   
->> i.MX6 has ver_10 controller, it has more reigsters than ver_3 has.
->> The rxfgmask (Rx FIFO Global Mask) register is one of the new added.
->> Its reset value is 0xffffffff, this means ID Filter Table must be
->> checked when receive a packet, but the driver is designed to accept
->> everything during the chip start, we need to clear this register to
->> follow this design.
->>
->> Use the data entry of the struct of_device_id to point chip specific
->> info, we can set hardware version for each platform.
->>     
->
-> cheers, Marc
->
->   
-
+Acked-by: Hui Wang <jason77.wang@gmail.com>
