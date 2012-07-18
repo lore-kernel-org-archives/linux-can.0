@@ -1,17 +1,15 @@
 From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: [PATCH 5/6] can: janz-ican3: avoid firmware lockup caused by infinite bus error quota
-Date: Wed, 18 Jul 2012 15:33:17 -0700
-Message-ID: <1342650798-2991-6-git-send-email-iws@ovro.caltech.edu>
-References: <1342650798-2991-1-git-send-email-iws@ovro.caltech.edu>
+Subject: [PATCH 0/6] can: janz-ican3: multiple fixes
+Date: Wed, 18 Jul 2012 15:33:12 -0700
+Message-ID: <1342650798-2991-1-git-send-email-iws@ovro.caltech.edu>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ovro.ovro.caltech.edu ([192.100.16.2]:50097 "EHLO
+Received: from ovro.ovro.caltech.edu ([192.100.16.2]:50088 "EHLO
 	ovro.ovro.caltech.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753151Ab2GRWdX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Jul 2012 18:33:23 -0400
+	with ESMTP id S1751347Ab2GRWdU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Jul 2012 18:33:20 -0400
 Received: from localhost (localhost [127.0.0.1])
-	by ovro.ovro.caltech.edu (Postfix) with ESMTP id 7E99B21FCD
-	for <linux-can@vger.kernel.org>; Wed, 18 Jul 2012 15:33:23 -0700 (PDT)
-In-Reply-To: <1342650798-2991-1-git-send-email-iws@ovro.caltech.edu>
+	by ovro.ovro.caltech.edu (Postfix) with ESMTP id 7538E22296
+	for <linux-can@vger.kernel.org>; Wed, 18 Jul 2012 15:33:20 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
@@ -19,63 +17,45 @@ Cc: "Ira W. Snyder" <iws@ovro.caltech.edu>
 
 From: "Ira W. Snyder" <iws@ovro.caltech.edu>
 
-If the bus error quota is set to infinite and the host CPU cannot keep
-up, the Janz VMOD-ICAN3 firmware will stop responding to control
-messages until the controller is reset.
+This patch series started out as a way to fix support for
+CAN_RAW_RECV_OWN_MSGS, and has grown quite a bit since then.
 
-The firmware will automatically stop sending bus error messages when the
-quota is reached, and will only resume sending bus error messages when
-the quota is re-set to a positive value.
+The new addition is a workaround for a quirk in the firmware. If you have
+enabled infinite bus error messages to be generated, but your host CPU
+cannot keep up, the firmware will stop responding to control messages until
+it is hard-reset. This can be worked around by setting a small bus error
+quota, and re-enabling bus errors every time you receive a message.
 
-This limitation is worked around by setting the bus error quota to one
-message, and then re-setting the quota to one message every time a bus
-error message is received. By doing this, the firmware never stops
-responding to control messages. The CAN bus can be reset without a
-hard-reset of the controller card.
+With this change, leaving the controller in "one-shot off" mode, it will
+successfully send the packet as soon as the bus is reconnected. This is the
+expected behavior, and it works well. The "one-shot on" mode works as well,
+without retransmissions.
 
-Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
----
- drivers/net/can/janz-ican3.c |   13 ++++++++++++-
- 1 files changed, 12 insertions(+), 1 deletions(-)
+I moved the TX-error vs. ECHO skb handling from patch #6 (add support for
+one shot mode) into patch #4 (fix support for CAN_RAW_RECV_OWN_MSGS). This
+puts all of the ECHO skb changes into a single patch.
 
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 1304712..df3ba07 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -960,6 +960,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
- 	 * skb allocation when it will just be freed immediately.
- 	 */
- 	if (isrc == CEVTIND_BEI) {
-+		int ret;
- 		dev_dbg(mod->dev, "bus error interrupt, part 1\n");
- 
- 		/* TX error */
-@@ -970,6 +971,16 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
- 			stats->rx_errors++;
- 		}
- 
-+		/*
-+		 * The controller automatically disables bus-error interrupts
-+		 * and therefore we must re-enable them.
-+		 */
-+		ret = ican3_set_buserror(mod, 1);
-+		if (ret) {
-+			dev_err(mod->dev, "unable to re-enable bus-error\n");
-+			return ret;
-+		}
-+
- 		/* bus error reporting is off, return immediately */
- 		if (!(mod->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
- 			return 0;
-@@ -1447,7 +1458,7 @@ static int __devinit ican3_startup_module(struct ican3_dev *mod)
- 	}
- 
- 	/* default to "bus errors enabled" */
--	ret = ican3_set_buserror(mod, ICAN3_BUSERR_QUOTA_MAX);
-+	ret = ican3_set_buserror(mod, 1);
- 	if (ret) {
- 		dev_err(mod->dev, "unable to set bus-error\n");
- 		return ret;
+Many thanks to those who have provided feedback for this patch series. It
+is appreciated.
+
+Changes since last version:
+- several unrelated changes broken into separate small patches
+- ECHO vs. TX-error handling moved into patch #4, where it belongs
+- avoid firmware lockup caused by patch #4's use of bus error messages
+- support for single shot mode is now very simple
+- various nitpicks suggested by reviewers
+
+Ira W. Snyder (6):
+  can: janz-ican3: remove dead code
+  can: janz-ican3: drop invalid skbs
+  can: janz-ican3: fix error and byte counters
+  can: janz-ican3: fix support for CAN_RAW_RECV_OWN_MSGS
+  can: janz-ican3: avoid firmware lockup caused by infinite bus error quota
+  can: janz-ican3: add support for one shot mode
+
+ drivers/net/can/janz-ican3.c |  228 ++++++++++++++++++++++++++++++++----------
+ 1 files changed, 177 insertions(+), 51 deletions(-)
+
 -- 
 1.7.8.6
 
