@@ -1,84 +1,109 @@
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: Re: [PATCH 5/9] can: janz-ican3: cleanup of ican3_to_can_frame and
- can_frame_to_ican3
-Date: Fri, 20 Jul 2012 08:39:34 -0700
-Message-ID: <20120720153933.GA18481@ovro.caltech.edu>
-References: <1342782709-4868-1-git-send-email-mkl@pengutronix.de>
- <1342782709-4868-6-git-send-email-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2012-07-20
+Date: Fri, 20 Jul 2012 18:27:50 +0200
+Message-ID: <50098706.2080509@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig602B74502FF92E8C8FCDC34D"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ovro.ovro.caltech.edu ([192.100.16.2]:60315 "EHLO
-	ovro.ovro.caltech.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753043Ab2GTPjh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Jul 2012 11:39:37 -0400
-Content-Disposition: inline
-In-Reply-To: <1342782709-4868-6-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55678 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750925Ab2GTQ2A (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Jul 2012 12:28:00 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Fri, Jul 20, 2012 at 01:11:45PM +0200, Marc Kleine-Budde wrote:
-> This patch cleans up the ICAN3 to Linux CAN frame and vice versa
-> conversion functions:
-> 
-> - RX: Use get_can_dlc() to limit the dlc value.
-> - RX+TX: Don't copy the whole frame, only copy the amount of bytes
->   specified in cf->can_dlc.
-> 
-> Cc: Ira W. Snyder <iws@ovro.caltech.edu>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig602B74502FF92E8C8FCDC34D
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-It looks good to me, and works perfectly.
+Hello David,
 
-Acked-by: Ira W. Snyder <iws@ovro.caltech.edu>
-Tested-by: Ira W. Snyder <iws@ovro.caltech.edu>
+the fifth pull request for upcoming v3.6 net-next cleans up and
+improves the janz-ican3 driver (6 patches by Ira W. Snyder, one by me).
+A patch by Steffen Trumtrar adds imx53 support to the flexcan driver.
+And another patch by me, which marks the bit timing constant in the CAN
+drivers as "const".
 
->  drivers/net/can/janz-ican3.c |   10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-> index 754b803..b19aca5 100644
-> --- a/drivers/net/can/janz-ican3.c
-> +++ b/drivers/net/can/janz-ican3.c
-> @@ -811,10 +811,10 @@ static void ican3_to_can_frame(struct ican3_dev *mod,
->  
->  		cf->can_id |= desc->data[0] << 3;
->  		cf->can_id |= (desc->data[1] & 0xe0) >> 5;
-> -		cf->can_dlc = desc->data[1] & ICAN3_CAN_DLC_MASK;
-> -		memcpy(cf->data, &desc->data[2], sizeof(cf->data));
-> +		cf->can_dlc = get_can_dlc(desc->data[1] & ICAN3_CAN_DLC_MASK);
-> +		memcpy(cf->data, &desc->data[2], cf->can_dlc);
->  	} else {
-> -		cf->can_dlc = desc->data[0] & ICAN3_CAN_DLC_MASK;
-> +		cf->can_dlc = get_can_dlc(desc->data[0] & ICAN3_CAN_DLC_MASK);
->  		if (desc->data[0] & ICAN3_EFF_RTR)
->  			cf->can_id |= CAN_RTR_FLAG;
->  
-> @@ -829,7 +829,7 @@ static void ican3_to_can_frame(struct ican3_dev *mod,
->  			cf->can_id |= desc->data[3] >> 5;  /* 2-0   */
->  		}
->  
-> -		memcpy(cf->data, &desc->data[6], sizeof(cf->data));
-> +		memcpy(cf->data, &desc->data[6], cf->can_dlc);
->  	}
->  }
->  
-> @@ -861,7 +861,7 @@ static void can_frame_to_ican3(struct ican3_dev *mod,
->  	}
->  
->  	/* copy the data bits into the descriptor */
-> -	memcpy(&desc->data[6], cf->data, sizeof(cf->data));
-> +	memcpy(&desc->data[6], cf->data, cf->can_dlc);
->  }
->  
->  /*
-> -- 
-> 1.7.10
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+regards, Marc
+
+---
+
+The following changes since commit 769162e38b91e1d300752e666260fa6c7b203f=
+bc:
+
+  Merge branch 'net' of git://git.kernel.org/pub/scm/linux/kernel/git/cme=
+tcalf/linux-tile (2012-07-19 13:39:27 -0700)
+
+are available in the git repository at:
+
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 3b5c6b9e49f78f07ebcd34b38c1185e57a0fd9eb:
+
+  can: janz-ican3: add support for one shot mode (2012-07-20 17:49:05 +02=
+00)
+
+----------------------------------------------------------------
+Ira W. Snyder (6):
+      can: janz-ican3: remove dead code
+      can: janz-ican3: drop invalid skbs
+      can: janz-ican3: fix error and byte counters
+      can: janz-ican3: fix support for CAN_RAW_RECV_OWN_MSGS
+      can: janz-ican3: avoid firmware lockup caused by infinite bus error=
+ quota
+      can: janz-ican3: add support for one shot mode
+
+Marc Kleine-Budde (2):
+      can: mark bittiming_const pointer in struct can_priv as const
+      can: janz-ican3: cleanup of ican3_to_can_frame and can_frame_to_ica=
+n3
+
+Steffen Trumtrar (1):
+      can: flexcan: add 2nd clock to support imx53 and newer
+
+ drivers/net/can/at91_can.c                   |    2 +-
+ drivers/net/can/bfin_can.c                   |    2 +-
+ drivers/net/can/c_can/c_can.c                |    2 +-
+ drivers/net/can/cc770/cc770.c                |    2 +-
+ drivers/net/can/flexcan.c                    |   47 +++--
+ drivers/net/can/janz-ican3.c                 |  241 ++++++++++++++++++++=
+------
+ drivers/net/can/mcp251x.c                    |    2 +-
+ drivers/net/can/mscan/mscan.c                |    2 +-
+ drivers/net/can/pch_can.c                    |    2 +-
+ drivers/net/can/sja1000/sja1000.c            |    2 +-
+ drivers/net/can/ti_hecc.c                    |    2 +-
+ drivers/net/can/usb/ems_usb.c                |    2 +-
+ drivers/net/can/usb/esd_usb2.c               |    2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |    2 +-
+ include/linux/can/dev.h                      |    2 +-
+ 15 files changed, 226 insertions(+), 88 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig602B74502FF92E8C8FCDC34D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAlAJhwoACgkQjTAFq1RaXHN0aACeLgRPKFVis94vJ9ve0m9BUO2F
+uX4AoJeHrOcP2t0apf1bUKs4zjy1Qot8
+=ZX6x
+-----END PGP SIGNATURE-----
+
+--------------enig602B74502FF92E8C8FCDC34D--
