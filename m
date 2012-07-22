@@ -1,31 +1,31 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2012-07-20
-Date: Fri, 20 Jul 2012 11:02:09 -0700 (PDT)
-Message-ID: <20120720.110209.689779595180800453.davem@davemloft.net>
-References: <50098706.2080509@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] cangen: Enable sending of RTR CAN frames
+Date: Sun, 22 Jul 2012 13:09:51 +0200
+Message-ID: <500BDF7F.3010901@hartkopp.net>
+References: <1342611219-18643-1-git-send-email-lisovy@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:54274 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751424Ab2GTSCJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Jul 2012 14:02:09 -0400
-In-Reply-To: <50098706.2080509@pengutronix.de>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:40075 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750986Ab2GVLJx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 22 Jul 2012 07:09:53 -0400
+In-Reply-To: <1342611219-18643-1-git-send-email-lisovy@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: Rostislav Lisovy <lisovy@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 20 Jul 2012 18:27:50 +0200
+On 18.07.2012 13:33, Rostislav Lisovy wrote:
 
-> Hello David,
-> 
-> the fifth pull request for upcoming v3.6 net-next cleans up and
-> improves the janz-ican3 driver (6 patches by Ira W. Snyder, one by me).
-> A patch by Steffen Trumtrar adds imx53 support to the flexcan driver.
-> And another patch by me, which marks the bit timing constant in the CAN
-> drivers as "const".
+> Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
+> ---
+>  cangen.c |   11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 
-Pulled, thanks Marc.
+
+Applied to can-utils.
+
+Tnx & best regards,
+Oliver
