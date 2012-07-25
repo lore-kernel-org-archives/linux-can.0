@@ -1,70 +1,56 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH RESEND 2/2] can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
-Date: Wed, 25 Jul 2012 17:48:49 +0530
-Message-ID: <1343218729-16954-3-git-send-email-anilkumar@ti.com>
-References: <1343218729-16954-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH v2 0/2] Add DT support to C_CAN/D_CAN controller
+Date: Wed, 25 Jul 2012 17:48:47 +0530
+Message-ID: <1343218729-16954-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:51736 "EHLO bear.ext.ti.com"
+Received: from arroyo.ext.ti.com ([192.94.94.40]:41456 "EHLO arroyo.ext.ti.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756607Ab2GYMTR (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 25 Jul 2012 08:19:17 -0400
-In-Reply-To: <1343218729-16954-1-git-send-email-anilkumar@ti.com>
+	id S1756600Ab2GYMTQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 25 Jul 2012 08:19:16 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: devicetree-discuss@lists.ozlabs.org, grant.likely@secretlab.ca, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-Add Runtime PM support to C_CAN/D_CAN controller. The runtime PM
-APIs control clocks for C_CAN/D_CAN IP and prevent access to the
-register of C_CAN/D_CAN IP when clock is turned off.
+This patch series adds the device tree support to C_CAN/D_CAN
+controller with pinmux configuration and device tree data
+addition to corresponding dts and dtsi files.
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
----
- drivers/net/can/c_can/c_can_platform.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+Also adds Runtime PM support to C_CAN/D_CAN controller.
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index d0a66cf..83a1e17 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -32,6 +32,7 @@
- #include <linux/clk.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- 
- #include <linux/can/dev.h>
- 
-@@ -177,6 +178,9 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 		goto exit_free_device;
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_get_sync(&pdev->dev);
-+
- 	dev->irq = irq;
- 	priv->base = addr;
- 	priv->can.clock.freq = clk_get_rate(clk);
-@@ -198,6 +202,8 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 
- exit_free_device:
- 	platform_set_drvdata(pdev, NULL);
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	free_c_can_dev(dev);
- exit_iounmap:
- 	iounmap(addr);
-@@ -226,6 +232,8 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	release_mem_region(mem->start, resource_size(mem));
- 
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	clk_put(priv->priv);
- 
- 	return 0;
+These patches have been tested on AM335x EVM using some additional
+patches to add device tree data to EVM dts files and to initialize
+D_CAN RAM. D_CAN raminit is controlled from control module register.
+This patch will be submitted once control module MFD driver support
+is added to mainline.
+
+Due to lack of hardware I am not able to test c_can functionality.
+I appreciate if anyone can test c_can functionality with this patch
+series.
+
+First and last patches applies on top of linux-next tree, 2nd and
+3rd patches applies on linux-omap tree.
+
+Changes from v1:
+	- Separated 4 patches into CAN driver specific and device
+	  tree data addition specific.
+	- Incorporated Marc's comments on v1
+	  * Modified c_can_dev_id enum to handle both devtype and
+	    platform device id index.
+	  * Removed "legacy bosch,c_can_platform" from DT bindings
+
+AnilKumar Ch (2):
+  can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
+  can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
+
+ .../devicetree/bindings/net/can/c_can.txt          |   37 +++++++++++
+ drivers/net/can/c_can/c_can.h                      |    5 +-
+ drivers/net/can/c_can/c_can_platform.c             |   65 +++++++++++++++-----
+ 3 files changed, 88 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+
 -- 
 1.7.9.5
 
