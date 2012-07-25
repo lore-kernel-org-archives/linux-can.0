@@ -1,50 +1,51 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH 0/4] Add DT support to C_CAN/D_CAN controller
-Date: Wed, 25 Jul 2012 11:53:33 +0530
-Message-ID: <1343197417-27481-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH 3/4] arm/dts: AM33XX: Configure pinmuxs for D_CAN1 on AM335x-EVM
+Date: Wed, 25 Jul 2012 11:53:36 +0530
+Message-ID: <1343197417-27481-4-git-send-email-anilkumar@ti.com>
+References: <1343197417-27481-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:55462 "EHLO bear.ext.ti.com"
+Received: from bear.ext.ti.com ([192.94.94.41]:55464 "EHLO bear.ext.ti.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932767Ab2GYGYL (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 25 Jul 2012 02:24:11 -0400
+	id S932767Ab2GYGYN (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 25 Jul 2012 02:24:13 -0400
+In-Reply-To: <1343197417-27481-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch series adds the device tree support to C_CAN/D_CAN
-controller with pinmux configuration and device tree data
-addition to corresponding dts and dtsi files.
+Add D_CAN1 pinctrl node to am3358_pinmux master node to export
+D_CAN functionality on AM335x EVM according to pinctrl-single
+driver.
 
-Also adds Runtime PM support to C_CAN/D_CAN controller.
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
+ arch/arm/boot/dts/am335x-evm.dts |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-These patches have been tested on AM335x EVM using some additional
-patch to initialize D_CAN RAM. D_CAN raminit is controlled from
-control module register. This patch will be submitted once control
-module MFD driver support is added to mainline.
-
-Due to lack of hardware I am not able to test c_can functionality.
-I appreciate if anyone can test c_can functionality with this patch
-series.
-
-First and last patches applies on top of linux-next tree, 2nd and
-3rd patches applies on linux-omap tree.
-
-AnilKumar Ch (4):
-  can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
-  arm/dts: AM33XX: Add D_CAN device tree data
-  arm/dts: AM33XX: Configure pinmuxs for D_CAN1 on AM335x-EVM
-  can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
-
- .../devicetree/bindings/net/can/c_can.txt          |   38 +++++++++++++
- arch/arm/boot/dts/am335x-evm.dts                   |   13 +++++
- arch/arm/boot/dts/am33xx.dtsi                      |    5 ++
- drivers/net/can/c_can/c_can_platform.c             |   60 +++++++++++++++-----
- 4 files changed, 101 insertions(+), 15 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
+diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
+index e4e1ccb..7f0fd6c 100644
+--- a/arch/arm/boot/dts/am335x-evm.dts
++++ b/arch/arm/boot/dts/am335x-evm.dts
+@@ -46,3 +46,16 @@
+ 	regulator-boot-on;
+ 	regulator-always-on;
+ };
++
++&am3358_pinmux {
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&d_can1_pins>;
++
++	d_can1_pins: pinmux_d_can_pins {
++		pinctrl-single,pins = <
++			0x168 0x2	/* uart0_ctsn.d_can1_tx, OUTPUT | MODE2 */
++			0x16C 0x32	/* uart0_rtsn.d_can1_rx, INPUT_PULLUP | MODE2 */
++		>;
++	};
++};
 -- 
 1.7.9.5
 
