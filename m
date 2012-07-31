@@ -1,82 +1,66 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
 Subject: Re: [PATCH can-next v3 1/2] can: add tx/rx LED trigger support
-Date: Tue, 31 Jul 2012 14:00:36 +0200
-Message-ID: <5017C8E4.4020003@pengutronix.de>
-References: <1343676041-29572-1-git-send-email-fabio.baltieri@gmail.com> <5016FA01.5000109@pengutronix.de> <20120731065733.GA30267@gmail.com> <501784C8.9050803@pengutronix.de> <20120731115733.GB30417@gmail.com>
+Date: Tue, 31 Jul 2012 14:14:52 +0200
+Message-ID: <20120731121452.GC30417@gmail.com>
+References: <1343676041-29572-1-git-send-email-fabio.baltieri@gmail.com>
+ <50179B81.3040907@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig05D7B327D6C64F42C5EED01A"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51222 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751724Ab2GaMAk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jul 2012 08:00:40 -0400
-In-Reply-To: <20120731115733.GB30417@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <50179B81.3040907@grandegger.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig05D7B327D6C64F42C5EED01A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 31, 2012 at 10:46:57AM +0200, Wolfgang Grandegger wrote:
+> Hi Fabio,
+> 
+> On 07/30/2012 09:20 PM, Fabio Baltieri wrote:
+> > This patch implements the functions to add two LED triggers, named
+> > <ifname>-tx and <ifname>-rx, to a canbus device driver.
+> > 
+> > Triggers are called from specific handlers by each CAN device driver and
+> > can be disabled altogether with a Kconfig option.
+> > 
+> > The implementation keeps the LED on when the interface is UP and blinks
+> > the LED on network activity at a configurable rate.
+> > 
+> > This only supports can-dev based drivers, as it uses some support field
+> > in the can_priv structure.
+> > 
+> > Supported drivers should call can_led_init(), can_led_exit() and
+> > can_led_event() as needed.
+> > 
+> > Supported events are:
+> > - CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
+> > - CAN_LED_EVENT_STOP: turn off tx/rx LEDs
+> > - CAN_LED_EVENT_TX: trigger tx LED blink
+> > - CAN_LED_EVENT_RX: trigger tx LED blink
+> > 
+> > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> > Cc: Wolfgang Grandegger <wg@grandegger.com>
+> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> > Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+> > ---
+> > 
+> > Hi all!
+> > 
+> > This is the v3 of my CAN LED trigger patch.  It's a major refactoring of the v2
+> > that was discussed about three months ago concluding with the idea that
+> > implementing the oneshot triggering code in the LED framework would be a better
+> > solution.
+> > 
+> > This is the old thread for reference:
+> > http://marc.info/?l=linux-can&m=133521499002898&w=2
+> > 
+> > So, generic oneshot trigger code is now merged in mainline (see 5bb629c), and
+> > these are the changes in the v3:
+> 
+> Nice, thanks for your patience (and not giving up).
 
-On 07/31/2012 01:57 PM, Fabio Baltieri wrote:
-[...]
+Thanks to you for the review... no intention of giving up, I'm learning
+a lot from this! ;-)
 
->>>> Can you provide a devm implementation for can_led?
->>>
->>> Sounds reasonable, you mean like a devm_kasprintf implementation to
->>> remove kfree and unwinding code?
->>
->> IMHO it would be sufficient if you implement the devm cleanup function=
-s
->> here.
->=20
-> Uh - can you be more specific?  I mean, are you suggesting to just
-> convert the code to something like:
->=20
-> unsigned int len;
-> char *p;
->=20
-> len =3D snprintf(NULL, 0, "%s-tx", netdev->name);
-> p =3D devm_kzalloc(&netdev->dev, len + 1, GFP_KERNEL);
-> if (!p)
-> return -ENOMEM;
-> sprintf(p, len + 1, "%s-tx", netdev->name);
-
-This would work, if you just have to free both names, but...
-
-> or to implement something with devres_alloc() and a specific
-> release function?
-
-=2E..you have to call led_trigger_unregister_simple(), so we need a custo=
-m
-release function.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig05D7B327D6C64F42C5EED01A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAlAXyOQACgkQjTAFq1RaXHOrqgCfR1xP0itAC6UcfCW9B2FuNvQ+
-0OQAn3lhSjV4AoKtOv8jB+q0AsHV+uSF
-=WBxJ
------END PGP SIGNATURE-----
-
---------------enig05D7B327D6C64F42C5EED01A--
+Fabio
