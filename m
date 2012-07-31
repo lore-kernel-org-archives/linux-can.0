@@ -1,188 +1,290 @@
-From: Rostislav Lisovy <lisovy@gmail.com>
-Subject: [PATCH iproute2 1/2] Add missing can.h
-Date: Tue, 31 Jul 2012 16:46:20 +0200
-Message-ID: <1343745981-14248-1-git-send-email-lisovy@gmail.com>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz, Rostislav Lisovy <lisovy@gmail.com>
-List-Id: linux-can.vger.kernel.org
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: [PATCH can-next v4] can: add tx/rx LED trigger support
+Date: Wed,  1 Aug 2012 00:05:38 +0200
+Message-ID: <1343772338-1526-1-git-send-email-fabio.baltieri@gmail.com>
+References: <5017C8E4.4020003@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ey0-f174.google.com ([209.85.215.174]:40096 "EHLO
+	mail-ey0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754324Ab2GaWEL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Jul 2012 18:04:11 -0400
+In-Reply-To: <5017C8E4.4020003@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Header file used when working with AF_CAN frames -- generated from
-linux kernel 3.5+
+This patch implements the functions to add two LED triggers, named
+<ifname>-tx and <ifname>-rx, to a canbus device driver.
 
-Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
+Triggers are called from specific handlers by each CAN device driver and
+can be disabled altogether with a Kconfig option.
+
+The implementation keeps the LED on when the interface is UP and blinks
+the LED on network activity at a configurable rate.
+
+This only supports can-dev based drivers, as it uses some support field
+in the can_priv structure.
+
+Supported drivers should call can_led_init() and can_led_event() as
+needed.
+
+Cleanup is handled automatically by devres, so no *_exit function is
+needed.
+
+Supported events are:
+- CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
+- CAN_LED_EVENT_STOP: turn off tx/rx LEDs
+- CAN_LED_EVENT_TX: trigger tx LED blink
+- CAN_LED_EVENT_RX: trigger tx LED blink
+
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
 ---
- include/linux/can.h |  161 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 161 insertions(+)
- create mode 100644 include/linux/can.h
 
-diff --git a/include/linux/can.h b/include/linux/can.h
+Hi!
+
+So, here is the v4.
+
+Changes against v3:
+- add a netdev_err message in kasprintf error path
+- implement a devres_alloc release function to de-allocate strings and trigger
+- can_led_exit is now unneeded and gone
+
+Is that what you had in mind Marc?
+
+I like the devres implementation, as callers don't have to care about exit
+function anymore... still it looks like a bit of an hack to me.
+
+Also, I made an initial version with the four pointers in a separate can_led
+struct to be allocated as a payload of devres_alloc - but I think this one
+looks cleaner and is more cache-friendly.
+
+What you think about this?
+
+Fabio
+
+ drivers/net/can/Kconfig  |  12 ++++++
+ drivers/net/can/Makefile |   2 +
+ drivers/net/can/led.c    | 102 +++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/dev.h  |   8 ++++
+ include/linux/can/led.h  |  34 ++++++++++++++++
+ 5 files changed, 158 insertions(+)
+ create mode 100644 drivers/net/can/led.c
+ create mode 100644 include/linux/can/led.h
+
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index bb709fd..19dec19 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -54,6 +54,18 @@ config CAN_CALC_BITTIMING
+ 	  arguments "tq", "prop_seg", "phase_seg1", "phase_seg2" and "sjw".
+ 	  If unsure, say Y.
+ 
++config CAN_LEDS
++	bool "Enable LED triggers for Netlink based drivers"
++	depends on CAN_DEV
++	depends on LEDS_CLASS
++	select LEDS_TRIGGERS
++	---help---
++	  This option adds two LED triggers for packet receive and transmit
++	  events on each supported CAN device.
++
++	  Say Y here if you are working on a system with led-class supported
++	  LEDs and you want to use them as canbus activity indicators.
++
+ config CAN_AT91
+ 	tristate "Atmel AT91 onchip CAN controller"
+ 	depends on CAN_DEV && (ARCH_AT91SAM9263 || ARCH_AT91SAM9X5)
+diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
+index 938be37..24ee98b 100644
+--- a/drivers/net/can/Makefile
++++ b/drivers/net/can/Makefile
+@@ -8,6 +8,8 @@ obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
+ obj-$(CONFIG_CAN_DEV)		+= can-dev.o
+ can-dev-y			:= dev.o
+ 
++can-dev-$(CONFIG_CAN_LEDS)	+= led.o
++
+ obj-y				+= usb/
+ obj-y				+= softing/
+ 
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
 new file mode 100644
-index 0000000..018055e
+index 0000000..4fa8a47
 --- /dev/null
-+++ b/include/linux/can.h
-@@ -0,0 +1,161 @@
++++ b/drivers/net/can/led.c
+@@ -0,0 +1,102 @@
 +/*
-+ * linux/can.h
++ * Copyright 2012, Fabio Baltieri <fabio.baltieri@gmail.com>
 + *
-+ * Definitions for CAN network layer (socket addr / CAN frame / CAN filter)
-+ *
-+ * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-+ *          Urs Thuermann   <urs.thuermann@volkswagen.de>
-+ * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
-+ * All rights reserved.
-+ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#ifndef CAN_H
-+#define CAN_H
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/netdevice.h>
++#include <linux/can/dev.h>
 +
-+#include <linux/types.h>
-+#include <linux/socket.h>
++#include <linux/can/led.h>
 +
-+/* controller area network (CAN) kernel definitions */
-+
-+/* special address description flags for the CAN_ID */
-+#define CAN_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
-+#define CAN_RTR_FLAG 0x40000000U /* remote transmission request */
-+#define CAN_ERR_FLAG 0x20000000U /* error message frame */
-+
-+/* valid bits in CAN ID for frame formats */
-+#define CAN_SFF_MASK 0x000007FFU /* standard frame format (SFF) */
-+#define CAN_EFF_MASK 0x1FFFFFFFU /* extended frame format (EFF) */
-+#define CAN_ERR_MASK 0x1FFFFFFFU /* omit EFF, RTR, ERR flags */
++static unsigned long led_delay = 50;
++module_param(led_delay, ulong, 0644);
++MODULE_PARM_DESC(led_delay,
++		"blink delay time for activity leds (msecs, default: 50).");
 +
 +/*
-+ * Controller Area Network Identifier structure
-+ *
-+ * bit 0-28	: CAN identifier (11/29 bit)
-+ * bit 29	: error message frame flag (0 = data frame, 1 = error message)
-+ * bit 30	: remote transmission request flag (1 = rtr frame)
-+ * bit 31	: frame format flag (0 = standard 11 bit, 1 = extended 29 bit)
++ * Trigger a LED event in response to a CAN device event
 + */
-+typedef __u32 canid_t;
++void can_led_event(struct net_device *netdev, enum can_led_event event)
++{
++	struct can_priv *priv = netdev_priv(netdev);
 +
-+#define CAN_SFF_ID_BITS		11
-+#define CAN_EFF_ID_BITS		29
++	switch (event) {
++	case CAN_LED_EVENT_OPEN:
++		led_trigger_event(priv->tx_led_trig, LED_FULL);
++		led_trigger_event(priv->rx_led_trig, LED_FULL);
++		break;
++	case CAN_LED_EVENT_STOP:
++		led_trigger_event(priv->tx_led_trig, LED_OFF);
++		led_trigger_event(priv->rx_led_trig, LED_OFF);
++		break;
++	case CAN_LED_EVENT_TX:
++		if (led_delay)
++			led_trigger_blink_oneshot(priv->tx_led_trig,
++						  &led_delay, &led_delay, 1);
++		break;
++	case CAN_LED_EVENT_RX:
++		if (led_delay)
++			led_trigger_blink_oneshot(priv->rx_led_trig,
++						  &led_delay, &led_delay, 1);
++		break;
++	}
++}
++EXPORT_SYMBOL_GPL(can_led_event);
++
++static void can_led_release(struct device *gendev, void *res)
++{
++	struct can_priv *priv = netdev_priv(to_net_dev(gendev));
++
++	led_trigger_unregister_simple(priv->tx_led_trig);
++	led_trigger_unregister_simple(priv->rx_led_trig);
++
++	kfree(priv->tx_led_trig_name);
++	kfree(priv->rx_led_trig_name);
++}
 +
 +/*
-+ * Controller Area Network Error Message Frame Mask structure
++ * Register CAN LED triggers for a CAN device
 + *
-+ * bit 0-28	: error class mask (see include/linux/can/error.h)
-+ * bit 29-31	: set to zero
++ * This is normally called from a driver's probe function
 + */
-+typedef __u32 can_err_mask_t;
++void can_led_init(struct net_device *netdev)
++{
++	struct can_priv *priv = netdev_priv(netdev);
++	void *res;
 +
-+/* CAN payload length and DLC definitions according to ISO 11898-1 */
-+#define CAN_MAX_DLC 8
-+#define CAN_MAX_DLEN 8
++	res = devres_alloc(can_led_release, 0, GFP_KERNEL);
++	if (!res)
++		goto err_out;
 +
-+/* CAN FD payload length and DLC definitions according to ISO 11898-7 */
-+#define CANFD_MAX_DLC 15
-+#define CANFD_MAX_DLEN 64
++	priv->tx_led_trig_name = kasprintf(GFP_KERNEL, "%s-tx", netdev->name);
++	if (!priv->tx_led_trig_name)
++		goto err_out;
 +
-+/**
-+ * struct can_frame - basic CAN frame structure
-+ * @can_id:  CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-+ * @can_dlc: frame payload length in byte (0 .. 8) aka data length code
-+ *           N.B. the DLC field from ISO 11898-1 Chapter 8.4.2.3 has a 1:1
-+ *           mapping of the 'data length code' to the real payload length
-+ * @data:    CAN frame payload (up to 8 byte)
-+ */
-+struct can_frame {
-+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-+	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
-+	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
-+};
++	priv->rx_led_trig_name = kasprintf(GFP_KERNEL, "%s-rx", netdev->name);
++	if (!priv->rx_led_trig_name)
++		goto err_out_rx;
 +
++	led_trigger_register_simple(priv->tx_led_trig_name,
++				    &priv->tx_led_trig);
++	led_trigger_register_simple(priv->rx_led_trig_name,
++				    &priv->rx_led_trig);
++
++	devres_add(&netdev->dev, res);
++
++	return;
++
++err_out_rx:
++	kfree(priv->tx_led_trig_name);
++	priv->tx_led_trig_name = NULL;
++err_out:
++	netdev_err(netdev, "cannot register LED triggers\n");
++	devres_free(res);
++}
++EXPORT_SYMBOL_GPL(can_led_init);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 2b2fc34..167b04a 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -16,6 +16,7 @@
+ #include <linux/can.h>
+ #include <linux/can/netlink.h>
+ #include <linux/can/error.h>
++#include <linux/can/led.h>
+ 
+ /*
+  * CAN mode
+@@ -52,6 +53,13 @@ struct can_priv {
+ 
+ 	unsigned int echo_skb_max;
+ 	struct sk_buff **echo_skb;
++
++#ifdef CONFIG_CAN_LEDS
++	struct led_trigger *tx_led_trig;
++	char *tx_led_trig_name;
++	struct led_trigger *rx_led_trig;
++	char *rx_led_trig_name;
++#endif
+ };
+ 
+ /*
+diff --git a/include/linux/can/led.h b/include/linux/can/led.h
+new file mode 100644
+index 0000000..b91982c
+--- /dev/null
++++ b/include/linux/can/led.h
+@@ -0,0 +1,34 @@
 +/*
-+ * defined bits for canfd_frame.flags
++ * Copyright 2012, Fabio Baltieri <fabio.baltieri@gmail.com>
 + *
-+ * As the default for CAN FD should be to support the high data rate in the
-+ * payload section of the frame (HDR) and to support up to 64 byte in the
-+ * data section (EDL) the bits are only set in the non-default case.
-+ * Btw. as long as there's no real implementation for CAN FD network driver
-+ * these bits are only preliminary.
-+ *
-+ * RX: NOHDR/NOEDL - info about received CAN FD frame
-+ *     ESI         - bit from originating CAN controller
-+ * TX: NOHDR/NOEDL - control per-frame settings if supported by CAN controller
-+ *     ESI         - bit is set by local CAN controller
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
-+#define CANFD_NOHDR 0x01 /* frame without high data rate */
-+#define CANFD_NOEDL 0x02 /* frame without extended data length */
-+#define CANFD_ESI   0x04 /* error state indicator */
 +
-+/**
-+ * struct canfd_frame - CAN flexible data rate frame structure
-+ * @can_id: CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-+ * @len:    frame payload length in byte (0 .. CANFD_MAX_DLEN)
-+ * @flags:  additional flags for CAN FD
-+ * @__res0: reserved / padding
-+ * @__res1: reserved / padding
-+ * @data:   CAN FD frame payload (up to CANFD_MAX_DLEN byte)
-+ */
-+struct canfd_frame {
-+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-+	__u8    len;     /* frame payload length in byte */
-+	__u8    flags;   /* additional flags for CAN FD */
-+	__u8    __res0;  /* reserved / padding */
-+	__u8    __res1;  /* reserved / padding */
-+	__u8    data[CANFD_MAX_DLEN] __attribute__((aligned(8)));
++#ifndef CAN_LED_H
++#define CAN_LED_H
++
++#include <linux/leds.h>
++
++enum can_led_event {
++	CAN_LED_EVENT_OPEN,
++	CAN_LED_EVENT_STOP,
++	CAN_LED_EVENT_TX,
++	CAN_LED_EVENT_RX,
 +};
 +
-+#define CAN_MTU		(sizeof(struct can_frame))
-+#define CANFD_MTU	(sizeof(struct canfd_frame))
++#ifdef CONFIG_CAN_LEDS
++void can_led_event(struct net_device *netdev, enum can_led_event event);
++void can_led_init(struct net_device *netdev);
++#else
++static inline void can_led_event(struct net_device *netdev,
++				 enum can_led_event event)
++{
++}
++static inline void can_led_init(struct net_device *netdev)
++{
++}
++#endif
 +
-+/* particular protocols of the protocol family PF_CAN */
-+#define CAN_RAW		1 /* RAW sockets */
-+#define CAN_BCM		2 /* Broadcast Manager */
-+#define CAN_TP16	3 /* VAG Transport Protocol v1.6 */
-+#define CAN_TP20	4 /* VAG Transport Protocol v2.0 */
-+#define CAN_MCNET	5 /* Bosch MCNet */
-+#define CAN_ISOTP	6 /* ISO 15765-2 Transport Protocol */
-+#define CAN_NPROTO	7
-+
-+#define SOL_CAN_BASE 100
-+
-+/**
-+ * struct sockaddr_can - the sockaddr structure for CAN sockets
-+ * @can_family:  address family number AF_CAN.
-+ * @can_ifindex: CAN network interface index.
-+ * @can_addr:    protocol specific address information
-+ */
-+struct sockaddr_can {
-+	__kernel_sa_family_t can_family;
-+	int         can_ifindex;
-+	union {
-+		/* transport protocol class address information (e.g. ISOTP) */
-+		struct { canid_t rx_id, tx_id; } tp;
-+
-+		/* reserved for future CAN protocols address information */
-+	} can_addr;
-+};
-+
-+/**
-+ * struct can_filter - CAN ID based filter in can_register().
-+ * @can_id:   relevant bits of CAN ID which are not masked out.
-+ * @can_mask: CAN mask (see description)
-+ *
-+ * Description:
-+ * A filter matches, when
-+ *
-+ *          <received_can_id> & mask == can_id & mask
-+ *
-+ * The filter can be inverted (CAN_INV_FILTER bit set in can_id) or it can
-+ * filter for error message frames (CAN_ERR_FLAG bit set in mask).
-+ */
-+struct can_filter {
-+	canid_t can_id;
-+	canid_t can_mask;
-+};
-+
-+#define CAN_INV_FILTER 0x20000000U /* to be set in can_filter.can_id */
-+
-+#endif /* CAN_H */
++#endif
 -- 
-1.7.10.4
+1.7.11.rc1.9.gf623ca1.dirty
+
