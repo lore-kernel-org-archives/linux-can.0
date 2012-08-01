@@ -1,306 +1,71 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH] Read all data from socket in do_get_nl_link
-Date: Wed,  1 Aug 2012 14:57:02 +0200
-Message-ID: <1343825822-19607-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [can:master 1/1] drivers/net/can/led.c:41:4: error: implicit
+ declaration of function 'led_trigger_blink_oneshot'
+Date: Wed, 01 Aug 2012 15:35:16 +0200
+Message-ID: <50193094.4090704@pengutronix.de>
+References: <20120801125137.GB19751@localhost>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigECD8088CC41B270EAB26129A"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:33854 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752612Ab2HAM5J (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Aug 2012 08:57:09 -0400
-Received: from comm.systec-electronic.de (95-91-85-164-dynip.superkabel.de [95.91.85.164])
-	by webbox1416.server-home.net (Postfix) with ESMTPA id C025B27A569
-	for <linux-can@vger.kernel.org>; Wed,  1 Aug 2012 15:07:34 +0200 (CEST)
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54764 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752285Ab2HANf1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Aug 2012 09:35:27 -0400
+In-Reply-To: <20120801125137.GB19751@localhost>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, kernel-janitors@vger.kernel.org, linux-can@vger.kernel.org
 
-recvmsg might not return all interface data at once. Use a non-blocking
-socket and read several times until there is no more data.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigECD8088CC41B270EAB26129A
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
-Without that patch I only get the data for lo, eth0 and eth2 (I printed
-RTA_DATA(tb[IFLA_IFNAME]))), even eth1 is missing here.
-With that patch I get the data for all my 10 interfaces I currently have.
+On 08/01/2012 02:51 PM, Fengguang Wu wrote:
+> Hi Fabio,
+>=20
+> Kernel build failed on
+>=20
+> tree:   git://gitorious.org/linux-can/linux-can-next master
+> head:   272669c35de610ef75427d2f41b328a5e0f65bfc
+> commit: 272669c35de610ef75427d2f41b328a5e0f65bfc [1/1] can: add tx/rx L=
+ED trigger support
+> config: i386-allmodconfig (attached as .config)
+>=20
+> All related error/warning messages:
+>=20
+> drivers/net/can/led.c: In function 'can_led_event':
+> drivers/net/can/led.c:41:4: error: implicit declaration of function 'le=
+d_trigger_blink_oneshot' [-Werror=3Dimplicit-function-declaration]
 
- src/libsocketcan.c |  231 +++++++++++++++++++++++++++-------------------------
- 1 files changed, 119 insertions(+), 112 deletions(-)
+We have to delay the patch until rc1 or whatever is merged back to net-ne=
+xt.
 
-diff --git a/src/libsocketcan.c b/src/libsocketcan.c
-index 26da338..b3815c1 100644
---- a/src/libsocketcan.c
-+++ b/src/libsocketcan.c
-@@ -258,6 +258,7 @@ static int open_nl_sock()
- 	int fd;
- 	int sndbuf = 32768;
- 	int rcvbuf = 32768;
-+	int flags;
- 	unsigned int addr_len;
- 	struct sockaddr_nl local;
- 
-@@ -271,6 +272,10 @@ static int open_nl_sock()
- 
- 	setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void *)&rcvbuf, sizeof(rcvbuf));
- 
-+	if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
-+		flags = 0;
-+	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-+
- 	memset(&local, 0, sizeof(local));
- 	local.nl_family = AF_NETLINK;
- 	local.nl_groups = 0;
-@@ -349,43 +354,40 @@ static int do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
- 		return ret;
- 	}
- 
--	if ((msglen = recvmsg(fd, &msg, 0)) <= 0) {
--		perror("Receive error");
--		return ret;
--	}
--	size_t u_msglen = (size_t) msglen;
--	/* Check to see if the buffers in msg get truncated */
--	if (msg.msg_namelen != sizeof(peer) ||
--	    (msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC))) {
--		fprintf(stderr, "Uhoh... truncated message.\n");
--		return ret;
--	}
-+	while ((msglen = recvmsg(fd, &msg, 0)) > 0) {
-+		size_t u_msglen = (size_t) msglen;
-+		/* Check to see if the buffers in msg get truncated */
-+		if (msg.msg_namelen != sizeof(peer) ||
-+		    (msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC))) {
-+			fprintf(stderr, "Uhoh... truncated message.\n");
-+			return ret;
-+		}
- 
--	for (nl_msg = (struct nlmsghdr *)nlbuf;
--	     NLMSG_OK(nl_msg, u_msglen);
--	     nl_msg = NLMSG_NEXT(nl_msg, u_msglen)) {
--		int type = nl_msg->nlmsg_type;
--		int len;
--		if (type != RTM_NEWLINK)
--			continue;
-+		for (nl_msg = (struct nlmsghdr *)nlbuf;
-+		    NLMSG_OK(nl_msg, u_msglen);
-+		    nl_msg = NLMSG_NEXT(nl_msg, u_msglen)) {
-+			int type = nl_msg->nlmsg_type;
-+			int len;
-+			if (type != RTM_NEWLINK)
-+				continue;
- 
--		struct ifinfomsg *ifi = NLMSG_DATA(nl_msg);
--		struct rtattr *tb[IFLA_MAX + 1];
-+			struct ifinfomsg *ifi = NLMSG_DATA(nl_msg);
-+			struct rtattr *tb[IFLA_MAX + 1];
- 
--		len =
--		    nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
--		parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
-+			len =
-+			    nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-+			parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
- 
--		if (strncmp
--		    ((char *)RTA_DATA(tb[IFLA_IFNAME]), name,
--		     sizeof(name)) != 0)
--			continue;
-+			if (strncmp
-+			    ((char *)RTA_DATA(tb[IFLA_IFNAME]), name,
-+			    sizeof(name)) != 0)
-+				continue;
- 
--		if (tb[IFLA_LINKINFO])
--			parse_rtattr_nested(linkinfo,
--					    IFLA_INFO_MAX, tb[IFLA_LINKINFO]);
--		else
--			continue;
-+			if (tb[IFLA_LINKINFO])
-+				parse_rtattr_nested(linkinfo,
-+						    IFLA_INFO_MAX, tb[IFLA_LINKINFO]);
-+			else
-+				continue;
- 
- 		if (acquire == GET_XSTATS) {
- 			if (!linkinfo[IFLA_INFO_XSTATS])
-@@ -398,92 +400,97 @@ static int do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
- 			continue;
- 		}
- 
--		if (!linkinfo[IFLA_INFO_DATA]) {
--			fprintf(stderr, "no link data found\n");
--			return ret;
--		}
--
--		parse_rtattr_nested(can_attr, IFLA_CAN_MAX,
--				    linkinfo[IFLA_INFO_DATA]);
--
--		switch (acquire) {
--		case GET_STATE:
--			if (can_attr[IFLA_CAN_STATE]) {
--				*((int *)res) = *((__u32 *)
--						  RTA_DATA(can_attr
--							   [IFLA_CAN_STATE]));
--				ret = 0;
--			} else {
--				fprintf(stderr, "no state data found\n");
-+			if (!linkinfo[IFLA_INFO_DATA]) {
-+				fprintf(stderr, "no link data found\n");
-+				return ret;
- 			}
- 
--			break;
--		case GET_RESTART_MS:
--			if (can_attr[IFLA_CAN_RESTART_MS]) {
--				*((__u32 *) res) = *((__u32 *)
--						     RTA_DATA(can_attr
--							      [IFLA_CAN_RESTART_MS]));
--				ret = 0;
--			} else
--				fprintf(stderr, "no restart_ms data found\n");
--
--			break;
--		case GET_BITTIMING:
--			if (can_attr[IFLA_CAN_BITTIMING]) {
--				memcpy(res,
--				       RTA_DATA(can_attr[IFLA_CAN_BITTIMING]),
--				       sizeof(struct can_bittiming));
--				ret = 0;
--			} else
--				fprintf(stderr, "no bittiming data found\n");
--
--			break;
--		case GET_CTRLMODE:
--			if (can_attr[IFLA_CAN_CTRLMODE]) {
--				memcpy(res,
--				       RTA_DATA(can_attr[IFLA_CAN_CTRLMODE]),
--				       sizeof(struct can_ctrlmode));
--				ret = 0;
--			} else
--				fprintf(stderr, "no ctrlmode data found\n");
-+			parse_rtattr_nested(can_attr, IFLA_CAN_MAX,
-+					    linkinfo[IFLA_INFO_DATA]);
- 
--			break;
--		case GET_CLOCK:
--			if (can_attr[IFLA_CAN_CLOCK]) {
--				memcpy(res,
--				       RTA_DATA(can_attr[IFLA_CAN_CLOCK]),
--				       sizeof(struct can_clock));
--				ret = 0;
--			} else
--				fprintf(stderr,
--					"no clock parameter data found\n");
--
--			break;
--		case GET_BITTIMING_CONST:
--			if (can_attr[IFLA_CAN_BITTIMING_CONST]) {
--				memcpy(res,
--				       RTA_DATA(can_attr[IFLA_CAN_BITTIMING_CONST]),
--				       sizeof(struct can_bittiming_const));
--				ret = 0;
--			} else
--				fprintf(stderr, "no bittiming_const data found\n");
--
--			break;
--		case GET_BERR_COUNTER:
--			if (can_attr[IFLA_CAN_BERR_COUNTER]) {
--				memcpy(res,
--				       RTA_DATA(can_attr[IFLA_CAN_BERR_COUNTER]),
--				       sizeof(struct can_berr_counter));
--				ret = 0;
--			} else
--				fprintf(stderr, "no berr_counter data found\n");
--
--			break;
-+			switch (acquire) {
-+			case GET_STATE:
-+				if (can_attr[IFLA_CAN_STATE]) {
-+					*((int *)res) = *((__u32 *)
-+							  RTA_DATA(can_attr
-+								  [IFLA_CAN_STATE]));
-+					ret = 0;
-+				} else {
-+					fprintf(stderr, "no state data found\n");
-+				}
- 
--		default:
--			fprintf(stderr, "unknown acquire mode\n");
-+				break;
-+			case GET_RESTART_MS:
-+				if (can_attr[IFLA_CAN_RESTART_MS]) {
-+					*((__u32 *) res) = *((__u32 *)
-+							    RTA_DATA(can_attr
-+								      [IFLA_CAN_RESTART_MS]));
-+					ret = 0;
-+				} else
-+					fprintf(stderr, "no restart_ms data found\n");
-+
-+				break;
-+			case GET_BITTIMING:
-+				if (can_attr[IFLA_CAN_BITTIMING]) {
-+					memcpy(res,
-+					      RTA_DATA(can_attr[IFLA_CAN_BITTIMING]),
-+					      sizeof(struct can_bittiming));
-+					ret = 0;
-+				} else
-+					fprintf(stderr, "no bittiming data found\n");
-+
-+				break;
-+			case GET_CTRLMODE:
-+				if (can_attr[IFLA_CAN_CTRLMODE]) {
-+					memcpy(res,
-+					      RTA_DATA(can_attr[IFLA_CAN_CTRLMODE]),
-+					      sizeof(struct can_ctrlmode));
-+					ret = 0;
-+				} else
-+					fprintf(stderr, "no ctrlmode data found\n");
-+
-+				break;
-+			case GET_CLOCK:
-+				if (can_attr[IFLA_CAN_CLOCK]) {
-+					memcpy(res,
-+					      RTA_DATA(can_attr[IFLA_CAN_CLOCK]),
-+					      sizeof(struct can_clock));
-+					ret = 0;
-+				} else
-+					fprintf(stderr,
-+						"no clock parameter data found\n");
-+
-+				break;
-+			case GET_BITTIMING_CONST:
-+				if (can_attr[IFLA_CAN_BITTIMING_CONST]) {
-+					memcpy(res,
-+					      RTA_DATA(can_attr[IFLA_CAN_BITTIMING_CONST]),
-+					      sizeof(struct can_bittiming_const));
-+					ret = 0;
-+				} else
-+					fprintf(stderr, "no bittiming_const data found\n");
-+
-+				break;
-+			case GET_BERR_COUNTER:
-+				if (can_attr[IFLA_CAN_BERR_COUNTER]) {
-+					memcpy(res,
-+					      RTA_DATA(can_attr[IFLA_CAN_BERR_COUNTER]),
-+					      sizeof(struct can_berr_counter));
-+					ret = 0;
-+				} else
-+					fprintf(stderr, "no berr_counter data found\n");
-+
-+				break;
-+
-+			default:
-+				fprintf(stderr, "unknown acquire mode\n");
-+			}
- 		}
- 	}
-+	if ((msglen <= 0) && (errno != EAGAIN)) {
-+		perror("Receive error");
-+	}
-+
- 	return ret;
- }
- 
--- 
-1.7.8.6
+Or I will provide a temporary tree with current mainline as base.
 
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enigECD8088CC41B270EAB26129A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAlAZMJgACgkQjTAFq1RaXHNrzQCfYdsYRCrLYeaTJ9GqJKyO+c3+
+7SQAoI5EZkzwXw3hul7bRJEdZ07ExHbx
+=SWDC
+-----END PGP SIGNATURE-----
+
+--------------enigECD8088CC41B270EAB26129A--
