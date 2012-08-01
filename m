@@ -1,83 +1,279 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-next v4] can: add tx/rx LED trigger support
-Date: Wed, 01 Aug 2012 13:37:45 +0200
-Message-ID: <50191509.8030404@pengutronix.de>
-References: <5017C8E4.4020003@pengutronix.de> <1343772338-1526-1-git-send-email-fabio.baltieri@gmail.com> <5018F8B3.6080404@pengutronix.de> <20120801103032.GA1385@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigC03E5205E9B19DD1A9AEE815"
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: [PATCH can-next v5 1/2] can: add tx/rx LED trigger support
+Date: Wed,  1 Aug 2012 13:49:41 +0200
+Message-ID: <1343821782-1346-1-git-send-email-fabio.baltieri@gmail.com>
+References: <5018F8B3.6080404@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54265 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751818Ab2HALiA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Aug 2012 07:38:00 -0400
-In-Reply-To: <20120801103032.GA1385@gmail.com>
+Received: from mail-wg0-f44.google.com ([74.125.82.44]:42592 "EHLO
+	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753218Ab2HALsH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Aug 2012 07:48:07 -0400
+In-Reply-To: <5018F8B3.6080404@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+To: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigC03E5205E9B19DD1A9AEE815
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+This patch implements the functions to add two LED triggers, named
+<ifname>-tx and <ifname>-rx, to a canbus device driver.
 
-On 08/01/2012 12:30 PM, Fabio Baltieri wrote:
-[...]
->>> +void can_led_init(struct net_device *netdev)
->>> +{
->>> +	struct can_priv *priv =3D netdev_priv(netdev);
->>> +	void *res;
->>> +
->>> +	res =3D devres_alloc(can_led_release, 0, GFP_KERNEL);
->>                                             ^
->> I'm not really sure if this is working. For example, pinctrl [1]
->> allocates a double pointer here. The res pointer here and in
->> can_led_release simply points to invalid memory. But as long as you
->> don't dereference it, it should work.
->>
->> [1] http://lxr.free-electrons.com/source/drivers/pinctrl/core.c#L862
->=20
-> Actually that's also used by libata-core (not in lxr yet) and dma-mappi=
-ng:
->=20
-> http://lxr.free-electrons.com/source/drivers/base/dma-mapping.c#L193
->=20
-> actually, res should point at the end of some internal devres structure=
-,
-> and is only used as return value in this case.
->=20
-> Of course, in this case the release function can only use the struct
-> device pointer.
->=20
-> I've run some fail test and ftraced the whole thing and it seems to wor=
-k
-> pretty good!  I'll send a v5 with the rename later.
+Triggers are called from specific handlers by each CAN device driver and
+can be disabled altogether with a Kconfig option.
 
-Thanks for checking. I just noticed, the pinctrl usecase is a bit differe=
-nt.
+The implementation keeps the LED on when the interface is UP and blinks
+the LED on network activity at a configurable rate.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+This only supports can-dev based drivers, as it uses some support field
+in the can_priv structure.
 
+Supported drivers should call devm_can_led_init() and can_led_event() as
+needed.
 
---------------enigC03E5205E9B19DD1A9AEE815
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Cleanup is handled automatically by devres, so no *_exit function is
+needed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Supported events are:
+- CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
+- CAN_LED_EVENT_STOP: turn off tx/rx LEDs
+- CAN_LED_EVENT_TX: trigger tx LED blink
+- CAN_LED_EVENT_RX: trigger tx LED blink
 
-iEYEARECAAYFAlAZFRAACgkQjTAFq1RaXHOrAQCgj/wB/GbHM032ywRp9JzCXWaS
-qywAnROqiNlNFCHFUc54uwgV+fzeYl/a
-=v+6P
------END PGP SIGNATURE-----
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+---
 
---------------enigC03E5205E9B19DD1A9AEE815--
+Hello,
+
+so, v5, renamed can_led_init to devm_can_led_init like other devres based
+functions.
+
+Also, I'm reposting implementation into flexcan in 2/2... I have a small
+patchset for others embedded can drivers to be tested which I can post in
+another thread if this patch is accepted.
+
+Fabio
+
+ drivers/net/can/Kconfig  |  12 ++++++
+ drivers/net/can/Makefile |   2 +
+ drivers/net/can/led.c    | 102 +++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/dev.h  |   8 ++++
+ include/linux/can/led.h  |  34 ++++++++++++++++
+ 5 files changed, 158 insertions(+)
+ create mode 100644 drivers/net/can/led.c
+ create mode 100644 include/linux/can/led.h
+
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index bb709fd..19dec19 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -54,6 +54,18 @@ config CAN_CALC_BITTIMING
+ 	  arguments "tq", "prop_seg", "phase_seg1", "phase_seg2" and "sjw".
+ 	  If unsure, say Y.
+ 
++config CAN_LEDS
++	bool "Enable LED triggers for Netlink based drivers"
++	depends on CAN_DEV
++	depends on LEDS_CLASS
++	select LEDS_TRIGGERS
++	---help---
++	  This option adds two LED triggers for packet receive and transmit
++	  events on each supported CAN device.
++
++	  Say Y here if you are working on a system with led-class supported
++	  LEDs and you want to use them as canbus activity indicators.
++
+ config CAN_AT91
+ 	tristate "Atmel AT91 onchip CAN controller"
+ 	depends on CAN_DEV && (ARCH_AT91SAM9263 || ARCH_AT91SAM9X5)
+diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
+index 938be37..24ee98b 100644
+--- a/drivers/net/can/Makefile
++++ b/drivers/net/can/Makefile
+@@ -8,6 +8,8 @@ obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
+ obj-$(CONFIG_CAN_DEV)		+= can-dev.o
+ can-dev-y			:= dev.o
+ 
++can-dev-$(CONFIG_CAN_LEDS)	+= led.o
++
+ obj-y				+= usb/
+ obj-y				+= softing/
+ 
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
+new file mode 100644
+index 0000000..8b4f6a9
+--- /dev/null
++++ b/drivers/net/can/led.c
+@@ -0,0 +1,102 @@
++/*
++ * Copyright 2012, Fabio Baltieri <fabio.baltieri@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/netdevice.h>
++#include <linux/can/dev.h>
++
++#include <linux/can/led.h>
++
++static unsigned long led_delay = 50;
++module_param(led_delay, ulong, 0644);
++MODULE_PARM_DESC(led_delay,
++		"blink delay time for activity leds (msecs, default: 50).");
++
++/*
++ * Trigger a LED event in response to a CAN device event
++ */
++void can_led_event(struct net_device *netdev, enum can_led_event event)
++{
++	struct can_priv *priv = netdev_priv(netdev);
++
++	switch (event) {
++	case CAN_LED_EVENT_OPEN:
++		led_trigger_event(priv->tx_led_trig, LED_FULL);
++		led_trigger_event(priv->rx_led_trig, LED_FULL);
++		break;
++	case CAN_LED_EVENT_STOP:
++		led_trigger_event(priv->tx_led_trig, LED_OFF);
++		led_trigger_event(priv->rx_led_trig, LED_OFF);
++		break;
++	case CAN_LED_EVENT_TX:
++		if (led_delay)
++			led_trigger_blink_oneshot(priv->tx_led_trig,
++						  &led_delay, &led_delay, 1);
++		break;
++	case CAN_LED_EVENT_RX:
++		if (led_delay)
++			led_trigger_blink_oneshot(priv->rx_led_trig,
++						  &led_delay, &led_delay, 1);
++		break;
++	}
++}
++EXPORT_SYMBOL_GPL(can_led_event);
++
++static void can_led_release(struct device *gendev, void *res)
++{
++	struct can_priv *priv = netdev_priv(to_net_dev(gendev));
++
++	led_trigger_unregister_simple(priv->tx_led_trig);
++	led_trigger_unregister_simple(priv->rx_led_trig);
++
++	kfree(priv->tx_led_trig_name);
++	kfree(priv->rx_led_trig_name);
++}
++
++/*
++ * Register CAN LED triggers for a CAN device
++ *
++ * This is normally called from a driver's probe function
++ */
++void devm_can_led_init(struct net_device *netdev)
++{
++	struct can_priv *priv = netdev_priv(netdev);
++	void *res;
++
++	res = devres_alloc(can_led_release, 0, GFP_KERNEL);
++	if (!res)
++		goto err_out;
++
++	priv->tx_led_trig_name = kasprintf(GFP_KERNEL, "%s-tx", netdev->name);
++	if (!priv->tx_led_trig_name)
++		goto err_out;
++
++	priv->rx_led_trig_name = kasprintf(GFP_KERNEL, "%s-rx", netdev->name);
++	if (!priv->rx_led_trig_name)
++		goto err_out_rx;
++
++	led_trigger_register_simple(priv->tx_led_trig_name,
++				    &priv->tx_led_trig);
++	led_trigger_register_simple(priv->rx_led_trig_name,
++				    &priv->rx_led_trig);
++
++	devres_add(&netdev->dev, res);
++
++	return;
++
++err_out_rx:
++	kfree(priv->tx_led_trig_name);
++	priv->tx_led_trig_name = NULL;
++err_out:
++	netdev_err(netdev, "cannot register LED triggers\n");
++	devres_free(res);
++}
++EXPORT_SYMBOL_GPL(devm_can_led_init);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 2b2fc34..167b04a 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -16,6 +16,7 @@
+ #include <linux/can.h>
+ #include <linux/can/netlink.h>
+ #include <linux/can/error.h>
++#include <linux/can/led.h>
+ 
+ /*
+  * CAN mode
+@@ -52,6 +53,13 @@ struct can_priv {
+ 
+ 	unsigned int echo_skb_max;
+ 	struct sk_buff **echo_skb;
++
++#ifdef CONFIG_CAN_LEDS
++	struct led_trigger *tx_led_trig;
++	char *tx_led_trig_name;
++	struct led_trigger *rx_led_trig;
++	char *rx_led_trig_name;
++#endif
+ };
+ 
+ /*
+diff --git a/include/linux/can/led.h b/include/linux/can/led.h
+new file mode 100644
+index 0000000..946059c
+--- /dev/null
++++ b/include/linux/can/led.h
+@@ -0,0 +1,34 @@
++/*
++ * Copyright 2012, Fabio Baltieri <fabio.baltieri@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef CAN_LED_H
++#define CAN_LED_H
++
++#include <linux/leds.h>
++
++enum can_led_event {
++	CAN_LED_EVENT_OPEN,
++	CAN_LED_EVENT_STOP,
++	CAN_LED_EVENT_TX,
++	CAN_LED_EVENT_RX,
++};
++
++#ifdef CONFIG_CAN_LEDS
++void can_led_event(struct net_device *netdev, enum can_led_event event);
++void devm_can_led_init(struct net_device *netdev);
++#else
++static inline void can_led_event(struct net_device *netdev,
++				 enum can_led_event event)
++{
++}
++static inline void devm_can_led_init(struct net_device *netdev)
++{
++}
++#endif
++
++#endif
+-- 
+1.7.11.rc1.9.gf623ca1.dirty
+
