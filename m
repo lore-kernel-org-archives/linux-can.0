@@ -1,169 +1,50 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
-Date: Thu, 02 Aug 2012 13:56:23 +0200
-Message-ID: <501A6AE7.9060508@pengutronix.de>
-References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <50166BF2.9000700@pengutronix.de> <20120730133323.GA13941@hposo> <5017ABC6.7030307@pengutronix.de> <20120731130650.GA23541@hposo> <5017DD5B.2030701@pengutronix.de> <20120802105358.GA23787@hposo>
+From: "AnilKumar, Chimata" <anilkumar-l0cyMroinI0@public.gmane.org>
+Subject: RE: [PATCH v3 1/3] can: c_can: Add device tree support to Bosch
+ C_CAN/D_CAN controller
+Date: Thu, 2 Aug 2012 12:01:37 +0000
+Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA08249@DBDE01.ent.ti.com>
+References: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
+ <1343905339-4642-2-git-send-email-anilkumar@ti.com>
+ <3432187.NhmxBJqHyV@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig0AF6AB88EEBBD5E06510C7AE"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46198 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754298Ab2HBL4c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 07:56:32 -0400
-In-Reply-To: <20120802105358.GA23787@hposo>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Olivier Sobrie <olivier@sobrie.be>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <3432187.NhmxBJqHyV@wuerfel>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Cc: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org" <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "Gole, Anant" <anantgole-l0cyMroinI0@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig0AF6AB88EEBBD5E06510C7AE
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
 
-On 08/02/2012 12:53 PM, Olivier Sobrie wrote:
->>> 1) With the short circuit:
->>>
->>> I perform the test you described. It showed that the Kvaser passes fr=
-om
->>> ERROR-WARNING to ERROR-PASSIVE and then BUS-OFF. But after going to t=
-he
->>> state BUS-OFF it comes back to ERROR-WARNING.
->>>
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
->>
->> Why don't we have any rx/tx numbers in the error frame?
->=20
-> Because the hardware seems to not update the tx/rx_errors_count
-> fields :-(
+Thanks for the review
 
-Okay.
+On Thu, Aug 02, 2012 at 17:03:59, Arnd Bergmann wrote:
+> On Thursday 02 August 2012 16:32:17 AnilKumar Ch wrote:
+> > +- interrupt-parent     : The parent interrupt controller
+> > +
+> > +Optional properties:
+> > +- ti,hwmods            : Must be "d_can<n>" or "c_can<n>", n being the
+> > +                         instance number
+> 
+> interrupt-parent should be optional, not mandatory. It's usually implied
+> by the parent's interrupt-parent.
+> 
 
->> From the hardware point of view the short circuit and open end tests
->> look good. Please adjust the driver to turn off the CAN interface in
->> case of a bus off if restart_ms is 0.
->=20
-> And in the case where restart_ms is not 0? Don't I've to put it off so
-> and drop the frame?
+In case of AM33XX specific we need to connect interrupt to interrupt
+controller so I added to mandatory list. Yes I agree with you, in generic
+case this should be optional I will change.
 
-No, don't drop the frame. restart-ms !=3D 0 means the controller is
-automatically restarted after the specified time (if the controller
-supports). Or in your and the at91 case, automatically.
-
-> I actually implemeted it as you said and here is what I observed in
-> candump output with restart_ms set to 100 ms:
->=20
-> t0: Short circuit between CAN-H and CAN-L + cansend can1 123#1122
->   can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
-> 	controller-problem{rx-error-warning}
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-error
->   can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> 	controller-problem{rx-error-passive}
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-error
->   can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-off
-> 	bus-error
-> ...
->   can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
-> 	controller-problem{rx-error-warning}
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-error
->   can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> 	controller-problem{rx-error-passive}
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-error
->   can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
-> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-> 	bus-off
-> 	bus-error
->=20
-> t1: short circuit removed
->   can1  123  [2] 11 22
->   can1  20000100  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
-> 	restarted-after-bus-of
->=20
-> The echo coming before the restart looks weird? No?
-> Shouldn't we drop the frame once BUF-OFF is reached?
-
-No, I don't think so. But wait for Wolfgang, here's more into error
-handling then me.
-
->=20
->>>>>>> +		if ((priv->can.state =3D=3D CAN_STATE_ERROR_WARNING) ||
->>>>>>> +		    (priv->can.state =3D=3D CAN_STATE_ERROR_PASSIVE)) {
->>>>>>> +			cf->data[1] =3D (txerr > rxerr) ?
->>>>>>> +				CAN_ERR_CRTL_TX_PASSIVE
->>>>>>> +				: CAN_ERR_CRTL_RX_PASSIVE;
->>
->> Please use CAN_ERR_CRTL_RX_WARNING, CAN_ERR_CRTL_TX_WARNING where
->> appropriate.
-
-> Ok. As the hardware doesn't report good values for txerr and rxerr, I'l=
-l
-> also remove the tests on txerr and rxerr.
-> I observed the same behavior with the original driver.
-> I asked Kvaser for this problem. I've to wait before their developer is=
-
-> back (same for the GPL issue).
-
-Okay.
-
->>>>>>> +static int kvaser_usb_get_berr_counter(const struct net_device *=
-netdev,
->>>>>>> +				       struct can_berr_counter *bec)
->>>>>>> +{
->>>>>>> +	struct kvaser_usb_net_priv *priv =3D netdev_priv(netdev);
->>>>>>> +
->>>>>>> +	bec->txerr =3D priv->bec.txerr;
->>>>>>> +	bec->rxerr =3D priv->bec.rxerr;
->>
->> I think you can copy the struct like this:
->>
->> 	*bec =3D priv->bec;
->=20
-> Thanks. I'll remove the function kvaser_usb_get_berr_counter as the
-> hardware seems to never report txerr and rxerr.
-
-Sounds reasonable.
-
-BTW: is it possible to update the firmware on these devices?
-
-> I'll look deeper at this driver during the week-end if possible...
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig0AF6AB88EEBBD5E06510C7AE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAlAaauoACgkQjTAFq1RaXHNeMwCeJ6zDBNuUzLs9N9muGlt2u+/F
-Ez8AniRPP2r6QqZyy3X/0Hfy4H+A3yJC
-=v4ti
------END PGP SIGNATURE-----
-
---------------enig0AF6AB88EEBBD5E06510C7AE--
+Thanks
+AnilKumar
