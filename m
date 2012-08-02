@@ -1,57 +1,130 @@
-From: "AnilKumar, Chimata" <anilkumar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH v2 1/2] can: c_can: Add device tree support to Bosch
- C_CAN/D_CAN controller
-Date: Thu, 2 Aug 2012 08:51:06 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA0802C@DBDE01.ent.ti.com>
-References: <1343218729-16954-1-git-send-email-anilkumar@ti.com>
- <1343218729-16954-2-git-send-email-anilkumar@ti.com>
- <500FF908.1000307@pengutronix.de>
- <331ABD5ECB02734CA317220B2BBEABC13EA037AA@DBDE01.ent.ti.com>
- <501A3370.5090906@pengutronix.de>
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Thu, 2 Aug 2012 12:53:58 +0200
+Message-ID: <20120802105358.GA23787@hposo>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be>
+ <50166BF2.9000700@pengutronix.de>
+ <20120730133323.GA13941@hposo>
+ <5017ABC6.7030307@pengutronix.de>
+ <20120731130650.GA23541@hposo>
+ <5017DD5B.2030701@pengutronix.de>
+Reply-To: Olivier Sobrie <olivier@sobrie.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <501A3370.5090906-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "Gole,
- Anant" <anantgole-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5017DD5B.2030701@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+Hello,
 
-On Thu, Aug 02, 2012 at 13:29:44, Marc Kleine-Budde wrote:
-> On 07/25/2012 04:12 PM, AnilKumar, Chimata wrote:
-> > Marc,
+On Tue, Jul 31, 2012 at 03:27:55PM +0200, Marc Kleine-Budde wrote:
+> We can continue the review process, this problem has to be sorted out
+> before I can apply this patch to linux-can-next tree.
+
+Ok.
+
+> > 1) With the short circuit:
 > > 
-> > On Wed, Jul 25, 2012 at 19:17:52, Marc Kleine-Budde wrote:
-> >> On 07/25/2012 02:18 PM, AnilKumar Ch wrote:
-> >>> Add device tree support to C_CAN/D_CAN controller and usage details
-> >>> are added to device tree documentation. Driver was tested on AM335x
-> >>> EVM.
-> >>
-> >> Does not apply to linux-can-next, as Viresh Kumar's patch "net/c_can:
-> >> remove conditional compilation of clk code" is not yet included. I
-> >> suggest to delay this patch until we have Viresh's patch in net-next.
-> >>
-> >> See comment inline.
+> > I perform the test you described. It showed that the Kvaser passes from
+> > ERROR-WARNING to ERROR-PASSIVE and then BUS-OFF. But after going to the
+> > state BUS-OFF it comes back to ERROR-WARNING.
 > > 
-> > Ok, I will wait till net-next is updated with Viresh Kumar's patch.
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
 > 
-> Now Viresh's patch is in net-next, feel free to post your new patches.
+> Why don't we have any rx/tx numbers in the error frame?
 
-I will send the patches.
+Because the hardware seems to not update the tx/rx_errors_count
+fields :-(
 
-Thanks
-AnilKumar
+> From the hardware point of view the short circuit and open end tests
+> look good. Please adjust the driver to turn off the CAN interface in
+> case of a bus off if restart_ms is 0.
+
+And in the case where restart_ms is not 0? Don't I've to put it off so
+and drop the frame?
+I actually implemeted it as you said and here is what I observed in
+candump output with restart_ms set to 100 ms:
+
+t0: Short circuit between CAN-H and CAN-L + cansend can1 123#1122
+  can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
+	controller-problem{rx-error-warning}
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-error
+  can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+	controller-problem{rx-error-passive}
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-error
+  can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-off
+	bus-error
+...
+  can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
+	controller-problem{rx-error-warning}
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-error
+  can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+	controller-problem{rx-error-passive}
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-error
+  can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
+	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+	bus-off
+	bus-error
+
+t1: short circuit removed
+  can1  123  [2] 11 22
+  can1  20000100  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
+	restarted-after-bus-of
+
+The echo coming before the restart looks weird? No?
+Shouldn't we drop the frame once BUF-OFF is reached?
+
+> >>>>> +		if ((priv->can.state == CAN_STATE_ERROR_WARNING) ||
+> >>>>> +		    (priv->can.state == CAN_STATE_ERROR_PASSIVE)) {
+> >>>>> +			cf->data[1] = (txerr > rxerr) ?
+> >>>>> +				CAN_ERR_CRTL_TX_PASSIVE
+> >>>>> +				: CAN_ERR_CRTL_RX_PASSIVE;
+> 
+> Please use CAN_ERR_CRTL_RX_WARNING, CAN_ERR_CRTL_TX_WARNING where
+> appropriate.
+
+Ok. As the hardware doesn't report good values for txerr and rxerr, I'll
+also remove the tests on txerr and rxerr.
+I observed the same behavior with the original driver.
+I asked Kvaser for this problem. I've to wait before their developer is
+back (same for the GPL issue).
+
+> >>>>> +static int kvaser_usb_get_berr_counter(const struct net_device *netdev,
+> >>>>> +				       struct can_berr_counter *bec)
+> >>>>> +{
+> >>>>> +	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
+> >>>>> +
+> >>>>> +	bec->txerr = priv->bec.txerr;
+> >>>>> +	bec->rxerr = priv->bec.rxerr;
+> 
+> I think you can copy the struct like this:
+> 
+> 	*bec = priv->bec;
+
+Thanks. I'll remove the function kvaser_usb_get_berr_counter as the
+hardware seems to never report txerr and rxerr.
+
+I'll look deeper at this driver during the week-end if possible...
+
+Thanks a lot for your help,
+
+-- 
+Olivier
