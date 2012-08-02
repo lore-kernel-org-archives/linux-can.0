@@ -1,130 +1,59 @@
-From: Olivier Sobrie <olivier@sobrie.be>
-Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
-Date: Thu, 2 Aug 2012 12:53:58 +0200
-Message-ID: <20120802105358.GA23787@hposo>
-References: <1343626352-24760-1-git-send-email-olivier@sobrie.be>
- <50166BF2.9000700@pengutronix.de>
- <20120730133323.GA13941@hposo>
- <5017ABC6.7030307@pengutronix.de>
- <20120731130650.GA23541@hposo>
- <5017DD5B.2030701@pengutronix.de>
-Reply-To: Olivier Sobrie <olivier@sobrie.be>
+From: AnilKumar Ch <anilkumar@ti.com>
+Subject: [PATCH v3 0/3] Add DT support to C_CAN/D_CAN controller
+Date: Thu, 2 Aug 2012 16:32:16 +0530
+Message-ID: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5017DD5B.2030701@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from devils.ext.ti.com ([198.47.26.153]:42109 "EHLO
+	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754375Ab2HBLCi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 07:02:38 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: devicetree-discuss@lists.ozlabs.org, grant.likely@secretlab.ca, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-Hello,
+This patch series adds the device tree support and Runtime PM support
+to C_CAN/D_CAN controller.
 
-On Tue, Jul 31, 2012 at 03:27:55PM +0200, Marc Kleine-Budde wrote:
-> We can continue the review process, this problem has to be sorted out
-> before I can apply this patch to linux-can-next tree.
+These patches have been tested on AM335x EVM using some additional
+patches to add device tree data to EVM dts files and to initialize
+D_CAN RAM. D_CAN raminit is controlled from control module register.
+This patch will be submitted once control module MFD driver support
+is added.
 
-Ok.
+These patches are based on linx-can-next tree.
 
-> > 1) With the short circuit:
-> > 
-> > I perform the test you described. It showed that the Kvaser passes from
-> > ERROR-WARNING to ERROR-PASSIVE and then BUS-OFF. But after going to the
-> > state BUS-OFF it comes back to ERROR-WARNING.
-> > 
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> >   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-> 
-> Why don't we have any rx/tx numbers in the error frame?
+Due to lack of hardware I am not able to test c_can functionality.
+I appreciate if anyone can test c_can functionality with this patch
+series.
 
-Because the hardware seems to not update the tx/rx_errors_count
-fields :-(
+Changes from v2:
+	- Incorporated Marcs on v2
+	  * Fix compilation errors in pci due to device name changes
+	  in v2 by adding new patch.
 
-> From the hardware point of view the short circuit and open end tests
-> look good. Please adjust the driver to turn off the CAN interface in
-> case of a bus off if restart_ms is 0.
+Changes from v1:
+	- Separated 4 patches into CAN driver specific and device
+	  tree data addition specific.
+	- Incorporated Marc's comments on v1
+	  * Modified c_can_dev_id enum to handle both devtype and
+	    platform device id index.
+	  * Removed "legacy bosch,c_can_platform" from DT bindings
 
-And in the case where restart_ms is not 0? Don't I've to put it off so
-and drop the frame?
-I actually implemeted it as you said and here is what I observed in
-candump output with restart_ms set to 100 ms:
+AnilKumar Ch (3):
+  can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
+  can: c_can: Modify c_can device names in c_can_pci driver
+  can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
 
-t0: Short circuit between CAN-H and CAN-L + cansend can1 123#1122
-  can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
-	controller-problem{rx-error-warning}
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-error
-  can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-	controller-problem{rx-error-passive}
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-error
-  can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-off
-	bus-error
-...
-  can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
-	controller-problem{rx-error-warning}
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-error
-  can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
-	controller-problem{rx-error-passive}
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-error
-  can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
-	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
-	bus-off
-	bus-error
-
-t1: short circuit removed
-  can1  123  [2] 11 22
-  can1  20000100  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
-	restarted-after-bus-of
-
-The echo coming before the restart looks weird? No?
-Shouldn't we drop the frame once BUF-OFF is reached?
-
-> >>>>> +		if ((priv->can.state == CAN_STATE_ERROR_WARNING) ||
-> >>>>> +		    (priv->can.state == CAN_STATE_ERROR_PASSIVE)) {
-> >>>>> +			cf->data[1] = (txerr > rxerr) ?
-> >>>>> +				CAN_ERR_CRTL_TX_PASSIVE
-> >>>>> +				: CAN_ERR_CRTL_RX_PASSIVE;
-> 
-> Please use CAN_ERR_CRTL_RX_WARNING, CAN_ERR_CRTL_TX_WARNING where
-> appropriate.
-
-Ok. As the hardware doesn't report good values for txerr and rxerr, I'll
-also remove the tests on txerr and rxerr.
-I observed the same behavior with the original driver.
-I asked Kvaser for this problem. I've to wait before their developer is
-back (same for the GPL issue).
-
-> >>>>> +static int kvaser_usb_get_berr_counter(const struct net_device *netdev,
-> >>>>> +				       struct can_berr_counter *bec)
-> >>>>> +{
-> >>>>> +	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
-> >>>>> +
-> >>>>> +	bec->txerr = priv->bec.txerr;
-> >>>>> +	bec->rxerr = priv->bec.rxerr;
-> 
-> I think you can copy the struct like this:
-> 
-> 	*bec = priv->bec;
-
-Thanks. I'll remove the function kvaser_usb_get_berr_counter as the
-hardware seems to never report txerr and rxerr.
-
-I'll look deeper at this driver during the week-end if possible...
-
-Thanks a lot for your help,
+ .../devicetree/bindings/net/can/c_can.txt          |   37 +++++++++++
+ drivers/net/can/c_can/c_can.h                      |    5 +-
+ drivers/net/can/c_can/c_can_pci.c                  |    6 +-
+ drivers/net/can/c_can/c_can_platform.c             |   65 +++++++++++++++-----
+ 4 files changed, 91 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
 
 -- 
-Olivier
+1.7.9.5
+
