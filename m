@@ -1,59 +1,70 @@
 From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v3 0/3] Add DT support to C_CAN/D_CAN controller
-Date: Thu, 2 Aug 2012 16:32:16 +0530
-Message-ID: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
+Subject: [PATCH v3 3/3] can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
+Date: Thu, 2 Aug 2012 16:32:19 +0530
+Message-ID: <1343905339-4642-4-git-send-email-anilkumar@ti.com>
+References: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:42109 "EHLO
+Received: from devils.ext.ti.com ([198.47.26.153]:42111 "EHLO
 	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754375Ab2HBLCi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 07:02:38 -0400
+	with ESMTP id S1754375Ab2HBLCl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 07:02:41 -0400
+In-Reply-To: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: devicetree-discuss@lists.ozlabs.org, grant.likely@secretlab.ca, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This patch series adds the device tree support and Runtime PM support
-to C_CAN/D_CAN controller.
+Add Runtime PM support to C_CAN/D_CAN controller. The runtime PM
+APIs control clocks for C_CAN/D_CAN IP and prevent access to the
+register of C_CAN/D_CAN IP when clock is turned off.
 
-These patches have been tested on AM335x EVM using some additional
-patches to add device tree data to EVM dts files and to initialize
-D_CAN RAM. D_CAN raminit is controlled from control module register.
-This patch will be submitted once control module MFD driver support
-is added.
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
+ drivers/net/can/c_can/c_can_platform.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-These patches are based on linx-can-next tree.
-
-Due to lack of hardware I am not able to test c_can functionality.
-I appreciate if anyone can test c_can functionality with this patch
-series.
-
-Changes from v2:
-	- Incorporated Marcs on v2
-	  * Fix compilation errors in pci due to device name changes
-	  in v2 by adding new patch.
-
-Changes from v1:
-	- Separated 4 patches into CAN driver specific and device
-	  tree data addition specific.
-	- Incorporated Marc's comments on v1
-	  * Modified c_can_dev_id enum to handle both devtype and
-	    platform device id index.
-	  * Removed "legacy bosch,c_can_platform" from DT bindings
-
-AnilKumar Ch (3):
-  can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
-  can: c_can: Modify c_can device names in c_can_pci driver
-  can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
-
- .../devicetree/bindings/net/can/c_can.txt          |   37 +++++++++++
- drivers/net/can/c_can/c_can.h                      |    5 +-
- drivers/net/can/c_can/c_can_pci.c                  |    6 +-
- drivers/net/can/c_can/c_can_platform.c             |   65 +++++++++++++++-----
- 4 files changed, 91 insertions(+), 22 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index d0a66cf..83a1e17 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -32,6 +32,7 @@
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <linux/can/dev.h>
+ 
+@@ -177,6 +178,9 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 		goto exit_free_device;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
++
+ 	dev->irq = irq;
+ 	priv->base = addr;
+ 	priv->can.clock.freq = clk_get_rate(clk);
+@@ -198,6 +202,8 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 
+ exit_free_device:
+ 	platform_set_drvdata(pdev, NULL);
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 	free_c_can_dev(dev);
+ exit_iounmap:
+ 	iounmap(addr);
+@@ -226,6 +232,8 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	release_mem_region(mem->start, resource_size(mem));
+ 
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 	clk_put(priv->priv);
+ 
+ 	return 0;
 -- 
 1.7.9.5
 
