@@ -1,50 +1,39 @@
-From: "AnilKumar, Chimata" <anilkumar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH v3 1/3] can: c_can: Add device tree support to Bosch
- C_CAN/D_CAN controller
-Date: Thu, 2 Aug 2012 12:01:37 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA08249@DBDE01.ent.ti.com>
-References: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
- <1343905339-4642-2-git-send-email-anilkumar@ti.com>
- <3432187.NhmxBJqHyV@wuerfel>
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Thu, 2 Aug 2012 14:16:43 +0200
+Message-ID: <20120802121643.GA12913@hposo>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be>
+ <50166BF2.9000700@pengutronix.de>
+ <20120730133323.GA13941@hposo>
+ <5017ABC6.7030307@pengutronix.de>
+ <20120731130650.GA23541@hposo>
+ <5017DD5B.2030701@pengutronix.de>
+ <20120802105358.GA23787@hposo>
+ <501A6AE7.9060508@pengutronix.de>
+Reply-To: Olivier Sobrie <olivier@sobrie.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <3432187.NhmxBJqHyV@wuerfel>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Cc: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org" <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "Gole, Anant" <anantgole-l0cyMroinI0@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ey0-f174.google.com ([209.85.215.174]:50425 "EHLO
+	mail-ey0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752735Ab2HBMQw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 08:16:52 -0400
+Content-Disposition: inline
+In-Reply-To: <501A6AE7.9060508@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Hi Arnd,
+On Thu, Aug 02, 2012 at 01:56:23PM +0200, Marc Kleine-Budde wrote:
+> BTW: is it possible to update the firmware on these devices?
 
-Thanks for the review
+Yes it possible. But I don't know how to do it... I never did it.
+I saw on their website that they propose a zipfile with new firmwares.
+Inside the zipfile there is a tool 'Update.exe' which, I suppose, does
+the upgrade.
 
-On Thu, Aug 02, 2012 at 17:03:59, Arnd Bergmann wrote:
-> On Thursday 02 August 2012 16:32:17 AnilKumar Ch wrote:
-> > +- interrupt-parent     : The parent interrupt controller
-> > +
-> > +Optional properties:
-> > +- ti,hwmods            : Must be "d_can<n>" or "c_can<n>", n being the
-> > +                         instance number
-> 
-> interrupt-parent should be optional, not mandatory. It's usually implied
-> by the parent's interrupt-parent.
-> 
+Kr,
 
-In case of AM33XX specific we need to connect interrupt to interrupt
-controller so I added to mandatory list. Yes I agree with you, in generic
-case this should be optional I will change.
-
-Thanks
-AnilKumar
+-- 
+Olivier
