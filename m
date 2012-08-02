@@ -1,60 +1,122 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
-Date: Thu, 02 Aug 2012 14:33:56 +0200
-Message-ID: <501A73B4.6030203@pengutronix.de>
-References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <50166BF2.9000700@pengutronix.de> <20120730133323.GA13941@hposo> <5017ABC6.7030307@pengutronix.de> <20120731130650.GA23541@hposo> <5017DD5B.2030701@pengutronix.de> <20120802105358.GA23787@hposo> <501A6AE7.9060508@pengutronix.de> <20120802121643.GA12913@hposo>
+From: AnilKumar Ch <anilkumar@ti.com>
+Subject: [PATCH v4 1/3] can: c_can: Modify c_can device names
+Date: Thu, 2 Aug 2012 18:43:09 +0530
+Message-ID: <1343913191-14722-2-git-send-email-anilkumar@ti.com>
+References: <1343913191-14722-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig896DDF599E4A94B813E8C16F"
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59574 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753329Ab2HBMeD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 08:34:03 -0400
-In-Reply-To: <20120802121643.GA12913@hposo>
+Received: from comal.ext.ti.com ([198.47.26.152]:34904 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753406Ab2HBNNc (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 2 Aug 2012 09:13:32 -0400
+In-Reply-To: <1343913191-14722-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Olivier Sobrie <olivier@sobrie.be>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: devicetree-discuss@lists.ozlabs.org, grant.likely@secretlab.ca, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig896DDF599E4A94B813E8C16F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Modify c_can device names from *_CAN_DEVTYPE to BOSCH_*_CAN to make
+use of same names for array indexes in c_can_id_table[] as well as
+device names.
 
-On 08/02/2012 02:16 PM, Olivier Sobrie wrote:
-> On Thu, Aug 02, 2012 at 01:56:23PM +0200, Marc Kleine-Budde wrote:
->> BTW: is it possible to update the firmware on these devices?
->=20
-> Yes it possible. But I don't know how to do it... I never did it.
-> I saw on their website that they propose a zipfile with new firmwares.
-> Inside the zipfile there is a tool 'Update.exe' which, I suppose, does
-> the upgrade.
+This patch also add indexes to c_can_id_table array.
 
-=2E..on windows only :). If they would be cool, they support dfu.
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+---
+ drivers/net/can/c_can/c_can.h          |    5 +++--
+ drivers/net/can/c_can/c_can_pci.c      |    6 +++---
+ drivers/net/can/c_can/c_can_platform.c |   18 ++++++++++--------
+ 3 files changed, 16 insertions(+), 13 deletions(-)
 
-Marc
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 01a7049..4e56baa 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -143,8 +143,9 @@ static const u16 reg_map_d_can[] = {
+ };
+ 
+ enum c_can_dev_id {
+-	C_CAN_DEVTYPE,
+-	D_CAN_DEVTYPE,
++	BOSCH_C_CAN_PLATFORM,
++	BOSCH_C_CAN,
++	BOSCH_D_CAN,
+ };
+ 
+ /* c_can private data structure */
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 1011146..3d7830b 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -120,10 +120,10 @@ static int __devinit c_can_pci_probe(struct pci_dev *pdev,
+ 
+ 	/* Configure CAN type */
+ 	switch (c_can_pci_data->type) {
+-	case C_CAN_DEVTYPE:
++	case BOSCH_C_CAN:
+ 		priv->regs = reg_map_c_can;
+ 		break;
+-	case D_CAN_DEVTYPE:
++	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+ 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		break;
+@@ -192,7 +192,7 @@ static void __devexit c_can_pci_remove(struct pci_dev *pdev)
+ }
+ 
+ static struct c_can_pci_data c_can_sta2x11= {
+-	.type = C_CAN_DEVTYPE,
++	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_ALIGN_32,
+ 	.freq = 52000000, /* 52 Mhz */
+ };
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 6ff7ad0..5c46d1c 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -116,7 +116,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(dev);
+ 	id = platform_get_device_id(pdev);
+ 	switch (id->driver_data) {
+-	case C_CAN_DEVTYPE:
++	case BOSCH_C_CAN:
+ 		priv->regs = reg_map_c_can;
+ 		switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
+ 		case IORESOURCE_MEM_32BIT:
+@@ -130,7 +130,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 			break;
+ 		}
+ 		break;
+-	case D_CAN_DEVTYPE:
++	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+ 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
+@@ -196,15 +196,17 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct platform_device_id c_can_id_table[] = {
+-	{
++	[BOSCH_C_CAN_PLATFORM] = {
+ 		.name = KBUILD_MODNAME,
+-		.driver_data = C_CAN_DEVTYPE,
+-	}, {
++		.driver_data = BOSCH_C_CAN,
++	},
++	[BOSCH_C_CAN] = {
+ 		.name = "c_can",
+-		.driver_data = C_CAN_DEVTYPE,
+-	}, {
++		.driver_data = BOSCH_C_CAN,
++	},
++	[BOSCH_D_CAN] = {
+ 		.name = "d_can",
+-		.driver_data = D_CAN_DEVTYPE,
++		.driver_data = BOSCH_D_CAN,
+ 	}, {
+ 	}
+ };
+-- 
+1.7.9.5
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig896DDF599E4A94B813E8C16F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAlAac7cACgkQjTAFq1RaXHOq+QCeOLTmMbfsjdRkfSmw+tsHRYSc
-r6EAoIbSp2p3VOYPuSZJC5gzFhpxojS+
-=CC8I
------END PGP SIGNATURE-----
-
---------------enig896DDF599E4A94B813E8C16F--
