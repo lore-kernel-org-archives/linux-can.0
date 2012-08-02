@@ -1,76 +1,94 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
-Date: Thu, 2 Aug 2012 00:38:32 +0200
-Message-ID: <20120801223832.GA2769@gmail.com>
-References: <50191EA5.1040303@pengutronix.de>
- <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com>
- <501998D4.2040206@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] can: c_can: Add device tree support to Bosch
+ C_CAN/D_CAN controller
+Date: Thu, 02 Aug 2012 09:59:44 +0200
+Message-ID: <501A3370.5090906@pengutronix.de>
+References: <1343218729-16954-1-git-send-email-anilkumar@ti.com>
+ <1343218729-16954-2-git-send-email-anilkumar@ti.com>
+ <500FF908.1000307@pengutronix.de>
+ <331ABD5ECB02734CA317220B2BBEABC13EA037AA@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <501998D4.2040206@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0489769713302232033=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13EA037AA-Er742YJ7I/eIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: "AnilKumar, Chimata" <anilkumar-l0cyMroinI0@public.gmane.org>
+Cc: "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "Gole,
+ Anant" <anantgole-l0cyMroinI0@public.gmane.org>
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Aug 01, 2012 at 11:00:04PM +0200, Marc Kleine-Budde wrote:
-> On 08/01/2012 08:21 PM, Fabio Baltieri wrote:
-> > This patch implements the functions to add two LED triggers, named
-> > <ifname>-tx and <ifname>-rx, to a canbus device driver.
-> > 
-> > Triggers are called from specific handlers by each CAN device driver and
-> > can be disabled altogether with a Kconfig option.
-> > 
-> > The implementation keeps the LED on when the interface is UP and blinks
-> > the LED on network activity at a configurable rate.
-> > 
-> > This only supports can-dev based drivers, as it uses some support field
-> > in the can_priv structure.
-> > 
-> > Supported drivers should call devm_can_led_init() and can_led_event() as
-> > needed.
-> > 
-> > Cleanup is handled automatically by devres, so no *_exit function is
-> > needed.
-> > 
-> > Supported events are:
-> > - CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
-> > - CAN_LED_EVENT_STOP: turn off tx/rx LEDs
-> > - CAN_LED_EVENT_TX: trigger tx LED blink
-> > - CAN_LED_EVENT_RX: trigger tx LED blink
-> > 
-> > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
-> > ---
-> > 
-> > Hi all,
-> > 
-> > so, v6, change trigger names for fixed size allocation capped to (IFNAMSIZ + 4)
-> > and removed kasprintf as suggested by Oliver (thanks!).
-> > 
-> > This also has the side effect of reducing the error path to just one check to
-> > devres_alloc return value... nice!
-> > 
-> > I've put CAN_LED_NAME_SZ definition with the active function declaration,
-> > but used sizeof(priv->tx_led_trig_name) as snprintf length argument in the
-> > code, as it looks cleaner to me.
-> > 
-> > I'm not reposting the flexcan patch as it's not affected by the change.
-> 
-> Pushed to can-next/master, it even compiles now, as David has included
-> some upstream branches.
-> 
-> I'm still taking Tested- and Acked-by for these patches.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0489769713302232033==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig2A9138F53A577644A316FEB5"
 
-Nice!  So, I'll start preparing some patch for other embedded CAN
-controllers for test/review by developers who have access to the
-actual hardware.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2A9138F53A577644A316FEB5
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-In the meantime, thanks to everyone on the list for reviews and ideas!
+On 07/25/2012 04:12 PM, AnilKumar, Chimata wrote:
+> Marc,
+>=20
+> On Wed, Jul 25, 2012 at 19:17:52, Marc Kleine-Budde wrote:
+>> On 07/25/2012 02:18 PM, AnilKumar Ch wrote:
+>>> Add device tree support to C_CAN/D_CAN controller and usage details
+>>> are added to device tree documentation. Driver was tested on AM335x
+>>> EVM.
+>>
+>> Does not apply to linux-can-next, as Viresh Kumar's patch "net/c_can:
+>> remove conditional compilation of clk code" is not yet included. I
+>> suggest to delay this patch until we have Viresh's patch in net-next.
+>>
+>> See comment inline.
+>=20
+> Ok, I will wait till net-next is updated with Viresh Kumar's patch.
 
-Cheers!
-Fabio
+Now Viresh's patch is in net-next, feel free to post your new patches.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig2A9138F53A577644A316FEB5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAlAaM3AACgkQjTAFq1RaXHPnWACgghpOA6YZsNQv1uWMqNryJdmt
+fXIAn1pJq3Weh0BBdEpLSbswoWAlAYG1
+=xPxJ
+-----END PGP SIGNATURE-----
+
+--------------enig2A9138F53A577644A316FEB5--
+
+--===============0489769713302232033==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============0489769713302232033==--
