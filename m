@@ -1,74 +1,147 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v3 0/3] Add DT support to C_CAN/D_CAN controller
-Date: Thu, 02 Aug 2012 13:45:26 +0200
-Message-ID: <501A6856.9010706@pengutronix.de>
-References: <1343905339-4642-1-git-send-email-anilkumar@ti.com>
- <501A60C0.1040504@pengutronix.de>
- <331ABD5ECB02734CA317220B2BBEABC13EA081AD@DBDE01.ent.ti.com>
- <501A633A.5000100@pengutronix.de>
- <331ABD5ECB02734CA317220B2BBEABC13EA081FB@DBDE01.ent.ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Thu, 02 Aug 2012 13:56:23 +0200
+Message-ID: <501A6AE7.9060508@pengutronix.de>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <50166BF2.9000700@pengutronix.de> <20120730133323.GA13941@hposo> <5017ABC6.7030307@pengutronix.de> <20120731130650.GA23541@hposo> <5017DD5B.2030701@pengutronix.de> <20120802105358.GA23787@hposo>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6062482309821139859=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13EA081FB-Er742YJ7I/eIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: "AnilKumar, Chimata" <anilkumar-l0cyMroinI0@public.gmane.org>
-Cc: "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "Gole,
- Anant" <anantgole-l0cyMroinI0@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============6062482309821139859==
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig0AF1C2653584EA3B371FFF46"
+ boundary="------------enig0AF6AB88EEBBD5E06510C7AE"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46198 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754298Ab2HBL4c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Aug 2012 07:56:32 -0400
+In-Reply-To: <20120802105358.GA23787@hposo>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig0AF1C2653584EA3B371FFF46
+--------------enig0AF6AB88EEBBD5E06510C7AE
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 08/02/2012 01:39 PM, AnilKumar, Chimata wrote:
-[...]
->>>>> AnilKumar Ch (3):
->>>>>   can: c_can: Add device tree support to Bosch C_CAN/D_CAN controll=
-er
->>>>>   can: c_can: Modify c_can device names in c_can_pci driver
->>>>
->>>> You break bisectability here. After patch 1 the pci driver will not
->>>> compile anymore. I suggest to do the renaming of enum c_can_dev_id a=
-nd
->>>> all it's users in patch 1.
->>>>
+On 08/02/2012 12:53 PM, Olivier Sobrie wrote:
+>>> 1) With the short circuit:
 >>>
->>> I will merge patch 1 and 2 and submit v4.
+>>> I perform the test you described. It showed that the Kvaser passes fr=
+om
+>>> ERROR-WARNING to ERROR-PASSIVE and then BUS-OFF. But after going to t=
+he
+>>> state BUS-OFF it comes back to ERROR-WARNING.
+>>>
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+>>>   can1  20000088  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
 >>
->> But changing the pci driver has nothing to do with the subject ("Add
->> device tree support to Bosch C_CAN/D_CAN controller").
->>
->> It's considered bad practise to do so.
->>
+>> Why don't we have any rx/tx numbers in the error frame?
 >=20
-> In that case I will change the patch 1 according to "C_CAN_PLTFORM_DEVT=
-YPE"
-> and flag name changes to BOSCH_* will be in patch 2. So that we can get=
- rid
-> of these two problems.
+> Because the hardware seems to not update the tx/rx_errors_count
+> fields :-(
 
-I'm not sure if I understand you correctly. Please first rename the
-constants, then add device tree support.
+Okay.
 
-It doesn't make any sense to first introduce DT support and then patch
-parts of the DT that have been added in the previous patch.
+>> From the hardware point of view the short circuit and open end tests
+>> look good. Please adjust the driver to turn off the CAN interface in
+>> case of a bus off if restart_ms is 0.
+>=20
+> And in the case where restart_ms is not 0? Don't I've to put it off so
+> and drop the frame?
+
+No, don't drop the frame. restart-ms !=3D 0 means the controller is
+automatically restarted after the specified time (if the controller
+supports). Or in your and the at91 case, automatically.
+
+> I actually implemeted it as you said and here is what I observed in
+> candump output with restart_ms set to 100 ms:
+>=20
+> t0: Short circuit between CAN-H and CAN-L + cansend can1 123#1122
+>   can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
+> 	controller-problem{rx-error-warning}
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-error
+>   can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> 	controller-problem{rx-error-passive}
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-error
+>   can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-off
+> 	bus-error
+> ...
+>   can1  2000008C  [8] 00 04 90 00 00 00 00 00   ERRORFRAME
+> 	controller-problem{rx-error-warning}
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-error
+>   can1  2000008C  [8] 00 10 90 00 00 00 00 00   ERRORFRAME
+> 	controller-problem{rx-error-passive}
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-error
+>   can1  200000C8  [8] 00 00 90 00 00 00 00 00   ERRORFRAME
+> 	protocol-violation{{tx-recessive-bit-error,error-on-tx}{}}
+> 	bus-off
+> 	bus-error
+>=20
+> t1: short circuit removed
+>   can1  123  [2] 11 22
+>   can1  20000100  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
+> 	restarted-after-bus-of
+>=20
+> The echo coming before the restart looks weird? No?
+> Shouldn't we drop the frame once BUF-OFF is reached?
+
+No, I don't think so. But wait for Wolfgang, here's more into error
+handling then me.
+
+>=20
+>>>>>>> +		if ((priv->can.state =3D=3D CAN_STATE_ERROR_WARNING) ||
+>>>>>>> +		    (priv->can.state =3D=3D CAN_STATE_ERROR_PASSIVE)) {
+>>>>>>> +			cf->data[1] =3D (txerr > rxerr) ?
+>>>>>>> +				CAN_ERR_CRTL_TX_PASSIVE
+>>>>>>> +				: CAN_ERR_CRTL_RX_PASSIVE;
+>>
+>> Please use CAN_ERR_CRTL_RX_WARNING, CAN_ERR_CRTL_TX_WARNING where
+>> appropriate.
+
+> Ok. As the hardware doesn't report good values for txerr and rxerr, I'l=
+l
+> also remove the tests on txerr and rxerr.
+> I observed the same behavior with the original driver.
+> I asked Kvaser for this problem. I've to wait before their developer is=
+
+> back (same for the GPL issue).
+
+Okay.
+
+>>>>>>> +static int kvaser_usb_get_berr_counter(const struct net_device *=
+netdev,
+>>>>>>> +				       struct can_berr_counter *bec)
+>>>>>>> +{
+>>>>>>> +	struct kvaser_usb_net_priv *priv =3D netdev_priv(netdev);
+>>>>>>> +
+>>>>>>> +	bec->txerr =3D priv->bec.txerr;
+>>>>>>> +	bec->rxerr =3D priv->bec.rxerr;
+>>
+>> I think you can copy the struct like this:
+>>
+>> 	*bec =3D priv->bec;
+>=20
+> Thanks. I'll remove the function kvaser_usb_get_berr_counter as the
+> hardware seems to never report txerr and rxerr.
+
+Sounds reasonable.
+
+BTW: is it possible to update the firmware on these devices?
+
+> I'll look deeper at this driver during the week-end if possible...
 
 Marc
 
@@ -79,7 +152,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig0AF1C2653584EA3B371FFF46
+--------------enig0AF6AB88EEBBD5E06510C7AE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -88,22 +161,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAlAaaFkACgkQjTAFq1RaXHMQLACfeSrGwmtw+ru3dYj6Sy5qv15z
-E/8AmwUb1MU7Oqs9rESiQV7WGHLOqQ99
-=PKMy
+iEYEARECAAYFAlAaauoACgkQjTAFq1RaXHNeMwCeJ6zDBNuUzLs9N9muGlt2u+/F
+Ez8AniRPP2r6QqZyy3X/0Hfy4H+A3yJC
+=v4ti
 -----END PGP SIGNATURE-----
 
---------------enig0AF1C2653584EA3B371FFF46--
-
---===============6062482309821139859==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============6062482309821139859==--
+--------------enig0AF6AB88EEBBD5E06510C7AE--
