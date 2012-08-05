@@ -1,98 +1,72 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH can-next 4/5] can: mcp251x: add LED trigger support
-Date: Sun,  5 Aug 2012 16:51:49 +0200
-Message-ID: <1344178310-2898-4-git-send-email-fabio.baltieri@gmail.com>
-References: <20120805144814.GA2804@gmail.com>
- <1344178310-2898-1-git-send-email-fabio.baltieri@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1344178310-2898-1-git-send-email-fabio.baltieri@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Christian Pellegrin <chripell@fsfe.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH] can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Sun, 05 Aug 2012 22:41:10 +0200
+Message-ID: <501EDA66.4090708@grandegger.com>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <50166BF2.9000700@pengutronix.de> <20120730133323.GA13941@hposo> <5017ABC6.7030307@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:51643 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754923Ab2HEUlW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Aug 2012 16:41:22 -0400
+In-Reply-To: <5017ABC6.7030307@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Olivier Sobrie <olivier@sobrie.be>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Add support for canbus activity led indicators on mcp251x devices by
-calling appropriate can_led functions.
+On 07/31/2012 11:56 AM, Marc Kleine-Budde wrote:
+> On 07/30/2012 03:33 PM, Olivier Sobrie wrote:
+...
 
-These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
-otherwise.
+>>>> +static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
+>>>> +				const struct kvaser_msg *msg)
+>>>> +{
+>>>> +	struct can_frame *cf;
+>>>> +	struct sk_buff *skb;
+>>>> +	struct net_device_stats *stats;
+>>>> +	struct kvaser_usb_net_priv *priv;
+>>>> +	u8 channel, status, txerr, rxerr;
+>>>> +
+>>>> +	if (msg->id == CMD_CAN_ERROR_EVENT) {
+>>>> +		channel = msg->u.error_event.channel;
+>>>> +		status =  msg->u.error_event.status;
+>>>> +		txerr = msg->u.error_event.tx_errors_count;
+>>>> +		rxerr = msg->u.error_event.rx_errors_count;
+>>>> +	} else {
+>>>> +		channel = msg->u.chip_state_event.channel;
+>>>> +		status =  msg->u.chip_state_event.status;
+>>>> +		txerr = msg->u.chip_state_event.tx_errors_count;
+>>>> +		rxerr = msg->u.chip_state_event.rx_errors_count;
+>>>> +	}
+>>>> +
+>>>> +	if (channel >= dev->nchannels) {
+>>>> +		dev_err(dev->udev->dev.parent,
+>>>> +			"Invalid channel number (%d)\n", channel);
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	priv = dev->nets[channel];
+>>>> +	stats = &priv->netdev->stats;
+>>>> +
+>>>> +	skb = alloc_can_err_skb(priv->netdev, &cf);
+>>>> +	if (!skb) {
+>>>> +		stats->rx_dropped++;
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	if ((status & M16C_STATE_BUS_OFF) ||
+>>>> +	    (status & M16C_STATE_BUS_RESET)) {
+>>>> +		priv->can.state = CAN_STATE_BUS_OFF;
+>>>> +		cf->can_id |= CAN_ERR_BUSOFF;
+>>>> +		can_bus_off(priv->netdev);
+> 
+> you should increment priv->can.can_stats.bus_off
 
-Cc: Christian Pellegrin <chripell@fsfe.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
----
- drivers/net/can/mcp251x.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+No, already done in can_bus_off():
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index a580db2..128235e 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -60,6 +60,7 @@
- 
- #include <linux/can/core.h>
- #include <linux/can/dev.h>
-+#include <linux/can/led.h>
- #include <linux/can/platform/mcp251x.h>
- #include <linux/completion.h>
- #include <linux/delay.h>
-@@ -485,6 +486,9 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
- 
- 	priv->net->stats.rx_packets++;
- 	priv->net->stats.rx_bytes += frame->can_dlc;
-+
-+	can_led_event(priv->net, CAN_LED_EVENT_RX);
-+
- 	netif_rx_ni(skb);
- }
- 
-@@ -698,6 +702,8 @@ static int mcp251x_stop(struct net_device *net)
- 
- 	mutex_unlock(&priv->mcp_lock);
- 
-+	can_led_event(net, CAN_LED_EVENT_STOP);
-+
- 	return 0;
- }
- 
-@@ -896,6 +902,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
- 		if (intf & CANINTF_TX) {
- 			net->stats.tx_packets++;
- 			net->stats.tx_bytes += priv->tx_len - 1;
-+			can_led_event(net, CAN_LED_EVENT_TX);
- 			if (priv->tx_len) {
- 				can_get_echo_skb(net, 0);
- 				priv->tx_len = 0;
-@@ -959,6 +966,9 @@ static int mcp251x_open(struct net_device *net)
- 		mcp251x_open_clean(net);
- 		goto open_unlock;
- 	}
-+
-+	can_led_event(net, CAN_LED_EVENT_OPEN);
-+
- 	netif_wake_queue(net);
- 
- open_unlock:
-@@ -1068,10 +1078,15 @@ static int __devinit mcp251x_can_probe(struct spi_device *spi)
- 		pdata->transceiver_enable(0);
- 
- 	ret = register_candev(net);
--	if (!ret) {
--		dev_info(&spi->dev, "probed\n");
--		return ret;
--	}
-+	if (ret)
-+		goto error_probe;
-+
-+	devm_can_led_init(net);
-+
-+	dev_info(&spi->dev, "probed\n");
-+
-+	return ret;
-+
- error_probe:
- 	if (!mcp251x_enable_dma)
- 		kfree(priv->spi_rx_buf);
--- 
-1.7.11.rc1.9.gf623ca1.dirty
+  http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L439
+
+Wolfgang.
