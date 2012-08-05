@@ -1,96 +1,98 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH can-next 3/5] can: c_can: add LED trigger support
-Date: Sun,  5 Aug 2012 16:51:48 +0200
-Message-ID: <1344178310-2898-3-git-send-email-fabio.baltieri@gmail.com>
+Subject: [PATCH can-next 4/5] can: mcp251x: add LED trigger support
+Date: Sun,  5 Aug 2012 16:51:49 +0200
+Message-ID: <1344178310-2898-4-git-send-email-fabio.baltieri@gmail.com>
 References: <20120805144814.GA2804@gmail.com>
  <1344178310-2898-1-git-send-email-fabio.baltieri@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1344178310-2898-1-git-send-email-fabio.baltieri@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-can@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Bhupesh Sharma <bhupesh.sharma@st.com>, AnilKumar Ch <anilkumar@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Christian Pellegrin <chripell@fsfe.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Add support for canbus activity led indicators on c_can devices by
+Add support for canbus activity led indicators on mcp251x devices by
 calling appropriate can_led functions.
 
 These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
 otherwise.
 
-Cc: Bhupesh Sharma <bhupesh.sharma@st.com>
-Cc: AnilKumar Ch <anilkumar@ti.com>
+Cc: Christian Pellegrin <chripell@fsfe.org>
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
 ---
- drivers/net/can/c_can/c_can.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/net/can/mcp251x.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 4c538e3..a8c5807 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -38,6 +38,7 @@
- #include <linux/can.h>
+diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
+index a580db2..128235e 100644
+--- a/drivers/net/can/mcp251x.c
++++ b/drivers/net/can/mcp251x.c
+@@ -60,6 +60,7 @@
+ 
+ #include <linux/can/core.h>
  #include <linux/can/dev.h>
- #include <linux/can/error.h>
 +#include <linux/can/led.h>
+ #include <linux/can/platform/mcp251x.h>
+ #include <linux/completion.h>
+ #include <linux/delay.h>
+@@ -485,6 +486,9 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
  
- #include "c_can.h"
+ 	priv->net->stats.rx_packets++;
+ 	priv->net->stats.rx_bytes += frame->can_dlc;
++
++	can_led_event(priv->net, CAN_LED_EVENT_RX);
++
+ 	netif_rx_ni(skb);
+ }
  
-@@ -439,6 +440,8 @@ static int c_can_read_msg_object(struct net_device *dev, int iface, int ctrl)
- 	stats->rx_packets++;
- 	stats->rx_bytes += frame->can_dlc;
+@@ -698,6 +702,8 @@ static int mcp251x_stop(struct net_device *net)
  
-+	can_led_event(dev, CAN_LED_EVENT_RX);
+ 	mutex_unlock(&priv->mcp_lock);
+ 
++	can_led_event(net, CAN_LED_EVENT_STOP);
 +
  	return 0;
  }
  
-@@ -709,6 +712,7 @@ static void c_can_do_tx(struct net_device *dev)
- 					C_CAN_IFACE(MSGCTRL_REG, 0))
- 					& IF_MCONT_DLC_MASK;
- 			stats->tx_packets++;
-+			can_led_event(dev, CAN_LED_EVENT_TX);
- 			c_can_inval_msg_object(dev, 0, msg_obj_no);
- 		} else {
- 			break;
-@@ -1070,6 +1074,8 @@ static int c_can_open(struct net_device *dev)
- 
- 	napi_enable(&priv->napi);
- 
-+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+@@ -896,6 +902,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 		if (intf & CANINTF_TX) {
+ 			net->stats.tx_packets++;
+ 			net->stats.tx_bytes += priv->tx_len - 1;
++			can_led_event(net, CAN_LED_EVENT_TX);
+ 			if (priv->tx_len) {
+ 				can_get_echo_skb(net, 0);
+ 				priv->tx_len = 0;
+@@ -959,6 +966,9 @@ static int mcp251x_open(struct net_device *net)
+ 		mcp251x_open_clean(net);
+ 		goto open_unlock;
+ 	}
 +
- 	/* start the c_can controller */
- 	c_can_start(dev);
- 
-@@ -1092,6 +1098,8 @@ static int c_can_close(struct net_device *dev)
- 	free_irq(dev->irq, dev);
- 	close_candev(dev);
- 
-+	can_led_event(dev, CAN_LED_EVENT_STOP);
++	can_led_event(net, CAN_LED_EVENT_OPEN);
 +
- 	return 0;
- }
+ 	netif_wake_queue(net);
  
-@@ -1133,10 +1141,17 @@ static const struct net_device_ops c_can_netdev_ops = {
+ open_unlock:
+@@ -1068,10 +1078,15 @@ static int __devinit mcp251x_can_probe(struct spi_device *spi)
+ 		pdata->transceiver_enable(0);
  
- int register_c_can_dev(struct net_device *dev)
- {
-+	int ret;
+ 	ret = register_candev(net);
+-	if (!ret) {
+-		dev_info(&spi->dev, "probed\n");
+-		return ret;
+-	}
++	if (ret)
++		goto error_probe;
 +
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &c_can_netdev_ops;
- 
--	return register_candev(dev);
-+	ret = register_candev(dev);
++	devm_can_led_init(net);
 +
-+	if (!ret)
-+		devm_can_led_init(dev);
++	dev_info(&spi->dev, "probed\n");
 +
 +	return ret;
- }
- EXPORT_SYMBOL_GPL(register_c_can_dev);
- 
++
+ error_probe:
+ 	if (!mcp251x_enable_dma)
+ 		kfree(priv->spi_rx_buf);
 -- 
 1.7.11.rc1.9.gf623ca1.dirty
