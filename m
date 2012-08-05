@@ -1,51 +1,88 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH can-next 0/5] can: add LED trigger support to common devices
-Date: Sun, 5 Aug 2012 16:48:14 +0200
-Message-ID: <20120805144814.GA2804@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: [PATCH can-next 1/5] can: at91_can: add LED trigger support
+Date: Sun,  5 Aug 2012 16:51:46 +0200
+Message-ID: <1344178310-2898-1-git-send-email-fabio.baltieri@gmail.com>
+References: <20120805144814.GA2804@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f172.google.com ([209.85.212.172]:43519 "EHLO
-	mail-wi0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754459Ab2HEOqG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Aug 2012 10:46:06 -0400
-Content-Disposition: inline
+Received: from mail-wg0-f42.google.com ([74.125.82.42]:62438 "EHLO
+	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754459Ab2HEOt4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Aug 2012 10:49:56 -0400
+In-Reply-To: <20120805144814.GA2804@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+Add support for canbus activity led indicators on at91_can devices by
+calling appropriate can_led functions.
 
-this patch series adds support for LED triggers to CAN devices commonly
-found on SoC architectures, using the support code recently merged in
-Marc's can-next tree.
+These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
+otherwise.
 
-I actually modified only drivers who's devices may be commonly found
-in embedded platforms with associated cpu-controlled LEDs, let me know
-if I missed anything.
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+---
+ drivers/net/can/at91_can.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-As I lack the actual hardware, these patches are *compile tested* only,
-so I hope to get some test on real hardware from other developers,
-through the modifications should be quite straightforward.
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index fcff73a..b496bff 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -36,6 +36,7 @@
+ 
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
++#include <linux/can/led.h>
+ 
+ #include <mach/board.h>
+ 
+@@ -642,6 +643,8 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
+ 
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
++
++	can_led_event(dev, CAN_LED_EVENT_RX);
+ }
+ 
+ /**
+@@ -876,6 +879,7 @@ static void at91_irq_tx(struct net_device *dev, u32 reg_sr)
+ 			/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
+ 			can_get_echo_skb(dev, mb - get_mb_tx_first(priv));
+ 			dev->stats.tx_packets++;
++			can_led_event(dev, CAN_LED_EVENT_TX);
+ 		}
+ 	}
+ 
+@@ -1129,6 +1133,8 @@ static int at91_open(struct net_device *dev)
+ 		goto out_close;
+ 	}
+ 
++	can_led_event(dev, CAN_LED_EVENT_OPEN);
++
+ 	/* start chip and queuing */
+ 	at91_chip_start(dev);
+ 	napi_enable(&priv->napi);
+@@ -1160,6 +1166,8 @@ static int at91_close(struct net_device *dev)
+ 
+ 	close_candev(dev);
+ 
++	can_led_event(dev, CAN_LED_EVENT_STOP);
++
+ 	return 0;
+ }
+ 
+@@ -1322,6 +1330,8 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
+ 		goto exit_free;
+ 	}
+ 
++	devm_can_led_init(dev);
++
+ 	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
+ 		 priv->reg_base, dev->irq);
+ 
+-- 
+1.7.11.rc1.9.gf623ca1.dirty
 
-Also, I'll let you know that I may not have access to my email during
-the next week, so if you write me, I'll try to answer as soon as
-possible.
-
-Fabio
-
-
-Fabio Baltieri (5):
-      can: at91_can: add LED trigger support
-      can: ti_hecc: add LED trigger support
-      can: c_can: add LED trigger support
-      can: mcp251x: add LED trigger support
-      can: sja1000: add LED trigger support
-
- at91_can.c        |   10 ++++++++++
- c_can/c_can.c     |   17 ++++++++++++++++-
- mcp251x.c         |   23 +++++++++++++++++++----
- sja1000/sja1000.c |   17 ++++++++++++++++-
- ti_hecc.c         |   10 ++++++++++
- 5 files changed, 71 insertions(+), 6 deletions(-)
