@@ -1,55 +1,79 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 3.6-rc1] canfd: remove redundant CAN FD flag
-Date: Tue, 07 Aug 2012 10:33:16 +0200
-Message-ID: <5020D2CC.6040106@hartkopp.net>
-References: <501FEA95.3060906@hartkopp.net> <5020CEF7.9080809@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] canfd: remove redundant CAN FD flag
+Date: Tue,  7 Aug 2012 12:04:18 +0200
+Message-ID: <1344333858-11944-2-git-send-email-mkl@pengutronix.de>
+References: <1344333858-11944-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:62157 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751124Ab2HGIdL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Aug 2012 04:33:11 -0400
-In-Reply-To: <5020CEF7.9080809@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41584 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753721Ab2HGKE1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Aug 2012 06:04:27 -0400
+In-Reply-To: <1344333858-11944-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 07.08.2012 10:16, Marc Kleine-Budde wrote:
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-> On 08/06/2012 06:02 PM, Oliver Hartkopp wrote:
+The first idea of the CAN FD implementation started with a new struct
+canfd_frame to be used for both CAN FD frames and legacy CAN frames.
+The now mainlined implementation supports both CAN frame types simultaneously
+and distinguishes them only by their required sizes: CAN_MTU and CANFD_MTU.
 
->> The former flags definition turned out to be hard to use and is redundant in
->> the case of the CANFD_EDL flag.
->>
->> Do you want to take that patch in your linux-can tree to be pulled for 3.6-rc2
->> or should i send it to Dave/netdev-ML directly?
->> The patch is based on Linus' 3.6-rc1 tree.
-> 
-> I'll take the patch. As I'm the single point of contact, David will
-> probably refuse to take it directly from you. I hope no one will blame
-> us hard for modifying the ABI of the kernel for canfd frames. However I
-> think it's okay as there are probably no users of the canfd frame out there.
+Only the struct canfd_frame contains a flags element which is needed for the
+additional CAN FD information. As CAN FD implicitly means that the 'Extened
+Data Length' mode is enabled the formerly defined CANFD_EDL bit became
+redundant and also confusing as an unset bit would be an error and would
+always need to be tested.
 
+This patch removes the obsolete CANFD_EDL bit and clarifies the documentation
+for the use of struct canfd_frame and the CAN FD relevant flags.
 
-Yes. We are the only users now and if you look at the patch in detail, i
-removed these lines:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ include/linux/can.h |   25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
+diff --git a/include/linux/can.h b/include/linux/can.h
+index 018055e..e52958d 100644
+--- a/include/linux/can.h
++++ b/include/linux/can.h
+@@ -74,20 +74,21 @@ struct can_frame {
+ /*
+  * defined bits for canfd_frame.flags
+  *
+- * As the default for CAN FD should be to support the high data rate in the
+- * payload section of the frame (HDR) and to support up to 64 byte in the
+- * data section (EDL) the bits are only set in the non-default case.
 - * Btw. as long as there's no real implementation for CAN FD network driver
 - * these bits are only preliminary.
-
-Just if there's a discussion coming up.
-
-From reading the CAN FD specs and the first controller register layout of the
-M_CAN IP core the picture just settles :-)
-
-> BTW: warning: 1 line adds whitespace errors.
-> I've fixed this.
-
-
-Many thanks!
-
-Oliver
++ * The use of struct canfd_frame implies the Extended Data Length (EDL) bit to
++ * be set in the CAN frame bitstream on the wire. The EDL bit switch turns
++ * the CAN controllers bitstream processor into the CAN FD mode which creates
++ * two new options within the CAN FD frame specification:
+  *
+- * RX: NOHDR/NOEDL - info about received CAN FD frame
+- *     ESI         - bit from originating CAN controller
+- * TX: NOHDR/NOEDL - control per-frame settings if supported by CAN controller
+- *     ESI         - bit is set by local CAN controller
++ * Bit Rate Switch - to indicate a second bitrate is/was used for the payload
++ * Error State Indicator - represents the error state of the transmitting node
++ *
++ * As the CANFD_ESI bit is internally generated by the transmitting CAN
++ * controller only the CANFD_BRS bit is relevant for real CAN controllers when
++ * building a CAN FD frame for transmission. Setting the CANFD_ESI bit can make
++ * sense for virtual CAN interfaces to test applications with echoed frames.
+  */
+-#define CANFD_NOHDR 0x01 /* frame without high data rate */
+-#define CANFD_NOEDL 0x02 /* frame without extended data length */
+-#define CANFD_ESI   0x04 /* error state indicator */
++#define CANFD_BRS 0x01 /* bit rate switch (second bitrate for payload data) */
++#define CANFD_ESI 0x02 /* error state indicator of the transmitting node */
+ 
+ /**
+  * struct canfd_frame - CAN flexible data rate frame structure
+-- 
+1.7.10
 
