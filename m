@@ -1,49 +1,55 @@
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: [PATCH] can/softing: Fix potential memory leak in softing_load_fw()
-Date: Wed,  8 Aug 2012 19:15:01 +0400
-Message-ID: <1344438901-25005-1-git-send-email-khoroshilov@ispras.ru>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can/softing: Fix potential memory leak in softing_load_fw()
+Date: Wed, 08 Aug 2012 19:18:02 +0200
+Message-ID: <50229F4A.3010002@pengutronix.de>
+References: <1344438901-25005-1-git-send-email-khoroshilov@ispras.ru>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig1E3FA5183655B02D06137DED"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1344438901-25005-1-git-send-email-khoroshilov@ispras.ru>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv-project@ispras.ru
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv-project@ispras.ru
 List-Id: linux-can.vger.kernel.org
 
-Do not leak memory by updating pointer with potentially NULL realloc return value.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig1E3FA5183655B02D06137DED
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Found by Linux Driver Verification project (linuxtesting.org).
+On 08/08/2012 05:15 PM, Alexey Khoroshilov wrote:
+> Do not leak memory by updating pointer with potentially NULL realloc re=
+turn value.
+>=20
+> Found by Linux Driver Verification project (linuxtesting.org).
+>=20
+> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
- drivers/net/can/softing/softing_fw.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Thanks for the work,
+applied to can/master.
 
-diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
-index 3105961..b595d34 100644
---- a/drivers/net/can/softing/softing_fw.c
-+++ b/drivers/net/can/softing/softing_fw.c
-@@ -150,7 +150,7 @@ int softing_load_fw(const char *file, struct softing *card,
- 	const uint8_t *mem, *end, *dat;
- 	uint16_t type, len;
- 	uint32_t addr;
--	uint8_t *buf = NULL;
-+	uint8_t *buf = NULL, *new_buf;
- 	int buflen = 0;
- 	int8_t type_end = 0;
- 
-@@ -199,11 +199,12 @@ int softing_load_fw(const char *file, struct softing *card,
- 		if (len > buflen) {
- 			/* align buflen */
- 			buflen = (len + (1024-1)) & ~(1024-1);
--			buf = krealloc(buf, buflen, GFP_KERNEL);
--			if (!buf) {
-+			new_buf = krealloc(buf, buflen, GFP_KERNEL);
-+			if (!new_buf) {
- 				ret = -ENOMEM;
- 				goto failed;
- 			}
-+			buf = new_buf;
- 		}
- 		/* verify record data */
- 		memcpy_fromio(buf, &dpram[addr + offset], len);
--- 
-1.7.9.5
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig1E3FA5183655B02D06137DED
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAlAin0oACgkQjTAFq1RaXHPaiQCeN/jNtWYyGKc9JT8hlY7re9dI
+teoAn1LCRd0QVsy03TJqalQjowDfxE22
+=KS42
+-----END PGP SIGNATURE-----
+
+--------------enig1E3FA5183655B02D06137DED--
