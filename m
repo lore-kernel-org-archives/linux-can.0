@@ -1,52 +1,47 @@
-From: Yegor Yefremov <yegor_sub1@visionsystems.de>
-Subject: Re: FYI: SocketCAN Google plus page
-Date: Fri, 10 Aug 2012 14:10:02 +0200
-Message-ID: <5024FA1A.2010709@visionsystems.de>
-References: <5024D799.3000401@visionsystems.de> <5024E3C5.2050407@hartkopp.net>
-Reply-To: yegor_sub1@visionsystems.de
+From: Bernhard Thiele <bernhard-thiele@web.de>
+Subject: Re: [softing] CAN-AC PCI card
+Date: Fri, 10 Aug 2012 18:35:40 +0200
+Message-ID: <5025385C.3080603@web.de>
+References: <trinity-fd24c49d-69e3-4dee-9d03-b9b8ac39f610-1344523228553@3capp-webde-bs20> <20120809212817.GA3194@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hhlx01.vscom.de ([62.145.30.242]:33458 "EHLO
-	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753618Ab2HJMKR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Aug 2012 08:10:17 -0400
-In-Reply-To: <5024E3C5.2050407@hartkopp.net>
+Received: from mout.web.de ([212.227.17.12]:52861 "EHLO mout.web.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752073Ab2HJQfm (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 10 Aug 2012 12:35:42 -0400
+Received: from [192.168.178.30] ([85.181.77.165]) by smtp.web.de (mrweb102)
+ with ESMTPSA (Nemesis) id 0Lo0ZA-1TfmZY2zua-00gH6f for
+ <linux-can@vger.kernel.org>; Fri, 10 Aug 2012 18:35:40 +0200
+In-Reply-To: <20120809212817.GA3194@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Am 10.08.2012 12:34, schrieb Oliver Hartkopp:
-> On 10.08.2012 11:42, Yegor Yefremov wrote:
+Hello Kurt and Marc,
+
+Thanks for the quick reply.
+
+On 08/09/2012 11:28 PM, Kurt Van Dijck wrote:
+> [...]
+> The dual port RAM interface is equal for PCI & PCMCIA devices.
+> The PCMCIA driver (softing_cs.ko) only provides a platform device with the dual port RAM
+> interface. And the real driver (softing.ko) uses this.
+> I designed the PCMCIA driver this way to allow for share code
+> with PCI cards. But I never got to writing the PCI driver
+> itself since I don't need it.
 >
->> I made a SocketCAN dedicated G+ page:
->> https://plus.google.com/u/0/117660856159215855502
+> Adding the PCI driver should not be too hard.
+> This should be possible without touching existing code.
+> I may able to assist you with this.
+I'm not a kernel hacker. But it would be fun to try. I will try to learn 
+a bit about kernel module programming. If I see any chance to succeed, I 
+will gladly come back on your offer for some assistance!
+>> Best regards,
 >>
->> The purpose is to provide Linux drivers updates and also OSS CAN related stuff. Everybody is welcome to contribute and/or point me to interesting resources.
->>
+>> Bernhard
+> Kind regards,
+> Kurt
 >
-> Hello Yegor,
->
-> nice page.
-
-thanks
-
-> I attached two SocketCAN Logo PNGs for your G+ page (witdh 250px).
->
-> The original Logo is pretty easy according the Copyright notice.
-> See details in the Meta Info of
-> https://gitorious.org/linux-can/can-misc/blobs/master/logo/SocketCAN-logo.svg
->
-> I also produced various SocketCAN Logos based on the G2 Tux from
-> http://en.wikipedia.org/wiki/File:Tux-G2.svg
->
-> But i'm not sure about the G2 Tux' license from http://tux.crystalxp.net/
-> where it (obviously) originally came from.
->
-> As you have a G2 based avatar too - you probably know better ?!?
-
-No, I don't. I found the picture somewhere without any license note. So I'll use the SocketCAN-logo.png for now.
-
-Yegor
+/Bernhard
