@@ -1,59 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/2] can: softing: Fix potential memory leak in softing_load_fw()
-Date: Fri, 10 Aug 2012 10:54:21 +0200
-Message-ID: <1344588862-26470-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 2/2] can: sja1000_platform: fix wrong flag IRQF_SHARED for interrupt sharing
+Date: Fri, 10 Aug 2012 10:54:22 +0200
+Message-ID: <1344588862-26470-3-git-send-email-mkl@pengutronix.de>
 References: <1344588862-26470-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39011 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39013 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755474Ab2HJIyg (ORCPT
+	with ESMTP id S1752606Ab2HJIyg (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Aug 2012 04:54:36 -0400
 In-Reply-To: <1344588862-26470-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "Schmitt, Sven (EVM/8)" <Sven.Schmitt@volkswagen.de>, Sven Schmitt <sven.schmitt@volkswagen.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+From: "Schmitt, Sven (EVM/8)" <Sven.Schmitt@volkswagen.de>
 
-Do not leak memory by updating pointer with potentially NULL realloc return value.
+The sja1000 platform driver wrongly assumes that a shared IRQ is indicated
+with the IRQF_SHARED flag in irq resource flags. This patch changes the
+driver to handle the correct flag IORESOURCE_IRQ_SHAREABLE instead.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+There are no mainline users of the platform driver which wrongly make use
+of IRQF_SHARED.
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Signed-off-by: Sven Schmitt <sven.schmitt@volkswagen.de>
+Acked-by: Yegor Yefremov <yegorslists@googlemail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_fw.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/can/sja1000/sja1000_platform.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
-index 3105961..b595d34 100644
---- a/drivers/net/can/softing/softing_fw.c
-+++ b/drivers/net/can/softing/softing_fw.c
-@@ -150,7 +150,7 @@ int softing_load_fw(const char *file, struct softing *card,
- 	const uint8_t *mem, *end, *dat;
- 	uint16_t type, len;
- 	uint32_t addr;
--	uint8_t *buf = NULL;
-+	uint8_t *buf = NULL, *new_buf;
- 	int buflen = 0;
- 	int8_t type_end = 0;
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 4f50145..662c5f7 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -109,7 +109,9 @@ static int sp_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(dev);
  
-@@ -199,11 +199,12 @@ int softing_load_fw(const char *file, struct softing *card,
- 		if (len > buflen) {
- 			/* align buflen */
- 			buflen = (len + (1024-1)) & ~(1024-1);
--			buf = krealloc(buf, buflen, GFP_KERNEL);
--			if (!buf) {
-+			new_buf = krealloc(buf, buflen, GFP_KERNEL);
-+			if (!new_buf) {
- 				ret = -ENOMEM;
- 				goto failed;
- 			}
-+			buf = new_buf;
- 		}
- 		/* verify record data */
- 		memcpy_fromio(buf, &dpram[addr + offset], len);
+ 	dev->irq = res_irq->start;
+-	priv->irq_flags = res_irq->flags & (IRQF_TRIGGER_MASK | IRQF_SHARED);
++	priv->irq_flags = res_irq->flags & IRQF_TRIGGER_MASK;
++	if (res_irq->flags & IORESOURCE_IRQ_SHAREABLE)
++		priv->irq_flags |= IRQF_SHARED;
+ 	priv->reg_base = addr;
+ 	/* The CAN clock frequency is half the oscillator clock frequency */
+ 	priv->can.clock.freq = pdata->osc_freq / 2;
 -- 
 1.7.10
 
