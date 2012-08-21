@@ -1,34 +1,37 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: [PATCH iproute2 2/2] em_canid: Ematch used to classify CAN
- frames according to their identifiers
-Date: Mon, 20 Aug 2012 13:13:34 -0700
-Message-ID: <20120820131334.70d39b62@nehalam.linuxnetplumber.net>
-References: <1343745981-14248-1-git-send-email-lisovy@gmail.com>
-	<1343745981-14248-2-git-send-email-lisovy@gmail.com>
+From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Subject: Re: [PATCH iproute2 v2 0/3] CAN Filter/Classifier
+Date: Tue, 21 Aug 2012 08:27:50 +0200
+Message-ID: <50332A66.80906@volkswagen.de>
+References: <1343383363-6174-1-git-send-email-mkl@pengutronix.de> <20120820130605.63811eee@nehalam.linuxnetplumber.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.vyatta.com ([76.74.103.46]:54987 "EHLO mail.vyatta.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753725Ab2HTUNw (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 20 Aug 2012 16:13:52 -0400
-In-Reply-To: <1343745981-14248-2-git-send-email-lisovy@gmail.com>
+Received: from mr1.volkswagen.de ([194.114.62.75]:57055 "EHLO
+	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750918Ab2HUGeN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Aug 2012 02:34:13 -0400
+In-Reply-To: <20120820130605.63811eee@nehalam.linuxnetplumber.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rostislav Lisovy <lisovy@gmail.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, pisa@cmp.felk.cvut.cz, sojkam1@fel.cvut.cz, lisovy@gmail.com
 
-On Tue, 31 Jul 2012 16:46:21 +0200
-Rostislav Lisovy <lisovy@gmail.com> wrote:
+No action required!
 
-> This ematch enables effective filtering of CAN frames (AF_CAN) based
-> on CAN identifiers with masking of compared bits. Implementation
-> utilizes bitmap based classification for standard frame format (SFF)
-> which is optimized for minimal overhead.
-> 
-> Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
+On 20.08.2012 22:06, Stephen Hemminger wrote:
 
-Since this doesn't have any conflicts (unlike other CAN filtering),
-I applied it for 3.6 version.
+>
+> If your changes work with 3.6 then please rebase your patches on current iproute2 tree.
+>
+> Note: do not include changes to include/linux which now includes can.h
+> and matches 3.6-rc2.
+>
 
+
+Both updates (can.h and em_canid.c) have been applied properly, see:
+
+http://git.kernel.org/?p=linux/kernel/git/shemminger/iproute2.git;a=summary
+
+Regards,
+Oliver
