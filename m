@@ -1,33 +1,59 @@
-From: Mahesh.Maharjan-EXT@continental-corporation.com
-Subject: Loopback problem with Filters-ID
-Date: Fri, 24 Aug 2012 09:28:18 +0200
-Message-ID: <OF911BAA88.D6C43CE4-ONC1257A64.0028B9F0-C1257A64.00290B6B@continental-corporation.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 1/2] can: softing: Fix potential memory leak in softing_load_fw()
+Date: Fri, 24 Aug 2012 11:30:42 +0200
+Message-ID: <1345800643-29456-2-git-send-email-mkl@pengutronix.de>
+References: <1345800643-29456-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout64.rmx.de ([62.134.45.44]:48533 "EHLO mailout64.rmx.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752062Ab2HXH22 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 24 Aug 2012 03:28:28 -0400
-Received: from [10.64.70.33] (HELO kdin65.retarus.de)
-  by mailout64.rmx.de (CommuniGate Pro SMTP 5.2.13 _community_)
-  with ESMTP id 36714429 for linux-can@vger.kernel.org; Fri, 24 Aug 2012 09:28:25 +0200
-Received: from sbas141a.vs.de.conti.de ([10.215.251.127])
-	by kdin65.retarus.de (8.14.2/8.14.2/retarus.custom) with ESMTP id q7O7SNKm030232
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-can@vger.kernel.org>; Fri, 24 Aug 2012 09:28:25 +0200
-Received: from sbas141a.cw01.contiwan.com (sbas141a.vs.de.conti.de [158.92.186.140])
-	by sbas141a.vs.de.conti.de (8.13.8/8.13.8) with ESMTP id q7O7SNTY019595
-	for <linux-can@vger.kernel.org>; Fri, 24 Aug 2012 09:28:23 +0200
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55973 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756344Ab2HXJay (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 24 Aug 2012 05:30:54 -0400
+In-Reply-To: <1345800643-29456-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello to all,
- Thanks for  all,
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
 
-So it is better to use the Filter-Id for socket_RAW  to solve the problem 
-arise by loopback...
+Do not leak memory by updating pointer with potentially NULL realloc return value.
 
+Found by Linux Driver Verification project (linuxtesting.org).
 
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/softing/softing_fw.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
+index 3105961..b595d34 100644
+--- a/drivers/net/can/softing/softing_fw.c
++++ b/drivers/net/can/softing/softing_fw.c
+@@ -150,7 +150,7 @@ int softing_load_fw(const char *file, struct softing *card,
+ 	const uint8_t *mem, *end, *dat;
+ 	uint16_t type, len;
+ 	uint32_t addr;
+-	uint8_t *buf = NULL;
++	uint8_t *buf = NULL, *new_buf;
+ 	int buflen = 0;
+ 	int8_t type_end = 0;
+ 
+@@ -199,11 +199,12 @@ int softing_load_fw(const char *file, struct softing *card,
+ 		if (len > buflen) {
+ 			/* align buflen */
+ 			buflen = (len + (1024-1)) & ~(1024-1);
+-			buf = krealloc(buf, buflen, GFP_KERNEL);
+-			if (!buf) {
++			new_buf = krealloc(buf, buflen, GFP_KERNEL);
++			if (!new_buf) {
+ 				ret = -ENOMEM;
+ 				goto failed;
+ 			}
++			buf = new_buf;
+ 		}
+ 		/* verify record data */
+ 		memcpy_fromio(buf, &dpram[addr + offset], len);
+-- 
+1.7.10
 
