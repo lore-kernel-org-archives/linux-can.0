@@ -1,29 +1,89 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2012-08-24
-Date: Fri, 24 Aug 2012 15:21:48 -0400 (EDT)
-Message-ID: <20120824.152148.1272042065601340498.davem@davemloft.net>
-References: <1345800643-29456-1-git-send-email-mkl@pengutronix.de>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Sat, 25 Aug 2012 00:01:42 +0200
+Message-ID: <20120824220142.GA1470@gmail.com>
+References: <50191EA5.1040303@pengutronix.de>
+ <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com>
+ <20120824051016.GB1718@vandijck-laurijssen.be>
+ <50376550.4020501@pengutronix.de>
+ <20120824124248.GA422@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:55742 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758130Ab2HXTVu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 24 Aug 2012 15:21:50 -0400
-In-Reply-To: <1345800643-29456-1-git-send-email-mkl@pengutronix.de>
+Received: from mail-wi0-f178.google.com ([209.85.212.178]:43975 "EHLO
+	mail-wi0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757172Ab2HXWBd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 24 Aug 2012 18:01:33 -0400
+Content-Disposition: inline
+In-Reply-To: <20120824124248.GA422@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 24 Aug 2012 11:30:41 +0200
+Hello Kurt,
 
-> here are two fixes for the v3.6 release cycle. Alexey Khoroshilov submitted a
-> fix for a memory leak in the softing driver (in softing_load_fw()) in case a
-> krealloc() fails. Sven Schmitt fixed the misuse of the IRQF_SHARED flag in the
-> irq resouce of the sja1000 platform driver, now the correct flag is used. There
-> are no mainline users of this feature which need to be converted.
+On Fri, Aug 24, 2012 at 02:42:48PM +0200, Kurt Van Dijck wrote:
+> On Fri, Aug 24, 2012 at 01:28:16PM +0200, Marc Kleine-Budde wrote:
+> > On 08/24/2012 07:10 AM, Kurt Van Dijck wrote:
+> > > Hello,
+> > > 
+> > > I find the CAN led triggers an interesting thing.
+> > > 
+> > > And then, this scenario fell crossed my mind:
+> > > Imagine I do:
+> > > [insert CAN device: can0]
+> > > $ ip link set can0 name helga
+> > > [insert another CAN device: again 'can0']
+> > > 
+> > > Registering 'can0-tx' led trigger will fail for the second CAN device,
+> > > since that led trigger name is already reserved for CAN device 'helga'.
+> > Good point.
 
-Pulled, thanks Marc.
+Yep, thanks for pointing that out!
+
+Interface renaming was something I considered when I first wrote the
+code and I had the mac80211-led driver in mind, as that driver uses the
+phy name and not the netdev one for its triggers.
+
+The reason why I did not care that much in the end is that on SoC based
+systems trigger-led association is made at probe time, based on data
+either from platform_data or devicetree, so I imagined that once the
+kernel is ported to the board and default triggers are set correctly at
+boot time, the userspace is free to rename CAN interfaces and nobody
+should notice... :^)
+
+The thing I did not consider are hot-plug interfaces mixed with
+renaming, such as in the case you pointed out - it's probably not really
+common but still possible.
+
+> > > I'm not sure how to fix such.
+> > > If 'rx' & 'tx' may be combined, reusing the netdev name may be possible?
+> > > Just wild thinking ...
+> > 
+> > I think the device's name (not netdev) is unique in the system and
+> > cannot be changed.
+>
+> but may contain several netdev's ...
+
+Ouch.
+
+> 
+> > 
+> > On my device tree enabled mx28 I'm talking about the "80032000.can" in:
+> 
+> You idea triggered another thougt: since control is put in device drivers,
+> why putting the name in the generic can_dev struct?
+
+Why not?  That makes the API easy.
+
+> A more flexible approach to assign names is the key to success here.
+> The correct 'works in all conditions' approach is not yet in my sight :-(
+
+Agreed.
+
+What about using a combination of device name + an optional port index
+specified in devm_can_led_init()? (something like to platform_device names)
+Of course that would require changing the API for libraries like
+register_sja1000dev(), to add a port index.
+
+Fabio
