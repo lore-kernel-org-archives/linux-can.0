@@ -1,70 +1,95 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: usb-can device
-Date: Mon, 27 Aug 2012 11:05:41 +0200
-Message-ID: <503B3865.4090202@pengutronix.de>
-References: <1345996339.6610.10.camel@slaptop> <503A4E9B.9060308@pengutronix.de> <503B1198.3010506@hartkopp.net> <20120827081028.GA417@vandijck-laurijssen.be>
+From: Benoit <benoit@pouic.eu>
+Subject: mcp251x.c : patch to avoid repeated frame bug
+Date: Mon, 27 Aug 2012 15:02:45 +0200
+Message-ID: <503B6FF5.6000800@pouic.eu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9157F82849ADFF5B46C5A965"
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42113 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751312Ab2H0JFp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Aug 2012 05:05:45 -0400
-In-Reply-To: <20120827081028.GA417@vandijck-laurijssen.be>
+Received: from pouic.eu ([109.190.18.85]:60364 "EHLO smtp.pouic.eu"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751136Ab2H0NMA (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 27 Aug 2012 09:12:00 -0400
+Received: from [163.157.129.250] (gw.skf.net [163.157.254.25])
+	(using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by smtp.pouic.eu (Magpie Mail Daemon) with ESMTPSA id 4BAFF28A064
+	for <linux-can@vger.kernel.org>; Mon, 27 Aug 2012 15:02:48 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "Max S." <max@schneidersoft.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9157F82849ADFF5B46C5A965
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On 08/27/2012 10:10 AM, Kurt Van Dijck wrote:
->> *2:
->> To provide a state-of-the-art echo functionality the sk pointer (skb->=
-sk) is
->> sent along with the CAN frame. This allows to skb_free() the original =
-tx skb
->> and create a new one at rx time with the correct sk pointer, when the =
-frame is
->> echoed after successful transmission. As we are endian safe the sk poi=
-nter can
->> be taken from the USB URB as-is. (For security reasons we should proba=
-bly not
->> take the pointer directly but double check with stored echo-skbs)
+The MCP2515 has a silicon bug causing repeated frame transmission, see=20
+section 5 of MCP2515 Rev. B Silicon Errata Revision G (March 2007).
 
-> 'sending an skb pointer' is indeed a key to cleaner design,
-> but couples both systems more tight: is that pointer 32bit? 64?
->=20
-> I even don't know if that is a problem ...
-
-On 64 Bit archs you need 64 bit for a pointer. However I'd like to call
-this cookie or handle not pointer to some kernel internal data. And as
-Oliver pointed out, don't trust the data that comes from the USB device.
-
-regards, Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Basically, setting TXBnCTRL.TXREQ in either SPI mode (00 or 11) will=20
+eventually cause the bug. The workaround proposed by Microchip is to us=
+e=20
+mode 00 and send an RTS command on the SPI bus to initiate the=20
+transmission. Accordingly, I have modified the transmission routine as=20
+follows in file mcp251x.c:
 
 
---------------enig9157F82849ADFF5B46C5A965
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--- drivers/net/can/mcp251x.c-original	2012-08-26 15:00:28.000000000 +0=
+200
++++ drivers/net/can/mcp251x.c	2012-08-26 20:42:58.000000000 +0200
+@@ -83,6 +83,10 @@
+  #define INSTRUCTION_LOAD_TXB(n)	(0x40 + 2 * (n))
+  #define INSTRUCTION_READ_RXB(n)	(((n) =3D=3D 0) ? 0x90 : 0x94)
+  #define INSTRUCTION_RESET	0xC0
++#define	RTS_TXB0		0x01
++#define	RTS_TXB1		0x02
++#define	RTS_TXB2		0x04
++#define INSTRUCTION_RTS(txb)	(0x80 | ((txb) & 0x07))
+ =20
+  /* MPC251x registers */
+  #define CANSTAT	      0x0e
+@@ -394,9 +398,20 @@
+  	}
+  }
+ =20
++
++/*
++ * CAN frame is now sent using instruction RTS over SPI to work around
++ * repeated frame problem as per MCP2515 Rev B. Silicon Errata revisio=
+n G
++ * (March 2007) about repeated frames (see section 5 of document).
++ * Note that repeated frames can still occur if using SPI mode 11. It =
+seems
++ * however that spi mode is forcibly set to 0, so it looks safe.
++ *
++ */
+  static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *f=
+rame,
+  			  int tx_buf_idx)
+  {
++	struct mcp251x_priv *priv =3D dev_get_drvdata(&spi->dev);
++	int ret;
+  	u32 sid, eid, exide, rtr;
+  	u8 buf[SPI_TRANSFER_BUF_LEN];
+ =20
+@@ -418,7 +433,12 @@
+  	buf[TXBDLC_OFF] =3D (rtr << DLC_RTR_SHIFT) | frame->can_dlc;
+  	memcpy(buf + TXBDAT_OFF, frame->data, frame->can_dlc);
+  	mcp251x_hw_tx_frame(spi, buf, frame->can_dlc, tx_buf_idx);
+-	mcp251x_write_reg(spi, TXBCTRL(tx_buf_idx), TXBCTRL_TXREQ);
++
++	priv->spi_tx_buf[0] =3D INSTRUCTION_RTS(1 << tx_buf_idx);
++	ret =3D spi_write(spi, priv->spi_tx_buf, 1);
++	if (ret) {
++		dev_err(&spi->dev, "RTS failed: ret =3D %d\n", ret);
++	}
+  }
+ =20
+  static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlA7OGUACgkQjTAFq1RaXHPYagCZAfEMMAbaeRDARRBJbCijae5m
-+BUAoIBmIJ58g9s0aatk3stEIO+Uxgu6
-=kg5K
------END PGP SIGNATURE-----
 
---------------enig9157F82849ADFF5B46C5A965--
+Would it be possible to integrate this patch into mainstream mcp251x.c?
+
+Kind Regards,
+
+Beno=EEt.
