@@ -1,92 +1,216 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: usb-can device
-Date: Sun, 26 Aug 2012 18:28:11 +0200
-Message-ID: <503A4E9B.9060308@pengutronix.de>
-References: <1345996339.6610.10.camel@slaptop>
+From: "AnilKumar, Chimata" <anilkumar@ti.com>
+Subject: RE: [PATCH v9] can: c_can: Add runtime PM support to Bosch
+ C_CAN/D_CAN controller
+Date: Mon, 27 Aug 2012 05:06:53 +0000
+Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA1FF07@DBDE01.ent.ti.com>
+References: <1345461654-439-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig68A37D29F303BCCF1937ECCD"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45577 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751114Ab2HZQ2S (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 26 Aug 2012 12:28:18 -0400
-In-Reply-To: <1345996339.6610.10.camel@slaptop>
+Received: from comal.ext.ti.com ([198.47.26.152]:38428 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750825Ab2H0FHL convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Aug 2012 01:07:11 -0400
+In-Reply-To: <1345461654-439-1-git-send-email-anilkumar@ti.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+To: "AnilKumar, Chimata" <anilkumar@ti.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Gole, Anant" <anantgole@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig68A37D29F303BCCF1937ECCD
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-Hello Max,
+On Mon, Aug 20, 2012 at 16:50:54, AnilKumar, Chimata wrote:
+> Add Runtime PM support to C_CAN/D_CAN controller. The runtime PM
+> APIs control clocks for C_CAN/D_CAN IP and prevent access to the
+> register of C_CAN/D_CAN IP when clock is turned off.
+> 
+> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+> ---
+> This patch has been tested on AM335X EVM. Due to lack of hardware
+> I am not able to test c_can functionality. I appreciate if anyone
+> can test c_can functionality with this patch.
+> 
+> This patch is based on "can-next/master" 
+> 
+> Changes from v8:
+> 	- corrected the return path sequence in c_can_probe()
+> 
+> Changes from v7:
+> 	- Incorporated Marc's comments on v7
+> 	  * changed device pointer to c_can_priv pointer
+> 
+> Changes from v6:
+> 	- Incorporated Marc's comments on v6
+> 	  * changed dev pointer to priv
+> 	  * removed platform_device.h include from c_can.c
+> 
+> Changes from v5:
+> 	- Incorporated Marc's comments on v5
+> 	  * changed runtime pm calls in c_can driver to handle
+> 	    the drivers which are not using platform drivers.
+> 	  * added device pointer protection in c_can driver if
+> 	    not passed from platform/pci driver.
+> 
+> Changes from v4:
+> 	- Incorporated Vaibhav H review comments on v4.
+> 	  * Moved pm_runtime put/get_sync calls to appropriate positions.
+> 	- This patch is from "Add DT support to C_CAN/D_CAN controller"
+> 	  patch series. Rest of the patches in this series were applied
+> 	  so this v5 contains only this patch.
+> 
+>  drivers/net/can/c_can/c_can.c          |   24 +++++++++++++++++++++++-
+>  drivers/net/can/c_can/c_can.h          |    1 +
+>  drivers/net/can/c_can/c_can_platform.c |   11 +++++++++--
+>  3 files changed, 33 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+> index 4c538e3..966d318 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -34,6 +34,7 @@
+>  #include <linux/if_ether.h>
+>  #include <linux/list.h>
+>  #include <linux/io.h>
+> +#include <linux/pm_runtime.h>
+>  
+>  #include <linux/can.h>
+>  #include <linux/can/dev.h>
+> @@ -201,6 +202,18 @@ static const struct can_bittiming_const c_can_bittiming_const = {
+>  	.brp_inc = 1,
+>  };
+>  
+> +static inline void c_can_pm_runtime_get_sync(struct c_can_priv *priv)
+> +{
+> +	if (priv->device)
+> +		pm_runtime_get_sync(priv->device);
+> +}
+> +
+> +static inline void c_can_pm_runtime_put_sync(struct c_can_priv *priv)
+> +{
+> +	if (priv->device)
+> +		pm_runtime_put_sync(priv->device);
+> +}
+> +
+>  static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
+>  {
+>  	return (priv->tx_next & C_CAN_NEXT_MSG_OBJ_MASK) +
+> @@ -673,11 +686,15 @@ static int c_can_get_berr_counter(const struct net_device *dev,
+>  	unsigned int reg_err_counter;
+>  	struct c_can_priv *priv = netdev_priv(dev);
+>  
+> +	c_can_pm_runtime_get_sync(priv);
+> +
+>  	reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+>  	bec->rxerr = (reg_err_counter & ERR_CNT_REC_MASK) >>
+>  				ERR_CNT_REC_SHIFT;
+>  	bec->txerr = reg_err_counter & ERR_CNT_TEC_MASK;
+>  
+> +	c_can_pm_runtime_put_sync(priv);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1053,11 +1070,13 @@ static int c_can_open(struct net_device *dev)
+>  	int err;
+>  	struct c_can_priv *priv = netdev_priv(dev);
+>  
+> +	c_can_pm_runtime_get_sync(priv);
+> +
+>  	/* open the can device */
+>  	err = open_candev(dev);
+>  	if (err) {
+>  		netdev_err(dev, "failed to open can device\n");
+> -		return err;
+> +		goto exit_open_fail;
+>  	}
+>  
+>  	/* register interrupt handler */
+> @@ -1079,6 +1098,8 @@ static int c_can_open(struct net_device *dev)
+>  
+>  exit_irq_fail:
+>  	close_candev(dev);
+> +exit_open_fail:
+> +	c_can_pm_runtime_put_sync(priv);
+>  	return err;
+>  }
+>  
+> @@ -1091,6 +1112,7 @@ static int c_can_close(struct net_device *dev)
+>  	c_can_stop(dev);
+>  	free_irq(dev->irq, dev);
+>  	close_candev(dev);
+> +	c_can_pm_runtime_put_sync(priv);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+> index 4e56baa..1437a6d 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -153,6 +153,7 @@ struct c_can_priv {
+>  	struct can_priv can;	/* must be the first member */
+>  	struct napi_struct napi;
+>  	struct net_device *dev;
+> +	struct device *device;
+>  	int tx_object;
+>  	int current_status;
+>  	int last_status;
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+> index d0a66cf..90801c4 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_runtime.h>
+>  
+>  #include <linux/can/dev.h>
+>  
+> @@ -177,8 +178,11 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+>  		goto exit_free_device;
+>  	}
+>  
+> +	pm_runtime_enable(&pdev->dev);
+> +
+>  	dev->irq = irq;
+>  	priv->base = addr;
+> +	priv->device = &pdev->dev;
+>  	priv->can.clock.freq = clk_get_rate(clk);
+>  	priv->priv = clk;
+>  
+> @@ -189,15 +193,17 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+>  			KBUILD_MODNAME, ret);
+> -		goto exit_free_device;
+> +		goto exit_clear_drvdata;
+>  	}
+>  
+>  	dev_info(&pdev->dev, "%s device registered (regs=%p, irq=%d)\n",
+>  		 KBUILD_MODNAME, priv->base, dev->irq);
+>  	return 0;
+>  
+> -exit_free_device:
+> +exit_clear_drvdata:
+>  	platform_set_drvdata(pdev, NULL);
+> +	pm_runtime_disable(&pdev->dev);
+> +exit_free_device:
+>  	free_c_can_dev(dev);
+>  exit_iounmap:
+>  	iounmap(addr);
+> @@ -226,6 +232,7 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
+>  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	release_mem_region(mem->start, resource_size(mem));
+>  
+> +	pm_runtime_disable(&pdev->dev);
+>  	clk_put(priv->priv);
+>  
+>  	return 0;
+> -- 
 
-On 08/26/2012 05:52 PM, Max S. wrote:
-> I am developing a usb to can adapter.
->=20
-> Does there exist a standard usb-can interface on the linux side? Or wil=
-l
-> I have to create my own device driver?
+If there are no comments can you please push this patch
 
-There is no standard driver, however I was thinking last week that
-someone should write a CDC CAN driver. CDC Ethernet is a standard to
-send ethernet frames over USB.
-
-> In the linux kernel source I see drivers/net/can/ems_usb.c which seems
-> to provide a way to add support for multiple devices through the
-> ems_usb_table. What would it take to get my vendor id and product id
-> into this list (assuming that the device is working with this driver).
->=20
-> I haven't studied the driver in great detail, so i don't know if it is
-> appropriate for what I am trying to do...
-
-I don't know what the legal department of ems will do, if you "clone"
-their hardware, or build something that is compatible to their hardware
-on the driver level.
-
-> What are my options for getting a usb device, that exposes two can
-> nodes, supported under linux? I have complete access to the usb device,=
-
-> so it would not be a problem for me to build a firmware that behaves a
-> certain standard way.
-
-The kvaser driver basically just sends and receives binary messages.
-They have a common header (len+type of message+CAN interface) and the
-message itself. There are messages to send and receive a CAN frame,
-TX-complete, for error handling, and for configuration. If you want to
-make your device's firmware update able, implement dfu (device firmware
-update). Optional stuff is abort tx of CAN frames, timestamps for rx and =
-tx.
-
-Oliver, do you remember the talk about the CAN in FPGA we heart at the
-CAN CIA conference, do you have a link to the presentation. It was FPGA
-based, but all concept mentioned there also apply to USB based devices.
-
-cheers, Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig68A37D29F303BCCF1937ECCD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAlA6Tp4ACgkQjTAFq1RaXHO1FwCfYxVghwW3bmzLfD39+W7+6lyv
-40YAn0oqUfxLTrtzxz4Ri0JM6u1Fw7G2
-=AnTZ
------END PGP SIGNATURE-----
-
---------------enig68A37D29F303BCCF1937ECCD--
+Thanks
+AnilKumar
