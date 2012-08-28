@@ -1,95 +1,111 @@
-From: Benoit <benoit@pouic.eu>
-Subject: mcp251x.c : patch to avoid repeated frame bug
-Date: Mon, 27 Aug 2012 15:02:45 +0200
-Message-ID: <503B6FF5.6000800@pouic.eu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: usb-can device
+Date: Tue, 28 Aug 2012 13:58:38 +0200
+Message-ID: <503CB26E.7010106@hartkopp.net>
+References: <1345996339.6610.10.camel@slaptop>  <503A4E9B.9060308@pengutronix.de> <503B1198.3010506@hartkopp.net> <1346071259.3928.33.camel@slaptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pouic.eu ([109.190.18.85]:60364 "EHLO smtp.pouic.eu"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751136Ab2H0NMA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 27 Aug 2012 09:12:00 -0400
-Received: from [163.157.129.250] (gw.skf.net [163.157.254.25])
-	(using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp.pouic.eu (Magpie Mail Daemon) with ESMTPSA id 4BAFF28A064
-	for <linux-can@vger.kernel.org>; Mon, 27 Aug 2012 15:02:48 +0200 (CEST)
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:26318 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751346Ab2H1L6m (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 28 Aug 2012 07:58:42 -0400
+In-Reply-To: <1346071259.3928.33.camel@slaptop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: "Max S." <max@schneidersoft.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello,
+On 27.08.2012 14:40, Max S. wrote:
 
-The MCP2515 has a silicon bug causing repeated frame transmission, see=20
-section 5 of MCP2515 Rev. B Silicon Errata Revision G (March 2007).
+> On Mon, 2012-08-27 at 08:20 +0200, Oliver Hartkopp wrote:
 
-Basically, setting TXBnCTRL.TXREQ in either SPI mode (00 or 11) will=20
-eventually cause the bug. The workaround proposed by Microchip is to us=
-e=20
-mode 00 and send an RTS command on the SPI bus to initiate the=20
-transmission. Accordingly, I have modified the transmission routine as=20
-follows in file mcp251x.c:
-
-
---- drivers/net/can/mcp251x.c-original	2012-08-26 15:00:28.000000000 +0=
-200
-+++ drivers/net/can/mcp251x.c	2012-08-26 20:42:58.000000000 +0200
-@@ -83,6 +83,10 @@
-  #define INSTRUCTION_LOAD_TXB(n)	(0x40 + 2 * (n))
-  #define INSTRUCTION_READ_RXB(n)	(((n) =3D=3D 0) ? 0x90 : 0x94)
-  #define INSTRUCTION_RESET	0xC0
-+#define	RTS_TXB0		0x01
-+#define	RTS_TXB1		0x02
-+#define	RTS_TXB2		0x04
-+#define INSTRUCTION_RTS(txb)	(0x80 | ((txb) & 0x07))
- =20
-  /* MPC251x registers */
-  #define CANSTAT	      0x0e
-@@ -394,9 +398,20 @@
-  	}
-  }
- =20
-+
-+/*
-+ * CAN frame is now sent using instruction RTS over SPI to work around
-+ * repeated frame problem as per MCP2515 Rev B. Silicon Errata revisio=
-n G
-+ * (March 2007) about repeated frames (see section 5 of document).
-+ * Note that repeated frames can still occur if using SPI mode 11. It =
-seems
-+ * however that spi mode is forcibly set to 0, so it looks safe.
-+ *
-+ */
-  static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *f=
-rame,
-  			  int tx_buf_idx)
-  {
-+	struct mcp251x_priv *priv =3D dev_get_drvdata(&spi->dev);
-+	int ret;
-  	u32 sid, eid, exide, rtr;
-  	u8 buf[SPI_TRANSFER_BUF_LEN];
- =20
-@@ -418,7 +433,12 @@
-  	buf[TXBDLC_OFF] =3D (rtr << DLC_RTR_SHIFT) | frame->can_dlc;
-  	memcpy(buf + TXBDAT_OFF, frame->data, frame->can_dlc);
-  	mcp251x_hw_tx_frame(spi, buf, frame->can_dlc, tx_buf_idx);
--	mcp251x_write_reg(spi, TXBCTRL(tx_buf_idx), TXBCTRL_TXREQ);
-+
-+	priv->spi_tx_buf[0] =3D INSTRUCTION_RTS(1 << tx_buf_idx);
-+	ret =3D spi_write(spi, priv->spi_tx_buf, 1);
-+	if (ret) {
-+		dev_err(&spi->dev, "RTS failed: ret =3D %d\n", ret);
-+	}
-  }
- =20
-  static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
+>> The idea is to bring the USB CAN interface as near as possible to the
+>> SocketCAN network interface:
+> 
+> Exactly. The device should know what a struct can_frame is. The device i
+> have is more than powerful enough to do some extra converting, endian
+> etc (its an atmel devboard).
+> I have been reading the Peak CAN-USB driver source, they seem to do the
+> conversion on the host with a simple
+> #ifdef ENDIAN be or le ... 
+> 
+> compiling either the big endian or the little endian code.
+> 
+> but a single memcpy would be allot cleaner.
 
 
+Yes. In general the content from the CAN registers needs to be copied into the
+URB from the CAN USB CPU anyway. So the idea is to do it in host-byteorder.
+This has a very small impact to the CAN CPU complexity and makes it really
+easy on the host driver side.
 
-Would it be possible to integrate this patch into mainstream mcp251x.c?
+>> - send struct can_frames
+>> - receive struct can_frames (for instant CAN data forwarding)
+>> - receive struct can_frames (for instant CAN error messages(!) forwarding)
+>> - send an endian pattern inside the USB URB (*1)
+>> - send skb->sk pointers along with CAN data (*2)
+>> - define a simple interface for open/close/bitrate-setting
+>>
+>> *1:
+>> The idea is to reduce the CAN network driver to make simple memcpy()
+>> operations instead of do any bitshifting or endian conversions. For that
+>> reason an endian pattern (e.g. 0xAA00AA00) is added to the USB URB at
+>> send/configuration, so that the CAN USB adapter switches to the host endian
+>> mode and replies with the same endian pattern before the CAN data.
+>> This allows to simply memcpy() the received CAN frame into skb->data.
+>>
+>> *2:
+>> To provide a state-of-the-art echo functionality the sk pointer (skb->sk) is
+>> sent along with the CAN frame. This allows to skb_free() the original tx skb
+>> and create a new one at rx time with the correct sk pointer, when the frame is
+>> echoed after successful transmission. As we are endian safe the sk pointer can
+>> be taken from the USB URB as-is. (For security reasons we should probably not
+>> take the pointer directly but double check with stored echo-skbs)
+> 
+> hm. I also don't think it would be wise to accept a pointer from the
+> outside in kernel space. maybe accept an index(that can be checked) into
+> a pointer array?.. I don't know, I'm not at that point yet :P.
+> 
 
-Kind Regards,
 
-Beno=EEt.
+I found a very interesting implementation in the Bosch M_CAN specification:
+
+http://www.semiconductors.bosch.de/en/ipmodules/can/canipmodules/m_can/m_can.asp
+
+http://www.semiconductors.bosch.de/media/en/pdf/ipmodules_1/m_can/mcan_users_manual.pdf
+
+Section 2.4.3 Tx Buffer Element (page 45)
+
+---8<---
+
+T1 Bits 31:24 MM[7:0]: Message Marker
+
+Written by CPU during Tx Buffer configuration. Copied into Tx Event FIFO
+element for identification of Tx message status.
+
+---8<---
+
+So you can see in the Tx event FIFO, which marked CAN frame has been sent.
+
+This is probably enough to provide just a byte and to create an array of
+skb pointers which is referenced by this Message Marker. Maybe 256 markers
+are too much ... we could only use 8 markers IMO.
+
+>>
+>> So the general idea is not to design an USB CAN API and adapt this to the CAN
+>> network interface driver - BUT to design an USB CAN API supporting the CAN
+>> netdev driver concepts and native data structures directly. This would be
+>> similar to the CDC Ethernet approach and could become a "standard USB-CAN
+>> interface" - which was originally requested by Max.
+> 
+> I have started work on this, since the last email, although i am only at
+> the very beginning of the task.
+> 
+
+
+No problem. Every journey begins with a first step. [Lao Tze]
+
+Regards,
+Oliver
