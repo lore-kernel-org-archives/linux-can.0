@@ -1,44 +1,39 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: usb-can device
-Date: Wed, 29 Aug 2012 13:02:15 +0200
-Message-ID: <503DF6B7.8010004@hartkopp.net>
-References: <1345996339.6610.10.camel@slaptop> <503A4E9B.9060308@pengutronix.de> <503B1198.3010506@hartkopp.net> <20120828233459.GA3046@gmail.com>
+From: Mahesh.Maharjan-EXT@continental-corporation.com
+Subject: using multiple buffer with mailbox
+Date: Thu, 30 Aug 2012 14:26:15 +0200
+Message-ID: <OFB15B28F3.46CFFEF5-ONC1257A6A.004361AB-C1257A6A.0044524C@continental-corporation.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:17761 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752541Ab2H2LCR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Aug 2012 07:02:17 -0400
-In-Reply-To: <20120828233459.GA3046@gmail.com>
+Received: from mailout64.rmx.de ([62.134.45.44]:39355 "EHLO mailout64.rmx.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751324Ab2H3M0X (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 30 Aug 2012 08:26:23 -0400
+Received: from [10.64.70.32] (HELO kdin64.retarus.de)
+  by mailout64.rmx.de (CommuniGate Pro SMTP 5.2.13 _community_)
+  with ESMTP id 36870099 for linux-can@vger.kernel.org; Thu, 30 Aug 2012 14:26:20 +0200
+Received: from sbas140a.vs.de.conti.de ([10.215.251.126])
+	by kdin64.retarus.de (8.14.2/8.14.2/retarus.custom) with ESMTP id q7UCQIrr030793
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-can@vger.kernel.org>; Thu, 30 Aug 2012 14:26:19 +0200
+Received: from sbas140a.cw01.contiwan.com (sbas140a.vs.de.conti.de [158.92.186.121])
+	by sbas140a.vs.de.conti.de (8.13.8/8.13.8) with ESMTP id q7UCQIWd015315
+	for <linux-can@vger.kernel.org>; Thu, 30 Aug 2012 14:26:18 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "Max S." <max@schneidersoft.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On 29.08.2012 01:34, Fabio Baltieri wrote:
+hello to all Again,
 
-> Oliver, Marc, do you think that this design my be used as a base to do
-> some generic USB-CAN (CDC CAN?) protocol development?  I would be happy
-> to help!
+ As I working with imx,  I want to know ,  How do SocketCAN can be 
+implement with mailbox ( 64 message buffer) regarding flexcan flexibilti 
+and hardware filters. Or is there possible to implement  along message 
+buffer using priority based CAN message  using Socket CANin upperlayer , 
+with CAN_buffer register Interrupts.
 
+Another question , which interest me is ,CAN_ ISO TP implementaion , which 
+ I check in linux-can, I could not find the sources & header files, but , 
+CAN-util is using  CAN_ISOTP- examples.  Do, still ISO-TP in  test mode Or 
+it is already beed implement.
 
-Yes. Definitely!
-
-Really nice to have the entire project on github now.
-
-Even if the MCP2515 is not the high performance hardware, we probably run into
-problems there, we would not see on better hardware ;-)
-
-> Max, does this helps you with the design?  I understand that you are
-> using some other Atmel MCUs... maybe you can directly re-use part of the
-> code.
-> 
-> Fabio
-
-
-Tnx!
-
-Oliver
-
+~ Mahesh
