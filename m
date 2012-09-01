@@ -1,63 +1,99 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Full Buffers and the Passive bus
-Date: Fri, 31 Aug 2012 19:37:42 +0200
-Message-ID: <20120831173742.GA414@vandijck-laurijssen.be>
-References: <CACJ51z3wGmSnZ3U-qe_QLSPnNuRb54k5=5zuQ+DBQ0aFohcvVw@mail.gmail.com>
- <5040EAFE.9000500@hartkopp.net>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: Truncate DLC to 8 instead of dropping?
+Date: Sat, 1 Sep 2012 19:33:13 +0200
+Message-ID: <20120901173313.GA9656@pengutronix.de>
+References: <20120831115904.GB2624@pengutronix.de>
+ <20120831125021.GB1191@vandijck-laurijssen.be>
+ <5040E7C2.4040305@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:12597 "EHLO
-	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754763Ab2HaRhr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Aug 2012 13:37:47 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44098 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751761Ab2IARdO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Sep 2012 13:33:14 -0400
 Content-Disposition: inline
-In-Reply-To: <5040EAFE.9000500@hartkopp.net>
+In-Reply-To: <5040E7C2.4040305@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andrew Bell <andrew.bell.ia@gmail.com>, linux-can@vger.kernel.org
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, linux-can@vger.kernel.org
 
-On Fri, Aug 31, 2012 at 06:49:02PM +0200, Oliver Hartkopp wrote:
-> On 31.08.2012 18:36, Andrew Bell wrote:
-> 
-> > Is there some way within socket CAN to detect the state when no nodes
-> > are on the BUS?  I do get CAN_ERR_TX_TIMEOUT error frames after some
-> > time, but I'm writing to the BUS faster than frames drain from the
-> > buffers, so eventually buffers fill up and writes start failing.  In
-> > this case, write does return ENOBUFS.  But I'd like to be able to
-> > differentiate between the case where buffers are full because of some
-> > transient condition (I'm writing too fast for the BUS) and the
-> > condition when nobody is home to receive anything at all.
-> > 
-> > Suggestions appreciated.
-> 
-> 
-> Hello Andrew,
-> 
-> this first idea was to check, if the successful transmissions increase the tx
-> counter in the netdevice statistics. When there's no increasing value no
-> frames have been sent on the wire.
-> 
-> But maybe there's another suggestion out there ...
 
-Successfull transmissions generate incoming messages if CAN_RAW_RECV_OWN_MSGS
-is set ...
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The use case I have in mind (and successfully implemented) is to catch
-a bootloader on the bus in its bootloader state. I guess we all know this
-use case.
+On Fri, Aug 31, 2012 at 06:35:14PM +0200, Oliver Hartkopp wrote:
+> Hello Kurt and Wolfram,
+>=20
+> On 31.08.2012 14:50, Kurt Van Dijck wrote:
+>=20
+> > On Fri, Aug 31, 2012 at 01:59:04PM +0200, Wolfram Sang wrote:
+> >> Hi,
+> >>
+> >> I just noticed today that commit c7cd606f60e7679c7f9eee7010f02a6f00020=
+9c1
+> >> ("can: Fix data length code handling in rx path") says regarding
+> >> overlong packets:
+> >>
+> >> =3D=3D=3D
+> >>
+> >> The ISO 11898-1 Chapter 8.4.2.3 (DLC field) says that register values =
+> 8
+> >> should be reduced to 8 without any error reporting or frame drop.
+> >>
+> >> =3D=3D=3D
+> >>
+> >> and this is why get_can_dlc() came into existance.
+> >>
+> >> However, functions like can_dropped_invalid_skb() from dev.h or can_rc=
+v() from
+> >> af_can.c do check for a correct length, but drop the packet in the err=
+or case.
+> >> Don't those need to be fixed?
+> >>
+> >=20
+> > Interesting point. My first idea is to acknowledge your thinking, BUT:
+> > * ISO 11898-1 is about the wire format, whereas your issues address
+> >   higher level interfaces. Higher level interfaces may IMHO use a stric=
+ter
+> >   format that the wire format.
+>=20
+>=20
+> Pointing to the wire format is a good idea.
+> To me this "dlc error ignoring" requirement is implemented by the CAN
+> controller. And when the dlc value in the controller register is not sani=
+tized
+> we should do it on driver level.
 
-In case no frames get out since the PC is alone, I see no loopback'd frames
-of myself, so I need not repeating my 'catch frame' again.
-If I receive my loopback'd 'catch frame', I know I must repeat it within
-a specified time interval.
+If I understand both of you correctly, that means the checks in the
+functions I mentioned should be removed then?
 
-Kind regards,
+Fine with me if this is consistent, I just wondered if it wasn't nice to
+have a check in an upper layer in case the driver did not correctly
+implement the check.
 
--- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAlBCRtgACgkQD27XaX1/VRvQgACfTqCMio3PkfzVoil3AIP8hSUH
+n3QAn1sKkMBLhMSyJj4TXdAS9qKB8vKV
+=Ed0q
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
