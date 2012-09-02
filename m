@@ -1,78 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Truncate DLC to 8 instead of dropping?
-Date: Sat, 01 Sep 2012 21:27:48 +0200
-Message-ID: <504261B4.4090107@hartkopp.net>
-References: <20120831115904.GB2624@pengutronix.de> <20120831125021.GB1191@vandijck-laurijssen.be> <5040E7C2.4040305@hartkopp.net> <20120901173313.GA9656@pengutronix.de> <20120901181106.GA425@vandijck-laurijssen.be> <20120901181757.GC9656@pengutronix.de>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: [PATCH] net/can:  rename peak_usb dump_mem function
+Date: Sun, 02 Sep 2012 10:13:11 -0700
+Message-ID: <504393A7.8040007@xenotime.net>
+References: <1346577700-8156-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:54660 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754213Ab2IAT1w (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Sep 2012 15:27:52 -0400
-In-Reply-To: <20120901181757.GC9656@pengutronix.de>
+Received: from oproxy11-pub.bluehost.com ([173.254.64.10]:34787 "HELO
+	oproxy11-pub.bluehost.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with SMTP id S1754278Ab2IBRNa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 2 Sep 2012 13:13:30 -0400
+In-Reply-To: <1346577700-8156-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>
+To: netdev@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-On 01.09.2012 20:17, Wolfram Sang wrote:
+From: Randy Dunlap <rdunlap@xenotime.net>
 
-> On Sat, Sep 01, 2012 at 08:11:06PM +0200, Kurt Van Dijck wrote:
->> On Sat, Sep 01, 2012 at 07:33:13PM +0200, Wolfram Sang wrote:
->>> On Fri, Aug 31, 2012 at 06:35:14PM +0200, Oliver Hartkopp wrote:
->>>> Hello Kurt and Wolfram,
->>>>
->>>> On 31.08.2012 14:50, Kurt Van Dijck wrote:
->>>>
->>>>> On Fri, Aug 31, 2012 at 01:59:04PM +0200, Wolfram Sang wrote:
->>>>>> Hi,
->>>>>>
->>>>>> I just noticed today that commit c7cd606f60e7679c7f9eee7010f02a6f000209c1
->>>>>> ("can: Fix data length code handling in rx path") says regarding
->>>>>> overlong packets:
->>>>>>
->>>>>> ===
->>>>>>
->>>>>> The ISO 11898-1 Chapter 8.4.2.3 (DLC field) says that register values > 8
->>>>>> should be reduced to 8 without any error reporting or frame drop.
->>>>>>
->>>>>> ===
->>>>>>
->>>>>> and this is why get_can_dlc() came into existance.
->>>>>>
->>>>>> However, functions like can_dropped_invalid_skb() from dev.h or can_rcv() from
->>>>>> af_can.c do check for a correct length, but drop the packet in the error case.
->>>>>> Don't those need to be fixed?
->>>>>>
->>>>>
->>>>> Interesting point. My first idea is to acknowledge your thinking, BUT:
->>>>> * ISO 11898-1 is about the wire format, whereas your issues address
->>>>>   higher level interfaces. Higher level interfaces may IMHO use a stricter
->>>>>   format that the wire format.
->>>>
->>>>
->>>> Pointing to the wire format is a good idea.
->>>> To me this "dlc error ignoring" requirement is implemented by the CAN
->>>> controller. And when the dlc value in the controller register is not sanitized
->>>> we should do it on driver level.
->>>
->>> If I understand both of you correctly, that means the checks in the
->>> functions I mentioned should be removed then?
->>
->> Not completely IMHO. The check in the recv path should not be necessary.
-> 
-> OK. I only meant the rx path.
-> 
+Rename generic-sounding function dump_mem() to pcan_dump_mem()
+so that it does not conflict with the dump_mem() function in
+arch/sh/include/asm/kdebug.h.
 
+drivers/net/can/usb/peak_usb/pcan_usb_core.c: error: conflicting types for 'dump_mem':  => 56:6
+drivers/net/can/usb/peak_usb/pcan_usb_core.h: error: conflicting types for 'dump_mem':  => 134:6
 
-The check on driver level should not be removed. Both the driver and the
-network layer should do it's own checks.
+Not tested.
 
-Think about people using PF_PACKET sockets to access CAN netdevices.
-When you are able to put "userspace garbage" directly into CAN netdevices via
-PF_PACKET you need checks for rx/tx sanity in the driver.
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |    2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Regards,
-Oliver
+--- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -53,7 +53,7 @@ static struct peak_usb_adapter *peak_usb
+  * dump memory
+  */
+ #define DUMP_WIDTH	16
+-void dump_mem(char *prompt, void *p, int l)
++void pcan_dump_mem(char *prompt, void *p, int l)
+ {
+ 	pr_info("%s dumping %s (%d bytes):\n",
+ 		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
+--- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -131,7 +131,7 @@ struct peak_usb_device {
+ 	struct peak_usb_device *next_siblings;
+ };
+ 
+-void dump_mem(char *prompt, void *p, int l);
++void pcan_dump_mem(char *prompt, void *p, int l);
+ 
+ /* common timestamp management */
+ void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
