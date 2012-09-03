@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
 Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
-Date: Mon, 3 Sep 2012 20:13:35 +0200
-Message-ID: <20120903181335.GA415@vandijck-laurijssen.be>
+Date: Mon, 3 Sep 2012 20:29:25 +0200
+Message-ID: <20120903182925.GA28766@gmail.com>
 References: <50191EA5.1040303@pengutronix.de>
  <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com>
  <20120824051016.GB1718@vandijck-laurijssen.be>
@@ -9,83 +9,47 @@ References: <50191EA5.1040303@pengutronix.de>
  <20120824124248.GA422@vandijck-laurijssen.be>
  <20120824220142.GA1470@gmail.com>
  <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:37541 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754398Ab2ICSNo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 14:13:44 -0400
+Received: from mail-ee0-f46.google.com ([74.125.83.46]:56930 "EHLO
+	mail-ee0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753435Ab2ICS2l (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 14:28:41 -0400
 Content-Disposition: inline
-In-Reply-To: <5044A547.2010603@pengutronix.de>
+In-Reply-To: <20120903181335.GA415@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-On Mon, Sep 03, 2012 at 02:40:39PM +0200, Marc Kleine-Budde wrote:
-> On 08/25/2012 12:01 AM, Fabio Baltieri wrote:
-> > Hello Kurt,
+On Mon, Sep 03, 2012 at 08:13:35PM +0200, Kurt Van Dijck wrote:
+> On Mon, Sep 03, 2012 at 02:40:39PM +0200, Marc Kleine-Budde wrote:
+> > The net->ifindex is unique. But it's only an integer. Usually can0 has a
+> > ifindex != 0, so a simple can%d is contra productive here.
 > > 
-> > On Fri, Aug 24, 2012 at 02:42:48PM +0200, Kurt Van Dijck wrote:
-> >> On Fri, Aug 24, 2012 at 01:28:16PM +0200, Marc Kleine-Budde wrote:
-> >>> On 08/24/2012 07:10 AM, Kurt Van Dijck wrote:
-> >>>> Hello,
-> >>>>
-> >>>> I find the CAN led triggers an interesting thing.
-> >>>>
-> >>>> And then, this scenario fell crossed my mind:
-> >>>> Imagine I do:
-> >>>> [insert CAN device: can0]
-> >>>> $ ip link set can0 name helga
-> >>>> [insert another CAN device: again 'can0']
-> >>>>
-> >>>> Registering 'can0-tx' led trigger will fail for the second CAN device,
-> >>>> since that led trigger name is already reserved for CAN device 'helga'.
-> >>> Good point.
+> > Some pointers to related code:
+> > http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
+> > http://lxr.free-electrons.com/source/drivers/base/core.c#L73
+> > http://lxr.free-electrons.com/source/include/linux/device.h#L695
 > > 
-> > Yep, thanks for pointing that out!
-> > 
-> > Interface renaming was something I considered when I first wrote the
-> > code and I had the mac80211-led driver in mind, as that driver uses the
-> > phy name and not the netdev one for its triggers.
-> > 
-> > The reason why I did not care that much in the end is that on SoC based
-> > systems trigger-led association is made at probe time, based on data
-> > either from platform_data or devicetree, so I imagined that once the
-> > kernel is ported to the board and default triggers are set correctly at
-> > boot time, the userspace is free to rename CAN interfaces and nobody
-> > should notice... :^)
-> > 
-> > The thing I did not consider are hot-plug interfaces mixed with
-> > renaming, such as in the case you pointed out - it's probably not really
-> > common but still possible.
-> > 
-> >>>> I'm not sure how to fix such.
-> >>>> If 'rx' & 'tx' may be combined, reusing the netdev name may be possible?
-> >>>> Just wild thinking ...
-> >>>
-> >>> I think the device's name (not netdev) is unique in the system and
-> >>> cannot be changed.
-> >>
-> >> but may contain several netdev's ...
-> > 
-> > Ouch.
+> > comments?
+
+That would probabily makes really hard to choose the right
+default_trigger for led devices to get to the appropriate CAN LED in
+embedded systems, as trigger name would depend from other network
+devices and probing order (correct me if I'm wrong).
+
+Something with device name would probaily be more appropriate here.
+
 > 
-> The net->ifindex is unique. But it's only an integer. Usually can0 has a
-> ifindex != 0, so a simple can%d is contra productive here.
+> a very recent idea: something with netdevice notifiers and NETDEV_CHANGENAME ...
+> http://lxr.free-electrons.com/source/net/core/dev.c#L1030
 > 
-> Some pointers to related code:
-> http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
-> http://lxr.free-electrons.com/source/drivers/base/core.c#L73
-> http://lxr.free-electrons.com/source/include/linux/device.h#L695
-> 
-> comments?
+> you could: rename the trigger, or if we think it's usefull,
+> block the netdev rename when its triggers are in use.
 
-a very recent idea: something with netdevice notifiers and NETDEV_CHANGENAME ...
-http://lxr.free-electrons.com/source/net/core/dev.c#L1030
+Blocking the rename looks overkill to me, what about using device name
+with an optional "port id" appended to it?  Sounds simpler...
 
-you could: rename the trigger, or if we think it's usefull,
-block the netdev rename when its triggers are in use.
-
-Kurt
+Fabio
