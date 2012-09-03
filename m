@@ -1,142 +1,197 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/4] ARM: AM33XX: board-generic: Add of_dev_auxdata to
- pass d_can raminit
-Date: Mon, 03 Sep 2012 22:11:14 +0200
-Message-ID: <50450EE2.3000107@pengutronix.de>
-References: <1346673139-14540-1-git-send-email-anilkumar@ti.com> <1346673139-14540-4-git-send-email-anilkumar@ti.com>
+Subject: Re: [PATCH 2/4] can: c_can: Add d_can raminit support
+Date: Mon, 03 Sep 2012 22:39:15 +0200
+Message-ID: <50451573.4090109@pengutronix.de>
+References: <1346673139-14540-1-git-send-email-anilkumar@ti.com> <1346673139-14540-3-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig336B49E1C85A468B75167165"
+ boundary="------------enig2D0B8E1B09236338243A46FB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:32970 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41493 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756502Ab2ICULY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 16:11:24 -0400
-In-Reply-To: <1346673139-14540-4-git-send-email-anilkumar@ti.com>
+	with ESMTP id S1752738Ab2ICUj3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 16:39:29 -0400
+In-Reply-To: <1346673139-14540-3-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: AnilKumar Ch <anilkumar@ti.com>
 Cc: wg@grandegger.com, tony@atomide.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig336B49E1C85A468B75167165
+--------------enig2D0B8E1B09236338243A46FB
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
 On 09/03/2012 01:52 PM, AnilKumar Ch wrote:
-> Add of_dev_auxdata to pass d_can raminit callback APIs to initialize
-> d_can RAM. D_CAN RAM initialization bits are present in CONTROL module
-> address space, which can be accessed by platform specific code. So
-> callback functions are added to serve this purpose, this can done by
-> using of_dev_auxdata.
->=20
-> Callback API is added to of_dev_auxdata with different instance numbers=
-
-> for two instances of D_CAN IP. These callback functions are used to
-> enable/disable D_CAN RAM from CAN driver.
+> Add D_CAN raminit support to C_CAN driver to enable D_CAN RAM.
+> DCAN RAM holds all the message objects during transmission or
+> receiving of data. This initialization/de-initialization should
+> be done in synchronous with D_CAN clock.
 >=20
 > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+> ---
+>  drivers/net/can/c_can/c_can.c          |   13 ++++++++++++
+>  drivers/net/can/c_can/c_can.h          |    2 ++
+>  drivers/net/can/c_can/c_can_platform.c |   10 +++++++++
+>  include/linux/can/platform/c_can.h     |   36 ++++++++++++++++++++++++=
+++++++++
+>  4 files changed, 61 insertions(+)
+>  create mode 100644 include/linux/can/platform/c_can.h
+>=20
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
+n.c
+> index aa6c5eb..c175410 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -214,6 +214,12 @@ static inline void c_can_pm_runtime_put_sync(const=
+ struct c_can_priv *priv)
+>  		pm_runtime_put_sync(priv->device);
+>  }
+> =20
+> +static inline void c_can_reset_ram(const struct c_can_priv *priv, bool=
+ enable)
+> +{
+> +	if (priv->ram_init)
+> +		priv->ram_init(priv->instance, enable);
+> +}
+> +
+>  static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
+>  {
+>  	return (priv->tx_next & C_CAN_NEXT_MSG_OBJ_MASK) +
+> @@ -1071,6 +1077,8 @@ static int c_can_open(struct net_device *dev)
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> =20
+>  	c_can_pm_runtime_get_sync(priv);
+> +	/* Initialize DCAN RAM */
+> +	c_can_reset_ram(priv, true);
+> =20
+>  	/* open the can device */
+>  	err =3D open_candev(dev);
+> @@ -1099,6 +1107,8 @@ static int c_can_open(struct net_device *dev)
+>  exit_irq_fail:
+>  	close_candev(dev);
+>  exit_open_fail:
+> +	/* De-Initialize DCAN RAM */
+> +	c_can_reset_ram(priv, false);
+>  	c_can_pm_runtime_put_sync(priv);
+>  	return err;
+>  }
+> @@ -1112,6 +1122,9 @@ static int c_can_close(struct net_device *dev)
+>  	c_can_stop(dev);
+>  	free_irq(dev->irq, dev);
+>  	close_candev(dev);
+> +
+> +	/* De-Initialize DCAN RAM */
+> +	c_can_reset_ram(priv, false);
+>  	c_can_pm_runtime_put_sync(priv);
+> =20
+>  	return 0;
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_ca=
+n.h
+> index 1437a6d..5f6339c 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -166,6 +166,8 @@ struct c_can_priv {
+>  	unsigned int tx_echo;
+>  	void *priv;		/* for board-specific data */
+>  	u16 irqstatus;
+> +	unsigned int instance;
+> +	void (*ram_init) (unsigned int instance, bool enable);
+>  };
+> =20
+>  struct net_device *alloc_c_can_dev(void);
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
+_can/c_can_platform.c
+> index c351975..c6963b2 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -34,6 +34,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/pinctrl/consumer.h>
+> +#include <linux/can/platform/c_can.h>
+> =20
+>  #include <linux/can/dev.h>
+> =20
+> @@ -98,6 +99,7 @@ static int __devinit c_can_plat_probe(struct platform=
+_device *pdev)
+>  	struct net_device *dev;
+>  	struct c_can_priv *priv;
+>  	const struct of_device_id *match;
+> +	struct c_can_platform_data *pdata =3D NULL;
+>  	const struct platform_device_id *id;
+>  	struct pinctrl *pinctrl;
+>  	struct resource *mem;
+> @@ -179,6 +181,14 @@ static int __devinit c_can_plat_probe(struct platf=
+orm_device *pdev)
+>  		priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_3_SAMPLES;
+>  		priv->read_reg =3D c_can_plat_read_reg_aligned_to_16bit;
+>  		priv->write_reg =3D c_can_plat_write_reg_aligned_to_16bit;
+> +		pdata =3D pdev->dev.platform_data;
+> +		if (!pdata) {
+> +			dev_err(&pdev->dev, "d_can platform data missing\n");
+> +			ret =3D -EINVAL;
 
-This will be a more complicated. This patch will go over the arm tree,
-but needs a header going via net.
+Is the ram_init mandatory on all d_can? There might be non omap d_can use=
+rs.
 
 Marc
 
-> ---
->  arch/arm/mach-omap2/board-generic.c |   40 +++++++++++++++++++++++++++=
-+++++++-
->  arch/arm/mach-omap2/control.h       |    4 ++++
->  2 files changed, 43 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/=
-board-generic.c
-> index 6f93a20..b68e642 100644
-> --- a/arch/arm/mach-omap2/board-generic.c
-> +++ b/arch/arm/mach-omap2/board-generic.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of_irq.h>
->  #include <linux/of_platform.h>
->  #include <linux/irqdomain.h>
-> +#include <linux/can/platform/c_can.h>
-> =20
->  #include <mach/hardware.h>
->  #include <asm/hardware/gic.h>
-> @@ -22,6 +23,8 @@
-> =20
->  #include <plat/board.h>
->  #include "common.h"
-> +#include "control.h"
-> +#include "iomap.h"
->  #include "common-board-devices.h"
-> =20
->  #if !(defined(CONFIG_ARCH_OMAP2) || defined(CONFIG_ARCH_OMAP3))
-> @@ -37,11 +40,46 @@ static struct of_device_id omap_dt_match_table[] __=
-initdata =3D {
->  	{ }
->  };
-> =20
-> +void d_can_hw_raminit(unsigned int instance, bool enable)
-> +{
-> +	u32 val;
+> +			goto exit_free_device;
+> +		}
+> +		priv->ram_init =3D pdata->ram_init;
+> +		priv->instance =3D pdata->instance;
+>  		break;
+>  	default:
+>  		ret =3D -EINVAL;
+> diff --git a/include/linux/can/platform/c_can.h b/include/linux/can/pla=
+tform/c_can.h
+> new file mode 100644
+> index 0000000..84b27d2
+> --- /dev/null
+> +++ b/include/linux/can/platform/c_can.h
+> @@ -0,0 +1,36 @@
+> +/*
+> + * C_CAN controller driver platform header
+> + *
+> + * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.c=
+om/
+> + *
+> + * Bosch C_CAN/D_CAN controller is compliant to CAN protocol version 2=
+=2E0
+> + * part A and B.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation version 2.
+> + *
+> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> + * kind, whether express or implied; without even the implied warranty=
+
+> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
 > +
-> +	val =3D readl(AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> +	if (enable) {
-> +		val &=3D ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> +		val |=3D AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> +	} else {
-> +		val &=3D ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> +	}
-> +}
+> +#ifndef __CAN_PLATFORM_C_CAN_H__
+> +#define __CAN_PLATFORM_C_CAN_H__
 > +
-> +static struct c_can_platform_data d_can0_pdata =3D {
-> +	.ram_init	=3D d_can_hw_raminit,
-> +	.instance	=3D 0,
+> +/**
+> + * struct c_can_platform_data - C_CAN/D_CAN Platform Data
+> + *
+> + * @instance:		CAN instance, required for d_can raminit
+> + * @ram_init:		CAN RAM initialization
+> + *
+> + * Platform data structure to get all platform specific settings.
+> + * this structure also accounts the fact that the IP may have differen=
+t
+> + * RAM for different SOC's
+> + */
+> +struct c_can_platform_data {
+> +	unsigned int instance;
+> +	void (*ram_init) (unsigned int instance, bool enable);
 > +};
-> +
-> +static struct c_can_platform_data d_can1_pdata =3D {
-> +	.ram_init	=3D d_can_hw_raminit,
-> +	.instance	=3D 1,
-> +};
-> +
-> +static const struct of_dev_auxdata am33xx_auxdata_lookup[] __initconst=
- =3D {
-> +	OF_DEV_AUXDATA("bosch,d_can", 0x481cc000, NULL, &d_can0_pdata),
-> +	OF_DEV_AUXDATA("bosch,d_can", 0x481d0000, NULL, &d_can1_pdata),
-> +	{ },
-> +};
-> +
->  static void __init omap_generic_init(void)
->  {
->  	omap_sdrc_init(NULL, NULL);
-> =20
-> -	of_platform_populate(NULL, omap_dt_match_table, NULL, NULL);
-> +	if (of_machine_is_compatible("ti,am33xx"))
-> +		of_platform_populate(NULL, omap_dt_match_table,
-> +				am33xx_auxdata_lookup, NULL);
-> +	else
-> +		of_platform_populate(NULL, omap_dt_match_table, NULL, NULL);
->  }
-> =20
->  #ifdef CONFIG_SOC_OMAP2420
-> diff --git a/arch/arm/mach-omap2/control.h b/arch/arm/mach-omap2/contro=
-l.h
-> index b8cdc85..afd189b 100644
-> --- a/arch/arm/mach-omap2/control.h
-> +++ b/arch/arm/mach-omap2/control.h
-> @@ -356,6 +356,10 @@
->  #define AM33XX_CONTROL_STATUS_SYSBOOT1_SHIFT		22
->  #define AM33XX_CONTROL_STATUS_SYSBOOT1_MASK		(0x3 << 22)
-> =20
-> +/* AM33XX DCAN bitfields */
-> +#define AM33XX_CONTROL_DCAN_RAMINIT		0x644
-> +#define AM33XX_DCAN_RAMINIT_START_MASK(i)	(1 << (i))
-> +
->  /* CONTROL OMAP STATUS register to identify OMAP3 features */
->  #define OMAP3_CONTROL_OMAP_STATUS	0x044c
-> =20
+> +#endif
 >=20
 
 
@@ -147,7 +202,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig336B49E1C85A468B75167165
+--------------enig2D0B8E1B09236338243A46FB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -156,9 +211,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlBFDuYACgkQjTAFq1RaXHOU0wCfYd3NyFefOtvnuaM0l3Lyq/Zt
-sZsAn25SFCoXUldi0yacfDIipsVKxjU6
-=rAre
+iEYEARECAAYFAlBFFXgACgkQjTAFq1RaXHMvywCfX0Qn+aiiaPuZouF3gaSewL3r
+aFMAoJhOhKQxVL9EA4FBT84Ew0TSi/R/
+=w/6f
 -----END PGP SIGNATURE-----
 
---------------enig336B49E1C85A468B75167165--
+--------------enig2D0B8E1B09236338243A46FB--
