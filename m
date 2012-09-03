@@ -1,106 +1,58 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/4] can: c_can: Adopt pinctrl support
-Date: Mon, 03 Sep 2012 22:42:04 +0200
-Message-ID: <5045161C.4000100@pengutronix.de>
-References: <1346673139-14540-1-git-send-email-anilkumar@ti.com> <1346673139-14540-2-git-send-email-anilkumar@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Mon, 03 Sep 2012 22:54:49 +0200
+Message-ID: <50451919.20205@hartkopp.net>
+References: <50191EA5.1040303@pengutronix.de> <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com> <20120824051016.GB1718@vandijck-laurijssen.be> <50376550.4020501@pengutronix.de> <20120824124248.GA422@vandijck-laurijssen.be> <20120824220142.GA1470@gmail.com> <5044A547.2010603@pengutronix.de> <20120903181335.GA415@vandijck-laurijssen.be> <20120903182925.GA28766@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigD26EC89AE912B203349FC18E"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41516 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753634Ab2ICUmK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 16:42:10 -0400
-In-Reply-To: <1346673139-14540-2-git-send-email-anilkumar@ti.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:57465 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753418Ab2ICUyx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 16:54:53 -0400
+In-Reply-To: <20120903182925.GA28766@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: AnilKumar Ch <anilkumar@ti.com>
-Cc: wg@grandegger.com, tony@atomide.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigD26EC89AE912B203349FC18E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 03.09.2012 20:29, Fabio Baltieri wrote:
 
-On 09/03/2012 01:52 PM, AnilKumar Ch wrote:
-> Adopt pinctrl support to c_can driver based on c_can device
-> pointer, pinctrl driver configure SoC pins to d_can mode
-> according to definitions provided in .dts file.
->=20
-> In device specific device tree file 'pinctrl-names =3D "default";'
-> and 'pinctrl-0 =3D <&d_can1_pins>;' needs to add to configure pins
-> from c_can driver. d_can1_pins node contains the pinmux/config
-> details of d_can L/H pins.
-
-Looks good, is the pinctrl property documented in the dt bindings already=
-?
-
-Marc
-
->=20
-> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
-> ---
->  drivers/net/can/c_can/c_can_platform.c |    7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
-_can/c_can_platform.c
-> index 90801c4..c351975 100644
-> --- a/drivers/net/can/c_can/c_can_platform.c
-> +++ b/drivers/net/can/c_can/c_can_platform.c
-> @@ -33,6 +33,7 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/pinctrl/consumer.h>
-> =20
->  #include <linux/can/dev.h>
-> =20
-> @@ -98,6 +99,7 @@ static int __devinit c_can_plat_probe(struct platform=
-_device *pdev)
->  	struct c_can_priv *priv;
->  	const struct of_device_id *match;
->  	const struct platform_device_id *id;
-> +	struct pinctrl *pinctrl;
->  	struct resource *mem;
->  	int irq;
->  	struct clk *clk;
-> @@ -114,6 +116,11 @@ static int __devinit c_can_plat_probe(struct platf=
-orm_device *pdev)
->  		id =3D platform_get_device_id(pdev);
->  	}
-> =20
-> +	pinctrl =3D devm_pinctrl_get_select_default(&pdev->dev);
-> +	if (IS_ERR(pinctrl))
-> +		dev_warn(&pdev->dev,
-> +			"failed to configure pins from driver\n");
-> +
->  	/* get the appropriate clk */
->  	clk =3D clk_get(&pdev->dev, NULL);
->  	if (IS_ERR(clk)) {
->=20
+> On Mon, Sep 03, 2012 at 08:13:35PM +0200, Kurt Van Dijck wrote:
+>> On Mon, Sep 03, 2012 at 02:40:39PM +0200, Marc Kleine-Budde wrote:
+>>> The net->ifindex is unique. But it's only an integer. Usually can0 has a
+>>> ifindex != 0, so a simple can%d is contra productive here.
+>>>
+>>> Some pointers to related code:
+>>> http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
+>>> http://lxr.free-electrons.com/source/drivers/base/core.c#L73
+>>> http://lxr.free-electrons.com/source/include/linux/device.h#L695
+>>>
+>>> comments?
+> 
+> That would probabily makes really hard to choose the right
+> default_trigger for led devices to get to the appropriate CAN LED in
+> embedded systems, as trigger name would depend from other network
+> devices and probing order (correct me if I'm wrong).
+> 
+> Something with device name would probaily be more appropriate here.
+> 
+>>
+>> a very recent idea: something with netdevice notifiers and NETDEV_CHANGENAME ...
+>> http://lxr.free-electrons.com/source/net/core/dev.c#L1030
+>>
+>> you could: rename the trigger, or if we think it's usefull,
+>> block the netdev rename when its triggers are in use.
+> 
+> Blocking the rename looks overkill to me, what about using device name
+> with an optional "port id" appended to it?  Sounds simpler...
 
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The name of the device can only be changed when the interface is down.
+Is it possible to put some scripting around it to detach and attach the leds
+to the interfaces on ifup/ifdown triggers?
 
+Regards,
+Oliver
 
---------------enigD26EC89AE912B203349FC18E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBFFhwACgkQjTAFq1RaXHNlSgCff/ftiJphR8hv71Udn+l7SDuG
-vV0An1p/rJaq+jE7Ksom4F7gn7hBVCbV
-=iLA6
------END PGP SIGNATURE-----
-
---------------enigD26EC89AE912B203349FC18E--
