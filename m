@@ -1,78 +1,113 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: mcp251x: avoid repeated frame bug
-Date: Mon,  3 Sep 2012 14:17:29 +0200
-Message-ID: <1346674649-10181-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Mon, 03 Sep 2012 14:40:39 +0200
+Message-ID: <5044A547.2010603@pengutronix.de>
+References: <50191EA5.1040303@pengutronix.de> <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com> <20120824051016.GB1718@vandijck-laurijssen.be> <50376550.4020501@pengutronix.de> <20120824124248.GA422@vandijck-laurijssen.be> <20120824220142.GA1470@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig9D8A217EF256FB81A0C34C77"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35202 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44886 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752724Ab2ICMRf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 08:17:35 -0400
+	with ESMTP id S1755803Ab2ICMkr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Sep 2012 08:40:47 -0400
+In-Reply-To: <20120824220142.GA1470@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Benoit <benoit@pouic.eu>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-From: Benoit <benoit@pouic.eu>
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig9D8A217EF256FB81A0C34C77
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-The MCP2515 has a silicon bug causing repeated frame transmission, see section
-5 of MCP2515 Rev. B Silicon Errata Revision G (March 2007).
+On 08/25/2012 12:01 AM, Fabio Baltieri wrote:
+> Hello Kurt,
+>=20
+> On Fri, Aug 24, 2012 at 02:42:48PM +0200, Kurt Van Dijck wrote:
+>> On Fri, Aug 24, 2012 at 01:28:16PM +0200, Marc Kleine-Budde wrote:
+>>> On 08/24/2012 07:10 AM, Kurt Van Dijck wrote:
+>>>> Hello,
+>>>>
+>>>> I find the CAN led triggers an interesting thing.
+>>>>
+>>>> And then, this scenario fell crossed my mind:
+>>>> Imagine I do:
+>>>> [insert CAN device: can0]
+>>>> $ ip link set can0 name helga
+>>>> [insert another CAN device: again 'can0']
+>>>>
+>>>> Registering 'can0-tx' led trigger will fail for the second CAN devic=
+e,
+>>>> since that led trigger name is already reserved for CAN device 'helg=
+a'.
+>>> Good point.
+>=20
+> Yep, thanks for pointing that out!
+>=20
+> Interface renaming was something I considered when I first wrote the
+> code and I had the mac80211-led driver in mind, as that driver uses the=
 
-Basically, setting TXBnCTRL.TXREQ in either SPI mode (00 or 11) will eventually
-cause the bug. The workaround proposed by Microchip is to use mode 00 and send
-an RTS command on the SPI bus to initiate the transmission.
+> phy name and not the netdev one for its triggers.
+>=20
+> The reason why I did not care that much in the end is that on SoC based=
 
-TODO: get S-o-b from Benoit <benoit@pouic.eu>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello Benoit,
+> systems trigger-led association is made at probe time, based on data
+> either from platform_data or devicetree, so I imagined that once the
+> kernel is ported to the board and default triggers are set correctly at=
 
-can you please test this patch, if it still fixes your problem. In order to
-integrate this patch into the kernel, I need you Signed-off-by [1] with you
-real name.
+> boot time, the userspace is free to rename CAN interfaces and nobody
+> should notice... :^)
+>=20
+> The thing I did not consider are hot-plug interfaces mixed with
+> renaming, such as in the case you pointed out - it's probably not reall=
+y
+> common but still possible.
+>=20
+>>>> I'm not sure how to fix such.
+>>>> If 'rx' & 'tx' may be combined, reusing the netdev name may be possi=
+ble?
+>>>> Just wild thinking ...
+>>>
+>>> I think the device's name (not netdev) is unique in the system and
+>>> cannot be changed.
+>>
+>> but may contain several netdev's ...
+>=20
+> Ouch.
 
-regards, Marc
+The net->ifindex is unique. But it's only an integer. Usually can0 has a
+ifindex !=3D 0, so a simple can%d is contra productive here.
 
-[1] http://lxr.free-electrons.com/source/Documentation/SubmittingPatches#L298
+Some pointers to related code:
+http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
+http://lxr.free-electrons.com/source/drivers/base/core.c#L73
+http://lxr.free-electrons.com/source/include/linux/device.h#L695
 
- drivers/net/can/mcp251x.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+comments?
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index a580db2..26e7129 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -83,6 +83,11 @@
- #define INSTRUCTION_LOAD_TXB(n)	(0x40 + 2 * (n))
- #define INSTRUCTION_READ_RXB(n)	(((n) == 0) ? 0x90 : 0x94)
- #define INSTRUCTION_RESET	0xC0
-+#define RTS_TXB0		0x01
-+#define RTS_TXB1		0x02
-+#define RTS_TXB2		0x04
-+#define INSTRUCTION_RTS(n)	(0x80 | ((n) & 0x07))
-+
- 
- /* MPC251x registers */
- #define CANSTAT	      0x0e
-@@ -397,6 +402,7 @@ static void mcp251x_hw_tx_frame(struct spi_device *spi, u8 *buf,
- static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *frame,
- 			  int tx_buf_idx)
- {
-+	struct mcp251x_priv *priv = dev_get_drvdata(&spi->dev);
- 	u32 sid, eid, exide, rtr;
- 	u8 buf[SPI_TRANSFER_BUF_LEN];
- 
-@@ -418,7 +424,10 @@ static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *frame,
- 	buf[TXBDLC_OFF] = (rtr << DLC_RTR_SHIFT) | frame->can_dlc;
- 	memcpy(buf + TXBDAT_OFF, frame->data, frame->can_dlc);
- 	mcp251x_hw_tx_frame(spi, buf, frame->can_dlc, tx_buf_idx);
--	mcp251x_write_reg(spi, TXBCTRL(tx_buf_idx), TXBCTRL_TXREQ);
-+
-+	/* use INSTRUCTION_RTS, to avoid "repeated frame problem" */
-+	priv->spi_tx_buf[0] = INSTRUCTION_RTS(1 << tx_buf_idx);
-+	mcp251x_spi_trans(priv->spi, 1);
- }
- 
- static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
--- 
-1.7.10
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--------------enig9D8A217EF256FB81A0C34C77
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBEpUsACgkQjTAFq1RaXHMZuQCgmIPr9CV88CQQQUCUHQ8xVS1L
+hPUAn2nW1MDJDBqEGkPhw0t6qNRxmwxm
+=1YVX
+-----END PGP SIGNATURE-----
+
+--------------enig9D8A217EF256FB81A0C34C77--
