@@ -1,62 +1,83 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: [PATCH] net/can:  rename peak_usb dump_mem function
-Date: Sun, 02 Sep 2012 10:13:11 -0700
-Message-ID: <504393A7.8040007@xenotime.net>
-References: <1346577700-8156-1-git-send-email-geert@linux-m68k.org>
+From: AnilKumar Ch <anilkumar@ti.com>
+Subject: [PATCH v2] of: Modify c_can binding documentation
+Date: Mon, 3 Sep 2012 10:24:34 +0530
+Message-ID: <1346648074-27025-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from oproxy11-pub.bluehost.com ([173.254.64.10]:34787 "HELO
-	oproxy11-pub.bluehost.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1754278Ab2IBRNa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 2 Sep 2012 13:13:30 -0400
-In-Reply-To: <1346577700-8156-1-git-send-email-geert@linux-m68k.org>
+Received: from bear.ext.ti.com ([192.94.94.41]:47343 "EHLO bear.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752807Ab2ICEzf (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 3 Sep 2012 00:55:35 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: swarren@wwwdotorg.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
 
-From: Randy Dunlap <rdunlap@xenotime.net>
+Modify c_can binding documentation according to recent review comments
+on device tree data addition patches.
 
-Rename generic-sounding function dump_mem() to pcan_dump_mem()
-so that it does not conflict with the dump_mem() function in
-arch/sh/include/asm/kdebug.h.
-
-drivers/net/can/usb/peak_usb/pcan_usb_core.c: error: conflicting types for 'dump_mem':  => 56:6
-drivers/net/can/usb/peak_usb/pcan_usb_core.h: error: conflicting types for 'dump_mem':  => 134:6
-
-Not tested.
-
-Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |    2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes from v1:
+	- Separated from "Add DT for AM33XX devices" patch series
+	- Incorporated Stephen Warren's review comments on v1
+	  * Removed status and interrupt-parent description from
+	    c_can.txt file because these are device specific
+	    parameters.
 
---- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -53,7 +53,7 @@ static struct peak_usb_adapter *peak_usb
-  * dump memory
-  */
- #define DUMP_WIDTH	16
--void dump_mem(char *prompt, void *p, int l)
-+void pcan_dump_mem(char *prompt, void *p, int l)
- {
- 	pr_info("%s dumping %s (%d bytes):\n",
- 		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
---- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -131,7 +131,7 @@ struct peak_usb_device {
- 	struct peak_usb_device *next_siblings;
- };
+ .../devicetree/bindings/net/can/c_can.txt          |   24 +++++++++++++++-----
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
+index a43f083..2c420c2 100644
+--- a/Documentation/devicetree/bindings/net/can/c_can.txt
++++ b/Documentation/devicetree/bindings/net/can/c_can.txt
+@@ -10,7 +10,6 @@ Required properties:
+ 			  number
  
--void dump_mem(char *prompt, void *p, int l);
-+void pcan_dump_mem(char *prompt, void *p, int l);
+ Optional properties:
+-- interrupt-parent	: The parent interrupt controller
+ - ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
+ 			  instance number
  
- /* common timestamp management */
- void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
+@@ -20,18 +19,31 @@ Future plan is to migrate hwmod data base contents into device tree
+ blob so that, all the required data will be used from device tree dts
+ file.
+ 
+-Examples:
++Example:
+ 
+-	d_can@481D0000 {
++Step1: SoC common .dtsi file
++
++	d_can1: d_can@481d0000 {
+ 		compatible = "bosch,d_can";
+-		reg = <0x481D0000 0x1000>;
+-		interrupts = <55 0x4>;
++		reg = <0x481d0000 0x2000>;
++		interrupts = <55>;
+ 		interrupt-parent = <&intc>;
++		status = "disabled";
+ 	};
+ 
+ (or)
+ 
+-	d_can@481D0000 {
++	d_can1: d_can@481d0000 {
+ 		compatible = "bosch,d_can";
+ 		ti,hwmods = "d_can1";
++		reg = <0x481d0000 0x2000>;
++		interrupts = <55>;
++		interrupt-parent = <&intc>;
++		status = "disabled";
++	};
++
++Step 2: board specific .dts file
++
++	&dcan1 {
++		status = "okay";
+ 	};
+-- 
+1.7.9.5
+
