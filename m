@@ -1,159 +1,73 @@
-From: "AnilKumar, Chimata" <anilkumar@ti.com>
-Subject: RE: [PATCH 3/4] ARM: AM33XX: board-generic: Add of_dev_auxdata to
- pass d_can raminit
-Date: Tue, 4 Sep 2012 06:26:56 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA26346@DBDE01.ent.ti.com>
-References: <1346673139-14540-1-git-send-email-anilkumar@ti.com>
- <1346673139-14540-4-git-send-email-anilkumar@ti.com>
- <50450EE2.3000107@pengutronix.de>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Tue, 4 Sep 2012 09:11:28 +0200
+Message-ID: <20120904071128.GB416@vandijck-laurijssen.be>
+References: <50191EA5.1040303@pengutronix.de>
+ <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com>
+ <20120824051016.GB1718@vandijck-laurijssen.be>
+ <50376550.4020501@pengutronix.de>
+ <20120824124248.GA422@vandijck-laurijssen.be>
+ <20120824220142.GA1470@gmail.com>
+ <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <50450EE2.3000107@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "tony@atomide.com" <tony@atomide.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:11517 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753004Ab2IDHLb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 03:11:31 -0400
+Content-Disposition: inline
+In-Reply-To: <50451919.20205@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-On Tue, Sep 04, 2012 at 01:41:14, Marc Kleine-Budde wrote:
-> On 09/03/2012 01:52 PM, AnilKumar Ch wrote:
-> > Add of_dev_auxdata to pass d_can raminit callback APIs to initialize
-> > d_can RAM. D_CAN RAM initialization bits are present in CONTROL module
-> > address space, which can be accessed by platform specific code. So
-> > callback functions are added to serve this purpose, this can done by
-> > using of_dev_auxdata.
+On Mon, Sep 03, 2012 at 10:54:49PM +0200, Oliver Hartkopp wrote:
+> On 03.09.2012 20:29, Fabio Baltieri wrote:
+> 
+> > On Mon, Sep 03, 2012 at 08:13:35PM +0200, Kurt Van Dijck wrote:
+> >> On Mon, Sep 03, 2012 at 02:40:39PM +0200, Marc Kleine-Budde wrote:
+> >>> The net->ifindex is unique. But it's only an integer. Usually can0 has a
+> >>> ifindex != 0, so a simple can%d is contra productive here.
+> >>>
+> >>> Some pointers to related code:
+> >>> http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
+> >>> http://lxr.free-electrons.com/source/drivers/base/core.c#L73
+> >>> http://lxr.free-electrons.com/source/include/linux/device.h#L695
+> >>>
+> >>> comments?
 > > 
-> > Callback API is added to of_dev_auxdata with different instance numbers
-> > for two instances of D_CAN IP. These callback functions are used to
-> > enable/disable D_CAN RAM from CAN driver.
+> > That would probabily makes really hard to choose the right
+> > default_trigger for led devices to get to the appropriate CAN LED in
+> > embedded systems, as trigger name would depend from other network
+> > devices and probing order (correct me if I'm wrong).
 > > 
-> > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
-> 
-> This will be a more complicated. This patch will go over the arm tree,
-> but needs a header going via net.
-> 
-
-Marc,
-
-I agree this is a bit complicated but this has to go along with
-this patch series otherwise build will break. If there are no
-changes required I will request Tony to ack it.
-
-Tony,
-
-If there are no changes required, could you please ack this patch
-so that this will go to linux-can tree.
-
-Thanks
-AnilKumar
-
-> 
-> > ---
-> >  arch/arm/mach-omap2/board-generic.c |   40 ++++++++++++++++++++++++++++++++++-
-> >  arch/arm/mach-omap2/control.h       |    4 ++++
-> >  2 files changed, 43 insertions(+), 1 deletion(-)
+> > Something with device name would probaily be more appropriate here.
 > > 
-> > diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
-> > index 6f93a20..b68e642 100644
-> > --- a/arch/arm/mach-omap2/board-generic.c
-> > +++ b/arch/arm/mach-omap2/board-generic.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/of_irq.h>
-> >  #include <linux/of_platform.h>
-> >  #include <linux/irqdomain.h>
-> > +#include <linux/can/platform/c_can.h>
-> >  
-> >  #include <mach/hardware.h>
-> >  #include <asm/hardware/gic.h>
-> > @@ -22,6 +23,8 @@
-> >  
-> >  #include <plat/board.h>
-> >  #include "common.h"
-> > +#include "control.h"
-> > +#include "iomap.h"
-> >  #include "common-board-devices.h"
-> >  
-> >  #if !(defined(CONFIG_ARCH_OMAP2) || defined(CONFIG_ARCH_OMAP3))
-> > @@ -37,11 +40,46 @@ static struct of_device_id omap_dt_match_table[] __initdata = {
-> >  	{ }
-> >  };
-> >  
-> > +void d_can_hw_raminit(unsigned int instance, bool enable)
-> > +{
-> > +	u32 val;
-> > +
-> > +	val = readl(AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> > +	if (enable) {
-> > +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> > +		val |= AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> > +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> > +	} else {
-> > +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
-> > +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
-> > +	}
-> > +}
-> > +
-> > +static struct c_can_platform_data d_can0_pdata = {
-> > +	.ram_init	= d_can_hw_raminit,
-> > +	.instance	= 0,
-> > +};
-> > +
-> > +static struct c_can_platform_data d_can1_pdata = {
-> > +	.ram_init	= d_can_hw_raminit,
-> > +	.instance	= 1,
-> > +};
-> > +
-> > +static const struct of_dev_auxdata am33xx_auxdata_lookup[] __initconst = {
-> > +	OF_DEV_AUXDATA("bosch,d_can", 0x481cc000, NULL, &d_can0_pdata),
-> > +	OF_DEV_AUXDATA("bosch,d_can", 0x481d0000, NULL, &d_can1_pdata),
-> > +	{ },
-> > +};
-> > +
-> >  static void __init omap_generic_init(void)
-> >  {
-> >  	omap_sdrc_init(NULL, NULL);
-> >  
-> > -	of_platform_populate(NULL, omap_dt_match_table, NULL, NULL);
-> > +	if (of_machine_is_compatible("ti,am33xx"))
-> > +		of_platform_populate(NULL, omap_dt_match_table,
-> > +				am33xx_auxdata_lookup, NULL);
-> > +	else
-> > +		of_platform_populate(NULL, omap_dt_match_table, NULL, NULL);
-> >  }
-> >  
-> >  #ifdef CONFIG_SOC_OMAP2420
-> > diff --git a/arch/arm/mach-omap2/control.h b/arch/arm/mach-omap2/control.h
-> > index b8cdc85..afd189b 100644
-> > --- a/arch/arm/mach-omap2/control.h
-> > +++ b/arch/arm/mach-omap2/control.h
-> > @@ -356,6 +356,10 @@
-> >  #define AM33XX_CONTROL_STATUS_SYSBOOT1_SHIFT		22
-> >  #define AM33XX_CONTROL_STATUS_SYSBOOT1_MASK		(0x3 << 22)
-> >  
-> > +/* AM33XX DCAN bitfields */
-> > +#define AM33XX_CONTROL_DCAN_RAMINIT		0x644
-> > +#define AM33XX_DCAN_RAMINIT_START_MASK(i)	(1 << (i))
-> > +
-> >  /* CONTROL OMAP STATUS register to identify OMAP3 features */
-> >  #define OMAP3_CONTROL_OMAP_STATUS	0x044c
-> >  
+> >>
+> >> a very recent idea: something with netdevice notifiers and NETDEV_CHANGENAME ...
+> >> http://lxr.free-electrons.com/source/net/core/dev.c#L1030
+> >>
+> >> you could: rename the trigger, or if we think it's usefull,
+> >> block the netdev rename when its triggers are in use.
 > > 
+> > Blocking the rename looks overkill to me,
+
+renaming a netdev _after_ first attaching led triggers looks stupid to me
+anyway.
+
+> > what about using device name
+> > with an optional "port id" appended to it?  Sounds simpler...
 > 
 > 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
-> 
+> The name of the device can only be changed when the interface is down.
+> Is it possible to put some scripting around it to detach and attach the leds
+> to the interfaces on ifup/ifdown triggers?
+
+Are the led triggers available for using while the netdev is down then?
+
+Kurt
