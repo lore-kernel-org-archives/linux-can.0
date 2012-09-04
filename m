@@ -1,100 +1,88 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: CAN device filterting
-Date: Tue, 04 Sep 2012 19:13:26 +0200
-Message-ID: <504636B6.7070907@pengutronix.de>
-References: <1346765466.5440.3.camel@punsfloyd-desktop> <504604E3.1040305@hartkopp.net> <504608CB.9080709@pengutronix.de> <50463205.8050705@hartkopp.net>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Tue, 4 Sep 2012 22:15:53 +0200
+Message-ID: <20120904201553.GA29478@gmail.com>
+References: <1343845298-2065-1-git-send-email-fabio.baltieri@gmail.com>
+ <20120824051016.GB1718@vandijck-laurijssen.be>
+ <50376550.4020501@pengutronix.de>
+ <20120824124248.GA422@vandijck-laurijssen.be>
+ <20120824220142.GA1470@gmail.com>
+ <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
+ <20120904071128.GB416@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig6E0708A80B4199CC1F1179EF"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55328 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750852Ab2IDRN3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 13:13:29 -0400
-In-Reply-To: <50463205.8050705@hartkopp.net>
+Received: from mail-ee0-f46.google.com ([74.125.83.46]:46712 "EHLO
+	mail-ee0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932423Ab2IDUPE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 16:15:04 -0400
+Content-Disposition: inline
+In-Reply-To: <20120904071128.GB416@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: puneet.sharma@moschip.com, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig6E0708A80B4199CC1F1179EF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 04, 2012 at 09:11:28AM +0200, Kurt Van Dijck wrote:
+> On Mon, Sep 03, 2012 at 10:54:49PM +0200, Oliver Hartkopp wrote:
+> > On 03.09.2012 20:29, Fabio Baltieri wrote:
+> > 
+> > > On Mon, Sep 03, 2012 at 08:13:35PM +0200, Kurt Van Dijck wrote:
+> > >> On Mon, Sep 03, 2012 at 02:40:39PM +0200, Marc Kleine-Budde wrote:
+> > >>> The net->ifindex is unique. But it's only an integer. Usually can0 has a
+> > >>> ifindex != 0, so a simple can%d is contra productive here.
+> > >>>
+> > >>> Some pointers to related code:
+> > >>> http://lxr.free-electrons.com/source/drivers/base/core.c#L1847
+> > >>> http://lxr.free-electrons.com/source/drivers/base/core.c#L73
+> > >>> http://lxr.free-electrons.com/source/include/linux/device.h#L695
+> > >>>
+> > >>> comments?
+> > > 
+> > > That would probabily makes really hard to choose the right
+> > > default_trigger for led devices to get to the appropriate CAN LED in
+> > > embedded systems, as trigger name would depend from other network
+> > > devices and probing order (correct me if I'm wrong).
+> > > 
+> > > Something with device name would probaily be more appropriate here.
+> > > 
+> > >>
+> > >> a very recent idea: something with netdevice notifiers and NETDEV_CHANGENAME ...
+> > >> http://lxr.free-electrons.com/source/net/core/dev.c#L1030
+> > >>
+> > >> you could: rename the trigger, or if we think it's usefull,
+> > >> block the netdev rename when its triggers are in use.
+> > > 
+> > > Blocking the rename looks overkill to me,
+> 
+> renaming a netdev _after_ first attaching led triggers looks stupid to me
+> anyway.
+> 
+> > > what about using device name
+> > > with an optional "port id" appended to it?  Sounds simpler...
+> > 
+> > 
+> > The name of the device can only be changed when the interface is down.
+> > Is it possible to put some scripting around it to detach and attach the leds
+> > to the interfaces on ifup/ifdown triggers?
+> 
+> Are the led triggers available for using while the netdev is down then?
 
-On 09/04/2012 06:53 PM, Oliver Hartkopp wrote:
-> On 04.09.2012 15:57, Marc Kleine-Budde wrote:
->=20
->> On 09/04/2012 03:40 PM, Oliver Hartkopp wrote:
->>> On 04.09.2012 15:31, Puneet Sharma wrote:
->>>
->>>> I need some guidance on implementing the CAN filtering of identifier=
- in
->>>> the driver code of CAN for atmel AT91SAM9263 board. Please guide me =
-how
->>>> to proceed with it..
->>>
->>>
->>> Hm - i wrote that some days ago:
->>
->> I talked to Puneet in private before, if I understand him correctly he=
+Sure!  On embedded systems triggers are usually attached to actual LEDs
+at probe time using default_trigger field of struct led_classdev, and
+that can be specified both in machine files or in device tree.
 
->> wants to implement hardware filtering, although software filtering is
->> available.
->=20
->=20
-> Ah, ok.
->=20
->>
->> From my point of view it should become a per device callback, which yo=
-u
->> (admin, i.e. the root user) can set when the device is down. You have =
-to
->> extend the CAN netlink interface [1].
->=20
->=20
-> Good idea.
->=20
->> Each device should identify what kind and how many hardware filters it=
+See
 
->> supports:
->> a) mask+id
->> b) just id
->> c) ...
->> Analogue to ctrlmode [2][3].
->=20
->=20
-> Yes. Could be ambitious. E.g. a 2048 bit bitfield is an option too :-)
->=20
-> The question is, if the usual mailbox configurations in CAN controller
-> IP-cores can be stripped down to 2-3 standard types of filters, so that=
- a good
-> interface can be specified.
+http://lxr.free-electrons.com/source/arch/powerpc/boot/dts/mpc8315erdb.dts#L477
+http://lxr.free-electrons.com/source/arch/arm/mach-pxa/tosa.c#L576
 
-id+mask is quite common.
+that's why the trigger name should be predictable, at least at
+boot/probe time.
 
-Marc
+The actual CAN LED trigger also reflects the actual state of the
+interface (off if down, on if up, blink on activity).
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig6E0708A80B4199CC1F1179EF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBGNrYACgkQjTAFq1RaXHNBwgCeIk41UCa8qlQKzjvJO157v9rs
-qb8An1Wl+tk3/Jx8bDgF7Dz4doC/aCkA
-=Cy6W
------END PGP SIGNATURE-----
-
---------------enig6E0708A80B4199CC1F1179EF--
+Fabio
