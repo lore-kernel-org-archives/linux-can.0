@@ -1,85 +1,131 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: CAN device filterting
-Date: Tue, 04 Sep 2012 18:53:25 +0200
-Message-ID: <50463205.8050705@hartkopp.net>
-References: <1346765466.5440.3.camel@punsfloyd-desktop> <504604E3.1040305@hartkopp.net> <504608CB.9080709@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: sctp_close/sk_free: kernel BUG at arch/x86/mm/physaddr.c:18!
+Date: Tue, 04 Sep 2012 19:10:52 +0200
+Message-ID: <5046361C.5070602@pengutronix.de>
+References: <20120904140411.GB15068@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigF8D8A75656752D84D33B0276"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:45015 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753443Ab2IDQx3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 12:53:29 -0400
-In-Reply-To: <504608CB.9080709@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44479 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932406Ab2IDRLA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 13:11:00 -0400
+In-Reply-To: <20120904140411.GB15068@localhost>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: puneet.sharma@moschip.com, linux-can@vger.kernel.org
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: networking <netdev@vger.kernel.org>, linux-can@vger.kernel.org, ebiederm@xmission.com
 
-On 04.09.2012 15:57, Marc Kleine-Budde wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigF8D8A75656752D84D33B0276
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On 09/04/2012 03:40 PM, Oliver Hartkopp wrote:
->> On 04.09.2012 15:31, Puneet Sharma wrote:
->>
->>> I need some guidance on implementing the CAN filtering of identifier in
->>> the driver code of CAN for atmel AT91SAM9263 board. Please guide me how
->>> to proceed with it..
->>
->>
->> Hm - i wrote that some days ago:
-> 
-> I talked to Puneet in private before, if I understand him correctly he
-> wants to implement hardware filtering, although software filtering is
-> available.
+On 09/04/2012 04:04 PM, Fengguang Wu wrote:
+> FYI, another kconfig triggering a slightly different oops on tree
+>=20
+>         git://gitorious.org/linux-can/linux-can-next led-trigger
+
+This in turn means the problem doesn't come from the CAN patches, as
+both trees have different CAN patches. I'm adding Eric W. Biederman on
+Cc as he contributed some sctp patches between v3.6 and net-next/master.
+
+Marc
+
+>=20
+> [   96.267311] ------------[ cut here ]------------
+> [   96.268294] kernel BUG at /c/kernel-tests/src/stable/arch/x86/mm/phy=
+saddr.c:18!
+> [   96.269988] invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC
+> [   96.270636] Modules linked in:
+> [   96.270636] CPU 0=20
+> [   96.270636] Pid: 2116, comm: trinity Not tainted 3.6.0-rc3+ #2679 Bo=
+chs Bochs
+> [   96.270636] RIP: 0010:[<ffffffff8102b22b>]  [<ffffffff8102b22b>] __p=
+hys_addr+0x46/0x6b
+> [   96.270636] RSP: 0018:ffff880019585c98  EFLAGS: 00010213
+> [   96.270636] RAX: ffff87ffffffffff RBX: 0000ea6000000bb8 RCX: 0000000=
+000000000
+> [   96.270636] RDX: 0000000000000000 RSI: 0000000000000296 RDI: 0000ea6=
+000000bb8
+> [   96.270636] RBP: ffff880019585c98 R08: 0000000000000058 R09: 0000000=
+000000008
+> [   96.270636] R10: 000000000000000a R11: 0000000000000058 R12: ffff880=
+0195f7718
+> [   96.270636] R13: ffffffff816521cf R14: ffffea0000000000 R15: 0000000=
+000000000
+> [   96.270636] FS:  00007fa19b534700(0000) GS:ffff88001f200000(0000) kn=
+lGS:0000000000000000
+> [   96.270636] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   96.270636] CR2: 00007fa19b03eba0 CR3: 000000001957b000 CR4: 0000000=
+0000006f0
+> [   96.270636] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+> [   96.270636] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000=
+000000400
+> [   96.270636] Process trinity (pid: 2116, threadinfo ffff880019584000,=
+ task ffff88001af2c680)
+> [   96.270636] Stack:
+> [   96.270636]  ffff880019585cd8 ffffffff811091d7 0000000000000000 ffff=
+88001b1ef200
+> [   96.270636]  ffff88001b1ef4d0 0000000000000000 ffff88001b1617b0 0000=
+000000000000
+> [   96.270636]  ffff880019585cf8 ffffffff816521cf ffff88001b1ef200 ffff=
+88001b1ef248
+> [   96.270636] Call Trace:
+> [   96.270636]  [<ffffffff811091d7>] kfree+0x63/0x162
+> [   96.270636]  [<ffffffff816521cf>] inet_sock_destruct+0x112/0x1ca
+> [   96.270636]  [<ffffffff815f6fa4>] __sk_free+0x1d/0x114
+> [   96.270636]  [<ffffffff815f710b>] sk_free+0x1c/0x1e
+> [   96.270636]  [<ffffffff816d59d5>] sctp_close+0x21a/0x229
+> [   96.270636]  [<ffffffff810810f6>] ? lock_release_holdtime.part.6+0xb=
+2/0xb7
+> [   96.270636]  [<ffffffff81651b3e>] ? inet_release+0x65/0xc3
+> [   96.270636]  [<ffffffff81651b93>] inet_release+0xba/0xc3
+> [   96.270636]  [<ffffffff81651af9>] ? inet_release+0x20/0xc3
+> [   96.270636]  [<ffffffff81674134>] inet6_release+0x30/0x3c
+> [   96.270636]  [<ffffffff815f2317>] sock_release+0x1f/0x77
+> [   96.270636]  [<ffffffff815f2396>] sock_close+0x27/0x2b
+> [   96.270636]  [<ffffffff8110ec22>] __fput+0xf0/0x24b
+> [   96.270636]  [<ffffffff8110ed8b>] ____fput+0xe/0x10
+> [   96.270636]  [<ffffffff8104f370>] task_work_run+0x5d/0x75
+> [   96.270636]  [<ffffffff81038a66>] do_exit+0x26b/0x7d7
+> [   96.270636]  [<ffffffff81725a95>] ? retint_swapgs+0x13/0x1b
+> [   96.270636]  [<ffffffff8103925b>] do_group_exit+0x7b/0xba
+> [   96.270636]  [<ffffffff810392b1>] sys_exit_group+0x17/0x17
+> [   96.270636]  [<ffffffff8172c78e>] tracesys+0xd0/0xd5
+> [   96.270636] Code: 00 80 48 01 c7 48 81 ff ff ff ff 1f 76 02 0f 0b 48=
+ 89 f8 48 03 05 f6 bd ae 00 eb 32 48 b8 ff ff ff ff ff 87 ff ff 48 39 c7 =
+77 02 <0f> 0b 0f b6 0d 55 57 ba 00 48 b8 00 00 00 00 00 78 00 00 48 01=20
+> [   96.270636] RIP  [<ffffffff8102b22b>] __phys_addr+0x46/0x6b
+> [   96.270636]  RSP <ffff880019585c98>
+>=20
+> Thanks,
+> Fengguang
+>=20
 
 
-Ah, ok.
-
-> 
-> From my point of view it should become a per device callback, which you
-> (admin, i.e. the root user) can set when the device is down. You have to
-> extend the CAN netlink interface [1].
-
-
-Good idea.
-
-> Each device should identify what kind and how many hardware filters it
-> supports:
-> a) mask+id
-> b) just id
-> c) ...
-> Analogue to ctrlmode [2][3].
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Yes. Could be ambitious. E.g. a 2048 bit bitfield is an option too :-)
+--------------enigF8D8A75656752D84D33B0276
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-The question is, if the usual mailbox configurations in CAN controller
-IP-cores can be stripped down to 2-3 standard types of filters, so that a good
-interface can be specified.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-> 
-> The requested filers are transferred into the kernel via netlink, but
-> you have to figure out how to encode a variable length list (netfilter
-> has probably a solution for this). Then the code in can_changelink() [4]
-> should check if the transferred filter is supported on that hardware.
-> Then, during open the driver should code the filters into hardware, on
-> at91 it should be done in at91_setup_mailboxes [5][6].
+iEYEARECAAYFAlBGNh8ACgkQjTAFq1RaXHMprwCdFdw9Z/Lnpcy27a6LL7pRU4sJ
+MLkAnim74DNlk0rVcFWq3fWgps6DxUi2
+=IEEY
+-----END PGP SIGNATURE-----
 
-
-Yep. I'm looking forward to a patch :-)
-
-Regards,
-Oliver
-
-> 
-> Marc
-> 
-> [1] http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L585
-> [2] http://lxr.free-electrons.com/source/include/linux/can/netlink.h#L81
-> [3] http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L691
-> [4] http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L600
-> [5] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L418
-> [6] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L336
-
-
+--------------enigF8D8A75656752D84D33B0276--
