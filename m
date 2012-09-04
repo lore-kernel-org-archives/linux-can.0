@@ -1,54 +1,107 @@
-From: "AnilKumar, Chimata" <anilkumar@ti.com>
-Subject: RE: [PATCH 1/4] can: c_can: Adopt pinctrl support
-Date: Tue, 4 Sep 2012 08:34:11 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA26482@DBDE01.ent.ti.com>
-References: <1346673139-14540-1-git-send-email-anilkumar@ti.com>
- <1346673139-14540-2-git-send-email-anilkumar@ti.com>
- <5045161C.4000100@pengutronix.de>
- <331ABD5ECB02734CA317220B2BBEABC13EA2630A@DBDE01.ent.ti.com>
- <5045B0D9.6060003@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: [PATCH] can: rename LED trigger name on netdev renames
+Date: Tue,  4 Sep 2012 11:29:11 +0200
+Message-ID: <1346750951-10451-1-git-send-email-kurt.van.dijck@eia.be>
+References: <20120904071128.GB416@vandijck-laurijssen.be>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:39518 "EHLO arroyo.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753389Ab2IDIed convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 04:34:33 -0400
-In-Reply-To: <5045B0D9.6060003@pengutronix.de>
-Content-Language: en-US
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176]:58919 "EHLO
+	mailrelay009.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752178Ab2IDJ3c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Sep 2012 05:29:32 -0400
+In-Reply-To: <20120904071128.GB416@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "tony@atomide.com" <tony@atomide.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Fabio Baltieri <fabio.baltieri@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>
 
-On Tue, Sep 04, 2012 at 13:12:17, Marc Kleine-Budde wrote:
-> On 09/04/2012 08:14 AM, AnilKumar, Chimata wrote:
-> > Hi Marc,
-> > 
-> > On Tue, Sep 04, 2012 at 02:12:04, Marc Kleine-Budde wrote:
-> >> On 09/03/2012 01:52 PM, AnilKumar Ch wrote:
-> >>> Adopt pinctrl support to c_can driver based on c_can device
-> >>> pointer, pinctrl driver configure SoC pins to d_can mode
-> >>> according to definitions provided in .dts file.
-> >>>
-> >>> In device specific device tree file 'pinctrl-names = "default";'
-> >>> and 'pinctrl-0 = <&d_can1_pins>;' needs to add to configure pins
-> >>> from c_can driver. d_can1_pins node contains the pinmux/config
-> >>> details of d_can L/H pins.
-> >>
-> >> Looks good, is the pinctrl property documented in the dt bindings already?
-> >>
-> > 
-> > Yes, its here Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> 
-> Sorry, I meant not the generic pinctrl, but the c_can/d_can bindings
-> documentation (Documentation/devicetree/bindings/net/can/).
-> 
+The LED trigger name for CAN devices is based on the initial
+CAN device name, but does never change. The LED trigger name
+is not guaranteed to be unique in case of hotplugging CAN devices.
 
-No, I have not included because those are pinctrl driver specific
-bindings. If the SoC supports pinmux/conf feature then those should
-be added according to pinctrl driver. If the SoC is not supported pinmux/config then this configuration is not required.
+This patch tries to address this problem by modifying the
+LED trigger name according to the CAN device name when
+the latter changes.
 
-Thanks
-AnilKumar
+This patch is meant as illustration only.
+In case of VCAN device rename, a segmentation fault will occur.
+
+Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
+---
+ drivers/net/can/led.c |   57 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
+index eaa14ac..f62f908 100644
+--- a/drivers/net/can/led.c
++++ b/drivers/net/can/led.c
+@@ -12,6 +12,7 @@
+ #include <linux/slab.h>
+ #include <linux/netdevice.h>
+ #include <linux/can/dev.h>
++#include <linux/if_arp.h>
+ 
+ #include <linux/can/led.h>
+ 
+@@ -87,3 +88,59 @@ void devm_can_led_init(struct net_device *netdev)
+ 	devres_add(&netdev->dev, res);
+ }
+ EXPORT_SYMBOL_GPL(devm_can_led_init);
++
++/*
++ * NETDEV rename notifier to rename the associated led triggers too
++ */
++static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
++			void *data)
++{
++	struct net_device *netdev = (struct net_device *)data;
++	struct can_priv *priv = netdev_priv(netdev);
++	int busy = 0;
++
++	if (!net_eq(dev_net(netdev), &init_net))
++		return NOTIFY_DONE;
++
++	if (netdev->type != ARPHRD_CAN)
++		return NOTIFY_DONE;
++
++	if (msg != NETDEV_CHANGENAME)
++		return NOTIFY_DONE;
++
++	read_lock(&priv->tx_led_trig->leddev_list_lock);
++	if (!list_empty(&priv->tx_led_trig->led_cdevs))
++		++busy;
++	read_unlock(&priv->tx_led_trig->leddev_list_lock);
++	read_lock(&priv->rx_led_trig->leddev_list_lock);
++	if (!list_empty(&priv->rx_led_trig->led_cdevs))
++		++busy;
++	read_unlock(&priv->rx_led_trig->leddev_list_lock);
++
++	if (busy)
++		return notifier_from_errno(-EBUSY);
++
++	snprintf(priv->tx_led_trig_name, sizeof(priv->tx_led_trig_name),
++		 "%s-tx", netdev->name);
++	snprintf(priv->rx_led_trig_name, sizeof(priv->rx_led_trig_name),
++		 "%s-rx", netdev->name);
++	return NOTIFY_DONE;
++}
++
++/* notifier block for netdevice event */
++static struct notifier_block can_netdev_notifier __read_mostly = {
++	.notifier_call = can_led_notifier,
++};
++
++static __init int can_led_init(void)
++{
++	return register_netdevice_notifier(&can_netdev_notifier);
++}
++
++static __exit void can_led_exit(void)
++{
++	unregister_netdevice_notifier(&can_netdev_notifier);
++}
++
++module_init(can_led_init);
++module_exit(can_led_exit);
+-- 
+1.7.10.4
+
