@@ -1,81 +1,52 @@
-From: Puneet Sharma <puneet.sharma@moschip.com>
-Subject: Re: CAN device filterting
-Date: Wed, 5 Sep 2012 14:58:59 +0530
-Message-ID: <1346837339.2993.3.camel@punsfloyd-desktop>
-References: <1346765466.5440.3.camel@punsfloyd-desktop>
-	 <504604E3.1040305@hartkopp.net> <504608CB.9080709@pengutronix.de>
-	 <50463205.8050705@hartkopp.net>  <504636B6.7070907@pengutronix.de>
-Reply-To: puneet.sharma@moschip.com
+From: AnilKumar Ch <anilkumar@ti.com>
+Subject: [PATCH v2 0/4] can: c_can: Add suspend/resume and pinctrl support
+Date: Wed, 5 Sep 2012 16:42:40 +0530
+Message-ID: <1346843564-25343-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lexus.moschip.com ([115.118.5.150]:16397 "EHLO
-	LEXUS.MOSCHIP.COM" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756792Ab2IEJaV convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 05:30:21 -0400
-In-Reply-To: <504636B6.7070907@pengutronix.de>
+Received: from comal.ext.ti.com ([198.47.26.152]:47338 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751403Ab2IELNa (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Sep 2012 07:13:30 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: tony@atomide.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, AnilKumar Ch <anilkumar@ti.com>
 
-On Tue, 2012-09-04 at 22:43 +0530, Marc Kleine-Budde wrote:
-> On 09/04/2012 06:53 PM, Oliver Hartkopp wrote:
-> > On 04.09.2012 15:57, Marc Kleine-Budde wrote:
-> >
-> >> On 09/04/2012 03:40 PM, Oliver Hartkopp wrote:
-> >>> On 04.09.2012 15:31, Puneet Sharma wrote:
-> >>>
-> >>>> I need some guidance on implementing the CAN filtering of identifier in
-> >>>> the driver code of CAN for atmel AT91SAM9263 board. Please guide me how
-> >>>> to proceed with it..
-> >>>
-> >>>
-> >>> Hm - i wrote that some days ago:
-> >>
-> >> I talked to Puneet in private before, if I understand him correctly he
-> >> wants to implement hardware filtering, although software filtering is
-> >> available.
-> >
-> >
-> > Ah, ok.
-> >
+Adds suspend/resume functionality of d_can driver along with d_can
+raminit support which is required to initialize RAM while data
+transmission.
 
-   Hello,
-        Marc is correct. I want to implement hardware filtering. Need
-some guidance on this how to proceed with it ?
+This patch series also adds pinctrl support to c_can driver. These
+patches were tested on AM335x-EVM.
 
-> >> From my point of view it should become a per device callback, which you
-> >> (admin, i.e. the root user) can set when the device is down. You have to
-> >> extend the CAN netlink interface [1].
-> >
-> >
-> > Good idea.
-> >
-> >> Each device should identify what kind and how many hardware filters it
-> >> supports:
-> >> a) mask+id
-> >> b) just id
-> >> c) ...
-> >> Analogue to ctrlmode [2][3].
-> >
-> >
-> > Yes. Could be ambitious. E.g. a 2048 bit bitfield is an option too :-)
-> >
-> > The question is, if the usual mailbox configurations in CAN controller
-> > IP-cores can be stripped down to 2-3 standard types of filters, so that a good
-> > interface can be specified.
->
-> id+mask is quite common.
->
+This patch-series is based ontop of runtimePM patch submitted
+earlier - https://patchwork.kernel.org/patch/1348081/
 
-id+mask is what will be required for the driver.
-> Marc
->
+Changes from v1:
+	- Incorporated Marc's comments on v1
+	  * Changed marco name with units in it
+	  * Used ndev->flags for link status instead of new member
+	  * Added BUG_ON inside *_power_down and *_power_up APIs
+	  * Added new member "type" in c_can_priv struct for keeping
+	    dev id details/name.
 
---
-Puneet Sharma <puneet.sharma@moschip.com>
+AnilKumar Ch (4):
+  can: c_can: Adopt pinctrl support
+  can: c_can: Add d_can raminit support
+  ARM: AM33XX: board-generic: Add of_dev_auxdata to pass d_can raminit
+  can: c_can: Add d_can suspend resume support
 
+ arch/arm/mach-omap2/board-generic.c    |   40 +++++++++++++-
+ arch/arm/mach-omap2/control.h          |    4 ++
+ drivers/net/can/c_can/c_can.c          |   95 ++++++++++++++++++++++++++++++++
+ drivers/net/can/c_can/c_can.h          |   10 ++++
+ drivers/net/can/c_can/c_can_platform.c |   79 ++++++++++++++++++++++++++
+ include/linux/can/platform/c_can.h     |   36 ++++++++++++
+ 6 files changed, 263 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/can/platform/c_can.h
 
-The information contained in this email and any attachments is confidential and may be subject to copyright or other intellectual property protection. If you are not the intended recipient, you are not authorized to use or disclose this information, and we request that you notify us by reply mail or telephone and delete the original message from your mail system.
+-- 
+1.7.9.5
+
