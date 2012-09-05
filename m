@@ -1,56 +1,36 @@
 From: Eric Dumazet <eric.dumazet@gmail.com>
 Subject: Re: sctp_close/sk_free: kernel BUG at arch/x86/mm/physaddr.c:18!
-Date: Wed, 05 Sep 2012 17:40:45 +0200
-Message-ID: <1346859645.13121.146.camel@edumazet-glaptop>
+Date: Wed, 05 Sep 2012 18:57:00 +0200
+Message-ID: <1346864220.13121.157.camel@edumazet-glaptop>
 References: <20120904140411.GB15068@localhost>
 	 <5046361C.5070602@pengutronix.de> <87mx15zfze.fsf@xmission.com>
 	 <20120905145508.GA9450@localhost>  <50476931.20100@pengutronix.de>
 	 <1346859046.13121.144.camel@edumazet-glaptop>
+	 <1346859645.13121.146.camel@edumazet-glaptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f46.google.com ([209.85.214.46]:60023 "EHLO
+Received: from mail-bk0-f46.google.com ([209.85.214.46]:44334 "EHLO
 	mail-bk0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751999Ab2IEPkw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 11:40:52 -0400
-In-Reply-To: <1346859046.13121.144.camel@edumazet-glaptop>
+	with ESMTP id S1752789Ab2IEQ5K (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 12:57:10 -0400
+In-Reply-To: <1346859645.13121.146.camel@edumazet-glaptop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: Fengguang Wu <fengguang.wu@intel.com>, "H.K. Jerry Chu" <hkchu@google.com>, "Eric W. Biederman" <ebiederm@xmission.com>, networking <netdev@vger.kernel.org>, linux-can@vger.kernel.org
 
-On Wed, 2012-09-05 at 17:30 +0200, Eric Dumazet wrote:
-> On Wed, 2012-09-05 at 17:01 +0200, Marc Kleine-Budde wrote:
-> > On 09/05/2012 04:55 PM, Fengguang Wu wrote:
-> > >>> This in turn means the problem doesn't come from the CAN patches, as
-> > >>> both trees have different CAN patches. I'm adding Eric W. Biederman on
-> > >>> Cc as he contributed some sctp patches between v3.6 and net-next/master.
-> > >>
-> > >> Anything is possible, but this seems unlikely as I don't think I touched
-> > >> anything close to that part of the code.
-> > > 
-> > > You are both right.  The bad commit turns out to be one of:
-> > > 
-> > > 1bed966cc3bd4042110129f0fc51aeeb59c5b200 Merge branch 'tcp_fastopen_server'
-> > > 168a8f58059a22feb9e9a2dcc1b8053dbbbc12ef tcp: TCP Fast Open Server - main code path
-> > > 8336886f786fdacbc19b719c1f7ea91eb70706d4 tcp: TCP Fast Open Server - support TFO listeners
-> > > 
-> > > Thanks,
-> > > Fengguang
-> > 
-> > Thanks for your work Fengguang.
-> > 
-> > Marc
-> > 
+On Wed, 2012-09-05 at 17:40 +0200, Eric Dumazet wrote:
+
+> Could you test the following patch please ?
 > 
-> OK I have a good idea how to fix the bug, I will send a patch ASAP
+> (Not sure why sctp doesnt memset/bzero its whole socket by the way...)
+> 
+> Thanks
 
-Could you test the following patch please ?
-
-(Not sure why sctp doesnt memset/bzero its whole socket by the way...)
-
-Thanks
+Here is a more complete patch, as there are three potential problems,
+not only one :
 
 diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
 index 4f70ef0..845372b 100644
@@ -70,6 +50,27 @@ index 4f70ef0..845372b 100644
  
  	WARN_ON(atomic_read(&sk->sk_rmem_alloc));
  	WARN_ON(atomic_read(&sk->sk_wmem_alloc));
-
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 8464b79..f0c5b9c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -314,7 +314,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err)
+ 	newsk = req->sk;
+ 
+ 	sk_acceptq_removed(sk);
+-	if (sk->sk_type == SOCK_STREAM && queue->fastopenq != NULL) {
++	if (sk->sk_protocol == IPPROTO_TCP && queue->fastopenq != NULL) {
+ 		spin_lock_bh(&queue->fastopenq->lock);
+ 		if (tcp_rsk(req)->listener) {
+ 			/* We are still waiting for the final ACK from 3WHS
+@@ -775,7 +775,7 @@ void inet_csk_listen_stop(struct sock *sk)
+ 
+ 		percpu_counter_inc(sk->sk_prot->orphan_count);
+ 
+-		if (sk->sk_type == SOCK_STREAM && tcp_rsk(req)->listener) {
++		if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(req)->listener) {
+ 			BUG_ON(tcp_sk(child)->fastopen_rsk != req);
+ 			BUG_ON(sk != tcp_rsk(req)->listener);
+ 
 
 
