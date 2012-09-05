@@ -1,115 +1,72 @@
-From: Jerry Chu <hkchu@google.com>
-Subject: Re: sctp_close/sk_free: kernel BUG at arch/x86/mm/physaddr.c:18!
-Date: Wed, 5 Sep 2012 16:07:06 -0700
-Message-ID: <CAPshTCgVGBpqgrMR8ub4+WKpEDMmPtPRfri8-35TVuHbf_H4yA@mail.gmail.com>
-References: <20120904140411.GB15068@localhost>
-	<5046361C.5070602@pengutronix.de>
-	<87mx15zfze.fsf@xmission.com>
-	<20120905145508.GA9450@localhost>
-	<50476931.20100@pengutronix.de>
-	<1346859046.13121.144.camel@edumazet-glaptop>
-	<1346859645.13121.146.camel@edumazet-glaptop>
-	<1346864220.13121.157.camel@edumazet-glaptop>
-	<20120905222850.GA11230@localhost>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH RESEND 3/4] ARM: AM33XX: board-generic: Add
+ of_dev_auxdata to pass d_can raminit
+Date: Wed, 5 Sep 2012 16:18:38 -0700
+Message-ID: <20120905231837.GI1303@atomide.com>
+References: <1346843564-25343-1-git-send-email-anilkumar@ti.com>
+ <1346843564-25343-4-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lpp01m010-f46.google.com ([209.85.215.46]:49877 "EHLO
-	mail-lpp01m010-f46.google.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1759837Ab2IEXHJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 19:07:09 -0400
-Received: by lagy9 with SMTP id y9so703826lag.19
-        for <linux-can@vger.kernel.org>; Wed, 05 Sep 2012 16:07:07 -0700 (PDT)
-In-Reply-To: <20120905222850.GA11230@localhost>
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71]:23170 "EHLO
+	mho-01-ewr.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755164Ab2IEXSo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 19:18:44 -0400
+Content-Disposition: inline
+In-Reply-To: <1346843564-25343-4-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fengguang Wu <fengguang.wu@intel.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "Eric W. Biederman" <ebiederm@xmission.com>, networking <netdev@vger.kernel.org>, linux-can@vger.kernel.org
+To: AnilKumar Ch <anilkumar@ti.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Paul Walmsley <paul@pwsan.com>
 
-On Wed, Sep 5, 2012 at 3:28 PM, Fengguang Wu <fengguang.wu@intel.com> wrote:
-> On Wed, Sep 05, 2012 at 06:57:00PM +0200, Eric Dumazet wrote:
->> On Wed, 2012-09-05 at 17:40 +0200, Eric Dumazet wrote:
->>
->> > Could you test the following patch please ?
->
-> It works - no single error for 1000 boots!
+Hi,
 
-Sorry for introducing the bug, one of the casualties dealing with code
-that is shared
-outside of TCP. I did spend some effort adding special checks but I was wrong in
-assuming inet_create() will zero all the field including fastopenq
-inside icsk_accept_queue
-inside struct inet_connection_sock - although this is true for TCP and
-DCCP, SCTP doesn't
-have inet_connection_sock hence inet_csk(sk) is bogus.
+* AnilKumar Ch <anilkumar@ti.com> [120905 04:14]:
+> Add of_dev_auxdata to pass d_can raminit callback APIs to initialize
+> d_can RAM. D_CAN RAM initialization bits are present in CONTROL module
+> address space, which can be accessed by platform specific code. So
+> callback functions are added to serve this purpose, this can done by
+> using of_dev_auxdata.
+> 
+> Two callback APIs are added to of_dev_auxdata used by two instances of
+> D_CAN IP. These callback functions are used to enable/disable D_CAN RAM
+> from CAN driver.
 
-Kudo to Eric for fixing it quickly before I got to it.
+I'd like to avoid the callbacks to the platform code where possible as
+that's the biggest pain we already have moving things to work with device
+tree for the existing drivers.
 
-Jerry
+And I'm pretty convinced that whatever is done with callbacks should be
+done with some Linux generic framework from the driver that has it's own
+binding, such as clock framework, regulator framework, pinctrl framework,
+runtime PM etc.
 
->
-> btw, the first bad commit has been bisected to
->
->         commit 8336886f786fdacbc19b719c1f7ea91eb70706d4
->         Author: Jerry Chu <hkchu@google.com>
->         Date:   Fri Aug 31 12:29:12 2012 +0000
->
->             tcp: TCP Fast Open Server - support TFO listeners
->
->> > (Not sure why sctp doesnt memset/bzero its whole socket by the way...)
->> >
->> > Thanks
->>
->> Here is a more complete patch, as there are three potential problems,
->> not only one :
->
-> Great! I'll start tests for it.
->
-> Thanks,
-> Fengguang
->
->> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
->> index 4f70ef0..845372b 100644
->> --- a/net/ipv4/af_inet.c
->> +++ b/net/ipv4/af_inet.c
->> @@ -149,11 +149,8 @@ void inet_sock_destruct(struct sock *sk)
->>               pr_err("Attempt to release alive inet socket %p\n", sk);
->>               return;
->>       }
->> -     if (sk->sk_type == SOCK_STREAM) {
->> -             struct fastopen_queue *fastopenq =
->> -                     inet_csk(sk)->icsk_accept_queue.fastopenq;
->> -             kfree(fastopenq);
->> -     }
->> +     if (sk->sk_protocol == IPPROTO_TCP)
->> +             kfree(inet_csk(sk)->icsk_accept_queue.fastopenq);
->>
->>       WARN_ON(atomic_read(&sk->sk_rmem_alloc));
->>       WARN_ON(atomic_read(&sk->sk_wmem_alloc));
->> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
->> index 8464b79..f0c5b9c 100644
->> --- a/net/ipv4/inet_connection_sock.c
->> +++ b/net/ipv4/inet_connection_sock.c
->> @@ -314,7 +314,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err)
->>       newsk = req->sk;
->>
->>       sk_acceptq_removed(sk);
->> -     if (sk->sk_type == SOCK_STREAM && queue->fastopenq != NULL) {
->> +     if (sk->sk_protocol == IPPROTO_TCP && queue->fastopenq != NULL) {
->>               spin_lock_bh(&queue->fastopenq->lock);
->>               if (tcp_rsk(req)->listener) {
->>                       /* We are still waiting for the final ACK from 3WHS
->> @@ -775,7 +775,7 @@ void inet_csk_listen_stop(struct sock *sk)
->>
->>               percpu_counter_inc(sk->sk_prot->orphan_count);
->>
->> -             if (sk->sk_type == SOCK_STREAM && tcp_rsk(req)->listener) {
->> +             if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(req)->listener) {
->>                       BUG_ON(tcp_sk(child)->fastopen_rsk != req);
->>                       BUG_ON(sk != tcp_rsk(req)->listener);
->>
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> --- a/arch/arm/mach-omap2/board-generic.c
+> +++ b/arch/arm/mach-omap2/board-generic.c
+> @@ -37,11 +40,46 @@ static struct of_device_id omap_dt_match_table[] __initdata = {
+>  	{ }
+>  };
+>  
+> +void d_can_hw_raminit(unsigned int instance, bool enable)
+> +{
+> +	u32 val;
+> +
+> +	val = readl(AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+> +	if (enable) {
+> +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
+> +		val |= AM33XX_DCAN_RAMINIT_START_MASK(instance);
+> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+> +	} else {
+> +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
+> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+> +	}
+> +}
+
+This part does not look good to me, this is tweaking the omap control
+module register bits directly. To me it seems that the above should
+be implemented in the omap/am33xx hwmod code that gets initialized when
+the dcan driver calls pm_runtime_enable()? Paul, got any other ideas?
+
+Regards,
+
+Tony
