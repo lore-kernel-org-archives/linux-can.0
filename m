@@ -1,87 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/4] can: c_can: Add suspend/resume and pinctrl support
-Date: Thu, 06 Sep 2012 10:27:30 +0200
-Message-ID: <50485E72.7010900@pengutronix.de>
-References: <1346843564-25343-1-git-send-email-anilkumar@ti.com> <50473D92.9000500@pengutronix.de> <504759B4.6060203@pengutronix.de> <20120905232609.GL1303@atomide.com> <331ABD5ECB02734CA317220B2BBEABC13EA27D69@DBDE01.ent.ti.com>
+From: "AnilKumar, Chimata" <anilkumar@ti.com>
+Subject: RE: [PATCH v2] of: Modify c_can binding documentation
+Date: Thu, 6 Sep 2012 09:26:49 +0000
+Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA27FF8@DBDE01.ent.ti.com>
+References: <1346648074-27025-1-git-send-email-anilkumar@ti.com>
+ <50461FB5.3050908@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigE0EE4EBC362DA897C283FD01"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43538 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754031Ab2IFI1p (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 04:27:45 -0400
-In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13EA27D69@DBDE01.ent.ti.com>
+Received: from bear.ext.ti.com ([192.94.94.41]:56111 "EHLO bear.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754456Ab2IFJ1D convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 05:27:03 -0400
+In-Reply-To: <50461FB5.3050908@wwwdotorg.org>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "AnilKumar, Chimata" <anilkumar@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Gole, Anant" <anantgole@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE0EE4EBC362DA897C283FD01
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Marc,
 
-On 09/06/2012 08:09 AM, AnilKumar, Chimata wrote:
-> On Thu, Sep 06, 2012 at 04:56:10, Tony Lindgren wrote:
->> * Marc Kleine-Budde <mkl@pengutronix.de> [120905 06:55]:
->>> On 09/05/2012 01:54 PM, Marc Kleine-Budde wrote:
->>>> On 09/05/2012 01:12 PM, AnilKumar Ch wrote:
->>>>> Adds suspend/resume functionality of d_can driver along with d_can
->>>>> raminit support which is required to initialize RAM while data
->>>>> transmission.
->>>>>
->>>>> This patch series also adds pinctrl support to c_can driver. These
->>>>> patches were tested on AM335x-EVM.
->>>>>
->>>>> This patch-series is based ontop of runtimePM patch submitted
->>>>> earlier - https://patchwork.kernel.org/patch/1348081/
->>>>
->>>> Looks good, I'll apply the series after Tony acks the patch 3
->>>> ([PATCH RESEND 3/4] ARM: AM33XX: board-generic: Add of_dev_auxdata t=
-o
->>>> pass d_can raminit).
->>>
->>> I've pushed all patches to can-next/master [1]. When Tony gives his A=
-ck,
->>> I'll send David a pull request (of a tree including that Ack).
->>
->> To me it looks like we can avoid the platform callbacks and the ram
->> init changes to the driver by implementing right runtime PM calls
->> for omap/am33xx. So NAK on few patches, and ACK on one :)
->>
->=20
-> Marc,
->=20
-> Can you please queue ACK patch for 3.7, I will submit v3 for rest of
-> the patches, once we found the clear way of doing RAMINIT.
+On Tue, Sep 04, 2012 at 21:05:17, Stephen Warren wrote:
+> On 09/02/2012 10:54 PM, AnilKumar Ch wrote:
+> > Modify c_can binding documentation according to recent review comments
+> > on device tree data addition patches.
+> > 
+> > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+> 
+> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+> 
+> 
 
-Done. I've updated the master branch on my repo[1]. I'll send a pull
-request to David soon.
+Can you queue this patch as well for 3.7?
 
-Marc
-
-[1] https://gitorious.org/linux-can/linux-can-next
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigE0EE4EBC362DA897C283FD01
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBIXnYACgkQjTAFq1RaXHMsKwCglo19FHu1HKmILOxFOGO5OoVl
-dNMAoJBBvPWnpVEL/dMJcIxCkwroKYX6
-=s6tw
------END PGP SIGNATURE-----
-
---------------enigE0EE4EBC362DA897C283FD01--
+Thanks
+AnilKumar
