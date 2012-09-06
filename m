@@ -1,57 +1,88 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3] of: Modify c_can binding documentation
-Date: Thu, 06 Sep 2012 13:23:20 +0200
-Message-ID: <504887A8.4000508@pengutronix.de>
-References: <1346925725-19873-1-git-send-email-anilkumar@ti.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Thu, 6 Sep 2012 17:11:58 +0200
+Message-ID: <20120906151158.GA37075@macbook.local>
+References: <20120824124248.GA422@vandijck-laurijssen.be>
+ <20120824220142.GA1470@gmail.com>
+ <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
+ <20120904071128.GB416@vandijck-laurijssen.be>
+ <20120904201553.GA29478@gmail.com>
+ <20120906103248.GA36903@macbook.local>
+ <CABkP77fff7wmZKbT=xbcBkSgLTbjTTzxOpQsWLrHTeG-53KSWQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigBBBB55F816ED4EEFE72AF0D2"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46459 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750833Ab2IFLX0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 07:23:26 -0400
-In-Reply-To: <1346925725-19873-1-git-send-email-anilkumar@ti.com>
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176]:16739 "EHLO
+	mailrelay009.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1756815Ab2IFPME (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 11:12:04 -0400
+Content-Disposition: inline
+In-Reply-To: <CABkP77fff7wmZKbT=xbcBkSgLTbjTTzxOpQsWLrHTeG-53KSWQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: AnilKumar Ch <anilkumar@ti.com>
-Cc: wg@grandegger.com, swarren@wwwdotorg.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBBBB55F816ED4EEFE72AF0D2
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 06, 2012 at 01:17:39PM +0200, Fabio Baltieri wrote:
+> Hi Kurt,
+> 
+> On Thu, Sep 6, 2012 at 12:33 PM, Kurt Van Dijck <kurt.van.dijck@eia.be> wrote:
+> > On Tue, Sep 04, 2012 at 10:15:53PM +0200, Fabio Baltieri wrote:
+> >> On Tue, Sep 04, 2012 at 09:11:28AM +0200, Kurt Van Dijck wrote:
+> > [...]
+> >> > > The name of the device can only be changed when the interface is down.
+> >> > > Is it possible to put some scripting around it to detach and attach the leds
+> >> > > to the interfaces on ifup/ifdown triggers?
+> >> >
+> >> > Are the led triggers available for using while the netdev is down then?
+> >>
+> >> Sure!  On embedded systems triggers are usually attached to actual LEDs
+> >> at probe time using default_trigger field of struct led_classdev, and
+> >> that can be specified both in machine files or in device tree.
+> >
+> > I also think that led triggers should be available.
+> 
+> Right, that's why I think the only way is to use device name.
 
-On 09/06/2012 12:02 PM, AnilKumar Ch wrote:
-> Modify c_can binding documentation according to recent review comments
-> on device tree data addition patches.
->=20
-> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+yes, but it has 2 disadvantages:
+* inconvenient. I like 'can0-tx' much more than any device name
+  (Sorry I can't get any real example, I'm not at home now).
+  And for usecases where the actual device of the CAN iface is
+  important, such setup requires udev to assign the proper iface names.
+* extends existing function calls like sja1000
 
-Thanks, I've updated my master branch.
+> 
+> > I asked the question because detach & attach leds to interfaces would
+> > indeed break that.
+> 
+> Sure? I think that the trigger would be set again on reattach, as
+> default_trigger is checked both in led_cdev probe and
+> trigger_register, see:
+> 
+> http://lxr.free-electrons.com/source/drivers/leds/led-triggers.c#L180
+> 
+> I'll try that tonight.
 
-Marc
+It looks even more inconvenient. It only works as expected when you don't
+change the trigger afterwards, but still it is possible (as should be),
+so the design of trigger is ... wrong.
+example:
+When you put another trigger to a led, and have a proper sequence of
+'ip link set xxx up' and 'ip link set xxx down', you will end up
+with the default_trigger again.
+I realize I'm looking at unusual scenario's.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+> > btw, I tried to send a patch tuesday (my first $ git send-email) using
+> > netdev notifiers: did you receive it, and what do you think of it?
+> 
+> Sure, I got it!
+Ok, well done for me then :-)
+> I was planning to try that this weekend but I can
+> give you some comments earlier tonight... sorry for the dealy!
+no hurry, I'm already satified that I got git setup right.
 
-
---------------enigBBBB55F816ED4EEFE72AF0D2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBIh6gACgkQjTAFq1RaXHNSSgCeOvu+f4RmIAaGjrETfnlKN+81
-6VEAnjgkMFg1TTGdfIC3WX6DLfgsEfOF
-=rKL5
------END PGP SIGNATURE-----
-
---------------enigBBBB55F816ED4EEFE72AF0D2--
+Kurt
