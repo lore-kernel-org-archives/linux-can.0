@@ -1,87 +1,53 @@
-From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH v3] of: Modify c_can binding documentation
-Date: Thu, 6 Sep 2012 15:32:05 +0530
-Message-ID: <1346925725-19873-1-git-send-email-anilkumar@ti.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Thu, 6 Sep 2012 12:33:13 +0200
+Message-ID: <20120906103248.GA36903@macbook.local>
+References: <20120824051016.GB1718@vandijck-laurijssen.be>
+ <50376550.4020501@pengutronix.de>
+ <20120824124248.GA422@vandijck-laurijssen.be>
+ <20120824220142.GA1470@gmail.com>
+ <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
+ <20120904071128.GB416@vandijck-laurijssen.be>
+ <20120904201553.GA29478@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:58035 "EHLO bear.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753451Ab2IFKDd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 6 Sep 2012 06:03:33 -0400
+Received: from mailrelay008.isp.belgacom.be ([195.238.6.174]:33028 "EHLO
+	mailrelay008.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753369Ab2IFKdK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 06:33:10 -0400
+Content-Disposition: inline
+In-Reply-To: <20120904201553.GA29478@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: swarren@wwwdotorg.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-Modify c_can binding documentation according to recent review comments
-on device tree data addition patches.
+On Tue, Sep 04, 2012 at 10:15:53PM +0200, Fabio Baltieri wrote:
+> On Tue, Sep 04, 2012 at 09:11:28AM +0200, Kurt Van Dijck wrote:
+> > On Mon, Sep 03, 2012 at 10:54:49PM +0200, Oliver Hartkopp wrote:
+> > > On 03.09.2012 20:29, Fabio Baltieri wrote:
+> > > 
+> > > 
+[...]
+> > > The name of the device can only be changed when the interface is down.
+> > > Is it possible to put some scripting around it to detach and attach the leds
+> > > to the interfaces on ifup/ifdown triggers?
+> > 
+> > Are the led triggers available for using while the netdev is down then?
+> 
+> Sure!  On embedded systems triggers are usually attached to actual LEDs
+> at probe time using default_trigger field of struct led_classdev, and
+> that can be specified both in machine files or in device tree.
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
----
-Changes from v2:
-	- Incorporated Marc's comments on v2
-	  * Fixed typo mistake by renaming d_can1 to dcan1
+I also think that led triggers should be available.
+I asked the question because detach & attach leds to interfaces would
+indeed break that.
 
-Changes from v1:
-	- Separated from "Add DT for AM33XX devices" patch series
-	- Incorporated Stephen Warren's review comments on v1
-	  * Removed status and interrupt-parent description from
-	    c_can.txt file because these are device specific
-	    parameters.
+btw, I tried to send a patch tuesday (my first $ git send-email) using
+netdev notifiers: did you receive it, and what do you think of it?
 
- .../devicetree/bindings/net/can/c_can.txt          |   24 +++++++++++++++-----
- 1 file changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
-index a43f083..8f1ae81 100644
---- a/Documentation/devicetree/bindings/net/can/c_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/c_can.txt
-@@ -10,7 +10,6 @@ Required properties:
- 			  number
- 
- Optional properties:
--- interrupt-parent	: The parent interrupt controller
- - ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
- 			  instance number
- 
-@@ -20,18 +19,31 @@ Future plan is to migrate hwmod data base contents into device tree
- blob so that, all the required data will be used from device tree dts
- file.
- 
--Examples:
-+Example:
- 
--	d_can@481D0000 {
-+Step1: SoC common .dtsi file
-+
-+	dcan1: d_can@481d0000 {
- 		compatible = "bosch,d_can";
--		reg = <0x481D0000 0x1000>;
--		interrupts = <55 0x4>;
-+		reg = <0x481d0000 0x2000>;
-+		interrupts = <55>;
- 		interrupt-parent = <&intc>;
-+		status = "disabled";
- 	};
- 
- (or)
- 
--	d_can@481D0000 {
-+	dcan1: d_can@481d0000 {
- 		compatible = "bosch,d_can";
- 		ti,hwmods = "d_can1";
-+		reg = <0x481d0000 0x2000>;
-+		interrupts = <55>;
-+		interrupt-parent = <&intc>;
-+		status = "disabled";
-+	};
-+
-+Step 2: board specific .dts file
-+
-+	&dcan1 {
-+		status = "okay";
- 	};
--- 
-1.7.9.5
-
+Kurt
