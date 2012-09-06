@@ -1,63 +1,85 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: Re: [PATCH] can: rename LED trigger name on netdev renames
-Date: Thu, 6 Sep 2012 22:46:00 +0200
-Message-ID: <20120906204559.GB4043@gmail.com>
-References: <20120904071128.GB416@vandijck-laurijssen.be>
- <1346750951-10451-1-git-send-email-kurt.van.dijck@eia.be>
- <20120906185938.GA4043@gmail.com>
- <5048F9FB.9020207@hartkopp.net>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Thu, 6 Sep 2012 22:57:28 +0200
+Message-ID: <20120906205728.GC4043@gmail.com>
+References: <20120824220142.GA1470@gmail.com>
+ <5044A547.2010603@pengutronix.de>
+ <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
+ <20120904071128.GB416@vandijck-laurijssen.be>
+ <20120904201553.GA29478@gmail.com>
+ <20120906103248.GA36903@macbook.local>
+ <CABkP77fff7wmZKbT=xbcBkSgLTbjTTzxOpQsWLrHTeG-53KSWQ@mail.gmail.com>
+ <20120906151158.GA37075@macbook.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f44.google.com ([74.125.82.44]:57832 "EHLO
-	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753918Ab2IFUo7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 16:44:59 -0400
+Received: from mail-wi0-f178.google.com ([209.85.212.178]:35404 "EHLO
+	mail-wi0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759803Ab2IFU41 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Sep 2012 16:56:27 -0400
 Content-Disposition: inline
-In-Reply-To: <5048F9FB.9020207@hartkopp.net>
+In-Reply-To: <20120906151158.GA37075@macbook.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-On Thu, Sep 06, 2012 at 09:31:07PM +0200, Oliver Hartkopp wrote:
-> >> +
-> >> +/*
-> >> + * NETDEV rename notifier to rename the associated led triggers too
-> >> + */
-> >> +static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
-> >> +			void *data)
-> >> +{
-> >> +	struct net_device *netdev = (struct net_device *)data;
-> >> +	struct can_priv *priv = netdev_priv(netdev);
-> >> +	int busy = 0;
-> >> +
-> >> +	if (!net_eq(dev_net(netdev), &init_net))
-> >> +		return NOTIFY_DONE;
-> >> +
-> >> +	if (netdev->type != ARPHRD_CAN)
-> >> +		return NOTIFY_DONE;
-> >> +
-> >> +	if (msg != NETDEV_CHANGENAME)
-> >> +		return NOTIFY_DONE;
+On Thu, Sep 06, 2012 at 05:11:58PM +0200, Kurt Van Dijck wrote:
+> > > I also think that led triggers should be available.
 > > 
-> > That's the main problem, which I also got stuck into when I did my first
-> > can-led implementation.  As LED structures are in netdev's private data,
-> > you can only use it if your driver is based on the can-dev API, and
-> > there are no way to be sure of that if you get outside driver's code
-> > itself.
-> > 
-> > This would give problems with vcan, slcan, and probabily other
-> > non-mainlined drivers.
+> > Right, that's why I think the only way is to use device name.
 > 
-> 
-> Do you think, this is really a problem?
-> 
-> If a driver decides not to use the can-dev framework it has to implement own
-> solutions or just adopt can-dev.
+> yes, but it has 2 disadvantages:
+> * inconvenient. I like 'can0-tx' much more than any device name
+>   (Sorry I can't get any real example, I'm not at home now).
+>   And for usecases where the actual device of the CAN iface is
+>   important, such setup requires udev to assign the proper iface names.
 
-Agreed, but this still means that we can't assume that
-netdev_priv(netdev) to a netdev where netdev->type == ARPHRD_CAN points
-to a struct can_priv, right?
+Can't argue with that... I'm trying to see how it comes but names like
+"can-3-2:1.0-tx" doesn't looks that friendly to me...
+
+> * extends existing function calls like sja1000
+
+Indeed.
+
+> > > I asked the question because detach & attach leds to interfaces would
+> > > indeed break that.
+> > 
+> > Sure? I think that the trigger would be set again on reattach, as
+> > default_trigger is checked both in led_cdev probe and
+> > trigger_register, see:
+> > 
+> > http://lxr.free-electrons.com/source/drivers/leds/led-triggers.c#L180
+> > 
+> > I'll try that tonight.
+> 
+> It looks even more inconvenient. It only works as expected when you don't
+> change the trigger afterwards, but still it is possible (as should be),
+> so the design of trigger is ... wrong.
+> example:
+> When you put another trigger to a led, and have a proper sequence of
+> 'ip link set xxx up' and 'ip link set xxx down', you will end up
+> with the default_trigger again.
+> I realize I'm looking at unusual scenario's.
+
+That's not correct, default trigger is going to be set only if there are
+no other trigger assigned to the LED, and only on led probe and trigger
+probe.
+
+So, the LED framework is not going to change the trigger if you manually
+changed it to something else, and in any case default_trigger assignment
+only happens at probe/exit, not when interface is set up/down.
+
+> > > btw, I tried to send a patch tuesday (my first $ git send-email) using
+> > > netdev notifiers: did you receive it, and what do you think of it?
+> > 
+> > Sure, I got it!
+> Ok, well done for me then :-)
+> > I was planning to try that this weekend but I can
+> > give you some comments earlier tonight... sorry for the dealy!
+> no hurry, I'm already satified that I got git setup right.
+
+Way to go! :-)
 
 Fabio
