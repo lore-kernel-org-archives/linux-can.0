@@ -1,51 +1,96 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 0/4] can: c_can: Add suspend/resume and pinctrl
- support
-Date: Wed, 5 Sep 2012 16:26:10 -0700
-Message-ID: <20120905232609.GL1303@atomide.com>
-References: <1346843564-25343-1-git-send-email-anilkumar@ti.com>
- <50473D92.9000500@pengutronix.de>
- <504759B4.6060203@pengutronix.de>
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Subject: Re: [PATCH RESEND 3/4] ARM: AM33XX: board-generic: Add of_dev_auxdata
+ to pass d_can raminit
+Date: Thu, 6 Sep 2012 09:26:07 +0530
+Message-ID: <50481ED7.7050409@ti.com>
+References: <1346843564-25343-1-git-send-email-anilkumar@ti.com> <1346843564-25343-4-git-send-email-anilkumar@ti.com> <20120905231837.GI1303@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mho-01-ewr.mailhop.org ([204.13.248.71]:26670 "EHLO
-	mho-01-ewr.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755165Ab2IEX0Q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Sep 2012 19:26:16 -0400
-Content-Disposition: inline
-In-Reply-To: <504759B4.6060203@pengutronix.de>
+Received: from comal.ext.ti.com ([198.47.26.152]:47301 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752030Ab2IFD4e (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Sep 2012 23:56:34 -0400
+In-Reply-To: <20120905231837.GI1303@atomide.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: AnilKumar Ch <anilkumar@ti.com>, wg@grandegger.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: AnilKumar Ch <anilkumar@ti.com>, Paul Walmsley <paul@pwsan.com>, linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-* Marc Kleine-Budde <mkl@pengutronix.de> [120905 06:55]:
-> On 09/05/2012 01:54 PM, Marc Kleine-Budde wrote:
-> > On 09/05/2012 01:12 PM, AnilKumar Ch wrote:
-> >> Adds suspend/resume functionality of d_can driver along with d_can
-> >> raminit support which is required to initialize RAM while data
-> >> transmission.
-> >>
-> >> This patch series also adds pinctrl support to c_can driver. These
-> >> patches were tested on AM335x-EVM.
-> >>
-> >> This patch-series is based ontop of runtimePM patch submitted
-> >> earlier - https://patchwork.kernel.org/patch/1348081/
-> > 
-> > Looks good, I'll apply the series after Tony acks the patch 3
-> > ([PATCH RESEND 3/4] ARM: AM33XX: board-generic: Add of_dev_auxdata to
-> > pass d_can raminit).
+
+
+On 9/6/2012 4:48 AM, Tony Lindgren wrote:
+> Hi,
 > 
-> I've pushed all patches to can-next/master [1]. When Tony gives his Ack,
-> I'll send David a pull request (of a tree including that Ack).
+> * AnilKumar Ch <anilkumar@ti.com> [120905 04:14]:
+>> Add of_dev_auxdata to pass d_can raminit callback APIs to initialize
+>> d_can RAM. D_CAN RAM initialization bits are present in CONTROL module
+>> address space, which can be accessed by platform specific code. So
+>> callback functions are added to serve this purpose, this can done by
+>> using of_dev_auxdata.
+>>
+>> Two callback APIs are added to of_dev_auxdata used by two instances of
+>> D_CAN IP. These callback functions are used to enable/disable D_CAN RAM
+>> from CAN driver.
+> 
+> I'd like to avoid the callbacks to the platform code where possible as
+> that's the biggest pain we already have moving things to work with device
+> tree for the existing drivers.
+> 
+> And I'm pretty convinced that whatever is done with callbacks should be
+> done with some Linux generic framework from the driver that has it's own
+> binding, such as clock framework, regulator framework, pinctrl framework,
+> runtime PM etc.
+> 
+>> --- a/arch/arm/mach-omap2/board-generic.c
+>> +++ b/arch/arm/mach-omap2/board-generic.c
+>> @@ -37,11 +40,46 @@ static struct of_device_id omap_dt_match_table[] __initdata = {
+>>  	{ }
+>>  };
+>>  
+>> +void d_can_hw_raminit(unsigned int instance, bool enable)
+>> +{
+>> +	u32 val;
+>> +
+>> +	val = readl(AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+>> +	if (enable) {
+>> +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
+>> +		val |= AM33XX_DCAN_RAMINIT_START_MASK(instance);
+>> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+>> +	} else {
+>> +		val &= ~AM33XX_DCAN_RAMINIT_START_MASK(instance);
+>> +		writel(val, AM33XX_CTRL_REGADDR(AM33XX_CONTROL_DCAN_RAMINIT));
+>> +	}
+>> +}
+> 
+> This part does not look good to me, this is tweaking the omap control
+> module register bits directly. To me it seems that the above should
+> be implemented in the omap/am33xx hwmod code that gets initialized when
+> the dcan driver calls pm_runtime_enable()? Paul, got any other ideas?
+> 
 
-To me it looks like we can avoid the platform callbacks and the ram
-init changes to the driver by implementing right runtime PM calls
-for omap/am33xx. So NAK on few patches, and ACK on one :)
+Technically yes, this is required during module enable/disable sequence.
+But there is no way currently supported in hwmod layer. Also I am not
+quite sure how many other modules/devices may use this.
 
-Regards,
+Couple of more examples I have here,
 
-Tony
+In case of AM3517 we have similar SoC integration, where VPFE, MAC and
+USB required clock control (handled by clock-tree) and interrupt status
+(handled by callbacks) from control module.
+So not sure whether we can get rid of callbacks until we have control
+module MFD driver (on which Konstantin is working on)
 
-> [1] https://gitorious.org/linux-can/linux-can-next
+Thanks,
+Vaibhav
+
+> Regards,
+> 
+> Tony
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
