@@ -1,286 +1,68 @@
-From: "AnilKumar, Chimata" <anilkumar@ti.com>
-Subject: RE: [PATCH v2 4/4] can: c_can: Add d_can suspend resume support
-Date: Fri, 7 Sep 2012 08:26:26 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA296D6@DBDE01.ent.ti.com>
-References: <1346843564-25343-1-git-send-email-anilkumar@ti.com>
- <1346843564-25343-5-git-send-email-anilkumar@ti.com>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: Re: [PATCH can-next v6] can: add tx/rx LED trigger support
+Date: Fri, 7 Sep 2012 20:59:41 +0200
+Message-ID: <20120907185941.GA2034@gmail.com>
+References: <20120903181335.GA415@vandijck-laurijssen.be>
+ <20120903182925.GA28766@gmail.com>
+ <50451919.20205@hartkopp.net>
+ <20120904071128.GB416@vandijck-laurijssen.be>
+ <20120904201553.GA29478@gmail.com>
+ <20120906103248.GA36903@macbook.local>
+ <CABkP77fff7wmZKbT=xbcBkSgLTbjTTzxOpQsWLrHTeG-53KSWQ@mail.gmail.com>
+ <20120906151158.GA37075@macbook.local>
+ <20120906205728.GC4043@gmail.com>
+ <20120907070419.GA37685@macbook.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:54927 "EHLO arroyo.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755740Ab2IGI0j convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Sep 2012 04:26:39 -0400
-In-Reply-To: <1346843564-25343-5-git-send-email-anilkumar@ti.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "AnilKumar, Chimata" <anilkumar@ti.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
-Cc: "tony@atomide.com" <tony@atomide.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120907070419.GA37685@macbook.local>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+List-Id: linux-can.vger.kernel.org
 
-On Wed, Sep 05, 2012 at 16:42:44, AnilKumar, Chimata wrote:
-> Adds suspend resume support to DCAN driver which enables
-> DCAN power down mode bit (PDR). Then DCAN will ack the local
-> power-down mode by setting PDA bit in STATUS register.
+On Fri, Sep 07, 2012 at 09:04:19AM +0200, Kurt Van Dijck wrote:
+> On Thu, Sep 06, 2012 at 10:57:28PM +0200, Fabio Baltieri wrote:
+> > On Thu, Sep 06, 2012 at 05:11:58PM +0200, Kurt Van Dijck wrote:
+> > Can't argue with that... I'm trying to see how it comes but names like
+> > "can-3-2:1.0-tx" doesn't looks that friendly to me...
 > 
+> "can-3-2:1.0" is an iface name?
 
-Marc,
+No, I was trying some combination using device name instead of netdev
+one (which remains can0), here 3-2:1.0 is the usb path, looks really bad
+to be used for dev name if netdev name is still can0 - no way of
+determine the link between the two.
 
-I missed out this patch, I will remove raminit calls from this
-patch and submit new version. But I will test using RAMINIT.
-
-Thanks
-AnilKumar
-
-> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
-> ---
->  drivers/net/can/c_can/c_can.c          |   82 ++++++++++++++++++++++++++++++++
->  drivers/net/can/c_can/c_can.h          |    8 ++++
->  drivers/net/can/c_can/c_can_platform.c |   62 ++++++++++++++++++++++++
->  3 files changed, 152 insertions(+)
+> We must keep default iface names can%d. Only in the usecase that someone
+> wants to name its ifaces according device names, he/she should manually
+> adjust udev rules on his/her system ...
 > 
-> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-> index c175410..c601136 100644
-> --- a/drivers/net/can/c_can/c_can.c
-> +++ b/drivers/net/can/c_can/c_can.c
-> @@ -46,6 +46,9 @@
->  #define IF_ENUM_REG_LEN		11
->  #define C_CAN_IFACE(reg, iface)	(C_CAN_IF1_##reg + (iface) * IF_ENUM_REG_LEN)
->  
-> +/* control extension register D_CAN specific */
-> +#define CONTROL_EX_PDR		BIT(8)
-> +
->  /* control register */
->  #define CONTROL_TEST		BIT(7)
->  #define CONTROL_CCE		BIT(6)
-> @@ -65,6 +68,7 @@
->  #define TEST_BASIC		BIT(2)
->  
->  /* status register */
-> +#define STATUS_PDA		BIT(10)
->  #define STATUS_BOFF		BIT(7)
->  #define STATUS_EWARN		BIT(6)
->  #define STATUS_EPASS		BIT(5)
-> @@ -164,6 +168,9 @@
->  /* minimum timeout for checking BUSY status */
->  #define MIN_TIMEOUT_VALUE	6
->  
-> +/* Wait for ~1 sec for INIT bit */
-> +#define INIT_WAIT_MS		1000
-> +
->  /* napi related */
->  #define C_CAN_NAPI_WEIGHT	C_CAN_MSG_OBJ_RX_NUM
->  
-> @@ -1154,6 +1161,81 @@ struct net_device *alloc_c_can_dev(void)
->  }
->  EXPORT_SYMBOL_GPL(alloc_c_can_dev);
->  
-> +#ifdef CONFIG_PM
-> +int c_can_power_down(struct net_device *dev)
-> +{
-> +	u32 val;
-> +	unsigned long time_out;
-> +	struct c_can_priv *priv = netdev_priv(dev);
-> +
-> +	if (!(dev->flags & IFF_UP))
-> +		return 0;
-> +
-> +	BUG_ON(priv->type != BOSCH_D_CAN);
-> +
-> +	/* set PDR value so the device goes to power down mode */
-> +	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-> +	val |= CONTROL_EX_PDR;
-> +	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
-> +
-> +	/* Wait for the PDA bit to get set */
-> +	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
-> +	while (!(priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
-> +				time_after(time_out, jiffies))
-> +		cpu_relax();
-> +
-> +	if (time_after(jiffies, time_out))
-> +		return -ETIMEDOUT;
-> +
-> +	c_can_stop(dev);
-> +
-> +	/* De-initialize DCAN RAM */
-> +	c_can_reset_ram(priv, false);
-> +	c_can_pm_runtime_put_sync(priv);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(c_can_power_down);
-> +
-> +int c_can_power_up(struct net_device *dev)
-> +{
-> +	u32 val;
-> +	unsigned long time_out;
-> +	struct c_can_priv *priv = netdev_priv(dev);
-> +
-> +	if (!(dev->flags & IFF_UP))
-> +		return 0;
-> +
-> +	BUG_ON(priv->type != BOSCH_D_CAN);
-> +
-> +	c_can_pm_runtime_get_sync(priv);
-> +	/* Initialize DCAN RAM */
-> +	c_can_reset_ram(priv, true);
-> +
-> +	/* Clear PDR and INIT bits */
-> +	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-> +	val &= ~CONTROL_EX_PDR;
-> +	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
-> +	val = priv->read_reg(priv, C_CAN_CTRL_REG);
-> +	val &= ~CONTROL_INIT;
-> +	priv->write_reg(priv, C_CAN_CTRL_REG, val);
-> +
-> +	/* Wait for the PDA bit to get clear */
-> +	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
-> +	while ((priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
-> +				time_after(time_out, jiffies))
-> +		cpu_relax();
-> +
-> +	if (time_after(jiffies, time_out))
-> +		return -ETIMEDOUT;
-> +
-> +	c_can_start(dev);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(c_can_power_up);
-> +#endif
-> +
->  void free_c_can_dev(struct net_device *dev)
->  {
->  	free_candev(dev);
-> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-> index 5f6339c..ca149eb 100644
-> --- a/drivers/net/can/c_can/c_can.h
-> +++ b/drivers/net/can/c_can/c_can.h
-> @@ -24,6 +24,7 @@
->  
->  enum reg {
->  	C_CAN_CTRL_REG = 0,
-> +	C_CAN_CTRL_EX_REG,
->  	C_CAN_STS_REG,
->  	C_CAN_ERR_CNT_REG,
->  	C_CAN_BTR_REG,
-> @@ -104,6 +105,7 @@ static const u16 reg_map_c_can[] = {
->  
->  static const u16 reg_map_d_can[] = {
->  	[C_CAN_CTRL_REG]	= 0x00,
-> +	[C_CAN_CTRL_EX_REG]	= 0x02,
->  	[C_CAN_STS_REG]		= 0x04,
->  	[C_CAN_ERR_CNT_REG]	= 0x08,
->  	[C_CAN_BTR_REG]		= 0x0C,
-> @@ -166,6 +168,7 @@ struct c_can_priv {
->  	unsigned int tx_echo;
->  	void *priv;		/* for board-specific data */
->  	u16 irqstatus;
-> +	enum c_can_dev_id type;
->  	unsigned int instance;
->  	void (*ram_init) (unsigned int instance, bool enable);
->  };
-> @@ -175,4 +178,9 @@ void free_c_can_dev(struct net_device *dev);
->  int register_c_can_dev(struct net_device *dev);
->  void unregister_c_can_dev(struct net_device *dev);
->  
-> +#ifdef CONFIG_PM
-> +int c_can_power_up(struct net_device *dev);
-> +int c_can_power_down(struct net_device *dev);
-> +#endif
-> +
->  #endif /* C_CAN_H */
-> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-> index c6963b2..68c186b 100644
-> --- a/drivers/net/can/c_can/c_can_platform.c
-> +++ b/drivers/net/can/c_can/c_can_platform.c
-> @@ -202,6 +202,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
->  	priv->device = &pdev->dev;
->  	priv->can.clock.freq = clk_get_rate(clk);
->  	priv->priv = clk;
-> +	priv->type = id->driver_data;
->  
->  	platform_set_drvdata(pdev, dev);
->  	SET_NETDEV_DEV(dev, &pdev->dev);
-> @@ -255,6 +256,65 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_PM
-> +static int c_can_suspend(struct platform_device *pdev, pm_message_t state)
-> +{
-> +	int ret;
-> +	struct net_device *ndev = platform_get_drvdata(pdev);
-> +	struct c_can_priv *priv = netdev_priv(ndev);
-> +
-> +	if (priv->type != BOSCH_D_CAN) {
-> +		dev_warn(&pdev->dev, "Not supported\n");
-> +		return 0;
-> +	}
-> +
-> +	if (netif_running(ndev)) {
-> +		netif_stop_queue(ndev);
-> +		netif_device_detach(ndev);
-> +	}
-> +
-> +	ret = c_can_power_down(ndev);
-> +	if (ret) {
-> +		netdev_err(ndev, "failed to enter power down mode\n");
-> +		return ret;
-> +	}
-> +
-> +	priv->can.state = CAN_STATE_SLEEPING;
-> +
-> +	return 0;
-> +}
-> +
-> +static int c_can_resume(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct net_device *ndev = platform_get_drvdata(pdev);
-> +	struct c_can_priv *priv = netdev_priv(ndev);
-> +
-> +	if (priv->type != BOSCH_D_CAN) {
-> +		dev_warn(&pdev->dev, "Not supported\n");
-> +		return 0;
-> +	}
-> +
-> +	ret = c_can_power_up(ndev);
-> +	if (ret) {
-> +		netdev_err(ndev, "Still in power down mode\n");
-> +		return ret;
-> +	}
-> +
-> +	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-> +
-> +	if (netif_running(ndev)) {
-> +		netif_device_attach(ndev);
-> +		netif_start_queue(ndev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +#else
-> +#define c_can_suspend NULL
-> +#define c_can_resume NULL
-> +#endif
-> +
->  static struct platform_driver c_can_plat_driver = {
->  	.driver = {
->  		.name = KBUILD_MODNAME,
-> @@ -263,6 +323,8 @@ static struct platform_driver c_can_plat_driver = {
->  	},
->  	.probe = c_can_plat_probe,
->  	.remove = __devexit_p(c_can_plat_remove),
-> +	.suspend = c_can_suspend,
-> +	.resume = c_can_resume,
->  	.id_table = c_can_id_table,
->  };
->  
-> -- 
-> 1.7.9.5
-> 
-> 
+> And if the iface is names "can-3-2:1.0", "can-3-2:1.0-tx" _is_
+> a friendly trigger name.
 
+Agreed.
+
+> > > It looks even more inconvenient. It only works as expected when you don't
+> > > change the trigger afterwards, but still it is possible (as should be),
+> > > so the design of trigger is ... wrong.
+> > > example:
+> > > When you put another trigger to a led, and have a proper sequence of
+> > > 'ip link set xxx up' and 'ip link set xxx down', you will end up
+> > > with the default_trigger again.
+> > > I realize I'm looking at unusual scenario's.
+> > 
+> > That's not correct, default trigger is going to be set only if there are
+> > no other trigger assigned to the LED, and only on led probe and trigger
+> > probe.
+> > 
+> > So, the LED framework is not going to change the trigger if you manually
+> > changed it to something else, and in any case default_trigger assignment
+> > only happens at probe/exit, not when interface is set up/down.
+> 
+> I think you're also arguing against a register/unregister during iface up/down.
+> We agree.
+
+Uh - yes! :-)
+
+Fabio
