@@ -1,130 +1,192 @@
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: Re: usb-can device
-Date: Sun, 9 Sep 2012 15:41:40 +0200
-Message-ID: <201209091541.41109.pisa@cmp.felk.cvut.cz>
-References: <1345996339.6610.10.camel@slaptop> <20120828233459.GA3046@gmail.com> <503DF6B7.8010004@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay.felk.cvut.cz ([147.32.80.7]:47710 "EHLO
-	relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752705Ab2IIOPW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 9 Sep 2012 10:15:22 -0400
-In-Reply-To: <503DF6B7.8010004@hartkopp.net>
-Content-Disposition: inline
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: "Max S." <max@schneidersoft.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: [PATCH v2] can: rename LED trigger name on netdev renames
+Date: Sun,  9 Sep 2012 18:17:44 +0200
+Message-ID: <1347207464-2002-1-git-send-email-fabio.baltieri@gmail.com>
+References: <20120907071934.GB37685@macbook.local>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120907071934.GB37685@macbook.local>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
-On Wednesday 29 August 2012 13:02:15 Oliver Hartkopp wrote:
-> On 29.08.2012 01:34, Fabio Baltieri wrote:
-> > Oliver, Marc, do you think that this design my be used as a base to do
-> > some generic USB-CAN (CDC CAN?) protocol development?  I would be happy
-> > to help!
->
-> Yes. Definitely!
->
-> Really nice to have the entire project on github now.
->
-> Even if the MCP2515 is not the high performance hardware, we probably run
-> into problems there, we would not see on better hardware ;-)
->
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 
-I would like to express my interrest in the development of some generic CAN<->USB
-protocol specification as well.
+The LED trigger name for CAN devices is based on the initial
+CAN device name, but does never change. The LED trigger name
+is not guaranteed to be unique in case of hotplugging CAN devices.
 
-The main question is, if the data should be bulk messages boundaries aligned
-(as done in our actual implementations) or if the USB PIPE/stream feature should be
-used and USB transferred messages length to be variable.
+This patch tries to address this problem by modifying the
+LED trigger name according to the CAN device name when
+the latter changes.
 
-There are some HW/code chunks which are available from our side:
+This patch is meant as illustration only.
+In case of VCAN device rename, a segmentation fault will occur.
 
-1) We have used two CAN<->USB hardware setups already
-    - LPC2148 + SJA1000 board (deprecated now)
-    - LPC1768
-   both boards was originally designed by my colleague at PiKRON Ltd.
-   and are rich with other functions for their main use in our laboratory
-   and medical systems.
-   But we consider the circuitry required for CAN<->USB converters as
-   open (GPL/MPL) and can think even about PD. If there is broader
-   interrest, we would prepare and publish design optimized for CAN<->USB
-   converter use.
+v1 - Kurt Van Dijck
+v2 - Fabio Baltieri
+- remove rename blocking if trigger is bound
+- use led-subsystem function for the actual rename (still WiP)
+- call init/exit functions from dev.c
 
-2) the core part of the converters firmware is based on the LinCAN driver
-   project which is now maintained as one of the OrtCAN GIT repositories.
+Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+---
 
-   Firmware build steps are briefly documented at next page
+Hi Kurt,
 
-     http://ortcan.sourceforge.net/lincan/usbcan/
+I like the can_priv_safe() idea, so I allowed myself to write a v2 of your
+patch (hope you are ok with that - let me know if you think I should just post
+a diff) to address the other issues I found and bring back the discussion.
 
-   Used protocol is really simple for now, it maps each CAN message into
-   little-endian formated 16-byte bulk message.
-   Bitrate settings and calculations come from our LinCAN and H8S projects
-   which are precursor for calculation used in SocketCAN and we extended
-   our code to provide SocketCAN compatible parameters passing over USB
-   in the latest version.
+So, that's what I changed:
 
-3) On the Linux side, the converters are primarily supported in the same
-   LinCAN can-usb1 branch as firmware is located which is logical choice,
-   because setup  architecture is stub chip driver/serialization replacing
-   regular LinCAN chip driver on Linux side and deserialization and local
-   embedded LinCAN core client on the converter side.
+- remove device rename blocking if trigger is bound: I don't think it's needed
+  as we can just rename the trigger and everyone should be happy.  Besides that
+  I don't like the idea of using list lock outside led-triggers.
 
-4) Socketcan support for the converters has been implemented in the frame
-   of Jiri Vanek diploma thesis and is available in "vanekjir" branch of
-   our experimental SocketCAN repo
+- use led_trigger_rename_static to rename the LED: the actual implementation is
+  a locked strcpy to prevent races, I just posted the patch in the linux-leds
+  mailing list, so this patch depends on wether that would be accepted.
+  Link: http://marc.info/?l=linux-kernel&m=134720454513067&w=2
 
-     http://rtime.felk.cvut.cz/gitweb/socketcan-devel.git
+- call init/exit functions from dev.c: that fixes builds as a module.  I also
+  renamed functions to can_led_notifier_{init,exit} to avoid confusion with
+  devm_can_led_init.
 
-     (the thesis full text - unfortunately Czech language only)
-     http://support.dce.felk.cvut.cz/mediawiki/images/5/56/Dp_2012_vanek_jiri.pdf
+- left a TODO marker for you for a candev-safe v3 version :-)
 
-5) Similar but independent USB<->CAN converter based on ST STR710
-   is described in Ondrej Semler's diploma thesis. It was done
-   on other CTU department and a driver side targets to Windows systems.
+As this is starting to look like a jam of patches, I pushed my working branch,
+based upon Marc's can-next/led-trigger on:
 
-     (the thesis full text - Czech language only as well)
-     http://support.dce.felk.cvut.cz/mediawiki/images/0/0b/Dp_2012_semmler_ondrej.pdf
+git://github.com/fabiobaltieri/linux.git can-leds-devel
 
-As for converters based on SPI connected MCP2515 and some PIC. FTDI or other MCU
-used for USB connection, I am not fan of these designs. They have tendency
-to be overflown by full CAN traffic. On the other hand, my colleague has
-single chip PIC with CAN based design which could serve as cheap converter
-base and can handle full CAN bandwidth.
+Let me know what you think of it.
 
-But I think that ARM based chips are cheap enough for now, that LPC17xx,
-ST, AT or some other MCU based design would not mean significant contribution
-to price and flexibility, FIFOs size etc. are much better. 
+Fabio
 
-The protocol definition is most important for now.
-There is no problem to adapt our design to different CAN messages
-encapsulation and channel control.
+ drivers/net/can/dev.c   |  5 +++++
+ drivers/net/can/led.c   | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/led.h |  9 +++++++++
+ 3 files changed, 60 insertions(+)
 
-Things to consider/decide:
-
-A) Stream with variable length or bulk aligned
-B) If and how should be Linux driver Tx side notified about CAN message
-   delivery onto physical CAN bus and actual Tx time
-C) how should be managed Rx and Tx timestamping, probably some free
-   running time on the converter side should be used and translated
-   to timespec format on Linux side
-D) how should be solved prioritization of the messages, small/dicrete
-   number of the priority queues or full ID based ordering
-E) if more queues are used there is problem with Tx flow control,
-   use more blocking USB endpoints/pipes - one for each queue,
-   or use nonblocking solution with FIFOs free size reporting
-   through single pipes/endpoints pair.
-F) think about CAN single shot messages and rescheduling/reissuing
-   higher priority message to the converter Tx buffer to prevent
-   messages priority inversion problem in the converter/CAN bus
-   interaction.
-
-Best wishes,
-
-                Pavel Pisa
-    e-mail:     pisa@cmp.felk.cvut.cz
-    www:        http://cmp.felk.cvut.cz/~pisa
-    university: http://dce.fel.cvut.cz/
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 963e2cc..f738841 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -25,6 +25,7 @@
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/netlink.h>
++#include <linux/can/led.h>
+ #include <net/rtnetlink.h>
+ 
+ #define MOD_DESC "CAN device driver interface"
+@@ -799,6 +800,8 @@ static __init int can_dev_init(void)
+ {
+ 	int err;
+ 
++	can_led_notifier_init();
++
+ 	err = rtnl_link_register(&can_link_ops);
+ 	if (!err)
+ 		printk(KERN_INFO MOD_DESC "\n");
+@@ -810,6 +813,8 @@ module_init(can_dev_init);
+ static __exit void can_dev_exit(void)
+ {
+ 	rtnl_link_unregister(&can_link_ops);
++
++	can_led_notifier_exit();
+ }
+ module_exit(can_dev_exit);
+ 
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
+index eaa14ac..43ebd47 100644
+--- a/drivers/net/can/led.c
++++ b/drivers/net/can/led.c
+@@ -12,6 +12,7 @@
+ #include <linux/slab.h>
+ #include <linux/netdevice.h>
+ #include <linux/can/dev.h>
++#include <linux/if_arp.h>
+ 
+ #include <linux/can/led.h>
+ 
+@@ -87,3 +88,48 @@ void devm_can_led_init(struct net_device *netdev)
+ 	devres_add(&netdev->dev, res);
+ }
+ EXPORT_SYMBOL_GPL(devm_can_led_init);
++
++/*
++ * NETDEV rename notifier to rename the associated led triggers too
++ */
++static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
++			void *data)
++{
++	struct net_device *netdev = (struct net_device *)data;
++	struct can_priv *priv = netdev_priv(netdev);
++	char name[CAN_LED_NAME_SZ];
++
++	if (!net_eq(dev_net(netdev), &init_net))
++		return NOTIFY_DONE;
++
++	if (netdev->type != ARPHRD_CAN)
++		return NOTIFY_DONE;
++
++	if (msg != NETDEV_CHANGENAME)
++		return NOTIFY_DONE;
++
++	/* TODO: make sure we are can-dev safe */
++
++	snprintf(name, sizeof(name), "%s-tx", netdev->name);
++	led_trigger_rename_static(name, priv->tx_led_trig);
++
++	snprintf(name, sizeof(name), "%s-rx", netdev->name);
++	led_trigger_rename_static(name, priv->rx_led_trig);
++
++	return NOTIFY_DONE;
++}
++
++/* notifier block for netdevice event */
++static struct notifier_block can_netdev_notifier __read_mostly = {
++	.notifier_call = can_led_notifier,
++};
++
++int __init can_led_notifier_init(void)
++{
++	return register_netdevice_notifier(&can_netdev_notifier);
++}
++
++void __exit can_led_notifier_exit(void)
++{
++	unregister_netdevice_notifier(&can_netdev_notifier);
++}
+diff --git a/include/linux/can/led.h b/include/linux/can/led.h
+index 12d5549..9c1167b 100644
+--- a/include/linux/can/led.h
++++ b/include/linux/can/led.h
+@@ -26,6 +26,8 @@ enum can_led_event {
+ 
+ void can_led_event(struct net_device *netdev, enum can_led_event event);
+ void devm_can_led_init(struct net_device *netdev);
++int __init can_led_notifier_init(void);
++void __exit can_led_notifier_exit(void);
+ 
+ #else
+ 
+@@ -36,6 +38,13 @@ static inline void can_led_event(struct net_device *netdev,
+ static inline void devm_can_led_init(struct net_device *netdev)
+ {
+ }
++static inline int can_led_notifier_init(void)
++{
++	return 0;
++}
++static inline void can_led_notifier_exit(void)
++{
++}
+ 
+ #endif
+ 
+-- 
+1.7.11.rc1.9.gf623ca1.dirty
