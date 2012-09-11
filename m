@@ -1,59 +1,57 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Antwort: Re: problem with adding socketcan isotp " frreescale
- imx"
-Date: Tue, 11 Sep 2012 19:30:15 +0200
-Message-ID: <504F7527.9080409@hartkopp.net>
-References: <OF888EFFE9.4D2BD1DC-ONC1257A75.002CF71F-C1257A75.002DDB22@continental-corporation.com> <504E34E9.7020108@hartkopp.net> <OF00E617F7.E1525EED-ONC1257A76.0033FAFA-C1257A76.00346CF5@continental-corporation.com>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: Re: [PATCH v4] can: rename LED trigger name on netdev renames
+Date: Tue, 11 Sep 2012 23:04:34 +0200
+Message-ID: <20120911210434.GA3895@gmail.com>
+References: <20120907071934.GB37685@macbook.local>
+ <1347207464-2002-1-git-send-email-fabio.baltieri@gmail.com>
+ <20120910142827.GB11000@vandijck-laurijssen.be>
+ <504E30AE.50201@hartkopp.net>
+ <20120910184049.GD2006@gmail.com>
+ <20120910200648.GB546@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:33600 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751706Ab2IKRaS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Sep 2012 13:30:18 -0400
-In-Reply-To: <OF00E617F7.E1525EED-ONC1257A76.0033FAFA-C1257A76.00346CF5@continental-corporation.com>
+Received: from mail-wi0-f172.google.com ([209.85.212.172]:65427 "EHLO
+	mail-wi0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752723Ab2IKVDP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Sep 2012 17:03:15 -0400
+Content-Disposition: inline
+In-Reply-To: <20120910200648.GB546@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mahesh.Maharjan-EXT@continental-corporation.com
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 
-On 11.09.2012 11:32, Mahesh.Maharjan-EXT@continental-corporation.com wrote:
+Hi Kurt,
 
-> Thanks Oliver for reply.
+On Mon, Sep 10, 2012 at 10:06:48PM +0200, Kurt Van Dijck wrote:
+> can: rename LED trigger name on netdev renames
 > 
-> As far , I do not see  can-isotp 
+> The LED trigger name for CAN devices is based on the initial
+> CAN device name, but does never change. The LED trigger name
+> is not guaranteed to be unique in case of hotplugging CAN devices.
 > 
-> But when I tried with modprobe.. the module do not exist in system...
->  But it compile comletely
-
-
-Hm - i don't know the kernel build and installation process of your BSP.
-Maybe not all modules are copied with your installation process.
-
-When there is a can-isotp.ko please try to load it manually:
-
-- go to the build directory cd (...)/net/can
-- insmod ./can-isotp.ko
-
-Regards,
-Oliver
-
-
-> On 10.09.2012 10:20, Mahesh.Maharjan-EXT@continental-corporation.com 
-> wrote:
+> This patch tries to address this problem by modifying the
+> LED trigger name according to the CAN device name when
+> the latter changes.
 > 
->>  I am trying to use SocketCAN  ISOTP in freescale imx board. I added 
-> isotp 
->> source file in freescale BSP (linux 2,638 imx ). It compile properly , 
-> but 
->> when I trying use in application it is not supported. As socket and 
->> binding with isotp is not with  working with it.
-> 
-> 
-> Did you see some can-isotp banner in dmesg?
-> Have you tried 'modprobe can-isotp'?
-> Does it appear in lsmod?
-> 
+> v1 - Kurt Van Dijck
+> v2 - Fabio Baltieri
+> - remove rename blocking if trigger is bound
+> - use led-subsystem function for the actual rename (still WiP)
+> - call init/exit functions from dev.c
+> v3 - Kurt Van Dijck
+> - safe operation for non-candev based devices (vcan, slcan)
+> 	based on earlier patch
+> v4 - Kurt Van Dijck
+> - trivial patch mistakes fixed
 
+Well done, I'm testing the last patches (my can-leds-devel branch on
+github) and seems to work good (tested rename, disconnect-reconnect,
+vcan rename, rename from udev rule).
 
+Now I think we just have to wait for Bryan for the LED rename patch.
+
+Fabio
+
+-- 
+Fabio Baltieri
