@@ -1,7 +1,7 @@
 From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: [PATCH 2/2] can: janz-ican3: fix support for older hardware revisions
-Date: Tue, 11 Sep 2012 15:58:15 -0700
-Message-ID: <1347404295-7985-3-git-send-email-iws@ovro.caltech.edu>
+Subject: [PATCH 1/2] mfd/janz-cmodio: fix MODULBus number sysfs entry
+Date: Tue, 11 Sep 2012 15:58:14 -0700
+Message-ID: <1347404295-7985-2-git-send-email-iws@ovro.caltech.edu>
 References: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu>
@@ -12,36 +12,28 @@ List-Id: linux-can.vger.kernel.org
 
 From: "Ira W. Snyder" <iws@ovro.caltech.edu>
 
-The Revision 1.0 Janz CMOD-IO Carrier Board does not have support for
-the reset registers. To support older hardware, the code is changed to
-use the hardware reset register on the Janz VMOD-ICAN3 hardware itself.
+Revision 1.0 of the Janz CMOD-IO Carrier Board does not contain zeroes
+in the top 4 bits of the modulbus_num (int_enable) register. Mask off
+the unused bits so that the correct value is displayed in sysfs.
 
+Cc: Samuel Ortiz <sameo@linux.intel.com>
 Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
 ---
- drivers/net/can/janz-ican3.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mfd/janz-cmodio.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 98ee438..7edadee 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1391,7 +1391,6 @@ static irqreturn_t ican3_irq(int irq, void *dev_id)
-  */
- static int ican3_reset_module(struct ican3_dev *mod)
- {
--	u8 val = 1 << mod->num;
- 	unsigned long start;
- 	u8 runold, runnew;
+diff --git a/drivers/mfd/janz-cmodio.c b/drivers/mfd/janz-cmodio.c
+index 2ea9998..32d0efd 100644
+--- a/drivers/mfd/janz-cmodio.c
++++ b/drivers/mfd/janz-cmodio.c
+@@ -216,7 +216,7 @@ static int __devinit cmodio_pci_probe(struct pci_dev *dev,
+ 	}
  
-@@ -1405,8 +1404,7 @@ static int ican3_reset_module(struct ican3_dev *mod)
- 	runold = ioread8(mod->dpm + TARGET_RUNNING);
+ 	/* Read the hex switch on the carrier board */
+-	priv->hex = ioread8(&priv->ctrl->int_enable);
++	priv->hex = ioread8(&priv->ctrl->int_enable) & 0x0f;
  
- 	/* reset the module */
--	iowrite8(val, &mod->ctrl->reset_assert);
--	iowrite8(val, &mod->ctrl->reset_deassert);
-+	iowrite8(0x00, &mod->dpmctrl->hwreset);
- 
- 	/* wait until the module has finished resetting and is running */
- 	start = jiffies;
+ 	/* Add the MODULbus number (hex switch value) to the device's sysfs */
+ 	ret = sysfs_create_group(&dev->dev.kobj, &cmodio_sysfs_attr_group);
 -- 
 1.7.8.6
