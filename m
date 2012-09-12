@@ -1,39 +1,61 @@
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-Subject: [PATCH 1/2] mfd/janz-cmodio: fix MODULBus number sysfs entry
-Date: Tue, 11 Sep 2012 15:58:14 -0700
-Message-ID: <1347404295-7985-2-git-send-email-iws@ovro.caltech.edu>
-References: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-can@vger.kernel.org, sameo@linux.intel.com, "Ira W. Snyder" <iws@ovro.caltech.edu>
-List-Id: linux-can.vger.kernel.org
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH v3] can: rename LED trigger name on netdev renames
+Date: Wed, 12 Sep 2012 09:22:19 +0200
+Message-ID: <20120912072219.GA518@vandijck-laurijssen.be>
+References: <20120907071934.GB37685@macbook.local>
+ <1347207464-2002-1-git-send-email-fabio.baltieri@gmail.com>
+ <20120910142827.GB11000@vandijck-laurijssen.be>
+ <504E30AE.50201@hartkopp.net>
+ <20120910184049.GD2006@gmail.com>
+ <504E3901.10901@hartkopp.net>
+ <20120910200844.GC546@vandijck-laurijssen.be>
+ <504ECF3B.1090709@hartkopp.net>
+ <20120911071314.GA4766@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mx01.eia.be ([195.130.156.18]:17222 "EHLO mail.eia.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750708Ab2ILHWX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 12 Sep 2012 03:22:23 -0400
+Content-Disposition: inline
+In-Reply-To: <20120911071314.GA4766@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
+On Tue, Sep 11, 2012 at 09:13:14AM +0200, Fabio Baltieri wrote:
+> Hi Oliver,
+> 
+> On Tue, Sep 11, 2012 at 07:42:19AM +0200, Oliver Hartkopp wrote:
+> > On 10.09.2012 22:08, Kurt Van Dijck wrote:
+> > > But the initial name must have been set properly already in that case...
+> > 
+> > Yes it is.
+> > 
+> > See register_netdevice()
+> > 
+> > http://lxr.linux.no/#linux+v3.5.3/net/core/dev.c#L5453
+> > 
+> > 
+> > at the end NETDEV_REGISTER is notified:
+> > 
+> > http://lxr.linux.no/#linux+v3.5.3/net/core/dev.c#L5552
+> > 
+> > So it would be pretty elegant to create the LED trigger name in the notifier.
+> > This would allow to remove that code at the current init function too.
+> 
+> That would indeed be elegant, but in the current implementation
+> triggers only works for supported drivers, while putting registration in
+> the notifier would imply to use it also in unsupported ones, where you
+> would get a trigger which never triggers.
 
-Revision 1.0 of the Janz CMOD-IO Carrier Board does not contain zeroes
-in the top 4 bits of the modulbus_num (int_enable) register. Mask off
-the unused bits so that the correct value is displayed in sysfs.
+I note here another problem: any candev rename causes the notifier to
+rename its led triggers, but some have it never registered.
 
-Cc: Samuel Ortiz <sameo@linux.intel.com>
-Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
----
- drivers/mfd/janz-cmodio.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Oliver, your approach is the better. It took a bit for me to see ...
+but this requires a bit of reverting in the drivers.
 
-diff --git a/drivers/mfd/janz-cmodio.c b/drivers/mfd/janz-cmodio.c
-index 2ea9998..32d0efd 100644
---- a/drivers/mfd/janz-cmodio.c
-+++ b/drivers/mfd/janz-cmodio.c
-@@ -216,7 +216,7 @@ static int __devinit cmodio_pci_probe(struct pci_dev *dev,
- 	}
- 
- 	/* Read the hex switch on the carrier board */
--	priv->hex = ioread8(&priv->ctrl->int_enable);
-+	priv->hex = ioread8(&priv->ctrl->int_enable) & 0x0f;
- 
- 	/* Add the MODULbus number (hex switch value) to the device's sysfs */
- 	ret = sysfs_create_group(&dev->dev.kobj, &cmodio_sysfs_attr_group);
--- 
-1.7.8.6
+Kind regards,
+Kurt
