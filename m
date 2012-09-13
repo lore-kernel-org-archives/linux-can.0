@@ -1,123 +1,187 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 4/4] can: c_can: Add d_can suspend resume support
-Date: Thu, 13 Sep 2012 10:30:47 +0200
-Message-ID: <505199B7.2000903@pengutronix.de>
-References: <1346673139-14540-1-git-send-email-anilkumar@ti.com> <1346673139-14540-5-git-send-email-anilkumar@ti.com> <50450C9F.6010203@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC13EA26300@DBDE01.ent.ti.com> <5045AD56.2050400@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC13EA2D7FA@DBDE01.ent.ti.com> <505087FD.7000907@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC13EA2E0AA@DBDE01.ent.ti.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigF1946D18D22DF327A9F7DE4E"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13EA2E0AA@DBDE01.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "AnilKumar, Chimata" <anilkumar@ti.com>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "tony@atomide.com" <tony@atomide.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-List-Id: linux-can.vger.kernel.org
+Subject: [PATCH v10] can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
+Date: Thu, 13 Sep 2012 10:34:23 +0200
+Message-ID: <1347525263-28414-1-git-send-email-mkl@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60008 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751651Ab2IMIeZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Sep 2012 04:34:25 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: anilkumar@ti.com, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF1946D18D22DF327A9F7DE4E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: AnilKumar Ch <anilkumar@ti.com>
 
-On 09/13/2012 09:24 AM, AnilKumar, Chimata wrote:
-> Marc,
->=20
-> On Wed, Sep 12, 2012 at 18:32:53, Marc Kleine-Budde wrote:
->> On 09/12/2012 02:48 PM, AnilKumar, Chimata wrote:
->>> Hi Marc,
->>>
->>> On Tue, Sep 04, 2012 at 12:57:18, Marc Kleine-Budde wrote:
->>>> On 09/04/2012 08:14 AM, AnilKumar, Chimata wrote:
->>>>> Marc,
->>>>>
->>>>> Thanks for the comments,
->>>>>
->>>>> On Tue, Sep 04, 2012 at 01:31:35, Marc Kleine-Budde wrote:
->>>>>> On 09/03/2012 01:52 PM, AnilKumar Ch wrote:
->>>>>>> Adds suspend resume support to DCAN driver which enables
->>>>>>> DCAN power down mode bit (PDR). Then DCAN will ack the local
->>>>>>> power-down mode by setting PDA bit in STATUS register.
->>>>>>>
->>>>>>> Also adds a status flag to know the status of DCAN module,
->>>>>>> whether it is opened or not.
->>>>>>
->>>>>> Use "ndev->flags & IFF_UP" for that. Have a look at the at91_can d=
-river
->>>>>> [1]. I'm not sure if you need locking here.
->>>>>>
->>>>>
->>>>> Then I can use this to check the status, lock is not
->>>>> required.
->>>>>
->>>>>> [1] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.=
-c#L1198
->>>>>>
->>>>>>> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
->>>>>>> ---
->>>>>>>  drivers/net/can/c_can/c_can.c          |   78 ++++++++++++++++++=
-++++++++++++++
->>>>>>>  drivers/net/can/c_can/c_can.h          |    5 ++
->>>>>>>  drivers/net/can/c_can/c_can_platform.c |   70 ++++++++++++++++++=
-++++++++--
->>>>>>>  3 files changed, 150 insertions(+), 3 deletions(-)
->>>
->>> [snip]
->>>
->>>>>>> +#ifdef CONFIG_PM
->>>>>>> +int c_can_power_down(struct net_device *dev)
->>>>>>> +{
->>>>>>> +	unsigned long time_out;
->>>>>>> +	struct c_can_priv *priv =3D netdev_priv(dev);
->>>>>>> +
->>>>>>> +	if (!priv->is_opened)
->>>>>>> +		return 0;
->>>>>>
->>>>>> Should we add a BUG_ON(id->driver_data !=3D BOSCH_D_CAN)?
->>>>>
->>>>> These APIs are called from platform driver where device type
->>>>> device type is verified. I think we have to add BUG_ON() in
->>>>> platform driver.
->>>>
->>>> The platform driver returns if not on D_CAN and will not call this
->>>> function. But this functions are exported, so can be called by someo=
-ne
->>>> else. So if the caller is not D_CAN, it's a bug.
->>>>
->>>
->>> I agree with you, but I have some concern here.
->>> I think we should do "return 0;" instead of BUG_ON(). With
->>> BUG_ON() system will hang and ultimately user lost his/her
->>> contents.
->>
->> Good point, better safe then sorry.
->> But this should not happen. What about WARN_ON()?
->>
->=20
-> Either would be fine printing a warning message or WARN_ON()
+Add Runtime PM support to C_CAN/D_CAN controller. The runtime PM
+APIs control clocks for C_CAN/D_CAN IP and prevent access to the
+register of C_CAN/D_CAN IP when clock is turned off.
 
-I'm for a  WARN_ON()
+Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
+
+I've squashed both patches into one, also changed:
+- add and use c_can_pm_runtime_{enable,disable}
+- remove leftovers from c_can_platform.c
+- cleaned up error path in register_c_can_dev
+
+Please test.
 
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ drivers/net/can/c_can/c_can.c          |   49 ++++++++++++++++++++++++++++++--
+ drivers/net/can/c_can/c_can.h          |    1 +
+ drivers/net/can/c_can/c_can_platform.c |    1 +
+ 3 files changed, 49 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 4c538e3..768bb48 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -34,6 +34,7 @@
+ #include <linux/if_ether.h>
+ #include <linux/list.h>
+ #include <linux/io.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+@@ -201,6 +202,30 @@ static const struct can_bittiming_const c_can_bittiming_const = {
+ 	.brp_inc = 1,
+ };
+ 
++static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
++{
++	if (priv->device)
++		pm_runtime_enable(priv->device);
++}
++
++static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
++{
++	if (priv->device)
++		pm_runtime_disable(priv->device);
++}
++
++static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
++{
++	if (priv->device)
++		pm_runtime_get_sync(priv->device);
++}
++
++static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
++{
++	if (priv->device)
++		pm_runtime_put_sync(priv->device);
++}
++
+ static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
+ {
+ 	return (priv->tx_next & C_CAN_NEXT_MSG_OBJ_MASK) +
+@@ -673,11 +698,15 @@ static int c_can_get_berr_counter(const struct net_device *dev,
+ 	unsigned int reg_err_counter;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
++	c_can_pm_runtime_get_sync(priv);
++
+ 	reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+ 	bec->rxerr = (reg_err_counter & ERR_CNT_REC_MASK) >>
+ 				ERR_CNT_REC_SHIFT;
+ 	bec->txerr = reg_err_counter & ERR_CNT_TEC_MASK;
+ 
++	c_can_pm_runtime_put_sync(priv);
++
+ 	return 0;
+ }
+ 
+@@ -1053,11 +1082,13 @@ static int c_can_open(struct net_device *dev)
+ 	int err;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
++	c_can_pm_runtime_get_sync(priv);
++
+ 	/* open the can device */
+ 	err = open_candev(dev);
+ 	if (err) {
+ 		netdev_err(dev, "failed to open can device\n");
+-		return err;
++		goto exit_open_fail;
+ 	}
+ 
+ 	/* register interrupt handler */
+@@ -1079,6 +1110,8 @@ static int c_can_open(struct net_device *dev)
+ 
+ exit_irq_fail:
+ 	close_candev(dev);
++exit_open_fail:
++	c_can_pm_runtime_put_sync(priv);
+ 	return err;
+ }
+ 
+@@ -1091,6 +1124,7 @@ static int c_can_close(struct net_device *dev)
+ 	c_can_stop(dev);
+ 	free_irq(dev->irq, dev);
+ 	close_candev(dev);
++	c_can_pm_runtime_put_sync(priv);
+ 
+ 	return 0;
+ }
+@@ -1133,10 +1167,19 @@ static const struct net_device_ops c_can_netdev_ops = {
+ 
+ int register_c_can_dev(struct net_device *dev)
+ {
++	struct c_can_priv *priv = netdev_priv(dev);
++	int err;
++
++	c_can_pm_runtime_enable(priv);
++
+ 	dev->flags |= IFF_ECHO;	/* we support local echo */
+ 	dev->netdev_ops = &c_can_netdev_ops;
+ 
+-	return register_candev(dev);
++	err = register_candev(dev);
++	if (err)
++		c_can_pm_runtime_disable(priv);
++
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_c_can_dev);
+ 
+@@ -1148,6 +1191,8 @@ void unregister_c_can_dev(struct net_device *dev)
+ 	c_can_enable_all_interrupts(priv, DISABLE_ALL_INTERRUPTS);
+ 
+ 	unregister_candev(dev);
++
++	c_can_pm_runtime_disable(priv);
+ }
+ EXPORT_SYMBOL_GPL(unregister_c_can_dev);
+ 
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 4e56baa..1437a6d 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -153,6 +153,7 @@ struct c_can_priv {
+ 	struct can_priv can;	/* must be the first member */
+ 	struct napi_struct napi;
+ 	struct net_device *dev;
++	struct device *device;
+ 	int tx_object;
+ 	int current_status;
+ 	int last_status;
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index d0a66cf..7b8b7a4 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -179,6 +179,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 
+ 	dev->irq = irq;
+ 	priv->base = addr;
++	priv->device = &pdev->dev;
+ 	priv->can.clock.freq = clk_get_rate(clk);
+ 	priv->priv = clk;
+ 
+-- 
+1.7.10
 
---------------enigF1946D18D22DF327A9F7DE4E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBRmbcACgkQjTAFq1RaXHMX2gCgj7YrkMFdSieK7LFAr+1YuM3K
-xUQAn18ykqZVGKLprMIY+B6N+aVcjqOF
-=j2nN
------END PGP SIGNATURE-----
-
---------------enigF1946D18D22DF327A9F7DE4E--
