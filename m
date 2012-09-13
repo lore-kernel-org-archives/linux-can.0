@@ -1,62 +1,71 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] mfd/janz-cmodio: fix MODULBus number sysfs entry
-Date: Thu, 13 Sep 2012 13:56:32 +0200
-Message-ID: <5051C9F0.3050600@pengutronix.de>
-References: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu> <1347404295-7985-2-git-send-email-iws@ovro.caltech.edu>
+Subject: Re: [PATCH 2/2] can: janz-ican3: fix support for older hardware revisions
+Date: Thu, 13 Sep 2012 13:57:32 +0200
+Message-ID: <5051CA2C.5080806@pengutronix.de>
+References: <1347404295-7985-1-git-send-email-iws@ovro.caltech.edu> <1347404295-7985-3-git-send-email-iws@ovro.caltech.edu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enigFB7AD0A080C12FDDAC84541C"
+ boundary="------------enig8D1073A90A7671430FB85825"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50937 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46242 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757725Ab2IML4l (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Sep 2012 07:56:41 -0400
-In-Reply-To: <1347404295-7985-2-git-send-email-iws@ovro.caltech.edu>
+	with ESMTP id S1757720Ab2IML5f (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Sep 2012 07:57:35 -0400
+In-Reply-To: <1347404295-7985-3-git-send-email-iws@ovro.caltech.edu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "Ira W. Snyder" <iws@ovro.caltech.edu>
 Cc: linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, sameo@linux.intel.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigFB7AD0A080C12FDDAC84541C
+--------------enig8D1073A90A7671430FB85825
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
 On 09/12/2012 12:58 AM, Ira W. Snyder wrote:
 > From: "Ira W. Snyder" <iws@ovro.caltech.edu>
 >=20
-> Revision 1.0 of the Janz CMOD-IO Carrier Board does not contain zeroes
-> in the top 4 bits of the modulbus_num (int_enable) register. Mask off
-> the unused bits so that the correct value is displayed in sysfs.
+> The Revision 1.0 Janz CMOD-IO Carrier Board does not have support for
+> the reset registers. To support older hardware, the code is changed to
+> use the hardware reset register on the Janz VMOD-ICAN3 hardware itself.=
+
 >=20
-> Cc: Samuel Ortiz <sameo@linux.intel.com>
 > Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
 
-Who will take care of this patch?
+Applied to linux-can.
 
+Tnx,
 Marc
-
 > ---
->  drivers/mfd/janz-cmodio.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+>  drivers/net/can/janz-ican3.c |    4 +---
+>  1 files changed, 1 insertions(+), 3 deletions(-)
 >=20
-> diff --git a/drivers/mfd/janz-cmodio.c b/drivers/mfd/janz-cmodio.c
-> index 2ea9998..32d0efd 100644
-> --- a/drivers/mfd/janz-cmodio.c
-> +++ b/drivers/mfd/janz-cmodio.c
-> @@ -216,7 +216,7 @@ static int __devinit cmodio_pci_probe(struct pci_de=
-v *dev,
->  	}
+> diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.=
+c
+> index 98ee438..7edadee 100644
+> --- a/drivers/net/can/janz-ican3.c
+> +++ b/drivers/net/can/janz-ican3.c
+> @@ -1391,7 +1391,6 @@ static irqreturn_t ican3_irq(int irq, void *dev_i=
+d)
+>   */
+>  static int ican3_reset_module(struct ican3_dev *mod)
+>  {
+> -	u8 val =3D 1 << mod->num;
+>  	unsigned long start;
+>  	u8 runold, runnew;
 > =20
->  	/* Read the hex switch on the carrier board */
-> -	priv->hex =3D ioread8(&priv->ctrl->int_enable);
-> +	priv->hex =3D ioread8(&priv->ctrl->int_enable) & 0x0f;
+> @@ -1405,8 +1404,7 @@ static int ican3_reset_module(struct ican3_dev *m=
+od)
+>  	runold =3D ioread8(mod->dpm + TARGET_RUNNING);
 > =20
->  	/* Add the MODULbus number (hex switch value) to the device's sysfs *=
-/
->  	ret =3D sysfs_create_group(&dev->dev.kobj, &cmodio_sysfs_attr_group);=
-
+>  	/* reset the module */
+> -	iowrite8(val, &mod->ctrl->reset_assert);
+> -	iowrite8(val, &mod->ctrl->reset_deassert);
+> +	iowrite8(0x00, &mod->dpmctrl->hwreset);
+> =20
+>  	/* wait until the module has finished resetting and is running */
+>  	start =3D jiffies;
 >=20
 
 
@@ -67,7 +76,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enigFB7AD0A080C12FDDAC84541C
+--------------enig8D1073A90A7671430FB85825
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -76,9 +85,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlBRyfAACgkQjTAFq1RaXHMAugCdFXAAw1GBtox/bqwWVCbgLrY9
-qoYAniVdmc4G7TK3xzbDlvwGyG4HECH9
-=u09E
+iEYEARECAAYFAlBRyiwACgkQjTAFq1RaXHMBnQCcCgQW+8Q2GKlAcsVrGsWJsToa
+H6UAn1E4s9c1TM4BdL4BumpBhs6RvQ5D
+=AS86
 -----END PGP SIGNATURE-----
 
---------------enigFB7AD0A080C12FDDAC84541C--
+--------------enig8D1073A90A7671430FB85825--
