@@ -1,72 +1,50 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Andrew Bell <andrew.bell.ia@gmail.com>
 Subject: Re: What are you doing if the TX buffer overflows?
-Date: Mon, 17 Sep 2012 21:19:24 +0200
-Message-ID: <505777BC.3000705@hartkopp.net>
+Date: Mon, 17 Sep 2012 14:26:13 -0500
+Message-ID: <CACJ51z1g+A2Hy5SXU=1AmwyDYRuxv=MzsyVjAwiRWaOSRn+h7A@mail.gmail.com>
 References: <2478881.znSzbTXnK5@uschi>
+	<505777BC.3000705@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:56902 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932417Ab2IQTT2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 15:19:28 -0400
-In-Reply-To: <2478881.znSzbTXnK5@uschi>
+Received: from mail-oa0-f46.google.com ([209.85.219.46]:42569 "EHLO
+	mail-oa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932417Ab2IQT0O convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 15:26:14 -0400
+Received: by oago6 with SMTP id o6so5164722oag.19
+        for <linux-can@vger.kernel.org>; Mon, 17 Sep 2012 12:26:13 -0700 (PDT)
+In-Reply-To: <505777BC.3000705@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen_Oertel?= <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Heinz,
+On Mon, Sep 17, 2012 at 2:19 PM, Oliver Hartkopp <socketcan@hartkopp.ne=
+t> wrote:
+> Hello Heinz,
+>
+> On 17.09.2012 15:58, Heinz-J=FCrgen Oertel wrote:
+>
+>>
+>> is there a way to empty the tx buffer ?
+>
+>
+> Usually the buffer does not get empty due to a problem of the CAN con=
+troller
+> and/or the CAN network.
+>
+> So even if you could flush the queue the CAN controller is probably s=
+till
+> stuck with his processed frame.
 
-On 17.09.2012 15:58, Heinz-J=FCrgen Oertel wrote:
+On my interface, the TX frames time out after one second.  But I could
+find nothing in the spec to say that this is how things should
+operate.  Is this driver-specific or is there something in a document
+that says how retransmission and timeouts works?
 
->=20
-> is there a way to empty the tx buffer ?
+Thanks,
 
-
-Usually the buffer does not get empty due to a problem of the CAN contr=
-oller
-and/or the CAN network.
-
-So even if you could flush the queue the CAN controller is probably sti=
-ll
-stuck with his processed frame.
-
-Setting the interface to DOWN and UP again re-initializes the CAN contr=
-oller
-and flushes all the queues.
-
-This would work - but all open sockets would get a notification of the
-interface went down.
-
-Btw. IIRC there's a IFLA_CAN_RESTART functionality to kick the CAN cont=
-roller
-if it got stuck. It can by triggered by a netlink message. This is the =
-same
-configuration interface that's used to set the bittiming:
-
-http://lxr.linux.no/#linux+v3.5.4/include/linux/can/netlink.h#L103
-
-But i have currently no source code example as i always use the 'ip' to=
-ol from
-the iproute2 package to configure my CAN interfaces:
-
-http://lxr.linux.no/#linux+v3.5.4/Documentation/networking/can.txt#L646
-
-=46ollowing that documentation
-
-	ip link set can0 type can restart
-
-should do it for 'can0'.
-
-> Or read out the occupied size of it
-> to get the mumber of CAN frames waiting for transmission?
-
-
-I'll take a look, if there's a programming interface to get this value.
-Or is this request obsolete now after my answer above?
-
-Regards,
-Oliver
-
+--=20
+Andrew Bell
+andrew.bell.ia@gmail.com
