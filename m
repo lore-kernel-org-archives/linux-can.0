@@ -1,75 +1,72 @@
-From: Andreas Larsson <andreas@gaisler.com>
-Subject: [PATCH] can: sja1000: Add support for listen-only mode and one-shot mode
-Date: Mon, 17 Sep 2012 17:58:02 +0200
-Message-ID: <1347897482-26379-1-git-send-email-andreas@gaisler.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: What are you doing if the TX buffer overflows?
+Date: Mon, 17 Sep 2012 21:19:24 +0200
+Message-ID: <505777BC.3000705@hartkopp.net>
+References: <2478881.znSzbTXnK5@uschi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from vsp-authed02.binero.net ([195.74.38.226]:51092 "HELO
-	vsp-authed-03-02.binero.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1756927Ab2IQRuM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 13:50:12 -0400
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:56902 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932417Ab2IQTT2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 15:19:28 -0400
+In-Reply-To: <2478881.znSzbTXnK5@uschi>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: software@gaisler.com
+To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Packages that fails to be transmitted in one-shot mode are never the
-less echoed back as sja1000 does not give any indication when a single
-transmission has failed.
+Hello Heinz,
 
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
----
- drivers/net/can/sja1000/sja1000.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+On 17.09.2012 15:58, Heinz-J=FCrgen Oertel wrote:
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 4c4f33d..cc771d9 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -141,6 +141,7 @@ static void set_normal_mode(struct net_device *dev)
- 	struct sja1000_priv *priv = netdev_priv(dev);
- 	unsigned char status = priv->read_reg(priv, REG_MOD);
- 	int i;
-+	u8 normal = priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY ? MOD_LOM : 0;
- 
- 	for (i = 0; i < 100; i++) {
- 		/* check reset bit */
-@@ -156,7 +157,7 @@ static void set_normal_mode(struct net_device *dev)
- 		}
- 
- 		/* set chip to normal mode */
--		priv->write_reg(priv, REG_MOD, 0x00);
-+		priv->write_reg(priv, REG_MOD, normal);
- 		udelay(10);
- 		status = priv->read_reg(priv, REG_MOD);
- 	}
-@@ -278,6 +279,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
- 	canid_t id;
- 	uint8_t dreg;
- 	int i;
-+	u8 oneshot;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -310,7 +312,8 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
--	sja1000_write_cmdreg(priv, CMD_TR);
-+	oneshot = (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT) ? CMD_AT : 0;
-+	sja1000_write_cmdreg(priv, CMD_TR | oneshot);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -605,7 +608,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
- 	priv->can.do_set_mode = sja1000_set_mode;
- 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
--		CAN_CTRLMODE_BERR_REPORTING;
-+		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
-+		CAN_CTRLMODE_ONE_SHOT;
- 
- 	spin_lock_init(&priv->cmdreg_lock);
- 
--- 
-1.7.0.4
+>=20
+> is there a way to empty the tx buffer ?
+
+
+Usually the buffer does not get empty due to a problem of the CAN contr=
+oller
+and/or the CAN network.
+
+So even if you could flush the queue the CAN controller is probably sti=
+ll
+stuck with his processed frame.
+
+Setting the interface to DOWN and UP again re-initializes the CAN contr=
+oller
+and flushes all the queues.
+
+This would work - but all open sockets would get a notification of the
+interface went down.
+
+Btw. IIRC there's a IFLA_CAN_RESTART functionality to kick the CAN cont=
+roller
+if it got stuck. It can by triggered by a netlink message. This is the =
+same
+configuration interface that's used to set the bittiming:
+
+http://lxr.linux.no/#linux+v3.5.4/include/linux/can/netlink.h#L103
+
+But i have currently no source code example as i always use the 'ip' to=
+ol from
+the iproute2 package to configure my CAN interfaces:
+
+http://lxr.linux.no/#linux+v3.5.4/Documentation/networking/can.txt#L646
+
+=46ollowing that documentation
+
+	ip link set can0 type can restart
+
+should do it for 'can0'.
+
+> Or read out the occupied size of it
+> to get the mumber of CAN frames waiting for transmission?
+
+
+I'll take a look, if there's a programming interface to get this value.
+Or is this request obsolete now after my answer above?
+
+Regards,
+Oliver
 
