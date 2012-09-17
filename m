@@ -1,37 +1,75 @@
-From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
-Subject: What are you doing if the TX buffer overflows?
-Date: Mon, 17 Sep 2012 13:58:30 +0000
-Message-ID: <2478881.znSzbTXnK5@uschi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: [PATCH] can: sja1000: Add support for listen-only mode and one-shot mode
+Date: Mon, 17 Sep 2012 17:58:02 +0200
+Message-ID: <1347897482-26379-1-git-send-email-andreas@gaisler.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from host24.networkinvest.de ([46.4.85.104]:56024 "EHLO
-	host24.networkinvest.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756332Ab2IQOID convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 10:08:03 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by host24.networkinvest.de (Postfix) with ESMTP id 600DF3F3213F
-	for <linux-can@vger.kernel.org>; Mon, 17 Sep 2012 15:58:32 +0200 (CEST)
-Received: from host24.networkinvest.de ([127.0.0.1])
-	by localhost (host24.networkinvest.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ZAjo-vhMak3Y for <linux-can@vger.kernel.org>;
-	Mon, 17 Sep 2012 15:58:32 +0200 (CEST)
-Received: from remote.port.de (business-178-015-016-250.static.arcor-ip.net [178.15.16.250])
-	(Authenticated sender: web12p1)
-	by host24.networkinvest.de (Postfix) with ESMTPSA id 422873F3212B
-	for <linux-can@vger.kernel.org>; Mon, 17 Sep 2012 15:58:32 +0200 (CEST)
-Content-Language: de-DE
-Content-ID: <5DCE4B9759AED64C9DD5AB419A491A5D@portgmbh.local>
+Received: from vsp-authed02.binero.net ([195.74.38.226]:51092 "HELO
+	vsp-authed-03-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1756927Ab2IQRuM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Sep 2012 13:50:12 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: software@gaisler.com
 
+Packages that fails to be transmitted in one-shot mode are never the
+less echoed back as sja1000 does not give any indication when a single
+transmission has failed.
 
-Hello,
-is there a way to empty the tx buffer ?
-Or read out the occupied size of it
-to get the mumber of CAN frames waiting for transmission?
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+---
+ drivers/net/can/sja1000/sja1000.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
-Best regards
- Heinz-J=FCrgen Oertel
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 4c4f33d..cc771d9 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -141,6 +141,7 @@ static void set_normal_mode(struct net_device *dev)
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+ 	unsigned char status = priv->read_reg(priv, REG_MOD);
+ 	int i;
++	u8 normal = priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY ? MOD_LOM : 0;
+ 
+ 	for (i = 0; i < 100; i++) {
+ 		/* check reset bit */
+@@ -156,7 +157,7 @@ static void set_normal_mode(struct net_device *dev)
+ 		}
+ 
+ 		/* set chip to normal mode */
+-		priv->write_reg(priv, REG_MOD, 0x00);
++		priv->write_reg(priv, REG_MOD, normal);
+ 		udelay(10);
+ 		status = priv->read_reg(priv, REG_MOD);
+ 	}
+@@ -278,6 +279,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 	canid_t id;
+ 	uint8_t dreg;
+ 	int i;
++	u8 oneshot;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+@@ -310,7 +312,8 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 
+ 	can_put_echo_skb(skb, dev, 0);
+ 
+-	sja1000_write_cmdreg(priv, CMD_TR);
++	oneshot = (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT) ? CMD_AT : 0;
++	sja1000_write_cmdreg(priv, CMD_TR | oneshot);
+ 
+ 	return NETDEV_TX_OK;
+ }
+@@ -605,7 +608,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
+ 	priv->can.do_set_mode = sja1000_set_mode;
+ 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+-		CAN_CTRLMODE_BERR_REPORTING;
++		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
++		CAN_CTRLMODE_ONE_SHOT;
+ 
+ 	spin_lock_init(&priv->cmdreg_lock);
+ 
+-- 
+1.7.0.4
+
