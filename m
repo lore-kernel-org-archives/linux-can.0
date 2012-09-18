@@ -1,42 +1,44 @@
-From: Andrew Bell <andrew.bell.ia@gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: What are you doing if the TX buffer overflows?
-Date: Tue, 18 Sep 2012 08:36:44 -0500
-Message-ID: <CACJ51z2=T1M065ubm6sLt=utWo3ndZAL9YJNdeGQuS=2uR8EZA@mail.gmail.com>
-References: <2478881.znSzbTXnK5@uschi>
-	<505777BC.3000705@hartkopp.net>
-	<CACJ51z1g+A2Hy5SXU=1AmwyDYRuxv=MzsyVjAwiRWaOSRn+h7A@mail.gmail.com>
-	<50577B03.60105@hartkopp.net>
+Date: Tue, 18 Sep 2012 15:39:19 +0200
+Message-ID: <50587987.3070308@grandegger.com>
+References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <5058659E.2010804@grandegger.com> <50586A50.5060300@pengutronix.de> <50586DE4.9020707@grandegger.com> <50587058.7090703@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ie0-f174.google.com ([209.85.223.174]:61707 "EHLO
-	mail-ie0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757064Ab2IRNgr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Sep 2012 09:36:47 -0400
-Received: by ieak13 with SMTP id k13so2236787iea.19
-        for <linux-can@vger.kernel.org>; Tue, 18 Sep 2012 06:36:44 -0700 (PDT)
-In-Reply-To: <50577B03.60105@hartkopp.net>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:53531 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757122Ab2IRNj2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Sep 2012 09:39:28 -0400
+In-Reply-To: <50587058.7090703@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen_Oertel?= <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, =?ISO-8859-1?Q?Heinz-J=FCrg?= =?ISO-8859-1?Q?en_Oertel?= <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon, Sep 17, 2012 at 2:33 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 17.09.2012 21:26, Andrew Bell wrote:
->
-> The TX timeout functionality has been removed a long time ago. There was a
-> discussion about that topic that days.
->
-> So what kind of driver do you have there? A PEAK PCAN driver?
+On 09/18/2012 03:00 PM, Marc Kleine-Budde wrote:
+> On 09/18/2012 02:49 PM, Wolfgang Grandegger wrote:
+> [...]
+> 
+>>> We have several customers who asked how to abort pending TX messages,
+>>> too. Which involves:
+>>> a) clear the TX-queue in Linux
+>>> b) clear queue in hardware
+>>> c) abort currently transmitting CAN frame
+>>>
+>>> I think c) would be a usecase of its own, too.
+>>
+>> I think you need c) for b), at least for some controllers. These
+> 
+> Yes, if it's a hardware limitation so be it. But if we design an
+> interface it should support "clear everything" (a+b+c), but also just
+> only c.
 
-We're using an old mscan driver.
+Yes, that you be nice. The only portable "clear everything" (a+b+c) I
+see is "ifconfig down -> up". This also answers you other related mail.
 
-So, what's supposed to happen?  Does the hardware just attempt to send
-once and then drop the packet if no acknowledgement is received?  Is
-an error frame generated?  Is the issue being discussed just one where
-the application writes faster than the frames can be put onto the bus,
-rather than the condition of the bus being bad?
+What do people really want/need and why? This is still not clear to me.
+More input would be nice.
 
--- 
-Andrew Bell
-andrew.bell.ia@gmail.com
+Wolfgang.
