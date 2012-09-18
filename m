@@ -1,44 +1,132 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: What are you doing if the TX buffer overflows?
-Date: Tue, 18 Sep 2012 15:46:50 +0200
-Message-ID: <50587B4A.6080806@grandegger.com>
-References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <CACJ51z1g+A2Hy5SXU=1AmwyDYRuxv=MzsyVjAwiRWaOSRn+h7A@mail.gmail.com> <50577B03.60105@hartkopp.net> <CACJ51z2=T1M065ubm6sLt=utWo3ndZAL9YJNdeGQuS=2uR8EZA@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: sja1000: Add support for listen-only mode and one-shot
+ mode
+Date: Tue, 18 Sep 2012 15:46:46 +0200
+Message-ID: <50587B46.7060506@pengutronix.de>
+References: <1347897482-26379-1-git-send-email-andreas@gaisler.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig43C3B781774DF9C1AB863796"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:54143 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757122Ab2IRNqz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Sep 2012 09:46:55 -0400
-In-Reply-To: <CACJ51z2=T1M065ubm6sLt=utWo3ndZAL9YJNdeGQuS=2uR8EZA@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55671 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757122Ab2IRNre (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Sep 2012 09:47:34 -0400
+In-Reply-To: <1347897482-26379-1-git-send-email-andreas@gaisler.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andrew Bell <andrew.bell.ia@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, =?ISO-8859-1?Q?Heinz-J=FCrg?= =?ISO-8859-1?Q?en_Oertel?= <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-can@vger.kernel.org, software@gaisler.com
 
-On 09/18/2012 03:36 PM, Andrew Bell wrote:
-> On Mon, Sep 17, 2012 at 2:33 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->> On 17.09.2012 21:26, Andrew Bell wrote:
->>
->> The TX timeout functionality has been removed a long time ago. There was a
->> discussion about that topic that days.
->>
->> So what kind of driver do you have there? A PEAK PCAN driver?
-> 
-> We're using an old mscan driver.
-> 
-> So, what's supposed to happen?  Does the hardware just attempt to send
-> once and then drop the packet if no acknowledgement is received?  Is
-> an error frame generated?  Is the issue being discussed just one where
-> the application writes faster than the frames can be put onto the bus,
-> rather than the condition of the bus being bad?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig43C3B781774DF9C1AB863796
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-The CAN hardware usually *retries* to send to message until you abort it
-or stop the device (going bus-off). If the message does not go out,
-first the hardware and then the software queues will fill up and finally
-the send() fails with errno=ENOBUFS. The send can also end up returning
-ENOBUFS if the CPU is sending faster than the packets go out. Hope this
-answers your question.
+On 09/17/2012 05:58 PM, Andreas Larsson wrote:
+> Packages that fails to be transmitted in one-shot mode are never the
+> less echoed back as sja1000 does not give any indication when a single
+> transmission has failed.
 
-Wolfgang.
+Uhh... can any of the SJA1000 gurus comment to this?
+
+Some write-more-readable-code comments inline :)
+
+> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+> ---
+>  drivers/net/can/sja1000/sja1000.c |   10 +++++++---
+>  1 files changed, 7 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja100=
+0/sja1000.c
+> index 4c4f33d..cc771d9 100644
+> --- a/drivers/net/can/sja1000/sja1000.c
+> +++ b/drivers/net/can/sja1000/sja1000.c
+> @@ -141,6 +141,7 @@ static void set_normal_mode(struct net_device *dev)=
+
+>  	struct sja1000_priv *priv =3D netdev_priv(dev);
+>  	unsigned char status =3D priv->read_reg(priv, REG_MOD);
+>  	int i;
+> +	u8 normal =3D priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY ? MOD_LOM =
+: 0;
+
+What about a more readable:
+	u8 normal =3D 0;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		normal =3D MOD_LOM;
+
+> =20
+>  	for (i =3D 0; i < 100; i++) {
+>  		/* check reset bit */
+> @@ -156,7 +157,7 @@ static void set_normal_mode(struct net_device *dev)=
+
+>  		}
+> =20
+>  		/* set chip to normal mode */
+> -		priv->write_reg(priv, REG_MOD, 0x00);
+> +		priv->write_reg(priv, REG_MOD, normal);
+>  		udelay(10);
+>  		status =3D priv->read_reg(priv, REG_MOD);
+>  	}
+> @@ -278,6 +279,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buf=
+f *skb,
+>  	canid_t id;
+>  	uint8_t dreg;
+>  	int i;
+> +	u8 oneshot;
+> =20
+>  	if (can_dropped_invalid_skb(dev, skb))
+>  		return NETDEV_TX_OK;
+> @@ -310,7 +312,8 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buf=
+f *skb,
+> =20
+>  	can_put_echo_skb(skb, dev, 0);
+> =20
+> -	sja1000_write_cmdreg(priv, CMD_TR);
+> +	oneshot =3D (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT) ? CMD_AT : 0=
+;
+> +	sja1000_write_cmdreg(priv, CMD_TR | oneshot);
+
+something simmilar here, too
+
+>  	return NETDEV_TX_OK;
+>  }
+> @@ -605,7 +608,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv=
+)
+>  	priv->can.do_set_mode =3D sja1000_set_mode;
+>  	priv->can.do_get_berr_counter =3D sja1000_get_berr_counter;
+>  	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES |
+> -		CAN_CTRLMODE_BERR_REPORTING;
+> +		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
+> +		CAN_CTRLMODE_ONE_SHOT;
+> =20
+>  	spin_lock_init(&priv->cmdreg_lock);
+> =20
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig43C3B781774DF9C1AB863796
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBYe0YACgkQjTAFq1RaXHMZnQCffMqGiaFTv83WwXXQTFjlWXOt
+grAAn2hW66+VN1os1hhWaIdue8vZFAth
+=IR5r
+-----END PGP SIGNATURE-----
+
+--------------enig43C3B781774DF9C1AB863796--
