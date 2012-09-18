@@ -1,60 +1,73 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: What are you doing if the TX buffer overflows?
-Date: Tue, 18 Sep 2012 13:44:03 +0200
-Message-ID: <20120918114403.GA77823@macbook.local>
-References: <2478881.znSzbTXnK5@uschi>
- <505777BC.3000705@hartkopp.net>
- <4283CE44E963D741A50240F32D185B9F109AA1@SBSPORT3.portgmbh.local>
- <3033577.LU3ttOr8xL@linux-edhj>
+Date: Tue, 18 Sep 2012 14:14:22 +0200
+Message-ID: <5058659E.2010804@grandegger.com>
+References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay002.isp.belgacom.be ([195.238.6.175]:33487 "EHLO
-	mailrelay002.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932711Ab2IRLoH convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 18 Sep 2012 07:44:07 -0400
-Content-Disposition: inline
-In-Reply-To: <3033577.LU3ttOr8xL@linux-edhj>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:47920 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755056Ab2IRM1P (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Sep 2012 08:27:15 -0400
+In-Reply-To: <505777BC.3000705@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?Q?Heinz-J=C3=BCrgen?= Oertel <oe@port.de>
-Cc: Oliver Hartkopp =?utf-8?B?4oCO?= <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon, Sep 17, 2012 at 09:40:41PM +0200, Heinz-J=C3=BCrgen Oertel wrot=
-e:
+On 09/17/2012 09:19 PM, Oliver Hartkopp wrote:
+> Hello Heinz,
 >=20
-[...]
-> >=20
-> > > Or read out the occupied size of it
-> > > to get the mumber of CAN frames waiting for transmission?
-> >=20
-> >=20
-> > I'll take a look, if there's a programming interface to get this va=
-lue.
-> > Or is this request obsolete now after my answer above?
+> On 17.09.2012 15:58, Heinz-J=FCrgen Oertel wrote:
 >=20
-> No. This is still of interest.
-> Knowing if the transmit queue is mostly empty is a good thing.
-> Otherwise the application is sending to fast,
+>>
+>> is there a way to empty the tx buffer ?
+>=20
+>=20
+> Usually the buffer does not get empty due to a problem of the CAN con=
+troller
+> and/or the CAN network.
+>=20
+> So even if you could flush the queue the CAN controller is probably s=
+till
+> stuck with his processed frame.
+>=20
+> Setting the interface to DOWN and UP again re-initializes the CAN con=
+troller
+> and flushes all the queues.
+>=20
+> This would work - but all open sockets would get a notification of th=
+e
+> interface went down.
+>=20
+> Btw. IIRC there's a IFLA_CAN_RESTART functionality to kick the CAN co=
+ntroller
+> if it got stuck. It can by triggered by a netlink message. This is th=
+e same
+> configuration interface that's used to set the bittiming:
+>=20
+> http://lxr.linux.no/#linux+v3.5.4/include/linux/can/netlink.h#L103
+>=20
+> But i have currently no source code example as i always use the 'ip' =
+tool from
+> the iproute2 package to configure my CAN interfaces:
+>=20
+> http://lxr.linux.no/#linux+v3.5.4/Documentation/networking/can.txt#L6=
+46
+>=20
+> Following that documentation
+>=20
+> 	ip link set can0 type can restart
+>=20
+> should do it for 'can0'.
 
-I distinguish 2 use cases there:
-1. repeating a limited set of identical frames endlessly (eg. grabbing =
-a bootloader)
-2. burst a lot of data on the bus.
+No, this does only works if a bus-off is pending. See:
 
-Case 1 can be solved by setting CAN_RAW_RECV_OWN_MSGS. If you don't
-see your transmitted frames, it makes no sense to repeat it, since
-they're still queued.
+http://lxr.linux.no/#linux+v3.5.4/drivers/net/can/dev.c#L413
 
-Case 2 is solved by waiting a little while when you get ENOBUFS. This
-way, you will not need to track the buffer's status.
-Throttling messages based on buffer fill status is a bit difficult
-in a multi-user environment. You may know the buffer max. size,
-but not the number of applications using it.
+Well, the name IFLA_CAN_RESTART is not really well chosen.
 
-Can your issue be categorized under one of these 2 cases?
-If not, I'd like to learn the use case :-)
+Wolfgang.
 
-Kurt
