@@ -1,114 +1,81 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+From: Steffen Rose <ro@emtas.de>
 Subject: Re: What are you doing if the TX buffer overflows?
-Date: Wed, 19 Sep 2012 11:04:45 +0200
-Message-ID: <20120919090445.GA1612@vandijck-laurijssen.be>
-References: <50586A50.5060300@pengutronix.de>
- <50586DE4.9020707@grandegger.com>
- <50587058.7090703@pengutronix.de>
- <50587987.3070308@grandegger.com>
- <50587A4F.5060105@pengutronix.de>
- <5058C28A.5030300@grandegger.com>
- <5058C505.6020605@pengutronix.de>
- <5058C7EC.1080206@grandegger.com>
- <20120918202018.GA78585@macbook.local>
- <50595B4A.10409@hartkopp.net>
+Date: Wed, 19 Sep 2012 12:18:45 +0200
+Message-ID: <8427746.XzAaKfMUEU@lisa>
+References: <2478881.znSzbTXnK5@uschi> <50586DE4.9020707@grandegger.com> <50587058.7090703@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:8542 "EHLO
-	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752313Ab2ISJFD convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 19 Sep 2012 05:05:03 -0400
-Content-Disposition: inline
-In-Reply-To: <50595B4A.10409@hartkopp.net>
+Received: from moutng.kundenserver.de ([212.227.126.187]:49237 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753575Ab2ISKSs convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Sep 2012 06:18:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 081C756249E
+	for <linux-can@vger.kernel.org>; Wed, 19 Sep 2012 12:18:53 +0200 (CEST)
+Received: from kolab.emtas.de ([127.0.0.1])
+	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 3+-O1zFlnYRx for <linux-can@vger.kernel.org>;
+	Wed, 19 Sep 2012 12:18:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 8EEAD562544
+	for <linux-can@vger.kernel.org>; Wed, 19 Sep 2012 12:18:52 +0200 (CEST)
+Received: from lisa.localnet (lisa.emtas.de [192.168.3.54])
+	by kolab.emtas.de (Postfix) with ESMTPS id 57A9D56249E
+	for <linux-can@vger.kernel.org>; Wed, 19 Sep 2012 12:18:52 +0200 (CEST)
+In-Reply-To: <50587058.7090703@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, =?utf-8?Q?Heinz-J=C3=BCrgen?= Oertel <oe@port.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On Wed, Sep 19, 2012 at 07:42:34AM +0200, Oliver Hartkopp wrote:
-> On 18.09.2012 22:20, Kurt Van Dijck wrote:
->=20
-> > On Tue, Sep 18, 2012 at 09:13:48PM +0200, Wolfgang Grandegger wrote=
-:
-> >> On 09/18/2012 09:01 PM, Marc Kleine-Budde wrote:
-> >>> On 09/18/2012 08:50 PM, Wolfgang Grandegger wrote:
-> >>>> On 09/18/2012 03:42 PM, Marc Kleine-Budde wrote:
-> >>>>> On 09/18/2012 03:39 PM, Wolfgang Grandegger wrote:
-> >>>>>> On 09/18/2012 03:00 PM, Marc Kleine-Budde wrote:
-> >>>>>>> On 09/18/2012 02:49 PM, Wolfgang Grandegger wrote:
-> >>>>>>> [...]
-> >>>>>>>
-> >>>>>>>>> We have several customers who asked how to abort pending TX=
- messages,
-> >>>>>>>>> too. Which involves:
-> >>>>>>>>> a) clear the TX-queue in Linux
-> >>>>>>>>> b) clear queue in hardware
-> >>>>>>>>> c) abort currently transmitting CAN frame
-> >>>>>>>>>
-> >>>>>>>>> I think c) would be a usecase of its own, too.
-> >>>>>>>>
-> >>>>>>>> I think you need c) for b), at least for some controllers. T=
-hese
-> >>>>>>>
-> >>>>>>> Yes, if it's a hardware limitation so be it. But if we design=
- an
-> >>>>>>> interface it should support "clear everything" (a+b+c), but a=
-lso just
-> >>>>>>> only c.
-> >>>>>>
-> >>>>>> Yes, that you be nice. The only portable "clear everything" (a=
-+b+c) I
-> >>>>>> see is "ifconfig down -> up". This also answers you other rela=
-ted mail.
-> >>>>>>
-> >>>>>> What do people really want/need and why? This is still not cle=
-ar to me.
-> >>>>>> More input would be nice.
-> >>>>>
-> >>>>> Heinz-J=C3=BCrgen uses abort current TX Message on SJA1000, can=
- you give us
-> >>>>> more insight? I've talked to customers, e.g. they want to abort=
- the
-> >>>>> current frame if it takes "too long" to send it, because the fr=
-ames CAN
-> >>>>> id priority is too low.
-> >=20
-> > If "too long" is defined as a period of time where it makes sense t=
-o
-> > take such actions in software (like > 10msec), and your message sti=
-ll
-> > did not get out, but you wanted it to be,
-> > then IMO the bus load is too high with regard to the expected time =
-restrictions.
-> >=20
-> > Or am I missing something?
->=20
->=20
-> The question is, if we should add some time of expiry to the tx-skb?!=
-?
->=20
-> I have not checked whether the new ematch queuing discipline
->=20
-> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux.git;a=3Dco=
-mmitdiff;h=3Df057bbb6f9ed0fb61ea11105c9ef0ed5ac1a354d
->=20
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
->=20
-> would allow already to sort out expired skbs.
->=20
-> This is probably the preferred solution instead of checking expired s=
-kbs
-> inside the driver.
-> =20
+Hallo,
 
-I did not check the qdisc code.
+more a question to this discussion then a meaning:
 
-Would this expiry be a per-skb option (maybe per-socket), then I think
-this solves the unclear usecase mentioned above, while not
-being too invasive in current and future designs.
+> >> a) clear the TX-queue in Linux
+[...]
+> Yes, if it's a hardware limitation so be it. But if we design an
+> interface it should support "clear everything" (a+b+c), but also just
+> only c.
+>=20
 
-Kurt
+Example:
+ I use more than one program, e.g.3 to communicate over one interface,=20
+e.g.can0.
 
+Question:
+The TX Queue is interface related, not program related, right?
+
+This would mean, if my program (one of the 3) clear the TX queue as par=
+t of an=20
+internal communication reset it would also destroy the messages of the =
+other=20
+programs.
+
+Is this idea right?
+
+--=20
+Mit freundlichen Gr=FC=DFen / Regards
+
+Steffen Rose
+
+--------------------------------------------------------------
+
+emtas - your embedded solution partner
+
+Meet our specialists on the SPS IPC drives fair=20
+from 27 to 29.November in Nuremberg
+
+--------------------------------------------------------------
+emtas GmbH
+=46ischweg 17
+06217 Merseburg
+Tel.:  +49(0)3461-79416-0
+=46ax.:  +49(0)3461-79416-10
+www.emtas.de - service@emtas.de
+Gesch=E4ftsf=FChrer: Andreas Boebel, Torsten Gedenk, Steffen Rose
+Registergericht: Amtsgericht Stendal
+Registernummer:  HRB 17616=20
+UstID: DE281092198
+--------------------------------------------------------------
