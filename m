@@ -1,76 +1,94 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [can:master 239/293]
- net/ipv6/netfilter/nf_conntrack_l3proto_ipv6.c:231: warning: passing
- argument 4 of 'NF_HOOK_THRESH' discards qualifiers from pointer target type
-Date: Thu, 20 Sep 2012 15:34:33 +0800
-Message-ID: <20120920073433.GA1370@localhost>
-References: <20120906231958.GB7382@localhost>
- <Pine.GSO.4.63.1209111042560.2448@stinky-local.trash.net>
- <Pine.GSO.4.63.1209200902120.8409@stinky-local.trash.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: [PATCH v5] can: sja1000: Add support for listen-only mode and one-shot mode
+Date: Thu, 20 Sep 2012 09:50:41 +0200
+Message-ID: <1348127441-2165-1-git-send-email-andreas@gaisler.com>
+References: <5059F783.5030200@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga01.intel.com ([192.55.52.88]:16795 "EHLO mga01.intel.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751982Ab2ITHej (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 20 Sep 2012 03:34:39 -0400
-Content-Disposition: inline
-In-Reply-To: <Pine.GSO.4.63.1209200902120.8409@stinky-local.trash.net>
+Received: from vsp-authed02.binero.net ([195.74.38.226]:50269 "HELO
+	vsp-authed-03-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1753306Ab2ITHwf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Sep 2012 03:52:35 -0400
+In-Reply-To: <5059F783.5030200@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Patrick McHardy <kaber@trash.net>
-Cc: kernel-janitors@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: software@gaisler.com
 
-On Thu, Sep 20, 2012 at 09:14:02AM +0200, Patrick McHardy wrote:
-> On Tue, 11 Sep 2012, Patrick McHardy wrote:
-> 
-> >On Fri, 7 Sep 2012, Fengguang Wu wrote:
-> >
-> >>Hi Patrick,
-> >>
-> >>FYI, there are new compile warnings show up in
-> >>
-> >>tree:   git://gitorious.org/linux-can/linux-can-next master
-> >>head:   bbe660a7ddf32dfe80753c6722e141bf7e4bf5d8
-> >>commit: 4cdd34084d539c758d00c5dc7bf95db2e4f2bc70 [239/293]
-> >>netfilter: nf_conntrack_ipv6: improve fragmentation handling
-> >>config: avr32-atngw100_defconfig (attached as .config)
-> >>
-> >>All error/warnings:
-> >>
-> >>net/ipv6/netfilter/nf_conntrack_l3proto_ipv6.c: In function
-> >>'__ipv6_conntrack_in':
-> >>net/ipv6/netfilter/nf_conntrack_l3proto_ipv6.c:231: warning:
-> >>passing argument 4 of 'NF_HOOK_THRESH' discards qualifiers from
-> >>pointer target type
-> >>net/ipv6/netfilter/nf_conntrack_l3proto_ipv6.c:231: warning:
-> >>passing argument 5 of 'NF_HOOK_THRESH' discards qualifiers from
-> >>pointer target type
-> >
-> >Thanks, I'll look into this.
-> 
-> It seems the cure for this is worse than the problem. The code
-> currently casts the const struct net_device pointer to non-const
-> for the NF_HOOK_THRES call. To avoid the cast we'd have to change
-> all netfilter hooks to take a non-const pointer. The alternative
-> would be to change the NF_HOOK functions to also take a const struct
-> net_device pointer, but that would require the same cast to non-const
-> for nf_queue, which uses dev_hold() and dev_put(), so this would
-> effectively just move the warning to a different place.
-> 
-> nf_queue is a quite special case, normally netfilter hooks shouln't
-> be changing anything on the net_device, so I don't want to unconstify
-> the arguments.
-> 
-> The compiler actually shouldn't warn about this since its an explicit
-> cast. I know some older versions of gcc did this, but there's no
-> warning with current versions of gcc and the same casts are already
-> present
-> in other parts of IPv6 conntrack.
+One-shot mode uses the TCS bit of the status register to discern
+whether a transmission was successful or not. On a failed
+transmission, the frame is not echoed back.
 
-Yes, the avr32 builds are using an old gcc. Please ignore this
-warning. I'll teach the build system to ignore this class of warning
-on older gcc.
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/sja1000/sja1000.c |   31 ++++++++++++++++++++++++-------
+ 1 files changed, 24 insertions(+), 7 deletions(-)
 
-Thanks,
-Fengguang
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 4c4f33d..25011db 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -156,8 +156,13 @@ static void set_normal_mode(struct net_device *dev)
+ 		}
+ 
+ 		/* set chip to normal mode */
+-		priv->write_reg(priv, REG_MOD, 0x00);
++		if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
++			priv->write_reg(priv, REG_MOD, MOD_LOM);
++		else
++			priv->write_reg(priv, REG_MOD, 0x00);
++
+ 		udelay(10);
++
+ 		status = priv->read_reg(priv, REG_MOD);
+ 	}
+ 
+@@ -310,7 +315,10 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 
+ 	can_put_echo_skb(skb, dev, 0);
+ 
+-	sja1000_write_cmdreg(priv, CMD_TR);
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		sja1000_write_cmdreg(priv, CMD_TR | CMD_AT);
++	else
++		sja1000_write_cmdreg(priv, CMD_TR);
+ 
+ 	return NETDEV_TX_OK;
+ }
+@@ -505,10 +513,18 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 			netdev_warn(dev, "wakeup interrupt\n");
+ 
+ 		if (isrc & IRQ_TI) {
+-			/* transmission complete interrupt */
+-			stats->tx_bytes += priv->read_reg(priv, REG_FI) & 0xf;
+-			stats->tx_packets++;
+-			can_get_echo_skb(dev, 0);
++			/* transmission buffer released */
++			if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT &&
++			    !(status & SR_TCS)) {
++				stats->tx_errors++;
++				can_free_echo_skb(dev, 0);
++			} else {
++				/* transmission complete */
++				stats->tx_bytes +=
++					priv->read_reg(priv, REG_FI) & 0xf;
++				stats->tx_packets++;
++				can_get_echo_skb(dev, 0);
++			}
+ 			netif_wake_queue(dev);
+ 		}
+ 		if (isrc & IRQ_RI) {
+@@ -605,7 +621,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
+ 	priv->can.do_set_mode = sja1000_set_mode;
+ 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+-		CAN_CTRLMODE_BERR_REPORTING;
++		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
++		CAN_CTRLMODE_ONE_SHOT;
+ 
+ 	spin_lock_init(&priv->cmdreg_lock);
+ 
+-- 
+1.7.0.4
+
