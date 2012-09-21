@@ -1,74 +1,77 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] net/can:  rename peak_usb dump_mem function
-Date: Fri, 21 Sep 2012 14:42:23 -0700
-Message-ID: <505CDF3F.6040009@xenotime.net>
-References: <1346577700-8156-1-git-send-email-geert@linux-m68k.org> <504393A7.8040007@xenotime.net>
+Date: Fri, 21 Sep 2012 23:52:28 +0200
+Message-ID: <505CE19C.6030205@pengutronix.de>
+References: <1346577700-8156-1-git-send-email-geert@linux-m68k.org> <504393A7.8040007@xenotime.net> <505CDF3F.6040009@xenotime.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig2AA0C284398B8F2C9039A6D3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from oproxy9.bluehost.com ([69.89.24.6]:44990 "HELO
-	oproxy9.bluehost.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1751907Ab2IUVnH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 17:43:07 -0400
-In-Reply-To: <504393A7.8040007@xenotime.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54332 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753804Ab2IUVwk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 17:52:40 -0400
+In-Reply-To: <505CDF3F.6040009@xenotime.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: netdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-On 09/02/2012 10:13 AM, Randy Dunlap wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2AA0C284398B8F2C9039A6D3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> From: Randy Dunlap <rdunlap@xenotime.net>
-> 
-> Rename generic-sounding function dump_mem() to pcan_dump_mem()
-> so that it does not conflict with the dump_mem() function in
-> arch/sh/include/asm/kdebug.h.
-> 
-> drivers/net/can/usb/peak_usb/pcan_usb_core.c: error: conflicting types for 'dump_mem':  => 56:6
-> drivers/net/can/usb/peak_usb/pcan_usb_core.h: error: conflicting types for 'dump_mem':  => 134:6
-> 
-> Not tested.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Stephane Grosjean <s.grosjean@peak-system.com>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+On 09/21/2012 11:42 PM, Randy Dunlap wrote:
+> On 09/02/2012 10:13 AM, Randy Dunlap wrote:
+>=20
+>> From: Randy Dunlap <rdunlap@xenotime.net>
+>>
+>> Rename generic-sounding function dump_mem() to pcan_dump_mem()
+>> so that it does not conflict with the dump_mem() function in
+>> arch/sh/include/asm/kdebug.h.
+>>
+>> drivers/net/can/usb/peak_usb/pcan_usb_core.c: error: conflicting types=
+ for 'dump_mem':  =3D> 56:6
+>> drivers/net/can/usb/peak_usb/pcan_usb_core.h: error: conflicting types=
+ for 'dump_mem':  =3D> 134:6
+>>
+>> Not tested.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+>> Cc: Wolfgang Grandegger <wg@grandegger.com>
+>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+>=20
+> ping.
 
+The patch is already part of can-next and will be included in the next
+pull request to David.
 
-ping.
+regards, Marc
 
-> ---
->  drivers/net/can/usb/peak_usb/pcan_usb_core.c |    2 +-
->  drivers/net/can/usb/peak_usb/pcan_usb_core.h |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -53,7 +53,7 @@ static struct peak_usb_adapter *peak_usb
->   * dump memory
->   */
->  #define DUMP_WIDTH	16
-> -void dump_mem(char *prompt, void *p, int l)
-> +void pcan_dump_mem(char *prompt, void *p, int l)
->  {
->  	pr_info("%s dumping %s (%d bytes):\n",
->  		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
-> --- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-> +++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-> @@ -131,7 +131,7 @@ struct peak_usb_device {
->  	struct peak_usb_device *next_siblings;
->  };
->  
-> -void dump_mem(char *prompt, void *p, int l);
-> +void pcan_dump_mem(char *prompt, void *p, int l);
->  
->  /* common timestamp management */
->  void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
-> 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enig2AA0C284398B8F2C9039A6D3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
--- 
-~Randy
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBc4aAACgkQjTAFq1RaXHPbhQCePg2HuWElNS93vdHQ4N5K7+pd
+4nkAmwXrsPnaYoxU8piVfPbSY4wffjNj
+=0vrN
+-----END PGP SIGNATURE-----
+
+--------------enig2AA0C284398B8F2C9039A6D3--
