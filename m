@@ -1,273 +1,85 @@
-From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH] can: c_can: Add d_can suspend resume support
-Date: Fri, 21 Sep 2012 15:29:01 +0530
-Message-ID: <1348221541-28878-1-git-send-email-anilkumar@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] can: ti_hecc: fix oops during rmmod
+Date: Fri, 21 Sep 2012 12:07:16 +0200
+Message-ID: <1348222036-13498-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from comal.ext.ti.com ([198.47.26.152]:36945 "EHLO comal.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932742Ab2IUKAb (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 21 Sep 2012 06:00:31 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57262 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933026Ab2IUKHU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 06:07:20 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: swarren@wwwdotorg.org, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Anant Gole <anantgole@ti.com>
 
-Adds suspend resume support to DCAN driver which enables
-DCAN power down mode bit (PDR). Then DCAN will ack the local
-power-down mode by setting PDA bit in STATUS register.
+This patch fixes an oops which occurs when unloading the driver, while the
+network interface is still up. The problem is that first the io mapping is
+teared own, then the CAN device is unregistered, resulting in accessing the
+hardware's iomem:
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+[  172.744232] Unable to handle kernel paging request at virtual address c88b0040
+[  172.752441] pgd = c7be4000
+[  172.755645] [c88b0040] *pgd=87821811, *pte=00000000, *ppte=00000000
+[  172.762207] Internal error: Oops: 807 [#1] PREEMPT ARM
+[  172.767517] Modules linked in: ti_hecc(-) can_dev
+[  172.772430] CPU: 0    Not tainted  (3.5.0alpha-00037-g3554cc0 #126)
+[  172.778961] PC is at ti_hecc_close+0xb0/0x100 [ti_hecc]
+[  172.784423] LR is at __dev_close_many+0x90/0xc0
+[  172.789123] pc : [<bf00c768>]    lr : [<c033be58>]    psr: 60000013
+[  172.789123] sp : c5c1de68  ip : 00040081  fp : 00000000
+[  172.801025] r10: 00000001  r9 : c5c1c000  r8 : 00100100
+[  172.806457] r7 : c5d0a48c  r6 : c5d0a400  r5 : 00000000  r4 : c5d0a000
+[  172.813232] r3 : c88b0000  r2 : 00000001  r1 : c5d0a000  r0 : c5d0a000
+[  172.820037] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+[  172.827423] Control: 10c5387d  Table: 87be4019  DAC: 00000015
+[  172.833404] Process rmmod (pid: 600, stack limit = 0xc5c1c2f0)
+[  172.839447] Stack: (0xc5c1de68 to 0xc5c1e000)
+[  172.843994] de60:                   bf00c6b8 c5c1dec8 c5d0a000 c5d0a000 00200200 c033be58
+[  172.852478] de80: c5c1de44 c5c1dec8 c5c1dec8 c033bf2c c5c1de90 c5c1de90 c5d0a084 c5c1de44
+[  172.860992] dea0: c5c1dec8 c033c098 c061d3dc c5d0a000 00000000 c05edf28 c05edb34 c000d724
+[  172.869476] dec0: 00000000 c033c2f8 c5d0a084 c5d0a084 00000000 c033c370 00000000 c5d0a000
+[  172.877990] dee0: c05edb00 c033c3b8 c5d0a000 bf00d3ac c05edb00 bf00d7c8 bf00d7c8 c02842dc
+[  172.886474] df00: c02842c8 c0282f90 c5c1c000 c05edb00 bf00d7c8 c0283668 bf00d7c8 00000000
+[  172.894989] df20: c0611f98 befe2f80 c000d724 c0282d10 bf00d804 00000000 00000013 c0068a8c
+[  172.903472] df40: c5c538e8 685f6974 00636365 c61571a8 c5cb9980 c61571a8 c6158a20 c00c9bc4
+[  172.911987] df60: 00000000 00000000 c5cb9980 00000000 c5cb9980 00000000 c7823680 00000006
+[  172.920471] df80: bf00d804 00000880 c5c1df8c 00000000 000d4267 befe2f80 00000001 b6d90068
+[  172.928985] dfa0: 00000081 c000d5a0 befe2f80 00000001 befe2f80 00000880 b6d90008 00000008
+[  172.937469] dfc0: befe2f80 00000001 b6d90068 00000081 00000001 00000000 befe2eac 00000000
+[  172.945983] dfe0: 00000000 befe2b18 00023ba4 b6e6addc 60000010 befe2f80 a8e00190 86d2d344
+[  172.954498] [<bf00c768>] (ti_hecc_close+0xb0/0x100 [ti_hecc]) from [<c033be58>] (__dev__registered_many+0xc0/0x2a0)
+[  172.984161] [<c033c098>] (rollback_registered_many+0xc0/0x2a0) from [<c033c2f8>] (rollback_registered+0x20/0x30)
+[  172.994750] [<c033c2f8>] (rollback_registered+0x20/0x30) from [<c033c370>] (unregister_netdevice_queue+0x68/0x98)
+[  173.005401] [<c033c370>] (unregister_netdevice_queue+0x68/0x98) from [<c033c3b8>] (unregister_netdev+0x18/0x20)
+[  173.015899] [<c033c3b8>] (unregister_netdev+0x18/0x20) from [<bf00d3ac>] (ti_hecc_remove+0x60/0x80 [ti_hecc])
+[  173.026245] [<bf00d3ac>] (ti_hecc_remove+0x60/0x80 [ti_hecc]) from [<c02842dc>] (platform_drv_remove+0x14/0x18)
+[  173.036712] [<c02842dc>] (platform_drv_remove+0x14/0x18) from [<c0282f90>] (__device_release_driver+0x7c/0xbc)
+
+Cc: Anant Gole <anantgole@ti.com>
+Tested-by: Jan Luebbe <jlu@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-Changes from v1:
-	- Incorporated Marc's comments on v1
-	  * Changed marco name to INIT_WAIT_MS from INIT_WAIT_COUNT.
-	  * Added WARN_ON if device is not D_CAN in c_can_power_down/up
-	    APIs.
-	  * Added enum to c_can_priv data structure to hold device
-	    type, C_CAN or D_CAN.
+ drivers/net/can/ti_hecc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/net/can/c_can/c_can.c          |   78 ++++++++++++++++++++++++++++++++
- drivers/net/can/c_can/c_can.h          |    8 ++++
- drivers/net/can/c_can/c_can_platform.c |   62 +++++++++++++++++++++++++
- 3 files changed, 148 insertions(+)
-
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 768bb48..2c4a21f 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -46,6 +46,9 @@
- #define IF_ENUM_REG_LEN		11
- #define C_CAN_IFACE(reg, iface)	(C_CAN_IF1_##reg + (iface) * IF_ENUM_REG_LEN)
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 527dbcf..9ded21e 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -984,12 +984,12 @@ static int __devexit ti_hecc_remove(struct platform_device *pdev)
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
  
-+/* control extension register D_CAN specific */
-+#define CONTROL_EX_PDR		BIT(8)
-+
- /* control register */
- #define CONTROL_TEST		BIT(7)
- #define CONTROL_CCE		BIT(6)
-@@ -65,6 +68,7 @@
- #define TEST_BASIC		BIT(2)
- 
- /* status register */
-+#define STATUS_PDA		BIT(10)
- #define STATUS_BOFF		BIT(7)
- #define STATUS_EWARN		BIT(6)
- #define STATUS_EPASS		BIT(5)
-@@ -164,6 +168,9 @@
- /* minimum timeout for checking BUSY status */
- #define MIN_TIMEOUT_VALUE	6
- 
-+/* Wait for ~1 sec for INIT bit */
-+#define INIT_WAIT_MS		1000
-+
- /* napi related */
- #define C_CAN_NAPI_WEIGHT	C_CAN_MSG_OBJ_RX_NUM
- 
-@@ -1153,6 +1160,77 @@ struct net_device *alloc_c_can_dev(void)
- }
- EXPORT_SYMBOL_GPL(alloc_c_can_dev);
- 
-+#ifdef CONFIG_PM
-+int c_can_power_down(struct net_device *dev)
-+{
-+	u32 val;
-+	unsigned long time_out;
-+	struct c_can_priv *priv = netdev_priv(dev);
-+
-+	if (!(dev->flags & IFF_UP))
-+		return 0;
-+
-+	WARN_ON(priv->type != BOSCH_D_CAN);
-+
-+	/* set PDR value so the device goes to power down mode */
-+	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-+	val |= CONTROL_EX_PDR;
-+	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
-+
-+	/* Wait for the PDA bit to get set */
-+	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
-+	while (!(priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
-+				time_after(time_out, jiffies))
-+		cpu_relax();
-+
-+	if (time_after(jiffies, time_out))
-+		return -ETIMEDOUT;
-+
-+	c_can_stop(dev);
-+
-+	c_can_pm_runtime_put_sync(priv);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(c_can_power_down);
-+
-+int c_can_power_up(struct net_device *dev)
-+{
-+	u32 val;
-+	unsigned long time_out;
-+	struct c_can_priv *priv = netdev_priv(dev);
-+
-+	if (!(dev->flags & IFF_UP))
-+		return 0;
-+
-+	WARN_ON(priv->type != BOSCH_D_CAN);
-+
-+	c_can_pm_runtime_get_sync(priv);
-+
-+	/* Clear PDR and INIT bits */
-+	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-+	val &= ~CONTROL_EX_PDR;
-+	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
-+	val = priv->read_reg(priv, C_CAN_CTRL_REG);
-+	val &= ~CONTROL_INIT;
-+	priv->write_reg(priv, C_CAN_CTRL_REG, val);
-+
-+	/* Wait for the PDA bit to get clear */
-+	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
-+	while ((priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
-+				time_after(time_out, jiffies))
-+		cpu_relax();
-+
-+	if (time_after(jiffies, time_out))
-+		return -ETIMEDOUT;
-+
-+	c_can_start(dev);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(c_can_power_up);
-+#endif
-+
- void free_c_can_dev(struct net_device *dev)
- {
- 	free_candev(dev);
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 1437a6d..e5ed41d 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -24,6 +24,7 @@
- 
- enum reg {
- 	C_CAN_CTRL_REG = 0,
-+	C_CAN_CTRL_EX_REG,
- 	C_CAN_STS_REG,
- 	C_CAN_ERR_CNT_REG,
- 	C_CAN_BTR_REG,
-@@ -104,6 +105,7 @@ static const u16 reg_map_c_can[] = {
- 
- static const u16 reg_map_d_can[] = {
- 	[C_CAN_CTRL_REG]	= 0x00,
-+	[C_CAN_CTRL_EX_REG]	= 0x02,
- 	[C_CAN_STS_REG]		= 0x04,
- 	[C_CAN_ERR_CNT_REG]	= 0x08,
- 	[C_CAN_BTR_REG]		= 0x0C,
-@@ -166,6 +168,7 @@ struct c_can_priv {
- 	unsigned int tx_echo;
- 	void *priv;		/* for board-specific data */
- 	u16 irqstatus;
-+	enum c_can_dev_id type;
- };
- 
- struct net_device *alloc_c_can_dev(void);
-@@ -173,4 +176,9 @@ void free_c_can_dev(struct net_device *dev);
- int register_c_can_dev(struct net_device *dev);
- void unregister_c_can_dev(struct net_device *dev);
- 
-+#ifdef CONFIG_PM
-+int c_can_power_up(struct net_device *dev);
-+int c_can_power_down(struct net_device *dev);
-+#endif
-+
- #endif /* C_CAN_H */
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index d6b94b7..ee141613 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -189,6 +189,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 	priv->device = &pdev->dev;
- 	priv->can.clock.freq = clk_get_rate(clk);
- 	priv->priv = clk;
-+	priv->type = id->driver_data;
- 
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
-@@ -239,6 +240,65 @@ static int __devexit c_can_plat_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM
-+static int c_can_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	int ret;
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct c_can_priv *priv = netdev_priv(ndev);
-+
-+	if (priv->type != BOSCH_D_CAN) {
-+		dev_warn(&pdev->dev, "Not supported\n");
-+		return 0;
-+	}
-+
-+	if (netif_running(ndev)) {
-+		netif_stop_queue(ndev);
-+		netif_device_detach(ndev);
-+	}
-+
-+	ret = c_can_power_down(ndev);
-+	if (ret) {
-+		netdev_err(ndev, "failed to enter power down mode\n");
-+		return ret;
-+	}
-+
-+	priv->can.state = CAN_STATE_SLEEPING;
-+
-+	return 0;
-+}
-+
-+static int c_can_resume(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct c_can_priv *priv = netdev_priv(ndev);
-+
-+	if (priv->type != BOSCH_D_CAN) {
-+		dev_warn(&pdev->dev, "Not supported\n");
-+		return 0;
-+	}
-+
-+	ret = c_can_power_up(ndev);
-+	if (ret) {
-+		netdev_err(ndev, "Still in power down mode\n");
-+		return ret;
-+	}
-+
-+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+
-+	if (netif_running(ndev)) {
-+		netif_device_attach(ndev);
-+		netif_start_queue(ndev);
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define c_can_suspend NULL
-+#define c_can_resume NULL
-+#endif
-+
- static struct platform_driver c_can_plat_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
-@@ -247,6 +307,8 @@ static struct platform_driver c_can_plat_driver = {
- 	},
- 	.probe = c_can_plat_probe,
- 	.remove = __devexit_p(c_can_plat_remove),
-+	.suspend = c_can_suspend,
-+	.resume = c_can_resume,
- 	.id_table = c_can_id_table,
- };
++	unregister_candev(ndev);
+ 	clk_disable(priv->clk);
+ 	clk_put(priv->clk);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	iounmap(priv->base);
+ 	release_mem_region(res->start, resource_size(res));
+-	unregister_candev(ndev);
+ 	free_candev(ndev);
+ 	platform_set_drvdata(pdev, NULL);
  
 -- 
-1.7.9.5
+1.7.10
 
