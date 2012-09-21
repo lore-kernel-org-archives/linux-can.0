@@ -1,36 +1,74 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2012-09-21
-Date: Fri, 21 Sep 2012 13:51:00 -0400 (EDT)
-Message-ID: <20120921.135100.2021015240286558305.davem@davemloft.net>
-References: <1348225535-24976-1-git-send-email-mkl@pengutronix.de>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: [PATCH] net/can:  rename peak_usb dump_mem function
+Date: Fri, 21 Sep 2012 14:42:23 -0700
+Message-ID: <505CDF3F.6040009@xenotime.net>
+References: <1346577700-8156-1-git-send-email-geert@linux-m68k.org> <504393A7.8040007@xenotime.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:51007 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932208Ab2IURvC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 13:51:02 -0400
-In-Reply-To: <1348225535-24976-1-git-send-email-mkl@pengutronix.de>
+Received: from oproxy9.bluehost.com ([69.89.24.6]:44990 "HELO
+	oproxy9.bluehost.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with SMTP id S1751907Ab2IUVnH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 17:43:07 -0400
+In-Reply-To: <504393A7.8040007@xenotime.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: Randy Dunlap <rdunlap@xenotime.net>
+Cc: netdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 21 Sep 2012 13:05:33 +0200
+On 09/02/2012 10:13 AM, Randy Dunlap wrote:
 
-> two patches for the v3.6 release cycle. Ira W. Snyder fixed support for the
-> older version of the Janz CMOD-IO Carrier Board. I found and fixed an oops in
-> the ti_hecc driver, which occurs when removing the module if the network
-> interface is still open.
- ...
-> The following changes since commit c0d680e577ff171e7b37dbdb1b1bf5451e851f04:
+> From: Randy Dunlap <rdunlap@xenotime.net>
 > 
->   net: do not disable sg for packets requiring no checksum (2012-09-20 22:23:40 -0400)
+> Rename generic-sounding function dump_mem() to pcan_dump_mem()
+> so that it does not conflict with the dump_mem() function in
+> arch/sh/include/asm/kdebug.h.
 > 
-> are available in the git repository at:
+> drivers/net/can/usb/peak_usb/pcan_usb_core.c: error: conflicting types for 'dump_mem':  => 56:6
+> drivers/net/can/usb/peak_usb/pcan_usb_core.h: error: conflicting types for 'dump_mem':  => 134:6
 > 
->   git://gitorious.org/linux-can/linux-can.git fixes-for-3.6
+> Not tested.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Pulled, thanks.
+
+ping.
+
+> ---
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |    2 +-
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.h |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -53,7 +53,7 @@ static struct peak_usb_adapter *peak_usb
+>   * dump memory
+>   */
+>  #define DUMP_WIDTH	16
+> -void dump_mem(char *prompt, void *p, int l)
+> +void pcan_dump_mem(char *prompt, void *p, int l)
+>  {
+>  	pr_info("%s dumping %s (%d bytes):\n",
+>  		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
+> --- lnx-36-rc4.orig/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+> +++ lnx-36-rc4/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+> @@ -131,7 +131,7 @@ struct peak_usb_device {
+>  	struct peak_usb_device *next_siblings;
+>  };
+>  
+> -void dump_mem(char *prompt, void *p, int l);
+> +void pcan_dump_mem(char *prompt, void *p, int l);
+>  
+>  /* common timestamp management */
+>  void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
+> 
+
+
+
+-- 
+~Randy
