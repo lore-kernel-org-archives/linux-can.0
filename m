@@ -1,94 +1,54 @@
-From: Andreas Larsson <andreas@gaisler.com>
-Subject: [PATCH v5] can: sja1000: Add support for listen-only mode and one-shot mode
-Date: Thu, 20 Sep 2012 09:50:41 +0200
-Message-ID: <1348127441-2165-1-git-send-email-andreas@gaisler.com>
-References: <5059F783.5030200@hartkopp.net>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] can: mscan-mpc5xxx: fix return value check in mpc512x_can_get_clock()
+Date: Fri, 21 Sep 2012 15:09:47 +0800
+Message-ID: <CAPgLHd9fRAvQ77rD_PCp45XW9-FsBisUATOT00Je39nbv5o28A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from vsp-authed02.binero.net ([195.74.38.226]:50269 "HELO
-	vsp-authed-03-02.binero.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1753306Ab2ITHwf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Sep 2012 03:52:35 -0400
-In-Reply-To: <5059F783.5030200@hartkopp.net>
+Received: from mail-qc0-f174.google.com ([209.85.216.174]:61319 "EHLO
+	mail-qc0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751892Ab2IUHJr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 03:09:47 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: software@gaisler.com
+To: wg@grandegger.com, mkl@pengutronix.de, grant.likely@secretlab.ca, rob.herring@calxeda.com
+Cc: yongjun_wei@trendmicro.com.cn, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
 
-One-shot mode uses the TCS bit of the status register to discern
-whether a transmission was successful or not. On a failed
-transmission, the frame is not echoed back.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+In case of error, the function clk_get() returns ERR_PTR()
+and never returns NULL pointer. The NULL test in the error
+handling should be replaced with IS_ERR().
+
+dpatch engine is used to auto generated this patch.
+(https://github.com/weiyj/dpatch)
+
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
- drivers/net/can/sja1000/sja1000.c |   31 ++++++++++++++++++++++++-------
- 1 files changed, 24 insertions(+), 7 deletions(-)
+ drivers/net/can/mscan/mpc5xxx_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 4c4f33d..25011db 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -156,8 +156,13 @@ static void set_normal_mode(struct net_device *dev)
- 		}
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index 06adf88..524ef96 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -181,7 +181,7 @@ static u32 __devinit mpc512x_can_get_clock(struct platform_device *ofdev,
  
- 		/* set chip to normal mode */
--		priv->write_reg(priv, REG_MOD, 0x00);
-+		if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-+			priv->write_reg(priv, REG_MOD, MOD_LOM);
-+		else
-+			priv->write_reg(priv, REG_MOD, 0x00);
-+
- 		udelay(10);
-+
- 		status = priv->read_reg(priv, REG_MOD);
- 	}
+ 		if (!clock_name || !strcmp(clock_name, "sys")) {
+ 			sys_clk = clk_get(&ofdev->dev, "sys_clk");
+-			if (!sys_clk) {
++			if (IS_ERR(sys_clk)) {
+ 				dev_err(&ofdev->dev, "couldn't get sys_clk\n");
+ 				goto exit_unmap;
+ 			}
+@@ -204,7 +204,7 @@ static u32 __devinit mpc512x_can_get_clock(struct platform_device *ofdev,
  
-@@ -310,7 +315,10 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
--	sja1000_write_cmdreg(priv, CMD_TR);
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		sja1000_write_cmdreg(priv, CMD_TR | CMD_AT);
-+	else
-+		sja1000_write_cmdreg(priv, CMD_TR);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -505,10 +513,18 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 			netdev_warn(dev, "wakeup interrupt\n");
- 
- 		if (isrc & IRQ_TI) {
--			/* transmission complete interrupt */
--			stats->tx_bytes += priv->read_reg(priv, REG_FI) & 0xf;
--			stats->tx_packets++;
--			can_get_echo_skb(dev, 0);
-+			/* transmission buffer released */
-+			if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT &&
-+			    !(status & SR_TCS)) {
-+				stats->tx_errors++;
-+				can_free_echo_skb(dev, 0);
-+			} else {
-+				/* transmission complete */
-+				stats->tx_bytes +=
-+					priv->read_reg(priv, REG_FI) & 0xf;
-+				stats->tx_packets++;
-+				can_get_echo_skb(dev, 0);
-+			}
- 			netif_wake_queue(dev);
- 		}
- 		if (isrc & IRQ_RI) {
-@@ -605,7 +621,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
- 	priv->can.do_set_mode = sja1000_set_mode;
- 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
--		CAN_CTRLMODE_BERR_REPORTING;
-+		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
-+		CAN_CTRLMODE_ONE_SHOT;
- 
- 	spin_lock_init(&priv->cmdreg_lock);
- 
--- 
-1.7.0.4
+ 		if (clocksrc < 0) {
+ 			ref_clk = clk_get(&ofdev->dev, "ref_clk");
+-			if (!ref_clk) {
++			if (IS_ERR(ref_clk)) {
+ 				dev_err(&ofdev->dev, "couldn't get ref_clk\n");
+ 				goto exit_unmap;
+ 			}
+
 
