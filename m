@@ -1,107 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2012-09-22
-Date: Sat, 22 Sep 2012 00:24:28 +0200
-Message-ID: <505CE91C.1070504@pengutronix.de>
+From: "Vick, Matthew" <matthew.vick@intel.com>
+Subject: RE: [can:master 110/171]
+ drivers/net/ethernet/intel/igb/igb.h:347:25: error: field 'hwtstamp_config'
+ has incomplete type
+Date: Fri, 21 Sep 2012 23:38:12 +0000
+Message-ID: <06DFBC1E25D8024DB214DC7F41A3CD34488EFFFC@ORSMSX101.amr.corp.intel.com>
+References: <20120921121642.GA17278@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCAE396B5F25D2CBDC791E97F"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35601 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752416Ab2IUWYf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 18:24:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63622 "EHLO mga01.intel.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753693Ab2IUXiP convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Sep 2012 19:38:15 -0400
+In-Reply-To: <20120921121642.GA17278@localhost>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "Wu, Fengguang" <fengguang.wu@intel.com>
+Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCAE396B5F25D2CBDC791E97F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> -----Original Message-----
+> From: Wu, Fengguang
+> Sent: Friday, September 21, 2012 5:17 AM
+> To: Vick, Matthew
+> Cc: kernel-janitors@vger.kernel.org; Kirsher, Jeffrey T; linux-
+> can@vger.kernel.org
+> Subject: [can:master 110/171]
+> drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
+> 'hwtstamp_config' has incomplete type
+> 
+> Hi Matthew,
+> 
+> FYI, kernel build failed on
+> 
+> tree:   git://gitorious.org/linux-can/linux-can-next master
+> head:   a1161bc7bdf4eedccb1b91e7479f303cf95af533
+> commit: 3c89f6d0d4aa92ff252c17f8f6b5c8983ae2b77e [110/171] igb: Tidy up
+> wrapping for CONFIG_IGB_PTP.
+> config: x86_64-allyesdebian (attached as .config)
+> 
+> All related error/warning messages:
+> 
+> In file included from
+> drivers/net/ethernet/intel/igb/igb_ethtool.c:41:0:
+> drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
+> 'hwtstamp_config' has incomplete type
+> --
+> In file included from drivers/net/ethernet/intel/igb/e1000_mac.c:36:0:
+> drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
+> 'hwtstamp_config' has incomplete type
+> 
+> vim +347 drivers/net/ethernet/intel/igb/igb.h
+>    341		u8  tx_timeout_factor;
+>    342		struct timer_list blink_timer;
+>    343		unsigned long led_status;
+>    344
+>    345		/* OS defined structs */
+>    346		struct pci_dev *pdev;
+>  > 347		struct hwtstamp_config hwtstamp_config;
+>    348
+>    349		spinlock_t stats64_lock;
+>    350		struct rtnl_link_stats64 stats64;
+> 
+> ---
+> 0-DAY kernel build testing backend         Open Source Technology
+> Centre
+> Fengguang Wu, Yuanhan Liu                              Intel
+> Corporation
 
-Hello David,
+Fengguang,
 
-this pull request is intended for net-next (v3.7 cycle), it consist of
-5 patches by AnilKumar bringing device tree support, runtime PM, suspend
-resume and pinctrl support to the c_can/d_can driver.
+I'm not certain I understand how this issue came back to me. The patch in question doesn't touch that code, nor should it be changing anything that would cause a build error here. The offending line is also removed in the next patch (a79f4f88261d7fd492121daf85beafff663f1f01). I'm also unable to reproduce the error.
 
-Andreas Larsson improves the sja1000 driver (one-shot, listen only).
-Randy Dunlap fixes a function name conflict in the peak driver.
-Wei Yongjun fixes a return value check in the mscan-mpc5xxx driver.
+What would you like me to do with this?
 
-regards, Marc
---
-
-The following changes since commit abb17e6c0c7b27693201dc85f75dbb184279fd=
-10:
-
-  netlink: use <linux/export.h> instead of <linux/module.h> (2012-09-21 1=
-5:43:58 -0400)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can-next.git for-davem
-
-for you to fetch changes up to cb8db899a6b73334b41fd1a72252533afdf080dc:
-
-  can: sja1000: Add support for listen-only mode and one-shot mode (2012-=
-09-21 23:58:49 +0200)
-
-----------------------------------------------------------------
-Andreas Larsson (1):
-      can: sja1000: Add support for listen-only mode and one-shot mode
-
-AnilKumar Ch (5):
-      can: c_can: Modify c_can device names
-      can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller=
-
-      can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
-      can: c_can: Add d_can suspend resume support
-      can: c_can: Adopt pinctrl support
-
-Randy Dunlap (1):
-      can: usb: peak: rename peak_usb dump_mem function
-
-Wei Yongjun (1):
-      can: mscan-mpc5xxx: fix return value check in mpc512x_can_get_clock=
-()
-
- .../devicetree/bindings/net/can/c_can.txt          |   49 ++++++++
- drivers/net/can/c_can/c_can.c                      |  127 ++++++++++++++=
-+++++-
- drivers/net/can/c_can/c_can.h                      |   14 ++-
- drivers/net/can/c_can/c_can_pci.c                  |    6 +-
- drivers/net/can/c_can/c_can_platform.c             |  123 ++++++++++++++=
-++---
- drivers/net/can/mscan/mpc5xxx_can.c                |    4 +-
- drivers/net/can/sja1000/sja1000.c                  |   31 +++--
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       |    8 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h       |    2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c        |    8 +-
- 10 files changed, 332 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigCAE396B5F25D2CBDC791E97F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBc6SAACgkQjTAFq1RaXHOWNwCfXJOB3RS0kn2zc5LQ1GLagsG+
-sqcAnRgDzbABNgIbAq4x6wCOr+8Lt4Qt
-=subJ
------END PGP SIGNATURE-----
-
---------------enigCAE396B5F25D2CBDC791E97F--
+Cheers,
+Matthew
