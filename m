@@ -1,31 +1,111 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2012-09-22
-Date: Sat, 22 Sep 2012 15:26:41 -0400 (EDT)
-Message-ID: <20120922.152641.232413793871445214.davem@davemloft.net>
-References: <505CE91C.1070504@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Fwd: Re: (Case 10934) Re: [PATCH v4] can: kvaser_usb: Add support
+ for Kvaser CAN/USB devices
+Date: Mon, 24 Sep 2012 13:56:29 +0200
+Message-ID: <50604A6D.3040809@pengutronix.de>
+References: <md5:932bhqRVAAL8C/77La5+vQ==>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig25B06765D320AF9BD54B1330"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:34641 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751527Ab2IVT0m (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 22 Sep 2012 15:26:42 -0400
-In-Reply-To: <505CE91C.1070504@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48457 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754686Ab2IXL4g (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Sep 2012 07:56:36 -0400
+In-Reply-To: <md5:932bhqRVAAL8C/77La5+vQ==>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Kvaser Support <support@kvaser.com>, db@kvaser.com
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Sat, 22 Sep 2012 00:24:28 +0200
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig25B06765D320AF9BD54B1330
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-> this pull request is intended for net-next (v3.7 cycle), it consist of
-> 5 patches by AnilKumar bringing device tree support, runtime PM, suspend
-> resume and pinctrl support to the c_can/d_can driver.
-> 
-> Andreas Larsson improves the sja1000 driver (one-shot, listen only).
-> Randy Dunlap fixes a function name conflict in the peak driver.
-> Wei Yongjun fixes a return value check in the mscan-mpc5xxx driver.
+FYI: Olivier has got a S-o-b from Daniel Berglund from Kvaser for his
+USB driver.
 
-Pulled, thanks Marc.
+regards, Marc
+
+-------- Original Message --------
+Subject: Re: (Case 10934) Re: [PATCH v4] can: kvaser_usb: Add support
+for Kvaser CAN/USB devices
+Date: Mon, 24 Sep 2012 13:23:46 +0200
+From: Kvaser Support <support@kvaser.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: Olivier Sobrie <olivier@sobrie.be>
+
+Hi again,
+
+I just got the following comments from our head of software development:
+
+--
+They can add:
+Signed-off-by: Daniel Berglund <db@kvaser.com>
+
+By the way, the following lines are not necessary as the devices will
+not be found in the wild:
+  - Kvaser Memorator II, Prototype
+  - Kvaser Leaf prototype (P010v2 and v3)
+
+and this line:
+  - Kvaser Leaf Light (P010v3)
+should be just
+  - Kvaser Leaf Light
+--
+
+Best regards
+Jerry Thors=E9n
+Kvaser Support
+support@kvaser.com
+-------------------------------------------------------------------------=
+--
+
+
+
+-----Original Message-----
+From: "Kvaser Support" <support@kvaser.com>
+Reply-To: "Kvaser Support" <support@kvaser.com>
+Date: Mon, 24 Sep 2012 10:05:36 +02:00
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: "Olivier Sobrie" <olivier@sobrie.be>
+Subject: Re: (Case 10934) Re: [PATCH v4] can: kvaser_usb: Add support
+for Kvaser CAN/USB devices
+
+>Hi,
+>
+>Great, thanks!
+>
+>Best regards
+>Jerry Thors=E9n
+>Kvaser Support
+>support@kvaser.com
+>------------------------------------------------------------------------=
+---
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+
+
+--------------enig25B06765D320AF9BD54B1330
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBgSnAACgkQjTAFq1RaXHOPwQCcDhj2EicW6ekV02nq57nF0HpY
+NrsAn3rZA8LeUTD8jVOtbUJrXT9w3s4w
+=oCz+
+-----END PGP SIGNATURE-----
+
+--------------enig25B06765D320AF9BD54B1330--
