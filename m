@@ -1,104 +1,80 @@
-From: "Vick, Matthew" <matthew.vick@intel.com>
-Subject: RE: [can:master 110/171]
- drivers/net/ethernet/intel/igb/igb.h:347:25: error: field 'hwtstamp_config'
- has incomplete type
-Date: Tue, 25 Sep 2012 17:06:17 +0000
-Message-ID: <06DFBC1E25D8024DB214DC7F41A3CD34488F2D9F@ORSMSX101.amr.corp.intel.com>
-References: <20120921121642.GA17278@localhost>
- <06DFBC1E25D8024DB214DC7F41A3CD34488EFFFC@ORSMSX101.amr.corp.intel.com>
- <20120925122218.GB4545@localhost>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: ISOTP-implementation
+Date: Tue, 25 Sep 2012 21:44:37 +0200
+Message-ID: <506209A5.6050900@hartkopp.net>
+References: <OFA6F22965.64945A5F-ONC1257A80.00311F72-C1257A80.00314FED@continental-corporation.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga09.intel.com ([134.134.136.24]:43894 "EHLO mga09.intel.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1757357Ab2IYRGf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 25 Sep 2012 13:06:35 -0400
-In-Reply-To: <20120925122218.GB4545@localhost>
-Content-Language: en-US
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:9333 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755218Ab2IYTok (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 25 Sep 2012 15:44:40 -0400
+In-Reply-To: <OFA6F22965.64945A5F-ONC1257A80.00311F72-C1257A80.00314FED@continental-corporation.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Wu, Fengguang" <fengguang.wu@intel.com>
-Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Mahesh.Maharjan-EXT@continental-corporation.com
+Cc: linux-can@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXdSwgRmVuZ2d1YW5nDQo+IFNl
-bnQ6IFR1ZXNkYXksIFNlcHRlbWJlciAyNSwgMjAxMiA1OjIyIEFNDQo+IFRvOiBWaWNrLCBNYXR0
-aGV3DQo+IENjOiBrZXJuZWwtamFuaXRvcnNAdmdlci5rZXJuZWwub3JnOyBLaXJzaGVyLCBKZWZm
-cmV5IFQ7IGxpbnV4LQ0KPiBjYW5Admdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbY2Fu
-Om1hc3RlciAxMTAvMTcxXQ0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2IvaWdiLmg6
-MzQ3OjI1OiBlcnJvcjogZmllbGQNCj4gJ2h3dHN0YW1wX2NvbmZpZycgaGFzIGluY29tcGxldGUg
-dHlwZQ0KPiANCj4gT24gU2F0LCBTZXAgMjIsIDIwMTIgYXQgMDc6Mzg6MTJBTSArMDgwMCwgVmlj
-aywgTWF0dGhldyB3cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4g
-PiBGcm9tOiBXdSwgRmVuZ2d1YW5nDQo+ID4gPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAyMSwg
-MjAxMiA1OjE3IEFNDQo+ID4gPiBUbzogVmljaywgTWF0dGhldw0KPiA+ID4gQ2M6IGtlcm5lbC1q
-YW5pdG9yc0B2Z2VyLmtlcm5lbC5vcmc7IEtpcnNoZXIsIEplZmZyZXkgVDsgbGludXgtDQo+ID4g
-PiBjYW5Admdlci5rZXJuZWwub3JnDQo+ID4gPiBTdWJqZWN0OiBbY2FuOm1hc3RlciAxMTAvMTcx
-XQ0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJy
-b3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBfY29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+
-ID4gPg0KPiA+ID4gSGkgTWF0dGhldywNCj4gPiA+DQo+ID4gPiBGWUksIGtlcm5lbCBidWlsZCBm
-YWlsZWQgb24NCj4gPiA+DQo+ID4gPiB0cmVlOiAgIGdpdDovL2dpdG9yaW91cy5vcmcvbGludXgt
-Y2FuL2xpbnV4LWNhbi1uZXh0IG1hc3Rlcg0KPiA+ID4gaGVhZDogICBhMTE2MWJjN2JkZjRlZWRj
-Y2IxYjkxZTc0NzlmMzAzY2Y5NWFmNTMzDQo+ID4gPiBjb21taXQ6IDNjODlmNmQwZDRhYTkyZmYy
-NTJjMTdmOGY2YjVjODk4M2FlMmI3N2UgWzExMC8xNzFdIGlnYjoNCj4gVGlkeQ0KPiA+ID4gdXAg
-d3JhcHBpbmcgZm9yIENPTkZJR19JR0JfUFRQLg0KPiA+ID4gY29uZmlnOiB4ODZfNjQtYWxseWVz
-ZGViaWFuIChhdHRhY2hlZCBhcyAuY29uZmlnKQ0KPiA+ID4NCj4gPiA+IEFsbCByZWxhdGVkIGVy
-cm9yL3dhcm5pbmcgbWVzc2FnZXM6DQo+ID4gPg0KPiA+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9t
-DQo+ID4gPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2IvaWdiX2V0aHRvb2wuYzo0MTow
-Og0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJy
-b3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBfY29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+
-ID4gPiAtLQ0KPiA+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tDQo+IGRyaXZlcnMvbmV0L2V0aGVy
-bmV0L2ludGVsL2lnYi9lMTAwMF9tYWMuYzozNjowOg0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJu
-ZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJyb3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBf
-Y29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+ID4gPg0KPiA+ID4gdmltICszNDcgZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oDQo+ID4gPiAgICAzNDEJCXU4ICB0eF90aW1l
-b3V0X2ZhY3RvcjsNCj4gPiA+ICAgIDM0MgkJc3RydWN0IHRpbWVyX2xpc3QgYmxpbmtfdGltZXI7
-DQo+ID4gPiAgICAzNDMJCXVuc2lnbmVkIGxvbmcgbGVkX3N0YXR1czsNCj4gPiA+ICAgIDM0NA0K
-PiA+ID4gICAgMzQ1CQkvKiBPUyBkZWZpbmVkIHN0cnVjdHMgKi8NCj4gPiA+ICAgIDM0NgkJc3Ry
-dWN0IHBjaV9kZXYgKnBkZXY7DQo+ID4gPiAgPiAzNDcJCXN0cnVjdCBod3RzdGFtcF9jb25maWcg
-aHd0c3RhbXBfY29uZmlnOw0KPiA+ID4gICAgMzQ4DQo+ID4gPiAgICAzNDkJCXNwaW5sb2NrX3Qg
-c3RhdHM2NF9sb2NrOw0KPiA+ID4gICAgMzUwCQlzdHJ1Y3QgcnRubF9saW5rX3N0YXRzNjQgc3Rh
-dHM2NDsNCj4gPiA+DQo+ID4gPiAtLS0NCj4gPiA+IDAtREFZIGtlcm5lbCBidWlsZCB0ZXN0aW5n
-IGJhY2tlbmQgICAgICAgICBPcGVuIFNvdXJjZSBUZWNobm9sb2d5DQo+ID4gPiBDZW50cmUNCj4g
-PiA+IEZlbmdndWFuZyBXdSwgWXVhbmhhbiBMaXUgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBJbnRlbA0KPiA+ID4gQ29ycG9yYXRpb24NCj4gPg0KPiA+IEZlbmdndWFuZywNCj4gPg0KPiA+
-IEknbSBub3QgY2VydGFpbiBJIHVuZGVyc3RhbmQgaG93IHRoaXMgaXNzdWUgY2FtZSBiYWNrIHRv
-IG1lLiBUaGUNCj4gcGF0Y2gNCj4gPiBpbiBxdWVzdGlvbiBkb2Vzbid0IHRvdWNoIHRoYXQgY29k
-ZSwgbm9yIHNob3VsZCBpdCBiZSBjaGFuZ2luZw0KPiA+IGFueXRoaW5nIHRoYXQgd291bGQgY2F1
-c2UgYSBidWlsZCBlcnJvciBoZXJlLiBUaGUgb2ZmZW5kaW5nIGxpbmUgaXMNCj4gPiBhbHNvIHJl
-bW92ZWQgaW4gdGhlIG5leHQgcGF0Y2gNCj4gPiAoYTc5ZjRmODgyNjFkN2ZkNDkyMTIxZGFmODVi
-ZWFmZmY2NjNmMWYwMSkuIEknbSBhbHNvIHVuYWJsZSB0bw0KPiA+IHJlcHJvZHVjZSB0aGUgZXJy
-b3IuDQo+IA0KPiBIaSBNYXR0aGV3LCB0aGlzIGlzIGludGVyZXN0aW5nLCBidXQgSSBkbyByZXBy
-b2R1Y2VkIHRoZSBpc3N1ZSBieQ0KPiBidWlsZGluZyAzYzg5ZjZkMGQ0YWE5MmZmMjUyYzE3Zjhm
-NmI1Yzg5ODNhZTJiNzdlIGZyb20gc2NyYXRjaCB3aXRoIHRoZQ0KPiBvcmlnaW5hbGx5IGF0dGFj
-aGVkIGNvbmZpZyBmaWxlOg0KPiANCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L3Fs
-b2dpYy9xbGEzeHh4Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2l4
-Z2JldmYvbWJ4Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2l4Z2Jl
-L2l4Z2JlX21haW4ubw0KPiAgIENDICAgICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcWxvZ2ljL25l
-dHhlbi9uZXR4ZW5fbmljX2h3Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2lu
-dGVsL2l4Z2JldmYvZXRodG9vbC5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9p
-bnRlbC9pZ2IvZTEwMDBfaTIxMC5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9p
-bnRlbC9peGdiZXZmL2l4Z2JldmZfbWFpbi5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhl
-cm5ldC9pbnRlbC9peGdiZS9peGdiZV9jb21tb24ubw0KPiAgIENDICAgICAgZHJpdmVycy9uZXQv
-ZXRoZXJuZXQvcmVhbHRlay9yODE2OS5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5l
-dC9xbG9naWMvbmV0eGVuL25ldHhlbl9uaWNfbWFpbi5vDQo+IEluIGZpbGUgaW5jbHVkZWQgZnJv
-bQ0KPiAvYy93ZmcvbGludXgvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYl9ldGh0
-b29sLmM6NDE6MDoNCj4gL2Mvd2ZnL2xpbnV4L2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ln
-Yi9pZ2IuaDozNDc6MjU6IGVycm9yOiBmaWVsZA0KPiDigJhod3RzdGFtcF9jb25maWfigJkgaGFz
-IGluY29tcGxldGUgdHlwZQ0KPiAgIENDICAgICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcWxvZ2lj
-L25ldHhlbi9uZXR4ZW5fbmljX2luaXQubw0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20NCj4gL2Mv
-d2ZnL2xpbnV4L2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYi9lMTAwMF9tYWMuYzozNjow
-Og0KPiAvYy93ZmcvbGludXgvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0
-NzoyNTogZXJyb3I6IGZpZWxkDQo+IOKAmGh3dHN0YW1wX2NvbmZpZ+KAmSBoYXMgaW5jb21wbGV0
-ZSB0eXBlDQo+IG1ha2VbNl06ICoqKiBbZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2Ux
-MDAwX21hYy5vXSBFcnJvciAxDQo+IG1ha2VbNl06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVk
-IGpvYnMuLi4uDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9xbG9naWMvbmV0eGVu
-L25ldHhlbl9uaWNfZXRodG9vbC5vDQo+IG1ha2VbNl06ICoqKiBbZHJpdmVycy9uZXQvZXRoZXJu
-ZXQvaW50ZWwvaWdiL2lnYl9ldGh0b29sLm9dIEVycm9yIDENCj4gDQo+IFRoYW5rcywNCj4gRmVu
-Z2d1YW5nDQoNCkFoLCBJIHNlZSB0aGUgaXNzdWUgbm93LiBTb21lIGNvbWJpbmF0aW9uIG9mIENP
-TkZJR19JR0JfUFRQIG5vdCBiZWluZyBzdXBwb3J0ZWQgYWxvbmdzaWRlIG90aGVyIGtlcm5lbCBj
-b25maWd1cmF0aW9uIHN0cmFuZ2VuZXNzIEkgaGF2ZW4ndCBmdWxseSBkaXZlZCBpbnRvIHNlZW1z
-IHRvIGJlIHRoZSBjdWxwcml0Lg0KDQpXaGF0IHdvdWxkIHlvdSBsaWtlIG1lIHRvIGRvIHdpdGgg
-dGhpcyBpbmZvcm1hdGlvbiwgdGhvdWdoPyBUaGUgb2ZmZW5kaW5nIGNvZGUgaXMgcmVtb3ZlZCBp
-biB0aGUgbmV4dCBwYXRjaCwgc28gSSdtIHVuYWJsZSB0byBjbGVhbiBpdCB1cHN0cmVhbSBhdCB0
-aGlzIHBvaW50Lg0KDQpDaGVlcnMsDQpNYXR0aGV3DQo=
+On 21.09.2012 10:58, Mahesh.Maharjan-EXT@continental-corporation.com wrote:
+
+> In socketCan implementation with ISOTP_can, I want to know few things. As 
+> far. ISOTP is point to point. But , as in BCM and RAW, Is it possible to 
+> create multiple sockets for ISO-TP ??
+
+
+You can open as much ISO-TP as you like.
+Each ISO-TP socket should be bound to a different src-ID / dst-ID pair so that
+they don't interfere.
+
+> Or creating each socket with Message object for reading and writing
+
+
+No. Once bound to a specific src/dst identifier, the connection is defined
+properly. You can send and receive on that socket then.
+
+See this example:
+
+https://gitorious.org/linux-can/can-utils/blobs/master/isotptun.c
+
+
+> Now If I want to implement with ISOTP with InterProcess Com  system  !! . 
+> which might have multiple PDU..
+
+
+One write() syscall -> one ISO-TP PDU is sent
+
+One ISO-TP PDU is received -> one read() syscall get's the PDU
+
+
+> Suppose , In receiving side , I might have 
+> single master PDU and multi Slave PDU ..
+
+
+???
+
+The ISO-TP socket can only deal with point-to-point connections - due to the
+two needed CAN Identifiers.
+
+If you think about functional diagnosis requests: Use the raw socket to send
+these requests that are fitting into one CAN frame ...
+
+> So  what could be idea.. if I 
+> want to use Socketcan ISO-TP standard Socketcan. and  I check in isotp.c 
+> file., But could able to figure out , how it realize with Socket and 
+> ISO-TP standard.
+
+
+Did you read the source of all the ISO-TP tools?
+
+https://gitorious.org/linux-can/can-utils/trees/master (isotp*.c)
+
+And did you read this:
+
+https://gitorious.org/linux-can/can-modules/blobs/master/README.isotp
+
+??
+
+Regards,
+Oliver
