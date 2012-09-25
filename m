@@ -1,114 +1,104 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [can:master 110/171]
+From: "Vick, Matthew" <matthew.vick@intel.com>
+Subject: RE: [can:master 110/171]
  drivers/net/ethernet/intel/igb/igb.h:347:25: error: field 'hwtstamp_config'
  has incomplete type
-Date: Tue, 25 Sep 2012 20:22:18 +0800
-Message-ID: <20120925122218.GB4545@localhost>
+Date: Tue, 25 Sep 2012 17:06:17 +0000
+Message-ID: <06DFBC1E25D8024DB214DC7F41A3CD34488F2D9F@ORSMSX101.amr.corp.intel.com>
 References: <20120921121642.GA17278@localhost>
  <06DFBC1E25D8024DB214DC7F41A3CD34488EFFFC@ORSMSX101.amr.corp.intel.com>
+ <20120925122218.GB4545@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga01.intel.com ([192.55.52.88]:41722 "EHLO mga01.intel.com"
+Received: from mga09.intel.com ([134.134.136.24]:43894 "EHLO mga09.intel.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751602Ab2IYMW0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 25 Sep 2012 08:22:26 -0400
-Content-Disposition: inline
-In-Reply-To: <06DFBC1E25D8024DB214DC7F41A3CD34488EFFFC@ORSMSX101.amr.corp.intel.com>
+	id S1757357Ab2IYRGf (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 25 Sep 2012 13:06:35 -0400
+In-Reply-To: <20120925122218.GB4545@localhost>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Vick, Matthew" <matthew.vick@intel.com>
+To: "Wu, Fengguang" <fengguang.wu@intel.com>
 Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Sat, Sep 22, 2012 at 07:38:12AM +0800, Vick, Matthew wrote:
-> > -----Original Message-----
-> > From: Wu, Fengguang
-> > Sent: Friday, September 21, 2012 5:17 AM
-> > To: Vick, Matthew
-> > Cc: kernel-janitors@vger.kernel.org; Kirsher, Jeffrey T; linux-
-> > can@vger.kernel.org
-> > Subject: [can:master 110/171]
-> > drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
-> > 'hwtstamp_config' has incomplete type
-> >=20
-> > Hi Matthew,
-> >=20
-> > FYI, kernel build failed on
-> >=20
-> > tree:   git://gitorious.org/linux-can/linux-can-next master
-> > head:   a1161bc7bdf4eedccb1b91e7479f303cf95af533
-> > commit: 3c89f6d0d4aa92ff252c17f8f6b5c8983ae2b77e [110/171] igb: Tid=
-y up
-> > wrapping for CONFIG_IGB_PTP.
-> > config: x86_64-allyesdebian (attached as .config)
-> >=20
-> > All related error/warning messages:
-> >=20
-> > In file included from
-> > drivers/net/ethernet/intel/igb/igb_ethtool.c:41:0:
-> > drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
-> > 'hwtstamp_config' has incomplete type
-> > --
-> > In file included from drivers/net/ethernet/intel/igb/e1000_mac.c:36=
-:0:
-> > drivers/net/ethernet/intel/igb/igb.h:347:25: error: field
-> > 'hwtstamp_config' has incomplete type
-> >=20
-> > vim +347 drivers/net/ethernet/intel/igb/igb.h
-> >    341		u8  tx_timeout_factor;
-> >    342		struct timer_list blink_timer;
-> >    343		unsigned long led_status;
-> >    344
-> >    345		/* OS defined structs */
-> >    346		struct pci_dev *pdev;
-> >  > 347		struct hwtstamp_config hwtstamp_config;
-> >    348
-> >    349		spinlock_t stats64_lock;
-> >    350		struct rtnl_link_stats64 stats64;
-> >=20
-> > ---
-> > 0-DAY kernel build testing backend         Open Source Technology
-> > Centre
-> > Fengguang Wu, Yuanhan Liu                              Intel
-> > Corporation
->=20
-> Fengguang,
->=20
-> I'm not certain I understand how this issue came back to me. The
-> patch in question doesn't touch that code, nor should it be changing
-> anything that would cause a build error here. The offending line is
-> also removed in the next patch
-> (a79f4f88261d7fd492121daf85beafff663f1f01). I'm also unable to
-> reproduce the error.
-
-Hi Matthew, this is interesting, but I do reproduced the issue by
-building 3c89f6d0d4aa92ff252c17f8f6b5c8983ae2b77e from scratch with
-the originally attached config file:
-
-  CC      drivers/net/ethernet/qlogic/qla3xxx.o
-  CC      drivers/net/ethernet/intel/ixgbevf/mbx.o
-  CC      drivers/net/ethernet/intel/ixgbe/ixgbe_main.o
-  CC      drivers/net/ethernet/qlogic/netxen/netxen_nic_hw.o
-  CC      drivers/net/ethernet/intel/ixgbevf/ethtool.o
-  CC      drivers/net/ethernet/intel/igb/e1000_i210.o
-  CC      drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.o
-  CC      drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
-  CC      drivers/net/ethernet/realtek/r8169.o
-  CC      drivers/net/ethernet/qlogic/netxen/netxen_nic_main.o
-In file included from /c/wfg/linux/drivers/net/ethernet/intel/igb/igb_e=
-thtool.c:41:0:
-/c/wfg/linux/drivers/net/ethernet/intel/igb/igb.h:347:25: error: field =
-=E2=80=98hwtstamp_config=E2=80=99 has incomplete type
-  CC      drivers/net/ethernet/qlogic/netxen/netxen_nic_init.o
-In file included from /c/wfg/linux/drivers/net/ethernet/intel/igb/e1000=
-_mac.c:36:0:
-/c/wfg/linux/drivers/net/ethernet/intel/igb/igb.h:347:25: error: field =
-=E2=80=98hwtstamp_config=E2=80=99 has incomplete type
-make[6]: *** [drivers/net/ethernet/intel/igb/e1000_mac.o] Error 1
-make[6]: *** Waiting for unfinished jobs....
-  CC      drivers/net/ethernet/qlogic/netxen/netxen_nic_ethtool.o
-make[6]: *** [drivers/net/ethernet/intel/igb/igb_ethtool.o] Error 1
-
-Thanks,
-=46engguang
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXdSwgRmVuZ2d1YW5nDQo+IFNl
+bnQ6IFR1ZXNkYXksIFNlcHRlbWJlciAyNSwgMjAxMiA1OjIyIEFNDQo+IFRvOiBWaWNrLCBNYXR0
+aGV3DQo+IENjOiBrZXJuZWwtamFuaXRvcnNAdmdlci5rZXJuZWwub3JnOyBLaXJzaGVyLCBKZWZm
+cmV5IFQ7IGxpbnV4LQ0KPiBjYW5Admdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbY2Fu
+Om1hc3RlciAxMTAvMTcxXQ0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2IvaWdiLmg6
+MzQ3OjI1OiBlcnJvcjogZmllbGQNCj4gJ2h3dHN0YW1wX2NvbmZpZycgaGFzIGluY29tcGxldGUg
+dHlwZQ0KPiANCj4gT24gU2F0LCBTZXAgMjIsIDIwMTIgYXQgMDc6Mzg6MTJBTSArMDgwMCwgVmlj
+aywgTWF0dGhldyB3cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4g
+PiBGcm9tOiBXdSwgRmVuZ2d1YW5nDQo+ID4gPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAyMSwg
+MjAxMiA1OjE3IEFNDQo+ID4gPiBUbzogVmljaywgTWF0dGhldw0KPiA+ID4gQ2M6IGtlcm5lbC1q
+YW5pdG9yc0B2Z2VyLmtlcm5lbC5vcmc7IEtpcnNoZXIsIEplZmZyZXkgVDsgbGludXgtDQo+ID4g
+PiBjYW5Admdlci5rZXJuZWwub3JnDQo+ID4gPiBTdWJqZWN0OiBbY2FuOm1hc3RlciAxMTAvMTcx
+XQ0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJy
+b3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBfY29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+
+ID4gPg0KPiA+ID4gSGkgTWF0dGhldywNCj4gPiA+DQo+ID4gPiBGWUksIGtlcm5lbCBidWlsZCBm
+YWlsZWQgb24NCj4gPiA+DQo+ID4gPiB0cmVlOiAgIGdpdDovL2dpdG9yaW91cy5vcmcvbGludXgt
+Y2FuL2xpbnV4LWNhbi1uZXh0IG1hc3Rlcg0KPiA+ID4gaGVhZDogICBhMTE2MWJjN2JkZjRlZWRj
+Y2IxYjkxZTc0NzlmMzAzY2Y5NWFmNTMzDQo+ID4gPiBjb21taXQ6IDNjODlmNmQwZDRhYTkyZmYy
+NTJjMTdmOGY2YjVjODk4M2FlMmI3N2UgWzExMC8xNzFdIGlnYjoNCj4gVGlkeQ0KPiA+ID4gdXAg
+d3JhcHBpbmcgZm9yIENPTkZJR19JR0JfUFRQLg0KPiA+ID4gY29uZmlnOiB4ODZfNjQtYWxseWVz
+ZGViaWFuIChhdHRhY2hlZCBhcyAuY29uZmlnKQ0KPiA+ID4NCj4gPiA+IEFsbCByZWxhdGVkIGVy
+cm9yL3dhcm5pbmcgbWVzc2FnZXM6DQo+ID4gPg0KPiA+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9t
+DQo+ID4gPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2IvaWdiX2V0aHRvb2wuYzo0MTow
+Og0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJy
+b3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBfY29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+
+ID4gPiAtLQ0KPiA+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tDQo+IGRyaXZlcnMvbmV0L2V0aGVy
+bmV0L2ludGVsL2lnYi9lMTAwMF9tYWMuYzozNjowOg0KPiA+ID4gZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaW50ZWwvaWdiL2lnYi5oOjM0NzoyNTogZXJyb3I6IGZpZWxkDQo+ID4gPiAnaHd0c3RhbXBf
+Y29uZmlnJyBoYXMgaW5jb21wbGV0ZSB0eXBlDQo+ID4gPg0KPiA+ID4gdmltICszNDcgZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oDQo+ID4gPiAgICAzNDEJCXU4ICB0eF90aW1l
+b3V0X2ZhY3RvcjsNCj4gPiA+ICAgIDM0MgkJc3RydWN0IHRpbWVyX2xpc3QgYmxpbmtfdGltZXI7
+DQo+ID4gPiAgICAzNDMJCXVuc2lnbmVkIGxvbmcgbGVkX3N0YXR1czsNCj4gPiA+ICAgIDM0NA0K
+PiA+ID4gICAgMzQ1CQkvKiBPUyBkZWZpbmVkIHN0cnVjdHMgKi8NCj4gPiA+ICAgIDM0NgkJc3Ry
+dWN0IHBjaV9kZXYgKnBkZXY7DQo+ID4gPiAgPiAzNDcJCXN0cnVjdCBod3RzdGFtcF9jb25maWcg
+aHd0c3RhbXBfY29uZmlnOw0KPiA+ID4gICAgMzQ4DQo+ID4gPiAgICAzNDkJCXNwaW5sb2NrX3Qg
+c3RhdHM2NF9sb2NrOw0KPiA+ID4gICAgMzUwCQlzdHJ1Y3QgcnRubF9saW5rX3N0YXRzNjQgc3Rh
+dHM2NDsNCj4gPiA+DQo+ID4gPiAtLS0NCj4gPiA+IDAtREFZIGtlcm5lbCBidWlsZCB0ZXN0aW5n
+IGJhY2tlbmQgICAgICAgICBPcGVuIFNvdXJjZSBUZWNobm9sb2d5DQo+ID4gPiBDZW50cmUNCj4g
+PiA+IEZlbmdndWFuZyBXdSwgWXVhbmhhbiBMaXUgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBJbnRlbA0KPiA+ID4gQ29ycG9yYXRpb24NCj4gPg0KPiA+IEZlbmdndWFuZywNCj4gPg0KPiA+
+IEknbSBub3QgY2VydGFpbiBJIHVuZGVyc3RhbmQgaG93IHRoaXMgaXNzdWUgY2FtZSBiYWNrIHRv
+IG1lLiBUaGUNCj4gcGF0Y2gNCj4gPiBpbiBxdWVzdGlvbiBkb2Vzbid0IHRvdWNoIHRoYXQgY29k
+ZSwgbm9yIHNob3VsZCBpdCBiZSBjaGFuZ2luZw0KPiA+IGFueXRoaW5nIHRoYXQgd291bGQgY2F1
+c2UgYSBidWlsZCBlcnJvciBoZXJlLiBUaGUgb2ZmZW5kaW5nIGxpbmUgaXMNCj4gPiBhbHNvIHJl
+bW92ZWQgaW4gdGhlIG5leHQgcGF0Y2gNCj4gPiAoYTc5ZjRmODgyNjFkN2ZkNDkyMTIxZGFmODVi
+ZWFmZmY2NjNmMWYwMSkuIEknbSBhbHNvIHVuYWJsZSB0bw0KPiA+IHJlcHJvZHVjZSB0aGUgZXJy
+b3IuDQo+IA0KPiBIaSBNYXR0aGV3LCB0aGlzIGlzIGludGVyZXN0aW5nLCBidXQgSSBkbyByZXBy
+b2R1Y2VkIHRoZSBpc3N1ZSBieQ0KPiBidWlsZGluZyAzYzg5ZjZkMGQ0YWE5MmZmMjUyYzE3Zjhm
+NmI1Yzg5ODNhZTJiNzdlIGZyb20gc2NyYXRjaCB3aXRoIHRoZQ0KPiBvcmlnaW5hbGx5IGF0dGFj
+aGVkIGNvbmZpZyBmaWxlOg0KPiANCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L3Fs
+b2dpYy9xbGEzeHh4Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2l4
+Z2JldmYvbWJ4Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2l4Z2Jl
+L2l4Z2JlX21haW4ubw0KPiAgIENDICAgICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcWxvZ2ljL25l
+dHhlbi9uZXR4ZW5fbmljX2h3Lm8NCj4gICBDQyAgICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2lu
+dGVsL2l4Z2JldmYvZXRodG9vbC5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9p
+bnRlbC9pZ2IvZTEwMDBfaTIxMC5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9p
+bnRlbC9peGdiZXZmL2l4Z2JldmZfbWFpbi5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhl
+cm5ldC9pbnRlbC9peGdiZS9peGdiZV9jb21tb24ubw0KPiAgIENDICAgICAgZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvcmVhbHRlay9yODE2OS5vDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5l
+dC9xbG9naWMvbmV0eGVuL25ldHhlbl9uaWNfbWFpbi5vDQo+IEluIGZpbGUgaW5jbHVkZWQgZnJv
+bQ0KPiAvYy93ZmcvbGludXgvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYl9ldGh0
+b29sLmM6NDE6MDoNCj4gL2Mvd2ZnL2xpbnV4L2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ln
+Yi9pZ2IuaDozNDc6MjU6IGVycm9yOiBmaWVsZA0KPiDigJhod3RzdGFtcF9jb25maWfigJkgaGFz
+IGluY29tcGxldGUgdHlwZQ0KPiAgIENDICAgICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcWxvZ2lj
+L25ldHhlbi9uZXR4ZW5fbmljX2luaXQubw0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20NCj4gL2Mv
+d2ZnL2xpbnV4L2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYi9lMTAwMF9tYWMuYzozNjow
+Og0KPiAvYy93ZmcvbGludXgvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oOjM0
+NzoyNTogZXJyb3I6IGZpZWxkDQo+IOKAmGh3dHN0YW1wX2NvbmZpZ+KAmSBoYXMgaW5jb21wbGV0
+ZSB0eXBlDQo+IG1ha2VbNl06ICoqKiBbZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2Ux
+MDAwX21hYy5vXSBFcnJvciAxDQo+IG1ha2VbNl06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVk
+IGpvYnMuLi4uDQo+ICAgQ0MgICAgICBkcml2ZXJzL25ldC9ldGhlcm5ldC9xbG9naWMvbmV0eGVu
+L25ldHhlbl9uaWNfZXRodG9vbC5vDQo+IG1ha2VbNl06ICoqKiBbZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaW50ZWwvaWdiL2lnYl9ldGh0b29sLm9dIEVycm9yIDENCj4gDQo+IFRoYW5rcywNCj4gRmVu
+Z2d1YW5nDQoNCkFoLCBJIHNlZSB0aGUgaXNzdWUgbm93LiBTb21lIGNvbWJpbmF0aW9uIG9mIENP
+TkZJR19JR0JfUFRQIG5vdCBiZWluZyBzdXBwb3J0ZWQgYWxvbmdzaWRlIG90aGVyIGtlcm5lbCBj
+b25maWd1cmF0aW9uIHN0cmFuZ2VuZXNzIEkgaGF2ZW4ndCBmdWxseSBkaXZlZCBpbnRvIHNlZW1z
+IHRvIGJlIHRoZSBjdWxwcml0Lg0KDQpXaGF0IHdvdWxkIHlvdSBsaWtlIG1lIHRvIGRvIHdpdGgg
+dGhpcyBpbmZvcm1hdGlvbiwgdGhvdWdoPyBUaGUgb2ZmZW5kaW5nIGNvZGUgaXMgcmVtb3ZlZCBp
+biB0aGUgbmV4dCBwYXRjaCwgc28gSSdtIHVuYWJsZSB0byBjbGVhbiBpdCB1cHN0cmVhbSBhdCB0
+aGlzIHBvaW50Lg0KDQpDaGVlcnMsDQpNYXR0aGV3DQo=
