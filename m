@@ -1,34 +1,28 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2012-09-27
-Date: Fri, 28 Sep 2012 18:47:22 -0400 (EDT)
-Message-ID: <20120928.184722.207332759072223029.davem@davemloft.net>
-References: <5064661E.1000000@pengutronix.de>
+From: Hui Wang <jason77.wang@gmail.com>
+Subject: Re: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Sat, 29 Sep 2012 14:00:05 +0800
+Message-ID: <50668E65.8030500@gmail.com>
+References: <5065A35B.3020702@grandegger.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:45687 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932167Ab2I1WrY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Sep 2012 18:47:24 -0400
-In-Reply-To: <5064661E.1000000@pengutronix.de>
+Received: from mail.windriver.com ([147.11.1.11]:57278 "EHLO
+	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754951Ab2I2GA0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 29 Sep 2012 02:00:26 -0400
+In-Reply-To: <5065A35B.3020702@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 27 Sep 2012 16:43:42 +0200
+Wolfgang Grandegger wrote:
+> Due to a bug in most Flexcan cores, the bus error interrupt needs
+> to be enabled. Otherwise we don't get any error warning or passive
+> interrupts. This is _not_ necessay for the i.MX28 and this patch
+>   
+s/necessay/necessary/
 
-> Hello David,
-> 
-> this pull request is for net-next, for the v3.7 release cycle.
-> AnilKumar Ch contributed a fix for a segfault in the c_can driver,
-> which is triggered by an earlier commit [1] in net-next (so no backport
-> is needed).
-> 
-> Marc
-> 
-> [1] 4cdd34b can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller
 
-Pulled, thanks.
+Other looks fine to me.  Reviewed-by:  Hui Wang <jason77.wang@gmail.com>
