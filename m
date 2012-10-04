@@ -1,61 +1,97 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/3] can: peak_pcmcia: fix error return code
-Date: Thu,  4 Oct 2012 19:57:21 +0200
-Message-ID: <1349373442-11128-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 3/3] can: mpc5xxx_can: fix section type conflict
+Date: Thu,  4 Oct 2012 19:57:22 +0200
+Message-ID: <1349373442-11128-4-git-send-email-mkl@pengutronix.de>
 References: <1349373442-11128-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51910 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751278Ab2JDR52 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 13:57:28 -0400
 In-Reply-To: <1349373442-11128-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Peter Senna Tschudin <peter.senna@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Peter Senna Tschudin <peter.senna@gmail.com>
+Since commit:
+    6d99c4c can: mpc5xxx_can: make data used as *of_device_id.data cons=
+t
 
-Convert a nonnegative error return code to a negative one, as returned
-elsewhere in the function.
+both "struct mpc5xxx_can_data mpc5200_can_data" and "mpc5121_can_data" =
+are
+marked as "const" but also as "__devinitdata". This leads to the follow=
+ing
+compile error:
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
+drivers/net/can/mscan/mpc5xxx_can.c:383: error: mpc5200_can_data causes=
+ a section type conflict
+drivers/net/can/mscan/mpc5xxx_can.c:383: error: mpc5200_can_data causes=
+ a section type conflict
+drivers/net/can/mscan/mpc5xxx_can.c:388: error: mpc5121_can_data causes=
+ a section type conflict
+drivers/net/can/mscan/mpc5xxx_can.c:388: error: mpc5121_can_data causes=
+ a section type conflict
 
-// <smpl>
-(
-if@p1 (\(ret < 0\|ret != 0\))
- { ... return ret; }
-|
-ret@p1 = 0
-)
-... when != ret = e1
-    when != &ret
-*if(...)
-{
-  ... when != ret = e2
-      when forall
- return ret;
-}
-// </smpl>
+This patch changes the "__devinitdata" to "__devinitconst" and marks th=
+e
+"struct of_device_id mpc5xxx_can_table" as "const" and "__devinitconst"=
+, too.
 
-Signed-off-by: Peter Senna Tschudin <peter.senna@gmail.com>
+Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/peak_pcmcia.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/mscan/mpc5xxx_can.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
-index ec6bd9d..272a85f 100644
---- a/drivers/net/can/sja1000/peak_pcmcia.c
-+++ b/drivers/net/can/sja1000/peak_pcmcia.c
-@@ -686,8 +686,10 @@ static int __devinit pcan_probe(struct pcmcia_device *pdev)
- 
- 	/* detect available channels */
- 	pcan_add_channels(card);
--	if (!card->chan_count)
-+	if (!card->chan_count) {
-+		err = -ENOMEM;
- 		goto probe_err_4;
-+	}
- 
- 	/* init the timer which controls the leds */
- 	init_timer(&card->led_timer);
--- 
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/msca=
+n/mpc5xxx_can.c
+index c975999..799c354 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -247,7 +247,7 @@ static u32 __devinit mpc512x_can_get_clock(struct p=
+latform_device *ofdev,
+ }
+ #endif /* CONFIG_PPC_MPC512x */
+=20
+-static struct of_device_id mpc5xxx_can_table[];
++static const struct of_device_id mpc5xxx_can_table[];
+ static int __devinit mpc5xxx_can_probe(struct platform_device *ofdev)
+ {
+ 	const struct of_device_id *match;
+@@ -380,17 +380,17 @@ static int mpc5xxx_can_resume(struct platform_dev=
+ice *ofdev)
+ }
+ #endif
+=20
+-static const struct mpc5xxx_can_data __devinitdata mpc5200_can_data =3D=
+ {
++static const struct mpc5xxx_can_data __devinitconst mpc5200_can_data =3D=
+ {
+ 	.type =3D MSCAN_TYPE_MPC5200,
+ 	.get_clock =3D mpc52xx_can_get_clock,
+ };
+=20
+-static const struct mpc5xxx_can_data __devinitdata mpc5121_can_data =3D=
+ {
++static const struct mpc5xxx_can_data __devinitconst mpc5121_can_data =3D=
+ {
+ 	.type =3D MSCAN_TYPE_MPC5121,
+ 	.get_clock =3D mpc512x_can_get_clock,
+ };
+=20
+-static struct of_device_id __devinitdata mpc5xxx_can_table[] =3D {
++static const struct of_device_id __devinitconst mpc5xxx_can_table[] =3D=
+ {
+ 	{ .compatible =3D "fsl,mpc5200-mscan", .data =3D &mpc5200_can_data, }=
+,
+ 	/* Note that only MPC5121 Rev. 2 (and later) is supported */
+ 	{ .compatible =3D "fsl,mpc5121-mscan", .data =3D &mpc5121_can_data, }=
+,
+--=20
 1.7.10
+
