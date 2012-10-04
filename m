@@ -1,65 +1,67 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: sja1000: Make sja1000_of_platform selectable and
- compilable on SPARC
-Date: Thu, 04 Oct 2012 14:49:27 +0200
-Message-ID: <506D85D7.8090801@pengutronix.de>
-References: <1349183599-28734-1-git-send-email-andreas@gaisler.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig4C425DDB68C034108A8F6D18"
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: [PATCH v2] can: sja1000: Make sja1000_of_platform selectable and compilable on SPARC
+Date: Thu,  4 Oct 2012 15:59:10 +0200
+Message-ID: <1349359150-18012-1-git-send-email-andreas@gaisler.com>
+References: <506D9266.6010707@gaisler.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38443 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752711Ab2JDMtj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 08:49:39 -0400
-In-Reply-To: <1349183599-28734-1-git-send-email-andreas@gaisler.com>
+Received: from vsp-authed02.binero.net ([195.74.38.226]:55143 "HELO
+	vsp-authed-02-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S933158Ab2JDN7x (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 09:59:53 -0400
+In-Reply-To: <506D9266.6010707@gaisler.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>
-Cc: linux-can@vger.kernel.org, software@gaisler.com
+To: linux-can@vger.kernel.org
+Cc: software@gaisler.com
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig4C425DDB68C034108A8F6D18
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+---
+ drivers/net/can/sja1000/Kconfig               |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-On 10/02/2012 03:13 PM, Andreas Larsson wrote:
-> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 03df9a8..44abee4 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -21,7 +21,7 @@ config CAN_SJA1000_PLATFORM
+ 
+ config CAN_SJA1000_OF_PLATFORM
+ 	tristate "Generic OF Platform Bus based SJA1000 driver"
+-	depends on PPC_OF
++	depends on OF
+ 	---help---
+ 	  This driver adds support for the SJA1000 chips connected to
+ 	  the OpenFirmware "platform bus" found on embedded systems with
+diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+index f2683eb..e45258d 100644
+--- a/drivers/net/can/sja1000/sja1000_of_platform.c
++++ b/drivers/net/can/sja1000/sja1000_of_platform.c
+@@ -42,6 +42,8 @@
+ #include <linux/can/dev.h>
+ 
+ #include <linux/of_platform.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
+ #include <asm/prom.h>
+ 
+ #include "sja1000.h"
+@@ -59,13 +61,13 @@ MODULE_LICENSE("GPL v2");
+ 
+ static u8 sja1000_ofp_read_reg(const struct sja1000_priv *priv, int reg)
+ {
+-	return in_8(priv->reg_base + reg);
++	return ioread8(priv->reg_base + reg);
+ }
+ 
+ static void sja1000_ofp_write_reg(const struct sja1000_priv *priv,
+ 				  int reg, u8 val)
+ {
+-	out_8(priv->reg_base + reg, val);
++	iowrite8(val, priv->reg_base + reg);
+ }
+ 
+ static int __devexit sja1000_ofp_remove(struct platform_device *ofdev)
+-- 
+1.7.0.4
 
-On sparc32 (and others) this fails to compile with:
-
-> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja10=
-00_ofp_read_reg':
-> linux/drivers/net/can/sja1000/sja1000_of_platform.c:64:2: error: implic=
-it declaration of function 'in_8' [-Werror=3Dimplicit-function-declaratio=
-n]
-> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja10=
-00_ofp_write_reg':
-> linux/drivers/net/can/sja1000/sja1000_of_platform.c:70:2: error: implic=
-it declaration of function 'out_8' [-Werror=3Dimplicit-function-declarati=
-on]
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig4C425DDB68C034108A8F6D18
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBthdsACgkQjTAFq1RaXHOCXQCfRqipjuQ1PiLcAz+2SHvMtRxk
-w/QAn0424z3LmJ5yoNSL/fq/laZvfk7Z
-=Sjo1
------END PGP SIGNATURE-----
-
---------------enig4C425DDB68C034108A8F6D18--
