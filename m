@@ -1,50 +1,30 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2012-10-04
-Date: Thu,  4 Oct 2012 19:53:36 +0200
-Message-ID: <1349373219-30387-1-git-send-email-mkl@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2012-10-04
+Date: Thu, 04 Oct 2012 15:56:59 -0400 (EDT)
+Message-ID: <20121004.155659.1276977292492709992.davem@davemloft.net>
+References: <1349373219-30387-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34475 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750702Ab2JDRxo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 13:53:44 -0400
+Received: from shards.monkeyblade.net ([149.20.54.216]:45467 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756950Ab2JDT5B (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 15:57:01 -0400
+In-Reply-To: <1349373219-30387-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: davem@davemloft.net
+To: mkl@pengutronix.de
 Cc: linux-can@vger.kernel.org, nnnnetdev@vger.kernel.org
 
-Hello David,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu,  4 Oct 2012 19:53:36 +0200
 
-here are three patches for the v3.7 release cycle. Two patches by Peter Senna
-Tschudin which fix the return values in the error handling path of the sja1000
-peak pci and pcmcia driver. And one patch by myself that fixes a compile
-breakage of the mpc5xxx_can mscan driver due to a section conflict.
+> here are three patches for the v3.7 release cycle. Two patches by Peter Senna
+> Tschudin which fix the return values in the error handling path of the sja1000
+> peak pci and pcmcia driver. And one patch by myself that fixes a compile
+> breakage of the mpc5xxx_can mscan driver due to a section conflict.
+ ...
+>   git://gitorious.org/linux-can/linux-can.git fixes-for-3.7
 
-regards, Marc
-
----
-
-The following changes since commit c0b8b99287235626a5850ef7e5bfc842d1ebcecd:
-
-  cxgb4: Fix build error due to missing linux/vmalloc.h include. (2012-10-03 20:50:08 -0400)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can.git fixes-for-3.7
-
-for you to fetch changes up to 8cf437a0dc2acacb4efa5eb73af9067bba3d2232:
-
-  can: mpc5xxx_can: fix section type conflict (2012-10-04 19:26:32 +0200)
-
-----------------------------------------------------------------
-Marc Kleine-Budde (1):
-      can: mpc5xxx_can: fix section type conflict
-
-Peter Senna Tschudin (2):
-      can: peak_pci: fix error return code
-      can: peak_pcmcia: fix error return code
-
- drivers/net/can/mscan/mpc5xxx_can.c   |    8 ++++----
- drivers/net/can/sja1000/peak_pci.c    |    2 ++
- drivers/net/can/sja1000/peak_pcmcia.c |    4 +++-
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
+Pulled, thanks Marc.
