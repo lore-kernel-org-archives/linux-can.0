@@ -1,67 +1,87 @@
-From: Andreas Larsson <andreas@gaisler.com>
-Subject: [PATCH v2] can: sja1000: Make sja1000_of_platform selectable and compilable on SPARC
-Date: Thu,  4 Oct 2012 15:59:10 +0200
-Message-ID: <1349359150-18012-1-git-send-email-andreas@gaisler.com>
-References: <506D9266.6010707@gaisler.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2] can: sja1000: Make sja1000_of_platform selectable
+ and compilable on SPARC
+Date: Thu, 04 Oct 2012 17:12:41 +0200
+Message-ID: <506DA769.6090000@pengutronix.de>
+References: <506D9266.6010707@gaisler.com> <1349359150-18012-1-git-send-email-andreas@gaisler.com> <506DA06D.3070003@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig24858AE9555E31A41568B3BF"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from vsp-authed02.binero.net ([195.74.38.226]:55143 "HELO
-	vsp-authed-02-02.binero.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S933158Ab2JDN7x (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 09:59:53 -0400
-In-Reply-To: <506D9266.6010707@gaisler.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52087 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S965590Ab2JDPNe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 11:13:34 -0400
+In-Reply-To: <506DA06D.3070003@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: software@gaisler.com
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-can@vger.kernel.org, software@gaisler.com
 
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
----
- drivers/net/can/sja1000/Kconfig               |    2 +-
- drivers/net/can/sja1000/sja1000_of_platform.c |    6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig24858AE9555E31A41568B3BF
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
-index 03df9a8..44abee4 100644
---- a/drivers/net/can/sja1000/Kconfig
-+++ b/drivers/net/can/sja1000/Kconfig
-@@ -21,7 +21,7 @@ config CAN_SJA1000_PLATFORM
- 
- config CAN_SJA1000_OF_PLATFORM
- 	tristate "Generic OF Platform Bus based SJA1000 driver"
--	depends on PPC_OF
-+	depends on OF
- 	---help---
- 	  This driver adds support for the SJA1000 chips connected to
- 	  the OpenFirmware "platform bus" found on embedded systems with
-diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
-index f2683eb..e45258d 100644
---- a/drivers/net/can/sja1000/sja1000_of_platform.c
-+++ b/drivers/net/can/sja1000/sja1000_of_platform.c
-@@ -42,6 +42,8 @@
- #include <linux/can/dev.h>
- 
- #include <linux/of_platform.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
- #include <asm/prom.h>
- 
- #include "sja1000.h"
-@@ -59,13 +61,13 @@ MODULE_LICENSE("GPL v2");
- 
- static u8 sja1000_ofp_read_reg(const struct sja1000_priv *priv, int reg)
- {
--	return in_8(priv->reg_base + reg);
-+	return ioread8(priv->reg_base + reg);
- }
- 
- static void sja1000_ofp_write_reg(const struct sja1000_priv *priv,
- 				  int reg, u8 val)
- {
--	out_8(priv->reg_base + reg, val);
-+	iowrite8(val, priv->reg_base + reg);
- }
- 
- static int __devexit sja1000_ofp_remove(struct platform_device *ofdev)
--- 
-1.7.0.4
+On 10/04/2012 04:42 PM, Marc Kleine-Budde wrote:
+> On 10/04/2012 03:59 PM, Andreas Larsson wrote:
+>> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+>=20
+> Looks better. However on sparc and sparc64, I'm seeing this warning.
+> From my point of view a false positive.
+>=20
+>> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja1=
+000_ofp_remove':
+>> linux/include/linux/ioport.h:165:18: warning: 'res.end' is used uninit=
+ialized in this function [-Wuninitialized]
+>> linux/drivers/net/can/sja1000/sja1000_of_platform.c:78:18: note: 'res.=
+end' was declared here
+>> linux/include/linux/ioport.h:165:2: warning: 'res.start' is used unini=
+tialized in this function [-Wuninitialized]
+>> linux/drivers/net/can/sja1000/sja1000_of_platform.c:78:18: note: 'res.=
+start' was declared here
 
+Looking at the preprocessed code, the compiler is right:
+
+> # 30 "/home/frogger/pengutronix/socketcan/linux/include/linux/of_addres=
+s.h"
+> static inline __attribute__((always_inline)) __attribute__((no_instrume=
+nt_function)) int of_address_to_resource(struct device_node *dev, int ind=
+ex,
+>       struct resource *r)
+> {
+>  return -22;
+> }
+
+http://lxr.free-electrons.com/source/include/linux/of_address.h#L29
+
+Why is CONFIG_OF_ADDRESS not set in my .config?
+
+http://lxr.free-electrons.com/source/drivers/of/Kconfig#L43
+
+What a U+1F4A9,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig24858AE9555E31A41568B3BF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBtp2wACgkQjTAFq1RaXHPw5gCdEgKyFWbRqtVQu+p0znOyhSEm
+r3gAn20oEar9cJ/bVzEzyi5B3+AH8vCM
+=gSkA
+-----END PGP SIGNATURE-----
+
+--------------enig24858AE9555E31A41568B3BF--
