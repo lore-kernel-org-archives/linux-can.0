@@ -1,95 +1,65 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: mpc5xxx_can: fix section type conflict
-Date: Thu,  4 Oct 2012 16:34:09 +0200
-Message-ID: <1349361249-30888-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH] can: sja1000: Make sja1000_of_platform selectable and
+ compilable on SPARC
+Date: Thu, 04 Oct 2012 14:49:27 +0200
+Message-ID: <506D85D7.8090801@pengutronix.de>
+References: <1349183599-28734-1-git-send-email-andreas@gaisler.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig4C425DDB68C034108A8F6D18"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54171 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38443 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965038Ab2JDOeW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 10:34:22 -0400
+	with ESMTP id S1752711Ab2JDMtj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 08:49:39 -0400
+In-Reply-To: <1349183599-28734-1-git-send-email-andreas@gaisler.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, Arnd Bergmann <arnd@arndb.de>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-can@vger.kernel.org, software@gaisler.com
 
-Since commit:
-    6d99c4c can: mpc5xxx_can: make data used as *of_device_id.data cons=
-t
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig4C425DDB68C034108A8F6D18
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-both "struct mpc5xxx_can_data mpc5200_can_data" and "mpc5121_can_data" =
-are
-marked as "const" but also as "__devinitdata". This leads to the follow=
-ing
-compile error:
+On 10/02/2012 03:13 PM, Andreas Larsson wrote:
+> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
 
-drivers/net/can/mscan/mpc5xxx_can.c:383: error: mpc5200_can_data causes=
- a section type conflict
-drivers/net/can/mscan/mpc5xxx_can.c:383: error: mpc5200_can_data causes=
- a section type conflict
-drivers/net/can/mscan/mpc5xxx_can.c:388: error: mpc5121_can_data causes=
- a section type conflict
-drivers/net/can/mscan/mpc5xxx_can.c:388: error: mpc5121_can_data causes=
- a section type conflict
+On sparc32 (and others) this fails to compile with:
 
-This patch changes the "__devinitdata" to "__devinitconst" and marks th=
-e
-"struct of_device_id mpc5xxx_can_table" as "const" and "__devinitconst"=
-, too.
+> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja10=
+00_ofp_read_reg':
+> linux/drivers/net/can/sja1000/sja1000_of_platform.c:64:2: error: implic=
+it declaration of function 'in_8' [-Werror=3Dimplicit-function-declaratio=
+n]
+> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja10=
+00_ofp_write_reg':
+> linux/drivers/net/can/sja1000/sja1000_of_platform.c:70:2: error: implic=
+it declaration of function 'out_8' [-Werror=3Dimplicit-function-declarati=
+on]
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/mscan/mpc5xxx_can.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/msca=
-n/mpc5xxx_can.c
-index c975999..799c354 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -247,7 +247,7 @@ static u32 __devinit mpc512x_can_get_clock(struct p=
-latform_device *ofdev,
- }
- #endif /* CONFIG_PPC_MPC512x */
-=20
--static struct of_device_id mpc5xxx_can_table[];
-+static const struct of_device_id mpc5xxx_can_table[];
- static int __devinit mpc5xxx_can_probe(struct platform_device *ofdev)
- {
- 	const struct of_device_id *match;
-@@ -380,17 +380,17 @@ static int mpc5xxx_can_resume(struct platform_dev=
-ice *ofdev)
- }
- #endif
-=20
--static const struct mpc5xxx_can_data __devinitdata mpc5200_can_data =3D=
- {
-+static const struct mpc5xxx_can_data __devinitconst mpc5200_can_data =3D=
- {
- 	.type =3D MSCAN_TYPE_MPC5200,
- 	.get_clock =3D mpc52xx_can_get_clock,
- };
-=20
--static const struct mpc5xxx_can_data __devinitdata mpc5121_can_data =3D=
- {
-+static const struct mpc5xxx_can_data __devinitconst mpc5121_can_data =3D=
- {
- 	.type =3D MSCAN_TYPE_MPC5121,
- 	.get_clock =3D mpc512x_can_get_clock,
- };
-=20
--static struct of_device_id __devinitdata mpc5xxx_can_table[] =3D {
-+static const struct of_device_id __devinitconst mpc5xxx_can_table[] =3D=
- {
- 	{ .compatible =3D "fsl,mpc5200-mscan", .data =3D &mpc5200_can_data, }=
-,
- 	/* Note that only MPC5121 Rev. 2 (and later) is supported */
- 	{ .compatible =3D "fsl,mpc5121-mscan", .data =3D &mpc5121_can_data, }=
-,
+Marc
 --=20
-1.7.10
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--------------enig4C425DDB68C034108A8F6D18
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBthdsACgkQjTAFq1RaXHOCXQCfRqipjuQ1PiLcAz+2SHvMtRxk
+w/QAn0424z3LmJ5yoNSL/fq/laZvfk7Z
+=Sjo1
+-----END PGP SIGNATURE-----
+
+--------------enig4C425DDB68C034108A8F6D18--
