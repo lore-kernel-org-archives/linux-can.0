@@ -1,67 +1,69 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [RFC: PATCH 3/5] can: sja1000_platform: replace DRV_NAME by KBUILD_MODNAME
-Date: Fri,  5 Oct 2012 16:39:05 +0200
-Message-ID: <1349447947-18451-4-git-send-email-mkl@pengutronix.de>
+Subject: [RFC: PATCH 4/5] can: sja1000_platform: factor out initialization from platform data
+Date: Fri,  5 Oct 2012 16:39:06 +0200
+Message-ID: <1349447947-18451-5-git-send-email-mkl@pengutronix.de>
 References: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38401 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38406 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752951Ab2JEOjR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Oct 2012 10:39:17 -0400
+	with ESMTP id S1754802Ab2JEOjS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Oct 2012 10:39:18 -0400
 In-Reply-To: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: andreas@gaisler.com, kernel@pengutronix.de, wg@grandegger.com, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch replaces DRV_NAME by KBUILD_MODNAME. DRV_NAME is removed from the
-"dev_LEVEL()", as it already provides every relevant information.
+This patch moves the initialization from the "sp_probe()" function into a
+seperate function. This prepares the driver for the device tree bindings coming
+in the next patch.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000_platform.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/net/can/sja1000/sja1000_platform.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
-index 36300de..b0ce5ef 100644
+index b0ce5ef..6260209 100644
 --- a/drivers/net/can/sja1000/sja1000_platform.c
 +++ b/drivers/net/can/sja1000/sja1000_platform.c
-@@ -30,8 +30,6 @@
+@@ -64,6 +64,14 @@ static void sp_write_reg32(const struct sja1000_priv *priv, int reg, u8 val)
+ 	iowrite8(val, priv->reg_base + reg * 4);
+ }
  
- #include "sja1000.h"
++static void __devinit sp_probe_pdata(struct sja1000_priv *priv, const struct sja1000_platform_data *pdata)
++{
++	/* The CAN clock frequency is half the oscillator clock frequency */
++	priv->can.clock.freq = pdata->osc_freq / 2;
++	priv->ocr = pdata->ocr;
++	priv->cdr = pdata->cdr;
++}
++
+ static int __devinit sp_probe(struct platform_device *pdev)
+ {
+ 	int err;
+@@ -71,7 +79,7 @@ static int __devinit sp_probe(struct platform_device *pdev)
+ 	struct net_device *dev;
+ 	struct sja1000_priv *priv;
+ 	struct resource *res_mem, *res_irq;
+-	struct sja1000_platform_data *pdata;
++	const struct sja1000_platform_data *pdata;
  
--#define DRV_NAME "sja1000_platform"
--
- MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
- MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
- MODULE_LICENSE("GPL v2");
-@@ -133,13 +131,13 @@ static int __devinit sp_probe(struct platform_device *pdev)
+ 	pdata = pdev->dev.platform_data;
+ 	if (!pdata) {
+@@ -105,10 +113,8 @@ static int __devinit sp_probe(struct platform_device *pdev)
+ 	if (res_irq->flags & IORESOURCE_IRQ_SHAREABLE)
+ 		priv->irq_flags |= IRQF_SHARED;
+ 	priv->reg_base = addr;
+-	/* The CAN clock frequency is half the oscillator clock frequency */
+-	priv->can.clock.freq = pdata->osc_freq / 2;
+-	priv->ocr = pdata->ocr;
+-	priv->cdr = pdata->cdr;
++
++	sp_probe_pdata(priv, pdata);
  
- 	err = register_sja1000dev(dev);
- 	if (err) {
--		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
--			DRV_NAME, err);
-+		dev_err(&pdev->dev, "registering netdev failed (err=%d)\n",
-+			err);
- 		goto exit_free;
- 	}
- 
--	dev_info(&pdev->dev, "%s device registered (reg_base=%p, irq=%d)\n",
--		 DRV_NAME, priv->reg_base, dev->irq);
-+	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
-+		 priv->reg_base, dev->irq);
- 	return 0;
- 
-  exit_free:
-@@ -163,7 +161,7 @@ static struct platform_driver sp_driver = {
- 	.probe = sp_probe,
- 	.remove = __devexit_p(sp_remove),
- 	.driver = {
--		.name = DRV_NAME,
-+		.name = KBUILD_MODNAME,
- 		.owner = THIS_MODULE,
- 	},
- };
+ 	switch (res_mem->flags & IORESOURCE_MEM_TYPE_MASK) {
+ 	case IORESOURCE_MEM_32BIT:
 -- 
 1.7.10
 
