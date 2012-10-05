@@ -1,54 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: ISOTP-implementation
-Date: Thu, 04 Oct 2012 20:33:58 +0200
-Message-ID: <506DD696.5090906@hartkopp.net>
-References: <trinity-e227a661-0fd3-43e4-80ac-b4854f33afba-1349166829591@3capp-webde-bs17>
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: Re: [PATCH v2] can: sja1000: Make sja1000_of_platform selectable
+ and compilable on SPARC
+Date: Fri, 05 Oct 2012 11:01:52 +0200
+Message-ID: <506EA200.1040500@gaisler.com>
+References: <506D9266.6010707@gaisler.com> <1349359150-18012-1-git-send-email-andreas@gaisler.com> <506DA06D.3070003@pengutronix.de> <506DA769.6090000@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:40978 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751306Ab2JDSd4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Oct 2012 14:33:56 -0400
-In-Reply-To: <trinity-e227a661-0fd3-43e4-80ac-b4854f33afba-1349166829591@3capp-webde-bs17>
+Received: from vsp-authed02.binero.net ([195.74.38.226]:43784 "HELO
+	vsp-authed-02-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1754277Ab2JEJC3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Oct 2012 05:02:29 -0400
+In-Reply-To: <506DA769.6090000@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mahesh Maharjan <mahesh.maharjan@web.de>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, software@gaisler.com
 
-On 02.10.2012 10:33, Mahesh Maharjan wrote:
+On 10/04/2012 05:12 PM, Marc Kleine-Budde wrote:
+> On 10/04/2012 04:42 PM, Marc Kleine-Budde wrote:
+>> On 10/04/2012 03:59 PM, Andreas Larsson wrote:
+>>> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+>>
+>> Looks better. However on sparc and sparc64, I'm seeing this warning.
+>>  From my point of view a false positive.
+>>
+>>> linux/drivers/net/can/sja1000/sja1000_of_platform.c: In function 'sja1000_ofp_remove':
+>>> linux/include/linux/ioport.h:165:18: warning: 'res.end' is used uninitialized in this function [-Wuninitialized]
+>>> linux/drivers/net/can/sja1000/sja1000_of_platform.c:78:18: note: 'res.end' was declared here
+>>> linux/include/linux/ioport.h:165:2: warning: 'res.start' is used uninitialized in this function [-Wuninitialized]
+>>> linux/drivers/net/can/sja1000/sja1000_of_platform.c:78:18: note: 'res.start' was declared here
+>
+> Looking at the preprocessed code, the compiler is right:
+>
+>> # 30 "/home/frogger/pengutronix/socketcan/linux/include/linux/of_address.h"
+>> static inline __attribute__((always_inline)) __attribute__((no_instrument_function)) int of_address_to_resource(struct device_node *dev, int index,
+>>        struct resource *r)
+>> {
+>>   return -22;
+>> }
+>
+> http://lxr.free-electrons.com/source/include/linux/of_address.h#L29
+>
+> Why is CONFIG_OF_ADDRESS not set in my .config?
 
-> 
-> Thank you Oliver providing me some guideline to use  ISO-TP socketCan for multiple socket. 
-> In my previous queries- I think, I could not able to describe my problem properly.
-> While working with RAW socket in Imx6, I was having problem with frame lost during the Tx. So, I was thinking to use multiple socket to minimise the lost of can frame in ISOTP also. 
+In drivers/of/Kconfig, OF_ADDRESS depends on !SPARC as sparc handles a 
+bunch of open firmware things differently. There is a sparc-specific 
+implementations of of_address_to_resource.
 
+I'll send in a patch changing of_address.h so that 
+of_address_to_resource gets declared extern for sparc instead of an 
+empty inline function. That should solve the problem as far as I see it.
 
-Can you be a bit more detailed please?
+There is a similar thing with CONFIG_OF_IRQ, of_irq.h and 
+irq_of_parse_and_map, but there irq_of_parse_and_map is declared outside 
+of #ifdef CONFIG_OF_IRQ because of the sparc specific implementation.
 
-Frames usually do not get lost - unless the driver is faulty OR you did not
-check the return values for the raw socket you've been using ??
+Cheers,
+Andreas
 
-> 
-> Another important things about Point to Point(ISOTP), as you wrote me;
-> One write() syscall -> one ISO-TP PDU is sent
-> 
-> One ISO-TP PDU is received -> one read() syscall get's the PDU
-> 
-> Would you please provide some further guide line on it, whether I can use some acknowledge between read Or writing frames. So I would prefer to know get inform with complete  tranmsmission Complete or  Received Complete...
-
-
-ISO-TP is an unreliable datagramm protocol, like UDP/IP.
-
-The PDU loss has therefore to be detected by a higher layer. E.g. the UDS
-diagnosis service has it's own timeout for application message timeouts.
-
-So send a ISO-TP PDU, assume it gone ok and wait for an application layer
-answer (with timeout).
-
-Did you follow this hint?
-https://gitorious.org/linux-can/can-modules/blobs/master/README.isotp#line212
-
-Regards,
-Oliver
