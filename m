@@ -1,89 +1,144 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 4/20 V2] drivers/net/can/sja1000/peak_pcmcia.c: fix error
- return code
-Date: Fri, 05 Oct 2012 23:07:06 +0200
-Message-ID: <506F4BFA.2090006@pengutronix.de>
-References: <1349469667-6137-1-git-send-email-peter.senna@gmail.com> <1349469667-6137-4-git-send-email-peter.senna@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Sun, 7 Oct 2012 11:09:00 +0800
+Message-ID: <20121007030858.GJ20231@S2101-09.ap.freescale.net>
+References: <5065A35B.3020702@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig761A2545C156F724C8D92326"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43044 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S964814Ab2JEVHJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Oct 2012 17:07:09 -0400
-In-Reply-To: <1349469667-6137-4-git-send-email-peter.senna@gmail.com>
+Received: from mail-da0-f46.google.com ([209.85.210.46]:39802 "EHLO
+	mail-da0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751962Ab2JGDJD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 6 Oct 2012 23:09:03 -0400
+Received: by mail-da0-f46.google.com with SMTP id n41so947643dak.19
+        for <linux-can@vger.kernel.org>; Sat, 06 Oct 2012 20:09:02 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5065A35B.3020702@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Peter Senna Tschudin <peter.senna@gmail.com>
-Cc: wg@grandegger.com, linux@dominikbrodowski.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>, Dong Aisheng <b29396@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig761A2545C156F724C8D92326
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 28, 2012 at 03:17:15PM +0200, Wolfgang Grandegger wrote:
+> Due to a bug in most Flexcan cores, the bus error interrupt needs
+> to be enabled. Otherwise we don't get any error warning or passive
+> interrupts. This is _not_ necessay for the i.MX28 and this patch
+> disables bus error interrupts if "berr-reporting" is not requested.
+> This avoids bus error flooding, which might harm, especially on
+> low-end systems.
+> 
+> To handle such quirks of the Flexcan cores, a hardware feature flag
+> has been introduced, also replacing the "hw_ver" variable. So far
+> nobody could tell what Flexcan core version is available on what
+> Freescale SOC, apart from the i.MX6Q and P1010, and which bugs or
+> features are present on the various "hw_rev".
+> 
+> CC: Hui Wang <jason77.wang@gmail.com>
+> CC: Shawn Guo <shawn.guo@linaro.org>
+> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> ---
+> 
+> Concerning the bug, I know that the i.MX35 does have it. Maybe other
+> Flexcan cores than on the i.MX28 does *not* have it either. If you
+> have a chance, please check on the P1010, i.MX6Q, i.MX51, i.MX53,
+> etc.
 
-On 10/05/2012 10:41 PM, Peter Senna Tschudin wrote:
-> From: Peter Senna Tschudin <peter.senna@gmail.com>
->=20
-> The function pcan_probe() return 0 for success and negative value
-> for most of its internal tests failures. There is one exception
-> that is error case going to probe_err_4:. Fore this error case, the
-> function abort its success execution path but returns non negative
-> value, making it difficult for a caller function to notice the error.
->=20
-> This patch fixes the error case that do not return negative value.
->=20
-> This was found by Coccinelle, but the code change was made by hand.
-> This patch is not robot generated.
->=20
-> A simplified version of the semantic match that finds this problem is
-> as follows: (http://coccinelle.lip6.fr/)
->=20
-> // <smpl>
-> (
-> if@p1 (\(ret < 0\|ret !=3D 0\))
->  { ... return ret; }
-> |
-> ret@p1 =3D 0
-> )
-> ... when !=3D ret =3D e1
->     when !=3D &ret
-> *if(...)
-> {
->   ... when !=3D ret =3D e2
->       when forall
->  return ret;
-> }
-> // </smpl>
->=20
-> Signed-off-by: Peter Senna Tschudin <peter.senna@gmail.com>
+From what I can tell, i.MX35, i.MX51 and i.MX53 use the same version,
+so they should all have the bug.  And for i.MX6Q, since it uses a newer
+version even than i.MX28, I would believe it's affected by the bug.
+But I'm copying Dong who should have better knowledge about this to
+confirm. 
 
+Shawn
 
-Too late, v1 of this patch is already in net/master
-
-regards, Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig761A2545C156F724C8D92326
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlBvS/oACgkQjTAFq1RaXHMZ+QCgl76N92Yd2LChjRYEORSnHUs+
-IcIAnjIp88hNdwK7TewfxgbeYr4dqhU0
-=/ldX
------END PGP SIGNATURE-----
-
---------------enig761A2545C156F724C8D92326--
+> 
+> Wolfgang.
+> 
+> 
+>  drivers/net/can/flexcan.c |   29 +++++++++++++++++++----------
+>  1 files changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index c5f1431..c78ecfc 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -144,6 +144,10 @@
+>  
+>  #define FLEXCAN_MB_CODE_MASK		(0xf0ffffff)
+>  
+> +/* FLEXCAN hardware feature flags */
+> +#define FLEXCAN_HAS_V10_FEATURES	BIT(1) /* For core version >= 10 */
+> +#define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* Broken error state handling */
+> +
+>  /* Structure of the message buffer */
+>  struct flexcan_mb {
+>  	u32 can_ctrl;
+> @@ -178,7 +182,7 @@ struct flexcan_regs {
+>  };
+>  
+>  struct flexcan_devtype_data {
+> -	u32 hw_ver;	/* hardware controller version */
+> +	u32 features;	/* hardware controller features */
+>  };
+>  
+>  struct flexcan_priv {
+> @@ -197,11 +201,11 @@ struct flexcan_priv {
+>  };
+>  
+>  static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+> -	.hw_ver = 3,
+> +	.features = FLEXCAN_HAS_BROKEN_ERR_STATE,
+>  };
+> -
+> +static struct flexcan_devtype_data fsl_imx28_devtype_data;
+>  static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+> -	.hw_ver = 10,
+> +	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_BROKEN_ERR_STATE,
+>  };
+>  
+>  static const struct can_bittiming_const flexcan_bittiming_const = {
+> @@ -741,15 +745,19 @@ static int flexcan_chip_start(struct net_device *dev)
+>  	 * enable tx and rx warning interrupt
+>  	 * enable bus off interrupt
+>  	 * (== FLEXCAN_CTRL_ERR_STATE)
+> -	 *
+> -	 * _note_: we enable the "error interrupt"
+> -	 * (FLEXCAN_CTRL_ERR_MSK), too. Otherwise we don't get any
+> -	 * warning or bus passive interrupts.
+>  	 */
+>  	reg_ctrl = flexcan_read(&regs->ctrl);
+>  	reg_ctrl &= ~FLEXCAN_CTRL_TSYN;
+>  	reg_ctrl |= FLEXCAN_CTRL_BOFF_REC | FLEXCAN_CTRL_LBUF |
+> -		FLEXCAN_CTRL_ERR_STATE | FLEXCAN_CTRL_ERR_MSK;
+> +		FLEXCAN_CTRL_ERR_STATE;
+> +	/*
+> +	 * enable the "error interrupt" (FLEXCAN_CTRL_ERR_MSK),
+> +	 * on most Flexcan cores, too. Otherwise we don't get
+> +	 * any error warning or passive interrupts.
+> +	 */
+> +	if (priv->devtype_data->features & FLEXCAN_HAS_BROKEN_ERR_STATE ||
+> +	    priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+> +		reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
+>  
+>  	/* save for later use */
+>  	priv->reg_ctrl_default = reg_ctrl;
+> @@ -772,7 +780,7 @@ static int flexcan_chip_start(struct net_device *dev)
+>  	flexcan_write(0x0, &regs->rx14mask);
+>  	flexcan_write(0x0, &regs->rx15mask);
+>  
+> -	if (priv->devtype_data->hw_ver >= 10)
+> +	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
+>  		flexcan_write(0x0, &regs->rxfgmask);
+>  
+>  	flexcan_transceiver_switch(priv, 1);
+> @@ -954,6 +962,7 @@ static void __devexit unregister_flexcandev(struct net_device *dev)
+>  
+>  static const struct of_device_id flexcan_of_match[] = {
+>  	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
+> +	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+>  	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+>  	{ /* sentinel */ },
+>  };
+> -- 
+> 1.7.7.6
+> 
