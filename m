@@ -1,88 +1,174 @@
-From: AnilKumar Ch <anilkumar@ti.com>
-Subject: [PATCH] can: ti_hecc: fix rx wrong sequence issue
-Date: Mon, 8 Oct 2012 12:10:36 +0530
-Message-ID: <1349678436-747-1-git-send-email-anilkumar@ti.com>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Mon, 8 Oct 2012 07:59:50 +0000
+Message-ID: <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
+References: <5065A35B.3020702@grandegger.com>
+ <20121007030858.GJ20231@S2101-09.ap.freescale.net>
+ <50719647.4070404@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:52647 "EHLO arroyo.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751260Ab2JHGkw (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 8 Oct 2012 02:40:52 -0400
+Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]:44843
+	"EHLO va3outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751763Ab2JHH76 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 8 Oct 2012 03:59:58 -0400
+In-Reply-To: <50719647.4070404@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: swarren@wwwdotorg.org, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com, AnilKumar Ch <anilkumar@ti.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
 
-Fix "received wrong sequence count. expected: x, got: y" errors
-reported by cansequence in a stress test (--verbose).
+Hi Wolfgang,
 
-While processing the receive packets in mailboxes, upper mailboxes
-need to enable while processing 12th (RX_BUFFER mailbox) mailbox.
-This requires a status check to identify whether the receiving of
-packets in progress or not. If the mailboxes are enabled before the
-receive packet status is cleared then there is a possibility of
-receiving out of order packets.
+>On 10/07/2012 05:09 AM, Shawn Guo wrote:
+>> On Fri, Sep 28, 2012 at 03:17:15PM +0200, Wolfgang Grandegger wrote:
+>>> Due to a bug in most Flexcan cores, the bus error interrupt needs to
+>>> be enabled. Otherwise we don't get any error warning or passive
+>>> interrupts. This is _not_ necessay for the i.MX28 and this patch
+>>> disables bus error interrupts if "berr-reporting" is not requested.
+>>> This avoids bus error flooding, which might harm, especially on
+>>> low-end systems.
+>>>
+>>> To handle such quirks of the Flexcan cores, a hardware feature flag
+>>> has been introduced, also replacing the "hw_ver" variable. So far
+>>> nobody could tell what Flexcan core version is available on what
+>>> Freescale SOC, apart from the i.MX6Q and P1010, and which bugs or
+>>> features are present on the various "hw_rev".
+>>>
+>>> CC: Hui Wang <jason77.wang@gmail.com>
+>>> CC: Shawn Guo <shawn.guo@linaro.org>
+>>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+>>> ---
+>>>
+>>> Concerning the bug, I know that the i.MX35 does have it. Maybe other
+>>> Flexcan cores than on the i.MX28 does *not* have it either. If you
+>>> have a chance, please check on the P1010, i.MX6Q, i.MX51, i.MX53,
+>>> etc.
+>>
+>>>From what I can tell, i.MX35, i.MX51 and i.MX53 use the same version,
+>> so they should all have the bug.  And for i.MX6Q, since it uses a
+>> newer version even than i.MX28, I would believe it's affected by the bug.
+>> But I'm copying Dong who should have better knowledge about this to
+>> confirm.
+>
+>Thank for clarification. I have a i.MX6Q board but without CAN adapter :(,
+>unfortunately. Otherwise I would try it out myself.
+>
+How did you verify this issue?
+I just checked our ic guy of flexcan, it seems he also had no sense of this issue.
 
-With this patch mailboxes are enabled once the receive status is
-cleared.
+Below is some version info what I got:
+Mx6s use FlexCAN3, with IP version 10.00.12.00
+Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
+Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
+Mx35 use FlexCAN2 (without glitch filter) , with IP version 03.00.00.00
+Mx25 use FlexCAN2 (without glitch filter), with IP version 03.00.00.00
+I'm not sure if mx6q has such issue.
 
-Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
----
- drivers/net/can/ti_hecc.c |   19 ++++++++++++++++++-
- 1 files changed, 18 insertions(+), 1 deletions(-)
+Regards
+Dong Aisheng 
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 39293e9..2417a2d 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -169,6 +169,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
- #define HECC_CANES_SMA		BIT(5)	/* suspend mode ack */
- #define HECC_CANES_CCE		BIT(4)	/* Change config enabled */
- #define HECC_CANES_PDA		BIT(3)	/* Power down mode ack */
-+#define HECC_CANES_RM		BIT(1)	/* Receive Mode bit */
- 
- #define HECC_CANBTC_SAM		BIT(7)	/* sample points */
- 
-@@ -194,6 +195,13 @@ MODULE_VERSION(HECC_MODULE_VERSION);
- #define HECC_CANGIM_DEF_MASK	0x700	/* only busoff/warning/passive */
- #define HECC_CANGIM_SIL		BIT(2)	/* system interrupts to int line 1 */
- 
-+/*
-+ * Receive Mode bit reflects what the CAN protocol kernel (CPK) is
-+ * actually doing regardless of mailbox configuration. CPK receive
-+ * mode timeout. Tried from 1 - 5us and kept 10 as a safety value.
-+ */
-+#define RM_TIMEOUT_US		10
-+
- /* CAN Bittiming constants as per HECC specs */
- static struct can_bittiming_const ti_hecc_bittiming_const = {
- 	.name = DRV_NAME,
-@@ -615,7 +623,7 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
- 	struct ti_hecc_priv *priv = netdev_priv(ndev);
- 	u32 num_pkts = 0;
- 	u32 mbx_mask;
--	unsigned long pending_pkts, flags;
-+	unsigned long pending_pkts, flags, timeout;
- 
- 	if (!netif_running(ndev))
- 		return 0;
-@@ -633,6 +641,15 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
- 		--priv->rx_next;
- 		if (priv->rx_next == HECC_RX_BUFFER_MBOX) {
- 			/* enable high bank mailboxes */
-+			timeout = jiffies + usecs_to_jiffies(RM_TIMEOUT_US);
-+			while (hecc_get_bit(priv, HECC_CANES, HECC_CANES_RM)) {
-+				cpu_relax();
-+				if (time_after(jiffies, timeout)) {
-+					netdev_warn(ndev, "receiving pkt\n");
-+					break;
-+				}
-+			}
-+
- 			spin_lock_irqsave(&priv->mbx_lock, flags);
- 			mbx_mask = hecc_read(priv, HECC_CANME);
- 			mbx_mask |= HECC_RX_HIGH_MBOX_MASK;
--- 
-1.7.0.4
+>>>  drivers/net/can/flexcan.c |   29 +++++++++++++++++++----------
+>>>  1 files changed, 19 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index c5f1431..c78ecfc 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -144,6 +144,10 @@
+>>>
+>>>  #define FLEXCAN_MB_CODE_MASK		(0xf0ffffff)
+>>>
+>>> +/* FLEXCAN hardware feature flags */
+>>> +#define FLEXCAN_HAS_V10_FEATURES	BIT(1) /* For core version >= 10
+>*/
+>>> +#define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* Broken error state
+>handling */
+>>> +
+>>>  /* Structure of the message buffer */  struct flexcan_mb {
+>>>  	u32 can_ctrl;
+>>> @@ -178,7 +182,7 @@ struct flexcan_regs {  };
+>>>
+>>>  struct flexcan_devtype_data {
+>>> -	u32 hw_ver;	/* hardware controller version */
+>>> +	u32 features;	/* hardware controller features */
+>>>  };
+>>>
+>>>  struct flexcan_priv {
+>>> @@ -197,11 +201,11 @@ struct flexcan_priv {  };
+>>>
+>>>  static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+>>> -	.hw_ver = 3,
+>>> +	.features = FLEXCAN_HAS_BROKEN_ERR_STATE,
+>>>  };
+>>> -
+>>> +static struct flexcan_devtype_data fsl_imx28_devtype_data;
+>>>  static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+>>> -	.hw_ver = 10,
+>>> +	.features = FLEXCAN_HAS_V10_FEATURES |
+>>> +FLEXCAN_HAS_BROKEN_ERR_STATE,
+>>>  };
+>>>
+>>>  static const struct can_bittiming_const flexcan_bittiming_const = {
+>>> @@ -741,15 +745,19 @@ static int flexcan_chip_start(struct net_device
+>*dev)
+>>>  	 * enable tx and rx warning interrupt
+>>>  	 * enable bus off interrupt
+>>>  	 * (== FLEXCAN_CTRL_ERR_STATE)
+>>> -	 *
+>>> -	 * _note_: we enable the "error interrupt"
+>>> -	 * (FLEXCAN_CTRL_ERR_MSK), too. Otherwise we don't get any
+>>> -	 * warning or bus passive interrupts.
+>>>  	 */
+>>>  	reg_ctrl = flexcan_read(&regs->ctrl);
+>>>  	reg_ctrl &= ~FLEXCAN_CTRL_TSYN;
+>>>  	reg_ctrl |= FLEXCAN_CTRL_BOFF_REC | FLEXCAN_CTRL_LBUF |
+>>> -		FLEXCAN_CTRL_ERR_STATE | FLEXCAN_CTRL_ERR_MSK;
+>>> +		FLEXCAN_CTRL_ERR_STATE;
+>>> +	/*
+>>> +	 * enable the "error interrupt" (FLEXCAN_CTRL_ERR_MSK),
+>>> +	 * on most Flexcan cores, too. Otherwise we don't get
+>>> +	 * any error warning or passive interrupts.
+>>> +	 */
+>>> +	if (priv->devtype_data->features & FLEXCAN_HAS_BROKEN_ERR_STATE ||
+>>> +	    priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+>>> +		reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
+>>>
+>>>  	/* save for later use */
+>>>  	priv->reg_ctrl_default = reg_ctrl;
+>>> @@ -772,7 +780,7 @@ static int flexcan_chip_start(struct net_device
+>*dev)
+>>>  	flexcan_write(0x0, &regs->rx14mask);
+>>>  	flexcan_write(0x0, &regs->rx15mask);
+>>>
+>>> -	if (priv->devtype_data->hw_ver >= 10)
+>>> +	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
+>>>  		flexcan_write(0x0, &regs->rxfgmask);
+>>>
+>>>  	flexcan_transceiver_switch(priv, 1); @@ -954,6 +962,7 @@ static
+>>> void __devexit unregister_flexcandev(struct net_device *dev)
+>>>
+>>>  static const struct of_device_id flexcan_of_match[] = {
+>>>  	{ .compatible = "fsl,p1010-flexcan", .data =
+>>> &fsl_p1010_devtype_data, },
+>>> +	{ .compatible = "fsl,imx28-flexcan", .data =
+>>> +&fsl_imx28_devtype_data, },
+>>>  	{ .compatible = "fsl,imx6q-flexcan", .data =
+>&fsl_imx6q_devtype_data, },
+>>>  	{ /* sentinel */ },
+>>>  };
+>>> --
+>>> 1.7.7.6
+>>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-can"
+>> in the body of a message to majordomo@vger.kernel.org More majordomo
+>> info at  http://vger.kernel.org/majordomo-info.html
+>>
+>>
+>
+
 
