@@ -1,76 +1,109 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
-Date: Mon, 8 Oct 2012 09:42:58 +0000
-Message-ID: <7FE21149F4667147B645348EC60578850B2AA918@039-SN2MPN1-011.039d.mgd.msft.net>
-References: <5065A35B.3020702@grandegger.com>
- <20121007030858.GJ20231@S2101-09.ap.freescale.net>
- <50719647.4070404@grandegger.com>
- <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
- <507296F2.9010402@grandegger.com>
- <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
- <50729D73.3050409@pengutronix.de>
+From: Steffen Rose <ro@emtas.de>
+Subject: unsure - socketCAN blocking
+Date: Mon, 08 Oct 2012 12:16:40 +0200
+Message-ID: <6309304.MqJsLKDGaO@lisa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]:35750
-	"EHLO ch1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751001Ab2JHJnC convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 8 Oct 2012 05:43:02 -0400
-In-Reply-To: <50729D73.3050409@pengutronix.de>
-Content-Language: en-US
+Received: from moutng.kundenserver.de ([212.227.126.187]:64917 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751682Ab2JHKQn convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 06:16:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id 50D3B5636ED
+	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 12:16:43 +0200 (CEST)
+Received: from kolab.emtas.de ([127.0.0.1])
+	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id P96jaK13o0kV for <linux-can@vger.kernel.org>;
+	Mon,  8 Oct 2012 12:16:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by kolab.emtas.de (Postfix) with ESMTP id D789E563704
+	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 12:16:42 +0200 (CEST)
+Received: from lisa.localnet (lisa.emtas.de [192.168.3.54])
+	by kolab.emtas.de (Postfix) with ESMTPS id A1DBC5636ED
+	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 12:16:42 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
+To: linux-can@vger.kernel.org
 
->-----Original Message-----
->From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->Sent: Monday, October 08, 2012 5:32 PM
->To: Dong Aisheng-B29396
->Cc: Wolfgang Grandegger; Shawn Guo; Linux Netdev List; Linux-CAN; Hui Wang
->Subject: Re: [PATCH] flexcan: disable bus error interrupts for the i.MX28
->Importance: High
->
->On 10/08/2012 11:13 AM, Dong Aisheng-B29396 wrote:
->>>> I just checked our ic guy of flexcan, it seems he also had no sense
->>>> of
->>> this issue.
->>>>
->>>> Below is some version info what I got:
->>>> Mx6s use FlexCAN3, with IP version 10.00.12.00
->>>> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
->>>> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
->>>> Mx35 use FlexCAN2 (without glitch filter) , with IP version
->>>> 03.00.00.00
->>>> Mx25 use FlexCAN2 (without glitch filter), with IP version
->>>> 03.00.00.00 I'm not sure if mx6q has such issue.
->>>
->>> OK, we need to find that out experimentally.
->>>
->> Our IC owner double checked the MX35 and MX53 IP and found the RX_WARN
->> & TX_WARN Interrupt source actually are not connected to ARM.
->
->Does this mean it's a SoC problem, not a problem of the ip core?
->
-It's not a problem of ip core, it's about how to use the IP.
-I do not know why some i.MX SoCs does not use rx/tx warn interrupts.
+Hello,=20
+I'm unsure, what I see.
 
->> That means flexcan will not trigger interrupt to ARM core even RX_WARN
->> or TX_WARN Happens.
->> This may be the root cause that why you cannot see RX_WARN interrupt
->> if not enable bus error interrupt on mx35.
->> He also checked that mx6q has the rx/tx warning interrupt connected to
->arm.
->> So we guess mx6q does not have this issue.
->> Anyway, we can test to confirm.
->
->What about mx25?
->
-For mx25 and mx28, he could not access it now.
-Will check tomorrow.
+I use:
+Virtual box - Host Win 7/Guest kubuntu=20
+Linux lisa 3.2.0-30-generic #48-Ubuntu SMP Fri Aug 24 16:52:48 UTC 2012=
+ x86_64=20
+x86_64 x86_64 GNU/Linux
 
-Regards
-Dong Aisheng
+SocketCAN connector is a EMS CPC-USB.
+
+On startup, the network works fine.
+In different situation one or both directions (RX/TX) stop it's work.
+My Linux program say:
+
+	write: No buffer space available
+
+It's the write to the socketcan device can0.
+
+=46or the current situation the communication stopped in general.
+
+$ ip link show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN=20
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast st=
+ate UP=20
+qlen 1000
+    link/ether 08:00:27:62:24:48 brd ff:ff:ff:ff:ff:ff
+3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ qlen=20
+100
+    link/can=20
+
+$ cat /proc/net/can/stats
+
+      717 transmitted frames (TXF)
+      820 received frames (RXF)
+      607 matched frames (RXMF)
+
+       74 % total match ratio (RXMR)
+        0 frames/s total tx rate (TXR)
+        0 frames/s total rx rate (RXR)
+
+      100 % current match ratio (CRXMR)
+        0 frames/s current tx rate (CTXR)
+        0 frames/s current rx rate (CRXR)
+
+      100 % max match ratio (MRXMR)
+       11 frames/s max tx rate (MTXR)
+       20 frames/s max rx rate (MRXR)
+
+        2 current receive list entries (CRCV)
+        2 maximum receive list entries (MRCV)
+
+$ ip -det -stat link show can0
+3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ qlen=20
+100
+    link/can=20
+    can state ERROR-ACTIVE restart-ms 0=20
+    bitrate 250000 sample-point 0.875=20
+    tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+    ems_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+    clock 8000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          0          0          0        =20
+    RX: bytes  packets  errors  dropped overrun mcast  =20
+    106        213      0       0       0       0     =20
+    TX: bytes  packets  errors  dropped carrier collsns=20
+    607        607      0       0       0       0     =20
+
+$ ./candump any
+say nothing
+
+I'm unsure to interprete the data. I cannot see any mistake.=20
+
+--=20
+Mit freundlichen Gr=FC=DFen / Best regards
+Steffen Rose
 
