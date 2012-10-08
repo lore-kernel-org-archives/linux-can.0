@@ -1,103 +1,84 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] can: ti_hecc: fix rx wrong sequence issue
-Date: Mon, 08 Oct 2012 11:28:26 +0200
-Message-ID: <50729CBA.2070600@grandegger.com>
-References: <1349678436-747-1-git-send-email-anilkumar@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Mon, 08 Oct 2012 11:31:31 +0200
+Message-ID: <50729D73.3050409@pengutronix.de>
+References: <5065A35B.3020702@grandegger.com> <20121007030858.GJ20231@S2101-09.ap.freescale.net> <50719647.4070404@grandegger.com> <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net> <507296F2.9010402@grandegger.com> <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigB48DB519EAE3FF48644B1601"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:42134 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751007Ab2JHJ2k (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:28:40 -0400
-In-Reply-To: <1349678436-747-1-git-send-email-anilkumar@ti.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36070 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750709Ab2JHJbj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:31:39 -0400
+In-Reply-To: <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: AnilKumar Ch <anilkumar@ti.com>
-Cc: mkl@pengutronix.de, swarren@wwwdotorg.org, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
 
-On 10/08/2012 08:40 AM, AnilKumar Ch wrote:
-> Fix "received wrong sequence count. expected: x, got: y" errors
-> reported by cansequence in a stress test (--verbose).
-> 
-> While processing the receive packets in mailboxes, upper mailboxes
-> need to enable while processing 12th (RX_BUFFER mailbox) mailbox.
-> This requires a status check to identify whether the receiving of
-> packets in progress or not. If the mailboxes are enabled before the
-> receive packet status is cleared then there is a possibility of
-> receiving out of order packets.
-> 
-> With this patch mailboxes are enabled once the receive status is
-> cleared.
-> 
-> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB48DB519EAE3FF48644B1601
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/net/can/ti_hecc.c |   19 ++++++++++++++++++-
->  1 files changed, 18 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-> index 39293e9..2417a2d 100644
-> --- a/drivers/net/can/ti_hecc.c
-> +++ b/drivers/net/can/ti_hecc.c
-> @@ -169,6 +169,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
->  #define HECC_CANES_SMA		BIT(5)	/* suspend mode ack */
->  #define HECC_CANES_CCE		BIT(4)	/* Change config enabled */
->  #define HECC_CANES_PDA		BIT(3)	/* Power down mode ack */
-> +#define HECC_CANES_RM		BIT(1)	/* Receive Mode bit */
->  
->  #define HECC_CANBTC_SAM		BIT(7)	/* sample points */
->  
-> @@ -194,6 +195,13 @@ MODULE_VERSION(HECC_MODULE_VERSION);
->  #define HECC_CANGIM_DEF_MASK	0x700	/* only busoff/warning/passive */
->  #define HECC_CANGIM_SIL		BIT(2)	/* system interrupts to int line 1 */
->  
-> +/*
-> + * Receive Mode bit reflects what the CAN protocol kernel (CPK) is
-> + * actually doing regardless of mailbox configuration. CPK receive
-> + * mode timeout. Tried from 1 - 5us and kept 10 as a safety value.
-> + */
-> +#define RM_TIMEOUT_US		10
-> +
->  /* CAN Bittiming constants as per HECC specs */
->  static struct can_bittiming_const ti_hecc_bittiming_const = {
->  	.name = DRV_NAME,
-> @@ -615,7 +623,7 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
->  	struct ti_hecc_priv *priv = netdev_priv(ndev);
->  	u32 num_pkts = 0;
->  	u32 mbx_mask;
-> -	unsigned long pending_pkts, flags;
-> +	unsigned long pending_pkts, flags, timeout;
->  
->  	if (!netif_running(ndev))
->  		return 0;
-> @@ -633,6 +641,15 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
->  		--priv->rx_next;
->  		if (priv->rx_next == HECC_RX_BUFFER_MBOX) {
->  			/* enable high bank mailboxes */
-> +			timeout = jiffies + usecs_to_jiffies(RM_TIMEOUT_US);
-> +			while (hecc_get_bit(priv, HECC_CANES, HECC_CANES_RM)) {
-> +				cpu_relax();
-> +				if (time_after(jiffies, timeout)) {
-> +					netdev_warn(ndev, "receiving pkt\n");
-> +					break;
-> +				}
-> +			}
-> +
->  			spin_lock_irqsave(&priv->mbx_lock, flags);
->  			mbx_mask = hecc_read(priv, HECC_CANME);
->  			mbx_mask |= HECC_RX_HIGH_MBOX_MASK;
-> 
+On 10/08/2012 11:13 AM, Dong Aisheng-B29396 wrote:
+>>> I just checked our ic guy of flexcan, it seems he also had no sense o=
+f
+>> this issue.
+>>>
+>>> Below is some version info what I got:
+>>> Mx6s use FlexCAN3, with IP version 10.00.12.00
+>>> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
+>>> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
+>>> Mx35 use FlexCAN2 (without glitch filter) , with IP version
+>>> 03.00.00.00
+>>> Mx25 use FlexCAN2 (without glitch filter), with IP version 03.00.00.0=
+0
+>>> I'm not sure if mx6q has such issue.
+>>
+>> OK, we need to find that out experimentally.
+>>
+> Our IC owner double checked the MX35 and MX53 IP and found the RX_WARN =
+& TX_WARN
+> Interrupt source actually are not connected to ARM.
 
-Hm, jiffies do have a 1/HZ resolution, normally 1/100 or 1/250 s. Then
-time_after() would not trigger before the next jiffy. Or have I missed
-something.
+Does this mean it's a SoC problem, not a problem of the ip core?
 
-FYI: the program canfdtest [1] from the offical can-utils has been added
-some time ago to allow detection of out-of-order messages.
+> That means flexcan will not trigger interrupt to ARM core even RX_WARN =
+or TX_WARN
+> Happens.
+> This may be the root cause that why you cannot see RX_WARN interrupt if=
+ not enable
+> bus error interrupt on mx35.
+> He also checked that mx6q has the rx/tx warning interrupt connected to =
+arm.
+> So we guess mx6q does not have this issue.
+> Anyway, we can test to confirm.
 
-Wolfgang.
+What about mx25?
 
-[1] https://gitorious.org/linux-can/can-utils/blobs/master/canfdtest.c
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--------------enigB48DB519EAE3FF48644B1601
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBynXMACgkQjTAFq1RaXHNrQQCfbozsaobAnfC5Zxet0ND1gqjo
+K/wAniKbSZe3pfz2Wrlcddpv3PrM9Hil
+=aTCj
+-----END PGP SIGNATURE-----
+
+--------------enigB48DB519EAE3FF48644B1601--
