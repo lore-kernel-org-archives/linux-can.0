@@ -1,105 +1,41 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
-Date: Mon, 8 Oct 2012 09:13:40 +0000
-Message-ID: <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
-References: <5065A35B.3020702@grandegger.com>
- <20121007030858.GJ20231@S2101-09.ap.freescale.net>
- <50719647.4070404@grandegger.com>
- <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
- <507296F2.9010402@grandegger.com>
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: Re: [RFC: PATCH 1/5] can: sja1000_platform
+Date: Mon, 08 Oct 2012 11:16:04 +0200
+Message-ID: <507299D4.9030506@gaisler.com>
+References: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]:53090
-	"EHLO am1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750794Ab2JHJN5 convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 8 Oct 2012 05:13:57 -0400
-In-Reply-To: <507296F2.9010402@grandegger.com>
-Content-Language: en-US
+Received: from vsp-authed02.binero.net ([195.74.38.226]:11641 "HELO
+	vsp-authed-01-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1751026Ab2JHJQl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:16:41 -0400
+In-Reply-To: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, wg@grandegger.com
 
-Hi Wolfgang,
-
->Hi Dong,
+On 10/05/2012 04:39 PM, Marc Kleine-Budde wrote:
+> Hello,
 >
->On 10/08/2012 09:59 AM, Dong Aisheng-B29396 wrote:
->> Hi Wolfgang,
->>
->>> On 10/07/2012 05:09 AM, Shawn Guo wrote:
->>>> On Fri, Sep 28, 2012 at 03:17:15PM +0200, Wolfgang Grandegger wrote:
->>>>> Due to a bug in most Flexcan cores, the bus error interrupt needs
->>>>> to be enabled. Otherwise we don't get any error warning or passive
->>>>> interrupts. This is _not_ necessay for the i.MX28 and this patch
->>>>> disables bus error interrupts if "berr-reporting" is not requested.
->>>>> This avoids bus error flooding, which might harm, especially on
->>>>> low-end systems.
->>>>>
->>>>> To handle such quirks of the Flexcan cores, a hardware feature flag
->>>>> has been introduced, also replacing the "hw_ver" variable. So far
->>>>> nobody could tell what Flexcan core version is available on what
->>>>> Freescale SOC, apart from the i.MX6Q and P1010, and which bugs or
->>>>> features are present on the various "hw_rev".
->>>>>
->>>>> CC: Hui Wang <jason77.wang@gmail.com>
->>>>> CC: Shawn Guo <shawn.guo@linaro.org>
->>>>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->>>>> ---
->>>>>
->>>>> Concerning the bug, I know that the i.MX35 does have it. Maybe
->>>>> other Flexcan cores than on the i.MX28 does *not* have it either.
->>>>> If you have a chance, please check on the P1010, i.MX6Q, i.MX51,
->>>>> i.MX53, etc.
->>>>
->>>> >From what I can tell, i.MX35, i.MX51 and i.MX53 use the same
->>>> >version,
->>>> so they should all have the bug.  And for i.MX6Q, since it uses a
->>>> newer version even than i.MX28, I would believe it's affected by the
->bug.
->>>> But I'm copying Dong who should have better knowledge about this to
->>>> confirm.
->>>
->>> Thank for clarification. I have a i.MX6Q board but without CAN
->>> adapter :(, unfortunately. Otherwise I would try it out myself.
->>>
->> How did you verify this issue?
+> this series ports the device tree bindings from the existing
+> sja1000_of_platform driver to the sja1000_platform driver. It has been compile
+> time tested only. I've written the patches to get rid of the
+> sja1000_of_platform once this in the kernel.
 >
->I provoke state changes, e.g. by sending a message without connection to
->the bus. On the Mx28, the TWRN_INT/RWRN_INT/(BOFF_INT?) does trigger the
->corresponding interrupt. This does not work properly on some other cores,
->e.g. the Mx35. Therefore we enable ERR_INT for those cores to realize
->state changes.
-Thanks for the info.
+> Please test, especially on sparc, powerpc and arm.
 
->> I just checked our ic guy of flexcan, it seems he also had no sense of
->this issue.
->>
->> Below is some version info what I got:
->> Mx6s use FlexCAN3, with IP version 10.00.12.00
->> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
->> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
->> Mx35 use FlexCAN2 (without glitch filter) , with IP version
->> 03.00.00.00
->> Mx25 use FlexCAN2 (without glitch filter), with IP version 03.00.00.00
->> I'm not sure if mx6q has such issue.
->
->OK, we need to find that out experimentally.
->
-Our IC owner double checked the MX35 and MX53 IP and found the RX_WARN & TX_WARN
-Interrupt source actually are not connected to ARM.
-That means flexcan will not trigger interrupt to ARM core even RX_WARN or TX_WARN
-Happens.
-This may be the root cause that why you cannot see RX_WARN interrupt if not enable
-bus error interrupt on mx35.
-He also checked that mx6q has the rx/tx warning interrupt connected to arm.
-So we guess mx6q does not have this issue.
-Anyway, we can test to confirm.
+On sparc, sp_probe fails for me because there is no resource of type 
+IORESOURCE_IRQ.
 
-Regards
-Dong Aisheng
+As far as I can find out, on sparc (32 and 64 bit) IORESOURCE_IRQ 
+resources are never created for the platform_device representation. The 
+resources that are created are the ones created for adresses/registers 
+in build_device_resources() in arch/sparc/kernel/of_device_32.c and 
+arch/sparc/kernel/of_device_64.c respectively.
 
+Cheers,
+Andreas
 
