@@ -1,41 +1,103 @@
-From: Andreas Larsson <andreas@gaisler.com>
-Subject: Re: [RFC: PATCH 1/5] can: sja1000_platform
-Date: Mon, 08 Oct 2012 11:16:04 +0200
-Message-ID: <507299D4.9030506@gaisler.com>
-References: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH] can: ti_hecc: fix rx wrong sequence issue
+Date: Mon, 08 Oct 2012 11:28:26 +0200
+Message-ID: <50729CBA.2070600@grandegger.com>
+References: <1349678436-747-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from vsp-authed02.binero.net ([195.74.38.226]:11641 "HELO
-	vsp-authed-01-02.binero.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1751026Ab2JHJQl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:16:41 -0400
-In-Reply-To: <1349447947-18451-1-git-send-email-mkl@pengutronix.de>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:42134 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751007Ab2JHJ2k (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:28:40 -0400
+In-Reply-To: <1349678436-747-1-git-send-email-anilkumar@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, wg@grandegger.com
+To: AnilKumar Ch <anilkumar@ti.com>
+Cc: mkl@pengutronix.de, swarren@wwwdotorg.org, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
 
-On 10/05/2012 04:39 PM, Marc Kleine-Budde wrote:
-> Hello,
->
-> this series ports the device tree bindings from the existing
-> sja1000_of_platform driver to the sja1000_platform driver. It has been compile
-> time tested only. I've written the patches to get rid of the
-> sja1000_of_platform once this in the kernel.
->
-> Please test, especially on sparc, powerpc and arm.
+On 10/08/2012 08:40 AM, AnilKumar Ch wrote:
+> Fix "received wrong sequence count. expected: x, got: y" errors
+> reported by cansequence in a stress test (--verbose).
+> 
+> While processing the receive packets in mailboxes, upper mailboxes
+> need to enable while processing 12th (RX_BUFFER mailbox) mailbox.
+> This requires a status check to identify whether the receiving of
+> packets in progress or not. If the mailboxes are enabled before the
+> receive packet status is cleared then there is a possibility of
+> receiving out of order packets.
+> 
+> With this patch mailboxes are enabled once the receive status is
+> cleared.
+> 
+> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
 
-On sparc, sp_probe fails for me because there is no resource of type 
-IORESOURCE_IRQ.
+> ---
+>  drivers/net/can/ti_hecc.c |   19 ++++++++++++++++++-
+>  1 files changed, 18 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+> index 39293e9..2417a2d 100644
+> --- a/drivers/net/can/ti_hecc.c
+> +++ b/drivers/net/can/ti_hecc.c
+> @@ -169,6 +169,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
+>  #define HECC_CANES_SMA		BIT(5)	/* suspend mode ack */
+>  #define HECC_CANES_CCE		BIT(4)	/* Change config enabled */
+>  #define HECC_CANES_PDA		BIT(3)	/* Power down mode ack */
+> +#define HECC_CANES_RM		BIT(1)	/* Receive Mode bit */
+>  
+>  #define HECC_CANBTC_SAM		BIT(7)	/* sample points */
+>  
+> @@ -194,6 +195,13 @@ MODULE_VERSION(HECC_MODULE_VERSION);
+>  #define HECC_CANGIM_DEF_MASK	0x700	/* only busoff/warning/passive */
+>  #define HECC_CANGIM_SIL		BIT(2)	/* system interrupts to int line 1 */
+>  
+> +/*
+> + * Receive Mode bit reflects what the CAN protocol kernel (CPK) is
+> + * actually doing regardless of mailbox configuration. CPK receive
+> + * mode timeout. Tried from 1 - 5us and kept 10 as a safety value.
+> + */
+> +#define RM_TIMEOUT_US		10
+> +
+>  /* CAN Bittiming constants as per HECC specs */
+>  static struct can_bittiming_const ti_hecc_bittiming_const = {
+>  	.name = DRV_NAME,
+> @@ -615,7 +623,7 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
+>  	struct ti_hecc_priv *priv = netdev_priv(ndev);
+>  	u32 num_pkts = 0;
+>  	u32 mbx_mask;
+> -	unsigned long pending_pkts, flags;
+> +	unsigned long pending_pkts, flags, timeout;
+>  
+>  	if (!netif_running(ndev))
+>  		return 0;
+> @@ -633,6 +641,15 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
+>  		--priv->rx_next;
+>  		if (priv->rx_next == HECC_RX_BUFFER_MBOX) {
+>  			/* enable high bank mailboxes */
+> +			timeout = jiffies + usecs_to_jiffies(RM_TIMEOUT_US);
+> +			while (hecc_get_bit(priv, HECC_CANES, HECC_CANES_RM)) {
+> +				cpu_relax();
+> +				if (time_after(jiffies, timeout)) {
+> +					netdev_warn(ndev, "receiving pkt\n");
+> +					break;
+> +				}
+> +			}
+> +
+>  			spin_lock_irqsave(&priv->mbx_lock, flags);
+>  			mbx_mask = hecc_read(priv, HECC_CANME);
+>  			mbx_mask |= HECC_RX_HIGH_MBOX_MASK;
+> 
 
-As far as I can find out, on sparc (32 and 64 bit) IORESOURCE_IRQ 
-resources are never created for the platform_device representation. The 
-resources that are created are the ones created for adresses/registers 
-in build_device_resources() in arch/sparc/kernel/of_device_32.c and 
-arch/sparc/kernel/of_device_64.c respectively.
+Hm, jiffies do have a 1/HZ resolution, normally 1/100 or 1/250 s. Then
+time_after() would not trigger before the next jiffy. Or have I missed
+something.
 
-Cheers,
-Andreas
+FYI: the program canfdtest [1] from the offical can-utils has been added
+some time ago to allow detection of out-of-order messages.
+
+Wolfgang.
+
+[1] https://gitorious.org/linux-can/can-utils/blobs/master/canfdtest.c
 
