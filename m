@@ -1,95 +1,105 @@
-From: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-Subject: Re: [PATCH] can: ti_hecc: fix rx wrong sequence issue
-Date: Mon, 08 Oct 2012 11:12:27 +0200
-Message-ID: <1349687547.3444.7.camel@coredoba.hi.pengutronix.de>
-References: <1349678436-747-1-git-send-email-anilkumar@ti.com>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Mon, 8 Oct 2012 09:13:40 +0000
+Message-ID: <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
+References: <5065A35B.3020702@grandegger.com>
+ <20121007030858.GJ20231@S2101-09.ap.freescale.net>
+ <50719647.4070404@grandegger.com>
+ <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
+ <507296F2.9010402@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33355 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750794Ab2JHJMf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 05:12:35 -0400
-In-Reply-To: <1349678436-747-1-git-send-email-anilkumar@ti.com>
+Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]:53090
+	"EHLO am1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750794Ab2JHJN5 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 8 Oct 2012 05:13:57 -0400
+In-Reply-To: <507296F2.9010402@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: AnilKumar Ch <anilkumar@ti.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, swarren@wwwdotorg.org, linux-can@vger.kernel.org, anantgole@ti.com, nsekhar@ti.com
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
 
-On Mon, 2012-10-08 at 12:10 +0530, AnilKumar Ch wrote:
-> Fix "received wrong sequence count. expected: x, got: y" errors
-> reported by cansequence in a stress test (--verbose).
+Hi Wolfgang,
 
-I tested this on a AM3505 with cansequence 4.0.6. For 500kbit, I see no
-reordering anymore.
+>Hi Dong,
+>
+>On 10/08/2012 09:59 AM, Dong Aisheng-B29396 wrote:
+>> Hi Wolfgang,
+>>
+>>> On 10/07/2012 05:09 AM, Shawn Guo wrote:
+>>>> On Fri, Sep 28, 2012 at 03:17:15PM +0200, Wolfgang Grandegger wrote:
+>>>>> Due to a bug in most Flexcan cores, the bus error interrupt needs
+>>>>> to be enabled. Otherwise we don't get any error warning or passive
+>>>>> interrupts. This is _not_ necessay for the i.MX28 and this patch
+>>>>> disables bus error interrupts if "berr-reporting" is not requested.
+>>>>> This avoids bus error flooding, which might harm, especially on
+>>>>> low-end systems.
+>>>>>
+>>>>> To handle such quirks of the Flexcan cores, a hardware feature flag
+>>>>> has been introduced, also replacing the "hw_ver" variable. So far
+>>>>> nobody could tell what Flexcan core version is available on what
+>>>>> Freescale SOC, apart from the i.MX6Q and P1010, and which bugs or
+>>>>> features are present on the various "hw_rev".
+>>>>>
+>>>>> CC: Hui Wang <jason77.wang@gmail.com>
+>>>>> CC: Shawn Guo <shawn.guo@linaro.org>
+>>>>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+>>>>> ---
+>>>>>
+>>>>> Concerning the bug, I know that the i.MX35 does have it. Maybe
+>>>>> other Flexcan cores than on the i.MX28 does *not* have it either.
+>>>>> If you have a chance, please check on the P1010, i.MX6Q, i.MX51,
+>>>>> i.MX53, etc.
+>>>>
+>>>> >From what I can tell, i.MX35, i.MX51 and i.MX53 use the same
+>>>> >version,
+>>>> so they should all have the bug.  And for i.MX6Q, since it uses a
+>>>> newer version even than i.MX28, I would believe it's affected by the
+>bug.
+>>>> But I'm copying Dong who should have better knowledge about this to
+>>>> confirm.
+>>>
+>>> Thank for clarification. I have a i.MX6Q board but without CAN
+>>> adapter :(, unfortunately. Otherwise I would try it out myself.
+>>>
+>> How did you verify this issue?
+>
+>I provoke state changes, e.g. by sending a message without connection to
+>the bus. On the Mx28, the TWRN_INT/RWRN_INT/(BOFF_INT?) does trigger the
+>corresponding interrupt. This does not work properly on some other cores,
+>e.g. the Mx35. Therefore we enable ERR_INT for those cores to realize
+>state changes.
+Thanks for the info.
 
-When testing at 1Mbit, it seems to be worse than before:
-~ # ifconfig can0 down; canconfig can0 bitrate 1000000; ifconfig can0 up
-can0 bitrate: 1000000, sample-point: 0.692
-[ 1627.995574] ti_hecc ti_hecc: can0: setting CANBTC=0x3b
-~ # cansequence -r -vv can0
-interface = can0, family = 29, type = 3, proto = 1
-received frame. sequence number: 0
-received frame. sequence number: 1
-received frame. sequence number: 2
-received frame. sequence number: 3
-received frame. sequence number: 4
-received frame. sequence number: 5
-received frame. sequence number: 6
-received frame. sequence number: 7
-received frame. sequence number: 8
-received frame. sequence number: 9
-received frame. sequence number: 10
-received frame. sequence number: 11
-received frame. sequence number: 12
-received frame. sequence number: 13
-received frame. sequence number: 14
-received frame. sequence number: 15
-received frame. sequence number: 16
-received frame. sequence number: 17
-received frame. sequence number: 18
-received frame. sequence number: 19
-received frame. sequence number: 20
-received frame. sequence number: 21
-received frame. sequence number: 21
-received wrong sequence count. expected: 22, got: 21
-received frame. sequence number: 21
-received wrong sequence count. expected: 22, got: 21
-received frame. sequence number: 22
-received frame. sequence number: 22
-received wrong sequence count. expected: 23, got: 22
-received frame. sequence number: 23
-received frame. sequence number: 23
-received wrong sequence count. expected: 24, got: 23
-received frame. sequence number: 24
-received frame. sequence number: 24
-received wrong sequence count. expected: 25, got: 24
-received frame. sequence number: 24
-received wrong sequence count. expected: 25, got: 24
-received frame. sequence number: 25
-received frame. sequence number: 25
-received wrong sequence count. expected: 26, got: 25
-received frame. sequence number: 26
-received frame. sequence number: 27
-received frame. sequence number: 27
-received wrong sequence count. expected: 28, got: 27
-received frame. sequence number: 28
-received frame. sequence number: 28
-received wrong sequence count. expected: 29, got: 28
-received frame. sequence number: 28
-received wrong sequence count. expected: 29, got: 28
-received frame. sequence number: 29
-...
+>> I just checked our ic guy of flexcan, it seems he also had no sense of
+>this issue.
+>>
+>> Below is some version info what I got:
+>> Mx6s use FlexCAN3, with IP version 10.00.12.00
+>> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
+>> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
+>> Mx35 use FlexCAN2 (without glitch filter) , with IP version
+>> 03.00.00.00
+>> Mx25 use FlexCAN2 (without glitch filter), with IP version 03.00.00.00
+>> I'm not sure if mx6q has such issue.
+>
+>OK, we need to find that out experimentally.
+>
+Our IC owner double checked the MX35 and MX53 IP and found the RX_WARN & TX_WARN
+Interrupt source actually are not connected to ARM.
+That means flexcan will not trigger interrupt to ARM core even RX_WARN or TX_WARN
+Happens.
+This may be the root cause that why you cannot see RX_WARN interrupt if not enable
+bus error interrupt on mx35.
+He also checked that mx6q has the rx/tx warning interrupt connected to arm.
+So we guess mx6q does not have this issue.
+Anyway, we can test to confirm.
 
-Here we can see that after the initial frames, most frames are received
-twice (some even thrice).
+Regards
+Dong Aisheng
 
-Regards,
-Jan
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
