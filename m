@@ -1,65 +1,55 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: unsure - socketCAN blocking
-Date: Mon, 08 Oct 2012 13:46:06 +0200
-Message-ID: <5072BCFE.5000006@pengutronix.de>
-References: <6309304.MqJsLKDGaO@lisa>
+Subject: Re: [RFC: PATCH 1/5] can: sja1000_platform
+Date: Mon, 08 Oct 2012 14:19:37 +0200
+Message-ID: <5072C4D9.8020008@pengutronix.de>
+References: <1349447947-18451-1-git-send-email-mkl@pengutronix.de> <507299D4.9030506@gaisler.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enigDE24F5E43F73585A007B106D"
+ boundary="------------enig38A25803C236CD89AF06DD50"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42868 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56800 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750718Ab2JHLqM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 07:46:12 -0400
-In-Reply-To: <6309304.MqJsLKDGaO@lisa>
+	with ESMTP id S1751845Ab2JHMTm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 08:19:42 -0400
+In-Reply-To: <507299D4.9030506@gaisler.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Steffen Rose <ro@emtas.de>
-Cc: linux-can@vger.kernel.org
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, wg@grandegger.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDE24F5E43F73585A007B106D
+--------------enig38A25803C236CD89AF06DD50
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 10/08/2012 12:16 PM, Steffen Rose wrote:
-> Hello,=20
-> I'm unsure, what I see.
->=20
-> I use:
-> Virtual box - Host Win 7/Guest kubuntu=20
-> Linux lisa 3.2.0-30-generic #48-Ubuntu SMP Fri Aug 24 16:52:48 UTC 2012=
- x86_64=20
-> x86_64 x86_64 GNU/Linux
->=20
-> SocketCAN connector is a EMS CPC-USB.
->=20
-> On startup, the network works fine.
-> In different situation one or both directions (RX/TX) stop it's work.
-> My Linux program say:
->=20
-> 	write: No buffer space available
->=20
-> It's the write to the socketcan device can0.
+On 10/08/2012 11:16 AM, Andreas Larsson wrote:
+> On 10/05/2012 04:39 PM, Marc Kleine-Budde wrote:
+>> Hello,
+>>
+>> this series ports the device tree bindings from the existing
+>> sja1000_of_platform driver to the sja1000_platform driver. It has been=
 
-Your program probably produces CAN frames faster than they could be
-delivered by your CAN hardware. Your choices are:
-1) If the write/sendto system call returns with -ENOBUFS,
-   add the filedesciptor to poll/select and wait for it to be writeable
-   again. For some known, but not yet resolved reasons (a.k.a. bug),
-   the poll/select will return immediately, but the write will fail
-   again. To workaround this usleep for some milliseconds between
-   the write/sendto and the poll/select system call.
+>> compile
+>> time tested only. I've written the patches to get rid of the
+>> sja1000_of_platform once this in the kernel.
+>>
+>> Please test, especially on sparc, powerpc and arm.
+>=20
+> On sparc, sp_probe fails for me because there is no resource of type
+> IORESOURCE_IRQ.
+>=20
+> As far as I can find out, on sparc (32 and 64 bit) IORESOURCE_IRQ
+> resources are never created for the platform_device representation. The=
 
-2) Increase txqueue length to 10000 or so.
-   (ifconfig can0 txqueuelen 10000)
-   This avoids to trigger the above bug and your write/sendto will
-   block until the queues are free again and your CAN frame will added
-   to the send queue. With this workaround poll/select work as expected,
-   i.e. when they return the socket is writeable without problems.
+> resources that are created are the ones created for adresses/registers
+> in build_device_resources() in arch/sparc/kernel/of_device_32.c and
+> arch/sparc/kernel/of_device_64.c respectively.
 
-Hope that helps,
+Okay. Do both sparc architectures implement
+
+    irq_of_parse_and_map()
+
 Marc
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -68,7 +58,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enigDE24F5E43F73585A007B106D
+--------------enig38A25803C236CD89AF06DD50
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -77,9 +67,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlByvQEACgkQjTAFq1RaXHPG/wCfVz9dwc3nxphXQQMCQXbepvYn
-w6oAn0dgK+aT8BP/snPdKjlaJoHBKYIh
-=ySrd
+iEYEARECAAYFAlByxNkACgkQjTAFq1RaXHPbXACgh70A00Xsz3P4UngckLpXo/kH
+dOkAoIMXkzWncsGEGpI7hBZ4Jz7sZ5Lg
+=LcIx
 -----END PGP SIGNATURE-----
 
---------------enigDE24F5E43F73585A007B106D--
+--------------enig38A25803C236CD89AF06DD50--
