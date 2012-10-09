@@ -1,83 +1,44 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [GIT PULL] Disintegrate UAPI for can
-Date: Tue, 09 Oct 2012 19:55:34 +0200
-Message-ID: <50746516.6040100@hartkopp.net>
-References: <30687.1349789402@warthog.procyon.org.uk>
+From: Stuart Statman <sstatman@sunverge.com>
+Subject: "Blessed" Version
+Date: Tue, 09 Oct 2012 16:25:40 -0700
+Message-ID: <5074B274.7070703@sunverge.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:26643 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752195Ab2JIRz2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Oct 2012 13:55:28 -0400
-In-Reply-To: <30687.1349789402@warthog.procyon.org.uk>
+Received: from mail-pa0-f46.google.com ([209.85.220.46]:50470 "EHLO
+	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754686Ab2JIXZn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Oct 2012 19:25:43 -0400
+Received: by mail-pa0-f46.google.com with SMTP id hz1so5740117pad.19
+        for <linux-can@vger.kernel.org>; Tue, 09 Oct 2012 16:25:42 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David Howells <dhowells@redhat.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-
-Hello Marc,
-
-can you please pull these changes, so that they can go via the CAN tree to Dave?
-
-Thanks,
-Oliver
-
-On 09.10.2012 15:30, David Howells wrote:
-
-> Can you merge the following branch into the can tree please.
-> 
-> This is to complete part of the Userspace API (UAPI) disintegration for which
-> the preparatory patches were pulled recently.  After these patches, userspace
-> headers will be segregated into:
-> 
-> 	include/uapi/linux/.../foo.h
-> 
-> for the userspace interface stuff, and:
-> 
-> 	include/linux/.../foo.h
-> 
-> for the strictly kernel internal stuff.
-> 
-> ---
-> The following changes since commit 9e2d8656f5e8aa214e66b462680cf86b210b74a8:
-> 
->   Merge branch 'akpm' (Andrew's patch-bomb) (2012-10-09 16:23:15 +0900)
-> 
-> are available in the git repository at:
-> 
-> 
->   git://git.infradead.org/users/dhowells/linux-headers.git tags/disintegrate-can-20121009
-> 
-> for you to fetch changes up to c523b9b41d6bfdd035b5c25063ad13967f3306cd:
-> 
->   UAPI: (Scripted) Disintegrate include/linux/can (2012-10-09 09:48:41 +0100)
-> 
-> ----------------------------------------------------------------
-> UAPI Disintegration 2012-10-09
-> 
-> ----------------------------------------------------------------
-> David Howells (1):
->       UAPI: (Scripted) Disintegrate include/linux/can
-> 
->  include/linux/can/Kbuild               | 5 -----
->  include/uapi/linux/can/Kbuild          | 5 +++++
->  include/{ => uapi}/linux/can/bcm.h     | 0
->  include/{ => uapi}/linux/can/error.h   | 0
->  include/{ => uapi}/linux/can/gw.h      | 0
->  include/{ => uapi}/linux/can/netlink.h | 0
->  include/{ => uapi}/linux/can/raw.h     | 0
->  7 files changed, 5 insertions(+), 5 deletions(-)
->  rename include/{ => uapi}/linux/can/bcm.h (100%)
->  rename include/{ => uapi}/linux/can/error.h (100%)
->  rename include/{ => uapi}/linux/can/gw.h (100%)
->  rename include/{ => uapi}/linux/can/netlink.h (100%)
->  rename include/{ => uapi}/linux/can/raw.h (100%)
-> .
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+To: linux-can@vger.kernel.org
 
 
+Sorry if this is a repeat of an earlier question; I missed the 
+transition from Berlios to this mailing list, and am only now catching up.
+
+I've been sticking with a snapshot of the source tree from months ago. 
+It isn't that I don't want the changes, I just don't want to have to 
+retest my gear with a new set of drivers. (I'm also sticking with older 
+versions of the kernel, same reason.)
+
+However, we want to start testing against newer 2.6 kernels. However, it 
+turns out that my snapshot from so many moons ago no longer compiles 
+against the latest CentOS blessed 2.6 kernel.
+
+So ... how do I get the latest release version of the SocketCAN drivers, 
+CAN utils, etc? I could use git to grab from the head, I suppose, but 
+that may be too bleeding edge for me.
+
+(Forgive my almost complete ignorance of git, by the way. I'm likely to 
+ask wildly stupid questions on this thread.)
+
+
+-- 
+Stu Statman
+VP of Engineering
+Sunverge, Inc
+http://www.sunverge.com
