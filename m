@@ -1,47 +1,92 @@
-From: Steffen Rose <ro@emtas.de>
-Subject: Re: unsure - socketCAN blocking
-Date: Mon, 08 Oct 2012 17:21:18 +0200
-Message-ID: <2236713.jcWFbEc6dn@lisa>
-References: <6309304.MqJsLKDGaO@lisa> <5072E9A5.2060908@grandegger.com> <5072EA72.9050308@pengutronix.de>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+Date: Tue, 9 Oct 2012 11:52:26 +0000
+Message-ID: <7FE21149F4667147B645348EC60578850B36E998@039-SN2MPN1-011.039d.mgd.msft.net>
+References: <5065A35B.3020702@grandegger.com>
+ <20121007030858.GJ20231@S2101-09.ap.freescale.net>
+ <50719647.4070404@grandegger.com>
+ <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
+ <507296F2.9010402@grandegger.com>
+ <7FE21149F4667147B645348EC60578850B2A8D51@039-SN2MPN1-011.039d.mgd.msft.net>
+ <50729D73.3050409@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.186]:59274 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752493Ab2JHPVW convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Oct 2012 11:21:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by kolab.emtas.de (Postfix) with ESMTP id D75965636F1
-	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 17:21:21 +0200 (CEST)
-Received: from kolab.emtas.de ([127.0.0.1])
-	by localhost (kolab.emtas.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id E82UXxLq43hJ for <linux-can@vger.kernel.org>;
-	Mon,  8 Oct 2012 17:21:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by kolab.emtas.de (Postfix) with ESMTP id 66B625637E5
-	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 17:21:21 +0200 (CEST)
-Received: from lisa.localnet (lisa.emtas.de [192.168.3.54])
-	by kolab.emtas.de (Postfix) with ESMTPS id 366CA5637E2
-	for <linux-can@vger.kernel.org>; Mon,  8 Oct 2012 17:21:21 +0200 (CEST)
-In-Reply-To: <5072EA72.9050308@pengutronix.de>
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]:46061 "EHLO
+	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-FAIL-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752363Ab2JILwv convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 9 Oct 2012 07:52:51 -0400
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
 
-Am Montag, 8. Oktober 2012, 17:00:02 schrieb Marc Kleine-Budde:
-> >> Now my error:
-> >>      write: Interrupted system call
+Hi Wolfgang,
 
-> > Hm, who has interrupted the write system call? gdb?
-=20
-> Is your application making use of signals? This is not an error, just
-> restart the write.
+>-----Original Message-----
+>From: Dong Aisheng-B29396
+>Sent: Monday, October 08, 2012 5:44 PM
+>To: 'Marc Kleine-Budde'
+>Cc: Wolfgang Grandegger; Shawn Guo; Linux Netdev List; Linux-CAN; Hui Wang
+>Subject: RE: [PATCH] flexcan: disable bus error interrupts for the i.MX28
+>
+>>-----Original Message-----
+>>From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>>Sent: Monday, October 08, 2012 5:32 PM
+>>To: Dong Aisheng-B29396
+>>Cc: Wolfgang Grandegger; Shawn Guo; Linux Netdev List; Linux-CAN; Hui
+>>Wang
+>>Subject: Re: [PATCH] flexcan: disable bus error interrupts for the
+>>i.MX28
+>>Importance: High
+>>
+>>On 10/08/2012 11:13 AM, Dong Aisheng-B29396 wrote:
+>>>>> I just checked our ic guy of flexcan, it seems he also had no sense
+>>>>> of
+>>>> this issue.
+>>>>>
+>>>>> Below is some version info what I got:
+>>>>> Mx6s use FlexCAN3, with IP version 10.00.12.00
+>>>>> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
+>>>>> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
+>>>>> Mx35 use FlexCAN2 (without glitch filter) , with IP version
+>>>>> 03.00.00.00
+>>>>> Mx25 use FlexCAN2 (without glitch filter), with IP version
+>>>>> 03.00.00.00 I'm not sure if mx6q has such issue.
+>>>>
+>>>> OK, we need to find that out experimentally.
+>>>>
+>>> Our IC owner double checked the MX35 and MX53 IP and found the
+>>> RX_WARN & TX_WARN Interrupt source actually are not connected to ARM.
+>>
+>>Does this mean it's a SoC problem, not a problem of the ip core?
+>>
+>It's not a problem of ip core, it's about how to use the IP.
+>I do not know why some i.MX SoCs does not use rx/tx warn interrupts.
+>
+>>> That means flexcan will not trigger interrupt to ARM core even
+>>> RX_WARN or TX_WARN Happens.
+>>> This may be the root cause that why you cannot see RX_WARN interrupt
+>>> if not enable bus error interrupt on mx35.
+>>> He also checked that mx6q has the rx/tx warning interrupt connected
+>>> to
+>>arm.
+>>> So we guess mx6q does not have this issue.
+>>> Anyway, we can test to confirm.
+>>
+>>What about mx25?
+>>
+>For mx25 and mx28, he could not access it now.
+>Will check tomorrow.
+>
+Just let you know:
+The checking result is Mx28 has rx/tx warning interrupt line connected
+while mx25 not.
+Looks align with what we guess.
 
-I will ask my colleguage. But that is possible.
-
---=20
-Mit freundlichen Gr=FC=DFen / Best regards
-
-Steffen Rose
+Regards
+Dong Aisheng
 
