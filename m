@@ -1,92 +1,62 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] flexcan: disable bus error interrupts for the i.MX28
-Date: Wed, 10 Oct 2012 22:04:42 +0200
-Message-ID: <5075D4DA.7010407@pengutronix.de>
-References: <5065A35B.3020702@grandegger.com> <20121007030858.GJ20231@S2101-09.ap.freescale.net> <50719647.4070404@grandegger.com> <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [GIT PULL] Disintegrate UAPI for can
+Date: Wed, 10 Oct 2012 16:08:16 -0400 (EDT)
+Message-ID: <20121010.160816.1174547411763490557.davem@davemloft.net>
+References: <30687.1349789402@warthog.procyon.org.uk>
+	<27643.1349892024@warthog.procyon.org.uk>
+	<5075D2AF.1010409@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig1758982963CDEA236DC7DC90"
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34506 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751206Ab2JJUEx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 10 Oct 2012 16:04:53 -0400
-In-Reply-To: <7FE21149F4667147B645348EC60578850B2A361F@039-SN2MPN1-011.039d.mgd.msft.net>
+Received: from shards.monkeyblade.net ([149.20.54.216]:53328 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751407Ab2JJUIU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 10 Oct 2012 16:08:20 -0400
+In-Reply-To: <5075D2AF.1010409@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Shawn Guo <shawn.guo@linaro.org>, Linux Netdev List <netdev@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, Hui Wang <jason77.wang@gmail.com>
+To: mkl@pengutronix.de
+Cc: dhowells@redhat.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1758982963CDEA236DC7DC90
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 10 Oct 2012 21:55:27 +0200
 
-On 10/08/2012 09:59 AM, Dong Aisheng-B29396 wrote:
-[...]
-
->>>> Concerning the bug, I know that the i.MX35 does have it. Maybe other=
-
->>>> Flexcan cores than on the i.MX28 does *not* have it either. If you
->>>> have a chance, please check on the P1010, i.MX6Q, i.MX51, i.MX53,
->>>> etc.
+> On 10/10/2012 08:00 PM, David Howells wrote:
+>> Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>> 
+>>> On 10/09/2012 03:30 PM, David Howells wrote:
+>>>> Can you merge the following branch into the can tree please.
+>>>>
+>>>> This is to complete part of the Userspace API (UAPI) disintegration for which
+>>>> the preparatory patches were pulled recently.  After these patches, userspace
+>>>> headers will be segregated into:
+>>>>
+>>>> 	include/uapi/linux/.../foo.h
+>>>>
+>>>> for the userspace interface stuff, and:
+>>>>
+>>>> 	include/linux/.../foo.h
+>>>>
+>>>> for the strictly kernel internal stuff.
 >>>
->>> >From what I can tell, i.MX35, i.MX51 and i.MX53 use the same version=
-,
->>> so they should all have the bug.  And for i.MX6Q, since it uses a
->>> newer version even than i.MX28, I would believe it's affected by the =
-bug.
->>> But I'm copying Dong who should have better knowledge about this to
->>> confirm.
->>
->> Thank for clarification. I have a i.MX6Q board but without CAN adapter=
- :(,
->> unfortunately. Otherwise I would try it out myself.
->>
-> How did you verify this issue?
-> I just checked our ic guy of flexcan, it seems he also had no sense of =
-this issue.
+>>> Nice work David. The upstream for can-next is David Miller's net-next
+>>> tree. He doesn't like if I pull unrelated stuff into my tree, so I'm
+>>> going to cherry pick your patch. This is not yet possible, as net-next
+>>> doesn't include the latest patches from the 3.7 merge window, so that
+>>> compilation breaks. After the merge window closes David Miller merges
+>>> back the latest changes to net-next. I'll postpone your patch until
+>>> then, this means the code will go into v3.8. I'm not familiar with the
+>>> UAPI conversion, should your patch go via linux-can and David's net into
+>>> v3.7?
+>> 
+>> It's okay for the patch to go into 3.8 if that is easier for you.  As it's
+>> scripted, I can regenerate your branch after -rc1 if that helps too.
+> 
+> I don't mind, as long as it compiles (using you tag), and it does, the
+> patch doesn't break anything. From the linux-can and David Miller's net
+> point of view, v3.7 is closed for new features just bug fixes are
+> allowed. But I'm open to make an exception, if UAPI hits mainline in
+> v3.7 on most subsystems. Hopefully David sees it the same way.
 
-Wolfgang added this table to the driver code, which is a very good idea.
-I've some (nitpicky) questions :)
-
-> Below is some version info what I got:
-> Mx6s use FlexCAN3, with IP version 10.00.12.00
-    ^^^
-Is this core different from the mx6q? Has the flexcan on mx6 a glitch
-filter?
-
-> Mx53 use FlexCAN2 (with glitch filter), with IP version 03.00.00.00
-> Mx28 use FlexCAN2 (with glitch filter), with IP version 03.00.04.00
-> Mx35 use FlexCAN2 (without glitch filter) , with IP version 03.00.00.00=
-
-> Mx25 use FlexCAN2 (without glitch filter), with IP version 03.00.00.00
-
-Do you have access to the powerpc designs which have a flexcan core,
-too? I'm interested to complete the above table with powerpcs cores
-(p1010 and similar).
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig1758982963CDEA236DC7DC90
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlB11NoACgkQjTAFq1RaXHO6tACfWs9s1gVT3d0FoXgCkuxbiQ5V
-sZQAmQFNnlG9CL+REJcrl2U4hIvhKO4W
-=/2f+
------END PGP SIGNATURE-----
-
---------------enig1758982963CDEA236DC7DC90--
+We're putting the UAPI stuff in now, don't delay this please.
