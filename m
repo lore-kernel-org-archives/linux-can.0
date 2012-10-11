@@ -1,52 +1,65 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] flexcan: disable bus error interrupts for the i.MX28
-Date: Thu, 11 Oct 2012 10:00:33 +0200
-Message-ID: <50767CA1.3030600@pengutronix.de>
-References: <5075C832.8080102@grandegger.com>
+Subject: Re: [PATCH] can: grcan: Add device driver for GRCAN and GRHCAN cores
+Date: Thu, 11 Oct 2012 12:04:15 +0200
+Message-ID: <5076999F.6070302@pengutronix.de>
+References: <1349188730-11434-1-git-send-email-andreas@gaisler.com> <506D5AA4.5080704@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig131138F29C2CA83960E72544"
+ boundary="------------enig447FD3DFB03C8982224C2B2F"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48911 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35382 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758001Ab2JKIAm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Oct 2012 04:00:42 -0400
-In-Reply-To: <5075C832.8080102@grandegger.com>
+	with ESMTP id S1758249Ab2JKKE1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Oct 2012 06:04:27 -0400
+In-Reply-To: <506D5AA4.5080704@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, Shawn Guo <shawn.guo@linaro.org>, Hui Wang <jason77.wang@gmail.com>, David Miller <davem@davemloft.net>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-can@vger.kernel.org, software@gaisler.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig131138F29C2CA83960E72544
+--------------enig447FD3DFB03C8982224C2B2F
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 10/10/2012 09:10 PM, Wolfgang Grandegger wrote:
-> Due to a bug in most Flexcan cores, the bus error interrupt needs
-> to be enabled. Otherwise we don't get any error warning or passive
-> interrupts. This is _not_ necessary for the i.MX28 and this patch
-> disables bus error interrupts if "berr-reporting" is not requested.
-> This avoids bus error flooding, which might harm, especially on
-> low-end systems.
+On 10/04/2012 11:45 AM, Marc Kleine-Budde wrote:
+> Hello,
 >=20
-> To handle such quirks of the Flexcan cores, a hardware feature flag
-> has been introduced, also replacing the "hw_ver" variable. We got
-> some version info about what Flexcan core version is available on
-> what Freescale SOC which have been summarized as comment.
+> On 10/02/2012 04:38 PM, Andreas Larsson wrote:
+>> This driver supports GRCAN and CRHCAN CAN controllers available in the=
+ GRLIB
+>> VHDL IP core library.
+>>
+>> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+>> ---
+>>  drivers/net/can/Kconfig  |    6 +
+>>  drivers/net/can/Makefile |    1 +
+>>  drivers/net/can/grcan.c  | 1283 +++++++++++++++++++++++++++++++++++++=
++++++++++
+>>  drivers/net/can/grcan.h  |  273 ++++++++++
+>>  4 files changed, 1563 insertions(+), 0 deletions(-)
+>>  create mode 100644 drivers/net/can/grcan.c
+>>  create mode 100644 drivers/net/can/grcan.h
 >=20
-> Changes since v1:
->=20
-> - add known version info and hw bugs as comment
-> - remove FLEXCAN_HAS_BROKEN_ERR_STATE for i.MX6Q
+> Some general remarks while scrolling though the driver:
+> - please provide a device tree binding documentation
+>   Documentation/devicetree/bindings/net/can/grcan.txt
+>   and add devicetree-discuss@lists.ozlabs.org on Cc
+> - please provide a documentation for the sysfs entries:
+>   Documentation/ABI/testing/sys-XXX-grcan.txt
+> - please implement a NAPI
+> - please include the .h file into the C code,
+>   as the C code is the one and only user of the .h file
+> - please give every macro a GRCAN_ prefix
 
-David was quick in applying the v1 version of this patch into his tree
-directly. Wolfgang can you send an incremental patch? Please change the
-list of can cores, according to Dong Aisheng, the mx6 has a glitch
-filter, too.
+Your driver should work on little as well as on big endian systems. You
+need probably two implementations of the grcan_{read,write}_reg
+functions, you can take the flexcan driver [1] as an example.
 
-regards, Marc
+Marc
+
+[1] http://lxr.free-electrons.com/source/drivers/net/can/flexcan.c#L222
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -55,7 +68,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig131138F29C2CA83960E72544
+--------------enig447FD3DFB03C8982224C2B2F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -64,9 +77,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlB2fKEACgkQjTAFq1RaXHPj3wCfXlMyBQ0YKqDED149Q2GHH0eI
-Bt8AnjUtN1xxiubLgEGNxrqSjQEfO7ml
-=4+Sx
+iEYEARECAAYFAlB2mZ8ACgkQjTAFq1RaXHP5FQCeKjMceaIfwIBlenoqjxk9Ejo2
+xjwAn1FzhXkKrx9D/ljWYCvM+qKo9y1E
+=je9K
 -----END PGP SIGNATURE-----
 
---------------enig131138F29C2CA83960E72544--
+--------------enig447FD3DFB03C8982224C2B2F--
