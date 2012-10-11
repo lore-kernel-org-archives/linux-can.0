@@ -1,88 +1,84 @@
-From: Andreas Larsson <andreas@gaisler.com>
-Subject: Re: [PATCH] can: grcan: Add device driver for GRCAN and GRHCAN cores
-Date: Thu, 11 Oct 2012 14:08:48 +0200
-Message-ID: <5076B6D0.5020808@gaisler.com>
-References: <1349188730-11434-1-git-send-email-andreas@gaisler.com> <506D5AA4.5080704@pengutronix.de> <5076999F.6070302@pengutronix.de> <5076AC0C.6090306@gaisler.com> <5076AD65.6080909@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v3] can: flexcan: disable bus error interrupts for the i.MX6q
+Date: Thu, 11 Oct 2012 15:39:22 +0200
+Message-ID: <1349962762-24500-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from vsp-authed02.binero.net ([195.74.38.226]:29897 "HELO
-	vsp-authed-02-02.binero.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1750924Ab2JKMI4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Oct 2012 08:08:56 -0400
-In-Reply-To: <5076AD65.6080909@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35780 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753218Ab2JKNj3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Oct 2012 09:39:29 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, software@gaisler.com
+To: linux-can@vger.kernel.org
+Cc: wg@grandegger.com, Hui Wang <jason77.wang@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 2012-10-11 13:28, Marc Kleine-Budde wrote:
-> On 10/11/2012 01:22 PM, Andreas Larsson wrote:
->> On 2012-10-11 12:04, Marc Kleine-Budde wrote:
->>> On 10/04/2012 11:45 AM, Marc Kleine-Budde wrote:
->>>> Hello,
->>>>
->>>> On 10/02/2012 04:38 PM, Andreas Larsson wrote:
->>>>> This driver supports GRCAN and CRHCAN CAN controllers available in
->>>>> the GRLIB
->>>>> VHDL IP core library.
->>>>>
->>>>> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
->>>>> ---
->>>>>    drivers/net/can/Kconfig  |    6 +
->>>>>    drivers/net/can/Makefile |    1 +
->>>>>    drivers/net/can/grcan.c  | 1283
->>>>> ++++++++++++++++++++++++++++++++++++++++++++++
->>>>>    drivers/net/can/grcan.h  |  273 ++++++++++
->>>>>    4 files changed, 1563 insertions(+), 0 deletions(-)
->>>>>    create mode 100644 drivers/net/can/grcan.c
->>>>>    create mode 100644 drivers/net/can/grcan.h
->>>>
->>>> Some general remarks while scrolling though the driver:
->>>> - please provide a device tree binding documentation
->>>>     Documentation/devicetree/bindings/net/can/grcan.txt
->>>>     and add devicetree-discuss@lists.ozlabs.org on Cc
->>>> - please provide a documentation for the sysfs entries:
->>>>     Documentation/ABI/testing/sys-XXX-grcan.txt
->>>> - please implement a NAPI
->>>> - please include the .h file into the C code,
->>>>     as the C code is the one and only user of the .h file
->>>> - please give every macro a GRCAN_ prefix
->>>
->>> Your driver should work on little as well as on big endian systems. You
->>> need probably two implementations of the grcan_{read,write}_reg
->>> functions, you can take the flexcan driver [1] as an example.
->>
->> Adding that is easy of course, but that gives the impression of support
->> for little endian systems. If the core would be instantiated in a little
->> endian fashion in a little endian environment, the DMA accessing parts
->> of the hardware would still not work in a little endian system without
->> modifications to the hardware design.
->
-> Can you add this to the Kconfig help text.
->
->>  From the driver point of view either way works for me, but I am not sure
->> what is best.
->
-> In this case you should limit the driver to big endian systems via kconfig.
+From: Wolfgang Grandegger <wg@grandegger.com>
 
-That would of course be nice. One problem with that is that there seems 
-to be no Kconfig configuration option to depend on to match big endian 
-systems in general.
+Due to a bug in most Flexcan cores, the bus error interrupt needs
+to be enabled. Otherwise we don't get any error warning or passive
+interrupts. This is _not_ necessary for the i.MX6q and this patch
+disables bus error interrupts if "berr-reporting" is not requested.
+This avoids bus error flooding, which might harm, especially on
+low-end systems.
 
-One solution is to depend on SPARC (the standard environment of the 
-core) and having anyone instantiating the core outside of a sparc 
-environment patch his or her kernel.
+Cc: Hui Wang <jason77.wang@gmail.com>
+Cc: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+[mkl: convert to incremental patch]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v3:
+- convert to incremental patch
+- update mx6 glitch filter information
+---
+Hello Wolfgang,
 
-Another solution is of course to do the ifdef on endianness solution 
-like in flexcan and have a note in Kconfig text about the hardware not 
-being compatible with little endian in an unchanged fashion.
+I've converted your patch so that it can be applied to current net, where David
+already accepted your v1 version of the patch.
 
-I am not comfortable to try to come up with some hairy dependency that 
-tries to catch all kinds of architectures that might or might not be 
-configured big endian at compile time.
+cheers, Marc
 
-Cheers,
-Andreas
+ drivers/net/can/flexcan.c |   19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index c78ecfc..a412bf6 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -144,9 +144,22 @@
+ 
+ #define FLEXCAN_MB_CODE_MASK		(0xf0ffffff)
+ 
+-/* FLEXCAN hardware feature flags */
++/*
++ * FLEXCAN hardware feature flags
++ *
++ * Below is some version info we got:
++ *    SOC   Version   IP-Version  Glitch-  [TR]WRN_INT
++ *                                Filter?   connected?
++ *   MX25  FlexCAN2  03.00.00.00     no         no
++ *   MX28  FlexCAN2  03.00.04.00    yes        yes
++ *   MX35  FlexCAN2  03.00.00.00     no         no
++ *   MX53  FlexCAN2  03.00.00.00    yes         no
++ *   MX6s  FlexCAN3  10.00.12.00    yes        yes
++ *
++ * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
++ */
+ #define FLEXCAN_HAS_V10_FEATURES	BIT(1) /* For core version >= 10 */
+-#define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* Broken error state handling */
++#define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* [TR]WRN_INT not connected */
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -205,7 +218,7 @@ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+ };
+ static struct flexcan_devtype_data fsl_imx28_devtype_data;
+ static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+-	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_BROKEN_ERR_STATE,
++	.features = FLEXCAN_HAS_V10_FEATURES,
+ };
+ 
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+-- 
+1.7.10
 
