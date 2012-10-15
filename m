@@ -1,75 +1,38 @@
-From: Yegor Yefremov <yegor_sub1@visionsystems.de>
+From: Stuart Statman <sstatman@sunverge.com>
 Subject: Re: "Blessed" Version
-Date: Mon, 15 Oct 2012 08:33:37 +0200
-Message-ID: <507BAE41.4080104@visionsystems.de>
+Date: Mon, 15 Oct 2012 11:12:24 -0700
+Message-ID: <507C5208.7050100@sunverge.com>
 References: <5074B274.7070703@sunverge.com> <507554BB.4000809@grandegger.com> <5077196C.60405@sunverge.com> <50793FAD.6030704@hartkopp.net>
-Reply-To: yegor_sub1@visionsystems.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from hhlx01.visionsystems.de ([62.145.30.242]:51925 "EHLO
-	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753723Ab2JOHD1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 15 Oct 2012 03:03:27 -0400
+Received: from mail-pa0-f46.google.com ([209.85.220.46]:39643 "EHLO
+	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751869Ab2JOSMP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 15 Oct 2012 14:12:15 -0400
+Received: by mail-pa0-f46.google.com with SMTP id hz1so5099599pad.19
+        for <linux-can@vger.kernel.org>; Mon, 15 Oct 2012 11:12:15 -0700 (PDT)
 In-Reply-To: <50793FAD.6030704@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Stuart Statman <sstatman@sunverge.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-On 13.10.2012 12:17, Oliver Hartkopp wrote:
-> Hello Stuart,
-> 
-> On 11.10.2012 21:09, Stuart Statman wrote:
-> 
->> Strangely enough, just yesterday we made a decision to migrate CAN hardware
->> that reduced the urgency of my question.
->>
->> However, it does bring up another question.
->>
->> I've been using slcand and "ip link set xxx up" for a piece of hardware that
->> uses the slcan protocol. I'm pretty happy with how it's working, but I'd be
->> happier if it was compatible with the can_if script that's in the utilities. I
->> could write my own version of can_if that just does the right things for
->> slcan, but it does open up a few questions :
->>
->> 1. What is slcan anyway, and why is it not handled like the other drivers?
-> 
-> 
-> The SLCAN driver adds the support for (usually low cost) simple CAN interfaces
-> that transfer the CAN frames via some ASCII based protocol.
-> 
-> As these interfaces are attached via the serial line (RS232 or USB/serial) the
-> slcan driver implements a 'serial line discipline' as you might know from
-> early internet times where you used a modem to connect the internet.
-> 
-> In that modem case IP network packets have been transmitted through the serial
-> line, after the modem has been set up and connected (-> ppp daemon).
-> Once switching the 'line discipline' IP packets are tranferred via serial.
-> 
-> Same here with SLCAN:
-> 
-> First the SLCAN adapter needs to be configured (speed 'S') and opened 'O' and
-> then the line discipline is switched to transfer CAN frames with the ASCII
-> protocol (slcan_attach, slcand).
-> 
-> As this is a completely different CAN adapter configuration interface the
-> CAN-DEV framework therefore can not be used and the 'ip link set' stuff does
-> not work for SLCAN devices.
-> 
+
+On 10/13/12 3:17 AM, Oliver Hartkopp wrote:
+
 >> 2. Is there a can_if style script that already handles slcan?
-> 
-> 
 > We have extended the can_if script for slcan at Volkswagen and also extended
 > the slcand to do some of the setup from slcan_attach (e.g. for the CAN
 > bitrate). I don't know the exact state of these extensions and if it works
 > stable in all environments (udev, ...). But if you like, i can sent it to you
 > and you may check if it fit's your needs and if it's worth to merge it with
 > the can-utils.
+I would love to see this! Thanks!
 
-Please share the changes for can_if and related stuff. I was already looking for this.
-
-Best regards,
-Yegor
-
+-- 
+Stu Statman
+VP of Engineering
+Sunverge, Inc
+http://www.sunverge.com
