@@ -1,38 +1,48 @@
-From: Stuart Statman <sstatman@sunverge.com>
-Subject: Re: "Blessed" Version
-Date: Mon, 15 Oct 2012 11:12:24 -0700
-Message-ID: <507C5208.7050100@sunverge.com>
-References: <5074B274.7070703@sunverge.com> <507554BB.4000809@grandegger.com> <5077196C.60405@sunverge.com> <50793FAD.6030704@hartkopp.net>
+From: Amit <amitvi128@gmail.com>
+Subject: Re: [PATCH v4 2/3] can: =?utf-8?b?Y19jYW46?= Add device tree support to Bosch =?utf-8?b?Q19DQU4vRF9DQU4=?= controller
+Date: Tue, 16 Oct 2012 06:17:11 +0000 (UTC)
+Message-ID: <loom.20121016T081312-440@post.gmane.org>
+References: <1343913191-14722-1-git-send-email-anilkumar@ti.com> <1343913191-14722-3-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f46.google.com ([209.85.220.46]:39643 "EHLO
-	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751869Ab2JOSMP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 15 Oct 2012 14:12:15 -0400
-Received: by mail-pa0-f46.google.com with SMTP id hz1so5099599pad.19
-        for <linux-can@vger.kernel.org>; Mon, 15 Oct 2012 11:12:15 -0700 (PDT)
-In-Reply-To: <50793FAD.6030704@hartkopp.net>
+Received: from plane.gmane.org ([80.91.229.3]:48018 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751880Ab2JPGUB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 16 Oct 2012 02:20:01 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TO0VX-00014x-M3
+	for linux-can@vger.kernel.org; Tue, 16 Oct 2012 08:20:03 +0200
+Received: from ns10.dnsmadeeasy.com ([208.94.148.4])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 16 Oct 2012 08:20:03 +0200
+Received: from amitvi128 by ns10.dnsmadeeasy.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 16 Oct 2012 08:20:03 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
+Dear Anil,
 
-On 10/13/12 3:17 AM, Oliver Hartkopp wrote:
+AnilKumar Ch <anilkumar <at> ti.com> writes:
 
->> 2. Is there a can_if style script that already handles slcan?
-> We have extended the can_if script for slcan at Volkswagen and also extended
-> the slcand to do some of the setup from slcan_attach (e.g. for the CAN
-> bitrate). I don't know the exact state of these extensions and if it works
-> stable in all environments (udev, ...). But if you like, i can sent it to you
-> and you may check if it fit's your needs and if it's worth to merge it with
-> the can-utils.
-I would love to see this! Thanks!
+> 
+> Add device tree support to C_CAN/D_CAN controller and usage details
+> are added to device tree documentation. Driver was tested on AM335x
+> EVM.
+> 
+> Signed-off-by: AnilKumar Ch <anilkumar <at> ti.com>
 
--- 
-Stu Statman
-VP of Engineering
-Sunverge, Inc
-http://www.sunverge.com
+Did you test this on any system where CAN registers are 32 bit aligned?
+I couldn't find a way to pass the "flags" option thro' DT and the first look at 
+the OF DT code suggests me that there's no way to pass it.
+
+What do you think?
+
+Regards
+Amit Virdi
+
