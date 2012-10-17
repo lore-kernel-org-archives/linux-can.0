@@ -1,101 +1,67 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2] can: sja1000: plx_pci: add support for Connect Tech Inc's Canpro/104-Plus Opto CAN board
-Date: Wed, 17 Oct 2012 12:09:53 +0200
-Message-ID: <1350468593-10294-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH] CAN: sja1000: Add support for Connect Tech Inc's Canpro/104-Plus
+ Opto CAN board
+Date: Wed, 17 Oct 2012 12:13:25 +0200
+Message-ID: <507E84C5.2040600@pengutronix.de>
+References: <02ac01cdabe1$b5403e10$1fc0ba30$@connecttech.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig8D5B72D20F7CC475792A0925"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35998 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57777 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755889Ab2JQKKB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 17 Oct 2012 06:10:01 -0400
+	with ESMTP id S1756480Ab2JQKNc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 17 Oct 2012 06:13:32 -0400
+In-Reply-To: <02ac01cdabe1$b5403e10$1fc0ba30$@connecttech.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Muhammad Ghias <mghias@connecttech.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Muhammad Ghias <mghias@connecttech.com>
+Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-kernel@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Muhammad Ghias <mghias@connecttech.com>
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig8D5B72D20F7CC475792A0925
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Patch adds support for CANpro/104-Plus Opto CAN board. Board uses PLX9030
-bridge and two NXP SJA1000 CAN controllers. Patch is generated and tested with
-kernel 3.6.1.
+On 10/16/2012 11:03 PM, Muhammad Ghias wrote:
+> Patch adds support for CANpro/104-Plus Opto CAN board. Board uses PLX90=
+30
+> bridge and two NXP SJA1000 CAN controllers. Patch is generated and test=
+ed
+> with kernel 3.6.1.
+>=20
+> If you have any questions or any feedback please let me know.
 
-Signed-off-by: Muhammad Ghias <mghias@connecttech.com>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-[mkl: minor adjustments to commit message]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello,
-
-I'm going to take this patch, please test.
+Thanks, the code looks good. Please try, if possible, to send your
+patches via git send-email, as outlooks messed up the patch. I've fixed
+all line wrapping problems by hand, applied the patch and send a v2,
+please test.
 
 regards, Marc
 
- drivers/net/can/sja1000/Kconfig   |    1 +
- drivers/net/can/sja1000/plx_pci.c |   19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
+P.S.: Please use the linux-can@vger.kernel.org mailing list for CAN
+related patches/topics.
 
-diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
-index 03df9a8..559be87 100644
---- a/drivers/net/can/sja1000/Kconfig
-+++ b/drivers/net/can/sja1000/Kconfig
-@@ -93,6 +93,7 @@ config CAN_PLX_PCI
- 	   - Marathon CAN-bus-PCI card (http://www.marathon.ru/)
- 	   - TEWS TECHNOLOGIES TPMC810 card (http://www.tews.com/)
- 	   - IXXAT Automation PC-I 04/PCI card (http://www.ixxat.com/)
-+	   - Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card (http://www.connecttech.com)
- 
- config CAN_TSCAN1
- 	tristate "TS-CAN1 PC104 boards"
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
-index 8bc9598..dc04407 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -44,6 +44,7 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
- 			"esd CAN-PCI/CPCI/PCI104/200, "
- 			"esd CAN-PCI/PMC/266, "
- 			"esd CAN-PCIe/2000, "
-+			"Connect Tech Inc. CANpro/104-Plus Opto (CRG001), "
- 			"IXXAT PC-I 04/PCI")
- MODULE_LICENSE("GPL v2");
- 
-@@ -131,6 +132,9 @@ struct plx_pci_card {
- #define TEWS_PCI_VENDOR_ID		0x1498
- #define TEWS_PCI_DEVICE_ID_TMPC810	0x032A
- 
-+#define CTI_PCI_VENDOR_ID		0x12c4
-+#define CTI_PCI_DEVICE_ID_CRG001	0x0900
-+
- static void plx_pci_reset_common(struct pci_dev *pdev);
- static void plx_pci_reset_marathon(struct pci_dev *pdev);
- static void plx9056_pci_reset_common(struct pci_dev *pdev);
-@@ -222,6 +226,14 @@ static struct plx_pci_card_info plx_pci_card_info_tews __devinitdata = {
- 	/* based on PLX9030 */
- };
- 
-+static struct plx_pci_card_info plx_pci_card_info_cti __devinitdata = {
-+	"Connect Tech Inc. CANpro/104-Plus Opto (CRG001)", 2,
-+	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
-+	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
-+	&plx_pci_reset_common
-+	/* based on PLX9030 */
-+};
-+
- static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
- 	{
- 		/* Adlink PCI-7841/cPCI-7841 */
-@@ -300,6 +312,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
- 		0, 0,
- 		(kernel_ulong_t)&plx_pci_card_info_tews
- 	},
-+	{
-+		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
-+		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-+		CTI_PCI_VENDOR_ID, CTI_PCI_DEVICE_ID_CRG001,
-+		0, 0,
-+		(kernel_ulong_t)&plx_pci_card_info_cti
-+	},
- 	{ 0,}
- };
- MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
--- 
-1.7.10
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--------------enig8D5B72D20F7CC475792A0925
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlB+hMkACgkQjTAFq1RaXHN5+gCgkQgUwEFbBnHR6gLtggQMESMf
+CwcAn3NcIBF+JHe/Sz/4jYpagskAQDXZ
+=zB7O
+-----END PGP SIGNATURE-----
+
+--------------enig8D5B72D20F7CC475792A0925--
