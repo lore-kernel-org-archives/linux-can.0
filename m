@@ -1,56 +1,42 @@
-From: "Muhammad Ghias" <mghias@connecttech.com>
-Subject: RE: [PATCH] CAN: sja1000: Add support for Connect Tech Inc's Canpro/104-Plus Opto CAN board
-Date: Wed, 17 Oct 2012 14:42:12 -0400
-Message-ID: <036301cdac97$1ee892d0$5cb9b870$@connecttech.com>
-References: <02ac01cdabe1$b5403e10$1fc0ba30$@connecttech.com> <507E84C5.2040600@pengutronix.de>
+From: rotesmofa <pascalkrauth@gmail.com>
+Subject: Bitbake recipe building socketcan for angstrom
+Date: Thu, 18 Oct 2012 10:55:44 +0000 (UTC)
+Message-ID: <loom.20121018T125449-719@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <507E84C5.2040600@pengutronix.de>
-Content-Language: en-ca
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Marc Kleine-Budde' <mkl@pengutronix.de>
-Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:58066 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755575Ab2JRLAF (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 18 Oct 2012 07:00:05 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TOnpb-0001zr-SY
+	for linux-can@vger.kernel.org; Thu, 18 Oct 2012 13:00:04 +0200
+Received: from 106.51.102.39 ([106.51.102.39])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 18 Oct 2012 13:00:03 +0200
+Received: from pascalkrauth by 106.51.102.39 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 18 Oct 2012 13:00:03 +0200
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Hi Marc,
+Hallo everyone, 
 
-I tested the patch v2 with kernel 3.6.1 and 3.7-rc1. Clean compile and works
-with hardware.
+I am fighting with Bitbaking Socketcan for Angstrom with a 2.6.32 Kernel for my 
+Craneboard. 
 
-Regards,
-Muhammad
+Currently I have a basic lag of understanding for the *.bb files. I simply want 
+to build socketcan for my board using either Eclipse with my Angstrom toolchain 
+or using Bitbake. 
 
------Original Message-----
-From: Marc Kleine-Budde [mailto:mkl@pengutronix.de] 
-Sent: October-17-12 6:13 AM
-To: Muhammad Ghias
-Cc: 'Wolfgang Grandegger'; linux-kernel@vger.kernel.org;
-linux-can@vger.kernel.org
-Subject: Re: [PATCH] CAN: sja1000: Add support for Connect Tech Inc's
-Canpro/104-Plus Opto CAN board
 
-On 10/16/2012 11:03 PM, Muhammad Ghias wrote:
-> Patch adds support for CANpro/104-Plus Opto CAN board. Board uses PLX9030
-> bridge and two NXP SJA1000 CAN controllers. Patch is generated and tested
-> with kernel 3.6.1.
-> 
-> If you have any questions or any feedback please let me know.
+Can anyone guide me? I'am in India and have kind of a research project but there 
+is no support and I'am a Hardware Guy ;-) 
 
-Thanks, the code looks good. Please try, if possible, to send your
-patches via git send-email, as outlooks messed up the patch. I've fixed
-all line wrapping problems by hand, applied the patch and send a v2,
-please test.
+Best regards
 
-regards, Marc
-
-P.S.: Please use the linux-can@vger.kernel.org mailing list for CAN
-related patches/topics.
-
--- 
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
