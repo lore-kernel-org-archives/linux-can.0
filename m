@@ -1,140 +1,153 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] candump: add option to ignore ENOBUFS
-Date: Fri, 26 Oct 2012 11:46:45 +0200
-Message-ID: <508A5C05.6050803@pengutronix.de>
-References: <1351244569-11398-1-git-send-email-yegorslists@googlemail.com>
+From: Matthias Fuchs <matthias.fuchs@esd.eu>
+Subject: [PATCH] can: usb: esd_usb2: Add support for CAN-USB/Micro and listen-only
+ mode
+Date: Fri, 26 Oct 2012 13:18:08 +0200
+Message-ID: <508A7170.2060104@esd.eu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB62B95B55DA5E161301C0FD7"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37323 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752349Ab2JZJqy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Oct 2012 05:46:54 -0400
-In-Reply-To: <1351244569-11398-1-git-send-email-yegorslists@googlemail.com>
+Received: from moutng.kundenserver.de ([212.227.17.9]:58256 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753336Ab2JZLUE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Oct 2012 07:20:04 -0400
+Received: from [10.0.18.3] (pc-matthias.esd [10.0.18.3])
+	by comm-neu.esd (Postfix) with ESMTP id 99A541362D6
+	for <linux-can@vger.kernel.org>; Fri, 26 Oct 2012 13:18:03 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB62B95B55DA5E161301C0FD7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+This patch extends the esd_usb2 driver to support the
+tiny CAN-USB/Micro CAN/USB interface.
 
-On 10/26/2012 11:42 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
->=20
-> -f option replicated -i option from cangen and allows to
-> ignore ENOBUFS error in bridge mode
+Listen-only mode for both supported devices is added also.
 
-Better not ignore, but handle the error. If socket would support, wait
-with select/poll that the socket get writable and try again. For now
-sleep and try again. (or fix the poll/select bug in the kernel).
+Signed-off-by: Matthias Fuchs <matthias.fuchs@esd.eu>
+---
+ drivers/net/can/usb/Kconfig    |    4 ++--
+ drivers/net/can/usb/esd_usb2.c |   39 +++++++++++++++++++++++++++++++--------
+ 2 files changed, 33 insertions(+), 10 deletions(-)
 
-Marc
-
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->  candump.c |   19 ++++++++++++++++---
->  1 files changed, 16 insertions(+), 3 deletions(-)
->=20
-> diff --git a/candump.c b/candump.c
-> index ac51192..3a6be62 100644
-> --- a/candump.c
-> +++ b/candump.c
-> @@ -53,6 +53,7 @@
->  #include <ctype.h>
->  #include <libgen.h>
->  #include <time.h>
-> +#include <errno.h>
-> =20
->  #include <sys/time.h>
->  #include <sys/types.h>
-> @@ -122,6 +123,7 @@ void print_usage(char *prg)
->  	fprintf(stderr, "         -r <size>   (set socket receive buffer to <=
-size>)\n");
->  	fprintf(stderr, "         -d          (monitor dropped CAN frames)\n"=
-);
->  	fprintf(stderr, "         -e          (dump CAN error frames in human=
--readable format)\n");
-> +	fprintf(stderr, "         -f          (ignore -ENOBUFS return values =
-on write() syscalls)\n");
->  	fprintf(stderr, "\n");
->  	fprintf(stderr, "Up to %d CAN interfaces with optional filter sets ca=
-n be specified\n", MAXSOCK);
->  	fprintf(stderr, "on the commandline in the form: <ifname>[,filter]*\n=
-");
-> @@ -211,6 +213,7 @@ int main(int argc, char **argv)
->  	unsigned char view =3D 0;
->  	unsigned char log =3D 0;
->  	unsigned char logfrmt =3D 0;
-> +	unsigned char ignore_enobufs =3D 0;
->  	int count =3D 0;
->  	int rcvbuf_size =3D 0;
->  	int opt, ret;
-> @@ -236,7 +239,7 @@ int main(int argc, char **argv)
->  	last_tv.tv_sec  =3D 0;
->  	last_tv.tv_usec =3D 0;
-> =20
-> -	while ((opt =3D getopt(argc, argv, "t:ciaSs:b:B:u:ldLn:r:he?")) !=3D =
--1) {
-> +	while ((opt =3D getopt(argc, argv, "ft:ciaSs:b:B:u:ldLn:r:he?")) !=3D=
- -1) {
->  		switch (opt) {
->  		case 't':
->  			timestamp =3D optarg[0];
-> @@ -347,6 +350,10 @@ int main(int argc, char **argv)
->  			}
->  			break;
-> =20
-> +		case 'f':
-> +			ignore_enobufs =3D 1;
-> +			break;
-> +
->  		default:
->  			print_usage(basename(argv[0]));
->  			exit(1);
-> @@ -625,8 +632,14 @@ int main(int argc, char **argv)
-> =20
->  					nbytes =3D write(bridge, &frame, sizeof(struct can_frame));
->  					if (nbytes < 0) {
-> -						perror("bridge write");
-> -						return 1;
-> +						if (errno !=3D ENOBUFS) {
-> +							perror("bridge write");
-> +							return 1;
-> +						}
-> +						if (!ignore_enobufs) {
-> +							perror("bridge write");
-> +							return 1;
-> +						}
->  					} else if ((size_t)nbytes < sizeof(struct can_frame)) {
->  						fprintf(stderr,"bridge write: incomplete CAN frame\n");
->  						return 1;
->=20
-
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigB62B95B55DA5E161301C0FD7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlCKXAsACgkQjTAFq1RaXHMu4wCfYWUs7WdXTS+ZkSHys/W/H5jL
-UKsAoITdri5Bg9idhxqdW82D1k646qmL
-=y+bQ
------END PGP SIGNATURE-----
-
---------------enigB62B95B55DA5E161301C0FD7--
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index 0a68768..ef96520 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -8,9 +8,9 @@ config CAN_EMS_USB
+ 	  from EMS Dr. Thomas Wuensche (http://www.ems-wuensche.de).
+ 
+ config CAN_ESD_USB2
+-        tristate "ESD USB/2 CAN/USB interface"
++        tristate "ESD USB/2 and USB/Micro CAN/USB interfaces"
+         ---help---
+-          This driver supports the CAN-USB/2 interface
++          This driver supports the CAN-USB/2 and CAN-USB/Micro interfaces
+           from esd electronic system design gmbh (http://www.esd.eu).
+ 
+ config CAN_PEAK_USB
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index bd36e55..a9fe8a2 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -1,7 +1,7 @@
+ /*
+- * CAN driver for esd CAN-USB/2
++ * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
+  *
+- * Copyright (C) 2010 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
++ * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of the GNU General Public License as published
+@@ -28,14 +28,16 @@
+ #include <linux/can/error.h>
+ 
+ MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
+-MODULE_DESCRIPTION("CAN driver for esd CAN-USB/2 interfaces");
++MODULE_DESCRIPTION("CAN driver for esd CAN-USB/2 and CAN-USB/Micro interfaces");
+ MODULE_LICENSE("GPL v2");
+ 
+ /* Define these values to match your devices */
+ #define USB_ESDGMBH_VENDOR_ID	0x0ab4
+ #define USB_CANUSB2_PRODUCT_ID	0x0010
++#define USB_CANUSBM_PRODUCT_ID	0x0011
+ 
+ #define ESD_USB2_CAN_CLOCK	60000000
++#define ESD_USBM_CAN_CLOCK	36000000
+ #define ESD_USB2_MAX_NETS	2
+ 
+ /* USB2 commands */
+@@ -69,6 +71,7 @@ MODULE_LICENSE("GPL v2");
+ #define ESD_USB2_TSEG2_SHIFT	20
+ #define ESD_USB2_SJW_MAX	4
+ #define ESD_USB2_SJW_SHIFT	14
++#define ESD_USBM_SJW_SHIFT	24
+ #define ESD_USB2_BRP_MIN	1
+ #define ESD_USB2_BRP_MAX	1024
+ #define ESD_USB2_BRP_INC	1
+@@ -183,6 +186,7 @@ struct __attribute__ ((packed)) esd_usb2_msg {
+ 
+ static struct usb_device_id esd_usb2_table[] = {
+ 	{USB_DEVICE(USB_ESDGMBH_VENDOR_ID, USB_CANUSB2_PRODUCT_ID)},
++	{USB_DEVICE(USB_ESDGMBH_VENDOR_ID, USB_CANUSBM_PRODUCT_ID)},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(usb, esd_usb2_table);
+@@ -889,18 +893,29 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
+ 	struct can_bittiming *bt = &priv->can.bittiming;
+ 	struct esd_usb2_msg msg;
+ 	u32 canbtr;
++	int sjw_shift;
+ 
+ 	canbtr = ESD_USB2_UBR;
+ 	canbtr |= (bt->brp - 1) & (ESD_USB2_BRP_MAX - 1);
++
++	if (le16_to_cpu(priv->usb2->udev->descriptor.idProduct) ==
++	    USB_CANUSBM_PRODUCT_ID)
++		sjw_shift = ESD_USBM_SJW_SHIFT;
++	else {
++		sjw_shift = ESD_USB2_SJW_SHIFT;
++		if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
++			canbtr |= ESD_USB2_3_SAMPLES;
++	}
++	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
++		canbtr |= ESD_USB2_LOM;
++
+ 	canbtr |= ((bt->sjw - 1) & (ESD_USB2_SJW_MAX - 1))
+-		<< ESD_USB2_SJW_SHIFT;
++		<< sjw_shift;
+ 	canbtr |= ((bt->prop_seg + bt->phase_seg1 - 1)
+ 		   & (ESD_USB2_TSEG1_MAX - 1))
+ 		<< ESD_USB2_TSEG1_SHIFT;
+ 	canbtr |= ((bt->phase_seg2 - 1) & (ESD_USB2_TSEG2_MAX - 1))
+ 		<< ESD_USB2_TSEG2_SHIFT;
+-	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+-		canbtr |= ESD_USB2_3_SAMPLES;
+ 
+ 	msg.msg.hdr.len = 2;
+ 	msg.msg.hdr.cmd = CMD_SETBAUD;
+@@ -971,12 +986,20 @@ static int esd_usb2_probe_one_net(struct usb_interface *intf, int index)
+ 	priv->index = index;
+ 
+ 	priv->can.state = CAN_STATE_STOPPED;
+-	priv->can.clock.freq = ESD_USB2_CAN_CLOCK;
++	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY;
++
++	if (le16_to_cpu(dev->udev->descriptor.idProduct) ==
++	    USB_CANUSBM_PRODUCT_ID)
++		priv->can.clock.freq = ESD_USBM_CAN_CLOCK;
++	else {
++		priv->can.clock.freq = ESD_USB2_CAN_CLOCK;
++		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
++	}
++
+ 	priv->can.bittiming_const = &esd_usb2_bittiming_const;
+ 	priv->can.do_set_bittiming = esd_usb2_set_bittiming;
+ 	priv->can.do_set_mode = esd_usb2_set_mode;
+ 	priv->can.do_get_berr_counter = esd_usb2_get_berr_counter;
+-	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+ 
+ 	netdev->flags |= IFF_ECHO; /* we support local echo */
+ 
+-- 
+1.7.4.1
