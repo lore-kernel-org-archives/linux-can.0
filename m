@@ -1,41 +1,61 @@
-From: Pascal <Pascalkrauth@gmail.com>
-Subject: Re: cansend uses wrong ID and gives wrong Payload, candump works fine
-Date: Tue, 6 Nov 2012 12:35:38 +0000 (UTC)
-Message-ID: <loom.20121106T133317-792@post.gmane.org>
+From: =?iso-8859-1?Q?Kjell_Str=F6m?= <Kjell.Strom@prevas.se>
+Subject: =?iso-8859-1?Q?FW:_(Case_11280)_Open_source_st=F6d_f=F6r_Kvaser_Leaf_Ligh?=
+ =?iso-8859-1?Q?t_HS?=
+Date: Tue, 6 Nov 2012 16:13:35 +0000
+Message-ID: <D06C8F8BF0DB1D42B8270DA292E9256928523A11@VMPREVAS1.prevas.se>
+References: <D06C8F8BF0DB1D42B8270DA292E92569285239F9@VMPREVAS1.prevas.se>
+ <509936b5.0192980a.622a.ffff9440@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:37416 "EHLO plane.gmane.org"
+Received: from mail01.prevas.se ([62.95.78.3]:34633 "EHLO mail01.prevas.se"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751017Ab2KFMfz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 6 Nov 2012 07:35:55 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1TViNt-0005Hu-7s
-	for linux-can@vger.kernel.org; Tue, 06 Nov 2012 13:36:01 +0100
-Received: from 106.51.64.154 ([106.51.64.154])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 06 Nov 2012 13:36:01 +0100
-Received: from Pascalkrauth by 106.51.64.154 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 06 Nov 2012 13:36:01 +0100
+	id S1751308Ab2KFQXg convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Nov 2012 11:23:36 -0500
+In-Reply-To: <509936b5.0192980a.622a.ffff9440@mx.google.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
 
-Nevermind. 
+Hi,
+Is there any support for Kvaser Leaf Light to be downloaded?
 
-I used as second side a PCAN-View. 
+Best Regards
+//Kjell
 
-I got confused because of a old tutorial which used the code in another way. 
-cansend works fine if you are using it properly like. 
+-----Original Message-----
+=46rom: Kvaser Support [mailto:support@kvaser.com]=20
+Sent: den 6 november 2012 17:12
+To: Kjell Str=F6m
+Subject: Re: (Case 11280) Open source st=F6d f=F6r Kvaser Leaf Light HS
 
-cansend can0 10 20 10 20 -i 10 which sends a 10,20,10,20 on ID 10. 
+Hej Kjell,
 
-Sorry for the disturbance ;-) 
+Olivier i SocketCAN teamet bad mig h=E4nvisa till SocketCAN mailing lis=
+t:
+linux-can@vger.kernel.org
 
-Thanks anyway, best regards from India,
-Pascal
+V=E4nliga h=E4lsningar
+Jerry Thors=E9n
+Kvaser Support
+support@kvaser.com
+-----------------------------------------------------------------------=
+----
 
+
+
+-----Original Message-----
+=46rom: "Kjell Str=F6m" <Kjell.Strom@prevas.se>
+Reply-To: "Kjell Str=F6m" <Kjell.Strom@prevas.se>
+Date: Tue, 6 Nov 2012 15:53:59 +0000
+To: "'support@kvaser.com'" <support@kvaser.com>
+Subject: Open source st=F6d f=F6r Kvaser Leaf Light HS
+
+>Hej,
+>Pratades vid nyligen p=E5 telefon.
+>Vore tacksam om att f=E5 fatt p=E5 drivrutiner f=F6r ovanst=E5ende pro=
+duct s=E5 att den g=E5r att komma =E5t via socketCAN anrop.
+>MVH
+>//Kjell
