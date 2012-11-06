@@ -1,61 +1,60 @@
-From: =?iso-8859-1?Q?Kjell_Str=F6m?= <Kjell.Strom@prevas.se>
-Subject: =?iso-8859-1?Q?FW:_(Case_11280)_Open_source_st=F6d_f=F6r_Kvaser_Leaf_Ligh?=
- =?iso-8859-1?Q?t_HS?=
-Date: Tue, 6 Nov 2012 16:13:35 +0000
-Message-ID: <D06C8F8BF0DB1D42B8270DA292E9256928523A11@VMPREVAS1.prevas.se>
-References: <D06C8F8BF0DB1D42B8270DA292E92569285239F9@VMPREVAS1.prevas.se>
- <509936b5.0192980a.622a.ffff9440@mx.google.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: FW: (Case 11280) Open source =?ISO-8859-1?Q?st=F6d_f=F6r_?=
+ =?ISO-8859-1?Q?Kvaser_Leaf_Light_HS?=
+Date: Tue, 06 Nov 2012 18:43:17 +0100
+Message-ID: <50994C35.7010408@pengutronix.de>
+References: <D06C8F8BF0DB1D42B8270DA292E92569285239F9@VMPREVAS1.prevas.se> <509936b5.0192980a.622a.ffff9440@mx.google.com> <D06C8F8BF0DB1D42B8270DA292E9256928523A11@VMPREVAS1.prevas.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigBF110771CFD96E7A6D3C1FAF"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail01.prevas.se ([62.95.78.3]:34633 "EHLO mail01.prevas.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751308Ab2KFQXg convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Nov 2012 11:23:36 -0500
-In-Reply-To: <509936b5.0192980a.622a.ffff9440@mx.google.com>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41573 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750989Ab2KFRnT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Nov 2012 12:43:19 -0500
+In-Reply-To: <D06C8F8BF0DB1D42B8270DA292E9256928523A11@VMPREVAS1.prevas.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
+To: =?ISO-8859-1?Q?Kjell_Str=F6m?= <Kjell.Strom@prevas.se>
+Cc: "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
 
-Hi,
-Is there any support for Kvaser Leaf Light to be downloaded?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBF110771CFD96E7A6D3C1FAF
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Best Regards
-//Kjell
+On 11/06/2012 05:13 PM, Kjell Str=F6m wrote:
+> Hi,
+> Is there any support for Kvaser Leaf Light to be downloaded?
 
------Original Message-----
-=46rom: Kvaser Support [mailto:support@kvaser.com]=20
-Sent: den 6 november 2012 17:12
-To: Kjell Str=F6m
-Subject: Re: (Case 11280) Open source st=F6d f=F6r Kvaser Leaf Light HS
+Yes, Olivier posted a driver a month ago...which was not treated with
+the attention it deserved from us, the reviewers. The patch is:
 
-Hej Kjell,
+"[PATCH v5] can: kvaser_usb: Add support for Kvaser CAN/USB devices"
 
-Olivier i SocketCAN teamet bad mig h=E4nvisa till SocketCAN mailing lis=
-t:
-linux-can@vger.kernel.org
+I just forwarded it to you,
 
-V=E4nliga h=E4lsningar
-Jerry Thors=E9n
-Kvaser Support
-support@kvaser.com
------------------------------------------------------------------------=
-----
-
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
------Original Message-----
-=46rom: "Kjell Str=F6m" <Kjell.Strom@prevas.se>
-Reply-To: "Kjell Str=F6m" <Kjell.Strom@prevas.se>
-Date: Tue, 6 Nov 2012 15:53:59 +0000
-To: "'support@kvaser.com'" <support@kvaser.com>
-Subject: Open source st=F6d f=F6r Kvaser Leaf Light HS
+--------------enigBF110771CFD96E7A6D3C1FAF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
->Hej,
->Pratades vid nyligen p=E5 telefon.
->Vore tacksam om att f=E5 fatt p=E5 drivrutiner f=F6r ovanst=E5ende pro=
-duct s=E5 att den g=E5r att komma =E5t via socketCAN anrop.
->MVH
->//Kjell
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlCZTDUACgkQjTAFq1RaXHN6DgCfWV5EzGmZgZyyOoPKJ7jUK2ff
+VX0AoIhjxyHGpc/iwbQPcna4BbL2oNnm
+=S82B
+-----END PGP SIGNATURE-----
+
+--------------enigBF110771CFD96E7A6D3C1FAF--
