@@ -1,61 +1,41 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 5/7] can: janz-ican3: Fix the usage of wait_for_completion_timeout
-Date: Tue, 06 Nov 2012 12:43:59 +0100
-Message-ID: <5098F7FF.1090100@pengutronix.de>
-References: <1352222317.15558.1584.camel@cliu38-desktop-build>  <1352222480.15558.1587.camel@cliu38-desktop-build>  <1352222555.15558.1589.camel@cliu38-desktop-build>  <1352222894.15558.1595.camel@cliu38-desktop-build> <1352223097.15558.1599.camel@cliu38-desktop-build>
+From: Pascal <Pascalkrauth@gmail.com>
+Subject: cansend uses wrong ID and gives wrong Payload, candump works fine
+Date: Tue, 6 Nov 2012 12:23:34 +0000 (UTC)
+Message-ID: <loom.20121106T132252-54@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig33D4E66B0263FF929BF15C72"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34195 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751445Ab2KFLo0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Nov 2012 06:44:26 -0500
-In-Reply-To: <1352223097.15558.1599.camel@cliu38-desktop-build>
+Received: from plane.gmane.org ([80.91.229.3]:53941 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750997Ab2KFMXt (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 6 Nov 2012 07:23:49 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TViCB-0006HL-9d
+	for linux-can@vger.kernel.org; Tue, 06 Nov 2012 13:23:55 +0100
+Received: from 106.51.64.154 ([106.51.64.154])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 06 Nov 2012 13:23:55 +0100
+Received: from Pascalkrauth by 106.51.64.154 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 06 Nov 2012 13:23:55 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Chuansheng Liu <chuansheng.liu@intel.com>
-Cc: wg@grandegger.com, linux-kernel@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig33D4E66B0263FF929BF15C72
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello, 
 
-On 11/06/2012 06:31 PM, Chuansheng Liu wrote:
->=20
-> The return value of wait_for_completion_timeout() is always
->> =3D 0 with unsigned int type.
->=20
-> So the condition "ret < 0" or "ret >=3D 0" is pointless.
->=20
-> Signed-off-by: liu chuansheng <chuansheng.liu@intel.com>
+I test the canutils. I can use candump and read CAN Messages correctly which I 
+send throug a PEAK CAN from another machine. 
+If I try to send a message back using: "cansend can0 500#1E.10.10" which from my 
+understanding should give my a Message on ID 500 with Paylod 1E 10 and 10 I 
+receive on ID 1 with DLC 1 Payload F4. 
 
-Thnx, applied to can-next. Please put linux-can@vger.kernel.org on Cc
-next time.
+Is this a common issue? 
+I use a craneboard with Angstrom. 
 
-regards, Marc
+Best regards from India, 
+Pascal
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig33D4E66B0263FF929BF15C72
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlCY+AUACgkQjTAFq1RaXHOobgCfUHoVe2BsdBTAA+j903cmJwhY
-vusAoIZO2mqf5qFcqUmzIeNOTUlqnOB1
-=VepF
------END PGP SIGNATURE-----
-
---------------enig33D4E66B0263FF929BF15C72--
