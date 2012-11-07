@@ -1,69 +1,70 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: FW: (Case 11280) Open source =?ISO-8859-1?Q?st=F6d_f=F6r_?=
- =?ISO-8859-1?Q?Kvaser_Leaf_Light_HS?=
-Date: Wed, 07 Nov 2012 09:51:11 +0100
-Message-ID: <509A20FF.90002@pengutronix.de>
-References: <D06C8F8BF0DB1D42B8270DA292E92569285239F9@VMPREVAS1.prevas.se> <509936b5.0192980a.622a.ffff9440@mx.google.com> <D06C8F8BF0DB1D42B8270DA292E9256928523A11@VMPREVAS1.prevas.se> <50994C35.7010408@pengutronix.de> <509A0B63.90002@grandegger.com>
+From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Subject: Re: [PATCH] cangen: Support RTR frames with random or increment CAN
+ IDs
+Date: Wed, 07 Nov 2012 10:07:08 +0100
+Message-ID: <509A24BC.5070505@volkswagen.de>
+References: <1352276048-21299-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig83090C155C85C0B41D00CD0F"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36910 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753821Ab2KGIvX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Nov 2012 03:51:23 -0500
-In-Reply-To: <509A0B63.90002@grandegger.com>
+Received: from mr1.volkswagen.de ([194.114.62.75]:40879 "EHLO
+	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752647Ab2KGJWs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Nov 2012 04:22:48 -0500
+In-Reply-To: <1352276048-21299-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: =?ISO-8859-1?Q?Kjell_Str=F6m?= <Kjell.Strom@prevas.se>, "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig83090C155C85C0B41D00CD0F
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hello Alexander,
 
-On 11/07/2012 08:18 AM, Wolfgang Grandegger wrote:
-> Hi Marc,
->=20
-> On 11/06/2012 06:43 PM, Marc Kleine-Budde wrote:
->> On 11/06/2012 05:13 PM, Kjell Str=F6m wrote:
->>> Hi,
->>> Is there any support for Kvaser Leaf Light to be downloaded?
->>
->> Yes, Olivier posted a driver a month ago...which was not treated with
->> the attention it deserved from us, the reviewers. The patch is:
->=20
-> Yes, that was also my conclusion. What is the status? Do we need anothe=
-r
-> round of reviews? IIRC, error handling and most other things looked goo=
-d.
+just yesterday evening i was pondering about making the canfd branch of the
+can-utils the master branch ...
 
-I'll look at this patch today, promised. I first have to fix a total
-system freeze with the flexcan on ifconfig down.
+Due to added the CAN FD possibilities is also cleaned up the RTR sending
+which can be done randomly now too.
 
-Marc
+See the commit log at
+https://gitorious.org/linux-can/can-utils/commit/51c57c8445d5a0faef73f32fc9f5b772d4fde939
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Please check out the canfd branch and see if cangen meets your requirements.
 
+The same with 'candump' ...
+There's a new '-x' option which prints extra message infos: RX/TX BRS ESI
 
---------------enig83090C155C85C0B41D00CD0F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Best regards,
+Oliver
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+On 07.11.2012 09:14, Alexander Stein wrote:
+> Signed-off-by: Alexander Stein<alexander.stein@systec-electronic.com>
+> ---
+>   cangen.c |    6 ++++++
+>   1 files changed, 6 insertions(+), 0 deletions(-)
+> 
+> diff --git a/cangen.c b/cangen.c
+> index efb8251..0037605 100644
+> --- a/cangen.c
+> +++ b/cangen.c
+> @@ -339,6 +339,9 @@ int main(int argc, char **argv)
+>   				frame.can_id |= CAN_EFF_FLAG;
+>   			} else
+>   				frame.can_id&= CAN_SFF_MASK;
+> +
+> +			if (rtr_frame)
+> +				frame.can_id |= CAN_RTR_FLAG;
+>   		}
+> 
+>   		if (dlc_mode == MODE_RANDOM) {
+> @@ -412,6 +415,9 @@ resend:
+>   				frame.can_id |= CAN_EFF_FLAG;
+>   			} else
+>   				frame.can_id&= CAN_SFF_MASK;
+> +
+> +			if (rtr_frame)
+> +				frame.can_id |= CAN_RTR_FLAG;
+>   		}
+> 
+>   		if (dlc_mode == MODE_INCREMENT) {
 
-iEYEARECAAYFAlCaIQMACgkQjTAFq1RaXHMofACcCPdxSwZtIz3PHxv8PjezvGO8
-AtQAn2BcZ1bRakW2pnFEEEzeVo17flNK
-=/Gez
------END PGP SIGNATURE-----
-
---------------enig83090C155C85C0B41D00CD0F--
