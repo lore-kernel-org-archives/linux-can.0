@@ -1,138 +1,491 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v3] can: grcan: Add device driver for GRCAN and GRHCAN
- cores
-Date: Wed, 07 Nov 2012 12:15:36 +0100
-Message-ID: <509A42D8.6030009@grandegger.com>
-References: <5087EDBF.2040108@gaisler.com> <1351588017-14357-1-git-send-email-andreas@gaisler.com> <508FA6D3.9000809@grandegger.com> <508FFF50.8050900@gaisler.com> <50911EB6.1070105@grandegger.com> <509152D5.2050701@gaisler.com> <50918830.9040601@grandegger.com> <50929E7F.1090205@gaisler.com> <509786C0.9070703@grandegger.com> <509A0E94.1040103@gaisler.com>
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: [PATCH 02/10] arm: at91: move platfarm_data to
+ include/linux/platform_data/atmel.h
+Date: Wed,  7 Nov 2012 12:22:46 +0100
+Message-ID: <1352287374-25176-2-git-send-email-plagnioj@jcrosoft.com>
+References: <20121107111235.GH20063@game.jcrosoft.org>
+ <1352287374-25176-1-git-send-email-plagnioj@jcrosoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:41146 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754180Ab2KGLPr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Nov 2012 06:15:47 -0500
-In-Reply-To: <509A0E94.1040103@gaisler.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, devicetree-discuss@lists.ozlabs.org, software@gaisler.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1352287374-25176-1-git-send-email-plagnioj@jcrosoft.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org, rtc-linux@googlegroups.com, linux-mmc@vger.kernel.org, linux-pcmcia@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-input@vger.kernel.org, spi-devel-general@lists.sourceforge.net, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+List-Id: linux-can.vger.kernel.org
 
-On 11/07/2012 08:32 AM, Andreas Larsson wrote:
-> On 11/05/2012 10:28 AM, Wolfgang Grandegger wrote:
->> On 11/01/2012 05:08 PM, Andreas Larsson wrote:
->>> On 2012-10-31 21:21, Wolfgang Grandegger wrote:
-> ...
->>> Yes, the hardware becomes error active after having monitored 11
->>> consecutive recessive bits on the bus 128 times (as allowed by the 2.0
->>> CAN spec). There is no way of turning this off, so to conform to the
->>> normal linux procedure of not doing this, I shut down the device on bus
->>> off interrupt.
->>
->> This should be handled in the following way:
->>
->> 1. If priv->can.restart_ms == 0: do *not* allow automatic restart
->>     That's what you alredy have implemented.
->>
->> 2. If priv->can.restart_ms  > 0 : do allow automatic restart.
->>     This requires to send CAN_ERR_RESTARTED when the system goes
->>     bus-on. See at91_can and mcp251x as example.
->>
->>> In addition I have thrown out the arbitration lost error frame
->>> generation as arbitration errors can not be singled out. The TXLOSS
->>> interrupt might be due to arbitration error, but is also triggered in
->>> great numbers when there is no one else on the can bus or when there is
->>> a problem with the hardware interface or the bus itself.
->>>
->>> This is how things look currently with no one else on the bus:
->>> ~ # cansend can0 123#45
->>>    can0  20000004  [8] 00 08 00 00 00 00 60 00   ERRORFRAME
->>>          controller-problem{tx-error-warning}
->>>          error-counter-tx-rx{{96}{0}}
->>>    can0  20000004  [8] 00 20 00 00 00 00 80 00   ERRORFRAME
->>>          controller-problem{tx-error-passive}
->>>          error-counter-tx-rx{{128}{0}}
->>> ~ #
->>>
->>> And this is how it looks with a short-circuited bus:
->>> ~ # cansend can0 123#45
->>>    can0  20000004  [8] 00 08 00 00 00 00 90 00   ERRORFRAME
->>>          controller-problem{tx-error-warning}
->>>          error-counter-tx-rx{{144}{0}}
->>>    can0  20000004  [8] 00 20 00 00 00 00 98 00   ERRORFRAME
->>>          controller-problem{tx-error-passive}
->>>          error-counter-tx-rx{{152}{0}}
->>>    can0  20000040  [8] 00 00 00 00 00 00 00 00   ERRORFRAME
->>>          bus-off
->>> ~ #
->>
->> This looks good now. Just the automatic restart is missing as described
->> above.
-> 
-> When doing the bus_off handling as in at91_can, on a short-circuited bus
-> with restart-ms != 0, the result of a cansend is an endless and frequent
-> stream of
-> 
->   can0  20000004  [8] 00 20 00 00 00 00 88 00   ERRORFRAME
->         controller-problem{tx-error-passive}
->         error-counter-tx-rx{{136}{0}}
->   can0  20000040  [8] 00 00 00 00 00 00 80 00   ERRORFRAME
->         bus-off
->         error-counter-tx-rx{{128}{0}}
->   can0  20000104  [8] 00 00 00 00 00 00 10 00   ERRORFRAME
->         controller-problem{}
->         restarted-after-bus-off
->         error-counter-tx-rx{{16}{0}}
->   can0  20000004  [8] 00 10 00 00 00 00 57 80   ERRORFRAME
->         controller-problem{rx-error-passive}
->         error-counter-tx-rx{{87}{128}}
->   can0  20000040  [8] 00 00 00 00 00 00 80 00   ERRORFRAME
->         bus-off
->         error-counter-tx-rx{{128}{0}}
->   can0  20000104  [8] 00 00 00 00 00 00 08 00   ERRORFRAME
->         controller-problem{}
->         restarted-after-bus-off
->         error-counter-tx-rx{{8}{0}}
->   can0  20000004  [8] 00 10 00 00 00 00 57 80   ERRORFRAME
->         controller-problem{rx-error-passive}
->         error-counter-tx-rx{{87}{128}}
->   can0  20000040  [8] 00 00 00 00 00 00 80 00   ERRORFRAME
->         bus-off
->         error-counter-tx-rx{{128}{0}}
->   can0  20000104  [8] 00 00 00 00 00 00 08 00   ERRORFRAME
->         controller-problem{}
->         restarted-after-bus-off
->         error-counter-tx-rx{{8}{0}}
->   [...]
-> 
-> as the grcan core continues to try to resend the frame when it comes
-> back again. To mimic the sja1000 behavior as closely as possible, I
-> guess that the driver also would need to make sure that the tx and rx
-> buffers are cleaned out so that this resending does not happen, right?
+Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-ide@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-pcmcia@lists.infradead.org
+Cc: rtc-linux@googlegroups.com
+Cc: spi-devel-general@lists.sourceforge.net
+Cc: linux-serial@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+---
+HI all,
 
-No, what you see is the normal behavior for automatic restart by the
-hardware. A bus-off recovery is *not* the same than a controller restart.
+	If it's ok with everyone this will go via at91
+	with the patch serie than clean up the include/mach
 
-> To do this, the hardware needs to be stopped anyway. Therefore, in my
-> opinion it is much simpler to handle it as it is in v5: always shut down
-> the hardware on bus off and, in the case of a non-zero restart_ms, let
-> restart timer trigger can_restart that will call grcan_set_mode which
-> will restart the hardware with empty buffers. Do you see any problems
-> with this approach?
+	For preparation to switch to arm multiarch kernel
 
-The application will start to send frames anyway and will again trigger
-a bus-off as long as the electronic problem persists. Flushing the
-buffers will not cure the problem.
+Best Regards,
+J.
+ arch/arm/mach-at91/include/mach/board.h     |   55 ----------------------
+ arch/avr32/mach-at32ap/include/mach/board.h |    7 ---
+ drivers/ata/pata_at91.c                     |    2 +-
+ drivers/input/touchscreen/atmel_tsadcc.c    |    2 +-
+ drivers/mmc/host/atmel-mci.c                |    2 +-
+ drivers/net/can/at91_can.c                  |    3 +-
+ drivers/net/ethernet/cadence/at91_ether.c   |    2 +-
+ drivers/pcmcia/at91_cf.c                    |    2 +-
+ drivers/rtc/rtc-at91sam9.c                  |    2 +-
+ drivers/spi/spi-atmel.c                     |    2 +-
+ drivers/tty/serial/atmel_serial.c           |    2 +-
+ drivers/usb/gadget/at91_udc.c               |    2 +-
+ drivers/usb/gadget/atmel_usba_udc.c         |    2 +-
+ drivers/usb/host/ohci-at91.c                |    2 +-
+ drivers/video/atmel_lcdfb.c                 |    2 +-
+ include/linux/platform_data/atmel.h         |   67 +++++++++++++++++++++++++++
+ 16 files changed, 80 insertions(+), 76 deletions(-)
 
-> The added benefit of this approach is that then the actual millisecond
-> value of the non-zero restart_ms is used instead of having the hardware
-> quickly restart regardless of the value.
-
-See above.
-
-> In any case I have some other fixes for v6.
-
-OK.
-
-Wolfgang.
-
+diff --git a/arch/arm/mach-at91/include/mach/board.h b/arch/arm/mach-at91/include/mach/board.h
+index c55a436..662451d 100644
+--- a/arch/arm/mach-at91/include/mach/board.h
++++ b/arch/arm/mach-at91/include/mach/board.h
+@@ -31,42 +31,15 @@
+ #ifndef __ASM_ARCH_BOARD_H
+ #define __ASM_ARCH_BOARD_H
+ 
+-#include <linux/mtd/partitions.h>
+-#include <linux/device.h>
+-#include <linux/i2c.h>
+-#include <linux/leds.h>
+-#include <linux/spi/spi.h>
+-#include <linux/usb/atmel_usba_udc.h>
+-#include <linux/atmel-mci.h>
+-#include <sound/atmel-ac97c.h>
+-#include <linux/serial.h>
+-#include <linux/platform_data/macb.h>
+ #include <linux/platform_data/atmel.h>
+ 
+  /* USB Device */
+-struct at91_udc_data {
+-	int	vbus_pin;		/* high == host powering us */
+-	u8	vbus_active_low;	/* vbus polarity */
+-	u8	vbus_polled;		/* Use polling, not interrupt */
+-	int	pullup_pin;		/* active == D+ pulled up */
+-	u8	pullup_active_low;	/* true == pullup_pin is active low */
+-};
+ extern void __init at91_add_device_udc(struct at91_udc_data *data);
+ 
+  /* USB High Speed Device */
+ extern void __init at91_add_device_usba(struct usba_platform_data *data);
+ 
+  /* Compact Flash */
+-struct at91_cf_data {
+-	int	irq_pin;		/* I/O IRQ */
+-	int	det_pin;		/* Card detect */
+-	int	vcc_pin;		/* power switching */
+-	int	rst_pin;		/* card reset */
+-	u8	chipselect;		/* EBI Chip Select number */
+-	u8	flags;
+-#define AT91_CF_TRUE_IDE	0x01
+-#define AT91_IDE_SWAP_A0_A2	0x02
+-};
+ extern void __init at91_add_device_cf(struct at91_cf_data *data);
+ 
+  /* MMC / SD */
+@@ -86,16 +59,6 @@ extern void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *d
+ extern void __init at91_add_device_eth(struct macb_platform_data *data);
+ 
+  /* USB Host */
+-#define AT91_MAX_USBH_PORTS	3
+-struct at91_usbh_data {
+-	int		vbus_pin[AT91_MAX_USBH_PORTS];	/* port power-control pin */
+-	int             overcurrent_pin[AT91_MAX_USBH_PORTS];
+-	u8		ports;				/* number of ports on root hub */
+-	u8              overcurrent_supported;
+-	u8              vbus_pin_active_low[AT91_MAX_USBH_PORTS];
+-	u8              overcurrent_status[AT91_MAX_USBH_PORTS];
+-	u8              overcurrent_changed[AT91_MAX_USBH_PORTS];
+-};
+ extern void __init at91_add_device_usbh(struct at91_usbh_data *data);
+ extern void __init at91_add_device_usbh_ohci(struct at91_usbh_data *data);
+ extern void __init at91_add_device_usbh_ehci(struct at91_usbh_data *data);
+@@ -124,13 +87,6 @@ extern void __init at91_register_uart(unsigned id, unsigned portnr, unsigned pin
+ 
+ extern struct platform_device *atmel_default_console_device;
+ 
+-struct atmel_uart_data {
+-	int			num;		/* port num */
+-	short			use_dma_tx;	/* use transmit DMA? */
+-	short			use_dma_rx;	/* use receive DMA? */
+-	void __iomem		*regs;		/* virt. base address, if any */
+-	struct serial_rs485	rs485;		/* rs485 settings */
+-};
+ extern void __init at91_add_device_serial(void);
+ 
+ /*
+@@ -173,24 +129,13 @@ extern void __init at91_add_device_isi(struct isi_platform_data *data,
+ 		bool use_pck_as_mck);
+ 
+  /* Touchscreen Controller */
+-struct at91_tsadcc_data {
+-	unsigned int    adc_clock;
+-	u8		pendet_debounce;
+-	u8		ts_sample_hold_time;
+-};
+ extern void __init at91_add_device_tsadcc(struct at91_tsadcc_data *data);
+ 
+ /* CAN */
+-struct at91_can_data {
+-	void (*transceiver_switch)(int on);
+-};
+ extern void __init at91_add_device_can(struct at91_can_data *data);
+ 
+  /* LEDs */
+ extern void __init at91_gpio_leds(struct gpio_led *leds, int nr);
+ extern void __init at91_pwm_leds(struct gpio_led *leds, int nr);
+ 
+-/* FIXME: this needs a better location, but gets stuff building again */
+-extern int at91_suspend_entering_slow_clock(void);
+-
+ #endif
+diff --git a/arch/avr32/mach-at32ap/include/mach/board.h b/arch/avr32/mach-at32ap/include/mach/board.h
+index 70742ec..dca9345 100644
+--- a/arch/avr32/mach-at32ap/include/mach/board.h
++++ b/arch/avr32/mach-at32ap/include/mach/board.h
+@@ -34,13 +34,6 @@ extern struct platform_device *atmel_default_console_device;
+ #define	ATMEL_USART_CTS		0x02
+ #define	ATMEL_USART_CLK		0x04
+ 
+-struct atmel_uart_data {
+-	int		num;		/* port num */
+-	short		use_dma_tx;	/* use transmit DMA? */
+-	short		use_dma_rx;	/* use receive DMA? */
+-	void __iomem	*regs;		/* virtual base address, if any */
+-	struct serial_rs485	rs485;		/* rs485 settings */
+-};
+ void at32_map_usart(unsigned int hw_id, unsigned int line, int flags);
+ struct platform_device *at32_add_device_usart(unsigned int id);
+ 
+diff --git a/drivers/ata/pata_at91.c b/drivers/ata/pata_at91.c
+index 53d3770..2a96bb2 100644
+--- a/drivers/ata/pata_at91.c
++++ b/drivers/ata/pata_at91.c
+@@ -27,9 +27,9 @@
+ #include <linux/libata.h>
+ #include <linux/platform_device.h>
+ #include <linux/ata_platform.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <mach/at91sam9_smc.h>
+-#include <mach/board.h>
+ #include <asm/gpio.h>
+ 
+ #define DRV_NAME		"pata_at91"
+diff --git a/drivers/input/touchscreen/atmel_tsadcc.c b/drivers/input/touchscreen/atmel_tsadcc.c
+index 201b2d2..ea392ee 100644
+--- a/drivers/input/touchscreen/atmel_tsadcc.c
++++ b/drivers/input/touchscreen/atmel_tsadcc.c
+@@ -22,7 +22,7 @@
+ #include <linux/clk.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+-#include <mach/board.h>
++#include <linux/platform_data/atmel.h>
+ #include <mach/cpu.h>
+ 
+ /* Register definitions based on AT91SAM9RL64 preliminary draft datasheet */
+diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
+index ddf096e..8689989 100644
+--- a/drivers/mmc/host/atmel-mci.c
++++ b/drivers/mmc/host/atmel-mci.c
+@@ -28,6 +28,7 @@
+ #include <linux/slab.h>
+ #include <linux/stat.h>
+ #include <linux/types.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/sdio.h>
+@@ -40,7 +41,6 @@
+ #include <asm/unaligned.h>
+ 
+ #include <mach/cpu.h>
+-#include <mach/board.h>
+ 
+ #include "atmel-mci-regs.h"
+ 
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index fcff73a..994b6ac 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -33,12 +33,11 @@
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+ 
+-#include <mach/board.h>
+-
+ #define AT91_MB_MASK(i)		((1 << (i)) - 1)
+ 
+ /* Common registers */
+diff --git a/drivers/net/ethernet/cadence/at91_ether.c b/drivers/net/ethernet/cadence/at91_ether.c
+index 4e980a7..35fc6edb 100644
+--- a/drivers/net/ethernet/cadence/at91_ether.c
++++ b/drivers/net/ethernet/cadence/at91_ether.c
+@@ -31,6 +31,7 @@
+ #include <linux/clk.h>
+ #include <linux/gfp.h>
+ #include <linux/phy.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+@@ -38,7 +39,6 @@
+ 
+ #include <mach/at91rm9200_emac.h>
+ #include <asm/gpio.h>
+-#include <mach/board.h>
+ 
+ #include "at91_ether.h"
+ 
+diff --git a/drivers/pcmcia/at91_cf.c b/drivers/pcmcia/at91_cf.c
+index 9694c1e..01463c7 100644
+--- a/drivers/pcmcia/at91_cf.c
++++ b/drivers/pcmcia/at91_cf.c
+@@ -17,6 +17,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/slab.h>
+ #include <linux/gpio.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <pcmcia/ss.h>
+ 
+@@ -24,7 +25,6 @@
+ #include <asm/io.h>
+ #include <asm/sizes.h>
+ 
+-#include <mach/board.h>
+ #include <mach/at91rm9200_mc.h>
+ #include <mach/at91_ramc.h>
+ 
+diff --git a/drivers/rtc/rtc-at91sam9.c b/drivers/rtc/rtc-at91sam9.c
+index 2dfe7a2..e981798 100644
+--- a/drivers/rtc/rtc-at91sam9.c
++++ b/drivers/rtc/rtc-at91sam9.c
+@@ -19,8 +19,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/ioctl.h>
+ #include <linux/slab.h>
++#include <linux/platform_data/atmel.h>
+ 
+-#include <mach/board.h>
+ #include <mach/at91_rtt.h>
+ #include <mach/cpu.h>
+ 
+diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
+index 16d6a83..61fb0ec 100644
+--- a/drivers/spi/spi-atmel.c
++++ b/drivers/spi/spi-atmel.c
+@@ -19,9 +19,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/spi/spi.h>
+ #include <linux/slab.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <asm/io.h>
+-#include <mach/board.h>
+ #include <asm/gpio.h>
+ #include <mach/cpu.h>
+ 
+diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+index 3d7e1ee..5660ec2 100644
+--- a/drivers/tty/serial/atmel_serial.c
++++ b/drivers/tty/serial/atmel_serial.c
+@@ -39,12 +39,12 @@
+ #include <linux/atmel_pdc.h>
+ #include <linux/atmel_serial.h>
+ #include <linux/uaccess.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <asm/io.h>
+ #include <asm/ioctls.h>
+ 
+ #include <asm/mach/serial_at91.h>
+-#include <mach/board.h>
+ 
+ #ifdef CONFIG_ARM
+ #include <mach/cpu.h>
+diff --git a/drivers/usb/gadget/at91_udc.c b/drivers/usb/gadget/at91_udc.c
+index 89d90b5..a7b042b 100644
+--- a/drivers/usb/gadget/at91_udc.c
++++ b/drivers/usb/gadget/at91_udc.c
+@@ -31,6 +31,7 @@
+ #include <linux/usb/gadget.h>
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <asm/byteorder.h>
+ #include <mach/hardware.h>
+@@ -38,7 +39,6 @@
+ #include <asm/irq.h>
+ #include <asm/gpio.h>
+ 
+-#include <mach/board.h>
+ #include <mach/cpu.h>
+ #include <mach/at91sam9261_matrix.h>
+ #include <mach/at91_matrix.h>
+diff --git a/drivers/usb/gadget/atmel_usba_udc.c b/drivers/usb/gadget/atmel_usba_udc.c
+index 9a9bced..a7aed84 100644
+--- a/drivers/usb/gadget/atmel_usba_udc.c
++++ b/drivers/usb/gadget/atmel_usba_udc.c
+@@ -21,9 +21,9 @@
+ #include <linux/usb/gadget.h>
+ #include <linux/usb/atmel_usba_udc.h>
+ #include <linux/delay.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <asm/gpio.h>
+-#include <mach/board.h>
+ 
+ #include "atmel_usba_udc.h"
+ 
+diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
+index 0bf72f9..8e62f81 100644
+--- a/drivers/usb/host/ohci-at91.c
++++ b/drivers/usb/host/ohci-at91.c
+@@ -16,11 +16,11 @@
+ #include <linux/platform_device.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_gpio.h>
++#include <linux/platform_data/atmel.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/gpio.h>
+ 
+-#include <mach/board.h>
+ #include <mach/cpu.h>
+ 
+ #ifndef CONFIG_ARCH_AT91
+diff --git a/drivers/video/atmel_lcdfb.c b/drivers/video/atmel_lcdfb.c
+index 94cac9f..12cf5f3 100644
+--- a/drivers/video/atmel_lcdfb.c
++++ b/drivers/video/atmel_lcdfb.c
+@@ -19,8 +19,8 @@
+ #include <linux/backlight.h>
+ #include <linux/gfp.h>
+ #include <linux/module.h>
++#include <linux/platform_data/atmel.h>
+ 
+-#include <mach/board.h>
+ #include <mach/cpu.h>
+ #include <asm/gpio.h>
+ 
+diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
+index b0f2c56..dbd6d53 100644
+--- a/include/linux/platform_data/atmel.h
++++ b/include/linux/platform_data/atmel.h
+@@ -8,6 +8,49 @@
+ #define __ATMEL_H__
+ 
+ #include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
++#include <linux/leds.h>
++#include <linux/spi/spi.h>
++#include <linux/usb/atmel_usba_udc.h>
++#include <linux/atmel-mci.h>
++#include <sound/atmel-ac97c.h>
++#include <linux/serial.h>
++#include <linux/platform_data/macb.h>
++
++ /* USB Device */
++struct at91_udc_data {
++	int	vbus_pin;		/* high == host powering us */
++	u8	vbus_active_low;	/* vbus polarity */
++	u8	vbus_polled;		/* Use polling, not interrupt */
++	int	pullup_pin;		/* active == D+ pulled up */
++	u8	pullup_active_low;	/* true == pullup_pin is active low */
++};
++
++ /* Compact Flash */
++struct at91_cf_data {
++	int	irq_pin;		/* I/O IRQ */
++	int	det_pin;		/* Card detect */
++	int	vcc_pin;		/* power switching */
++	int	rst_pin;		/* card reset */
++	u8	chipselect;		/* EBI Chip Select number */
++	u8	flags;
++#define AT91_CF_TRUE_IDE	0x01
++#define AT91_IDE_SWAP_A0_A2	0x02
++};
++
++ /* USB Host */
++#define AT91_MAX_USBH_PORTS	3
++struct at91_usbh_data {
++	int		vbus_pin[AT91_MAX_USBH_PORTS];	/* port power-control pin */
++	int             overcurrent_pin[AT91_MAX_USBH_PORTS];
++	u8		ports;				/* number of ports on root hub */
++	u8              overcurrent_supported;
++	u8              vbus_pin_active_low[AT91_MAX_USBH_PORTS];
++	u8              overcurrent_status[AT91_MAX_USBH_PORTS];
++	u8              overcurrent_changed[AT91_MAX_USBH_PORTS];
++};
+ 
+  /* NAND / SmartMedia */
+ struct atmel_nand_data {
+@@ -24,4 +67,28 @@ struct atmel_nand_data {
+ 	unsigned int	num_parts;
+ };
+ 
++ /* Serial */
++struct atmel_uart_data {
++	int			num;		/* port num */
++	short			use_dma_tx;	/* use transmit DMA? */
++	short			use_dma_rx;	/* use receive DMA? */
++	void __iomem		*regs;		/* virt. base address, if any */
++	struct serial_rs485	rs485;		/* rs485 settings */
++};
++
++ /* Touchscreen Controller */
++struct at91_tsadcc_data {
++	unsigned int    adc_clock;
++	u8		pendet_debounce;
++	u8		ts_sample_hold_time;
++};
++
++/* CAN */
++struct at91_can_data {
++	void (*transceiver_switch)(int on);
++};
++
++/* FIXME: this needs a better location, but gets stuff building again */
++extern int at91_suspend_entering_slow_clock(void);
++
+ #endif /* __ATMEL_H__ */
+-- 
+1.7.10.4
