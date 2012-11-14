@@ -1,114 +1,105 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] Use strcmp instead of strncmp
-Date: Wed, 14 Nov 2012 11:10:13 +0100
-Message-ID: <50A36E05.4050708@pengutronix.de>
-References: <1352821642-18791-1-git-send-email-alexander.stein@systec-electronic.com> <50A2AD0A.6040005@pengutronix.de> <20121114085537.GB82180@airbook.eia.lan> <7396967.nBD5445xda@ws-stein> <20121114100441.GA82249@airbook.eia.lan>
+From: Andreas Larsson <andreas@gaisler.com>
+Subject: Re: [PATCH v8] can: grcan: Add device driver for GRCAN and GRHCAN
+ cores
+Date: Wed, 14 Nov 2012 12:02:51 +0100
+Message-ID: <50A37A5B.8060808@gaisler.com>
+References: <509C47CB.8060701@pengutronix.de> <1352732256-12712-1-git-send-email-andreas@gaisler.com> <50A2B88A.3040609@pengutronix.de> <50A34D49.2070908@gaisler.com> <50A359A1.30700@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig1BFDE338246D01A973C1DF97"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58970 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1161008Ab2KNKKT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Nov 2012 05:10:19 -0500
-In-Reply-To: <20121114100441.GA82249@airbook.eia.lan>
+Received: from vsp-authed02.binero.net ([195.74.38.226]:39563 "HELO
+	vsp-authed-03-02.binero.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1752241Ab2KNLC6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Nov 2012 06:02:58 -0500
+In-Reply-To: <50A359A1.30700@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, software@gaisler.com, Wolfgang Grandegger <wg@grandegger.com>, devicetree-discuss@lists.ozlabs.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1BFDE338246D01A973C1DF97
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 2012-11-14 09:43, Marc Kleine-Budde wrote:
+> Handle incoming events (rx or tx-complete) until:
+> a) number of handled events == budget
+> or
+> b) no more events pending.
+>
+> 	while (work_done < budget && interrupts_pending()) {
+> 		work_done += handle_rx(budget - work_done);
+> 		work_done += handle_tx(budget - work_done);
+> 	}
 
-On 11/14/2012 11:04 AM, Kurt Van Dijck wrote:
-> On Wed, Nov 14, 2012 at 10:07:15AM +0100, Alexander Stein wrote:
->> Hello,
->>
->> On Wednesday 14 November 2012 09:55:37, Kurt Van Dijck wrote:
->>> On Tue, Nov 13, 2012 at 09:26:50PM +0100, Marc Kleine-Budde wrote:
->>>> On 11/13/2012 04:47 PM, Alexander Stein wrote:
->>>>> This bug was detected by the clang warning:
->>>>> libsocketcan.c:384:16: warning: argument to 'sizeof' in 'strncmp' c=
-all
->>>>> is the same expression as the source; did you mean to provide an
->>>>> explicit length? [-Wsizeof-pointer-memaccess]
->>>>> sizeof(name)) !=3D 0)
->>>>> ~~~~~~~^~~~~~
->>> strlen() requires a null terminator. Is that always present?
->>> Unfortunately, I've no access to the libsocketcan code today...
->>>>>
->>>>> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.c=
-om>
->>>>> ---
->>>>>  src/libsocketcan.c |    3 ++-
->>>>>  1 files changed, 2 insertions(+), 1 deletions(-)
->>>>>
->>>>> diff --git a/src/libsocketcan.c b/src/libsocketcan.c
->>>>> index fedcbdc..3ad2a6c 100644
->>>>> --- a/src/libsocketcan.c
->>>>> +++ b/src/libsocketcan.c
->>>>> @@ -364,6 +364,7 @@ static int do_get_nl_link(int fd, __u8 acquire,=
-=20
->> const char *name, void *res)
->>>>>  		     nl_msg =3D NLMSG_NEXT(nl_msg, u_msglen)) {
->>>>>  			int type =3D nl_msg->nlmsg_type;
->>>>>  			int len;
->>>>> +			int namelen =3D strlen(name);
->>>>> =20
->>>>>  			if (type =3D=3D NLMSG_DONE) {
->>>>>  				done++;
->>>>> @@ -381,7 +382,7 @@ static int do_get_nl_link(int fd, __u8 acquire,=
-=20
->> const char *name, void *res)
->>>>> =20
->>>>>  			if (strncmp
->>>>>  			    ((char *)RTA_DATA(tb[IFLA_IFNAME]), name,
->>>>> -			     sizeof(name)) !=3D 0)
->>>>> +			     namelen) !=3D 0)
->>>>
->>>> What about using strcmp() instead. AFAIK it will compare until it fi=
-nds
->>>> the end of the string in one of the strings, so it should be no
->>>> difference here?
->>> if name contains a null terminator, using strcmp() is even better.
->>
->> name is passed directly from public API functions like can_get_state. =
-So the=20
->> user has to provide the null terminator. As this cannot be garuanteed =
+That could starve handle_tx completely though under high rx pressure, but I can 
+prevent that by making sure that half of the budget is held back in the first 
+call to handle_rx.
 
-> I think we should assume that the user passes a null terminated string.=
+> Then, if you have handled less events then budget:
+> 1) call napi_complete()
+> then
+> 2) enable interrupts.
+>
+> 	if (work_done < budget) {
+> 		napi_complete();
+> 		enable_interrupts();
+> 	}
+>
+> Then, return number of handled events:
+>
+> 	return work_done;
 
-> Otherwise, we must question if the user passes a valid address. I don't=
+Any additional remarks on the following implementation of the poll function?
 
-> like to go that way.
->=20
-> strcmp() will just work.
+static int grcan_poll(struct napi_struct *napi, int budget)
+{
+	struct grcan_priv *priv = container_of(napi, struct grcan_priv, napi);
+	struct net_device *dev = priv->dev;
+	struct grcan_registers __iomem *regs = priv->regs;
+	unsigned long flags;
+	int work_done = 0;
+	int reserved = budget / 2;
 
-+1
+	while (work_done < budget) {
+		int old_work_done = work_done;
 
-Marc
+		/* Prevent grcan_transmit_catch_up from starving by reserving
+		 * part of the budget in the first iteration when calling
+		 * grcan_receive.
+		 */
+		work_done += grcan_receive(dev, budget - reserved - work_done);
+		reserved = 0;
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+		/* Catch up echo skb according to same budget, as
+		 * grcan_transmit_catch_up can trigger echo frames being
+		 * received.
+		 */
+		work_done += grcan_transmit_catch_up(dev, budget - work_done);
+
+		/* Break out if nothing was done */
+		if (work_done == old_work_done)
+			break;
+	}
+
+	if (work_done < budget) {
+		napi_complete(napi);
+
+		/* Guarantee no interference with a running reset that otherwise
+		 * could turn off interrupts.
+		 */
+		spin_lock_irqsave(&priv->lock, flags);
+
+		/* Enable tx and rx interrupts again. No need to check
+		 * priv->closing as napi_disable in grcan_close is waiting for
+		 * scheduled napi calls to finish.
+		 */
+		grcan_set_bits(&regs->imr, GRCAN_IRQ_TX | GRCAN_IRQ_RX);
+
+		spin_unlock_irqrestore(&priv->lock, flags);
+	}
+
+	return work_done;
+}
 
 
---------------enig1BFDE338246D01A973C1DF97
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Cheers,
+Andreas
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlCjbggACgkQjTAFq1RaXHPIRgCggXIDwb+ATmDdihVwEj8u43N+
-p/MAoIq4elPc6lAnNlMh1PLX0WdcRIpO
-=fWPT
------END PGP SIGNATURE-----
-
---------------enig1BFDE338246D01A973C1DF97--
