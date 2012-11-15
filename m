@@ -1,87 +1,68 @@
-From: Michael Pellegrini <mikep86@gmail.com>
-Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
-Date: Thu, 15 Nov 2012 18:26:39 +0000 (UTC)
-Message-ID: <loom.20121115T191324-6@post.gmane.org>
-References: <loom.20121114T160521-534@post.gmane.org> <14870489.3crZoRWJoA@lisa>
+From: Jason White <white_jason_r1@cat.com>
+Subject: Re: What are you doing if the TX buffer overflows?
+Date: Thu, 15 Nov 2012 19:07:58 +0000 (UTC)
+Message-ID: <loom.20121115T200742-282@post.gmane.org>
+References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <5058659E.2010804@grandegger.com> <50586A50.5060300@pengutronix.de> <loom.20121114T213201-791@post.gmane.org> <50A4E5FC.5020103@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:37412 "EHLO plane.gmane.org"
+Received: from plane.gmane.org ([80.91.229.3]:47920 "EHLO plane.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S2992484Ab2KOS0z (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 15 Nov 2012 13:26:55 -0500
+	id S1423636Ab2KOTIT (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 15 Nov 2012 14:08:19 -0500
 Received: from list by plane.gmane.org with local (Exim 4.69)
 	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1TZ49W-00008t-0N
-	for linux-can@vger.kernel.org; Thu, 15 Nov 2012 19:27:02 +0100
-Received: from 96.45.208.254 ([96.45.208.254])
+	id 1TZ4nU-0002L9-Cx
+	for linux-can@vger.kernel.org; Thu, 15 Nov 2012 20:08:20 +0100
+Received: from bc1.cat.com ([12.2.142.12])
         by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 19:27:02 +0100
-Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
+        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 20:08:20 +0100
+Received: from white_jason_r1 by bc1.cat.com with local (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 19:27:02 +0100
+        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 20:08:20 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-Steffen Rose <ro <at> emtas.de> writes:
+Marc Kleine-Budde <mkl@pengutronix.de> wrote on 11/15/2012 06:54:20 AM:
 
+> > Right now we are taking the interface down and then back up and while this 
+> > works for a single process using CAN, I don't think it will work well with 
+> > multi-process support.  Would the other processes know that the interface 
+> > was taken down?  I haven't decided the route we will go, but maybe an 
 > 
-> > I am encountering a serious issue where, at random intervals, the CAN
-> > interface will lock up and stop transmitting data.  Data reception
-> > continues normally. 
-> 
-> Hello,
-> 
-> the situation is like my described situation at the 8.10.
-> "unsure - socketCAN blocking"
-> 
-> socketCAN with EMS-USB interface
-> 3.2.0-32-generic 64bit
-> running in a virtualBox
-> ip link add dev can0 type can
-> 
-> sometimes:
-> Transmission stop
-> Reception is working
+> If the other process is doing a read, the read will return. I'm not sure
+> what happens to a write after ifdown/ifup, I think it will fail.
 > 
 
-Hi Steffen,
+But you wouldn't want all processes to implement this timeout, otherwise 
+they would all timeout at the same time and bring the interface down 
+hence having something lower down in the stack implement it. 
 
-I saw your post and tried the solutions proposed by Marc, which are copied
-below:
 
-"
-Your program probably produces CAN frames faster than they could be
-delivered by your CAN hardware. Your choices are:
-1) If the write/sendto system call returns with -ENOBUFS,
-   add the filedesciptor to poll/select and wait for it to be writeable
-   again. For some known, but not yet resolved reasons (a.k.a. bug),
-   the poll/select will return immediately, but the write will fail
-   again. To workaround this usleep for some milliseconds between
-   the write/sendto and the poll/select system call.
+> > Ideally a packet timeout would be implemented in the driver since it knows 
+> > when the last message was transmitted (tx interrupt) and could perform the 
+> > flush properly.  Has there been any more thought to this scenario?
+> 
+> This is a scenario, I think the first step will be to implement an
+> "abort currently transmitted frame" callback. Note that not all hardware
+> supports a tx-complete interrupt. A timeout mechanism can then be
+> implemented in the framework in a hardware independent way, e.g. if you
+> extend the currently used can_echo mechanism.
+> 
+> Marc
 
-2) Increase txqueue length to 10000 or so.
-   (ifconfig can0 txqueuelen 10000)
-   This avoids to trigger the above bug and your write/sendto will
-   block until the queues are free again and your CAN frame will added
-   to the send queue. With this workaround poll/select work as expected,
-   i.e. when they return the socket is writeable without problems.
+Every piece of CAN hardware I've seen (10+ devices) has a tx interrupt 
+that indicates when the message is transmitted.  If the current message 
+being transmitted has been in the buffer XX amount of time, then it 
+and probably the entire queue should be flushed.  Obviously not all 
+hardware supports aborting the current frame, but there are work arounds. 
+Usually if a CAN message can't transmit within this time it's data is way 
+too old to be sent.  The actual time might be up for discussion and 
+depends on what is being sent, but for controls its not that long. 
 
-Hope that helps,
-Marc
-"
-
-I added a select call before the write to check that the file descriptor was
-available for writing.  As expected, I hit the bug where the select call
-indicated the file descriptor was available for writing but the write failed.
-
-Increasing the tx queue length to 10000 resolved the select bug, but not the
-data transmission bug.  Now, when the data transmission bug occurs, the select
-call indicates that the file descriptor is not available for writing.
-
-- Mike 
+Jason
 
 
