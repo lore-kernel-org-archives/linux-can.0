@@ -1,84 +1,67 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: What are you doing if the TX buffer overflows?
-Date: Thu, 15 Nov 2012 22:04:55 +0100
-Message-ID: <50A558F7.60005@hartkopp.net>
-References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <5058659E.2010804@grandegger.com> <50586A50.5060300@pengutronix.de> <loom.20121114T213201-791@post.gmane.org> <50A4E5FC.5020103@pengutronix.de> <50A52266.8030301@hartkopp.net> <loom.20121115T201037-567@post.gmane.org>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Thu, 15 Nov 2012 22:16:48 +0100
+Message-ID: <50A55BC0.7030208@grandegger.com>
+References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <CABgkGoGYGpefppHUCnBZQQRX8Nn5_AnVdDPQ-gHs4H7vyVOVXQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:62790 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750718Ab2KOVXS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 16:23:18 -0500
-In-Reply-To: <loom.20121115T201037-567@post.gmane.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:51151 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751680Ab2KOVcn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 16:32:43 -0500
+In-Reply-To: <CABgkGoGYGpefppHUCnBZQQRX8Nn5_AnVdDPQ-gHs4H7vyVOVXQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Jason White <white_jason_r1@cat.com>
-Cc: linux-can@vger.kernel.org
+To: Casper Mogensen <casper.mogensen@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Michael Pellegrini <mikep86@gmail.com>, linux-can@vger.kernel.org, tomoya.rohm@gmail.com, Bhupesh SHARMA <bhupesh.sharma@st.com>, Alexander Stein <alexander.stein@systec-electronic.com>, federico.vaga@gmail.com, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>
 
-On 15.11.2012 20:11, Jason White wrote:
+Hi Casper,
 
-> Oliver Hartkopp <socketcan@hartkopp.net> wrote on 11/15/2012 11:12:06 AM:
+On 11/15/2012 05:32 PM, Casper Mogensen wrote:
+> Hi all
 > 
->>
->> The can-gw frame router is part of mainline Linux 3.2+
->>
->>
+> I have been working with the eg20t chipset and the pch_can driver a
+> lot up until January this year, where the project i was working on
+> unfortunately was shut down. There is a bug in the implementation,
+> which causes the transmit buffers to fill up and all become
+> unavailable. It happens randomly, but is easily triggered with a high
+> load. I experienced the same problems as Michael.
 > 
-> I'm not sure I entirely follow what you are doing.  Here is what I think you
-> mean.  Please correct me if I'm wrong.  You have implemented a network
-> management layer that interfaces directly with can0.  All other applications
-> interact with can0v, which is always up.  When you know the communication
-> is stable you route between can0 and can0v.  Did I get that right?
-
-
-Yep!
-
+> I have not been working on it for a long time, so i don't recall the
+> problem precisely, but as i remember there is two memory areas which
+> is used for communication between the processor and the can core. One
+> is used for receive, and one is used for transmit in the pch_can
+> driver. When initiating a transmit, a flag is indicating that an
+> interrupt must be generated upon transmit receive, if a transmit
+> interrupt is handled during an ongoing transmit, then problems can
+> occur.
 > 
-> So do you take can0 down/up when timeouts occur with messaging?
-
-
-No. I did not need to do so. But it is generally possible to down/up the
-interfaces without destroying the cangw's routing table.
-
->  Is there
-> any kind of startup delay associated with this?
-
-
-Of what? The gateway route establishment? 
-
->  Is there any kind of
-> delays going to can0v?
-
-
-When a CAN frame is received on can0, the NET_RX softirq is invoked to handle
-the CAN filters and passes the frame to the cangw ... which passes the frame
-directly into the can0v interface.
-
-Usually this is done withing the same softirq and you don't have any
-noticeable delay.
-
-See measurements in the text here:
-
-http://permalink.gmane.org/gmane.linux.network/205565
-
->  
->> Officially the TX-timeout has been removed as the controller just sends out
->> the CAN frames, when it comes back to life ...
->>
->> The question is, if the controller gets into the BUS_OFF state and if the
->> restart-ms option (see ip tool) would help here.
->>
->> Regards,
->> Oliver
+>>From pch_xmit in pch_can
+> on line 940 in pch_can.c: can_put_echo_skb is called, which occupies
+> the skb(which to my best knowledge, is the reason that you get a
+> buffer overflow)
+> on line 943 in pch_can.c: The transmit complete interrupt flag is
+> written to the internal register (but not writing to the can core yet)
+> on line 946 in pch_can.c: pch_can_rw_msg_obj is issued, which writes
+> the internal registers to can core.
 > 
-> What do you mean by the TX-timeout or restart-ms option?
+> If the transmit completed handler has been running between lines 943
+> or 946, the pch_tx_complete routine will clear the transmit interupt
+> enable flag in priv->regs->ifregs[1] (same register is used in both),
+> then you end up writing something the message to the core without
+> transmit completed interrupt enabled, and with an occupied skb, then
+> you eventually runs out of transmit buffers, as the skb's are free'd
+> in pch_tx_complete, which is triggered by a transmit completed
+> interrupt
+> 
+> I am a little rusty in this issue, as it is quite a long time ago i
+> was working with it, but i hope the description is understandable :-)
 
+Thanks for your info. This confirms that there is there is a bug
+somewhere in the driver. Instead of chasing it, I prefer switching to
+the C_CAN driver first.
 
-See:
+Wolfgang.
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=blob;f=Documentation/networking/can.txt;h=820f55344edc0a035358fa643bbe79c48d4d887f;hb=HEAD#l817
-
-Regards,
-Oliver
