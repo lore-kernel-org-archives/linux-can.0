@@ -1,59 +1,105 @@
-From: Jason White <white_jason_r1@cat.com>
-Subject: Re: What are you doing if the TX buffer overflows?
-Date: Thu, 15 Nov 2012 19:11:33 +0000 (UTC)
-Message-ID: <loom.20121115T201037-567@post.gmane.org>
-References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <5058659E.2010804@grandegger.com> <50586A50.5060300@pengutronix.de> <loom.20121114T213201-791@post.gmane.org> <50A4E5FC.5020103@pengutronix.de> <50A52266.8030301@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2012-11-15
+Date: Thu, 15 Nov 2012 21:30:27 +0100
+Message-ID: <50A550E3.4060600@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigA3B35DEF76B4057DA08160B3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:50419 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1768697Ab2KOTOz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 15 Nov 2012 14:14:55 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1TZ4u0-00083c-8t
-	for linux-can@vger.kernel.org; Thu, 15 Nov 2012 20:15:04 +0100
-Received: from bc1.cat.com ([12.2.142.12])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 20:15:04 +0100
-Received: from white_jason_r1 by bc1.cat.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 15 Nov 2012 20:15:04 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51674 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1768924Ab2KOUak (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 15:30:40 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Oliver Hartkopp <socketcan@hartkopp.net> wrote on 11/15/2012 11:12:06 AM:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigA3B35DEF76B4057DA08160B3
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> The can-gw frame router is part of mainline Linux 3.2+
-> 
-> 
+Hello David
 
-I'm not sure I entirely follow what you are doing.  Here is what I think you
-mean.  Please correct me if I'm wrong.  You have implemented a network
-management layer that interfaces directly with can0.  All other applications
-interact with can0v, which is always up.  When you know the communication
-is stable you route between can0 and can0v.  Did I get that right?
+this pull request is for net-next, for the v3.8 release cycle. Muhammad
+Ghias added support another board to the plx_pci sja1000 driver.
+Matthias Fuchs improved the esd_usb2 driver with listen-only mode and
+CAN-USB/Micro support. Andreas Larsson contributed a driver for the
+GRHCAN CAN IP-Core
 
-So do you take can0 down/up when timeouts occur with messaging?  Is there
-any kind of startup delay associated with this?  Is there any kind of
-delays going to can0v?
- 
-> Officially the TX-timeout has been removed as the controller just sends out
-> the CAN frames, when it comes back to life ...
-> 
-> The question is, if the controller gets into the BUS_OFF state and if the
-> restart-ms option (see ip tool) would help here.
-> 
-> Regards,
-> Oliver
+regards,
+Marc
 
-What do you mean by the TX-timeout or restart-ms option?
+---
 
-Jason
+The following changes since commit 702ed3c1a9dfe4dfe112f13542d0c9d689f500=
+8b:
+
+  Merge tag 'batman-adv-for-davem' of git://git.open-mesh.org/linux-merge=
+ (2012-11-14 22:10:50 -0500)
+
+are available in the git repository at:
 
 
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 6cec9b07fe6a0c4dfbcdcee7c6283529f087c521:
+
+  can: grcan: Add device driver for GRCAN and GRHCAN cores (2012-11-15 20=
+:47:26 +0100)
+
+----------------------------------------------------------------
+Andreas Larsson (1):
+      can: grcan: Add device driver for GRCAN and GRHCAN cores
+
+Chuansheng Liu (1):
+      can: janz-ican3: Fix the usage of wait_for_completion_timeout
+
+Matthias Fuchs (2):
+      can: usb: esd_usb2: Add support for listen-only mode
+      can: usb: esd_usb2: Add support for CAN-USB/Micro
+
+Muhammad Ghias (1):
+      can: sja1000: plx_pci: add support for Connect Tech Inc's Canpro/10=
+4-Plus Opto CAN board
+
+ Documentation/ABI/testing/sysfs-class-net-grcan    |   35 +
+ .../devicetree/bindings/net/can/grcan.txt          |   28 +
+ Documentation/kernel-parameters.txt                |   18 +
+ drivers/net/can/Kconfig                            |    9 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/grcan.c                            | 1756 ++++++++++++++=
+++++++
+ drivers/net/can/janz-ican3.c                       |    4 +-
+ drivers/net/can/sja1000/Kconfig                    |    1 +
+ drivers/net/can/sja1000/plx_pci.c                  |   19 +
+ drivers/net/can/usb/esd_usb2.c                     |   35 +-
+ 10 files changed, 1898 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-net-grcan
+ create mode 100644 Documentation/devicetree/bindings/net/can/grcan.txt
+ create mode 100644 drivers/net/can/grcan.c
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enigA3B35DEF76B4057DA08160B3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlClUOkACgkQjTAFq1RaXHOqawCeP8+mnHA18h4HkTvtaWjx2fEI
+42MAn3HfoB1f9KUS08Atq7v3Tnwnx1eQ
+=FmO+
+-----END PGP SIGNATURE-----
+
+--------------enigA3B35DEF76B4057DA08160B3--
