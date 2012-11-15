@@ -1,111 +1,82 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: What are you doing if the TX buffer overflows?
-Date: Thu, 15 Nov 2012 13:54:20 +0100
-Message-ID: <50A4E5FC.5020103@pengutronix.de>
-References: <2478881.znSzbTXnK5@uschi> <505777BC.3000705@hartkopp.net> <5058659E.2010804@grandegger.com> <50586A50.5060300@pengutronix.de> <loom.20121114T213201-791@post.gmane.org>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Thu, 15 Nov 2012 14:13:43 +0100
+Message-ID: <50A4EA87.9020206@grandegger.com>
+References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigF03232BEE9FB0585CA2ABEA5"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43087 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1767700Ab2KOMy2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 07:54:28 -0500
-In-Reply-To: <loom.20121114T213201-791@post.gmane.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:47797 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1767709Ab2KONNz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 08:13:55 -0500
+In-Reply-To: <50A4972A.9070707@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Jason White <white_jason_r1@cat.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Michael Pellegrini <mikep86@gmail.com>, linux-can@vger.kernel.org, tomoya.rohm@gmail.com, Bhupesh SHARMA <bhupesh.sharma@st.com>, Alexander Stein <alexander.stein@systec-electronic.com>, federico.vaga@gmail.com, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF03232BEE9FB0585CA2ABEA5
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On 11/14/2012 09:48 PM, Jason White wrote:
-> Marc Kleine-Budde <mkl <at> pengutronix.de> writes:
->=20
+On 11/15/2012 08:18 AM, Oliver Hartkopp wrote:
+> On 14.11.2012 16:39, Michael Pellegrini wrote:
+> 
+> 
+>> I am trying to use the pch_can driver to interface with a CANopen system.
+>> I am encountering a serious issue where, at random intervals, the CAN interface
+>> will lock up and stop transmitting data.  Data reception continues normally.
+>> The only way I've found to resolve the issue so far is to issue an
+>> "ifconfig canx down" command followed by an "ifconfig canx up" command.
+>> After the interface is reset through these commands, the TX packet dropped count
+>> and the TX packet carrier count increment by 1.
 >>
+>> I am running Ubuntu 12.04 with kernel version 3.2.0-23.
 >>
->> We have several customers who asked how to abort pending TX messages,
->> too. Which involves:
->> a) clear the TX-queue in Linux
->> b) clear queue in hardware
->> c) abort currently transmitting CAN frame
->>
->> I think c) would be a usecase of its own, too.
->>
->> Marc
->>
->=20
->=20
-> Has there been any more investigation into this tx buffer overflow scen=
-ario?
->=20
-> I've been working on using SocketCAN interface for the past several mon=
-ths. =20
-> I have quite a bit of experience with CAN from an embedded perspective =
+>> Has anyone else seen this problem or have a fix for it?
+> 
+> 
+> Hello Mike,
+> 
+> i put the relevant people into CC that probably know better than me.
+> 
+> Btw. using the pch_can driver:
+> 
+> 1. Can you please provide the output of 
+> 
+> 	ip -details link show can0
+> 
+> (if can0 is your device with the problem)
+> at start time and when the problem happened?
+> 
+> 2. Can you send the output of
+> 
+> 	candump can0,0~0,#FFFFFFFF -e
+> 
+> from start time until the problem happens?
+> 
+> 3. It turned out that the pch_can controller is created upon the C_CAN
+> CAN controller IP-core. Therefore Wolfgang posted an idea to replace the
+> pch_can driver with a PCI-attached C_CAN driver:
+> 
+> http://thread.gmane.org/gmane.linux.can/815
+> 
+> I don't know the current state of the tests/replacement.
 
-> (outside of Linux) and even multiple clients accessing a single CAN por=
-t. =20
-> We have to have a method of flushing the transmit queue because if an E=
-CU is=20
-> initially alone on the network and goes error passive (no ack), then we=
- want
-> to be able to flush the tx queue periodically to prevent stale data on =
-the bus.
-> Other scenarios have also been listed.
->=20
-> Right now we are taking the interface down and then back up and while t=
-his=20
-> works for a single process using CAN, I don't think it will work well w=
-ith=20
-> multi-process support.  Would the other processes know that the interfa=
-ce=20
-> was taken down?  I haven't decided the route we will go, but maybe an=20
+As you can see from this thread, the replacement patch did not yet
+succesfully run on such a platform. But I definitively would like to get
+rid of the obsolete pch_can driver. Testers are welcome! Michael, would
+you be able/willing to test a patch, even with a recent kernel version?
 
-If the other process is doing a read, the read will return. I'm not sure
-what happens to a write after ifdown/ifup, I think it will fail.
+> But a general C_CAN PCI driver has been contributed by Frederico Vaga which
+> became a mainline driver in June
+> 
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commitdiff;h=5b92da0443c2585e31b64e86c2e1b8e22845d4bb
+> 
+> Don't know if this driver can be used out of the box, when the PCI IDs of the
+> PCH_CAN board are added ...
+> 
+> But maybe the guys in CC know ;-)
 
-> intermediate layer between SocketCAN and user processes to monitor the =
+You need a PCI driver first.
 
-> flushing.  Does the socket itself have any buffering or are messages=20
-> forwarded directly to the driver?
->=20
-> Ideally a packet timeout would be implemented in the driver since it kn=
-ows=20
-> when the last message was transmitted (tx interrupt) and could perform =
-the=20
-> flush properly.  Has there been any more thought to this scenario?
+Wolfgang.
 
-This is a scenario, I think the first step will be to implement an
-"abort currently transmitted frame" callback. Note that not all hardware
-supports a tx-complete interrupt. A timeout mechanism can then be
-implemented in the framework in a hardware independent way, e.g. if you
-extend the currently used can_echo mechanism.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enigF03232BEE9FB0585CA2ABEA5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlCk5gAACgkQjTAFq1RaXHMpsACggHGlNPLWn2VO1msqVIp4HPsu
-YxUAn3twPL2ea2JrLczVSTjEWuYT660Z
-=Z4Jz
------END PGP SIGNATURE-----
-
---------------enigF03232BEE9FB0585CA2ABEA5--
