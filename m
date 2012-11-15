@@ -1,60 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v9] can: grcan: Add device driver for GRCAN and GRHCAN
- cores
-Date: Thu, 15 Nov 2012 21:32:06 +0100
-Message-ID: <50A55146.5050008@pengutronix.de>
-References: <50A3B4DB.40502@pengutronix.de> <1352965634-26663-1-git-send-email-andreas@gaisler.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Thu, 15 Nov 2012 22:19:33 +0100
+Message-ID: <50A55C65.2020003@grandegger.com>
+References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig68360BC90475DD30CE670F2D"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51707 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1768923Ab2KOUcU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 15:32:20 -0500
-In-Reply-To: <1352965634-26663-1-git-send-email-andreas@gaisler.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:50191 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750710Ab2KOVTf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Nov 2012 16:19:35 -0500
+In-Reply-To: <loom.20121115T171319-854@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, devicetree-discuss@lists.ozlabs.org, software@gaisler.com
+To: Michael Pellegrini <mikep86@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig68360BC90475DD30CE670F2D
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 11/15/2012 05:23 PM, Michael Pellegrini wrote:
+> Wolfgang Grandegger <wg <at> grandegger.com> writes:
+> 
+>>>
+>>> 3. It turned out that the pch_can controller is created upon the C_CAN
+>>> CAN controller IP-core. Therefore Wolfgang posted an idea to replace the
+>>> pch_can driver with a PCI-attached C_CAN driver:
+>>>
+>>> http://thread.gmane.org/gmane.linux.can/815
+>>>
+>>> I don't know the current state of the tests/replacement.
+>>
+>> As you can see from this thread, the replacement patch did not yet
+>> succesfully run on such a platform. But I definitively would like to get
+>> rid of the obsolete pch_can driver. Testers are welcome! Michael, would
+>> you be able/willing to test a patch, even with a recent kernel version?
+> 
+> I would be willing to test a patch, however any fix would need to be back-ported
+> to the 3.2.0 kernel to be useful to me.  For the sake of testing though, I would
+> be willing to update to a newer kernel.
 
-On 11/15/2012 08:47 AM, Andreas Larsson wrote:
-> This driver supports GRCAN and CRHCAN CAN controllers available in the =
-GRLIB
-> VHDL IP core library.
->=20
-> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+I need to check first if this driver can be supported with little effort.
 
-Applied to can-next/master - and included in the pull-reqeust I just
-sent to David.
+> Also, I should warn you that I am not a Linux expert.  Thus, operations like
+> updating/recompiling the kernel are new to me and I'll need some help working
+> through the process.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Of course! You are welcome. What Linux distribution do you use?
 
-
---------------enig68360BC90475DD30CE670F2D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iEYEARECAAYFAlClUUYACgkQjTAFq1RaXHOBWACglDxURLOkTxjiVa9ldAY6/S6R
-aocAnRlgk1s2n55ol07mo+2VYqdvPOH7
-=tBLH
------END PGP SIGNATURE-----
-
---------------enig68360BC90475DD30CE670F2D--
+Wolfgang.
