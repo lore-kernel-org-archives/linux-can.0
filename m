@@ -1,344 +1,311 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: pch_can: Data transmission stops after dropped packet
-Date: Mon, 19 Nov 2012 20:22:03 +0100
-Message-ID: <50AA86DB.7000506@grandegger.com>
-References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org> <50A55C65.2020003@grandegger.com> <loom.20121115T222748-977@post.gmane.org> <50A95FC1.3050907@grandegger.com> <loom.20121119T155735-163@post.gmane.org> <50AA4FB3.7070009@grandegger.com> <loom.20121119T171647-35@post.gmane.org> <50AA5EE6.6060105@grandegger.com> <loom.20121119T183819-427@post.gmane.org>
+From: Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Re: [PATCH 333/493] net: remove use of __devinitdata
+Date: Mon, 19 Nov 2012 14:02:25 -0600
+Message-ID: <50AA9051.7060201@lwfinger.net>
+References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu> <1353349642-3677-333-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000003020002050908050404"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:49280 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754273Ab2KSTWH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Nov 2012 14:22:07 -0500
-In-Reply-To: <loom.20121119T183819-427@post.gmane.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Michael Pellegrini <mikep86@gmail.com>
-Cc: linux-can@vger.kernel.org
-
-This is a multi-part message in MIME format.
---------------000003020002050908050404
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1353349642-3677-333-git-send-email-wfp5p@virginia.edu>
+Sender: netdev-owner@vger.kernel.org
+To: Bill Pemberton <wfp5p@virginia.edu>
+Cc: gregkh@linuxfoundation.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "Maciej W. Rozycki" <macro@linux-mips.org>, Jes Sorensen <jes@trained-monkey.org>, "John W. Linville" <linville@tuxdriver.com>, Chaoming Li <chaoming_li@realsil.com.cn>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-hippi@sunsite.dk, linux-wireless@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On 11/19/2012 06:39 PM, Michael Pellegrini wrote:
-> Wolfgang Grandegger <wg <at> grandegger.com> writes:
-> 
->>
->> On 11/19/2012 05:20 PM, Michael Pellegrini wrote:
->>> Wolfgang Grandegger <wg <at> grandegger.com> writes:
->>>
->>>>
->>>> On 11/19/2012 04:10 PM, Michael Pellegrini wrote:
->>>>> Wolfgang Grandegger <wg <at> grandegger.com> writes:
->>>>>
->>>>>>
->>>>>> On 11/15/2012 10:34 PM, Michael Pellegrini wrote:
->>>>>>> Wolfgang Grandegger <wg <at> grandegger.com> writes:
->>>>>>>
->>>>>>>> I need to check first if this driver can be supported with little 
-> effort.
->>>>>>>
->>>>>>> Thank you for your consideration.
->>>>>>
->>>>>> For simple out-of-tree build I have now extracted the most recent
->>>>>> version of c_can and c_can_pci driver files, backported it to v3.2 and
->>>>>> added the PCH related code.
->>>>>>
->>>>>> You should be able to build these drivers on your system as shown below:
->>>>>>
->>>>>>   $ tar xf c-can-pci-v1.tar.bz2
->>>>>>   $ cd c-can-pci-v1
->>>>>>   $ CONFIG_CAN_C_CAN_PCI=m \
->>>>>>     make -C /usr/src/linux-headers-`uname -r` SUBDIRS=`pwd` modules
->>>>>>
->>>>>> This requires that you have the kernel header, gcc and fiends installed
->>>>>> on your system.
->>>>>>
->>>>>> Then you can load the modules as shown below, after unloading the
->>>>>> original C_CAN modules:
->>>>>>
->>>>>>   $ sudo modprobe can_dev
->>>>>>   $ rmmod c_can
->>>>>>   $ rmmod c_can_pci
->>>>>>   $ sudo insmod c_can.ko
->>>>>>   $ sudo insmod c_can_pci.ko
->>>>>>
->>>>>> Hope it works as expected. 
->>>>>
->>>>> I got the modules built, however loading them results in a non-functional 
->>> CAN 
->>>>> interface.  can0 no longer shows up in "ifconfig" or "ip".  Upon loading 
-> the 
->>>>> modules, dmesg prints the following:
->>>>>
->>>>> [ 2786.244341] c_can_pci 0000:02:0c.3: PCI INT C -> GSI 18 (level, low) -> 
->>> IRQ 
->>>>> 18
->>>>> [ 2786.244381] c_can_pci 0000:02:0c.3: setting latency timer to 64
->>>>> [ 2786.244497] c_can_pci 0000:02:0c.3: irq 41 for MSI/MSI-X
->>>>> [ 2786.244523] c_can_pci 0000:02:0c.3: device has no PCI memory resources, 
->>>>> failing adapter
->>>>> [ 2786.244586] c_can_pci 0000:02:0c.3: PCI INT C disabled
->>>>> [ 2786.244611] c_can_pci: probe of 0000:02:0c.3 failed with error -12
->>>>
->>>> "-ENOMEM", ah, the PCH uses PCI Bar 1 (instead of 0). I missed that.
->>>> Could you please replace:
->>>>
->>>> 	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
->>>>
->>>> with
->>>>
->>>> 	addr = pci_iomap(pdev, 1, pci_resource_len(pdev, 0));
->>>>
->>>> in c_can_pci and retry.
->>>>
->>>> Wolfgang.
->>>
->>> I made the change, the module crashes on load now.  Dmesg output is:
->>
->> Grrr, sorry, it should be :
->>
->> 	addr = pci_iomap(pdev, 1, pci_resource_len(pdev, 1));
->>
->> Wolfgang.
-> 
-> Made the change, same problem.  Dmesg output is:
+On 11/19/2012 12:24 PM, Bill Pemberton wrote:
+> CONFIG_HOTPLUG is going away as an option so __devinitdata is no
+> longer needed.
+>
+> Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "Maciej W. Rozycki" <macro@linux-mips.org>
+> Cc: Jes Sorensen <jes@trained-monkey.org>
+> Cc: "John W. Linville" <linville@tuxdriver.com>
+> Cc: Larry Finger <Larry.Finger@lwfinger.net>
+> Cc: Chaoming Li <chaoming_li@realsil.com.cn>
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-hippi@sunsite.dk
+> Cc: linux-wireless@vger.kernel.org
+> ---
+>   drivers/net/can/cc770/cc770_isa.c             | 12 ++++++------
+>   drivers/net/can/cc770/cc770_platform.c        |  2 +-
+>   drivers/net/can/mscan/mpc5xxx_can.c           |  4 ++--
+>   drivers/net/can/sja1000/plx_pci.c             | 16 ++++++++--------
+>   drivers/net/can/sja1000/sja1000_isa.c         | 10 +++++-----
+>   drivers/net/can/sja1000/sja1000_of_platform.c |  2 +-
+>   drivers/net/fddi/defxx.c                      |  2 +-
+>   drivers/net/hippi/rrunner.c                   |  2 +-
+>   drivers/net/wan/farsync.c                     |  2 +-
+>   drivers/net/wireless/mwl8k.c                  |  2 +-
+>   drivers/net/wireless/rtlwifi/rtl8192de/sw.c   |  2 +-
+>   drivers/net/wireless/rtlwifi/rtl8192se/sw.c   |  2 +-
+>   drivers/net/wireless/rtlwifi/rtl8723ae/sw.c   |  2 +-
+>   13 files changed, 30 insertions(+), 30 deletions(-)
 
-OK, priv->regs in c_can_pci_reset_pch() is wrong. It should be
-priv->base. Next try. I have attached c-can-pci-v2.tar.bz2.
+ACKed-by: Larry Finger <Larry.Finger.net> for the rtl8192de, rtl8192se, and 
+rtl8192ae parts.
 
-Wolfgang.
-
-
---------------000003020002050908050404
-Content-Type: application/x-bzip;
- name="c-can-pci-v2.tar.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="c-can-pci-v2.tar.bz2"
-
-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
---------------000003020002050908050404--
+>
+> diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+> index 9ca0461..bed9d19 100644
+> --- a/drivers/net/can/cc770/cc770_isa.c
+> +++ b/drivers/net/can/cc770/cc770_isa.c
+> @@ -75,12 +75,12 @@ MODULE_LICENSE("GPL v2");
+>
+>   static unsigned long port[MAXDEV];
+>   static unsigned long mem[MAXDEV];
+> -static int __devinitdata irq[MAXDEV];
+> -static int __devinitdata clk[MAXDEV];
+> -static u8 __devinitdata cir[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> -static u8 __devinitdata cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> -static u8 __devinitdata bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> -static int __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+> +static int irq[MAXDEV];
+> +static int clk[MAXDEV];
+> +static u8 cir[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> +static u8 cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> +static u8 bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> +static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+>
+>   module_param_array(port, ulong, NULL, S_IRUGO);
+>   MODULE_PARM_DESC(port, "I/O port number");
+> diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+> index fef046f..caf4d70 100644
+> --- a/drivers/net/can/cc770/cc770_platform.c
+> +++ b/drivers/net/can/cc770/cc770_platform.c
+> @@ -253,7 +253,7 @@ static int __devexit cc770_platform_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>
+> -static struct of_device_id __devinitdata cc770_platform_table[] = {
+> +static struct of_device_id cc770_platform_table[] = {
+>   	{.compatible = "bosch,cc770"}, /* CC770 from Bosch */
+>   	{.compatible = "intc,82527"},  /* AN82527 from Intel CP */
+>   	{},
+> diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+> index 752bfed..254c168 100644
+> --- a/drivers/net/can/mscan/mpc5xxx_can.c
+> +++ b/drivers/net/can/mscan/mpc5xxx_can.c
+> @@ -43,7 +43,7 @@ struct mpc5xxx_can_data {
+>   };
+>
+>   #ifdef CONFIG_PPC_MPC52xx
+> -static struct of_device_id __devinitdata mpc52xx_cdm_ids[] = {
+> +static struct of_device_id mpc52xx_cdm_ids[] = {
+>   	{ .compatible = "fsl,mpc5200-cdm", },
+>   	{}
+>   };
+> @@ -124,7 +124,7 @@ struct mpc512x_clockctl {
+>   	u32 mccr[4];		/* MSCAN Clk Ctrl Reg 1-3 */
+>   };
+>
+> -static struct of_device_id __devinitdata mpc512x_clock_ids[] = {
+> +static struct of_device_id mpc512x_clock_ids[] = {
+>   	{ .compatible = "fsl,mpc5121-clock", },
+>   	{}
+>   };
+> diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+> index 619b96c..f1c7a50 100644
+> --- a/drivers/net/can/sja1000/plx_pci.c
+> +++ b/drivers/net/can/sja1000/plx_pci.c
+> @@ -158,7 +158,7 @@ struct plx_pci_card_info {
+>   	void (*reset_func)(struct pci_dev *pdev);
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_adlink __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_adlink = {
+>   	"Adlink PCI-7841/cPCI-7841", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
+> @@ -166,7 +166,7 @@ static struct plx_pci_card_info plx_pci_card_info_adlink __devinitdata = {
+>   	/* based on PLX9052 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_adlink_se __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_adlink_se = {
+>   	"Adlink PCI-7841/cPCI-7841 SE", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
+> @@ -174,7 +174,7 @@ static struct plx_pci_card_info plx_pci_card_info_adlink_se __devinitdata = {
+>   	/* based on PLX9052 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_esd200 __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_esd200 = {
+>   	"esd CAN-PCI/CPCI/PCI104/200", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+> @@ -182,7 +182,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd200 __devinitdata = {
+>   	/* based on PLX9030/9050 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_esd266 __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_esd266 = {
+>   	"esd CAN-PCI/PMC/266", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+> @@ -190,7 +190,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd266 __devinitdata = {
+>   	/* based on PLX9056 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_esd2000 = {
+>   	"esd CAN-PCIe/2000", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+> @@ -198,7 +198,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
+>   	/* based on PEX8311 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_ixxat = {
+>   	"IXXAT PC-I 04/PCI", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x200, 0x80} },
+> @@ -206,7 +206,7 @@ static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
+>   	/* based on PLX9050 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_marathon = {
+>   	"Marathon CAN-bus-PCI", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x00, 0x00}, {4, 0x00, 0x00} },
+> @@ -214,7 +214,7 @@ static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
+>   	/* based on PLX9052 */
+>   };
+>
+> -static struct plx_pci_card_info plx_pci_card_info_tews __devinitdata = {
+> +static struct plx_pci_card_info plx_pci_card_info_tews = {
+>   	"TEWS TECHNOLOGIES TPMC810", 2,
+>   	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+>   	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
+> diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+> index 3f12e85..a872f24 100644
+> --- a/drivers/net/can/sja1000/sja1000_isa.c
+> +++ b/drivers/net/can/sja1000/sja1000_isa.c
+> @@ -42,11 +42,11 @@ MODULE_LICENSE("GPL v2");
+>
+>   static unsigned long port[MAXDEV];
+>   static unsigned long mem[MAXDEV];
+> -static int __devinitdata irq[MAXDEV];
+> -static int __devinitdata clk[MAXDEV];
+> -static unsigned char __devinitdata cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> -static unsigned char __devinitdata ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> -static int __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+> +static int irq[MAXDEV];
+> +static int clk[MAXDEV];
+> +static unsigned char cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> +static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+> +static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+>
+>   module_param_array(port, ulong, NULL, S_IRUGO);
+>   MODULE_PARM_DESC(port, "I/O port number");
+> diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+> index 259d5a1d..1ca0ee1 100644
+> --- a/drivers/net/can/sja1000/sja1000_of_platform.c
+> +++ b/drivers/net/can/sja1000/sja1000_of_platform.c
+> @@ -204,7 +204,7 @@ exit_release_mem:
+>   	return err;
+>   }
+>
+> -static struct of_device_id __devinitdata sja1000_ofp_table[] = {
+> +static struct of_device_id sja1000_ofp_table[] = {
+>   	{.compatible = "nxp,sja1000"},
+>   	{},
+>   };
+> diff --git a/drivers/net/fddi/defxx.c b/drivers/net/fddi/defxx.c
+> index 13f42cc..fd58f0b 100644
+> --- a/drivers/net/fddi/defxx.c
+> +++ b/drivers/net/fddi/defxx.c
+> @@ -228,7 +228,7 @@
+>   #define DRV_VERSION "v1.10"
+>   #define DRV_RELDATE "2006/12/14"
+>
+> -static char version[] __devinitdata =
+> +static char version[] =
+>   	DRV_NAME ": " DRV_VERSION " " DRV_RELDATE
+>   	"  Lawrence V. Stefani and others\n";
+>
+> diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
+> index 164d845..12b7ff9 100644
+> --- a/drivers/net/hippi/rrunner.c
+> +++ b/drivers/net/hippi/rrunner.c
+> @@ -61,7 +61,7 @@ MODULE_AUTHOR("Jes Sorensen <jes@wildopensource.com>");
+>   MODULE_DESCRIPTION("Essential RoadRunner HIPPI driver");
+>   MODULE_LICENSE("GPL");
+>
+> -static char version[] __devinitdata = "rrunner.c: v0.50 11/11/2002  Jes Sorensen (jes@wildopensource.com)\n";
+> +static char version[] = "rrunner.c: v0.50 11/11/2002  Jes Sorensen (jes@wildopensource.com)\n";
+>
+>
+>   static const struct net_device_ops rr_netdev_ops = {
+> diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
+> index dc529aa..dbbe06e 100644
+> --- a/drivers/net/wan/farsync.c
+> +++ b/drivers/net/wan/farsync.c
+> @@ -2361,7 +2361,7 @@ fst_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>    *      via a printk and leave the corresponding interface and all that follow
+>    *      disabled.
+>    */
+> -static char *type_strings[] __devinitdata = {
+> +static char *type_strings[] = {
+>   	"no hardware",		/* Should never be seen */
+>   	"FarSync T2P",
+>   	"FarSync T4P",
+> diff --git a/drivers/net/wireless/mwl8k.c b/drivers/net/wireless/mwl8k.c
+> index 1bbdc63..b9f71fd 100644
+> --- a/drivers/net/wireless/mwl8k.c
+> +++ b/drivers/net/wireless/mwl8k.c
+> @@ -5257,7 +5257,7 @@ enum {
+>   #define _MWL8K_8366_AP_FW(api) "mwl8k/fmimage_8366_ap-" #api ".fw"
+>   #define MWL8K_8366_AP_FW(api) _MWL8K_8366_AP_FW(api)
+>
+> -static struct mwl8k_device_info mwl8k_info_tbl[] __devinitdata = {
+> +static struct mwl8k_device_info mwl8k_info_tbl[] = {
+>   	[MWL8363] = {
+>   		.part_name	= "88w8363",
+>   		.helper_image	= "mwl8k/helper_8363.fw",
+> diff --git a/drivers/net/wireless/rtlwifi/rtl8192de/sw.c b/drivers/net/wireless/rtlwifi/rtl8192de/sw.c
+> index 480862c..93d792a 100644
+> --- a/drivers/net/wireless/rtlwifi/rtl8192de/sw.c
+> +++ b/drivers/net/wireless/rtlwifi/rtl8192de/sw.c
+> @@ -352,7 +352,7 @@ static struct rtl_hal_cfg rtl92de_hal_cfg = {
+>   	.maps[RTL_RC_HT_RATEMCS15] = DESC92_RATEMCS15,
+>   };
+>
+> -static struct pci_device_id rtl92de_pci_ids[] __devinitdata = {
+> +static struct pci_device_id rtl92de_pci_ids[] = {
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8193, rtl92de_hal_cfg)},
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x002B, rtl92de_hal_cfg)},
+>   	{},
+> diff --git a/drivers/net/wireless/rtlwifi/rtl8192se/sw.c b/drivers/net/wireless/rtlwifi/rtl8192se/sw.c
+> index ad4b480..ca80fa8 100644
+> --- a/drivers/net/wireless/rtlwifi/rtl8192se/sw.c
+> +++ b/drivers/net/wireless/rtlwifi/rtl8192se/sw.c
+> @@ -403,7 +403,7 @@ static struct rtl_hal_cfg rtl92se_hal_cfg = {
+>   	.maps[RTL_RC_HT_RATEMCS15] = DESC92_RATEMCS15,
+>   };
+>
+> -static struct pci_device_id rtl92se_pci_ids[] __devinitdata = {
+> +static struct pci_device_id rtl92se_pci_ids[] = {
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8192, rtl92se_hal_cfg)},
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8171, rtl92se_hal_cfg)},
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8172, rtl92se_hal_cfg)},
+> diff --git a/drivers/net/wireless/rtlwifi/rtl8723ae/sw.c b/drivers/net/wireless/rtlwifi/rtl8723ae/sw.c
+> index 0afdc24..b1c3626 100644
+> --- a/drivers/net/wireless/rtlwifi/rtl8723ae/sw.c
+> +++ b/drivers/net/wireless/rtlwifi/rtl8723ae/sw.c
+> @@ -341,7 +341,7 @@ static struct rtl_hal_cfg rtl8723ae_hal_cfg = {
+>   	.maps[RTL_RC_HT_RATEMCS15] = DESC92_RATEMCS15,
+>   };
+>
+> -static struct pci_device_id rtl8723ae_pci_ids[] __devinitdata = {
+> +static struct pci_device_id rtl8723ae_pci_ids[] = {
+>   	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8723, rtl8723ae_hal_cfg)},
+>   	{},
+>   };
+>
