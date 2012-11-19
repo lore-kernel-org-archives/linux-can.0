@@ -1,124 +1,291 @@
 From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 379/493] net: remove use of __devinitconst
-Date: Mon, 19 Nov 2012 13:25:28 -0500
-Message-ID: <1353349642-3677-379-git-send-email-wfp5p@virginia.edu>
+Subject: [PATCH 079/493] can: remove use of __devexit_p
+Date: Mon, 19 Nov 2012 13:20:28 -0500
+Message-ID: <1353349642-3677-79-git-send-email-wfp5p@virginia.edu>
 References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Sender: netdev-owner@vger.kernel.org
 To: gregkh@linuxfoundation.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Luciano Coelho <coelho@ti.com>, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-CONFIG_HOTPLUG is going away as an option so __devinitconst is no
-longer needed.
+CONFIG_HOTPLUG is going away as an option so __devexit_p is no longer
+needed.
 
 Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
 Cc: Wolfgang Grandegger <wg@grandegger.com> 
 Cc: Marc Kleine-Budde <mkl@pengutronix.de> 
-Cc: Luciano Coelho <coelho@ti.com> 
-Cc: "John W. Linville" <linville@tuxdriver.com> 
 Cc: linux-can@vger.kernel.org 
 Cc: netdev@vger.kernel.org 
-Cc: linux-wireless@vger.kernel.org 
 ---
- drivers/net/can/at91_can.c            | 2 +-
- drivers/net/can/mscan/mpc5xxx_can.c   | 6 +++---
- drivers/net/can/sja1000/tscan1.c      | 2 +-
- drivers/net/wireless/ti/wl12xx/main.c | 2 +-
- drivers/net/wireless/ti/wl18xx/main.c | 2 +-
- drivers/net/wireless/ti/wlcore/sdio.c | 2 +-
- 6 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/can/at91_can.c                    | 2 +-
+ drivers/net/can/bfin_can.c                    | 2 +-
+ drivers/net/can/c_can/c_can_pci.c             | 2 +-
+ drivers/net/can/c_can/c_can_platform.c        | 2 +-
+ drivers/net/can/cc770/cc770_isa.c             | 2 +-
+ drivers/net/can/cc770/cc770_platform.c        | 2 +-
+ drivers/net/can/flexcan.c                     | 2 +-
+ drivers/net/can/janz-ican3.c                  | 2 +-
+ drivers/net/can/mcp251x.c                     | 2 +-
+ drivers/net/can/mscan/mpc5xxx_can.c           | 2 +-
+ drivers/net/can/pch_can.c                     | 2 +-
+ drivers/net/can/sja1000/kvaser_pci.c          | 2 +-
+ drivers/net/can/sja1000/peak_pci.c            | 2 +-
+ drivers/net/can/sja1000/sja1000_isa.c         | 2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c | 2 +-
+ drivers/net/can/sja1000/tscan1.c              | 2 +-
+ drivers/net/can/softing/softing_cs.c          | 2 +-
+ drivers/net/can/softing/softing_main.c        | 2 +-
+ drivers/net/can/ti_hecc.c                     | 2 +-
+ 19 files changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 32e60dd..da807f3 100644
+index 994b6ac..0f08305 100644
 --- a/drivers/net/can/at91_can.c
 +++ b/drivers/net/can/at91_can.c
-@@ -154,7 +154,7 @@ struct at91_priv {
- 	canid_t mb0_id;
+@@ -1374,7 +1374,7 @@ static const struct platform_device_id at91_can_id_table[] = {
+ 
+ static struct platform_driver at91_can_driver = {
+ 	.probe = at91_can_probe,
+-	.remove = __devexit_p(at91_can_remove),
++	.remove = at91_can_remove,
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
+index f2d6d25..ee4983a 100644
+--- a/drivers/net/can/bfin_can.c
++++ b/drivers/net/can/bfin_can.c
+@@ -677,7 +677,7 @@ static int bfin_can_resume(struct platform_device *pdev)
+ 
+ static struct platform_driver bfin_can_driver = {
+ 	.probe = bfin_can_probe,
+-	.remove = __devexit_p(bfin_can_remove),
++	.remove = bfin_can_remove,
+ 	.suspend = bfin_can_suspend,
+ 	.resume = bfin_can_resume,
+ 	.driver = {
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 3d7830b..019cf71 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -210,7 +210,7 @@ static struct pci_driver c_can_pci_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = c_can_pci_tbl,
+ 	.probe = c_can_pci_probe,
+-	.remove = __devexit_p(c_can_pci_remove),
++	.remove = c_can_pci_remove,
  };
  
--static const struct at91_devtype_data at91_devtype_data[] __devinitconst = {
-+static const struct at91_devtype_data at91_devtype_data[] = {
- 	[AT91_DEVTYPE_SAM9263] = {
- 		.rx_first = 1,
- 		.rx_split = 8,
+ module_pci_driver(c_can_pci_driver);
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index ee14161..fed1dd1 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -306,7 +306,7 @@ static struct platform_driver c_can_plat_driver = {
+ 		.of_match_table = of_match_ptr(c_can_of_table),
+ 	},
+ 	.probe = c_can_plat_probe,
+-	.remove = __devexit_p(c_can_plat_remove),
++	.remove = c_can_plat_remove,
+ 	.suspend = c_can_suspend,
+ 	.resume = c_can_resume,
+ 	.id_table = c_can_id_table,
+diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+index 9f3a25c..dfa9a45 100644
+--- a/drivers/net/can/cc770/cc770_isa.c
++++ b/drivers/net/can/cc770/cc770_isa.c
+@@ -316,7 +316,7 @@ static int __devexit cc770_isa_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver cc770_isa_driver = {
+ 	.probe = cc770_isa_probe,
+-	.remove = __devexit_p(cc770_isa_remove),
++	.remove = cc770_isa_remove,
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index 688371c..a294926 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -266,7 +266,7 @@ static struct platform_driver cc770_platform_driver = {
+ 		.of_match_table = cc770_platform_table,
+ 	},
+ 	.probe = cc770_platform_probe,
+-	.remove = __devexit_p(cc770_platform_remove),
++	.remove = cc770_platform_remove,
+ };
+ 
+ module_platform_driver(cc770_platform_driver);
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index a412bf6..01e0201 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1168,7 +1168,7 @@ static struct platform_driver flexcan_driver = {
+ 		.of_match_table = flexcan_of_match,
+ 	},
+ 	.probe = flexcan_probe,
+-	.remove = __devexit_p(flexcan_remove),
++	.remove = flexcan_remove,
+ 	.suspend = flexcan_suspend,
+ 	.resume = flexcan_resume,
+ 	.id_table = flexcan_id_table,
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 7edadee..a9dfcb9 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1927,7 +1927,7 @@ static struct platform_driver ican3_driver = {
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= ican3_probe,
+-	.remove		= __devexit_p(ican3_remove),
++	.remove		= ican3_remove,
+ };
+ 
+ module_platform_driver(ican3_driver);
+diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
+index 26e7129..7a059d1 100644
+--- a/drivers/net/can/mcp251x.c
++++ b/drivers/net/can/mcp251x.c
+@@ -1198,7 +1198,7 @@ static struct spi_driver mcp251x_can_driver = {
+ 
+ 	.id_table = mcp251x_id_table,
+ 	.probe = mcp251x_can_probe,
+-	.remove = __devexit_p(mcp251x_can_remove),
++	.remove = mcp251x_can_remove,
+ 	.suspend = mcp251x_can_suspend,
+ 	.resume = mcp251x_can_resume,
+ };
 diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index 254c168..508cbad 100644
+index 799c354..db59bbc 100644
 --- a/drivers/net/can/mscan/mpc5xxx_can.c
 +++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -380,17 +380,17 @@ static int mpc5xxx_can_resume(struct platform_device *ofdev)
- }
- #endif
- 
--static const struct mpc5xxx_can_data __devinitconst mpc5200_can_data = {
-+static const struct mpc5xxx_can_data mpc5200_can_data = {
- 	.type = MSCAN_TYPE_MPC5200,
- 	.get_clock = mpc52xx_can_get_clock,
+@@ -404,7 +404,7 @@ static struct platform_driver mpc5xxx_can_driver = {
+ 		.of_match_table = mpc5xxx_can_table,
+ 	},
+ 	.probe = mpc5xxx_can_probe,
+-	.remove = __devexit_p(mpc5xxx_can_remove),
++	.remove = mpc5xxx_can_remove,
+ #ifdef CONFIG_PM
+ 	.suspend = mpc5xxx_can_suspend,
+ 	.resume = mpc5xxx_can_resume,
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index 48b3d62..56145f9 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -1269,7 +1269,7 @@ static struct pci_driver pch_can_pci_driver = {
+ 	.name = "pch_can",
+ 	.id_table = pch_pci_tbl,
+ 	.probe = pch_can_probe,
+-	.remove = __devexit_p(pch_can_remove),
++	.remove = pch_can_remove,
+ 	.suspend = pch_can_suspend,
+ 	.resume = pch_can_resume,
+ };
+diff --git a/drivers/net/can/sja1000/kvaser_pci.c b/drivers/net/can/sja1000/kvaser_pci.c
+index 23ed6ea..be95c42 100644
+--- a/drivers/net/can/sja1000/kvaser_pci.c
++++ b/drivers/net/can/sja1000/kvaser_pci.c
+@@ -394,7 +394,7 @@ static struct pci_driver kvaser_pci_driver = {
+ 	.name = DRV_NAME,
+ 	.id_table = kvaser_pci_tbl,
+ 	.probe = kvaser_pci_init_one,
+-	.remove = __devexit_p(kvaser_pci_remove_one),
++	.remove = kvaser_pci_remove_one,
  };
  
--static const struct mpc5xxx_can_data __devinitconst mpc5121_can_data = {
-+static const struct mpc5xxx_can_data mpc5121_can_data = {
- 	.type = MSCAN_TYPE_MPC5121,
- 	.get_clock = mpc512x_can_get_clock,
+ module_pci_driver(kvaser_pci_driver);
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index 6525dbc..0247efa 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -757,7 +757,7 @@ static struct pci_driver peak_pci_driver = {
+ 	.name = DRV_NAME,
+ 	.id_table = peak_pci_tbl,
+ 	.probe = peak_pci_probe,
+-	.remove = __devexit_p(peak_pci_remove),
++	.remove = peak_pci_remove,
  };
  
--static const struct of_device_id __devinitconst mpc5xxx_can_table[] = {
-+static const struct of_device_id mpc5xxx_can_table[] = {
- 	{ .compatible = "fsl,mpc5200-mscan", .data = &mpc5200_can_data, },
- 	/* Note that only MPC5121 Rev. 2 (and later) is supported */
- 	{ .compatible = "fsl,mpc5121-mscan", .data = &mpc5121_can_data, },
+ module_pci_driver(peak_pci_driver);
+diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+index 90c5c2d..f910102 100644
+--- a/drivers/net/can/sja1000/sja1000_isa.c
++++ b/drivers/net/can/sja1000/sja1000_isa.c
+@@ -248,7 +248,7 @@ static int __devexit sja1000_isa_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver sja1000_isa_driver = {
+ 	.probe = sja1000_isa_probe,
+-	.remove = __devexit_p(sja1000_isa_remove),
++	.remove = sja1000_isa_remove,
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+index f2683eb..a330fe8 100644
+--- a/drivers/net/can/sja1000/sja1000_of_platform.c
++++ b/drivers/net/can/sja1000/sja1000_of_platform.c
+@@ -217,7 +217,7 @@ static struct platform_driver sja1000_ofp_driver = {
+ 		.of_match_table = sja1000_ofp_table,
+ 	},
+ 	.probe = sja1000_ofp_probe,
+-	.remove = __devexit_p(sja1000_ofp_remove),
++	.remove = sja1000_ofp_remove,
+ };
+ 
+ module_platform_driver(sja1000_ofp_driver);
 diff --git a/drivers/net/can/sja1000/tscan1.c b/drivers/net/can/sja1000/tscan1.c
-index 9b608d8..6a6db7e 100644
+index 9756099..04a9001 100644
 --- a/drivers/net/can/sja1000/tscan1.c
 +++ b/drivers/net/can/sja1000/tscan1.c
-@@ -71,7 +71,7 @@ MODULE_LICENSE("GPL");
- #define TSCAN1_SJA1000_XTAL 16000000
+@@ -197,7 +197,7 @@ static int __devexit tscan1_remove(struct device *dev, unsigned id /*unused*/)
  
- /* SJA1000 IO base addresses */
--static const unsigned short tscan1_sja1000_addresses[] __devinitconst = {
-+static const unsigned short tscan1_sja1000_addresses[] = {
- 	0x100, 0x120, 0x180, 0x1a0, 0x200, 0x240, 0x280, 0x320
+ static struct isa_driver tscan1_isa_driver = {
+ 	.probe = tscan1_probe,
+-	.remove = __devexit_p(tscan1_remove),
++	.remove = tscan1_remove,
+ 	.driver = {
+ 		.name = "tscan1",
+ 	},
+diff --git a/drivers/net/can/softing/softing_cs.c b/drivers/net/can/softing/softing_cs.c
+index c0e1b1e..ab132c5 100644
+--- a/drivers/net/can/softing/softing_cs.c
++++ b/drivers/net/can/softing/softing_cs.c
+@@ -338,7 +338,7 @@ static struct pcmcia_driver softingcs_driver = {
+ 	.name		= "softingcs",
+ 	.id_table	= softingcs_ids,
+ 	.probe		= softingcs_probe,
+-	.remove		= __devexit_p(softingcs_remove),
++	.remove		= softingcs_remove,
  };
  
-diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
-index c10e691..e5f5f8f 100644
---- a/drivers/net/wireless/ti/wl12xx/main.c
-+++ b/drivers/net/wireless/ti/wl12xx/main.c
-@@ -1725,7 +1725,7 @@ out:
- 	return ret;
- }
- 
--static const struct platform_device_id wl12xx_id_table[] __devinitconst = {
-+static const struct platform_device_id wl12xx_id_table[] = {
- 	{ "wl12xx", 0 },
- 	{  } /* Terminating Entry */
- };
-diff --git a/drivers/net/wireless/ti/wl18xx/main.c b/drivers/net/wireless/ti/wl18xx/main.c
-index 7171c93..8d8c1f8 100644
---- a/drivers/net/wireless/ti/wl18xx/main.c
-+++ b/drivers/net/wireless/ti/wl18xx/main.c
-@@ -1528,7 +1528,7 @@ out:
- 	return ret;
- }
- 
--static const struct platform_device_id wl18xx_id_table[] __devinitconst = {
-+static const struct platform_device_id wl18xx_id_table[] = {
- 	{ "wl18xx", 0 },
- 	{  } /* Terminating Entry */
- };
-diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
-index 6fa2a01..7bf612c 100644
---- a/drivers/net/wireless/ti/wlcore/sdio.c
-+++ b/drivers/net/wireless/ti/wlcore/sdio.c
-@@ -54,7 +54,7 @@ struct wl12xx_sdio_glue {
- 	struct platform_device *core;
+ static int __init softingcs_start(void)
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index f2a221e..6337581 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -871,7 +871,7 @@ static struct platform_driver softing_driver = {
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe = softing_pdev_probe,
+-	.remove = __devexit_p(softing_pdev_remove),
++	.remove = softing_pdev_remove,
  };
  
--static const struct sdio_device_id wl1271_devices[] __devinitconst = {
-+static const struct sdio_device_id wl1271_devices[] = {
- 	{ SDIO_DEVICE(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271) },
- 	{}
+ module_platform_driver(softing_driver);
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 9ded21e..80ee814 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -1045,7 +1045,7 @@ static struct platform_driver ti_hecc_driver = {
+ 		.owner   = THIS_MODULE,
+ 	},
+ 	.probe = ti_hecc_probe,
+-	.remove = __devexit_p(ti_hecc_remove),
++	.remove = ti_hecc_remove,
+ 	.suspend = ti_hecc_suspend,
+ 	.resume = ti_hecc_resume,
  };
 -- 
 1.8.0
