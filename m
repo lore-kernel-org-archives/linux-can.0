@@ -1,49 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 202/493] can: remove use of __devinit
-Date: Mon, 19 Nov 2012 19:48:56 +0100
-Message-ID: <50AA7F18.7070102@pengutronix.de>
-References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu> <1353349642-3677-202-git-send-email-wfp5p@virginia.edu>
+Subject: Re: [PATCH 333/493] net: remove use of __devinitdata
+Date: Mon, 19 Nov 2012 19:50:49 +0100
+Message-ID: <50AA7F89.1020504@pengutronix.de>
+References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu> <1353349642-3677-333-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig69DC3E3C0221C61AEC071FF7"
+ boundary="------------enigE7DB2B6D387D3DC5400C6E07"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49585 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49624 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754161Ab2KSSs6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Nov 2012 13:48:58 -0500
-In-Reply-To: <1353349642-3677-202-git-send-email-wfp5p@virginia.edu>
+	with ESMTP id S1753996Ab2KSSvD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Nov 2012 13:51:03 -0500
+In-Reply-To: <1353349642-3677-333-git-send-email-wfp5p@virginia.edu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Bill Pemberton <wfp5p@virginia.edu>
-Cc: gregkh@linuxfoundation.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, Wolfgang Grandegger <wg@grandegger.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Jes Sorensen <jes@trained-monkey.org>, "John W. Linville" <linville@tuxdriver.com>, Larry Finger <Larry.Finger@lwfinger.net>, Chaoming Li <chaoming_li@realsil.com.cn>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-hippi@sunsite.dk, linux-wireless@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig69DC3E3C0221C61AEC071FF7
+--------------enigE7DB2B6D387D3DC5400C6E07
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 11/19/2012 07:22 PM, Bill Pemberton wrote:
-> CONFIG_HOTPLUG is going away as an option so __devinit is no longer
-> needed.
+On 11/19/2012 07:24 PM, Bill Pemberton wrote:
+> CONFIG_HOTPLUG is going away as an option so __devinitdata is no
+> longer needed.
 >=20
 > Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
 > Cc: Wolfgang Grandegger <wg@grandegger.com>=20
 > Cc: Marc Kleine-Budde <mkl@pengutronix.de>=20
+> Cc: "Maciej W. Rozycki" <macro@linux-mips.org>=20
+> Cc: Jes Sorensen <jes@trained-monkey.org>=20
+> Cc: "John W. Linville" <linville@tuxdriver.com>=20
+> Cc: Larry Finger <Larry.Finger@lwfinger.net>=20
+> Cc: Chaoming Li <chaoming_li@realsil.com.cn>=20
 > Cc: linux-can@vger.kernel.org=20
 > Cc: netdev@vger.kernel.org=20
+> Cc: linux-hippi@sunsite.dk=20
+> Cc: linux-wireless@vger.kernel.org=20
 
-You've missed (upstreamed via net-next/master):
+You've missed (mainlined via net-next/master):
+> ./sja1000/plx_pci.c:229:static struct plx_pci_card_info plx_pci_card_in=
+fo_cti __devinitdata =3D {
 
-=2E/grcan.c:1662:static int __devinit grcan_probe(struct platform_device
-*ofdev)
-=2E/grcan.c:1717:static int __devexit grcan_remove(struct platform_device=
-
-*ofdev)
-
-Otherwise...Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-Marc
+Otherwise...
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> (for the CAN part)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -52,7 +54,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig69DC3E3C0221C61AEC071FF7
+--------------enigE7DB2B6D387D3DC5400C6E07
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -61,9 +63,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
 
-iEYEARECAAYFAlCqfxgACgkQjTAFq1RaXHM7pQCeJFt0pHPf3d/gZLk3gPIVUkrm
-xlcAn0Nw3vxO+m6l3cDVR3wykygx8GZ8
-=Vssv
+iEYEARECAAYFAlCqf4kACgkQjTAFq1RaXHPGvACdG0eLBLrkna9F93jnuxcADGQB
+u6YAnjaWLnG+qswOL22ZSiaRWz3mVRob
+=77FE
 -----END PGP SIGNATURE-----
 
---------------enig69DC3E3C0221C61AEC071FF7--
+--------------enigE7DB2B6D387D3DC5400C6E07--
