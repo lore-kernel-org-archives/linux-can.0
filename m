@@ -1,218 +1,80 @@
-From: "AnilKumar, Chimata" <anilkumar@ti.com>
-Subject: RE: [PATCH 1/3] can: c_can: Add d_can raminit support
-Date: Tue, 20 Nov 2012 13:05:47 +0000
-Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA771E9@DBDE01.ent.ti.com>
-References: <1352916505-12343-1-git-send-email-anilkumar@ti.com>
- <1352916505-12343-2-git-send-email-anilkumar@ti.com>
- <50AB6081.9060701@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: linsocketcan
+Date: Tue, 20 Nov 2012 14:29:26 +0100
+Message-ID: <50AB85B6.3090702@pengutronix.de>
+References: <003501cdc71f$aca1c950$05e55bf0$@wp.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <50AB6081.9060701@pengutronix.de>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "Cousson, Benoit" <b-cousson@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig2654E8EE538B61FA7E8E5143"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42939 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752619Ab2KTN3c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Nov 2012 08:29:32 -0500
+In-Reply-To: <003501cdc71f$aca1c950$05e55bf0$@wp.eu>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Robert <robercik@wp.eu>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Nov 20, 2012 at 16:20:41, Marc Kleine-Budde wrote:
-> On 11/14/2012 07:08 PM, AnilKumar Ch wrote:
-> > Add D_CAN raminit support to C_CAN driver to enable D_CAN RAM,
-> > which holds all the message objects during transmission or
-> > receiving of data. This initialization/de-initialization should
-> > be done in synchronous with D_CAN clock.
-> > 
-> > In case of AM335X-EVM (active user of D_CAN driver) message RAM is
-> > controlled through control module register for both instances. So
-> > control module register details is required to initialization or
-> > de-initialization of message RAM according to instance number.
-> > 
-> > Control module memory resource is obtained from D_CAN dt node and
-> > instance number obtained from device tree aliases node.
-> > 
-> > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
-> 
-> Some nitpicks inline.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2654E8EE538B61FA7E8E5143
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review.
- 
-> 
-> > ---
-> >  drivers/net/can/c_can/c_can.c          |   12 +++++++++++
-> >  drivers/net/can/c_can/c_can.h          |    3 +++
-> >  drivers/net/can/c_can/c_can_platform.c |   34 +++++++++++++++++++++++++++++++-
-> >  3 files changed, 48 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-> > index e5180df..c15830c 100644
-> > --- a/drivers/net/can/c_can/c_can.c
-> > +++ b/drivers/net/can/c_can/c_can.c
-> > @@ -233,6 +233,12 @@ static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
-> >  		pm_runtime_put_sync(priv->device);
-> >  }
-> >  
-> > +static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
-> > +{
-> > +	if (priv->ram_init)
-> > +		priv->ram_init(priv, enable);
-> > +}
-> > +
-> >  static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
-> >  {
-> >  	return (priv->tx_next & C_CAN_NEXT_MSG_OBJ_MASK) +
-> > @@ -1090,6 +1096,7 @@ static int c_can_open(struct net_device *dev)
-> >  	struct c_can_priv *priv = netdev_priv(dev);
-> >  
-> >  	c_can_pm_runtime_get_sync(priv);
-> > +	c_can_reset_ram(priv, true);
-> >  
-> >  	/* open the can device */
-> >  	err = open_candev(dev);
-> > @@ -1118,6 +1125,7 @@ static int c_can_open(struct net_device *dev)
-> >  exit_irq_fail:
-> >  	close_candev(dev);
-> >  exit_open_fail:
-> > +	c_can_reset_ram(priv, false);
-> >  	c_can_pm_runtime_put_sync(priv);
-> >  	return err;
-> >  }
-> > @@ -1131,6 +1139,8 @@ static int c_can_close(struct net_device *dev)
-> >  	c_can_stop(dev);
-> >  	free_irq(dev->irq, dev);
-> >  	close_candev(dev);
-> > +
-> > +	c_can_reset_ram(priv, false);
-> >  	c_can_pm_runtime_put_sync(priv);
-> >  
-> >  	return 0;
-> > @@ -1188,6 +1198,7 @@ int c_can_power_down(struct net_device *dev)
-> >  
-> >  	c_can_stop(dev);
-> >  
-> > +	c_can_reset_ram(priv, false);
-> >  	c_can_pm_runtime_put_sync(priv);
-> >  
-> >  	return 0;
-> > @@ -1206,6 +1217,7 @@ int c_can_power_up(struct net_device *dev)
-> >  	WARN_ON(priv->type != BOSCH_D_CAN);
-> >  
-> >  	c_can_pm_runtime_get_sync(priv);
-> > +	c_can_reset_ram(priv, true);
-> >  
-> >  	/* Clear PDR and INIT bits */
-> >  	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-> > diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-> > index e5ed41d..419de5c 100644
-> > --- a/drivers/net/can/c_can/c_can.h
-> > +++ b/drivers/net/can/c_can/c_can.h
-> > @@ -169,6 +169,9 @@ struct c_can_priv {
-> >  	void *priv;		/* for board-specific data */
-> >  	u16 irqstatus;
-> >  	enum c_can_dev_id type;
-> > +	u32 __iomem *raminit_ctrlreg;
-> > +	unsigned int instance;
-> > +	void (*ram_init) (const struct c_can_priv *priv, bool enable);
-> >  };
-> >  
-> >  struct net_device *alloc_c_can_dev(void);
-> > diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-> > index ee141613..2e61d69 100644
-> > --- a/drivers/net/can/c_can/c_can_platform.c
-> > +++ b/drivers/net/can/c_can/c_can_platform.c
-> > @@ -38,6 +38,8 @@
-> >  
-> >  #include "c_can.h"
-> >  
-> > +#define CAN_RAMINIT_START_MASK(i)	(1 << (i))
-> > +
-> >  /*
-> >   * 16-bit c_can registers can be arranged differently in the memory
-> >   * architecture of different implementations. For example: 16-bit
-> > @@ -68,6 +70,24 @@ static void c_can_plat_write_reg_aligned_to_32bit(struct c_can_priv *priv,
-> >  	writew(val, priv->base + 2 * priv->regs[index]);
-> >  }
-> >  
-> > +static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
-> > +{
-> > +	u32 val;
-> > +
-> > +	if (!priv->raminit_ctrlreg || (priv->instance < 0))
-> > +		return;
-> 
-> Can you move this sanity check to the probe function and only assign
-> priv->ram_init if the above is true?
+Hey Robert,
 
-Sure, I will change
+please use the linux-can mailinglist (Cc'ed). Don't post HTML mails there=
+=2E
 
-> 
-> > +
-> > +	val = readl(priv->raminit_ctrlreg);
-> > +	if (enable) {
-> > +		val &= ~CAN_RAMINIT_START_MASK(priv->instance);
-> > +		val |= CAN_RAMINIT_START_MASK(priv->instance);
-> > +		writel(val, priv->raminit_ctrlreg);
-> > +	} else {
-> > +		val &= ~CAN_RAMINIT_START_MASK(priv->instance);
-> > +		writel(val, priv->raminit_ctrlreg);
-> > +	}
-> > +}
-> > +
-> >  static struct platform_device_id c_can_id_table[] = {
-> >  	[BOSCH_C_CAN_PLATFORM] = {
-> >  		.name = KBUILD_MODNAME,
-> > @@ -99,7 +119,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
-> >  	const struct of_device_id *match;
-> >  	const struct platform_device_id *id;
-> >  	struct pinctrl *pinctrl;
-> > -	struct resource *mem;
-> > +	struct resource *mem, *res;
-> >  	int irq;
-> >  	struct clk *clk;
-> >  
-> > @@ -178,6 +198,18 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
-> >  		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
-> >  		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
-> >  		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-> > +
-> > +		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> > +		priv->raminit_ctrlreg =
-> > +				devm_request_and_ioremap(&pdev->dev, res);
-> 
-> What happens if there isn't a second IORESOURCE_MEM region? devm_request
-> will print an error in this case and any other error, too [1]. Do we
-> need streamlining here?
-> 
-> [1] http://lxr.free-electrons.com/source/drivers/base/platform.c#L59
+On 11/20/2012 02:05 PM, Robert wrote:
+> Hi,
+>=20
+> I try use libsocketcan  in my android application to work with CANbus
+>  (ti_HECC ) in HMI device TH-1535  based on ARM3517 Sitara .
+>=20
+> OS Android IceCream  Linux kernel 2.6.37
+>=20
+> =20
+>=20
+> Add libsocketcan.c  to my  jni  folder and build library
+>   libsocketcan.so  use  ndk-build (all ok no errors)
+>=20
+> =20
+>=20
+> If  use *can_set_bitrate**(=93can0=94, 125000),*function*send_mod_reque=
+st
+> return -1 (errno =3D 1,  err->error =3D 2).*
 
-I did not get what the point is.
+If the libsocketcan isn't buggy here, and errno equals 1, you should
+have a look at the errno definition[1]. An errno of 1 means "Operation
+not permitted". In non Android Linux systems you need to be the root
+user to set the bitrate.
 
-In most of the cases above two API's returns NULL. Even res is NULL
-nothing to worry, first condition in devm_request_and_ioremap() is
-NULL pointer check of res. If "res" is NULL then devm_xx will return
-NULL which result into printing of below warning.
+[1] http://lxr.free-electrons.com/source/include/asm-generic/errno-base.h=
+#L4
 
-> 
-> > +		if (!priv->raminit_ctrlreg)
-> > +			dev_warn(&pdev->dev, "failed to obtain control memory\n");
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-I will change this warning to info
 
-if (!priv->raminit_ctrlreg)
-	dev_info(&pdev->dev, "control memory is not used for raminit\n");
+--------------enig2654E8EE538B61FA7E8E5143
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-> > +
-> > +		if (pdev->dev.of_node)
-> > +			pdev->id = of_alias_get_id(pdev->dev.of_node, "d_can");
-> > +
-> > +		priv->instance = pdev->id;
-> 
-> Please do not modify the pdev, better you use something like this:
-> 
->     pdev->id < 0 ? of_alias_get_id(pdev->dev.of_node, "d_can") :
->         pdev->id;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-I will change accordingly.
+iEYEARECAAYFAlCrhboACgkQjTAFq1RaXHO7xQCfSlrbS1a5J9IXTWtpBO4Li0B9
+PCYAn3bHjE01NilNuHNyZPPzVfMd/4BS
+=q2zD
+-----END PGP SIGNATURE-----
 
-Thanks
-AnilKumar
+--------------enig2654E8EE538B61FA7E8E5143--
