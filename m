@@ -1,101 +1,64 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] can: c_can: Add d_can raminit support
-Date: Tue, 20 Nov 2012 14:46:04 +0100
-Message-ID: <50AB899C.3040701@pengutronix.de>
-References: <1352916505-12343-1-git-send-email-anilkumar@ti.com> <1352916505-12343-2-git-send-email-anilkumar@ti.com> <50AB6081.9060701@pengutronix.de> <331ABD5ECB02734CA317220B2BBEABC13EA771E9@DBDE01.ent.ti.com>
+From: Michael Pellegrini <mikep86@gmail.com>
+Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
+Date: Tue, 20 Nov 2012 14:25:58 +0000 (UTC)
+Message-ID: <loom.20121120T151831-134@post.gmane.org>
+References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org> <50A55C65.2020003@grandegger.com> <loom.20121115T222748-977@post.gmane.org> <50A95FC1.3050907@grandegger.com> <loom.20121119T155735-163@post.gmane.org> <50AA4FB3.7070009@grandegger.com> <loom.20121119T171647-35@post.gmane.org> <50AA5EE6.6060105@grandegger.com> <loom.20121119T183819-427@post.gmane.org> <50AA86DB.7000506@grandegger.com> <loom.20121119T211403-520@post.gmane.org> <50AAA8C8.2080504@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigFF8A2E2505FD4FC5AE0581D7"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34530 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752748Ab2KTNqP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Nov 2012 08:46:15 -0500
-In-Reply-To: <331ABD5ECB02734CA317220B2BBEABC13EA771E9@DBDE01.ent.ti.com>
+Received: from plane.gmane.org ([80.91.229.3]:37934 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751198Ab2KTO0T (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 20 Nov 2012 09:26:19 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TaomR-0002BN-SZ
+	for linux-can@vger.kernel.org; Tue, 20 Nov 2012 15:26:28 +0100
+Received: from 96.45.208.254 ([96.45.208.254])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 20 Nov 2012 15:26:27 +0100
+Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 20 Nov 2012 15:26:27 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "AnilKumar, Chimata" <anilkumar@ti.com>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "Cousson, Benoit" <b-cousson@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigFF8A2E2505FD4FC5AE0581D7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
 
-On 11/20/2012 02:05 PM, AnilKumar, Chimata wrote:
-[...]
+> 
+> There is obviously still a problem when insmoding the driver. The only
+> significant difference vs. the pch_probe() is the line:
+> 
+>   pci_set_master(pdev);
+> 
+> which I have commented out. Furthermore I fixed another problem with the
+> register access (the shift was wrong). Please retry with the attached
+> c-can-pci-v3.tar.bz2.
+> 
+> Wolfgang.
+> 
+> Attachment (c-can-pci-v3.tar.bz2): application/x-bzip, 11 KiB
 
->>>  static struct platform_device_id c_can_id_table[] =3D {
->>>  	[BOSCH_C_CAN_PLATFORM] =3D {
->>>  		.name =3D KBUILD_MODNAME,
->>> @@ -99,7 +119,7 @@ static int __devinit c_can_plat_probe(struct platf=
-orm_device *pdev)
->>>  	const struct of_device_id *match;
->>>  	const struct platform_device_id *id;
->>>  	struct pinctrl *pinctrl;
->>> -	struct resource *mem;
->>> +	struct resource *mem, *res;
->>>  	int irq;
->>>  	struct clk *clk;
->>> =20
->>> @@ -178,6 +198,18 @@ static int __devinit c_can_plat_probe(struct pla=
-tform_device *pdev)
->>>  		priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_3_SAMPLES;
->>>  		priv->read_reg =3D c_can_plat_read_reg_aligned_to_16bit;
->>>  		priv->write_reg =3D c_can_plat_write_reg_aligned_to_16bit;
->>> +
->>> +		res =3D platform_get_resource(pdev, IORESOURCE_MEM, 1);
->>> +		priv->raminit_ctrlreg =3D
->>> +				devm_request_and_ioremap(&pdev->dev, res);
->>
->> What happens if there isn't a second IORESOURCE_MEM region? devm_reque=
-st
->> will print an error in this case and any other error, too [1]. Do we
->> need streamlining here?
->>
->> [1] http://lxr.free-electrons.com/source/drivers/base/platform.c#L59
->=20
-> I did not get what the point is.
->=20
-> In most of the cases above two API's returns NULL. Even res is NULL
-> nothing to worry, first condition in devm_request_and_ioremap() is
-> NULL pointer check of res. If "res" is NULL then devm_xx will return
-> NULL which result into printing of below warning.
->=20
->>
->>> +		if (!priv->raminit_ctrlreg)
->>> +			dev_warn(&pdev->dev, "failed to obtain control memory\n");
->=20
-> I will change this warning to info
->=20
-> if (!priv->raminit_ctrlreg)
-> 	dev_info(&pdev->dev, "control memory is not used for raminit\n");
+The new driver loads!  After loading the driver, I am able to see the CAN 
+interface in ifconfig.  Dmesg output after loading is:
 
-That's more descriptive, good.
+[ 4285.596420] c_can_pci 0000:02:0c.3: PCI INT C -> GSI 18 (level, low) -> IRQ 
+18
+[ 4285.597107] c_can_pci 0000:02:0c.3: irq 41 for MSI/MSI-X
+[ 4285.597135] c_can_pci_probe: bar=1
+[ 4285.597191] c_can_pci_probe: addr=f8450000
+[ 4285.685151] c_can_pci_reset_pch: addr=f84501fc
+[ 4285.685332] c_can_pci 0000:02:0c.3: can0: setting BTR=0518 BRPE=0000
 
-Marc
+However, everything isn't fixed yet.  After sending a handful of messages, the 
+CAN interface hits the same problem that started this thread.  My application 
+prints the error "No buffer space available" and the only way to recover is an 
+interface reset via "ifconfig can0 down" followed by "ifconfig can0 up".
 
+Is there any information you need me to capture to assist you in debugging?
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+- Mike
 
-
---------------enigFF8A2E2505FD4FC5AE0581D7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
-
-iEYEARECAAYFAlCriZwACgkQjTAFq1RaXHOorACfQcpB04G5RqL6lyMNirIR8tqg
-F5QAnR5qjRg4nw6aEbZflIRApacLPTsL
-=E1Vw
------END PGP SIGNATURE-----
-
---------------enigFF8A2E2505FD4FC5AE0581D7--
