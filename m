@@ -1,76 +1,57 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/3] ARM: dts: AM33XX: Add memory resource to d_can node
-Date: Tue, 20 Nov 2012 11:13:04 +0100
-Message-ID: <50AB57B0.7040502@pengutronix.de>
-References: <1352916505-12343-1-git-send-email-anilkumar@ti.com> <1352916505-12343-4-git-send-email-anilkumar@ti.com>
+From: "AnilKumar, Chimata" <anilkumar@ti.com>
+Subject: RE: [PATCH 3/3] ARM: dts: AM33XX: Add memory resource to d_can node
+Date: Tue, 20 Nov 2012 10:23:57 +0000
+Message-ID: <331ABD5ECB02734CA317220B2BBEABC13EA7701D@DBDE01.ent.ti.com>
+References: <1352916505-12343-1-git-send-email-anilkumar@ti.com>
+ <1352916505-12343-4-git-send-email-anilkumar@ti.com>
+ <50AB57B0.7040502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigD07642B4D6E66FC7078DFB2B"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38168 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751826Ab2KTKNa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Nov 2012 05:13:30 -0500
-In-Reply-To: <1352916505-12343-4-git-send-email-anilkumar@ti.com>
+Received: from devils.ext.ti.com ([198.47.26.153]:60862 "EHLO
+	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751937Ab2KTKYU convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Nov 2012 05:24:20 -0500
+In-Reply-To: <50AB57B0.7040502@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: AnilKumar Ch <anilkumar@ti.com>
-Cc: wg@grandegger.com, swarren@wwwdotorg.org, linux-can@vger.kernel.org, tony@atomide.com, b-cousson@ti.com, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, grant.likely@secretlab.ca, devicetree-discuss@lists.ozlabs.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "Cousson, Benoit" <b-cousson@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigD07642B4D6E66FC7078DFB2B
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 20, 2012 at 15:43:04, Marc Kleine-Budde wrote:
+> On 11/14/2012 07:08 PM, AnilKumar Ch wrote:
+> > Add a new address space/memory resource to d_can device tree node. D_CAN
+> > RAM initialization is achieved through RAMINIT register which is part of
+> > AM33XX control module address space. D_CAN RAM init or de-init should be
+> > done by writing instance corresponding value to control module register.
+> > 
+> > Till we have a separate control module driver to write to control module,
+> > d_can driver will handle the register writes to control module by itself.
+> > So a new address space to represent this control module register is added
+> > to d_can driver.
+> > 
+> > Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+> 
+> This does not apply to net-next/master:
+> 
+> Applying: ARM: dts: AM33XX: Add memory resource to d_can node
+> error: patch failed: arch/arm/boot/dts/am33xx.dtsi:227
+> error: arch/arm/boot/dts/am33xx.dtsi: patch does not apply
+> Patch failed at 0003 ARM: dts: AM33XX: Add memory resource to d_can node
+> 
 
-On 11/14/2012 07:08 PM, AnilKumar Ch wrote:
-> Add a new address space/memory resource to d_can device tree node. D_CA=
-N
-> RAM initialization is achieved through RAMINIT register which is part o=
-f
-> AM33XX control module address space. D_CAN RAM init or de-init should b=
-e
-> done by writing instance corresponding value to control module register=
-=2E
->=20
-> Till we have a separate control module driver to write to control modul=
-e,
-> d_can driver will handle the register writes to control module by itsel=
-f.
-> So a new address space to represent this control module register is add=
-ed
-> to d_can driver.
->=20
-> Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
+Marc,
 
-This does not apply to net-next/master:
+Sorry about this DT changes are present in linux-omap.
 
-Applying: ARM: dts: AM33XX: Add memory resource to d_can node
-error: patch failed: arch/arm/boot/dts/am33xx.dtsi:227
-error: arch/arm/boot/dts/am33xx.dtsi: patch does not apply
-Patch failed at 0003 ARM: dts: AM33XX: Add memory resource to d_can node
+Could you please take the driver changes only and ACK on remaining will
+help.
 
-Marc
+Tony/Benoit,
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Could you please take dt patches in this series to linux-omap?
 
-
---------------enigD07642B4D6E66FC7078DFB2B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
-
-iEYEARECAAYFAlCrV7MACgkQjTAFq1RaXHOj4ACfWlm56jc7E1k49dK3WFCTIoCF
-dNUAnjBrzUzmmlvDk/osFw93VZrWdmGh
-=LhLo
------END PGP SIGNATURE-----
-
---------------enigD07642B4D6E66FC7078DFB2B--
+Thanks
+AnilKumar
