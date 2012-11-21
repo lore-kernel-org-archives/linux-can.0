@@ -1,117 +1,196 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: pch_can: Data transmission stops after dropped packet
-Date: Tue, 20 Nov 2012 22:05:32 +0100
-Message-ID: <50ABF09C.8040303@grandegger.com>
-References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org> <50A55C65.2020003@grandegger.com> <loom.20121115T222748-977@post.gmane.org> <50A95FC1.3050907@grandegger.com> <loom.20121119T155735-163@post.gmane.org> <50AA4FB3.7070009@grandegger.com> <loom.20121119T171647-35@post.gmane.org> <50AA5EE6.6060105@grandegger.com> <loom.20121119T183819-427@post.gmane.org> <50AA86DB.7000506@grandegger.com> <loom.20121119T211403-520@post.gmane.org> <50AAA8C8.2080504@grandegger.com> <loom.20121120T151831-134@post.gmane.org> <50ABABDE.8060503@grandegger.com> <loom.20121120T192159-770@post.gmane.org>
+From: AnilKumar Ch <anilkumar-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v2] can: c_can: Add d_can raminit support
+Date: Wed, 21 Nov 2012 11:14:10 +0530
+Message-ID: <1353476650-24398-1-git-send-email-anilkumar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:52822 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753663Ab2KTVFf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Nov 2012 16:05:35 -0500
-In-Reply-To: <loom.20121120T192159-770@post.gmane.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Michael Pellegrini <mikep86@gmail.com>
-Cc: linux-can@vger.kernel.org
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org
+Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Michael,
+Add D_CAN raminit support to C_CAN driver to enable D_CAN RAM,
+which holds all the message objects during transmission or
+receiving of data. This initialization/de-initialization should
+be done in synchronous with D_CAN clock.
 
-On 11/20/2012 08:12 PM, Michael Pellegrini wrote:
-> Wolfgang Grandegger <wg <at> grandegger.com> writes:
-> 
->>>
->>> However, everything isn't fixed yet.  After sending a handful of messages, 
-> the 
->>> CAN interface hits the same problem that started this thread.  My 
-> application 
->>> prints the error "No buffer space available" and the only way to recover is 
-> an 
->>> interface reset via "ifconfig can0 down" followed by "ifconfig can0 up".
->>
->> Could you please send the output of "candump any,0:0,#FFFFFFFF" while
->> sending the messages. Do they go out to the bus? Also "ip -d -s link
->> show can0" would be useful.
-> 
-> candump produced no output while my application was running and trying to send
-> messages.  Furthermore, the lack of output from candump suggests that messages
-> aren't being received as well.  There is another CAN device on the bus and I can
-> confirm, using a CAN monitor tool on another PC, that it is actively sending
-> messages.
-> 
-> Upon starting my application, 16 messages are transmitted on the bus (confirmed
-> via the external CAN monitor tool) which candump does not report.  Then
-> transmission stops.  This lines up with the output of "ip -d -s link show can0",
-> shown below:
+In case of AM335X-EVM (current user of D_CAN driver) message RAM is
+controlled through control module register for both instances. So
+control module register details is required to initialization or
+de-initialization of message RAM according to instance number.
 
-I'm a bit confused. Where is the application running? On this
-PCH-System? Or does an external node send messages, which are not
-received by the PCH-C_CAN?
+Control module memory resource is obtained from D_CAN dt node and
+instance number obtained from device tree aliases node.
 
-> At startup:
-> 
-> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
->     link/can
->     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->     bitrate 250000 sample-point 0.875
->     tq 500 prop-seg 3 phase-seg1 3 phase-seg2 1 sjw 1
->     c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
->     clock 50000000
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
->     0          0          0          0          0          0
->     RX: bytes  packets  errors  dropped overrun mcast
->     0          0        0       0       0       0
->     TX: bytes  packets  errors  dropped carrier collsns
->     0          0        0       0       0       0
-> 
-> After transmission stops:
-> 
-> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
->     link/can
->     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->     bitrate 250000 sample-point 0.875
->     tq 500 prop-seg 3 phase-seg1 3 phase-seg2 1 sjw 1
->     c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
->     clock 50000000
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
->     0          0          0          0          0          0
->     RX: bytes  packets  errors  dropped overrun mcast
->     0          0        0       0       0       0
->     TX: bytes  packets  errors  dropped carrier collsns
->     0          0        0       0       0       0
-> 
-> After transmission stops & interface is reset:
-> 
-> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
->     link/can
->     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->     bitrate 250000 sample-point 0.875
->     tq 500 prop-seg 3 phase-seg1 3 phase-seg2 1 sjw 1
->     c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
->     clock 50000000
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
->     0          0          0          0          0          0
->     RX: bytes  packets  errors  dropped overrun mcast
->     0          0        0       0       0       0
->     TX: bytes  packets  errors  dropped carrier collsns
->     0          0        0       16      0       0
-> 
-> The best I can tell, the 16 messages which are successfully transmitted on the
-> bus are considered dropped by the driver.
+This patch was tested on AM335x-EVM along with pinctrl data addition
+patch, d_can dt aliases addition and control module data addition.
+pinctrl data addition is not added to am335x-evm.dts (only supports
+CPLD profile#0) because d_can1 is supported under CPLD profile#1.
 
-OK, we still have a problem with TX and RX, most likely with interrupts.
-Could you please send a message on the PCH-System executing
-"cansend can0 123#abcdef":
+Signed-off-by: AnilKumar Ch <anilkumar-l0cyMroinI0@public.gmane.org>
+---
+Changes from v1:
+	- Incorporated Marc's comments on v1
+	  * sanity check moved to c_can_probe() from c_can_hw_raminit()
+	  * device instance is assigned using conditional operator
+	  * Changed warning to info to tell control module is not
+	    used for raminit if there is no second IORESOURCE_MEM
+	- Dropped dt patches
+	  * No changes from v1
+	  * Those will go to linux-omap/master
 
-- Does "candump any,0:0,#FFFFFFFF" report anything.
+ drivers/net/can/c_can/c_can.c          |   12 ++++++++++++
+ drivers/net/can/c_can/c_can.h          |    3 +++
+ drivers/net/can/c_can/c_can_platform.c |   33 +++++++++++++++++++++++++++++++-
+ 3 files changed, 47 insertions(+), 1 deletion(-)
 
-- Does the message show up on the bus (visiable to another node or
-  analyser)?
-
-- Does the interrupt count increase? Check output of /proc/interrupts.
-
-I will prepare an instrumented driver tomorrow.
-
-Wolfgang.
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index e5180df..c15830c 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -233,6 +233,12 @@ static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
+ 		pm_runtime_put_sync(priv->device);
+ }
+ 
++static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
++{
++	if (priv->ram_init)
++		priv->ram_init(priv, enable);
++}
++
+ static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
+ {
+ 	return (priv->tx_next & C_CAN_NEXT_MSG_OBJ_MASK) +
+@@ -1090,6 +1096,7 @@ static int c_can_open(struct net_device *dev)
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+ 	c_can_pm_runtime_get_sync(priv);
++	c_can_reset_ram(priv, true);
+ 
+ 	/* open the can device */
+ 	err = open_candev(dev);
+@@ -1118,6 +1125,7 @@ static int c_can_open(struct net_device *dev)
+ exit_irq_fail:
+ 	close_candev(dev);
+ exit_open_fail:
++	c_can_reset_ram(priv, false);
+ 	c_can_pm_runtime_put_sync(priv);
+ 	return err;
+ }
+@@ -1131,6 +1139,8 @@ static int c_can_close(struct net_device *dev)
+ 	c_can_stop(dev);
+ 	free_irq(dev->irq, dev);
+ 	close_candev(dev);
++
++	c_can_reset_ram(priv, false);
+ 	c_can_pm_runtime_put_sync(priv);
+ 
+ 	return 0;
+@@ -1188,6 +1198,7 @@ int c_can_power_down(struct net_device *dev)
+ 
+ 	c_can_stop(dev);
+ 
++	c_can_reset_ram(priv, false);
+ 	c_can_pm_runtime_put_sync(priv);
+ 
+ 	return 0;
+@@ -1206,6 +1217,7 @@ int c_can_power_up(struct net_device *dev)
+ 	WARN_ON(priv->type != BOSCH_D_CAN);
+ 
+ 	c_can_pm_runtime_get_sync(priv);
++	c_can_reset_ram(priv, true);
+ 
+ 	/* Clear PDR and INIT bits */
+ 	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index e5ed41d..419de5c 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -169,6 +169,9 @@ struct c_can_priv {
+ 	void *priv;		/* for board-specific data */
+ 	u16 irqstatus;
+ 	enum c_can_dev_id type;
++	u32 __iomem *raminit_ctrlreg;
++	unsigned int instance;
++	void (*ram_init) (const struct c_can_priv *priv, bool enable);
+ };
+ 
+ struct net_device *alloc_c_can_dev(void);
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index ee141613..d1c31c8 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -38,6 +38,8 @@
+ 
+ #include "c_can.h"
+ 
++#define CAN_RAMINIT_START_MASK(i)	(1 << (i))
++
+ /*
+  * 16-bit c_can registers can be arranged differently in the memory
+  * architecture of different implementations. For example: 16-bit
+@@ -68,6 +70,21 @@ static void c_can_plat_write_reg_aligned_to_32bit(struct c_can_priv *priv,
+ 	writew(val, priv->base + 2 * priv->regs[index]);
+ }
+ 
++static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
++{
++	u32 val;
++
++	val = readl(priv->raminit_ctrlreg);
++	if (enable) {
++		val &= ~CAN_RAMINIT_START_MASK(priv->instance);
++		val |= CAN_RAMINIT_START_MASK(priv->instance);
++		writel(val, priv->raminit_ctrlreg);
++	} else {
++		val &= ~CAN_RAMINIT_START_MASK(priv->instance);
++		writel(val, priv->raminit_ctrlreg);
++	}
++}
++
+ static struct platform_device_id c_can_id_table[] = {
+ 	[BOSCH_C_CAN_PLATFORM] = {
+ 		.name = KBUILD_MODNAME,
+@@ -99,7 +116,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 	const struct of_device_id *match;
+ 	const struct platform_device_id *id;
+ 	struct pinctrl *pinctrl;
+-	struct resource *mem;
++	struct resource *mem, *res;
+ 	int irq;
+ 	struct clk *clk;
+ 
+@@ -178,6 +195,20 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
++
++		if (pdev->dev.of_node)
++			priv->instance = pdev->id < 0 ?
++				of_alias_get_id(pdev->dev.of_node, "d_can") :
++				pdev->id;
++
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++		priv->raminit_ctrlreg =
++				devm_request_and_ioremap(&pdev->dev, res);
++		if (!priv->raminit_ctrlreg || priv->instance < 0) {
++			dev_info(&pdev->dev, "control memory is not used for raminit\n");
++			break;
++		}
++		priv->ram_init = c_can_hw_raminit;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-- 
+1.7.9.5
