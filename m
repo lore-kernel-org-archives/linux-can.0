@@ -1,40 +1,79 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: pch_can: Data transmission stops after dropped packet
-Date: Wed, 21 Nov 2012 16:56:48 +0100
-Message-ID: <50ACF9C0.8050206@grandegger.com>
-References: <loom.20121114T160521-534@post.gmane.org> <50A4972A.9070707@hartkopp.net> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org> <50A55C65.2020003@grandegger.com> <loom.20121115T222748-977@post.gmane.org> <50A95FC1.3050907@grandegger.com> <loom.20121119T155735-163@post.gmane.org> <50AA4FB3.7070009@grandegger.com> <loom.20121119T171647-35@post.gmane.org> <50AA5EE6.6060105@grandegger.com> <loom.20121119T183819-427@post.gmane.org> <50AA86DB.7000506@grandegger.com> <loom.20121119T211403-520@post.gmane.org> <50AAA8C8.2080504@grandegger.com> <loom.20121120T151831-134@post.gmane.org> <50ABABDE.8060503@grandegger.com> <loom.20121120T192159-770@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or
- g> <loom.20121121T162041-774@post.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: peak_usb: timestamp issue
+Date: Wed, 21 Nov 2012 16:58:45 +0100
+Message-ID: <50ACFA35.90804@pengutronix.de>
+References: <50ACF47E.7010004@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig4F854BB97E55EE6481B10D80"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:46977 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755005Ab2KUP4v (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Nov 2012 10:56:51 -0500
-In-Reply-To: <loom.20121121T162041-774@post.gmane.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36602 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751484Ab2KUP6v (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Nov 2012 10:58:51 -0500
+In-Reply-To: <50ACF47E.7010004@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Pellegrini <mikep86@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/21/2012 04:25 PM, Michael Pellegrini wrote:
-> Michael Pellegrini <mikep86 <at> gmail.com> writes:
-> 
->> This driver is working very well so far.  ifconfig shows that I am sending and
->> receiving CAN messages successfully.  This is confirmed externally by the CAN
->> Monitor system.
->>
->> I will start a more intensive test now and report the results.
-> 
-> I shouldn't have spoken so soon.  Running my application on the PCH-System
-> caused the original problem within minutes.  Message transmission stopped
-> and and my application started printing the error "No buffer space available".
-> The only way to recover was to reset the interface.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig4F854BB97E55EE6481B10D80
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-OK, at least we have reached the level of the PHC_CAN driver. The driver
-does print some debug messages. Could you show them?
+On 11/21/2012 04:34 PM, Oliver Hartkopp wrote:
+> Hi Stephane,
+>=20
+> i was working with the PEAK USB adapter today and got the problem of di=
+fferent
+> timestamps with 'candump -x -ta can0':
+>=20
+> Timestamps of received CAN frames looked like my system 'uptime'.
+> Send CAN frames had the real system time.
+>=20
+> The problem is, that you insert the hardware timestamp of the PEAK USB
+> adapters into skb->tstamp ...
+>=20
+> This is wrong. For hardware timestamps (RX/TX) there's a special handli=
+ng in
+> the Linux Kernel, see at
+>=20
+> 	linux/Documentation/networking/timestamping.txt
+>=20
+> For now i just removed the setting of your HW timestamps on my Linux bo=
+x (see
+> attached patch).
+>=20
+> Please fix the HW timestamp handling in your driver by supporting the H=
+W
+> timstamp API correctly.
 
-Wolfgang.
+Oliver can you prepare a proper patch, which removes the broken time
+stamping, I'd like to get this into 3.7.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enig4F854BB97E55EE6481B10D80
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlCs+jkACgkQjTAFq1RaXHNPrgCeJH9PL2VxkUNa9KTZVUf4xpRG
+HpgAnib7Oglvzgl+DJ7AILNG9sn6jGZ0
+=YtE6
+-----END PGP SIGNATURE-----
+
+--------------enig4F854BB97E55EE6481B10D80--
