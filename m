@@ -1,149 +1,61 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v6] can: kvaser_usb: Add support for Kvaser CAN/USB devices
-Date: Thu, 22 Nov 2012 12:01:29 +0100
-Message-ID: <50AE0609.1030101@pengutronix.de>
-References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <1353481873-3214-1-git-send-email-olivier@sobrie.be>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [can:for-davem 2/3] drivers/net/can/usb/kvaser_usb.c:431
+ kvaser_usb_send_simple_msg() error: doing dma on the stack ((null))
+Date: Thu, 22 Nov 2012 20:22:17 +0800
+Message-ID: <50ae18f9.g1Qzcmfv5xzx4tke%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigAB31021B077780C55D49AB74"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1353481873-3214-1-git-send-email-olivier@sobrie.be>
-Sender: netdev-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mga09.intel.com ([134.134.136.24]:6386 "EHLO mga09.intel.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932087Ab2KVSug (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Nov 2012 13:50:36 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: Olivier Sobrie <olivier@sobrie.be>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, Daniel Berglund <db@kvaser.com>
-List-Id: linux-can.vger.kernel.org
+Cc: linux-can@vger.kernel.org, Daniel Berglund <db@kvaser.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigAB31021B077780C55D49AB74
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On 11/21/2012 08:11 AM, Olivier Sobrie wrote:
-> This driver provides support for several Kvaser CAN/USB devices.
-> Such kind of devices supports up to three CAN network interfaces.
->=20
-> It has been tested with a Kvaser USB Leaf Light (one network interface)=
-
-> connected to a pch_can interface.
-> The firmware version of the Kvaser device was 2.5.205.
->=20
-> List of Kvaser devices supported by the driver:
->   - Kvaser Leaf Light
->   - Kvaser Leaf Professional HS
->   - Kvaser Leaf SemiPro HS
->   - Kvaser Leaf Professional LS
->   - Kvaser Leaf Professional SWC
->   - Kvaser Leaf Professional LIN
->   - Kvaser Leaf SemiPro LS
->   - Kvaser Leaf SemiPro SWC
->   - Kvaser Memorator II HS/HS
->   - Kvaser USBcan Professional HS/HS
->   - Kvaser Leaf Light GI
->   - Kvaser Leaf Professional HS (OBD-II connector)
->   - Kvaser Memorator Professional HS/LS
->   - Kvaser Leaf Light "China"
->   - Kvaser BlackBird SemiPro
->   - Kvaser USBcan R
->=20
-> Signed-off-by: Daniel Berglund <db@kvaser.com>
-> Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
-> ---
-
-[...]
-> +static struct usb_device_id kvaser_usb_table[] =3D {
-
-this can be const
-
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_DEVEL_PRODUCT_ID) },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_PRODUCT_ID) },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_LS_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_SWC_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_LIN_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_LS_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_SWC_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_DEVEL_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_HSHS_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_UPRO_HSHS_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_GI_PRODUCT_ID) },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_OBDII_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
-> +			       KVASER_HAS_SILENT_MODE },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_HSLS_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_CH_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_BLACKBIRD_SPRO_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_OEM_MERCURY_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_OEM_LEAF_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_CAN_R_PRODUCT_ID),
-> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
-> +	{ }
-> +};
-[...]
-
-> +static struct can_bittiming_const kvaser_usb_bittiming_const =3D {
-
-this, too.
-
-> +	.name =3D "kvaser_usb",
-> +	.tseg1_min =3D KVASER_USB_TSEG1_MIN,
-> +	.tseg1_max =3D KVASER_USB_TSEG1_MAX,
-> +	.tseg2_min =3D KVASER_USB_TSEG2_MIN,
-> +	.tseg2_max =3D KVASER_USB_TSEG2_MAX,
-> +	.sjw_max =3D KVASER_USB_SJW_MAX,
-> +	.brp_min =3D KVASER_USB_BRP_MIN,
-> +	.brp_max =3D KVASER_USB_BRP_MAX,
-> +	.brp_inc =3D KVASER_USB_BRP_INC,
-> +};
-
-I'm adding the consts while applying the patch.
-
-Thanks,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+tree:   git://gitorious.org/linux-can/linux-can-next for-davem
+head:   21c837dccb1b249864b9c8475f51dad355b42554
+commit: f0fbcc3bab6ff298bbb8c91de2ddf2824996181f [2/3] can: kvaser_usb: Add support for Kvaser CAN/USB devices
 
 
---------------enigAB31021B077780C55D49AB74
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+smatch warnings:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
++ drivers/net/can/usb/kvaser_usb.c:431 kvaser_usb_send_simple_msg() error: doing dma on the stack ((null))
++ drivers/net/can/usb/kvaser_usb.c:1073 kvaser_usb_set_opt_mode() error: doing dma on the stack ((null))
++ drivers/net/can/usb/kvaser_usb.c:1174 kvaser_usb_flush_queue() error: doing dma on the stack ((null))
++ drivers/net/can/usb/kvaser_usb.c:1384 kvaser_usb_set_bittiming() error: doing dma on the stack ((null))
 
-iEYEARECAAYFAlCuBg4ACgkQjTAFq1RaXHN4ggCgjk+EsutCMWXjbrknr3C8EBRH
-WYsAn3KQNk6T0ckjIVSvSzquKOVcedLJ
-=iRgH
------END PGP SIGNATURE-----
+vim +431 drivers/net/can/usb/kvaser_usb.c
 
---------------enigAB31021B077780C55D49AB74--
+f0fbcc3b Olivier Sobrie 2012-11-21  415  end:
+f0fbcc3b Olivier Sobrie 2012-11-21  416  	kfree(buf);
+f0fbcc3b Olivier Sobrie 2012-11-21  417  
+f0fbcc3b Olivier Sobrie 2012-11-21  418  	return err;
+f0fbcc3b Olivier Sobrie 2012-11-21  419  }
+f0fbcc3b Olivier Sobrie 2012-11-21  420  
+f0fbcc3b Olivier Sobrie 2012-11-21  421  static int kvaser_usb_send_simple_msg(const struct kvaser_usb *dev,
+f0fbcc3b Olivier Sobrie 2012-11-21  422  				      u8 msg_id, int channel)
+f0fbcc3b Olivier Sobrie 2012-11-21  423  {
+f0fbcc3b Olivier Sobrie 2012-11-21  424  	struct kvaser_msg msg = {
+f0fbcc3b Olivier Sobrie 2012-11-21  425  		.len = MSG_HEADER_LEN + sizeof(struct kvaser_msg_simple),
+f0fbcc3b Olivier Sobrie 2012-11-21  426  		.id = msg_id,
+f0fbcc3b Olivier Sobrie 2012-11-21  427  		.u.simple.channel = channel,
+f0fbcc3b Olivier Sobrie 2012-11-21  428  		.u.simple.tid = 0xff,
+f0fbcc3b Olivier Sobrie 2012-11-21  429  	};
+f0fbcc3b Olivier Sobrie 2012-11-21  430  
+f0fbcc3b Olivier Sobrie 2012-11-21 @431  	return kvaser_usb_send_msg(dev, &msg);
+f0fbcc3b Olivier Sobrie 2012-11-21  432  }
+f0fbcc3b Olivier Sobrie 2012-11-21  433  
+f0fbcc3b Olivier Sobrie 2012-11-21  434  static int kvaser_usb_get_software_info(struct kvaser_usb *dev)
+f0fbcc3b Olivier Sobrie 2012-11-21  435  {
+f0fbcc3b Olivier Sobrie 2012-11-21  436  	struct kvaser_msg msg;
+f0fbcc3b Olivier Sobrie 2012-11-21  437  	int err;
+f0fbcc3b Olivier Sobrie 2012-11-21  438  
+f0fbcc3b Olivier Sobrie 2012-11-21  439  	err = kvaser_usb_send_simple_msg(dev, CMD_GET_SOFTWARE_INFO, 0);
+
+---
+0-DAY kernel build testing backend         Open Source Technology Center
+Fengguang Wu, Yuanhan Liu                              Intel Corporation
