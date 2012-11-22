@@ -1,59 +1,47 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [can:for-davem 2/3] drivers/net/can/usb/kvaser_usb.c:431
- kvaser_usb_send_simple_msg() error: doing dma on the stack ((null))
-Date: Fri, 23 Nov 2012 00:29:19 +0800
-Message-ID: <20121122162919.GA13425@localhost>
-References: <50ae18f9.g1Qzcmfv5xzx4tke%fengguang.wu@intel.com>
- <50AE231A.2040306@pengutronix.de>
- <20121122144648.GA11612@hposo>
- <50AE49D2.4080709@pengutronix.de>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v6] can: kvaser_usb: Add support for Kvaser CAN/USB
+ devices
+Date: Thu, 22 Nov 2012 13:30:22 -0800
+Message-ID: <20121122213022.GB1461@kroah.com>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be>
+ <1353481873-3214-1-git-send-email-olivier@sobrie.be>
+ <20121122150149.GB11612@hposo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga11.intel.com ([192.55.52.93]:11406 "EHLO mga11.intel.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752977Ab2KVSyS (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 22 Nov 2012 13:54:18 -0500
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <50AE49D2.4080709@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Olivier Sobrie <olivier@sobrie.be>, linux-can@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <20121122150149.GB11612@hposo>
+Sender: netdev-owner@vger.kernel.org
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, Daniel Berglund <db@kvaser.com>
+List-Id: linux-can.vger.kernel.org
 
-On Thu, Nov 22, 2012 at 04:50:42PM +0100, Marc Kleine-Budde wrote:
-> On 11/22/2012 03:46 PM, Olivier Sobrie wrote:
-> > Hi Marc,
-> > 
-> > Argh.
-> > 
-> > On Thu, Nov 22, 2012 at 02:05:30PM +0100, Marc Kleine-Budde wrote:
-> >> Hello Olivier,
-> >>
-> >> can you please ask on the usb mailinglist how to fix this problem (given
-> >> this isn't a false positive)
-> > 
-> > Ok I'll ask. By googling I found this which looks to be a similar problem
-> > fixed in another driver.
-> > http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commitdiff;h=32ec4576c3fb37316b1d11a04b220527822f3f0d
-> > 
-> > I assume I've to kmalloc the kvaser_msg I send through
-> > kvaser_usb_send_msg(). I'll ask to people of linux-usb to be sure.
-> > 
-> > By the way I installed smatch (which I never used) and ran the command
-> >  make CHECK="~/bin/smatch -p=kernel" C=1"
-> > in my kernel dir but I didn't get the error:
-> >   CHECK   drivers/net/can/usb/kvaser_usb.c
-> >   CC [M]  drivers/net/can/usb/kvaser_usb.o
-> > 
-> > Do I've to give a specific option to smatch to get this error?
+On Thu, Nov 22, 2012 at 04:01:49PM +0100, Olivier Sobrie wrote:
+> Hi linux-usb folks,
 > 
-> I've not used smack either. Maybe Wu can give us some hints and/or links.
+> Is there someone who can help me to fix the following errors?
+> 
+> smatch warnings:
+> 
+> + drivers/net/can/usb/kvaser_usb.c:431 kvaser_usb_send_simple_msg() error: doing
+> +dma on the stack ((null))
+> + drivers/net/can/usb/kvaser_usb.c:1073 kvaser_usb_set_opt_mode() error: doing
+> +dma on the stack ((null))
+> + drivers/net/can/usb/kvaser_usb.c:1174 kvaser_usb_flush_queue() error: doing
+> +dma on the stack ((null))
+> + drivers/net/can/usb/kvaser_usb.c:1384 kvaser_usb_set_bittiming() error: doing
+> +dma on the stack ((null))
+> 
+> I assume it's due to the buffer I pass to the function usb_bulk_msg()
+> which is on the stack and can't be.
+> Do I just have to kmalloc a buffer and give it to the usb_bulk_msg()
+> function? That's what I understood by reading
+> "Documentation/DMA-API-HOWTO.txt" section "What memory is DMA'able?"...
+> and from commit
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commitdiff;h=32ec4576c3fb37316b1d11a04b220527822f3f0d
 
-It should be due to the build system will rebuild smatch db before
-running smatch, while you are running smatch with its default smatch
-db which is not aware of (in smatch_data/kernel.dma_funcs) the newly
-added kvaser_usb_send_msg().
+Yes, that is all that is needed.
 
-Thanks,
-Fengguang
+thanks,
+
+greg k-h
