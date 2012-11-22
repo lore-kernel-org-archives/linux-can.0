@@ -1,46 +1,51 @@
-From: Michael Pellegrini <mikep86@gmail.com>
-Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
-Date: Wed, 21 Nov 2012 21:00:02 +0000 (UTC)
-Message-ID: <loom.20121121T215717-106@post.gmane.org>
-References: <loom.20121114T160521-534@post.gmane.org> <50A4EA87.9020206@grandegger.com> <loom.20121115T171319-854@post.gmane.org> <50A55C65.2020003@grandegger.com> <loom.20121115T222748-977@post.gmane.org> <50A95FC1.3050907@grandegger.com> <loom.20121119T155735-163@post.gmane.org> <50AA4FB3.7070009@grandegger.com> <loom.20121119T171647-35@post.gmane.org> <50AA5EE6.6060105@grandegger.com> <loom.20121119T183819-427@post.gmane.org> <50AA86DB.7000506@grandegger.com> <loom.20121119T211403-520@post.gmane.org> <50AAA8C8.2080504@grandegger.com> <loom.20121120T151831-134@post.gmane.org> <50ABABDE.8060503@grandegger.com> <loom.20121120T192159-770@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or  g> <loom.20121121T162041-774@p
-  ost.gmane.org> <50ACF9C0.8050206@grandegger.com> <loom.20121121T170446-911@post.gmane.org> <50AD042B.3020305@grandegger.com> <loom.20121121T184014-391@post.gmane.org> <50AD319E.2000209@grandegger.com>
+From: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+Subject: Re: [PATCH 2/8] can: ti_hecc: add MODULE_ALIAS
+Date: Thu, 22 Nov 2012 15:03:24 +0100
+Message-ID: <1353593004.3811.36.camel@coredoba.hi.pengutronix.de>
+References: <1353586790-30791-1-git-send-email-mkl@pengutronix.de>
+	 <1353586790-30791-3-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:54116 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S964798Ab2KUVAQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 21 Nov 2012 16:00:16 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1TbHPE-0001mm-G4
-	for linux-can@vger.kernel.org; Wed, 21 Nov 2012 22:00:24 +0100
-Received: from 96.45.208.254 ([96.45.208.254])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 21 Nov 2012 22:00:24 +0100
-Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 21 Nov 2012 22:00:24 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38525 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752493Ab2KVS3r convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Nov 2012 13:29:47 -0500
+In-Reply-To: <1353586790-30791-3-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-Wolfgang Grandegger <wg <at> grandegger.com> writes:
+On Thu, 2012-11-22 at 13:19 +0100, Marc Kleine-Budde wrote:
+> This patch adds a MODULE_ALIAS for the platform bindings, so that
+> the module can be loaded automatically udev.
+>=20
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-> Hm, object 0x16 does not get handled for some reason and then the
-> interrupt re-occurs. Could you please try "c-can-pci-v5.tar.bz2". As
-> suggested by Casper. It uses a spinlock in c_can_start_xmit() and
-> c_can_do_tx() mainly to protect priv->tx_next. If that doesn't help, we
-> need a more sophisticated instrumentation and trigger.
+Tested-by: Jan L=C3=BCbbe <jlu@pengutronix.de>
 
-My application has been running strong for about 45 minutes and counting with
-this driver.  I will leave the system running over Thanksgiving as a long-term
-test.
-
-- Mike
-
-
-
+> ---
+>  drivers/net/can/ti_hecc.c |    1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+> index 9ded21e..1267b36 100644
+> --- a/drivers/net/can/ti_hecc.c
+> +++ b/drivers/net/can/ti_hecc.c
+> @@ -1055,3 +1055,4 @@ module_platform_driver(ti_hecc_driver);
+>  MODULE_AUTHOR("Anant Gole <anantgole@ti.com>");
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION(DRV_DESC);
+> +MODULE_ALIAS("platform:" DRV_NAME);
+--=20
+Pengutronix e.K.                           |                           =
+  |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0  =
+  |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-555=
+5 |
 
