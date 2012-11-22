@@ -1,122 +1,149 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] peak_usb: fix hwtstamp assignment
-Date: Wed, 21 Nov 2012 22:43:59 +0100
-Message-ID: <50AD4B1F.4070806@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v6] can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Thu, 22 Nov 2012 12:01:29 +0100
+Message-ID: <50AE0609.1030101@pengutronix.de>
+References: <1343626352-24760-1-git-send-email-olivier@sobrie.be> <1353481873-3214-1-git-send-email-olivier@sobrie.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:30236 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753581Ab2KVSoD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Nov 2012 13:44:03 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigAB31021B077780C55D49AB74"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1353481873-3214-1-git-send-email-olivier@sobrie.be>
+Sender: netdev-owner@vger.kernel.org
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, Daniel Berglund <db@kvaser.com>
+List-Id: linux-can.vger.kernel.org
 
-The skb->tstamp is set to the hardware timestamp when available in the USB
-urb message. This leads to user visible timestamps which contain the 'uptime'
-of the USB adapter - and not the usual system generated timestamp.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigAB31021B077780C55D49AB74
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Fix this wrong assignment by applying the available hardware timestamp to the
-skb_shared_hwtstamps data structure - which is intended for this purpose.
+On 11/21/2012 08:11 AM, Olivier Sobrie wrote:
+> This driver provides support for several Kvaser CAN/USB devices.
+> Such kind of devices supports up to three CAN network interfaces.
+>=20
+> It has been tested with a Kvaser USB Leaf Light (one network interface)=
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> connected to a pch_can interface.
+> The firmware version of the Kvaser device was 2.5.205.
+>=20
+> List of Kvaser devices supported by the driver:
+>   - Kvaser Leaf Light
+>   - Kvaser Leaf Professional HS
+>   - Kvaser Leaf SemiPro HS
+>   - Kvaser Leaf Professional LS
+>   - Kvaser Leaf Professional SWC
+>   - Kvaser Leaf Professional LIN
+>   - Kvaser Leaf SemiPro LS
+>   - Kvaser Leaf SemiPro SWC
+>   - Kvaser Memorator II HS/HS
+>   - Kvaser USBcan Professional HS/HS
+>   - Kvaser Leaf Light GI
+>   - Kvaser Leaf Professional HS (OBD-II connector)
+>   - Kvaser Memorator Professional HS/LS
+>   - Kvaser Leaf Light "China"
+>   - Kvaser BlackBird SemiPro
+>   - Kvaser USBcan R
+>=20
+> Signed-off-by: Daniel Berglund <db@kvaser.com>
+> Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+> ---
 
----
+[...]
+> +static struct usb_device_id kvaser_usb_table[] =3D {
 
-Hello Marc, hello Stephane,
+this can be const
 
-i think we would generally need to support a hwtstamp_ioctl() for CAN
-interfaces which are controlled with a struct hwtstamp_config in the future.
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_DEVEL_PRODUCT_ID) },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_PRODUCT_ID) },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_LS_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_SWC_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_LIN_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_LS_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_SPRO_SWC_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_DEVEL_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_HSHS_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_UPRO_HSHS_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_GI_PRODUCT_ID) },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_PRO_OBDII_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS |
+> +			       KVASER_HAS_SILENT_MODE },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO2_HSLS_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_CH_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_BLACKBIRD_SPRO_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_OEM_MERCURY_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_OEM_LEAF_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ USB_DEVICE(KVASER_VENDOR_ID, USB_CAN_R_PRODUCT_ID),
+> +		.driver_info =3D KVASER_HAS_TXRX_ERRORS },
+> +	{ }
+> +};
+[...]
 
-For now this patch fixes the current issue much better than a simple removal
-of the skb->tstamp assignment.
+> +static struct can_bittiming_const kvaser_usb_bittiming_const =3D {
 
-I'm currently on a business trip and i accidentally missed to take two PEAK
-USB interfaces with me to test this patch. It's compile tested ...
+this, too.
 
-So let's wait for an Acked-by from Stephane.
+> +	.name =3D "kvaser_usb",
+> +	.tseg1_min =3D KVASER_USB_TSEG1_MIN,
+> +	.tseg1_max =3D KVASER_USB_TSEG1_MAX,
+> +	.tseg2_min =3D KVASER_USB_TSEG2_MIN,
+> +	.tseg2_max =3D KVASER_USB_TSEG2_MAX,
+> +	.sjw_max =3D KVASER_USB_SJW_MAX,
+> +	.brp_min =3D KVASER_USB_BRP_MIN,
+> +	.brp_max =3D KVASER_USB_BRP_MAX,
+> +	.brp_inc =3D KVASER_USB_BRP_INC,
+> +};
 
-Regards,
-Oliver
+I'm adding the consts while applying the patch.
 
-
-
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 86f26a1..25723d8 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -519,8 +519,10 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
- 	mc->pdev->dev.can.state = new_state;
- 
- 	if (status_len & PCAN_USB_STATUSLEN_TIMESTAMP) {
-+		struct skb_shared_hwtstamps *hwts = skb_hwtstamps(skb);
-+
- 		peak_usb_get_ts_tv(&mc->pdev->time_ref, mc->ts16, &tv);
--		skb->tstamp = timeval_to_ktime(tv);
-+		hwts->hwtstamp = timeval_to_ktime(tv);
- 	}
- 
- 	netif_rx(skb);
-@@ -605,6 +607,7 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
- 	struct sk_buff *skb;
- 	struct can_frame *cf;
- 	struct timeval tv;
-+	struct skb_shared_hwtstamps *hwts;
- 
- 	skb = alloc_can_skb(mc->netdev, &cf);
- 	if (!skb)
-@@ -652,7 +655,8 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
- 
- 	/* convert timestamp into kernel time */
- 	peak_usb_get_ts_tv(&mc->pdev->time_ref, mc->ts16, &tv);
--	skb->tstamp = timeval_to_ktime(tv);
-+	hwts = skb_hwtstamps(skb);
-+	hwts->hwtstamp = timeval_to_ktime(tv);
- 
- 	/* push the skb */
- 	netif_rx(skb);
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index e1626d9..30d79bf 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -532,6 +532,7 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
- 	struct can_frame *can_frame;
- 	struct sk_buff *skb;
- 	struct timeval tv;
-+	struct skb_shared_hwtstamps *hwts;
- 
- 	skb = alloc_can_skb(netdev, &can_frame);
- 	if (!skb)
-@@ -549,7 +550,8 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
- 		memcpy(can_frame->data, rx->data, can_frame->can_dlc);
- 
- 	peak_usb_get_ts_tv(&usb_if->time_ref, le32_to_cpu(rx->ts32), &tv);
--	skb->tstamp = timeval_to_ktime(tv);
-+	hwts = skb_hwtstamps(skb);
-+	hwts->hwtstamp = timeval_to_ktime(tv);
- 
- 	netif_rx(skb);
- 	netdev->stats.rx_packets++;
-@@ -570,6 +572,7 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
- 	u8 err_mask = 0;
- 	struct sk_buff *skb;
- 	struct timeval tv;
-+	struct skb_shared_hwtstamps *hwts;
- 
- 	/* nothing should be sent while in BUS_OFF state */
- 	if (dev->can.state == CAN_STATE_BUS_OFF)
-@@ -664,7 +667,8 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
- 	dev->can.state = new_state;
- 
- 	peak_usb_get_ts_tv(&usb_if->time_ref, le32_to_cpu(er->ts32), &tv);
--	skb->tstamp = timeval_to_ktime(tv);
-+	hwts = skb_hwtstamps(skb);
-+	hwts->hwtstamp = timeval_to_ktime(tv);
- 	netif_rx(skb);
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += can_frame->can_dlc;
+Thanks,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enigAB31021B077780C55D49AB74
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlCuBg4ACgkQjTAFq1RaXHN4ggCgjk+EsutCMWXjbrknr3C8EBRH
+WYsAn3KQNk6T0ckjIVSvSzquKOVcedLJ
+=iRgH
+-----END PGP SIGNATURE-----
+
+--------------enigAB31021B077780C55D49AB74--
