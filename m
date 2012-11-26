@@ -1,34 +1,47 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net: sched: enable CAN Identifier to be build into
- kernel
-Date: Sun, 25 Nov 2012 16:06:44 -0500 (EST)
-Message-ID: <20121125.160644.398080366230597668.davem@davemloft.net>
-References: <1353667497-25676-1-git-send-email-mkl@pengutronix.de>
+From: Ulrich Escher <ulrich.escher@myvdr.de>
+Subject: [PATCH] slcanpty.c Remove one Bug
+Date: Mon, 26 Nov 2012 01:12:23 +0100
+Message-ID: <50B2B3E7.5040202@myvdr.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:40721 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753390Ab2KYVGr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 25 Nov 2012 16:06:47 -0500
-In-Reply-To: <1353667497-25676-1-git-send-email-mkl@pengutronix.de>
+Received: from smtprelay06.ispgateway.de ([80.67.31.103]:48713 "EHLO
+	smtprelay06.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753706Ab2KZARi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 25 Nov 2012 19:17:38 -0500
+Received: from [176.34.235.140] (helo=[0.0.0.0])
+	by smtprelay06.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68)
+	(envelope-from <ulrich.escher@myvdr.de>)
+	id 1TcmJE-0000hd-Sl
+	for linux-can@vger.kernel.org; Mon, 26 Nov 2012 01:12:25 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 23 Nov 2012 11:44:57 +0100
+It is an error to overwrite nbytes at this point.
+LG Ulrich
 
-> This patch makes it possible to build the CAN Identifier into the kernel, even
-> if the CAN support is build as a module.
-> 
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: ulrich escher<git@myvdr.de>
+---
+  slcanpty.c |    4 +++-----
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to net-next, thanks.
+diff --git a/slcanpty.c b/slcanpty.c
+index e3b7304..3c1935a 100644
+--- a/slcanpty.c
++++ b/slcanpty.c
+@@ -281,8 +279,8 @@ rx_restart:
+                         ptr--;
+         }
 
-> is there a nicer solution to this problem? Or remove the "&& CAN" at all?
+-       nbytes = write(socket, &frame, sizeof(frame));
+-       if (nbytes != sizeof(frame)) {
++       tmp = write(socket, &frame, sizeof(frame));
++       if (tmp != sizeof(frame)) {
+                 perror("write socket");
+                 return 1;
+         }
 
-I don't see how enabling this with CAN disabled could be
-useful, so better to have the dependency there.
+
