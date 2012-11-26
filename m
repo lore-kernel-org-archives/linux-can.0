@@ -1,58 +1,83 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC 0/6] pch_can/c_can: fix races and add PCH support to c_can
-Date: Mon, 26 Nov 2012 09:23:00 +0100
-Message-ID: <1353918186-4234-1-git-send-email-wg@grandegger.com>
+Subject: [RFC 1/6] pch_can: add spinlock to protect tx objects
+Date: Mon, 26 Nov 2012 09:23:01 +0100
+Message-ID: <1353918186-4234-2-git-send-email-wg@grandegger.com>
+References: <1353918186-4234-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:33874 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:33876 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754312Ab2KZIXf (ORCPT
+	with ESMTP id S1754313Ab2KZIXf (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 03:23:35 -0500
+In-Reply-To: <1353918186-4234-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: bhupesh.sharma@st.com, tomoya.rohm@gmail.com, Wolfgang Grandegger <wg@grandegger.com>
 
-Hello,
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+---
+ drivers/net/can/pch_can.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-as you might have already realized, Michael has reported problems with
-the PCH_CAN driver. With his help we try to fix these issues and add
-PCH PCI support to the C_CAN driver replacing the PCH_CAN driver sooner
-than later. Here follows my current patch stack for the records. When
-Michael's tests are successful, I'm going to post final patches.
-
-For Michael I have prepared out-of-tree driver sources allowing to
-easily build the drivers also for older 3.x kernel versions. More
-tester are welcome.
-
-As also pointed out by Casper, the problems are obvisouly due to races
-with stop and wakeup of the netif tx queue, managing tx_next and
-concurrent register accesses. For the moment I have fixed the races by
-adding "spin[un]lock_irqsave/restore" but, thinking more about it,
-"spinlock_bh" should be enough to protect against softirq context.
-
-With the C_CAN driver I realized some other minor issues:
-
-- The C/D_CAN type handling is common code and could go to
-  alloc_c_can_dev() or register_c_can_dev().
-
-Comments are welcome.
-
-Wolfgang.
-
-Wolfgang Grandegger (6):
-  pch_can: add spinlock to protect tx objects
-  c_can: add spinlock to protect tx and rx objects
-  c_can: add optional reset callback
-  c_can_pci: introduce board specific PCI bar
-  c_can_pci: enable PCI bus master only for MSI
-  c_can_pci: add support for PCH CAN on Intel EG20T PCH
-
- drivers/net/can/c_can/c_can.c     |   24 ++++++++++++++++-
- drivers/net/can/c_can/c_can.h     |    2 ++
- drivers/net/can/c_can/c_can_pci.c |   54 ++++++++++++++++++++++++++++++++++---
- drivers/net/can/pch_can.c         |   11 ++++++++
- 4 files changed, 87 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index 48b3d62..2d3f757 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -182,6 +182,7 @@ struct pch_can_priv {
+ 	struct napi_struct napi;
+ 	int tx_obj;	/* Point next Tx Obj index */
+ 	int use_msi;
++	spinlock_t lock;	/* to protect tx objects */
+ };
+ 
+ static const struct can_bittiming_const pch_can_bittiming_const = {
+@@ -722,8 +723,11 @@ static void pch_can_tx_complete(struct net_device *ndev, u32 int_stat)
+ {
+ 	struct pch_can_priv *priv = netdev_priv(ndev);
+ 	struct net_device_stats *stats = &(priv->ndev->stats);
++	unsigned long flags;
+ 	u32 dlc;
+ 
++	spin_lock_irqsave(&priv->lock, flags);
++
+ 	can_get_echo_skb(ndev, int_stat - PCH_RX_OBJ_END - 1);
+ 	iowrite32(PCH_CMASK_RX_TX_GET | PCH_CMASK_CLRINTPND,
+ 		  &priv->regs->ifregs[1].cmask);
+@@ -734,6 +738,8 @@ static void pch_can_tx_complete(struct net_device *ndev, u32 int_stat)
+ 	stats->tx_packets++;
+ 	if (int_stat == PCH_TX_OBJ_END)
+ 		netif_wake_queue(ndev);
++
++	spin_unlock_irqrestore(&priv->lock, flags);
+ }
+ 
+ static int pch_can_poll(struct napi_struct *napi, int quota)
+@@ -894,6 +900,7 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
+ {
+ 	struct pch_can_priv *priv = netdev_priv(ndev);
+ 	struct can_frame *cf = (struct can_frame *)skb->data;
++	unsigned long flags;
+ 	int tx_obj_no;
+ 	int i;
+ 	u32 id2;
+@@ -901,6 +908,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	if (can_dropped_invalid_skb(ndev, skb))
+ 		return NETDEV_TX_OK;
+ 
++	spin_lock_irqsave(&priv->lock, flags);
++
+ 	tx_obj_no = priv->tx_obj;
+ 	if (priv->tx_obj == PCH_TX_OBJ_END) {
+ 		if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
+@@ -911,6 +920,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 		priv->tx_obj++;
+ 	}
+ 
++	spin_unlock_irqrestore(&priv->lock, flags);
++
+ 	/* Setting the CMASK register. */
+ 	pch_can_bit_set(&priv->regs->ifregs[1].cmask, PCH_CMASK_ALL);
+ 
 -- 
 1.7.9.5
 
