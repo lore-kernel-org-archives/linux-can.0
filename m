@@ -1,70 +1,66 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/5] can: esd_usb2: remove obsolete variable open_time
-Date: Mon, 26 Nov 2012 15:24:46 +0100
-Message-ID: <1353939887-19552-5-git-send-email-mkl@pengutronix.de>
-References: <1353939887-19552-1-git-send-email-mkl@pengutronix.de>
+From: Henrik Bork Steffensen <hbs@rosetechnology.dk>
+Subject: at91_can.c: Data transmission stops
+Date: Mon, 26 Nov 2012 15:28:32 +0100
+Message-ID: <50B37C90.3040904@rosetechnology.dk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56483 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754286Ab2KZOYu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 09:24:50 -0500
-In-Reply-To: <1353939887-19552-1-git-send-email-mkl@pengutronix.de>
+Received: from dmz4.rosetechnology.dk ([95.154.61.7]:46908 "EHLO
+	dmz4.rosetechnology.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752861Ab2KZOhO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 09:37:14 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by dmz4.rosetechnology.dk (Postfix) with ESMTP id 3E17EA3028
+	for <linux-can@vger.kernel.org>; Mon, 26 Nov 2012 15:28:32 +0100 (CET)
+Received: from dmz4.rosetechnology.dk ([127.0.0.1])
+	by localhost (localhost.localdomain [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id IkY3rNYop5TR for <linux-can@vger.kernel.org>;
+	Mon, 26 Nov 2012 15:28:32 +0100 (CET)
+Received: from [192.168.36.250] (unknown [95.154.61.6])
+	by dmz4.rosetechnology.dk (Postfix) with ESMTPA id 18C60A300E
+	for <linux-can@vger.kernel.org>; Mon, 26 Nov 2012 15:28:32 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-The variable open_time in the struct esd_usb2_net_priv was used to protect
-esd_usb2_set_mode() only to be called, if the interface is up. Now the CAN
-device infrastructure takes care of this.
+Hi All,
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/esd_usb2.c |   10 ----------
- 1 file changed, 10 deletions(-)
+We use the canopen on an at91sam9263, and experience a can problem.
+Sometimes data transmission simply stops. Data reception continues normally.
 
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index 124e0dd..9b74d1e 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -217,7 +217,6 @@ struct esd_usb2_net_priv {
- 	struct usb_anchor tx_submitted;
- 	struct esd_tx_urb_context tx_contexts[MAX_TX_URBS];
- 
--	int open_time;
- 	struct esd_usb2 *usb2;
- 	struct net_device *netdev;
- 	int index;
-@@ -695,8 +694,6 @@ static int esd_usb2_open(struct net_device *netdev)
- 		return err;
- 	}
- 
--	priv->open_time = jiffies;
--
- 	netif_start_queue(netdev);
- 
- 	return 0;
-@@ -864,8 +861,6 @@ static int esd_usb2_close(struct net_device *netdev)
- 
- 	close_candev(netdev);
- 
--	priv->open_time = 0;
--
- 	return 0;
- }
- 
-@@ -941,11 +936,6 @@ static int esd_usb2_get_berr_counter(const struct net_device *netdev,
- 
- static int esd_usb2_set_mode(struct net_device *netdev, enum can_mode mode)
- {
--	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
--
--	if (!priv->open_time)
--		return -EINVAL;
--
- 	switch (mode) {
- 	case CAN_MODE_START:
- 		netif_wake_queue(netdev);
--- 
-1.7.10.4
+Reloading the at91_can module seems to be the only action to bring our 
+system back on can.
+When we experience this problem, the TXF counter in /proc/net/can/stats 
+is frozen.
+
+I have followed the thread on a similar issue "pch_can", and I was wondering
+if this is the same problem, and if the real problem might be in a 
+higher level.
+
+In our case the lockup occurs approximately 1 time in 50 days.
+I tried reducing the number of mailboxes used for TX, from 4 to 1.
+That seem to increase the frequency of this lockup by a factor 2-5.
+These numbers are very uncertain due to the randomness and rarity of 
+this bug.
+
+Some numbers to give an impression of our system:
+125 kbit bus speed
+can bus load <1%
+max tx burst 1-6 telegrams, rx is a little bit higher.
+240MHz ARM 9 (at91sam9263B)
+2.6.32 kernel, with at91_can (and related files) patched with a few 
+important fixes.
+I would like to move to a recent kernel, but that is not possible right now.
+
+
+I am considering protecting tx objects as Wolfgang suggests in the 
+pch_can thread.
+
+Any ideas?
+
+best regards,
+Henrik Bork Steffensen
+
+
 
