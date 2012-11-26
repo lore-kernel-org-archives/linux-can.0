@@ -1,51 +1,57 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC 3/6] c_can: add optional reset callback
-Date: Mon, 26 Nov 2012 09:23:03 +0100
-Message-ID: <1353918186-4234-4-git-send-email-wg@grandegger.com>
+Subject: [RFC 4/6] c_can_pci: introduce board specific PCI bar
+Date: Mon, 26 Nov 2012 09:23:04 +0100
+Message-ID: <1353918186-4234-5-git-send-email-wg@grandegger.com>
 References: <1353918186-4234-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:33881 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:33885 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754322Ab2KZIXg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 03:23:36 -0500
+	with ESMTP id S1754312Ab2KZIXh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 03:23:37 -0500
 In-Reply-To: <1353918186-4234-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: bhupesh.sharma@st.com, tomoya.rohm@gmail.com, Wolfgang Grandegger <wg@grandegger.com>
 
+Also fix minor issue with pci_iomap specifying size 0 for
+mapping the full range.
+
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
- drivers/net/can/c_can/c_can.c |    3 +++
- drivers/net/can/c_can/c_can.h |    1 +
- 2 files changed, 4 insertions(+)
+ drivers/net/can/c_can/c_can_pci.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 4fab6b8..7dd771b 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -1123,6 +1123,9 @@ static int c_can_open(struct net_device *dev)
- 		goto exit_irq_fail;
- 	}
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 3d7830b..7b73f90 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -31,6 +31,8 @@ struct c_can_pci_data {
+ 	enum c_can_pci_reg_align reg_align;
+ 	/* Set the frequency */
+ 	unsigned int freq;
++	/* PCI bar number */
++	int bar;
+ };
  
-+	if (priv->reset)
-+		priv->reset(priv);
-+
- 	napi_enable(&priv->napi);
+ /*
+@@ -87,7 +89,7 @@ static int __devinit c_can_pci_probe(struct pci_dev *pdev,
+ 	pci_set_master(pdev);
+ 	pci_enable_msi(pdev);
  
- 	/* start the c_can controller */
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index c683f0d..fd949a4 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -161,6 +161,7 @@ struct c_can_priv {
- 	int last_status;
- 	u16 (*read_reg) (struct c_can_priv *priv, enum reg index);
- 	void (*write_reg) (struct c_can_priv *priv, enum reg index, u16 val);
-+	void (*reset) (struct c_can_priv *priv);
- 	void __iomem *base;
- 	const u16 *regs;
- 	unsigned long irq_flags; /* for request_irq() */
+-	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
++	addr = pci_iomap(pdev, c_can_pci_data->bar, 0);
+ 	if (!addr) {
+ 		dev_err(&pdev->dev,
+ 			"device has no PCI memory resources, "
+@@ -195,6 +197,7 @@ static struct c_can_pci_data c_can_sta2x11= {
+ 	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_ALIGN_32,
+ 	.freq = 52000000, /* 52 Mhz */
++	.bar = 0,
+ };
+ 
+ #define C_CAN_ID(_vend, _dev, _driverdata) {		\
 -- 
 1.7.9.5
 
