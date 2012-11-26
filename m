@@ -1,68 +1,83 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/5] can: ems_usb: remove obsolete variable open_time
-Date: Mon, 26 Nov 2012 15:24:45 +0100
-Message-ID: <1353939887-19552-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 1/5] can: mscan: remove obsolete variable open_time
+Date: Mon, 26 Nov 2012 15:24:43 +0100
+Message-ID: <1353939887-19552-2-git-send-email-mkl@pengutronix.de>
 References: <1353939887-19552-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56480 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56476 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753492Ab2KZOYu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 09:24:50 -0500
+	with ESMTP id S1754015Ab2KZOYt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 09:24:49 -0500
 In-Reply-To: <1353939887-19552-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-The variable open_time in the struct ems_usb was used to protect
-ems_usb_set_mode() only to be called, if the interface is up. Now the CAN
+The variable open_time in the struct mscan_priv was used to protect
+mscan_do_set_mode() only to be called, if the interface is up. Now the CAN
 device infrastructure takes care of this.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/ems_usb.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/net/can/mscan/mscan.c |    8 --------
+ drivers/net/can/mscan/mscan.h |    1 -
+ 2 files changed, 9 deletions(-)
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 086fa32..938924c 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -245,7 +245,6 @@ struct ems_tx_urb_context {
+diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
+index 2b104d5..e6b4095 100644
+--- a/drivers/net/can/mscan/mscan.c
++++ b/drivers/net/can/mscan/mscan.c
+@@ -517,12 +517,8 @@ static irqreturn_t mscan_isr(int irq, void *dev_id)
  
- struct ems_usb {
- 	struct can_priv can; /* must be the first member */
--	int open_time;
- 
- 	struct sk_buff *echo_skb[MAX_TX_URBS];
- 
-@@ -728,7 +727,6 @@ static int ems_usb_open(struct net_device *netdev)
- 		return err;
- 	}
- 
--	dev->open_time = jiffies;
- 
- 	netif_start_queue(netdev);
- 
-@@ -878,8 +876,6 @@ static int ems_usb_close(struct net_device *netdev)
- 
- 	close_candev(netdev);
- 
--	dev->open_time = 0;
--
- 	return 0;
- }
- 
-@@ -904,9 +900,7 @@ static const struct can_bittiming_const ems_usb_bittiming_const = {
- static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
+ static int mscan_do_set_mode(struct net_device *dev, enum can_mode mode)
  {
- 	struct ems_usb *dev = netdev_priv(netdev);
--
--	if (!dev->open_time)
--		return -EINVAL;
-+	int err = 0;
+-	struct mscan_priv *priv = netdev_priv(dev);
+ 	int ret = 0;
  
+-	if (!priv->open_time)
+-		return -EINVAL;
+-
  	switch (mode) {
  	case CAN_MODE_START:
+ 		ret = mscan_restart(dev);
+@@ -590,8 +586,6 @@ static int mscan_open(struct net_device *dev)
+ 		goto exit_napi_disable;
+ 	}
+ 
+-	priv->open_time = jiffies;
+-
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		setbits8(&regs->canctl1, MSCAN_LISTEN);
+ 	else
+@@ -606,7 +600,6 @@ static int mscan_open(struct net_device *dev)
+ 	return 0;
+ 
+ exit_free_irq:
+-	priv->open_time = 0;
+ 	free_irq(dev->irq, dev);
+ exit_napi_disable:
+ 	napi_disable(&priv->napi);
+@@ -627,7 +620,6 @@ static int mscan_close(struct net_device *dev)
+ 	mscan_set_mode(dev, MSCAN_INIT_MODE);
+ 	close_candev(dev);
+ 	free_irq(dev->irq, dev);
+-	priv->open_time = 0;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/can/mscan/mscan.h b/drivers/net/can/mscan/mscan.h
+index b43e9f5..af2ed8b 100644
+--- a/drivers/net/can/mscan/mscan.h
++++ b/drivers/net/can/mscan/mscan.h
+@@ -281,7 +281,6 @@ struct tx_queue_entry {
+ struct mscan_priv {
+ 	struct can_priv can;	/* must be the first member */
+ 	unsigned int type; 	/* MSCAN type variants */
+-	long open_time;
+ 	unsigned long flags;
+ 	void __iomem *reg_base;	/* ioremap'ed address to registers */
+ 	u8 shadow_statflg;
 -- 
 1.7.10.4
 
