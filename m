@@ -1,64 +1,86 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC 0/6] pch_can/c_can: fix races and add PCH support to c_can
-Date: Mon, 26 Nov 2012 10:20:33 +0100
-Message-ID: <50B33461.4020404@grandegger.com>
-References: <1353918186-4234-1-git-send-email-wg@grandegger.com> <50B32CAC.4050501@pengutronix.de> <50B32D40.1040507@grandegger.com> <50B32F62.9090507@pengutronix.de>
+From: Christoph Appel <cappel@ilv.uni-kiel.de>
+Subject: Re: J1939 support: plans for integration?
+Date: Mon, 26 Nov 2012 11:56:09 +0100
+Message-ID: <50B34AC9.1010306@ilv.uni-kiel.de>
+References: <50AE12C5.2070501@ilv.uni-kiel.de> <20121123055240.GA17495@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:42119 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753996Ab2KZJUl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 04:20:41 -0500
-In-Reply-To: <50B32F62.9090507@pengutronix.de>
+Received: from l4ms.rz.uni-kiel.de ([134.245.11.212]:48609 "EHLO
+	l4ms.rz.uni-kiel.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754361Ab2KZK4K (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 05:56:10 -0500
+Received: from localhost ([127.0.0.1])
+	by l4ms.rz.uni-kiel.de with esmtp (Exim 4.80.1)
+	(envelope-from <cappel@ilv.uni-kiel.de>)
+	id 1TcwMC-0005u7-Lk
+	for linux-can@vger.kernel.org; Mon, 26 Nov 2012 11:56:08 +0100
+Received: from frontend3.mail.uni-kiel.de ([134.245.12.50])
+	by l4ms.rz.uni-kiel.de with esmtp (Exim 4.80.1)
+	(envelope-from <cappel@ilv.uni-kiel.de>)
+	id 1TcwMC-0005u2-Iw
+	for linux-can@vger.kernel.org; Mon, 26 Nov 2012 11:56:08 +0100
+Received: from [134.245.144.187]
+	by frontend3.mail.uni-kiel.de with esmtpsa (TLSv1:DHE-RSA-CAMELLIA256-SHA:256)
+	(Exim 4.80.1)
+	(envelope-from <cappel@ilv.uni-kiel.de>)
+	id 1TcwMB-0001dO-6l
+	for linux-can@vger.kernel.org; Mon, 26 Nov 2012 11:56:07 +0100
+In-Reply-To: <20121123055240.GA17495@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
+To: linux-can@vger.kernel.org
 
-On 11/26/2012 09:59 AM, Marc Kleine-Budde wrote:
-> On 11/26/2012 09:50 AM, Wolfgang Grandegger wrote:
->> On 11/26/2012 09:47 AM, Marc Kleine-Budde wrote:
->>> On 11/26/2012 09:23 AM, Wolfgang Grandegger wrote:
->>>> Hello,
->>>>
->>>> as you might have already realized, Michael has reported problems with
->>>> the PCH_CAN driver. With his help we try to fix these issues and add
->>>> PCH PCI support to the C_CAN driver replacing the PCH_CAN driver sooner
->>>> than later. Here follows my current patch stack for the records. When
->>>> Michael's tests are successful, I'm going to post final patches.
->>>>
->>>> For Michael I have prepared out-of-tree driver sources allowing to
->>>> easily build the drivers also for older 3.x kernel versions. More
->>>> tester are welcome.
->>>>
->>>> As also pointed out by Casper, the problems are obvisouly due to races
->>>> with stop and wakeup of the netif tx queue, managing tx_next and
->>>> concurrent register accesses. For the moment I have fixed the races by
->>>> adding "spin[un]lock_irqsave/restore" but, thinking more about it,
->>>> "spinlock_bh" should be enough to protect against softirq context.
->>>>
->>>> With the C_CAN driver I realized some other minor issues:
->>>>
->>>> - The C/D_CAN type handling is common code and could go to
->>>>   alloc_c_can_dev() or register_c_can_dev().
->>>>
->>>> Comments are welcome.
->>>
->>> Please make the patches based on linux-can-next/for-davem
->>
->> OK, will do for the next round. For the moment these are just RFC patches.
-> 
-> AnilKumar Ch has added added a init callback, maybe you can make use of
-> it, too. And give it a more general name then.
+Hello Kurt,
 
-Ah, right, missed that. As it's called at open/close the same name would
-make sense.
+Am 23.11.2012 06:52, schrieb Kurt Van Dijck:
+> Hi,
+>
+>> are there any plans for a "streamlined" integration of J1939 support
+>> into linux-can i.e. the kernel main line?
+> This has always been the target, and still is.
+> The number of known users is very small, and do not convince linux-ca=
+n maintainers
+> yet that the approach of the stack is a good approach.
 
-Wolfgang.
+I see.
 
-> 
-> Marc
-> 
+> You're welcome to join this effort.
 
+> How do you use the current J1939 stack?
+I am in the early process of evaluating possibilities
+deploying J1939 in farm machinery (primary
+data logging purposes with a couple of bus requests).
+So for now, I only use the Linux stack on virtual busses.
+
+> Do you use Transport Protocol, Address Claiming, ....
+The latter is planned, as we try to integrate our bus logging
+facilities seamlessly.
+
+> Do you use it only on developer PC, or on production items.
+There will be in-house products for research purposes, both
+PC-based and embedded.
+
+> Mr. Hartkopp & I are very interested in feedback of other users.
+As we are in early stages, I can't promise anything but will keep you=20
+informed, if we should finally use the Linux stack.
+
+Kind regards,
+
+   Christoph
+--=20
+Mit freundlichem Gru=C3=9F,
+
+   Christoph Appel
+
+Christian-Albrechts-Universit=C3=A4t zu Kiel
+Institut f=C3=BCr Landwirtschaftliche Verfahrenstechnik
+
+Hausadresse: Max-Eyth-Strasse 6, 24118 Kiel
+Postadresse: Olshausenstrasse 40, 24098 Kiel
+
+Telefon: +49 (0) 431 880-3790
+Telefax: +49 (0) 431 880-4283
+http://www.ilv.uni-kiel.de/
