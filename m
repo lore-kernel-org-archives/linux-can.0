@@ -1,43 +1,27 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can-bcm: initialize ifindex for timeouts without previous
- frame reception
-Date: Mon, 26 Nov 2012 22:24:23 +0100
-Message-ID: <50B3DE07.7080506@hartkopp.net>
+From: uescher <linux-can_ger.kernel.org@myvdr.de>
+Subject: Re: [PATCH 0/5] prepare for release + add more clocks to can-calc-bit-timing
+Date: Mon, 26 Nov 2012 22:18:41 +0100
+Message-ID: <50B3DCB1.8070207@myvdr.de>
+References: <1353962689-18669-1-git-send-email-mkl@pengutronix.de> <50B3D700.7040606@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:14036 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755837Ab2KZVY0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 16:24:26 -0500
+Received: from smtprelay06.ispgateway.de ([80.67.31.102]:53904 "EHLO
+	smtprelay06.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755829Ab2KZVZ2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Nov 2012 16:25:28 -0500
+Received: from [176.34.235.140] (helo=[0.0.0.0])
+	by smtprelay06.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68)
+	(envelope-from <linux-can_ger.kernel.org@myvdr.de>)
+	id 1Td64w-0004sr-8I
+	for linux-can@vger.kernel.org; Mon, 26 Nov 2012 22:19:01 +0100
+In-Reply-To: <50B3D700.7040606@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Andre Naujoks <nautsch2@googlemail.com>
+To: linux-can@vger.kernel.org
 
-Set in the rx_ifindex to pass the correct interface index in the case of a
-message timeout detection. Usually the rx_ifindex value is set at receive
-time. But when no CAN frame has been received the RX_TIMEOUT notification
-did not contain a valid value.
-
-Reported-by: Andre Naujoks <nautsch2@googlemail.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
----
-
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 6f74758..969b7cd 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1084,6 +1084,9 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		op->sk = sk;
- 		op->ifindex = ifindex;
- 
-+		/* ifindex for timeout events w/o previous frame reception */
-+		op->rx_ifindex = ifindex;
-+
- 		/* initialize uninitialized (kzalloc) structure */
- 		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- 		op->timer.function = bcm_rx_timeout_handler;
-
+Am 26.11.2012 21:54, schrieb Oliver Hartkopp:
+> I also pushed the slcanpty fix from Ulrich with an appropriate commit message.
+Thanks, your comment is complete correct.
