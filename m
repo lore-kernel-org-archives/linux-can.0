@@ -1,45 +1,113 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH] can: Do not call dev_put if restart timer is running upon close
-Date: Tue, 27 Nov 2012 08:52:34 +0100
-Message-ID: <1354002754-5971-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2012-11-27
+Date: Tue, 27 Nov 2012 09:57:34 +0100
+Message-ID: <50B4807E.8010607@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig07297DF6009613D8384EFCE1"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:52587 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1758137Ab2K0Hwp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Nov 2012 02:52:45 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34475 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758307Ab2K0I5k (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Nov 2012 03:57:40 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Stein <alexander.stein@systec-electronic.com>
+To: netdev@vger.kernel.org
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-If the restart timer is running due to BUS-OFF and the device is
-disconnected an dev_put will decrease the usage counter to -1 thus
-blocking the interface removal, resulting in the following dmesg
-lines repeating every 10s:
-can: notifier: receive list not found for dev can0
-can: notifier: receive list not found for dev can0
-can: notifier: receive list not found for dev can0
-unregister_netdevice: waiting for can0 to become free. Usage count = -1
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig07297DF6009613D8384EFCE1
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+Hello David,
+
+this is pull request is for net-next. Contains a patch by Andreas
+Larsson, which enables the sja1000 of driver to work under sparc.
+AnilKumar Ch contributed a patch to improve the c_can support under
+omap, Olivier Sobrie's patch brings support for the CAN/USB dongles
+from Kvaser. In a bunch of patches by me missing MODULE_ALIAS and/or
+MODULE_DEVICE_TABLE entries were added to the CAN drivers.
+
+regards,
+Marc
+
 ---
- drivers/net/can/dev.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index b8f5cc9..a45a559 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -609,8 +609,7 @@ void close_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	if (del_timer_sync(&priv->restart_timer))
--		dev_put(dev);
-+	del_timer_sync(&priv->restart_timer);
- 	can_flush_echo_skb(dev);
- }
- EXPORT_SYMBOL_GPL(close_candev);
--- 
-1.7.8.6
+The following changes since commit 03f52a0a554210d5049eeed9f1bb29047dc807=
+cb:
 
+  ip6mr: Add sizeof verification to MRT6_ASSERT and MT6_PIM (2012-11-26 1=
+7:35:58 -0500)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to fc8f40b10e58f37ec07e7b0cf85d19e899bdf23f:
+
+  can: mpc5xxx_can: add MODULE_DEVICE_TABLE (2012-11-27 09:49:36 +0100)
+
+----------------------------------------------------------------
+Andreas Larsson (1):
+      can: sja1000: Make sja1000_of_platform selectable and compilable on=
+ SPARC
+
+AnilKumar Ch (1):
+      can: c_can: Add d_can raminit support
+
+Marc Kleine-Budde (8):
+      can: bfin_can: add MODULE_ALIAS
+      can: ti_hecc: add MODULE_ALIAS
+      can: sja1000_platform: add MODULE_ALIAS
+      can: cc770_platform: add MODULE_ALIAS and MODULE_DEVICE_TABLE
+      can: flexcan: add MODULE_DEVICE_TABLE
+      can: at91_can: add MODULE_DEVICE_TABLE
+      can: c_can_platform: add MODULE_DEVICE_TABLE
+      can: mpc5xxx_can: add MODULE_DEVICE_TABLE
+
+Olivier Sobrie (1):
+      can: kvaser_usb: Add support for Kvaser CAN/USB devices
+
+ drivers/net/can/at91_can.c                    |    1 +
+ drivers/net/can/bfin_can.c                    |    1 +
+ drivers/net/can/c_can/c_can.c                 |   12 +
+ drivers/net/can/c_can/c_can.h                 |    3 +
+ drivers/net/can/c_can/c_can_platform.c        |   30 +-
+ drivers/net/can/cc770/cc770_platform.c        |    2 +
+ drivers/net/can/flexcan.c                     |    2 +
+ drivers/net/can/mscan/mpc5xxx_can.c           |    1 +
+ drivers/net/can/sja1000/Kconfig               |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    6 +-
+ drivers/net/can/sja1000/sja1000_platform.c    |    1 +
+ drivers/net/can/ti_hecc.c                     |    1 +
+ drivers/net/can/usb/Kconfig                   |   29 +
+ drivers/net/can/usb/Makefile                  |    1 +
+ drivers/net/can/usb/kvaser_usb.c              | 1627 +++++++++++++++++++=
+++++++
+ 15 files changed, 1715 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/net/can/usb/kvaser_usb.c
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig07297DF6009613D8384EFCE1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlC0gIEACgkQjTAFq1RaXHMsKACgik0OOUBPZfapVhopr4FsJWwY
+nOcAn3wDYru5MXmEmq+KXYxepztIikpq
+=Fois
+-----END PGP SIGNATURE-----
+
+--------------enig07297DF6009613D8384EFCE1--
