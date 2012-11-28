@@ -1,104 +1,57 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: at91_can.c: Data transmission stops
-Date: Wed, 28 Nov 2012 15:56:49 +0100
-Message-ID: <50B62631.8070606@pengutronix.de>
-References: <50B37C90.3040904@rosetechnology.dk> <50B389D6.4050308@grandegger.com> <50B398E6.2070101@rosetechnology.dk> <50B4CA2D.5080309@rosetechnology.dk> <50B4EAE1.6070400@grandegger.com>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: J1939 support: plans for integration?
+Date: Wed, 28 Nov 2012 16:00:07 +0100
+Message-ID: <20121128150007.GF40463@vandijck-laurijssen.be>
+References: <50AE12C5.2070501@ilv.uni-kiel.de>
+ <20121123055240.GA17495@vandijck-laurijssen.be>
+ <50B34AC9.1010306@ilv.uni-kiel.de>
+ <20121128134323.GE40463@vandijck-laurijssen.be>
+ <50B615E5.9040903@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig3210BC2B87E5B2B35FFC5C94"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34431 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755392Ab2K1O45 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Nov 2012 09:56:57 -0500
-In-Reply-To: <50B4EAE1.6070400@grandegger.com>
+Received: from mailrelay002.isp.belgacom.be ([195.238.6.175]:33279 "EHLO
+	mailrelay002.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755499Ab2K1PAK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Nov 2012 10:00:10 -0500
+Content-Disposition: inline
+In-Reply-To: <50B615E5.9040903@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Henrik Bork Steffensen <hbs@rosetechnology.dk>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Christoph Appel <cappel@ilv.uni-kiel.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3210BC2B87E5B2B35FFC5C94
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 28, 2012 at 02:47:17PM +0100, Marc Kleine-Budde wrote:
+> On 11/28/2012 02:43 PM, Kurt Van Dijck wrote:
+> > On Mon, Nov 26, 2012 at 11:56:09AM +0100, Christoph Appel wrote:
+> >> Hello Kurt,
+> >>
+> >> Am 23.11.2012 06:52, schrieb Kurt Van Dijck:
+> >>> Hi,
+> >>>
+> > [...]
+> >>> How do you use the current J1939 stack?
+> >> I am in the early process of evaluating possibilities
+> >> deploying J1939 in farm machinery (primary
+> >> data logging purposes with a couple of bus requests).
+> > 
+> > FYI, we (EIA Electronics) have certified a Virtual Terminal
+> > using this j1939 stack. The certification process went
+> > very smooth for the networking tests.
+> 
+> like telnet?
+telnet on j1939?
 
-On 11/27/2012 05:31 PM, Wolfgang Grandegger wrote:
-[...]
+No, I meant the test that are preformed during this isobus certification
+on the isobus (J1939) networking level, like dynamic addressing behaviour,
+Transport protocol, ...
+A beautifull set of nasty corner cases is verified then.
+I was a bit curious to the results since I had spent some time on that code.
 
-> As mentioned above, on the c_can there is definitely a race with the
-> message ram due to the busy wait after accessing it. See:
->=20
->   http://lxr.linux.no/#linux+v3.6.8/drivers/net/can/c_can/c_can.c#L237
->=20
->> Or is it the potential race between "c_can_start_xmit" and "c_can_do_t=
-x" ?
->> Or even the access to the net api?
->>
->> Would someone care to explain?
->=20
-> I will try. In at91_start_xmit, if we get interrupted
->=20
-> 	if (!(at91_read(priv, AT91_MSR(get_tx_next_mb(priv))) &
->               AT91_MSR_MRDY) ||
->              (priv->tx_next & get_next_mask(priv)) =3D=3D 0)
->=20
-> 		/* HERE */
->=20
-> 		netif_stop_queue(dev);
->=20
-> and then at91_irq_tx() is called executing netif_wake_queue() we may en=
-d
-> up with a stopped tx queue. But I'm not yet 100% sure.
+Being certified at least means that the j1939 stack, together with the userspace programs,
+is functionally ready for production.
 
-I don't think so, because after this follows[1]
+Isobus (on CAN networking equal to j1939) has become the 'de facto' standard for agriculture
+machinery...
 
-	/* Enable interrupt for this mailbox */
-	at91_write(priv, AT91_IER, 1 << mb);
-
-[1] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L524
-
-So first the queued ist stopped, then the interrupt activated.
-
-Then in the interrupt handler[2], [3]:
-
-	reg_sr =3D at91_read(priv, AT91_SR);
-	reg_imr =3D at91_read(priv, AT91_IMR);
-
-	reg_sr &=3D reg_imr;
-
-=2E..
-
-	if (reg_sr & AT91_IRQ_MB_TX)
-		at91_irq_tx(dev, reg_sr);
-
-[2] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L1081=
-
-[3] http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L1104=
-
-
-The at91_irq_tx() function works on the reg_sr.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig3210BC2B87E5B2B35FFC5C94
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
-
-iEYEARECAAYFAlC2JjUACgkQjTAFq1RaXHOEFwCfVNxlCprEi37UE2qIm0J0kdh1
-y3IAoIuxghy6ihVhA+iWvY3UF9Nv6Ptl
-=FpoQ
------END PGP SIGNATURE-----
-
---------------enig3210BC2B87E5B2B35FFC5C94--
+Kurt
