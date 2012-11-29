@@ -1,46 +1,47 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/5] can: Kconfig: remove 'default n' from CAN_BCM and CAN_GW
-Date: Thu, 29 Nov 2012 14:58:10 +0100
-Message-ID: <1354197491-31205-5-git-send-email-mkl@pengutronix.de>
-References: <1354197491-31205-1-git-send-email-mkl@pengutronix.de>
+From: Michael Pellegrini <mikep86@gmail.com>
+Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
+Date: Thu, 29 Nov 2012 14:15:14 +0000 (UTC)
+Message-ID: <loom.20121129T150945-987@post.gmane.org>
+References: <loom.20121114T160521-534@post.gmane.org> <loom.20121120T151831-134@post.gmane.org> <50ABABDE.8060503@grandegger.com> <loom.20121120T192159-770@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or  g> <loom.20121121T162041-774@p  ost.gmane.org> <50ACF9C0.8050206@grandegger.com> <loom.20121121T170446-911@post.gmane.org> <50AD042B.3020305 @grandegger.com> <loom.20121121T184014-391@post.gmane.org> <50AD319E.2000209@grandegger.com> <loom.20121121T215717-10 6@post.gmane.org> <loom.20121123T150627-133@post.gmane.org> <50AF8C01.6060 809@grandegger.com> <loom.20121123T155746-12@post.gmane.org> <50AFABB1.7080 507@grandegger.com> <50AFAFF0.9030706@grandegger.com> <loom.20121123T184133-638@post.gmane.org> <50B2449B.806
+  0708@grandegger.com> <loom.20121126T154645-335@post.gmane.org> <50B38AFB.70209@grandegger.com> <loom.20121126T181452-657@post.gmane.org> <50B3B162.9020905@grandegger.com> <50B751D7.6060106@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42781 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754012Ab2K2N6O (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 08:58:14 -0500
-In-Reply-To: <1354197491-31205-1-git-send-email-mkl@pengutronix.de>
+Received: from plane.gmane.org ([80.91.229.3]:51470 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753857Ab2K2OPh (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 29 Nov 2012 09:15:37 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Te4u2-000412-Dh
+	for linux-can@vger.kernel.org; Thu, 29 Nov 2012 15:15:46 +0100
+Received: from 96.45.208.254 ([96.45.208.254])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 29 Nov 2012 15:15:46 +0100
+Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 29 Nov 2012 15:15:46 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-As 'default n' is already default, remove it.
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/Kconfig |    2 --
- 1 file changed, 2 deletions(-)
+> I have implemented a better solution now using different sets of
+> registers for tx and rx. This avoids locking in the RX path as well.
+> Furthermore, pch_can now uses spin_[un]lock_bh. Would be nice if you
+> could give the pch_can and c_can_pci driver a try when time permits.
 
-diff --git a/net/can/Kconfig b/net/can/Kconfig
-index c017121..0d52416 100644
---- a/net/can/Kconfig
-+++ b/net/can/Kconfig
-@@ -30,7 +30,6 @@ config CAN_RAW
- 
- config CAN_BCM
- 	tristate "Broadcast Manager CAN Protocol (with content filtering)"
--	default N
- 	---help---
- 	  The Broadcast Manager offers content filtering, timeout monitoring,
- 	  sending of RTR frames, and cyclic CAN messages without permanent user
-@@ -42,7 +41,6 @@ config CAN_BCM
- 
- config CAN_GW
- 	tristate "CAN Gateway/Router (with netlink configuration)"
--	default N
- 	---help---
- 	  The CAN Gateway/Router is used to route (and modify) CAN frames.
- 	  It is based on the PF_CAN core infrastructure for msg filtering and
--- 
-1.7.10.4
+Great! I'm happy to test these drivers out.  In addition to testing
+these drivers through my application, I'm looking at creating a soak test to
+really push the interface (and the driver) hard.  That test will probably be
+ready early next week.  I will get back to you with the results.
+
+Thank you!
+Mike
+
+
+
 
