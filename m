@@ -1,44 +1,75 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [can:for-davem 3/5] drivers/net/can/usb/ems_usb.c:903:6: warning:
- unused variable 'err'
-Date: Thu, 29 Nov 2012 14:29:16 +0100
-Message-ID: <50B7632C.3030705@pengutronix.de>
-References: <50b76293.9VF7dj0y5in3n8rs%fengguang.wu@intel.com>
+Subject: pull-request: can-next 2012-11-29
+Date: Thu, 29 Nov 2012 14:50:13 +0100
+Message-ID: <50B76815.8010907@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enigC2B675CACF8D844635B2B534"
+ boundary="------------enig7F8DD1AC1339AA301ED25436"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50430 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41542 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753466Ab2K2N3S (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 08:29:18 -0500
-In-Reply-To: <50b76293.9VF7dj0y5in3n8rs%fengguang.wu@intel.com>
+	with ESMTP id S1753394Ab2K2NuW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 08:50:22 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: linux-can@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigC2B675CACF8D844635B2B534
+--------------enig7F8DD1AC1339AA301ED25436
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 11/29/2012 02:26 PM, kbuild test robot wrote:
-> tree:   git://gitorious.org/linux-can/linux-can-next for-davem
-> head:   31f03931a244878209a41ab337f7260d8b4da6a6
-> commit: 8c9a8243358bf335df940d5273363360358148a9 [3/5] can: ems_usb: re=
-move obsolete variable open_time
-> config: make ARCH=3Dx86_64 allyesconfig
->=20
-> All warnings:
->=20
-> drivers/net/can/usb/ems_usb.c: In function 'ems_usb_set_mode':
-> drivers/net/can/usb/ems_usb.c:903:6: warning: unused variable 'err' [-W=
-unused-variable]
+Hello David,
 
-Doh - tnx
+this pull request is for net-next/master. There is a patch by Alexander
+Stein fixing a reference counter problem which can make driver
+unloading impossible (stable Cc'ed). And several patches by me which
+remove an obsolete mechanism from several drivers, which is already
+handled at the infrastructure level.
+
+regards,
 Marc
+
+---
+
+The following changes since commit 3177bf6f922f62743133abbcbbbb5545f4133b=
+2d:
+
+  net: ethernet: cpsw: fix build warnings for CPSW when CPTS not selected=
+ (2012-11-28 17:51:16 -0500)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 823d7a1f761d6404babaab04cc8b1724186cf2c8:
+
+  can: pcan_usb_core: remove obsolete variable open_time (2012-11-29 14:3=
+4:06 +0100)
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      can: Do not call dev_put if restart timer is running upon close
+
+Marc Kleine-Budde (5):
+      can: mscan: remove obsolete variable open_time
+      can: sja1000: remove obsolete variable open_time
+      can: ems_usb: remove obsolete variable open_time
+      can: esd_usb2: remove obsolete variable open_time
+      can: pcan_usb_core: remove obsolete variable open_time
+
+ drivers/net/can/dev.c                        |    3 +--
+ drivers/net/can/mscan/mscan.c                |    8 --------
+ drivers/net/can/mscan/mscan.h                |    1 -
+ drivers/net/can/sja1000/sja1000.c            |    8 --------
+ drivers/net/can/sja1000/sja1000.h            |    1 -
+ drivers/net/can/usb/ems_usb.c                |    7 -------
+ drivers/net/can/usb/esd_usb2.c               |   10 ----------
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |    5 -----
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |    1 -
+ 9 files changed, 1 insertion(+), 43 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -47,7 +78,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enigC2B675CACF8D844635B2B534
+--------------enig7F8DD1AC1339AA301ED25436
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -56,9 +87,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-iEUEARECAAYFAlC3YywACgkQjTAFq1RaXHPfzACfemno25wIrNjm2+mfOfxIBOpV
-DmkAlAqHJKPpaqQ2/j7+rQsLOmebjC0=
-=4pIq
+iEYEARECAAYFAlC3aBsACgkQjTAFq1RaXHMm4ACfTvN3brwMWLodooo56qDVwoB7
+XK0An0Hwfe29g9o3SJoiHRyb1tl+fnRc
+=VgFz
 -----END PGP SIGNATURE-----
 
---------------enigC2B675CACF8D844635B2B534--
+--------------enig7F8DD1AC1339AA301ED25436--
