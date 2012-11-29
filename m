@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/5] can: Kconfig: convert 'depends on CAN_DEV' into 'if CAN_DEV...endif' block
-Date: Thu, 29 Nov 2012 14:58:08 +0100
-Message-ID: <1354197491-31205-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 1/5] can: Kconfig: convert 'depends on CAN' into 'if CAN...endif' block
+Date: Thu, 29 Nov 2012 14:58:07 +0100
+Message-ID: <1354197491-31205-2-git-send-email-mkl@pengutronix.de>
 References: <1354197491-31205-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42776 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42774 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753198Ab2K2N6N (ORCPT
+	with ESMTP id S1753173Ab2K2N6N (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 08:58:13 -0500
 In-Reply-To: <1354197491-31205-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,181 +14,91 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch adds an 'if CAN_DEV...endif' Block around the CAN driver
-symbols in drivers/net/can/Kconfig. So the 'depends on CAN' dependencies
-can be removed.
+This patch adds an 'if CAN...endif' Block around all CAN symbols in
+net/can/Kconfig. So the 'depends on CAN' dependencies can be removed.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig         |   21 ++++++++++++---------
- drivers/net/can/c_can/Kconfig   |    2 +-
- drivers/net/can/cc770/Kconfig   |    2 +-
- drivers/net/can/mscan/Kconfig   |    2 +-
- drivers/net/can/sja1000/Kconfig |    2 +-
- drivers/net/can/softing/Kconfig |    2 +-
- drivers/net/can/usb/Kconfig     |    2 +-
- 7 files changed, 18 insertions(+), 15 deletions(-)
+ drivers/net/can/Kconfig |    5 -----
+ net/can/Kconfig         |    7 ++++---
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 8088d8f..0c5a656 100644
+index b56bd9e..8088d8f 100644
 --- a/drivers/net/can/Kconfig
 +++ b/drivers/net/can/Kconfig
-@@ -36,9 +36,10 @@ config CAN_DEV
- 	  support. This is the standard library for CAN drivers.
- 	  If unsure, say Y.
+@@ -1,9 +1,7 @@
+ menu "CAN Device Drivers"
+-	depends on CAN
  
-+if CAN_DEV
-+
- config CAN_CALC_BITTIMING
- 	bool "CAN bit-timing calculation"
--	depends on CAN_DEV
+ config CAN_VCAN
+ 	tristate "Virtual Local CAN Interface (vcan)"
+-	depends on CAN
+ 	---help---
+ 	  Similar to the network loopback devices, vcan offers a
+ 	  virtual local CAN interface.
+@@ -13,7 +11,6 @@ config CAN_VCAN
+ 
+ config CAN_SLCAN
+ 	tristate "Serial / USB serial CAN Adaptors (slcan)"
+-	depends on CAN
+ 	---help---
+ 	  CAN driver for several 'low cost' CAN interfaces that are attached
+ 	  via serial lines or via USB-to-serial adapters using the LAWICEL
+@@ -33,7 +30,6 @@ config CAN_SLCAN
+ 
+ config CAN_DEV
+ 	tristate "Platform CAN drivers with Netlink support"
+-	depends on CAN
  	default y
  	---help---
- 	  If enabled, CAN bit-timing parameters will be calculated for the
-@@ -52,13 +53,13 @@ config CAN_CALC_BITTIMING
+ 	  Enables the common framework for platform CAN drivers with Netlink
+@@ -133,7 +129,6 @@ source "drivers/net/can/softing/Kconfig"
  
- config CAN_AT91
- 	tristate "Atmel AT91 onchip CAN controller"
--	depends on CAN_DEV && (ARCH_AT91SAM9263 || ARCH_AT91SAM9X5)
-+	depends on ARCH_AT91SAM9263 || ARCH_AT91SAM9X5
- 	---help---
- 	  This is a driver for the SoC CAN controller in Atmel's AT91SAM9263
- 	  and AT91SAM9X5 processors.
- 
- config CAN_TI_HECC
--	depends on CAN_DEV && ARCH_OMAP3
-+	depends on ARCH_OMAP3
- 	tristate "TI High End CAN Controller"
- 	---help---
- 	  Driver for TI HECC (High End CAN Controller) module found on many
-@@ -66,12 +67,12 @@ config CAN_TI_HECC
- 
- config CAN_MCP251X
- 	tristate "Microchip MCP251x SPI CAN controllers"
--	depends on CAN_DEV && SPI && HAS_DMA
-+	depends on SPI && HAS_DMA
- 	---help---
- 	  Driver for the Microchip MCP251x SPI CAN controllers.
- 
- config CAN_BFIN
--	depends on CAN_DEV && (BF534 || BF536 || BF537 || BF538 || BF539 || BF54x)
-+	depends on BF534 || BF536 || BF537 || BF538 || BF539 || BF54x
- 	tristate "Analog Devices Blackfin on-chip CAN"
- 	---help---
- 	  Driver for the Analog Devices Blackfin on-chip CAN controllers
-@@ -81,7 +82,7 @@ config CAN_BFIN
- 
- config CAN_JANZ_ICAN3
- 	tristate "Janz VMOD-ICAN3 Intelligent CAN controller"
--	depends on CAN_DEV && MFD_JANZ_CMODIO
-+	depends on MFD_JANZ_CMODIO
- 	---help---
- 	  Driver for Janz VMOD-ICAN3 Intelligent CAN controller module, which
- 	  connects to a MODULbus carrier board.
-@@ -94,13 +95,13 @@ config HAVE_CAN_FLEXCAN
- 
- config CAN_FLEXCAN
- 	tristate "Support for Freescale FLEXCAN based chips"
--	depends on CAN_DEV && HAVE_CAN_FLEXCAN
-+	depends on HAVE_CAN_FLEXCAN
- 	---help---
- 	  Say Y here if you want to support for Freescale FlexCAN.
- 
- config PCH_CAN
- 	tristate "Intel EG20T PCH CAN controller"
--	depends on CAN_DEV && PCI
-+	depends on PCI
- 	---help---
- 	  This driver is for PCH CAN of Topcliff (Intel EG20T PCH) which
- 	  is an IOH for x86 embedded processor (Intel Atom E6xx series).
-@@ -108,7 +109,7 @@ config PCH_CAN
- 
- config CAN_GRCAN
- 	tristate "Aeroflex Gaisler GRCAN and GRHCAN CAN devices"
--	depends on CAN_DEV && OF
-+	depends on OF
- 	---help---
- 	  Say Y here if you want to use Aeroflex Gaisler GRCAN or GRHCAN.
- 	  Note that the driver supports little endian, even though little
-@@ -127,6 +128,8 @@ source "drivers/net/can/usb/Kconfig"
- 
- source "drivers/net/can/softing/Kconfig"
- 
-+endif
-+
  config CAN_DEBUG_DEVICES
  	bool "CAN devices debugging messages"
+-	depends on CAN
  	---help---
-diff --git a/drivers/net/can/c_can/Kconfig b/drivers/net/can/c_can/Kconfig
-index 3b83baf..61ffc12 100644
---- a/drivers/net/can/c_can/Kconfig
-+++ b/drivers/net/can/c_can/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig CAN_C_CAN
- 	tristate "Bosch C_CAN/D_CAN devices"
--	depends on CAN_DEV && HAS_IOMEM
-+	depends on HAS_IOMEM
+ 	  Say Y here if you want the CAN device drivers to produce a bunch of
+ 	  debug messages to the system log.  Select this if you are having
+diff --git a/net/can/Kconfig b/net/can/Kconfig
+index 0320069..0435fc4 100644
+--- a/net/can/Kconfig
++++ b/net/can/Kconfig
+@@ -16,9 +16,10 @@ menuconfig CAN
+ 	  If you want CAN support you should say Y here and also to the
+ 	  specific driver for your controller(s) below.
  
- if CAN_C_CAN
- 
-diff --git a/drivers/net/can/cc770/Kconfig b/drivers/net/can/cc770/Kconfig
-index 22c07a8..6a9a5ba 100644
---- a/drivers/net/can/cc770/Kconfig
-+++ b/drivers/net/can/cc770/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig CAN_CC770
- 	tristate "Bosch CC770 and Intel AN82527 devices"
--	depends on CAN_DEV && HAS_IOMEM
-+	depends on HAS_IOMEM
- 
- if CAN_CC770
- 
-diff --git a/drivers/net/can/mscan/Kconfig b/drivers/net/can/mscan/Kconfig
-index d387069..f19be52 100644
---- a/drivers/net/can/mscan/Kconfig
-+++ b/drivers/net/can/mscan/Kconfig
-@@ -1,5 +1,5 @@
- config CAN_MSCAN
--	depends on CAN_DEV && (PPC || M68K)
-+	depends on PPC || M68K
- 	tristate "Support for Freescale MSCAN based chips"
++if CAN
++
+ config CAN_RAW
+ 	tristate "Raw CAN Protocol (raw access with CAN-ID filtering)"
+-	depends on CAN
+ 	default N
  	---help---
- 	  The Motorola Scalable Controller Area Network (MSCAN) definition
-diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
-index 92f73c7..1bed54f 100644
---- a/drivers/net/can/sja1000/Kconfig
-+++ b/drivers/net/can/sja1000/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig CAN_SJA1000
- 	tristate "Philips/NXP SJA1000 devices"
--	depends on CAN_DEV && HAS_IOMEM
-+	depends on HAS_IOMEM
+ 	  The raw CAN protocol option offers access to the CAN bus via
+@@ -29,7 +30,6 @@ config CAN_RAW
  
- if CAN_SJA1000
- 
-diff --git a/drivers/net/can/softing/Kconfig b/drivers/net/can/softing/Kconfig
-index 5de46a9..96b6fe1 100644
---- a/drivers/net/can/softing/Kconfig
-+++ b/drivers/net/can/softing/Kconfig
-@@ -1,6 +1,6 @@
- config CAN_SOFTING
- 	tristate "Softing Gmbh CAN generic support"
--	depends on CAN_DEV && HAS_IOMEM
-+	depends on HAS_IOMEM
+ config CAN_BCM
+ 	tristate "Broadcast Manager CAN Protocol (with content filtering)"
+-	depends on CAN
+ 	default N
  	---help---
- 	  Support for CAN cards from Softing Gmbh & some cards
- 	  from Vector Gmbh.
-diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
-index a4e4bee..acba33d 100644
---- a/drivers/net/can/usb/Kconfig
-+++ b/drivers/net/can/usb/Kconfig
-@@ -1,5 +1,5 @@
- menu "CAN USB interfaces"
--	depends on USB && CAN_DEV
-+	depends on USB
+ 	  The Broadcast Manager offers content filtering, timeout monitoring,
+@@ -42,7 +42,6 @@ config CAN_BCM
  
- config CAN_EMS_USB
- 	tristate "EMS CPC-USB/ARM7 CAN/USB interface"
+ config CAN_GW
+ 	tristate "CAN Gateway/Router (with netlink configuration)"
+-	depends on CAN
+ 	default N
+ 	---help---
+ 	  The CAN Gateway/Router is used to route (and modify) CAN frames.
+@@ -53,3 +52,5 @@ config CAN_GW
+ 	  by the netlink configuration interface known e.g. from iptables.
+ 
+ source "drivers/net/can/Kconfig"
++
++endif
 -- 
 1.7.10.4
 
