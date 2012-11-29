@@ -1,119 +1,131 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC v2 2/7] c_can: rename callback "initram" to "init" to more general usage
-Date: Thu, 29 Nov 2012 15:39:42 +0100
-Message-ID: <1354199987-10350-3-git-send-email-wg@grandegger.com>
+Subject: [RFC v2 6/7] c_can_pci: add support for PCH CAN on Intel EG20T PCH
+Date: Thu, 29 Nov 2012 15:39:46 +0100
+Message-ID: <1354199987-10350-7-git-send-email-wg@grandegger.com>
 References: <1354199987-10350-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:44190 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:44210 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754841Ab2K2Oj4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 09:39:56 -0500
+	with ESMTP id S1752836Ab2K2Oj6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Nov 2012 09:39:58 -0500
 In-Reply-To: <1354199987-10350-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: bhupesh.sharma@st.com, tomoya.rohm@gmail.com, Wolfgang Grandegger <wg@grandegger.com>
 
-The callback "init" is called with the argument "true" when the
-device is opened and with "false" when it is closed allowing for
-device specific initialization and cleanup, e.g. raminit or reset.
-
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
- drivers/net/can/c_can/c_can.c          |   16 ++++++++--------
- drivers/net/can/c_can/c_can.h          |    2 +-
- drivers/net/can/c_can/c_can_platform.c |    2 +-
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/can/c_can/c_can_pci.c |   46 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 45 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 5233b8f..3ae356f 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -233,10 +233,10 @@ static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
- 		pm_runtime_put_sync(priv->device);
- }
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 320e371..2516ea9 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -19,9 +19,13 @@
  
--static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
-+static inline void c_can_init(const struct c_can_priv *priv, bool enable)
- {
--	if (priv->raminit)
--		priv->raminit(priv, enable);
-+	if (priv->init)
-+		priv->init(priv, enable);
- }
+ #include "c_can.h"
  
- static inline int get_tx_next_msg_obj(const struct c_can_priv *priv)
-@@ -1096,7 +1096,7 @@ static int c_can_open(struct net_device *dev)
- 	struct c_can_priv *priv = netdev_priv(dev);
++#define PCI_DEVICE_ID_PCH_CAN	0x8818
++#define PCH_PCI_SOFT_RESET	0x01fc
++
+ enum c_can_pci_reg_align {
+ 	C_CAN_REG_ALIGN_16,
+ 	C_CAN_REG_ALIGN_32,
++	C_CAN_REG_32,
+ };
  
- 	c_can_pm_runtime_get_sync(priv);
--	c_can_reset_ram(priv, true);
-+	c_can_init(priv, true);
- 
- 	/* open the can device */
- 	err = open_candev(dev);
-@@ -1125,7 +1125,7 @@ static int c_can_open(struct net_device *dev)
- exit_irq_fail:
- 	close_candev(dev);
- exit_open_fail:
--	c_can_reset_ram(priv, false);
-+	c_can_init(priv, false);
- 	c_can_pm_runtime_put_sync(priv);
- 	return err;
- }
-@@ -1140,7 +1140,7 @@ static int c_can_close(struct net_device *dev)
- 	free_irq(dev->irq, dev);
- 	close_candev(dev);
- 
--	c_can_reset_ram(priv, false);
-+	c_can_init(priv, false);
- 	c_can_pm_runtime_put_sync(priv);
- 
- 	return 0;
-@@ -1198,7 +1198,7 @@ int c_can_power_down(struct net_device *dev)
- 
- 	c_can_stop(dev);
- 
--	c_can_reset_ram(priv, false);
-+	c_can_init(priv, false);
- 	c_can_pm_runtime_put_sync(priv);
- 
- 	return 0;
-@@ -1217,7 +1217,7 @@ int c_can_power_up(struct net_device *dev)
- 	WARN_ON(priv->type != BOSCH_D_CAN);
- 
- 	c_can_pm_runtime_get_sync(priv);
--	c_can_reset_ram(priv, true);
-+	c_can_init(priv, true);
- 
- 	/* Clear PDR and INIT bits */
- 	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index d2e1c21..4baf3f6 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -171,7 +171,7 @@ struct c_can_priv {
- 	enum c_can_dev_id type;
- 	u32 __iomem *raminit_ctrlreg;
- 	unsigned int instance;
--	void (*raminit) (const struct c_can_priv *priv, bool enable);
+ struct c_can_pci_data {
+@@ -33,6 +37,8 @@ struct c_can_pci_data {
+ 	unsigned int freq;
+ 	/* PCI bar number */
+ 	int bar;
++	/* Callback for reset */
 +	void (*init) (const struct c_can_priv *priv, bool enable);
  };
  
- struct net_device *alloc_c_can_dev(void);
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 0044fd8..5619b9c 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -205,7 +205,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
- 		if (!priv->raminit_ctrlreg || priv->instance < 0)
- 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
- 		else
--			priv->raminit = c_can_hw_raminit;
-+			priv->init = c_can_hw_raminit;
+ /*
+@@ -65,6 +71,29 @@ static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
+ 	writew(val, priv->base + 2 * priv->regs[index]);
+ }
+ 
++static u16 c_can_pci_read_reg_32bit(struct c_can_priv *priv,
++				    enum reg index)
++{
++	return (u16)ioread32(priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_write_reg_32bit(struct c_can_priv *priv,
++				      enum reg index, u16 val)
++{
++	iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_reset_pch(const struct c_can_priv *priv, bool enable)
++{
++	if (enable) {
++		u32 __iomem *addr = priv->base + PCH_PCI_SOFT_RESET;
++
++		/* write to sw reset register */
++		iowrite32(1, addr);
++		iowrite32(0, addr);
++	}
++}
++
+ static int __devinit c_can_pci_probe(struct pci_dev *pdev,
+ 				     const struct pci_device_id *ent)
+ {
+@@ -86,7 +115,6 @@ static int __devinit c_can_pci_probe(struct pci_dev *pdev,
+ 		goto out_disable_device;
+ 	}
+ 
+-
+ 	if (!pci_enable_msi(pdev)) {
+ 		dev_info(&pdev->dev, "MSI enabled\n");
+ 		pci_set_master(pdev);
+@@ -147,11 +175,17 @@ static int __devinit c_can_pci_probe(struct pci_dev *pdev,
+ 		priv->read_reg = c_can_pci_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_pci_write_reg_aligned_to_16bit;
  		break;
++	case C_CAN_REG_32:
++		priv->read_reg = c_can_pci_read_reg_32bit;
++		priv->write_reg = c_can_pci_write_reg_32bit;
++		break;
  	default:
  		ret = -EINVAL;
+ 		goto out_free_c_can;
+ 	}
+ 
++	priv->init = c_can_pci_data->init;
++
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -203,6 +237,14 @@ static struct c_can_pci_data c_can_sta2x11= {
+ 	.bar = 0,
+ };
+ 
++static struct c_can_pci_data c_can_pch = {
++	.type = BOSCH_C_CAN,
++	.reg_align = C_CAN_REG_32,
++	.freq = 50000000, /* 50 MHz */
++	.init = c_can_pci_reset_pch,
++	.bar = 1,
++};
++
+ #define C_CAN_ID(_vend, _dev, _driverdata) {		\
+ 	PCI_DEVICE(_vend, _dev),			\
+ 	.driver_data = (unsigned long)&_driverdata,	\
+@@ -210,6 +252,8 @@ static struct c_can_pci_data c_can_sta2x11= {
+ static DEFINE_PCI_DEVICE_TABLE(c_can_pci_tbl) = {
+ 	C_CAN_ID(PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_CAN,
+ 		 c_can_sta2x11),
++	C_CAN_ID(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_PCH_CAN,
++		 c_can_pch),
+ 	{},
+ };
+ static struct pci_driver c_can_pci_driver = {
 -- 
 1.7.9.5
 
