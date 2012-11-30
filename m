@@ -1,51 +1,54 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC v2 3/7] c_can: use different sets of interface registers
- for rx and tx
-Date: Fri, 30 Nov 2012 10:15:53 +0100
-Message-ID: <50B87949.70802@grandegger.com>
-References: <1354199987-10350-1-git-send-email-wg@grandegger.com> <1354199987-10350-4-git-send-email-wg@grandegger.com> <50B870B1.4050907@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/5] can: Kconfig: switch on CAN_RAW by default
+Date: Fri, 30 Nov 2012 07:47:29 +0100
+Message-ID: <50B85681.8030502@hartkopp.net>
+References: <1354197491-31205-1-git-send-email-mkl@pengutronix.de> <1354197491-31205-4-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:49795 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750888Ab2K3JQC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Nov 2012 04:16:02 -0500
-In-Reply-To: <50B870B1.4050907@pengutronix.de>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:62825 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751507Ab2K3Grc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Nov 2012 01:47:32 -0500
+In-Reply-To: <1354197491-31205-4-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
+Cc: linux-can@vger.kernel.org
 
-On 11/30/2012 09:39 AM, Marc Kleine-Budde wrote:
-> On 11/29/2012 03:39 PM, Wolfgang Grandegger wrote:
->> To avoid conflicts between CPU access to the message RAM we now
->> use the first set of interface registers for RX and the second
->> for TX.
->>
->> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/net/can/c_can/c_can.c |   37 ++++++++++++++++++++++---------------
->>  1 file changed, 22 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
->> index 3ae356f..27e45e6 100644
->> --- a/drivers/net/can/c_can/c_can.c
->> +++ b/drivers/net/can/c_can/c_can.c
->> @@ -158,6 +158,10 @@
->>  #define C_CAN_NEXT_MSG_OBJ_MASK	(C_CAN_MSG_OBJ_TX_NUM - 1)
->>  #define RECEIVE_OBJECT_BITS	0x0000ffff
->>  
->> +/* message interface used for rx and tx */
->> +#define IFACE_RX		0
->> +#define IFACE_TX		1
+On 29.11.2012 14:58, Marc Kleine-Budde wrote:
+
+> As CAN_RAW is the basic CAN protocol, switch it on by default.
 > 
-> Can you give these defines a common C_CAN_ prefix? And you can make them
-> an enum and change the signature of the function you're changing below.
 
-OK, will do with the next version. Want to be sure that the driver works
-as expected first.
 
-Wolfgang
+Hello Marc,
+
+you are probably right, that most users will at least need CAN_RAW sockets.
+But i asked myself, what the Linux distributions will do once we point out
+that a specific protocol is *preferred* to be enabled?
+
+Regards,
+Oliver
+
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  net/can/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/can/Kconfig b/net/can/Kconfig
+> index 0435fc4..c017121 100644
+> --- a/net/can/Kconfig
+> +++ b/net/can/Kconfig
+> @@ -20,7 +20,7 @@ if CAN
+>  
+>  config CAN_RAW
+>  	tristate "Raw CAN Protocol (raw access with CAN-ID filtering)"
+> -	default N
+> +	default y
+>  	---help---
+>  	  The raw CAN protocol option offers access to the CAN bus via
+>  	  the BSD socket API. You probably want to use the raw socket in
+
 
