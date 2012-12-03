@@ -1,79 +1,49 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC v2 2/7] c_can: rename callback "initram" to "init" to more
- general usage
-Date: Mon, 03 Dec 2012 15:32:07 +0100
-Message-ID: <50BCB7E7.6010707@grandegger.com>
-References: <1354199987-10350-1-git-send-email-wg@grandegger.com> <1354199987-10350-3-git-send-email-wg@grandegger.com> <1876011.7USXKpqpSd@ws-stein>
+From: Henrik Bork Steffensen <hbs@rosetechnology.dk>
+Subject: Re: at91_can.c: Data transmission stops
+Date: Mon, 03 Dec 2012 17:13:53 +0100
+Message-ID: <50BCCFC1.3030105@rosetechnology.dk>
+References: <50B37C90.3040904@rosetechnology.dk> <50B389D6.4050308@grandegger.com> <50B398E6.2070101@rosetechnology.dk> <50B4CA2D.5080309@rosetechnology.dk> <50B4EAE1.6070400@grandegger.com> <50B61E1B.8040904@rosetechnology.dk> <50B61FE4.5090905@pengutronix.de> <50B62947.4090300@rosetechnology.dk> <50B629ED.40507@pengutronix.de> <50B63164.5090601@rosetechnology.dk> <50B63A8E.5010802@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:46426 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754193Ab2LCOcK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Dec 2012 09:32:10 -0500
-In-Reply-To: <1876011.7USXKpqpSd@ws-stein>
+Received: from dmz4.rosetechnology.dk ([95.154.61.7]:48810 "EHLO
+	dmz4.rosetechnology.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751412Ab2LCQN4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Dec 2012 11:13:56 -0500
+In-Reply-To: <50B63A8E.5010802@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-On 12/03/2012 03:20 PM, Alexander Stein wrote:
-> Hello Wolfgang,
-> 
-> On Thursday 29 November 2012 15:39:42, Wolfgang Grandegger wrote:
->> The callback "init" is called with the argument "true" when the
->> device is opened and with "false" when it is closed allowing for
->> device specific initialization and cleanup, e.g. raminit or reset.
+On 11/28/2012 05:23 PM, Wolfgang Grandegger wrote:
+> On 11/28/2012 04:44 PM, Henrik Bork Steffensen wrote:
 >>
->> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/net/can/c_can/c_can.c          |   16 ++++++++--------
->>  drivers/net/can/c_can/c_can.h          |    2 +-
->>  drivers/net/can/c_can/c_can_platform.c |    2 +-
->>  3 files changed, 10 insertions(+), 10 deletions(-)
+>> This patch only contains this tx spin_lock - the rest of the driver
+>> contains changes too.
 >>
->> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
->> index 5233b8f..3ae356f 100644
->> --- a/drivers/net/can/c_can/c_can.c
->> +++ b/drivers/net/can/c_can/c_can.c
->> @@ -233,10 +233,10 @@ static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
->>  		pm_runtime_put_sync(priv->device);
->>  }
->>  
->> -static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
-> 
-> Where does c_can_reset_ram come from? I can't a patch to it in Linus' tree nor in linux-can repository.
+>> e.g: "at91_write(priv, AT91_IER, 1<<  AT91_MB_TX_SINGLE_MB_NUM);"
+>> Only using one mailbox for TX was part of an divide-and-conquer process,
+>> but also because the data sheet errata suggested it for low bw
+>> applications.
+> Don't change two (or more) things at a time. Otherwise you don't know
+> what really helped.
+>
+> Just my 0.01 EUR
+>
+> Wolfgang.
+>
+>
+Hi
 
-It is in the net-next tree and patches have been posted to this list.
+I completly agree, and only one thing is changed.
+The other changes are older.
 
-commit 52cde85acc23f61b09dd0376c61eb891125c6990
-Author: AnilKumar Ch <anilkumar@ti.com>
-Date:   Wed Nov 21 11:14:10 2012 +0530
+BTW testing of the patch is postponed because the test equipment is in 
+use for another test.
+I hope that we will get test time by the end of this week.
 
-    can: c_can: Add d_can raminit support
-
-    Add D_CAN raminit support to C_CAN driver to enable D_CAN RAM,
-    which holds all the message objects during transmission or
-    receiving of data. This initialization/de-initialization should
-    be done in synchronous with D_CAN clock.
-
-    In case of AM335X-EVM (current user of D_CAN driver) message RAM is
-    controlled through control module register for both instances. So
-    control module register details is required to initialization or
-    de-initialization of message RAM according to instance number.
-
-    Control module memory resource is obtained from D_CAN dt node and
-    instance number obtained from device tree aliases node.
-
-    This patch was tested on AM335x-EVM along with pinctrl data addition
-    patch, d_can dt aliases addition and control module data addition.
-    pinctrl data addition is not added to am335x-evm.dts (only supports
-    CPLD profile#0) because d_can1 is supported under CPLD profile#1.
-
-    Signed-off-by: AnilKumar Ch <anilkumar@ti.com>
-    [mkl: fix instance for non DT in probe, cleaned up raminit]
-    Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-Wolfgang.
+regards,
+Henrik
 
