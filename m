@@ -1,42 +1,46 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 3/5] can: Kconfig: switch on CAN_RAW by default
-Date: Mon, 03 Dec 2012 18:43:09 +0100
-Message-ID: <50BCE4AD.5010301@hartkopp.net>
-References: <1354197491-31205-1-git-send-email-mkl@pengutronix.de> <1354197491-31205-4-git-send-email-mkl@pengutronix.de> <50B85681.8030502@hartkopp.net> <50B86BF9.6020202@pengutronix.de> <50B8E6AA.4090209@hartkopp.net> <50BCAB7D.5070604@pengutronix.de>
+From: "krumboeck@universalnet.at" <krumboeck@universalnet.at>
+Subject: Re: [PATCH v2] usb_8dev: Add support for USB2CAN interface from 8
+ devices
+Date: Mon, 03 Dec 2012 21:32:18 +0100
+Message-ID: <50BD0C52.6010606@universalnet.at>
+References: <50BBF73F.9080208@universalnet.at> <50BC5ECB.9070206@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:59154 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755756Ab2LCRnO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Dec 2012 12:43:14 -0500
-In-Reply-To: <50BCAB7D.5070604@pengutronix.de>
+Received: from smtp.xy24.at ([85.126.109.136]:32944 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751008Ab2LCTcd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 3 Dec 2012 14:32:33 -0500
+In-Reply-To: <50BC5ECB.9070206@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, gediminas@8devices.com, info@gerhard-bertelsmann.de
 
-On 03.12.2012 14:39, Marc Kleine-Budde wrote:
+Hi Wolfgang!
 
-> On 11/30/2012 06:02 PM, Oliver Hartkopp wrote:
+>
+> And please also drop the remaining sysfs files for firmware and
+> hardware. I thinks it's enough that the versions are printed when the
+> device is probed.
+
+Systemadministrators often use versions for configuration scripts.
+If you insist I will remove.
+
+>> +/*
+>> + * CAN driver for UAB "8 devices" USB2CAN converter
+>
+> UAB means?
+>
+
+I don't know. I've taken from the homepage. Maybe it is a type of company.
+
+I will remove...
 
 
->> IMO all entries (RAW/BCM/GW) should be enabled by default when CAN is
->> selected. When people really know what they do, the might deselect entries at
->> their own risc ...
-> 
-> YMMV, BCM and GW are for experienced can users. But I can change the
-> patch to enable RAW, BCM and GW on by default.
 
+Thanks for your comments and suggestions.
 
-That would be ok!
-
-The problem is, when an application from an experienced CAN developer hits a
-Linux-box from an inexperienced user.
-
-Trying to help this user to compile / install the missing protocols is a mess.
-So having all 'enabled' by default once CAN is selected is much better.
-
-Tnx,
-Oliver
+regards,
+Bernd
