@@ -1,76 +1,52 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v2] usb_8dev: Add support for USB2CAN interface from 8
  devices
-Date: Tue, 04 Dec 2012 11:07:06 +0100
-Message-ID: <50BDCB4A.5040709@pengutronix.de>
-References: <50BBF73F.9080208@universalnet.at> <50BCB1E8.2070705@pengutronix.de> <50BD0E9F.2060302@universalnet.at>
+Date: Tue, 04 Dec 2012 11:13:56 +0100
+Message-ID: <50BDCCE4.5080901@pengutronix.de>
+References: <50BBF73F.9080208@universalnet.at> <50BCB1E8.2070705@pengutronix.de> <50BD09D1.6040009@universalnet.at> <50BD00A2.8010300@pengutronix.de> <50BD0FD2.5060002@universalnet.at>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig009AA2D87DCACC0C6AA59DF8"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <50BD0E9F.2060302-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org" <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+ boundary="------------enig8451F61F1AC46B1860A07AA7"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45018 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751287Ab2LDKOD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Dec 2012 05:14:03 -0500
+In-Reply-To: <50BD0FD2.5060002@universalnet.at>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "krumboeck@universalnet.at" <krumboeck@universalnet.at>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig009AA2D87DCACC0C6AA59DF8
-Content-Type: text/plain; charset=ISO-8859-15
+--------------enig8451F61F1AC46B1860A07AA7
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 12/03/2012 09:42 PM, krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org wrote:
-> Hi Marc!
->=20
->=20
->>> +/* Send open command to device */
->>> +static int usb_8dev_cmd_open(struct usb_8dev *dev)
->>> +{
->>> +    struct can_bittiming *bt =3D &dev->can.bittiming;
->>> +    struct usb_8dev_cmd_msg outmsg;
->>> +    struct usb_8dev_cmd_msg inmsg;
->>> +    u32 flags =3D 0;
->>> +    u32 beflags;
->>> +    u16 bebrp;
->>> +    u32 ctrlmode =3D dev->can.ctrlmode;
->>> +
->>> +    if (ctrlmode & CAN_CTRLMODE_LOOPBACK)
->>> +        flags |=3D USB_8DEV_LOOPBACK;
->>> +    if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
->>> +        flags |=3D USB_8DEV_SILENT;
->>> +    if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
->>> +        flags |=3D USB_8DEV_DISABLE_AUTO_RESTRANS;
->>> +
->>> +    flags |=3D USB_8DEV_STATUS_FRAME;
->>> +
->>> +    memset(&outmsg, 0, sizeof(struct usb_8dev_cmd_msg));
->>> +    outmsg.command =3D USB_8DEV_OPEN;
->>> +    outmsg.opt1 =3D USB_8DEV_BAUD_MANUAL;
->>> +    outmsg.data[0] =3D (bt->prop_seg + bt->phase_seg1);
->>> +    outmsg.data[1] =3D bt->phase_seg2;
->>> +    outmsg.data[2] =3D bt->sjw;
+Hello,
+
+please leave the mailinglist on Cc
+
+On 12/03/2012 09:47 PM, krumboeck@universalnet.at wrote:
+>>>
+>>> Gives following error:
+>>> usb_8dev.c:979:27: warning: assignment discards =E2=80=98const=E2=80=99=
+ qualifier from
+>>> pointer target type [enabled by default]
 >>
->> But you should not use usb_bulk_msg() to send data which is on the
->> stack, please use you already allocated memory in priv or kmalloc
->> something here.
->=20
-> The function usb_8dev_send_cmd copies the data to dev->cmd_msg_buffer
-> (allocated with kzalloc, GFP_KERNEL).
-
-Okay, then you might want to set outmsg via C99 initializers.
-
->>> +
->>> +    /* BRP */
->>> +    bebrp =3D cpu_to_be16((u16) bt->brp);
->>> +    memcpy(&outmsg.data[3], &bebrp, sizeof(bebrp));
+>> which kernel are you using?
 >>
->> Are you sure about the endianess? Some data types are BE some are LE?
 >=20
-> Where is LE used?
+> Linux debian 3.2.0-4-amd64 #1 SMP Debian 3.2.32-1 x86_64 GNU/Linux
 
-Opps, yeah right. only BE.
+The struct definition has been changed with commit:
 
+194b9a4 can: mark bittiming_const pointer in struct can_priv as const
+
+which was first released with v3.6-rc1.
+
+Please develop and send patches against David Miller's net-next/master,
+or even better, linux-can-next/master.
 
 Marc
 
@@ -81,7 +57,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig009AA2D87DCACC0C6AA59DF8
+--------------enig8451F61F1AC46B1860A07AA7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -90,13 +66,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-iEYEARECAAYFAlC9y0oACgkQjTAFq1RaXHMKogCfbZ2ZfnNLneY9Qhrd/UgvOC8U
-QXAAnRrYwofw+YCYOxV6SDsTseSYSHz6
-=8sc6
+iEYEARECAAYFAlC9zOgACgkQjTAFq1RaXHPFugCgh8St/Xqe214HSR/19pW/1qS1
+8rQAn2LPrxC3J95beh+w7kx4UkkAD+a/
+=VSx3
 -----END PGP SIGNATURE-----
 
---------------enig009AA2D87DCACC0C6AA59DF8--
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--------------enig8451F61F1AC46B1860A07AA7--
