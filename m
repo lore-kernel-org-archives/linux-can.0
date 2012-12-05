@@ -1,126 +1,235 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v3] usb_8dev: Add support for USB2CAN interface from 8
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: [PATCH v4] usb_8dev: Add support for USB2CAN interface from 8
  devices
-Date: Wed, 05 Dec 2012 08:24:09 +0100
-Message-ID: <50BEF699.8000402@grandegger.com>
-References: <50BE6092.9050602@universalnet.at> <50BE60AD.10307@grandegger.com> <50BE773F.6060409@universalnet.at>
+Date: Wed, 05 Dec 2012 11:13:44 +0100
+Message-ID: <50BF1E58.4090603@grandegger.com>
+References: <50BE7C7E.8080406@universalnet.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:60478 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751590Ab2LEHYY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Dec 2012 02:24:24 -0500
-In-Reply-To: <50BE773F.6060409@universalnet.at>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Bernd Krumboeck <krumboeck@universalnet.at>
-Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <50BE7C7E.8080406-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Cc: "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-On 12/04/2012 11:20 PM, Bernd Krumboeck wrote:
-> Hi Wolfgang!
-> 
-> 
-> Am 2012-12-04 21:44, schrieb Wolfgang Grandegger:
->> On 12/04/2012 09:44 PM, krumboeck@universalnet.at wrote:
->>> Add device driver for USB2CAN interface from "8 devices"
->>> (http://www.8devices.com).
->>>
->>> Signed-off-by: Bernd Krumboeck <krumboeck@universalnet.at>
->>> ---
->>>   drivers/net/can/usb/Kconfig    |    6 +
->>>   drivers/net/can/usb/Makefile   |    1 +
->>>   drivers/net/can/usb/usb_8dev.c | 1093
->>> ++++++++++++++++++++++++++++++++++++++++
->>>   3 files changed, 1100 insertions(+)
->>>   create mode 100644 drivers/net/can/usb/usb_8dev.c
->>>
->>> diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
->>> index a4e4bee..2162233 100644
->>> --- a/drivers/net/can/usb/Kconfig
->>> +++ b/drivers/net/can/usb/Kconfig
->>> @@ -48,4 +48,10 @@ config CAN_PEAK_USB
->>>         This driver supports the PCAN-USB and PCAN-USB Pro adapters
->>>         from PEAK-System Technik (http://www.peak-system.com).
->>>   +config CAN_8DEV_USB
->>> +    tristate "8 devices USB2CAN interface"
->>> +    ---help---
->>> +      This driver supports the USB2CAN interface
->>> +      from 8 devices (http://www.8devices.com).
->>> +
->>>   endmenu
->>> diff --git a/drivers/net/can/usb/Makefile b/drivers/net/can/usb/Makefile
->>> index 80a2ee4..becef46 100644
->>> --- a/drivers/net/can/usb/Makefile
->>> +++ b/drivers/net/can/usb/Makefile
->>> @@ -6,5 +6,6 @@ obj-$(CONFIG_CAN_EMS_USB) += ems_usb.o
->>>   obj-$(CONFIG_CAN_ESD_USB2) += esd_usb2.o
->>>   obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb.o
->>>   obj-$(CONFIG_CAN_PEAK_USB) += peak_usb/
->>> +obj-$(CONFIG_CAN_8DEV_USB) += usb_8dev.o
->>>    ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
->>
->> The patch looks white-space mangled.
-> 
-> The patch is correct, only thunderbird hates me.
-> Sorry, I will try it again.
+Hi Bernd,
 
-I use the add-on "Toggle Word Wrap". Anyway, git send-email is better.
+still a few issues with error handling.
 
->>> +        switch (state) {
->>> +        case USB_8DEV_STATUSMSG_ACK:
->>> +            cf->can_id |= CAN_ERR_ACK;
->>> +            tx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_CRC:
->>> +            cf->data[2] |= CAN_ERR_PROT_BIT;
->>> +            rx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_BIT0:
->>> +            cf->data[2] |= CAN_ERR_PROT_BIT0;
->>> +            tx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_BIT1:
->>> +            cf->data[2] |= CAN_ERR_PROT_BIT1;
->>> +            tx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_FORM:
->>> +            cf->data[2] |= CAN_ERR_PROT_FORM;
->>> +            rx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_STUFF:
->>> +            cf->data[2] |= CAN_ERR_PROT_STUFF;
->>> +            rx_errors = 1;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_OVERRUN:
->>> +            cf->data[1] = (txerr > rxerr) ?
->>> +                CAN_ERR_CRTL_TX_OVERFLOW :
->>> +                CAN_ERR_CRTL_RX_OVERFLOW;
->>> +            cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
->>> +            stats->rx_over_errors++;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_BUSLIGHT:
->>> +            cf->data[1] = (txerr > rxerr) ?
->>> +                CAN_ERR_CRTL_TX_WARNING :
->>> +                CAN_ERR_CRTL_RX_WARNING;
->>> +            dev->can.can_stats.error_warning++;
->>> +            break;
->>> +        case USB_8DEV_STATUSMSG_BUSHEAVY:
->>> +            cf->data[1] = (txerr > rxerr) ?
->>> +                CAN_ERR_CRTL_TX_PASSIVE :
->>> +                CAN_ERR_CRTL_RX_PASSIVE;
->>> +            dev->can.can_stats.error_passive++;
->>> +            break;
->>> +        default:
->>> +            cf->data[2] |= CAN_ERR_PROT_UNSPEC;
->>
->> Did you see this happen?
-> 
-> No. I'll remove default case.
+> +/* Send open command to device */
+> +static int usb_8dev_cmd_open(struct usb_8dev *dev)
+> +{
+> +    struct can_bittiming *bt = &dev->can.bittiming;
+> +    struct usb_8dev_cmd_msg outmsg;
+> +    struct usb_8dev_cmd_msg inmsg;
+> +    u32 flags = 0;
+> +    u32 beflags;
+> +    u16 bebrp;
+> +    u32 ctrlmode = dev->can.ctrlmode;
+> +
+> +    if (ctrlmode & CAN_CTRLMODE_LOOPBACK)
+> +        flags |= USB_8DEV_LOOPBACK;
+> +    if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
+> +        flags |= USB_8DEV_SILENT;
+> +    if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+> +        flags |= USB_8DEV_DISABLE_AUTO_RESTRANS;
+> +
+> +    flags |= USB_8DEV_STATUS_FRAME;
+> +
+> +    memset(&outmsg, 0, sizeof(struct usb_8dev_cmd_msg));
 
-I would prefer adding a netdev_warn message here. Sending an empty bus
-error message upstream is ok as we konw that is an error.
+sizeof(outmsg) is better, here and maybe in other places.
+
+> +    outmsg.command = USB_8DEV_OPEN;
+> +    outmsg.opt1 = USB_8DEV_BAUD_MANUAL;
+> +    outmsg.data[0] = (bt->prop_seg + bt->phase_seg1);
+
+Minor issue. Brackets not needed.
+
+> +    outmsg.data[1] = bt->phase_seg2;
+> +    outmsg.data[2] = bt->sjw;
+> +
+> +    /* BRP */
+> +    bebrp = cpu_to_be16((u16) bt->brp);
+> +    memcpy(&outmsg.data[3], &bebrp, sizeof(bebrp));
+> +
+> +    /* flags */
+> +    beflags = cpu_to_be32(flags);
+> +    memcpy(&outmsg.data[5], &beflags, sizeof(beflags));
+> +
+> +    return usb_8dev_send_cmd(dev, &outmsg, &inmsg);
+> +}
+...
+> +
+> +/* Read data and status frames */
+> +static void usb_8dev_rx_can_msg(struct usb_8dev *dev,
+> +                struct usb_8dev_rx_msg *msg)
+> +{
+> +    struct can_frame *cf;
+> +    struct sk_buff *skb;
+> +    struct net_device_stats *stats = &dev->netdev->stats;
+> +
+> +    if (msg->type == USB_8DEV_TYPE_CAN_FRAME) {
+> +        skb = alloc_can_skb(dev->netdev, &cf);
+> +        if (!skb)
+> +            return;
+> +
+> +        cf->can_id = be32_to_cpu(msg->id);
+> +        cf->can_dlc = get_can_dlc(msg->dlc & 0xF);
+> +
+> +        if (msg->flags & USB_8DEV_EXTID)
+> +            cf->can_id |= CAN_EFF_FLAG;
+> +
+> +        if (msg->flags & USB_8DEV_RTR)
+> +            cf->can_id |= CAN_RTR_FLAG;
+> +        else
+> +            memcpy(cf->data, msg->data, cf->can_dlc);
+> +    } else if (msg->type == USB_8DEV_TYPE_ERROR_FRAME &&
+> +           msg->flags == USB_8DEV_ERR_FLAG) {
+> +
+> +        /*
+> +         * Error message:
+> +         * byte 0: Status
+> +         * byte 1: bit   7: Receive Passive
+> +         * byte 1: bit 0-6: Receive Error Counter
+> +         * byte 2: Transmit Error Counter
+> +         * byte 3: Always 0 (maybe reserved for future use)
+> +         */
+> +
+> +        u8 state = msg->data[0];
+> +        u8 rxerr = msg->data[1] & USB_8DEV_RP_MASK;
+> +        u8 txerr = msg->data[2];
+> +        int rx_errors = 0;
+> +        int tx_errors = 0;
+> +
+> +        skb = alloc_can_err_skb(dev->netdev, &cf);
+> +        if (!skb)
+> +            return;
+> +
+> +        switch (state) {
+> +        case USB_8DEV_STATUSMSG_OK:
+> +            dev->can.state = CAN_STATE_ERROR_ACTIVE;
+> +            cf->can_id |= CAN_ERR_PROT;
+> +            cf->data[2] = CAN_ERR_PROT_ACTIVE;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_BUSOFF:
+> +            dev->can.state = CAN_STATE_BUS_OFF;
+> +            cf->can_id |= CAN_ERR_BUSOFF;
+> +            can_bus_off(dev->netdev);
+> +            break;
+> +        case USB_8DEV_STATUSMSG_OVERRUN:
+
+Overrun is not a bus-erroror state change. It should be treated
+separately. More below...
+
+> +        case USB_8DEV_STATUSMSG_BUSLIGHT:
+> +        case USB_8DEV_STATUSMSG_BUSHEAVY:
+> +            dev->can.state = CAN_STATE_ERROR_WARNING;
+
+Please set the state below when you re-treat BUSLIGHT and BUSHEAVY.
+
+> +            cf->can_id |= CAN_ERR_CRTL;
+> +            break;
+> +        default:
+> +            dev->can.state = CAN_STATE_ERROR_WARNING;
+
+Bus-errors do not necessarily change the state. Please remove.
+
+> +            cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+> +            dev->can.can_stats.bus_error++;
+> +            break;
+> +        }
+> +
+> +        switch (state) {
+> +        case USB_8DEV_STATUSMSG_ACK:
+> +            cf->can_id |= CAN_ERR_ACK;
+> +            tx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_CRC:
+> +            cf->data[2] |= CAN_ERR_PROT_BIT;
+> +            rx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_BIT0:
+> +            cf->data[2] |= CAN_ERR_PROT_BIT0;
+> +            tx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_BIT1:
+> +            cf->data[2] |= CAN_ERR_PROT_BIT1;
+> +            tx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_FORM:
+> +            cf->data[2] |= CAN_ERR_PROT_FORM;
+> +            rx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_STUFF:
+> +            cf->data[2] |= CAN_ERR_PROT_STUFF;
+> +            rx_errors = 1;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_OVERRUN:
+> +            cf->data[1] = (txerr > rxerr) ?
+> +                CAN_ERR_CRTL_TX_OVERFLOW :
+> +                CAN_ERR_CRTL_RX_OVERFLOW;
+> +            cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
+> +            stats->rx_over_errors++;
+
+The overrun normally means the a message could not be received because
+the hardware was busy (FIFO full). It does not depend on the tx/rxerrs
+and we only set CAN_ERR_CRTL_RX_OVERFLOW. As good example please check:
+
+http://lxr.linux.no/#linux+v3.6.9/drivers/net/can/usb/ems_usb.c#L335
+
+> +            break;
+> +        case USB_8DEV_STATUSMSG_BUSLIGHT:
+
+               dev->can.state = CAN_STATE_ERROR_WARNING;
+
+> +            cf->data[1] = (txerr > rxerr) ?
+> +                CAN_ERR_CRTL_TX_WARNING :
+> +                CAN_ERR_CRTL_RX_WARNING;
+> +            dev->can.can_stats.error_warning++;
+> +            break;
+> +        case USB_8DEV_STATUSMSG_BUSHEAVY:
+
+               dev->can.state = CAN_STATE_ERROR_PASSIVE;
+
+> +            cf->data[1] = (txerr > rxerr) ?
+> +                CAN_ERR_CRTL_TX_PASSIVE :
+> +                CAN_ERR_CRTL_RX_PASSIVE;
+> +            dev->can.can_stats.error_passive++;
+> +            break;
+> +        }
+> +
+> +        if (tx_errors) {
+> +            cf->data[2] |= CAN_ERR_PROT_TX;
+> +            stats->tx_errors++;
+> +        }
+> +
+> +        if (rx_errors)
+> +            stats->rx_errors++;
+> +
+> +        cf->data[6] = txerr;
+> +        cf->data[7] = rxerr;
+> +
+> +        dev->bec.txerr = txerr;
+> +        dev->bec.rxerr = rxerr;
+> +
+> +    } else {
+> +        netdev_warn(dev->netdev, "frame type %d unknown",
+> +             msg->type);
+> +        return;
+> +    }
+> +
+> +    netif_rx(skb);
+> +
+> +    stats->rx_packets++;
+> +    stats->rx_bytes += cf->can_dlc;
+> +}
 
 Wolfgang.
 
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
