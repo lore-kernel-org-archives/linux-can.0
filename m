@@ -1,158 +1,72 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
-Subject: Re: [PATCH v3] usb_8dev: Add support for USB2CAN interface from 8
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v4] usb_8dev: Add support for USB2CAN interface from 8
  devices
-Date: Wed, 05 Dec 2012 18:36:02 +0100
-Message-ID: <50BF8602.1070909@universalnet.at>
-References: <50BE6092.9050602@universalnet.at> <50BE6F0E.80308@pengutronix.de>
+Date: Wed, 05 Dec 2012 22:32:25 +0100
+Message-ID: <50BFBD69.40009@pengutronix.de>
+References: <50BE7C7E.8080406@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:42129 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751599Ab2LERhj (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 5 Dec 2012 12:37:39 -0500
-In-Reply-To: <50BE6F0E.80308@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig8920092696B643D6DDA425EF"
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <50BE7C7E.8080406-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Cc: "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Marc!
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig8920092696B643D6DDA425EF
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
+On 12/04/2012 11:43 PM, Bernd Krumboeck wrote:
+> Add device driver for USB2CAN interface from "8 devices"
+> (http://www.8devices.com).
 
->> +    default:
->> +        netdev_info(netdev, "Rx URB aborted (%d)\n",
->> +             urb->status);
->> +        goto resubmit_urb;
->> +    }
->> +
->> +    while (pos < urb->actual_length) {
->> +        struct usb_8dev_rx_msg *msg;
->> +
->> +        if (pos + sizeof(struct usb_8dev_rx_msg) > urb->actual_length) {
->> +            netdev_err(dev->netdev, "format error\n");
->> +            break;
->
-> is resubmitting the urb the correct way to handle this problem?
+[...]
 
-Suggestions? (maybe CAN_ERR_CRTL_UNSPEC ??)
+> +/* Send data to device */
+> +static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
+> +                      struct net_device *netdev)
+> +{
+> +    struct usb_8dev *dev =3D netdev_priv(netdev);
 
->> +
->> +            stats->tx_dropped++;
->> +        }
->> +    } else {
->> +        /* Slow down tx path */
->> +        if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ||
->> +            dev->free_slots < 5) {
->
-> where's the 5 coming from?
->
+I just noticed, it's unusual to name you private data pointer "dev", I
+suggest to name it priv. Maybe you can rename your private data struct
+to: "struct usb_8dev_priv".
 
- From ems_usb driver.
+> +    struct net_device_stats *stats =3D &netdev->stats;
+> +    struct can_frame *cf =3D (struct can_frame *) skb->data;
+> +    struct usb_8dev_tx_msg *msg;
+> +    struct urb *urb;
+> +    struct usb_8dev_tx_urb_context *context =3D NULL;
 
->> +            netif_stop_queue(netdev);
->> +        }
->> +    }
->> +
->> +    /*
->> +     * Release our reference to this URB, the USB core will eventually
->> free
->> +     * it entirely.
->> +     */
->> +    usb_free_urb(urb);
->> +
->> +    return NETDEV_TX_OK;
->> +
->> +nomem:
->> +    dev_kfree_skb(skb);
->> +    stats->tx_dropped++;
->> +
->> +    return NETDEV_TX_OK;
->> +}
->> +
->> +static int usb_8dev_get_berr_counter(const struct net_device *netdev,
->> +                     struct can_berr_counter *bec)
->> +{
->> +    struct usb_8dev *dev = netdev_priv(netdev);
->> +
->> +    bec->txerr = dev->bec.txerr;
->> +    bec->rxerr = dev->bec.rxerr;
->> +
->> +    return 0;
->> +}
->> +
->> +/* Start USB device */
->> +static int usb_8dev_start(struct usb_8dev *dev)
->> +{
->> +    struct net_device *netdev = dev->netdev;
->> +    int err, i;
->> +
->> +    dev->free_slots = 15; /* initial size */
->
-> there does the 15 come from?
+Marc
 
-ditto
-
->> + * Check device and firmware.
->> + * Set supported modes and bittiming constants.
->> + * Allocate some memory.
->> + */
->> +static int usb_8dev_probe(struct usb_interface *intf,
->> +             const struct usb_device_id *id)
->> +{
->> +    struct net_device *netdev;
->> +    struct usb_8dev *dev;
->> +    int i, err = -ENOMEM;
->> +    u32 version;
->> +    char buf[18];
->
-> where does this 18 come from?
-
-String "USB2CAN converter" + trailing 0.
-
->
->> +    struct usb_device *usbdev = interface_to_usbdev(intf);
->> +
->> +    /* product id looks strange, better we also check iProdukt string */
->
-> iProduct?
-
-Check if usbdev->descriptor.iProduct == "USB2CAN converter".
-
->> +    if (usb_string(usbdev, usbdev->descriptor.iProduct, buf,
->> +               sizeof(buf)) > 0 && strcmp(buf, "USB2CAN converter")) {
->> +        dev_info(&usbdev->dev, "ignoring: not an USB2CAN converter\n");
->> +        return -ENODEV;
->> +    }
->> +
->> +    netdev = alloc_candev(sizeof(struct usb_8dev), MAX_TX_URBS);
->> +    if (!netdev) {
->> +        dev_err(&intf->dev, "Couldn't alloc candev\n");
->> +        return -ENOMEM;
->> +    }
->> +
->> +    dev = netdev_priv(netdev);
->> +
->> +    dev->udev = usbdev;
->> +    dev->netdev = netdev;
->> +
->> +    dev->can.state = CAN_STATE_STOPPED;
->> +    dev->can.clock.freq = USB_8DEV_ABP_CLOCK;
->> +    dev->can.bittiming_const = &usb_8dev_bittiming_const;
->> +    dev->can.do_set_mode = usb_8dev_set_mode;
->> +    dev->can.do_get_berr_counter = usb_8dev_get_berr_counter;
->> +    dev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
->> +                      CAN_CTRLMODE_LISTENONLY |
->> +                      CAN_CTRLMODE_ONE_SHOT;
->
-> Have you actually tested one shot? What happens if a can frame cannot be
-> transmitted?
->
-
-Not really. Can someone explain what one-shot exactly means and what is the correct behavior.
-I've only tested without any other device connected. I got the same errors like in normal mode.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-regards,
-Bernd
+--------------enig8920092696B643D6DDA425EF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlC/vW0ACgkQjTAFq1RaXHNCJQCfUG452EQr8xIOlbWq22ZBu2iv
+mJQAn0StVmKQXSIrfPLPejehjp2HeN77
+=ruf0
+-----END PGP SIGNATURE-----
+
+--------------enig8920092696B643D6DDA425EF--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
