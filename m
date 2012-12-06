@@ -1,91 +1,108 @@
-From: "Mylene Josserand" <Mylene.Josserand@navocap.com>
-Subject: RE: [mcp251x - spi] Blocked to "wait_for_completion"
-Date: Thu, 6 Dec 2012 14:43:26 +0100
-Message-ID: <CA78C307B8F06747967D122FC656B1537FEDF4@SERVEUR0.nvp.local>
-References: <50C0862F.4080309@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [RFC v2 0/7] pch_can/c_can: fix races and add PCH support to
+ c_can
+Date: Thu, 06 Dec 2012 15:02:39 +0100
+Message-ID: <50C0A57F.70304@pengutronix.de>
+References: <1354199987-10350-1-git-send-email-wg@grandegger.com> <4250988.UdN8LQq6de@ws-stein> <50BF85DD.6090809@grandegger.com> <4036287.fuKZ6k5idx@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigF8B310FAAD3C65A3C13EDF29"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bamako.nerim.net ([178.132.17.28]:64850 "EHLO bamako.nerim.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755024Ab2LFNn3 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 08:43:29 -0500
-Content-class: urn:content-classes:message
-In-Reply-To: <50C0862F.4080309@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54070 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754771Ab2LFOCt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 09:02:49 -0500
+In-Reply-To: <4036287.fuKZ6k5idx@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigF8B310FAAD3C65A3C13EDF29
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for your quick answer ! :)
+On 12/06/2012 02:38 PM, Alexander Stein wrote:
+>>> On the second line you can see that the register isn't written at all=
+ (or the=20
+>>> read failed for some reason).
+>>
+>> I assume the latter. Could you please retry reading the register until=
+
+>> the correct value shows up. With some timeout, of course.
+>=20
+> I notices having all error events printed on serial console using
+> pch_uart driver has negative effect (I guess one problem causes
+> another one), so I setup 'dmesg -n1' to reduce serial load before the
+> test. Running the test with just one heartbeat triggered LED set
+> using I2C the test runs without errors. I only see Lots of 'c_can_pci
+> 0000:02:0c.3: can0: write 0x0 to offset 0x2c failed. got: 0x2000' at
+> the beginning. It seems this (reserved?) bit is always 1 no matter
+> what we write. But things start to break when running the test while
+> running 'watch sensors' (sensors queries several temperature sensors
+> via I2C) in a seconds ssh session. First off the driver error
+> messages (omitting the messages as written above):
+
+Hmmm, maybe there is a hardware problem, that would not be the first one
+we've seen in CAN hardware.
+
+> [  384.466217] c_can_pci 0000:02:0c.3: can0: write 0x73 to offset 0x24 =
+failed. got: 0xbc
+[...]
+> [  700.647000] c_can_pci 0000:02:0c.3: can0: write 0x0 to offset 0x0 fa=
+iled. got: 0x88
+
+Your spin lock patches look good. I think it's time to get in contact
+with your Intel support and try to get through to the hardware people
+that can look into the VHDL code.
+
+> As you can see, sometimes it needs several write retries to succeed.
+> Nevertheless my test application detects also some problems:
+
+>> Error on MSG ID 0x252. Got counter 96480 and expected 96466
+>> Error on MSG ID 0x251. Got counter 96480 and expected 96466
+>> Error on MSG ID 0x252. Got counter 101706 and expected 101696
+>> Error on MSG ID 0x251. Got counter 101706 and expected 101696
+> Here were messages missed/dropped for both CAN-IDs.
+
+Drops can happen at the hardware level, rx-overflow, or in the socket
+queueing in linux. Look in the driver if it reports rx-overflows
+properly and look at the stats. There also is a flag that indicates
+frame drop at the linux socket level, but I don't remember it.
+
+>> Error on MSG ID 0x251. Got counter 108673 and expected 108672
+>> Error on MSG ID 0x251. Got counter 108672 and expected 108674
+>> Error on MSG ID 0x251. Got counter 108674 and expected 108673
+>                                      ^^^^^^
+> Here you can see the CAN frame with counter 108673 is read before 10867=
+2.
+
+This is a typical out-of-sequence reception with a
+RX-goes-into-first-free-mailbox hardware. I've implemented the algorithm
+used in the at91 and fixed the one for the ti_hecc.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
->what SPI controller are you using?
->Which SoC are you on?
+--------------enigF8B310FAAD3C65A3C13EDF29
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-We are using a IMX27 and the spi controller is inside I think.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
->Do you have a MCP2510 or a MCP2515?
+iEYEARECAAYFAlDApYMACgkQjTAFq1RaXHM6CwCeKNLLpB57P8q3OeuLWm+1ZWdP
+xjQAnAg25o9a4hQ51OE/44cDd9AoraW3
+=OfmE
+-----END PGP SIGNATURE-----
 
-We have a MCP2515.
-
-
->A lot of fixes have been applied to the driver since v2.6.34, you shou=
-ld
->backport them, too.
-
-Yes, I see it. I have tried to update the MCP driver with a patch that =
-you have wrote to "fix and optimize" this driver. Unfortunately, it did=
- not seem to solve the problem. But I will try to backport the new driv=
-er version.
-
-
->The CAN driver calls into the SPI layer to send a message synchronousl=
-y.
->The SPI layer kicks the SPI driver to send the message, bus, this is
->done asynchronously. In the completion handler of the SPI driver the S=
-PI
->layer is told that the SPI transfer is complete.
-
->In the above described mechanism the SPI layer is waiting with
->wait_for_completion(), the SPI driver will call (either directly, or v=
-ia
->a callback, which has been set by the SPI layer) a complete() which wi=
-ll
->wake up the SPI layer.
-
->If the SPI layer is still in wait_for_completion(), the SPI transfer
->never finished...there's might be a bug in the SPI driver.
-
-Okay. It was what I am thinking of. It was like waiting something...
-
-
->Never seen it.
-
-Arf ! I thought that maybe, it was a bug known that you/someone had fix=
-ed with new versions.
-
->Debug your SPI driver. Especially the completion of a transfer. Hook u=
-p
->a scope to the SPI lines.
-
-Okay. So the spi.c with the wait_for_completion is the spi layer ? My p=
-roblem would not be in this file but in the spi driver (which I do not =
-know where it is but I will search it ! ) ?
-
->Updating the Kernel is always a good idea. Use latest v3.7-rc or newer
->if updating.
-
-Okay ! This was something that I propose to my company. I will maybe tr=
-y directly to update the kernel (so the driver too) !
-I will let you know if I find why it is happening.
-
-
-Thank you again for your answer and your work on the CAN ! :)
-
-
-Myl=E8ne JOSSERAND
-
+--------------enigF8B310FAAD3C65A3C13EDF29--
