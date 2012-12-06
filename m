@@ -1,112 +1,82 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: pch_can: Data transmission stops after dropped packet
-Date: Thu, 06 Dec 2012 18:05:31 +0100
-Message-ID: <2331999.ZYFOYXdjyx@ws-stein>
-References: <loom.20121114T160521-534@post.gmane.org> <50ACABE2.2020306@grandegger.com> <50C0B05F.7020606@grandegger.com>
+Subject: Re: [RFC v2 0/7] pch_can/c_can: fix races and add PCH support to c_can
+Date: Thu, 06 Dec 2012 18:14:12 +0100
+Message-ID: <9545085.epYbjMqEeA@ws-stein>
+References: <1354199987-10350-1-git-send-email-wg@grandegger.com> <4036287.fuKZ6k5idx@ws-stein> <50C0AC38.8080405@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:47180 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:38494 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753734Ab2LFRFn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 12:05:43 -0500
-In-Reply-To: <50C0B05F.7020606@grandegger.com>
+	by vger.kernel.org with ESMTP id S1424524Ab2LFROO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 12:14:14 -0500
+In-Reply-To: <50C0AC38.8080405@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Pellegrini <mikep86@gmail.com>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
 
-Hi Michael,
+Hello Wolfgang,
 
-On Thursday 06 December 2012 15:49:03, Wolfgang Grandegger wrote:
-> > Details of the soak test:
-> > 
-> > There are two systems involved in the test: the PCH-System and an External Node.
-> > The External Node transmits data at a high rate, bringing bus utilization to
-> > ~35%.
-> > The PCH-System also transmits data, in bursts of 10 messages every 5 ms.
-> > Combined, the two systems utilize ~90% of bus bandwidth.
-> > The PCH-System is constantly checking that it is receiving data from the
-> > External Node at the expected rate and in the expected order.
+On Thursday 06 December 2012 15:31:20, Wolfgang Grandegger wrote:
+> >> Error on MSG ID 0x252. Got counter 96480 and expected 96466
+> >> Error on MSG ID 0x251. Got counter 96480 and expected 96466
+> >> Error on MSG ID 0x252. Got counter 101706 and expected 101696
+> >> Error on MSG ID 0x251. Got counter 101706 and expected 101696
+> > Here were messages missed/dropped for both CAN-IDs.
+> 
+> It is interesting that the same number of messages are missing for both
+> IDs... which come from different CAN nodes, right?
 
-So you do a lot of transmit and reception of CAN frames?
+Yep, node 1 sends 0x251 and node 2 sends 0x252.
 
-> On another thread Alexander is reporting problems with the same driver
-> when he runs a I2C application concurrently. Are you able to stress the
-> system in a similar way?
+> Do you see dropped messages with "ip -d -s link show canX"?
+> Did you check if the protocol layer did drop messages. You can
+> use "candump -d" to find that out.
 
-Could you please test with the following patch? Do you see error messages from this patch?
-Thanks!
+My test application says:
+Error on MSG ID 0x251. Got counter 8442 and expected 8427
+Error on MSG ID 0x252. Got counter 8442 and expected 8426
+Error on MSG ID 0x251. Got counter 8794 and expected 8792
+Error on MSG ID 0x252. Got counter 8794 and expected 8791
+Message counters: 0x251: 249982, 0x252: 249980
 
+ip -s -d link show can0:
+3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+    link/can 
+    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0 
+    bitrate 1000000 sample-point 0.700 
+    tq 100 prop-seg 3 phase-seg1 3 phase-seg2 3 sjw 1
+    c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
+    clock 50000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          0          0          0         
+    RX: bytes  packets  errors  dropped overrun mcast   
+    1999980    501239   0       0       0       0      
+    TX: bytes  packets  errors  dropped carrier collsns 
+    8          1        0       0       0       0
+
+candump -d can0,0~0,#ffffffff didn't show anything. I used the filter to reduce the load from that ssh session.
+
+On Thursday 06 December 2012 15:02:39, Marc Kleine-Budde wrote:
+> >> Error on MSG ID 0x251. Got counter 108673 and expected 108672
+> >> Error on MSG ID 0x251. Got counter 108672 and expected 108674
+> >> Error on MSG ID 0x251. Got counter 108674 and expected 108673
+> >                                      ^^^^^^
+> > Here you can see the CAN frame with counter 108673 is read before 108672.
+> 
+> You could add some offset/mask to the counter data of MSG ID 0x252 to
+> see if they get mixed up.
+
+Yep, nice idea. But I've no idea whether I get the possibility to modify the firmware for that.
+
+> This is a typical out-of-sequence reception with a
+> RX-goes-into-first-free-mailbox hardware. I've implemented the algorithm
+> used in the at91 and fixed the one for the ti_hecc.
+
+Marc, do you mean out-of-sequence reception with such mailbox types can happen even with the algorithm used in c_can and at91?
+
+Best regards,
 Alexander
-
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index d63aaa3..da9bbc0 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -1186,6 +1186,7 @@ struct net_device *alloc_c_can_dev(void)
-                                        CAN_CTRLMODE_BERR_REPORTING;
- 
-        spin_lock_init(&priv->lock);
-+       spin_lock_init(&priv->testlock);
- 
-        return dev;
- }
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 3487d5e..2b58b75 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -173,6 +173,7 @@ struct c_can_priv {
-        unsigned int instance;
-        void (*init) (const struct c_can_priv *priv, bool enable);
-        spinlock_t lock;        /* to protect tx and rx message objects */
-+       spinlock_t testlock;    /* to protect tx and rx message objects */
- };
- 
- struct net_device *alloc_c_can_dev(void);
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 2516ea9..0ac4d43 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -74,13 +74,37 @@ static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
- static u16 c_can_pci_read_reg_32bit(struct c_can_priv *priv,
-                                    enum reg index)
- {
--       return (u16)ioread32(priv->base + 2 * priv->regs[index]);
-+       unsigned long flags;
-+       u16 reg;
-+
-+       spin_lock_irqsave(&priv->testlock, flags);
-+       reg = (u16)ioread32(priv->base + 2 * priv->regs[index]);
-+       spin_unlock_irqrestore(&priv->testlock, flags);
-+
-+       return reg;
- }
- 
- static void c_can_pci_write_reg_32bit(struct c_can_priv *priv,
-                                      enum reg index, u16 val)
- {
--       iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
-+       u16 reg;
-+       unsigned long flags;
-+       int retries;
-+
-+       retries = 0;
-+
-+       spin_lock_irqsave(&priv->testlock, flags);
-+
-+       do
-+       {
-+               iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
-+               reg = (u16)ioread32(priv->base + 2 * priv->regs[index]);
-+               if (reg != val)
-+               {
-+                       netdev_err(priv->dev, "write 0x%x to offset 0x%x failed. got: 0x%x\n", val, 2 * priv->regs[index], reg);
-+               }
-+       } while ((reg != val) && (retries++ < 20));
-+       spin_unlock_irqrestore(&priv->testlock, flags);
- }
- 
- static void c_can_pci_reset_pch(const struct c_can_priv *priv, bool enable)
 
