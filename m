@@ -1,129 +1,71 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [mcp251x - spi] Blocked to "wait_for_completion"
-Date: Thu, 06 Dec 2012 15:21:52 +0100
-Message-ID: <50C0AA00.204@pengutronix.de>
-References: <CA78C307B8F06747967D122FC656B1537FEDF4@SERVEUR0.nvp.local>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Thu, 06 Dec 2012 15:23:27 +0100
+Message-ID: <50C0AA5F.5070305@pengutronix.de>
+References: <loom.20121114T160521-534@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or  g> <loom.20121121T162041-774@p  ost.gmane.org> <50ACF9C0.8050206@grandegger.com> <loom.20121121T170446-911@post.gmane.org> <50AD042B.3020305 @grandegger.com> <loom.20121121T184014-391@post.gmane.org> <50AD319E.2000209@grandegger.com> <loom.20121121T215717-10 6@post.gmane.org> <loom.20121123T150627-133@post.gmane.org> <50AF8C01.6060 809@grandegger.com> <loom.20121123T155746-12@post.gmane.org> <50AFABB1.7080 507@grandegger.com> <50AFAFF0.9030706@grandegger.com> <loom.20121123T184133-638@post.gmane.org> <50B2449B.806  0708@grandegger.com> <loom.20121126T154645-335@post.gmane.org> <50B38AFB.70209@grandegger.com> <loom.20121126T181452
+ -657@post.gmane.org> <50B3B162.9020905@grandegger.com> <50B751D7.6060106@grandeg ger.com> <loom.20121129T150945-987@post.gmane.org> <loom.20121206T150229-86@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig99FA86A042C21FBA83B50087"
+ boundary="------------enig6D9C5E73B3FACED74F15A68B"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57218 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45456 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751321Ab2LFOV6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 09:21:58 -0500
-In-Reply-To: <CA78C307B8F06747967D122FC656B1537FEDF4@SERVEUR0.nvp.local>
+	with ESMTP id S932710Ab2LFOX3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 09:23:29 -0500
+In-Reply-To: <loom.20121206T150229-86@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mylene Josserand <Mylene.Josserand@navocap.com>
+To: Michael Pellegrini <mikep86@gmail.com>
 Cc: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig99FA86A042C21FBA83B50087
+--------------enig6D9C5E73B3FACED74F15A68B
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 12/06/2012 02:43 PM, Mylene Josserand wrote:
->> what SPI controller are you using? Which SoC are you on?
+On 12/06/2012 03:20 PM, Michael Pellegrini wrote:
+> Michael Pellegrini <mikep86 <at> gmail.com> writes:
 >=20
-> We are using a IMX27 and the spi controller is inside I think.
+>>> I have implemented a better solution now using different sets of
+>>> registers for tx and rx. This avoids locking in the RX path as well.
+>>> Furthermore, pch_can now uses spin_[un]lock_bh. Would be nice if you
+>>> could give the pch_can and c_can_pci driver a try when time permits.
+>>
+>> Great! I'm happy to test these drivers out.  In addition to testing
+>> these drivers through my application, I'm looking at creating a soak t=
+est to
+>> really push the interface (and the driver) hard.  That test will proba=
+bly be
+>> ready early next week.  I will get back to you with the results.
+>=20
+> I have some results. =20
+>=20
+> The good news: The c_can driver appears to work very well.  It has been=
+ running
+> successfully under the soak test for 18 hours and counting.
+>=20
+> The bad news: The pch_can driver is exhibiting the transmission problem=
+ again.
+> The soak test causes the driver to fail within minutes.
 
-uuuhhh....2.6.32 is pretty old for an imx27. There are probably a lot of
-spi fixes, too.
+We want to kick the pch_can driver anyways.
 
+> Details of the soak test:
 >=20
->> Do you have a MCP2510 or a MCP2515?
->=20
-> We have a MCP2515.
->=20
->=20
->> A lot of fixes have been applied to the driver since v2.6.34, you
->> should backport them, too.
->=20
-> Yes, I see it. I have tried to update the MCP driver with a patch
-> that you have wrote to "fix and optimize" this driver. Unfortunately,
-> it did not seem to solve the problem. But I will try to backport the
-> new driver version.
+> There are two systems involved in the test: the PCH-System and an Exter=
+nal Node.
+> The External Node transmits data at a high rate, bringing bus utilizati=
+on to
+> ~35%.
+> The PCH-System also transmits data, in bursts of 10 messages every 5 ms=
+=2E
+> Combined, the two systems utilize ~90% of bus bandwidth.
+> The PCH-System is constantly checking that it is receiving data from th=
+e
+> External Node at the expected rate and in the expected order.
 
-I suggest to cherry-pick the patches from your kernel to the current
-one:
-
-3c8ac0f can: remove __dev* attributes
-cab32f3 can: mcp251x: avoid repeated frame bug
-194b9a4 can: mark bittiming_const pointer in struct can_priv as const
-c2fd03a drivers: net: Remove casts to same type
-aabdfd6 can: replace the dev_dbg/info/err/... with the new netdev_xxx mac=
-ros
-34206f2 can: mcp251x: Allow pass IRQ flags through platform data.
-58a69cb workqueue, freezer: unify spelling of 'freeze' + 'able' to 'freez=
-able'
-b9958a9 can: mcp251x: fix reception of standard RTR frames
-612eef4 can: mcp251x: fix generation of error frames
-5601b2d can: mcp251x: fix endless loop in interrupt handler if CANINTF_ME=
-RRF is set
-9c473fc can: mcp251x: optimize 2515, rx int gets cleared automatically
-beab675 can: mcp251x: define helper functions mcp251x_is_2510, mcp251x_is=
-_2515
-f1f8c6c can: mcp251x: Don't use pdata->model for chip selection anymore
-d3cd156 can: mcp251x: write intf only when needed
-7e15de3 can: mcp251x: read-modify-write eflag only when needed
-f3a3ed3 can: mcp251x: allow to read two registers in one spi transfer
-711e4d6 can: mcp251x: increase rx_errors on overflow, not only rx_over_er=
-rors
-57d3c7b can: mcp251x: fix NOHZ local_softirq_pending 08 warning
-1ae5dc3 net: trans_start cleanups
-829e001 Fix some #includes in CAN drivers (rebased for net-next-2.6)
-e446630 Add hotplug support to mcp251x driver
-5a0e3ad include cleanup: Update gfp.h and slab.h includes to prepare for =
-breaking implicit slab.h inclusion from percpu.h
-bf66f37 can: mcp251x: Move to threaded interrupts instead of workqueues.
-ad72c34 can: Proper ctrlmode handling for CAN devices
-3ccd4c6 can: Unify droping of invalid tx skbs and netdev stats
-ce739b4 drivers/net/can: Correct NULL test
-c7cd606 can: Fix data length code handling in rx path
-615534b can: fix setting mcp251x bit timing on open
-e000016 can: Driver for the Microchip MCP251x SPI CAN controllers
-
-But you have to omit some that are not compatible with your kernel.
-
->> The CAN driver calls into the SPI layer to send a message
->> synchronously. The SPI layer kicks the SPI driver to send the
->> message, bus, this is done asynchronously. In the completion
->> handler of the SPI driver the SPI layer is told that the SPI
->> transfer is complete.
->=20
->> In the above described mechanism the SPI layer is waiting with=20
->> wait_for_completion(), the SPI driver will call (either directly,
->> or via a callback, which has been set by the SPI layer) a
->> complete() which will wake up the SPI layer.
->=20
->> If the SPI layer is still in wait_for_completion(), the SPI
->> transfer never finished...there's might be a bug in the SPI
->> driver.
->=20
-> Okay. It was what I am thinking of. It was like waiting something...
->=20
->=20
->> Never seen it.
->=20
-> Arf ! I thought that maybe, it was a bug known that you/someone had
-> fixed with new versions.
->=20
->> Debug your SPI driver. Especially the completion of a transfer.
->> Hook up a scope to the SPI lines.
->=20
-> Okay. So the spi.c with the wait_for_completion is the spi layer ? My
-> problem would not be in this file but in the spi driver (which I do
-> not know where it is but I will search it ! ) ?
-
-Maybe there is the same mechanism in the spi driver, too.
-
->> Updating the Kernel is always a good idea. Use latest v3.7-rc or
->> newer if updating.
->=20
-> Okay ! This was something that I propose to my company. I will maybe
-> try directly to update the kernel (so the driver too) ! I will let
-> you know if I find why it is happening.
+Which patches do you have applied to the c_can driver?
 
 Marc
 
@@ -134,7 +76,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig99FA86A042C21FBA83B50087
+--------------enig6D9C5E73B3FACED74F15A68B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -143,9 +85,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-iEYEARECAAYFAlDAqgMACgkQjTAFq1RaXHMC1wCfaRfXkdFQnOANOhPMqRx237c4
-YdkAn3aLtV6m2dAFsOkz4US1/w5QXt6V
-=bw9L
+iEYEARECAAYFAlDAql8ACgkQjTAFq1RaXHOoOwCfXrypAwTcI8ua1pJFVRFc5VWg
+JhIAoIH7GsaXGMAo4aPSTweqhJMsnB17
+=YHSc
 -----END PGP SIGNATURE-----
 
---------------enig99FA86A042C21FBA83B50087--
+--------------enig6D9C5E73B3FACED74F15A68B--
