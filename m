@@ -1,108 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC v2 0/7] pch_can/c_can: fix races and add PCH support to
- c_can
-Date: Thu, 06 Dec 2012 15:02:39 +0100
-Message-ID: <50C0A57F.70304@pengutronix.de>
-References: <1354199987-10350-1-git-send-email-wg@grandegger.com> <4250988.UdN8LQq6de@ws-stein> <50BF85DD.6090809@grandegger.com> <4036287.fuKZ6k5idx@ws-stein>
+From: Michael Pellegrini <mikep86@gmail.com>
+Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
+Date: Thu, 6 Dec 2012 14:20:08 +0000 (UTC)
+Message-ID: <loom.20121206T150229-86@post.gmane.org>
+References: <loom.20121114T160521-534@post.gmane.org> <loom.20121120T151831-134@post.gmane.org> <50ABABDE.8060503@grandegger.com> <loom.20121120T192159-770@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or  g> <loom.20121121T162041-774@p  ost.gmane.org> <50ACF9C0.8050206@grandegger.com> <loom.20121121T170446-911@post.gmane.org> <50AD042B.3020305 @grandegger.com> <loom.20121121T184014-391@post.gmane.org> <50AD319E.2000209@grandegger.com> <loom.20121121T215717-10 6@post.gmane.org> <loom.20121123T150627-133@post.gmane.org> <50AF8C01.6060 809@grandegger.com> <loom.20121123T155746-12@post.gmane.org> <50AFABB1.7080 507@grandegger.com> <50AFAFF0.9030706@grandegger.com> <loom.20121123T184133-638@post.gmane.org> <50B2449B.806
+   0708@grandegger.com> <loom.20121126T154645-335@post.gmane.org> <50B38AFB.70209@grandegger.com> <loom.20121126T181452-657@post.gmane.org> <50B3B162.9020905@grandegger.com> <50B751D7.6060106@grandegger.com> <loom.20121129T150945-987@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigF8B310FAAD3C65A3C13EDF29"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54070 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754771Ab2LFOCt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 09:02:49 -0500
-In-Reply-To: <4036287.fuKZ6k5idx@ws-stein>
+Received: from plane.gmane.org ([80.91.229.3]:60538 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932710Ab2LFOU1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 6 Dec 2012 09:20:27 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TgcJY-0003o6-HZ
+	for linux-can@vger.kernel.org; Thu, 06 Dec 2012 15:20:36 +0100
+Received: from 96.45.208.254 ([96.45.208.254])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 06 Dec 2012 15:20:36 +0100
+Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 06 Dec 2012 15:20:36 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, bhupesh.sharma@st.com, tomoya.rohm@gmail.com
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF8B310FAAD3C65A3C13EDF29
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Michael Pellegrini <mikep86 <at> gmail.com> writes:
 
-On 12/06/2012 02:38 PM, Alexander Stein wrote:
->>> On the second line you can see that the register isn't written at all=
- (or the=20
->>> read failed for some reason).
->>
->> I assume the latter. Could you please retry reading the register until=
+> > I have implemented a better solution now using different sets of
+> > registers for tx and rx. This avoids locking in the RX path as well.
+> > Furthermore, pch_can now uses spin_[un]lock_bh. Would be nice if you
+> > could give the pch_can and c_can_pci driver a try when time permits.
+> 
+> Great! I'm happy to test these drivers out.  In addition to testing
+> these drivers through my application, I'm looking at creating a soak test to
+> really push the interface (and the driver) hard.  That test will probably be
+> ready early next week.  I will get back to you with the results.
 
->> the correct value shows up. With some timeout, of course.
->=20
-> I notices having all error events printed on serial console using
-> pch_uart driver has negative effect (I guess one problem causes
-> another one), so I setup 'dmesg -n1' to reduce serial load before the
-> test. Running the test with just one heartbeat triggered LED set
-> using I2C the test runs without errors. I only see Lots of 'c_can_pci
-> 0000:02:0c.3: can0: write 0x0 to offset 0x2c failed. got: 0x2000' at
-> the beginning. It seems this (reserved?) bit is always 1 no matter
-> what we write. But things start to break when running the test while
-> running 'watch sensors' (sensors queries several temperature sensors
-> via I2C) in a seconds ssh session. First off the driver error
-> messages (omitting the messages as written above):
+I have some results.  
 
-Hmmm, maybe there is a hardware problem, that would not be the first one
-we've seen in CAN hardware.
+The good news: The c_can driver appears to work very well.  It has been running
+successfully under the soak test for 18 hours and counting.
 
-> [  384.466217] c_can_pci 0000:02:0c.3: can0: write 0x73 to offset 0x24 =
-failed. got: 0xbc
-[...]
-> [  700.647000] c_can_pci 0000:02:0c.3: can0: write 0x0 to offset 0x0 fa=
-iled. got: 0x88
+The bad news: The pch_can driver is exhibiting the transmission problem again.
+The soak test causes the driver to fail within minutes.
 
-Your spin lock patches look good. I think it's time to get in contact
-with your Intel support and try to get through to the hardware people
-that can look into the VHDL code.
+Details of the soak test:
 
-> As you can see, sometimes it needs several write retries to succeed.
-> Nevertheless my test application detects also some problems:
+There are two systems involved in the test: the PCH-System and an External Node.
+The External Node transmits data at a high rate, bringing bus utilization to
+~35%.
+The PCH-System also transmits data, in bursts of 10 messages every 5 ms.
+Combined, the two systems utilize ~90% of bus bandwidth.
+The PCH-System is constantly checking that it is receiving data from the
+External Node at the expected rate and in the expected order.
 
->> Error on MSG ID 0x252. Got counter 96480 and expected 96466
->> Error on MSG ID 0x251. Got counter 96480 and expected 96466
->> Error on MSG ID 0x252. Got counter 101706 and expected 101696
->> Error on MSG ID 0x251. Got counter 101706 and expected 101696
-> Here were messages missed/dropped for both CAN-IDs.
-
-Drops can happen at the hardware level, rx-overflow, or in the socket
-queueing in linux. Look in the driver if it reports rx-overflows
-properly and look at the stats. There also is a flag that indicates
-frame drop at the linux socket level, but I don't remember it.
-
->> Error on MSG ID 0x251. Got counter 108673 and expected 108672
->> Error on MSG ID 0x251. Got counter 108672 and expected 108674
->> Error on MSG ID 0x251. Got counter 108674 and expected 108673
->                                      ^^^^^^
-> Here you can see the CAN frame with counter 108673 is read before 10867=
-2.
-
-This is a typical out-of-sequence reception with a
-RX-goes-into-first-free-mailbox hardware. I've implemented the algorithm
-used in the at91 and fixed the one for the ti_hecc.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+- Mike
 
 
---------------enigF8B310FAAD3C65A3C13EDF29
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
-
-iEYEARECAAYFAlDApYMACgkQjTAFq1RaXHM6CwCeKNLLpB57P8q3OeuLWm+1ZWdP
-xjQAnAg25o9a4hQ51OE/44cDd9AoraW3
-=OfmE
------END PGP SIGNATURE-----
-
---------------enigF8B310FAAD3C65A3C13EDF29--
