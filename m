@@ -1,95 +1,99 @@
-From: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
 Subject: Re: [PATCH v3] usb_8dev: Add support for USB2CAN interface from 8
  devices
-Date: Thu, 06 Dec 2012 05:28:40 +0100
-Message-ID: <50C01EF8.8020107@universalnet.at>
-References: <50BE6092.9050602@universalnet.at> <50BE6F0E.80308@pengutronix.de> <50BF8602.1070909@universalnet.at> <50BFBF60.2090106@pengutronix.de>
+Date: Thu, 06 Dec 2012 05:47:52 +0100
+Message-ID: <50C02378.90001@universalnet.at>
+References: <50BE6092.9050602@universalnet.at> <50BE6F0E.80308@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <50BFBF60.2090106-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp.xy24.at ([85.126.109.136]:36827 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753406Ab2LFEt1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Dec 2012 23:49:27 -0500
+In-Reply-To: <50BE6F0E.80308@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
 
-Hi Mark!
+Hi Marc!
 
-Am 2012-12-05 22:40, schrieb Marc Kleine-Budde:
-> On 12/05/2012 06:36 PM, Bernd Krumboeck wrote:
->> Hi Marc!
->>
->>
->>>> +    default:
->>>> +        netdev_info(netdev, "Rx URB aborted (%d)\n",
->>>> +             urb->status);
->>>> +        goto resubmit_urb;
->>>> +    }
->>>> +
->>>> +    while (pos < urb->actual_length) {
->>>> +        struct usb_8dev_rx_msg *msg;
->>>> +
->>>> +        if (pos + sizeof(struct usb_8dev_rx_msg) >
->>>> urb->actual_length) {
->>>> +            netdev_err(dev->netdev, "format error\n");
->>>> +            break;
->>>
->>> is resubmitting the urb the correct way to handle this problem?
->>
->> Suggestions? (maybe CAN_ERR_CRTL_UNSPEC ??)
+
+Am 2012-12-04 22:45, schrieb Marc Kleine-Budde:
+>> +
+>> +        /* create a URB, and a buffer for it */
+>> +        urb = usb_alloc_urb(0, GFP_KERNEL);
+>> +        if (!urb) {
+>> +            netdev_err(netdev, "No memory left for URBs\n");
+>> +            return -ENOMEM;
 >
-> It's not an error on the CAN protocol level, but the USB communication
-> is broken. I just had a look at the kvaser usb driver, it's doing a
-> resubmit, too. So it seems to be okay.
+> who will free the already allocated urbs if i != 0 ?
+
+This function tries to submit 10 urbs (MAX_RX_URBS) for receiving. When we could not
+submit all, we still proceed as long as we could submit at least 1.
+
+We must not free, because we should break the loop not return from the function.
+I'll correct.
+
+
 >
-
-I suggested CAN_ERR_CRTL_UNSPEC not CAN_ERR_PROT_UNSPEC. ;-)
-
->>
->>>> +
->>>> +            stats->tx_dropped++;
->>>> +        }
->>>> +    } else {
->>>> +        /* Slow down tx path */
->>>> +        if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ||
->>>> +            dev->free_slots < 5) {
->>>
->>> where's the 5 coming from?
->>>
->>
->>  From ems_usb driver.
+>> +        }
+>> +
+>> +        buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+>> +                     &urb->transfer_dma);
+>> +        if (!buf) {
+>> +            netdev_err(netdev, "No memory left for USB buffer\n");
+>> +            usb_free_urb(urb);
 >
-> Hmmmm, is the variable free_slots used?
+> same problem here for coherent
 
-Ahm, no.
+dito.
 
->>>
->>> Have you actually tested one shot? What happens if a can frame cannot be
->>> transmitted?
->>>
->>
->> Not really. Can someone explain what one-shot exactly means and what is
->> the correct behavior.
->> I've only tested without any other device connected. I got the same
->> errors like in normal mode.
 >
-> Can has a built in collision avoidance protocol. If a collision is about
-> to happen the sender with the higher CAN id will back of and try again
-> later. In one shot mode it will not try again. The question is, how
-> behaves the dongle firmware, as you have to free your tx message somehow.
+>> +            return -ENOMEM;
+>> +        }
+>> +
+>> +        usb_fill_bulk_urb(urb, dev->udev,
+>> +                  usb_rcvbulkpipe(dev->udev,
+>> +                          USB_8DEV_ENDP_DATA_RX),
+>> +                  buf, RX_BUFFER_SIZE,
+>> +                  usb_8dev_read_bulk_callback, dev);
+>> +        urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+>> +        usb_anchor_urb(urb, &dev->rx_submitted);
+>> +
+>> +        err = usb_submit_urb(urb, GFP_KERNEL);
+>> +        if (err) {
+>> +            if (err == -ENODEV)
+>> +                netif_device_detach(dev->netdev);
+>> +
+>> +            usb_unanchor_urb(urb);
+>> +            usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
+>> +                      urb->transfer_dma);
+> same here
 >
-> To test, simply send with one station with canid 1, the other one in
-> one-shot-mode with canid 0x7ff.
+> add a loop that runs backwards at the end of the function
+
+dito.
+
 >
-
-Thanks for the explanation, maybe Gerd can test. I still have no other device. :-(
-
+>> +            break;
+>> +        }
+>> +
+>> +        /* Drop reference, USB core will take care of freeing it */
+>> +        usb_free_urb(urb);
+>> +    }
+>> +
+>> +    /* Did we submit any URBs */
+>> +    if (i == 0) {
+>> +        netdev_warn(netdev, "couldn't setup read URBs\n");
+>> +        return err;
+>> +    }
+>> +
+>
+> Marc
+>
 
 regards,
 Bernd
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
