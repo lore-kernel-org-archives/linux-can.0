@@ -1,43 +1,90 @@
-From: Michael Pellegrini <mikep86@gmail.com>
-Subject: Re: =?utf-8?b?cGNoX2Nhbjo=?= Data transmission stops after dropped packet
-Date: Thu, 6 Dec 2012 22:11:50 +0000 (UTC)
-Message-ID: <loom.20121206T231009-942@post.gmane.org>
-References: <loom.20121114T160521-534@post.gmane.org> <50ABF09C.8040303@grandegger.com> <50ACABE2.2020306@grandegger.com> <loom.20121121T160744-278@post.gmane.or  g> <loom.20121121T162041-774@p  ost.gmane.org> <50ACF9C0.8050206@grandegger.com> <loom.20121121T170446-911@post.gmane.org> <50AD042B.3020305 @grandegger.com> <loom.20121121T184014-391@post.gmane.org> <50AD319E.2000209@grandegger.com> <loom.20121121T215717-10 6@post.gmane.org> <loom.20121123T150627-133@post.gmane.org> <50AF8C01.6060 809@grandegger.com> <loom.20121123T155746-12@post.gmane.org> <50AFABB1.7080 507@grandegger.com> <50AFAFF0.9030706@grandegger.com> <loom.20121123T184133-638@post.gmane.org> <50B2449B.806  0708@grandegger.com> <loom.20121126T154645-335@post.gmane.org> <50B38AFB.70209@grandegger.com> <loom.20121126T181452
-  -657@post.gmane.org> <50B3B162.9020905@grandegger.com> <50B751D7.6060106@grandegger.com> <loom.20121129T150945-987@post.gmane.org> <loom.20121206T150229-86@post.gmane.org> <50C0B05F.7020606@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Fri, 07 Dec 2012 00:24:02 +0100
+Message-ID: <50C12912.7000806@pengutronix.de>
+References: <loom.20121114T160521-534@post.gmane.org> <50ACABE2.2020306@grandegger.com> <50C0B05F.7020606@grandegger.com> <2331999.ZYFOYXdjyx@ws-stein> <50C1160A.20203@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig548FA151ACDDEBDC355B79E3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:60423 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751930Ab2LFWMH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 6 Dec 2012 17:12:07 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Tgjfz-0007xA-RG
-	for linux-can@vger.kernel.org; Thu, 06 Dec 2012 23:12:16 +0100
-Received: from 96.45.208.254 ([96.45.208.254])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 06 Dec 2012 23:12:15 +0100
-Received: from mikep86 by 96.45.208.254 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 06 Dec 2012 23:12:15 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33841 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753977Ab2LFXYK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Dec 2012 18:24:10 -0500
+In-Reply-To: <50C1160A.20203@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Michael Pellegrini <mikep86@gmail.com>, linux-can@vger.kernel.org
 
-Wolfgang Grandegger <wg <at> grandegger.com> writes:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig548FA151ACDDEBDC355B79E3
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On another thread Alexander is reporting problems with the same driver
-> when he runs a I2C application concurrently. Are you able to stress the
-> system in a similar way?
-> 
-> Thanks a lot for testing.
+On 12/06/2012 11:02 PM, Wolfgang Grandegger wrote:
+> Hi Michael,
+>=20
+> On 12/06/2012 06:05 PM, Alexander Stein wrote:
+>> Hi Michael,
+>>=20
+>> On Thursday 06 December 2012 15:49:03, Wolfgang Grandegger wrote:
+>>>> Details of the soak test:
+>>>>=20
+>>>> There are two systems involved in the test: the PCH-System and
+>>>> an External Node. The External Node transmits data at a high
+>>>> rate, bringing bus utilization to ~35%. The PCH-System also
+>>>> transmits data, in bursts of 10 messages every 5 ms. Combined,
+>>>> the two systems utilize ~90% of bus bandwidth. The PCH-System
+>>>> is constantly checking that it is receiving data from the=20
+>>>> External Node at the expected rate and in the expected order.
+>>=20
+>> So you do a lot of transmit and reception of CAN frames?
+>>=20
+>>> On another thread Alexander is reporting problems with the same
+>>> driver when he runs a I2C application concurrently. Are you able
+>>> to stress the system in a similar way?
+>>=20
+>> Could you please test with the following patch? Do you see error
+>> messages from this patch? Thanks!
+>=20
+> To summarize my understanding of your problem(s). As long as there
+> are no I2C transfers, everything works fine, right? The patch below
+> does report some write-readback failures but that's due to reserved
+> read-only bits. I assume t hat you also use my "RFC v2" patches for
+> c_can.
+>=20
+> Trouble starts with concurrent I2C transfers. Then the protected=20
+> write-readback test fails, which I regard as abnormal hardware
+> behavior, resulting in message losses and out-of-order reception.
 
-I don't have an I2C application on-hand, let me see what I can whip up.
+Out-of-sequence reception might be a problem due to a problem in the rx
+algorithm. And the drops are probably due to overflowing rx mailboxes.
+The out-of-sequence will most mist likely occur if the rx fifo runs
+full, but does not overflow.
 
-- Mike
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--------------enig548FA151ACDDEBDC355B79E3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlDBKRYACgkQjTAFq1RaXHOV1ACgk0DSTNi8AZ46ZANMMvfJfTuJ
+GawAnRstYWtFBvtWfPsUH2flQrmtcboU
+=H/CC
+-----END PGP SIGNATURE-----
+
+--------------enig548FA151ACDDEBDC355B79E3--
