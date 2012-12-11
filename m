@@ -1,83 +1,67 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [RFC v3 1/7] pch_can: add spinlocks to protect tx objects
-Date: Tue, 11 Dec 2012 22:18:48 +0100
-Message-ID: <1355260735-18994-2-git-send-email-wg@grandegger.com>
-References: <1355260735-18994-1-git-send-email-wg@grandegger.com>
+Subject: [RFC v3 0/7] pch_can/c_can: fix races and add PCH support to c_can
+Date: Tue, 11 Dec 2012 22:18:47 +0100
+Message-ID: <1355260735-18994-1-git-send-email-wg@grandegger.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:59216 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:59215 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754000Ab2LKVTN (ORCPT
+	with ESMTP id S1753917Ab2LKVTN (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Dec 2012 16:19:13 -0500
-In-Reply-To: <1355260735-18994-1-git-send-email-wg@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Alexander.Stein@systec-electronic.com, Christian.Bendele@gmx.net, Michael Pellegrini <mikep86@gmail.com>, bhupesh.sharma@st.com, Wolfgang Grandegger <wg@grandegger.com>
 
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/net/can/pch_can.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hello,
 
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 7d17485..af61961 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -182,6 +182,7 @@ struct pch_can_priv {
- 	struct napi_struct napi;
- 	int tx_obj;	/* Point next Tx Obj index */
- 	int use_msi;
-+	spinlock_t lock;	/* to protect tx objects */
- };
- 
- static const struct can_bittiming_const pch_can_bittiming_const = {
-@@ -722,8 +723,11 @@ static void pch_can_tx_complete(struct net_device *ndev, u32 int_stat)
- {
- 	struct pch_can_priv *priv = netdev_priv(ndev);
- 	struct net_device_stats *stats = &(priv->ndev->stats);
-+	unsigned long flags;
- 	u32 dlc;
- 
-+	spin_lock_irqsave(&priv->lock, flags);
-+
- 	can_get_echo_skb(ndev, int_stat - PCH_RX_OBJ_END - 1);
- 	iowrite32(PCH_CMASK_RX_TX_GET | PCH_CMASK_CLRINTPND,
- 		  &priv->regs->ifregs[1].cmask);
-@@ -734,6 +738,8 @@ static void pch_can_tx_complete(struct net_device *ndev, u32 int_stat)
- 	stats->tx_packets++;
- 	if (int_stat == PCH_TX_OBJ_END)
- 		netif_wake_queue(ndev);
-+
-+	spin_unlock_irqrestore(&priv->lock, flags);
- }
- 
- static int pch_can_poll(struct napi_struct *napi, int quota)
-@@ -894,6 +900,7 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
- {
- 	struct pch_can_priv *priv = netdev_priv(ndev);
- 	struct can_frame *cf = (struct can_frame *)skb->data;
-+	unsigned long flags;
- 	int tx_obj_no;
- 	int i;
- 	u32 id2;
-@@ -901,6 +908,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	if (can_dropped_invalid_skb(ndev, skb))
- 		return NETDEV_TX_OK;
- 
-+	spin_lock_irqsave(&priv->lock, flags);
-+
- 	tx_obj_no = priv->tx_obj;
- 	if (priv->tx_obj == PCH_TX_OBJ_END) {
- 		if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
-@@ -911,6 +920,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		priv->tx_obj++;
- 	}
- 
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+
- 	/* Setting the CMASK register. */
- 	pch_can_bit_set(&priv->regs->ifregs[1].cmask, PCH_CMASK_ALL);
- 
+here is v3 of my patches for the C_CAN drivers.
+
+Alexander reported strange results with write-readback of C_CAN register
+showing up with concurrent I2C access. They might not be related to CAN
+but to other problems on that board. At least Michael did not realize
+them yet. Apart from that the c_can driver seems to work fine.
+Anyway, we now know that the handling of reveive objects is not water-
+proof. To fix out-of-order receipten we should implement an improved
+algorithm as suggested by Marc here:
+
+  http://marc.info/?l=linux-can&m=135487418225533&w=2
+
+I will not have time to look into that befoer Xmas. Volunteers are
+welcome.
+
+What's also missing is the suspend/resume handling. Then the pch_can
+driver is obsolete and can be removed.
+
+Wolfgang.
+
+Changes since v2:
+
+- re-use spin_[un]lock_[irqsave|irqrestore] to protect the tx objects
+  of the pch_can driver. spin_[un]lock_bh was not sufficient.
+- adapted for the most recent version of the net-next tree
+
+Changes since v1:
+
+- use init callback after renaming it from initram
+- use different sets of interface registers for rx and tx (like PCH_CAN)
+- use spin_[un]lock_bh to protect the tx objects
+
+Wolfgang Grandegger (7):
+  pch_can: add spinlocks to protect tx objects
+  c_can: rename callback "initram" to "init" to more general usage
+  c_can: use different sets of interface registers for rx and tx
+  c_can: add spinlock to protect tx objects
+  c_can_pci: introduce board specific PCI bar
+  c_can_pci: enable PCI bus master only for MSI
+  c_can_pci: add support for PCH CAN on Intel EG20T PCH
+
+ drivers/net/can/c_can/c_can.c          |  102 ++++++++++++++++++++------------
+ drivers/net/can/c_can/c_can.h          |    3 +-
+ drivers/net/can/c_can/c_can_pci.c      |   57 +++++++++++++++++-
+ drivers/net/can/c_can/c_can_platform.c |    2 +-
+ drivers/net/can/pch_can.c              |   11 ++++
+ 5 files changed, 131 insertions(+), 44 deletions(-)
+
 -- 
 1.7.9.5
 
