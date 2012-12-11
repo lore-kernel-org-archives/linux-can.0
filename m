@@ -1,44 +1,81 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: pch_can probable bug
-Date: Tue, 11 Dec 2012 17:22:09 +0100
-Message-ID: <50C75DB1.3080703@grandegger.com>
-References: <loom.20121211T155025-697@post.gmane.org> <loom.20121211T165553-739@post.gmane.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: socketcan and perl module ?
+Date: Tue, 11 Dec 2012 17:46:25 +0100
+Message-ID: <50C76361.7000605@hartkopp.net>
+References: <eb163bb46a69fe58c0d3f9676172ed9a@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:34729 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753261Ab2LKQWM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Dec 2012 11:22:12 -0500
-In-Reply-To: <loom.20121211T165553-739@post.gmane.org>
+Received: from mo-p04-ob.rzone.de ([81.169.146.178]:53693 "EHLO
+	mo-p04-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753588Ab2LKQqc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Dec 2012 11:46:32 -0500
+In-Reply-To: <eb163bb46a69fe58c0d3f9676172ed9a@localhost>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Christian Bendele <Christian.Bendele@gmx.net>
-Cc: linux-can@vger.kernel.org
+To: Rastislav Piater <rass@rassnet.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Christian,
+Hello Rastislav,
 
-On 12/11/2012 05:08 PM, Christian Bendele wrote:
-> Well, I just found the most recent patch to the generic c_can driver on this
-> list. I had only checked with Kernel 3.7rcSomething before and it didn't seem to
-> support the intel eg20t. I failed to check if there was a more recent patch
-> available and if that supported the intel chip. I'm really sorry for that.
+i've been on your website 2-3 years ago - it has been really improved
+
+I don't have any knowledge about perl. But there was an attempt to support
+SocketCAN network sockets in perl in 2010 (just google 'socketcan perl').
+
+If this attempt does not help, you may be interested in kayak, which includes
+a 'socketcand' for remote CAN access via network (also on localhost):
+
+http://kayak.2codeornot2code.org/tutorial.html
+
+Btw. don't hesitate to ask these kind of questions on the mailing list:
+
+"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+I've put the ML on CC.
+
+Best regards,
+Oliver
+
+On 11.12.2012 16:32, Rastislav Piater wrote:
+
+> Hello,
 > 
-> I will try if that patch works for me tomorrow, since unfortunatelly my working
-> day is almost at its end and I don't have the hardware at home. However, cursery
-> skimming the code of c_can.c, c_can_do_rx_poll() it seems to me as if it does
-> the same thing here:
+>  
 > 
+> Socket can is really great project.
 > 
-> 			if (msg_ctrl_save & IF_MCONT_EOB)
-> 				return num_rx_pkts;
+> I created  open source saab player based on socket-can. (http://saablin.net/)
+> 
+> Issue is that I developed it in perl, and for sending and receiving can
+> messages, I am calling candump and cansend binary from perl which is not so
+> good (effective).
+> 
+> What do you think to create perl module for candump and cansend ?
+> 
+> This will help me and maybe more peoples to develop applications with socket can.
+> 
+>  
+> 
+> I am not real developer, so I don't have knowledge to port  candump and
+> cansend to perl ... can bus  it's just my hobby.
+> 
+>  
+> 
+> Thank you for  your answer.
+> 
+> Rastislav
+> 
+>  
+> 
+>  
+> 
+>  
+> 
+>  
+> 
+>  
+> 
 
-Just a quick answer. We know that the pch_can and also the c_can driver
-does have issues with tx and rx. Races, out-of-order-receptions, etc. I
-have sent patches for the C_CAN drivers to support the PCH as well. But
-still the RX handling needs to be improved to avoid out-of-order
-reception at high message input rate. I will tell more later today.
-
-Wolfgang.
 
