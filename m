@@ -1,113 +1,60 @@
-From: Rastislav Piater <rass@rassnet.org>
-Subject: Re: socketcan and perl module =?UTF-8?Q?=3F?=
-Date: Wed, 12 Dec 2012 13:13:07 +0100
-Message-ID: <94265ad687b0bd3c02c7efeceeb0e5b6@localhost>
-References: <eb163bb46a69fe58c0d3f9676172ed9a@localhost> <50C76361.7000605@hartkopp.net>
+From: Christian Bendele <Christian.Bendele@gmx.net>
+Subject: Re: [RFC v3 0/7] =?utf-8?b?cGNoX2Nhbi9jX2Nhbjo=?= fix races and add PCH support to =?utf-8?b?Y19jYW4=?=
+Date: Wed, 12 Dec 2012 12:51:43 +0000 (UTC)
+Message-ID: <loom.20121212T131741-530@post.gmane.org>
+References: <1355260735-18994-1-git-send-email-wg@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 772662-everela.ba.psg.sk ([195.28.75.178]:45570 "EHLO
-	mail.wishion.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751517Ab2LLMWT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 07:22:19 -0500
-In-Reply-To: <50C76361.7000605@hartkopp.net>
+Received: from plane.gmane.org ([80.91.229.3]:58606 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751891Ab2LLMwD (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 12 Dec 2012 07:52:03 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1TilnF-00057Q-Uu
+	for linux-can@vger.kernel.org; Wed, 12 Dec 2012 13:52:09 +0100
+Received: from irdmzpr02-ext.ir.intel.com ([192.198.151.37])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 12 Dec 2012 13:52:09 +0100
+Received: from Christian.Bendele by irdmzpr02-ext.ir.intel.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 12 Dec 2012 13:52:09 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Hello Oliver, 
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
 
-thanks for fast answer.
-Yes, you are right, there was an attempt to implement socketcan to perl:
-
-http://www.nntp.perl.org/group/perl.modules/2010/08/msg72366.html
-
-It was by my request to my fiend,  I  pushed him to create module for me
-:-)
-Hi post it in 2010, but still not finished, I must push him again to
-finish it. 
-
-I also check your recommendation for socketcand, and it looks really good.
-For tcp/ip have existing module in perl, so it seems I can do it via
-socketcand.
-
-So I will try socketcand way ...  and I will see. 
-
-Thanks,
-Rastislav  
-
-
-
-
-
-On Tue, 11 Dec 2012 17:46:25 +0100, Oliver Hartkopp
-<socketcan@hartkopp.net> wrote:
-> Hello Rastislav,
 > 
-> i've been on your website 2-3 years ago - it has been really improved
+> Hello,
 > 
-> I don't have any knowledge about perl. But there was an attempt to
-support
-> SocketCAN network sockets in perl in 2010 (just google 'socketcan
-perl').
+> here is v3 of my patches for the C_CAN drivers.
+
+What are those patches against? They don't apply against current mainstream
+kernel (3.7)... 
+
+
+> Anyway, we now know that the handling of reveive objects is not water-
+> proof. To fix out-of-order receipten we should implement an improved
+> algorithm as suggested by Marc here:
 > 
-> If this attempt does not help, you may be interested in kayak, which
-> includes
-> a 'socketcand' for remote CAN access via network (also on localhost):
-> 
-> http://kayak.2codeornot2code.org/tutorial.html
-> 
-> Btw. don't hesitate to ask these kind of questions on the mailing list:
-> 
-> "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> 
-> I've put the ML on CC.
-> 
-> Best regards,
-> Oliver
-> 
-> On 11.12.2012 16:32, Rastislav Piater wrote:
-> 
->> Hello,
->> 
->>  
->> 
->> Socket can is really great project.
->> 
->> I created  open source saab player based on socket-can.
->> (http://saablin.net/)
->> 
->> Issue is that I developed it in perl, and for sending and receiving can
->> messages, I am calling candump and cansend binary from perl which is
-not
->> so
->> good (effective).
->> 
->> What do you think to create perl module for candump and cansend ?
->> 
->> This will help me and maybe more peoples to develop applications with
->> socket can.
->> 
->>  
->> 
->> I am not real developer, so I don't have knowledge to port  candump and
->> cansend to perl ... can bus  it's just my hobby.
->> 
->>  
->> 
->> Thank you for  your answer.
->> 
->> Rastislav
->> 
->>  
->> 
->>  
->> 
->>  
->> 
->>  
->> 
->>  
->>
+>   http://marc.info/?l=linux-can&m=135487418225533&w=2
+
+I'd like to take a look at this, but unfortunately that link consistently times
+out for me.
+
+
+> I will not have time to look into that befoer Xmas. Volunteers are
+> welcome.
+
+Pfffffft.... Personally I wouldn't be opposed to investing some time in this,
+but I don't think I could get this cleared through legal in any useful time 
+frame. 
+Definitely not before next year. If there's still a lot of work left in January
+I'll give it a try.
+
+Christian
+
