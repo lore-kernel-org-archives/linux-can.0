@@ -1,60 +1,39 @@
-From: Christian Bendele <Christian.Bendele@gmx.net>
-Subject: Re: [RFC v3 0/7] =?utf-8?b?cGNoX2Nhbi9jX2Nhbjo=?= fix races and add PCH support to =?utf-8?b?Y19jYW4=?=
-Date: Wed, 12 Dec 2012 12:51:43 +0000 (UTC)
-Message-ID: <loom.20121212T131741-530@post.gmane.org>
-References: <1355260735-18994-1-git-send-email-wg@grandegger.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Wed, 12 Dec 2012 14:35:47 +0100
+Message-ID: <3357578.4okCBEnLQl@ws-stein>
+References: <loom.20121114T160521-534@post.gmane.org> <50C1160A.20203@grandegger.com> <loom.20121211T153556-802@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:58606 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751891Ab2LLMwD (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 12 Dec 2012 07:52:03 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1TilnF-00057Q-Uu
-	for linux-can@vger.kernel.org; Wed, 12 Dec 2012 13:52:09 +0100
-Received: from irdmzpr02-ext.ir.intel.com ([192.198.151.37])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 12 Dec 2012 13:52:09 +0100
-Received: from Christian.Bendele by irdmzpr02-ext.ir.intel.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 12 Dec 2012 13:52:09 +0100
+Received: from webbox1416.server-home.net ([77.236.96.61]:45314 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752041Ab2LLNfw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 08:35:52 -0500
+In-Reply-To: <loom.20121211T153556-802@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Michael Pellegrini <mikep86@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Wolfgang Grandegger <wg <at> grandegger.com> writes:
+Hello Michael,
 
+On Tuesday 11 December 2012 14:46:37, Michael Pellegrini wrote:
+> I applied the patch provided.  On driver load, dmesg reports the following:
 > 
-> Hello,
-> 
-> here is v3 of my patches for the C_CAN drivers.
+> [  379.817717] c_can_pci 0000:02:0c.3: can0: write 0x0 to offset 0x2c failed. 
+> got: 0x2000
+> [...]
 
-What are those patches against? They don't apply against current mainstream
-kernel (3.7)... 
+This should be expected due to the reserved bit set as 1. But I get the same behavior if there is no i2c traffic: CAN works fine. I'm just losing some messages at some time which is IMO related to the algorithm.
 
+> Based on a quick test, the CAN interface appears functional with this driver.
+> However, I am unable to test the I2C interface as I can't get I2C devices to
+> appear in /dev right now.
 
-> Anyway, we now know that the handling of reveive objects is not water-
-> proof. To fix out-of-order receipten we should implement an improved
-> algorithm as suggested by Marc here:
-> 
->   http://marc.info/?l=linux-can&m=135487418225533&w=2
+An /dev/i2c-0 (or -1 or whatever, depending on your bus number ordering) should be enough to use things as i2cdetect. On the other hand if you have hwmon sensors they can be queried from within /sys/class/hwmon/hwmonX/
 
-I'd like to take a look at this, but unfortunately that link consistently times
-out for me.
-
-
-> I will not have time to look into that befoer Xmas. Volunteers are
-> welcome.
-
-Pfffffft.... Personally I wouldn't be opposed to investing some time in this,
-but I don't think I could get this cleared through legal in any useful time 
-frame. 
-Definitely not before next year. If there's still a lot of work left in January
-I'll give it a try.
-
-Christian
+Best regards,
+Alexander
 
