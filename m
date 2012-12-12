@@ -1,107 +1,113 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: pch_can probable bug
-Date: Tue, 11 Dec 2012 23:05:56 +0100
-Message-ID: <50C7AE44.4040603@grandegger.com>
-References: <loom.20121211T155025-697@post.gmane.org>
+From: Rastislav Piater <rass@rassnet.org>
+Subject: Re: socketcan and perl module =?UTF-8?Q?=3F?=
+Date: Wed, 12 Dec 2012 13:13:07 +0100
+Message-ID: <94265ad687b0bd3c02c7efeceeb0e5b6@localhost>
+References: <eb163bb46a69fe58c0d3f9676172ed9a@localhost> <50C76361.7000605@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:34300 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753627Ab2LKWF6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Dec 2012 17:05:58 -0500
-In-Reply-To: <loom.20121211T155025-697@post.gmane.org>
+Received: from 772662-everela.ba.psg.sk ([195.28.75.178]:45570 "EHLO
+	mail.wishion.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751517Ab2LLMWT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 07:22:19 -0500
+In-Reply-To: <50C76361.7000605@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Christian Bendele <Christian.Bendele@gmx.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can@vger.kernel.org
 
-On 12/11/2012 04:43 PM, Christian Bendele wrote:
-> Hi all,
+Hello Oliver, 
+
+thanks for fast answer.
+Yes, you are right, there was an attempt to implement socketcan to perl:
+
+http://www.nntp.perl.org/group/perl.modules/2010/08/msg72366.html
+
+It was by my request to my fiend,  I  pushed him to create module for me
+:-)
+Hi post it in 2010, but still not finished, I must push him again to
+finish it. 
+
+I also check your recommendation for socketcand, and it looks really good.
+For tcp/ip have existing module in perl, so it seems I can do it via
+socketcand.
+
+So I will try socketcand way ...  and I will see. 
+
+Thanks,
+Rastislav  
+
+
+
+
+
+On Tue, 11 Dec 2012 17:46:25 +0100, Oliver Hartkopp
+<socketcan@hartkopp.net> wrote:
+> Hello Rastislav,
 > 
-> I believe I have found a bug in the pch_can driver. It _might_ also be 
-> related to what was discussed recently in the thread at
-> http://thread.gmane.org/gmane.linux.can/2483/focus=2573
-> however, a problem with transmission was reported there and this bug is not
-> related to transmission but to receiving.
+> i've been on your website 2-3 years ago - it has been really improved
 > 
-> This is what I observed:
+> I don't have any knowledge about perl. But there was an attempt to
+support
+> SocketCAN network sockets in perl in 2010 (just google 'socketcan
+perl').
 > 
-> If very high load on the can bus coincides with very high load on the pc,
-> so that the 26 message fifo buffer configured in the can controller 
-> actually runs full, then receiving stops completely and the pc gets
-> very sluggish.
-
-OK. Two other people are reporting somehow different problems with tx
-but also rx.
-
-> This is what I think is going on:
+> If this attempt does not help, you may be interested in kayak, which
+> includes
+> a 'socketcand' for remote CAN access via network (also on localhost):
 > 
-> According to Sections 13.5.9 and 13.5.9.1 of the Intel PCH EG20T
-> Datasheet setting up a FIFO buffer on the pch can works like this:
+> http://kayak.2codeornot2code.org/tutorial.html
 > 
-> "...The EOB bit of all message objects of a FIFO buffer except the last have
-> to be programmed to 0. The EOB bits of the last message object of a FIFO
-> buffer is set to 1, configuring it as the End of the Block...."
-> "When a message is stored into a message object [...] the NEWDAT bit of
-> that object is set. [...]the message object is locked for further write
-> accesses [...] until the CPU has written the NEWDAT bit back to 0."
-> "Messaged are stored into a FIFO buffer until the last message object [...]
-> is reached. If none of the preceding objects is released by writing NEWDAT
-> to 0, all further messages [...] are written into the last message object
-> [...] and therefore overwrite previous messages."
-
-Yes, note that the PCH does use a C_CAN core (even the manual is identical).
-
+> Btw. don't hesitate to ask these kind of questions on the mailing list:
 > 
-> The pch_c_can defines a 26 messages deep FIFO buffer (from message object 1 
-> to message object 26) for receiving. 
-
-Please do not invest time fixing the pch_can driver. We want to get rid
-of it asap.
-
-> However, In the pch_can_rx_normal() method of the pch_can.c driver, right at
-> the top of the main loop in which pending messages are read from the
-> controller, the loop is aborted if the EOB bit is send in the message object
-> currently considered:
+> "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 > 
-> 		if (reg & PCH_IF_MCONT_EOB)
-> 			break;
+> I've put the ML on CC.
 > 
-> That means that the message(s) stored in this message object are never read
-> out, and the INTPND (interrupt pending, is set together with NEWDAT when a
-> message is stored into the object) bit in that message object's control
-> register is never cleared.
-
-Looking to c_can.c, I see this problem as well. The above check should
-be done after reading out the message.
-
-> Thus a kind of "endless loop" happens where the same message object (26
-> = PCH_RX_OBJ_END) is considered again and again but never handled, until the
-> napi quota is consumed, and then immediately the device interrupt happens
-> again because the INTPND bit in the message object was never cleared.
-> The system is completely swamped.
+> Best regards,
+> Oliver
 > 
-> Due to the way the FIFO buffer is handled by the driver (kind of like a 16
-> deep fifo with a 10 deep overflow, it doesn't matter, though), that
-> message object is only ever used if the FIFO actually runs completely
-> full. Thus the problem only manifests if very high loads on the canbus and
-> on the host happen at the same time. If that never happens the system will
-> work fine for a long time.
+> On 11.12.2012 16:32, Rastislav Piater wrote:
 > 
-> I'm still trying to fix this problem here, but this is the first time I
-> actually did anything using the napi and the whole driver looks slightly
-> confusing to me (half the time I don't understand why it does things the
-> way it does them). Just moving down the offending break towards the bottom
-> of the loop unfortunately doesn't work (The driver breaks completely). I
-> would appreciate it if somebody who knows more about this stuff could
-> try to fix this.
-
-Could you please use my "RFC V3" c_can_pci driver patches I sent out an
-hour ago. Anyway, avoiding out-of-order reception with a message FIFO is
-tricky and we need to fix that part as well. Unfortunately, I do not
-have a system for development and testing.
-
-Wolfgang.
-
+>> Hello,
+>> 
+>>  
+>> 
+>> Socket can is really great project.
+>> 
+>> I created  open source saab player based on socket-can.
+>> (http://saablin.net/)
+>> 
+>> Issue is that I developed it in perl, and for sending and receiving can
+>> messages, I am calling candump and cansend binary from perl which is
+not
+>> so
+>> good (effective).
+>> 
+>> What do you think to create perl module for candump and cansend ?
+>> 
+>> This will help me and maybe more peoples to develop applications with
+>> socket can.
+>> 
+>>  
+>> 
+>> I am not real developer, so I don't have knowledge to port  candump and
+>> cansend to perl ... can bus  it's just my hobby.
+>> 
+>>  
+>> 
+>> Thank you for  your answer.
+>> 
+>> Rastislav
+>> 
+>>  
+>> 
+>>  
+>> 
+>>  
+>> 
+>>  
+>> 
+>>  
+>>
