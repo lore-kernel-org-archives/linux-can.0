@@ -1,39 +1,69 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: pch_can: Data transmission stops after dropped packet
-Date: Wed, 12 Dec 2012 14:35:47 +0100
-Message-ID: <3357578.4okCBEnLQl@ws-stein>
-References: <loom.20121114T160521-534@post.gmane.org> <50C1160A.20203@grandegger.com> <loom.20121211T153556-802@post.gmane.org>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [RFC v3 0/7] pch_can/c_can: fix races and add PCH support to
+ c_can
+Date: Wed, 12 Dec 2012 14:42:26 +0100
+Message-ID: <50C889C2.2040305@grandegger.com>
+References: <1355260735-18994-1-git-send-email-wg@grandegger.com> <loom.20121212T131741-530@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:45314 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752041Ab2LLNfw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 08:35:52 -0500
-In-Reply-To: <loom.20121211T153556-802@post.gmane.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:33417 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752903Ab2LLNm2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 08:42:28 -0500
+In-Reply-To: <loom.20121212T131741-530@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Pellegrini <mikep86@gmail.com>
+To: Christian Bendele <Christian.Bendele@gmx.net>
 Cc: linux-can@vger.kernel.org
 
-Hello Michael,
-
-On Tuesday 11 December 2012 14:46:37, Michael Pellegrini wrote:
-> I applied the patch provided.  On driver load, dmesg reports the following:
+On 12/12/2012 01:51 PM, Christian Bendele wrote:
+> Wolfgang Grandegger <wg <at> grandegger.com> writes:
 > 
-> [  379.817717] c_can_pci 0000:02:0c.3: can0: write 0x0 to offset 0x2c failed. 
-> got: 0x2000
-> [...]
+>>
+>> Hello,
+>>
+>> here is v3 of my patches for the C_CAN drivers.
+> 
+> What are those patches against? They don't apply against current mainstream
+> kernel (3.7)... 
 
-This should be expected due to the reserved bit set as 1. But I get the same behavior if there is no i2c traffic: CAN works fine. I'm just losing some messages at some time which is IMO related to the algorithm.
+They are against David Miller's "net-next" tree, which you can get as
+shown below:
 
-> Based on a quick test, the CAN interface appears functional with this driver.
-> However, I am unable to test the I2C interface as I can't get I2C devices to
-> appear in /dev right now.
+git clone --reference=<another-recent-linux-tree> \
+	git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next
 
-An /dev/i2c-0 (or -1 or whatever, depending on your bus number ordering) should be enough to use things as i2cdetect. On the other hand if you have hwmon sensors they can be queried from within /sys/class/hwmon/hwmonX/
+>> Anyway, we now know that the handling of reveive objects is not water-
+>> proof. To fix out-of-order receipten we should implement an improved
+>> algorithm as suggested by Marc here:
+>>
+>>   http://marc.info/?l=linux-can&m=135487418225533&w=2
 
-Best regards,
-Alexander
+> 
+> I'd like to take a look at this, but unfortunately that link consistently times
+> out for me.
+
+Try http://news.gmane.org/gmane.linux.can instead. Search for:
+
+7 Dec 10:55	Marc Kleine-Budde	
+***********	[RFC v2 0/7] pch_can/c_can: fix races and add PCH support to c_can
+
+>> I will not have time to look into that befoer Xmas. Volunteers are
+>> welcome.
+> 
+> Pfffffft.... Personally I wouldn't be opposed to investing some time in this,
+> but I don't think I could get this cleared through legal in any useful time 
+> frame. 
+> Definitely not before next year. If there's still a lot of work left in January
+> I'll give it a try.
+
+Hope I will find the time before beginning of next year. Anyway, would
+be nice ifyou could give the c_can_pci driver a try to see if it works
+better than the pch_can.
+
+Thanks,
+
+Wolfgang,
 
