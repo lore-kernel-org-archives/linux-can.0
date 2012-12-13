@@ -1,54 +1,40 @@
-From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
-Subject: Re: [PATCH] usb2can: Add support for USB2CAN interface from 8
- devices
-Date: Thu, 13 Dec 2012 08:44:59 +0100
-Message-ID: <2d326343baa98de754c90e51e7a07a3e.squirrel@webmail.universalnet.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH] c_can: Set reserved bit in IFx_MASK2 to set 1 on write
+Date: Thu, 13 Dec 2012 10:06:10 +0100
+Message-ID: <1355389570-24180-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:47407 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752852Ab2LMHpK (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 13 Dec 2012 02:45:10 -0500
+Received: from webbox1416.server-home.net ([77.236.96.61]:53140 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753277Ab2LMJGS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Dec 2012 04:06:18 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: "krumboeck@universalnet.at" <krumboeck@universalnet.at>, linux-can@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-Hi!
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ drivers/net/can/c_can/c_can.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-> On 12/03/2012 01:43 AM, krumboeck@universalnet.at wrote:
->> Am 2012-12-02 14:35, schrieb Wolfgang Grandegger:
-...
->>>
->>> Could you please show the output of "candump -e any,0:0,#FFFFFFFF" when
->>> the device goes 1) error passive and 2) bus-off. You could provoke
->>> these states by 1) sending without connection to the bus or 2)
->>> short-circuiting CAN high and low.
-...
->>
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->>   can0  500  [4] 00 01 02 03
->
-> These messages should up after reconnecting the cable?
->
->> In my tests I was not able to provoke "bus-off".
->
->
-> Even by short-circuiting CAN high and low while sending messages out to
-> the bus? This should always work.
->
-
-This was my fault, because I forgot to connect a power supply and the
-controller circuit use galvanic isolation.
-
-
-regards,
-Bernd
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 30646d6..2f9dedd2 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -495,8 +495,12 @@ static void c_can_setup_receive_object(struct net_device *dev,
+ 
+ 	priv->write_reg(priv, C_CAN_IFACE(MASK1_REG, iface),
+ 			IFX_WRITE_LOW_16BIT(mask));
++
++	/* According to C_CAN documentation, the reserved bit
++	 * in IFx_MASK2 register is fixed 1
++	 */
+ 	priv->write_reg(priv, C_CAN_IFACE(MASK2_REG, iface),
+-			IFX_WRITE_HIGH_16BIT(mask));
++			IFX_WRITE_HIGH_16BIT(mask) | BIT(13));
+ 
+ 	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface),
+ 			IFX_WRITE_LOW_16BIT(id));
+-- 
+1.7.8.6
 
