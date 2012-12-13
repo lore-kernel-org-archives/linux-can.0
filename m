@@ -1,80 +1,58 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: can-utils - release - tarballs
-Date: Thu, 13 Dec 2012 11:34:14 +0100
-Message-ID: <50C9AF26.3040801@pengutronix.de>
-References: <50B3D0B5.1050005@pengutronix.de> <CAGm1_kv-Pk-oSJ-yQksiGYaodUzgW=FSh2TpREYq9oGqeNT+Bw@mail.gmail.com> <50B4D194.9090203@pengutronix.de> <CAGm1_ksE8O3O-BXNAOfyCVEqPM7DHv8sUqc12FjD31UufZmuiQ@mail.gmail.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: pch_can: Data transmission stops after dropped packet
+Date: Thu, 13 Dec 2012 15:04:35 +0100
+Message-ID: <5514012.Sv8BXqiA5S@ws-stein>
+References: <loom.20121114T160521-534@post.gmane.org> <1647541.efLPJ8JS7c@ws-stein> <50C79699.1070801@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig1DDFF077AB1CEED8D447E1F9"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50569 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753411Ab2LMKeX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Dec 2012 05:34:23 -0500
-In-Reply-To: <CAGm1_ksE8O3O-BXNAOfyCVEqPM7DHv8sUqc12FjD31UufZmuiQ@mail.gmail.com>
+Received: from webbox1416.server-home.net ([77.236.96.61]:38386 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1756289Ab2LMOEj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Dec 2012 09:04:39 -0500
+In-Reply-To: <50C79699.1070801@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Michael Pellegrini <mikep86@gmail.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1DDFF077AB1CEED8D447E1F9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello Wolfgang,
 
-On 12/13/2012 11:15 AM, Yegor Yefremov wrote:
-> On Tue, Nov 27, 2012 at 3:43 PM, Marc Kleine-Budde <mkl@pengutronix.de>=
- wrote:
->> On 11/27/2012 03:35 PM, Yegor Yefremov wrote:
->>> On Mon, Nov 26, 2012 at 9:27 PM, Marc Kleine-Budde <mkl@pengutronix.d=
-e> wrote:
->>>> Hello,
->>>>
->>>> I'm thinking about to make a release for the can-utils, but where to=
- put
->>>> the tarballs. What about the kernel.org infrastructure? Has anyone
->>>> contact to the admins?
->>>
->>> What about writing to ftpadmin@kernel.org directly or asking David Mi=
-ller?
->>
->> I'll ask the ftpadmin@kernel.org then.
->>
->> Marc
->>
->> --
->> Pengutronix e.K.                  | Marc Kleine-Budde           |
->> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
->> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
->> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
->>
->=20
-> Did the admins answer?
+On Tuesday 11 December 2012 21:24:57, Wolfgang Grandegger wrote:
+> > I cannot say if any (small) I2C transfer at all raises the problem. I run 'cangen -I 0x300 can0' on my PC connected to my test board. A I2C connected LED is triggered by heartbeat thus there is a small I2C traffic each second. I couldn't see any errors in dmesg in about 10 minutes.
+> > But even with that small CAN traffic (next to nothing) a 'watch sensors' (which queries several I2C sensors every 2s) caused errors in dmesg. It seems the problem isn't related to CAN bus load at all.
+> 
+> Yes, that's also my impression. Most likely it's a problem on the PCI
+> bus with caching or concurrent access. Any chance to use a more recent
+> version of the Linux kernel?
 
-not yet :(
+I tried your v3 patchset based on 6be35c700f742e911ecedd07fcc43d4439922334 (which is next-next/master being merged into Linus' master branch) and it got even "worse". Which actually means I even get PCI write errors if there is no I2C traffic at all (compared the interrupt before and after the test). In the end it's the same error in each case:
+[  321.702036] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  322.630034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  350.026035] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  354.932033] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  374.812036] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  378.099034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  386.068034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  399.639034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  401.034033] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  410.143034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  415.082034] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  418.593033] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  439.871035] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  564.614037] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
+[  586.593035] c_can_pci 0000:02:0c.3 can0: write 0xe to offset 0x0 failed. got: 0x0
 
-Marc
+I compared the output of lspci -vv from v3.0.31+ and v3.7+ and there are only  few changes which, I suspect, should not have any influence:
+* different MSI Data register content
+* PCI bridges have a bigger prefetchable memory range
+* driver description for HDA audio changed
+* Address of the expansion ROM from the external ethernet controller changed (same as the address at the bridges)
+* "Kernel driver in use" ehci_hcd and ehci-pci for USB reported by lspci have exchanged
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+All in all nothing which should have influence.
 
+Best regards,
+Alexander
 
---------------enig1DDFF077AB1CEED8D447E1F9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
-
-iEYEARECAAYFAlDJrykACgkQjTAFq1RaXHOe+ACglggNxEfz9LLTV1dbVES4hNeW
-2HUAmQE4BehEaZ7QLLibOIp39VNehLrN
-=nDpR
------END PGP SIGNATURE-----
-
---------------enig1DDFF077AB1CEED8D447E1F9--
