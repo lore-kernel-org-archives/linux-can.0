@@ -1,69 +1,54 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC v3 0/7] pch_can/c_can: fix races and add PCH support to
- c_can
-Date: Wed, 12 Dec 2012 14:42:26 +0100
-Message-ID: <50C889C2.2040305@grandegger.com>
-References: <1355260735-18994-1-git-send-email-wg@grandegger.com> <loom.20121212T131741-530@post.gmane.org>
+From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
+Subject: Re: [PATCH] usb2can: Add support for USB2CAN interface from 8
+ devices
+Date: Thu, 13 Dec 2012 08:44:59 +0100
+Message-ID: <2d326343baa98de754c90e51e7a07a3e.squirrel@webmail.universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:33417 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752903Ab2LLNm2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Dec 2012 08:42:28 -0500
-In-Reply-To: <loom.20121212T131741-530@post.gmane.org>
+Received: from smtp.xy24.at ([85.126.109.136]:47407 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752852Ab2LMHpK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 13 Dec 2012 02:45:10 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Christian Bendele <Christian.Bendele@gmx.net>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: "krumboeck@universalnet.at" <krumboeck@universalnet.at>, linux-can@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
 
-On 12/12/2012 01:51 PM, Christian Bendele wrote:
-> Wolfgang Grandegger <wg <at> grandegger.com> writes:
-> 
+Hi!
+
+> On 12/03/2012 01:43 AM, krumboeck@universalnet.at wrote:
+>> Am 2012-12-02 14:35, schrieb Wolfgang Grandegger:
+...
+>>>
+>>> Could you please show the output of "candump -e any,0:0,#FFFFFFFF" when
+>>> the device goes 1) error passive and 2) bus-off. You could provoke
+>>> these states by 1) sending without connection to the bus or 2)
+>>> short-circuiting CAN high and low.
+...
 >>
->> Hello,
->>
->> here is v3 of my patches for the C_CAN drivers.
-> 
-> What are those patches against? They don't apply against current mainstream
-> kernel (3.7)... 
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>>   can0  500  [4] 00 01 02 03
+>
+> These messages should up after reconnecting the cable?
+>
+>> In my tests I was not able to provoke "bus-off".
+>
+>
+> Even by short-circuiting CAN high and low while sending messages out to
+> the bus? This should always work.
+>
 
-They are against David Miller's "net-next" tree, which you can get as
-shown below:
+This was my fault, because I forgot to connect a power supply and the
+controller circuit use galvanic isolation.
 
-git clone --reference=<another-recent-linux-tree> \
-	git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next
 
->> Anyway, we now know that the handling of reveive objects is not water-
->> proof. To fix out-of-order receipten we should implement an improved
->> algorithm as suggested by Marc here:
->>
->>   http://marc.info/?l=linux-can&m=135487418225533&w=2
-
-> 
-> I'd like to take a look at this, but unfortunately that link consistently times
-> out for me.
-
-Try http://news.gmane.org/gmane.linux.can instead. Search for:
-
-7 Dec 10:55	Marc Kleine-Budde	
-***********	[RFC v2 0/7] pch_can/c_can: fix races and add PCH support to c_can
-
->> I will not have time to look into that befoer Xmas. Volunteers are
->> welcome.
-> 
-> Pfffffft.... Personally I wouldn't be opposed to investing some time in this,
-> but I don't think I could get this cleared through legal in any useful time 
-> frame. 
-> Definitely not before next year. If there's still a lot of work left in January
-> I'll give it a try.
-
-Hope I will find the time before beginning of next year. Anyway, would
-be nice ifyou could give the c_can_pci driver a try to see if it works
-better than the pch_can.
-
-Thanks,
-
-Wolfgang,
+regards,
+Bernd
 
