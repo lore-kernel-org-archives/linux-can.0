@@ -1,46 +1,45 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: Re: tx/rx LED trigger support
-Date: Fri, 14 Dec 2012 17:31:22 +0100
-Message-ID: <20121214163122.GA20128@balto.lan>
-References: <50CB1618.3040805@pengutronix.de>
- <20121214121649.GA13906@vandijck-laurijssen.be>
+From: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
+Subject: usb_8dev: USB Protocoll available?
+Date: Fri, 14 Dec 2012 17:52:47 +0100
+Message-ID: <20683.22879.172661.430971@elektron.ikp.physik.tu-darmstadt.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f180.google.com ([209.85.212.180]:42447 "EHLO
-	mail-wi0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755599Ab2LNQbi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Dec 2012 11:31:38 -0500
-Received: by mail-wi0-f180.google.com with SMTP id hj13so634728wib.1
-        for <linux-can@vger.kernel.org>; Fri, 14 Dec 2012 08:31:37 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20121214121649.GA13906@vandijck-laurijssen.be>
+Received: from lnx141.hrz.tu-darmstadt.de ([130.83.156.236]:51407 "EHLO
+	lnx141.hrz.tu-darmstadt.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1756224Ab2LNRaL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Dec 2012 12:30:11 -0500
+Received: from lnx500.hrz.tu-darmstadt.de (lnx500.hrz.tu-darmstadt.de [130.83.156.225])
+	by lnx141.hrz.tu-darmstadt.de (8.14.4/8.13.8) with ESMTP id qBEGrn7g030725
+	for <linux-can@vger.kernel.org>; Fri, 14 Dec 2012 17:53:49 +0100
+	(envelope-from bon@elektron.ikp.physik.tu-darmstadt.de)
+Received: from elektron.ikp.physik.tu-darmstadt.de (elektron.ikp.physik.tu-darmstadt.de [130.83.133.205])
+	by lnx500.hrz.tu-darmstadt.de (8.14.4/8.14.4/HRZ/PMX) with ESMTP id qBEGr4BE032080
+	for <linux-can@vger.kernel.org>; Fri, 14 Dec 2012 17:53:04 +0100
+	(envelope-from bon@elektron.ikp.physik.tu-darmstadt.de)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>
+To: linux-can@vger.kernel.org
 
-On Fri, Dec 14, 2012 at 01:16:49PM +0100, Kurt Van Dijck wrote:
->
-> I still have pending comments on my last sent patches.
-> I must find time to rework some things.
->
-> There was a patch to determine if _a_ netdevice is
-> actually a can_dev based device (i.e. not slcan or vcan),
-> so one can use can_priv.
-> That patch is operational and may be usefull for other users
-> as well.
 
-Actually if I'm not missing anything we were at a point where we just
-missed the safe led-rename function, which I has been accepted in the
-meantime and is in LED maintainer's -next branch with a pending pull
-request.
+Hello,
 
-I was planning to wait for the merge of that patch, rebase all patches,
-retest and send the whole series to the list again, is that ok for you?
+is there some document describing the protocoll used for the usb_8dev? I
+have STM32 hardware with USB and CAN connected and think about writing some
+firmware compatible with some existing adapter.
 
-Thanks,
-Fabio
+Otherwise, are the github projects
 
+saeugetier / usb2can
+
+shackspace / usb2can
+
+for usb to can hardware related to this driver??
+
+Thanks
 -- 
-Fabio Baltieri
+Uwe Bonnes                bon@elektron.ikp.physik.tu-darmstadt.de
+
+Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
+--------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
