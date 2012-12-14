@@ -1,45 +1,33 @@
-From: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
-Subject: usb_8dev: USB Protocoll available?
-Date: Fri, 14 Dec 2012 17:52:47 +0100
-Message-ID: <20683.22879.172661.430971@elektron.ikp.physik.tu-darmstadt.de>
+From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
+Subject: Re: [PATCH v7] usb_8dev: Add support for USB2CAN interface from 8
+ devices
+Date: Fri, 14 Dec 2012 19:22:53 +0100
+Message-ID: <95c24a1d2b44b779fc4022a4f5ea6961.squirrel@webmail.universalnet.at>
+References: <1355424053-608-1-git-send-email-krumboeck@universalnet.at>
+    <50CB148F.7030002@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lnx141.hrz.tu-darmstadt.de ([130.83.156.236]:51407 "EHLO
-	lnx141.hrz.tu-darmstadt.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756224Ab2LNRaL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Dec 2012 12:30:11 -0500
-Received: from lnx500.hrz.tu-darmstadt.de (lnx500.hrz.tu-darmstadt.de [130.83.156.225])
-	by lnx141.hrz.tu-darmstadt.de (8.14.4/8.13.8) with ESMTP id qBEGrn7g030725
-	for <linux-can@vger.kernel.org>; Fri, 14 Dec 2012 17:53:49 +0100
-	(envelope-from bon@elektron.ikp.physik.tu-darmstadt.de)
-Received: from elektron.ikp.physik.tu-darmstadt.de (elektron.ikp.physik.tu-darmstadt.de [130.83.133.205])
-	by lnx500.hrz.tu-darmstadt.de (8.14.4/8.14.4/HRZ/PMX) with ESMTP id qBEGr4BE032080
-	for <linux-can@vger.kernel.org>; Fri, 14 Dec 2012 17:53:04 +0100
-	(envelope-from bon@elektron.ikp.physik.tu-darmstadt.de)
+Received: from smtp.xy24.at ([85.126.109.136]:46267 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1756652Ab2LNSXI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 14 Dec 2012 13:23:08 -0500
+In-Reply-To: <50CB148F.7030002@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Bernd Krumboeck <b.krumboeck@gmail.com>, linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com, Bernd Krumboeck <krumboeck@universalnet.at>
 
+Hello Marc!
 
-Hello,
+> Looks good to me. Minor style issue inline. Please provide a
+> documentation for the sysfs entries and place it under:
+> Documentation/ABI/testing/sysfs-platform.
 
-is there some document describing the protocoll used for the usb_8dev? I
-have STM32 hardware with USB and CAN connected and think about writing some
-firmware compatible with some existing adapter.
+Should I change the sysfs path to /sys/devices/platform/usb_8dev? At the
+moment the path is /sys/bus/usb/devices/<busnum>:<devnum>.
 
-Otherwise, are the github projects
+regards,
+Bernd
 
-saeugetier / usb2can
-
-shackspace / usb2can
-
-for usb to can hardware related to this driver??
-
-Thanks
--- 
-Uwe Bonnes                bon@elektron.ikp.physik.tu-darmstadt.de
-
-Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
---------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
