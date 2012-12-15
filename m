@@ -1,72 +1,102 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2] can: sja1000: fix compilation on x86
-Date: Fri, 14 Dec 2012 23:25:12 +0100
-Message-ID: <1355523912-1977-1-git-send-email-mkl@pengutronix.de>
+From: uescher <linux-can_ger.kernel.org@myvdr.de>
+Subject: Re: [Patch] can-utils/slcanpty.c pseudo-terminal interface
+Date: Sat, 15 Dec 2012 02:14:26 +0100
+Message-ID: <50CBCEF2.9020904@myvdr.de>
+References: <50564EC7.7020005@myvdr.de> <5056D3F7.10506@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53799 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756234Ab2LNWZR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Dec 2012 17:25:17 -0500
+Received: from smtprelay06.ispgateway.de ([80.67.31.102]:36396 "EHLO
+	smtprelay06.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S964777Ab2LOBOa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Dec 2012 20:14:30 -0500
+Received: from [176.34.235.140] (helo=[0.0.0.0])
+	by smtprelay06.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68)
+	(envelope-from <linux-can_ger.kernel.org@myvdr.de>)
+	id 1TjgKh-0004oG-Bi
+	for linux-can@vger.kernel.org; Sat, 15 Dec 2012 02:14:27 +0100
+In-Reply-To: <5056D3F7.10506@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, rdunlap@infradead.org, davem@davemloft.net, Marc Kleine-Budde <mkl@pengutronix.de>, Andreas Larsson <andreas@gaisler.com>
+To: linux-can@vger.kernel.org
 
-Since commit:
-04df251 can: sja1000: Make sja1000_of_platform selectable and compilable on SPARC
-the driver can be activated on non powerpc platform like x86 or sparc. Without
-this patch the driver fails to compile on platform that don't define NO_IRQ,
-like x86.
+Next try :)
+Add Support for the Unix 98 pseudo-terminal interface /dev/ptmx /dev/pts/N
+http://www.kernel.org/doc/man-pages/online/pages/man4/pts.4.html
+My change is like this change:
+http://sourceforge.net/tracker/index.php?func=detail&aid=3467521&group_id=146269&atid=764681
+most Linux distributions do not configure their kernels to use the BSD 
+pseudo-terminal interface (/dev/pty* and /dev/tty*) anymore; they uses 
+the Unix 98 pseudo-terminal interface instead (/dev/ptmx and /dev/pts/*).
+Maybe is it possible to add this patch for the next release.
+Thanks.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andreas Larsson <andreas@gaisler.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Ulrich Escher<git@myvdr.de>
 ---
+  slcanpty.c |   27 +++++++++++++++++++++++++++
+  1 file changed, 27 insertions(+)
 
-Hello David,
+diff --git a/slcanpty.c b/slcanpty.c
+index 67a7491..13ed96c 100644
+--- a/slcanpty.c
++++ b/slcanpty.c
+@@ -22,6 +22,9 @@
+   *
+   */
 
-here's v2 of the patch.
++/* To get ptsname grantpt and unlockpt definitions from stdlib.h */
++#define _GNU_SOURCE
++
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+@@ -40,6 +43,7 @@
 
-Changes since v1:
-* check if irq equals 0 (don't test for <= 0)
+  /* maximum rx buffer len: extended CAN frame with timestamp */
+  #define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
++#define DEVICE_NAME_PTMX "/dev/ptmx"
 
-regards,
-Marc
+  #define DEBUG
 
----
+@@ -383,6 +387,8 @@ int main(int argc, char **argv)
+          fprintf(stderr, "Usage: %s <pty> <can interface>\n", argv[0]);
+          fprintf(stderr, "e.g. '%s /dev/ptyc0 can0' creates"
+              " /dev/ttyc0 for the slcan application\n", argv[0]);
++        fprintf(stderr, "e.g. for pseudo-terminal '%s %s can0' creates"
++            " /dev/pts/N\n", argv[0], DEVICE_NAME_PTMX);
+          fprintf(stderr, "\n");
+          return 1;
+      }
+@@ -404,6 +410,27 @@ int main(int argc, char **argv)
+                 ECHONL | ECHOPRT | ECHOKE | ICRNL);
+      tcsetattr(p, TCSANOW, &topts);
 
-The following changes since commit 17bc14b767cf0692420c43dbe5310ae98a5a7836:
-
-  Revert "sched: Update_cfs_shares at period edge" (2012-12-14 07:20:43 -0800)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can.git fixes-for-3.8
-
-for you to fetch changes up to b9b325a81c77adc5d735b70a6fce6fb6d1317476:
-
-  can: sja1000: fix compilation on x86 (2012-12-14 23:17:24 +0100)
-
-----------------------------------------------------------------
-Marc Kleine-Budde (1):
-      can: sja1000: fix compilation on x86
-
- drivers/net/can/sja1000/sja1000_of_platform.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
-index 0f59170..6433b81 100644
---- a/drivers/net/can/sja1000/sja1000_of_platform.c
-+++ b/drivers/net/can/sja1000/sja1000_of_platform.c
-@@ -121,7 +121,7 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
- 	}
- 
- 	irq = irq_of_parse_and_map(np, 0);
--	if (irq == NO_IRQ) {
-+	if (irq == 0) {
- 		dev_err(&ofdev->dev, "no irq found\n");
- 		err = -ENODEV;
- 		goto exit_unmap_mem;
--- 
-1.7.10.4
-
++    /* Support for the Unix 98 pseudo-terminal interface /dev/ptmx 
+/dev/pts/N */
++    if  (strcmp(argv[1], DEVICE_NAME_PTMX) == 0) {
++        if (grantpt(p) < 0) {
++            perror("grantpt");
++            return 1;
++        }
++
++        if (unlockpt(p) < 0) {
++            perror("unlockpt");
++            return 1;
++        }
++
++        char *name_pts = NULL;    /* slave pseudo-terminal device name */
++        name_pts = ptsname(p);
++        if (name_pts == NULL) {
++            perror("ptsname");
++            return 1;
++        }
++        printf("open: %s: slave pseudo-terminal is %s\n", argv[1], 
+name_pts);
++    }
++
+      /* open socket */
+      s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+      if (s < 0) {
+--
