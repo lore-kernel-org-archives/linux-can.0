@@ -1,119 +1,79 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [Patch] can-utils/slcanpty.c pseudo-terminal interface
-Date: Sun, 16 Dec 2012 17:02:12 +0100
-Message-ID: <50CDF084.8030002@hartkopp.net>
-References: <50564EC7.7020005@myvdr.de> <5056D3F7.10506@pengutronix.de> <50CBCEF2.9020904@myvdr.de>
+Subject: USB CAN Scripts - was Re: usb_8dev: USB Protocoll available?
+Date: Sun, 16 Dec 2012 17:54:00 +0100
+Message-ID: <50CDFCA8.6000409@hartkopp.net>
+References: <20683.22879.172661.430971@elektron.ikp.physik.tu-darmstadt.de> <50CC2226.10107@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:25906 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:48877 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753120Ab2LPQCQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 11:02:16 -0500
-In-Reply-To: <50CBCEF2.9020904@myvdr.de>
+	with ESMTP id S1751555Ab2LPQyE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 11:54:04 -0500
+In-Reply-To: <50CC2226.10107@universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: uescher <linux-can_ger.kernel.org@myvdr.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Bernd Krumboeck <krumboeck@universalnet.at>, Kurt Van Dijck <kurt.van.dijck@eia.be>, Stephane Grosjean <s.grosjean@peak-system.com>
 Cc: linux-can@vger.kernel.org
 
-Please re-send with proper whitespaces.
+Hello Bernd,
 
-Something (your mail client?) replaced tabs with spaces ...
+thanks for sending the [v9] version of the 8devices USB2CAN.
 
-@Marc: If there're new no remarks from your side you can add my
+I'm looking forward to get my own devices (hopefully) the next days to test
+your driver too. When it's applied to Daves net-next we have additional two
+month to test ;-)
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Btw. you mentioned the need for some scripting support ...
 
-for the re-posted patch.
+To me the problem is when attaching some USB CAN adapter the enumeration of
+these adapters is arbitrarily.
 
-Tnx Ulrich for the pts support!
+E.g. if i wanted to set the bitrate according to the specific adapter, i need
+some kind of reference, let's say a unique device identifier.
+
+When i would be able to identify the USB CAN adapters device ID i could add
+some udev scripts to set the bitrate - even if i change the plug-in order.
+
+The PEAK USB adapters have this info:
+
+peak_usb 2-1.3:1.0: PEAK-System PCAN-USB adapter hwrev 28 serial FFFFFFFF (1 channel)
+peak_usb 2-1.3:1.0 can2: attached to PCAN-USB channel 0 (device 67)
+
+This device number "67" can be set by the user to identify the adapter.
+
+In your mail ...
+
+On 15.12.2012 08:09, Bernd Krumboeck wrote:
+> Maybe this will help you (lsusb -v):
+
+> 
+> Bus 006 Device 006: ID 0483:1234 SGS Thomson Microelectronics
+> Device Descriptor:
+
+
+(..)
+
+>   iManufacturer           1 edevices
+>   iProduct                2 USB2CAN converter
+>   iSerial                 3 ED000202
+
+
+(..)
+
+... there's a serial number "ED000202" available.
+
+Maybe we should discuss about having that kind of unique identifier available
+in the sysfs (as we do not have a MAC address like USB ethernet adapters) for
+udev scripts as discussed above.
+
+I wonder if we could/should re-use the already existing
+
+	/sys/class/net/canX/addr
+	/sys/class/net/canX/addr_len
+
+for this purpose ?!?
 
 Regards,
 Oliver
-
-On 15.12.2012 02:14, uescher wrote:
-
-> Next try :)
-> Add Support for the Unix 98 pseudo-terminal interface /dev/ptmx /dev/pts/N
-> http://www.kernel.org/doc/man-pages/online/pages/man4/pts.4.html
-> My change is like this change:
-> http://sourceforge.net/tracker/index.php?func=detail&aid=3467521&group_id=146269&atid=764681
-> 
-> most Linux distributions do not configure their kernels to use the BSD
-> pseudo-terminal interface (/dev/pty* and /dev/tty*) anymore; they uses the
-> Unix 98 pseudo-terminal interface instead (/dev/ptmx and /dev/pts/*).
-> Maybe is it possible to add this patch for the next release.
-> Thanks.
-> 
-> Signed-off-by: Ulrich Escher<git@myvdr.de>
-> ---
->  slcanpty.c |   27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/slcanpty.c b/slcanpty.c
-> index 67a7491..13ed96c 100644
-> --- a/slcanpty.c
-> +++ b/slcanpty.c
-> @@ -22,6 +22,9 @@
->   *
->   */
-> 
-> +/* To get ptsname grantpt and unlockpt definitions from stdlib.h */
-> +#define _GNU_SOURCE
-> +
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> @@ -40,6 +43,7 @@
-> 
->  /* maximum rx buffer len: extended CAN frame with timestamp */
->  #define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
-> +#define DEVICE_NAME_PTMX "/dev/ptmx"
-> 
->  #define DEBUG
-> 
-> @@ -383,6 +387,8 @@ int main(int argc, char **argv)
->          fprintf(stderr, "Usage: %s <pty> <can interface>\n", argv[0]);
->          fprintf(stderr, "e.g. '%s /dev/ptyc0 can0' creates"
->              " /dev/ttyc0 for the slcan application\n", argv[0]);
-> +        fprintf(stderr, "e.g. for pseudo-terminal '%s %s can0' creates"
-> +            " /dev/pts/N\n", argv[0], DEVICE_NAME_PTMX);
->          fprintf(stderr, "\n");
->          return 1;
->      }
-> @@ -404,6 +410,27 @@ int main(int argc, char **argv)
->                 ECHONL | ECHOPRT | ECHOKE | ICRNL);
->      tcsetattr(p, TCSANOW, &topts);
-> 
-> +    /* Support for the Unix 98 pseudo-terminal interface /dev/ptmx /dev/pts/N */
-> +    if  (strcmp(argv[1], DEVICE_NAME_PTMX) == 0) {
-> +        if (grantpt(p) < 0) {
-> +            perror("grantpt");
-> +            return 1;
-> +        }
-> +
-> +        if (unlockpt(p) < 0) {
-> +            perror("unlockpt");
-> +            return 1;
-> +        }
-> +
-> +        char *name_pts = NULL;    /* slave pseudo-terminal device name */
-> +        name_pts = ptsname(p);
-> +        if (name_pts == NULL) {
-> +            perror("ptsname");
-> +            return 1;
-> +        }
-> +        printf("open: %s: slave pseudo-terminal is %s\n", argv[1], name_pts);
-> +    }
-> +
->      /* open socket */
->      s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
->      if (s < 0) {
-> -- 
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
