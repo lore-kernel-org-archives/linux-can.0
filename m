@@ -1,61 +1,73 @@
-From: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
-Subject: Re: USB CAN Scripts - was Re: usb_8dev: USB Protocoll available?
-Date: Sun, 16 Dec 2012 18:17:51 +0100
-Message-ID: <20686.575.599365.113903@elektron.ikp.physik.tu-darmstadt.de>
-References: <20683.22879.172661.430971@elektron.ikp.physik.tu-darmstadt.de>
-	<50CC2226.10107@universalnet.at>
-	<50CDFCA8.6000409@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/9] tx/rx LED trigger support
+Date: Sun, 16 Dec 2012 23:37:59 +0100
+Message-ID: <50CE4D47.8000701@pengutronix.de>
+References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigC27E1E032A2A7B1C6D3A8A1B"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lnx500.hrz.tu-darmstadt.de ([130.83.156.225]:48521 "EHLO
-	lnx500.hrz.tu-darmstadt.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751513Ab2LPRSe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 12:18:34 -0500
-In-Reply-To: <50CDFCA8.6000409@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51096 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751365Ab2LPWiN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 17:38:13 -0500
+In-Reply-To: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Bernd Krumboeck <krumboeck@universalnet.at>, Kurt Van Dijck <kurt.van.dijck@eia.be>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
 
->>>>> "Oliver" == Oliver Hartkopp <socketcan@hartkopp.net> writes:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC27E1E032A2A7B1C6D3A8A1B
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-    Oliver> Hello Bernd, thanks for sending the [v9] version of the 8devices
-    Oliver> USB2CAN.
+On 12/16/2012 12:08 PM, Fabio Baltieri wrote:
+> Hi all,
+>=20
+> this is a resend of the patch series on tx/rx LEDs trigger.  The patch
+> set was put on hold after the latest discussions on Kurt's rename patch=
 
-    Oliver> I'm looking forward to get my own devices (hopefully) the next
-    Oliver> days to test your driver too. When it's applied to Daves
-    Oliver> net-next we have additional two month to test ;-)
+> due to a missing feature in the LED subsystem, which has been just
+> merged in:
+>=20
+> a8df7b1 leds: add led_trigger_rename function
+>=20
+> So, as months passed since the latest developments, I'm reposting the
+> whole set, rebased on current mainline.  The first patches are the same=
 
-    Oliver> Btw. you mentioned the need for some scripting support ...
+> that were merged in can-next/led-trigger, but there was some (trivial)
+> conflict in the rebase.
+>=20
+> As for the test, I've tried the patch on the current mainline kernel
+> with my custom usb-can interface.  For the drivers, I don't have any
+> SoC-enabled board anymore, so they have only been compile tested.
 
-    Oliver> To me the problem is when attaching some USB CAN adapter the
-    Oliver> enumeration of these adapters is arbitrarily.
+Thanks for your work. Can you move patches 8+9 to the beginning, before
+touching the device drivers. I'll apply on the Thursday, as I don't have
+proper internet now.
 
-    Oliver> E.g. if i wanted to set the bitrate according to the specific
-    Oliver> adapter, i need some kind of reference, let's say a unique
-    Oliver> device identifier.
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-    Oliver> When i would be able to identify the USB CAN adapters device ID
-    Oliver> i could add some udev scripts to set the bitrate - even if i
-    Oliver> change the plug-in order.
 
-Hello,
+--------------enigC27E1E032A2A7B1C6D3A8A1B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I have a lot of FTDI USB adapter related boards here. For manufacturer, I
-programmed "IKDA", product is the board name and each board has a unique
-number, here enumeratad beginning with 0000, 0001 etc.
-To construct a unique /dev/ entry for each of them, I have a line
-SUBSYSTEMS=="usb", KERNEL=="ttyUSB*", ATTRS{../manufacturer}=="IKDA", \
-SYMLINK="%s{../product}_%s{../serial}_%s{bInterfaceNumber}"
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-in my udev rules. When plugged in, e.g. /dev/FTDITAG_0002_01 is created.
-Network devices behave different, but maybe above gives you an idea.
+iEUEARECAAYFAlDOTU0ACgkQjTAFq1RaXHPHXgCXdzfvTUOuNjC6z9xJcxKBpH5f
+cwCZAR1jIfrqgdyS0ICZU4qjRDxbIhc=
+=J5xi
+-----END PGP SIGNATURE-----
 
-Bye 
--- 
-Uwe Bonnes                bon@elektron.ikp.physik.tu-darmstadt.de
-
-Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
---------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
+--------------enigC27E1E032A2A7B1C6D3A8A1B--
