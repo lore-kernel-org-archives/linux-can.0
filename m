@@ -1,90 +1,98 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH 5/9] can: c_can: add LED trigger support
-Date: Sun, 16 Dec 2012 12:08:29 +0100
-Message-ID: <1355656113-9562-6-git-send-email-fabio.baltieri@gmail.com>
+Subject: [PATCH 7/9] can: sja1000: add LED trigger support
+Date: Sun, 16 Dec 2012 12:08:31 +0100
+Message-ID: <1355656113-9562-8-git-send-email-fabio.baltieri@gmail.com>
 References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f174.google.com ([209.85.212.174]:58420 "EHLO
-	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752810Ab2LPLJy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 06:09:54 -0500
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Bhupesh Sharma <bhupesh.sharma@st.com>, AnilKumar Ch <anilkumar@ti.com>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
-Add support for canbus activity led indicators on c_can devices by
+Add support for canbus activity led indicators on sja1000 devices by
 calling appropriate can_led functions.
 
 These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
 otherwise.
 
-Cc: Bhupesh Sharma <bhupesh.sharma@st.com>
-Cc: AnilKumar Ch <anilkumar@ti.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
 ---
- drivers/net/can/c_can/c_can.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/can/sja1000/sja1000.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 5233b8f..57eb1e7 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -39,6 +39,7 @@
- #include <linux/can.h>
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 83ee11e..daf4013 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -60,6 +60,7 @@
+ 
  #include <linux/can/dev.h>
  #include <linux/can/error.h>
 +#include <linux/can/led.h>
  
- #include "c_can.h"
+ #include "sja1000.h"
  
-@@ -477,6 +478,8 @@ static int c_can_read_msg_object(struct net_device *dev, int iface, int ctrl)
+@@ -368,6 +369,8 @@ static void sja1000_rx(struct net_device *dev)
+ 
  	stats->rx_packets++;
- 	stats->rx_bytes += frame->can_dlc;
- 
-+	can_led_event(dev, CAN_LED_EVENT_RX);
+ 	stats->rx_bytes += cf->can_dlc;
 +
- 	return 0;
++	can_led_event(dev, CAN_LED_EVENT_RX);
  }
  
-@@ -751,6 +754,7 @@ static void c_can_do_tx(struct net_device *dev)
- 					C_CAN_IFACE(MSGCTRL_REG, 0))
- 					& IF_MCONT_DLC_MASK;
- 			stats->tx_packets++;
+ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+@@ -521,6 +524,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				can_get_echo_skb(dev, 0);
+ 			}
+ 			netif_wake_queue(dev);
 +			can_led_event(dev, CAN_LED_EVENT_TX);
- 			c_can_inval_msg_object(dev, 0, msg_obj_no);
- 		} else {
- 			break;
-@@ -1115,6 +1119,8 @@ static int c_can_open(struct net_device *dev)
- 
- 	napi_enable(&priv->napi);
+ 		}
+ 		if (isrc & IRQ_RI) {
+ 			/* receive interrupt */
+@@ -575,6 +579,8 @@ static int sja1000_open(struct net_device *dev)
+ 	/* init and start chi */
+ 	sja1000_start(dev);
  
 +	can_led_event(dev, CAN_LED_EVENT_OPEN);
 +
- 	/* start the c_can controller */
- 	c_can_start(dev);
+ 	netif_start_queue(dev);
  
-@@ -1143,6 +1149,8 @@ static int c_can_close(struct net_device *dev)
- 	c_can_reset_ram(priv, false);
- 	c_can_pm_runtime_put_sync(priv);
+ 	return 0;
+@@ -592,6 +598,8 @@ static int sja1000_close(struct net_device *dev)
+ 
+ 	close_candev(dev);
  
 +	can_led_event(dev, CAN_LED_EVENT_STOP);
 +
  	return 0;
  }
  
-@@ -1268,6 +1276,8 @@ int register_c_can_dev(struct net_device *dev)
- 	err = register_candev(dev);
- 	if (err)
- 		c_can_pm_runtime_disable(priv);
-+	else
-+		devm_can_led_init(dev);
+@@ -639,6 +647,8 @@ static const struct net_device_ops sja1000_netdev_ops = {
  
- 	return err;
+ int register_sja1000dev(struct net_device *dev)
+ {
++	int ret;
++
+ 	if (!sja1000_probe_chip(dev))
+ 		return -ENODEV;
+ 
+@@ -648,7 +658,12 @@ int register_sja1000dev(struct net_device *dev)
+ 	set_reset_mode(dev);
+ 	chipset_init(dev);
+ 
+-	return register_candev(dev);
++	ret =  register_candev(dev);
++
++	if (!ret)
++		devm_can_led_init(dev);
++
++	return ret;
  }
+ EXPORT_SYMBOL_GPL(register_sja1000dev);
+ 
 -- 
 1.7.12.1
-
