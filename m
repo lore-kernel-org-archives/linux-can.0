@@ -1,54 +1,68 @@
-From: Markus Becker <mab@comnets.uni-bremen.de>
-Subject: Re: Debian packages for can-utils
-Date: Sun, 16 Dec 2012 11:37:46 +0100
-Message-ID: <201212161137.47176.mab@comnets.uni-bremen.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: [PATCH 0/9] tx/rx LED trigger support
+Date: Sun, 16 Dec 2012 12:08:24 +0100
+Message-ID: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bugs.comnets.uni-bremen.de ([134.102.186.10]:58118 "EHLO
-	bugs.comnets.uni-bremen.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752112Ab2LPKpl convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 16 Dec 2012 05:45:41 -0500
-Received: from shelbyville.comnets.uni-bremen.de (unknown [10.8.0.62])
-	by bugs.comnets.uni-bremen.de (Postfix) with ESMTPS id 7126ED409A5
-	for <linux-can@vger.kernel.org>; Sun, 16 Dec 2012 11:37:48 +0100 (CET)
+Received: from mail-wi0-f180.google.com ([209.85.212.180]:33077 "EHLO
+	mail-wi0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752386Ab2LPLIs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Dec 2012 06:08:48 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
 
-Hi,
+Hi all,
 
-I did package can-utils 0.0.2 in April.
+this is a resend of the patch series on tx/rx LEDs trigger.  The patch
+set was put on hold after the latest discussions on Kurt's rename patch
+due to a missing feature in the LED subsystem, which has been just
+merged in:
 
-The packaging is available in:
-http://anonscm.debian.org/gitweb/?p=collab-maint/can-utils.git;a=summary
+a8df7b1 leds: add led_trigger_rename function
 
-From that, one can create deb's using dpkg-buildpackage.
+So, as months passed since the latest developments, I'm reposting the
+whole set, rebased on current mainline.  The first patches are the same
+that were merged in can-next/led-trigger, but there was some (trivial)
+conflict in the rebase.
 
-Some time ago I submitted the built packages to mentors.debian.net, but they 
-were not sponsored by a maintainer.
+As for the test, I've tried the patch on the current mainline kernel
+with my custom usb-can interface.  For the drivers, I don't have any
+SoC-enabled board anymore, so they have only been compile tested.
 
-If you want, you could help on adapt the packaging for the upcoming release.
+Cheers,
+Fabio
 
-Markus
 
+Fabio Baltieri (7):
+  can: add tx/rx LED trigger support
+  can: flexcan: add LED trigger support
+  can: at91_can: add LED trigger support
+  can: ti_hecc: add LED trigger support
+  can: c_can: add LED trigger support
+  can: mcp251x: add LED trigger support
+  can: sja1000: add LED trigger support
 
-> Hey guys,
-> 
-> Is anyone working on Debian packages for can-utils?
-> 
-> mfg, Stefan.
-------------------------------------------------
-| Dipl.-Ing. Markus Becker
-| Communication Networks
-| TZI - Center for Computing Technologies
-| University Bremen
-| Germany
-------------------------------------------------
-| web: http://www.comnets.uni-bremen.de/~mab/
-| mailto: mab@comnets.uni-bremen.de
-| telephone: +49 421 218 62379
-| building: NW1 room: N2260
-------------------------------------------------
+Kurt Van Dijck (2):
+  can: export a safe netdev_priv wrapper for candev
+  can: rename LED trigger name on netdev renames
+
+ drivers/net/can/Kconfig           |  12 ++++
+ drivers/net/can/Makefile          |   2 +
+ drivers/net/can/at91_can.c        |  10 +++
+ drivers/net/can/c_can/c_can.c     |  10 +++
+ drivers/net/can/dev.c             |  18 ++++++
+ drivers/net/can/flexcan.c         |  11 ++++
+ drivers/net/can/led.c             | 129 ++++++++++++++++++++++++++++++++++++++
+ drivers/net/can/mcp251x.c         |  23 +++++--
+ drivers/net/can/sja1000/sja1000.c |  17 ++++-
+ drivers/net/can/ti_hecc.c         |  10 +++
+ include/linux/can/dev.h           |  11 ++++
+ include/linux/can/led.h           |  51 +++++++++++++++
+ 12 files changed, 299 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/net/can/led.c
+ create mode 100644 include/linux/can/led.h
+
+-- 
+1.7.12.1
+
