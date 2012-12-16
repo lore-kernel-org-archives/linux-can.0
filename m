@@ -1,37 +1,33 @@
-From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
-Subject: Re: [PATCH v8] usb_8dev: Add support for USB2CAN interface from 8
- devices
-Date: Sat, 15 Dec 2012 14:10:26 +0100
-Message-ID: <0ee4802e1538ea1ea22d3f4f00af102e.squirrel@webmail.universalnet.at>
-References: <525609baa6c4f07fdacc5089b7de5e4d.squirrel@webmail.universalnet.at>
-    <50CC66AD.60104@grandegger.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v2] can: sja1000: fix compilation on x86
+Date: Sat, 15 Dec 2012 17:16:00 -0800 (PST)
+Message-ID: <20121215.171600.1207782952199175480.davem@davemloft.net>
+References: <1355523912-1977-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:53211 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755808Ab2LONKc (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sat, 15 Dec 2012 08:10:32 -0500
-In-Reply-To: <50CC66AD.60104@grandegger.com>
+Received: from shards.monkeyblade.net ([149.20.54.216]:34272 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751900Ab2LPBQG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 15 Dec 2012 20:16:06 -0500
+In-Reply-To: <1355523912-1977-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, rdunlap@infradead.org, andreas@gaisler.com
 
-> On 12/15/2012 11:12 AM, "Bernd Krumb=F6ck" wrote:
->> This informations could be useful for configuration scripts. Various
->> drivers do the same.
->
-> Well, "could be" is not a strong argument. Is there a real use-case? =
-If
-> not I'm also in favor of removing these entries, as I already said.
->
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 14 Dec 2012 23:25:12 +0100
 
+> Since commit:
+> 04df251 can: sja1000: Make sja1000_of_platform selectable and compilable on SPARC
+> the driver can be activated on non powerpc platform like x86 or sparc. Without
+> this patch the driver fails to compile on platform that don't define NO_IRQ,
+> like x86.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Andreas Larsson <andreas@gaisler.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Ok, I'll remove...
-
-regards,
-Bernd
-
-
+Applied.
