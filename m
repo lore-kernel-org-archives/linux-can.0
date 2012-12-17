@@ -1,32 +1,39 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: Re: [PATCH 0/9] tx/rx LED trigger support
-Date: Sun, 16 Dec 2012 23:51:05 +0100
-Message-ID: <20121216225103.GA7161@balto.lan>
-References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
- <50CE4D47.8000701@pengutronix.de>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
+Subject: Re: USB CAN Scripts - was Re: usb_8dev: USB Protocoll available?
+Date: Mon, 17 Dec 2012 09:06:10 +0100
+Message-ID: <50CED272.2050902@universalnet.at>
+References: <20683.22879.172661.430971@elektron.ikp.physik.tu-darmstadt.de> <50CC2226.10107@universalnet.at> <50CDFCA8.6000409@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50CE4D47.8000701@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp.xy24.at ([85.126.109.136]:50108 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750813Ab2LQHGp (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 17 Dec 2012 02:06:45 -0500
+In-Reply-To: <50CDFCA8.6000409@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
 
-Hello Marc,
+Hello Oliver!
 
-On Sun, Dec 16, 2012 at 11:37:59PM +0100, Marc Kleine-Budde wrote:
-> Thanks for your work. Can you move patches 8+9 to the beginning, before
-> touching the device drivers. I'll apply on the Thursday, as I don't have
-> proper internet now.
+Am 2012-12-16 17:54, schrieb Oliver Hartkopp:
+>
+> ... there's a serial number "ED000202" available.
+>
+> Maybe we should discuss about having that kind of unique identifier available
+> in the sysfs (as we do not have a MAC address like USB ethernet adapters) for
+> udev scripts as discussed above.
 
-Ok, it makes sense.  In that case I'll wait a couple of days before
-re-sending the reordered series, just in case someone else wants to
-comment.
+Simply a great idea. :-)
 
-Thanks!
-Fabio
+Some questions:
+* How should it look like? ("<vendorId><productId><serial><...>")
+* What should we do if the device does not have any useful number? (A PCI device can simply use the slot-id. USB???)
+* How a driver should set the address? (priv->can.addr?)
 
--- 
-Fabio Baltieri
+
+regards,
+Bernd
