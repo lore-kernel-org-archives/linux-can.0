@@ -1,63 +1,90 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [PATCH 1/9] can: add tx/rx LED trigger support
-Date: Mon, 17 Dec 2012 10:34:14 +0100
-Message-ID: <20121217093414.GA17341@vandijck-laurijssen.be>
-References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
- <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
- <50CEC9B0.3040503@universalnet.at>
+From: Christian Bendele <Christian.Bendele@gmx.net>
+Subject: Re: =?utf-8?b?cGNoX2Nhbg==?= probable bug
+Date: Mon, 17 Dec 2012 13:21:38 +0000 (UTC)
+Message-ID: <loom.20121217T124707-860@post.gmane.org>
+References: <loom.20121211T155025-697@post.gmane.org> <50C7AE44.4040603@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:23149 "EHLO
-	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751269Ab2LQJeh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Dec 2012 04:34:37 -0500
-Content-Disposition: inline
-In-Reply-To: <50CEC9B0.3040503@universalnet.at>
+Received: from plane.gmane.org ([80.91.229.3]:40176 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752125Ab2LQNV7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 17 Dec 2012 08:21:59 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Tkae2-0000A0-FS
+	for linux-can@vger.kernel.org; Mon, 17 Dec 2012 14:22:10 +0100
+Received: from 192.198.151.43 ([192.198.151.43])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Mon, 17 Dec 2012 14:22:10 +0100
+Received: from Christian.Bendele by 192.198.151.43 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Mon, 17 Dec 2012 14:22:10 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Bernd Krumboeck <krumboeck@universalnet.at>
-Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On Mon, Dec 17, 2012 at 08:28:48AM +0100, Bernd Krumboeck wrote:
-> Hello Fabio!
+Hi,
+
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
+
+> Yes, note that the PCH does use a C_CAN core (even the manual is identical).
+
+Indeed.
+
+
+> Please do not invest time fixing the pch_can driver. We want to get rid
+> of it asap.
+
+Okay, I have turned my efforts towards the c-can driver now. I've had some
+issues with some of the design decisions of the pch driver anyway. Some of those
+issues seem to be absent from the c-can driver after a first glance.
+
+
+> > That means that the message(s) stored in this message object are never read
+> > out, and the INTPND (interrupt pending, is set together with NEWDAT when a
+> > message is stored into the object) bit in that message object's control
+> > register is never cleared.
 > 
-> Am 2012-12-16 12:08, schrieb Fabio Baltieri:
-> >This patch implements the functions to add two LED triggers, named
-> ><ifname>-tx and <ifname>-rx, to a canbus device driver.
-> >
-> >Triggers are called from specific handlers by each CAN device driver and
-> >can be disabled altogether with a Kconfig option.
-> >
-> >The implementation keeps the LED on when the interface is UP and blinks
-> >the LED on network activity at a configurable rate.
-> >
-> >This only supports can-dev based drivers, as it uses some support field
-> >in the can_priv structure.
-> >
-> >Supported drivers should call devm_can_led_init() and can_led_event() as
-> >needed.
-> >
-> >Cleanup is handled automatically by devres, so no *_exit function is
-> >needed.
-> >
-> >Supported events are:
-> >- CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
-> >- CAN_LED_EVENT_STOP: turn off tx/rx LEDs
-> >- CAN_LED_EVENT_TX: trigger tx LED blink
-> >- CAN_LED_EVENT_RX: trigger tx LED blink
-> 
-> Why there is no patch for any usb can device?
-> 
-> Can this be done in a more general way, except patching every driver?
+> Looking to c_can.c, I see this problem as well. The above check should
+> be done after reading out the message.
 
-There must be a way.
-Up to this series, there were a few minor problems:
-* determine if a CAN device is can_dev based
-* led trigger calls.
+That's what I thought as well, but after a closer look at c_can_do_rx_poll()
+method of the c_can driver I disagree. I think the way this driver works the
+check for the EOB bit should not be necessary at all. Neither before nor after
+reading out the message. The loop will already be exited after that message
+object is read out due to "msg_obj <= C_CAN_MSG_OBJ_RX_LAST" in the loop header.
 
-After this series, I think it's possible to make this functionality generic.
-But up to then, this per-driver code is a working model.
 
-Kind regards,
-Kurt
+> Could you please use my "RFC V3" c_can_pci driver patches I sent out an
+> hour ago. Anyway, avoiding out-of-order reception with a message FIFO is
+> tricky and we need to fix that part as well. Unfortunately, I do not
+> have a system for development and testing.
+
+I tried your RFC V3 drivers now. As you sent them they work about as well as the
+pch driver. The generally seem to have similar bugs as the latter, too. 
+
+I was quite surprised, however, that the c_can driver actually caused (very
+slightly) higher CPU load for a given CANBUS load than the pch driver.
+I had looked at the code before testing it, and some issues I had with design
+decisions of the pch driver (among other things it failed to make proper use of
+the message handling registers the c-can controller provides) seemed to be much
+better with the c_can driver. I had therefore expected it to cause _lower_ cpu
+load than the pch driver and was somewhat disappointed. I'll have to give this a
+closer look after the holidays, maybe I can find the reasons why this happens.
+
+I then removed the two lines that check for the EOB bit. That seems to fix all
+hangs that I observed on the RX end. It seems to be quite stable now, even under
+high load. I'm not really sure if I consider the out-of-order reception problems
+important right now. 
+
+The TX side still seems to have hickups (hangs, as observed by others as well).
+I'll try to look into that before the holidays, but I make no promises that I'll
+find the time.
+
+Christian
+
+
+
