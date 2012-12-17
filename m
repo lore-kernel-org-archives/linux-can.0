@@ -1,54 +1,63 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: [PATCH 1/9] can: add tx/rx LED trigger support
-Date: Mon, 17 Dec 2012 08:28:48 +0100
-Message-ID: <50CEC9B0.3040503@universalnet.at>
-References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com> <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
+Date: Mon, 17 Dec 2012 10:34:14 +0100
+Message-ID: <20121217093414.GA17341@vandijck-laurijssen.be>
+References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
+ <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
+ <50CEC9B0.3040503@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:43176 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750813Ab2LQH31 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 17 Dec 2012 02:29:27 -0500
-In-Reply-To: <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:23149 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751269Ab2LQJeh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Dec 2012 04:34:37 -0500
+Content-Disposition: inline
+In-Reply-To: <50CEC9B0.3040503@universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Baltieri <fabio.baltieri@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
+To: Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: Fabio Baltieri <fabio.baltieri@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
 
-Hello Fabio!
+On Mon, Dec 17, 2012 at 08:28:48AM +0100, Bernd Krumboeck wrote:
+> Hello Fabio!
+> 
+> Am 2012-12-16 12:08, schrieb Fabio Baltieri:
+> >This patch implements the functions to add two LED triggers, named
+> ><ifname>-tx and <ifname>-rx, to a canbus device driver.
+> >
+> >Triggers are called from specific handlers by each CAN device driver and
+> >can be disabled altogether with a Kconfig option.
+> >
+> >The implementation keeps the LED on when the interface is UP and blinks
+> >the LED on network activity at a configurable rate.
+> >
+> >This only supports can-dev based drivers, as it uses some support field
+> >in the can_priv structure.
+> >
+> >Supported drivers should call devm_can_led_init() and can_led_event() as
+> >needed.
+> >
+> >Cleanup is handled automatically by devres, so no *_exit function is
+> >needed.
+> >
+> >Supported events are:
+> >- CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
+> >- CAN_LED_EVENT_STOP: turn off tx/rx LEDs
+> >- CAN_LED_EVENT_TX: trigger tx LED blink
+> >- CAN_LED_EVENT_RX: trigger tx LED blink
+> 
+> Why there is no patch for any usb can device?
+> 
+> Can this be done in a more general way, except patching every driver?
 
-Am 2012-12-16 12:08, schrieb Fabio Baltieri:
-> This patch implements the functions to add two LED triggers, named
-> <ifname>-tx and <ifname>-rx, to a canbus device driver.
->
-> Triggers are called from specific handlers by each CAN device driver and
-> can be disabled altogether with a Kconfig option.
->
-> The implementation keeps the LED on when the interface is UP and blinks
-> the LED on network activity at a configurable rate.
->
-> This only supports can-dev based drivers, as it uses some support field
-> in the can_priv structure.
->
-> Supported drivers should call devm_can_led_init() and can_led_event() as
-> needed.
->
-> Cleanup is handled automatically by devres, so no *_exit function is
-> needed.
->
-> Supported events are:
-> - CAN_LED_EVENT_OPEN: turn on tx/rx LEDs
-> - CAN_LED_EVENT_STOP: turn off tx/rx LEDs
-> - CAN_LED_EVENT_TX: trigger tx LED blink
-> - CAN_LED_EVENT_RX: trigger tx LED blink
+There must be a way.
+Up to this series, there were a few minor problems:
+* determine if a CAN device is can_dev based
+* led trigger calls.
 
-Why there is no patch for any usb can device?
+After this series, I think it's possible to make this functionality generic.
+But up to then, this per-driver code is a working model.
 
-Can this be done in a more general way, except patching every driver?
-
-
-regards,
-Bernd
-
+Kind regards,
+Kurt
