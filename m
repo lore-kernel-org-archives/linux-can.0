@@ -1,85 +1,47 @@
-From: Bernd Krumboeck <b.krumboeck@gmail.com>
-Subject: [PATCH] usb_8dev: add LED trigger support
-Date: Mon, 17 Dec 2012 22:19:49 +0100
-Message-ID: <1355779189-23289-1-git-send-email-krumboeck@universalnet.at>
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: Re: [PATCH 1/9] can: add tx/rx LED trigger support
+Date: Mon, 17 Dec 2012 22:42:23 +0100
+Message-ID: <20121217214222.GA3539@balto.lan>
+References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
+ <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
+ <50CEC9B0.3040503@universalnet.at>
+ <20121217174121.GA16327@balto.lan>
+ <86fd45485e2016d2c5ad27f28669195e.squirrel@webmail.universalnet.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ee0-f46.google.com ([74.125.83.46]:34420 "EHLO
-	mail-ee0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751544Ab2LQVUJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Dec 2012 16:20:09 -0500
+Received: from mail-wg0-f46.google.com ([74.125.82.46]:33521 "EHLO
+	mail-wg0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752253Ab2LQVme (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Dec 2012 16:42:34 -0500
+Content-Disposition: inline
+In-Reply-To: <86fd45485e2016d2c5ad27f28669195e.squirrel@webmail.universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com, fabio.baltieri@gmail.com, Bernd Krumboeck <krumboeck@universalnet.at>
+To: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
 
-Add support for canbus activity led indicators on usb_8dev devices by
-calling appropriate can_led functions.
+On Mon, Dec 17, 2012 at 09:20:57PM +0100, "Bernd Krumb=F6ck" wrote:
+> > If you think it's useful for USB controller, just tell me or modify=
+ the
+> > driver by yourself!  As you see the patch is really easy.
+>=20
+> At least it is useful for the usb_8dev driver. I'll write a patch.
+>=20
+> Photo of the device:
+> http://www.8devices.com/product/2/usb2can
 
-These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
-otherwise.
+Sure that it's needed?  That status LED is probably controlled directly
+by the firmware itself.  Anyway I think it makes sense to support all
+the mainline drivers and I'm really happy if you test the patch on
+your hardware!
 
-Signed-off-by: Bernd Krumboeck <krumboeck@universalnet.at>
----
- drivers/net/can/usb/usb_8dev.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+My only suggestion is to keep the LED support on a separate patch from
+the "add driver" one.
 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index 660b4f87..adec0d2 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -33,6 +33,7 @@
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
-+#include <linux/can/led.h>
- 
- /* driver constants */
- #define MAX_RX_URBS			10
-@@ -504,6 +505,8 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
- 
- 		stats->rx_packets++;
- 		stats->rx_bytes += cf->can_dlc;
-+
-+		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
- 	} else {
- 		netdev_warn(priv->netdev, "frame type %d unknown",
- 			 msg->type);
-@@ -606,6 +609,8 @@ static void usb_8dev_write_bulk_callback(struct urb *urb)
- 
- 	can_get_echo_skb(netdev, context->echo_index);
- 
-+	can_led_event(netdev, CAN_LED_EVENT_TX);
-+
- 	/* Release context */
- 	context->echo_index = MAX_TX_URBS;
- 
-@@ -830,6 +835,8 @@ static int usb_8dev_open(struct net_device *netdev)
- 	if (err)
- 		return err;
- 
-+	can_led_event(netdev, CAN_LED_EVENT_OPEN);
-+
- 	/* finally start device */
- 	err = usb_8dev_start(priv);
- 	if (err) {
-@@ -882,6 +889,8 @@ static int usb_8dev_close(struct net_device *netdev)
- 
- 	close_candev(netdev);
- 
-+	can_led_event(netdev, CAN_LED_EVENT_STOP);
-+
- 	return err;
- }
- 
-@@ -990,6 +999,8 @@ static int usb_8dev_probe(struct usb_interface *intf,
- 			 (version>>8) & 0xff, version & 0xff);
- 	}
- 
-+	devm_can_led_init(netdev);
-+
- 	return 0;
- 
- cleanup_cmd_msg_buffer:
--- 
-1.7.10.4
+Cheers,
+=46abio
 
+--=20
+=46abio Baltieri
