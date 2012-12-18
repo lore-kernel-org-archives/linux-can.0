@@ -1,43 +1,60 @@
-From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
-Subject: Re: [PATCH 1/9] can: add tx/rx LED trigger support
-Date: Tue, 18 Dec 2012 07:02:02 +0100
-Message-ID: <92a8e5e68e38c059d3a29b5ed4252da8.squirrel@webmail.universalnet.at>
-References: <1355656113-9562-1-git-send-email-fabio.baltieri@gmail.com>
-    <1355656113-9562-2-git-send-email-fabio.baltieri@gmail.com>
-    <50CEC9B0.3040503@universalnet.at> <20121217174121.GA16327@balto.lan>
-    <86fd45485e2016d2c5ad27f28669195e.squirrel@webmail.universalnet.at>
-    <20121217214222.GA3539@balto.lan>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] usb_8dev: add LED trigger support
+Date: Tue, 18 Dec 2012 15:05:12 +0100
+Message-ID: <50D07818.9000108@pengutronix.de>
+References: <1355779189-23289-1-git-send-email-krumboeck@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121217214222.GA3539@balto.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Baltieri <fabio.baltieri@gmail.com>, =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigBC83342F91F2A643121FBB88"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42425 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754302Ab2LROF0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 09:05:26 -0500
+In-Reply-To: <1355779189-23289-1-git-send-email-krumboeck@universalnet.at>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Bernd Krumboeck <b.krumboeck@gmail.com>
+Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com, fabio.baltieri@gmail.com, Bernd Krumboeck <krumboeck@universalnet.at>Fabio Baltieri <fabio.baltieri@gmail.com>
 
-Hi Fabio!
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBC83342F91F2A643121FBB88
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, Dec 17, 2012 at 09:20:57PM +0100, "Bernd Krumb=F6ck" wrote:
->> > If you think it's useful for USB controller, just tell me or modif=
-y
->> the
->> > driver by yourself!  As you see the patch is really easy.
->>
->> At least it is useful for the usb_8dev driver. I'll write a patch.
->>
->> Photo of the device:
->> http://www.8devices.com/product/2/usb2can
->
-> Sure that it's needed?  That status LED is probably controlled direct=
-ly
-> by the firmware itself.  Anyway I think it makes sense to support all
-> the mainline drivers and I'm really happy if you test the patch on
-> your hardware!
+On 12/17/2012 10:19 PM, Bernd Krumboeck wrote:
+> Add support for canbus activity led indicators on usb_8dev devices by
+> calling appropriate can_led functions.
+>=20
+> These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
+> otherwise.
+>=20
+> Signed-off-by: Bernd Krumboeck <krumboeck@universalnet.at>
 
-Yes, it is controlled by the firmware, but it does not show rx/tx. Wher=
-eas
-my OpenWRT hardware has enough leds. ;-)
+Thx. Fabio, can you queue this patch your tree and include it in your
+series when you send the next iteration?
 
-regards,
-Bernd
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enigBC83342F91F2A643121FBB88
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iEYEARECAAYFAlDQeBwACgkQjTAFq1RaXHPMSgCfTrPncDvcddKjcGgvn3imHLQ6
+xiEAoIVmmFxT6T0qjnPf/zrQKo3rryD+
+=G4DI
+-----END PGP SIGNATURE-----
+
+--------------enigBC83342F91F2A643121FBB88--
