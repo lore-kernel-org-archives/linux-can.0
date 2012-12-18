@@ -1,103 +1,90 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH 09/10] can: sja1000: add LED trigger support
-Date: Tue, 18 Dec 2012 18:51:03 +0100
-Message-ID: <1355853064-18144-10-git-send-email-fabio.baltieri@gmail.com>
+Subject: [PATCH 10/10] can: usb_8dev: add LED trigger support
+Date: Tue, 18 Dec 2012 18:51:04 +0100
+Message-ID: <1355853064-18144-11-git-send-email-fabio.baltieri@gmail.com>
 References: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f182.google.com ([74.125.82.182]:55147 "EHLO
-	mail-we0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751357Ab2LRRwk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:52:40 -0500
+Received: from mail-wi0-f169.google.com ([209.85.212.169]:42082 "EHLO
+	mail-wi0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753550Ab2LRRwq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:52:46 -0500
 In-Reply-To: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Bernd Krumboeck <krumboeck@universalnet.at>, Fabio Baltieri <fabio.baltieri@gmail.com>
 
-Add support for canbus activity led indicators on sja1000 devices by
+From: Bernd Krumboeck <b.krumboeck@gmail.com>
+
+Add support for canbus activity led indicators on usb_8dev devices by
 calling appropriate can_led functions.
 
 These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
 otherwise.
 
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Bernd Krumboeck <krumboeck@universalnet.at>
 Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
 ---
- drivers/net/can/sja1000/sja1000.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/usb_8dev.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 83ee11e..daf4013 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -60,6 +60,7 @@
- 
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index 660b4f87..b4bb1a6 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -33,6 +33,7 @@
+ #include <linux/can.h>
  #include <linux/can/dev.h>
  #include <linux/can/error.h>
 +#include <linux/can/led.h>
  
- #include "sja1000.h"
+ /* driver constants */
+ #define MAX_RX_URBS			10
+@@ -504,6 +505,8 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
  
-@@ -368,6 +369,8 @@ static void sja1000_rx(struct net_device *dev)
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
+ 		stats->rx_packets++;
+ 		stats->rx_bytes += cf->can_dlc;
 +
-+	can_led_event(dev, CAN_LED_EVENT_RX);
++		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
+ 	} else {
+ 		netdev_warn(priv->netdev, "frame type %d unknown",
+ 			 msg->type);
+@@ -606,6 +609,8 @@ static void usb_8dev_write_bulk_callback(struct urb *urb)
+ 
+ 	can_get_echo_skb(netdev, context->echo_index);
+ 
++	can_led_event(netdev, CAN_LED_EVENT_TX);
++
+ 	/* Release context */
+ 	context->echo_index = MAX_TX_URBS;
+ 
+@@ -830,6 +835,8 @@ static int usb_8dev_open(struct net_device *netdev)
+ 	if (err)
+ 		return err;
+ 
++	can_led_event(netdev, CAN_LED_EVENT_OPEN);
++
+ 	/* finally start device */
+ 	err = usb_8dev_start(priv);
+ 	if (err) {
+@@ -882,6 +889,8 @@ static int usb_8dev_close(struct net_device *netdev)
+ 
+ 	close_candev(netdev);
+ 
++	can_led_event(netdev, CAN_LED_EVENT_STOP);
++
+ 	return err;
  }
  
- static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
-@@ -521,6 +524,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 				can_get_echo_skb(dev, 0);
- 			}
- 			netif_wake_queue(dev);
-+			can_led_event(dev, CAN_LED_EVENT_TX);
- 		}
- 		if (isrc & IRQ_RI) {
- 			/* receive interrupt */
-@@ -575,6 +579,8 @@ static int sja1000_open(struct net_device *dev)
- 	/* init and start chi */
- 	sja1000_start(dev);
+@@ -990,6 +999,8 @@ static int usb_8dev_probe(struct usb_interface *intf,
+ 			 (version>>8) & 0xff, version & 0xff);
+ 	}
  
-+	can_led_event(dev, CAN_LED_EVENT_OPEN);
++	devm_can_led_init(netdev);
 +
- 	netif_start_queue(dev);
- 
  	return 0;
-@@ -592,6 +598,8 @@ static int sja1000_close(struct net_device *dev)
  
- 	close_candev(dev);
- 
-+	can_led_event(dev, CAN_LED_EVENT_STOP);
-+
- 	return 0;
- }
- 
-@@ -639,6 +647,8 @@ static const struct net_device_ops sja1000_netdev_ops = {
- 
- int register_sja1000dev(struct net_device *dev)
- {
-+	int ret;
-+
- 	if (!sja1000_probe_chip(dev))
- 		return -ENODEV;
- 
-@@ -648,7 +658,12 @@ int register_sja1000dev(struct net_device *dev)
- 	set_reset_mode(dev);
- 	chipset_init(dev);
- 
--	return register_candev(dev);
-+	ret =  register_candev(dev);
-+
-+	if (!ret)
-+		devm_can_led_init(dev);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(register_sja1000dev);
- 
+ cleanup_cmd_msg_buffer:
 -- 
 1.7.12.1
 
