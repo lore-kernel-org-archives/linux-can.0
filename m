@@ -1,43 +1,66 @@
-From: Fabio Baltieri <fabio.baltieri-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] usb_8dev: add LED trigger support
-Date: Tue, 18 Dec 2012 15:18:01 +0100
-Message-ID: <20121218141801.GA29522@balto.lan>
-References: <1355779189-23289-1-git-send-email-krumboeck@universalnet.at>
- <50D07818.9000108@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <50D07818.9000108-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Bernd Krumboeck <b.krumboeck-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org, Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+From: Fabio Baltieri <fabio.baltieri@gmail.com>
+Subject: [PATCH v2 00/10] tx/rx LED trigger support
+Date: Tue, 18 Dec 2012 18:50:54 +0100
+Message-ID: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-we0-f174.google.com ([74.125.82.174]:37916 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750703Ab2LRRvU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:51:20 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
 
-On Tue, Dec 18, 2012 at 03:05:12PM +0100, Marc Kleine-Budde wrote:
-> On 12/17/2012 10:19 PM, Bernd Krumboeck wrote:
-> > Add support for canbus activity led indicators on usb_8dev devices by
-> > calling appropriate can_led functions.
-> > 
-> > These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
-> > otherwise.
-> > 
-> > Signed-off-by: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-> 
-> Thx. Fabio, can you queue this patch your tree and include it in your
-> series when you send the next iteration?
+Hi All,
 
-Ok I will. Should I add my Signed-off-by to all the patches I'm sending
-as I'm on the submissiom path?
+this is the v2 of the canbus LED series.
 
-I'll resend the series later tonight.
+Changes from v1:
+- moved all framework patches before driver ones
+- added usb_8dev driver patch to the series (based on v9 version)
+- added by S-o-b to all patches in this series
+
+The last usb_8dev patch requires Bernd's patch.  A part from this the
+set applies cleanly on current mainline.
 
 Thanks,
 Fabio
 
+
+Bernd Krumboeck (1):
+  can: usb_8dev: add LED trigger support
+
+Fabio Baltieri (7):
+  can: add tx/rx LED trigger support
+  can: flexcan: add LED trigger support
+  can: at91_can: add LED trigger support
+  can: ti_hecc: add LED trigger support
+  can: c_can: add LED trigger support
+  can: mcp251x: add LED trigger support
+  can: sja1000: add LED trigger support
+
+Kurt Van Dijck (2):
+  can: export a safe netdev_priv wrapper for candev
+  can: rename LED trigger name on netdev renames
+
+ drivers/net/can/Kconfig           |  12 ++++
+ drivers/net/can/Makefile          |   2 +
+ drivers/net/can/at91_can.c        |  10 +++
+ drivers/net/can/c_can/c_can.c     |  10 +++
+ drivers/net/can/dev.c             |  18 ++++++
+ drivers/net/can/flexcan.c         |  11 ++++
+ drivers/net/can/led.c             | 129 ++++++++++++++++++++++++++++++++++++++
+ drivers/net/can/mcp251x.c         |  23 +++++--
+ drivers/net/can/sja1000/sja1000.c |  17 ++++-
+ drivers/net/can/ti_hecc.c         |  10 +++
+ drivers/net/can/usb/usb_8dev.c    |  11 ++++
+ include/linux/can/dev.h           |  11 ++++
+ include/linux/can/led.h           |  51 +++++++++++++++
+ 13 files changed, 310 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/net/can/led.c
+ create mode 100644 include/linux/can/led.h
+
 -- 
-Fabio Baltieri
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.7.12.1
+
