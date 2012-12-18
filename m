@@ -1,102 +1,103 @@
 From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH 08/10] can: mcp251x: add LED trigger support
-Date: Tue, 18 Dec 2012 18:51:02 +0100
-Message-ID: <1355853064-18144-9-git-send-email-fabio.baltieri@gmail.com>
+Subject: [PATCH 09/10] can: sja1000: add LED trigger support
+Date: Tue, 18 Dec 2012 18:51:03 +0100
+Message-ID: <1355853064-18144-10-git-send-email-fabio.baltieri@gmail.com>
 References: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f178.google.com ([74.125.82.178]:59996 "EHLO
-	mail-we0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750929Ab2LRRwg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:52:36 -0500
+Received: from mail-we0-f182.google.com ([74.125.82.182]:55147 "EHLO
+	mail-we0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751357Ab2LRRwk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:52:40 -0500
 In-Reply-To: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>, Christian Pellegrin <chripell@fsfe.org>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Fabio Baltieri <fabio.baltieri@gmail.com>
 
-Add support for canbus activity led indicators on mcp251x devices by
+Add support for canbus activity led indicators on sja1000 devices by
 calling appropriate can_led functions.
 
 These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
 otherwise.
 
-Cc: Christian Pellegrin <chripell@fsfe.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
 ---
- drivers/net/can/mcp251x.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ drivers/net/can/sja1000/sja1000.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index 5eaf47b..f32b9fc 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 83ee11e..daf4013 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
 @@ -60,6 +60,7 @@
  
- #include <linux/can/core.h>
  #include <linux/can/dev.h>
+ #include <linux/can/error.h>
 +#include <linux/can/led.h>
- #include <linux/can/platform/mcp251x.h>
- #include <linux/completion.h>
- #include <linux/delay.h>
-@@ -494,6 +495,9 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
  
- 	priv->net->stats.rx_packets++;
- 	priv->net->stats.rx_bytes += frame->can_dlc;
+ #include "sja1000.h"
+ 
+@@ -368,6 +369,8 @@ static void sja1000_rx(struct net_device *dev)
+ 
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
 +
-+	can_led_event(priv->net, CAN_LED_EVENT_RX);
-+
- 	netif_rx_ni(skb);
++	can_led_event(dev, CAN_LED_EVENT_RX);
  }
  
-@@ -707,6 +711,8 @@ static int mcp251x_stop(struct net_device *net)
+ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+@@ -521,6 +524,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				can_get_echo_skb(dev, 0);
+ 			}
+ 			netif_wake_queue(dev);
++			can_led_event(dev, CAN_LED_EVENT_TX);
+ 		}
+ 		if (isrc & IRQ_RI) {
+ 			/* receive interrupt */
+@@ -575,6 +579,8 @@ static int sja1000_open(struct net_device *dev)
+ 	/* init and start chi */
+ 	sja1000_start(dev);
  
- 	mutex_unlock(&priv->mcp_lock);
++	can_led_event(dev, CAN_LED_EVENT_OPEN);
++
+ 	netif_start_queue(dev);
  
-+	can_led_event(net, CAN_LED_EVENT_STOP);
+ 	return 0;
+@@ -592,6 +598,8 @@ static int sja1000_close(struct net_device *dev)
+ 
+ 	close_candev(dev);
+ 
++	can_led_event(dev, CAN_LED_EVENT_STOP);
 +
  	return 0;
  }
  
-@@ -905,6 +911,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
- 		if (intf & CANINTF_TX) {
- 			net->stats.tx_packets++;
- 			net->stats.tx_bytes += priv->tx_len - 1;
-+			can_led_event(net, CAN_LED_EVENT_TX);
- 			if (priv->tx_len) {
- 				can_get_echo_skb(net, 0);
- 				priv->tx_len = 0;
-@@ -968,6 +975,9 @@ static int mcp251x_open(struct net_device *net)
- 		mcp251x_open_clean(net);
- 		goto open_unlock;
- 	}
-+
-+	can_led_event(net, CAN_LED_EVENT_OPEN);
-+
- 	netif_wake_queue(net);
+@@ -639,6 +647,8 @@ static const struct net_device_ops sja1000_netdev_ops = {
  
- open_unlock:
-@@ -1077,10 +1087,15 @@ static int mcp251x_can_probe(struct spi_device *spi)
- 		pdata->transceiver_enable(0);
+ int register_sja1000dev(struct net_device *dev)
+ {
++	int ret;
++
+ 	if (!sja1000_probe_chip(dev))
+ 		return -ENODEV;
  
- 	ret = register_candev(net);
--	if (!ret) {
--		dev_info(&spi->dev, "probed\n");
--		return ret;
--	}
-+	if (ret)
-+		goto error_probe;
+@@ -648,7 +658,12 @@ int register_sja1000dev(struct net_device *dev)
+ 	set_reset_mode(dev);
+ 	chipset_init(dev);
+ 
+-	return register_candev(dev);
++	ret =  register_candev(dev);
 +
-+	devm_can_led_init(net);
-+
-+	dev_info(&spi->dev, "probed\n");
++	if (!ret)
++		devm_can_led_init(dev);
 +
 +	return ret;
-+
- error_probe:
- 	if (!mcp251x_enable_dma)
- 		kfree(priv->spi_rx_buf);
+ }
+ EXPORT_SYMBOL_GPL(register_sja1000dev);
+ 
 -- 
 1.7.12.1
 
