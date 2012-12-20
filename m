@@ -1,49 +1,42 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/3] c_can: Update can support
-Date: Thu, 20 Dec 2012 14:57:40 +0100
-Message-ID: <50D31954.30501@pengutronix.de>
-References: <cover.1355996839.git.amit.virdi@st.com>
+Subject: Re: [PATCH 1/3] can: c_can: Correct register alignment info passing
+ through DT
+Date: Thu, 20 Dec 2012 14:59:50 +0100
+Message-ID: <50D319D6.1060201@pengutronix.de>
+References: <cover.1355996839.git.amit.virdi@st.com> <4fb69be55045aa390e73c56b215a4b4afb091d1a.1355996839.git.amit.virdi@st.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig2353675FBF4BE7ED99DB8C32"
+ boundary="------------enig87840CAD52BCC11C64A82DC9"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36499 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36511 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751359Ab2LTN5t (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Dec 2012 08:57:49 -0500
-In-Reply-To: <cover.1355996839.git.amit.virdi@st.com>
+	with ESMTP id S1751882Ab2LTN76 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Dec 2012 08:59:58 -0500
+In-Reply-To: <4fb69be55045aa390e73c56b215a4b4afb091d1a.1355996839.git.amit.virdi@st.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Amit Virdi <amit.virdi@st.com>
 Cc: linux-can@vger.kernel.org, wg@grandegger.com, bhupesh.sharma@st.com, anilkumar@ti.com, spear-devel@list.st.com
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig2353675FBF4BE7ED99DB8C32
+--------------enig87840CAD52BCC11C64A82DC9
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
 On 12/20/2012 11:05 AM, Amit Virdi wrote:
-> This patchset aims to improve the Bosch c_can driver support. The chang=
-es are
-> as a result of problems encountered using the c_can driver on SPEAr pla=
-tform.
+> Depending upon the integration of the C_CAN controller in the SoC, the
+> registers may be aligned to 16-bit or 32-bit boundary. The device tree
+> support added to the driver assumes this information can be passed
+> through 'flags' in the platform resources, however current DT
+> implementation provides no such provision.
 >=20
-> Although significant care has been taken to ensure that the changes don=
-'t break
-> the existing functionality, however there might be some hiccups on othe=
-r platforms.
->=20
-> The patch to provide generic interface is provided to add more flexibil=
-ity for
-> the end applications.
->=20
-> The patches have been tested on SPEAr1310 EVB and the patchset rebased =
-on master
-> of http://git.gitorious.org/linux-can/linux-can-next.git
+> So passing the information explicitly through the optional parameter
+> 'reg_alignment' in the device tree.
 
-I'm on vacation already. I'll have a look at the patches in about 2 weeks=
-=2E
+Please put devicetree-discuss for dt related topics on Cc. Have a look
+at Documentation/devicetree/bindings for existing bindings. E.g. there
+already is reg-io-width.
 
 Marc
 --=20
@@ -53,7 +46,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---------------enig2353675FBF4BE7ED99DB8C32
+--------------enig87840CAD52BCC11C64A82DC9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -62,9 +55,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-iEYEARECAAYFAlDTGVcACgkQjTAFq1RaXHNdZQCglpCenaBSQw8n1X9nfDUmYPES
-pEkAnRUywXaRj2on8lNKCbirztIp4mDB
-=jTSw
+iEYEARECAAYFAlDTGdYACgkQjTAFq1RaXHMT+gCfVTS2gwA1CzrTWitn14T76ppO
+j2QAnAj1cXbKlkSniWcCgG28LcyQ6xAE
+=DwPU
 -----END PGP SIGNATURE-----
 
---------------enig2353675FBF4BE7ED99DB8C32--
+--------------enig87840CAD52BCC11C64A82DC9--
