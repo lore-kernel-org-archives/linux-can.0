@@ -1,90 +1,95 @@
-From: Fabio Baltieri <fabio.baltieri@gmail.com>
-Subject: [PATCH 10/10] can: usb_8dev: add LED trigger support
-Date: Tue, 18 Dec 2012 18:51:04 +0100
-Message-ID: <1355853064-18144-11-git-send-email-fabio.baltieri@gmail.com>
-References: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
+From: Amit Virdi <amit.virdi@st.com>
+Subject: [PATCH 1/3] can: c_can: Correct register alignment info passing through DT
+Date: Thu, 20 Dec 2012 15:35:42 +0530
+Message-ID: <4fb69be55045aa390e73c56b215a4b4afb091d1a.1355996839.git.amit.virdi@st.com>
+References: <cover.1355996839.git.amit.virdi@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f169.google.com ([209.85.212.169]:42082 "EHLO
-	mail-wi0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753550Ab2LRRwq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Dec 2012 12:52:46 -0500
-In-Reply-To: <1355853064-18144-1-git-send-email-fabio.baltieri@gmail.com>
+Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141]:50903 "EHLO
+	eu1sys200aog116.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751431Ab2LTKGJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Dec 2012 05:06:09 -0500
+In-Reply-To: <cover.1355996839.git.amit.virdi@st.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <b.krumboeck@gmail.com>, linux-kernel@vger.kernel.org, Bernd Krumboeck <krumboeck@universalnet.at>, Fabio Baltieri <fabio.baltieri@gmail.com>
+To: linux-can@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, bhupesh.sharma@st.com, anilkumar@ti.com, spear-devel@list.st.com, Amit Virdi <amit.virdi@st.com>
 
-From: Bernd Krumboeck <b.krumboeck@gmail.com>
+Depending upon the integration of the C_CAN controller in the SoC, the
+registers may be aligned to 16-bit or 32-bit boundary. The device tree
+support added to the driver assumes this information can be passed
+through 'flags' in the platform resources, however current DT
+implementation provides no such provision.
 
-Add support for canbus activity led indicators on usb_8dev devices by
-calling appropriate can_led functions.
+So passing the information explicitly through the optional parameter
+'reg_alignment' in the device tree.
 
-These are only enabled when CONFIG_CAN_LEDS is Y, becomes no-op
-otherwise.
-
-Signed-off-by: Bernd Krumboeck <krumboeck@universalnet.at>
-Signed-off-by: Fabio Baltieri <fabio.baltieri@gmail.com>
+Signed-off-by: Amit Virdi <amit.virdi@st.com>
+Reviewed-by: Shiraz Hashim <shiraz.hashim@st.com>
 ---
- drivers/net/can/usb/usb_8dev.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ Documentation/devicetree/bindings/net/can/c_can.txt |  4 ++++
+ drivers/net/can/c_can/c_can_platform.c              | 11 ++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index 660b4f87..b4bb1a6 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -33,6 +33,7 @@
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
-+#include <linux/can/led.h>
+diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
+index 8f1ae81..7d645cb 100644
+--- a/Documentation/devicetree/bindings/net/can/c_can.txt
++++ b/Documentation/devicetree/bindings/net/can/c_can.txt
+@@ -12,6 +12,10 @@ Required properties:
+ Optional properties:
+ - ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
+ 			  instance number
++- reg_alignment : Signifies register alignment. Must be either of
++                        1. 0x8 or 0x10 - If registers are 16-bit aligned
++                        2. 0x18 - If registers are 32-bit aligned
++                Default is 32-bit alignment.
  
- /* driver constants */
- #define MAX_RX_URBS			10
-@@ -504,6 +505,8 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
+ Note: "ti,hwmods" field is used to fetch the base address and irq
+ resources from TI, omap hwmod data base during device registration.
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 0044fd8..451e81f 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -117,6 +117,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 	struct pinctrl *pinctrl;
+ 	struct resource *mem, *res;
+ 	int irq;
++	u32 reg_alignment = IORESOURCE_MEM_32BIT;
+ 	struct clk *clk;
  
- 		stats->rx_packets++;
- 		stats->rx_bytes += cf->can_dlc;
+ 	if (pdev->dev.of_node) {
+@@ -127,6 +128,11 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 			goto exit;
+ 		}
+ 		id = match->data;
 +
-+		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
++		if (of_property_read_u32(pdev->dev.of_node,
++				"reg_alignment", &reg_alignment))
++			dev_warn(&pdev->dev, "Register alignment not provided, \
++					using 32-bit as default\n");
  	} else {
- 		netdev_warn(priv->netdev, "frame type %d unknown",
- 			 msg->type);
-@@ -606,6 +609,8 @@ static void usb_8dev_write_bulk_callback(struct urb *urb)
- 
- 	can_get_echo_skb(netdev, context->echo_index);
- 
-+	can_led_event(netdev, CAN_LED_EVENT_TX);
-+
- 	/* Release context */
- 	context->echo_index = MAX_TX_URBS;
- 
-@@ -830,6 +835,8 @@ static int usb_8dev_open(struct net_device *netdev)
- 	if (err)
- 		return err;
- 
-+	can_led_event(netdev, CAN_LED_EVENT_OPEN);
-+
- 	/* finally start device */
- 	err = usb_8dev_start(priv);
- 	if (err) {
-@@ -882,6 +889,8 @@ static int usb_8dev_close(struct net_device *netdev)
- 
- 	close_candev(netdev);
- 
-+	can_led_event(netdev, CAN_LED_EVENT_STOP);
-+
- 	return err;
- }
- 
-@@ -990,6 +999,8 @@ static int usb_8dev_probe(struct usb_interface *intf,
- 			 (version>>8) & 0xff, version & 0xff);
+ 		id = platform_get_device_id(pdev);
+ 	}
+@@ -166,6 +172,9 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 		goto exit_release_mem;
  	}
  
-+	devm_can_led_init(netdev);
++	if (!pdev->dev.of_node)
++		reg_alignment = mem->flags;
 +
- 	return 0;
- 
- cleanup_cmd_msg_buffer:
+ 	/* allocate the c_can device */
+ 	dev = alloc_c_can_dev();
+ 	if (!dev) {
+@@ -177,7 +186,7 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+ 	switch (id->driver_data) {
+ 	case BOSCH_C_CAN:
+ 		priv->regs = reg_map_c_can;
+-		switch (mem->flags & IORESOURCE_MEM_TYPE_MASK) {
++		switch (reg_alignment & IORESOURCE_MEM_TYPE_MASK) {
+ 		case IORESOURCE_MEM_32BIT:
+ 			priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
+ 			priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
 -- 
-1.7.12.1
+1.8.0
 
