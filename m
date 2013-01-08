@@ -1,44 +1,57 @@
-From: =?iso-8859-1?Q?Heinz-J=FCrgen_Oertel?= <oe@port.de>
-Subject: Re: exclusive access to can interface
-Date: Tue, 8 Jan 2013 10:18:27 +0000
-Message-ID: <2287848.8ERXcjpij0@uschi>
-References: <2412937.XVpYjfC7zz@ws-stein> <1943558.lxo8ZHFGuj@ws-stein>
- <50EBF058.5050400@volkswagen.de>
+From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Subject: Re: [RFC PATCH net-next] can-gw: add a variable limit for CAN frame
+ routings
+Date: Tue, 08 Jan 2013 11:26:27 +0100
+Message-ID: <50EBF453.7020408@volkswagen.de>
+References: <50EB4377.6030306@hartkopp.net> <50EBDB94.3000705@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from host24.networkinvest.de ([46.4.85.104]:39349 "EHLO
-	host24.networkinvest.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755533Ab3AHK0E convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Jan 2013 05:26:04 -0500
-In-Reply-To: <50EBF058.5050400@volkswagen.de>
-Content-Language: de-DE
-Content-ID: <989DD8BBA9134F4F80FBCE918E54B0E4@portgmbh.local>
+Received: from mr2.volkswagen.de ([194.114.62.76]:38281 "EHLO
+	mr2.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755759Ab3AHK0c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Jan 2013 05:26:32 -0500
+In-Reply-To: <50EBDB94.3000705@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, Linux CAN List <linux-can@vger.kernel.org>
 
-Am Dienstag, 8. Januar 2013, 11:09:28 schrieb Oliver Hartkopp:
-> .....
-> This should be solved by the system setup.
- +1
-> E.g. if you start two applications using/providing identical resources at
-> the same time, you'll always get into trouble.
-> 
-> If you start two inetd daemons, the second one would fail as he would like
-> to bind the same IP ports. But this kind of mechanic is not available with
-> CAN sockets.
+Am 08.01.2013 09:40, schrieb Marc Kleine-Budde:
+> On 01/07/2013 10:51 PM, Oliver Hartkopp wrote:
+
+
+>>
+>>   static __init int cgw_module_init(void)
+>>   {
+>> -	printk(banner);
+>> +	/* sanitize given module parameter */
+>> +	if (max_hops < 1)
+>> +		max_hops = 1;
+>> +
+>> +	if (max_hops > CAN_GW_MAX_HOPS)
+>> +		max_hops = CAN_GW_MAX_HOPS;
 >
-> I would tend to make sure that the Node-ID is always unique in your system.
-> What would happen, if you start a Node-ID on your host that already exists
-> on the CAN networks attached to the system? You have to deal with that too:
-> E.g. terminate myself with some error logging if i see my own Node-ID
+> You can make use of clamp(val, min, max) here.
+>
 
-that is the point, correct.
- 
-> .....
+ok.
 
-regards
-   Heinz
+I added
+
+	#include <linux/kernel.h>
+
+where clamp is defined and reduced the code above to
+
+clamp_t(unsigned int, max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS);
+
+Unfortunately clamp(max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS) did not work.
+
+=> (warning: comparison of distinct pointer types lacks a cast)
+
+Will send the v2 when there're no other remarks tommorrow.
+
+Tnx,
+Oliver
+
