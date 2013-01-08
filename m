@@ -1,57 +1,88 @@
-From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [RFC PATCH net-next] can-gw: add a variable limit for CAN frame
  routings
-Date: Tue, 08 Jan 2013 11:26:27 +0100
-Message-ID: <50EBF453.7020408@volkswagen.de>
-References: <50EB4377.6030306@hartkopp.net> <50EBDB94.3000705@pengutronix.de>
+Date: Tue, 08 Jan 2013 12:56:32 +0100
+Message-ID: <50EC0970.10806@pengutronix.de>
+References: <50EB4377.6030306@hartkopp.net> <50EBDB94.3000705@pengutronix.de> <50EBF453.7020408@volkswagen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigC7A3F04446D77181CBF4726B"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mr2.volkswagen.de ([194.114.62.76]:38281 "EHLO
-	mr2.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755759Ab3AHK0c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Jan 2013 05:26:32 -0500
-In-Reply-To: <50EBDB94.3000705@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41905 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755438Ab3AHL4e (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Jan 2013 06:56:34 -0500
+In-Reply-To: <50EBF453.7020408@volkswagen.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
 Cc: Linux Netdev List <netdev@vger.kernel.org>, Linux CAN List <linux-can@vger.kernel.org>
 
-Am 08.01.2013 09:40, schrieb Marc Kleine-Budde:
-> On 01/07/2013 10:51 PM, Oliver Hartkopp wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC7A3F04446D77181CBF4726B
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-
+On 01/08/2013 11:26 AM, Oliver Hartkopp wrote:
+> Am 08.01.2013 09:40, schrieb Marc Kleine-Budde:
+>> On 01/07/2013 10:51 PM, Oliver Hartkopp wrote:
+>=20
+>=20
+>>>
+>>>   static __init int cgw_module_init(void)
+>>>   {
+>>> -    printk(banner);
+>>> +    /* sanitize given module parameter */
+>>> +    if (max_hops < 1)
+>>> +        max_hops =3D 1;
+>>> +
+>>> +    if (max_hops > CAN_GW_MAX_HOPS)
+>>> +        max_hops =3D CAN_GW_MAX_HOPS;
 >>
->>   static __init int cgw_module_init(void)
->>   {
->> -	printk(banner);
->> +	/* sanitize given module parameter */
->> +	if (max_hops < 1)
->> +		max_hops = 1;
->> +
->> +	if (max_hops > CAN_GW_MAX_HOPS)
->> +		max_hops = CAN_GW_MAX_HOPS;
->
-> You can make use of clamp(val, min, max) here.
->
+>> You can make use of clamp(val, min, max) here.
+>>
+>=20
+> ok.
+>=20
+> I added
+>=20
+>     #include <linux/kernel.h>
+>=20
+> where clamp is defined and reduced the code above to
+>=20
+> clamp_t(unsigned int, max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS);
+>=20
+> Unfortunately clamp(max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS) did not=
 
-ok.
+> work.
+>=20
+> =3D> (warning: comparison of distinct pointer types lacks a cast)
 
-I added
+Defines are probably unsinged longs, by default.
 
-	#include <linux/kernel.h>
+> Will send the v2 when there're no other remarks tommorrow.
 
-where clamp is defined and reduced the code above to
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-clamp_t(unsigned int, max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS);
 
-Unfortunately clamp(max_hops, CAN_GW_MIN_HOPS, CAN_GW_MAX_HOPS) did not work.
+--------------enigC7A3F04446D77181CBF4726B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-=> (warning: comparison of distinct pointer types lacks a cast)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-Will send the v2 when there're no other remarks tommorrow.
+iEYEARECAAYFAlDsCXAACgkQjTAFq1RaXHNR+QCaA8mNWhw5OEa7o4Jc8n1vFKxM
+W+UAniEmmb5xTZgmktDsWCaz400OUzO/
+=BYiq
+-----END PGP SIGNATURE-----
 
-Tnx,
-Oliver
-
+--------------enigC7A3F04446D77181CBF4726B--
