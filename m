@@ -1,125 +1,109 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: can-next rebase?
-Date: Mon, 14 Jan 2013 19:49:28 +0100
-Message-ID: <50F45338.9060301@hartkopp.net>
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
+ devices
+Date: Mon, 14 Jan 2013 21:59:24 +0100
+Message-ID: <50F471AC.50902@hartkopp.net>
+References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:41487 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758024Ab3ANStc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Jan 2013 13:49:32 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1355641315-15739-1-git-send-email-krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bernd Krumboeck <b.krumboeck-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org, Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hello Marc,
+Hi Bernd,
 
-it looks like that my request to Dave to revert a patch failed:
+On 16.12.2012 08:01, Bernd Krumboeck wrote:
 
-http://marc.info/?t=135799864800001&r=1&w=2
-
-To prevent the routing of CAN frames back to the originating device i wanted
-to use skb->skb_iif (incoming interface index).
-
-But skb->skb_iif is now *always* set in netif_receive_skb(), so it get's
-destroyed when going down to the CAN netdev and up again :-(
-
-As we can not used the control buffer cb[] too (net/sched qdiscs are using
-the cb[] in the tx path), i was thinking about putting this information into
-the skb payload (into skb headroom).
-
-This looks like this then:
-
- 
-+struct can_skb_priv {
-+	int rx_ifindex;
-+	struct can_frame cf[0];
-+};
-+
-
-
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 8233e5e..8233944 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -500,14 +500,21 @@ static void can_setup(struct net_device *dev)
- struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
- {
- 	struct sk_buff *skb;
-+	struct can_skb_priv *cskbp;
- 
--	skb = netdev_alloc_skb(dev, sizeof(struct can_frame));
-+	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
-+			       sizeof(struct can_frame));
- 	if (unlikely(!skb))
- 		return NULL;
- 
- 	skb->protocol = htons(ETH_P_CAN);
- 	skb->pkt_type = PACKET_BROADCAST;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+	skb_reserve(skb, sizeof(struct can_skb_priv));
-+	cskbp = (struct can_skb_priv *)skb->head;
-+	cskbp->rx_ifindex = dev->ifindex;
-+
- 	*cf = (struct can_frame *)skb_put(skb, sizeof(struct can_frame));
- 	memset(*cf, 0, sizeof(struct can_frame));
- 
-
-(..)
- 
-+	/* is sending the skb back to the incoming interface allowed? */
-+	if (!(gwj->flags & CGW_FLAGS_CAN_IIF_TX_OK) &&
-+	    skb_headroom(skb) == sizeof(struct can_skb_priv)) {
-+		struct can_skb_priv *cskbp = (struct can_skb_priv *)skb->head;
-+
-+		if (cskbp->rx_ifindex == gwj->dst.dev->ifindex)
-+			return;
-+	}
-+
+> Add device driver for USB2CAN interface from "8 devices" (http://www.8devices.com).
+> 
+> changes since v8:
+> * remove all sysfs files
+> 
+> changes since v7:
+> * add sysfs documentation
+> * fix minor styling issue
+> * fixed can state for passive mode
+> * changed handling for crc errors
+> 
+> changes since v6:
+> * changed some variable types to big endian equivalent
+> * small cleanups
+> 
+> changes since v5:
+> * unlock mutex on error
+> 
+> changes since v4:
+> * removed FSF address
+> * renamed struct usb_8dev
+> * removed unused variable free_slots
+> * replaced some _to_cpu functions with pointer equivalent
+> * fix return value for usb_8dev_set_mode
+> * handle can errors with separate function
+> * fix overrun error handling
+> * rewrite error handling for usb_8dev_start_xmit
+> * fix urb submit in usb_8dev_start
+> * various small fixes
+> 
+> Signed-off-by: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+> Acked-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
 
 
-All the other handling with skb->data and skb->len remains stable with this
-approach.
+Tested-by: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
 
-But coming back to the mail topic:
+Fortunately i got my adapter today ...
 
-I think i would need at least three patches for this change.
+[   52.984254] usb 2-1.4: new full-speed USB device number 6 using ehci-pci
+[   53.078690] usb 2-1.4: New USB device found, idVendor=0483, idProduct=1234
+[   53.078698] usb 2-1.4: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[   53.078703] usb 2-1.4: Product: USB2CAN converter
+[   53.078707] usb 2-1.4: Manufacturer: edevices
+[   53.078711] usb 2-1.4: SerialNumber: ED000212
+[   53.111990] usb_8dev 2-1.4:1.0 can2: firmware: 1.4, hardware: 255.255
+[   53.112090] usbcore: registered new interface driver usb_8dev
 
-When trying to rebase linux-can-next the automatic merge fails ...
+Looks good :-)
 
-$ git rebase        
-First, rewinding head to replay your work on top of it...
-Applying: can: add tx/rx LED trigger support
-Applying: can: flexcan: add LED trigger support
-Applying: can: add tx/rx LED trigger support
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-No changes -- Patch already applied.
-Applying: can: flexcan: add LED trigger support
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-No changes -- Patch already applied.
-Applying: can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/can/c_can/c_can_platform.c
-CONFLICT (content): Merge conflict in drivers/net/can/c_can/c_can_platform.c
-Auto-merging Documentation/devicetree/bindings/net/can/c_can.txt
-CONFLICT (add/add): Merge conflict in Documentation/devicetree/bindings/net/can/c_can.txt
-Failed to merge in the changes.
-Patch failed at 0005 can: c_can: Add device tree support to Bosch C_CAN/D_CAN controller
+When detaching the device from the CAN bus when sending/receiving CAN traffic
+i got these dmesg infos:
 
-When you have resolved this problem run "git rebase --continue".
-If you would prefer to skip this patch, instead run "git rebase --skip".
-To check out the original branch and stop rebasing run "git rebase --abort".
+[  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
+[  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
+
+Did you check these kind of 'unfriendly user' tests?
+
+E.g. pulling the USB under receive load brings this output:
+
+[ 1343.786427] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+[ 1343.786640] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+
+(..) another 344 of these URB aborted messages
+
+[ 1343.872620] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+[ 1343.872867] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+[ 1343.873124] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+[ 1343.873269] usb 2-1.4: USB disconnect, device number 6
+[ 1343.873363] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+[ 1343.875259] usb_8dev 2-1.4:1.0 can2: device disconnected
+[ 1343.875366] usb_8dev 2-1.4:1.0 can2: sending command message failed
+[ 1343.875371] usb_8dev 2-1.4:1.0 can2: couldn't stop device
 
 
-Any idea?
- 
+Tomorrow i will do some more testing.
+
+The LED handling of the device is really fine:
+
+- interface down -> red
+- interface up -> green
+- interface error passive -> green blinking
+
 Regards,
 Oliver
 
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
