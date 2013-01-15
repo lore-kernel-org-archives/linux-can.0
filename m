@@ -1,118 +1,132 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: upcoming pull reqeust
-Date: Tue, 15 Jan 2013 21:58:18 +0100
-Message-ID: <50F5C2EA.8030304@pengutronix.de>
+From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
+ devices
+Date: Tue, 15 Jan 2013 23:05:36 +0100
+Message-ID: <ae58b62ae76e6261e66774c458012a87.squirrel@webmail.universalnet.at>
+References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>
+    <50F471AC.50902@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2MDFAACDRVBGQWJFPODHE"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55331 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757015Ab3AOU6Y (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jan 2013 15:58:24 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1TvDaR-0006Xs-Mg
-	for linux-can@vger.kernel.org; Tue, 15 Jan 2013 21:58:23 +0100
-Received: from [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b] (hardanger.wlan.blackshift.org [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b])
-	(using TLSv1 with cipher ECDHE-ECDSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: frogger)
-	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id 6A2115F511
-	for <linux-can@vger.kernel.org>; Tue, 15 Jan 2013 21:58:23 +0100 (CET)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <50F471AC.50902-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Cc: Bernd Krumboeck <b.krumboeck-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org, Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2MDFAACDRVBGQWJFPODHE
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi Oliver!
 
-Hello,
+> Hi Bernd,
+>
+> On 16.12.2012 08:01, Bernd Krumboeck wrote:
+>
+>> Add device driver for USB2CAN interface from "8 devices"
+>> (http://www.8devices.com).
+>>
+>> changes since v8:
+>> * remove all sysfs files
+>>
+>> changes since v7:
+>> * add sysfs documentation
+>> * fix minor styling issue
+>> * fixed can state for passive mode
+>> * changed handling for crc errors
+>>
+>> changes since v6:
+>> * changed some variable types to big endian equivalent
+>> * small cleanups
+>>
+>> changes since v5:
+>> * unlock mutex on error
+>>
+>> changes since v4:
+>> * removed FSF address
+>> * renamed struct usb_8dev
+>> * removed unused variable free_slots
+>> * replaced some _to_cpu functions with pointer equivalent
+>> * fix return value for usb_8dev_set_mode
+>> * handle can errors with separate function
+>> * fix overrun error handling
+>> * rewrite error handling for usb_8dev_start_xmit
+>> * fix urb submit in usb_8dev_start
+>> * various small fixes
+>>
+>> Signed-off-by: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
+>> Acked-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+>
+>
+> Tested-by: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+>
+> Fortunately i got my adapter today ...
+>
+> [   52.984254] usb 2-1.4: new full-speed USB device number 6 using
+> ehci-pci
+> [   53.078690] usb 2-1.4: New USB device found, idVendor=0483,
+> idProduct=1234
+> [   53.078698] usb 2-1.4: New USB device strings: Mfr=1, Product=2,
+> SerialNumber=3
+> [   53.078703] usb 2-1.4: Product: USB2CAN converter
+> [   53.078707] usb 2-1.4: Manufacturer: edevices
+> [   53.078711] usb 2-1.4: SerialNumber: ED000212
+> [   53.111990] usb_8dev 2-1.4:1.0 can2: firmware: 1.4, hardware: 255.255
+> [   53.112090] usbcore: registered new interface driver usb_8dev
+>
+> Looks good :-)
 
-I'm going to send a pull request to David this week, it will include:
-the LED trigger patches by Fabio and Kurt and my Kconfig cleanup. The
-usb8-dev driver has some problems with unplug under heavy load, so it
-will not be included.
+:-)
 
-The patches are in the for-davem branch in the linux-can-next repo at
-gitorious:
+> When detaching the device from the CAN bus when sending/receiving CAN
+> traffic
+> i got these dmesg infos:
+>
+> [  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
+> [  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
+>
+> Did you check these kind of 'unfriendly user' tests?
 
-https://gitorious.org/linux-can/linux-can-next/commits/for-davem
+Not really. At least I don't know what the driver should do. Let me know
+if you have some suggestions.
 
-The shortlog is:
+> E.g. pulling the USB under receive load brings this output:
+>
+> [ 1343.786427] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+> [ 1343.786640] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+>
+> (..) another 344 of these URB aborted messages
 
-Fabio Baltieri (7):
-      can: add tx/rx LED trigger support
-      can: flexcan: add LED trigger support
-      can: at91_can: add LED trigger support
-      can: ti_hecc: add LED trigger support
-      can: c_can: add LED trigger support
-      can: mcp251x: add LED trigger support
-      can: sja1000: add LED trigger support
+a bit much...
 
-Kurt Van Dijck (2):
-      can: export a safe netdev_priv wrapper for candev
-      can: rename LED trigger name on netdev renames
+Maybe we should suppress this messages?
 
-Marc Kleine-Budde (4):
-      can: Kconfig: convert 'depends on CAN' into 'if CAN...endif' block
-      can: Kconfig: convert 'depends on CAN_DEV' into 'if CAN_DEV...endif=
-' block
-      can: Kconfig: switch on all CAN protocolls by default
-      can: sja1000: correct indention of Kconfig help text
+> [ 1343.872620] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+> [ 1343.872867] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+> [ 1343.873124] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+> [ 1343.873269] usb 2-1.4: USB disconnect, device number 6
+> [ 1343.873363] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
+> [ 1343.875259] usb_8dev 2-1.4:1.0 can2: device disconnected
+> [ 1343.875366] usb_8dev 2-1.4:1.0 can2: sending command message failed
+> [ 1343.875371] usb_8dev 2-1.4:1.0 can2: couldn't stop device
+>
+>
+> Tomorrow i will do some more testing.
 
- drivers/net/can/Kconfig           |   37 +++++++----
- drivers/net/can/Makefile          |    2 +
- drivers/net/can/at91_can.c        |   10 +++
- drivers/net/can/c_can/Kconfig     |    2 +-
- drivers/net/can/c_can/c_can.c     |   10 +++
- drivers/net/can/cc770/Kconfig     |    2 +-
- drivers/net/can/dev.c             |   18 ++++++
- drivers/net/can/flexcan.c         |   11 ++++
- drivers/net/can/led.c             |  129 +++++++++++++++++++++++++++++++=
-++++++
- drivers/net/can/mcp251x.c         |   23 +++++--
- drivers/net/can/mscan/Kconfig     |    2 +-
- drivers/net/can/sja1000/Kconfig   |   14 ++--
- drivers/net/can/sja1000/sja1000.c |   17 ++++-
- drivers/net/can/softing/Kconfig   |    2 +-
- drivers/net/can/ti_hecc.c         |   10 +++
- drivers/net/can/usb/Kconfig       |    2 +-
- include/linux/can/dev.h           |   11 ++++
- include/linux/can/led.h           |   51 +++++++++++++++
- net/can/Kconfig                   |   13 ++--
- 19 files changed, 329 insertions(+), 37 deletions(-)
- create mode 100644 drivers/net/can/led.c
- create mode 100644 include/linux/can/led.h
+Thanks!
 
-Comments, any missing patches or {Reviewed,Acked,Tested}-by?
+> The LED handling of the device is really fine:
+>
+> - interface down -> red
+> - interface up -> green
+> - interface error passive -> green blinking
+>
+> Regards,
+> Oliver
+>
 
 regards,
-Marc
+Bernd
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2MDFAACDRVBGQWJFPODHE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlD1wu4ACgkQjTAFq1RaXHOkegCeOjaf6w7YsfsLicwSyGZioMoP
-+M8An1cngEdK34QLx1G8Ys5p1xxyqSm/
-=HEYv
------END PGP SIGNATURE-----
-
-------enig2MDFAACDRVBGQWJFPODHE--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
