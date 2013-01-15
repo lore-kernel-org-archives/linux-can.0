@@ -1,109 +1,97 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
- devices
-Date: Mon, 14 Jan 2013 21:59:24 +0100
-Message-ID: <50F471AC.50902@hartkopp.net>
-References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: can-next rebase?
+Date: Tue, 15 Jan 2013 10:35:33 +0100
+Message-ID: <50F522E5.4080403@pengutronix.de>
+References: <50F45338.9060301@hartkopp.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2STMNUXOACRLRRBHPKTSS"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44691 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750892Ab3AOJfj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jan 2013 04:35:39 -0500
+In-Reply-To: <50F45338.9060301@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2STMNUXOACRLRRBHPKTSS
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1355641315-15739-1-git-send-email-krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Bernd Krumboeck <b.krumboeck-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org, Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bernd,
+On 01/14/2013 07:49 PM, Oliver Hartkopp wrote:
 
-On 16.12.2012 08:01, Bernd Krumboeck wrote:
+[...]
 
-> Add device driver for USB2CAN interface from "8 devices" (http://www.8devices.com).
-> 
-> changes since v8:
-> * remove all sysfs files
-> 
-> changes since v7:
-> * add sysfs documentation
-> * fix minor styling issue
-> * fixed can state for passive mode
-> * changed handling for crc errors
-> 
-> changes since v6:
-> * changed some variable types to big endian equivalent
-> * small cleanups
-> 
-> changes since v5:
-> * unlock mutex on error
-> 
-> changes since v4:
-> * removed FSF address
-> * renamed struct usb_8dev
-> * removed unused variable free_slots
-> * replaced some _to_cpu functions with pointer equivalent
-> * fix return value for usb_8dev_set_mode
-> * handle can errors with separate function
-> * fix overrun error handling
-> * rewrite error handling for usb_8dev_start_xmit
-> * fix urb submit in usb_8dev_start
-> * various small fixes
-> 
-> Signed-off-by: Bernd Krumboeck <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-> Acked-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+> But coming back to the mail topic:
+>=20
+> I think i would need at least three patches for this change.
+>=20
+> When trying to rebase linux-can-next the automatic merge fails ...
+>=20
+> $ git rebase       =20
+> First, rewinding head to replay your work on top of it...
+> Applying: can: add tx/rx LED trigger support
+> Applying: can: flexcan: add LED trigger support
+> Applying: can: add tx/rx LED trigger support
+> Using index info to reconstruct a base tree...
+> Falling back to patching base and 3-way merge...
+> No changes -- Patch already applied.
+> Applying: can: flexcan: add LED trigger support
+> Using index info to reconstruct a base tree...
+> Falling back to patching base and 3-way merge...
+> No changes -- Patch already applied.
+> Applying: can: c_can: Add device tree support to Bosch C_CAN/D_CAN cont=
+roller
+> Using index info to reconstruct a base tree...
+> Falling back to patching base and 3-way merge...
+> Auto-merging drivers/net/can/c_can/c_can_platform.c
+> CONFLICT (content): Merge conflict in drivers/net/can/c_can/c_can_platf=
+orm.c
+> Auto-merging Documentation/devicetree/bindings/net/can/c_can.txt
+> CONFLICT (add/add): Merge conflict in Documentation/devicetree/bindings=
+/net/can/c_can.txt
+> Failed to merge in the changes.
+> Patch failed at 0005 can: c_can: Add device tree support to Bosch C_CAN=
+/D_CAN controller
+>=20
+> When you have resolved this problem run "git rebase --continue".
+> If you would prefer to skip this patch, instead run "git rebase --skip"=
+=2E
+> To check out the original branch and stop rebasing run "git rebase --ab=
+ort".
 
+The LED patches are not yet part or linux-can-next/master,
+linux-can-next/master was clean, a parent of net-next/master. However
+I've pushed net-next/master to linux-can-next/master.
 
-Tested-by: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+I hope I'll find time today to pick up all outstanding patches and queue
+them.
 
-Fortunately i got my adapter today ...
-
-[   52.984254] usb 2-1.4: new full-speed USB device number 6 using ehci-pci
-[   53.078690] usb 2-1.4: New USB device found, idVendor=0483, idProduct=1234
-[   53.078698] usb 2-1.4: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[   53.078703] usb 2-1.4: Product: USB2CAN converter
-[   53.078707] usb 2-1.4: Manufacturer: edevices
-[   53.078711] usb 2-1.4: SerialNumber: ED000212
-[   53.111990] usb_8dev 2-1.4:1.0 can2: firmware: 1.4, hardware: 255.255
-[   53.112090] usbcore: registered new interface driver usb_8dev
-
-Looks good :-)
-
-When detaching the device from the CAN bus when sending/receiving CAN traffic
-i got these dmesg infos:
-
-[  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
-[  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
-
-Did you check these kind of 'unfriendly user' tests?
-
-E.g. pulling the USB under receive load brings this output:
-
-[ 1343.786427] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-[ 1343.786640] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-
-(..) another 344 of these URB aborted messages
-
-[ 1343.872620] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-[ 1343.872867] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-[ 1343.873124] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-[ 1343.873269] usb 2-1.4: USB disconnect, device number 6
-[ 1343.873363] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-[ 1343.875259] usb_8dev 2-1.4:1.0 can2: device disconnected
-[ 1343.875366] usb_8dev 2-1.4:1.0 can2: sending command message failed
-[ 1343.875371] usb_8dev 2-1.4:1.0 can2: couldn't stop device
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Tomorrow i will do some more testing.
+------enig2STMNUXOACRLRRBHPKTSS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-The LED handling of the device is really fine:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-- interface down -> red
-- interface up -> green
-- interface error passive -> green blinking
+iEYEARECAAYFAlD1IugACgkQjTAFq1RaXHNv4ACgkAommhzDl6b9bv2bckWqdSOD
+0c8AniDbnj4MUjsC6EB17N8lS5SgeY7j
+=3KPI
+-----END PGP SIGNATURE-----
 
-Regards,
-Oliver
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+------enig2STMNUXOACRLRRBHPKTSS--
