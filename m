@@ -1,158 +1,68 @@
-From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
-Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
- devices
-Date: Wed, 16 Jan 2013 08:51:43 +0100
-Message-ID: <30b2dd836cb9271d609e428466e4795a.squirrel@webmail.universalnet.at>
-References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>
-    <50F471AC.50902@hartkopp.net>
-    <ae58b62ae76e6261e66774c458012a87.squirrel@webmail.universalnet.at>
-    <50F644F4.1080607@hartkopp.net>
+From: Amit Virdi <amit.virdi@st.com>
+Subject: Re: [PATCH 3/3] can: c_can: Enable clock before first use
+Date: Wed, 16 Jan 2013 13:33:27 +0530
+Message-ID: <50F65ECF.6070802@st.com>
+References: <cover.1355996839.git.amit.virdi@st.com> <3ce526df6a4f9e71f8b05132689db7426bae6bbb.1355996839.git.amit.virdi@st.com> <50D31B96.8010501@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:49957 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1758223Ab3APHvs (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 16 Jan 2013 02:51:48 -0500
-In-Reply-To: <50F644F4.1080607@hartkopp.net>
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149]:57666 "EHLO
+	eu1sys200aog120.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757708Ab3APIDr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 16 Jan 2013 03:03:47 -0500
+In-Reply-To: <50D31B96.8010501@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Bhupesh SHARMA <bhupesh.sharma@st.com>, "anilkumar@ti.com" <anilkumar@ti.com>, spear-devel <spear-devel@list.st.com>
 
-> On 15.01.2013 23:05, "Bernd Krumb=F6ck" wrote:
->
->>> [  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error messag=
-e
->>> (0)
->>> [  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error messag=
-e
->>> (0)
->>>
->>> Did you check these kind of 'unfriendly user' tests?
+On 12/20/2012 7:37 PM, Marc Kleine-Budde wrote:
+> On 12/20/2012 11:05 AM, Amit Virdi wrote:
+>> Current implementation assumes clock to be always enabled. Instead,
+>> explicitly enable device clock before usage.
 >>
->> Not really. At least I don't know what the driver should do. Let me =
-know
->> if you have some suggestions.
+>> Signed-off-by: Amit Virdi<amit.virdi@st.com>
+>> Reviewed-by: Shiraz Hashim<shiraz.hashim@st.com>
+>> ---
+>>   drivers/net/can/c_can/c_can_platform.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
 >>
->
->
-> Pulling/reconnecting CAN and/or USB under heavy CAN load ;-)
-
-Sorry, I meant: How the driver should behave?
-
-
-A test with loopback (canbusload 40%):
-
-Jan 16 07:58:36 debian kernel: [40503.434639] CAN device driver interfa=
-ce
-Jan 16 07:58:38 debian kernel: [40504.900138] usb_8dev 5-2:1.0: can0:
-firmware: 1.4, hardware: 1.0
-Jan 16 07:58:38 debian kernel: [40504.900161] usbcore: registered new
-interface driver usb_8dev
-
-(Starting my script and disconnect usb adapter)
-
-Jan 16 08:09:29 debian kernel: [41155.696483] usb_8dev 5-2:1.0: can0: R=
-x
-URB aborted (-84)
-Jan 16 08:09:29 debian kernel: [41155.696490] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-71)
-Jan 16 08:09:29 debian kernel: [41155.697479] usb_8dev 5-2:1.0: can0: R=
-x
-URB aborted (-84)
-Jan 16 08:09:29 debian kernel: [41155.697484] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-71)
-Jan 16 08:09:29 debian kernel: [41155.698479] usb_8dev 5-2:1.0: can0: R=
-x
-URB aborted (-84)
-
-No surprises:
-* We received (84) "Illegal byte sequence"
-* Sending was aborted by (71) "Protocol error"
-
-Jan 16 08:09:29 debian kernel: [41155.752054] usb 5-2: USB disconnect,
-device number 2
-Jan 16 08:09:29 debian kernel: [41155.752484] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-71)
-Jan 16 08:09:29 debian kernel: [41155.752489] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752492] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752495] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752499] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752502] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752505] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752508] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752511] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752514] usb_8dev 5-2:1.0: can0: T=
-x
-URB aborted (-108)
-Jan 16 08:09:29 debian kernel: [41155.752522] usb_8dev 5-2:1.0: can0:
-device disconnected
-
-Looks also ok:
-* Sending was aborted by (108) "transport endpoint shutdown"
-
-But after 1 minute my computer freezed!! :-(
-Did you see this problem during your tests?
-
-System:
-Kernel 3.2.0-4-amd64 SMP on Debian 3.2.35-2
-00:1a.2 USB controller: Intel Corporation 82801I (ICH9 Family) USB UHCI
-Controller #6 (rev 02)
-
-
->>> E.g. pulling the USB under receive load brings this output:
->>>
->>> [ 1343.786427] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
->>> [ 1343.786640] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
-
-Receiving aborted because of "Broken pipe"...
-
->>>
->>> (..) another 344 of these URB aborted messages
+>> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+>> index 6e8dc56..d0bd6e6 100644
+>> --- a/drivers/net/can/c_can/c_can_platform.c
+>> +++ b/drivers/net/can/c_can/c_can_platform.c
+>> @@ -194,6 +194,12 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
+>>   		goto exit;
+>>   	}
 >>
->> a bit much...
->>
->> Maybe we should suppress this messages?
->>
+>> +	ret = clk_prepare_enable(clk);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev, "could not prepare CAN clock\n");
+>> +		goto exit_no_clk_en;
+>> +	}
+>> +
+>>   	/* get the platform data */
+>>   	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>   	irq = platform_get_irq(pdev, 0);
+>> @@ -295,6 +301,8 @@ exit_iounmap:
+>>   exit_release_mem:
+>>   	release_mem_region(mem->start, resource_size(mem));
+>>   exit_free_clk:
+>> +	clk_disable_unprepare(clk);
+>> +exit_no_clk_en:
+>>   	clk_put(clk);
+>>   exit:
+>>   	dev_err(&pdev->dev, "probe failed\n");
 >
+> Why do you have to enable the clock if the driver is loaded? What about
+> disabling the clock on driver unload. The clock should be enabled on
+> open and disabled on close if the network interface. If you need to
+> access the registers of your hardware, you should enable the clock
+> before accessing the regs and disable the clock when finished.
 >
-> I did not had the time for tests yesterday.
-> But i will attach my full-load CAN generator today.
->
-> Regarding the USB abort messages, i'll try the same with my other USB
-> adapters
-> and how they behave under these conditions.
 
-Okidoki. ;-)
+Okay, I would take care of it in V2.
 
-> I remember some tests for the PEAK USB mainlining ... let's see.
->
-> Regards,
-> Oliver
->
->
-
-regards,
-Bernd
-
+Regards
+Amit Virdi
