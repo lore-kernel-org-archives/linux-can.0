@@ -1,68 +1,42 @@
-From: Amit Virdi <amit.virdi@st.com>
-Subject: Re: [PATCH 3/3] can: c_can: Enable clock before first use
-Date: Wed, 16 Jan 2013 13:33:27 +0530
-Message-ID: <50F65ECF.6070802@st.com>
-References: <cover.1355996839.git.amit.virdi@st.com> <3ce526df6a4f9e71f8b05132689db7426bae6bbb.1355996839.git.amit.virdi@st.com> <50D31B96.8010501@pengutronix.de>
+From: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
+Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
+ devices
+Date: Wed, 16 Jan 2013 09:07:05 +0100
+Message-ID: <9efedd49790bb8df2952bf599424f9f9.squirrel@webmail.universalnet.at>
+References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>
+    <50F471AC.50902@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149]:57666 "EHLO
-	eu1sys200aog120.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757708Ab3APIDr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 16 Jan 2013 03:03:47 -0500
-In-Reply-To: <50D31B96.8010501@pengutronix.de>
+Received: from smtp.xy24.at ([85.126.109.136]:54260 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1754153Ab3APIHI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 16 Jan 2013 03:07:08 -0500
+In-Reply-To: <50F471AC.50902@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Bhupesh SHARMA <bhupesh.sharma@st.com>, "anilkumar@ti.com" <anilkumar@ti.com>, spear-devel <spear-devel@list.st.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, linux-usb@vger.kernel.org, info@gerhard-bertelsmann.de, gediminas@8devices.com
 
-On 12/20/2012 7:37 PM, Marc Kleine-Budde wrote:
-> On 12/20/2012 11:05 AM, Amit Virdi wrote:
->> Current implementation assumes clock to be always enabled. Instead,
->> explicitly enable device clock before usage.
->>
->> Signed-off-by: Amit Virdi<amit.virdi@st.com>
->> Reviewed-by: Shiraz Hashim<shiraz.hashim@st.com>
->> ---
->>   drivers/net/can/c_can/c_can_platform.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
->> index 6e8dc56..d0bd6e6 100644
->> --- a/drivers/net/can/c_can/c_can_platform.c
->> +++ b/drivers/net/can/c_can/c_can_platform.c
->> @@ -194,6 +194,12 @@ static int __devinit c_can_plat_probe(struct platform_device *pdev)
->>   		goto exit;
->>   	}
->>
->> +	ret = clk_prepare_enable(clk);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "could not prepare CAN clock\n");
->> +		goto exit_no_clk_en;
->> +	}
->> +
->>   	/* get the platform data */
->>   	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>   	irq = platform_get_irq(pdev, 0);
->> @@ -295,6 +301,8 @@ exit_iounmap:
->>   exit_release_mem:
->>   	release_mem_region(mem->start, resource_size(mem));
->>   exit_free_clk:
->> +	clk_disable_unprepare(clk);
->> +exit_no_clk_en:
->>   	clk_put(clk);
->>   exit:
->>   	dev_err(&pdev->dev, "probe failed\n");
+Hi Oliver!
+
+> When detaching the device from the CAN bus when sending/receiving CAN
+> traffic
+> i got these dmesg infos:
 >
-> Why do you have to enable the clock if the driver is loaded? What about
-> disabling the clock on driver unload. The clock should be enabled on
-> open and disabled on close if the network interface. If you need to
-> access the registers of your hardware, you should enable the clock
-> before accessing the regs and disable the clock when finished.
+> [  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
+> [  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error message (0)
 >
 
-Okay, I would take care of it in V2.
+Sorry, I can't do this sort of tests myself, because my second can device
+is an expensive device, without developer/test mode. ;-)
 
-Regards
-Amit Virdi
+Gerd helped me with the can tests so far. (Thank you!)
+
+The messages you see mean "Normal condition" and shouldn't be displayed.
+I'll fix them in the next version.
+
+regards,
+Bernd
+
