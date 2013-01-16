@@ -1,62 +1,40 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: [PATCH v9] usb_8dev: Add support for USB2CAN interface from 8
- devices
-Date: Wed, 16 Jan 2013 07:13:08 +0100
-Message-ID: <50F644F4.1080607@hartkopp.net>
-References: <1355641315-15739-1-git-send-email-krumboeck@universalnet.at>    <50F471AC.50902@hartkopp.net> <ae58b62ae76e6261e66774c458012a87.squirrel@webmail.universalnet.at>
+From: Amit Virdi <amit.virdi@st.com>
+Subject: Re: [PATCH 1/3] can: c_can: Correct register alignment info passing
+ through DT
+Date: Wed, 16 Jan 2013 13:10:55 +0530
+Message-ID: <50F65987.40903@st.com>
+References: <cover.1355996839.git.amit.virdi@st.com> <4fb69be55045aa390e73c56b215a4b4afb091d1a.1355996839.git.amit.virdi@st.com> <50D319D6.1060201@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <ae58b62ae76e6261e66774c458012a87.squirrel-2RFepEojUI0eLjVtqu/qlogRFKwBiOYo@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?ISO-8859-1?Q?Bernd_Krumb=F6ck?= <krumboeck-Hi41barv6paIERSsAYjmKA@public.gmane.org>
-Cc: Bernd Krumboeck <b.krumboeck-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org, gediminas-LljXPT5IorFWk0Htik3J/w@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from eu1sys200aog101.obsmtp.com ([207.126.144.111]:47084 "EHLO
+	eu1sys200aog101.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758088Ab3APHlJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 16 Jan 2013 02:41:09 -0500
+In-Reply-To: <50D319D6.1060201@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Bhupesh SHARMA <bhupesh.sharma@st.com>, "anilkumar@ti.com" <anilkumar@ti.com>, spear-devel <spear-devel@list.st.com>
 
-On 15.01.2013 23:05, "Bernd Krumb=F6ck" wrote:
-
->> [  960.047130] usb_8dev 2-1.4:1.0 can2: Unknown status/error message=
- (0)
->> [  976.544343] usb_8dev 2-1.4:1.0 can2: Unknown status/error message=
- (0)
+On 12/20/2012 7:29 PM, Marc Kleine-Budde wrote:
+> On 12/20/2012 11:05 AM, Amit Virdi wrote:
+>> Depending upon the integration of the C_CAN controller in the SoC, the
+>> registers may be aligned to 16-bit or 32-bit boundary. The device tree
+>> support added to the driver assumes this information can be passed
+>> through 'flags' in the platform resources, however current DT
+>> implementation provides no such provision.
 >>
->> Did you check these kind of 'unfriendly user' tests?
->=20
-> Not really. At least I don't know what the driver should do. Let me k=
-now
-> if you have some suggestions.
->=20
+>> So passing the information explicitly through the optional parameter
+>> 'reg_alignment' in the device tree.
+>
+> Please put devicetree-discuss for dt related topics on Cc. Have a look
+> at Documentation/devicetree/bindings for existing bindings. E.g. there
+> already is reg-io-width.
+>
 
+Yeah, thanks! I would modify the code for this.
 
-Pulling/reconnecting CAN and/or USB under heavy CAN load ;-)
-
->> E.g. pulling the USB under receive load brings this output:
->>
->> [ 1343.786427] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
->> [ 1343.786640] usb_8dev 2-1.4:1.0 can2: Rx URB aborted (-32)
->>
->> (..) another 344 of these URB aborted messages
->=20
-> a bit much...
->=20
-> Maybe we should suppress this messages?
->=20
-
-
-I did not had the time for tests yesterday.
-But i will attach my full-load CAN generator today.
-
-Regarding the USB abort messages, i'll try the same with my other USB a=
-dapters
-and how they behave under these conditions.
-
-I remember some tests for the PEAK USB mainlining ... let's see.
-
-Regards,
-Oliver
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards
+Amit Virdi
