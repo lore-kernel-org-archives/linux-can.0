@@ -1,57 +1,62 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: usb_8dev: firmware and windows library
-Date: Thu, 17 Jan 2013 17:32:06 +0100
-Message-ID: <50F82786.5050509@hartkopp.net>
-References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+Subject: [PATCH 0/4] CAN sk_buff and can-gw enhancements
+Date: Thu, 17 Jan 2013 18:43:36 +0100
+Message-ID: <50F83848.4090006@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:18038 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:36879 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757181Ab3AQQcJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Jan 2013 11:32:09 -0500
-In-Reply-To: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+	with ESMTP id S1752708Ab3AQRnj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Jan 2013 12:43:39 -0500
+Received: from [192.168.178.31] (p5B0B0333.dip0.t-ipconnect.de [91.11.3.51])
+	by smtp.strato.de (jorabe mo12) (RZmta 31.13 DYNA|AUTH)
+	with ESMTPA id N057f1p0HHGu0v for <linux-can@vger.kernel.org>;
+	Thu, 17 Jan 2013 18:43:37 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Bernd_Krumb=F6ck?= <krumboeck@universalnet.at>, gediminas@8devices.com
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Whow! Great!
+From 0cb44d2bda7d3aeb96ce45eb7ee24a139bf40f78 Mon Sep 17 00:00:00 2001
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Thu, 17 Jan 2013 17:51:48 +0100
+Subject: [PATCH 0/4] CAN sk_buff and can-gw enhancements
 
-On 17.01.2013 10:03, "Bernd Krumb=F6ck" wrote:
+Hi all,
 
->=20
-> 8 devices (http://www.8devices.com/) allowed me to publish the firmwa=
-re to
-> the public:
->=20
-> firmware:
-> https://github.com/krumboeck/usb2can_firmware
->=20
-> canal library:
-> https://github.com/krumboeck/usb2can_canal
->=20
->=20
-> Many thanks to 8 devices!
+after the discussion with DaveM about the skb_iif usage here's my alternative
+to support the new can-gw functionalities:
 
+- make routing to the incoming CAN interface configurable
+- add a variable limit for CAN frame routings
+- indicate and count deleted frames due to misconfiguration
 
-Indeed. Great step for this CAN hardware.
+I added some private space to CAN sk_buffs. See commit messages.
 
-Today i compared the performance of the 8devices CAN USB with
+It can be pulled from the cangw branch of ollis-can-next:
 
-	cangen -g0 -i -I 010 -L 8 -D 0000000000000000 canX
+https://gitorious.org/~hartkopp/linux-can/ollis-can-next/commits/cangw
 
-in my Laptop:
-
-EMS PCMCIA sja1000    tx busload up to 74% (5699 frames/s)
-8devices CAN USB      tx busload up to 88% (6780 frames/s)
-PEAK USB (mainline)   tx busload up to 68% (5288 frames/s)
-
-ALL: rx busload up to 104% (8007 frames/s) =3D=3D 88% w/o bitstuff esti=
-mation
-
-So the 8devices CAN USB has an excellent performance right now.
-
-Tnx & regards,
+Regards,
 Oliver
+
+Oliver Hartkopp (4):
+  can: add private data space for CAN sk_buffs
+  can-gw: make routing to the incoming CAN interface configurable
+  can-gw: add a variable limit for CAN frame routings
+  can-gw: indicate and count deleted frames due to misconfiguration
+
+ drivers/net/can/dev.c       |    8 ++++-
+ drivers/net/can/slcan.c     |    8 ++++-
+ include/linux/can/skb.h     |   35 ++++++++++++++++++++
+ include/uapi/linux/can/gw.h |    2 ++
+ net/can/bcm.c               |   12 +++++--
+ net/can/gw.c                |   74 +++++++++++++++++++++++++++++++++----------
+ net/can/raw.c               |    8 +++--
+ 7 files changed, 124 insertions(+), 23 deletions(-)
+ create mode 100644 include/linux/can/skb.h
+
+-- 
+1.7.10.4
+
