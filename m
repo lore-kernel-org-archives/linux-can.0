@@ -1,43 +1,41 @@
-From: Olivier Sobrie <olivier@sobrie.be>
-Subject: [PATCH 3/3] can: pch_can: fix invalid error codes
-Date: Fri, 18 Jan 2013 09:32:41 +0100
-Message-ID: <1358497961-9080-3-git-send-email-olivier@sobrie.be>
-References: <1358497961-9080-1-git-send-email-olivier@sobrie.be>
- <1358497961-9080-2-git-send-email-olivier@sobrie.be>
+From: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
+Subject: Re: usb_8dev: firmware and windows library
+Date: Fri, 18 Jan 2013 11:43:54 +0100
+Message-ID: <20729.10090.297358.429625@elektron.ikp.physik.tu-darmstadt.de>
+References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ee0-f46.google.com ([74.125.83.46]:42163 "EHLO
-	mail-ee0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750928Ab3ARIes (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Jan 2013 03:34:48 -0500
-Received: by mail-ee0-f46.google.com with SMTP id e49so1596955eek.5
-        for <linux-can@vger.kernel.org>; Fri, 18 Jan 2013 00:34:46 -0800 (PST)
-In-Reply-To: <1358497961-9080-2-git-send-email-olivier@sobrie.be>
+Received: from lnx503.hrz.tu-darmstadt.de ([130.83.156.232]:42014 "EHLO
+	lnx503.hrz.tu-darmstadt.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751177Ab3ARKoY convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 18 Jan 2013 05:44:24 -0500
+In-Reply-To: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Olivier Sobrie <olivier@sobrie.be>
+To: =?iso-8859-1?Q?=22Bernd_Krumb=F6ck=22?= <krumboeck@universalnet.at>
+Cc: linux-can@vger.kernel.org, gediminas@8devices.com
 
-Errors in CAN protocol (location) are reported in data[3] of the can
-frame instead of data[2].
+>>>>> "Bernd" =3D=3D Bernd Krumb=F6ck <krumboeck@universalnet.at> write=
+s:
 
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
----
- drivers/net/can/pch_can.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    Bernd> Hello!  8 devices (http://www.8devices.com/) allowed me to
+    Bernd> publish the firmware to the public:
 
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 7d17485..5c314a9 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -560,7 +560,7 @@ static void pch_can_error(struct net_device *ndev, u32 status)
- 		stats->rx_errors++;
- 		break;
- 	case PCH_CRC_ERR:
--		cf->data[2] |= CAN_ERR_PROT_LOC_CRC_SEQ |
-+		cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ |
- 			       CAN_ERR_PROT_LOC_CRC_DEL;
- 		priv->can.can_stats.bus_error++;
- 		stats->rx_errors++;
--- 
-1.7.9.5
+    Bernd> firmware: https://github.com/krumboeck/usb2can_firmware
 
+    Bernd> canal library: https://github.com/krumboeck/usb2can_canal
+
+
+I know, I am greedy :-)
+
+Does anybody have a Makefile or at least a log file of a build?
+
+Thanks
+--=20
+Uwe Bonnes                bon@elektron.ikp.physik.tu-darmstadt.de
+
+Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
+--------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
