@@ -1,97 +1,32 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: upcoming pull reqeust
-Date: Sat, 19 Jan 2013 14:34:07 +0100
-Message-ID: <50FAA0CF.8000007@hartkopp.net>
-References: <50F5C2EA.8030304@pengutronix.de>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: candump -x: brs esi is set on non-canfd interfaces
+Date: Tue, 22 Jan 2013 08:55:18 +0100
+Message-ID: <2839107.LG5rdvYUWD@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:55692 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751012Ab3ASNeK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 19 Jan 2013 08:34:10 -0500
-In-Reply-To: <50F5C2EA.8030304@pengutronix.de>
+Received: from webbox1416.server-home.net ([77.236.96.61]:39060 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752273Ab3AVHzY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Jan 2013 02:55:24 -0500
+Received: from comm.systec-electronic.de (178-24-127-48-dynip.superkabel.de [178.24.127.48])
+	by webbox1416.server-home.net (Postfix) with ESMTPA id 9421F27A602
+	for <linux-can@vger.kernel.org>; Tue, 22 Jan 2013 08:50:01 +0100 (CET)
+Received: from ws-stein.localnet (unknown [192.168.10.63])
+	by comm.systec-electronic.de (Postfix) with ESMTP id 9AA8097C275
+	for <linux-can@vger.kernel.org>; Tue, 22 Jan 2013 08:55:22 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Can you add my patchset
+Hello,
 
-"CAN sk_buff and can-gw enhancements"
+a student noticed that during his CANopen SDO transfer traffic candump sometimes shows e.g.
+> (000.000124)  can0  TX B E  641   [8]  00 32 33 34 35 36 37 38
+while on a non-canfd interfaces. It seem to occur at some time and disappears again for one SDO transfer and it occurs for another transfer and stays forever. I see that candump always uses struct canfd_frame, but AFAICS the flags member should not be set at all, as alloc_can_skb does a memset on struct can_frame. So the padding bytes in can_frame are zero which are used for flags in canfd_frame.
+When printing flags directly it is set to 0x7F. Has anybody an idea what could cause this? I could find any position which would manipulate the flags byte.
 
-and Bernds
-
-"[PATCH v11] usb_8dev: Add support for USB2CAN interface from 8 devices"
-
-and the omitted LED support for the usb_8dev driver from Fabio too?
-
-Regards,
-Oliver
-
-On 15.01.2013 21:58, Marc Kleine-Budde wrote:
-
-> Hello,
-> 
-> I'm going to send a pull request to David this week, it will include:
-> the LED trigger patches by Fabio and Kurt and my Kconfig cleanup. The
-> usb8-dev driver has some problems with unplug under heavy load, so it
-> will not be included.
-> 
-> The patches are in the for-davem branch in the linux-can-next repo at
-> gitorious:
-> 
-> https://gitorious.org/linux-can/linux-can-next/commits/for-davem
-> 
-> The shortlog is:
-> 
-> Fabio Baltieri (7):
->       can: add tx/rx LED trigger support
->       can: flexcan: add LED trigger support
->       can: at91_can: add LED trigger support
->       can: ti_hecc: add LED trigger support
->       can: c_can: add LED trigger support
->       can: mcp251x: add LED trigger support
->       can: sja1000: add LED trigger support
-> 
-> Kurt Van Dijck (2):
->       can: export a safe netdev_priv wrapper for candev
->       can: rename LED trigger name on netdev renames
-> 
-> Marc Kleine-Budde (4):
->       can: Kconfig: convert 'depends on CAN' into 'if CAN...endif' block
->       can: Kconfig: convert 'depends on CAN_DEV' into 'if CAN_DEV...endif' block
->       can: Kconfig: switch on all CAN protocolls by default
->       can: sja1000: correct indention of Kconfig help text
-> 
->  drivers/net/can/Kconfig           |   37 +++++++----
->  drivers/net/can/Makefile          |    2 +
->  drivers/net/can/at91_can.c        |   10 +++
->  drivers/net/can/c_can/Kconfig     |    2 +-
->  drivers/net/can/c_can/c_can.c     |   10 +++
->  drivers/net/can/cc770/Kconfig     |    2 +-
->  drivers/net/can/dev.c             |   18 ++++++
->  drivers/net/can/flexcan.c         |   11 ++++
->  drivers/net/can/led.c             |  129 +++++++++++++++++++++++++++++++++++++
->  drivers/net/can/mcp251x.c         |   23 +++++--
->  drivers/net/can/mscan/Kconfig     |    2 +-
->  drivers/net/can/sja1000/Kconfig   |   14 ++--
->  drivers/net/can/sja1000/sja1000.c |   17 ++++-
->  drivers/net/can/softing/Kconfig   |    2 +-
->  drivers/net/can/ti_hecc.c         |   10 +++
->  drivers/net/can/usb/Kconfig       |    2 +-
->  include/linux/can/dev.h           |   11 ++++
->  include/linux/can/led.h           |   51 +++++++++++++++
->  net/can/Kconfig                   |   13 ++--
->  19 files changed, 329 insertions(+), 37 deletions(-)
->  create mode 100644 drivers/net/can/led.c
->  create mode 100644 include/linux/can/led.h
-> 
-> Comments, any missing patches or {Reviewed,Acked,Tested}-by?
-> 
-> regards,
-> Marc
-> 
-
+Best regards,
+Alexander
 
