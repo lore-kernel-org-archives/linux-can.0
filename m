@@ -1,42 +1,34 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: candump -x: brs esi is set on non-canfd interfaces
-Date: Tue, 22 Jan 2013 09:58:54 +0100
-Message-ID: <2827513.Ik1JmLTmS7@ws-stein>
-References: <2839107.LG5rdvYUWD@ws-stein> <50FE5159.9090105@volkswagen.de>
+Subject: Re: exclusive access to can interface
+Date: Tue, 22 Jan 2013 10:41:03 +0100
+Message-ID: <3261122.aWhS3clJQh@ws-stein>
+References: <2412937.XVpYjfC7zz@ws-stein> <50EB10F4.6070308@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:58540 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:53685 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752221Ab3AVI66 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Jan 2013 03:58:58 -0500
-In-Reply-To: <50FE5159.9090105@volkswagen.de>
+	by vger.kernel.org with ESMTP id S1752373Ab3AVJlG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Jan 2013 04:41:06 -0500
+In-Reply-To: <50EB10F4.6070308@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org
 
-Hello Oliver,
+Hello again,
 
-On Tuesday 22 January 2013 09:44:09, Oliver Hartkopp wrote:
-> Am 22.01.2013 08:55, schrieb Alexander Stein:
+On Monday 07 January 2013 19:16:20, Marc Kleine-Budde wrote:
+> On 01/07/2013 05:52 PM, Alexander Stein wrote:
+> > is there a way to get exclusive (write) access to a CAN interface, so
+> > that only one bound socket can write CAN frames on the bus?
 > 
-> > a student noticed that during his CANopen SDO transfer traffic candump sometimes shows e.g.
-> >> (000.000124)  can0  TX B E  641   [8]  00 32 33 34 35 36 37 38
-> > while on a non-canfd interfaces. It seem to occur at some time and disappears again for one SDO transfer and it occurs for another transfer and stays forever. I see that candump always uses struct canfd_frame, but AFAICS the flags member should not be set at all, as alloc_can_skb does a memset on struct can_frame. So the padding bytes in can_frame are zero which are used for flags in canfd_frame.
-> > When printing flags directly it is set to 0x7F. Has anybody an idea what could cause this? I could find any position which would manipulate the flags byte.
-> >
-> 
-> Is it possible that you generate that CAN frame on the local host?
-> If you do not zero the struct CAN frame before sending it e.g. via CAN_RAW 
-> socket this could be an idea where it comes from.
-> 
-> Because as you already pointed out alloc_can_skb() initializes the struct 
-> properly. But this only is relevant from CAN frames from 'the outside'.
+> No, what's the use case?
 
-I don't know about the details that much, but you actually might be right. I will forward your suggestion and reply with the response.
+I have now a more detailed view about the customers request and background: The problem runs some (time consuming) tests using CAN and they want to prohibit CAN write access meanwhile in order to prevent e.g. some (mis-)configuration of CAN devices or firmware updates. In such a case the test might shutdown and needs to be restarted. During the test nobody alse should be allowed to write to the CAN bus. I think this is justified.
+It seems this is unrelated to CANopen or user application started twice, like I've expected and written before.
 
-Thanks so far.
+Best regards,
 Alexander
 
