@@ -1,81 +1,45 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/4] CAN sk_buff and can-gw enhancements
-Date: Wed, 23 Jan 2013 10:20:24 +0100
-Message-ID: <50FFAB58.1030301@pengutronix.de>
-References: <50F83848.4090006@hartkopp.net> <50FF07A1.1070909@pengutronix.de> <50FF0EC6.70106@pengutronix.de> <50FFA9D8.40005@hartkopp.net>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: candump -x: brs esi is set on non-canfd interfaces
+Date: Thu, 24 Jan 2013 10:01:42 +0100
+Message-ID: <52273885.5b5dnNaNTl@ws-stein>
+References: <2839107.LG5rdvYUWD@ws-stein> <50FE5159.9090105@volkswagen.de> <2827513.Ik1JmLTmS7@ws-stein>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2RSTFDTBVWKKJLBUKRBAP"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33277 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754146Ab3AWJU0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Jan 2013 04:20:26 -0500
-In-Reply-To: <50FFA9D8.40005@hartkopp.net>
+Received: from webbox1416.server-home.net ([77.236.96.61]:37161 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751242Ab3AXJBp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Jan 2013 04:01:45 -0500
+In-Reply-To: <2827513.Ik1JmLTmS7@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2RSTFDTBVWKKJLBUKRBAP
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tuesday 22 January 2013 09:58:54, Alexander Stein wrote:
+> Hello Oliver,
+> 
+> On Tuesday 22 January 2013 09:44:09, Oliver Hartkopp wrote:
+> > Am 22.01.2013 08:55, schrieb Alexander Stein:
+> > 
+> > > a student noticed that during his CANopen SDO transfer traffic candump sometimes shows e.g.
+> > >> (000.000124)  can0  TX B E  641   [8]  00 32 33 34 35 36 37 38
+> > > while on a non-canfd interfaces. It seem to occur at some time and disappears again for one SDO transfer and it occurs for another transfer and stays forever. I see that candump always uses struct canfd_frame, but AFAICS the flags member should not be set at all, as alloc_can_skb does a memset on struct can_frame. So the padding bytes in can_frame are zero which are used for flags in canfd_frame.
+> > > When printing flags directly it is set to 0x7F. Has anybody an idea what could cause this? I could find any position which would manipulate the flags byte.
+> > >
+> > 
+> > Is it possible that you generate that CAN frame on the local host?
+> > If you do not zero the struct CAN frame before sending it e.g. via CAN_RAW 
+> > socket this could be an idea where it comes from.
+> > 
+> > Because as you already pointed out alloc_can_skb() initializes the struct 
+> > properly. But this only is relevant from CAN frames from 'the outside'.
+> 
+> I don't know about the details that much, but you actually might be right. I will forward your suggestion and reply with the response.
 
-On 01/23/2013 10:14 AM, Oliver Hartkopp wrote:
-> On 22.01.2013 23:12, Marc Kleine-Budde wrote:
->=20
->=20
->>
->> BTW: try to use git send-email to send your patches, it's easier than =
-to
->> use thunderbird and git am works better.
->>
->=20
->=20
-> I was in hurry that day and tried to get my IMAP mail account working w=
-ith
-> git. After 2h of failures i copy/pasted the four output files of
->=20
-> 	git format-patch --cover-letter
->=20
-> by hand into thunderbird.
->=20
-> Sigh :-(
->=20
-> Will need to spend some more time for that ...
+Oliver, you were right. This issue was raised by local CAN frames and a memset on the struct solves this annoyance. Thanks for the hint.
 
-Have a look at the bottom of the git-sendemail manpage, add this to your
-~/.gitconfig
+Regards,
+Alexander
 
-           [sendemail]
-                   smtpencryption =3D tls
-                   smtpserver =3D smtp.gmail.com
-                   smtpuser =3D yourname@gmail.com
-                   smtpserverport =3D 587
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2RSTFDTBVWKKJLBUKRBAP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlD/q1gACgkQjTAFq1RaXHPTrgCfYwT91F0ZNYyCjSxKv5KL7jJa
-tQwAn12W6kICItwDqHSh8SuLUXjQPW/Z
-=/GuC
------END PGP SIGNATURE-----
-
-------enig2RSTFDTBVWKKJLBUKRBAP--
