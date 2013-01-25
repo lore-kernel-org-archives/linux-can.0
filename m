@@ -1,45 +1,69 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: candump -x: brs esi is set on non-canfd interfaces
-Date: Thu, 24 Jan 2013 10:01:42 +0100
-Message-ID: <52273885.5b5dnNaNTl@ws-stein>
-References: <2839107.LG5rdvYUWD@ws-stein> <50FE5159.9090105@volkswagen.de> <2827513.Ik1JmLTmS7@ws-stein>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: upcoming pull reqeust
+Date: Fri, 25 Jan 2013 16:55:03 +0100
+Message-ID: <5102AAD7.3040403@hartkopp.net>
+References: <50F5C2EA.8030304@pengutronix.de> <50FAA0CF.8000007@hartkopp.net> <50FF0C9C.3030207@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:37161 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751242Ab3AXJBp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Jan 2013 04:01:45 -0500
-In-Reply-To: <2827513.Ik1JmLTmS7@ws-stein>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:65059 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755747Ab3AYPzG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jan 2013 10:55:06 -0500
+In-Reply-To: <50FF0C9C.3030207@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tuesday 22 January 2013 09:58:54, Alexander Stein wrote:
-> Hello Oliver,
-> 
-> On Tuesday 22 January 2013 09:44:09, Oliver Hartkopp wrote:
-> > Am 22.01.2013 08:55, schrieb Alexander Stein:
-> > 
-> > > a student noticed that during his CANopen SDO transfer traffic candump sometimes shows e.g.
-> > >> (000.000124)  can0  TX B E  641   [8]  00 32 33 34 35 36 37 38
-> > > while on a non-canfd interfaces. It seem to occur at some time and disappears again for one SDO transfer and it occurs for another transfer and stays forever. I see that candump always uses struct canfd_frame, but AFAICS the flags member should not be set at all, as alloc_can_skb does a memset on struct can_frame. So the padding bytes in can_frame are zero which are used for flags in canfd_frame.
-> > > When printing flags directly it is set to 0x7F. Has anybody an idea what could cause this? I could find any position which would manipulate the flags byte.
-> > >
-> > 
-> > Is it possible that you generate that CAN frame on the local host?
-> > If you do not zero the struct CAN frame before sending it e.g. via CAN_RAW 
-> > socket this could be an idea where it comes from.
-> > 
-> > Because as you already pointed out alloc_can_skb() initializes the struct 
-> > properly. But this only is relevant from CAN frames from 'the outside'.
-> 
-> I don't know about the details that much, but you actually might be right. I will forward your suggestion and reply with the response.
+On 22.01.2013 23:03, Marc Kleine-Budde wrote:
 
-Oliver, you were right. This issue was raised by local CAN frames and a memset on the struct solves this annoyance. Thanks for the hint.
+
+> The patches are in the for-davem branch in the linux-can-next repo at
+> gitorious:
+> 
+> https://gitorious.org/linux-can/linux-can-next/commits/for-davem
+> 
+> Bernd Krumboeck (2):
+>       can: usb_8dev: Add support for USB2CAN interface from 8 devices
+>       can: usb_8dev: add LED trigger support
+> 
+> Fabio Baltieri (7):
+>       can: add tx/rx LED trigger support
+>       can: flexcan: add LED trigger support
+>       can: at91_can: add LED trigger support
+>       can: ti_hecc: add LED trigger support
+>       can: c_can: add LED trigger support
+>       can: mcp251x: add LED trigger support
+>       can: sja1000: add LED trigger support
+> 
+> Kurt Van Dijck (2):
+>       can: export a safe netdev_priv wrapper for candev
+>       can: rename LED trigger name on netdev renames
+> 
+> Marc Kleine-Budde (4):
+>       can: Kconfig: convert 'depends on CAN' into 'if CAN...endif' block
+>       can: Kconfig: convert 'depends on CAN_DEV' into 'if CAN_DEV...endif' block
+>       can: Kconfig: switch on all CAN protocolls by default
+>       can: sja1000: correct indention of Kconfig help text
+> 
+> Oliver Hartkopp (4):
+>       can: add private data space for CAN sk_buffs
+>       can: gw: make routing to the incoming CAN interface configurable
+>       can: gw: add a variable limit for CAN frame routings
+>       can: gw: indicate and count deleted frames due to misconfiguration
+> 
+
+> 
+> Comments?
+> 
+
+
+What's you plan when to send the pull request to Dave?
+
+Btw. have you seen the 3 c_can fixes from Olivier Sobrie for the net/stable
+tree from 2013-01-18? They all look correct.
 
 Regards,
-Alexander
-
+Oliver
