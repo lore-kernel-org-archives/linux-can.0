@@ -1,44 +1,59 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/3] can: pch_can: fix invalid error codes
-Date: Sat, 26 Jan 2013 17:33:27 +0100
-Message-ID: <1359218007-18586-4-git-send-email-mkl@pengutronix.de>
-References: <1359218007-18586-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: upcoming pull reqeust
+Date: Sat, 26 Jan 2013 17:35:32 +0100
+Message-ID: <510405D4.1020708@pengutronix.de>
+References: <50F5C2EA.8030304@pengutronix.de> <50FAA0CF.8000007@hartkopp.net> <50FF0C9C.3030207@pengutronix.de> <5102AAD7.3040403@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2UPTESNECDJWCNAQFEKAC"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56864 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56887 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753172Ab3AZQdh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Jan 2013 11:33:37 -0500
-In-Reply-To: <1359218007-18586-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751316Ab3AZQff (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Jan 2013 11:35:35 -0500
+In-Reply-To: <5102AAD7.3040403@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, Olivier Sobrie <olivier@sobrie.be>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Olivier Sobrie <olivier@sobrie.be>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2UPTESNECDJWCNAQFEKAC
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Errors in CAN protocol (location) are reported in data[3] of the can
-frame instead of data[2].
+On 01/25/2013 04:55 PM, Oliver Hartkopp wrote:
 
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/pch_can.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 7d17485..5c314a9 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -560,7 +560,7 @@ static void pch_can_error(struct net_device *ndev, u32 status)
- 		stats->rx_errors++;
- 		break;
- 	case PCH_CRC_ERR:
--		cf->data[2] |= CAN_ERR_PROT_LOC_CRC_SEQ |
-+		cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ |
- 			       CAN_ERR_PROT_LOC_CRC_DEL;
- 		priv->can.can_stats.bus_error++;
- 		stats->rx_errors++;
--- 
-1.7.10.4
+> Btw. have you seen the 3 c_can fixes from Olivier Sobrie for the net/st=
+able
+> tree from 2013-01-18? They all look correct.
 
+Done
+
+Thanks for poking me,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2UPTESNECDJWCNAQFEKAC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlEEBdQACgkQjTAFq1RaXHPheQCeIZYSh+r2jri0VRaAKOarHGHa
+e6cAn3YFi3yRf+N2v4pCYtI88MCi+TvS
+=6gwr
+-----END PGP SIGNATURE-----
+
+------enig2UPTESNECDJWCNAQFEKAC--
