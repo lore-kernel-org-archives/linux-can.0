@@ -1,60 +1,102 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: pull-request: can-next 2013-01-26
-Date: Mon, 28 Jan 2013 06:58:29 +0100
-Message-ID: <51061385.9070108@hartkopp.net>
-References: <5103FFA3.5020507@pengutronix.de> <20130128.002455.638752456075920210.davem@davemloft.net>
+Subject: ATTENTION: Out-of-tree CAN driver maintainers!
+Date: Tue, 29 Jan 2013 21:56:52 +0100
+Message-ID: <51083794.4080803@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:35076 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:54755 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750742Ab3A1F6c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Jan 2013 00:58:32 -0500
-In-Reply-To: <20130128.002455.638752456075920210.davem@davemloft.net>
+	with ESMTP id S1750949Ab3A2U4z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Jan 2013 15:56:55 -0500
+Received: from [192.168.178.33] (p5B0B05C1.dip0.t-ipconnect.de [91.11.5.193])
+	by smtp.strato.de (jored mo27) (RZmta 31.14 DYNA|AUTH)
+	with ESMTPA id k02bb9p0TKuqQB for <linux-can@vger.kernel.org>;
+	Tue, 29 Jan 2013 21:56:52 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: mkl@pengutronix.de, netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 28.01.2013 06:24, David Miller wrote:
+Hello all,
 
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Sat, 26 Jan 2013 17:09:07 +0100
-> 
->> this is a pull-request for net-next/master. There is are 9 patches by 
->> Fabio Baltieri and Kurt Van Dijck which add LED infrastructure and
->> support for CAN devices. Bernd Krumboeck adds a driver for the USB CAN
->> adapter from 8 devices. Oliver Hartkopp improves the CAN gateway
->> functionality. There are 4 patches by me, which clean up the CAN's
->> Kconfig.
-> 
-> Pulled, although:
-> 
-> 1) You need to create an accessor helper for that can_skb_priv
->    thing, every access to it is that horrible cast expression.
+in Linux 3.9 the layout of CAN frame in the socket buffer (struct sk_buff) is
+extended by a struct can_skb_priv.
+
+This structure is placed 'before' the CAN frame data, which is done by
+skb_reserve(). All other things like skb->data and skb->len handling is not
+changed.
+
+When you are already using the GPL exported alloc_can_skb() function
+ -> Good! can_alloc_skb() has been adapted -> no action needed for you.
+
+When you are NOT using can_alloc_skb() and you still do not want to use it
+(hint, hint) you need to
+
+1. include the new include file include/linux/can/skb.h
+2. add the sizeof(struct can_skb_priv) to the allocated skb size
+3. call can_skb_reserve(skb) after successfully allocating the skb
+4. assign the device interface index in the struct can_skb_priv
+
+N.B. The can_skb_reserve() action needs to be done before adding any data to
+the skb with skb_put().
+
+The changes that have been done in slcan.c can be taken as an example:
+
+--- linux/drivers/net/can/slcan.c	2013-01-19 15:03:33.175529949 +0100
++++ net-next/drivers/net/can/slcan.c	2013-01-29 07:05:09.612534272 +0100
+@@ -52,12 +52,13 @@
+ #include <linux/if_ether.h>
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/can.h>
++#include <linux/can/skb.h>
+
+ static __initconst const char banner[] =
+ 	KERN_INFO "slcan: serial line CAN interface driver\n";
+
+ MODULE_ALIAS_LDISC(N_SLCAN);
+ MODULE_DESCRIPTION("serial line CAN interface");
+@@ -181,20 +182,25 @@
+ 		tmp = hex_to_bin(sl->rbuff[dlc_pos++]);
+ 		if (tmp < 0)
+ 			return;
+ 		cf.data[i] |= tmp;
+ 	}
+
+-	skb = dev_alloc_skb(sizeof(struct can_frame));
++	skb = dev_alloc_skb(sizeof(struct can_frame) +
++			    sizeof(struct can_skb_priv));
+ 	if (!skb)
+ 		return;
+
+ 	skb->dev = sl->dev;
+ 	skb->protocol = htons(ETH_P_CAN);
+ 	skb->pkt_type = PACKET_BROADCAST;
+ 	skb->ip_summed = CHECKSUM_UNNECESSARY;
++
++	can_skb_reserve(skb);
++	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
++
+ 	memcpy(skb_put(skb, sizeof(struct can_frame)),
+ 	       &cf, sizeof(struct can_frame));
+ 	netif_rx_ni(skb);
+
+ 	sl->dev->stats.rx_packets++;
+ 	sl->dev->stats.rx_bytes += cf.can_dlc;
 
 
-Ok, will do.
+For out-of-tree drivers you probably need to put some
 
-> 
-> 2) There is no reason to accomodate out of tree stuff, and for that
->    reason I see no reason why you should need that headroom size
->    check at all.
-> 
->    Either the driver uses alloc_can_skb() or it does it's own SKB
->    allocation and in-tree you've fixed that.
-> 
->    You're just asking for trouble by trying to accomodate out of
->    tree guys anyways, why if they create a headroom that happens
->    to be the size of can_skb_priv.  See what a joke that test is?
->    It's not really protecting fully against anything.
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
++#include <linux/can/skb.h>
++#endif
 
+arround it.
 
-I see.
+Any questions? No questions? Good :-)
 
-I'll remove the check and try to inform the few out of tree guys that i'm
-aware of.
-
-Thanks,
+Regards,
 Oliver
