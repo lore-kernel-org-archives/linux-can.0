@@ -1,102 +1,54 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: ATTENTION: Out-of-tree CAN driver maintainers!
-Date: Tue, 29 Jan 2013 21:56:52 +0100
-Message-ID: <51083794.4080803@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: ATTENTION: Out-of-tree CAN driver maintainers!
+Date: Tue, 29 Jan 2013 23:05:36 +0100
+Message-ID: <510847B0.7090206@pengutronix.de>
+References: <51083794.4080803@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2XLWIGWKUXEGHGMBTCLXR"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:54755 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750949Ab3A2U4z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Jan 2013 15:56:55 -0500
-Received: from [192.168.178.33] (p5B0B05C1.dip0.t-ipconnect.de [91.11.5.193])
-	by smtp.strato.de (jored mo27) (RZmta 31.14 DYNA|AUTH)
-	with ESMTPA id k02bb9p0TKuqQB for <linux-can@vger.kernel.org>;
-	Tue, 29 Jan 2013 21:56:52 +0100 (CET)
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46989 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751217Ab3A2WFo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Jan 2013 17:05:44 -0500
+In-Reply-To: <51083794.4080803@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello all,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2XLWIGWKUXEGHGMBTCLXR
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-in Linux 3.9 the layout of CAN frame in the socket buffer (struct sk_buff) is
-extended by a struct can_skb_priv.
+On 01/29/2013 09:56 PM, Oliver Hartkopp wrote:
+[...]
 
-This structure is placed 'before' the CAN frame data, which is done by
-skb_reserve(). All other things like skb->data and skb->len handling is not
-changed.
+> For out-of-tree drivers you probably need to put some
 
-When you are already using the GPL exported alloc_can_skb() function
- -> Good! can_alloc_skb() has been adapted -> no action needed for you.
+=2E....should be mainlined :D
 
-When you are NOT using can_alloc_skb() and you still do not want to use it
-(hint, hint) you need to
-
-1. include the new include file include/linux/can/skb.h
-2. add the sizeof(struct can_skb_priv) to the allocated skb size
-3. call can_skb_reserve(skb) after successfully allocating the skb
-4. assign the device interface index in the struct can_skb_priv
-
-N.B. The can_skb_reserve() action needs to be done before adding any data to
-the skb with skb_put().
-
-The changes that have been done in slcan.c can be taken as an example:
-
---- linux/drivers/net/can/slcan.c	2013-01-19 15:03:33.175529949 +0100
-+++ net-next/drivers/net/can/slcan.c	2013-01-29 07:05:09.612534272 +0100
-@@ -52,12 +52,13 @@
- #include <linux/if_ether.h>
- #include <linux/sched.h>
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/can.h>
-+#include <linux/can/skb.h>
-
- static __initconst const char banner[] =
- 	KERN_INFO "slcan: serial line CAN interface driver\n";
-
- MODULE_ALIAS_LDISC(N_SLCAN);
- MODULE_DESCRIPTION("serial line CAN interface");
-@@ -181,20 +182,25 @@
- 		tmp = hex_to_bin(sl->rbuff[dlc_pos++]);
- 		if (tmp < 0)
- 			return;
- 		cf.data[i] |= tmp;
- 	}
-
--	skb = dev_alloc_skb(sizeof(struct can_frame));
-+	skb = dev_alloc_skb(sizeof(struct can_frame) +
-+			    sizeof(struct can_skb_priv));
- 	if (!skb)
- 		return;
-
- 	skb->dev = sl->dev;
- 	skb->protocol = htons(ETH_P_CAN);
- 	skb->pkt_type = PACKET_BROADCAST;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+	can_skb_reserve(skb);
-+	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
-+
- 	memcpy(skb_put(skb, sizeof(struct can_frame)),
- 	       &cf, sizeof(struct can_frame));
- 	netif_rx_ni(skb);
-
- 	sl->dev->stats.rx_packets++;
- 	sl->dev->stats.rx_bytes += cf.can_dlc;
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-For out-of-tree drivers you probably need to put some
+------enig2XLWIGWKUXEGHGMBTCLXR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
-+#include <linux/can/skb.h>
-+#endif
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-arround it.
+iEYEARECAAYFAlEIR7QACgkQjTAFq1RaXHMQxwCfc/PPJPe+kSkA96V/yHFTpiFz
+ZIAAn1yBJIp3wX4u8JpKkkhWw5loBTkW
+=xp+/
+-----END PGP SIGNATURE-----
 
-Any questions? No questions? Good :-)
-
-Regards,
-Oliver
+------enig2XLWIGWKUXEGHGMBTCLXR--
