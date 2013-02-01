@@ -1,59 +1,44 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can-utils: fix local header path for AOSP build
-Date: Fri, 01 Feb 2013 10:33:08 +0100
-Message-ID: <510B8BD4.2000301@pengutronix.de>
-References: <1359704686-3040-1-git-send-email-yegorslists@googlemail.com>
+From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Subject: Re: can-utils: usage with kernels prior to 3.6
+Date: Fri, 01 Feb 2013 13:15:02 +0100
+Message-ID: <510BB1C6.40000@volkswagen.de>
+References: <CAGm1_kvzT8e7_7JNt6NUyHUccpFb0c9v8XP3RStOWw6uKhObtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2DTCHVDHCXPIDSVWJUHJH"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50891 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755839Ab3BAJdP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 1 Feb 2013 04:33:15 -0500
-In-Reply-To: <1359704686-3040-1-git-send-email-yegorslists@googlemail.com>
+Received: from mr1.volkswagen.de ([194.114.62.75]:51039 "EHLO
+	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751688Ab3BAMPR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 1 Feb 2013 07:15:17 -0500
+In-Reply-To: <CAGm1_kvzT8e7_7JNt6NUyHUccpFb0c9v8XP3RStOWw6uKhObtA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
+To: Yegor Yefremov <yegorslists@googlemail.com>
 Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2DTCHVDHCXPIDSVWJUHJH
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Am 01.02.2013 08:30, schrieb Yegor Yefremov:
+> I've looked at the source code of the latest can-utils and it seems
+> like one cannot use them with the kernels prior to 3.6 because of
+> missing CAN FD support. The "struct can_frame" was replaced with the
+> new one, so that candump, cangen etc. are using only the CAN FD frame
+> structure.
+> 
+> Am I missing something?
 
-On 02/01/2013 08:44 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
->=20
-> Use path relative to the can-utils source code and to root of
-> the AOSP repository.
->=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Hello Yegor,
 
-Thx, pushed to master.
+of course the tools can be used with older kernels too.
 
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The struct canfd_frame is capable to contain a CAN frames as well as a CAN FD
+frame. Therefore e.g. candump internally uses struct canfd_famres to handle
+both frame types in the same manner.
 
+The idea and a visualisation can be found here:
 
-------enig2DTCHVDHCXPIDSVWJUHJH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+http://can-newsletter.org/engineering/standardization/nr_stand_can-fd_linux3.6_120703/
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Does this answer your question?
 
-iEYEARECAAYFAlELi9cACgkQjTAFq1RaXHO2pgCdGvaDBXr+5leBTFtNu3bzNQ1g
-CAUAn0Zw1+Ux10uj6z5DLr84IulzqmFH
-=ROvZ
------END PGP SIGNATURE-----
-
-------enig2DTCHVDHCXPIDSVWJUHJH--
+Regards,
+Oliver
