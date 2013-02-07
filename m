@@ -1,39 +1,47 @@
-From: Gitorious <no-reply@gitorious.org>
-Subject: [Gitorious] Activity: konrada updated merge request for k...
-Date: Thu, 7 Feb 2013 11:17:08 +0100
-Message-ID: <20130207101708.B072CFC0@ratt.gitorious.c.bitbit.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] cangen: use long long in time computation for -g to support >2.1s
+Date: Thu,  7 Feb 2013 11:38:09 +0100
+Message-ID: <1360233489-14471-1-git-send-email-mkl@pengutronix.de>
+References: <20130207101708.B072CFC0@ratt.gitorious.c.bitbit.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59117 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56274 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754959Ab3BGKdX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Feb 2013 05:33:23 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1U3OnB-0002kd-RO
-	for linux-can@vger.kernel.org; Thu, 07 Feb 2013 11:33:22 +0100
-Received: from [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b] (hardanger.wlan.blackshift.org [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b])
-	(using TLSv1 with cipher ECDHE-ECDSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: frogger)
-	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id 241005E901
-	for <linux-can@vger.kernel.org>; Thu,  7 Feb 2013 11:33:20 +0100 (CET)
+	with ESMTP id S1755390Ab3BGKiN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Feb 2013 05:38:13 -0500
+In-Reply-To: <20130207101708.B072CFC0@ratt.gitorious.c.bitbit.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Konrad Anton <konrad.anton@awinia.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
+From: Konrad Anton <konrad.anton@awinia.de>
 
+The computation of nanosleep times for the "-g" option to cangen.c (delay
+between sends) overflows when more than 2100ms are given.
 
-Hello bet-frogger,
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
 
-One of your favorites has a new activity:
-------------------------------------------------------------------------
-konrada updated merge request for konradas-can-utils with can-utils.
-The merge request is at https://gitorious.org/linux-can/can-utils/merge_requests/1
-------------------------------------------------------------------------
+This is the pull gitorious pull reqeust transformed into a standard git one. :)
 
-You are receiving this email because you have chosen to be notified by
-email whenever this favorite has new activity. You can manage your
-favorite subscriptions at https://gitorious.org/favorites
+Marc
+
+ cangen.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cangen.c b/cangen.c
+index 7518c12..db4c803 100644
+--- a/cangen.c
++++ b/cangen.c
+@@ -269,7 +269,7 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	ts.tv_sec = gap / 1000;
+-	ts.tv_nsec = ((int)(gap * 1000000)) % 1000000000;
++	ts.tv_nsec = (long)(((long long)(gap * 1000000)) % 1000000000ll);
+ 
+ 	/* recognize obviously missing commandline option */
+ 	if (id_mode == MODE_FIX && frame.can_id > 0x7FF && !extended) {
+-- 
+1.7.10.4
+
