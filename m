@@ -1,58 +1,74 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Retrieve amount of queued frames in the txqueue of a interface
-Date: Thu, 07 Feb 2013 11:42:39 +0100
-Message-ID: <5113851F.1060501@pengutronix.de>
-References: <CAJsOQGO3bHsCqJ9kr=h0XZHxZ5wPejcPgV7WyCUp2HKYzZx0WQ@mail.gmail.com>
+From: Konrad Anton <konrad.anton@awinia.de>
+Subject: Re: [PATCH] cangen: use long long in time computation for -g to support
+ >2.1s
+Date: Thu, 07 Feb 2013 12:04:36 +0100
+Message-ID: <51138A44.5090306@awinia.de>
+References: <20130207101708.B072CFC0@ratt.gitorious.c.bitbit.net> <1360233489-14471-1-git-send-email-mkl@pengutronix.de> <511384F4.703@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2TLODNONQIQJRKKOSTPRQ"
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35466 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757316Ab3BGKmm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Feb 2013 05:42:42 -0500
-In-Reply-To: <CAJsOQGO3bHsCqJ9kr=h0XZHxZ5wPejcPgV7WyCUp2HKYzZx0WQ@mail.gmail.com>
+Received: from static.19.126.47.78.clients.your-server.de ([78.47.126.19]:44184
+	"EHLO sys1.syste.me" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1751962Ab3BGLLT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Feb 2013 06:11:19 -0500
+In-Reply-To: <511384F4.703@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Felix Obenhuber <felix@obenhuber.de>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2TLODNONQIQJRKKOSTPRQ
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On 02/06/2013 12:59 PM, Felix Obenhuber wrote:
-> Hi,
->=20
-> how can I retrive the number of frames currently queued for
-> transmission on a SocketCAN interface? Is this possible via netlink?
->=20
-> Maybe someone has the answer by hand...
+On 07.02.2013 11:41, Marc Kleine-Budde wrote:
+> we're a bit oldschool and discuss the code on the
+> linux-can@vger.kernel.org mailinglist. Feel free to subscribe.
 
-Sorry, I don't know. What's you usecase?
+Can you please put that information on the Gitorious page for the next=20
+casual committer?
 
-Marc
+
+>>   	ts.tv_sec =3D gap / 1000;
+>> -	ts.tv_nsec =3D ((int)(gap * 1000000)) % 1000000000;
+>> +	ts.tv_nsec =3D (long)(((long long)(gap * 1000000)) % 1000000000ll)=
+;
+>
+> What's going on here exactly?
+>
+> gap is a double - Will it be converted into an int before multiplicat=
+ion
+> with 1000000? IIRC there is a difference between "gap * 1000000" and
+> "gap * 1000000.0". In the latter the multiplication is done in floati=
+ng
+> point, because of the ".0".
+
+gap is a double.
+(gap * 1000000) will cause 1000000 to be converted to intermediate=20
+temp1 of type double,
+temp1 will be truncated to long long temp2, losing its decimals,
+temp2 will be moduloed by 1000000000ll in a long-long mod operation,=20
+giving temp3.
+temp3 will be truncated to as many bits as long has, and stored in long=
+=20
+tv_nsec.
+
+I think it is safe.
+
+--Konrad
+
+
+
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2TLODNONQIQJRKKOSTPRQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlEThSAACgkQjTAFq1RaXHPBFQCfU0Di9CADAVDxVwUZA87IwZ6A
-vkEAnisPEIszjfbt68FKutBzHNJoTIPX
-=awxP
------END PGP SIGNATURE-----
-
-------enig2TLODNONQIQJRKKOSTPRQ--
+-----------------------------------------------------------------------=
+-
+Konrad Anton
+awinia gmbh, Software Consulting and Development
+Max-Josef-Metzger-Str. 2, D-79111 Freiburg
+Tel. +49 761 52 07 449 19
+=46ax. +49 761 52 07 449 10
+EMail: konrad.anton@awinia.de
+Handelsregister Nr.: HRB 706296, eingetragen beim Amtsgericht Freiburg
+USt.-IdNr.: DE 275018159
+Gesch=E4ftsf=FChrer: Marc Gossweiler, Bernd Wiedle
+-----------------------------------------------------------------------=
+-
