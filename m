@@ -1,71 +1,78 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] drivers: net: Remove remaining alloc/OOM messages
-Date: Fri, 08 Feb 2013 00:29:14 +0100
-Message-ID: <511438CA.8060003@pengutronix.de>
-References: <1360273587.27863.15.camel@joe-AO722>
+From: Onteddu Slreddy <slreddy88@gmail.com>
+Subject: Wifi basics documents
+Date: Fri, 8 Feb 2013 12:25:31 +0530
+Message-ID: <CAHT=_ri0JBrbPfWJrzjYR4eNDDW9ygMkJSDU4vJXEfh_STLK9g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2UHVEOGTHORNDWVVOWLUJ"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41929 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759403Ab3BGX3z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Feb 2013 18:29:55 -0500
-In-Reply-To: <1360273587.27863.15.camel@joe-AO722>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@lists.ath9k.org, wil6210@qca.qualcomm.com, brcm80211-dev-list@broadcom.com, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
+Content-Type: multipart/mixed; boundary="===============3985181019086890401=="
+Return-path: <e1000-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=e1000-devel>
+List-Post: <mailto:e1000-devel@lists.sourceforge.net>
+List-Help: <mailto:e1000-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: e1000-devel-bounces@lists.sourceforge.net
+To: netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@lists.ath9k.org, wil6210@qca.qualcomm.com, brcm80211-dev-list@broadcom.com, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2UHVEOGTHORNDWVVOWLUJ
+--===============3985181019086890401==
+Content-Type: multipart/alternative; boundary=bcaec54c52529d3ade04d5310b0d
+
+--bcaec54c52529d3ade04d5310b0d
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
 
-On 02/07/2013 10:46 PM, Joe Perches wrote:
-> alloc failures already get standardized OOM
-> messages and a dump_stack.
->=20
-> For the affected mallocs around these OOM messages:
->=20
-> Converted kmallocs with multiplies to kmalloc_array.
-> Converted a kmalloc/memcpy to kmemdup.
-> Removed now unused stack variables.
-> Removed unnecessary parentheses.
-> Neatened alignment.
->=20
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> Let me know if you want multiple small patches instead.
->=20
->  drivers/net/can/usb/ems_usb.c                      |  4 +-
-
-For ems_usb.c
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Hello All,
 
 
-------enig2UHVEOGTHORNDWVVOWLUJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I recently joined this group the group.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Can anybody suggest me places where I can get Documents which will explain
+wifi  Architecture in brief i would like to know details like
 
-iEYEARECAAYFAlEUON8ACgkQjTAFq1RaXHNawgCghkTouziZz1s9EyqAQmRtnyTg
-t5QAoIsLAx7+P28BtRi4ralrnaIxHHZm
-=jak+
------END PGP SIGNATURE-----
+In Linux for embedded systems:
+        What is the software architecture for wifi
+        What are each folders in kernel/net and kernel/drivers/net refer to
+        What is wpa_supplicant how to know which version I have to use
+        How to get  familiar with words like nl802.11, mac802.11, wext,
+copat-wireless, compatwireless-openmac
+        If I have to add a new chip driver what are the checklist points i
+have to see
 
-------enig2UHVEOGTHORNDWVVOWLUJ--
+My Quesitions may be basic kindly bare with me
+If any body have self prepared documents that will be great help for me
+
+
+
+Thanks & Regards
+
+O S L Reddy
+slreddy88@gmail.com
+
+--bcaec54c52529d3ade04d5310b0d--
+
+
+--===============3985181019086890401==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
+--===============3985181019086890401==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+E1000-devel mailing list
+E1000-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/e1000-devel
+To learn more about Intel&#174; Ethernet, visit http://communities.intel.com/community/wired
+
+--===============3985181019086890401==--
