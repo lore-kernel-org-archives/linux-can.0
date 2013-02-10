@@ -1,21 +1,23 @@
-From: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+From: Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
 Subject: Re: [PATCH] drivers: net: Remove remaining alloc/OOM messages
-Date: Fri, 08 Feb 2013 17:45:00 -0500 (EST)
-Message-ID: <20130208.174500.1518593039138341685.davem@davemloft.net>
+Date: Sun, 10 Feb 2013 09:57:54 +0200
+Message-ID: <1877379.y4GS62BPgg@lx-vladimir>
 References: <1360273587.27863.15.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38]:14198 "EHLO
+	sabertooth02.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752211Ab3BJH6A (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 10 Feb 2013 02:58:00 -0500
 In-Reply-To: <1360273587.27863.15.camel@joe-AO722>
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, e1000-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ath9k-devel-xDcbHBWguxHbcTqmT+pZeQ@public.gmane.org, wil6210-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org, brcm80211-dev-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@lists.ath9k.org, wil6210@qca.qualcomm.com, brcm80211-dev-list@broadcom.com, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
 
-From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Date: Thu, 07 Feb 2013 13:46:27 -0800
-
+On Thursday, February 07, 2013 01:46:27 PM Joe Perches wrote:
 > alloc failures already get standardized OOM
 > messages and a dump_stack.
 > 
@@ -27,10 +29,11 @@ Date: Thu, 07 Feb 2013 13:46:27 -0800
 > Removed unnecessary parentheses.
 > Neatened alignment.
 > 
-> Signed-off-by: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> 
 
-Applied, thanks Joe.
---
-To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+For wil6210:
+
+Acked--by: Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
+
+Thanks, Vladimir
