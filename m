@@ -1,39 +1,83 @@
-From: Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
-Subject: Re: [PATCH] drivers: net: Remove remaining alloc/OOM messages
-Date: Sun, 10 Feb 2013 09:57:54 +0200
-Message-ID: <1877379.y4GS62BPgg@lx-vladimir>
-References: <1360273587.27863.15.camel@joe-AO722>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH] candump: Add timeout option if no message has been received
+Date: Tue, 12 Feb 2013 11:31:22 +0100
+Message-ID: <1360665082-14256-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38]:14198 "EHLO
-	sabertooth02.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752211Ab3BJH6A (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 10 Feb 2013 02:58:00 -0500
-In-Reply-To: <1360273587.27863.15.camel@joe-AO722>
+Received: from webbox1416.server-home.net ([77.236.96.61]:52708 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932241Ab3BLKbc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Feb 2013 05:31:32 -0500
+Received: from comm.systec-electronic.de (178-24-127-48-dynip.superkabel.de [178.24.127.48])
+	by webbox1416.server-home.net (Postfix) with ESMTPA id 0463527A622
+	for <linux-can@vger.kernel.org>; Tue, 12 Feb 2013 11:23:34 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@lists.ath9k.org, wil6210@qca.qualcomm.com, brcm80211-dev-list@broadcom.com, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
+To: linux-can@vger.kernel.org
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>
 
-On Thursday, February 07, 2013 01:46:27 PM Joe Perches wrote:
-> alloc failures already get standardized OOM
-> messages and a dump_stack.
-> 
-> For the affected mallocs around these OOM messages:
-> 
-> Converted kmallocs with multiplies to kmalloc_array.
-> Converted a kmalloc/memcpy to kmemdup.
-> Removed now unused stack variables.
-> Removed unnecessary parentheses.
-> Neatened alignment.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> 
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ candump.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-For wil6210:
+diff --git a/candump.c b/candump.c
+index bf3e8bb..7fce1d3 100644
+--- a/candump.c
++++ b/candump.c
+@@ -121,6 +121,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -d          (monitor dropped CAN frames)\n");
+ 	fprintf(stderr, "         -e          (dump CAN error frames in human-readable format)\n");
+ 	fprintf(stderr, "         -x          (print extra message infos, rx/tx brs esi)\n");
++	fprintf(stderr, "         -T <msecs>  (terminate after <msecs> without any reception)\n");
+ 	fprintf(stderr, "\n");
+ 	fprintf(stderr, "Up to %d CAN interfaces with optional filter sets can be specified\n", MAXSOCK);
+ 	fprintf(stderr, "on the commandline in the form: <ifname>[,filter]*\n");
+@@ -227,6 +228,7 @@ int main(int argc, char **argv)
+ 	int nbytes, i, maxdlen;
+ 	struct ifreq ifr;
+ 	struct timeval tv, last_tv;
++	struct timeval timeout, timeout_config, *timeout_current = NULL;
+ 	FILE *logfile = NULL;
+ 
+ 	signal(SIGTERM, sigterm);
+@@ -236,7 +238,7 @@ int main(int argc, char **argv)
+ 	last_tv.tv_sec  = 0;
+ 	last_tv.tv_usec = 0;
+ 
+-	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:he?")) != -1) {
++	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:heT:?")) != -1) {
+ 		switch (opt) {
+ 		case 't':
+ 			timestamp = optarg[0];
+@@ -351,6 +353,16 @@ int main(int argc, char **argv)
+ 			}
+ 			break;
+ 
++		case 'T':
++			timeout_config.tv_usec = atoi(optarg);
++			if (timeout_config.tv_usec < 1) {
++				print_usage(basename(argv[0]));
++				exit(1);
++			}
++			timeout_config.tv_sec = timeout_config.tv_usec / 1000;
++			timeout_config.tv_usec = (timeout_config.tv_usec % 1000) * 1000;
++			timeout_current = &timeout;
++			break;
+ 		default:
+ 			print_usage(basename(argv[0]));
+ 			exit(1);
+@@ -594,7 +606,10 @@ int main(int argc, char **argv)
+ 		for (i=0; i<currmax; i++)
+ 			FD_SET(s[i], &rdfs);
+ 
+-		if ((ret = select(s[currmax-1]+1, &rdfs, NULL, NULL, NULL)) < 0) {
++		if (timeout_current)
++			memcpy(timeout_current, &timeout_config, sizeof(timeout_config));
++
++		if ((ret = select(s[currmax-1]+1, &rdfs, NULL, NULL, timeout_current)) <= 0) {
+ 			//perror("select");
+ 			running = 0;
+ 			continue;
+-- 
+1.8.1.2
 
-Acked--by: Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
-
-Thanks, Vladimir
