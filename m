@@ -1,68 +1,86 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] candump: Add timeout option if no message has been received
-Date: Tue, 12 Feb 2013 15:07:07 +0100
-Message-ID: <511A4C8B.3030605@pengutronix.de>
-References: <1360665082-14256-1-git-send-email-alexander.stein@systec-electronic.com> <511A1EA1.7050607@pengutronix.de> <2883446.YiNPK9y0c4@ws-stein>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2QFPOTGHLFEBJDNOJLPEF"
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH v2] candump: Add timeout option if no message has been received
+Date: Tue, 12 Feb 2013 15:17:52 +0100
+Message-ID: <1360678672-31881-1-git-send-email-alexander.stein@systec-electronic.com>
+References: <511A4C8B.3030605@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40545 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932953Ab3BLOHN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Feb 2013 09:07:13 -0500
-In-Reply-To: <2883446.YiNPK9y0c4@ws-stein>
+Received: from webbox1416.server-home.net ([77.236.96.61]:49436 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1759860Ab3BLOR4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Feb 2013 09:17:56 -0500
+In-Reply-To: <511A4C8B.3030605@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2QFPOTGHLFEBJDNOJLPEF
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+Chanes in v2:
+* Use strtol instead of atoi
+* Change memcpy to direct struct copy
 
-On 02/12/2013 03:05 PM, Alexander Stein wrote:
-> On Tuesday 12 February 2013 11:51:13, Marc Kleine-Budde wrote:
->> On 02/12/2013 11:31 AM, Alexander Stein wrote:
->>> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com=
->
->>
->> I get a new warning with your patch:
->>
->> candump.c:231: warning: 'timeout_config' is used uninitialized in this=
+ candump.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
->> function
->>
->> I think the compiler is not smart enough :)
->=20
-> Yeah, I think that too :) Which version did you use?
-> Both gcc 4.6.3 and clang 3.1 didn't complain.
+diff --git a/candump.c b/candump.c
+index bf3e8bb..7fce1d3 100644
+--- a/candump.c
++++ b/candump.c
+@@ -121,6 +121,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -d          (monitor dropped CAN frames)\n");
+ 	fprintf(stderr, "         -e          (dump CAN error frames in human-readable format)\n");
+ 	fprintf(stderr, "         -x          (print extra message infos, rx/tx brs esi)\n");
++	fprintf(stderr, "         -T <msecs>  (terminate after <msecs> without any reception)\n");
+ 	fprintf(stderr, "\n");
+ 	fprintf(stderr, "Up to %d CAN interfaces with optional filter sets can be specified\n", MAXSOCK);
+ 	fprintf(stderr, "on the commandline in the form: <ifname>[,filter]*\n");
+@@ -227,6 +228,7 @@ int main(int argc, char **argv)
+ 	int nbytes, i, maxdlen;
+ 	struct ifreq ifr;
+ 	struct timeval tv, last_tv;
++	struct timeval timeout, timeout_config, *timeout_current = NULL;
+ 	FILE *logfile = NULL;
+ 
+ 	signal(SIGTERM, sigterm);
+@@ -236,7 +238,7 @@ int main(int argc, char **argv)
+ 	last_tv.tv_sec  = 0;
+ 	last_tv.tv_usec = 0;
+ 
+-	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:he?")) != -1) {
++	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:heT:?")) != -1) {
+ 		switch (opt) {
+ 		case 't':
+ 			timestamp = optarg[0];
+@@ -351,6 +353,16 @@ int main(int argc, char **argv)
+ 			}
+ 			break;
+ 
++		case 'T':
++			timeout_config.tv_usec = atoi(optarg);
++			if (timeout_config.tv_usec < 1) {
++				print_usage(basename(argv[0]));
++				exit(1);
++			}
++			timeout_config.tv_sec = timeout_config.tv_usec / 1000;
++			timeout_config.tv_usec = (timeout_config.tv_usec % 1000) * 1000;
++			timeout_current = &timeout;
++			break;
+ 		default:
+ 			print_usage(basename(argv[0]));
+ 			exit(1);
+@@ -594,7 +606,10 @@ int main(int argc, char **argv)
+ 		for (i=0; i<currmax; i++)
+ 			FD_SET(s[i], &rdfs);
+ 
+-		if ((ret = select(s[currmax-1]+1, &rdfs, NULL, NULL, NULL)) < 0) {
++		if (timeout_current)
++			memcpy(timeout_current, &timeout_config, sizeof(timeout_config));
++
++		if ((ret = select(s[currmax-1]+1, &rdfs, NULL, NULL, timeout_current)) <= 0) {
+ 			//perror("select");
+ 			running = 0;
+ 			continue;
+-- 
+1.8.1.2
 
-gcc (Ubuntu 4.4.3-4ubuntu5.1) 4.4.3
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2QFPOTGHLFEBJDNOJLPEF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlEaTI4ACgkQjTAFq1RaXHMB+ACbB/wGgAHe+DvO148xM+3XwRmS
-vIQAn2ytEzjn+lmoWFt/98q+rCiBjntN
-=nGIz
------END PGP SIGNATURE-----
-
-------enig2QFPOTGHLFEBJDNOJLPEF--
