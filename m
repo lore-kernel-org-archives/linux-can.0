@@ -1,73 +1,70 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v3] candump: Add timeout option if no message has been
- received
-Date: Tue, 12 Feb 2013 18:38:38 +0100
-Message-ID: <511A7E1E.3010407@hartkopp.net>
-References: <511A4C8B.3030605@pengutronix.de> <1360687851-1849-1-git-send-email-alexander.stein@systec-electronic.com> <511A7428.8040202@pengutronix.de>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: isobus with transport protocol
+Date: Wed, 13 Feb 2013 09:59:46 +0100
+Message-ID: <20130213085946.GA47662@vandijck-laurijssen.be>
+References: <CAJsOQGO3bHsCqJ9kr=h0XZHxZ5wPejcPgV7WyCUp2HKYzZx0WQ@mail.gmail.com>
+ <5113851F.1060501@pengutronix.de>
+ <CAJsOQGMbTkJfc8YYiTdhc9r3aT1mD9MfGmWL3u=DwOmPojNLiw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:41195 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932404Ab3BLRim (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Feb 2013 12:38:42 -0500
-In-Reply-To: <511A7428.8040202@pengutronix.de>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:7904 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758914Ab3BMI7w (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Feb 2013 03:59:52 -0500
+Content-Disposition: inline
+In-Reply-To: <CAJsOQGMbTkJfc8YYiTdhc9r3aT1mD9MfGmWL3u=DwOmPojNLiw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: Felix Obenhuber <felix@obenhuber.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-On 12.02.2013 17:56, Marc Kleine-Budde wrote:
+Felix,
 
-> On 02/12/2013 05:50 PM, Alexander Stein wrote:
->> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
->> ---
->> Changes in v3 (v2 was bogus)
->> * Use strtol instead of atoi
->> * Change memcpy to direct struct copy
->>
->>  candump.c | 21 +++++++++++++++++++--
->>  1 file changed, 19 insertions(+), 2 deletions(-)
->>
->> diff --git a/candump.c b/candump.c
->> index bf3e8bb..457af9d 100644
->> --- a/candump.c
->> +++ b/candump.c
->> @@ -49,6 +49,7 @@
->>  #include <ctype.h>
->>  #include <libgen.h>
->>  #include <time.h>
->> +#include <errno.h>
->>  
->>  #include <sys/time.h>
->>  #include <sys/types.h>
->> @@ -121,6 +122,7 @@ void print_usage(char *prg)
->>  	fprintf(stderr, "         -d          (monitor dropped CAN frames)\n");
->>  	fprintf(stderr, "         -e          (dump CAN error frames in human-readable format)\n");
->>  	fprintf(stderr, "         -x          (print extra message infos, rx/tx brs esi)\n");
->> +	fprintf(stderr, "         -T <msecs>  (terminate after <msecs> without any reception)\n");
->>  	fprintf(stderr, "\n");
->>  	fprintf(stderr, "Up to %d CAN interfaces with optional filter sets can be specified\n", MAXSOCK);
->>  	fprintf(stderr, "on the commandline in the form: <ifname>[,filter]*\n");
->> @@ -227,6 +229,7 @@ int main(int argc, char **argv)
->>  	int nbytes, i, maxdlen;
->>  	struct ifreq ifr;
->>  	struct timeval tv, last_tv;
->> +	struct timeval timeout, timeout_config, *timeout_current = NULL;
+> We're working with ISOBUS systems (ISO11783). During a transport
+> protocol session
+
+As you know, I've put a j1939 (and ISOBUS) stack on
+https://gitorious.org/linux-can/linux-can-j1939
+
+> There are multiple
+> software modules that might send frames at the same time over  a
+> single module/socket.
+
+It does allow for multiple software modules to cooperate
+both on the same & on different logical ECU's (Source addresses),
+and provides a transport protocol without IPC overhead or race conditions.
+
+Can you explain what it is missing for your needs?
+I may be able to help you to get things running.
+
+Kind regards,
+Kurt
+
+On Thu, Feb 07, 2013 at 05:18:33PM +0100, Felix Obenhuber wrote:
+> Hi Marc,
 > 
-> I'll change this into
-> 	struct timeval timeout, timeout_config = { 0, 0 }, *timeout_current = NULL;
+> On Thu, Feb 7, 2013 at 11:42 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > On 02/06/2013 12:59 PM, Felix Obenhuber wrote:
+> >> Hi,
+> >>
+> >> how can I retrive the number of frames currently queued for
+> >> transmission on a SocketCAN interface? Is this possible via netlink?
+> >
+> > Sorry, I don't know. What's you usecase?
 > 
-> To make my old compiler happy.
+> We're working with ISOBUS systems (ISO11783). During a transport
+> protocol session (similiar to iso tp) we'd like to know how many
+> frames can get queued at once to adjust timings. There are multiple
+> software modules that might send frames at the same time over  a
+> single module/socket.
 > 
-> Applied.
-
-
-Fine :-)
-
-A funny feature.
-
-Tnx,
-Oliver
-
+> Maybe we have to add a tx fifo within the software...
+> 
+> cheers,
+> 
+> Felix
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
