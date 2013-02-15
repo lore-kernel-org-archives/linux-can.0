@@ -1,64 +1,112 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: can-utils at http://gitorious.org/+linux-can-developers/linux-can/can-utils
-Date: Fri, 15 Feb 2013 11:51:06 +0100
-Message-ID: <CAGm1_kuzVOWsdrz508gJ71T8EB2cCgWxy17sqkhQdH3Y=Agmuw@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Fwd: can-utils at http://gitorious.org/+linux-can-developers/linux-can/can-utils
+Date: Fri, 15 Feb 2013 17:13:23 +0100
+Message-ID: <511E5EA3.70804@hartkopp.net>
 References: <7073D121A5DFE9448648C0E083BEA9C96C7AA63220@vsrv6.tele-radio.ad> <511E1170.6040409@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f44.google.com ([209.85.214.44]:37744 "EHLO
-	mail-bk0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S935727Ab3BOKv2 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 15 Feb 2013 05:51:28 -0500
-Received: by mail-bk0-f44.google.com with SMTP id j4so1494810bkw.31
-        for <linux-can@vger.kernel.org>; Fri, 15 Feb 2013 02:51:27 -0800 (PST)
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:43699 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932675Ab3BOQNZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 Feb 2013 11:13:25 -0500
 In-Reply-To: <511E1170.6040409@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, H.Engblom@tele-radio.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, H.Engblom@tele-radio.com
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Fri, Feb 15, 2013 at 11:44 AM, Marc Kleine-Budde <mkl@pengutronix.de=
-> wrote:
-> Hey H=C3=A5kan,
->
-> let's wait for Oliver to say something to the length. As far as I kno=
-w
+Hello Hakan,
+
+On 15.02.2013 11:44, Marc Kleine-Budde wrote:
+
+> let's wait for Oliver to say something to the length. As far as I know
 > the canutils already support can-fd, which can send up to 64 bytes. I
-> don't know the standard for sure, but maybe they got rid of the RTR i=
-n
+> don't know the standard for sure, but maybe they got rid of the RTR in
 > canfd.
->
-> Regarding the mailinglist, it's linux-can@vger.kernel.org (Cc'ed), bu=
-t
-> that only accepts text (i.e. non HTML) emails.
->
-> regards, Marc
->
-> -------- Original Message --------
-> Subject:        can-utils at
-> http://gitorious.org/+linux-can-developers/linux-can/can-utils
-> Date:   Fri, 15 Feb 2013 11:07:29 +0100
-> From:   H=C3=A5kan Engblom <H.Engblom@tele-radio.com>
-> To:     socketcan@hartkopp.net <socketcan@hartkopp.net>, wg@grandegge=
-r.com
-> <wg@grandegger.com>, mkl@pengutronix.de <mkl@pengutronix.de>,
-> urs@isnogud.escape.de <urs@isnogud.escape.de>
->
->
->
-> Hi,
->
->
->
-> Don=E2=80=99t know if it is OK to write to you directly, but I could =
-not find
-> any mailing-list or anything else.
 
-I've updated the CAN related page of the eLinux wiki:
-http://elinux.org/CAN_Bus. Let me know what else can added here and
-whether we could use this page as a central SocketCAN related
-resources with HOWTO's etc.?
 
-Yegor
+Yes. CAN FD does not support RTR.
+
+
+> Anyway, I think I found a small bug in cansend, when sedning Remote
+> Frames. The syntax is (an example):
+> 
+> 
+> 
+> $ cansend can0 181#R
+> 
+> 
+> 
+> But according to the standard, the dlc field should be set to how much
+> data that is expected in the expected tpdo. So I did the change in the
+> attached patch, and the syntax now is
+> 
+> 
+> 
+> $ cansend can0 181#R8
+> 
+> 
+> 
+> to indicate that 8 bytes of process data is expected.
+> 
+
+
+In general RTR are declared to be bad by several CAN related papers.
+
+The CAN Spec states for RTR frames:
+
+	There is no DATA FIELD, independent of the values of the DATA LENGTH
+	CODE which may be signed any value within the admissible range 0...8.
+	The value is the DATA LENGTH CODE of the corresponding DATA FRAME.
+
+Which probably contains the problem WHY it is declared to be bad, as you would
+need a DLC check in the CAN controller for RTR frames, etc.
+
+Btw. you are right, that RTR frames can contain a DLC value: 0 .. 8 - as CAN
+FD is not supported anyway.
+
+Looking into the CAN drivers in linux/drivers/net/can it looks like that no
+data is copied from the registers in the case of a received RTR frame. But it
+also looks like that the can_dlc is set from the controller registers value in
+a correct way. I need to doublecheck, if really all drivers handle the can_dlc
+correctly in the case of RTR frames.
+
+E.g. the CC770 handles the RTR frames with some local intelligence, and does
+not even provide the CAN ID ... and the can_dlc is set to zero in any case:
+
+http://lxr.linux.no/#linux+v3.7.8/drivers/net/can/cc770/cc770.c#L477
+
+In general you idea is ok to support the can_dlc values in CAN 2.0B frames:
+
+$ cansend can0 181#R8
+
+BUT if we add this can_dlc option for RTR frames, it should be *optional* to
+be able to ...
+
+- indicate that the can_dlc was not valid
+- be backwards compatible to older log files
+
+The RTR stuff in conjunction with can_dlc is not always consistent.
+
+Would this *optional* can_dlc value approach be fine to you?
+
+> @@ -141,6 +141,9 @@
+>         if((cs[idx] == 'R') || (cs[idx] == 'r')){ /* RTR frame */
+>                 cf->can_id |= CAN_RTR_FLAG;
+> +               if ((tmp = asc2nibble(cs[++idx])) > 0x08) /* 8 is max dlc */
+> +                       return 1;
+
+
+This error condition exit would be too hard for an optional value then.
+
+> +               cf->can_dlc = tmp;
+>                 return 0;
+>         }
+
+
+
+Regards,
+Oliver
+
