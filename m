@@ -1,31 +1,338 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <hj.oertel@t-online.de>
-Subject: Re: Fwd: can-utils at http://gitorious.org/+linux-can-developers/linux-can/can-utils
-Date: Sun, 17 Feb 2013 14:00:39 +0100
-Message-ID: <8460593.0ZXZdCLvdq@linux-edhj>
-References: <7073D121A5DFE9448648C0E083BEA9C96C7AA63220@vsrv6.tele-radio.ad> <511E1170.6040409@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: yegorslists@googlemail.com
+Subject: [PATCH] can-utils: AOSP build improvements
+Date: Mon, 18 Feb 2013 09:06:59 +0100
+Message-ID: <1361174819-3168-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.10]:61260 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755531Ab3BQNAu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 17 Feb 2013 08:00:50 -0500
-In-Reply-To: <511E1170.6040409@pengutronix.de>
+Received: from ns.visionsystems.de ([62.145.30.242]:52721 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751677Ab3BRIHb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Feb 2013 03:07:31 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, H.Engblom@tele-radio.com
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>
 
-Am Freitag 15 Februar 2013, 11:44:00 schrieb Marc Kleine-Budde:
-> let's wait for Oliver to say something to the length. As far as I know
-> the canutils already support can-fd, which can send up to 64 bytes. I
-> don't know the standard for sure, but maybe they got rid of the RTR in
-> canfd.
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-CAN FD is not supporting RTR frames anymore.
-Besides this in classic CAN you can specify a dlc between 0 and 15
-in data frames. Nevertheless, for dlc > 8 always max 8 data bytes are in the frame.
+Add local headers and GCC flags for all can-utils targets.
 
- Regards
-    Heinz 
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+ Android.mk |  148 ++++++++++++++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 109 insertions(+), 39 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 56a80c1..db83bbb 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -8,7 +8,11 @@ include $(CLEAR_VARS)
+ 
+ LOCAL_SRC_FILES := lib.c
+ LOCAL_MODULE := libcan
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_STATIC_LIBRARY)
+ 
+@@ -22,8 +26,11 @@ LOCAL_SRC_FILES := candump.c
+ LOCAL_MODULE := candump
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -37,8 +44,11 @@ LOCAL_SRC_FILES := cansend.c
+ LOCAL_MODULE := cansend
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -51,8 +61,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := bcmserver.c
+ LOCAL_MODULE := bcmserver
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -66,8 +79,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := can-calc-bit-timing.c
+ LOCAL_MODULE := can-calc-bit-timing
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -80,8 +96,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canbusload.c
+ LOCAL_MODULE := canbusload
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -94,8 +113,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canfdtest.c
+ LOCAL_MODULE := canfdtest
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -109,8 +131,11 @@ LOCAL_SRC_FILES := cangen.c
+ LOCAL_MODULE := cangen
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -123,8 +148,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cangw.c
+ LOCAL_MODULE := cangw
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -138,8 +166,11 @@ LOCAL_SRC_FILES := canlogserver.c
+ LOCAL_MODULE := canlogserver
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -153,8 +184,11 @@ LOCAL_SRC_FILES := canplayer.c
+ LOCAL_MODULE := canplayer
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -167,8 +201,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cansniffer.c
+ LOCAL_MODULE := cansniffer
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -182,7 +219,10 @@ LOCAL_SRC_FILES := isotpdump.c
+ LOCAL_MODULE := isotpdump
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -196,7 +236,10 @@ LOCAL_SRC_FILES := isotprecv.c
+ LOCAL_MODULE := isotprecv
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -210,7 +253,10 @@ LOCAL_SRC_FILES := isotpsend.c
+ LOCAL_MODULE := isotpsend
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -224,7 +270,10 @@ LOCAL_SRC_FILES := isotpserver.c
+ LOCAL_MODULE := isotpserver
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -238,7 +287,10 @@ LOCAL_SRC_FILES := isotpsniffer.c
+ LOCAL_MODULE := isotpsniffer.c
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -252,7 +304,10 @@ LOCAL_SRC_FILES := isotptun.c
+ LOCAL_MODULE := isotptun
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -266,8 +321,11 @@ LOCAL_SRC_FILES := log2asc.c
+ LOCAL_MODULE := log2asc
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -281,8 +339,11 @@ LOCAL_SRC_FILES := log2long.c
+ LOCAL_MODULE := log2long
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -295,8 +356,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcan_attach.c
+ LOCAL_MODULE := slcan_attach
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -309,8 +373,11 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcand.c
+ LOCAL_MODULE := slcand
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -323,7 +390,10 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcanpty.c
+ LOCAL_MODULE := slcanpty
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := -O2 -g -W -Wall \
++	    -DSO_RXQ_OVFL=40 \
++	    -DPF_CAN=29 \
++	    -DAF_CAN=PF_CAN
+ 
+ include $(BUILD_EXECUTABLE)
+-- 
+1.7.7
+
