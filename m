@@ -1,384 +1,280 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can-utils: AOSP build improvements
-Date: Mon, 18 Feb 2013 09:15:10 +0100
-Message-ID: <5121E30E.1050305@pengutronix.de>
-References: <1361174819-3168-1-git-send-email-yegorslists@googlemail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2EDWGVCSUDBEIIRAPLAKH"
+From: yegorslists@googlemail.com
+Subject: [PATCH v2] can-utils: AOSP build improvements
+Date: Mon, 18 Feb 2013 09:59:49 +0100
+Message-ID: <1361177989-8648-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52602 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751776Ab3BRIPb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Feb 2013 03:15:31 -0500
-In-Reply-To: <1361174819-3168-1-git-send-email-yegorslists@googlemail.com>
+Received: from ns.vscom.de ([62.145.30.242]:51055 "EHLO mail.visionsystems.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751339Ab3BRJAO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 18 Feb 2013 04:00:14 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2EDWGVCSUDBEIIRAPLAKH
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-On 02/18/2013 09:06 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
->=20
-> Add local headers and GCC flags for all can-utils targets.
+Add local headers and GCC flags for all can-utils targets.
 
-Can you create a variable PRIVATE_LOCAL_CFLAGS or whatever to hold the
--O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+ Android.mk |   84 ++++++++++++++++++++++++++++++++----------------------------
+ 1 files changed, 45 insertions(+), 39 deletions(-)
 
-and reuse that?
+diff --git a/Android.mk b/Android.mk
+index 56a80c1..4cf664b 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -1,5 +1,10 @@
+ LOCAL_PATH := $(call my-dir)
+ 
++PRIVATE_LOCAL_CFLAGS := -O2 -g -W -Wall		\
++			-DSO_RXQ_OVFL=40	\
++			-DPF_CAN=29		\
++			-DAF_CAN=PF_CAN
++
+ #
+ # canlib
+ #
+@@ -8,7 +13,8 @@ include $(CLEAR_VARS)
+ 
+ LOCAL_SRC_FILES := lib.c
+ LOCAL_MODULE := libcan
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_STATIC_LIBRARY)
+ 
+@@ -22,8 +28,8 @@ LOCAL_SRC_FILES := candump.c
+ LOCAL_MODULE := candump
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -37,8 +43,8 @@ LOCAL_SRC_FILES := cansend.c
+ LOCAL_MODULE := cansend
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -51,8 +57,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := bcmserver.c
+ LOCAL_MODULE := bcmserver
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -66,8 +72,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := can-calc-bit-timing.c
+ LOCAL_MODULE := can-calc-bit-timing
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -80,8 +86,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canbusload.c
+ LOCAL_MODULE := canbusload
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -94,8 +100,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canfdtest.c
+ LOCAL_MODULE := canfdtest
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -109,8 +115,8 @@ LOCAL_SRC_FILES := cangen.c
+ LOCAL_MODULE := cangen
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -123,8 +129,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cangw.c
+ LOCAL_MODULE := cangw
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -138,8 +144,8 @@ LOCAL_SRC_FILES := canlogserver.c
+ LOCAL_MODULE := canlogserver
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -153,8 +159,8 @@ LOCAL_SRC_FILES := canplayer.c
+ LOCAL_MODULE := canplayer
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -167,8 +173,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cansniffer.c
+ LOCAL_MODULE := cansniffer
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -182,7 +188,7 @@ LOCAL_SRC_FILES := isotpdump.c
+ LOCAL_MODULE := isotpdump
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -196,7 +202,7 @@ LOCAL_SRC_FILES := isotprecv.c
+ LOCAL_MODULE := isotprecv
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -210,7 +216,7 @@ LOCAL_SRC_FILES := isotpsend.c
+ LOCAL_MODULE := isotpsend
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -224,7 +230,7 @@ LOCAL_SRC_FILES := isotpserver.c
+ LOCAL_MODULE := isotpserver
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -238,7 +244,7 @@ LOCAL_SRC_FILES := isotpsniffer.c
+ LOCAL_MODULE := isotpsniffer.c
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -252,7 +258,7 @@ LOCAL_SRC_FILES := isotptun.c
+ LOCAL_MODULE := isotptun
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -266,8 +272,8 @@ LOCAL_SRC_FILES := log2asc.c
+ LOCAL_MODULE := log2asc
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -281,8 +287,8 @@ LOCAL_SRC_FILES := log2long.c
+ LOCAL_MODULE := log2long
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -295,8 +301,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcan_attach.c
+ LOCAL_MODULE := slcan_attach
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -309,8 +315,8 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcand.c
+ LOCAL_MODULE := slcand
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+ 
+@@ -323,7 +329,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcanpty.c
+ LOCAL_MODULE := slcanpty
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS)
+-LOCAL_CFLAGS := -O2 -g -W -Wall
++LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+-- 
+1.7.7
 
-Marc
-
->=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->  Android.mk |  148 ++++++++++++++++++++++++++++++++++++++++++++--------=
---------
->  1 files changed, 109 insertions(+), 39 deletions(-)
->=20
-> diff --git a/Android.mk b/Android.mk
-> index 56a80c1..db83bbb 100755
-> --- a/Android.mk
-> +++ b/Android.mk
-> @@ -8,7 +8,11 @@ include $(CLEAR_VARS)
-> =20
->  LOCAL_SRC_FILES :=3D lib.c
->  LOCAL_MODULE :=3D libcan
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_STATIC_LIBRARY)
-> =20
-> @@ -22,8 +26,11 @@ LOCAL_SRC_FILES :=3D candump.c
->  LOCAL_MODULE :=3D candump
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -37,8 +44,11 @@ LOCAL_SRC_FILES :=3D cansend.c
->  LOCAL_MODULE :=3D cansend
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -51,8 +61,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D bcmserver.c
->  LOCAL_MODULE :=3D bcmserver
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -66,8 +79,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D can-calc-bit-timing.c
->  LOCAL_MODULE :=3D can-calc-bit-timing
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -80,8 +96,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D canbusload.c
->  LOCAL_MODULE :=3D canbusload
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -94,8 +113,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D canfdtest.c
->  LOCAL_MODULE :=3D canfdtest
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -109,8 +131,11 @@ LOCAL_SRC_FILES :=3D cangen.c
->  LOCAL_MODULE :=3D cangen
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -123,8 +148,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D cangw.c
->  LOCAL_MODULE :=3D cangw
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -138,8 +166,11 @@ LOCAL_SRC_FILES :=3D canlogserver.c
->  LOCAL_MODULE :=3D canlogserver
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -153,8 +184,11 @@ LOCAL_SRC_FILES :=3D canplayer.c
->  LOCAL_MODULE :=3D canplayer
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -167,8 +201,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D cansniffer.c
->  LOCAL_MODULE :=3D cansniffer
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -182,7 +219,10 @@ LOCAL_SRC_FILES :=3D isotpdump.c
->  LOCAL_MODULE :=3D isotpdump
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -196,7 +236,10 @@ LOCAL_SRC_FILES :=3D isotprecv.c
->  LOCAL_MODULE :=3D isotprecv
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -210,7 +253,10 @@ LOCAL_SRC_FILES :=3D isotpsend.c
->  LOCAL_MODULE :=3D isotpsend
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -224,7 +270,10 @@ LOCAL_SRC_FILES :=3D isotpserver.c
->  LOCAL_MODULE :=3D isotpserver
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -238,7 +287,10 @@ LOCAL_SRC_FILES :=3D isotpsniffer.c
->  LOCAL_MODULE :=3D isotpsniffer.c
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -252,7 +304,10 @@ LOCAL_SRC_FILES :=3D isotptun.c
->  LOCAL_MODULE :=3D isotptun
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -266,8 +321,11 @@ LOCAL_SRC_FILES :=3D log2asc.c
->  LOCAL_MODULE :=3D log2asc
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -281,8 +339,11 @@ LOCAL_SRC_FILES :=3D log2long.c
->  LOCAL_MODULE :=3D log2long
->  LOCAL_MODULE_TAGS :=3D optional
->  LOCAL_STATIC_LIBRARIES :=3D libcan
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -295,8 +356,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D slcan_attach.c
->  LOCAL_MODULE :=3D slcan_attach
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -309,8 +373,11 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D slcand.c
->  LOCAL_MODULE :=3D slcand
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
-> =20
-> @@ -323,7 +390,10 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES :=3D slcanpty.c
->  LOCAL_MODULE :=3D slcanpty
->  LOCAL_MODULE_TAGS :=3D optional
-> -LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS)
-> -LOCAL_CFLAGS :=3D -O2 -g -W -Wall
-> +LOCAL_C_INCLUDES :=3D $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
-> +LOCAL_CFLAGS :=3D -O2 -g -W -Wall \
-> +	    -DSO_RXQ_OVFL=3D40 \
-> +	    -DPF_CAN=3D29 \
-> +	    -DAF_CAN=3DPF_CAN
-> =20
->  include $(BUILD_EXECUTABLE)
->=20
-
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2EDWGVCSUDBEIIRAPLAKH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlEh4xoACgkQjTAFq1RaXHPRBQCfdGiQBxmpUloNR55G6txJ3TqE
-eowAn0CYXvghh8PlP1VfO1z/4l2rjKwi
-=BHyh
------END PGP SIGNATURE-----
-
-------enig2EDWGVCSUDBEIIRAPLAKH--
