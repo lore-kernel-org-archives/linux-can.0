@@ -1,33 +1,51 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: SV: SV: Fwd: can-utils at http://gitorious.org/+linux-can-developers/linux-can/can-utils
-Date: Mon, 18 Feb 2013 23:03:32 +0100
-Message-ID: <5122A534.8090300@hartkopp.net>
-References: <7073D121A5DFE9448648C0E083BEA9C96C7AA63220@vsrv6.tele-radio.ad> <511E1170.6040409@pengutronix.de> <511E5EA3.70804@hartkopp.net> <7073D121A5DFE9448648C0E083BEA9C96C7AA632B2@vsrv6.tele-radio.ad> <511E6E4E.4040502@hartkopp.net> <7073D121A5DFE9448648C0E083BEA9C96C7AA6333E@vsrv6.tele-radio.ad>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: [PATCH] can-utils: AOSP build improvements
+Date: Wed, 20 Feb 2013 09:43:58 +0100
+Message-ID: <20130220084358.GB5486@vandijck-laurijssen.be>
+References: <1361174819-3168-1-git-send-email-yegorslists@googlemail.com>
+ <5121E30E.1050305@pengutronix.de>
+ <CAGm1_ks1qZkaE0UGMV2F9ooFrziMNb3JAtcqMW1AWX7VSP9Teg@mail.gmail.com>
+ <5121F27F.9020102@pengutronix.de>
+ <5122A383.7040804@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:43736 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756771Ab3BRWDd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Feb 2013 17:03:33 -0500
-In-Reply-To: <7073D121A5DFE9448648C0E083BEA9C96C7AA6333E@vsrv6.tele-radio.ad>
+Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:20017 "EHLO
+	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S933359Ab3BTIoE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Feb 2013 03:44:04 -0500
+Content-Disposition: inline
+In-Reply-To: <5122A383.7040804@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?H=E5kan_Engblom?= <H.Engblom@tele-radio.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michal Sojka <sojkam1@fel.cvut.cz>
 
-On 18.02.2013 10:21, H=E5kan Engblom wrote:
+On Mon, Feb 18, 2013 at 10:56:19PM +0100, Oliver Hartkopp wrote:
+> 
+> The code itself is working properly for a long time now. The only missing
+> point is that i do not have a really good idea how to cope with the fact that
+> up to 500 CAN frames can be pushed into the CAN netdev tx queue at a time.
+> 
+> The advisory to increase the tx_queue_len to 1000 is not a solution.
+> 
+> Maybe qdiscs is a solution or we need to be able to peek the tx queue state
+> whether we can push the next CAN frame to the device, or if we need to wait.
 
-> Seems good from my point of view.
+the tx queue state thing seems very similar to what Felix asked for recently,
+and I'm thinking such thing may improve any transport protocol also ...
+> 
+> Regards,
+> Oliver
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-
-Great! I pushed the patch on Friday evening.
-
-I added some more documentation in lib.h too, see:
-
-https://gitorious.org/linux-can/can-utils/commit/eaf87a3bf69b92a15d0f51=
-c7e3f08e8d900862cc
-
-Tnx & best regards,
-Oliver
+-- 
+Kurt Van Dijck
+GRAMMER EiA ELECTRONICS
+http://www.eia.be
+kurt.van.dijck@eia.be
++32-38708534
