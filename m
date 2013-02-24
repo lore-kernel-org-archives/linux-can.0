@@ -1,51 +1,120 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: [PATCH] can-utils: AOSP build improvements
-Date: Wed, 20 Feb 2013 09:43:58 +0100
-Message-ID: <20130220084358.GB5486@vandijck-laurijssen.be>
-References: <1361174819-3168-1-git-send-email-yegorslists@googlemail.com>
- <5121E30E.1050305@pengutronix.de>
- <CAGm1_ks1qZkaE0UGMV2F9ooFrziMNb3JAtcqMW1AWX7VSP9Teg@mail.gmail.com>
- <5121F27F.9020102@pengutronix.de>
- <5122A383.7040804@hartkopp.net>
+From: uescher <linux-can_ger.kernel.org@myvdr.de>
+Subject: [PATCH 1/2] slcanpty: Improve the reading from pty to avoid incomplete
+ messages in the reading buf[]
+Date: Sun, 24 Feb 2013 16:30:35 +0100
+Message-ID: <512A321B.7090201@myvdr.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed;
+ boundary="------------020403030201030107070709"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:20017 "EHLO
-	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S933359Ab3BTIoE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Feb 2013 03:44:04 -0500
-Content-Disposition: inline
-In-Reply-To: <5122A383.7040804@hartkopp.net>
+Received: from smtprelay05.ispgateway.de ([80.67.31.97]:57182 "EHLO
+	smtprelay05.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758035Ab3BXPhG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Feb 2013 10:37:06 -0500
+Received: from [176.34.235.140] (helo=[0.0.0.0])
+	by smtprelay05.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68)
+	(envelope-from <linux-can_ger.kernel.org@myvdr.de>)
+	id 1U9dXA-0004kN-Ot
+	for linux-can@vger.kernel.org; Sun, 24 Feb 2013 16:30:37 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michal Sojka <sojkam1@fel.cvut.cz>
+To: linux-can@vger.kernel.org
 
-On Mon, Feb 18, 2013 at 10:56:19PM +0100, Oliver Hartkopp wrote:
-> 
-> The code itself is working properly for a long time now. The only missing
-> point is that i do not have a really good idea how to cope with the fact that
-> up to 500 CAN frames can be pushed into the CAN netdev tx queue at a time.
-> 
-> The advisory to increase the tx_queue_len to 1000 is not a solution.
-> 
-> Maybe qdiscs is a solution or we need to be able to peek the tx queue state
-> whether we can push the next CAN frame to the device, or if we need to wait.
+This is a multi-part message in MIME format.
+--------------020403030201030107070709
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-the tx queue state thing seems very similar to what Felix asked for recently,
-and I'm thinking such thing may improve any transport protocol also ...
-> 
-> Regards,
-> Oliver
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+slcanpty: Improve the reading from pty to avoid incomplete messages in 
+the reading buf[]
 
+This Patch ensure that we read the maximum of complete SLCAN messages 
+from pty.
+Leave messages at the pty if is not possible to read it complete in the buf.
+
+Signed-off-by: Ulrich Escher <git@myvdr.de>
+
+
+--------------020403030201030107070709
+Content-Type: text/x-patch;
+ name="0001-slcanpty-Improve-the-reading-from-pty-to-avoid-incom.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-slcanpty-Improve-the-reading-from-pty-to-avoid-incom.pa";
+ filename*1="tch"
+
+From 13e8e6ad85e42f68816d14eb74c0f3fabcd28465 Mon Sep 17 00:00:00 2001
+From: ulrich <git@myvdr.de>
+Date: Sun, 24 Feb 2013 15:55:19 +0100
+Subject: [PATCH 1/2] slcanpty: Improve the reading from pty to avoid
+ incomplete messages in the reading buf[]
+
+This Patch ensure that we read the maximum of complete SLCAN messages from pty.
+Leave messages at the pty if is not possible to read it complete in the buf.
+
+Signed-off-by: Ulrich Escher <git@myvdr.de>
+---
+ slcanpty.c |   32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/slcanpty.c b/slcanpty.c
+index f3628b9..037edf5 100644
+--- a/slcanpty.c
++++ b/slcanpty.c
+@@ -31,6 +31,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <termios.h>
++#include <poll.h>
+ 
+ #include <net/if.h>
+ #include <sys/socket.h>
+@@ -74,12 +75,41 @@ int pty2can(int pty, int socket, struct can_filter *fi,
+ 	struct can_frame frame;
+ 	int tmp, i;
+ 
+-	nbytes = read(pty, &buf, sizeof(buf)-1);
++	nbytes = read(pty, &buf, sizeof(buf)-SLC_MTU-1);
+ 	if (nbytes < 0) {
+ 		perror("read pty");
+ 		return 1;
+ 	}
+ 
++	if (nbytes == sizeof(buf)-SLC_MTU-1) {
++		struct pollfd fds;
++		fds.fd = pty;
++		fds.events = POLLIN;
++
++		while (buf[nbytes-1] != '\r' && nbytes < (sizeof(buf)-1)) {
++			tmp = poll(&fds, 1, 0);
++			if (tmp < 0) {
++				perror("poll pty");
++				return 1;
++			}
++
++			if (fds.revents & POLLIN) {
++				tmp = read(pty, &buf[nbytes++], 1);
++				if (tmp < 0) {
++					perror("read pty");
++					return 1;
++				}
++			} else {
++				/* No further Data available */
++				break;
++			}
++		}
++	}
++
++#ifdef DEBUG
++	printf("read %d bytes from pty\n",nbytes);
++#endif
++
+ rx_restart:
+ 	/* remove trailing '\r' characters to be robust against some apps */
+ 	while (buf[0] == '\r' && nbytes > 0) {
 -- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+1.7.9.5
+
+
+--------------020403030201030107070709--
