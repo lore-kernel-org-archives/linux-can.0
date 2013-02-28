@@ -1,83 +1,85 @@
-From: uescher <linux-can_ger.kernel.org@myvdr.de>
-Subject: [PATCH 2/2] slcanpty: code-style: add braces
-Date: Sun, 24 Feb 2013 16:31:56 +0100
-Message-ID: <512A326C.4030300@myvdr.de>
+From: GeoffO <geoffeolson@gmail.com>
+Subject: Trying to use ESD CAN-USB with SocketCAN
+Date: Thu, 28 Feb 2013 17:57:53 +0000 (UTC)
+Message-ID: <loom.20130228T180224-395@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070606050204050702020601"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay01.ispgateway.de ([80.67.18.43]:37855 "EHLO
-	smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755868Ab3BXPjg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Feb 2013 10:39:36 -0500
-Received: from [176.34.235.140] (helo=[0.0.0.0])
-	by smtprelay01.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.68)
-	(envelope-from <linux-can_ger.kernel.org@myvdr.de>)
-	id 1U9dYU-0004J0-5Y
-	for linux-can@vger.kernel.org; Sun, 24 Feb 2013 16:31:58 +0100
+Received: from plane.gmane.org ([80.91.229.3]:49915 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752610Ab3B1SEq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 28 Feb 2013 13:04:46 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1UB7qq-0001KF-Ex
+	for linux-can@vger.kernel.org; Thu, 28 Feb 2013 19:05:04 +0100
+Received: from c-98-246-44-194.hsd1.or.comcast.net ([98.246.44.194])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 28 Feb 2013 19:05:04 +0100
+Received: from geoffeolson by c-98-246-44-194.hsd1.or.comcast.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 28 Feb 2013 19:05:04 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------070606050204050702020601
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+I wanted to setup SocketCAN on my PC to prepare for an embedded Linux project,
+so I purchased a USB device from ESD who claimed it supports SocketCAN.
+I could not get it to work after the following these steps: 
+Downloaded and installed can-utils
+Loaded modules to the kernal
+	sudo modprobe can
+	sudo modprobe can_raw
+	sudo modprobe can_bcm
+	sudo modprobe vcan
 
-slcanpty: code-style: add braces
+Checked that modules are loaded
+	lsmod | grep can
+	vcan                    1314  0 
+	can_bcm                11942  0 
+	can_raw                 5381  0 
+	can                    21728  2 can_bcm,can_raw
 
-Signed-off-by: Ulrich Escher <git@myvdr.de>
+Plugged-in ESD CAN-USB/Micro and got this new device
+	/dev/ttyACM0
 
+Tried to attach the USB device to SocketCAN
+	sudo slcan_attach /dev/ttyACM0
+	ioctl TIOCSETD: Invalid argument
 
---------------070606050204050702020601
-Content-Type: text/x-patch;
- name="0002-slcanpty-code-style-add-braces.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0002-slcanpty-code-style-add-braces.patch"
+I got this error, so I checked the code of slcan_attach to find the problem,
+and wrote this small program to isolate the problem:
 
-From 0db3dba7450c5ec9f6fa31ff7686f7ed3536fe8d Mon Sep 17 00:00:00 2001
-From: ulrich <git@myvdr.de>
-Date: Sun, 24 Feb 2013 15:57:05 +0100
-Subject: [PATCH 2/2] slcanpty: code-style: add braces
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#define LDISC_N_SLCAN 17 // default slcan line discipline since Kernel 2.6.25
+int main(int argc, char **argv)
+{
+	int fd;
+	int ldisc = LDISC_N_SLCAN;
+	char *tty = "/dev/ttyACM0";//device for ESD CAN/USB Micro
+	if ((fd = open (tty, O_WRONLY | O_NOCTTY)) < 0) {
+		perror(tty);
+		exit(1);
+	}
+	// set slcan line discipline on given tty
+	if (ioctl (fd, TIOCSETD, &ldisc) < 0) {
+		perror("ioctl TIOCSETD");
+		exit(1);
+	}
+	return 0;
+}
 
-Signed-off-by: Ulrich Escher <git@myvdr.de>
----
- slcanpty.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/slcanpty.c b/slcanpty.c
-index 037edf5..b176498 100644
---- a/slcanpty.c
-+++ b/slcanpty.c
-@@ -508,16 +508,18 @@ int main(int argc, char **argv)
- 			continue;
- 		}
- 
--		if (FD_ISSET(p, &rdfs))
-+		if (FD_ISSET(p, &rdfs)) {
- 			if (pty2can(p, s, &fi, &is_open, &tstamp)) {
--			running = 0;
--			continue;
-+				running = 0;
-+				continue;
-+			}
- 		}
- 
--		if (FD_ISSET(s, &rdfs))
-+		if (FD_ISSET(s, &rdfs)) {
- 			if (can2pty(p, s, &tstamp)) {
--			running = 0;
--			continue;
-+				running = 0;
-+				continue;
-+			}
- 		}
- 	}
- 
--- 
-1.7.9.5
+This program writes "ioctl TIOCSETD: Invalid argument" to the consul.  The
+problem is apparently caused when ioctl() tries to set the LDISC_N_SLCAN line
+discipline for /dev/ttyACM0 and detects an invalid argument.  I tried setting
+the line discipline to N_TTY and it did not complain.  I am running Ubuntu
+10.04 with kernal version 2.6.32.  Any Idea what might be the problem?  
+Is this device supported by by SocketCAN?  ESD claims it is.
 
 
---------------070606050204050702020601--
+
