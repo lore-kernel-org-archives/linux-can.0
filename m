@@ -1,27 +1,65 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Informations About CAN API of the Linux Kernel
-Date: Wed, 06 Mar 2013 16:42:04 +0100
-Message-ID: <513763CC.1070507@pengutronix.de>
+From: Sako Youssouf <youssouf.sako@renault-trucks.com>
+Subject: RE: Informations About CAN API of the Linux Kernel
+Date: Wed, 6 Mar 2013 16:03:29 +0000
+Message-ID: <2B7D120CFC15DC438D721B998AD9D9E90971062B@SEGOTNC5180-N2.vcn.ds.volvo.net>
 References: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net>
+ <513763CC.1070507@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2TQFAFHPILWRMPLQFANCL"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55798 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750887Ab3CFPmK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Mar 2013 10:42:10 -0500
-In-Reply-To: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net>
+Received: from mail-gw1.it.volvo.com ([192.138.110.14]:31684 "EHLO
+	mail-gw1.it.volvo.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751501Ab3CFQNK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Mar 2013 11:13:10 -0500
+In-Reply-To: <513763CC.1070507@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sako Youssouf <youssouf.sako@renault-trucks.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Kurt Van Dijck <kurt.van.dijck@eia.be>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2TQFAFHPILWRMPLQFANCL
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+What's your usecae? What do you want to do with that information?
+
+Actually I'm in a multithreaded application and my goal is to lose no f=
+rame.
+If I had direct access to the hardware, I would go  get the new frame a=
+fter hardware interrupt.
+But I think it's not possible. So I want to find the better way to get =
+all frames in a multithreaded application.=20
+
+Youssouf
+_________________________________________________
+
+
+
+
+
+
+
+
+
+
+Youssouf SAKO
+System engineer
+S +33 1 73 19 07 45
++ youssouf.sako@renault-trucks.com
+www.renault-trucks-defense.com
+
+15 bis All=E9e des Marronniers
+SAT TER 1 15
+SATORY - CS 30502
+78 008 VERSAILLES Cedex
+=46rance
+
+
+
+-----Original Message-----
+=46rom: Marc Kleine-Budde [mailto:mkl@pengutronix.de]=20
+Sent: mercredi 6 mars 2013 16:42
+To: Sako Youssouf
+Cc: linux-can@vger.kernel.org; Kurt Van Dijck
+Subject: Re: Informations About CAN API of the Linux Kernel
 
 On 03/06/2013 03:51 PM, Sako Youssouf wrote:
 > I'm an engineer of a French company, Renault Trucks Defense. We are=20
@@ -41,12 +79,14 @@ allowed on that list.
 > kernel has a way to handle that situation.
 
 In linux-can we make use of the Linux networking driver model. This
-means if a frame is received from the hardware, it read from the receive
+means if a frame is received from the hardware, it read from the receiv=
+e
 buffer by the driver as soon as possible and pushed into the Linux
-networking stack. If the driver fails to do so, the frame of course is lo=
-st.
+networking stack. If the driver fails to do so, the frame of course is =
+lost.
 
-However there is a queue between you application and the kernel, so that
+However there is a queue between you application and the kernel, so tha=
+t
 several CAN frames can be on-the-fly between the driver and your
 application.
 
@@ -54,8 +94,10 @@ application.
 > the read function on userspace program, is it possible to know how=20
 > many frames are available on the RX queue?
 
-There's no way to figure out the number of frames in the RX queue of the
-hardware. It might be possible to figure out the number of frames in the
+There's no way to figure out the number of frames in the RX queue of th=
+e
+hardware. It might be possible to figure out the number of frames in th=
+e
 software queue between the kernel and your application. What's your
 usecae? What do you want to do with that information?
 
@@ -73,19 +115,3 @@ Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
 
-
-------enig2TQFAFHPILWRMPLQFANCL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlE3Y8wACgkQjTAFq1RaXHOkxgCeJQDDXc+K8E3dPPku8SpNPZI1
-FRoAn0jlwuQc8QtE3QcOZw0rlJvJ5zcf
-=jXkb
------END PGP SIGNATURE-----
-
-------enig2TQFAFHPILWRMPLQFANCL--
