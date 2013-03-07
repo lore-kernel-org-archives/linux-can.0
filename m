@@ -1,46 +1,52 @@
-From: Sako Youssouf <youssouf.sako@renault-trucks.com>
-Subject: RE: Informations About CAN API of the Linux Kernel
-Date: Wed, 6 Mar 2013 16:41:36 +0000
-Message-ID: <2B7D120CFC15DC438D721B998AD9D9E90971065E@SEGOTNC5180-N2.vcn.ds.volvo.net>
-References: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net>
- <513763CC.1070507@pengutronix.de>
- <2B7D120CFC15DC438D721B998AD9D9E90971062B@SEGOTNC5180-N2.vcn.ds.volvo.net>
- <51376C4E.3020105@pengutronix.de>
- <2B7D120CFC15DC438D721B998AD9D9E909710649@SEGOTNC5180-N2.vcn.ds.volvo.net>
- <51377097.4000108@pengutronix.de>
+From: =?ISO-8859-1?Q?Michael_Th=E9nault?= <michael.thenault@gmail.com>
+Subject: write: No buffer space available
+Date: Thu, 7 Mar 2013 10:55:08 +0100
+Message-ID: <CACekSAN4Roq50mr7+2P5Fk8zxY6hSOErqgrxu-3sLbyS7SzwJQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-gw3.it.volvo.com ([192.138.110.232]:20005 "EHLO
-	mail-gw3.it.volvo.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752501Ab3CFQlk convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Mar 2013 11:41:40 -0500
-In-Reply-To: <51377097.4000108@pengutronix.de>
-Content-Language: en-US
+Received: from mail-ie0-f177.google.com ([209.85.223.177]:36988 "EHLO
+	mail-ie0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752897Ab3CGJz2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Mar 2013 04:55:28 -0500
+Received: by mail-ie0-f177.google.com with SMTP id 16so287015iea.8
+        for <linux-can@vger.kernel.org>; Thu, 07 Mar 2013 01:55:28 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+To: linux-can@vger.kernel.org
 
-Ok! I'll do that.
+hello,
 
-Thanks for your help Marc.=20
+I'm working on a arm system with the 2.6.38.8 kernel.
+When I try to send can frames (with cansend, cangen or sockets) the tx
+queue is getting full and then i get this error :
 
-_________________________________________________
+write: No buffer space available
 
-Youssouf SAKO
-System engineer
-S +33 1 73 19 07 45
-+ youssouf.sako@renault-trucks.com
-www.renault-trucks-defense.com
+I've been monitoring the CAN bus with an oscilloscope and nothing
+seems to happen.
+I saw a thread with the similar problem, and there was some problem
+with the one-shot mode. This mode doesn't work with me :
 
-15 bis All=E9e des Marronniers
-SAT TER 1 15
-SATORY - CS 30502
-78 008 VERSAILLES Cedex
-=46rance
+# ip link set can0 up type can one-shot on
+RTNETLINK answers: Operation not supported
 
+here are some details :
 
+# ip -details -statistics link show can0
+4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+    link/can
+    can state ERROR-PASSIVE restart-ms 0
+    bitrate 125000 sample-point 0.875
+    tq 500 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+    mcp251x: tseg1 3..16 tseg2 2..8 sjw 1..4 brp 1..64 brp-inc 1
+    clock 8000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          4          4          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    0          0        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    0          0        3       3       0       0
 
-
+what am i doing wrong ?
+Thank you in advance for your help
