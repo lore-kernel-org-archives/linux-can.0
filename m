@@ -1,80 +1,222 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/3] can: at91_can: add pinctrl support
-Date: Fri, 08 Mar 2013 18:37:40 +0100
-Message-ID: <513A21E4.6000801@pengutronix.de>
-References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com> <1362763842-14924-3-git-send-email-ludovic.desroches@atmel.com>
+Subject: Re: [PATCH 1/3] can: at91_can: add dt support
+Date: Fri, 08 Mar 2013 18:44:05 +0100
+Message-ID: <513A2365.5050803@pengutronix.de>
+References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com> <1362763842-14924-2-git-send-email-ludovic.desroches@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="----enig2SNRSIDQMHJQUUXDTBPFM"
+ boundary="----enig2NORFJHFVVOFNVXNTXLON"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47528 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39135 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756129Ab3CHRh6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Mar 2013 12:37:58 -0500
-In-Reply-To: <1362763842-14924-3-git-send-email-ludovic.desroches@atmel.com>
+	with ESMTP id S933641Ab3CHRoW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Mar 2013 12:44:22 -0500
+In-Reply-To: <1362763842-14924-2-git-send-email-ludovic.desroches@atmel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: ludovic.desroches@atmel.com
 Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, plagnioj@jcrosoft.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2SNRSIDQMHJQUUXDTBPFM
+------enig2NORFJHFVVOFNVXNTXLON
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
 On 03/08/2013 06:30 PM, ludovic.desroches@atmel.com wrote:
 > From: Ludovic Desroches <ludovic.desroches@atmel.com>
 >=20
+> Add device tree support.
+>=20
 > Signed-off-by: Ludovic Desroches <ludovic.desroches@atmel.com>
 > ---
->  drivers/net/can/at91_can.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  .../devicetree/bindings/net/can/atmel-can.txt      | 14 ++++
+>  drivers/net/can/at91_can.c                         | 75 ++++++++++++++=
+++------
+>  2 files changed, 70 insertions(+), 19 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/atmel-can=
+=2Etxt
 >=20
+> diff --git a/Documentation/devicetree/bindings/net/can/atmel-can.txt b/=
+Documentation/devicetree/bindings/net/can/atmel-can.txt
+> new file mode 100644
+> index 0000000..69381db
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/atmel-can.txt
+> @@ -0,0 +1,14 @@
+> +* AT91 CAN *
+> +
+> +Required properties:
+> +  - compatible: Should be "atmel,at91sam9263-can" or "atmel,at91sam9x5=
+-can"
+
+On imx we use the oldest SoC with that IP available. Which strategy are
+you following on at91?
+
+> +  - reg: Should contain RTC registers location and length
+
+RTC?
+
+> +  - interrupts: Should contain IRQ line for the CAN controller
+> +
+> +Example:
+> +
+> +	can0: can@f000c000 {
+> +		compatbile =3D "atmel,at91sam9x5-can";
+> +		reg =3D <0xf000c000 0x300>;
+> +		interrupts =3D <40 4 5>
+> +	};
 > diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-> index c7f70d4..56fb2aa 100644
+> index 44f3637..c7f70d4 100644
 > --- a/drivers/net/can/at91_can.c
 > +++ b/drivers/net/can/at91_can.c
-> @@ -28,6 +28,7 @@
+> @@ -27,6 +27,7 @@
+>  #include <linux/kernel.h>
 >  #include <linux/module.h>
 >  #include <linux/netdevice.h>
->  #include <linux/of.h>
-> +#include <linux/pinctrl/consumer.h>
+> +#include <linux/of.h>
 >  #include <linux/platform_device.h>
 >  #include <linux/rtnetlink.h>
 >  #include <linux/skbuff.h>
-> @@ -1292,6 +1293,7 @@ static int at91_can_probe(struct platform_device =
-*pdev)
->  	struct clk *clk;
+> @@ -155,19 +156,20 @@ struct at91_priv {
+>  	canid_t mb0_id;
+>  };
+> =20
+> -static const struct at91_devtype_data at91_devtype_data[] =3D {
+> -	[AT91_DEVTYPE_SAM9263] =3D {
+> -		.rx_first =3D 1,
+> -		.rx_split =3D 8,
+> -		.rx_last =3D 11,
+> -		.tx_shift =3D 2,
+> -	},
+> -	[AT91_DEVTYPE_SAM9X5] =3D {
+> -		.rx_first =3D 0,
+> -		.rx_split =3D 4,
+> -		.rx_last =3D 5,
+> -		.tx_shift =3D 1,
+> -	},
+> +static struct at91_devtype_data at91_at91sam9263_data =3D {
+> +	.rx_first =3D 1,
+> +	.rx_split =3D 8,
+> +	.rx_last =3D 11,
+> +	.tx_shift =3D 2,
+> +	.type =3D AT91_DEVTYPE_SAM9263
+
+nitpick:
+can you add a trailing ","
+
+> +};
+> +
+> +static struct at91_devtype_data at91_at91sam9x5_data =3D {
+> +	.rx_first =3D 0,
+> +	.rx_split =3D 4,
+> +	.rx_last =3D 5,
+> +	.tx_shift =3D 1,
+> +	.type =3D AT91_DEVTYPE_SAM9X5
+
+dito
+
+>  };
+> =20
+>  static const struct can_bittiming_const at91_bittiming_const =3D {
+> @@ -1249,10 +1251,41 @@ static struct attribute_group at91_sysfs_attr_g=
+roup =3D {
+>  	.attrs =3D at91_sysfs_attrs,
+>  };
+> =20
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id at91_can_dt_ids[] =3D {
+> +	{
+> +		.compatible =3D "atmel,at91sam9x5-can",
+> +		.data =3D &at91_at91sam9x5_data,
+> +	}, {
+> +		.compatible =3D "atmel,at91sam9263-can",
+> +		.data =3D &at91_at91sam9263_data,
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +MODULE_DEVICE_TABLE(of, at91_can_dt_ids);
+> +#else
+> +#define at91_can_dt_ids NULL
+> +#endif
+> +
+> +static struct at91_devtype_data* at91_can_get_driver_data(
+> +						struct platform_device *pdev)
+
+I think it's okay to put this into one line.
+
+> +{
+> +	if (pdev->dev.of_node) {
+> +		const struct of_device_id *match;
+> +		match =3D of_match_node(at91_can_dt_ids, pdev->dev.of_node);
+> +		if (!match) {
+> +			dev_err(&pdev->dev, "no matching node found in dtb\n");
+> +			return NULL;
+> +		}
+> +		return (struct at91_devtype_data *)match->data;
+> +	}
+> +	return (struct at91_devtype_data *)platform_get_device_id(pdev)->driv=
+er_data;
+> +}
+> +
+>  static int at91_can_probe(struct platform_device *pdev)
+>  {
+>  	const struct at91_devtype_data *devtype_data;
+> -	enum at91_devtype devtype;
+>  	struct net_device *dev;
+>  	struct at91_priv *priv;
+>  	struct resource *res;
+> @@ -1260,8 +1293,12 @@ static int at91_can_probe(struct platform_device=
+ *pdev)
 >  	void __iomem *addr;
 >  	int err, irq;
-> +	struct pinctrl *pinctrl;
 > =20
->  	devtype_data =3D at91_can_get_driver_data(pdev);
->  	if (!devtype_data) {
-> @@ -1314,6 +1316,13 @@ static int at91_can_probe(struct platform_device=
- *pdev)
->  		goto exit_put;
+> -	devtype =3D pdev->id_entry->driver_data;
+> -	devtype_data =3D &at91_devtype_data[devtype];
+> +	devtype_data =3D at91_can_get_driver_data(pdev);
+> +	if (!devtype_data) {
+> +		dev_err(&pdev->dev, "no driver data\n");
+> +		err =3D -ENODEV;
+> +		goto exit;
+> +	}
+> =20
+>  	clk =3D clk_get(&pdev->dev, "can_clk");
+>  	if (IS_ERR(clk)) {
+> @@ -1310,7 +1347,6 @@ static int at91_can_probe(struct platform_device =
+*pdev)
+>  	priv->dev =3D dev;
+>  	priv->reg_base =3D addr;
+>  	priv->devtype_data =3D *devtype_data;
+> -	priv->devtype_data.type =3D devtype;
+>  	priv->clk =3D clk;
+>  	priv->pdata =3D pdev->dev.platform_data;
+>  	priv->mb0_id =3D 0x7ff;
+> @@ -1373,10 +1409,10 @@ static int at91_can_remove(struct platform_devi=
+ce *pdev)
+>  static const struct platform_device_id at91_can_id_table[] =3D {
+>  	{
+>  		.name =3D "at91_can",
+> -		.driver_data =3D AT91_DEVTYPE_SAM9263,
+> +		.driver_data =3D (unsigned long)&at91_at91sam9x5_data,
+>  	}, {
+>  		.name =3D "at91sam9x5_can",
+> -		.driver_data =3D AT91_DEVTYPE_SAM9X5,
+> +		.driver_data =3D (unsigned long)&at91_at91sam9263_data,
+>  	}, {
+>  		/* sentinel */
 >  	}
-> =20
-> +	pinctrl =3D devm_pinctrl_get_select_default(&pdev->dev);
-
-Is this still needed? I think the pinctrl framework automatically
-enables the default pinctrl for a device if available.
+> @@ -1389,6 +1425,7 @@ static struct platform_driver at91_can_driver =3D=
+ {
+>  	.driver =3D {
+>  		.name =3D KBUILD_MODNAME,
+>  		.owner =3D THIS_MODULE,
+> +		.of_match_table =3D at91_can_dt_ids,
+>  	},
+>  	.id_table =3D at91_can_id_table,
+>  };
 
 Marc
-
-> +	if (IS_ERR(pinctrl)) {
-> +		dev_err(&pdev->dev, "Failed to request pinctrl\n");
-> +		err =3D PTR_ERR(pinctrl);
-> +		goto exit_put;
-> +	}
-> +
->  	if (!request_mem_region(res->start,
->  				resource_size(res),
->  				pdev->name)) {
->=20
-
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -83,7 +225,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-------enig2SNRSIDQMHJQUUXDTBPFM
+------enig2NORFJHFVVOFNVXNTXLON
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -92,9 +234,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlE6IegACgkQjTAFq1RaXHOx6wCgjbxmep0N0Fx4ALoBBnLMF34+
-EL4AoJRjf21A4vfJ9p1xLPL+yR6wjqgR
-=/wX6
+iEYEARECAAYFAlE6I2gACgkQjTAFq1RaXHMNxwCfZXtOJN3F6dGnBhgrqR3N5FQR
+6c4An3OpPpmB37z//32jdz5Q0rvW6dhc
+=duLi
 -----END PGP SIGNATURE-----
 
-------enig2SNRSIDQMHJQUUXDTBPFM--
+------enig2NORFJHFVVOFNVXNTXLON--
