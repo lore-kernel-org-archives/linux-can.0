@@ -1,41 +1,63 @@
-From: "Max S." <max@schneidersoft.net>
-Subject: Re: write: No buffer space available
-Date: Fri, 08 Mar 2013 10:39:34 +0000
-Message-ID: <1362739174.3296.2.camel@blackbox>
-References: <CACekSAN4Roq50mr7+2P5Fk8zxY6hSOErqgrxu-3sLbyS7SzwJQ@mail.gmail.com>
-	 <5138C20B.1070306@hartkopp.net>
-	 <CACekSAML-BgcW5CWNfns_V0HgqsEFEHXQ06AdLAMupDKefmnFQ@mail.gmail.com>
+From: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Subject: Re: Informations About CAN API of the Linux Kernel
+Date: Fri, 08 Mar 2013 13:04:40 +0100
+Message-ID: <5139D3D8.2020305@volkswagen.de>
+References: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net> <513763CC.1070507@pengutronix.de> <20130307124012.GC603@vandijck-laurijssen.be> <5139A78D.9060005@pengutronix.de> <20130308100548.GA496@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.schneidersoft.net ([173.45.248.65]:35217 "EHLO
-	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932759Ab3CHKo4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Mar 2013 05:44:56 -0500
-In-Reply-To: <CACekSAML-BgcW5CWNfns_V0HgqsEFEHXQ06AdLAMupDKefmnFQ@mail.gmail.com>
+Received: from mr1.volkswagen.de ([194.114.62.75]:32821 "EHLO
+	mr1.volkswagen.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753110Ab3CHMFm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Mar 2013 07:05:42 -0500
+In-Reply-To: <20130308100548.GA496@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael =?ISO-8859-1?Q?Th=E9nault?= <michael.thenault@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Sako Youssouf <youssouf.sako@renault-trucks.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello,
+Am 08.03.2013 11:05, schrieb Kurt Van Dijck:
 
-On Fri, 2013-03-08 at 11:24 +0100, Michael Th=C3=A9nault wrote:
-> Hello,
->=20
-> Indeed after connecting the arm board to a termination, I'm able to
-> see traffic with the oscilloscope.
-> I noticed that after sending only one frame with cansend, I see
-> traffic all the time with the oscilloscope. I guess that the reason i=
-s
-> the lack of ACK frames coming from other nodes, which causes re-sends=
-=2E
+>>> The J1939 API that is available on gitorious[1] is waiting for acceptance.
+>>> The API has not changed for almost a year now, and is working.
+>>> The J1939 API is quite different from raw CAN, since J1939 adds an
+>>> addressing scheme. This makes it hard for non-J1939 users to
+>>> judge about the usefullness of the API.
 
-Yes. If there is no other node to ack the frame, the can controller wil=
-l
-resend the frame continuously. unless, i think, if you set it up to use
-oneshot mode.
+Yes. Unfortunately.
 
-M.S.
+>>> Therefore, it's important that users of the J1939 stack share their
+>>> opinion about it.
+>>> Therefore, also your opinion matters and may contribute to the acceptance.
+>>> If you find the J1939 stack usefull of course :-)
 
+Indeed user feedback is really required.
+
+>>
+>> Would it be possible to add the j1939 support to staging? I mean from
+>> the technical and from the political (is staging reserved for drivers
+>> only?) point of view.
+>
+> That is a good idea.
+> Technically, staging is underneath drivers/, which answers the political
+> question: yes, it's for drivers probably.
+
+Please check:
+
+http://www.kroah.com/log/linux/linux-staging-update.html
+
+It's for "drivers" and "filesystems".
+
+You don't need to modify the kernel infrastructure to add drivers and
+filesystems - but you need to change infrastructure to add new networking
+functionalities.
+
+Therefore i don't think, that this would work with the staging approach.
+
+Btw. how can we gain more interest and users to the evaluation of Kurts j1939
+stack? I remember about 3 persons asking about it (even about details) - what
+happened to them?
+
+Regards,
+Oliver
