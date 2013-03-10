@@ -1,88 +1,103 @@
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 2/3] can: at91_can: add pinctrl support
-Date: Fri, 8 Mar 2013 19:46:48 +0100
-Message-ID: <20130308184648.GE4590@game.jcrosoft.org>
-References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com>
- <1362763842-14924-3-git-send-email-ludovic.desroches@atmel.com>
- <513A21E4.6000801@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <513A21E4.6000801@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: devicetree-discuss@lists.ozlabs.org, ludovic.desroches@atmel.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: Valentin Ilie <valentin.ilie@gmail.com>
+Subject: [PATCHv2] net: can: af_can.c: Fix checkpatch warnings
+Date: Sun, 10 Mar 2013 23:15:13 +0200
+Message-ID: <1362950113-25515-1-git-send-email-valentin.ilie@gmail.com>
+References: <1362918526-26730-1-git-send-email-valentin.ilie@gmail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wg0-f54.google.com ([74.125.82.54]:65378 "EHLO
+	mail-wg0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751299Ab3CJVP2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 10 Mar 2013 17:15:28 -0400
+In-Reply-To: <1362918526-26730-1-git-send-email-valentin.ilie@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: socketcan@hartkopp.net, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Valentin Ilie <valentin.ilie@gmail.com>
 
-On 18:37 Fri 08 Mar     , Marc Kleine-Budde wrote:
-> On 03/08/2013 06:30 PM, ludovic.desroches@atmel.com wrote:
-> > From: Ludovic Desroches <ludovic.desroches@atmel.com>
-> > 
-> > Signed-off-by: Ludovic Desroches <ludovic.desroches@atmel.com>
-> > ---
-> >  drivers/net/can/at91_can.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-> > index c7f70d4..56fb2aa 100644
-> > --- a/drivers/net/can/at91_can.c
-> > +++ b/drivers/net/can/at91_can.c
-> > @@ -28,6 +28,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/netdevice.h>
-> >  #include <linux/of.h>
-> > +#include <linux/pinctrl/consumer.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/rtnetlink.h>
-> >  #include <linux/skbuff.h>
-> > @@ -1292,6 +1293,7 @@ static int at91_can_probe(struct platform_device *pdev)
-> >  	struct clk *clk;
-> >  	void __iomem *addr;
-> >  	int err, irq;
-> > +	struct pinctrl *pinctrl;
-> >  
-> >  	devtype_data = at91_can_get_driver_data(pdev);
-> >  	if (!devtype_data) {
-> > @@ -1314,6 +1316,13 @@ static int at91_can_probe(struct platform_device *pdev)
-> >  		goto exit_put;
-> >  	}
-> >  
-> > +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-> 
-> Is this still needed? I think the pinctrl framework automatically
-> enables the default pinctrl for a device if available.
-yes this is useless
+Replace printk(KERN_ERR with pr_err
+Add space before {
+Removed OOM messages
 
-Best Regards,
-J.
-> 
-> Marc
-> 
-> > +	if (IS_ERR(pinctrl)) {
-> > +		dev_err(&pdev->dev, "Failed to request pinctrl\n");
-> > +		err = PTR_ERR(pinctrl);
-> > +		goto exit_put;
-> > +	}
-> > +
-> >  	if (!request_mem_region(res->start,
-> >  				resource_size(res),
-> >  				pdev->name)) {
-> > 
-> 
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+Signed-off-by: Valentin Ilie <valentin.ilie@gmail.com>
+---
+ net/can/af_can.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index c48e522..8bacf28 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -525,7 +525,7 @@ void can_rx_unregister(struct net_device *dev, canid_t can_id, canid_t mask,
+ 
+ 	d = find_dev_rcv_lists(dev);
+ 	if (!d) {
+-		printk(KERN_ERR "BUG: receive list not found for "
++		pr_err("BUG: receive list not found for "
+ 		       "dev %s, id %03X, mask %03X\n",
+ 		       DNAME(dev), can_id, mask);
+ 		goto out;
+@@ -552,7 +552,7 @@ void can_rx_unregister(struct net_device *dev, canid_t can_id, canid_t mask,
+ 	 */
+ 
+ 	if (!r) {
+-		printk(KERN_ERR "BUG: receive list entry not found for "
++		pr_err("BUG: receive list entry not found for "
+ 		       "dev %s, id %03X, mask %03X\n",
+ 		       DNAME(dev), can_id, mask);
+ 		r = NULL;
+@@ -749,8 +749,7 @@ int can_proto_register(const struct can_proto *cp)
+ 	int err = 0;
+ 
+ 	if (proto < 0 || proto >= CAN_NPROTO) {
+-		printk(KERN_ERR "can: protocol number %d out of range\n",
+-		       proto);
++		pr_err("can: protocol number %d out of range\n", proto);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -761,8 +760,7 @@ int can_proto_register(const struct can_proto *cp)
+ 	mutex_lock(&proto_tab_lock);
+ 
+ 	if (proto_tab[proto]) {
+-		printk(KERN_ERR "can: protocol %d already registered\n",
+-		       proto);
++		pr_err("can: protocol %d already registered\n", proto);
+ 		err = -EBUSY;
+ 	} else
+ 		RCU_INIT_POINTER(proto_tab[proto], cp);
+@@ -816,11 +814,8 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
+ 
+ 		/* create new dev_rcv_lists for this device */
+ 		d = kzalloc(sizeof(*d), GFP_KERNEL);
+-		if (!d) {
+-			printk(KERN_ERR
+-			       "can: allocation of receive list failed\n");
++		if (!d)
+ 			return NOTIFY_DONE;
+-		}
+ 		BUG_ON(dev->ml_priv);
+ 		dev->ml_priv = d;
+ 
+@@ -838,8 +833,8 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
+ 				dev->ml_priv = NULL;
+ 			}
+ 		} else
+-			printk(KERN_ERR "can: notifier: receive list not "
+-			       "found for dev %s\n", dev->name);
++			pr_err("can: notifier: receive list not found for dev "
++			       "%s\n", dev->name);
+ 
+ 		spin_unlock(&can_rcvlists_lock);
+ 
+@@ -927,7 +922,7 @@ static __exit void can_exit(void)
+ 	/* remove created dev_rcv_lists from still registered CAN devices */
+ 	rcu_read_lock();
+ 	for_each_netdev_rcu(&init_net, dev) {
+-		if (dev->type == ARPHRD_CAN && dev->ml_priv){
++		if (dev->type == ARPHRD_CAN && dev->ml_priv) {
+ 
+ 			struct dev_rcv_lists *d = dev->ml_priv;
+ 
+-- 
+1.8.1.2
+
