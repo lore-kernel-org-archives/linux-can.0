@@ -1,77 +1,62 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/3] can: Kconfig: CAN_AT91 depends on ARCH_AT91
-Date: Mon, 11 Mar 2013 10:57:10 +0100
-Message-ID: <513DAA76.6040803@pengutronix.de>
-References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com> <1362763842-14924-4-git-send-email-ludovic.desroches@atmel.com> <513A2396.4080508@pengutronix.de> <20130311092419.GB2572@ludovic.desroches@atmel.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Informations About CAN API of the Linux Kernel
+Date: Mon, 11 Mar 2013 11:03:46 +0100
+Message-ID: <513DAC02.6080905@hartkopp.net>
+References: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net> <513763CC.1070507@pengutronix.de> <20130307124012.GC603@vandijck-laurijssen.be> <5139A78D.9060005@pengutronix.de> <20130308100548.GA496@vandijck-laurijssen.be> <5139D3D8.2020305@volkswagen.de> <CAGm1_kuBZGMxQ2m97fE8EimDKj-exy7Xto2TVEgbqv8Ns4R-JA@mail.gmail.com> <20130311093123.GB5114@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2PAUKNCNLCAHSNWGJBIUA"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44763 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753212Ab3CKJ5Y (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Mar 2013 05:57:24 -0400
-In-Reply-To: <20130311092419.GB2572@ludovic.desroches@atmel.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:16224 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753584Ab3CKKDt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Mar 2013 06:03:49 -0400
+In-Reply-To: <20130311093123.GB5114@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ludovic Desroches <ludovic.desroches@atmel.com>
-Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, plagnioj@jcrosoft.com
+To: Yegor Yefremov <yegorslists@googlemail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2PAUKNCNLCAHSNWGJBIUA
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 11.03.2013 10:31, Kurt Van Dijck wrote:
 
-On 03/11/2013 10:24 AM, Ludovic Desroches wrote:
-> On Fri, Mar 08, 2013 at 06:44:54PM +0100, Marc Kleine-Budde wrote:
->> On 03/08/2013 06:30 PM, ludovic.desroches@atmel.com wrote:
->>> From: Ludovic Desroches <ludovic.desroches@atmel.com>
+> On Fri, Mar 08, 2013 at 02:27:18PM +0100, Yegor Yefremov wrote:
+>> On Fri, Mar 8, 2013 at 1:04 PM, Oliver Hartkopp
+>> <oliver.hartkopp@volkswagen.de> wrote:
+>>> Am 08.03.2013 11:05, schrieb Kurt Van Dijck:
 >>>
->>> SAMA5D3 devices also embed CAN feature. Moreover if we want to produc=
-e a single
->>> kernel image (at least for Atmel devices) it is not useful to be too
->>> restrictive.
+>>>
 >>
->> If it compiles on other ARMs aswell we can make it depend on ARCH_ARM.=
-
->>=20
-> I was thinking about it but I am wondering if it makes sense. Should we=
- have a
-> non atmel device with atmel can?
-
-I don't know if atmels sells the IP core separately, but ARM Linux is
-going towards a multi ARCH kernel anyways. So the can core should
-compile on non atmel and/or multi arch kernels.
-
-> I have no position about this point, if you think it's better to make
-> it depending onto ARCH_ARM, I'll change it if there is no compilation
-> issue.
-
-Please make it so.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>> What about creating a small k1939 howto here http://elinux.org/CAN_Bus
+>> Then we could at least try G+ channel to get attention. There are many
+>> automation engineers.
+> 
+> Your suggestion makes sense regardless of the outcome of the Kconfig discussion.
+> 
 
 
-------enig2PAUKNCNLCAHSNWGJBIUA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Yes. Great idea.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Especially as all the announcements about the support of
 
-iEYEARECAAYFAlE9qnkACgkQjTAFq1RaXHO8xQCfW8u8An0yL/5TYieG8UfaHWdq
-O+MAoIrK1EpQ24SI4hxsmwWxtEWtHnvs
-=mTaT
------END PGP SIGNATURE-----
+- Android
+- CAN utils
+- Python
+- CAN FD
+- J1939
+- ISO15765-2 (w CAN FD too)
+- CAN Gateways
+- etc
 
-------enig2PAUKNCNLCAHSNWGJBIUA--
+get lost on the mailing list ...
+
+It's hard to check the ML archives so i really would appreciate to have a
+general overview about SocketCAN and it's dedicated projects.
+
+http://elinux.org/CAN_Bus looks to be a good place for that.
+
+If it's ok for the other guys here on the ML how can i contribute to the wiki?
+
+Just create an account and go for it?
+
+Best regards,
+Oliver
