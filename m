@@ -1,7 +1,7 @@
-From: Ludovic Desroches <ludovic.desroches-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+From: Ludovic Desroches <ludovic.desroches@atmel.com>
 Subject: Re: [PATCH 1/3] can: at91_can: add dt support
 Date: Mon, 11 Mar 2013 16:39:56 +0100
-Message-ID: <4097.59588442302$1363016445@news.gmane.org>
+Message-ID: <25670.0509613895$1363016484@news.gmane.org>
 References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com>
  <1362763842-14924-2-git-send-email-ludovic.desroches@atmel.com>
  <513A2365.5050803@pengutronix.de>
@@ -10,32 +10,31 @@ References: <1362763842-14924-1-git-send-email-ludovic.desroches@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <513DF46E.7000903-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+In-Reply-To: <513DF46E.7000903@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-can@vger.kernel.org, ludovic.desroches@atmel.com, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
 On Mon, Mar 11, 2013 at 04:12:46PM +0100, Marc Kleine-Budde wrote:
 > On 03/11/2013 10:17 AM, Ludovic Desroches wrote:
 > > On Fri, Mar 08, 2013 at 06:44:05PM +0100, Marc Kleine-Budde wrote:
-> >> On 03/08/2013 06:30 PM, ludovic.desroches-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org wrote:
-> >>> From: Ludovic Desroches <ludovic.desroches-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+> >> On 03/08/2013 06:30 PM, ludovic.desroches@atmel.com wrote:
+> >>> From: Ludovic Desroches <ludovic.desroches@atmel.com>
 > >>>
 > >>> Add device tree support.
 > >>>
-> >>> Signed-off-by: Ludovic Desroches <ludovic.desroches-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+> >>> Signed-off-by: Ludovic Desroches <ludovic.desroches@atmel.com>
 > >>> ---
 > >>>  .../devicetree/bindings/net/can/atmel-can.txt      | 14 ++++
 > >>>  drivers/net/can/at91_can.c                         | 75 ++++++++++++++++------
