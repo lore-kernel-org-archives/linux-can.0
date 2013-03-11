@@ -1,78 +1,36 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: Informations About CAN API of the Linux Kernel
-Date: Mon, 11 Mar 2013 11:21:21 +0100
-Message-ID: <CAGm1_kuNaqSUnoq0DpbLugz=-OgTm523GvRgS_t9bggfVdMnjg@mail.gmail.com>
-References: <2B7D120CFC15DC438D721B998AD9D9E9097105AB@SEGOTNC5180-N2.vcn.ds.volvo.net>
- <513763CC.1070507@pengutronix.de> <20130307124012.GC603@vandijck-laurijssen.be>
- <5139A78D.9060005@pengutronix.de> <20130308100548.GA496@vandijck-laurijssen.be>
- <5139D3D8.2020305@volkswagen.de> <CAGm1_kuBZGMxQ2m97fE8EimDKj-exy7Xto2TVEgbqv8Ns4R-JA@mail.gmail.com>
- <20130311093123.GB5114@vandijck-laurijssen.be> <513DAC02.6080905@hartkopp.net>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCHv2] net: can: af_can.c: Fix checkpatch warnings
+Date: Mon, 11 Mar 2013 07:40:44 -0400 (EDT)
+Message-ID: <20130311.074044.1360965348131709747.davem@davemloft.net>
+References: <1362918526-26730-1-git-send-email-valentin.ilie@gmail.com>
+	<1362950113-25515-1-git-send-email-valentin.ilie@gmail.com>
+	<513D8193.3080405@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f42.google.com ([209.85.214.42]:47150 "EHLO
-	mail-bk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753320Ab3CKKVn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Mar 2013 06:21:43 -0400
-Received: by mail-bk0-f42.google.com with SMTP id jk7so1590456bkc.15
-        for <linux-can@vger.kernel.org>; Mon, 11 Mar 2013 03:21:42 -0700 (PDT)
-In-Reply-To: <513DAC02.6080905@hartkopp.net>
+Received: from shards.monkeyblade.net ([149.20.54.216]:60243 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753735Ab3CKLkj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Mar 2013 07:40:39 -0400
+In-Reply-To: <513D8193.3080405@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: socketcan@hartkopp.net
+Cc: valentin.ilie@gmail.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, Mar 11, 2013 at 11:03 AM, Oliver Hartkopp
-<socketcan@hartkopp.net> wrote:
-> On 11.03.2013 10:31, Kurt Van Dijck wrote:
->
->> On Fri, Mar 08, 2013 at 02:27:18PM +0100, Yegor Yefremov wrote:
->>> On Fri, Mar 8, 2013 at 1:04 PM, Oliver Hartkopp
->>> <oliver.hartkopp@volkswagen.de> wrote:
->>>> Am 08.03.2013 11:05, schrieb Kurt Van Dijck:
->>>>
->>>>
->>>
->>> What about creating a small k1939 howto here http://elinux.org/CAN_Bus
->>> Then we could at least try G+ channel to get attention. There are many
->>> automation engineers.
->>
->> Your suggestion makes sense regardless of the outcome of the Kconfig discussion.
->>
->
->
-> Yes. Great idea.
->
-> Especially as all the announcements about the support of
->
-> - Android
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Mon, 11 Mar 2013 08:02:43 +0100
 
-I'll can take care about this.
+> On 10.03.2013 22:15, Valentin Ilie wrote:
+> 
+>> Replace printk(KERN_ERR with pr_err
+>> Add space before {
+>> Removed OOM messages
+>> 
+>> Signed-off-by: Valentin Ilie <valentin.ilie@gmail.com>
+> 
+> 
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-> - CAN utils
-> - Python
-
-I've made a small howto for Python support based on the example in the
-patch: https://libbits.wordpress.com/2012/05/22/socketcan-support-in-python/
-So I could place it on the wiki too.
-
-> - CAN FD
-> - J1939
-> - ISO15765-2 (w CAN FD too)
-> - CAN Gateways
-> - etc
->
-> get lost on the mailing list ...
->
-> It's hard to check the ML archives so i really would appreciate to have a
-> general overview about SocketCAN and it's dedicated projects.
->
-> http://elinux.org/CAN_Bus looks to be a good place for that.
->
-> If it's ok for the other guys here on the ML how can i contribute to the wiki?
->
-> Just create an account and go for it?
-
-Yes.
-
-Yegor
+Applied, thanks.
