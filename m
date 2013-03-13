@@ -1,69 +1,34 @@
 From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: CAN j1939 library doubts
-Date: Wed, 13 Mar 2013 09:42:48 +0100
-Message-ID: <20130313084248.GA449@vandijck-laurijssen.be>
-References: <loom.20130312T213038-40@post.gmane.org>
- <854F9BFD-752B-4B2B-A637-7310BCF8B7D2@emailplus.org>
+Subject: can-j1939: kernel updates
+Date: Wed, 13 Mar 2013 11:54:47 +0100
+Message-ID: <20130313105447.GB449@vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:33760 "EHLO
-	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752011Ab3CMInH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Mar 2013 04:43:07 -0400
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171]:28036 "EHLO
+	mailrelay005.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754570Ab3CMKyx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Mar 2013 06:54:53 -0400
 Content-Disposition: inline
-In-Reply-To: <854F9BFD-752B-4B2B-A637-7310BCF8B7D2@emailplus.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Jean-Claude Monnin <jc_monnin@emailplus.org>
-Cc: Giox79 <giovanniparodi79@gmail.com>, linux-can@vger.kernel.org
+To: Giox79 <giovanniparodi79@gmail.com>, Jean-Claude Monnin <jc_monnin@emailplus.org>, Sako Youssouf <youssouf.sako@renault-trucks.com>
+Cc: linux-can@vger.kernel.org
 
-Hi,
+I just put different updated branches on http://gitorious/~kurt-vd/linux-can-j1939.
 
-iproute2, can-utils & kernel needs patches.
+branch j1939-v3.3: the closest to my development branch.
+branch j1939-v3.7: compile tested
+branch j1939-v3.0: compile tested
 
-My 'latest' git archives http://gitorious.org/~kurt-vd/  will work,
-but you probably want to merge the necessary patches into later versions.
+I think these branches support enough variety for merging?
 
-I plan to do some effort to assemble an howto on elinux.org.
+In my next timeslot, I'll do such operation for can-utils & iproute2 too.
+After that, merging the j1939 specifics should be 'easy'.
+What's your idea of this approach?
 
 Kind regards,
 Kurt
-
-On Wed, Mar 13, 2013 at 09:29:01AM +0100, Jean-Claude Monnin wrote:
-> Hi,
-> Yes, I have been using j1939 on an ARM system in the past (TI AM3505). Requires a patched kernel, "iproute2" and "can-j1939-utils". jspy worked fine on ARM.
-> I cross-compiled the software with ptxdist. I can't provide a tutorial for that, but I can share the rules to build it in case you are familiar with ptxdist.
-> I would like take the opportunity to say that I encourage the effort to bring upstream the j1939 stack and it's tools. Official tar.* source archives for "iproute2" with j1939 support and "can-j1939-utils" would be useful for the ptxdist rules.
-> Regards,
-> Jean-Claude
-> 
-> On Mar 12, 2013, at 22:52 , Giox79 <giovanniparodi79@gmail.com> wrote:
-> 
-> > Hello everybody.
-> > I'm working on an embedded system, and I would like to dump data 
-> > from CAN bus and parse j1939 data. 
-> > I built canutils, last version, on ARM device, however, I'm a bit 
-> > about how to use the j1939 version of canutils.
-> > Is there any tutorial about what should I do in order to use 
-> > Utilities  like jspy?
-> > If I'm right, I have to build both the kernel and the user app section.
-> > I'm a Linux beginner, and I didn't find guides to these steps.
-> > Any help, link to website or similar resources will be really appreciated.
-> > 
-> > Finally is there anyone that compiled the j1939 can libraries on 
-> > ARM systems?
-> > 
-> > 
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 -- 
 Kurt Van Dijck
