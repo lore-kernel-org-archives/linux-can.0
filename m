@@ -1,57 +1,50 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can-next] can: dump stack on protocol bugs
-Date: Mon, 18 Mar 2013 19:22:41 +0100
-Message-ID: <51475B71.803@hartkopp.net>
+Subject: j1939 - first steps
+Date: Mon, 18 Mar 2013 21:13:33 +0100
+Message-ID: <5147756D.1060203@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:17761 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:61647 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752148Ab3CRSWn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Mar 2013 14:22:43 -0400
+	with ESMTP id S1751903Ab3CRUNg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Mar 2013 16:13:36 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-The rework of the kernel hlist implementation "hlist: drop the node parameter
-from iterators" (b67bfe0d42cac56c512dd5da4b1b347a23f4b70a) created some
-fallout in the form of non matching comments and obsolete code.
+Hi Kurt,
 
-Additionally to the cleanup this patch adds a WARN() statement to catch the
-caller of the wrong filter removal request.
+following the idea from Marc (cloning linux-stable, check-out 3.7.10, adding
+j1939 branch, applying the j1939-3.7 branch) i managed to get my linux-box
+working with your stack.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Following the documentation, i did this (as root):
 
----
+./ip link set vcan0 j1939 on
+./ip addr show vcan0
+./ip addr add dev vcan0 j1939 0x22
+./ip addr show vcan0
+6: vcan0: <NOARP,UP,LOWER_UP> mtu 72 qdisc noqueue state UNKNOWN
+    link/can
+    can-j1939 0x22 scope link
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 8bacf28..c4e5085 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -546,16 +546,13 @@ void can_rx_unregister(struct net_device *dev, canid_t
-can_id, canid_t mask,
- 	}
-  	/*
--	 * Check for bugs in CAN protocol implementations:
--	 * If no matching list item was found, the list cursor variable next
--	 * will be NULL, while r will point to the last item of the list.
-+	 * Check for bugs in CAN protocol implementations using af_can.c:
-+	 * 'r' will be NULL if no matching list item was found for removal.
- 	 */
-  	if (!r) {
--		pr_err("BUG: receive list entry not found for "
--		       "dev %s, id %03X, mask %03X\n",
--		       DNAME(dev), can_id, mask);
--		r = NULL;
-+		WARN(1, "BUG: receive list entry not found for dev %s, "
-+		     "id %03X, mask %03X\n", DNAME(dev), can_id, mask);
- 		goto out;
- 	}
+And this (as user):
+
+./jsr -v vcan0:0x22
+./jsr: bind(vcan0:0000000000000022), -99: Cannot assign requested address
+
+./jsr -v 0x22
+./jsr: bind(#34:-), -19: No such device
 
 
---
-To unsubscribe from this list: send the line "unsubscribe netdev" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+./jsr -v 22
+./jsr: bind(#22:-), -19: No such device
+
+
+Any idea?
+
+Regards,
+Oliver
