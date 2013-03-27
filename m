@@ -1,35 +1,70 @@
-From: du <duzhenhuan@gmail.com>
-Subject: socketcan receive queue too many frames
-Date: Wed, 27 Mar 2013 11:38:29 +0000 (UTC)
-Message-ID: <loom.20130327T122706-603@post.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: socketcan receive queue too many frames
+Date: Wed, 27 Mar 2013 12:50:10 +0100
+Message-ID: <5152DCF2.80804@pengutronix.de>
+References: <loom.20130327T122706-603@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2WRNWCONQDMPMSQSVOHXV"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:48296 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753253Ab3C0Lop (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 27 Mar 2013 07:44:45 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1UKomu-0004mg-Bv
-	for linux-can@vger.kernel.org; Wed, 27 Mar 2013 12:45:04 +0100
-Received: from 113.227.62.246 ([113.227.62.246])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 27 Mar 2013 12:45:04 +0100
-Received: from duzhenhuan by 113.227.62.246 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Wed, 27 Mar 2013 12:45:04 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35538 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751437Ab3C0LuQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 07:50:16 -0400
+In-Reply-To: <loom.20130327T122706-603@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: du <duzhenhuan@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Hello, I'm using socketcan buffer , 
-but i'm getting frames for tens of seconds even after I have open the CAN wire
-from the bus, In my application ,frame lost is not a problem since I'm using
-cyclic process data. I just want to make sure the frame is stopped just when I
-disconnect the cable. 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2WRNWCONQDMPMSQSVOHXV
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-What should I do ? How can I make receive buffer smaller?
+On 03/27/2013 12:38 PM, du wrote:
+> Hello, I'm using socketcan buffer ,=20
 
+What is "socketcan buffer"?
+
+> but i'm getting frames for tens of seconds even after I have open the C=
+AN wire
+> from the bus, In my application ,frame lost is not a problem since I'm =
+using
+
+What kind of CAN frame do you get? Maybe error messages, due to the open
+bus?
+
+> cyclic process data. I just want to make sure the frame is stopped just=
+ when I
+> disconnect the cable.=20
+>=20
+> What should I do ? How can I make receive buffer smaller?
+
+That will not solve your problem.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2WRNWCONQDMPMSQSVOHXV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlFS3PUACgkQjTAFq1RaXHOO2gCePRqTSPLcFVbVUBz1sfhe/4wv
+n8wAnj5LCpKCyISCmYRjTqiwfpB2dg67
+=+V8n
+-----END PGP SIGNATURE-----
+
+------enig2WRNWCONQDMPMSQSVOHXV--
