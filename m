@@ -1,76 +1,59 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2013-03-27
-Date: Wed, 27 Mar 2013 15:18:32 +0100
-Message-ID: <5152FFB8.2000008@pengutronix.de>
+Subject: Re: pull-request: can-next 2013-03-27
+Date: Wed, 27 Mar 2013 15:22:24 +0100
+Message-ID: <515300A0.2020105@pengutronix.de>
+References: <5152FFB8.2000008@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="----enig2RJNUOIUIARISJRLAWPDW"
+ boundary="----enig2RAMRFEQMMQXUOBHWTEHO"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52417 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54319 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752178Ab3C0OSl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 10:18:41 -0400
+	with ESMTP id S1751988Ab3C0OW0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 10:22:26 -0400
+In-Reply-To: <5152FFB8.2000008@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2RJNUOIUIARISJRLAWPDW
+------enig2RAMRFEQMMQXUOBHWTEHO
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hello David,
+On 03/27/2013 03:18 PM, Marc Kleine-Budde wrote:
+> Hello David,
+>=20
+> this is a pull-request for net-next/master. It consists of three
+> patches by Lars-Peter Clausen to clean up the mcp251x spi-can driver,
+> two patches from Ludovic Desroches to bring device tree support to the
+> at91_can driver and a patch by me to fix a sparse warning in the
+> blackfin driver.
+>=20
+> regards,
+> Marc
+>=20
+> ---
+>=20
+> The following changes since commit 6bdeaba47d87f48a3943b6899d6c6e6f17d5=
+2f1d:
+>=20
+>   6lowpan: use IEEE802154_ADDR_LEN instead of a magic number (2013-03-2=
+7 00:52:16 -0400)
+>=20
+> are available in the git repository at:
+>=20
+>   git@gitorious.org:linux-can/linux-can-next.git testing
 
-this is a pull-request for net-next/master. It consists of three
-patches by Lars-Peter Clausen to clean up the mcp251x spi-can driver,
-two patches from Ludovic Desroches to bring device tree support to the
-at91_can driver and a patch by me to fix a sparse warning in the
-blackfin driver.
+Doh! "testing" equals "for-davem" currently and git picked the "wrong"
+tree. It should be:
 
-regards,
+git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+sorry,
 Marc
-
----
-
-The following changes since commit 6bdeaba47d87f48a3943b6899d6c6e6f17d52f=
-1d:
-
-  6lowpan: use IEEE802154_ADDR_LEN instead of a magic number (2013-03-27 =
-00:52:16 -0400)
-
-are available in the git repository at:
-
-  git@gitorious.org:linux-can/linux-can-next.git testing
-
-for you to fetch changes up to 21c11bc5d016ede062843cb3f98ee6824e6bcae2:
-
-  can: bfin_can: declare locally used functions static (2013-03-27 13:07:=
-10 +0100)
-
-----------------------------------------------------------------
-Lars-Peter Clausen (3):
-      can: mcp251x: Remove redundant spi driver bus initialization
-      can: mcp251x: Use module_spi_driver
-      can: mcp251x: Use dev_pm_ops
-
-Ludovic Desroches (2):
-      can: at91_can: add dt support
-      can: Kconfig: CAN_AT91 depends on ARM
-
-Marc Kleine-Budde (1):
-      can: bfin_can: declare locally used functions static
-
- .../devicetree/bindings/net/can/atmel-can.txt      | 14 ++++
- drivers/net/can/Kconfig                            |  2 +-
- drivers/net/can/at91_can.c                         | 76 ++++++++++++++++=
-------
- drivers/net/can/bfin_can.c                         |  4 +-
- drivers/net/can/mcp251x.c                          | 35 ++++------
- 5 files changed, 88 insertions(+), 43 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/atmel-can.t=
-xt
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -79,7 +62,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-------enig2RJNUOIUIARISJRLAWPDW
+------enig2RAMRFEQMMQXUOBHWTEHO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -88,9 +71,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlFS/7sACgkQjTAFq1RaXHPeoQCghKvtEaEolSb14gGE3iGjPRRX
-CXsAn2AhpX/27FYNhbk/AV3HzDJuxXPR
-=WUs+
+iEYEARECAAYFAlFTAKAACgkQjTAFq1RaXHNPBQCfZQwZ0oKVUR7aMJPOP2ytPdGp
+qGYAmwTrKgfGAQQDEtkTLbO6JMGtfoIt
+=0+GP
 -----END PGP SIGNATURE-----
 
-------enig2RJNUOIUIARISJRLAWPDW--
+------enig2RAMRFEQMMQXUOBHWTEHO--
