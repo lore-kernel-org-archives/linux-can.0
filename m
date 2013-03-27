@@ -1,57 +1,72 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Parsing j1939 from raw candump
-Date: Wed, 27 Mar 2013 13:04:38 +0100
-Message-ID: <20130327120438.GD449@vandijck-laurijssen.be>
-References: <loom.20130325T214842-307@post.gmane.org>
- <20130326191831.GA22696@vandijck-laurijssen.be>
- <loom.20130326T221001-133@post.gmane.org>
- <20130327080926.GA449@vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: socketcan receive queue too many frames
+Date: Wed, 27 Mar 2013 13:04:45 +0100
+Message-ID: <5152E05D.80908@pengutronix.de>
+References: <loom.20130327T122706-603@post.gmane.org> <5152DCF2.80804@pengutronix.de> <loom.20130327T125524-733@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2VSPTIWLCAKQQRRTSQHIV"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from Mailrelay020.isp.belgacom.be ([195.238.6.95]:1869 "EHLO
-	mailrelay020.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752218Ab3C0MEn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 08:04:43 -0400
-Content-Disposition: inline
-In-Reply-To: <20130327080926.GA449@vandijck-laurijssen.be>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37257 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752672Ab3C0MEr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 08:04:47 -0400
+In-Reply-To: <loom.20130327T125524-733@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Giox79 <giovanniparodi79@gmail.com>, linux-can@vger.kernel.org
+To: du <duzhenhuan@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-> > 
-> > > 
-> > > > Please note that I have the whole j1939 standard and that 
-> > > > at present time I can't integrate the j1939 canutils in linux 
-> > > > kernel because I should use for other kind of constraints 
-> > > > a 2.6 linux kernel.
-> > > 
-> > > which specific 2.6 one did it start from (like 2.6.28 or 2.6.35 or ...)
-> > 
-> > The version is 2.6.35.3
-> I'll take a look if backporting linux-j1939 to 2.6.35 is feasible.
-> Btw, I still run a platform with 2.6.25 _and_ a backported j1939.
-> But 2.6.25 lacks some infrastructure, and I had to come up with less
-> elegant procfs tunables to replace iproute2 commands.
-> The rest of the API (i.e. socket interface) is equal.
-> 
-> I'll take a look...
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2VSPTIWLCAKQQRRTSQHIV
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Giovanni,
+On 03/27/2013 01:01 PM, du wrote:
+>> What is "socketcan buffer"?
+> sorry ,I means socketcan only.
 
-I've put a branch j1939-v2.6.35 on
-http://gitorious.org/~kurt-vd/linux-can/linux-can-j1939
+:)
 
-I cherry-picked some commits between v2.6.35 & v2.6.38 in order
-to enable the necessary rtnetlink infrastructure.
-It is compile-tested, but I'm unable to test it on hardware easily.
-I'm booting via EFI now and that support is very recent...
+>> What kind of CAN frame do you get? Maybe error messages, due to the op=
+en
+>> bus?
+> It's not error message , just normal CAN  data frames.
 
-You may want to give it a try.
-The iproute2 package does not need backporting AFAIK, i.e. you can use
-the one you like (with j1939 support).
+Okay.
 
-If this works, it enables you to play with the j1939 stack on your PC also.
+> I thought it may has something to do with buffer.=20
+> If my application is not fast enough to read the frames in buffer,
+>  I can still get frames even the bus is open, is it right?
 
-Kind regards,
-Kurt
+Yes, socketcan is designed not to drop any messages, but it will, if the
+rx-queue (between kernel and your apps) gets to lange. If you receive
+frames in your application 10 seconds after you disconnected the cable
+you have a serious design or performance problem (or both) in you system.=
+
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2VSPTIWLCAKQQRRTSQHIV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlFS4F0ACgkQjTAFq1RaXHNW5wCdFqhW/SRBRG57yyIkbCC5mgli
+YG4AnjKohXBeByZF3C7APC6qf5OMJIBJ
+=5rol
+-----END PGP SIGNATURE-----
+
+------enig2VSPTIWLCAKQQRRTSQHIV--
