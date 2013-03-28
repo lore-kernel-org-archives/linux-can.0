@@ -1,72 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Transmitted Data is not to be received by other Application
-Date: Thu, 28 Mar 2013 13:21:00 +0100
-Message-ID: <515435AC.2040707@pengutronix.de>
-References: <515433AF.7000203@gmx.de>
+From: "Boris Baskevitch" <boris.baskevitch@annecy-elec.fr>
+Subject: BCM periodic send
+Date: Thu, 28 Mar 2013 17:11:36 +0100
+Message-ID: <001e01ce2bce$ec5abcf0$c51036d0$@annecy-elec.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2MIFESSHQSBKAEKXMJXMH"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53518 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755368Ab3C1MVG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Mar 2013 08:21:06 -0400
-In-Reply-To: <515433AF.7000203@gmx.de>
+Received: from riga.magic.fr ([188.130.33.24]:41684 "HELO riga.magic.fr"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+	id S1756392Ab3C1QSU (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 28 Mar 2013 12:18:20 -0400
+Content-Language: fr
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Stefan <os252@gmx.de>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2MIFESSHQSBKAEKXMJXMH
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Hello all,
+This is my first message on this list, reading it already helped me a lot,
+thank you to the contributors here.
+I need some help on 2 issues, I'm using Socket-CAN BCM feature to send and
+receive periodic messages:
+I configured some periodic TX messages as shown below. It works great except
+the fact that the actual period on the bus doesn't exactly match the
+programmed period, it's a little slower, so I need to add a correction
+factor to get the right period. I guess it's my system timer which is
+incorrectly configured (I use a Fujitsu SoC with ARM Cortex A9). I don't set
+the Jiffie parameter during the boot, so it's recalculated each time I
+power-up the board. I don't know what is the time reference for Socket-CAN
+(jiffies or something else?), do you know where should I look to correct it
+?
+Second point, I would like to change the content of the periodic frames at
+runtime without reconfiguring the timer, ID and flags. What is the most
+elegant way to do it ?
+Thanks for your help !
 
-On 03/28/2013 01:12 PM, Oliver Stefan wrote:
-> I'm developing Software for the Raspberry Pi with MCP2515 extension.
->=20
-> I have two applications running the same time.
-> One is in the receiving mode, and the other can transmit and receive.
-> Unfortunately the application that is permanently receiving, receives
-> the data of the second application too.
->=20
-> How can I turn off this function?
+Here's my periodic TX frame setup:
 
-Have you tried this:
+void CanBus::StartPeriodicSend(void)
+{
+     struct {
+	struct bcm_msg_head msg_head;
+	struct can_frame frame[1];
+     } msg;
+    
+     
+    msg.msg_head.opcode = TX_SETUP;
+    msg.msg_head.flags = SETTIMER|STARTTIMER|TX_CP_CAN_ID|TX_COUNTEVT;
+    msg.msg_head.count = 0;
+    msg.msg_head.ival1.tv_sec = 0;
+    msg.msg_head.ival1.tv_usec = 0;
+    msg.msg_head.ival2.tv_sec = 0;
+    msg.msg_head.ival2.tv_usec = 450000*0.979;		/* interval for the
+following frames with correction factor */
+    msg.msg_head.can_id = CAN_ID_ETAT_COMB;
+    msg.msg_head.nframes = 1;
+    msg.frame[0].can_id = CAN_ID_ETAT_COMB;
+    msg.frame[0].can_dlc = 8;
+    msg.frame[0].data[0] = 0;
+    msg.frame[0].data[1] = 0;
+    msg.frame[0].data[2] = 0;
+    msg.frame[0].data[3] = 0;
+    msg.frame[0].data[4] = 0;
+    msg.frame[0].data[5] = 0;
+    msg.frame[0].data[6] = 0;
+    msg.frame[0].data[7] = 0;
 
-  4.1.3 RAW socket option CAN_RAW_LOOPBACK
+    if (write(m_fd, &msg, sizeof(msg)) < 0){
+	DiagnosticPlatform::ConsoleOut("CAN: ERROR: send BCM message !\n");
+    }
+}
 
-  To meet multi user needs the local loopback is enabled by default
-  (see chapter 3.2 for details). But in some embedded use-cases
-  (e.g. when only one application uses the CAN bus) this loopback
-  functionality can be disabled (separately for each socket):
-
-    int loopback =3D 0; /* 0 =3D disabled, 1 =3D enabled (default) */
-
-    setsockopt(s, SOL_CAN_RAW, CAN_RAW_LOOPBACK, &loopback, sizeof(loopba=
-ck));
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2MIFESSHQSBKAEKXMJXMH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlFUNa8ACgkQjTAFq1RaXHNcygCggld+kSRER7bfyyBshmB3O4GJ
-QuMAn1T1358QC2ayEDxe9mRXPnwFBXCb
-=9mT2
------END PGP SIGNATURE-----
-
-------enig2MIFESSHQSBKAEKXMJXMH--
