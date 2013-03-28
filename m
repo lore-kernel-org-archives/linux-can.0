@@ -1,38 +1,36 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2013-03-27
-Date: Wed, 27 Mar 2013 14:10:45 -0400 (EDT)
-Message-ID: <20130327.141045.999210087722896364.davem@davemloft.net>
-References: <1364393128-19701-1-git-send-email-mkl@pengutronix.de>
+From: Oliver Stefan <os252@gmx.de>
+Subject: Transmitted Data is not to be received by other Application
+Date: Thu, 28 Mar 2013 13:12:31 +0100
+Message-ID: <515433AF.7000203@gmx.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:58912 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751279Ab3C0SKs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Mar 2013 14:10:48 -0400
-In-Reply-To: <1364393128-19701-1-git-send-email-mkl@pengutronix.de>
+Received: from mout.gmx.net ([212.227.15.15]:58713 "EHLO mout.gmx.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753095Ab3C1MMh (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 28 Mar 2013 08:12:37 -0400
+Received: from mailout-de.gmx.net ([10.1.76.33]) by mrigmx.server.lan
+ (mrigmx002) with ESMTP (Nemesis) id 0M9LrE-1UVc560VuY-00CjPx for
+ <linux-can@vger.kernel.org>; Thu, 28 Mar 2013 13:12:34 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 27 Mar 2013 15:05:26 +0100
+I'm developing Software for the Raspberry Pi with MCP2515 extension.
 
-> Hello David,
-> 
-> here's a patch series for net for the v3.9 release cycle. Fengguang Wu found
-> two problems with the sja1000 drivers:
-> 
-> A macro in the SH architecture collides with one in the sja1000 driver. I
-> created a minimal patch suited for stable, only changing this particular
-> define. (Once net is merged back to net-next, I'll post a patch to uniformly
-> use a SJA1000_ prefix for the sja100 private defines.) If you prefer, I can
-> squash both patches together.
-> 
-> Fengguang further noticed that the peak pcmcia driver will not compile on archs
-> without ioport support. I created a patch to limit the driver to archs which
-> select HAS_IOPORT in Kconfig.
+I have two applications running the same time.
+One is in the receiving mode, and the other can transmit and receive.
+Unfortunately the application that is permanently receiving, receives 
+the data of the second application too.
 
-Pulled, thanks Marc.
+How can I turn off this function?
+
+I read the helpfile
+http://svn.berlios.de/wsvn/socketcan/trunk/kernel/2.6/Documentation/networking/can.txt 
+
+but I don't see there any possibility to eleminate this function.
+
+Thank you very much!
+
+
