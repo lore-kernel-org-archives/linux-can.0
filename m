@@ -1,77 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: drivers/net/can/sja1000/peak_pcmcia.c:626:2: error: implicit
- declaration of function 'ioport_unmap'
-Date: Tue, 02 Apr 2013 09:51:16 +0200
-Message-ID: <515A8DF4.9030504@pengutronix.de>
-References: <5152a96f.mjO7hZyAZ4CJtDg3%fengguang.wu@intel.com> <20130327083110.GB11489@localhost> <20130327094135.GB23796@linux-sh.org> <5152C868.5030801@pengutronix.de> <515A8D1C.5010308@peak-system.com>
+From: Giox79 <giovanniparodi79@gmail.com>
+Subject: Re: Parsing j1939 from raw candump
+Date: Tue, 2 Apr 2013 19:53:58 +0000 (UTC)
+Message-ID: <loom.20130402T213730-777@post.gmane.org>
+References: <loom.20130325T214842-307@post.gmane.org> <20130326191831.GA22696@vandijck-laurijssen.be> <loom.20130326T221001-133@post.gmane.org> <20130327080926.GA449@vandijck-laurijssen.be> <20130327120438.GD449@vandijck-laurijssen.be> <loom.20130327T132424-152@post.gmane.org> <20130327132521.GF449@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2UBJTRUGUJHKPPOMDGCSM"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47678 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1760595Ab3DBHv0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 2 Apr 2013 03:51:26 -0400
-In-Reply-To: <515A8D1C.5010308@peak-system.com>
+Received: from plane.gmane.org ([80.91.229.3]:43890 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932457Ab3DBTyO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 2 Apr 2013 15:54:14 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1UN7Hx-0007Z4-5C
+	for linux-can@vger.kernel.org; Tue, 02 Apr 2013 21:54:37 +0200
+Received: from host31-26-dynamic.0-87-r.retail.telecomitalia.it ([87.0.26.31])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 02 Apr 2013 21:54:37 +0200
+Received: from giovanniparodi79 by host31-26-dynamic.0-87-r.retail.telecomitalia.it with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 02 Apr 2013 21:54:37 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2UBJTRUGUJHKPPOMDGCSM
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Kurt Van Dijck <kurt.van.dijck <at> eia.be> writes:
 
-On 04/02/2013 09:47 AM, Stephane Grosjean wrote:
-[...]
-
->>> This would no doubt be due to the defconfig selecting NO_IOPORT. This=
-
->>> driver probably needs a HAS_IOPORT depends.
->=20
->> Stephane, can we use pcmcia_map_mem_page() instead of ioport_map() lik=
-e
->> in the ems_pcmcia driver?
->>
->> http://lxr.free-electrons.com/source/drivers/net/can/sja1000/ems_pcmci=
-a.c#L286
-
-> Ok, I'll have a look to that asap.
-
-Fine.
-
-> Meanwhile, adding the HAS_IOPORT depends in
-> drivers/net/can/sja1000/Kconfig does the trick. What do you think about=
-
-> that?
-
-Ack, done, already upstream :)
-
-3fd3349 can: sja1000: limit PEAK PCAN-PC Card to HAS_IOPORT
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+> > I will give it a try during the weekend.
+> I'll be off next week. My email access may be limited. I
+>  hope it just works then.
+> 
 
 
-------enig2UBJTRUGUJHKPPOMDGCSM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Hi Kurt thank you again.
+I had some little problem since my boss decided to 
+avoid recompiling Linux kernel in our board 
+(different development teams involved in the project
+ and I work on the application layer).
+So at present time I have to create a custom SW in 
+userspace to parse some J1939 extracting the 
+associated SPN.
+In order to validate my approach, I would like to have
+ an example of candump log (the official candump 
+application, integrated in the main branch of Linux kernel) 
+and to know what kind of j1939 nformation it represents.
+So I would like to ask you if there is some kind of candump
+ test vectors somewhere on the web.
+I wasn't able to find any resource about this topic.
+Do you know if there is some place where I can look for?
+Best regards
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlFajfcACgkQjTAFq1RaXHPflQCfQI5zYpP90ga46WL0lJ2oN85F
-ytkAni5L2rUaVyD/4jJ8C49Ftedz1sCE
-=bqTY
------END PGP SIGNATURE-----
-
-------enig2UBJTRUGUJHKPPOMDGCSM--
