@@ -1,73 +1,108 @@
-From: "Boris Baskevitch" <boris.baskevitch@annecy-elec.fr>
-Subject: RE: BCM periodic send
-Date: Wed, 3 Apr 2013 11:46:23 +0200
-Message-ID: <000501ce3050$1a5fb580$4f1f2080$@annecy-elec.fr>
-References: <001e01ce2bce$ec5abcf0$c51036d0$@annecy-elec.fr> <5154B38F.5080404@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Fwd: Loosing CAN messages with socket-CAN
+Date: Wed, 03 Apr 2013 12:37:03 +0200
+Message-ID: <515C064F.2060503@pengutronix.de>
+References: <OFFDCA8F9E.6364F5F1-ONC1257B42.00342754-C1257B42.003887D3@de.abb.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2DMIKLNEEMSDTWLRJXNBJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from riga.magic.fr ([188.130.33.24]:43674 "HELO riga.magic.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1763313Ab3DCJq0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 3 Apr 2013 05:46:26 -0400
-In-Reply-To: <5154B38F.5080404@hartkopp.net>
-Content-Language: fr
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47848 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751754Ab3DCKhJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Apr 2013 06:37:09 -0400
+In-Reply-To: <OFFDCA8F9E.6364F5F1-ONC1257B42.00342754-C1257B42.003887D3@de.abb.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: 'Oliver Hartkopp' <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Jeroen Lammertink <jeroen.lammertink@nl.abb.com>
 
-Hi Olivier,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2DMIKLNEEMSDTWLRJXNBJ
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-> > I need some help on 2 issues, I'm using Socket-CAN BCM feature to send
-> > and receive periodic messages:
-> > I configured some periodic TX messages as shown below. It works great
-> > except the fact that the actual period on the bus doesn't exactly
-> > match the programmed period, it's a little slower, so I need to add a
-> > correction factor to get the right period. I guess it's my system
-> > timer which is incorrectly configured (I use a Fujitsu SoC with ARM
-> > Cortex A9). I don't set the Jiffie parameter during the boot, so it's
-> > recalculated each time I power-up the board. I don't know what is the
-> > time reference for Socket-CAN (jiffies or something else?), do you
-> > know where should I look to correct it ?
-> 
-> 
-> The BCM has been moved from jiffies to Linux hrtimers a long time ago in
-> 2.6.26.
-> What Linux kernel version do you use?
+Hello Jeroen,
 
-I use Linux 3.0.3
+please use the linux-can Mailinglist, but don't post HTML mails there.
 
-> Btw. have you tried a virtual CAN interface? Do you have similar problems
-> there?
+Marc
 
-Yes. It must be linked to my  CLOCK_TICK_RATE constant. I'm using a 66.66MHz
-reference clock, so probably a rounding issue. I'm doing some investigation
-on this point.
+-------- Original Message --------
+Subject: Loosing CAN messages with socket-CAN
+Date: Wed, 3 Apr 2013 12:17:31 +0200
+From: Jeroen Lammertink <jeroen.lammertink@nl.abb.com>
+To: bet-frogger@users.berlios.de
 
-> > Second point, I would like to change the content of the periodic
-> > frames at runtime without reconfiguring the timer, ID and flags. What
-> > is the most elegant way to do it ?
-> 
-> 
-> Send a TX_SETUP without "SETTIMER|STARTTIMER" in msg_head.flags, is the
-> really most elegant way :-)
+Marc Kleine-Budde,
 
-OK, thanks.
+I hope you can put me in the right direction for the following problem: W=
+e
+seem to loose CAN messages.
 
-Now I have a new issue, the BCM report a RX_TIMEOUT for all periodic
-messages, even if the message is present on the bus with a shorter period
-than the one I configured in the BCM.
-The message is correctly received as I can get the RX_CHANGED message for
-the corresponding IDs.
-If I use RX_FILTER_ID option, I get a RX_CHANGED and RX_TIMEOUT for each
-message seen the bus (which is correct for RX_CHANGED, but not for
-RX_TIMEOUT).
-By the way, for a periodic RX message, which parameter is the period, ival1
-or ival2 ? (I had both set for the tests)
+We are sending batches of 80 CAN messages using socket CAN to transfer an=
 
-Boris.
+image for download. After the 80 messages we wait for a response
+consisting of a single CAN message. Within the messages we have coded a
+sequence number, so that we can detect lost messages. Besides the CAN
+device that is subject of download, we have also a (hardware) CAN sniffer=
+
+on the CAN bus. We typically log CAN messages when we put them in the
+socket. With this set-up we typically detect loosing a short series of
+(mostly 5) CAN messages, somewhere halfway the batch of 80. No other
+devices are present on the CAN bus.
+
+I've dumped below some version and set-up info of Ubuntu, socket-can and
+ifconfig.
+
+Is this problem known?
+May this problem be related to using an old version of socket can?
+How can I upgrade Ubuntu to the latest versions of socket-can?
+
+Thanks in advance,
+
+Jeroen Lammertink
 
 
+bmterra@q7buntu:~/user/jla$ uname -a
+Linux q7buntu 3.5.0-26-generic #42~precise1-Ubuntu SMP Mon Mar 11 22:19:4=
+2
+UTC 2013 i686 i686 i386 GNU/Linux
+bmterra@q7buntu:~/user/jla$ cat /proc/net/can/version
+rev 20090105 abi 8
+bmterra@q7buntu:~/user/jla$ ifconfig can0
+can0      Link encap:UNSPEC  HWaddr
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:1128 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:4400 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1024
+          RX bytes:9024 (9.0 KB)  TX bytes:34176 (34.1 KB)
+          Interrupt:18
+
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+
+
+------enig2DMIKLNEEMSDTWLRJXNBJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlFcBlMACgkQjTAFq1RaXHPvEQCghMcstxAschEOAe2ZdlPSa1vG
+s/kAn3OVdIejl4xBcmTmps4aWlr2HONd
+=vLM9
+-----END PGP SIGNATURE-----
+
+------enig2DMIKLNEEMSDTWLRJXNBJ--
