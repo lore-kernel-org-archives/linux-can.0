@@ -1,104 +1,85 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Fwd: Loosing CAN messages with socket-CAN
-Date: Wed, 03 Apr 2013 17:17:13 +0200
-Message-ID: <515C47F9.20708@pengutronix.de>
-References: <OFFDCA8F9E.6364F5F1-ONC1257B42.00342754-C1257B42.003887D3@de.abb.com> <515C064F.2060503@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: BCM periodic send
+Date: Wed, 03 Apr 2013 20:29:24 +0200
+Message-ID: <515C7504.3060403@hartkopp.net>
+References: <001e01ce2bce$ec5abcf0$c51036d0$@annecy-elec.fr> <5154B38F.5080404@hartkopp.net> <000501ce3050$1a5fb580$4f1f2080$@annecy-elec.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2KNKOOJIHHJDUHVXCXNAJ"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54980 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1760462Ab3DCPRQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Apr 2013 11:17:16 -0400
-In-Reply-To: <515C064F.2060503@pengutronix.de>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:37088 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759285Ab3DCS32 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Apr 2013 14:29:28 -0400
+In-Reply-To: <000501ce3050$1a5fb580$4f1f2080$@annecy-elec.fr>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Jeroen Lammertink <jeroen.lammertink@nl.abb.com>
+To: Boris Baskevitch <boris.baskevitch@annecy-elec.fr>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2KNKOOJIHHJDUHVXCXNAJ
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+On 03.04.2013 11:46, Boris Baskevitch wrote:
 
-On 04/03/2013 12:37 PM, Marc Kleine-Budde wrote:
-> We are sending batches of 80 CAN messages using socket CAN to transfer =
-an
-> image for download. After the 80 messages we wait for a response
-
-Are you evaluating the return value of the write() or sendmsg() systemcal=
-l?
-
-> consisting of a single CAN message. Within the messages we have coded a=
-
-> sequence number, so that we can detect lost messages. Besides the CAN
-> device that is subject of download, we have also a (hardware) CAN sniff=
-er
-> on the CAN bus. We typically log CAN messages when we put them in the
-> socket. With this set-up we typically detect loosing a short series of
-> (mostly 5) CAN messages, somewhere halfway the batch of 80. No other
-> devices are present on the CAN bus.
->=20
-> I've dumped below some version and set-up info of Ubuntu, socket-can an=
-d
-> ifconfig.
->=20
-> Is this problem known?
-> May this problem be related to using an old version of socket can?
-
-This is either a userspace problem or a buggy driver. The driver problem
-may have been fixed in the meantime.
-
-> How can I upgrade Ubuntu to the latest versions of socket-can?
-
-First we have to figure out what's brokoen.
-
-> Thanks in advance,
->=20
-> Jeroen Lammertink
->=20
->=20
-> bmterra@q7buntu:~/user/jla$ uname -a
-> Linux q7buntu 3.5.0-26-generic #42~precise1-Ubuntu SMP Mon Mar 11 22:19=
-:42
-> UTC 2013 i686 i686 i386 GNU/Linux
-> bmterra@q7buntu:~/user/jla$ cat /proc/net/can/version
-> rev 20090105 abi 8
-> bmterra@q7buntu:~/user/jla$ ifconfig can0
-> can0      Link encap:UNSPEC  HWaddr
-> 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
->           UP RUNNING NOARP  MTU:16  Metric:1
->           RX packets:1128 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:4400 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:1024
->           RX bytes:9024 (9.0 KB)  TX bytes:34176 (34.1 KB)
->           Interrupt:18
-
-Which CAN hardware are you using?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> Now I have a new issue, the BCM report a RX_TIMEOUT for all periodic
+> messages, even if the message is present on the bus with a shorter period
+> than the one I configured in the BCM.
 
 
-------enig2KNKOOJIHHJDUHVXCXNAJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I assume you set STARTIMER too, which fires the RX timeout timer immediately.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+> The message is correctly received as I can get the RX_CHANGED message for
+> the corresponding IDs.
+> If I use RX_FILTER_ID option, I get a RX_CHANGED and RX_TIMEOUT for each
+> message seen the bus (which is correct for RX_CHANGED, but not for
+> RX_TIMEOUT).
+> By the way, for a periodic RX message, which parameter is the period, ival1
+> or ival2 ? (I had both set for the tests)
 
-iEYEARECAAYFAlFcR/oACgkQjTAFq1RaXHNu6wCbBp05l7aRQPrkGgMXc9wfK791
-LLEAniRvstbwfSRfa7ekkSthvbDzypEA
-=fh1B
------END PGP SIGNATURE-----
 
-------enig2KNKOOJIHHJDUHVXCXNAJ--
+ival1
+
+Please look into
+
+http://svn.berlios.de/wsvn/socketcan/trunk/test/tst-bcm-dump.c
+
+You can download it from the old BerliOS SVN here:
+
+http://developer.berlios.de/svn/?group_id=6475
+
+An here is, what it does:
+
+hartko@keffi-oh:~$ tst-bcm-dump -?
+tst-bcm-dump: invalid option -- '?'
+
+Usage: tst-bcm-dump [options]
+Options: -i <interface> (CAN interface. Default: 'vcan0')
+         -c <can_id>    (used CAN ID. Default: 0x042)
+         -o <timeout>   (Timeout value in nsecs. Default: 0)
+         -t <throttle>  (Throttle value in nsecs. Default: 0)
+         -q <msgs>      (Quit after receiption of #msgs)
+         -s             (set STARTTIMER flag. Default: off)
+
+hartko@keffi-oh:~$ tst-bcm-dump -o 500000
+[1365012787.346834] Writing RX_SETUP with RX_FILTER_ID for can_id <042>
+[1365012800.057653] (1365012800.057338) RX_CHANGED
+[1365012800.557701] RX_TIMEOUT
+^C
+hartko@keffi-oh:~$ tst-bcm-dump -o 500000 -s
+[1365012821.448782] Writing RX_SETUP with RX_FILTER_ID for can_id <042>
+[1365012821.948974] RX_TIMEOUT
+^C
+
+In the first case the RX_TIMEOUT is 500000ns behind the reception of the
+frame. In the second case (with STARTTIMER set) the RX_TIMEOUT emerges even
+when there was no reception of any frame.
+
+You can use
+
+cangen vcan0 -I 042 -g400
+
+to test the functionality of above "tst-bcm-dump -o 500000"
+
+When cangen is termintated, the RX_TIMEOUT appears.
+
+Regards,
+Oliver
+
