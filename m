@@ -1,92 +1,78 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: BCM periodic send
-Date: Thu, 04 Apr 2013 20:44:46 +0200
-Message-ID: <515DCA1E.7070502@hartkopp.net>
-References: <001e01ce2bce$ec5abcf0$c51036d0$@annecy-elec.fr> <5154B38F.5080404@hartkopp.net> <000501ce3050$1a5fb580$4f1f2080$@annecy-elec.fr> <000601ce312f$5d07f6b0$1717e410$@annecy-elec.fr>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Losing CAN messages with socket-CAN
+Date: Thu, 04 Apr 2013 23:12:24 +0200
+Message-ID: <515DECB8.6090909@grandegger.com>
+References: <20130404161608.8B2BF3E5B2D4A@bmail02.one.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:35486 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1761136Ab3DDSot (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Apr 2013 14:44:49 -0400
-In-Reply-To: <000601ce312f$5d07f6b0$1717e410$@annecy-elec.fr>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:57963 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1763239Ab3DDVM3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Apr 2013 17:12:29 -0400
+In-Reply-To: <20130404161608.8B2BF3E5B2D4A@bmail02.one.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Boris Baskevitch <boris.baskevitch@annecy-elec.fr>
+To: "j.p.lammertink" <j.p.lammertink@kubicas.com>
 Cc: linux-can@vger.kernel.org
 
-On 04.04.2013 14:24, Boris Baskevitch wrote:
+On 04/04/2013 06:16 PM, j.p.lammertink wrote:
+> Hi Wolfgang,
+>=20
+> It looks like you can help us out. That would realy be great!
+> I've collected answers to your questions and pasted them below.
 
-> I finally found out in a German documentation the actual meaning of ival1,
-> ival2 and data (mask) fields in RX_SETUP.
-> I didn't see it in English, is there a reference documentation that I
-> missed?
+=2E..
 
+> <>This CAN controller identifies itself (according to data sheet) as =
+follows:
+> <>    Vendor Identification Register    8086h
+> <>    Device Identification Register    8818h
+> <>    Revision Identification Register  00h
+> <>    Class Code Register               0C0900h
+>=20
+> < Ah, the "pch_can" driver does have known issues. End of last year I=
+ sent
+> < some patches to improve the "pch_can" or, even better, make the "c_=
+can"
+> < driver work on the EG20T as well. See:
+>=20
+> <   http://marc.info/?l=3Dlinux-can&m=3D135531975013055&w=3D2
+>=20
+> < Are you able to build and use a recent mainline kernel? I need to f=
+igure
+> < out how to help you best.
+>=20
+> Currently a colleage of mine is attempting to build the kernel (to be=
+ able to
+> apply patches to solve a display issue). I expect he will succeed one=
+ of these
+> days.
+> Wouldn't it be simplest just to use the latest sources of this driver=
+?
 
-Hm - no.
+These patches are not yet mainline because they do not fix all issues. =
+I
+do not have a system at hand and therefore somebody else needs to take
+care. We actually want to drop the pch_can driver in favor of an update=
+d
+c_can driver. If you go over the patch series I pointed out you will ge=
+t
+more information. Anyway, we got positive feedback especially with the
+c_can driver for the EG20T.
 
-Daniele Venzano suggested to add some documentation for the BCM:
+> Can you tell me which sources I should look for? (Probably I've downl=
+oaded them
+> already, but I wish to replace only the files that make the differenc=
+e)
 
-http://www.brownhat.org/docs/socketcan.html
+I think that patch 1/7 of the series may already fix your TX problems:
 
-And i started the documentation split in the old BerliOS SVN:
+  http://marc.info/?l=3Dlinux-can&m=3D135526076021515&w=3D2
+=B4
+If you apply the remaining patches, you can select the "c_can_pci"
+driver. If you get trouble with these patches I need to adapt them to a
+more recent kernel version.
 
-http://svn.berlios.de/wsvn/socketcan/trunk/kernel/2.6/Documentation/networking/can/
-
-But unfortunately this didn't go further ... 
-
-> I also have to note for other users the fact that when you get a RX_TIMEOUT
-> you have to check msg_head.can_id to find out the offending message ID and
-> not frame[0].can_id which is not updated.
-
-
-The RX_TIMEOUT message has no struct can_frame.
-
-It only consists of a struct bcm_msg_head!
-
-That's why frame[0].can_id is not updated at all in RX_TIMEOUT messages :-)
-
-> So now the timeout feature works in my application but I still have the
-> issue with both RX_TIMEOUT and RX_CHANGED flags always set together.
-
-
-Flags?
-
-RX_TIMEOUT and RX_CHANGED are two different messages (with different sizes).
-
-> This issue is masked when I use the following structure:
-> if (msg.msg_head.opcode & RX_CHANGED) {
-> // extract data from frame and send to process
-> } else if (msg.msg_head.opcode & RX_TIMEOUT) {
-> // tell process that the frame is absent
-> }
-> But if I replace the "else if" by a simple "if" I have wrong timeout
-> signaling for each frame received.
-> Is it a normal behavior?
-
-
-Your if statement is wrong.
-
-Use
- 
-	if (msg.msg_head.opcode == RX_CHANGED)
-
-instead of
-
-	if (msg.msg_head.opcode & RX_CHANGED)
-
-The opcode is a enum value and not a bit field.
-
-> 
-> I'm still working on my timer inaccuracy issue. It's not linked to
-> CLOCK_TICK_RATE which is OK. It's probably not directly linked to the BCM,
-> but still if anybody has any hints, I'm taking.
-
-
-No idea so far.
-
-Regards,
-Oliver
-
+Wolfgang.
