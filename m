@@ -1,334 +1,587 @@
-From: "j.p.lammertink" <j.p.lammertink@kubicas.com>
-Subject: Losing CAN messages with socket-CAN
-Date: Fri, 05 Apr 2013 15:31:40 +0200
-Message-ID: <20130405133140.17A179B5161E0@bmail04.one.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC PATCH] can: sja1000: use common prefix for all sja1000 defines
+Date: Fri, 05 Apr 2013 20:24:55 +0200
+Message-ID: <515F16F7.7020508@hartkopp.net>
+References: <1364974929-14702-1-git-send-email-mkl@pengutronix.de> <515C8834.7040006@hartkopp.net> <515E84AF.303@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webmail-out2.one.com ([91.198.169.17]:35819 "EHLO
-	webmail-out2.b-one.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1161177Ab3DENbm convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Apr 2013 09:31:42 -0400
-Content-Disposition: inline
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:63406 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1162370Ab3DESY7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Apr 2013 14:24:59 -0400
+In-Reply-To: <515E84AF.303@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
-Hi Wolfgang,
+On 05.04.2013 10:00, Marc Kleine-Budde wrote:
 
-Thanks for your response. Still working just before midnight ...
-Unfortunatelly it doesn't work yet.
-I've collected test results and pasted them below.
+> On 04/03/2013 09:51 PM, Oliver Hartkopp wrote:
+>> Hello Marc,
+>>
+>> On 03.04.2013 09:42, Marc Kleine-Budde wrote:
+>>
+>>
+>>> -	priv->write_reg(priv, REG_CDR, CDR_PELICAN);
+>>> +	priv->write_reg(priv, SJA1000_REG_CDR, CDR_PELICAN);
+>>
+>>
+>> What about CDR_PELICAN here?
+> 
+> It's from a different file, IIRC.
 
-Best Regards,
 
-Jeroen Lammertink
+Yes, it is.
 
------------------------------------------------------------------------=
----
 
-<><><> We are sending batches of 80 CAN messages using socket CAN to tr=
-ansfer an
-<><><> image for download. After the 80 messages we wait for a response
+>>
+>>> +	priv->write_reg(priv, SJA1000_REG_OCR, priv->ocr | OCR_MODE_NORMAL);
+>>
+>>
+>> and OCR_MODE_NORMAL here?
+> 
+> same here.
+> 
 
-<><><Are you evaluating the return value of the write() or sendmsg() sy=
-stemcall?
 
-<><> We do evaluate the write call to the socket with an assert. I=E2=80=
-=99ve included
-<><> the code below. (See CCanPort::Write()). I=E2=80=99ve also include=
-d the code in
-<><> which the socket is created, just to be complete. When the problem=
- (of
-<><> losing CAN messages) happens, the Assert is not triggered. So I de=
-duce
-<><> that the socket remains unaware of the losing of messages.
+dito.
 
-<><><> consisting of a single CAN message. Within the messages we have =
-coded a
-<><><> sequence number, so that we can detect lost messages. Besides th=
-e CAN
-<><><> device that is subject of download, we have also a (hardware) CA=
-N sniffer
-<><><> on the CAN bus. We typically log CAN messages when we put them i=
-n the
-<><><> socket. With this set-up we typically detect losing a short seri=
-es of
-<><><> (mostly 5) CAN messages, somewhere halfway the batch of 80. No o=
-ther
-<><><> devices are present on the CAN bus.
+But when we add to each register *content* definition the SJA1000_ prefix ...
+why not adding this for the OCR and CDR register content too then?
 
-<><><> I've dumped below some version and set-up info of Ubuntu, socket=
--can and
-<><><> ifconfig.
+>>
+>> All the defines from include/linux/can/platform/sja1000.h are not unified too.
+>>
+>> What about this patch?
+>>
+>> I used SJA_ as prefix for all relevant defines - even for SJA1000_ defines:
+> 
+> I like SJA1000_ more then SJA_, but I don't insist on that... :)
 
-<><><> Is this problem known?
-<><><> May this problem be related to using an old version of socket ca=
-n?
 
-<><>< This is either a userspace problem or a buggy driver. The driver =
-problem
-<><>< may have been fixed in the meantime.
+Wolfgang too :-)
 
-<><><> How can I upgrade Ubuntu to the latest versions of socket-can?
+What about only changing the REG_ defines to SJA1000_ and let the register
+content values as-is?
 
-<><>< First we have to figure out what's broken.
 
-<><><> ----------------------------------------------------------------=
-----------
-<><><> bmterra@q7buntu:~/user/jla$ uname -a
-<><><> Linux q7buntu 3.5.0-26-generic #42~precise1-Ubuntu SMP Mon Mar 1=
-1 22:19:42
-<><><> UTC 2013 i686 i686 i386 GNU/Linux
-<><><> bmterra@q7buntu:~/user/jla$ cat /proc/net/can/version
-<><><> rev 20090105 abi 8
-<><><> bmterra@q7buntu:~/user/jla$ ifconfig can0
-<><><> can0      Link encap:UNSPEC  HWaddr
-<><><> 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
-<><><>           UP RUNNING NOARP  MTU:16  Metric:1
-<><><>           RX packets:1128 errors:0 dropped:0 overruns:0 frame:0
-<><><>           TX packets:4400 errors:0 dropped:0 overruns:0 carrier:=
-0
-<><><>           collisions:0 txqueuelen:1024
-<><><>           RX bytes:9024 (9.0 KB)  TX bytes:34176 (34.1 KB)
-<><><>           Interrupt:18
-<><><> ----------------------------------------------------------------=
-----------
+ ems_pci.c     |    6 +-
+ ems_pcmcia.c  |    6 +-
+ kvaser_pci.c  |    4 -
+ peak_pci.c    |    2 
+ peak_pcmcia.c |    8 +--
+ plx_pci.c     |   12 ++---
+ sja1000.c     |  126 +++++++++++++++++++++++++++++-----------------------------
+ sja1000.h     |   68 +++++++++++++++----------------
+ 8 files changed, 117 insertions(+), 115 deletions(-)
 
-<><>< Which CAN hardware are you using?
 
-<><>Qseven module PQ7-M105IT
-<><>with Intel Platform Controller HUB EG20T IOH
-<><>with a =E2=80=9CBOSCH CAN Protocol Version 2.0B Active=20
-<><>    (ISO 11519, ISO 11898, and SAEJ2411)=E2=80=9D CAN controller
 
-<>< Which driver do you use? (check "ip -d -s link show can0").
+diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
+index 36d298d..3752342 100644
+--- a/drivers/net/can/sja1000/ems_pci.c
++++ b/drivers/net/can/sja1000/ems_pci.c
+@@ -168,12 +168,12 @@ static inline int ems_pci_check_chan(const struct sja1000_priv *priv)
+ 	unsigned char res;
+ 
+ 	/* Make sure SJA1000 is in reset mode */
+-	priv->write_reg(priv, REG_MOD, 1);
++	priv->write_reg(priv, SJA1000_MOD, 1);
+ 
+-	priv->write_reg(priv, REG_CDR, CDR_PELICAN);
++	priv->write_reg(priv, SJA1000_CDR, CDR_PELICAN);
+ 
+ 	/* read reset-values */
+-	res = priv->read_reg(priv, REG_CDR);
++	res = priv->read_reg(priv, SJA1000_CDR);
+ 
+ 	if (res == CDR_PELICAN)
+ 		return 1;
+diff --git a/drivers/net/can/sja1000/ems_pcmcia.c b/drivers/net/can/sja1000/ems_pcmcia.c
+index 5c2f3fb..a3aa681 100644
+--- a/drivers/net/can/sja1000/ems_pcmcia.c
++++ b/drivers/net/can/sja1000/ems_pcmcia.c
+@@ -126,11 +126,11 @@ static irqreturn_t ems_pcmcia_interrupt(int irq, void *dev_id)
+ static inline int ems_pcmcia_check_chan(struct sja1000_priv *priv)
+ {
+ 	/* Make sure SJA1000 is in reset mode */
+-	ems_pcmcia_write_reg(priv, REG_MOD, 1);
+-	ems_pcmcia_write_reg(priv, REG_CDR, CDR_PELICAN);
++	ems_pcmcia_write_reg(priv, SJA1000_MOD, 1);
++	ems_pcmcia_write_reg(priv, SJA1000_CDR, CDR_PELICAN);
+ 
+ 	/* read reset-values */
+-	if (ems_pcmcia_read_reg(priv, REG_CDR) == CDR_PELICAN)
++	if (ems_pcmcia_read_reg(priv, SJA1000_CDR) == CDR_PELICAN)
+ 		return 1;
+ 
+ 	return 0;
+diff --git a/drivers/net/can/sja1000/kvaser_pci.c b/drivers/net/can/sja1000/kvaser_pci.c
+index 37b0381..217585b 100644
+--- a/drivers/net/can/sja1000/kvaser_pci.c
++++ b/drivers/net/can/sja1000/kvaser_pci.c
+@@ -159,9 +159,9 @@ static int number_of_sja1000_chip(void __iomem *base_addr)
+ 	for (i = 0; i < MAX_NO_OF_CHANNELS; i++) {
+ 		/* reset chip */
+ 		iowrite8(MOD_RM, base_addr +
+-			 (i * KVASER_PCI_PORT_BYTES) + REG_MOD);
++			 (i * KVASER_PCI_PORT_BYTES) + SJA1000_MOD);
+ 		status = ioread8(base_addr +
+-				 (i * KVASER_PCI_PORT_BYTES) + REG_MOD);
++				 (i * KVASER_PCI_PORT_BYTES) + SJA1000_MOD);
+ 		/* check reset bit */
+ 		if (!(status & MOD_RM))
+ 			break;
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index d1e7f10..6b6f0ad 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -402,7 +402,7 @@ static void peak_pciec_write_reg(const struct sja1000_priv *priv,
+ 	int c = (priv->reg_base - card->reg_base) / PEAK_PCI_CHAN_SIZE;
+ 
+ 	/* sja1000 register changes control the leds state */
+-	if (port == REG_MOD)
++	if (port == SJA1000_MOD)
+ 		switch (val) {
+ 		case MOD_RM:
+ 			/* Reset Mode: set led on */
+diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
+index 1a7020b..977901a 100644
+--- a/drivers/net/can/sja1000/peak_pcmcia.c
++++ b/drivers/net/can/sja1000/peak_pcmcia.c
+@@ -196,7 +196,7 @@ static void pcan_write_canreg(const struct sja1000_priv *priv, int port, u8 v)
+ 	int c = (priv->reg_base - card->ioport_addr) / PCC_CHAN_SIZE;
+ 
+ 	/* sja1000 register changes control the leds state */
+-	if (port == REG_MOD)
++	if (port == SJA1000_MOD)
+ 		switch (v) {
+ 		case MOD_RM:
+ 			/* Reset Mode: set led on */
+@@ -509,11 +509,11 @@ static void pcan_free_channels(struct pcan_pccard *card)
+ static inline int pcan_channel_present(struct sja1000_priv *priv)
+ {
+ 	/* make sure SJA1000 is in reset mode */
+-	pcan_write_canreg(priv, REG_MOD, 1);
+-	pcan_write_canreg(priv, REG_CDR, CDR_PELICAN);
++	pcan_write_canreg(priv, SJA1000_MOD, 1);
++	pcan_write_canreg(priv, SJA1000_CDR, CDR_PELICAN);
+ 
+ 	/* read reset-values */
+-	if (pcan_read_canreg(priv, REG_CDR) == CDR_PELICAN)
++	if (pcan_read_canreg(priv, SJA1000_CDR) == CDR_PELICAN)
+ 		return 1;
+ 
+ 	return 0;
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index 3c18d7d..c52c1e9 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -348,20 +348,20 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
+ 	 */
+ 	if ((priv->read_reg(priv, REG_CR) & REG_CR_BASICCAN_INITIAL_MASK) ==
+ 	    REG_CR_BASICCAN_INITIAL &&
+-	    (priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_BASICCAN_INITIAL) &&
+-	    (priv->read_reg(priv, REG_IR) == REG_IR_BASICCAN_INITIAL))
++	    (priv->read_reg(priv, SJA1000_SR) == REG_SR_BASICCAN_INITIAL) &&
++	    (priv->read_reg(priv, SJA1000_IR) == REG_IR_BASICCAN_INITIAL))
+ 		flag = 1;
+ 
+ 	/* Bring the SJA1000 into the PeliCAN mode*/
+-	priv->write_reg(priv, REG_CDR, CDR_PELICAN);
++	priv->write_reg(priv, SJA1000_CDR, CDR_PELICAN);
+ 
+ 	/*
+ 	 * Check registers after reset in the PeliCAN mode.
+ 	 * See states on p. 23 of the Datasheet.
+ 	 */
+-	if (priv->read_reg(priv, REG_MOD) == REG_MOD_PELICAN_INITIAL &&
+-	    priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_PELICAN_INITIAL &&
+-	    priv->read_reg(priv, REG_IR) == REG_IR_PELICAN_INITIAL)
++	if (priv->read_reg(priv, SJA1000_MOD) == REG_MOD_PELICAN_INITIAL &&
++	    priv->read_reg(priv, SJA1000_SR) == REG_SR_PELICAN_INITIAL &&
++	    priv->read_reg(priv, SJA1000_IR) == REG_IR_PELICAN_INITIAL)
+ 		return flag;
+ 
+ 	return 0;
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index e4df307..7164a99 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -91,14 +91,14 @@ static void sja1000_write_cmdreg(struct sja1000_priv *priv, u8 val)
+ 	 * the write_reg() operation - especially on SMP systems.
+ 	 */
+ 	spin_lock_irqsave(&priv->cmdreg_lock, flags);
+-	priv->write_reg(priv, REG_CMR, val);
+-	priv->read_reg(priv, SJA1000_REG_SR);
++	priv->write_reg(priv, SJA1000_CMR, val);
++	priv->read_reg(priv, SJA1000_SR);
+ 	spin_unlock_irqrestore(&priv->cmdreg_lock, flags);
+ }
+ 
+ static int sja1000_is_absent(struct sja1000_priv *priv)
+ {
+-	return (priv->read_reg(priv, REG_MOD) == 0xFF);
++	return (priv->read_reg(priv, SJA1000_MOD) == 0xFF);
+ }
+ 
+ static int sja1000_probe_chip(struct net_device *dev)
+@@ -116,11 +116,11 @@ static int sja1000_probe_chip(struct net_device *dev)
+ static void set_reset_mode(struct net_device *dev)
+ {
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+-	unsigned char status = priv->read_reg(priv, REG_MOD);
++	unsigned char status = priv->read_reg(priv, SJA1000_MOD);
+ 	int i;
+ 
+ 	/* disable interrupts */
+-	priv->write_reg(priv, REG_IER, IRQ_OFF);
++	priv->write_reg(priv, SJA1000_IER, IRQ_OFF);
+ 
+ 	for (i = 0; i < 100; i++) {
+ 		/* check reset bit */
+@@ -129,9 +129,10 @@ static void set_reset_mode(struct net_device *dev)
+ 			return;
+ 		}
+ 
+-		priv->write_reg(priv, REG_MOD, MOD_RM);	/* reset chip */
++		/* reset chip */
++		priv->write_reg(priv, SJA1000_MOD, MOD_RM);
+ 		udelay(10);
+-		status = priv->read_reg(priv, REG_MOD);
++		status = priv->read_reg(priv, SJA1000_MOD);
+ 	}
+ 
+ 	netdev_err(dev, "setting SJA1000 into reset mode failed!\n");
+@@ -140,7 +141,7 @@ static void set_reset_mode(struct net_device *dev)
+ static void set_normal_mode(struct net_device *dev)
+ {
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+-	unsigned char status = priv->read_reg(priv, REG_MOD);
++	unsigned char status = priv->read_reg(priv, SJA1000_MOD);
+ 	int i;
+ 
+ 	for (i = 0; i < 100; i++) {
+@@ -149,22 +150,22 @@ static void set_normal_mode(struct net_device *dev)
+ 			priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 			/* enable interrupts */
+ 			if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+-				priv->write_reg(priv, REG_IER, IRQ_ALL);
++				priv->write_reg(priv, SJA1000_IER, IRQ_ALL);
+ 			else
+-				priv->write_reg(priv, REG_IER,
++				priv->write_reg(priv, SJA1000_IER,
+ 						IRQ_ALL & ~IRQ_BEI);
+ 			return;
+ 		}
+ 
+ 		/* set chip to normal mode */
+ 		if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+-			priv->write_reg(priv, REG_MOD, MOD_LOM);
++			priv->write_reg(priv, SJA1000_MOD, MOD_LOM);
+ 		else
+-			priv->write_reg(priv, REG_MOD, 0x00);
++			priv->write_reg(priv, SJA1000_MOD, 0x00);
+ 
+ 		udelay(10);
+ 
+-		status = priv->read_reg(priv, REG_MOD);
++		status = priv->read_reg(priv, SJA1000_MOD);
+ 	}
+ 
+ 	netdev_err(dev, "setting SJA1000 into normal mode failed!\n");
+@@ -179,9 +180,9 @@ static void sja1000_start(struct net_device *dev)
+ 		set_reset_mode(dev);
+ 
+ 	/* Clear error counters and error code capture */
+-	priv->write_reg(priv, REG_TXERR, 0x0);
+-	priv->write_reg(priv, REG_RXERR, 0x0);
+-	priv->read_reg(priv, REG_ECC);
++	priv->write_reg(priv, SJA1000_TXERR, 0x0);
++	priv->write_reg(priv, SJA1000_RXERR, 0x0);
++	priv->read_reg(priv, SJA1000_ECC);
+ 
+ 	/* leave reset mode */
+ 	set_normal_mode(dev);
+@@ -217,8 +218,8 @@ static int sja1000_set_bittiming(struct net_device *dev)
+ 
+ 	netdev_info(dev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+ 
+-	priv->write_reg(priv, REG_BTR0, btr0);
+-	priv->write_reg(priv, REG_BTR1, btr1);
++	priv->write_reg(priv, SJA1000_BTR0, btr0);
++	priv->write_reg(priv, SJA1000_BTR1, btr1);
+ 
+ 	return 0;
+ }
+@@ -228,8 +229,8 @@ static int sja1000_get_berr_counter(const struct net_device *dev,
+ {
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+ 
+-	bec->txerr = priv->read_reg(priv, REG_TXERR);
+-	bec->rxerr = priv->read_reg(priv, REG_RXERR);
++	bec->txerr = priv->read_reg(priv, SJA1000_TXERR);
++	bec->rxerr = priv->read_reg(priv, SJA1000_RXERR);
+ 
+ 	return 0;
+ }
+@@ -247,20 +248,20 @@ static void chipset_init(struct net_device *dev)
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+ 
+ 	/* set clock divider and output control register */
+-	priv->write_reg(priv, REG_CDR, priv->cdr | CDR_PELICAN);
++	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
+ 
+ 	/* set acceptance filter (accept all) */
+-	priv->write_reg(priv, REG_ACCC0, 0x00);
+-	priv->write_reg(priv, REG_ACCC1, 0x00);
+-	priv->write_reg(priv, REG_ACCC2, 0x00);
+-	priv->write_reg(priv, REG_ACCC3, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC1, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC2, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC3, 0x00);
+ 
+-	priv->write_reg(priv, REG_ACCM0, 0xFF);
+-	priv->write_reg(priv, REG_ACCM1, 0xFF);
+-	priv->write_reg(priv, REG_ACCM2, 0xFF);
+-	priv->write_reg(priv, REG_ACCM3, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM0, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM1, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM2, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM3, 0xFF);
+ 
+-	priv->write_reg(priv, REG_OCR, priv->ocr | OCR_MODE_NORMAL);
++	priv->write_reg(priv, SJA1000_OCR, priv->ocr | OCR_MODE_NORMAL);
+ }
+ 
+ /*
+@@ -289,21 +290,21 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 	id = cf->can_id;
+ 
+ 	if (id & CAN_RTR_FLAG)
+-		fi |= FI_RTR;
++		fi |= SJA1000_FI_RTR;
+ 
+ 	if (id & CAN_EFF_FLAG) {
+-		fi |= FI_FF;
+-		dreg = EFF_BUF;
+-		priv->write_reg(priv, REG_FI, fi);
+-		priv->write_reg(priv, REG_ID1, (id & 0x1fe00000) >> (5 + 16));
+-		priv->write_reg(priv, REG_ID2, (id & 0x001fe000) >> (5 + 8));
+-		priv->write_reg(priv, REG_ID3, (id & 0x00001fe0) >> 5);
+-		priv->write_reg(priv, REG_ID4, (id & 0x0000001f) << 3);
++		fi |= SJA1000_FI_FF;
++		dreg = SJA1000_EFF_BUF;
++		priv->write_reg(priv, SJA1000_FI, fi);
++		priv->write_reg(priv, SJA1000_ID1, (id & 0x1fe00000) >> 21);
++		priv->write_reg(priv, SJA1000_ID2, (id & 0x001fe000) >> 13);
++		priv->write_reg(priv, SJA1000_ID3, (id & 0x00001fe0) >> 5);
++		priv->write_reg(priv, SJA1000_ID4, (id & 0x0000001f) << 3);
+ 	} else {
+-		dreg = SFF_BUF;
+-		priv->write_reg(priv, REG_FI, fi);
+-		priv->write_reg(priv, REG_ID1, (id & 0x000007f8) >> 3);
+-		priv->write_reg(priv, REG_ID2, (id & 0x00000007) << 5);
++		dreg = SJA1000_SFF_BUF;
++		priv->write_reg(priv, SJA1000_FI, fi);
++		priv->write_reg(priv, SJA1000_ID1, (id & 0x000007f8) >> 3);
++		priv->write_reg(priv, SJA1000_ID2, (id & 0x00000007) << 5);
+ 	}
+ 
+ 	for (i = 0; i < dlc; i++)
+@@ -335,25 +336,25 @@ static void sja1000_rx(struct net_device *dev)
+ 	if (skb == NULL)
+ 		return;
+ 
+-	fi = priv->read_reg(priv, REG_FI);
++	fi = priv->read_reg(priv, SJA1000_FI);
+ 
+-	if (fi & FI_FF) {
++	if (fi & SJA1000_FI_FF) {
+ 		/* extended frame format (EFF) */
+-		dreg = EFF_BUF;
+-		id = (priv->read_reg(priv, REG_ID1) << (5 + 16))
+-		    | (priv->read_reg(priv, REG_ID2) << (5 + 8))
+-		    | (priv->read_reg(priv, REG_ID3) << 5)
+-		    | (priv->read_reg(priv, REG_ID4) >> 3);
++		dreg = SJA1000_EFF_BUF;
++		id = (priv->read_reg(priv, SJA1000_ID1) << 21)
++		    | (priv->read_reg(priv, SJA1000_ID2) << 13)
++		    | (priv->read_reg(priv, SJA1000_ID3) << 5)
++		    | (priv->read_reg(priv, SJA1000_ID4) >> 3);
+ 		id |= CAN_EFF_FLAG;
+ 	} else {
+ 		/* standard frame format (SFF) */
+-		dreg = SFF_BUF;
+-		id = (priv->read_reg(priv, REG_ID1) << 3)
+-		    | (priv->read_reg(priv, REG_ID2) >> 5);
++		dreg = SJA1000_SFF_BUF;
++		id = (priv->read_reg(priv, SJA1000_ID1) << 3)
++		    | (priv->read_reg(priv, SJA1000_ID2) >> 5);
+ 	}
+ 
+ 	cf->can_dlc = get_can_dlc(fi & 0x0F);
+-	if (fi & FI_RTR) {
++	if (fi & SJA1000_FI_RTR) {
+ 		id |= CAN_RTR_FLAG;
+ 	} else {
+ 		for (i = 0; i < cf->can_dlc; i++)
+@@ -414,7 +415,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 		priv->can.can_stats.bus_error++;
+ 		stats->rx_errors++;
+ 
+-		ecc = priv->read_reg(priv, REG_ECC);
++		ecc = priv->read_reg(priv, SJA1000_ECC);
+ 
+ 		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+ 
+@@ -448,7 +449,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	if (isrc & IRQ_ALI) {
+ 		/* arbitration lost interrupt */
+ 		netdev_dbg(dev, "arbitration lost interrupt\n");
+-		alc = priv->read_reg(priv, REG_ALC);
++		alc = priv->read_reg(priv, SJA1000_ALC);
+ 		priv->can.can_stats.arbitration_lost++;
+ 		stats->tx_errors++;
+ 		cf->can_id |= CAN_ERR_LOSTARB;
+@@ -457,8 +458,8 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 
+ 	if (state != priv->can.state && (state == CAN_STATE_ERROR_WARNING ||
+ 					 state == CAN_STATE_ERROR_PASSIVE)) {
+-		uint8_t rxerr = priv->read_reg(priv, REG_RXERR);
+-		uint8_t txerr = priv->read_reg(priv, REG_TXERR);
++		uint8_t rxerr = priv->read_reg(priv, SJA1000_RXERR);
++		uint8_t txerr = priv->read_reg(priv, SJA1000_TXERR);
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		if (state == CAN_STATE_ERROR_WARNING) {
+ 			priv->can.can_stats.error_warning++;
+@@ -494,15 +495,16 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	int n = 0;
+ 
+ 	/* Shared interrupts and IRQ off? */
+-	if (priv->read_reg(priv, REG_IER) == IRQ_OFF)
++	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
+ 		return IRQ_NONE;
+ 
+ 	if (priv->pre_irq)
+ 		priv->pre_irq(priv);
+ 
+-	while ((isrc = priv->read_reg(priv, REG_IR)) && (n < SJA1000_MAX_IRQ)) {
++	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
++	       (n < SJA1000_MAX_IRQ)) {
+ 		n++;
+-		status = priv->read_reg(priv, SJA1000_REG_SR);
++		status = priv->read_reg(priv, SJA1000_SR);
+ 		/* check for absent controller due to hw unplug */
+ 		if (status == 0xFF && sja1000_is_absent(priv))
+ 			return IRQ_NONE;
+@@ -519,7 +521,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 			} else {
+ 				/* transmission complete */
+ 				stats->tx_bytes +=
+-					priv->read_reg(priv, REG_FI) & 0xf;
++					priv->read_reg(priv, SJA1000_FI) & 0xf;
+ 				stats->tx_packets++;
+ 				can_get_echo_skb(dev, 0);
+ 			}
+@@ -530,7 +532,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 			/* receive interrupt */
+ 			while (status & SR_RBS) {
+ 				sja1000_rx(dev);
+-				status = priv->read_reg(priv, SJA1000_REG_SR);
++				status = priv->read_reg(priv, SJA1000_SR);
+ 				/* check for absent controller */
+ 				if (status == 0xFF && sja1000_is_absent(priv))
+ 					return IRQ_NONE;
+diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
+index aa48e05..fcb9aef 100644
+--- a/drivers/net/can/sja1000/sja1000.h
++++ b/drivers/net/can/sja1000/sja1000.h
+@@ -54,46 +54,46 @@
+ #define SJA1000_MAX_IRQ 20	/* max. number of interrupts handled in ISR */
+ 
+ /* SJA1000 registers - manual section 6.4 (Pelican Mode) */
+-#define REG_MOD		0x00
+-#define REG_CMR		0x01
+-#define SJA1000_REG_SR		0x02
+-#define REG_IR		0x03
+-#define REG_IER		0x04
+-#define REG_ALC		0x0B
+-#define REG_ECC		0x0C
+-#define REG_EWL		0x0D
+-#define REG_RXERR	0x0E
+-#define REG_TXERR	0x0F
+-#define REG_ACCC0	0x10
+-#define REG_ACCC1	0x11
+-#define REG_ACCC2	0x12
+-#define REG_ACCC3	0x13
+-#define REG_ACCM0	0x14
+-#define REG_ACCM1	0x15
+-#define REG_ACCM2	0x16
+-#define REG_ACCM3	0x17
+-#define REG_RMC		0x1D
+-#define REG_RBSA	0x1E
++#define SJA1000_MOD		0x00
++#define SJA1000_CMR		0x01
++#define SJA1000_SR		0x02
++#define SJA1000_IR		0x03
++#define SJA1000_IER		0x04
++#define SJA1000_ALC		0x0B
++#define SJA1000_ECC		0x0C
++#define SJA1000_EWL		0x0D
++#define SJA1000_RXERR	0x0E
++#define SJA1000_TXERR	0x0F
++#define SJA1000_ACCC0	0x10
++#define SJA1000_ACCC1	0x11
++#define SJA1000_ACCC2	0x12
++#define SJA1000_ACCC3	0x13
++#define SJA1000_ACCM0	0x14
++#define SJA1000_ACCM1	0x15
++#define SJA1000_ACCM2	0x16
++#define SJA1000_ACCM3	0x17
++#define SJA1000_RMC		0x1D
++#define SJA1000_RBSA	0x1E
+ 
+ /* Common registers - manual section 6.5 */
+-#define REG_BTR0	0x06
+-#define REG_BTR1	0x07
+-#define REG_OCR		0x08
+-#define REG_CDR		0x1F
++#define SJA1000_BTR0	0x06
++#define SJA1000_BTR1	0x07
++#define SJA1000_OCR		0x08
++#define SJA1000_CDR		0x1F
+ 
+-#define REG_FI		0x10
+-#define SFF_BUF		0x13
+-#define EFF_BUF		0x15
++#define SJA1000_FI		0x10
++#define SJA1000_SFF_BUF		0x13
++#define SJA1000_EFF_BUF		0x15
+ 
+-#define FI_FF		0x80
+-#define FI_RTR		0x40
++#define SJA1000_FI_FF		0x80
++#define SJA1000_FI_RTR		0x40
+ 
+-#define REG_ID1		0x11
+-#define REG_ID2		0x12
+-#define REG_ID3		0x13
+-#define REG_ID4		0x14
++#define SJA1000_ID1		0x11
++#define SJA1000_ID2		0x12
++#define SJA1000_ID3		0x13
++#define SJA1000_ID4		0x14
+ 
+-#define CAN_RAM		0x20
++#define SJA1000_CAN_RAM		0x20
+ 
+ /* mode register */
+ #define MOD_RM		0x01
 
-<>---------------------------------------------------------------------=
------
-<>bmterra@q7buntu:~/user/jla$ ip -d -s link show can0
-<>3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNO=
-WN qlen 1024
-<>    link/can=20
-<>    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0=20
-<>    bitrate 500000 sample-point 0.850=20
-<>    tq 100 prop-seg 8 phase-seg1 8 phase-seg2 3 sjw 1
-<>    pch_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
-<>    clock 50000000
-<>    re-started bus-errors arbit-lost error-warn error-pass bus-off
-<>    0          0          0          0          0          0        =20
-<>    RX: bytes  packets  errors  dropped overrun mcast  =20
-<>    7464       933      0       0       0       0     =20
-<>    TX: bytes  packets  errors  dropped carrier collsns=20
-<>    220064     27508    0       0       0       0
-<>---------------------------------------------------------------------=
------
-<>Textdump above contains "pch_can:" ...
 
-<><>This CAN controller identifies itself (according to data sheet) as =
-follows:
-<><>    Vendor Identification Register    8086h
-<><>    Device Identification Register    8818h
-<><>    Revision Identification Register  00h
-<><>    Class Code Register               0C0900h
 
-<>< Ah, the "pch_can" driver does have known issues. End of last year I=
- sent
-<>< some patches to improve the "pch_can" or, even better, make the "c_=
-can"
-<>< driver work on the EG20T as well. See:
-
-<><   http://marc.info/?l=3Dlinux-can&m=3D135531975013055&w=3D2
-
-<>< Are you able to build and use a recent mainline kernel? I need to f=
-igure
-<>< out how to help you best.
-
-<>Currently a colleage of mine is attempting to build the kernel (to be=
- able to
-<>apply patches to solve a display issue). I expect he will succeed one=
- of these
-<>days.
-
-We succeeded in buildin the kernel.
-
-<>Wouldn't it be simplest just to use the latest sources of this driver=
-?
-
-< These patches are not yet mainline because they do not fix all issues=
-=2E I
-< do not have a system at hand and therefore somebody else needs to tak=
-e
-< care. We actually want to drop the pch_can driver in favor of an upda=
-ted
-< c_can driver. If you go over the patch series I pointed out you will =
-get
-< more information. Anyway, we got positive feedback especially with th=
-e
-< c_can driver for the EG20T.
-
-<>Can you tell me which sources I should look for? (Probably I've downl=
-oaded them
-<>already, but I wish to replace only the files that make the differenc=
-e)
-
-< I think that patch 1/7 of the series may already fix your TX problems=
-:
-
-<   http://marc.info/?l=3Dlinux-can&m=3D135526076021515&w=3D2
-< =C2=B4
-< If you apply the remaining patches, you can select the "c_can_pci"
-< driver. If you get trouble with these patches I need to adapt them to=
- a
-< more recent kernel version.
-
-My colleage has applied the patch you mentioned above. The patching was=
-=20
-straightforward without any problems. Also building went fine (->pch_ca=
-n.ko).
-I've installed the module with:
-    sudo rmmod pch_can
-    sudo insmod pch_can.ko=20
-Unfortunatelly, running the test application resulted in an assert. To =
-obtain
-additional information I addapted the function CCanPort::Write() (See b=
-elow).
-Running gave the following result:
-
-write returned -1
-errno =3D 64
-CCanPort.cpp[116]: ASSERT(ret =3D=3D sizeof(*pFrame)) FAILED=20
-
-The errno 64 is not mentioned in man write
-#define ENONET 64 /* Machine is not on the network */
-
-At the end of this E-mail I've also included messages of dmesg.
-
-Do you recognize these errors?
-Should we continue with the pch_can driver and also apply remaining pat=
-ches,
-or should we switch to c_can?
-
-<><>-------------------------------------------------------------------=
--------
-
-<><>size_t CCanPort::Write(can_frame *pFrame)
-<><>{
-<><>    ssize_t ret =3D write(m_Sock, pFrame, sizeof(*pFrame));
-<><>    ASSERT(ret =3D=3D sizeof(*pFrame));
-<><>    return ret;
-<><>}
-
-<><>CCanPort::CCanPort()
-<><>{
-<><>    int rcvbuf_size =3D BUFFER_SIZE;
-
-<><>    m_Sock =3D socket( PF_CAN, SOCK_RAW, CAN_RAW );
-
-<><>    struct ifreq ifr;
-<><>    strcpy(ifr.ifr_name, "can0");
-<><>    ioctl(m_Sock, SIOCGIFINDEX, &ifr);
-
-<><>    struct sockaddr_can addr;
-<><>    addr.can_family =3D AF_CAN;
-<><>    addr.can_ifindex =3D ifr.ifr_ifindex;
-
-<><>    // Set receive buffer size
-<><>    setsockopt(m_Sock, SOL_SOCKET, SO_RCVBUF, &rcvbuf_size, sizeof(=
-rcvbuf_size));
-
-<><>    // Bind
-<><>    bind( m_Sock, (struct sockaddr*)&addr, sizeof(addr) );
-<><>}
-
------------------------------------------------------------------------=
----
-
-size_t CCanPort::Write(can_frame *pFrame)
-{
-    ssize_t ret =3D write(m_Sock, pFrame, sizeof(*pFrame));
-
-    switch(ret)
-    {
-    case 0:
-        std::cout << "write return 0" << std::endl;
-        break;
-    case -1:
-        std::cout << "write returned -1" << std::endl;
-        switch(errno)
-        {
-        case EAGAIN:
-            std::cout << "errno =3D EAGAIN (=3DEWOULDBLOCK)" << std::en=
-dl;
-            break;
-        case EBADF:
-            std::cout << "errno =3D EBADF" << std::endl;
-            break;
-        case EDESTADDRREQ:
-            std::cout << "errno =3D EDESTADDRREQ" << std::endl;
-            break;
-        case EFAULT:
-            std::cout << "errno =3D EFAULT" << std::endl;
-            break;
-        case EFBIG:
-            std::cout << "errno =3D EFBIG" << std::endl;
-            break;
-        case EINTR:
-            std::cout << "errno =3D EINTR" << std::endl;
-            break;
-        case EINVAL:
-            std::cout << "errno =3D EINVAL" << std::endl;
-            break;
-        case EIO:
-            std::cout << "errno =3D EIO" << std::endl;
-            break;
-        case ENOSPC:
-            std::cout << "errno =3D ENOSPC" << std::endl;
-            break;
-        case EPIPE:
-            std::cout << "errno =3D EPIPE" << std::endl;
-            break;
-        default:
-            std::cout << "errno =3D " << errno << std::endl;
-            break;
-        }
-        break;
-    default:
-        std::cout << "write returned " << ret << std::endl;
-    };
-
-    ASSERT(ret =3D=3D sizeof(*pFrame));
-    return ret;
-}
-
------------------------------------------------------------------------=
----
-
-bmterra@q7buntu:~/user/jla$ dmesg | grep can
-[    0.181560] [Firmware Bug]: ACPI: No _BQC method, cannot determine i=
-nitial brightness
-[    1.316862] isapnp: Scanning for PnP cards...
-[    2.885786] rtc_cmos 00:08: RTC can wake from S4
-[   11.119391] pch_can 0000:02:0c.3: irq 47 for MSI/MSI-X
-[   11.119435] pch_can 0000:02:0c.3: (unregistered net_device): PCH CAN=
- opened with MSI
-[   11.119537] pch_can 0000:02:0c.3: setting latency timer to 64
-[  635.622115] can: controller area network core (rev 20090105 abi 8)
-[  635.628256] can: raw protocol (rev 20090105)
-[  660.069395] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  660.069561] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  660.069583] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  660.069602] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  660.069622] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  660.069641] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[ 3148.202568] pch_can 0000:02:0c.3: irq 47 for MSI/MSI-X
-[ 3148.202618] pch_can 0000:02:0c.3: (unregistered net_device): PCH CAN=
- opened with MSI
-[ 3148.202639] pch_can 0000:02:0c.3: setting latency timer to 64
