@@ -1,78 +1,47 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Losing CAN messages with socket-CAN
-Date: Thu, 04 Apr 2013 23:12:24 +0200
-Message-ID: <515DECB8.6090909@grandegger.com>
-References: <20130404161608.8B2BF3E5B2D4A@bmail02.one.com>
+From: Katoch <din.gulu.er@gmail.com>
+Subject: Tutorial or Read-me file for Linux can API
+Date: Fri, 5 Apr 2013 04:29:09 +0000 (UTC)
+Message-ID: <loom.20130405T062502-943@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:57963 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1763239Ab3DDVM3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 4 Apr 2013 17:12:29 -0400
-In-Reply-To: <20130404161608.8B2BF3E5B2D4A@bmail02.one.com>
+Received: from plane.gmane.org ([80.91.229.3]:46423 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750890Ab3DEEeo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 5 Apr 2013 00:34:44 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1UNyMi-0007To-Ah
+	for linux-can@vger.kernel.org; Fri, 05 Apr 2013 06:35:04 +0200
+Received: from ns10.dnsmadeeasy.com ([208.94.148.4])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 05 Apr 2013 06:35:04 +0200
+Received: from din.gulu.er by ns10.dnsmadeeasy.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 05 Apr 2013 06:35:04 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "j.p.lammertink" <j.p.lammertink@kubicas.com>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On 04/04/2013 06:16 PM, j.p.lammertink wrote:
-> Hi Wolfgang,
->=20
-> It looks like you can help us out. That would realy be great!
-> I've collected answers to your questions and pasted them below.
+Hi,
 
-=2E..
+I am going through a can base network driver for MCP-2515
+https://github.com/raspberrypi/linux/blob/rpi-3.6.y/drivers/net/can/mcp251x.c
 
-> <>This CAN controller identifies itself (according to data sheet) as =
-follows:
-> <>    Vendor Identification Register    8086h
-> <>    Device Identification Register    8818h
-> <>    Revision Identification Register  00h
-> <>    Class Code Register               0C0900h
->=20
-> < Ah, the "pch_can" driver does have known issues. End of last year I=
- sent
-> < some patches to improve the "pch_can" or, even better, make the "c_=
-can"
-> < driver work on the EG20T as well. See:
->=20
-> <   http://marc.info/?l=3Dlinux-can&m=3D135531975013055&w=3D2
->=20
-> < Are you able to build and use a recent mainline kernel? I need to f=
-igure
-> < out how to help you best.
->=20
-> Currently a colleage of mine is attempting to build the kernel (to be=
- able to
-> apply patches to solve a display issue). I expect he will succeed one=
- of these
-> days.
-> Wouldn't it be simplest just to use the latest sources of this driver=
-?
+Please suggest where i can find the description of the function, :--
+alloc_candev
+open_candev
+alloc_can_skb
+can_dropped_invalid_skb
+alloc_can_err_skb
+etc .....
 
-These patches are not yet mainline because they do not fix all issues. =
-I
-do not have a system at hand and therefore somebody else needs to take
-care. We actually want to drop the pch_can driver in favor of an update=
-d
-c_can driver. If you go over the patch series I pointed out you will ge=
-t
-more information. Anyway, we got positive feedback especially with the
-c_can driver for the EG20T.
+Is there some read-me file or some tutorial ?
 
-> Can you tell me which sources I should look for? (Probably I've downl=
-oaded them
-> already, but I wish to replace only the files that make the differenc=
-e)
+Please suggest.
 
-I think that patch 1/7 of the series may already fix your TX problems:
+//Katoch
 
-  http://marc.info/?l=3Dlinux-can&m=3D135526076021515&w=3D2
-=B4
-If you apply the remaining patches, you can select the "c_can_pci"
-driver. If you get trouble with these patches I need to adapt them to a
-more recent kernel version.
 
-Wolfgang.
