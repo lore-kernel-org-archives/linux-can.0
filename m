@@ -1,61 +1,29 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: gw: use kmem_cache_free() instead of kfree()
-Date: Tue, 09 Apr 2013 10:20:39 +0200
-Message-ID: <5163CF57.1090309@pengutronix.de>
-References: <CAPgLHd9eAfwJMJ9P5RqOKNP5kq87y61V7CTw2J--Ld8uHT0RrQ@mail.gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2013-04-09
+Date: Tue, 09 Apr 2013 13:25:24 -0400 (EDT)
+Message-ID: <20130409.132524.1748863572087326219.davem@davemloft.net>
+References: <1365495215-12081-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2DTUXQLJHGOGFSCMDSOHL"
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40634 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S936958Ab3DIIUv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Apr 2013 04:20:51 -0400
-In-Reply-To: <CAPgLHd9eAfwJMJ9P5RqOKNP5kq87y61V7CTw2J--Ld8uHT0RrQ@mail.gmail.com>
+Received: from shards.monkeyblade.net ([149.20.54.216]:36487 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932140Ab3DIRZ0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Apr 2013 13:25:26 -0400
+In-Reply-To: <1365495215-12081-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: socketcan@hartkopp.net, davem@davemloft.net, yongjun_wei@trendmicro.com.cn, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2DTUXQLJHGOGFSCMDSOHL
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Tue,  9 Apr 2013 10:13:34 +0200
 
-On 04/09/2013 08:16 AM, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> memory allocated by kmem_cache_alloc() should be freed using
-> kmem_cache_free(), not kfree().
->=20
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> here's a fix for the v3.9 release cycle, if not too late:
+> 
+> Wei Yongjun contributes a patch for the can-gw protocoll. The patch fixes the
+> memory allocated with kmem_cache_alloc(), is now freed using kmem_cache_free(),
+> not kfree().
 
-Thanks for catching this. Applied to can/master.
-I've send a pull request to David, along with Oliver's Acked-by and
-stable on Cc.
-
-Thanks,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2DTUXQLJHGOGFSCMDSOHL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlFjz1wACgkQjTAFq1RaXHMgVACfejVeOBXML1XalskjYRwa01f6
-74sAn1Ekat5lHkhlxnzIT8Kc2ArW9l3J
-=JD4g
------END PGP SIGNATURE-----
-
-------enig2DTUXQLJHGOGFSCMDSOHL--
+Pulled, thanks Marc.
