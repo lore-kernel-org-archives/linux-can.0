@@ -1,43 +1,98 @@
 From: Christoph Fritz <chf.fritz@googlemail.com>
-Subject: Re: [PATCH v2] can: sja1000: fix endian on arm
-Date: Thu, 11 Apr 2013 20:53:33 +0200
-Message-ID: <1365706413.4136.15.camel@mars>
+Subject: Re: [PATCH v3] can: sja1000: fix endian on arm
+Date: Thu, 11 Apr 2013 21:14:57 +0200
+Message-ID: <1365707697.4136.26.camel@mars>
 References: <1365428932.5760.52.camel@lovely>
 	 <5162CCB5.3000605@pengutronix.de> <1365705884.4136.5.camel@mars>
-	 <51670532.5060101@pengutronix.de>
+	 <51670532.5060101@pengutronix.de>  <1365706413.4136.15.camel@mars>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <51670532.5060101@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Andreas Larsson <andreas@gaisler.com>, "Hans J. Koch" <hjk@hansjkoch.de>, Bill Pemberton <wfp5p@virginia.edu>, Daniel Mack <daniel@zonque.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ea0-f176.google.com ([209.85.215.176]:38080 "EHLO
+	mail-ea0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751700Ab3DKTPD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Apr 2013 15:15:03 -0400
+In-Reply-To: <1365706413.4136.15.camel@mars>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, Andreas Larsson <andreas@gaisler.com>, "Hans J. Koch" <hjk@hansjkoch.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Bill Pemberton <wfp5p@virginia.edu>, linux-can@vger.kernel.org, Daniel Mack <daniel@zonque.org>
 
-On Thu, 2013-04-11 at 20:47 +0200, Marc Kleine-Budde wrote:
-> On 04/11/2013 08:44 PM, Christoph Fritz wrote:
-> > To get correct endian on arm cpus while reading device tree properties,
-> > this patch replaces of_get_property() with of_property_read_u32().
-> > 
-> > Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
-> 
-> looks good, one nitpick inline
-> 
-> > ---
-> >  drivers/net/can/sja1000/sja1000_of_platform.c |   32 ++++++++++++-------------
-> >  1 file changed, 16 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+To get correct endian on arm cpus while reading device tree properties,
+this patch replaces of_get_property() with of_property_read_u32().
 
-> > @@ -168,8 +168,8 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
-> >  		priv->cdr |= CDR_CLK_OFF; /* default */
-> >  	}
-> >  
-> > -	prop = of_get_property(np, "nxp,no-comparator-bypass", NULL);
-> > -	if (!prop)
-> > +	err = of_property_read_u32(np, "nxp,no-comparator-bypass", &prop);
-> 
-> What about using of_property_read_bool instead?
+Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
+---
+ drivers/net/can/sja1000/sja1000_of_platform.c |   31 ++++++++++++-------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
- Yeah, that would be better, thanks - let me re-roll this.
+diff --git a/drivers/net/can/sja1000/sja1000_of_platform.c b/drivers/net/can/sja1000/sja1000_of_platform.c
+index 6433b81..f2d2f78 100644
+--- a/drivers/net/can/sja1000/sja1000_of_platform.c
++++ b/drivers/net/can/sja1000/sja1000_of_platform.c
+@@ -96,8 +96,8 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
+ 	struct net_device *dev;
+ 	struct sja1000_priv *priv;
+ 	struct resource res;
+-	const u32 *prop;
+-	int err, irq, res_size, prop_size;
++	u32 prop;
++	int err, irq, res_size;
+ 	void __iomem *base;
+ 
+ 	err = of_address_to_resource(np, 0, &res);
+@@ -138,27 +138,27 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
+ 	priv->read_reg = sja1000_ofp_read_reg;
+ 	priv->write_reg = sja1000_ofp_write_reg;
+ 
+-	prop = of_get_property(np, "nxp,external-clock-frequency", &prop_size);
+-	if (prop && (prop_size ==  sizeof(u32)))
+-		priv->can.clock.freq = *prop / 2;
++	err = of_property_read_u32(np, "nxp,external-clock-frequency", &prop);
++	if (!err)
++		priv->can.clock.freq = prop / 2;
+ 	else
+ 		priv->can.clock.freq = SJA1000_OFP_CAN_CLOCK; /* default */
+ 
+-	prop = of_get_property(np, "nxp,tx-output-mode", &prop_size);
+-	if (prop && (prop_size == sizeof(u32)))
+-		priv->ocr |= *prop & OCR_MODE_MASK;
++	err = of_property_read_u32(np, "nxp,tx-output-mode", &prop);
++	if (!err)
++		priv->ocr |= prop & OCR_MODE_MASK;
+ 	else
+ 		priv->ocr |= OCR_MODE_NORMAL; /* default */
+ 
+-	prop = of_get_property(np, "nxp,tx-output-config", &prop_size);
+-	if (prop && (prop_size == sizeof(u32)))
+-		priv->ocr |= (*prop << OCR_TX_SHIFT) & OCR_TX_MASK;
++	err = of_property_read_u32(np, "nxp,tx-output-config", &prop);
++	if (!err)
++		priv->ocr |= (prop << OCR_TX_SHIFT) & OCR_TX_MASK;
+ 	else
+ 		priv->ocr |= OCR_TX0_PULLDOWN; /* default */
+ 
+-	prop = of_get_property(np, "nxp,clock-out-frequency", &prop_size);
+-	if (prop && (prop_size == sizeof(u32)) && *prop) {
+-		u32 divider = priv->can.clock.freq * 2 / *prop;
++	err = of_property_read_u32(np, "nxp,clock-out-frequency", &prop);
++	if (!err) {
++		u32 divider = priv->can.clock.freq * 2 / prop;
+ 
+ 		if (divider > 1)
+ 			priv->cdr |= divider / 2 - 1;
+@@ -168,8 +168,7 @@ static int sja1000_ofp_probe(struct platform_device *ofdev)
+ 		priv->cdr |= CDR_CLK_OFF; /* default */
+ 	}
+ 
+-	prop = of_get_property(np, "nxp,no-comparator-bypass", NULL);
+-	if (!prop)
++	if (!of_property_read_bool(np, "nxp,no-comparator-bypass"))
+ 		priv->cdr |= CDR_CBP; /* default */
+ 
+ 	priv->irq_flags = IRQF_SHARED;
+-- 
+1.7.10.4
+
+
+
