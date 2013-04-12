@@ -1,59 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/2] can: mcp251x: add missing IRQF_ONESHOT to request_threaded_irq
-Date: Fri, 12 Apr 2013 13:11:56 +0200
-Message-ID: <1365765117-28316-2-git-send-email-mkl@pengutronix.de>
-References: <1365765117-28316-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1365765117-28316-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, davem@davemloft.net, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Subject: Re: RFC: [PATCH] can: mcp251x: add missing IRQF_ONESHOT to request_threaded_irq
+Date: Fri, 12 Apr 2013 13:16:48 +0200
+Message-ID: <5167ED20.5060107@pengutronix.de>
+References: <51666B21.10109@pengutronix.de> <1365669410-8101-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2FGGTOVUHGULPMNEKRSKI"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51707 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753054Ab3DLLQw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 12 Apr 2013 07:16:52 -0400
+In-Reply-To: <1365669410-8101-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Mylene.Josserand@navocap.com
 
-Since commit:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2FGGTOVUHGULPMNEKRSKI
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-    1c6c695 genirq: Reject bogus threaded irq requests
+On 04/11/2013 10:36 AM, Marc Kleine-Budde wrote:
+> Since commit:
+>=20
+>     1c6c695 genirq: Reject bogus threaded irq requests
+>=20
+> threaded irqs must provide a primary handler or set the IRQF_ONESHOT fl=
+ag.
+> Since the mcp251x driver doesn't make use of a primary handler set the
+> IRQF_ONESHOT flag.
+>=20
+> /* Cc: linux-stable <stable@vger.kernel.org> # >=3D v3.5 */
+> Reported-by: Mylene Josserand <Mylene.Josserand@navocap.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-threaded irqs must provide a primary handler or set the IRQF_ONESHOT flag.
-Since the mcp251x driver doesn't make use of a primary handler set the
-IRQF_ONESHOT flag.
+Myl=E8ne, added your Tested-by and send a pull request to David.
 
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.5
-Reported-by: Mylene Josserand <Mylene.Josserand@navocap.com>
-Tested-by: Mylene Josserand <Mylene.Josserand@navocap.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/mcp251x.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index f32b9fc..9aa0c64 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -929,6 +929,7 @@ static int mcp251x_open(struct net_device *net)
- 	struct mcp251x_priv *priv = netdev_priv(net);
- 	struct spi_device *spi = priv->spi;
- 	struct mcp251x_platform_data *pdata = spi->dev.platform_data;
-+	unsigned long flags;
- 	int ret;
- 
- 	ret = open_candev(net);
-@@ -945,9 +946,14 @@ static int mcp251x_open(struct net_device *net)
- 	priv->tx_skb = NULL;
- 	priv->tx_len = 0;
- 
-+	flags = IRQF_ONESHOT;
-+	if (pdata->irq_flags)
-+		flags |= pdata->irq_flags;
-+	else
-+		flags |= IRQF_TRIGGER_FALLING;
-+
- 	ret = request_threaded_irq(spi->irq, NULL, mcp251x_can_ist,
--		  pdata->irq_flags ? pdata->irq_flags : IRQF_TRIGGER_FALLING,
--		  DEVICE_NAME, priv);
-+				   flags, DEVICE_NAME, priv);
- 	if (ret) {
- 		dev_err(&spi->dev, "failed to acquire irq %d\n", spi->irq);
- 		if (pdata->transceiver_enable)
--- 
-1.8.2.rc2
+
+------enig2FGGTOVUHGULPMNEKRSKI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlFn7SAACgkQjTAFq1RaXHM6bgCfWoFnoqqDANDxqhshgk5kQYHV
+ZKUAoIP1lTOelmJ0rp+7B1w/uH8gNbm4
+=LOZ1
+-----END PGP SIGNATURE-----
+
+------enig2FGGTOVUHGULPMNEKRSKI--
