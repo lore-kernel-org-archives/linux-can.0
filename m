@@ -1,63 +1,66 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC PATCH v2] can: sja1000: use common prefix for all sja1000
- defines
-Date: Tue, 16 Apr 2013 12:40:59 +0200
-Message-ID: <516D2ABB.4000300@pengutronix.de>
-References: <5169B395.2070703@hartkopp.net>
+Subject: pull-request: can-next 2013-04-16
+Date: Tue, 16 Apr 2013 12:51:26 +0200
+Message-ID: <516D2D2E.2050509@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="----enig2OKOOODWXIDHFNQPBMXGO"
+ boundary="----enig2OTNLPLXLAPOATNNXOVOX"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43882 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34146 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754154Ab3DPKlG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Apr 2013 06:41:06 -0400
-In-Reply-To: <5169B395.2070703@hartkopp.net>
+	with ESMTP id S934869Ab3DPKva (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Apr 2013 06:51:30 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Linux Netdev List <netdev@vger.kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2OKOOODWXIDHFNQPBMXGO
+------enig2OTNLPLXLAPOATNNXOVOX
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-On 04/13/2013 09:35 PM, Oliver Hartkopp wrote:
-> This is a follow up patch to:
->=20
->     f901b6b can: sja1000: fix define conflict on SH
->=20
-> That patch fixed a define conflict between the SH architecture and the =
-sja1000
-> driver, by addind a prefix to one macro only. This patch consistently r=
-enames
-> the prefix of the SJA1000 controller registers from "REG_" to "SJA1000_=
-".
->=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
->=20
-> ---
->=20
-> Hello Marc,
->=20
-> to not miss the current net-next window, here's a well formatted patch =
-for my
-> REG_ rename proposal. It renames the formerly register defines from REG=
-_ to
-> SJA1000_ and leaves the content definitions of the registers as-is.
-> This is because of all content definitions would have to be changed in =
+Hello David,
 
-> sja1000.h AND include/linux/can/platform/sja1000.h to have a consistent=
+this is a pull-request for net-next/master. It consists of a patch by
+Oliver Hartkopp. In this patch he cleans up the sja1000 header file by
+using a common prefix for all sja1000 defines.
 
-> naming scheme.
+regards,
+Marc
 
-Looks good, I've fixed the indention in
-drivers/net/can/sja1000/sja1000.h. I'll send a pull request to David soon=
-=2E
+---
 
-Thanks, Marc
+The following changes since commit 61f47132dcba1eacf8fd8e64488d0b6d4bcbe4=
+a0:
+
+  Merge branch 'sync_multiple' (2013-04-15 16:10:53 -0400)
+
+are available in the git repository at:
+
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 06e1d1d71876c75bf4a9d3b310c1b4df34e8be69:
+
+  can: sja1000: use common prefix for all sja1000 defines (2013-04-16 12:=
+39:14 +0200)
+
+----------------------------------------------------------------
+Oliver Hartkopp (1):
+      can: sja1000: use common prefix for all sja1000 defines
+
+ drivers/net/can/sja1000/ems_pci.c     |   6 +-
+ drivers/net/can/sja1000/ems_pcmcia.c  |   6 +-
+ drivers/net/can/sja1000/kvaser_pci.c  |   4 +-
+ drivers/net/can/sja1000/peak_pci.c    |   2 +-
+ drivers/net/can/sja1000/peak_pcmcia.c |   8 +--
+ drivers/net/can/sja1000/plx_pci.c     |  12 ++--
+ drivers/net/can/sja1000/sja1000.c     | 126 +++++++++++++++++-----------=
+------
+ drivers/net/can/sja1000/sja1000.h     |  68 +++++++++---------
+ 8 files changed, 117 insertions(+), 115 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -66,7 +69,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-------enig2OKOOODWXIDHFNQPBMXGO
+------enig2OTNLPLXLAPOATNNXOVOX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -75,9 +78,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlFtKr4ACgkQjTAFq1RaXHODOgCfbgazJ+u+C1krlTgbaZ9V/YI7
-15YAoJQEz2ur51jkS6zI8u19X2mXkJUk
-=gV0w
+iEYEARECAAYFAlFtLS4ACgkQjTAFq1RaXHPdwgCeMx7B7xFPMdly/YtEV7ErvkI9
+yskAnAiTaLDRFFUdmRF2VU0NGzZTHOGK
+=nITk
 -----END PGP SIGNATURE-----
 
-------enig2OKOOODWXIDHFNQPBMXGO--
+------enig2OTNLPLXLAPOATNNXOVOX--
