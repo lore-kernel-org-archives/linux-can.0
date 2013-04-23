@@ -1,1059 +1,1081 @@
-From: "j.p.lammertink" <j.p.lammertink@kubicas.com>
-Subject: Losing CAN messages with socket-CAN
-Date: Thu, 18 Apr 2013 12:34:02 +0200
-Message-ID: <20130418103402.D48CAF34CDA0B@bmail06.one.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: Usb to can driver
+Date: Tue, 23 Apr 2013 17:15:02 +0000
+Message-ID: <1366737302.3325.36.camel@blackbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed; boundary="=-XFVwgkZ71U0EQGXM7+iJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webmail-out2.one.com ([91.198.169.17]:49946 "EHLO
-	webmail-out2.b-one.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S966004Ab3DRKeF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 18 Apr 2013 06:34:05 -0400
-Content-Disposition: inline
+Received: from mail.schneidersoft.net ([173.45.248.65]:52720 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756642Ab3DWRUM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Apr 2013 13:20:12 -0400
+Received: from [192.168.1.13] (unknown [179.163.88.251])
+	by mail.schneidersoft.net (Postfix) with ESMTPSA id 5C3F41A17D
+	for <linux-can@vger.kernel.org>; Tue, 23 Apr 2013 12:09:45 -0500 (CDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: linux-can <linux-can@vger.kernel.org>
 
-Hi Wolfgang,
 
-Yesterday I was able to pick-up the work on the CAN driver again.
-Tomorrow morning I'll continue the search for the root cause.
-I report my findings so far.
+--=-XFVwgkZ71U0EQGXM7+iJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-Best Regards,
+Hello,
 
-Jeroen Lammertink
+I've been working on a device and a Linux socket can driver for it.
 
------------------------------------------------------------------------=
----
+Its a dual USB to CAN adapter in two variants external USB device with
+cable, or a mini pci form factor expansion card.
 
-<><><><> We are sending batches of 80 CAN messages using socket CAN to =
-transfer an
-<><><><> image for download. After the 80 messages we wait for a respon=
-se
-<><><><> consisting of a single CAN message.
+This is my first Linux driver, and I'd like to have someone look at it.
+Feel free to criticize. I have not done any massive testing, but am able
+to send and receive frames at 250k +full echo :). Higher speeds should
+easily be possible, but i have not tested.
 
-<><><><Are you evaluating the return value of the write() or sendmsg() =
-systemcall?
+The firmware I have written myself. Here's how it enumerates:
 
-<><><> We do evaluate the write call to the socket with an assert. I=E2=
-=80=99ve included
-<><><> the code below. (See Appendix 4). I=E2=80=99ve also included the=
- code in
-<><><> which the socket is created (See Appendix 3). When the problem (=
-of
-<><><> losing CAN messages) happens, the Assert is not triggered. So I =
-deduce
-<><><> that the socket remains unaware of the losing of messages.
+$ lsusb -v -d beef:1234 # :P have yet to get proper USB vender code.
 
-<><><><> Within the messages we have coded a
-<><><><> sequence number, so that we can detect lost messages. Besides =
-the CAN
-<><><><> device that is subject of download, we have also a (hardware) =
-CAN sniffer
-<><><><> on the CAN bus. We typically log CAN messages when we put them=
- in the
-<><><><> socket. With this set-up we typically detect losing a short se=
-ries of
-<><><><> (mostly 5) CAN messages, somewhere halfway the batch of 80. No=
- other
-<><><><> devices are present on the CAN bus.
+Bus 003 Device 003: ID beef:1234  
+Couldn't open device, some information will be missing
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0xbeef 
+  idProduct          0x1234 
+  bcdDevice            1.00
+  iManufacturer           1 
+  iProduct                2 
+  iSerial                 3 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           32
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              100mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass    255 Vendor Specific Subclass
+      bInterfaceProtocol    255 Vendor Specific Protocol
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
 
-<><><><> I've dumped below some version and set-up info of Ubuntu, sock=
-et-can and
-<><><><> ifconfig. (Appendix 1)
 
-<><><><> Is this problem known?
-<><><><> May this problem be related to using an old version of socket =
-can?
+Basic rundown of what the driver does now:
+config information is passed between the host/device using the control
+endpoint using brequest as a switch to indicate the command to run or
+information requested.
 
-<><><>< This is either a userspace problem or a buggy driver. The drive=
-r problem
-<><><>< may have been fixed in the meantime.
+Can frames are exchanged via bulk endpoints in a native format. meaning
+a small header and a struct can_frame. The device is responsible for
+packaging the can frame in a host readable format. when can frames
+arrive, they are simply copied over by linux.
 
-<><><><> How can I upgrade Ubuntu to the latest versions of socket-can?
+so:
+1) When probed config data is exchanged between host and device.
+indicating to the device what the 'host frame' format is, and what byte
+order to use.
+2) Two candevs are registered.
 
-<><><>< First we have to figure out what's broken.
+when an interface is brought up/configured:
+3) settings are passed on to the device.
+4) can controllers get initialized by the device.
 
-<><><>< Which CAN hardware are you using?
+When sending messages:
+4) an echo id is associated with the frame, copied into the host frame
+and sent to the device. bulk ep 2
 
-See "HW version info below" in Appendix 2
+When receiving messages:
+5) data from bulk ep1 is received.
+when echo_id == 0: this message was successfully received by the
+controller. 
+when echo_id != 0: this message was successfully sent by the controller.
+echo_id for full echo support. 
 
-<><>< Which driver do you use? (check "ip -d -s link show can0").
+Code attached,
+Best regards,
+Max S.
 
-See "SW version info below" in Appendix 1
+--=-XFVwgkZ71U0EQGXM7+iJ
+Content-Disposition: attachment; filename="Makefile"
+Content-Type: text/x-makefile; name="Makefile"; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-<><>Textdump below contains "pch_can:" ...
+#called from kbuild system
+ifneq ($(KERNELRELEASE),)
+obj-m := ss_usb.o
 
-<><>< Ah, the "pch_can" driver does have known issues. End of last year=
- I sent
-<><>< some patches to improve the "pch_can" or, even better, make the "=
-c_can"
-<><>< driver work on the EG20T as well. See:
+#called from command line
+else
+KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+PWD := $(shell pwd)
+default:
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
-<><><   http://marc.info/?l=3Dlinux-can&m=3D135531975013055&w=3D2>
+endif
 
-<><>< Are you able to build and use a recent mainline kernel? I need to=
- figure
-<><>< out how to help you best.
+#sudo modprobe pcan
+#sudo modprobe candev
+#sudo modprobe netconsole netconsole=6666@192.168.1.54/eth0,6666@192.168.1.39/aa:00:04:00:0a:04
+#sudo insmod ss_usb.ko
 
-<><>Currently a colleage of mine is attempting to build the kernel (to =
-be able to
-<><>apply patches to solve a display issue). I expect he will succeed o=
-ne of these
-<><>days.
+--=-XFVwgkZ71U0EQGXM7+iJ
+Content-Disposition: attachment; filename="ss_usb.c"
+Content-Type: text/x-csrc; name="ss_usb.c"; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-<> We succeeded in buildin the kernel.
+#include <linux/init.h>
+#include <linux/signal.h>
+//#include <linux/slab.h>
+//#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/usb.h>
 
-<><>Wouldn't it be simplest just to use the latest sources of this driv=
-er?
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
 
-<>< These patches are not yet mainline because they do not fix all issu=
-es. I
-<>< do not have a system at hand and therefore somebody else needs to t=
-ake
-<>< care. We actually want to drop the pch_can driver in favor of an up=
-dated
-<>< c_can driver. If you go over the patch series I pointed out you wil=
-l get
-<>< more information. Anyway, we got positive feedback especially with =
-the
-<>< c_can driver for the EG20T.
+/* Device specific constants */
+#define USB_SSUSB_VENDOR_ID         0xbeef
+#define USB_SSUSB_AT32_PRODUCT_ID   0x1234
 
-<><>Can you tell me which sources I should look for? (Probably I've dow=
-nloaded them
-<><>already, but I wish to replace only the files that make the differe=
-nce)
+#define SS_USB_ENDPOINT_IN          1
+#define SS_USB_ENDPOINT_OUT         2
 
-<>< I think that patch 1/7 of the series may already fix your TX proble=
-ms:
+#define SS_USB_BREQ_HOST_FORMAT     0
+#define SS_USB_BREQ_BITTIMING       1
+#define SS_USB_BREQ_MODE            2
+#define SS_USB_BREQ_BERR            3
+#define SS_USB_BREQ_BT_CONST        4
 
-<><   http://marc.info/?l=3Dlinux-can&m=3D135526076021515&w=3D2
 
-<>< If you apply the remaining patches, you can select the "c_can_pci"
-<>< driver. If you get trouble with these patches I need to adapt them =
-to a
-<>< more recent kernel version.
+#define SS_CAN_MODE_RESET           0
+#define SS_CAN_MODE_START           1
 
-<> My colleage has applied the patch you mentioned above. The patching =
-was=20
-<> straightforward without any problems. Also building went fine (->pch=
-_can.ko).
-<> I've installed the module with:
-<>     sudo rmmod pch_can
-<>     sudo insmod pch_can.ko=20
-<> Unfortunatelly, running the test application resulted in an assert. =
-To obtain
-<> additional information I addapted the function CCanPort::Write() (Se=
-e below).
-<> Running gave the following result:
+#define SS_CAN_STATE_ERROR_ACTIVE   0
+#define SS_CAN_STATE_ERROR_WARNING  1
+#define SS_CAN_STATE_ERROR_PASSIVE  2
+#define SS_CAN_STATE_BUS_OFF        3
+#define SS_CAN_STATE_STOPPED        4
+#define SS_CAN_STATE_SLEEPING       5
 
-<> write returned -1
-<> errno =3D 64
-<> CCanPort.cpp[116]: ASSERT(ret =3D=3D sizeof(*pFrame)) FAILED=20
+/* data types passed between host and device */
+struct __packed device_config {
+	u16 byte_order;
 
-<> The errno 64 is not mentioned in man write
-<> #define ENONET 64 /* Machine is not on the network */
+	u32 hf_size;	/* size of a host frame */
+	u32 hf_can_id;
+	u32 hf_can_dlc;
+	u32 hf_data;
+	u32 hf_echo_id;
+	u32 hf_channel;
+};
 
-< Hm, I'm also puzzled where this errno comes from? If you send a lot o=
-f
-< messages without delay I would expect an errno ENOBUFS. Could you ple=
-ase
-< handle the error code properly. In case of an ENOBUF errno just sleep
-< for a shot time (e.g. usleep(10000)) and then retry.
+struct __packed device_mode {
+	u8  mode;
+};
 
-I've installed kernel and related stuff myself to be able to rebuild th=
-e pch_can=20
-module. I also applied the patch myself, but this time I do not get suc=
-h errors=20
-and also the ASSERT does not trigger. I think something must have gone =
-wrong with=20
-applying the patch the previous time. I sugest to forget about the errn=
-o =3D 64=20
-problem.
+struct __packed device_state {
+	u8  state;
+	u32 rxerr;
+	u32 txerr;
+};
 
-Unfortunatelly the patch does not solve the problem yet.
+struct __packed device_bittiming {
+	u32 prop_seg;
+	u32 phase_seg1;
+	u32 phase_seg2;
+	u32 sjw;
+	u32 brp;
+};
 
-I also changed the code with a retry loop upon ENOBUFS. I've included t=
-he code=20
-below.
+struct __packed device_bt_const {
+	u32 fclk_can;
+	u32 tseg1_min;
+	u32 tseg1_max;
+	u32 tseg2_min;
+	u32 tseg2_max;
+	u32 sjw_max;
+	u32 brp_min;
+	u32 brp_max;
+	u32 brp_inc;
+};
 
-< $ man 3 errno
-< says:
-<        A common mistake is to do
+struct ss_host_frame {
+	u8  channel;
+	u32 echo_id;
+	struct can_frame frame;
+};
 
-<            if (somecall() =3D=3D -1) {
-<                printf("somecall() failed\n");
-<                if (errno =3D=3D ...) { ... }
-<            }
+#define MAX_TX_URBS 10
+#define MAX_RX_URBS 10
 
-< Maybe the real errno is overwritten already by the time it's actually=
- used?
+#define MAX_INTF 2
 
-Thanks for this sugestion. I've improved the code (See Appendix 4).
+struct ss_tx_context {
+	struct ss_can *dev;
+	unsigned int echo_id;
+};
 
-<> At the end of this E-mail I've also included messages of dmesg.
+struct ss_can {
+	struct can_priv can; /* must be the first member */
 
-<> Do you recognize these errors?
+	struct ss_usb *parent;
 
-< See above.
+	struct net_device *netdev;
+	struct usb_device *udev;
+	struct usb_interface *iface;
 
-<> Should we continue with the pch_can driver and also apply remaining =
-patches,
-<> or should we switch to c_can?
+	struct can_bittiming_const bt_const;
+	unsigned int channel;	/* channel number */
 
-< Probably yes. I do not really want to care about the pch_can driver.
+	struct ss_tx_context tx_context[MAX_TX_URBS];
 
-I've instrument the pch_xmit() function with netdev_info() calls. I've
-included the code in Appendix 5. I also added a=20
-"dmesg | grep pch_can", see Appendix 6.
+	struct usb_anchor tx_submitted;
+	atomic_t active_tx_urbs;
 
-I ran the application while experiencing one sequence number mismatch e=
-rror.
-I have a strong feeling that the=20
-"can_put_echo_skb: BUG! echo_skb is occupied!" messages are printed whi=
-le
-the application is loosing CAN messages. Probably once per lost message=
-=20
-(plus or minus 1). I also have the feeling that it is related to a
-"netif_stop_queue(ndev)"
+	int open_time;
+};
 
-If you have any sugestions so far please let me know.
+/* usb interface struct */
+struct ss_usb {
+//	struct usb_device *udev;
+//	struct usb_interface *iface;
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-Appendices
------------------------------------------------------------------------=
----
-Appendix 1: SW version info
+	struct ss_can *canch[MAX_INTF];
 
-bmterra@q7buntu:~/user/jla$ uname -a
-Linux q7buntu 3.5.0-27-generic #46~precise1-Ubuntu SMP Tue Mar 26 19:33=
-:56=20
-UTC 2013 i686 i686 i386 GNU/Linux
+	struct usb_anchor rx_submitted;
 
-bmterra@q7buntu:~/user/jla$ cat /proc/net/can/version
-rev 20090105 abi 8
+	atomic_t active_channels;
+};
 
-bmterra@q7buntu:~/user/jla$ ifconfig can0
-can0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00=
--00-00-00-00 =20
-          UP RUNNING NOARP  MTU:16  Metric:1
-          RX packets:124877 errors:0 dropped:607 overruns:0 frame:0
-          TX packets:240 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1024=20
-          RX bytes:999016 (999.0 KB)  TX bytes:1920 (1.9 KB)
-          Interrupt:18=20
-
-bmterra@q7buntu:~/user/jla$ ip -d -s link show can0
-6: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
- qlen 1024
-    link/can=20
-    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0=20
-    bitrate 500000 sample-point 0.850=20
-    tq 100 prop-seg 8 phase-seg1 8 phase-seg2 3 sjw 1
-    pch_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
-    clock 50000000
-    re-started bus-errors arbit-lost error-warn error-pass bus-off
-    0          0          0          0          0          0        =20
-    RX: bytes  packets  errors  dropped overrun mcast  =20
-    1064080    133010   0       607     0       0     =20
-    TX: bytes  packets  errors  dropped carrier collsns=20
-    1920       240      0       0       0       0     =20
-
-I applied patch 1 of http://marc.info/?l=3Dlinux-can&m=3D13552607602151=
-5&w=3D2
-
------------------------------------------------------------------------=
----
-Appendix 2: HW version info
-
-Qseven module PQ7-M105IT
-with Intel Platform Controller HUB EG20T IOH
-with a =E2=80=9CBOSCH CAN Protocol Version 2.0B Active=20
-    (ISO 11519, ISO 11898, and SAEJ2411)=E2=80=9D CAN controller
-
-This CAN controller identifies itself (according to data sheet) as foll=
-ows:
-    Vendor Identification Register    8086h
-    Device Identification Register    8818h
-    Revision Identification Register  00h
-    Class Code Register               0C0900h
-
------------------------------------------------------------------------=
----
-Appendix 3
-
-CCanPort::CCanPort()
+/* 'allocate' a tx context.
+ * returns a valid tx context or NULL if there is no space.
+ */
+static struct ss_tx_context *ss_alloc_tx_context( struct ss_can *dev )
 {
-    int rcvbuf_size =3D BUFFER_SIZE;
-
-    m_Sock =3D socket( PF_CAN, SOCK_RAW, CAN_RAW );
-
-    struct ifreq ifr;
-    strcpy(ifr.ifr_name, "can0");
-    ioctl(m_Sock, SIOCGIFINDEX, &ifr);
-
-    struct sockaddr_can addr;
-    addr.can_family =3D AF_CAN;
-    addr.can_ifindex =3D ifr.ifr_ifindex;
-
-    // Set receive buffer size
-    setsockopt(m_Sock, SOL_SOCKET, SO_RCVBUF, &rcvbuf_size, sizeof(rcvb=
-uf_size));
-
-    // Bind
-    bind( m_Sock, (struct sockaddr*)&addr, sizeof(addr) );
+	int ii=0;
+	for(;ii<MAX_TX_URBS;ii++){
+		if(dev->tx_context[ii].echo_id==MAX_TX_URBS){
+			dev->tx_context[ii].echo_id=ii;
+			return(&dev->tx_context[ii]);
+		}
+	}
+	return NULL;
 }
 
------------------------------------------------------------------------=
----
-Appendix 4
-
-size_t CCanPort::Write(can_frame *pFrame)
+/* releases a tx context
+ */
+static void ss_free_tx_context(struct ss_tx_context *txc)
 {
-    ssize_t ret;
-    int err;
-    while(true)
-    {
-        ret =3D write(m_Sock, pFrame, sizeof(*pFrame));
-        err =3D errno;
-        if(err!=3DENOBUFS)
-        {
-            break;
-        }
-        usleep(1000);
-    }
-
-    switch(ret)
-    {
-    case sizeof(*pFrame):
-        break;
-    case 0:
-        std::cout << "write return 0" << std::endl;
-        break;
-    case -1:
-        std::cout << "write returned -1" << std::endl;
-        switch(err)
-        {
-        case EAGAIN:
-            std::cout << "errno =3D EAGAIN (=3DEWOULDBLOCK)" << std::en=
-dl;
-            break;
-        case EBADF:
-            std::cout << "errno =3D EBADF" << std::endl;
-            break;
-        case EDESTADDRREQ:
-            std::cout << "errno =3D EDESTADDRREQ" << std::endl;
-            break;
-        case EFAULT:
-            std::cout << "errno =3D EFAULT" << std::endl;
-            break;
-        case EFBIG:
-            std::cout << "errno =3D EFBIG" << std::endl;
-            break;
-        case EINTR:
-            std::cout << "errno =3D EINTR" << std::endl;
-            break;
-        case EINVAL:
-            std::cout << "errno =3D EINVAL" << std::endl;
-            break;
-        case EIO:
-            std::cout << "errno =3D EIO" << std::endl;
-            break;
-        case ENOSPC:
-            std::cout << "errno =3D ENOSPC" << std::endl;
-            break;
-        case EPIPE:
-            std::cout << "errno =3D EPIPE" << std::endl;
-            break;
-        default:
-            std::cout << "errno =3D " << err << std::endl;
-            break;
-        }
-        break;
-    default:
-        std::cout << "write returned " << ret << std::endl;
-    };
-
-    ASSERT(ret =3D=3D sizeof(*pFrame));
-    return ret;
+	txc->echo_id = MAX_TX_URBS;
 }
 
------------------------------------------------------------------------=
----
-Appendix 5
-
-static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *nde=
-v)
+/* Get a tx context by id. 
+ */
+static struct ss_tx_context *ss_get_tx_context( struct ss_can *dev, unsigned int id )
 {
-	struct pch_can_priv *priv =3D netdev_priv(ndev);
-	struct can_frame *cf =3D (struct can_frame *)skb->data;
-	unsigned long flags;
-	int tx_obj_no;
-	int i;
-	u32 id2;
-
-	netdev_info(ndev, "Jeroen! pch_xmit\n");
-
-	if (can_dropped_invalid_skb(ndev, skb))
-	{
-	    netdev_info(ndev, "Jeroen! can_dropped_invalid_skb\n");
-		return NETDEV_TX_OK;
+	if(id<MAX_TX_URBS){
+		if(dev->tx_context[id].echo_id==id){
+			return &dev->tx_context[id];
+		}
 	}
 
-	spin_lock_irqsave(&priv->lock, flags);
+	return NULL;
+}
 
-	tx_obj_no =3D priv->tx_obj;
-	if (priv->tx_obj =3D=3D PCH_TX_OBJ_END) {
-		if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
-		{
-			netdev_info(ndev, "Jeroen! netif_stop_queue(ndev)\n");
-			netif_stop_queue(ndev);
+/* Get a tx contexts id. 
+ */
+static unsigned int ss_tx_context_id( struct ss_tx_context *txc ){
+	return(txc->echo_id);
+}
+
+#define BUFFER_SIZE sizeof(struct ss_host_frame)
+
+/**************************** USB CALLBACKS **************************/
+static void ss_usb_recieve_bulk_callback( struct urb *urb )
+{
+	struct ss_usb *usbcan = urb->context;
+	struct ss_can *dev;
+	struct net_device *netdev;
+	int rc;
+	struct net_device_stats *stats;
+	struct sk_buff *skb;
+	struct can_frame *cf;
+	struct ss_host_frame *hf = urb->transfer_buffer;
+	struct ss_tx_context *txc;
+
+	BUG_ON(!usbcan);
+
+	switch( urb->status ){
+	case 0: /* success */
+		break;
+	case -ENOENT:
+	case -ESHUTDOWN:
+		return;
+	default:
+		printk(KERN_INFO "Rx URB aborted (%d)\n", urb->status);
+		return;	//do not resubmit aborted urbs... happens when device goes down
+		//goto resubmit_urb;
+	}
+
+	/* device reports out of range channel id */
+	if(hf->channel>=MAX_INTF){
+		printk(KERN_INFO "%d] strange channel #\n",hf->channel);
+		goto resubmit_urb;
+	}
+
+	/* device reports bad channel id */
+	dev = usbcan->canch[hf->channel];
+	if( !dev )		//FIXME use assert instead
+		goto resubmit_urb;
+
+	netdev = dev->netdev;
+	if( !netdev )		//FIXME use assert instead
+		goto resubmit_urb;
+
+	if( !netif_device_present(netdev) )
+		return;
+
+	stats = &dev->netdev->stats;
+
+	if(hf->echo_id == 0){ /* normal */
+		printk(KERN_INFO "%d] got msg\n",hf->channel);
+		skb = alloc_can_skb(dev->netdev, &cf);
+		if( skb==NULL )
+			return;
+
+		*cf = hf->frame;
+		cf->can_dlc = get_can_dlc(hf->frame.can_dlc);
+
+		netif_rx(skb);
+
+		stats->rx_packets++;
+		stats->rx_bytes += cf->can_dlc;
+	}else{		/* echo_id = hf->echo_id-1 //echo ids start at 1 */
+		txc = ss_get_tx_context(dev,hf->echo_id-1);
+
+		/* bad devices send bad echo_ids. */
+		if(!txc){
+			printk(KERN_INFO "%d] bad echo %d\n",hf->channel,hf->echo_id);
+			goto resubmit_urb;
+		}else{
+			printk(KERN_INFO "%d] got echo %d\n",hf->channel,hf->echo_id);
 		}
 
-		priv->tx_obj =3D PCH_TX_OBJ_START;
+		can_get_echo_skb(netdev, ss_tx_context_id(txc));
+
+		ss_free_tx_context(txc);
+
+		netdev->stats.tx_packets++;
+//FIXME: report dlc
+//		stats->tx_bytes += cf->can_dlc;
+
+		netdev->trans_start = jiffies;
+
+		if (netif_queue_stopped(netdev))
+			netif_wake_queue(netdev);
+	}
+
+
+resubmit_urb:
+//	do i really need to refill? the urb should still be valid
+//	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, SS_USB_ENDPOINT_IN(dev->iface->altsetting[0].desc.bInterfaceNumber)), urb->transfer_buffer, BUFFER_SIZE, ss_usb_recieve_bulk_callback, dev);
+
+	rc = usb_submit_urb(urb, GFP_ATOMIC);
+
+	if( rc==-ENODEV )
+		printk(KERN_INFO "resubmit error -ENODEV\n");
+		//netif_device_detach(netdev);
+	else if( rc )
+		printk(KERN_INFO "resubmit error %d\n",rc);
+}
+
+static void ss_usb_xmit_callback( struct urb *urb )
+{
+	struct ss_tx_context *txc = urb->context;
+	struct ss_can *dev;
+	struct net_device *netdev;
+
+	BUG_ON(!txc);
+
+	dev = txc->dev;
+	BUG_ON(!dev);
+
+	netdev = dev->netdev;
+	BUG_ON(!netdev);
+
+	if (urb->status){
+		printk(KERN_INFO "%d] xmit err %d\n",dev->channel,txc->echo_id+1);
+	}else{
+		printk(KERN_INFO "%d] xmit ok  %d\n",dev->channel,txc->echo_id+1);
+	}
+
+	usb_free_coherent(urb->dev, urb->transfer_buffer_length, urb->transfer_buffer, urb->transfer_dma);
+
+	atomic_dec(&dev->active_tx_urbs);
+
+	if (!netif_device_present(netdev))
+		return;
+
+	/* The urb never made it to the device. Drop this packet. */
+	if (urb->status){
+		dev_info(netdev->dev.parent, "Tx URB aborted (%d)\n", urb->status);
+		can_free_echo_skb(netdev, ss_tx_context_id(txc));
+		ss_free_tx_context(txc);
+		netdev->stats.tx_dropped++;
+	}
+
+	if (netif_queue_stopped(netdev))
+		netif_wake_queue(netdev);
+}
+
+/****************************** UBS CAN ******************************/
+static int ss_usb_set_bittiming( struct net_device *netdev )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct can_bittiming *bt = &dev->can.bittiming;
+	struct usb_interface *intf = dev->iface;
+	int rc;
+
+	struct __packed device_bittiming dbt = {
+		.prop_seg = bt->prop_seg,
+		.phase_seg1 = bt->phase_seg1,
+		.phase_seg2 = bt->phase_seg2,
+		.sjw = bt->sjw,
+		.brp = bt->brp
+	};
+
+	printk(KERN_INFO "CH: %d\n",dev->channel);
+	printk(KERN_INFO "PRS %d\n",bt->prop_seg);
+	printk(KERN_INFO "PH1 %d\n",bt->phase_seg1);
+	printk(KERN_INFO "PH2 %d\n",bt->phase_seg2);
+	printk(KERN_INFO "SJW %d\n",bt->sjw);
+	printk(KERN_INFO "BRP %d\n",bt->brp);
+
+	rc = usb_control_msg(interface_to_usbdev(intf),
+			usb_sndctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+			SS_USB_BREQ_BITTIMING,					/* request */
+			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,	/* request type */
+			dev->channel,						/* value */
+			0,							/* interface */
+			&dbt,							/* data */
+			sizeof(dbt),						/* len */
+			1000);
+	if(rc<0){
+		dev_warn(netdev->dev.parent, "Couldn't set bittimings %d",rc);
+	}
+
+	return rc;
+}
+
+static int ss_usb_set_mode( struct net_device *netdev, enum can_mode mode )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct usb_interface *intf = dev->iface;
+	struct device_mode dm;
+	int rc;
+	printk(KERN_INFO "ss can mode %d\n",mode);
+
+	if( !dev->open_time )
+		return -EINVAL;
+
+
+	switch( mode ){
+	case CAN_MODE_START:
+		dm.mode = SS_CAN_MODE_RESET;
+
+		rc = usb_control_msg(interface_to_usbdev(intf),
+				usb_sndctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+				SS_USB_BREQ_MODE,					/* request */
+				USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,	/* request type */
+				dev->channel,						/* value */
+				0,							/* index */
+				&dm,							/* data */
+				sizeof(dm),						/* len */
+				1000);
+		if( rc<0 ){
+			dev_warn(netdev->dev.parent, "Couldn't start device %d",rc);
+			return rc;
+		}
+
+		if( netif_queue_stopped(netdev) )
+			netif_wake_queue(netdev);
+		break;
+	case CAN_MODE_STOP:
+	case CAN_MODE_SLEEP:
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+int ss_usb_get_state( const struct net_device *netdev, enum can_state *state )
+{
+
+	struct ss_can *dev = netdev_priv(netdev);
+	struct usb_interface *intf = dev->iface;
+	struct device_state dstate;
+	int rc;
+	printk(KERN_INFO "ss can state\n");
+
+	rc = usb_control_msg(interface_to_usbdev(intf),
+			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+			SS_USB_BREQ_BERR,					/* request */
+			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,		/* request type */
+			dev->channel,						/* value */
+			0,							/* index */
+			&dstate,						/* data */
+			sizeof(dstate),						/* len */
+			1000);
+	if( rc<0 ){
+		dev_warn(netdev->dev.parent, "Couldn't get state %d",rc);
+		return rc;
+	}
+
+	printk(KERN_INFO "state: %d\n",dstate.state);
+
+	switch(dstate.state){
+		case SS_CAN_STATE_ERROR_ACTIVE:;
+			*state = CAN_STATE_ERROR_ACTIVE;     /* RX/TX error count < 96 */
+			return 0;
+		case SS_CAN_STATE_ERROR_WARNING:;
+			*state = CAN_STATE_ERROR_WARNING;    /* RX/TX error count < 128 */
+			return 0;
+		case SS_CAN_STATE_ERROR_PASSIVE:;
+			*state = CAN_STATE_ERROR_PASSIVE;    /* RX/TX error count < 256 */
+			return 0;
+		case SS_CAN_STATE_BUS_OFF:;
+			*state = CAN_STATE_BUS_OFF;          /* RX/TX error count >= 256 */
+			return 0;
+		case SS_CAN_STATE_STOPPED:;
+			*state = CAN_STATE_STOPPED;          /* Device is stopped */
+			return 0;
+		case SS_CAN_STATE_SLEEPING:;
+			*state = CAN_STATE_SLEEPING;         /* Device is sleeping */
+			return 0;
+	}
+
+	return -ENOTSUPP;
+}
+
+static int ss_usb_get_berr_counter( const struct net_device *netdev, struct can_berr_counter *bec )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct usb_interface *intf = dev->iface;
+	struct device_state dstate;
+	int rc;
+
+	rc = usb_control_msg(interface_to_usbdev(intf),
+			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+			SS_USB_BREQ_BERR,					/* request */
+			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,		/* request type */
+			dev->channel,						/* value */
+			0,							/* index */
+			&dstate,						/* data */
+			sizeof(dstate),						/* len */
+			1000);
+	if( rc<0 ){
+		dev_warn(netdev->dev.parent, "Couldn't get error counters %d",rc);
+		return rc;
+	}
+
+	printk(KERN_INFO "txerr: %d rxerr: %d\n",dstate.txerr,dstate.rxerr);
+
+	bec->txerr = dstate.txerr;
+	bec->rxerr = dstate.rxerr;
+
+	return 0;
+}
+
+static netdev_tx_t ss_can_start_xmit( struct sk_buff *skb, struct net_device *netdev )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct net_device_stats *stats = &dev->netdev->stats;
+	struct urb *urb;
+	struct ss_host_frame *hf;
+	int rc;
+	struct ss_tx_context *txc;
+
+	if (can_dropped_invalid_skb(netdev, skb))
+		return NETDEV_TX_OK;
+
+	/* find an empty context to keep track of transmission */
+	txc = ss_alloc_tx_context(dev);
+	if (!txc) {
+		//dev_kfree_skb(skb);
+		return NETDEV_TX_BUSY;
+	}
+
+	/* create a URB, and a buffer for it */
+	urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (!urb) {
+		ss_free_tx_context(txc);
+		dev_err(netdev->dev.parent, "No memory left for URBs\n");
+		goto nomem;
+	}
+
+	hf = usb_alloc_coherent(dev->udev, sizeof(*hf), GFP_ATOMIC, &urb->transfer_dma);
+	if (!hf) {
+		ss_free_tx_context(txc);
+		dev_err(netdev->dev.parent, "No memory left for USB buffer\n");
+		usb_free_urb(urb);
+		goto nomem;
+	}
+
+	hf->frame = *(struct can_frame *)skb->data;
+	hf->echo_id = ss_tx_context_id(txc)+1;
+	hf->channel = dev->channel;
+
+	usb_fill_bulk_urb(urb, dev->udev,
+			usb_sndbulkpipe(dev->udev, SS_USB_ENDPOINT_OUT),
+			hf,
+			sizeof(*hf),
+			ss_usb_xmit_callback,
+			txc);
+
+	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+	usb_anchor_urb(urb, &dev->tx_submitted);
+
+	can_put_echo_skb(skb, netdev, ss_tx_context_id(txc));
+
+	atomic_inc(&dev->active_tx_urbs);
+
+//	printk(KERN_INFO "%d] xmit new %d\n",hf->channel,hf->echo_id);
+
+	rc = usb_submit_urb(urb, GFP_ATOMIC);
+	if (unlikely(rc)) {			// usb send failed
+
+		printk(KERN_INFO "usb_submit failed %d\n",rc);
+
+		can_free_echo_skb(netdev, ss_tx_context_id(txc));
+		ss_free_tx_context(txc);
+
+		usb_unanchor_urb(urb);
+		usb_free_coherent(dev->udev, sizeof(*hf), hf, urb->transfer_dma);
+		dev_kfree_skb(skb);
+
+		atomic_dec(&dev->active_tx_urbs);
+
+		if (rc == -ENODEV) {
+			netif_device_detach(netdev);
+		} else {
+			dev_warn(netdev->dev.parent, "failed tx_urb %d\n", rc);
+
+			stats->tx_dropped++;
+		}
 	} else {
-		priv->tx_obj++;
+		netdev->trans_start = jiffies;
+
+		/* Slow down tx path */
+		if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ){
+// || dev->free_slots < 5) {
+			netif_stop_queue(netdev);
+		}
 	}
 
-	spin_unlock_irqrestore(&priv->lock, flags);
+	/* let usb core take care of this urb */
+	usb_free_urb(urb);
 
-	/* Setting the CMASK register. */
-	pch_can_bit_set(&priv->regs->ifregs[1].cmask, PCH_CMASK_ALL);
+	return NETDEV_TX_OK;
 
-	/* If ID extended is set. */
-	if (cf->can_id & CAN_EFF_FLAG) {
-		iowrite32(cf->can_id & 0xffff, &priv->regs->ifregs[1].id1);
-		id2 =3D ((cf->can_id >> 16) & 0x1fff) | PCH_ID2_XTD;
-	} else {
-		iowrite32(0, &priv->regs->ifregs[1].id1);
-		id2 =3D (cf->can_id & CAN_SFF_MASK) << 2;
-	}
-
-	id2 |=3D PCH_ID_MSGVAL;
-
-	/* If remote frame has to be transmitted.. */
-	if (!(cf->can_id & CAN_RTR_FLAG))
-		id2 |=3D PCH_ID2_DIR;
-
-	iowrite32(id2, &priv->regs->ifregs[1].id2);
-
-	/* Copy data to register */
-	for (i =3D 0; i < cf->can_dlc; i +=3D 2) {
-		iowrite16(cf->data[i] | (cf->data[i + 1] << 8),
-			  &priv->regs->ifregs[1].data[i / 2]);
-	}
-
-	can_put_echo_skb(skb, ndev, tx_obj_no - PCH_RX_OBJ_END - 1);
-
-	/* Set the size of the data. Update if2_mcont */
-	iowrite32(cf->can_dlc | PCH_IF_MCONT_NEWDAT | PCH_IF_MCONT_TXRQXT |
-		  PCH_IF_MCONT_TXIE, &priv->regs->ifregs[1].mcont);
-
-	pch_can_rw_msg_obj(&priv->regs->ifregs[1].creq, tx_obj_no);
-
-	netdev_info(ndev, "Jeroen! normal exit\n");
+nomem:
+	dev_kfree_skb(skb);
+	stats->tx_dropped++;
 	return NETDEV_TX_OK;
 }
 
------------------------------------------------------------------------=
----
-Appendix 6
+static int ss_can_open( struct net_device *netdev )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct ss_usb *parent = dev->parent;
+	struct device_mode dm;
+	int rc,i;
 
-bmterra@q7buntu:~/user/jla$ dmesg | grep pch_can
-[    6.935595] pch_can 0000:02:0c.3: irq 47 for MSI/MSI-X
-[    6.935641] pch_can 0000:02:0c.3: (unregistered net_device): PCH CAN=
- opened with MSI
-[    6.935741] pch_can 0000:02:0c.3: setting latency timer to 64
-[   89.989304] pch_can 0000:02:0c.3: irq 47 for MSI/MSI-X
-[   89.989356] pch_can 0000:02:0c.3: (unregistered net_device): PCH CAN=
- opened with MSI
-[   89.989380] pch_can 0000:02:0c.3: setting latency timer to 64
-[  102.234560] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.234584] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.911657] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.911682] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.912849] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.912867] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.912887] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.912900] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.912914] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.912927] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.912942] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.912951] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.912963] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913831] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913846] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913853] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913866] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913873] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913885] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913892] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913904] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913911] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913923] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.913930] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.913938] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.913951] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915313] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915327] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915334] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915347] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915353] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915366] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915373] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915385] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915392] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915405] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.915411] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.915419] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.915432] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916766] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916787] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916799] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916816] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916828] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916845] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916857] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916874] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916886] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916903] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.916915] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.916927] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.916944] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918209] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918229] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918242] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918260] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918272] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918290] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918302] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918319] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918331] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918348] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.918360] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.918374] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.918391] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919654] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919672] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919684] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919702] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919712] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919730] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919741] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919760] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919771] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919788] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.919799] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.919812] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.919830] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921120] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921141] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921154] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921172] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921184] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921201] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921213] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921230] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921242] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921260] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.921271] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.921283] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.921300] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922560] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922580] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922592] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922610] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922622] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922639] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922651] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922669] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922681] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922699] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.922711] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.922723] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.922739] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924042] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924068] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924086] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924111] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924129] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924153] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924168] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924191] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924202] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924218] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.924229] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.924241] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.924259] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925493] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925512] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925525] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925542] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925555] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925572] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925584] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925602] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925614] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925632] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.925644] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.925656] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.925673] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.926928] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.926951] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.926963] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.926981] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.926993] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.927010] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.927021] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.927038] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.927050] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.927066] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.927078] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.927091] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.927107] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928384] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928402] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928415] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928432] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928443] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928462] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928478] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928494] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928505] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928523] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.928533] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.928545] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.928564] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929841] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.929862] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929875] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.929892] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929904] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.929922] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929934] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.929951] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929963] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.929980] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.929992] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.930005] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.930021] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.931291] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.931311] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.931323] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.931341] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.931353] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.931369] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.936367] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.936390] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.937501] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.937526] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.937553] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.937566] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.937582] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938019] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938033] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938041] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938053] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938060] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938072] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938079] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938091] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938098] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938110] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.938116] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.938125] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.938137] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939475] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939489] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939496] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939509] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939516] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939528] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939535] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939547] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939554] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939566] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.939573] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.939581] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.939594] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941426] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941447] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941460] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941478] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941492] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941509] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941521] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941538] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941551] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941568] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.941580] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.941594] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.941611] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.942891] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.942910] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.942922] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.942940] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.942951] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.942969] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.942980] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.942998] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.943009] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.943027] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.943037] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.943049] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.943067] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944370] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944390] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944401] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944419] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944430] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944448] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944459] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944475] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944486] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944503] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.944514] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.944526] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.944545] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945834] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945854] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945866] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945884] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945895] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945910] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945920] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945938] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945950] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945968] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.945980] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.945993] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.946011] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947302] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947321] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947333] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947350] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947362] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947381] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947392] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947408] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947419] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947436] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.947447] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.947459] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.947475] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948763] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948783] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948794] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948810] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948821] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948838] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948849] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948865] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948876] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948893] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.948905] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.948918] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.948935] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950208] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950229] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950241] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950260] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950272] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950289] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950301] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950318] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950330] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950348] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.950360] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.950372] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.950389] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951646] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951665] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951677] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951694] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951706] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951723] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951735] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951751] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951762] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951779] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.951790] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.951802] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.951820] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953097] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953120] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953133] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953150] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953163] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953180] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953192] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953209] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953221] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953239] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.953251] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.953264] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.953281] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954550] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954569] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954582] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954600] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954613] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954630] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954643] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954660] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954672] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954689] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.954701] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.954712] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  102.954728] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.956038] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.956057] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.956068] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.956091] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.956109] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.956130] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.956145] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.956169] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  102.956185] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  102.956208] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003056] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003082] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003106] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003123] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003146] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003164] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003185] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003203] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003225] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003243] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003265] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003282] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003304] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003315] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.003337] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003352] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003373] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003388] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003402] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003423] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003437] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003451] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003472] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003485] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003500] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003523] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003537] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003555] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003577] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003592] pch_can 0000:02:0c.3: can0: can_put_echo_skb: BUG! echo_=
-skb is occupied!
-[  103.003607] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.003627] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.003641] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.003657] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005435] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005457] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005469] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005485] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005498] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005515] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005527] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005544] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005556] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005574] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.005586] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.005599] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.005616] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.006870] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.006889] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.006901] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.006919] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.006931] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.006949] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.006959] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.006976] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.006987] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.007004] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.007017] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.007028] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.007045] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008326] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008344] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008355] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008372] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008383] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008401] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008412] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008430] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008442] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008459] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.008471] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.008484] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.008502] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009778] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009797] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009809] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009828] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009840] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009858] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009869] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009887] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009898] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009914] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.009925] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.009938] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.009956] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011213] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011233] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011245] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011261] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011272] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011289] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011300] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011318] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011329] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011346] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.011358] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.011370] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.011387] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012663] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012682] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012695] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012712] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012724] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012741] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012753] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012779] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012791] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012809] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.012821] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.012833] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.012850] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014114] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014136] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014149] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014166] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014179] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014196] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014209] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014226] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014238] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014255] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.014267] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.014281] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.014299] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015565] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015581] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015588] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015601] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015608] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015620] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015627] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015640] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015647] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015659] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.015666] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.015675] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.015688] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017038] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017057] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017069] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017084] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017096] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017114] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017126] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017143] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017155] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017172] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.017184] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.017197] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.017214] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018492] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018512] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018524] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018541] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018552] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018568] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018577] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018594] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018605] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018624] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.018635] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.018647] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.018664] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.019947] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.019966] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.019978] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.019995] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.020044] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.020060] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.020070] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.020093] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.020111] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.020135] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.020153] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.020175] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.020207] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.021395] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.021416] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.026893] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.026916] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.027018] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.027038] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.027062] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.027081] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.027104] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.027122] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
-[  103.027144] pch_can 0000:02:0c.3: can0: Jeroen! pch_xmit
-[  103.027155] pch_can 0000:02:0c.3: can0: Jeroen! netif_stop_queue(nde=
-v)
-[  103.027176] pch_can 0000:02:0c.3: can0: Jeroen! normal exit
+	/* common open */
+	rc = open_candev(netdev);
+	if( rc )
+		return rc;
+
+	if( atomic_add_return( 1, &parent->active_channels )==1 ){
+		for( i = 0; i < MAX_RX_URBS; i++ ){
+			struct urb *urb = NULL;
+			u8 *buf = NULL;
+
+			/* alloc rx urb */
+			urb = usb_alloc_urb(0, GFP_KERNEL);
+			if (!urb) {
+				dev_err(netdev->dev.parent, "No memory left for URBs\n");
+				return -ENOMEM;
+			}
+
+			/* alloc rx buffer */
+			//FIXME: free this memory
+			buf = usb_alloc_coherent(dev->udev, BUFFER_SIZE, GFP_KERNEL, &urb->transfer_dma);
+			if (!buf) {
+				dev_err(netdev->dev.parent,
+					"No memory left for USB buffer\n");
+				usb_free_urb(urb);
+				return -ENOMEM;
+			}
+
+
+			/* fill, anchor, and submit rx urb */
+			usb_fill_bulk_urb(urb,
+					dev->udev,
+					usb_rcvbulkpipe(dev->udev, SS_USB_ENDPOINT_IN),
+					buf,
+					BUFFER_SIZE,
+					ss_usb_recieve_bulk_callback,
+					parent
+					);
+			urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+
+			usb_anchor_urb(urb, &parent->rx_submitted);
+
+			rc = usb_submit_urb(urb, GFP_KERNEL);
+			if( rc ){
+				if( rc == -ENODEV )
+					netif_device_detach( dev->netdev );
+
+					//FIXME: free rx buffer/urb maybe?
+					usb_unanchor_urb(urb);
+				break;
+			}
+
+			/* Drop reference, USB core will take care of freeing it */
+			usb_free_urb(urb);
+		}
+	}
+
+	/* finally start device */
+	dm.mode = SS_CAN_MODE_START;
+	rc = usb_control_msg(interface_to_usbdev(dev->iface),
+			usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),/* pipe */
+			SS_USB_BREQ_MODE,					/* request */
+			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,	/* request type */
+			dev->channel,						/* value */
+			0,							/* index */
+			&dm,							/* data */
+			sizeof(dm),						/* len */
+			1000);
+
+	if(rc<0){
+		dev_warn(netdev->dev.parent, "Couldn't start device %d",rc);
+	}
+
+	dev->open_time = jiffies;
+
+	netif_start_queue(netdev);
+
+	printk(KERN_INFO "ss can open\n");
+	return 0;
+}
+
+/* think: ip link set canx down */
+static int ss_can_close( struct net_device *netdev )
+{
+	struct ss_can *dev = netdev_priv(netdev);
+	struct ss_usb *parent = dev->parent;
+
+	netif_stop_queue(netdev);
+
+	/* Stop polling */
+	if( atomic_dec_and_test( &parent->active_channels ) ){
+		usb_kill_anchored_urbs(&parent->rx_submitted);
+	//	foreach child
+	//	usb_kill_anchored_urbs(&parent->tx_submitted);
+		//CLEANUP OTHER
+		/* Set CAN controller to reset mode */
+	}
+
+	close_candev(netdev);
+
+	dev->open_time = 0;
+
+	printk(KERN_INFO "ss can close\n");
+	return 0;
+}
+
+/******************************** USB ********************************/
+
+static const struct net_device_ops ss_usb_netdev_ops = {
+	.ndo_open = ss_can_open,
+	.ndo_stop = ss_can_close,
+	.ndo_start_xmit = ss_can_start_xmit,
+};
+
+static int ss_make_candev( struct ss_can **dev, unsigned int channel, struct usb_interface *intf );
+static void ss_destroy_candev( struct ss_can *dev );
+
+static int ss_usb_probe( struct usb_interface *intf, const struct usb_device_id *id )
+{
+	struct ss_usb *dev;
+	int rc = -ENOMEM;
+	unsigned int icount,i;
+
+	struct device_config conf;
+
+	/* send host config */
+	conf = (struct device_config){
+		.byte_order = 0xbeef,
+		.hf_size = sizeof(struct ss_host_frame),
+		.hf_can_id = offsetof(struct ss_host_frame, frame.can_id),
+		.hf_can_dlc = offsetof(struct ss_host_frame, frame.can_dlc),
+		.hf_data = offsetof(struct ss_host_frame, frame.data),
+		.hf_echo_id = offsetof(struct ss_host_frame, echo_id),
+		.hf_channel = offsetof(struct ss_host_frame, channel),
+	};
+
+	rc = usb_control_msg(interface_to_usbdev(intf),
+			usb_sndctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+			SS_USB_BREQ_HOST_FORMAT,				/* request */
+			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,	/* request type */
+			1,							/* value */
+			intf->altsetting[0].desc.bInterfaceNumber,		/* index */
+			&conf,							/* data */
+			sizeof(conf),						/* len */
+			1000);
+
+	if( rc<0 ){
+		dev_err(&intf->dev, "ss_usb: Couldn't send data format %d\n",rc);
+		return rc;
+	}
+
+	/* fetch interface count and global settings etc.. */
+	//TODO: --^
+	icount = 2;
+
+	if(icount>MAX_INTF){
+		dev_err(&intf->dev, "ss_usb: Cannot handle more that %d Can interfaces\n",MAX_INTF);
+		return -EINVAL;
+	}
+
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	init_usb_anchor(&dev->rx_submitted);
+
+	atomic_set(&dev->active_channels, 0);
+
+	usb_set_intfdata(intf, dev);
+
+	for(i=0;i<icount;i++){
+		rc = ss_make_candev(&dev->canch[i],i,intf);
+		if( rc ){
+			icount = i;
+			for(i=0;i<icount;i++){
+				ss_destroy_candev(dev->canch[i]);
+				dev->canch[icount] = NULL;
+			}
+			return rc;
+		}
+		dev->canch[i]->parent = dev;
+	}
+
+	printk(KERN_INFO "ss usb probe\n");
+	return 0;
+}
+
+static void ss_usb_disconnect( struct usb_interface *intf )
+{
+	unsigned i;
+	struct ss_usb *dev = usb_get_intfdata(intf);
+	usb_set_intfdata(intf, NULL);
+
+	if( !dev ){
+		printk(KERN_INFO "ss usb disconnect (nodata)\n");
+		return;
+	}
+
+	for(i=0;i<MAX_INTF;i++){
+		struct ss_can *can=dev->canch[i];
+
+		if(!can)
+			continue;
+
+		//ss_destroy_candev(dev->canch[i]);
+
+		unregister_netdev(can->netdev);
+		free_candev(can->netdev);
+
+		usb_kill_anchored_urbs(&can->tx_submitted);
+
+//		unlink_all_urbs(can->);
+
+//		usb_free_urb(dev->intr_urb);
+//		kfree(dev);
+	}
+
+	usb_kill_anchored_urbs(&dev->rx_submitted);
+
+	printk(KERN_INFO "ss usb disconnect\n");
+}
+
+/******************* EVERYTHING BELLOW HERE WORKS! *******************/
+
+MODULE_DEVICE_TABLE(usb, ss_usb_table);
+static struct usb_device_id ss_usb_table[] = {
+	{USB_DEVICE(USB_SSUSB_VENDOR_ID, USB_SSUSB_AT32_PRODUCT_ID)},
+	{} /* Terminating entry */
+};
+
+static struct usb_driver ss_usb_driver = {
+	.name       = "ss_usb",
+	.probe      = ss_usb_probe,
+	.disconnect = ss_usb_disconnect,
+	.id_table   = ss_usb_table,
+	//FIXME: suspend, resume, etc...
+};
+
+static int __init ss_usb_init( void )
+{
+	printk(KERN_INFO "ss usb init\n");
+	return usb_register(&ss_usb_driver);
+}
+
+static void __exit ss_usb_exit( void )
+{
+	printk(KERN_INFO "ss usb exit\n");
+	usb_deregister(&ss_usb_driver);
+}
+
+module_init(ss_usb_init);
+module_exit(ss_usb_exit);
+
+MODULE_AUTHOR("Maximilian Schneider <mws@schneidersoft.net>");
+MODULE_DESCRIPTION("socket CAN device driver for SchneiderSoft USB2.0 to CAN interfaces.");
+MODULE_LICENSE("GPL v2");
+
+
+
+
+
+static int ss_make_candev( struct ss_can **out, unsigned int channel, struct usb_interface *intf )
+{
+	struct ss_can *dev;
+	struct device_bt_const bt_const;
+	struct net_device *netdev;
+	int rc;
+	/* fetch bit timing constants */
+	rc = usb_control_msg(interface_to_usbdev(intf),
+			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),		/* pipe */
+			SS_USB_BREQ_BT_CONST,					/* request */
+			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,		/* request type */
+			channel,						/* value */
+			0,							/* index */
+			&bt_const,						/* data */
+			sizeof(bt_const),					/* len */
+			1000);
+
+	if( rc<0 ){
+		dev_err(&intf->dev, "ss_usb: Couldn't get bit timing const for channel %d\n",rc);
+		return rc;
+	}
+
+	printk(KERN_INFO "fclock: %d\n",bt_const.fclk_can);
+
+	/* create netdev */
+	netdev = alloc_candev(sizeof(struct ss_can),MAX_TX_URBS);
+	if( !netdev ){
+		dev_err(&intf->dev, "ss_usb: Couldn't alloc candev\n");
+		return -ENOMEM;
+	}
+
+	dev = netdev_priv(netdev);
+
+	netdev->netdev_ops = &ss_usb_netdev_ops;
+	netdev->flags |= IFF_ECHO; /* we support full roundtrip echo */
+
+	/* dev settup */
+	dev->bt_const = (struct can_bittiming_const){
+		.name = "ss_usb",
+		.tseg1_min = bt_const.tseg1_min,
+		.tseg1_max = bt_const.tseg1_max,
+		.tseg2_min = bt_const.tseg2_min,
+		.tseg2_max = bt_const.tseg2_max,
+		.sjw_max = bt_const.sjw_max,
+		.brp_min = bt_const.brp_min,
+		.brp_max = bt_const.brp_max,
+		.brp_inc = bt_const.brp_inc
+	};
+
+	dev->udev = interface_to_usbdev(intf);
+	dev->iface = intf;
+	dev->netdev = netdev;
+	dev->channel = channel;
+
+	init_usb_anchor(&dev->tx_submitted);
+	atomic_set(&dev->active_tx_urbs, 0);
+	for(rc=0;rc<MAX_TX_URBS;rc++){
+		dev->tx_context[rc].dev = dev;
+		dev->tx_context[rc].echo_id = MAX_TX_URBS;
+	}
+
+	/* can settup */
+	dev->can.state = CAN_STATE_STOPPED;
+	dev->can.clock.freq = bt_const.fclk_can;
+	dev->can.bittiming_const = &dev->bt_const;
+	dev->can.do_set_bittiming = ss_usb_set_bittiming;
+	dev->can.do_set_mode = ss_usb_set_mode;
+	dev->can.do_get_state = ss_usb_get_state;
+	dev->can.do_get_berr_counter = ss_usb_get_berr_counter;
+	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+
+	SET_NETDEV_DEV(netdev, &intf->dev);
+
+	rc = register_candev(dev->netdev);
+	if( rc ){
+		free_candev(dev->netdev);
+		dev_err(&intf->dev, "ss_usb: Couldn't register candev\n");
+		return(rc);
+	}
+
+	*out = dev;
+	return(0);
+}
+
+static void ss_destroy_candev( struct ss_can *dev )
+{
+	unregister_candev(dev->netdev);
+	free_candev(dev->netdev);
+}
+
+
+--=-XFVwgkZ71U0EQGXM7+iJ--
+
