@@ -1,428 +1,1084 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Is there any way of getting the CAN interfaces list, from any
- C program?
-Date: Wed, 24 Apr 2013 16:49:29 +0200
-Message-ID: <20130424144929.GA2077@vandijck-laurijssen.be>
-References: <5169B395.2070703@hartkopp.net>
- <516D2ABB.4000300@pengutronix.de>
- <5177A090.6010904@peak-system.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: Re: Usb to can driver
+Date: Wed, 24 Apr 2013 15:48:10 +0000
+Message-ID: <1366818490.5965.35.camel@blackbox>
+References: <1366737302.3325.36.camel@blackbox>
+	 <51770161.2030005@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Type: multipart/mixed; boundary="=-GfrC3Lxi641mKQGoqXBf"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:23074 "EHLO
-	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751780Ab3DXOth (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 10:49:37 -0400
-Content-Disposition: inline
-In-Reply-To: <5177A090.6010904@peak-system.com>
+Received: from mail.schneidersoft.net ([173.45.248.65]:53844 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752450Ab3DXPmu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 11:42:50 -0400
+In-Reply-To: <51770161.2030005@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can <linux-can@vger.kernel.org>
 
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--=-GfrC3Lxi641mKQGoqXBf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Stephane,
+Hello Marc,
 
-I have written this some time ago, not using it actually.
-I tried a modular approach, don't know if its usefull.
+On Tue, 2013-04-23 at 23:47 +0200, Marc Kleine-Budde wrote:
+Hello Max,
+> 
+> On 04/23/2013 07:15 PM, Max S. wrote:
+> > I've been working on a device and a Linux socket can driver for it.
+> > 
+> > Its a dual USB to CAN adapter in two variants external USB device
+with
+> > cable, or a mini pci form factor expansion card.
+> > 
+> > This is my first Linux driver, and I'd like to have someone look at
+it.
+> > Feel free to criticize. I have not done any massive testing, but am
+able
+> > to send and receive frames at 250k +full echo :). Higher speeds
+should
+> > easily be possible, but i have not tested.
+> 
+> Please use "./scripts/checkpatch.pl" from the kernel and fix all
+coding
+> style errors. The compile your code with "make C=1", fix all errors.
+> Then repost :).
+> 
+OK. attached.
 
-PS: I used attachments.
 
-Kurt
+> Can you explain how the "struct device_config" works.
+> 
+struct __packed device_config {
+	u16 byte_order;
 
-On Wed, Apr 24, 2013 at 11:06:24AM +0200, Stephane Grosjean wrote:
-> Hi linux-can members,
->=20
-> I currently wonder whether it exists any way of getting the list of
-> the installed CAN interfaces, from a C program?
-> I mean, getting the network interfaces list is available using
-> ioctl(SIOCGIFCONF).
-> But AFAIK, this (only) returns the IP interfaces found in the
-> system, even using a socket CAN file descriptor.
-> And, I would also like to avoid some pipe/fork/grep/sed in this C
-> program too ;-)
->=20
-> Thanks for your help and best regards,
->=20
-> St=C3=A9phane
-> --
-> PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt
-> Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA
-> Darmstadt HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.:
-> DE39305391 Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329,
-> info@peak-system.com
-> ----
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+	u32 hf_size;	/* size of a host frame */
+	u32 hf_can_id;
+	u32 hf_can_dlc;
+	u32 hf_data;
+	u32 hf_echo_id;
+	u32 hf_channel;
+} conf;
 
---=20
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
-
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/x-csrc; charset=utf-8
-Content-Disposition: attachment; filename="enumif.c"
-
-#ifdef linux
-#if linux
-
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-
-#include <unistd.h>
-#include <sys/socket.h>
-#include <linux/rtnetlink.h>
-#include <linux/netlink.h>
-
-#include "enumif.h"
-
-static struct {
-	int sock;
-	int seq;
-} s = {
-	.sock = -1,
+conf = (struct device_config){
+	.byte_order = 0xbeef,
+	.hf_size = sizeof(struct ss_host_frame),
+	.hf_can_id = offsetof(struct ss_host_frame, frame.can_id),
+	.hf_can_dlc = offsetof(struct ss_host_frame, frame.can_dlc),
+	.hf_data = offsetof(struct ss_host_frame, frame.data),
+	.hf_echo_id = offsetof(struct ss_host_frame, echo_id),
+	.hf_channel = offsetof(struct ss_host_frame, channel),
 };
 
-__attribute__((destructor))
-void enumif_cleanup(void)
-{
-	if (s.sock >= 0) {
-		close(s.sock);
-		s.sock = -1;
-	}
-}
+... send conf to device, packed that should be 26 bytes.
 
-static int enumif_open(void)
-{
-	int fd;
-	struct sockaddr_nl local = {
-		.nl_family = AF_NETLINK,
-		.nl_groups = 0,
-	};
+The device uses byte_order which will appear as either 0xbeef or 0xefbe
+to convert the other members to device byte order. (and to convert all
+future messages)
 
-	if (s.sock >= 0)
-		return s.sock;
+The device can then tell how the host prefers its can frames formatted.
+The idea is that the struct device_config holds enough data to allow the
+device to construct a struct ss_host_frame in host format, including
+padding & byte order.
 
-	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-	if (fd < 0) {
-		perror("Cannot open netlink socket");
-		return -1;
-	}
+since a struct ss_host_frame is simply a wrapper that includes a struct
+can_frame, when a message arrives from the device, the host can copy the
+struct can frame member without modification from the struct
+ss_host_frame into the skb.
 
-	if (bind(fd, (struct sockaddr *)&local, sizeof(local)) < 0) {
-		perror("Cannot bind netlink socket");
-		return -1;
-	}
-	s.sock = fd;
-	s.seq = 0;
-	return fd;
-}
+assumptions that are made:
+* The sizes of the struct can_frame members are id:u32 dlc:u8 data:u64 .
+* It is also assumed that existing defines like CAN_EFF_FLAG in can.h
+and can/error.h don't change, as they are used by the device to
+construct the can_id field.
+* additionally it is assumes that sizeof(struct ss_host_frame) is small
+enough not to consume more bandwidth than is available to a usb2.0
+device at full CAN speeds (which is the case, unless gcc decides to add
+an unrealistic amount of padding).
 
-static inline int enumif_send_request(int sk)
-{
-	struct {
-		struct nlmsghdr n;
-		struct rtgenmsg g;
-	} req = {
-		.n = {
-			.nlmsg_len = sizeof(req),
-			.nlmsg_type = RTM_GETLINK,
-			.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT | NLM_F_MATCH,
-			.nlmsg_pid = 0,
-			.nlmsg_seq = ++s.seq,
-		},
-		.g.rtgen_family = AF_PACKET,
-	};
-	return send(sk, &req, sizeof(req), 0);
-}
-
-static void parse_rtattr(struct rtattr **tb, int max,
-		struct rtattr *rta, int len)
-{
-	memset(tb, 0, sizeof(*tb) * max);
-	while (RTA_OK(rta, len)) {
-		if (rta->rta_type <= max) {
-			tb[rta->rta_type] = rta;
-		}
-
-		rta = RTA_NEXT(rta, len);
-	}
-}
-
-int enumif(void (*fn)(const char *name, int ifindex, int type, int flags, int state))
-{
-	int ret, n_if = 0;
-	size_t msglen;
-	struct nlmsghdr *h;
-	struct sockaddr_nl peer;
-	char cbuf[128];
-	char buf[1024 * 16];
-	struct iovec iov = {
-		.iov_base = buf,
-		.iov_len = sizeof(buf),
-	};
-	struct msghdr msg = {
-		.msg_name = (void *)&peer,
-		.msg_namelen = sizeof(peer),
-		.msg_iov = &iov,
-		.msg_iovlen = 1,
-		.msg_control = &cbuf,
-		.msg_controllen = sizeof(cbuf),
-		.msg_flags = 0,
-	};
-	struct ifinfomsg *ifi;
-	struct rtattr *tb[IFLA_MAX + 1];
-
-	if (enumif_open() < 0)
-		return -1;
-
-	if (enumif_send_request(s.sock) < 0) {
-		perror("Cannot send dump request");
-		return -1;
-	}
-
-	while (1) {
-		iov.iov_len = sizeof(buf);
-
-		ret = recvmsg(s.sock, &msg, 0);
-		if (ret < 0) {
-			if (errno == EINTR || errno == EAGAIN)
-				continue;
-			perror("netlink receive error");
-			return -1;
-		}
-		if (ret == 0) {
-			errno = 0;
-			perror("netlink EOF?");
-			return -1;
-		}
-		msglen = ret;
-		for (h = (void *)buf; NLMSG_OK(h, msglen);
-				h = NLMSG_NEXT(h, msglen)) {
-			if (h->nlmsg_type == NLMSG_DONE)
-				goto done;
-			if (h->nlmsg_type == NLMSG_ERROR) {
-				struct nlmsgerr *err = (struct nlmsgerr*)NLMSG_DATA(h);
-				if (h->nlmsg_len < NLMSG_LENGTH(sizeof(struct nlmsgerr))) {
-					fprintf(stderr,
-						"ERROR truncated\n");
-				} else {
-					errno = -err->error;
-					perror("RTNETLINK answers");
-				}
-				return -1;
-			}
-			++n_if;
-			ifi = NLMSG_DATA(h);
-			parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), IFLA_PAYLOAD(h));
-                        
-			fn(RTA_DATA(tb[IFLA_IFNAME]), ifi->ifi_index, ifi->ifi_type,
-					ifi->ifi_flags,
-					*(unsigned char *)RTA_DATA(tb[IFLA_OPERSTATE]));
-		}
-	}
-
-done:
-	return 0;
-}
-
-#endif
-#endif
+Thanks for the audience,
+Max Schneider.
 
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/x-chdr; charset=utf-8
-Content-Disposition: attachment; filename="enumif.h"
+--=-GfrC3Lxi641mKQGoqXBf
+Content-Disposition: attachment; filename="0001-added-the-ss_usb-driver-source-files.patch"
+Content-Type: text/x-patch; name="0001-added-the-ss_usb-driver-source-files.patch";
+	charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-#ifndef _enumif_h_
-#define _enumif_h_
-#ifdef __cplusplus
-extern "C" {
-#endif
+From 23094effcef481efff7b8107ac452a28448a923b Mon Sep 17 00:00:00 2001
+From: blackbox <maximilian@blackbox>
+Date: Wed, 24 Apr 2013 13:50:41 +0000
+Subject: [PATCH 1/2] added the ss_usb driver source files.
 
-#ifdef linux
-#if linux
-extern int enumif(void (*fn)(const char *name, int ifindex, int type, int flags, int state));
-#endif
-#endif
+---
+ drivers/net/can/usb/Makefile |    1 +
+ drivers/net/can/usb/ss_usb.c |  939 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 940 insertions(+)
+ create mode 100644 drivers/net/can/usb/ss_usb.c
 
-#ifdef __cplusplus
-}
-#endif
-#endif
+diff --git a/drivers/net/can/usb/Makefile b/drivers/net/can/usb/Makefile
+index becef46..c341a1b 100644
+--- a/drivers/net/can/usb/Makefile
++++ b/drivers/net/can/usb/Makefile
+@@ -7,5 +7,6 @@ obj-$(CONFIG_CAN_ESD_USB2) += esd_usb2.o
+ obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb.o
+ obj-$(CONFIG_CAN_PEAK_USB) += peak_usb/
+ obj-$(CONFIG_CAN_8DEV_USB) += usb_8dev.o
++obj-$(CONFIG_CAN_SS_USB) += ss_usb.o
+ 
+ ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
+diff --git a/drivers/net/can/usb/ss_usb.c b/drivers/net/can/usb/ss_usb.c
+new file mode 100644
+index 0000000..cc86e0e
+--- /dev/null
++++ b/drivers/net/can/usb/ss_usb.c
+@@ -0,0 +1,939 @@
++#include <linux/init.h>
++#include <linux/signal.h>
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/usb.h>
++
++#include <linux/can.h>
++#include <linux/can/dev.h>
++#include <linux/can/error.h>
++
++/* Device specific constants */
++#define USB_SSUSB_VENDOR_ID         0xbeef
++#define USB_SSUSB_AT32_PRODUCT_ID   0x1234
++
++#define SS_USB_ENDPOINT_IN          1
++#define SS_USB_ENDPOINT_OUT         2
++
++#define SS_USB_BREQ_HOST_FORMAT     0
++#define SS_USB_BREQ_BITTIMING       1
++#define SS_USB_BREQ_MODE            2
++#define SS_USB_BREQ_BERR            3
++#define SS_USB_BREQ_BT_CONST        4
++
++
++#define SS_CAN_MODE_RESET           0
++#define SS_CAN_MODE_START           1
++
++#define SS_CAN_STATE_ERROR_ACTIVE   0
++#define SS_CAN_STATE_ERROR_WARNING  1
++#define SS_CAN_STATE_ERROR_PASSIVE  2
++#define SS_CAN_STATE_BUS_OFF        3
++#define SS_CAN_STATE_STOPPED        4
++#define SS_CAN_STATE_SLEEPING       5
++
++/* data types passed between host and device */
++struct __packed device_config {
++	u16 byte_order;
++
++	u32 hf_size;	/* size of a host frame */
++	u32 hf_can_id;
++	u32 hf_can_dlc;
++	u32 hf_data;
++	u32 hf_echo_id;
++	u32 hf_channel;
++};
++
++struct __packed device_mode {
++	u8  mode;
++};
++
++struct __packed device_state {
++	u8  state;
++	u32 rxerr;
++	u32 txerr;
++};
++
++struct __packed device_bittiming {
++	u32 prop_seg;
++	u32 phase_seg1;
++	u32 phase_seg2;
++	u32 sjw;
++	u32 brp;
++};
++
++struct __packed device_bt_const {
++	u32 fclk_can;
++	u32 tseg1_min;
++	u32 tseg1_max;
++	u32 tseg2_min;
++	u32 tseg2_max;
++	u32 sjw_max;
++	u32 brp_min;
++	u32 brp_max;
++	u32 brp_inc;
++};
++
++struct ss_host_frame {
++	u8  channel;
++	u32 echo_id;
++	struct can_frame frame;
++};
++
++#define MAX_TX_URBS 10
++#define MAX_RX_URBS 10
++
++#define MAX_INTF 2
++
++struct ss_tx_context {
++	struct ss_can *dev;
++	unsigned int echo_id;
++};
++
++struct ss_can {
++	struct can_priv can; /* must be the first member */
++
++	struct ss_usb *parent;
++
++	struct net_device *netdev;
++	struct usb_device *udev;
++	struct usb_interface *iface;
++
++	struct can_bittiming_const bt_const;
++	unsigned int channel;	/* channel number */
++
++	struct ss_tx_context tx_context[MAX_TX_URBS];
++
++	struct usb_anchor tx_submitted;
++	atomic_t active_tx_urbs;
++
++	int open_time;
++};
++
++/* usb interface struct */
++struct ss_usb {
++//	struct usb_device *udev;
++//	struct usb_interface *iface;
++
++	struct ss_can *canch[MAX_INTF];
++
++	struct usb_anchor rx_submitted;
++
++	atomic_t active_channels;
++};
++
++/* 'allocate' a tx context.
++ * returns a valid tx context or NULL if there is no space.
++ */
++static struct ss_tx_context *ss_alloc_tx_context( struct ss_can *dev )
++{
++	int ii=0;
++	for(;ii<MAX_TX_URBS;ii++){
++		if(dev->tx_context[ii].echo_id==MAX_TX_URBS){
++			dev->tx_context[ii].echo_id=ii;
++			return(&dev->tx_context[ii]);
++		}
++	}
++	return NULL;
++}
++
++/* releases a tx context
++ */
++static void ss_free_tx_context(struct ss_tx_context *txc)
++{
++	txc->echo_id = MAX_TX_URBS;
++}
++
++/* Get a tx context by id. 
++ */
++static struct ss_tx_context *ss_get_tx_context(
++	struct ss_can *dev,
++	unsigned int id )
++{
++	if(id<MAX_TX_URBS){
++		if(dev->tx_context[id].echo_id==id){
++			return &dev->tx_context[id];
++		}
++	}
++
++	return NULL;
++}
++
++/* Get a tx contexts id. 
++ */
++static unsigned int ss_tx_context_id( struct ss_tx_context *txc ){
++	return(txc->echo_id);
++}
++
++#define BUFFER_SIZE sizeof(struct ss_host_frame)
++
++/**************************** USB CALLBACKS **************************/
++static void ss_usb_recieve_bulk_callback( struct urb *urb )
++{
++	struct ss_usb *usbcan = urb->context;
++	struct ss_can *dev;
++	struct net_device *netdev;
++	int rc;
++	struct net_device_stats *stats;
++	struct sk_buff *skb;
++	struct can_frame *cf;
++	struct ss_host_frame *hf = urb->transfer_buffer;
++	struct ss_tx_context *txc;
++
++	BUG_ON(!usbcan);
++
++	switch( urb->status ){
++	case 0: /* success */
++		break;
++	case -ENOENT:
++	case -ESHUTDOWN:
++		return;
++	default:
++		printk(KERN_INFO "Rx URB aborted (%d)\n", urb->status);
++		/* do not resubmit aborted urbs. eg: when device goes down */
++		return;
++	}
++
++	/* device reports out of range channel id */
++	if(hf->channel>=MAX_INTF){
++		printk(KERN_INFO "%d] strange channel #\n",hf->channel);
++		goto resubmit_urb;
++	}
++
++	/* device reports bad channel id */
++	dev = usbcan->canch[hf->channel];
++
++	BUG_ON( !dev );
++
++	netdev = dev->netdev;
++	BUG_ON( !netdev );
++
++	if( !netif_device_present(netdev) )
++		return;
++
++	stats = &dev->netdev->stats;
++
++	if(hf->echo_id == 0){ /* normal */
++		printk(KERN_INFO "%d] got msg\n",hf->channel);
++		skb = alloc_can_skb(dev->netdev, &cf);
++		if( skb==NULL )
++			return;
++
++		*cf = hf->frame;
++		cf->can_dlc = get_can_dlc(hf->frame.can_dlc);
++
++		netif_rx(skb);
++
++		stats->rx_packets++;
++		stats->rx_bytes += cf->can_dlc;
++	}else{		/* echo_id = hf->echo_id-1 //echo ids start at 1 */
++		txc = ss_get_tx_context(dev,hf->echo_id-1);
++
++		/* bad devices send bad echo_ids. */
++		if(!txc){
++			printk(KERN_INFO "%d] bad echo %d\n",hf->channel,hf->echo_id);
++			goto resubmit_urb;
++		}else{
++			printk(KERN_INFO "%d] got echo %d\n",hf->channel,hf->echo_id);
++		}
++
++		can_get_echo_skb(netdev, ss_tx_context_id(txc));
++
++		ss_free_tx_context(txc);
++
++		netdev->stats.tx_packets++;
++		/* FIXME: report dlc:
++		stats->tx_bytes += cf->can_dlc; */
++
++		netdev->trans_start = jiffies;
++
++		if (netif_queue_stopped(netdev))
++			netif_wake_queue(netdev);
++	}
++
++
++resubmit_urb:
++	/* do i really need to refill? the urb should still be valid:
++	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, SS_USB_ENDPOINT_IN(dev->iface->altsetting[0].desc.bInterfaceNumber)), urb->transfer_buffer, BUFFER_SIZE, ss_usb_recieve_bulk_callback, dev); */
++	rc = usb_submit_urb(urb, GFP_ATOMIC);
++
++	if( rc==-ENODEV )
++		printk(KERN_INFO "resubmit error -ENODEV\n");
++		/* FIXME: necessary?
++		netif_device_detach(netdev); */
++	else if( rc )
++		printk(KERN_INFO "resubmit error %d\n",rc);
++}
++
++static void ss_usb_xmit_callback( struct urb *urb )
++{
++	struct ss_tx_context *txc = urb->context;
++	struct ss_can *dev;
++	struct net_device *netdev;
++
++	BUG_ON(!txc);
++
++	dev = txc->dev;
++	BUG_ON(!dev);
++
++	netdev = dev->netdev;
++	BUG_ON(!netdev);
++
++	if (urb->status){
++		printk(KERN_INFO "%d] xmit err %d\n",
++			dev->channel,txc->echo_id+1);
++	}else{
++		printk(KERN_INFO "%d] xmit ok  %d\n",
++			dev->channel,txc->echo_id+1);
++	}
++
++	usb_free_coherent( urb->dev,
++		urb->transfer_buffer_length,
++		urb->transfer_buffer,
++		urb->transfer_dma );
++
++	atomic_dec(&dev->active_tx_urbs);
++
++	if (!netif_device_present(netdev))
++		return;
++
++	/* The urb never made it to the device. Drop this packet. */
++	if (urb->status){
++		dev_info(netdev->dev.parent, "Tx URB aborted (%d)\n",
++			urb->status);
++		can_free_echo_skb(netdev, ss_tx_context_id(txc));
++		ss_free_tx_context(txc);
++		netdev->stats.tx_dropped++;
++	}
++
++	if (netif_queue_stopped(netdev))
++		netif_wake_queue(netdev);
++}
++
++/****************************** UBS CAN ******************************/
++static int ss_usb_set_bittiming( struct net_device *netdev )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct can_bittiming *bt = &dev->can.bittiming;
++	struct usb_interface *intf = dev->iface;
++	int rc;
++
++	struct __packed device_bittiming dbt = {
++		.prop_seg = bt->prop_seg,
++		.phase_seg1 = bt->phase_seg1,
++		.phase_seg2 = bt->phase_seg2,
++		.sjw = bt->sjw,
++		.brp = bt->brp
++	};
++
++	printk(KERN_INFO "CH: %d\n",dev->channel);
++	printk(KERN_INFO "PRS %d\n",bt->prop_seg);
++	printk(KERN_INFO "PH1 %d\n",bt->phase_seg1);
++	printk(KERN_INFO "PH2 %d\n",bt->phase_seg2);
++	printk(KERN_INFO "SJW %d\n",bt->sjw);
++	printk(KERN_INFO "BRP %d\n",bt->brp);
++
++	rc = usb_control_msg(interface_to_usbdev(intf),
++			usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++			SS_USB_BREQ_BITTIMING,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			&dbt,
++			sizeof(dbt),
++			1000);
++	if(rc<0){
++		dev_warn(netdev->dev.parent, "Couldn't set bittimings %d",rc);
++	}
++
++	return rc;
++}
++
++static int ss_usb_set_mode( struct net_device *netdev, enum can_mode mode )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct usb_interface *intf = dev->iface;
++	struct device_mode dm;
++	int rc;
++	printk(KERN_INFO "ss can mode %d\n",mode);
++
++	if( !dev->open_time )
++		return -EINVAL;
++
++
++	switch( mode ){
++	case CAN_MODE_START:
++		dm.mode = SS_CAN_MODE_RESET;
++
++		rc = usb_control_msg(interface_to_usbdev(intf),
++				usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++				SS_USB_BREQ_MODE,
++				USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++				dev->channel,
++				0,
++				&dm,
++				sizeof(dm),
++				1000);
++		if( rc<0 ){
++			dev_warn(netdev->dev.parent,"Couldn't start device %d",
++				rc);
++			return rc;
++		}
++
++		if( netif_queue_stopped(netdev) )
++			netif_wake_queue(netdev);
++		break;
++	case CAN_MODE_STOP:
++	case CAN_MODE_SLEEP:
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++static int ss_usb_get_state( const struct net_device *netdev, enum can_state *state )
++{
++
++	struct ss_can *dev = netdev_priv(netdev);
++	struct usb_interface *intf = dev->iface;
++	struct device_state dstate;
++	int rc;
++	printk(KERN_INFO "ss can state\n");
++
++	rc = usb_control_msg(interface_to_usbdev(intf),
++			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++			SS_USB_BREQ_BERR,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			&dstate,
++			sizeof(dstate),
++			1000);
++	if( rc<0 ){
++		dev_warn(netdev->dev.parent, "Couldn't get state %d",rc);
++		return rc;
++	}
++
++	printk(KERN_INFO "state: %d\n",dstate.state);
++
++	switch(dstate.state){
++		/* RX/TX error count < 96 */
++		case SS_CAN_STATE_ERROR_ACTIVE:;
++			*state = CAN_STATE_ERROR_ACTIVE;
++			return 0;
++		/* RX/TX error count < 128 */
++		case SS_CAN_STATE_ERROR_WARNING:;
++			*state = CAN_STATE_ERROR_WARNING;
++			return 0;
++		/* RX/TX error count < 256 */
++		case SS_CAN_STATE_ERROR_PASSIVE:;
++			*state = CAN_STATE_ERROR_PASSIVE;
++			return 0;
++		/* RX/TX error count >= 256 */
++		case SS_CAN_STATE_BUS_OFF:;
++			*state = CAN_STATE_BUS_OFF;
++			return 0;
++		/* Device is stopped */
++		case SS_CAN_STATE_STOPPED:;
++			*state = CAN_STATE_STOPPED;
++			return 0;
++		/* Device is sleeping */
++		case SS_CAN_STATE_SLEEPING:;
++			*state = CAN_STATE_SLEEPING;
++			return 0;
++	}
++
++	return -ENOTSUPP;
++}
++
++static int ss_usb_get_berr_counter( const struct net_device *netdev,
++	struct can_berr_counter *bec )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct usb_interface *intf = dev->iface;
++	struct device_state dstate;
++	int rc;
++
++	rc = usb_control_msg(interface_to_usbdev(intf),
++			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++			SS_USB_BREQ_BERR,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			&dstate,
++			sizeof(dstate),
++			1000);
++	if( rc<0 ){
++		dev_warn(netdev->dev.parent, "Couldn't get error counters %d",
++			rc);
++		return rc;
++	}
++
++	printk(KERN_INFO "txerr: %d rxerr: %d\n",dstate.txerr,dstate.rxerr);
++
++	bec->txerr = dstate.txerr;
++	bec->rxerr = dstate.rxerr;
++
++	return 0;
++}
++
++static netdev_tx_t ss_can_start_xmit( struct sk_buff *skb,
++	struct net_device *netdev )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct net_device_stats *stats = &dev->netdev->stats;
++	struct urb *urb;
++	struct ss_host_frame *hf;
++	int rc;
++	struct ss_tx_context *txc;
++
++	if (can_dropped_invalid_skb(netdev, skb))
++		return NETDEV_TX_OK;
++
++	/* find an empty context to keep track of transmission */
++	txc = ss_alloc_tx_context(dev);
++	if (!txc) {
++		//dev_kfree_skb(skb);
++		return NETDEV_TX_BUSY;
++	}
++
++	/* create a URB, and a buffer for it */
++	urb = usb_alloc_urb(0, GFP_ATOMIC);
++	if (!urb) {
++		ss_free_tx_context(txc);
++		dev_err(netdev->dev.parent, "No memory left for URBs\n");
++		goto nomem;
++	}
++
++	hf = usb_alloc_coherent(dev->udev, sizeof(*hf), GFP_ATOMIC,
++		&urb->transfer_dma);
++	if (!hf) {
++		ss_free_tx_context(txc);
++		dev_err(netdev->dev.parent, "No memory left for USB buffer\n");
++		usb_free_urb(urb);
++		goto nomem;
++	}
++
++	hf->frame = *(struct can_frame *)skb->data;
++	hf->echo_id = ss_tx_context_id(txc)+1;
++	hf->channel = dev->channel;
++
++	usb_fill_bulk_urb(urb, dev->udev,
++			usb_sndbulkpipe(dev->udev, SS_USB_ENDPOINT_OUT),
++			hf,
++			sizeof(*hf),
++			ss_usb_xmit_callback,
++			txc);
++
++	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
++	usb_anchor_urb(urb, &dev->tx_submitted);
++
++	can_put_echo_skb(skb, netdev, ss_tx_context_id(txc));
++
++	atomic_inc(&dev->active_tx_urbs);
++
++//	printk(KERN_INFO "%d] xmit new %d\n",hf->channel,hf->echo_id);
++
++	rc = usb_submit_urb(urb, GFP_ATOMIC);
++	if (unlikely(rc)) {			// usb send failed
++
++		printk(KERN_INFO "usb_submit failed %d\n",rc);
++
++		can_free_echo_skb(netdev, ss_tx_context_id(txc));
++		ss_free_tx_context(txc);
++
++		usb_unanchor_urb(urb);
++		usb_free_coherent(dev->udev,
++			sizeof(*hf),
++			hf,
++			urb->transfer_dma);
++
++		dev_kfree_skb(skb);
++
++		atomic_dec(&dev->active_tx_urbs);
++
++		if (rc == -ENODEV) {
++			netif_device_detach(netdev);
++		} else {
++			dev_warn(netdev->dev.parent, "failed tx_urb %d\n", rc);
++
++			stats->tx_dropped++;
++		}
++	} else {
++		netdev->trans_start = jiffies;
++
++		/* Slow down tx path */
++		if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ){
++			netif_stop_queue(netdev);
++		}
++	}
++
++	/* let usb core take care of this urb */
++	usb_free_urb(urb);
++
++	return NETDEV_TX_OK;
++
++nomem:
++	dev_kfree_skb(skb);
++	stats->tx_dropped++;
++	return NETDEV_TX_OK;
++}
++
++static int ss_can_open( struct net_device *netdev )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct ss_usb *parent = dev->parent;
++	struct device_mode dm;
++	int rc,i;
++
++	/* common open */
++	rc = open_candev(netdev);
++	if( rc )
++		return rc;
++
++	if( atomic_add_return( 1, &parent->active_channels )==1 ){
++		for( i = 0; i < MAX_RX_URBS; i++ ){
++			struct urb *urb = NULL;
++			u8 *buf = NULL;
++
++			/* alloc rx urb */
++			urb = usb_alloc_urb(0, GFP_KERNEL);
++			if (!urb) {
++				dev_err(netdev->dev.parent,
++					"No memory left for URBs\n");
++				return -ENOMEM;
++			}
++
++			/* alloc rx buffer */
++			//FIXME: free this memory
++			buf = usb_alloc_coherent(dev->udev,
++				BUFFER_SIZE,
++				GFP_KERNEL,
++				&urb->transfer_dma);
++			if (!buf) {
++				dev_err(netdev->dev.parent,
++					"No memory left for USB buffer\n");
++				usb_free_urb(urb);
++				return -ENOMEM;
++			}
++
++
++			/* fill, anchor, and submit rx urb */
++			usb_fill_bulk_urb(urb,
++					dev->udev,
++					usb_rcvbulkpipe(dev->udev,
++						SS_USB_ENDPOINT_IN),
++					buf,
++					BUFFER_SIZE,
++					ss_usb_recieve_bulk_callback,
++					parent
++					);
++			urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
++
++			usb_anchor_urb(urb, &parent->rx_submitted);
++
++			rc = usb_submit_urb(urb, GFP_KERNEL);
++			if( rc ){
++				if( rc == -ENODEV )
++					netif_device_detach( dev->netdev );
++
++					//FIXME: free rx buffer/urb maybe?
++					usb_unanchor_urb(urb);
++				break;
++			}
++
++			/* Drop reference,
++			USB core will take care of freeing it */
++			usb_free_urb(urb);
++		}
++	}
++
++	/* finally start device */
++	dm.mode = SS_CAN_MODE_START;
++	rc = usb_control_msg(interface_to_usbdev(dev->iface),
++			usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
++			SS_USB_BREQ_MODE,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			&dm,
++			sizeof(dm),
++			1000);
++
++	if(rc<0)
++		dev_warn(netdev->dev.parent, "Couldn't start device %d",rc);
++
++	dev->open_time = jiffies;
++
++	netif_start_queue(netdev);
++
++	printk(KERN_INFO "ss can open\n");
++	return 0;
++}
++
++/* think: ip link set canx down */
++static int ss_can_close( struct net_device *netdev )
++{
++	struct ss_can *dev = netdev_priv(netdev);
++	struct ss_usb *parent = dev->parent;
++
++	netif_stop_queue(netdev);
++
++	/* Stop polling */
++	if( atomic_dec_and_test( &parent->active_channels ) ){
++		usb_kill_anchored_urbs(&parent->rx_submitted);
++		/* FIXME: Set CAN controller to reset mode */
++	}
++
++	close_candev(netdev);
++
++	dev->open_time = 0;
++
++	printk(KERN_INFO "ss can close\n");
++	return 0;
++}
++
++/******************************** USB ********************************/
++
++static const struct net_device_ops ss_usb_netdev_ops = {
++	.ndo_open = ss_can_open,
++	.ndo_stop = ss_can_close,
++	.ndo_start_xmit = ss_can_start_xmit,
++};
++
++static int ss_make_candev( struct ss_can **dev, unsigned int channel,
++	struct usb_interface *intf );
++static void ss_destroy_candev( struct ss_can *dev );
++
++static int ss_usb_probe( struct usb_interface *intf,
++	const struct usb_device_id *id )
++{
++	struct ss_usb *dev;
++	int rc = -ENOMEM;
++	unsigned int icount,i;
++
++	struct device_config conf;
++
++	/* send host config */
++	conf = (struct device_config){
++		.byte_order = 0xbeef,
++		.hf_size = sizeof(struct ss_host_frame),
++		.hf_can_id = offsetof(struct ss_host_frame, frame.can_id),
++		.hf_can_dlc = offsetof(struct ss_host_frame, frame.can_dlc),
++		.hf_data = offsetof(struct ss_host_frame, frame.data),
++		.hf_echo_id = offsetof(struct ss_host_frame, echo_id),
++		.hf_channel = offsetof(struct ss_host_frame, channel),
++	};
++
++	rc = usb_control_msg(interface_to_usbdev(intf),
++			usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++			SS_USB_BREQ_HOST_FORMAT,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			1,
++			intf->altsetting[0].desc.bInterfaceNumber,
++			&conf,
++			sizeof(conf),
++			1000);
++
++	if( rc<0 ){
++		dev_err(&intf->dev, "ss_usb: Couldn't send data format %d\n",
++			rc);
++		return rc;
++	}
++
++	/* FIXME: fetch interface count and global settings etc.. */
++	icount = 2;
++
++	if(icount>MAX_INTF){
++		dev_err(&intf->dev,
++			"ss_usb: Cannot handle more that %d Can interfaces\n",
++			MAX_INTF);
++		return -EINVAL;
++	}
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	init_usb_anchor(&dev->rx_submitted);
++
++	atomic_set(&dev->active_channels, 0);
++
++	usb_set_intfdata(intf, dev);
++
++	for(i=0;i<icount;i++){
++		rc = ss_make_candev(&dev->canch[i],i,intf);
++		if( rc ){
++			icount = i;
++			for(i=0;i<icount;i++){
++				ss_destroy_candev(dev->canch[i]);
++				dev->canch[icount] = NULL;
++			}
++			return rc;
++		}
++		dev->canch[i]->parent = dev;
++	}
++
++	printk(KERN_INFO "ss usb probe\n");
++	return 0;
++}
++
++static void ss_usb_disconnect( struct usb_interface *intf )
++{
++	unsigned i;
++	struct ss_usb *dev = usb_get_intfdata(intf);
++	usb_set_intfdata(intf, NULL);
++
++	if( !dev ){
++		printk(KERN_INFO "ss usb disconnect (nodata)\n");
++		return;
++	}
++
++	for(i=0;i<MAX_INTF;i++){
++		struct ss_can *can=dev->canch[i];
++
++		if(!can)
++			continue;
++
++		unregister_netdev(can->netdev);
++		free_candev(can->netdev);
++
++		usb_kill_anchored_urbs(&can->tx_submitted);
++	}
++
++	usb_kill_anchored_urbs(&dev->rx_submitted);
++
++	printk(KERN_INFO "ss usb disconnect\n");
++}
++
++MODULE_DEVICE_TABLE(usb, ss_usb_table);
++static struct usb_device_id ss_usb_table[] = {
++	{USB_DEVICE(USB_SSUSB_VENDOR_ID, USB_SSUSB_AT32_PRODUCT_ID)},
++	{} /* Terminating entry */
++};
++
++static struct usb_driver ss_usb_driver = {
++	.name       = "ss_usb",
++	.probe      = ss_usb_probe,
++	.disconnect = ss_usb_disconnect,
++	.id_table   = ss_usb_table,
++	/* FIXME: suspend, resume, etc... */
++};
++
++static int __init ss_usb_init( void )
++{
++	printk(KERN_INFO "ss usb init\n");
++	return usb_register(&ss_usb_driver);
++}
++
++static void __exit ss_usb_exit( void )
++{
++	printk(KERN_INFO "ss usb exit\n");
++	usb_deregister(&ss_usb_driver);
++}
++
++module_init(ss_usb_init);
++module_exit(ss_usb_exit);
++
++MODULE_AUTHOR("Maximilian Schneider <mws@schneidersoft.net>");
++MODULE_DESCRIPTION("socket CAN device driver for "
++	"SchneiderSoft USB2.0 to CAN interfaces.");
++MODULE_LICENSE("GPL v2");
++
++
++
++
++
++static int ss_make_candev( struct ss_can **out,
++	unsigned int channel,
++	struct usb_interface *intf )
++{
++	struct ss_can *dev;
++	struct device_bt_const bt_const;
++	struct net_device *netdev;
++	int rc;
++	/* fetch bit timing constants */
++	rc = usb_control_msg(interface_to_usbdev(intf),
++			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++			SS_USB_BREQ_BT_CONST,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			channel,
++			0,
++			&bt_const,
++			sizeof(bt_const),
++			1000);
++
++	if( rc<0 ){
++		dev_err(&intf->dev,
++			"ss_usb: Couldn't get bit timing const for channel %d\n",
++			rc);
++		return rc;
++	}
++
++	printk(KERN_INFO "fclock: %d\n",bt_const.fclk_can);
++
++	/* create netdev */
++	netdev = alloc_candev(sizeof(struct ss_can),MAX_TX_URBS);
++	if( !netdev ){
++		dev_err(&intf->dev, "ss_usb: Couldn't alloc candev\n");
++		return -ENOMEM;
++	}
++
++	dev = netdev_priv(netdev);
++
++	netdev->netdev_ops = &ss_usb_netdev_ops;
++
++	netdev->flags |= IFF_ECHO; /* we support full roundtrip echo */
++
++	/* dev settup */
++	dev->bt_const = (struct can_bittiming_const){
++		.name = "ss_usb",
++		.tseg1_min = bt_const.tseg1_min,
++		.tseg1_max = bt_const.tseg1_max,
++		.tseg2_min = bt_const.tseg2_min,
++		.tseg2_max = bt_const.tseg2_max,
++		.sjw_max = bt_const.sjw_max,
++		.brp_min = bt_const.brp_min,
++		.brp_max = bt_const.brp_max,
++		.brp_inc = bt_const.brp_inc
++	};
++
++	dev->udev = interface_to_usbdev(intf);
++	dev->iface = intf;
++	dev->netdev = netdev;
++	dev->channel = channel;
++
++	init_usb_anchor(&dev->tx_submitted);
++	atomic_set(&dev->active_tx_urbs, 0);
++	for(rc=0;rc<MAX_TX_URBS;rc++){
++		dev->tx_context[rc].dev = dev;
++		dev->tx_context[rc].echo_id = MAX_TX_URBS;
++	}
++
++	/* can settup */
++	dev->can.state = CAN_STATE_STOPPED;
++	dev->can.clock.freq = bt_const.fclk_can;
++	dev->can.bittiming_const = &dev->bt_const;
++	dev->can.do_set_bittiming = ss_usb_set_bittiming;
++	dev->can.do_set_mode = ss_usb_set_mode;
++	dev->can.do_get_state = ss_usb_get_state;
++	dev->can.do_get_berr_counter = ss_usb_get_berr_counter;
++	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
++
++	SET_NETDEV_DEV(netdev, &intf->dev);
++
++	rc = register_candev(dev->netdev);
++	if( rc ){
++		free_candev(dev->netdev);
++		dev_err(&intf->dev, "ss_usb: Couldn't register candev\n");
++		return(rc);
++	}
++
++	*out = dev;
++	return(0);
++}
++
++static void ss_destroy_candev( struct ss_can *dev )
++{
++	unregister_candev(dev->netdev);
++	free_candev(dev->netdev);
++}
++
+-- 
+1.7.10.4
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/x-csrc; charset=utf-8
-Content-Disposition: attachment; filename="enumif-test.c"
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <linux/if.h>
-#include <linux/if_arp.h>
+--=-GfrC3Lxi641mKQGoqXBf--
 
-#include "enumif.h"
-
-struct lookup {
-	int i;
-	const char *a;
-};
-
-#define __PF(f,n) { ARPHRD_##f, #n },
-static const struct lookup iftypes[] = {
-	{ 0, "generic", },
-__PF(ETHER,ether)
-__PF(EETHER,eether)
-__PF(AX25,ax25)
-__PF(PRONET,pronet)
-__PF(CHAOS,chaos)
-__PF(IEEE802,ieee802)
-__PF(ARCNET,arcnet)
-__PF(APPLETLK,atalk)
-__PF(DLCI,dlci)
-__PF(ATM,atm)
-__PF(METRICOM,metricom)
-__PF(IEEE1394,ieee1394)
-__PF(INFINIBAND,infiniband)
-__PF(SLIP,slip)
-__PF(CSLIP,cslip)
-__PF(SLIP6,slip6)
-__PF(CSLIP6,cslip6)
-__PF(RSRVD,rsrvd)
-__PF(ADAPT,adapt)
-__PF(ROSE,rose)
-__PF(X25,x25)
-__PF(HWX25,hwx25)
-__PF(CAN,can)
-__PF(PPP,ppp)
-__PF(HDLC,hdlc)
-__PF(LAPB,lapb)
-__PF(DDCMP,ddcmp)
-__PF(RAWHDLC,rawhdlc)
-__PF(TUNNEL,ipip)
-__PF(TUNNEL6,tunnel6)
-__PF(FRAD,frad)
-__PF(SKIP,skip)
-__PF(LOOPBACK,loopback)
-__PF(LOCALTLK,ltalk)
-__PF(FDDI,fddi)
-__PF(BIF,bif)
-__PF(SIT,sit)
-__PF(IPDDP,ip/ddp)
-__PF(IPGRE,gre)
-__PF(PIMREG,pimreg)
-__PF(HIPPI,hippi)
-__PF(ASH,ash)
-__PF(ECONET,econet)
-__PF(IRDA,irda)
-__PF(FCPP,fcpp)
-__PF(FCAL,fcal)
-__PF(FCPL,fcpl)
-__PF(FCFABRIC,fcfb0)
-__PF(FCFABRIC+1,fcfb1)
-__PF(FCFABRIC+2,fcfb2)
-__PF(FCFABRIC+3,fcfb3)
-__PF(FCFABRIC+4,fcfb4)
-__PF(FCFABRIC+5,fcfb5)
-__PF(FCFABRIC+6,fcfb6)
-__PF(FCFABRIC+7,fcfb7)
-__PF(FCFABRIC+8,fcfb8)
-__PF(FCFABRIC+9,fcfb9)
-__PF(FCFABRIC+10,fcfb10)
-__PF(FCFABRIC+11,fcfb11)
-__PF(FCFABRIC+12,fcfb12)
-__PF(IEEE802_TR,tr)
-__PF(IEEE80211,ieee802.11)
-__PF(IEEE80211_PRISM,ieee802.11/prism)
-__PF(IEEE80211_RADIOTAP,ieee802.11/radiotap)
-#ifdef ARPHD_IEEE802154
-__PF(IEEE802154, ieee802.15.4)
-#endif
-#ifdef ARPHD_PHONET
-__PF(PHONET, phonet)
-#endif
-#ifdef ARPHD_PIPE
-__PF(PHONET_PIPE, phonet_pipe)
-#endif
-
-__PF(NONE, none)
-__PF(VOID,void)
-	{ },
-};
-
-#define __IF(f)	{ IFF_##f, #f, }
-static const struct lookup ifflags[] = {
-	__IF(LOOPBACK),
-	__IF(BROADCAST),
-	__IF(POINTOPOINT),
-	__IF(MULTICAST),
-	__IF(NOARP),
-	__IF(ALLMULTI),
-	__IF(PROMISC),
-	__IF(MASTER),
-	__IF(SLAVE),
-	__IF(DEBUG),
-	__IF(DYNAMIC),
-	__IF(AUTOMEDIA),
-	__IF(PORTSEL),
-	__IF(NOTRAILERS),
-	__IF(UP),
-	__IF(LOWER_UP),
-	__IF(DORMANT),
-	__IF(ECHO),
-	{},
-};
-
-static const char *statestrs[] = {
-	"UNKNOWN", "NOTPRESENT", "DOWN", "LOWERLAYERDOWN", 
-	"TESTING", "DORMANT",	 "UP"
-};
-
-static void ifcallback(const char *name, int index, int type, int flags, int state)
-{
-	const struct lookup *lp;
-	char typestr[16];
-
-
-	sprintf(typestr, "%i", type);
-	for (lp = iftypes; lp->a; ++lp)
-		if (lp->i == type)
-			break;
-	printf("%i: %s\t{%s}", index, name, lp->a ?: typestr);
-
-	printf(" <");
-	/* from iproute2 */
-	if ((flags & IFF_UP) && !(flags & IFF_RUNNING))
-		printf("%s%s", "NO-CARRIER", flags ? "," : "");
-	flags &= ~IFF_RUNNING;
-
-	for (lp = ifflags; lp->a; ++lp) {
-		if (flags & lp->i) {
-			flags &= ~lp->i;
-			printf("%s%s", lp->a, flags ? "," : "");
-		}
-	}
-	if (flags)
-		printf("%x", flags);
-	printf("> %s\n", statestrs[state]);
-}
-
-int main(int argc, char *argv[])
-{
-	enumif(ifcallback);
-	return 0;
-}
-
-
---a8Wt8u1KmwUX3Y2C--
