@@ -1,41 +1,64 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Is there any way of getting the CAN interfaces list, from any C
- program?
-Date: Wed, 24 Apr 2013 11:06:24 +0200
-Message-ID: <5177A090.6010904@peak-system.com>
-References: <5169B395.2070703@hartkopp.net> <516D2ABB.4000300@pengutronix.de>
-Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Losing CAN messages with socket-CAN
+Date: Wed, 24 Apr 2013 12:59:41 +0200
+Message-ID: <5177BB1D.7070405@grandegger.com>
+References: <20130424091101.3CC0EEB62F6D@bmail02.one.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:35470 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758076Ab3DXJSp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 05:18:45 -0400
-In-Reply-To: <516D2ABB.4000300@pengutronix.de>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:46470 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932244Ab3DXK7o (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 06:59:44 -0400
+In-Reply-To: <20130424091101.3CC0EEB62F6D@bmail02.one.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "j.p.lammertink" <j.p.lammertink@kubicas.com>
+Cc: linux-can@vger.kernel.org
 
-Hi linux-can members,
+Hi Jeroen,
 
-I currently wonder whether it exists any way of getting the list of the=
-=20
-installed CAN interfaces, from a C program?
-I mean, getting the network interfaces list is available using=20
-ioctl(SIOCGIFCONF).
-But AFAIK, this (only) returns the IP interfaces found in the system,=20
-even using a socket CAN file descriptor.
-And, I would also like to avoid some pipe/fork/grep/sed in this C=20
-program too ;-)
+On 04/24/2013 11:11 AM, j.p.lammertink wrote:
+> Hi Wolfgang,
+> 
+> I think I have a patch for the "Loosing CAN messages problem"
+> See at the bottom Appendix 7 Sugested patch.
+> I realize that this patch has a performance penalty, but I didn't dare
+> to make more rigorous changes.
+> I've put the patch on top of Patch 1, of the patches that you sugested (see
+> text below)
+> 
+> I'm interested in all feedback.
 
-Thanks for your help and best regards,
+Well, we want to get rid of the pch_can driver sooner than later.
+Therefore I would appreciate if you could test and improve the c_can
+driver instead.
 
-St=E9phane
---
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+Wolfgang.
+
+...
+> --------------------------------------------------------------------------
+> Appendix 7 Suggested patch
+> 
+> diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+> index 44b9a7a..81d599f 100644
+> --- a/drivers/net/can/pch_can.c
+> +++ b/drivers/net/can/pch_can.c
+> @@ -912,7 +912,6 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  
+>  	tx_obj_no = priv->tx_obj;
+>  	if (priv->tx_obj == PCH_TX_OBJ_END) {
+> -		if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
+
+This means that there are pending TX messages. If there are none, there
+is no need to stop the queue. I'm puzzled!
+
+>  			netif_stop_queue(ndev);
+>  
+>  		priv->tx_obj = PCH_TX_OBJ_START;
+> 
+
+Hm, is this code protected by spin_lock_irqsave/spin_unlock_irqrestore?
+
+Wolfgang.
