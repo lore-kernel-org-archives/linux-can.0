@@ -1,107 +1,86 @@
-From: =?ISO-8859-15?Q?Fran=E7ois?= <fbeaulier@orange.fr>
-Subject: Re: Is there any way of getting the CAN interfaces list, from any
- C program?
-Date: Wed, 24 Apr 2013 23:02:09 +0200
-Message-ID: <51784851.1000208@orange.fr>
-References: <5169B395.2070703@hartkopp.net> <516D2ABB.4000300@pengutronix.de> <5177A090.6010904@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Usb to can driver
+Date: Wed, 24 Apr 2013 23:24:38 +0200
+Message-ID: <51784D96.8000309@pengutronix.de>
+References: <1366737302.3325.36.camel@blackbox>  <51770161.2030005@pengutronix.de> <1366818490.5965.35.camel@blackbox> <51780336.5060800@pengutronix.de> <51781907.3030306@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2CBJIITQRBJCIFBBPLLEN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:22511 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757858Ab3DXVKG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 17:10:06 -0400
-In-Reply-To: <5177A090.6010904@peak-system.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40782 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757884Ab3DXVYr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Apr 2013 17:24:47 -0400
+In-Reply-To: <51781907.3030306@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "Max S." <max@schneidersoft.net>, linux-can <linux-can@vger.kernel.org>
 
-Stephane,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2CBJIITQRBJCIFBBPLLEN
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-This is what i have done in a open source project i have started, a web=
-=20
-can analyzer called ewecan (https://bitbucket.org/Mongo/ewecan):
-It parses /sys/class/net but unfortunately, as noted in comments, it=20
-cannot make the difference between up or down interfaces.
+On 04/24/2013 07:40 PM, Oliver Hartkopp wrote:
+>>> assumptions that are made:
+>>> * The sizes of the struct can_frame members are id:u32 dlc:u8 data:u6=
+4 .
+>>> * It is also assumed that existing defines like CAN_EFF_FLAG in can.h=
 
-/* Get a list of available socketcan interfaces and return them in
-    a string as a JS array like ["can0", "can1", "vcan"]
-    Returned string must be freed after use
-    BUG : it also returns interfaces that are present but down !
-*/
-char *cmd_listitf(void)
-{
-     char *buf =3D malloc(255);
-     if(!buf)
-         return NULL;
-     /* looking for socketcan interfaces in /sys */
-     DIR *fdir =3D opendir("/sys/class/net");
-     if(fdir =3D=3D NULL){
-         perror("opendir");
-         free(buf);
-         return NULL;
-     }
-     struct dirent *fic;
-     int firstdone =3D 0;
-     buf[0] =3D '[';
-     buf[1] =3D '\0';
-     while(1){
-         fic =3D readdir(fdir);
-         if(fic =3D=3D NULL)
-             break;
-         if(!strstr(fic->d_name, "can"))
-             continue;
-         /* if the new string does not fit in buf, stop here */
-         if((strlen(fic->d_name) + strlen(buf) + 4) >=3D 255)
-             break;
-         if(firstdone)
-             strcat(buf, ",");
-         strcat(buf, "\"");
-         strcat(buf, fic->d_name);
-         strcat(buf, "\"");
-         firstdone =3D 1;
-     }
-     strcat(buf, "]");
-     closedir(fdir);
-     return buf;
-}
+>>> and can/error.h don't change, as they are used by the device to
+>>> construct the can_id field.
+>>
+>> You cannot rely in your firmware, that the struct can_frame and
+>> CAN_*_FLAG doesn't change. Please define your own struct.
+>>
+>=20
+>=20
+> Hm - i really appreciate the memcopy-only approach which can cope with =
+the
+> host byte order directly. This is a real improvement on the host side.
+>=20
+> The struct can_frame and the error message content is official Kernel A=
+PI and
+> therefore can be assumed to be fix.
 
-Hope it can help !
+Yes but no. The struct can_frame to the _userspace_ is official Kernel
+API/ABI, but within the kernel the is no stable API (see
+stable_api_nonsense.txt). But if we go this way we should make compile
+time checks, so that the compilation breaks if the struct can_frame chang=
+es.
 
-Regards
+> Btw. extensions like the introduction of the struct canfd_frame can alw=
+ays
+> take place. But this comes along with really new functionality then.
 
---
-=46ran=E7ois Beaulier
-www.ingelibre.fr
+> I would like to continue with the memcopy approach - but we probably ne=
+ed some
+> frame type identifier to be able to handle different host CAN frames, l=
+ike
+> struct can_frame and struct canfd_frame, ...
 
-Le 24/04/2013 11:06, Stephane Grosjean a =E9crit :
-> Hi linux-can members,
->
-> I currently wonder whether it exists any way of getting the list of=20
-> the installed CAN interfaces, from a C program?
-> I mean, getting the network interfaces list is available using=20
-> ioctl(SIOCGIFCONF).
-> But AFAIK, this (only) returns the IP interfaces found in the system,=
-=20
-> even using a socket CAN file descriptor.
-> And, I would also like to avoid some pipe/fork/grep/sed in this C=20
-> program too ;-)
->
-> Thanks for your help and best regards,
->
-> St=E9phane
-> --=20
-> PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-> Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=
-=20
-> HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-> Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
-> ----
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+------enig2CBJIITQRBJCIFBBPLLEN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlF4TZkACgkQjTAFq1RaXHP05gCfZceqjdkcNLaN5ojYcO9GSbn/
+g7IAn08F6RiAT2xKSLJHhBxHqWL6akVB
+=04wb
+-----END PGP SIGNATURE-----
+
+------enig2CBJIITQRBJCIFBBPLLEN--
