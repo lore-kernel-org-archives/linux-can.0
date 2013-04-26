@@ -1,40 +1,88 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Evaluating the c_can driver for EG20T
-Date: Fri, 26 Apr 2013 13:45:06 +0200
-Message-ID: <517A68C2.3090807@grandegger.com>
-References: <20130426072329.9DA9836D72D29@bmail03.one.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [Socketcan-users] socketcan
+Date: Fri, 26 Apr 2013 16:21:35 +0200
+Message-ID: <517A8D6F.90400@pengutronix.de>
+References: <CANdmM3PoMSQeo19m0W-XEtQ8MXhW9RTv1ZUKdFzQ-MgMzwbUsQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2QPPARVBIWGWOAFPPSRUD"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:48884 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752476Ab3DZLpI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Apr 2013 07:45:08 -0400
-In-Reply-To: <20130426072329.9DA9836D72D29@bmail03.one.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54515 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752057Ab3DZOVh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Apr 2013 10:21:37 -0400
+In-Reply-To: <CANdmM3PoMSQeo19m0W-XEtQ8MXhW9RTv1ZUKdFzQ-MgMzwbUsQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "j.p.lammertink" <j.p.lammertink@kubicas.com>
-Cc: Wolfgang@MISSING_DOMAIN.one.com, Grandegger@MISSING_DOMAIN.one.com, linux-can@vger.kernel.org
+To: kedari appana <kedare06@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Jeroen ,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2QPPARVBIWGWOAFPPSRUD
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-On 04/26/2013 09:23 AM, j.p.lammertink wrote:
-> 
-> Hi Wolfgang,
-> 
-> Unfortunatelly we cannot switch Linux version any more. We're about to
-> ship our product in 2 weeks. I'm a bit puzzled what you mean with
-> "a recent mailing Linux version", I interpreted it to be
-> "a recent Linux version".
+Hello kedari appana,
 
-s/mailing/mainline/, sorry for the typo.
+please use the linux-can mailing list (Cc'ed) as the old berlios list is
+obsolete.
 
-> Note coming Monday an Tuesday are non-working days because of the coronation
-> of our king Willem Alexander to be. I'll be drinking and dancing then.
-> So no need to hurry.
+On 04/26/2013 03:03 PM, kedari appana wrote:
+> I am new to socketcan and i write a socketcan driver based on the
+> standard can drivers now i want to compile that driver how to compile
 
-OK, have fun.
+Add your driver to your linux kernel under:
 
-Wolfgang.
+    drivers/net/can/
 
+and add an option to
+
+    drivers/net/can/Kconfig
+    drivers/net/can/Makefile
+
+follow an existing driver like e.g. flexcan [1][2].
+
+> it and please help me how to write user space applications and how to
+> test my hardware so that  my driver code is correct .please help me
+> regarding this issue
+
+There are existing userspace applications, e.g. the can-utils, which can
+be downlaoded at gitorious.org [3]. Use cansend and candump to send and
+receive can messages. Use "ip" of the iproute2 package to configure the
+bitrate of your can interface[4]. See that document for more information
+about CAN under Linux.
+
+hth,
+Marc
+
+[1] http://lxr.free-electrons.com/source/drivers/net/can/Kconfig#L99
+[2] http://lxr.free-electrons.com/source/drivers/net/can/Makefile#L23
+[3] https://gitorious.org/linux-can/can-utils
+[4]
+http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L85=
+4
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+
+
+------enig2QPPARVBIWGWOAFPPSRUD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlF6jW8ACgkQjTAFq1RaXHOgrACeOVeLAHeVJ6We2NoRXizhQqSV
+JWEAnipfnGhbMl8xGA70CuAHdNOJqKmm
+=SVCc
+-----END PGP SIGNATURE-----
+
+------enig2QPPARVBIWGWOAFPPSRUD--
