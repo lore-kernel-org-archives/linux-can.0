@@ -1,61 +1,87 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Usb to can driver
-Date: Fri, 26 Apr 2013 10:55:57 +0200
-Message-ID: <20130426085557.GB432@vandijck-laurijssen.be>
-References: <1366737302.3325.36.camel@blackbox>
- <51770161.2030005@pengutronix.de>
- <1366818490.5965.35.camel@blackbox>
- <51780336.5060800@pengutronix.de>
- <51781907.3030306@hartkopp.net>
- <51784D96.8000309@pengutronix.de>
- <1366932904.3307.23.camel@blackbox>
- <517A0FE6.8010308@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Evaluating the c_can driver for EG20T
+Date: Fri, 26 Apr 2013 13:42:44 +0200
+Message-ID: <517A6834.5080400@grandegger.com>
+References: <20130425085507.3EE222B1334F5@bmail03.one.com> <5178F624.5000208@grandegger.com> <20130425101119.ADC62B6CB1792@bmail02.one.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:37215 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1758706Ab3DZI4D (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Apr 2013 04:56:03 -0400
-Content-Disposition: inline
-In-Reply-To: <517A0FE6.8010308@hartkopp.net>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:48745 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754098Ab3DZLmr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Apr 2013 07:42:47 -0400
+In-Reply-To: <20130425101119.ADC62B6CB1792@bmail02.one.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "Max S." <max@schneidersoft.net>, linux-can <linux-can@vger.kernel.org>
+To: "j.p.lammertink" <j.p.lammertink@kubicas.com>
+Cc: linux-can@vger.kernel.org
 
-On Fri, Apr 26, 2013 at 07:25:58AM +0200, Oliver Hartkopp wrote:
-> On 26.04.2013 01:35, Max S. wrote:
+On 04/25/2013 12:11 PM, j.p.lammertink wrote:
 > 
-> > On Wed, 2013-04-24 at 23:24 +0200, Marc Kleine-Budde wrote:
-> >> On 04/24/2013 07:40 PM, Oliver Hartkopp wrote:
-> >>>>> assumptions that are made:
-> >>>>> * The sizes of the struct can_frame members are id:u32 dlc:u8 data:u64 .
-> >>>>> * It is also assumed that existing defines like CAN_EFF_FLAG in can.h
-> >>>>> and can/error.h don't change, as they are used by the device to
-> >>>>> construct the can_id field.
+> <><> Hi Wolfgang,
+> <><>< Hi Jeroen,
+> <><><> Hi Wolfgang,
+> <><><> I think I have a patch for the "Loosing CAN messages problem"
+> <><><> See at the bottom Appendix 7 Sugested patch.
+> <><><> I realize that this patch has a performance penalty, but I didn't dare
+> <><><> to make more rigorous changes.
+> <><><> I've put the patch on top of Patch 1, of the patches that you sugested (see
+> <><><> text below)
+> <><><> I'm interested in all feedback.
+> <><>< Well, we want to get rid of the pch_can driver sooner than later.
+> <><>< Therefore I would appreciate if you could test and improve the c_can
+> <><>< driver instead.
+> <><>< Wolfgang.
+> <><> I tried once before but I did not succeed. I probably did something
+> <><> wrong. Can you tell me how I can replace the pch_can driver by the
+> <><> c_can driver?
+> <><> We have reduced confidence in the pch_can driver and therefor we
+> <><> are also intrested in evaluating the c_can driver.
+> <>< Good, anyway, could you sent me your patches pch_can.c to understand
+> <>< better your lates problems.
+> <><> Note, after applying patch 1/7 to the pch_can driver, I also
+> <><> attemped to
+> <><> apply the patches 2/7-7/7 which mainly/only(?) effect the c_can
+> <><> driver.
+> <><> 1/7 went succesfull, 2/7-7/7 not. Do I still need to apply those
+> <><> patches?
+> <>< What exact kernel disto and kernel version are you using. With that
+> <>< knowledge I could provid new patches.
+> <>< Wolfgang.
+> <> Hi Wolfgang,
+> <> I've included the patch in the E-mail:
+> <> "Losing CAN messages with socket-CAN" of 24 apr 2013 11:11. (Appendix 7)
+> <> It also contains kernel disto and kernel version and also
+> <> the problem description.
+> < OK. could you send the file "pch_can.c" you used (sorry for my bad
+> < English). Your kernel is obviously 3.5.0-27-generic from Ubuntu. I'm
+> < going to rebase the patches on top of mainline Linux 3.5.0. Any chance
+> < for you to use a recent mailing Linux version?
+> <> You replied to above mentioned E-mail:
+> <> "Therefore I would appreciate if you could test and improve the c_can
+> <> driver instead."
+> <> Can you please indicate how to activate the c_can driver
+> <> (instead of the pch_driver)?
+> < You need to deselect the PCH_CAN and select the C_CAN PCI driver in your
+> < kernel config. I use "make menuconfig" for that purpose. But you need
+> < the complete patch stack.
+> < Wolfgang.
 > 
-[...]
-> IMHO using the struct can(fd)_frame can considered to be stable.
-> The 'stable API nonsense' mainly focuses kernel internal function definitions
-> and structures that may change in names and variables - or be removed at all.
+> Hi Wolfgang,
 > 
-> Struct can(fd)_frame is a CAN specific data structure. And CAN is an
-> ISO standard that even Linux hackers are not able to change :-)
+> I've attached pch_can.c.
+> I also enlarged the scope of the spinlock in the pch_xmit() function.
 
-modifying struct can(fd)_frame serves not purpose.
-If you drop something, it's insufficient to deal with the ISO standards.
-If you add something, it's add overhead.
-If you modify the order of the members, you'll still be very close to the standard,
-but what's the use?
+Ah! Could you please revert your other fix and retry?
 
-So I agree with Oliver that these structs are very likely to stay stable.
+> With this version of the pch_can driver I do no longer loose any messages.
+> Seems that the problem is solved. I have to admit that I do not
+> thoroughly understand this driver (yet) and that I just made educated
+> guesses based on testing and debugging.
 
-Kurt
+There is obviously a race which I also have not yet fully understood.
 
--- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+Still the driver has other issues, unfortunately.
+
+Wolfgang.
