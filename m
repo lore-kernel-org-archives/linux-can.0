@@ -1,70 +1,144 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: flexcan driver: tx_bytes counter never incremented when CAN_RAW_LOOPBACK
- removed?
-Date: Mon, 29 Apr 2013 12:53:20 +0200
-Message-ID: <517E5120.70600@pengutronix.de>
-References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com> <517A968D.20508@pengutronix.de> <CAJW3KNWrdhvXyEA3jmkx+eobH34_g5noykZpyL0YaWjrm1qbLA@mail.gmail.com> <20130426205150.GA28450@thinkoso.home> <517E26E4.8010003@pengutronix.de> <517E4E01.3080705@peak-system.com>
+From: Jonas Peterson <jonas.peterson@gmail.com>
+Subject: Re: Patch for kvaser_usb
+Date: Mon, 29 Apr 2013 13:09:54 +0200
+Message-ID: <CAJW3KNUYN-Nbee36-BQ-w0wiTAAv4t4X80SMHTUGx+oOFX8idg@mail.gmail.com>
+References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com>
+	<517A968D.20508@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2UPELSTPOMGBQARQWBTHS"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42530 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751382Ab3D2Kx1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Apr 2013 06:53:27 -0400
-In-Reply-To: <517E4E01.3080705@peak-system.com>
+Received: from mail-we0-f176.google.com ([74.125.82.176]:45574 "EHLO
+	mail-we0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750907Ab3D2LJ4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Apr 2013 07:09:56 -0400
+Received: by mail-we0-f176.google.com with SMTP id s10so5383270wey.35
+        for <linux-can@vger.kernel.org>; Mon, 29 Apr 2013 04:09:55 -0700 (PDT)
+In-Reply-To: <517A968D.20508@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Olivier Sobrie <olivier@sobrie.be>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2UPELSTPOMGBQARQWBTHS
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+> Thanks for your feedback. Which firmware version of the Kvaser USBcan
+> Pro are you using?
 
-On 04/29/2013 12:40 PM, Stephane Grosjean wrote:
-> Hi Marc,
->=20
-> Playing with the flexcan driver, I've seen that the tx_bytes counter
-> always equals 0 while tx_packets increases.
-> I simply removed the CAN_RAW_LOOPBACK option from my CAN socket, so I
-> suppose that:
->=20
-> stats->tx_bytes +=3D can_get_echo_skb(dev, 0);
->=20
-> doesn't do what it should.
-> Am I wrong?
+2.7.600
 
-Let me see. Yes you're right. can_put_echo_skb() only queues the CAN
-frame if CAN_RAW_LOOPBACK is set.
-
-We either can change that can_put_echo_skb() always queues the CAN frame
-or that can_get_echo_skb() returns the correct number of bytes even if
-the CAN frame is not queued or put the mechanism in each driver.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+/Jonas
 
 
-------enig2UPELSTPOMGBQARQWBTHS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlF+USQACgkQjTAFq1RaXHNPOQCgj/HKHLJAp/uupC18st7D0iR6
-FgkAniy5AMEDbp6JlJm57S0N6cZ1EpkG
-=oJKB
------END PGP SIGNATURE-----
-
-------enig2UPELSTPOMGBQARQWBTHS--
+On Fri, Apr 26, 2013 at 5:00 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> Hello Jonas,
+>
+> adding Olivier Sobrie, the author of the driver to the loop.
+>
+> On 04/26/2013 04:50 PM, Jonas Peterson wrote:
+>> I've tried the kvaser_usb driver with my Kvaser USBcan Pro and no can
+>> frames are properly received. It seems like they are all flagged as
+>> log messages. I patched the driver and have used it for a while now.
+>> Feel free to use it as you please.
+>
+> Thanks for your feedback. Which firmware version of the Kvaser USBcan
+> Pro are you using?
+>
+> Can I add a Signed-off-by[1] to your patch?
+>
+> Marc
+>
+> [1]
+> http://lxr.free-electrons.com/source/Documentation/SubmittingPatches#L298
+>>
+>> Best regards,
+>> Jonas Peterson
+>>
+>> --- /drivers/net/can/usb/kvaser_usb.c 2013-04-26 16:20:19.748994249 +0200
+>> +++ kvaser_usb.c 2012-12-14 15:59:10.017829818 +0100
+>> @@ -858,6 +858,62 @@
+>>   stats->rx_bytes += cf->can_dlc;
+>>  }
+>>
+>> +static void kvaser_usb_rx_can_log_msg(const struct kvaser_usb *dev,
+>> +   const struct kvaser_msg *msg)
+>> +{
+>> + struct kvaser_usb_net_priv *priv;
+>> + struct can_frame *cf;
+>> + struct sk_buff *skb;
+>> + struct net_device_stats *stats;
+>> + u8 channel = msg->u.log_message.channel;
+>> +
+>> + if (channel >= dev->nchannels) {
+>> + dev_err(dev->udev->dev.parent,
+>> + "Invalid channel number (%d)\n", channel);
+>> + return;
+>> + }
+>> +
+>> + priv = dev->nets[channel];
+>> + stats = &priv->netdev->stats;
+>> +
+>> + if (msg->u.log_message.flags & (MSG_FLAG_ERROR_FRAME | MSG_FLAG_NERR |
+>> +   MSG_FLAG_OVERRUN)) {
+>> + kvaser_usb_rx_can_err(priv, msg);
+>> + dev_err(dev->udev->dev.parent,
+>> + "Error frame (flags: 0x%02x)",
+>> +     msg->u.log_message.flags);
+>> + return;
+>> + } else if (msg->u.log_message.flags & ~MSG_FLAG_REMOTE_FRAME) {
+>> + dev_err(dev->udev->dev.parent,
+>> + "Unhandled frame (flags: 0x%02x)",
+>> +     msg->u.log_message.flags);
+>> + netdev_warn(priv->netdev,
+>> +     "Unhandled frame (flags: 0x%02x)",
+>> +     msg->u.log_message.flags);
+>> + return;
+>> + }
+>> +
+>> + skb = alloc_can_skb(priv->netdev, &cf);
+>> + if (!skb) {
+>> + dev_err(dev->udev->dev.parent, "Alloc error");
+>> + stats->tx_dropped++;
+>> + return;
+>> + }
+>> +
+>> + cf->can_id = msg->u.log_message.id;
+>> + cf->can_dlc = msg->u.log_message.dlc;
+>> +
+>> + if (msg->u.rx_can.flag & MSG_FLAG_REMOTE_FRAME)
+>> + cf->can_id |= CAN_RTR_FLAG;
+>> + else
+>> + memcpy(cf->data, &msg->u.log_message.data, cf->can_dlc);
+>> +
+>> + netif_rx(skb);
+>> +
+>> + stats->rx_packets++;
+>> + stats->rx_bytes += cf->can_dlc;
+>> +}
+>> +
+>>  static void kvaser_usb_start_chip_reply(const struct kvaser_usb *dev,
+>>   const struct kvaser_msg *msg)
+>>  {
+>> @@ -921,8 +977,11 @@
+>>   break;
+>>
+>>   case CMD_LOG_MESSAGE:
+>> - if (msg->u.log_message.flags & MSG_FLAG_ERROR_FRAME)
+>> + if (msg->u.log_message.flags & MSG_FLAG_ERROR_FRAME) {
+>>   kvaser_usb_rx_error(dev, msg);
+>> + } else {
+>> + kvaser_usb_rx_can_log_msg(dev, msg);
+>> + }
+>>   break;
+>>
+>>   case CMD_TX_ACKNOWLEDGE:
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>
+>
+> --
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>
