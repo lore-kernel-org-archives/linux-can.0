@@ -1,68 +1,71 @@
-From: wg <wg@grandegger.com>
-Subject: Re: flexcan: use hardware timestamp
-Date: Mon, 29 Apr 2013 20:42:35 +0200
-Message-ID: <05b3a72eaa4694232ba34598c325a345@grandegger.com>
-References: <517ECB130200000100098502@mail.schleissheimer.de>
- <517EB4D1.8020205@pengutronix.de> <517EB531.20803@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: flexcan driver: tx_bytes counter never incremented when
+ CAN_RAW_LOOPBACK removed?
+Date: Tue, 30 Apr 2013 08:47:28 +0200
+Message-ID: <517F6900.2080404@peak-system.com>
+References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com>
+ <517A968D.20508@pengutronix.de>
+ <CAJW3KNWrdhvXyEA3jmkx+eobH34_g5noykZpyL0YaWjrm1qbLA@mail.gmail.com>
+ <20130426205150.GA28450@thinkoso.home> <517E26E4.8010003@pengutronix.de>
+ <517E4E01.3080705@peak-system.com> <517E5120.70600@pengutronix.de>
+ <517E69A0.8050701@peak-system.com> <517E6DC6.1050709@grandegger.com>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:44722 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932625Ab3D2Smi (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 29 Apr 2013 14:42:38 -0400
-In-Reply-To: <517EB531.20803@pengutronix.de>
+Received: from mail.peak-system.com ([213.157.13.214]:44542 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753459Ab3D3Grq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 30 Apr 2013 02:47:46 -0400
+In-Reply-To: <517E6DC6.1050709@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Sven Schuchmann <schuchmann@schleissheimer.de>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-On Mon, 29 Apr 2013 20:00:17 +0200, Marc Kleine-Budde <mkl@pengutronix.de>
+Le 29/04/2013 14:55, Wolfgang Grandegger a =E9crit :
+>> I also have seen that the flexcan ctrlr (iMx25) behaves oddly when r=
+x
+>> overrun occurs: each time I get such an OVR INT., I also get some
+> OVR INT? What error do you mean?
 
-wrote:
-
-> On 04/29/2013 07:58 PM, Marc Kleine-Budde wrote:
-
->> On 04/29/2013 07:33 PM, Sven Schuchmann wrote:
-
->>> Hello,
-
->>> I was wondering if the flexcan driver uses the hardware timestamp
-
->>> and by looking at the code under drivers/net/can/flexcan.c and did
-
->>> not find any access to those registers.
-
->>>  
-
->>> is there a special reason for this?
-
->> 
-
->> Yes, no one has implemented it yet :)
-
->> 
-
->>> If not, I would try implementing to use skb_shared_hwtstamps...
-
-> 
-
-> I mean, go ahead implement hardware timestamps, but I haven't checked if
-
-> skb_shared_hwtstamps is the correct interface.
+         /* FIFO overflow */
+         if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
 
 
+>> spurious TX INT. too, while I never sent anything on the CAN. So, fo=
+r
+>> me, handling tx_bytes/tx_packets stats when sending the data would f=
+ix
+>> everything!
+> See above. What has the handling of tx_bytes/tx_packets stats to do w=
+ith
+> spurious TX INT or the OVR INT?
 
-Looks good according to:
+         /* transmission complete interrupt */
+         if (reg_iflag1 & (1 << FLEXCAN_TX_BUF_ID)) {
+                 stats->tx_bytes +=3D can_get_echo_skb(dev, 0);
+                 stats->tx_packets++;
 
 
+I don't even know the reason for the moment but when any=20
+RX_FIFO_OVERFLOW interrupts occur, some (spurious) TX_BUF_ID follow too=
+=20
+(to be more precise: FLEXCAN_TX_BUF_ID bit is sometimes set too in=20
+iflag1), which leads "tx_packets" to increase while no CAN frames have=20
+been sent at all! Didn't find any documentation nor errata about this,=20
+but it's a fact.
 
-http://lxr.linux.no/#linux+v3.9/Documentation/networking/timestamping.txt
+My proposal was only a quick 'n secure workaround for both issues:=20
+"tx_bytes always 0 when LOOPBACK not set" AND "wrong tx_packets (and=20
+tx_bytes) management on spurious TX INTerrupts".
 
-http://lxr.linux.no/#linux+v3.9/Documentation/networking/timestamping/timestamping.c
+St=E9phane
 
-
-
-Wolfgang,
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
