@@ -1,74 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Usb to can driver
-Date: Thu, 02 May 2013 13:32:09 +0200
-Message-ID: <51824EB9.7050508@pengutronix.de>
-References: <1366737302.3325.36.camel@blackbox>   <51770161.2030005@pengutronix.de> <1366818490.5965.35.camel@blackbox>  <51780336.5060800@pengutronix.de> <1366839193.7226.8.camel@blackbox> <5182490F.2080707@pengutronix.de> <51824E42.9080905@grandegger.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2TSSRLUPQPBUQKIJRGPAI"
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH, RFC 01/22] can: move CONFIG_HAVE_CAN_FLEXCAN out of CAN_DEV
+Date: Thu,  2 May 2013 17:16:05 +0200
+Message-ID: <1367507786-505303-2-git-send-email-arnd@arndb.de>
+References: <1367507786-505303-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40193 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755873Ab3EBLcR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 May 2013 07:32:17 -0400
-In-Reply-To: <51824E42.9080905@grandegger.com>
+Received: from moutng.kundenserver.de ([212.227.126.186]:49626 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758555Ab3EBPQg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 May 2013 11:16:36 -0400
+In-Reply-To: <1367507786-505303-1-git-send-email-arnd@arndb.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: "Max S." <max@schneidersoft.net>, linux-can <linux-can@vger.kernel.org>, Sven Geggus <lists@fuchsschwanzdomain.de>
+To: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2TSSRLUPQPBUQKIJRGPAI
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+CONFIG_HAVE_CAN_FLEXCAN is a silect symbol that is meant to be selected
+by platforms that support this driver, but that is not possible without
+also selecting CAN_DEV, unless we move it out of the "if CAN_DEV"
+section of the Kconfig file.
 
-On 05/02/2013 01:30 PM, Wolfgang Grandegger wrote:
-> On 05/02/2013 01:07 PM, Marc Kleine-Budde wrote:
->> On 04/24/2013 11:33 PM, Max S. wrote:
->>> From 8a83080bcddc558cd016e58e408b56ca68bc5bc8 Mon Sep 17 00:00:00 200=
-1
->>> From: Maximilian Schneider <max@schneidersoft.net>
->>> Date: Wed, 24 Apr 2013 21:03:31 +0000
->>> Subject: [PATCH] Added ss_usb source.
->>
->> Comments inline.
->>
->>> Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
->>> ---
->>>  drivers/net/can/usb/Makefile |    1 +
->>
->> You should add your driver to Kconfig, too.
->>
->>>  drivers/net/can/usb/ss_usb.c |  944 ++++++++++++++++++++++++++++++++=
-++++++++++
->>>  2 files changed, 945 insertions(+)
->>>  create mode 100644 drivers/net/can/usb/ss_usb.c
->=20
-> What stands "ss" for? I would prefer "ssoft" or "schneidersoft".
+warning: (SOC_IMX28 && SOC_IMX25 && SOC_IMX35 &&
+ IMX_HAVE_PLATFORM_FLEXCAN && SOC_IMX53 && SOC_IMX6Q) selects HAVE_CAN_FLEXCAN
+ which has unmet direct dependencies (NET && CAN && CAN_DEV)
 
-Good idea, ad the term is historically biased in Germany.
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/can/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index e456b70..3941a7d 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -29,6 +29,9 @@ config CAN_SLCAN
+ 	  can be changed by the 'maxdev=xx' module option. This driver can
+ 	  also be built as a module. If so, the module will be called slcan.
+ 
++config HAVE_CAN_FLEXCAN
++	bool
++
+ config CAN_DEV
+ 	tristate "Platform CAN drivers with Netlink support"
+ 	default y
+@@ -102,9 +105,6 @@ config CAN_JANZ_ICAN3
+ 	  This driver can also be built as a module. If so, the module will be
+ 	  called janz-ican3.ko.
+ 
+-config HAVE_CAN_FLEXCAN
+-	bool
+-
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+ 	depends on HAVE_CAN_FLEXCAN
+-- 
+1.8.1.2
 
-
-------enig2TSSRLUPQPBUQKIJRGPAI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlGCTr0ACgkQjTAFq1RaXHM5qQCghiuUSM4n0oTOnPEw2vnK/S8z
-DJEAn0AhHrWiZuEhadRWymfAU8CzCAV5
-=hnsO
------END PGP SIGNATURE-----
-
-------enig2TSSRLUPQPBUQKIJRGPAI--
