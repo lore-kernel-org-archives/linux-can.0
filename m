@@ -1,97 +1,116 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: [PATCH, RFC 00/22] ARM randconfig bugs
-Date: Thu, 02 May 2013 20:53:44 +0200
-Message-ID: <2710056.LHQ0Ee0x8t@vostro.rjw.lan>
-References: <1367507786-505303-1-git-send-email-arnd@arndb.de>
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: [PATCH v2] can: kvaser_usb: handle rx msg correctly
+Date: Thu, 2 May 2013 20:57:10 +0200
+Message-ID: <20130502185710.GA1041@thinkoso.home>
+References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com>
+ <517A968D.20508@pengutronix.de>
+ <20130430214044.GA22921@thinkoso.home>
+ <51824189.8090402@pengutronix.de>
+ <20130502180610.GA14242@thinkoso.home>
+Reply-To: Olivier Sobrie <olivier@sobrie.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <1367507786-505303-1-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>, dri-devel@lists.freedesktop.org, oprofile-list@lists.sf.net, Samuel Ortiz <sameo@linux.intel.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, cpufreq@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>, Alan Stern <stern@rowland.harvard.edu>, Dave Airlie <airlied@redhat.com>, Zhang Rui <rui.zhang@intel.com>, linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-arm-kernel@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, Herbert Xu <herbert@gondor.hengli.com.au>, Oliver Hartkopp <socketcan@hartkopp.net>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wg0-f44.google.com ([74.125.82.44]:42575 "EHLO
+	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756653Ab3EBS5O (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 May 2013 14:57:14 -0400
+Received: by mail-wg0-f44.google.com with SMTP id z12so903341wgg.11
+        for <linux-can@vger.kernel.org>; Thu, 02 May 2013 11:57:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20130502180610.GA14242@thinkoso.home>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jonas Peterson <jonas.peterson@gmail.com>, linux-can@vger.kernel.org
 
-On Thursday, May 02, 2013 05:16:04 PM Arnd Bergmann wrote:
-> Hi subsystem maintainers,
-> 
-> This is a set of patches to to fix build errors I hit while trying to
-> build lots of randconfig kernels on linux-next.
-> 
-> Most of them are simple missing dependencies in Kconfig, but some are
-> more substantial. I would like to see at least the obvious patches
-> get merged for 3.10. If you are happy with the patches, feel free
-> to apply them directly, otherwise please provide feedback.
-> 
-> No single patch out of these is very important though, most of them
-> only concern corner cases and don't matter in practice.
+From: Jonas Peterson <jonas.peterson@gmail.com>
 
-For cpufreq and cpuidle:
+Unlike Kvaser Leaf light devices, some other Kvaser devices (like USBcan
+Pro, USBcan R) receive CAN messages in CMD_LOG_MESSAGE frames. This
+patch adds support for it.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Jonas Peterson <jonas.peterson@gmail.com>
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+---
+ drivers/net/can/usb/kvaser_usb.c | 49 ++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 20 deletions(-)
 
-> Arnd Bergmann (22):
->   can: move CONFIG_HAVE_CAN_FLEXCAN out of CAN_DEV
->   cpufreq: ARM_DT_BL_CPUFREQ needs ARM_CPU_TOPOLOGY
->   cpuidle: calxeda: select ARM_CPU_SUSPEND
->   staging/drm: imx: add missing dependencies
->   drm: always provide debugfs function prototypes
->   gpu/drm: host1x: add dependency on Tegra
->   drm/tilcd: select BACKLIGHT_LCD_SUPPORT
->   OMAPDSS: DPI needs DSI
->   crypto: lz4: don't build on ARM
->   mfd: ab8500: debugfs code depends on gpadc
->   iwlegacy: il_pm_ops is only provided for PM_SLEEP
->   thermal: cpu_cooling: fix stub function
->   staging/logger: use kuid_t internally
->   oprofile: always enable IRQ_WORK
->   USB: EHCI: remove bogus #error
->   USB: UHCI: clarify Kconfig dependencies
->   USB: OHCI: clarify Kconfig dependencies
->   Xen: SWIOTLB is only used on x86
->   staging/solo6x10: depend on CONFIG_FONTS
->   media: coda: select GENERIC_ALLOCATOR
->   davinci: vpfe_capture needs i2c
->   radio-si4713: depend on SND_SOC
-> 
->  arch/Kconfig                           |  1 +
->  crypto/Kconfig                         |  2 ++
->  drivers/cpufreq/Kconfig.arm            |  1 +
->  drivers/cpuidle/Kconfig                |  1 +
->  drivers/gpu/drm/tilcdc/Kconfig         |  1 +
->  drivers/gpu/host1x/drm/Kconfig         |  1 +
->  drivers/media/platform/Kconfig         |  1 +
->  drivers/media/platform/davinci/Kconfig |  3 ++
->  drivers/media/radio/Kconfig            |  1 +
->  drivers/mfd/Kconfig                    |  2 +-
->  drivers/net/can/Kconfig                |  6 ++--
->  drivers/net/wireless/iwlegacy/common.h |  2 +-
->  drivers/staging/android/logger.c       |  4 +--
->  drivers/staging/android/logger.h       |  2 +-
->  drivers/staging/imx-drm/Kconfig        |  4 +++
->  drivers/staging/media/solo6x10/Kconfig |  1 +
->  drivers/usb/host/Kconfig               | 65 +++++++++++++++++++++++++++++-----
->  drivers/usb/host/Makefile              |  4 +--
->  drivers/usb/host/ehci-hcd.c            | 17 ---------
->  drivers/usb/host/ohci-hcd.c            | 19 ----------
->  drivers/usb/host/uhci-hcd.c            |  4 +--
->  drivers/video/console/Makefile         |  2 ++
->  drivers/video/omap2/dss/Kconfig        |  1 +
->  drivers/xen/Kconfig                    |  2 +-
->  include/drm/drmP.h                     |  3 +-
->  include/linux/cpu_cooling.h            |  2 +-
->  26 files changed, 91 insertions(+), 61 deletions(-)
-> 
-> 
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 45cb9f3..6c89360 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -834,22 +834,35 @@ static void kvaser_usb_rx_can_msg(const struct kvaser_usb *dev,
+ 		return;
+ 	}
+ 
+-	cf->can_id = ((msg->u.rx_can.msg[0] & 0x1f) << 6) |
+-		     (msg->u.rx_can.msg[1] & 0x3f);
+-	cf->can_dlc = get_can_dlc(msg->u.rx_can.msg[5]);
+-
+-	if (msg->id == CMD_RX_EXT_MESSAGE) {
+-		cf->can_id <<= 18;
+-		cf->can_id |= ((msg->u.rx_can.msg[2] & 0x0f) << 14) |
+-			      ((msg->u.rx_can.msg[3] & 0xff) << 6) |
+-			      (msg->u.rx_can.msg[4] & 0x3f);
+-		cf->can_id |= CAN_EFF_FLAG;
+-	}
++	if (msg->id == CMD_LOG_MESSAGE) {
++		cf->can_id = le32_to_cpu(msg->u.log_message.id);
++		cf->can_dlc = get_can_dlc(msg->u.log_message.dlc);
+ 
+-	if (msg->u.rx_can.flag & MSG_FLAG_REMOTE_FRAME)
+-		cf->can_id |= CAN_RTR_FLAG;
+-	else
+-		memcpy(cf->data, &msg->u.rx_can.msg[6], cf->can_dlc);
++		if (msg->u.log_message.flags & MSG_FLAG_REMOTE_FRAME)
++			cf->can_id |= CAN_RTR_FLAG;
++		else
++			memcpy(cf->data, &msg->u.log_message.data,
++			       cf->can_dlc);
++	} else {
++		cf->can_id = ((msg->u.rx_can.msg[0] & 0x1f) << 6) |
++			     (msg->u.rx_can.msg[1] & 0x3f);
++
++		if (msg->id == CMD_RX_EXT_MESSAGE) {
++			cf->can_id <<= 18;
++			cf->can_id |= ((msg->u.rx_can.msg[2] & 0x0f) << 14) |
++				      ((msg->u.rx_can.msg[3] & 0xff) << 6) |
++				      (msg->u.rx_can.msg[4] & 0x3f);
++			cf->can_id |= CAN_EFF_FLAG;
++		}
++
++		cf->can_dlc = get_can_dlc(msg->u.rx_can.msg[5]);
++
++		if (msg->u.rx_can.flag & MSG_FLAG_REMOTE_FRAME)
++			cf->can_id |= CAN_RTR_FLAG;
++		else
++			memcpy(cf->data, &msg->u.rx_can.msg[6],
++			       cf->can_dlc);
++	}
+ 
+ 	netif_rx(skb);
+ 
+@@ -911,6 +924,7 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
+ 
+ 	case CMD_RX_STD_MESSAGE:
+ 	case CMD_RX_EXT_MESSAGE:
++	case CMD_LOG_MESSAGE:
+ 		kvaser_usb_rx_can_msg(dev, msg);
+ 		break;
+ 
+@@ -919,11 +933,6 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
+ 		kvaser_usb_rx_error(dev, msg);
+ 		break;
+ 
+-	case CMD_LOG_MESSAGE:
+-		if (msg->u.log_message.flags & MSG_FLAG_ERROR_FRAME)
+-			kvaser_usb_rx_error(dev, msg);
+-		break;
+-
+ 	case CMD_TX_ACKNOWLEDGE:
+ 		kvaser_usb_tx_acknowledge(dev, msg);
+ 		break;
 -- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+1.8.1.5
+
