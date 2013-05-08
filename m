@@ -1,160 +1,35 @@
-From: Olivier Sobrie <olivier@sobrie.be>
-Subject: [PATCH v3] can: kvaser_usb: handle rx msg correctly
-Date: Tue, 7 May 2013 22:05:23 +0200
-Message-ID: <20130507200523.GA2514@thinkoso.home>
-References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com>
- <517A968D.20508@pengutronix.de>
- <20130430214044.GA22921@thinkoso.home>
- <51824189.8090402@pengutronix.de>
- <20130502180610.GA14242@thinkoso.home>
- <20130502185710.GA1041@thinkoso.home>
- <518388AD.3050902@pengutronix.de>
-Reply-To: Olivier Sobrie <olivier@sobrie.be>
+From: kedari appana <kedare06@gmail.com>
+Subject: cancompilation
+Date: Wed, 8 May 2013 10:52:06 +0530
+Message-ID: <CANdmM3Ph_eAR7p+aD1B9w6JbKVOZyG9SvE24=4o-Q_U+6kyj5w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f47.google.com ([74.125.82.47]:39506 "EHLO
-	mail-wg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752536Ab3EGUF1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 May 2013 16:05:27 -0400
-Received: by mail-wg0-f47.google.com with SMTP id e11so1092706wgh.14
-        for <linux-can@vger.kernel.org>; Tue, 07 May 2013 13:05:26 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <518388AD.3050902@pengutronix.de>
+Received: from mail-pd0-f180.google.com ([209.85.192.180]:49855 "EHLO
+	mail-pd0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750719Ab3EHFWH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 8 May 2013 01:22:07 -0400
+Received: by mail-pd0-f180.google.com with SMTP id t10so965819pdi.39
+        for <linux-can@vger.kernel.org>; Tue, 07 May 2013 22:22:07 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Jonas Peterson <jonas.peterson@gmail.com>, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Jonas Peterson <jonas.peterson@gmail.com>
+Hi,
 
-Unlike Kvaser Leaf light devices, some other Kvaser devices (like USBcan
-Pro, USBcan R) receive CAN messages in CMD_LOG_MESSAGE frames. This
-patch adds support for it.
+ if i type the below command i am getting the following errors
+# ip link show can0
+2: can0: <NOARP40000> mtu 16 qdisc noop qlen 10
+    link/[280]
+#cat /proc/interrupts
+in this i am not getting entry for my can interrupt handler
+#./canconfig can0 bitrate 50000 ctrlmode triple-sampling on
+this command was successfull but when i debugging it is showing  can0:
+bit-timing not yet defined
 
-Signed-off-by: Jonas Peterson <jonas.peterson@gmail.com>
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
----
-v3:
- - add KVASER_EXTENDED_FRAME define
- - call kvaser_usb_rx_error() in kvaser_usb_rx_can_msg when the frame is
-   a CMD_LOG_MESSAGE and flag MSG_FLAG_ERROR_FRAME is set.
-
-By reading the patch again I saw that I mixed up kvaser_usb_rx_can_msg and
-kvaser_usb_rx_error when I cleaned the patch... If fixed that in this
-version.
-I should maybe merge these two functions to avoid confusion...
-
-Olivier
-
- drivers/net/can/usb/kvaser_usb.c | 64 +++++++++++++++++++++++++++-------------
- 1 file changed, 43 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 45cb9f3..3b95465 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -136,6 +136,9 @@
- #define KVASER_CTRL_MODE_SELFRECEPTION	3
- #define KVASER_CTRL_MODE_OFF		4
- 
-+/* log message */
-+#define KVASER_EXTENDED_FRAME		BIT(31)
-+
- struct kvaser_msg_simple {
- 	u8 tid;
- 	u8 channel;
-@@ -817,8 +820,13 @@ static void kvaser_usb_rx_can_msg(const struct kvaser_usb *dev,
- 	priv = dev->nets[channel];
- 	stats = &priv->netdev->stats;
- 
--	if (msg->u.rx_can.flag & (MSG_FLAG_ERROR_FRAME | MSG_FLAG_NERR |
--				  MSG_FLAG_OVERRUN)) {
-+	if ((msg->u.rx_can.flag & MSG_FLAG_ERROR_FRAME) &&
-+	    (msg->id == CMD_LOG_MESSAGE)) {
-+		kvaser_usb_rx_error(dev, msg);
-+		return;
-+	} else if (msg->u.rx_can.flag & (MSG_FLAG_ERROR_FRAME |
-+					 MSG_FLAG_NERR |
-+					 MSG_FLAG_OVERRUN)) {
- 		kvaser_usb_rx_can_err(priv, msg);
- 		return;
- 	} else if (msg->u.rx_can.flag & ~MSG_FLAG_REMOTE_FRAME) {
-@@ -834,22 +842,40 @@ static void kvaser_usb_rx_can_msg(const struct kvaser_usb *dev,
- 		return;
- 	}
- 
--	cf->can_id = ((msg->u.rx_can.msg[0] & 0x1f) << 6) |
--		     (msg->u.rx_can.msg[1] & 0x3f);
--	cf->can_dlc = get_can_dlc(msg->u.rx_can.msg[5]);
-+	if (msg->id == CMD_LOG_MESSAGE) {
-+		cf->can_id = le32_to_cpu(msg->u.log_message.id);
-+		if (cf->can_id & KVASER_EXTENDED_FRAME)
-+			cf->can_id &= CAN_EFF_MASK | CAN_EFF_FLAG;
-+		else
-+			cf->can_id &= CAN_SFF_MASK;
- 
--	if (msg->id == CMD_RX_EXT_MESSAGE) {
--		cf->can_id <<= 18;
--		cf->can_id |= ((msg->u.rx_can.msg[2] & 0x0f) << 14) |
--			      ((msg->u.rx_can.msg[3] & 0xff) << 6) |
--			      (msg->u.rx_can.msg[4] & 0x3f);
--		cf->can_id |= CAN_EFF_FLAG;
--	}
-+		cf->can_dlc = get_can_dlc(msg->u.log_message.dlc);
- 
--	if (msg->u.rx_can.flag & MSG_FLAG_REMOTE_FRAME)
--		cf->can_id |= CAN_RTR_FLAG;
--	else
--		memcpy(cf->data, &msg->u.rx_can.msg[6], cf->can_dlc);
-+		if (msg->u.log_message.flags & MSG_FLAG_REMOTE_FRAME)
-+			cf->can_id |= CAN_RTR_FLAG;
-+		else
-+			memcpy(cf->data, &msg->u.log_message.data,
-+			       cf->can_dlc);
-+	} else {
-+		cf->can_id = ((msg->u.rx_can.msg[0] & 0x1f) << 6) |
-+			     (msg->u.rx_can.msg[1] & 0x3f);
-+
-+		if (msg->id == CMD_RX_EXT_MESSAGE) {
-+			cf->can_id <<= 18;
-+			cf->can_id |= ((msg->u.rx_can.msg[2] & 0x0f) << 14) |
-+				      ((msg->u.rx_can.msg[3] & 0xff) << 6) |
-+				      (msg->u.rx_can.msg[4] & 0x3f);
-+			cf->can_id |= CAN_EFF_FLAG;
-+		}
-+
-+		cf->can_dlc = get_can_dlc(msg->u.rx_can.msg[5]);
-+
-+		if (msg->u.rx_can.flag & MSG_FLAG_REMOTE_FRAME)
-+			cf->can_id |= CAN_RTR_FLAG;
-+		else
-+			memcpy(cf->data, &msg->u.rx_can.msg[6],
-+			       cf->can_dlc);
-+	}
- 
- 	netif_rx(skb);
- 
-@@ -911,6 +937,7 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
- 
- 	case CMD_RX_STD_MESSAGE:
- 	case CMD_RX_EXT_MESSAGE:
-+	case CMD_LOG_MESSAGE:
- 		kvaser_usb_rx_can_msg(dev, msg);
- 		break;
- 
-@@ -919,11 +946,6 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
- 		kvaser_usb_rx_error(dev, msg);
- 		break;
- 
--	case CMD_LOG_MESSAGE:
--		if (msg->u.log_message.flags & MSG_FLAG_ERROR_FRAME)
--			kvaser_usb_rx_error(dev, msg);
--		break;
--
- 	case CMD_TX_ACKNOWLEDGE:
- 		kvaser_usb_tx_acknowledge(dev, msg);
- 		break;
--- 
-1.8.1.5
-
+#If i use ifconfig can0 up
+error is can0: bit-timing not yet defined
+ifconfig: SIOCSIFFLAGS: Invalid argument
+Please help me what is the problem.
+regards,
+Kedar.
