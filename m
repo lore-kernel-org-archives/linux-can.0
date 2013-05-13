@@ -1,34 +1,39 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: [PATCH 07/11] net/peak_pcmcia: take msecs_to_jiffies_min into use
-Date: Fri, 10 May 2013 15:13:25 +0300
-Message-ID: <1368188011-23661-7-git-send-email-imre.deak@intel.com>
-References: <1368188011-23661-1-git-send-email-imre.deak@intel.com>
+From: Laurent Navet <laurent.navet@gmail.com>
+Subject: [PATCH] drivers: net: can: grcan: use devm_ioremap_resource()
+Date: Mon, 13 May 2013 17:27:51 +0200
+Message-ID: <1368458871-7402-1-git-send-email-laurent.navet@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1368188011-23661-1-git-send-email-imre.deak@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Bill Pemberton <wfp5p@virginia.edu>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Joe Perches <joe@perches.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Laurent Navet <laurent.navet@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-Use msecs_to_jiffies_min instead of open-coding the same.
+Replace a call to deprecated devm_request_and_ioremap by devm_ioremap_resource.
+dev_err() message is no more needed since it's already displayed in
+devm_ioremap_resource().
 
-Signed-off-by: Imre Deak <imre.deak@intel.com>
+Signed-off-by: Laurent Navet <laurent.navet@gmail.com>
 ---
- drivers/net/can/sja1000/peak_pcmcia.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/grcan.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
-index 1a7020b..3e45e16 100644
---- a/drivers/net/can/sja1000/peak_pcmcia.c
-+++ b/drivers/net/can/sja1000/peak_pcmcia.c
-@@ -253,7 +253,7 @@ static inline int pcan_pccard_present(struct pcan_pccard *card)
- static int pcan_wait_spi_busy(struct pcan_pccard *card)
- {
- 	unsigned long timeout = jiffies +
--				msecs_to_jiffies(PCC_SPI_MAX_BUSY_WAIT_MS) + 1;
-+				msecs_to_jiffies_min(PCC_SPI_MAX_BUSY_WAIT_MS);
+diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
+index 17fbc7a..9e9d0d6 100644
+--- a/drivers/net/can/grcan.c
++++ b/drivers/net/can/grcan.c
+@@ -1683,10 +1683,9 @@ static int grcan_probe(struct platform_device *ofdev)
+ 	}
  
- 	/* be sure to read status at least once after sleeping */
- 	while (pcan_read_reg(card, PCC_CSR) & PCC_CSR_SPI_BUSY) {
+ 	res = platform_get_resource(ofdev, IORESOURCE_MEM, 0);
+-	base = devm_request_and_ioremap(&ofdev->dev, res);
+-	if (!base) {
+-		dev_err(&ofdev->dev, "couldn't map IO resource\n");
+-		err = -EADDRNOTAVAIL;
++	base = devm_ioremap_resource(&ofdev->dev, res);
++	if (IS_ERR(base)) {
++		err = PTR_ERR(base);
+ 		goto exit_error;
+ 	}
+ 
 -- 
 1.7.10.4
