@@ -1,59 +1,53 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: CAN driver for the Holt HI-3110
-Date: Wed, 15 May 2013 09:24:22 +0200
-Message-ID: <51933826.80205@pengutronix.de>
-References: <5039321.EyQMEif55R@heinz.site> <519337CE.1010505@pengutronix.de>
+From: kedari appana <kedare06-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: CANutilities
+Date: Wed, 15 May 2013 13:09:35 +0530
+Message-ID: <CANdmM3Mo0q7OpX5-ScnLhtWGEiPBvgeKx9SPe=+KBeABodP46g@mail.gmail.com>
+References: <CANdmM3MkAN9tZLUDSnVrdXTngu7CH5UESUAo7NO4u85D0Hg2tQ@mail.gmail.com>
+	<5193360F.3040609@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2ESSREFPXGKUBRHVHQGDO"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59330 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752002Ab3EOHYY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 15 May 2013 03:24:24 -0400
-In-Reply-To: <519337CE.1010505@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-15?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <5193360F.3040609-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2ESSREFPXGKUBRHVHQGDO
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
+I am running as a root.my hardware don't support triple sampling mode
+is there any issue with that?
 
-On 05/15/2013 09:22 AM, Marc Kleine-Budde wrote:
-> On 05/15/2013 12:18 AM, Heinz-J=FCrgen Oertel wrote:
->> does someone know if it exists for the Holt Integrated Circuits Inc.
->> CAN controller HI-311[03]? It has an SPI host interface.
->> http://www.holtic.com/documents/371-hi-3110_v-rev-dpdf.do
->=20
-> I don't think so. The only mainline spi driver is for the mcp251x.
+Regards,
+Kedar.
 
-And it's sloooow. Don't use an SPI CAN controller if possible. Do you
-have the option to use an USB CAN adapter instead?
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2ESSREFPXGKUBRHVHQGDO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlGTOCYACgkQjTAFq1RaXHPa9ACfd6vQKj2dzwG3tKjWezJIu8s3
-VAYAnjOSZzJlC2F7IrWFcaO1PolF3AFb
-=3drD
------END PGP SIGNATURE-----
-
-------enig2ESSREFPXGKUBRHVHQGDO--
+On Wed, May 15, 2013 at 12:45 PM, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org> wrote:
+> On 05/15/2013 09:00 AM, kedari appana wrote:
+>> Hi,
+>>                      when i try to run the below command i am getting the error
+>> ./canconfig can0 bitrate 100000 ctrlmode triple-sampling on loopback on
+>> 1c
+>> can0 bitrate: 100000, sample-point: 0.875
+>> RTNETLINK answers: Operation not supported
+>> can0: failed to set ctrlmode
+>>
+>> How to overcome it
+>
+> Are you running canconfig as root?
+>
+> Marc
+>
+> --
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>
