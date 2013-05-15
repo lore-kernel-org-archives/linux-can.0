@@ -1,78 +1,64 @@
-From: Olivier Sobrie <olivier@sobrie.be>
-Subject: Re: [PATCH v3] can: kvaser_usb: handle rx msg correctly
-Date: Wed, 15 May 2013 13:50:25 +0200
-Message-ID: <20130515114907.GA17776@hposo>
-References: <CAJW3KNWxa_a727sgi_EO7nMBVbyVrCz0V3wCJBfvhz0ubbqCfA@mail.gmail.com>
- <517A968D.20508@pengutronix.de>
- <20130430214044.GA22921@thinkoso.home>
- <51824189.8090402@pengutronix.de>
- <20130502180610.GA14242@thinkoso.home>
- <20130502185710.GA1041@thinkoso.home>
- <518388AD.3050902@pengutronix.de>
- <20130507200523.GA2514@thinkoso.home>
- <51935DEB.8080805@pengutronix.de>
-Reply-To: Olivier Sobrie <olivier@sobrie.be>
+From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <hj.oertel@t-online.de>
+Subject: Re: CAN driver for the Holt HI-3110
+Date: Wed, 15 May 2013 15:11:29 +0200
+Message-ID: <4792173.AorC3MCra4@heinz.site>
+References: <5039321.EyQMEif55R@heinz.site> <519337CE.1010505@pengutronix.de> <51933826.80205@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; boundary="nextPart1522417.xL2hePzdjz"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ea0-f169.google.com ([209.85.215.169]:45943 "EHLO
-	mail-ea0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752051Ab3EOLue (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 15 May 2013 07:50:34 -0400
-Received: by mail-ea0-f169.google.com with SMTP id m14so1012554eaj.28
-        for <linux-can@vger.kernel.org>; Wed, 15 May 2013 04:50:33 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <51935DEB.8080805@pengutronix.de>
+Received: from moutng.kundenserver.de ([212.227.126.186]:56959 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756602Ab3EONLp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 15 May 2013 09:11:45 -0400
+In-Reply-To: <51933826.80205@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Jonas Peterson <jonas.peterson@gmail.com>, linux-can@vger.kernel.org
+Cc: linux-can@vger.kernel.org
 
-Hi Marc,
 
-On Wed, May 15, 2013 at 12:05:31PM +0200, Marc Kleine-Budde wrote:
-> On 05/07/2013 10:05 PM, Olivier Sobrie wrote:
-> > From: Jonas Peterson <jonas.peterson@gmail.com>
-> > 
-> > Unlike Kvaser Leaf light devices, some other Kvaser devices (like USBcan
-> > Pro, USBcan R) receive CAN messages in CMD_LOG_MESSAGE frames. This
-> > patch adds support for it.
-> > 
-> > Signed-off-by: Jonas Peterson <jonas.peterson@gmail.com>
-> > Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
-> > ---
-> > v3:
-> >  - add KVASER_EXTENDED_FRAME define
-> >  - call kvaser_usb_rx_error() in kvaser_usb_rx_can_msg when the frame is
-> >    a CMD_LOG_MESSAGE and flag MSG_FLAG_ERROR_FRAME is set.
-> > 
-> > By reading the patch again I saw that I mixed up kvaser_usb_rx_can_msg and
->                                                                      ^^^
-> 
-> Do you want to merge kvaser_usb_rx_can_msg() or kvaser_usb_rx_can_err()?
+--nextPart1522417.xL2hePzdjz
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-No, grrr I mixed up kvaser_usb_rx_can_msg and kvaser_usb_rx_can_err in my
-comment. I meant kvaser_usb_rx_can_err() and kvaser_usb_rx_error().
+Am Mittwoch 15 Mai 2013, 09:24:22 schrieb Marc Kleine-Budde:
+> On 05/15/2013 09:22 AM, Marc Kleine-Budde wrote:
+> > On 05/15/2013 12:18 AM, Heinz-J=FCrgen Oertel wrote:
+> >> does someone know if it exists for the Holt Integrated Circuits In=
+c.
+> >> CAN controller HI-311[03]? It has an SPI host interface.
+> >> http://www.holtic.com/documents/371-hi-3110_v-rev-dpdf.do
+> >=20
+> > I don't think so. The only mainline spi driver is for the mcp251x.
+>=20
+> And it's sloooow. Don't use an SPI CAN controller if possible. Do you=
 
-> 
-> > kvaser_usb_rx_error when I cleaned the patch... If fixed that in this
-> > version.
-> > I should maybe merge these two functions to avoid confusion...
-> 
-> If you want to merge kvaser_usb_rx_can_err() and kvaser_usb_rx_error()
-> it would make sense, to have the error handling functionality in one
-> function. I haven't looked at the code, though.
+> have the option to use an USB CAN adapter instead?
+>=20
+> Marc
 
-Yes that's what I'll maybe do, merging the two error functions in one.
-I'll look at this more deeply when I've a more time.
+I know :-)
+but at least the HI-3110 has a bigger receive FIFO.
 
-> 
-> However, this would be a separate patch. I'm applying this patch as it
-> is to can/master with linux-stable on Cc.
+--=20
+mit freundlichen Gr=FC=DFen
+       Heinz-J=FCrgen Oertel
+--nextPart1522417.xL2hePzdjz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Ok fine for me.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
 
-Thanks,
+iQEcBAABAgAGBQJRk4mHAAoJENViPQy9fcm7goIIAOZT+4a//5Fji6w1XVjvmDWj
+jQGnfP9AGa6DAHfzTB4eOLaK84FDuH3/YSX3D06P2OC1xiVQvMS7VqMDeCC1C/B9
+GAYshA0damQkAfmZUdn2RIYyceMUf+i3Yc4gli3wvp8sqP6QBfnrf0uBUp2XIRdU
+WD817VEU8vbD5Vo1MmHHc+jcUwl9aSgGUdbaKY7qYlNoaVgeNsGfHPnurmLxZi7y
+rRLEV9Cn2vQO3mhZq9KSER10GyZLjhwI8mmbvlJUWCcFkTbNqh9+MmDygNpVqz/5
+vIHZ748wKicGSkSpBzKi+kOL8KPPtJh+8X8nOu/A6kM9/FHpqn8M1G1mue37vJA=
+=4s8z
+-----END PGP SIGNATURE-----
 
--- 
-Olivier
+--nextPart1522417.xL2hePzdjz--
+
