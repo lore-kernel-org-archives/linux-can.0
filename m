@@ -1,58 +1,66 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Usb to can driver
-Date: Thu, 16 May 2013 13:40:34 +0200
-Message-ID: <5194C5B2.7060004@pengutronix.de>
-References: <1366737302.3325.36.camel@blackbox>   <51770161.2030005@pengutronix.de> <1366818490.5965.35.camel@blackbox>  <51780336.5060800@pengutronix.de> <1366839193.7226.8.camel@blackbox>
+Subject: Re: [PATCH] drivers: net: can: grcan: use devm_ioremap_resource()
+Date: Thu, 16 May 2013 13:50:00 +0200
+Message-ID: <5194C7E8.4060804@pengutronix.de>
+References: <1368458871-7402-1-git-send-email-laurent.navet@gmail.com> <51935176.7020601@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="----enig2NONVPQVURNRLTJQOTCWB"
+ boundary="----enig2NJUWBQCCIVDADDCFLDWQ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38541 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60022 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752399Ab3EPLkh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 07:40:37 -0400
-In-Reply-To: <1366839193.7226.8.camel@blackbox>
+	with ESMTP id S1751123Ab3EPLuD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 07:50:03 -0400
+In-Reply-To: <51935176.7020601@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: Laurent Navet <laurent.navet@gmail.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2NONVPQVURNRLTJQOTCWB
+------enig2NJUWBQCCIVDADDCFLDWQ
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-On 04/24/2013 11:33 PM, Max S. wrote:
-> From 8a83080bcddc558cd016e58e408b56ca68bc5bc8 Mon Sep 17 00:00:00 2001
-> From: Maximilian Schneider <max@schneidersoft.net>
-> Date: Wed, 24 Apr 2013 21:03:31 +0000
-> Subject: [PATCH] Added ss_usb source.
+On 05/15/2013 11:12 AM, Marc Kleine-Budde wrote:
+> On 05/13/2013 05:27 PM, Laurent Navet wrote:
+>> Replace a call to deprecated devm_request_and_ioremap by devm_ioremap_=
+resource.
+>> dev_err() message is no more needed since it's already displayed in
+>> devm_ioremap_resource().
+>>
+>> Signed-off-by: Laurent Navet <laurent.navet@gmail.com>
 >=20
->=20
-> Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
+> Tnx, applied to linux-can-next.
 
-Please fix these errors, too:
+The "IS_ERR(base)" ...
 
-> drivers/net/can/usb/ss_usb.c:343 ss_usb_set_bittiming() error: doing dm=
-a on the stack (&dbt)
-> drivers/net/can/usb/ss_usb.c:374 ss_usb_set_mode() error: doing dma on =
-the stack (&dm)
-> drivers/net/can/usb/ss_usb.c:411 ss_usb_get_state() error: doing dma on=
- the stack (&dstate)
-> drivers/net/can/usb/ss_usb.c:465 ss_usb_get_berr_counter() error: doing=
- dma on the stack (&dstate)
-> drivers/net/can/usb/ss_usb.c:661 ss_can_open() error: doing dma on the =
-stack (&dm)
-> drivers/net/can/usb/ss_usb.c:736 ss_usb_probe() error: doing dma on the=
- stack (&conf)
-> drivers/net/can/usb/ss_usb.c:859 ss_make_candev() error: doing dma on t=
-he stack (&bt_const)
+> +	base =3D devm_ioremap_resource(&ofdev->dev, res);
+> +	if (IS_ERR(base)) {
+> +		err =3D PTR_ERR(base);
+>  		goto exit_error;
+>  	}
 
-You should not use memory on stack for usb transfers. Use kmalloc(), or
-kzalloc() (and kfree) instead.
+=2E.. introduces this sparse warning:
+
+> drivers/net/can/grcan.c:1687:20: warning: incorrect type in argument 1 =
+(different address spaces)
+> drivers/net/can/grcan.c:1687:20:    expected void const *ptr
+> drivers/net/can/grcan.c:1687:20:    got void [noderef] <asn:2>*[assigne=
+d] base
+> drivers/net/can/grcan.c:1688:31: warning: incorrect type in argument 1 =
+(different address spaces)
+> drivers/net/can/grcan.c:1688:31:    expected void const *ptr
+> drivers/net/can/grcan.c:1688:31:    got void [noderef] <asn:2>*[assigne=
+d] base
+
+I think it's the __iomem annotation of the void pointer that
+devm_ioremap_resource() returns. Is there a clever way to improve IS_ERR
+and PTR_ERR?
 
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -60,7 +68,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-------enig2NONVPQVURNRLTJQOTCWB
+------enig2NJUWBQCCIVDADDCFLDWQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -69,9 +77,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.12 (GNU/Linux)
 Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlGUxbIACgkQjTAFq1RaXHMz2gCeISDJJPcP+UZ7vMihxiAum9bV
-lG8AoIJ1ifMAVvZJnUMWMjkhUscNVbuM
-=Xt1W
+iEYEARECAAYFAlGUx+gACgkQjTAFq1RaXHN3pwCfeMypx0rU/Ky2c8F+qDL5Ts0x
+OVsAoI9r/nHQ70eAka2/9HK8rLT3Zi1z
+=ivLw
 -----END PGP SIGNATURE-----
 
-------enig2NONVPQVURNRLTJQOTCWB--
+------enig2NJUWBQCCIVDADDCFLDWQ--
