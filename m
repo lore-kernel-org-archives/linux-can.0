@@ -1,54 +1,175 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: command ip -details -statistics link show wlan0
-Date: Thu, 16 May 2013 09:02:03 +0200
-Message-ID: <5194846B.1070307@grandegger.com>
-References: <CAOD0pe=EMt3+ymJMwT+gOUbFZN7_R8exkh36G5457O61GoV4UA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] net: can: peak_usb: Do not do dma on the stack
+Date: Thu, 16 May 2013 11:40:36 +0200
+Message-ID: <1368697236-17035-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:60511 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755520Ab3EPHCH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 03:02:07 -0400
-In-Reply-To: <CAOD0pe=EMt3+ymJMwT+gOUbFZN7_R8exkh36G5457O61GoV4UA@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39395 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751020Ab3EPJkl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 05:40:41 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ernast Sevo <ersevs@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-Hi Ernast,
+smatch reports the following warnings:
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:514 pcan_usb_pro_drv_loaded() error: doing dma on the stack (buffer)
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:878 pcan_usb_pro_init() error: doing dma on the stack (&fi)
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:889 pcan_usb_pro_init() error: doing dma on the stack (&bi)
 
-On 05/15/2013 08:58 PM, Ernast Sevo wrote:
-> Hello,
-> 
->  I am quite new to socket can and I had a question about the output of
-> the command: ip -details -statistics link show can0. When I run the
-> above command I get the following output:
-> 
-> re-started bus-errors arbit-lost error-warn error-pass bus-off
->     0          0          0          0          0          0
->     RX: bytes  packets  errors  dropped overrun mcast
->     3956387    948121    11      0           11          0
->     TX: bytes  packets  errors  dropped carrier collsns
->     100        44       0       0       0       0
-> 
-> 
-> I see that I received 11 errors packets (all of them being rx overrun
-> errors) and that no packets were dropped. Does the dropped field refer
-> to packets lost in userspace (i.e because they weren't being read fast
-> enough and the socket receive buffer overflowed) or does the dropped
-> packet field refer to dropped packets being dropped somewhere other
-> than userspace?
+See "Documentation/DMA-API-HOWTO.txt" section "What memory is DMA'able?"
 
-They refer to packets dropped in the driver for some reason, maily
-because memory is short (ENOMEM). The overrun errors above are reported
-by the hardware due to messages arrived but there was no space to store
-it. Messages dropped because the socket buffer was full can be reported
-with the candump option "-d" as shown here:
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello Stephane,
 
-https://gitorious.org/linux-can/can-utils/blobs/master/candump.c#line549
+can you please test this patch. It applies to current net/master, but any
+recent kernel should do.
 
-Hope that helps.
+regards,
+Marc
 
-Wolfgang.
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 61 +++++++++++++++++++----------
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h |  1 +
+ 2 files changed, 41 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index 30d79bf..b94bf9f 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -504,15 +504,24 @@ static int pcan_usb_pro_restart_async(struct peak_usb_device *dev,
+ 	return usb_submit_urb(urb, GFP_ATOMIC);
+ }
+ 
+-static void pcan_usb_pro_drv_loaded(struct peak_usb_device *dev, int loaded)
++static int pcan_usb_pro_drv_loaded(struct peak_usb_device *dev, int loaded)
+ {
+-	u8 buffer[16];
++	u8 *buffer;
++	int err;
++
++	buffer = kmalloc(PCAN_USBPRO_FCT_DRVLD_REQ_LEN, GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
+ 
+ 	buffer[0] = 0;
+ 	buffer[1] = !!loaded;
+ 
+-	pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_FCT,
+-			      PCAN_USBPRO_FCT_DRVLD, buffer, sizeof(buffer));
++	err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_FCT,
++				    PCAN_USBPRO_FCT_DRVLD, buffer,
++				    PCAN_USBPRO_FCT_DRVLD_REQ_LEN);
++	kfree(buffer);
++
++	return err;
+ }
+ 
+ static inline
+@@ -851,21 +860,24 @@ static int pcan_usb_pro_stop(struct peak_usb_device *dev)
+  */
+ static int pcan_usb_pro_init(struct peak_usb_device *dev)
+ {
+-	struct pcan_usb_pro_interface *usb_if;
+ 	struct pcan_usb_pro_device *pdev =
+ 			container_of(dev, struct pcan_usb_pro_device, dev);
++	struct pcan_usb_pro_interface *usb_if = NULL;
++	struct pcan_usb_pro_fwinfo *fi = NULL;
++	struct pcan_usb_pro_blinfo *bi = NULL;
++	int err;
+ 
+ 	/* do this for 1st channel only */
+ 	if (!dev->prev_siblings) {
+-		struct pcan_usb_pro_fwinfo fi;
+-		struct pcan_usb_pro_blinfo bi;
+-		int err;
+-
+ 		/* allocate netdevices common structure attached to first one */
+ 		usb_if = kzalloc(sizeof(struct pcan_usb_pro_interface),
+ 				 GFP_KERNEL);
+-		if (!usb_if)
+-			return -ENOMEM;
++		fi = kzalloc(sizeof(struct pcan_usb_pro_fwinfo), GFP_KERNEL);
++		bi = kzalloc(sizeof(struct pcan_usb_pro_blinfo), GFP_KERNEL);
++		if (!usb_if || !fi || !bi) {
++			err = -ENOMEM;
++			goto err_out;
++		}
+ 
+ 		/* number of ts msgs to ignore before taking one into account */
+ 		usb_if->cm_ignore_count = 5;
+@@ -877,34 +889,34 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
+ 		 */
+ 		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
+ 					    PCAN_USBPRO_INFO_FW,
+-					    &fi, sizeof(fi));
++					    fi, sizeof(*fi));
+ 		if (err) {
+-			kfree(usb_if);
+ 			dev_err(dev->netdev->dev.parent,
+ 				"unable to read %s firmware info (err %d)\n",
+ 				pcan_usb_pro.name, err);
+-			return err;
++			goto err_out;
+ 		}
+ 
+ 		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
+ 					    PCAN_USBPRO_INFO_BL,
+-					    &bi, sizeof(bi));
++					    bi, sizeof(*bi));
+ 		if (err) {
+-			kfree(usb_if);
+ 			dev_err(dev->netdev->dev.parent,
+ 				"unable to read %s bootloader info (err %d)\n",
+ 				pcan_usb_pro.name, err);
+-			return err;
++			goto err_out;
+ 		}
+ 
++		/* tell the device the can driver is running */
++		err = pcan_usb_pro_drv_loaded(dev, 1);
++		if (err)
++			goto err_out;
++
+ 		dev_info(dev->netdev->dev.parent,
+ 		     "PEAK-System %s hwrev %u serial %08X.%08X (%u channels)\n",
+ 		     pcan_usb_pro.name,
+-		     bi.hw_rev, bi.serial_num_hi, bi.serial_num_lo,
++		     bi->hw_rev, bi->serial_num_hi, bi->serial_num_lo,
+ 		     pcan_usb_pro.ctrl_count);
+-
+-		/* tell the device the can driver is running */
+-		pcan_usb_pro_drv_loaded(dev, 1);
+ 	} else {
+ 		usb_if = pcan_usb_pro_dev_if(dev->prev_siblings);
+ 	}
+@@ -916,6 +928,13 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
+ 	pcan_usb_pro_set_led(dev, 0, 1);
+ 
+ 	return 0;
++
++ err_out:
++	kfree(bi);
++	kfree(fi);
++	kfree(usb_if);
++
++	return err;
+ }
+ 
+ static void pcan_usb_pro_exit(struct peak_usb_device *dev)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
+index a869918..32275af 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
+@@ -29,6 +29,7 @@
+ 
+ /* Vendor Request value for XXX_FCT */
+ #define PCAN_USBPRO_FCT_DRVLD		5 /* tell device driver is loaded */
++#define PCAN_USBPRO_FCT_DRVLD_REQ_LEN	16
+ 
+ /* PCAN_USBPRO_INFO_BL vendor request record type */
+ struct __packed pcan_usb_pro_blinfo {
+-- 
+1.8.2.rc2
+
