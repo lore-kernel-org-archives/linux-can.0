@@ -1,89 +1,172 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2013-05-16
-Date: Thu, 16 May 2013 14:51:56 +0200
-Message-ID: <5194D66C.8050502@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2IAKCXOXVTVXJXBBTBDSL"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55142 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753894Ab3EPMwD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 08:52:03 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: [PATCH] can: flexcan: allow compilation on arm and powerpc
+Date: Thu, 16 May 2013 15:42:36 +0200
+Message-ID: <1368711756-22324-1-git-send-email-mkl@pengutronix.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, Kumar Gala <galak@kernel.crashing.org>, U Bhaskar-B22300 <B22300@freescale.com>, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2IAKCXOXVTVXJXBBTBDSL
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+This patch removes the Kconfig symbols HAVE_CAN_FLEXCAN and
+IMX_HAVE_PLATFORM_FLEXCAN from arch/{arm,powerpc} and allowing compilation on
+all arm and powerpc platforms.
 
-Hello David,
+This brings a bigger compile time coverage and removes the following dependency
+warning found by Arnd Bergmann:
 
-this is a pull-request for net-next/master. It consists of 4 patches by
-Jingoo Han, which remove the unnecessary platform_set_drvdata() and a
-patch by Laurent Navet converting the grcan driver to use
-devm_ioremap_resource().
+    warning: (SOC_IMX28 && SOC_IMX25 && SOC_IMX35 && IMX_HAVE_PLATFORM_FLEXCAN &&
+        SOC_IMX53 && SOC_IMX6Q) selects HAVE_CAN_FLEXCAN
+    which has unmet direct dependencies (NET && CAN && CAN_DEV)
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Kumar Gala <galak@kernel.crashing.org>
+Cc: U Bhaskar-B22300 <B22300@freescale.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
+
+if the arm and powerpc people are okay with this, I'm taking this patch (and
+then will go upstream via David Miller's net-next).
 
 regards,
 Marc
 
----
+ arch/arm/mach-imx/Kconfig         | 8 --------
+ arch/arm/mach-imx/devices/Kconfig | 4 ----
+ arch/arm/mach-mxs/Kconfig         | 1 -
+ arch/powerpc/Kconfig              | 1 -
+ drivers/net/can/Kconfig           | 5 +----
+ 5 files changed, 1 insertion(+), 18 deletions(-)
 
-The following changes since commit dbbffe6898fd0d7bac66ded5d3c58835b13dde=
-fc:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2013-05-=
-13 13:25:36 -0700)
-
-are available in the git repository at:
-
-
-  git://gitorious.org/linux-can/linux-can-next.git for-davem
-
-for you to fetch changes up to 5727dc6bf5b70dd278e58e26137e2df729b9c107:
-
-  net: can: ti_hecc: remove unnecessary platform_set_drvdata() (2013-05-1=
-6 13:27:20 +0200)
-
-----------------------------------------------------------------
-Jingoo Han (4):
-      net: can: at91_can: remove unnecessary platform_set_drvdata()
-      net: can: c_can: remove unnecessary platform_set_drvdata()
-      net: can: flexcan: remove unnecessary platform_set_drvdata()
-      net: can: ti_hecc: remove unnecessary platform_set_drvdata()
-
-Laurent Navet (1):
-      drivers: net: can: grcan: use devm_ioremap_resource()
-
- drivers/net/can/at91_can.c             | 2 --
- drivers/net/can/c_can/c_can_platform.c | 2 --
- drivers/net/can/flexcan.c              | 1 -
- drivers/net/can/grcan.c                | 7 +++----
- drivers/net/can/ti_hecc.c              | 1 -
- 5 files changed, 3 insertions(+), 10 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2IAKCXOXVTVXJXBBTBDSL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlGU1m8ACgkQjTAFq1RaXHOOyQCfSOzrlDgKive6NAY24T1Cjsy3
-S4wAn0eDm1X7Y4OV++qFUnuVes9QIBq/
-=xqaJ
------END PGP SIGNATURE-----
-
-------enig2IAKCXOXVTVXJXBBTBDSL--
+diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+index ba44328..239d084 100644
+--- a/arch/arm/mach-imx/Kconfig
++++ b/arch/arm/mach-imx/Kconfig
+@@ -111,7 +111,6 @@ config SOC_IMX25
+ 	select ARCH_MXC_IOMUX_V3
+ 	select COMMON_CLK
+ 	select CPU_ARM926T
+-	select HAVE_CAN_FLEXCAN if CAN
+ 	select MXC_AVIC
+ 
+ config SOC_IMX27
+@@ -137,7 +136,6 @@ config SOC_IMX35
+ 	select ARCH_MXC_IOMUX_V3
+ 	select COMMON_CLK
+ 	select CPU_V6K
+-	select HAVE_CAN_FLEXCAN if CAN
+ 	select HAVE_EPIT
+ 	select MXC_AVIC
+ 	select SMP_ON_UP if SMP
+@@ -208,7 +206,6 @@ comment "MX25 platforms:"
+ 
+ config MACH_MX25_3DS
+ 	bool "Support MX25PDK (3DS) Platform"
+-	select IMX_HAVE_PLATFORM_FLEXCAN
+ 	select IMX_HAVE_PLATFORM_FSL_USB2_UDC
+ 	select IMX_HAVE_PLATFORM_IMX2_WDT
+ 	select IMX_HAVE_PLATFORM_IMXDI_RTC
+@@ -223,7 +220,6 @@ config MACH_MX25_3DS
+ 
+ config MACH_EUKREA_CPUIMX25SD
+ 	bool "Support Eukrea CPUIMX25 Platform"
+-	select IMX_HAVE_PLATFORM_FLEXCAN
+ 	select IMX_HAVE_PLATFORM_FSL_USB2_UDC
+ 	select IMX_HAVE_PLATFORM_IMX2_WDT
+ 	select IMX_HAVE_PLATFORM_IMXDI_RTC
+@@ -629,7 +625,6 @@ comment "MX35 platforms:"
+ 
+ config MACH_PCM043
+ 	bool "Support Phytec pcm043 (i.MX35) platforms"
+-	select IMX_HAVE_PLATFORM_FLEXCAN
+ 	select IMX_HAVE_PLATFORM_FSL_USB2_UDC
+ 	select IMX_HAVE_PLATFORM_IMX2_WDT
+ 	select IMX_HAVE_PLATFORM_IMX_I2C
+@@ -665,7 +660,6 @@ config MACH_MX35_3DS
+ 
+ config MACH_EUKREA_CPUIMX35SD
+ 	bool "Support Eukrea CPUIMX35 Platform"
+-	select IMX_HAVE_PLATFORM_FLEXCAN
+ 	select IMX_HAVE_PLATFORM_FSL_USB2_UDC
+ 	select IMX_HAVE_PLATFORM_IMX2_WDT
+ 	select IMX_HAVE_PLATFORM_IMX_I2C
+@@ -776,7 +770,6 @@ comment "Device tree only"
+ 
+ config	SOC_IMX53
+ 	bool "i.MX53 support"
+-	select HAVE_CAN_FLEXCAN if CAN
+ 	select HAVE_IMX_SRC
+ 	select IMX_HAVE_PLATFORM_IMX2_WDT
+ 	select PINCTRL
+@@ -799,7 +792,6 @@ config SOC_IMX6Q
+ 	select CPU_V7
+ 	select HAVE_ARM_SCU if SMP
+ 	select HAVE_ARM_TWD if LOCAL_TIMERS
+-	select HAVE_CAN_FLEXCAN if CAN
+ 	select HAVE_IMX_ANATOP
+ 	select HAVE_IMX_GPC
+ 	select HAVE_IMX_MMDC
+diff --git a/arch/arm/mach-imx/devices/Kconfig b/arch/arm/mach-imx/devices/Kconfig
+index 3dd2b1b..b0a629d 100644
+--- a/arch/arm/mach-imx/devices/Kconfig
++++ b/arch/arm/mach-imx/devices/Kconfig
+@@ -2,10 +2,6 @@ config IMX_HAVE_PLATFORM_FEC
+ 	bool
+ 	default y if ARCH_MX25 || SOC_IMX27 || SOC_IMX35 || SOC_IMX51 || SOC_IMX53
+ 
+-config IMX_HAVE_PLATFORM_FLEXCAN
+-	bool
+-	select HAVE_CAN_FLEXCAN if CAN
+-
+ config IMX_HAVE_PLATFORM_FSL_USB2_UDC
+ 	bool
+ 
+diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+index 4dc2fbb..ce6e7d6 100644
+--- a/arch/arm/mach-mxs/Kconfig
++++ b/arch/arm/mach-mxs/Kconfig
+@@ -11,7 +11,6 @@ config SOC_IMX28
+ 	select ARM_AMBA
+ 	select ARM_CPU_SUSPEND if PM
+ 	select CPU_ARM926T
+-	select HAVE_CAN_FLEXCAN if CAN
+ 	select HAVE_PWM
+ 	select PINCTRL_IMX28
+ 
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index c33e3ad..7754c6b 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -674,7 +674,6 @@ config SBUS
+ 
+ config FSL_SOC
+ 	bool
+-	select HAVE_CAN_FLEXCAN if NET && CAN
+ 
+ config FSL_PCI
+  	bool
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index e456b70..3c06947 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -102,12 +102,9 @@ config CAN_JANZ_ICAN3
+ 	  This driver can also be built as a module. If so, the module will be
+ 	  called janz-ican3.ko.
+ 
+-config HAVE_CAN_FLEXCAN
+-	bool
+-
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+-	depends on HAVE_CAN_FLEXCAN
++	depends on ARM || PPC
+ 	---help---
+ 	  Say Y here if you want to support for Freescale FlexCAN.
+ 
+-- 
+1.8.2.rc2
