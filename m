@@ -1,138 +1,30 @@
-From: Ernast Sevo <ersevs@gmail.com>
-Subject: Re: command ip -details -statistics link show wlan0
-Date: Thu, 16 May 2013 12:37:27 -0400
-Message-ID: <CAOD0pekz8LWk-rTCy=iAZ53W=0jUmMMGZNXhS=yE7z6ZnH8P=g@mail.gmail.com>
-References: <CAOD0pe=EMt3+ymJMwT+gOUbFZN7_R8exkh36G5457O61GoV4UA@mail.gmail.com>
-	<5194846B.1070307@grandegger.com>
-	<CAOD0pekopW9g0SD=BnOMCEp3SdVZPrx5jY_CKLjZV09sWepS6A@mail.gmail.com>
-	<5194F46D.4060905@grandegger.com>
-	<CAOD0pena8JLpCsq6EUqqy_Rip0oRe0Z5=6SQfGV2TNeS_YABfQ@mail.gmail.com>
-	<5194FE85.7030705@grandegger.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2013-05-16
+Date: Thu, 16 May 2013 17:12:46 -0700 (PDT)
+Message-ID: <20130516.171246.789606546975644807.davem@davemloft.net>
+References: <5194D66C.8050502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37557 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753188Ab3EPRM6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 13:12:58 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1Ud1jd-0003mL-CD
-	for linux-can@vger.kernel.org; Thu, 16 May 2013 19:12:57 +0200
-Received: from [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b] (hardanger.wlan.blackshift.org [IPv6:2001:6f8:105b:1122:21d:e0ff:fe39:f61b])
-	(using TLSv1 with cipher ECDHE-ECDSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: frogger)
-	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id EAC935E889
-	for <linux-can@vger.kernel.org>; Thu, 16 May 2013 19:12:56 +0200 (CEST)
-In-Reply-To: <5194FE85.7030705@grandegger.com>
+Received: from shards.monkeyblade.net ([149.20.54.216]:56972 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752523Ab3EQAMt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 May 2013 20:12:49 -0400
+In-Reply-To: <5194D66C.8050502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
 
-Great! Thank you very much for all your help! And I will take a closer
-look at that optimized driver.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu, 16 May 2013 14:51:56 +0200
 
-Best,
+> this is a pull-request for net-next/master. It consists of 4 patches by
+> Jingoo Han, which remove the unnecessary platform_set_drvdata() and a
+> patch by Laurent Navet converting the grcan driver to use
+> devm_ioremap_resource().
+ ...
+>   git://gitorious.org/linux-can/linux-can-next.git for-davem
 
- Ernast
-
-On Thu, May 16, 2013 at 11:43 AM, Wolfgang Grandegger <wg@grandegger.com> wrote:
-> Hi Ernast,
->
-> please don't frop the CC to the mailing list...
->
-> On 05/16/2013 05:32 PM, Ernast Sevo wrote:
->> On Thu, May 16, 2013 at 10:59 AM, Wolfgang Grandegger <wg@grandegger.com> wrote:
->>> On 05/16/2013 03:43 PM, Ernast Sevo wrote:
->>>> On Thu, May 16, 2013 at 3:02 AM, Wolfgang Grandegger <wg@grandegger.com> wrote:
->>>>> Hi Ernast,
->>>>>
->>>>> On 05/15/2013 08:58 PM, Ernast Sevo wrote:
->>>>>> Hello,
->>>>>>
->>>>>>  I am quite new to socket can and I had a question about the output of
->>>>>> the command: ip -details -statistics link show can0. When I run the
->>>>>> above command I get the following output:
->>>>>>
->>>>>> re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>>>     0          0          0          0          0          0
->>>>>>     RX: bytes  packets  errors  dropped overrun mcast
->>>>>>     3956387    948121    11      0           11          0
->>>>>>     TX: bytes  packets  errors  dropped carrier collsns
->>>>>>     100        44       0       0       0       0
->>>>>>
->>>>>>
->>>>>> I see that I received 11 errors packets (all of them being rx overrun
->>>>>> errors) and that no packets were dropped. Does the dropped field refer
->>>>>> to packets lost in userspace (i.e because they weren't being read fast
->>>>>> enough and the socket receive buffer overflowed) or does the dropped
->>>>>> packet field refer to dropped packets being dropped somewhere other
->>>>>> than userspace?
->>>>>
->>>>> They refer to packets dropped in the driver for some reason, maily
->>>>> because memory is short (ENOMEM). The overrun errors above are reported
->>>>> by the hardware due to messages arrived but there was no space to store
->>>>> it. Messages dropped because the socket buffer was full can be reported
->>>>> with the candump option "-d" as shown here:
->>>>>
->>>>> https://gitorious.org/linux-can/can-utils/blobs/master/candump.c#line549
->>>>>
->>>>> Hope that helps.
->>>>>
->>>>> Wolfgang.
->>>>
->>>>
->>>>
->>>> Hi Wolfgang,
->>>>
->>>> That definitely clears things up a bit. One more question though. Does
->>>> the number in
->>>> overrun or the number in errors from the command above then directly
->>>> refer to the number
->>>> of packets lost on the hardware level due to there being no space to
->>>> store it (i.e 11 overrun or
->>>> errors means 11 packets lost) ?
->>>
->>> Well, not sure if the hardware realizes any packet lost. This typically
->>> happens when the software does not empty the hardware buffers quickly
->>> enough? What hardware are you using? MCP251x?
->>>
->>> Wolfgang.
->>>
->>> Wolfgang.
->>>
->>>
->>
->> Yes I am using MCP2515. I am getting a couple of rx buffer overflow errors
->> so I was wondering how these errors corresponded to packet loss,
->> whether this is a 1:1 relationship or 1:N relationship (if i am
->> interpretting Marc's post
->> correctly should I assume 1:1 for best case and 1:N for worst case? ).
->
-> That would be my guess as well.
->
->> Essentially I am trying to determine at what speed i can have stuff
->> coming in before
->> I start losing packets for any reason. I know how to account packets
->> lost in userspace
->>  and packets lost by the driver (which you mentioned above) and now I
->> am trying to
->> account for packets lost at the hardware level. Knowing how these rx buffer
->> overflow/overrun errors correspond to packet loss would help make my
->> data more accurate and reliable.
->
-> You may try to increase the priority of the MCP2515 IRQ thread.
->
-> Recently I also stumbled over the following optimized driver for the
-> MCP2515:
->
->   http://clientes.netvisao.pt/anbadeol/mcp2515.html
->
-> But that would required some effort to update and test it.
->
-> Wolfgang.
->
-
+Pulled, thanks Marc.
