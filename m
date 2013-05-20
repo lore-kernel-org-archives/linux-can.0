@@ -1,53 +1,60 @@
-From: Peter Huewe <peterhuewe@gmx.de>
-Subject: [PATCH] net/can/mcp251x: Use module_spi_driver to register driver
-Date: Mon, 20 May 2013 21:49:59 +0200
-Message-ID: <1369079399-6031-1-git-send-email-peterhuewe@gmx.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] net/can/mcp251x: Use module_spi_driver to register driver
+Date: Mon, 20 May 2013 21:53:31 +0200
+Message-ID: <519A7F3B.1000105@pengutronix.de>
+References: <1369079399-6031-1-git-send-email-peterhuewe@gmx.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2BHRVFPFOJSVBFLSSESXQ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.15]:59439 "EHLO mout.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756008Ab3ETTov (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 20 May 2013 15:44:51 -0400
-Received: from mailout-de.gmx.net ([10.1.76.33]) by mrigmx.server.lan
- (mrigmx001) with ESMTP (Nemesis) id 0LaIM4-1UCYmN3W9O-00m2sx for
- <linux-can@vger.kernel.org>; Mon, 20 May 2013 21:44:49 +0200
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48104 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756736Ab3ETTxi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 20 May 2013 15:53:38 -0400
+In-Reply-To: <1369079399-6031-1-git-send-email-peterhuewe@gmx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>
+To: Peter Huewe <peterhuewe@gmx.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Removing some boilerplate by using module_spi_driver instead of calling
-register and unregister in the otherwise empty init/exit functions
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2BHRVFPFOJSVBFLSSESXQ
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
----
- drivers/net/can/mcp251x.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+On 05/20/2013 09:49 PM, Peter Huewe wrote:
+> Removing some boilerplate by using module_spi_driver instead of calling=
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index f32b9fc..7a42e0f 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -1218,19 +1218,7 @@ static struct spi_driver mcp251x_can_driver = {
- 	.resume = mcp251x_can_resume,
- };
- 
--static int __init mcp251x_can_init(void)
--{
--	return spi_register_driver(&mcp251x_can_driver);
--}
--
--static void __exit mcp251x_can_exit(void)
--{
--	spi_unregister_driver(&mcp251x_can_driver);
--}
--
--module_init(mcp251x_can_init);
--module_exit(mcp251x_can_exit);
--
-+module_spi_driver(mcp251x_can_driver);
- MODULE_AUTHOR("Chris Elston <celston@katalix.com>, "
- 	      "Christian Pellegrin <chripell@evolware.org>");
- MODULE_DESCRIPTION("Microchip 251x CAN driver");
--- 
-1.8.1.5
+> register and unregister in the otherwise empty init/exit functions
+>=20
+> Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
 
+A similar patch [1] by Lars-Peter Clausen hit mainline in v3.10-rc1.
+
+thanks, Marc
+
+[1] 01b8807 can: mcp251x: Use module_spi_driver
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2BHRVFPFOJSVBFLSSESXQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlGafz8ACgkQjTAFq1RaXHOnPwCeKYOEOM+NtswjyjF5CbgMibLV
+2u4An1Bhk6PVqz1Ll+Q7S0tXhATsksSd
+=8K45
+-----END PGP SIGNATURE-----
+
+------enig2BHRVFPFOJSVBFLSSESXQ--
