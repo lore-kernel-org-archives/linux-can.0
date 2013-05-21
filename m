@@ -1,63 +1,27 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: facing some problem with flexcan driver
-Date: Tue, 21 May 2013 08:56:21 +0200
-Message-ID: <519B1A95.5060405@pengutronix.de>
-References: <CALUo3F9Zmx-rOCOmBone6b-nu3G_0bfOjL1Npp=ku=2fBHpTJw@mail.gmail.com> <519355C2.2050502@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2MPKVWETGOHOIOFPFWSJR"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50722 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752453Ab3EUG4b (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 May 2013 02:56:31 -0400
-In-Reply-To: <519355C2.2050502@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ashutosh Singh <ashuleapyear@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: "root-CgIdpPDxw9YxlOqWRbE4Kw@public.gmane.org" <root-CgIdpPDxw9YxlOqWRbE4Kw@public.gmane.org>
+Subject: Millions of wet ladies are looking for cocks. Join today.
+Date: Tue, 21 May 2013 20:01:33 +0700
+Message-ID: <519BD29A.898A58C9@198.143.171.157>
+Reply-To: root-CgIdpPDxw9YxlOqWRbE4Kw@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-efi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-efi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linusstrothmann-Mmb7MZpHnFY@public.gmane.org
+Cc: linustown-j9pdmedNgrk@public.gmane.org, linux-201011-TzK+PxyQ8t4hFhg+JK9F0w@public.gmane.org, linux-acpi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-alert-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-dvb-3O85N1bWYStAfugRpC6u6w@public.gmane.org, linux-efi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2MPKVWETGOHOIOFPFWSJR
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Find girls for chat and hookup now.
 
-On 05/15/2013 11:30 AM, Marc Kleine-Budde wrote:
------>8--------
-> commit 28c17d5a382912ee66ed5476616b3d64d425a3e0
-> Author: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date:   Wed May 15 11:28:38 2013 +0200
->=20
->     net: can: flexcan: switch on clocks before accessing ecr register
->=20
->     Reported-by: Ashutosh Singh <ashuleapyear@gmail.com>
->     Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-Does the patch fix your problem?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+http://dir.orangefronthost.info
 
 
-------enig2MPKVWETGOHOIOFPFWSJR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlGbGpkACgkQjTAFq1RaXHNs8QCfRqLKV47So0tV3ybiYiX1WCv/
-tK8AnR0hE4T4QANK2qIeYDn4YZNNeZPV
-=uZse
------END PGP SIGNATURE-----
 
-------enig2MPKVWETGOHOIOFPFWSJR--
+
+
+
+
+
+
+lfsrktgcd
