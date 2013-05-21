@@ -1,42 +1,63 @@
-From: Peter =?iso-8859-15?q?H=FCwe?= <PeterHuewe@gmx.de>
-Subject: Re: [PATCH] net/can/mcp251x: Use module_spi_driver to register driver
-Date: Mon, 20 May 2013 22:17:29 +0200
-Message-ID: <201305202217.29983.PeterHuewe@gmx.de>
-References: <1369079399-6031-1-git-send-email-peterhuewe@gmx.de> <519A7F3B.1000105@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: facing some problem with flexcan driver
+Date: Tue, 21 May 2013 08:56:21 +0200
+Message-ID: <519B1A95.5060405@pengutronix.de>
+References: <CALUo3F9Zmx-rOCOmBone6b-nu3G_0bfOjL1Npp=ku=2fBHpTJw@mail.gmail.com> <519355C2.2050502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2MPKVWETGOHOIOFPFWSJR"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.18]:50222 "EHLO mout.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756910Ab3ETUMU (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 20 May 2013 16:12:20 -0400
-Received: from mailout-de.gmx.net ([10.1.76.32]) by mrigmx.server.lan
- (mrigmx002) with ESMTP (Nemesis) id 0Lu1vs-1UWEx234GE-011RuF for
- <linux-can@vger.kernel.org>; Mon, 20 May 2013 22:12:18 +0200
-In-Reply-To: <519A7F3B.1000105@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50722 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752453Ab3EUG4b (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 May 2013 02:56:31 -0400
+In-Reply-To: <519355C2.2050502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Ashutosh Singh <ashuleapyear@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Am Montag, 20. Mai 2013, 21:53:31 schrieb Marc Kleine-Budde:
-> On 05/20/2013 09:49 PM, Peter Huewe wrote:
-> > Removing some boilerplate by using module_spi_driver instead of calling
-> > register and unregister in the otherwise empty init/exit functions
-> > 
-> > Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-> 
-> A similar patch [1] by Lars-Peter Clausen hit mainline in v3.10-rc1.
-> 
-> thanks, Marc
-> 
-> [1] 01b8807 can: mcp251x: Use module_spi_driver
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2MPKVWETGOHOIOFPFWSJR
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+
+On 05/15/2013 11:30 AM, Marc Kleine-Budde wrote:
+----->8--------
+> commit 28c17d5a382912ee66ed5476616b3d64d425a3e0
+> Author: Marc Kleine-Budde <mkl@pengutronix.de>
+> Date:   Wed May 15 11:28:38 2013 +0200
+>=20
+>     net: can: flexcan: switch on clocks before accessing ecr register
+>=20
+>     Reported-by: Ashutosh Singh <ashuleapyear@gmail.com>
+>     Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+Does the patch fix your problem?
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Thanks for noticing!
-I was unfortunately working on a stale tree - sorry for the noise.
+------enig2MPKVWETGOHOIOFPFWSJR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Thanks,
-Peter
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlGbGpkACgkQjTAFq1RaXHNs8QCfRqLKV47So0tV3ybiYiX1WCv/
+tK8AnR0hE4T4QANK2qIeYDn4YZNNeZPV
+=uZse
+-----END PGP SIGNATURE-----
+
+------enig2MPKVWETGOHOIOFPFWSJR--
