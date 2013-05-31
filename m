@@ -1,62 +1,41 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Several sockets on one interface in Python
-Date: Fri, 31 May 2013 18:38:58 +0200
-Message-ID: <51A8D222.8000206@hartkopp.net>
-References: <51A87391.6010308@black-photon.de>
+From: Sebastian Haas <dev@sebastianhaas.info>
+Subject: Re: RFC: (optional) software filtering in candump
+Date: Fri, 31 May 2013 22:40:21 +0200
+Message-ID: <51A90AB5.5010708@sebastianhaas.info>
+References: <51A66B55.6080506@sebastianhaas.info> <51A6DC6A.7020609@hartkopp.net> <51A70F0E.1010902@sebastianhaas.info> <51A71298.1070202@volkswagen.de> <51A71696.8030609@sebastianhaas.info> <20130530101719.GB427@vandijck-laurijssen.be> <51A740E7.3020400@volkswagen.de> <20130530123526.GC427@vandijck-laurijssen.be> <51A77250.8070907@sebastianhaas.info> <51A77657.5060004@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:60418 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753780Ab3EaQjB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 May 2013 12:39:01 -0400
-In-Reply-To: <51A87391.6010308@black-photon.de>
+Received: from smtprelay02.ispgateway.de ([80.67.31.40]:36623 "EHLO
+	smtprelay02.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754217Ab3EaUkW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 31 May 2013 16:40:22 -0400
+In-Reply-To: <51A77657.5060004@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Joachim Jaus <jaus@black-photon.de>
-Cc: linux-can@vger.kernel.org, Yegor Yefremov <yegorslists@googlemail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-Hi Joachim,
+>> I still dont understand why I receive the same CAN message twice just because
+>> the filter matched? Can someone explain the logic behind that?
+>>
+>
+> You added two independent filters, both matching 0x1FF.
+>
+> When you invoke this:
+>
+> candump vcan0,100~7ff,101~7ff,000:000
+>
+> you will get the CAN frame with the CAN ID 1FF three times.
+>
+> Clearly now?
+I understoot how the filter system is working, but don't why it was 
+implemented this way.
 
-On 31.05.2013 11:55, Joachim Jaus wrote:
-> Hi all,
-> this is my first email to this list, therefore I want start with a big "thank
-> you" to all the people involved in the Linux CAN socket development, which has
-> opened up a lot of interesting possibilities for sensor and machine control
-> for me and my colleagues.
+What is the use case for an application to receive messages twice or 
+more just because more filters matched? I cannot imagine any reason to 
+process more frames than the node actually receive.
 
-Great! Mind-expansion without drugs but only through SocketCAN :-)
-
-> 
-> We would like to bind several sockets with different filter settings to one
-> single CAN interface within the same application. Is that generally a safe
-> thing to do (both in C and in Python)?
-
-Yes, it's a safe thing to do.
-
-E.g. the candump programm does it in this way.
-
-You may create multiple sockets having each multiple filters.
-
-The only potential drawback that you need to put a select() statement around
-it, to manage to read from all created sockets/filedescriptors.
-
-> Is there a way to set filters on a CAN socket in Python similar to the
-> implementation in C?
-
-I don't know exactly.
-But "CAN_RAW_FILTER" is defined in the Python patch:
-
-http://bugs.python.org/file23234/socketcan_v5.patch
-
-http://libbits.wordpress.com/2012/05/22/socketcan-support-in-python/
-
-so you can hope that the filters are configurable in some way.
-
-Perhaps Yegor knows more about this.
-
-Best ragards,
-Oliver
-
-
+Cheers,
+Sebastian
