@@ -1,41 +1,51 @@
-From: Sebastian Haas <dev@sebastianhaas.info>
-Subject: Re: RFC: (optional) software filtering in candump
-Date: Fri, 31 May 2013 22:40:21 +0200
-Message-ID: <51A90AB5.5010708@sebastianhaas.info>
-References: <51A66B55.6080506@sebastianhaas.info> <51A6DC6A.7020609@hartkopp.net> <51A70F0E.1010902@sebastianhaas.info> <51A71298.1070202@volkswagen.de> <51A71696.8030609@sebastianhaas.info> <20130530101719.GB427@vandijck-laurijssen.be> <51A740E7.3020400@volkswagen.de> <20130530123526.GC427@vandijck-laurijssen.be> <51A77250.8070907@sebastianhaas.info> <51A77657.5060004@hartkopp.net>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH v2] can: flexcan: remove HAVE_CAN_FLEXCAN Kconfig symbol
+Date: Sat, 01 Jun 2013 09:40:30 +1000
+Message-ID: <1370043630.3928.166.camel@pasglop>
+References: <1368781157-4646-1-git-send-email-mkl@pengutronix.de>
+	 <20130517090949.GI8607@S2101-09.ap.freescale.net>
+	 <519A4A00.8000109@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay02.ispgateway.de ([80.67.31.40]:36623 "EHLO
-	smtprelay02.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754217Ab3EaUkW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 May 2013 16:40:22 -0400
-In-Reply-To: <51A77657.5060004@hartkopp.net>
+Received: from gate.crashing.org ([63.228.1.57]:52670 "EHLO gate.crashing.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755224Ab3EaXlU (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 31 May 2013 19:41:20 -0400
+In-Reply-To: <519A4A00.8000109@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, U Bhaskar-B22300 <B22300@freescale.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
->> I still dont understand why I receive the same CAN message twice just because
->> the filter matched? Can someone explain the logic behind that?
->>
->
-> You added two independent filters, both matching 0x1FF.
->
-> When you invoke this:
->
-> candump vcan0,100~7ff,101~7ff,000:000
->
-> you will get the CAN frame with the CAN ID 1FF three times.
->
-> Clearly now?
-I understoot how the filter system is working, but don't why it was 
-implemented this way.
+On Mon, 2013-05-20 at 18:06 +0200, Marc Kleine-Budde wrote:
+> On 05/17/2013 11:09 AM, Shawn Guo wrote:
+> > On Fri, May 17, 2013 at 10:59:17AM +0200, Marc Kleine-Budde wrote:
+> >> This patch removes the Kconfig symbol HAVE_CAN_FLEXCAN from arch/{arm,powerpc}
+> >> and allowing compilation unconditionally on all arm and powerpc platforms.
+> >>
+> >> This brings a bigger compile time coverage and removes the following dependency
+> >> warning found by Arnd Bergmann:
+> >>
+> >>     warning: (SOC_IMX28 && SOC_IMX25 && SOC_IMX35 && IMX_HAVE_PLATFORM_FLEXCAN &&
+> >>         SOC_IMX53 && SOC_IMX6Q) selects HAVE_CAN_FLEXCAN
+> >>     which has unmet direct dependencies (NET && CAN && CAN_DEV)
+> >>
+> >> Cc: Arnd Bergmann <arnd@arndb.de>
+> >> Cc: Shawn Guo <shawn.guo@linaro.org>
+> > 
+> > Acked-by: Shawn Guo <shawn.guo@linaro.org>
+> 
+> Thanks.
+> 
+> An Acked-by by the powerpc people would be fine. However, if nobody
+> doesn't object, I'm sending this patch via linux-can and net-next upstream.
 
-What is the use case for an application to receive messages twice or 
-more just because more filters matched? I cannot imagine any reason to 
-process more frames than the node actually receive.
+Sorry, missed it, if it's still out there, add my
+
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
 Cheers,
-Sebastian
+Ben.
+
