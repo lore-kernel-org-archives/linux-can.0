@@ -1,51 +1,86 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2] can: flexcan: remove HAVE_CAN_FLEXCAN Kconfig symbol
-Date: Sat, 01 Jun 2013 09:40:30 +1000
-Message-ID: <1370043630.3928.166.camel@pasglop>
-References: <1368781157-4646-1-git-send-email-mkl@pengutronix.de>
-	 <20130517090949.GI8607@S2101-09.ap.freescale.net>
-	 <519A4A00.8000109@pengutronix.de>
+From: Jingoo Han <jg1.han@samsung.com>
+Subject: [PATCH] net: can: replace strict_strtoul() with kstrtoul()
+Date: Sat, 01 Jun 2013 16:18:55 +0900
+Message-ID: <000d01ce5e98$46b6d430$d4247c90$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gate.crashing.org ([63.228.1.57]:52670 "EHLO gate.crashing.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755224Ab3EaXlU (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 31 May 2013 19:41:20 -0400
-In-Reply-To: <519A4A00.8000109@pengutronix.de>
+Received: from mailout2.samsung.com ([203.254.224.25]:55803 "EHLO
+	mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751034Ab3FAHS5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Jun 2013 03:18:57 -0400
+Content-language: ko
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, U Bhaskar-B22300 <B22300@freescale.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: "'David S. Miller'" <davem@davemloft.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, 'Jingoo Han' <jg1.han@samsung.com>
 
-On Mon, 2013-05-20 at 18:06 +0200, Marc Kleine-Budde wrote:
-> On 05/17/2013 11:09 AM, Shawn Guo wrote:
-> > On Fri, May 17, 2013 at 10:59:17AM +0200, Marc Kleine-Budde wrote:
-> >> This patch removes the Kconfig symbol HAVE_CAN_FLEXCAN from arch/{arm,powerpc}
-> >> and allowing compilation unconditionally on all arm and powerpc platforms.
-> >>
-> >> This brings a bigger compile time coverage and removes the following dependency
-> >> warning found by Arnd Bergmann:
-> >>
-> >>     warning: (SOC_IMX28 && SOC_IMX25 && SOC_IMX35 && IMX_HAVE_PLATFORM_FLEXCAN &&
-> >>         SOC_IMX53 && SOC_IMX6Q) selects HAVE_CAN_FLEXCAN
-> >>     which has unmet direct dependencies (NET && CAN && CAN_DEV)
-> >>
-> >> Cc: Arnd Bergmann <arnd@arndb.de>
-> >> Cc: Shawn Guo <shawn.guo@linaro.org>
-> > 
-> > Acked-by: Shawn Guo <shawn.guo@linaro.org>
-> 
-> Thanks.
-> 
-> An Acked-by by the powerpc people would be fine. However, if nobody
-> doesn't object, I'm sending this patch via linux-can and net-next upstream.
+The usage of strict_strtoul() is not preferred, because
+strict_strtoul() is obsolete. Thus, kstrtoul() should be
+used.
 
-Sorry, missed it, if it's still out there, add my
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/net/can/at91_can.c             |    2 +-
+ drivers/net/can/janz-ican3.c           |    2 +-
+ drivers/net/can/slcan.c                |    2 +-
+ drivers/net/can/softing/softing_main.c |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 5566566..ce8421a 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1220,7 +1220,7 @@ static ssize_t at91_sysfs_set_mb0_id(struct device *dev,
+ 		goto out;
+ 	}
+ 
+-	err = strict_strtoul(buf, 0, &can_id);
++	err = kstrtoul(buf, 0, &can_id);
+ 	if (err) {
+ 		ret = err;
+ 		goto out;
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index c4bc1d2..36bd6fa 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1734,7 +1734,7 @@ static ssize_t ican3_sysfs_set_term(struct device *dev,
+ 	unsigned long enable;
+ 	int ret;
+ 
+-	if (strict_strtoul(buf, 0, &enable))
++	if (kstrtoul(buf, 0, &enable))
+ 		return -EINVAL;
+ 
+ 	ret = ican3_set_termination(mod, enable);
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 06b7e09..874188b 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -161,7 +161,7 @@ static void slc_bump(struct slcan *sl)
+ 
+ 	sl->rbuff[dlc_pos] = 0; /* terminate can_id string */
+ 
+-	if (strict_strtoul(sl->rbuff+1, 16, &ultmp))
++	if (kstrtoul(sl->rbuff+1, 16, &ultmp))
+ 		return;
+ 
+ 	cf.can_id = ultmp;
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index 3a2b456..65eef1e 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -594,7 +594,7 @@ static ssize_t store_output(struct device *dev, struct device_attribute *attr,
+ 	unsigned long val;
+ 	int ret;
+ 
+-	ret = strict_strtoul(buf, 0, &val);
++	ret = kstrtoul(buf, 0, &val);
+ 	if (ret < 0)
+ 		return ret;
+ 	val &= 0xFF;
+-- 
+1.7.10.4
 
-Cheers,
-Ben.
 
