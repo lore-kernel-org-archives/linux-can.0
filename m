@@ -1,150 +1,85 @@
-From: uescher <linux-can_ger.kernel.org@myvdr.de>
-Subject: [PATCH 1/1 V2] slcanpty: Improve the data handling from pty2can()
- to avoid, incomplete messages in further processing
-Date: Sat, 01 Jun 2013 21:18:50 +0200
-Message-ID: <51AA491A.7060307@myvdr.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: RFC SFF bitfield filter - was Re: RFC: (optional) software filtering
+ in candump
+Date: Sun, 02 Jun 2013 11:59:14 +0200
+Message-ID: <51AB1772.2000608@hartkopp.net>
+References: <51A66B55.6080506@sebastianhaas.info> <51A6DC6A.7020609@hartkopp.net> <51A70F0E.1010902@sebastianhaas.info> <51A71298.1070202@volkswagen.de> <51A71696.8030609@sebastianhaas.info> <20130530101719.GB427@vandijck-laurijssen.be> <51A740E7.3020400@volkswagen.de> <20130530123526.GC427@vandijck-laurijssen.be> <51A77250.8070907@sebastianhaas.info> <51AA01F0.8020308@hartkopp.net> <51AA3ED6.9010806@sebastianhaas.info>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020900010109040305070301"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay01.ispgateway.de ([80.67.31.35]:53057 "EHLO
-	smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753760Ab3FATfk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Jun 2013 15:35:40 -0400
-Received: from [176.34.235.140] (helo=[0.0.0.0])
-	by smtprelay01.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.68)
-	(envelope-from <linux-can_ger.kernel.org@myvdr.de>)
-	id 1UirKZ-0002Nr-L9
-	for linux-can@vger.kernel.org; Sat, 01 Jun 2013 21:19:12 +0200
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:57391 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751385Ab3FBJ7R (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 2 Jun 2013 05:59:17 -0400
+In-Reply-To: <51AA3ED6.9010806@sebastianhaas.info>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-
-This is a multi-part message in MIME format.
---------------020900010109040305070301
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-
-slcanpty: Improve the data handling from pty2can() to avoid
-  incomplete messages in further processing
-
-This Patch ensure that we have minimum one complete SLCAN messages from 
-pty in our buf[]
-before we start the processing.
-Leave framgents of an messages in the buf[] and wait with processing 
-until we have a '\r' in the buf[].
-
-Signed-off-by: Ulrich Escher <git@myvdr.de>
+To: Sebastian Haas <dev@sebastianhaas.info>
+Cc: Kurt Van Dijck <kurt.van.dijck@eia.be>, Sandro Anders | CarMediaLab <sandro.anders@carmedialab.de>, linux-can Mailing List <linux-can@vger.kernel.org>
 
 
+> Am 01.06.2013 16:15, schrieb Oliver Hartkopp:
+
+>> The idea is to introduce a new socket option CAN_RAW_FILTER_UNIQUE for the
+>> RAW socket, that catches and omits duplicate frames when it's enabled.
+>> This is a per-socket option and is active for all configured filters applied
+>> to this socket.
+>>
+>> It's a relatively small and clear change and it fixes your "bug".
+>>
+>> Here's the output of candump with and without the 'unique' option when
+>> invoking "cansend vcan0 1FF#" in another terminal:
+>>
+>> $ ./candump vcan0,100~7FF,101~7FF
+>>    vcan0  1FF   [0]
+>>    vcan0  1FF   [0]
+>>
+>> $ ./candump vcan0,100~7FF,101~7FF,U
+>>    vcan0  1FF   [0]
+>>
+>> I hope this fit your needs ?! :-)
+> Yes it does. It may not be a "clean" solution, but it fixes the issue.
+> 
+
+Yes. It is a bit of a fix that handles overlapping filters but is does not
+provide a logical AND operation on a bigger number of inverted filters.
+
+E.g. i wanted to remove some single SFF CAN IDs in the 3xx and 5xx range,
+which lead to something like this:
+
+candump vcan0,100~C0000100,500:C0000500,333:C00007FF, ...
+
+100~C0000100 -> NOT 1XX 3XX 5XX 7XX SFF frames
+500:C0000500 -> add 5XX 7XX again
+333:C00007FF, ... -> add single IDs in the 1XX 3XX range
+
+It was a mess. The current filters are not optimized for complex requirements.
+
+Even if it only would be usable for the SFF CAN IDs 0 .. 2048, i wonder if it
+would help to configure a 2048 bit bitfield for a 'really individual' filter.
+
+The CAN_RAW socket would get a new sockopt which sets a 128 byte array
+(2048/8) to specify for each single CAN ID if it can pass the filter:
+
+u8 bfield[128] /* 2048 bit */
+
+Check at CAN frame reception:
+
+if (can_id & FFFFF800 == 0) { /* no EFF / RTR / ERR and max 0x7FF */
+
+    if ( bfield[can_id >> 3] & 1 << (can_id & 7) ) {
+
+        /* can_id matched */
+
+    }
+}
+
+What is your opinion?
+
+Does this kind of individual bitfield filter help for your use-cases?
+
+Regards,
+Oliver
 
 
---------------020900010109040305070301
-Content-Type: text/x-patch;
- name="0001-slcanpty-Improve-the-data-handling-from-pty2can-to-a.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-slcanpty-Improve-the-data-handling-from-pty2can-to-a.pa";
- filename*1="tch"
-
-From 1ce314cb99592d4e6021717fffbe8130001f3838 Mon Sep 17 00:00:00 2001
-From: ulrich <git@myvdr.de>
-Date: Sat, 1 Jun 2013 21:06:49 +0200
-Subject: [PATCH] slcanpty: Improve the data handling from pty2can() to avoid
- incomplete messages in further processing
-
-This Patch ensure that we have minimum one complete SLCAN messages from pty in our buf[]
-before we start the processing.
-Leave framgents of an messages in the buf[] and wait with processing until we have a '\r' in the buf[].
-
-Signed-off-by: Ulrich Escher <git@myvdr.de>
----
- slcanpty.c |   39 +++++++++++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 8 deletions(-)
-
-diff --git a/slcanpty.c b/slcanpty.c
-index f3628b9..8d1a6b3 100644
---- a/slcanpty.c
-+++ b/slcanpty.c
-@@ -73,12 +73,18 @@ int pty2can(int pty, int socket, struct can_filter *fi,
- 	int ptr;
- 	struct can_frame frame;
- 	int tmp, i;
-+	static int nbytes_saved = 0;
- 
--	nbytes = read(pty, &buf, sizeof(buf)-1);
-+	nbytes = read(pty, &buf[nbytes_saved], sizeof(buf)-nbytes_saved-1);
- 	if (nbytes < 0) {
- 		perror("read pty");
- 		return 1;
- 	}
-+#ifdef DEBUG
-+	printf("read %d bytes from pty\n",nbytes);
-+#endif
-+	nbytes = nbytes_saved + nbytes;
-+	nbytes_saved = 0;
- 
- rx_restart:
- 	/* remove trailing '\r' characters to be robust against some apps */
-@@ -91,6 +97,19 @@ rx_restart:
- 	if (!nbytes)
- 		return 0;
- 
-+	for (tmp = 0; tmp <= nbytes; tmp++) {
-+		if (tmp == nbytes) {
-+			nbytes_saved = nbytes;
-+#ifdef DEBUG
-+			printf("nbytes_saveds ist nun: %d return\n", nbytes);
-+#endif
-+			return 0;
-+		}
-+		if (buf[tmp] == '\r') {
-+			break;
-+		}
-+	}
-+
- 	cmd = buf[0];
- 	buf[nbytes] = 0;
- 
-@@ -359,7 +378,9 @@ int can2pty(int pty, int socket, int *tstamp)
- 		return 1;
- 	}
- 	fflush(NULL);
--
-+#ifdef DEBUG
-+	printf("%s\n",buf);
-+#endif
- 	return 0;
- }
- 
-@@ -478,16 +499,18 @@ int main(int argc, char **argv)
- 			continue;
- 		}
- 
--		if (FD_ISSET(p, &rdfs))
-+		if (FD_ISSET(p, &rdfs)) {
- 			if (pty2can(p, s, &fi, &is_open, &tstamp)) {
--			running = 0;
--			continue;
-+				running = 0;
-+				continue;
-+			}
- 		}
- 
--		if (FD_ISSET(s, &rdfs))
-+		if (FD_ISSET(s, &rdfs)) {
- 			if (can2pty(p, s, &tstamp)) {
--			running = 0;
--			continue;
-+				running = 0;
-+				continue;
-+			}
- 		}
- 	}
- 
--- 
-1.7.9.5
-
-
---------------020900010109040305070301--
