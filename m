@@ -1,169 +1,101 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/3] net: can: peak_usb: Do not do dma on the stack
-Date: Mon,  3 Jun 2013 14:15:33 +0200
-Message-ID: <1370261733-22935-4-git-send-email-mkl@pengutronix.de>
-References: <1370261733-22935-1-git-send-email-mkl@pengutronix.de>
+Subject: pull-request: can-next 2013-06-03
+Date: Mon, 03 Jun 2013 14:30:26 +0200
+Message-ID: <51AC8C62.5010905@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2XKGBPAPUKTLUEDMXKDPL"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36623 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52809 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757358Ab3FCMQk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Jun 2013 08:16:40 -0400
-In-Reply-To: <1370261733-22935-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1753564Ab3FCMad (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Jun 2013 08:30:33 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, davem@davemloft.net, Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>
 
-smatch reports the following warnings:
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c:514 pcan_usb_pro_drv_loaded() error: doing dma on the stack (buffer)
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c:878 pcan_usb_pro_init() error: doing dma on the stack (&fi)
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c:889 pcan_usb_pro_init() error: doing dma on the stack (&bi)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2XKGBPAPUKTLUEDMXKDPL
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-See "Documentation/DMA-API-HOWTO.txt" section "What memory is DMA'able?"
+Hello David,
 
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+this is a pull-request for net-next/master. It consists of two patches
+by Fabio Estevam, cleaning up the flexcan driver (remove default
+pinctrl and switch to SIMPLE_DEV_PM_OPS). A patch by me to simplify the
+Kconfig [1] handling for flexcan. And a patch by Jingoo Han that
+converts the can drivers to use platform_{get,set}_drvdata().
+
+[1] My patch touches arch/{arm,powerpc}, so I collected Acked-bys from
+Arnd Bergmann, Shawn Guo and Benjamin Herrenschmidt.
+
+regards,
+Marc
+
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 61 +++++++++++++++++++----------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h |  1 +
- 2 files changed, 41 insertions(+), 21 deletions(-)
+The following changes since commit 5865fc1b6a99bc7dcf245770c2735577b8596b=
+6e:
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 30d79bf..8ee9d15 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -504,15 +504,24 @@ static int pcan_usb_pro_restart_async(struct peak_usb_device *dev,
- 	return usb_submit_urb(urb, GFP_ATOMIC);
- }
- 
--static void pcan_usb_pro_drv_loaded(struct peak_usb_device *dev, int loaded)
-+static int pcan_usb_pro_drv_loaded(struct peak_usb_device *dev, int loaded)
- {
--	u8 buffer[16];
-+	u8 *buffer;
-+	int err;
-+
-+	buffer = kmalloc(PCAN_USBPRO_FCT_DRVLD_REQ_LEN, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
- 
- 	buffer[0] = 0;
- 	buffer[1] = !!loaded;
- 
--	pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_FCT,
--			      PCAN_USBPRO_FCT_DRVLD, buffer, sizeof(buffer));
-+	err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_FCT,
-+				    PCAN_USBPRO_FCT_DRVLD, buffer,
-+				    PCAN_USBPRO_FCT_DRVLD_REQ_LEN);
-+	kfree(buffer);
-+
-+	return err;
- }
- 
- static inline
-@@ -851,21 +860,24 @@ static int pcan_usb_pro_stop(struct peak_usb_device *dev)
-  */
- static int pcan_usb_pro_init(struct peak_usb_device *dev)
- {
--	struct pcan_usb_pro_interface *usb_if;
- 	struct pcan_usb_pro_device *pdev =
- 			container_of(dev, struct pcan_usb_pro_device, dev);
-+	struct pcan_usb_pro_interface *usb_if = NULL;
-+	struct pcan_usb_pro_fwinfo *fi = NULL;
-+	struct pcan_usb_pro_blinfo *bi = NULL;
-+	int err;
- 
- 	/* do this for 1st channel only */
- 	if (!dev->prev_siblings) {
--		struct pcan_usb_pro_fwinfo fi;
--		struct pcan_usb_pro_blinfo bi;
--		int err;
--
- 		/* allocate netdevices common structure attached to first one */
- 		usb_if = kzalloc(sizeof(struct pcan_usb_pro_interface),
- 				 GFP_KERNEL);
--		if (!usb_if)
--			return -ENOMEM;
-+		fi = kmalloc(sizeof(struct pcan_usb_pro_fwinfo), GFP_KERNEL);
-+		bi = kmalloc(sizeof(struct pcan_usb_pro_blinfo), GFP_KERNEL);
-+		if (!usb_if || !fi || !bi) {
-+			err = -ENOMEM;
-+			goto err_out;
-+		}
- 
- 		/* number of ts msgs to ignore before taking one into account */
- 		usb_if->cm_ignore_count = 5;
-@@ -877,34 +889,34 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 		 */
- 		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
- 					    PCAN_USBPRO_INFO_FW,
--					    &fi, sizeof(fi));
-+					    fi, sizeof(*fi));
- 		if (err) {
--			kfree(usb_if);
- 			dev_err(dev->netdev->dev.parent,
- 				"unable to read %s firmware info (err %d)\n",
- 				pcan_usb_pro.name, err);
--			return err;
-+			goto err_out;
- 		}
- 
- 		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
- 					    PCAN_USBPRO_INFO_BL,
--					    &bi, sizeof(bi));
-+					    bi, sizeof(*bi));
- 		if (err) {
--			kfree(usb_if);
- 			dev_err(dev->netdev->dev.parent,
- 				"unable to read %s bootloader info (err %d)\n",
- 				pcan_usb_pro.name, err);
--			return err;
-+			goto err_out;
- 		}
- 
-+		/* tell the device the can driver is running */
-+		err = pcan_usb_pro_drv_loaded(dev, 1);
-+		if (err)
-+			goto err_out;
-+
- 		dev_info(dev->netdev->dev.parent,
- 		     "PEAK-System %s hwrev %u serial %08X.%08X (%u channels)\n",
- 		     pcan_usb_pro.name,
--		     bi.hw_rev, bi.serial_num_hi, bi.serial_num_lo,
-+		     bi->hw_rev, bi->serial_num_hi, bi->serial_num_lo,
- 		     pcan_usb_pro.ctrl_count);
--
--		/* tell the device the can driver is running */
--		pcan_usb_pro_drv_loaded(dev, 1);
- 	} else {
- 		usb_if = pcan_usb_pro_dev_if(dev->prev_siblings);
- 	}
-@@ -916,6 +928,13 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 	pcan_usb_pro_set_led(dev, 0, 1);
- 
- 	return 0;
-+
-+ err_out:
-+	kfree(bi);
-+	kfree(fi);
-+	kfree(usb_if);
-+
-+	return err;
- }
- 
- static void pcan_usb_pro_exit(struct peak_usb_device *dev)
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index a869918..32275af 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -29,6 +29,7 @@
- 
- /* Vendor Request value for XXX_FCT */
- #define PCAN_USBPRO_FCT_DRVLD		5 /* tell device driver is loaded */
-+#define PCAN_USBPRO_FCT_DRVLD_REQ_LEN	16
- 
- /* PCAN_USBPRO_INFO_BL vendor request record type */
- struct __packed pcan_usb_pro_blinfo {
--- 
-1.8.2.rc2
+  tg3: remove redundant pm init code (2013-06-03 00:48:11 -0700)
 
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 00e4bbc8cd7efac66caa4ce6bcf5f02e944184f6:
+
+  net: can: use platform_{get,set}_drvdata() (2013-06-03 13:13:49 +0200)
+
+----------------------------------------------------------------
+Fabio Estevam (2):
+      can: flexcan: Let device core handle pinctrl
+      can: flexcan: Use SIMPLE_DEV_PM_OPS
+
+Jingoo Han (1):
+      net: can: use platform_{get,set}_drvdata()
+
+Marc Kleine-Budde (1):
+      can: flexcan: remove HAVE_CAN_FLEXCAN Kconfig symbol
+
+ arch/arm/mach-imx/Kconfig                     |  4 ----
+ arch/arm/mach-imx/devices/Kconfig             |  1 -
+ arch/arm/mach-mxs/Kconfig                     |  1 -
+ arch/powerpc/Kconfig                          |  1 -
+ drivers/net/can/Kconfig                       |  5 +----
+ drivers/net/can/bfin_can.c                    | 10 ++++------
+ drivers/net/can/cc770/cc770_isa.c             |  5 ++---
+ drivers/net/can/cc770/cc770_platform.c        |  4 ++--
+ drivers/net/can/flexcan.c                     | 26 +++++++++------------=
+-----
+ drivers/net/can/grcan.c                       |  5 ++---
+ drivers/net/can/mscan/mpc5xxx_can.c           | 10 ++++------
+ drivers/net/can/sja1000/sja1000_isa.c         |  5 ++---
+ drivers/net/can/sja1000/sja1000_of_platform.c |  6 ++----
+ drivers/net/can/sja1000/sja1000_platform.c    |  5 ++---
+ 14 files changed, 30 insertions(+), 58 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2XKGBPAPUKTLUEDMXKDPL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlGsjGYACgkQjTAFq1RaXHNUuACfbwLvkXfIV1kdmijZBD3IrZFN
+fosAnAqwz8u1TlIw9kFy73k1s8x7FbvC
+=hWoc
+-----END PGP SIGNATURE-----
+
+------enig2XKGBPAPUKTLUEDMXKDPL--
