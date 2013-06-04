@@ -1,75 +1,40 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: Usb to can driver
-Date: Tue, 04 Jun 2013 16:40:01 +0200
-Message-ID: <51ADFC41.5070306@grandegger.com>
+Date: Tue, 04 Jun 2013 16:41:28 +0200
+Message-ID: <51ADFC98.70002@pengutronix.de>
 References: <1366737302.3325.36.camel@blackbox>  <51770161.2030005@pengutronix.de> <1366818490.5965.35.camel@blackbox>  <51780336.5060800@pengutronix.de> <1366839193.7226.8.camel@blackbox>  <5194C5B2.7060004@pengutronix.de> <1370351898.3785.16.camel@blackbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2SSRXDOPOBLFDGOIQHGBE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:44352 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751712Ab3FDOkH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Jun 2013 10:40:07 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41552 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752451Ab3FDOlh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Jun 2013 10:41:37 -0400
 In-Reply-To: <1370351898.3785.16.camel@blackbox>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "Max S." <max@schneidersoft.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+Cc: linux-can <linux-can@vger.kernel.org>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2SSRXDOPOBLFDGOIQHGBE
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
 On 06/04/2013 03:18 PM, Max S. wrote:
-> Hello all,
-> 
-> I've 'rebranded' the entire driver to Geschwister Schneider
-> Technologie-, Entwicklungs- und Vertriebs UG. using gs_ for structs,
-> enums and function names.
-> 
-> Regarding the dma on the stack errors, where do you see these messages? I have modified the code (see patch attached), and they should no longer appear.
-> 
-> I have sent an email to the openmoko people, and will update the product/vender code when i get a response.
-> 
-> There are still some things I'd like to work out:
-> In the driver i do netdev->flags |= IFF_ECHO; to tell the netdev subsystem i will be handling message delivery tracking.
-> via can_free_echo_skb, can_get_echo_skb, can_put_echo_skb...
-> 
-> I read in the 8devices driver:
-> dev->can.ctrlmode_supported = ...
-> 				CAN_CTRLMODE_LOOPBACK |
-> 				...
-> 
-> An in documentation/networking/can.txt:
-> To reflect the correct* traffic on the node the loopback of the sent data has to be performed right after a successful transmission.
-> 
-> what is the difference between IFF_ECHO and CAN_CTRLMODE_LOOPBACK? loopback is default behavior...
-> How should my driver/device behave differently when loopback is not enabled?
-
-CAN_CTRLMODE_LOOPBACK allows to use the CAN loopback of the controller,
-if available. All CAN messages send to the bus will be looped back.
-
-IFF_ECHO emulates the network behavior: messages are visible on the same
-host by other sockets as well. This is usually a pure software loopback.
-
-> Currently when the CAN controller fails to send a can frame, for example when there is no other node to ack it, my firmware will produce an error frame and queue it for the host.
-> Since the can controller will immediately retry transmission, if the error condition persists this means error frames will continually be sent to the host.
-
-That's normal (the infamous received no ACK on transmission bus error).
-
-> Is this acceptable behavior? I think it would be better to find a way to throttle repetitive error frames.
-
-Some CAN controller allow to disable bus error reporting to avoid
-interrupt and error message flooding.
-
-> I have done some testing with higher can speeds and run into the following kernel panic (netconsole extract):
-> 
+[...]
 > [ 1784.427960] gs_usb 4-1:1.0: can_put_echo_skb: BUG! echo_skb is
 > occupied!
 > [ 1784.493869] gs_usb 4-1:1.0: can_put_echo_skb: BUG! echo_skb is
 > occupied!
 > [ 1784.745668] ------------[ cut here ]------------
 > [ 1784.745701] kernel BUG
-> at /build/buildd-linux_3.2.35-2-amd64-v9djlH/linux-3.2.35/drivers/net/can/dev.c:283!
-> [ 1784.745719] invalid opcode: 0000 [#1] SMP 
-> [ 1784.745740] CPU 2 
+> at /build/buildd-linux_3.2.35-2-amd64-v9djlH/linux-3.2.35/drivers/net/c=
+an/dev.c:283!
+> [ 1784.745719] invalid opcode: 0000 [#1] SMP=20
+> [ 1784.745740] CPU 2=20
 > [ 1784.745750] Modules linked in: can_raw can gs_usb(O) netconsole
 > configfs can_dev ppdev lp rfcomm bnep bluetooth crc16 cpufreq_stats
 > cpufreq_userspace cpufreq_powersave cpufreq_conservative fuse nfsd nfs
@@ -77,11 +42,13 @@ interrupt and error message flooding.
 > rt2800usb rt2x00usb rt2800lib rt2x00lib mac80211 cfg80211 rfkill
 > crc_ccitt evdev psmouse snd_hda_intel coretemp serio_raw snd_hda_codec
 > i2c_i801 snd_hwdep pcspkr i2c_core snd_pcm snd_page_alloc snd_seq
-> snd_seq_device snd_timer parport_pc iTCO_wdt parport iTCO_vendor_support
-> snd uhci_hcd video acpi_cpufreq mperf ehci_hcd usbcore e1000e soundcore
+> snd_seq_device snd_timer parport_pc iTCO_wdt parport iTCO_vendor_suppor=
+t
+> snd uhci_hcd video acpi_cpufreq mperf ehci_hcd usbcore e1000e soundcore=
+
 > button usb_common processor thermal_sys ext2 mbcache sd_mod crc_t10dif
 > ahci libahci libata scsi_mod
-> [ 1784.746265] 
+> [ 1784.746265]=20
 > [ 1784.746276] Pid: 7786, comm: cansequence Tainted: G           O
 > 3.2.0-4-amd64 #1 Debian 3.2.35-2                  /DN2800MT
 > [ 1784.746297] RIP: 0010:[<ffffffffa03d9552>]  [<ffffffffa03d9552>]
@@ -125,7 +92,8 @@ interrupt and error message flooding.
 > [ 1784.746644]  [<ffffffff810363d8>] ? should_resched+0x5/0x23
 > [ 1784.746665]  [<ffffffffa03f6435>] ? can_send+0xe9/0x134 [can]
 > [ 1784.746685]  [<ffffffff8127bca1>] ? sock_tx_timestamp+0x29/0x35
-> [ 1784.746705]  [<ffffffffa04053a2>] ? raw_sendmsg+0xf3/0x130 [can_raw]
+> [ 1784.746705]  [<ffffffffa04053a2>] ? raw_sendmsg+0xf3/0x130 [can_raw]=
+
 > [ 1784.746726]  [<ffffffff8127f7a4>] ? sock_update_classid+0x2c/0x42
 > [ 1784.746746]  [<ffffffff8127d0e2>] ? sock_aio_write+0x121/0x135
 > [ 1784.746769]  [<ffffffff810f95d4>] ? do_sync_write+0xb4/0xec
@@ -136,14 +104,18 @@ interrupt and error message flooding.
 > [ 1784.746852]  [<ffffffff810f9ccc>] ? vfs_write+0xa9/0xe9
 > [ 1784.746872]  [<ffffffff810f9ea2>] ? sys_write+0x45/0x6b
 > [ 1784.746895]  [<ffffffff81352012>] ? system_call_fastpath+0x16/0x1b
-> [ 1784.746910] Code: e0 48 8b 83 10 08 00 00 48 c7 04 e8 00 00 00 00 41
-> 5b 5b 5d c3 41 56 41 55 41 54 55 48 89 f5 53 3b 96 08 08 00 00 48 89 fb
-> 72 02 <0f> 0b f6 86 b2 01 00 00 04 0f 84 c8 00 00 00 8a 47 7d 83 e0 07 
+> [ 1784.746910] Code: e0 48 8b 83 10 08 00 00 48 c7 04 e8 00 00 00 00 41=
+
+> 5b 5b 5d c3 41 56 41 55 41 54 55 48 89 f5 53 3b 96 08 08 00 00 48 89 fb=
+
+> 72 02 <0f> 0b f6 86 b2 01 00 00 04 0f 84 c8 00 00 00 8a 47 7d 83 e0 07 =
+
 > [ 1784.747301] RIP  [<ffffffffa03d9552>] can_put_echo_skb+0x16/0x106
 > [can_dev]
 > [ 1784.747324]  RSP <ffff880117265b38>
 > [ 1784.747345] ---[ end trace 811113d28006e99a ]---
-> [ 1784.747357] Kernel panic - not syncing: Fatal exception in interrupt
+> [ 1784.747357] Kernel panic - not syncing: Fatal exception in interrupt=
+
 > [ 1784.747368] Pid: 7786, comm: cansequence Tainted: G      D    O
 > 3.2.0-4-amd64 #1 Debian 3.2.35-2
 > [ 1784.747377] Call Trace:
@@ -170,7 +142,8 @@ interrupt and error message flooding.
 > [ 1784.747641]  [<ffffffff810363d8>] ? should_resched+0x5/0x23
 > [ 1784.747655]  [<ffffffffa03f6435>] ? can_send+0xe9/0x134 [can]
 > [ 1784.747669]  [<ffffffff8127bca1>] ? sock_tx_timestamp+0x29/0x35
-> [ 1784.747682]  [<ffffffffa04053a2>] ? raw_sendmsg+0xf3/0x130 [can_raw]
+> [ 1784.747682]  [<ffffffffa04053a2>] ? raw_sendmsg+0xf3/0x130 [can_raw]=
+
 > [ 1784.747695]  [<ffffffff8127f7a4>] ? sock_update_classid+0x2c/0x42
 > [ 1784.747707]  [<ffffffff8127d0e2>] ? sock_aio_write+0x121/0x135
 > [ 1784.747721]  [<ffffffff810f95d4>] ? do_sync_write+0xb4/0xec
@@ -184,26 +157,45 @@ interrupt and error message flooding.
 > [42043.689364] BUG: scheduling while atomic: swapper/0/0/0x10000100
 > [42043.690985] Stack:
 > [42043.691116] Call Trace:
-> [42043.691211] Code: d2 65 48 8b 04 25 c8 c6 00 00 48 89 d1 48 2d c8 1f
-> 00 00 0f 01 c8 0f ae f0 e8 c2 fc ff ff 85 c0 75 0b 31 c0 48 89 c1 fb 0f
+> [42043.691211] Code: d2 65 48 8b 04 25 c8 c6 00 00 48 89 d1 48 2d c8 1f=
+
+> 00 00 0f 01 c8 0f ae f0 e8 c2 fc ff ff 85 c0 75 0b 31 c0 48 89 c1 fb 0f=
+
 > 01 c9 <eb> 05 e8 98 fc ff ff 65 8b 3c 25 08 dc 00 00 e8 9b fd ff ff 65
-> 
+>=20
 > The first two lines tell me I'm not using can_put_echo_skb correctly.
-
-Yep.
-
 > I can only imagine there is a kind of race condition in the
 > gs_*_tx_context group of functions, but i don't know how to solve it.
-
-spin_lock_irqsave/spin_unlock_irqrestore
-
 > The fact that the driver works fine at lower CAN speeds again makes me
 > want to think race condition.
-> 
-> What do you think?
 
-You could use function tracing and stop the trace on oops to understand
-what's going on. Let me know if you need more help on that.
+http://lxr.free-electrons.com/source/drivers/net/can/dev.c?v=3D3.2#L283
 
-Wolfgang.
+The "index" parameter is bigger than the MAX_TX_URBS, as defined here:
 
++	netdev =3D alloc_candev(sizeof(struct gs_can), MAX_TX_URBS);
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2SSRXDOPOBLFDGOIQHGBE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlGt/JwACgkQjTAFq1RaXHMkWwCfTMyiqzvORFGyoTzWt4BFy2J6
+IPYAn1cjfIv45BZDXu9B2dsjrVtIuvie
+=KSMV
+-----END PGP SIGNATURE-----
+
+------enig2SSRXDOPOBLFDGOIQHGBE--
