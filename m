@@ -1,82 +1,233 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: J1939 questions
-Date: Wed, 5 Jun 2013 20:01:07 +0200
-Message-ID: <20130605180107.GA755@vandijck-laurijssen.be>
-References: <CAFu8-3CDw3Ab=fwseBfseazR0j-8qGrx6c1Nz0iXBYaJ-FW6wA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] flexcan: Use a regulator to control the CAN transceiver
+Date: Wed,  5 Jun 2013 16:27:24 -0300
+Message-ID: <1370460445-15386-1-git-send-email-festevam@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay010.isp.belgacom.be ([195.238.6.177]:14090 "EHLO
-	mailrelay010.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757057Ab3FESBX convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 5 Jun 2013 14:01:23 -0400
-Content-Disposition: inline
-In-Reply-To: <CAFu8-3CDw3Ab=fwseBfseazR0j-8qGrx6c1Nz0iXBYaJ-FW6wA@mail.gmail.com>
+Received: from mail-yh0-f51.google.com ([209.85.213.51]:55851 "EHLO
+	mail-yh0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756549Ab3FET1i (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Jun 2013 15:27:38 -0400
+Received: by mail-yh0-f51.google.com with SMTP id l109so521087yhq.10
+        for <linux-can@vger.kernel.org>; Wed, 05 Jun 2013 12:27:37 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Billy Muma <billymuma@3d-p.com>
-Cc: linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
 
-Hi,
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Thanks for your interest in j1939 on linux-can.
+Instead of using a GPIO to turn on/off the CAN transceiver, it is better to
+use a regulator as some systems may use a PMIC to power the CAN transceiver.
 
-I replied with linux-can mailing list in CC. This is the main resource
-for linux-can related development.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |  2 +
+ arch/arm/boot/dts/imx28-evk.dts                    | 11 +++++
+ arch/arm/mach-mxs/mach-mxs.c                       | 54 ++--------------------
+ drivers/net/can/flexcan.c                          | 24 +++++-----
+ 4 files changed, 29 insertions(+), 62 deletions(-)
 
->   =E2=80=A2 The nature of the hardware for which the solution is bein=
-g implemented.
->       =E2=96=A1 How is CAN implemented on your test board.  Is it SJA=
-1000 based?
->       =E2=96=A1 What bus is used to interface the CAN hardware
-We have an Isobus certified hardware board with an SJA1000 chip.
-But I've also ran this on my host computer using a Softing Gmbh PCMCIA =
-card,
-as well as ESD (USB2) and later on PEAK.
-Any linux-can supported controller with echo support will work.
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index 8ff324e..56d6cc3 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -16,6 +16,8 @@ Optional properties:
+ 
+ - clock-frequency : The oscillator frequency driving the flexcan device
+ 
++- xceiver-supply: Regulator that powers the CAN transceiver
++
+ Example:
+ 
+ 	can@1c000 {
+diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
+index 3637bf3..dff42b3 100644
+--- a/arch/arm/boot/dts/imx28-evk.dts
++++ b/arch/arm/boot/dts/imx28-evk.dts
+@@ -155,6 +155,7 @@
+ 			can0: can@80032000 {
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&can0_pins_a>;
++				xceiver-supply = <&reg_can_3v3>;
+ 				status = "okay";
+ 			};
+ 
+@@ -319,6 +320,16 @@
+ 			gpio = <&gpio3 30 0>;
+ 			enable-active-high;
+ 		};
++
++		reg_can_3v3: can-3v3 {
++			compatible = "regulator-fixed";
++			regulator-name = "can-3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			gpio = <&gpio2 13 0>;
++			enable-active-high;
++		};
++
+ 	};
+ 
+ 	sound {
+diff --git a/arch/arm/mach-mxs/mach-mxs.c b/arch/arm/mach-mxs/mach-mxs.c
+index bd225e9..22735c1 100644
+--- a/arch/arm/mach-mxs/mach-mxs.c
++++ b/arch/arm/mach-mxs/mach-mxs.c
+@@ -14,7 +14,6 @@
+ #include <linux/clk/mxs.h>
+ #include <linux/clkdev.h>
+ #include <linux/clocksource.h>
+-#include <linux/can/platform/flexcan.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/gpio.h>
+@@ -59,41 +58,6 @@ static inline void __mxs_togl(u32 mask, void __iomem *reg)
+ 	__raw_writel(mask, reg + MXS_TOG_ADDR);
+ }
+ 
+-/*
+- * MX28EVK_FLEXCAN_SWITCH is shared between both flexcan controllers
+- */
+-#define MX28EVK_FLEXCAN_SWITCH	MXS_GPIO_NR(2, 13)
+-
+-static int flexcan0_en, flexcan1_en;
+-
+-static void mx28evk_flexcan_switch(void)
+-{
+-	if (flexcan0_en || flexcan1_en)
+-		gpio_set_value(MX28EVK_FLEXCAN_SWITCH, 1);
+-	else
+-		gpio_set_value(MX28EVK_FLEXCAN_SWITCH, 0);
+-}
+-
+-static void mx28evk_flexcan0_switch(int enable)
+-{
+-	flexcan0_en = enable;
+-	mx28evk_flexcan_switch();
+-}
+-
+-static void mx28evk_flexcan1_switch(int enable)
+-{
+-	flexcan1_en = enable;
+-	mx28evk_flexcan_switch();
+-}
+-
+-static struct flexcan_platform_data flexcan_pdata[2];
+-
+-static struct of_dev_auxdata mxs_auxdata_lookup[] __initdata = {
+-	OF_DEV_AUXDATA("fsl,imx28-flexcan", 0x80032000, NULL, &flexcan_pdata[0]),
+-	OF_DEV_AUXDATA("fsl,imx28-flexcan", 0x80034000, NULL, &flexcan_pdata[1]),
+-	{ /* sentinel */ }
+-};
+-
+ #define OCOTP_WORD_OFFSET		0x20
+ #define OCOTP_WORD_COUNT		0x20
+ 
+@@ -253,15 +217,6 @@ static void __init imx28_evk_init(void)
+ 	mxs_saif_clkmux_select(MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0);
+ }
+ 
+-static void __init imx28_evk_post_init(void)
+-{
+-	if (!gpio_request_one(MX28EVK_FLEXCAN_SWITCH, GPIOF_DIR_OUT,
+-			      "flexcan-switch")) {
+-		flexcan_pdata[0].transceiver_switch = mx28evk_flexcan0_switch;
+-		flexcan_pdata[1].transceiver_switch = mx28evk_flexcan1_switch;
+-	}
+-}
+-
+ static int apx4devkit_phy_fixup(struct phy_device *phy)
+ {
+ 	phy->dev_flags |= MICREL_PHY_50MHZ_CLK;
+@@ -371,15 +326,12 @@ static void __init mxs_machine_init(void)
+ 		cfa10037_init();
+ 	else if (of_machine_is_compatible("crystalfontz,cfa10049"))
+ 		cfa10049_init();
+-
+-	of_platform_populate(NULL, of_default_bus_match_table,
+-			     mxs_auxdata_lookup, NULL);
++
++	of_platform_populate(NULL, of_default_bus_match_table,
++			     NULL, NULL);
+ 
+ 	if (of_machine_is_compatible("karo,tx28"))
+ 		tx28_post_init();
+-
+-	if (of_machine_is_compatible("fsl,imx28-evk"))
+-		imx28_evk_post_init();
+ }
+ 
+ #define MX23_CLKCTRL_RESET_OFFSET	0x120
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f873b9f..3de02b1 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -37,6 +37,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/regulator/consumer.h>
+ 
+ #define DRV_NAME			"flexcan"
+ 
+@@ -211,6 +212,7 @@ struct flexcan_priv {
+ 	struct clk *clk_per;
+ 	struct flexcan_platform_data *pdata;
+ 	const struct flexcan_devtype_data *devtype_data;
++	struct regulator *reg_xceiver;
+ };
+ 
+ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+@@ -258,15 +260,6 @@ static inline void flexcan_write(u32 val, void __iomem *addr)
+ }
+ #endif
+ 
+-/*
+- * Swtich transceiver on or off
+- */
+-static void flexcan_transceiver_switch(const struct flexcan_priv *priv, int on)
+-{
+-	if (priv->pdata && priv->pdata->transceiver_switch)
+-		priv->pdata->transceiver_switch(on);
+-}
+-
+ static inline int flexcan_has_and_handle_berr(const struct flexcan_priv *priv,
+ 					      u32 reg_esr)
+ {
+@@ -799,7 +792,11 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
+ 		flexcan_write(0x0, &regs->rxfgmask);
+ 
+-	flexcan_transceiver_switch(priv, 1);
++	if (priv->reg_xceiver)	{
++		err = regulator_enable(priv->reg_xceiver);
++		if (err)
++			goto out;
++	}
+ 
+ 	/* synchronize with the can bus */
+ 	reg_mcr = flexcan_read(&regs->mcr);
+@@ -842,7 +839,8 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 	reg |= FLEXCAN_MCR_MDIS | FLEXCAN_MCR_HALT;
+ 	flexcan_write(reg, &regs->mcr);
+ 
+-	flexcan_transceiver_switch(priv, 0);
++	if (priv->reg_xceiver)
++		regulator_disable(priv->reg_xceiver);
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 
+ 	return;
+@@ -1084,6 +1082,10 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->pdata = pdev->dev.platform_data;
+ 	priv->devtype_data = devtype_data;
+ 
++	priv->reg_xceiver = devm_regulator_get(&pdev->dev, "xceiver");
++	if (IS_ERR(priv->reg_xceiver))
++		priv->reg_xceiver = NULL;
++
+ 	netif_napi_add(dev, &priv->napi, flexcan_poll, FLEXCAN_NAPI_WEIGHT);
+ 
+ 	dev_set_drvdata(&pdev->dev, dev);
+-- 
+1.8.1.2
 
->   =E2=80=A2 Would you be interested in porting the solution for a 3.4=
- kernel.
-I've built some branches based on the past requirements.
-If you're using git, you could easily merge j1939-v3.3 branch into your=
- 3.4 kernel
-by doing in git working directory:
-
-	$ git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-ca=
-n-j1939.git
-	$ git remote update j1939
-	$ git merge j1939/j1939-v3.3
-
-I do not foresee any problems with this.
-If you do not feel comfortable, I could create a j1939-v3.4 branch as w=
-ell.
-
-Kind regards,
-Kurt
-
-On Tue, Jun 04, 2013 at 04:34:01PM -0600, Billy Muma wrote:
-> Hi Kurt,
->=20
-> I was looking for J1939 solutions for linux when I came across the fo=
-llowing
-> wiki page.
->=20
-> http://elinux.org/J1939
->=20
-> I'm curious about the following, I was hoping you could share:
->=20
->   =E2=80=A2 The nature of the hardware for which the solution is bein=
-g implemented.
->       =E2=96=A1 How is CAN implemented on your test board.  Is it SJA=
-1000 based?
->       =E2=96=A1 What bus is used to interface the CAN hardware
->   =E2=80=A2 Would you be interested in porting the solution for a 3.4=
- kernel.
-[...]
->=20
-> Hope to hear from you.
->=20
-> Cheers.
->=20
