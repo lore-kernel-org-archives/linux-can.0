@@ -1,67 +1,74 @@
-From: janusz.uzycki@elproma.com.pl
-Subject: [PATCH] slcanpty
-Date: Fri, 07 Jun 2013 15:40:06 +0200
-Message-ID: <6f9fdd56db06e6029218834c526f7d15@beep.pl>
-References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
- <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
- <51B0D58F.2010401@hartkopp.net>
+From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
+Subject: AW: [Socketcan-users] [socketcan]problem to using CAN with
+ BeagleBone Black A5A
+Date: Fri, 7 Jun 2013 21:46:13 +0200
+Message-ID: <zarafa.51b23885.159b.07db93856850360d@v14647.1blu.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailmxout15.mailmx.agnat.pl ([193.239.45.95]:44419 "EHLO
-	mailmxout15.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752777Ab3FGNkK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Jun 2013 09:40:10 -0400
-In-Reply-To: <51B0D58F.2010401@hartkopp.net>
+Received: from v14647.1blu.de ([178.254.6.47]:37535 "EHLO v14647.1blu.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755977Ab3FGT4x convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Jun 2013 15:56:53 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
+To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>
+Cc: =?utf-8?Q?socketcan-users=40lists=2Eberlios=2Ede?= <socketcan-users@lists.berlios.de>
 
-Hi Oliver.
+Hello Mohamed,
 
-I've tested the following case:
-modprobe vcan
-ip link add dev vcan0 type vcan
-#ip link set vcan0 up type can bitrate 125000
-ip link set vcan0 up
-socat PTY,link=/tmp/a -
-cgdb --args ./slcanpty /tmp/a vcan0
+is you question still open or answered already?
 
-If socat killed slcanpty should finish instead of crazy loop (select 
-always returns).
-Here is proposal of very little patch:
- From a708491ea49e170ac1d36148e75b7b6c6f07b6fd Mon Sep 17 00:00:00 2001
- From: Janusz Uzycki <j.uzycki@elproma.com.pl>
-Date: Fri, 7 Jun 2013 15:25:39 +0200
-Subject: slcanpty: detect that master PTY descriptor closed
+If still open, please have a look on this page where you can find how t=
+o enable the CAN-Devices on BeagleBone Black.
+http://www.aero-box.co.uk/beaglebone-black#TOC-Enable-CANbus-device
 
+The only thing you have to do is to edit the am335x-bone-common.dtsi fi=
+le for enabling dcan0 and/or dcan1.
+Please have in mind that dcan0 is normaly used for the optional Capes, =
+as they use the I2C2 pins which are muxed on the same pins than dcan0.
+Nevertheless I've edited am335x-bone-common.dtsi successfully to enable=
+ dcan0 and dcan1. On my BeagleBone Black (Hardware A5A) eveything is ru=
+nning fine on both internal CAN-Interfaces with latest Angstrom and lat=
+est Debian as well.
+Keep in mind that you have to put a CAN-transceiver on the Pins 20/19 (=
+DCAN0) an 24/26 (DCAN1) on your BeagleBone Black.
 
-Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
----
-  slcanpty.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Regards
+Mike
 
-diff --git a/slcanpty.c b/slcanpty.c
-index f3628b9..061c1ab 100644
---- a/slcanpty.c
-+++ b/slcanpty.c
-@@ -75,7 +75,7 @@ int pty2can(int pty, int socket, struct can_filter 
-*fi,
-         int tmp, i;
-
-         nbytes = read(pty, &buf, sizeof(buf)-1);
--       if (nbytes < 0) {
-+       if (nbytes <= 0) { /* 0 means that master PTY descriptor has 
-been closed */
-                 perror("read pty");
-                 return 1;
-         }
---
-1.7.11.3
-
-best regards
-Janusz
-
+-----Urspr=C3=BCngliche Nachricht-----
+Von:	Martin Gysel <m.gysel@gmail.com>
+Gesendet:	Di 04.06.2013 13:32
+Betreff:	Re: [Socketcan-users] [socketcan]problem to using CAN with Bea=
+gleBone Black A5A
+An:	linux-can@vger.kernel.org;=20
+CC:	socketcan-users@lists.berlios.de;=20
+> Am 25.05.2013 00:49, schrieb Mohamed HAMZAOUI:
+> > Hi,
+> >=20
+> > I started with beaglebone black A5A, i installed on it the latest
+> > Angstrom image with : Linux beaglebone 3.8.13 #1 SMP Mon May 20
+> > 17:07:58 CEST 2013 armv7l GNU/Linux
+> >=20
+> > I have a problem when I try to add a can device, i load with modpro=
+be
+> > all necessary kernel module (can, ti_hecc, c_can, c_can_platform,
+> > can-raw, can-bcm) but when i execute
+> >> ip link add can0 type can
+> > I have : RTNETLINK answers: Operation not supported
+> > I used a recent version of iproute2.
+>=20
+> did you initialize the can module? do you use a can cape? if yes, doe=
+s
+> your kernel already include the needed dts to enable the can module?
+>=20
+> /martin
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
