@@ -1,74 +1,52 @@
 From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
-Subject: AW: [Socketcan-users] [socketcan]problem to using CAN with
- BeagleBone Black A5A
-Date: Fri, 7 Jun 2013 21:46:13 +0200
-Message-ID: <zarafa.51b23885.159b.07db93856850360d@v14647.1blu.de>
+Subject: Web GUI for can-utils (i.e. cangw, cansend, candump)
+Date: Fri, 7 Jun 2013 22:10:04 +0200
+Message-ID: <zarafa.51b23e1c.16b0.5a9e858f2ffa17a7@v14647.1blu.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from v14647.1blu.de ([178.254.6.47]:37535 "EHLO v14647.1blu.de"
+Received: from v14647.1blu.de ([178.254.6.47]:49929 "EHLO v14647.1blu.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755977Ab3FGT4x convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Jun 2013 15:56:53 -0400
+	id S1754148Ab3FGUKH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Jun 2013 16:10:07 -0400
+Received: from v14647.1blu.de (unknown [IPv6:::1])
+	by v14647.1blu.de (Postfix) with ESMTP id E8C88596768A
+	for <linux-can@vger.kernel.org>; Fri,  7 Jun 2013 22:10:04 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>
-Cc: =?utf-8?Q?socketcan-users=40lists=2Eberlios=2Ede?= <socketcan-users@lists.berlios.de>
+To: =?utf-8?Q?linux-can_Mailing_List?= <linux-can@vger.kernel.org>
 
-Hello Mohamed,
+Hello,
 
-is you question still open or answered already?
+I'm looking for a easy solution to make the powerful cangw tool more comfortable for endusers (dummy user).
 
-If still open, please have a look on this page where you can find how t=
-o enable the CAN-Devices on BeagleBone Black.
-http://www.aero-box.co.uk/beaglebone-black#TOC-Enable-CANbus-device
+Therefore I prefer to have a webfrontend / Web GUI to configure the cangw rules with a webbrowser which is available on each PC/smartphone/etc
 
-The only thing you have to do is to edit the am335x-bone-common.dtsi fi=
-le for enabling dcan0 and/or dcan1.
-Please have in mind that dcan0 is normaly used for the optional Capes, =
-as they use the I2C2 pins which are muxed on the same pins than dcan0.
-Nevertheless I've edited am335x-bone-common.dtsi successfully to enable=
- dcan0 and dcan1. On my BeagleBone Black (Hardware A5A) eveything is ru=
-nning fine on both internal CAN-Interfaces with latest Angstrom and lat=
-est Debian as well.
-Keep in mind that you have to put a CAN-transceiver on the Pins 20/19 (=
-DCAN0) an 24/26 (DCAN1) on your BeagleBone Black.
+Is there already a configuration tool or best a Web GUI available which can i.e.:
+cangw
+- Load two Vector .dbc files (one for can0 and one for can1)
+- Select on one side (can0) the input CAN frame which should be routed from can0 to can via cagw
+- Select on the other side (can1) the input CAN fram whcih should be routed from can1 to can0 via cangw
+- Manipulate of CAN-frames with some logic operations +/-/*/div to use the modification features of cangw
+- start cangw
+
+cansend
+- load a Vector .dbc file
+- select a CAN-frame for transmitting
+- select a CAN-signal to fillin a value to transmit
+- manipulate the CAN-frames/CAN-signals content/values independent
+- start cansend for CAN simulation
+
+candump
+- configure can interface to monitor/log
+- start candump -l in background
+
+
+Environment background:
+I'm currently using the two internal CAN-Interfaces of the BeagleBone Black. They are perfectly working for me with the latest Angstrom or Debian images.
+
+Thanks for any hint or pointing me to the right place!
 
 Regards
 Mike
-
------Urspr=C3=BCngliche Nachricht-----
-Von:	Martin Gysel <m.gysel@gmail.com>
-Gesendet:	Di 04.06.2013 13:32
-Betreff:	Re: [Socketcan-users] [socketcan]problem to using CAN with Bea=
-gleBone Black A5A
-An:	linux-can@vger.kernel.org;=20
-CC:	socketcan-users@lists.berlios.de;=20
-> Am 25.05.2013 00:49, schrieb Mohamed HAMZAOUI:
-> > Hi,
-> >=20
-> > I started with beaglebone black A5A, i installed on it the latest
-> > Angstrom image with : Linux beaglebone 3.8.13 #1 SMP Mon May 20
-> > 17:07:58 CEST 2013 armv7l GNU/Linux
-> >=20
-> > I have a problem when I try to add a can device, i load with modpro=
-be
-> > all necessary kernel module (can, ti_hecc, c_can, c_can_platform,
-> > can-raw, can-bcm) but when i execute
-> >> ip link add can0 type can
-> > I have : RTNETLINK answers: Operation not supported
-> > I used a recent version of iproute2.
->=20
-> did you initialize the can module? do you use a can cape? if yes, doe=
-s
-> your kernel already include the needed dts to enable the can module?
->=20
-> /martin
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
