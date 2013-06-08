@@ -1,207 +1,76 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: command ip -details -statistics link show wlan0
-Date: Sat, 08 Jun 2013 09:42:42 +0200
-Message-ID: <51B2E072.3090206@grandegger.com>
-References: <CAOD0pe=EMt3+ymJMwT+gOUbFZN7_R8exkh36G5457O61GoV4UA@mail.gmail.com> <5194846B.1070307@grandegger.com> <CAOD0pekopW9g0SD=BnOMCEp3SdVZPrx5jY_CKLjZV09sWepS6A@mail.gmail.com> <5194F46D.4060905@grandegger.com> <CAOD0pena8JLpCsq6EUqqy_Rip0oRe0Z5=6SQfGV2TNeS_YABfQ@mail.gmail.com> <5194FE85.7030705@grandegger.com> <CAOD0pekym7Ey1eRn-ndwjEnsJUpf84xHbexztpRBjUKqoaGcPw@mail.gmail.com> <51B239EA.6060603@grandegger.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] slcanpty
+Date: Sat, 08 Jun 2013 13:09:16 +0200
+Message-ID: <51B310DC.8040509@hartkopp.net>
+References: <2DAB3DC2841347E7AF7833620339B427@laptop2> <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2> <51B0D58F.2010401@hartkopp.net> <6f9fdd56db06e6029218834c526f7d15@beep.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030605050409040700010609"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:55298 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751020Ab3FHHmq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Jun 2013 03:42:46 -0400
-In-Reply-To: <51B239EA.6060603@grandegger.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:38504 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752078Ab3FHLJS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Jun 2013 07:09:18 -0400
+In-Reply-To: <6f9fdd56db06e6029218834c526f7d15@beep.pl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ernast Sevo <ersevs@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Linux-CAN <linux-can@vger.kernel.org>
+To: janusz.uzycki@elproma.com.pl
+Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
 
-This is a multi-part message in MIME format.
---------------030605050409040700010609
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi Janusz,
 
-Hi Ernast,
+thanks for the patch.
 
-Please do not drop the CC to the Linux-CAN mailing list...
+I changed it in the way the perror() is only called on negative return values.
 
-On 06/07/2013 09:52 PM, Wolfgang Grandegger wrote:
-> On 06/07/2013 09:32 PM, Ernast Sevo wrote:
->> Hello,
->>
->>  I apologize for resurrecting an old thread but I finally got around
->> to testing a program which uses
->> socket can that I wrote and I get quite a few overrun errors. I also
->> tried increasing the priority of
->> the  MCP2515 IRQ which made things slightly better for me but not good
->> enough. Are there any other
->> suggestions as to how to fix these overrun errors? or at least improve
->> them a bit more.
+Please check it out for a test.
+
+Best regards,
+Oliver
+
+On 07.06.2013 15:40, janusz.uzycki@elproma.com.pl wrote:
+> Hi Oliver.
 > 
-> What priority did you use? Could you show the output of
+> I've tested the following case:
+> modprobe vcan
+> ip link add dev vcan0 type vcan
+> #ip link set vcan0 up type can bitrate 125000
+> ip link set vcan0 up
+> socat PTY,link=/tmp/a -
+> cgdb --args ./slcanpty /tmp/a vcan0
 > 
->   # ps -m -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm
+> If socat killed slcanpty should finish instead of crazy loop (select always
+> returns).
+> Here is proposal of very little patch:
+> From a708491ea49e170ac1d36148e75b7b6c6f07b6fd Mon Sep 17 00:00:00 2001
+> From: Janusz Uzycki <j.uzycki@elproma.com.pl>
+> Date: Fri, 7 Jun 2013 15:25:39 +0200
+> Subject: slcanpty: detect that master PTY descriptor closed
 > 
-> when the test app is running? Note that these option are not available
-> with the busybox version of ps.
 > 
-> I also wrote:
+> Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
+> ---
+>  slcanpty.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->>> Recently I also stumbled over the following optimized driver 
->>> MCP2515:
->>>
->>>   http://clientes.netvisao.pt/anbadeol/mcp2515.html
->>>
->>> But that would required some effort to update and test it.
+> diff --git a/slcanpty.c b/slcanpty.c
+> index f3628b9..061c1ab 100644
+> --- a/slcanpty.c
+> +++ b/slcanpty.c
+> @@ -75,7 +75,7 @@ int pty2can(int pty, int socket, struct can_filter *fi,
+>         int tmp, i;
 > 
-> Would be interesting if this driver behaves better concerning message
-> losses. What kernel version are you using?
+>         nbytes = read(pty, &buf, sizeof(buf)-1);
+> -       if (nbytes < 0) {
+> +       if (nbytes <= 0) { /* 0 means that master PTY descriptor has been
+> closed */
+>                 perror("read pty");
+>                 return 1;
+>         }
+> -- 
+> 1.7.11.3
+> 
+> best regards
+> Janusz
+> 
 
-Just to give this driver a try, I have attached
-"mcp2515-extern-v1.tar.bz2", my out-of-tree version of the MCP2515
-driver mentioned above. On my Ubuntu system (running Linux 3.2.0), I
-just use the following commands to get the kernel module built:
-
-  $ tar xf mcp2515-extern-v1.tar.bz2
-  $ cd mcp2515-extern
-  $ ./make-modules.sh
-
-For your embedded environment you need to tweak "make-modules.sh",
-though, or use the following command:
-
-  $ CONFIG_CAN_DEBUG_DEVICES=y CONFIG_CAN_MCP2515=m \
-    make -C <path-to-your-kernel-tree> SUBDIRS=`pwd` modules
-
-You should then be able to load "mcp2515.ko" on your embedded system
-(after removing the old MCP2510 driver):
-
-  # rmmod mcp2510
-  # insmod mcp2515.ko
-
-If you are lucky, it will work out of the box.
-
-Wolfgang.
-
-
---------------030605050409040700010609
-Content-Type: application/x-bzip;
- name="mcp2515-extern-v1.tar.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="mcp2515-extern-v1.tar.bz2"
-
-QlpoOTFBWSZTWS8NmNcAHvz/tP7wAEB/f////////v////8gAAEAAACACGAcv3gH0HaS69Ht
-lH1qd7Bd889yx7ind3c2tSmDw9w9VKs2ordrtud3VuyY4pAbs10dOjqzJB05cIM1GWnc6Gk7
-sNNIIGhJ6aZARpM0DUzSZBhNDKeRqHqaaYhkDCMQBJEAQEEaamIT0aBMmTU9BPSPKYmg0ek0
-ANADRoBU0J6Q0ANAAaAAAANAAAAAAAAEmkkRT0mEo9PUyTNRtNT2oIeg1DQGhpppoAAGjQBo
-AiUIRGRqbSZqnkanqepkPSaPU/VM1NBoGQxNqaGmQybU0NGg0ESRBAAmmpgmQxUntU/VPU08
-ppoaMmjTIaNoQAaeoNAH/35R/OV9X5vz+PkHpOORoGqhECaUUePoY/CRGpxXs7Oze539tsOz
-vc3EiTgkQGSRopOiwuduc5IIMTwz0oYL60Pr2E2EREYCqAjAUgIxGCcVsKBuCllFBBGBsxRb
-exlVbaMCv0z7r7e3u5z06+2Xl6yPCWRFQVVIiij66dDpDQokqQLBiNYUYQVQQUVBjNMCsUFF
-kRkRAZBkVFAQXElRUjFCAsC6skL06wUBGFTLx/DXMHnbg2CHnYyxalLU3iFw1360jCoQhli3
-H42UU21grI4iqHN/jXc8vKcIwO2B8Xa2yS8iR3PJrFV1TgkyYgWfhajGQRExsENxhDnMldMB
-hdMmWn3GVDBaqiwFEjIWhofSYGZS2rF2QN2HHXL+2gxFCDtViiyAsAWBUJKgIpCEqUAOLERx
-7LfbP4pvduv+RgSen52en3/DU9m2G5JPNm5Zw61xfCwHqq45xQWrFrjl1a6aFS4RlERNfcPU
-oy4EJIkyagZQqKCcaaxRM0MFObNql3gs+O9VD3VCkAIM0cjHnawKTXOo7IXXtUwmm2BPYjyh
-KAsMUJCQZCRkDdAC6oSCO0zjHOgYJA3hgh7emxLt9LZb6XGckw17vJkq8kKQowRfdL/HhI5t
-YCL3hqM1daUTAEEhqP7vZwW3hHEpRIiiDKF/d773LwCAcxV6RSRkJDL7Q8D7P6f00HNaeXe/
-phueMZac0veEqzm3vLlfSx7X6VaNCFERInXUArAE0hMwR/0COAoAcd0JNqx4n8+mr17hqX9X
-o2c+SeNLmnQF6ubeHHm0IMe0UBSUr4h0tCCATK0MQbbFbET62Z0MggHEMHhbwMy6lY5PXLli
-a1ZRjewMIEKVAjdoEcjvB5NxwqEb4jQUvwoYI3ljLGKLsj7bmwndJ3FXbSkBORPT63VzaeKp
-MwE8NrI+x3fQ+O9OxeB0ccPOpvko5L1+9l6+p6Q8z6mI3jacgM2NpGiWxpl20YcYeus1GrIA
-gZPEJJ/qRUcGQawONpmsb4zpAE+/Z4M/VH5rOYZd4eQAYADO4AY267r4LwawxwzkjbVRYNNe
-TKm2wj3Vn6oAv5Nn4pwMx9DlNDX0Uo3Q0i7D/2WvJszbcO++kazbCAKFRgvuMSQkEQ5eYDq0
-240mjtVTeJBU1EkvCCFhLCOZBnIcNAQVuyDoteJSkxArtdlvORhR/8uYLt/Rc2gHwOWxVI2x
-dHEwkSxPg0gaVLgxregFwkABCgCJJErCAxsQIs9KJCOE0tM0KLAUlqXTgkEBCIBgwRjRx1zM
-YzO2SclCATYIGv6Ye/EiZDCWO3B0OnADObnfiw1xgKeUD4LV3rDVvD2eyeeOSDJdvk+Ikx8I
-0Q2XoUam3uzsBqHWcHR13CgvT4mpWNQNJIBBHfXSZPRy1TShA7IBE50Xk3wxnnM5o9OdhjmZ
-DwrzVpWmBeMrursQ1vPhIfI5zXhloIzrst4Y6TcyOybvtxLto2OZUi8cV5tsTyPE8HDhMYlD
-pyZy1WSDkUNMXMGy1JRzq0lo1NtFHiJtlynWYGr9bRnb9GALYE5ZnduV16kdbb9pVhk75Zx2
-EU1taNnwpLdb3dsZKlQv3oCIwxDtEM7EhQVZj+Tydd4w1aj3lXtFI7LKRBNykvbmq5ipAwjM
-OJ44SaOr9u2TCLM0WpD0QwMCUhyxc6pvymr2U2XQz9iCmTLwzjQxYbAtpO1LQt4pHhgXNlMi
-f4YJ7t6vId1WltNmOwIavlxcysww0xiC3aTDmo3omDEJNXG5zOq2OnydRKhIyEJTvEaN2l22
-KfE7zMdrcu84PikrGO6OWn8/0TA89pYETkrqKjbp1sPosdNmo3uSISL6OIR+ITr2+VvKyqOx
-GRcRCCyQkIx0dXpa57rwcAk06X+w1Nw829dA/3lIbzqBPKnr+S057pPUYdI+t0Pk8XpPLWkO
-DJHeqVqzi8LUPM9c9n8qHRzyTo6aZPo2BzHKnTz3tyvUNBfjUys9t9nXuznGFHvjjNoLAU/N
-BJRMe0eXwHql6dcanJDGKKuFGYHKibHPnr34guYX2BBIRaAHuPC/n+u9fwibT0mugJLxqf2r
-HrejF2/J3qKgJVBlVkVti1vm1BUU3WpF3U+Di9DPwvGI9JZfI8ote5OBRhJ2FYbutk2/CudW
-Ht+O8ENvaUtIk5k76Xt1evNGu94O8B4wPyEigCIKgCRhEURVYMFFgDBiKCkRUUGIkgT56QE+
-0hAO5gS0CzLdWUKCwfIoi4GrX+Xb3fDjdTJhPbd5ZdWaM8uvma3Vxezg0eymfiruUV1w1UpO
-zfKtIk2FDKrb1OpJPokYJrWsGyJ8cUq7JJ7ei8/izhB5ctGnV0z261x2kDjoXFd2sZEb7Xwb
-vvE+bfJn4BuICP8ERRN1gGcByCqy8y3ETcHOAFByp5lDYCBFHpi1ICmQKI5QkE8HokWEuvKP
-qmLtliK/Ffsa44PR0NaCTeVciqEAmIg07c7/gA/JN3PON07ucUD9u6BkRCzL3EpRGBufz6at
-1vLyFTu4XhxE5myM8cHb08vjpT220g5cOLMD7YuEQNLy+oQg+GkgeLf1YAfepUFBUEJiEiH5
-M8wfr5dBJElsq+PoQhISjt68QPS+lRDXuODMRFcPCUG9r576InyaNp2ThVsUUa9hZdVtgmVA
-oEu5/fF5E2UfO8wCvQ6Ac9/vfR9fm+zP99cHQG/AFCIQxhhDjNz5WpUUQT2J/Wng0CIm2OXD
-2czoadIO9/mAn+QnYhpwfmQgRhGA6TiD2UW66tmt4875kqUAWG9QsE9u4xAwR0jhpCNZ8bYh
-lnek+FydZoEDDkNKK398Lx+FA1MD4eujyb4gX7zI6UsFig5uRc51yQbMLdM4Bzcm7nImxiLW
-F7B3+xI/GEYgSIKwIBv53fwaevMnULuLvHdjxe699xFSgx9LbWgT8nZj7mEzg2NTmoaiPxTl
-UMyoR3cjytBsNqPjytQPZw7dcxUY6uT5NM025MMPQxioZOkngB56sQdV54oIkMr1VxoPj7Ku
-M0+7plrCbEyBJY4D9Y0mG5cJ5ywCdwljoDV1e1jKN4qON74x72FsyILHCuQ56sPUkqMBqc6N
-XyJaEHG1aEHske4Rffx7jRdqMmWSbV4td/28jctGDTk26xI8V4YXJYsO0o5+SgX4nI+nDYBq
-29YzYYMEqRRzNbBnS2YjqrqEFak8JixEwtXxRvYECXTIcWDswiBLhesVgk0mRoMFAYBMUQ39
-9lwkt+f0touvjjWZ9LADB+eIKULhxv9TQGlL9lrQL9amwrWEOmZ5WV3/XPEAL3pkobPhiY8E
-RKFIKIkJlRpTJGhPSpSR3ZuZ/HseUDoKJ1IKnKwDQRUkJFjECQkECRJENB4OZn6/RnkU6Z3x
-n16g/AggTlGfYw7761O71qcScfDr+IXvEBJ4cMdhGji/ztYfVSXPigPY7gv7Qu5KB+bXtTCz
-lNGtSwnc/TST32TiKMFGKrFeU1Ovu5tDed9lQ5kgt7PL6fceEHy+gDPUwEsjZvkeeqXpY3A8
-btm5mQCdNmNQ28Wh9JPHfx5OSW94QXQs5DF0jNjW+85n9+nrtIwqjFwUV04HIGxAwqIu/EgC
-4TJIiJPj1VYZL9LEV+vm4ZgdBk46vTNll2IAqlAkt23jmWvUm20OnuVqEiBjhn5mFjrHx755
-Qok126AuLX5ARlhOga9PctZqEzXPTtpt674sgyzx6YuybYmWLIY02Fzw6Xe3OQzIMNqfAdVt
-F5AIpo5PePQrPmKRzjIZiIimTix21mudFAVKAjaygSd7i0Cwt19PJNLV9IPVjznd3QhpTFQn
-5OxA2MF2m3jsy2QO26cvB6tVVe9jttzl90QIc+IaF4wflQdbJNmkZsIgKdlBJ6tiYvPV+m/z
-6/TyDPWqwzrfwpfCEj59UMNkyCgTDDKjd0XIwH5UA6ckyjSsTQZEFu7Wgr7wksd2ltmKKmiI
-WeedXWiwiwJ1Zk5JtX3DuIAsgpIX4X8f1ve932VTmPg9y0xFoeCRzRcM1bPm41f+TIktaqrV
-4J1cJO89QabR9LHj63J2EIfO9p/y5PtYOHjYLt0wXUQWKyGBiwtkXGIrResPk3CV+E/CJzD4
-9slnyAPxjC/j97Vp+7MKotSaBK/E+v5/B1mDDPCMSLEYPGgweoNTJIWoDPmg0LRkZjEZRRED
-52prgeBCoiRKcLScFAb2XiRHee65cIuYRERSsjebfqx7+aHjC1GKmvjc1MmktZEuCZS4JGtO
-JZ4QkJATXAefBAxxGKmEw4YOYRqzRiIoRcZi2G2tK40WGcUzMzMz0HCBvyHhEdTbl8Xue2TN
-oebZaPyoiDJWNE5dnR+N98Im1mezDe0GfZTVB0MACLrc6Eg0UVKzISYSWOK4XhA6D4hblDTh
-X4wzNvfEObKPeGMCrGQB51sJzCgAHdclkKgdpiuCI3udlWJwHMXrDjlDRgntvpuZvM3mBAIF
-2GRtZ2Nwkc1w3ZufFcQ4JG82KubyJCyDhly6HMk4PUXQQkVvGgpzo4rBR1dd28GH3U7NqE6P
-tjN4H6vRIhk18DPh884sVpNj7LR6DYM2mqwNoCYUmgSUEjGJS3CdNhMs0o9oz1xMA4cd9TJ5
-YVbnQNEVbYFgIdvbsOefhJhTlVsdDVHDU0dATkEiTC3wRvghOPZC1pC0qVqUZdvfNQVMkTNZ
-DVqtsufexlUNuViiAYscSfYYAGPwBoItsLJELxEOgN2JkhEPpTt8lStihGGMphgBzSLcIeoA
-oTqQv+Dk8UOEFAoi0QJIb7OnOwZt2QFkuwlwzLF85xDRCU1jSebYVWso0RswI+Ojbw7+9eX4
-I4b7KIFq46rw7mUNk4aUhwsruklpmzadRTG7KkXH5VZSWdxxUrXcIaA/jSTztlZFkgvbQqLb
-YAspld9Mni2XWvC1sCbD0mMhFAynos45TbffCaXzdjQXfZDBCxVH17LGmXMPbC3saCDa92Rg
-YtQJJGUmCcDQaR9vmHyhQb2wmv3nqixgHxqx46aUsYTP26A+iGN8w2rNQ0BpnJoRJReqXvAT
-hJi0nyoO6wegzVk+ETpI4GUU1nLyjhPKEw9r2oxIk7C0LsDDZGKYWUZwAIxeM9NCI06aYTpP
-xQBEWNjxMHLkoRSrJ/bO9360lnlcd0C/DYTVaUY6zAt/Hm8SqkkQCoZAEdkHMbyIe7EIcnAo
-0c3CLHgqkOFNHxhVZMfeYNY4m3XYJwDrNo3SzrAC6CjI2BPARWYN5Goj74YjJbrNDK5JulA6
-oWdhkTLvOs4m1yX7rvTI0En1hwc43Q26XwQ6byrFAVKhjLb74tyQuUREsFvEmTtL4ZGF4XA5
-KcfVTdzkitsAdBDXDQbLWmlA5cbnUYXZ2lwJha9cekQqB0B+3ADPQF17sw6MEqdciuuAsokT
-bYF2AJAh3FwzBf3zB0pkCodUAWzHq4xm0QvAPpHWDz8/uYJ5CBce2DPVoGhhuTYfeQLlNI1Z
-40OniePbQSKLHALjau9f3uHGhtyEiJfR1BxuSgtcm/cchfdmO02UAUfY6CUJ5RKbid1s1gBy
-W1YJzr5edDrJRRTRKheWCfLEo5Gq1twHbsm1wMgpOtDMEpz7EwxiGxCLN+BwN1e5/M2F1azW
-6BW7w9h7uRmpsMD1P1MBhekT5WSGYW402YLQkVEm0MEhywM5ehBQQGX3LGnv2gZwRvAAkU57
-hjYFMN096g/fDCj5kNJvUIBFGGqinA4oXIoSM9s1B6PAjrB+rdyQ0h82D2JFk6aC2BpXUd58
-Wngx7YvYuM/GpncO9iVuXJkxTWNmlc1akMtlw0ROrpwN6HmRPYFUB6kMqmVjqV3I32IdIyMj
-Ij9lT0De/N55OsNRSyO+kzJEgYauJ3vpSTmMJZvYPqdQ9806NGnTaNqheBDzTqlYcTNXK4oh
-ihqChCorgGCE0VSWT2EICUMBiL4CUZZSzCHl6840zkq6k/F3Dm8hM8k2sqqwos6378kE2BmJ
-lzGkswQoWQInkCyEZ4rsPNgmXid9In9wL0wZiKakIycv2zl3LvelTvF6qwvSxlOdzkZcTWwl
-lJImHSE8yXytpMaJWJGMQYN6R0rLkiPr6tLDvXuzXv/+/97v/c5icYe12UFk7FSxhiQlIgio
-IgiZSxQFSJghRhpLQOo5Ahg2A3d7RAJQSPahR8E9YBISJy7bmLGWoNfxOfO+129iCbDphhYq
-rqXAY6wRhmQZs2BrWRrLpdTs1JszR8cu4swDdWCkYk2cRx9aYa2sJLBDaoWSq8NpysYv9Nfo
-BxvnZAupeweGAWjYkZRALtgozf6gs3QNYeIu67v6lYC9ju6yyJe4UnXz0i6kCMCRdsIrENxI
-sxLoFiIXHUGEoBuhBS4F1G4QP3YthGK2oS+3VrwxFwDevp5n7UqDIEDoHEQ54nSDddh6PboF
-zYTrUADSiWAMwbfH55vyPpAGsXxBpDhhQQFOsXS/bqoNRKCwuwMEC6FlQ+mBzC/Psc2xQVhj
-22dQDMlUmtrpcc0pJeZsK9U9CefSdf1Qv8HuSogJaLLXNYnvDdvRyfN3OvigYvAfiJCDhRRJ
-kiZb0/NnTsm5lBYNjRVzsMFFKhbu06ZOKiSvXQRoIdv1EgWSFnePYpVOVq2lyAUDEwtuZHAK
-M/WRDRm72uBQ6ObmDuEF1t/nXWPyPMUIJNpuWa6iNgLNpBMDAKvFrAVWtGJDUgoneRSQ+TgV
-JE3gkSBgmHp0C75PiAHaiHxIjp95syk2bAtrCjYBPo3EYbxXxONkODqlPv4JQe6TOh9lGTwx
-DUYhgnb4bx/vXwUZpOMOsfhH+72Ce8UQ0B9SQBzXGIZ9gjBhMQ6IRwE6+RPYgX0HOvnDsRNI
-iduulDZAG9xrrTYooskXUOK9puLIggOitashy2ZLAyQxI6GhWK9k4QZiZSIdWikr2HDjgpF7
-nbeOQ8SJFhMwTRoNjKdmi79oOCqtpVFN9XYFGySD5OuZlhSiKo26IS6E/Jsk5mDphGx4Dkrb
-i4o+gOpw2PLc7ghzWS7yGgJ19nVsGoHV3Vpk9F7/HqmEzp8dzthl4enbmxS+maum9HMELxXU
-2wLOAYkueIHTqcDbU1NyKyCo8ilKjBcJyrgCHA1F997biFMZcdDoyY/QLCAuobK3DFaNWOwp
-ByqrQSlqB/pG1lpSsoNTkE5E5gmhDygPLnfP8PX4c6flu9f4WnItjkpIhg82RNBttQKzIF40
-exVq0nMg8iQwsxMMEJHRSB4KcDVg3gMtS78cMBU5gMpjkUmXNvBe1vzwzTvwsk4cM12uIFxe
-i44GS6jeEMreKZa3DpgK2qCxg40QyqxZYIUwbJRcMyqThpG4Nh+BkBhdBMVzLCpIyB4SwKYB
-5Wg4bMDQFN1pAk0BhyUoxLMVWowGISGSvBGDa9iJSRgwlMwwCdbo0iWUU27V2ENY7U2BZedw
-wAD1ImBug7Y7qILr3npXYPACY0wh1/eeHqcVFO1Hcw9CiIdyKM47sh28oeZ8+Jib+SHCVSzt
-hHcpgfYbAvdYewimbB4MuUbLds0HXR3QTZUgpEhIgSQAkUQghICwgMGKMSRAONtIX3OdAYBR
-UgYxQoIrgWAX/3s4xW4LC/kl70yvNNkw15geb8CqtYwoPoG9LGQhiXTqm1bqax3CZw8Hddrp
-FSKVUb7a0hCDCEF2GtDfPc1KKCixVGAm5OJOiMAOPZ8Kb5uvuKVuw/aoTiVHUXSDvpgN5LWR
-3Le0E0pxASAO7RBglAAikCgc9V/8XckU4UJAvDZjXA==
---------------030605050409040700010609--
