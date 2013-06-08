@@ -1,76 +1,52 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] slcanpty
-Date: Sat, 08 Jun 2013 13:09:16 +0200
-Message-ID: <51B310DC.8040509@hartkopp.net>
-References: <2DAB3DC2841347E7AF7833620339B427@laptop2> <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2> <51B0D58F.2010401@hartkopp.net> <6f9fdd56db06e6029218834c526f7d15@beep.pl>
+Subject: Re: [PATCH 1/1 V2] slcanpty: Improve the data handling from pty2can()
+ to avoid, incomplete messages in further processing
+Date: Sat, 08 Jun 2013 13:18:41 +0200
+Message-ID: <51B31311.6080606@hartkopp.net>
+References: <51AA491A.7060307@myvdr.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:38504 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:27375 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752078Ab3FHLJS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Jun 2013 07:09:18 -0400
-In-Reply-To: <6f9fdd56db06e6029218834c526f7d15@beep.pl>
+	with ESMTP id S1751861Ab3FHLSm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Jun 2013 07:18:42 -0400
+In-Reply-To: <51AA491A.7060307@myvdr.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: janusz.uzycki@elproma.com.pl
-Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
+To: uescher <linux-can_ger.kernel.org@myvdr.de>
+Cc: linux-can@vger.kernel.org
 
-Hi Janusz,
+On 01.06.2013 21:18, uescher wrote:
+> slcanpty: Improve the data handling from pty2can() to avoid
+>  incomplete messages in further processing
+> 
+> This Patch ensure that we have minimum one complete SLCAN messages from pty in
+> our buf[]
+> before we start the processing.
+> Leave framgents of an messages in the buf[] and wait with processing until we
+> have a '\r' in the buf[].
+> 
+> Signed-off-by: Ulrich Escher <git@myvdr.de>
+> 
+> 
+> 
 
-thanks for the patch.
+Hi Ulrich,
 
-I changed it in the way the perror() is only called on negative return values.
+thanks for the fix!
 
-Please check it out for a test.
+Indeed I needed some time to get the point %-)
+
+I removed all the debug stuff and added some comments to reduce the time to
+get the point the next time i look into that code.
+
+I changed the for() statement with the break to a simpler implementation.
+
+Please check out the updated version which should do the same as your patch.
 
 Best regards,
 Oliver
 
-On 07.06.2013 15:40, janusz.uzycki@elproma.com.pl wrote:
-> Hi Oliver.
-> 
-> I've tested the following case:
-> modprobe vcan
-> ip link add dev vcan0 type vcan
-> #ip link set vcan0 up type can bitrate 125000
-> ip link set vcan0 up
-> socat PTY,link=/tmp/a -
-> cgdb --args ./slcanpty /tmp/a vcan0
-> 
-> If socat killed slcanpty should finish instead of crazy loop (select always
-> returns).
-> Here is proposal of very little patch:
-> From a708491ea49e170ac1d36148e75b7b6c6f07b6fd Mon Sep 17 00:00:00 2001
-> From: Janusz Uzycki <j.uzycki@elproma.com.pl>
-> Date: Fri, 7 Jun 2013 15:25:39 +0200
-> Subject: slcanpty: detect that master PTY descriptor closed
-> 
-> 
-> Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
-> ---
->  slcanpty.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/slcanpty.c b/slcanpty.c
-> index f3628b9..061c1ab 100644
-> --- a/slcanpty.c
-> +++ b/slcanpty.c
-> @@ -75,7 +75,7 @@ int pty2can(int pty, int socket, struct can_filter *fi,
->         int tmp, i;
-> 
->         nbytes = read(pty, &buf, sizeof(buf)-1);
-> -       if (nbytes < 0) {
-> +       if (nbytes <= 0) { /* 0 means that master PTY descriptor has been
-> closed */
->                 perror("read pty");
->                 return 1;
->         }
-> -- 
-> 1.7.11.3
-> 
-> best regards
-> Janusz
-> 
 
