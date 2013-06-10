@@ -1,111 +1,71 @@
-From: janusz.uzycki@elproma.com.pl
-Subject: Re: [PATCH 2/2] slcanpty: /dev/tty support for tests
-Date: Mon, 10 Jun 2013 20:38:29 +0200
-Message-ID: <f00a17de7fa15644f49ca035d77b1769@beep.pl>
-References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
- <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
- <51B0D58F.2010401@hartkopp.net> <6f9fdd56db06e6029218834c526f7d15@beep.pl>
- <51B310DC.8040509@hartkopp.net> <5dedc0b6441b754aebf3b560756932b8@beep.pl>
- <2b96a7606efb82e512f328eb2260b4bd@beep.pl>
- <f4dc05d8086417bb0b0b3613a0e93311@beep.pl>
- <a6a53837d3a628d0a188d974acfd2597@beep.pl>
- <5b163f3e26b882777deae9a0f3ba248c@beep.pl>
- <3bdf2623dd49f435018b29b60d720a3b@beep.pl> <51B61AF7.901@hartkopp.net>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 2/2] flexcan: Enable/Disable the CAN regulator in probe/remove
+Date: Mon, 10 Jun 2013 16:05:17 -0300
+Message-ID: <CAOMZO5CEWHTyw3s+vLtOVMdWmNWUndOZ3E4ohpCyTFXiz+VEOQ@mail.gmail.com>
+References: <1370460445-15386-1-git-send-email-festevam@gmail.com>
+	<1370460445-15386-2-git-send-email-festevam@gmail.com>
+	<51B606C0.1070407@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailmxout15.mailmx.agnat.pl ([193.239.45.95]:56983 "EHLO
-	mailmxout15.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752025Ab3FJSig (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 14:38:36 -0400
-In-Reply-To: <51B61AF7.901@hartkopp.net>
+Received: from mail-vc0-f171.google.com ([209.85.220.171]:35688 "EHLO
+	mail-vc0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751940Ab3FJTFS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 15:05:18 -0400
+Received: by mail-vc0-f171.google.com with SMTP id gd11so1893794vcb.30
+        for <linux-can@vger.kernel.org>; Mon, 10 Jun 2013 12:05:17 -0700 (PDT)
+In-Reply-To: <51B606C0.1070407@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
 
-;)
+Hi Marc,
 
-* The first today fixes terminal settings (cr/nl). Flags update is=20
-enough for that.
-* 1/2 patch introduces stdin detection switch. It is important if you=20
-want to use slcanpty as deamon - natural choice for me.
-* 2/2 patch is rather for very simple testings using console (like=20
-DEBUG define). However command "slcanpty /dev/tty vcan0 < /dev/null"=20
-makes the patch redundant.
-So the first and 1/2 are really strongly suggested.
+On Mon, Jun 10, 2013 at 2:02 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 06/05/2013 09:27 PM, Fabio Estevam wrote:
+>> mx28evk has two CAN ports and they are controlled by the same GPIO.
+>>
+>> If can0 runs flexcan_chip_stop(), then the regulator will be disabled, which
+>> means that can1 cannot run anymore.
+>
+> Are you sure? I think the regulator framework has a proper refcount.
 
-best regards
-Janusz
+Yes, the refcount is OK. The problem is that on mx28evk we have two
+CAN ports controlled by the same regulator.
 
-W dniu 2013-06-10 20:29, Oliver Hartkopp napisa=C5=82(a):
-> On 10.06.2013 11:53, janusz.uzycki@elproma.com.pl wrote:
->> Primarily I wanted to use stdin/stdout (defined as "-") but it=20
->> required
->> splitted p descriptor to pin and pout... For the "-" socat can be=20
->> used so I
->> stopped here.
->=20
-> :-)
->=20
-> Ok, which of your three patches do you suggest to be applied now?
->=20
-> Is the terminal flags update patch enough?
->=20
-> Best regards,
-> Oliver
->=20
->>=20
->> best regards
->> Janusz
->>=20
->> W dniu 2013-06-10 11:44, janusz.uzycki@elproma.com.pl napisa=C5=82(a=
-):
->>> From 4c6115b210b64cf93493c93b05f82c83a085fb73 Mon Sep 17 00:00:00=20
->>> 2001
->>> From: Janusz Uzycki <j.uzycki@elproma.com.pl>
->>> Date: Fri, 7 Jun 2013 23:02:13 +0200
->>> Subject: [PATCH 2/2] slcanpty: /dev/tty support for tests
->>>=20
->>>=20
->>> Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
->>> ---
->>>  slcanpty.c | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>=20
->>> diff --git a/slcanpty.c b/slcanpty.c
->>> index f312362..b7e8ed7 100644
->>> --- a/slcanpty.c
->>> +++ b/slcanpty.c
->>> @@ -44,6 +44,7 @@
->>>  /* maximum rx buffer len: extended CAN frame with timestamp */
->>>  #define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
->>>  #define DEVICE_NAME_PTMX "/dev/ptmx"
->>> +#define DEVICE_NAME_TTY "/dev/tty"
->>>=20
->>>  #define DEBUG
->>>=20
->>> @@ -407,10 +408,13 @@ int main(int argc, char **argv)
->>>                         " /dev/ttyc0 for the slcan application\n",=20
->>> argv[0]);
->>>                 fprintf(stderr, "e.g. for pseudo-terminal '%s %s=20
->>> can0' creates"
->>>                         " /dev/pts/N\n", argv[0], DEVICE_NAME_PTMX)=
-;
->>> +               fprintf(stderr, "e.g. for pseudo-terminal '%s %s=20
->>> can0' uses"
->>> +                       " console terminal (for testing=20
->>> purposes)\n",
->>> argv[0], DEVICE_NAME_TTY);
->>>                 fprintf(stderr, "\n");
->>>                 return 1;
->>>         }
->>>=20
->>> +       if (strcmp(argv[1], DEVICE_NAME_TTY) !=3D 0)
->>>         select_stdin =3D check_select_stdin();
->>>=20
->>>         /* open pty */
->>> --
->>> 1.7.11.3
+Let's say that can0 executes flexcan_chip_stop:
+
+static void flexcan_chip_stop(struct net_device *dev)
+{
+	struct flexcan_priv *priv = netdev_priv(dev);
+	struct flexcan_regs __iomem *regs = priv->base;
+	u32 reg;
+
+	/* Disable all interrupts */
+	flexcan_write(0, &regs->imask1);
+
+	/* Disable + halt module */
+	reg = flexcan_read(&regs->mcr);
+	reg |= FLEXCAN_MCR_MDIS | FLEXCAN_MCR_HALT;
+	flexcan_write(reg, &regs->mcr);
+
+        if (priv->reg_xceiver)
+	        regulator_disabled(priv->reg_xceiver);
+...
+
+It will turn off the transceiver here, which means that can1 will not
+be able to operate.
+
+Currently this situation is properly handled inside mach-mxs by only
+disabling the CAN transceiver when both CAN ports are not used.
+
+With the conversion to regulator I thought on enabling the regulator
+at the probe function and disabling it at remove.
+
+I understand that the power consumption will be higher in this case,
+but I could not find a better alternative so far.
+
+Regards,
+
+Fabio Estevam
