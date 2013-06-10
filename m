@@ -1,178 +1,103 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: AW: [Socketcan-users] [socketcan]problem to using CAN with BeagleBone
- Black A5A
-Date: Sun, 09 Jun 2013 09:11:22 +0200
-Message-ID: <51B42A9A.3000008@hartkopp.net>
-References: <zarafa.51b3a615.6bf0.67d03e2606cfc0c7@v14647.1blu.de>
+From: janusz.uzycki@elproma.com.pl
+Subject: Re: [PATCH] slcanpty
+Date: Mon, 10 Jun 2013 11:06:11 +0200
+Message-ID: <5dedc0b6441b754aebf3b560756932b8@beep.pl>
+References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
+ <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
+ <51B0D58F.2010401@hartkopp.net> <6f9fdd56db06e6029218834c526f7d15@beep.pl>
+ <51B310DC.8040509@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:49999 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751913Ab3FIHL0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 9 Jun 2013 03:11:26 -0400
-In-Reply-To: <zarafa.51b3a615.6bf0.67d03e2606cfc0c7@v14647.1blu.de>
+Received: from mailmxout15.mailmx.agnat.pl ([193.239.45.95]:39613 "EHLO
+	mailmxout15.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752987Ab3FJJGS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 05:06:18 -0400
+In-Reply-To: <51B310DC.8040509@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Luxen <mluxen@gmx.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
 
-On 08.06.2013 23:45, Michael Luxen wrote:
+Hi Oliver.
 
-> Did you or anybody else have already some experience on the BeagleBon=
-e Black with using the SPI-Interface with MCP2515?
-
-Not yet.
-
-> I'm thinking about to use 1-2 additional CAN-Interfaces to my BeagleB=
-one Black! That means two internal CAN-Interfaces and 2x SPI CAN-Interf=
-aces.
-> For example the Cape TT3201 uses two MCP2515 via SPI but I don't know=
- if there are issues with CAN busload above 30% at 500 kbit/s
-> http://www.towertech.it/en/products/hardware/tt3201-can-cape/
-
-We were discussing exactly about this board.
-AFAIK the CAN Capes have a I2C EEPROM for configuration data which conf=
-licts
-with one of the internal DCAN mux pins:
-
-http://circuitco.com/support/index.php?title=3DTT3201_CAN_Cape#EEPROM
-
-My first idea was to to modify the board in a way that both internal DC=
-AN
-interfaces and only one MCP2515 would be connected to the three CAN
-transceivers available on the board.
-
-That's why i was happy to see how you made the second DCAN working.
-
->=20
-> I'm not sure about the cpu-load, latency and messages lost problems. =
-My experience on the RasperryPi is that 2x MCP2515 on one SPI-Channel d=
-oesn't work with busload above 10% at 500kbit/s.
-
-That's not that much. But it's an interesting information to get an est=
-imation
-what one might get with this setup.
-
-> IMO the BeagleBone Black has the advantage to use two independent SPI=
--Channels SPI1 and SPI2 for using a MCP2515 on each SPI channel.
-
-This might be better. But IMO sending all the small messages for the re=
-gister
-accesses is the problem. When serial (e.g. SPI) attached CAN controller=
-s had a
-message based programming interface (instead of a register based) using=
- the
-SPI would be a real alternative.
-
-Regards,
-Oliver
-
-
->=20
-> -----Urspr=C3=BCngliche Nachricht-----
-> Von:	Oliver Hartkopp <socketcan@hartkopp.net>
-> Gesendet:	Sa 08.06.2013 13:46
-> Betreff:	Re: AW: [Socketcan-users] [socketcan]problem to using CAN wi=
-th BeagleBone Black A5A
-> An:	Michael Luxen <mluxen@gmx.net>;=20
-> CC:	linux-can@vger.kernel.org;=20
->> Hello Mike,
->>
->> thanks for pointing to that comprehensive documentation.
->>
->> I was asked by a colleague how to get both internal CAN controllers =
-working
->> instead of adding SPI-based MCP2515 interfaces.
->>
->> Good job!
->>
->> Best regards,
->> Oliver
->>
->> On 07.06.2013 21:46, Michael Luxen wrote:
->>> Hello Mohamed,
->>>
->>> is you question still open or answered already?
->>>
->>> If still open, please have a look on this page where you can find h=
-ow to=20
->> enable the CAN-Devices on BeagleBone Black.
->>> http://www.aero-box.co.uk/beaglebone-black#TOC-Enable-CANbus-device
->>>
->>> The only thing you have to do is to edit the am335x-bone-common.dts=
-i file for=20
->> enabling dcan0 and/or dcan1.
->>> Please have in mind that dcan0 is normaly used for the optional Cap=
-es, as=20
->> they use the I2C2 pins which are muxed on the same pins than dcan0.
->>> Nevertheless I've edited am335x-bone-common.dtsi successfully to en=
-able dcan0=20
->> and dcan1. On my BeagleBone Black (Hardware A5A) eveything is runnin=
-g fine on=20
->> both internal CAN-Interfaces with latest Angstrom and latest Debian =
-as well.
->>> Keep in mind that you have to put a CAN-transceiver on the Pins 20/=
-19 (DCAN0)=20
->> an 24/26 (DCAN1) on your BeagleBone Black.
->>>
->>> Regards
->>> Mike
->>>
->>> -----Urspr=C3=BCngliche Nachricht-----
->>> Von:	Martin Gysel <m.gysel@gmail.com>
->>> Gesendet:	Di 04.06.2013 13:32
->>> Betreff:	Re: [Socketcan-users] [socketcan]problem to using CAN with=
+The patch it ok. Thanks.
+However I have a problem with "slcanpty: handle incomplete messages=20
+from pty correctly" patch and socat tests. The patch expects \r and=20
+socat by default sends only \n. Even "socat PTY,link=3D/tmp/a,crnl -"=20
+results in \n\n instead of \r\n in buf[] despite ICRNL flag is reset by=
 =20
->> BeagleBone Black A5A
->>> An:	linux-can@vger.kernel.org;=20
->>> CC:	socketcan-users@lists.berlios.de;=20
->>>> Am 25.05.2013 00:49, schrieb Mohamed HAMZAOUI:
->>>>> Hi,
->>>>>
->>>>> I started with beaglebone black A5A, i installed on it the latest
->>>>> Angstrom image with : Linux beaglebone 3.8.13 #1 SMP Mon May 20
->>>>> 17:07:58 CEST 2013 armv7l GNU/Linux
->>>>>
->>>>> I have a problem when I try to add a can device, i load with modp=
-robe
->>>>> all necessary kernel module (can, ti_hecc, c_can, c_can_platform,
->>>>> can-raw, can-bcm) but when i execute
->>>>>> ip link add can0 type can
->>>>> I have : RTNETLINK answers: Operation not supported
->>>>> I used a recent version of iproute2.
->>>>
->>>> did you initialize the can module? do you use a can cape? if yes, =
-does
->>>> your kernel already include the needed dts to enable the can modul=
-e?
->>>>
->>>> /martin
->>>>
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe linux-ca=
-n" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>>
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-can=
-" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+tcsetattr(). Also "topts.c_lflag |=3D INLCR;" didn't help. Do you have=20
+idea?
 
+best regards
+Janusz
+
+W dniu 2013-06-08 13:09, Oliver Hartkopp napisa=C5=82(a):
+> Hi Janusz,
+>=20
+> thanks for the patch.
+>=20
+> I changed it in the way the perror() is only called on negative retur=
+n=20
+> values.
+>=20
+> Please check it out for a test.
+>=20
+> Best regards,
+> Oliver
+>=20
+> On 07.06.2013 15:40, janusz.uzycki@elproma.com.pl wrote:
+>> Hi Oliver.
+>>=20
+>> I've tested the following case:
+>> modprobe vcan
+>> ip link add dev vcan0 type vcan
+>> #ip link set vcan0 up type can bitrate 125000
+>> ip link set vcan0 up
+>> socat PTY,link=3D/tmp/a -
+>> cgdb --args ./slcanpty /tmp/a vcan0
+>>=20
+>> If socat killed slcanpty should finish instead of crazy loop (select=
+=20
+>> always
+>> returns).
+>> Here is proposal of very little patch:
+>> From a708491ea49e170ac1d36148e75b7b6c6f07b6fd Mon Sep 17 00:00:00=20
+>> 2001
+>> From: Janusz Uzycki <j.uzycki@elproma.com.pl>
+>> Date: Fri, 7 Jun 2013 15:25:39 +0200
+>> Subject: slcanpty: detect that master PTY descriptor closed
+>>=20
+>>=20
+>> Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
+>> ---
+>>  slcanpty.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/slcanpty.c b/slcanpty.c
+>> index f3628b9..061c1ab 100644
+>> --- a/slcanpty.c
+>> +++ b/slcanpty.c
+>> @@ -75,7 +75,7 @@ int pty2can(int pty, int socket, struct can_filter=
+=20
+>> *fi,
+>>         int tmp, i;
+>>=20
+>>         nbytes =3D read(pty, &buf, sizeof(buf)-1);
+>> -       if (nbytes < 0) {
+>> +       if (nbytes <=3D 0) { /* 0 means that master PTY descriptor h=
+as=20
+>> been
+>> closed */
+>>                 perror("read pty");
+>>                 return 1;
+>>         }
+>> --
+>> 1.7.11.3
+>>=20
+>> best regards
+>> Janusz
+>>=20
