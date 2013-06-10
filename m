@@ -1,82 +1,88 @@
-From: janusz.uzycki@elproma.com.pl
-Subject: Re: [PATCH 2/2] slcanpty: /dev/tty support for tests
-Date: Mon, 10 Jun 2013 11:53:20 +0200
-Message-ID: <3bdf2623dd49f435018b29b60d720a3b@beep.pl>
-References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
- <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
- <51B0D58F.2010401@hartkopp.net> <6f9fdd56db06e6029218834c526f7d15@beep.pl>
- <51B310DC.8040509@hartkopp.net> <5dedc0b6441b754aebf3b560756932b8@beep.pl>
- <2b96a7606efb82e512f328eb2260b4bd@beep.pl>
- <f4dc05d8086417bb0b0b3613a0e93311@beep.pl>
- <a6a53837d3a628d0a188d974acfd2597@beep.pl>
- <5b163f3e26b882777deae9a0f3ba248c@beep.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH 00/15] Convert to use devm_ioremap_resource
+Date: Mon, 10 Jun 2013 17:04:58 +0530
+Message-ID: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailmxout15.mailmx.agnat.pl ([193.239.45.95]:51393 "EHLO
-	mailmxout15.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751552Ab3FJJzI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 05:55:08 -0400
-In-Reply-To: <5b163f3e26b882777deae9a0f3ba248c@beep.pl>
+Received: from mail-pb0-f50.google.com ([209.85.160.50]:49792 "EHLO
+	mail-pb0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752808Ab3FJLtt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 07:49:49 -0400
+Received: by mail-pb0-f50.google.com with SMTP id wz7so1570682pbc.9
+        for <linux-can@vger.kernel.org>; Mon, 10 Jun 2013 04:49:48 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
+To: linux-kernel@vger.kernel.org
+Cc: thierry.reding@gmail.com, patches@linaro.org, alsa-devel@alsa-project.org, devel@driverdev.osuosl.org, linux-can@vger.kernel.org, linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org, linux-pci@vger.kernel.org, linux-usb@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Chris Ball <cjb@laptop.org>, Dan Williams <djbw@fb.com>, "David S. Miller" <davem@davemloft.net>, Felipe Balbi <balbi@ti.com>, Grant Likely <grant.likely@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Brown <broonie@kernel.org>, Michal Simek <michal.simek@xilinx.com>, Rob Landley <rob@landley.net>, Vinod Koul <vinod.koul@intel.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-Primarily I wanted to use stdin/stdout (defined as "-") but it required=
-=20
-splitted p descriptor to pin and pout... For the "-" socat can be used=20
-so I stopped here.
+These are the remaining instances of devm_request_and_ioremap. Convert
+them to use devm_ioremap_resource as introduced by commit
+75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()).
+Patches 1 to 13 remove occurrences of devm_request_and_ioremap.
+Patch 14 modifies one comment that speaks about devm_request_and_ioremap.
+Patch 15 removes the definition of devm_request_and_ioremap which
+should only be applied if all other pathces are merged.
 
-best regards
-Janusz
+Tushar Behera (15):
+  sparc,leon: Convert to use devm_ioremap_resource
+  sudmac: Convert to use devm_ioremap_resource
+  mmc: mvsdio: Convert to use devm_ioremap_resource
+  gpio_msm: Convert to use devm_ioremap_resource
+  gpio-sta2x11: Convert to use devm_ioremap_resource
+  net: bcm63xx_enet: Convert to use devm_ioremap_resource
+  net: fec: Convert to use devm_ioremap_resource
+  net: emaclite: Convert to use devm_ioremap_resource
+  net: can: Convert to use devm_ioremap_resource
+  Staging: netlogic: Convert to use devm_ioremap_resource
+  regulator: ti-abb: Convert to use devm_ioremap_resource
+  ASoC: spear: Convert to use devm_ioremap_resource
+  pci: mvebu: Convert to use devm_ioremap_resource
+  usb: phy: rcar-usb: Fix comment w.r.t. devm_ioremap_resource
+  lib: devres: Remove deprecated devm_request_and_ioremap
 
-W dniu 2013-06-10 11:44, janusz.uzycki@elproma.com.pl napisa=C5=82(a):
-> From 4c6115b210b64cf93493c93b05f82c83a085fb73 Mon Sep 17 00:00:00 200=
-1
-> From: Janusz Uzycki <j.uzycki@elproma.com.pl>
-> Date: Fri, 7 Jun 2013 23:02:13 +0200
-> Subject: [PATCH 2/2] slcanpty: /dev/tty support for tests
->=20
->=20
-> Signed-off-by: Janusz Uzycki <j.uzycki@elproma.com.pl>
-> ---
->  slcanpty.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/slcanpty.c b/slcanpty.c
-> index f312362..b7e8ed7 100644
-> --- a/slcanpty.c
-> +++ b/slcanpty.c
-> @@ -44,6 +44,7 @@
->  /* maximum rx buffer len: extended CAN frame with timestamp */
->  #define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
->  #define DEVICE_NAME_PTMX "/dev/ptmx"
-> +#define DEVICE_NAME_TTY "/dev/tty"
->=20
->  #define DEBUG
->=20
-> @@ -407,10 +408,13 @@ int main(int argc, char **argv)
->                         " /dev/ttyc0 for the slcan application\n",=20
-> argv[0]);
->                 fprintf(stderr, "e.g. for pseudo-terminal '%s %s can0=
-'=20
-> creates"
->                         " /dev/pts/N\n", argv[0], DEVICE_NAME_PTMX);
-> +               fprintf(stderr, "e.g. for pseudo-terminal '%s %s can0=
-'=20
-> uses"
-> +                       " console terminal (for testing purposes)\n",
-> argv[0], DEVICE_NAME_TTY);
->                 fprintf(stderr, "\n");
->                 return 1;
->         }
->=20
-> +       if (strcmp(argv[1], DEVICE_NAME_TTY) !=3D 0)
->         select_stdin =3D check_select_stdin();
->=20
->         /* open pty */
-> --
-> 1.7.11.3
+ Documentation/driver-model/devres.txt         |    1 -
+ arch/sparc/kernel/leon_pci_grpci1.c           |    6 +++---
+ drivers/dma/sh/sudmac.c                       |    6 +++---
+ drivers/gpio/gpio-msm-v1.c                    |   12 +++++------
+ drivers/gpio/gpio-sta2x11.c                   |    4 +++-
+ drivers/mmc/host/mvsdio.c                     |    6 +++---
+ drivers/net/can/c_can/c_can_platform.c        |    4 ++--
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c  |   12 +++++------
+ drivers/net/ethernet/freescale/fec_main.c     |   12 +++++------
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |    6 ++++--
+ drivers/pci/host/pci-mvebu.c                  |    5 +++--
+ drivers/regulator/ti-abb-regulator.c          |   12 +++++------
+ drivers/staging/netlogic/xlr_net.c            |    8 +++----
+ drivers/usb/phy/phy-rcar-usb.c                |    2 +-
+ include/linux/device.h                        |    2 --
+ lib/devres.c                                  |   28 -------------------------
+ sound/soc/spear/spdif_out.c                   |   20 +++++-------------
+ 17 files changed, 55 insertions(+), 91 deletions(-)
+
+CC: alsa-devel@alsa-project.org
+CC: devel@driverdev.osuosl.org
+CC: linux-can@vger.kernel.org
+CC: linux-doc@vger.kernel.org
+CC: linux-gpio@vger.kernel.org
+CC: linux-mmc@vger.kernel.org
+CC: linux-pci@vger.kernel.org
+CC: linux-usb@vger.kernel.org
+CC: netdev@vger.kernel.org
+CC: sparclinux@vger.kernel.org
+CC: Bjorn Helgaas <bhelgaas@google.com>
+CC: Chris Ball <cjb@laptop.org>
+CC: Dan Williams <djbw@fb.com>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Felipe Balbi <balbi@ti.com>
+CC: Grant Likely <grant.likely@linaro.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Linus Walleij <linus.walleij@linaro.org>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: Mark Brown <broonie@kernel.org>
+CC: Michal Simek <michal.simek@xilinx.com>
+CC: Rob Landley <rob@landley.net>
+CC: Vinod Koul <vinod.koul@intel.com>
+CC: Wolfgang Grandegger <wg@grandegger.com>
+-- 
+1.7.9.5
+
