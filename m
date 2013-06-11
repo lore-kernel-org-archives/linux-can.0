@@ -1,42 +1,43 @@
-From: Mohamed HAMZAOUI <requinham@gmail.com>
-Subject: Re: AW: Web GUI for can-utils (i.e. cangw, cansend, candump)
-Date: Tue, 11 Jun 2013 10:54:21 +0100
-Message-ID: <CABMxt4i7og5rCM82Ex-DziUBty9R-JRH_PN5v8qyqOjJ7o06OA@mail.gmail.com>
-References: <zarafa.51b5ff24.7028.506b738f3f6d3b02@v14647.1blu.de>
-	<51B61980.5060302@hartkopp.net>
+From: janusz.uzycki@elproma.com.pl
+Subject: Re: slcanpty
+Date: Tue, 11 Jun 2013 18:29:39 +0200
+Message-ID: <b4ff288352031c6f215c601575e7be0d@beep.pl>
+References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
+ <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
+ <51B0D58F.2010401@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f176.google.com ([209.85.217.176]:44033 "EHLO
-	mail-lb0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752406Ab3FKJyW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Jun 2013 05:54:22 -0400
-Received: by mail-lb0-f176.google.com with SMTP id z5so7282001lbh.35
-        for <linux-can@vger.kernel.org>; Tue, 11 Jun 2013 02:54:21 -0700 (PDT)
-In-Reply-To: <51B61980.5060302@hartkopp.net>
+Received: from mailmxout15.mailmx.agnat.pl ([193.239.45.95]:54489 "EHLO
+	mailmxout15.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755259Ab3FKQ3x (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Jun 2013 12:29:53 -0400
+In-Reply-To: <51B0D58F.2010401@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Luxen <mluxen@gmx.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
 
-Hi,
+Hi Oliver.
 
-Good idea. I think we could use Qt to develop this on a GUI based
-application which you can deploy on several architecture.
-I worked on a strong tool for simulation analysis and automatic
-validation of CAN/LIN networks and we developp all in C/C++/Qt.
-For Web based Gui, I think that it's possible to develop a gsoap
-webservice which you can consume with interface web and other type of
-application.
+> The SLCAN protocol is a nice and simple ASCII protocol that fits for 
+> many
+> purposes. But it also has some disadvantages e.g. when you want 
+> timestamps and
+> additional error signaling you can usually get from a CAN controller.
+> 
+>> (https://github.com/dschanoeh/socketcand/blob/master/doc/protocol.md) 
+>> some
 
-Regards,
-Mohamed
+I noticed that both slcanpty and socketcand don't implement bitrate 
+settings yet.
+iproute2 includes libnetlink but the library avoids CAN support.
+libsocketcan seems to be the best choice but libnl also good.
 
-> I would suggest to start with kcd files instead of dbc files, which are Vector
-> property.
+What do you prefer for CAN interface control?
 
-I think dbc format is too more used than kcd and switch to this format
-it's not possible for many reason
+best regards
+Janusz Uzycki
 
-Regards,
-Mohamed
