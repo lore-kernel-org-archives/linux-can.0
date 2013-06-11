@@ -1,70 +1,174 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] flexcan: Enable/Disable the CAN regulator in probe/remove
-Date: Tue, 11 Jun 2013 01:35:50 +0200
-Message-ID: <51B662D6.8080803@pengutronix.de>
-References: <1370460445-15386-1-git-send-email-festevam@gmail.com> <1370460445-15386-2-git-send-email-festevam@gmail.com> <51B606C0.1070407@pengutronix.de> <CAOMZO5CEWHTyw3s+vLtOVMdWmNWUndOZ3E4ohpCyTFXiz+VEOQ@mail.gmail.com> <51B63974.2000100@pengutronix.de> <CAOMZO5BdBr_ms1M61-k4hEmV3HnhAd6hOuUvAx6krxG95+c_Sg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2QXPRRAAATXTNEXQJCDRK"
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/3] ARM: imx: prepare for removal of flexcan_platform_data
+Date: Mon, 10 Jun 2013 23:12:56 -0300
+Message-ID: <1370916778-4406-1-git-send-email-festevam@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41670 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752084Ab3FJXgC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 19:36:02 -0400
-In-Reply-To: <CAOMZO5BdBr_ms1M61-k4hEmV3HnhAd6hOuUvAx6krxG95+c_Sg@mail.gmail.com>
+Received: from mail-gg0-f173.google.com ([209.85.161.173]:42579 "EHLO
+	mail-gg0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754540Ab3FKCNL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 22:13:11 -0400
+Received: by mail-gg0-f173.google.com with SMTP id k3so743825ggn.4
+        for <linux-can@vger.kernel.org>; Mon, 10 Jun 2013 19:13:10 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
+To: mkl@pengutronix.de
+Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2QXPRRAAATXTNEXQJCDRK
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 06/10/2013 10:49 PM, Fabio Estevam wrote:
-> On Mon, Jun 10, 2013 at 5:39 PM, Marc Kleine-Budde <mkl@pengutronix.de>=
- wrote:
->=20
->>> It will turn off the transceiver here, which means that can1 will not=
+As there are no imx in-tree users of flexcan_platform_data, this patch removes
+the possibility to register a flexcan device with platform data.
 
->>> be able to operate.
->>>
->>> Currently this situation is properly handled inside mach-mxs by only
->>> disabling the CAN transceiver when both CAN ports are not used.
->>
->> Why don't you enable the regulator in can1, too?
->=20
-> Since they use the same regulator (the same GPIO pin control both CAN
-> ports on mx28evk), I can not have regulator disabled for can0 and
-> regulator enabled for can1.
+The functionality to swith on/off CAN transceivers is added to DT via
+regulators on a later patch.
 
-Why not? I think regulators have proper refcounts and will stay enabled
-in the "disabled for CAN0 and enabled for CAN1" case.
+Compile time tested with imx_v4_v5_defconfig and imx_v6_v7_defconfig.
 
-Marc
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ arch/arm/mach-imx/devices-imx25.h              | 8 ++++----
+ arch/arm/mach-imx/devices-imx35.h              | 8 ++++----
+ arch/arm/mach-imx/devices/devices-common.h     | 4 +---
+ arch/arm/mach-imx/devices/platform-flexcan.c   | 5 ++---
+ arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c | 2 +-
+ arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c | 2 +-
+ arch/arm/mach-imx/mach-mx25_3ds.c              | 2 +-
+ arch/arm/mach-imx/mach-pcm043.c                | 2 +-
+ 8 files changed, 15 insertions(+), 18 deletions(-)
 
+diff --git a/arch/arm/mach-imx/devices-imx25.h b/arch/arm/mach-imx/devices-imx25.h
+index 0d2922b..769563f 100644
+--- a/arch/arm/mach-imx/devices-imx25.h
++++ b/arch/arm/mach-imx/devices-imx25.h
+@@ -13,10 +13,10 @@ extern const struct imx_fec_data imx25_fec_data;
+ 	imx_add_fec(&imx25_fec_data, pdata)
+ 
+ extern const struct imx_flexcan_data imx25_flexcan_data[];
+-#define imx25_add_flexcan(id, pdata)	\
+-	imx_add_flexcan(&imx25_flexcan_data[id], pdata)
+-#define imx25_add_flexcan0(pdata)	imx25_add_flexcan(0, pdata)
+-#define imx25_add_flexcan1(pdata)	imx25_add_flexcan(1, pdata)
++#define imx25_add_flexcan(id)	\
++	imx_add_flexcan(&imx25_flexcan_data[id])
++#define imx25_add_flexcan0()		imx25_add_flexcan(0)
++#define imx25_add_flexcan1()		imx25_add_flexcan(1)
+ 
+ extern const struct imx_fsl_usb2_udc_data imx25_fsl_usb2_udc_data;
+ #define imx25_add_fsl_usb2_udc(pdata)	\
+diff --git a/arch/arm/mach-imx/devices-imx35.h b/arch/arm/mach-imx/devices-imx35.h
+index e2675f1..780d824 100644
+--- a/arch/arm/mach-imx/devices-imx35.h
++++ b/arch/arm/mach-imx/devices-imx35.h
+@@ -17,10 +17,10 @@ extern const struct imx_fsl_usb2_udc_data imx35_fsl_usb2_udc_data;
+ 	imx_add_fsl_usb2_udc(&imx35_fsl_usb2_udc_data, pdata)
+ 
+ extern const struct imx_flexcan_data imx35_flexcan_data[];
+-#define imx35_add_flexcan(id, pdata)	\
+-	imx_add_flexcan(&imx35_flexcan_data[id], pdata)
+-#define imx35_add_flexcan0(pdata)	imx35_add_flexcan(0, pdata)
+-#define imx35_add_flexcan1(pdata)	imx35_add_flexcan(1, pdata)
++#define imx35_add_flexcan(id)	\
++	imx_add_flexcan(&imx35_flexcan_data[id])
++#define imx35_add_flexcan0()		imx35_add_flexcan(0)
++#define imx35_add_flexcan1()		imx35_add_flexcan(1)
+ 
+ extern const struct imx_imx2_wdt_data imx35_imx2_wdt_data;
+ #define imx35_add_imx2_wdt()       \
+diff --git a/arch/arm/mach-imx/devices/devices-common.h b/arch/arm/mach-imx/devices/devices-common.h
+index 453e20b..c13b76b 100644
+--- a/arch/arm/mach-imx/devices/devices-common.h
++++ b/arch/arm/mach-imx/devices/devices-common.h
+@@ -50,7 +50,6 @@ struct platform_device *__init imx_add_fec(
+ 		const struct imx_fec_data *data,
+ 		const struct fec_platform_data *pdata);
+ 
+-#include <linux/can/platform/flexcan.h>
+ struct imx_flexcan_data {
+ 	int id;
+ 	resource_size_t iobase;
+@@ -58,8 +57,7 @@ struct imx_flexcan_data {
+ 	resource_size_t irq;
+ };
+ struct platform_device *__init imx_add_flexcan(
+-		const struct imx_flexcan_data *data,
+-		const struct flexcan_platform_data *pdata);
++		const struct imx_flexcan_data *data);
+ 
+ #include <linux/fsl_devices.h>
+ struct imx_fsl_usb2_udc_data {
+diff --git a/arch/arm/mach-imx/devices/platform-flexcan.c b/arch/arm/mach-imx/devices/platform-flexcan.c
+index 1078bf0..55d61ea 100644
+--- a/arch/arm/mach-imx/devices/platform-flexcan.c
++++ b/arch/arm/mach-imx/devices/platform-flexcan.c
+@@ -38,8 +38,7 @@ const struct imx_flexcan_data imx35_flexcan_data[] __initconst = {
+ #endif /* ifdef CONFIG_SOC_IMX35 */
+ 
+ struct platform_device *__init imx_add_flexcan(
+-		const struct imx_flexcan_data *data,
+-		const struct flexcan_platform_data *pdata)
++		const struct imx_flexcan_data *data)
+ {
+ 	struct resource res[] = {
+ 		{
+@@ -54,5 +53,5 @@ struct platform_device *__init imx_add_flexcan(
+ 	};
+ 
+ 	return imx_add_platform_device("flexcan", data->id,
+-			res, ARRAY_SIZE(res), pdata, sizeof(*pdata));
++			res, ARRAY_SIZE(res), NULL, 0);
+ }
+diff --git a/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c b/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
+index e2b70f4c..e77cc3a 100644
+--- a/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
++++ b/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
+@@ -279,7 +279,7 @@ void __init eukrea_mbimxsd25_baseboard_init(void)
+ 	imx25_add_imx_fb(&eukrea_mximxsd_fb_pdata);
+ 	imx25_add_imx_ssi(0, &eukrea_mbimxsd_ssi_pdata);
+ 
+-	imx25_add_flexcan1(NULL);
++	imx25_add_flexcan1();
+ 	imx25_add_sdhci_esdhc_imx(0, &sd1_pdata);
+ 
+ 	gpio_request(GPIO_LED1, "LED1");
+diff --git a/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c b/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
+index 5a2d5ef..14d6c82 100644
+--- a/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
++++ b/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
+@@ -287,7 +287,7 @@ void __init eukrea_mbimxsd35_baseboard_init(void)
+ 
+ 	imx35_add_imx_ssi(0, &eukrea_mbimxsd_ssi_pdata);
+ 
+-	imx35_add_flexcan1(NULL);
++	imx35_add_flexcan1();
+ 	imx35_add_sdhci_esdhc_imx(0, &sd1_pdata);
+ 
+ 	gpio_request(GPIO_LED1, "LED1");
+diff --git a/arch/arm/mach-imx/mach-mx25_3ds.c b/arch/arm/mach-imx/mach-mx25_3ds.c
+index 8bcda68..13490c2 100644
+--- a/arch/arm/mach-imx/mach-mx25_3ds.c
++++ b/arch/arm/mach-imx/mach-mx25_3ds.c
+@@ -249,7 +249,7 @@ static void __init mx25pdk_init(void)
+ 	imx25_add_imx_i2c0(&mx25_3ds_i2c0_data);
+ 
+ 	gpio_request_one(MX25PDK_CAN_PWDN, GPIOF_OUT_INIT_LOW, "can-pwdn");
+-	imx25_add_flexcan0(NULL);
++	imx25_add_flexcan0();
+ }
+ 
+ static void __init mx25pdk_timer_init(void)
+diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
+index 8ed533f..b726cb1 100644
+--- a/arch/arm/mach-imx/mach-pcm043.c
++++ b/arch/arm/mach-imx/mach-pcm043.c
+@@ -385,7 +385,7 @@ static void __init pcm043_init(void)
+ 	if (!otg_mode_host)
+ 		imx35_add_fsl_usb2_udc(&otg_device_pdata);
+ 
+-	imx35_add_flexcan1(NULL);
++	imx35_add_flexcan1();
+ 	imx35_add_sdhci_esdhc_imx(0, &sd1_pdata);
+ }
+ 
+-- 
+1.8.1.2
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2QXPRRAAATXTNEXQJCDRK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlG2YtkACgkQjTAFq1RaXHPdZgCfajrxdLIj+3ovM8tb6Fm5zp5w
-ANIAoI2ldJ4YIZlXIBzA15+dBS9iihkc
-=+fuF
------END PGP SIGNATURE-----
-
-------enig2QXPRRAAATXTNEXQJCDRK--
