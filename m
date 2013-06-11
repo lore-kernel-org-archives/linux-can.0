@@ -1,39 +1,40 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/2] flexcan: Use a regulator to control the CAN transceiver
-Date: Mon, 10 Jun 2013 23:38:06 -0300
-Message-ID: <CAOMZO5CtSZ-ru1PFdgBhtvNYMSfaqe=0Bnmk4sTLRzHROp1YEA@mail.gmail.com>
-References: <1370460445-15386-1-git-send-email-festevam@gmail.com>
-	<51B605E7.6080903@pengutronix.de>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH 09/15] net: can: Convert to use devm_ioremap_resource
+Date: Tue, 11 Jun 2013 08:45:47 +0530
+Message-ID: <51B69663.5080304@linaro.org>
+References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org> <1370864113-17895-10-git-send-email-tushar.behera@linaro.org> <51B5D007.8050005@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ve0-f178.google.com ([209.85.128.178]:36149 "EHLO
-	mail-ve0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752249Ab3FKCiI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 22:38:08 -0400
-Received: by mail-ve0-f178.google.com with SMTP id pb11so5317612veb.23
-        for <linux-can@vger.kernel.org>; Mon, 10 Jun 2013 19:38:06 -0700 (PDT)
-In-Reply-To: <51B605E7.6080903@pengutronix.de>
+Received: from mail-pb0-f44.google.com ([209.85.160.44]:63855 "EHLO
+	mail-pb0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754553Ab3FKDPx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Jun 2013 23:15:53 -0400
+Received: by mail-pb0-f44.google.com with SMTP id uo1so3212339pbc.17
+        for <linux-can@vger.kernel.org>; Mon, 10 Jun 2013 20:15:52 -0700 (PDT)
+In-Reply-To: <51B5D007.8050005@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
+Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
 
-Hi Marc,
++CC: 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
 
-On Mon, Jun 10, 2013 at 1:59 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-};
->> +
->> +             reg_can_3v3: can-3v3 {
->> +                     compatible = "regulator-fixed";
->> +                     regulator-name = "can-3v3";
->> +                     regulator-min-microvolt = <3300000>;
->> +                     regulator-max-microvolt = <3300000>;
->> +                     gpio = <&gpio2 13 0>;
->
-> Can you convert GPIO2_13 from a hog gpio to a normal pinctl gpio?
+On 06/10/2013 06:39 PM, Marc Kleine-Budde wrote:
+> On 06/10/2013 01:35 PM, Tushar Behera wrote:
+>> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+>> introduced devm_ioremap_resource() and deprecated the use of
+>> devm_request_and_ioremap().
+> 
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> 
+> Are the patches going over the individual subsystem maintainers?
+> 
+> Marc
+> 
 
-I kept gpio2_13 as a hog gpio because on imx28-evk.dts we use this
-approach for the fec and usb regulators.
+I am not sure. Looping in Greg for clarity.
 
-Hope this is OK.
+-- 
+Tushar Behera
