@@ -1,66 +1,37 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] ARM: imx: prepare for removal of flexcan_platform_data
-Date: Wed, 12 Jun 2013 11:41:43 +0200
-Message-ID: <51B84257.608@pengutronix.de>
-References: <1370916778-4406-1-git-send-email-festevam@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/2] flexcan: Use a regulator to control the CAN
+ transceiver
+Date: Wed, 12 Jun 2013 19:42:00 +0800
+Message-ID: <20130612114159.GD13274@S2101-09.ap.freescale.net>
+References: <1370460445-15386-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2ESDRGEJGIMRLMOGAILWO"
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46150 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750876Ab3FLJls (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Jun 2013 05:41:48 -0400
-In-Reply-To: <1370916778-4406-1-git-send-email-festevam@gmail.com>
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]:12112
+	"EHLO co1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753022Ab3FLLla (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Jun 2013 07:41:30 -0400
+Content-Disposition: inline
+In-Reply-To: <1370460445-15386-1-git-send-email-festevam@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Fabio Estevam <festevam@gmail.com>
-Cc: shawn.guo@linaro.org, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2ESDRGEJGIMRLMOGAILWO
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 05, 2013 at 04:27:24PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> Instead of using a GPIO to turn on/off the CAN transceiver, it is better to
+> use a regulator as some systems may use a PMIC to power the CAN transceiver.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  .../devicetree/bindings/net/can/fsl-flexcan.txt    |  2 +
+>  arch/arm/boot/dts/imx28-evk.dts                    | 11 +++++
+>  arch/arm/mach-mxs/mach-mxs.c                       | 54 ++--------------------
 
-On 06/11/2013 04:12 AM, Fabio Estevam wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
->=20
-> As there are no imx in-tree users of flexcan_platform_data, this patch =
-removes
-> the possibility to register a flexcan device with platform data.
->=20
-> The functionality to swith on/off CAN transceivers is added to DT via
-> regulators on a later patch.
->=20
-> Compile time tested with imx_v4_v5_defconfig and imx_v6_v7_defconfig.
->=20
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
 
-Nitpick: Don't forget to add your S-o-b when posting patches from other
-people ;)
+>  drivers/net/can/flexcan.c                          | 24 +++++-----
+>  4 files changed, 29 insertions(+), 62 deletions(-)
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2ESDRGEJGIMRLMOGAILWO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlG4QlcACgkQjTAFq1RaXHN2FQCfVaEydKA9MRE0Whuf6fGmC1RC
-KlAAnRqj55hRH+fJqD0Mr1Ocscr3zyCI
-=QqNW
------END PGP SIGNATURE-----
-
-------enig2ESDRGEJGIMRLMOGAILWO--
