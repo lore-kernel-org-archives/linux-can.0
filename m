@@ -1,37 +1,50 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 1/2] flexcan: Use a regulator to control the CAN
- transceiver
-Date: Wed, 12 Jun 2013 19:42:00 +0800
-Message-ID: <20130612114159.GD13274@S2101-09.ap.freescale.net>
-References: <1370460445-15386-1-git-send-email-festevam@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] net: can: at91_can: Use of_match_ptr()
+Date: Wed, 12 Jun 2013 17:00:39 +0530
+Message-ID: <1371036639-16798-1-git-send-email-sachin.kamat@linaro.org>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]:12112
-	"EHLO co1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753022Ab3FLLla (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Jun 2013 07:41:30 -0400
-Content-Disposition: inline
-In-Reply-To: <1370460445-15386-1-git-send-email-festevam@gmail.com>
+Received: from mail-pd0-f177.google.com ([209.85.192.177]:58132 "EHLO
+	mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750862Ab3FLLpN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Jun 2013 07:45:13 -0400
+Received: by mail-pd0-f177.google.com with SMTP id p10so4232939pdj.22
+        for <linux-can@vger.kernel.org>; Wed, 12 Jun 2013 04:45:12 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@freescale.com>
+To: netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, davem@davemloft.net, wg@grandegger.com, sachin.kamat@linaro.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On Wed, Jun 05, 2013 at 04:27:24PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> Instead of using a GPIO to turn on/off the CAN transceiver, it is better to
-> use a regulator as some systems may use a PMIC to power the CAN transceiver.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> ---
->  .../devicetree/bindings/net/can/fsl-flexcan.txt    |  2 +
->  arch/arm/boot/dts/imx28-evk.dts                    | 11 +++++
->  arch/arm/mach-mxs/mach-mxs.c                       | 54 ++--------------------
+of_match_ptr() eliminates having an #ifdef returning NULL for the case
+when OF is disabled.
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/at91_can.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
->  drivers/net/can/flexcan.c                          | 24 +++++-----
->  4 files changed, 29 insertions(+), 62 deletions(-)
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index ce8421a..dbbe97a 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1264,8 +1264,6 @@ static const struct of_device_id at91_can_dt_ids[] = {
+ 	}
+ };
+ MODULE_DEVICE_TABLE(of, at91_can_dt_ids);
+-#else
+-#define at91_can_dt_ids NULL
+ #endif
+ 
+ static const struct at91_devtype_data *at91_can_get_driver_data(struct platform_device *pdev)
+@@ -1424,7 +1422,7 @@ static struct platform_driver at91_can_driver = {
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+ 		.owner = THIS_MODULE,
+-		.of_match_table = at91_can_dt_ids,
++		.of_match_table = of_match_ptr(at91_can_dt_ids),
+ 	},
+ 	.id_table = at91_can_id_table,
+ };
+-- 
+1.7.9.5
 
