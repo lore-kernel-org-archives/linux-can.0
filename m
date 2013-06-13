@@ -1,74 +1,77 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 09/15] net: can: Convert to use devm_ioremap_resource
-Date: Thu, 13 Jun 2013 11:11:09 +0530
-Message-ID: <CAK9yfHzAkca-YxFoSv=vyxgOQMyi8adgeABi3ZHW=Jiw2Z51dg@mail.gmail.com>
-References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org>
-	<1370864113-17895-10-git-send-email-tushar.behera@linaro.org>
-	<51B958D8.2070804@linaro.org>
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Subject: Dual SJA1000 can controllers on SMP system.
+Date: Thu, 13 Jun 2013 14:47:29 +0200
+Message-ID: <51B9BF61.8050905@hostmobility.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ob0-f175.google.com ([209.85.214.175]:39658 "EHLO
-	mail-ob0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755257Ab3FMFlK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Jun 2013 01:41:10 -0400
-Received: by mail-ob0-f175.google.com with SMTP id xn12so14153914obc.20
-        for <linux-can@vger.kernel.org>; Wed, 12 Jun 2013 22:41:09 -0700 (PDT)
-In-Reply-To: <51B958D8.2070804@linaro.org>
+Received: from mail-la0-f54.google.com ([209.85.215.54]:45529 "EHLO
+	mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754884Ab3FMMre (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Jun 2013 08:47:34 -0400
+Received: by mail-la0-f54.google.com with SMTP id ec20so8980875lab.13
+        for <linux-can@vger.kernel.org>; Thu, 13 Jun 2013 05:47:32 -0700 (PDT)
+Received: from [192.168.0.85] (static-92-33-5-210.sme.bredbandsbolaget.se. [92.33.5.210])
+        by mx.google.com with ESMTPSA id t17sm10707318lbd.11.2013.06.13.05.47.30
+        for <linux-can@vger.kernel.org>
+        (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Thu, 13 Jun 2013 05:47:31 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-can@vger.kernel.org
 
-On 13 June 2013 11:00, Tushar Behera <tushar.behera@linaro.org> wrote:
-> On 06/10/2013 05:05 PM, Tushar Behera wrote:
->> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
->> introduced devm_ioremap_resource() and deprecated the use of
->> devm_request_and_ioremap().
->>
->> Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
->> CC: netdev@vger.kernel.org
->> CC: linux-can@vger.kernel.org
->> CC: Marc Kleine-Budde <mkl@pengutronix.de>
->> CC: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/net/can/c_can/c_can_platform.c |    4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
->> index 6b6130b..b918c73 100644
->> --- a/drivers/net/can/c_can/c_can_platform.c
->> +++ b/drivers/net/can/c_can/c_can_platform.c
->> @@ -201,8 +201,8 @@ static int c_can_plat_probe(struct platform_device *pdev)
->>                       priv->instance = pdev->id;
->>
->>               res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> -             priv->raminit_ctrlreg = devm_request_and_ioremap(&pdev->dev, res);
->> -             if (!priv->raminit_ctrlreg || priv->instance < 0)
->> +             priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
->> +             if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
->>                       dev_info(&pdev->dev, "control memory is not used for raminit\n");
->>               else
->>                       priv->raminit = c_can_hw_raminit;
->>
->
-> IS_ERR() check on the return value of devm_ioremap_resource produces
-> following sparse warning. This is because of the __iomem address space
-> attribute. How should we fix this?
->
-> drivers/net/can/c_can/c_can_platform.c:205:32: warning: incorrect type
-> in argument 1 (different address spaces)
-> drivers/net/can/c_can/c_can_platform.c:205:32:    expected void const *ptr
-> drivers/net/can/c_can/c_can_platform.c:205:32:    got unsigned int
-> [noderef] [usertype] <asn:2>*raminit_ctrlreg
->
+Dear Sirs.
 
-This is a known issue since the time devm_ioremap_resource was
-introduced. Thierry had already submitted some fixes for this.
-I am not sure if they have been applied yet.
-More details here:
-https://patchwork.kernel.org/patch/2071361/
+I am running a 3.1.10 kernel on Nvidia Tegra 2 CPU (Dual Core). Not=20
+vanilla kernel (Linux4Tegra).
 
--- 
-With warm regards,
-Sachin
+We are using dual can controllers connected on th external data bus on=20
+our custom hardware. The can controllers are SJA1000.
+
+Driver that is used is vanilla sja1000 driver (sja1000.c)
+
+Now to the issue at hand. Will try my best to explain our scenario and=20
+issue:
+     1. The two can controllers are connected with each other with a=20
+loop-back.
+     2. What we are attempting is to send data on both controllers in=20
+two separate processes. We are using following command "cansequence can=
+0=20
+-p &" and "cansequence can1 -p &". With a bit-rate configured to 1 Mbit=
+/s.
+     3. What we see when we attempt the above is that one of the=20
+controllers stop sending and the software buffer gets filled up. When i=
+t=20
+stops varies but usually after a few packets are sent.
+
+After some digging we came to this conclusion. The two cansequence=20
+processes end up on different CPU cores. The process that ends up in=20
+CPU1 is the one that always stops transmitting.
+
+Workarounds that we have seen that works is
+     1. Disable dual core with kernel argument "maxcpus=3D1".
+     2. Forcing the cansequence processes to CPU0 with "taskset" comman=
+d.
+
+My question to you is if anyone has tested the SJA1000 driver on an SMP=
+=20
+system or anything similar.
+--=20
+Med V=E4nliga H=E4lsningar / Best Regards
+Mirza
+
+*******************************************************************
+Mirza Krak
+Host Mobility AB
+mirza.krak@hostmobility.com
+Anders Personsgatan 12, 416 64 G=F6teborg
+Sweden
+www.hostmobility.com <http://www.hostmobility.com>
+Direct: +46 31 31 32 704
+Phone: +46 31 31 32 700
+=46ax: +46 31 80 67 51
+Mobile: +46 730 28 06 22
+*******************************************************************
+
