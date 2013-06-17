@@ -1,74 +1,103 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Dual SJA1000 can controllers on SMP system.
-Date: Mon, 17 Jun 2013 09:18:33 +0200
-Message-ID: <51BEB849.3020409@pengutronix.de>
-References: <c2744427f1624d26950ca030d4dff1c6@s75.digisrv.net> <51BDB1ED.1040603@grandegger.com> <51BEA863.1040704@hostmobility.com>
+From: "Janusz Uzycki" <janusz.uzycki@elproma.com.pl>
+Subject: Re: RFC: (optional) software filtering in candump
+Date: Mon, 17 Jun 2013 13:27:57 +0200
+Message-ID: <D1C57559EF7B4FA8A6C669A1BF05CFDB@laptop2>
+References: <190D92B052C049F4B059DCFE8F841940@laptop2> <51BB5B80.9060109@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2FMBNKKIUKNGCDCRVRSDP"
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-2";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56532 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750880Ab3FQHSj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Jun 2013 03:18:39 -0400
-In-Reply-To: <51BEA863.1040704@hostmobility.com>
+Received: from mailmxout12.mailmx.agnat.pl ([193.239.45.92]:57698 "EHLO
+	mailmxout12.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932295Ab3FQL2d (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Jun 2013 07:28:33 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@hostmobility.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2FMBNKKIUKNGCDCRVRSDP
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+> Did you see my patch to remove duplicates by matching the CAN-ID and the
+> timestamp for the raw socket?
 
-On 06/17/2013 08:10 AM, Mirza Krak wrote:
-> Aah off course. The low-level device driver is sja1000_platform.c. The
-> functions I am using are sp_read_reg8 and sp_write_reg8 which I have
-> slightly modified. Since I don't use multiplexed bus functionality I
-> write the address first.
->=20
->   static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
-> {
->     iowrite8(reg, priv->reg_base);
-      ^^^^^^^^
->     return ioread8(priv->reg_base + 0x20);
-> }
->=20
-> static void sp_write_reg8(const struct sja1000_priv *priv, int reg, u8 =
-val)
-> {
->     iowrite8(reg, priv->reg_base);
-      ^^^^^^^^
->     iowrite8(val, (priv->reg_base + 0x20));
-> }
+I read comments about the patch. Now I see the code and timestamp matching 
+:)
+Before I thought that each CAN frame is stamped by frame's circular id 
+(in/after a queue). Then the filter would be even simpler (id filtering 
+instead of can_id and timestamp).
 
-Can you post a proper patch, so that we can see what you have changed?
+>> The problem
+>> could be a lot of frames in short time. Then additional field in 
+>> can_frame
+>> struct with packet_id in queue would be useful.
+>
+> No. For two reasons:
+>
+> 1. The struct can_frame contains the content of a CAN frame, which is
+>   - a CAN Identifier
+>   - a data length
+>   - CAN payload data
+>
+>   all other stuff is not really CAN specific.
 
-You probably have a nice race condition here. The two iowrites have to
-be atomic.
+It is not CAN frame data, right, but important information about frame and 
+the best timestamp could be used (eg. HW if available).
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 2. The struct can_frame is set in stone with Linux 2.6.25. Any change 
+> breaks
+>   the binary API
 
+If the field member is added at the end of structure it is extention not 
+breaker. On the other hand kernel has well defined API for timestamping.
 
-------enig2FMBNKKIUKNGCDCRVRSDP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>> The timestamp could be also
+>> added in the same way. How SIOCGSTAMP works now?
+>
+> Use ioctl(s, SIOCGSTAMP, &tv) after read/recvmsg:
+>
+> See e.g. for a read() syscall
+> https://gitorious.org/linux-can/can-utils/blobs/master/isotpdump.c#line214
+>
+> See e.g. for a recvmsg() syscall
+> https://gitorious.org/linux-can/can-utils/blobs/master/candump.c#line663
+>
+>> What is difference in
+>> SO_TIMESTAMP?
+>
+> It *is* SO_TIMESTAMP. The standard established programming interface in 
+> POSIX
+> systems. Therefore puting the timestamp into struct can_frame would have 
+> been
+> a mistake.
+>
+>
+>> Where in kernel (socket layer or low level CAN driver, eq. irq)
+>> the timestamp is generated?
+>
+> See netif_receive_skb() (softirq context)
+> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L3547
+>
+> Or netif_rx() (irq context)
+> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L3116
+>
+> These call net_timestamp_check() at
+> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L1571
+>
+> which sets the timestamp if enabled and needed.
+>
+> So it's at irq level (e.g. for SJA1000 driver)
+>
+> Additional a hardware timestamp can be retrieved from the hardware and 
+> passed
+> to the userspace. (HW timestamps)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+Thanks Oliver for the explanation. It's clean now.
+Shouldn't hardware timestamping option be implemented like PTP? 
+http://lxr.linux.no/linux+v3.9.6/net/core/timestamping.c#L104  (I don't need 
+it but I couldn't find HW timestamp code for SJA1000 or MCP2515)
 
-iEYEARECAAYFAlG+uEkACgkQjTAFq1RaXHMQOwCdG4SXfJpq86jqGwUYZK79Qd92
-6V0AnjAvjPD9t7+XN5Y4Iw+/Xph9HZzj
-=TOrR
------END PGP SIGNATURE-----
+best regards
+Janusz
 
-------enig2FMBNKKIUKNGCDCRVRSDP--
