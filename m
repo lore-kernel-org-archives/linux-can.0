@@ -1,103 +1,108 @@
-From: "Janusz Uzycki" <janusz.uzycki@elproma.com.pl>
-Subject: Re: RFC: (optional) software filtering in candump
-Date: Mon, 17 Jun 2013 13:27:57 +0200
-Message-ID: <D1C57559EF7B4FA8A6C669A1BF05CFDB@laptop2>
-References: <190D92B052C049F4B059DCFE8F841940@laptop2> <51BB5B80.9060109@hartkopp.net>
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Subject: Re: Dual SJA1000 can controllers on SMP system.
+Date: Mon, 17 Jun 2013 15:46:19 +0200
+Message-ID: <51BF132B.3020705@hostmobility.com>
+References: <c2744427f1624d26950ca030d4dff1c6@s75.digisrv.net> <51BDB1ED.1040603@grandegger.com> <51BEA863.1040704@hostmobility.com> <51BEB849.3020409@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-2";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------040004040604010001060507"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailmxout12.mailmx.agnat.pl ([193.239.45.92]:57698 "EHLO
-	mailmxout12.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932295Ab3FQL2d (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Jun 2013 07:28:33 -0400
+Received: from mail-la0-f51.google.com ([209.85.215.51]:48105 "EHLO
+	mail-la0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755834Ab3FQNqY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Jun 2013 09:46:24 -0400
+Received: by mail-la0-f51.google.com with SMTP id fq12so2446529lab.38
+        for <linux-can@vger.kernel.org>; Mon, 17 Jun 2013 06:46:22 -0700 (PDT)
+In-Reply-To: <51BEB849.3020409@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Rickard Gustafsson <rickard.gustafsson@hostmobility.com>
 
-> Did you see my patch to remove duplicates by matching the CAN-ID and the
-> timestamp for the raw socket?
+This is a multi-part message in MIME format.
+--------------040004040604010001060507
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
 
-I read comments about the patch. Now I see the code and timestamp matching 
-:)
-Before I thought that each CAN frame is stamped by frame's circular id 
-(in/after a queue). Then the filter would be even simpler (id filtering 
-instead of can_id and timestamp).
+My modifications to sja1000_platform.c are attached as a patch.
 
->> The problem
->> could be a lot of frames in short time. Then additional field in 
->> can_frame
->> struct with packet_id in queue would be useful.
->
-> No. For two reasons:
->
-> 1. The struct can_frame contains the content of a CAN frame, which is
->   - a CAN Identifier
->   - a data length
->   - CAN payload data
->
->   all other stuff is not really CAN specific.
+Wolfgang: Using spinlock_irqsave() and spinlock_irqrestore() was also my 
+initial idea on the io functions but I tried this without it solving the 
+problem. I could try this again to be sure.
 
-It is not CAN frame data, right, but important information about frame and 
-the best timestamp could be used (eg. HW if available).
+Med Vänliga Hälsningar / Best Regards
+Mirza
 
-> 2. The struct can_frame is set in stone with Linux 2.6.25. Any change 
-> breaks
->   the binary API
+*******************************************************************
+Mirza Krak
+Host Mobility AB
+mirza.krak@hostmobility.com
+Anders Personsgatan 12, 416 64 Göteborg
+Sweden
+www.hostmobility.com <http://www.hostmobility.com>
+Direct: +46 31 31 32 704
+Phone: +46 31 31 32 700
+Fax: +46 31 80 67 51
+Mobile: +46 730 28 06 22
+*******************************************************************
 
-If the field member is added at the end of structure it is extention not 
-breaker. On the other hand kernel has well defined API for timestamping.
 
->> The timestamp could be also
->> added in the same way. How SIOCGSTAMP works now?
+On 06/17/2013 09:18 AM, Marc Kleine-Budde wrote:
+> On 06/17/2013 08:10 AM, Mirza Krak wrote:
+>> Aah off course. The low-level device driver is sja1000_platform.c. The
+>> functions I am using are sp_read_reg8 and sp_write_reg8 which I have
+>> slightly modified. Since I don't use multiplexed bus functionality I
+>> write the address first.
+>>
+>>    static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
+>> {
+>>      iowrite8(reg, priv->reg_base);
+>        ^^^^^^^^
+>>      return ioread8(priv->reg_base + 0x20);
+>> }
+>>
+>> static void sp_write_reg8(const struct sja1000_priv *priv, int reg, u8 val)
+>> {
+>>      iowrite8(reg, priv->reg_base);
+>        ^^^^^^^^
+>>      iowrite8(val, (priv->reg_base + 0x20));
+>> }
 >
-> Use ioctl(s, SIOCGSTAMP, &tv) after read/recvmsg:
+> Can you post a proper patch, so that we can see what you have changed?
 >
-> See e.g. for a read() syscall
-> https://gitorious.org/linux-can/can-utils/blobs/master/isotpdump.c#line214
+> You probably have a nice race condition here. The two iowrites have to
+> be atomic.
 >
-> See e.g. for a recvmsg() syscall
-> https://gitorious.org/linux-can/can-utils/blobs/master/candump.c#line663
+> Marc
 >
->> What is difference in
->> SO_TIMESTAMP?
->
-> It *is* SO_TIMESTAMP. The standard established programming interface in 
-> POSIX
-> systems. Therefore puting the timestamp into struct can_frame would have 
-> been
-> a mistake.
->
->
->> Where in kernel (socket layer or low level CAN driver, eq. irq)
->> the timestamp is generated?
->
-> See netif_receive_skb() (softirq context)
-> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L3547
->
-> Or netif_rx() (irq context)
-> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L3116
->
-> These call net_timestamp_check() at
-> http://lxr.linux.no/#linux+v3.9.6/net/core/dev.c#L1571
->
-> which sets the timestamp if enabled and needed.
->
-> So it's at irq level (e.g. for SJA1000 driver)
->
-> Additional a hardware timestamp can be retrieved from the hardware and 
-> passed
-> to the userspace. (HW timestamps)
 
-Thanks Oliver for the explanation. It's clean now.
-Shouldn't hardware timestamping option be implemented like PTP? 
-http://lxr.linux.no/linux+v3.9.6/net/core/timestamping.c#L104  (I don't need 
-it but I couldn't find HW timestamp code for SJA1000 or MCP2515)
+--------------040004040604010001060507
+Content-Type: text/x-patch;
+ name="sja1000_platform.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="sja1000_platform.patch"
 
-best regards
-Janusz
+Index: sja1000_platform.c
+===================================================================
+--- sja1000_platform.c	(revision 160)
++++ sja1000_platform.c	(working copy)
+@@ -38,12 +38,14 @@
+ 
+ static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
+ {
+-	return ioread8(priv->reg_base + reg);
++	iowrite8(reg, priv->reg_base);
++	return ioread8(priv->reg_base + 0x20);
+ }
+ 
+ static void sp_write_reg8(const struct sja1000_priv *priv, int reg, u8 val)
+ {
+-	iowrite8(val, priv->reg_base + reg);
++	iowrite8(reg, priv->reg_base);
++	iowrite8(val, (priv->reg_base + 0x20));
+ }
+ 
+ static u8 sp_read_reg16(const struct sja1000_priv *priv, int reg)
 
+--------------040004040604010001060507--
