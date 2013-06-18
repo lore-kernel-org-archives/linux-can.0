@@ -1,92 +1,73 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
-Subject: Re: 8devices problem on usb-3.0 host
-Date: Tue, 18 Jun 2013 20:21:17 +0200
-Message-ID: <51C0A51D.8010802@universalnet.at>
-References: <51C0533D.5030502@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: usb_8dev: unregister netdev before free()ing
+Date: Tue, 18 Jun 2013 20:34:08 +0200
+Message-ID: <51C0A820.3010102@pengutronix.de>
+References: <1371560243-24316-1-git-send-email-mkl@pengutronix.de> <51C0A5A2.6010909@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2NMWEDNNXTAQEDBBURMDI"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:53239 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932824Ab3FRSax (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 18 Jun 2013 14:30:53 -0400
-In-Reply-To: <51C0533D.5030502@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40483 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933020Ab3FRSe2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Jun 2013 14:34:28 -0400
+In-Reply-To: <51C0A5A2.6010909@universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michael Olbrich <mol@pengutronix.de>
+To: Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: linux-can@vger.kernel.org
 
-Am 2013-06-18 14:31, schrieb Marc Kleine-Budde:
-> Hello Bernd,
->
-> my college Michael is using the 8 devices usb dongle on an USB-3.0 host
-> and it fails with:
->
->> [ 1686.609330] can: raw protocol (rev 20120528)
->> [ 3347.787587] usb_8dev 3-1.2:1.0 can0: Rx URB aborted (-32)
->> [ 3347.788319] usb_8dev 3-1.2:1.0 can0: Rx URB aborted (-32)
->> [ 3347.789050] usb_8dev 3-1.2:1.0 can0: Rx URB aborted (-32)
-...
->> [ 3347.897224] usb_8dev 3-1.2:1.0 can0: Rx URB aborted (-32)
->> [ 3347.897725] usb 3-1.2: USB disconnect, device number 8
->> [ 3347.898037] usb_8dev 3-1.2:1.0 can0: device disconnected
->> [ 3347.898058] usb_8dev 3-1.2:1.0 can0: sending command message failed
->> [ 3347.898062] usb_8dev 3-1.2:1.0 can0: couldn't stop device
->> [ 3354.974145] usb 1-2: new full-speed USB device number 5 using xhci_hcd
->> [ 3354.974366] usb 1-2: Device not responding to set address.
->> [ 3355.184387] usb 1-2: Device not responding to set address.
->> [ 3355.394243] usb 1-2: device not accepting address 5, error -71
->> [ 3355.514288] usb 1-2: new full-speed USB device number 6 using xhci_hcd
->> [ 3355.536209] usb 1-2: New USB device found, idVendor=0483, idProduct=1234
->> [ 3355.536216] usb 1-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
->> [ 3355.536220] usb 1-2: Product: USB2CAN converter
->> [ 3355.536224] usb 1-2: Manufacturer: edevices
->> [ 3355.536227] usb 1-2: SerialNumber: ED000210
->> [ 3356.635802] usb_8dev 1-2:1.0 can0: no command message answer
->> [ 3356.635811] usb_8dev 1-2:1.0 can0: can't get firmware version
->
-> Then the driver oopes; I already have a patch for the oops, I'll send it
-> around soon.
->
-> Marc
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2NMWEDNNXTAQEDBBURMDI
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
+On 06/18/2013 08:23 PM, Bernd Krumboeck wrote:
+> Am 2013-06-18 14:57, schrieb Marc Kleine-Budde:
+>> The usb_8dev hardware has problems on some xhci USB hosts. The driver
+>> fails to
+>> read the firmware revision in the probe function. This leads to the
+>> following
+>> Oops:
+>>
+>>      [ 3356.635912] kernel BUG at net/core/dev.c:5701!
+>>
+>> The driver tries to free the netdev, which has already been
+>> registered, without
+>> unregistering it.
+>>
+>> This patch fixes the problem by unregistering the netdev in the error
+>> path.
+>>
+>=20
+> Thank you for the patch!
+>=20
+> I've applied it to my source tree:
+> https://github.com/krumboeck/usb2can
 
-Hello Marc!
+Can I have you Acked-by or Reviewed-by?
 
-
-My tests also failed. :-(
-
-System:
-Linux debian 3.2.0-4-amd64
-Asus U3S6 PCIe x4
-USB controller: NEC Corporation uPD720200 USB 3.0 Host Controller (rev 03)
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-dmesg:
-[87087.312019] usb 2-2: new full-speed USB device number 4 using xhci_hcd
-[87087.312300] usb 2-2: Device not responding to set address.
-[87087.516288] usb 2-2: Device not responding to set address.
-[87087.720009] usb 2-2: device not accepting address 4, error -71
-[87087.832025] usb 2-2: new full-speed USB device number 5 using xhci_hcd
-[87087.877433] usb 2-2: New USB device found, idVendor=0483, idProduct=1234
-[87087.877437] usb 2-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[87087.877440] usb 2-2: Product: USB2CAN converter
-[87087.877442] usb 2-2: Manufacturer: edevices
-[87087.877444] usb 2-2: SerialNumber: ED000202
-[87087.877704] xhci_hcd 0000:06:00.0: ERROR: unexpected command completion code 0x11.
-[87087.877712] usb 2-2: can't set config #1, error -22
+------enig2NMWEDNNXTAQEDBBURMDI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-Maybe a firmware bug?
-Any ideas are highly welcome...
+iEYEARECAAYFAlHAqCQACgkQjTAFq1RaXHOEOACghT8FFBNii/uSwmWjJtcBqIZX
+S9UAoI9TLse82j902ay+6hj2IaOqJeoN
+=V+Ff
+-----END PGP SIGNATURE-----
 
-
-Firmware:
-https://github.com/krumboeck/usb2can_firmware
-
-
-regards,
-Bernd
-
+------enig2NMWEDNNXTAQEDBBURMDI--
