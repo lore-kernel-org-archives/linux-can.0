@@ -1,25 +1,72 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2013-06-19
-Date: Wed, 19 Jun 2013 00:48:13 -0700 (PDT)
-Message-ID: <20130619.004813.1446078085522365696.davem@davemloft.net>
-References: <1371625369-26368-1-git-send-email-mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: usb_8dev: unregister netdev before free()ing
+Date: Wed, 19 Jun 2013 18:29:12 +0200
+Message-ID: <51C1DC58.2040705@hartkopp.net>
+References: <1371625369-26368-1-git-send-email-mkl@pengutronix.de> <1371625369-26368-2-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1371625369-26368-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:44091 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757195Ab3FSQ3Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Jun 2013 12:29:25 -0400
+In-Reply-To: <1371625369-26368-2-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.net, stable@kernel.org, =?ISO-8859-1?Q?Bernd_Krumb=F6c?= =?ISO-8859-1?Q?k?= <krumboeck@universalnet.at>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 19 Jun 2013 09:02:48 +0200
+Hello Marc,
 
-> here are there fixes for the v3.10 release cycle:
+the usb_8dev driver was introduced in Linux 3.9 and therefore this reasonable
+patch should be queued up for linux-3.9.y stable too.
+
+Regards,
+Oliver
+
+
+On 19.06.2013 09:02, Marc Kleine-Budde wrote:
+> The usb_8dev hardware has problems on some xhci USB hosts. The driver fails to
+> read the firmware revision in the probe function. This leads to the following
+> Oops:
 > 
-> Michael Olbrich reported an Oops (free_netdev() on registered netdev) with the
-> 8devices USB CAN converter on xhci USB host controllers. I've created a patch
-> to fix the error path of the driver.
+>     [ 3356.635912] kernel BUG at net/core/dev.c:5701!
+> 
+> The driver tries to free the netdev, which has already been registered, without
+> unregistering it.
+> 
+> This patch fixes the problem by unregistering the netdev in the error path.
+> 
+> Reported-by: Michael Olbrich <m.olbrich@pengutronix.de>
+> Reviewed-by: Bernd Krumboeck <krumboeck@universalnet.at>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/usb/usb_8dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+> index 6e15ef0..cbd388e 100644
+> --- a/drivers/net/can/usb/usb_8dev.c
+> +++ b/drivers/net/can/usb/usb_8dev.c
+> @@ -977,7 +977,7 @@ static int usb_8dev_probe(struct usb_interface *intf,
+>  	err = usb_8dev_cmd_version(priv, &version);
+>  	if (err) {
+>  		netdev_err(netdev, "can't get firmware version\n");
+> -		goto cleanup_cmd_msg_buffer;
+> +		goto cleanup_unregister_candev;
+>  	} else {
+>  		netdev_info(netdev,
+>  			 "firmware: %d.%d, hardware: %d.%d\n",
+> @@ -989,6 +989,9 @@ static int usb_8dev_probe(struct usb_interface *intf,
+>  
+>  	return 0;
+>  
+> +cleanup_unregister_candev:
+> +	unregister_netdev(priv->netdev);
+> +
+>  cleanup_cmd_msg_buffer:
+>  	kfree(priv->cmd_msg_buffer);
+>  
+> 
 
-Pulled, thanks Marc.
