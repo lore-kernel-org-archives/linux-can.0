@@ -1,65 +1,57 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: AW: Web GUI for can-utils (i.e. cangw, cansend, candump)
-Date: Wed, 19 Jun 2013 19:29:47 +0200
-Message-ID: <51C1EA8B.3080403@hartkopp.net>
-References: <zarafa.51bd74e8.76a4.36c61f7d6f480f71@v14647.1blu.de>
+From: j.uzycki@elproma.com.pl
+Subject: Re: slcanpty
+Date: Thu, 20 Jun 2013 00:39:40 +0200
+Message-ID: <57ec0d6e974a0a9688d1f68c5204d95e@beep.pl>
+References: <2DAB3DC2841347E7AF7833620339B427@laptop2>
+ <51AF950D.1050004@hartkopp.net> <8BA0AB4D19CC422597E52513948E2EF0@laptop2>
+ <51B0D58F.2010401@hartkopp.net> <b4ff288352031c6f215c601575e7be0d@beep.pl>
+ <51B7896D.7080608@hartkopp.net> <a1ef1ba453a6dca8222147aab20b61f1@beep.pl>
+ <51B892E4.6020907@hartkopp.net> mid:1927
+ <3dc287504f468fde2629107bdc65c4ae@beep.pl> <51C1E74A.70107@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:35218 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756708Ab3FSR3t (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Jun 2013 13:29:49 -0400
-In-Reply-To: <zarafa.51bd74e8.76a4.36c61f7d6f480f71@v14647.1blu.de>
+Received: from mailmxout12.mailmx.agnat.pl ([193.239.45.92]:58705 "EHLO
+	mailmxout12.mailmx.agnat.pl" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S935295Ab3FSWjp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Jun 2013 18:39:45 -0400
+In-Reply-To: <51C1E74A.70107@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Luxen <mluxen@gmx.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Krzysztof Borgulski <k.borgulski@elproma.com.pl>
 
-On 16.06.2013 10:18, Michael Luxen wrote:
-
->> Usually we use it with localhost IP communication.
->> An in the rare cases we use a MPC5200@400MHz based embedded system with two
->> CAN interfaces without any problems so far.
-> Can you explain your setup more in detail?
-
-AFAIK Kayak was always running on a Linux Laptop in our setups.
-
-And the socketcand was running on the same Linux Laptop or on the PowerPC
-MPC5200. I must admit that i didn't look to CPU usage details. It was just
-working for the purposes.
-
-> I did several tests in the last days with:
-> a) Kayak installed on the BeagleBone Black and export display to my Windows machine (using socketcand only on localhost)
-> b) Kayak installed on my windows machine and connection via ethernet port of the BeagleBone Black via socketcand
+>> I've just implemented SJA1000 filter emulator. I didn't test it yet. 
+>> What do
+>> you think about the idea?
 > 
-> Results for a) are that the socketcand process uses round abput 45% CPU (1GHz SoC) load at 37%@500kbit/s busload and a further socketcand process for DCAN1 increases the busload depending on the busload.
->  
-> Results for b) are unacceptable due to very low speed of the exported Kayak application via MobaXterm.
-
-Forwarding of display data is not very CPU / networking friendly.
-The socketcand data is the only thing that should be transmitted via network.
-
-
-> Further nice tools are:
-> Webbased CANlogger using socketcan 
-> https://bitbucket.org/Mongo/ewecan/overview
+> Pretty funny.
 > 
-> Qcanobserver - CAN sniffer Qt based
-> http://qcanobserver.sourceforge.net/
-
-Interesting!
-
+> Your referenced docs (and your patch) are very informative, but I just 
+> wonder
+> if the filters have really ever been used by anybody.
 > 
-> As I'm fighting with getting my MCP2515 to work on a BeagleBone Black (Angstrom 2013-06-06 distribution)I'm very interested in getting a guideline/howto to get it working. 
-> Does someone in the mailinglist have a working MCP2515 running with BeagleBone / BeagleBone Black.
+> They look *very* special.
+> 
+> If there's a need to implement it, it's ok.
+> But IMHO adding the filters just for the completeness of an emulation 
+> can be
+> omitted when nobody is ever using it.
 
-Don't know.
+The whole solution is very specific. The main idea is to reuse existing 
+CAN applications ecosystem by common protocols (based on serial port or 
+TCP/IP stack).
+An universal remote CAN gateway sends data via eg. GPRS which generates 
+costs, delays etc. Therefore filters are very appreciated. In other case 
+the filters could be negligible.
+The simplest choice seems just emulate cheap SLCAN adapters using eg. 
+slcanpty.
+Another option is socketcand - much better but desired for the future 
+front-end applications (I hope).
+Any better idea?
 
-You better start a new thread with a matching mail subject.
-
-Best regards,
-Oliver
-
+best regards
+Janusz
 
