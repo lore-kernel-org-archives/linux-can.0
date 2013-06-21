@@ -1,151 +1,102 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [RFC v3 1/7] pch_can: add spinlocks to protect tx objects
-Date: Fri, 21 Jun 2013 12:11:35 +0200
-Message-ID: <51C426D7.7050502@grandegger.com>
-References: <1355260735-18994-1-git-send-email-wg@grandegger.com> <1355260735-18994-2-git-send-email-wg@grandegger.com> <CAGY4fa-e6foJTzX9cKhNKgeJHfmyi_QsvO8k+94YVzHVM+BAtw@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Fwd: Re: [PATCH] can: usb_8dev: unregister netdev before free()ing
+Date: Fri, 21 Jun 2013 21:04:23 +0200
+Message-ID: <51C4A3B7.9040903@hartkopp.net>
+References: <51C1DC58.2040705@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:40332 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750824Ab3FUKLh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Jun 2013 06:11:37 -0400
-In-Reply-To: <CAGY4fa-e6foJTzX9cKhNKgeJHfmyi_QsvO8k+94YVzHVM+BAtw@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Mike Pellegrini <mikep86@gmail.com>
-Cc: linux-can@vger.kernel.org, Alexander.Stein@systec-electronic.com, Christian.Bendele@gmx.net, bhupesh.sharma@st.com
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <51C1DC58.2040705@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi Mike,
+Hello Greg,
 
-On 06/20/2013 04:23 PM, Mike Pellegrini wrote:
-> I believe I have found a bug in this changelist.  When applying these
-> changes to the standard pch_can driver which ships with Ubuntu 12.04
-> (kernel version 3.2.0-24.39), the race condition is still present and data
-> transmission ceases after a short period of time.
-> 
-> I applied the following modification and the data transmission problem went
-> away:
-> 
-> diff -c c-can-pci-v7/pch_can.c c-can-pci-v7-mrp/pch_can.c
-> *** c-can-pci-v7/pch_can.c 2012-11-25 05:09:13.000000000 -0500
-> --- c-can-pci-v7-mrp/pch_can.c 2012-11-26 11:29:11.350012074 -0500
-> ***************
-> *** 921,928 ****
->   priv->tx_obj++;
->   }
-> 
-> - spin_unlock_irqrestore(&priv->lock, flags);
-> -
->   /* Setting the CMASK register. */
->   pch_can_bit_set(&priv->regs->ifregs[1].cmask, PCH_CMASK_ALL);
-> 
-> --- 921,926 ----
-> ***************
-> *** 957,962 ****
-> --- 955,962 ----
-> 
->   pch_can_rw_msg_obj(&priv->regs->ifregs[1].creq, tx_obj_no);
-> 
-> + spin_unlock_irqrestore(&priv->lock, flags);
+can you please integrate this patch into stable 3.9 too?
+The usb_8dev driver was introduced in Linux 3.9 and has now been fixed =
+in
+DaveMs net-tree for 3.10 some days ago.
+
+Upstream commit 4afe2156eb639e563d6ef0c2706b66ea400348b2
+
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=3D=
+4afe2156eb639e563d6ef0c2706b66ea400348b2
+
+I wanted to put stable@kernel.org in CC but that bounced.
+
+Tnx,
+Oliver
+
+
+-------- Original Message --------
+Subject: Re: [PATCH] can: usb_8dev: unregister netdev before free()ing
+Date: Wed, 19 Jun 2013 18:29:12 +0200
+=46rom: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.=
+net, stable@kernel.org, Bernd Krumb=F6ck  <krumboeck@universalnet.at>
+
+Hello Marc,
+
+the usb_8dev driver was introduced in Linux 3.9 and therefore this reas=
+onable
+patch should be queued up for linux-3.9.y stable too.
+
+Regards,
+Oliver
+
+
+On 19.06.2013 09:02, Marc Kleine-Budde wrote:
+> The usb_8dev hardware has problems on some xhci USB hosts. The driver=
+ fails to
+> read the firmware revision in the probe function. This leads to the f=
+ollowing
+> Oops:
+>=20
+>     [ 3356.635912] kernel BUG at net/core/dev.c:5701!
+>=20
+> The driver tries to free the netdev, which has already been registere=
+d, without
+> unregistering it.
+>=20
+> This patch fixes the problem by unregistering the netdev in the error=
+ path.
+>=20
+> Reported-by: Michael Olbrich <m.olbrich@pengutronix.de>
+> Reviewed-by: Bernd Krumboeck <krumboeck@universalnet.at>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/usb/usb_8dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb=
+_8dev.c
+> index 6e15ef0..cbd388e 100644
+> --- a/drivers/net/can/usb/usb_8dev.c
+> +++ b/drivers/net/can/usb/usb_8dev.c
+> @@ -977,7 +977,7 @@ static int usb_8dev_probe(struct usb_interface *i=
+ntf,
+>  	err =3D usb_8dev_cmd_version(priv, &version);
+>  	if (err) {
+>  		netdev_err(netdev, "can't get firmware version\n");
+> -		goto cleanup_cmd_msg_buffer;
+> +		goto cleanup_unregister_candev;
+>  	} else {
+>  		netdev_info(netdev,
+>  			 "firmware: %d.%d, hardware: %d.%d\n",
+> @@ -989,6 +989,9 @@ static int usb_8dev_probe(struct usb_interface *i=
+ntf,
+> =20
+>  	return 0;
+> =20
+> +cleanup_unregister_candev:
+> +	unregister_netdev(priv->netdev);
 > +
->   return NETDEV_TX_OK;
->   }
-> 
-> This modification was suggested by Wolfgang during testing many months back
-> (I found it in my archive of test code); I think it got lost during the
-> shuffle between versions.
-
-Yes, I know. These patches did not go mainline yet because we know that
-this driver does have other issues. Unfortunately the same is true for
-the C_CAN based driver for the PCH I posted some time ago. That's a bad
-situation but so far nobody with a hardware at hand made real progress
-on the remaining issues. Maybe I should push my current patches
-mainline, especially to introduce the C_CAN based driver.. and to make
-the pch_can driver finally deprecated (or even remove it).
-
-Wolfgang.
-
-
-> 
-> - Mike
-> 
-> 
-> On Tue, Dec 11, 2012 at 4:18 PM, Wolfgang Grandegger <wg@grandegger.com>wrote:
-> 
->> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/net/can/pch_can.c |   11 +++++++++++
->>  1 file changed, 11 insertions(+)
->>
->> diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
->> index 7d17485..af61961 100644
->> --- a/drivers/net/can/pch_can.c
->> +++ b/drivers/net/can/pch_can.c
->> @@ -182,6 +182,7 @@ struct pch_can_priv {
->>         struct napi_struct napi;
->>         int tx_obj;     /* Point next Tx Obj index */
->>         int use_msi;
->> +       spinlock_t lock;        /* to protect tx objects */
->>  };
->>
->>  static const struct can_bittiming_const pch_can_bittiming_const = {
->> @@ -722,8 +723,11 @@ static void pch_can_tx_complete(struct net_device
->> *ndev, u32 int_stat)
->>  {
->>         struct pch_can_priv *priv = netdev_priv(ndev);
->>         struct net_device_stats *stats = &(priv->ndev->stats);
->> +       unsigned long flags;
->>         u32 dlc;
->>
->> +       spin_lock_irqsave(&priv->lock, flags);
->> +
->>         can_get_echo_skb(ndev, int_stat - PCH_RX_OBJ_END - 1);
->>         iowrite32(PCH_CMASK_RX_TX_GET | PCH_CMASK_CLRINTPND,
->>                   &priv->regs->ifregs[1].cmask);
->> @@ -734,6 +738,8 @@ static void pch_can_tx_complete(struct net_device
->> *ndev, u32 int_stat)
->>         stats->tx_packets++;
->>         if (int_stat == PCH_TX_OBJ_END)
->>                 netif_wake_queue(ndev);
->> +
->> +       spin_unlock_irqrestore(&priv->lock, flags);
->>  }
->>
->>  static int pch_can_poll(struct napi_struct *napi, int quota)
->> @@ -894,6 +900,7 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb,
->> struct net_device *ndev)
->>  {
->>         struct pch_can_priv *priv = netdev_priv(ndev);
->>         struct can_frame *cf = (struct can_frame *)skb->data;
->> +       unsigned long flags;
->>         int tx_obj_no;
->>         int i;
->>         u32 id2;
->> @@ -901,6 +908,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb,
->> struct net_device *ndev)
->>         if (can_dropped_invalid_skb(ndev, skb))
->>                 return NETDEV_TX_OK;
->>
->> +       spin_lock_irqsave(&priv->lock, flags);
->> +
->>         tx_obj_no = priv->tx_obj;
->>         if (priv->tx_obj == PCH_TX_OBJ_END) {
->>                 if (ioread32(&priv->regs->treq2) & PCH_TREQ2_TX_MASK)
->> @@ -911,6 +920,8 @@ static netdev_tx_t pch_xmit(struct sk_buff *skb,
->> struct net_device *ndev)
->>                 priv->tx_obj++;
->>         }
->>
->> +       spin_unlock_irqrestore(&priv->lock, flags);
->> +
->>         /* Setting the CMASK register. */
->>         pch_can_bit_set(&priv->regs->ifregs[1].cmask, PCH_CMASK_ALL);
->>
->> --
->> 1.7.9.5
->>
->>
-> 
+>  cleanup_cmd_msg_buffer:
+>  	kfree(priv->cmd_msg_buffer);
+> =20
+>=20
 
