@@ -1,44 +1,68 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Fwd: Re: [PATCH] can: usb_8dev: unregister netdev before
- free()ing
-Date: Mon, 24 Jun 2013 14:55:20 -0700
-Message-ID: <20130624215520.GA6621@kroah.com>
-References: <51C1DC58.2040705@hartkopp.net>
- <51C4A3B7.9040903@hartkopp.net>
+From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
+Subject: AW: Receiving messages issue
+Date: Tue, 25 Jun 2013 09:43:19 +0200
+Message-ID: <zarafa.51c94a17.775f.288b4f8e69a3abab@v14647.1blu.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12]:60459 "EHLO
-	mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750830Ab3FXVzW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Jun 2013 17:55:22 -0400
-Content-Disposition: inline
-In-Reply-To: <51C4A3B7.9040903@hartkopp.net>
+Received: from v14647.1blu.de ([178.254.6.47]:47995 "EHLO v14647.1blu.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751211Ab3FYHnW convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 25 Jun 2013 03:43:22 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>
+To: =?utf-8?Q?Luka_Rahne?= <luka.rahne@gmail.com>, =?utf-8?Q?Marc_Kleine-Budde?= <mkl@pengutronix.de>
+Cc: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>
 
-On Fri, Jun 21, 2013 at 09:04:23PM +0200, Oliver Hartkopp wrote:
-> Hello Greg,
-> 
-> can you please integrate this patch into stable 3.9 too?
-> The usb_8dev driver was introduced in Linux 3.9 and has now been fixed in
-> DaveMs net-tree for 3.10 some days ago.
-> 
-> Upstream commit 4afe2156eb639e563d6ef0c2706b66ea400348b2
-> 
-> http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=4afe2156eb639e563d6ef0c2706b66ea400348b2
-> 
-> I wanted to put stable@kernel.org in CC but that bounced.
+Hello Marc, hello Luca,=20
 
-That commit is not in Linus's tree, so I can't do anything about it at
-this point in time.  When it hits Linus's tree, please resend this
-message to stable@vger.kernel.org, so we know to pick it up then.
+what I can confirm is that I've seen the message lost issue some weeks =
+ago on a Raspberry Pi with MCP2515.
 
-Also, networking stable patches come from David Miller, so he should be
-the one sending this to me...
+The solution for me was to use the async MCP2515 driver from Andre B. O=
+liveira mentoned by Marc below and furthermore to optimize the SPI inte=
+rface to get less latency here.
+This modifications for the Raspberry Pi are documented here:
+http://www.elinux.org/RPi_CANBus
 
-thanks,
+Whith these modifications I didn't see any message lost at busload abov=
+e 50%@500kbit/s!
 
-greg k-h
+Currently I'm fighting with the same MCP251x driver on my BeagleBone Bl=
+ack where I've seen the same message lost problem yesterday. Now, I'm c=
+ompiling a new kernel with the async MCP2515 driver and hopefully I can=
+ get the same good results to get my 3rd/4th CAN-Interface working on t=
+he BeagleBone Black.
+
+Regards
+Mike
+
+-----Urspr=C3=BCngliche Nachricht-----
+Von:	Marc Kleine-Budde <mkl@pengutronix.de>
+Gesendet:	Mo 24.06.2013 15:42
+Betreff:	Re: Receiving messages issue
+Anlage:	signature.asc
+An:	Luka Rahne <luka.rahne@gmail.com>;=20
+CC:	linux-can@vger.kernel.org;=20
+> On 06/24/2013 02:26 PM, Luka Rahne wrote:
+> > I am using MCP2515 with  i.MX27
+>=20
+> MCP2515 is the second worst CAN hardware I know. Only MCP2510 is wors=
+e.
+>=20
+> You can try Andre B. Oliveira's async mcp2515 driver. It's here:
+>=20
+> http://git.pengutronix.de/?p=3Dmkl/linux.git;a=3Dshortlog;h=3Drefs/he=
+ads/can/mcp2515-a
+> sync
+>=20
+> regards,
+> Marc
+> --=20
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>=20
+>
