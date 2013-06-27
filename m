@@ -1,36 +1,102 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 0/3] ARM: imx: flexcan: convert transceiver switching to
- DT
-Date: Thu, 27 Jun 2013 21:11:19 +0800
-Message-ID: <20130627131117.GB2695@S2101-09.ap.freescale.net>
-References: <1372317731-24966-1-git-send-email-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2013-06-27
+Date: Thu, 27 Jun 2013 15:23:34 +0200
+Message-ID: <51CC3CD6.6050505@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2UADIOHJDRAJPHDBQRCTF"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from co9ehsobe004.messaging.microsoft.com ([207.46.163.27]:51115
-	"EHLO co9outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752882Ab3F0NLa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Jun 2013 09:11:30 -0400
-Content-Disposition: inline
-In-Reply-To: <1372317731-24966-1-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47554 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751530Ab3F0NXm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Jun 2013 09:23:42 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>
 
-On Thu, Jun 27, 2013 at 09:22:08AM +0200, Marc Kleine-Budde wrote:
-> Hello,
-> 
-> this series converts the flexcan driver from using a callback function
-> (configured via platform data), to switch the transceiver on and off, to a
-> standard regulator. As there are no in-tree users of the platform data, it's
-> finally removed.
-> 
-> If there are no objections I'd like to upstream this via can-next and David
-> Miller's net-next. As these patches are touching arch/arm/mach-imx, I don't
-> want to continue without some Acked-bys.
- 
-For the series,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2UADIOHJDRAJPHDBQRCTF
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Hello David,
 
+this is a pull-request for net-next/master. It consists of three
+patches by Fabio Estevam and me, which convert the flexcan transceiver
+switching to DT[1] and a patch by Sachin Kamat, which cleans up the
+at91_can driver a bit.
+
+[1] These patches touch arch/arm/mach-imx, so I collected Acked-bys
+from Shawn Guo and Sascha Hauer.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 38ae92dc215e939897f17861d658f882d0eaab=
+0f:
+
+  fec: Add support for reading RMON registers (2013-06-26 15:45:14 -0700)=
+
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 1f3e4b0cc4deb9d740261273fbbf5ea95c8434d0:
+
+  can: at91_can: Use of_match_ptr() (2013-06-27 15:15:42 +0200)
+
+----------------------------------------------------------------
+Fabio Estevam (2):
+      can: flexcan: Use a regulator to control the CAN transceiver
+      ARM: imx: flexcan: Remove platform file
+
+Marc Kleine-Budde (1):
+      ARM: imx: prepare for removal of flexcan_platform_data
+
+Sachin Kamat (1):
+      can: at91_can: Use of_match_ptr()
+
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |  2 +
+ arch/arm/boot/dts/imx28-evk.dts                    | 12 ++++++
+ arch/arm/mach-imx/devices-imx25.h                  |  8 ++--
+ arch/arm/mach-imx/devices-imx35.h                  |  8 ++--
+ arch/arm/mach-imx/devices/devices-common.h         |  4 +-
+ arch/arm/mach-imx/devices/platform-flexcan.c       |  5 +--
+ arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c     |  2 +-
+ arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c     |  2 +-
+ arch/arm/mach-imx/mach-mx25_3ds.c                  |  2 +-
+ arch/arm/mach-imx/mach-pcm043.c                    |  2 +-
+ arch/arm/mach-mxs/mach-mxs.c                       | 50 +---------------=
+------
+ drivers/net/can/at91_can.c                         |  4 +-
+ drivers/net/can/flexcan.c                          | 25 +++++------
+ include/linux/can/platform/flexcan.h               | 20 ---------
+ 14 files changed, 44 insertions(+), 102 deletions(-)
+ delete mode 100644 include/linux/can/platform/flexcan.h
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2UADIOHJDRAJPHDBQRCTF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlHMPNYACgkQjTAFq1RaXHPAIACeKwT9+B75whQgDmJJvXFDkN77
+bV0AnjtRxLojD4klCK8xo1U2aENlVDgB
+=ETui
+-----END PGP SIGNATURE-----
+
+------enig2UADIOHJDRAJPHDBQRCTF--
