@@ -1,93 +1,237 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: AW: Receiving messages issue
-Date: Fri, 05 Jul 2013 12:18:54 +0200
-Message-ID: <51D69D8E.6060803@pengutronix.de>
-References: <zarafa.51c94a17.775f.288b4f8e69a3abab@v14647.1blu.de> <56720.79.205.48.80.1372161611.squirrel@webmail.rdts.de> <51C99CE5.7070708@pengutronix.de> <CAOHwv555mUTjXQsB2KGPAEjdVkS1fOeWZxvTb+XEk-8HjkANwQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2LXSLMBAMUCSEBIHDGCBM"
+From: yegorslists@googlemail.com
+Subject: [PATCH] can-utils: AOSP build clean up
+Date: Wed, 10 Jul 2013 09:28:57 +0200
+Message-ID: <1373441337-3016-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56988 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757069Ab3GEKTH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Jul 2013 06:19:07 -0400
-In-Reply-To: <CAOHwv555mUTjXQsB2KGPAEjdVkS1fOeWZxvTb+XEk-8HjkANwQ@mail.gmail.com>
+Received: from ns.vscom.de ([62.145.30.242]:38221 "EHLO mail.visionsystems.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751196Ab3GJIib (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 10 Jul 2013 04:38:31 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Luka Rahne <luka.rahne@gmail.com>
-Cc: info@gerhard-bertelsmann.de, Michael Luxen <mluxen@gmx.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Yegor Yefremov <yegorslists@googlemail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2LXSLMBAMUCSEBIHDGCBM
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-On 07/05/2013 12:07 PM, Luka Rahne wrote:
-> I was able to include this driver in my project but first test shows
-> that there is no significant improvement.
->=20
-> I also had to patch driver in order to compile and work.
-> Can someone more experienced check patch for some fatal issues?
+Remove unneeded includes. Both AOSP and NDK builds tested.
 
-Just the tx_bytes calculation isn't correct, see inline. But that will
-not cause bad performance.
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+ Android.mk |   46 +++++++++++++++++++++++-----------------------
+ 1 files changed, 23 insertions(+), 23 deletions(-)
 
->  Testing results:
-> Test -> sending 520 messages in total (each burst had 65 unique ID
-> messages of length 8 ) @ 100k baud.
-> USB-PEAK-CAN used for listening only, confirms all messages on sent bus=
-=2E
->=20
-> New spi async drivers mcp2515.c had 3% packet loss and stable stock
-> driver mcp251x.c included in kernel 3.0.81 had 5% losts messages.
+diff --git a/Android.mk b/Android.mk
+index 4cf664b..ffac957 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -13,7 +13,7 @@ include $(CLEAR_VARS)
+ 
+ LOCAL_SRC_FILES := lib.c
+ LOCAL_MODULE := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_STATIC_LIBRARY)
+@@ -28,7 +28,7 @@ LOCAL_SRC_FILES := candump.c
+ LOCAL_MODULE := candump
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -43,7 +43,7 @@ LOCAL_SRC_FILES := cansend.c
+ LOCAL_MODULE := cansend
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -57,7 +57,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := bcmserver.c
+ LOCAL_MODULE := bcmserver
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -72,7 +72,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := can-calc-bit-timing.c
+ LOCAL_MODULE := can-calc-bit-timing
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -86,7 +86,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canbusload.c
+ LOCAL_MODULE := canbusload
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -100,7 +100,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := canfdtest.c
+ LOCAL_MODULE := canfdtest
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -115,7 +115,7 @@ LOCAL_SRC_FILES := cangen.c
+ LOCAL_MODULE := cangen
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -129,7 +129,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cangw.c
+ LOCAL_MODULE := cangw
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -144,7 +144,7 @@ LOCAL_SRC_FILES := canlogserver.c
+ LOCAL_MODULE := canlogserver
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -159,7 +159,7 @@ LOCAL_SRC_FILES := canplayer.c
+ LOCAL_MODULE := canplayer
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -173,7 +173,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := cansniffer.c
+ LOCAL_MODULE := cansniffer
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -187,7 +187,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotpdump.c
+ LOCAL_MODULE := isotpdump
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -201,7 +201,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotprecv.c
+ LOCAL_MODULE := isotprecv
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -215,7 +215,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotpsend.c
+ LOCAL_MODULE := isotpsend
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -229,7 +229,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotpserver.c
+ LOCAL_MODULE := isotpserver
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -243,7 +243,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotpsniffer.c
+ LOCAL_MODULE := isotpsniffer.c
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -257,7 +257,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := isotptun.c
+ LOCAL_MODULE := isotptun
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -272,7 +272,7 @@ LOCAL_SRC_FILES := log2asc.c
+ LOCAL_MODULE := log2asc
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -287,7 +287,7 @@ LOCAL_SRC_FILES := log2long.c
+ LOCAL_MODULE := log2long
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_STATIC_LIBRARIES := libcan
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -301,7 +301,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcan_attach.c
+ LOCAL_MODULE := slcan_attach
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -315,7 +315,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcand.c
+ LOCAL_MODULE := slcand
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+@@ -329,7 +329,7 @@ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := slcanpty.c
+ LOCAL_MODULE := slcanpty
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/include/
++LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+ LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+ 
+ include $(BUILD_EXECUTABLE)
+-- 
+1.7.7
 
-That's about 40% less packet loss.
-
-> Decreasing baud on 50k had no packet loss for handling packets of
-> length 8 bytes (stock driver), but there is still issue on receiving
-> messages of length 0. (tested with stock driver only)
-> As expected shorter messages generates more interrupts, since they
-> takes less time to transfer.
->=20
-> Does anyone has any ideas what should I try, because I dont have lot
-> more ideas to try with.
-
-If I remember correct the i.mx spi driver uses a workqueue internally
-and in newer kernels there isn't a kthread directly associated with that
-workqueue. You can patch the spi driver to create a special kthread
-based workqueue, which you can boost in priority via chrt in userspace
-later.
-
-> Is there any chip on market that has more than few RX buffers and can
-> better handle high baud bus?
-
-If you have access to the data and address bus on your processor you can
-attach an sja1000 (you need a bunch of level shifters, too), that works
-pretty good. Another option is to use some USB based CAN adapter.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2LXSLMBAMUCSEBIHDGCBM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlHWnY4ACgkQjTAFq1RaXHOazgCfTDgUG68NJn1sVI1v963uPWg6
-8PEAn21+NzlDqzw7GtX23GlESoGRlgLF
-=LW3x
------END PGP SIGNATURE-----
-
-------enig2LXSLMBAMUCSEBIHDGCBM--
