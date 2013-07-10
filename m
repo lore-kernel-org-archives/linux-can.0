@@ -1,55 +1,63 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH 07/12] drivers/net/can/c_can: don't use devm_pinctrl_get_select_default() in probe
-Date: Wed, 10 Jul 2013 16:57:42 +0100
-Message-ID: <1373471889-18107-7-git-send-email-wsa@the-dreams.de>
-References: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Wolfram Sang <wsa@the-dreams.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, AnilKumar Ch <anilkumar@ti.com>, "David S. Miller" <davem@davemloft.net>, Tony Lindgren <tony@atomide.com>, Jingoo Han <jg1.han@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 07/12] drivers/net/can/c_can: don't use devm_pinctrl_get_select_default()
+ in probe
+Date: Wed, 10 Jul 2013 23:02:57 +0200
+Message-ID: <51DDCC01.1090104@pengutronix.de>
+References: <1373471889-18107-1-git-send-email-wsa@the-dreams.de> <1373471889-18107-7-git-send-email-wsa@the-dreams.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="----enig2GEBQRHRHUWQHPQCAISEH"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34503 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754991Ab3GJVDM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 10 Jul 2013 17:03:12 -0400
+In-Reply-To: <1373471889-18107-7-git-send-email-wsa@the-dreams.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, AnilKumar Ch <anilkumar@ti.com>, "David S. Miller" <davem@davemloft.net>, Tony Lindgren <tony@atomide.com>, Jingoo Han <jg1.han@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
-we can rely on device core for setting the default pins. Compile tested only.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2GEBQRHRHUWQHPQCAISEH
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13)
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
----
- drivers/net/can/c_can/c_can_platform.c |    7 -------
- 1 file changed, 7 deletions(-)
+On 07/10/2013 05:57 PM, Wolfram Sang wrote:
+> Since commit ab78029 (drivers/pinctrl: grab default handles from device=
+ core),
+> we can rely on device core for setting the default pins. Compile tested=
+ only.
+>=20
+> Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13=
+)
+> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index b918c73..c6f838d 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -32,7 +32,6 @@
- #include <linux/clk.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
--#include <linux/pinctrl/consumer.h>
- 
- #include <linux/can/dev.h>
- 
-@@ -114,7 +113,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	struct c_can_priv *priv;
- 	const struct of_device_id *match;
- 	const struct platform_device_id *id;
--	struct pinctrl *pinctrl;
- 	struct resource *mem, *res;
- 	int irq;
- 	struct clk *clk;
-@@ -131,11 +129,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		id = platform_get_device_id(pdev);
- 	}
- 
--	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
--	if (IS_ERR(pinctrl))
--		dev_warn(&pdev->dev,
--			"failed to configure pins from driver\n");
--
- 	/* get the appropriate clk */
- 	clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(clk)) {
--- 
-1.7.10.4
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+Who takes care of this patch/patch series?
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+------enig2GEBQRHRHUWQHPQCAISEH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlHdzAEACgkQjTAFq1RaXHNxuwCfU22mQey9fGPWB0I1SWFaBJ7x
+M70AnR9WXSzupvQ4/lraplY5fhqhJXl6
+=7O5d
+-----END PGP SIGNATURE-----
+
+------enig2GEBQRHRHUWQHPQCAISEH--
