@@ -1,58 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can-utils: AOSP build clean up
-Date: Wed, 10 Jul 2013 11:05:51 +0200
-Message-ID: <51DD23EF.1040203@pengutronix.de>
-References: <1373441337-3016-1-git-send-email-yegorslists@googlemail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2XEKGWBPBOOVXWKPNHXBF"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34370 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753439Ab3GJJF7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 10 Jul 2013 05:05:59 -0400
-In-Reply-To: <1373441337-3016-1-git-send-email-yegorslists@googlemail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: [PATCH 07/12] drivers/net/can/c_can: don't use devm_pinctrl_get_select_default() in probe
+Date: Wed, 10 Jul 2013 16:57:42 +0100
+Message-ID: <1373471889-18107-7-git-send-email-wsa@the-dreams.de>
+References: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Wolfram Sang <wsa@the-dreams.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, AnilKumar Ch <anilkumar@ti.com>, "David S. Miller" <davem@davemloft.net>, Tony Lindgren <tony@atomide.com>, Jingoo Han <jg1.han@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2XEKGWBPBOOVXWKPNHXBF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
+we can rely on device core for setting the default pins. Compile tested only.
 
-On 07/10/2013 09:28 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
->=20
-> Remove unneeded includes. Both AOSP and NDK builds tested.
->=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13)
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+---
+ drivers/net/can/c_can/c_can_platform.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
-Looks good, pushed to master.
-
-tnx,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2XEKGWBPBOOVXWKPNHXBF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlHdI+8ACgkQjTAFq1RaXHMougCghMJ63x/6F5gtuzBPQHDgCcZ5
-NoQAni9pfxTVZCX9Fxp+3BK3+KSD3EaN
-=vWDc
------END PGP SIGNATURE-----
-
-------enig2XEKGWBPBOOVXWKPNHXBF--
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index b918c73..c6f838d 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -32,7 +32,6 @@
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+-#include <linux/pinctrl/consumer.h>
+ 
+ #include <linux/can/dev.h>
+ 
+@@ -114,7 +113,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	struct c_can_priv *priv;
+ 	const struct of_device_id *match;
+ 	const struct platform_device_id *id;
+-	struct pinctrl *pinctrl;
+ 	struct resource *mem, *res;
+ 	int irq;
+ 	struct clk *clk;
+@@ -131,11 +129,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 		id = platform_get_device_id(pdev);
+ 	}
+ 
+-	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+-	if (IS_ERR(pinctrl))
+-		dev_warn(&pdev->dev,
+-			"failed to configure pins from driver\n");
+-
+ 	/* get the appropriate clk */
+ 	clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(clk)) {
+-- 
+1.7.10.4
