@@ -1,140 +1,84 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2 1/2] flexcan: Use devm_ioremap_resource()
-Date: Mon, 22 Jul 2013 12:41:39 -0300
-Message-ID: <1374507700-21575-1-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH v2 2/2] flexcan: Check the return value from clk_prepare_enable()
+Date: Mon, 22 Jul 2013 12:41:40 -0300
+Message-ID: <1374507700-21575-2-git-send-email-fabio.estevam@freescale.com>
+References: <1374507700-21575-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]:56524 "EHLO
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]:23272 "EHLO
 	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755829Ab3GVPly (ORCPT
+	by vger.kernel.org with ESMTP id S1756220Ab3GVPly (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Jul 2013 11:41:54 -0400
+In-Reply-To: <1374507700-21575-1-git-send-email-fabio.estevam@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
 Cc: linux-can@vger.kernel.org, festevam@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>
 
-Using devm_ioremap_resource() can make the code simpler and smaller.
-
-Also, place alloc_candev() after of_match_device() to make error handling
-easier.
+clk_prepare_enable() may fail, so let's check its return value and propagate it
+in the case of error.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 Changes since v1:
-- Place alloc_candev() after of_match_device()
+- Newly introduced in this version
 
- drivers/net/can/flexcan.c | 53 +++++++++++------------------------------------
- 1 file changed, 12 insertions(+), 41 deletions(-)
+ drivers/net/can/flexcan.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 7b0be09..9ca27e2 100644
+index da24ca5..03b93fa 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1001,7 +1001,6 @@ static int flexcan_probe(struct platform_device *pdev)
- 	struct resource *mem;
- 	struct clk *clk_ipg = NULL, *clk_per = NULL;
- 	void __iomem *base;
--	resource_size_t mem_size;
- 	int err, irq;
- 	u32 clock_freq = 0;
+@@ -850,8 +850,13 @@ static int flexcan_open(struct net_device *dev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	int err;
  
-@@ -1013,43 +1012,25 @@ static int flexcan_probe(struct platform_device *pdev)
- 		clk_ipg = devm_clk_get(&pdev->dev, "ipg");
- 		if (IS_ERR(clk_ipg)) {
- 			dev_err(&pdev->dev, "no ipg clock defined\n");
--			err = PTR_ERR(clk_ipg);
--			goto failed_clock;
-+			return PTR_ERR(clk_ipg);
- 		}
- 		clock_freq = clk_get_rate(clk_ipg);
- 
- 		clk_per = devm_clk_get(&pdev->dev, "per");
- 		if (IS_ERR(clk_per)) {
- 			dev_err(&pdev->dev, "no per clock defined\n");
--			err = PTR_ERR(clk_per);
--			goto failed_clock;
-+			return PTR_ERR(clk_per);
- 		}
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	irq = platform_get_irq(pdev, 0);
--	if (!mem || irq <= 0) {
--		err = -ENODEV;
--		goto failed_get;
--	}
--
--	mem_size = resource_size(mem);
--	if (!request_mem_region(mem->start, mem_size, pdev->name)) {
--		err = -EBUSY;
--		goto failed_get;
--	}
-+	if (irq <= 0)
-+		return -ENODEV;
- 
--	base = ioremap(mem->start, mem_size);
--	if (!base) {
--		err = -ENOMEM;
--		goto failed_map;
--	}
--
--	dev = alloc_candev(sizeof(struct flexcan_priv), 1);
--	if (!dev) {
--		err = -ENOMEM;
--		goto failed_alloc;
--	}
-+	base = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
- 
- 	of_id = of_match_device(flexcan_of_match, &pdev->dev);
- 	if (of_id) {
-@@ -1058,10 +1039,13 @@ static int flexcan_probe(struct platform_device *pdev)
- 		devtype_data = (struct flexcan_devtype_data *)
- 			pdev->id_entry->driver_data;
- 	} else {
--		err = -ENODEV;
--		goto failed_devtype;
-+		return -ENODEV;
- 	}
- 
-+	dev = alloc_candev(sizeof(struct flexcan_priv), 1);
-+	if (!dev)
-+		return -ENOMEM;
+-	clk_prepare_enable(priv->clk_ipg);
+-	clk_prepare_enable(priv->clk_per);
++	err = clk_prepare_enable(priv->clk_ipg);
++	if (err)
++		return err;
 +
- 	dev->netdev_ops = &flexcan_netdev_ops;
- 	dev->irq = irq;
- 	dev->flags |= IFF_ECHO;
-@@ -1104,28 +1088,15 @@ static int flexcan_probe(struct platform_device *pdev)
- 	return 0;
++	err = clk_prepare_enable(priv->clk_per);
++	if (err)
++		goto out_clk_per;
  
-  failed_register:
-- failed_devtype:
- 	free_candev(dev);
-- failed_alloc:
--	iounmap(base);
-- failed_map:
--	release_mem_region(mem->start, mem_size);
-- failed_get:
-- failed_clock:
+ 	err = open_candev(dev);
+ 	if (err)
+@@ -877,6 +882,7 @@ static int flexcan_open(struct net_device *dev)
+ 	close_candev(dev);
+  out:
+ 	clk_disable_unprepare(priv->clk_per);
++out_clk_per:
+ 	clk_disable_unprepare(priv->clk_ipg);
+ 
  	return err;
- }
+@@ -933,8 +939,13 @@ static int register_flexcandev(struct net_device *dev)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	u32 reg, err;
  
- static int flexcan_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
--	struct flexcan_priv *priv = netdev_priv(dev);
--	struct resource *mem;
+-	clk_prepare_enable(priv->clk_ipg);
+-	clk_prepare_enable(priv->clk_per);
++	err = clk_prepare_enable(priv->clk_ipg);
++	if (err)
++		return err;
++
++	err = clk_prepare_enable(priv->clk_per);
++	if (err)
++		goto out_clk_per;
  
- 	unregister_flexcandev(dev);
--	iounmap(priv->base);
--
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(mem->start, resource_size(mem));
+ 	/* select "bus clock", chip must be disabled */
+ 	flexcan_chip_disable(priv);
+@@ -968,6 +979,7 @@ static int register_flexcandev(struct net_device *dev)
+ 	/* disable core and turn off clocks */
+ 	flexcan_chip_disable(priv);
+ 	clk_disable_unprepare(priv->clk_per);
++out_clk_per:
+ 	clk_disable_unprepare(priv->clk_ipg);
  
- 	free_candev(dev);
- 
+ 	return err;
 -- 
 1.8.1.2
 
