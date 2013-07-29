@@ -1,52 +1,21 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
-Subject: Re: [PATCH] can: usb_8dev: fix urb leak on failure path in usb_8dev_start()
-Date: Sun, 28 Jul 2013 09:45:28 +0200
-Message-ID: <51F4CC18.4090109@universalnet.at>
-References: <1374096033-28981-1-git-send-email-khoroshilov@ispras.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+From: yegorslists@googlemail.com
+Subject: slcanpty and TCP
+Date: Mon, 29 Jul 2013 11:37:56 +0200
+Message-ID: <1375090677-4758-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:54506 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753234Ab3G1IAy (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 28 Jul 2013 04:00:54 -0400
-In-Reply-To: <1374096033-28981-1-git-send-email-khoroshilov@ispras.ru>
+Received: from ns.vscom.de ([62.145.30.242]:55601 "EHLO mail.visionsystems.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750918Ab3G2JiX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 29 Jul 2013 05:38:23 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Cc: mkl@pengutronix.de, socketcan@hartkopp.net
 
-Thanks!
+This is a first quick and dirty patch for including TCP support. 
+There some questions to clear. The firs one is, what to do with ENOBUFS
+(http://dics.voicecontrol.ro/process_mails/arata_discutia/173374/[PATCH]_candump:_add_option_to_ignore_ENOBUFS.html)?
 
-Added to repository on github: https://github.com/krumboeck/usb2can
+What about providing LAN interface name or none for expicit binding?
 
-regards,
-Bernd
-
-
-Am 2013-07-17 23:20, schrieb Alexey Khoroshilov:
-> If usb_8dev_start() fails to submit urb,
-> it unanchors the urb but forgets to free it.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-> ---
->   drivers/net/can/usb/usb_8dev.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-> index cbd388e..8becd3d 100644
-> --- a/drivers/net/can/usb/usb_8dev.c
-> +++ b/drivers/net/can/usb/usb_8dev.c
-> @@ -779,6 +779,7 @@ static int usb_8dev_start(struct usb_8dev_priv *priv)
->   			usb_unanchor_urb(urb);
->   			usb_free_coherent(priv->udev, RX_BUFFER_SIZE, buf,
->   					  urb->transfer_dma);
-> +			usb_free_urb(urb);
->   			break;
->   		}
->
->
-
+Yegor
