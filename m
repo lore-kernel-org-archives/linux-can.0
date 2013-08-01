@@ -1,140 +1,81 @@
-From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
-Subject: AW: [Socketcan-users] [socketcan]problem to using CAN with
- BeagleBone Black A5A
-Date: Thu, 1 Aug 2013 00:45:25 +0200
-Message-ID: <zarafa.51f99385.60f0.036c2a1e097ab32f@v14647.1blu.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2013-08-01
+Date: Thu, 01 Aug 2013 14:00:24 +0200
+Message-ID: <51FA4DD8.1040903@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="UEijNQR3C2PEhaXBtb2IVx48wkk72aw0Q"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from v14647.1blu.de ([178.254.6.47]:57767 "EHLO v14647.1blu.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1757781Ab3GaWzK convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 31 Jul 2013 18:55:10 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41968 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752542Ab3HAMAk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 1 Aug 2013 08:00:40 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>, =?utf-8?Q?Jeffrey_Lin?= <linjef@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 
-Hello Jeffrey,
- 
-> I have a similar question to Mohamed, and I'm not sure it was resolved in 
-> the following threads. 
-> 
-> I don't mind losing i2c2, so what I did was follow the http://www.aero-
-> box.co.uk/beaglebone-black#TOC-Enable-CANbus-device page, except since I 
-> want both dcan0 and dcan1, I removed the entry: 
-> 
->                 i2c2_pins: pinmux_i2c2_pins {
-> 			pinctrl-single,pins = <
-> 				0x178 0x73 	
-> 				0x17c 0x73	
-> 
-> 			>;
-> 		};
-It's not necessary to delete this lines if you disable the i2c2 later in the same file here:
-----------------
-&i2c2 {
-	status = "disabled";
-.
-.
-. 
-----------------
-> and replaced it with 
-> 
->                 dcan0_pins: pinmux_dcan0_pins {
-> 			pinctrl-single,pins = <
-> 				0x178 0x12
-> 				0x17c 0x32
-> 			>; 
-> 
-> 		};
-> 
-> 		dcan1_pins: pinmux_dcan1_pins {
-> 			pinctrl-single,pins = <
-> 				0x180 0x12
-> 				0x184 0x32
-> 			>; 
-> 		}; 
-The dcan0/dcan1 settings are fine!
- 
-> Then, as with the tutorial, made: 
-> 
->                 uart2: serial@48022000 {
->                         status = "disabled";
-> 
->                 };
-> 
-> and added in: 
-> 
-> 		dcan1: d_can@481d0000 {
-> 			status = "okay";
-> 			pinctrl-names = "default"; 
-> 			pinctrl-0 = <&dcan1_pins>;  
-> 		};
-> 
-> 		dcan0: d_can@481cc000 {
-> 			status = "okay"; 
-> 			pinctrl-names = "default"; 
-> 			pinctrl-0 = <&dcan0_pins>; 
-> 		};  
-Its also correct.
- 
-> In the spirit of stripping out all the i2c2 references, I got ride of 
-> 
-> &i2c2 {
-> 	status = "okay";
-> 	pinctrl-names = "default";
-> 	pinctrl-0 = <&i2c2_pins>;
-> 
-> 	clock-frequency = <100000>;
-> 
-> 	cape_eeprom0: cape_eeprom0@54 {
-> 		compatible = "at,24c256";
-> 		reg = <0x54>;
-> 	};
-> 
-> 	cape_eeprom1: cape_eeprom1@55 {
-> 		compatible = "at,24c256";
-> 		reg = <0x55>;
-> 	};
-> 
-> 	cape_eeprom2: cape_eeprom2@56 {
-> 		compatible = "at,24c256";
-> 		reg = <0x56>;
-> 	};
-> 
-> 	cape_eeprom3: cape_eeprom3@57 {
-> 		compatible = "at,24c256";
-> 		reg = <0x57>;
-> 	};
-> };
-Thats not necessary as mentioned above, you can only set status = "okay" to status = "disabled" but deleting the stuff should have the same result.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UEijNQR3C2PEhaXBtb2IVx48wkk72aw0Q
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> I can bring up can0, but not can1: 
-> 
-> root@beaglebone:~# canconfig can0 bitrate 10000 ctrlmode triple-sampling on
-> can0 bitrate: 10000, sample-point: 0.875
-> can0 ctrlmode: loopback[OFF], listen-only[OFF], tripple-sampling[ON],one-
-> shot[OFF], berr-reporting[OFF]
-> root@beaglebone:~# canconfig can0 start
-> can0 state: ERROR-ACTIVE
-> root@beaglebone:~# canconfig can1 bitrate 10000 ctrlmode triple-sampling on
-> can1: failed to get bitrate
-> 
-> root@beaglebone:~# canconfig can1 stop
-> can1: failed to get state
-> root@beaglebone:~# canconfig can1 start
-> can1: failed to get state
-> 
-> I think I'm fundamentally missing something; do you have any pointers on 
-> this? 
-Did you use this dtc command line?
-dtc -O dtb -o am335x-boneblack.dtb -b 0 am335x-boneblack.dts
+Hello David,
 
-I've seen an issue on my Debian based Beaglebone where the "-b 0" patch isn't available with my am335x-boneblack.dtb so can say it is a must to use the "-b 0" option.
+this is a pull-request for net-next/master. It consists of two patches
+by Fabio Estevam. Them first convert the flexcan driver to use
+devm_ioremap_resource(), the second adds return value checking for
+clk_prepare_enable().
 
-DCAN0 seems to be OK. 
-Can you provide the dmesg output for DCAN0 and DCAN1. Maybe there are some helpful information what happens during initialization.
+regards,
+Marc
 
-Regards
-Mike
+---
+
+The following changes since commit 46b3a421903aa2a4bc9731ca4663cee3ea869d=
+ab:
+
+  ipv6: fib6_rules should return exact return value (2013-08-01 00:26:22 =
+-0700)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to aa10181bdac99a623517f0f2bfa14cd98c749246:
+
+  can: flexcan: Check the return value from clk_prepare_enable() (2013-08=
+-01 12:36:20 +0200)
+
+----------------------------------------------------------------
+Fabio Estevam (2):
+      can: flexcan: Use devm_ioremap_resource()
+      can: flexcan: Check the return value from clk_prepare_enable()
+
+ drivers/net/can/flexcan.c | 81 +++++++++++++++++++----------------------=
+------
+ 1 file changed, 32 insertions(+), 49 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--UEijNQR3C2PEhaXBtb2IVx48wkk72aw0Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlH6TdkACgkQjTAFq1RaXHMkpgCglZ6mMr0ZHOFglE6yBXKoB98i
+aq4AoIlne63JaE6G0p685o/qqhYleeO8
+=q8tJ
+-----END PGP SIGNATURE-----
+
+--UEijNQR3C2PEhaXBtb2IVx48wkk72aw0Q--
