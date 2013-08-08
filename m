@@ -1,28 +1,41 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2013-08-01
-Date: Thu, 01 Aug 2013 16:15:27 -0700 (PDT)
-Message-ID: <20130801.161527.1594172734368232008.davem@davemloft.net>
-References: <51FA4DD8.1040903@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH] pcan_usb: fix wrong memcpy() bytes length
+Date: Thu,  8 Aug 2013 10:52:31 +0200
+Message-ID: <1375951951-18507-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:55478 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753272Ab3HAXP2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 1 Aug 2013 19:15:28 -0400
-In-Reply-To: <51FA4DD8.1040903@pengutronix.de>
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:40624 "EHLO
+	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934040Ab3HHJBC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 05:01:02 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 01 Aug 2013 14:00:24 +0200
+Fix possibly wrong memcpy() bytes length since some CAN records received from
+PCAN-USB could define a DLC field in range [9..15].
+In that case, the real DLC value MUST be used to move forward the record pointer
+but, only 8 bytes max. MUST be copied into the data field of the struct
+can_frame object of the skb given to the network core.
 
-> this is a pull-request for net-next/master. It consists of two patches
-> by Fabio Estevam. Them first convert the flexcan driver to use
-> devm_ioremap_resource(), the second adds return value checking for
-> clk_prepare_enable().
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pulled, thanks Marc.
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 25723d8..925ab8e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -649,7 +649,7 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 		if ((mc->ptr + rec_len) > mc->end)
+ 			goto decode_failed;
+ 
+-		memcpy(cf->data, mc->ptr, rec_len);
++		memcpy(cf->data, mc->ptr, cf->can_dlc);
+ 		mc->ptr += rec_len;
+ 	}
+ 
+-- 
+1.7.10.4
+
