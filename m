@@ -1,61 +1,31 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: mcp251x: Replace power callbacks with regulator
- API
-Date: Thu, 08 Aug 2013 13:53:44 +0200
-Message-ID: <520386C8.3020505@pengutronix.de>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gY2FuOiBtY3AyNTF4OiBSZXBsYWNlIHBvd2VyIGNhbGxi?=
+ =?UTF-8?B?YWNrcyB3aXRoIHJlZ3VsYXRvciBBUEk=?=
+Date: Thu, 08 Aug 2013 15:59:07 +0400
+Message-ID: <1375963147.66625024@f382.i.mail.ru>
 References: <1375962183-6229-1-git-send-email-shc_work@mail.ru>
+ <520386C8.3020505@pengutronix.de>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="L5wcx4eSDDBsDTSR9UontSEOlevK9vDKj"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36203 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934114Ab3HHLx6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 07:53:58 -0400
-In-Reply-To: <1375962183-6229-1-git-send-email-shc_work@mail.ru>
+Received: from fallback1.mail.ru ([94.100.176.18]:46597 "EHLO
+	fallback1.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751939Ab3HHL7b (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 07:59:31 -0400
+In-Reply-To: <520386C8.3020505@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---L5wcx4eSDDBsDTSR9UontSEOlevK9vDKj
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 08/08/2013 01:43 PM, Alexander Shiyan wrote:
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  arch/arm/mach-pxa/icontrol.c         |  3 --
->  arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
-
-Can you add alkml on Cc and check if the pxa people (still) accept
-patches for board files. The overall idea to use the regulator
-frameowork is good.
-
-I'll have a deeper look at the patch later.
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---L5wcx4eSDDBsDTSR9UontSEOlevK9vDKj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIDhskACgkQjTAFq1RaXHP7JgCeN1bWveTIE2pMFUhNWmlc2n21
-o+cAn3eOse6WpHkuapCbkb+cBNq9tpo8
-=1DaT
------END PGP SIGNATURE-----
-
---L5wcx4eSDDBsDTSR9UontSEOlevK9vDKj--
+PiBPbiAwOC8wOC8yMDEzIDAxOjQzIFBNLCBBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+ID4gU2ln
+bmVkLW9mZi1ieTogQWxleGFuZGVyIFNoaXlhbiA8c2hjX3dvcmtAbWFpbC5ydT4KPiA+IC0tLQo+
+ID4gIGFyY2gvYXJtL21hY2gtcHhhL2ljb250cm9sLmMgICAgICAgICB8ICAzIC0tCj4gPiAgYXJj
+aC9hcm0vbWFjaC1weGEvemV1cy5jICAgICAgICAgICAgIHwgNDYgKysrKysrKysrKy0tLS0tLS0t
+LS0KPiAKPiBDYW4geW91IGFkZCBhbGttbCBvbiBDYyBhbmQgY2hlY2sgaWYgdGhlIHB4YSBwZW9w
+bGUgKHN0aWxsKSBhY2NlcHQKPiBwYXRjaGVzIGZvciBib2FyZCBmaWxlcy4gVGhlIG92ZXJhbGwg
+aWRlYSB0byB1c2UgdGhlIHJlZ3VsYXRvcgo+IGZyYW1lb3dvcmsgaXMgZ29vZC4KPiAKPiBJJ2xs
+IGhhdmUgYSBkZWVwZXIgbG9vayBhdCB0aGUgcGF0Y2ggbGF0ZXIuCgpXZWxsLCBJJ2xsIHBvc3Qg
+YWdhaW4uCgotLS0K
