@@ -1,65 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 Subject: Re: [PATCH] pcan_usb: fix wrong memcpy() bytes length
-Date: Thu, 08 Aug 2013 15:53:46 +0200
-Message-ID: <5203A2EA.7080402@pengutronix.de>
-References: <1375951951-18507-1-git-send-email-s.grosjean@peak-system.com> <52036B60.7090701@pengutronix.de> <5203A113.9080207@peak-system.com>
+Date: Thu, 08 Aug 2013 15:45:55 +0200
+Message-ID: <5203A113.9080207@peak-system.com>
+References: <1375951951-18507-1-git-send-email-s.grosjean@peak-system.com>
+ <52036B60.7090701@pengutronix.de>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="LsB3gqhNB3vvUp986xffrJPb6ad232s9r"
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52439 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965593Ab3HHNyE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 09:54:04 -0400
-In-Reply-To: <5203A113.9080207@peak-system.com>
+Received: from mail.peak-system.com ([213.157.13.214]:43119 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933145Ab3HHN6Y (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 09:58:24 -0400
+In-Reply-To: <52036B60.7090701@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LsB3gqhNB3vvUp986xffrJPb6ad232s9r
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 08/08/2013 03:45 PM, Stephane Grosjean wrote:
-> I'm afraid I don't understand your remark/question below. Can you pleas=
-e
-> be more precise?
+I'm afraid I don't understand your remark/question below. Can you pleas=
+e=20
+be more precise?
 
-Under Linux we have the concept of stable kernel [1] releases. As this
-is a bugfix, I suggested that this patch should be scheduled for the
-stable kernel procedure. This is done by adding a "Cc:
-<stable@vger.kernel.org>" to the patch description.
+Regards,
 
-I'll add the Cc and push the patch to David, okay :)
+St=C3=A9phane
 
-Marc
+Le 08/08/2013 11:56, Marc Kleine-Budde a =C3=A9crit :
+> On 08/08/2013 10:52 AM, Stephane Grosjean wrote:
+>> Fix possibly wrong memcpy() bytes length since some CAN records rece=
+ived from
+>> PCAN-USB could define a DLC field in range [9..15].
+>> In that case, the real DLC value MUST be used to move forward the re=
+cord pointer
+>> but, only 8 bytes max. MUST be copied into the data field of the str=
+uct
+>> can_frame object of the skb given to the network core.
+>>
+>> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> Looks like a candidate for stable, doesn't it?
+>
+> Marc
+>
 
-[1]
-http://lxr.free-electrons.com/source/Documentation/stable_kernel_rules.tx=
-t
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---LsB3gqhNB3vvUp986xffrJPb6ad232s9r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIDousACgkQjTAFq1RaXHOfsQCfX9S5xl3VFgHuwlnbP2TOYD//
-/FMAniO6gbRhK5oJbXIaoA0CouDEuiPg
-=otXO
------END PGP SIGNATURE-----
-
---LsB3gqhNB3vvUp986xffrJPb6ad232s9r--
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
