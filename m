@@ -1,54 +1,59 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH] pcan_usb: fix wrong memcpy() bytes length
-Date: Thu, 08 Aug 2013 15:45:55 +0200
-Message-ID: <5203A113.9080207@peak-system.com>
-References: <1375951951-18507-1-git-send-email-s.grosjean@peak-system.com>
- <52036B60.7090701@pengutronix.de>
-Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
+ API
+Date: Fri, 09 Aug 2013 09:37:40 +0200
+Message-ID: <52049C44.6030902@pengutronix.de>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:43119 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933145Ab3HHN6Y (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Aug 2013 09:58:24 -0400
-In-Reply-To: <52036B60.7090701@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58296 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1030450Ab3HIHiE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Aug 2013 03:38:04 -0400
+In-Reply-To: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I'm afraid I don't understand your remark/question below. Can you pleas=
-e=20
-be more precise?
+On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> ---
+>  arch/arm/mach-pxa/icontrol.c         |  3 --
+>  arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
 
-Regards,
+What's pxa's status of DT conversion? Do you (still) accept patches to
+board files?
 
-St=C3=A9phane
+Marc
 
-Le 08/08/2013 11:56, Marc Kleine-Budde a =C3=A9crit :
-> On 08/08/2013 10:52 AM, Stephane Grosjean wrote:
->> Fix possibly wrong memcpy() bytes length since some CAN records rece=
-ived from
->> PCAN-USB could define a DLC field in range [9..15].
->> In that case, the real DLC value MUST be used to move forward the re=
-cord pointer
->> but, only 8 bytes max. MUST be copied into the data field of the str=
-uct
->> can_frame object of the skb given to the network core.
->>
->> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> Looks like a candidate for stable, doesn't it?
->
-> Marc
->
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
---
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+
+--Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIEnEUACgkQjTAFq1RaXHOHEQCgiPytvRcdz3Bnf4OIaMn3umW5
+5nMAn3VxdnfFPGrJNSsbYXUG7XVd5M2C
+=OCud
+-----END PGP SIGNATURE-----
+
+--Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c--
