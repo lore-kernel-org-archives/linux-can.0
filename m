@@ -1,59 +1,22 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
- API
-Date: Fri, 09 Aug 2013 09:37:40 +0200
-Message-ID: <52049C44.6030902@pengutronix.de>
-References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c"
+Subject: pull-request: can 2013-08-09
+Date: Fri,  9 Aug 2013 11:44:05 +0200
+Message-ID: <1376041446-24058-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58296 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52021 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1030450Ab3HIHiE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Aug 2013 03:38:04 -0400
-In-Reply-To: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
+	with ESMTP id S965779Ab3HIJoV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 9 Aug 2013 05:44:21 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>
+To: netdev@vger.kernel.org
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, davem@davemloft.net
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+here is a fix for the v3.11 release cycle:
 
-On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  arch/arm/mach-pxa/icontrol.c         |  3 --
->  arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
+Stephane Grosjean has found and fixed a potential wrong length for the mempy()
+in pcan_usb's decode usb data function.
 
-What's pxa's status of DT conversion? Do you (still) accept patches to
-board files?
-
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIEnEUACgkQjTAFq1RaXHOHEQCgiPytvRcdz3Bnf4OIaMn3umW5
-5nMAn3VxdnfFPGrJNSsbYXUG7XVd5M2C
-=OCud
------END PGP SIGNATURE-----
-
---Uts0NtGbjLgQKrtdpFwbNnPepCDEeld2c--
