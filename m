@@ -1,36 +1,57 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] can: pcan_usb: fix wrong memcpy() bytes length
-Date: Sun, 11 Aug 2013 21:52:18 -0700 (PDT)
-Message-ID: <20130811.215218.820389949622900993.davem@davemloft.net>
-References: <1376041446-24058-1-git-send-email-mkl@pengutronix.de>
-	<1376041446-24058-2-git-send-email-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [Socketcan-users] Booting issue
+Date: Tue, 13 Aug 2013 15:23:49 +0200
+Message-ID: <520A3365.4050909@pengutronix.de>
+References: <CANdmM3ONppmuVUrvaMmBXhJktT8r7JXsB3Bw-yyM4i7M7MaJSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="vWVKJd0cJQJdB5lJ3donJaXrRSuiDLNQ4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:47632 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752637Ab3HLEq6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Aug 2013 00:46:58 -0400
-In-Reply-To: <1376041446-24058-2-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55549 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757753Ab3HMNX7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Aug 2013 09:23:59 -0400
+In-Reply-To: <CANdmM3ONppmuVUrvaMmBXhJktT8r7JXsB3Bw-yyM4i7M7MaJSg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org, s.grosjean@peak-system.com, stable@vger.kernel.org
+To: Kedari Appana <kedare06@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri,  9 Aug 2013 11:44:06 +0200
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--vWVKJd0cJQJdB5lJ3donJaXrRSuiDLNQ4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> From: Stephane Grosjean <s.grosjean@peak-system.com>
-> 
-> Fix possibly wrong memcpy() bytes length since some CAN records received from
-> PCAN-USB could define a DLC field in range [9..15].
-> In that case, the real DLC value MUST be used to move forward the record pointer
-> but, only 8 bytes max. MUST be copied into the data field of the struct
-> can_frame object of the skb given to the network core.
-> 
-> Cc: linux-stable <stable@vger.kernel.org>
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+On 08/13/2013 01:21 PM, Kedari Appana wrote:
+> Hi,
+>                I am able to boot the linux for my SOC which contains
+> CAN.After booting i can see it in dmesg as well as in ifconfig can0
+> command .When i using ifconfig can0 up command system hang up.What was
+> the problem.Is there any solution for it
 
-Applied, thanks.
+Please come to the new mailinglist linux-can@vger.kernel.org
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--vWVKJd0cJQJdB5lJ3donJaXrRSuiDLNQ4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIKM2oACgkQjTAFq1RaXHO+FgCggc/JB1Q8FVIZLzSvicTlg0no
+C/kAn3ZeIFluUV9vKtanQGr8KCgoFA04
+=Hrsc
+-----END PGP SIGNATURE-----
+
+--vWVKJd0cJQJdB5lJ3donJaXrRSuiDLNQ4--
