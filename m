@@ -1,55 +1,43 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with
- regulator API
-Date: Sat, 17 Aug 2013 12:37:59 +0800
-Message-ID: <CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
-References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
-	<52049C44.6030902@pengutronix.de>
-	<520EDDA8.6050309@gmail.com>
-	<20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] trivial: fix file name in header of cansniffer.c
+Date: Sat, 17 Aug 2013 19:06:26 +0200
+Message-ID: <520FAD92.1070209@hartkopp.net>
+References: <1376600299-3600-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
-Sender: netdev-owner@vger.kernel.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Eric Miao <eric.y.miao@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:16396 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753851Ab3HQRGd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 13:06:33 -0400
+In-Reply-To: <1376600299-3600-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-On Sat, Aug 17, 2013 at 12:30 PM, Alexander Shiyan <shc_work@mail.ru> wrote:
-> On Sat, 17 Aug 2013 10:19:20 +0800
-> Haojian Zhuang <haojian.zhuang@gmail.com> wrote:
->
->> On 08/09/2013 03:37 PM, Marc Kleine-Budde wrote:
->> > On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
->> >> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
->> >> ---
->> >>   arch/arm/mach-pxa/icontrol.c         |  3 --
->> >>   arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
->> >
->> > What's pxa's status of DT conversion? Do you (still) accept patches to
->> > board files?
->> >
->> > Marc
->> >
->>
->> Since DT conversion isn't finished, I still accept the board files.
->> But this patch should be split into two parts. One is for pxa, and the
->> other one is for net.
->
-> Patch cannot be splitted because this can create hole which break git-bisect.
->
-> In any case, I want to create a v2 with a more detailed description, and I
-> have a supplementary question for the CAN subsystem maintainers.
-> "Transciever power" is not used by any of the boards, can we remove it
-> completely? This will greatly simplify driver.
-> Thanks.
->
-> --
-> Alexander Shiyan <shc_work@mail.ru>
+On 15.08.2013 22:58, Uwe Kleine-K=C3=B6nig wrote:
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-If you want to make the patch go through pxa tree, you need to get the Ack
-from CAN maintainer.
+Applied to can-utils.
 
-Regards
-Haojian
+Tnx!
+
+> ---
+>  cansniffer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/cansniffer.c b/cansniffer.c
+> index 71ca721..c8ee58e 100644
+> --- a/cansniffer.c
+> +++ b/cansniffer.c
+> @@ -1,5 +1,5 @@
+>  /*
+> - * can-sniffer.c
+> + * cansniffer.c
+>   *
+>   * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+>   * All rights reserved.
+>=20
+
