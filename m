@@ -1,37 +1,69 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-utils] Don't overwrite PREFIX and DESTDIR when provided
- via the environment
-Date: Sat, 17 Aug 2013 21:32:45 +0200
-Message-ID: <520FCFDD.7010308@pengutronix.de>
-References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
+ API
+Date: Sat, 17 Aug 2013 21:59:10 +0200
+Message-ID: <520FD60E.4040709@pengutronix.de>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru> <52049C44.6030902@pengutronix.de> <520EDDA8.6050309@gmail.com> <20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="bEeeTJdsvngX3vlJwSe4BfceNIVUICtfv"
+ boundary="iJRqkJtL8jged6X3GQQRLl8lAT9mFrD4x"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42127 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55891 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754251Ab3HQTcx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 15:32:53 -0400
-In-Reply-To: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de>
+	with ESMTP id S1754351Ab3HQT7j (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 15:59:39 -0400
+In-Reply-To: <20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bEeeTJdsvngX3vlJwSe4BfceNIVUICtfv
+--iJRqkJtL8jged6X3GQQRLl8lAT9mFrD4x
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/17/2013 09:28 PM, Uwe Kleine-K=C3=B6nig wrote:
-> For creating a Debian package providing PREFIX and DESTDIR via the
-> environment is the easiest option. So use ?=3D to assign these two
-> variables to honor the values in the environment.
+On 08/17/2013 06:30 AM, Alexander Shiyan wrote:
+[...]
+>> Since DT conversion isn't finished, I still accept the board files.
+>> But this patch should be split into two parts. One is for pxa, and the=
 
-I suggest to use autotools.
+>> other one is for net.
+>=20
+> Patch cannot be splitted because this can create hole which break git-b=
+isect.
+>=20
+> In any case, I want to create a v2 with a more detailed description, an=
+d I
+> have a supplementary question for the CAN subsystem maintainers.
+> "Transciever power" is not used by any of the boards, can we remove it
+> completely? This will greatly simplify driver.
 
-=2E/configure && make && make install
+Do you mean the former transceiver_enable() callback?
+
+>  struct mcp251x_platform_data {
+>  	unsigned long oscillator_frequency;
+>  	unsigned long irq_flags;
+> -	int (*board_specific_setup)(struct spi_device *spi);
+> -	int (*transceiver_enable)(int enable);
+> -	int (*power_enable) (int enable);
+>  };
+
+Having a switchable transceiver is a quite common thing. So I'd like
+that you keep it. The flexcan driver was just converted from a callback
+to a regulator too. It already has device tree bindings and I'd like to
+use these bindings as a standard for new drivers. From flexcan's dt
+bindings:
+
+> - xceiver-supply: Regulator that powers the CAN transceiver
+
+which translates into:
+
+> priv->reg_xceiver =3D devm_regulator_get(&pdev->dev, "xceiver");
+
+Can you please use "xceiver" instead of "transceiver", so that future DT
+binding will fit the scheme.
 
 Marc
 
@@ -42,7 +74,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---bEeeTJdsvngX3vlJwSe4BfceNIVUICtfv
+--iJRqkJtL8jged6X3GQQRLl8lAT9mFrD4x
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -51,9 +83,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlIPz90ACgkQjTAFq1RaXHNVUgCfeyr5+AjbhYvWI5MfqCHmgrCz
-/EYAn0rExKhaQqpFzfSg8zKWdwu75Y47
-=f298
+iEYEARECAAYFAlIP1g4ACgkQjTAFq1RaXHM1LwCeN3aRjAvOPOjt80BuESpAQOpn
+QXYAniHBYknFe4bDxet9jD6bLhe4yXxq
+=fJbh
 -----END PGP SIGNATURE-----
 
---bEeeTJdsvngX3vlJwSe4BfceNIVUICtfv--
+--iJRqkJtL8jged6X3GQQRLl8lAT9mFrD4x--
