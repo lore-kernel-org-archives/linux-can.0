@@ -1,95 +1,51 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: license issues of can-utils
-Date: Sat, 17 Aug 2013 22:24:55 +0200
-Message-ID: <520FDC17.7070107@pengutronix.de>
-References: <20130817190521.GK30496@pengutronix.de>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCBSRVNFTkRdIGNhbjogbWNwMjUxeDogUmVwbGFjZSBwb3dl?=
+ =?UTF-8?B?ciBjYWxsYmFja3Mgd2l0aCByZWd1bGF0b3IgQVBJ?=
+Date: Sun, 18 Aug 2013 01:10:05 +0400
+Message-ID: <1376773805.878998573@f169.i.mail.ru>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
+ <20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
+ <520FD60E.4040709@pengutronix.de>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="npw7UjiIlcL3kKAU70feUMi3mp86XSFu2"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55430 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754553Ab3HQUZH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 16:25:07 -0400
-In-Reply-To: <20130817190521.GK30496@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Robert Haddon <robert.haddon@verari.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <520FD60E.4040709@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
+Cc: =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>, netdev@vger.kernel.org, =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---npw7UjiIlcL3kKAU70feUMi3mp86XSFu2
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 08/17/2013 09:05 PM, Uwe Kleine-K=C3=B6nig wrote:
-> I started to create a Debian package for can-utils and while looking
-> through the source files to collect their copyright and license
-> information, I noticed two things that probably need fixing before a
-> can-utils package can enter Debian.
-
-[...]
-
-> b) several headers below include/socketcan/can have a copyright but no
-> license. I think the best approach here (as also suggested by Marc in a=
-
-> private discussion) is to fix the original headers in the kernel and
-> then copy these back into can-utils. I assume the standard boilerplate
-> with BSD-3-Clause + GPL-2 is the desired addition? If yes I can prepare=
-
-> a patch.
-
-tl;dr IANAL: netlink.h GPL, all others DUAL BSD/GPL.
-
-Marc
-
-We're talking about the uapi can headers which are:
-
-include/uapi/linux/can/error.h		added with initial code which is Dual BSD=
-/GPL
-
-Copyright by VW, Author Oliver.
-
-
-include/uapi/linux/can.h		added with initial code which is Dual BSD/GPL
-include/uapi/linux/can/raw.h		added with initial code which is Dual BSD/G=
-PL
-
-Both copyright by VW, Author Oliver and Urs.
-
-
-include/uapi/linux/can/bcm.h		bcm.c has MODULE_LICENSE("Dual BSD/GPL");
-include/uapi/linux/can/gw.h		gw.c has MODULE_LICENSE("Dual BSD/GPL")
-
-Both copyright by VW, Author Oliver.
-
-
-include/uapi/linux/can/netlink.h	was added by Wolfgang Grandegger:
-  39549ee can: CAN Network device driver and Netlink interface
-dev.c holds the netlink parsing code which has MODULE_LICENSE("GPL v2");
-
-Copyright by Wolfgang.
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---npw7UjiIlcL3kKAU70feUMi3mp86XSFu2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIP3BcACgkQjTAFq1RaXHPu5QCglUrTbxwUzcGg8QdWNjmmiPSZ
-4QEAn0hfjAr3fRCqZxjROXIVCHHBrZBP
-=WleY
------END PGP SIGNATURE-----
-
---npw7UjiIlcL3kKAU70feUMi3mp86XSFu2--
+PiBPbiAwOC8xNy8yMDEzIDA2OjMwIEFNLCBBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+IFsuLi5d
+Cj4gPj4gU2luY2UgRFQgY29udmVyc2lvbiBpc24ndCBmaW5pc2hlZCwgSSBzdGlsbCBhY2NlcHQg
+dGhlIGJvYXJkIGZpbGVzLgo+ID4+IEJ1dCB0aGlzIHBhdGNoIHNob3VsZCBiZSBzcGxpdCBpbnRv
+IHR3byBwYXJ0cy4gT25lIGlzIGZvciBweGEsIGFuZCB0aGUKPiA+PiBvdGhlciBvbmUgaXMgZm9y
+IG5ldC4KPiA+IAo+ID4gUGF0Y2ggY2Fubm90IGJlIHNwbGl0dGVkIGJlY2F1c2UgdGhpcyBjYW4g
+Y3JlYXRlIGhvbGUgd2hpY2ggYnJlYWsgZ2l0LWJpc2VjdC4KPiA+IAo+ID4gSW4gYW55IGNhc2Us
+IEkgd2FudCB0byBjcmVhdGUgYSB2MiB3aXRoIGEgbW9yZSBkZXRhaWxlZCBkZXNjcmlwdGlvbiwg
+YW5kIEkKPiA+IGhhdmUgYSBzdXBwbGVtZW50YXJ5IHF1ZXN0aW9uIGZvciB0aGUgQ0FOIHN1YnN5
+c3RlbSBtYWludGFpbmVycy4KPiA+ICJUcmFuc2NpZXZlciBwb3dlciIgaXMgbm90IHVzZWQgYnkg
+YW55IG9mIHRoZSBib2FyZHMsIGNhbiB3ZSByZW1vdmUgaXQKPiA+IGNvbXBsZXRlbHk/IFRoaXMg
+d2lsbCBncmVhdGx5IHNpbXBsaWZ5IGRyaXZlci4KPiAKPiBEbyB5b3UgbWVhbiB0aGUgZm9ybWVy
+IHRyYW5zY2VpdmVyX2VuYWJsZSgpIGNhbGxiYWNrPwoKWWVzLgoKPiA+ICBzdHJ1Y3QgbWNwMjUx
+eF9wbGF0Zm9ybV9kYXRhIHsKPiA+ICAJdW5zaWduZWQgbG9uZyBvc2NpbGxhdG9yX2ZyZXF1ZW5j
+eTsKPiA+ICAJdW5zaWduZWQgbG9uZyBpcnFfZmxhZ3M7Cj4gPiAtCWludCAoKmJvYXJkX3NwZWNp
+ZmljX3NldHVwKShzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpKTsKPiA+IC0JaW50ICgqdHJhbnNjZWl2
+ZXJfZW5hYmxlKShpbnQgZW5hYmxlKTsKPiA+IC0JaW50ICgqcG93ZXJfZW5hYmxlKSAoaW50IGVu
+YWJsZSk7Cj4gPiAgfTsKPiAKPiBIYXZpbmcgYSBzd2l0Y2hhYmxlIHRyYW5zY2VpdmVyIGlzIGEg
+cXVpdGUgY29tbW9uIHRoaW5nLiBTbyBJJ2QgbGlrZQo+IHRoYXQgeW91IGtlZXAgaXQuIFRoZSBm
+bGV4Y2FuIGRyaXZlciB3YXMganVzdCBjb252ZXJ0ZWQgZnJvbSBhIGNhbGxiYWNrCj4gdG8gYSBy
+ZWd1bGF0b3IgdG9vLiBJdCBhbHJlYWR5IGhhcyBkZXZpY2UgdHJlZSBiaW5kaW5ncyBhbmQgSSdk
+IGxpa2UgdG8KPiB1c2UgdGhlc2UgYmluZGluZ3MgYXMgYSBzdGFuZGFyZCBmb3IgbmV3IGRyaXZl
+cnMuIEZyb20gZmxleGNhbidzIGR0Cj4gYmluZGluZ3M6Cj4gCj4gPiAtIHhjZWl2ZXItc3VwcGx5
+OiBSZWd1bGF0b3IgdGhhdCBwb3dlcnMgdGhlIENBTiB0cmFuc2NlaXZlcgo+IAo+IHdoaWNoIHRy
+YW5zbGF0ZXMgaW50bzoKPiAKPiA+IHByaXYtPnJlZ194Y2VpdmVyID0gZGV2bV9yZWd1bGF0b3Jf
+Z2V0KCZwZGV2LT5kZXYsICJ4Y2VpdmVyIik7Cj4gCj4gQ2FuIHlvdSBwbGVhc2UgdXNlICJ4Y2Vp
+dmVyIiBpbnN0ZWFkIG9mICJ0cmFuc2NlaXZlciIsIHNvIHRoYXQgZnV0dXJlIERUCj4gYmluZGlu
+ZyB3aWxsIGZpdCB0aGUgc2NoZW1lLgoKT0suIEkgYW0gbm90IHJlYWR5IHRvIGFkZCBEVCBzdXBw
+b3J0IHlldCwgYnV0IGl0IGNhbiBiZSBhZGRlZCBsYXRlciwKc28gdjIgd2lsbCBjb250YWluIDMg
+cGFydHM6CjEgLSBSZXBsYWNlIHBvd2VyIGNhbGxiYWNrcyB3aXRoIHJlZ3VsYXRvciBBUEkKMiAt
+IEVsaW1pbmF0ZSBtY3AyNTF4X3BsYXRmb3JtX2RhdGEtPmlycV9mbGFncwozIC0gUmVwbGFjZSBv
+c2NpbGxhdG9yX2ZyZXF1ZW5jeSB3aXRoIENMSyBBUEkgKGFuZCByZW1vdmUgbWNwMjUxeC5oIGhl
+YWRlcikKCkFyZSB5b3UgT0sgd2l0aCBzdWNoIGNoYW5nZXM/CgotLS0K
