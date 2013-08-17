@@ -1,43 +1,35 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] trivial: fix file name in header of cansniffer.c
-Date: Sat, 17 Aug 2013 19:06:26 +0200
-Message-ID: <520FAD92.1070209@hartkopp.net>
-References: <1376600299-3600-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH] slcan2d: add new slcan daemon
+Date: Sat, 17 Aug 2013 21:01:19 +0200
+Message-ID: <CAGm1_ksLBm-uS9SiOx+cPHim0CLM6Zg65t4am-=kL_7qgH5-6Q@mail.gmail.com>
+References: <1373536496-17141-1-git-send-email-yegorslists@googlemail.com> <CAGm1_ktaO0C7sJVFJnCs0OOgfVSkJrk1f04ez5tE=H-Db6P-bA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:16396 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753851Ab3HQRGd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 13:06:33 -0400
-In-Reply-To: <1376600299-3600-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from mail-bk0-f42.google.com ([209.85.214.42]:37955 "EHLO
+	mail-bk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754112Ab3HQTBk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 17 Aug 2013 15:01:40 -0400
+Received: by mail-bk0-f42.google.com with SMTP id my10so1034414bkb.1
+        for <linux-can@vger.kernel.org>; Sat, 17 Aug 2013 12:01:39 -0700 (PDT)
+In-Reply-To: <CAGm1_ktaO0C7sJVFJnCs0OOgfVSkJrk1f04ez5tE=H-Db6P-bA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Yegor Yefremov <yegorslists@googlemail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 15.08.2013 22:58, Uwe Kleine-K=C3=B6nig wrote:
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Wed, Jul 24, 2013 at 2:01 PM, Yegor Yefremov
+<yegorslists@googlemail.com> wrote:
+> Hi Marc, Oliver,
+>
+> On Thu, Jul 11, 2013 at 11:54 AM,  <yegorslists@googlemail.com> wrote:
+>> From: Yegor Yefremov <yegorslists@googlemail.com>
+>>
+>> Cleaned up version of Oliver Hartkopp's effort with addition of
+>> UART speed configuration.
+>>
+>> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+>
+> any comments/suggestions?
 
-Applied to can-utils.
-
-Tnx!
-
-> ---
->  cansniffer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/cansniffer.c b/cansniffer.c
-> index 71ca721..c8ee58e 100644
-> --- a/cansniffer.c
-> +++ b/cansniffer.c
-> @@ -1,5 +1,5 @@
->  /*
-> - * can-sniffer.c
-> + * cansniffer.c
->   *
->   * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
->   * All rights reserved.
->=20
-
+ping
