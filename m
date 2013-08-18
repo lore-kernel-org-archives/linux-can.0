@@ -1,51 +1,82 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCBSRVNFTkRdIGNhbjogbWNwMjUxeDogUmVwbGFjZSBwb3dl?=
- =?UTF-8?B?ciBjYWxsYmFja3Mgd2l0aCByZWd1bGF0b3IgQVBJ?=
-Date: Sun, 18 Aug 2013 01:10:05 +0400
-Message-ID: <1376773805.878998573@f169.i.mail.ru>
-References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
- <20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
- <520FD60E.4040709@pengutronix.de>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
+ API
+Date: Sun, 18 Aug 2013 10:00:34 +0200
+Message-ID: <52107F22.80002@pengutronix.de>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru> <20130817083014.a01144051b158c34ec7dd9d9@mail.ru> <520FD60E.4040709@pengutronix.de> <1376773805.878998573@f169.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <520FD60E.4040709@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
-Cc: =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>, netdev@vger.kernel.org, =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="uvu50eHw3xR5l8WRVkQwRidfuI41wte0L"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59750 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752192Ab3HRIBG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 18 Aug 2013 04:01:06 -0400
+In-Reply-To: <1376773805.878998573@f169.i.mail.ru>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Russell King <linux@arm.linux.org.uk>, netdev@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-PiBPbiAwOC8xNy8yMDEzIDA2OjMwIEFNLCBBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+IFsuLi5d
-Cj4gPj4gU2luY2UgRFQgY29udmVyc2lvbiBpc24ndCBmaW5pc2hlZCwgSSBzdGlsbCBhY2NlcHQg
-dGhlIGJvYXJkIGZpbGVzLgo+ID4+IEJ1dCB0aGlzIHBhdGNoIHNob3VsZCBiZSBzcGxpdCBpbnRv
-IHR3byBwYXJ0cy4gT25lIGlzIGZvciBweGEsIGFuZCB0aGUKPiA+PiBvdGhlciBvbmUgaXMgZm9y
-IG5ldC4KPiA+IAo+ID4gUGF0Y2ggY2Fubm90IGJlIHNwbGl0dGVkIGJlY2F1c2UgdGhpcyBjYW4g
-Y3JlYXRlIGhvbGUgd2hpY2ggYnJlYWsgZ2l0LWJpc2VjdC4KPiA+IAo+ID4gSW4gYW55IGNhc2Us
-IEkgd2FudCB0byBjcmVhdGUgYSB2MiB3aXRoIGEgbW9yZSBkZXRhaWxlZCBkZXNjcmlwdGlvbiwg
-YW5kIEkKPiA+IGhhdmUgYSBzdXBwbGVtZW50YXJ5IHF1ZXN0aW9uIGZvciB0aGUgQ0FOIHN1YnN5
-c3RlbSBtYWludGFpbmVycy4KPiA+ICJUcmFuc2NpZXZlciBwb3dlciIgaXMgbm90IHVzZWQgYnkg
-YW55IG9mIHRoZSBib2FyZHMsIGNhbiB3ZSByZW1vdmUgaXQKPiA+IGNvbXBsZXRlbHk/IFRoaXMg
-d2lsbCBncmVhdGx5IHNpbXBsaWZ5IGRyaXZlci4KPiAKPiBEbyB5b3UgbWVhbiB0aGUgZm9ybWVy
-IHRyYW5zY2VpdmVyX2VuYWJsZSgpIGNhbGxiYWNrPwoKWWVzLgoKPiA+ICBzdHJ1Y3QgbWNwMjUx
-eF9wbGF0Zm9ybV9kYXRhIHsKPiA+ICAJdW5zaWduZWQgbG9uZyBvc2NpbGxhdG9yX2ZyZXF1ZW5j
-eTsKPiA+ICAJdW5zaWduZWQgbG9uZyBpcnFfZmxhZ3M7Cj4gPiAtCWludCAoKmJvYXJkX3NwZWNp
-ZmljX3NldHVwKShzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpKTsKPiA+IC0JaW50ICgqdHJhbnNjZWl2
-ZXJfZW5hYmxlKShpbnQgZW5hYmxlKTsKPiA+IC0JaW50ICgqcG93ZXJfZW5hYmxlKSAoaW50IGVu
-YWJsZSk7Cj4gPiAgfTsKPiAKPiBIYXZpbmcgYSBzd2l0Y2hhYmxlIHRyYW5zY2VpdmVyIGlzIGEg
-cXVpdGUgY29tbW9uIHRoaW5nLiBTbyBJJ2QgbGlrZQo+IHRoYXQgeW91IGtlZXAgaXQuIFRoZSBm
-bGV4Y2FuIGRyaXZlciB3YXMganVzdCBjb252ZXJ0ZWQgZnJvbSBhIGNhbGxiYWNrCj4gdG8gYSBy
-ZWd1bGF0b3IgdG9vLiBJdCBhbHJlYWR5IGhhcyBkZXZpY2UgdHJlZSBiaW5kaW5ncyBhbmQgSSdk
-IGxpa2UgdG8KPiB1c2UgdGhlc2UgYmluZGluZ3MgYXMgYSBzdGFuZGFyZCBmb3IgbmV3IGRyaXZl
-cnMuIEZyb20gZmxleGNhbidzIGR0Cj4gYmluZGluZ3M6Cj4gCj4gPiAtIHhjZWl2ZXItc3VwcGx5
-OiBSZWd1bGF0b3IgdGhhdCBwb3dlcnMgdGhlIENBTiB0cmFuc2NlaXZlcgo+IAo+IHdoaWNoIHRy
-YW5zbGF0ZXMgaW50bzoKPiAKPiA+IHByaXYtPnJlZ194Y2VpdmVyID0gZGV2bV9yZWd1bGF0b3Jf
-Z2V0KCZwZGV2LT5kZXYsICJ4Y2VpdmVyIik7Cj4gCj4gQ2FuIHlvdSBwbGVhc2UgdXNlICJ4Y2Vp
-dmVyIiBpbnN0ZWFkIG9mICJ0cmFuc2NlaXZlciIsIHNvIHRoYXQgZnV0dXJlIERUCj4gYmluZGlu
-ZyB3aWxsIGZpdCB0aGUgc2NoZW1lLgoKT0suIEkgYW0gbm90IHJlYWR5IHRvIGFkZCBEVCBzdXBw
-b3J0IHlldCwgYnV0IGl0IGNhbiBiZSBhZGRlZCBsYXRlciwKc28gdjIgd2lsbCBjb250YWluIDMg
-cGFydHM6CjEgLSBSZXBsYWNlIHBvd2VyIGNhbGxiYWNrcyB3aXRoIHJlZ3VsYXRvciBBUEkKMiAt
-IEVsaW1pbmF0ZSBtY3AyNTF4X3BsYXRmb3JtX2RhdGEtPmlycV9mbGFncwozIC0gUmVwbGFjZSBv
-c2NpbGxhdG9yX2ZyZXF1ZW5jeSB3aXRoIENMSyBBUEkgKGFuZCByZW1vdmUgbWNwMjUxeC5oIGhl
-YWRlcikKCkFyZSB5b3UgT0sgd2l0aCBzdWNoIGNoYW5nZXM/CgotLS0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--uvu50eHw3xR5l8WRVkQwRidfuI41wte0L
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 08/17/2013 11:10 PM, Alexander Shiyan wrote:
+[...]
+
+>>> - xceiver-supply: Regulator that powers the CAN transceiver
+>>
+>> which translates into:
+>>
+>>> priv->reg_xceiver =3D devm_regulator_get(&pdev->dev, "xceiver");
+>>
+>> Can you please use "xceiver" instead of "transceiver", so that future =
+DT
+>> binding will fit the scheme.
+>=20
+> OK. I am not ready to add DT support yet, but it can be added later,
+
+DT support can be added later, I just want to make sure that you use
+"xceiver" for the regulator, so that you don't need to change any code
+if DT is added.
+
+> so v2 will contain 3 parts:
+
+If you mean series v3 consists of three patches....
+
+> 1 - Replace power callbacks with regulator API
+> 2 - Eliminate mcp251x_platform_data->irq_flags
+> 3 - Replace oscillator_frequency with CLK API (and remove mcp251x.h hea=
+der)
+>=20
+> Are you OK with such changes?
+
+=2E..them I'm okay :)
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--uvu50eHw3xR5l8WRVkQwRidfuI41wte0L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIQfyIACgkQjTAFq1RaXHMpEgCffD4vMzXBf3axUw7j7z0egHnI
+zQcAn17jb+IoenVagyc+IXphEbQ3ixZq
+=09BH
+-----END PGP SIGNATURE-----
+
+--uvu50eHw3xR5l8WRVkQwRidfuI41wte0L--
