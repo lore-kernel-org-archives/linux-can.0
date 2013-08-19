@@ -1,65 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-utils] Don't overwrite PREFIX and DESTDIR when provided
- via the environment
-Date: Mon, 19 Aug 2013 10:24:21 +0200
-Message-ID: <5211D635.2090508@pengutronix.de>
-References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de> <520FCFDD.7010308@pengutronix.de> <5210A9C5.5070309@hartkopp.net> <20130818204930.GM30496@pengutronix.de> <52113E45.4090300@pengutronix.de>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH can-utils] Don't overwrite PREFIX and DESTDIR when
+ provided via the environment
+Date: Mon, 19 Aug 2013 10:37:54 +0200
+Message-ID: <20130819083754.GN30496@pengutronix.de>
+References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <520FCFDD.7010308@pengutronix.de>
+ <5210A9C5.5070309@hartkopp.net>
+ <20130818204930.GM30496@pengutronix.de>
+ <52113E45.4090300@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="35DORHaVxr3TIcADDCVmQHFtRva9s3VJi"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45813 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:53182 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750842Ab3HSIYd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Aug 2013 04:24:33 -0400
+	with ESMTP id S1750930Ab3HSIh4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Aug 2013 04:37:56 -0400
+Content-Disposition: inline
 In-Reply-To: <52113E45.4090300@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---35DORHaVxr3TIcADDCVmQHFtRva9s3VJi
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 08/18/2013 11:36 PM, Marc Kleine-Budde wrote:
-> On 08/18/2013 10:49 PM, Uwe Kleine-K=C3=B6nig wrote:
+On Sun, Aug 18, 2013 at 11:36:05PM +0200, Marc Kleine-Budde wrote:
+> On 08/18/2013 10:49 PM, Uwe Kleine-K=F6nig wrote:
 > [...]
 >=20
->>> 1. good idea - I already pushed it to the git tree
->> Thanks, but you somehow messed up the attribution. All three patches I=
+> >> 1. good idea - I already pushed it to the git tree
+> > Thanks, but you somehow messed up the attribution. All three patche=
+s I
+> > sent in the last few days appear with author=3Dyou :-(
+>=20
+> We can force-push-fix that :)
+If you want, a command to fix these three commits is:
 
->> sent in the last few days appear with author=3Dyou :-(
+	git filter-branch --env-filter 'case $GIT_COMMIT in b945b274ae48b48d2d=
+4c21e115da69db1d9ec28a) GIT_AUTHOR_NAME=3D"Uwe Kleine-K=F6nig"; GIT_AUT=
+HOR_EMAIL=3D"u.kleine-koenig@pengutronix.de"; GIT_AUTHOR_DATE=3D"Thu, 1=
+5 Aug 2013 20:59:26 +0200";; 8d5d80d0eae82e345e257a262a1e5b975ba4cbc0) =
+GIT_AUTHOR_NAME=3D"Uwe Kleine-K=F6nig"; GIT_AUTHOR_EMAIL=3D"u.kleine-ko=
+enig@pengutronix.de"; GIT_AUTHOR_DATE=3D"Thu, 15 Aug 2013 22:58:19 +020=
+0";; 903357e71a8994d8a821df6b31b86240f851dec1) GIT_AUTHOR_NAME=3D"Uwe K=
+leine-K=F6nig"; GIT_AUTHOR_EMAIL=3D"u.kleine-koenig@pengutronix.de"; GI=
+T_AUTHOR_DATE=3D"Sat, 17 Aug 2013 21:28:10 +0200";; esac' HEAD~4..
 
-In order to apply patches with git, I use:
+That fixes just the author and date of the three commits in master
+without changing anything else.
 
-    git am -s /path/to/path
-
-Then the author is not lost and you are tracked as the committer.
-
-Marc
+Best regards
+Uwe
 
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---35DORHaVxr3TIcADDCVmQHFtRva9s3VJi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIR1jYACgkQjTAFq1RaXHPv1gCgmOjyZQ8lnwbfY64+qBab26ea
-PZkAn3+RXvGpaz2UTRtS8RtReSJ2Nys3
-=OlMP
------END PGP SIGNATURE-----
-
---35DORHaVxr3TIcADDCVmQHFtRva9s3VJi--
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
+    |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
