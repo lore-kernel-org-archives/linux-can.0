@@ -1,52 +1,76 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-utils] Don't overwrite PREFIX and DESTDIR when provided
- via the environment
-Date: Tue, 20 Aug 2013 08:55:42 +0200
-Message-ID: <521312EE.4080606@pengutronix.de>
-References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de> <520FCFDD.7010308@pengutronix.de> <5210A9C5.5070309@hartkopp.net> <20130818204930.GM30496@pengutronix.de> <52113E45.4090300@pengutronix.de> <20130819083754.GN30496@pengutronix.de> <5212547D.9060402@hartkopp.net> <52126F15.3090500@pengutronix.de> <5212FEB6.2080005@hartkopp.net>
+Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
+ API
+Date: Tue, 20 Aug 2013 10:46:15 +0200
+Message-ID: <52132CD7.50100@pengutronix.de>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru> <52049C44.6030902@pengutronix.de> <520EDDA8.6050309@gmail.com> <20130817083014.a01144051b158c34ec7dd9d9@mail.ru> <CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO"
+ boundary="GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56369 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51653 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751259Ab3HTHpp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 03:45:45 -0400
-In-Reply-To: <5212FEB6.2080005@hartkopp.net>
+	with ESMTP id S1751244Ab3HTIqk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 04:46:40 -0400
+In-Reply-To: <CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Alexander Shiyan <shc_work@mail.ru>, Eric Miao <eric.y.miao@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO
+--GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/20/2013 07:29 AM, Oliver Hartkopp wrote:
-> On 19.08.2013 21:16, Marc Kleine-Budde wrote:
->> On 08/19/2013 07:23 PM, Oliver Hartkopp wrote:
->>> I did not intentionally replace you as author.
->>>
->>> When i do a similar commit from a mail, I=E2=80=99ll take care about =
-not loosing the
->>> original author anymore.
->>>
->>> Git still is mystic to me 8-)
+On 08/17/2013 06:37 AM, Haojian Zhuang wrote:
+> On Sat, Aug 17, 2013 at 12:30 PM, Alexander Shiyan <shc_work@mail.ru> w=
+rote:
+>> On Sat, 17 Aug 2013 10:19:20 +0800
+>> Haojian Zhuang <haojian.zhuang@gmail.com> wrote:
 >>
->> If it's okay Oliver, I'm going to force push your branch, so that we
->> have a clean history again.
+>>> On 08/09/2013 03:37 PM, Marc Kleine-Budde wrote:
+>>>> On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
+>>>>> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+>>>>> ---
+>>>>>   arch/arm/mach-pxa/icontrol.c         |  3 --
+>>>>>   arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
+>>>>
+>>>> What's pxa's status of DT conversion? Do you (still) accept patches =
+to
+>>>> board files?
+>>>>
+>>>> Marc
+>>>>
+>>>
+>>> Since DT conversion isn't finished, I still accept the board files.
+>>> But this patch should be split into two parts. One is for pxa, and th=
+e
+>>> other one is for net.
 >>
+>> Patch cannot be splitted because this can create hole which break git-=
+bisect.
+>>
+>> In any case, I want to create a v2 with a more detailed description, a=
+nd I
+>> have a supplementary question for the CAN subsystem maintainers.
+>> "Transciever power" is not used by any of the boards, can we remove it=
+
+>> completely? This will greatly simplify driver.
+>> Thanks.
+>>
+>> --
+>> Alexander Shiyan <shc_work@mail.ru>
 >=20
-> I would appreciate that.
+> If you want to make the patch go through pxa tree, you need to get the =
+Ack
+> from CAN maintainer.
 
-Done. You can bring your local repo into a consistent state with:
-
-    $ pit pull --rebase
-
-If you don't have any patches applied your HEAD should be equal to
-origin/master.
+The current series consists of 3 patches, only the first one touches
+"arch/arm/mach-pxa", so I'd like the patches to go via linux-can. Can I
+have your Acked-by for the first patch "[PATCH v2 1/3] can: mcp251x:
+Replace power callbacks with regulator AP"
 
 Marc
 --=20
@@ -56,7 +80,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO
+--GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -65,9 +89,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlITEu4ACgkQjTAFq1RaXHPmAwCeKULW0Q/V9ratxcmrmi8nl4Pi
-vB8Anj63FjepEitgvQ2OgpKloioRrTI+
-=bChz
+iEYEARECAAYFAlITLNcACgkQjTAFq1RaXHOO5gCfeXjmDzePrJarUr6p3fl5/t8Q
+JCEAn3I/ZE3PFHuBzAt3154In4mZZ1SM
+=lc3r
 -----END PGP SIGNATURE-----
 
---pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO--
+--GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP--
