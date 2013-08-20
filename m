@@ -1,78 +1,108 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with regulator
+Subject: Re: [PATCH v2 1/3] can: mcp251x: Replace power callbacks with regulator
  API
-Date: Tue, 20 Aug 2013 10:46:15 +0200
-Message-ID: <52132CD7.50100@pengutronix.de>
-References: <1375963227-6468-1-git-send-email-shc_work@mail.ru> <52049C44.6030902@pengutronix.de> <520EDDA8.6050309@gmail.com> <20130817083014.a01144051b158c34ec7dd9d9@mail.ru> <CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
+Date: Tue, 20 Aug 2013 10:46:36 +0200
+Message-ID: <52132CEC.2030100@pengutronix.de>
+References: <1376912361-22133-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP"
+ boundary="7EOvN0GLfbRWe7iitr9nBaFxfHiVK3td4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51653 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51655 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751244Ab3HTIqk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 04:46:40 -0400
-In-Reply-To: <CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
+	with ESMTP id S1751322Ab3HTIqo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 04:46:44 -0400
+In-Reply-To: <1376912361-22133-1-git-send-email-shc_work@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Alexander Shiyan <shc_work@mail.ru>, Eric Miao <eric.y.miao@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP
+--7EOvN0GLfbRWe7iitr9nBaFxfHiVK3td4
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/17/2013 06:37 AM, Haojian Zhuang wrote:
-> On Sat, Aug 17, 2013 at 12:30 PM, Alexander Shiyan <shc_work@mail.ru> w=
-rote:
->> On Sat, 17 Aug 2013 10:19:20 +0800
->> Haojian Zhuang <haojian.zhuang@gmail.com> wrote:
->>
->>> On 08/09/2013 03:37 PM, Marc Kleine-Budde wrote:
->>>> On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
->>>>> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
->>>>> ---
->>>>>   arch/arm/mach-pxa/icontrol.c         |  3 --
->>>>>   arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
->>>>
->>>> What's pxa's status of DT conversion? Do you (still) accept patches =
-to
->>>> board files?
->>>>
->>>> Marc
->>>>
->>>
->>> Since DT conversion isn't finished, I still accept the board files.
->>> But this patch should be split into two parts. One is for pxa, and th=
-e
->>> other one is for net.
->>
->> Patch cannot be splitted because this can create hole which break git-=
-bisect.
->>
->> In any case, I want to create a v2 with a more detailed description, a=
-nd I
->> have a supplementary question for the CAN subsystem maintainers.
->> "Transciever power" is not used by any of the boards, can we remove it=
-
->> completely? This will greatly simplify driver.
->> Thanks.
->>
->> --
->> Alexander Shiyan <shc_work@mail.ru>
+On 08/19/2013 01:39 PM, Alexander Shiyan wrote:
+> This patch replaces power callbacks to the regulator API. To improve
+> the readability of the code, helper for the regulator enable/disable
+> was added.
 >=20
-> If you want to make the patch go through pxa tree, you need to get the =
-Ack
-> from CAN maintainer.
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> ---
+>  arch/arm/mach-pxa/icontrol.c         |  3 --
+>  arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
+>  drivers/net/can/mcp251x.c            | 81 +++++++++++++++++++---------=
+--------
+>  include/linux/can/platform/mcp251x.h | 13 +-----
+>  4 files changed, 69 insertions(+), 74 deletions(-)
+>=20
+[...]
 
-The current series consists of 3 patches, only the first one touches
-"arch/arm/mach-pxa", so I'd like the patches to go via linux-can. Can I
-have your Acked-by for the first patch "[PATCH v2 1/3] can: mcp251x:
-Replace power callbacks with regulator AP"
+> diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
+> index 8cda23b..3df83f8 100644
+> --- a/drivers/net/can/mcp251x.c
+> +++ b/drivers/net/can/mcp251x.c
+
+[...]
+
+> @@ -1163,15 +1170,14 @@ static int mcp251x_can_suspend(struct device *d=
+ev)
+>  		netif_device_detach(net);
+> =20
+>  		mcp251x_hw_sleep(spi);
+> -		if (pdata->transceiver_enable)
+> -			pdata->transceiver_enable(0);
+> +		mcp251x_power_enable(priv->transceiver, 0);
+>  		priv->after_suspend =3D AFTER_SUSPEND_UP;
+>  	} else {
+>  		priv->after_suspend =3D AFTER_SUSPEND_DOWN;
+>  	}
+> =20
+> -	if (pdata->power_enable) {
+> -		pdata->power_enable(0);
+> +	if (!IS_ERR(priv->power))
+                                ^^^
+
+There's a '{' missing.
+
+> +		regulator_disable(priv->power);
+>  		priv->after_suspend |=3D AFTER_SUSPEND_POWER;
+>  	}
+> =20
+> @@ -1185,12 +1191,11 @@ static int mcp251x_can_resume(struct device *de=
+v)
+>  	struct mcp251x_priv *priv =3D spi_get_drvdata(spi);
+> =20
+>  	if (priv->after_suspend & AFTER_SUSPEND_POWER) {
+> -		pdata->power_enable(1);
+> +		mcp251x_power_enable(priv->power, 1);
+>  		queue_work(priv->wq, &priv->restart_work);
+>  	} else {
+>  		if (priv->after_suspend & AFTER_SUSPEND_UP) {
+> -			if (pdata->transceiver_enable)
+> -				pdata->transceiver_enable(1);
+> +			mcp251x_power_enable(priv->transceiver, 1);
+>  			queue_work(priv->wq, &priv->restart_work);
+>  		} else {
+>  			priv->after_suspend =3D 0;
+
+And I see the following warnings:
+
+> /home/frogger/pengutronix/socketcan/linux/drivers/net/can/mcp251x.c: In=
+ function 'mcp251x_can_suspend':
+> /home/frogger/pengutronix/socketcan/linux/drivers/net/can/mcp251x.c:115=
+6:32: warning: unused variable 'pdata' [-Wunused-variable]
+> /home/frogger/pengutronix/socketcan/linux/drivers/net/can/mcp251x.c: In=
+ function 'mcp251x_can_resume':
+> /home/frogger/pengutronix/socketcan/linux/drivers/net/can/mcp251x.c:118=
+7:32: warning: unused variable 'pdata' [-Wunused-variable]
+
+I've fixed the problems and applied the patch to linux-can/testing.
 
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -80,7 +110,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP
+--7EOvN0GLfbRWe7iitr9nBaFxfHiVK3td4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -89,9 +119,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlITLNcACgkQjTAFq1RaXHOO5gCfeXjmDzePrJarUr6p3fl5/t8Q
-JCEAn3I/ZE3PFHuBzAt3154In4mZZ1SM
-=lc3r
+iEYEARECAAYFAlITLOwACgkQjTAFq1RaXHNUygCfUbNF7EIjTThtJfiyNYqfj+2+
+9rAAoIT4CG+po4SB8JO6mnTFa9TOOwkC
+=T1a9
 -----END PGP SIGNATURE-----
 
---GeksnCwvddiDawgX0HxbwDSwDwkCgrFVP--
+--7EOvN0GLfbRWe7iitr9nBaFxfHiVK3td4--
