@@ -1,40 +1,73 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH can-utils] Don't overwrite PREFIX and DESTDIR when provided
  via the environment
-Date: Tue, 20 Aug 2013 07:29:26 +0200
-Message-ID: <5212FEB6.2080005@hartkopp.net>
-References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de> <520FCFDD.7010308@pengutronix.de> <5210A9C5.5070309@hartkopp.net> <20130818204930.GM30496@pengutronix.de> <52113E45.4090300@pengutronix.de> <20130819083754.GN30496@pengutronix.de> <5212547D.9060402@hartkopp.net> <52126F15.3090500@pengutronix.de>
+Date: Tue, 20 Aug 2013 08:55:42 +0200
+Message-ID: <521312EE.4080606@pengutronix.de>
+References: <1376767690-8472-1-git-send-email-u.kleine-koenig@pengutronix.de> <520FCFDD.7010308@pengutronix.de> <5210A9C5.5070309@hartkopp.net> <20130818204930.GM30496@pengutronix.de> <52113E45.4090300@pengutronix.de> <20130819083754.GN30496@pengutronix.de> <5212547D.9060402@hartkopp.net> <52126F15.3090500@pengutronix.de> <5212FEB6.2080005@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:40233 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751998Ab3HTF32 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 01:29:28 -0400
-In-Reply-To: <52126F15.3090500@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56369 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751259Ab3HTHpp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 03:45:45 -0400
+In-Reply-To: <5212FEB6.2080005@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: =?windows-1252?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
 
-On 19.08.2013 21:16, Marc Kleine-Budde wrote:
-> On 08/19/2013 07:23 PM, Oliver Hartkopp wrote:
->> I did not intentionally replace you as author.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 08/20/2013 07:29 AM, Oliver Hartkopp wrote:
+> On 19.08.2013 21:16, Marc Kleine-Budde wrote:
+>> On 08/19/2013 07:23 PM, Oliver Hartkopp wrote:
+>>> I did not intentionally replace you as author.
+>>>
+>>> When i do a similar commit from a mail, I=E2=80=99ll take care about =
+not loosing the
+>>> original author anymore.
+>>>
+>>> Git still is mystic to me 8-)
 >>
->> When i do a similar commit from a mail, I=92ll take care about not l=
-oosing the
->> original author anymore.
+>> If it's okay Oliver, I'm going to force push your branch, so that we
+>> have a clean history again.
 >>
->> Git still is mystic to me 8-)
 >=20
-> If it's okay Oliver, I'm going to force push your branch, so that we
-> have a clean history again.
->=20
+> I would appreciate that.
 
-I would appreciate that.
+Done. You can bring your local repo into a consistent state with:
 
-BR,
-Oliver
+    $ pit pull --rebase
+
+If you don't have any patches applied your HEAD should be equal to
+origin/master.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlITEu4ACgkQjTAFq1RaXHPmAwCeKULW0Q/V9ratxcmrmi8nl4Pi
+vB8Anj63FjepEitgvQ2OgpKloioRrTI+
+=bChz
+-----END PGP SIGNATURE-----
+
+--pB4Rivg9nbV5aU1pNQ03Ch2jWv6PXOeJO--
