@@ -1,111 +1,54 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH v2] candump: Add possibility to specify logfile
-Date: Wed, 21 Aug 2013 11:21:08 +0200
-Message-ID: <1377076868-31679-1-git-send-email-alexander.stein@systec-electronic.com>
-References: <52147A71.2080200@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:54787 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751422Ab3HUJVM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 05:21:12 -0400
-Received: from comm.systec-electronic.de (unknown [212.185.67.146])
-	by webbox1416.server-home.net (Postfix) with ESMTPA id 4B70D27A563
-	for <linux-can@vger.kernel.org>; Wed, 21 Aug 2013 10:49:44 +0200 (CEST)
-In-Reply-To: <52147A71.2080200@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH next] drivers: net: can: c_can: add type cast from 'unsigned
+ int' to 'int'
+Date: Wed, 21 Aug 2013 11:45:02 +0200
+Message-ID: <52148C1E.3020709@pengutronix.de>
+References: <521483CD.8050907@asianux.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="MCv54WLWxVEwgIQmRgLhl6DqLgoeFvKv3"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <521483CD.8050907@asianux.com>
+Sender: netdev-owner@vger.kernel.org
+To: Chen Gang <gang.chen@asianux.com>
+Cc: wg@grandegger.com, anilkumar@ti.com, Tony Lindgren <tony@atomide.com>, jg1.han@samsung.com, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-You need to use -l/tmp/logfile (wihtout space!) because -l takes an
-optional parameter.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MCv54WLWxVEwgIQmRgLhl6DqLgoeFvKv3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
-Changes in v2:
-* Fixed some coding style issues
+On 08/21/2013 11:09 AM, Chen Gang wrote:
+> 'priv->instance' may less than zero, so need a type cast, the related
+> warnings (allmodconfig, "EXTRA_CFLAGS=3D-W"):
+>=20
+>   drivers/net/can/c_can/c_can_platform.c:198:3: warning: comparison of =
+unsigned expression < 0 is always false [-Wtype-limits]
 
- candump.c | 36 +++++++++++++++++++++---------------
- 1 file changed, 21 insertions(+), 15 deletions(-)
+Tnx, I've tweaked the commit message a bit, will send a v2.
 
-diff --git a/candump.c b/candump.c
-index c865bd7..35ccaad 100644
---- a/candump.c
-+++ b/candump.c
-@@ -115,7 +115,7 @@ void print_usage(char *prg)
- 	fprintf(stderr, "         -b <can>    (bridge mode - send received frames to <can>)\n");
- 	fprintf(stderr, "         -B <can>    (bridge mode - like '-b' with disabled loopback)\n");
- 	fprintf(stderr, "         -u <usecs>  (delay bridge forwarding by <usecs> microseconds)\n");
--	fprintf(stderr, "         -l          (log CAN-frames into file. Sets '-s %d' by default)\n", SILENT_ON);
-+	fprintf(stderr, "         -l[logfile] (log CAN-frames into file. Sets '-s %d' by default)\n", SILENT_ON);
- 	fprintf(stderr, "         -L          (use log file format on stdout)\n");
- 	fprintf(stderr, "         -n <count>  (terminate after receiption of <count> CAN frames)\n");
- 	fprintf(stderr, "         -r <size>   (set socket receive buffer to <size>)\n");
-@@ -231,6 +231,7 @@ int main(int argc, char **argv)
- 	struct timeval tv, last_tv;
- 	struct timeval timeout, timeout_config = { 0, 0 }, *timeout_current = NULL;
- 	FILE *logfile = NULL;
-+	const char *fname = NULL;
- 
- 	signal(SIGTERM, sigterm);
- 	signal(SIGHUP, sigterm);
-@@ -239,7 +240,7 @@ int main(int argc, char **argv)
- 	last_tv.tv_sec  = 0;
- 	last_tv.tv_usec = 0;
- 
--	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:heT:?")) != -1) {
-+	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:l::dxLn:r:heT:?")) != -1) {
- 		switch (opt) {
- 		case 't':
- 			timestamp = optarg[0];
-@@ -324,6 +325,7 @@ int main(int argc, char **argv)
- 
- 		case 'l':
- 			log = 1;
-+			fname = optarg;
- 			break;
- 
- 		case 'd':
-@@ -566,22 +568,26 @@ int main(int argc, char **argv)
- 	if (log) {
- 		time_t currtime;
- 		struct tm now;
--		char fname[sizeof("candump-2006-11-20_202026.log")+1];
-+		char filename[sizeof("candump-2006-11-20_202026.log") + 1];
- 
--		if (time(&currtime) == (time_t)-1) {
--			perror("time");
--			return 1;
--		}
-+		if (fname == NULL) {
-+			if (time(&currtime) == (time_t)-1) {
-+				perror("time");
-+				return 1;
-+			}
-+
-+			localtime_r(&currtime, &now);
- 
--		localtime_r(&currtime, &now);
-+			sprintf(filename, "candump-%04d-%02d-%02d_%02d%02d%02d.log",
-+				now.tm_year + 1900,
-+				now.tm_mon + 1,
-+				now.tm_mday,
-+				now.tm_hour,
-+				now.tm_min,
-+				now.tm_sec);
- 
--		sprintf(fname, "candump-%04d-%02d-%02d_%02d%02d%02d.log",
--			now.tm_year + 1900,
--			now.tm_mon + 1,
--			now.tm_mday,
--			now.tm_hour,
--			now.tm_min,
--			now.tm_sec);
-+			fname = filename;
-+		}
- 
- 		if (silent != SILENT_ON)
- 			printf("\nWarning: console output active while logging!");
--- 
-1.8.1.5
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--MCv54WLWxVEwgIQmRgLhl6DqLgoeFvKv3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIUjB4ACgkQjTAFq1RaXHMYJgCfQAjIqxNerzOQC1llP4LG97ip
+TKsAnRPAUsyfD5kNmQuMxFuWtFLh1mDQ
+=pLp6
+-----END PGP SIGNATURE-----
+
+--MCv54WLWxVEwgIQmRgLhl6DqLgoeFvKv3--
