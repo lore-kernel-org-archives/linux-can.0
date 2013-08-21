@@ -1,69 +1,41 @@
-From: "Valler, Robert" <r.valler@enextra.de>
-Subject: RE: [Socketcan-users] Finding a transmitter's CAN ID
-Date: Wed, 21 Aug 2013 13:41:26 +0000
-Message-ID: <BB60414AA9EB294DA42EBCE12106C45A03AA1486@EX10MBOX1B.hosting.inetserver.de>
-References: <1376923439605-7678.post@n3.nabble.com>,<521232ED.4050607@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v2] candump: Add possibility to specify logfile
+Date: Wed, 21 Aug 2013 18:58:19 +0200
+Message-ID: <5214F1AB.30404@hartkopp.net>
+References: <52147A71.2080200@pengutronix.de> <1377076868-31679-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx-relay04.cloudservice.ag ([81.20.94.241]:52727 "EHLO
-	mx-relay04.cloudservice.ag" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751813Ab3HUNsD convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 21 Aug 2013 09:48:03 -0400
-Received: from EX10HUB1.hosting.inetserver.de (unknown [10.20.10.69])
-	by qhexrelay2.hosting.inetserver.de (Postfix) with ESMTP id 3EE6F18710D
-	for <linux-can@vger.kernel.org>; Wed, 21 Aug 2013 15:41:27 +0200 (CEST)
-In-Reply-To: <521232ED.4050607@pengutronix.de>
-Content-Language: en-GB
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:41190 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751624Ab3HUQ6W (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 12:58:22 -0400
+In-Reply-To: <1377076868-31679-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
 
-Hello again,
+On 21.08.2013 11:21, Alexander Stein wrote:
+> You need to use -l/tmp/logfile (wihtout space!) because -l takes an
+> optional parameter.
+> 
 
-Thanks all for the helpful information.
-I am a little clearer on how the CAN bus works now.
+Hm. I don't like that because of the "(without space!)"
 
+If the option could have been passed like all other options (with space), it
+would have been ok. But not like this.
 
-All the best,
-Rob
+I know that this is a getopt problem ...
 
+Btw. why can't you just use '-L' and redirect the output, e.g.
 
+candump -L can0 > mylogfile.log
 
-On 08/19/2013 04:43 PM, Rob__V wrote:
-> Hi all,
->
-> I am currently working on a project with several embedded platforms connect
-> via CAN:
-> 1 x Linux board connected via SocketCAN
-> N x embedded boards using the Atmega16M1 (CAN) MCU.
->
-> The Linux board is 'treated' as the master and needs to know the CAN ID of
-> each
-> atmega board that sends it a CAN message. So my question is :
->
-> How is the Linux/SocketCAN board able to determine the CAN ID of other
-> networked nodes when they transmit ?
->
-> Of course, each CAN node can determine the target ID for each message but
-> I am not sure if the source ID is known ... outside of arbitration.
->
->
-> Thank you for your time.
->
-> All the best,
-> Rob
->
->
->
-> --
-> View this message in context: http://socket-can.996257.n3.nabble.com/Finding-a-transmitter-s-CAN-ID-tp7678.html
-> Sent from the Socket-CAN Users mailing list archive at Nabble.com.
-> _______________________________________________
-> Socketcan-users mailing list
-> Socketcan-users@lists.berlios.de
-> https://lists.berlios.de/mailman/listinfo/socketcan-users
->
+??
+
+Regards,
+Oliver
+
 
