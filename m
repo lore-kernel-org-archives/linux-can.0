@@ -1,27 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
-Date: Wed, 21 Aug 2013 22:19:22 +0200
-Message-ID: <521520CA.5080700@pengutronix.de>
-References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local> <52151DCA.3000606@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [SPAM]  Reading messages that use BAM,
+ or have a DLC larger than 8
+Date: Wed, 21 Aug 2013 22:06:34 +0200
+Message-ID: <52151DCA.3000606@pengutronix.de>
+References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="LwNwDN7ttFBPJNhih9b8pFutqStvsincH"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33320 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752289Ab3HUUTb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 16:19:31 -0400
-In-Reply-To: <52151DCA.3000606@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Brent Sink <Brent.Sink@we-ics.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+Content-Type: multipart/mixed; boundary="===============0926865084716649873=="
+Return-path: <socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86-m2CP4sPuupzvI/EAa86jFoT4S9po1h25@public.gmane.org>
+List-Unsubscribe: <https://lists.berlios.de/mailman/options/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.berlios.de/pipermail/socketcan-users>
+List-Post: <mailto:socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>
+List-Help: <mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.berlios.de/mailman/listinfo/socketcan-users>,
+	<mailto:socketcan-users-request-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org?subject=subscribe>
+Sender: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+Errors-To: socketcan-users-bounces-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+To: Brent Sink <Brent.Sink-CmWHElxDd53QT0dZR+AlfA@public.gmane.org>
+Cc: "socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org" <socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LwNwDN7ttFBPJNhih9b8pFutqStvsincH
+--===============0926865084716649873==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="BbLLgNMmvGMoJTT4wS2NG1pXtPlFMVAvO"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BbLLgNMmvGMoJTT4wS2NG1pXtPlFMVAvO
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+
+Hello Brent,
+
+please come to the new mailingliste at linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+
+regards,
+Marc
 
 On 08/21/2013 08:43 PM, Brent Sink wrote:
 > How do I read J1939 messages that use the BAM format?  Some of the
@@ -30,16 +46,6 @@ On 08/21/2013 08:43 PM, Brent Sink wrote:
 > error.  Is there something special that I need to do to enable reading
 > these messages?  Thanks!
 
-With mainline linux you just receive raw CAN frames. I'm not a j1939
-expert, as far as I can see, BAM is a transport protocol for CAN.
-
-There are two options:
-1) You have to implement the BAM protocol yourself either,
-   a) inside the kernel or
-   b) inside userspace.
-2) Talk to Kurt (Cc'ed) if his j1939 patches support BAM.
-
-Marc
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -47,7 +53,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---LwNwDN7ttFBPJNhih9b8pFutqStvsincH
+--BbLLgNMmvGMoJTT4wS2NG1pXtPlFMVAvO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -56,9 +62,21 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlIVIMoACgkQjTAFq1RaXHOvegCgiwVud/JGsuLx7G9qyN+++iAy
-oHEAn2V6CcN6KrP4CRPZxPArralOsFhy
-=z3UP
+iEYEARECAAYFAlIVHcsACgkQjTAFq1RaXHMTKQCgjg8Qv2UFw+wk1z5AcezOUUDd
+4nYAn1DijgsW6HR2t5LaXuovtLDraF9v
+=B8Dj
 -----END PGP SIGNATURE-----
 
---LwNwDN7ttFBPJNhih9b8pFutqStvsincH--
+--BbLLgNMmvGMoJTT4wS2NG1pXtPlFMVAvO--
+
+--===============0926865084716649873==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Socketcan-users mailing list
+Socketcan-users-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org
+https://lists.berlios.de/mailman/listinfo/socketcan-users
+--===============0926865084716649873==--
