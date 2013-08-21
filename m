@@ -1,54 +1,44 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] candump: Add possibility to specify logfile
-Date: Wed, 21 Aug 2013 10:29:37 +0200
-Message-ID: <52147A71.2080200@pengutronix.de>
-References: <1377073026-30202-1-git-send-email-alexander.stein@systec-electronic.com> <52147A27.9020601@pengutronix.de>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: [PATCH next] drivers: net: can: c_can: add type cast from 'unsigned
+ int' to 'int'
+Date: Wed, 21 Aug 2013 17:09:33 +0800
+Message-ID: <521483CD.8050907@asianux.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="13dKKR5k6i2uSREAQMcDjj89p77eNmwMP"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39169 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751444Ab3HUI3j (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 04:29:39 -0400
-In-Reply-To: <52147A27.9020601@pengutronix.de>
+Received: from intranet.asianux.com ([58.214.24.6]:47791 "EHLO
+	intranet.asianux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751725Ab3HUJKt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 05:10:49 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, anilkumar@ti.com, Tony Lindgren <tony@atomide.com>, jg1.han@samsung.com
+Cc: David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---13dKKR5k6i2uSREAQMcDjj89p77eNmwMP
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+'priv->instance' may less than zero, so need a type cast, the related
+warnings (allmodconfig, "EXTRA_CFLAGS=-W"):
 
-On 08/21/2013 10:28 AM, Marc Kleine-Budde wrote:
->> +	const char* fname =3D NULL;
->=20
-> chat *fname
-char
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+  drivers/net/can/c_can/c_can_platform.c:198:3: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
 
 
---13dKKR5k6i2uSREAQMcDjj89p77eNmwMP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ drivers/net/can/c_can/c_can_platform.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIUenEACgkQjTAFq1RaXHNyYgCeOOe/opIY3cEkRXZ7A7m9M9Dc
-+9MAnRZKxABIhaMDy/tKOvLOEG4wn+aj
-=V2Tz
------END PGP SIGNATURE-----
-
---13dKKR5k6i2uSREAQMcDjj89p77eNmwMP--
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index c6f838d..294ced3 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -195,7 +195,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
+-		if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
++		if (IS_ERR(priv->raminit_ctrlreg) || (int)priv->instance < 0)
+ 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
+ 		else
+ 			priv->raminit = c_can_hw_raminit;
+-- 
+1.7.7.6
