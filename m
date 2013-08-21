@@ -1,64 +1,75 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [Socketcan-users] Socketcan-users Digest, Vol 77, Issue 2
-Date: Tue, 20 Aug 2013 13:02:40 +0200
-Message-ID: <52134CD0.5030209@pengutronix.de>
-References: <mailman.17.1376992804.28649.socketcan-users@lists.berlios.de> <8A49CFF5759B8644A46158D75AFC117D68584B51@AUSP01DAG0102.collaborationhost.net>
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH RESEND] can: mcp251x: Replace power callbacks with
+ regulator API
+Date: Wed, 21 Aug 2013 08:46:00 +0800
+Message-ID: <CAN1soZyM8x4cWqqjk4az37Njvgez0teTnKuGa2ZQ4od-3sm6MQ@mail.gmail.com>
+References: <1375963227-6468-1-git-send-email-shc_work@mail.ru>
+	<52049C44.6030902@pengutronix.de>
+	<520EDDA8.6050309@gmail.com>
+	<20130817083014.a01144051b158c34ec7dd9d9@mail.ru>
+	<CAN1soZz68ymkj4x5bWTP-6Qc7zVuVotLoT8nYLrdTd3DQHyFbQ@mail.gmail.com>
+	<52132CD7.50100@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="aB1PFItNMlfX6X04ofe61DoKMiVCaGFIQ"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45762 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750981Ab3HTLCr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 07:02:47 -0400
-In-Reply-To: <8A49CFF5759B8644A46158D75AFC117D68584B51@AUSP01DAG0102.collaborationhost.net>
+Received: from mail-ee0-f52.google.com ([74.125.83.52]:54082 "EHLO
+	mail-ee0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751379Ab3HUAqB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Aug 2013 20:46:01 -0400
+In-Reply-To: <52132CD7.50100@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Anil Mathews (India - Bangalore)" <anil.mathews@mindteck.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Rob__V <r.valler@enextra.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Alexander Shiyan <shc_work@mail.ru>, Eric Miao <eric.y.miao@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aB1PFItNMlfX6X04ofe61DoKMiVCaGFIQ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 20, 2013 at 4:46 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 08/17/2013 06:37 AM, Haojian Zhuang wrote:
+>> On Sat, Aug 17, 2013 at 12:30 PM, Alexander Shiyan <shc_work@mail.ru> wrote:
+>>> On Sat, 17 Aug 2013 10:19:20 +0800
+>>> Haojian Zhuang <haojian.zhuang@gmail.com> wrote:
+>>>
+>>>> On 08/09/2013 03:37 PM, Marc Kleine-Budde wrote:
+>>>>> On 08/08/2013 02:00 PM, Alexander Shiyan wrote:
+>>>>>> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+>>>>>> ---
+>>>>>>   arch/arm/mach-pxa/icontrol.c         |  3 --
+>>>>>>   arch/arm/mach-pxa/zeus.c             | 46 ++++++++++----------
+>>>>>
+>>>>> What's pxa's status of DT conversion? Do you (still) accept patches to
+>>>>> board files?
+>>>>>
+>>>>> Marc
+>>>>>
+>>>>
+>>>> Since DT conversion isn't finished, I still accept the board files.
+>>>> But this patch should be split into two parts. One is for pxa, and the
+>>>> other one is for net.
+>>>
+>>> Patch cannot be splitted because this can create hole which break git-bisect.
+>>>
+>>> In any case, I want to create a v2 with a more detailed description, and I
+>>> have a supplementary question for the CAN subsystem maintainers.
+>>> "Transciever power" is not used by any of the boards, can we remove it
+>>> completely? This will greatly simplify driver.
+>>> Thanks.
+>>>
+>>> --
+>>> Alexander Shiyan <shc_work@mail.ru>
+>>
+>> If you want to make the patch go through pxa tree, you need to get the Ack
+>> from CAN maintainer.
+>
+> The current series consists of 3 patches, only the first one touches
+> "arch/arm/mach-pxa", so I'd like the patches to go via linux-can. Can I
+> have your Acked-by for the first patch "[PATCH v2 1/3] can: mcp251x:
+> Replace power callbacks with regulator AP"
+>
+> Marc
+> --
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>
 
-On 08/20/2013 12:42 PM, Anil Mathews (India - Bangalore) wrote:
-> Hi Rob,
-
-> As per my understanding every CAN node should have a hardcoded
-> address accessed from rotary switch,or read from eeprom etc.Every
-> message ID should be anded with this CAN ID so that each message will
-> be unique in the network.Now each individual CAN nodes will process
-> these messages using their filter and mask and if it matches they can
-> extract the CAN ID and take appropriate action.All these action code
-> for a particular CAN ID our application should be capable to do.
-
-What you describe is a layer on top of raw CAN. There are many different
-layers on top of raw CAN, some of them are even standardized. The usage
-of the CAN id  depends on the uppers layers.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---aB1PFItNMlfX6X04ofe61DoKMiVCaGFIQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlITTNAACgkQjTAFq1RaXHPmPwCghIO/hwvJ9B2qaVIgmBG+rv8k
-Ec0An3zcD5UUqJUhUUmm7ABJ0WLlNEsi
-=b1bL
------END PGP SIGNATURE-----
-
---aB1PFItNMlfX6X04ofe61DoKMiVCaGFIQ--
+Acked-by: Haojian Zhuang <haojian.zhuang@gmail.com>
