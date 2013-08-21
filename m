@@ -1,84 +1,107 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2013-08-21
-Date: Wed, 21 Aug 2013 09:42:55 +0200
-Message-ID: <52146F7F.6010001@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="OBJMXlfAeKdhUlBugQjW11apdbQF8FaiS"
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH] candump: Add possibility to specify logfile
+Date: Wed, 21 Aug 2013 10:17:06 +0200
+Message-ID: <1377073026-30202-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45381 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752251Ab3HUHnO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 03:43:14 -0400
+Received: from webbox1416.server-home.net ([77.236.96.61]:52532 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751447Ab3HUIVF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Aug 2013 04:21:05 -0400
+Received: from comm.systec-electronic.de (unknown [212.185.67.146])
+	by webbox1416.server-home.net (Postfix) with ESMTPA id 9C81B27A6BE
+	for <linux-can@vger.kernel.org>; Wed, 21 Aug 2013 09:49:37 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: linux-can@vger.kernel.org
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OBJMXlfAeKdhUlBugQjW11apdbQF8FaiS
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+You need to use -l/tmp/logfile (wihtout space!) because -l takes an
+optional parameter.
 
-Hello David,
-
-this pull-request for net-next consists of a series by Alexander
-Shiyan, he cleans up the mcp251x driver. As the first patch touches
-arch/arm/mach-pxa, it's acked by Haojian Zhuang.
-
-regards,
-Marc
-
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
+ candump.c | 37 ++++++++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
 
-The following changes since commit 954c396756e3d31985f7bc6a414a988a4736a7=
-d0:
+diff --git a/candump.c b/candump.c
+index c865bd7..72193fc 100644
+--- a/candump.c
++++ b/candump.c
+@@ -115,7 +115,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -b <can>    (bridge mode - send received frames to <can>)\n");
+ 	fprintf(stderr, "         -B <can>    (bridge mode - like '-b' with disabled loopback)\n");
+ 	fprintf(stderr, "         -u <usecs>  (delay bridge forwarding by <usecs> microseconds)\n");
+-	fprintf(stderr, "         -l          (log CAN-frames into file. Sets '-s %d' by default)\n", SILENT_ON);
++	fprintf(stderr, "         -l[logfile] (log CAN-frames into file. Sets '-s %d' by default)\n", SILENT_ON);
+ 	fprintf(stderr, "         -L          (use log file format on stdout)\n");
+ 	fprintf(stderr, "         -n <count>  (terminate after receiption of <count> CAN frames)\n");
+ 	fprintf(stderr, "         -r <size>   (set socket receive buffer to <size>)\n");
+@@ -231,6 +231,7 @@ int main(int argc, char **argv)
+ 	struct timeval tv, last_tv;
+ 	struct timeval timeout, timeout_config = { 0, 0 }, *timeout_current = NULL;
+ 	FILE *logfile = NULL;
++	const char* fname = NULL;
+ 
+ 	signal(SIGTERM, sigterm);
+ 	signal(SIGHUP, sigterm);
+@@ -239,7 +240,7 @@ int main(int argc, char **argv)
+ 	last_tv.tv_sec  = 0;
+ 	last_tv.tv_usec = 0;
+ 
+-	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:ldxLn:r:heT:?")) != -1) {
++	while ((opt = getopt(argc, argv, "t:ciaSs:b:B:u:l::dxLn:r:heT:?")) != -1) {
+ 		switch (opt) {
+ 		case 't':
+ 			timestamp = optarg[0];
+@@ -324,6 +325,7 @@ int main(int argc, char **argv)
+ 
+ 		case 'l':
+ 			log = 1;
++			fname = optarg;
+ 			break;
+ 
+ 		case 'd':
+@@ -566,22 +568,27 @@ int main(int argc, char **argv)
+ 	if (log) {
+ 		time_t currtime;
+ 		struct tm now;
+-		char fname[sizeof("candump-2006-11-20_202026.log")+1];
++		char filename[sizeof("candump-2006-11-20_202026.log")+1];
+ 
+-		if (time(&currtime) == (time_t)-1) {
+-			perror("time");
+-			return 1;
+-		}
++		if (fname == NULL)
++		{
++			if (time(&currtime) == (time_t)-1) {
++				perror("time");
++				return 1;
++			}
++
++			localtime_r(&currtime, &now);
+ 
+-		localtime_r(&currtime, &now);
++			sprintf(filename, "candump-%04d-%02d-%02d_%02d%02d%02d.log",
++				now.tm_year + 1900,
++				now.tm_mon + 1,
++				now.tm_mday,
++				now.tm_hour,
++				now.tm_min,
++				now.tm_sec);
+ 
+-		sprintf(fname, "candump-%04d-%02d-%02d_%02d%02d%02d.log",
+-			now.tm_year + 1900,
+-			now.tm_mon + 1,
+-			now.tm_mday,
+-			now.tm_hour,
+-			now.tm_min,
+-			now.tm_sec);
++			fname = filename;
++		}
+ 
+ 		if (silent != SILENT_ON)
+ 			printf("\nWarning: console output active while logging!");
+-- 
+1.8.1.5
 
-  net/phy: micrel: Add OF configuration support for ksz9021 (2013-08-21 0=
-0:03:38 -0700)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can-next.git for-davem
-
-for you to fetch changes up to b1ef05a5a20afe50d4188a5b59579bd140758cf0:
-
-  can: mcp251x: Allow tuning SPI mode and limit maximal SPI speed (2013-0=
-8-21 09:28:29 +0200)
-
-----------------------------------------------------------------
-Alexander Shiyan (3):
-      can: mcp251x: Replace power callbacks with regulator API
-      can: mcp251x: Eliminate irq_flags from driver platform_data
-      can: mcp251x: Allow tuning SPI mode and limit maximal SPI speed
-
- arch/arm/mach-pxa/icontrol.c         |  3 --
- arch/arm/mach-pxa/zeus.c             | 46 +++++++++--------
- drivers/net/can/mcp251x.c            | 98 ++++++++++++++++++------------=
-------
- include/linux/can/platform/mcp251x.h | 15 +-----
- 4 files changed, 75 insertions(+), 87 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---OBJMXlfAeKdhUlBugQjW11apdbQF8FaiS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIUb38ACgkQjTAFq1RaXHN45wCfYk34pGy3oaAU8Qro9UNDlCh4
-4BcAn0CaNhb/hcB1T70lrLys6b9Upfqx
-=fXZS
------END PGP SIGNATURE-----
-
---OBJMXlfAeKdhUlBugQjW11apdbQF8FaiS--
