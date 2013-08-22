@@ -1,142 +1,105 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
-Date: Thu, 22 Aug 2013 16:38:58 +0200
-Message-ID: <20130822143858.GB997@vandijck-laurijssen.be>
+From: Brent Sink <Brent.Sink@we-ics.com>
+Subject: RE: Reading messages that use BAM, or have a DLC larger than 8
+Date: Thu, 22 Aug 2013 12:24:15 -0400
+Message-ID: <9522AFA707AD744DA5CF5DF53E30277430EEDB1BF6@WEICSUS1.weics.local>
 References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
- <52151DCA.3000606@pengutronix.de>
- <521520CA.5080700@pengutronix.de>
+ <52151DCA.3000606@pengutronix.de> <521520CA.5080700@pengutronix.de>
  <20130822075613.GA1831@vandijck-laurijssen.be>
  <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
+ <20130822143858.GB997@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:33891 "EHLO
-	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752457Ab3HVOjE convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 22 Aug 2013 10:39:04 -0400
-Content-Disposition: inline
-In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
+Received: from 66.49.45.106.nw.nuvox.net ([66.49.45.106]:36369 "EHLO
+	remote.weics-us.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753026Ab3HVQYV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Aug 2013 12:24:21 -0400
+In-Reply-To: <20130822143858.GB997@vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Brent Sink <Brent.Sink@we-ics.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "John Boyd (jaboydjr77@gmail.com)" <jaboydjr77@gmail.com>
 
-Brent,
-
-in your linux git repository, do:
-$ git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-can=
--j1939.git
-$ git remote update j1939
-$ git merge j1939/v3.6 (or any branch that suits best your kernel).
-
-This won't take as long as cloning the entire repository, if you
-are already working in a git repo.
-
-Kurt
-
-
-On Thu, Aug 22, 2013 at 10:22:31AM -0400, Brent Sink wrote:
-> Thanks Kurt.  Do I really need to clone the entire repository, or can=
- you point me to the files I need to rebuild the can-utils?  Is there a=
- patch that I could apply to my current kernel build?  Thanks,
->=20
-> -brent
->=20
-> -----Original Message-----
-> From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
-> Sent: Thursday, August 22, 2013 3:56 AM
-> To: Marc Kleine-Budde
-> Cc: Brent Sink; linux-can@vger.kernel.org
-> Subject: Re: Reading messages that use BAM, or have a DLC larger than=
- 8
->=20
-> Hi,
->=20
-> I have a git repository on git://gitorious.org/~kurt-vd/linux-can/lin=
-ux-can-j1939.git
->=20
-> I added a complete j1939 stack, including 'BAM'.
->=20
-> You will need the associated can-utils with j1939 support to activate=
- the j1939 processing for a specific CAN device:
-> $ ip link set can0 j1939 on
->=20
-> If you only need to receive j1939 packets, then that's all you need t=
-o do.
->=20
-> The associated can-utils provide some example programs. You will need=
- to take a look as the API for j1939 sockets is different than for raw =
-CAN.
->=20
-> Kind regards,
-> Kurt
->=20
-> On Wed, Aug 21, 2013 at 10:19:22PM +0200, Marc Kleine-Budde wrote:
-> > On 08/21/2013 08:43 PM, Brent Sink wrote:
-> > > How do I read J1939 messages that use the BAM format?  Some of th=
-e
-> > > diagnostic messages that are on the DM01 message have a DLC that =
-is
-> > > often larger than 8 bytes when the message contains more than one
-> > > error.  Is there something special that I need to do to enable
-> > > reading these messages?  Thanks!
-> >
-> > With mainline linux you just receive raw CAN frames. I'm not a j193=
-9
-> > expert, as far as I can see, BAM is a transport protocol for CAN.
-> >
-> > There are two options:
-> > 1) You have to implement the BAM protocol yourself either,
-> >    a) inside the kernel or
-> >    b) inside userspace.
-> > 2) Talk to Kurt (Cc'ed) if his j1939 patches support BAM.
-> >
-> > Marc
-> > --
-> > Pengutronix e.K.                  | Marc Kleine-Budde           |
-> > Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> > Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> > Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> >
->=20
->=20
->=20
-> --
-> Kurt Van Dijck
-> GRAMMER EiA ELECTRONICS
-> http://www.eia.be
-> kurt.van.dijck@eia.be
-> +32-38708534
->=20
-> The information contained in this message may be privileged and confi=
-dential and protected from disclosure. If the reader of this message is=
- not the intended recipient, or an employee or agent responsible for de=
-livering this message to the intended recipient, you are hereby notifie=
-d that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in err=
-or, please notify us immediately by replying to the message and deletin=
-g it from your computer. Internet communications are not assured to be =
-secure or clear of inaccuracies as information could be intercepted, co=
-rrupted, lost, destroyed, arrive late or incomplete, or contain viruses=
-=2E Therefore, we do not accept responsibility for any errors or omissi=
-ons that are present in this email, or any attachment, that have arisen=
- as a result of e-mail transmission.
-> N=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDr=EF=BF=BD=EF=BF=BDy=EF=
-=BF=BD=EF=BF=BD=EF=BF=BDb=EF=BF=BDX=EF=BF=BD=EF=BF=BD=C7=A7v=EF=BF=BD^=EF=
-=BF=BD)=DE=BA{.n=EF=BF=BD+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD{=EF=BF=BD=
-q=EF=BF=BD=EF=BF=BD=EF=BF=BD^n=EF=BF=BDr=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=
-=BF=BD=1A=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD&=EF=BF=
-=BD=EF=BF=BD=1E=EF=BF=BDG=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=03(=EF=BF=
-=BD=E9=9A=8E=EF=BF=BD=DD=A2j"=EF=BF=BD=EF=BF=BD=1A=EF=BF=BD=1Bm=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=DE=96=EF=BF=BD=EF=BF=BD=EF=
-=BF=BDf=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD~=EF=BF=BD=
-m=EF=BF=BD
-
---=20
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+T2ssIHNvIG1lcmdlZCB0aGlzIGludG8gbXkgMy44IGJyYW5jaCBhbmQgYnVpbHQgdGhlIGtlcm5l
+bC4gIENhbGxpbmcgImlwIGxpbmsgc2V0IGNhbjAgajE5Mzkgb24iIHJlc3VsdHMgaW4gdGhlIGVy
+cm9yIHNlZW4gYmVsb3cuICBJJ20gZ3Vlc3NpbmcgSSBuZWVkIHRvIGJ1aWxkIHRoZSBjYW4tdXRp
+bHMgKGdpdDovL2dpdG9yaW91cy5vcmcvfmt1cnQtdmQvbGludXgtY2FuL2Nhbi1qMTkzOS11dGls
+cy5naXQpLi4uIHJpZ2h0PyAgQW55dGhpbmcgZWxzZSB0aGF0IEkgbWF5IG5lZWQgdG8gZG8/DQoN
+CiMgaXAgbGluayBzZXQgY2FuMCBqMTkzOSBvbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIA0KRXJyb3I6IGVpdGhlciAiZGV2IiBpcyBkdXBsaWNhdGUsIG9yICJqMTkzOSIgaXMg
+YSBnYXJiYWdlLg0KDQotYnJlbnQNCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJv
+bTogS3VydCBWYW4gRGlqY2sgW21haWx0bzprdXJ0LnZhbi5kaWpja0BlaWEuYmVdIA0KU2VudDog
+VGh1cnNkYXksIEF1Z3VzdCAyMiwgMjAxMyAxMDozOSBBTQ0KVG86IEJyZW50IFNpbmsNCkNjOiBN
+YXJjIEtsZWluZS1CdWRkZTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6
+IFJlYWRpbmcgbWVzc2FnZXMgdGhhdCB1c2UgQkFNLCBvciBoYXZlIGEgRExDIGxhcmdlciB0aGFu
+IDgNCg0KQnJlbnQsDQoNCmluIHlvdXIgbGludXggZ2l0IHJlcG9zaXRvcnksIGRvOg0KJCBnaXQg
+cmVtb3RlIGFkZCBqMTkzOSBnaXQ6Ly9naXRvcmlvdXMub3JnL35rdXJ0LXZkL2xpbnV4LWNhbi9s
+aW51eC1jYW4tajE5MzkuZ2l0DQokIGdpdCByZW1vdGUgdXBkYXRlIGoxOTM5DQokIGdpdCBtZXJn
+ZSBqMTkzOS92My42IChvciBhbnkgYnJhbmNoIHRoYXQgc3VpdHMgYmVzdCB5b3VyIGtlcm5lbCku
+DQoNClRoaXMgd29uJ3QgdGFrZSBhcyBsb25nIGFzIGNsb25pbmcgdGhlIGVudGlyZSByZXBvc2l0
+b3J5LCBpZiB5b3UgYXJlIGFscmVhZHkgd29ya2luZyBpbiBhIGdpdCByZXBvLg0KDQpLdXJ0DQoN
+Cg0KT24gVGh1LCBBdWcgMjIsIDIwMTMgYXQgMTA6MjI6MzFBTSAtMDQwMCwgQnJlbnQgU2luayB3
+cm90ZToNCj4gVGhhbmtzIEt1cnQuICBEbyBJIHJlYWxseSBuZWVkIHRvIGNsb25lIHRoZSBlbnRp
+cmUgcmVwb3NpdG9yeSwgb3IgY2FuIA0KPiB5b3UgcG9pbnQgbWUgdG8gdGhlIGZpbGVzIEkgbmVl
+ZCB0byByZWJ1aWxkIHRoZSBjYW4tdXRpbHM/ICBJcyB0aGVyZSBhIA0KPiBwYXRjaCB0aGF0IEkg
+Y291bGQgYXBwbHkgdG8gbXkgY3VycmVudCBrZXJuZWwgYnVpbGQ/ICBUaGFua3MsDQo+IA0KPiAt
+YnJlbnQNCj4gDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEt1cnQgVmFu
+IERpamNrIFttYWlsdG86a3VydC52YW4uZGlqY2tAZWlhLmJlXQ0KPiBTZW50OiBUaHVyc2RheSwg
+QXVndXN0IDIyLCAyMDEzIDM6NTYgQU0NCj4gVG86IE1hcmMgS2xlaW5lLUJ1ZGRlDQo+IENjOiBC
+cmVudCBTaW5rOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBSZWFk
+aW5nIG1lc3NhZ2VzIHRoYXQgdXNlIEJBTSwgb3IgaGF2ZSBhIERMQyBsYXJnZXIgdGhhbiANCj4g
+OA0KPiANCj4gSGksDQo+IA0KPiBJIGhhdmUgYSBnaXQgcmVwb3NpdG9yeSBvbiANCj4gZ2l0Oi8v
+Z2l0b3Jpb3VzLm9yZy9+a3VydC12ZC9saW51eC1jYW4vbGludXgtY2FuLWoxOTM5LmdpdA0KPiAN
+Cj4gSSBhZGRlZCBhIGNvbXBsZXRlIGoxOTM5IHN0YWNrLCBpbmNsdWRpbmcgJ0JBTScuDQo+IA0K
+PiBZb3Ugd2lsbCBuZWVkIHRoZSBhc3NvY2lhdGVkIGNhbi11dGlscyB3aXRoIGoxOTM5IHN1cHBv
+cnQgdG8gYWN0aXZhdGUgdGhlIGoxOTM5IHByb2Nlc3NpbmcgZm9yIGEgc3BlY2lmaWMgQ0FOIGRl
+dmljZToNCj4gJCBpcCBsaW5rIHNldCBjYW4wIGoxOTM5IG9uDQo+IA0KPiBJZiB5b3Ugb25seSBu
+ZWVkIHRvIHJlY2VpdmUgajE5MzkgcGFja2V0cywgdGhlbiB0aGF0J3MgYWxsIHlvdSBuZWVkIHRv
+IGRvLg0KPiANCj4gVGhlIGFzc29jaWF0ZWQgY2FuLXV0aWxzIHByb3ZpZGUgc29tZSBleGFtcGxl
+IHByb2dyYW1zLiBZb3Ugd2lsbCBuZWVkIHRvIHRha2UgYSBsb29rIGFzIHRoZSBBUEkgZm9yIGox
+OTM5IHNvY2tldHMgaXMgZGlmZmVyZW50IHRoYW4gZm9yIHJhdyBDQU4uDQo+IA0KPiBLaW5kIHJl
+Z2FyZHMsDQo+IEt1cnQNCj4gDQo+IE9uIFdlZCwgQXVnIDIxLCAyMDEzIGF0IDEwOjE5OjIyUE0g
+KzAyMDAsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPiA+IE9uIDA4LzIxLzIwMTMgMDg6NDMg
+UE0sIEJyZW50IFNpbmsgd3JvdGU6DQo+ID4gPiBIb3cgZG8gSSByZWFkIEoxOTM5IG1lc3NhZ2Vz
+IHRoYXQgdXNlIHRoZSBCQU0gZm9ybWF0PyAgU29tZSBvZiB0aGUgDQo+ID4gPiBkaWFnbm9zdGlj
+IG1lc3NhZ2VzIHRoYXQgYXJlIG9uIHRoZSBETTAxIG1lc3NhZ2UgaGF2ZSBhIERMQyB0aGF0IA0K
+PiA+ID4gaXMgb2Z0ZW4gbGFyZ2VyIHRoYW4gOCBieXRlcyB3aGVuIHRoZSBtZXNzYWdlIGNvbnRh
+aW5zIG1vcmUgdGhhbiANCj4gPiA+IG9uZSBlcnJvci4gIElzIHRoZXJlIHNvbWV0aGluZyBzcGVj
+aWFsIHRoYXQgSSBuZWVkIHRvIGRvIHRvIGVuYWJsZSANCj4gPiA+IHJlYWRpbmcgdGhlc2UgbWVz
+c2FnZXM/ICBUaGFua3MhDQo+ID4NCj4gPiBXaXRoIG1haW5saW5lIGxpbnV4IHlvdSBqdXN0IHJl
+Y2VpdmUgcmF3IENBTiBmcmFtZXMuIEknbSBub3QgYSBqMTkzOSANCj4gPiBleHBlcnQsIGFzIGZh
+ciBhcyBJIGNhbiBzZWUsIEJBTSBpcyBhIHRyYW5zcG9ydCBwcm90b2NvbCBmb3IgQ0FOLg0KPiA+
+DQo+ID4gVGhlcmUgYXJlIHR3byBvcHRpb25zOg0KPiA+IDEpIFlvdSBoYXZlIHRvIGltcGxlbWVu
+dCB0aGUgQkFNIHByb3RvY29sIHlvdXJzZWxmIGVpdGhlciwNCj4gPiAgICBhKSBpbnNpZGUgdGhl
+IGtlcm5lbCBvcg0KPiA+ICAgIGIpIGluc2lkZSB1c2Vyc3BhY2UuDQo+ID4gMikgVGFsayB0byBL
+dXJ0IChDYydlZCkgaWYgaGlzIGoxOTM5IHBhdGNoZXMgc3VwcG9ydCBCQU0uDQo+ID4NCj4gPiBN
+YXJjDQo+ID4gLS0NCj4gPiBQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJj
+IEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiA+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25z
+ICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+ID4gVmVydHJldHVuZyBX
+ZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4g
+PiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJv
+bml4LmRlICAgfA0KPiA+DQo+IA0KPiANCj4gDQo+IC0tDQo+IEt1cnQgVmFuIERpamNrDQo+IEdS
+QU1NRVIgRWlBIEVMRUNUUk9OSUNTDQo+IGh0dHA6Ly93d3cuZWlhLmJlDQo+IGt1cnQudmFuLmRp
+amNrQGVpYS5iZQ0KPiArMzItMzg3MDg1MzQNCj4gDQo+IFRoZSBpbmZvcm1hdGlvbiBjb250YWlu
+ZWQgaW4gdGhpcyBtZXNzYWdlIG1heSBiZSBwcml2aWxlZ2VkIGFuZCBjb25maWRlbnRpYWwgYW5k
+IHByb3RlY3RlZCBmcm9tIGRpc2Nsb3N1cmUuIElmIHRoZSByZWFkZXIgb2YgdGhpcyBtZXNzYWdl
+IGlzIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBvciBhbiBlbXBsb3llZSBvciBhZ2VudCBy
+ZXNwb25zaWJsZSBmb3IgZGVsaXZlcmluZyB0aGlzIG1lc3NhZ2UgdG8gdGhlIGludGVuZGVkIHJl
+Y2lwaWVudCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQgdGhhdCBhbnkgZGlzc2VtaW5hdGlvbiwg
+ZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBjb21tdW5pY2F0aW9uIGlzIHN0cmljdGx5
+IHByb2hpYml0ZWQuIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBl
+cnJvciwgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBieSByZXBseWluZyB0byB0aGUgbWVz
+c2FnZSBhbmQgZGVsZXRpbmcgaXQgZnJvbSB5b3VyIGNvbXB1dGVyLiBJbnRlcm5ldCBjb21tdW5p
+Y2F0aW9ucyBhcmUgbm90IGFzc3VyZWQgdG8gYmUgc2VjdXJlIG9yIGNsZWFyIG9mIGluYWNjdXJh
+Y2llcyBhcyBpbmZvcm1hdGlvbiBjb3VsZCBiZSBpbnRlcmNlcHRlZCwgY29ycnVwdGVkLCBsb3N0
+LCBkZXN0cm95ZWQsIGFycml2ZSBsYXRlIG9yIGluY29tcGxldGUsIG9yIGNvbnRhaW4gdmlydXNl
+cy4gVGhlcmVmb3JlLCB3ZSBkbyBub3QgYWNjZXB0IHJlc3BvbnNpYmlsaXR5IGZvciBhbnkgZXJy
+b3JzIG9yIG9taXNzaW9ucyB0aGF0IGFyZSBwcmVzZW50IGluIHRoaXMgZW1haWwsIG9yIGFueSBh
+dHRhY2htZW50LCB0aGF0IGhhdmUgYXJpc2VuIGFzIGEgcmVzdWx0IG9mIGUtbWFpbCB0cmFuc21p
+c3Npb24uDQo+IE4gICAgIHIgIHkgICBiIFggIMendiBeICneunsubiArICAgIHsgcSAgIF5uIHIg
+ICB6IBogIGggICAgJiAgHiBHICAgaCADKA0KPiAg6ZqOIN2iaiIgIBogG20gICAgIHog3pYgICBm
+ICAgaCAgIH4gbSANCg0KLS0NCkt1cnQgVmFuIERpamNrDQpHUkFNTUVSIEVpQSBFTEVDVFJPTklD
+Uw0KaHR0cDovL3d3dy5laWEuYmUNCmt1cnQudmFuLmRpamNrQGVpYS5iZQ0KKzMyLTM4NzA4NTM0
+DQo=
