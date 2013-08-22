@@ -1,84 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2013-08-22
-Date: Thu, 22 Aug 2013 09:49:08 +0200
-Message-ID: <5215C274.1090200@pengutronix.de>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
+Date: Thu, 22 Aug 2013 09:56:13 +0200
+Message-ID: <20130822075613.GA1831@vandijck-laurijssen.be>
+References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
+ <52151DCA.3000606@pengutronix.de>
+ <521520CA.5080700@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="wrLs8lvFPX048hI3MC5N5lwhlxUrbnxqs"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50377 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753817Ab3HVHtY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Aug 2013 03:49:24 -0400
+Received: from mailrelay008.isp.belgacom.be ([195.238.6.174]:17560 "EHLO
+	mailrelay008.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753843Ab3HVH4R (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Aug 2013 03:56:17 -0400
+Content-Disposition: inline
+In-Reply-To: <521520CA.5080700@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Brent Sink <Brent.Sink@we-ics.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wrLs8lvFPX048hI3MC5N5lwhlxUrbnxqs
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hello David,
+I have a git repository on git://gitorious.org/~kurt-vd/linux-can/linux-can-j1939.git
 
-another pull-request for net-next. It consists of two patches by Libo
-Chen, the at91 and flexcan driver make use of platform_set_drvdata()
-rather than open coding it. Chen Gang improves the error checking in
-the c_can_platform driver's probe function.
+I added a complete j1939 stack, including 'BAM'.
 
-regards,
-Marc
+You will need the associated can-utils with j1939 support
+to activate the j1939 processing for a specific CAN device:
+$ ip link set can0 j1939 on
 
----
+If you only need to receive j1939 packets, then that's all you need to do.
 
-The following changes since commit f8825669b3165bbf4380eabfd641f693d02af8=
-66:
+The associated can-utils provide some example programs. You will
+need to take a look as the API for j1939 sockets is different than
+for raw CAN.
 
-  net: phy: mdio-octeon: use platform_set_drvdata() (2013-08-21 20:51:11 =
--0700)
+Kind regards,
+Kurt
 
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can-next.git for-davem
-
-for you to fetch changes up to d75ea942b360690a380da8012a51eaf6a6ebb1b1:
-
-  can: flexcan: use platform_set_drvdata() (2013-08-22 09:40:20 +0200)
-
-----------------------------------------------------------------
-Chen Gang (1):
-      can: c_can: fix error checking of priv->instance in probe()
-
-Libo Chen (2):
-      can: at91_can: use platform_set_drvdata()
-      can: flexcan: use platform_set_drvdata()
-
- drivers/net/can/at91_can.c             | 2 +-
- drivers/net/can/c_can/c_can_platform.c | 2 +-
- drivers/net/can/flexcan.c              | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+On Wed, Aug 21, 2013 at 10:19:22PM +0200, Marc Kleine-Budde wrote:
+> On 08/21/2013 08:43 PM, Brent Sink wrote:
+> > How do I read J1939 messages that use the BAM format?  Some of the
+> > diagnostic messages that are on the DM01 message have a DLC that is
+> > often larger than 8 bytes when the message contains more than one
+> > error.  Is there something special that I need to do to enable reading
+> > these messages?  Thanks!
+> 
+> With mainline linux you just receive raw CAN frames. I'm not a j1939
+> expert, as far as I can see, BAM is a transport protocol for CAN.
+> 
+> There are two options:
+> 1) You have to implement the BAM protocol yourself either,
+>    a) inside the kernel or
+>    b) inside userspace.
+> 2) Talk to Kurt (Cc'ed) if his j1939 patches support BAM.
+> 
+> Marc
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
 
 
---wrLs8lvFPX048hI3MC5N5lwhlxUrbnxqs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIVwnQACgkQjTAFq1RaXHPBdgCgl1AT0kuJdtSJessNhsAy1cdx
-XFYAn0jQJgfrV0h+KpXrlPWYe9xomeYG
-=diSe
------END PGP SIGNATURE-----
-
---wrLs8lvFPX048hI3MC5N5lwhlxUrbnxqs--
+-- 
+Kurt Van Dijck
+GRAMMER EiA ELECTRONICS
+http://www.eia.be
+kurt.van.dijck@eia.be
++32-38708534
