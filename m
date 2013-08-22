@@ -1,77 +1,142 @@
-From: Brent Sink <Brent.Sink@we-ics.com>
-Subject: RE: Reading messages that use BAM, or have a DLC larger than 8
-Date: Thu, 22 Aug 2013 10:22:31 -0400
-Message-ID: <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
+Date: Thu, 22 Aug 2013 16:38:58 +0200
+Message-ID: <20130822143858.GB997@vandijck-laurijssen.be>
 References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
- <52151DCA.3000606@pengutronix.de> <521520CA.5080700@pengutronix.de>
+ <52151DCA.3000606@pengutronix.de>
+ <521520CA.5080700@pengutronix.de>
  <20130822075613.GA1831@vandijck-laurijssen.be>
+ <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 66.49.45.106.nw.nuvox.net ([66.49.45.106]:57883 "EHLO
-	remote.weics-us.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752516Ab3HVOWg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Aug 2013 10:22:36 -0400
-In-Reply-To: <20130822075613.GA1831@vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:33891 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752457Ab3HVOjE convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Aug 2013 10:39:04 -0400
+Content-Disposition: inline
+In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <kurt.van.dijck@eia.be>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Brent Sink <Brent.Sink@we-ics.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-VGhhbmtzIEt1cnQuICBEbyBJIHJlYWxseSBuZWVkIHRvIGNsb25lIHRoZSBlbnRpcmUgcmVwb3Np
-dG9yeSwgb3IgY2FuIHlvdSBwb2ludCBtZSB0byB0aGUgZmlsZXMgSSBuZWVkIHRvIHJlYnVpbGQg
-dGhlIGNhbi11dGlscz8gIElzIHRoZXJlIGEgcGF0Y2ggdGhhdCBJIGNvdWxkIGFwcGx5IHRvIG15
-IGN1cnJlbnQga2VybmVsIGJ1aWxkPyAgVGhhbmtzLA0KDQotYnJlbnQNCg0KLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCkZyb206IEt1cnQgVmFuIERpamNrIFttYWlsdG86a3VydC52YW4uZGlq
-Y2tAZWlhLmJlXQ0KU2VudDogVGh1cnNkYXksIEF1Z3VzdCAyMiwgMjAxMyAzOjU2IEFNDQpUbzog
-TWFyYyBLbGVpbmUtQnVkZGUNCkNjOiBCcmVudCBTaW5rOyBsaW51eC1jYW5Admdlci5rZXJuZWwu
-b3JnDQpTdWJqZWN0OiBSZTogUmVhZGluZyBtZXNzYWdlcyB0aGF0IHVzZSBCQU0sIG9yIGhhdmUg
-YSBETEMgbGFyZ2VyIHRoYW4gOA0KDQpIaSwNCg0KSSBoYXZlIGEgZ2l0IHJlcG9zaXRvcnkgb24g
-Z2l0Oi8vZ2l0b3Jpb3VzLm9yZy9+a3VydC12ZC9saW51eC1jYW4vbGludXgtY2FuLWoxOTM5Lmdp
-dA0KDQpJIGFkZGVkIGEgY29tcGxldGUgajE5Mzkgc3RhY2ssIGluY2x1ZGluZyAnQkFNJy4NCg0K
-WW91IHdpbGwgbmVlZCB0aGUgYXNzb2NpYXRlZCBjYW4tdXRpbHMgd2l0aCBqMTkzOSBzdXBwb3J0
-IHRvIGFjdGl2YXRlIHRoZSBqMTkzOSBwcm9jZXNzaW5nIGZvciBhIHNwZWNpZmljIENBTiBkZXZp
-Y2U6DQokIGlwIGxpbmsgc2V0IGNhbjAgajE5Mzkgb24NCg0KSWYgeW91IG9ubHkgbmVlZCB0byBy
-ZWNlaXZlIGoxOTM5IHBhY2tldHMsIHRoZW4gdGhhdCdzIGFsbCB5b3UgbmVlZCB0byBkby4NCg0K
-VGhlIGFzc29jaWF0ZWQgY2FuLXV0aWxzIHByb3ZpZGUgc29tZSBleGFtcGxlIHByb2dyYW1zLiBZ
-b3Ugd2lsbCBuZWVkIHRvIHRha2UgYSBsb29rIGFzIHRoZSBBUEkgZm9yIGoxOTM5IHNvY2tldHMg
-aXMgZGlmZmVyZW50IHRoYW4gZm9yIHJhdyBDQU4uDQoNCktpbmQgcmVnYXJkcywNCkt1cnQNCg0K
-T24gV2VkLCBBdWcgMjEsIDIwMTMgYXQgMTA6MTk6MjJQTSArMDIwMCwgTWFyYyBLbGVpbmUtQnVk
-ZGUgd3JvdGU6DQo+IE9uIDA4LzIxLzIwMTMgMDg6NDMgUE0sIEJyZW50IFNpbmsgd3JvdGU6DQo+
-ID4gSG93IGRvIEkgcmVhZCBKMTkzOSBtZXNzYWdlcyB0aGF0IHVzZSB0aGUgQkFNIGZvcm1hdD8g
-IFNvbWUgb2YgdGhlDQo+ID4gZGlhZ25vc3RpYyBtZXNzYWdlcyB0aGF0IGFyZSBvbiB0aGUgRE0w
-MSBtZXNzYWdlIGhhdmUgYSBETEMgdGhhdCBpcw0KPiA+IG9mdGVuIGxhcmdlciB0aGFuIDggYnl0
-ZXMgd2hlbiB0aGUgbWVzc2FnZSBjb250YWlucyBtb3JlIHRoYW4gb25lDQo+ID4gZXJyb3IuICBJ
-cyB0aGVyZSBzb21ldGhpbmcgc3BlY2lhbCB0aGF0IEkgbmVlZCB0byBkbyB0byBlbmFibGUNCj4g
-PiByZWFkaW5nIHRoZXNlIG1lc3NhZ2VzPyAgVGhhbmtzIQ0KPg0KPiBXaXRoIG1haW5saW5lIGxp
-bnV4IHlvdSBqdXN0IHJlY2VpdmUgcmF3IENBTiBmcmFtZXMuIEknbSBub3QgYSBqMTkzOQ0KPiBl
-eHBlcnQsIGFzIGZhciBhcyBJIGNhbiBzZWUsIEJBTSBpcyBhIHRyYW5zcG9ydCBwcm90b2NvbCBm
-b3IgQ0FOLg0KPg0KPiBUaGVyZSBhcmUgdHdvIG9wdGlvbnM6DQo+IDEpIFlvdSBoYXZlIHRvIGlt
-cGxlbWVudCB0aGUgQkFNIHByb3RvY29sIHlvdXJzZWxmIGVpdGhlciwNCj4gICAgYSkgaW5zaWRl
-IHRoZSBrZXJuZWwgb3INCj4gICAgYikgaW5zaWRlIHVzZXJzcGFjZS4NCj4gMikgVGFsayB0byBL
-dXJ0IChDYydlZCkgaWYgaGlzIGoxOTM5IHBhdGNoZXMgc3VwcG9ydCBCQU0uDQo+DQo+IE1hcmMN
-Cj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUt
-QnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwg
-UGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5k
-ICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQg
-SGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCj4N
-Cg0KDQoNCi0tDQpLdXJ0IFZhbiBEaWpjaw0KR1JBTU1FUiBFaUEgRUxFQ1RST05JQ1MNCmh0dHA6
-Ly93d3cuZWlhLmJlDQprdXJ0LnZhbi5kaWpja0BlaWEuYmUNCiszMi0zODcwODUzNA0KDQpUaGUg
-aW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgbWVzc2FnZSBtYXkgYmUgcHJpdmlsZWdlZCBh
-bmQgY29uZmlkZW50aWFsIGFuZCBwcm90ZWN0ZWQgZnJvbSBkaXNjbG9zdXJlLiBJZiB0aGUgcmVh
-ZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgb3IgYW4g
-ZW1wbG95ZWUgb3IgYWdlbnQgcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJpbmcgdGhpcyBtZXNzYWdl
-IHRvIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQg
-YW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVu
-aWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
-IGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYnkg
-cmVwbHlpbmcgdG8gdGhlIG1lc3NhZ2UgYW5kIGRlbGV0aW5nIGl0IGZyb20geW91ciBjb21wdXRl
-ci4gSW50ZXJuZXQgY29tbXVuaWNhdGlvbnMgYXJlIG5vdCBhc3N1cmVkIHRvIGJlIHNlY3VyZSBv
-ciBjbGVhciBvZiBpbmFjY3VyYWNpZXMgYXMgaW5mb3JtYXRpb24gY291bGQgYmUgaW50ZXJjZXB0
-ZWQsIGNvcnJ1cHRlZCwgbG9zdCwgZGVzdHJveWVkLCBhcnJpdmUgbGF0ZSBvciBpbmNvbXBsZXRl
-LCBvciBjb250YWluIHZpcnVzZXMuIFRoZXJlZm9yZSwgd2UgZG8gbm90IGFjY2VwdCByZXNwb25z
-aWJpbGl0eSBmb3IgYW55IGVycm9ycyBvciBvbWlzc2lvbnMgdGhhdCBhcmUgcHJlc2VudCBpbiB0
-aGlzIGVtYWlsLCBvciBhbnkgYXR0YWNobWVudCwgdGhhdCBoYXZlIGFyaXNlbiBhcyBhIHJlc3Vs
-dCBvZiBlLW1haWwgdHJhbnNtaXNzaW9uLg0K
+Brent,
+
+in your linux git repository, do:
+$ git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-can=
+-j1939.git
+$ git remote update j1939
+$ git merge j1939/v3.6 (or any branch that suits best your kernel).
+
+This won't take as long as cloning the entire repository, if you
+are already working in a git repo.
+
+Kurt
+
+
+On Thu, Aug 22, 2013 at 10:22:31AM -0400, Brent Sink wrote:
+> Thanks Kurt.  Do I really need to clone the entire repository, or can=
+ you point me to the files I need to rebuild the can-utils?  Is there a=
+ patch that I could apply to my current kernel build?  Thanks,
+>=20
+> -brent
+>=20
+> -----Original Message-----
+> From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
+> Sent: Thursday, August 22, 2013 3:56 AM
+> To: Marc Kleine-Budde
+> Cc: Brent Sink; linux-can@vger.kernel.org
+> Subject: Re: Reading messages that use BAM, or have a DLC larger than=
+ 8
+>=20
+> Hi,
+>=20
+> I have a git repository on git://gitorious.org/~kurt-vd/linux-can/lin=
+ux-can-j1939.git
+>=20
+> I added a complete j1939 stack, including 'BAM'.
+>=20
+> You will need the associated can-utils with j1939 support to activate=
+ the j1939 processing for a specific CAN device:
+> $ ip link set can0 j1939 on
+>=20
+> If you only need to receive j1939 packets, then that's all you need t=
+o do.
+>=20
+> The associated can-utils provide some example programs. You will need=
+ to take a look as the API for j1939 sockets is different than for raw =
+CAN.
+>=20
+> Kind regards,
+> Kurt
+>=20
+> On Wed, Aug 21, 2013 at 10:19:22PM +0200, Marc Kleine-Budde wrote:
+> > On 08/21/2013 08:43 PM, Brent Sink wrote:
+> > > How do I read J1939 messages that use the BAM format?  Some of th=
+e
+> > > diagnostic messages that are on the DM01 message have a DLC that =
+is
+> > > often larger than 8 bytes when the message contains more than one
+> > > error.  Is there something special that I need to do to enable
+> > > reading these messages?  Thanks!
+> >
+> > With mainline linux you just receive raw CAN frames. I'm not a j193=
+9
+> > expert, as far as I can see, BAM is a transport protocol for CAN.
+> >
+> > There are two options:
+> > 1) You have to implement the BAM protocol yourself either,
+> >    a) inside the kernel or
+> >    b) inside userspace.
+> > 2) Talk to Kurt (Cc'ed) if his j1939 patches support BAM.
+> >
+> > Marc
+> > --
+> > Pengutronix e.K.                  | Marc Kleine-Budde           |
+> > Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> > Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> > Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> >
+>=20
+>=20
+>=20
+> --
+> Kurt Van Dijck
+> GRAMMER EiA ELECTRONICS
+> http://www.eia.be
+> kurt.van.dijck@eia.be
+> +32-38708534
+>=20
+> The information contained in this message may be privileged and confi=
+dential and protected from disclosure. If the reader of this message is=
+ not the intended recipient, or an employee or agent responsible for de=
+livering this message to the intended recipient, you are hereby notifie=
+d that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in err=
+or, please notify us immediately by replying to the message and deletin=
+g it from your computer. Internet communications are not assured to be =
+secure or clear of inaccuracies as information could be intercepted, co=
+rrupted, lost, destroyed, arrive late or incomplete, or contain viruses=
+=2E Therefore, we do not accept responsibility for any errors or omissi=
+ons that are present in this email, or any attachment, that have arisen=
+ as a result of e-mail transmission.
+> N=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDr=EF=BF=BD=EF=BF=BDy=EF=
+=BF=BD=EF=BF=BD=EF=BF=BDb=EF=BF=BDX=EF=BF=BD=EF=BF=BD=C7=A7v=EF=BF=BD^=EF=
+=BF=BD)=DE=BA{.n=EF=BF=BD+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD{=EF=BF=BD=
+q=EF=BF=BD=EF=BF=BD=EF=BF=BD^n=EF=BF=BDr=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=
+=BF=BD=1A=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD&=EF=BF=
+=BD=EF=BF=BD=1E=EF=BF=BDG=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=03(=EF=BF=
+=BD=E9=9A=8E=EF=BF=BD=DD=A2j"=EF=BF=BD=EF=BF=BD=1A=EF=BF=BD=1Bm=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=DE=96=EF=BF=BD=EF=BF=BD=EF=
+=BF=BDf=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD~=EF=BF=BD=
+m=EF=BF=BD
+
+--=20
+Kurt Van Dijck
+GRAMMER EiA ELECTRONICS
+http://www.eia.be
+kurt.van.dijck@eia.be
++32-38708534
