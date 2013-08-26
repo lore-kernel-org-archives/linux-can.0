@@ -1,15 +1,15 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can-next] can-gw: add a per rule limitation of frame hops
-Date: Mon, 26 Aug 2013 15:05:36 +0200
-Message-ID: <521B52A0.1050702@hartkopp.net>
+Subject: [PATCH can-utils] cangw: add per rule limitation of frame hops option
+Date: Mon, 26 Aug 2013 15:06:50 +0200
+Message-ID: <521B52EA.7030802@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:24642 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:53683 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756377Ab3HZNGF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Aug 2013 09:06:05 -0400
+	with ESMTP id S1756816Ab3HZNHb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Aug 2013 09:07:31 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
@@ -23,10 +23,82 @@ Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
 ---
 
-diff --git a/include/uapi/linux/can/gw.h b/include/uapi/linux/can/gw.h
-index ae07bec..a9d4363 100644
---- a/include/uapi/linux/can/gw.h
-+++ b/include/uapi/linux/can/gw.h
+diff --git a/cangw.c b/cangw.c
+index 802aa86..b908fe4 100644
+--- a/cangw.c
++++ b/cangw.c
+@@ -196,6 +196,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "Options:   -t (preserve src_dev rx timestamp)\n");
+ 	fprintf(stderr, "           -e (echo sent frames - recommended on vcanx)\n");
+ 	fprintf(stderr, "           -i (allow to route to incoming interface)\n");
++	fprintf(stderr, "           -l <hops> (limit the number of frame hops / routings)\n");
+ 	fprintf(stderr, "           -f <filter> (set CAN filter)\n");
+ 	fprintf(stderr, "           -m <mod> (set frame modifications)\n");
+ 	fprintf(stderr, "           -x <from_idx>:<to_idx>:<result_idx>:<init_xor_val> (XOR checksum)\n");
+@@ -417,6 +418,7 @@ int parse_rtlist(char *prgname, unsigned char *rxbuf, int len)
+ 			case CGW_MOD_OR:
+ 			case CGW_MOD_XOR:
+ 			case CGW_MOD_SET:
++			case CGW_LIM_HOPS:
+ 			case CGW_CS_XOR:
+ 			case CGW_CS_CRC8:
+ 				break;
+@@ -489,6 +491,10 @@ int parse_rtlist(char *prgname, unsigned char *rxbuf, int len)
+ 				printmod("SET", RTA_DATA(rta));
+ 				break;
+ 
++			case CGW_LIM_HOPS:
++				printf("-l %d ", *(__u8 *)RTA_DATA(rta));
++				break;
++
+ 			case CGW_CS_XOR:
+ 				print_cs_xor((struct cgw_csum_xor *)RTA_DATA(rta));
+ 				break;
+@@ -545,6 +551,7 @@ int main(int argc, char **argv)
+ 	struct nlmsgerr *rte;
+ 	unsigned int src_ifindex = 0;
+ 	unsigned int dst_ifindex = 0;
++	__u8 limit_hops = 0;
+ 	__u16 flags = 0;
+ 	int len;
+ 
+@@ -563,7 +570,7 @@ int main(int argc, char **argv)
+ 	memset(&cs_xor, 0, sizeof(cs_xor));
+ 	memset(&cs_crc8, 0, sizeof(cs_crc8));
+ 
+-	while ((opt = getopt(argc, argv, "ADFLs:d:teif:c:p:x:m:?")) != -1) {
++	while ((opt = getopt(argc, argv, "ADFLs:d:teil:f:c:p:x:m:?")) != -1) {
+ 		switch (opt) {
+ 
+ 		case 'A':
+@@ -606,6 +613,13 @@ int main(int argc, char **argv)
+ 			flags |= CGW_FLAGS_CAN_IIF_TX_OK;
+ 			break;
+ 
++		case 'l':
++			if (sscanf(optarg, "%hhd", &limit_hops) != 1 || !(limit_hops)) {
++				printf("Bad hop limit definition '%s'.\n", optarg);
++				exit(1);
++			}
++			break;
++
+ 		case 'f':
+ 			if (sscanf(optarg, "%x:%x", &filter.can_id,
+ 				   &filter.can_mask) == 2) {
+@@ -743,6 +757,9 @@ int main(int argc, char **argv)
+ 	if (have_cs_xor)
+ 		addattr_l(&req.nh, sizeof(req), CGW_CS_XOR, &cs_xor, sizeof(cs_xor));
+ 
++	if (limit_hops)
++		addattr_l(&req.nh, sizeof(req), CGW_LIM_HOPS, &limit_hops, sizeof(__u8));
++
+ 	/*
+ 	 * a better example code
+ 	 * modmsg.modtype = CGW_MOD_ID;
+diff --git a/include/socketcan/can/gw.h b/include/socketcan/can/gw.h
+index 9c290dc..56d3246 100644
+--- a/include/socketcan/can/gw.h
++++ b/include/socketcan/can/gw.h
 @@ -45,6 +45,7 @@ enum {
  	CGW_DST_IF,	/* ifindex of destination network interface */
  	CGW_FILTER,	/* specify struct can_filter on source CAN device */
@@ -56,130 +128,4 @@ index ae07bec..a9d4363 100644
   * CGW_CS_XOR (length 4 bytes):
   * Set a simple XOR checksum starting with an initial value into
   * data[result-idx] using data[start-idx] .. data[end-idx]
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 2f291f9..3f9b0f3 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -146,6 +146,7 @@ struct cgw_job {
- 		/* tbc */
- 	};
- 	u8 gwtype;
-+	u8 limit_hops;
- 	u16 flags;
- };
- 
-@@ -402,6 +403,11 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 
- 	/* put the incremented hop counter in the cloned skb */
- 	cgw_hops(nskb) = cgw_hops(skb) + 1;
-+
-+	/* first processing of this CAN frame -> adjust to private hop limit */
-+	if (gwj->limit_hops && cgw_hops(nskb) == 1)
-+		cgw_hops(nskb) = max_hops - gwj->limit_hops + 1;
-+
- 	nskb->dev = gwj->dst.dev;
- 
- 	/* pointer to modifiable CAN frame */
-@@ -509,6 +515,11 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
- 
- 	/* check non default settings of attributes */
- 
-+	if (gwj->limit_hops) {
-+		if (nla_put_u8(skb, CGW_LIM_HOPS, gwj->limit_hops) < 0)
-+			goto cancel;
-+	}
-+
- 	if (gwj->mod.modtype.and) {
- 		memcpy(&mb.cf, &gwj->mod.modframe.and, sizeof(mb.cf));
- 		mb.modtype = gwj->mod.modtype.and;
-@@ -606,11 +617,12 @@ static const struct nla_policy cgw_policy[CGW_MAX+1] = {
- 	[CGW_SRC_IF]	= { .type = NLA_U32 },
- 	[CGW_DST_IF]	= { .type = NLA_U32 },
- 	[CGW_FILTER]	= { .len = sizeof(struct can_filter) },
-+	[CGW_LIM_HOPS]	= { .type = NLA_U8 },
- };
- 
- /* check for common and gwtype specific attributes */
- static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
--			  u8 gwtype, void *gwtypeattr)
-+			  u8 gwtype, void *gwtypeattr, u8 *limhops)
- {
- 	struct nlattr *tb[CGW_MAX+1];
- 	struct cgw_frame_mod mb;
-@@ -625,6 +637,13 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 	if (err < 0)
- 		return err;
- 
-+	if (tb[CGW_LIM_HOPS]) {
-+		*limhops = nla_get_u8(tb[CGW_LIM_HOPS]);
-+
-+		if (*limhops < 1 || *limhops > max_hops)
-+			return -EINVAL;
-+	}
-+
- 	/* check for AND/OR/XOR/SET modifications */
- 
- 	if (tb[CGW_MOD_AND]) {
-@@ -782,6 +801,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
- {
- 	struct rtcanmsg *r;
- 	struct cgw_job *gwj;
-+	u8 limhops = 0;
- 	int err = 0;
- 
- 	if (!capable(CAP_NET_ADMIN))
-@@ -808,7 +828,8 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
- 	gwj->flags = r->flags;
- 	gwj->gwtype = r->gwtype;
- 
--	err = cgw_parse_attr(nlh, &gwj->mod, CGW_TYPE_CAN_CAN, &gwj->ccgw);
-+	err = cgw_parse_attr(nlh, &gwj->mod, CGW_TYPE_CAN_CAN, &gwj->ccgw,
-+			     &limhops);
- 	if (err < 0)
- 		goto out;
- 
-@@ -836,6 +857,8 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
- 	if (gwj->dst.dev->type != ARPHRD_CAN || gwj->dst.dev->header_ops)
- 		goto put_src_dst_out;
- 
-+	gwj->limit_hops = limhops;
-+
- 	ASSERT_RTNL();
- 
- 	err = cgw_register_filter(gwj);
-@@ -867,13 +890,14 @@ static void cgw_remove_all_jobs(void)
- 	}
- }
- 
--static int cgw_remove_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
-+static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
- {
- 	struct cgw_job *gwj = NULL;
- 	struct hlist_node *nx;
- 	struct rtcanmsg *r;
- 	struct cf_mod mod;
- 	struct can_can_gw ccgw;
-+	u8 limhops = 0;
- 	int err = 0;
- 
- 	if (!capable(CAP_NET_ADMIN))
-@@ -890,7 +914,7 @@ static int cgw_remove_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
- 	if (r->gwtype != CGW_TYPE_CAN_CAN)
- 		return -EINVAL;
- 
--	err = cgw_parse_attr(nlh, &mod, CGW_TYPE_CAN_CAN, &ccgw);
-+	err = cgw_parse_attr(nlh, &mod, CGW_TYPE_CAN_CAN, &ccgw, &limhops);
- 	if (err < 0)
- 		return err;
- 
-@@ -910,6 +934,9 @@ static int cgw_remove_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
- 		if (gwj->flags != r->flags)
- 			continue;
- 
-+		if (gwj->limit_hops != limhops)
-+			continue;
-+
- 		if (memcmp(&gwj->mod, &mod, sizeof(mod)))
- 			continue;
- 
 
