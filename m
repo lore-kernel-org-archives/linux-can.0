@@ -1,131 +1,134 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can-utils] cangw: add per rule limitation of frame hops option
-Date: Mon, 26 Aug 2013 15:06:50 +0200
-Message-ID: <521B52EA.7030802@hartkopp.net>
+From: Brent Sink <Brent.Sink@we-ics.com>
+Subject: RE: Reading messages that use BAM, or have a DLC larger than 8
+Date: Mon, 26 Aug 2013 16:00:50 -0400
+Message-ID: <9522AFA707AD744DA5CF5DF53E30277430EEDB1CFA@WEICSUS1.weics.local>
+References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
+ <52151DCA.3000606@pengutronix.de> <521520CA.5080700@pengutronix.de>
+ <20130822075613.GA1831@vandijck-laurijssen.be>
+ <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
+ <20130822143858.GB997@vandijck-laurijssen.be>
+ <9522AFA707AD744DA5CF5DF53E30277430EEDB1BF6@WEICSUS1.weics.local>
+ <20130822175628.GA8941@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:53683 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756816Ab3HZNHb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Aug 2013 09:07:31 -0400
+Received: from 66.49.45.106.nw.nuvox.net ([66.49.45.106]:38283 "EHLO
+	remote.weics-us.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751741Ab3HZUAy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Aug 2013 16:00:54 -0400
+In-Reply-To: <20130822175628.GA8941@vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "John Boyd (jaboydjr77@gmail.com)" <jaboydjr77@gmail.com>
 
-Usually the received CAN frames can be processed/routed as much as 'max_hops'
-times (which is given at module load time of the can-gw module).
-Introduce a new configuration option to reduce the number of possible hops
-for a specific gateway rule to a value smaller then max_hops.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
----
-
-diff --git a/cangw.c b/cangw.c
-index 802aa86..b908fe4 100644
---- a/cangw.c
-+++ b/cangw.c
-@@ -196,6 +196,7 @@ void print_usage(char *prg)
- 	fprintf(stderr, "Options:   -t (preserve src_dev rx timestamp)\n");
- 	fprintf(stderr, "           -e (echo sent frames - recommended on vcanx)\n");
- 	fprintf(stderr, "           -i (allow to route to incoming interface)\n");
-+	fprintf(stderr, "           -l <hops> (limit the number of frame hops / routings)\n");
- 	fprintf(stderr, "           -f <filter> (set CAN filter)\n");
- 	fprintf(stderr, "           -m <mod> (set frame modifications)\n");
- 	fprintf(stderr, "           -x <from_idx>:<to_idx>:<result_idx>:<init_xor_val> (XOR checksum)\n");
-@@ -417,6 +418,7 @@ int parse_rtlist(char *prgname, unsigned char *rxbuf, int len)
- 			case CGW_MOD_OR:
- 			case CGW_MOD_XOR:
- 			case CGW_MOD_SET:
-+			case CGW_LIM_HOPS:
- 			case CGW_CS_XOR:
- 			case CGW_CS_CRC8:
- 				break;
-@@ -489,6 +491,10 @@ int parse_rtlist(char *prgname, unsigned char *rxbuf, int len)
- 				printmod("SET", RTA_DATA(rta));
- 				break;
- 
-+			case CGW_LIM_HOPS:
-+				printf("-l %d ", *(__u8 *)RTA_DATA(rta));
-+				break;
-+
- 			case CGW_CS_XOR:
- 				print_cs_xor((struct cgw_csum_xor *)RTA_DATA(rta));
- 				break;
-@@ -545,6 +551,7 @@ int main(int argc, char **argv)
- 	struct nlmsgerr *rte;
- 	unsigned int src_ifindex = 0;
- 	unsigned int dst_ifindex = 0;
-+	__u8 limit_hops = 0;
- 	__u16 flags = 0;
- 	int len;
- 
-@@ -563,7 +570,7 @@ int main(int argc, char **argv)
- 	memset(&cs_xor, 0, sizeof(cs_xor));
- 	memset(&cs_crc8, 0, sizeof(cs_crc8));
- 
--	while ((opt = getopt(argc, argv, "ADFLs:d:teif:c:p:x:m:?")) != -1) {
-+	while ((opt = getopt(argc, argv, "ADFLs:d:teil:f:c:p:x:m:?")) != -1) {
- 		switch (opt) {
- 
- 		case 'A':
-@@ -606,6 +613,13 @@ int main(int argc, char **argv)
- 			flags |= CGW_FLAGS_CAN_IIF_TX_OK;
- 			break;
- 
-+		case 'l':
-+			if (sscanf(optarg, "%hhd", &limit_hops) != 1 || !(limit_hops)) {
-+				printf("Bad hop limit definition '%s'.\n", optarg);
-+				exit(1);
-+			}
-+			break;
-+
- 		case 'f':
- 			if (sscanf(optarg, "%x:%x", &filter.can_id,
- 				   &filter.can_mask) == 2) {
-@@ -743,6 +757,9 @@ int main(int argc, char **argv)
- 	if (have_cs_xor)
- 		addattr_l(&req.nh, sizeof(req), CGW_CS_XOR, &cs_xor, sizeof(cs_xor));
- 
-+	if (limit_hops)
-+		addattr_l(&req.nh, sizeof(req), CGW_LIM_HOPS, &limit_hops, sizeof(__u8));
-+
- 	/*
- 	 * a better example code
- 	 * modmsg.modtype = CGW_MOD_ID;
-diff --git a/include/socketcan/can/gw.h b/include/socketcan/can/gw.h
-index 9c290dc..56d3246 100644
---- a/include/socketcan/can/gw.h
-+++ b/include/socketcan/can/gw.h
-@@ -45,6 +45,7 @@ enum {
- 	CGW_DST_IF,	/* ifindex of destination network interface */
- 	CGW_FILTER,	/* specify struct can_filter on source CAN device */
- 	CGW_DELETED,	/* number of deleted CAN frames (see max_hops param) */
-+	CGW_LIM_HOPS,	/* limit the number of hops of this specific rule */
- 	__CGW_MAX
- };
- 
-@@ -116,13 +117,19 @@ enum {
-  * Sets a CAN receive filter for the gateway job specified by the
-  * struct can_filter described in include/linux/can.h
-  *
-- * CGW_MOD_XXX (length 17 bytes):
-+ * CGW_MOD_(AND|OR|XOR|SET) (length 17 bytes):
-  * Specifies a modification that's done to a received CAN frame before it is
-  * send out to the destination interface.
-  *
-  * <struct can_frame> data used as operator
-  * <u8> affected CAN frame elements
-  *
-+ * CGW_LIM_HOPS (length 1 byte):
-+ * Limit the number of hops of this specific rule. Usually the received CAN
-+ * frame can be processed as much as 'max_hops' times (which is given at module
-+ * load time of the can-gw module). This value is used to reduce the number of
-+ * possible hops for this gateway rule to a value smaller then max_hops.
-+ *
-  * CGW_CS_XOR (length 4 bytes):
-  * Set a simple XOR checksum starting with an initial value into
-  * data[result-idx] using data[start-idx] .. data[end-idx]
-
+S3VydCwNCg0KT2ssIHNvIEkgaGF2ZSBtYW5hZ2VkIHRvIGdldCB5b3VyIHZlcnNpb24gb2YgaXAg
+YW5kIGNhbmR1bXAgd29ya2luZyBhbmQgaGF2ZSB0aGUga2VybmVsIGJ1aWx0IHdpdGggdGhlIGox
+OTM5IG9wdGlvbnMuICBDYWxsaW5nICJpcCBsaW5rIHNldCBjYW4wIGoxOTM5IG9uIiB3b3JrcyBq
+dXN0IGZpbmUsIGJ1dCBJJ20gc2VlaW5nIGFuIGlzc3VlIHdoZW4gdHJ5aW5nIHRvIHJlYWQgdGhl
+IERNMSBtZXNzYWdlIHVzaW5nIGNhbmR1bXAuICBJIHNlZW0gdG8gYmUgZ2V0dGluZyBhIHRpbWVv
+dXQgZXJyb3I6IGoxOTM5dHBfcnh0YXNrOiB0aW1lb3V0IG9uIDIuDQoNCkFueSB0aG91Z2h0cz8N
+Cg0KLWJyZW50DQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEt1cnQgVmFu
+IERpamNrIFttYWlsdG86a3VydC52YW4uZGlqY2tAZWlhLmJlXSANClNlbnQ6IFRodXJzZGF5LCBB
+dWd1c3QgMjIsIDIwMTMgMTo1NiBQTQ0KVG86IEJyZW50IFNpbmsNCkNjOiBNYXJjIEtsZWluZS1C
+dWRkZTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgSm9obiBCb3lkIChqYWJveWRqcjc3QGdt
+YWlsLmNvbSkNClN1YmplY3Q6IFJlOiBSZWFkaW5nIG1lc3NhZ2VzIHRoYXQgdXNlIEJBTSwgb3Ig
+aGF2ZSBhIERMQyBsYXJnZXIgdGhhbiA4DQoNCkJyZW50LA0KDQo+ICMgaXAgbGluayBzZXQgY2Fu
+MCBqMTkzOSBvbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiBFcnJvcjog
+ZWl0aGVyICJkZXYiIGlzIGR1cGxpY2F0ZSwgb3IgImoxOTM5IiBpcyBhIGdhcmJhZ2UuDQoNCllv
+dSB3aWxsIHdhbnQgdGhlIGoxOTM5IGJyYW5jaCBvZiBjYW4tdXRpbHMsIGFuZCBhYnNvbHV0ZWx5
+IF9uZWVkXyB0aGUgajE5MzkgYnJhbmNoIG9mIGlwcm91dGUyLg0KVGhlIG1lc3NhZ2UgeW91IGdv
+dCBpcyBnZW5lcmF0ZWQgYnkgaXByb3V0ZTIgLi4uDQoNClNvcnJ5IGZvciB0aGUgaW5jb252ZW5p
+ZW5jZS4NCkkgbXVzdCBhcG9sb2dpemUgZm9yIG15IGxpbWl0ZWQgYXZhaWxhYmlsaXR5IG5vd2Fk
+YXlzLg0KSSdtIHByZXR0eSBvY2N1cGllZCB3aXRoIG90aGVyIHRoaW5ncy4NCg0KS3VydA0KDQpP
+biBUaHUsIEF1ZyAyMiwgMjAxMyBhdCAxMjoyNDoxNVBNIC0wNDAwLCBCcmVudCBTaW5rIHdyb3Rl
+Og0KPiBPaywgc28gbWVyZ2VkIHRoaXMgaW50byBteSAzLjggYnJhbmNoIGFuZCBidWlsdCB0aGUg
+a2VybmVsLiAgQ2FsbGluZyAiaXAgbGluayBzZXQgY2FuMCBqMTkzOSBvbiIgcmVzdWx0cyBpbiB0
+aGUgZXJyb3Igc2VlbiBiZWxvdy4gIEknbSBndWVzc2luZyBJIG5lZWQgdG8gYnVpbGQgdGhlIGNh
+bi11dGlscyAoZ2l0Oi8vZ2l0b3Jpb3VzLm9yZy9+a3VydC12ZC9saW51eC1jYW4vY2FuLWoxOTM5
+LXV0aWxzLmdpdCkuLi4gcmlnaHQ/ICBBbnl0aGluZyBlbHNlIHRoYXQgSSBtYXkgbmVlZCB0byBk
+bz8NCj4gDQo+ICMgaXAgbGluayBzZXQgY2FuMCBqMTkzOSBvbiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIA0KPiBFcnJvcjogZWl0aGVyICJkZXYiIGlzIGR1cGxpY2F0ZSwgb3Ig
+ImoxOTM5IiBpcyBhIGdhcmJhZ2UuDQo+IA0KPiAtYnJlbnQNCj4gDQo+IA0KPiAtLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmt1cnQudmFu
+LmRpamNrQGVpYS5iZV0NCj4gU2VudDogVGh1cnNkYXksIEF1Z3VzdCAyMiwgMjAxMyAxMDozOSBB
+TQ0KPiBUbzogQnJlbnQgU2luaw0KPiBDYzogTWFyYyBLbGVpbmUtQnVkZGU7IGxpbnV4LWNhbkB2
+Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFJlYWRpbmcgbWVzc2FnZXMgdGhhdCB1c2Ug
+QkFNLCBvciBoYXZlIGEgRExDIGxhcmdlciB0aGFuIA0KPiA4DQo+IA0KPiBCcmVudCwNCj4gDQo+
+IGluIHlvdXIgbGludXggZ2l0IHJlcG9zaXRvcnksIGRvOg0KPiAkIGdpdCByZW1vdGUgYWRkIGox
+OTM5IA0KPiBnaXQ6Ly9naXRvcmlvdXMub3JnL35rdXJ0LXZkL2xpbnV4LWNhbi9saW51eC1jYW4t
+ajE5MzkuZ2l0DQo+ICQgZ2l0IHJlbW90ZSB1cGRhdGUgajE5MzkNCj4gJCBnaXQgbWVyZ2UgajE5
+MzkvdjMuNiAob3IgYW55IGJyYW5jaCB0aGF0IHN1aXRzIGJlc3QgeW91ciBrZXJuZWwpLg0KPiAN
+Cj4gVGhpcyB3b24ndCB0YWtlIGFzIGxvbmcgYXMgY2xvbmluZyB0aGUgZW50aXJlIHJlcG9zaXRv
+cnksIGlmIHlvdSBhcmUgYWxyZWFkeSB3b3JraW5nIGluIGEgZ2l0IHJlcG8uDQo+IA0KPiBLdXJ0
+DQo+IA0KPiANCj4gT24gVGh1LCBBdWcgMjIsIDIwMTMgYXQgMTA6MjI6MzFBTSAtMDQwMCwgQnJl
+bnQgU2luayB3cm90ZToNCj4gPiBUaGFua3MgS3VydC4gIERvIEkgcmVhbGx5IG5lZWQgdG8gY2xv
+bmUgdGhlIGVudGlyZSByZXBvc2l0b3J5LCBvciANCj4gPiBjYW4geW91IHBvaW50IG1lIHRvIHRo
+ZSBmaWxlcyBJIG5lZWQgdG8gcmVidWlsZCB0aGUgY2FuLXV0aWxzPyAgSXMgDQo+ID4gdGhlcmUg
+YSBwYXRjaCB0aGF0IEkgY291bGQgYXBwbHkgdG8gbXkgY3VycmVudCBrZXJuZWwgYnVpbGQ/ICAN
+Cj4gPiBUaGFua3MsDQo+ID4gDQo+ID4gLWJyZW50DQo+ID4gDQo+ID4gLS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmt1cnQudmFuLmRp
+amNrQGVpYS5iZV0NCj4gPiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDIyLCAyMDEzIDM6NTYgQU0N
+Cj4gPiBUbzogTWFyYyBLbGVpbmUtQnVkZGUNCj4gPiBDYzogQnJlbnQgU2luazsgbGludXgtY2Fu
+QHZnZXIua2VybmVsLm9yZw0KPiA+IFN1YmplY3Q6IFJlOiBSZWFkaW5nIG1lc3NhZ2VzIHRoYXQg
+dXNlIEJBTSwgb3IgaGF2ZSBhIERMQyBsYXJnZXIgDQo+ID4gdGhhbg0KPiA+IDgNCj4gPiANCj4g
+PiBIaSwNCj4gPiANCj4gPiBJIGhhdmUgYSBnaXQgcmVwb3NpdG9yeSBvbg0KPiA+IGdpdDovL2dp
+dG9yaW91cy5vcmcvfmt1cnQtdmQvbGludXgtY2FuL2xpbnV4LWNhbi1qMTkzOS5naXQNCj4gPiAN
+Cj4gPiBJIGFkZGVkIGEgY29tcGxldGUgajE5Mzkgc3RhY2ssIGluY2x1ZGluZyAnQkFNJy4NCj4g
+PiANCj4gPiBZb3Ugd2lsbCBuZWVkIHRoZSBhc3NvY2lhdGVkIGNhbi11dGlscyB3aXRoIGoxOTM5
+IHN1cHBvcnQgdG8gYWN0aXZhdGUgdGhlIGoxOTM5IHByb2Nlc3NpbmcgZm9yIGEgc3BlY2lmaWMg
+Q0FOIGRldmljZToNCj4gPiAkIGlwIGxpbmsgc2V0IGNhbjAgajE5Mzkgb24NCj4gPiANCj4gPiBJ
+ZiB5b3Ugb25seSBuZWVkIHRvIHJlY2VpdmUgajE5MzkgcGFja2V0cywgdGhlbiB0aGF0J3MgYWxs
+IHlvdSBuZWVkIHRvIGRvLg0KPiA+IA0KPiA+IFRoZSBhc3NvY2lhdGVkIGNhbi11dGlscyBwcm92
+aWRlIHNvbWUgZXhhbXBsZSBwcm9ncmFtcy4gWW91IHdpbGwgbmVlZCB0byB0YWtlIGEgbG9vayBh
+cyB0aGUgQVBJIGZvciBqMTkzOSBzb2NrZXRzIGlzIGRpZmZlcmVudCB0aGFuIGZvciByYXcgQ0FO
+Lg0KPiA+IA0KPiA+IEtpbmQgcmVnYXJkcywNCj4gPiBLdXJ0DQo+ID4gDQo+ID4gT24gV2VkLCBB
+dWcgMjEsIDIwMTMgYXQgMTA6MTk6MjJQTSArMDIwMCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6
+DQo+ID4gPiBPbiAwOC8yMS8yMDEzIDA4OjQzIFBNLCBCcmVudCBTaW5rIHdyb3RlOg0KPiA+ID4g
+PiBIb3cgZG8gSSByZWFkIEoxOTM5IG1lc3NhZ2VzIHRoYXQgdXNlIHRoZSBCQU0gZm9ybWF0PyAg
+U29tZSBvZiANCj4gPiA+ID4gdGhlIGRpYWdub3N0aWMgbWVzc2FnZXMgdGhhdCBhcmUgb24gdGhl
+IERNMDEgbWVzc2FnZSBoYXZlIGEgRExDIA0KPiA+ID4gPiB0aGF0IGlzIG9mdGVuIGxhcmdlciB0
+aGFuIDggYnl0ZXMgd2hlbiB0aGUgbWVzc2FnZSBjb250YWlucyBtb3JlIA0KPiA+ID4gPiB0aGFu
+IG9uZSBlcnJvci4gIElzIHRoZXJlIHNvbWV0aGluZyBzcGVjaWFsIHRoYXQgSSBuZWVkIHRvIGRv
+IHRvIA0KPiA+ID4gPiBlbmFibGUgcmVhZGluZyB0aGVzZSBtZXNzYWdlcz8gIFRoYW5rcyENCj4g
+PiA+DQo+ID4gPiBXaXRoIG1haW5saW5lIGxpbnV4IHlvdSBqdXN0IHJlY2VpdmUgcmF3IENBTiBm
+cmFtZXMuIEknbSBub3QgYSANCj4gPiA+IGoxOTM5IGV4cGVydCwgYXMgZmFyIGFzIEkgY2FuIHNl
+ZSwgQkFNIGlzIGEgdHJhbnNwb3J0IHByb3RvY29sIGZvciBDQU4uDQo+ID4gPg0KPiA+ID4gVGhl
+cmUgYXJlIHR3byBvcHRpb25zOg0KPiA+ID4gMSkgWW91IGhhdmUgdG8gaW1wbGVtZW50IHRoZSBC
+QU0gcHJvdG9jb2wgeW91cnNlbGYgZWl0aGVyLA0KPiA+ID4gICAgYSkgaW5zaWRlIHRoZSBrZXJu
+ZWwgb3INCj4gPiA+ICAgIGIpIGluc2lkZSB1c2Vyc3BhY2UuDQo+ID4gPiAyKSBUYWxrIHRvIEt1
+cnQgKENjJ2VkKSBpZiBoaXMgajE5MzkgcGF0Y2hlcyBzdXBwb3J0IEJBTS4NCj4gPiA+DQo+ID4g
+PiBNYXJjDQo+ID4gPiAtLQ0KPiA+ID4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAg
+IHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gPiA+IEluZHVzdHJpYWwgTGludXgg
+U29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+ID4gPiBW
+ZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3
+LTU1NTUgfA0KPiA+ID4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDov
+L3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCj4gPiA+DQo+ID4gDQo+ID4gDQo+ID4gDQo+ID4gLS0N
+Cj4gPiBLdXJ0IFZhbiBEaWpjaw0KPiA+IEdSQU1NRVIgRWlBIEVMRUNUUk9OSUNTDQo+ID4gaHR0
+cDovL3d3dy5laWEuYmUNCj4gPiBrdXJ0LnZhbi5kaWpja0BlaWEuYmUNCj4gPiArMzItMzg3MDg1
+MzQNCj4gPiANCj4gPiBUaGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgbWVzc2FnZSBt
+YXkgYmUgcHJpdmlsZWdlZCBhbmQgY29uZmlkZW50aWFsIGFuZCBwcm90ZWN0ZWQgZnJvbSBkaXNj
+bG9zdXJlLiBJZiB0aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3QgdGhlIGludGVuZGVk
+IHJlY2lwaWVudCwgb3IgYW4gZW1wbG95ZWUgb3IgYWdlbnQgcmVzcG9uc2libGUgZm9yIGRlbGl2
+ZXJpbmcgdGhpcyBtZXNzYWdlIHRvIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVy
+ZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5
+aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3Ug
+aGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkg
+dXMgaW1tZWRpYXRlbHkgYnkgcmVwbHlpbmcgdG8gdGhlIG1lc3NhZ2UgYW5kIGRlbGV0aW5nIGl0
+IGZyb20geW91ciBjb21wdXRlci4gSW50ZXJuZXQgY29tbXVuaWNhdGlvbnMgYXJlIG5vdCBhc3N1
+cmVkIHRvIGJlIHNlY3VyZSBvciBjbGVhciBvZiBpbmFjY3VyYWNpZXMgYXMgaW5mb3JtYXRpb24g
+Y291bGQgYmUgaW50ZXJjZXB0ZWQsIGNvcnJ1cHRlZCwgbG9zdCwgZGVzdHJveWVkLCBhcnJpdmUg
+bGF0ZSBvciBpbmNvbXBsZXRlLCBvciBjb250YWluIHZpcnVzZXMuIFRoZXJlZm9yZSwgd2UgZG8g
+bm90IGFjY2VwdCByZXNwb25zaWJpbGl0eSBmb3IgYW55IGVycm9ycyBvciBvbWlzc2lvbnMgdGhh
+dCBhcmUgcHJlc2VudCBpbiB0aGlzIGVtYWlsLCBvciBhbnkgYXR0YWNobWVudCwgdGhhdCBoYXZl
+IGFyaXNlbiBhcyBhIHJlc3VsdCBvZiBlLW1haWwgdHJhbnNtaXNzaW9uLg0KPiA+IE4gICAgIHIg
+IHkgICBiIFggIMendiBeICneunsubiArICAgIHsgcSAgIF5uIHIgICB6IBogIGggICAgJiAgHiBH
+ICAgaCADKA0KPiA+ICDpmo4g3aJqIiAgGiAbbSAgICAgeiDeliAgIGYgICBoICAgfiBtIA0KPiAN
+Cj4gLS0NCj4gS3VydCBWYW4gRGlqY2sNCj4gR1JBTU1FUiBFaUEgRUxFQ1RST05JQ1MNCj4gaHR0
+cDovL3d3dy5laWEuYmUNCj4ga3VydC52YW4uZGlqY2tAZWlhLmJlDQo+ICszMi0zODcwODUzNA0K
+PiATICDsubscICYgfiAmIBggICstICDdthcgIHcgIMubICAgbSBiICBcanggIBcgINyofSAgIMag
+eiAmajordiAgICANCj4gICAgIHpaKyAgK3pmICAgaCAgIH4gICAgaSAgIHogHiB3ICAgPyAgICAm
+ICnfohtmDQoNCi0tDQpLdXJ0IFZhbiBEaWpjaw0KR1JBTU1FUiBFaUEgRUxFQ1RST05JQ1MNCmh0
+dHA6Ly93d3cuZWlhLmJlDQprdXJ0LnZhbi5kaWpja0BlaWEuYmUNCiszMi0zODcwODUzNA0K
