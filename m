@@ -1,7 +1,7 @@
 From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
-Date: Tue, 27 Aug 2013 08:54:08 +0200
-Message-ID: <20130827065408.GA3875@vandijck-laurijssen.be>
+Date: Tue, 27 Aug 2013 09:02:08 +0200
+Message-ID: <20130827070208.GB3875@vandijck-laurijssen.be>
 References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
  <52151DCA.3000606@pengutronix.de>
  <521520CA.5080700@pengutronix.de>
@@ -10,39 +10,57 @@ References: <9522AFA707AD744DA5CF5DF53E30277430EEDB1B86@WEICSUS1.weics.local>
  <20130822143858.GB997@vandijck-laurijssen.be>
  <9522AFA707AD744DA5CF5DF53E30277430EEDB1BF6@WEICSUS1.weics.local>
  <20130822175628.GA8941@vandijck-laurijssen.be>
- <9522AFA707AD744DA5CF5DF53E30277430EEDB1CFA@WEICSUS1.weics.local>
+ <9522AFA707AD744DA5CF5DF53E30277430EEDB1D17@WEICSUS1.weics.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:49041 "EHLO
-	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752482Ab3H0GyP convert rfc822-to-8bit
+Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:22559 "EHLO
+	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752194Ab3H0HCN convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 27 Aug 2013 02:54:15 -0400
+	Tue, 27 Aug 2013 03:02:13 -0400
 Content-Disposition: inline
-In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1CFA@WEICSUS1.weics.local>
+In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1D17@WEICSUS1.weics.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Brent Sink <Brent.Sink@we-ics.com>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "John Boyd (jaboydjr77@gmail.com)" <jaboydjr77@gmail.com>
 
-Hi Brent,
+Brent,
 
-j1939tp_rxtask: timeout on 2
+in my gitorious pages, the can-j1939-utils repository contains a patche=
+d version
+of can-utils.
+As a pure listener (i.e. no transmits), you'll find jspy.c interesting.
 
-It looks like you got everything up and running then!
+Note that recvmsg() may be replaced by the easier recvfrom() if you're =
+not interested
+in stuff like j1939 priority, original destination address, etc.
+Most of jspy.c main receive loop deals with handling recvmsg() ...
 
-The message indicates a protocol fault of the sender.
-The remote is sending too slow.
-You can debug such things with candump, and inspect timestamps.
-But there is nothing you can do on the receiving side to fix protocol f=
-aults.
+To learn the setup of the kernel j1939 stack, consult Documentation/net=
+working/j1939.txt
+I didn't manage to write proper howto's yet.
 
 Kind regards,
 Kurt
 
-On Mon, Aug 26, 2013 at 04:00:50PM -0400, Brent Sink wrote:
+On Mon, Aug 26, 2013 at 08:30:10PM -0400, Brent Sink wrote:
+> Also, where are is the example code located for using the new version=
+ of SocketCan?
+>=20
+> -brent
+>=20
+> -----Original Message-----
+> From: Brent Sink=20
+> Sent: Monday, August 26, 2013 4:01 PM
+> To: 'Kurt Van Dijck'
+> Cc: Marc Kleine-Budde; linux-can@vger.kernel.org; John Boyd (jaboydjr=
+77@gmail.com)
+> Subject: RE: Reading messages that use BAM, or have a DLC larger than=
+ 8
+>=20
 > Kurt,
 >=20
 > Ok, so I have managed to get your version of ip and candump working a=
@@ -57,7 +75,7 @@ or: j1939tp_rxtask: timeout on 2.
 >=20
 >=20
 > -----Original Message-----
-> From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]=20
+> From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
 > Sent: Thursday, August 22, 2013 1:56 PM
 > To: Brent Sink
 > Cc: Marc Kleine-Budde; linux-can@vger.kernel.org; John Boyd (jaboydjr=
@@ -99,13 +117,13 @@ o?
 > > To: Brent Sink
 > > Cc: Marc Kleine-Budde; linux-can@vger.kernel.org
 > > Subject: Re: Reading messages that use BAM, or have a DLC larger th=
-an=20
+an
 > > 8
 > >=20
 > > Brent,
 > >=20
 > > in your linux git repository, do:
-> > $ git remote add j1939=20
+> > $ git remote add j1939
 > > git://gitorious.org/~kurt-vd/linux-can/linux-can-j1939.git
 > > $ git remote update j1939
 > > $ git merge j1939/v3.6 (or any branch that suits best your kernel).
@@ -121,7 +139,7 @@ e already working in a git repo.
 =20
 > > > can you point me to the files I need to rebuild the can-utils?  I=
 s=20
-> > > there a patch that I could apply to my current kernel build? =20
+> > > there a patch that I could apply to my current kernel build?
 > > > Thanks,
 > > >=20
 > > > -brent
@@ -169,7 +187,7 @@ ore=20
  to=20
 > > > > > enable reading these messages?  Thanks!
 > > > >
-> > > > With mainline linux you just receive raw CAN frames. I'm not a=20
+> > > > With mainline linux you just receive raw CAN frames. I'm not a
 > > > > j1939 expert, as far as I can see, BAM is a transport protocol =
 for CAN.
 > > > >
@@ -233,16 +251,6 @@ en as a result of e-mail transmission.
 > http://www.eia.be
 > kurt.van.dijck@eia.be
 > +32-38708534
-> N=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDr=EF=BF=BD=EF=BF=BDy=EF=
-=BF=BD=EF=BF=BD=EF=BF=BDb=EF=BF=BDX=EF=BF=BD=EF=BF=BD=C7=A7v=EF=BF=BD^=EF=
-=BF=BD)=DE=BA{.n=EF=BF=BD+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD{=EF=BF=BD=
-q=EF=BF=BD=EF=BF=BD=EF=BF=BD^n=EF=BF=BDr=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=
-=BF=BD=1A=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD&=EF=BF=
-=BD=EF=BF=BD=1E=EF=BF=BDG=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=03(=EF=BF=
-=BD=E9=9A=8E=EF=BF=BD=DD=A2j"=EF=BF=BD=EF=BF=BD=1A=EF=BF=BD=1Bm=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=DE=96=EF=BF=BD=EF=BF=BD=EF=
-=BF=BDf=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BD~=EF=BF=BD=
-m=EF=BF=BD
 
 --=20
 Kurt Van Dijck
