@@ -1,303 +1,52 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: Reading messages that use BAM, or have a DLC larger than 8
-Date: Tue, 27 Aug 2013 23:00:18 +0200
-Message-ID: <20130827210018.GB2105@vandijck-laurijssen.be>
-References: <52151DCA.3000606@pengutronix.de>
- <521520CA.5080700@pengutronix.de>
- <20130822075613.GA1831@vandijck-laurijssen.be>
- <9522AFA707AD744DA5CF5DF53E30277430EEDB1BD2@WEICSUS1.weics.local>
- <20130822143858.GB997@vandijck-laurijssen.be>
- <9522AFA707AD744DA5CF5DF53E30277430EEDB1BF6@WEICSUS1.weics.local>
- <20130822175628.GA8941@vandijck-laurijssen.be>
- <9522AFA707AD744DA5CF5DF53E30277430EEDB1CFA@WEICSUS1.weics.local>
- <20130827065408.GA3875@vandijck-laurijssen.be>
- <9522AFA707AD744DA5CF5DF53E30277430EEDB1D6A@WEICSUS1.weics.local>
+From: xuewentian <xuewt@embedinfo.com>
+Subject: candump app will lost rx packets while it prints the received data frames
+Date: Wed, 28 Aug 2013 09:17:59 +0000 (UTC)
+Message-ID: <loom.20130828T111233-886@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:37169 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751968Ab3H0VAY convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 27 Aug 2013 17:00:24 -0400
-Content-Disposition: inline
-In-Reply-To: <9522AFA707AD744DA5CF5DF53E30277430EEDB1D6A@WEICSUS1.weics.local>
+Received: from plane.gmane.org ([80.91.229.3]:36985 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751616Ab3H1JZF (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 28 Aug 2013 05:25:05 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1VEbzr-0006rf-2B
+	for linux-can@vger.kernel.org; Wed, 28 Aug 2013 11:25:03 +0200
+Received: from 183.37.235.205 ([183.37.235.205])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 28 Aug 2013 11:25:03 +0200
+Received: from xuewt by 183.37.235.205 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 28 Aug 2013 11:25:03 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Brent Sink <Brent.Sink@we-ics.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "John Boyd (jaboydjr77@gmail.com)" <jaboydjr77@gmail.com>
+To: linux-can@vger.kernel.org
 
-Hi Brent,
+Hi all,
 
-> I received that error when I was trying to manually send a message in=
- PEAK Explorer with a DLC of 9.
-I see. You should respect a inter-frame delay of 50msec (up to 250msec =
-or so),
-which is practically impossible to perform manually.
+  I wonder that when the can select/poll bug can be fixed ? What reason 
+has it not been fixed yet? Thanks a lot.
 
-> When I connect my device to an actual CAN bus that is transmitting a =
-DM1 message with a DLC of 34, I do not see the message using candump.
-> However, I don't see the timeout error anymore, so that's a plus.
+ and now I encounter another problem, I use a sufficient delay for cansend 
+on the first borad, and anther board using candump to
+receive the data frame.
 
-The actual DM1 message respects the timings. That's good.
+board 1:
+cansend can0  -l 500 -i 0x123 0x11 0x22 0x33 0x44 0x55 0x66 0x77 
+0x88   //cansend I have added the delay,and no any write failaure report
 
-> Is there something specific I need to do in order to receive messages=
- that use BAM?
-Try the jspy program in can-j1939-utils.
-candump does/should show the 6 raw can frames, jspy should show the 1 j=
-1939 packet.
+board 2:
+candump can0    // on the serial terminal, I have only received about 434
+                // data frames which are printed on the serial
+                // terminal,and no any read error information
 
-Kind regards,
-Kurt
+and use "ifconfig can0" on the two boards, I found that board 1 has 
+increased 500 "TX packets",and board 2 has also increased 500 "RX 
+packets", but candump app seemed that lost some packets. what reason is 
+it??
 
-On Tue, Aug 27, 2013 at 02:17:08PM -0400, Brent Sink wrote:
-> Kurt,
->=20
-> Ok, maybe I'm missing something.=20
-> I received that error when I was trying to manually send a message in=
- PEAK Explorer with a DLC of 9.
-> When I connect my device to an actual CAN bus that is transmitting a =
-DM1 message with a DLC of 34, I do not see the message using candump.
-> However, I don't see the timeout error anymore, so that's a plus.
-> Is there something specific I need to do in order to receive messages=
- that use BAM?
->=20
-> -brent
->=20
->=20
-> -----Original Message-----
-> From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]=20
-> Sent: Tuesday, August 27, 2013 2:54 AM
-> To: Brent Sink
-> Cc: Marc Kleine-Budde; linux-can@vger.kernel.org; John Boyd (jaboydjr=
-77@gmail.com)
-> Subject: Re: Reading messages that use BAM, or have a DLC larger than=
- 8
->=20
-> Hi Brent,
->=20
-> j1939tp_rxtask: timeout on 2
->=20
-> It looks like you got everything up and running then!
->=20
-> The message indicates a protocol fault of the sender.
-> The remote is sending too slow.
-> You can debug such things with candump, and inspect timestamps.
-> But there is nothing you can do on the receiving side to fix protocol=
- faults.
->=20
-> Kind regards,
-> Kurt
->=20
-> On Mon, Aug 26, 2013 at 04:00:50PM -0400, Brent Sink wrote:
-> > Kurt,
-> >=20
-> > Ok, so I have managed to get your version of ip and candump working=
- and have the kernel built with the j1939 options.  Calling "ip link se=
-t can0 j1939 on" works just fine, but I'm seeing an issue when trying t=
-o read the DM1 message using candump.  I seem to be getting a timeout e=
-rror: j1939tp_rxtask: timeout on 2.
-> >=20
-> > Any thoughts?
-> >=20
-> > -brent
-> >=20
-> >=20
-> > -----Original Message-----
-> > From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
-> > Sent: Thursday, August 22, 2013 1:56 PM
-> > To: Brent Sink
-> > Cc: Marc Kleine-Budde; linux-can@vger.kernel.org; John Boyd=20
-> > (jaboydjr77@gmail.com)
-> > Subject: Re: Reading messages that use BAM, or have a DLC larger th=
-an=20
-> > 8
-> >=20
-> > Brent,
-> >=20
-> > > # ip link set can0 j1939 on                                   =20
-> > > Error: either "dev" is duplicate, or "j1939" is a garbage.
-> >=20
-> > You will want the j1939 branch of can-utils, and absolutely _need_ =
-the j1939 branch of iproute2.
-> > The message you got is generated by iproute2 ...
-> >=20
-> > Sorry for the inconvenience.
-> > I must apologize for my limited availability nowadays.
-> > I'm pretty occupied with other things.
-> >=20
-> > Kurt
-> >=20
-> > On Thu, Aug 22, 2013 at 12:24:15PM -0400, Brent Sink wrote:
-> > > Ok, so merged this into my 3.8 branch and built the kernel.  Call=
-ing "ip link set can0 j1939 on" results in the error seen below.  I'm g=
-uessing I need to build the can-utils (git://gitorious.org/~kurt-vd/lin=
-ux-can/can-j1939-utils.git)... right?  Anything else that I may need to=
- do?
-> > >=20
-> > > # ip link set can0 j1939 on                                   =20
-> > > Error: either "dev" is duplicate, or "j1939" is a garbage.
-> > >=20
-> > > -brent
-> > >=20
-> > >=20
-> > > -----Original Message-----
-> > > From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
-> > > Sent: Thursday, August 22, 2013 10:39 AM
-> > > To: Brent Sink
-> > > Cc: Marc Kleine-Budde; linux-can@vger.kernel.org
-> > > Subject: Re: Reading messages that use BAM, or have a DLC larger=20
-> > > than
-> > > 8
-> > >=20
-> > > Brent,
-> > >=20
-> > > in your linux git repository, do:
-> > > $ git remote add j1939
-> > > git://gitorious.org/~kurt-vd/linux-can/linux-can-j1939.git
-> > > $ git remote update j1939
-> > > $ git merge j1939/v3.6 (or any branch that suits best your kernel=
-).
-> > >=20
-> > > This won't take as long as cloning the entire repository, if you =
-are already working in a git repo.
-> > >=20
-> > > Kurt
-> > >=20
-> > >=20
-> > > On Thu, Aug 22, 2013 at 10:22:31AM -0400, Brent Sink wrote:
-> > > > Thanks Kurt.  Do I really need to clone the entire repository, =
-or=20
-> > > > can you point me to the files I need to rebuild the can-utils? =
- Is=20
-> > > > there a patch that I could apply to my current kernel build?
-> > > > Thanks,
-> > > >=20
-> > > > -brent
-> > > >=20
-> > > > -----Original Message-----
-> > > > From: Kurt Van Dijck [mailto:kurt.van.dijck@eia.be]
-> > > > Sent: Thursday, August 22, 2013 3:56 AM
-> > > > To: Marc Kleine-Budde
-> > > > Cc: Brent Sink; linux-can@vger.kernel.org
-> > > > Subject: Re: Reading messages that use BAM, or have a DLC large=
-r=20
-> > > > than
-> > > > 8
-> > > >=20
-> > > > Hi,
-> > > >=20
-> > > > I have a git repository on
-> > > > git://gitorious.org/~kurt-vd/linux-can/linux-can-j1939.git
-> > > >=20
-> > > > I added a complete j1939 stack, including 'BAM'.
-> > > >=20
-> > > > You will need the associated can-utils with j1939 support to ac=
-tivate the j1939 processing for a specific CAN device:
-> > > > $ ip link set can0 j1939 on
-> > > >=20
-> > > > If you only need to receive j1939 packets, then that's all you =
-need to do.
-> > > >=20
-> > > > The associated can-utils provide some example programs. You wil=
-l need to take a look as the API for j1939 sockets is different than fo=
-r raw CAN.
-> > > >=20
-> > > > Kind regards,
-> > > > Kurt
-> > > >=20
-> > > > On Wed, Aug 21, 2013 at 10:19:22PM +0200, Marc Kleine-Budde wro=
-te:
-> > > > > On 08/21/2013 08:43 PM, Brent Sink wrote:
-> > > > > > How do I read J1939 messages that use the BAM format?  Some=
- of=20
-> > > > > > the diagnostic messages that are on the DM01 message have a=
-=20
-> > > > > > DLC that is often larger than 8 bytes when the message=20
-> > > > > > contains more than one error.  Is there something special t=
-hat=20
-> > > > > > I need to do to enable reading these messages?  Thanks!
-> > > > >
-> > > > > With mainline linux you just receive raw CAN frames. I'm not =
-a
-> > > > > j1939 expert, as far as I can see, BAM is a transport protoco=
-l for CAN.
-> > > > >
-> > > > > There are two options:
-> > > > > 1) You have to implement the BAM protocol yourself either,
-> > > > >    a) inside the kernel or
-> > > > >    b) inside userspace.
-> > > > > 2) Talk to Kurt (Cc'ed) if his j1939 patches support BAM.
-> > > > >
-> > > > > Marc
-> > > > > --
-> > > > > Pengutronix e.K.                  | Marc Kleine-Budde        =
-   |
-> > > > > Industrial Linux Solutions        | Phone: +49-231-2826-924  =
-   |
-> > > > > Vertretung West/Dortmund          | Fax:   +49-5121-206917-55=
-55 |
-> > > > > Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de=
-   |
-> > > > >
-> > > >=20
-> > > >=20
-> > > >=20
-> > > > --
-> > > > Kurt Van Dijck
-> > > > GRAMMER EiA ELECTRONICS
-> > > > http://www.eia.be
-> > > > kurt.van.dijck@eia.be
-> > > > +32-38708534
-> > > >=20
-> > > > The information contained in this message may be privileged and=
- confidential and protected from disclosure. If the reader of this mess=
-age is not the intended recipient, or an employee or agent responsible =
-for delivering this message to the intended recipient, you are hereby n=
-otified that any dissemination, distribution or copying of this communi=
-cation is strictly prohibited. If you have received this communication =
-in error, please notify us immediately by replying to the message and d=
-eleting it from your computer. Internet communications are not assured =
-to be secure or clear of inaccuracies as information could be intercept=
-ed, corrupted, lost, destroyed, arrive late or incomplete, or contain v=
-iruses. Therefore, we do not accept responsibility for any errors or om=
-issions that are present in this email, or any attachment, that have ar=
-isen as a result of e-mail transmission.
-> > > > N     r  y   b X  =C7=A7v ^ )=DE=BA{.n +    { q   ^n r   z =1A =
- h    &  =1E G   h =03(
-> > > >  =E9=9A=8E =DD=A2j"  =1A =1Bm     z =DE=96   f   h   ~ m=20
-> > >=20
-> > > --
-> > > Kurt Van Dijck
-> > > GRAMMER EiA ELECTRONICS
-> > > http://www.eia.be
-> > > kurt.van.dijck@eia.be
-> > > +32-38708534
-> > > =13  =EC=B9=BB=1C & ~ & =18  +-  =DD=B6=17  w  =CB=9B   m b  \jx =
- =17  =DC=A8}   =C6=A0z &j:+v   =20
-> > >     zZ+  +zf   h   ~    i   z =1E w   ?    & )=DF=A2=1Bf
-> >=20
-> > --
-> > Kurt Van Dijck
-> > GRAMMER EiA ELECTRONICS
-> > http://www.eia.be
-> > kurt.van.dijck@eia.be
-> > +32-38708534
-> > N     r  y   b X  =C7=A7v ^ )=DE=BA{.n +    { q   ^n r   z =1A  h  =
-  &  =1E G   h =03(
-> >  =E9=9A=8E =DD=A2j"  =1A =1Bm     z =DE=96   f   h   ~ m=20
->=20
-> --
-> Kurt Van Dijck
-> GRAMMER EiA ELECTRONICS
-> http://www.eia.be
-> kurt.van.dijck@eia.be
-> +32-38708534
+Thanks a lot.
 
---=20
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
