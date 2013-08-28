@@ -1,61 +1,73 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: candump app will lost rx packets while it prints the received
- data frames
-Date: Wed, 28 Aug 2013 12:28:39 +0200
-Message-ID: <521DD0D7.50208@pengutronix.de>
-References: <loom.20130828T111233-886@post.gmane.org>
+Subject: Re: cansend app will block while it is sending RTR frames
+Date: Wed, 28 Aug 2013 14:31:21 +0200
+Message-ID: <521DED99.6010606@pengutronix.de>
+References: <loom.20130828T111851-325@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="Hd8cvwqENKlLxSBOFwdVmTqw97OQUEpwI"
+ boundary="km17URsdTE8LxXCdr9JMsLUeq88bPcxlJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36003 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47921 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752582Ab3H1K2q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Aug 2013 06:28:46 -0400
-In-Reply-To: <loom.20130828T111233-886@post.gmane.org>
+	with ESMTP id S1752335Ab3H1Mb3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Aug 2013 08:31:29 -0400
+In-Reply-To: <loom.20130828T111851-325@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: xuewentian <xuewt@embedinfo.com>
 Cc: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Hd8cvwqENKlLxSBOFwdVmTqw97OQUEpwI
+--km17URsdTE8LxXCdr9JMsLUeq88bPcxlJ
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/28/2013 11:17 AM, xuewentian wrote:
+On 08/28/2013 11:34 AM, xuewentian wrote:
 > Hi all,
 >=20
->   I wonder that when the can select/poll bug can be fixed ? What reason=
+>   I want to test sending a lot of RTR frames, because select/poll is no=
 =20
-> has it not been fixed yet? Thanks a lot.
+> effect on the flow control, I add the usleep in the cansend app.
+>  =20
+>   The code segment is :
+>  =20
 >=20
->  and now I encounter another problem, I use a sufficient delay for cans=
-end=20
-> on the first borad, and anther board using candump to
-> receive the data frame.
+> 	while (infinite || loopcount--) {
+> 	=09
+> 		ret =3D write(s, &frame, sizeof(frame));
+> 		if (ret =3D=3D -1) {
+> 			perror("write");
+> 			printf("Please specify a more long delay time!\n");
+> 			break;
+> 		}
+> 		usleep(delay);//flow control
+> 	}
 >=20
-> board 1:
-> cansend can0  -l 500 -i 0x123 0x11 0x22 0x33 0x44 0x55 0x66 0x77=20
-> 0x88   //cansend I have added the delay,and no any write failaure repor=
-t
->=20
-> board 2:
-> candump can0    // on the serial terminal, I have only received about 4=
-34
->                 // data frames which are printed on the serial
->                 // terminal,and no any read error information
->=20
-> and use "ifconfig can0" on the two boards, I found that board 1 has=20
-> increased 500 "TX packets",and board 2 has also increased 500 "RX=20
-> packets", but candump app seemed that lost some packets. what reason is=
-=20
-> it??
+>   Here the "delay" is about 200us, and I used "cansend can0 -r -e -l 50=
+0 -
+> i 0x1234567  0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88" command to send 5=
+00=20
+> RTR frames.but candump on
+> the another board could only received the 336 frames,and candump app=20
+> hasn't print the received RTR frames,and only count the received frmaes=
+=2E
+>   and I debugged the send process in the kernel, and I found that it sl=
+eep=20
+> on the copy_from_user in the memcpy_fromiovec of the raw_sendmsg
+>  =20
+>   err =3D memcpy_fromiovec(skb_put(skb, size), msg->msg_iov, size);  //=
+ in=20
+> the raw_sendmsg function of the net/can/raw.c file.
+> 	if (err < 0)
+> 		goto free_skb;
 
-Don't print on a serial line what you have received over CAN. Your
-serial port is slower than CAN, the socket buffer between kernel and
-application will be full sooner or less, then the kernel drops frames.
+How have you measured that the kernel sleeps in that function? How long
+does it sleep?
+
+>   What about happens with the write of the cansend app? and I used the =
+
+> same way to send the 5000000 data frames, it didn't blocked.
 
 Marc
 
@@ -66,7 +78,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Hd8cvwqENKlLxSBOFwdVmTqw97OQUEpwI
+--km17URsdTE8LxXCdr9JMsLUeq88bPcxlJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -75,9 +87,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlId0NcACgkQjTAFq1RaXHOwLgCdFIqKg/ieBE5jK7MWJTukl4xk
-FKkAn1Gb26q5l+Z8E3NOMeF43bdgtgrP
-=Y6Hi
+iEYEARECAAYFAlId7ZkACgkQjTAFq1RaXHNeRQCfRUcpBM9ml+KMKc7z89XtSQn9
+lOQAoJdBefvMJYrA6wZDBpAEWtiJbBg9
+=H7iY
 -----END PGP SIGNATURE-----
 
---Hd8cvwqENKlLxSBOFwdVmTqw97OQUEpwI--
+--km17URsdTE8LxXCdr9JMsLUeq88bPcxlJ--
