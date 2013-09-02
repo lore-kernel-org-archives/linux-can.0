@@ -1,517 +1,93 @@
-From: Stefan Wahren <stefan.wahren@i2se.com>
-Subject: Re: [PATCH] slcand: add slcan_attach and UART settings
-Date: Mon, 02 Sep 2013 11:31:05 +0200
-Message-ID: <52245AD9.6030806@i2se.com>
-References: <522449EC.3060705@i2se.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: pull-request: can-next 2013-08-29
+Date: Mon, 02 Sep 2013 21:06:10 +0200
+Message-ID: <5224E1A2.1010302@pengutronix.de>
+References: <521FB992.5080002@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.9]:63380 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932150Ab3IBJbI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Sep 2013 05:31:08 -0400
-In-Reply-To: <522449EC.3060705@i2se.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35854 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758874Ab3IBTGY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Sep 2013 15:06:24 -0400
+In-Reply-To: <521FB992.5080002@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Linux Netdev List <netdev@vger.kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 
-Hello Yegor,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-as requested on GitHub here are my comments:
+Hello David,
 
-> slcand takes settings known from slcan_attach to configure CAN
-> interface, like open/close channel, set bitrate etc. In addition -S
-> option sets UART's baudrate. This way slcand combines three utilities
-> in one: old slcand, slcan_attach and stty.
->
-> Example: slcand -o -s8 -S 3000000 ttyUSB0
->
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->  slcand.c |  295 
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++--------
->  1 files changed, 256 insertions(+), 39 deletions(-)
->
-> diff --git a/slcand.c b/slcand.c
-> index 807ffaa..92ffa20 100644
-> --- a/slcand.c
-> +++ b/slcand.c
-> @@ -40,16 +40,16 @@
->  #include <stdlib.h>
->  #include <string.h>
->  #include <unistd.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
->  #include <fcntl.h>
->  #include <syslog.h>
->  #include <errno.h>
->  #include <pwd.h>
->  #include <signal.h>
-> -#include <sys/socket.h>
->  #include <sys/ioctl.h>
-> -#include <sys/types.h>
-> -#include <sys/stat.h>
->  #include <net/if.h>
-> +#include <termios.h>
->
->  /* default slcan line discipline since Kernel 2.6.25 */
->  #define LDISC_N_SLCAN 17
-> @@ -69,46 +69,126 @@
->  #define EXIT_SUCCESS 0
->  #define EXIT_FAILURE 1
->
-> +
-> +
->  void print_usage(char *prg)
->  {
-> -    fprintf(stderr, "\nUsage: %s tty [name]\n\n", prg);
-> -    fprintf(stderr, "Example:\n");
-> -    fprintf(stderr, "%s ttyUSB1\n", prg);
-> -    fprintf(stderr, "%s ttyS0 can0\n", prg);
-> +    fprintf(stderr, "\nUsage: %s [options] <tty> [canif-name]\n\n", 
-> prg);
-> +    fprintf(stderr, "Options: -o         (send open command 'O\\r')\n");
-> +    fprintf(stderr, "         -c         (send close command 
-> 'C\\r')\n");
-> +    fprintf(stderr, "         -f         (read status flags with 
-> 'F\\r' to reset error states)\n");
-> +    fprintf(stderr, "         -s <speed> (set CAN speed 0..8)\n");
-> +    fprintf(stderr, "         -S <speed> (set UART speed)\n");
+On 08/29/2013 11:13 PM, Marc Kleine-Budde wrote:
+> this is a pull request for net-next. There are two patches from Gerhard=
 
-It would be nice for the user to know the range of the UART speed and it 
-is in baud.
+> Sittig, which improves the clock handling on mpc5121. Oliver Hartkopp
+> provides a patch that adds a per rule limitation of frame hops.
 
-> + fprintf(stderr, "         -b <btr>   (set bit time register value)\n");
-> +    fprintf(stderr, "         -F         (stay in foreground; no 
-> daemonize)\n");
-> +    fprintf(stderr, "         -h         (show this help page)\n");
-> +    fprintf(stderr, "\nExamples:\n");
-> +    fprintf(stderr, "slcand -o -c -f -s6 ttyslcan0\n");
-> +    fprintf(stderr, "slcand -o -c -f -s6 ttyslcan0 can0\n");
->      fprintf(stderr, "\n");
->      exit(EXIT_FAILURE);
->  }
->
-> +
-> +static int slcand_running = 0;
-> +static int exit_code = 0;
-> +static char ttypath[TTYPATH_LENGTH];
-> +static char pidfile[PIDFILE_LENGTH];
-> +
-> +
->  static void child_handler (int signum)
->  {
->      switch (signum)
->      {
-> -    case SIGALRM:
-> -        exit (EXIT_FAILURE);
-> -        break;
->      case SIGUSR1:
-> -        exit (EXIT_SUCCESS);
-> +        /* exit parent */
-> +        exit(EXIT_SUCCESS);
+have you forgotten this pull request?
 
-Please try to keep code convention.
+Marc
 
-> break;
-> +    case SIGALRM:
->      case SIGCHLD:
-> -        exit (EXIT_FAILURE);
-> +        syslog (LOG_NOTICE, "received signal %i on %s", signum, 
-> ttypath);
-> +        exit_code = EXIT_FAILURE;
-> +        slcand_running = 0;
-> +        break;
-> +    case SIGINT:
-> +    case SIGTERM:
-> +        syslog (LOG_NOTICE, "received signal %i on %s", signum, 
-> ttypath);
-> +        exit_code = EXIT_SUCCESS;
-> +        slcand_running = 0;
->          break;
->      }
->  }
->
-> -static void daemonize (const char *lockfile, char *tty)
-> +static int look_up_uart_speed(int s)
+> The following changes since commit 7ec06da81d2b98859b558d8d551a0c4e3d95=
+16a3:
+>=20
+>   net: packet: document available fanout policies (2013-08-29 16:43:29 =
+-0400)
+>=20
+> are available in the git repository at:
+>=20
+>   git://gitorious.org/linux-can/linux-can-next.git for-davem
+>=20
+> for you to fetch changes up to 391ac1282dd7ff1cb8245cccc5262e8e4173edc4=
+:
+>=20
+>   can: gw: add a per rule limitation of frame hops (2013-08-29 22:58:24=
+ +0200)
+>=20
+> ----------------------------------------------------------------
+> Gerhard Sittig (2):
+>       can: mscan: add a comment on reg to idx mapping
+>       can: mscan: improve clock API use
+>=20
+> Oliver Hartkopp (1):
+>       can: gw: add a per rule limitation of frame hops
+>=20
+>  drivers/net/can/mscan/mpc5xxx_can.c | 23 ++++++++++++++++-------
+>  drivers/net/can/mscan/mscan.c       | 25 ++++++++++++++++++++++++-
+>  drivers/net/can/mscan/mscan.h       |  3 +++
+>  include/uapi/linux/can/gw.h         |  9 ++++++++-
+>  net/can/gw.c                        | 35 +++++++++++++++++++++++++++++=
+++----
+>  5 files changed, 82 insertions(+), 13 deletions(-)
+>=20
 
-As my comment on GitHub, i think int isn't 32 bit or high on all 
-platforms. So please change the datatype of parameter s to make sure the 
-maximum like 4000000 is always reached like long or int32_t. Btw speed 
-would be a better variable name.
 
-> +{
-> +    switch (s) {
-> +    case 9600:
-> +        return B9600;
-> +    case 19200:
-> +        return B19200;
-> +    case 38400:
-> +        return B38400;
-> +    case 57600:
-> +        return B57600;
-> +    case 115200:
-> +        return B115200;
-> +    case 230400:
-> +        return B230400;
-> +    case 460800:
-> +        return B460800;
-> +    case 500000:
-> +        return B500000;
-> +    case 576000:
-> +        return B576000;
-> +    case 921600:
-> +        return B921600;
-> +    case 1000000:
-> +        return B1000000;
-> +    case 1152000:
-> +        return B1152000;
-> +    case 1500000:
-> +        return B1500000;
-> +    case 2000000:
-> +        return B2000000;
-> +#ifdef B2500000
-> +    case 2500000:
-> +        return B2500000;
-> +#endif
-> +#ifdef B3000000
-> +    case 3000000:
-> +        return B3000000;
-> +#endif
-> +#ifdef B3500000
-> +    case 3500000:
-> +        return B3500000;
-> +#endif
-> +#ifdef B3710000
-> +    case 3710000
-> +        return B3710000;
-> +#endif
-> +#ifdef B4000000
-> +    case 4000000:
-> +        return B4000000;
-> +#endif
-> +    default:
-> +        return B57600;
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-I believe it isn't a good behaviour to return 57600 in error case. So 
-better return a special error value like -1 and handle this error case.
 
-> +    }
-> +}
-> +
-> +static pid_t daemonize (const char *lockfile, char *tty, char *name)
->  {
->      pid_t pid, sid, parent;
->      int lfp = -1;
->      FILE * pFile;
-> +    FILE * dummyFile;
->      char const *pidprefix = "/var/run/";
->      char const *pidsuffix = ".pid";
-> -    char pidfile[PIDFILE_LENGTH];
->
->      snprintf(pidfile, PIDFILE_LENGTH, "%s%s-%s%s", pidprefix, 
-> DAEMON_NAME, tty, pidsuffix);
->
->      /* already a daemon */
->      if (getppid () == 1)
-> -        return;
-> +        return 0;
->
->      /* Create the lock file as the current user */
->      if (lockfile && lockfile[0])
-> @@ -134,6 +214,8 @@ static void daemonize (const char *lockfile, char 
-> *tty)
->      }
->
->      /* Trap signals that we expect to receive */
-> +    signal (SIGINT, child_handler);
-> +    signal (SIGTERM, child_handler);
->      signal (SIGCHLD, child_handler);
->      signal (SIGUSR1, child_handler);
->      signal (SIGALRM, child_handler);
-> @@ -152,9 +234,8 @@ static void daemonize (const char *lockfile, char 
-> *tty)
->
->          /* Wait for confirmation from the child via SIGTERM or 
-> SIGCHLD, or
->             for two seconds to elapse (SIGALRM).  pause() should not 
-> return. */
-> -        alarm (2);
-> +        alarm (5);
+--T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Please correct the comment above, if you change the seconds.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
->
->          pause ();
-> -
->          exit (EXIT_FAILURE);
->      }
-> @@ -167,7 +248,8 @@ static void daemonize (const char *lockfile, char 
-> *tty)
->      signal (SIGTTOU, SIG_IGN);
->      signal (SIGTTIN, SIG_IGN);
->      signal (SIGHUP, SIG_IGN);    /* Ignore hangup signal */
-> -    signal (SIGTERM, SIG_DFL);    /* Die on SIGTERM */
-> +    signal (SIGINT, child_handler);
-> +    signal (SIGTERM, child_handler);
->
->      /* Change the file mode mask */
->      umask (0);
-> @@ -182,7 +264,7 @@ static void daemonize (const char *lockfile, char 
-> *tty)
->      }
->
->      pFile = fopen (pidfile,"w");
-> -    if (pFile == NULL)
-> +    if (NULL == pFile)
->      {
->          syslog (LOG_ERR, "unable to create pid file %s, code=%d (%s)",
->              pidfile, errno, strerror (errno));
-> @@ -201,36 +283,88 @@ static void daemonize (const char *lockfile, 
-> char *tty)
->      }
->
->      /* Redirect standard files to /dev/null */
-> -    freopen ("/dev/null", "r", stdin);
-> -    freopen ("/dev/null", "w", stdout);
-> -    freopen ("/dev/null", "w", stderr);
-> +    dummyFile = freopen ("/dev/null", "r", stdin);
-> +    dummyFile = freopen ("/dev/null", "w", stdout);
-> +    dummyFile = freopen ("/dev/null", "w", stderr);
->
->      /* Tell the parent process that we are A-okay */
-> -    kill (parent, SIGUSR1);
-> +    //kill (parent, SIGUSR1);
+iEYEARECAAYFAlIk4aMACgkQjTAFq1RaXHNyJACePAwdlsR21ZAagFtm/gL8I4b9
+urIAnjHPqLJ6i8e7QFXFBtYnuAMIUA0o
+=LtzB
+-----END PGP SIGNATURE-----
 
-Why do you uncomment this line than remove it?
-
-> + return parent;
->  }
->
->  int main (int argc, char *argv[])
->  {
->      char *tty = NULL;
-> -    char ttypath[TTYPATH_LENGTH];
->      char const *devprefix = "/dev/";
->      char *name = NULL;
->      char buf[IFNAMSIZ+1];
-> +    struct termios tios;
-> +    speed_t old_ispeed;
-> +    speed_t old_ospeed;
-> +
-> +    int opt;
-> +    int detach = 1;
-> +    int send_open = 0;
-> +    int send_close = 0;
-> +    int send_read_status_flags = 0;
-> +    char *speed = NULL;
-> +    char *uart_speed_str = NULL;
-> +    long int uart_speed = 0;
-> +    char *btr = NULL;
-> +    int run_as_daemon = 1;
-> +    pid_t parent_pid = 0;
-> +
-> +    ttypath[0] = '\0';
-> +
-> +    while ((opt = getopt(argc, argv, "ocfs:S:b:?hF")) != -1) {
-> +        switch (opt) {
-> +        case 'o':
-> +            send_open = 1;
-> +            break;
-> +        case 'c':
-> +            send_close = 1;
-> +            break;
-> +        case 'f':
-> +            send_read_status_flags = 1;
-> +            break;
-> +        case 's':
-> +            speed = optarg;
-> +            if (strlen(speed) > 1)
-> +                print_usage(argv[0]);
-> +            break;
-> +        case 'S':
-> +            uart_speed_str = optarg;
-> +            errno = 0;
-> +            uart_speed = strtol(uart_speed_str, NULL, 10);
-> +            if (errno)
-> +                print_usage(argv[0]);
-> +            break;
-> +        case 'b':
-> +            btr = optarg;
-> +            if (strlen(btr) > 6)
-> +                print_usage(argv[0]);
-> +            break;
-> +        case 'F':
-> +            run_as_daemon = 0;
-> +            break;
-> +        case 'h':
-> +        case '?':
-> +        default:
-> +            print_usage(argv[0]);
-> +            //exit(EXIT_SUCCESS);
-
-dito
-
-> + break;
-> +        }
-> +    }
->
->      /* Initialize the logging interface */
->      openlog (DAEMON_NAME, LOG_PID, LOG_LOCAL5);
->
-> -    /* See how we're called */
-> -    if (argc == 2) {
-> -        tty = argv[1];
-> -    } else if (argc == 3) {
-> -        tty = argv[1];
-> -        name = argv[2];
-> -        if (strlen(name) > IFNAMSIZ-1)
-> -            print_usage(argv[0]);
-> -    } else {
-> +    /* Parse serial device name and optional can interface name */
-> +    tty = argv[optind];
-> +    if(NULL == tty) {
->          print_usage(argv[0]);
->      }
-> +    name = argv[optind + 1];
->
->      /* Prepare the tty device name string */
->      char * pch;
-> @@ -243,16 +377,69 @@ int main (int argc, char *argv[])
->      syslog (LOG_INFO, "starting on TTY device %s", ttypath);
->
->      /* Daemonize */
-> -    daemonize ("/var/lock/" DAEMON_NAME, tty);
-> +    if(run_as_daemon) {
-> +        parent_pid = daemonize ("/var/lock/" DAEMON_NAME, tty, name);
-
-I think /var/lock is a perfect candidate for a define.
-
-> +    }
-> +    else {
-> +        /* Trap signals that we expect to receive */
-> +        signal (SIGINT, child_handler);
-> +        signal (SIGTERM, child_handler);
-> +    }
-> +
-> +    /* */
-> +    slcand_running = 1;
->
->      /* Now we are a daemon -- do the work for which we were paid */
->      int fd;
->      int ldisc = LDISC_N_SLCAN;
->
-> -    if ((fd = open (ttypath, O_WRONLY | O_NOCTTY )) < 0) {
-> +    if ((fd = open (ttypath, O_RDWR | O_NONBLOCK | O_NOCTTY )) < 0) {
->          syslog (LOG_NOTICE, "failed to open TTY device %s\n", ttypath);
->          perror(ttypath);
-> -        exit(1);
-> +        exit(EXIT_FAILURE);
-> +    }
-> +
-> +    /* Configure baud rate */
-> +    memset(&tios, 0, sizeof(struct termios));
-> +    if(tcgetattr(fd, &tios) < 0) {
-> +    syslog (LOG_NOTICE, "failed to get attributes for TTY device %s: 
-> %s\n", ttypath, strerror(errno));
-> +        exit (EXIT_FAILURE);
-> +    }
-> +
-> +    /* Get old values for later restore */
-> +    old_ispeed = cfgetispeed(&tios);
-> +    old_ospeed = cfgetospeed(&tios);
-> +
-> +    /* Baud Rate */
-> +    cfsetispeed(&tios, look_up_uart_speed(uart_speed));
-> +    cfsetospeed(&tios, look_up_uart_speed(uart_speed));
-> +
-> +    /* apply changes */
-> +    if(tcsetattr(fd, TCSADRAIN, &tios) < 0) {
-> +    syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": 
-> %s!\n", ttypath, strerror(errno));
-> +    }
-> +
-> +    if (speed) {
-> +        sprintf(buf, "C\rS%s\r", speed);
-> +        if(write(fd, buf, strlen(buf)) < 0) {
-> +            //syslog (LO, "failed to get attributes for TTY device 
-> %s: %s\n", ttypath, strerror(errno));
-> +
-> +        }
-> +    }
-> +
-> +    if (btr) {
-> +        sprintf(buf, "C\rs%s\r", btr);
-> +        write(fd, buf, strlen(buf));
-> +    }
-> +
-> +    if (send_read_status_flags) {
-> +        sprintf(buf, "F\r");
-> +        write(fd, buf, strlen(buf));
-> +    }
-> +
-> +    if (send_open) {
-> +        sprintf(buf, "O\r");
-> +        write(fd, buf, strlen(buf));
->      }
->
->      /* set slcan like discipline on given tty */
-> @@ -289,14 +476,44 @@ int main (int argc, char *argv[])
->              close(s);
->          }
->      }
-> +    if(parent_pid > 0) {
-> +        kill(parent_pid, SIGUSR1);
-> +    }
->
->      /* The Big Loop */
-> -    while (1) {
-> -        sleep(60); /* wait 60 seconds */
-> +    while (slcand_running) {
-> +        sleep(1); /* wait 1 second */
-> +    }
-> +
-> +    /* Reset line discipline */
-> +    syslog (LOG_INFO, "stopping on TTY device %s", ttypath);
-> +    ldisc = N_TTY;
-> +    if (ioctl (fd, TIOCSETD, &ldisc) < 0) {
-> +        perror("ioctl TIOCSETD");
-> +        exit(1);
-
-Is here a EXIT_FAILURE missing?
-
-> +    }
-> +
-> +    if (send_close) {
-> +        sprintf(buf, "C\r");
-> +        write(fd, buf, strlen(buf));
->      }
->
-> +    /* Reset old rates */
-> +    cfsetispeed(&tios, old_ispeed);
-> +    cfsetospeed(&tios, old_ospeed);
-> +
-> +    /* apply changes */
-> +    if(tcsetattr(fd, TCSADRAIN, &tios) < 0) {
-> +    syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": 
-> %s!\n", ttypath, strerror(errno));
-> +    }
-> +
-> +    /* Remove pidfile */
-> +    if(run_as_daemon) {
-> +    unlink(pidfile);
-> +    }
-> +
->      /* Finish up */
->      syslog (LOG_NOTICE, "terminated on %s", ttypath);
->      closelog ();
-> -    return 0;
-> +    return exit_code;
->  }
->
-
-Best regards
-
-Stefan Wahren
-
+--T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA--
