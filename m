@@ -1,71 +1,63 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can-next 2013-08-29
-Date: Mon, 02 Sep 2013 21:06:10 +0200
-Message-ID: <5224E1A2.1010302@pengutronix.de>
-References: <521FB992.5080002@pengutronix.de>
+Subject: Re: [Socketcan-users] real-time transmission?
+Date: Tue, 03 Sep 2013 16:56:37 +0200
+Message-ID: <5225F8A5.4060207@pengutronix.de>
+References: <11071630B606A2488DE633430B530FDE57F06BEE@ELS-EX01-PV.KSTG.corp>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA"
+ boundary="eCUjhcFlPdop7KpntUTQHI48JWS4MuIbc"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35854 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42029 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758874Ab3IBTGY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Sep 2013 15:06:24 -0400
-In-Reply-To: <521FB992.5080002@pengutronix.de>
+	with ESMTP id S1753192Ab3ICO4q (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 3 Sep 2013 10:56:46 -0400
+In-Reply-To: <11071630B606A2488DE633430B530FDE57F06BEE@ELS-EX01-PV.KSTG.corp>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Linux Netdev List <netdev@vger.kernel.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: "Aiken, Scott" <Scott.Aiken@karlstorz.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA
+--eCUjhcFlPdop7KpntUTQHI48JWS4MuIbc
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello David,
+Hello,
 
-On 08/29/2013 11:13 PM, Marc Kleine-Budde wrote:
-> this is a pull request for net-next. There are two patches from Gerhard=
+please come to the linux-can mailinglist.
 
-> Sittig, which improves the clock handling on mpc5121. Oliver Hartkopp
-> provides a patch that adds a per rule limitation of frame hops.
+On 09/03/2013 04:31 PM, Aiken, Scott wrote:
+> Hi all,
+>=20
+> =20
+>=20
+> I=E2=80=99m porting an old implementation of CAL/CiA to Linux.  The dev=
+ice
+> connection protocol has some pretty tight timing.  I=E2=80=99ve observe=
+d that
+> some CAN packets are buffered for 500 ms between the socket write() cal=
+l
+> and the actual transmission of the packet.  This is enough to sabotage
+> the connection process, and possibly take out other devices as well.=20
+> Are there any socket options to disable buffering of write packets, and=
 
-have you forgotten this pull request?
-
-Marc
-
-> The following changes since commit 7ec06da81d2b98859b558d8d551a0c4e3d95=
-16a3:
+> send them when write() is called?=20
 >=20
->   net: packet: document available fanout policies (2013-08-29 16:43:29 =
--0400)
+> =20
 >=20
-> are available in the git repository at:
+> Thanks,
 >=20
->   git://gitorious.org/linux-can/linux-can-next.git for-davem
+> Scott
 >=20
-> for you to fetch changes up to 391ac1282dd7ff1cb8245cccc5262e8e4173edc4=
-:
+> =20
 >=20
->   can: gw: add a per rule limitation of frame hops (2013-08-29 22:58:24=
- +0200)
 >=20
-> ----------------------------------------------------------------
-> Gerhard Sittig (2):
->       can: mscan: add a comment on reg to idx mapping
->       can: mscan: improve clock API use
 >=20
-> Oliver Hartkopp (1):
->       can: gw: add a per rule limitation of frame hops
->=20
->  drivers/net/can/mscan/mpc5xxx_can.c | 23 ++++++++++++++++-------
->  drivers/net/can/mscan/mscan.c       | 25 ++++++++++++++++++++++++-
->  drivers/net/can/mscan/mscan.h       |  3 +++
->  include/uapi/linux/can/gw.h         |  9 ++++++++-
->  net/can/gw.c                        | 35 +++++++++++++++++++++++++++++=
-++----
->  5 files changed, 82 insertions(+), 13 deletions(-)
+> _______________________________________________
+> Socketcan-users mailing list
+> Socketcan-users@lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/socketcan-users
 >=20
 
 
@@ -76,7 +68,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA
+--eCUjhcFlPdop7KpntUTQHI48JWS4MuIbc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -85,9 +77,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlIk4aMACgkQjTAFq1RaXHNyJACePAwdlsR21ZAagFtm/gL8I4b9
-urIAnjHPqLJ6i8e7QFXFBtYnuAMIUA0o
-=LtzB
+iEYEARECAAYFAlIl+KUACgkQjTAFq1RaXHMyQgCfYFMLFNiI6Q8Yuoo8yqQGy/Uu
+wosAnAgY5sOx+DxVYo6HzKchpQ7EJQxE
+=Ubyy
 -----END PGP SIGNATURE-----
 
---T4CrLkgH3rfKUh3Pr154f85gjdKKPhUgA--
+--eCUjhcFlPdop7KpntUTQHI48JWS4MuIbc--
