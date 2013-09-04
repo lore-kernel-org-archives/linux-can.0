@@ -1,38 +1,25 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2013-08-29
-Date: Tue, 03 Sep 2013 21:56:04 -0400 (EDT)
-Message-ID: <20130903.215604.852482029571949947.davem@davemloft.net>
-References: <521FB992.5080002@pengutronix.de>
-	<5224E1A2.1010302@pengutronix.de>
+From: Michael Muldoon <mbmuldoon07@gmail.com>
+Subject: can acknowledgment
+Date: Wed, 4 Sep 2013 15:47:38 -0400
+Message-ID: <CAJU5jUJBe49CsixJcy292Qp0VruPJo+1_FSp3FxyNFxjZDJhLQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <5224E1A2.1010302@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wg0-f50.google.com ([74.125.82.50]:36793 "EHLO
+	mail-wg0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755066Ab3IDTrj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Sep 2013 15:47:39 -0400
+Received: by mail-wg0-f50.google.com with SMTP id j13so845395wgh.29
+        for <linux-can@vger.kernel.org>; Wed, 04 Sep 2013 12:47:38 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 02 Sep 2013 21:06:10 +0200
-
-> Hello David,
-> 
-> On 08/29/2013 11:13 PM, Marc Kleine-Budde wrote:
->> this is a pull request for net-next. There are two patches from Gerhard
->> Sittig, which improves the clock handling on mpc5121. Oliver Hartkopp
->> provides a patch that adds a per rule limitation of frame hops.
-> 
-> have you forgotten this pull request?
-
-If you actually checked the patchwork queue, you're see that this pull
-request was still "under review" and there are people who have been
-waiting much longer than you have.
-
-I just pulled this in and will push it out once my build tests complete.
-
-There is no reason for you to ever ask me the above question unless
-your pull request doesn't show up in patchwork in an appropriate
-state.  By default assume I am backlogged and I will get to it
-whenever time and my resources allow.
+So I have a decent amount of experience with can but this is my first
+time using it on a linux device and therefore my first experience with
+socket-can.  Anyway the problem is that I am unable to view any can
+messages on the network without two other can devices on it currently
+a pcan from preak systems and an intrepid fire.  Also I'm unable to
+send can messages.  Everything seems to be pointing to a can
+acknowledgment issue which I have had experience with before but I
+can't seems to figure out the root cause of it here.
