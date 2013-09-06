@@ -1,78 +1,92 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: add explicit copyright to header can/netlink.h
-Date: Fri,  6 Sep 2013 16:30:11 +0200
-Message-ID: <1378477811-3606-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH] linux/can: add explicit copyrights to can headers
+Date: Fri, 06 Sep 2013 16:32:02 +0200
+Message-ID: <5229E762.6030605@pengutronix.de>
+References: <1376858497-1700-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="PGBkmB8W487rxkNucTEFf35U9NxRsFNrQ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37296 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37311 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751350Ab3IFOaU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Sep 2013 10:30:20 -0400
+	with ESMTP id S1751350Ab3IFOcT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Sep 2013 10:32:19 -0400
+In-Reply-To: <1376858497-1700-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Urs Thuermann <urs.thuermann@volkswagen.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-=46rom: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PGBkmB8W487rxkNucTEFf35U9NxRsFNrQ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This file is copied to the source code of user space applications (in
-this case can-utils) and so it makes sense to mention explicitly its
-copyright. I added the terms of C code that was introduced in the same
-commit as this header.
+On 08/18/2013 10:41 PM, Uwe Kleine-K=C3=B6nig wrote:
+> These files are copied to the source code of user space applications (i=
+n
+> this case can-utils) and so it makes sense to mention explicitly their
+> copyright. I added the terms of C code that was introduced in the same
+> commit as these headers.
+>=20
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: Urs Thuermann <urs.thuermann@volkswagen.de>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
+> Hello,
+>=20
+> I think it is necessary to get the Ack of the three people mentioned in=
 
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello Wolfgang,
+> the Cc: commit footers. @Wolfgang: I added a statement
+>=20
+>     The provided data structures and external interfaces from this code=
 
-this is the remaining hunk from Uwe's patch that has not been Acked. Co=
-ntinuing
-with Uwe's words (adopted):
-
-I think it is necessary to get the Ack of the people mentioned in
-the Cc: commit footers. @Wolfgang: I added a statement
-
-    The provided data structures and external interfaces from this code
-    are not restricted to be used by software with a GPL compatible lic=
+>     are not restricted to be used by software with a GPL compatible lic=
 ense.
+>=20
+> similar to the other can headers. Does that suit you?
+>=20
+> Best regards
+> Uwe
+>=20
+>  include/uapi/linux/can/bcm.h     | 32 ++++++++++++++++++++++++++++++++=
 
-similar to the other can headers. Does that suit you?
+>  include/uapi/linux/can/error.h   | 32 ++++++++++++++++++++++++++++++++=
 
-Best regards
-Uwe
+>  include/uapi/linux/can/gw.h      | 32 ++++++++++++++++++++++++++++++++=
 
- include/uapi/linux/can/netlink.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+>  include/uapi/linux/can/netlink.h | 11 +++++++++++
+>  include/uapi/linux/can/raw.h     | 32 ++++++++++++++++++++++++++++++++=
 
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/=
-netlink.h
-index 14966dd..8bbb885 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -5,6 +5,17 @@
-  *
-  * Copyright (c) 2009 Wolfgang Grandegger <wg@grandegger.com>
-  *
-+ * This program is free software; you can redistribute it and/or modif=
-y
-+ * it under the terms of the version 2 of the GNU General Public Licen=
-se
-+ * as published by the Free Software Foundation
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * The provided data structures and external interfaces from this code
-+ * are not restricted to be used by software with a GPL compatible lic=
-ense.
-  */
-=20
- #ifndef CAN_NETLINK_H
+>  5 files changed, 139 insertions(+)
+
+If've ripped the can/netlink.h from this patch and resend it to the
+mailinglist. I've pushed already Acked (by Oliver and Urs) parts to
+linux-can-next/testing.
+
+Marc
+
 --=20
-1.8.4.rc3
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--PGBkmB8W487rxkNucTEFf35U9NxRsFNrQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIp52cACgkQjTAFq1RaXHNSoQCfT2pMUl8pzgXJQtB2qvGws2zW
+NlsAn3GL/cPHaGLT8NB0IW1o3Sa+Ou7h
+=mEci
+-----END PGP SIGNATURE-----
+
+--PGBkmB8W487rxkNucTEFf35U9NxRsFNrQ--
