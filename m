@@ -1,68 +1,84 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Debian package configuration for can-utils
-Date: Fri, 06 Sep 2013 21:28:55 +0200
-Message-ID: <522A2CF7.7040505@pengutronix.de>
-References: <5229E1D2.7090509@i2se.com> <20130906185139.GU24802@pengutronix.de>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] can: add explicit copyright to header can/netlink.h
+Date: Fri, 6 Sep 2013 21:37:44 +0200
+Message-ID: <20130906193744.GV24802@pengutronix.de>
+References: <1378477811-3606-1-git-send-email-mkl@pengutronix.de>
+ <ecac65a6d53af596b53d115a9e6552a0@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Vas0OcOanRbUms6pP6a0NQXmQlFR1o7Jh"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33902 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39282 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750856Ab3IFT3C (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Sep 2013 15:29:02 -0400
-In-Reply-To: <20130906185139.GU24802@pengutronix.de>
+	with ESMTP id S1750855Ab3IFThs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Sep 2013 15:37:48 -0400
+Content-Disposition: inline
+In-Reply-To: <ecac65a6d53af596b53d115a9e6552a0@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Vas0OcOanRbUms6pP6a0NQXmQlFR1o7Jh
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello Wolfgang,
 
-On 09/06/2013 08:51 PM, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Stefan,
+On Fri, Sep 06, 2013 at 05:48:06PM +0200, Wolfgang Grandegger wrote:
+> Hi Marc and Uwe,
 >=20
-> On Fri, Sep 06, 2013 at 04:08:18PM +0200, Stefan Wahren wrote:
->> i had read the discussion about Debian package for can-utils (
->> http://thread.gmane.org/gmane.linux.can/3748 ) and i'm very
->> interested about that.
->>
->> Is there a public repository, where i can get can-utils including
->> Debian package configuration?
-> I have some preliminary work. While it's not yet good enough for Debian=
+> On Fri,  6 Sep 2013 16:30:11 +0200, Marc Kleine-Budde <mkl@pengutroni=
+x.de>
+> wrote:
+> > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >=20
+> > This file is copied to the source code of user space applications (=
+in
+> > this case can-utils) and so it makes sense to mention explicitly it=
+s
+> > copyright. I added the terms of C code that was introduced in the s=
+ame
+> > commit as this header.
+> >=20
+> > Cc: Wolfgang Grandegger <wg@grandegger.com>
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> > ---
+> > Hello Wolfgang,
+> >=20
+> > this is the remaining hunk from Uwe's patch that has not been Acked=
+=2E
+> > Continuing
+> > with Uwe's words (adopted):
+> >=20
+> > I think it is necessary to get the Ack of the people mentioned in
+> > the Cc: commit footers. @Wolfgang: I added a statement
+> >=20
+> >     The provided data structures and external interfaces from this =
+code
+> >     are not restricted to be used by software with a GPL compatible
+> >     license.
+> >=20
+> > similar to the other can headers. Does that suit you?
+>=20
+> Is this the common phrase other public header files use as well?
+> What's the motivation for that addition. Likely I might
+> have missed some related discussion.=20
+This is what the headers by Volkswagen are using, but it's only a
+suggestion. So it's up to you.
 
-> (because of license issues) I don't mind sharing it. Below you can find=
+Best regards
+Uwe
+>=20
+>=20
+>=20
+> Thanks,
+>=20
+>=20
+>=20
+> Wolfgang.
+>=20
 
-> the current patch. I don't plan to publish a repository until the
-> license issues are resolved.
-
-OT: Regarding the license issue, can you answer Wolfgangs mail?
-
-Tnx,
-Marc
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Vas0OcOanRbUms6pP6a0NQXmQlFR1o7Jh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIqLPcACgkQjTAFq1RaXHNZDACdGGZgmLbYUPW2IVtqrhFELYrM
-iuAAni9M6bdraBdfMs9BXTfJ5sGpT1Nk
-=9LEJ
------END PGP SIGNATURE-----
-
---Vas0OcOanRbUms6pP6a0NQXmQlFR1o7Jh--
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
+    |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
