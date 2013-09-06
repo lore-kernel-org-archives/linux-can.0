@@ -1,50 +1,93 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: can acknowledgment
-Date: Thu, 05 Sep 2013 22:12:40 +0200
-Message-ID: <5228E5B8.3010201@grandegger.com>
-References: <CAJU5jUJBe49CsixJcy292Qp0VruPJo+1_FSp3FxyNFxjZDJhLQ@mail.gmail.com> <11071630B606A2488DE633430B530FDE57F07118@ELS-EX01-PV.KSTG.corp> <CAJU5jU+gp+Zihug9KW5-6VwkKjw3bhr=33v=Kd-_u-r4eGDXng@mail.gmail.com> <818b112277dbc87b883edf93f165ecff@grandegger.com> <CAJU5jULyMTQYRuaJ2UMgONaGtm8CPfdW4-u1Dtx59ndzUNC=Zw@mail.gmail.com> <6aada00421e51a3bffc2e4354e6fbb34@grandegger.com> <CAJU5jULo5Lu1Qbe2Qibr78OZuAMhyD=bD+vP+xrXERV2ZeN-2A@mail.gmail.com> <430e94b292fb21c91a1f128f83bb8ad3@grandegger.com> <CAJU5jULTsLvi4BrB5kuKC7QGVeUjTKY4ad_UA7sJ9aoXNax__g@mail.gmail.com> <57acf912689fb58466cb5aaac1993a59@grandegger.com> <CAJU5jU+F6t+WSLnsF8j7V2v9WBW+BVqQFf=00E2469RybocjzA@mail.gmail.com> <5228DA82.4050203@grandegger.com> <CAJU5jUKkim-Pp5=VZjUfKUfRYB8b8zufwh9jtYFnhAcaYNgN5w@mail.gmail.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH] can: pcan_usb_core: fix memory leak on failure paths in
+ peak_usb_start()
+Date: Fri, 6 Sep 2013 08:52:59 +0200
+Message-ID: <1378450379823688500@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:47607 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752633Ab3IEUMm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Sep 2013 16:12:42 -0400
-In-Reply-To: <CAJU5jUKkim-Pp5=VZjUfKUfRYB8b8zufwh9jtYFnhAcaYNgN5w@mail.gmail.com>
+Received: from mail.peak-system.com ([213.157.13.214]:37748 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750805Ab3IFGxL convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Sep 2013 02:53:11 -0400
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Muldoon <mbmuldoon07@gmail.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
 
-On 09/05/2013 09:45 PM, Michael Muldoon wrote:
-> Here it is:
-> 
-> Linux version 3.2.20 (tomh@turbo_tom) (gcc version 4.5.3 (Buildroot
-> 2012.05) ) #2 Wed Dec 5 14:33:28 CST 2012
-> CPU: ARM926EJ-S [41069265] revision 5 (ARMv5TEJ), cr=00053177
-> CPU: VIVT data cache, VIVT instruction cache
-> Machine: Atmel AT91SAM9G20-EK
+Tx and rx urbs are not deallocated if something goes wrong in peak_usb_start().
+The patch fixes error handling to deallocate all the resources.
 
-Even if reported, this seems not to be a Atmel AT91SAM9G20-EK board.
-What do you find in "arch/arm/mach-at91/board-sam9g20ek.c".
+Found by Linux Driver Verification project (linuxtesting.org).
 
-...
-> can: controller area network core (rev 20090105 abi 8)
-> NET: Registered protocol family 29
-> CAN device driver interface
-> can: raw protocol (rev 20090105)
-> mcp251x spi0.0: probed
-> mcp251x spi0.2: probed
-> mcp251x spi0.0: CNF: 0x01 0xff 0x02
-> mcp251x spi0.2: CNF: 0x01 0xff 0x02
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Strange. The latter two line should not show up before the devices are
-opened (with ifconfig or ip.. Also "drivers/net/can/mcp251x.c" seems to
-be special.
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index a0f647f..0b7a4c3 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -463,7 +463,7 @@ static int peak_usb_start(struct peak_usb_device *dev)
+     if (i < PCAN_USB_MAX_TX_URBS) {
+         if (i == 0) {
+             netdev_err(netdev, "couldn't setup any tx URB\n");
+-            return err;
++            goto err_tx;
+         }
+ 
+         netdev_warn(netdev, "tx performance may be slow\n");
+@@ -472,7 +472,7 @@ static int peak_usb_start(struct peak_usb_device *dev)
+     if (dev->adapter->dev_start) {
+         err = dev->adapter->dev_start(dev);
+         if (err)
+-            goto failed;
++            goto err_adapter;
+     }
+ 
+     dev->state |= PCAN_USB_STATE_STARTED;
+@@ -481,19 +481,26 @@ static int peak_usb_start(struct peak_usb_device *dev)
+     if (dev->adapter->dev_set_bus) {
+         err = dev->adapter->dev_set_bus(dev, 1);
+         if (err)
+-            goto failed;
++            goto err_adapter;
+     }
+ 
+     dev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+     return 0;
+ 
+-failed:
++err_adapter:
+     if (err == -ENODEV)
+         netif_device_detach(dev->netdev);
+ 
+     netdev_warn(netdev, "couldn't submit control: %d\n", err);
+ 
++    for (i = 0; i < PCAN_USB_MAX_TX_URBS; i++) {
++        usb_free_urb(dev->tx_contexts[i].urb);
++        dev->tx_contexts[i].urb = NULL;
++    }
++err_tx:
++    usb_kill_anchored_urbs(&dev->rx_submitted);
++
+     return err;
+ }
+ 
+--
+1.8.1.2
 
-And how to you configure and start the CAN devices?
-
-Wolfgang.
-
-
+--
+To unsubscribe from this list: send the line "unsubscribe linux-can" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt 
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt 
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391 
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
