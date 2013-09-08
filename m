@@ -1,55 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] uapi/linux/can: add explicit copyrights to can's  netlink
- header
-Date: Sat, 07 Sep 2013 22:03:17 +0200
-Message-ID: <522B8685.4000807@pengutronix.de>
-References: <1b45fb94c09a6ee453fd1606cc21e111@grandegger.com> <1378582478-9484-1-git-send-email-u.kleine-koenig@pengutronix.de> <8bd2765c8cea602fccac395d45e6f3b3@grandegger.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: add explicit copyright to header can/netlink.h
+Date: Sun, 08 Sep 2013 21:09:39 +0200
+Message-ID: <522CCB73.3090504@hartkopp.net>
+References: <1378477811-3606-1-git-send-email-mkl@pengutronix.de> <ecac65a6d53af596b53d115a9e6552a0@grandegger.com> <20130906193744.GV24802@pengutronix.de> <522AFEA8.3020303@hartkopp.net> <522AFF20.6000501@pengutronix.de> <3cfa97cc2473a26f5f961bfb4560acd0@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="r54gRbnbOaTaeAiJOjkQQk6lCJ0NXGEFu"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35538 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751812Ab3IGUDa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 7 Sep 2013 16:03:30 -0400
-In-Reply-To: <8bd2765c8cea602fccac395d45e6f3b3@grandegger.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:30563 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750975Ab3IHTJn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 8 Sep 2013 15:09:43 -0400
+In-Reply-To: <3cfa97cc2473a26f5f961bfb4560acd0@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7Zu?= =?UTF-8?B?aWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---r54gRbnbOaTaeAiJOjkQQk6lCJ0NXGEFu
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 09/07/2013 09:57 PM, Wolfgang Grandegger wrote:
-[...]
-> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+On 07.09.2013 21:15, Wolfgang Grandegger wrote:
+> On Sat, 07 Sep 2013 12:25:36 +0200, Marc Kleine-Budde <mkl@pengutronix.de>
 
 
---r54gRbnbOaTaeAiJOjkQQk6lCJ0NXGEFu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>> The usage of netlink.h in a closed source app might be a nother usecase.
+> 
+> 
+> 
+> The intention is clear. But many other uapi include files are used in
+> 
+> closed source as well without such a clause.
+> 
+> 
+> 
+> Are you/we sure that this addition is even compatible with the
+> 
+> GPL (v2) license. GPL does usually not allow exceptions.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+As original author you may chose the license as you like.
 
-iEYEARECAAYFAlIrhokACgkQjTAFq1RaXHPxAwCbBqgUArx037v3DYT+wSIix/Xh
-pCoAoIAFCUIzoJp8+iXbkHD1/wF3E4gJ
-=y1U2
------END PGP SIGNATURE-----
+That's why our license header intends to be like a BSD license and when used
+inside the Linux kernel the GPL comes into action:
 
---r54gRbnbOaTaeAiJOjkQQk6lCJ0NXGEFu--
+ * Alternatively, provided that this notice is retained in full, this
+ * software may be distributed under the terms of the GNU General
+ * Public License ("GPL") version 2, in which case the provisions of the
+ * GPL apply INSTEAD OF those given above.
+
+And then - just to make it really sure - this additional sentence is written:
+
+ * The provided data structures and external interfaces from this code
+ * are not restricted to be used by modules with a GPL compatible license.
+
+Originally there was (intentionally) no license information in the CAN header
+files - as there were _many_ header files in the Linux kernel that did not
+contain any license information.
+
+When Debian needs this information to be sure about the GPL status duplicating
+that license information from e.g. net/can/bcm.c is fine.
+
+Best regards,
+Oliver
+
+
