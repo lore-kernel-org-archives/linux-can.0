@@ -1,75 +1,63 @@
-From: Stefan Wahren <stefan.wahren@i2se.com>
-Subject: Re: Debian package configuration for can-utils
-Date: Mon, 09 Sep 2013 08:44:02 +0200
-Message-ID: <522D6E32.4090900@i2se.com>
-References: <5229E1D2.7090509@i2se.com> <20130906185139.GU24802@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 00/16] Support for =?UTF-8?B?RWJlcnNww6RjaGVyIEZsZXhj?=
+ =?UTF-8?B?YXJkIERDQU4gZnVuY3Rpb24=?=
+Date: Mon, 09 Sep 2013 09:54:11 +0200
+Message-ID: <522D7EA3.3040505@pengutronix.de>
+References: <1378711513-2548-1-git-send-email-b.spranger@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="wvU5FDf9VJnm36aHCuuDXHXsOCbQQOiJ7"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.186]:53317 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751788Ab3IIGoT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Sep 2013 02:44:19 -0400
-In-Reply-To: <20130906185139.GU24802@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45568 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750820Ab3IIHy1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Sep 2013 03:54:27 -0400
+In-Reply-To: <1378711513-2548-1-git-send-email-b.spranger@linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Markus Becker <mab@comnets.uni-bremen.de>
-Cc: linux-can@vger.kernel.org
+To: Benedikt Spranger <b.spranger@linutronix.de>
+Cc: netdev@vger.kernel.org, Alexander Frank <Alexander.Frank@eberspaecher.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Holger Dengler <dengler@linutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Uwe,
-hello Markus,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wvU5FDf9VJnm36aHCuuDXHXsOCbQQOiJ7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-thank you very much.
+Hey Bene,
 
-Best regards
-Stefan
+On 09/09/2013 09:24 AM, Benedikt Spranger wrote:
+> The Ebersp=C3=A4cher Flexcard is a multifunctional PCI Mezzanine Card. =
+This
+> patch-series adds support for the DCAN function. The Flexcard supports
+> up too 8 CAN devices and has some CAN related special features:
+> - own FIFO per device
+> - DMA for receiving CAN frames
+> - Firmware tracks CAN echo packets
 
-Am 06.09.2013 20:51, schrieb Uwe Kleine-K=F6nig:
-> Hello Stefan,
->
-> On Fri, Sep 06, 2013 at 04:08:18PM +0200, Stefan Wahren wrote:
->> i had read the discussion about Debian package for can-utils (
->> http://thread.gmane.org/gmane.linux.can/3748 ) and i'm very
->> interested about that.
->>
->> Is there a public repository, where i can get can-utils including
->> Debian package configuration?
-> I have some preliminary work. While it's not yet good enough for Debi=
-an
-> (because of license issues) I don't mind sharing it. Below you can fi=
-nd
-> the current patch. I don't plan to publish a repository until the
-> license issues are resolved.
->
-> Best regards
-> Uwe
->
+Please include linux-can@vger.kernel.org when posting CAN related patches=
+=2E
 
-
+Marc
 --=20
-Software-Entwickler / software developer
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-I2SE GmbH                           Tel: +49 (0) 341 355667-00
-=46riedrich-Ebert-Str. 61             Fax: +49 (0) 341 355667-02
-04109 Leipzig
-Germany
-Web: http://www.i2se.com/           Mail: info@i2se.com
-VAT No.: DE 811528334
-Amtsgericht Leipzig HRB 23784
-Gesch=E4ftsf=FChrer/CEO: Carsten Ziermann
 
-*** Diese E-Mail ist allein f=FCr den bezeichneten Adressaten bestimmt.=
- Sie kann rechtlich vertrauliche Informationen enthalten. Wenn Sie dies=
-e E-Mail irrt=FCmlich erhalten haben, informieren Sie bitte unverz=FCgl=
-ich den Absender per E-Mail und l=F6schen Sie diese E-Mail von Ihrem Co=
-mputer, ohne Kopien anzufertigen.
-Vielen Dank. ***
+--wvU5FDf9VJnm36aHCuuDXHXsOCbQQOiJ7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-*** This email is for the exclusive use of the addressee. It may contai=
-n legally privileged information. If you have received this message in =
-error, please notify the sender by email immediately and delete the mes=
-sage from your computer without making any copies.
-Thank you. ***
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
+iEYEARECAAYFAlItfqcACgkQjTAFq1RaXHMXZgCfXlABJAStcVNlmMArNI6CHfO7
+8TMAnjhwETz6FJIkYzU42T1pAghFpkTj
+=jlGl
+-----END PGP SIGNATURE-----
+
+--wvU5FDf9VJnm36aHCuuDXHXsOCbQQOiJ7--
