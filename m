@@ -1,141 +1,154 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 02/16] c_can: add generic D-CAN RAM initialization support
-Date: Mon, 09 Sep 2013 10:34:27 +0200
-Message-ID: <522D8813.1030806@pengutronix.de>
-References: <1378711513-2548-1-git-send-email-b.spranger@linutronix.de> <1378711513-2548-3-git-send-email-b.spranger@linutronix.de>
+Subject: Re: [PATCH 03/16] c_can: simplify arbitration register handling
+Date: Mon, 09 Sep 2013 11:16:26 +0200
+Message-ID: <522D91EA.3020302__4250.84770326993$1378718222$gmane$org@pengutronix.de>
+References: <1378711513-2548-1-git-send-email-b.spranger@linutronix.de> <1378711513-2548-4-git-send-email-b.spranger@linutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="xgPwsapLXs9ogtMxPq1CNmlnjJISbiac4"
+ boundary="GwN7friMwC0SrvunuhbIfmN4lndcGKbSh"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59536 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54647 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750959Ab3IIIed (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Sep 2013 04:34:33 -0400
-In-Reply-To: <1378711513-2548-3-git-send-email-b.spranger@linutronix.de>
+	with ESMTP id S1751921Ab3IIJQw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Sep 2013 05:16:52 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1VIxaU-0007Iq-JD
+	for linux-can@vger.kernel.org; Mon, 09 Sep 2013 11:16:50 +0200
+Received: from [172.17.34.65] (hardanger.do.blackshift.org [172.17.34.65])
+	(using TLSv1 with cipher ECDHE-ECDSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	(Authenticated sender: frogger)
+	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id 5D1545E8DF
+	for <linux-can@vger.kernel.org>; Mon,  9 Sep 2013 11:16:50 +0200 (CEST)
+In-Reply-To: <1378711513-2548-4-git-send-email-b.spranger@linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Benedikt Spranger <b.spranger@linutronix.de>
-Cc: netdev@vger.kernel.org, Alexander Frank <Alexander.Frank@eberspaecher.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Holger Dengler <dengler@linutronix.de>, AnilKumar Ch <anilkumar@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: netdev@vger.kernel.org, Alexander Frank <Alexander.Frank@eberspaecher.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Holger Dengler <dengler@linutronix.de>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xgPwsapLXs9ogtMxPq1CNmlnjJISbiac4
+--GwN7friMwC0SrvunuhbIfmN4lndcGKbSh
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 09/09/2013 09:24 AM, Benedikt Spranger wrote:
-> D-CAN provides an automatic RAM initialization. The initialization can =
-be
-> executed while D-CAN is in the init state.
+On 09/09/2013 09:25 AM, Benedikt Spranger wrote:
+> The IF1/2 Arbitration register of the C_CAN/D_CAN ip core is internaly
+> a 32bit register. Do not use two different 16bit variables to handle
+> the IF1/2 Arbitration register.
 >=20
-> It should be checked if this is compatible with TI's d_can implementati=
-on
-> which does not have or does not use this bit which is here according to=
- the
-> d_can specification.
+> Signed-off-by: Benedikt Spranger <b.spranger@linutronix.de>
 
-Added AnilKumar Ch to the loop, who contributed the d_can support for
-TI. Bene please collect a Tested-by for this patch.
+Looks good, nitpit inline.
 
 Marc
-
-> Signed-off-by: Benedikt Spranger <b.spranger@linutronix.de>
 > ---
->  drivers/net/can/c_can/c_can.c | 38 +++++++++++++++++++++++++++++++++++=
-+--
->  drivers/net/can/c_can/c_can.h |  2 ++
->  2 files changed, 38 insertions(+), 2 deletions(-)
+>  drivers/net/can/c_can/c_can.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
 >=20
 > diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
 n.c
-> index a668cd4..081620b 100644
+> index 081620b..bdb7bcd 100644
 > --- a/drivers/net/can/c_can/c_can.c
 > +++ b/drivers/net/can/c_can/c_can.c
-> @@ -68,6 +68,8 @@
->  #define TEST_SILENT		BIT(3)
->  #define TEST_BASIC		BIT(2)
+> @@ -117,9 +117,9 @@
+>  				IF_COMM_DATAA | IF_COMM_DATAB)
 > =20
-> +#define FUNC_RAMINIT		BIT(3)
-> +
->  /* status register */
->  #define STATUS_PDA		BIT(10)
->  #define STATUS_BOFF		BIT(7)
-> @@ -573,6 +575,7 @@ static int c_can_set_bittiming(struct net_device *d=
-ev)
->  	u32 ten_bit_brp;
+>  /* IFx arbitration */
+> -#define IF_ARB_MSGVAL		BIT(15)
+> -#define IF_ARB_MSGXTD		BIT(14)
+> -#define IF_ARB_TRANSMIT		BIT(13)
+> +#define IF_ARB_MSGVAL		BIT(31)
+> +#define IF_ARB_MSGXTD		BIT(30)
+> +#define IF_ARB_TRANSMIT		BIT(29)
+> =20
+>  /* IFx message control */
+>  #define IF_MCONT_NEWDAT		BIT(15)
+> @@ -133,6 +133,7 @@
+>  #define IF_MCONT_TXRQST		BIT(8)
+>  #define IF_MCONT_EOB		BIT(7)
+>  #define IF_MCONT_DLC_MASK	0xf
+> +#define IF_MCONT_DLC_MAX	8
+
+It's not used, is it?
+
+> =20
+>  /*
+>   * IFx register masks:
+> @@ -336,7 +337,7 @@ static void c_can_write_msg_object(struct net_devic=
+e *dev,
+>  			int iface, struct can_frame *frame, int objno)
+>  {
+>  	int i;
+> -	u16 flags =3D 0;
+> +	u32 flags =3D IF_ARB_MSGVAL;
+>  	unsigned int id;
 >  	struct c_can_priv *priv =3D netdev_priv(dev);
->  	const struct can_bittiming *bt =3D &priv->can.bittiming;
-> +	int retry;
 > =20
->  	/* c_can provides a 6-bit brp and 4-bit brpe fields */
->  	ten_bit_brp =3D bt->brp - 1;
-> @@ -590,11 +593,42 @@ static int c_can_set_bittiming(struct net_device =
-*dev)
->  		"setting BTR=3D%04x BRPE=3D%04x\n", reg_btr, reg_brpe);
+> @@ -349,11 +350,11 @@ static void c_can_write_msg_object(struct net_dev=
+ice *dev,
+>  	} else
+>  		id =3D ((frame->can_id & CAN_SFF_MASK) << 18);
 > =20
->  	ctrl_save =3D priv->read_reg(priv, C_CAN_CTRL_REG);
-> -	priv->write_reg(priv, C_CAN_CTRL_REG,
-> -			ctrl_save | CONTROL_CCE | CONTROL_INIT);
-> +	ctrl_save &=3D ~CONTROL_INIT;
-> +
-> +	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_CCE | CONTROL_INIT);
-> +	retry =3D 1000;
-> +	while (!(priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_INIT)) {
-> +		if (!retry) {
-> +			netdev_info(dev, "CCTRL: set CONTROL_INIT failed\n");
-> +			return -EIO;
-> +		}
-> +		udelay(10);
-> +		retry--;
-> +	}
->  	priv->write_reg(priv, C_CAN_BTR_REG, reg_btr);
->  	priv->write_reg(priv, C_CAN_BRPEXT_REG, reg_brpe);
-> +
-> +	priv->write_reg(priv, C_CAN_FUNC_REG, FUNC_RAMINIT);
-> +	retry =3D 1000;
-> +	while (priv->read_reg(priv, C_CAN_FUNC_REG) & FUNC_RAMINIT) {
-> +		if (!retry) {
-> +			netdev_info(dev, "CFR: FUNC_RAMINIT failed\n");
-> +			return -EIO;
-> +		}
-> +		udelay(10);
-> +		retry--;
-> +	}
-> +
->  	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl_save);
-> +	retry =3D 1000;
-> +	while (priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_INIT) {
-> +		if (!retry) {
-> +			netdev_info(dev, "CCTRL: clear CONTROL_INIT failed\n");
-> +			return -EIO;
-> +		}
-> +		udelay(10);
-> +		retry--;
-> +	}
+> -	flags |=3D IF_ARB_MSGVAL;
+> +	id |=3D flags;
 > =20
->  	return 0;
->  }
-> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_ca=
-n.h
-> index d2e2d20..9f0eda8 100644
-> --- a/drivers/net/can/c_can/c_can.h
-> +++ b/drivers/net/can/c_can/c_can.h
-> @@ -61,6 +61,7 @@ enum reg {
->  	C_CAN_INTPND2_REG,
->  	C_CAN_MSGVAL1_REG,
->  	C_CAN_MSGVAL2_REG,
-> +	C_CAN_FUNC_REG,
->  };
+>  	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface),
+>  				IFX_WRITE_LOW_16BIT(id));
+> -	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface), flags |
+> +	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface),
+>  				IFX_WRITE_HIGH_16BIT(id));
 > =20
->  static const u16 reg_map_c_can[] =3D {
-> @@ -112,6 +113,7 @@ static const u16 reg_map_d_can[] =3D {
->  	[C_CAN_BRPEXT_REG]	=3D 0x0E,
->  	[C_CAN_INT_REG]		=3D 0x10,
->  	[C_CAN_TEST_REG]	=3D 0x14,
-> +	[C_CAN_FUNC_REG]	=3D 0x18,
->  	[C_CAN_TXRQST1_REG]	=3D 0x88,
->  	[C_CAN_TXRQST2_REG]	=3D 0x8A,
->  	[C_CAN_NEWDAT1_REG]	=3D 0x9C,
+>  	for (i =3D 0; i < frame->can_dlc; i +=3D 2) {
+> @@ -439,7 +440,7 @@ static void c_can_handle_lost_msg_obj(struct net_de=
+vice *dev,
+> =20
+>  static int c_can_read_msg_object(struct net_device *dev, int iface, in=
+t ctrl)
+>  {
+> -	u16 flags, data;
+> +	u16 data;
+>  	int i;
+>  	unsigned int val;
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> @@ -455,16 +456,15 @@ static int c_can_read_msg_object(struct net_devic=
+e *dev, int iface, int ctrl)
+> =20
+>  	frame->can_dlc =3D get_can_dlc(ctrl & 0x0F);
+> =20
+> -	flags =3D	priv->read_reg(priv, C_CAN_IFACE(ARB2_REG, iface));
+> -	val =3D priv->read_reg(priv, C_CAN_IFACE(ARB1_REG, iface)) |
+> -		(flags << 16);
+> +	val =3D (priv->read_reg(priv, C_CAN_IFACE(ARB2_REG, iface)) << 16);
+> +	val |=3D priv->read_reg(priv, C_CAN_IFACE(ARB1_REG, iface));
+> =20
+> -	if (flags & IF_ARB_MSGXTD)
+> +	if (val & IF_ARB_MSGXTD)
+>  		frame->can_id =3D (val & CAN_EFF_MASK) | CAN_EFF_FLAG;
+>  	else
+>  		frame->can_id =3D (val >> 18) & CAN_SFF_MASK;
+> =20
+> -	if (flags & IF_ARB_TRANSMIT)
+> +	if (val & IF_ARB_TRANSMIT)
+>  		frame->can_id |=3D CAN_RTR_FLAG;
+>  	else {
+>  		for (i =3D 0; i < frame->can_dlc; i +=3D 2) {
+> @@ -500,10 +500,11 @@ static void c_can_setup_receive_object(struct net=
+_device *dev, int iface,
+>  	priv->write_reg(priv, C_CAN_IFACE(MASK2_REG, iface),
+>  			IFX_WRITE_HIGH_16BIT(mask) | BIT(13));
+> =20
+> +	id |=3D IF_ARB_MSGVAL;
+>  	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface),
+>  			IFX_WRITE_LOW_16BIT(id));
+>  	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface),
+> -			(IF_ARB_MSGVAL | IFX_WRITE_HIGH_16BIT(id)));
+> +			(IFX_WRITE_HIGH_16BIT(id)));
+> =20
+>  	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), mcont);
+>  	c_can_object_put(dev, iface, objno, IF_COMM_ALL & ~IF_COMM_TXRQST);
 >=20
 
 
@@ -146,7 +159,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---xgPwsapLXs9ogtMxPq1CNmlnjJISbiac4
+--GwN7friMwC0SrvunuhbIfmN4lndcGKbSh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -155,9 +168,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.14 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlItiBMACgkQjTAFq1RaXHNt/ACdFKyd1YZVg6l9f51GTaWyxC0K
-WC4AoJgbHgVcpVjgTyAsig6ue/wrT4JO
-=a0ri
+iEYEARECAAYFAlItkeoACgkQjTAFq1RaXHN6IgCaAnWMkrSl00KUzgacs4oUSWEs
+ynIAn37MK5y3Oxxr+Rggdg43Oks8KJGG
+=ujb4
 -----END PGP SIGNATURE-----
 
---xgPwsapLXs9ogtMxPq1CNmlnjJISbiac4--
+--GwN7friMwC0SrvunuhbIfmN4lndcGKbSh--
