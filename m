@@ -1,22 +1,22 @@
 From: Jingoo Han <jg1.han@samsung.com>
-Subject: [PATCH 3/9] can: cc770: use dev_get_platdata()
-Date: Tue, 10 Sep 2013 17:41:07 +0900
-Message-ID: <004a01ceae01$7dfebd50$79fc37f0$%han@samsung.com>
+Subject: [PATCH 4/9] can: flexcan: use dev_get_platdata()
+Date: Tue, 10 Sep 2013 17:41:30 +0900
+Message-ID: <004b01ceae01$8bf76650$a3e632f0$%han@samsung.com>
 References: <004701ceae01$4303dcd0$c90b9670$%han@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout1.samsung.com ([203.254.224.24]:32505 "EHLO
-	mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753280Ab3IJIlI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 04:41:08 -0400
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+Received: from mailout4.samsung.com ([203.254.224.34]:33609 "EHLO
+	mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753280Ab3IJIlb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 04:41:31 -0400
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MSW009YMISCPI40@mailout1.samsung.com> for
- linux-can@vger.kernel.org; Tue, 10 Sep 2013 17:41:07 +0900 (KST)
+ with ESMTP id <0MSW009VOIT6NZR0@mailout4.samsung.com> for
+ linux-can@vger.kernel.org; Tue, 10 Sep 2013 17:41:30 +0900 (KST)
 In-reply-to: <004701ceae01$4303dcd0$c90b9670$%han@samsung.com>
 Content-language: ko
 Sender: linux-can-owner@vger.kernel.org
@@ -30,31 +30,22 @@ to make the code simpler and enhance the readability.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/net/can/cc770/cc770_platform.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
-index 034bdd8..ad76734 100644
---- a/drivers/net/can/cc770/cc770_platform.c
-+++ b/drivers/net/can/cc770/cc770_platform.c
-@@ -152,7 +152,7 @@ static int cc770_get_platform_data(struct platform_device *pdev,
- 				   struct cc770_priv *priv)
- {
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 71c677e..e8c46bd 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1074,7 +1074,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->dev = dev;
+ 	priv->clk_ipg = clk_ipg;
+ 	priv->clk_per = clk_per;
+-	priv->pdata = pdev->dev.platform_data;
++	priv->pdata = dev_get_platdata(&pdev->dev);
+ 	priv->devtype_data = devtype_data;
  
--	struct cc770_platform_data *pdata = pdev->dev.platform_data;
-+	struct cc770_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 
- 	priv->can.clock.freq = pdata->osc_freq;
- 	if (priv->cpu_interface & CPUIF_DSC)
-@@ -203,7 +203,7 @@ static int cc770_platform_probe(struct platform_device *pdev)
- 
- 	if (pdev->dev.of_node)
- 		err = cc770_get_of_node_data(pdev, priv);
--	else if (pdev->dev.platform_data)
-+	else if (dev_get_platdata(&pdev->dev))
- 		err = cc770_get_platform_data(pdev, priv);
- 	else
- 		err = -ENODEV;
+ 	priv->reg_xceiver = devm_regulator_get(&pdev->dev, "xceiver");
 -- 
 1.7.10.4
 
