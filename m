@@ -1,52 +1,57 @@
-From: Jingoo Han <jg1.han@samsung.com>
-Subject: [PATCH 9/9] can: ti_hecc: use dev_get_platdata()
-Date: Tue, 10 Sep 2013 17:43:12 +0900
-Message-ID: <005001ceae01$c8d69730$5a83c590$%han@samsung.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/9] can: use dev_get_platdata()
+Date: Tue, 10 Sep 2013 11:02:19 +0200
+Message-ID: <522EE01B.2030307@pengutronix.de>
 References: <004701ceae01$4303dcd0$c90b9670$%han@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="cLNA3Qxv0m8M0BE9KgjtvmpHTPUrdMamB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout4.samsung.com ([203.254.224.34]:34044 "EHLO
-	mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754768Ab3IJInW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 04:43:22 -0400
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MSW00HWGIW0SIM0@mailout4.samsung.com> for
- linux-can@vger.kernel.org; Tue, 10 Sep 2013 17:43:16 +0900 (KST)
-In-reply-to: <004701ceae01$4303dcd0$c90b9670$%han@samsung.com>
-Content-language: ko
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56945 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751351Ab3IJJC2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 05:02:28 -0400
+In-Reply-To: <004701ceae01$4303dcd0$c90b9670$%han@samsung.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: 'Marc Kleine-Budde' <mkl@pengutronix.de>
-Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-can@vger.kernel.org, 'Jingoo Han' <jg1.han@samsung.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Use the wrapper function for retrieving the platform data instead of
-accessing dev->platform_data directly. This is a cosmetic change
-to make the code simpler and enhance the readability.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cLNA3Qxv0m8M0BE9KgjtvmpHTPUrdMamB
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/net/can/ti_hecc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 09/10/2013 10:39 AM, Jingoo Han wrote:
+> Use the wrapper function for retrieving the platform data instead of
+> accessing dev->platform_data directly. This is a cosmetic change
+> to make the code simpler and enhance the readability.
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 3a349a2..beb5ef8 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -894,7 +894,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	void __iomem *addr;
- 	int err = -ENODEV;
- 
--	pdata = pdev->dev.platform_data;
-+	pdata = dev_get_platdata(&pdev->dev);
- 	if (!pdata) {
- 		dev_err(&pdev->dev, "No platform data\n");
- 		goto probe_exit;
--- 
-1.7.10.4
+Tnx, all applied to net-next/testing. The series will be included in the
+next pull request to David  Miller.
+
+regards,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--cLNA3Qxv0m8M0BE9KgjtvmpHTPUrdMamB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIu4BwACgkQjTAFq1RaXHMf/gCdGQOvFInWZCxyj1WPXWKKBF0y
+FoYAn0gO6NmZPuOVc/VQwyWtKWabHotQ
+=OGaN
+-----END PGP SIGNATURE-----
+
+--cLNA3Qxv0m8M0BE9KgjtvmpHTPUrdMamB--
