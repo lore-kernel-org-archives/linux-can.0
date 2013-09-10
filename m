@@ -1,57 +1,465 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: add explicit copyright to header can/netlink.h
-Date: Mon, 09 Sep 2013 22:29:32 +0200
-Message-ID: <522E2FAC.1000505@hartkopp.net>
-References: <1378477811-3606-1-git-send-email-mkl@pengutronix.de> <ecac65a6d53af596b53d115a9e6552a0@grandegger.com> <20130906193744.GV24802@pengutronix.de> <522AFEA8.3020303@hartkopp.net> <522AFF20.6000501@pengutronix.de> <3cfa97cc2473a26f5f961bfb4560acd0@grandegger.com> <522CCB73.3090504@hartkopp.net> <522CD430.1020009@grandegger.com> <522E0E25.10600@hartkopp.net> <522E2931.9050006@grandegger.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: yegorslists@googlemail.com
+Subject: [PATCH v2] slcand: add slcan_attach and UART settings
+Date: Tue, 10 Sep 2013 09:38:53 +0200
+Message-ID: <1378798733-14026-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:18923 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754841Ab3IIU3f (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Sep 2013 16:29:35 -0400
-In-Reply-To: <522E2931.9050006@grandegger.com>
+Received: from hhlx01.visionsystems.de ([62.145.30.242]:58768 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754328Ab3IJHjW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 03:39:22 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, =?ISO-8859-1?Q?Uwe_Kleine-K?= =?ISO-8859-1?Q?=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Yegor Yefremov <yegorslists@googlemail.com>, stefan.wahren@i2se.com, socketcan@hartkopp.net, mkl@pengutronix.de
 
-On 09.09.2013 22:01, Wolfgang Grandegger wrote:
-> On 09/09/2013 08:06 PM, Oliver Hartkopp wrote:
->> On 08.09.2013 21:46, Wolfgang Grandegger wrote:
->>> On 09/08/2013 09:09 PM, Oliver Hartkopp wrote:
->>
->>
->>>>
->>>>  * The provided data structures and external interfaces from this code
->>>>  * are not restricted to be used by modules with a GPL compatible license.
->>>
->>> The question is if this sentence is a legal addition to the GPL license.
->>> I personally doubt but I'm not a lawyer.
->>
->> This is for the guys that like to put EXPORT_SYMBOL_GPL() anywhere to NOT do
->> this here ;-)
-> 
-> But this is something different. EXPORT_SYMBOLS is for kernel modules
-> which are covered by the GPL license, even with the Volkswagen
-> license... or have I missed something. My favorite would be the GPL v3
-> license ;).
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-Well yes. The text was originally retrieved from the kernel module.
+slcand takes settings known from slcan_attach to configure CAN
+interface, like open/close channel, set bitrate etc. In addition -S
+option sets UART's baudrate. This way slcand combines three utilities
+in one: old slcand, slcan_attach and stty.
 
-I'm still in doubt if it's a good idea to have the GPL license for the header
-files. It makes more problems than clarifications.
+Example: slcand -o -s8 -S 3000000 ttyUSB0
 
-IMHO the headers are no "program" in the terms of the GPL.
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+CC: stefan.wahren@i2se.com
+CC: socketcan@hartkopp.net
+CC: mkl@pengutronix.de
+---
+Changes since v1:
+  Implement suggestions from Stefan Wahren
+  - fix style issues
+  - changed look_up_uart_speed parameter from int to long int
+  - look_up_uart_speed return value will be checked for unsupported baudrates
+ slcand.c |  299 +++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 257 insertions(+), 42 deletions(-)
 
-If you go into linux/include/uapi/linux and say 'head *.h' you will not see
-that much GPL licensing as you would imagine.
-
-E.g. look at the wimax.h header file from Intel. Nice text but no GPL.
-
-Looks like that everyone is doing his own stuff here ...
-
-BR,
-Oliver
+diff --git a/slcand.c b/slcand.c
+index 807ffaa..cc397df 100644
+--- a/slcand.c
++++ b/slcand.c
+@@ -40,16 +40,16 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <sys/types.h>
++#include <sys/stat.h>
+ #include <fcntl.h>
+ #include <syslog.h>
+ #include <errno.h>
+ #include <pwd.h>
+ #include <signal.h>
+-#include <sys/socket.h>
+ #include <sys/ioctl.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+ #include <net/if.h>
++#include <termios.h>
+ 
+ /* default slcan line discipline since Kernel 2.6.25 */
+ #define LDISC_N_SLCAN 17
+@@ -71,44 +71,119 @@
+ 
+ void print_usage(char *prg)
+ {
+-	fprintf(stderr, "\nUsage: %s tty [name]\n\n", prg);
+-	fprintf(stderr, "Example:\n");
+-	fprintf(stderr, "%s ttyUSB1\n", prg);
+-	fprintf(stderr, "%s ttyS0 can0\n", prg);
++	fprintf(stderr, "\nUsage: %s [options] <tty> [canif-name]\n\n", prg);
++	fprintf(stderr, "Options: -o         (send open command 'O\\r')\n");
++	fprintf(stderr, "         -c         (send close command 'C\\r')\n");
++	fprintf(stderr, "         -f         (read status flags with 'F\\r' to reset error states)\n");
++	fprintf(stderr, "         -s <speed> (set CAN speed 0..8)\n");
++	fprintf(stderr, "         -S <speed> (set UART speed)\n");
++	fprintf(stderr, "         -b <btr>   (set bit time register value)\n");
++	fprintf(stderr, "         -F         (stay in foreground; no daemonize)\n");
++	fprintf(stderr, "         -h         (show this help page)\n");
++	fprintf(stderr, "\nExamples:\n");
++	fprintf(stderr, "slcand -o -c -f -s6 ttyslcan0\n");
++	fprintf(stderr, "slcand -o -c -f -s6 ttyslcan0 can0\n");
+ 	fprintf(stderr, "\n");
+ 	exit(EXIT_FAILURE);
+ }
+ 
++static int slcand_running = 0;
++static int exit_code = 0;
++static char ttypath[TTYPATH_LENGTH];
++static char pidfile[PIDFILE_LENGTH];
++
+ static void child_handler (int signum)
+ {
+-	switch (signum)
+-	{
+-	case SIGALRM:
+-		exit (EXIT_FAILURE);
+-		break;
++	switch (signum) {
+ 	case SIGUSR1:
+-		exit (EXIT_SUCCESS);
++		/* exit parent */
++		exit(EXIT_SUCCESS);
+ 		break;
++	case SIGALRM:
+ 	case SIGCHLD:
+-		exit (EXIT_FAILURE);
++		syslog (LOG_NOTICE, "received signal %i on %s", signum, ttypath);
++		exit_code = EXIT_FAILURE;
++		slcand_running = 0;
++		break;
++	case SIGINT:
++	case SIGTERM:
++		syslog (LOG_NOTICE, "received signal %i on %s", signum, ttypath);
++		exit_code = EXIT_SUCCESS;
++		slcand_running = 0;
+ 		break;
+ 	}
+ }
+ 
+-static void daemonize (const char *lockfile, char *tty)
++static int look_up_uart_speed(long int s)
++{
++	switch (s) {
++	case 9600:
++		return B9600;
++	case 19200:
++		return B19200;
++	case 38400:
++		return B38400;
++	case 57600:
++		return B57600;
++	case 115200:
++		return B115200;
++	case 230400:
++		return B230400;
++	case 460800:
++		return B460800;
++	case 500000:
++		return B500000;
++	case 576000:
++		return B576000;
++	case 921600:
++		return B921600;
++	case 1000000:
++		return B1000000;
++	case 1152000:
++		return B1152000;
++	case 1500000:
++		return B1500000;
++	case 2000000:
++		return B2000000;
++#ifdef B2500000
++	case 2500000:
++		return B2500000;
++#endif
++#ifdef B3000000
++	case 3000000:
++		return B3000000;
++#endif
++#ifdef B3500000
++	case 3500000:
++		return B3500000;
++#endif
++#ifdef B3710000
++	case 3710000
++		return B3710000;
++#endif
++#ifdef B4000000
++	case 4000000:
++		return B4000000;
++#endif
++	default:
++		return -1;
++	}
++}
++
++static pid_t daemonize (const char *lockfile, char *tty, char *name)
+ {
+ 	pid_t pid, sid, parent;
+ 	int lfp = -1;
+ 	FILE * pFile;
++	FILE * dummyFile;
+ 	char const *pidprefix = "/var/run/";
+ 	char const *pidsuffix = ".pid";
+-	char pidfile[PIDFILE_LENGTH];
+ 
+ 	snprintf(pidfile, PIDFILE_LENGTH, "%s%s-%s%s", pidprefix, DAEMON_NAME, tty, pidsuffix);
+ 
+ 	/* already a daemon */
+ 	if (getppid () == 1)
+-		return;
++		return 0;
+ 
+ 	/* Create the lock file as the current user */
+ 	if (lockfile && lockfile[0])
+@@ -134,6 +209,8 @@ static void daemonize (const char *lockfile, char *tty)
+ 	}
+ 
+ 	/* Trap signals that we expect to receive */
++	signal (SIGINT, child_handler);
++	signal (SIGTERM, child_handler);
+ 	signal (SIGCHLD, child_handler);
+ 	signal (SIGUSR1, child_handler);
+ 	signal (SIGALRM, child_handler);
+@@ -151,10 +228,9 @@ static void daemonize (const char *lockfile, char *tty)
+ 	{
+ 
+ 		/* Wait for confirmation from the child via SIGTERM or SIGCHLD, or
+-		   for two seconds to elapse (SIGALRM).  pause() should not return. */
+-		alarm (2);
++		   for five seconds to elapse (SIGALRM).  pause() should not return. */
++		alarm (5);
+ 		pause ();
+-
+ 		exit (EXIT_FAILURE);
+ 	}
+ 
+@@ -167,7 +243,8 @@ static void daemonize (const char *lockfile, char *tty)
+ 	signal (SIGTTOU, SIG_IGN);
+ 	signal (SIGTTIN, SIG_IGN);
+ 	signal (SIGHUP, SIG_IGN);	/* Ignore hangup signal */
+-	signal (SIGTERM, SIG_DFL);	/* Die on SIGTERM */
++	signal (SIGINT, child_handler);
++	signal (SIGTERM, child_handler);
+ 
+ 	/* Change the file mode mask */
+ 	umask (0);
+@@ -182,7 +259,7 @@ static void daemonize (const char *lockfile, char *tty)
+ 	}
+ 
+ 	pFile = fopen (pidfile,"w");
+-	if (pFile == NULL)
++	if (NULL == pFile)
+ 	{
+ 		syslog (LOG_ERR, "unable to create pid file %s, code=%d (%s)",
+ 			pidfile, errno, strerror (errno));
+@@ -201,36 +278,91 @@ static void daemonize (const char *lockfile, char *tty)
+ 	}
+ 
+ 	/* Redirect standard files to /dev/null */
+-	freopen ("/dev/null", "r", stdin);
+-	freopen ("/dev/null", "w", stdout);
+-	freopen ("/dev/null", "w", stderr);
++	dummyFile = freopen ("/dev/null", "r", stdin);
++	dummyFile = freopen ("/dev/null", "w", stdout);
++	dummyFile = freopen ("/dev/null", "w", stderr);
+ 
+ 	/* Tell the parent process that we are A-okay */
+-	kill (parent, SIGUSR1);
++	//kill (parent, SIGUSR1);
++	return parent;
+ }
+ 
+ int main (int argc, char *argv[])
+ {
+ 	char *tty = NULL;
+-	char ttypath[TTYPATH_LENGTH];
+ 	char const *devprefix = "/dev/";
+ 	char *name = NULL;
+ 	char buf[IFNAMSIZ+1];
++	struct termios tios;
++	speed_t old_ispeed;
++	speed_t old_ospeed;
++
++	int opt;
++	int detach = 1;
++	int send_open = 0;
++	int send_close = 0;
++	int send_read_status_flags = 0;
++	char *speed = NULL;
++	char *uart_speed_str = NULL;
++	long int uart_speed = 0;
++	char *btr = NULL;
++	int run_as_daemon = 1;
++	pid_t parent_pid = 0;
++
++	ttypath[0] = '\0';
++
++	while ((opt = getopt(argc, argv, "ocfs:S:b:?hF")) != -1) {
++		switch (opt) {
++		case 'o':
++			send_open = 1;
++			break;
++		case 'c':
++			send_close = 1;
++			break;
++		case 'f':
++			send_read_status_flags = 1;
++			break;
++		case 's':
++			speed = optarg;
++			if (strlen(speed) > 1)
++				print_usage(argv[0]);
++			break;
++		case 'S':
++			uart_speed_str = optarg;
++			errno = 0;
++			uart_speed = strtol(uart_speed_str, NULL, 10);
++			if (errno)
++				print_usage(argv[0]);
++			if (look_up_uart_speed(uart_speed) == -1) {
++				fprintf(stderr, "Unsupported UART speed (%lu)\n", uart_speed);
++				exit(EXIT_FAILURE);
++			}
++			break;
++		case 'b':
++			btr = optarg;
++			if (strlen(btr) > 6)
++				print_usage(argv[0]);
++			break;
++		case 'F':
++			run_as_daemon = 0;
++			break;
++		case 'h':
++		case '?':
++		default:
++			print_usage(argv[0]);
++			break;
++		}
++	}
+ 
+ 	/* Initialize the logging interface */
+ 	openlog (DAEMON_NAME, LOG_PID, LOG_LOCAL5);
+ 
+-	/* See how we're called */
+-	if (argc == 2) {
+-		tty = argv[1];
+-	} else if (argc == 3) {
+-		tty = argv[1];
+-		name = argv[2];
+-		if (strlen(name) > IFNAMSIZ-1)
+-			print_usage(argv[0]);
+-	} else {
++	/* Parse serial device name and optional can interface name */
++	tty = argv[optind];
++	if(NULL == tty) {
+ 		print_usage(argv[0]);
+ 	}
++	name = argv[optind + 1];
+ 
+ 	/* Prepare the tty device name string */
+ 	char * pch;
+@@ -243,16 +375,69 @@ int main (int argc, char *argv[])
+ 	syslog (LOG_INFO, "starting on TTY device %s", ttypath);
+ 
+ 	/* Daemonize */
+-	daemonize ("/var/lock/" DAEMON_NAME, tty);
++	if(run_as_daemon) {
++		parent_pid = daemonize ("/var/lock/" DAEMON_NAME, tty, name);
++	}
++	else {
++		/* Trap signals that we expect to receive */
++		signal (SIGINT, child_handler);
++		signal (SIGTERM, child_handler);
++	}
++
++	/* */
++	slcand_running = 1;
+ 
+ 	/* Now we are a daemon -- do the work for which we were paid */
+ 	int fd;
+ 	int ldisc = LDISC_N_SLCAN;
+ 
+-	if ((fd = open (ttypath, O_WRONLY | O_NOCTTY )) < 0) {
++	if ((fd = open (ttypath, O_RDWR | O_NONBLOCK | O_NOCTTY )) < 0) {
+ 	    syslog (LOG_NOTICE, "failed to open TTY device %s\n", ttypath);
+ 		perror(ttypath);
+-		exit(1);
++		exit(EXIT_FAILURE);
++	}
++
++    /* Configure baud rate */
++    memset(&tios, 0, sizeof(struct termios));
++    if(tcgetattr(fd, &tios) < 0) {
++	syslog (LOG_NOTICE, "failed to get attributes for TTY device %s: %s\n", ttypath, strerror(errno));
++		exit (EXIT_FAILURE);
++    }
++
++    /* Get old values for later restore */
++    old_ispeed = cfgetispeed(&tios);
++    old_ospeed = cfgetospeed(&tios);
++
++    /* Baud Rate */
++    cfsetispeed(&tios, look_up_uart_speed(uart_speed));
++    cfsetospeed(&tios, look_up_uart_speed(uart_speed));
++
++    /* apply changes */
++    if(tcsetattr(fd, TCSADRAIN, &tios) < 0) {
++	syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": %s!\n", ttypath, strerror(errno));
++    }
++
++	if (speed) {
++		sprintf(buf, "C\rS%s\r", speed);
++		if(write(fd, buf, strlen(buf)) < 0) {
++			//syslog (LO, "failed to get attributes for TTY device %s: %s\n", ttypath, strerror(errno));
++
++		}
++	}
++
++	if (btr) {
++		sprintf(buf, "C\rs%s\r", btr);
++		write(fd, buf, strlen(buf));
++	}
++
++	if (send_read_status_flags) {
++		sprintf(buf, "F\r");
++		write(fd, buf, strlen(buf));
++	}
++
++	if (send_open) {
++		sprintf(buf, "O\r");
++		write(fd, buf, strlen(buf));
+ 	}
+ 
+ 	/* set slcan like discipline on given tty */
+@@ -289,14 +474,44 @@ int main (int argc, char *argv[])
+ 			close(s);
+ 		}	
+ 	}
++	if(parent_pid > 0) {
++		kill(parent_pid, SIGUSR1);
++	}
+ 
+ 	/* The Big Loop */
+-	while (1) {
+-		sleep(60); /* wait 60 seconds */
++	while (slcand_running) {
++		sleep(1); /* wait 1 second */
+ 	}
+ 
++	/* Reset line discipline */
++	syslog (LOG_INFO, "stopping on TTY device %s", ttypath);
++	ldisc = N_TTY;
++	if (ioctl (fd, TIOCSETD, &ldisc) < 0) {
++		perror("ioctl TIOCSETD");
++		exit(1);
++	}
++
++	if (send_close) {
++		sprintf(buf, "C\r");
++		write(fd, buf, strlen(buf));
++	}
++
++    /* Reset old rates */
++    cfsetispeed(&tios, old_ispeed);
++    cfsetospeed(&tios, old_ospeed);
++
++    /* apply changes */
++    if(tcsetattr(fd, TCSADRAIN, &tios) < 0) {
++	syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": %s!\n", ttypath, strerror(errno));
++    }
++
++    /* Remove pidfile */
++    if(run_as_daemon) {
++	unlink(pidfile);
++    }
++
+ 	/* Finish up */
+ 	syslog (LOG_NOTICE, "terminated on %s", ttypath);
+ 	closelog ();
+-	return 0;
++	return exit_code;
+ }
+-- 
+1.7.7
 
