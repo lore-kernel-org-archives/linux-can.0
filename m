@@ -1,91 +1,60 @@
-From: Jingoo Han <jg1.han@samsung.com>
-Subject: [PATCH 3/3] can: sja1000: remove unnecessary pci_set_drvdata()
-Date: Tue, 10 Sep 2013 20:12:51 +0900
-Message-ID: <00ab01ceae16$b05be8d0$1113ba70$%han@samsung.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/3] can: remove unnecessary pci_set_drvdata()
+Date: Tue, 10 Sep 2013 13:17:28 +0200
+Message-ID: <522EFFC8.4060603@pengutronix.de>
 References: <00a801ceae15$bb3daa50$31b8fef0$%han@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="owBIBdlKKcR7cSpuaxHtIi0ctmPr4HpjC"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout1.samsung.com ([203.254.224.24]:57372 "EHLO
-	mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751104Ab3IJLM7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 07:12:59 -0400
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MSW0081FPSJSNC0@mailout1.samsung.com> for
- linux-can@vger.kernel.org; Tue, 10 Sep 2013 20:12:51 +0900 (KST)
-In-reply-to: <00a801ceae15$bb3daa50$31b8fef0$%han@samsung.com>
-Content-language: ko
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47896 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751326Ab3IJLRl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Sep 2013 07:17:41 -0400
+In-Reply-To: <00a801ceae15$bb3daa50$31b8fef0$%han@samsung.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: 'Marc Kleine-Budde' <mkl@pengutronix.de>
-Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-can@vger.kernel.org, 'Oliver Hartkopp' <socketcan@hartkopp.net>, 'Jingoo Han' <jg1.han@samsung.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Cc: 'Wolfgang Grandegger' <wg@grandegger.com>, linux-can@vger.kernel.org
 
-The driver core clears the driver data to NULL after device_release
-or on probe failure. Thus, it is not needed to manually clear the
-device driver data to NULL.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--owBIBdlKKcR7cSpuaxHtIi0ctmPr4HpjC
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/net/can/sja1000/ems_pci.c    |    1 -
- drivers/net/can/sja1000/kvaser_pci.c |    1 -
- drivers/net/can/sja1000/peak_pci.c   |    2 --
- drivers/net/can/sja1000/plx_pci.c    |    1 -
- 4 files changed, 5 deletions(-)
+On 09/10/2013 01:05 PM, Jingoo Han wrote:
+> Since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
+> (device-core: Ensure drvdata =3D NULL when no driver is bound),
+> the driver core clears the driver data to NULL after device_release
+> or on probe failure. Thus, it is not needed to manually clear the
+> device driver data to NULL.
 
-diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index 3752342..8359213 100644
---- a/drivers/net/can/sja1000/ems_pci.c
-+++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -207,7 +207,6 @@ static void ems_pci_del_card(struct pci_dev *pdev)
- 	kfree(card);
- 
- 	pci_disable_device(pdev);
--	pci_set_drvdata(pdev, NULL);
- }
- 
- static void ems_pci_card_reset(struct ems_pci_card *card)
-diff --git a/drivers/net/can/sja1000/kvaser_pci.c b/drivers/net/can/sja1000/kvaser_pci.c
-index 217585b..087b13b 100644
---- a/drivers/net/can/sja1000/kvaser_pci.c
-+++ b/drivers/net/can/sja1000/kvaser_pci.c
-@@ -387,7 +387,6 @@ static void kvaser_pci_remove_one(struct pci_dev *pdev)
- 
- 	pci_release_regions(pdev);
- 	pci_disable_device(pdev);
--	pci_set_drvdata(pdev, NULL);
- }
- 
- static struct pci_driver kvaser_pci_driver = {
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 6b6f0ad..065ca49 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -744,8 +744,6 @@ static void peak_pci_remove(struct pci_dev *pdev)
- 	pci_iounmap(pdev, cfg_base);
- 	pci_release_regions(pdev);
- 	pci_disable_device(pdev);
--
--	pci_set_drvdata(pdev, NULL);
- }
- 
- static struct pci_driver peak_pci_driver = {
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
-index c52c1e9..f9b4f81 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -477,7 +477,6 @@ static void plx_pci_del_card(struct pci_dev *pdev)
- 	kfree(card);
- 
- 	pci_disable_device(pdev);
--	pci_set_drvdata(pdev, NULL);
- }
- 
- /*
--- 
-1.7.10.4
+Tnx, all applied to net-next/testing. The series will be included in the
+next pull request to David  Miller.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--owBIBdlKKcR7cSpuaxHtIi0ctmPr4HpjC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIu/80ACgkQjTAFq1RaXHO5egCdEJY1nMCy3yywdXpSKwxEHJ+i
+yRAAn1UlhVD0kx5oQHUjBrAefJgnv6cY
+=FEwQ
+-----END PGP SIGNATURE-----
+
+--owBIBdlKKcR7cSpuaxHtIi0ctmPr4HpjC--
