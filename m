@@ -1,45 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: CAN libpcap capture endianess
-Date: Wed, 11 Sep 2013 21:22:01 +0200
-Message-ID: <5230C2D9.6040502@hartkopp.net>
-References: <1378920814-sup-4559@pruts.nl> <5230B4C9.4070904@pengutronix.de> <1378923967-sup-6565@pruts.nl> <5230B897.7020807@pengutronix.de> <1378925552-sup-4997@pruts.nl>
+Date: Wed, 11 Sep 2013 21:37:06 +0200
+Message-ID: <5230C662.6010502@pengutronix.de>
+References: <1378920814-sup-4559@pruts.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="HMnGn57UdIG8oxNtGTXrEuHTfwaUQujbf"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:32625 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754833Ab3IKTWE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Sep 2013 15:22:04 -0400
-In-Reply-To: <1378925552-sup-4997@pruts.nl>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55664 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755053Ab3IKTkc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Sep 2013 15:40:32 -0400
+In-Reply-To: <1378920814-sup-4559@pruts.nl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ico Doornekamp <can@zevv.nl>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: Ico <can@zevv.nl>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-On 11.09.2013 20:53, Ico Doornekamp wrote:
-> * On 2013-09-11 20:38:15 +0200, Marc Kleine-Budde wrote:
->  
->>>> Does the command line tool candump show proper frames?
->>>
->>> I'll have to look into that tomorrow, at this time I only have access to
->>> the capture file I made earlier.
->>
->> What kind of CAN hardware are you using? Maybe it's not compatible with
->> the existing driver.
-> 
-> I'm using the CANUSB device from can232.com:
-> 
-> http://www.can232.com/?page_id=16
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HMnGn57UdIG8oxNtGTXrEuHTfwaUQujbf
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I do have this hardware at work.
+On 09/11/2013 07:42 PM, Ico wrote:
+> 1. capture-ico.pcap: CAN-232 interface, slcan, x86_64
+> 2. capture-yegor.pcap: VScom USB-CAN interface, slcal, x86
 
-And the slcan driver was originally implemented for this hardware.
+BTW:
 
-I have to look, if i can find a Debian amd64 system for testing.
-Usually our Laptops are i386 (32 bit) installations.
+> file *.pcap
+> capture-ico.pcap:   pcap-ng capture file - version 1.0
+> capture-yegor.pcap: tcpdump capture file (little-endian) - version 2.4 =
+(SocketCAN, capture length 65535)
 
-Best regards,
-Oliver
+You are using different tools.
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--HMnGn57UdIG8oxNtGTXrEuHTfwaUQujbf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlIwxmIACgkQjTAFq1RaXHNN0wCfZUYraFGQjAdfvDjZC9Xlj93q
+g30AnjqDXkPLzJIT/sx/COj2UcneoruY
+=NlBR
+-----END PGP SIGNATURE-----
+
+--HMnGn57UdIG8oxNtGTXrEuHTfwaUQujbf--
