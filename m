@@ -1,65 +1,48 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Ico Doornekamp <can@zevv.nl>
 Subject: Re: CAN libpcap capture endianess
-Date: Thu, 12 Sep 2013 11:13:40 +0200
-Message-ID: <523185C4.1020208@pengutronix.de>
-References: <1378920814-sup-4559@pruts.nl> <5230C662.6010502@pengutronix.de> <1378929884-sup-7223@pruts.nl> <5230CE58.3020604@pengutronix.de> <1378968239-sup-1257@pruts.nl> <5231748A.2080009@pengutronix.de> <1378975140-sup-5236@pruts.nl> <523180D2.700@pengutronix.de> <1378976796-sup-1310@pruts.nl>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="gMIhqDqH6dLscmMaUIsTnOon5IQ2RVbXW"
+Date: Thu, 12 Sep 2013 11:31:16 +0200
+Message-ID: <1378978095-sup-4073@pruts.nl>
+References: <1378920814-sup-4559@pruts.nl> <5230C662.6010502@pengutronix.de> <1378929884-sup-7223@pruts.nl> <5230CE58.3020604@pengutronix.de> <1378968239-sup-1257@pruts.nl> <5231748A.2080009@pengutronix.de> <1378975140-sup-5236@pruts.nl> <523180D2.700@pengutronix.de> <1378976796-sup-1310@pruts.nl> <523185C4.1020208@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59536 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753311Ab3ILJNs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Sep 2013 05:13:48 -0400
-In-Reply-To: <1378976796-sup-1310@pruts.nl>
+Received: from pruts.nl ([82.94.235.106]:38535 "EHLO fe2.pruts.nl"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751369Ab3ILJbV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 12 Sep 2013 05:31:21 -0400
+In-reply-to: <523185C4.1020208@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ico Doornekamp <can@zevv.nl>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can <linux-can@vger.kernel.org>, yegorslists <yegorslists@googlemail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gMIhqDqH6dLscmMaUIsTnOon5IQ2RVbXW
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+* On 2013-09-12 11:13:40 +0200, Marc Kleine-Budde wrote:
+ 
+> On 09/12/2013 11:09 AM, Ico Doornekamp wrote:
+> 
+> >> They are assuming the wrong endianes for your capture file. Yegor's
+> >> capture file, which comes in another format, is interpreted correctly.
+> > 
+> > Sorry, I was not completely clear on this: I did the capturing on the
+> > slcan0 interface from wireshark, so I did not make a capture file first.
+> 
+> In your original mail you've captured with wireshark, too, but written
+> into a file. Now you are capturing with wireshark directly. 
 
-On 09/12/2013 11:09 AM, Ico Doornekamp wrote:
+Correct. Yesterday I did not have access to the test setup, but today
+I'm back at the lab.
 
->> They are assuming the wrong endianes for your capture file. Yegor's
->> capture file, which comes in another format, is interpreted correctly.=
+> I assume the same capturing engine (that one in wireshark) is involved
+> in both workflows and the same error is triggered in the
+> interpretation/dissection process.
 
->=20
-> Sorry, I was not completely clear on this: I did the capturing on the
-> slcan0 interface from wireshark, so I did not make a capture file first=
-=2E
+That's what I'm thinking as well. But the confusion arose because of the
+dump I received from Yegor, which was decoded correctly by wireshark.
 
-In your original mail you've captured with wireshark, too, but written
-into a file. Now you are capturing with wireshark directly. I assume the
-same capturing engine (that one in wireshark) is involved in both
-workflows and the same error is triggered in the
-interpretation/dissection process.
+I've long learned that is usually safest to assume that strange errors
+originate from myself instead of questioning other peoples software, but
+in this case it seems that wireshark is at fault.
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---gMIhqDqH6dLscmMaUIsTnOon5IQ2RVbXW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlIxhcQACgkQjTAFq1RaXHOArwCggG3r7PtJY5ivCd/0ISx4oVeI
-hs0An3OuoRAPGH0p8Exi1QmwxJwycM1l
-=YZLX
------END PGP SIGNATURE-----
-
---gMIhqDqH6dLscmMaUIsTnOon5IQ2RVbXW--
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
