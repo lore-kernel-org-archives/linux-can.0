@@ -1,101 +1,70 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net 1/3] slip/slcan: added locking in wakeup function
-Date: Fri, 13 Sep 2013 20:45:29 +0200
-Message-ID: <52335D49.1000105@hartkopp.net>
-References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com> <1379093833-4949-2-git-send-email-nautsch2@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH net 0/3] SLCAN/SLIP fixes and performance
+Date: Sat, 14 Sep 2013 12:45:56 +0200
+Message-ID: <52343E64.1050207@pengutronix.de>
+References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="7dqrSudOtSmMtOmTLcuDXcATt4OxSn1NS"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:52922 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751316Ab3IMSpb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Sep 2013 14:45:31 -0400
-In-Reply-To: <1379093833-4949-2-git-send-email-nautsch2@gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60636 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751478Ab3INKqK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Sep 2013 06:46:10 -0400
+In-Reply-To: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Andre Naujoks <nautsch2@gmail.com>
-Cc: davem@davemloft.net, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 13.09.2013 19:37, Andre Naujoks wrote:
-> The locking is needed, since the the internal buffer for the CAN frames is
-> changed during the wakeup call. This could cause buffer inconsistencies
-> under high loads, especially for the outgoing short CAN packet skbuffs.
-> 
-> The needed locks led to deadlocks before commit
-> "5ede52538ee2b2202d9dff5b06c33bfde421e6e4 tty: Remove extra wakeup from pty
-> write() path", which removed the direct callback to the wakeup function from the
-> tty layer.
-> 
-> As slcan.c is based on slip.c the issue in the original code is fixed, too.
-> 
-> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7dqrSudOtSmMtOmTLcuDXcATt4OxSn1NS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-At least for slcan.c:
+On 09/13/2013 07:37 PM, Andre Naujoks wrote:
+> Hi Dave,
+>=20
+> these are some loosely related patches, that fix an ancient locking pro=
+blem in
+> the slip and slcan drivers, add general ASCII-HEX to bin functions for
+> uppercase ASCII, fix the handling of CAN RTR frames in the slcan driver=
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Tnx for figuring that out with your heavy load testing.
+Can you get an Acked-by for the ASCII-HEX functions from the appropriate
+maintainer?
 
-Best regards,
-Oliver
+> and increase the performance for the slcan driver.
+>=20
+> As these patches mainly contain fixes for the slip/slcan drivers that r=
+equire
+> a tty layer fix included in 3.11, I would suggest to get the patches in=
+ via
+> the net tree for the 3.12 cycle. They should apply properly on the late=
+st net
+> and mainline tree.
 
-> ---
->  drivers/net/can/slcan.c | 3 +++
->  drivers/net/slip/slip.c | 3 +++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-> index 874188b..d571e2e 100644
-> --- a/drivers/net/can/slcan.c
-> +++ b/drivers/net/can/slcan.c
-> @@ -286,11 +286,13 @@ static void slcan_write_wakeup(struct tty_struct *tty)
->  	if (!sl || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev))
->  		return;
->  
-> +	spin_lock(&sl->lock);
->  	if (sl->xleft <= 0)  {
->  		/* Now serial buffer is almost free & we can start
->  		 * transmission of another packet */
->  		sl->dev->stats.tx_packets++;
->  		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
-> +		spin_unlock(&sl->lock);
->  		netif_wake_queue(sl->dev);
->  		return;
->  	}
-> @@ -298,6 +300,7 @@ static void slcan_write_wakeup(struct tty_struct *tty)
->  	actual = tty->ops->write(tty, sl->xhead, sl->xleft);
->  	sl->xleft -= actual;
->  	sl->xhead += actual;
-> +	spin_unlock(&sl->lock);
->  }
->  
->  /* Send a can_frame to a TTY queue. */
-> diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
-> index a34d6bf..cc70ecf 100644
-> --- a/drivers/net/slip/slip.c
-> +++ b/drivers/net/slip/slip.c
-> @@ -429,11 +429,13 @@ static void slip_write_wakeup(struct tty_struct *tty)
->  	if (!sl || sl->magic != SLIP_MAGIC || !netif_running(sl->dev))
->  		return;
->  
-> +	spin_lock(&sl->lock);
->  	if (sl->xleft <= 0)  {
->  		/* Now serial buffer is almost free & we can start
->  		 * transmission of another packet */
->  		sl->dev->stats.tx_packets++;
->  		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
-> +		spin_unlock(&sl->lock);
->  		sl_unlock(sl);
->  		return;
->  	}
-> @@ -441,6 +443,7 @@ static void slip_write_wakeup(struct tty_struct *tty)
->  	actual = tty->ops->write(tty, sl->xhead, sl->xleft);
->  	sl->xleft -= actual;
->  	sl->xhead += actual;
-> +	spin_unlock(&sl->lock);
->  }
->  
->  static void sl_tx_timeout(struct net_device *dev)
-> 
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--7dqrSudOtSmMtOmTLcuDXcATt4OxSn1NS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlI0PmgACgkQjTAFq1RaXHOwTwCaA0JPqw/msDkE8L/8JjVlhIX6
+ReQAn0FEnSiAje51pFF4OHBJa8FPjaNU
+=aZNV
+-----END PGP SIGNATURE-----
+
+--7dqrSudOtSmMtOmTLcuDXcATt4OxSn1NS--
