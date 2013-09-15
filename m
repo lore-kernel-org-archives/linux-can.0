@@ -1,57 +1,88 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH net 2/3] lib: introduce upper case hex ascii helpers
-Date: Sat, 14 Sep 2013 21:35:46 -0700
-Message-ID: <20130914213546.ae435cdd.akpm@linux-foundation.org>
-References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
-	<1379093833-4949-3-git-send-email-nautsch2@gmail.com>
-	<CACnwZYdBocYEjASpKCNZ6cfLNpzxeLxaVjLCHwxwsYO+P14tAQ@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v3] slcand: add slcan_attach and UART settings
+Date: Sun, 15 Sep 2013 22:11:41 +0200
+Message-ID: <5236147D.8020200@hartkopp.net>
+References: <1379067102-27741-1-git-send-email-yegorslists@googlemail.com> <5232F733.2040707@i2se.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12]:46662 "EHLO
-	mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751590Ab3IOEff (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 15 Sep 2013 00:35:35 -0400
-In-Reply-To: <CACnwZYdBocYEjASpKCNZ6cfLNpzxeLxaVjLCHwxwsYO+P14tAQ@mail.gmail.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:43831 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752442Ab3IOULq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 15 Sep 2013 16:11:46 -0400
+In-Reply-To: <5232F733.2040707@i2se.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thiago Farina <tfransosi@gmail.com>
-Cc: Andre Naujoks <nautsch2@gmail.com>, "David S. Miller" <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Rusty Russell <rusty@rustcorp.com.au>, Arnd Bergmann <arnd@arndb.de>, "Michael S. Tsirkin" <mst@redhat.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, Jason Baron <jbaron@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux list <linux-kernel@vger.kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Stefan Wahren <stefan.wahren@i2se.com>, yegorslists@googlemail.com
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de
 
-On Sun, 15 Sep 2013 01:27:03 -0300 Thiago Farina <tfransosi@gmail.com> wrote:
+On 13.09.2013 13:29, Stefan Wahren wrote:
+> Hello Yegor,
+> 
+> Am 13.09.2013 12:11, schrieb yegorslists@googlemail.com:
+>> From: Yegor Yefremov <yegorslists@googlemail.com>
+>>
+>> slcand takes settings known from slcan_attach to configure CAN
+>> interface, like open/close channel, set bitrate etc (Oliver Hartkopp).
+>>
+>> In addition -S option sets UART's baudrate (Yegor Yefremov).
+>>
+>> This way slcand combines three autilities in one: old slcand,
+>> slcan_attach and stty.
+>>
+>> Example: slcand -o -s8 -S 3000000 ttyUSB0
+>>
+>> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+>> CC: stefan.wahren@i2se.com
+>> CC: socketcan@hartkopp.net
+>> CC: mkl@pengutronix.de
+>> ---
+>> Changes since v2:
+>>    More style fixes as suggested by Stefan Wahren
+>> Changes since v1:
+>>    Implement suggestions from Stefan Wahren
+>>    - fix style issues
+>>    - changed look_up_uart_speed parameter from int to long int
+>>    - look_up_uart_speed return value will be checked for unsupported baudrates
+>>   slcand.c |  297
+>> +++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+>>   1 files changed, 255 insertions(+), 42 deletions(-)
+>>
 
-> On Fri, Sep 13, 2013 at 2:37 PM, Andre Naujoks <nautsch2@gmail.com> wrote:
-> > To be able to use the hex ascii functions in case sensitive environments
-> > the array hex_asc_upper[] and the needed functions for hex_byte_pack_upper()
-> > are introduced.
-> >
-> > Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
-> > ---
-> >  include/linux/kernel.h | 11 +++++++++++
-> >  lib/hexdump.c          |  2 ++
-> >  2 files changed, 13 insertions(+)
-> >
-> > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> > index 482ad2d..672ddc4 100644
-> > --- a/include/linux/kernel.h
-> > +++ b/include/linux/kernel.h
-> > @@ -439,6 +439,17 @@ static inline char *hex_byte_pack(char *buf, u8 byte)
-> >         return buf;
-> >  }
-> >
-> > +extern const char hex_asc_upper[];
-> > +#define hex_asc_upper_lo(x)    hex_asc_upper[((x) & 0x0f)]
-> > +#define hex_asc_upper_hi(x)    hex_asc_upper[((x) & 0xf0) >> 4]
-> Does using a macro instead of a real function (static inline)
-> generates a better code?
 
-Yes, a static inline would be nicer, but these are derived from
-hex_asc_lo/hex_asc_hi.  If we change one we should change the other
-and that becomes a separate cleanup.  So I think this patch is
-OK as-is.
+> okay, looks good to me.
+> 
+> Best regards
+> 
+> Stefan
+> 
 
-Also, it would make sense to get all the *hex* stuff out of kernel.h
-and into a new header file (hexchar.h?).  They're a clean
-self-contained thing and kernel.h is rather a dumping ground.
+Hi all,
+
+i applied the v3 patch to the can-utils git repo.
+
+Thanks!
+
+I tried linux/scripts/checkpatch.pl which provided tons of issues :-(
+
+Therefore i fixed up the entire coding style and removed an empty statement
+in the 'if (speed)' condition to make sure, that the write() statement is not
+unintentionally optimized away by the compiler %-)
+
+See changes here:
+
+https://gitorious.org/linux-can/can-utils/commit/35d2bc1381f04e0fcc5baadf9d1ddad8db0187d3 
+
+There's still one warning left:
+
+slcand.c: In function 'daemonize':
+slcand.c:180:8: warning: variable 'dummyFile' set but not used [-Wunused-but-set-variable]
+  FILE *dummyFile;
+        ^
+
+Any suggestion?
+
+Best regards,
+Oliver
 
