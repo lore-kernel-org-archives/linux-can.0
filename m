@@ -1,47 +1,42 @@
-From: Andre Naujoks <nautsch2@gmail.com>
-Subject: Re: [PATCH net 0/3] SLCAN/SLIP fixes and performance
-Date: Sat, 14 Sep 2013 13:22:14 +0200
-Message-ID: <523446E6.5060507@gmail.com>
-References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com> <52343E64.1050207@pengutronix.de>
+From: Thiago Farina <tfransosi@gmail.com>
+Subject: Re: [PATCH net 2/3] lib: introduce upper case hex ascii helpers
+Date: Sun, 15 Sep 2013 01:27:03 -0300
+Message-ID: <CACnwZYdBocYEjASpKCNZ6cfLNpzxeLxaVjLCHwxwsYO+P14tAQ@mail.gmail.com>
+References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
+	<1379093833-4949-3-git-send-email-nautsch2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f52.google.com ([209.85.214.52]:39080 "EHLO
-	mail-bk0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752516Ab3INLWS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Sep 2013 07:22:18 -0400
-In-Reply-To: <52343E64.1050207@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1379093833-4949-3-git-send-email-nautsch2@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andre Naujoks <nautsch2@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Steven Rostedt <rostedt@goodmis.org>, Rusty Russell <rusty@rustcorp.com.au>, Arnd Bergmann <arnd@arndb.de>, "Michael S. Tsirkin" <mst@redhat.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, Jason Baron <jbaron@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux list <linux-kernel@vger.kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On 14.09.2013 12:45, Marc Kleine-Budde wrote:
-> On 09/13/2013 07:37 PM, Andre Naujoks wrote:
->> Hi Dave,
->>
->> these are some loosely related patches, that fix an ancient locking problem in
->> the slip and slcan drivers, add general ASCII-HEX to bin functions for
->> uppercase ASCII, fix the handling of CAN RTR frames in the slcan driver
+On Fri, Sep 13, 2013 at 2:37 PM, Andre Naujoks <nautsch2@gmail.com> wrote:
+> To be able to use the hex ascii functions in case sensitive environments
+> the array hex_asc_upper[] and the needed functions for hex_byte_pack_upper()
+> are introduced.
 >
-> Can you get an Acked-by for the ASCII-HEX functions from the appropriate
-> maintainer?
-
-The patch went out to the maintainers I got from the get_maintainer.pl 
-script. Is there anything else I can or should do to get an Ack from them?
-
-Regards
-   Andre
-
+> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+> ---
+>  include/linux/kernel.h | 11 +++++++++++
+>  lib/hexdump.c          |  2 ++
+>  2 files changed, 13 insertions(+)
 >
->> and increase the performance for the slcan driver.
->>
->> As these patches mainly contain fixes for the slip/slcan drivers that require
->> a tty layer fix included in 3.11, I would suggest to get the patches in via
->> the net tree for the 3.12 cycle. They should apply properly on the latest net
->> and mainline tree.
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 482ad2d..672ddc4 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -439,6 +439,17 @@ static inline char *hex_byte_pack(char *buf, u8 byte)
+>         return buf;
+>  }
 >
-> Marc
->
+> +extern const char hex_asc_upper[];
+> +#define hex_asc_upper_lo(x)    hex_asc_upper[((x) & 0x0f)]
+> +#define hex_asc_upper_hi(x)    hex_asc_upper[((x) & 0xf0) >> 4]
+Does using a macro instead of a real function (static inline)
+generates a better code?
 
+--
+Thiago Farina
