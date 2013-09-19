@@ -1,70 +1,66 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net 2/3] lib: introduce upper case hex ascii helpers
-Date: Thu, 19 Sep 2013 11:57:22 +0200
-Message-ID: <523ACA82.6070902@hartkopp.net>
-References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com> <1379093833-4949-3-git-send-email-nautsch2@gmail.com> <CACnwZYdBocYEjASpKCNZ6cfLNpzxeLxaVjLCHwxwsYO+P14tAQ@mail.gmail.com> <20130914213546.ae435cdd.akpm@linux-foundation.org> <523AC615.9020204@pengutronix.de>
+From: Andre Naujoks <nautsch2@gmail.com>
+Subject: Re: [PATCH net 1/3] slip/slcan: added locking in wakeup function
+Date: Thu, 19 Sep 2013 12:29:48 +0200
+Message-ID: <523AD21C.8030102@gmail.com>
+References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com> <1379093833-4949-2-git-send-email-nautsch2@gmail.com> <523AC589.5040006@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:18256 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753270Ab3ISJ5l (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Sep 2013 05:57:41 -0400
-In-Reply-To: <523AC615.9020204@pengutronix.de>
+Received: from mail-ee0-f50.google.com ([74.125.83.50]:63141 "EHLO
+	mail-ee0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750878Ab3ISK3w (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Sep 2013 06:29:52 -0400
+In-Reply-To: <523AC589.5040006@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Thiago Farina <tfransosi@gmail.com>, Andre Naujoks <nautsch2@gmail.com>, "David S. Miller" <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Rusty Russell <rusty@rustcorp.com.au>, Arnd Bergmann <arnd@arndb.de>, "Michael S. Tsirkin" <mst@redhat.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, Jason Baron <jbaron@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux list <linux-kernel@vger.kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: davem@davemloft.net, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 19.09.2013 11:38, Marc Kleine-Budde wrote:
-> On 09/15/2013 06:35 AM, Andrew Morton wrote:
->> On Sun, 15 Sep 2013 01:27:03 -0300 Thiago Farina <tfransosi@gmail.com> wrote:
->>
->>> On Fri, Sep 13, 2013 at 2:37 PM, Andre Naujoks <nautsch2@gmail.com> wrote:
->>>> To be able to use the hex ascii functions in case sensitive environments
->>>> the array hex_asc_upper[] and the needed functions for hex_byte_pack_upper()
->>>> are introduced.
->>>>
->>>> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
->>>> ---
->>>>  include/linux/kernel.h | 11 +++++++++++
->>>>  lib/hexdump.c          |  2 ++
->>>>  2 files changed, 13 insertions(+)
->>>>
->>>> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
->>>> index 482ad2d..672ddc4 100644
->>>> --- a/include/linux/kernel.h
->>>> +++ b/include/linux/kernel.h
->>>> @@ -439,6 +439,17 @@ static inline char *hex_byte_pack(char *buf, u8 byte)
->>>>         return buf;
->>>>  }
->>>>
->>>> +extern const char hex_asc_upper[];
->>>> +#define hex_asc_upper_lo(x)    hex_asc_upper[((x) & 0x0f)]
->>>> +#define hex_asc_upper_hi(x)    hex_asc_upper[((x) & 0xf0) >> 4]
->>> Does using a macro instead of a real function (static inline)
->>> generates a better code?
->>
->> Yes, a static inline would be nicer, but these are derived from
->> hex_asc_lo/hex_asc_hi.  If we change one we should change the other
->> and that becomes a separate cleanup.  So I think this patch is
->> OK as-is.
+On 19.09.2013 11:36, schrieb Marc Kleine-Budde:
+> On 09/13/2013 07:37 PM, Andre Naujoks wrote:
+>> The locking is needed, since the the internal buffer for the CAN
+>> frames is changed during the wakeup call. This could cause buffer
+>> inconsistencies under high loads, especially for the outgoing
+>> short CAN packet skbuffs.
+>> 
+>> The needed locks led to deadlocks before commit 
+>> "5ede52538ee2b2202d9dff5b06c33bfde421e6e4 tty: Remove extra
+>> wakeup from pty write() path", which removed the direct callback
+>> to the wakeup function from the tty layer.
 > 
-> Is this an Acked-by?
+> What does that mean for older kernels? (<
+> 5ede52538ee2b2202d9dff5b06c33bfde421e6e4)
+
+It seems the slcan (and slip) driver is broken for older kernels. See
+this thread for a discussion about the patch in pty.c.
+
+http://marc.info/?l=linux-kernel&m=137269017002789&w=2
+
+The patch from Peter Hurley was actually already in the queue, when I
+ran into the problem, and is now in kernel 3.12.
+
+Without the pty patch and slow CAN traffic, the driver works, because
+the wakeup is called directly from the pty driver. That is also the
+reason why there was no locking. It would just deadlock.
+
+When the pty driver defers the wakeup, we ran into synchronisation
+problems (which should be fixed by the locking) and eventually into a
+kernel panic because of a recursive loop (which should be fixed by the
+pty.c patch).
+
+Maybe it is possible to get both patches back into the stable branches?
+
+Regards
+  Andre
+
 > 
->> Also, it would make sense to get all the *hex* stuff out of kernel.h
->> and into a new header file (hexchar.h?).  They're a clean
->> self-contained thing and kernel.h is rather a dumping ground.
+>> As slcan.c is based on slip.c the issue in the original code is
+>> fixed, too.
+>> 
+>> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+> Acked-by: Marc Kleine-Budde  <mkl@pengutronix.de>
 > 
-> Who is taking this series?
-
-Andre suggested that Dave Miller could take these three patches for 3.12 as
-they are mainly network fixes:
-
-http://marc.info/?l=linux-can&m=137909384116115&w=2
-
-Regards,
-Oliver
-
+> Marc
+> 
 
