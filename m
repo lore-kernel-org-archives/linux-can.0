@@ -1,66 +1,33 @@
-From: Peter Hurley <peter@hurleysoftware.com>
-Subject: Re: [PATCH net 1/3] slip/slcan: added locking in wakeup function
-Date: Thu, 19 Sep 2013 06:43:16 -0400
-Message-ID: <523AD544.7030100@hurleysoftware.com>
-References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com> <1379093833-4949-2-git-send-email-nautsch2@gmail.com> <523AC589.5040006@pengutronix.de> <523AD21C.8030102@gmail.com> <523AD356.70607@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH net 0/3] SLCAN/SLIP fixes and performance
+Date: Fri, 20 Sep 2013 15:39:17 -0400 (EDT)
+Message-ID: <20130920.153917.223605052660606273.davem@davemloft.net>
+References: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <523AD356.70607@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Andre Naujoks <nautsch2@gmail.com>, davem@davemloft.net, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:40014 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751651Ab3ITTjV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Sep 2013 15:39:21 -0400
+In-Reply-To: <1379093833-4949-1-git-send-email-nautsch2@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: nautsch2@gmail.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-[ +cc Greg Kroah-Hartman]
+From: Andre Naujoks <nautsch2@gmail.com>
+Date: Fri, 13 Sep 2013 19:37:10 +0200
 
-On 09/19/2013 06:35 AM, Marc Kleine-Budde wrote:
-> On 09/19/2013 12:29 PM, Andre Naujoks wrote:
->> On 19.09.2013 11:36, schrieb Marc Kleine-Budde:
->>> On 09/13/2013 07:37 PM, Andre Naujoks wrote:
->>>> The locking is needed, since the the internal buffer for the CAN
->>>> frames is changed during the wakeup call. This could cause buffer
->>>> inconsistencies under high loads, especially for the outgoing
->>>> short CAN packet skbuffs.
->>>>
->>>> The needed locks led to deadlocks before commit
->>>> "5ede52538ee2b2202d9dff5b06c33bfde421e6e4 tty: Remove extra
->>>> wakeup from pty write() path", which removed the direct callback
->>>> to the wakeup function from the tty layer.
->>>
->>> What does that mean for older kernels? (<
->>> 5ede52538ee2b2202d9dff5b06c33bfde421e6e4)
->>
->> It seems the slcan (and slip) driver is broken for older kernels. See
->> this thread for a discussion about the patch in pty.c.
->>
->> http://marc.info/?l=linux-kernel&m=137269017002789&w=2
->
-> Thanks for the info.
->
->> The patch from Peter Hurley was actually already in the queue, when I
->> ran into the problem, and is now in kernel 3.12.
->>
->> Without the pty patch and slow CAN traffic, the driver works, because
->> the wakeup is called directly from the pty driver. That is also the
->> reason why there was no locking. It would just deadlock.
->>
->> When the pty driver defers the wakeup, we ran into synchronisation
->> problems (which should be fixed by the locking) and eventually into a
->> kernel panic because of a recursive loop (which should be fixed by the
->> pty.c patch).
->>
->> Maybe it is possible to get both patches back into the stable branches?
->
-> Sounds reasonable. You might get in touch with Peter Hurley, if his
-> patch is scheduled for stable. Documentation/stable_kernel_rules.txt
-> suggests a procedure if your patch depends on others to be cherry picked.
+> these are some loosely related patches, that fix an ancient locking problem in
+> the slip and slcan drivers, add general ASCII-HEX to bin functions for
+> uppercase ASCII, fix the handling of CAN RTR frames in the slcan driver
+> and increase the performance for the slcan driver.
+> 
+> As these patches mainly contain fixes for the slip/slcan drivers that require
+> a tty layer fix included in 3.11, I would suggest to get the patches in via
+> the net tree for the 3.12 cycle. They should apply properly on the latest net
+> and mainline tree.
 
-Already following along.
-
-I'd like to wait for 3.12 release before the pty patch goes to -stable
-(so that it gets more in-the-wild testing).
-
-Regards,
-Peter Hurley
+Applied thanks.
