@@ -1,58 +1,219 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <hj.oertel@t-online.de>
-Subject: adding can4linux to drivers/char
-Date: Sat, 21 Sep 2013 01:03:28 +0200
-Message-ID: <1881932.U1kQQJkqCz@heinz.site>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: adding can4linux to drivers/char
+Date: Sat, 21 Sep 2013 11:17:51 +0200
+Message-ID: <523D643F.6040703@hartkopp.net>
+References: <1881932.U1kQQJkqCz@heinz.site>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1643385.czHBXS5iaL"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: multipart/mixed;
+ boundary="------------030404080905080604060407"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.10]:61896 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753076Ab3ITXDt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Sep 2013 19:03:49 -0400
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:9840 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751741Ab3IUJRy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 21 Sep 2013 05:17:54 -0400
+In-Reply-To: <1881932.U1kQQJkqCz@heinz.site>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>
+Cc: linux-can@vger.kernel.org
+
+This is a multi-part message in MIME format.
+--------------030404080905080604060407
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+
+On 21.09.2013 01:03, Heinz-Jürgen Oertel wrote:
+> Hello Linux CAN community,
+> 
+> long before SocketCAN, which now is part of the Linux kernel drivers, can4linux was available as the CAN device driver for Linux.
+> 
+> I now like to add it to the kernel source tree as well. What to you think about it. And how should I start and proceed?
+> I would like to start with the Xilinx XCANPS as can be found on the Zynq processor. Maybe also with one PCI board, the CPC-PCI (EMS Wünsche).
+> 
+> What is the best way? My current development for the PC is based on OpenSuse with kernel 3.7.10. for Xilinx it is kernel 3.10. Can I send a patch against 3.7 and to whom can I send it?
+
+Hello Heinz,
+
+merging the two different approaches makes sense in that way that the
+different users of the can4linux character device API should be able to take
+part of the Linux mainline improvements.
+
+The question is how to make it a win-win for both sides without doing double work:
+
+1. SocketCAN & can4linux users should be able to use a common CAN driver pool
+2. The netdev and the chardev should be able to run simultaneously
+3. The chardev API preferably should support all chardev flavours
+
+Indeed i did some evaluations about the migration from the chardev API of
+can4linux to SocketCAN in my thesis on page 156ff
+
+(unfortunately in german)
+A.8 Migration existierender CAN Anwendungen
+
+You might get the thesis from here:
+http://edoc.bibliothek.uni-halle.de/servlets/DocumentServlet?id=9738
+
+In chapter 8.2 there's a concept describing the co-existence of a character
+device emulator and how to connect it to the existing Linux CAN
+infrastructure. A screenshot from that picture is attached to this mail.
+
+The advantages of this approach:
+
+- only one hardware driver pool to maintain (e.g. add Xilinx as netdev driver)
+- SocketCAN and can4linux apps can run simultaneously on the same CAN hardware
+- SocketCAN protocols CAN_BCM and the CAN gateway CAN_GW are still operational
+- a compact and easy maintainable chardev API adapter emulation
+- can4linux API users get access to all existing CAN netdev drivers (USB, ...)
+
+A real good thing would be if the chardev emulation adapter would support
+different chardev flavours like can4linux, PEAK, LinCAN, ...
+
+Of course there would be something to do for the existing infrastructure too.
+
+E.g. the netlink configuration interface for the bitrate settings has to be
+made accessible for the chardev emulator. Probably features of the chardev
+concepts have to be integrated into the mainline CAN driver infrastruture.
+Thinking about hardware filters: These can be easily emulated by the SocketCAN
+filter lists, that are per-socket anyway (see picture).
+
+Any thoughts about this idea?
+
+Regards,
+Oliver
 
 
---nextPart1643385.czHBXS5iaL
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+--------------030404080905080604060407
+Content-Type: image/png;
+ name="chardev_emu.png"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="chardev_emu.png"
 
-Hello Linux CAN community,
-
-long before SocketCAN, which now is part of the Linux kernel drivers, c=
-an4linux was available as the CAN device driver for Linux.
-
-I now like to add it to the kernel source tree as well. What to you thi=
-nk about it. And how should I start and proceed?
-I would like to start with the Xilinx XCANPS as can be found on the Zyn=
-q processor. Maybe also with one PCI board, the CPC-PCI (EMS W=FCnsche)=
-.
-
-What is the best way? My current development for the PC is based on Ope=
-nSuse with kernel 3.7.10. for Xilinx it is kernel 3.10. Can I send a pa=
-tch against 3.7 and to whom can I send it?
-
-Hope to get some answers helping me with the project. Thanks.
---=20
-mit freundlichen Gr=FC=DFen
-       Heinz-J=FCrgen Oertel
---nextPart1643385.czHBXS5iaL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQEcBAABAgAGBQJSPNRPAAoJENViPQy9fcm78KMH/A1EYMLvDWSFTqV2bNZbmmxN
-2klkf56VOafvpw1ndgJ0sdmVDJU9JlnC6R0o/aootQMYJ75ForaDfyAteaWITJLJ
-vHTDGnFtEU/f3OytJCa2B1Eslg22/h1loRxQU2Kk8/+SuupdwbjaCf5XxAsljcEx
-80UtmuKl3Bkr4y9o+XMVu3t87ONLD112A1uluxx3nWZKz9WTJtzbWd+dw34yIuvW
-CkXBFQ6+A6bI/YjFq7N7PHkk23hpl/utW0T2UpTm3AL3DmMCAet2m406PVbAPTP1
-s1KBMC7JiDJ4kcBStrmtxQtxINxWZMzazHP+vesNfbQj/I13HC6DRxwuw6fGtj8=
-=bepl
------END PGP SIGNATURE-----
-
---nextPart1643385.czHBXS5iaL--
-
+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
+--------------030404080905080604060407--
