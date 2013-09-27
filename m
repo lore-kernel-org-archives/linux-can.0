@@ -1,27 +1,32 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2013-09-21
-Date: Fri, 27 Sep 2013 02:08:49 -0400 (EDT)
-Message-ID: <20130927.020849.1853435330707756474.davem@davemloft.net>
-References: <1379772493-7856-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: pull-request: can-next 2013-09-21
+Date: Fri, 27 Sep 2013 02:10:50 -0400 (EDT)
+Message-ID: <20130927.021050.603129866969698558.davem@davemloft.net>
+References: <523DA52E.2030701@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:50480 "EHLO
+Received: from shards.monkeyblade.net ([149.20.54.216]:50519 "EHLO
 	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750887Ab3I0GIu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Sep 2013 02:08:50 -0400
-In-Reply-To: <1379772493-7856-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751832Ab3I0GKv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Sep 2013 02:10:51 -0400
+In-Reply-To: <523DA52E.2030701@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Sat, 21 Sep 2013 16:08:12 +0200
+=46rom: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Sat, 21 Sep 2013 15:54:54 +0200
 
-> here is a fixes for the v3.12 release cycle. Alexey Khoroshilov from the Linux
-> Driver Verification project submitted a patch that fixes a memory leak in the
-> failure paths of the peak USB driver.
+> this is a pull request for net-next. It consists of two patches by Uw=
+e
+> Kleine-K=F6nig, they add explicit copyrights to the uapi CAN headers
+> (including Acked-bys of the header authors). And 12 cleanup patches b=
+y
+> Jingoo Han. Several drivers are converted to use dev_get_platdata()
+> instead of open coding it, two unnecessary pci_set_drvdata() are
+> removed from the CAN PCI drivers.
 
-Pulled, thanks.
+Pulled, th anks.
