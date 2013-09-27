@@ -1,89 +1,128 @@
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+From: Matt Sealey <neko@bakuhatsu.net>
 Subject: Re: imprecise external abort using the flexcan driver on i.MX6Q
-Date: Fri, 27 Sep 2013 12:43:10 +0200
-Message-ID: <21061.24894.57898.36640@ipc1.ka-ro>
+Date: Fri, 27 Sep 2013 12:24:38 -0500
+Message-ID: <CAHCPf3vJi5HH52XRsJ5tsaOsGk_1YsoSHHgJNPpeJLBpd5EZsA@mail.gmail.com>
 References: <21060.15934.600859.167074@ipc1.ka-ro>
 	<524455FD.7070808@pengutronix.de>
 	<20130926155422.GQ12758@n2100.arm.linux.org.uk>
-	<52445FBE.4060503@ti.com>
-	<21061.20097.221946.197751@ipc1.ka-ro>
-	<5245535F.6020804@pengutronix.de>
-	<21061.22576.404020.384558@ipc1.ka-ro>
-	<52455A7D.6030403@pengutronix.de>
+	<CAHCPf3u7qpdiqoOhD1yxoHybgS1+mvdd8xxaTKnK-DJ9sJYY7g@mail.gmail.com>
+	<21061.21191.197931.54061@ipc1.ka-ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.karo-electronics.de ([81.173.242.67]:50431 "EHLO
-	mail.karo-electronics.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750871Ab3I0Knc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Sep 2013 06:43:32 -0400
-In-Reply-To: <52455A7D.6030403@pengutronix.de>
+Received: from mail-pd0-f170.google.com ([209.85.192.170]:48932 "EHLO
+	mail-pd0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752591Ab3I0RYi convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Sep 2013 13:24:38 -0400
+Received: by mail-pd0-f170.google.com with SMTP id x10so2885317pdj.29
+        for <linux-can@vger.kernel.org>; Fri, 27 Sep 2013 10:24:38 -0700 (PDT)
+In-Reply-To: <21061.21191.197931.54061@ipc1.ka-ro>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, linux-arm-kernel@lists.infradead.org
+To: =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@karo-electronics.de>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-Hi,
-
-Marc Kleine-Budde writes:
-> On 09/27/2013 12:04 PM, Lothar Wa=C3=9Fmann wrote:
->=20
-> >> They layout of the flexcan varies in the different imx chips. I'm
-> >> comparing the datasheets at the moment. As Russell pointed out the=
- area
-> >> staring at offset 0x80 is by the reception FIFO engine.
-> >>
-> > The layout is correct when the Rx FIFO is disabled!
-> >=20
-> > removing 'FLEXCAN_MCR_FEN' from the MCR setting makes the driver wo=
-rk
-> > as expected (just without receive fifo).
-> >=20
-> > For the use case with the FIFO enabled, the layout has to be change=
+On Fri, Sep 27, 2013 at 4:41 AM, Lothar Wa=DFmann <LW@karo-electronics.=
+de> wrote:
+> Hi,
+>
+> Matt Sealey writes:
+>> Hi Russel,
+>>
+>> If r2 is indeed the address of the access, then this is entirely dow=
+n
+>> to a misuse of the hardware; from the manual:
+>>
+>> ~
+>> When the FEN bit is set in the MCR, the memory area from 0x80 to 0xF=
+=46 (which is
+>> normally occupied by MB0 to MB7) is used by the reception FIFO engin=
+e.
+>> Table 34-6
+>> shows the Rx FIFO data structure. The region 0x80-0x8F contains an
+>> message buffer
+>
+> What manual are you referring to? In my "i.MX 6Dual/6Quad Application=
+s
+> Processor Reference Manual, Rev. 1, 04/2013" flexcan is chapter 26 an=
 d
-> > obviously.
->=20
-> Can you just remove the loop completely? I think it's not needed. It
-> was in the original driver, when I picked it up.
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index e1ac75d..57ee3df 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -778,17 +778,6 @@ static int flexcan_chip_start(struct net_device =
-*dev)
->         netdev_dbg(dev, "%s: writing ctrl=3D0x%08x", __func__, reg_ct=
-rl);
->         flexcan_write(reg_ctrl, &regs->ctrl);
->=20
-> -       for (i =3D 0; i < ARRAY_SIZE(regs->cantxfg); i++) {
-> -               flexcan_write(0, &regs->cantxfg[i].can_ctrl);
-> -               flexcan_write(0, &regs->cantxfg[i].can_id);
-> -               flexcan_write(0, &regs->cantxfg[i].data[0]);
-> -               flexcan_write(0, &regs->cantxfg[i].data[1]);
-> -
-> -               /* put MB into rx queue */
-> -               flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
-> -                       &regs->cantxfg[i].can_ctrl);
-> -       }
-> -
->         /* acceptance mask/acceptance code (accept everything) */
->         flexcan_write(0x0, &regs->rxgmask);
->         flexcan_write(0x0, &regs->rx14mask);
->=20
-OK, done that. Driver works perfectly well now on i.MX6Q. I'll retest
-on i.MX53 later to make sure it's still working there too.
+> Table 34-6 is: Single-Ended Source Termination Resistance Settings
+> of the HDMI interface.
 
+Actually that was from the i.MX53 manual.. it's table 26-7 in the MX6
+manual and the description is different, but the hardware operation is
+*identical*.
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
+>> I'm surprised this ever worked.. if the area 0x90-0xDF is being used
+>> by the FIFO internally then the difference between i.MX53 ('working'=
+)
+>> and i.MX6Q ('imprecise abort') is that the i.MX6Q is causing the
+>> proper bus response. We can only hope that the i.MX53 is ONLY not
+>> causing the proper bus response and not actually letting you write
+>> into a FIFO internal data area..
+>
+> This seems a plausible explanation.
+>
+> The definition:
+> |struct flexcan_mb {
+> |       u32 can_ctrl;
+> |       u32 can_id;
+> |       u32 data[2];
+> |};
+> |
+> |/* Structure of the hardware registers */
+> |struct flexcan_regs {
+> |       u32 mcr;                /* 0x00 */
+> [...]
+> |       struct flexcan_mb cantxfg[64];
+> |                                 ^^
+> has obviously nothing to do with reality!
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+It does, as you found later, reflect reality as it is where the
+message buffers 0-5 go when the FIFO is disabled. After that there are
+filter registers.. some unions or egregious casting is required, but
+the structure is semi-correct.
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+This is defined in the i.MX6Q manual at least in section 26.4:
+
+~~~
+26.4 Message Buffer Structure
+Message Buffer Address: Base + 0x0080-0x047C
+~~~
+
+But when FEN is set, this is internal FIFO data after entry 0, as
+defined in section 26.5:
+
+~~~
+26.5 Rx FIFO Structure
+When the MCR[RFEN] bit is set, the memory area from $80 to $DC (which
+is normally
+occupied by MBs 0 to 5) is used by the reception FIFO engine.
+
+The region 0x80-0x8C contains the output of the FIFO which must be
+read by the CPU as
+a Message Buffer. This output contains the oldest message received and
+not read yet. The
+region 0x90-0xDC is reserved for internal use of the FIFO engine.
+~~~
+
+Marc - I don't think FLEXCAN has changed layout at all in these areas.
+The hardware always worked this way..
+
+The only difference here  is that the i.MX53 is doing something weird
+on the bus. The i.MX6Q is giving the absolutely correct BRESP for the
+transfer to the peripheral (in effect, a "go away, this is my data"
+failure, which the CPU turns into an imprecise abort since it no idea
+which transaction it committed aeons ago caused it).
+
+Writes to 0x90 to 0xDF while MCR[FEN] is set *should* cause a data
+abort.. because it's not even a read-only region, it *should* be
+totally inaccessible to the CPU.
+
+The question I have is, when MCR[FEN] is set on i.MX53, does reading
+from those reserved registers give anything but 0's or garbage? I'm
+curious, that's all, it doesn't really matter ;)
+
+Ta,
+Matt <neko@bakuhatsu.net>
