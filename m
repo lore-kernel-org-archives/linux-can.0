@@ -1,59 +1,73 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <hj.oertel@t-online.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: adding can4linux to drivers/char
-Date: Sun, 29 Sep 2013 21:23:21 +0200
-Message-ID: <6536290.C0TsQ59CM7@heinz.site>
-References: <1881932.U1kQQJkqCz@heinz.site> <2109885.0l6dWmo4a5@heinz.site> <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com>
+Date: Sun, 29 Sep 2013 21:41:44 +0200
+Message-ID: <52488278.4030603@grandegger.com>
+References: <1881932.U1kQQJkqCz@heinz.site> <523DF9C1.30300@grandegger.com> <2109885.0l6dWmo4a5@heinz.site>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1662163.4jj558A2oq"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.8]:56724 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754903Ab3I2TXY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 15:23:24 -0400
-In-Reply-To: <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:59643 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755611Ab3I2Tlt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 15:41:49 -0400
+In-Reply-To: <2109885.0l6dWmo4a5@heinz.site>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>, linux-can@vger.kernel.org
+
+On 09/29/2013 06:28 PM, Heinz-J=FCrgen Oertel wrote:
+>=20
+> Hello
+>=20
+> Am Samstag, 21. September 2013, 21:55:45 schrieb Wolfgang Grandegger:
+>> I think you need *strong* arguments to get it accepted.=20
+>=20
+> I have some good arguments for this kind of driver
+> - it is much more simple in design than others,
+>   simplicity is one of the Linux design goals
+> - It has a simple user API
+> - It does not need any other infrastructure than the kernel API
+> - It is mature
+
+Well, the question is in what respect it's (much) better than the
+existing Linux-CAN. I can imagine some performance benefits on very low
+end systems, if at all.
+
+> I agree, it would be nice to share the low level CAN controller relat=
+ed=20
+> experiences of the developers. That is may be something we can share =
+if we=20
+> could agree of a set of CAN controller header files with shared regis=
+ter=20
+> #defines. And a set of very basic functions like initialize and activ=
+ate CAN,=20
+> set acceptance filters, transmit and receive, read out error register=
+ or=20
+> whatever.
+
+Sounds ugly!
+
+> But to stay simple, I don't like the idea to have another additional =
+layer=20
+> around SocketCAN as layer below the can4linux API.
+>=20
+> Linux offers real diversity on the desktop, why not with drivers? Lin=
+ux also=20
+> has different sound devices and architectures.  Why not offering two =
+different=20
+> CAN driver concepts to the application programmer,
+> let she decide what to use.
 
 
---nextPart1662163.4jj558A2oq
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+It's also about maintenance. It's real work to keep a driver in the
+kernel up-to-date, to review and accept new drivers, etc., not only for
+the initial submitter.
 
-Sebastion,
-thanks for at least being open for my arguments.
+There are missing bits and pieces in Linux-CAN, e.g. hardware filter
+support, improved bus-off handling or even bitrate detection. That's
+also not a strong argument for can4linux. Just contribute them to Linux=
+-CAN.
 
-Am Sonntag, 29. September 2013, 19:45:09 schrieb Sebastian Haas:
-> The Socket approach has some real advantages (multi-user for single
-> CAN controller,
-
-I like only comment this one.
-Multiple applications can of course share one device in can4linux.
-
-And Marc, because some of the drivers exist much longer than SocketCAN,=
-
-one should be respectful and don't name only one driver 'linux CAN'.=20=
-
-
---=20
-mit freundlichen Gr=FC=DFen
-       Heinz-J=FCrgen Oertel
---nextPart1662163.4jj558A2oq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQEcBAABAgAGBQJSSH4qAAoJENViPQy9fcm7HWMH/iX+Ngi1XHtBbOnMViDK/Swx
-oEEBg9ebjrSK1D8W3ZvlfVrJayxrjPD7FOyV+IS41WtcbBS3jZ297HHCvZ1iUc0b
-nt4BdTxQEzxI8kFkqoh35FRAmF4TW5AhxPTyoNYSoTMvV3RtC3PX6Apdy/tYcKa2
-z7jMBWFo5vGwGnHm6jVoMjiWqjFb6OgyRB+wRHPApMS539BSXPCA7CbqG+W4VJCH
-tObHJqbtch/9RXL9FRlcys+xRiZ3HCZxCpKm4KDMvXqFRinXs3Pc9KnhDNTpWBP3
-QhRplyBWs+SbopFRCiZ6v2PC1jH1QUoMsgsEWOtzOXPwrMvmwIMi5HueWEKG0LQ=
-=oYKO
------END PGP SIGNATURE-----
-
---nextPart1662163.4jj558A2oq--
+Wolfgang.
 
