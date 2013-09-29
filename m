@@ -1,100 +1,96 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Sebastian Haas <dev@sebastianhaas.info>
 Subject: Re: adding can4linux to drivers/char
-Date: Sun, 29 Sep 2013 19:44:51 +0200
-Message-ID: <52486713.2000209@pengutronix.de>
-References: <1881932.U1kQQJkqCz@heinz.site> <523DF9C1.30300@grandegger.com> <2109885.0l6dWmo4a5@heinz.site>
+Date: Sun, 29 Sep 2013 19:45:09 +0200
+Message-ID: <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com>
+References: <1881932.U1kQQJkqCz@heinz.site>
+	<523DF9C1.30300@grandegger.com>
+	<2109885.0l6dWmo4a5@heinz.site>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="lMOhgJKmJiI0n62rQAwtGnGGVQl4fNUsC"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48842 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754890Ab3I2Ro6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 13:44:58 -0400
+Received: from smtprelay03.ispgateway.de ([80.67.31.37]:43379 "EHLO
+	smtprelay03.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754620Ab3I2RpN convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 13:45:13 -0400
+Received: from [209.85.216.173] (helo=mail-qc0-f173.google.com)
+	by smtprelay03.ispgateway.de with esmtpsa (TLSv1:RC4-SHA:128)
+	(Exim 4.68)
+	(envelope-from <dev@sebastianhaas.info>)
+	id 1VQL3O-0003ym-Hm
+	for linux-can@vger.kernel.org; Sun, 29 Sep 2013 19:45:10 +0200
+Received: by mail-qc0-f173.google.com with SMTP id c3so3062104qcv.32
+        for <linux-can@vger.kernel.org>; Sun, 29 Sep 2013 10:45:09 -0700 (PDT)
 In-Reply-To: <2109885.0l6dWmo4a5@heinz.site>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?SGVpbnotSsO8cmdlbiBPZXJ0ZWw=?= <hj.oertel@t-online.de>
+To: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen_Oertel?= <hj.oertel@t-online.de>
 Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lMOhgJKmJiI0n62rQAwtGnGGVQl4fNUsC
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I think Heinz-J=FCrgens' arguments are not that wrong. There are a bunc=
+h
+of example in the kernel of concurring solution for the same issues
+every single one with different advantages and disadvantages (just
+compare how many solution for virtualization are available kvm, xen,
+paravirt, ...).
 
-On 09/29/2013 06:28 PM, Heinz-J=C3=BCrgen Oertel wrote:
+There must be space in kernel for the classical chardev CAN-approach.
+Sharing common code to access the different controllers must be
+possible.
+
+I think there are a bunch of use cases out there which are easier and
+more efficiently solved with a simple chardev API. A simple chardev
+CAN driver like can4linux provide doesn't depend on the whole
+networking subsystem which may be imported of real embedded systems
+with strong memory constraints (less memory footprint, smaller
+kernel).
+
+The Socket approach has some real advantages (multi-user for single
+CAN controller, iptables filtering, netutil integration, buffering,
+=2E.), but many of them may be considered as disadvantages as well (no
+control of the message flow in terms of timing and ordering, no
+exclusive use of the interface, networking dependency). Implementing
+an automatic bitrate detection or application driver busoff recovery
+is a pain in the ass with SocketCAN.
+
+-Sebastian
+
+2013/9/29 Heinz-J=FCrgen Oertel <hj.oertel@t-online.de>:
+>
+> Hello
+>
 > Am Samstag, 21. September 2013, 21:55:45 schrieb Wolfgang Grandegger:
->> I think you need *strong* arguments to get it accepted.=20
->=20
+>> I think you need *strong* arguments to get it accepted.
+>
 > I have some good arguments for this kind of driver
 > - it is much more simple in design than others,
 >   simplicity is one of the Linux design goals
-
-What is in your opinion too complicated about linux CAN? Is it a lack of
-Documentation or examples?
-
 > - It has a simple user API
-
-For a simple program you need socket(), bind(), read(), write().
-
 > - It does not need any other infrastructure than the kernel API
-
-This is another way of telling, we've reinvented the rest on our own.
-
 > - It is mature
-
-The ultimate question is: What problem does it solve?
-
-> I agree, it would be nice to share the low level CAN controller related=
-=20
-> experiences of the developers. That is may be something we can share if=
- we=20
-> could agree of a set of CAN controller header files with shared registe=
-r=20
-> #defines. And a set of very basic functions like initialize and activat=
-e CAN,=20
-> set acceptance filters, transmit and receive, read out error register o=
-r=20
+>
+> I agree, it would be nice to share the low level CAN controller relat=
+ed
+> experiences of the developers. That is may be something we can share =
+if we
+> could agree of a set of CAN controller header files with shared regis=
+ter
+> #defines. And a set of very basic functions like initialize and activ=
+ate CAN,
+> set acceptance filters, transmit and receive, read out error register=
+ or
 > whatever.
-
-Like the driver and the socket infrastructure?
-
-> But to stay simple, I don't like the idea to have another additional la=
-yer=20
+> But to stay simple, I don't like the idea to have another additional =
+layer
 > around SocketCAN as layer below the can4linux API.
-
-Does this mean you want to duplicate the drivers?
-
-> Linux offers real diversity on the desktop, why not with drivers? Linux=
- also=20
-> has different sound devices and architectures.  Why not offering two di=
-fferent=20
+>
+> Linux offers real diversity on the desktop, why not with drivers? Lin=
+ux also
+> has different sound devices and architectures.  Why not offering two =
+different
 > CAN driver concepts to the application programmer,
 > let she decide what to use.
-
-Sorry, but I can only NAK this idea.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---lMOhgJKmJiI0n62rQAwtGnGGVQl4fNUsC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJIZxcACgkQjTAFq1RaXHMZlACeOCSSwCGJiRdEsinJlAszrI6b
-QIwAnRdZhuuVCU935PvtyB3DeTW4sw6F
-=phuu
------END PGP SIGNATURE-----
-
---lMOhgJKmJiI0n62rQAwtGnGGVQl4fNUsC--
+>
+> --
+> mit freundlichen Gr=FC=DFen
+>        Heinz-J=FCrgen Oertel
