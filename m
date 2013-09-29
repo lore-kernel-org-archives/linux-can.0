@@ -1,54 +1,47 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <hj.oertel@t-online.de>
+From: "Max S." <max@schneidersoft.net>
 Subject: Re: adding can4linux to drivers/char
-Date: Sun, 29 Sep 2013 21:17:45 +0200
-Message-ID: <15194714.SFYGdkB9Ra@heinz.site>
-References: <1881932.U1kQQJkqCz@heinz.site> <52487518.80008@pengutronix.de> <1380482622.14050.15.camel@blackbox>
+Date: Sun, 29 Sep 2013 19:23:42 +0000
+Message-ID: <1380482622.14050.15.camel@blackbox>
+References: <1881932.U1kQQJkqCz@heinz.site> <523DF9C1.30300@grandegger.com>
+	 <2109885.0l6dWmo4a5@heinz.site>
+	 <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com>
+	 <52487518.80008@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4133158.oRhbKKrZLE"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.17.8]:54916 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754312Ab3I2TR5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 15:17:57 -0400
-In-Reply-To: <1380482622.14050.15.camel@blackbox>
+Received: from mail.schneidersoft.net ([173.45.248.65]:34624 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754334Ab3I2TWY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 29 Sep 2013 15:22:24 -0400
+In-Reply-To: <52487518.80008@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Sebastian Haas <dev@sebastianhaas.info>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Sebastian Haas <dev@sebastianhaas.info>, =?ISO-8859-1?Q?Heinz-J=FCrgen?= Oertel <hj.oertel@t-online.de>, linux-can@vger.kernel.org
 
+This isn't on topic to this thread...
+Just thought I'd note:
 
---nextPart4133158.oRhbKKrZLE
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+On Sun, 2013-09-29 at 20:44 +0200, Marc Kleine-Budde wrote:
+> If there is a need for bitrate detection, feel free request it here. I
+> think there are some controllers that support this in hardware, while
+> others don't. Is there a known working algorithm for bitrate detection?
 
-Am Sonntag, 29. September 2013, 19:23:42 schrieb Max S.:
-> Additionally when using micros with on-board CAN controllers the RX p=
-in
-> can be temporarily reprogrammed to an input. With a pin change interr=
-upt
-> and a timer it is then possible to measure the TQ used by other nodes=
-.
+Most controllers have listen only mode, in which the error counters are
+frozen. It is then possible to systematically try all common bit-rate
+configurations, and listen for good frames. works best when you start
+with high speeds and work your way down. Listen only mode baud sniffing
+will require at least two other nodes (one to send, one to ack..)
 
-That is the method which Infineon suggested, isn't it?
---=20
-mit freundlichen Gr=FC=DFen
-       Heinz-J=FCrgen Oertel
---nextPart4133158.oRhbKKrZLE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Some controllers also have a mode similar to listen only, but that also
+internally connect the TX signal to the RX signal. this way you only
+need 1 other node to send non acked frames. the autobauding node will
+then ack those frames for itself only. Atmel calls this mode LOOPBACK...
+even though its not a typical "LOOPBACK".
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
+Additionally when using micros with on-board CAN controllers the RX pin
+can be temporarily reprogrammed to an input. With a pin change interrupt
+and a timer it is then possible to measure the TQ used by other nodes.
 
-iQEcBAABAgAGBQJSSHzfAAoJENViPQy9fcm7xbIH/jr/yvV2p/gmX7TK71QX8LrX
-Wpikm7W68gUu/X/35XmgpotXsy/zcbPNJxt/uMbIsf/dC1pZogGvbpnkOthPCMV1
-yneCiqrHefPWWswo5lFZiWYda/AeIwk/yHF+HCJjfXszxhP9HHlhcJQjStERbaJo
-ZGCX5KN80neqFiMUfWORaIqYHsT8FbNZZgEzFaKRo2mOH5EVlBaAvy5FddD1RxCs
-P+jn99RWk6OUrP8+QvZne+9JdQ9kwr+UjzQUjgiIY3gjSNPBamA/lQfS80xZ1ql3
-fhgDaEtunO6yIw1WWKaKYgNbhelatHuB23v2KrLlRaTkDZT+RS0YDjsHrYSrz/c=
-=5pw+
------END PGP SIGNATURE-----
-
---nextPart4133158.oRhbKKrZLE--
 
