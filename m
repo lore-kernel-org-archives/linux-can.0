@@ -1,106 +1,64 @@
-From: Sebastian Haas <dev@sebastianhaas.info>
-Subject: Re: adding can4linux to drivers/char
-Date: Mon, 30 Sep 2013 09:40:37 +0200
-Message-ID: <CADGMhsWUYN8gYqaRFH802jHmDgC2kamdLzDCgOvhhB-MYG-0hQ@mail.gmail.com>
-References: <1881932.U1kQQJkqCz@heinz.site>
-	<523DF9C1.30300@grandegger.com>
-	<2109885.0l6dWmo4a5@heinz.site>
-	<52488278.4030603@grandegger.com>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH 01/21] drivers: remove unnecessary prom.h includes
+Date: Mon, 30 Sep 2013 09:54:55 +0200
+Message-ID: <52492E4F.2020701@pengutronix.de>
+References: <1380221456-11192-1-git-send-email-robherring2@gmail.com> <1380221456-11192-2-git-send-email-robherring2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay01.ispgateway.de ([80.67.31.35]:43569 "EHLO
-	smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751372Ab3I3Hkk convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Sep 2013 03:40:40 -0400
-Received: from [209.85.128.46] (helo=mail-qe0-f46.google.com)
-	by smtprelay01.ispgateway.de with esmtpsa (TLSv1:RC4-SHA:128)
-	(Exim 4.68)
-	(envelope-from <dev@sebastianhaas.info>)
-	id 1VQY5u-0004jj-Ms
-	for linux-can@vger.kernel.org; Mon, 30 Sep 2013 09:40:38 +0200
-Received: by mail-qe0-f46.google.com with SMTP id x7so3518966qeu.33
-        for <linux-can@vger.kernel.org>; Mon, 30 Sep 2013 00:40:37 -0700 (PDT)
-In-Reply-To: <52488278.4030603@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen_Oertel?= <hj.oertel@t-online.de>, linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="xktXMclENS0wfIOadoWo9wEvOknUc3Ljc"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1380221456-11192-2-git-send-email-robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-2013/9/29 Wolfgang Grandegger <wg@grandegger.com>:
-> On 09/29/2013 06:28 PM, Heinz-J=FCrgen Oertel wrote:
->>
->> Hello
->>
->> Am Samstag, 21. September 2013, 21:55:45 schrieb Wolfgang Grandegger=
-:
->>> I think you need *strong* arguments to get it accepted.
->>
->> I have some good arguments for this kind of driver
->> - it is much more simple in design than others,
->>   simplicity is one of the Linux design goals
->> - It has a simple user API
->> - It does not need any other infrastructure than the kernel API
->> - It is mature
->
-> Well, the question is in what respect it's (much) better than the
-> existing Linux-CAN. I can imagine some performance benefits on very l=
-ow
-> end systems, if at all.
-Again think about memory (RAM/ROM) as well. We are talking here about s=
-mall
-ARM7TDMI stuff and other creepy and limited systems.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xktXMclENS0wfIOadoWo9wEvOknUc3Ljc
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
->> I agree, it would be nice to share the low level CAN controller rela=
-ted
->> experiences of the developers. That is may be something we can share=
- if we
->> could agree of a set of CAN controller header files with shared regi=
-ster
->> #defines. And a set of very basic functions like initialize and acti=
-vate CAN,
->> set acceptance filters, transmit and receive, read out error registe=
-r or
->> whatever.
->
-> Sounds ugly!
-Sharing definitions and common functions sounds ugly to you? What does
-the candev
-and sja1000dev in Socket CAN does?
+On 09/26/2013 08:50 PM, Rob Herring wrote:
+> From: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+>=20
+> Remove unnecessary prom.h includes in preparation to remove implicit
+> includes of prom.h.
+>=20
+> Signed-off-by: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>
+> Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+> Cc: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
->> But to stay simple, I don't like the idea to have another additional=
- layer
->> around SocketCAN as layer below the can4linux API.
->>
->> Linux offers real diversity on the desktop, why not with drivers? Li=
-nux also
->> has different sound devices and architectures.  Why not offering two=
- different
->> CAN driver concepts to the application programmer,
->> let she decide what to use.
->
->
-> It's also about maintenance. It's real work to keep a driver in the
-> kernel up-to-date, to review and accept new drivers, etc., not only f=
-or
-> the initial submitter.
-Right, and I think a chardev drivers has far less dependencies to maint=
-ain then
-the Socket CAN driver. No netdev changes to maintain, iputils stuff or =
-changes
-in the candev ;-)
+Applied to linux-can-next/testing, it will be included in my next pull
+request to David Miller.
 
-A reason more trying to share code with a chardev solution!
+tnx,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-> There are missing bits and pieces in Linux-CAN, e.g. hardware filter
-> support, improved bus-off handling or even bitrate detection. That's
-> also not a strong argument for can4linux. Just contribute them to Lin=
-ux-CAN.
-Well, some things can't be done cause of the underlying networking subs=
-ystem
-(namely the queuing) which is perfectly fine for real networking stuff
-(>=3D IP) but
-not that well for CAN IMHO.
 
--Sebastian
+--xktXMclENS0wfIOadoWo9wEvOknUc3Ljc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlJJLk8ACgkQjTAFq1RaXHMeJACeK9HZUEC1VQZeq2GzjerfTgrG
+ckcAniqhgxJhqm/Ho/b7PXMpVeEW1pRc
+=ixWT
+-----END PGP SIGNATURE-----
+
+--xktXMclENS0wfIOadoWo9wEvOknUc3Ljc--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
