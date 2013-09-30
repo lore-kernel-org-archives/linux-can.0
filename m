@@ -1,96 +1,71 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: imprecise external abort using the flexcan driver on i.MX6Q
-Date: Mon, 30 Sep 2013 13:19:00 +0200
-Message-ID: <52495E24.4080703@pengutronix.de>
-References: <21060.15934.600859.167074@ipc1.ka-ro> <524455FD.7070808@pengutronix.de> <20130926155422.GQ12758@n2100.arm.linux.org.uk> <CAHCPf3u7qpdiqoOhD1yxoHybgS1+mvdd8xxaTKnK-DJ9sJYY7g@mail.gmail.com> <21061.21191.197931.54061@ipc1.ka-ro> <CAHCPf3vJi5HH52XRsJ5tsaOsGk_1YsoSHHgJNPpeJLBpd5EZsA@mail.gmail.com> <5245E2C5.1030705@pengutronix.de> <21065.23354.418805.871480@ipc1.ka-ro>
+Subject: [PATCH] can: flexcan: fix flexcan_chip_start() on imx6
+Date: Mon, 30 Sep 2013 13:25:20 +0200
+Message-ID: <1380540320-20055-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="MPOgw2dVjiMrcJPegnkHBI7Fdlp0Odj20"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57312 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41377 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753815Ab3I3LUI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Sep 2013 07:20:08 -0400
-In-Reply-To: <21065.23354.418805.871480@ipc1.ka-ro>
+	with ESMTP id S1754373Ab3I3L1Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Sep 2013 07:27:25 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Cc: Matt Sealey <neko@bakuhatsu.net>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, neko@bakuhatsu.net, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MPOgw2dVjiMrcJPegnkHBI7Fdlp0Odj20
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In the flexcan_chip_start() function first the flexcan core is going th=
+rough
+the soft reset sequence, then the RX FIFO is enabled.
 
-On 09/30/2013 01:06 PM, Lothar Wa=C3=9Fmann wrote:
-> Hi,
->=20
-> Marc Kleine-Budde writes:
->> On 09/27/2013 07:24 PM, Matt Sealey wrote:
->>> Marc - I don't think FLEXCAN has changed layout at all in these areas=
-=2E
->>> The hardware always worked this way..
->>
->> All flexcan cores support the RX FIFO, the mx6 supports an additional
->> mode for different acceptance filters.
->>
->>> The only difference here  is that the i.MX53 is doing something weird=
+With the hardware is put into FIFO mode, message buffers 1...7 are rese=
+rved by
+the FIFO engine. The remaining message buffers are in reset default val=
+ues.
+This patch removes the bogus initialization of the message buffers, as =
+it
+causes an imprecise external abort on imx6.
 
->>> on the bus. The i.MX6Q is giving the absolutely correct BRESP for the=
+Reported-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+Waiting-for-Tested-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/flexcan.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
->>> transfer to the peripheral (in effect, a "go away, this is my data"
->>> failure, which the CPU turns into an imprecise abort since it no idea=
-
->>> which transaction it committed aeons ago caused it).
->>>
->>> Writes to 0x90 to 0xDF while MCR[FEN] is set *should* cause a data
->>> abort.. because it's not even a read-only region, it *should* be
->>> totally inaccessible to the CPU.
->>>
->>> The question I have is, when MCR[FEN] is set on i.MX53, does reading
->>> from those reserved registers give anything but 0's or garbage? I'm
->>> curious, that's all, it doesn't really matter ;)
->>
->> The driver only read from message buffer 0, and uses buffer 8 for tx.
->> The others are not accessed, unless in that chip start routine. We don=
-'t
->> need this loop, it comes from the original driver. I think no one has
->> ever noticed that bug, because all other CPUs have not complained.
->>
->> The driver without the loop is working on mx6 and Lothar is testing it=
-
->> on mx53.
->>
-> I can confirm, that the driver still works on i.MX53 as before the
-> patch.
-> Is someone going to prepare a patch, or should I do it, as I was the
-> one who first brought up this issue?
-
-I have a patch ready, it's basically what I send you. Can I add your
-Tested-by?
-
-Marc
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 71c677e..3f21142 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -702,7 +702,6 @@ static int flexcan_chip_start(struct net_device *de=
+v)
+ {
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs =3D priv->base;
+-	unsigned int i;
+ 	int err;
+ 	u32 reg_mcr, reg_ctrl;
+=20
+@@ -772,17 +771,6 @@ static int flexcan_chip_start(struct net_device *d=
+ev)
+ 	netdev_dbg(dev, "%s: writing ctrl=3D0x%08x", __func__, reg_ctrl);
+ 	flexcan_write(reg_ctrl, &regs->ctrl);
+=20
+-	for (i =3D 0; i < ARRAY_SIZE(regs->cantxfg); i++) {
+-		flexcan_write(0, &regs->cantxfg[i].can_ctrl);
+-		flexcan_write(0, &regs->cantxfg[i].can_id);
+-		flexcan_write(0, &regs->cantxfg[i].data[0]);
+-		flexcan_write(0, &regs->cantxfg[i].data[1]);
+-
+-		/* put MB into rx queue */
+-		flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
+-			&regs->cantxfg[i].can_ctrl);
+-	}
+-
+ 	/* acceptance mask/acceptance code (accept everything) */
+ 	flexcan_write(0x0, &regs->rxgmask);
+ 	flexcan_write(0x0, &regs->rx14mask);
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+1.8.4.rc3
 
-
---MPOgw2dVjiMrcJPegnkHBI7Fdlp0Odj20
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJJXikACgkQjTAFq1RaXHOwbgCfQlq6OUpJC3xR+vUyuaJHnJmE
-910An3T1YTckXtIqA5UyAPwCA27vjouK
-=T/pV
------END PGP SIGNATURE-----
-
---MPOgw2dVjiMrcJPegnkHBI7Fdlp0Odj20--
