@@ -1,86 +1,156 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
 Subject: Re: adding can4linux to drivers/char
-Date: Mon, 30 Sep 2013 11:35:23 +0200
-Message-ID: <206b49e0-6fcb-4895-8fca-19a9b38e6a18@email.android.com>
-References: <1881932.U1kQQJkqCz@heinz.site> <2109885.0l6dWmo4a5@heinz.site> <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com> <6536290.C0TsQ59CM7@heinz.site>
+Date: Mon, 30 Sep 2013 12:20:38 +0200
+Message-ID: <20130930102038.GA13680@vandijck-laurijssen.be>
+References: <1881932.U1kQQJkqCz@heinz.site>
+ <523DF9C1.30300@grandegger.com>
+ <2109885.0l6dWmo4a5@heinz.site>
+ <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com>
+ <52487518.80008@pengutronix.de>
+ <CADGMhsXb+uEweThQxxnytO3Kw_psYfyase=2gS1pwvuVFzquyA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:50586 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751372Ab3I3Jhg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Sep 2013 05:37:36 -0400
-In-Reply-To: <6536290.C0TsQ59CM7@heinz.site>
+Received: from mailrelay008.isp.belgacom.be ([195.238.6.174]:36722 "EHLO
+	mailrelay008.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755887Ab3I3KUx convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 30 Sep 2013 06:20:53 -0400
+Content-Disposition: inline
+In-Reply-To: <CADGMhsXb+uEweThQxxnytO3Kw_psYfyase=2gS1pwvuVFzquyA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>, linux-can@vger.kernel.org
+To: Sebastian Haas <dev@sebastianhaas.info>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, =?utf-8?Q?Heinz-J=C3=BCrgen?= Oertel <hj.oertel@t-online.de>, linux-can@vger.kernel.org
 
+Hi,
 
+Please find my remarks on this topic below.
 
+On Mon, Sep 30, 2013 at 09:30:09AM +0200, Sebastian Haas wrote:
+> Am 29.09.2013 20:44 schrieb "Marc Kleine-Budde" <mkl@pengutronix.de>:
+> >
+> > On 09/29/2013 07:45 PM, Sebastian Haas wrote:
+> > > I think Heinz-J=C3=BCrgens' arguments are not that wrong. There a=
+re a bunch
+> > > of example in the kernel of concurring solution for the same issu=
+es
+> > > every single one with different advantages and disadvantages (jus=
+t
+> > > compare how many solution for virtualization are available kvm, x=
+en,
+> > > paravirt, ...).
+> >
+> > You're right.
 
+You cannot have 1 device with 2 drivers (1 can4linux + 1 linux-can),
+because users would need to choose the set of drivers to use.
+That choice is made for an application, but must be implemented on a
+system level: some udev magic or module blacklisting, or in your
+case, compile only 1 set in the kernel.
+No arguments exist to provide non-expert users with those choices.
 
-"Heinz-J=C3=BCrgen Oertel" <hj.oertel@t-online.de> schrieb:
->Sebastion,
->thanks for at least being open for my arguments.
+I agree that adding 1 api as emulation layer really suits some usecases=
+=2E
 
-Hello Heinz,=20
+Linux-CAN is IMHO superior because linux-can preserves
+the network semantics in the way that the linux kernel has foreseen.
+can4linux may provide network semantics (I'm not specialist there),
+but providing network semantics through a chardev is simply wrong.
 
-I was open to your arguments too.
+> > > I think there are a bunch of use cases out there which are easier=
+ and
+> > > more efficiently solved with a simple chardev API. A simple chard=
+ev
+> > > CAN driver like can4linux provide doesn't depend on the whole
+> > > networking subsystem which may be imported of real embedded syste=
+ms
+> > > with strong memory constraints (less memory footprint, smaller
+> > > kernel).
 
-But I'm definitely against including a separate set of CAN drivers into=
- the Kernel. Adding a separate API is ok - but creating separate driver=
-s for the exactly same hardware will not work!
+If you put all application logic in 1 binary, you don't need
+the multi-user capabilities nor the network semantics.
+But that's not the typical scenario, so it shouldn't be abused
+to promote single-user or chardev API's.
+Bare metal programming, if done well, will always render a more efficie=
+nt
+system, but requires more effort :-)
 
->Am Sonntag, 29. September 2013, 19:45:09 schrieb Sebastian Haas:
->> The Socket approach has some real advantages (multi-user for single
->> CAN controller,
->
->I like only comment this one.
->Multiple applications can of course share one device in can4linux.
->
+> >
+> > The smallest system we're running Linux is a Cortex M3, it's on chi=
+p RAM
+> > is to small for Kernel + Userspace, so you need an external RAM chi=
+p
+> > anyways.
+> RAM is not the only limiting factor there is memory out there called =
+flash or
+> ROM and then we are talking about code size and required tools to use=
+ a
+> specific features. And you know what I wrote whole CAN drivers with a=
+s much
+> LOC as libsocketcan.
+>=20
+> In a system with just 2MB flash and no need for networking stuff exce=
+pt CAN
+> every 10KB counts. To get a full features Socket CAN installation on =
+such a
+> system you need the networking subsystem, iputils and libsocketcan wh=
+ereas
+> a chardev solution is much more leaner, you just need the driver and =
+your app
+> - that's it.
+>=20
+> > > The Socket approach has some real advantages (multi-user for sing=
+le
+> > > CAN controller, iptables filtering, netutil integration, bufferin=
+g,
+> > > ..), but many of them may be considered as disadvantages as well =
+(no
+> > > control of the message flow in terms of timing and ordering, no
 
-Yes but people have to learn about all that. And with the 'even easier'=
- known and clean socket API there's a proper separation between the use=
-r stuff and the admin interfaces like bitrate setting. There's a reason=
- why developers thank the developers here, when the started with Socket=
-CAN.
-
->And Marc, because some of the drivers exist much longer than SocketCAN=
+You compare a stripped chardev solution with a 'full featured' socket C=
+AN,
+with iptables & stuff?
+You should compare against a 'stripped' socket CAN solution: no iproute=
 ,
->one should be respectful and don't name only one driver 'linux CAN'.=20
+just libsocketcan. You app will 'up' the netdev.
+No ip sockets, no unix sockets, ....
+> >
+> > You you have ordering problem? That's a bug? Which driver/hardware?
+> I didn't say I have an ordering bug, but due to the queuing the messa=
+ges
+> on sending you loose control _when_ a message is actually sent and if=
+ it was
 
-The reason why SocketCAN was invented was because there was a complete =
-mix of different CAN drivers with thousands of different crappy program=
-ming interfaces (mailbox ids in can frame structures) and many vendor l=
-ock-ins.
+The issues you mention only expose themselves in 'real' multi-user syst=
+ems,
+but you have only 1 user. You can predict exactly what is in the queues=
+=2E
+With a chardev API, you would administer queues yourself in application=
+=2E
+You could do this on top of socketCAN too.
 
-SocketCAN has been discussed at least for two years until it made it's =
-way into mainline. There was no contribution from all the CAN hardware =
-manifacturers except PEAK, which supported SocketCAN in their out-of-tr=
-ee driver (and now in mainline linux).
+> sent. On Socket-CAN I can only guess if the message was sent. If you =
+want
+> to couple this with an automatic bitrate detection which relies on se=
+nding
+> messages (e.g. SafetyBus p) in a different pattern this is simple not=
+ possible.
 
-Even the 'performance' argument is no argument to go for a different CA=
-N  infrastructure in the kernel. See my thesis or the measurements from=
- the University of Prague comparing the OCAN driver with SocketCAN.
+You can retrieve you own sent messages in the same flow.
+see commit 1e55659ce6ddb5247cee0b1f720d77a799902b85
 
-If you feel things are missing, please discuss and contribute them here=
-=2E It's never too late. But starting a new chardev discussion with all=
- the different chardev flavours from all the different vendors will not=
- fix any problem for Linux users. They will get lost, like it was befor=
-e SocketCAN.=20
-Add your currently unsupported hardware as netdev drivers. People will =
-appreciate that. And add a CUSE adaption for your legacy costumers. And=
- if there's anything that's missing or has to be fixed in SocketCAN hel=
-p us to fix it.
+>=20
+> > > exclusive use of the interface, networking dependency).
+You had only 1 application running, right?
+You know that you have exclusive use then!
 
-Regards,
-Oliver
+[...]
+>=20
+> -Sebastian
 
-ps. I'm currently on vacation and this mail was sent from my wifes mobi=
-le.  So I'll not be able to answer like you know it from me.
-
+Kind regards,
 
 --=20
-Diese Nachricht wurde von meinem Android-Mobiltelefon mit K-9 Mail gese=
-ndet.
+Kurt Van Dijck
