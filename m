@@ -1,124 +1,113 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: adding can4linux to drivers/char
-Date: Wed, 02 Oct 2013 09:49:12 +0200
-Message-ID: <747de50e-57ad-4be5-a754-5ad5c16295cf@email.android.com>
-References: <1881932.U1kQQJkqCz@heinz.site> <2109885.0l6dWmo4a5@heinz.site> <CADGMhsXTbEc5ifQEbNM=dS3OP6uwGrvGfZ3OCvWJ=aXJyzGs+A@mail.gmail.com> <6536290.C0TsQ59CM7@heinz.site> <206b49e0-6fcb-4895-8fca-19a9b38e6a18@email.android.com> <5B48DC5BA8D5D64A8F5E39AC7EF2A42008B864@ADXV3.win.desy.de>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: Linux CAN CUSE hacks, SocketCAN and RT Was: adding can4linux to drivers/char
+Date: Wed, 2 Oct 2013 10:43:59 +0200
+Message-ID: <201310021044.00281.pisa@cmp.felk.cvut.cz>
+References: <1881932.U1kQQJkqCz@heinz.site> <206b49e0-6fcb-4895-8fca-19a9b38e6a18@email.android.com> <5B48DC5BA8D5D64A8F5E39AC7EF2A42008B864@ADXV3.win.desy.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:28475 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752801Ab3JBHtU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Oct 2013 03:49:20 -0400
+Received: from relay.felk.cvut.cz ([147.32.80.7]:63441 "EHLO
+	relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752806Ab3JBJTM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Oct 2013 05:19:12 -0400
 In-Reply-To: <5B48DC5BA8D5D64A8F5E39AC7EF2A42008B864@ADXV3.win.desy.de>
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "May, Stefan" <stefan.may@desy.de>, =?ISO-8859-1?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>, linux-can@vger.kernel.org
+To: "May, Stefan" <stefan.may@desy.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, =?iso-8859-1?q?Heinz-J=FCrgen?= Oertel <hj.oertel@t-online.de>, linux-can@vger.kernel.org, Michal Sojka <sojkam1@fel.cvut.cz>
 
+Hello All,
 
+I monitor this discussion for longer time.
+Unfortuantelly I am quite out of time and we need some more
+testing of newer kernels with SocketCAN and some alternatives
+to backup my observations. But I cannot stay longer silent.
 
+On Tuesday 01 of October 2013 22:20:55 May, Stefan wrote:
+> > And add a CUSE adaption for your legacy costumers.
+>
+> CUSE adaption is not possible in the case of can4linux API. I tried that
+> once and failed. The reason is in read() and write() call where can4linux
+> chooses to use the number of frames instead of bytes for the count
+> parameter.
 
+Such choice is broken by design and I would beg and protest against
+inclusion of such thing into mainline. This is against POSIX
+read/write calls definitions. This breaks all tools like Valgrind
+and security checks etc. You can do so such weird things on Linux
+but under Windows KDM and WDM models with IRP packets you cannot.
+Same in many sane systems either. It breaks possible future modifications
+of Linux to the more microkernel/hypervisor based design etc.
+(and yes, I am aware that there is/was similar brokenness in mainline
+kernel already somewhere in I2C code where read uses address provided
+in the first byte of buff which should be receive only, but at least
+size matches).
 
-"May, Stefan" <stefan.may@desy.de> schrieb:
->> And add a CUSE adaption for your legacy costumers.
->
->CUSE adaption is not possible in the case of can4linux API. I tried
->that once and failed. The reason is in read() and write() call where
->can4linux chooses to use the number of frames instead of bytes for the
->count parameter.
->
+On Wednesday 02 of October 2013 09:49:12 Oliver Hartkopp wrote:
+> Btw. CUSE is open source.
+> Why not adding a feature to CUSE that allows to pass the number of structs
+> instead of the number of bytes?
 
-This is not the standard way :-(
+Please no, NO, I expect that CUSE maintainers would cry loud as well.
 
-Btw. CUSE is open source.
-Why not adding a feature to CUSE that allows to pass the number of stru=
-cts instead of the number of bytes?
+Lack of in and out size arguments for IOCTL in POSIX standard
+is enough disaster for now. That is one of (hopefully) not so
+many things which are better on Windows and cannot be corrected
+ON Linux without standard breakage. When suggested IOCL values
+construction is used then it IS not so horrible for usual cases.
 
-Regards,
-Oliver
+On the other hand, there is really only limited space for CUSE
+use when we speak about CAN and real CAN applications targetting
+control and real real-time applications. There would be even
+additional overhead added to the SocketCAN.
 
->mfg, Stefan May.
->
->
->
->-----Urspr=C3=BCngliche Nachricht-----
->Von: linux-can-owner@vger.kernel.org im Auftrag von Oliver Hartkopp
->Gesendet: Mo 30.09.2013 11:35
->An: Heinz-J=C3=BCrgen Oertel; linux-can@vger.kernel.org
->Betreff: Re: adding can4linux to drivers/char
->=20
->
->
->
->
->"Heinz-J=C3=BCrgen Oertel" <hj.oertel@t-online.de> schrieb:
->>Sebastion,
->>thanks for at least being open for my arguments.
->
->Hello Heinz,=20
->
->I was open to your arguments too.
->
->But I'm definitely against including a separate set of CAN drivers int=
-o
->the Kernel. Adding a separate API is ok - but creating separate driver=
-s
->for the exactly same hardware will not work!
->
->>Am Sonntag, 29. September 2013, 19:45:09 schrieb Sebastian Haas:
->>> The Socket approach has some real advantages (multi-user for single
->>> CAN controller,
->>
->>I like only comment this one.
->>Multiple applications can of course share one device in can4linux.
->>
->
->Yes but people have to learn about all that. And with the 'even easier=
-'
->known and clean socket API there's a proper separation between the use=
-r
->stuff and the admin interfaces like bitrate setting. There's a reason
->why developers thank the developers here, when the started with
->SocketCAN.
->
->>And Marc, because some of the drivers exist much longer than
->SocketCAN,
->>one should be respectful and don't name only one driver 'linux CAN'.=20
->
->The reason why SocketCAN was invented was because there was a complete
->mix of different CAN drivers with thousands of different crappy
->programming interfaces (mailbox ids in can frame structures) and many
->vendor lock-ins.
->
->SocketCAN has been discussed at least for two years until it made it's
->way into mainline. There was no contribution from all the CAN hardware
->manifacturers except PEAK, which supported SocketCAN in their
->out-of-tree driver (and now in mainline linux).
->
->Even the 'performance' argument is no argument to go for a different
->CAN  infrastructure in the kernel. See my thesis or the measurements
->from the University of Prague comparing the OCAN driver with SocketCAN=
-=2E
->
->If you feel things are missing, please discuss and contribute them
->here. It's never too late. But starting a new chardev discussion with
->all the different chardev flavours from all the different vendors will
->not fix any problem for Linux users. They will get lost, like it was
->before SocketCAN.=20
->Add your currently unsupported hardware as netdev drivers. People will
->appreciate that. And add a CUSE adaption for your legacy costumers. An=
-d
->if there's anything that's missing or has to be fixed in SocketCAN hel=
-p
->us to fix it.
->
->Regards,
->Oliver
->
->ps. I'm currently on vacation and this mail was sent from my wifes
->mobile.  So I'll not be able to answer like you know it from me.
+And there are legal demand for Linux CAN support suitable
+for real real-time/(near)hard real-time applications. SocketCAN
+has very nice API, but its overhead and Linux networking
+stack problems with RT-kernel are significant obstacles,
+at least according our long time testing.
 
---=20
-Diese Nachricht wurde von meinem Android-Mobiltelefon mit K-9 Mail gese=
-ndet.
+We (mainly my colleague Michal Sojka and this year even
+Martin Horenovsky - student paid from our group budget over holidays)
+have spent significant time on Linux CAN system testing and measurement.
+This year round is not finished and interpretation is missing still.
+We have intended to announce that after some analysis is finished
+but to have some clue for possible future discussion, there are
+actual results
+
+  http://rtime.felk.cvut.cz/can/benchmark/3.0/
+
+Even simple/not-tuned RTEMS system driver was added to the
+test (per journal article reviewer request to compare against
+other system). And it latencies are much much better than
+SocketCAN or any RT kernel (we need to find time for update/porting/testing
+latest ones but that is not so easy - 3.6.x-rt and around were
+totally unusable on our HW). RT usability indicator "nop-highprio"
+test breaks many RT kernels when Etherned load is applied and results
+are not so great even for these which work
+
+http://rtime.felk.cvut.cz/can/benchmark/3.0/host-2.6.36.2-00015-g4f1bc4e/2.6.33.7-rt29-00004-g92487e4/flood/eth/nop-highprio/results.html
+
+Compare Linux results with RTEMS
+
+http://rtime.felk.cvut.cz/can/benchmark/3.0/host-2.6.36.2-00015-g4f1bc4e/rtems4.10-midam/flood/eth/nop-highprio/results.html
+
+The comparison is not fair to Linux, RTEMS driver is really much simpler
+and no GW functionality or other SocketCAN/Linux advantages are present.
+"GW" is only simple copy from one CAN interface to another through open,
+read and write calls in standard application, but RTEMS has no 
+userspace/kernelspace call overhead (it uses same memory context
+and no protection in our case). But it illustrates bare
+HW capabilities.
+
+I have more things and thought to say but I am not fully ready
+for that and I have fear that required amount of work is above
+my time and knowledge so most of my thoughts are more or less
+grumbles.
+
+Best wishes,
+
+                Pavel
