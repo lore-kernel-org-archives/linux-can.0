@@ -1,29 +1,32 @@
-From: Aijaz Lending <yin01@aijaz527.onmicrosoft.com>
-Subject: looking for loan
-Date: Fri, 4 Oct 2013 01:32:25 +0530
-Message-ID: <cd860669-4969-42a9-9503-9a527399cc0d@HKXPR02MB213.apcprd02.prod.outlook.com>
-Reply-To: <sg.loan.sg@outlook.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 0/2] can: flexcan: proposed fixes for v3.12
+Date: Fri,  4 Oct 2013 12:48:51 +0200
+Message-ID: <1380883733-11995-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from emea01-db3-ndr.ptr.protection.outlook.com ([157.56.120.104]:27938
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754931Ab3JCUDE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Oct 2013 16:03:04 -0400
-Content-Description: Mail message body
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59311 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753557Ab3JDKs7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Oct 2013 06:48:59 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <yin01@aijaz527.onmicrosoft.com>
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 
-Do you have a firm or company that need loan to start up a business or need,personal loan, Debt consolidation? For more information,Contact us now for a guarantee loan with low interest rate. We will provide you with loan to meet your needs. For more information contact us with the following information's.
-Full name:
-country:
-Address:
-Phone Number:
-Amount needed:
-Duration of loan:
+Hello,
 
-sg.loan.sg@outlook.com
-Kind regards
+while hacking on a new feature on the flexcan driver I found two problems:
+
+In my last patch on the flexcan dirver I removed the loop from
+flexcan_chip_start(), this causes pending TX messages not beeing aborted on
+device resart. Lothar, can you please test this patch on mx6.
+
+The second patch fixes the problem, that a DT probed mx28 flexcan core is
+detected as p1010. This activaes a workaround in the driver which is not
+needed, the bus error interrupt is always active.
+
+Please test, both patches apply to current net/master, latest v3.12-rcX should
+work, too.
+
+regards,
+Marc
+
