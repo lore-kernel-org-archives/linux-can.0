@@ -1,61 +1,65 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 1/7] can: berr_limit support
-Date: Mon, 07 Oct 2013 21:38:30 +0200
-Message-ID: <52530DB6.2020407@grandegger.com>
-References: <1381156840-24071-1-git-send-email-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/3] remove do_get_state() callback
+Date: Mon, 07 Oct 2013 21:39:25 +0200
+Message-ID: <52530DED.5080604@pengutronix.de>
+References: <1381157168-24588-1-git-send-email-mkl@pengutronix.de> <52530AAB.4040808@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:59676 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754897Ab3JGTig (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 15:38:36 -0400
-In-Reply-To: <1381156840-24071-1-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51228 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751642Ab3JGTje (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 15:39:34 -0400
+In-Reply-To: <52530AAB.4040808@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 10/07/2013 04:40 PM, Marc Kleine-Budde wrote:
-> Hello,
-> 
-> this series does first some cleanups in can/dev.c, the implementation of three
-> functions is sorted by IFLA_CAN_*, that we can see at the first look, that all
-> needed IFLA_CAN_* are handled and that new code can be added at the end. 
-> 
-> Then the bus error limiting (short: berr_limit) infrastructure + netlink
-> configuration interface is added. Last patch is an example implementation on
-> the flexcan hardware.
-> 
-> The CAN bus, like the old 10BASE2 Ethernet, needs bus termination. An open CAN
-> bus doesn't work and will produce lots of CAN bus errors.
-> 
-> If the user wants to detect an open CAN bus, the CAN bus error interrupts have
-> to be enabled. This is represented by the control mode
-> CAN_CTRLMODE_BERR_REPORTING.
-> 
-> On an unterminated CAN bus at 500 kbit/s, this can lead to more then 8000
-> interrupts/s on some SoCs with integrated CAN cores. These interrupts and the
-> associated processing in software lead to a significant load and may reader the
-> system unresponsive and even unusable at CAN bus speeds of 1000 kbit/s.
+On 10/07/2013 09:25 PM, Wolfgang Grandegger wrote:
+>> this patch series removes the do_get_state() callback from the driver
+>> interface, as it is not needed to get the state of the interface.
 
-And there might be more than just one interface.
+Then I'll just take "[PATCH 1/3] can: ti_hecc: remove
+priv->can.do_get_state() callback"
 
-> This patch adds the infrastructure to limit these interrupts. The driver has to
-> implement the do_berr_restart() callback, which re-enables the bus error
-> interrupts. The idea is to delay the re-enabling of the interrupts after they
-> have been served. The delay is configured by berr_limit_delay. A value of 0
-> means interrupts are restarted immediately, any other other value will start a
-> timer and call do_berr_restart() when the timer fires.
+> I just realized that Max's GS-USB driver would require it because the
+> device does not send asynchronous error and state change messages. But
+> thinking more about it, I tend to nack such a solution as it breaks man=
+y
+> user space programs.
 
-IIRC, some versions of the Flexcan controller need bus error interupts
-enabled otherwise state changes are not realized. This makes an
-efficient support for CAN_CTRLMODE_BERR_REPORTING impossible, which can
-normally be achieved by simply masking the interrupt source. Does state
-change reporting still work properly with this kind of interrupt
-throttling? Apart from that the approach looks good.
+The real need for a synchronous state callback to the driver has come
+with the GS-USB device. I'll drop patches 2+3.
 
-Wolfgang.
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlJTDe0ACgkQjTAFq1RaXHMyDwCcC2ULxJZWMBuL0Uw50CFs2qcx
+cvYAnjGdE+bDbwtgrCFDB5ZApfSo6uDC
+=uZwq
+-----END PGP SIGNATURE-----
+
+--6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD--
