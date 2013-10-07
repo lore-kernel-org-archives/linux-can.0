@@ -1,64 +1,70 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: =?UTF-8?Q?GS=5FUSB?=
-Date: Mon, 07 Oct 2013 16:37:32 +0200
-Message-ID: <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
-References: <1380889887.22484.2.camel@blackbox>
- <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4/7] can: dev: sort can_changelink() by IFLA_CAN_*
+Date: Mon,  7 Oct 2013 16:40:37 +0200
+Message-ID: <1381156840-24071-5-git-send-email-mkl@pengutronix.de>
+References: <1381156840-24071-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from uranus.manitu.net ([217.11.48.8]:54666 "EHLO uranus.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754693Ab3JGOhe (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 7 Oct 2013 10:37:34 -0400
-In-Reply-To: <1381155720.21207.7.camel@blackbox>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33015 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755297Ab3JGOkq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 10:40:46 -0400
+In-Reply-To: <1381156840-24071-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On Mon, 07 Oct 2013 14:22:00 +0000, "Max S." <max@schneidersoft.net>
+This patch sorts the handling of data[IFLA_CAN_*] by IFLA_CAN_*.
 
-wrote:
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/dev.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-> Hello Wolfgang,
-
-> 
-
-> Here is the cleaned up patch incorporating your suggestions.
-
-> 
-
-> I am using "git commit --amend" to compile changes into a single patch.
-
-> Is this the correct method?
-
-
-
-I normally use "git rebase -i <first-commit-id>"? It's very
-
-powerful and allows to reorder, squash, re-word commits and
-
-much more.
-
-
-
-Will not find time for the review today...
-
-
-
-The CAN controller does not do any asynchronous error reporting,
-
-right? This will limit the usability of this device, especially
-
-CAN applications relying on that feature will not work. Any chance
-
-to add asynchronous error reporting to the firmware?
-
-
-
-Wolfgang.
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 8d6f721..bda1888 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -645,19 +645,6 @@ static int can_changelink(struct net_device *dev,
+ 	/* We need synchronization with dev->stop() */
+ 	ASSERT_RTNL();
+ 
+-	if (data[IFLA_CAN_CTRLMODE]) {
+-		struct can_ctrlmode *cm;
+-
+-		/* Do not allow changing controller mode while running */
+-		if (dev->flags & IFF_UP)
+-			return -EBUSY;
+-		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+-		if (cm->flags & ~priv->ctrlmode_supported)
+-			return -EOPNOTSUPP;
+-		priv->ctrlmode &= ~cm->mask;
+-		priv->ctrlmode |= cm->flags;
+-	}
+-
+ 	if (data[IFLA_CAN_BITTIMING]) {
+ 		struct can_bittiming bt;
+ 
+@@ -680,6 +667,19 @@ static int can_changelink(struct net_device *dev,
+ 		}
+ 	}
+ 
++	if (data[IFLA_CAN_CTRLMODE]) {
++		struct can_ctrlmode *cm;
++
++		/* Do not allow changing controller mode while running */
++		if (dev->flags & IFF_UP)
++			return -EBUSY;
++		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
++		if (cm->flags & ~priv->ctrlmode_supported)
++			return -EOPNOTSUPP;
++		priv->ctrlmode &= ~cm->mask;
++		priv->ctrlmode |= cm->flags;
++	}
++
+ 	if (data[IFLA_CAN_RESTART_MS]) {
+ 		/* Do not allow changing restart delay while running */
+ 		if (dev->flags & IFF_UP)
+-- 
+1.8.4.rc3
 
