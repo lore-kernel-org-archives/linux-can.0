@@ -1,65 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/3] remove do_get_state() callback
-Date: Mon, 07 Oct 2013 21:39:25 +0200
-Message-ID: <52530DED.5080604@pengutronix.de>
-References: <1381157168-24588-1-git-send-email-mkl@pengutronix.de> <52530AAB.4040808@grandegger.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: Re: GS_USB
+Date: Mon, 07 Oct 2013 19:52:26 +0000
+Message-ID: <1381175546.21207.37.camel@blackbox>
+References: <1380889887.22484.2.camel@blackbox>
+	 <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
+	 <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51228 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751642Ab3JGTje (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 15:39:34 -0400
-In-Reply-To: <52530AAB.4040808@grandegger.com>
+Received: from mail.schneidersoft.net ([173.45.248.65]:50236 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751642Ab3JGTlF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 15:41:05 -0400
+In-Reply-To: <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: linux-can <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, 2013-10-07 at 16:37 +0200, Wolfgang Grandegger wrote:
+> Will not find time for the review today...
 
-On 10/07/2013 09:25 PM, Wolfgang Grandegger wrote:
->> this patch series removes the do_get_state() callback from the driver
->> interface, as it is not needed to get the state of the interface.
+no problem.
 
-Then I'll just take "[PATCH 1/3] can: ti_hecc: remove
-priv->can.do_get_state() callback"
+> The CAN controller does not do any asynchronous error reporting,
+> right? This will limit the usability of this device, especially
+> CAN applications relying on that feature will not work. Any chance
+> to add asynchronous error reporting to the firmware?
 
-> I just realized that Max's GS-USB driver would require it because the
-> device does not send asynchronous error and state change messages. But
-> thinking more about it, I tend to nack such a solution as it breaks man=
-y
-> user space programs.
+Only CAN_ERR_CRTL_RX_OVERFLOW is currently reported (possible when host
+is too slow).
+CAN_ERR_CRTL_TX_OVERFLOW is impossible due to the driver design
+(tx context + echo).
 
-The real need for a synchronous state callback to the driver has come
-with the GS-USB device. I'll drop patches 2+3.
+Which errors are most important to the applications you mentioned?
 
-Marc
+The hardware does not allow for the sensing of the CAN_ERR_TRX_* errors.
+I can sense some  CAN_ERR_PROT_* errors, as well as all CAN_ERR_CRTL_*
+errors.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+In firmware it is possible to queue error/status frames much like normal
+frames. So they would show up in the receive callback... Thats what you
+meant by asynchronous right?
 
+regards,
+Max Schneider.
 
---6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJTDe0ACgkQjTAFq1RaXHMyDwCcC2ULxJZWMBuL0Uw50CFs2qcx
-cvYAnjGdE+bDbwtgrCFDB5ZApfSo6uDC
-=uZwq
------END PGP SIGNATURE-----
-
---6aQfoPkOCmHBeOrmF4cdsA4BlkwNgF1OD--
