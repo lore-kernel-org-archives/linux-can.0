@@ -1,55 +1,64 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: dev: fix nlmsg size calculation in  can_get_size()
-Date: Mon, 07 Oct 2013 16:26:41 +0200
-Message-ID: <5252C4A1.8030903@pengutronix.de>
-References: <1381001117-19624-1-git-send-email-mkl@pengutronix.de> <52507B7D.6030008@grandegger.com> <5252C1CC.4060809@pengutronix.de> <705c23ba0332d9658b8760cd5d460e8a@grandegger.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: =?UTF-8?Q?GS=5FUSB?=
+Date: Mon, 07 Oct 2013 16:37:32 +0200
+Message-ID: <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
+References: <1380889887.22484.2.camel@blackbox>
+ <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="r5RF3oLnSdIVLj9E1bBMW6P7PUt4GK413"
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50759 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753401Ab3JGO0s (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 10:26:48 -0400
-In-Reply-To: <705c23ba0332d9658b8760cd5d460e8a@grandegger.com>
+Received: from uranus.manitu.net ([217.11.48.8]:54666 "EHLO uranus.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754693Ab3JGOhe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 7 Oct 2013 10:37:34 -0400
+In-Reply-To: <1381155720.21207.7.camel@blackbox>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: "Max S." <max@schneidersoft.net>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---r5RF3oLnSdIVLj9E1bBMW6P7PUt4GK413
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, 07 Oct 2013 14:22:00 +0000, "Max S." <max@schneidersoft.net>
 
-On 10/07/2013 04:24 PM, Wolfgang Grandegger wrote:
+wrote:
 
->> Is this an Acked-by? :)
-> Yep, obviously a long time ago that I did something for Linux-CAN :(.
+> Hello Wolfgang,
 
-Thx, there are some netlink related patches coming soon :)
+> 
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> Here is the cleaned up patch incorporating your suggestions.
+
+> 
+
+> I am using "git commit --amend" to compile changes into a single patch.
+
+> Is this the correct method?
 
 
---r5RF3oLnSdIVLj9E1bBMW6P7PUt4GK413
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+I normally use "git rebase -i <first-commit-id>"? It's very
 
-iEYEARECAAYFAlJSxKEACgkQjTAFq1RaXHNOOwCfUEu4y01lZ12hmFePdwzZhzCc
-5nQAni8BVNbq7WfSHbT0ub28HHyODtLL
-=xZHG
------END PGP SIGNATURE-----
+powerful and allows to reorder, squash, re-word commits and
 
---r5RF3oLnSdIVLj9E1bBMW6P7PUt4GK413--
+much more.
+
+
+
+Will not find time for the review today...
+
+
+
+The CAN controller does not do any asynchronous error reporting,
+
+right? This will limit the usability of this device, especially
+
+CAN applications relying on that feature will not work. Any chance
+
+to add asynchronous error reporting to the firmware?
+
+
+
+Wolfgang.
+
+
