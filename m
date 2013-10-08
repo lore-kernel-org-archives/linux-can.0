@@ -1,109 +1,143 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: sja1000 interrupt problem
-Date: Mon, 7 Oct 2013 17:47:48 -0700
-Message-ID: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
+From: Brian Thorne <hardbyte@gmail.com>
+Subject: [PATCH] Broadcast manager documentation
+Date: Tue, 8 Oct 2013 13:56:57 +1300
+Message-ID: <CAENe87otPZVjDkvJJDR4CLE2e4dcyzde1=5rQZWytG_JyOpvsQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/mixed; boundary=047d7bd7623ee2eeed04e8303e7e
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ie0-f169.google.com ([209.85.223.169]:39631 "EHLO
-	mail-ie0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751327Ab3JHArt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 20:47:49 -0400
-Received: by mail-ie0-f169.google.com with SMTP id tp5so17815061ieb.14
-        for <linux-can@vger.kernel.org>; Mon, 07 Oct 2013 17:47:48 -0700 (PDT)
+Received: from mail-vb0-f53.google.com ([209.85.212.53]:44430 "EHLO
+	mail-vb0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751484Ab3JHA46 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Oct 2013 20:56:58 -0400
+Received: by mail-vb0-f53.google.com with SMTP id i3so3741913vbh.40
+        for <linux-can@vger.kernel.org>; Mon, 07 Oct 2013 17:56:58 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-I am seeing the following problem with my Peak miniPCIe card.  After
-being up for a long time and not having any programs listening to the
-CAN traffic, I get the following message from dmesg, and then I start
-not receiving packets (Some get through, but not all of them.)
+--047d7bd7623ee2eeed04e8303e7e
+Content-Type: text/plain; charset=UTF-8
 
-Is this a known issue?  Are there any tests that I can run to help
-isolate and fix the problem?
+Hi all,
 
-Thanks,
-    Austin Schuh
+I wanted to use the bcm module and ended up putting together some basic findings
+that might be a useful addition to the can.txt documentation.
 
-$ lspci -v -s 05:00.0
-05:00.0 Network controller: PEAK-System Technik GmbH Device 0008 (rev 02)
-        Subsystem: PEAK-System Technik GmbH Device 0005
-        Flags: bus master, fast devsel, latency 0, IRQ 18
-        Memory at e0510000 (32-bit, non-prefetchable) [size=64K]
-        Memory at e0500000 (32-bit, non-prefetchable) [size=64K]
-        Capabilities: [50] Power Management version 0
-        Capabilities: [70] MSI: Enable- Count=1/1 Maskable- 64bit+
-        Capabilities: [90] Express Endpoint, MSI 00
-        Capabilities: [100] Vendor Specific Information: ID=0000 Rev=0
-Len=00c <?>
-        Kernel driver in use: peak_pci
+I haven't tried submitting any patches before so please point out any mistakes.
 
-$ uname -a
-Linux vpc3 3.10-3-rt-amd64 #1 SMP PREEMPT RT Debian 3.10.11-1
-(2013-09-10) x86_64 GNU/Linux
+Cheers,
+Brian
 
-$ dmesg
---- snip ---
-[105918.136633] irq 18: nobody cared (try booting with the "irqpoll" option)
-[105918.136763] CPU: 1 PID: 202 Comm: irq/18-ata_gene Not tainted
-3.10-3-rt-amd64 #1 Debian 3.10.11-1
-[105918.136768] Hardware name: CompuLab Intense-PC/Intense-PC, BIOS
-CR_2.2.0.377 X64 04/10/2013
-[105918.136777]  ffffffff8139f8fc 000000000000003c ffffffff810a2d43
-ffff88042a4b5600
-[105918.136781]  0000000000000000 ffff88042750ece0 ffffffff810a3182
-ffffffff814089d0
-[105918.136785]  ffff880426527c80 ffff88042a4b5600 ffff88042750ece0
-ffffffff810a13d7
-[105918.136791] Call Trace:
-[105918.136805]  [<ffffffff8139f8fc>] ? dump_stack+0xd/0x17
-[105918.136814]  [<ffffffff810a2d43>] ? __report_bad_irq+0x21/0xc1
-[105918.136819]  [<ffffffff810a3182>] ? note_interrupt+0x16d/0x1ff
-[105918.136824]  [<ffffffff810a13d7>] ? irq_thread_fn+0x30/0x30
-[105918.136828]  [<ffffffff810a1d9c>] ? irq_thread+0xaf/0x190
-[105918.136833]  [<ffffffff810a1e7d>] ? irq_thread+0x190/0x190
-[105918.136837]  [<ffffffff810a1ced>] ? wake_threads_waitq+0x3a/0x3a
-[105918.136843]  [<ffffffff8105a909>] ? kthread+0x81/0x89
-[105918.136848]  [<ffffffff8105a888>] ? __kthread_parkme+0x5c/0x5c
-[105918.136854]  [<ffffffff813a75fc>] ? ret_from_fork+0x7c/0xb0
-[105918.136858]  [<ffffffff8105a888>] ? __kthread_parkme+0x5c/0x5c
-[105918.136861] handlers:
-[105918.136962] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa00db857>] ata_bmdma_interrupt [libata]
-[105918.136972] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-[105918.136980] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-[105918.136981] Disabling IRQ #18
-[202007.935715] irq 18: nobody cared (try booting with the "irqpoll" option)
-[202007.935860] CPU: 0 PID: 202 Comm: irq/18-ata_gene Not tainted
-3.10-3-rt-amd64 #1 Debian 3.10.11-1
-[202007.935865] Hardware name: CompuLab Intense-PC/Intense-PC, BIOS
-CR_2.2.0.377 X64 04/10/2013
-[202007.935874]  ffffffff8139f8fc 000000000000003c ffffffff810a2d43
-ffff88042a4b5600
-[202007.935877]  0000000000000000 ffff88042750ece0 ffffffff810a3182
-ffffffff814089d0
-[202007.935881]  ffff880426527c80 ffff88042a4b5600 ffff88042750ece0
-ffffffff810a13d7
-[202007.935888] Call Trace:
-[202007.935901]  [<ffffffff8139f8fc>] ? dump_stack+0xd/0x17
-[202007.935910]  [<ffffffff810a2d43>] ? __report_bad_irq+0x21/0xc1
-[202007.935915]  [<ffffffff810a3182>] ? note_interrupt+0x16d/0x1ff
-[202007.935920]  [<ffffffff810a13d7>] ? irq_thread_fn+0x30/0x30
-[202007.935925]  [<ffffffff810a1d9c>] ? irq_thread+0xaf/0x190
-[202007.935930]  [<ffffffff810a1e7d>] ? irq_thread+0x190/0x190
-[202007.935936]  [<ffffffff810a1ced>] ? wake_threads_waitq+0x3a/0x3a
-[202007.935944]  [<ffffffff8105a909>] ? kthread+0x81/0x89
-[202007.935950]  [<ffffffff8105a888>] ? __kthread_parkme+0x5c/0x5c
-[202007.935957]  [<ffffffff813a75fc>] ? ret_from_fork+0x7c/0xb0
-[202007.935961]  [<ffffffff8105a888>] ? __kthread_parkme+0x5c/0x5c
-[202007.935964] handlers:
-[202007.936067] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa00db857>] ata_bmdma_interrupt [libata]
-[202007.936076] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-[202007.936084] [<ffffffff810a126f>] irq_default_primary_handler
-threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-[202007.936086] Disabling IRQ #18
+--047d7bd7623ee2eeed04e8303e7e
+Content-Type: application/octet-stream;
+	name="0001-net-Update-the-CAN-broadcast-manager-documentation.patch"
+Content-Disposition: attachment;
+	filename="0001-net-Update-the-CAN-broadcast-manager-documentation.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hmif4xti0
+
+RnJvbSAyODJiNGQyMDJiNTgwZDU3YzM4NGRjODRhZWI3YmJiMDhkZmY1NTZmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBCcmlhbiBUaG9ybmUgPGhhcmRieXRlQGdtYWlsLmNvbT4KRGF0
+ZTogVHVlLCA4IE9jdCAyMDEzIDEyOjEwOjQzICsxMzAwClN1YmplY3Q6IFtQQVRDSF0gbmV0OiBV
+cGRhdGUgdGhlIENBTiBicm9hZGNhc3QgbWFuYWdlciBkb2N1bWVudGF0aW9uCgpBZGQgY29udGVu
+dCB0byBlbXB0eSBzZWN0aW9uIGluIGNvbnRyb2xsZXIgYXJlYSBuZXR3b3JrCmRvY3VtZW50YXRp
+b24uCgpTaWduZWQtb2ZmLWJ5OiBCcmlhbiBUaG9ybmUgPGhhcmRieXRlQGdtYWlsLmNvbT4KLS0t
+CiBEb2N1bWVudGF0aW9uL25ldHdvcmtpbmcvY2FuLnR4dCB8IDEzMiArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxMzIgaW5zZXJ0aW9ucygr
+KQoKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vbmV0d29ya2luZy9jYW4udHh0IGIvRG9jdW1l
+bnRhdGlvbi9uZXR3b3JraW5nL2Nhbi50eHQKaW5kZXggODIwZjU1My4uMzhiMWQ3ZSAxMDA2NDQK
+LS0tIGEvRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2Nhbi50eHQKKysrIGIvRG9jdW1lbnRhdGlv
+bi9uZXR3b3JraW5nL2Nhbi50eHQKQEAgLTU5Myw2ICs1OTMsMTM4IEBAIHNvbHV0aW9uIGZvciBh
+IGNvdXBsZSBvZiByZWFzb25zOgogICAgICAgSW4gb3JkZXIgdG8gcmVjZWl2ZSBzdWNoIG1lc3Nh
+Z2VzLCBDQU5fUkFXX1JFQ1ZfT1dOX01TR1MgbXVzdCBiZSBzZXQuCiAKICAgNC4yIEJyb2FkY2Fz
+dCBNYW5hZ2VyIHByb3RvY29sIHNvY2tldHMgKFNPQ0tfREdSQU0pCisKKyAgVGhlIEJyb2FkY2Fz
+dCBNYW5hZ2VyIHByb3RvY29sIHByb3ZpZGVzIGFuIGludGVyZmFjZSB0byBmaWx0ZXIgYW5kIHNl
+bmQKKyAgY3ljbGljIENBTiBwYWNrZXRzIGluIGtlcm5lbCBzcGFjZS4KKworICBQZXJpb2RpYyB0
+cmFuc21pc3Npb25zIGNhbiBiZSBtb2RpZmllZCBhdCBydW50aW1lOyBib3RoIHRoZSBtZXNzYWdl
+IGNvbnRlbnQKKyAgYW5kIHRoZSBpbnRlcnZhbCBjYW4gYmUgYWx0ZXJlZC4gUGVyaW9kaWMgdHJh
+bnNtaXNzaW9ucyBjYW4gdXNlIG11bHRpcGxlCisgIGludGVydmFscywgc2VuZGluZyBOIG1lc3Nh
+Z2VzIGF0IGEgaW50ZXJ2YWwsIHRoZW4gY29udGludWluZyB0byBzZW5kIGF0CisgIGFub3RoZXIg
+Z2l2ZW4gaW50ZXJ2YWwuCisKKyAgUmVjZWl2ZSBmaWx0ZXJzIGNhbiBiZSB1c2VkIHRvIGRvd24g
+c2FtcGxlIGZyZXF1ZW50IG1lc3NhZ2VzOyBkZXRlY3QgZXZlbnRzCisgIHN1Y2ggYXMgbWVzc2Fn
+ZSBjb250ZW50cyBjaGFuZ2VzLCBwYWNrZXQgbGVuZ3RoIGNoYW5nZXMsIGFuZCBkbyB0aW1lLW91
+dAorICBtb25pdG9yaW5nIG9mIHJlY2VpdmVkIG1lc3NhZ2VzLgorCisgIEEgQkNNIHNvY2tldCBp
+cyBub3QgdXNlZCBmb3Igc2VuZGluZyBpbmRpdmlkdWFsIGNhbiBmcmFtZXMsIGluc3RlYWQgYSBu
+ZXcKKyAgc3BlY2lhbCBtZXNzYWdlIGlzIGRlZmluZWQuIFRoZSBiYXNpYyBCQ00gZnJhbWUgc3Ry
+dWN0dXJlIHVzZWQgdG8KKyAgY29tbXVuaWNhdGUgd2l0aCB0aGUgYnJvYWRjYXN0IG1hbmFnZXIg
+YW5kIHRoZSBhdmFpbGFibGUgb3BlcmF0aW9ucyBhcmUKKyAgZGVmaW5lZCBpbiBpbmNsdWRlL2xp
+bnV4L2Nhbi9iY20uaC4gVGhlIGJhc2ljIEJDTSBmcmFtZSBjb25zaXN0cyBvZiBhCisgIG1lc3Nh
+Z2UgaGVhZGVyIHdpdGggYW4gb3Bjb2RlIGNvbW1hbmQgZm9sbG93ZWQgYnkgemVybyBvciBtb3Jl
+IGNhbiBmcmFtZXMuCisgIFRoZSBicm9hZGNhc3QgbWFuYWdlciBzZW5kcyByZXNwb25zZXMgdG8g
+dXNlciBzcGFjZSBpbiB0aGUgc2FtZSBmb3JtOgorCisgICAgc3RydWN0IGJjbV9tc2dfaGVhZCB7
+CisgICAgICAgICAgICBfX3UzMiBvcGNvZGU7ICAgICAgICAgICAgICAgICAgIC8qIGNvbW1hbmQg
+Ki8KKyAgICAgICAgICAgIF9fdTMyIGZsYWdzOyAgICAgICAgICAgICAgICAgICAgLyogc3BlY2lh
+bCBmbGFncyAqLworICAgICAgICAgICAgX191MzIgY291bnQ7ICAgICAgICAgICAgICAgICAgICAv
+KiBydW4gJ2NvdW50JyB0aW1lcyB3aXRoIGl2YWwxICovCisgICAgICAgICAgICBzdHJ1Y3QgdGlt
+ZXZhbCBpdmFsMSwgaXZhbDI7ICAgIC8qIGNvdW50IGFuZCBzdWJzZXF1ZW50IGludGVydmFsICov
+CisgICAgICAgICAgICBjYW5pZF90IGNhbl9pZDsgICAgICAgICAgICAgICAgIC8qIHVuaXF1ZSBj
+YW5faWQgZm9yIHRhc2sgKi8KKyAgICAgICAgICAgIF9fdTMyIG5mcmFtZXM7ICAgICAgICAgICAg
+ICAgICAgLyogbnVtYmVyIG9mIGNhbl9mcmFtZXMgZm9sbG93aW5nICovCisgICAgICAgICAgICBz
+dHJ1Y3QgY2FuX2ZyYW1lIGZyYW1lc1swXTsKKyAgICB9OworCisgIFRoZSBmcmFtZXMgcGF5bG9h
+ZCB1c2VzIHRoZSBzYW1lIGJhc2ljIENBTiBmcmFtZSBzdHJ1Y3R1cmUgZGVmaW5lZCBhdCB0aGUK
+KyAgYmVnaW5uaW5nIG9mIHNlY3Rpb24gNC4gQWxsIG1lc3NhZ2VzIHRvIHRoZSBicm9hZGNhc3Qg
+bWFuYWdlciBmcm9tIHVzZXIKKyAgc3BhY2UgaGF2ZSB0aGlzIHN0cnVjdHVyZS4KKworICBOb3Rl
+IGEgQ0FOX0JDTSBzb2NrZXQgbXVzdCBiZSBjb25uZWN0ZWQgaW5zdGVhZCBvZiBib3VuZCBhZnRl
+ciBzb2NrZXQKKyAgY3JlYXRpb24gKGV4YW1wbGUgd2l0aG91dCBlcnJvciBjaGVja2luZyk6CisK
+KyAgICBpbnQgczsKKyAgICBzdHJ1Y3Qgc29ja2FkZHJfY2FuIGFkZHI7CisgICAgc3RydWN0IGlm
+cmVxIGlmcjsKKworICAgIHMgPSBzb2NrZXQoUEZfQ0FOLCBTT0NLX0RHUkFNLCBDQU5fQkNNKTsK
+KworICAgIHN0cmNweShpZnIuaWZyX25hbWUsICJjYW4wIik7CisgICAgaW9jdGwocywgU0lPQ0dJ
+RklOREVYLCAmaWZyKTsKKworICAgIGFkZHIuY2FuX2ZhbWlseSA9IEFGX0NBTjsKKyAgICBhZGRy
+LmNhbl9pZmluZGV4ID0gaWZyLmlmcl9pZmluZGV4OworCisgICAgY29ubmVjdChzLCAoc3RydWN0
+IHNvY2thZGRyICopJmFkZHIsIHNpemVvZihhZGRyKSkKKworICAgICguLikKKworICBUaGUgYnJv
+YWRjYXN0IG1hbmFnZXIgc29ja2V0IGlzIGFibGUgdG8gaGFuZGxlIGFueSBudW1iZXIgb2YgaW4g
+ZmxpZ2h0CisgIHRyYW5zbWlzc2lvbnMgb3IgcmVjZWl2ZSBmaWx0ZXJzIGNvbmN1cnJlbnRseS4g
+SG93ZXZlciBhZGRpdGlvbmFsIHNvY2tldHMKKyAgYXJlIHJlcXVpcmVkIHRvIGNvbW11bmljYXRl
+IG9uIG11bHRpcGxlIENBTiBidXNlcy4KKworICA0LjIuMSBCcm9hZGNhc3QgTWFuYWdlciBPcGVy
+YXRpb25zCisKKyAgVGhlIG9wY29kZSBkZWZpbmVzIHRoZSBvcGVyYXRpb24gZm9yIHRoZSBicm9h
+ZGNhc3QgbWFuYWdlciB0byBjYXJyeSBvdXQsIG9yCisgIGRldGFpbHMgdGhlIGJyb2FkY2FzdCBt
+YW5hZ2VycyByZXNwb25zZSB0byBzZXZlcmFsIGV2ZW50cywgaW5jbHVkaW5nIHVzZXIKKyAgcmVx
+dWVzdHMuCisKKyAgVHJhbnNtaXQgT3BlcmF0aW9ucworCisgIFRoZSBmb2xsb3dpbmcgdHJhbnNt
+aXQgb3BlcmF0aW9ucyBtYXkgYmUgc2VudCBmcm9tIHVzZXIgc3BhY2UgdG8gdGhlCisgIGJyb2Fk
+Y2FzdCBtYW5hZ2VyOgorCisgICAgVFhfU0VUVVA6ICAgY3JlYXRlIChjeWNsaWMpIHRyYW5zbWlz
+c2lvbiB0YXNrCisKKyAgICBUWF9ERUxFVEU6ICByZW1vdmUgKGN5Y2xpYykgdHJhbnNtaXNzaW9u
+IHRhc2ssIHJlcXVpcmVzIG9ubHkgY2FuX2lkLgorCisgICAgVFhfUkVBRDogICAgcmVhZCBwcm9w
+ZXJ0aWVzIG9mIChjeWNsaWMpIHRyYW5zbWlzc2lvbiB0YXNrCisKKyAgICBUWF9TRU5EOiAgICBz
+ZW5kIG9uZSBDQU4gZnJhbWUKKworICBUcmFuc21pdCBSZXNwb25zZXMKKworICAgIFRYX1NUQVRV
+UzogIHJlcGx5IHRvIFRYX1JFQUQgcmVxdWVzdAorCisgICAgVFhfRVhQSVJFRDogbm90aWZpY2F0
+aW9uIHdoZW4gY291bnRlciBmaW5pc2hlcyBzZW5kaW5nIGF0IGluaXRpYWwgaW50ZXJ2YWwKKyAg
+ICAgIFJlcXVpcmVzIHRoZSBUWF9DT1VOVEVWVCBmbGFnIHRvIGJlIHNldC4KKworICBSZWNlaXZl
+IE9wZXJhdGlvbnMKKworICAgIFJYX1NFVFVQOiAgIGNyZWF0ZSBSWCBjb250ZW50IGZpbHRlciBz
+dWJzY3JpcHRpb24KKworICAgIFJYX0RFTEVURTogIHJlbW92ZSBSWCBjb250ZW50IGZpbHRlciBz
+dWJzY3JpcHRpb24KKworICAgIFJYX1JFQUQ6ICAgIHJlYWQgcHJvcGVydGllcyBvZiBSWCBjb250
+ZW50IGZpbHRlciBzdWJzY3JpcHRpb24KKworICBSZWNlaXZlIFJlc3BvbnNlcworCisgICAgUlhf
+U1RBVFVTOiAgcmVwbHkgdG8gUlhfUkVBRCByZXF1ZXN0CisKKyAgICBSWF9USU1FT1VUOiBDeWNs
+aWMgbWVzc2FnZSBpcyBhYnNlbnQuIFNlbnQgd2hlbiB0aW1lIGNvbnRyb2xsZWQKKyAgICAgIG1l
+c3NhZ2UgcmVjZXB0aW9uIGZhaWxlZC4KKworICAgIFJYX0NIQU5HRUQ6IHVwZGF0ZWQgQ0FOIGZy
+YW1lIChkZXRlY3RlZCBjb250ZW50IGNoYW5nZSkuIFNlbnQgb24gZmlyc3QKKyAgICAgIG1lc3Nh
+Z2UgcmVjZWl2ZWQsIG9yIG9uIGEgcmVjZWlwdCBvZiBhIHJldmlzZWQgQ0FOIG1lc3NhZ2VzLgor
+CisgIDQuMi4yIEJyb2FkY2FzdCBNYW5hZ2VyIG1lc3NhZ2UgZmxhZ3MKKworICBXaGVuIHNlbmRp
+bmcgYSBtZXNzYWdlIHRvIHRoZSBicm9hZGNhc3QgbWFuYWdlciB0aGUgbXNnLT5mbGFncyBtYXkg
+Y29udGFpbgorICB0aGUgZm9sbG93aW5nIGZsYWdzIHdoaWNoIGluZmx1ZW5jZSB0aGUgYmVoYXZp
+b3VyOgorCisgICAgU0VUVElNRVI6ICAgICAgICAgICBTZXQgdGhlIHZhbHVlIG9mIGl2YWwxLCBp
+dmFsMiBhbmQgY291bnQKKworICAgIFNUQVJUVElNRVI6ICAgICAgICAgU3RhcnQgdGhlIHRpbWVy
+IHdpdGggdGhlIGFjdHVhbCB2YWx1ZSBvZiBpdmFsMSwgaXZhbDIKKyAgICAgIGFuZCBjb3VudC4g
+U3RhcnRpbmcgdGhlIHRpbWVyIGxlYWRzIHNpbXVsdGFuZW91c2x5IHRvIGVtaXQgYSBjYW5fZnJh
+bWUuCisKKyAgICBUWF9DT1VOVEVWVDogICAgICAgIGNyZWF0ZSB0aGUgbWVzc2FnZSBUWF9FWFBJ
+UkVEIHdoZW4gY291bnQgZXhwaXJlcworCisgICAgVFhfQU5OT1VOQ0U6ICAgICAgICBBIGNoYW5n
+ZSBvZiBkYXRhIGJ5IHRoZSBwcm9jZXNzIGlzIGVtaXR0ZWQgaW1tZWRpYXRlbHkuCisKKyAgICBU
+WF9DUF9DQU5fSUQ6ICAgICAgIENvcGllcyB0aGUgY2FuX2lkIGZyb20gdGhlIG1lc3NhZ2UgaGVh
+ZGVyIGF0dGFjaGVkIHRvCisgICAgICBlYWNoIGZyYW1lIGluIGZyYW1lcy4gVGhpcyBpcyBpbnRl
+bmRlZCBvbmx5IGFzIHVzYWdlIHNpbXBsaWZpY2F0aW9uLgorCisgICAgUlhfRklMVEVSX0lEOiAg
+ICAgICBGaWx0ZXIgYnkgY2FuX2lkIGFsb25lLCBubyBmcmFtZXMgcmVxdWlyZWQgKG5mcmFtZXM9
+MCkKKworICAgIFJYX0NIRUNLX0RMQzogICAgICAgQSBjaGFuZ2Ugb2YgdGhlIERMQyBsZWFkcyB0
+byBhbiBSWF9DSEFOR0VELgorCisgICAgUlhfTk9fQVVUT1RJTUVSOiAgICBQcmV2ZW50IGF1dG9t
+YXRpY2FsbHkgc3RhcnRpbmcgdGhlIHRpbWVvdXQgbW9uaXRvci4KKworICAgIFJYX0FOTk9VTkNF
+X1JFU1VNRTogSWYgcGFzc2VkIHRvIFJYX1NFVFVQLCB3aGVuIGEgcmVjZWl2ZSB0aW1lb3V0IG9j
+Y3VycywKKyAgICAgIGFuIFJYX0NIQU5HRUQgd2lsbCBiZSBnZW5lcmF0ZWQgd2hlbiB0aGUgKGN5
+Y2xpYykgcmVjZWl2ZSByZXN0YXJ0cy4KKworICAgIFRYX1JFU0VUX01VTFRJX0lEWDogU3RhcnQg
+bXVsdGlwbGUgZnJhbWUgdHJhbnNtaXNzaW9uIHdpdGggaW5kZXggMC4KKworICAgIFJYX1JUUl9G
+UkFNRTogICAgICAgc2VuZCByZXBseSBmb3IgUlRSLXJlcXVlc3QgKHBsYWNlZCBpbiBvcC0+ZnJh
+bWVzWzBdKQorCisKICAgNC4zIGNvbm5lY3RlZCB0cmFuc3BvcnQgcHJvdG9jb2xzIChTT0NLX1NF
+UVBBQ0tFVCkKICAgNC40IHVuY29ubmVjdGVkIHRyYW5zcG9ydCBwcm90b2NvbHMgKFNPQ0tfREdS
+QU0pCiAKLS0gCjEuOC4xLjIKCg==
+--047d7bd7623ee2eeed04e8303e7e--
