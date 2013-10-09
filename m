@@ -1,7 +1,7 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: sja1000 interrupt problem
-Date: Wed, 09 Oct 2013 08:31:58 +0200
-Message-ID: <dcf5b3926cef004e48112b7f1c46dd0d@grandegger.com>
+Date: Wed, 09 Oct 2013 08:47:56 +0200
+Message-ID: <be0d6725fff5298d3fb8417e4800348b@grandegger.com>
 References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
  <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
  <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
@@ -13,10 +13,10 @@ Content-Type: text/plain;
  charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:44090 "EHLO pluto.manitu.net"
+Received: from pluto.manitu.net ([217.11.48.9]:39381 "EHLO pluto.manitu.net"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756431Ab3JIGcA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 9 Oct 2013 02:32:00 -0400
+	id S1751823Ab3JIGr6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 9 Oct 2013 02:47:58 -0400
 In-Reply-To: <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -24,6 +24,14 @@ To: Austin Schuh <austin@peloton-tech.com>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
 Hi Austin,
+
+
+
+I have some trouble with my WEB mail interface resulting in two incomplete
+
+messages sent out...
+
+
 
 
 
@@ -75,73 +83,69 @@ Not sure if it's worth the effort... at least for the moment.
 
 
 
-OK, my idea is to do an ftrace freeze when IRQ 18 is not handled. Could
+OK, I think the SJA1000 gets stuck for some reason. My idea is to do an
 
-you please add 
-
-
+ftrace freeze when IRQ 18 is not handled. Could you please add:
 
 
 
-"pr_info("Stop tracing...\n");tracing_off();" when
+    if (irq == 18) {
 
-IRQ 18 is  
+        "pr_info("Unhandled IRQ 18... stop tracing...\n");
+
+         tracing_off();
+
+    }
 
 
 
-http://lxr.free-electrons.com/source/kernel/irq/spurious.c#L291
+here:
 
 
 
-> Austin
+    http://lxr.free-electrons.com/source/kernel/irq/spurious.c#L291
 
-> 
+
+
+... actually when the first unhandled IRQ 18 shows up. You can
+
+activate function tracing as shown below:
+
+
+
+  # cd /sys/kernel/debug/tracing/
+
+  # echo function > current_tracer
+
+
+
+When the tracing is stop via unhandled IRQ 18 just save the trace:
+
+
+
+   # cp trace /tmp/trace.log
+
+
+
+You may need to increase the tracing buffer:
+
+
+
+   # echo 20000 > buffer_total_size_kb
+
+
+
+This will introduce some overhead. Let's hope that the problem does
+
+still show up.
+
+
 
 > $ ip -d -s link
 
-> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode
+...
 
-> DEFAULT
-
->     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     7964       57       0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     7964       57       0       0       0       0
-
-> 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-
-> state UP mode DEFAULT qlen 1000
-
->     link/ether 00:01:c0:12:29:80 brd ff:ff:ff:ff:ff:ff
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     160966647  505906   0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     1565668810 1457778  0       0       0       0
-
-> 3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-
-> state UP mode DEFAULT qlen 1000
-
->     link/ether 00:01:c0:12:29:7f brd ff:ff:ff:ff:ff:ff
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     92348233   293914   0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     2152586    27438    0       0       0       0
-
-> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
+ 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
 
 > UNKNOWN mode DEFAULT qlen 10
 
@@ -149,350 +153,16 @@ http://lxr.free-electrons.com/source/kernel/irq/spurious.c#L291
 
 >     can <TRIPLE-SAMPLING> state ERROR-ACTIVE (berr-counter tx 0 rx 0)
 
-> restart-ms 0
 
->     bitrate 250000 sample-point 0.875
 
->     tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+BTW. why are you using TRIPLE-SAMPLING. IIRC, it's mainly useful for low
 
->     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+CAN
 
->     clock 8000000
+bitrates. At 800 kBits/s it's usually not set.
 
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
 
->     0          0          0          0          0          0
 
->     RX: bytes  packets  errors  dropped overrun mcast
+Wolfgang.
 
->     15428069   1929618  0       0       0       0
 
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 5: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
-
-> UNKNOWN mode DEFAULT qlen 30
-
->     link/can
-
->     can <TRIPLE-SAMPLING> state ERROR-ACTIVE (berr-counter tx 0 rx 0)
-
-> restart-ms 0
-
->     bitrate 500000 sample-point 0.875
-
->     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
-
->     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-
->     clock 8000000
-
->     re-started bus-errors arbit-lost error-warn error-pass bus-off
-
->     0          0          0          0          0          0
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     89752816   11505773 0       468029  0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     3283508    1281127  0       0       0       0
-
-> 6: vcan0: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 7: vcan1: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     3620640    452580   0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     3620640    452580   0       0       0       0
-
-> 8: vcan2: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     9999880    1249985  0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     9999880    1249985  0       0       0       0
-
-> 9: vcan3: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 10: vcan10: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 11: vcan11: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     3552992    444124   0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     3552992    444124   0       0       0       0
-
-> 12: vcan12: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 13: vcan13: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 14: vcan20: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 15: vcan21: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 16: vcan22: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 17: vcan23: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 18: vcan50: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode
-
-> DEFAULT
-
->     link/can
-
->     vcan
-
->     RX: bytes  packets  errors  dropped overrun mcast
-
->     0          0        0       0       0       0
-
->     TX: bytes  packets  errors  dropped carrier collsns
-
->     0          0        0       0       0       0
-
-> 
-
-> On Tue, Oct 8, 2013 at 12:44 PM, Wolfgang Grandegger <wg@grandegger.com>
-
-> wrote:
-
->> On 10/08/2013 08:48 PM, Austin Schuh wrote:
-
->>> $ cat /proc/interrupts  | grep " 18:"
-
->>>  18:   23361632   96767425   20421047   23392586   IO-APIC-fasteoi
-
->>> ata_generic, can1, can0
-
->>
-
->> Are both CAN active when the problem occurs. At least two handler for
-
->> the SJA1000 are called.
-
->>
-
->> [105918.136861] handlers:
-
->> [105918.136962] [<ffffffff810a126f>] irq_default_primary_handler
-
->>   threaded [<ffffffffa00db857>] ata_bmdma_interrupt [libata]
-
->> [105918.136972] [<ffffffff810a126f>] irq_default_primary_handler
-
->>   threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-
->> [105918.136980] [<ffffffff810a126f>] irq_default_primary_handler
-
->>   threaded [<ffffffffa023f75e>] sja1000_interrupt [sja1000]
-
->> [105918.136981] Disabling IRQ #18
-
->>
-
->>> Looks like the IRQ is shared with ata_generic.  I don't see any
-
->>> hard-drive related problems though after the message, only CAN
-
->>> problems.  If I bring the interface down and then back up with
-
->>> ifconfig, it works again.
-
->>>
-
->>> I see this failure about once per day.
-
->>
-
->> Can you use another PCI slot to have an IRQ solely for the CAN devices?
-
->>
-
->> What does "ip -d -s link" list?
-
->>
-
->> Does the problem show up with a vanilla (non-rt) kernel as well?
-
->>
-
->> Does the problem show up if an app is reading the CAN messages?
-
->>
-
->> Are you able to rebuild your kernel with some additional debug code?
-
->> (Not sure what to trigger yet, though).
-
->>
-
->> Wolfgang.
-
->>
-
-> --
-
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-
-> the body of a message to majordomo@vger.kernel.org
-
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
