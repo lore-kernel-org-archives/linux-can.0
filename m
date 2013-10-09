@@ -1,7 +1,7 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: sja1000 interrupt problem
-Date: Wed, 09 Oct 2013 08:21:06 +0200
-Message-ID: <91656c5fc6383386ad3c027b30062832@grandegger.com>
+Date: Wed, 09 Oct 2013 08:31:58 +0200
+Message-ID: <dcf5b3926cef004e48112b7f1c46dd0d@grandegger.com>
 References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
  <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
  <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
@@ -13,15 +13,19 @@ Content-Type: text/plain;
  charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:45115 "EHLO pluto.manitu.net"
+Received: from pluto.manitu.net ([217.11.48.9]:44090 "EHLO pluto.manitu.net"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751382Ab3JIGVJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 9 Oct 2013 02:21:09 -0400
+	id S1756431Ab3JIGcA (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 9 Oct 2013 02:32:00 -0400
 In-Reply-To: <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Austin Schuh <austin@peloton-tech.com>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+
+Hi Austin,
+
+
 
 On Tue, 8 Oct 2013 13:47:06 -0700, Austin Schuh <austin@peloton-tech.com>
 
@@ -57,7 +61,11 @@ wrote:
 
 > takes to reproduce.
 
-> 
+
+
+Not sure if it's worth the effort... at least for the moment.
+
+
 
 > I built the kernel once already, and am comfortable patching it.  I'm
 
@@ -65,7 +73,25 @@ wrote:
 
 > with the Debian 3.2 kernel where I backported the sja1000 driver.
 
-> 
+
+
+OK, my idea is to do an ftrace freeze when IRQ 18 is not handled. Could
+
+you please add 
+
+
+
+
+
+"pr_info("Stop tracing...\n");tracing_off();" when
+
+IRQ 18 is  
+
+
+
+http://lxr.free-electrons.com/source/kernel/irq/spurious.c#L291
+
+
 
 > Austin
 
@@ -462,3 +488,11 @@ wrote:
 >> Wolfgang.
 
 >>
+
+> --
+
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+
+> the body of a message to majordomo@vger.kernel.org
+
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
