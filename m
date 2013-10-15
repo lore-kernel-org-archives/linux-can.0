@@ -1,37 +1,49 @@
-From: Brian Thorne <hardbyte@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH can-next] Add broadcast manager documentation
-Date: Tue, 15 Oct 2013 10:00:15 +1300
-Message-ID: <CAENe87ohb5JowobYPRdYD3PM_pYTjObBKbP6NxAJHL83SvBMTA@mail.gmail.com>
-References: <CAENe87otPZVjDkvJJDR4CLE2e4dcyzde1=5rQZWytG_JyOpvsQ@mail.gmail.com>
-	<525C48F8.1050907@hartkopp.net>
-	<525C4DC0.5030107@pengutronix.de>
-	<CAENe87q9PCCJjgzDp-D7GfhJkGeBJU6kog+YuMHKkNbacg1bTA@mail.gmail.com>
+Date: Tue, 15 Oct 2013 06:57:32 +0200
+Message-ID: <525CCB3C.8050609@hartkopp.net>
+References: <CAENe87otPZVjDkvJJDR4CLE2e4dcyzde1=5rQZWytG_JyOpvsQ@mail.gmail.com> <525C48F8.1050907@hartkopp.net> <525C4DC0.5030107@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ve0-f181.google.com ([209.85.128.181]:63162 "EHLO
-	mail-ve0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757060Ab3JNVAQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Oct 2013 17:00:16 -0400
-Received: by mail-ve0-f181.google.com with SMTP id pa12so201605veb.26
-        for <linux-can@vger.kernel.org>; Mon, 14 Oct 2013 14:00:15 -0700 (PDT)
-In-Reply-To: <CAENe87q9PCCJjgzDp-D7GfhJkGeBJU6kog+YuMHKkNbacg1bTA@mail.gmail.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.160]:11322 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750979Ab3JOE5f (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Oct 2013 00:57:35 -0400
+In-Reply-To: <525C4DC0.5030107@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Brian Thorne <hardbyte@gmail.com>, linux-can@vger.kernel.org
 
-Hi Oliver,
-Your changes all look good to me.
-Thanks,
-Brian
+On 14.10.2013 22:02, Marc Kleine-Budde wrote:
+> On 10/14/2013 09:41 PM, Oliver Hartkopp wrote:
 
-(Reposting in text mode for mailing list)
+>> +  configuration message is defined. The basic BCM configuration message used
+>> +  to communicate with the broadcast manager and the available operations are
+>> +  defined in the linux/can/bcm.h include. The BCM message consists of a
+> 
+> Nitpick
+> It's "include/uapi/linux/can/bcm.h" in recent kernel trees.
+> 
 
->> > Hi Brian,
->> >
->> > I updated and enhanced your documentation patch for the broadcast manager.
->> >
->> > Please review and make your annotations inline.
->> >
->> > Tnx,
->> > Oliver
+AFAIK the uapi directory is the place where the 'user API' relevant header
+files are /generated/ at build time. Finally these header files are copied to
+
+	/usr/include/linux/...
+
+in the different Linux distributions to be accessed by application developers.
+
+So in the application C code it's still:
+
+#include <linux/can.h>
+#include <linux/can/raw.h>
+#include <linux/can/bcm.h>
+
+Right?
+
+Regards,
+Oliver
+
+
