@@ -1,252 +1,275 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: Flexcan - timestamp from message buffer to userspace
-Date: Mon, 21 Oct 2013 10:00:28 +0200
-Message-ID: <07b96b822a3778b2279d78b90cda3908@grandegger.com>
+Date: Mon, 21 Oct 2013 10:11:27 +0200
+Message-ID: <9d0a209e86731f7a68f84dbdc52124cc@grandegger.com>
 References: <l3r0ki$hde$1@ger.gmane.org> <526113A1.8020403@kkmicro.cz>
  <526148E9.4040406@hartkopp.net> <5264CFA6.9050805@kkmicro.cz>
+ <07b96b822a3778b2279d78b90cda3908@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:56253 "EHLO pluto.manitu.net"
+Received: from pluto.manitu.net ([217.11.48.9]:33769 "EHLO pluto.manitu.net"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751428Ab3JUIAa (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 21 Oct 2013 04:00:30 -0400
-In-Reply-To: <5264CFA6.9050805@kkmicro.cz>
+	id S1752738Ab3JUILa (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 21 Oct 2013 04:11:30 -0400
+In-Reply-To: <07b96b822a3778b2279d78b90cda3908@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Martin Kozusky <mkozusky@kkmicro.cz>
 Cc: linux-can@vger.kernel.org
 
-On Mon, 21 Oct 2013 08:54:30 +0200, Martin Kozusky <mkozusky@kkmicro.cz>
+My previous mail went out to early, sorry... completing it now...
 
-wrote:
 
-> Dne 18.10.2013 16:42, Oliver Hartkopp napsal(a):
 
->> On 18.10.2013 12:55, Martin Kozusky wrote:
+On Mon, 21 Oct 2013 10:00:28 +0200, Wolfgang Grandegger
 
->>>
+<wg@grandegger.com> wrote:
 
->>> Dne 18.10.2013 11:56, Martin Kozusky napsal(a):
+> On Mon, 21 Oct 2013 08:54:30 +0200, Martin Kozusky <mkozusky@kkmicro.cz>
 
->>>> Hello,
+> wrote:
 
->>>> is there any official way how to read timestamp from flexcans message
+>> Dne 18.10.2013 16:42, Oliver Hartkopp napsal(a):
 
->>>> buffer?
-
->>>> I see there is a macro defined FLEXCAN_MB_CNT_TIMESTAMP in flexcan.c,
-
->>>> but not used.
-
->>>> I would modify function flecan_read_fifo like
+>>> On 18.10.2013 12:55, Martin Kozusky wrote:
 
 >>>>
 
->>>> + u32 timestamp = FLEXCAN_MB_CNT_TIMESTAMP(reg_ctrl);
+>>>> Dne 18.10.2013 11:56, Martin Kozusky napsal(a):
 
->>>
+>>>>> Hello,
 
->>> sorry, u32 should be just u16
+>>>>> is there any official way how to read timestamp from flexcans
 
->>>
+message
 
->>>> but what to do with timestamp variable next and how to read it in
+>>>>> buffer?
 
->>>> userspace? :) I could change structure can_frame and add  u32
+>>>>> I see there is a macro defined FLEXCAN_MB_CNT_TIMESTAMP in
 
-timestamp
+flexcan.c,
 
->>> also u16, not u32
+>>>>> but not used.
 
->>>
+>>>>> I would modify function flecan_read_fifo like
 
->>>> into it, but it wouldn't be very nice hack I think.
+>>>>>
 
->>>>
-
->>>> BTW: is timestamp read with SO_TIMESTAMP  actualy taken when CAN
-
->>>> message
-
->>>> arrives?
+>>>>> + u32 timestamp = FLEXCAN_MB_CNT_TIMESTAMP(reg_ctrl);
 
 >>>>
 
->>
+>>>> sorry, u32 should be just u16
 
->> Hello Martin,
+>>>>
 
->>
+>>>>> but what to do with timestamp variable next and how to read it in
 
->> with SO_TIMESTAMP you get the system timestamp in nanosec resolution.
+>>>>> userspace? :) I could change structure can_frame and add  u32
 
->>
+> timestamp
 
->> It is set at the time when the CAN frame is pushed to the network layer
+>>>> also u16, not u32
 
->> by
+>>>>
 
->> the CAN drivers interrupt routine.
+>>>>> into it, but it wouldn't be very nice hack I think.
 
->>
+>>>>>
 
->> See net_timestamp_check() in netif_rx():
+>>>>> BTW: is timestamp read with SO_TIMESTAMP  actualy taken when CAN
 
->>
+>>>>> message
 
->>
+>>>>> arrives?
+
+>>>>>
+
+>>>
+
+>>> Hello Martin,
+
+>>>
+
+>>> with SO_TIMESTAMP you get the system timestamp in nanosec resolution.
+
+>>>
+
+>>> It is set at the time when the CAN frame is pushed to the network
+
+layer
+
+>>> by
+
+>>> the CAN drivers interrupt routine.
+
+>>>
+
+>>> See net_timestamp_check() in netif_rx():
+
+>>>
+
+>>>
+
+>
 
 http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/net/core/dev.c#n3228
 
-> Hello Oliver,
+>> Hello Oliver,
 
-> I'm already using SO_TIMESTAMP with recvmmsg so may be I should switch 
+>> I'm already using SO_TIMESTAMP with recvmmsg so may be I should switch 
 
-> to SO_TIMESTAMPNS for better times, right?
+>> to SO_TIMESTAMPNS for better times, right?
 
-> 
+>> 
 
->> You may get this timestamp via ioctl() or recvmsg().
+>>> You may get this timestamp via ioctl() or recvmsg().
 
->>
+>>>
 
->> To pass hardware timestamps there's some infrastructure for ethernet
+>>> To pass hardware timestamps there's some infrastructure for ethernet
 
->> devices in the
+>>> devices in the
 
->> mainlaine kernel, which is configured with "ethtool":
+>>> mainlaine kernel, which is configured with "ethtool":
 
->>
+>>>
 
->>     ethtool -T|--show-time-stamping DEVNAME    Show time stamping
+>>>     ethtool -T|--show-time-stamping DEVNAME    Show time stamping
 
->>     capabilities
+>>>     capabilities
 
->>
+>>>
 
->> See details at
+>>> See details at
 
->>
+>>>
 
->>
+>>>
+
+>
 
 http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/timestamping.txt
 
->>
+>>>
 
->> And some example source code at
+>>> And some example source code at
 
->>
+>>>
 
->>
+>>>
+
+>
 
 http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/timestamping/timestamping.c
 
->>
+>>>
 
->> There needs to be added some infrastructure to the network devices to
+>>> There needs to be added some infrastructure to the network devices to
 
->> query
+>>> query
 
->> and configure the timestamping possibilities.
+>>> and configure the timestamping possibilities.
 
->>
+>>>
 
->> This is currently missing for CAN devices ...
+>>> This is currently missing for CAN devices ...
 
->>
+>>>
 
->> Even if I moved a wrongly assigned hardware timestamp to another place
+>>> Even if I moved a wrongly assigned hardware timestamp to another place
 
->> here:
+>>> here:
 
->>
+>>>
 
->>
+>>>
+
+>
 
 http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/net/can/usb/peak_usb?id=c9faaa09e2a1335678f09c70a0d0eda095564bab
 
->>
+>>>
 
->> the rest of the hardware timestamping (& configuration) is still
+>>> the rest of the hardware timestamping (& configuration) is still
 
-missing.
+> missing.
+
+
+
+Supporting SIOCSHWTSTAMP seem the right way to go.
+
+
+
+>> 
+
+>> So I could just do
+
+>> 
+
+>>   struct skb_shared_hwtstamps *hwts;
+
+>>   hwts = skb_hwtstamps(skb);
+
+
+
+Most drivers do as well:
+
+
+
+ memset(hwts, 0, sizeof(*hwts));
+
+
+
+>>   hwts->hwtstamp = FLEXCAN_MB_CNT_TIMESTAMP(reg_ctrl);
+
+
+
+This should assign a proper ktime. [nm]s_to_ktime() may help.
+
+
+
+>> 
+
+>> in  flecan_read_fifo ?
+
+>> 
+
+>> And then how to read it?
 
 > 
 
-> So I could just do
+> See:
 
 > 
 
->   struct skb_shared_hwtstamps *hwts;
-
->   hwts = skb_hwtstamps(skb);
-
-
-
->   hwts->hwtstamp = FLEXCAN_MB_CNT_TIMESTAMP(reg_ctrl);
-
-> 
-
-> in  flecan_read_fifo ?
-
-> 
-
-> And then how to read it?
-
-
-
-See:
-
-
+>
 
 http://lxr.free-electrons.com/source/Documentation/networking/timestamping/
 
 
 
-> 
-
-> Or will it be easier for me just to change can_frame structure? :)
+This also shows how to do read the timestamp.
 
 
-
-No. 
-
-
-
-> Thanks,
-
-> Martin
 
 > 
 
->> Regards,
+>> 
 
->> Oliver
-
->>
-
->> --
-
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-
->> the body of a message to majordomo@vger.kernel.org
-
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
->>
+>> Or will it be easier for me just to change can_frame structure? :)
 
 > 
 
-> 
+> No.
 
-> --
 
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
 
-> the body of a message to majordomo@vger.kernel.org
+Please use the forseen interface.
 
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+Wolfgang
