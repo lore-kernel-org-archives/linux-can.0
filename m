@@ -1,72 +1,56 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
 Subject: Re: iso-tp: timeout handling for unknown packet size
-Date: Wed, 23 Oct 2013 18:00:57 +0200
-Message-ID: <5267F2B9.2000704@hartkopp.net>
-References: <CAJA4uhcj+ySw1j64vz4Ao1t62YzYcZfoNLkjsmFg-Pqf+mjy4g@mail.gmail.com> <CABLFF-=Rxi7Gtpr+OD5q5QsjD5fnrcZQaTJFoeT9a8UzuMbSEA@mail.gmail.com>
+Date: Wed, 23 Oct 2013 18:50:29 +0200
+Message-ID: <CAJA4uhe4VmLKXrk+CrurZLZ-wJGnvxtKr3jUbaiVZ7ZrKQHf4w@mail.gmail.com>
+References: <CAJA4uhcj+ySw1j64vz4Ao1t62YzYcZfoNLkjsmFg-Pqf+mjy4g@mail.gmail.com>
+ <CABLFF-=Rxi7Gtpr+OD5q5QsjD5fnrcZQaTJFoeT9a8UzuMbSEA@mail.gmail.com> <5267F2B9.2000704@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:32478 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751416Ab3JWQBE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Oct 2013 12:01:04 -0400
-In-Reply-To: <CABLFF-=Rxi7Gtpr+OD5q5QsjD5fnrcZQaTJFoeT9a8UzuMbSEA@mail.gmail.com>
+Received: from mail-ob0-f172.google.com ([209.85.214.172]:62039 "EHLO
+	mail-ob0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751392Ab3JWQuu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Oct 2013 12:50:50 -0400
+Received: by mail-ob0-f172.google.com with SMTP id gq1so1090078obb.3
+        for <linux-can@vger.kernel.org>; Wed, 23 Oct 2013 09:50:50 -0700 (PDT)
+In-Reply-To: <5267F2B9.2000704@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nathan Conrad <nconrad.mlock@gmail.com>
-Cc: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>, linux-can <linux-can@vger.kernel.org>, Yannick Bedhomme <yannick.bedhomme@mobile-devices.fr>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Nathan Conrad <nconrad.mlock@gmail.com>, linux-can <linux-can@vger.kernel.org>, Yannick Bedhomme <yannick.bedhomme@mobile-devices.fr>
 
-On 23.10.2013 16:40, Nathan Conrad wrote:
-> You could also add a filter for the ISO-TP reception ID to a raw
-> protocol socket and monitor the reception of packets that way.  Non
-> ISO-TP packets shouldn't be on that ID.
-> 
-> Nathan Conrad
+2013/10/23 Oliver Hartkopp <socketcan@hartkopp.net>:
+> On 23.10.2013 16:40, Nathan Conrad wrote:
+>> You could also add a filter for the ISO-TP reception ID to a raw
+>> protocol socket and monitor the reception of packets that way.  Non
+>> ISO-TP packets shouldn't be on that ID.
+We thought of that, the problem is we have to wake the process up by
+receiving each frame if we don't only want to detect the presence of
+an ECU but also if it's still responding or if there have been a
+problem during transfer.
 
-Yes. This would be an idea.
+>> Nathan Conrad
+>
+> Yes. This would be an idea.
+>
+> You could also create a CAN_BCM socket to detect a timeout on a given CAN-ID.
+That's a neat idea. We are not familiar with the broadcast manager but
+we will look further into it.
 
-You could also create a CAN_BCM socket to detect a timeout on a given CAN-ID.
+> See the BCM documentation(s) at
+>
+>         http://marc.info/?l=linux-can&m=138217795117288&w=2
+>
+> or the tst-bcm-*.c examples at
+>
+>         https://gitorious.org/linux-can/can-tests/
+Thanks
 
-See the BCM documentation(s) at
+> With the BCM you can put the timeout handling completely into the kernel.
+That's what we were hoping was possible.
 
-	http://marc.info/?l=linux-can&m=138217795117288&w=2
-
-or the tst-bcm-*.c examples at
-
-	https://gitorious.org/linux-can/can-tests/
-
-With the BCM you can put the timeout handling completely into the kernel.
 
 Regards,
-Oliver
-
-
-
-> 
-> On Wed, Oct 23, 2013 at 8:32 AM, Josselin Costanzi
-> <josselin.costanzi@mobile-devices.fr> wrote:
->> Hello,
->>
->> We are working with the current implementation of ISO-TP from Oliver
->> Hartkopp available on github. The implementation works well for us
->> with a slight limitation that we would like to discuss here.
->>
->> We use ISO-TP to talk to OBD ECUs. In this context, our userspace
->> opens an ISO-TP socket and sends an OBD-CAN request to the ECU and
->> waits for a response over ISO-TP. To be able to receive large frames
->> over ISO-TP or to account for transmitter having a large inter frame
->> delay, we have to use large timeout values so we don't close the
->> socket while the packet is still being received.
->>
->> We would like to know if an ECU is responding or not without having to
->> wait several seconds for a hypotetical packet to be received, do you
->> have any idea how we could do that?
->>
->> Thanks,
->>
->> --
->> Josselin Costanzi
->>   Embedded Linux System Engineer
-
-
+-- 
+Josselin Costanzi
+  Embedded Linux System Engineer
