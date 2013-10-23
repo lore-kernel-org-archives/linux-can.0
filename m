@@ -1,56 +1,56 @@
-From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
-Subject: Re: iso-tp: timeout handling for unknown packet size
-Date: Wed, 23 Oct 2013 18:50:29 +0200
-Message-ID: <CAJA4uhe4VmLKXrk+CrurZLZ-wJGnvxtKr3jUbaiVZ7ZrKQHf4w@mail.gmail.com>
-References: <CAJA4uhcj+ySw1j64vz4Ao1t62YzYcZfoNLkjsmFg-Pqf+mjy4g@mail.gmail.com>
- <CABLFF-=Rxi7Gtpr+OD5q5QsjD5fnrcZQaTJFoeT9a8UzuMbSEA@mail.gmail.com> <5267F2B9.2000704@hartkopp.net>
+From: "Spies, Raphael | BFFT GmbH" <raphael.spies@bfft.de>
+Subject: CAN Interface on Toradex Board
+Date: Wed, 23 Oct 2013 16:49:30 +0000
+Message-ID: <F1A135976112904197F6276B89309FEF2603BC@sgexc1.bfft.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ob0-f172.google.com ([209.85.214.172]:62039 "EHLO
-	mail-ob0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751392Ab3JWQuu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Oct 2013 12:50:50 -0400
-Received: by mail-ob0-f172.google.com with SMTP id gq1so1090078obb.3
-        for <linux-can@vger.kernel.org>; Wed, 23 Oct 2013 09:50:50 -0700 (PDT)
-In-Reply-To: <5267F2B9.2000704@hartkopp.net>
+Received: from mail.bfft.de ([178.239.73.3]:51239 "EHLO mail.bfft.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751408Ab3JWQym convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Oct 2013 12:54:42 -0400
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Nathan Conrad <nconrad.mlock@gmail.com>, linux-can <linux-can@vger.kernel.org>, Yannick Bedhomme <yannick.bedhomme@mobile-devices.fr>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-2013/10/23 Oliver Hartkopp <socketcan@hartkopp.net>:
-> On 23.10.2013 16:40, Nathan Conrad wrote:
->> You could also add a filter for the ISO-TP reception ID to a raw
->> protocol socket and monitor the reception of packets that way.  Non
->> ISO-TP packets shouldn't be on that ID.
-We thought of that, the problem is we have to wake the process up by
-receiving each frame if we don't only want to detect the presence of
-an ECU but also if it's still responding or if there have been a
-problem during transfer.
-
->> Nathan Conrad
->
-> Yes. This would be an idea.
->
-> You could also create a CAN_BCM socket to detect a timeout on a given CAN-ID.
-That's a neat idea. We are not familiar with the broadcast manager but
-we will look further into it.
-
-> See the BCM documentation(s) at
->
->         http://marc.info/?l=linux-can&m=138217795117288&w=2
->
-> or the tst-bcm-*.c examples at
->
->         https://gitorious.org/linux-can/can-tests/
-Thanks
-
-> With the BCM you can put the timeout handling completely into the kernel.
-That's what we were hoping was possible.
+Hi everyone,
 
 
-Regards,
--- 
-Josselin Costanzi
-  Embedded Linux System Engineer
+at the moment i try to get a can interface to work on a toradex 
+tegra2 evaluation board. in the manual there are some instructions:
+
+
+http://developer.toradex.com/software-resources/arm-family/linux/linux-%28colibri-t20%29-know-how#CAN
+
+I downloaded the packages from: 
+
+http://developer.toradex.com/files/toradex-dev/uploads/media/Colibri/Linux/Extra/can-packages.tar.bz2
+
+and installed them on my device. When I try to set my bitrate as explained 
+
+"ip link set can0 type can bitrate 125000"
+
+it quits with 
+
+"RTNETLINK answers: Invalid argument".
+
+
+A strace command yields a line with
+
+
+"open("usr/lib/ip/link_can.so", ...) = -1 ENOENT (No such file or directory)".
+
+
+Does anyone have any idea how can I fix that problem? or in what direction I have to search for solutions?
+
+
+Thanks a lot,
+Raphael Spies
+
+
+
+Kernel version 3.1.10-gd831d2d, build as explained on toradex homepage
+
+
