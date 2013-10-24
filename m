@@ -1,121 +1,87 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: AW: CAN Interface on Toradex Board
-Date: Thu, 24 Oct 2013 09:28:27 +0200
-Message-ID: <35798e892fe0606d15b87c9b366199dc@grandegger.com>
+From: "Spies, Raphael | BFFT GmbH" <raphael.spies@bfft.de>
+Subject: AW: AW: CAN Interface on Toradex Board
+Date: Thu, 24 Oct 2013 07:39:01 +0000
+Message-ID: <F1A135976112904197F6276B89309FEF26040B@sgexc1.bfft.de>
 References: <F1A135976112904197F6276B89309FEF2603BC@sgexc1.bfft.de>
  <526805E9.1060702@hartkopp.net>
  <F1A135976112904197F6276B89309FEF2603E1@sgexc1.bfft.de>
+ <35798e892fe0606d15b87c9b366199dc@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from uranus.manitu.net ([217.11.48.8]:59729 "EHLO uranus.manitu.net"
+Received: from mail.bfft.de ([178.239.73.3]:43956 "EHLO mail.bfft.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753358Ab3JXH23 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 24 Oct 2013 03:28:29 -0400
-In-Reply-To: <F1A135976112904197F6276B89309FEF2603E1@sgexc1.bfft.de>
+	id S1751427Ab3JXHjI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 24 Oct 2013 03:39:08 -0400
+In-Reply-To: <35798e892fe0606d15b87c9b366199dc@grandegger.com>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Spies, Raphael | BFFT GmbH" <raphael.spies@bfft.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: 'Wolfgang Grandegger' <wg@grandegger.com>
+Cc: "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
 
-On Thu, 24 Oct 2013 06:44:30 +0000, "Spies, Raphael | BFFT GmbH"
-
-<raphael.spies@bfft.de> wrote:
-
-> Hello everyone,
-
-> 
-
-> thanks for the help so far..
-
-> 
-
-> 
-
->> 	Can you see the can0 interface itself?
-
-> 
-
-> Yes, I Can see the can interface. IP Link shows:
-
-> 
-
-> 2: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT qlen 10
-
->     link/can 
-
->     can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0 
-
->     bitrate 0 sample-point 0.000 
-
->     tq 0 prop-seg 0 phase-seg1 0 phase-seg2 0 sjw 0
-
->     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-
->     clock 12000000
-
-> 
-
->>	when invoking 'dmesg' ?
-
-> 
-
-> [    2.067414] CAN device driver interface
-
-> [    2.079435] sja1000 CAN netdevice driver
-
-> [    2.092644] sja1000_platform sja1000_platform.0: sja1000_platform
-
-> device registered (reg_base=c9800000, irq=192)
-
-> ...
-
-> [    5.051783] can: controller area network core (rev 20090105 abi 8)
-
-> [    5.063383] NET: Registered protocol family 29
-
-> [    5.072990] can: raw protocol (rev 20090105)
-
-> [    5.082193] can: broadcast manager protocol (rev 20090105 t)
-
-> 
-
-> 
-
->> 	This looks like the installed iproute2 package is broken.
-
-> 
-
-> I downloaded them from the given link in the documentation:
-
->
-
-http://developer.toradex.com/files/toradex-dev/uploads/media/Colibri/Linux/Extra/can-packages.tar.bz2
-
-> on the distribution in the image V2 of Toradex there is due to the
-
-> hardfloat architecture no working package manager, so I have to install
-
-> them manually
-
-> 
-
-> 
-
->>	 ls -l `which ip`
-
->>	 to check if 'ip' is linked to the busybox binary.
-
-> 
-
-> "Which ip" gives "/bin/ip" and is in my opinion linked to iproute2
-
-
-
-What does "ip link help" list?
-
-
-
-Wolfgang.
+DQo+IC0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NCj4gVm9uOiBsaW51eC1jYW4t
+b3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bGludXgtY2FuLQ0KPiBvd25lckB2Z2VyLmtl
+cm5lbC5vcmddIEltIEF1ZnRyYWcgdm9uIFdvbGZnYW5nIEdyYW5kZWdnZXINCj4gR2VzZW5kZXQ6
+IERvbm5lcnN0YWcsIDI0LiBPa3RvYmVyIDIwMTMgMDk6MjgNCj4gQW46IFNwaWVzLCBSYXBoYWVs
+IHwgQkZGVCBHbWJIDQo+IENjOiBPbGl2ZXIgSGFydGtvcHA7IGxpbnV4LWNhbkB2Z2VyLmtlcm5l
+bC5vcmcNCj4gQmV0cmVmZjogUmU6IEFXOiBDQU4gSW50ZXJmYWNlIG9uIFRvcmFkZXggQm9hcmQN
+Cj4gDQo+IE9uIFRodSwgMjQgT2N0IDIwMTMgMDY6NDQ6MzAgKzAwMDAsICJTcGllcywgUmFwaGFl
+bCB8IEJGRlQgR21iSCINCj4gDQo+IDxyYXBoYWVsLnNwaWVzQGJmZnQuZGU+IHdyb3RlOg0KPiAN
+Cj4gPiBIZWxsbyBldmVyeW9uZSwNCj4gDQo+ID4NCj4gDQo+ID4gdGhhbmtzIGZvciB0aGUgaGVs
+cCBzbyBmYXIuLg0KPiANCj4gPg0KPiANCj4gPg0KPiANCj4gPj4gCUNhbiB5b3Ugc2VlIHRoZSBj
+YW4wIGludGVyZmFjZSBpdHNlbGY/DQo+IA0KPiA+DQo+IA0KPiA+IFllcywgSSBDYW4gc2VlIHRo
+ZSBjYW4gaW50ZXJmYWNlLiBJUCBMaW5rIHNob3dzOg0KPiANCj4gPg0KPiANCj4gPiAyOiBjYW4w
+OiA8Tk9BUlAsRUNITz4gbXR1IDE2IHFkaXNjIG5vb3Agc3RhdGUgRE9XTiBtb2RlIERFRkFVTFQN
+Cj4gcWxlbg0KPiA+IDEwDQo+IA0KPiA+ICAgICBsaW5rL2Nhbg0KPiANCj4gPiAgICAgY2FuIHN0
+YXRlIFNUT1BQRUQgKGJlcnItY291bnRlciB0eCAwIHJ4IDApIHJlc3RhcnQtbXMgMA0KPiANCj4g
+PiAgICAgYml0cmF0ZSAwIHNhbXBsZS1wb2ludCAwLjAwMA0KPiANCj4gPiAgICAgdHEgMCBwcm9w
+LXNlZyAwIHBoYXNlLXNlZzEgMCBwaGFzZS1zZWcyIDAgc2p3IDANCj4gDQo+ID4gICAgIHNqYTEw
+MDA6IHRzZWcxIDEuLjE2IHRzZWcyIDEuLjggc2p3IDEuLjQgYnJwIDEuLjY0IGJycC1pbmMgMQ0K
+PiANCj4gPiAgICAgY2xvY2sgMTIwMDAwMDANCj4gDQo+ID4NCj4gDQo+ID4+CXdoZW4gaW52b2tp
+bmcgJ2RtZXNnJyA/DQo+IA0KPiA+DQo+IA0KPiA+IFsgICAgMi4wNjc0MTRdIENBTiBkZXZpY2Ug
+ZHJpdmVyIGludGVyZmFjZQ0KPiANCj4gPiBbICAgIDIuMDc5NDM1XSBzamExMDAwIENBTiBuZXRk
+ZXZpY2UgZHJpdmVyDQo+IA0KPiA+IFsgICAgMi4wOTI2NDRdIHNqYTEwMDBfcGxhdGZvcm0gc2ph
+MTAwMF9wbGF0Zm9ybS4wOiBzamExMDAwX3BsYXRmb3JtDQo+IA0KPiA+IGRldmljZSByZWdpc3Rl
+cmVkIChyZWdfYmFzZT1jOTgwMDAwMCwgaXJxPTE5MikNCj4gDQo+ID4gLi4uDQo+IA0KPiA+IFsg
+ICAgNS4wNTE3ODNdIGNhbjogY29udHJvbGxlciBhcmVhIG5ldHdvcmsgY29yZSAocmV2IDIwMDkw
+MTA1IGFiaSA4KQ0KPiANCj4gPiBbICAgIDUuMDYzMzgzXSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9j
+b2wgZmFtaWx5IDI5DQo+IA0KPiA+IFsgICAgNS4wNzI5OTBdIGNhbjogcmF3IHByb3RvY29sIChy
+ZXYgMjAwOTAxMDUpDQo+IA0KPiA+IFsgICAgNS4wODIxOTNdIGNhbjogYnJvYWRjYXN0IG1hbmFn
+ZXIgcHJvdG9jb2wgKHJldiAyMDA5MDEwNSB0KQ0KPiANCj4gPg0KPiANCj4gPg0KPiANCj4gPj4g
+CVRoaXMgbG9va3MgbGlrZSB0aGUgaW5zdGFsbGVkIGlwcm91dGUyIHBhY2thZ2UgaXMgYnJva2Vu
+Lg0KPiANCj4gPg0KPiANCj4gPiBJIGRvd25sb2FkZWQgdGhlbSBmcm9tIHRoZSBnaXZlbiBsaW5r
+IGluIHRoZSBkb2N1bWVudGF0aW9uOg0KPiANCj4gPg0KPiANCj4gaHR0cDovL2RldmVsb3Blci50
+b3JhZGV4LmNvbS9maWxlcy90b3JhZGV4LQ0KPiBkZXYvdXBsb2Fkcy9tZWRpYS9Db2xpYnJpL0xp
+bnV4L0V4dHJhL2Nhbi1wYWNrYWdlcy50YXIuYnoyDQo+IA0KPiA+IG9uIHRoZSBkaXN0cmlidXRp
+b24gaW4gdGhlIGltYWdlIFYyIG9mIFRvcmFkZXggdGhlcmUgaXMgZHVlIHRvIHRoZQ0KPiANCj4g
+PiBoYXJkZmxvYXQgYXJjaGl0ZWN0dXJlIG5vIHdvcmtpbmcgcGFja2FnZSBtYW5hZ2VyLCBzbyBJ
+IGhhdmUgdG8NCj4gPiBpbnN0YWxsDQo+IA0KPiA+IHRoZW0gbWFudWFsbHkNCj4gDQo+ID4NCj4g
+DQo+ID4NCj4gDQo+ID4+CSBscyAtbCBgd2hpY2ggaXBgDQo+IA0KPiA+PgkgdG8gY2hlY2sgaWYg
+J2lwJyBpcyBsaW5rZWQgdG8gdGhlIGJ1c3lib3ggYmluYXJ5Lg0KPiANCj4gPg0KPiANCj4gPiAi
+V2hpY2ggaXAiIGdpdmVzICIvYmluL2lwIiBhbmQgaXMgaW4gbXkgb3BpbmlvbiBsaW5rZWQgdG8g
+aXByb3V0ZTINCj4gDQo+IA0KPiANCj4gV2hhdCBkb2VzICJpcCBsaW5rIGhlbHAiIGxpc3Q/DQoN
+CnNoLTQuMiMgaXAgbGluayBoZWxwDQpVc2FnZTogaXAgbGluayBhZGQgW2xpbmsgREVWXSBbIG5h
+bWUgXSBOQU1FDQogICAgICAgICAgICAgICAgICAgWyB0eHF1ZXVlbGVuIFBBQ0tFVFMgXQ0KICAg
+ICAgICAgICAgICAgICAgIFsgYWRkcmVzcyBMTEFERFIgXQ0KICAgICAgICAgICAgICAgICAgIFsg
+YnJvYWRjYXN0IExMQUREUiBdDQogICAgICAgICAgICAgICAgICAgWyBtdHUgTVRVIF0NCiAgICAg
+ICAgICAgICAgICAgICB0eXBlIFRZUEUgWyBBUkdTIF0NCiAgICAgICBpcCBsaW5rIGRlbGV0ZSBE
+RVYgdHlwZSBUWVBFIFsgQVJHUyBdDQoNCiAgICAgICBpcCBsaW5rIHNldCB7IGRldiBERVZJQ0Ug
+fCBncm91cCBERVZHUk9VUCB9IFsgeyB1cCB8IGRvd24gfSBdDQoJICAgICAgICAgICAgICAgICAg
+WyBhcnAgeyBvbiB8IG9mZiB9IF0NCgkgICAgICAgICAgICAgICAgICBbIGR5bmFtaWMgeyBvbiB8
+IG9mZiB9IF0NCgkgICAgICAgICAgICAgICAgICBbIG11bHRpY2FzdCB7IG9uIHwgb2ZmIH0gXQ0K
+CSAgICAgICAgICAgICAgICAgIFsgYWxsbXVsdGljYXN0IHsgb24gfCBvZmYgfSBdDQoJICAgICAg
+ICAgICAgICAgICAgWyBwcm9taXNjIHsgb24gfCBvZmYgfSBdDQoJICAgICAgICAgICAgICAgICAg
+WyB0cmFpbGVycyB7IG9uIHwgb2ZmIH0gXQ0KCSAgICAgICAgICAgICAgICAgIFsgdHhxdWV1ZWxl
+biBQQUNLRVRTIF0NCgkgICAgICAgICAgICAgICAgICBbIG5hbWUgTkVXTkFNRSBdDQoJICAgICAg
+ICAgICAgICAgICAgWyBhZGRyZXNzIExMQUREUiBdDQoJICAgICAgICAgICAgICAgICAgWyBicm9h
+ZGNhc3QgTExBRERSIF0NCgkgICAgICAgICAgICAgICAgICBbIG10dSBNVFUgXQ0KCSAgICAgICAg
+ICAgICAgICAgIFsgbmV0bnMgUElEIF0NCgkgICAgICAgICAgICAgICAgICBbIG5ldG5zIE5BTUUg
+XQ0KCQkJICBbIGFsaWFzIE5BTUUgXQ0KCSAgICAgICAgICAgICAgICAgIFsgdmYgTlVNIFsgbWFj
+IExMQUREUiBdDQoJCQkJICAgWyB2bGFuIFZMQU5JRCBbIHFvcyBWTEFOLVFPUyBdIF0NCgkJCQkg
+ICBbIHJhdGUgVFhSQVRFIF0gXSANCgkJCQkgICBbIHNwb29mY2hrIHsgb24gfCBvZmZ9IF0gXSAN
+CgkJCSAgWyBtYXN0ZXIgREVWSUNFIF0NCgkJCSAgWyBub21hc3RlciBdDQogICAgICAgaXAgbGlu
+ayBzaG93IFsgREVWSUNFIHwgZ3JvdXAgR1JPVVAgXQ0KDQpUWVBFIDo9IHsgdmxhbiB8IHZldGgg
+fCB2Y2FuIHwgZHVtbXkgfCBpZmIgfCBtYWN2bGFuIHwgY2FuIHwgYnJpZGdlIH0NCg0KDQpSYXBo
+YWVsDQo=
