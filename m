@@ -1,82 +1,195 @@
-From: Brennan Ashton <bashton@brennanashton.com>
-Subject: Re: MCP251x bit rate calculations wrong
-Date: Sat, 26 Oct 2013 10:26:03 -0700
-Message-ID: <CANQdSEHbU1PfoLG4oOK+epKOp-pyn3n9E4xCsHJQMh5Y9znTng@mail.gmail.com>
-References: <CANQdSEGgf=UiYwKcOyoLA2qmtiF19XaD46_3ZkTHRUXOwe-+yQ@mail.gmail.com>
+From: Martin Kozusky <mkozusky@kkmicro.cz>
+Subject: Re: CAN messages being lost on i.MX25 with flexcan - continued (was
+ CAN messages being lost on i.MX25 with flexcan - 2012-04-19)
+Date: Sat, 26 Oct 2013 20:18:16 +0200
+Message-ID: <526C0768.8040903@kkmicro.cz>
+References: <l4b8eg$40b$1@ger.gmane.org> <526A6B28.4040800@kkmicro.cz> <526AB12C.7090900@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f53.google.com ([74.125.82.53]:33630 "EHLO
-	mail-wg0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752018Ab3JZR0F (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Oct 2013 13:26:05 -0400
-Received: by mail-wg0-f53.google.com with SMTP id y10so5093176wgg.20
-        for <linux-can@vger.kernel.org>; Sat, 26 Oct 2013 10:26:03 -0700 (PDT)
-In-Reply-To: <CANQdSEGgf=UiYwKcOyoLA2qmtiF19XaD46_3ZkTHRUXOwe-+yQ@mail.gmail.com>
+Received: from plane.gmane.org ([80.91.229.3]:60586 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752935Ab3JZSS3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 26 Oct 2013 14:18:29 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Va8RP-0007ki-SJ
+	for linux-can@vger.kernel.org; Sat, 26 Oct 2013 20:18:27 +0200
+Received: from fw.novalisnet.cz ([178.72.237.80])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Sat, 26 Oct 2013 20:18:27 +0200
+Received: from mkozusky by fw.novalisnet.cz with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Sat, 26 Oct 2013 20:18:27 +0200
+In-Reply-To: <526AB12C.7090900@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
+Cc: wg@grandegger.com
 
-I did not see this line:
-1024 >---priv->can.clock.freq = pdata->oscillator_frequency / 2;$
+Dne 25.10.2013 19:58, Wolfgang Grandegger napsal(a):
+> Hi Martin,
+>
+> On 10/25/2013 02:59 PM, Martin Kozusky wrote:
+>> Dne 24.10.2013 15:48, Martin Kozusky napsal(a):
+>>> Hello,
+>>> after more than year I'm back with CAN fifo overrun problems on i.MX25
+>>> board.
+>>> (it was good enough earlier, if some frames were lost, but not this time)
+>>>
+>>> I have 2 flexcan interfaces, each receiving around 1100 msgs/s
+>>> (situation is a little better if I use just one iface, but I need both)
+>>> I just configure them and then run:
+>>>
+>>> I=0; while [ $I -le 20 ]; do dd if=/dev/zero of=/mnt/mmcblk0p1/test
+>>> bs=512 count=200; sync; sleep 1; I=$(($I+1)); done
+>>> (simulate writing to SDcard with 100KB blocks in 1 sec intervals)
+>>>
+>>> and start sending data from another device.
+>>>
+>>> I am not running any other program (like candump etc) to read from CAN.
+>>>
+>>> this is what is shown after I finish sending 35777 packets (both
+>>> interfaces now connected to same bus so they should receive same data)
+>>> with ip -d -s link show can0/1
+>>>
+>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>       link/can
+>>>       can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>> restart-ms 0
+>>>       bitrate 250000 sample-point 0.857
+>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>       clock 66500000
+>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>       0          0          0          1          1          0
+>
+> Do you have electrical problems on the bus? Or is reaching error-passive
+> not related to this problem?
+It is not related to this problem - there is only RX pin connected on can0 (RX is connected in parallel with Coldfire V1 MCU CAN, which is doing TX)
 
-So the kernel driver should be fine but in can utils this should still
-be fixed for the -1
+  
+>>>       RX: bytes  packets  errors  dropped overrun mcast
+>>>       151769     19000    1699    0       1699    0
+>>>       TX: bytes  packets  errors  dropped carrier collsns
+>>>       0          0        0       0       0       0
+>>> root@vmx25 /opt/waytracer$ /root/utils/ip -d -s link show can1
+>>> 3: can1: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>       link/can
+>>>       can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+>>>       bitrate 250000 sample-point 0.857
+>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>       clock 66500000
+>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>       0          0          0          0          0          0
+>>>       RX: bytes  packets  errors  dropped overrun mcast
+>>>       157377     19696    2664    0       2664    0
+>>>       TX: bytes  packets  errors  dropped carrier collsns
+>>>       0          0        0       0       0       0
+>>>
+>>>
+>>> With just one iface used:
+>>>
+>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>       link/can
+>>>       can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>> restart-ms 0
+>>>       bitrate 250000 sample-point 0.857
+>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>       clock 66500000
+>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>       0          0          0          1          1          0
+>>>       RX: bytes  packets  errors  dropped overrun mcast
+>>>       233277     29201    1483    0       1483    0
+>>>       TX: bytes  packets  errors  dropped carrier collsns
+>>>       0          0        0       0       0       0
+>>>
+>>>
+>>> Too many packets are lost.
+>>>
+>>> I tried to play with FLEXCAN_NAPI_WEIGHT (quota for napi) and that
+>>> didn't hepl too much, if I put it too high then the system response
+>>> was slow and packets still lost, also tried to change priority of CAN
+>>> interrupts with (don't know if correctly)
+>>>     // imx_irq_set_priority(43,14);
+>>>     // imx_irq_set_priority(44,14);
+>>>
+>>> But it didn't help either.
+>>>
+>>>
+>>> Does anybody have any idea how not to lose any packets? :)
+>>
+>>
+>> Hello,
+>> I tried to disable
+>> //netif_receive_skb(skb); in  flexcan_read_frame() and other functions
+>> so that data is not processed further in system
+>
+> Well ...
+>
+>> It didn't help.
+>> So I tried to put time_start=ktime_get_real() at the begining of
+>> flexcan_read_frame(), then time_stop=ktime_get_real(); at the end and
+>> add their difference to the global variable
+>> time_total+=time_stop-time_start;
+>> I divided this time_total by rx_packets count at flexcan_chip_stop and
+>> wrote with dev_info into log (variables were initialized in
+>> flexcan_chi_start, so I could just do ifconfig can0 up/down and reset
+>> those counters and write them to log), so now I had average time spent
+>> int flexcan_read_frame.
+>> This time it was around 100usec! just with one CAN used, if both were
+>> connected, it was more than twice. And many CAN frames were lost.
+>>
+>> So I tried to disable
+>>      /*
+>>          skb = alloc_can_skb(dev, &cf);
+>>          if (unlikely(!skb)) {
+>>                  stats->rx_dropped++;
+>>                  return 0;
+>>          }
+>>       */
+>> and made "struct can_frame cf" (not pointer, so that I can use it in
+>> flexcan_read_fifo call)
+>> And tried to send data again.
+>> Now - average time in flexcan_read_frame was not 100usec, but just 2
+>> usec! 50x less ...  no CAN frame was lost, even if I was using both CAN
+>> interfaces, each getting over 1100 msgs/sec and writing 100KB data to SD
+>> card.
+>
+> ... but the messages need to be allocated, queued, delivered to and even
+> processed by a user space task. What you messure it part of the network
+> stack overhead but 100us just for alloc_can_skb() seems quite a lot to
+> me. At what frequency is your CPU running? Is the system low of memory?
+> Maybe your system is simply not fast enough. To see what code is
+> involved just follow:
+CPU is i.MX25, should be running at 400MHz. There is 64MB RAM totally and free enough :(
 
-diff --git a/can-calc-bit-timing.c b/can-calc-bit-timing.c
-index ecf5cb6..242e1ef 100644
---- a/can-calc-bit-timing.c
-+++ b/can-calc-bit-timing.c
-@@ -192,7 +192,7 @@ static void printf_btr_mcp251x(struct
-can_bittiming *bt, int hd
-        if (hdr) {
-                printf("CNF1 CNF2 CNF3");
-        } else {
--               cnf1 = ((bt->sjw - 1) << 6) | bt->brp;
-+               cnf1 = ((bt->sjw - 1) << 6) | (bt->brp-1);
-                cnf2 = 0x80 | ((bt->phase_seg1 - 1) << 3) | (bt->prop_seg - 1);
-                cnf3 = bt->phase_seg2 - 1;
-                printf("0x%02x 0x%02x 0x%02x", cnf1, cnf2, cnf3);
+>
+>    http://lxr.free-electrons.com/ident?i=alloc_can_skb
+>> So I am asking - how to make this alloc_can_skb faster (or is there any
+>> alternative)? Or if there is another way how to get data to user?
+>
+> Well, not with Linux-CAN. Anyway, messages arrive at a rate of approx. 1
+> KHz. So there is 1ms per message. I think it's a latency problem in the
+> first place. The Flexcan on the i.MX25 can queue up to 5 messages. If
+> the queue is full you loose messages. This obviously happens when the
+> SDcard is accessed.
+>
+> Could you take function traces on your system?
+Is there any special tool for this or should I use my start/stop timers?
+
+Martin
+
+> Wolfgang.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
 
-On Sat, Oct 26, 2013 at 10:08 AM, Brennan Ashton
-<bashton@brennanashton.com> wrote:
-> The bit timing calculations in can-utils are certainly wrong, and
-> after a quick look at the ones that make up the kernel is appears that
-> they are not quite right as well.
->
-> From the datasheet:
-> TQ = 2*(BRP-1)/Fosc
->
-> Looking at the kernel:
->
-> can/dev.c defines best brp as:
-> 182 >---v64 = (u64)best_brp * 1000000000UL;
-> 183 >---do_div(v64, priv->clock.freq);
-> 184 >---bt->tq = (u32)v64;
-> ...
-> 201 >---bt->brp = best_brp;$
->
-> so TQ[ns] = BRP/Fosc
->
-> in can/mcp251x.c
->
-> 592 >---mcp251x_write_reg(spi, CNF1, ((bt->sjw - 1) << CNF1_SJW_SHIFT) |
-> 593 >--->--->---  (bt->brp - 1));
->
-> This is missing the key /2 factor but does take into account the -1
->
-> Now looking at can-calc-bit-timing.c from can-utils:
->
-> 195 >--->---cnf1 = ((bt->sjw - 1) << 6) | bt->brp;$
->
-> This is wrong as it is missing both the -1 and the /2
-> I have tested this corrected timing  on the MCP2515 at 20MHz Fosc and
-> 20k bitrate.  It worked with the corrected calculations but not
-> before.
->
-> There is a little more work than just adjusting the calculation as the
-> limits and the best bpr calc must be adjusted for the /2.  I can write
-> some patches up unless someone thinks I am missing something.
->
-> --Brennan Ashton
