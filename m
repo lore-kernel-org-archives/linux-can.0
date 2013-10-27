@@ -1,187 +1,50 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: CAN messages being lost on i.MX25 with flexcan - continued (was
- CAN messages being lost on i.MX25 with flexcan - 2012-04-19)
-Date: Sat, 26 Oct 2013 21:40:00 +0200
-Message-ID: <526C1A90.4050005@grandegger.com>
-References: <l4b8eg$40b$1@ger.gmane.org> <526A6B28.4040800@kkmicro.cz> <526AB12C.7090900@grandegger.com> <526C0768.8040903@kkmicro.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: [PATCH] can: kvaser_usb: fix usb endpoints detection
+Date: Sun, 27 Oct 2013 22:07:53 +0100
+Message-ID: <1382908073-6865-1-git-send-email-olivier@sobrie.be>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:35342 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753120Ab3JZTkF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Oct 2013 15:40:05 -0400
-In-Reply-To: <526C0768.8040903@kkmicro.cz>
+Received: from mail-wi0-f172.google.com ([209.85.212.172]:41763 "EHLO
+	mail-wi0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753229Ab3J0VIO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 27 Oct 2013 17:08:14 -0400
+Received: by mail-wi0-f172.google.com with SMTP id ez12so3044671wid.5
+        for <linux-can@vger.kernel.org>; Sun, 27 Oct 2013 14:08:13 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Martin Kozusky <mkozusky@kkmicro.cz>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Olivier Sobrie <olivier@sobrie.be>
 
-On 10/26/2013 08:18 PM, Martin Kozusky wrote:
-> Dne 25.10.2013 19:58, Wolfgang Grandegger napsal(a):
->> Hi Martin,
->>
->> On 10/25/2013 02:59 PM, Martin Kozusky wrote:
->>> Dne 24.10.2013 15:48, Martin Kozusky napsal(a):
->>>> Hello,
->>>> after more than year I'm back with CAN fifo overrun problems on i.MX25
->>>> board.
->>>> (it was good enough earlier, if some frames were lost, but not this
->>>> time)
->>>>
->>>> I have 2 flexcan interfaces, each receiving around 1100 msgs/s
->>>> (situation is a little better if I use just one iface, but I need both)
->>>> I just configure them and then run:
->>>>
->>>> I=0; while [ $I -le 20 ]; do dd if=/dev/zero of=/mnt/mmcblk0p1/test
->>>> bs=512 count=200; sync; sleep 1; I=$(($I+1)); done
->>>> (simulate writing to SDcard with 100KB blocks in 1 sec intervals)
->>>>
->>>> and start sending data from another device.
->>>>
->>>> I am not running any other program (like candump etc) to read from CAN.
->>>>
->>>> this is what is shown after I finish sending 35777 packets (both
->>>> interfaces now connected to same bus so they should receive same data)
->>>> with ip -d -s link show can0/1
->>>>
->>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>       link/can
->>>>       can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
->>>> restart-ms 0
->>>>       bitrate 250000 sample-point 0.857
->>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>       clock 66500000
->>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>       0          0          0          1          1          0
->>
->> Do you have electrical problems on the bus? Or is reaching error-passive
->> not related to this problem?
-> It is not related to this problem - there is only RX pin connected on
-> can0 (RX is connected in parallel with Coldfire V1 MCU CAN, which is
-> doing TX)
-> 
->  
->>>>       RX: bytes  packets  errors  dropped overrun mcast
->>>>       151769     19000    1699    0       1699    0
->>>>       TX: bytes  packets  errors  dropped carrier collsns
->>>>       0          0        0       0       0       0
->>>> root@vmx25 /opt/waytracer$ /root/utils/ip -d -s link show can1
->>>> 3: can1: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>       link/can
->>>>       can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
->>>>       bitrate 250000 sample-point 0.857
->>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>       clock 66500000
->>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>       0          0          0          0          0          0
->>>>       RX: bytes  packets  errors  dropped overrun mcast
->>>>       157377     19696    2664    0       2664    0
->>>>       TX: bytes  packets  errors  dropped carrier collsns
->>>>       0          0        0       0       0       0
->>>>
->>>>
->>>> With just one iface used:
->>>>
->>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>       link/can
->>>>       can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
->>>> restart-ms 0
->>>>       bitrate 250000 sample-point 0.857
->>>>       tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>       flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>       clock 66500000
->>>>       re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>       0          0          0          1          1          0
->>>>       RX: bytes  packets  errors  dropped overrun mcast
->>>>       233277     29201    1483    0       1483    0
->>>>       TX: bytes  packets  errors  dropped carrier collsns
->>>>       0          0        0       0       0       0
->>>>
->>>>
->>>> Too many packets are lost.
->>>>
->>>> I tried to play with FLEXCAN_NAPI_WEIGHT (quota for napi) and that
->>>> didn't hepl too much, if I put it too high then the system response
->>>> was slow and packets still lost, also tried to change priority of CAN
->>>> interrupts with (don't know if correctly)
->>>>     // imx_irq_set_priority(43,14);
->>>>     // imx_irq_set_priority(44,14);
->>>>
->>>> But it didn't help either.
->>>>
->>>>
->>>> Does anybody have any idea how not to lose any packets? :)
->>>
->>>
->>> Hello,
->>> I tried to disable
->>> //netif_receive_skb(skb); in  flexcan_read_frame() and other functions
->>> so that data is not processed further in system
->>
->> Well ...
->>
->>> It didn't help.
->>> So I tried to put time_start=ktime_get_real() at the begining of
->>> flexcan_read_frame(), then time_stop=ktime_get_real(); at the end and
->>> add their difference to the global variable
->>> time_total+=time_stop-time_start;
->>> I divided this time_total by rx_packets count at flexcan_chip_stop and
->>> wrote with dev_info into log (variables were initialized in
->>> flexcan_chi_start, so I could just do ifconfig can0 up/down and reset
->>> those counters and write them to log), so now I had average time spent
->>> int flexcan_read_frame.
->>> This time it was around 100usec! just with one CAN used, if both were
->>> connected, it was more than twice. And many CAN frames were lost.
->>>
->>> So I tried to disable
->>>      /*
->>>          skb = alloc_can_skb(dev, &cf);
->>>          if (unlikely(!skb)) {
->>>                  stats->rx_dropped++;
->>>                  return 0;
->>>          }
->>>       */
->>> and made "struct can_frame cf" (not pointer, so that I can use it in
->>> flexcan_read_fifo call)
->>> And tried to send data again.
->>> Now - average time in flexcan_read_frame was not 100usec, but just 2
->>> usec! 50x less ...  no CAN frame was lost, even if I was using both CAN
->>> interfaces, each getting over 1100 msgs/sec and writing 100KB data to SD
->>> card.
->>
->> ... but the messages need to be allocated, queued, delivered to and even
->> processed by a user space task. What you messure it part of the network
->> stack overhead but 100us just for alloc_can_skb() seems quite a lot to
->> me. At what frequency is your CPU running? Is the system low of memory?
->> Maybe your system is simply not fast enough. To see what code is
->> involved just follow:
-> CPU is i.MX25, should be running at 400MHz. There is 64MB RAM totally
-> and free enough :(
-> 
->>
->>    http://lxr.free-electrons.com/ident?i=alloc_can_skb
->>> So I am asking - how to make this alloc_can_skb faster (or is there any
->>> alternative)? Or if there is another way how to get data to user?
->>
->> Well, not with Linux-CAN. Anyway, messages arrive at a rate of approx. 1
->> KHz. So there is 1ms per message. I think it's a latency problem in the
->> first place. The Flexcan on the i.MX25 can queue up to 5 messages. If
->> the queue is full you loose messages. This obviously happens when the
->> SDcard is accessed.
->>
->> Could you take function traces on your system?
-> Is there any special tool for this or should I use my start/stop timers?
+Some devices, like the Kvaser Memorator Professional, have several
+bulk in endpoints. Only the first one found should be used by the
+driver. The same holds for the bulk out endpoint.
 
-Your start/stop timers will not show what other activity is disturbing
-the CAN messages reception. There is the Linux function tracer:
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+---
+ drivers/net/can/usb/kvaser_usb.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-  http://lxr.free-electrons.com/source/Documentation/trace/ftrace.txt
-
-It need to be enabled in the kernel. Especially event and function
-tracing could help to better understand your problems.
-
-Wolfgang.
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 3b95465..bdbf5bf 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -1554,13 +1554,14 @@ static void kvaser_usb_get_endpoints(const struct usb_interface *intf,
+ 
+ 	iface_desc = &intf->altsetting[0];
+ 
+-	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
++	for (i = 0; (i < iface_desc->desc.bNumEndpoints) && (!*in || !*out);
++	     ++i) {
+ 		endpoint = &iface_desc->endpoint[i].desc;
+ 
+-		if (usb_endpoint_is_bulk_in(endpoint))
++		if (!*in && usb_endpoint_is_bulk_in(endpoint))
+ 			*in = endpoint;
+ 
+-		if (usb_endpoint_is_bulk_out(endpoint))
++		if (!*out && usb_endpoint_is_bulk_out(endpoint))
+ 			*out = endpoint;
+ 	}
+ }
+-- 
+1.8.3.2
 
