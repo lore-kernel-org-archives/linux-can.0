@@ -1,62 +1,59 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: c_can: Handle lost message before EOB
-Date: Mon, 28 Oct 2013 10:08:03 +0100
-Message-ID: <526E2973.6090905@pengutronix.de>
-References: <1382950480-12515-1-git-send-email-mpa@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ"
+Subject: [PATCH v2] can: kvaser_usb: fix usb endpoints detection
+Date: Mon, 28 Oct 2013 10:14:18 +0100
+Message-ID: <1382951658-19214-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55827 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42687 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751948Ab3J1JIP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Oct 2013 05:08:15 -0400
-In-Reply-To: <1382950480-12515-1-git-send-email-mpa@pengutronix.de>
+	with ESMTP id S1752718Ab3J1JOV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Oct 2013 05:14:21 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Olivier Sobrie <olivier@sobrie.be>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Olivier Sobrie <olivier@sobrie.be>
 
-On 10/28/2013 09:54 AM, Markus Pargmann wrote:
-> If we handle end of block messages with higher priority than a lost
-> message, we can run into an endless interrupt loop.
->=20
-> This is reproducable with a am335x processor and "cansequence -r" at
-> 1Mbit. As soon as we loose a packet we can't escape from a interrupt
-> loop.
->=20
-> This patch handles lost packets before EOB packets.
->=20
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Some devices, like the Kvaser Memorator Professional, have several
+bulk in endpoints. Only the first one found should be used by the
+driver. The same holds for the bulk out endpoint.
 
-Thanks, applied to can.
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
 
+changes since v1:
+- use explizid return in loop if both in and out endpoints are found.
+
+regards,
 Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+ drivers/net/can/usb/kvaser_usb.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 3b95465..b88a8e9 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -1557,11 +1557,15 @@ static void kvaser_usb_get_endpoints(const struct usb_interface *intf,
+ 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
+ 		endpoint = &iface_desc->endpoint[i].desc;
+ 
+-		if (usb_endpoint_is_bulk_in(endpoint))
++		if (!*in && usb_endpoint_is_bulk_in(endpoint))
+ 			*in = endpoint;
+ 
+-		if (usb_endpoint_is_bulk_out(endpoint))
++		if (!*out && usb_endpoint_is_bulk_out(endpoint))
+ 			*out = endpoint;
++
++		/* only use first bulk endpoint for in and out */
++		if (*in && *out)
++			return;
+ 	}
+ }
+ 
+-- 
+1.8.4.rc3
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJuKXQACgkQjTAFq1RaXHM61wCeLbbGwIVvk5Z2oympmZZJQhAo
-E24AmwbRsez7TxFD2bT/EVEBNDTRJYkH
-=agCZ
------END PGP SIGNATURE-----
-
---4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ--
