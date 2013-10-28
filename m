@@ -1,55 +1,62 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH] can: c_can: Handle lost message before EOB
-Date: Mon, 28 Oct 2013 09:54:40 +0100
-Message-ID: <1382950480-12515-1-git-send-email-mpa@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: c_can: Handle lost message before EOB
+Date: Mon, 28 Oct 2013 10:08:03 +0100
+Message-ID: <526E2973.6090905@pengutronix.de>
+References: <1382950480-12515-1-git-send-email-mpa@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46007 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55827 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754581Ab3J1Iy5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Oct 2013 04:54:57 -0400
+	with ESMTP id S1751948Ab3J1JIP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Oct 2013 05:08:15 -0400
+In-Reply-To: <1382950480-12515-1-git-send-email-mpa@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
 
-If we handle end of block messages with higher priority than a lost
-message, we can run into an endless interrupt loop.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This is reproducable with a am335x processor and "cansequence -r" at
-1Mbit. As soon as we loose a packet we can't escape from a interrupt
-loop.
+On 10/28/2013 09:54 AM, Markus Pargmann wrote:
+> If we handle end of block messages with higher priority than a lost
+> message, we can run into an endless interrupt loop.
+>=20
+> This is reproducable with a am335x processor and "cansequence -r" at
+> 1Mbit. As soon as we loose a packet we can't escape from a interrupt
+> loop.
+>=20
+> This patch handles lost packets before EOB packets.
+>=20
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 
-This patch handles lost packets before EOB packets.
+Thanks, applied to can.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- drivers/net/can/c_can/c_can.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index a668cd4..e3fc07c 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -814,9 +814,6 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 			msg_ctrl_save = priv->read_reg(priv,
- 					C_CAN_IFACE(MSGCTRL_REG, 0));
- 
--			if (msg_ctrl_save & IF_MCONT_EOB)
--				return num_rx_pkts;
--
- 			if (msg_ctrl_save & IF_MCONT_MSGLST) {
- 				c_can_handle_lost_msg_obj(dev, 0, msg_obj);
- 				num_rx_pkts++;
-@@ -824,6 +821,9 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 				continue;
- 			}
- 
-+			if (msg_ctrl_save & IF_MCONT_EOB)
-+				return num_rx_pkts;
-+
- 			if (!(msg_ctrl_save & IF_MCONT_NEWDAT))
- 				continue;
- 
--- 
-1.8.4.rc3
 
+--4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlJuKXQACgkQjTAFq1RaXHM61wCeLbbGwIVvk5Z2oympmZZJQhAo
+E24AmwbRsez7TxFD2bT/EVEBNDTRJYkH
+=agCZ
+-----END PGP SIGNATURE-----
+
+--4dnXTfDLU5AKrpl31p0R3g43N5dRwOnSQ--
