@@ -1,93 +1,37 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2] can: c_can: Speed up rx_poll function
-Date: Tue, 29 Oct 2013 09:27:47 +0100
-Message-ID: <1383035267-19604-1-git-send-email-mpa@pengutronix.de>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2] can: c_can: Speed up rx_poll function
+Date: Tue, 29 Oct 2013 01:31:01 -0700
+Message-ID: <1383035461.2713.1.camel@joe-AO722>
+References: <1383035267-19604-1-git-send-email-mpa@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54784 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752596Ab3J2I2F (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 04:28:05 -0400
+Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:46682 "EHLO
+	smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751510Ab3J2IbH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 04:31:07 -0400
+In-Reply-To: <1383035267-19604-1-git-send-email-mpa@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Joe Perches <joe@perches.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
 
-This patch speeds up the rx_poll function by reducing the number of
-register reads.
+On Tue, 2013-10-29 at 09:27 +0100, Markus Pargmann wrote:
+> This patch speeds up the rx_poll function by reducing the number of
+> register reads.
+[]
+> The third change is to replace the for-loop by a find_next_bit loop.
 
-Replace the 32bit register read by a 16bit register read. Currently
-the 32bit register read is implemented by using 2 16bit reads. This is
-inefficient as we only use the lower 16bit in rx_poll.
+You need to update the commit message.
 
-The for loop reads the pending interrupts in every iteration. This
-leads up to 16 reads of pending interrupts. The patch introduces a new
-outer loop to read the pending interrupts as long as 'quota' is above 0.
-This reduces the total number of reads.
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+[]
+> @@ -798,17 +798,19 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
+[]
+> +	while (quota > 0 && (val = priv->read_reg(priv, C_CAN_INTPND1_REG))) {
+> +		while ((msg_obj = ffs(val)) && quota > 0) {
+> +			val &= ~BIT(msg_obj - 1);
 
-The third change is to replace the for-loop by a find_next_bit loop.
 
-Tested on AM335x. I removed all 'static' and 'inline' from c_can.c to
-see the timings for all functions. I used the function tracer with
-trace_stats.
-
-125kbit:
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_do_rx_poll                     63960    10168178 us     158.977 us      1493056 us
-With patch:
-  c_can_do_rx_poll                     63939    4268457 us     66.758 us       818790.9 us
-
-1Mbit:
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_do_rx_poll                     69489    30049498 us     432.435 us      9271851 us
-With patch:
-  c_can_do_rx_poll                    103034    24220362 us     235.071 us      6016656 us
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
-
-Notes:
-    Changes in v2:
-     - Small changes, find_next_bit -> ffs and other
-
- drivers/net/can/c_can/c_can.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index a668cd4..428681e 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -798,17 +798,19 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 	u32 num_rx_pkts = 0;
- 	unsigned int msg_obj, msg_ctrl_save;
- 	struct c_can_priv *priv = netdev_priv(dev);
--	u32 val = c_can_read_reg32(priv, C_CAN_INTPND1_REG);
-+	u16 val;
-+
-+	/*
-+	 * It is faster to read only one 16bit register. This is only possible
-+	 * for a maximum number of 16 objects.
-+	 */
-+	BUILD_BUG_ON_MSG(C_CAN_MSG_OBJ_RX_LAST > 16,
-+			"Implementation does not support more message objects than 16");
-+
-+	while (quota > 0 && (val = priv->read_reg(priv, C_CAN_INTPND1_REG))) {
-+		while ((msg_obj = ffs(val)) && quota > 0) {
-+			val &= ~BIT(msg_obj - 1);
- 
--	for (msg_obj = C_CAN_MSG_OBJ_RX_FIRST;
--			msg_obj <= C_CAN_MSG_OBJ_RX_LAST && quota > 0;
--			val = c_can_read_reg32(priv, C_CAN_INTPND1_REG),
--			msg_obj++) {
--		/*
--		 * as interrupt pending register's bit n-1 corresponds to
--		 * message object n, we need to handle the same properly.
--		 */
--		if (val & (1 << (msg_obj - 1))) {
- 			c_can_object_get(dev, 0, msg_obj, IF_COMM_ALL &
- 					~IF_COMM_TXRQST);
- 			msg_ctrl_save = priv->read_reg(priv,
--- 
-1.8.4.rc3
 
