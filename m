@@ -1,172 +1,93 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: CAN bus transmission timeout
-Date: Tue, 29 Oct 2013 07:03:19 +0100
-Message-ID: <20131029060319.GA12205@vandijck-laurijssen.be>
-References: <CAGfq0uuk-7ihMaYvgEGUvnMaNLcxQc6LrvizuFG2g_KHga7iCw@mail.gmail.com>
- <20131028143558.GB493@vandijck-laurijssen.be>
- <CAGfq0uvbNYiu3qoTOch7jVMVVFwk0BmpzLej+8EOQow0sU8o-w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v2] can: c_can: Speed up rx_poll function
+Date: Tue, 29 Oct 2013 09:27:47 +0100
+Message-ID: <1383035267-19604-1-git-send-email-mpa@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:51348 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751398Ab3J2GDY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 02:03:24 -0400
-Content-Disposition: inline
-In-Reply-To: <CAGfq0uvbNYiu3qoTOch7jVMVVFwk0BmpzLej+8EOQow0sU8o-w@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54784 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752596Ab3J2I2F (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 04:28:05 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Kirienko <pavel.kirienko.list@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Joe Perches <joe@perches.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>
 
-On Mon, Oct 28, 2013 at 08:01:18PM +0400, Pavel Kirienko wrote:
-> Hi Kurt,
-> 
-> Thanks.
-> I assume the most obvious solution - setsockopt SO_SNDTIMEO - is not
-> availabe with CAN, right? (well, I understand that this feature must
-> also be supported by CAN device drivers)
-> 
-> According to my understanding, your approach basically boils down to
-> maintaining a TX queue inside the user space application. Each message
-> from this user space TX shall be moved into the socket only when it is
-> confirmed that the previous message has been pushed to the bus
-> successfully.
-> Compared to the straightforward approach, this one has one extra IO
-> per message (to read back my own messages). This shouldn't hurt the
-> performance a lot I guess, but this increases the inter-message
-> intervals. OK, we can cope with that.
-> 
-> New questions:
-> 
-> 1. Assuming that there might be more than one node transmitting some
-> particular message, how do I distinguish which messages were actually
-> received from the bus, and which were loopbacked? I guess I should
-> open two sockets, one for loopbacks+RX, other just for RX?
+This patch speeds up the rx_poll function by reducing the number of
+register reads.
 
-You just need 1 socket.
+Replace the 32bit register read by a 16bit register read. Currently
+the 32bit register read is implemented by using 2 16bit reads. This is
+inefficient as we only use the lower 16bit in rx_poll.
 
-See $ git show 1e55659ce6ddb5247cee0b1f720d77a799902b85
+The for loop reads the pending interrupts in every iteration. This
+leads up to 16 reads of pending interrupts. The patch introduces a new
+outer loop to read the pending interrupts as long as 'quota' is above 0.
+This reduces the total number of reads.
 
-MSG_DONTROUTE is set for any packet from localhost,
-MSG_CONFIRM is set for any pakcet of your socket.
+The third change is to replace the for-loop by a find_next_bit loop.
 
-> 
-> 2. If an application closes its socket while there are still some
-> messages to transmit from the TX queue, will these untransmitted
-> messages be discarded? Or will they wait regardless of the socket's
-> life cycle? I am asking because it would be nice if there is some way
-> to drop the transmitting queue entirely in case of bus-off condition.
+Tested on AM335x. I removed all 'static' and 'inline' from c_can.c to
+see the timings for all functions. I used the function tracer with
+trace_stats.
 
-The messages that were sent with sendto/send/...
-have been queued, and cannot be recalled :-(
+125kbit:
+  Function                               Hit    Time            Avg             s^2
+  --------                               ---    ----            ---             ---
+  c_can_do_rx_poll                     63960    10168178 us     158.977 us      1493056 us
+With patch:
+  c_can_do_rx_poll                     63939    4268457 us     66.758 us       818790.9 us
 
-> 
-> Best regards,
-> Pavel.
-> 
-> 
-> On Mon, Oct 28, 2013 at 6:35 PM, Kurt Van Dijck <kurt.van.dijck@eia.be> wrote:
-> > Hi Pavel,
-> >
-> > I believe the queue filling can be solved by reading your own
-> > messages back. As long as you see your own messages, your queue
-> > remains empty.
-> > When your messages is not yet read back, you must assume it did not
-> > get out yet, so it's still in the queue. No need to resend, because
-> > the previous one is yet pending.
-> >
-> > When you receive a bus-off indication, you should reset this mechanism.
-> >
-> > This address problems 1 & 3.
-> > Problem 2 (old data) remains for 1 transmission period.
-> >
-> > receiving your own traffic can be instructed with:
-> >
-> >     int recv_own_msgs = 1; /* 0 = disabled (default), 1 = enabled */
-> >
-> >     setsockopt(sock, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS,
-> >                &recv_own_msgs, sizeof(recv_own_msgs));
-> >
-> > Kind regards,
-> > Kurt
-> >
-> > On Mon, Oct 28, 2013 at 05:59:02PM +0400, Pavel Kirienko wrote:
-> >> Hi list,
-> >>
-> >> Consider the following scenario:
-> >>
-> >> There is a Linux-powered device connected to a CAN bus. The device
-> >> periodically transmits the CAN message. The nature of the data carried
-> >> by this message is like measurement rather than command, i.e. only the
-> >> most recent one is actually valid, and if some messages are lost that
-> >> is not an issue as long as the latest one was received successfully.
-> >>
-> >> Then the device in question is being disconnected from the CAN bus for
-> >> some amount of time that is much longer than the interval between
-> >> subsequent message transmissions. The device logic is still trying to
-> >> transmit the messages, but since the bus is disconnected the CAN
-> >> controller is unable to transmit any of them so the messages are being
-> >> accumulated in the TX queue.
-> >>
-> >> Some time later the CAN bus connection is restored, and all the
-> >> accumulated messages are being kicked on the bus one by one.
-> >>
-> >> --- Problem ---
-> >>
-> >> 1. When the CAN bus connection is restored, undefined amount of
-> >> outdated messages will be transmitted from the TX queue.
-> >>
-> >> 2. While the CAN bus connection is still not available but TX queue is
-> >> already full, transmission of some most recent messages (i.e. the only
-> >> valid messages) will be discarded.
-> >>
-> >> 3. Once the CAN bus connection is restored, there would be short term
-> >> traffic burst while the TX queue is being flushed. This can alter the
-> >> Time Triggered Bus Scheduling if one is used (it is in my case).
-> >>
-> >> --- Question ---
-> >>
-> >> My application uses SocketCAN driver, so basically the question should
-> >> be applied to SocketCAN, but other options are considered too if there
-> >> are any.
-> >>
-> >> I see two possible solutions: define a message transmission timeout
-> >> (if a message was not transmitted during some predefined amount if
-> >> time, it will be discarded automatically), or abort transmission of
-> >> outdated messages manually (though I doubt it is possible at all with
-> >> socket API).
-> >>
-> >> Since the first option seems to be most real to me, the questions are:
-> >>
-> >> 1. How does one define TX timeout for CAN interface under Linux?
-> >>
-> >> 2. Are there other options exist to solve the problems described
-> >> above, aside from TX timeouts?
-> >>
-> >> Thanks in advance,
-> >> Pavel Kirienko.
-> >>
-> >> P.S. reposted from http://stackoverflow.com/questions/19633015
-> >> --
-> >> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> >> the body of a message to majordomo@vger.kernel.org
-> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >
-> > --
-> > Kurt Van Dijck
-> > GRAMMER EiA ELECTRONICS
-> > http://www.eia.be
-> > kurt.van.dijck@eia.be
-> > +32-38708534
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1Mbit:
+  Function                               Hit    Time            Avg             s^2
+  --------                               ---    ----            ---             ---
+  c_can_do_rx_poll                     69489    30049498 us     432.435 us      9271851 us
+With patch:
+  c_can_do_rx_poll                    103034    24220362 us     235.071 us      6016656 us
 
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+
+Notes:
+    Changes in v2:
+     - Small changes, find_next_bit -> ffs and other
+
+ drivers/net/can/c_can/c_can.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index a668cd4..428681e 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -798,17 +798,19 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
+ 	u32 num_rx_pkts = 0;
+ 	unsigned int msg_obj, msg_ctrl_save;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+-	u32 val = c_can_read_reg32(priv, C_CAN_INTPND1_REG);
++	u16 val;
++
++	/*
++	 * It is faster to read only one 16bit register. This is only possible
++	 * for a maximum number of 16 objects.
++	 */
++	BUILD_BUG_ON_MSG(C_CAN_MSG_OBJ_RX_LAST > 16,
++			"Implementation does not support more message objects than 16");
++
++	while (quota > 0 && (val = priv->read_reg(priv, C_CAN_INTPND1_REG))) {
++		while ((msg_obj = ffs(val)) && quota > 0) {
++			val &= ~BIT(msg_obj - 1);
+ 
+-	for (msg_obj = C_CAN_MSG_OBJ_RX_FIRST;
+-			msg_obj <= C_CAN_MSG_OBJ_RX_LAST && quota > 0;
+-			val = c_can_read_reg32(priv, C_CAN_INTPND1_REG),
+-			msg_obj++) {
+-		/*
+-		 * as interrupt pending register's bit n-1 corresponds to
+-		 * message object n, we need to handle the same properly.
+-		 */
+-		if (val & (1 << (msg_obj - 1))) {
+ 			c_can_object_get(dev, 0, msg_obj, IF_COMM_ALL &
+ 					~IF_COMM_TXRQST);
+ 			msg_ctrl_save = priv->read_reg(priv,
 -- 
-Kurt Van Dijck
-GRAMMER EiA ELECTRONICS
-http://www.eia.be
-kurt.van.dijck@eia.be
-+32-38708534
+1.8.4.rc3
+
