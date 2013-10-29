@@ -1,23 +1,35 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
+From: Martin Kozusky <mkozusky@kkmicro.cz>
 Subject: Re: CAN messages being lost on i.MX25 with flexcan - continued (was
  CAN messages being lost on i.MX25 with flexcan - 2012-04-19)
-Date: Tue, 29 Oct 2013 13:22:49 +0100
-Message-ID: <526FA899.2070708@grandegger.com>
+Date: Tue, 29 Oct 2013 13:40:29 +0100
+Message-ID: <526FACBD.4030605@kkmicro.cz>
 References: <l4b8eg$40b$1@ger.gmane.org> <526A6B28.4040800@kkmicro.cz> <526AB12C.7090900@grandegger.com> <526C0768.8040903@kkmicro.cz> <526C1A90.4050005@grandegger.com> <526F9216.6010506@kkmicro.cz> <526FA40D.8000202@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:58343 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751978Ab3J2MWw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 08:22:52 -0400
+Received: from plane.gmane.org ([80.91.229.3]:47520 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752795Ab3J2Mkk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 29 Oct 2013 08:40:40 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Vb8b8-0000TD-RH
+	for linux-can@vger.kernel.org; Tue, 29 Oct 2013 13:40:38 +0100
+Received: from 213.191.105.242 ([213.191.105.242])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 29 Oct 2013 13:40:38 +0100
+Received: from mkozusky by 213.191.105.242 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 29 Oct 2013 13:40:38 +0100
 In-Reply-To: <526FA40D.8000202@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Martin Kozusky <mkozusky@kkmicro.cz>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>
 
-On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
+Dne 29.10.2013 13:03, Wolfgang Grandegger napsal(a):
 > On 10/29/2013 11:46 AM, Martin Kozusky wrote:
 >> Dne 26.10.2013 21:40, Wolfgang Grandegger napsal(a):
 >>> On 10/26/2013 08:18 PM, Martin Kozusky wrote:
@@ -53,15 +65,15 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>>>>>> with ip -d -s link show can0/1
 >>>>>>>
 >>>>>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>>>>        link/can
->>>>>>>        can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>>>>>>         link/can
+>>>>>>>         can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
 >>>>>>> restart-ms 0
->>>>>>>        bitrate 250000 sample-point 0.857
->>>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>>>>        clock 66500000
->>>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>>>>        0          0          0          1          1          0
+>>>>>>>         bitrate 250000 sample-point 0.857
+>>>>>>>         tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>>>         flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>>>         clock 66500000
+>>>>>>>         re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>>>         0          0          0          1          1          0
 >>>>>
 >>>>> Do you have electrical problems on the bus? Or is reaching
 >>>>> error-passive
@@ -71,42 +83,42 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>>> doing TX)
 >>>>
 >>>>
->>>>>>>        RX: bytes  packets  errors  dropped overrun mcast
->>>>>>>        151769     19000    1699    0       1699    0
->>>>>>>        TX: bytes  packets  errors  dropped carrier collsns
->>>>>>>        0          0        0       0       0       0
+>>>>>>>         RX: bytes  packets  errors  dropped overrun mcast
+>>>>>>>         151769     19000    1699    0       1699    0
+>>>>>>>         TX: bytes  packets  errors  dropped carrier collsns
+>>>>>>>         0          0        0       0       0       0
 >>>>>>> root@vmx25 /opt/waytracer$ /root/utils/ip -d -s link show can1
 >>>>>>> 3: can1: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>>>>        link/can
->>>>>>>        can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
->>>>>>>        bitrate 250000 sample-point 0.857
->>>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>>>>        clock 66500000
->>>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>>>>        0          0          0          0          0          0
->>>>>>>        RX: bytes  packets  errors  dropped overrun mcast
->>>>>>>        157377     19696    2664    0       2664    0
->>>>>>>        TX: bytes  packets  errors  dropped carrier collsns
->>>>>>>        0          0        0       0       0       0
+>>>>>>>         link/can
+>>>>>>>         can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+>>>>>>>         bitrate 250000 sample-point 0.857
+>>>>>>>         tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>>>         flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>>>         clock 66500000
+>>>>>>>         re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>>>         0          0          0          0          0          0
+>>>>>>>         RX: bytes  packets  errors  dropped overrun mcast
+>>>>>>>         157377     19696    2664    0       2664    0
+>>>>>>>         TX: bytes  packets  errors  dropped carrier collsns
+>>>>>>>         0          0        0       0       0       0
 >>>>>>>
 >>>>>>>
 >>>>>>> With just one iface used:
 >>>>>>>
 >>>>>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->>>>>>>        link/can
->>>>>>>        can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>>>>>>         link/can
+>>>>>>>         can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
 >>>>>>> restart-ms 0
->>>>>>>        bitrate 250000 sample-point 0.857
->>>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
->>>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
->>>>>>>        clock 66500000
->>>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
->>>>>>>        0          0          0          1          1          0
->>>>>>>        RX: bytes  packets  errors  dropped overrun mcast
->>>>>>>        233277     29201    1483    0       1483    0
->>>>>>>        TX: bytes  packets  errors  dropped carrier collsns
->>>>>>>        0          0        0       0       0       0
+>>>>>>>         bitrate 250000 sample-point 0.857
+>>>>>>>         tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>>>         flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>>>         clock 66500000
+>>>>>>>         re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>>>         0          0          0          1          1          0
+>>>>>>>         RX: bytes  packets  errors  dropped overrun mcast
+>>>>>>>         233277     29201    1483    0       1483    0
+>>>>>>>         TX: bytes  packets  errors  dropped carrier collsns
+>>>>>>>         0          0        0       0       0       0
 >>>>>>>
 >>>>>>>
 >>>>>>> Too many packets are lost.
@@ -115,8 +127,8 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>>>>>> didn't hepl too much, if I put it too high then the system response
 >>>>>>> was slow and packets still lost, also tried to change priority of CAN
 >>>>>>> interrupts with (don't know if correctly)
->>>>>>>      // imx_irq_set_priority(43,14);
->>>>>>>      // imx_irq_set_priority(44,14);
+>>>>>>>       // imx_irq_set_priority(43,14);
+>>>>>>>       // imx_irq_set_priority(44,14);
 >>>>>>>
 >>>>>>> But it didn't help either.
 >>>>>>>
@@ -145,13 +157,13 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>>>>> connected, it was more than twice. And many CAN frames were lost.
 >>>>>>
 >>>>>> So I tried to disable
->>>>>>       /*
->>>>>>           skb = alloc_can_skb(dev, &cf);
->>>>>>           if (unlikely(!skb)) {
->>>>>>                   stats->rx_dropped++;
->>>>>>                   return 0;
->>>>>>           }
->>>>>>        */
+>>>>>>        /*
+>>>>>>            skb = alloc_can_skb(dev, &cf);
+>>>>>>            if (unlikely(!skb)) {
+>>>>>>                    stats->rx_dropped++;
+>>>>>>                    return 0;
+>>>>>>            }
+>>>>>>         */
 >>>>>> and made "struct can_frame cf" (not pointer, so that I can use it in
 >>>>>> flexcan_read_fifo call)
 >>>>>> And tried to send data again.
@@ -173,7 +185,7 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>>> and free enough :(
 >>>>
 >>>>>
->>>>>     http://lxr.free-electrons.com/ident?i=alloc_can_skb
+>>>>>      http://lxr.free-electrons.com/ident?i=alloc_can_skb
 >>>>>> So I am asking - how to make this alloc_can_skb faster (or is there
 >>>>>> any
 >>>>>> alternative)? Or if there is another way how to get data to user?
@@ -191,7 +203,7 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >>> Your start/stop timers will not show what other activity is disturbing
 >>> the CAN messages reception. There is the Linux function tracer:
 >>>
->>>    http://lxr.free-electrons.com/source/Documentation/trace/ftrace.txt
+>>>     http://lxr.free-electrons.com/source/Documentation/trace/ftrace.txt
 >>>
 >>> It need to be enabled in the kernel. Especially event and function
 >>> tracing could help to better understand your problems.
@@ -201,13 +213,23 @@ On 10/29/2013 01:03 PM, Wolfgang Grandegger wrote:
 >> that easy, will be?
 >> Timestamps that ftrace is showing me are in 10 miliseconds resolution,
 >> that won't help me much :(
-> 
+>
 > Probably that version is to old for proper ftrace support. The 100us you
 > measured for alloc_can_skb() is worst case, right? What is the mean value?
 
-Flexcan support was added to the mainline kernel 2.6.36. Where did you
-get your flexcan driver from? Could you post it please here? Any chance
-to switch to a (more) recent version of the Linux kernel?
+Now I checked again and logged every call (don't know if realy everything was logged but something was :) and I see that it is not 100usec, but only around 20usec (mean value - checked by eye). There were some very long calls (around 2ms!) that were puttings errors in my  sum/count formula (may be I should filter out calls longer that 200usec), with this error it was not 100usec, but almost 1ms (my value was only 32bit and was overflowing when I wrote it first time). So normally around 20usec, but with very long calls around 2-3 ms (looks like those long are periodic - each 6th - 8th call is much longer, but not all the time)
+But still with those 20usec call, there are many RX overflows, if I disable the call alloc_can_skb, there are no overflows and all is received (but still not processed further, because I don't have skb ... )
 
-Wolfgang.
+Martin
+
+> Wolfgang.
+>
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+
 
