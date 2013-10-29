@@ -1,97 +1,212 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v2] can: c_can: Speed up rx_poll function
-Date: Tue, 29 Oct 2013 09:58:53 +0100
-Message-ID: <20131029085853.GC20839@pengutronix.de>
-References: <1383035267-19604-1-git-send-email-mpa@pengutronix.de>
- <1383035688.2713.2.camel@joe-AO722>
+From: Martin Kozusky <mkozusky@kkmicro.cz>
+Subject: Re: CAN messages being lost on i.MX25 with flexcan - continued (was
+ CAN messages being lost on i.MX25 with flexcan - 2012-04-19)
+Date: Tue, 29 Oct 2013 11:46:46 +0100
+Message-ID: <526F9216.6010506@kkmicro.cz>
+References: <l4b8eg$40b$1@ger.gmane.org> <526A6B28.4040800@kkmicro.cz> <526AB12C.7090900@grandegger.com> <526C0768.8040903@kkmicro.cz> <526C1A90.4050005@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39596 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751922Ab3J2I66 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Oct 2013 04:58:58 -0400
-Content-Disposition: inline
-In-Reply-To: <1383035688.2713.2.camel@joe-AO722>
+Received: from plane.gmane.org ([80.91.229.3]:38822 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751349Ab3J2Kq6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 29 Oct 2013 06:46:58 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Vb6p5-00046e-SW
+	for linux-can@vger.kernel.org; Tue, 29 Oct 2013 11:46:55 +0100
+Received: from 213.191.105.242 ([213.191.105.242])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 29 Oct 2013 11:46:55 +0100
+Received: from mkozusky by 213.191.105.242 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 29 Oct 2013 11:46:55 +0100
+In-Reply-To: <526C1A90.4050005@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>
 
-On Tue, Oct 29, 2013 at 01:34:48AM -0700, Joe Perches wrote:
-> On Tue, 2013-10-29 at 09:27 +0100, Markus Pargmann wrote:
-> > This patch speeds up the rx_poll function by reducing the number of
-> > register reads.
-> []
-> > 125kbit:
-> >   Function                               Hit    Time            Avg             s^2
-> >   --------                               ---    ----            ---             ---
-> >   c_can_do_rx_poll                     63960    10168178 us     158.977 us      1493056 us
-> > With patch:
-> >   c_can_do_rx_poll                     63939    4268457 us     66.758 us       818790.9 us
-> > 
-> > 1Mbit:
-> >   Function                               Hit    Time            Avg             s^2
-> >   --------                               ---    ----            ---             ---
-> >   c_can_do_rx_poll                     69489    30049498 us     432.435 us      9271851 us
-> > With patch:
-> >   c_can_do_rx_poll                    103034    24220362 us     235.071 us      6016656 us
-> 
-> Also nicer if you updated the timings table
-> 
-> 
+Dne 26.10.2013 21:40, Wolfgang Grandegger napsal(a):
+> On 10/26/2013 08:18 PM, Martin Kozusky wrote:
+>> Dne 25.10.2013 19:58, Wolfgang Grandegger napsal(a):
+>>> Hi Martin,
+>>>
+>>> On 10/25/2013 02:59 PM, Martin Kozusky wrote:
+>>>> Dne 24.10.2013 15:48, Martin Kozusky napsal(a):
+>>>>> Hello,
+>>>>> after more than year I'm back with CAN fifo overrun problems on i.MX25
+>>>>> board.
+>>>>> (it was good enough earlier, if some frames were lost, but not this
+>>>>> time)
+>>>>>
+>>>>> I have 2 flexcan interfaces, each receiving around 1100 msgs/s
+>>>>> (situation is a little better if I use just one iface, but I need both)
+>>>>> I just configure them and then run:
+>>>>>
+>>>>> I=0; while [ $I -le 20 ]; do dd if=/dev/zero of=/mnt/mmcblk0p1/test
+>>>>> bs=512 count=200; sync; sleep 1; I=$(($I+1)); done
+>>>>> (simulate writing to SDcard with 100KB blocks in 1 sec intervals)
+>>>>>
+>>>>> and start sending data from another device.
+>>>>>
+>>>>> I am not running any other program (like candump etc) to read from CAN.
+>>>>>
+>>>>> this is what is shown after I finish sending 35777 packets (both
+>>>>> interfaces now connected to same bus so they should receive same data)
+>>>>> with ip -d -s link show can0/1
+>>>>>
+>>>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>>>        link/can
+>>>>>        can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>>>> restart-ms 0
+>>>>>        bitrate 250000 sample-point 0.857
+>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>        clock 66500000
+>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>        0          0          0          1          1          0
+>>>
+>>> Do you have electrical problems on the bus? Or is reaching error-passive
+>>> not related to this problem?
+>> It is not related to this problem - there is only RX pin connected on
+>> can0 (RX is connected in parallel with Coldfire V1 MCU CAN, which is
+>> doing TX)
+>>
+>>
+>>>>>        RX: bytes  packets  errors  dropped overrun mcast
+>>>>>        151769     19000    1699    0       1699    0
+>>>>>        TX: bytes  packets  errors  dropped carrier collsns
+>>>>>        0          0        0       0       0       0
+>>>>> root@vmx25 /opt/waytracer$ /root/utils/ip -d -s link show can1
+>>>>> 3: can1: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>>>        link/can
+>>>>>        can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+>>>>>        bitrate 250000 sample-point 0.857
+>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>        clock 66500000
+>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>        0          0          0          0          0          0
+>>>>>        RX: bytes  packets  errors  dropped overrun mcast
+>>>>>        157377     19696    2664    0       2664    0
+>>>>>        TX: bytes  packets  errors  dropped carrier collsns
+>>>>>        0          0        0       0       0       0
+>>>>>
+>>>>>
+>>>>> With just one iface used:
+>>>>>
+>>>>> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+>>>>>        link/can
+>>>>>        can <LISTEN-ONLY> state STOPPED (berr-counter tx 0 rx 0)
+>>>>> restart-ms 0
+>>>>>        bitrate 250000 sample-point 0.857
+>>>>>        tq 285 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>>>>        flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>>>>        clock 66500000
+>>>>>        re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>>>>        0          0          0          1          1          0
+>>>>>        RX: bytes  packets  errors  dropped overrun mcast
+>>>>>        233277     29201    1483    0       1483    0
+>>>>>        TX: bytes  packets  errors  dropped carrier collsns
+>>>>>        0          0        0       0       0       0
+>>>>>
+>>>>>
+>>>>> Too many packets are lost.
+>>>>>
+>>>>> I tried to play with FLEXCAN_NAPI_WEIGHT (quota for napi) and that
+>>>>> didn't hepl too much, if I put it too high then the system response
+>>>>> was slow and packets still lost, also tried to change priority of CAN
+>>>>> interrupts with (don't know if correctly)
+>>>>>      // imx_irq_set_priority(43,14);
+>>>>>      // imx_irq_set_priority(44,14);
+>>>>>
+>>>>> But it didn't help either.
+>>>>>
+>>>>>
+>>>>> Does anybody have any idea how not to lose any packets? :)
+>>>>
+>>>>
+>>>> Hello,
+>>>> I tried to disable
+>>>> //netif_receive_skb(skb); in  flexcan_read_frame() and other functions
+>>>> so that data is not processed further in system
+>>>
+>>> Well ...
+>>>
+>>>> It didn't help.
+>>>> So I tried to put time_start=ktime_get_real() at the begining of
+>>>> flexcan_read_frame(), then time_stop=ktime_get_real(); at the end and
+>>>> add their difference to the global variable
+>>>> time_total+=time_stop-time_start;
+>>>> I divided this time_total by rx_packets count at flexcan_chip_stop and
+>>>> wrote with dev_info into log (variables were initialized in
+>>>> flexcan_chi_start, so I could just do ifconfig can0 up/down and reset
+>>>> those counters and write them to log), so now I had average time spent
+>>>> int flexcan_read_frame.
+>>>> This time it was around 100usec! just with one CAN used, if both were
+>>>> connected, it was more than twice. And many CAN frames were lost.
+>>>>
+>>>> So I tried to disable
+>>>>       /*
+>>>>           skb = alloc_can_skb(dev, &cf);
+>>>>           if (unlikely(!skb)) {
+>>>>                   stats->rx_dropped++;
+>>>>                   return 0;
+>>>>           }
+>>>>        */
+>>>> and made "struct can_frame cf" (not pointer, so that I can use it in
+>>>> flexcan_read_fifo call)
+>>>> And tried to send data again.
+>>>> Now - average time in flexcan_read_frame was not 100usec, but just 2
+>>>> usec! 50x less ...  no CAN frame was lost, even if I was using both CAN
+>>>> interfaces, each getting over 1100 msgs/sec and writing 100KB data to SD
+>>>> card.
+>>>
+>>> ... but the messages need to be allocated, queued, delivered to and even
+>>> processed by a user space task. What you messure it part of the network
+>>> stack overhead but 100us just for alloc_can_skb() seems quite a lot to
+>>> me. At what frequency is your CPU running? Is the system low of memory?
+>>> Maybe your system is simply not fast enough. To see what code is
+>>> involved just follow:
+>> CPU is i.MX25, should be running at 400MHz. There is 64MB RAM totally
+>> and free enough :(
+>>
+>>>
+>>>     http://lxr.free-electrons.com/ident?i=alloc_can_skb
+>>>> So I am asking - how to make this alloc_can_skb faster (or is there any
+>>>> alternative)? Or if there is another way how to get data to user?
+>>>
+>>> Well, not with Linux-CAN. Anyway, messages arrive at a rate of approx. 1
+>>> KHz. So there is 1ms per message. I think it's a latency problem in the
+>>> first place. The Flexcan on the i.MX25 can queue up to 5 messages. If
+>>> the queue is full you loose messages. This obviously happens when the
+>>> SDcard is accessed.
+>>>
+>>> Could you take function traces on your system?
+>> Is there any special tool for this or should I use my start/stop timers?
+>
+> Your start/stop timers will not show what other activity is disturbing
+> the CAN messages reception. There is the Linux function tracer:
+>
+>    http://lxr.free-electrons.com/source/Documentation/trace/ftrace.txt
+>
+> It need to be enabled in the kernel. Especially event and function
+> tracing could help to better understand your problems.
+Hello Wolfgang,
+it seems that my architecture (arm/mx25 on 2.6.35 kernel) is missing HAVE_FUNCTION_GRAPH_TRACER, HAVE_DYNAMIC_FTRACE options so it won't be that easy, will be?
+Timestamps that ftrace is showing me are in 10 miliseconds resolution, that won't help me much :(
 
-Yes I just measured the timings again:
-
-./perf_can_test.sh 125000 30
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_poll                          127882    6178806 us     48.316 us       4393411 us 
-  c_can_do_rx_poll                     63941    3764057 us     58.867 us       776162.2 us 
-  c_can_enable_all_interrupts         255764    2213697 us     8.655 us        1093934 us 
-  c_can_plat_write_reg_aligned_t      807252    1607115 us     1.990 us        10053684 us 
-  c_can_isr                           127882    1220001 us     9.540 us        789.495 us  
-  c_can_object_put                    119887    1039222 us     8.668 us        1608.668 us 
-  c_can_plat_read_reg_aligned_to     1015072    1033283 us     1.017 us        7021.465 us 
-  c_can_read_msg_object                63943    1026159 us     16.048 us       718.464 us  
-  c_can_activate_all_lower_rx_ms        7992    755782.4 us     94.567 us       55.270 us   
-  c_can_mark_rx_msg_obj                55951    709072.1 us     12.673 us       39.974 us   
-  c_can_object_get                     63943    555669.2 us     8.690 us        96.211 us   
-  c_can_msg_obj_is_busy               183830    527826.1 us     2.871 us        7289.221 us 
-  alloc_can_skb                        63943    170966.6 us     2.673 us        165.765 us  
-  c_can_has_and_handle_berr            63941    47063.18 us     0.736 us        2.757 us    
-
-./perf_can_test.sh 1000000 30
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_poll                          270678    30290751 us     111.906 us      5809627 us 
-  c_can_do_rx_poll                    207109    24322185 us     117.436 us      171469047 us 
-  c_can_object_put                    841431    7278794 us     8.650 us        305841.0 us 
-  c_can_plat_write_reg_aligned_t     4037180    6244636 us     1.546 us        4581066 us 
-  c_can_read_msg_object               453988    6033464 us     13.289 us       128809.6 us 
-  c_can_enable_all_interrupts         541342    5849826 us     10.806 us       22458900 us 
-  c_can_activate_all_lower_rx_ms       55349    5237761 us     94.631 us       19004.79 us 
-  c_can_mark_rx_msg_obj               387429    4865632 us     12.558 us       380606.4 us 
-  c_can_plat_read_reg_aligned_to     4597629    4633247 us     1.007 us        315286.2 us 
-  c_can_object_get                    453988    3919692 us     8.633 us        59847.76 us 
-  c_can_msg_obj_is_busy              1295419    3706862 us     2.861 us        316655.7 us 
-  c_can_isr                           270671    2496734 us     9.224 us        530.967 us  
-  alloc_can_skb                       453988    856917.4 us     1.887 us        18157.68 us 
-  c_can_activate_rx_msg_obj            11210    141177.4 us     12.593 us       123.068 us  
-  c_can_has_and_handle_berr            63569    44995.85 us     0.707 us        12.780 us
-
-It is interesting that the number of hits for c_can_do_rx_poll is twice as much
-as it was with find_next_bit. Unfortunately this reduces the overall benefit of
-this patch. Any ideas how to increase the number of waiting message objects we
-handle in one poll call?
+Martin
+  
+> Wolfgang.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
 
-Regards,
-
-Markus
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
