@@ -1,57 +1,77 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3] can: kvaser_usb: fix usb endpoints detection
-Date: Wed, 30 Oct 2013 20:09:51 +0100
-Message-ID: <5271597F.4090501@pengutronix.de>
-References: <1382963081-11012-1-git-send-email-mkl@pengutronix.de> <20131028132959.GA19808@hposo> <52715360.2030900@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="XAnRGL2hmTptgC0kHpllqrGp5sFS53LrK"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59349 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751751Ab3J3TKE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Oct 2013 15:10:04 -0400
-In-Reply-To: <52715360.2030900@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+Subject: [PATCH 2/2] can: kvaser_usb: fix usb endpoints detection
+Date: Thu, 31 Oct 2013 20:24:50 +0100
+Message-ID: <1383247490-26984-3-git-send-email-mkl@pengutronix.de>
+References: <1383247490-26984-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1383247490-26984-1-git-send-email-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Olivier Sobrie <olivier@sobrie.be>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XAnRGL2hmTptgC0kHpllqrGp5sFS53LrK
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Olivier Sobrie <olivier@sobrie.be>
 
-On 10/30/2013 07:43 PM, Oliver Hartkopp wrote:
-> Hello Marc,
->=20
-> do you plan to add my BCM documentation patch from October 19th when yo=
-u push
-> this fix to Dave?
+Some devices, like the Kvaser Memorator Professional, have several bulk in
+endpoints. Only the first one found must be used by the driver. The same holds
+for the bulk out endpoint. The official Kvaser driver (leaf) was used as
+reference for this patch.
 
-Yes, Documentation update into net-next, the kvaser fix into net.
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/kvaser_usb.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---XAnRGL2hmTptgC0kHpllqrGp5sFS53LrK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJxWYYACgkQjTAFq1RaXHNSbACfYSF75gwJJ9uUGPL1oHOCOhnx
-9n4AnRX9Kn8jVpVsQaTPUb5y2vBjaM3w
-=hM6h
------END PGP SIGNATURE-----
-
---XAnRGL2hmTptgC0kHpllqrGp5sFS53LrK--
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 3b95465..4b2d5ed 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -1544,9 +1544,9 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
+ 	return 0;
+ }
+ 
+-static void kvaser_usb_get_endpoints(const struct usb_interface *intf,
+-				     struct usb_endpoint_descriptor **in,
+-				     struct usb_endpoint_descriptor **out)
++static int kvaser_usb_get_endpoints(const struct usb_interface *intf,
++				    struct usb_endpoint_descriptor **in,
++				    struct usb_endpoint_descriptor **out)
+ {
+ 	const struct usb_host_interface *iface_desc;
+ 	struct usb_endpoint_descriptor *endpoint;
+@@ -1557,12 +1557,18 @@ static void kvaser_usb_get_endpoints(const struct usb_interface *intf,
+ 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
+ 		endpoint = &iface_desc->endpoint[i].desc;
+ 
+-		if (usb_endpoint_is_bulk_in(endpoint))
++		if (!*in && usb_endpoint_is_bulk_in(endpoint))
+ 			*in = endpoint;
+ 
+-		if (usb_endpoint_is_bulk_out(endpoint))
++		if (!*out && usb_endpoint_is_bulk_out(endpoint))
+ 			*out = endpoint;
++
++		/* use first bulk endpoint for in and out */
++		if (*in && *out)
++			return 0;
+ 	}
++
++	return -ENODEV;
+ }
+ 
+ static int kvaser_usb_probe(struct usb_interface *intf,
+@@ -1576,8 +1582,8 @@ static int kvaser_usb_probe(struct usb_interface *intf,
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	kvaser_usb_get_endpoints(intf, &dev->bulk_in, &dev->bulk_out);
+-	if (!dev->bulk_in || !dev->bulk_out) {
++	err = kvaser_usb_get_endpoints(intf, &dev->bulk_in, &dev->bulk_out);
++	if (err) {
+ 		dev_err(&intf->dev, "Cannot get usb endpoint(s)");
+ 		return err;
+ 	}
+-- 
+1.8.4.rc3
