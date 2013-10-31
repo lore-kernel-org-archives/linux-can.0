@@ -1,50 +1,91 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [can-next] can: add broadcast manager documentation
-Date: Thu, 31 Oct 2013 20:57:19 +0100
-Message-ID: <5272B61F.9050503@hartkopp.net>
-References: <52625C90.6030508@hartkopp.net> <5272B595.3090102@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2013-10-31
+Date: Thu, 31 Oct 2013 21:06:28 +0100
+Message-ID: <5272B844.9010100@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="HE4EAkvw6ea30wLjxR1wuJA9nlxUd7hik"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:35909 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755079Ab3JaT5X (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 31 Oct 2013 15:57:23 -0400
-In-Reply-To: <5272B595.3090102@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60075 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755079Ab3JaUGk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 31 Oct 2013 16:06:40 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Brian Thorne <hardbyte@gmail.com>, Daniele Venzano <linux@brownhat.org>, Andre Naujoks <nautsch2@gmail.com>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HE4EAkvw6ea30wLjxR1wuJA9nlxUd7hik
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello David,
+
+here's a pull request for net-next.
+
+It includes a patch by Oliver Hartkopp et al. that adds documentation
+for the broadcast manager to Documentation/networking/can.txt. Three
+patches by me that clean up the netlink handling code in the CAN core.
+And another patch that removes a not needed function from the ti_hecc
+driver.
+
+regards,
+Marc
+
+---
+
+The following changes since commit ba4865027c11d7ac8e5a33e0624dd415caab20=
+27:
+
+  ipv6: remove the unnecessary statement in find_match() (2013-10-30 17:0=
+6:51 -0400)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to 26896fd98130cdda73b19c75849a0d25cb850cb8:
+
+  can: ti_hecc: remove priv->can.do_get_state() callback (2013-10-31 20:5=
+5:16 +0100)
+
+----------------------------------------------------------------
+Marc Kleine-Budde (4):
+      can: dev: sort can_get_size() by IFLA_CAN_*
+      can: dev: sort can_fill_info() by IFLA_CAN_*
+      can: dev: sort can_changelink() by IFLA_CAN_*
+      can: ti_hecc: remove priv->can.do_get_state() callback
+
+Oliver Hartkopp (1):
+      can: add broadcast manager documentation
+
+ Documentation/networking/can.txt | 217 +++++++++++++++++++++++++++++++++=
+++++++
+ drivers/net/can/dev.c            |  67 ++++++------
+ drivers/net/can/ti_hecc.c        |  10 --
+ 3 files changed, 249 insertions(+), 45 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--HE4EAkvw6ea30wLjxR1wuJA9nlxUd7hik
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-On 31.10.2013 20:55, Marc Kleine-Budde wrote:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-> The patch description now looks like this:
-> 
-> ---
-> 
-> can: add broadcast manager documentation
-> 
-> This patch adds documentation about the broadcast manager. It's based on Brian
-> Thorne's initial patch http://marc.info/?l=linux-can&m=138119382015496&w=2 and
-> Daniele Venzano's work http://brownhat.org/docs/socketcan.html .
-> 
-> Signed-off-by: Brian Thorne <hardbyte@gmail.com>
-> Cc: Daniele Venzano <linux@brownhat.org>
-> Cc: Andre Naujoks <nautsch2@gmail.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> 
-> ----
-> 
-> Any objections?
+iEYEARECAAYFAlJyuEQACgkQjTAFq1RaXHMAfgCeP25mu2hv9Kl9E3r8nPfdYEYt
+YT4An0JFH7Rj42rrO9NJ8glSFU9FKCJ9
+=wiI2
+-----END PGP SIGNATURE-----
 
-No.
-
-It's fine to me.
-
-Tnx!
-
-Oliver
+--HE4EAkvw6ea30wLjxR1wuJA9nlxUd7hik--
