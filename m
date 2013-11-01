@@ -1,96 +1,242 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v3] can: c_can: Speed up rx_poll function
-Date: Fri,  1 Nov 2013 10:36:36 +0100
-Message-ID: <1383298596-18385-1-git-send-email-mpa@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54799 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751556Ab3KAJgp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 1 Nov 2013 05:36:45 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Joe Perches <joe@perches.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v2] can: add Renesas R-Car CAN driver
+Date: Sat, 02 Nov 2013 01:24:15 +0300
+Message-ID: <52742A0F.7040707@cogentembedded.com>
+References: <201310250303.00695.sergei.shtylyov@cogentembedded.com> <526AC65B.5020203@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <526AC65B.5020203@grandegger.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+List-Id: linux-can.vger.kernel.org
 
-This patch speeds up the rx_poll function by reducing the number of
-register reads.
+On 10/25/2013 11:28 PM, Wolfgang Grandegger wrote:
 
-Replace the 32bit register read by a 16bit register read. Currently
-the 32bit register read is implemented by using 2 16bit reads. This is
-inefficient as we only use the lower 16bit in rx_poll.
+>> Add support for the CAN controller found in Renesas R-Car SoCs.
 
-The for loop reads the pending interrupts in every iteration. This
-leads up to 16 reads of pending interrupts. The patch introduces a new
-outer loop to read the pending interrupts as long as 'quota' is above 0.
-This reduces the total number of reads.
+>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-The third change is to replace the for-loop by a ffs loop.
+[...]
 
-Tested on AM335x. I removed all 'static' and 'inline' from c_can.c to
-see the timings for all functions. I used the function tracer with
-trace_stats.
+>> Index: linux-can-next/drivers/net/can/rcar_can.c
+>> ===================================================================
+>> --- /dev/null
+>> +++ linux-can-next/drivers/net/can/rcar_can.c
+>> @@ -0,0 +1,920 @@
+[...]
+>> +static bool autorecovery;
+>> +module_param(autorecovery, bool, 0644);
+>> +MODULE_PARM_DESC(autorecovery, "Automatic hardware recovery from bus-off");
 
-125kbit:
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_do_rx_poll                     63960    10168178 us     158.977 us      1493056 us
-With patch:
-  c_can_do_rx_poll                     63941    3764057 us      58.867 us       776162.2 us
+> Software recovery is the preferred solution. No need to support
+> automatic recovery by the hardware.
 
-1Mbit:
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  c_can_do_rx_poll                     69489    30049498 us     432.435 us      9271851 us
-With patch:
-  c_can_do_rx_poll                    207109    24322185 us     117.436 us      171469047 us
+    OK, removed it.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
+>> +/* Mailbox registers structure */
+>> +struct rcar_can_mbox_regs {
+>> +	u32 id;		/* IDE and RTR bits, SID and EID */
+>> +	u8 stub;	/* Not used */
+>> +	u8 dlc;		/* Data Length Code - bits [0..3] */
+>> +	u8 data[8];	/* Data Bytes */
+>> +	u8 tsh;		/* Time Stamp Higher Byte */
+>> +	u8 tsl;		/* Time Stamp Lower Byte */
 
-Notes:
-    Changes in v3:
-     - Update commit message (measurements and ffs)
-    
-    Changes in v2:
-     - Small changes, find_next_bit -> ffs and other
+> I would add padding bytes here to ensure alignment.
 
- drivers/net/can/c_can/c_can.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+    What padding? This is how the hardware registers are laid out. I think I 
+should rather add __packed after }.
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index a668cd4..428681e 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -798,17 +798,19 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 	u32 num_rx_pkts = 0;
- 	unsigned int msg_obj, msg_ctrl_save;
- 	struct c_can_priv *priv = netdev_priv(dev);
--	u32 val = c_can_read_reg32(priv, C_CAN_INTPND1_REG);
-+	u16 val;
-+
-+	/*
-+	 * It is faster to read only one 16bit register. This is only possible
-+	 * for a maximum number of 16 objects.
-+	 */
-+	BUILD_BUG_ON_MSG(C_CAN_MSG_OBJ_RX_LAST > 16,
-+			"Implementation does not support more message objects than 16");
-+
-+	while (quota > 0 && (val = priv->read_reg(priv, C_CAN_INTPND1_REG))) {
-+		while ((msg_obj = ffs(val)) && quota > 0) {
-+			val &= ~BIT(msg_obj - 1);
- 
--	for (msg_obj = C_CAN_MSG_OBJ_RX_FIRST;
--			msg_obj <= C_CAN_MSG_OBJ_RX_LAST && quota > 0;
--			val = c_can_read_reg32(priv, C_CAN_INTPND1_REG),
--			msg_obj++) {
--		/*
--		 * as interrupt pending register's bit n-1 corresponds to
--		 * message object n, we need to handle the same properly.
--		 */
--		if (val & (1 << (msg_obj - 1))) {
- 			c_can_object_get(dev, 0, msg_obj, IF_COMM_ALL &
- 					~IF_COMM_TXRQST);
- 			msg_ctrl_save = priv->read_reg(priv,
--- 
-1.8.4.rc3
+>> +};
+>> +
+>> +struct rcar_can_regs {
+>> +	struct rcar_can_mbox_regs mb[N_MBX];
+>> +};
+
+> Where are the other registers? Using a mix of struct and #define offsets
+> is really ugly.
+
+    OK, fixed. I just thought using {read|write}[bwl]() doesn't buy us any 
+type checking anyway, so was being lazy here.
+
+>> +struct rcar_can_priv {
+>> +	struct can_priv can;	/* Must be the first member! */
+>> +	struct net_device *ndev;
+>> +	struct napi_struct napi;
+>> +	struct rcar_can_regs __iomem *regs;
+>> +	struct clk *clk;
+>> +	spinlock_t mier_lock;
+>> +	u8 clock_select;
+>> +	u8 ier;
+
+> s/ier/ier_shadow/ ?
+
+    I'd rather leave it as is... hoping you won't insist.
+
+>> +};
+
+>> +static void rcar_can_start(struct net_device *ndev);
+
+> Forward declarations should be avoided.
+
+    Removed it since it's not needed anymore.
+
+>> +
+>> +static void rcar_can_error(struct net_device *ndev)
+>> +{
+>> +	struct rcar_can_priv *priv = netdev_priv(ndev);
+>> +	struct net_device_stats *stats = &ndev->stats;
+>> +	struct can_frame *cf;
+>> +	struct sk_buff *skb;
+>> +	u8 eifr, txerr = 0, rxerr = 0;
+>> +
+>> +	/* Propagate the error condition to the CAN stack */
+>> +	skb = alloc_can_err_skb(ndev, &cf);
+>> +	if (!skb)
+>> +		return;
+>> +	eifr = rcar_can_readb(priv, RCAR_CAN_EIFR);
+>> +	if (eifr & (EIFR_EWIF | EIFR_EPIF)) {
+>> +		cf->can_id |= CAN_ERR_CRTL;
+>> +		txerr = rcar_can_readb(priv, RCAR_CAN_TECR);
+>> +		rxerr = rcar_can_readb(priv, RCAR_CAN_RECR);
+
+> Could you please add these values to data[6..7] as shown here:
+
+> http://lxr.free-electrons.com/source/drivers/net/can/sja1000/sja1000.c#L475
+
+    OK.
+
+>> +	}
+>> +	if (eifr & EIFR_BEIF) {
+>> +		int rx_errors = 0, tx_errors = 0;
+>> +		u8 ecsr;
+>> +
+>> +		if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+>> +			tx_failure_cleanup(ndev);
+>> +		netdev_dbg(priv->ndev, "Bus error interrupt:\n");
+>> +		cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
+>> +		cf->data[2] = CAN_ERR_PROT_UNSPEC;
+>> +
+>> +		ecsr = rcar_can_readb(priv, RCAR_CAN_ECSR);
+>> +		if (ecsr & ECSR_ADEF) {
+>> +			netdev_dbg(priv->ndev, "ACK Delimiter Error\n");
+>> +			cf->data[3] |= CAN_ERR_PROT_LOC_ACK_DEL;
+>> +			tx_errors++;
+>> +			rcar_can_writeb(priv, RCAR_CAN_ECSR, (u8)~ECSR_ADEF);
+
+> Please avoid casts here and below.
+
+    These casts help avoid compiler warnings.
+
+[...]
+>> +	if (eifr & EIFR_BORIF) {
+>> +		netdev_dbg(priv->ndev, "Bus-off recovery interrupt\n");
+>> +		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>> +		cf->can_id |= CAN_ERR_RESTARTED;
+
+> Does this interrupt come when Bus-off recovery has compeleted (back to
+> error-active?) CAN_ERR_RESTARTED should be reported when the bus-off
+> recovery has been triggered. It takes some time before it is really
+> completed.
+
+    Removed the handler.
+
+>> +	if (eifr & EIFR_OLIF) {
+>> +		netdev_dbg(priv->ndev,
+>> +			   "Overload Frame Transmission error interrupt\n");
+>> +		cf->can_id |= CAN_ERR_PROT;
+>> +		cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
+>> +		ndev->stats.rx_over_errors++;
+>> +		ndev->stats.rx_errors++;
+>> +		rcar_can_writeb(priv, RCAR_CAN_EIFR, (u8)~EIFR_OLIF);
+
+> No unnecessary casts please.
+
+    Unfortunately, they are necessary.
+
+[...]
+>> +static irqreturn_t rcar_can_interrupt(int irq, void *dev_id)
+>> +{
+>> +	struct net_device *ndev = (struct net_device *)dev_id;
+>> +	struct rcar_can_priv *priv = netdev_priv(ndev);
+>> +	struct net_device_stats *stats = &ndev->stats;
+>> +	u8 isr;
+>> +
+>> +	isr = rcar_can_readb(priv, RCAR_CAN_ISR);
+>> +	if (!(isr & priv->ier))
+>> +		return IRQ_NONE;
+>> +
+>> +	if (isr & ISR_ERSF)
+>> +		rcar_can_error(ndev);
+>> +
+>> +	if (isr & ISR_TXMF) {
+>> +		u32 ie_mask = 0;
+>> +		int i;
+>> +
+>> +		/* Set Transmit Mailbox Search Mode */
+>> +		rcar_can_writeb(priv, RCAR_CAN_MSMR, MSMR_TXMB);
+>> +		for (i = 0; i < N_TX_MB; i++) {
+>> +			u8 mctl, mbx;
+>> +
+>> +			mbx = rcar_can_readb(priv, RCAR_CAN_MSSR);
+>> +			if (mbx & MSSR_SEST)
+>> +				break;
+>> +			mbx &= MSSR_MBNST;
+>> +			stats->tx_bytes += readb(&priv->regs->mb[mbx].dlc);
+>> +			stats->tx_packets++;
+>> +			mctl = rcar_can_readb(priv, RCAR_CAN_MCTL(mbx));
+>> +			/* Bits SENTDATA and TRMREQ cannot be
+>> +			 * set to 0 simultaneously
+>> +			 */
+>> +			mctl &= ~MCTL_TRMREQ;
+>> +			rcar_can_writeb(priv, RCAR_CAN_MCTL(mbx), mctl);
+>> +			mctl &= ~MCTL_SENTDATA;
+>> +			/* Clear interrupt */
+>> +			rcar_can_writeb(priv, RCAR_CAN_MCTL(mbx), mctl);
+>> +			ie_mask |= BIT(mbx - FIRST_TX_MB);
+>> +			can_get_echo_skb(ndev, mbx - FIRST_TX_MB);
+>> +			can_led_event(ndev, CAN_LED_EVENT_TX);
+>> +		}
+>> +		/* Set receive mailbox search mode */
+>> +		rcar_can_writeb(priv, RCAR_CAN_MSMR, MSMR_RXMB);
+>> +		/* Disable mailbox interrupt, mark mailbox as free */
+>> +		if (ie_mask) {
+>> +			u32 mier1;
+>> +
+>> +			spin_lock(&priv->mier_lock);
+>> +			mier1 = rcar_can_readl(priv, RCAR_CAN_MIER1);
+>> +			rcar_can_writel(priv, RCAR_CAN_MIER1, mier1 & ~ie_mask);
+>> +			spin_unlock(&priv->mier_lock);
+>> +			netif_wake_queue(ndev);
+>> +		}
+>> +	}
+
+> Would be nice to have this in an (inline) function, like for the error
+> handling above.
+
+    OK, but I guess *inline* keyword is not necessary as gcc should figure it 
+out itself, given only a single call.
+
+[...]
+>> +static int rcar_can_probe(struct platform_device *pdev)
+>> +{
+[...]
+>> +	ndev->netdev_ops = &rcar_can_netdev_ops;
+>> +	ndev->irq = irq;
+>> +	ndev->flags |= IFF_ECHO;
+>> +	priv->ndev = ndev;
+>> +	priv->regs = (struct rcar_can_regs *)addr;
+
+> Is this cast needed?
+
+    Not really, removed it.
+
+[...]
+
+> Wolfgang.
+
+WBR, Sergei
 
