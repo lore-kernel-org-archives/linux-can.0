@@ -1,76 +1,28 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2] can: add Renesas R-Car CAN driver
-Date: Sun, 03 Nov 2013 20:38:38 +0100
-Message-ID: <5276A63E.3070505@grandegger.com>
-References: <201310250303.00695.sergei.shtylyov@cogentembedded.com> <526AC65B.5020203@grandegger.com> <52742A0F.7040707@cogentembedded.com>
+Subject: Re: GS_USB
+Date: Sun, 03 Nov 2013 20:42:38 +0100
+Message-ID: <5276A72E.1000401@grandegger.com>
+References: <1380889887.22484.2.camel@blackbox>		 <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>		 <5e3f6029b128db63c69664deed10c5d6@grandegger.com>	 <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com> <1383498724.4208.4.camel@blackbox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:42836 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:43083 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752047Ab3KCTin (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 3 Nov 2013 14:38:43 -0500
-In-Reply-To: <52742A0F.7040707@cogentembedded.com>
+	with ESMTP id S1754142Ab3KCTmj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 3 Nov 2013 14:42:39 -0500
+In-Reply-To: <1383498724.4208.4.camel@blackbox>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: "Max S." <max@schneidersoft.net>, linux-can <linux-can@vger.kernel.org>
 
-On 11/01/2013 11:24 PM, Sergei Shtylyov wrote:
-> On 10/25/2013 11:28 PM, Wolfgang Grandegger wrote:
+On 11/03/2013 06:12 PM, Max S. wrote:
+> Any progress on reviewing the GS_USB driver code?
 > 
->>> Add support for the CAN controller found in Renesas R-Car SoCs.
-> 
->>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> 
-> [...]
-> 
->>> Index: linux-can-next/drivers/net/can/rcar_can.c
->>> ===================================================================
->>> --- /dev/null
->>> +++ linux-can-next/drivers/net/can/rcar_can.c
->>> @@ -0,0 +1,920 @@
-> [...]
->>> +static bool autorecovery;
->>> +module_param(autorecovery, bool, 0644);
->>> +MODULE_PARM_DESC(autorecovery, "Automatic hardware recovery from
->>> bus-off");
-> 
->> Software recovery is the preferred solution. No need to support
->> automatic recovery by the hardware.
-> 
->    OK, removed it.
-> 
->>> +/* Mailbox registers structure */
->>> +struct rcar_can_mbox_regs {
->>> +    u32 id;        /* IDE and RTR bits, SID and EID */
->>> +    u8 stub;    /* Not used */
->>> +    u8 dlc;        /* Data Length Code - bits [0..3] */
->>> +    u8 data[8];    /* Data Bytes */
->>> +    u8 tsh;        /* Time Stamp Higher Byte */
->>> +    u8 tsl;        /* Time Stamp Lower Byte */
-> 
->> I would add padding bytes here to ensure alignment.
-> 
->    What padding? This is how the hardware registers are laid out. I
-> think I should rather add __packed after }.
+> I have added asynchronous state update. Here is the latest patch.
 
-OK, I was confused that data does not start on a 4 byte boundary.
-
-
->>> +            rcar_can_writeb(priv, RCAR_CAN_ECSR, (u8)~ECSR_ADEF);
-> 
->> Please avoid casts here and below.
-> 
->    These casts help avoid compiler warnings.
-
-Well instead of using casts the declaration of ECSR_ADEF and otheres
-should be fixed. I think the problem is that BIT is declared as shown below:
-
- #define BIT(nr)                 (1UL << (nr))
-
-Using BIT seems not appropriate here.
+Great, actually I was waiting for support of the asynchronous state
+changes... Will have a closer look later this week.
 
 Wolfgang,
 
