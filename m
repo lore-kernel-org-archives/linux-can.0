@@ -1,1026 +1,1129 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v3] can: add Renesas R-Car CAN driver
-Date: Sat, 2 Nov 2013 02:40:12 +0300
-Message-ID: <201311020240.13354.sergei.shtylyov@cogentembedded.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: GS_USB
+Date: Sun, 03 Nov 2013 17:12:04 +0000
+Message-ID: <1383498724.4208.4.camel@blackbox>
+References: <1380889887.22484.2.camel@blackbox>
+		 <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
+		 <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
+	 <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.schneidersoft.net ([173.45.248.65]:40393 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751942Ab3KCQ7p (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 3 Nov 2013 11:59:45 -0500
+Received: from [192.168.1.13] (unknown [179.163.196.23])
+	by mail.schneidersoft.net (Postfix) with ESMTPSA id 996601A191
+	for <linux-can@vger.kernel.org>; Sun,  3 Nov 2013 11:01:49 -0600 (CST)
+In-Reply-To: <525319E6.4020505@grandegger.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>
 
-Add support for the CAN controller found in Renesas R-Car SoCs. 
+Any progress on reviewing the GS_USB driver code?
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+I have added asynchronous state update. Here is the latest patch.
 
+
+=46rom 346f223bb3a8f4435f93cdfbc5e06db2cbf7179d Mon Sep 17 00:00:00 200=
+1
+=46rom: Maximilian Schneider <max@schneidersoft.net>
+Date: Sun, 3 Nov 2013 16:57:06 +0000
+Subject: [PATCH] Added support for the GS_USB CAN devices.
+
+
+Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
 ---
-The patch is against the 'linux-can-next.git' repo.
+ drivers/net/can/usb/Kconfig  |    8 +
+ drivers/net/can/usb/Makefile |    1 +
+ drivers/net/can/usb/gs_usb.c | 1037
+++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1046 insertions(+)
+ create mode 100644 drivers/net/can/usb/gs_usb.c
 
-Changes in version 3:
-- replaced the register #define's with 'struct rcar_can_regs' fields, replaced
-  rcar_can_{read|write}[bwl]() with mere {read|write}[bwl]();
-- removed hardware bus-off recovery support which allowed to also remove
-  rcar_can_start() prototype;
-- added RX/TX error count to error data frame for error warning/passive;
-- moved TX completion interrupt handling into separate function;
-- removed unneeded type cast in the probe() method.
-
-Changes in version 2:
-- added function to clean up TX mailboxes after bus error and bus-off;
-- added module parameter to enable hardware recovery from bus-off, added handler
-  for the bus-off recovery interrupt, and set the control register according to
-  the parameter value and the restart timer setting in rcar_can_start();
-- changed the way CAN_ERR_CRTL_[RT]X_{PASSIVE|WARNING} flags are set to a more
-  realicstic one;
-- replaced MBX_* macros and rcar_can_mbx_{read|write}[bl]() functions with
-  'struct rcar_can_mbox_regs', 'struct rcar_can_regs', and {read|write}[bl](),
-  replaced 'reg_base' field of 'struct rcar_can_priv' with 'struct rcar_can_regs
-  __iomem *regs';
-- added 'ier' field to 'struct rcar_can_priv' to cache the current value of the
-  interrupt enable register;
-- added a check for enabled interrupts on entry to rcar_can_interrupt();
-- limited transmit mailbox search loop in rcar_can_interrupt();
-- decoupled  TX byte count increment from can_get_echo_skb() call;
-- removed netif_queue_stopped() call from rcar_can_interrupt();
-- added clk_prepare_enable()/clk_disable_unprepare() to ndo_{open|close}(),
-  do_set_bittiming(), and do_get_berr_counter() methods, removed clk_enable()
-  call from the probe() method and clk_disable() call from the remove() method;
-- allowed rcar_can_set_bittiming() to be called when the device is closed and
-  remove  explicit call to it from rcar_can_start();
-- switched to using mailbox number priority transmit mode, and switched to the
-  sequential mailbox use in ndo_start_xmit() method;
-- stopped reading the message control registers in ndo_start_xmit() method;
-- avoided returning NETDEV_TX_BUSY from ndo_start_xmit() method;
-- stopped reading data when RTR bit is set in the CAN frame;
-- made 'num_pkts' variable *int* and moved its check to the *while* condition in
-  rcar_can_rx_poll();
-- used dev_get_platdata() in the probe() method;
-- enabled bus error interrupt only if CAN_CTRLMODE_BERR_REPORTING flag is set;
-- started reporting CAN_CTRLMODE_BERR_REPORTING support and stopped reporting
-  CAN_CTRLMODE_3_SAMPLES support;
-- set CAN_ERR_ACK flag on ACK error;
-- switched to incrementing bus error counter only once per bus error interrupt;
-- started switching to CAN sleep mode in rcar_can_stop() and stopped switching
-  to it in the remove() method;
-- removed netdev_err() calls on allocation failure in rcar_can_error() and
-  rcar_can_rx_pkt();
-- removed "CANi" from the register offset macro comments.
-
- drivers/net/can/Kconfig               |    9 
- drivers/net/can/Makefile              |    1 
- drivers/net/can/rcar_can.c            |  893 ++++++++++++++++++++++++++++++++++
- include/linux/can/platform/rcar_can.h |   15 
- 4 files changed, 918 insertions(+)
-
-Index: linux-can-next/drivers/net/can/Kconfig
-===================================================================
---- linux-can-next.orig/drivers/net/can/Kconfig
-+++ linux-can-next/drivers/net/can/Kconfig
-@@ -125,6 +125,15 @@ config CAN_GRCAN
- 	  endian syntheses of the cores would need some modifications on
- 	  the hardware level to work.
- 
-+config CAN_RCAR
-+	tristate "Renesas R-Car CAN controller"
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index fc96a3d..f5e3e8c 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -54,4 +54,12 @@ config CAN_8DEV_USB
+ 	  This driver supports the USB2CAN interface
+ 	  from 8 devices (http://www.8devices.com).
+=20
++config CAN_GS_USB
++	tristate "Geschwister Schneider UG interfaces"
 +	---help---
-+	  Say Y here if you want to use CAN controller found on Renesas R-Car
-+	  SoCs.
++	  This driver supports the Geschwister Schneider USB/CAN devices.
++	  If unsure choose N,
++	  choose Y for built in support,
++	  M to compile as module (module will be named: gs_usb).
 +
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called rcar_can.
-+
- source "drivers/net/can/mscan/Kconfig"
- 
- source "drivers/net/can/sja1000/Kconfig"
-Index: linux-can-next/drivers/net/can/Makefile
-===================================================================
---- linux-can-next.orig/drivers/net/can/Makefile
-+++ linux-can-next/drivers/net/can/Makefile
-@@ -25,5 +25,6 @@ obj-$(CONFIG_CAN_JANZ_ICAN3)	+= janz-ica
- obj-$(CONFIG_CAN_FLEXCAN)	+= flexcan.o
- obj-$(CONFIG_PCH_CAN)		+= pch_can.o
- obj-$(CONFIG_CAN_GRCAN)		+= grcan.o
-+obj-$(CONFIG_CAN_RCAR)		+= rcar_can.o
- 
- ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
-Index: linux-can-next/drivers/net/can/rcar_can.c
-===================================================================
+ endmenu
+diff --git a/drivers/net/can/usb/Makefile b/drivers/net/can/usb/Makefil=
+e
+index becef46..c21a521 100644
+--- a/drivers/net/can/usb/Makefile
++++ b/drivers/net/can/usb/Makefile
+@@ -7,5 +7,6 @@ obj-$(CONFIG_CAN_ESD_USB2) +=3D esd_usb2.o
+ obj-$(CONFIG_CAN_KVASER_USB) +=3D kvaser_usb.o
+ obj-$(CONFIG_CAN_PEAK_USB) +=3D peak_usb/
+ obj-$(CONFIG_CAN_8DEV_USB) +=3D usb_8dev.o
++obj-$(CONFIG_CAN_GS_USB) +=3D gs_usb.o
+=20
+ ccflags-$(CONFIG_CAN_DEBUG_DEVICES) :=3D -DDEBUG
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.=
+c
+new file mode 100644
+index 0000000..4aa28c0
 --- /dev/null
-+++ linux-can-next/drivers/net/can/rcar_can.c
-@@ -0,0 +1,893 @@
-+/*
-+ * Renesas R-Car CAN device driver
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -0,0 +1,1037 @@
++/* CAN driver for Geschwister Schneider USB/CAN devices.
 + *
-+ * Copyright (C) 2013 Cogent Embedded, Inc. <source@cogentembedded.com>
-+ * Copyright (C) 2013 Renesas Solutions Corp.
++ * Copyright (C) 2013 Geschwister Schneider Technologie-,
++ * Entwicklungs- und Vertriebs UG (Haftungsbeschr=C3=A4nkt).
 + *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
++ * Many thanks to all socketcan devs!
++ *
++ * This program is free software; you can redistribute it and/or modif=
+y
+it
++ * under the terms of the GNU General Public License as published
++ * by the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
++ * General Public License for more details.
 + */
 +
++#include <linux/init.h>
++#include <linux/signal.h>
 +#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/types.h>
-+#include <linux/interrupt.h>
-+#include <linux/errno.h>
 +#include <linux/netdevice.h>
-+#include <linux/platform_device.h>
-+#include <linux/can/led.h>
++#include <linux/usb.h>
++
++#include <linux/can.h>
 +#include <linux/can/dev.h>
-+#include <linux/clk.h>
-+#include <linux/can/platform/rcar_can.h>
++#include <linux/can/error.h>
 +
-+#define DRV_NAME	"rcar_can"
++/* Device specific constants */
++#define USB_GSUSB_1_VENDOR_ID      0x1d50
++#define USB_GSUSB_1_PRODUCT_ID     0x606f
 +
-+/* Mailbox configuration:
-+ * mailbox 0 - not used
-+ * mailbox 1-31 - Rx
-+ * mailbox 32-63 - Tx
-+ * no FIFO mailboxes
++#define GSUSB_ENDPOINT_IN          1
++#define GSUSB_ENDPOINT_OUT         2
++
++/* Device specific constants */
++enum gs_usb_breq {
++	GS_USB_BREQ_HOST_FORMAT =3D 0,
++	GS_USB_BREQ_BITTIMING,
++	GS_USB_BREQ_MODE,
++	GS_USB_BREQ_BERR,
++	GS_USB_BREQ_BT_CONST,
++	GS_USB_BREQ_DEVICE_CONFIG
++};
++
++enum gs_can_mode {
++	GS_CAN_MODE_RESET =3D 0,
++	GS_CAN_MODE_START
++};
++
++enum gs_can_state {
++	GS_CAN_STATE_ERROR_ACTIVE =3D 0,
++	GS_CAN_STATE_ERROR_WARNING,
++	GS_CAN_STATE_ERROR_PASSIVE,
++	GS_CAN_STATE_BUS_OFF,
++	GS_CAN_STATE_STOPPED,
++	GS_CAN_STATE_SLEEPING
++};
++
++/* data types passed between host and device */
++struct __packed gs_host_config {
++	u32 byte_order;
++};
++
++struct __packed gs_device_config {
++	u8 reserved1;
++	u8 reserved2;
++	u8 reserved3;
++	u8 icount;
++	u32 sw_version;
++	u32 hw_version;
++};
++
++#define GS_CAN_MODE_NORMAL               0
++#define GS_CAN_MODE_LISTEN_ONLY          (1<<0)
++#define GS_CAN_MODE_LOOP_BACK            (1<<1)
++#define GS_CAN_MODE_TRIPLE_SAMPLE        (1<<2)
++#define GS_CAN_MODE_ONE_SHOT             (1<<3)
++
++struct __packed gs_device_mode {
++	u32 mode;
++	u32 flags;
++};
++
++struct __packed gs_device_state {
++	u32 state;
++	u32 rxerr;
++	u32 txerr;
++};
++
++struct __packed gs_device_bittiming {
++	u32 prop_seg;
++	u32 phase_seg1;
++	u32 phase_seg2;
++	u32 sjw;
++	u32 brp;
++};
++
++#define GS_CAN_FEATURE_LISTEN_ONLY      (1<<0)
++#define GS_CAN_FEATURE_LOOP_BACK        (1<<1)
++#define GS_CAN_FEATURE_TRIPLE_SAMPLE    (1<<2)
++#define GS_CAN_FEATURE_ONE_SHOT         (1<<3)
++
++struct __packed gs_device_bt_const {
++	u32 feature;
++	u32 fclk_can;
++	u32 tseg1_min;
++	u32 tseg1_max;
++	u32 tseg2_min;
++	u32 tseg2_max;
++	u32 sjw_max;
++	u32 brp_min;
++	u32 brp_max;
++	u32 brp_inc;
++};
++
++#define GS_CAN_FLAG_OVERFLOW 1
++
++struct __packed gs_host_frame {
++	u32 echo_id;
++	u32 can_id;
++
++	u8 can_dlc;
++	u8 channel;
++	u8 flags;
++	u8 reserved;
++
++	u8 data[8];
++};
++
++/* Special address description flags for the CAN_ID */
++#define GS_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
++#define GS_RTR_FLAG 0x40000000U /* remote transmission request */
++#define GS_ERR_FLAG 0x20000000U /* error frame */
++
++/* Valid bits in CAN ID for frame formats */
++#define GS_SFF_MASK 0x000007FFU /* standard frame format (SFF) */
++#define GS_EFF_MASK 0x1FFFFFFFU /* extended frame format (EFF) */
++#define GS_ERR_MASK 0x1FFFFFFFU /* omit EFF, RTR, ERR flags */
++
++/* Only send a max of MAX_TX_URBS frames per channel to the device at =
+a
+time. */
++#define MAX_TX_URBS 10
++/* Only launch a max of MAX_RX_URBS usb requests at a time. */
++#define MAX_RX_URBS 30
++/* Maximum number of interfaces the driver supports per device.
++ * Current hardware only supports 2 interfaces. The future may vary.
 + */
-+#define N_MBX		64
-+#define FIRST_TX_MB	32
-+#define N_TX_MB		(N_MBX - FIRST_TX_MB)
-+#define RX_MBX_MASK	0xFFFFFFFE
++#define MAX_INTF 2
 +
-+/* Mailbox registers structure */
-+struct rcar_can_mbox_regs {
-+	u32 id;		/* IDE and RTR bits, SID and EID */
-+	u8 stub;	/* Not used */
-+	u8 dlc;		/* Data Length Code - bits [0..3] */
-+	u8 data[8];	/* Data Bytes */
-+	u8 tsh;		/* Time Stamp Higher Byte */
-+	u8 tsl;		/* Time Stamp Lower Byte */
-+} __packed;
-+
-+struct rcar_can_regs {
-+	struct rcar_can_mbox_regs mb[N_MBX]; /* Mailbox registers */
-+	u32 mkr_2_9[8];	/* Mask Registers 2-9 */
-+	u32 fidcr[2];	/* FIFO Received ID Compare Register */
-+	u32 mkivlr1;	/* Mask Invalid Register 1 */
-+	u32 mier1;	/* Mailbox Interrupt Enable Register 1 */
-+	u32 mkr_0_1[2];	/* Mask Registers 0-1 */
-+	u32 mkivlr0;    /* Mask Invalid Register 0*/
-+	u32 mier0;      /* Mailbox Interrupt Enable Register 0 */
-+	u8 pad_440[0x3c0];
-+	u8 mctl[64];	/* Message Control Registers */
-+	u16 ctlr;	/* Control Register */
-+	u16 str;	/* Status register */
-+	u8 bcr[3];	/* Bit Configuration Register */
-+	u8 clkr;	/* Clock Select Register */
-+	u8 rfcr;	/* Receive FIFO Control Register */
-+	u8 rfpcr;	/* Receive FIFO Pointer Control Register */
-+	u8 tfcr;	/* Transmit FIFO Control Register */
-+	u8 tfpcr;       /* Transmit FIFO Pointer Control Register */
-+	u8 eier;	/* Error Interrupt Enable Register */
-+	u8 eifr;	/* Error Interrupt Factor Judge Register */
-+	u8 recr;	/* Receive Error Count Register */
-+	u8 tecr;        /* Transmit Error Count Register */
-+	u8 ecsr;	/* Error Code Store Register */
-+	u8 cssr;	/* Channel Search Support Register */
-+	u8 mssr;	/* Mailbox Search Status Register */
-+	u8 msmr;	/* Mailbox Search Mode Register */
-+	u16 tsr;	/* Time Stamp Register */
-+	u8 afsr;	/* Acceptance Filter Support Register */
-+	u8 pad_857;
-+	u8 tcr;		/* Test Control Register */
-+	u8 pad_859[7];
-+	u8 ier;		/* Interrupt Enable Register */
-+	u8 isr;		/* Interrupt Status Register */
-+	u8 pad_862;
-+	u8 mbsmr;	/* Mailbox Search Mask Register */
-+} __packed;
-+
-+struct rcar_can_priv {
-+	struct can_priv can;	/* Must be the first member! */
-+	struct net_device *ndev;
-+	struct napi_struct napi;
-+	struct rcar_can_regs __iomem *regs;
-+	struct clk *clk;
-+	spinlock_t mier_lock;
-+	u8 clock_select;
-+	u8 ier;
++struct gs_tx_context {
++	struct gs_can *dev;
++	unsigned int echo_id;
 +};
 +
-+static const struct can_bittiming_const rcar_can_bittiming_const = {
-+	.name = DRV_NAME,
-+	.tseg1_min = 4,
-+	.tseg1_max = 16,
-+	.tseg2_min = 2,
-+	.tseg2_max = 8,
-+	.sjw_max = 4,
-+	.brp_min = 1,
-+	.brp_max = 1024,
-+	.brp_inc = 1,
++struct gs_can {
++	struct can_priv can; /* must be the first member */
++
++	struct gs_usb *parent;
++
++	struct net_device *netdev;
++	struct usb_device *udev;
++	struct usb_interface *iface;
++
++	struct can_bittiming_const bt_const;
++	unsigned int channel;	/* channel number */
++
++	/* This lock prevents a race condition
++	 * between xmit and recieve.
++	 */
++	spinlock_t tx_ctx_lock;
++	struct gs_tx_context tx_context[MAX_TX_URBS];
++
++	struct usb_anchor tx_submitted;
++	atomic_t active_tx_urbs;
 +};
 +
-+/* Control Register bits */
-+#define CTLR_BOM	(3 << 11) /* Bus-Off Recovery Mode Bits */
-+#define CTLR_BOM_ENT	BIT(11)	/* Entry to halt mode at bus-off entry */
-+#define CTLR_SLPM	BIT(10)
-+#define CTLR_HALT	BIT(9)
-+#define CTLR_RESET	BIT(8)
-+#define CTLR_FORCE_RESET (3 << 8)
-+#define CTLR_TPM	BIT(4)	/* Transmission Priority Mode Select Bit */
-+#define CTLR_IDFM_MIXED	BIT(2)	/* Mixed ID mode */
++/* usb interface struct */
++struct gs_usb {
++	struct gs_can *canch[MAX_INTF];
 +
-+/* Message Control Register bits */
-+#define MCTL_TRMREQ	BIT(7)
-+#define MCTL_RECREQ	BIT(6)
-+#define MCTL_ONESHOT	BIT(4)
-+#define MCTL_SENTDATA	BIT(0)
-+#define MCTL_NEWDATA	BIT(0)
++	struct usb_anchor rx_submitted;
 +
-+#define N_RX_MKREGS	2	/* Number of mask registers */
-+				/* for Rx mailboxes 0-31 */
++	atomic_t active_channels;
++};
 +
-+/* Bit Configuration Register settings */
-+#define BCR_TSEG1(x)	(((x) & 0x0f) << 28)
-+#define BCR_BPR(x)	(((x) & 0x3ff) << 16)
-+#define BCR_SJW(x)	(((x) & 0x3) << 12)
-+#define BCR_TSEG2(x)	(((x) & 0x07) << 8)
-+
-+/* Mailbox and Mask Registers bits */
-+#define RCAR_CAN_IDE	BIT(31)
-+#define RCAR_CAN_RTR	BIT(30)
-+#define RCAR_CAN_SID_SHIFT 18
-+
-+/* Interrupt Enable Register bits */
-+#define IER_ERSIE	BIT(5)	/* Error (ERS) Interrupt Enable Bit */
-+#define IER_RXM0IE	BIT(2)	/* Mailbox 0 Successful Reception (RXM0) */
-+				/* Interrupt Enable Bit */
-+#define IER_RXM1IE	BIT(1)	/* Mailbox 1 Successful Reception (RXM0) */
-+				/* Interrupt Enable Bit */
-+#define IER_TXMIE	BIT(0)	/* Mailbox 32 to 63 Successful Tx */
-+				/* Interrupt Enable Bit */
-+
-+/* Interrupt Status Register bits */
-+#define ISR_ERSF	BIT(5)	/* Error (ERS) Interrupt Status Bit */
-+#define ISR_RXM0F	BIT(2)	/* Mailbox 0 Successful Reception (RXM0) */
-+				/* Interrupt Status Bit */
-+#define ISR_RXM1F	BIT(1)	/* Mailbox 1 to 63 Successful Reception */
-+				/* (RXM1) Interrupt Status Bit */
-+#define ISR_TXMF	BIT(0)	/* Mailbox 32 to 63 Successful Transmission */
-+				/* (TXM) Interrupt Status Bit */
-+
-+/* Error Interrupt Enable Register bits */
-+#define EIER_BLIE	BIT(7)	/* Bus Lock Interrupt Enable */
-+#define EIER_OLIE	BIT(6)	/* Overload Frame Transmit Interrupt Enable */
-+#define EIER_ORIE	BIT(5)	/* Receive Overrun Interrupt Enable */
-+#define EIER_BORIE	BIT(4)	/* Bus-Off Recovery Interrupt Enable */
-+
-+#define EIER_BOEIE	BIT(3)	/* Bus-Off Entry Interrupt Enable */
-+#define EIER_EPIE	BIT(2)	/* Error Passive Interrupt Enable */
-+#define EIER_EWIE	BIT(1)	/* Error Warning Interrupt Enable */
-+#define EIER_BEIE	BIT(0)	/* Bus Error Interrupt Enable */
-+
-+/* Error Interrupt Factor Judge Register bits */
-+#define EIFR_BLIF	BIT(7)	/* Bus Lock Detect Flag */
-+#define EIFR_OLIF	BIT(6)	/* Overload Frame Transmission Detect Flag */
-+#define EIFR_ORIF	BIT(5)	/* Receive Overrun Detect Flag */
-+#define EIFR_BORIF	BIT(4)	/* Bus-Off Recovery Detect Flag */
-+#define EIFR_BOEIF	BIT(3)	/* Bus-Off Entry Detect Flag */
-+#define EIFR_EPIF	BIT(2)	/* Error Passive Detect Flag */
-+#define EIFR_EWIF	BIT(1)	/* Error Warning Detect Flag */
-+#define EIFR_BEIF	BIT(0)	/* Bus Error Detect Flag */
-+
-+/* Error Code Store Register bits */
-+#define ECSR_EDPM	BIT(7)	/* Error Display Mode Select Bit */
-+#define ECSR_ADEF	BIT(6)	/* ACK Delimiter Error Flag */
-+#define ECSR_BE0F	BIT(5)	/* Bit Error (dominant) Flag */
-+#define ECSR_BE1F	BIT(4)	/* Bit Error (recessive) Flag */
-+#define ECSR_CEF	BIT(3)	/* CRC Error Flag */
-+#define ECSR_AEF	BIT(2)	/* ACK Error Flag */
-+#define ECSR_FEF	BIT(1)	/* Form Error Flag */
-+#define ECSR_SEF	BIT(0)	/* Stuff Error Flag */
-+
-+/* Mailbox Search Status Register bits */
-+#define MSSR_SEST	BIT(7)	/* Search Result Status Bit */
-+#define MSSR_MBNST	0x3f	/* Search Result Mailbox Number Status mask */
-+
-+/* Mailbox Search Mode Register values */
-+#define MSMR_TXMB	1	/* Transmit mailbox search mode */
-+#define MSMR_RXMB	0	/* Receive mailbox search mode */
-+
-+#define RCAR_CAN_NAPI_WEIGHT (FIRST_TX_MB - 1)
-+
-+static void tx_failure_cleanup(struct net_device *ndev)
++/* 'allocate' a tx context.
++ * returns a valid tx context or NULL if there is no space.
++ */
++static struct gs_tx_context *gs_alloc_tx_context(struct gs_can *dev)
 +{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u32 mier1;
-+	u8 mbx;
++	int i =3D 0;
 +
-+	spin_lock(&priv->mier_lock);
-+	mier1 = readl(&priv->regs->mier1);
-+	for (mbx = FIRST_TX_MB; mbx < N_MBX; mbx++) {
-+		if (mier1 & BIT(mbx - FIRST_TX_MB)) {
-+			writeb(0, &priv->regs->mctl[mbx]);
-+			can_free_echo_skb(ndev, mbx - FIRST_TX_MB);
++	unsigned long flags;
++
++	spin_lock_irqsave(&dev->tx_ctx_lock, flags);
++
++	for (; i < MAX_TX_URBS; i++) {
++		if (dev->tx_context[i].echo_id =3D=3D MAX_TX_URBS) {
++			dev->tx_context[i].echo_id =3D i;
++			spin_unlock_irqrestore(&dev->tx_ctx_lock, flags);
++			return &dev->tx_context[i];
 +		}
 +	}
-+	writel(0, &priv->regs->mier1);
-+	spin_unlock(&priv->mier_lock);
++
++	spin_unlock_irqrestore(&dev->tx_ctx_lock, flags);
++	return NULL;
 +}
 +
-+static void rcar_can_error(struct net_device *ndev)
++/* releases a tx context
++ */
++static void gs_free_tx_context(struct gs_tx_context *txc)
 +{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	struct net_device_stats *stats = &ndev->stats;
++	unsigned long flags;
++
++	spin_lock_irqsave(&txc->dev->tx_ctx_lock, flags);
++	txc->echo_id =3D MAX_TX_URBS;
++	spin_unlock_irqrestore(&txc->dev->tx_ctx_lock, flags);
++}
++
++/* Get a tx context by id.
++ */
++static struct gs_tx_context *gs_get_tx_context(
++	struct gs_can *dev,
++	unsigned int id)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&dev->tx_ctx_lock, flags);
++	if (id < MAX_TX_URBS) {
++		if (dev->tx_context[id].echo_id =3D=3D id) {
++			spin_unlock_irqrestore(&dev->tx_ctx_lock, flags);
++			return &dev->tx_context[id];
++		}
++	}
++	spin_unlock_irqrestore(&dev->tx_ctx_lock, flags);
++	return NULL;
++}
++
++/* Get a tx contexts id.
++ */
++static unsigned int gs_tx_context_id(struct gs_tx_context *txc)
++{
++	unsigned int id;
++
++	unsigned long flags;
++
++	spin_lock_irqsave(&txc->dev->tx_ctx_lock, flags);
++	id =3D txc->echo_id;
++	spin_unlock_irqrestore(&txc->dev->tx_ctx_lock, flags);
++	return id;
++}
++
++static int gs_cmd_reset(struct gs_usb *gsusb, struct gs_can *gsdev)
++{
++	struct gs_device_mode *dm;
++	struct usb_interface *intf =3D gsdev->iface;
++	int rc;
++
++	dm =3D kzalloc(sizeof(*dm), GFP_KERNEL);
++	if (!dm)
++		return -ENOMEM;
++
++	dm->mode =3D GS_CAN_MODE_RESET;
++
++	rc =3D usb_control_msg(interface_to_usbdev(intf),
++			usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++			GS_USB_BREQ_MODE,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			gsdev->channel,
++			0,
++			dm,
++			sizeof(*dm),
++			1000);
++
++	return rc;
++}
++
++static void gs_update_state(struct gs_can *dev, struct can_frame *cf)
++{
++	if (cf->can_id & CAN_ERR_BUSOFF) {
++		dev->can.state =3D CAN_STATE_BUS_OFF;
++	} else if (cf->can_id & CAN_ERR_CRTL) {
++		dev->can.state =3D CAN_STATE_ERROR_ACTIVE;
++
++		if ((cf->data[1] & CAN_ERR_CRTL_TX_WARNING) ||
++			(cf->data[1] & CAN_ERR_CRTL_RX_WARNING))
++			dev->can.state =3D CAN_STATE_ERROR_WARNING;
++
++		if ((cf->data[1] & CAN_ERR_CRTL_TX_PASSIVE) ||
++			(cf->data[1]&CAN_ERR_CRTL_RX_PASSIVE))
++			dev->can.state =3D CAN_STATE_ERROR_PASSIVE;
++	}
++}
++
++/**************************** USB CALLBACKS **************************=
+/
++static void gs_usb_recieve_bulk_callback(struct urb *urb)
++{
++	struct gs_usb *usbcan =3D urb->context;
++	struct gs_can *dev;
++	struct net_device *netdev;
++	int rc;
++	struct net_device_stats *stats;
++	struct gs_host_frame *hf =3D urb->transfer_buffer;
++	struct gs_tx_context *txc;
++
 +	struct can_frame *cf;
 +	struct sk_buff *skb;
-+	u8 eifr, txerr = 0, rxerr = 0;
 +
-+	/* Propagate the error condition to the CAN stack */
-+	skb = alloc_can_err_skb(ndev, &cf);
-+	if (!skb)
++	BUG_ON(!usbcan);
++
++	switch (urb->status) {
++	case 0: /* success */
++		break;
++	case -ENOENT:
++	case -ESHUTDOWN:
++		return;
++	default:
++		/* do not resubmit aborted urbs. eg: when device goes down */
++		return;
++	}
++
++	/* device reports out of range channel id */
++	if (hf->channel >=3D MAX_INTF)
++		goto resubmit_urb;
++
++	/* device reports bad channel id */
++	dev =3D usbcan->canch[hf->channel];
++
++	netdev =3D dev->netdev;
++
++	if (!netif_device_present(netdev))
 +		return;
 +
-+	eifr = readb(&priv->regs->eifr);
-+	if (eifr & (EIFR_EWIF | EIFR_EPIF)) {
-+		cf->can_id |= CAN_ERR_CRTL;
-+		txerr = readb(&priv->regs->tecr);
-+		rxerr = readb(&priv->regs->recr);
-+		cf->data[6] = txerr;
-+		cf->data[7] = rxerr;
-+	}
-+	if (eifr & EIFR_BEIF) {
-+		int rx_errors = 0, tx_errors = 0;
-+		u8 ecsr;
++	stats =3D &dev->netdev->stats;
 +
-+		if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+			tx_failure_cleanup(ndev);
-+		netdev_dbg(priv->ndev, "Bus error interrupt:\n");
-+		cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
-+		cf->data[2] = CAN_ERR_PROT_UNSPEC;
++	if (hf->echo_id =3D=3D -1) { /* normal rx */
++		skb =3D alloc_can_skb(dev->netdev, &cf);
++		if (skb =3D=3D NULL)
++			return;
 +
-+		ecsr = readb(&priv->regs->ecsr);
-+		if (ecsr & ECSR_ADEF) {
-+			netdev_dbg(priv->ndev, "ACK Delimiter Error\n");
-+			cf->data[3] |= CAN_ERR_PROT_LOC_ACK_DEL;
-+			tx_errors++;
-+			writeb((u8)~ECSR_ADEF, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_BE0F) {
-+			netdev_dbg(priv->ndev, "Bit Error (dominant)\n");
-+			cf->data[2] |= CAN_ERR_PROT_BIT0;
-+			tx_errors++;
-+			writeb((u8)~ECSR_BE0F, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_BE1F) {
-+			netdev_dbg(priv->ndev, "Bit Error (recessive)\n");
-+			cf->data[2] |= CAN_ERR_PROT_BIT1;
-+			tx_errors++;
-+			writeb((u8)~ECSR_BE1F, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_CEF) {
-+			netdev_dbg(priv->ndev, "CRC Error\n");
-+			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
-+			rx_errors++;
-+			writeb((u8)~ECSR_CEF, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_AEF) {
-+			netdev_dbg(priv->ndev, "ACK Error\n");
-+			cf->can_id |= CAN_ERR_ACK;
-+			cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
-+			tx_errors++;
-+			writeb((u8)~ECSR_AEF, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_FEF) {
-+			netdev_dbg(priv->ndev, "Form Error\n");
-+			cf->data[2] |= CAN_ERR_PROT_FORM;
-+			rx_errors++;
-+			writeb((u8)~ECSR_FEF, &priv->regs->ecsr);
-+		}
-+		if (ecsr & ECSR_SEF) {
-+			netdev_dbg(priv->ndev, "Stuff Error\n");
-+			cf->data[2] |= CAN_ERR_PROT_STUFF;
-+			rx_errors++;
-+			writeb((u8)~ECSR_SEF, &priv->regs->ecsr);
++		cf->can_id =3D hf->can_id;
++		/* is it necessary to use get_can_dlc? */
++		cf->can_dlc =3D get_can_dlc(hf->can_dlc);
++		memcpy(cf->data, hf->data, 8);
++
++		/* ERROR frames tell us information about the controler */
++		if (hf->can_id & GS_ERR_FLAG)
++			gs_update_state(dev, cf);
++
++		netif_rx(skb);
++
++		netdev->stats.rx_packets++;
++		netdev->stats.rx_bytes +=3D hf->can_dlc;
++	} else { /* echo_id =3D=3D hf->echo_id */
++		if (hf->echo_id >=3D MAX_TX_URBS) {
++			netdev_err(netdev,
++				"Device sent an out of range echo id:%d\n",
++				hf->echo_id);
++			goto resubmit_urb;
 +		}
 +
-+		priv->can.can_stats.bus_error++;
-+		ndev->stats.rx_errors += rx_errors;
-+		ndev->stats.tx_errors += tx_errors;
-+		writeb((u8)~EIFR_BEIF, &priv->regs->eifr);
-+	}
-+	if (eifr & EIFR_EWIF) {
-+		netdev_dbg(priv->ndev, "Error warning interrupt\n");
-+		priv->can.state = CAN_STATE_ERROR_WARNING;
-+		priv->can.can_stats.error_warning++;
-+		cf->data[1] |= txerr > rxerr ? CAN_ERR_CRTL_TX_WARNING :
-+					       CAN_ERR_CRTL_RX_WARNING;
-+		/* Clear interrupt condition */
-+		writeb((u8)~EIFR_EWIF, &priv->regs->eifr);
-+	}
-+	if (eifr & EIFR_EPIF) {
-+		netdev_dbg(priv->ndev, "Error passive interrupt\n");
-+		priv->can.state = CAN_STATE_ERROR_PASSIVE;
-+		priv->can.can_stats.error_passive++;
-+		cf->data[1] |= txerr > rxerr ? CAN_ERR_CRTL_TX_PASSIVE :
-+					       CAN_ERR_CRTL_RX_PASSIVE;
-+		/* Clear interrupt condition */
-+		writeb((u8)~EIFR_EPIF, &priv->regs->eifr);
-+	}
-+	if (eifr & EIFR_BOEIF) {
-+		netdev_dbg(priv->ndev, "Bus-off entry interrupt\n");
-+		tx_failure_cleanup(ndev);
-+		priv->ier = IER_ERSIE;
-+		writeb(priv->ier, &priv->regs->ier);
-+		priv->can.state = CAN_STATE_BUS_OFF;
-+		cf->can_id |= CAN_ERR_BUSOFF;
-+		/* Clear interrupt condition */
-+		writeb((u8)~EIFR_BOEIF, &priv->regs->eifr);
-+		can_bus_off(ndev);
-+	}
-+	if (eifr & EIFR_ORIF) {
-+		netdev_dbg(priv->ndev, "Receive overrun error interrupt\n");
-+		cf->can_id |= CAN_ERR_CRTL;
-+		cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
-+		ndev->stats.rx_over_errors++;
-+		ndev->stats.rx_errors++;
-+		writeb((u8)~EIFR_ORIF, &priv->regs->eifr);
-+	}
-+	if (eifr & EIFR_OLIF) {
-+		netdev_dbg(priv->ndev,
-+			   "Overload Frame Transmission error interrupt\n");
-+		cf->can_id |= CAN_ERR_PROT;
-+		cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
-+		ndev->stats.rx_over_errors++;
-+		ndev->stats.rx_errors++;
-+		writeb((u8)~EIFR_OLIF, &priv->regs->eifr);
++		netdev->stats.tx_packets++;
++		netdev->stats.tx_bytes +=3D hf->can_dlc;
++
++		txc =3D gs_get_tx_context(dev, hf->echo_id);
++
++		/* bad devices send bad echo_ids. */
++		if (!txc) {
++			netdev_err(netdev,
++				"Device sent a bad echo id:%d\n",
++				hf->echo_id);
++			goto resubmit_urb;
++		}
++
++		can_get_echo_skb(netdev, gs_tx_context_id(txc));
++
++		gs_free_tx_context(txc);
++
++		netif_wake_queue(netdev);
 +	}
 +
-+	netif_rx(skb);
-+	stats->rx_packets++;
-+	stats->rx_bytes += cf->can_dlc;
-+}
++	if (hf->flags & GS_CAN_FLAG_OVERFLOW) {
++		skb =3D alloc_can_err_skb(netdev, &cf);
++		if (skb =3D=3D NULL)
++			goto resubmit_urb;
 +
-+static void rcar_can_tx_done(struct net_device *ndev)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	struct net_device_stats *stats = &ndev->stats;
-+	u32 ie_mask = 0;
-+	int i;
-+
-+	/* Set Transmit Mailbox Search Mode */
-+	writeb(MSMR_TXMB, &priv->regs->msmr);
-+	for (i = 0; i < N_TX_MB; i++) {
-+		u8 mctl, mbx;
-+
-+		mbx = readb(&priv->regs->mssr);
-+		if (mbx & MSSR_SEST)
-+			break;
-+		mbx &= MSSR_MBNST;
-+		stats->tx_bytes += readb(&priv->regs->mb[mbx].dlc);
-+		stats->tx_packets++;
-+		mctl = readb(&priv->regs->mctl[mbx]);
-+		/* Bits SENTDATA and TRMREQ cannot be
-+		 * set to 0 simultaneously
-+		 */
-+		mctl &= ~MCTL_TRMREQ;
-+		writeb(mctl, &priv->regs->mctl[mbx]);
-+		mctl &= ~MCTL_SENTDATA;
-+		/* Clear interrupt */
-+		writeb(mctl, &priv->regs->mctl[mbx]);
-+		ie_mask |= BIT(mbx - FIRST_TX_MB);
-+		can_get_echo_skb(ndev, mbx - FIRST_TX_MB);
-+		can_led_event(ndev, CAN_LED_EVENT_TX);
++		cf->can_id |=3D CAN_ERR_CRTL;
++		cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
++		stats->rx_over_errors++;
++		stats->rx_errors++;
++		netif_rx(skb);
 +	}
-+	/* Set receive mailbox search mode */
-+	writeb(MSMR_RXMB, &priv->regs->msmr);
-+	/* Disable mailbox interrupt, mark mailbox as free */
-+	if (ie_mask) {
-+		u32 mier1;
 +
-+		spin_lock(&priv->mier_lock);
-+		mier1 = readl(&priv->regs->mier1);
-+		writel(mier1 & ~ie_mask, &priv->regs->mier1);
-+		spin_unlock(&priv->mier_lock);
-+		netif_wake_queue(ndev);
++
++resubmit_urb:
++	/* note: no urb refill... works for me */
++
++	rc =3D usb_submit_urb(urb, GFP_ATOMIC);
++
++	/* USB failure take down all interfaces */
++	if (rc =3D=3D -ENODEV) {
++		for (rc =3D 0; rc < MAX_INTF; rc++) {
++			if (usbcan->canch[rc])
++				netif_device_detach(usbcan->canch[rc]->netdev);
++		}
 +	}
 +}
 +
-+static irqreturn_t rcar_can_interrupt(int irq, void *dev_id)
++static int gs_usb_set_bittiming(struct net_device *netdev)
 +{
-+	struct net_device *ndev = (struct net_device *)dev_id;
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u8 isr;
++	struct gs_can *dev =3D netdev_priv(netdev);
++	struct can_bittiming *bt =3D &dev->can.bittiming;
++	struct usb_interface *intf =3D dev->iface;
++	int rc;
++	struct gs_device_bittiming *dbt;
 +
-+	isr = readb(&priv->regs->isr);
-+	if (!(isr & priv->ier))
-+		return IRQ_NONE;
++	dbt =3D kmalloc(sizeof(*dbt), GFP_KERNEL);
++	if (!dbt)
++		return -ENOMEM;
 +
-+	if (isr & ISR_ERSF)
-+		rcar_can_error(ndev);
++	dbt->prop_seg =3D bt->prop_seg;
++	dbt->phase_seg1 =3D bt->phase_seg1;
++	dbt->phase_seg2 =3D bt->phase_seg2;
++	dbt->sjw =3D bt->sjw;
++	dbt->brp =3D bt->brp;
 +
-+	if (isr & ISR_TXMF)
-+		rcar_can_tx_done(ndev);
++	rc =3D usb_control_msg(interface_to_usbdev(intf),
++			usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++			GS_USB_BREQ_BITTIMING,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			dbt,
++			sizeof(*dbt),
++			1000);
++	if (rc < 0)
++		dev_err(netdev->dev.parent, "Couldn't set bittimings %d", rc);
 +
-+	if (isr & ISR_RXM1F) {
-+		if (napi_schedule_prep(&priv->napi)) {
-+			/* Disable Rx interrupts */
-+			priv->ier &= ~IER_RXM1IE;
-+			writeb(priv->ier, &priv->regs->ier);
-+			__napi_schedule(&priv->napi);
-+		}
++	kfree(dbt);
++
++	return rc;
++}
++
++static int gs_usb_set_mode(struct net_device *netdev, enum can_mode
+mode)
++{
++	if (mode =3D=3D CAN_MODE_START) {
++		netif_wake_queue(netdev);
++		return 0;
 +	}
 +
-+	return IRQ_HANDLED;
++	return -EOPNOTSUPP;
 +}
 +
-+static int rcar_can_set_bittiming(struct net_device *dev)
++static void gs_usb_xmit_callback(struct urb *urb)
 +{
-+	struct rcar_can_priv *priv = netdev_priv(dev);
-+	struct can_bittiming *bt = &priv->can.bittiming;
-+	u32 bcr;
-+	u16 ctlr;
-+	u8 clkr;
++	struct gs_tx_context *txc =3D urb->context;
++	struct gs_can *dev;
++	struct net_device *netdev;
 +
-+	clk_prepare_enable(priv->clk);
-+	/* rcar_can_set_bittiming() is called in CAN sleep mode.
-+	 * Can write to BCR  in CAN reset mode or CAN halt mode.
-+	 * Cannot write to CLKR in halt mode, so go to reset mode.
-+	 */
-+	ctlr = readw(&priv->regs->ctlr);
-+	ctlr &= ~CTLR_SLPM;
-+	ctlr |= CTLR_FORCE_RESET;
-+	writew(ctlr, &priv->regs->ctlr);
-+	/* Don't overwrite CLKR with 32-bit BCR access */
-+	/* CLKR has 8-bit access */
-+	clkr = readb(&priv->regs->clkr);
-+	bcr = BCR_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
-+	      BCR_BPR(bt->brp - 1) | BCR_SJW(bt->sjw - 1) |
-+	      BCR_TSEG2(bt->phase_seg2 - 1);
-+	writel(bcr, &priv->regs->bcr);
-+	writeb(clkr, &priv->regs->clkr);
-+	ctlr |= CTLR_SLPM;
-+	writew(ctlr, &priv->regs->ctlr);
-+	clk_disable_unprepare(priv->clk);
-+	return 0;
-+}
++	dev =3D txc->dev;
 +
-+static void rcar_can_start(struct net_device *ndev)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u16 ctlr, n;
++	netdev =3D dev->netdev;
 +
-+	/* Set controller to known mode:
-+	 * - normal mailbox mode (no FIFO);
-+	 * - accept all messages (no filter).
-+	 * CAN is in sleep mode after MCU hardware or software reset.
-+	 */
-+	ctlr = readw(&priv->regs->ctlr);
-+	ctlr &= ~CTLR_SLPM;
-+	writew(ctlr, &priv->regs->ctlr);
-+	/* Go to reset mode */
-+	ctlr |= CTLR_FORCE_RESET;
-+	writew(ctlr, &priv->regs->ctlr);
-+	ctlr |= CTLR_IDFM_MIXED; /* Select mixed ID mode */
-+	ctlr |= CTLR_TPM;	/* Set mailbox number priority transmit mode */
-+	ctlr |= CTLR_BOM_ENT;	/* Entry to halt mode automatically */
-+				/* at bus-off */
-+	writew(ctlr, &priv->regs->ctlr);
-+
-+	writeb(priv->clock_select, &priv->regs->clkr);
-+
-+	/* Accept all SID and EID */
-+	for (n = 0; n < N_RX_MKREGS; n++)
-+		writel(0, &priv->regs->mkr_0_1[n]);
-+	writel(0, &priv->regs->mkivlr0);
-+
-+	/* Initial value of MIER1 undefined.  Mark all Tx mailboxes as free. */
-+	writel(0, &priv->regs->mier1);
-+
-+	priv->ier = IER_TXMIE | IER_ERSIE | IER_RXM1IE;
-+	writeb(priv->ier, &priv->regs->ier);
-+
-+	/* Accumulate error codes */
-+	writeb(ECSR_EDPM, &priv->regs->ecsr);
-+	/* Enable error interrupts */
-+	writeb(EIER_EWIE | EIER_EPIE | EIER_BOEIE |
-+	       (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING ?
-+	       EIER_BEIE : 0) | EIER_ORIE | EIER_OLIE,
-+	       &priv->regs->eier);
-+	/* Enable interrupts for RX mailboxes */
-+	writel(RX_MBX_MASK, &priv->regs->mier0);
-+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+
-+	/* Write to the CiMCTLj register in CAN
-+	 * operation mode or CAN halt mode.
-+	 * Configure mailboxes 0-31 as Rx mailboxes.
-+	 * Configure mailboxes 32-63 as Tx mailboxes.
-+	 */
-+	/* Go to halt mode */
-+	ctlr |= CTLR_HALT;
-+	ctlr &= ~CTLR_RESET;
-+	writew(ctlr, &priv->regs->ctlr);
-+	for (n = 0; n < FIRST_TX_MB; n++) {
-+		/* According to documentation we should clear MCTL
-+		 * register before configuring mailbox.
-+		 */
-+		writeb(0, &priv->regs->mctl[n]);
-+		writeb(MCTL_RECREQ, &priv->regs->mctl[n]);
-+		writeb(0, &priv->regs->mctl[FIRST_TX_MB + n]);
++	if (urb->status) {
++		netdev_info(netdev, "%d] xmit err %d\n",
++			dev->channel, txc->echo_id);
 +	}
-+	/* Go to operation mode */
-+	writew(ctlr & ~CTLR_FORCE_RESET, &priv->regs->ctlr);
++
++	usb_free_coherent(urb->dev,
++		urb->transfer_buffer_length,
++		urb->transfer_buffer,
++		urb->transfer_dma);
++
++	atomic_dec(&dev->active_tx_urbs);
++
++	if (!netif_device_present(netdev))
++		return;
++
++	if (netif_queue_stopped(netdev))
++		netif_wake_queue(netdev);
 +}
 +
-+static int rcar_can_open(struct net_device *ndev)
++static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
++	struct net_device *netdev)
 +{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	int err;
++	struct gs_can *dev =3D netdev_priv(netdev);
++	struct net_device_stats *stats =3D &dev->netdev->stats;
++	struct urb *urb;
++	struct gs_host_frame *hf;
++	struct can_frame *cf;
++	int rc;
++	unsigned int idx;
++	struct gs_tx_context *txc;
 +
-+	clk_prepare_enable(priv->clk);
-+	err = open_candev(ndev);
-+	if (err) {
-+		netdev_err(ndev, "open_candev() failed %d\n", err);
-+		goto out;
-+	}
-+	napi_enable(&priv->napi);
-+	err = request_irq(ndev->irq, rcar_can_interrupt, 0, ndev->name, ndev);
-+	if (err) {
-+		netdev_err(ndev, "error requesting interrupt %x\n", ndev->irq);
-+		goto out_close;
-+	}
-+	can_led_event(ndev, CAN_LED_EVENT_OPEN);
-+	rcar_can_start(ndev);
-+	netif_start_queue(ndev);
-+	return 0;
-+out_close:
-+	napi_disable(&priv->napi);
-+	close_candev(ndev);
-+	clk_disable_unprepare(priv->clk);
-+out:
-+	return err;
-+}
++	if (dev->can.ctrlmode&CAN_CTRLMODE_LISTENONLY)
++		return NETDEV_TX_BUSY;
 +
-+static void rcar_can_stop(struct net_device *ndev)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u16 ctlr;
-+
-+	/* Go to (force) reset mode */
-+	ctlr = readw(&priv->regs->ctlr);
-+	ctlr |=  CTLR_FORCE_RESET;
-+	writew(ctlr, &priv->regs->ctlr);
-+	writel(0, &priv->regs->mier0);
-+	writel(0, &priv->regs->mier1);
-+	writeb(0, &priv->regs->ier);
-+	writeb(0, &priv->regs->eier);
-+	/* Go to sleep mode */
-+	ctlr |= CTLR_SLPM;
-+	writew(ctlr, &priv->regs->ctlr);
-+	priv->can.state = CAN_STATE_STOPPED;
-+}
-+
-+static int rcar_can_close(struct net_device *ndev)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+
-+	netif_stop_queue(ndev);
-+	rcar_can_stop(ndev);
-+	free_irq(ndev->irq, ndev);
-+	napi_disable(&priv->napi);
-+	clk_disable_unprepare(priv->clk);
-+	close_candev(ndev);
-+	can_led_event(ndev, CAN_LED_EVENT_STOP);
-+	return 0;
-+}
-+
-+static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
-+				       struct net_device *ndev)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	struct can_frame *cf = (struct can_frame *)skb->data;
-+	u32 data, mier1, mbxno, i;
-+	unsigned long flags;
-+	u8 mctl = 0;
-+
-+	if (can_dropped_invalid_skb(ndev, skb))
++	if (can_dropped_invalid_skb(netdev, skb))
 +		return NETDEV_TX_OK;
 +
-+	spin_lock_irqsave(&priv->mier_lock, flags);
-+	mier1 = readl(&priv->regs->mier1);
-+	if (mier1) {
-+		i = __builtin_clz(mier1);
-+		mbxno = i ? N_MBX - i : FIRST_TX_MB;
++	/* find an empty context to keep track of transmission */
++	txc =3D gs_alloc_tx_context(dev);
++	if (!txc)
++		return NETDEV_TX_BUSY;
++
++	/* create a URB, and a buffer for it */
++	urb =3D usb_alloc_urb(0, GFP_ATOMIC);
++	if (!urb) {
++		netdev_err(netdev, "No memory left for URBs\n");
++		goto nomem_urb;
++	}
++
++	hf =3D usb_alloc_coherent(dev->udev, sizeof(*hf), GFP_ATOMIC,
++		&urb->transfer_dma);
++	if (!hf) {
++		netdev_err(netdev, "No memory left for USB buffer\n");
++		goto nomem_hf;
++	}
++
++	cf =3D (struct can_frame *)skb->data;
++
++	idx =3D gs_tx_context_id(txc);
++
++	if (idx >=3D MAX_TX_URBS) {
++		netdev_err(netdev, "Invalid tx context %d\n", idx);
++		goto badidx;
++	}
++
++	hf->echo_id =3D idx;
++	hf->channel =3D dev->channel;
++
++	hf->can_id =3D cf->can_id;
++	hf->can_dlc =3D cf->can_dlc;
++	memcpy(hf->data, cf->data, 8);
++
++	usb_fill_bulk_urb(urb, dev->udev,
++			usb_sndbulkpipe(dev->udev, GSUSB_ENDPOINT_OUT),
++			hf,
++			sizeof(*hf),
++			gs_usb_xmit_callback,
++			txc);
++
++	urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
++	usb_anchor_urb(urb, &dev->tx_submitted);
++
++	can_put_echo_skb(skb, netdev, idx);
++
++	atomic_inc(&dev->active_tx_urbs);
++
++	rc =3D usb_submit_urb(urb, GFP_ATOMIC);
++	if (unlikely(rc)) {			/* usb send failed */
++		atomic_dec(&dev->active_tx_urbs);
++
++		netdev_err(netdev, "usb_submit failed %d\n", rc);
++
++		can_free_echo_skb(netdev, gs_tx_context_id(txc));
++		gs_free_tx_context(txc);
++
++		usb_unanchor_urb(urb);
++		usb_free_coherent(dev->udev,
++			sizeof(*hf),
++			hf,
++			urb->transfer_dma);
++
++
++
++		if (rc =3D=3D -ENODEV) {
++			netif_device_detach(netdev);
++		} else {
++			netdev_err(netdev, "Failed tx_urb %d\n", rc);
++
++			stats->tx_dropped++;
++		}
 +	} else {
-+		mbxno = FIRST_TX_MB;
++		netdev->trans_start =3D jiffies;
++
++		/* Slow down tx path */
++		if (atomic_read(&dev->active_tx_urbs) >=3D MAX_TX_URBS)
++			netif_stop_queue(netdev);
 +	}
-+	mier1 |= BIT(mbxno - FIRST_TX_MB);
-+	writel(mier1, &priv->regs->mier1);
-+	spin_unlock_irqrestore(&priv->mier_lock, flags);
-+	if (unlikely(mier1 == 0xffffffff))
-+		netif_stop_queue(ndev);
 +
-+	if (cf->can_id & CAN_EFF_FLAG) {
-+		/* Extended frame format */
-+		data = (cf->can_id & CAN_EFF_MASK) | RCAR_CAN_IDE;
-+	} else {
-+		/* Standard frame format */
-+		data = (cf->can_id & CAN_SFF_MASK) << RCAR_CAN_SID_SHIFT;
-+	}
-+	if (cf->can_id & CAN_RTR_FLAG) {
-+		/* Remote transmission request */
-+		data |= RCAR_CAN_RTR;
-+	}
-+	writel(data, &priv->regs->mb[mbxno].id);
++	/* let usb core take care of this urb */
++	usb_free_urb(urb);
 +
-+	writeb(cf->can_dlc, &priv->regs->mb[mbxno].dlc);
++	return NETDEV_TX_OK;
 +
-+	for (i = 0; i < cf->can_dlc; i++)
-+		writeb(cf->data[i], &priv->regs->mb[mbxno].data[i]);
++badidx:
++	usb_free_coherent(dev->udev,
++				sizeof(*hf),
++				hf,
++				urb->transfer_dma);
++nomem_hf:
++	usb_free_urb(urb);
 +
-+	can_put_echo_skb(skb, ndev, mbxno - FIRST_TX_MB);
-+
-+	priv->ier |= IER_TXMIE;
-+	writeb(priv->ier, &priv->regs->ier);
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		mctl |= MCTL_ONESHOT;
-+
-+	/* Start TX */
-+	mctl |= MCTL_TRMREQ;
-+	writeb(mctl, &priv->regs->mctl[mbxno]);
++nomem_urb:
++	gs_free_tx_context(txc);
++	dev_kfree_skb(skb);
++	stats->tx_dropped++;
 +	return NETDEV_TX_OK;
 +}
 +
-+static const struct net_device_ops rcar_can_netdev_ops = {
-+	.ndo_open = rcar_can_open,
-+	.ndo_stop = rcar_can_close,
-+	.ndo_start_xmit = rcar_can_start_xmit,
++static int gs_can_open(struct net_device *netdev)
++{
++	struct gs_can *dev =3D netdev_priv(netdev);
++	struct gs_usb *parent =3D dev->parent;
++	int rc, i;
++	struct gs_device_mode *dm;
++	u32 ctrlmode;
++
++	/* common open */
++	rc =3D open_candev(netdev);
++	if (rc)
++		return rc;
++
++	if (atomic_add_return(1, &parent->active_channels) =3D=3D 1) {
++		for (i =3D 0; i < MAX_RX_URBS; i++) {
++			struct urb *urb =3D NULL;
++			u8 *buf =3D NULL;
++
++			/* alloc rx urb */
++			urb =3D usb_alloc_urb(0, GFP_KERNEL);
++			if (!urb) {
++				netdev_err(netdev,
++					"No memory left for URBs\n");
++				return -ENOMEM;
++			}
++
++			/* alloc rx buffer */
++			buf =3D usb_alloc_coherent(dev->udev,
++				sizeof(struct gs_host_frame),
++				GFP_KERNEL,
++				&urb->transfer_dma);
++			if (!buf) {
++				netdev_err(netdev,
++					"No memory left for USB buffer\n");
++				usb_free_urb(urb);
++				return -ENOMEM;
++			}
++
++
++			/* fill, anchor, and submit rx urb */
++			usb_fill_bulk_urb(urb,
++					dev->udev,
++					usb_rcvbulkpipe(dev->udev,
++						GSUSB_ENDPOINT_IN),
++					buf,
++					sizeof(struct gs_host_frame),
++					gs_usb_recieve_bulk_callback,
++					parent
++					);
++			urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
++
++			usb_anchor_urb(urb, &parent->rx_submitted);
++
++			rc =3D usb_submit_urb(urb, GFP_KERNEL);
++			if (rc) {
++				if (rc =3D=3D -ENODEV)
++					netif_device_detach(dev->netdev);
++
++				usb_unanchor_urb(urb);
++				break;
++			}
++
++			/* Drop reference,
++			 * USB core will take care of freeing it
++			 */
++			usb_free_urb(urb);
++		}
++	}
++
++	dm =3D kmalloc(sizeof(*dm), GFP_KERNEL);
++	if (!dm)
++		return -ENOMEM;
++
++	/* flags */
++	ctrlmode =3D dev->can.ctrlmode;
++	dm->flags =3D 0;
++
++	if (ctrlmode & CAN_CTRLMODE_LOOPBACK)
++		dm->flags |=3D GS_CAN_MODE_LOOP_BACK;
++
++	else if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
++		dm->flags |=3D GS_CAN_MODE_LISTEN_ONLY;
++
++
++	/* Controller is not allowed to retry TX
++	 * this mode is unavailable on atmels uc3c hardware
++	 */
++	if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		dm->flags |=3D GS_CAN_MODE_ONE_SHOT;
++
++	if (ctrlmode & CAN_CTRLMODE_3_SAMPLES)
++		dm->flags |=3D GS_CAN_MODE_TRIPLE_SAMPLE;
++
++	/* finally start device */
++	dm->mode =3D GS_CAN_MODE_START;
++	rc =3D usb_control_msg(interface_to_usbdev(dev->iface),
++			usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
++			GS_USB_BREQ_MODE,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			dm,
++			sizeof(*dm),
++			1000);
++
++	if (rc < 0) {
++		netdev_err(netdev, "Couldn't start device %d\n", rc);
++		kfree(dm);
++		return rc;
++	}
++
++	/* check mode... */
++	if (!dm)
++		return -ENOMEM;
++
++	rc =3D usb_control_msg(interface_to_usbdev(dev->iface),
++			usb_rcvctrlpipe(interface_to_usbdev(dev->iface), 0),
++			GS_USB_BREQ_MODE,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			dev->channel,
++			0,
++			dm,
++			sizeof(*dm),
++			1000);
++
++	if (rc < 0) {
++		netdev_err(netdev, "Couldn't get device mode %d\n",
++			rc);
++		kfree(dm);
++		return rc;
++	}
++
++	kfree(dm);
++
++	dev->can.state =3D CAN_STATE_ERROR_ACTIVE;
++
++	netif_start_queue(netdev);
++
++	netdev_info(netdev, "CAN open\n");
++	return 0;
++}
++
++static int gs_can_close(struct net_device *netdev)
++{
++	int rc;
++	struct gs_can *dev =3D netdev_priv(netdev);
++	struct gs_usb *parent =3D dev->parent;
++
++	netif_stop_queue(netdev);
++
++	/* Stop polling */
++	if (atomic_dec_and_test(&parent->active_channels))
++		usb_kill_anchored_urbs(&parent->rx_submitted);
++
++	rc =3D gs_cmd_reset(parent, dev);
++
++	if (rc < 0)
++		netdev_warn(netdev, "Couldn't shutdown device %d", rc);
++
++	close_candev(netdev);
++
++	return 0;
++}
++
++/******************************** USB ********************************=
+/
++
++static const struct net_device_ops gs_usb_netdev_ops =3D {
++	.ndo_open =3D gs_can_open,
++	.ndo_stop =3D gs_can_close,
++	.ndo_start_xmit =3D gs_can_start_xmit,
 +};
 +
-+static void rcar_can_rx_pkt(struct rcar_can_priv *priv, int mbx)
++static int gs_make_candev(struct gs_can **out, unsigned int channel,
++	struct usb_interface *intf)
 +{
-+	struct net_device_stats *stats = &priv->ndev->stats;
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+	u32 data;
-+	u8 dlc;
++	struct gs_can *dev;
++	struct net_device *netdev;
++	int rc;
++	struct gs_device_bt_const *bt_const;
 +
-+	skb = alloc_can_skb(priv->ndev, &cf);
-+	if (!skb) {
-+		stats->rx_dropped++;
++	bt_const =3D kmalloc(sizeof(*bt_const), GFP_KERNEL);
++	if (!bt_const)
++		return -ENOMEM;
++
++	/* fetch bit timing constants */
++	rc =3D usb_control_msg(interface_to_usbdev(intf),
++			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++			GS_USB_BREQ_BT_CONST,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			channel,
++			0,
++			bt_const,
++			sizeof(*bt_const),
++			1000);
++
++	if (rc < 0) {
++		dev_err(&intf->dev,
++			"Couldn't get bit timing const for channel %d\n",
++			rc);
++		kfree(bt_const);
++		return rc;
++	}
++
++	/* create netdev */
++	netdev =3D alloc_candev(sizeof(struct gs_can), MAX_TX_URBS);
++	if (!netdev) {
++		dev_err(&intf->dev, "Couldn't alloc candev\n");
++		kfree(bt_const);
++		return -ENOMEM;
++	}
++
++	dev =3D netdev_priv(netdev);
++
++	netdev->netdev_ops =3D &gs_usb_netdev_ops;
++
++	netdev->flags |=3D IFF_ECHO; /* we support full roundtrip echo */
++
++	/* dev settup */
++	strcpy(dev->bt_const.name, "gs_usb");
++	dev->bt_const.tseg1_min =3D bt_const->tseg1_min;
++	dev->bt_const.tseg1_max =3D bt_const->tseg1_max;
++	dev->bt_const.tseg2_min =3D bt_const->tseg2_min;
++	dev->bt_const.tseg2_max =3D bt_const->tseg2_max;
++	dev->bt_const.sjw_max =3D bt_const->sjw_max;
++	dev->bt_const.brp_min =3D bt_const->brp_min;
++	dev->bt_const.brp_max =3D bt_const->brp_max;
++	dev->bt_const.brp_inc =3D bt_const->brp_inc;
++
++	dev->udev =3D interface_to_usbdev(intf);
++	dev->iface =3D intf;
++	dev->netdev =3D netdev;
++	dev->channel =3D channel;
++
++	init_usb_anchor(&dev->tx_submitted);
++	atomic_set(&dev->active_tx_urbs, 0);
++	spin_lock_init(&dev->tx_ctx_lock);
++	for (rc =3D 0; rc < MAX_TX_URBS; rc++) {
++		dev->tx_context[rc].dev =3D dev;
++		dev->tx_context[rc].echo_id =3D MAX_TX_URBS;
++	}
++
++	/* can settup */
++	dev->can.state =3D CAN_STATE_STOPPED;
++	dev->can.clock.freq =3D bt_const->fclk_can;
++	dev->can.bittiming_const =3D &dev->bt_const;
++	dev->can.do_set_bittiming =3D gs_usb_set_bittiming;
++	dev->can.do_set_mode =3D gs_usb_set_mode;
++
++	dev->can.ctrlmode_supported =3D 0;
++
++	if (bt_const->feature & GS_CAN_FEATURE_LISTEN_ONLY)
++		dev->can.ctrlmode_supported |=3D CAN_CTRLMODE_LISTENONLY;
++
++	if (bt_const->feature & GS_CAN_FEATURE_LOOP_BACK)
++		dev->can.ctrlmode_supported |=3D CAN_CTRLMODE_LOOPBACK;
++
++	if (bt_const->feature & GS_CAN_FEATURE_TRIPLE_SAMPLE)
++		dev->can.ctrlmode_supported |=3D CAN_CTRLMODE_3_SAMPLES;
++
++	if (bt_const->feature & GS_CAN_FEATURE_ONE_SHOT)
++		dev->can.ctrlmode_supported |=3D CAN_CTRLMODE_ONE_SHOT;
++
++	kfree(bt_const);
++
++	SET_NETDEV_DEV(netdev, &intf->dev);
++
++	rc =3D register_candev(dev->netdev);
++	if (rc) {
++		free_candev(dev->netdev);
++		dev_err(&intf->dev, "Couldn't register candev\n");
++		return rc;
++	}
++
++	*out =3D dev;
++	return 0;
++}
++
++static void gs_destroy_candev(struct gs_can *dev)
++{
++	unregister_candev(dev->netdev);
++	free_candev(dev->netdev);
++	usb_kill_anchored_urbs(&dev->tx_submitted);
++}
++
++static int gs_usb_probe(struct usb_interface *intf,
++	const struct usb_device_id *id)
++{
++	struct gs_usb *dev;
++	int rc =3D -ENOMEM;
++	unsigned int icount, i;
++	struct gs_host_config *hconf;
++	struct gs_device_config *dconf;
++
++	hconf =3D kmalloc(sizeof(*hconf), GFP_KERNEL);
++	if (!hconf)
++		return -ENOMEM;
++
++	hconf->byte_order =3D 0x0000beef;
++
++
++	/* send host config */
++	rc =3D usb_control_msg(interface_to_usbdev(intf),
++			usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++			GS_USB_BREQ_HOST_FORMAT,
++			USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			1,
++			intf->altsetting[0].desc.bInterfaceNumber,
++			hconf,
++			sizeof(*hconf),
++			1000);
++
++	kfree(hconf);
++
++	if (rc < 0) {
++		dev_err(&intf->dev, "Couldn't send data format: %d\n",
++			rc);
++		return rc;
++	}
++
++
++	dconf =3D kmalloc(sizeof(*dconf), GFP_KERNEL);
++	if (!dconf)
++		return -ENOMEM;
++
++	/* read device config */
++	rc =3D usb_control_msg(interface_to_usbdev(intf),
++			usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++			GS_USB_BREQ_DEVICE_CONFIG,
++			USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++			1,
++			intf->altsetting[0].desc.bInterfaceNumber,
++			dconf,
++			sizeof(*dconf),
++			1000);
++	if (rc < 0) {
++		dev_err(&intf->dev, "Couldn't recieve device config: %d\n",
++			rc);
++
++		kfree(dconf);
++
++		return rc;
++	}
++
++	icount =3D dconf->icount+1;
++
++	kfree(dconf);
++
++	dev_info(&intf->dev, "Configuring for %d interfaces\n", icount);
++
++	if (icount > MAX_INTF) {
++		dev_err(&intf->dev,
++			"Driver cannot handle more that %d Can interfaces\n",
++			MAX_INTF);
++		return -EINVAL;
++	}
++
++	dev =3D kzalloc(sizeof(*dev), GFP_KERNEL);
++	init_usb_anchor(&dev->rx_submitted);
++
++	atomic_set(&dev->active_channels, 0);
++
++	usb_set_intfdata(intf, dev);
++
++	for (i =3D 0; i < icount; i++) {
++		rc =3D gs_make_candev(&dev->canch[i], i, intf);
++		if (rc) {
++			/* on failure destroy previously created candevs */
++			icount =3D i;
++			for (i =3D 0; i < icount; i++) {
++				gs_destroy_candev(dev->canch[i]);
++				dev->canch[icount] =3D NULL;
++			}
++			return rc;
++		}
++		dev->canch[i]->parent =3D dev;
++	}
++
++	dev_info(&intf->dev, "Probe\n");
++	return 0;
++}
++
++static void gs_usb_disconnect(struct usb_interface *intf)
++{
++	unsigned i;
++	struct gs_usb *dev =3D usb_get_intfdata(intf);
++	usb_set_intfdata(intf, NULL);
++
++	if (!dev) {
++		dev_err(&intf->dev, "Disconnect (nodata)\n");
 +		return;
 +	}
 +
-+	data = readl(&priv->regs->mb[mbx].id);
-+	if (data & RCAR_CAN_IDE)
-+		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+	else
-+		cf->can_id = (data >> RCAR_CAN_SID_SHIFT) & CAN_SFF_MASK;
++	for (i =3D 0; i < MAX_INTF; i++) {
++		struct gs_can *can =3D dev->canch[i];
 +
-+	dlc = readb(&priv->regs->mb[mbx].dlc);
-+	cf->can_dlc = get_can_dlc(dlc);
-+	if (data & RCAR_CAN_RTR) {
-+		cf->can_id |= CAN_RTR_FLAG;
-+	} else {
-+		for (dlc = 0; dlc < cf->can_dlc; dlc++)
-+			cf->data[dlc] = readb(&priv->regs->mb[mbx].data[dlc]);
++		if (!can)
++			continue;
++
++		gs_destroy_candev(can);
 +	}
 +
-+	can_led_event(priv->ndev, CAN_LED_EVENT_RX);
-+
-+	netif_receive_skb(skb);
-+	stats->rx_bytes += cf->can_dlc;
-+	stats->rx_packets++;
++	usb_kill_anchored_urbs(&dev->rx_submitted);
 +}
 +
-+static int rcar_can_rx_poll(struct napi_struct *napi, int quota)
-+{
-+	struct rcar_can_priv *priv = container_of(napi,
-+						  struct rcar_can_priv, napi);
-+	int num_pkts = 0;
++MODULE_DEVICE_TABLE(usb, gs_usb_table);
 +
-+	/* Find mailbox */
-+	while (num_pkts < quota) {
-+		u8 mctl, mbx;
-+
-+		mbx = readb(&priv->regs->mssr);
-+		if (mbx & MSSR_SEST)
-+			break;
-+		mbx &= MSSR_MBNST;
-+		mctl = readb(&priv->regs->mctl[mbx]);
-+		/* Clear interrupt */
-+		writeb(mctl & ~MCTL_NEWDATA, &priv->regs->mctl[mbx]);
-+		rcar_can_rx_pkt(priv, mbx);
-+		++num_pkts;
-+	}
-+	/* All packets processed */
-+	if (num_pkts < quota) {
-+		napi_complete(napi);
-+		priv->ier |= IER_RXM1IE;
-+		writeb(priv->ier, &priv->regs->ier);
-+	}
-+	return num_pkts;
-+}
-+
-+static int rcar_can_do_set_mode(struct net_device *ndev, enum can_mode mode)
-+{
-+	switch (mode) {
-+	case CAN_MODE_START:
-+		rcar_can_start(ndev);
-+		netif_wake_queue(ndev);
-+		return 0;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int rcar_can_get_berr_counter(const struct net_device *dev,
-+				     struct can_berr_counter *bec)
-+{
-+	struct rcar_can_priv *priv = netdev_priv(dev);
-+
-+	clk_prepare_enable(priv->clk);
-+	bec->txerr = readb(&priv->regs->tecr);
-+	bec->rxerr = readb(&priv->regs->recr);
-+	clk_disable_unprepare(priv->clk);
-+	return 0;
-+}
-+
-+static int rcar_can_probe(struct platform_device *pdev)
-+{
-+	struct rcar_can_platform_data *pdata;
-+	struct rcar_can_priv *priv;
-+	struct net_device *ndev;
-+	struct resource *mem;
-+	void __iomem *addr;
-+	int err = -ENODEV;
-+	int irq;
-+
-+	pdata = dev_get_platdata(&pdev->dev);
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "No platform data provided!\n");
-+		goto fail;
-+	}
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (!irq) {
-+		dev_err(&pdev->dev, "No IRQ resource\n");
-+		goto fail;
-+	}
-+
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	addr = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(addr)) {
-+		err = PTR_ERR(addr);
-+		goto fail;
-+	}
-+
-+	ndev = alloc_candev(sizeof(struct rcar_can_priv), N_MBX - FIRST_TX_MB);
-+	if (!ndev) {
-+		dev_err(&pdev->dev, "alloc_candev failed\n");
-+		err = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	priv = netdev_priv(ndev);
-+
-+	priv->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(priv->clk)) {
-+		err = PTR_ERR(priv->clk);
-+		dev_err(&pdev->dev, "cannot get clock: %d\n", err);
-+		goto fail_clk;
-+	}
-+
-+	ndev->netdev_ops = &rcar_can_netdev_ops;
-+	ndev->irq = irq;
-+	ndev->flags |= IFF_ECHO;
-+	priv->ndev = ndev;
-+	priv->regs = addr;
-+	priv->clock_select = pdata->clock_select;
-+	priv->can.clock.freq = clk_get_rate(priv->clk);
-+	priv->can.bittiming_const = &rcar_can_bittiming_const;
-+	priv->can.do_set_bittiming = rcar_can_set_bittiming;
-+	priv->can.do_set_mode = rcar_can_do_set_mode;
-+	priv->can.do_get_berr_counter = rcar_can_get_berr_counter;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING |
-+				       CAN_CTRLMODE_ONE_SHOT;
-+	platform_set_drvdata(pdev, ndev);
-+	SET_NETDEV_DEV(ndev, &pdev->dev);
-+	spin_lock_init(&priv->mier_lock);
-+
-+	netif_napi_add(ndev, &priv->napi, rcar_can_rx_poll,
-+		       RCAR_CAN_NAPI_WEIGHT);
-+	err = register_candev(ndev);
-+	if (err) {
-+		dev_err(&pdev->dev, "register_candev() failed\n");
-+		goto fail_candev;
-+	}
-+
-+	devm_can_led_init(ndev);
-+
-+	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%u)\n",
-+		 priv->regs, ndev->irq);
-+
-+	return 0;
-+fail_candev:
-+	netif_napi_del(&priv->napi);
-+fail_clk:
-+	free_candev(ndev);
-+fail:
-+	return err;
-+}
-+
-+static int rcar_can_remove(struct platform_device *pdev)
-+{
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+
-+	unregister_candev(ndev);
-+	netif_napi_del(&priv->napi);
-+	free_candev(ndev);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int rcar_can_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u16 ctlr;
-+
-+	if (netif_running(ndev)) {
-+		netif_stop_queue(ndev);
-+		netif_device_detach(ndev);
-+	}
-+	ctlr = readw(&priv->regs->ctlr);
-+	ctlr |= CTLR_HALT;
-+	writew(ctlr, &priv->regs->ctlr);
-+	ctlr |= CTLR_SLPM;
-+	writew(ctlr, &priv->regs->ctlr);
-+	priv->can.state = CAN_STATE_SLEEPING;
-+
-+	clk_disable(priv->clk);
-+	return 0;
-+}
-+
-+static int rcar_can_resume(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct rcar_can_priv *priv = netdev_priv(ndev);
-+	u16 ctlr;
-+
-+	clk_enable(priv->clk);
-+
-+	ctlr = readw(&priv->regs->ctlr);
-+	ctlr &= ~CTLR_SLPM;
-+	writew(ctlr, &priv->regs->ctlr);
-+	ctlr &= ~CTLR_FORCE_RESET;
-+	writew(ctlr, &priv->regs->ctlr);
-+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+
-+	if (netif_running(ndev)) {
-+		netif_device_attach(ndev);
-+		netif_start_queue(ndev);
-+	}
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(rcar_can_pm_ops, rcar_can_suspend, rcar_can_resume);
-+
-+static struct platform_driver rcar_can_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.pm = &rcar_can_pm_ops,
-+	},
-+	.probe = rcar_can_probe,
-+	.remove = rcar_can_remove,
++static struct usb_device_id gs_usb_table[] =3D {
++	{USB_DEVICE(USB_GSUSB_1_VENDOR_ID, USB_GSUSB_1_PRODUCT_ID)},
++	{} /* Terminating entry */
 +};
 +
-+module_platform_driver(rcar_can_driver);
-+
-+MODULE_AUTHOR("Cogent Embedded, Inc.");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("CAN driver for Renesas R-Car SoC");
-+MODULE_ALIAS("platform:" DRV_NAME);
-Index: linux-can-next/include/linux/can/platform/rcar_can.h
-===================================================================
---- /dev/null
-+++ linux-can-next/include/linux/can/platform/rcar_can.h
-@@ -0,0 +1,15 @@
-+#ifndef _CAN_PLATFORM_RCAR_CAN_H_
-+#define _CAN_PLATFORM_RCAR_CAN_H_
-+
-+#include <linux/types.h>
-+
-+/* Clock Select Register settings */
-+#define CLKR_CLKEXT	3	/* Externally input clock */
-+#define CLKR_CLKP2	1	/* Peripheral clock (clkp2) */
-+#define CLKR_CLKP1	0	/* Peripheral clock (clkp1) */
-+
-+struct rcar_can_platform_data {
-+	u8 clock_select;	/* Clock source select */
++static struct usb_driver gs_usb_driver =3D {
++	.name       =3D "gs_usb",
++	.probe      =3D gs_usb_probe,
++	.disconnect =3D gs_usb_disconnect,
++	.id_table   =3D gs_usb_table
 +};
 +
-+#endif	/* !_CAN_PLATFORM_RCAR_CAN_H_ */
++static int __init gs_usb_init(void)
++{
++	return usb_register(&gs_usb_driver);
++}
++
++static void __exit gs_usb_exit(void)
++{
++	usb_deregister(&gs_usb_driver);
++}
++
++module_init(gs_usb_init);
++module_exit(gs_usb_exit);
++
++MODULE_AUTHOR("Maximilian Schneider <mws@schneidersoft.net>");
++MODULE_DESCRIPTION(
++"Socket CAN device driver for Geschwister Schneider Technologie-, "
++"Entwicklungs- und Vertriebs UG. USB2.0 to CAN interfaces.");
++MODULE_LICENSE("GPL v2");
++
+--=20
+1.7.10.4
+
+
