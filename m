@@ -1,31 +1,51 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2013-10-31
-Date: Mon, 04 Nov 2013 20:00:26 -0500 (EST)
-Message-ID: <20131104.200026.230978299925787520.davem@davemloft.net>
-References: <5272B844.9010100@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v2] can: add Renesas R-Car CAN driver
+Date: Wed, 06 Nov 2013 01:59:26 +0300
+Message-ID: <5279784E.1010205@cogentembedded.com>
+References: <201310250303.00695.sergei.shtylyov@cogentembedded.com> <526AC65B.5020203@grandegger.com> <52742A0F.7040707@cogentembedded.com> <5276A63E.3070505@grandegger.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:55812 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753495Ab3KEBA2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Nov 2013 20:00:28 -0500
-In-Reply-To: <5272B844.9010100@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <5276A63E.3070505@grandegger.com>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 31 Oct 2013 21:06:28 +0100
+Hello.
 
-> here's a pull request for net-next.
-> 
-> It includes a patch by Oliver Hartkopp et al. that adds documentation
-> for the broadcast manager to Documentation/networking/can.txt. Three
-> patches by me that clean up the netlink handling code in the CAN core.
-> And another patch that removes a not needed function from the ti_hecc
-> driver.
+On 11/03/2013 10:38 PM, Wolfgang Grandegger wrote:
 
-Pulled, thanks a lot Marc.
+>>>> Add support for the CAN controller found in Renesas R-Car SoCs.
+
+>>>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+>> [...]
+
+>>>> Index: linux-can-next/drivers/net/can/rcar_can.c
+>>>> ===================================================================
+>>>> --- /dev/null
+>>>> +++ linux-can-next/drivers/net/can/rcar_can.c
+>>>> @@ -0,0 +1,920 @@
+>> [...]
+
+>>>> +            rcar_can_writeb(priv, RCAR_CAN_ECSR, (u8)~ECSR_ADEF);
+
+>>> Please avoid casts here and below.
+
+>>     These casts help avoid compiler warnings.
+
+> Well instead of using casts the declaration of ECSR_ADEF and otheres
+> should be fixed. I think the problem is that BIT is declared as shown below:
+
+>   #define BIT(nr)                 (1UL << (nr))
+
+> Using BIT seems not appropriate here.
+
+    Well, I thought it was designed to replace explicit (1 << (nr)) #define's. 
+Hopefully those are good for you then...
+
+> Wolfgang,
+
+WBR, Sergei
