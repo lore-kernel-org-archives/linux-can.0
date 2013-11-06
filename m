@@ -1,51 +1,109 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [PATCH v2] can: add Renesas R-Car CAN driver
-Date: Wed, 06 Nov 2013 01:59:26 +0300
-Message-ID: <5279784E.1010205@cogentembedded.com>
-References: <201310250303.00695.sergei.shtylyov@cogentembedded.com> <526AC65B.5020203@grandegger.com> <52742A0F.7040707@cogentembedded.com> <5276A63E.3070505@grandegger.com>
+Date: Wed, 06 Nov 2013 09:08:20 +0100
+Message-ID: <1a1ef40a4f59b71daf33f958d8cc5b2e@grandegger.com>
+References: <201310250303.00695.sergei.shtylyov@cogentembedded.com>
+ <526AC65B.5020203@grandegger.com> <52742A0F.7040707@cogentembedded.com>
+ <5276A63E.3070505@grandegger.com> <5279784E.1010205@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+ charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <5276A63E.3070505@grandegger.com>
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from pluto.manitu.net ([217.11.48.9]:43179 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751209Ab3KFIIW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 6 Nov 2013 03:08:22 -0500
+In-Reply-To: <5279784E.1010205@cogentembedded.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
 
-Hello.
+On Wed, 06 Nov 2013 01:59:26 +0300, Sergei Shtylyov
 
-On 11/03/2013 10:38 PM, Wolfgang Grandegger wrote:
+<sergei.shtylyov@cogentembedded.com> wrote:
 
->>>> Add support for the CAN controller found in Renesas R-Car SoCs.
+> Hello.
 
->>>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> 
 
->> [...]
+> On 11/03/2013 10:38 PM, Wolfgang Grandegger wrote:
 
->>>> Index: linux-can-next/drivers/net/can/rcar_can.c
->>>> ===================================================================
->>>> --- /dev/null
->>>> +++ linux-can-next/drivers/net/can/rcar_can.c
->>>> @@ -0,0 +1,920 @@
->> [...]
+> 
 
->>>> +            rcar_can_writeb(priv, RCAR_CAN_ECSR, (u8)~ECSR_ADEF);
+>>>>> Add support for the CAN controller found in Renesas R-Car SoCs.
 
->>> Please avoid casts here and below.
+> 
 
->>     These casts help avoid compiler warnings.
+>>>>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-> Well instead of using casts the declaration of ECSR_ADEF and otheres
-> should be fixed. I think the problem is that BIT is declared as shown below:
+> 
 
->   #define BIT(nr)                 (1UL << (nr))
+>>> [...]
 
-> Using BIT seems not appropriate here.
+> 
 
-    Well, I thought it was designed to replace explicit (1 << (nr)) #define's. 
-Hopefully those are good for you then...
+>>>>> Index: linux-can-next/drivers/net/can/rcar_can.c
 
-> Wolfgang,
+>>>>> ===================================================================
 
-WBR, Sergei
+>>>>> --- /dev/null
+
+>>>>> +++ linux-can-next/drivers/net/can/rcar_can.c
+
+>>>>> @@ -0,0 +1,920 @@
+
+>>> [...]
+
+> 
+
+>>>>> +            rcar_can_writeb(priv, RCAR_CAN_ECSR, (u8)~ECSR_ADEF);
+
+> 
+
+>>>> Please avoid casts here and below.
+
+> 
+
+>>>     These casts help avoid compiler warnings.
+
+> 
+
+>> Well instead of using casts the declaration of ECSR_ADEF and otheres
+
+>> should be fixed. I think the problem is that BIT is declared as shown
+
+>> below:
+
+> 
+
+>>   #define BIT(nr)                 (1UL << (nr))
+
+> 
+
+>> Using BIT seems not appropriate here.
+
+> 
+
+>     Well, I thought it was designed to replace explicit (1 << (nr))
+
+>     #define's.
+
+
+
+Me too.
+
+
+
+> Hopefully those are good for you then...
+
+
+
+Yes, of course.
+
+
+
+Wolfgang.
+
+
