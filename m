@@ -1,204 +1,176 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v3] can: add Renesas R-Car CAN driver
-Date: Fri, 08 Nov 2013 02:57:18 +0300
-Message-ID: <527C28DE.7070402@cogentembedded.com>
-References: <201311020240.13354.sergei.shtylyov@cogentembedded.com> <5276ADF6.9050309@pengutronix.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: sja1000 interrupt problem
+Date: Thu, 7 Nov 2013 15:43:38 -0800
+Message-ID: <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
+	<3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
+	<99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
+	<CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
+	<5254608B.4080208@grandegger.com>
+	<CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
+	<be0d6725fff5298d3fb8417e4800348b@grandegger.com>
+	<CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
+	<84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <5276ADF6.9050309@pengutronix.de>
-Sender: linux-sh-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/mixed; boundary=089e013c6e4abb9dac04ea9ed5f1
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ie0-f178.google.com ([209.85.223.178]:39294 "EHLO
+	mail-ie0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753085Ab3KGXnj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Nov 2013 18:43:39 -0500
+Received: by mail-ie0-f178.google.com with SMTP id to1so309537ieb.37
+        for <linux-can@vger.kernel.org>; Thu, 07 Nov 2013 15:43:38 -0800 (PST)
+In-Reply-To: <84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Hello.
+--089e013c6e4abb9dac04ea9ed5f1
+Content-Type: text/plain; charset=ISO-8859-1
 
-On 11/03/2013 11:11 PM, Marc Kleine-Budde wrote:
+>>
+>> The dump is attached.
+>
+> I do not see any sja1000_rx() calls. Either they never happen or more
+> likely the trace is not long enough. Could you try with a larger buffer
+> using "echo 20000 > buffer_size_kb"? I also do not see some pr_info()
+> related functions at the end of the trace. Are you sure is has stopped
+> (cat tracing_on or message in dmesg)?
+>
+> Also please do an "echo 0 > trace" to clear the trace content.
+>
+> Wolfgang.
 
->> Add support for the CAN controller found in Renesas R-Car SoCs.
+Hi Wolfgang,
 
->> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+I'm pretty certain that the trace is long enough.  I tried again with
+echo -e -n 100000 > buffer_size_kb and I still don't see any calls to
+sja1000_rx.
 
-> See comment inline.
+I added some pr_info prints at the front of sja1000_rx and
+sja1000_interrupt.  For each packet sent and then received, I see the
+following.  The following lines are from me sending 4 packets.
 
-[...]
-
->> Index: linux-can-next/drivers/net/can/rcar_can.c
->> ===================================================================
->> --- /dev/null
->> +++ linux-can-next/drivers/net/can/rcar_can.c
->> @@ -0,0 +1,893 @@
->> +/*
->> + * Renesas R-Car CAN device driver
->> + *
->> + * Copyright (C) 2013 Cogent Embedded, Inc. <source@cogentembedded.com>
->> + * Copyright (C) 2013 Renesas Solutions Corp.
->> + *
->> + * This program is free software; you can redistribute  it and/or modify it
->> + * under  the terms of  the GNU General  Public License as published by the
->> + * Free Software Foundation;  either version 2 of the  License, or (at your
->> + * option) any later version.
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/kernel.h>
->> +#include <linux/types.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/errno.h>
->> +#include <linux/netdevice.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/can/led.h>
->> +#include <linux/can/dev.h>
->> +#include <linux/clk.h>
->> +#include <linux/can/platform/rcar_can.h>
->> +
->> +#define DRV_NAME	"rcar_can"
->> +
->> +/* Mailbox configuration:
->> + * mailbox 0 - not used
->> + * mailbox 1-31 - Rx
->> + * mailbox 32-63 - Tx
->> + * no FIFO mailboxes
->> + */
->> +#define N_MBX		64
->> +#define FIRST_TX_MB	32
->> +#define N_TX_MB		(N_MBX - FIRST_TX_MB)
->> +#define RX_MBX_MASK	0xFFFFFFFE
-
-> Please use a common prefix for all defines.
-
-    OK, done now. Could you however explain why the file-local #define's 
-should be prefixed? It's not quite obvious to me...
-
-[...]
->> +static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
->> +				       struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	struct can_frame *cf = (struct can_frame *)skb->data;
->> +	u32 data, mier1, mbxno, i;
->> +	unsigned long flags;
->> +	u8 mctl = 0;
->> +
->> +	if (can_dropped_invalid_skb(ndev, skb))
->> +		return NETDEV_TX_OK;
->> +
->> +	spin_lock_irqsave(&priv->mier_lock, flags);
->> +	mier1 = readl(&priv->regs->mier1);
->> +	if (mier1) {
->> +		i = __builtin_clz(mier1);
->> +		mbxno = i ? N_MBX - i : FIRST_TX_MB;
->> +	} else {
->> +		mbxno = FIRST_TX_MB;
->> +	}
-
-> Can you explain how the hardware arbitration works, and you do you
-> guarantee the CAN frames are send by the hardware in the same order you
-> put them into the hardware.
-
-    Tx mailbox with the smallest mailbox number has the highest priority. The 
-other possible Tx mailbox selection rule (not used by the driver now) is ID 
-priority transmit mode (as defined in the ISO 11898-1 specs). The algorithm 
-used guarantees the mailboxes are filled sequentially. I've used 'canfdtest' 
-as suggested by Wolfgang Grandegger to verify, see the log below:
-
-root@am335x-evm:~# ./canfdtest -v -g can0
-interface = can0, family = 29, type = 3, proto = 1
-...............................................................................C
-Test messages sent and received: 483203
-Exiting...
-root@am335x-evm:~#
-
-[...]
->> +static int rcar_can_rx_poll(struct napi_struct *napi, int quota)
->> +{
->> +	struct rcar_can_priv *priv = container_of(napi,
->> +						  struct rcar_can_priv, napi);
->> +	int num_pkts = 0;
->> +
->> +	/* Find mailbox */
->> +	while (num_pkts < quota) {
->> +		u8 mctl, mbx;
->> +
->> +		mbx = readb(&priv->regs->mssr);
-
-> How does the RX work? Is it a hardware FIFO?
-
-    In short, the MSSR register provides the smallest Rx mailbox number that 
-is looked up in the Rx search mode. We read MSSR until no search results can 
-be obtained, so it is some sort of FIFO.
-    And there is separate FIFO operation mode: some mailboxes can be 
-configured as FIFO and serviced by special registers but this operation mode 
-is not supported by the driver.
-
-[...]
->> +static int rcar_can_probe(struct platform_device *pdev)
->> +{
->> +	struct rcar_can_platform_data *pdata;
->> +	struct rcar_can_priv *priv;
->> +	struct net_device *ndev;
->> +	struct resource *mem;
->> +	void __iomem *addr;
->> +	int err = -ENODEV;
->> +	int irq;
->> +
->> +	pdata = dev_get_platdata(&pdev->dev);
->> +	if (!pdata) {
->> +		dev_err(&pdev->dev, "No platform data provided!\n");
->> +		goto fail;
->> +	}
->> +
->> +	irq = platform_get_irq(pdev, 0);
->> +	if (!irq) {
->> +		dev_err(&pdev->dev, "No IRQ resource\n");
->> +		goto fail;
->> +	}
->> +
->> +	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	addr = devm_ioremap_resource(&pdev->dev, mem);
->> +	if (IS_ERR(addr)) {
->> +		err = PTR_ERR(addr);
->> +		goto fail;
->> +	}
->> +
->> +	ndev = alloc_candev(sizeof(struct rcar_can_priv), N_MBX - FIRST_TX_MB);
->> +	if (!ndev) {
->> +		dev_err(&pdev->dev, "alloc_candev failed\n");
->> +		err = -ENOMEM;
->> +		goto fail;
->> +	}
->> +
->> +	priv = netdev_priv(ndev);
->> +
->> +	priv->clk = devm_clk_get(&pdev->dev, NULL);
->> +	if (IS_ERR(priv->clk)) {
->> +		err = PTR_ERR(priv->clk);
->> +		dev_err(&pdev->dev, "cannot get clock: %d\n", err);
->> +		goto fail_clk;
->> +	}
->> +
->> +	ndev->netdev_ops = &rcar_can_netdev_ops;
->> +	ndev->irq = irq;
->> +	ndev->flags |= IFF_ECHO;
->> +	priv->ndev = ndev;
->> +	priv->regs = addr;
->> +	priv->clock_select = pdata->clock_select;
->> +	priv->can.clock.freq = clk_get_rate(priv->clk);
->> +	priv->can.bittiming_const = &rcar_can_bittiming_const;
->> +	priv->can.do_set_bittiming = rcar_can_set_bittiming;
-
-> Please call this function directly during the open() function.
-
-    OK, done, and the method installation was removed. However, I'm not sure 
-why you requested this as many drivers are still using the method.
-
-[...]
-
-> regards,
-> Marc
-
-WBR, Sergei
+Nov  7 15:35:52 vpc5 kernel: [   75.136107] Got an sja1000 interrupt.
+Nov  7 15:35:52 vpc5 kernel: [   75.136123] Unhandled IRQ 18... stop tracing...
+Nov  7 15:35:52 vpc5 kernel: [   75.136130] Got an sja1000 interrupt.
+Nov  7 15:35:52 vpc5 kernel: [   75.136139] Received packet.
+Nov  7 15:35:52 vpc5 kernel: [   75.136146] sja1000_rx
+Nov  7 15:35:52 vpc5 kernel: [   75.136155] TX complete.
+Nov  7 15:35:52 vpc5 kernel: [   75.136174] Returning IRQ_HANDLED
+Nov  7 15:35:52 vpc5 kernel: [   75.136207] Returning IRQ_HANDLED
 
 
+Nov  7 15:35:54 vpc5 kernel: [   77.215328] Got an sja1000 interrupt.
+Nov  7 15:35:54 vpc5 kernel: [   77.215345] Got an sja1000 interrupt.
+Nov  7 15:35:54 vpc5 kernel: [   77.215348] Unhandled IRQ 18... stop tracing...
+Nov  7 15:35:54 vpc5 kernel: [   77.215355] Received packet.
+Nov  7 15:35:54 vpc5 kernel: [   77.215360] sja1000_rx
+Nov  7 15:35:54 vpc5 kernel: [   77.215394] TX complete.
+Nov  7 15:35:54 vpc5 kernel: [   77.215410] Returning IRQ_HANDLED
+Nov  7 15:35:54 vpc5 kernel: [   77.215418] Returning IRQ_HANDLED
+
+
+Nov  7 15:35:57 vpc5 kernel: [   80.614289] Unhandled IRQ 18... stop tracing...
+Nov  7 15:35:57 vpc5 kernel: [   80.614297] Got an sja1000 interrupt.
+Nov  7 15:35:57 vpc5 kernel: [   80.614308] Got an sja1000 interrupt.
+Nov  7 15:35:57 vpc5 kernel: [   80.614323] Received packet.
+Nov  7 15:35:57 vpc5 kernel: [   80.614327] TX complete.
+Nov  7 15:35:57 vpc5 kernel: [   80.614335] sja1000_rx
+Nov  7 15:35:57 vpc5 kernel: [   80.614343] Returning IRQ_HANDLED
+Nov  7 15:35:57 vpc5 kernel: [   80.614394] Returning IRQ_HANDLED
+
+
+Nov  7 15:36:02 vpc5 kernel: [   84.991239] Got an sja1000 interrupt.
+Nov  7 15:36:02 vpc5 kernel: [   84.991255] Got an sja1000 interrupt.
+Nov  7 15:36:02 vpc5 kernel: [   84.991258] Unhandled IRQ 18... stop tracing...
+Nov  7 15:36:02 vpc5 kernel: [   84.991266] Received packet.
+Nov  7 15:36:02 vpc5 kernel: [   84.991269] sja1000_rx
+Nov  7 15:36:02 vpc5 kernel: [   84.991303] TX complete.
+Nov  7 15:36:02 vpc5 kernel: [   84.991320] Returning IRQ_HANDLED
+Nov  7 15:36:02 vpc5 kernel: [   84.991326] Returning IRQ_HANDLED
+
+I didn't rerun any traces, since my analysis of the syslog is that it
+won't give you the information you are looking for without moving the
+tracing_off call somewhere else.
+
+Austin
+
+--089e013c6e4abb9dac04ea9ed5f1
+Content-Type: application/octet-stream; name="sja1000.c.diff"
+Content-Disposition: attachment; filename="sja1000.c.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hnqn3xut0
+
+KioqIC90bXAvc2phMTAwMC5jX29yaWcJMjAxMy0xMS0wNyAxNTozNzo1Ny4yMzgzMTE0NTYgLTA4
+MDAKLS0tIHNqYTEwMDAuYwkyMDEzLTExLTA3IDE1OjI4OjI5LjU4NjMzNTUwOSAtMDgwMAoqKioq
+KioqKioqKioqKioKKioqIDMzMCwzMzUgKioqKgotLS0gMzMwLDMzNiAtLS0tCiAgCXVpbnQ4X3Qg
+ZHJlZzsKICAJY2FuaWRfdCBpZDsKICAJaW50IGk7CisgICBwcl9pbmZvKCJzamExMDAwX3J4XG4i
+KTsKICAKICAJLyogY3JlYXRlIHplcm8nZWQgQ0FOIGZyYW1lIGJ1ZmZlciAqLwogIAlza2IgPSBh
+bGxvY19jYW5fc2tiKGRldiwgJmNmKTsKKioqKioqKioqKioqKioqCioqKiA0OTMsNTAyICoqKioK
+ICAJc3RydWN0IG5ldF9kZXZpY2Vfc3RhdHMgKnN0YXRzID0gJmRldi0+c3RhdHM7CiAgCXVpbnQ4
+X3QgaXNyYywgc3RhdHVzOwogIAlpbnQgbiA9IDA7CiAgCiAgCS8qIFNoYXJlZCBpbnRlcnJ1cHRz
+IGFuZCBJUlEgb2ZmPyAqLwohIAlpZiAocHJpdi0+cmVhZF9yZWcocHJpdiwgU0pBMTAwMF9JRVIp
+ID09IElSUV9PRkYpCiAgCQlyZXR1cm4gSVJRX05PTkU7CiAgCiAgCWlmIChwcml2LT5wcmVfaXJx
+KQogIAkJcHJpdi0+cHJlX2lycShwcml2KTsKLS0tIDQ5NCw1MDYgLS0tLQogIAlzdHJ1Y3QgbmV0
+X2RldmljZV9zdGF0cyAqc3RhdHMgPSAmZGV2LT5zdGF0czsKICAJdWludDhfdCBpc3JjLCBzdGF0
+dXM7CiAgCWludCBuID0gMDsKKyAgIHByX2luZm8oIkdvdCBhbiBzamExMDAwIGludGVycnVwdC5c
+biIpOwogIAogIAkvKiBTaGFyZWQgaW50ZXJydXB0cyBhbmQgSVJRIG9mZj8gKi8KISAJaWYgKHBy
+aXYtPnJlYWRfcmVnKHByaXYsIFNKQTEwMDBfSUVSKSA9PSBJUlFfT0ZGKSB7CiEgICAgIHByX2lu
+Zm8oIklSUSBub25lIGF0IHN0YXJ0XG4iKTsKICAJCXJldHVybiBJUlFfTk9ORTsKKyAgIH0KICAK
+ICAJaWYgKHByaXYtPnByZV9pcnEpCiAgCQlwcml2LT5wcmVfaXJxKHByaXYpOwoqKioqKioqKioq
+KioqKioKKioqIDUwNiw1MTYgKioqKgogIAkJbisrOwogIAkJc3RhdHVzID0gcHJpdi0+cmVhZF9y
+ZWcocHJpdiwgU0pBMTAwMF9TUik7CiAgCQkvKiBjaGVjayBmb3IgYWJzZW50IGNvbnRyb2xsZXIg
+ZHVlIHRvIGh3IHVucGx1ZyAqLwohIAkJaWYgKHN0YXR1cyA9PSAweEZGICYmIHNqYTEwMDBfaXNf
+YWJzZW50KHByaXYpKQogIAkJCXJldHVybiBJUlFfTk9ORTsKICAKISAJCWlmIChpc3JjICYgSVJR
+X1dVSSkKICAJCQluZXRkZXZfd2FybihkZXYsICJ3YWtldXAgaW50ZXJydXB0XG4iKTsKICAKICAJ
+CWlmIChpc3JjICYgSVJRX1RJKSB7CiAgCQkJLyogdHJhbnNtaXNzaW9uIGJ1ZmZlciByZWxlYXNl
+ZCAqLwotLS0gNTEwLDUyNCAtLS0tCiAgCQluKys7CiAgCQlzdGF0dXMgPSBwcml2LT5yZWFkX3Jl
+Zyhwcml2LCBTSkExMDAwX1NSKTsKICAJCS8qIGNoZWNrIGZvciBhYnNlbnQgY29udHJvbGxlciBk
+dWUgdG8gaHcgdW5wbHVnICovCiEgCQlpZiAoc3RhdHVzID09IDB4RkYgJiYgc2phMTAwMF9pc19h
+YnNlbnQocHJpdikpIHsKISAgICAgICBwcl9pbmZvKCJTSkExMDAwIElSUSBOb25lXG4iKTsKICAJ
+CQlyZXR1cm4gSVJRX05PTkU7CisgICAgIH0KICAKISAJCWlmIChpc3JjICYgSVJRX1dVSSkgewoh
+ICAgICAgIHByX2luZm8oIlNKQTEwMDAgV2FrZXVwIGludGVycnVwdC5cbiIpOwogIAkJCW5ldGRl
+dl93YXJuKGRldiwgIndha2V1cCBpbnRlcnJ1cHRcbiIpOworICAgICB9CiAgCiAgCQlpZiAoaXNy
+YyAmIElSUV9USSkgewogIAkJCS8qIHRyYW5zbWlzc2lvbiBidWZmZXIgcmVsZWFzZWQgKi8KKioq
+KioqKioqKioqKioqCioqKiA1MTgsNTQ1ICoqKioKICAJCQkgICAgIShzdGF0dXMgJiBTUl9UQ1Mp
+KSB7CiAgCQkJCXN0YXRzLT50eF9lcnJvcnMrKzsKICAJCQkJY2FuX2ZyZWVfZWNob19za2IoZGV2
+LCAwKTsKICAJCQl9IGVsc2UgewogIAkJCQkvKiB0cmFuc21pc3Npb24gY29tcGxldGUgKi8KICAJ
+CQkJc3RhdHMtPnR4X2J5dGVzICs9CiAgCQkJCQlwcml2LT5yZWFkX3JlZyhwcml2LCBTSkExMDAw
+X0ZJKSAmIDB4ZjsKICAJCQkJc3RhdHMtPnR4X3BhY2tldHMrKzsKICAJCQkJY2FuX2dldF9lY2hv
+X3NrYihkZXYsIDApOwogIAkJCX0KICAJCQluZXRpZl93YWtlX3F1ZXVlKGRldik7CiAgCQkJY2Fu
+X2xlZF9ldmVudChkZXYsIENBTl9MRURfRVZFTlRfVFgpOwogIAkJfQogIAkJaWYgKGlzcmMgJiBJ
+UlFfUkkpIHsKICAJCQkvKiByZWNlaXZlIGludGVycnVwdCAqLwogIAkJCXdoaWxlIChzdGF0dXMg
+JiBTUl9SQlMpIHsKICAJCQkJc2phMTAwMF9yeChkZXYpOwogIAkJCQlzdGF0dXMgPSBwcml2LT5y
+ZWFkX3JlZyhwcml2LCBTSkExMDAwX1NSKTsKICAJCQkJLyogY2hlY2sgZm9yIGFic2VudCBjb250
+cm9sbGVyICovCiEgCQkJCWlmIChzdGF0dXMgPT0gMHhGRiAmJiBzamExMDAwX2lzX2Fic2VudChw
+cml2KSkKICAJCQkJCXJldHVybiBJUlFfTk9ORTsKICAJCQl9CiAgCQl9CiAgCQlpZiAoaXNyYyAm
+IChJUlFfRE9JIHwgSVJRX0VJIHwgSVJRX0JFSSB8IElSUV9FUEkgfCBJUlFfQUxJKSkgewogIAkJ
+CS8qIGVycm9yIGludGVycnVwdCAqLwogIAkJCWlmIChzamExMDAwX2VycihkZXYsIGlzcmMsIHN0
+YXR1cykpCiAgCQkJCWJyZWFrOwogIAkJfQotLS0gNTI2LDU1OSAtLS0tCiAgCQkJICAgICEoc3Rh
+dHVzICYgU1JfVENTKSkgewogIAkJCQlzdGF0cy0+dHhfZXJyb3JzKys7CiAgCQkJCWNhbl9mcmVl
+X2VjaG9fc2tiKGRldiwgMCk7CisgICAgICAgICBwcl9pbmZvKCJUWCBidWZmZXIgcmVsZWFzZWQu
+XG4iKTsKICAJCQl9IGVsc2UgewogIAkJCQkvKiB0cmFuc21pc3Npb24gY29tcGxldGUgKi8KICAJ
+CQkJc3RhdHMtPnR4X2J5dGVzICs9CiAgCQkJCQlwcml2LT5yZWFkX3JlZyhwcml2LCBTSkExMDAw
+X0ZJKSAmIDB4ZjsKICAJCQkJc3RhdHMtPnR4X3BhY2tldHMrKzsKICAJCQkJY2FuX2dldF9lY2hv
+X3NrYihkZXYsIDApOworICAgICAgICAgcHJfaW5mbygiVFggY29tcGxldGUuXG4iKTsKICAJCQl9
+CiAgCQkJbmV0aWZfd2FrZV9xdWV1ZShkZXYpOwogIAkJCWNhbl9sZWRfZXZlbnQoZGV2LCBDQU5f
+TEVEX0VWRU5UX1RYKTsKICAJCX0KICAJCWlmIChpc3JjICYgSVJRX1JJKSB7CiAgCQkJLyogcmVj
+ZWl2ZSBpbnRlcnJ1cHQgKi8KKyAgICAgICBwcl9pbmZvKCJSZWNlaXZlZCBwYWNrZXQuXG4iKTsK
+ICAJCQl3aGlsZSAoc3RhdHVzICYgU1JfUkJTKSB7CiAgCQkJCXNqYTEwMDBfcngoZGV2KTsKICAJ
+CQkJc3RhdHVzID0gcHJpdi0+cmVhZF9yZWcocHJpdiwgU0pBMTAwMF9TUik7CiAgCQkJCS8qIGNo
+ZWNrIGZvciBhYnNlbnQgY29udHJvbGxlciAqLwohIAkJCQlpZiAoc3RhdHVzID09IDB4RkYgJiYg
+c2phMTAwMF9pc19hYnNlbnQocHJpdikpIHsKISAgICAgICAgICAgcHJfaW5mbygiSVJRIE5vbmUg
+cnhcbiIpOwogIAkJCQkJcmV0dXJuIElSUV9OT05FOworICAgICAgICAgfQogIAkJCX0KICAJCX0K
+ICAJCWlmIChpc3JjICYgKElSUV9ET0kgfCBJUlFfRUkgfCBJUlFfQkVJIHwgSVJRX0VQSSB8IElS
+UV9BTEkpKSB7CiAgCQkJLyogZXJyb3IgaW50ZXJydXB0ICovCisgICAgICAgcHJfaW5mbygiRXJy
+b3IgaW50ZXJydXB0LlxuIik7CiAgCQkJaWYgKHNqYTEwMDBfZXJyKGRldiwgaXNyYywgc3RhdHVz
+KSkKICAJCQkJYnJlYWs7CiAgCQl9CioqKioqKioqKioqKioqKgoqKiogNTUxLDU1NiAqKioqCi0t
+LSA1NjUsNTc1IC0tLS0KICAJaWYgKG4gPj0gU0pBMTAwMF9NQVhfSVJRKQogIAkJbmV0ZGV2X2Ri
+ZyhkZXYsICIlZCBtZXNzYWdlcyBoYW5kbGVkIGluIElTUiIsIG4pOwogIAorICAgaWYgKG4pIHsK
+KyAgICAgcHJfaW5mbygiUmV0dXJuaW5nIElSUV9IQU5ETEVEXG4iKTsKKyAgIH0gZWxzZSB7Cisg
+ICAgIHByX2luZm8oIlJldHVybmluZyBJUlFfTk9ORVxuIik7CisgICB9CiAgCXJldHVybiAobikg
+PyBJUlFfSEFORExFRCA6IElSUV9OT05FOwogIH0KICBFWFBPUlRfU1lNQk9MX0dQTChzamExMDAw
+X2ludGVycnVwdCk7Cg==
+--089e013c6e4abb9dac04ea9ed5f1--
