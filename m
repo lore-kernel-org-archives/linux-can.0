@@ -1,162 +1,76 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] can: add Renesas R-Car CAN driver
-Date: Sat, 09 Nov 2013 15:47:04 +0100
-Message-ID: <527E4AE8.6020905@grandegger.com>
-References: <201309280211.39068.sergei.shtylyov@cogentembedded.com> <524BB883.2040400@grandegger.com> <526061BE.7060204@cogentembedded.com> <52657CA1.2040708@grandegger.com> <527D89A3.1070403@cogentembedded.com> <527E142D.6070805@grandegger.com>
+Subject: Re: sja1000 interrupt problem
+Date: Sat, 09 Nov 2013 20:42:18 +0100
+Message-ID: <527E901A.4070907@grandegger.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>	<3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>	<99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>	<CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>	<5254608B.4080208@grandegger.com>	<CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>	<be0d6725fff5298d3fb8417e4800348b@grandegger.com>	<CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>	<84ba410d04a85a783d1c1994f98d1f31@grandegger.com> <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <527E142D.6070805@grandegger.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:43435 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756302Ab3KITmX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 9 Nov 2013 14:42:23 -0500
+In-Reply-To: <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Austin Schuh <austin@peloton-tech.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-On 11/09/2013 11:53 AM, Wolfgang Grandegger wrote:
-> Hi Sergei,
-> 
-> On 11/09/2013 02:02 AM, Sergei Shtylyov wrote:
->> Hello.
->>
->> On 10/21/2013 11:12 PM, Wolfgang Grandegger wrote:
->>
->>>>     Sorry for the belated reply -- was on vacations.
->>
->>    And again sorry, couldn't get to this due to other things.
->>
->>>>> thanks for your contribution. The patch looks already quite good.
->>>>> Before
->>>>> I find time for a detailed review could you please check error handling
->>>>> and bus-off recovery by reporting the output of "$ candump -td -e
->>>>> any,0:0,#FFFFFFFF" while sending messages to the device ...
->>
->> [...]
->>
->>>> root@10.0.0.101:/opt/can-utils# ip -details link show can0
->>>> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
->>>> qlen 10 link/can
->>>> can state ERROR-PASSIVE (berr-counter tx 128 rx 0) restart-ms 0
->>>> bitrate 297619 sample-point 0.714
->>
->>> Strange, what bitrate did you configure?
->>
->>    300000.
-> 
-> Ah, OK. It's just a very unusual CAN bitrate. Common are 125k, 250k,
-> 500kB, 800kB and 1 MBit/s. Is it your choice?
-> 
->>>> tq 480 prop-seg 2 phase-seg1 2 phase-seg2 2 sjw 1
->>>> rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
->>>> clock 49999999
->>
->>> Could you please try if the algorithm works better with 50000000.
->>
->>    It doesn't. Look at the logs below:
-> 
-> OK, I was mainly confused by the bitrate. Anyway, the bitrate algorithim
-> sometimes does not like exotic clock frequencies or bitrates. Then
-> manual setting of the bit-timing parameters might be necessary. But that
-> seem not the case here.
-> 
->>>>> 2. ... with short-circuited CAN high and low and doing some time later
->>>>>          a manual recovery with "ip link set can0 type can restart"
->>
->>>>     Now we have auto recovery only. Manual recovery was tested with the
->>>> first driver version and worked.
->>
->>> What do you mean with "auto recovery"? Auto recovery by the hardware or
->>> via "restart-ms <ms>"? How do you choose between "manual" and "auto"
->>> recovery?
->>
->>    This exact test was done with hardware auto-recovery only. No
->> "restart-ms" was programmed.
-> 
-> OK, you already explained that in another mail and your driver does not
-> use/support hardware auto-recovery any longer.
-> 
->>
->>>> Terminal 1:
->>
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils#
->>
->>>> Terminal 2:
->>
->>>> root@10.0.0.104:/opt/can-utils# ./candump -td -e any,0:0,#FFFFFFFF
->>>> (000.000000) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> protocol-violation{{tx-dominant-bit-error}{}}
->>>> bus-error
->>>> (000.021147) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> bus-off
->>>> restarted-after-bus-off
->>
->>> Why does it get "restarted" directly after the bus-off?
->>
->>    Because we have hardware auto-recovery enabled.
->>
->>>> (011.738522) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>
->>> What controller problem? data[1] is not set for some reasom.
->>
->>    Not comments. Looking into it.
->>
->>>> protocol-violation{{tx-dominant-bit-error}{}}
->>>> bus-error
->>>> (000.021163) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> bus-off
->>>> restarted-after-bus-off
->>>> (001.666625) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> protocol-violation{{tx-dominant-bit-error}{}}
->>>> bus-error
->>>> (000.021157) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> bus-off
->>>> restarted-after-bus-off
->>
->>>> dmesg:
->>>> rcar_can rcar_can.0 can0: Error warning interrupt
->>>> rcar_can rcar_can.0 can0: Error passive interrupt
->>>> rcar_can rcar_can.0 can0: Bus error interrupt:
->>>> rcar_can rcar_can.0 can0: Bit Error (dominant)
->>>> rcar_can rcar_can.0 can0: Error warning interrupt
->>>> rcar_can rcar_can.0 can0: Error passive interrupt
->>
->>> Why are they reported again. You are already in error passive.
->>
->>    Don't know. :-/
-> 
-> The hardware might not be that smart. Then the software should care.
-> 
->>>>> I also wonder if the messages are always sent in order. You could use
->>>>> the program "canfdtest" [1] from the can-utils for validation.
->>
->>>>     This program is PITA. With the driver workaroung it works:
->>
->>> What workaround?
->>
->>    Doesn't matter already, got rid of it.
-> 
-> OK. BTW: I suggest to run "canfdtest" at *1* MB/s with additional system
-> and I/O load and for much longer than a minute to increase the
-> probability of an out-of-order transmissions to occur.
+Hi Austin,
 
-That's probably a wrong assumption because "canfdtest" does do a 1ms
-sleep after each generated messages :(. Therefore I would try at 125
-KBit/s. Sorry for not providing a reliable tool for out-of-order
-validation. There is also the "cansequence" program from the Pengutronix
-canutils [1], which might be better suited, also to reveal races.
+On 11/08/2013 12:43 AM, Austin Schuh wrote:
+>>>
+>>> The dump is attached.
+>>
+>> I do not see any sja1000_rx() calls. Either they never happen or more
+>> likely the trace is not long enough. Could you try with a larger buffer
+>> using "echo 20000 > buffer_size_kb"? I also do not see some pr_info()
+>> related functions at the end of the trace. Are you sure is has stopped
+>> (cat tracing_on or message in dmesg)?
+>>
+>> Also please do an "echo 0 > trace" to clear the trace content.
+>>
+>> Wolfgang.
+> 
+> Hi Wolfgang,
+> 
+> I'm pretty certain that the trace is long enough.  I tried again with
+> echo -e -n 100000 > buffer_size_kb and I still don't see any calls to
+> sja1000_rx.
+> 
+> I added some pr_info prints at the front of sja1000_rx and
+> sja1000_interrupt.  For each packet sent and then received, I see the
+> following.  The following lines are from me sending 4 packets.
 
-Wolfgang.
+sja1000_interrupt() is normally called for each SJA1000 device (shared
+interrupt).
 
-[1] http://git.pengutronix.de/?p=tools/canutils.git;a=summary
-    http://www.pengutronix.de/software/socket-can/download
+> Nov  7 15:35:52 vpc5 kernel: [   75.136107] Got an sja1000 interrupt.
+> Nov  7 15:35:52 vpc5 kernel: [   75.136123] Unhandled IRQ 18... stop tracing...
+
+I'm confused. Why is the IRQ "unhandled" without calling
+sja1000_interrupt() twice. Ah, this is due to threaded interrupt
+handling, where the spurious interrupt check is called for each
+handler/device. Therefore the trigger is simply bad.
+
+> Nov  7 15:35:52 vpc5 kernel: [   75.136130] Got an sja1000 interrupt.
+> Nov  7 15:35:52 vpc5 kernel: [   75.136139] Received packet.
+> Nov  7 15:35:52 vpc5 kernel: [   75.136146] sja1000_rx
+> Nov  7 15:35:52 vpc5 kernel: [   75.136155] TX complete.
+> Nov  7 15:35:52 vpc5 kernel: [   75.136174] Returning IRQ_HANDLED
+> Nov  7 15:35:52 vpc5 kernel: [   75.136207] Returning IRQ_HANDLED
+...
+
+This is the working case. How does it look like when the device stops
+receiving messages. You should also label the device.
+
+> I didn't rerun any traces, since my analysis of the syslog is that it
+> won't give you the information you are looking for without moving the
+> tracing_off call somewhere else.
+
+Well, we know that messages are received properly for some time. We need
+to trigger the malfunctioning. I understood that it happens just once a
+day that the interrupts get stuck, right?
 
 Wolfgang.
