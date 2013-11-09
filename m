@@ -1,192 +1,199 @@
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v3] can: add Renesas R-Car CAN driver
-Date: Sat, 09 Nov 2013 01:54:00 +0300
-Message-ID: <527D6B88.3010409@cogentembedded.com>
-References: <201311020240.13354.sergei.shtylyov@cogentembedded.com> <5276ADF6.9050309@pengutronix.de> <527C28DE.7070402@cogentembedded.com> <527CAC38.6040800@pengutronix.de>
+Subject: Re: [PATCH] can: add Renesas R-Car CAN driver
+Date: Sat, 09 Nov 2013 04:02:27 +0300
+Message-ID: <527D89A3.1070403@cogentembedded.com>
+References: <201309280211.39068.sergei.shtylyov@cogentembedded.com> <524BB883.2040400@grandegger.com> <526061BE.7060204@cogentembedded.com> <52657CA1.2040708@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <527CAC38.6040800@pengutronix.de>
+In-Reply-To: <52657CA1.2040708@grandegger.com>
 Sender: linux-sh-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
+To: Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
 List-Id: linux-can.vger.kernel.org
 
 Hello.
 
-On 11/08/2013 12:17 PM, Marc Kleine-Budde wrote:
+On 10/21/2013 11:12 PM, Wolfgang Grandegger wrote:
 
->>>> Index: linux-can-next/drivers/net/can/rcar_can.c
->>>> ===================================================================
->>>> --- /dev/null
->>>> +++ linux-can-next/drivers/net/can/rcar_can.c
->>>> @@ -0,0 +1,893 @@
+>>     Sorry for the belated reply -- was on vacations.
+
+    And again sorry, couldn't get to this due to other things.
+
+>>> thanks for your contribution. The patch looks already quite good. Before
+>>> I find time for a detailed review could you please check error handling
+>>> and bus-off recovery by reporting the output of "$ candump -td -e
+>>> any,0:0,#FFFFFFFF" while sending messages to the device ...
+
 [...]
->>>> +#define DRV_NAME    "rcar_can"
->>>> +
->>>> +/* Mailbox configuration:
->>>> + * mailbox 0 - not used
->>>> + * mailbox 1-31 - Rx
->>>> + * mailbox 32-63 - Tx
->>>> + * no FIFO mailboxes
->>>> + */
->>>> +#define N_MBX        64
->>>> +#define FIRST_TX_MB    32
->>>> +#define N_TX_MB        (N_MBX - FIRST_TX_MB)
->>>> +#define RX_MBX_MASK    0xFFFFFFFE
 
->>> Please use a common prefix for all defines.
+>> root@10.0.0.101:/opt/can-utils# ip -details link show can0
+>> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
+>> qlen 10 link/can
+>> can state ERROR-PASSIVE (berr-counter tx 128 rx 0) restart-ms 0
+>> bitrate 297619 sample-point 0.714
 
->>     OK, done now. Could you however explain why the file-local #define's
->> should be prefixed? It's not quite obvious to me...
+> Strange, what bitrate did you configure?
 
-> It's about readability and maintainability. If you don't know the
-> driver, but all driver local defines and functions have a common prefix,
-> it's much easier to read if you are not the author of the driver IMHO.
+    300000.
 
-    Well, actually I think the last changes somewhat impaired the readability. 
-My idea was that you want to exclude name conflicts with #include'd headers 
-this way...
+>> tq 480 prop-seg 2 phase-seg1 2 phase-seg2 2 sjw 1
+>> rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+>> clock 49999999
 
->> [...]
->>>> +static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
->>>> +                       struct net_device *ndev)
->>>> +{
->>>> +    struct rcar_can_priv *priv = netdev_priv(ndev);
->>>> +    struct can_frame *cf = (struct can_frame *)skb->data;
->>>> +    u32 data, mier1, mbxno, i;
->>>> +    unsigned long flags;
->>>> +    u8 mctl = 0;
->>>> +
->>>> +    if (can_dropped_invalid_skb(ndev, skb))
->>>> +        return NETDEV_TX_OK;
->>>> +
->>>> +    spin_lock_irqsave(&priv->mier_lock, flags);
->>>> +    mier1 = readl(&priv->regs->mier1);
->>>> +    if (mier1) {
->>>> +        i = __builtin_clz(mier1);
->>>> +        mbxno = i ? N_MBX - i : FIRST_TX_MB;
->>>> +    } else {
->>>> +        mbxno = FIRST_TX_MB;
->>>> +    }
+> Could you please try if the algorithm works better with 50000000.
 
->>> Can you explain how the hardware arbitration works, and you do you
->>> guarantee the CAN frames are send by the hardware in the same order you
->>> put them into the hardware.
+    It doesn't. Look at the logs below:
 
->>     Tx mailbox with the smallest mailbox number has the highest priority.
->> The other possible Tx mailbox selection rule (not used by the driver
->> now) is ID priority transmit mode (as defined in the ISO 11898-1 specs).
->> The algorithm used guarantees the mailboxes are filled sequentially.
+Bitrate setting:
+----------------
+actual:
+300KHz
+ip -details link show can0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+link/can
+can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+bitrate 297619 sample-point 0.714
+tq 480 prop-seg 2 phase-seg1 2 phase-seg2 2 sjw 1
+rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+clock 49999999
 
-    Well, not quite, unfortunately -- it wraps at the last mailbox...
+500KHz:
+ip -details link show can0
+2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+link/can
+can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+bitrate 499999 sample-point 0.800
+tq 200 prop-seg 3 phase-seg1 4 phase-seg2 2 sjw 1
+rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+clock 49999999
 
-> I see. You are using mier1 to track the used mailboxes....correct?
+700KHz:
+ip -details link show can0
+2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+link/can
+can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+bitrate 694444 sample-point 0.750
+tq 180 prop-seg 2 phase-seg1 3 phase-seg2 2 sjw 1
+rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+clock 49999999
 
-    Yes, the mailbox interrupts in MIER1 are enabled only for used mailboxes.
+--------------
+Forced:
+priv->can.clock.freq = 50000000;
+300KHz:
+ip -details link show can0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
+link/can
+can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+bitrate 297619 sample-point 0.714
+tq 480 prop-seg 2 phase-seg1 2 phase-seg2 2 sjw 1
+rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+clock 50000000
+root@10.0.0.101:/opt#
 
->> +	if (unlikely(mier1 == 0xffffffff))
->> +		netif_stop_queue(ndev);
+700KHz:
+root@10.0.0.101:/opt# ip -details link show can0
+2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
+link/can
+can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+bitrate 694444 sample-point 0.750
+tq 180 prop-seg 2 phase-seg1 3 phase-seg2 2 sjw 1
+rcar_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..1024 brp-inc 1
+clock 50000000
 
-> Then you have a race condition in your tx-complete handler
-> rcar_can_tx_done(), as you call netif_wake_queue() unconditionally. If
+>> root@10.0.0.101:/opt/can-utils#
 
-    Yes, I'm seeing it now...
+>> dmesg:
+>> rcar_can rcar_can.0 can0: bitrate error 0.7%
+>> rcar_can rcar_can.0 can0: Error warning interrupt
+>> rcar_can rcar_can.0 can0: Bus error interrupt:
+>> rcar_can rcar_can.0 can0: ACK Error
+>> rcar_can rcar_can.0 can0: Error passive interrupt
 
-> mier1 == 0xffffffff you must wait until _all_ mailboxes are transmitted
+>>> 2. ... with short-circuited CAN high and low and doing some time later
+>>>          a manual recovery with "ip link set can0 type can restart"
 
-    That 0xffffffff criterion seems wrong for me now, I changed the algorithm 
-and moved the criterion but didn't update it. The correct one seems to be:
+>>     Now we have auto recovery only. Manual recovery was tested with the
+>> first driver version and worked.
 
-	if (unlikely(mier1 & 0x80000000))
-		netif_stop_queue(ndev);
+> What do you mean with "auto recovery"? Auto recovery by the hardware or
+> via "restart-ms <ms>"? How do you choose between "manual" and "auto"
+> recovery?
 
-> until you are allowed to reenable the mailboxes. Have a look at the
-> at91_can driver, it's using a similar scheme. The lowest mailbox is
-> transmitted first, but there are three additional bits that indicate the
-> priority.
+    This exact test was done with hardware auto-recovery only. No "restart-ms" 
+was programmed.
 
-    You mean 4 bits? Priorities are from 0 to 15...
+>> Terminal 1:
 
->> I've used 'canfdtest' as suggested by Wolfgang Grandegger to verify, see
->> the log below:
+>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
+>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
+>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
+>> root@10.0.0.104:/opt/can-utils#
 
->> root@am335x-evm:~# ./canfdtest -v -g can0
->> interface = can0, family = 29, type = 3, proto = 1
->> ...............................................................................C
->>
->> Test messages sent and received: 483203
->> Exiting...
->> root@am335x-evm:~#
+>> Terminal 2:
 
-    As you can see, 'canfdtest' didn't detect any race, maybe you could 
-recommend a test which would help to detect it?
+>> root@10.0.0.104:/opt/can-utils# ./candump -td -e any,0:0,#FFFFFFFF
+>> (000.000000) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
+>> protocol-violation{{tx-dominant-bit-error}{}}
+>> bus-error
+>> (000.021147) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
+>> bus-off
+>> restarted-after-bus-off
 
->> [...]
->>>> +static int rcar_can_rx_poll(struct napi_struct *napi, int quota)
->>>> +{
->>>> +    struct rcar_can_priv *priv = container_of(napi,
->>>> +                          struct rcar_can_priv, napi);
->>>> +    int num_pkts = 0;
->>>> +
->>>> +    /* Find mailbox */
->>>> +    while (num_pkts < quota) {
->>>> +        u8 mctl, mbx;
->>>> +
->>>> +        mbx = readb(&priv->regs->mssr);
+> Why does it get "restarted" directly after the bus-off?
 
->>> How does the RX work? Is it a hardware FIFO?
+    Because we have hardware auto-recovery enabled.
 
->>     In short, the MSSR register provides the smallest Rx mailbox number
->> that is looked up in the Rx search mode. We read MSSR until no search
->> results can be obtained, so it is some sort of FIFO.
+>> (011.738522) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
 
-> This looks racy....
+> What controller problem? data[1] is not set for some reasom.
 
-    Could you please elaborate?
+    Not comments. Looking into it.
 
->>     And there is separate FIFO operation mode: some mailboxes can be
->> configured as FIFO and serviced by special registers but this operation
->> mode is not supported by the driver.
+>> protocol-violation{{tx-dominant-bit-error}{}}
+>> bus-error
+>> (000.021163) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
+>> bus-off
+>> restarted-after-bus-off
+>> (001.666625) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
+>> protocol-violation{{tx-dominant-bit-error}{}}
+>> bus-error
+>> (000.021157) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
+>> controller-problem{}
+>> bus-off
+>> restarted-after-bus-off
 
-> if you hardware supports a real FIFO then I strongly suggest to make use
-> of it.
+>> dmesg:
+>> rcar_can rcar_can.0 can0: Error warning interrupt
+>> rcar_can rcar_can.0 can0: Error passive interrupt
+>> rcar_can rcar_can.0 can0: Bus error interrupt:
+>> rcar_can rcar_can.0 can0: Bit Error (dominant)
+>> rcar_can rcar_can.0 can0: Error warning interrupt
+>> rcar_can rcar_can.0 can0: Error passive interrupt
 
-    Well, Tx/Rx FIFOs are only 4 frames deep (although I haven't seen more 
-than 2 Rx mailboxes ready in a row, there are 32 Tx mailboxes); also FIFO mode 
-is less documented than mailbox mode (hence some nasty surprises are 
-possible). We still can use mailboxes when in FIFO mode, it's just 8 of them 
-are reserved for Tx/Rx FIFOs.
+> Why are they reported again. You are already in error passive.
 
->> [...]
->>>> +static int rcar_can_probe(struct platform_device *pdev)
->>>> +{
+    Don't know. :-/
+
 [...]
->>>> +    ndev->netdev_ops = &rcar_can_netdev_ops;
->>>> +    ndev->irq = irq;
->>>> +    ndev->flags |= IFF_ECHO;
->>>> +    priv->ndev = ndev;
->>>> +    priv->regs = addr;
->>>> +    priv->clock_select = pdata->clock_select;
->>>> +    priv->can.clock.freq = clk_get_rate(priv->clk);
->>>> +    priv->can.bittiming_const = &rcar_can_bittiming_const;
->>>> +    priv->can.do_set_bittiming = rcar_can_set_bittiming;
 
->>> Please call this function directly during the open() function.
+>>> I also wonder if the messages are always sent in order. You could use
+>>> the program "canfdtest" [1] from the can-utils for validation.
 
->>     OK, done, and the method installation was removed. However, I'm not
->> sure why you requested this as many drivers are still using the method.
+>>     This program is PITA. With the driver workaroung it works:
 
-> The callback was there from the beginning, but then we figured out that
-> we don't need it in the driver, but no one has cleaned up the drivers
-> yet. So don't use it in new drivers. I know it's not documented anywhere :(
+> What workaround?
 
-    You should have clarified that in your first review -- that would have 
-prevented me from going the wrong way...
+    Doesn't matter already, got rid of it.
 
-> regards,
-> Marc
+> Wolfgang.
 
 WBR, Sergei
 
