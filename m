@@ -1,258 +1,178 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3] can: add Renesas R-Car CAN driver
-Date: Sun, 10 Nov 2013 18:57:32 +0100
-Message-ID: <527FC90C.6020604@pengutronix.de>
-References: <201311020240.13354.sergei.shtylyov@cogentembedded.com> <5276ADF6.9050309@pengutronix.de> <527C28DE.7070402@cogentembedded.com> <527CAC38.6040800@pengutronix.de> <527D6B88.3010409@cogentembedded.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: Re: GS_USB
+Date: Mon, 11 Nov 2013 02:10:35 +0000
+Message-ID: <1384135835.3749.31.camel@blackbox>
+References: <1380889887.22484.2.camel@blackbox>
+			 <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
+			 <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
+		 <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>
+	 <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="McUmQ30TTCgg37usshs32TvDN7tlWG844"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48808 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751587Ab3KJR72 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 10 Nov 2013 12:59:28 -0500
-In-Reply-To: <527D6B88.3010409@cogentembedded.com>
+Received: from mail.schneidersoft.net ([173.45.248.65]:50626 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751018Ab3KKB5s (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 10 Nov 2013 20:57:48 -0500
+In-Reply-To: <527EC310.5010003@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---McUmQ30TTCgg37usshs32TvDN7tlWG844
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Wolfgang,
 
-On 11/08/2013 11:54 PM, Sergei Shtylyov wrote:
-[...]
+On Sun, 2013-11-10 at 00:19 +0100, Wolfgang Grandegger wrote:
 
->>>> Please use a common prefix for all defines.
->=20
->>>     OK, done now. Could you however explain why the file-local #defin=
-e's
->>> should be prefixed? It's not quite obvious to me...
->=20
->> It's about readability and maintainability. If you don't know the
->> driver, but all driver local defines and functions have a common prefi=
-x,
->> it's much easier to read if you are not the author of the driver IMHO.=
+> You redefine the CAN flags and mask here but in many places you
+> silentely assume that they are identical, e.g. via:
+> 
+>    cf->can_id = hf->can_id;
+> 
+> Not sure how to handle this transprently. I think these defines will
+> never change. Either use the CAN flags and mask directly (like you
+> already do for the error frames) or properly remap/copy all flags and
+> values. Other opinions?
 
->=20
->    Well, actually I think the last changes somewhat impaired the
-> readability. My idea was that you want to exclude name conflicts with
-> #include'd headers this way...
+I have removed the GS_CAN_* flags. They are the same as those in the
+Linux can headers. The idea was not to have to repackage everything. But
+instead get by with some copies. like cf->can_id = hf->can_id; Byte
+order is handled by the device.
 
-IMHO this way it's clear to everyone, that certain defines are
-driver/hardware specific.
+> In case of bus-off. What does the hardware do? How does it recover? Is
+> recovery triggered by software possible? Is it possible to support
+> manual recovery?
 
->>> [...]
->>>>> +static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
->>>>> +                       struct net_device *ndev)
->>>>> +{
->>>>> +    struct rcar_can_priv *priv =3D netdev_priv(ndev);
->>>>> +    struct can_frame *cf =3D (struct can_frame *)skb->data;
->>>>> +    u32 data, mier1, mbxno, i;
->>>>> +    unsigned long flags;
->>>>> +    u8 mctl =3D 0;
->>>>> +
->>>>> +    if (can_dropped_invalid_skb(ndev, skb))
->>>>> +        return NETDEV_TX_OK;
->>>>> +
->>>>> +    spin_lock_irqsave(&priv->mier_lock, flags);
->>>>> +    mier1 =3D readl(&priv->regs->mier1);
->>>>> +    if (mier1) {
->>>>> +        i =3D __builtin_clz(mier1);
->>>>> +        mbxno =3D i ? N_MBX - i : FIRST_TX_MB;
->>>>> +    } else {
->>>>> +        mbxno =3D FIRST_TX_MB;
->>>>> +    }
->=20
->>>> Can you explain how the hardware arbitration works, and you do you
->>>> guarantee the CAN frames are send by the hardware in the same order =
-you
->>>> put them into the hardware.
->=20
->>>     Tx mailbox with the smallest mailbox number has the highest
->>> priority.
->>> The other possible Tx mailbox selection rule (not used by the driver
->>> now) is ID priority transmit mode (as defined in the ISO 11898-1 spec=
-s).
->>> The algorithm used guarantees the mailboxes are filled sequentially.
->=20
->    Well, not quite, unfortunately -- it wraps at the last mailbox...
+Manual recovery is not supported. The node can leave bus off state if
+it detects 128 occurrences of 11 consecutive recessive bits on the bus.
+Maybe I can trick the controller out of bus off by doing a software
+reset. That's probably not going to be a clean solution though.
 
-Yes sure, that's the downside if there isn't a real FIFO in the
-hardware. I suggest to have two pointers in your private struct:
+> 
+> > +	} else if (cf->can_id & CAN_ERR_CRTL) {
+> > +		dev->can.state = CAN_STATE_ERROR_ACTIVE;
+> 
+> 
+> This means back to error active, right?
+Yes, if none of the following conditions apply.
+I guess i could use an if else if else instead of conditionally
+overwriting the state...
+> 
+> > +		if ((cf->data[1] & CAN_ERR_CRTL_TX_WARNING) ||
+> > +			(cf->data[1] & CAN_ERR_CRTL_RX_WARNING))
+> > +			dev->can.state = CAN_STATE_ERROR_WARNING;
+> > +
+> > +		if ((cf->data[1] & CAN_ERR_CRTL_TX_PASSIVE) ||
+> > +			(cf->data[1]&CAN_ERR_CRTL_RX_PASSIVE))
+> 
+> s/&/ & /
+> 
+> > +			dev->can.state = CAN_STATE_ERROR_PASSIVE;
+> > +	}
+> 
+> Also please update the stats accordingly:
+These are simple counts for how often the conditions occurred? They
+count when the respective state is entered? When a node recovers from
+bus off does that count as entering error passive?
+> 
+> 	can_stats.bus_off++;
+> 	can_stats.error_warning++
+> 	can_stats.error_passive++
+> 
+> Apart from that, the state handling is rather basic but totaly
+> sufficient. Would be nice if you could show the state handling
+> and bus-off recovery by reporting the output of "$ candump -td -e
+> any,0:0,#FFFFFFFF" while sending messages to the device ...
+> 
+> 1. without cable connected (entering error passive)
+> 2. with short-circuited CAN high and low (entering bus-off)
 
-    unsinged int tx_head;
-    unsigned int tx_tail;
+$ sudo ip link set can0 up type can bitrate 250000
+$ cansequence can0 -p
+$ candump -td -e can0,0:0,#FFFFFFFF 1>can.log
 
-static inline unsigned int get_tx_head_mb(struct *priv)
-{
-       return priv->tx_head % RCAN_TX_QUEUE_SIZE;
-}
+# CAN node transmitting normally
+ (000.000000)  can0  002   [1]  00
+...
+ (000.000006)  can0  002   [1]  68
+# CAN node is disconnected from bus
+ (000.040973)  can0  20000004   [8]  00 20 00 00 00 00 80 00
+ERRORFRAME
+	controller-problem{tx-error-passive}
+	error-counter-tx-rx{{128}{0}}
+ (007.437011)  can0  002   [1]  69
+...
+ (000.000991)  can0  002   [1]  B3
+# CAN node is reconnected to bus
+ (000.000008)  can0  20000004   [8]  00 00 00 00 00 00 00 00
+ERRORFRAME
+	controller-problem{}
+ (000.000004)  can0  002   [1]  B4
+...
+ (000.000003)  can0  002   [1]  D3
+# CAN node is disconnected from bus
+ (000.062975)  can0  20000004   [8]  00 20 00 00 00 00 80 00
+ERRORFRAME
+	controller-problem{tx-error-passive}
+	error-counter-tx-rx{{128}{0}}
+# short added between CAN-High to CAN-Low
+ (005.593023)  can0  20000040   [8]  00 00 00 00 00 00 00 0E
+ERRORFRAME
+	bus-off
+	error-counter-tx-rx{{0}{14}}
+ (000.260982)  can0  20000100   [8]  00 00 00 00 00 00 E8 00
+ERRORFRAME
+	restarted-after-bus-off
+	error-counter-tx-rx{{232}{0}}
+ (000.526024)  can0  20000040   [8]  00 00 00 00 00 00 00 7D
+ERRORFRAME
+	bus-off
+	error-counter-tx-rx{{0}{125}}
+ (001.834994)  can0  20000100   [8]  00 00 00 00 00 00 F0 00
+ERRORFRAME
+	restarted-after-bus-off
+	error-counter-tx-rx{{240}{0}}
+ (000.523992)  can0  20000040   [8]  00 00 00 00 00 00 00 80
+ERRORFRAME
+	bus-off
+	error-counter-tx-rx{{0}{128}}
+ (001.835013)  can0  20000100   [8]  00 00 00 00 00 00 F8 00
+ERRORFRAME
+	restarted-after-bus-off
+	error-counter-tx-rx{{248}{0}}
+ (000.524981)  can0  20000004   [8]  00 00 00 00 00 00 28 00
+ERRORFRAME
+	controller-problem{}
+	error-counter-tx-rx{{40}{0}}
+ (000.086006)  can0  20000040   [8]  00 00 00 00 00 00 00 7C
+ERRORFRAME
+	bus-off
+	error-counter-tx-rx{{0}{124}}
+# The short between CAN-High and CAN-Low is removed
+ (000.525000)  can0  20000100   [8]  00 00 00 00 00 00 80 00
+ERRORFRAME
+	restarted-after-bus-off
+	error-counter-tx-rx{{128}{0}}
+ (002.702998)  can0  002   [1]  D4
+...
+ (000.000003)  can0  002   [1]  ED
+# CAN node is reconnected to bus
+ (000.000007)  can0  20000004   [8]  00 08 00 00 00 00 6E 00
+ERRORFRAME
+	controller-problem{tx-error-warning}
+	error-counter-tx-rx{{110}{0}}
+ (000.000003)  can0  002   [1]  EE
+...
+ (000.000990)  can0  002   [1]  60
+ (000.000008)  can0  20000004   [8]  00 00 00 00 00 00 00 00
+ERRORFRAME
+	controller-problem{}
+ (000.000004)  can0  002   [1]  61
+ (000.000004)  can0  002   [1]  62
+...
 
-static inline unsigned int get_tx_tail_mb(struct priv *priv)
-{
-       return priv->tx_tail % RCAN_TX_QUEUE_SIZE;
-}
-
-Put the next CAN frame into get_tx_head_mb(), increment priv->tx_head
-and stop your queue if all buffers are used or wrap around.
-
-       /* stop, if all buffers are used or wrap around */
-       if ((priv->tx_head - priv->tx_tail =3D=3D RCAN_TX_QUEUE_SIZE) &&
-	    get_tx_head_mb(priv) =3D=3D 0)
-               netif_stop_queue(dev);
-
-But I think, as you don't have any additional prio bits, it boils down to=
-:
-
-       /* stop, if wrap around */
-       if (get_tx_head_mb(priv) =3D=3D 0)
-               netif_stop_queue(dev);
-
-In your tx-complete, use something like this:
-
-   reg =3D read_tx_complete();
-   for (/* nix */; priv->tx_head - priv->tx_tail > 0; priv->tx_tail++) {
-       mb =3D get_tx_tail_mb(priv);
-
-       if (!reg & (1 << mb))
-            break;
-
-       read_can_frame();
-   }
-
-   if ((get_tx_head_mb(priv) !=3D 0) || (get_tx_tail_mb(priv) =3D=3D 0))
-           netif_wake_queue(dev);
-
->> I see. You are using mier1 to track the used mailboxes....correct?
->=20
->    Yes, the mailbox interrupts in MIER1 are enabled only for used
-> mailboxes.
->=20
->>> +    if (unlikely(mier1 =3D=3D 0xffffffff))
->>> +        netif_stop_queue(ndev);
->=20
->> Then you have a race condition in your tx-complete handler
->> rcar_can_tx_done(), as you call netif_wake_queue() unconditionally. If=
-
->=20
->    Yes, I'm seeing it now...
->=20
->> mier1 =3D=3D 0xffffffff you must wait until _all_ mailboxes are transm=
-itted
->=20
->    That 0xffffffff criterion seems wrong for me now, I changed the
-> algorithm and moved the criterion but didn't update it. The correct one=
-
-> seems to be:
->=20
->     if (unlikely(mier1 & 0x80000000))
->         netif_stop_queue(ndev);
-
-Better handle it in software altogether as outlined above.
-
->> until you are allowed to reenable the mailboxes. Have a look at the
->> at91_can driver, it's using a similar scheme. The lowest mailbox is
->> transmitted first, but there are three additional bits that indicate t=
-he
->> priority.
->=20
->    You mean 4 bits? Priorities are from 0 to 15...
-
-Yes, 4 bits (0xf), but the algorithm isn't limited to 4 bits.
-
->>> I've used 'canfdtest' as suggested by Wolfgang Grandegger to verify, =
-see
->>> the log below:
->=20
->>> root@am335x-evm:~# ./canfdtest -v -g can0
->>> interface =3D can0, family =3D 29, type =3D 3, proto =3D 1
->>> .....................................................................=
-=2E.........C
->>>
->>>
->>> Test messages sent and received: 483203
->>> Exiting...
->>> root@am335x-evm:~#
->=20
->    As you can see, 'canfdtest' didn't detect any race, maybe you could
-> recommend a test which would help to detect it?
-
-It's better to think to detect a race condition, then to test for it. I
-suggest to use the algorithm outlined above, as implemented in the
-at91_can.c driver.
-
->>> [...]
->>>>> +static int rcar_can_rx_poll(struct napi_struct *napi, int quota)
->>>>> +{
->>>>> +    struct rcar_can_priv *priv =3D container_of(napi,
->>>>> +                          struct rcar_can_priv, napi);
->>>>> +    int num_pkts =3D 0;
->>>>> +
->>>>> +    /* Find mailbox */
->>>>> +    while (num_pkts < quota) {
->>>>> +        u8 mctl, mbx;
->>>>> +
->>>>> +        mbx =3D readb(&priv->regs->mssr);
->=20
->>>> How does the RX work? Is it a hardware FIFO?
->=20
->>>     In short, the MSSR register provides the smallest Rx mailbox numb=
-er
->>> that is looked up in the Rx search mode. We read MSSR until no search=
-
->>> results can be obtained, so it is some sort of FIFO.
->=20
->> This looks racy....
->=20
->    Could you please elaborate?
-
-Consider the hardware fills mailboxes 0...8, then your rx_poll starts to
-read mailbox 0, clear mailbox 0, read mb 1, clear mb 2, then another CAN
-frame arrives. Which mailbox will be filled next? Which mailbox will be
-read next by rx_poll?
-
->>>     And there is separate FIFO operation mode: some mailboxes can be
->>> configured as FIFO and serviced by special registers but this operati=
-on
->>> mode is not supported by the driver.
->=20
->> if you hardware supports a real FIFO then I strongly suggest to make u=
-se
->> of it.
->=20
->    Well, Tx/Rx FIFOs are only 4 frames deep (although I haven't seen
-> more than 2 Rx mailboxes ready in a row, there are 32 Tx mailboxes);
-> also FIFO mode is less documented than mailbox mode (hence some nasty
-> surprises are possible). We still can use mailboxes when in FIFO mode,
-> it's just 8 of them are reserved for Tx/Rx FIFOs.
-
-Who will the current rx_poll behave in the above outlined situation?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Thank you for your time,
+Max Schneider.
 
 
---McUmQ30TTCgg37usshs32TvDN7tlWG844
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlJ/yRAACgkQjTAFq1RaXHPnkwCeJPfyAVriadFw+Vb9AZHEbx5E
-ukcAn0cxKCsQXIq/xTB7hf3o1D+nYksr
-=XXq+
------END PGP SIGNATURE-----
-
---McUmQ30TTCgg37usshs32TvDN7tlWG844--
