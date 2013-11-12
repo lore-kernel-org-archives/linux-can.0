@@ -1,91 +1,53 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] can: add Renesas R-Car CAN driver
-Date: Tue, 12 Nov 2013 23:17:43 +0100
-Message-ID: <5282A907.6090404@grandegger.com>
-References: <201309280211.39068.sergei.shtylyov@cogentembedded.com> <524BB883.2040400@grandegger.com> <526061BE.7060204@cogentembedded.com> <52657CA1.2040708@grandegger.com> <527D89A3.1070403@cogentembedded.com> <5282A17C.1030309@cogentembedded.com>
+From: T Thayer <tthayer.linux@gmail.com>
+Subject: Question about D_CAN implementation
+Date: Tue, 12 Nov 2013 16:30:41 -0600
+Message-ID: <CAF03EBfWAS=JG923ainNts0zqnCKGfBTbNWihC8qsFXu6QfwGg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:36594 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754614Ab3KLWRp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 17:17:45 -0500
-In-Reply-To: <5282A17C.1030309@cogentembedded.com>
+Received: from mail-ve0-f176.google.com ([209.85.128.176]:45415 "EHLO
+	mail-ve0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756298Ab3KLWal (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 17:30:41 -0500
+Received: by mail-ve0-f176.google.com with SMTP id c14so4811099vea.7
+        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 14:30:41 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: anilkumar@ti.com
+Cc: linux-can@vger.kernel.org
 
-Hi Sergei,
+Hi,
 
-On 11/12/2013 10:45 PM, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 11/09/2013 04:02 AM, Sergei Shtylyov wrote:
-> 
->>>>> 2. ... with short-circuited CAN high and low and doing some time later
->>>>>          a manual recovery with "ip link set can0 type can restart"
-> 
->>>>     Now we have auto recovery only. Manual recovery was tested with the
->>>> first driver version and worked.
-> 
->>> What do you mean with "auto recovery"? Auto recovery by the hardware or
->>> via "restart-ms <ms>"? How do you choose between "manual" and "auto"
->>> recovery?
-> 
->>     This exact test was done with hardware auto-recovery only. No
->> "restart-ms"
->> was programmed.
-> 
->>>> Terminal 1:
-> 
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>>> root@10.0.0.104:/opt/can-utils#
-> 
->>>> Terminal 2:
-> 
->>>> root@10.0.0.104:/opt/can-utils# ./candump -td -e any,0:0,#FFFFFFFF
->>>> (000.000000) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> protocol-violation{{tx-dominant-bit-error}{}}
->>>> bus-error
->>>> (000.021147) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
->>>> bus-off
->>>> restarted-after-bus-off
-> 
->>> Why does it get "restarted" directly after the bus-off?
-> 
->>     Because we have hardware auto-recovery enabled.
-> 
->>>> (011.738522) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>>> controller-problem{}
-> 
->>> What controller problem? data[1] is not set for some reasom.
-> 
->>     Not comments. Looking into it.
-> 
->    Sorry, this has been fixed a while ago. Now the log looks like:
-> 
-> root@10.0.0.104:/opt/can-utils#  ./candump -td -e any,0:0,#FFFFFFFF
->  (000.000000)  can0  2000008C   [8]  00 28 08 00 00 00 88 00 ERRORFRAME
->         controller-problem{tx-error-warning,tx-error-passive}
+I'm experimenting with the combined C_CAN/D_CAN Linux driver for the
+Altera CycloneV SoC which uses the Bosch D_CAN module..
 
-Only the highest level should be reported.
+I'm having some problems though. Specifically, I'm seeing 2 copies of
+a frame get transmitted.
 
->         protocol-violation{{tx-dominant-bit-error}{}}
->         bus-error
->         error-counter-tx-rx{{136}{0}}
->  (000.007578)  can0  20000040   [8]  00 00 00 00 00 00 00 00 ERRORFRAME
->         bus-off
->  (000.091847)  can0  20000100   [8]  00 00 00 00 00 00 00 00 ERRORFRAME
->         restarted-after-bus-off
->  (056.136722)  can0  2000008C   [8]  00 28 08 00 00 00 88 00 ERRORFRAME
->         controller-problem{tx-error-warning,tx-error-passive}
+Strangely, the IRQ Status register = 0x800A inside the c_can_poll()
+function indicates a RX message object (0 <  RX < 16) instead of a TX
+message object.
 
-Ditto.
+If I use the standalone D_CAN driver which was in the
+drivers/net/can/d_can directory, it seems to work fine (IRQ Status =
+0x8011). I believe this directory was removed when the c_can and d_can
+drivers were combined (SHA 69927fccd96b15bd228bb82d)
 
-Wolfgang.
+I noticed some significant differences - particularly in the
+c_can_poll() function.
+IRQ Status Test.
+- d_can.c ANDs the irqstatus with STATUS_INTERRUPT
+- c_can.c checks to see if the irqstatus == STATUS_INTERRUPT.
+After IRQ Status Test.
+- d_can.c has a separate if/else if loop to determine whether the
+Message was RX/TX
+- c_can.c has is a continuation of the IRQ status test (else if, else if)
+
+Another symptom is that the tx_packet statistics aren't incrementing
+as I send data. However, this may be related to the IRQ indicating a
+RX message object.
+
+Thank you for any insight you may have,
+
+
+Thor
