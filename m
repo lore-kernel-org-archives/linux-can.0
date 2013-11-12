@@ -1,211 +1,87 @@
-From: swapnil <patilswa@gmail.com>
-Subject: Re: AW: Need support J1939 protocol support to my kernel (v3.8 on BeagleBone Black)
-Date: Tue, 12 Nov 2013 01:10:04 +0000 (UTC)
-Message-ID: <loom.20131112T015933-695@post.gmane.org>
-References: <zarafa.5281024a.0b28.43b8b0d35b442ecc@v14647.1blu.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: sja1000 interrupt problem
+Date: Mon, 11 Nov 2013 18:59:12 -0800
+Message-ID: <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
+	<3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
+	<99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
+	<CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
+	<5254608B.4080208@grandegger.com>
+	<CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
+	<be0d6725fff5298d3fb8417e4800348b@grandegger.com>
+	<CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
+	<84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
+	<CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+	<527E44EB.9020605@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:46315 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754547Ab3KLBPF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 11 Nov 2013 20:15:05 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Vg2ZL-0003Uk-Aj
-	for linux-can@vger.kernel.org; Tue, 12 Nov 2013 02:15:03 +0100
-Received: from c-98-212-86-243.hsd1.in.comcast.net ([98.212.86.243])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 02:15:03 +0100
-Received: from patilswa by c-98-212-86-243.hsd1.in.comcast.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 02:15:03 +0100
+Received: from mail-ie0-f170.google.com ([209.85.223.170]:45364 "EHLO
+	mail-ie0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751336Ab3KLC7M (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Nov 2013 21:59:12 -0500
+Received: by mail-ie0-f170.google.com with SMTP id to1so3762850ieb.15
+        for <linux-can@vger.kernel.org>; Mon, 11 Nov 2013 18:59:12 -0800 (PST)
+In-Reply-To: <527E44EB.9020605@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Michael Luxen <mluxen <at> gmx.net> writes:
+Hi Oliver,
 
->=20
-> Hello Swapnil,
->=20
-> I've success with building the J1939 stack on my BBB based on Debian =
-using=20
-these steps:
->=20
-> git clone git://gitorious.org/linux-can/can-utils.git
-> cd can-utils
-> --- get J1939 stuff ---
-> git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-can=
--
-j1939.git
-> git remote update j1939
-> --- depending on kernel ---
-> git merge j1939/v3.6
-> ...or=E2=80=A6
-> git merge j1939/v3.8
+On Sat, Nov 9, 2013 at 6:21 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> Hello Austin,
+>
+> from the trace I assume that you connected the two CAN interfaces which each
+> other and you get the tx-complete interrupt very close to the rx interrupt.
+>
+> (1) Is this assumed setup correct?
 
-git merge j1939/j1939-v3.8
-after this step=20
-ubuntu@arm:~/BBB/can-utils$ git merge j1939/j1939-v3.8
-error: The following untracked working tree files would be overwritten =
-by=20
-merge:
-        .mailmap
-        COPYING
-        CREDITS
-        Documentation/.gitignore
-        Documentation/00-INDEX
-        Documentation/ABI/README
-        Documentation/ABI/obsolete/sysfs-bus-usb
-        Documentation/ABI/obsolete/sysfs-class-rfkill
-        Documentation/ABI/obsolete/sysfs-driver-hid-roccat-koneplus
-        Documentation/ABI/removed/devfs
-        Documentation/ABI/removed/dv1394
-        Documentation/ABI/removed/o2cb
-        Documentation/ABI/removed/raw1394
-        Documentation/ABI/removed/video1394
-        Documentation/ABI/stable/firewire-cdev
-        Documentation/ABI/stable/o2cb
-        Documentation/ABI/stable/syscalls
-        Documentation/ABI/stable/sysfs-acpi-pmprofile
-        Documentation/ABI/stable/sysfs-bus-firewire
-        Documentation/ABI/stable/sysfs-bus-xen-backend
-        Documentation/ABI/stable/sysfs-class-backlight
-        Documentation/ABI/stable/sysfs-class-rfkill
-        Documentation/ABI/stable/sysfs-class-ubi
-        Documentation/ABI/stable/sysfs-devices-node
-        Documentation/ABI/stable/sysfs-devices-system-xen_memory
-        Documentation/ABI/stable/sysfs-driver-qla2xxx
-        Documentation/ABI/stable/sysfs-driver-usb-usbtmc
-        Documentation/ABI/stable/sysfs-firmware-efi-vars
-        Documentation/ABI/stable/sysfs-module
-        Documentation/ABI/stable/thermal-notification
-        Documentation/ABI/stable/vdso
-        Documentation/ABI/testing/configfs-spear-pcie-gadget
-        Documentation/ABI/testing/debugfs-ec
-        Documentation/ABI/testing/debugfs-ideapad
-        Documentation/ABI/testing/debugfs-pktcdvd
-        Documentation/ABI/testing/evm
-        Documentation/ABI/testing/ima_policy
-        Documentation/ABI/testing/procfs-diskstats
-        Documentation/ABI/testing/pstore
-        Documentation/ABI/testing/sysfs-ata
-        Documentation/ABI/testing/sysfs-block
-        Documentation/ABI/testing/sysfs-block-zram
-        Documentation/ABI/testing/sysfs-bus-bcma
-        Documentation/ABI/testing/sysfs-bus-css
-        Documentation/ABI/testing/sysfs-bus-i2c-devices-fsa9480
-        Documentation/ABI/testing/sysfs-bus-i2c-devices-hm6352
-        Documentation/ABI/testing/sysfs-bus-media
-        Documentation/ABI/testing/sysfs-bus-pci
-        Documentation/ABI/testing/sysfs-bus-pci-devices-cciss
-        Documentation/ABI/testing/sysfs-bus-pci-drivers-ehci_hcd
-        Documentation/ABI/testing/sysfs-bus-rbd
-        Documentation/ABI/testing/sysfs-bus-umc
-        Documentation/ABI/testing/sysfs-bus-usb
-        Documentation/ABI/testing/sysfs-bus-usb-devices-usbsevseg
-        Documentation/ABI/testing/sysfs-c2port
-        Documentation/ABI/testing/sysfs-class
-        Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870
-        Documentation/ABI/testing/sysfs-class-bdi
-        Documentation/ABI/testing/sysfs-class-devfreq
-        Documentation/ABI/testing/sysfs-class-lcd
-        Documentation/ABI/testing/sysfs-class-led
-        Documentation/ABI/testing/sysfs-class-mtd
-        Documentation/ABI/testing/sysfs-class-net-batman-adv
-        Documentation/ABI/testing/sysfs-class-net-mesh
-        Documentation/ABI/testing/sysfs-class-pktcdvd
-        Documentation/ABI/testing/sysfs-class-power
-        Documentation/ABI/testing/sysfs-class-regulator
-        Documentation/ABI/testing/sysfs-class-rtc-rtc0-device-
-rtc_calibration
-        Documentation/ABI/testing/sysfs-class-scsi_host
-        Documentation/ABI/testing/sysfs-class-uwb_rc
-        Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
-        Documentation/ABI/testing/sysfs-dev
-        Documentation/ABI/testing/sysfs-devices
-        Documentation/ABI/testing/sysfs-devices-memory
-        Documentation/ABI/testing/sysfs-devices-mmc
-        Documentation/ABI/testing/sysfs-devices-platform-_UDC_-gadget
-        Documentation/ABI/testing/sysfs-devices-platform-docg3
-        Documentation/ABI/testing/sysfs-devices-power
-        Documentation/ABI/testing/sysfs-devices-system-cpu
-        Documentation/ABI/testing/sysfs-devices-system-ibm-rtl
-        Documentation/ABI/testing/sysfs-driver-hid
-        Documentation/ABI/testing/sysfs-driver-hid-logitech-lg4ff
-        Documentation/ABI/testing/sysfs-driver-hid-multitouch
-        Documentation/ABI/testing/sysfs-driver-hid-picolcd
-        Documentation/ABI/testing/sysfs-driver-hid-prodikeys
-        Documentation/ABI/testing/sysfs-driver-hid-roccat-arvo
-        Documentation/ABI/testing/sysfs-driver-hid-roccat-isku
-        Documentation/ABI/testing/sysfs-driver-hid-roccat-kone
-        Documentation/ABI/testing/sysfs-driver-hid-roccat-koneplus
-        Documentation/ABI/testing/sysfs-driver-hid-roccat-kovaplus
-        Docume
-Aborting
+Correct, it is.
 
-didn't understand ??
+> From the trace it is pretty hard to know which CAN interface is in charge.
+> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
 
-what is the next step
+Gladly.  See the updated logs.
 
->=20
-> Regards
-> Mike
->=20
-> -----Urspr=C3=BCngliche Nachricht-----
-> Von:	Swapnil Patil <patilswa <at> gmail.com>
-> Gesendet:	Mo 11.11.2013 16:46
-> Betreff:	Need support J1939 protocol support to my kernel (v3.8 on=20
-BeagleBone Black)
-> An:	linux-can <at> vger.kernel.org;=20
-> > Hi Kurt,
-> >=20
-> >              Thanks for your reply.
-> > I am using Begalbone Black with Ubuntu 13.04
-> > I am able to transmit the RAW and extended can message over the can
-> > bus using can utility
-> > Now I want to use  J1939 stack.
-> > I downloaded the
-> > Linux-can-can-j1939-modules and Linux-can-iproute2-j1939  and tried=
- to
-> > build them but it failed
-> >=20
-> > Log of iproute2-j1939$ make
-> >=20
-> > make[1]: Entering directory `/home/ubuntu/BBB/iproute2-j1939/misc'
-> > gcc -D_GNU_SOURCE -O2 -Wstrict-prototypes -Wall -I../include
-> > -DRESOLVE_HOSTNAM -DLIBDIR=3D\"/usr/lib/\" -I  -o arpdarpd.c
-> > ../lib/libnetlink.a ../lib/libutil.-ldb -lpthread
-> > gcc: error: arpd: No such file or directory
-> >=20
-> > Log of can-j1939-modules: make
-> > /home/ubuntu/BBB/can-j1939-modules/net/can/j1939/rtnl.c:232:25: err=
-or:
-> > =C3=A2struct netlink_skb_parms=C3=A2 has no member named=C3=A2pid=C3=
-=A2
-> > /
-> >=20
-> >       If someone already build this on Begalbone black with ubuntu
-> > 13.04 or angstrom kernel Please add the steps
-> >=20
-> > Thanks
-> > Swapnil
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-can=
-" in
-> > the body of a message to majordomo <at> vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo <at> vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
->=20
+[  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+[  556.019268] Unhandled IRQ 18... stop tracing...
+[  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+[  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
+[  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
+[  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
+[  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+[  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
 
+[  785.760244] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+[  785.760249] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+[  785.760266] Unhandled IRQ 18... stop tracing...
+[  785.760271] peak_pci 0000:05:00.0 can1: Received packet.
+[  785.760286] peak_pci 0000:05:00.0 can1: sja1000_rx
+[  785.760303] peak_pci 0000:05:00.0 can0: TX complete.
+[  785.760317] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+[  785.760354] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
 
+[  805.392135] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+[  805.392176] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+[  805.392181] peak_pci 0000:05:00.0 can1: Received packet.
+[  805.392195] peak_pci 0000:05:00.0 can1: sja1000_rx
+[  805.392210] Unhandled IRQ 18... stop tracing...
+[  805.392248] peak_pci 0000:05:00.0 can0: TX complete.
+[  805.392268] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+[  805.392271] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
 
+> From your first post I was able to read your current kernel as:
+>> $ uname -a
+>> Linux vpc3 3.10-3-rt-amd64 #1 SMP PREEMPT RT Debian 3.10.11-1
+>> (2013-09-10) x86_64 GNU/Linux
+>
+> (3) Is it possible to use a standard (non-RT) kernel on your system to confirm
+> this issue on a unmodified system?
+
+It will be a bit of time before I can schedule enough time on the PC
+in question with a non-realtime kernel.  I'll see what I can do.
+
+Thanks!
+    Austin
