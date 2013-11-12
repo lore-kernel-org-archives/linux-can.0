@@ -1,85 +1,113 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Question about D_CAN implementation
-Date: Tue, 12 Nov 2013 23:50:03 +0100
-Message-ID: <5282B09B.6020307@pengutronix.de>
-References: <CAF03EBfWAS=JG923ainNts0zqnCKGfBTbNWihC8qsFXu6QfwGg@mail.gmail.com>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: sja1000 interrupt problem
+Date: Tue, 12 Nov 2013 15:22:07 -0800
+Message-ID: <CANGgnMZM-9cObw=Bh-VCsbn4b68+jhxCEptOaepbNna+KSGZmQ@mail.gmail.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
+	<3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
+	<99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
+	<CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
+	<5254608B.4080208@grandegger.com>
+	<CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
+	<be0d6725fff5298d3fb8417e4800348b@grandegger.com>
+	<CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
+	<84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
+	<CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+	<527E44EB.9020605@hartkopp.net>
+	<CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
+	<52829CF1.4010902@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="vKE5IhiSr50pQmMGCrxc6geKA6DRi13dp"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34150 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757186Ab3KLWuM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 17:50:12 -0500
-In-Reply-To: <CAF03EBfWAS=JG923ainNts0zqnCKGfBTbNWihC8qsFXu6QfwGg@mail.gmail.com>
+Received: from mail-ie0-f173.google.com ([209.85.223.173]:52535 "EHLO
+	mail-ie0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753864Ab3KLXWI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 18:22:08 -0500
+Received: by mail-ie0-f173.google.com with SMTP id x13so7994168ief.4
+        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 15:22:07 -0800 (PST)
+In-Reply-To: <52829CF1.4010902@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: T Thayer <tthayer.linux@gmail.com>
-Cc: anilkumar@ti.com, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vKE5IhiSr50pQmMGCrxc6geKA6DRi13dp
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 12, 2013 at 1:26 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> On 12.11.2013 03:59, Austin Schuh wrote:
+>
+>>> From the trace it is pretty hard to know which CAN interface is in charge.
+>>> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
+>>
+>> Gladly.  See the updated logs.
+>>
+>> [  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+>> [  556.019268] Unhandled IRQ 18... stop tracing...
+>> [  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+>> [  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
+>> [  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
+>> [  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
+>> [  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+>> [  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+>>
+>
+> This looks pretty broken regarding the IRQ handling.
+> Maybe the IRQ thread handling has a real problem in the -rt kernel ?!?
 
-On 11/12/2013 11:30 PM, T Thayer wrote:
-> I'm experimenting with the combined C_CAN/D_CAN Linux driver for the
-> Altera CycloneV SoC which uses the Bosch D_CAN module..
->=20
-> I'm having some problems though. Specifically, I'm seeing 2 copies of
-> a frame get transmitted.
+Sounds pretty plausible right now.
 
-Where do you see 2 copies of the frame?
+>>> (3) Is it possible to use a standard (non-RT) kernel on your system to confirm
+>>> this issue on a unmodified system?
+>>
+>> It will be a bit of time before I can schedule enough time on the PC
+>> in question with a non-realtime kernel.  I'll see what I can do.
+>
+> That would be a valuable information to go deeper into this problem.
 
-> Strangely, the IRQ Status register =3D 0x800A inside the c_can_poll()
-> function indicates a RX message object (0 <  RX < 16) instead of a TX
-> message object.
->=20
-> If I use the standalone D_CAN driver which was in the
-> drivers/net/can/d_can directory, it seems to work fine (IRQ Status =3D
-> 0x8011). I believe this directory was removed when the c_can and d_can
-> drivers were combined (SHA 69927fccd96b15bd228bb82d)
+Here is what is in the syslog from the same machine sending to it's
+self with a non-realtime kernel.
 
-There never was a mainline kernel with drivers/net/can/d_can.
+# uname -a
+Linux vpc5 3.10-3-amd64 #1 SMP Debian 3.10.11-2 (2013-09-10) x86_64 GNU/Linux
 
-> I noticed some significant differences - particularly in the
-> c_can_poll() function.
-> IRQ Status Test.
-> - d_can.c ANDs the irqstatus with STATUS_INTERRUPT
-> - c_can.c checks to see if the irqstatus =3D=3D STATUS_INTERRUPT.
-> After IRQ Status Test.
-> - d_can.c has a separate if/else if loop to determine whether the
-> Message was RX/TX
-> - c_can.c has is a continuation of the IRQ status test (else if, else i=
-f)
->=20
-> Another symptom is that the tx_packet statistics aren't incrementing
-> as I send data. However, this may be related to the IRQ indicating a
-> RX message object.
->=20
-> Thank you for any insight you may have,
+<6>[  169.993870] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+<6>[  169.993904] peak_pci 0000:05:00.0 can1: Received packet.
+<6>[  169.993923] peak_pci 0000:05:00.0 can1: sja1000_rx
+<6>[  169.993994] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+<6>[  169.994013] peak_pci 0000:05:00.0 can1: Found can1, disabling tracing.
+<6>[  169.994029] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+<6>[  169.994048] peak_pci 0000:05:00.0 can0: TX complete.
+<6>[  169.994061] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+<6>[  528.362919] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+<6>[  528.362953] peak_pci 0000:05:00.0 can1: Received packet.
+<6>[  528.362970] peak_pci 0000:05:00.0 can1: sja1000_rx
+<6>[  528.363038] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+<6>[  528.363056] peak_pci 0000:05:00.0 can1: Found can1, disabling tracing.
+<6>[  528.363071] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+<6>[  528.363088] peak_pci 0000:05:00.0 can0: TX complete.
+<6>[  528.363100] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
 
+When I attach the CAN device which continually sends, I get the
+following.  (The front might be snipped improperly, not sure.)
 
---vKE5IhiSr50pQmMGCrxc6geKA6DRi13dp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+<6>[  640.823323] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+<6>[  640.823331] peak_pci 0000:05:00.0 can1: Returning IRQ_NONE
+<6>[  640.823334] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+<6>[  640.823344] peak_pci 0000:05:00.0 can0: Received packet.
+<6>[  640.823346] peak_pci 0000:05:00.0 can0: sja1000_rx
+<6>[  640.823391] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+<6>[  640.823581] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+<6>[  640.823597] peak_pci 0000:05:00.0 can1: Returning IRQ_NONE
+<6>[  640.823604] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+<6>[  640.823618] peak_pci 0000:05:00.0 can0: Received packet.
+<6>[  640.823624] peak_pci 0000:05:00.0 can0: sja1000_rx
+<6>[  640.823684] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+<6>[  640.823818] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+<6>[  640.823827] peak_pci 0000:05:00.0 can1: Returning IRQ_NONE
+<6>[  640.823829] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+<6>[  640.823838] peak_pci 0000:05:00.0 can0: Received packet.
+<6>[  640.823840] peak_pci 0000:05:00.0 can0: sja1000_rx
+<6>[  640.823880] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+Looks like this is related to running a realtime kernel.
 
-iEYEARECAAYFAlKCsJsACgkQjTAFq1RaXHNlsgCeLus5/1M2fk6WoQOoKwKKzDBz
-guUAn1ynGOF3FHEFJRhnTPauJm0MbtF7
-=Uuna
------END PGP SIGNATURE-----
-
---vKE5IhiSr50pQmMGCrxc6geKA6DRi13dp--
+> Thanks,
+> Oliver
