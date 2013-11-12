@@ -1,121 +1,211 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: GS_USB
-Date: Mon, 11 Nov 2013 22:49:39 +0100
-Message-ID: <528150F3.8090406@hartkopp.net>
-References: <1380889887.22484.2.camel@blackbox>  <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>  <5e3f6029b128db63c69664deed10c5d6@grandegger.com>  <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>  <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>  <1384135835.3749.31.camel@blackbox>  <3370f1eba56bbe04176f4d14808c1dc0@grandegger.com>  <5280FAB2.3030600@hartkopp.net> <1384199350.3483.20.camel@blackbox>
+From: swapnil <patilswa@gmail.com>
+Subject: Re: AW: Need support J1939 protocol support to my kernel (v3.8 on BeagleBone Black)
+Date: Tue, 12 Nov 2013 01:10:04 +0000 (UTC)
+Message-ID: <loom.20131112T015933-695@post.gmane.org>
+References: <zarafa.5281024a.0b28.43b8b0d35b442ecc@v14647.1blu.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.160]:8893 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751527Ab3KKVtm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Nov 2013 16:49:42 -0500
-In-Reply-To: <1384199350.3483.20.camel@blackbox>
+Received: from plane.gmane.org ([80.91.229.3]:46315 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754547Ab3KLBPF (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 11 Nov 2013 20:15:05 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Vg2ZL-0003Uk-Aj
+	for linux-can@vger.kernel.org; Tue, 12 Nov 2013 02:15:03 +0100
+Received: from c-98-212-86-243.hsd1.in.comcast.net ([98.212.86.243])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 02:15:03 +0100
+Received: from patilswa by c-98-212-86-243.hsd1.in.comcast.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 02:15:03 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
+To: linux-can@vger.kernel.org
 
+Michael Luxen <mluxen <at> gmx.net> writes:
 
+>=20
+> Hello Swapnil,
+>=20
+> I've success with building the J1939 stack on my BBB based on Debian =
+using=20
+these steps:
+>=20
+> git clone git://gitorious.org/linux-can/can-utils.git
+> cd can-utils
+> --- get J1939 stuff ---
+> git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-can=
+-
+j1939.git
+> git remote update j1939
+> --- depending on kernel ---
+> git merge j1939/v3.6
+> ...or=E2=80=A6
+> git merge j1939/v3.8
 
-On 11.11.2013 20:49, Max S. wrote:
-> Hmm. Seems I missed something.
+git merge j1939/j1939-v3.8
+after this step=20
+ubuntu@arm:~/BBB/can-utils$ git merge j1939/j1939-v3.8
+error: The following untracked working tree files would be overwritten =
+by=20
+merge:
+        .mailmap
+        COPYING
+        CREDITS
+        Documentation/.gitignore
+        Documentation/00-INDEX
+        Documentation/ABI/README
+        Documentation/ABI/obsolete/sysfs-bus-usb
+        Documentation/ABI/obsolete/sysfs-class-rfkill
+        Documentation/ABI/obsolete/sysfs-driver-hid-roccat-koneplus
+        Documentation/ABI/removed/devfs
+        Documentation/ABI/removed/dv1394
+        Documentation/ABI/removed/o2cb
+        Documentation/ABI/removed/raw1394
+        Documentation/ABI/removed/video1394
+        Documentation/ABI/stable/firewire-cdev
+        Documentation/ABI/stable/o2cb
+        Documentation/ABI/stable/syscalls
+        Documentation/ABI/stable/sysfs-acpi-pmprofile
+        Documentation/ABI/stable/sysfs-bus-firewire
+        Documentation/ABI/stable/sysfs-bus-xen-backend
+        Documentation/ABI/stable/sysfs-class-backlight
+        Documentation/ABI/stable/sysfs-class-rfkill
+        Documentation/ABI/stable/sysfs-class-ubi
+        Documentation/ABI/stable/sysfs-devices-node
+        Documentation/ABI/stable/sysfs-devices-system-xen_memory
+        Documentation/ABI/stable/sysfs-driver-qla2xxx
+        Documentation/ABI/stable/sysfs-driver-usb-usbtmc
+        Documentation/ABI/stable/sysfs-firmware-efi-vars
+        Documentation/ABI/stable/sysfs-module
+        Documentation/ABI/stable/thermal-notification
+        Documentation/ABI/stable/vdso
+        Documentation/ABI/testing/configfs-spear-pcie-gadget
+        Documentation/ABI/testing/debugfs-ec
+        Documentation/ABI/testing/debugfs-ideapad
+        Documentation/ABI/testing/debugfs-pktcdvd
+        Documentation/ABI/testing/evm
+        Documentation/ABI/testing/ima_policy
+        Documentation/ABI/testing/procfs-diskstats
+        Documentation/ABI/testing/pstore
+        Documentation/ABI/testing/sysfs-ata
+        Documentation/ABI/testing/sysfs-block
+        Documentation/ABI/testing/sysfs-block-zram
+        Documentation/ABI/testing/sysfs-bus-bcma
+        Documentation/ABI/testing/sysfs-bus-css
+        Documentation/ABI/testing/sysfs-bus-i2c-devices-fsa9480
+        Documentation/ABI/testing/sysfs-bus-i2c-devices-hm6352
+        Documentation/ABI/testing/sysfs-bus-media
+        Documentation/ABI/testing/sysfs-bus-pci
+        Documentation/ABI/testing/sysfs-bus-pci-devices-cciss
+        Documentation/ABI/testing/sysfs-bus-pci-drivers-ehci_hcd
+        Documentation/ABI/testing/sysfs-bus-rbd
+        Documentation/ABI/testing/sysfs-bus-umc
+        Documentation/ABI/testing/sysfs-bus-usb
+        Documentation/ABI/testing/sysfs-bus-usb-devices-usbsevseg
+        Documentation/ABI/testing/sysfs-c2port
+        Documentation/ABI/testing/sysfs-class
+        Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870
+        Documentation/ABI/testing/sysfs-class-bdi
+        Documentation/ABI/testing/sysfs-class-devfreq
+        Documentation/ABI/testing/sysfs-class-lcd
+        Documentation/ABI/testing/sysfs-class-led
+        Documentation/ABI/testing/sysfs-class-mtd
+        Documentation/ABI/testing/sysfs-class-net-batman-adv
+        Documentation/ABI/testing/sysfs-class-net-mesh
+        Documentation/ABI/testing/sysfs-class-pktcdvd
+        Documentation/ABI/testing/sysfs-class-power
+        Documentation/ABI/testing/sysfs-class-regulator
+        Documentation/ABI/testing/sysfs-class-rtc-rtc0-device-
+rtc_calibration
+        Documentation/ABI/testing/sysfs-class-scsi_host
+        Documentation/ABI/testing/sysfs-class-uwb_rc
+        Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
+        Documentation/ABI/testing/sysfs-dev
+        Documentation/ABI/testing/sysfs-devices
+        Documentation/ABI/testing/sysfs-devices-memory
+        Documentation/ABI/testing/sysfs-devices-mmc
+        Documentation/ABI/testing/sysfs-devices-platform-_UDC_-gadget
+        Documentation/ABI/testing/sysfs-devices-platform-docg3
+        Documentation/ABI/testing/sysfs-devices-power
+        Documentation/ABI/testing/sysfs-devices-system-cpu
+        Documentation/ABI/testing/sysfs-devices-system-ibm-rtl
+        Documentation/ABI/testing/sysfs-driver-hid
+        Documentation/ABI/testing/sysfs-driver-hid-logitech-lg4ff
+        Documentation/ABI/testing/sysfs-driver-hid-multitouch
+        Documentation/ABI/testing/sysfs-driver-hid-picolcd
+        Documentation/ABI/testing/sysfs-driver-hid-prodikeys
+        Documentation/ABI/testing/sysfs-driver-hid-roccat-arvo
+        Documentation/ABI/testing/sysfs-driver-hid-roccat-isku
+        Documentation/ABI/testing/sysfs-driver-hid-roccat-kone
+        Documentation/ABI/testing/sysfs-driver-hid-roccat-koneplus
+        Documentation/ABI/testing/sysfs-driver-hid-roccat-kovaplus
+        Docume
+Aborting
+
+didn't understand ??
+
+what is the next step
+
+>=20
+> Regards
+> Mike
+>=20
+> -----Urspr=C3=BCngliche Nachricht-----
+> Von:	Swapnil Patil <patilswa <at> gmail.com>
+> Gesendet:	Mo 11.11.2013 16:46
+> Betreff:	Need support J1939 protocol support to my kernel (v3.8 on=20
+BeagleBone Black)
+> An:	linux-can <at> vger.kernel.org;=20
+> > Hi Kurt,
+> >=20
+> >              Thanks for your reply.
+> > I am using Begalbone Black with Ubuntu 13.04
+> > I am able to transmit the RAW and extended can message over the can
+> > bus using can utility
+> > Now I want to use  J1939 stack.
+> > I downloaded the
+> > Linux-can-can-j1939-modules and Linux-can-iproute2-j1939  and tried=
+ to
+> > build them but it failed
+> >=20
+> > Log of iproute2-j1939$ make
+> >=20
+> > make[1]: Entering directory `/home/ubuntu/BBB/iproute2-j1939/misc'
+> > gcc -D_GNU_SOURCE -O2 -Wstrict-prototypes -Wall -I../include
+> > -DRESOLVE_HOSTNAM -DLIBDIR=3D\"/usr/lib/\" -I  -o arpdarpd.c
+> > ../lib/libnetlink.a ../lib/libutil.-ldb -lpthread
+> > gcc: error: arpd: No such file or directory
+> >=20
+> > Log of can-j1939-modules: make
+> > /home/ubuntu/BBB/can-j1939-modules/net/can/j1939/rtnl.c:232:25: err=
+or:
+> > =C3=A2struct netlink_skb_parms=C3=A2 has no member named=C3=A2pid=C3=
+=A2
+> > /
+> >=20
+> >       If someone already build this on Begalbone black with ubuntu
+> > 13.04 or angstrom kernel Please add the steps
+> >=20
+> > Thanks
+> > Swapnil
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-can=
+" in
+> > the body of a message to majordomo <at> vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> >
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo <at> vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
 >=20
 
 
->>>
->>> http://lxr.free-electrons.com/source/Documentation/networking/can.t=
-xt#L891
->>>
->>>
->>
->> Yes.
->>
->> Usually the CAN controller sits in BUS_OFF until it detects correct =
-CAN frames
->> _or_ until the controller is re-initialized.
->=20
-> From the CAN2.0A spec chapter 7
-> 12. An node which is =E2=80=99bus off=E2=80=99 is permitted to become=
- =E2=80=99error active=E2=80=99 (no
-> longer =E2=80=99bus off=E2=80=99) with its error counters both set to=
- 0 after 128
-> occurrence of 11 consecutive =E2=80=99recessive=E2=80=99 bits have be=
-en monitored on the
-> bus.
 
-Hm - I assume this does not mean 128*11 bits but 128 occurences of 11
-consecutive =E2=80=99recessive=E2=80=99 bits with at least one dominant=
- bit in between.
-But I'm not sure about that.
-
->=20
-> So: When the controller goes into bus off because of a short on can h=
-igh
-> to low. It will inevitably observe recessive bits. and consequently c=
-ome
-> back out of bus off. It will then attempt to resend and hit bus off
-> again. rinse & repeat.
-
-
->=20
-> Why is it necessary to be able to get the controller out of bus off
-> manually?
-
-Think about a misconfigured bitrate.
-The application should decide if it's better to stay calm (in BUS_OFF) =
-or
-whether it should try to re-initialize the CAN controller and start aga=
-in.
-
->=20
-> I was able to improve the firmware to make status updates faster.
-> The following is the current state: @250K bitrate
->  (000.000011)  can0  20000040   [8]  00 00 00 00 00 00 00 01  ERRORFR=
-AME
-> 	bus-off
-> 	error-counter-tx-rx{{0}{1}}
->  (000.005980)  can0  20000100   [8]  00 00 00 00 00 00 00 80  ERRORFR=
-AME
-> 	restarted-after-bus-off
-> 	error-counter-tx-rx{{0}{128}}
->  (000.000013)  can0  20000008   [8]  00 00 40 00 00 00 00 00  ERRORFR=
-AME
-> 	protocol-violation{{back-to-error-active}{}}
->  (000.000006)  can0  20000004   [8]  00 08 00 00 00 00 60 00  ERRORFR=
-AME
-> 	controller-problem{tx-error-warning}
-> 	error-counter-tx-rx{{96}{0}}
->  (000.000008)  can0  20000004   [8]  00 20 00 00 00 00 80 00  ERRORFR=
-AME
-> 	controller-problem{tx-error-passive}
-> 	error-counter-tx-rx{{128}{0}}
->  (000.002014)  can0  20000040   [8]  00 00 00 00 00 00 00 01  ERRORFR=
-AME
-> 	bus-off
-> 	error-counter-tx-rx{{0}{1}}
->=20
->>
->> The CAN controller should not recover itself as this might be wrong =
-depending
->> on the use-case.
->=20
-> Is recovery (getting out of bus off) not part of the CAN spec?
-
-As discussed above the controller get's out of the BUS_OFF state when
-receiving correct CAN traffic.
-
-Or by kicking the controller by restarting it :-)
-
->=20
->>
->> Therefore the manual "restart" can be initiated by some user applica=
-tion or it
->> can be handled inside the driver e.g. 200ms after a BUS_OFF detectio=
-n by the
->> "restart-ms" option.
->>
-
-Regards,
-Oliver
