@@ -1,87 +1,70 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: sja1000 interrupt problem
-Date: Mon, 11 Nov 2013 18:59:12 -0800
-Message-ID: <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
-References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
-	<3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
-	<99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
-	<CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
-	<5254608B.4080208@grandegger.com>
-	<CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
-	<be0d6725fff5298d3fb8417e4800348b@grandegger.com>
-	<CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
-	<84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
-	<CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
-	<527E44EB.9020605@hartkopp.net>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: AW: Need support J1939 protocol support to my kernel (v3.8 on
+ BeagleBone Black)
+Date: Tue, 12 Nov 2013 11:02:22 +0100
+Message-ID: <20131112100222.GA3748@vandijck-laurijssen.be>
+References: <zarafa.5281024a.0b28.43b8b0d35b442ecc@v14647.1blu.de>
+ <loom.20131112T015933-695@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ie0-f170.google.com ([209.85.223.170]:45364 "EHLO
-	mail-ie0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751336Ab3KLC7M (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 11 Nov 2013 21:59:12 -0500
-Received: by mail-ie0-f170.google.com with SMTP id to1so3762850ieb.15
-        for <linux-can@vger.kernel.org>; Mon, 11 Nov 2013 18:59:12 -0800 (PST)
-In-Reply-To: <527E44EB.9020605@hartkopp.net>
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176]:6784 "EHLO
+	mailrelay009.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752615Ab3KLKC3 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 12 Nov 2013 05:02:29 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20131112T015933-695@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: swapnil <patilswa@gmail.com>, Michael Luxen <mluxen@gmx.net>
+Cc: linux-can@vger.kernel.org
 
-Hi Oliver,
+Hey all,
 
-On Sat, Nov 9, 2013 at 6:21 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> Hello Austin,
->
-> from the trace I assume that you connected the two CAN interfaces which each
-> other and you get the tx-complete interrupt very close to the rx interrupt.
->
-> (1) Is this assumed setup correct?
+Maybe Michael was a bit too fast.
+I suspect you tried to merge the j1939 linux kernel into can-utils ?
 
-Correct, it is.
+On Tue, Nov 12, 2013 at 01:10:04AM +0000, swapnil wrote:
+> Michael Luxen <mluxen <at> gmx.net> writes:
+>=20
+> >=20
+> > Hello Swapnil,
+> >=20
+> > I've success with building the J1939 stack on my BBB based on Debia=
+n using=20
+> these steps:
+> >=20
+> > git clone git://gitorious.org/linux-can/can-utils.git
+> > cd can-utils
+> > --- get J1939 stuff ---
 
-> From the trace it is pretty hard to know which CAN interface is in charge.
-> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
+So you're in the can-utils directory now. Merge can-utils-j1939
 
-Gladly.  See the updated logs.
+$ git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/can-j1939=
+-utils.git
+$ git remote update j1939
+$ git merge j1939/master
 
-[  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
-[  556.019268] Unhandled IRQ 18... stop tracing...
-[  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
-[  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
-[  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
-[  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
-[  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
-[  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+build can-utils now.
+And then:
 
-[  785.760244] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
-[  785.760249] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
-[  785.760266] Unhandled IRQ 18... stop tracing...
-[  785.760271] peak_pci 0000:05:00.0 can1: Received packet.
-[  785.760286] peak_pci 0000:05:00.0 can1: sja1000_rx
-[  785.760303] peak_pci 0000:05:00.0 can0: TX complete.
-[  785.760317] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
-[  785.760354] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+$ cd ..
+$ git clone <your kernel>
+$ cd linux (or your linux kernel directory)
 
-[  805.392135] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
-[  805.392176] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
-[  805.392181] peak_pci 0000:05:00.0 can1: Received packet.
-[  805.392195] peak_pci 0000:05:00.0 can1: sja1000_rx
-[  805.392210] Unhandled IRQ 18... stop tracing...
-[  805.392248] peak_pci 0000:05:00.0 can0: TX complete.
-[  805.392268] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
-[  805.392271] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+and then these steps apply.
 
-> From your first post I was able to read your current kernel as:
->> $ uname -a
->> Linux vpc3 3.10-3-rt-amd64 #1 SMP PREEMPT RT Debian 3.10.11-1
->> (2013-09-10) x86_64 GNU/Linux
->
-> (3) Is it possible to use a standard (non-RT) kernel on your system to confirm
-> this issue on a unmodified system?
+> > git remote add j1939 git://gitorious.org/~kurt-vd/linux-can/linux-c=
+an-j1939.git
+> > git remote update j1939
+> > --- depending on kernel ---
+> > git merge j1939/v3.6
+> > ...or=E2=80=A6
+> > git merge j1939/v3.8
 
-It will be a bit of time before I can schedule enough time on the PC
-in question with a non-realtime kernel.  I'll see what I can do.
+Maybe this will work better.
 
-Thanks!
-    Austin
+Kind regards,
+Kurt
