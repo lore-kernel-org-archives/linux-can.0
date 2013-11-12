@@ -1,109 +1,49 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH] can: add Renesas R-Car CAN driver
-Date: Wed, 13 Nov 2013 00:45:32 +0300
-Message-ID: <5282A17C.1030309@cogentembedded.com>
-References: <201309280211.39068.sergei.shtylyov@cogentembedded.com> <524BB883.2040400@grandegger.com> <526061BE.7060204@cogentembedded.com> <52657CA1.2040708@grandegger.com> <527D89A3.1070403@cogentembedded.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: sja1000 interrupt problem
+Date: Tue, 12 Nov 2013 22:26:09 +0100
+Message-ID: <52829CF1.4010902@hartkopp.net>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com> <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com> <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com> <CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com> <5254608B.4080208@grandegger.com> <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com> <be0d6725fff5298d3fb8417e4800348b@grandegger.com> <CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com> <84ba410d04a85a783d1c1994f98d1f31@grandegger.com> <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com> <527E44EB.9020605@hartkopp.net> <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f45.google.com ([209.85.215.45]:49108 "EHLO
-	mail-la0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753864Ab3KLUp2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 15:45:28 -0500
-Received: by mail-la0-f45.google.com with SMTP id eh20so311213lab.18
-        for <linux-can@vger.kernel.org>; Tue, 12 Nov 2013 12:45:27 -0800 (PST)
-In-Reply-To: <527D89A3.1070403@cogentembedded.com>
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:21133 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754796Ab3KLV0N (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Nov 2013 16:26:13 -0500
+In-Reply-To: <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: Austin Schuh <austin@peloton-tech.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Hello.
+On 12.11.2013 03:59, Austin Schuh wrote:
 
-On 11/09/2013 04:02 AM, Sergei Shtylyov wrote:
+>> From the trace it is pretty hard to know which CAN interface is in charge.
+>> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
+> 
+> Gladly.  See the updated logs.
+> 
+> [  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+> [  556.019268] Unhandled IRQ 18... stop tracing...
+> [  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+> [  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
+> [  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
+> [  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
+> [  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+> [  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+> 
 
->>>> 2. ... with short-circuited CAN high and low and doing some time later
->>>>          a manual recovery with "ip link set can0 type can restart"
+This looks pretty broken regarding the IRQ handling.
+Maybe the IRQ thread handling has a real problem in the -rt kernel ?!?
 
->>>     Now we have auto recovery only. Manual recovery was tested with the
->>> first driver version and worked.
+>> (3) Is it possible to use a standard (non-RT) kernel on your system to confirm
+>> this issue on a unmodified system?
+> 
+> It will be a bit of time before I can schedule enough time on the PC
+> in question with a non-realtime kernel.  I'll see what I can do.
 
->> What do you mean with "auto recovery"? Auto recovery by the hardware or
->> via "restart-ms <ms>"? How do you choose between "manual" and "auto"
->> recovery?
+That would be a valuable information to go deeper into this problem.
 
->     This exact test was done with hardware auto-recovery only. No "restart-ms"
-> was programmed.
-
->>> Terminal 1:
-
->>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>> root@10.0.0.104:/opt/can-utils# ./cangen -n 1 -g 1 can0
->>> root@10.0.0.104:/opt/can-utils#
-
->>> Terminal 2:
-
->>> root@10.0.0.104:/opt/can-utils# ./candump -td -e any,0:0,#FFFFFFFF
->>> (000.000000) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>> controller-problem{}
->>> protocol-violation{{tx-dominant-bit-error}{}}
->>> bus-error
->>> (000.021147) can0 20000144 [8] 00 00 00 00 00 00 00 00 ERRORFRAME
->>> controller-problem{}
->>> bus-off
->>> restarted-after-bus-off
-
->> Why does it get "restarted" directly after the bus-off?
-
->     Because we have hardware auto-recovery enabled.
-
->>> (011.738522) can0 2000008C [8] 00 00 08 00 00 00 00 00 ERRORFRAME
->>> controller-problem{}
-
->> What controller problem? data[1] is not set for some reasom.
-
->     Not comments. Looking into it.
-
-    Sorry, this has been fixed a while ago. Now the log looks like:
-
-root@10.0.0.104:/opt/can-utils#  ./candump -td -e any,0:0,#FFFFFFFF
-  (000.000000)  can0  2000008C   [8]  00 28 08 00 00 00 88 00 ERRORFRAME
-         controller-problem{tx-error-warning,tx-error-passive}
-         protocol-violation{{tx-dominant-bit-error}{}}
-         bus-error
-         error-counter-tx-rx{{136}{0}}
-  (000.007578)  can0  20000040   [8]  00 00 00 00 00 00 00 00 ERRORFRAME
-         bus-off
-  (000.091847)  can0  20000100   [8]  00 00 00 00 00 00 00 00 ERRORFRAME
-         restarted-after-bus-off
-  (056.136722)  can0  2000008C   [8]  00 28 08 00 00 00 88 00 ERRORFRAME
-         controller-problem{tx-error-warning,tx-error-passive}
-         protocol-violation{{tx-dominant-bit-error}{}}
-         bus-error
-         error-counter-tx-rx{{136}{0}}
-
->>> dmesg:
->>> rcar_can rcar_can.0 can0: Error warning interrupt
->>> rcar_can rcar_can.0 can0: Error passive interrupt
->>> rcar_can rcar_can.0 can0: Bus error interrupt:
->>> rcar_can rcar_can.0 can0: Bit Error (dominant)
->>> rcar_can rcar_can.0 can0: Error warning interrupt
->>> rcar_can rcar_can.0 can0: Error passive interrupt
-
->> Why are they reported again. You are already in error passive.
-
->     Don't know. :-/
-
-    This also has been dealt with. Here's an example:
-
-rcar_can rcar_can.0 can0: Bus error interrupt:
-rcar_can rcar_can.0 can0: ACK Error
-rcar_can rcar_can.0 can0: Error warning interrupt
-rcar_can rcar_can.0 can0: Bus error interrupt:
-rcar_can rcar_can.0 can0: ACK Error
-rcar_can rcar_can.0 can0: Error passive interrupt
-
-WBR, Sergei
-
+Thanks,
+Oliver
