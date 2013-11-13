@@ -1,205 +1,199 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/3] can: mcp251x: Add device tree support
-Date: Wed, 13 Nov 2013 10:16:43 +0100
-Message-ID: <5283437B.3010309@pengutronix.de>
-References: <1384332341-15363-1-git-send-email-shc_work@mail.ru>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: sja1000 interrupt problem
+Date: Wed, 13 Nov 2013 10:48:48 +0100
+Message-ID: <20131113094848.GB14784@vandijck-laurijssen.be>
+References: <be0d6725fff5298d3fb8417e4800348b@grandegger.com>
+ <CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
+ <84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
+ <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+ <527E44EB.9020605@hartkopp.net>
+ <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
+ <52829CF1.4010902@hartkopp.net>
+ <CANGgnMZM-9cObw=Bh-VCsbn4b68+jhxCEptOaepbNna+KSGZmQ@mail.gmail.com>
+ <CANGgnMaCvb=B2r997e+H9UjVquX66HJ+OtftL0EyGP7MKcy0tQ@mail.gmail.com>
+ <52832333.9080908@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Sn3KamJA7DWVC7vNtH7rnPrnLeUplxJVN"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56111 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759078Ab3KMJRH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Nov 2013 04:17:07 -0500
-In-Reply-To: <1384332341-15363-1-git-send-email-shc_work@mail.ru>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:38382 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758185Ab3KMJtA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Nov 2013 04:49:00 -0500
+Content-Disposition: inline
+In-Reply-To: <52832333.9080908@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Austin Schuh <austin@peloton-tech.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Sn3KamJA7DWVC7vNtH7rnPrnLeUplxJVN
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 11/13/2013 09:45 AM, Alexander Shiyan wrote:
-> This patch adds Device Tree support to the Microchip MCP251X driver.
->=20
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  .../bindings/net/can/microchip,mcp251x.txt         | 25 ++++++++++
->  drivers/net/can/mcp251x.c                          | 57 ++++++++++++++=
-++------
->  2 files changed, 66 insertions(+), 16 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/microchip=
-,mcp251x.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251=
-x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
-> new file mode 100644
-> index 0000000..06d95ee
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
-> @@ -0,0 +1,25 @@
-> +* Microchip MCP251X device tree bindings
-> +
-> +Registers a Microchip MCP251X stand-alone CAN controller connected to =
-SPI bus.
-> +
-> +Required properties:
-> + - compatible: Should be one of the following:
-> +   - "microchip,mcp2510" for MCP2510.
-> +   - "microchip,mcp2515" for MCP2515.
-> + - reg: SPI chip select.
-> + - clocks: The clock feeding the CAN controller.
-> + - interrupt-parent: The parent interrupt controller.
-> + - interrupts: Should contain IRQ line for the CAN controller.
-> +
-> +Optional properties:
-> + - vdd-supply: Regulator that powers the CAN controller.
-> + - xceiver-supply: Regulator that powers the CAN transceiver.
-> +
-> +Example:
-> +	can0: can@1 {
-> +		compatible =3D "microchip,mcp2515";
-> +		reg =3D <1>;
-> +		clocks =3D <&clk24m>;
-> +		interrupt-parent =3D <&gpio4>;
-> +		interrupts =3D <13 0x2>;
-> +	};
-> diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-> index 8e133aa..9aa2822 100644
-> --- a/drivers/net/can/mcp251x.c
-> +++ b/drivers/net/can/mcp251x.c
-> @@ -60,6 +60,8 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/netdevice.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/spi/spi.h>
-> @@ -987,10 +989,38 @@ static const struct net_device_ops mcp251x_netdev=
-_ops =3D {
->  	.ndo_start_xmit =3D mcp251x_hard_start_xmit,
->  };
-> =20
-> +static struct of_device_id mcp251x_of_match[] =3D {
-> +	{
-> +		.compatible	=3D "microchip,mcp2510",
-> +		.data		=3D (void *)CAN_MCP251X_MCP2510,
-> +	},
-> +	{
-> +		.compatible	=3D "microchip,mcp2515",
-> +		.data		=3D (void *)CAN_MCP251X_MCP2515,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, mcp251x_of_match);
-> +
-> +static const struct spi_device_id mcp251x_id_table[] =3D {
-> +	{
-> +		.name		=3D "mcp2510",
-> +		.driver_data	=3D (kernel_ulong_t)CAN_MCP251X_MCP2510,
-> +	},
-> +	{
-> +		.name		=3D "mcp2515",
-> +		.driver_data	=3D (kernel_ulong_t)CAN_MCP251X_MCP2515,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
-> +
->  static int mcp251x_can_probe(struct spi_device *spi)
->  {
->  	struct net_device *net;
->  	struct mcp251x_priv *priv;
-> +	const struct of_device_id *of_id =3D of_match_device(mcp251x_of_match=
-,
-> +							   &spi->dev);
->  	int ret;
-> =20
->  	/* Allocate can/net device */
-> @@ -1017,7 +1047,10 @@ static int mcp251x_can_probe(struct spi_device *=
-spi)
->  	priv->can.clock.freq =3D clk_get_rate(priv->clk) / 2;
->  	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES |
->  		CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY;
-> -	priv->model =3D spi_get_device_id(spi)->driver_data;
-> +	if (of_id)
-> +		priv->model =3D (enum mcp251x_model)of_id->data;
-> +	else
-> +		priv->model =3D spi_get_device_id(spi)->driver_data;
->  	priv->net =3D net;
-> =20
->  	priv->power =3D devm_regulator_get(&spi->dev, "vdd");
-> @@ -1198,24 +1231,16 @@ static int mcp251x_can_resume(struct device *de=
-v)
->  static SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
->  	mcp251x_can_resume);
-> =20
-> -static const struct spi_device_id mcp251x_id_table[] =3D {
-> -	{ "mcp2510",	CAN_MCP251X_MCP2510 },
-> -	{ "mcp2515",	CAN_MCP251X_MCP2515 },
-> -	{ },
-> -};
-> -
-> -MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
-> -
->  static struct spi_driver mcp251x_can_driver =3D {
->  	.driver =3D {
-> -		.name =3D DEVICE_NAME,
-> -		.owner =3D THIS_MODULE,
-> -		.pm =3D &mcp251x_can_pm_ops,
-> +		.name		=3D DEVICE_NAME,
-> +		.owner		=3D THIS_MODULE,
-> +		.of_match_table	=3D of_match_ptr(mcp251x_of_match),
-> +		.pm		=3D &mcp251x_can_pm_ops,
->  	},
-> -
-> -	.id_table =3D mcp251x_id_table,
-> -	.probe =3D mcp251x_can_probe,
-> -	.remove =3D mcp251x_can_remove,
-> +	.id_table	=3D mcp251x_id_table,
-> +	.probe		=3D mcp251x_can_probe,
-> +	.remove		=3D mcp251x_can_remove,
+I followed this interesting 'thread'.
+I'm not sure this is a contribution, but I share my idea already
+since it may help.
 
-Please don't reformat this. I personally don't like alignment here, as
-it tends to be to short if another member is added to the struct.
+It appears that the -rt is affecting the peak_pci driver.
+So I started looking into the SJA1000+peak_pci combination.
 
-Looks good otherwise, please add my:
+The peak_pci PITA does not look strange. The channel mask
+is used, so I don't suspect a locking problem there.
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+schematically, the current situation:
+1. deal with SJA1000 IRQ
+2. handle PITA
 
-Marc
+I'm not very familiar with the precise function of the PITA.
+What I do find strange is that the PITA is handled _after_
+processing the SJA1000 IRQ. This means that between processing
+the last SJA1000 IRQ and handling PITA, a new event may arrive.
+Especially when scheduling takes place in between.
 
->  };
->  module_spi_driver(mcp251x_can_driver);
-> =20
->=20
+Ideally, I would try:
+1. disable SJA1000 IRQ (make sure the hardware returns idle again)
+2. handle PITA (the kernel knows it must do something)
+3. handle SJA1000 IRQ (do something)
+4. enable SJA1000 IRQ
+
+This alternative sequence would effectively get an SJA1000's irq
+line idle, and let the PITA know that.
+If after handling the IRQ some event happens again, then the
+irq line get active again when enabling the SJA1000 IRQ.
+
+To make sure I expressed myself well, I attached a very elementary
+patch that shows what I actually mean.
+
+Kurt
+
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 83ee11e..a235ea0 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -494,15 +494,21 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	if (priv->read_reg(priv, REG_IER) == IRQ_OFF)
+ 		return IRQ_NONE;
+ 
++	priv->write_reg(priv, REG_IER, 0);
++
+ 	if (priv->pre_irq)
+ 		priv->pre_irq(priv);
++	/* do the post irq as a workaround.
++	   better rework the driver to use pre_irq */
++	if (priv->post_irq)
++		priv->post_irq(priv);
+ 
+ 	while ((isrc = priv->read_reg(priv, REG_IR)) && (n < SJA1000_MAX_IRQ)) {
+ 		n++;
+ 		status = priv->read_reg(priv, REG_SR);
+ 		/* check for absent controller due to hw unplug */
+ 		if (status == 0xFF && sja1000_is_absent(priv))
+-			return IRQ_NONE;
++			goto done;
+ 
+ 		if (isrc & IRQ_WUI)
+ 			netdev_warn(dev, "wakeup interrupt\n");
+@@ -529,7 +535,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				status = priv->read_reg(priv, REG_SR);
+ 				/* check for absent controller */
+ 				if (status == 0xFF && sja1000_is_absent(priv))
+-					return IRQ_NONE;
++					goto done;
+ 			}
+ 		}
+ 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
+@@ -539,12 +545,13 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 		}
+ 	}
+ 
+-	if (priv->post_irq)
+-		priv->post_irq(priv);
+-
+ 	if (n >= SJA1000_MAX_IRQ)
+ 		netdev_dbg(dev, "%d messages handled in ISR", n);
+ 
++done:
++	/* IRQ_ALL should become the same as used in set_normal_mode */
++	priv->write_reg(priv, REG_IER, IRQ_ALL);
++
+ 	return (n) ? IRQ_HANDLED : IRQ_NONE;
+ }
+ EXPORT_SYMBOL_GPL(sja1000_interrupt);
 
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Sn3KamJA7DWVC7vNtH7rnPrnLeUplxJVN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKDQ3sACgkQjTAFq1RaXHMKJACfcbugTbCbWLfYwA/UrRGxm2oh
-bL4An1KB0TvzuaTY11TCFhkcioo2VupY
-=R436
------END PGP SIGNATURE-----
-
---Sn3KamJA7DWVC7vNtH7rnPrnLeUplxJVN--
+On Wed, Nov 13, 2013 at 07:58:59AM +0100, Oliver Hartkopp wrote:
+> Hi Austin,
+> 
+> sorry for checking my mails in sequential order :-)
+> I would have been able to shorten the last mail.
+> 
+> Thanks for your interesting investigation.
+> I wonder why this problem did not show up before then. Having shared
+> interrupts should be a usual thing.
+> 
+> This kind of race condition should not be there at all. Do you have a second
+> peak_pci hardware? I could be an idea to try to split the IRQs in a way that
+> you have two IRQs for two cards - and then connect can0 to can2.
+> You would have a pretty fast following RX/TX interrupt but without interrupt
+> sharing ...
+> 
+> Best regards,
+> Oliver
+> 
+> On 13.11.2013 04:41, Austin Schuh wrote:
+> > On Tue, Nov 12, 2013 at 3:22 PM, Austin Schuh <austin@peloton-tech.com> wrote:
+> >> On Tue, Nov 12, 2013 at 1:26 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> >>> On 12.11.2013 03:59, Austin Schuh wrote:
+> >>>
+> >>>>> From the trace it is pretty hard to know which CAN interface is in charge.
+> >>>>> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
+> >>>>
+> >>>> Gladly.  See the updated logs.
+> >>>>
+> >>>> [  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+> >>>> [  556.019268] Unhandled IRQ 18... stop tracing...
+> >>>> [  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+> >>>> [  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
+> >>>> [  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
+> >>>> [  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
+> >>>> [  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+> >>>> [  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+> >>>>
+> >>>
+> >>> This looks pretty broken regarding the IRQ handling.
+> >>> Maybe the IRQ thread handling has a real problem in the -rt kernel ?!?
+> >>
+> >> Sounds pretty plausible right now.
+> > 
+> > Ok, I spent a good chunk of today reading the IRQ handling code in the
+> > kernel, and I think I get what is happening and have a plausible
+> > explanation for why the interrupt is getting disabled.  Not sure how
+> > to test it.
+> > 
+> > Here is what it looks like is happening.  The hardware triggers an
+> > interrupt.  The handler is called, and then the registered action for
+> > each of the devices is to notify their threads that an IRQ occurred,
+> > and to have them handle it.  Each of the handling threads then calls
+> > the sja1000_interrupt function, or the equivalent ata_generic
+> > interrupt function.  2 of the 3 interrupt functions then return
+> > IRQ_NONE, and one of them returns IRQ_HANDLED.  note_interrupt is then
+> > called in each of the threads (instead of being called once in the
+> > non-rt case), resulting in 2 unhanded calls, and 1 handled call.  So
+> > far, so good.  The kernel operates as expected, since less than 99.9 %
+> > of the interrupts are handled.  (There is a note_interrupt call in the
+> > handler, but since the threaded handlers are notified, this doesn't
+> > get counted.
+> > 
+> > Since the IRQ handlers are now all in threads, if the thread that
+> > actually receives data doesn't process the interrupts either because
+> > something goes wrong, or because it doesn't get scheduled, there will
+> > be a bunch of unhanded interrupts noted, and no handled interrupts
+> > noted.  This will cause the IRQ to be disabled.
+> > 
+> > I guess the next interesting thing to do is to trigger when it
+> > disables the IRQ and take a look at what is happening.  I have a test
+> > running on one machine with tracing enabled which will disable tracing
+> > when the IRQ is disabled.  That should provide some interesting
+> > results.  I think I also know how to bypass it for now by setting
+> > "noirqdebug", but I'd like to fix it for real as well.
+> > 
+> > Austin
+> > 
