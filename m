@@ -1,191 +1,345 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: sja1000 interrupt problem
-Date: Wed, 13 Nov 2013 09:11:58 +0100
-Message-ID: <f323c29b9730c877729322453b9e4ec9@grandegger.com>
-References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
- <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
- <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
- <CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
- <5254608B.4080208@grandegger.com>
- <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
- <be0d6725fff5298d3fb8417e4800348b@grandegger.com>
- <CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
- <84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
- <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
- <527E44EB.9020605@hartkopp.net>
- <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
- <52829CF1.4010902@hartkopp.net>
- <CANGgnMZM-9cObw=Bh-VCsbn4b68+jhxCEptOaepbNna+KSGZmQ@mail.gmail.com>
- <52831FC7.3040509@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:57536 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758517Ab3KMIMA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 13 Nov 2013 03:12:00 -0500
-In-Reply-To: <52831FC7.3040509@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
-
-On Wed, 13 Nov 2013 07:44:23 +0100, Oliver Hartkopp
-
-<socketcan@hartkopp.net> wrote:
-
-> On 13.11.2013 00:22, Austin Schuh wrote:
-
-> 
-
->> Here is what is in the syslog from the same machine sending to it's
-
->> self with a non-realtime kernel.
-
->> 
-
->> # uname -a
-
->> Linux vpc5 3.10-3-amd64 #1 SMP Debian 3.10.11-2 (2013-09-10) x86_64
-
->> GNU/Linux
-
->> 
-
->> <6>[  169.993870] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
-
->> <6>[  169.993904] peak_pci 0000:05:00.0 can1: Received packet.
-
->> <6>[  169.993923] peak_pci 0000:05:00.0 can1: sja1000_rx
-
->> <6>[  169.993994] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
-
->> <6>[  169.994013] peak_pci 0000:05:00.0 can1: Found can1, disabling
-
->> tracing.
-
->> <6>[  169.994029] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
-
->> <6>[  169.994048] peak_pci 0000:05:00.0 can0: TX complete.
-
->> <6>[  169.994061] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
-
-> 
-
-> This looks indeed much better :-)
-
-
-
-Note that the -rt uses threaded interrupt handlers, which can run on
-
-separate
-
-CPUs (just have a look to the function traces Austin provide), Looks like
-
-vanilla is just less sensitive to races.
-
-
-
->> When I attach the CAN device which continually sends, I get the
-
->> following.  (The front might be snipped improperly, not sure.)
-
->> 
-
->> <6>[  640.823323] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
-
->> <6>[  640.823331] peak_pci 0000:05:00.0 can1: Returning IRQ_NONE
-
->> <6>[  640.823334] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
-
->> <6>[  640.823344] peak_pci 0000:05:00.0 can0: Received packet.
-
->> <6>[  640.823346] peak_pci 0000:05:00.0 can0: sja1000_rx
-
->> <6>[  640.823391] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
-
-> 
-
-> This is a correct behaviour too:
-
-
-
-It is not a requirement that the (shared) handler are called sequentially.
-
-
-
-> The shared IRQ is handled by can1 (which had nothing to do) and then the
-
-> chain
-
-> goes to can0 which handles the reception correctly.
-
-> 
-
-> @Wolfgang: Do we need an additional protection for the PITA handling in
-
-> peak_pci.c ?
-
-
-
-Don't know. It depends on the hardware. The interrupt is cleared by
-
-writing the
-
-relevant bit to the PITA register. Looks save at a first glance but maybe
-
-the
-
-hardware is not smart enough. Adding spinlock protection would quickly
-
-reveal if
-
-that is the problem. Anyway, there could be other races as well.
-
-
-
-I can imaging another problem with the following returns:
-
-
-
-      /* check for absent controller due to hw unplug */
-
-      if (status == 0xFF && sja1000_is_absent(priv))
-
-          return IRQ_NONE;
-
-
-
-Austin, could you please check if they occur.
-
-
-
-> @Austin:
-
-> I have another idea to test, if it just shows up in the mainline driver:
-
-> 
-
-> Can you please download the out-of-tree driver from PEAK (version 7.9):
-
-> 
-
-> http://www.peak-system.com/linux/index.htm
-
-> 
-
-> I wonder if this one actually compiles with a -rt kernel and if it shows
-
-up
-
-> the same issue then.
-
-
-
-Well, we should better fix the problem in the Linux CAN driver. 
-
-
-
-Wolfgang.
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH 1/3] can: mcp251x: Convert driver to use common clk framework
+Date: Wed, 13 Nov 2013 12:42:24 +0400
+Message-ID: <1384332144-15211-1-git-send-email-shc_work@mail.ru>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Russell King <linux@arm.linux.org.uk>, Sascha Hauer <kernel@pengutronix.de>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
+List-Id: linux-can.vger.kernel.org
+
+This patch converts mcp251x driver to using common clk framework
+for getting input frequency. The change was made for the preparation
+of the driver work with the devicetree. As a result private header
+for the driver is eliminated.
+Additionally, all existing users of the driver was converted to use
+this feature.
+
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ arch/arm/mach-imx/mach-cpuimx51sd.c  | 18 ++++++++++----
+ arch/arm/mach-pxa/icontrol.c         | 23 +++++++++++------
+ arch/arm/mach-pxa/zeus.c             | 18 ++++++++++----
+ drivers/net/can/mcp251x.c            | 48 ++++++++++++++++++------------------
+ include/linux/can/platform/mcp251x.h | 21 ----------------
+ 5 files changed, 65 insertions(+), 63 deletions(-)
+ delete mode 100644 include/linux/can/platform/mcp251x.h
+
+diff --git a/arch/arm/mach-imx/mach-cpuimx51sd.c b/arch/arm/mach-imx/mach-cpuimx51sd.c
+index 9b5ddf5..493c0fc 100644
+--- a/arch/arm/mach-imx/mach-cpuimx51sd.c
++++ b/arch/arm/mach-imx/mach-cpuimx51sd.c
+@@ -24,7 +24,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/i2c-gpio.h>
+ #include <linux/spi/spi.h>
+-#include <linux/can/platform/mcp251x.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/mach-types.h>
+@@ -244,9 +245,14 @@ static struct platform_device hsi2c_gpio_device = {
+ 	.dev.platform_data	= &pdata,
+ };
+ 
+-static struct mcp251x_platform_data mcp251x_info = {
+-	.oscillator_frequency = 24E6,
+-};
++static void initialize_clocks(void)
++{
++	struct clk *clk24;
++
++	clk24 = clk_register_fixed_rate(NULL, "clk24", NULL,
++					CLK_IS_ROOT, 24000000);
++	clk_register_clkdev(clk24, NULL, "spi0.0");
++}
+ 
+ static struct spi_board_info cpuimx51sd_spi_device[] = {
+ 	{
+@@ -255,7 +261,6 @@ static struct spi_board_info cpuimx51sd_spi_device[] = {
+ 		.bus_num         = 0,
+ 		.mode		= SPI_MODE_0,
+ 		.chip_select     = 0,
+-		.platform_data   = &mcp251x_info,
+ 		/* irq number is run-time assigned */
+ 	},
+ };
+@@ -302,6 +307,9 @@ static void __init eukrea_cpuimx51sd_init(void)
+ 	gpio_direction_output(CAN_RST, 0);
+ 	msleep(20);
+ 	gpio_set_value(CAN_RST, 1);
++
++	initialize_clocks();
++
+ 	imx51_add_ecspi(0, &cpuimx51sd_ecspi1_pdata);
+ 	cpuimx51sd_spi_device[0].irq = gpio_to_irq(CAN_IRQGPIO);
+ 	spi_register_board_info(cpuimx51sd_spi_device,
+diff --git a/arch/arm/mach-pxa/icontrol.c b/arch/arm/mach-pxa/icontrol.c
+index c98511c..ebf453e 100644
+--- a/arch/arm/mach-pxa/icontrol.c
++++ b/arch/arm/mach-pxa/icontrol.c
+@@ -23,9 +23,10 @@
+ #include <mach/pxa320.h>
+ #include <mach/mxm8x10.h>
+ 
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/pxa2xx_spi.h>
+-#include <linux/can/platform/mcp251x.h>
+ 
+ #include "generic.h"
+ 
+@@ -71,9 +72,17 @@ static struct pxa2xx_spi_chip mcp251x_chip_info4 = {
+ 	.gpio_cs        = ICONTROL_MCP251x_nCS4
+ };
+ 
+-static struct mcp251x_platform_data mcp251x_info = {
+-	.oscillator_frequency = 16E6,
+-};
++static void initialize_clocks(void)
++{
++	struct clk *clk16;
++
++	clk16 = clk_register_fixed_rate(NULL, "clk16", NULL,
++					CLK_IS_ROOT, 16000000);
++	clk_register_clkdev(clk16, NULL, "spi3.0");
++	clk_register_clkdev(clk16, NULL, "spi3.1");
++	clk_register_clkdev(clk16, NULL, "spi4.0");
++	clk_register_clkdev(clk16, NULL, "spi4.1");
++}
+ 
+ static struct spi_board_info mcp251x_board_info[] = {
+ 	{
+@@ -81,7 +90,6 @@ static struct spi_board_info mcp251x_board_info[] = {
+ 		.max_speed_hz    = 6500000,
+ 		.bus_num         = 3,
+ 		.chip_select     = 0,
+-		.platform_data   = &mcp251x_info,
+ 		.controller_data = &mcp251x_chip_info1,
+ 		.irq             = PXA_GPIO_TO_IRQ(ICONTROL_MCP251x_nIRQ1)
+ 	},
+@@ -90,7 +98,6 @@ static struct spi_board_info mcp251x_board_info[] = {
+ 		.max_speed_hz    = 6500000,
+ 		.bus_num         = 3,
+ 		.chip_select     = 1,
+-		.platform_data   = &mcp251x_info,
+ 		.controller_data = &mcp251x_chip_info2,
+ 		.irq             = PXA_GPIO_TO_IRQ(ICONTROL_MCP251x_nIRQ2)
+ 	},
+@@ -99,7 +106,6 @@ static struct spi_board_info mcp251x_board_info[] = {
+ 		.max_speed_hz    = 6500000,
+ 		.bus_num         = 4,
+ 		.chip_select     = 0,
+-		.platform_data   = &mcp251x_info,
+ 		.controller_data = &mcp251x_chip_info3,
+ 		.irq             = PXA_GPIO_TO_IRQ(ICONTROL_MCP251x_nIRQ3)
+ 	},
+@@ -108,7 +114,6 @@ static struct spi_board_info mcp251x_board_info[] = {
+ 		.max_speed_hz    = 6500000,
+ 		.bus_num         = 4,
+ 		.chip_select     = 1,
+-		.platform_data   = &mcp251x_info,
+ 		.controller_data = &mcp251x_chip_info4,
+ 		.irq             = PXA_GPIO_TO_IRQ(ICONTROL_MCP251x_nIRQ4)
+ 	}
+@@ -173,6 +178,8 @@ static mfp_cfg_t mfp_can_cfg[] __initdata = {
+ 
+ static void __init icontrol_can_init(void)
+ {
++	initialize_clocks();
++
+ 	pxa3xx_mfp_config(ARRAY_AND_SIZE(mfp_can_cfg));
+ 	platform_add_devices(ARRAY_AND_SIZE(icontrol_spi_devices));
+ 	spi_register_board_info(ARRAY_AND_SIZE(mcp251x_board_info));
+diff --git a/arch/arm/mach-pxa/zeus.c b/arch/arm/mach-pxa/zeus.c
+index b19d1c3..7009e6e 100644
+--- a/arch/arm/mach-pxa/zeus.c
++++ b/arch/arm/mach-pxa/zeus.c
+@@ -28,7 +28,8 @@
+ #include <linux/i2c/pxa-i2c.h>
+ #include <linux/platform_data/pca953x.h>
+ #include <linux/apm-emulation.h>
+-#include <linux/can/platform/mcp251x.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
+ #include <linux/regulator/fixed.h>
+ #include <linux/regulator/machine.h>
+ 
+@@ -419,14 +420,18 @@ static struct platform_device can_regulator_device = {
+ 	},
+ };
+ 
+-static struct mcp251x_platform_data zeus_mcp2515_pdata = {
+-	.oscillator_frequency	= 16*1000*1000,
+-};
++static void initialize_clocks(void)
++{
++	struct clk *clk16;
++
++	clk16 = clk_register_fixed_rate(NULL, "clk16", NULL,
++					CLK_IS_ROOT, 16000000);
++	clk_register_clkdev(clk16, NULL, "spi3.0");
++}
+ 
+ static struct spi_board_info zeus_spi_board_info[] = {
+ 	[0] = {
+ 		.modalias	= "mcp2515",
+-		.platform_data	= &zeus_mcp2515_pdata,
+ 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_CAN_GPIO),
+ 		.max_speed_hz	= 1*1000*1000,
+ 		.bus_num	= 3,
+@@ -859,6 +864,9 @@ static void __init zeus_init(void)
+ 	pxa_set_ac97_info(&zeus_ac97_info);
+ 	pxa_set_i2c_info(NULL);
+ 	i2c_register_board_info(0, ARRAY_AND_SIZE(zeus_i2c_devices));
++
++	initialize_clocks();
++
+ 	pxa2xx_set_spi_info(3, &pxa2xx_spi_ssp3_master_info);
+ 	spi_register_board_info(zeus_spi_board_info, ARRAY_SIZE(zeus_spi_board_info));
+ }
+diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
+index 08ac401..3a8d80b 100644
+--- a/drivers/net/can/mcp251x.c
++++ b/drivers/net/can/mcp251x.c
+@@ -35,30 +35,21 @@
+  *
+  * Your platform definition file should specify something like:
+  *
+- * static struct mcp251x_platform_data mcp251x_info = {
+- *         .oscillator_frequency = 8000000,
+- * };
+- *
+  * static struct spi_board_info spi_board_info[] = {
+  *         {
+  *                 .modalias = "mcp2510",
+  *			// or "mcp2515" depending on your controller
+- *                 .platform_data = &mcp251x_info,
+  *                 .irq = IRQ_EINT13,
+  *                 .max_speed_hz = 2*1000*1000,
+  *                 .chip_select = 2,
+  *         },
+  * };
+- *
+- * Please see mcp251x.h for a description of the fields in
+- * struct mcp251x_platform_data.
+- *
+  */
+ 
+ #include <linux/can/core.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/led.h>
+-#include <linux/can/platform/mcp251x.h>
++#include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+@@ -264,6 +255,7 @@ struct mcp251x_priv {
+ 	int restart_tx;
+ 	struct regulator *power;
+ 	struct regulator *transceiver;
++	struct clk *clk;
+ };
+ 
+ #define MCP251X_IS(_model) \
+@@ -999,27 +991,30 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ {
+ 	struct net_device *net;
+ 	struct mcp251x_priv *priv;
+-	struct mcp251x_platform_data *pdata = dev_get_platdata(&spi->dev);
+-	int ret = -ENODEV;
+-
+-	if (!pdata)
+-		/* Platform data is required for osc freq */
+-		goto error_out;
++	int ret;
+ 
+ 	/* Allocate can/net device */
+ 	net = alloc_candev(sizeof(struct mcp251x_priv), TX_ECHO_SKB_MAX);
+-	if (!net) {
+-		ret = -ENOMEM;
+-		goto error_alloc;
+-	}
++	if (!net)
++		return -ENOMEM;
+ 
+ 	net->netdev_ops = &mcp251x_netdev_ops;
+ 	net->flags |= IFF_ECHO;
+ 
+ 	priv = netdev_priv(net);
++
++	priv->clk = devm_clk_get(&spi->dev, NULL);
++	if (IS_ERR(priv->clk))
++		ret = PTR_ERR(priv->clk);
++	else
++		ret = clk_prepare_enable(priv->clk);
++
++	if (ret)
++		goto error_clk;
++
+ 	priv->can.bittiming_const = &mcp251x_bittiming_const;
+ 	priv->can.do_set_mode = mcp251x_do_set_mode;
+-	priv->can.clock.freq = pdata->oscillator_frequency / 2;
++	priv->can.clock.freq = clk_get_rate(priv->clk) / 2;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+ 		CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY;
+ 	priv->model = spi_get_device_id(spi)->driver_data;
+@@ -1117,12 +1112,15 @@ error_tx_buf:
+ 	if (mcp251x_enable_dma)
+ 		dma_free_coherent(&spi->dev, PAGE_SIZE,
+ 				  priv->spi_tx_buf, priv->spi_tx_dma);
++
+ 	mcp251x_power_enable(priv->power, 0);
++
+ error_power:
++	clk_disable_unprepare(priv->clk);
++
++error_clk:
+ 	free_candev(net);
+-error_alloc:
+-	dev_err(&spi->dev, "probe failed\n");
+-error_out:
++
+ 	return ret;
+ }
+ 
+@@ -1143,6 +1141,8 @@ static int mcp251x_can_remove(struct spi_device *spi)
+ 
+ 	mcp251x_power_enable(priv->power, 0);
+ 
++	clk_disable_unprepare(priv->clk);
++
+ 	free_candev(net);
+ 
+ 	return 0;
+diff --git a/include/linux/can/platform/mcp251x.h b/include/linux/can/platform/mcp251x.h
+deleted file mode 100644
+index dc029db..0000000
+--- a/include/linux/can/platform/mcp251x.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-#ifndef __CAN_PLATFORM_MCP251X_H__
+-#define __CAN_PLATFORM_MCP251X_H__
+-
+-/*
+- *
+- * CAN bus driver for Microchip 251x CAN Controller with SPI Interface
+- *
+- */
+-
+-#include <linux/spi/spi.h>
+-
+-/*
+- * struct mcp251x_platform_data - MCP251X SPI CAN controller platform data
+- * @oscillator_frequency:       - oscillator frequency in Hz
+- */
+-
+-struct mcp251x_platform_data {
+-	unsigned long oscillator_frequency;
+-};
+-
+-#endif /* __CAN_PLATFORM_MCP251X_H__ */
+-- 
+1.8.1.5
