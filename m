@@ -1,218 +1,84 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: sja1000 interrupt problem
-Date: Wed, 13 Nov 2013 10:52:59 +0100
-Message-ID: <5654b3a33cce286efc0ef2729ca33f03@grandegger.com>
-References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
- <52831FC7.3040509@hartkopp.net>
- <f323c29b9730c877729322453b9e4ec9@grandegger.com>
- <201311131008.55018.pisa@cmp.felk.cvut.cz>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Kumar Gala <galak@codeaurora.org>
+Subject: Re: [PATCH 3/3] can: mcp251x: Add device tree support
+Date: Wed, 13 Nov 2013 04:53:02 -0600
+Message-ID: <7E7A9748-D946-4FDD-A764-6C7ECA44B890@codeaurora.org>
+References: <1384332341-15363-1-git-send-email-shc_work@mail.ru>
+Mime-Version: 1.0 (Mac OS X Mail 7.0 \(1822\))
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from uranus.manitu.net ([217.11.48.8]:52053 "EHLO uranus.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758999Ab3KMJxB (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 13 Nov 2013 04:53:01 -0500
-In-Reply-To: <201311131008.55018.pisa@cmp.felk.cvut.cz>
+Received: from smtp.codeaurora.org ([198.145.11.231]:57692 "EHLO
+	smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752290Ab3KMKxI convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Nov 2013 05:53:08 -0500
+In-Reply-To: <1384332341-15363-1-git-send-email-shc_work@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
-
-Hi Pavel,
-
-
-
-On Wed, 13 Nov 2013 10:08:54 +0100, Pavel Pisa <pisa@cmp.felk.cvut.cz>
-
-wrote:
-
-> Hello all,
-
-> 
-
-> I have noticed that you speak about PITA in the thread.
-
-> 
-
-> There can be problem that local bus IRQs are shared
-
-> and sensed as edge triggered on the PITa but PCI
-
-> interrupt processing is selected for level sharing
-
-> between PCI cards/sources. That means, when IRQ
-
-> on the first SJA1000 chip is activated exactly after
-
-> it was checked in ISR and before other chip's IRQ
-
-> is cleared than you receive no more any IRQ until
-
-> forced/polled check of the first chip.
-
-> 
-
-> Please, check what kind of the PCI to local-bus bridge
-
-> is on the card if my explanation applies. If it is Infineon
-
-> PSB4610 PITA-2  or some similar chip than it is possible
-
-> that there can be present above described problem I have
-
-> fight remotely for EMS-WUENSCHE CPC-PCI cards at Universita'
-
-> degli Studi di Parma years ago with LinCAN. They have donated
-
-> one such board to us so I can retest SocketCAN 
-
-> 
-
-> LinCAN commits
-
-> 
-
-> commit b5ac7e6f7e0d1af9dbb4bdb56921ab04de4e1ade
-
-> Author: ppisa <ppisa>
-
-> Date:   Fri Jul 16 15:44:20 2004 +0000
-
-> 
-
->     EMS CPC-PCI fix correcting poorly undocumented PITA2 IRQ behavior.
-
->     This workaround compiles only for 2.6.x kernels now and correct
-
->     fix compatible with 2.4 requires driver wide changes.
-
->     That is why CPC-PCI is not enabled by default.
-
-> 
-
-> commit 3a2bb63f0bb8de2aafb346b53b945c59b3f87a41
-
-> Author: ppisa <ppisa>
-
-> Date:   Fri Jul 2 00:26:41 2004 +0000
-
-> 
-
->     CPC-PCI second chip IRQ corrected. Message timestamp code added.
-
->     The timestamp code has some time overhead. If it is problem,
-
->     it can be disabled in the main.h file.
-
-> 
-
-> In the fact, I am not sure if code in
-
->   linux-devel/drivers/net/can/sja1000/ems_pci.c
-
-> supporting this card is fully correct either even that LinCAN
-
-> is referenced as the part of the code source. I need to analyze
-
-> if the sharing problem is resolved.
-
-> 
-
-> There seems to be code to resolve IRQ flag clearing in peak_pci.c
-
-> peak_pci_post_irq()
-
-> 
-
-> and different for two PITA versions in ems_pci.c 
-
->   ems_pci_v1_write_reg()
-
->   ems_pci_v1_post_irq()
-
-> 
-
-> LinCAn code strategy was to loop an the sibling CAN channers
-
-> as long as there was one full cycle without any pending IRQ
-
-> in all chips. This ensured that the shared wire from SJA1000
-
-> chips is low and next IRQ would lead to enge on PITA input.
-
-> That worked quite well.
-
-> 
-
->  
-
-http://sourceforge.net/p/ortcan/lincan/ci/master/tree/lincan/src/ems_cpcpci.c#l215
-
-
-
-In Linux-CAN we have something similar:
-
-
-
-http://lxr.linux.no/#linux/drivers/net/can/sja1000/ems_pcmcia.c#L90
-
-
-
-> So check exac PITA version and report it. Check, if it is same as one
-
-> supported by SocketCAN EMS driver and if the handling is the same.
-
-
-
-@Austin, could you check what is written on the PITA chip?
-
-
-
-> If this does not help than try to handle both chips
-
-> from single registered IRQ with loop (or register that IRQ twice
-
-> but do cross channel handling from it somehow if it is not possible
-
-> to do that some other way). Then it is necessary to check that same
-
-> chip is not handled from two IRQ threads concurrently in RT.
-
-> 
-
-> Other option is somehow switch given PCI line processing to
-
-> shared edge triggered mode in kernel PCI core.
-
-
-
-Hm, how should that work? Anyway, I'm aware of the problem when using
-
-edge triggered interrupts. I thought it could not happen with level
-
-triggered interrupts but I'm also afraid the hardware is not smart/good
-
-enough. We should ask Peak Systems.
-
-
-
-> Generally, RT is more sensitive to this stuck IRQs problem, because
-
-> race window is longer. But problem probably applies to stock kernel
-
-> but with probability many times smaller.
-
-
-
-I agree.
-
-
-
-Wolfgang.
-
-
-
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>
+
+
+On Nov 13, 2013, at 2:45 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+
+> This patch adds Device Tree support to the Microchip MCP251X driver.
+>=20
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> ---
+> .../bindings/net/can/microchip,mcp251x.txt         | 25 ++++++++++
+> drivers/net/can/mcp251x.c                          | 57 +++++++++++++=
++++------
+> 2 files changed, 66 insertions(+), 16 deletions(-)
+> create mode 100644 Documentation/devicetree/bindings/net/can/microchi=
+p,mcp251x.txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp2=
+51x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.t=
+xt
+> new file mode 100644
+> index 0000000..06d95ee
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+> @@ -0,0 +1,25 @@
+> +* Microchip MCP251X device tree bindings
+> +
+> +Registers a Microchip MCP251X stand-alone CAN controller connected t=
+o SPI bus.
+
+=93Register a=94 doesn=92t seem like it should be in a binding spec.
+
+> +
+> +Required properties:
+> + - compatible: Should be one of the following:
+> +   - "microchip,mcp2510" for MCP2510.
+> +   - "microchip,mcp2515" for MCP2515.
+> + - reg: SPI chip select.
+> + - clocks: The clock feeding the CAN controller.
+> + - interrupt-parent: The parent interrupt controller.
+> + - interrupts: Should contain IRQ line for the CAN controller.
+> +
+> +Optional properties:
+> + - vdd-supply: Regulator that powers the CAN controller.
+> + - xceiver-supply: Regulator that powers the CAN transceiver.
+> +
+> +Example:
+> +	can0: can@1 {
+> +		compatible =3D "microchip,mcp2515";
+> +		reg =3D <1>;
+> +		clocks =3D <&clk24m>;
+> +		interrupt-parent =3D <&gpio4>;
+> +		interrupts =3D <13 0x2>;
+
+Usually good to have example show all properties used (even optional on=
+es)
+
+> +	};
+
+Other than the nits, binding looks good.
+
+- k
+
+--=20
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, host=
+ed by The Linux Foundation
 
