@@ -1,97 +1,191 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: sja1000 interrupt problem
-Date: Wed, 13 Nov 2013 07:58:59 +0100
-Message-ID: <52832333.9080908@hartkopp.net>
-References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com> <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com> <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com> <CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com> <5254608B.4080208@grandegger.com> <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com> <be0d6725fff5298d3fb8417e4800348b@grandegger.com> <CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com> <84ba410d04a85a783d1c1994f98d1f31@grandegger.com> <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com> <527E44EB.9020605@hartkopp.net> <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com> <52829CF1.4010902@hartkopp.net> <CANGgnMZM-9cObw=Bh-VCsbn4b68+jhxCEptOaepbNna+KSGZmQ@mail.gmail.com>
- <CANGgnMaCvb=B2r997e+H9UjVquX66HJ+OtftL0EyGP7MKcy0tQ@mail.gmail.com>
+Date: Wed, 13 Nov 2013 09:11:58 +0100
+Message-ID: <f323c29b9730c877729322453b9e4ec9@grandegger.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
+ <3a4a0c6ac898fbe27a8fe95cb147634c@grandegger.com>
+ <99984642-b542-4078-a5ba-3dfb66188ce5@email.android.com>
+ <CANGgnMb130WSkOkreRyRg9cXhMn=MXhGmhMqXKMOTkiTMD4vqQ@mail.gmail.com>
+ <5254608B.4080208@grandegger.com>
+ <CANGgnMYN3epBb_b=AywUQbN_LQLu6C6ebCfE0xifzoS0Yw1y1g@mail.gmail.com>
+ <be0d6725fff5298d3fb8417e4800348b@grandegger.com>
+ <CANGgnMZpPGctUWGcg7Lp-QFPc7d6A5GeL9KQYnpeYMR8WukgdA@mail.gmail.com>
+ <84ba410d04a85a783d1c1994f98d1f31@grandegger.com>
+ <CANGgnMY4noiSSTXcuOJo36BXZhh0qOrJN_OXx8EZXE0_Gq4Z1g@mail.gmail.com>
+ <527E44EB.9020605@hartkopp.net>
+ <CANGgnMa6E9wx24YCexcMa=PMCEZBZw9b-Aa1MJR=-3UyDmHdpw@mail.gmail.com>
+ <52829CF1.4010902@hartkopp.net>
+ <CANGgnMZM-9cObw=Bh-VCsbn4b68+jhxCEptOaepbNna+KSGZmQ@mail.gmail.com>
+ <52831FC7.3040509@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+ charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:60496 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751655Ab3KMG7B (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Nov 2013 01:59:01 -0500
-In-Reply-To: <CANGgnMaCvb=B2r997e+H9UjVquX66HJ+OtftL0EyGP7MKcy0tQ@mail.gmail.com>
+Received: from pluto.manitu.net ([217.11.48.9]:57536 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1758517Ab3KMIMA (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 13 Nov 2013 03:12:00 -0500
+In-Reply-To: <52831FC7.3040509@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Austin Schuh <austin@peloton-tech.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
 
-Hi Austin,
+On Wed, 13 Nov 2013 07:44:23 +0100, Oliver Hartkopp
 
-sorry for checking my mails in sequential order :-)
-I would have been able to shorten the last mail.
+<socketcan@hartkopp.net> wrote:
 
-Thanks for your interesting investigation.
-I wonder why this problem did not show up before then. Having shared
-interrupts should be a usual thing.
+> On 13.11.2013 00:22, Austin Schuh wrote:
 
-This kind of race condition should not be there at all. Do you have a second
-peak_pci hardware? I could be an idea to try to split the IRQs in a way that
-you have two IRQs for two cards - and then connect can0 to can2.
-You would have a pretty fast following RX/TX interrupt but without interrupt
-sharing ...
+> 
 
-Best regards,
-Oliver
+>> Here is what is in the syslog from the same machine sending to it's
 
-On 13.11.2013 04:41, Austin Schuh wrote:
-> On Tue, Nov 12, 2013 at 3:22 PM, Austin Schuh <austin@peloton-tech.com> wrote:
->> On Tue, Nov 12, 2013 at 1:26 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>> On 12.11.2013 03:59, Austin Schuh wrote:
->>>
->>>>> From the trace it is pretty hard to know which CAN interface is in charge.
->>>>> (2) Can you please add the output of dev->ifindex in the pr_info() calls?
->>>>
->>>> Gladly.  See the updated logs.
->>>>
->>>> [  556.019246] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
->>>> [  556.019268] Unhandled IRQ 18... stop tracing...
->>>> [  556.019280] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
->>>> [  556.019289] peak_pci 0000:05:00.0 can1: Received packet.
->>>> [  556.019299] peak_pci 0000:05:00.0 can1: sja1000_rx
->>>> [  556.019307] peak_pci 0000:05:00.0 can0: TX complete.
->>>> [  556.019318] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
->>>> [  556.019362] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
->>>>
->>>
->>> This looks pretty broken regarding the IRQ handling.
->>> Maybe the IRQ thread handling has a real problem in the -rt kernel ?!?
->>
->> Sounds pretty plausible right now.
+>> self with a non-realtime kernel.
+
+>> 
+
+>> # uname -a
+
+>> Linux vpc5 3.10-3-amd64 #1 SMP Debian 3.10.11-2 (2013-09-10) x86_64
+
+>> GNU/Linux
+
+>> 
+
+>> <6>[  169.993870] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+
+>> <6>[  169.993904] peak_pci 0000:05:00.0 can1: Received packet.
+
+>> <6>[  169.993923] peak_pci 0000:05:00.0 can1: sja1000_rx
+
+>> <6>[  169.993994] peak_pci 0000:05:00.0 can1: Returning IRQ_HANDLED
+
+>> <6>[  169.994013] peak_pci 0000:05:00.0 can1: Found can1, disabling
+
+>> tracing.
+
+>> <6>[  169.994029] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+
+>> <6>[  169.994048] peak_pci 0000:05:00.0 can0: TX complete.
+
+>> <6>[  169.994061] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+
 > 
-> Ok, I spent a good chunk of today reading the IRQ handling code in the
-> kernel, and I think I get what is happening and have a plausible
-> explanation for why the interrupt is getting disabled.  Not sure how
-> to test it.
+
+> This looks indeed much better :-)
+
+
+
+Note that the -rt uses threaded interrupt handlers, which can run on
+
+separate
+
+CPUs (just have a look to the function traces Austin provide), Looks like
+
+vanilla is just less sensitive to races.
+
+
+
+>> When I attach the CAN device which continually sends, I get the
+
+>> following.  (The front might be snipped improperly, not sure.)
+
+>> 
+
+>> <6>[  640.823323] peak_pci 0000:05:00.0 can1: Got an sja1000 interrupt.
+
+>> <6>[  640.823331] peak_pci 0000:05:00.0 can1: Returning IRQ_NONE
+
+>> <6>[  640.823334] peak_pci 0000:05:00.0 can0: Got an sja1000 interrupt.
+
+>> <6>[  640.823344] peak_pci 0000:05:00.0 can0: Received packet.
+
+>> <6>[  640.823346] peak_pci 0000:05:00.0 can0: sja1000_rx
+
+>> <6>[  640.823391] peak_pci 0000:05:00.0 can0: Returning IRQ_HANDLED
+
 > 
-> Here is what it looks like is happening.  The hardware triggers an
-> interrupt.  The handler is called, and then the registered action for
-> each of the devices is to notify their threads that an IRQ occurred,
-> and to have them handle it.  Each of the handling threads then calls
-> the sja1000_interrupt function, or the equivalent ata_generic
-> interrupt function.  2 of the 3 interrupt functions then return
-> IRQ_NONE, and one of them returns IRQ_HANDLED.  note_interrupt is then
-> called in each of the threads (instead of being called once in the
-> non-rt case), resulting in 2 unhanded calls, and 1 handled call.  So
-> far, so good.  The kernel operates as expected, since less than 99.9 %
-> of the interrupts are handled.  (There is a note_interrupt call in the
-> handler, but since the threaded handlers are notified, this doesn't
-> get counted.
+
+> This is a correct behaviour too:
+
+
+
+It is not a requirement that the (shared) handler are called sequentially.
+
+
+
+> The shared IRQ is handled by can1 (which had nothing to do) and then the
+
+> chain
+
+> goes to can0 which handles the reception correctly.
+
 > 
-> Since the IRQ handlers are now all in threads, if the thread that
-> actually receives data doesn't process the interrupts either because
-> something goes wrong, or because it doesn't get scheduled, there will
-> be a bunch of unhanded interrupts noted, and no handled interrupts
-> noted.  This will cause the IRQ to be disabled.
+
+> @Wolfgang: Do we need an additional protection for the PITA handling in
+
+> peak_pci.c ?
+
+
+
+Don't know. It depends on the hardware. The interrupt is cleared by
+
+writing the
+
+relevant bit to the PITA register. Looks save at a first glance but maybe
+
+the
+
+hardware is not smart enough. Adding spinlock protection would quickly
+
+reveal if
+
+that is the problem. Anyway, there could be other races as well.
+
+
+
+I can imaging another problem with the following returns:
+
+
+
+      /* check for absent controller due to hw unplug */
+
+      if (status == 0xFF && sja1000_is_absent(priv))
+
+          return IRQ_NONE;
+
+
+
+Austin, could you please check if they occur.
+
+
+
+> @Austin:
+
+> I have another idea to test, if it just shows up in the mainline driver:
+
 > 
-> I guess the next interesting thing to do is to trigger when it
-> disables the IRQ and take a look at what is happening.  I have a test
-> running on one machine with tracing enabled which will disable tracing
-> when the IRQ is disabled.  That should provide some interesting
-> results.  I think I also know how to bypass it for now by setting
-> "noirqdebug", but I'd like to fix it for real as well.
+
+> Can you please download the out-of-tree driver from PEAK (version 7.9):
+
 > 
-> Austin
+
+> http://www.peak-system.com/linux/index.htm
+
 > 
+
+> I wonder if this one actually compiles with a -rt kernel and if it shows
+
+up
+
+> the same issue then.
+
+
+
+Well, we should better fix the problem in the Linux CAN driver. 
+
+
+
+Wolfgang.
