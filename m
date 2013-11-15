@@ -1,58 +1,68 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: J1939
-Date: Thu, 14 Nov 2013 21:31:47 +0100
-Message-ID: <20131114203147.GA7128@vandijck-laurijssen.be>
-References: <1384388788.4066.16.camel@hp-dhlii>
+From: "Max S." <max@schneidersoft.net>
+Subject: Re: GS_USB
+Date: Fri, 15 Nov 2013 10:39:59 +0000
+Message-ID: <1384511999.3561.8.camel@blackbox>
+References: <1380889887.22484.2.camel@blackbox>
+	  <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
+	  <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
+	  <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>
+	  <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>
+	  <1384135835.3749.31.camel@blackbox>
+	  <3370f1eba56bbe04176f4d14808c1dc0@grandegger.com>
+	  <5280FAB2.3030600@hartkopp.net> <1384199350.3483.20.camel@blackbox>
+	 <528150F3.8090406@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay005.isp.belgacom.be ([195.238.6.171]:8387 "EHLO
-	mailrelay005.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757425Ab3KNUcD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Nov 2013 15:32:03 -0500
-Content-Disposition: inline
-In-Reply-To: <1384388788.4066.16.camel@hp-dhlii>
+Received: from mail.schneidersoft.net ([173.45.248.65]:58142 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754616Ab3KOK1D (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 Nov 2013 05:27:03 -0500
+In-Reply-To: <528150F3.8090406@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "David H. Lynch Jr." <dhlii@dlasys.net>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi David,
+Hello all,
 
-On Wed, Nov 13, 2013 at 07:26:28PM -0500, David H. Lynch Jr. wrote:
-> I recently noticed that J1939 support has been incorporated into the
-> Linux Kernel CAN stack. 
+I've been doing some more testing and came across some strange behavior.
+Frames appear to be out of order.
 
-Well, the j1939 stack is not yet incorporated in mainline Linux.
-It's API, which adheres to BSD socket semantics than raw CAN due
-to the addressing concept, causes some resistance.
+I have both chanels of the GS_USB device and a PEAKUSB adapter on a bus,
+as well as another node (to ack frames).
 
-You are of course welcome to share your opinions about that matter.
+I have modified the GS_USB firmware to PANIC when txed frames are out of
+sequence.
 
-Once the API is agreed, mainline should be easy.
+tx interrupt now looks something like this
 
-> 
-> I would be happy to help with testing that with some pointers. 
+static uint8_t count = 0;
+void tx_channel_0_interrupt(void){
+	PANIC(txframe.data[0] != count);
+	count++;
 
-Great. I have performed only manual tests in the past to get
-the stack right.
-Some sort of automated test may be usefull to avoid
-problems over time with refactoring or changing kernel
-infrastructures.
+The GS_SUB device never panics, however cansequence -r on the peak
+device gives me messages like:
 
-A sample of the code got certified in an ISOBUS product.
-At that time, the code proved to be functional, both for
-the normal use case as for a lot of erroneous situations.
+received wrong sequence count. expected: 216, got: 220
+received wrong sequence count. expected: 224, got: 216
+received wrong sequence count. expected: 220, got: 224
+received wrong sequence count. expected: 227, got: 229
+received wrong sequence count. expected: 233, got: 227
+received wrong sequence count. expected: 229, got: 233
 
-> 
-> Any simple examples of sending/receiving specific PGN's ?
+notice that no frames are lost, just rearranged.
 
-You can read Documentation/networking/j1939.txt.
-The can-utils-j1939 package have some tools, but those do not expose
-the easiest examples.
+I can force frames to be out of order by restarting cansequence, so i
+know my monitor code is working.
 
-I will add some easier examples that are a bit closer to real-life
-programs.
+I have been trying to reproduce this error using libusb in userspace,
+but have not had any success.
 
-Kind regards,
-Kurt
+Any thoughts on this?
+
+Regards,
+Max Schneider.
+
