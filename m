@@ -1,91 +1,71 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: fix sja1000 pre_irq/post_irq handling
-Date: Sun, 17 Nov 2013 15:17:19 +0100
-Message-ID: <5288CFEF.3060701@hartkopp.net>
+Subject: Re: sja1000 interrupt problem
+Date: Sun, 17 Nov 2013 15:27:02 +0100
+Message-ID: <5288D236.403@hartkopp.net>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com> <52831FC7.3040509@hartkopp.net> <f323c29b9730c877729322453b9e4ec9@grandegger.com> <201311131008.55018.pisa@cmp.felk.cvut.cz> <5287E6B2.8020709@hartkopp.net> <85256584a266750b1330cfae8bebd55c@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:61726 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.162]:51368 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751951Ab3KQORX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 17 Nov 2013 09:17:23 -0500
+	with ESMTP id S1752639Ab3KQO1E (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 17 Nov 2013 09:27:04 -0500
+In-Reply-To: <85256584a266750b1330cfae8bebd55c@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>, Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
 
-The SJA1000 driver provides optional function pointers to handle specific
-hardware setups at interrupt time.
 
-This patch fixes the issue that the sja1000_interrupt() function may have
-returned IRQ_NONE without processing the post_irq function. Additionally
-an introduced return value from the pre_irq function is checked to skip the
-entire interrupt handling on pre_irq function errors.
 
-Reported-by: Wolfgang Grandegger <wg@grandegger.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+On 17.11.2013 09:18, Wolfgang Grandegger wrote:
+> 
+> On Sat, 16 Nov 2013 22:42:10 +0100, Oliver Hartkopp
 
----
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 7164a99..bb20470 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -494,12 +494,12 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 	uint8_t isrc, status;
- 	int n = 0;
- 
-+	if (priv->pre_irq && priv->pre_irq(priv))
-+		goto out;
-+
- 	/* Shared interrupts and IRQ off? */
- 	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
--		return IRQ_NONE;
--
--	if (priv->pre_irq)
--		priv->pre_irq(priv);
-+		goto out;
- 
- 	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
- 	       (n < SJA1000_MAX_IRQ)) {
-@@ -507,7 +507,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 		status = priv->read_reg(priv, SJA1000_SR);
- 		/* check for absent controller due to hw unplug */
- 		if (status == 0xFF && sja1000_is_absent(priv))
--			return IRQ_NONE;
-+			goto out;
- 
- 		if (isrc & IRQ_WUI)
- 			netdev_warn(dev, "wakeup interrupt\n");
-@@ -535,7 +535,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 				status = priv->read_reg(priv, SJA1000_SR);
- 				/* check for absent controller */
- 				if (status == 0xFF && sja1000_is_absent(priv))
--					return IRQ_NONE;
-+					goto out;
- 			}
- 		}
- 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
-@@ -544,7 +544,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 				break;
- 		}
- 	}
--
-+out:
- 	if (priv->post_irq)
- 		priv->post_irq(priv);
- 
-diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-index 9d46398..53c9797 100644
---- a/drivers/net/can/sja1000/sja1000.h
-+++ b/drivers/net/can/sja1000/sja1000.h
-@@ -157,7 +157,7 @@ struct sja1000_priv {
- 	/* the lower-layer is responsible for appropriate locking */
- 	u8 (*read_reg) (const struct sja1000_priv *priv, int reg);
- 	void (*write_reg) (const struct sja1000_priv *priv, int reg, u8 val);
--	void (*pre_irq) (const struct sja1000_priv *priv);
-+	int (*pre_irq) (const struct sja1000_priv *priv);
- 	void (*post_irq) (const struct sja1000_priv *priv);
- 
- 	void *priv;		/* for board-specific data */
+>> Btw. I would try two more things with the sja1000.c driver:
+> 
+>>
+> 
+>> 1. Print the corresponding CAN device name and the point in the code
+> 
+> before
+> 
+>> returning IRQ_NONE to catch the problematic return site.
+> 
+>>
+> 
+>> 2. Replace all IRQ_NONE with IRQ_HANDLED for a test ...
+> 
+>>
+> 
+>> Any other ideas?
+> 
+> 
+> 
+> A function trace is still the first thing to take. Be aware that the
+> 
+> tasks are running on more than one CPU. It's just to establish a good
+> 
+> trigger.
+> 
+
+Yes. But so far the function trace only showed the fact of simultaneous irq
+treads for the two CAN interfaces - what we were expecting :-)
+
+IMO it's interesting to get the concrete return site from where the IRQ_NONE
+is returned. Maybe one of the other interfaces / bits in PITA are enabled
+which we did not see so far.
+
+> 
+> 
+> Anyway, I think the direct "return IRQ_NONE" are wrong because they
+> 
+> do not call the "irq_post" handler.
+> 
+
+That's true. I just sent a patch to fix this issue.
+
+Tnx,
+Oliver
