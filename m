@@ -1,150 +1,91 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: sja1000 interrupt problem
-Date: Sun, 17 Nov 2013 09:18:16 +0100
-Message-ID: <85256584a266750b1330cfae8bebd55c@grandegger.com>
-References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com>
- <52831FC7.3040509@hartkopp.net>
- <f323c29b9730c877729322453b9e4ec9@grandegger.com>
- <201311131008.55018.pisa@cmp.felk.cvut.cz> <5287E6B2.8020709@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH] can: fix sja1000 pre_irq/post_irq handling
+Date: Sun, 17 Nov 2013 15:17:19 +0100
+Message-ID: <5288CFEF.3060701@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:53109 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751393Ab3KQIST (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 17 Nov 2013 03:18:19 -0500
-In-Reply-To: <5287E6B2.8020709@hartkopp.net>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:61726 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751951Ab3KQORX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 17 Nov 2013 09:17:23 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>, Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
-
-Hi Oliver,
-
-
-
-On Sat, 16 Nov 2013 22:42:10 +0100, Oliver Hartkopp
-
-<socketcan@hartkopp.net> wrote:
-
-> Hi all,
-
-> 
-
-> I would like to continue the discussion about Austins problem with the
-
--rt
-
-> kernel.
-
-> 
-
-> This problem addressed by Pavel should be handled correctly ...
-
-> 
-
->> I have noticed that you speak about PITA in the thread.
-
->> 
-
->> There can be problem that local bus IRQs are shared
-
->> and sensed as edge triggered on the PITa but PCI
-
->> interrupt processing is selected for level sharing
-
->> between PCI cards/sources. That means, when IRQ
-
->> on the first SJA1000 chip is activated exactly after
-
->> it was checked in ISR and before other chip's IRQ
-
->> is cleared than you receive no more any IRQ until
-
->> forced/polled check of the first chip.
-
-> 
-
-> ... by this while statement in the current sja1000interrupt() function:
-
-> 
-
-> http://lxr.linux.no/#linux+v3.12/drivers/net/can/sja1000/sja1000.c#L503
-
-> 
-
-> AFAICS when the interrupt is handled in this manner finally the device
-
-> corresponding bit in the PITA is set in peak_pci_post_irq(), see:
-
-> 
-
-> http://lxr.linux.no/#linux+v3.12/drivers/net/can/sja1000/peak_pci.c#L538
-
-> 
-
-> I doubt that protecting peak_pci_post_irq() would help as it only
-
-handles
-
-> the
-
-> device corresponding bit.
-
-
-
-I agree if the hardware is working properly. But who knows...
-
-
-
-> I don't know if the -rt kernel with the irq threads is more sensible to
-
-> IRQ_NONE return values that the mainline kernel.
-
-
-
-It's usually more sensitive to race conditions. IRQ_NONE is only returned
-
-for shared unhandled interrupts.
-
-
-
-> Btw. I would try two more things with the sja1000.c driver:
-
-> 
-
-> 1. Print the corresponding CAN device name and the point in the code
-
-before
-
-> returning IRQ_NONE to catch the problematic return site.
-
-> 
-
-> 2. Replace all IRQ_NONE with IRQ_HANDLED for a test ...
-
-> 
-
-> Any other ideas?
-
-
-
-A function trace is still the first thing to take. Be aware that the
-
-tasks are running on more than one CPU. It's just to establish a good
-
-trigger.
-
-
-
-Anyway, I think the direct "return IRQ_NONE" are wrong because they
-
-do not call the "irq_post" handler.
-
-
-
-Wolfgang.
-
-
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+
+The SJA1000 driver provides optional function pointers to handle specific
+hardware setups at interrupt time.
+
+This patch fixes the issue that the sja1000_interrupt() function may have
+returned IRQ_NONE without processing the post_irq function. Additionally
+an introduced return value from the pre_irq function is checked to skip the
+entire interrupt handling on pre_irq function errors.
+
+Reported-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+---
+
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 7164a99..bb20470 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -494,12 +494,12 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	uint8_t isrc, status;
+ 	int n = 0;
+ 
++	if (priv->pre_irq && priv->pre_irq(priv))
++		goto out;
++
+ 	/* Shared interrupts and IRQ off? */
+ 	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
+-		return IRQ_NONE;
+-
+-	if (priv->pre_irq)
+-		priv->pre_irq(priv);
++		goto out;
+ 
+ 	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
+ 	       (n < SJA1000_MAX_IRQ)) {
+@@ -507,7 +507,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 		status = priv->read_reg(priv, SJA1000_SR);
+ 		/* check for absent controller due to hw unplug */
+ 		if (status == 0xFF && sja1000_is_absent(priv))
+-			return IRQ_NONE;
++			goto out;
+ 
+ 		if (isrc & IRQ_WUI)
+ 			netdev_warn(dev, "wakeup interrupt\n");
+@@ -535,7 +535,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				status = priv->read_reg(priv, SJA1000_SR);
+ 				/* check for absent controller */
+ 				if (status == 0xFF && sja1000_is_absent(priv))
+-					return IRQ_NONE;
++					goto out;
+ 			}
+ 		}
+ 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
+@@ -544,7 +544,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				break;
+ 		}
+ 	}
+-
++out:
+ 	if (priv->post_irq)
+ 		priv->post_irq(priv);
+ 
+diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
+index 9d46398..53c9797 100644
+--- a/drivers/net/can/sja1000/sja1000.h
++++ b/drivers/net/can/sja1000/sja1000.h
+@@ -157,7 +157,7 @@ struct sja1000_priv {
+ 	/* the lower-layer is responsible for appropriate locking */
+ 	u8 (*read_reg) (const struct sja1000_priv *priv, int reg);
+ 	void (*write_reg) (const struct sja1000_priv *priv, int reg, u8 val);
+-	void (*pre_irq) (const struct sja1000_priv *priv);
++	int (*pre_irq) (const struct sja1000_priv *priv);
+ 	void (*post_irq) (const struct sja1000_priv *priv);
+ 
+ 	void *priv;		/* for board-specific data */
