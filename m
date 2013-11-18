@@ -1,108 +1,60 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3] can: fix sja1000 pre_irq/post_irq handling
-Date: Mon, 18 Nov 2013 14:01:14 +0100
-Message-ID: <528A0F9A.6070305@hartkopp.net>
+Subject: Re: [PATCH] can: fix sja1000 pre_irq/post_irq handling
+Date: Mon, 18 Nov 2013 14:13:55 +0100
+Message-ID: <528A1293.8080807@hartkopp.net>
+References: <5288CFEF.3060701@hartkopp.net> <52892C36.8060709@grandegger.com> <5289B0EF.3070507@hartkopp.net> <673f31d86a6b890f45ab63fb3799cbf0@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.162]:40921 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:28459 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751616Ab3KRNBQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Nov 2013 08:01:16 -0500
+	with ESMTP id S1751057Ab3KRNN6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Nov 2013 08:13:58 -0500
+In-Reply-To: <673f31d86a6b890f45ab63fb3799cbf0@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
-The SJA1000 driver provides optional function pointers to handle specific
-hardware setups at interrupt time.
+On 18.11.2013 08:48, Wolfgang Grandegger wrote:
 
-This patch fixes the issue that the sja1000_interrupt() function may have
-returned IRQ_NONE without processing the post_irq function. Additionally
-an introduced and documented return value from the pre_irq function is
-checked to skip the entire interrupt handling on pre_irq function errors.
+> 
+> 
+> Another thing I don't like is that the device present check is done for
+> 
+> all devices including devices which will never hotplug. I think this
+> 
+> code has been introduced for the PCMCIA/PCcard CAN controllers. I would
+> 
+> prefer somethink like:
+> 
+> 
+> 
+>          if (priv->hotpluggable && status == 0xFF &&
+> 
+>              sja1000_is_absent(priv)) {
+> 
+>                  ...
+> 
+>          }
+> 
+> 
+> 
+> What do you think?
 
-Reported-by: Wolfgang Grandegger <wg@grandegger.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+The status variable is retrieved from the sja1000 register anyway and sits in
+the CPU register.
 
----
+Checking the status against 0xFF already hints to several problems (bus-off
+together with overrun, etc. ) which are unusual in normal operation.
+Only in this unusual cased the sja1000_is_absent() is invoked.
 
-v2: move irq processing counter 'n' to the end of the while statement to
-return correct IRQ_[NONE|HANDLED] values at error conditions.
+This is pretty optimal.
 
-v3: added comments about the pre_irq() return values.
+Accessing priv->hotpluggable needs additional pointer dereferencing which is
+more costly than accessing/checking the already retrieved status variable.
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 7164a99..f7733d6 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -494,20 +494,21 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 	uint8_t isrc, status;
- 	int n = 0;
- 
-+	/* skip irq handling if the optional pre_irq() returns non-zero */
-+	if (priv->pre_irq && priv->pre_irq(priv))
-+		goto out;
-+
- 	/* Shared interrupts and IRQ off? */
- 	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
--		return IRQ_NONE;
--
--	if (priv->pre_irq)
--		priv->pre_irq(priv);
-+		goto out;
- 
- 	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
- 	       (n < SJA1000_MAX_IRQ)) {
--		n++;
-+
- 		status = priv->read_reg(priv, SJA1000_SR);
- 		/* check for absent controller due to hw unplug */
- 		if (status == 0xFF && sja1000_is_absent(priv))
--			return IRQ_NONE;
-+			goto out;
- 
- 		if (isrc & IRQ_WUI)
- 			netdev_warn(dev, "wakeup interrupt\n");
-@@ -535,7 +536,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 				status = priv->read_reg(priv, SJA1000_SR);
- 				/* check for absent controller */
- 				if (status == 0xFF && sja1000_is_absent(priv))
--					return IRQ_NONE;
-+					goto out;
- 			}
- 		}
- 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
-@@ -543,8 +544,9 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 			if (sja1000_err(dev, isrc, status))
- 				break;
- 		}
-+		n++;
- 	}
--
-+out:
- 	if (priv->post_irq)
- 		priv->post_irq(priv);
- 
-diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-index 9d46398..d7aaa42 100644
---- a/drivers/net/can/sja1000/sja1000.h
-+++ b/drivers/net/can/sja1000/sja1000.h
-@@ -157,7 +157,13 @@ struct sja1000_priv {
- 	/* the lower-layer is responsible for appropriate locking */
- 	u8 (*read_reg) (const struct sja1000_priv *priv, int reg);
- 	void (*write_reg) (const struct sja1000_priv *priv, int reg, u8 val);
--	void (*pre_irq) (const struct sja1000_priv *priv);
-+
-+	/*
-+	 * Hardware specific optional pre_irq() and post_irq() hooks.
-+	 * When pre_irq() returns a non-zero value the sja1000 irq register
-+	 * handling is skipped but post_irq() is still called.
-+	 */
-+	int (*pre_irq) (const struct sja1000_priv *priv);
- 	void (*post_irq) (const struct sja1000_priv *priv);
- 
- 	void *priv;		/* for board-specific data */
-
+Best regards,
+Oliver
 
