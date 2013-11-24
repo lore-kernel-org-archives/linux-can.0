@@ -1,107 +1,44 @@
-From: Holger Bechtold <Holger.Bechtold@gmx.net>
-Subject: [PATCH] to C_CAN driver in linux kernel
-Date: Sun, 24 Nov 2013 13:15:47 +0100
-Message-ID: <20131124121547.GB4010@pc1xp>
+From: Gerhard Sittig <gsi@denx.de>
+Subject: Re: [PATCH v5 00/17] add COMMON_CLK support for PowerPC MPC512x
+Date: Sun, 24 Nov 2013 19:39:08 +0100
+Message-ID: <20131124183908.GG2760@book.gsilab.sittig.org>
+References: <1384729577-7336-1-git-send-email-gsi@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.18]:62541 "EHLO mout.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751795Ab3KXMPv (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 24 Nov 2013 07:15:51 -0500
-Received: from pc1xp ([212.255.43.128]) by mail.gmx.com (mrgmx001) with
- ESMTPSA (Nemesis) id 0MTjqS-1WAqsX39t2-00QQhv for
- <linux-can@vger.kernel.org>; Sun, 24 Nov 2013 13:15:50 +0100
+Return-path: <linux-serial-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: linux-can@vger.kernel.org
+In-Reply-To: <1384729577-7336-1-git-send-email-gsi@denx.de>
+Sender: linux-serial-owner@vger.kernel.org
+To: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, Anatolij Gustschin <agust@denx.de>, Mike Turquette <mturquette@linaro.org>
+Cc: Scott Wood <scottwood@freescale.com>, Detlev Zundel <dzu@denx.de>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ian Campbell <ian.campbell@citrix.com>, Jiri Slaby <jslaby@suse.cz>, Kumar Gala <galak@kernel.crashing.org>, linux-can@vger.kernel.org, linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org, linux-spi@vger.kernel.org, linux-usb@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Paul Mackerras <paulus@samba.org>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Stephen Warren <swarren@wwwdotorg.org>, Wolfga
+List-Id: linux-can.vger.kernel.org
 
-Hello all
+On Mon, Nov 18, 2013 at 00:06 +0100, Gerhard Sittig wrote:
+> 
+> the series is based on v3.12, but I'll rebase against v3.13-rc1
+> (when available) or any other subtree upon request
 
-I would like to sumbit 2 patches to the C_CAN driver module file c_can.c.
-Both bugs were noticed, fixed and tested on platform
-   BeagleBoneBlack with AM335x Texas Instruments ARM Microprocessors
-using these 2 kernel versions:
+Now that v3.13-rc1 is out, I noticed that the series no longer
+applies cleanly (minor context changes and conflicts) and needs
+minor adjustment.
 
---- Angstroem -----------------------------
-# uname -a
-Linux beaglebone 3.8.13 #1 SMP Thu Sep 12 10:27:06 CEST 2013 armv7l GNU/Linux
+Compilation of 4/17 requires <linux/of_address.h> which no longer
+is included implicitly.
 
-# cat /etc/issue
-Angstrom v2012.12 - Kernel
--------------------------------------------
+PPC_CLOCK removal in 7/17 should remove <asm/clk_interface.h> as
+well after all references to this header file have gone.  (And
+the context of the patch has changed.)
 
-and
+The context of 16/17 for DIU initialization has changed.
 
---- Ubuntu --------------------------------
-# uname -a
-Linux ubuntu-armhf 3.8.13-bone20 #1 SMP Wed May 29 10:49:26 UTC 2013 ...
-   armv7l GNU/Linux
+I'll wait for a few more days whether there is more feedback for
+v5 (especially on the device tree backwards compat approach),
+then will rebase and send out v6 of the series.
 
-# cat /etc/issue
-Ubuntu 12.04.3 LTS
--------------------------------------------
 
-I could not yet test the patches with the newest kernel sources
-   linux-3.12.1
-but the differences in file c_can.c are quite small and pertain only to
-the control of a CAN-BUS activity LED.
-
-If you will accept patches only for the newest kernel sources, please
-drop me a line and I will try to test with newest sources.
-
-Best Regards
-Holger Bechtold
-
----------- patch 1 description -----------------------------------------------
-
-The for-loop cycling through the message objects forming the reception FIFO
-was left prematurely when it reached the last object (marked IF_MCONT_EOB).
-If a received message was stored in this object, it was not handled
-properly, leaving the IF_MCONT_INTPND condition pending. This led to a
-processor deadlock and a kernel panic.
-
----------- patch 1 -----------------------------------------------------------
-
---- drivers/net/can/c_can/c_can.c.orig	2013-11-20 16:57:44.655806758 +0100
-+++ drivers/net/can/c_can/c_can.c	2013-11-20 17:06:31.915937041 +0100
-@@ -810,9 +807,6 @@ static int c_can_do_rx_poll(struct net_d
- 			msg_ctrl_save = priv->read_reg(priv,
- 					C_CAN_IFACE(MSGCTRL_REG, 0));
- 
--			if (msg_ctrl_save & IF_MCONT_EOB)
--				return num_rx_pkts;
--
- 			if (msg_ctrl_save & IF_MCONT_MSGLST) {
- 				c_can_handle_lost_msg_obj(dev, 0, msg_obj);
- 				num_rx_pkts++;
-
----------- patch 2 description -----------------------------------------------
-
-The number of bytes transmitted was not updated correctly. Thus programs
-like 'ifconfig' showed wrong transmit byte counts.
-
----------- patch 2 -----------------------------------------------------------
-
---- drivers/net/can/c_can/c_can.c.orig	2013-11-20 16:57:44.655806758 +0100
-+++ drivers/net/can/c_can/c_can.c	2013-11-20 17:06:31.915937041 +0100
-@@ -749,11 +749,8 @@ static void c_can_do_tx(struct net_devic
- 		msg_obj_no = get_tx_echo_msg_obj(priv);
- 		val = c_can_read_reg32(priv, C_CAN_TXRQST1_REG);
- 		if (!(val & (1 << (msg_obj_no - 1)))) {
--			can_get_echo_skb(dev,
--					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
--			stats->tx_bytes += priv->read_reg(priv,
--					C_CAN_IFACE(MSGCTRL_REG, 0))
--					& IF_MCONT_DLC_MASK;
-+			stats->tx_bytes += can_get_echo_skb(dev, msg_obj_no -
-+				C_CAN_MSG_OBJ_TX_FIRST);
- 			stats->tx_packets++;
- 			c_can_inval_msg_object(dev, 0, msg_obj_no);
- 		} else {
-
-------------------------------------------------------------------------------
-
-Signed-off-by: Holger Bechtold <Holger.Bechtold@gmx.net>
+virtually yours
+Gerhard Sittig
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
