@@ -1,44 +1,64 @@
-From: Gerhard Sittig <gsi@denx.de>
-Subject: Re: [PATCH v5 00/17] add COMMON_CLK support for PowerPC MPC512x
-Date: Sun, 24 Nov 2013 19:39:08 +0100
-Message-ID: <20131124183908.GG2760@book.gsilab.sittig.org>
-References: <1384729577-7336-1-git-send-email-gsi@denx.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 05/16] c_can: use 32 bit access for D_CAN
+Date: Sun, 24 Nov 2013 20:07:54 +0100
+Message-ID: <52924E8A.3070601@pengutronix.de>
+References: <CAF03EBcKxO_JckT9BtxbHwax5o4rsQ1P+5X3ox_oJ_U+PPrLWw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-serial-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1384729577-7336-1-git-send-email-gsi@denx.de>
-Sender: linux-serial-owner@vger.kernel.org
-To: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, Anatolij Gustschin <agust@denx.de>, Mike Turquette <mturquette@linaro.org>
-Cc: Scott Wood <scottwood@freescale.com>, Detlev Zundel <dzu@denx.de>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ian Campbell <ian.campbell@citrix.com>, Jiri Slaby <jslaby@suse.cz>, Kumar Gala <galak@kernel.crashing.org>, linux-can@vger.kernel.org, linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org, linux-spi@vger.kernel.org, linux-usb@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Paul Mackerras <paulus@samba.org>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, Stephen Warren <swarren@wwwdotorg.org>, Wolfga
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="knTwUWrlLKVIUGTcqOBSMwofuNwBAkaFN"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33511 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752371Ab3KXTIL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Nov 2013 14:08:11 -0500
+In-Reply-To: <CAF03EBcKxO_JckT9BtxbHwax5o4rsQ1P+5X3ox_oJ_U+PPrLWw@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: T Thayer <tthayer.linux@gmail.com>
+Cc: b.spranger@linutronix.de, linux-can@vger.kernel.org
 
-On Mon, Nov 18, 2013 at 00:06 +0100, Gerhard Sittig wrote:
-> 
-> the series is based on v3.12, but I'll rebase against v3.13-rc1
-> (when available) or any other subtree upon request
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--knTwUWrlLKVIUGTcqOBSMwofuNwBAkaFN
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Now that v3.13-rc1 is out, I noticed that the series no longer
-applies cleanly (minor context changes and conflicts) and needs
-minor adjustment.
+On 11/16/2013 05:37 PM, T Thayer wrote:
+> What is the status of this patch?
 
-Compilation of 4/17 requires <linux/of_address.h> which no longer
-is included implicitly.
+The mail you copied reflects the current status, nothing happened since
+then. Feel free to adopt this patch and address my comments.
 
-PPC_CLOCK removal in 7/17 should remove <asm/clk_interface.h> as
-well after all references to this header file have gone.  (And
-the context of the patch has changed.)
+> This fixes the problem I was seeing for the D_CAN portion of the
+> driver which was
+> 1. Transmitting 2 copies (probably the result of an AutoRetry)
+> 2. Triggering a RX IRQ on a transmit because the Message Object # was
+> assigned to RX.
+> 3. CAN statistics were not incrementing properly.
+>=20
+> I just joined this mailing list and I don't have this email in my
+> history so I'm copying it below.
 
-The context of 16/17 for DIU initialization has changed.
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-I'll wait for a few more days whether there is more feedback for
-v5 (especially on the device tree backwards compat approach),
-then will rebase and send out v6 of the series.
 
+--knTwUWrlLKVIUGTcqOBSMwofuNwBAkaFN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-virtually yours
-Gerhard Sittig
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlKSTo4ACgkQjTAFq1RaXHOw4QCdFewjaJtODwZyWx1CTQzWmiTi
+HjEAnisHUn7OEbAfnI4igaWPewAko9+H
+=qVAN
+-----END PGP SIGNATURE-----
+
+--knTwUWrlLKVIUGTcqOBSMwofuNwBAkaFN--
