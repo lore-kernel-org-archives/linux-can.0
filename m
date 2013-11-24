@@ -1,68 +1,89 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: request to queue "5d0f801 can: c_can: Fix RX message handling, handle
- lost message before EOB" for stable
-Date: Sun, 24 Nov 2013 23:58:08 +0100
-Message-ID: <52928480.8010803@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="mRtI8a6M2PLHPablM0mCG00U1btHwb3Fo"
+Subject: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ handler return value
+Date: Mon, 25 Nov 2013 00:03:40 +0100
+Message-ID: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45704 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42478 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751536Ab3KXW6S (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Nov 2013 17:58:18 -0500
+	with ESMTP id S1751760Ab3KXXDp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Nov 2013 18:03:45 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: stable@vger.kernel.org
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Holger.Bechtold@gmx.net, Linux Netdev List <netdev@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mRtI8a6M2PLHPablM0mCG00U1btHwb3Fo
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Hello Greg,
+It has been reported that on PREEMPT_RT enabled system the peak SJA1000
+hardware can trigger "irq X: nobody cared" errors.
 
-can you please queue
+This patch fixes the issue that the sja1000_interrupt() function may have
+returned IRQ_NONE without processing the optional pre_irq() and post_irq()
+function before. Further the irq processing counter 'n' is moved to the end of
+the while statement to return correct IRQ_[NONE|HANDLED] values at error
+conditions.
 
-    5d0f801 can: c_can: Fix RX message handling, handle lost message befo=
-re EOB
+Reported-by: Wolfgang Grandegger <wg@grandegger.com>
+Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v5: make it one patch again.
 
-for the stable trees.
+ drivers/net/can/sja1000/sja1000.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-This patch was part of a two-patches pull request to David's net/master
-tree, which was merged in:
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 7164a99..f17c301 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -494,20 +494,20 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	uint8_t isrc, status;
+ 	int n = 0;
+ 
+-	/* Shared interrupts and IRQ off? */
+-	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
+-		return IRQ_NONE;
+-
+ 	if (priv->pre_irq)
+ 		priv->pre_irq(priv);
+ 
++	/* Shared interrupts and IRQ off? */
++	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
++		goto out;
++
+ 	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
+ 	       (n < SJA1000_MAX_IRQ)) {
+-		n++;
++
+ 		status = priv->read_reg(priv, SJA1000_SR);
+ 		/* check for absent controller due to hw unplug */
+ 		if (status == 0xFF && sja1000_is_absent(priv))
+-			return IRQ_NONE;
++			goto out;
+ 
+ 		if (isrc & IRQ_WUI)
+ 			netdev_warn(dev, "wakeup interrupt\n");
+@@ -535,7 +535,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				status = priv->read_reg(priv, SJA1000_SR);
+ 				/* check for absent controller */
+ 				if (status == 0xFF && sja1000_is_absent(priv))
+-					return IRQ_NONE;
++					goto out;
+ 			}
+ 		}
+ 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
+@@ -543,8 +543,9 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 			if (sja1000_err(dev, isrc, status))
+ 				break;
+ 		}
++		n++;
+ 	}
+-
++out:
+ 	if (priv->post_irq)
+ 		priv->post_irq(priv);
+ 
+-- 
+1.8.5.rc0
 
-    e9b51a1 Merge branch 'fixes-for-3.12' of git://gitorious.org/linux-ca=
-n/linux-can
-
-One patch has already been queued, the other not.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
-
---mRtI8a6M2PLHPablM0mCG00U1btHwb3Fo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKShIAACgkQjTAFq1RaXHMcfwCfRMXNFT1XGU+EwUC7esYQja5F
-JfYAoJgsFoZpVaxlSi7F6YAzMwhR/oGW
-=mbrn
------END PGP SIGNATURE-----
-
---mRtI8a6M2PLHPablM0mCG00U1btHwb3Fo--
