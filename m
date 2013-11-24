@@ -1,44 +1,35 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: request to queue "5d0f801 can: c_can: Fix RX message handling,
- handle lost message before EOB" for stable
-Date: Sun, 24 Nov 2013 23:41:34 +0100
-Message-ID: <5292809E.1080103@pengutronix.de>
-References: <52927A97.2060601@pengutronix.de> <20131124.144800.211193209202819326.davem@davemloft.net>
+Subject: Re: [PATCH v5 2/2] can: sja1000: fix return value of interrupt handler
+Date: Sun, 24 Nov 2013 23:44:47 +0100
+Message-ID: <5292815F.6050505@pengutronix.de>
+References: <1385329501-28021-1-git-send-email-mkl@pengutronix.de> <1385329501-28021-3-git-send-email-mkl@pengutronix.de> <c5cb898e-a4c9-4f0c-9a6b-24f5ae939451@email.android.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="Wiu88WGiMVhhPr9quGGOdxglA8Q0IKCXP"
+ boundary="2sbrKNLRrN8NeUCNcRNauSAkR9aHU0tna"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34482 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49285 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751306Ab3KXWlp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Nov 2013 17:41:45 -0500
-In-Reply-To: <20131124.144800.211193209202819326.davem@davemloft.net>
+	with ESMTP id S1751766Ab3KXWow (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 24 Nov 2013 17:44:52 -0500
+In-Reply-To: <c5cb898e-a4c9-4f0c-9a6b-24f5ae939451@email.android.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de, Holger Bechtold <Holger.Bechtold@gmx.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Wiu88WGiMVhhPr9quGGOdxglA8Q0IKCXP
+--2sbrKNLRrN8NeUCNcRNauSAkR9aHU0tna
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/24/2013 11:48 PM, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Sun, 24 Nov 2013 23:15:51 +0100
->=20
->>     5d0f801 can: c_can: Fix RX message handling, handle lost message
->> before EOB
->>
->> is missing. Can you please queue, if not happened so far, that patch, =
-too?
->=20
-> I'm busy travelling, so can you help me out by submitting it
-> yourself?
+On 11/24/2013 11:38 PM, Oliver Hartkopp wrote:
+> the reason why Kurt asked to split my patch was because of i added a
+> change in pre_irq () to return a value. splitting up the patch as you
+> did here IMO makes no sense. That is why I sent a new patch some days
+> ago only addressing the fix without the 'return value enhancement'.
 
-Sure, just a mail to stable@vger.kernel.org (and Greg)?
-
+Thanks for the clarification,
 Marc
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -47,7 +38,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Wiu88WGiMVhhPr9quGGOdxglA8Q0IKCXP
+--2sbrKNLRrN8NeUCNcRNauSAkR9aHU0tna
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -56,9 +47,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.15 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlKSgJ4ACgkQjTAFq1RaXHOr7QCeKzAnchvI4FG5sWVT3RsMLpry
-sT0AoISzyaiO5Nn53tWzz/d77+eORdFP
-=+kKW
+iEYEARECAAYFAlKSgV8ACgkQjTAFq1RaXHNT8ACfYhAU8Uc0p/mpqT5uTQCsiRFx
+OcIAn0xD8DOtGV7RSuDCDAOd4kKuh7/i
+=KFzH
 -----END PGP SIGNATURE-----
 
---Wiu88WGiMVhhPr9quGGOdxglA8Q0IKCXP--
+--2sbrKNLRrN8NeUCNcRNauSAkR9aHU0tna--
