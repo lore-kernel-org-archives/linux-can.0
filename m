@@ -1,75 +1,71 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v5 1/2] can: sja1000: fix "irq X: nobody cared" problem
-Date: Mon, 25 Nov 2013 08:57:17 +0100
-Message-ID: <808341cbce15240bc45f49ba76ae168b@grandegger.com>
-References: <1385329501-28021-1-git-send-email-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: c_can: don't call pm_runtime_get_sync() from IRQ
+ handler
+Date: Mon, 25 Nov 2013 09:48:54 +0100
+Message-ID: <52930EF6.8040606@pengutronix.de>
+References: <1385333617-30842-1-git-send-email-mkl@pengutronix.de> <2A43324E02E34840B044C9DC9221448009056812@AMDTCEX12.actuant.pri>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:47813 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751596Ab3KYH5S (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 25 Nov 2013 02:57:18 -0500
-In-Reply-To: <1385329501-28021-1-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41329 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753502Ab3KYItF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 03:49:05 -0500
+In-Reply-To: <2A43324E02E34840B044C9DC9221448009056812@AMDTCEX12.actuant.pri>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
+To: "Glen, Andrew" <AGlen@bepmarine.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+Hello Andrew,
 
+please keep the mailing list on Cc.
 
-On Sun, 24 Nov 2013 22:44:59 +0100, Marc Kleine-Budde <mkl@pengutronix.de>
+On 11/25/2013 01:27 AM, Glen, Andrew wrote:
+> There were a couple of mistakes in your patch, a missing semi-colon
+> and missing call to 'struct c_can_priv *priv =3D netdev_priv(dev);' in
+> ' c_can_get_berr_counter()'
 
-wrote:
+Doh, it was probably too late :)
 
-> Hello,
+> I'm new to the formal procedures and am keen to learn. I'd like to
+> post an updated patch. If this is ok, do I make a complete new post
+> with a similar subject except with [Patch v2]?
 
-> 
+Yes, please post the corrected patch, [PATCH v2] as subject, add your
+Singned-off-by and, if it fixes your problem add a Tested-by, too.
 
-> as Kurt suggested I've split up the patch into two parts. I've
+The "formal procedure" is outlined in Documentation/SubmittingPatches in
+the Kernel tree.
 
-added/keept
-
-> Wolfgang's Acks at both parts, hope that's okay. Further I've added to
-
-the
-
-> description of the first patch, that it fixes the "irq X: nobody cared".
-
-Is
-
-> this corrrect? If I understand the discussion and code correct, the
-
-second
-
-> patch is only relevant in the hot unplug case.
-
-
-
-It was Austin Schuh who reported a problem with -rt, which do not show up
-
-with
-
-vanilla Linux. See thread with the subject "sja1000 interrupt problem".
-
-It's
-
-still unclear what the real cause of this problem is. Anyway, Oliver and
-
-myself
-
-looked into the SJA1000 code and realized some inconsistencies with the
-
-interrupt acknowledgement via "post_irq" callback. Oliver already
-
-clarified
-
-that.
+thanks,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Wolfgang.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlKTDvkACgkQjTAFq1RaXHNOSgCdE6mlpUcZ3F99MsXbKYGwSO34
+CFcAn3IF/R0/EqiOGcgHIb6ixYhjyHwz
+=qFsh
+-----END PGP SIGNATURE-----
+
+--I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O--
