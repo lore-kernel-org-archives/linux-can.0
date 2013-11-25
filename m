@@ -1,67 +1,82 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: c_can: don't call pm_runtime_get_sync() from
- IRQ handler
-Date: Mon, 25 Nov 2013 21:42:48 +0100
-Message-ID: <5293B648.4040108@pengutronix.de>
-References: <2A43324E02E34840B044C9DC92214480090568F0@AMDTCEX12.actuant.pri>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="25GMPLVt7J9xaeh6tfVKBxVS2gx7XC1fU"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38864 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751269Ab3KYUnF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 15:43:05 -0500
-In-Reply-To: <2A43324E02E34840B044C9DC92214480090568F0@AMDTCEX12.actuant.pri>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "Glen, Andrew" <AGlen@bepmarine.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: [PATCH 1/3] can: sja1000: fix {pre,post}_irq() handling and IRQ handler return value
+Date: Mon, 25 Nov 2013 21:56:25 +0100
+Message-ID: <1385412987-31205-2-git-send-email-mkl@pengutronix.de>
+References: <1385412987-31205-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1385412987-31205-1-git-send-email-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---25GMPLVt7J9xaeh6tfVKBxVS2gx7XC1fU
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-On 11/25/2013 09:34 PM, Glen, Andrew wrote:
-> From: <mkl@pengutronix.de>
->=20
-> The c_can driver contains a callpath (c_can_poll -> c_can_state_change =
-->
-> c_can_get_berr_counter) which may call pm_runtime_get_sync() from the I=
-RQ handler, which is not allowed.
->=20
-> This problem is fixed by introducing __c_can_get_berr_counter, which wi=
-ll not call pm_runtime_get_sync().
->=20
-> Reported-by: Andrew Glen <AGlen@bepmarine.com>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Andrew Glen <AGlen@bepmarine.com>
-> Tested-by: Andrew Glen <AGlen@bepmarine.com>
+This patch fixes the issue that the sja1000_interrupt() function may have
+returned IRQ_NONE without processing the optional pre_irq() and post_irq()
+function before. Further the irq processing counter 'n' is moved to the end of
+the while statement to return correct IRQ_[NONE|HANDLED] values at error
+conditions.
 
-Thanks for fixing and testing.
+Reported-by: Wolfgang Grandegger <wg@grandegger.com>
+Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/sja1000/sja1000.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---25GMPLVt7J9xaeh6tfVKBxVS2gx7XC1fU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKTtkgACgkQjTAFq1RaXHMdOwCeItSc80fk1GJ9bGTDvq77thsG
-aa8An02Lh0dEnjFdJPRn4Df/eiD2Ve3b
-=z7Hv
------END PGP SIGNATURE-----
-
---25GMPLVt7J9xaeh6tfVKBxVS2gx7XC1fU--
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 7164a99..f17c301 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -494,20 +494,20 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	uint8_t isrc, status;
+ 	int n = 0;
+ 
+-	/* Shared interrupts and IRQ off? */
+-	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
+-		return IRQ_NONE;
+-
+ 	if (priv->pre_irq)
+ 		priv->pre_irq(priv);
+ 
++	/* Shared interrupts and IRQ off? */
++	if (priv->read_reg(priv, SJA1000_IER) == IRQ_OFF)
++		goto out;
++
+ 	while ((isrc = priv->read_reg(priv, SJA1000_IR)) &&
+ 	       (n < SJA1000_MAX_IRQ)) {
+-		n++;
++
+ 		status = priv->read_reg(priv, SJA1000_SR);
+ 		/* check for absent controller due to hw unplug */
+ 		if (status == 0xFF && sja1000_is_absent(priv))
+-			return IRQ_NONE;
++			goto out;
+ 
+ 		if (isrc & IRQ_WUI)
+ 			netdev_warn(dev, "wakeup interrupt\n");
+@@ -535,7 +535,7 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 				status = priv->read_reg(priv, SJA1000_SR);
+ 				/* check for absent controller */
+ 				if (status == 0xFF && sja1000_is_absent(priv))
+-					return IRQ_NONE;
++					goto out;
+ 			}
+ 		}
+ 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
+@@ -543,8 +543,9 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 			if (sja1000_err(dev, isrc, status))
+ 				break;
+ 		}
++		n++;
+ 	}
+-
++out:
+ 	if (priv->post_irq)
+ 		priv->post_irq(priv);
+ 
+-- 
+1.8.5.rc0
