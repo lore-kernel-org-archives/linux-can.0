@@ -1,50 +1,50 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 1/2] can: flexcan: use correct clock as base for bit rate calculation
-Date: Mon, 25 Nov 2013 22:15:20 +0100
-Message-ID: <1385414121-21493-2-git-send-email-mkl@pengutronix.de>
-References: <1385414121-21493-1-git-send-email-mkl@pengutronix.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
+ handler return value
+Date: Mon, 25 Nov 2013 14:05:18 -0800
+Message-ID: <CANGgnMZRo8XW1tGkHqENhMghGq3mY9r5QDp-h54W50ZrAxfK6Q@mail.gmail.com>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
+	<52931051.90502@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38184 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751359Ab3KYVPn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 16:15:43 -0500
-In-Reply-To: <1385414121-21493-1-git-send-email-mkl@pengutronix.de>
+Received: from mail-pd0-f177.google.com ([209.85.192.177]:41386 "EHLO
+	mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750811Ab3KYWFT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 17:05:19 -0500
+Received: by mail-pd0-f177.google.com with SMTP id q10so6372713pdj.22
+        for <linux-can@vger.kernel.org>; Mon, 25 Nov 2013 14:05:19 -0800 (PST)
+In-Reply-To: <52931051.90502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: kernel@pengutronix.de, lst@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>
 
-The flexcan IP core uses the peripheral clock ("per") as basic clock for the
-bit timing calculation. However the driver uses the the wrong clock ("ipg").
-This leads to wrong bit rates if the rates on both clock are different.
+I'll test the patch on the the 2nd when I have access to the machine
+again.  Thanks!
 
-This patch fixes the problem by using the correct clock for the bit rate
-calculation.
+Austin
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index ae08cf1..aaed97b 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1020,13 +1020,13 @@ static int flexcan_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "no ipg clock defined\n");
- 			return PTR_ERR(clk_ipg);
- 		}
--		clock_freq = clk_get_rate(clk_ipg);
- 
- 		clk_per = devm_clk_get(&pdev->dev, "per");
- 		if (IS_ERR(clk_per)) {
- 			dev_err(&pdev->dev, "no per clock defined\n");
- 			return PTR_ERR(clk_per);
- 		}
-+		clock_freq = clk_get_rate(clk_per);
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--- 
-1.8.4.2
-
+On Mon, Nov 25, 2013 at 12:54 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 11/25/2013 12:03 AM, Marc Kleine-Budde wrote:
+>> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>>
+>> It has been reported that on PREEMPT_RT enabled system the peak SJA1000
+>> hardware can trigger "irq X: nobody cared" errors.
+>>
+>> This patch fixes the issue that the sja1000_interrupt() function may have
+>> returned IRQ_NONE without processing the optional pre_irq() and post_irq()
+>> function before. Further the irq processing counter 'n' is moved to the end of
+>> the while statement to return correct IRQ_[NONE|HANDLED] values at error
+>> conditions.
+>
+> Austin, can you test if this patch solves your problem.
+>
+> Marc
+>
+> --
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>
