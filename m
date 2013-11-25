@@ -1,88 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] ARM i.MX5: set CAN peripheral clock to 24 MHz parent
-Date: Mon, 25 Nov 2013 18:48:11 +0100
-Message-ID: <52938D5B.6030002@pengutronix.de>
-References: <1385399751-19109-1-git-send-email-mkl@pengutronix.de> <1385399751-19109-3-git-send-email-mkl@pengutronix.de> <1385400467.906340545@f177.i.mail.ru>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
+ handler return value
+Date: Mon, 25 Nov 2013 19:12:08 +0100
+Message-ID: <529392F8.6040104@hartkopp.net>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <52931051.90502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56429 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756879Ab3KYRs0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 12:48:26 -0500
-In-Reply-To: <1385400467.906340545@f177.i.mail.ru>
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:62000 "EHLO
+	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754364Ab3KYSMM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 13:12:12 -0500
+In-Reply-To: <52931051.90502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Shawn Guo <shawn.guo@linaro.org>, lst@pengutronix.de, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, austin@peloton-tech.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On 11/25/2013 06:27 PM, Alexander Shiyan wrote:
->> This patch sets the parent of CAN peripheral clock (a.k.a. CPI clock) =
-to the
->> lp_apm clock, which has a rate of 24 MHz.
+
+On 25.11.2013 09:54, Marc Kleine-Budde wrote:
+> On 11/25/2013 12:03 AM, Marc Kleine-Budde wrote:
+>> From: Oliver Hartkopp <socketcan@hartkopp.net>
 >>
->> In the CAN world a base clock with multiple of 8 MHz is suited best fo=
-r all CIA
->> recommented bit rates. Without this patch the CAN peripheral clock on =
-i.MX53
->> has a rate of 66.666 MHz which produces quite large bit rate errors.
+>> It has been reported that on PREEMPT_RT enabled system the peak SJA1000
+>> hardware can trigger "irq X: nobody cared" errors.
+
+This sentence of the description is not really related to the patch.
+
+We all looked into the sja1000 driver due to the issue Austin reported and
+detected the general problem in error handling then.
+
+With PREEMPT_RT there are irq threads which might lead to Austins specific
+problem ...
+
 >>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
->> ---
->>  arch/arm/mach-imx/clk-imx51-imx53.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/arm/mach-imx/clk-imx51-imx53.c b/arch/arm/mach-imx/c=
-lk-imx51-imx53.c
->> index e349fd5..28f7f3f 100644
->> --- a/arch/arm/mach-imx/clk-imx51-imx53.c
->> +++ b/arch/arm/mach-imx/clk-imx51-imx53.c
->> @@ -306,6 +306,9 @@ static void __init mx5_clocks_common_init(unsigned=
- long rate_ckil,
->>  	/* move usb phy clk to 24MHz */
->>  	clk_set_parent(clk[IMX5_CLK_USB_PHY_SEL], clk[IMX5_CLK_OSC]);
->> =20
->> +	/* move can bus clk to 24MHz */
->> +	clk_set_parent(clk[IMX5_CLK_CAN_SEL], clk[IMX5_CLK_LP_APM]);
->> +
->>  	clk_prepare_enable(clk[IMX5_CLK_GPC_DVFS]);
->>  	clk_prepare_enable(clk[IMX5_CLK_AHB_MAX]); /* esdhc3 */
->>  	clk_prepare_enable(clk[IMX5_CLK_AIPS_TZ1]);
->> --=20
->=20
-> Again, CAN is missing on i.MX51, so this should be moved from common_in=
-it function.
+>> This patch fixes the issue that the sja1000_interrupt() function may have
+>> returned IRQ_NONE without processing the optional pre_irq() and post_irq()
+>> function before. Further the irq processing counter 'n' is moved to the end of
+>> the while statement to return correct IRQ_[NONE|HANDLED] values at error
+>> conditions.
+> 
+> Austin, can you test if this patch solves your problem.
 
-Doh, will fix.
+Austin should test it, right.
 
-Marc
+But that should not delay sending this patch to net/stable tree.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Sorry for the confusion. Following the mails must have been hard ;-)
+
+Best regards,
+Oliver
 
 
---GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKTjVsACgkQjTAFq1RaXHMFgQCfUFwb6AAiAOReeq0y2IwBxh2g
-X8YAoIrP14PBqdCV9PfAGNAyPdOnduTw
-=q274
------END PGP SIGNATURE-----
-
---GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA--
