@@ -1,69 +1,52 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
- handler return value
-Date: Mon, 25 Nov 2013 09:54:41 +0100
-Message-ID: <52931051.90502@pengutronix.de>
-References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
+From: Holger Bechtold <Holger.Bechtold@gmx.net>
+Subject: [PATCH] for C_CAN driver.
+Date: Mon, 25 Nov 2013 15:48:19 +0100
+Message-ID: <20131125144819.GA5129@pc1xp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="I81UXJt6LK987XjFX5TDIP8aOBlU1S08i"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35322 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753305Ab3KYIyu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 03:54:50 -0500
-In-Reply-To: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
+Received: from mout.gmx.net ([212.227.15.19]:62666 "EHLO mout.gmx.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753230Ab3KYOsc (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 25 Nov 2013 09:48:32 -0500
+Received: from pc1xp ([212.255.254.112]) by mail.gmx.com (mrgmx002) with
+ ESMTPSA (Nemesis) id 0MYwyp-1W62hh3qFP-00VkOA for
+ <linux-can@vger.kernel.org>; Mon, 25 Nov 2013 15:48:31 +0100
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, austin@peloton-tech.com
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---I81UXJt6LK987XjFX5TDIP8aOBlU1S08i
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello all
 
-On 11/25/2013 12:03 AM, Marc Kleine-Budde wrote:
-> From: Oliver Hartkopp <socketcan@hartkopp.net>
->=20
-> It has been reported that on PREEMPT_RT enabled system the peak SJA1000=
+As suggested by Marc Kleine-Budde I re-submit a modified version of the
+patch for the transmitted bytes counter.
 
-> hardware can trigger "irq X: nobody cared" errors.
->=20
-> This patch fixes the issue that the sja1000_interrupt() function may ha=
-ve
-> returned IRQ_NONE without processing the optional pre_irq() and post_ir=
-q()
-> function before. Further the irq processing counter 'n' is moved to the=
- end of
-> the while statement to return correct IRQ_[NONE|HANDLED] values at erro=
-r
-> conditions.
+---------- patch description -----------------------------------------------
 
-Austin, can you test if this patch solves your problem.
+The number of bytes transmitted was not updated correctly, if several
+CAN messages (with different length) were transmitted in one 'bunch'.
+Thus programs like 'ifconfig' showed wrong transmit byte counts.
+Reason was, that the message object whose DLC is to be read was not
+necessarily the active one at the time when
+   priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, 0)) & IF_MCONT_DLC_MASK;
+was executed.
 
-Marc
+---------- patch -----------------------------------------------------------
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+--- linux-3.8.13/drivers/net/can/c_can/c_can.c.Orig	2013-05-11 22:57:46.000000000 +0200
++++ linux-3.8.13/drivers/net/can/c_can/c_can.c	2013-11-25 15:21:29.000763007 +0100
+@@ -751,6 +751,7 @@ static void c_can_do_tx(struct net_devic
+ 		if (!(val & (1 << (msg_obj_no - 1)))) {
+ 			can_get_echo_skb(dev,
+ 					msg_obj_no - C_CAN_MSG_OBJ_TX_FIRST);
++			c_can_object_get(dev, 0, msg_obj_no, IF_COMM_ALL);
+ 			stats->tx_bytes += priv->read_reg(priv,
+ 					C_CAN_IFACE(MSGCTRL_REG, 0))
+ 					& IF_MCONT_DLC_MASK;
 
+------------------------------------------------------------------------------
 
---I81UXJt6LK987XjFX5TDIP8aOBlU1S08i
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Signed-off-by: Holger Bechtold <Holger.Bechtold@gmx.net>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKTEFEACgkQjTAFq1RaXHMv2QCgk51NqIRQmCB6xaX1QJ7p6YPl
-JIoAn1ZqgQ0fsaZIpX6MhjiDwx2OAbW6
-=70F7
------END PGP SIGNATURE-----
-
---I81UXJt6LK987XjFX5TDIP8aOBlU1S08i--
