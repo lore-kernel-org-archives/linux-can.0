@@ -1,71 +1,129 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: c_can: don't call pm_runtime_get_sync() from IRQ
+From: "Glen, Andrew" <AGlen@bepmarine.com>
+Subject: RE: [PATCH] can: c_can: don't call pm_runtime_get_sync() from IRQ
  handler
-Date: Mon, 25 Nov 2013 09:48:54 +0100
-Message-ID: <52930EF6.8040606@pengutronix.de>
-References: <1385333617-30842-1-git-send-email-mkl@pengutronix.de> <2A43324E02E34840B044C9DC9221448009056812@AMDTCEX12.actuant.pri>
+Date: Mon, 25 Nov 2013 00:27:52 +0000
+Message-ID: <2A43324E02E34840B044C9DC9221448009056812@AMDTCEX12.actuant.pri>
+References: <1385333617-30842-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41329 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41384 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753502Ab3KYItF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 03:49:05 -0500
-In-Reply-To: <2A43324E02E34840B044C9DC9221448009056812@AMDTCEX12.actuant.pri>
+	with ESMTP id S1753984Ab3KYIwO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 03:52:14 -0500
+Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1Vkrtt-0006SP-OZ
+	for linux-can@vger.kernel.org; Mon, 25 Nov 2013 09:52:13 +0100
+Received: from [172.17.34.65] (hardanger.do.blackshift.org [172.17.34.65])
+	(using TLSv1 with cipher ECDHE-ECDSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	(Authenticated sender: frogger)
+	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id 7791D5E89A
+	for <linux-can@vger.kernel.org>; Mon, 25 Nov 2013 09:52:13 +0100 (CET)
+In-Reply-To: <1385333617-30842-1-git-send-email-mkl@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Glen, Andrew" <AGlen@bepmarine.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
+There were a couple of mistakes in your patch, a missing semi-colon and missing call to 'struct c_can_priv *priv = netdev_priv(dev);' in ' c_can_get_berr_counter()'
+
+I'm new to the formal procedures and am keen to learn. I'd like to post an updated patch. If this is ok, do I make a complete new post with a similar subject except with [Patch v2]?
+
+
+Regards,
+Andrew.
+
+-----Original Message-----
+From: linux-can-owner@vger.kernel.org [mailto:linux-can-owner@vger.kernel.org] On Behalf Of Marc Kleine-Budde
+Sent: Monday, 25 November 2013 11:54 a.m.
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de; Glen, Andrew; Marc Kleine-Budde
+Subject: [PATCH] can: c_can: don't call pm_runtime_get_sync() from IRQ handler
+
+The c_can driver contians a callpath (c_can_poll -> c_can_state_change ->
+c_can_get_berr_counter) which may call pm_runtime_get_sync() from the IRQ handler, which is not allowed.
+
+This problem is fixed by introducing __c_can_get_berr_counter, which will not call pm_runtime_get_sync().
+
+Reported-by: Andrew Glen <AGlen@bepmarine.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
 Hello Andrew,
 
-please keep the mailing list on Cc.
+can you please test this patch if it solves your problem?
 
-On 11/25/2013 01:27 AM, Glen, Andrew wrote:
-> There were a couple of mistakes in your patch, a missing semi-colon
-> and missing call to 'struct c_can_priv *priv =3D netdev_priv(dev);' in
-> ' c_can_get_berr_counter()'
-
-Doh, it was probably too late :)
-
-> I'm new to the formal procedures and am keen to learn. I'd like to
-> post an updated patch. If this is ok, do I make a complete new post
-> with a similar subject except with [Patch v2]?
-
-Yes, please post the corrected patch, [PATCH v2] as subject, add your
-Singned-off-by and, if it fixes your problem add a Tested-by, too.
-
-The "formal procedure" is outlined in Documentation/SubmittingPatches in
-the Kernel tree.
-
-thanks,
 Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+ drivers/net/can/c_can/c_can.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
---I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c index e3fc07c..0a5718e 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -712,22 +712,30 @@ static int c_can_set_mode(struct net_device *dev, enum can_mode mode)
+        return 0;
+ }
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+-static int c_can_get_berr_counter(const struct net_device *dev,
+-                                       struct can_berr_counter *bec)
++static int __c_can_get_berr_counter(const struct net_device *dev,
++                                   struct can_berr_counter *bec)
+ {
+        unsigned int reg_err_counter;
+        struct c_can_priv *priv = netdev_priv(dev);
 
-iEYEARECAAYFAlKTDvkACgkQjTAFq1RaXHNOSgCdE6mlpUcZ3F99MsXbKYGwSO34
-CFcAn3IF/R0/EqiOGcgHIb6ixYhjyHwz
-=qFsh
------END PGP SIGNATURE-----
+-       c_can_pm_runtime_get_sync(priv);
+-
+        reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+        bec->rxerr = (reg_err_counter & ERR_CNT_REC_MASK) >>
+                                ERR_CNT_REC_SHIFT;
+        bec->txerr = reg_err_counter & ERR_CNT_TEC_MASK;
 
---I1t3mKM5Eco8J9LhRg8gIXg2J4VOIh39O--
++       return 0;
++}
++
++static int c_can_get_berr_counter(const struct net_device *dev,
++                                       struct can_berr_counter *bec)
++{
++       int err;
++
++       c_can_pm_runtime_get_sync(priv);
++       err = __c_can_get_berr_counter(dev, bec)
+        c_can_pm_runtime_put_sync(priv);
+
+-       return 0;
++       return err;
+ }
+
+ /*
+@@ -872,7 +880,7 @@ static int c_can_handle_state_change(struct net_device *dev,
+        if (unlikely(!skb))
+                return 0;
+
+-       c_can_get_berr_counter(dev, &bec);
++       __c_can_get_berr_counter(dev, &bec);
+        reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+        rx_err_passive = (reg_err_counter & ERR_CNT_RP_MASK) >>
+                                ERR_CNT_RP_SHIFT;
+--
+1.8.5.rc0
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-can" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+________________________________
+
+Actuant Corporation Email Notice
+
+This message is intended only for the use of the Addressee and may contain information that is PRIVILEGED and/or CONFIDENTIAL.
+This email is intended only for the personal and confidential use of the recipient(s) named above. If the reader of this email is not an intended recipient, you have received this email in error and any review, dissemination, distribution or copying is strictly prohibited.
+If you have received this email in error, please notify the sender immediately by return mail and permanently delete the copy you received.
+
+Thank you.
+
