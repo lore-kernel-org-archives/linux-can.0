@@ -1,154 +1,88 @@
-From: Rostislav Lisovy <lisovy@gmail.com>
-Subject: Re: Fwd: Using TC from iproute, unable to match canid
-Date: Mon, 25 Nov 2013 18:37:07 +0100
-Message-ID: <1385401027.16954.11.camel@umadbro>
-References: <201311251757.12012.pisa@cmp.felk.cvut.cz>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 2/2] ARM i.MX5: set CAN peripheral clock to 24 MHz parent
+Date: Mon, 25 Nov 2013 18:48:11 +0100
+Message-ID: <52938D5B.6030002@pengutronix.de>
+References: <1385399751-19109-1-git-send-email-mkl@pengutronix.de> <1385399751-19109-3-git-send-email-mkl@pengutronix.de> <1385400467.906340545@f177.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f47.google.com ([209.85.214.47]:47149 "EHLO
-	mail-bk0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754880Ab3KYRhM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 12:37:12 -0500
-Received: by mail-bk0-f47.google.com with SMTP id mx12so2090426bkb.6
-        for <linux-can@vger.kernel.org>; Mon, 25 Nov 2013 09:37:10 -0800 (PST)
-In-Reply-To: <201311251757.12012.pisa@cmp.felk.cvut.cz>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56429 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756879Ab3KYRs0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 12:48:26 -0500
+In-Reply-To: <1385400467.906340545@f177.i.mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Karsten Aalykke Stenzhorn <Karsten.Stenzhorn@marel.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Shawn Guo <shawn.guo@linaro.org>, lst@pengutronix.de, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
 
-Hello;
-I tried the example from the PDF and it worked for me. I am using Ubuntu
-12.10 (Linux kernel 3.5.0-43-generic) with x86 CPU (32-bit Little
-Endian).
-You have to be careful, that it is necessary to byte-swap the ID used
-with the 'u32 match' according to the architecture used.
-For CAN ID 0x123 on LE the matching rule is 0x23010000, on BE it should
-be 0x00000123.
-You can also try to set the mask only for significant bits in the CAN ID
-(i.e. 0xff070000 for LE, or 0x000007ff for BE).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The exact commands I used:
+On 11/25/2013 06:27 PM, Alexander Shiyan wrote:
+>> This patch sets the parent of CAN peripheral clock (a.k.a. CPI clock) =
+to the
+>> lp_apm clock, which has a rate of 24 MHz.
+>>
+>> In the CAN world a base clock with multiple of 8 MHz is suited best fo=
+r all CIA
+>> recommented bit rates. Without this patch the CAN peripheral clock on =
+i.MX53
+>> has a rate of 66.666 MHz which produces quite large bit rate errors.
+>>
+>> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>> ---
+>>  arch/arm/mach-imx/clk-imx51-imx53.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/arch/arm/mach-imx/clk-imx51-imx53.c b/arch/arm/mach-imx/c=
+lk-imx51-imx53.c
+>> index e349fd5..28f7f3f 100644
+>> --- a/arch/arm/mach-imx/clk-imx51-imx53.c
+>> +++ b/arch/arm/mach-imx/clk-imx51-imx53.c
+>> @@ -306,6 +306,9 @@ static void __init mx5_clocks_common_init(unsigned=
+ long rate_ckil,
+>>  	/* move usb phy clk to 24MHz */
+>>  	clk_set_parent(clk[IMX5_CLK_USB_PHY_SEL], clk[IMX5_CLK_OSC]);
+>> =20
+>> +	/* move can bus clk to 24MHz */
+>> +	clk_set_parent(clk[IMX5_CLK_CAN_SEL], clk[IMX5_CLK_LP_APM]);
+>> +
+>>  	clk_prepare_enable(clk[IMX5_CLK_GPC_DVFS]);
+>>  	clk_prepare_enable(clk[IMX5_CLK_AHB_MAX]); /* esdhc3 */
+>>  	clk_prepare_enable(clk[IMX5_CLK_AIPS_TZ1]);
+>> --=20
+>=20
+> Again, CAN is missing on i.MX51, so this should be moved from common_in=
+it function.
 
-modprobe can
-modprobe can-raw
-modprobe vcan
-ip link add dev vcan0 type vcan
-ip link set vcan0 up
-ifconfig -a
+Doh, will fix.
 
-> vcan0     Link encap:UNSPEC  HWaddr
-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
->           NOARP  MTU:16  Metric:1
->           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:0 
->           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+Marc
 
-tc qdisc add dev vcan0 root handle 1: prio bands 5
-
-tc -s class show dev vcan0
-> class prio 1:1 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:2 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:3 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:4 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:5 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-
-tc filter add dev vcan0 parent 1:0 prio 1 u32 match u32 0x01000000
-0xffffffff at 0 flowid 1:1
-
-cangen -I 0x2 -L 1 vcan0 -n 22 -g 1
-tc -s class show dev vcan0
-> class prio 1:1 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:2 parent 1: 
->  Sent 352 bytes 22 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:3 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:4 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:5 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-
-cangen -I 0x1 -L 1 vcan0 -n 11 -g 1
-> class prio 1:1 parent 1: 
->  Sent 176 bytes 11 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:2 parent 1: 
->  Sent 352 bytes 22 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:3 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:4 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
-> class prio 1:5 parent 1: 
->  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
->  backlog 0b 0p requeues 0 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Best regards;
-Rostislav Lisovy
+--GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
+iEYEARECAAYFAlKTjVsACgkQjTAFq1RaXHMFgQCfUFwb6AAiAOReeq0y2IwBxh2g
+X8YAoIrP14PBqdCV9PfAGNAyPdOnduTw
+=q274
+-----END PGP SIGNATURE-----
 
-On Mon, 2013-11-25 at 17:57 +0100, Pavel Pisa wrote:
-> 
-> ----------  Forwarded Message  ----------
-> 
-> Subject: Using TC from iproute, unable to match canid
-> Date: Monday 25 of November 2013, 17:49:02
-> From: Karsten Aalykke Stenzhorn <Karsten.Stenzhorn@marel.com>
-> To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> 
-> I'm trying to use tc from iproute2 to prioritize packets sent to a canbus.
-> 
-> Before doing so I read this guide about the 
-> issue: http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
-> Even using the exact examples from that pdf, I'm not able get any of the 
-> filters to get a match. My current version of kernel and tc only allows me to 
-> use the u32 match option.
-> 
-> Tried (both big and little endian):
-> 
-> tc filter add dev can0 parent 1:0 prio 1 u32 match u32 0x01000000 0xffffffff 
-> at 0 flowid 1:1
-> 
-> and also:
-> 
-> tc filter add dev can0 parent 1:0 prio 1 u32 match u8 0x01 0xff at 4 flowid 
-> 1:1
-> 
-> Sending packets to fit those filters does not trigger a match. I'm a bit 
-> confused why exact examples from the guide does not seem to work.
-> 
-> Any hints or experience on this would be much appreciated.
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
-> -------------------------------------------------------
-
-
+--GhGBNeAEScUPaqhJ1hoqpEnl4HOAi7qNA--
