@@ -1,50 +1,56 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
- handler return value
-Date: Mon, 25 Nov 2013 14:05:18 -0800
-Message-ID: <CANGgnMZRo8XW1tGkHqENhMghGq3mY9r5QDp-h54W50ZrAxfK6Q@mail.gmail.com>
-References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
-	<52931051.90502@pengutronix.de>
+From: "Glen, Andrew" <AGlen@bepmarine.com>
+Subject: RE: [PATCH v2] can: c_can: don't call pm_runtime_get_sync() from
+ IRQ handler
+Date: Tue, 26 Nov 2013 02:15:13 +0000
+Message-ID: <2A43324E02E34840B044C9DC92214480090569D0@AMDTCEX12.actuant.pri>
+References: <2A43324E02E34840B044C9DC92214480090568F0@AMDTCEX12.actuant.pri>
+ <5293B648.4040108@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pd0-f177.google.com ([209.85.192.177]:41386 "EHLO
-	mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750811Ab3KYWFT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 17:05:19 -0500
-Received: by mail-pd0-f177.google.com with SMTP id q10so6372713pdj.22
-        for <linux-can@vger.kernel.org>; Mon, 25 Nov 2013 14:05:19 -0800 (PST)
-In-Reply-To: <52931051.90502@pengutronix.de>
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.202]:42744 "EHLO
+	mail1.bemta8.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750926Ab3KZCWF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Nov 2013 21:22:05 -0500
+In-Reply-To: <5293B648.4040108@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 
-I'll test the patch on the the 2nd when I have access to the machine
-again.  Thanks!
-
-Austin
-
-On Mon, Nov 25, 2013 at 12:54 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 11/25/2013 12:03 AM, Marc Kleine-Budde wrote:
->> From: Oliver Hartkopp <socketcan@hartkopp.net>
->>
->> It has been reported that on PREEMPT_RT enabled system the peak SJA1000
->> hardware can trigger "irq X: nobody cared" errors.
->>
->> This patch fixes the issue that the sja1000_interrupt() function may have
->> returned IRQ_NONE without processing the optional pre_irq() and post_irq()
->> function before. Further the irq processing counter 'n' is moved to the end of
->> the while statement to return correct IRQ_[NONE|HANDLED] values at error
->> conditions.
->
-> Austin, can you test if this patch solves your problem.
->
-> Marc
->
-> --
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
->
+Q2hlZXJzLCB0aGFuayB5b3UgZm9yIGJlaW5nIHBhdGllbnQuIFRoaXMgd2FzIG15IGZpcnN0IGV2
+ZXIgY29udHJpYnV0aW9uIHRvIHRoZSBMaW51eCBjb21tdW5pdHkuDQoNCi0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQpGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRy
+b25peC5kZV0NClNlbnQ6IFR1ZXNkYXksIDI2IE5vdmVtYmVyIDIwMTMgOTo0MyBhLm0uDQpUbzog
+R2xlbiwgQW5kcmV3DQpDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsga2VybmVsQHBlbmd1
+dHJvbml4LmRlDQpTdWJqZWN0OiBSZTogW1BBVENIIHYyXSBjYW46IGNfY2FuOiBkb24ndCBjYWxs
+IHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSBmcm9tIElSUSBoYW5kbGVyDQoNCk9uIDExLzI1LzIwMTMg
+MDk6MzQgUE0sIEdsZW4sIEFuZHJldyB3cm90ZToNCj4gRnJvbTogPG1rbEBwZW5ndXRyb25peC5k
+ZT4NCj4NCj4gVGhlIGNfY2FuIGRyaXZlciBjb250YWlucyBhIGNhbGxwYXRoIChjX2Nhbl9wb2xs
+IC0+IGNfY2FuX3N0YXRlX2NoYW5nZSAtPg0KPiBjX2Nhbl9nZXRfYmVycl9jb3VudGVyKSB3aGlj
+aCBtYXkgY2FsbCBwbV9ydW50aW1lX2dldF9zeW5jKCkgZnJvbSB0aGUgSVJRIGhhbmRsZXIsIHdo
+aWNoIGlzIG5vdCBhbGxvd2VkLg0KPg0KPiBUaGlzIHByb2JsZW0gaXMgZml4ZWQgYnkgaW50cm9k
+dWNpbmcgX19jX2Nhbl9nZXRfYmVycl9jb3VudGVyLCB3aGljaCB3aWxsIG5vdCBjYWxsIHBtX3J1
+bnRpbWVfZ2V0X3N5bmMoKS4NCj4NCj4gUmVwb3J0ZWQtYnk6IEFuZHJldyBHbGVuIDxBR2xlbkBi
+ZXBtYXJpbmUuY29tPg0KPiBBY2tlZC1ieTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRy
+b25peC5kZT4NCj4gU2lnbmVkLW9mZi1ieTogQW5kcmV3IEdsZW4gPEFHbGVuQGJlcG1hcmluZS5j
+b20+DQo+IFRlc3RlZC1ieTogQW5kcmV3IEdsZW4gPEFHbGVuQGJlcG1hcmluZS5jb20+DQoNClRo
+YW5rcyBmb3IgZml4aW5nIGFuZCB0ZXN0aW5nLg0KDQpNYXJjDQotLQ0KUGVuZ3V0cm9uaXggZS5L
+LiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVz
+dHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAg
+ICB8DQpWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEt
+MjA2OTE3LTU1NTUgfA0KQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDov
+L3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXw0KDQpBY3R1YW50IENvcnBvcmF0aW9uIEVtYWlsIE5vdGljZQ0KDQpUaGlzIG1lc3NhZ2Ug
+aXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHVzZSBvZiB0aGUgQWRkcmVzc2VlIGFuZCBtYXkgY29u
+dGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIFBSSVZJTEVHRUQgYW5kL29yIENPTkZJREVOVElBTC4N
+ClRoaXMgZW1haWwgaXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbmFsIGFuZCBjb25maWRl
+bnRpYWwgdXNlIG9mIHRoZSByZWNpcGllbnQocykgbmFtZWQgYWJvdmUuIElmIHRoZSByZWFkZXIg
+b2YgdGhpcyBlbWFpbCBpcyBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgaGF2ZSByZWNl
+aXZlZCB0aGlzIGVtYWlsIGluIGVycm9yIGFuZCBhbnkgcmV2aWV3LCBkaXNzZW1pbmF0aW9uLCBk
+aXN0cmlidXRpb24gb3IgY29weWluZyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLg0KSWYgeW91IGhh
+dmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVy
+IGltbWVkaWF0ZWx5IGJ5IHJldHVybiBtYWlsIGFuZCBwZXJtYW5lbnRseSBkZWxldGUgdGhlIGNv
+cHkgeW91IHJlY2VpdmVkLg0KDQpUaGFuayB5b3UuDQo=
