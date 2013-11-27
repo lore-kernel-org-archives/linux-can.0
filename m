@@ -1,66 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] can + ARM i.MX53: use 24 MHz clock parent on i.MX53
-Date: Tue, 26 Nov 2013 15:35:35 +0100
-Message-ID: <5294B1B7.4030006@pengutronix.de>
-References: <1385414121-21493-1-git-send-email-mkl@pengutronix.de> <20131126045340.GJ30476@S2101-09.ap.freescale.net> <52945B40.5020200@pengutronix.de> <20131126143258.GA5685@S2101-09.ap.freescale.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="36l7DlQlwtbI5kDcCuMaAUskwbClv6qwP"
+Subject: pull-request: can 2013-11-27
+Date: Wed, 27 Nov 2013 22:11:31 +0100
+Message-ID: <1385586695-11134-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49251 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49151 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754499Ab3KZOfr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 26 Nov 2013 09:35:47 -0500
-In-Reply-To: <20131126143258.GA5685@S2101-09.ap.freescale.net>
+	with ESMTP id S1755867Ab3K0VLu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Nov 2013 16:11:50 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: kernel@pengutronix.de, lst@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---36l7DlQlwtbI5kDcCuMaAUskwbClv6qwP
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello David,
 
-On 11/26/2013 03:33 PM, Shawn Guo wrote:
-> On Tue, Nov 26, 2013 at 09:26:40AM +0100, Marc Kleine-Budde wrote:
->> The problem is, that the wrong clock is being used. An all i.mx, but n=
-ot
->> on imx6, both clocks are the same, the bug doesn't show up. So before =
-we
->> can use the 24 MHz clock on mx53, we have to fix the driver.
->=20
-> So it sounds like a more appropriate merging path would be that,
-> you send the driver fix right away to mainline via net tree with
-> v3.13-rc series, and I rebase IMX tree on the -rc that has the fix,
-> and then apply the DTS patch.
-                     ^^^
+this is an extention of my pull request from 2013-11-25, it includes an
+additional patch.
 
-Clocktree not Devicetree :)
+This series consists of a patch by Oliver Hartkopp which fixes some corner
+cases in the interrupt handler of the sja1000 driver. Then there are two
+patches for the c_can dirver. One by me, which fixes a runtime pm related
+"scheduling while atomic" error and patch by Holger Bechtold that fixes the
+calculation of the transmitted bytes.
 
-Okay, fine with me.
+The fourth patch (the additional one) is by me, it corrects the clock usage in
+the flexcan driver.
 
+regards,
 Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+---
+
+The following changes since commit 2c7a9dc1641664173211c4ebc5db510a08684c46:
+
+  be2net: Avoid programming permenant MAC by BE3-R VFs (2013-11-23 15:11:07 -0800)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can.git fixes-for-3.13-20131127
+
+for you to fetch changes up to 1a3e5173f5e72cbf7f0c8927b33082e361c16d72:
+
+  can: flexcan: use correct clock as base for bit rate calculation (2013-11-26 15:39:47 +0100)
+
+----------------------------------------------------------------
+Holger Bechtold (1):
+      can: c_can: fix calculation of transmitted bytes on tx complete
+
+Marc Kleine-Budde (2):
+      can: c_can: don't call pm_runtime_get_sync() from interrupt context
+      can: flexcan: use correct clock as base for bit rate calculation
+
+Oliver Hartkopp (1):
+      can: sja1000: fix {pre,post}_irq() handling and IRQ handler return value
+
+ drivers/net/can/c_can/c_can.c     | 22 ++++++++++++++++------
+ drivers/net/can/flexcan.c         |  2 +-
+ drivers/net/can/sja1000/sja1000.c | 17 +++++++++--------
+ 3 files changed, 26 insertions(+), 15 deletions(-)
 
 
---36l7DlQlwtbI5kDcCuMaAUskwbClv6qwP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlKUsbcACgkQjTAFq1RaXHOJYgCdHRuu3Gm9bzUYWakOp4z+TBgY
-iKoAn2d5uPI8PTnkovPZQplYHxNdEGoR
-=ztfj
------END PGP SIGNATURE-----
-
---36l7DlQlwtbI5kDcCuMaAUskwbClv6qwP--
