@@ -1,33 +1,35 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: Re: request to queue "9b3d423 ARM: i.MX6q: fix the wrong parent of
- can_root clock" for stable
-Date: Thu, 28 Nov 2013 14:50:11 +0000
-Message-ID: <20131128145011.GC3344@hercules.my.domain>
-References: <529719C1.7030402@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2013-11-27
+Date: Thu, 28 Nov 2013 18:42:03 -0500 (EST)
+Message-ID: <20131128.184203.1814210379631673420.davem@davemloft.net>
+References: <1385586695-11134-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <529719C1.7030402@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: stable@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Jiada Wang <jiada_wang@mentor.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:47462 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751089Ab3K1XmE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 Nov 2013 18:42:04 -0500
+In-Reply-To: <1385586695-11134-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-On Thu, Nov 28, 2013 at 11:24:01AM +0100, Marc Kleine-Budde wrote:
-> Hello Greg,
-> 
-> can you please queue
-> 
->     9b3d423 ARM: i.MX6q: fix the wrong parent of can_root clock
-> 
-> for the stable trees.
-> 
-> This patch (and another, which is not yet upstream) is needed for
-> flexcan on mx6 to work properly.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 27 Nov 2013 22:11:31 +0100
 
-Thanks Marc, I'm queuing this patch for the 3.5 kernel as well.
+> this is an extention of my pull request from 2013-11-25, it includes an
+> additional patch.
+> 
+> This series consists of a patch by Oliver Hartkopp which fixes some corner
+> cases in the interrupt handler of the sja1000 driver. Then there are two
+> patches for the c_can dirver. One by me, which fixes a runtime pm related
+> "scheduling while atomic" error and patch by Holger Bechtold that fixes the
+> calculation of the transmitted bytes.
+> 
+> The fourth patch (the additional one) is by me, it corrects the clock usage in
+> the flexcan driver.
 
-Cheers,
---
-Luis
+Pulled, thanks Marc.
