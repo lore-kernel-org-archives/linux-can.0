@@ -1,95 +1,44 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
- handler return value
-Date: Thu, 05 Dec 2013 21:26:45 +0100
-Message-ID: <52A0E185.1080402@grandegger.com>
-References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org>
+Subject: Re: GS_USB
+Date: Thu, 05 Dec 2013 21:42:57 +0100
+Message-ID: <52A0E551.4080900@grandegger.com>
+References: <1380889887.22484.2.camel@blackbox>	 <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>	 <5e3f6029b128db63c69664deed10c5d6@grandegger.com>	 <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>	 <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>	 <1384135835.3749.31.camel@blackbox>	 <3370f1eba56bbe04176f4d14808c1dc0@grandegger.com>	 <5280FAB2.3030600@hartkopp.net> <1384199350.3483.20.camel@blackbox>	 <528150F3.8090406@hartkopp.net> <1384511999.3561.8.camel@blackbox>	 <1385222752.3602.6.camel@blackbox> <1386191862.2061.1.camel@blackbox> <52A0DF88.2040507@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:50785 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:52282 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751584Ab3LEU0r (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Dec 2013 15:26:47 -0500
-In-Reply-To: <loom.20131205T202627-307@post.gmane.org>
+	with ESMTP id S1753567Ab3LEUnA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Dec 2013 15:43:00 -0500
+In-Reply-To: <52A0DF88.2040507@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Richard Andrysek <richard.andrysek@rg-mechatronics.com>, linux-can@vger.kernel.org
+To: "Max S." <max@schneidersoft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 12/05/2013 08:37 PM, Richard Andrysek wrote:
-> Wolfgang Grandegger <wg <at> grandegger.com> writes:
+On 12/05/2013 09:18 PM, Wolfgang Grandegger wrote:
+> Hi Max,
 > 
->> 	2) How the data overrun can happen, if the can bus load  is ~25%?
+> On 12/04/2013 10:17 PM, Max S. wrote:
+>> Hey,
 >>
->> If a bunch of messages is sent in a short time. The 25% is an average
->> load, I assume.
+>> Can someone give me a heads up on the GS_USB driver?
 >>
->>> 	 
->>> 	$ sudo cat /proc/net/can/stats
->>> 	[sudo] password for ran:
->>>  
->>>   1421819 transmitted frames (TXF)
->>>   2606493 received frames (RXF)
->>>    473873 matched frames (RXMF)
->>>  
->>>        18 % total match ratio (RXMR)
->>>      2400 frames/s total tx rate (TXR)
->>>      4400 frames/s total rx rate (RXR)
->>>  
->>>        18 % current match ratio (CRXMR)
->>>      2400 frames/s current tx rate (CTXR)
->>>      4400 frames/s current rx rate (CRXR)
->>>  
->>>        18 % max match ratio (MRXMR)
->>>      2427 frames/s max tx rate (MTXR)
->>>      4427 frames/s max rx rate (MRXR)
->>>  
->>>         4 current receive list entries (CRCV)
->>>         9 maximum receive list entries (MRCV)
->>>  
->>> 	        2 statistic resets (STR)
->>
->>   # ip -d -s link show can0
->>
->> will list the CAN statistics.
->>
->> Wolfgang.
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo <at> vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->>
+>> Whats the next step? Is someone looking at it?
 > 
-> Hi Wolfgang,
+> I will have a final look tomorrow or over the week-end. The driver was
+> already in a good shape. Then it's up to Marc...
 > 
-> thank you for help. I've recognized that these two lines comes from a
-> network world:
+> Anyway, next time please send the patch as standalone mail with the
+> subject "[PATCH vX] can: gs_usb: ..." incrementing X for each new
+> version. It's also common to briefly describe what has been changed
+> below the "---" line. A rather good example is here:
 > 
-> RX packets:12462166 errors:121380 dropped:0 overruns:0 frame:121380
-> TX packets:11604619 errors:678 dropped:0 overruns:0 carrier:0
+>   http://marc.info/?l=linux-can&m=138377346111229&w=2
+> 
+> Then it's less probable that your latest patch will be realized.
 
-What do you mean? CAN belongs to the network world. What does the
-following command report:
+I mean "s/less/more/" or "s/will be/will not be/"
 
- # ip -d -s link show can0
-
-> Then each event "arbitration lost" generates an IRQ.
-
-From a CAN device?
-
-> Is it OK to disable it, just now for tests. With that I want to reduce an
-> amount of IRQs. Is it possible to disable it without a new compilation of a
-> kernel?
-
-"ifconfig <device> down" should do the job. You may get in trouble if
-it's your ethernet device, though.
-
-> We are running quite fast, in few ms. So we test your driver quite well:)
-
-With "-rt" or with vanilla Linux?
-
-Wolfgang.
+Wolfgang
 
