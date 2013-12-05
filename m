@@ -1,52 +1,93 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: GS_USB
-Date: Thu, 05 Dec 2013 20:07:49 +0100
-Message-ID: <52A0CF05.4040302@hartkopp.net>
-References: <1380889887.22484.2.camel@blackbox>  <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>  <5e3f6029b128db63c69664deed10c5d6@grandegger.com>  <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>  <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>  <1384135835.3749.31.camel@blackbox>  <3370f1eba56bbe04176f4d14808c1dc0@grandegger.com>  <5280FAB2.3030600@hartkopp.net> <1384199350.3483.20.camel@blackbox>  <528150F3.8090406@hartkopp.net> <1384511999.3561.8.camel@blackbox>  <1385222752.3602.6.camel@blackbox> <1386191862.2061.1.camel@blackbox> <52A0CE63.80102@hartkopp.net>
+From: Richard Andrysek <richard.andrysek@rg-mechatronics.com>
+Subject: Re: [PATCH v6] can: sja1000: fix =?utf-8?b?e3ByZSxwb3N0fV9pcnEoKQ==?= handling and IRQ handler return value
+Date: Thu, 5 Dec 2013 19:37:58 +0000 (UTC)
+Message-ID: <loom.20131205T202627-307@post.gmane.org>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:13519 "EHLO
-	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751109Ab3LETHv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Dec 2013 14:07:51 -0500
-In-Reply-To: <52A0CE63.80102@hartkopp.net>
+Received: from plane.gmane.org ([80.91.229.3]:42322 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750723Ab3LETiX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 5 Dec 2013 14:38:23 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Voekc-0004nQ-OV
+	for linux-can@vger.kernel.org; Thu, 05 Dec 2013 20:38:19 +0100
+Received: from apollon.rg-mechatronics.com ([62.225.122.120])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 05 Dec 2013 20:38:18 +0100
+Received: from richard.andrysek by apollon.rg-mechatronics.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 05 Dec 2013 20:38:18 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Max S." <max@schneidersoft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
 
-
-On 05.12.2013 20:05, Oliver Hartkopp wrote:
-> On 04.12.2013 22:17, Max S. wrote:
+> 	2) How the data overrun can happen, if the can bus load  is ~25%?
 > 
->> Can someone give me a heads up on the GS_USB driver?
->>
->> Whats the next step? Is someone looking at it?
+> If a bunch of messages is sent in a short time. The 25% is an average
+> load, I assume.
 > 
-> Hello Max,
+> > 	 
+> > 	$ sudo cat /proc/net/can/stats
+> > 	[sudo] password for ran:
+> >  
+> >   1421819 transmitted frames (TXF)
+> >   2606493 received frames (RXF)
+> >    473873 matched frames (RXMF)
+> >  
+> >        18 % total match ratio (RXMR)
+> >      2400 frames/s total tx rate (TXR)
+> >      4400 frames/s total rx rate (RXR)
+> >  
+> >        18 % current match ratio (CRXMR)
+> >      2400 frames/s current tx rate (CTXR)
+> >      4400 frames/s current rx rate (CRXR)
+> >  
+> >        18 % max match ratio (MRXMR)
+> >      2427 frames/s max tx rate (MTXR)
+> >      4427 frames/s max rx rate (MRXR)
+> >  
+> >         4 current receive list entries (CRCV)
+> >         9 maximum receive list entries (MRCV)
+> >  
+> > 	        2 statistic resets (STR)
 > 
-> AFAIK Wolfgang asked for some comments and I'm still not sure about the
-> BUS_OFF behaviour.
+>   # ip -d -s link show can0
 > 
-> Additionally it is usual to have an available hardware when a driver get's
-> into mainline. I tried to click the "Add To Cart" button at
-> http://schneidersoft.net/node/2 but nothing happens :-(
-
-Oops. Now there is something :-)
-
-Did you activate it today?
-
+> will list the CAN statistics.
 > 
-> As long as there's no available HW there's IMHO no pressure for mainline.
-> 
-> Regards,
-> Oliver
+> Wolfgang.
 > 
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
+> the body of a message to majordomo <at> vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
+> 
+
+Hi Wolfgang,
+
+thank you for help. I've recognized that these two lines comes from a
+network world:
+
+RX packets:12462166 errors:121380 dropped:0 overruns:0 frame:121380
+TX packets:11604619 errors:678 dropped:0 overruns:0 carrier:0
+
+Then each event "arbitration lost" generates an IRQ.
+Is it OK to disable it, just now for tests. With that I want to reduce an
+amount of IRQs. Is it possible to disable it without a new compilation of a
+kernel?
+
+We are running quite fast, in few ms. So we test your driver quite well:)
+
+by
+
+Richard
+
+
