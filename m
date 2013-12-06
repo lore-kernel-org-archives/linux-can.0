@@ -1,96 +1,84 @@
-From: Richard Andrysek <richard.andrysek@rg-mechatronics.com>
-Subject: Re: [PATCH v6] can: sja1000: fix =?utf-8?b?e3ByZSxwb3N0fV9pcnEoKQ==?= handling and IRQ handler return value
-Date: Fri, 6 Dec 2013 10:57:01 +0000 (UTC)
-Message-ID: <loom.20131206T114831-779@post.gmane.org>
-References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org> <52A0E185.1080402@grandegger.com> <loom.20131206T100036-664@post.gmane.org> <52A1A323.1030605@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: arbitration lost error reporting (was: Re: [PATCH v6] can: sja1000:
+ fix {pre,post}_irq() handling and IRQ handler return value)
+Date: Fri, 06 Dec 2013 12:45:30 +0100
+Message-ID: <52A1B8DA.1030700@pengutronix.de>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org> <52A0E185.1080402@grandegger.com> <loom.20131206T100036-664@post.gmane.org> <52A1A323.1030605@pengutronix.de> <loom.20131206T114831-779@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="KHQAFQOoikW5pfOtdcDgNLOV8qCn0H3la"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:34148 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1757612Ab3LFK5X (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 6 Dec 2013 05:57:23 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Vot62-0005id-20
-	for linux-can@vger.kernel.org; Fri, 06 Dec 2013 11:57:22 +0100
-Received: from apollon.rg-mechatronics.com ([62.225.122.120])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 06 Dec 2013 11:57:22 +0100
-Received: from richard.andrysek by apollon.rg-mechatronics.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Fri, 06 Dec 2013 11:57:22 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45797 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757844Ab3LFLpk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Dec 2013 06:45:40 -0500
+In-Reply-To: <loom.20131206T114831-779@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Richard Andrysek <richard.andrysek@rg-mechatronics.com>
+Cc: linux-can@vger.kernel.org
 
-Marc Kleine-Budde <mkl <at> pengutronix.de> writes:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KHQAFQOoikW5pfOtdcDgNLOV8qCn0H3la
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> You can send a diff, to illustrate your changes.
+On 12/06/2013 11:57 AM, Richard Andrysek wrote:
+>> You can send a diff, to illustrate your changes.
+>=20
+> $ diff /cygdrive/X/bug1/sja1000.c /cygdrive/X/modified_sja1000.c
 
-$ diff /cygdrive/X/bug1/sja1000.c /cygdrive/X/modified_sja1000.c
+"diff -u" is preferred, but no need to resend it.
 
-151a152
->                         /* RAN 5.12.2013: Disable arbitration IRQ */
-153c154
-<                               priv->write_reg(priv, SJA1000_IER, IRQ_ALL);
----
->                               priv->write_reg(priv, SJA1000_IER, IRQ_ALL &
-~IRQ_ALI);
-156c157
-<                                               IRQ_ALL & ~IRQ_BEI);
----
->                                               IRQ_ALL & ~(IRQ_BEI | IRQ_ALI));
+>>> But I prefare to make some kind of "ioctl" support for that. There ar=
+e
+>>> applications, where it shall not happend. Concurrently I've played wi=
+th
+>>> taskset and priorities.
+>>
+>> ioctl() is not a option here, but there are two options:
+>> 1) We can put the arbitration lost error to the bus errors,
+>>    but I think that's wrong.
+>> 2) You can add another ctrlmode to disable arbitration lost error
+>>    reporting.
 
+> As Wolgang mentioned it has nothing to do with the patch v6.
+> Enabling/diabling IRQs is a new feature. So I don't know, if here it is=
+ a
+> right place to continue about that.
 
-> > But I prefare to make some kind of "ioctl" support for that. There are
-> > applications, where it shall not happend. Concurrently I've played with
-> > taskset and priorities.
-> 
-> ioctl() is not a option here, but there are two options:
-> 1) We can put the arbitration lost error to the bus errors,
->    but I think that's wrong.
-> 2) You can add another ctrlmode to disable arbitration lost error
->    reporting.
+Yes, why not? :)
+As I outlined above you have two options. I prefer option 2 and it has a
+big change of going mainline. The implementation is similar to
+CAN_CTRLMODE_BERR_REPORTING, just look for it in the kernel source tree
+and add a new define for arbitration lost error reporting.
 
-> ...
-> > 4: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode
-> > DEFAULT qlen 10
-> >     link/can
-> >     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-> >     bitrate 1000000 sample-point 0.750
-> >     tq 250 prop-seg 1 phase-seg1 1 phase-seg2 1 sjw 1
-> >     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-> >     clock 8000000
-> >     re-started bus-errors arbit-lost error-warn error-pass bus-off
-> >     0          0          0          0          0          0
-> >     RX: bytes  packets  errors  dropped overrun mcast
-> >     384541802  59160277 0       0       0       0
-> >     TX: bytes  packets  errors  dropped carrier collsns
-> >     77591108   9843156  0       0       0       0
-> > 
-> > 
-> > Please keep in mind arbit-lost is now zero forever.
-> 
-> Because you disabled it, right?
+Do you have a preferred name for the define?
+- CAN_CTRLMODE_AERR_REPORTING
+- CAN_CTRLMODE_ARBITRATIONERR_REPORTING to
 
-Yes, that's right.
+Marc
 
-> 
-> Marc
-
-As Wolgang mentioned it has nothing to do with the patch v6.
-Enabling/diabling IRQs is a new feature. So I don't know, if here it is a
-right place to continue about that.
-
-By
-
-Richard
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--KHQAFQOoikW5pfOtdcDgNLOV8qCn0H3la
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
+iEYEARECAAYFAlKhuNoACgkQjTAFq1RaXHP81QCfXFBRG7sMsWQUmhJHMuUJt8ky
+GFIAn1YyBirNet+WWN9V/1Tk/x8HA8Hp
+=5reg
+-----END PGP SIGNATURE-----
 
+--KHQAFQOoikW5pfOtdcDgNLOV8qCn0H3la--
