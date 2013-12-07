@@ -1,68 +1,56 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: ems_usb: fix urb leaks on failure paths
-Date: Sat, 07 Dec 2013 12:42:54 +0100
-Message-ID: <52A309BE.7000602@hartkopp.net>
-References: <1386371435-17597-1-git-send-email-khoroshilov@ispras.ru>
+Subject: Re: arbitration lost error reporting
+Date: Sat, 07 Dec 2013 14:13:39 +0100
+Message-ID: <52A31F03.1050701@hartkopp.net>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org> <52A0E185.1080402@grandegger.com> <loom.20131206T100036-664@post.gmane.org> <52A1A323.1030605@pengutronix.de> <loom.20131206T114831-779@post.gmane.org> <52A1B8DA.1030700@pengutronix.de> <52A1BCEE.5070101@hartkopp.net> <52A21082.9010102@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo-p00-ob.rzone.de ([81.169.146.161]:56173 "EHLO
+Received: from mo-p00-ob.rzone.de ([81.169.146.161]:33576 "EHLO
 	mo-p00-ob.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754955Ab3LGLm7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 7 Dec 2013 06:42:59 -0500
-In-Reply-To: <1386371435-17597-1-git-send-email-khoroshilov@ispras.ru>
+	with ESMTP id S1752482Ab3LGNNl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 7 Dec 2013 08:13:41 -0500
+In-Reply-To: <52A21082.9010102@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>, Sebastian Haas <dev@sebastianhaas.info>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Richard Andrysek <richard.andrysek@rg-mechatronics.com>, linux-can@vger.kernel.org
 
-Hello Alexey,
+On 06.12.2013 18:59, Wolfgang Grandegger wrote:
+> On 12/06/2013 01:02 PM, Oliver Hartkopp wrote:
+>> On 06.12.2013 12:45, Marc Kleine-Budde wrote:
 
-looks better :-)
+>>> As I outlined above you have two options. I prefer option 2 and it has a
+>>> big change of going mainline. The implementation is similar to
+>>> CAN_CTRLMODE_BERR_REPORTING, just look for it in the kernel source tree
+>>> and add a new define for arbitration lost error reporting.
+>>>
+>>> Do you have a preferred name for the define?
+>>> - CAN_CTRLMODE_AERR_REPORTING
+>>> - CAN_CTRLMODE_ARBITRATIONERR_REPORTING to
+>>
+>> Loosing the arbitration is not an error. It just can happen from time to time.
+> 
+> Well, if it does not happen often, why do we want to suppress reporting
+> this error? I still do not see what it's good for.
 
-I added the author of this driver to double check the patch and for his
-Acked-by ...
+Sometimes it's good to let it settle.
 
-@Sebastian: Would you like to update your e-mail address too?
+Indeed the CAN_CTRLMODE_BERR_REPORTING was introduced to reduce the irq storms
+that can occur when bus errors happen on the bus.
 
-Best regards,
+All other states are promoted by the driver when this information can be
+retrieved from the hardware.
+
+Btw. it seems reasonable to ask whether it makes sense to create error message
+skbs when there's no consumer of the information.
+E.g. the networking timestamps are only enabled when (at least) one
+application requires timestamps on the host.
+
+Therefore I would suggest to create the error message skb only when someone is
+requesting this information (== an error message filter is enabled).
+
+I'll send a RFC patch for that ...
+
 Oliver
-
-
-On 07.12.2013 00:10, Alexey Khoroshilov wrote:
-> There are a couple failure paths where urb leaks.
-> Is spare code within ems_usb_start_xmit(),
-> usb_free_urb() should be used to deallocate urb instead of usb_unanchor_urb().
-> In ems_usb_start() there is no usb_free_urb() if usb_submit_urb() fails.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-> ---
->  drivers/net/can/usb/ems_usb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-> index 5f9a7ad9b964..8aeec0b4601a 100644
-> --- a/drivers/net/can/usb/ems_usb.c
-> +++ b/drivers/net/can/usb/ems_usb.c
-> @@ -625,6 +625,7 @@ static int ems_usb_start(struct ems_usb *dev)
->  			usb_unanchor_urb(urb);
->  			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
->  					  urb->transfer_dma);
-> +			usb_free_urb(urb);
->  			break;
->  		}
->  
-> @@ -798,8 +799,8 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
->  	 * allowed (MAX_TX_URBS).
->  	 */
->  	if (!context) {
-> -		usb_unanchor_urb(urb);
->  		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
-> +		usb_free_urb(urb);
->  
->  		netdev_warn(netdev, "couldn't find free context\n");
->  
-> 
