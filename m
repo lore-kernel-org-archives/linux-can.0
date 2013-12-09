@@ -1,72 +1,55 @@
-From: "Max S." <max@schneidersoft.net>
-Subject: Re: GS_USB
-Date: Mon, 09 Dec 2013 17:53:53 +0000
-Message-ID: <1386611633.25689.10.camel@blackbox>
-References: <1380889887.22484.2.camel@blackbox>
-	  <52507832.8000709@grandegger.com> <1381155720.21207.7.camel@blackbox>
-	  <5e3f6029b128db63c69664deed10c5d6@grandegger.com>
-	  <1381175546.21207.37.camel@blackbox> <525319E6.4020505@grandegger.com>
-	  <1383498724.4208.4.camel@blackbox> <527EC310.5010003@grandegger.com>
-	  <1384135835.3749.31.camel@blackbox>
-	  <3370f1eba56bbe04176f4d14808c1dc0@grandegger.com>
-	  <5280FAB2.3030600@hartkopp.net> <1384199350.3483.20.camel@blackbox>
-	  <528150F3.8090406@hartkopp.net> <1384511999.3561.8.camel@blackbox>
-	  <1385222752.3602.6.camel@blackbox> <1386191862.2061.1.camel@blackbox>
-	 <52A0CE63.80102@hartkopp.net> <52A0CF05.4040302@hartkopp.net>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: [PATCH v6] can: sja1000: fix {pre,post}_irq() handling and IRQ
+ handler return value
+Date: Mon, 9 Dec 2013 11:48:27 -0800
+Message-ID: <CANGgnMYPm7yJOrhb-6Jg1LANk4D40p=UhCBx0Nu=JEbAaUuAeg@mail.gmail.com>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de>
+	<52931051.90502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.schneidersoft.net ([173.45.248.65]:52793 "EHLO
-	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1761231Ab3LIRkL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Dec 2013 12:40:11 -0500
-In-Reply-To: <52A0CF05.4040302@hartkopp.net>
+Received: from mail-ie0-f179.google.com ([209.85.223.179]:62864 "EHLO
+	mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755917Ab3LITs1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Dec 2013 14:48:27 -0500
+Received: by mail-ie0-f179.google.com with SMTP id x13so6971687ief.38
+        for <linux-can@vger.kernel.org>; Mon, 09 Dec 2013 11:48:27 -0800 (PST)
+In-Reply-To: <52931051.90502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>
 
-On Thu, 2013-12-05 at 20:07 +0100, Oliver Hartkopp wrote:
-> 
-> On 05.12.2013 20:05, Oliver Hartkopp wrote:
-> > On 04.12.2013 22:17, Max S. wrote:
-> > 
-> >> Can someone give me a heads up on the GS_USB driver?
-> >>
-> >> Whats the next step? Is someone looking at it?
-> > 
-> > Hello Max,
-> > 
-> > AFAIK Wolfgang asked for some comments and I'm still not sure about the
-> > BUS_OFF behaviour.
-> > 
-> > Additionally it is usual to have an available hardware when a driver get's
-> > into mainline. I tried to click the "Add To Cart" button at
-> > http://schneidersoft.net/node/2 but nothing happens :-(
-> 
-> Oops. Now there is something :-)
-> 
-> Did you activate it today?
+Hi Marc,
 
-Nope Its been up for a while. It requires javascript, maybe you had it
-turned off?
+I have applied the patch.  I ran a test with 75% bus load @500000
+bits/sec (15% sending from the SJA1000 and 60% from another device on
+the bus, running candump can1 to grab the data).  It failed within
+minutes.  I'll add the code back in to disable tracing when the IRQ
+gets disabled.
 
-> 
-> > 
-> > As long as there's no available HW there's IMHO no pressure for mainline.
-> > 
-> > Regards,
-> > Oliver
-> > 
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > 
+Austin
+
+On Mon, Nov 25, 2013 at 12:54 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 11/25/2013 12:03 AM, Marc Kleine-Budde wrote:
+>> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>>
+>> It has been reported that on PREEMPT_RT enabled system the peak SJA1000
+>> hardware can trigger "irq X: nobody cared" errors.
+>>
+>> This patch fixes the issue that the sja1000_interrupt() function may have
+>> returned IRQ_NONE without processing the optional pre_irq() and post_irq()
+>> function before. Further the irq processing counter 'n' is moved to the end of
+>> the while statement to return correct IRQ_[NONE|HANDLED] values at error
+>> conditions.
+>
+> Austin, can you test if this patch solves your problem.
+>
+> Marc
+>
 > --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>
