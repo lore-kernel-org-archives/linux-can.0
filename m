@@ -1,71 +1,106 @@
-From: Richard Andrysek <richard.andrysek@rg-mechatronics.com>
-Subject: Re: [PATCH v6] can: sja1000: fix =?utf-8?b?e3ByZSxwb3N0fV9pcnEoKQ==?= handling and IRQ handler return value
-Date: Mon, 9 Dec 2013 09:29:23 +0000 (UTC)
-Message-ID: <loom.20131209T101448-258@post.gmane.org>
-References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org> <52A0E185.1080402@grandegger.com> <loom.20131206T100036-664@post.gmane.org> <ac6a947c7ec842f67e9d23abd877b884@grandegger.com> <loom.20131206T112023-62@post.gmane.org> <52A21837.3030709@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: arbitration lost error reporting
+Date: Mon, 09 Dec 2013 11:32:52 +0100
+Message-ID: <52A59C54.5070500@pengutronix.de>
+References: <1385334220-31887-1-git-send-email-mkl@pengutronix.de> <loom.20131205T164221-222@post.gmane.org> <52A0BCD9.4090309@grandegger.com> <loom.20131205T202627-307@post.gmane.org> <52A0E185.1080402@grandegger.com> <loom.20131206T100036-664@post.gmane.org> <52A1A323.1030605@pengutronix.de> <loom.20131206T114831-779@post.gmane.org> <52A1B8DA.1030700@pengutronix.de> <52A1BCEE.5070101@hartkopp.net> <52A21082.9010102@grandegger.com> <loom.20131209T093912-850@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="0mdc4JomHPHvV5fW8e9gFG4teQTsDXf8d"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:38674 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754765Ab3LIJ3t (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 9 Dec 2013 04:29:49 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Vpx9v-0007JN-R8
-	for linux-can@vger.kernel.org; Mon, 09 Dec 2013 10:29:47 +0100
-Received: from apollon.rg-mechatronics.com ([62.225.122.120])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 09 Dec 2013 10:29:47 +0100
-Received: from richard.andrysek by apollon.rg-mechatronics.com with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 09 Dec 2013 10:29:47 +0100
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43203 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751412Ab3LIKdD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Dec 2013 05:33:03 -0500
+In-Reply-To: <loom.20131209T093912-850@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Richard Andrysek <richard.andrysek@rg-mechatronics.com>
+Cc: linux-can@vger.kernel.org
 
-Wolfgang Grandegger <wg <at> grandegger.com> writes:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0mdc4JomHPHvV5fW8e9gFG4teQTsDXf8d
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> On 12/06/2013 11:32 AM, Richard Andrysek wrote:
-> > Wolfgang Grandegger <wg <at> grandegger.com> writes:
-> > 
-> >>
-> >> ...
-> >>
-> >>> I've just studied sja1000.c I do not know yet, if it is healthy.
-> >>
-> >> This is normally due to hardware/electrical problems. It has nothing to do
-> >>
-> >> with software. Well, is there *any* relation to the patch mentioned in the
-> >>
-> >> subject? I mean, does the problem *not* show up without that patch.
-> > 
-> > 
-> > Patch solved a problem with unhandled IRQs. The original problem is solved.
-> 
-> What did it fix? Could you elaborate on that issue. You actually never
-> reported a problem.
-> 
-> Wolfgang.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo <at> vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
+On 12/09/2013 10:01 AM, Richard Andrysek wrote:
+> Wolfgang Grandegger <wg <at> grandegger.com> writes:
+>=20
+> ...
+>>>> big change of going mainline. The implementation is similar to
+>>>> CAN_CTRLMODE_BERR_REPORTING, just look for it in the kernel source t=
+ree
+>>>> and add a new define for arbitration lost error reporting.
+>>>>
+>>>> Do you have a preferred name for the define?
+>>>> - CAN_CTRLMODE_AERR_REPORTING
+>>>> - CAN_CTRLMODE_ARBITRATIONERR_REPORTING to
+>>>
+>>> Loosing the arbitration is not an error. It just can happen from time=
+ to
+> time.
+>>
+>> Well, if it does not happen often, why do we want to suppress reportin=
+g
+>> this error? I still do not see what it's good for.
+>>
+>> Wolfgang.
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-can" i=
+n
+>> the body of a message to majordomo <at> vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>>
+>=20
+> How do you define not often? Is it not often one time per ~130us? For X=
 
-I've reported a problem by peak-systems and they recommend me this patch.
-Without this patch with gotos, it leaves unhandled IRQs, e.g.:
+> channels you should divide it through X. Please assume this case stocha=
+stic
+> =3D> not always.=20
+> Next if the information is for an application irrelevant, why I need to=
 
-Dec  1 04:59:33 xxx kernel: [141189.277965] irq 19: nobody cared (try
-booting with the "irqpoll" option)
-...
-Dec  1 04:59:33 xxx kernel: [141189.278131] Disabling IRQ #19
+> generate an IRQ and use CPU resources?
+>=20
+> How to fight with such case:
+>=20
+> 1) Use time triggered protocol - not always possible=20
+> 2) Slow done communication - not always possible
+> 3) Buy faster machine - not always possible
+> 4) Combination of 1..4 - ...
+>=20
+> or
+>=20
+> 5) Let a freedom to a programmer, for the price that he shall to know i=
+t.
+
++1
+
+Feel free to implement it, as outlined in the previous mails.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-With this patch the sja1000 IRQs are not lost. 
+--0mdc4JomHPHvV5fW8e9gFG4teQTsDXf8d
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
+iEYEARECAAYFAlKlnFQACgkQjTAFq1RaXHNJjACeMs3qjs/Z3+IQAcHUVMkj82dT
+KcYAnA2vLBVbheNhAN5IUrZ9owV+bB4h
+=gDDi
+-----END PGP SIGNATURE-----
+
+--0mdc4JomHPHvV5fW8e9gFG4teQTsDXf8d--
