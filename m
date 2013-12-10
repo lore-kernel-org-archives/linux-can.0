@@ -1,329 +1,131 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 1/6] sllin: Replace pr_* with netdev_* where approriate
-Date: Tue, 10 Dec 2013 18:16:12 +0100
-Message-ID: <1386695777-18463-2-git-send-email-alexander.stein@systec-electronic.com>
-References: <1386695777-18463-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: sja1000 interrupt problem
+Date: Tue, 10 Dec 2013 22:12:18 +0100
+Message-ID: <52A783B2.5020002@grandegger.com>
+References: <CANGgnMZTugYEZDi5wrmFVP5K=ZMhKsgZJ5VQLP6Y0nxbCsDZ7w@mail.gmail.com> <52831FC7.3040509@hartkopp.net> <f323c29b9730c877729322453b9e4ec9@grandegger.com> <201311131008.55018.pisa@cmp.felk.cvut.cz> <5287E6B2.8020709@hartkopp.net> <85256584a266750b1330cfae8bebd55c@grandegger.com> <5288D236.403@hartkopp.net> <5288FB91.9050703@grandegger.com> <52892B21.9000501@grandegger.com> <CANGgnMa1NXWCtRCWEp3O+c614OyxD=E9mpr55FZNtLkoDrrxMw@mail.gmail.com> <CANGgnMa=Kri=ede28bB1fdB9YVsDMMwQpwQTUpheQdqwWaUnVg@mail.gmail.com> <333c0fd4238558062478212eb0704b04@grandegger.com> <CANGgnMbXt66Wh-yC6TsKmxy5OffKRvHi6L9-M19529r8rm-6gw@mail.gmail.com> <a6b0ff36f65f878d1d6b24b42260ad44@grandegger.com> <52A71B6C.3050600@hartkopp.net> <8e5f03acb59e16a0ebcd31499a533f15@grandegger.com> <52A73BB1.7070701@hartkopp.
+ net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:60304 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754848Ab3LJR2U (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Dec 2013 12:28:20 -0500
-In-Reply-To: <1386695777-18463-1-git-send-email-alexander.stein@systec-electronic.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:52039 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750858Ab3LJVMV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Dec 2013 16:12:21 -0500
+In-Reply-To: <52A73BB1.7070701@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: =?UTF-8?q?Rostislav=20Lisov=C3=BD?= <lisovy@gmail.com>, Michal Sojka <sojkam1@fel.cvut.cz>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Austin Schuh <austin@peloton-tech.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, linux-can@vger.kernel.org
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
- sllin/sllin.c | 70 +++++++++++++++++++++++++++++------------------------------
- 1 file changed, 35 insertions(+), 35 deletions(-)
+Hi Oliver,
 
-diff --git a/sllin/sllin.c b/sllin/sllin.c
-index 58e59e4..c1cdcd1 100644
---- a/sllin/sllin.c
-+++ b/sllin/sllin.c
-@@ -319,7 +319,7 @@ static void sllin_write_wakeup(struct tty_struct *tty)
- 	} while (unlikely(test_bit(SLF_TXBUFF_RQ, &sl->flags)));
- 
- 	if ((remains > 0) && (actual >= 0)) {
--		pr_debug("sllin: sllin_write_wakeup sent %d, remains %d, waiting\n",
-+		netdev_dbg(sl->dev, "sllin_write_wakeup sent %d, remains %d, waiting\n",
- 			sl->tx_cnt, sl->tx_lim - sl->tx_cnt);
- 		return;
- 	}
-@@ -328,7 +328,7 @@ static void sllin_write_wakeup(struct tty_struct *tty)
- 	set_bit(SLF_TXEVENT, &sl->flags);
- 	wake_up(&sl->kwt_wq);
- 
--	pr_debug("sllin: sllin_write_wakeup sent %d, wakeup\n", sl->tx_cnt);
-+	netdev_dbg(sl->dev, "sllin_write_wakeup sent %d, wakeup\n", sl->tx_cnt);
- }
- 
- /**
-@@ -347,11 +347,11 @@ static netdev_tx_t sll_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	spin_lock(&sl->lock);
- 	if (!netif_running(dev))  {
--		pr_warn("%s: xmit: iface is down\n", dev->name);
-+		netdev_warn(sl->dev, "xmit: iface is down\n");
- 		goto err_out_unlock;
- 	}
- 	if (sl->tty == NULL) {
--		pr_warn("%s: xmit: no tty device connected\n", dev->name);
-+		netdev_warn(sl->dev, "xmit: no tty device connected\n");
- 		goto err_out_unlock;
- 	}
- 
-@@ -405,7 +405,7 @@ static int sll_open(struct net_device *dev)
- {
- 	struct sllin *sl = netdev_priv(dev);
- 
--	pr_debug("sllin: %s() invoked\n", __func__);
-+	netdev_dbg(sl->dev, "%s() invoked\n", __func__);
- 
- 	if (sl->tty == NULL)
- 		return -ENODEV;
-@@ -457,7 +457,7 @@ static void sllin_master_receive_buf(struct tty_struct *tty,
- 	/* Read the characters out of the buffer */
- 	while (count--) {
- 		if (fp && *fp++) {
--			pr_debug("sllin: sllin_receive_buf char 0x%02x ignored "
-+			netdev_dbg(sl->dev, "sllin_master_receive_buf char 0x%02x ignored "
- 				"due marker 0x%02x, flags 0x%lx\n",
- 				*cp, *(fp-1), sl->flags);
- 
-@@ -472,13 +472,13 @@ static void sllin_master_receive_buf(struct tty_struct *tty,
- #ifndef BREAK_BY_BAUD
- 		/* We didn't receive Break character -- fake it! */
- 		if ((sl->rx_cnt == SLLIN_BUFF_BREAK) && (*cp == 0x55)) {
--			pr_debug("sllin: LIN_RX[%d]: 0x00\n", sl->rx_cnt);
-+			netdev_dbg(sl->dev, "LIN_RX[%d]: 0x00\n", sl->rx_cnt);
- 			sl->rx_buff[sl->rx_cnt++] = 0x00;
- 		}
- #endif /* BREAK_BY_BAUD */
- 
- 		if (sl->rx_cnt < SLLIN_BUFF_LEN) {
--			pr_debug("sllin: LIN_RX[%d]: 0x%02x\n", sl->rx_cnt, *cp);
-+			netdev_dbg(sl->dev, "LIN_RX[%d]: 0x%02x\n", sl->rx_cnt, *cp);
- 			sl->rx_buff[sl->rx_cnt++] = *cp++;
- 		}
- 	}
-@@ -487,9 +487,9 @@ static void sllin_master_receive_buf(struct tty_struct *tty,
- 	if (sl->rx_cnt >= sl->rx_expect) {
- 		set_bit(SLF_RXEVENT, &sl->flags);
- 		wake_up(&sl->kwt_wq);
--		pr_debug("sllin: sllin_receive_buf count %d, wakeup\n",	sl->rx_cnt);
-+		netdev_dbg(sl->dev, "sllin_receive_buf count %d, wakeup\n", sl->rx_cnt);
- 	} else {
--		pr_debug("sllin: sllin_receive_buf count %d, waiting\n", sl->rx_cnt);
-+		netdev_dbg(sl->dev, "sllin_receive_buf count %d, waiting\n", sl->rx_cnt);
- 	}
- }
- 
-@@ -505,7 +505,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 	/* Read the characters out of the buffer */
- 	while (count--) {
- 		if (fp && *fp++) {
--			pr_debug("sllin: sllin_receive_buf char 0x%02x ignored "
-+			netdev_dbg(sl->dev, "sllin_slave_receive_buf char 0x%02x ignored "
- 				"due marker 0x%02x, flags 0x%lx\n",
- 				*cp, *(fp-1), sl->flags);
- 
-@@ -517,7 +517,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 		}
- 
- 		if (sl->rx_cnt < SLLIN_BUFF_LEN) {
--			pr_debug("sllin: LIN_RX[%d]: 0x%02x\n", sl->rx_cnt, *cp);
-+			netdev_dbg(sl->dev, "LIN_RX[%d]: 0x%02x\n", sl->rx_cnt, *cp);
- 
- 			/* We did not receive break (0x00) character */
- 			if ((sl->rx_cnt == SLLIN_BUFF_BREAK) && (*cp == 0x55)) {
-@@ -547,6 +547,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 			sce = &sl->linfr_cache[lin_id];
- 
- 			spin_lock_irqsave(&sl->linfr_lock, flags);
-+
- 			/* Is the length of data set in frame cache? */
- 			if (sce->frame_fl & LIN_CACHE_RESPONSE) {
- 				sl->rx_expect += sce->dlc;
-@@ -558,6 +559,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 			spin_unlock_irqrestore(&sl->linfr_lock, flags);
- 
- 			sl->header_received = true;
-+
- 			sll_send_rtr(sl);
- 			continue;
- 		}
-@@ -568,7 +570,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 			((sl->rx_len_unknown == true) && (count == 0)))) {
- 
- 			sll_bump(sl);
--			pr_debug("sllin: Received LIN header & LIN response. "
-+			netdev_dbg(sl->dev, "Received LIN header & LIN response. "
- 					"rx_cnt = %u, rx_expect = %u\n", sl->rx_cnt,
- 					sl->rx_expect);
- 
-@@ -585,7 +587,7 @@ static void sllin_receive_buf(struct tty_struct *tty,
- 			      const unsigned char *cp, char *fp, int count)
- {
- 	struct sllin *sl = (struct sllin *) tty->disc_data;
--	pr_debug("sllin: sllin_receive_buf invoked, count = %u\n", count);
-+	netdev_dbg(sl->dev, "sllin_receive_buf invoked, count = %u\n", count);
- 
- 	if (!sl || sl->magic != SLLIN_MAGIC || !netif_running(sl->dev))
- 		return;
-@@ -643,7 +645,7 @@ static int sllin_configure_frame_cache(struct sllin *sl, struct can_frame *cf)
- 		return -1;
- 
- 	sce = &sl->linfr_cache[cf->can_id & LIN_ID_MASK];
--	pr_debug("sllin: Setting frame cache with EFF CAN frame. LIN ID = %d\n",
-+	netdev_dbg(sl->dev, "Setting frame cache with EFF CAN frame. LIN ID = %d\n",
- 		cf->can_id & LIN_ID_MASK);
- 
- 	spin_lock_irqsave(&sl->linfr_lock, flags);
-@@ -776,7 +778,7 @@ int sllin_send_tx_buff(struct sllin *sl)
- 			sl->tx_cnt += res;
- 		}
- 
--		pr_debug("sllin: sllin_send_tx_buff sent %d, remains %d\n",
-+		netdev_dbg(sl->dev, "sllin_send_tx_buff sent %d, remains %d\n",
- 				sl->tx_cnt, remains);
- 
- 		clear_bit(SLF_TXBUFF_INPR, &sl->flags);
-@@ -851,7 +853,7 @@ int sllin_send_break(struct sllin *sl)
- 
- 	sl->tx_cnt = SLLIN_BUFF_SYNC;
- 
--	pr_debug("sllin: Break sent.\n");
-+	netdev_dbg(sl->dev, "Break sent.\n");
- 	set_bit(SLF_RXEVENT, &sl->flags);
- 	wake_up(&sl->kwt_wq);
- 
-@@ -922,7 +924,7 @@ int sllin_kwthread(void *ptr)
- 	int tx_bytes = 0; /* Used for Network statistics */
- 
- 
--	pr_debug("sllin: sllin_kwthread started.\n");
-+	netdev_dbg(sl->dev, "sllin_kwthread started.\n");
- 	sched_setscheduler(current, SCHED_FIFO, &schparam);
- 
- 	clear_bit(SLF_ERROR, &sl->flags);
-@@ -952,14 +954,14 @@ int sllin_kwthread(void *ptr)
- 				&& test_bit(SLF_MSGEVENT, &sl->flags)));
- 
- 		if (test_and_clear_bit(SLF_RXEVENT, &sl->flags)) {
--			pr_debug("sllin: sllin_kthread RXEVENT\n");
-+			netdev_dbg(sl->dev, "sllin_kthread RXEVENT\n");
- 		}
- 
- 		if (test_and_clear_bit(SLF_ERROR, &sl->flags)) {
- 			unsigned long usleep_range_min;
- 			unsigned long usleep_range_max;
- 			hrtimer_cancel(&sl->rx_timer);
--			pr_debug("sllin: sllin_kthread ERROR\n");
-+			netdev_dbg(sl->dev, "sllin_kthread ERROR\n");
- 
- 			if (sl->lin_state != SLSTATE_IDLE)
- 				sllin_report_error(sl, LIN_ERR_FRAMING);
-@@ -973,11 +975,11 @@ int sllin_kwthread(void *ptr)
- 		}
- 
- 		if (test_and_clear_bit(SLF_TXEVENT, &sl->flags)) {
--			pr_debug("sllin: sllin_kthread TXEVENT\n");
-+			netdev_dbg(sl->dev, "sllin_kthread TXEVENT\n");
- 		}
- 
- 		if (test_and_clear_bit(SLF_TMOUTEVENT, &sl->flags)) {
--			pr_debug("sllin: sllin_kthread TMOUTEVENT\n");
-+			netdev_dbg(sl->dev, "sllin_kthread TMOUTEVENT\n");
- 			sllin_reset_buffs(sl);
- 
- 			sl->lin_state = SLSTATE_IDLE;
-@@ -995,7 +997,7 @@ int sllin_kwthread(void *ptr)
- 				unsigned long flags;
- 				struct sllin_conf_entry *sce;
- 
--				pr_debug("sllin: %s: RTR SFF CAN frame, ID = %x\n",
-+				netdev_dbg(sl->dev, "%s: RTR SFF CAN frame, ID = %x\n",
- 					__func__, cf->can_id & LIN_ID_MASK);
- 
- 				sce = &sl->linfr_cache[cf->can_id & LIN_ID_MASK];
-@@ -1005,7 +1007,7 @@ int sllin_kwthread(void *ptr)
- 				if ((sce->frame_fl & LIN_CACHE_RESPONSE)
- 					&& (sce->dlc > 0)) {
- 
--					pr_debug("sllin: Sending LIN response from linfr_cache\n");
-+					netdev_dbg(sl->dev, "Sending LIN response from linfr_cache\n");
- 
- 					lin_data = sce->data;
- 					lin_dlc = sce->dlc;
-@@ -1020,7 +1022,7 @@ int sllin_kwthread(void *ptr)
- 				spin_unlock_irqrestore(&sl->linfr_lock, flags);
- 
- 			} else { /* SFF NON-RTR CAN frame -> LIN header + LIN response */
--				pr_debug("sllin: %s: NON-RTR SFF CAN frame, ID = %x\n",
-+				netdev_dbg(sl->dev, "%s: NON-RTR SFF CAN frame, ID = %x\n",
- 					__func__, (int)cf->can_id & LIN_ID_MASK);
- 
- 				lin_data = cf->data;
-@@ -1092,7 +1094,7 @@ slstate_response_wait:
- 				lin_buff = (sl->lin_master) ? sl->tx_buff : sl->rx_buff;
- 				if (cf->can_id == (lin_buff[SLLIN_BUFF_ID] & LIN_ID_MASK)) {
- 					hrtimer_cancel(&sl->rx_timer);
--					pr_debug("sllin: received LIN response in a CAN frame.\n");
-+					netdev_dbg(sl->dev, "received LIN response in a CAN frame.\n");
- 					if (sllin_setup_msg(sl, SLLIN_STPMSG_RESPONLY,
- 						cf->can_id & LIN_ID_MASK,
- 						cf->data, cf->can_dlc) != -1) {
-@@ -1125,15 +1127,15 @@ slstate_response_wait:
- 				continue;
- 
- 			hrtimer_cancel(&sl->rx_timer);
--			pr_debug("sllin: response received ID %d len %d\n",
-+			netdev_dbg(sl->dev, "response received ID %d len %d\n",
- 				sl->rx_buff[SLLIN_BUFF_ID], sl->rx_cnt - SLLIN_BUFF_DATA - 1);
- 
- 			if (sllin_rx_validate(sl) == -1) {
--				pr_debug("sllin: RX validation failed.\n");
-+				netdev_dbg(sl->dev, "RX validation failed.\n");
- 				sllin_report_error(sl, LIN_ERR_CHECKSUM);
- 			} else {
- 				/* Send CAN non-RTR frame with data */
--				pr_debug("sllin: sending NON-RTR CAN frame with LIN payload.");
-+				netdev_dbg(sl->dev, "sending NON-RTR CAN frame with LIN payload.");
- 				sll_bump(sl); /* send packet to the network layer */
- 			}
- 
-@@ -1148,7 +1150,7 @@ slstate_response_sent:
- 
- 			hrtimer_cancel(&sl->rx_timer);
- 			sll_bump(sl); /* send packet to the network layer */
--			pr_debug("sllin: response sent ID %d len %d\n",
-+			netdev_dbg(sl->dev, "response sent ID %d len %d\n",
- 				sl->rx_buff[SLLIN_BUFF_ID], sl->rx_cnt - SLLIN_BUFF_DATA - 1);
- 
- 			sl->id_to_send = false;
-@@ -1158,7 +1160,7 @@ slstate_response_sent:
- 	}
- 
- 	hrtimer_cancel(&sl->rx_timer);
--	pr_debug("sllin: sllin_kwthread stopped.\n");
-+	netdev_dbg(sl->dev, "sllin_kwthread stopped.\n");
- 
- 	return 0;
- }
-@@ -1253,6 +1255,7 @@ static int sllin_open(struct tty_struct *tty)
- {
- 	struct sllin *sl;
- 	int err;
-+
- 	pr_debug("sllin: %s() invoked\n", __func__);
- 
- 	if (!capable(CAP_NET_ADMIN))
-@@ -1290,12 +1293,10 @@ static int sllin_open(struct tty_struct *tty)
- 	if (!test_bit(SLF_INUSE, &sl->flags)) {
- 		/* Perform the low-level SLLIN initialization. */
- 		sl->lin_master = master;
--#ifdef DEBUG
- 		if (master)
- 			pr_debug("sllin: Configured as MASTER\n");
- 		else
- 			pr_debug("sllin: Configured as SLAVE\n");
--#endif
- 
- 		sllin_reset_buffs(sl);
- 
-@@ -1492,8 +1493,7 @@ static void __exit sllin_exit(void)
- 
- 		sl = netdev_priv(dev);
- 		if (sl->tty) {
--			pr_err("%s: tty discipline still running\n",
--			       dev->name);
-+			netdev_dbg(sl->dev, "tty discipline still running\n");
- 			/* Intentionally leak the control block. */
- 			dev->destructor = NULL;
- 		}
--- 
-1.8.3.2
+On 12/10/2013 05:05 PM, Oliver Hartkopp wrote:
+> On 10.12.2013 15:41, Wolfgang Grandegger wrote:
+>> On Tue, 10 Dec 2013 14:47:24 +0100, Oliver Hartkopp
+> 
+>>> +       writew(0x00C3, chan->cfg_base + PITA_ICR);
+>>
+>> This may kill unhandled (shared) IRQs. You can do that only if all
+>> handlers have been called in advance (with a global ISR).
+>>
+> 
+> So here's my patch for PITA access protection in peak_pci_post_irq().
+> 
+> Note that we need a single lock for all (e.g. 4) channels of the PITA.
+> So my idea was to create the lock in the per-channel structure of the first
+> channel and then let the channels 1,2,3 refer to this lock.
+
+Cool, this means that the hardware is not working as expected.
+
+> Maybe there's a better solution for that. E.g. the driver cleanup at removal
+> time may get into problems with this approach?!?
+> 
+> So far the system is running. I'll take a look tomorrow morning if its still
+> alive :-) Maybe Austin can do some tests with this patch too.
+
+That would be nice... before I start digging through 1 GB of function
+trace lines ;-).
+
+One more comment inline...
+
+Wolfgang.
+
+> --- linux-source-3.10/drivers/net/can/sja1000/peak_pci.c	2013-09-08 07:10:14.000000000 +0200
+> +++ linux-source-3.10-rt/drivers/net/can/sja1000/peak_pci.c	2013-12-10 16:58:16.381938240 +0100
+> @@ -41,6 +41,8 @@
+>  struct peak_pciec_card;
+>  struct peak_pci_chan {
+>  	void __iomem *cfg_base;		/* Common for all channels */
+> +	spinlock_t pita_lock;
+> +	spinlock_t *pita_lock_ptr;
+
+Well, that's ugly and waste space. Already cfg_base is a per card
+property. Maybe it's time to introduce a "struct peak_pci_card" and
+handle it ala ems_pci.
+
+>  	struct net_device *prev_dev;	/* Chain of network devices */
+>  	u16 icr_mask;			/* Interrupt mask for fast ack */
+>  	struct peak_pciec_card *pciec_card;	/* only for PCIeC LEDs */
+> @@ -539,12 +541,17 @@
+>  static void peak_pci_post_irq(const struct sja1000_priv *priv)
+>  {
+>  	struct peak_pci_chan *chan = priv->priv;
+> +	unsigned long flags;
+>  	u16 icr;
+>  
+>  	/* Select and clear in PITA stored interrupt */
+> +	spin_lock_irqsave(chan->pita_lock_ptr, flags);
+> +
+>  	icr = readw(chan->cfg_base + PITA_ICR);
+>  	if (icr & chan->icr_mask)
+>  		writew(chan->icr_mask, chan->cfg_base + PITA_ICR);
+> +
+> +	spin_unlock_irqrestore(chan->pita_lock_ptr, flags);
+>  }
+>  
+>  static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> @@ -553,6 +560,7 @@
+>  	struct peak_pci_chan *chan;
+>  	struct net_device *dev;
+>  	void __iomem *cfg_base, *reg_base;
+> +	spinlock_t *pita_lock_ptr0;
+>  	u16 sub_sys_id, icr;
+>  	int i, err, channels;
+>  
+> @@ -611,6 +619,7 @@
+>  	icr = readw(cfg_base + PITA_ICR + 2);
+>  
+>  	for (i = 0; i < channels; i++) {
+> +
+
+Please do not add unrelated changes.
+
+>  		dev = alloc_sja1000dev(sizeof(struct peak_pci_chan));
+>  		if (!dev) {
+>  			err = -ENOMEM;
+> @@ -623,6 +632,13 @@
+>  		chan->cfg_base = cfg_base;
+>  		priv->reg_base = reg_base + i * PEAK_PCI_CHAN_SIZE;
+>  
+> +		if (i == 0) {
+> +			spin_lock_init(&chan->pita_lock);
+> +			pita_lock_ptr0 = &chan->pita_lock;
+> +		}
+> +
+> +		chan->pita_lock_ptr = pita_lock_ptr0;
+> +
+>  		priv->read_reg = peak_pci_read_reg;
+>  		priv->write_reg = peak_pci_write_reg;
+>  		priv->post_irq = peak_pci_post_irq;
+> 
+
+BTW: while browsing Austin's function trace I realized that we do access
+also the inactive device if interrupts are shared. I think we should use
+a shadow register variable for SJA1000_IR. Hope to find some time over
+the weekend to provide a patch.
+
+Wolfgang.
+
+Wolfgang.
 
