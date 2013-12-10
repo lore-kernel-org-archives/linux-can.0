@@ -1,12 +1,12 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 5/6] sllin: If length is unknown read until timer occurs or break is received
-Date: Tue, 10 Dec 2013 18:16:16 +0100
-Message-ID: <1386695777-18463-6-git-send-email-alexander.stein@systec-electronic.com>
+Subject: [PATCH 6/6] sllin: Add first support for LIN slave task on slave node
+Date: Tue, 10 Dec 2013 18:16:17 +0100
+Message-ID: <1386695777-18463-7-git-send-email-alexander.stein@systec-electronic.com>
 References: <1386695777-18463-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:60303 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:60307 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754565Ab3LJR2U (ORCPT
+	by vger.kernel.org with ESMTP id S1755010Ab3LJR2U (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Dec 2013 12:28:20 -0500
 In-Reply-To: <1386695777-18463-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,113 +14,132 @@ List-ID: <linux-can.vger.kernel.org>
 To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 Cc: =?UTF-8?q?Rostislav=20Lisov=C3=BD?= <lisovy@gmail.com>, Michal Sojka <sojkam1@fel.cvut.cz>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-If the length is unknown stop waiting for new data until the tty rx queue
-is empty once is not working on fast systems where sllin_receive_buf is
-called for each byte received. Instead wait up to 8 bytes, when the
-timeout occurs or when a new break is received.
-
 Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
- sllin/sllin.c | 54 ++++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+ sllin/sllin.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 3 deletions(-)
 
 diff --git a/sllin/sllin.c b/sllin/sllin.c
-index e8aca08..36f23a5 100644
+index 36f23a5..3e020b1 100644
 --- a/sllin/sllin.c
 +++ b/sllin/sllin.c
-@@ -670,6 +670,23 @@ static int sllin_rx_validate(struct sllin *sl)
- 	return 0;
- }
+@@ -113,6 +113,7 @@ enum slstate {
+ 	SLSTATE_RESPONSE_WAIT_BUS, /* Wait for response from LIN bus
+ 				only (CAN frames from network stack
+ 				are not processed in this moment) */
++	SLSTATE_ID_RECEIVED,
+ 	SLSTATE_RESPONSE_SENT,
+ };
  
-+static void sllin_slave_finish_rx_msg(struct sllin *sl)
-+{
-+	if (sllin_rx_validate(sl) == -1) {
-+		netdev_dbg(sl->dev, "sllin: RX validation failed.\n");
-+		sllin_report_error(sl, LIN_ERR_CHECKSUM);
-+	} else {
-+		/* Send CAN non-RTR frame with data */
-+		netdev_dbg(sl->dev, "sllin: sending NON-RTR CAN frame with LIN payload.");
-+		sll_bump(sl); /* send packet to the network layer */
-+	}
-+	/* Prepare for reception of new header */
-+	sl->rx_cnt = 0;
-+	sl->rx_expect = SLLIN_BUFF_ID + 1;
-+	sl->rx_len_unknown = false; /* We do know exact length of the header */
-+	sl->header_received = false;
-+}
-+
- static void sllin_slave_receive_buf(struct tty_struct *tty,
- 			      const unsigned char *cp, char *fp, int count)
- {
-@@ -681,6 +698,20 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 	/* Read the characters out of the buffer */
- 	while (count--) {
- 		if (fp && *fp++) {
-+			/*
-+			 * If we don't know the length of the current message
-+			 * we received the break of the next message.
-+			 * Evaluate the previous one before continuing
-+			 */
-+			if (sl->rx_len_unknown == true)
-+			{
-+				hrtimer_cancel(&sl->rx_timer);
-+				sllin_slave_finish_rx_msg(sl);
-+
-+				set_bit(SLF_RXEVENT, &sl->flags);
+@@ -755,10 +756,13 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
+ 
+ 			spin_lock_irqsave(&sl->linfr_lock, flags);
+ 
++			sl->lin_state = SLSTATE_ID_RECEIVED;
+ 			/* Is the length of data set in frame cache? */
+ 			if (sce->frame_fl & LIN_CACHE_RESPONSE) {
+ 				sl->rx_expect += sce->dlc + 1; /* + checksum */
+ 				sl->rx_len_unknown = false;
++				set_bit(SLF_MSGEVENT, &sl->flags);
 +				wake_up(&sl->kwt_wq);
-+			}
-+
- 			netdev_dbg(sl->dev, "sllin_slave_receive_buf char 0x%02x ignored "
- 				"due marker 0x%02x, flags 0x%lx\n",
- 				*cp, *(fp-1), sl->flags);
-@@ -736,25 +767,23 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
- 
- 			sl->header_received = true;
- 
-+			hrtimer_start(&sl->rx_timer,
-+				ktime_add(ktime_get(), sl->rx_timer_timeout),
-+				HRTIMER_MODE_ABS);
- 			sll_send_rtr(sl);
- 			continue;
- 		}
- 
- 		/* Response received */
- 		if ((sl->header_received == true) &&
--			((sl->rx_cnt >= sl->rx_expect) ||
--			((sl->rx_len_unknown == true) && (count == 0)))) {
-+			((sl->rx_cnt >= sl->rx_expect))) {
- 
--			sll_bump(sl);
-+			hrtimer_cancel(&sl->rx_timer);
- 			netdev_dbg(sl->dev, "Received LIN header & LIN response. "
- 					"rx_cnt = %u, rx_expect = %u\n", sl->rx_cnt,
+ 			} else {
+ 				sl->rx_expect += SLLIN_DATA_MAX + 1; /* + checksum */
+ 				sl->rx_len_unknown = true;
+@@ -784,6 +788,8 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
  					sl->rx_expect);
-+			sllin_slave_finish_rx_msg(sl);
+ 			sllin_slave_finish_rx_msg(sl);
  
--			/* Prepare for reception of new header */
--			sl->rx_cnt = 0;
--			sl->rx_expect = SLLIN_BUFF_ID + 1;
--			sl->rx_len_unknown = false; /* We do know exact length of the header */
--			sl->header_received = false;
++			set_bit(SLF_RXEVENT, &sl->flags);
++			wake_up(&sl->kwt_wq);
  		}
  	}
  }
-@@ -905,8 +934,13 @@ static enum hrtimer_restart sllin_rx_timeout_handler(struct hrtimer *hrtimer)
- {
- 	struct sllin *sl = container_of(hrtimer, struct sllin, rx_timer);
+@@ -956,7 +962,9 @@ static int sllin_kwthread(void *ptr)
+ 	struct tty_struct *tty = sl->tty;
+ 	struct sched_param schparam = { .sched_priority = 40 };
+ 	int tx_bytes = 0; /* Used for Network statistics */
+-
++	unsigned long flags;
++	int lin_id;
++	struct sllin_conf_entry *sce;
  
--	sllin_report_error(sl, LIN_ERR_RX_TIMEOUT);
--	set_bit(SLF_TMOUTEVENT, &sl->flags);
-+	if (sl->lin_master) {
-+		sllin_report_error(sl, LIN_ERR_RX_TIMEOUT);
-+		set_bit(SLF_TMOUTEVENT, &sl->flags);
-+	} else {
-+		sllin_slave_finish_rx_msg(sl);
-+		set_bit(SLF_RXEVENT, &sl->flags);
-+	}
- 	wake_up(&sl->kwt_wq);
+ 	netdev_dbg(sl->dev, "sllin_kwthread started.\n");
+ 	sched_setscheduler(current, SCHED_FIFO, &schparam);
+@@ -984,7 +992,8 @@ static int sllin_kwthread(void *ptr)
+ 			test_bit(SLF_TMOUTEVENT, &sl->flags) ||
+ 			test_bit(SLF_ERROR, &sl->flags) ||
+ 			(((sl->lin_state == SLSTATE_IDLE) ||
+-				(sl->lin_state == SLSTATE_RESPONSE_WAIT))
++				(sl->lin_state == SLSTATE_RESPONSE_WAIT) ||
++				(sl->lin_state == SLSTATE_ID_RECEIVED))
+ 				&& test_bit(SLF_MSGEVENT, &sl->flags)));
  
- 	return HRTIMER_NORESTART;
+ 		if (test_and_clear_bit(SLF_RXEVENT, &sl->flags)) {
+@@ -1028,7 +1037,6 @@ static int sllin_kwthread(void *ptr)
+ 
+ 			/* SFF RTR CAN frame -> LIN header */
+ 			if (cf->can_id & CAN_RTR_FLAG) {
+-				unsigned long flags;
+ 				struct sllin_conf_entry *sce;
+ 
+ 				netdev_dbg(sl->dev, "%s: RTR SFF CAN frame, ID = %x\n",
+@@ -1177,6 +1185,56 @@ slstate_response_wait:
+ 			sl->lin_state = SLSTATE_IDLE;
+ 			break;
+ 
++		case SLSTATE_ID_RECEIVED:
++			lin_id = sl->rx_buff[SLLIN_BUFF_ID] & LIN_ID_MASK;
++			sce = &sl->linfr_cache[lin_id];
++			spin_lock_irqsave(&sl->linfr_lock, flags);
++
++			if ((sce->frame_fl & LIN_CACHE_RESPONSE)
++					&& (sce->dlc > 0)
++					&& (test_bit(SLF_MSGEVENT, &sl->flags))) {
++				int mode;
++
++				netdev_dbg(sl->dev, "Sending LIN response from linfr_cache\n");
++
++				lin_data = sce->data;
++				lin_dlc = sce->dlc;
++				if (lin_dlc > SLLIN_DATA_MAX)
++					lin_dlc = SLLIN_DATA_MAX;
++				memcpy(lin_data_buff, lin_data, lin_dlc);
++				lin_data = lin_data_buff;
++				tx_bytes = lin_dlc;
++
++				mode = SLLIN_STPMSG_RESPONLY;
++				if (sl->rx_buff[SLLIN_BUFF_ID] & LIN_CHECKSUM_EXTENDED)
++					mode |= SLLIN_STPMSG_CHCKSUM_ENH;
++
++				if (sllin_setup_msg(sl, mode, lin_id & LIN_ID_MASK,
++					lin_data, lin_dlc) != -1) {
++
++					sl->rx_expect = sl->tx_lim;
++					sl->data_to_send = true;
++					sl->dev->stats.tx_packets++;
++					sl->dev->stats.tx_bytes += tx_bytes;
++					sl->resp_len_known = true;
++
++					if (!sl->lin_master) {
++						sl->tx_cnt = SLLIN_BUFF_DATA;
++					}
++					sllin_send_tx_buff(sl);
++				}
++
++				clear_bit(SLF_MSGEVENT, &sl->flags);
++				kfree_skb(sl->tx_req_skb);
++				netif_wake_queue(sl->dev);
++				hrtimer_start(&sl->rx_timer,
++					ktime_add(ktime_get(), sl->rx_timer_timeout),
++					HRTIMER_MODE_ABS);
++			}
++			spin_unlock_irqrestore(&sl->linfr_lock, flags);
++			sl->lin_state = SLSTATE_IDLE;
++			break;
++
+ 		case SLSTATE_RESPONSE_SENT:
+ slstate_response_sent:
+ 			if (sl->rx_cnt < sl->tx_lim)
 -- 
 1.8.3.2
 
