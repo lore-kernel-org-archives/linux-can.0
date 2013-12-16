@@ -1,13 +1,13 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 06/11] sllin: dlc in cache > 0 is the expected LIN frame length
-Date: Mon, 16 Dec 2013 08:54:09 +0100
-Message-ID: <1387180454-1738-7-git-send-email-alexander.stein@systec-electronic.com>
+Subject: [PATCH 10/11] sllin: Add LIN ID to timeout frame
+Date: Mon, 16 Dec 2013 08:54:13 +0100
+Message-ID: <1387180454-1738-11-git-send-email-alexander.stein@systec-electronic.com>
 References: <2633616.0o8t6AGOQY@ws-stein>
  <1387180454-1738-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:46053 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:46055 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752676Ab3LPHzz (ORCPT
+	by vger.kernel.org with ESMTP id S1752686Ab3LPHzz (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Dec 2013 02:55:55 -0500
 In-Reply-To: <1387180454-1738-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -15,27 +15,36 @@ List-ID: <linux-can.vger.kernel.org>
 To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 Cc: =?UTF-8?q?Rostislav=20Lisov=C3=BD?= <lisovy@gmail.com>, Michal Sojka <sojkam1@fel.cvut.cz>, Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-A cache entry should not be set to LIN_CACHE_RESPONSE if there is nothing
-to reply from this node. A dlc set > 0 configures the expected length.
-
 Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
- sllin/sllin.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sllin/sllin.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/sllin/sllin.c b/sllin/sllin.c
-index 487b72a..c5e1749 100644
+index c922b84..61c8134 100644
 --- a/sllin/sllin.c
 +++ b/sllin/sllin.c
-@@ -768,7 +768,7 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
+@@ -517,6 +517,9 @@ static void sllin_master_receive_buf(struct tty_struct *tty,
+  */
+ static void sllin_report_error(struct sllin *sl, int err)
+ {
++	unsigned char *lin_buff;
++	int lin_id;
++
+ 	switch (err) {
+ 	case LIN_ERR_CHECKSUM:
+ 		sl->dev->stats.rx_crc_errors++;
+@@ -531,7 +534,9 @@ static void sllin_report_error(struct sllin *sl, int err)
+ 		break;
+ 	}
  
- 			sl->lin_state = SLSTATE_ID_RECEIVED;
- 			/* Is the length of data set in frame cache? */
--			if (sce->frame_fl & LIN_CACHE_RESPONSE) {
-+			if (sce->dlc > 0) {
- 				sl->rx_expect += sce->dlc + 1; /* + checksum */
- 				sl->rx_len_unknown = false;
- 				set_bit(SLF_MSGEVENT, &sl->flags);
+-	sllin_send_canfr(sl, 0 | CAN_EFF_FLAG |
++	lin_buff = (sl->lin_master) ? sl->tx_buff : sl->rx_buff;
++	lin_id = lin_buff[SLLIN_BUFF_ID] & LIN_ID_MASK;
++	sllin_send_canfr(sl, lin_id | CAN_EFF_FLAG |
+ 		(err & ~LIN_ID_MASK), NULL, 0);
+ }
+ 
 -- 
 1.8.3.2
 
