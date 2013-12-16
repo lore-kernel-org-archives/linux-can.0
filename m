@@ -1,13 +1,13 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 04/11] sllin: Add version dependent access to termios in tty_struct
-Date: Mon, 16 Dec 2013 08:54:07 +0100
-Message-ID: <1387180454-1738-5-git-send-email-alexander.stein@systec-electronic.com>
+Subject: [PATCH 03/11] sllin: Add first support for LIN slave task on slave node
+Date: Mon, 16 Dec 2013 08:54:06 +0100
+Message-ID: <1387180454-1738-4-git-send-email-alexander.stein@systec-electronic.com>
 References: <2633616.0o8t6AGOQY@ws-stein>
  <1387180454-1738-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:46018 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:46022 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752646Ab3LPHzy (ORCPT
+	by vger.kernel.org with ESMTP id S1752645Ab3LPHzy (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Dec 2013 02:55:54 -0500
 In-Reply-To: <1387180454-1738-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -17,59 +17,130 @@ Cc: =?UTF-8?q?Rostislav=20Lisov=C3=BD?= <lisovy@gmail.com>, Michal Sojka <sojkam
 
 Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
- sllin/sllin.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ sllin/sllin.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 3 deletions(-)
 
 diff --git a/sllin/sllin.c b/sllin/sllin.c
-index 3e020b1..e05564c 100644
+index 36f23a5..3e020b1 100644
 --- a/sllin/sllin.c
 +++ b/sllin/sllin.c
-@@ -62,6 +62,7 @@
- #include <linux/can.h>
- #include <linux/kthread.h>
- #include <linux/hrtimer.h>
-+#include <linux/version.h>
- #include "linux/lin_bus.h"
+@@ -113,6 +113,7 @@ enum slstate {
+ 	SLSTATE_RESPONSE_WAIT_BUS, /* Wait for response from LIN bus
+ 				only (CAN frames from network stack
+ 				are not processed in this moment) */
++	SLSTATE_ID_RECEIVED,
+ 	SLSTATE_RESPONSE_SENT,
+ };
  
- /* Should be in include/linux/tty.h */
-@@ -206,22 +207,31 @@ const unsigned char sllin_id_parity_table[] = {
-  */
- static int sltty_change_speed(struct tty_struct *tty, unsigned speed)
- {
--	struct ktermios old_termios;
-+	struct ktermios old_termios, termios;
- 	int cflag;
+@@ -755,10 +756,13 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
  
- 	mutex_lock(&tty->termios_mutex);
+ 			spin_lock_irqsave(&sl->linfr_lock, flags);
  
--	old_termios = *(tty->termios);
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 7, 0)
-+	old_termios = termios = *(tty->termios);
-+#else
-+	old_termios = termios = tty->termios;
-+#endif
++			sl->lin_state = SLSTATE_ID_RECEIVED;
+ 			/* Is the length of data set in frame cache? */
+ 			if (sce->frame_fl & LIN_CACHE_RESPONSE) {
+ 				sl->rx_expect += sce->dlc + 1; /* + checksum */
+ 				sl->rx_len_unknown = false;
++				set_bit(SLF_MSGEVENT, &sl->flags);
++				wake_up(&sl->kwt_wq);
+ 			} else {
+ 				sl->rx_expect += SLLIN_DATA_MAX + 1; /* + checksum */
+ 				sl->rx_len_unknown = true;
+@@ -784,6 +788,8 @@ static void sllin_slave_receive_buf(struct tty_struct *tty,
+ 					sl->rx_expect);
+ 			sllin_slave_finish_rx_msg(sl);
  
- 	cflag = CS8 | CREAD | CLOCAL | HUPCL;
- 	cflag &= ~(CBAUD | CIBAUD);
- 	cflag |= BOTHER;
--	tty->termios->c_cflag = cflag;
--	tty->termios->c_oflag = 0;
--	tty->termios->c_lflag = 0;
-+	termios.c_cflag = cflag;
-+	termios.c_oflag = 0;
-+	termios.c_lflag = 0;
++			set_bit(SLF_RXEVENT, &sl->flags);
++			wake_up(&sl->kwt_wq);
+ 		}
+ 	}
+ }
+@@ -956,7 +962,9 @@ static int sllin_kwthread(void *ptr)
+ 	struct tty_struct *tty = sl->tty;
+ 	struct sched_param schparam = { .sched_priority = 40 };
+ 	int tx_bytes = 0; /* Used for Network statistics */
+-
++	unsigned long flags;
++	int lin_id;
++	struct sllin_conf_entry *sce;
  
- 	/* Enable interrupt when UART-Break or Framing error received */
--	tty->termios->c_iflag = BRKINT | INPCK;
-+	termios.c_iflag = BRKINT | INPCK;
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 7, 0)
-+	*(tty->termios) = termios;
-+#else
-+	tty->termios = termios;
-+#endif
+ 	netdev_dbg(sl->dev, "sllin_kwthread started.\n");
+ 	sched_setscheduler(current, SCHED_FIFO, &schparam);
+@@ -984,7 +992,8 @@ static int sllin_kwthread(void *ptr)
+ 			test_bit(SLF_TMOUTEVENT, &sl->flags) ||
+ 			test_bit(SLF_ERROR, &sl->flags) ||
+ 			(((sl->lin_state == SLSTATE_IDLE) ||
+-				(sl->lin_state == SLSTATE_RESPONSE_WAIT))
++				(sl->lin_state == SLSTATE_RESPONSE_WAIT) ||
++				(sl->lin_state == SLSTATE_ID_RECEIVED))
+ 				&& test_bit(SLF_MSGEVENT, &sl->flags)));
  
- 	tty_encode_baud_rate(tty, speed, speed);
+ 		if (test_and_clear_bit(SLF_RXEVENT, &sl->flags)) {
+@@ -1028,7 +1037,6 @@ static int sllin_kwthread(void *ptr)
  
+ 			/* SFF RTR CAN frame -> LIN header */
+ 			if (cf->can_id & CAN_RTR_FLAG) {
+-				unsigned long flags;
+ 				struct sllin_conf_entry *sce;
+ 
+ 				netdev_dbg(sl->dev, "%s: RTR SFF CAN frame, ID = %x\n",
+@@ -1177,6 +1185,56 @@ slstate_response_wait:
+ 			sl->lin_state = SLSTATE_IDLE;
+ 			break;
+ 
++		case SLSTATE_ID_RECEIVED:
++			lin_id = sl->rx_buff[SLLIN_BUFF_ID] & LIN_ID_MASK;
++			sce = &sl->linfr_cache[lin_id];
++			spin_lock_irqsave(&sl->linfr_lock, flags);
++
++			if ((sce->frame_fl & LIN_CACHE_RESPONSE)
++					&& (sce->dlc > 0)
++					&& (test_bit(SLF_MSGEVENT, &sl->flags))) {
++				int mode;
++
++				netdev_dbg(sl->dev, "Sending LIN response from linfr_cache\n");
++
++				lin_data = sce->data;
++				lin_dlc = sce->dlc;
++				if (lin_dlc > SLLIN_DATA_MAX)
++					lin_dlc = SLLIN_DATA_MAX;
++				memcpy(lin_data_buff, lin_data, lin_dlc);
++				lin_data = lin_data_buff;
++				tx_bytes = lin_dlc;
++
++				mode = SLLIN_STPMSG_RESPONLY;
++				if (sl->rx_buff[SLLIN_BUFF_ID] & LIN_CHECKSUM_EXTENDED)
++					mode |= SLLIN_STPMSG_CHCKSUM_ENH;
++
++				if (sllin_setup_msg(sl, mode, lin_id & LIN_ID_MASK,
++					lin_data, lin_dlc) != -1) {
++
++					sl->rx_expect = sl->tx_lim;
++					sl->data_to_send = true;
++					sl->dev->stats.tx_packets++;
++					sl->dev->stats.tx_bytes += tx_bytes;
++					sl->resp_len_known = true;
++
++					if (!sl->lin_master) {
++						sl->tx_cnt = SLLIN_BUFF_DATA;
++					}
++					sllin_send_tx_buff(sl);
++				}
++
++				clear_bit(SLF_MSGEVENT, &sl->flags);
++				kfree_skb(sl->tx_req_skb);
++				netif_wake_queue(sl->dev);
++				hrtimer_start(&sl->rx_timer,
++					ktime_add(ktime_get(), sl->rx_timer_timeout),
++					HRTIMER_MODE_ABS);
++			}
++			spin_unlock_irqrestore(&sl->linfr_lock, flags);
++			sl->lin_state = SLSTATE_IDLE;
++			break;
++
+ 		case SLSTATE_RESPONSE_SENT:
+ slstate_response_sent:
+ 			if (sl->rx_cnt < sl->tx_lim)
 -- 
 1.8.3.2
 
