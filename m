@@ -1,29 +1,46 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2MiAyLzJdIGNhbjogbWNwMjUxeDogQWRkIGRldmljZSB0?=
- =?UTF-8?B?cmVlIHN1cHBvcnQ=?=
-Date: Mon, 16 Dec 2013 14:53:43 +0400
-Message-ID: <1387191223.84324448@f191.i.mail.ru>
-References: <1387116961-15261-1-git-send-email-shc_work@mail.ru>
- <1387116961-15261-2-git-send-email-shc_work@mail.ru>
- <52AED3D4.40608@pengutronix.de>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback3.mail.ru ([94.100.176.58]:52508 "EHLO
-	fallback3.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753229Ab3LPKyH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Dec 2013 05:54:07 -0500
-In-Reply-To: <52AED3D4.40608@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>, =?UTF-8?B?Um9iIEhlcnJpbmc=?= <robh+dt@kernel.org>, =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>, =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>, =?UTF-8?B?SWFuIENhbXBiZWxs?= <ijc+devicetree@hellion.org.uk>, =?UTF-8?B?S3VtYXIgR2FsYQ==?= <galak@codeaurora.org>, =?UTF-8?B?R3JhbnQgTGlrZWx5?= <grant.likely@linaro.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2013-12-17
+Date: Tue, 17 Dec 2013 11:44:47 +0100
+Message-ID: <1387277089-25554-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-PiBjT24gMTIvMTUvMjAxMyAwMzoxNiBQTSwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+IFRo
-aXMgcGF0Y2ggYWRkcyBEZXZpY2UgVHJlZSBzdXBwb3J0IHRvIHRoZSBNaWNyb2NoaXAgTUNQMjUx
-WCBkcml2ZXIuCj4gCj4gV2hhdCBhYm91dCBjb21wbGV0aW5nIHRoZSBjbG9jayBzdXBwb3J0IGZv
-ciB0aGUgZHJpdmVyLCB0b28/IFlvdSBnZXQgdGhlCj4gY2xvY2ssIGJ1dCBpdCdzIG5ldmVyIGVu
-YWJsZWQuIEl0IHByb2JhYmx5IHdvcmtzIG9uIHlvdXIgYm9hcmQgYmVjYXVzZQo+IGl0J3MgYSBm
-aXhlZCBhbHdheXMgb24gY2xvY2suCgpBaCwgeWVzLiBPSy4KCi0tLQo=
+Hello David,
+
+this is a pull request with two fixes for net/master, the current release
+cycle.
+
+It consists of a patch by Alexey Khoroshilov from the Linux Driver Verification
+project, which fixes a memory leak in ems_usb's failure patch. And a patch by
+me which fixes a memory leak in the peak usb driver.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 9bd7d20c45157c175bfd45449e904a404506f99c:
+
+  sctp: loading sctp when load sctp_probe (2013-12-16 20:04:27 -0500)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can.git fixes-for-3.13
+
+for you to fetch changes up to 20fb4eb96fb0350d28fc4d7cbfd5506711079592:
+
+  can: peak_usb: fix mem leak in pcan_usb_pro_init() (2013-12-17 11:19:33 +0100)
+
+----------------------------------------------------------------
+Alexey Khoroshilov (1):
+      can: ems_usb: fix urb leaks on failure paths
+
+Marc Kleine-Budde (1):
+      can: peak_usb: fix mem leak in pcan_usb_pro_init()
+
+ drivers/net/can/usb/ems_usb.c               | 3 ++-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
