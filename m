@@ -1,66 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: ti_hecc: Use the OMAP2PLUS dependency for omap2plus
- devices
-Date: Fri, 20 Dec 2013 20:56:01 +0100
-Message-ID: <52B4A0D1.9010503@pengutronix.de>
-References: <1387542110-26596-1-git-send-email-ezequiel.garcia@free-electrons.com> <52B439AE.7020304@pengutronix.de> <20131220125236.GA26648@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="uXpUOM0sWIstRUpfiL9bqjdmUWLuWl3fw"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20131220125236.GA26648@localhost>
-Sender: netdev-owner@vger.kernel.org
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2] can: ti_hecc: Replace platform dependency with ARM dependency
+Date: Fri, 20 Dec 2013 17:14:20 -0300
+Message-ID: <1387570460-18409-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from top.free-electrons.com ([176.31.233.9]:41995 "EHLO
+	mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1751259Ab3LTUOI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Dec 2013 15:14:08 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uXpUOM0sWIstRUpfiL9bqjdmUWLuWl3fw
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+OMAP's ti_hecc driver is used to support the CAN controller on many omap2plus
+SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x), so it's wrong to make this
+depend on OMAP3 only. Take an extra step, to get wider build coverage, and make
+the driver depend on ARM.
 
-On 12/20/2013 01:52 PM, Ezequiel Garcia wrote:
-> On Fri, Dec 20, 2013 at 01:35:58PM +0100, Marc Kleine-Budde wrote:
->> On 12/20/2013 01:21 PM, Ezequiel Garcia wrote:
->>> OMAP's ti_hecc driver is used to support the CAN controller on many
->>> omap2plus SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x).
->>> Constrain the driver to OMAP2PLUS, which is the super-set of all the
->>> other SoCs variants.
->>
->> Why not enable it for all ARM platforms to get a bigger compile covera=
-ge?
->>
->=20
-> Hm.. Isn't the COMPILE_TEST option for getting compile coverage?
->=20
-> If the IP is only available on OMAP SoCs, it makes sense to only allow
-> building it there, but I don't really have a strong opinion.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/net/can/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We've replaced the depends on ARCH_* in the flexcan and at91 driver by a
-depends on ARM.
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 3c06947..9e7d95d 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -71,7 +71,7 @@ config CAN_AT91
+ 	  and AT91SAM9X5 processors.
+ 
+ config CAN_TI_HECC
+-	depends on ARCH_OMAP3
++	depends on ARM
+ 	tristate "TI High End CAN Controller"
+ 	---help---
+ 	  Driver for TI HECC (High End CAN Controller) module found on many
+-- 
+1.8.1.5
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---uXpUOM0sWIstRUpfiL9bqjdmUWLuWl3fw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlK0oNIACgkQjTAFq1RaXHOxyACdEZYVscdBWQVbgSjw66A8ebx0
-5FcAn3sJ74tOIMNptJt529HGXhxFP9Zl
-=7TZE
------END PGP SIGNATURE-----
-
---uXpUOM0sWIstRUpfiL9bqjdmUWLuWl3fw--
