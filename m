@@ -1,40 +1,58 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: [PATCH] can: ti_hecc: Use the OMAP2PLUS dependency for omap2plus devices
-Date: Fri, 20 Dec 2013 09:21:50 -0300
-Message-ID: <1387542110-26596-1-git-send-email-ezequiel.garcia@free-electrons.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: ti_hecc: Use the OMAP2PLUS dependency for omap2plus
+ devices
+Date: Fri, 20 Dec 2013 13:35:58 +0100
+Message-ID: <52B439AE.7020304@pengutronix.de>
+References: <1387542110-26596-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="jDotSCWA8JkAU7fDF0cVIU963eU2mtfaV"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from top.free-electrons.com ([176.31.233.9]:39553 "EHLO
-	mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1756251Ab3LTMVi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Dec 2013 07:21:38 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48030 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756410Ab3LTMgG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Dec 2013 07:36:06 -0500
+In-Reply-To: <1387542110-26596-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
 
-OMAP's ti_hecc driver is used to support the CAN controller on many
-omap2plus SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x).
-Constrain the driver to OMAP2PLUS, which is the super-set of all the
-other SoCs variants.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jDotSCWA8JkAU7fDF0cVIU963eU2mtfaV
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/net/can/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/20/2013 01:21 PM, Ezequiel Garcia wrote:
+> OMAP's ti_hecc driver is used to support the CAN controller on many
+> omap2plus SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x).
+> Constrain the driver to OMAP2PLUS, which is the super-set of all the
+> other SoCs variants.
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 3c06947..f0b106b 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -71,7 +71,7 @@ config CAN_AT91
- 	  and AT91SAM9X5 processors.
- 
- config CAN_TI_HECC
--	depends on ARCH_OMAP3
-+	depends on ARCH_OMAP2PLUS
- 	tristate "TI High End CAN Controller"
- 	---help---
- 	  Driver for TI HECC (High End CAN Controller) module found on many
--- 
-1.8.1.5
+Why not enable it for all ARM platforms to get a bigger compile coverage?=
 
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--jDotSCWA8JkAU7fDF0cVIU963eU2mtfaV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlK0Oa4ACgkQjTAFq1RaXHOC2wCdHlPYM4f8OKWxKo3p5CVzlMSA
+kq4AnjHQj4ShfvtRJxWLFhcijQloPlVB
+=gz9N
+-----END PGP SIGNATURE-----
+
+--jDotSCWA8JkAU7fDF0cVIU963eU2mtfaV--
