@@ -1,73 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 Subject: Re: [PATCH v2] can: ti_hecc: Replace platform dependency with ARM
  dependency
-Date: Sat, 21 Dec 2013 22:06:15 +0100
-Message-ID: <52B602C7.4080307@pengutronix.de>
-References: <1387570460-18409-1-git-send-email-ezequiel.garcia@free-electrons.com> <52B4B3E7.8050601@cogentembedded.com> <20131220213341.GA452@localhost>
+Date: Sun, 22 Dec 2013 01:16:44 +0300
+Message-ID: <52B6134C.5080301@cogentembedded.com>
+References: <1387570460-18409-1-git-send-email-ezequiel.garcia@free-electrons.com> <52B4B3E7.8050601@cogentembedded.com> <20131220213341.GA452@localhost> <52B602C7.4080307@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="kfdvRu19csibNEhucvSt32gm5IXc9Glh8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34005 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756047Ab3LUVG1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 21 Dec 2013 16:06:27 -0500
-In-Reply-To: <20131220213341.GA452@localhost>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <52B602C7.4080307@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kfdvRu19csibNEhucvSt32gm5IXc9Glh8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello.
 
-On 12/20/2013 10:33 PM, Ezequiel Garcia wrote:
-> On Sat, Dec 21, 2013 at 12:17:27AM +0300, Sergei Shtylyov wrote:
->> On 12/20/2013 11:14 PM, Ezequiel Garcia wrote:
->>
->>> OMAP's ti_hecc driver is used to support the CAN controller on many o=
-map2plus
->>> SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x), so it's wrong to mak=
-e this
->>> depend on OMAP3 only. Take an extra step, to get wider build coverage=
-, and make
->>> the driver depend on ARM.
->>
->>     To have a real wide coverage, it's probably worth adding '|| COMIP=
-LE_TEXT'=20
->> to 'depends on ARCH_OMAP2PLUS'?
+On 12/22/2013 12:06 AM, Marc Kleine-Budde wrote:
 
-> Yup, and that was my exact proposal on my reply to v1 (which I forgot t=
-o detail
-> in v2). I'd say it's Marc's call.
+>>>> OMAP's ti_hecc driver is used to support the CAN controller on many omap2plus
+>>>> SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x), so it's wrong to make this
+>>>> depend on OMAP3 only. Take an extra step, to get wider build coverage, and make
+>>>> the driver depend on ARM.
 
-Convinced, I've added the v1 of this patch to can-next together with a
-|| COMIPLE_TEXT.
+>>>      To have a real wide coverage, it's probably worth adding '|| COMIPLE_TEXT'
+>>> to 'depends on ARCH_OMAP2PLUS'?
 
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>> Yup, and that was my exact proposal on my reply to v1 (which I forgot to detail
+>> in v2). I'd say it's Marc's call.
 
+> Convinced, I've added the v1 of this patch to can-next together with a
+> || COMIPLE_TEXT.
 
---kfdvRu19csibNEhucvSt32gm5IXc9Glh8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+    Sorry, I meant COMPILE_TEST, of course. :-<
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+> regards,
+> Marc
 
-iEYEARECAAYFAlK2AssACgkQjTAFq1RaXHMIAACfe5rZtxGeewg1TvhdNVj6mRe2
-aRIAnRXEqBukZ2edmIvYyPJ6ktcmoJ4H
-=uAUx
------END PGP SIGNATURE-----
-
---kfdvRu19csibNEhucvSt32gm5IXc9Glh8--
+WBR, Sergei
