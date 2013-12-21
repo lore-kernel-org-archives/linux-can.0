@@ -1,63 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: ti_hecc: Replace platform dependency with ARM
- dependency
-Date: Sat, 21 Dec 2013 22:32:01 +0100
-Message-ID: <52B608D1.2030105@pengutronix.de>
-References: <1387570460-18409-1-git-send-email-ezequiel.garcia@free-electrons.com> <52B4B3E7.8050601@cogentembedded.com> <20131220213341.GA452@localhost> <52B602C7.4080307@pengutronix.de> <52B6134C.5080301@cogentembedded.com>
+Subject: Re: [can:for-davem 3/3] drivers/net/can/ti_hecc.c:909:7: warning:
+ assignment makes pointer from integer without a cast
+Date: Sat, 21 Dec 2013 22:58:57 +0100
+Message-ID: <52B60F21.5070502@pengutronix.de>
+References: <52b60e29.e6MbNbPY4sH1N+Ql%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="4XAdwbcWbutOvKjQrFD7RTacio23CCDln"
+ boundary="qQbRBj5cCcRddxNsxA7125w3w2BXcv4nU"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59646 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40657 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756047Ab3LUVc0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 21 Dec 2013 16:32:26 -0500
-In-Reply-To: <52B6134C.5080301@cogentembedded.com>
+	with ESMTP id S1751192Ab3LUV7G (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 21 Dec 2013 16:59:06 -0500
+In-Reply-To: <52b60e29.e6MbNbPY4sH1N+Ql%fengguang.wu@intel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4XAdwbcWbutOvKjQrFD7RTacio23CCDln
+--qQbRBj5cCcRddxNsxA7125w3w2BXcv4nU
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 12/21/2013 11:16 PM, Sergei Shtylyov wrote:
-> Hello.
+On 12/21/2013 10:54 PM, kbuild test robot wrote:
+> tree:   git://gitorious.org/linux-can/linux-can-next for-davem
+> head:   5dd64fac3ff28aab5e92548a066c175e00cc9da4
+> commit: 5dd64fac3ff28aab5e92548a066c175e00cc9da4 [3/3] can: ti_hecc: Us=
+e the OMAP2PLUS dependency for omap2plus devices
+> config: make ARCH=3Dum allyesconfig
 >=20
-> On 12/22/2013 12:06 AM, Marc Kleine-Budde wrote:
+> All warnings:
 >=20
->>>>> OMAP's ti_hecc driver is used to support the CAN controller on many=
+>    drivers/net/can/ti_hecc.c: In function 'ti_hecc_probe':
+>    drivers/net/can/ti_hecc.c:909:2: error: implicit declaration of func=
+tion 'ioremap' [-Werror=3Dimplicit-function-declaration]
+>      addr =3D ioremap(mem->start, resource_size(mem));
+>      ^
+>>> drivers/net/can/ti_hecc.c:909:7: warning: assignment makes pointer fr=
+om integer without a cast [enabled by default]
+>      addr =3D ioremap(mem->start, resource_size(mem));
+>           ^
+>    drivers/net/can/ti_hecc.c:974:2: error: implicit declaration of func=
+tion 'iounmap' [-Werror=3Dimplicit-function-declaration]
+>      iounmap(addr);
+>      ^
+>    cc1: some warnings being treated as errors
 
->>>>> omap2plus
->>>>> SoCs (OMAP2430, OMAP3, OMAP4, OMAP5 and AM335x), so it's wrong to
->>>>> make this
->>>>> depend on OMAP3 only. Take an extra step, to get wider build
->>>>> coverage, and make
->>>>> the driver depend on ARM.
->=20
->>>>      To have a real wide coverage, it's probably worth adding '||
->>>> COMIPLE_TEXT'
->>>> to 'depends on ARCH_OMAP2PLUS'?
->=20
->>> Yup, and that was my exact proposal on my reply to v1 (which I forgot=
-
->>> to detail
->>> in v2). I'd say it's Marc's call.
->=20
->> Convinced, I've added the v1 of this patch to can-next together with a=
-
->> || COMIPLE_TEXT.
->=20
->    Sorry, I meant COMPILE_TEST, of course. :-<
-
-lol, I copy/pasted the || COMIPLE_TEXT from you, but in the patch I
-added the correct COMPILE_TEST:
-
--       depends on ARCH_OMAP3
-+       depends on ARCH_OMAP2PLUS || COMPILE_TEST
+Should we go back to "depends on ARM"?
 
 Marc
 
@@ -68,7 +59,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---4XAdwbcWbutOvKjQrFD7RTacio23CCDln
+--qQbRBj5cCcRddxNsxA7125w3w2BXcv4nU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -77,9 +68,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.15 (GNU/Linux)
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlK2CNYACgkQjTAFq1RaXHNC6ACdH51/dhWhPgMzdvYjTXKQwAZ3
-PvAAn1iMGZDHPva9uw79WM3EyAlTG1na
-=rCHK
+iEYEARECAAYFAlK2DyEACgkQjTAFq1RaXHMFHACghBpz2gExI+e6vnX0PToo0oiU
+S5UAnRxc1s4O2/XaGazAetvV+Je4KDvD
+=7j2v
 -----END PGP SIGNATURE-----
 
---4XAdwbcWbutOvKjQrFD7RTacio23CCDln--
+--qQbRBj5cCcRddxNsxA7125w3w2BXcv4nU--
