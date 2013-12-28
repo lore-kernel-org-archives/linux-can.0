@@ -1,87 +1,87 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: plx_pci.c patch
-Date: Fri, 27 Dec 2013 16:21:08 +0100
-Message-ID: <52BD9AE4.7010104@hartkopp.net>
-References: <52B8878E.5090505@mcc.vniiem.ru> <52B88A9E.6000008@mcc.vniiem.ru>
+From: Oleg Moroz <oleg.moroz@mcc.vniiem.ru>
+Subject: [PATCH] can: sja1000: add support for Elcus CAN200PCI
+Date: Sat, 28 Dec 2013 23:05:24 +0400
+Message-ID: <52BF20F4.1090404@mcc.vniiem.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:24976 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753642Ab3L0PVN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Dec 2013 10:21:13 -0500
-In-Reply-To: <52B88A9E.6000008@mcc.vniiem.ru>
+Received: from mcc.vniiem.ru ([78.107.120.166]:52791 "EHLO mx.svc.vniiem.ru"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752267Ab3L1THK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 28 Dec 2013 14:07:10 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by mx.svc.vniiem.ru (Postfix) with ESMTP id 9A83881047
+	for <linux-can@vger.kernel.org>; Sat, 28 Dec 2013 23:07:26 +0400 (MSK)
+Received: from mx.svc.vniiem.ru ([127.0.0.1])
+	by localhost (mx.svc.vniiem.ru [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id v1rE5EP0gyhH for <linux-can@vger.kernel.org>;
+	Sat, 28 Dec 2013 23:07:26 +0400 (MSK)
+Received: from [192.168.2.106] (unknown [95.53.99.44])
+	by mx.svc.vniiem.ru (Postfix) with ESMTPSA id DAFB080F92
+	for <linux-can@vger.kernel.org>; Sat, 28 Dec 2013 23:07:24 +0400 (MSK)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?0J7Qu9C10LMg0JzQvtGA0L7Qtw==?= <oleg.moroz@mcc.vniiem.ru>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Hello Oleg,
+This patch adds support for Elcus CAN200PCI card.
 
-thanks for your contribution!
+Signed-off-by: Oleg Moroz<oleg.moroz@mcc.vniiem.ru>
 
-On 23.12.2013 20:10, =D0=9E=D0=BB=D0=B5=D0=B3 =D0=9C=D0=BE=D1=80=D0=BE=D0=
-=B7 wrote:
->=20
-> Hello. I've added the ELCUS CAN-200-PCI card support into sja1000_plx=
-_pci
-> driver. Could you please review my changes and commit it to the  Linu=
-x kernel
-> repository?
->=20
+---
 
-Please post patches always in-line, e.g. an example for plx_pci.c is th=
-is
-commit:
-
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/d=
-rivers/net/can/sja1000/plx_pci.c?id=3De4bc6c06569a90512169d98a11b3eb2ec=
-18da4ae
-
-Which had this patch:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/patch/dr=
-ivers/net/can/sja1000/plx_pci.c?id=3De08534b57e79fa722e3136b79868a725a8=
-eea0f0
-
-And this post on the mailing list:
-http://marc.info/?l=3Dlinux-netdev&m=3D132368716608087&w=3D2
-
-Please sent your patch the same way with a proper Signed-off-by: statem=
-ent
-(preferably without cyrillic characters).
-
-Please clean up your code changes before =3D> remove the line changes b=
-elow!
-
-Best regards,
-Oliver=20
-
-
-@@ -440,13 +462,14 @@ static void plx_pci_reset_marathon(struc
- 	}
- }
-=20
+diff -u a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -45,7 +45,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841
+  			"esd CAN-PCI/PMC/266, "
+  			"esd CAN-PCIe/2000, "
+  			"Connect Tech Inc. CANpro/104-Plus Opto (CRG001), "
+-			"IXXAT PC-I 04/PCI")
++			"IXXAT PC-I 04/PCI, "
++			"ELCUS CAN-200-PCI")
+  MODULE_LICENSE("GPL v2");
+  
+  #define PLX_PCI_MAX_CHAN 2
+@@ -123,6 +124,11 @@ struct plx_pci_card {
+  #define ESD_PCI_SUB_SYS_ID_PCIE2000	0x0200
+  #define ESD_PCI_SUB_SYS_ID_PCI104200	0x0501
+  
++#define CAN200PCI_DEVICE_ID		0x9030
++#define CAN200PCI_VENDOR_ID		0x10b5
++#define CAN200PCI_SUB_DEVICE_ID		0x0301
++#define CAN200PCI_SUB_VENDOR_ID		0xe1c5
 +
+  #define IXXAT_PCI_VENDOR_ID		0x10b5
+  #define IXXAT_PCI_DEVICE_ID		0x9050
+  #define IXXAT_PCI_SUB_SYS_ID		0x2540
+@@ -234,6 +240,14 @@ static struct plx_pci_card_info plx_pci_
+  	/* based on PLX9030 */
+  };
+  
++static struct plx_pci_card_info plx_pci_card_info_elcus = {
++	"Eclus CAN-200-PCI", 2,
++	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
++	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {3, 0x00, 0x80} },
++	&plx_pci_reset_common
++	/* based on PLX9030 */
++};
 +
+  static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
+  	{
+  		/* Adlink PCI-7841/cPCI-7841 */
+@@ -319,6 +333,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_t
+  		0, 0,
+  		(kernel_ulong_t)&plx_pci_card_info_cti
+  	},
++	{
++		/* Elcus CAN-200-PCI */
++		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
++		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
++		0, 0,
++		(kernel_ulong_t)&plx_pci_card_info_elcus
++	},
+  	{ 0,}
+  };
+  MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
 
-(why did you introduce these lines?)
-
- static void plx_pci_del_card(struct pci_dev *pdev)
- {
- 	struct plx_pci_card *card =3D pci_get_drvdata(pdev);
- 	struct net_device *dev;
- 	struct sja1000_priv *priv;
- 	int i =3D 0;
--
-
-(there should remain an empty line)
-=20
- 	for (i =3D 0; i < PLX_PCI_MAX_CHAN; i++) {
- 		dev =3D card->net_dev[i];
- 		if (!dev)
-
-=3D> please leave this code as-is. Tnx.
-
-ps. For the entire correct process see:
-https://www.kernel.org/doc/Documentation/SubmittingPatches
