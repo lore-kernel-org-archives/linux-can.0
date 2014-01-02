@@ -1,110 +1,110 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Precise timestamping
-Date: Thu, 02 Jan 2014 15:10:51 +0100
-Message-ID: <52C5736B.2070501@hartkopp.net>
-References: <CAGfq0uu2mEemora+4RZD8P_DWK=zHL8Y2=-A8=0VJe=RL=o7ZA@mail.gmail.com>
+Subject: Re: [PATCH] can: sja1000: add support for Elcus CAN200PCI
+Date: Thu, 02 Jan 2014 15:19:09 +0100
+Message-ID: <52C5755D.8050302@hartkopp.net>
+References: <52BF20F4.1090404@mcc.vniiem.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:18970 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:47518 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750832AbaABOK4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Jan 2014 09:10:56 -0500
-In-Reply-To: <CAGfq0uu2mEemora+4RZD8P_DWK=zHL8Y2=-A8=0VJe=RL=o7ZA@mail.gmail.com>
+	with ESMTP id S1750917AbaABOTL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Jan 2014 09:19:11 -0500
+In-Reply-To: <52BF20F4.1090404@mcc.vniiem.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Kirienko <pavel.kirienko.list@gmail.com>
+To: Oleg Moroz <oleg.moroz@mcc.vniiem.ru>
 Cc: linux-can@vger.kernel.org
 
-Hello Pavel,
+Hello Oleg,
 
-On 01.01.2014 16:25, Pavel Kirienko wrote:
+linux/scripts/checkpatch.pl still points out some problems:
 
-> I am looking for an optimal way to implement two CAN interfaces for a
-> carrier board for COM Express 2.0 computer-on-module (arch AMD64). The
-> CAN network this computer will be connected to has few nodes that will
-> periodically publish sensor measurements, and the application running
-> on the computer will need to receive these measurements with precise
-> timestamps (desired precision is around 1 ms).
+' might be better as 'Oleg Moroz <oleg.moroz@mcc.vniiem.ru>>
+#4:
+Signed-off-by: Oleg Moroz<oleg.moroz@mcc.vniiem.ru>
 
-The Linux timestamps are generated in nano secs resolution when the CAN frame
-gets processed in the networking subsystem. This is done independently from
-the way the CAN controller is attached to the system.
+=> there was a space missing :-)
 
-> The computer has the following interfaces: USB 2.0/3.0, PCIe, SPI, I2C.
+ERROR: DOS line endings
+#16: FILE: drivers/net/can/sja1000/plx_pci.c:48:
++^I^I^I"IXXAT PC-I 04/PCI, "^M$
 
-Of course PCIe will have the fastest connection here with the lowest latency.
+Ugh!
 
-> Note that this device is going to work in a space constrained
-> environment prone to intensive vibrations, thus solutions like an
-> external PCIe board are unfeasible; external USB-CAN adapters (e.g.
-> Peak System PCAN) are undesirable.
+Don't use DOS line endings with CR/LF.
+Unix is only LF (\n)
 
-You can also remove the housing of CAN USB interfaces and connect the USB
-lines to the CPU board directly. Probably the easiest & cheapest solution.
+Please repost.
 
-> Most obvious and most simple solution is to put a CAN-enabled
-> microcontroller on the board, connect in to the computer via USB and
-> use slcan transport (i.e. typical USB-CAN adapter embedded on the
-> board). I like this approach for its straightforwardness.
-
-What is the difference of connecting a homebrew CAN hardware via USB to use an
-existing CAN USB hardware??
-
-A homebrew CAN hardware with SLCAN is not as powerful as a native USB
-transport for CAN frames and CAN configurations you can get with, e.g.
-
-http://www.peak-system.com/PCAN-USB.199.0.html?&L=1
-http://8devices.com/usb2can
-http://schneidersoft.net/node/2
-
-... and all the others that are supported in Linux mainline.
-
-Using SLCAN the CPU board has to parse and create the ASCII protocol and e.g.
-the error message reporting and the CAN bitrate configuration interface is
-not(!) applicable for SLCAN devices.
-
-If you need to extend the USB CAN adapter firmware: The USB8DEV adapters
-firmware is available at github. And the schematics is available also, if you
-still think about a homebrew board. SLCAN is not a good option though ...
-
-> What kind of
-> resolution I can expect in this case with stock Ubuntu kernel (12.04
-> and higher)?
-
-See above: nano secs.
-
-> Other options I considered are to use an SPI CAN controller, like
-> MCP251x or whatever supported by the Linux CAN backends. This should
-> significantly reduce the read latency, but downside is that I'll need
-> to use a custom built driver (with custom platform description files
-> for SPI interface) (correct me if I am wrong).
-
-The SPI interface is usually not recommended for higher CAN busloads, as you
-need to transfer every CAN controller register access via SPI which becomes a
-bottleneck. There had been several discussions about the mcp251x issues here.
-The platform description is an additional reason not to use the SPI with your
-AMD64 board.
-
-> How much better the
-> timestamping resolution can be with this approach, compared to slcan?
-
-There's no difference regarding the timestamping for SLCAN and SPI.
-
-If you think about hardware timestamps there are some adapters that support
-them in the hardware. But the hardware timestamping is usually not implemented
-in the driver as the Linux network timestamp is sufficient for most use-cases.
-
-> Essentially, my question is: What are my options to implement
-> low-latency (under 1 ms) CAN interface for a COM Express 2.0 device?
-
-The USB CAN adapters or a (mini)PCIe solution, e.g.
-http://www.peak-system.com/PCAN-miniPCIe.285.0.html?&L=1
-should fit your needs for your CPU board. I don't have a strong recommendation
-for a specific CAN hardware but PCI(e) and USB are known to run very well in
-x86 environments.
-
-Regards,
+Thanks,
 Oliver
 
+
+On 28.12.2013 20:05, Oleg Moroz wrote:
+> This patch adds support for Elcus CAN200PCI card.
+> 
+> Signed-off-by: Oleg Moroz<oleg.moroz@mcc.vniiem.ru>
+> 
+> ---
+> 
+> diff -u a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+> --- a/drivers/net/can/sja1000/plx_pci.c
+> +++ b/drivers/net/can/sja1000/plx_pci.c
+> @@ -45,7 +45,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841
+>              "esd CAN-PCI/PMC/266, "
+>              "esd CAN-PCIe/2000, "
+>              "Connect Tech Inc. CANpro/104-Plus Opto (CRG001), "
+> -            "IXXAT PC-I 04/PCI")
+> +            "IXXAT PC-I 04/PCI, "
+> +            "ELCUS CAN-200-PCI")
+>  MODULE_LICENSE("GPL v2");
+>  
+>  #define PLX_PCI_MAX_CHAN 2
+> @@ -123,6 +124,11 @@ struct plx_pci_card {
+>  #define ESD_PCI_SUB_SYS_ID_PCIE2000    0x0200
+>  #define ESD_PCI_SUB_SYS_ID_PCI104200    0x0501
+>  
+> +#define CAN200PCI_DEVICE_ID        0x9030
+> +#define CAN200PCI_VENDOR_ID        0x10b5
+> +#define CAN200PCI_SUB_DEVICE_ID        0x0301
+> +#define CAN200PCI_SUB_VENDOR_ID        0xe1c5
+> +
+>  #define IXXAT_PCI_VENDOR_ID        0x10b5
+>  #define IXXAT_PCI_DEVICE_ID        0x9050
+>  #define IXXAT_PCI_SUB_SYS_ID        0x2540
+> @@ -234,6 +240,14 @@ static struct plx_pci_card_info plx_pci_
+>      /* based on PLX9030 */
+>  };
+>  
+> +static struct plx_pci_card_info plx_pci_card_info_elcus = {
+> +    "Eclus CAN-200-PCI", 2,
+> +    PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+> +    {1, 0x00, 0x00}, { {2, 0x00, 0x80}, {3, 0x00, 0x80} },
+> +    &plx_pci_reset_common
+> +    /* based on PLX9030 */
+> +};
+> +
+>  static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
+>      {
+>          /* Adlink PCI-7841/cPCI-7841 */
+> @@ -319,6 +333,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_t
+>          0, 0,
+>          (kernel_ulong_t)&plx_pci_card_info_cti
+>      },
+> +    {
+> +        /* Elcus CAN-200-PCI */
+> +        CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
+> +        CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
+> +        0, 0,
+> +        (kernel_ulong_t)&plx_pci_card_info_elcus
+> +    },
+>      { 0,}
+>  };
+>  MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
+> 
+> -- 
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
