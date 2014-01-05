@@ -1,91 +1,48 @@
-From: OIeg Moroz <oleg.moroz@mcc.vniiem.ru>
-Subject: [PATCH v2] can: sja1000: add support for Elcus CAN200PCI
-Date: Sat, 04 Jan 2014 13:53:14 +0400
-Message-ID: <5352298.Hh5htuev4I@debian-toshiba>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] net: can: Disable broken flexcan driver build for big endian CPU on ARM
+Date: Sun,  5 Jan 2014 09:51:23 -0800
+Message-ID: <1388944283-29990-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mcc.vniiem.ru ([78.107.120.166]:46599 "EHLO mx.svc.vniiem.ru"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751217AbaADJxW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sat, 4 Jan 2014 04:53:22 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by mx.svc.vniiem.ru (Postfix) with ESMTP id 9EF338105E
-	for <linux-can@vger.kernel.org>; Sat,  4 Jan 2014 13:53:42 +0400 (MSK)
-Received: from mx.svc.vniiem.ru ([127.0.0.1])
-	by localhost (mx.svc.vniiem.ru [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id T6Hycq5Z1tfH for <linux-can@vger.kernel.org>;
-	Sat,  4 Jan 2014 13:53:42 +0400 (MSK)
-Received: from debian-toshiba.localnet (ip-081-085-064-178.pools.atnet.ru [178.64.85.81])
-	by mx.svc.vniiem.ru (Postfix) with ESMTPSA id E61BA80F67
-	for <linux-can@vger.kernel.org>; Sat,  4 Jan 2014 13:53:40 +0400 (MSK)
+Received: from mail-pd0-f176.google.com ([209.85.192.176]:47200 "EHLO
+	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751293AbaAERv1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jan 2014 12:51:27 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
 
-This patch adds support for Elcus CAN200PCI card.
+Building arm:allmodconfig fails with
 
-Signed-off-by: Oleg Moroz <oleg.moroz@mcc.vniiem.ru>
+flexcan.c: In function 'flexcan_read':
+flexcan.c:243:2: error: implicit declaration of function 'in_be32'
+flexcan.c: In function 'flexcan_write':
+flexcan.c:248:2: error: implicit declaration of function 'out_be32'
 
+in_be32 and out_be32 do not (or no longer) exist for ARM targets.
+Mark the build for arm on big endian CPUs as broken.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
+If there is a better solution, please let me know and I'll be happy
+to provide a patch.
 
-Updates in v2: 
-- fixed the issue with non-UNIX line ending.
+ drivers/net/can/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
-index f9b4f81..aa301ec 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -45,7 +45,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
- 			"esd CAN-PCI/PMC/266, "
- 			"esd CAN-PCIe/2000, "
- 			"Connect Tech Inc. CANpro/104-Plus Opto (CRG001), "
--			"IXXAT PC-I 04/PCI")
-+			"IXXAT PC-I 04/PCI, "
-+			"ELCUS CAN-200-PCI")
- MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 3c06947..8d202f4 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -104,7 +104,7 @@ config CAN_JANZ_ICAN3
  
- #define PLX_PCI_MAX_CHAN 2
-@@ -123,6 +124,11 @@ struct plx_pci_card {
- #define ESD_PCI_SUB_SYS_ID_PCIE2000	0x0200
- #define ESD_PCI_SUB_SYS_ID_PCI104200	0x0501
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+-	depends on ARM || PPC
++	depends on (ARM || PPC) && (BROKEN || !ARM || CPU_LITTLE_ENDIAN)
+ 	---help---
+ 	  Say Y here if you want to support for Freescale FlexCAN.
  
-+#define CAN200PCI_DEVICE_ID		0x9030
-+#define CAN200PCI_VENDOR_ID		0x10b5
-+#define CAN200PCI_SUB_DEVICE_ID		0x0301
-+#define CAN200PCI_SUB_VENDOR_ID		0xe1c5
-+
- #define IXXAT_PCI_VENDOR_ID		0x10b5
- #define IXXAT_PCI_DEVICE_ID		0x9050
- #define IXXAT_PCI_SUB_SYS_ID		0x2540
-@@ -234,6 +240,14 @@ static struct plx_pci_card_info plx_pci_card_info_cti = {
- 	/* based on PLX9030 */
- };
- 
-+static struct plx_pci_card_info plx_pci_card_info_elcus = {
-+	"Eclus CAN-200-PCI", 2,
-+	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
-+	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {3, 0x00, 0x80} },
-+	&plx_pci_reset_common
-+	/* based on PLX9030 */
-+};
-+
- static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
- 	{
- 		/* Adlink PCI-7841/cPCI-7841 */
-@@ -319,6 +333,13 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
- 		0, 0,
- 		(kernel_ulong_t)&plx_pci_card_info_cti
- 	},
-+	{
-+		/* Elcus CAN-200-PCI */
-+		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-+		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
-+		0, 0,
-+		(kernel_ulong_t)&plx_pci_card_info_elcus
-+	},
- 	{ 0,}
- };
- MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
+-- 
+1.7.9.7
 
