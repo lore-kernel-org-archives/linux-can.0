@@ -1,57 +1,48 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: sja1000: add support for Elcus CAN200PCI
-Date: Mon, 06 Jan 2014 10:50:02 +0100
-Message-ID: <52CA7C4A.1060004@pengutronix.de>
-References: <5352298.Hh5htuev4I@debian-toshiba>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="rP73FeUTKP1RPns8lfou18aWOMITihskP"
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] net: can: Disable flexcan driver build for big endian CPU on ARM
+Date: Mon,  6 Jan 2014 05:21:03 -0800
+Message-ID: <1389014463-14649-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34566 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752672AbaAFJuq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 6 Jan 2014 04:50:46 -0500
-In-Reply-To: <5352298.Hh5htuev4I@debian-toshiba>
+Received: from mail-pd0-f172.google.com ([209.85.192.172]:56274 "EHLO
+	mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751376AbaAFNVI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 6 Jan 2014 08:21:08 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: OIeg Moroz <oleg.moroz@mcc.vniiem.ru>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rP73FeUTKP1RPns8lfou18aWOMITihskP
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Building arm:allmodconfig fails with
 
-On 01/04/2014 10:53 AM, OIeg Moroz wrote:
-> This patch adds support for Elcus CAN200PCI card.
->=20
-> Signed-off-by: Oleg Moroz <oleg.moroz@mcc.vniiem.ru>
+flexcan.c: In function 'flexcan_read':
+flexcan.c:243:2: error: implicit declaration of function 'in_be32'
+flexcan.c: In function 'flexcan_write':
+flexcan.c:248:2: error: implicit declaration of function 'out_be32'
 
-Applied to can-next.
+in_be32 and out_be32 do not (or no longer) exist for ARM targets.
+Disable the build for ARM on big endian CPUs.
 
-Tnx,
-Marc
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Instead of marking the build as broken, disable it for big endian ARM CPUs.
+    Adjust headline accordingly.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ drivers/net/can/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 3c06947..fd0e5de 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -104,7 +104,7 @@ config CAN_JANZ_ICAN3
+ 
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+-	depends on ARM || PPC
++	depends on (ARM && CPU_LITTLE_ENDIAN) || PPC
+ 	---help---
+ 	  Say Y here if you want to support for Freescale FlexCAN.
+ 
+-- 
+1.7.9.7
 
---rP73FeUTKP1RPns8lfou18aWOMITihskP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLKfEoACgkQjTAFq1RaXHMtPgCfVxyBWifYESflXJOuH4yvmls6
-/MwAn252wzou9Fn2zOPGIaZdn3jDND4b
-=JJjt
------END PGP SIGNATURE-----
-
---rP73FeUTKP1RPns8lfou18aWOMITihskP--
