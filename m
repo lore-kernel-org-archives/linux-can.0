@@ -1,164 +1,103 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Kvazer USB CAN driver
-Date: Wed, 08 Jan 2014 22:28:39 +0100
-Message-ID: <52CDC307.1020102@hartkopp.net>
-References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com> <1389107792.5708.9.camel@blackbox> <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
+From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
+Subject: RE: Kvazer USB CAN driver
+Date: Thu, 9 Jan 2014 07:12:52 +0000
+Message-ID: <ee338152677549439a2c86a4591409d0@AMSPR06MB053.eurprd06.prod.outlook.com>
+References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <1389107792.5708.9.camel@blackbox>
+ <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <52CDC307.1020102@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:8273 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757320AbaAHV2p (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 8 Jan 2014 16:28:45 -0500
-In-Reply-To: <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
+Received: from mail-am1lp0012.outbound.protection.outlook.com ([213.199.154.12]:42194
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751925AbaAIHMz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 9 Jan 2014 02:12:55 -0500
+In-Reply-To: <52CDC307.1020102@hartkopp.net>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Olivier Sobrie <olivier@sobrie.be>, Daniel Berglund <db@kvaser.com>
 
-Hello Pierre,
-
-what exact kernel version are you using there?
-
-Do you use the Mainline driver that comes with Linux or did you use the=
- Kvaser
-driver from http://www.kvaser.com/en/downloads.html ??
-
-Can you provide a crash dump?
-
-I also added the Kvaser authors in CC
-
-Regards,
-Oliver
-
-On 07.01.2014 17:46, GARNERO, PIERRE (P.) wrote:
-> Hello,
->=20
-> Thanks for all this information. And, basically the issue is the fact=
- that no can network interface shows up.
->=20
-> If I boot with the Kvaser device plugged, I could well see it using:
->  Lsusb
->=20
-> ...but=20
->  sudo ip link list
-> ...does not reveal any can interface while I have loaded these module=
-s: can, can-raw, can-dev, kvaser-usb.
-> ...while dmesg displays "usbcore: registered new interface driver kva=
-ser_usb"...
->=20
-> In addition, if I hotplug Kvaser device, I get a kernel panic.
->=20
-> So, I have probably made a mistake when I have built the kernel.
->=20
-> Cheers,
->=20
-> Pierre=20
->=20
-> =20
-> -----Message d'origine-----
-> De : socketcan-users-bounces@lists.berlios.de [mailto:socketcan-users=
--bounces@lists.berlios.de] De la part de Max S.
-> Envoy=C3=A9 : mardi 7 janvier 2014 16:17
-> =C3=80 : socketcan-users@lists.berlios.de
-> Objet : Re: [Socketcan-users] Beginner question - Kvazer USB CAN driv=
-er
->=20
-> Hello,
->=20
-> I'm not sure about the kvaser in particular, but the driver should cr=
-eate the network interfaces when the USB device is attached.
->=20
-> so no need to add a new socketcan device.
->=20
-> Check to make sure you have kvaser connected:
-> 	lsusb
->=20
-> Check to make sure kvaser driver has made network interfaces:
-> 	sudo ip link list
->=20
-> Then bring the interface up:
-> 	sudo ip link set can0 up type can bitrate 250000
->=20
-> Listen to some frames:
-> 	candump can0
->=20
-> Depending on how you have permissions set up you will require sudo to=
- use most of the ip commands.
->=20
-> Regards,
-> Max Schneider
->=20
-> On Tue, 2014-01-07 at 14:17 +0000, GARNERO, PIERRE (P.) wrote:
->> Hello.
->>
->> =20
->>
->> I would like to use a KVAZER USBcan Rugged device with the socketcan=
-=20
->> library.
->>
->> I use Raspbian OS and I have built a kernel with anything enabled=20
->> regarding CAN.
->>
->> =20
->>
->> I have loaded the following modules:
->>
->> # modprobe can
->>
->> # modprobe vcan
->>
->> # modprobe can-raw
->>
->> # modprobe can-dev
->>
->> # modprobe kvazer-usb
->>
->> =20
->>
->> But any ip link command (ex: ip link add dev can0 type can) failed=20
->> with =E2=80=9CRTNETLINK answer : operation not permitted=E2=80=9D (e=
-xcepted for vcan=20
->> which works well).
->>
->> =20
->>
->> Could someone provide me some hints regarding the steps to have a=20
->> Kvaser USBcan device up and running using the net driver ?
->>
->> =20
->>
->> Many thanks in advance,
->>
->> =20
->>
->> Pierre
->>
->> =20
->>
->> =20
->>
->> =20
->>
->> =20
->>
->> =20
->>
->>
->> _______________________________________________
->> Socketcan-users mailing list
->> Socketcan-users@lists.berlios.de
->> https://lists.berlios.de/mailman/listinfo/socketcan-users
->=20
->=20
-> _______________________________________________
-> Socketcan-users mailing list
-> Socketcan-users@lists.berlios.de
-> https://lists.berlios.de/mailman/listinfo/socketcan-users
-> _______________________________________________
-> Socketcan-users mailing list
-> Socketcan-users@lists.berlios.de
-> https://lists.berlios.de/mailman/listinfo/socketcan-users
->=20
+SGVsbG8gT2xpdmVyLA0KDQpUaGFua3MgZm9yIHlvdXIgbWFpbC4NCkkgdXNlIGtlcm5lbCB2ZXJz
+aW9uIDMuMTAuMjUrLCBkb3dubG9hZGVkIGZyb20gaHR0cHM6Ly9naXRodWIuY29tL3Jhc3BiZXJy
+eXBpL2xpbnV4LiBJIGhhdmUganVzdCBhY3RpdmF0ZWQgYW55dGhpbmcgcmVnYXJkaW5nIENBTiBz
+dXBwb3J0IHdoZW4gSSBoYXZlIGJ1aWx0IHRoaXMga2VybmVsIChjb21wYXJlZCB0byB0aGUgIm9s
+ZGNvbmZpZyIgc2V0dGluZ3MsIHdoZXJlIHRoZSAib2xkY29uZmlnIiBjb25maWd1cmF0aW9uIGNv
+bWVzIGZyb20gdGhlIGxhc3QgTk9PQlMgZGVsaXZlcnkgd2l0aCAzLjEwLjI0KyBrZXJuZWwpLg0K
+SSB1c2UgdGhlIGRyaXZlciBjb21pbmcgZnJvbSBMaW51eC4gSSBoYXZlbid0IHVzZWQgdGhlIGRy
+aXZlciBwcm92aWRlZCBieSBLdmFzZXIgb24gbXkgUmFzcGVycnkgcGxhdGZvcm0gKGhvd2V2ZXIs
+IEkgdXNlIHRoZSBLdmFzZXIgZHJpdmVyIG9uIGEgRmVkb3JhIDE3IGRpc3RyaWIvY2xhc3NpY2Fs
+IFBDLCB3aXRoIEt2YXNlciB1c2VyIHNwYWNlIEFQSSAgYW5kIGV2ZXJ5dGhpbmcgd29ya3Mgd2Vs
+bCkuDQpNeSBnb2FsIGlzIHRvIHVzZSB0aGUgc29ja2V0IENBTiBBUEkgb24gUmFzcGJpYW4gZm9y
+IG15ICgibWlkbmlnaHQiKSBkZXZlbG9wbWVudCBwcm9qZWN0LiANCkkgd2lsbCB0cnkgdG8gcHJv
+dmlkZSBhIGNyYXNoIGR1bXAgd2hlbiBJIGNhbiBnZXQgdGhlIEhXIGFnYWluIGFzIGl0IGlzIHVz
+ZWQgcmlnaHQgbm93IGJ5IGFuICJvZmZpY2lhbCIgVmlzdGVvbiBwcm9qZWN0Lg0KDQpBZ2Fpbiwg
+dGhhbmtzIGZvciB5b3VyIGhlbHAhDQoNCkNoZWVycywNCg0KUGllcnJlDQoNCg0KLS0tLS1NZXNz
+YWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBPbGl2ZXIgSGFydGtvcHAgW21haWx0bzpzb2NrZXRj
+YW5AaGFydGtvcHAubmV0XSANCkVudm95w6nCoDogbWVyY3JlZGkgOCBqYW52aWVyIDIwMTQgMjI6
+MjkNCsOAwqA6IEdBUk5FUk8sIFBJRVJSRSAoUC4pDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJu
+ZWwub3JnOyBPbGl2aWVyIFNvYnJpZTsgRGFuaWVsIEJlcmdsdW5kDQpPYmpldMKgOiBSZTogS3Zh
+emVyIFVTQiBDQU4gZHJpdmVyDQoNCkhlbGxvIFBpZXJyZSwNCg0Kd2hhdCBleGFjdCBrZXJuZWwg
+dmVyc2lvbiBhcmUgeW91IHVzaW5nIHRoZXJlPw0KDQpEbyB5b3UgdXNlIHRoZSBNYWlubGluZSBk
+cml2ZXIgdGhhdCBjb21lcyB3aXRoIExpbnV4IG9yIGRpZCB5b3UgdXNlIHRoZSBLdmFzZXIgZHJp
+dmVyIGZyb20gaHR0cDovL3d3dy5rdmFzZXIuY29tL2VuL2Rvd25sb2Fkcy5odG1sID8/DQoNCkNh
+biB5b3UgcHJvdmlkZSBhIGNyYXNoIGR1bXA/DQoNCkkgYWxzbyBhZGRlZCB0aGUgS3Zhc2VyIGF1
+dGhvcnMgaW4gQ0MNCg0KUmVnYXJkcywNCk9saXZlcg0KDQpPbiAwNy4wMS4yMDE0IDE3OjQ2LCBH
+QVJORVJPLCBQSUVSUkUgKFAuKSB3cm90ZToNCj4gSGVsbG8sDQo+IA0KPiBUaGFua3MgZm9yIGFs
+bCB0aGlzIGluZm9ybWF0aW9uLiBBbmQsIGJhc2ljYWxseSB0aGUgaXNzdWUgaXMgdGhlIGZhY3Qg
+dGhhdCBubyBjYW4gbmV0d29yayBpbnRlcmZhY2Ugc2hvd3MgdXAuDQo+IA0KPiBJZiBJIGJvb3Qg
+d2l0aCB0aGUgS3Zhc2VyIGRldmljZSBwbHVnZ2VkLCBJIGNvdWxkIHdlbGwgc2VlIGl0IHVzaW5n
+Og0KPiAgTHN1c2INCj4gDQo+IC4uLmJ1dA0KPiAgc3VkbyBpcCBsaW5rIGxpc3QNCj4gLi4uZG9l
+cyBub3QgcmV2ZWFsIGFueSBjYW4gaW50ZXJmYWNlIHdoaWxlIEkgaGF2ZSBsb2FkZWQgdGhlc2Ug
+bW9kdWxlczogY2FuLCBjYW4tcmF3LCBjYW4tZGV2LCBrdmFzZXItdXNiLg0KPiAuLi53aGlsZSBk
+bWVzZyBkaXNwbGF5cyAidXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciBr
+dmFzZXJfdXNiIi4uLg0KPiANCj4gSW4gYWRkaXRpb24sIGlmIEkgaG90cGx1ZyBLdmFzZXIgZGV2
+aWNlLCBJIGdldCBhIGtlcm5lbCBwYW5pYy4NCj4gDQo+IFNvLCBJIGhhdmUgcHJvYmFibHkgbWFk
+ZSBhIG1pc3Rha2Ugd2hlbiBJIGhhdmUgYnVpbHQgdGhlIGtlcm5lbC4NCj4gDQo+IENoZWVycywN
+Cj4gDQo+IFBpZXJyZQ0KPiANCj4gIA0KPiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCj4g
+RGUgOiBzb2NrZXRjYW4tdXNlcnMtYm91bmNlc0BsaXN0cy5iZXJsaW9zLmRlIFttYWlsdG86c29j
+a2V0Y2FuLXVzZXJzLWJvdW5jZXNAbGlzdHMuYmVybGlvcy5kZV0gRGUgbGEgcGFydCBkZSBNYXgg
+Uy4NCj4gRW52b3nDqSA6IG1hcmRpIDcgamFudmllciAyMDE0IDE2OjE3DQo+IMOAIDogc29ja2V0
+Y2FuLXVzZXJzQGxpc3RzLmJlcmxpb3MuZGUNCj4gT2JqZXQgOiBSZTogW1NvY2tldGNhbi11c2Vy
+c10gQmVnaW5uZXIgcXVlc3Rpb24gLSBLdmF6ZXIgVVNCIENBTiANCj4gZHJpdmVyDQo+IA0KPiBI
+ZWxsbywNCj4gDQo+IEknbSBub3Qgc3VyZSBhYm91dCB0aGUga3Zhc2VyIGluIHBhcnRpY3VsYXIs
+IGJ1dCB0aGUgZHJpdmVyIHNob3VsZCBjcmVhdGUgdGhlIG5ldHdvcmsgaW50ZXJmYWNlcyB3aGVu
+IHRoZSBVU0IgZGV2aWNlIGlzIGF0dGFjaGVkLg0KPiANCj4gc28gbm8gbmVlZCB0byBhZGQgYSBu
+ZXcgc29ja2V0Y2FuIGRldmljZS4NCj4gDQo+IENoZWNrIHRvIG1ha2Ugc3VyZSB5b3UgaGF2ZSBr
+dmFzZXIgY29ubmVjdGVkOg0KPiAJbHN1c2INCj4gDQo+IENoZWNrIHRvIG1ha2Ugc3VyZSBrdmFz
+ZXIgZHJpdmVyIGhhcyBtYWRlIG5ldHdvcmsgaW50ZXJmYWNlczoNCj4gCXN1ZG8gaXAgbGluayBs
+aXN0DQo+IA0KPiBUaGVuIGJyaW5nIHRoZSBpbnRlcmZhY2UgdXA6DQo+IAlzdWRvIGlwIGxpbmsg
+c2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAyNTAwMDANCj4gDQo+IExpc3RlbiB0byBzb21l
+IGZyYW1lczoNCj4gCWNhbmR1bXAgY2FuMA0KPiANCj4gRGVwZW5kaW5nIG9uIGhvdyB5b3UgaGF2
+ZSBwZXJtaXNzaW9ucyBzZXQgdXAgeW91IHdpbGwgcmVxdWlyZSBzdWRvIHRvIHVzZSBtb3N0IG9m
+IHRoZSBpcCBjb21tYW5kcy4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1heCBTY2huZWlkZXINCj4gDQo+
+IE9uIFR1ZSwgMjAxNC0wMS0wNyBhdCAxNDoxNyArMDAwMCwgR0FSTkVSTywgUElFUlJFIChQLikg
+d3JvdGU6DQo+PiBIZWxsby4NCj4+DQo+PiAgDQo+Pg0KPj4gSSB3b3VsZCBsaWtlIHRvIHVzZSBh
+IEtWQVpFUiBVU0JjYW4gUnVnZ2VkIGRldmljZSB3aXRoIHRoZSBzb2NrZXRjYW4gDQo+PiBsaWJy
+YXJ5Lg0KPj4NCj4+IEkgdXNlIFJhc3BiaWFuIE9TIGFuZCBJIGhhdmUgYnVpbHQgYSBrZXJuZWwg
+d2l0aCBhbnl0aGluZyBlbmFibGVkIA0KPj4gcmVnYXJkaW5nIENBTi4NCj4+DQo+PiAgDQo+Pg0K
+Pj4gSSBoYXZlIGxvYWRlZCB0aGUgZm9sbG93aW5nIG1vZHVsZXM6DQo+Pg0KPj4gIyBtb2Rwcm9i
+ZSBjYW4NCj4+DQo+PiAjIG1vZHByb2JlIHZjYW4NCj4+DQo+PiAjIG1vZHByb2JlIGNhbi1yYXcN
+Cj4+DQo+PiAjIG1vZHByb2JlIGNhbi1kZXYNCj4+DQo+PiAjIG1vZHByb2JlIGt2YXplci11c2IN
+Cj4+DQo+PiAgDQo+Pg0KPj4gQnV0IGFueSBpcCBsaW5rIGNvbW1hbmQgKGV4OiBpcCBsaW5rIGFk
+ZCBkZXYgY2FuMCB0eXBlIGNhbikgZmFpbGVkIA0KPj4gd2l0aCDigJxSVE5FVExJTksgYW5zd2Vy
+IDogb3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWTigJ0gKGV4Y2VwdGVkIGZvciB2Y2FuIA0KPj4gd2hp
+Y2ggd29ya3Mgd2VsbCkuDQo+Pg0KPj4gIA0KPj4NCj4+IENvdWxkIHNvbWVvbmUgcHJvdmlkZSBt
+ZSBzb21lIGhpbnRzIHJlZ2FyZGluZyB0aGUgc3RlcHMgdG8gaGF2ZSBhIA0KPj4gS3Zhc2VyIFVT
+QmNhbiBkZXZpY2UgdXAgYW5kIHJ1bm5pbmcgdXNpbmcgdGhlIG5ldCBkcml2ZXIgPw0KPj4NCj4+
+ICANCj4+DQo+PiBNYW55IHRoYW5rcyBpbiBhZHZhbmNlLA0KPj4NCj4+ICANCj4+DQo+PiBQaWVy
+cmUNCj4+DQo+PiAgDQo+Pg0KPj4gIA0KPj4NCj4+ICANCj4+DQo+PiAgDQo+Pg0KPj4gIA0KPj4N
+Cj4+DQo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
+Pj4gU29ja2V0Y2FuLXVzZXJzIG1haWxpbmcgbGlzdA0KPj4gU29ja2V0Y2FuLXVzZXJzQGxpc3Rz
+LmJlcmxpb3MuZGUNCj4+IGh0dHBzOi8vbGlzdHMuYmVybGlvcy5kZS9tYWlsbWFuL2xpc3RpbmZv
+L3NvY2tldGNhbi11c2Vycw0KPiANCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQo+IFNvY2tldGNhbi11c2VycyBtYWlsaW5nIGxpc3QNCj4gU29j
+a2V0Y2FuLXVzZXJzQGxpc3RzLmJlcmxpb3MuZGUNCj4gaHR0cHM6Ly9saXN0cy5iZXJsaW9zLmRl
+L21haWxtYW4vbGlzdGluZm8vc29ja2V0Y2FuLXVzZXJzDQo+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IFNvY2tldGNhbi11c2VycyBtYWlsaW5nIGxp
+c3QNCj4gU29ja2V0Y2FuLXVzZXJzQGxpc3RzLmJlcmxpb3MuZGUNCj4gaHR0cHM6Ly9saXN0cy5i
+ZXJsaW9zLmRlL21haWxtYW4vbGlzdGluZm8vc29ja2V0Y2FuLXVzZXJzDQo+IA0K
