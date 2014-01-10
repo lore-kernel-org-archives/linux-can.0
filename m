@@ -1,94 +1,59 @@
-From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
-Subject: RE: Kvazer USB CAN driver
-Date: Thu, 9 Jan 2014 13:14:18 +0000
-Message-ID: <32378eeacb19459f8f26378d2e1366e9@AMSPR06MB053.eurprd06.prod.outlook.com>
-References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
- <1389107792.5708.9.camel@blackbox>
- <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
- <52CDC307.1020102@hartkopp.net>
+From: franklinbuthelezi1@yahoo.com
+Subject: =?UTF-8?Q?DiePresse.com_Mein_Freund,_der_Fahrradh=C3=A4ndler?=
+Date: Fri, 10 Jan 2014 13:36:09 +0100 (CET)
+Message-ID: <418576180.1389357369034.JavaMail.root@dpoportal4.diepresse.apa.net>
+Reply-To: franklinbuthelezi1@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1lp0016.outbound.protection.outlook.com ([213.199.154.16]:54698
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751357AbaAINOW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Jan 2014 08:14:22 -0500
-In-Reply-To: <52CDC307.1020102@hartkopp.net>
-Content-Language: fr-FR
+Received: from dpocron.diepresse.apa.net ([194.232.102.6]:42144 "EHLO
+	dpocron.diepresse.apa.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752479AbaAJMoj convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Jan 2014 07:44:39 -0500
+Received: from dpoportal4.diepresse.apa.net (dpoportal4.diepresse.local [192.168.0.20])
+	by dpocron.diepresse.apa.net (Postfix) with ESMTP id 0D40B44A02
+	for <linux-can@vger.kernel.org>; Fri, 10 Jan 2014 13:36:09 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Olivier Sobrie <olivier@sobrie.be>, Daniel Berglund <db@kvaser.com>
+To: linux-can@vger.kernel.org
 
-SGVsbG8gT2xpdmllciwNCg0KSSBmaW5hbGx5IG1hbmFnZWQgdG8gZ2V0IGEgcG93ZXJlZCBVU0Ig
-aHViIGFuZCB0aGUga2VybmVsIHBhbmljIGRvZXMgbm90IHNob3cgdXAgYW55bW9yZS4NCg0KSSBj
-b3VsZCBzZWUgdGhlIEt2YXNlciBkZXZpY2UgdXNpbmcgbHN1c2IuDQogDQpIb3dldmVyLCBldmVu
-IHdpdGggdGhpcyBjb25maWd1cmF0aW9uLCBJIGNhbm5vdCBzZWUgYW55IGNhbjAgaW50ZXJmYWNl
-IChhZnRlciBoYXZpbmcgbG9hZGVkIGFsbCB0aGUgbmVjZXNzYXJ5IG1vZHVsZXMpLg0KDQpDaGVl
-cnMsDQoNClBpZXJyZQ0KDQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IE9saXZl
-ciBIYXJ0a29wcCBbbWFpbHRvOnNvY2tldGNhbkBoYXJ0a29wcC5uZXRdIA0KRW52b3nDqcKgOiBt
-ZXJjcmVkaSA4IGphbnZpZXIgMjAxNCAyMjoyOQ0Kw4DCoDogR0FSTkVSTywgUElFUlJFIChQLikN
-CkNjwqA6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE9saXZpZXIgU29icmllOyBEYW5pZWwg
-QmVyZ2x1bmQNCk9iamV0wqA6IFJlOiBLdmF6ZXIgVVNCIENBTiBkcml2ZXINCg0KSGVsbG8gUGll
-cnJlLA0KDQp3aGF0IGV4YWN0IGtlcm5lbCB2ZXJzaW9uIGFyZSB5b3UgdXNpbmcgdGhlcmU/DQoN
-CkRvIHlvdSB1c2UgdGhlIE1haW5saW5lIGRyaXZlciB0aGF0IGNvbWVzIHdpdGggTGludXggb3Ig
-ZGlkIHlvdSB1c2UgdGhlIEt2YXNlciBkcml2ZXIgZnJvbSBodHRwOi8vd3d3Lmt2YXNlci5jb20v
-ZW4vZG93bmxvYWRzLmh0bWwgPz8NCg0KQ2FuIHlvdSBwcm92aWRlIGEgY3Jhc2ggZHVtcD8NCg0K
-SSBhbHNvIGFkZGVkIHRoZSBLdmFzZXIgYXV0aG9ycyBpbiBDQw0KDQpSZWdhcmRzLA0KT2xpdmVy
-DQoNCk9uIDA3LjAxLjIwMTQgMTc6NDYsIEdBUk5FUk8sIFBJRVJSRSAoUC4pIHdyb3RlOg0KPiBI
-ZWxsbywNCj4gDQo+IFRoYW5rcyBmb3IgYWxsIHRoaXMgaW5mb3JtYXRpb24uIEFuZCwgYmFzaWNh
-bGx5IHRoZSBpc3N1ZSBpcyB0aGUgZmFjdCB0aGF0IG5vIGNhbiBuZXR3b3JrIGludGVyZmFjZSBz
-aG93cyB1cC4NCj4gDQo+IElmIEkgYm9vdCB3aXRoIHRoZSBLdmFzZXIgZGV2aWNlIHBsdWdnZWQs
-IEkgY291bGQgd2VsbCBzZWUgaXQgdXNpbmc6DQo+ICBMc3VzYg0KPiANCj4gLi4uYnV0DQo+ICBz
-dWRvIGlwIGxpbmsgbGlzdA0KPiAuLi5kb2VzIG5vdCByZXZlYWwgYW55IGNhbiBpbnRlcmZhY2Ug
-d2hpbGUgSSBoYXZlIGxvYWRlZCB0aGVzZSBtb2R1bGVzOiBjYW4sIGNhbi1yYXcsIGNhbi1kZXYs
-IGt2YXNlci11c2IuDQo+IC4uLndoaWxlIGRtZXNnIGRpc3BsYXlzICJ1c2Jjb3JlOiByZWdpc3Rl
-cmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIGt2YXNlcl91c2IiLi4uDQo+IA0KPiBJbiBhZGRpdGlv
-biwgaWYgSSBob3RwbHVnIEt2YXNlciBkZXZpY2UsIEkgZ2V0IGEga2VybmVsIHBhbmljLg0KPiAN
-Cj4gU28sIEkgaGF2ZSBwcm9iYWJseSBtYWRlIGEgbWlzdGFrZSB3aGVuIEkgaGF2ZSBidWlsdCB0
-aGUga2VybmVsLg0KPiANCj4gQ2hlZXJzLA0KPiANCj4gUGllcnJlDQo+IA0KPiAgDQo+IC0tLS0t
-TWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KPiBEZSA6IHNvY2tldGNhbi11c2Vycy1ib3VuY2VzQGxp
-c3RzLmJlcmxpb3MuZGUgW21haWx0bzpzb2NrZXRjYW4tdXNlcnMtYm91bmNlc0BsaXN0cy5iZXJs
-aW9zLmRlXSBEZSBsYSBwYXJ0IGRlIE1heCBTLg0KPiBFbnZvecOpIDogbWFyZGkgNyBqYW52aWVy
-IDIwMTQgMTY6MTcNCj4gw4AgOiBzb2NrZXRjYW4tdXNlcnNAbGlzdHMuYmVybGlvcy5kZQ0KPiBP
-YmpldCA6IFJlOiBbU29ja2V0Y2FuLXVzZXJzXSBCZWdpbm5lciBxdWVzdGlvbiAtIEt2YXplciBV
-U0IgQ0FOIA0KPiBkcml2ZXINCj4gDQo+IEhlbGxvLA0KPiANCj4gSSdtIG5vdCBzdXJlIGFib3V0
-IHRoZSBrdmFzZXIgaW4gcGFydGljdWxhciwgYnV0IHRoZSBkcml2ZXIgc2hvdWxkIGNyZWF0ZSB0
-aGUgbmV0d29yayBpbnRlcmZhY2VzIHdoZW4gdGhlIFVTQiBkZXZpY2UgaXMgYXR0YWNoZWQuDQo+
-IA0KPiBzbyBubyBuZWVkIHRvIGFkZCBhIG5ldyBzb2NrZXRjYW4gZGV2aWNlLg0KPiANCj4gQ2hl
-Y2sgdG8gbWFrZSBzdXJlIHlvdSBoYXZlIGt2YXNlciBjb25uZWN0ZWQ6DQo+IAlsc3VzYg0KPiAN
-Cj4gQ2hlY2sgdG8gbWFrZSBzdXJlIGt2YXNlciBkcml2ZXIgaGFzIG1hZGUgbmV0d29yayBpbnRl
-cmZhY2VzOg0KPiAJc3VkbyBpcCBsaW5rIGxpc3QNCj4gDQo+IFRoZW4gYnJpbmcgdGhlIGludGVy
-ZmFjZSB1cDoNCj4gCXN1ZG8gaXAgbGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDI1
-MDAwMA0KPiANCj4gTGlzdGVuIHRvIHNvbWUgZnJhbWVzOg0KPiAJY2FuZHVtcCBjYW4wDQo+IA0K
-PiBEZXBlbmRpbmcgb24gaG93IHlvdSBoYXZlIHBlcm1pc3Npb25zIHNldCB1cCB5b3Ugd2lsbCBy
-ZXF1aXJlIHN1ZG8gdG8gdXNlIG1vc3Qgb2YgdGhlIGlwIGNvbW1hbmRzLg0KPiANCj4gUmVnYXJk
-cywNCj4gTWF4IFNjaG5laWRlcg0KPiANCj4gT24gVHVlLCAyMDE0LTAxLTA3IGF0IDE0OjE3ICsw
-MDAwLCBHQVJORVJPLCBQSUVSUkUgKFAuKSB3cm90ZToNCj4+IEhlbGxvLg0KPj4NCj4+ICANCj4+
-DQo+PiBJIHdvdWxkIGxpa2UgdG8gdXNlIGEgS1ZBWkVSIFVTQmNhbiBSdWdnZWQgZGV2aWNlIHdp
-dGggdGhlIHNvY2tldGNhbiANCj4+IGxpYnJhcnkuDQo+Pg0KPj4gSSB1c2UgUmFzcGJpYW4gT1Mg
-YW5kIEkgaGF2ZSBidWlsdCBhIGtlcm5lbCB3aXRoIGFueXRoaW5nIGVuYWJsZWQgDQo+PiByZWdh
-cmRpbmcgQ0FOLg0KPj4NCj4+ICANCj4+DQo+PiBJIGhhdmUgbG9hZGVkIHRoZSBmb2xsb3dpbmcg
-bW9kdWxlczoNCj4+DQo+PiAjIG1vZHByb2JlIGNhbg0KPj4NCj4+ICMgbW9kcHJvYmUgdmNhbg0K
-Pj4NCj4+ICMgbW9kcHJvYmUgY2FuLXJhdw0KPj4NCj4+ICMgbW9kcHJvYmUgY2FuLWRldg0KPj4N
-Cj4+ICMgbW9kcHJvYmUga3ZhemVyLXVzYg0KPj4NCj4+ICANCj4+DQo+PiBCdXQgYW55IGlwIGxp
-bmsgY29tbWFuZCAoZXg6IGlwIGxpbmsgYWRkIGRldiBjYW4wIHR5cGUgY2FuKSBmYWlsZWQgDQo+
-PiB3aXRoIOKAnFJUTkVUTElOSyBhbnN3ZXIgOiBvcGVyYXRpb24gbm90IHBlcm1pdHRlZOKAnSAo
-ZXhjZXB0ZWQgZm9yIHZjYW4gDQo+PiB3aGljaCB3b3JrcyB3ZWxsKS4NCj4+DQo+PiAgDQo+Pg0K
-Pj4gQ291bGQgc29tZW9uZSBwcm92aWRlIG1lIHNvbWUgaGludHMgcmVnYXJkaW5nIHRoZSBzdGVw
-cyB0byBoYXZlIGEgDQo+PiBLdmFzZXIgVVNCY2FuIGRldmljZSB1cCBhbmQgcnVubmluZyB1c2lu
-ZyB0aGUgbmV0IGRyaXZlciA/DQo+Pg0KPj4gIA0KPj4NCj4+IE1hbnkgdGhhbmtzIGluIGFkdmFu
-Y2UsDQo+Pg0KPj4gIA0KPj4NCj4+IFBpZXJyZQ0KPj4NCj4+ICANCj4+DQo+PiAgDQo+Pg0KPj4g
-IA0KPj4NCj4+ICANCj4+DQo+PiAgDQo+Pg0KPj4NCj4+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fDQo+PiBTb2NrZXRjYW4tdXNlcnMgbWFpbGluZyBsaXN0
-DQo+PiBTb2NrZXRjYW4tdXNlcnNAbGlzdHMuYmVybGlvcy5kZQ0KPj4gaHR0cHM6Ly9saXN0cy5i
-ZXJsaW9zLmRlL21haWxtYW4vbGlzdGluZm8vc29ja2V0Y2FuLXVzZXJzDQo+IA0KPiANCj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gU29ja2V0Y2Fu
-LXVzZXJzIG1haWxpbmcgbGlzdA0KPiBTb2NrZXRjYW4tdXNlcnNAbGlzdHMuYmVybGlvcy5kZQ0K
-PiBodHRwczovL2xpc3RzLmJlcmxpb3MuZGUvbWFpbG1hbi9saXN0aW5mby9zb2NrZXRjYW4tdXNl
-cnMNCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4g
-U29ja2V0Y2FuLXVzZXJzIG1haWxpbmcgbGlzdA0KPiBTb2NrZXRjYW4tdXNlcnNAbGlzdHMuYmVy
-bGlvcy5kZQ0KPiBodHRwczovL2xpc3RzLmJlcmxpb3MuZGUvbWFpbG1hbi9saXN0aW5mby9zb2Nr
-ZXRjYW4tdXNlcnMNCj4gDQo=
+=46olgender Artikel auf http://diepresse.com wird Ihnen von Franklin Bu=
+thelezi empfohlen:
+
+Mein Freund, der Fahrradh=C3=A4ndler
+Manche Dinge ver=C3=A4ndern sich =C3=BCber die langen Wintermonate hinw=
+eg.=20
+
+http://diepresse.com/home/leben/mode/kolumnezumtag/548717/index.do
+
+Notiz:
+Dear friend,
+=20
+I am the international operations manager of ABSA bank South Africa. My=
+ name is Franklin Buthelezi. I have a sensitive and private offer from =
+the top executive to seek your partnership in re-profiling some offshor=
+e investment funds worth 11.5M U.S.D (Eleven Million five hundred thous=
+and United States Dollars) I am constrained however to withhold most of=
+ the details for now. This is a legitimate transaction.=20
+=20
+If we agree on the terms you will be given 15% of the total funds, if y=
+ou are interested please write back via email providing me your persona=
+l details and phone number for further directives.
+=20
+If you are interested and willing to render your assistance please resp=
+ond via my private email address stated below.
+=20
+I look forward to your response.
+=20
+Best regards
+=46ranklin Buthelezi
+Email: franklinbuthelezi1@yahoo.com
+
+
+------------------------------------
+DiePresse.com =C3=BCbernimmt keine Haftung f=C3=BCr den Inhalt der pers=
+=C3=B6nlichen Nachricht.
+
+=C2=A9 DiePresse.com - http://diepresse.com
+
