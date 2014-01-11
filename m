@@ -1,107 +1,89 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] candump: add option to ignore ENOBUFS
-Date: Fri, 10 Jan 2014 23:02:15 +0100
-Message-ID: <52D06DE7.3010002@hartkopp.net>
-References: <1351244569-11398-1-git-send-email-yegorslists@googlemail.com> <508A5C05.6050803@pengutronix.de> <508D8F53.1050005@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2014-01-11
+Date: Sat, 11 Jan 2014 19:48:02 +0100
+Message-ID: <52D191E2.8040703@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="VOruEJQKlALjjkOtPD1HGNabRNQuLMnTg"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:60833 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751986AbaAJWCU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Jan 2014 17:02:20 -0500
-In-Reply-To: <508D8F53.1050005@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43244 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751986AbaAKSsM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 11 Jan 2014 13:48:12 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Michal Sojka <sojkam1@fel.cvut.cz>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 
-Hi Yegor,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VOruEJQKlALjjkOtPD1HGNabRNQuLMnTg
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-the question about a blocking write was still not addressed :-(
+Hello David,
 
-Btw. the routing in userspace became obsolete with can-gw which does the
-routing in kernel space.
+this is a pull request of three patches for net-next/master.
 
-See can-utils 
+Oleg Moroz added support for a new PCI card to the generic SJA1000 PCI
+driver, Guenter Roeck's patch limits the flexcan driver to little
+endian arm (and powerpc) and I fixed a sparse warning found by the
+kbuild robot in the ti_hecc driver.
 
-$> cangw -?
+regards,
+Marc
+---
 
-Usage: cangw [options]
+The following changes since commit 45593c2bd2d1e257d03d795f9c80e22e18f188=
+f0:
 
-Commands:  -A (add a new rule)
-           -D (delete a rule)
-           -F (flush / delete all rules)
-           -L (list all rules)
-Mandatory: -s <src_dev>  (source netdevice)
-           -d <dst_dev>  (destination netdevice)
-Options:   -t (preserve src_dev rx timestamp)
-           -e (echo sent frames - recommended on vcanx)
-           -i (allow to route to incoming interface)
-           -l <hops> (limit the number of frame hops / routings)
-           -f <filter> (set CAN filter)
-           -m <mod> (set frame modifications)
-           -x <from_idx>:<to_idx>:<result_idx>:<init_xor_val> (XOR checksum)
-           -c <from>:<to>:<result>:<init_val>:<xor_val>:<crctab[256]> (CRC8 cs)
-           -p <profile>:[<profile_data>] (CRC8 checksum profile & parameters)
+  Merge tag 'batman-adv-for-davem' of git://git.open-mesh.org/linux-merge=
+ (2014-01-10 17:59:34 -0500)
 
-Values are given and expected in hexadecimal values. Leading 0s can be omitted.
-
-<filter> is a <value><mask> CAN identifier filter
-   <can_id>:<can_mask> (matches when <received_can_id> & mask == can_id & mask)
-   <can_id>~<can_mask> (matches when <received_can_id> & mask != can_id & mask)
-
-<mod> is a CAN frame modification instruction consisting of
-<instruction>:<can_frame-elements>:<can_id>.<can_dlc>.<can_data>
- - <instruction> is one of 'AND' 'OR' 'XOR' 'SET'
- - <can_frame-elements> is _one_ or _more_ of 'I'dentifier 'L'ength 'D'ata
- - <can_id> is an u32 value containing the CAN Identifier
- - <can_dlc> is an u8 value containing the data length code (0 .. 8)
- - <can_data> is always eight(!) u8 values containing the CAN frames data
-The max. four modifications are performed in the order AND -> OR -> XOR -> SET
-
-Example:
-cangw -A -s can0 -d vcan3 -e -f 123:C00007FF -m SET:IL:333.4.1122334455667788
-
-Supported CRC 8 profiles:
-Profile '1' (1U8)       - add one additional u8 value
-Profile '2' (16U8)      - add u8 value from table[16] indexed by (data[1] & 0xF)
-Profile '3' (SFFID_XOR) - add u8 value (can_id & 0xFF) ^ (can_id >> 8 & 0xFF)
-
-$>
-
-Does that fit your needs?
-You can also create these routing jobs with netlink.
-
-Regards,
-Oliver
+are available in the git repository at:
 
 
-On 28.10.2012 21:02, Oliver Hartkopp wrote:
-> On 26.10.2012 11:46, Marc Kleine-Budde wrote:
-> 
->> On 10/26/2012 11:42 AM, yegorslists@googlemail.com wrote:
->>> From: Yegor Yefremov <yegorslists@googlemail.com>
->>>
->>> -f option replicated -i option from cangen and allows to
->>> ignore ENOBUFS error in bridge mode
->>
->> Better not ignore, but handle the error. If socket would support, wait
->> with select/poll that the socket get writable and try again. For now
->> sleep and try again. (or fix the poll/select bug in the kernel).
-> 
-> 
-> ACK.
-> 
-> IIRC this was a problem of socket write queue length that are too long to
-> handle short MTUs like we have with CAN frames.
-> Therefore the socket itself does not stop the traffic.
-> 
-> Definitely something to be fixed ... i'll take a look into the mails from
-> Michal Sojka.
-> 
-> Regards,
-> Oliver
-> 
-> 
+  git://gitorious.org/linux-can/linux-can-next.git for-davem
+
+for you to fetch changes up to ea79c1c18520c3a60a2fc8193e2fb58710812d4e:
+
+  can: ti_hecc: fix endianness related sparse warning (2014-01-11 19:43:2=
+6 +0100)
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      can: Disable flexcan driver build for big endian CPU on ARM
+
+Marc Kleine-Budde (1):
+      can: ti_hecc: fix endianness related sparse warning
+
+Oleg Moroz (1):
+      can: sja1000: add support for Elcus CAN200PCI
+
+ drivers/net/can/Kconfig           |  2 +-
+ drivers/net/can/sja1000/plx_pci.c | 23 ++++++++++++++++++++++-
+ drivers/net/can/ti_hecc.c         | 10 ++++------
+ 3 files changed, 27 insertions(+), 8 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--VOruEJQKlALjjkOtPD1HGNabRNQuLMnTg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLRkeIACgkQjTAFq1RaXHOs3wCggURqLHAU/9172Nwe+Y8D+ZYA
+WvgAnj/tQaPwY0itp33Hv85dcshzkSBn
+=N+hg
+-----END PGP SIGNATURE-----
+
+--VOruEJQKlALjjkOtPD1HGNabRNQuLMnTg--
