@@ -1,147 +1,241 @@
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
 	<u.kleine-koenig@pengutronix.de>
-Subject: [PATCH can-utils 2/3] ioctl.h: drop unused header
-Date: Sun, 12 Jan 2014 00:10:22 +0100
-Message-ID: <1389481823-8379-3-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH can-utils 1/3] Update license information for some header files
+Date: Sun, 12 Jan 2014 00:10:21 +0100
+Message-ID: <1389481823-8379-2-git-send-email-u.kleine-koenig@pengutronix.de>
 References: <20130817190521.GK30496@pengutronix.de>
  <1389481823-8379-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39568 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39563 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750940AbaAKXKw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 11 Jan 2014 18:10:52 -0500
+	with ESMTP id S1750900AbaAKXKv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 11 Jan 2014 18:10:51 -0500
 In-Reply-To: <1389481823-8379-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This header doesn't exist in the Linux tree and it's unused by can-utils,
-so drop it. As a side effect this fixes the last file not specifying any
-license and/or copyright information.
+This corresponds to Linux commits
+  2485602f1af2 (can: add explicit copyrights to can headers)
+  1c2da13c21a1 (can: add explicit copyrights to can's netlink header)
 ---
- GNUmakefile.am                |  1 -
- include/socketcan/can/ioctl.h | 99 -------------------------------------------
- 2 files changed, 100 deletions(-)
- delete mode 100644 include/socketcan/can/ioctl.h
+Hello,
 
-diff --git a/GNUmakefile.am b/GNUmakefile.am
-index fc8f6e73e139..8c18e72794fa 100644
---- a/GNUmakefile.am
-+++ b/GNUmakefile.am
-@@ -23,7 +23,6 @@ noinst_HEADERS = \
- 	include/socketcan/can/error.h \
- 	include/socketcan/can/gw.h \
- 	include/socketcan/can.h \
--	include/socketcan/can/ioctl.h \
- 	include/socketcan/can/isotp.h \
- 	include/socketcan/can/netlink.h \
- 	include/socketcan/can/raw.h
-diff --git a/include/socketcan/can/ioctl.h b/include/socketcan/can/ioctl.h
-deleted file mode 100644
-index ab34e8918667..000000000000
---- a/include/socketcan/can/ioctl.h
-+++ /dev/null
-@@ -1,99 +0,0 @@
--
--/*
-- * socketcan/can/ioctl.h
-- *
-- * Definitions for CAN controller setup (work in progress)
-- *
-- * $Id$
-- *
-- * Send feedback to <linux-can@vger.kernel.org>
-- *
-- */
--
--#ifndef CAN_IOCTL_H
--#define CAN_IOCTL_H
--
--#include <linux/sockios.h>
--
--/*
-- * CAN bitrate
-- */
--#define CAN_BITRATE_UNCONFIGURED	((__u32) 0xFFFFFFFFU)
--#define CAN_BITRATE_UNKNOWN		0
--#define CAN_BITRATE_DEFAULT		500000
--
--/*
-- * CAN custom bit time
-- */
--enum can_bittimes {
--	CAN_BITTIME_STD,
--	CAN_BITTIME_BTR
--};
--
--/* TSEG1 of controllers usually is a sum of synch_seg (always 1),
-- * prop_seg and phase_seg1, TSEG2 = phase_seg2 */
--
--struct can_bittime_std {
--	__u32 brp;        /* baud rate prescaler */
--	__u8  prop_seg;   /* from 1 to 8 */
--	__u8  phase_seg1; /* from 1 to 8 */
--	__u8  phase_seg2; /* from 1 to 8 */
--	__u8  sjw:7;      /* from 1 to 4 */
--	__u8  sam:1;      /* 1 - enable triple sampling */
--};
--
--struct can_bittime_btr {
--	__u8  btr0;
--	__u8  btr1;
--};
--
--struct can_bittime {
--	enum can_bittimes type;
--	union {
--		struct can_bittime_std std;
--		struct can_bittime_btr btr;
--	};
--};
--
--/*
-- * CAN mode
-- */
--enum can_mode {
--	CAN_MODE_STOP = 0,
--	CAN_MODE_START,
--	CAN_MODE_SLEEP
--};
--
--/*
-- * CAN controller mode
-- */
--#define CAN_CTRLMODE_LOOPBACK   0x1
--#define CAN_CTRLMODE_LISTENONLY 0x2
--
--/*
-- * CAN operational and error states
-- */
--enum can_state {
--	CAN_STATE_ACTIVE = 0,
--	CAN_STATE_BUS_WARNING,
--	CAN_STATE_BUS_PASSIVE,
--	CAN_STATE_BUS_OFF,
--	CAN_STATE_STOPPED,
--	CAN_STATE_SLEEPING
--};
--
--/*
-- * CAN device statistics
-- */
--struct can_device_stats {
--	int error_warning;
--	int data_overrun;
--	int wakeup;
--	int bus_error;
--	int error_passive;
--	int arbitration_lost;
--	int restarts;
--	int bus_error_at_init;
--};
--
--#endif /* CAN_IOCTL_H */
+I would have expected to just need to do something like:
+
+cd $path_to_canutils
+rm -r include/socketcan/can
+cd $path_to_linux
+git archive --format=tar --prefix=socketcan/can/ v3.13-rc7:include/uapi/linux/can | tar xC $path_to_canutils/include
+git cat-file blob v3.13-rc7:include/uapi/linux/can.h > $path_to_canutils/include/socketcan/can.h
+
+to sync the header files. I didn't test but some changes introduced by
+the above sequence seem to be uncompilable so I choosed to only
+cherry-pick the two Linux commits. IMHO this is a bug (in Linux or
+can-utils or maybe both).
+
+Best regards
+Uwe
+
+ include/socketcan/can/bcm.h     | 32 ++++++++++++++++++++++++++++++++
+ include/socketcan/can/error.h   | 32 ++++++++++++++++++++++++++++++++
+ include/socketcan/can/gw.h      | 32 ++++++++++++++++++++++++++++++++
+ include/socketcan/can/netlink.h |  8 ++++++++
+ include/socketcan/can/raw.h     | 32 ++++++++++++++++++++++++++++++++
+ 5 files changed, 136 insertions(+)
+
+diff --git a/include/socketcan/can/bcm.h b/include/socketcan/can/bcm.h
+index 10185e86a596..5cd07152cd45 100644
+--- a/include/socketcan/can/bcm.h
++++ b/include/socketcan/can/bcm.h
+@@ -7,6 +7,38 @@
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * All rights reserved.
+  *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of Volkswagen nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * Alternatively, provided that this notice is retained in full, this
++ * software may be distributed under the terms of the GNU General
++ * Public License ("GPL") version 2, in which case the provisions of the
++ * GPL apply INSTEAD OF those given above.
++ *
++ * The provided data structures and external interfaces from this code
++ * are not restricted to be used by modules with a GPL compatible license.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
++ * DAMAGE.
+  */
+ 
+ #ifndef CAN_BCM_H
+diff --git a/include/socketcan/can/error.h b/include/socketcan/can/error.h
+index b65c2317b40a..923c65c32e0f 100644
+--- a/include/socketcan/can/error.h
++++ b/include/socketcan/can/error.h
+@@ -7,6 +7,38 @@
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * All rights reserved.
+  *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of Volkswagen nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * Alternatively, provided that this notice is retained in full, this
++ * software may be distributed under the terms of the GNU General
++ * Public License ("GPL") version 2, in which case the provisions of the
++ * GPL apply INSTEAD OF those given above.
++ *
++ * The provided data structures and external interfaces from this code
++ * are not restricted to be used by modules with a GPL compatible license.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
++ * DAMAGE.
+  */
+ 
+ #ifndef CAN_ERROR_H
+diff --git a/include/socketcan/can/gw.h b/include/socketcan/can/gw.h
+index 56d3246d7348..7f67c62a688a 100644
+--- a/include/socketcan/can/gw.h
++++ b/include/socketcan/can/gw.h
+@@ -7,6 +7,38 @@
+  * Copyright (c) 2011 Volkswagen Group Electronic Research
+  * All rights reserved.
+  *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of Volkswagen nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * Alternatively, provided that this notice is retained in full, this
++ * software may be distributed under the terms of the GNU General
++ * Public License ("GPL") version 2, in which case the provisions of the
++ * GPL apply INSTEAD OF those given above.
++ *
++ * The provided data structures and external interfaces from this code
++ * are not restricted to be used by modules with a GPL compatible license.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
++ * DAMAGE.
+  */
+ 
+ #ifndef CAN_GW_H
+diff --git a/include/socketcan/can/netlink.h b/include/socketcan/can/netlink.h
+index 9bb47e31748e..d97cb0d6ee4a 100644
+--- a/include/socketcan/can/netlink.h
++++ b/include/socketcan/can/netlink.h
+@@ -5,6 +5,14 @@
+  *
+  * Copyright (c) 2009 Wolfgang Grandegger <wg@grandegger.com>
+  *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the version 2 of the GNU General Public License
++ * as published by the Free Software Foundation
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
+  */
+ 
+ #ifndef CAN_NETLINK_H
+diff --git a/include/socketcan/can/raw.h b/include/socketcan/can/raw.h
+index ee683c58412b..76fe9ecf45d5 100644
+--- a/include/socketcan/can/raw.h
++++ b/include/socketcan/can/raw.h
+@@ -8,6 +8,38 @@
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * All rights reserved.
+  *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of Volkswagen nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * Alternatively, provided that this notice is retained in full, this
++ * software may be distributed under the terms of the GNU General
++ * Public License ("GPL") version 2, in which case the provisions of the
++ * GPL apply INSTEAD OF those given above.
++ *
++ * The provided data structures and external interfaces from this code
++ * are not restricted to be used by modules with a GPL compatible license.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
++ * DAMAGE.
+  */
+ 
+ #ifndef CAN_RAW_H
 -- 
 1.8.5.2
 
