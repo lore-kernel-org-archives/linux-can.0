@@ -1,86 +1,58 @@
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
 	<u.kleine-koenig@pengutronix.de>
-Subject: [PATCH can-utils v3 0/5] License cleanup
-Date: Mon, 13 Jan 2014 22:13:16 +0100
-Message-ID: <1389647601-10622-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH can-utils v3 1/5] Remove two unused header files
+Date: Mon, 13 Jan 2014 22:13:17 +0100
+Message-ID: <1389647601-10622-2-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1389647601-10622-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40244 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40247 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751068AbaAMVN1 (ORCPT
+	with ESMTP id S1751469AbaAMVN1 (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 16:13:27 -0500
+In-Reply-To: <1389647601-10622-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
-
-this is v3 of my clean up series. The main change compared to v2 is tha=
-t
-I split up patch "headers: use include/linux only for Linux kernel
-headers" into three patches now and I didn't sync with 3.13-rc7 as I di=
-d
-before. So the license in the kernel headers is still missing; I'll
-address that when this series is applied and maybe the
-__kernel_sa_family_t is resolved.
-
-I didn't keep isotp.h in include/linux mainly because I'm lazy, but als=
-o
-because I think keeping it there while it isn't in the kernel is a not
-worth the additional effort during header sync with the kernel.
-
-Uwe Kleine-K=C3=B6nig (5):
-  Remove two unused header files
-  Move isotp.h into the project root
-  Move includes copied from the Linux kernel into include/linux
-  ioctl.h: drop unused header
-  isotp.h: add explicit license information
-
- GNUmakefile.am                  |  14 +---
- include/linux/can.h             | 168 ++++++++++++++++++++++++++++++++=
-++++++-
- include/linux/can/bcm.h         |  67 +++++++++++++++-
- include/linux/can/core.h        |   1 -
- include/linux/can/dev.h         |   1 -
- include/linux/can/error.h       |  92 ++++++++++++++++++++-
- include/linux/can/gw.h          | 172 ++++++++++++++++++++++++++++++++=
-+++++++-
- include/linux/can/isotp.h       |   1 -
- include/linux/can/netlink.h     | 123 +++++++++++++++++++++++++++-
- include/linux/can/raw.h         |  31 +++++++-
- include/socketcan/can.h         | 167 --------------------------------=
-------
- include/socketcan/can/bcm.h     |  66 ---------------
- include/socketcan/can/error.h   |  91 ---------------------
- include/socketcan/can/gw.h      | 171 --------------------------------=
--------
- include/socketcan/can/ioctl.h   |  99 -----------------------
- include/socketcan/can/isotp.h   | 110 -------------------------
- include/socketcan/can/netlink.h | 122 ----------------------------
- include/socketcan/can/raw.h     |  30 -------
- isotp.h                         | 140 ++++++++++++++++++++++++++++++++
- isotprecv.c                     |   3 +-
- isotpsend.c                     |   3 +-
- isotpserver.c                   |   3 +-
- isotpsniffer.c                  |   3 +-
- isotptun.c                      |   3 +-
- 24 files changed, 799 insertions(+), 882 deletions(-)
+These seem to have never been used. They entered can-utils in commit
+77de10356fe0 (include: import kernel header files into tree) and already
+back then only consisted in an #include of a non-existing file.
+---
+ GNUmakefile.am           | 2 --
+ include/linux/can/core.h | 1 -
+ include/linux/can/dev.h  | 1 -
+ 3 files changed, 4 deletions(-)
  delete mode 100644 include/linux/can/core.h
  delete mode 100644 include/linux/can/dev.h
- delete mode 100644 include/linux/can/isotp.h
- delete mode 100644 include/socketcan/can.h
- delete mode 100644 include/socketcan/can/bcm.h
- delete mode 100644 include/socketcan/can/error.h
- delete mode 100644 include/socketcan/can/gw.h
- delete mode 100644 include/socketcan/can/ioctl.h
- delete mode 100644 include/socketcan/can/isotp.h
- delete mode 100644 include/socketcan/can/netlink.h
- delete mode 100644 include/socketcan/can/raw.h
- create mode 100644 isotp.h
 
---=20
+diff --git a/GNUmakefile.am b/GNUmakefile.am
+index fc8f6e73e139..34a7740c9906 100644
+--- a/GNUmakefile.am
++++ b/GNUmakefile.am
+@@ -11,8 +11,6 @@ noinst_HEADERS = \
+ 	lib.h \
+ 	terminal.h \
+ 	include/linux/can/bcm.h \
+-	include/linux/can/core.h \
+-	include/linux/can/dev.h \
+ 	include/linux/can/error.h \
+ 	include/linux/can/gw.h \
+ 	include/linux/can.h \
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+deleted file mode 100644
+index 620c88ddc5c5..000000000000
+--- a/include/linux/can/core.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/core.h>
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+deleted file mode 100644
+index 91879859cdf6..000000000000
+--- a/include/linux/can/dev.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/dev.h>
+-- 
 1.8.5.2
 
