@@ -1,80 +1,109 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH can-utils v2 1/3] headers: use include/linux only for
- Linux kernel headers
-Date: Mon, 13 Jan 2014 08:20:49 +0100
-Message-ID: <20140113072049.GB29475@pengutronix.de>
-References: <1389481823-8379-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1389561879-16729-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1389561879-16729-2-git-send-email-u.kleine-koenig@pengutronix.de>
- <52D3867B.6090108@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: yegorslists@googlemail.com
+Subject: [PATCH 1/2] slcand: add flow control option
+Date: Mon, 13 Jan 2014 09:54:04 +0100
+Message-ID: <1389603245-24023-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43226 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751131AbaAMHUw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 02:20:52 -0500
-Content-Disposition: inline
-In-Reply-To: <52D3867B.6090108@hartkopp.net>
+Received: from ns.vscom.de ([62.145.30.242]:59306 "EHLO mail.visionsystems.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751216AbaAMJPg (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 13 Jan 2014 04:15:36 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>
+To: linux-can@vger.kernel.org
+Cc: socketcan@hartkopp.net, u.kleine-koenig@pengutronix.de, mkl@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>
 
-Hello Oliver,
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-On Mon, Jan 13, 2014 at 07:23:55AM +0100, Oliver Hartkopp wrote:
-> On 12.01.2014 22:24, Uwe Kleine-K=F6nig wrote:
->=20
-> >  - use __kernel_sa_family_t instead of sa_family_t which requires
-> >    <linux/socket.h from Linux 3.1 or later. Unfortunately this make=
-s
-> >    can-utils FTBFS on e.g. Debian squeeze. If this is an issue this
-> >    could be fixed by adding something like:
->=20
-> This was exactly the idea to have a separate set of include files to =
-make sure
-> the 'newest and greatest' tools can be build even on 2.6.24 environme=
-nts where
-> there was no SocketCAN in mainline Linux.
-Hmm, the newest and greatest tools are unusable if your kernel doesn't
-also include the newest and greatest SocketCAN stuff. And then it is
-easy to also have updated kernel headers, isn't it? Well, anyhow I just
-found a system here at pengutronix with old enough kernel headers, so I
-will do a fix.
-=20
-> And e.g. this
->=20
-> >  #include <linux/can.h>
-> > -#include <linux/can/isotp.h>
-> > +#include "isotp.h"
-> >  #include <linux/if_tun.h>
->=20
-> should be avoided too.
-Why?
+Add option '-t' to specify flow control type. Two types are
+supported: 'hw' - RTS/CTS and 'sw' - XON/XOFF.
 
-> Please only fix the copyright information in this patch.
-OK, will split the patch accordingly.
-=20
-> The wrong 3.1 -> 3.2 comparison should be fixed in a separate patch t=
-oo.
->=20
-> But reorder the includes in a way you suggest needs at least some mor=
-e
-> discussion (see requirements above).
-I'm not aware what needs discussion here (apart from the "build with ol=
-d
-kernel headers" requirement maybe). I will prepare a new series and the=
-n
-we can discuss.
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+ slcand.c |   32 +++++++++++++++++++++++++++++++-
+ 1 files changed, 31 insertions(+), 1 deletions(-)
 
-Best regards
-Uwe
+diff --git a/slcand.c b/slcand.c
+index 30f5127..996c8d2 100644
+--- a/slcand.c
++++ b/slcand.c
+@@ -69,6 +69,11 @@
+ #define EXIT_SUCCESS 0
+ #define EXIT_FAILURE 1
+ 
++/* UART flow control types */
++#define FLOW_NONE 0
++#define FLOW_HW 1
++#define FLOW_SW 2
++
+ void print_usage(char *prg)
+ {
+ 	fprintf(stderr, "\nUsage: %s [options] <tty> [canif-name]\n\n", prg);
+@@ -77,6 +82,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -f         (read status flags with 'F\\r' to reset error states)\n");
+ 	fprintf(stderr, "         -s <speed> (set CAN speed 0..8)\n");
+ 	fprintf(stderr, "         -S <speed> (set UART speed in baud)\n");
++	fprintf(stderr, "         -t <type>  (set UART flow control type 'hw' or 'sw')\n");
+ 	fprintf(stderr, "         -b <btr>   (set bit time register value)\n");
+ 	fprintf(stderr, "         -F         (stay in foreground; no daemonize)\n");
+ 	fprintf(stderr, "         -h         (show this help page)\n");
+@@ -300,6 +306,7 @@ int main(int argc, char *argv[])
+ 	char *speed = NULL;
+ 	char *uart_speed_str = NULL;
+ 	long int uart_speed = 0;
++	int flow_type = FLOW_NONE;
+ 	char *btr = NULL;
+ 	int run_as_daemon = 1;
+ 	pid_t parent_pid = 0;
+@@ -309,7 +316,7 @@ int main(int argc, char *argv[])
+ 
+ 	ttypath[0] = '\0';
+ 
+-	while ((opt = getopt(argc, argv, "ocfs:S:b:?hF")) != -1) {
++	while ((opt = getopt(argc, argv, "ocfs:S:t:b:?hF")) != -1) {
+ 		switch (opt) {
+ 		case 'o':
+ 			send_open = 1;
+@@ -336,6 +343,18 @@ int main(int argc, char *argv[])
+ 				exit(EXIT_FAILURE);
+ 			}
+ 			break;
++		case 't':
++			if (!strcmp(optarg, "hw")) {
++				flow_type = FLOW_HW;
++			}
++			else if (!strcmp(optarg, "sw")) {
++				flow_type = FLOW_SW;
++			}
++			else {
++				fprintf(stderr, "Unsupported flow type (%s)\n", optarg);
++				exit(EXIT_FAILURE);
++			}
++			break;
+ 		case 'b':
+ 			btr = optarg;
+ 			if (strlen(btr) > 6)
+@@ -401,10 +420,21 @@ int main(int argc, char *argv[])
+ 	old_ispeed = cfgetispeed(&tios);
+ 	old_ospeed = cfgetospeed(&tios);
+ 
++	/* Reset UART settings */
++	cfmakeraw(&tios);
++	tios.c_iflag &= ~IXOFF;
++	tios.c_cflag &= ~CRTSCTS;
++
+ 	/* Baud Rate */
+ 	cfsetispeed(&tios, look_up_uart_speed(uart_speed));
+ 	cfsetospeed(&tios, look_up_uart_speed(uart_speed));
+ 
++	/* Flow control */
++	if (flow_type == FLOW_HW)
++		tios.c_cflag |= CRTSCTS;
++	else if (flow_type == FLOW_SW)
++		tios.c_iflag |= (IXON | IXOFF);
++
+ 	/* apply changes */
+ 	if (tcsetattr(fd, TCSADRAIN, &tios) < 0)
+ 		syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": %s!\n", ttypath, strerror(errno));
+-- 
+1.7.7
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
-    |
-Industrial Linux Solutions                 | http://www.pengutronix.de/=
-  |
