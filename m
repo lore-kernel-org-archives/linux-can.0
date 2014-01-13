@@ -1,80 +1,93 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: [PATCH can-utils v3 5/5] isotp.h: add explicit license information
-Date: Mon, 13 Jan 2014 22:13:21 +0100
-Message-ID: <1389647601-10622-6-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1389647601-10622-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH can-utils v2 1/3] headers: use include/linux only for
+ Linux kernel headers
+Date: Mon, 13 Jan 2014 22:18:04 +0100
+Message-ID: <52D4580C.5030602@hartkopp.net>
+References: <1389481823-8379-1-git-send-email-u.kleine-koenig@pengutronix.de> <1389561879-16729-1-git-send-email-u.kleine-koenig@pengutronix.de> <1389561879-16729-2-git-send-email-u.kleine-koenig@pengutronix.de> <52D3867B.6090108@hartkopp.net> <20140113072049.GB29475@pengutronix.de> <52D42F90.7080005@hartkopp.net> <20140113204531.GI29475@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40272 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751768AbaAMVNn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 16:13:43 -0500
-In-Reply-To: <1389647601-10622-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:11118 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751578AbaAMVSH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 16:18:07 -0500
+In-Reply-To: <20140113204531.GI29475@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>
 
-It seems this file was originally part of the Linux kernel as it was created
-by commit 77de10356fe0 (include: import kernel header files into tree) but I
-couldn't find it in the git history of the kernel. Anyhow the copyright
-suggests to use the license used by the other files created by Volkswagen.
----
- isotp.h | 36 +++++++++++++++++++++++++++++++++---
- 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/isotp.h b/isotp.h
-index 5499ca8e95c0..3540caf1b9b2 100644
---- a/isotp.h
-+++ b/isotp.h
-@@ -3,14 +3,44 @@
-  *
-  * Definitions for isotp CAN sockets
-  *
-- * $Id$
-- *
-  * Author: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-  * Copyright (c) 2008 Volkswagen Group Electronic Research
-  * All rights reserved.
-  *
-- * Send feedback to <linux-can@vger.kernel.org>
-+ * Redistribution and use in source and binary forms, with or without
-+ * modification, are permitted provided that the following conditions
-+ * are met:
-+ * 1. Redistributions of source code must retain the above copyright
-+ *    notice, this list of conditions and the following disclaimer.
-+ * 2. Redistributions in binary form must reproduce the above copyright
-+ *    notice, this list of conditions and the following disclaimer in the
-+ *    documentation and/or other materials provided with the distribution.
-+ * 3. Neither the name of Volkswagen nor the names of its contributors
-+ *    may be used to endorse or promote products derived from this software
-+ *    without specific prior written permission.
-+ *
-+ * Alternatively, provided that this notice is retained in full, this
-+ * software may be distributed under the terms of the GNU General
-+ * Public License ("GPL") version 2, in which case the provisions of the
-+ * GPL apply INSTEAD OF those given above.
-  *
-+ * The provided data structures and external interfaces from this code
-+ * are not restricted to be used by modules with a GPL compatible license.
-+ *
-+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-+ * DAMAGE.
-+ *
-+ * Send feedback to <linux-can@vger.kernel.org>
-  */
- 
- #ifndef CAN_ISOTP_H
--- 
-1.8.5.2
+
+On 13.01.2014 21:45, Uwe Kleine-K=C3=B6nig wrote:
+> Hello Oliver,
+>=20
+> On Mon, Jan 13, 2014 at 07:25:20PM +0100, Oliver Hartkopp wrote:
+>> On 13.01.2014 08:20, Uwe Kleine-K=C3=B6nig wrote:
+>>> Hello Oliver,
+>>>
+>>> On Mon, Jan 13, 2014 at 07:23:55AM +0100, Oliver Hartkopp wrote:
+>>>> On 12.01.2014 22:24, Uwe Kleine-K=C3=B6nig wrote:
+>>>>
+>>>>>  - use __kernel_sa_family_t instead of sa_family_t which requires
+>>>>>    <linux/socket.h from Linux 3.1 or later. Unfortunately this ma=
+kes
+>>>>>    can-utils FTBFS on e.g. Debian squeeze. If this is an issue th=
+is
+>>>>>    could be fixed by adding something like:
+>>>>
+>>>> This was exactly the idea to have a separate set of include files =
+to make sure
+>>>> the 'newest and greatest' tools can be build even on 2.6.24 enviro=
+nments where
+>>>> there was no SocketCAN in mainline Linux.
+>>> Hmm, the newest and greatest tools are unusable if your kernel does=
+n't
+>>> also include the newest and greatest SocketCAN stuff.
+>>
+>> Features that are not available in the kernel come back with an erro=
+r.
+>> But there's no reason not to have the latest can-utils with bug fixe=
+s and
+>> functional enhancements for older kernels, right?
+>>
+>>> And then it is
+>>> easy to also have updated kernel headers, isn't it? Well, anyhow I =
+just
+>>> found a system here at pengutronix with old enough kernel headers, =
+so I
+>>> will do a fix.
+>>
+>> ok. tnx.
+>>
+>>> =20
+>>>> And e.g. this
+>>>>
+>>>>>  #include <linux/can.h>
+>>>>> -#include <linux/can/isotp.h>
+>>>>> +#include "isotp.h"
+>>>>>  #include <linux/if_tun.h>
+>>>>
+>>>> should be avoided too.
+>>> Why?
+>>
+>> When isotp hits the kernel, there's no need to adapt all userland pr=
+ograms.
+> ah, didn't know that isotp targets the kernel. There is nothing in ne=
+xt
+> yet. I wonder if it's sensible to put it into can-utils' copy of the
+> kernel headers then. If you ask me keep isotp.h in / until it hits th=
+e
+> kernel, then sync the headers and switch the programs explicitly. Onl=
+y
+> my 0.02 =E2=82=AC.
+
+What's the benefit of moving it to root and then moving it back to the =
+includes?
+
+Please let it stay in the current place.
+
+Tnx,
+Oliver
 
