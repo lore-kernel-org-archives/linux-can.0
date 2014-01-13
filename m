@@ -1,235 +1,102 @@
-From: yegorslists@googlemail.com
-Subject: [PATCH 2/2] slcand: reimplement daemonize routine
-Date: Mon, 13 Jan 2014 09:54:05 +0100
-Message-ID: <1389603245-24023-2-git-send-email-yegorslists@googlemail.com>
-References: <1389603245-24023-1-git-send-email-yegorslists@googlemail.com>
+From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
+Subject: RE: Kvazer USB CAN driver
+Date: Mon, 13 Jan 2014 09:31:55 +0000
+Message-ID: <64b7875c88bc4d9c914241f2fac0d448@AMSPR06MB053.eurprd06.prod.outlook.com>
+References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <1389107792.5708.9.camel@blackbox>
+ <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <52CDC307.1020102@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ns.visionsystems.de ([62.145.30.242]:59307 "EHLO
-	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751280AbaAMJPh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 04:15:37 -0500
-In-Reply-To: <1389603245-24023-1-git-send-email-yegorslists@googlemail.com>
+Received: from mail-am1lp0013.outbound.protection.outlook.com ([213.199.154.13]:56954
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751270AbaAMJb7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 13 Jan 2014 04:31:59 -0500
+In-Reply-To: <52CDC307.1020102@hartkopp.net>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: socketcan@hartkopp.net, u.kleine-koenig@pengutronix.de, mkl@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Olivier Sobrie <olivier@sobrie.be>, Daniel Berglund <db@kvaser.com>
 
-From: Yegor Yefremov <yegorslists@googlemail.com>
-
-Replace daemonize() routine with daemone() system call, because of
-conflicting licenses. daemonize() routine was derived from under
-GNU Free Documentation License licensed code. This license is
-incompatible with GPL-2+.
-
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
----
- slcand.c |  144 +++-----------------------------------------------------------
- 1 files changed, 6 insertions(+), 138 deletions(-)
-
-diff --git a/slcand.c b/slcand.c
-index 996c8d2..66e62e0 100644
---- a/slcand.c
-+++ b/slcand.c
-@@ -18,20 +18,6 @@
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-  *
-- * This code is derived from an example daemon code from
-- *
-- * http://en.wikipedia.org/wiki/Daemon_(computer_software)#Sample_Program_in_C_on_Linux
-- * (accessed 2009-05-05)
-- *
-- * So it is additionally licensed under the GNU Free Documentation License:
-- *
-- * Permission is granted to copy, distribute and/or modify this document
-- * under the terms of the GNU Free Documentation License, Version 1.2
-- * or any later version published by the Free Software Foundation;
-- * with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-- * A copy of the license is included in the section entitled "GNU
-- * Free Documentation License".
-- *
-  * Send feedback to <linux-can@vger.kernel.org>
-  *
-  */
-@@ -63,9 +49,6 @@
- /* The length of ttypath buffer */
- #define TTYPATH_LENGTH	64
- 
--/* The length of pidfile name buffer */
--#define PIDFILE_LENGTH	64
--
- #define EXIT_SUCCESS 0
- #define EXIT_FAILURE 1
- 
-@@ -96,7 +79,6 @@ void print_usage(char *prg)
- static int slcand_running;
- static int exit_code;
- static char ttypath[TTYPATH_LENGTH];
--static char pidfile[PIDFILE_LENGTH];
- 
- static void child_handler(int signum)
- {
-@@ -178,117 +160,6 @@ static int look_up_uart_speed(long int s)
- 	}
- }
- 
--static pid_t daemonize(const char *lockfile, char *tty, char *name)
--{
--	pid_t pid, sid, parent;
--	int lfp = -1;
--	FILE *pFile;
--	char const *pidprefix = "/var/run/";
--	char const *pidsuffix = ".pid";
--
--	snprintf(pidfile, PIDFILE_LENGTH, "%s%s-%s%s", pidprefix, DAEMON_NAME, tty, pidsuffix);
--
--	/* already a daemon */
--	if (getppid() == 1)
--		return 0;
--
--	/* Create the lock file as the current user */
--	if (lockfile && lockfile[0]) {
--
--		lfp = open(lockfile, O_RDWR | O_CREAT, 0640);
--		if (lfp < 0)
--		{
--			syslog(LOG_ERR, "unable to create lock file %s, code=%d (%s)",
--			       lockfile, errno, strerror(errno));
--			exit(EXIT_FAILURE);
--		}
--	}
--
--	/* Drop user if there is one, and we were run as root */
--	if (getuid() == 0 || geteuid() == 0) {
--		struct passwd *pw = getpwnam(RUN_AS_USER);
--
--		if (pw)
--		{
--			/* syslog(LOG_NOTICE, "setting user to " RUN_AS_USER); */
--			setuid(pw->pw_uid);
--		}
--	}
--
--	/* Trap signals that we expect to receive */
--	signal(SIGINT, child_handler);
--	signal(SIGTERM, child_handler);
--	signal(SIGCHLD, child_handler);
--	signal(SIGUSR1, child_handler);
--	signal(SIGALRM, child_handler);
--
--	/* Fork off the parent process */
--	pid = fork();
--	if (pid < 0) {
--		syslog(LOG_ERR, "unable to fork daemon, code=%d (%s)",
--		       errno, strerror(errno));
--		exit(EXIT_FAILURE);
--	}
--
--	/* If we got a good PID, then we can exit the parent process. */
--	if (pid > 0) {
--		/* Wait for confirmation from the child via SIGTERM or SIGCHLD, or
--		   for five seconds to elapse (SIGALRM).  pause() should not return. */
--		alarm(5);
--		pause();
--		exit(EXIT_FAILURE);
--	}
--
--	/* At this point we are executing as the child process */
--	parent = getppid();
--
--	/* Cancel certain signals */
--	signal(SIGCHLD, SIG_DFL);	/* A child process dies */
--	signal(SIGTSTP, SIG_IGN);	/* Various TTY signals */
--	signal(SIGTTOU, SIG_IGN);
--	signal(SIGTTIN, SIG_IGN);
--	signal(SIGHUP, SIG_IGN);	/* Ignore hangup signal */
--	signal(SIGINT, child_handler);
--	signal(SIGTERM, child_handler);
--
--	/* Change the file mode mask */
--	umask(0);
--
--	/* Create a new SID for the child process */
--	sid = setsid();
--	if (sid < 0) {
--		syslog(LOG_ERR, "unable to create a new session, code %d (%s)",
--		       errno, strerror(errno));
--		exit(EXIT_FAILURE);
--	}
--
--	pFile = fopen(pidfile, "w");
--	if (NULL == pFile) {
--		syslog(LOG_ERR, "unable to create pid file %s, code=%d (%s)",
--		       pidfile, errno, strerror(errno));
--		exit(EXIT_FAILURE);
--	}
--	fprintf(pFile, "%d\n", sid);
--	fclose(pFile);
--
--	/* Change the current working directory.  This prevents the current
--	   directory from being locked; hence not being able to remove it. */
--	if (chdir("/") < 0) {
--		syslog(LOG_ERR, "unable to change directory to %s, code %d (%s)",
--		       "/", errno, strerror(errno));
--		exit(EXIT_FAILURE);
--	}
--
--	/* Redirect standard files to /dev/null */
--	pFile = freopen("/dev/null", "r", stdin);
--	pFile = freopen("/dev/null", "w", stdout);
--	pFile = freopen("/dev/null", "w", stderr);
--
--	/* Tell the parent process that we are A-okay */
--	/* kill(parent, SIGUSR1); */
--	return parent;
--}
--
- int main(int argc, char *argv[])
- {
- 	char *tty = NULL;
-@@ -309,7 +180,6 @@ int main(int argc, char *argv[])
- 	int flow_type = FLOW_NONE;
- 	char *btr = NULL;
- 	int run_as_daemon = 1;
--	pid_t parent_pid = 0;
- 	char *pch;
- 	int ldisc = LDISC_N_SLCAN;
- 	int fd;
-@@ -390,8 +260,12 @@ int main(int argc, char *argv[])
- 	syslog(LOG_INFO, "starting on TTY device %s", ttypath);
- 
- 	/* Daemonize */
--	if (run_as_daemon)
--		parent_pid = daemonize("/var/lock/" DAEMON_NAME, tty, name);
-+	if (run_as_daemon) {
-+		if (daemon(0, 0)) {
-+			syslog(LOG_ERR, "failed to daemonize");
-+			exit(EXIT_FAILURE);
-+		}
-+	}
- 	else {
- 		/* Trap signals that we expect to receive */
- 		signal(SIGINT, child_handler);
-@@ -494,8 +368,6 @@ int main(int argc, char *argv[])
- 			close(s);
- 		}	
- 	}
--	if (parent_pid > 0)
--		kill(parent_pid, SIGUSR1);
- 
- 	/* The Big Loop */
- 	while (slcand_running)
-@@ -522,10 +394,6 @@ int main(int argc, char *argv[])
- 	if (tcsetattr(fd, TCSADRAIN, &tios) < 0)
- 		syslog(LOG_NOTICE, "Cannot set attributes for device \"%s\": %s!\n", ttypath, strerror(errno));
- 
--	/* Remove pidfile */
--	if (run_as_daemon)
--		unlink(pidfile);
--
- 	/* Finish up */
- 	syslog(LOG_NOTICE, "terminated on %s", ttypath);
- 	closelog();
--- 
-1.7.7
-
+SGVsbG8gT2xpdmllciwNCg0KSSB0aGluayBJIHVuZGVyc3RhbmQgd2h5IHRoaXMgaXMgbm90IHdv
+cmtpbmcuDQoNCkkgaGF2ZSBsb29rZWQgYXQgdGhlIEt2YXNlciBkcml2ZXJzIG9uIFVTQiBhbmQs
+IGJhc2ljYWxseSwgdGhlcmUgYXJlIDIgYmlnIGZhbWlsaWVzOg0K4oCiCUxlYWYNCuKAoglVU0JJ
+SQ0KDQpBcyBmYXIgYXMgSSB1bmRlcnN0YW5kIHRoZSBjdXJyZW50IG5ldGRyaXZlciBpbXBsZW1l
+bnRzIHRoZSBMZWFmIGZhbWlseSBvbmx5Lg0KDQpJIGNvdWxkIHNlZSB0aGF0IGFsbCBVU0Ig4oCc
+cHJvZHVjdCBpZHPigJ0gYXJlIHdlbGwgaWRlbnRpY2FsIHRoYW4gdGhlIG9uZSBkZWZpbmVkIGlu
+IEt2YXNlciBsZWFmIGRyaXZlci4gSG93ZXZlciB1c2JJSSBkZXZpY2VzIHdpdGggcHJvZHVjdCBp
+ZHMgMiwzLDQsNSBhcmUgbm90IHByZXNlbnQuDQpFZmZlY3RpdmVsbHksIGxlIHByb2R1Y3QgaWQg
+dGllZCB0byBteSBrdmFzZXIgdXNiY2FuIFJ1Z2dlZCBkZXZpY2UgaXMgIjIiLg0KDQpJIGhhdmUg
+dHJpZWQgdG8gbG9vayBhdCB0aGUgZGlmZmVyZW5jZXMgKGZyb20ga3Zhc2VyIGRyaXZlciBzb3Vy
+Y2VzKSBhbmQgdGhlcmUgYSBsb3Qgb2YgZGlzY3JlcGVuY2llcyBiZXR3ZWVuIHRoZSBsZWFmIHVz
+YiBjb21tYW5kcyBhbmQgdGhlIHVzYmNhbjIgKGhlbGlvcz8pICB1c2IgY29tbWFuZHMuIFNvLCBz
+dXBwb3J0aW5nIHRoaXMgZGV2aWNlIHNob3VsZCBub3QgYmUgYW4gZWFzeSB0YXNrLi4uLg0KDQoN
+CkNoZWVycywNCg0KUGllcnJlDQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDog
+T2xpdmVyIEhhcnRrb3BwIFttYWlsdG86c29ja2V0Y2FuQGhhcnRrb3BwLm5ldF0gDQpFbnZvecOp
+wqA6IG1lcmNyZWRpIDggamFudmllciAyMDE0IDIyOjI5DQrDgMKgOiBHQVJORVJPLCBQSUVSUkUg
+KFAuKQ0KQ2PCoDogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgT2xpdmllciBTb2JyaWU7IERh
+bmllbCBCZXJnbHVuZA0KT2JqZXTCoDogUmU6IEt2YXplciBVU0IgQ0FOIGRyaXZlcg0KDQpIZWxs
+byBQaWVycmUsDQoNCndoYXQgZXhhY3Qga2VybmVsIHZlcnNpb24gYXJlIHlvdSB1c2luZyB0aGVy
+ZT8NCg0KRG8geW91IHVzZSB0aGUgTWFpbmxpbmUgZHJpdmVyIHRoYXQgY29tZXMgd2l0aCBMaW51
+eCBvciBkaWQgeW91IHVzZSB0aGUgS3Zhc2VyIGRyaXZlciBmcm9tIGh0dHA6Ly93d3cua3Zhc2Vy
+LmNvbS9lbi9kb3dubG9hZHMuaHRtbCA/Pw0KDQpDYW4geW91IHByb3ZpZGUgYSBjcmFzaCBkdW1w
+Pw0KDQpJIGFsc28gYWRkZWQgdGhlIEt2YXNlciBhdXRob3JzIGluIENDDQoNClJlZ2FyZHMsDQpP
+bGl2ZXINCg0KT24gMDcuMDEuMjAxNCAxNzo0NiwgR0FSTkVSTywgUElFUlJFIChQLikgd3JvdGU6
+DQo+IEhlbGxvLA0KPiANCj4gVGhhbmtzIGZvciBhbGwgdGhpcyBpbmZvcm1hdGlvbi4gQW5kLCBi
+YXNpY2FsbHkgdGhlIGlzc3VlIGlzIHRoZSBmYWN0IHRoYXQgbm8gY2FuIG5ldHdvcmsgaW50ZXJm
+YWNlIHNob3dzIHVwLg0KPiANCj4gSWYgSSBib290IHdpdGggdGhlIEt2YXNlciBkZXZpY2UgcGx1
+Z2dlZCwgSSBjb3VsZCB3ZWxsIHNlZSBpdCB1c2luZzoNCj4gIExzdXNiDQo+IA0KPiAuLi5idXQN
+Cj4gIHN1ZG8gaXAgbGluayBsaXN0DQo+IC4uLmRvZXMgbm90IHJldmVhbCBhbnkgY2FuIGludGVy
+ZmFjZSB3aGlsZSBJIGhhdmUgbG9hZGVkIHRoZXNlIG1vZHVsZXM6IGNhbiwgY2FuLXJhdywgY2Fu
+LWRldiwga3Zhc2VyLXVzYi4NCj4gLi4ud2hpbGUgZG1lc2cgZGlzcGxheXMgInVzYmNvcmU6IHJl
+Z2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIga3Zhc2VyX3VzYiIuLi4NCj4gDQo+IEluIGFk
+ZGl0aW9uLCBpZiBJIGhvdHBsdWcgS3Zhc2VyIGRldmljZSwgSSBnZXQgYSBrZXJuZWwgcGFuaWMu
+DQo+IA0KPiBTbywgSSBoYXZlIHByb2JhYmx5IG1hZGUgYSBtaXN0YWtlIHdoZW4gSSBoYXZlIGJ1
+aWx0IHRoZSBrZXJuZWwuDQo+IA0KPiBDaGVlcnMsDQo+IA0KPiBQaWVycmUNCj4gDQo+ICANCj4g
+LS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQo+IERlIDogc29ja2V0Y2FuLXVzZXJzLWJvdW5j
+ZXNAbGlzdHMuYmVybGlvcy5kZSBbbWFpbHRvOnNvY2tldGNhbi11c2Vycy1ib3VuY2VzQGxpc3Rz
+LmJlcmxpb3MuZGVdIERlIGxhIHBhcnQgZGUgTWF4IFMuDQo+IEVudm95w6kgOiBtYXJkaSA3IGph
+bnZpZXIgMjAxNCAxNjoxNw0KPiDDgCA6IHNvY2tldGNhbi11c2Vyc0BsaXN0cy5iZXJsaW9zLmRl
+DQo+IE9iamV0IDogUmU6IFtTb2NrZXRjYW4tdXNlcnNdIEJlZ2lubmVyIHF1ZXN0aW9uIC0gS3Zh
+emVyIFVTQiBDQU4gDQo+IGRyaXZlcg0KPiANCj4gSGVsbG8sDQo+IA0KPiBJJ20gbm90IHN1cmUg
+YWJvdXQgdGhlIGt2YXNlciBpbiBwYXJ0aWN1bGFyLCBidXQgdGhlIGRyaXZlciBzaG91bGQgY3Jl
+YXRlIHRoZSBuZXR3b3JrIGludGVyZmFjZXMgd2hlbiB0aGUgVVNCIGRldmljZSBpcyBhdHRhY2hl
+ZC4NCj4gDQo+IHNvIG5vIG5lZWQgdG8gYWRkIGEgbmV3IHNvY2tldGNhbiBkZXZpY2UuDQo+IA0K
+PiBDaGVjayB0byBtYWtlIHN1cmUgeW91IGhhdmUga3Zhc2VyIGNvbm5lY3RlZDoNCj4gCWxzdXNi
+DQo+IA0KPiBDaGVjayB0byBtYWtlIHN1cmUga3Zhc2VyIGRyaXZlciBoYXMgbWFkZSBuZXR3b3Jr
+IGludGVyZmFjZXM6DQo+IAlzdWRvIGlwIGxpbmsgbGlzdA0KPiANCj4gVGhlbiBicmluZyB0aGUg
+aW50ZXJmYWNlIHVwOg0KPiAJc3VkbyBpcCBsaW5rIHNldCBjYW4wIHVwIHR5cGUgY2FuIGJpdHJh
+dGUgMjUwMDAwDQo+IA0KPiBMaXN0ZW4gdG8gc29tZSBmcmFtZXM6DQo+IAljYW5kdW1wIGNhbjAN
+Cj4gDQo+IERlcGVuZGluZyBvbiBob3cgeW91IGhhdmUgcGVybWlzc2lvbnMgc2V0IHVwIHlvdSB3
+aWxsIHJlcXVpcmUgc3VkbyB0byB1c2UgbW9zdCBvZiB0aGUgaXAgY29tbWFuZHMuDQo+IA0KPiBS
+ZWdhcmRzLA0KPiBNYXggU2NobmVpZGVyDQo+IA0KPiBPbiBUdWUsIDIwMTQtMDEtMDcgYXQgMTQ6
+MTcgKzAwMDAsIEdBUk5FUk8sIFBJRVJSRSAoUC4pIHdyb3RlOg0KPj4gSGVsbG8uDQo+Pg0KPj4g
+IA0KPj4NCj4+IEkgd291bGQgbGlrZSB0byB1c2UgYSBLVkFaRVIgVVNCY2FuIFJ1Z2dlZCBkZXZp
+Y2Ugd2l0aCB0aGUgc29ja2V0Y2FuIA0KPj4gbGlicmFyeS4NCj4+DQo+PiBJIHVzZSBSYXNwYmlh
+biBPUyBhbmQgSSBoYXZlIGJ1aWx0IGEga2VybmVsIHdpdGggYW55dGhpbmcgZW5hYmxlZCANCj4+
+IHJlZ2FyZGluZyBDQU4uDQo+Pg0KPj4gIA0KPj4NCj4+IEkgaGF2ZSBsb2FkZWQgdGhlIGZvbGxv
+d2luZyBtb2R1bGVzOg0KPj4NCj4+ICMgbW9kcHJvYmUgY2FuDQo+Pg0KPj4gIyBtb2Rwcm9iZSB2
+Y2FuDQo+Pg0KPj4gIyBtb2Rwcm9iZSBjYW4tcmF3DQo+Pg0KPj4gIyBtb2Rwcm9iZSBjYW4tZGV2
+DQo+Pg0KPj4gIyBtb2Rwcm9iZSBrdmF6ZXItdXNiDQo+Pg0KPj4gIA0KPj4NCj4+IEJ1dCBhbnkg
+aXAgbGluayBjb21tYW5kIChleDogaXAgbGluayBhZGQgZGV2IGNhbjAgdHlwZSBjYW4pIGZhaWxl
+ZCANCj4+IHdpdGgg4oCcUlRORVRMSU5LIGFuc3dlciA6IG9wZXJhdGlvbiBub3QgcGVybWl0dGVk
+4oCdIChleGNlcHRlZCBmb3IgdmNhbiANCj4+IHdoaWNoIHdvcmtzIHdlbGwpLg0KPj4NCj4+ICAN
+Cj4+DQo+PiBDb3VsZCBzb21lb25lIHByb3ZpZGUgbWUgc29tZSBoaW50cyByZWdhcmRpbmcgdGhl
+IHN0ZXBzIHRvIGhhdmUgYSANCj4+IEt2YXNlciBVU0JjYW4gZGV2aWNlIHVwIGFuZCBydW5uaW5n
+IHVzaW5nIHRoZSBuZXQgZHJpdmVyID8NCj4+DQo+PiAgDQo+Pg0KPj4gTWFueSB0aGFua3MgaW4g
+YWR2YW5jZSwNCj4+DQo+PiAgDQo+Pg0KPj4gUGllcnJlDQo+Pg0KPj4gIA0KPj4NCj4+ICANCj4+
+DQo+PiAgDQo+Pg0KPj4gIA0KPj4NCj4+ICANCj4+DQo+Pg0KPj4gX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4+IFNvY2tldGNhbi11c2VycyBtYWlsaW5n
+IGxpc3QNCj4+IFNvY2tldGNhbi11c2Vyc0BsaXN0cy5iZXJsaW9zLmRlDQo+PiBodHRwczovL2xp
+c3RzLmJlcmxpb3MuZGUvbWFpbG1hbi9saXN0aW5mby9zb2NrZXRjYW4tdXNlcnMNCj4gDQo+IA0K
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBTb2Nr
+ZXRjYW4tdXNlcnMgbWFpbGluZyBsaXN0DQo+IFNvY2tldGNhbi11c2Vyc0BsaXN0cy5iZXJsaW9z
+LmRlDQo+IGh0dHBzOi8vbGlzdHMuYmVybGlvcy5kZS9tYWlsbWFuL2xpc3RpbmZvL3NvY2tldGNh
+bi11c2Vycw0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xw0KPiBTb2NrZXRjYW4tdXNlcnMgbWFpbGluZyBsaXN0DQo+IFNvY2tldGNhbi11c2Vyc0BsaXN0
+cy5iZXJsaW9zLmRlDQo+IGh0dHBzOi8vbGlzdHMuYmVybGlvcy5kZS9tYWlsbWFuL2xpc3RpbmZv
+L3NvY2tldGNhbi11c2Vycw0KPiANCg==
