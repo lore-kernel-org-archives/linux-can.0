@@ -1,70 +1,61 @@
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
 	<u.kleine-koenig@pengutronix.de>
-Subject: [PATCH can-utils v4 0/4] License cleanup
-Date: Mon, 13 Jan 2014 22:57:12 +0100
-Message-ID: <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH can-utils v4 1/4] Remove two unused header files
+Date: Mon, 13 Jan 2014 22:57:13 +0100
+Message-ID: <1389650236-13542-2-git-send-email-u.kleine-koenig@pengutronix.de>
 References: <52D45B4C.3070009@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+ <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38549 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38555 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750928AbaAMV5Y (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 16:57:24 -0500
-In-Reply-To: <52D45B4C.3070009@hartkopp.net>
+	with ESMTP id S1751071AbaAMV5Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2014 16:57:25 -0500
+In-Reply-To: <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+These seem to have never been used. They entered can-utils in commit
+77de10356fe0 (include: import kernel header files into tree) and already
+back then only consisted in an #include of a non-existing file.
 
-compared to v3 I dropped the patch to move isotp.h to the project root
-and did the necessary follow-up changes. Builds fine on a system that
-has installed kernel headers from 2.6.32.
-
-Best regards
-Uwe
-
-Uwe Kleine-K=C3=B6nig (4):
-  Remove two unused header files
-  Move includes copied from the Linux kernel into include/linux
-  ioctl.h: drop unused header
-  isotp.h: add explicit license information
-
- GNUmakefile.am                  |  11 +--
- include/linux/can.h             | 168 ++++++++++++++++++++++++++++++++=
-++++++-
- include/linux/can/bcm.h         |  67 +++++++++++++++-
- include/linux/can/core.h        |   1 -
- include/linux/can/dev.h         |   1 -
- include/linux/can/error.h       |  92 ++++++++++++++++++++-
- include/linux/can/gw.h          | 172 ++++++++++++++++++++++++++++++++=
-+++++++-
- include/linux/can/netlink.h     | 123 +++++++++++++++++++++++++++-
- include/linux/can/raw.h         |  31 +++++++-
- include/socketcan/can.h         | 167 --------------------------------=
-------
- include/socketcan/can/bcm.h     |  66 ---------------
- include/socketcan/can/error.h   |  91 ---------------------
- include/socketcan/can/gw.h      | 171 --------------------------------=
--------
- include/socketcan/can/ioctl.h   |  99 -----------------------
- include/socketcan/can/isotp.h   |  38 ++++++++-
- include/socketcan/can/netlink.h | 122 ----------------------------
- include/socketcan/can/raw.h     |  30 -------
- 17 files changed, 682 insertions(+), 768 deletions(-)
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ GNUmakefile.am           | 2 --
+ include/linux/can/core.h | 1 -
+ include/linux/can/dev.h  | 1 -
+ 3 files changed, 4 deletions(-)
  delete mode 100644 include/linux/can/core.h
  delete mode 100644 include/linux/can/dev.h
- delete mode 100644 include/socketcan/can.h
- delete mode 100644 include/socketcan/can/bcm.h
- delete mode 100644 include/socketcan/can/error.h
- delete mode 100644 include/socketcan/can/gw.h
- delete mode 100644 include/socketcan/can/ioctl.h
- delete mode 100644 include/socketcan/can/netlink.h
- delete mode 100644 include/socketcan/can/raw.h
 
---=20
+diff --git a/GNUmakefile.am b/GNUmakefile.am
+index fc8f6e73e139..34a7740c9906 100644
+--- a/GNUmakefile.am
++++ b/GNUmakefile.am
+@@ -11,8 +11,6 @@ noinst_HEADERS = \
+ 	lib.h \
+ 	terminal.h \
+ 	include/linux/can/bcm.h \
+-	include/linux/can/core.h \
+-	include/linux/can/dev.h \
+ 	include/linux/can/error.h \
+ 	include/linux/can/gw.h \
+ 	include/linux/can.h \
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+deleted file mode 100644
+index 620c88ddc5c5..000000000000
+--- a/include/linux/can/core.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/core.h>
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+deleted file mode 100644
+index 91879859cdf6..000000000000
+--- a/include/linux/can/dev.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/dev.h>
+-- 
 1.8.5.2
 
