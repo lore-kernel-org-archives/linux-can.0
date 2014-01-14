@@ -1,66 +1,46 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2] net: can: Disable flexcan driver build for big endian CPU on ARM
-Date: Tue, 14 Jan 2014 11:44:09 +0100
-Message-ID: <3157541.PQSkPAVrH7@wuerfel>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH can-utils v4 4/4] isotp.h: add explicit license information
+Date: Tue, 14 Jan 2014 16:49:15 +0100
+Message-ID: <52D55C7B.4010102@hartkopp.net>
+References: <52D45B4C.3070009@hartkopp.net> <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de> <1389650236-13542-5-git-send-email-u.kleine-koenig@pengutronix.de> <52D4E0CD.2040706@hartkopp.net> <20140114084616.GR29475@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.187]:61982 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751368AbaANKoT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2014 05:44:19 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:54615 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751445AbaANPtV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2014 10:49:21 -0500
+In-Reply-To: <20140114084616.GR29475@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-> On 01/06/2014 02:21 PM, Guenter Roeck wrote:
-> > Building arm:allmodconfig fails with
-> > 
-> > flexcan.c: In function 'flexcan_read':
-> > flexcan.c:243:2: error: implicit declaration of function 'in_be32'
-> > flexcan.c: In function 'flexcan_write':
-> > flexcan.c:248:2: error: implicit declaration of function 'out_be32'
-> > 
-> > in_be32 and out_be32 do not (or no longer) exist for ARM targets.
-> > Disable the build for ARM on big endian CPUs.
-> > 
-> > Signed-off-by: Guenter Roeck <linux@xxxxxxxxxxxx>
-> 
-> Applied to can-next.
+On 14.01.2014 09:46, Uwe Kleine-K=F6nig wrote:
 
-Sorry, this patch was wrong.
+>> Is this the only file in include/socketcan now?
+>> I thought you wanted to get rid of this construct and move everythin=
+g over to
+>> the include/linux directory to finally remove include/socketecan ??
+> You said:
+> 	Please let it stay in the current place.
+>=20
+> So did I. :-)
 
-There is no reason to disallow building the driver on big-endian
-ARM kernels. Furthermore, the current behavior is actually broken
-on little-endian PowerPC as well.
-The choice of register accessor functions must purely depend
-on the CPU architecture, not which endianess the CPU is running
-on. Note that we nowadays allow both big-endian ARM and little-endian
-PowerPC kernels.
-With this patch applied, we will do the right thing in all four
-combinations.
+Sigh. You are kidding me.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Please make your choice:
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index aaed97b..320bef2 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -235,9 +235,12 @@ static const struct can_bittiming_const flexcan_bittiming_const = {
- };
- 
- /*
-- * Abstract off the read/write for arm versus ppc.
-+ * Abstract off the read/write for arm versus ppc. This
-+ * assumes that PPC uses big-endian registers and everything
-+ * else uses little-endian registers, independent of CPU
-+ * endianess.
-  */
--#if defined(__BIG_ENDIAN)
-+#if defined(CONFIG_PPC)
- static inline u32 flexcan_read(void __iomem *addr)
- {
- 	return in_be32(addr);
+[ ] Please let it stay in the current place with all the other includes
+[ ] Do not put it to a different place away from the other includes
+
+We obviously need to work on our communication :-(
+
+As you moved *all* the includes to a new place I was not able to imagin=
+e that
+you would even think about leaving *only* isotp.h in include/socketcan.
+
+Regards,
+Oliver
 
