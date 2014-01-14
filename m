@@ -1,46 +1,43 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH can-utils v4 4/4] isotp.h: add explicit license information
-Date: Tue, 14 Jan 2014 16:49:15 +0100
-Message-ID: <52D55C7B.4010102@hartkopp.net>
-References: <52D45B4C.3070009@hartkopp.net> <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de> <1389650236-13542-5-git-send-email-u.kleine-koenig@pengutronix.de> <52D4E0CD.2040706@hartkopp.net> <20140114084616.GR29475@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: pull-request: can-next 2014-01-11
+Date: Tue, 14 Jan 2014 23:01:56 +0300
+Message-ID: <52D597B4.7020607@cogentembedded.com>
+References: <52D191E2.8040703@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:54615 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751445AbaANPtV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2014 10:49:21 -0500
-In-Reply-To: <20140114084616.GR29475@pengutronix.de>
+Received: from mail-lb0-f172.google.com ([209.85.217.172]:63256 "EHLO
+	mail-lb0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751756AbaANTBz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2014 14:01:55 -0500
+Received: by mail-lb0-f172.google.com with SMTP id c11so16740lbj.31
+        for <linux-can@vger.kernel.org>; Tue, 14 Jan 2014 11:01:54 -0800 (PST)
+In-Reply-To: <52D191E2.8040703@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 
-On 14.01.2014 09:46, Uwe Kleine-K=F6nig wrote:
+Hello.
 
->> Is this the only file in include/socketcan now?
->> I thought you wanted to get rid of this construct and move everythin=
-g over to
->> the include/linux directory to finally remove include/socketecan ??
-> You said:
-> 	Please let it stay in the current place.
->=20
-> So did I. :-)
+On 01/11/2014 09:48 PM, Marc Kleine-Budde wrote:
 
-Sigh. You are kidding me.
+> Hello David,
 
-Please make your choice:
+> this is a pull request of three patches for net-next/master.
 
-[ ] Please let it stay in the current place with all the other includes
-[ ] Do not put it to a different place away from the other includes
+> Oleg Moroz added support for a new PCI card to the generic SJA1000 PCI
+> driver, Guenter Roeck's patch limits the flexcan driver to little
+> endian arm (and powerpc) and I fixed a sparse warning found by the
+> kbuild robot in the ti_hecc driver.
 
-We obviously need to work on our communication :-(
+    What about the rewritten Renesas R-Car CAN driver? Is there a chance to 
+get it into 3.14-rc1 now that we've missed 3.13-rc1? I've sent it at the very 
+end of December, and have got no feedback still...
 
-As you moved *all* the includes to a new place I was not able to imagin=
-e that
-you would even think about leaving *only* isotp.h in include/socketcan.
+> regards,
+> Marc
 
-Regards,
-Oliver
+WBR, Sergei
 
