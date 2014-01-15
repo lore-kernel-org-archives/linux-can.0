@@ -1,75 +1,56 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can: add ability to allocate CANFD frame in skb data
-Date: Wed, 15 Jan 2014 09:50:13 +0100
-Message-ID: <1389775813-14838-1-git-send-email-s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: add ability to allocate CANFD frame in skb data
+Date: Wed, 15 Jan 2014 13:58:46 +0100
+Message-ID: <52D68606.1050103@pengutronix.de>
+References: <1389775813-14838-1-git-send-email-s.grosjean@peak-system.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="ThXAb1GndWKxb11QwiwLVvvF77ptdPIwN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:23252 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750941AbaAOIuj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 15 Jan 2014 03:50:39 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59611 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751664AbaAOM7G (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 15 Jan 2014 07:59:06 -0500
+In-Reply-To: <1389775813-14838-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-This patch adds the ability of allocating a CANFD frame data structure in the
-skb data area.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ThXAb1GndWKxb11QwiwLVvvF77ptdPIwN
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+On 01/15/2014 09:50 AM, Stephane Grosjean wrote:
+> This patch adds the ability of allocating a CANFD frame data structure =
+in the
+> skb data area.
 
----
- drivers/net/can/dev.c   | 24 ++++++++++++++++++++++++
- include/linux/can/dev.h |  2 ++
- 2 files changed, 26 insertions(+)
+Do you have real CANFD hardware?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 13a9098..cb584ea 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -521,6 +521,30 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
- }
- EXPORT_SYMBOL_GPL(alloc_can_skb);
- 
-+struct sk_buff *alloc_canfd_skb(struct net_device *dev,
-+				struct canfd_frame **cfd)
-+{
-+	struct sk_buff *skb;
-+
-+	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
-+			       sizeof(struct canfd_frame));
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	skb->protocol = htons(ETH_P_CANFD);
-+	skb->pkt_type = PACKET_BROADCAST;
-+	skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+	can_skb_reserve(skb);
-+	can_skb_prv(skb)->ifindex = dev->ifindex;
-+
-+	*cfd = (struct canfd_frame *)skb_put(skb, sizeof(struct canfd_frame));
-+	memset(*cfd, 0, sizeof(struct canfd_frame));
-+
-+	return skb;
-+}
-+EXPORT_SYMBOL_GPL(alloc_canfd_skb);
-+
- struct sk_buff *alloc_can_err_skb(struct net_device *dev, struct can_frame **cf)
- {
- 	struct sk_buff *skb;
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index fb0ab65..dc5f902 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -124,6 +124,8 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
- void can_free_echo_skb(struct net_device *dev, unsigned int idx);
- 
- struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);
-+struct sk_buff *alloc_canfd_skb(struct net_device *dev,
-+				struct canfd_frame **cfd);
- struct sk_buff *alloc_can_err_skb(struct net_device *dev,
- 				  struct can_frame **cf);
- 
--- 
-1.8.1.2
+Marc
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--ThXAb1GndWKxb11QwiwLVvvF77ptdPIwN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLWhgYACgkQjTAFq1RaXHM8sQCfVxfpTe/+4vQLSoWrFB/opCmf
+uq0AniB16jYpkxu7nQmIALAIAbIOiBFJ
+=FFDZ
+-----END PGP SIGNATURE-----
+
+--ThXAb1GndWKxb11QwiwLVvvF77ptdPIwN--
