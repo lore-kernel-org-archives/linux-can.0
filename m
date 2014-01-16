@@ -1,35 +1,47 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: add explicit copyrights to can userspace header
-Date: Thu, 16 Jan 2014 17:27:50 +0100
-Message-ID: <52D80886.1070808@pengutronix.de>
-References: <52D269D1.9030009@hartkopp.net> <1389553340-5758-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
+Date: Thu, 16 Jan 2014 17:30:10 +0100
+Message-ID: <52D80912.1090700@pengutronix.de>
+References: <52D6CB48.9010206@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G"
+ boundary="4RW4b4vOMJNlcBTX0I6GMS2a1oWPOuvt1"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60674 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60715 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752528AbaAPQ14 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:27:56 -0500
-In-Reply-To: <1389553340-5758-1-git-send-email-u.kleine-koenig@pengutronix.de>
+	with ESMTP id S1752292AbaAPQaM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:30:12 -0500
+In-Reply-To: <52D6CB48.9010206@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Urs Thuermann <urs.thuermann@volkswagen.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G
+--4RW4b4vOMJNlcBTX0I6GMS2a1oWPOuvt1
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/12/2014 08:02 PM, Uwe Kleine-K=C3=B6nig wrote:
-> This is in the spirit of commit 2485602f1af2 (can: add explicit
-> copyrights to can headers). It seems I have missed can.h back then.
+On 01/15/2014 06:54 PM, Oliver Hartkopp wrote:
+> Introduce a second set of bitrate configuration for the (potential diff=
+erent)
+> data bitrate. The CAN FD arbitration bitrate is stored in the existing
+> bittiming configuration space.
 >=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> TODO:
+> The functions can_calc_bittiming(), can_fixup_bittiming() should change=
+ their
+> parameters from
+>=20
+> 	(struct net_device *dev, struct can_bittiming *bt)
+> to
+> 	(struct can_bittiming *bt, const struct can_bittiming_const *btc, cons=
+t struct can_clock *clk)
 
-Tnx, applied to can-next.
+Are there any netdev_printk()? I don't want to loose the explicit device
+information.
+
+Otherwise looks good so far.
 
 Marc
 
@@ -40,7 +52,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G
+--4RW4b4vOMJNlcBTX0I6GMS2a1oWPOuvt1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -49,9 +61,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLYCIYACgkQjTAFq1RaXHNHKQCeOZohyV2NPJ4sI0d2wp0ELqUr
-ufIAnj8IutTKySCPeENcCnXFGhLfR8+E
-=bB4W
+iEYEARECAAYFAlLYCRIACgkQjTAFq1RaXHMPXwCfbJ5+7/7ulyxE8+mV9hTzSF2Y
+aJgAnjxoR9v+Kp1soZf2325DfI4ET5Pm
+=R+o0
 -----END PGP SIGNATURE-----
 
---4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G--
+--4RW4b4vOMJNlcBTX0I6GMS2a1oWPOuvt1--
