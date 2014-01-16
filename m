@@ -1,131 +1,66 @@
-From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
-Subject: RE: Kvazer USB CAN driver
-Date: Thu, 16 Jan 2014 12:55:21 +0000
-Message-ID: <27dfb57d144f4e0da772001b2b92307c@AMSPR06MB053.eurprd06.prod.outlook.com>
-References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
- <1389107792.5708.9.camel@blackbox>
- <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
- <52CDC307.1020102@hartkopp.net>
- <64b7875c88bc4d9c914241f2fac0d448@AMSPR06MB053.eurprd06.prod.outlook.com>
- <20140116110204.GA5286@hposo>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v5 1/5] include: Remove two unused header files
+Date: Thu, 16 Jan 2014 17:12:30 +0100
+Message-ID: <1389888754-23013-2-git-send-email-mkl@pengutronix.de>
+References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3lp0082.outbound.protection.outlook.com ([213.199.154.82]:15337
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752093AbaAPMzY (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 16 Jan 2014 07:55:24 -0500
-In-Reply-To: <20140116110204.GA5286@hposo>
-Content-Language: fr-FR
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55315 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752356AbaAPQMh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:12:37 -0500
+In-Reply-To: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Olivier Sobrie <olivier@sobrie.be>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Daniel Berglund <db@kvaser.com>
+To: linux-can@vger.kernel.org
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-SGVsbG8gT2xpdmllciwNCg0KSSBkb24ndCBoYXZlIGFjY2VzcyB0aGUgUmFzcGJlcnJ5IGh3IHNv
-IEkgY2Fubm90IGdldCB0aGUga2VybmVsIHBhbmljIGR1bXAgc29vbi4gQnV0IG9mIGNvdXJzZSBJ
-IHdpbGwgcHJvdmlkZSBpdCB3aGVuIHBvc3NpYmxlLg0KSSBoYXZlIG1vZGlmaWVkIGEgbGl0dGxl
-IGJpdCB0aGUga3Zhc2VyX3VzYi5jIHNvdXJjZSB0byBiZSBhYmxlIHRvIGRldGVjdCB0aGUgY2Fu
-VVNCIEhXLCBzbyBJIGhhdmUgc2VlbiBhIGNhbjAgZGV2aWNlIG9uIFJhc3BiZXJyeS4NClNvIGFn
-YWluLCBkdWUgdG8gdGhlIGZhY3QgdGhhdCBJIGRvIG5vdCBoYXZlIHRoZSBSYXNwYmVycnkgSFcs
-IEkgYW0gZ29pbmcgdG8gbWFrZSBzb21lIHRlc3RzIG9uIGEgeDg2IHBsYXRmb3JtIHdpdGggRmVk
-b3JhLiBJdCB3aWxsIGJlIGVhc2llciB0byB0cm91Ymxlc2hvb3QgaXQuDQpJIHdpbGwgbGV0IHlv
-dSBrbm93IHRoZSByZXN1bHQuDQoNCkNoZWVycywNCg0KUGllcnJlDQoNCi0tLS0tTWVzc2FnZSBk
-J29yaWdpbmUtLS0tLQ0KRGXCoDogT2xpdmllciBTb2JyaWUgW21haWx0bzpvbGl2aWVyLnNvYnJp
-ZUBnbWFpbC5jb21dIERlIGxhIHBhcnQgZGUgT2xpdmllciBTb2JyaWUNCkVudm95w6nCoDogamV1
-ZGkgMTYgamFudmllciAyMDE0IDEyOjAyDQrDgMKgOiBHQVJORVJPLCBQSUVSUkUgKFAuKQ0KQ2PC
-oDogT2xpdmVyIEhhcnRrb3BwOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBEYW5pZWwgQmVy
-Z2x1bmQNCk9iamV0wqA6IFJlOiBLdmF6ZXIgVVNCIENBTiBkcml2ZXINCg0KSGVsbG8gUGllcnJl
-LA0KDQpTb3JyeSBJIGRpZG4ndCBzZWUgeW91ciBwcmV2aW91cyBtYWlscy4uLg0KDQpPbiBNb24s
-IEphbiAxMywgMjAxNCBhdCAwOTozMTo1NUFNICswMDAwLCBHQVJORVJPLCBQSUVSUkUgKFAuKSB3
-cm90ZToNCj4gSGVsbG8gT2xpdmllciwNCj4gDQo+IEkgdGhpbmsgSSB1bmRlcnN0YW5kIHdoeSB0
-aGlzIGlzIG5vdCB3b3JraW5nLg0KPiANCj4gSSBoYXZlIGxvb2tlZCBhdCB0aGUgS3Zhc2VyIGRy
-aXZlcnMgb24gVVNCIGFuZCwgYmFzaWNhbGx5LCB0aGVyZSBhcmUgMiBiaWcgZmFtaWxpZXM6DQo+
-IOKAoglMZWFmDQo+IOKAoglVU0JJSQ0KPiANCj4gQXMgZmFyIGFzIEkgdW5kZXJzdGFuZCB0aGUg
-Y3VycmVudCBuZXRkcml2ZXIgaW1wbGVtZW50cyB0aGUgTGVhZiBmYW1pbHkgb25seS4NCg0KSW5k
-ZWVkLg0KDQo+IA0KPiBJIGNvdWxkIHNlZSB0aGF0IGFsbCBVU0Ig4oCccHJvZHVjdCBpZHPigJ0g
-YXJlIHdlbGwgaWRlbnRpY2FsIHRoYW4gdGhlIG9uZSBkZWZpbmVkIGluIEt2YXNlciBsZWFmIGRy
-aXZlci4gSG93ZXZlciB1c2JJSSBkZXZpY2VzIHdpdGggcHJvZHVjdCBpZHMgMiwzLDQsNSBhcmUg
-bm90IHByZXNlbnQuDQo+IEVmZmVjdGl2ZWxseSwgbGUgcHJvZHVjdCBpZCB0aWVkIHRvIG15IGt2
-YXNlciB1c2JjYW4gUnVnZ2VkIGRldmljZSBpcyAiMiIuDQoNCklmIHNvLCBJIHdvbmRlciBob3cg
-eW91IGdldCB0aGUga2VybmVsIHBhbmljIHlvdSBtZW50aW9ubmVkIGluIGEgcHJldmlvdXMgbWFp
-bD8gSSB3b3VsZCBiZSBpbnRlcnJlc3RlZCBpbiBzZWVpbmcgd2hlcmUgaXQgY3Jhc2hlcy4NCg0K
-PiANCj4gSSBoYXZlIHRyaWVkIHRvIGxvb2sgYXQgdGhlIGRpZmZlcmVuY2VzIChmcm9tIGt2YXNl
-ciBkcml2ZXIgc291cmNlcykgYW5kIHRoZXJlIGEgbG90IG9mIGRpc2NyZXBlbmNpZXMgYmV0d2Vl
-biB0aGUgbGVhZiB1c2IgY29tbWFuZHMgYW5kIHRoZSB1c2JjYW4yIChoZWxpb3M/KSAgdXNiIGNv
-bW1hbmRzLiBTbywgc3VwcG9ydGluZyB0aGlzIGRldmljZSBzaG91bGQgbm90IGJlIGFuIGVhc3kg
-dGFzay4uLi4NCg0KSW5kZWVkIHRoZSBjb21tYW5kcyBzZW50IHRvIGhhcmR3YXJlIGxvb2tzIHRv
-IGJlIGRpZmZlcmVudC4NCkknbGwgaGF2ZSBhIGxvb2sgb25jZSBJIGZvdW5kIHNvbWUgdGltZS4u
-Lg0KDQpLciwNCg0KT2xpdmllcg0KDQo+IA0KPiANCj4gQ2hlZXJzLA0KPiANCj4gUGllcnJlDQo+
-IA0KPiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCj4gRGXCoDogT2xpdmVyIEhhcnRrb3Bw
-IFttYWlsdG86c29ja2V0Y2FuQGhhcnRrb3BwLm5ldF0gRW52b3nDqcKgOiBtZXJjcmVkaSANCj4g
-OCBqYW52aWVyIDIwMTQgMjI6Mjkgw4DCoDogR0FSTkVSTywgUElFUlJFIChQLikgQ2PCoDogDQo+
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE9saXZpZXIgU29icmllOyBEYW5pZWwgQmVyZ2x1
-bmQgT2JqZXTCoDogUmU6IA0KPiBLdmF6ZXIgVVNCIENBTiBkcml2ZXINCj4gDQo+IEhlbGxvIFBp
-ZXJyZSwNCj4gDQo+IHdoYXQgZXhhY3Qga2VybmVsIHZlcnNpb24gYXJlIHlvdSB1c2luZyB0aGVy
-ZT8NCj4gDQo+IERvIHlvdSB1c2UgdGhlIE1haW5saW5lIGRyaXZlciB0aGF0IGNvbWVzIHdpdGgg
-TGludXggb3IgZGlkIHlvdSB1c2UgdGhlIEt2YXNlciBkcml2ZXIgZnJvbSBodHRwOi8vd3d3Lmt2
-YXNlci5jb20vZW4vZG93bmxvYWRzLmh0bWwgPz8NCj4gDQo+IENhbiB5b3UgcHJvdmlkZSBhIGNy
-YXNoIGR1bXA/DQo+IA0KPiBJIGFsc28gYWRkZWQgdGhlIEt2YXNlciBhdXRob3JzIGluIENDDQo+
-IA0KPiBSZWdhcmRzLA0KPiBPbGl2ZXINCj4gDQo+IE9uIDA3LjAxLjIwMTQgMTc6NDYsIEdBUk5F
-Uk8sIFBJRVJSRSAoUC4pIHdyb3RlOg0KPiA+IEhlbGxvLA0KPiA+IA0KPiA+IFRoYW5rcyBmb3Ig
-YWxsIHRoaXMgaW5mb3JtYXRpb24uIEFuZCwgYmFzaWNhbGx5IHRoZSBpc3N1ZSBpcyB0aGUgZmFj
-dCB0aGF0IG5vIGNhbiBuZXR3b3JrIGludGVyZmFjZSBzaG93cyB1cC4NCj4gPiANCj4gPiBJZiBJ
-IGJvb3Qgd2l0aCB0aGUgS3Zhc2VyIGRldmljZSBwbHVnZ2VkLCBJIGNvdWxkIHdlbGwgc2VlIGl0
-IHVzaW5nOg0KPiA+ICBMc3VzYg0KPiA+IA0KPiA+IC4uLmJ1dA0KPiA+ICBzdWRvIGlwIGxpbmsg
-bGlzdA0KPiA+IC4uLmRvZXMgbm90IHJldmVhbCBhbnkgY2FuIGludGVyZmFjZSB3aGlsZSBJIGhh
-dmUgbG9hZGVkIHRoZXNlIG1vZHVsZXM6IGNhbiwgY2FuLXJhdywgY2FuLWRldiwga3Zhc2VyLXVz
-Yi4NCj4gPiAuLi53aGlsZSBkbWVzZyBkaXNwbGF5cyAidXNiY29yZTogcmVnaXN0ZXJlZCBuZXcg
-aW50ZXJmYWNlIGRyaXZlciBrdmFzZXJfdXNiIi4uLg0KPiA+IA0KPiA+IEluIGFkZGl0aW9uLCBp
-ZiBJIGhvdHBsdWcgS3Zhc2VyIGRldmljZSwgSSBnZXQgYSBrZXJuZWwgcGFuaWMuDQo+ID4gDQo+
-ID4gU28sIEkgaGF2ZSBwcm9iYWJseSBtYWRlIGEgbWlzdGFrZSB3aGVuIEkgaGF2ZSBidWlsdCB0
-aGUga2VybmVsLg0KPiA+IA0KPiA+IENoZWVycywNCj4gPiANCj4gPiBQaWVycmUNCj4gPiANCj4g
-PiAgDQo+ID4gLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQo+ID4gRGUgOiBzb2NrZXRjYW4t
-dXNlcnMtYm91bmNlc0BsaXN0cy5iZXJsaW9zLmRlIFttYWlsdG86c29ja2V0Y2FuLXVzZXJzLWJv
-dW5jZXNAbGlzdHMuYmVybGlvcy5kZV0gRGUgbGEgcGFydCBkZSBNYXggUy4NCj4gPiBFbnZvecOp
-IDogbWFyZGkgNyBqYW52aWVyIDIwMTQgMTY6MTcNCj4gPiDDgCA6IHNvY2tldGNhbi11c2Vyc0Bs
-aXN0cy5iZXJsaW9zLmRlIE9iamV0IDogUmU6IFtTb2NrZXRjYW4tdXNlcnNdIA0KPiA+IEJlZ2lu
-bmVyIHF1ZXN0aW9uIC0gS3ZhemVyIFVTQiBDQU4gZHJpdmVyDQo+ID4gDQo+ID4gSGVsbG8sDQo+
-ID4gDQo+ID4gSSdtIG5vdCBzdXJlIGFib3V0IHRoZSBrdmFzZXIgaW4gcGFydGljdWxhciwgYnV0
-IHRoZSBkcml2ZXIgc2hvdWxkIGNyZWF0ZSB0aGUgbmV0d29yayBpbnRlcmZhY2VzIHdoZW4gdGhl
-IFVTQiBkZXZpY2UgaXMgYXR0YWNoZWQuDQo+ID4gDQo+ID4gc28gbm8gbmVlZCB0byBhZGQgYSBu
-ZXcgc29ja2V0Y2FuIGRldmljZS4NCj4gPiANCj4gPiBDaGVjayB0byBtYWtlIHN1cmUgeW91IGhh
-dmUga3Zhc2VyIGNvbm5lY3RlZDoNCj4gPiAJbHN1c2INCj4gPiANCj4gPiBDaGVjayB0byBtYWtl
-IHN1cmUga3Zhc2VyIGRyaXZlciBoYXMgbWFkZSBuZXR3b3JrIGludGVyZmFjZXM6DQo+ID4gCXN1
-ZG8gaXAgbGluayBsaXN0DQo+ID4gDQo+ID4gVGhlbiBicmluZyB0aGUgaW50ZXJmYWNlIHVwOg0K
-PiA+IAlzdWRvIGlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAyNTAwMDANCj4g
-PiANCj4gPiBMaXN0ZW4gdG8gc29tZSBmcmFtZXM6DQo+ID4gCWNhbmR1bXAgY2FuMA0KPiA+IA0K
-PiA+IERlcGVuZGluZyBvbiBob3cgeW91IGhhdmUgcGVybWlzc2lvbnMgc2V0IHVwIHlvdSB3aWxs
-IHJlcXVpcmUgc3VkbyB0byB1c2UgbW9zdCBvZiB0aGUgaXAgY29tbWFuZHMuDQo+ID4gDQo+ID4g
-UmVnYXJkcywNCj4gPiBNYXggU2NobmVpZGVyDQo+ID4gDQo+ID4gT24gVHVlLCAyMDE0LTAxLTA3
-IGF0IDE0OjE3ICswMDAwLCBHQVJORVJPLCBQSUVSUkUgKFAuKSB3cm90ZToNCj4gPj4gSGVsbG8u
-DQo+ID4+DQo+ID4+ICANCj4gPj4NCj4gPj4gSSB3b3VsZCBsaWtlIHRvIHVzZSBhIEtWQVpFUiBV
-U0JjYW4gUnVnZ2VkIGRldmljZSB3aXRoIHRoZSANCj4gPj4gc29ja2V0Y2FuIGxpYnJhcnkuDQo+
-ID4+DQo+ID4+IEkgdXNlIFJhc3BiaWFuIE9TIGFuZCBJIGhhdmUgYnVpbHQgYSBrZXJuZWwgd2l0
-aCBhbnl0aGluZyBlbmFibGVkIA0KPiA+PiByZWdhcmRpbmcgQ0FOLg0KPiA+Pg0KPiA+PiAgDQo+
-ID4+DQo+ID4+IEkgaGF2ZSBsb2FkZWQgdGhlIGZvbGxvd2luZyBtb2R1bGVzOg0KPiA+Pg0KPiA+
-PiAjIG1vZHByb2JlIGNhbg0KPiA+Pg0KPiA+PiAjIG1vZHByb2JlIHZjYW4NCj4gPj4NCj4gPj4g
-IyBtb2Rwcm9iZSBjYW4tcmF3DQo+ID4+DQo+ID4+ICMgbW9kcHJvYmUgY2FuLWRldg0KPiA+Pg0K
-PiA+PiAjIG1vZHByb2JlIGt2YXplci11c2INCj4gPj4NCj4gPj4gIA0KPiA+Pg0KPiA+PiBCdXQg
-YW55IGlwIGxpbmsgY29tbWFuZCAoZXg6IGlwIGxpbmsgYWRkIGRldiBjYW4wIHR5cGUgY2FuKSBm
-YWlsZWQgDQo+ID4+IHdpdGgg4oCcUlRORVRMSU5LIGFuc3dlciA6IG9wZXJhdGlvbiBub3QgcGVy
-bWl0dGVk4oCdIChleGNlcHRlZCBmb3IgDQo+ID4+IHZjYW4gd2hpY2ggd29ya3Mgd2VsbCkuDQo+
-ID4+DQo+ID4+ICANCj4gPj4NCj4gPj4gQ291bGQgc29tZW9uZSBwcm92aWRlIG1lIHNvbWUgaGlu
-dHMgcmVnYXJkaW5nIHRoZSBzdGVwcyB0byBoYXZlIGEgDQo+ID4+IEt2YXNlciBVU0JjYW4gZGV2
-aWNlIHVwIGFuZCBydW5uaW5nIHVzaW5nIHRoZSBuZXQgZHJpdmVyID8NCj4gPj4NCj4gPj4gIA0K
-PiA+Pg0KPiA+PiBNYW55IHRoYW5rcyBpbiBhZHZhbmNlLA0KPiA+Pg0KPiA+PiAgDQo+ID4+DQo+
-ID4+IFBpZXJyZQ0KPiA+Pg0KPiA+PiAgDQo+ID4+DQo+ID4+ICANCj4gPj4NCj4gPj4gIA0KPiA+
-Pg0KPiA+PiAgDQo+ID4+DQo+ID4+ICANCj4gPj4NCj4gPj4NCj4gPj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPj4gU29ja2V0Y2FuLXVzZXJzIG1h
-aWxpbmcgbGlzdA0KPiA+PiBTb2NrZXRjYW4tdXNlcnNAbGlzdHMuYmVybGlvcy5kZQ0KPiA+PiBo
-dHRwczovL2xpc3RzLmJlcmxpb3MuZGUvbWFpbG1hbi9saXN0aW5mby9zb2NrZXRjYW4tdXNlcnMN
-Cj4gPiANCj4gPiANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXw0KPiA+IFNvY2tldGNhbi11c2VycyBtYWlsaW5nIGxpc3QNCj4gPiBTb2NrZXRjYW4t
-dXNlcnNAbGlzdHMuYmVybGlvcy5kZQ0KPiA+IGh0dHBzOi8vbGlzdHMuYmVybGlvcy5kZS9tYWls
-bWFuL2xpc3RpbmZvL3NvY2tldGNhbi11c2Vycw0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gU29ja2V0Y2FuLXVzZXJzIG1haWxpbmcgbGlz
-dA0KPiA+IFNvY2tldGNhbi11c2Vyc0BsaXN0cy5iZXJsaW9zLmRlDQo+ID4gaHR0cHM6Ly9saXN0
-cy5iZXJsaW9zLmRlL21haWxtYW4vbGlzdGluZm8vc29ja2V0Y2FuLXVzZXJzDQo+ID4gDQoNCi0t
-DQpPbGl2aWVyDQo=
+=46rom: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+These seem to have never been used. They entered can-utils in commit
+77de10356fe0 (include: import kernel header files into tree) and alread=
+y
+back then only consisted in an #include of a non-existing file.
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ GNUmakefile.am           | 2 --
+ include/linux/can/core.h | 1 -
+ include/linux/can/dev.h  | 1 -
+ 3 files changed, 4 deletions(-)
+ delete mode 100644 include/linux/can/core.h
+ delete mode 100644 include/linux/can/dev.h
+
+diff --git a/GNUmakefile.am b/GNUmakefile.am
+index fc8f6e7..34a7740 100644
+--- a/GNUmakefile.am
++++ b/GNUmakefile.am
+@@ -11,8 +11,6 @@ noinst_HEADERS =3D \
+ 	lib.h \
+ 	terminal.h \
+ 	include/linux/can/bcm.h \
+-	include/linux/can/core.h \
+-	include/linux/can/dev.h \
+ 	include/linux/can/error.h \
+ 	include/linux/can/gw.h \
+ 	include/linux/can.h \
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+deleted file mode 100644
+index 620c88d..0000000
+--- a/include/linux/can/core.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/core.h>
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+deleted file mode 100644
+index 9187985..0000000
+--- a/include/linux/can/dev.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <socketcan/can/dev.h>
+--=20
+1.8.5.2
+
