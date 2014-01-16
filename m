@@ -1,155 +1,86 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v5 2/5] ioctl.h: drop unused header
-Date: Thu, 16 Jan 2014 17:12:31 +0100
-Message-ID: <1389888754-23013-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v5 4/5] include/socketcan: prepare headers to be moved to include/linux
+Date: Thu, 16 Jan 2014 17:12:33 +0100
+Message-ID: <1389888754-23013-5-git-send-email-mkl@pengutronix.de>
 References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55317 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55321 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752717AbaAPQMh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:12:37 -0500
+	with ESMTP id S1752718AbaAPQMi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:12:38 -0500
 In-Reply-To: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-=46rom: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+This patch changes the include from the socketcan folder to the linux folder:
 
-This header doesn't exist in the Linux tree and it's unused by can-util=
-s,
-so drop it.
+-#include <socketcan/can.h>
++#include <linux/can.h>
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+so that the socketcan folder can be eliminated in a later patch.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- GNUmakefile.am                |  1 -
- include/socketcan/can/ioctl.h | 99 -----------------------------------=
---------
- 2 files changed, 100 deletions(-)
- delete mode 100644 include/socketcan/can/ioctl.h
+ include/socketcan/can/bcm.h   | 2 +-
+ include/socketcan/can/gw.h    | 2 +-
+ include/socketcan/can/isotp.h | 2 +-
+ include/socketcan/can/raw.h   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/GNUmakefile.am b/GNUmakefile.am
-index 34a7740..9b30d9c 100644
---- a/GNUmakefile.am
-+++ b/GNUmakefile.am
-@@ -21,7 +21,6 @@ noinst_HEADERS =3D \
- 	include/socketcan/can/error.h \
- 	include/socketcan/can/gw.h \
- 	include/socketcan/can.h \
--	include/socketcan/can/ioctl.h \
- 	include/socketcan/can/isotp.h \
- 	include/socketcan/can/netlink.h \
- 	include/socketcan/can/raw.h
-diff --git a/include/socketcan/can/ioctl.h b/include/socketcan/can/ioct=
-l.h
-deleted file mode 100644
-index ab34e89..0000000
---- a/include/socketcan/can/ioctl.h
-+++ /dev/null
-@@ -1,99 +0,0 @@
--
--/*
-- * socketcan/can/ioctl.h
-- *
-- * Definitions for CAN controller setup (work in progress)
-- *
-- * $Id$
-- *
-- * Send feedback to <linux-can@vger.kernel.org>
-- *
-- */
--
--#ifndef CAN_IOCTL_H
--#define CAN_IOCTL_H
--
--#include <linux/sockios.h>
--
--/*
-- * CAN bitrate
-- */
--#define CAN_BITRATE_UNCONFIGURED	((__u32) 0xFFFFFFFFU)
--#define CAN_BITRATE_UNKNOWN		0
--#define CAN_BITRATE_DEFAULT		500000
--
--/*
-- * CAN custom bit time
-- */
--enum can_bittimes {
--	CAN_BITTIME_STD,
--	CAN_BITTIME_BTR
--};
--
--/* TSEG1 of controllers usually is a sum of synch_seg (always 1),
-- * prop_seg and phase_seg1, TSEG2 =3D phase_seg2 */
--
--struct can_bittime_std {
--	__u32 brp;        /* baud rate prescaler */
--	__u8  prop_seg;   /* from 1 to 8 */
--	__u8  phase_seg1; /* from 1 to 8 */
--	__u8  phase_seg2; /* from 1 to 8 */
--	__u8  sjw:7;      /* from 1 to 4 */
--	__u8  sam:1;      /* 1 - enable triple sampling */
--};
--
--struct can_bittime_btr {
--	__u8  btr0;
--	__u8  btr1;
--};
--
--struct can_bittime {
--	enum can_bittimes type;
--	union {
--		struct can_bittime_std std;
--		struct can_bittime_btr btr;
--	};
--};
--
--/*
-- * CAN mode
-- */
--enum can_mode {
--	CAN_MODE_STOP =3D 0,
--	CAN_MODE_START,
--	CAN_MODE_SLEEP
--};
--
--/*
-- * CAN controller mode
-- */
--#define CAN_CTRLMODE_LOOPBACK   0x1
--#define CAN_CTRLMODE_LISTENONLY 0x2
--
--/*
-- * CAN operational and error states
-- */
--enum can_state {
--	CAN_STATE_ACTIVE =3D 0,
--	CAN_STATE_BUS_WARNING,
--	CAN_STATE_BUS_PASSIVE,
--	CAN_STATE_BUS_OFF,
--	CAN_STATE_STOPPED,
--	CAN_STATE_SLEEPING
--};
--
--/*
-- * CAN device statistics
-- */
--struct can_device_stats {
--	int error_warning;
--	int data_overrun;
--	int wakeup;
--	int bus_error;
--	int error_passive;
--	int arbitration_lost;
--	int restarts;
--	int bus_error_at_init;
--};
--
--#endif /* CAN_IOCTL_H */
---=20
+diff --git a/include/socketcan/can/bcm.h b/include/socketcan/can/bcm.h
+index 10185e8..f10af82 100644
+--- a/include/socketcan/can/bcm.h
++++ b/include/socketcan/can/bcm.h
+@@ -13,7 +13,7 @@
+ #define CAN_BCM_H
+ 
+ #include <linux/types.h>
+-#include <socketcan/can.h>
++#include <linux/can.h>
+ 
+ /**
+  * struct bcm_msg_head - head of messages to/from the broadcast manager
+diff --git a/include/socketcan/can/gw.h b/include/socketcan/can/gw.h
+index 56d3246..f709809 100644
+--- a/include/socketcan/can/gw.h
++++ b/include/socketcan/can/gw.h
+@@ -13,7 +13,7 @@
+ #define CAN_GW_H
+ 
+ #include <linux/types.h>
+-#include <socketcan/can.h>
++#include <linux/can.h>
+ 
+ struct rtcanmsg {
+ 	__u8  can_family;
+diff --git a/include/socketcan/can/isotp.h b/include/socketcan/can/isotp.h
+index 541369a..18d13d1 100644
+--- a/include/socketcan/can/isotp.h
++++ b/include/socketcan/can/isotp.h
+@@ -46,7 +46,7 @@
+ #ifndef CAN_ISOTP_H
+ #define CAN_ISOTP_H
+ 
+-#include <socketcan/can.h>
++#include <linux/can.h>
+ 
+ #define SOL_CAN_ISOTP (SOL_CAN_BASE + CAN_ISOTP)
+ 
+diff --git a/include/socketcan/can/raw.h b/include/socketcan/can/raw.h
+index ee683c5..c80bff0 100644
+--- a/include/socketcan/can/raw.h
++++ b/include/socketcan/can/raw.h
+@@ -13,7 +13,7 @@
+ #ifndef CAN_RAW_H
+ #define CAN_RAW_H
+ 
+-#include <socketcan/can.h>
++#include <linux/can.h>
+ 
+ #define SOL_CAN_RAW (SOL_CAN_BASE + CAN_RAW)
+ 
+-- 
 1.8.5.2
 
