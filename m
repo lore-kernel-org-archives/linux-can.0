@@ -1,41 +1,36 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] slcand: reimplement daemonize routine
-Date: Thu, 16 Jan 2014 17:19:26 +0100
-Message-ID: <52D8068E.90002@pengutronix.de>
-References: <1389603245-24023-1-git-send-email-yegorslists@googlemail.com> <1389603245-24023-2-git-send-email-yegorslists@googlemail.com>
+Subject: Re: [PATCH] can: add explicit copyrights to can userspace header
+Date: Thu, 16 Jan 2014 17:27:50 +0100
+Message-ID: <52D80886.1070808@pengutronix.de>
+References: <52D269D1.9030009@hartkopp.net> <1389553340-5758-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="PWJrXmVUktQcOWs9wf2G7FVgdi5Gx4bip"
+ boundary="4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58483 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60674 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752837AbaAPQT2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:19:28 -0500
-In-Reply-To: <1389603245-24023-2-git-send-email-yegorslists@googlemail.com>
+	with ESMTP id S1752528AbaAPQ14 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:27:56 -0500
+In-Reply-To: <1389553340-5758-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com, linux-can@vger.kernel.org
-Cc: socketcan@hartkopp.net, u.kleine-koenig@pengutronix.de
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Urs Thuermann <urs.thuermann@volkswagen.de>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PWJrXmVUktQcOWs9wf2G7FVgdi5Gx4bip
+--4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/13/2014 09:54 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
+On 01/12/2014 08:02 PM, Uwe Kleine-K=C3=B6nig wrote:
+> This is in the spirit of commit 2485602f1af2 (can: add explicit
+> copyrights to can headers). It seems I have missed can.h back then.
 >=20
-> Replace daemonize() routine with daemone() system call, because of
-> conflicting licenses. daemonize() routine was derived from under
-> GNU Free Documentation License licensed code. This license is
-> incompatible with GPL-2+.
->=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-Applied to master.
+Tnx, applied to can-next.
 
-Tnx,
 Marc
 
 --=20
@@ -45,7 +40,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---PWJrXmVUktQcOWs9wf2G7FVgdi5Gx4bip
+--4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -54,9 +49,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLYBo4ACgkQjTAFq1RaXHPizQCeJMg2rjqCW5M+P3oULggtspfy
-DxIAn1uuKLbZ8iD5flZEy4z/9Nv8CyJV
-=6bDR
+iEYEARECAAYFAlLYCIYACgkQjTAFq1RaXHNHKQCeOZohyV2NPJ4sI0d2wp0ELqUr
+ufIAnj8IutTKySCPeENcCnXFGhLfR8+E
+=bB4W
 -----END PGP SIGNATURE-----
 
---PWJrXmVUktQcOWs9wf2G7FVgdi5Gx4bip--
+--4uo4V4RPmERX1hVNaeP4OWiownW1Hkn3G--
