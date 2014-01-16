@@ -1,88 +1,78 @@
-From: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Subject: Re: AW: Need support J1939 protocol support to my kernel (v3.8 on
- BeagleBone Black)
-Date: Thu, 16 Jan 2014 22:43:52 +0100
-Message-ID: <20140116214352.GA26545@vandijck-laurijssen.be>
-References: <loom.20140115T171400-435@post.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH can-utils v4 4/4] isotp.h: add explicit license information
+Date: Thu, 16 Jan 2014 23:05:25 +0100
+Message-ID: <52D857A5.2090206@pengutronix.de>
+References: <52D45B4C.3070009@hartkopp.net> <1389650236-13542-1-git-send-email-u.kleine-koenig@pengutronix.de> <1389650236-13542-5-git-send-email-u.kleine-koenig@pengutronix.de> <52D4E0CD.2040706@hartkopp.net> <20140114084616.GR29475@pengutronix.de> <20140116191835.GB25911@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="cqgd0oGS8aAwHOJntC8NW2MQwJ2NGGk77"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:3575 "EHLO
-	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750750AbaAPVn6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 16:43:58 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20140115T171400-435@post.gmane.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58871 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751181AbaAPWFa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 17:05:30 -0500
+In-Reply-To: <20140116191835.GB25911@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: swapnil <patilswa@gmail.com>
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can@vger.kernel.org
 
-Hi Swapnil,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cqgd0oGS8aAwHOJntC8NW2MQwJ2NGGk77
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
->        Using the test code given by you I have developed an app but I am 
-> facing some issues i don't know its j1939 limitation or the stack.
-> 
-> 1.I want to transmit and single frame message RACM message 
+On 01/16/2014 08:18 PM, Uwe Kleine-K=C3=B6nig wrote:
+>> On Tue, Jan 14, 2014 at 08:01:33AM +0100, Oliver Hartkopp wrote:
+>>> On 13.01.2014 22:57, Uwe Kleine-K=C3=B6nig wrote:
+>>>> It seems this file was originally part of the Linux kernel as it was=
+ created
+>>>> by commit 77de10356fe0 (include: import kernel header files into tre=
+e) but I
+>>>> couldn't find it in the git history of the kernel.
+>>>
+>>> This comes from the original development process in the BerliOS SVN.
+>>> The fact that these files are kernel header files does not necessaril=
+y mean
+>>> they have been imported from the kernel source tree :-)
+>> Strange concept. Either you need some additional Userspace API in the
+>> kernel for your isotp programs or you don't. In the first case there
+>> must be a header in the kernel providing that API (if not in mainline
+>> that at least in some can tree). In the latter case where everything
+>> works with the kernel as is, you shouldn't declare something to be a
+>> kernel header that doesn't need to.
 
-RACM?
-I don't know the RACM acronym. Can you explain a bit?
+> Looking a bit into the isotp*.c files it seems the isotp header falls
+> into the first category, i.e. you need kernel support to use these. Is
+> that correct? Is there an up-to-date kernel tree somewhere that holds
+> the necessary patches? If yes, I suggest to document that tree somewher=
+e
+> in can-utils to be the source for the kernel headers.
 
->    canId--18EAFEFF data 00EE00FFFFFFFFFFFF it asks to bind address with 0xFE
+Isotp is an external Kernel module.
 
-I guess you want 18eafffe#00ee (PGN 0ea00 is per J1939 only 3 bytes long).
+Marc
 
-Because FF is not allowed as source, and 0xfe is fuzzy to use as destination.
-Likewise, 0xfe as source is common thing to do for requesting others address
-claims, and FF as destination is, well, a broadcast.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-> 
->    note -can i transmit single frame message like raw can from any source 
-> address       
-> to  any dest address.
 
-That is true, but not every combination is a 'legal' withing J1939 context.
+--cqgd0oGS8aAwHOJntC8NW2MQwJ2NGGk77
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
->     I think address claim is needed for only TP message
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-Address claim is needed for dynamic addressing (j1939-81).
-This can be combined, but it really unrelated to TP (transport protocol).
-Your story is valid without address claims also, using static addressing.
+iEYEARECAAYFAlLYV6UACgkQjTAFq1RaXHNBRgCeIPYluSL8kL244OtARm+d8z2D
+dmwAni3jrQrVCdEVULH/SjjgKkAN0KBv
+=MvXR
+-----END PGP SIGNATURE-----
 
-> 
-> 2. In case of multiple address claims like 0x80 and 0x90 if i want to  
-> transmit the data from both address parallel y do i need to create different 
-> socket for each address?
-
-s/multiple address claims/multiple addresses/
-
-If you want to transmit both 18000080#xxxx & 18000090#xxxx, you need a different
-socket for each address.
-
-Note that a single source address indicates a logical node.
-It's quite uncommon to combine different logical nodes into 1 program,
-but if you'd want to, different sockets is the way to go ...
-
-> 
-> 3.It don't reply for RACM message if i send from different  adapter
->   example: 18EAFEFF#00EE00FFFFFFFFFFFF j1939 stack should reply with claimed 
-> address Like 80 and 90 
-
-I see what you mean.
-
-18eafffe#00ee00 from a remote should be replied with the address claims.
-You should really consider using jacd then.
-That will deal with j1939-81 (1 instance for each SA).
-
-Do you need dynamic addresses? Static addresses make things a lot simpler.
-And static addresses allow Transport Protocol :-).
-
->  
->         I was busy in creating the app  to test the linux j1939 stack on 
-> begalbone Black. thank you very much for the test programs those helped me 
-> a lot 
-
-That's cool! It feels fine that it helps others.
-
--- 
-Kurt Van Dijck
+--cqgd0oGS8aAwHOJntC8NW2MQwJ2NGGk77--
