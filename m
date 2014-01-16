@@ -1,74 +1,88 @@
-From: Michal Sojka <sojkam1@fel.cvut.cz>
-Subject: [PATCH RFC 1/2] can: Limit default size of CAN_RAW socket send queue
-Date: Thu, 16 Jan 2014 20:58:20 +0100
-Message-ID: <1389902301-24505-1-git-send-email-sojkam1@fel.cvut.cz>
+From: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Subject: Re: AW: Need support J1939 protocol support to my kernel (v3.8 on
+ BeagleBone Black)
+Date: Thu, 16 Jan 2014 22:43:52 +0100
+Message-ID: <20140116214352.GA26545@vandijck-laurijssen.be>
+References: <loom.20140115T171400-435@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from max.feld.cvut.cz ([147.32.192.36]:53383 "EHLO max.feld.cvut.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750994AbaAPUGz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 16 Jan 2014 15:06:55 -0500
+Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:3575 "EHLO
+	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750750AbaAPVn6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 16:43:58 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20140115T171400-435@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: yegorslists@googlemail.com, Michal Sojka <sojkam1@fel.cvut.cz>
+To: swapnil <patilswa@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-This fixes the infamous ENOBUFS problem, which appears when an
-application sends CAN frames faster than they leave the system.
+Hi Swapnil,
 
-Packets for sending can be queued at three places: socket, queueing
-discipline and device driver. Only the socket queue is able to block
-the sender; other queues are non-blocking. Since the size of the qdisc
-queue was set by default to 10 packets, this queue was full much
-earlier than the socket queue and this resulted in ENOBUFS error.
+>        Using the test code given by you I have developed an app but I am 
+> facing some issues i don't know its j1939 limitation or the stack.
+> 
+> 1.I want to transmit and single frame message RACM message 
 
-This patch limits the default size of the socket send queue to
-approximately 3 CAN frames and increases the size of the qdisc queue
-to 100 frames. This setting allows for at least 33 CAN_RAW sockets to
-be used simultaneously in the system without getting ENOBUFS errors.
+RACM?
+I don't know the RACM acronym. Can you explain a bit?
 
-Note that the size of the socket queue is only approximate, because it
-is counted in bytes and the realy allocated memory (skb->truesize) can
-be bigger than what is reported by SKB_TRUESIZE(). For example, on my
-32 bit PowerPC system, SKB_TRUESIZE() = 408, but skb->truesize = 448.
+>    canId--18EAFEFF data 00EE00FFFFFFFFFFFF it asks to bind address with 0xFE
 
-Open issues:
-- Will this work with CANFD?
-- What about other AF_CAN protocols?
+I guess you want 18eafffe#00ee (PGN 0ea00 is per J1939 only 3 bytes long).
 
-Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
----
- drivers/net/can/dev.c | 2 +-
- net/can/raw.c         | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Because FF is not allowed as source, and 0xfe is fuzzy to use as destination.
+Likewise, 0xfe as source is common thing to do for requesting others address
+claims, and FF as destination is, well, a broadcast.
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 1870c47..a0bce83 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -492,7 +492,7 @@ static void can_setup(struct net_device *dev)
- 	dev->mtu = CAN_MTU;
- 	dev->hard_header_len = 0;
- 	dev->addr_len = 0;
--	dev->tx_queue_len = 10;
-+	dev->tx_queue_len = 100;
- 
- 	/* New-style flags. */
- 	dev->flags = IFF_NOARP;
-diff --git a/net/can/raw.c b/net/can/raw.c
-index fdda5f6..4ad0bb2 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -291,6 +291,10 @@ static int raw_init(struct sock *sk)
- {
- 	struct raw_sock *ro = raw_sk(sk);
- 
-+	/* allow at most 3 frames to wait for transmission in socket queue */
-+	sk->sk_sndbuf = 3 * SKB_TRUESIZE(sizeof(struct can_frame) +
-+					 sizeof(struct can_skb_priv));
-+
- 	ro->bound            = 0;
- 	ro->ifindex          = 0;
- 
+> 
+>    note -can i transmit single frame message like raw can from any source 
+> address       
+> to  any dest address.
+
+That is true, but not every combination is a 'legal' withing J1939 context.
+
+>     I think address claim is needed for only TP message
+
+Address claim is needed for dynamic addressing (j1939-81).
+This can be combined, but it really unrelated to TP (transport protocol).
+Your story is valid without address claims also, using static addressing.
+
+> 
+> 2. In case of multiple address claims like 0x80 and 0x90 if i want to  
+> transmit the data from both address parallel y do i need to create different 
+> socket for each address?
+
+s/multiple address claims/multiple addresses/
+
+If you want to transmit both 18000080#xxxx & 18000090#xxxx, you need a different
+socket for each address.
+
+Note that a single source address indicates a logical node.
+It's quite uncommon to combine different logical nodes into 1 program,
+but if you'd want to, different sockets is the way to go ...
+
+> 
+> 3.It don't reply for RACM message if i send from different  adapter
+>   example: 18EAFEFF#00EE00FFFFFFFFFFFF j1939 stack should reply with claimed 
+> address Like 80 and 90 
+
+I see what you mean.
+
+18eafffe#00ee00 from a remote should be replied with the address claims.
+You should really consider using jacd then.
+That will deal with j1939-81 (1 instance for each SA).
+
+Do you need dynamic addresses? Static addresses make things a lot simpler.
+And static addresses allow Transport Protocol :-).
+
+>  
+>         I was busy in creating the app  to test the linux j1939 stack on 
+> begalbone Black. thank you very much for the test programs those helped me 
+> a lot 
+
+That's cool! It feels fine that it helps others.
+
 -- 
-1.8.5.2
-
+Kurt Van Dijck
