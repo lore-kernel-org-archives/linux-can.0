@@ -1,56 +1,61 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: add ability to allocate CANFD frame in skb data
-Date: Thu, 16 Jan 2014 17:35:37 +0100
-Message-ID: <52D80A59.3020302@pengutronix.de>
-References: <1389775813-14838-1-git-send-email-s.grosjean@peak-system.com>
+Subject: Re: [PATCH v2] net: can: Disable flexcan driver build for big endian
+ CPU on ARM
+Date: Thu, 16 Jan 2014 17:49:13 +0100
+Message-ID: <52D80D89.1040706@pengutronix.de>
+References: <3157541.PQSkPAVrH7@wuerfel>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="lvG8BTmFfrBucBX3JHpdFs7LCDEAmbl2D"
+ boundary="t2uQI9eqIGN3r3LOR0okSw4W3AEEu4WO4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59412 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41381 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752078AbaAPQfm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:35:42 -0500
-In-Reply-To: <1389775813-14838-1-git-send-email-s.grosjean@peak-system.com>
+	with ESMTP id S1752754AbaAPQtT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 11:49:19 -0500
+In-Reply-To: <3157541.PQSkPAVrH7@wuerfel>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lvG8BTmFfrBucBX3JHpdFs7LCDEAmbl2D
+--t2uQI9eqIGN3r3LOR0okSw4W3AEEu4WO4
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/15/2014 09:50 AM, Stephane Grosjean wrote:
-> This patch adds the ability of allocating a CANFD frame data structure =
-in the
-> skb data area.
+On 01/14/2014 11:44 AM, Arnd Bergmann wrote:
+>> On 01/06/2014 02:21 PM, Guenter Roeck wrote:
+>>> Building arm:allmodconfig fails with
+>>>
+>>> flexcan.c: In function 'flexcan_read':
+>>> flexcan.c:243:2: error: implicit declaration of function 'in_be32'
+>>> flexcan.c: In function 'flexcan_write':
+>>> flexcan.c:248:2: error: implicit declaration of function 'out_be32'
+>>>
+>>> in_be32 and out_be32 do not (or no longer) exist for ARM targets.
+>>> Disable the build for ARM on big endian CPUs.
+>>>
+>>> Signed-off-by: Guenter Roeck <linux@xxxxxxxxxxxx>
+>>
+>> Applied to can-next.
 >=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> Sorry, this patch was wrong.
 >=20
-> ---
->  drivers/net/can/dev.c   | 24 ++++++++++++++++++++++++
->  include/linux/can/dev.h |  2 ++
->  2 files changed, 26 insertions(+)
+> There is no reason to disallow building the driver on big-endian
+> ARM kernels. Furthermore, the current behavior is actually broken
+> on little-endian PowerPC as well.
+> The choice of register accessor functions must purely depend
+> on the CPU architecture, not which endianess the CPU is running
+> on. Note that we nowadays allow both big-endian ARM and little-endian
+> PowerPC kernels.
+> With this patch applied, we will do the right thing in all four
+> combinations.
 >=20
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 13a9098..cb584ea 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -521,6 +521,30 @@ struct sk_buff *alloc_can_skb(struct net_device *d=
-ev, struct can_frame **cf)
->  }
->  EXPORT_SYMBOL_GPL(alloc_can_skb);
-> =20
-> +struct sk_buff *alloc_canfd_skb(struct net_device *dev,
-> +				struct canfd_frame **cfd)
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Originally "cf" stands for _c_an _f_rame, but cfd for for CAN-FD frames
-ist nice, too :)
+Thanks Arnd, I've squashed in the revert of Guenter's patch.
 
-applied to can-next
 Marc
 
 --=20
@@ -60,7 +65,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---lvG8BTmFfrBucBX3JHpdFs7LCDEAmbl2D
+--t2uQI9eqIGN3r3LOR0okSw4W3AEEu4WO4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -69,9 +74,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLYClkACgkQjTAFq1RaXHOXcwCfR2/8xTH8PhWz+xpYeShR8cZX
-ypcAoIObuXusDjWh185tcxUTnINj0/dM
-=mVxg
+iEYEARECAAYFAlLYDYkACgkQjTAFq1RaXHOqygCcCUSmhFR6jI383yeXjJMMWqVu
++FAAn3Ihf3a9iiYYGaXdKZyp2IFuBsGp
+=v3uu
 -----END PGP SIGNATURE-----
 
---lvG8BTmFfrBucBX3JHpdFs7LCDEAmbl2D--
+--t2uQI9eqIGN3r3LOR0okSw4W3AEEu4WO4--
