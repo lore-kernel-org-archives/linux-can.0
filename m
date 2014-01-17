@@ -1,72 +1,74 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux kernel
- into include/linux
-Date: Thu, 16 Jan 2014 23:11:28 +0100
-Message-ID: <52D85910.8000200@pengutronix.de>
-References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de> <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
+Date: Fri, 17 Jan 2014 08:44:00 +0100
+Message-ID: <52D8DF40.7050405@peak-system.com>
+References: <52D6CB48.9010206@hartkopp.net>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="8d4Qk3iPT1fONaU35pKOc1OLcsJDb1pws"
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53764 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751038AbaAPWLe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 16 Jan 2014 17:11:34 -0500
-In-Reply-To: <20140116192818.GC25911@pengutronix.de>
+Received: from mail.peak-system.com ([213.157.13.214]:55104 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751892AbaAQHoW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 02:44:22 -0500
+In-Reply-To: <52D6CB48.9010206@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8d4Qk3iPT1fONaU35pKOc1OLcsJDb1pws
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 01/16/2014 08:28 PM, Uwe Kleine-K=C3=B6nig wrote:
-> On Thu, Jan 16, 2014 at 05:12:34PM +0100, Marc Kleine-Budde wrote:
->> From: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
->>
->> This makes it possible to update the copies more easily, e.g.:
->>
->> 	cd $path_to_linux_repo
->> 	make headers_install
->> 	rsync -a --delete --exclude .\* usr/include/linux/can* $path_to_can_u=
-tils/include/linux
->>
->> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Some questions:
 
-> I want to have pointed out in the commit log that it was you who added
-> isotp.h to the move. I don't care that much for your split into two
-> patches to fix the #includes first, but IMHO that should be documented,=
+Le 15/01/2014 18:54, Oliver Hartkopp a =C3=A9crit :
+> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/ca=
+n/netlink.h
+> index df944ed..bd0493a2 100644
+> --- a/include/uapi/linux/can/netlink.h
+> +++ b/include/uapi/linux/can/netlink.h
+> @@ -96,6 +96,7 @@ struct can_ctrlmode {
+>   #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
+>   #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
+>   #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+> +#define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
 
-> too.
+- What is exactly the goal of this new CAN_CTRLMODE_FD please? Did you=20
+define it to allow user to enable the CANFD function into the hardware,=
+=20
+for example? If yes, isn't it redundant with setting the MTU to 72 byte=
+s?
 
-Yes, but no. I imported the isotp header, but not from the kernel. It
-was imported from the berlios svn repo.
+- Moreover, how a CANFD -able driver has to handle a CANFD frame read=20
+from the CANFD controller, when its network device MTU *ISNOT* =3D=3D 7=
+2 ???=20
+Should it discard the CANFD frame?
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>  =20
+>   /*
+>    * CAN device statistics
+> @@ -122,6 +123,9 @@ enum {
+>   	IFLA_CAN_RESTART_MS,
+>   	IFLA_CAN_RESTART,
+>   	IFLA_CAN_BERR_COUNTER,
+> +	IFLA_CAN_DATA_BITTIMING,
+> +	IFLA_CAN_DATA_BITTIMING_CONST,
+> +	IFLA_CAN_DATA_CLOCK,
+>   	__IFLA_CAN_MAX
+>   };
 
+- by defining another clock for the data bitrate, do you suppose that=20
+some hardwares could use different clocks for both arbitration and data=
+=20
+bitrates?
 
---8d4Qk3iPT1fONaU35pKOc1OLcsJDb1pws
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Regards,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+St=C3=A9phane
 
-iEYEARECAAYFAlLYWREACgkQjTAFq1RaXHNEHACgjAKmjtBrUzNE6P8zcJYK/1Pk
-BAEAoJmLn8OkCkGlq1mDml1QcfFBQOJp
-=T5ip
------END PGP SIGNATURE-----
-
---8d4Qk3iPT1fONaU35pKOc1OLcsJDb1pws--
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
