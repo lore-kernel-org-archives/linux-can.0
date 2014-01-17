@@ -1,16 +1,16 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v6 1/5] include: Remove two unused header files
-Date: Fri, 17 Jan 2014 15:48:47 +0100
-Message-ID: <1389970131-9350-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v6 2/5] ioctl.h: drop unused header
+Date: Fri, 17 Jan 2014 15:48:48 +0100
+Message-ID: <1389970131-9350-3-git-send-email-mkl@pengutronix.de>
 References: <1389970131-9350-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43980 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43982 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752090AbaAQOsx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 09:48:53 -0500
+	with ESMTP id S1751701AbaAQOsy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 09:48:54 -0500
 In-Reply-To: <1389970131-9350-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -19,48 +19,137 @@ Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Marc K
 
 =46rom: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-These seem to have never been used. They entered can-utils in commit
-77de10356fe0 (include: import kernel header files into tree) and alread=
-y
-back then only consisted in an #include of a non-existing file.
+This header doesn't exist in the Linux tree and it's unused by can-util=
+s,
+so drop it.
 
 Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- GNUmakefile.am           | 2 --
- include/linux/can/core.h | 1 -
- include/linux/can/dev.h  | 1 -
- 3 files changed, 4 deletions(-)
- delete mode 100644 include/linux/can/core.h
- delete mode 100644 include/linux/can/dev.h
+ GNUmakefile.am                |  1 -
+ include/socketcan/can/ioctl.h | 99 -----------------------------------=
+--------
+ 2 files changed, 100 deletions(-)
+ delete mode 100644 include/socketcan/can/ioctl.h
 
 diff --git a/GNUmakefile.am b/GNUmakefile.am
-index fc8f6e7..34a7740 100644
+index 34a7740..9b30d9c 100644
 --- a/GNUmakefile.am
 +++ b/GNUmakefile.am
-@@ -11,8 +11,6 @@ noinst_HEADERS =3D \
- 	lib.h \
- 	terminal.h \
- 	include/linux/can/bcm.h \
--	include/linux/can/core.h \
--	include/linux/can/dev.h \
- 	include/linux/can/error.h \
- 	include/linux/can/gw.h \
- 	include/linux/can.h \
-diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+@@ -21,7 +21,6 @@ noinst_HEADERS =3D \
+ 	include/socketcan/can/error.h \
+ 	include/socketcan/can/gw.h \
+ 	include/socketcan/can.h \
+-	include/socketcan/can/ioctl.h \
+ 	include/socketcan/can/isotp.h \
+ 	include/socketcan/can/netlink.h \
+ 	include/socketcan/can/raw.h
+diff --git a/include/socketcan/can/ioctl.h b/include/socketcan/can/ioct=
+l.h
 deleted file mode 100644
-index 620c88d..0000000
---- a/include/linux/can/core.h
+index ab34e89..0000000
+--- a/include/socketcan/can/ioctl.h
 +++ /dev/null
-@@ -1 +0,0 @@
--#include <socketcan/can/core.h>
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-deleted file mode 100644
-index 9187985..0000000
---- a/include/linux/can/dev.h
-+++ /dev/null
-@@ -1 +0,0 @@
--#include <socketcan/can/dev.h>
+@@ -1,99 +0,0 @@
+-
+-/*
+- * socketcan/can/ioctl.h
+- *
+- * Definitions for CAN controller setup (work in progress)
+- *
+- * $Id$
+- *
+- * Send feedback to <linux-can@vger.kernel.org>
+- *
+- */
+-
+-#ifndef CAN_IOCTL_H
+-#define CAN_IOCTL_H
+-
+-#include <linux/sockios.h>
+-
+-/*
+- * CAN bitrate
+- */
+-#define CAN_BITRATE_UNCONFIGURED	((__u32) 0xFFFFFFFFU)
+-#define CAN_BITRATE_UNKNOWN		0
+-#define CAN_BITRATE_DEFAULT		500000
+-
+-/*
+- * CAN custom bit time
+- */
+-enum can_bittimes {
+-	CAN_BITTIME_STD,
+-	CAN_BITTIME_BTR
+-};
+-
+-/* TSEG1 of controllers usually is a sum of synch_seg (always 1),
+- * prop_seg and phase_seg1, TSEG2 =3D phase_seg2 */
+-
+-struct can_bittime_std {
+-	__u32 brp;        /* baud rate prescaler */
+-	__u8  prop_seg;   /* from 1 to 8 */
+-	__u8  phase_seg1; /* from 1 to 8 */
+-	__u8  phase_seg2; /* from 1 to 8 */
+-	__u8  sjw:7;      /* from 1 to 4 */
+-	__u8  sam:1;      /* 1 - enable triple sampling */
+-};
+-
+-struct can_bittime_btr {
+-	__u8  btr0;
+-	__u8  btr1;
+-};
+-
+-struct can_bittime {
+-	enum can_bittimes type;
+-	union {
+-		struct can_bittime_std std;
+-		struct can_bittime_btr btr;
+-	};
+-};
+-
+-/*
+- * CAN mode
+- */
+-enum can_mode {
+-	CAN_MODE_STOP =3D 0,
+-	CAN_MODE_START,
+-	CAN_MODE_SLEEP
+-};
+-
+-/*
+- * CAN controller mode
+- */
+-#define CAN_CTRLMODE_LOOPBACK   0x1
+-#define CAN_CTRLMODE_LISTENONLY 0x2
+-
+-/*
+- * CAN operational and error states
+- */
+-enum can_state {
+-	CAN_STATE_ACTIVE =3D 0,
+-	CAN_STATE_BUS_WARNING,
+-	CAN_STATE_BUS_PASSIVE,
+-	CAN_STATE_BUS_OFF,
+-	CAN_STATE_STOPPED,
+-	CAN_STATE_SLEEPING
+-};
+-
+-/*
+- * CAN device statistics
+- */
+-struct can_device_stats {
+-	int error_warning;
+-	int data_overrun;
+-	int wakeup;
+-	int bus_error;
+-	int error_passive;
+-	int arbitration_lost;
+-	int restarts;
+-	int bus_error_at_init;
+-};
+-
+-#endif /* CAN_IOCTL_H */
 --=20
 1.8.5.2
 
