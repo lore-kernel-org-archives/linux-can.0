@@ -1,74 +1,35 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
-Date: Fri, 17 Jan 2014 08:44:00 +0100
-Message-ID: <52D8DF40.7050405@peak-system.com>
-References: <52D6CB48.9010206@hartkopp.net>
-Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH] README: typos and beautification
+Date: Fri, 17 Jan 2014 09:44:51 +0100
+Message-ID: <CAGm1_kvqWzARTQso6R5F_RBm4Y-_HN2tjcNUZwTDv4w+bbcUJw@mail.gmail.com>
+References: <1389861900-29467-1-git-send-email-yegorslists@googlemail.com> <52D80E30.9010008@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:55104 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751892AbaAQHoW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 02:44:22 -0500
-In-Reply-To: <52D6CB48.9010206@hartkopp.net>
+Received: from mail-bk0-f42.google.com ([209.85.214.42]:37480 "EHLO
+	mail-bk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751094AbaAQIpN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 03:45:13 -0500
+Received: by mail-bk0-f42.google.com with SMTP id my12so1574037bkb.1
+        for <linux-can@vger.kernel.org>; Fri, 17 Jan 2014 00:45:12 -0800 (PST)
+In-Reply-To: <52D80E30.9010008@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 
-Hi,
+On Thu, Jan 16, 2014 at 5:52 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 01/16/2014 09:45 AM, yegorslists@googlemail.com wrote:
+>> From: Yegor Yefremov <yegorslists@googlemail.com>
+>>
+>> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+>
+> Applied to master.
 
-Some questions:
+Are you planning to make a new release any time soon?
 
-Le 15/01/2014 18:54, Oliver Hartkopp a =C3=A9crit :
-> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/ca=
-n/netlink.h
-> index df944ed..bd0493a2 100644
-> --- a/include/uapi/linux/can/netlink.h
-> +++ b/include/uapi/linux/can/netlink.h
-> @@ -96,6 +96,7 @@ struct can_ctrlmode {
->   #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
->   #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
->   #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
-> +#define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+Is it planned to move/mirror libsocketcan to/on
+https://gitorious.org/linux-can? So that all needed parts are at one
+place?
 
-- What is exactly the goal of this new CAN_CTRLMODE_FD please? Did you=20
-define it to allow user to enable the CANFD function into the hardware,=
-=20
-for example? If yes, isn't it redundant with setting the MTU to 72 byte=
-s?
-
-- Moreover, how a CANFD -able driver has to handle a CANFD frame read=20
-from the CANFD controller, when its network device MTU *ISNOT* =3D=3D 7=
-2 ???=20
-Should it discard the CANFD frame?
-
->  =20
->   /*
->    * CAN device statistics
-> @@ -122,6 +123,9 @@ enum {
->   	IFLA_CAN_RESTART_MS,
->   	IFLA_CAN_RESTART,
->   	IFLA_CAN_BERR_COUNTER,
-> +	IFLA_CAN_DATA_BITTIMING,
-> +	IFLA_CAN_DATA_BITTIMING_CONST,
-> +	IFLA_CAN_DATA_CLOCK,
->   	__IFLA_CAN_MAX
->   };
-
-- by defining another clock for the data bitrate, do you suppose that=20
-some hardwares could use different clocks for both arbitration and data=
-=20
-bitrates?
-
-Regards,
-
-St=C3=A9phane
-
---
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+Yegor
