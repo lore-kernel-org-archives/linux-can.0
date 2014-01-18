@@ -1,74 +1,106 @@
-From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
-Subject: RE: Kvazer USB CAN driver
-Date: Sat, 18 Jan 2014 14:26:01 +0000
-Message-ID: <5e703d274b0c4a1799bb4ff772b28f34@AMSPR06MB053.eurprd06.prod.outlook.com>
-References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
- <1389107792.5708.9.camel@blackbox>
- <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
- <52CDC307.1020102@hartkopp.net>
- <64b7875c88bc4d9c914241f2fac0d448@AMSPR06MB053.eurprd06.prod.outlook.com>
- <20140116110204.GA5286@hposo>
- <eaaaec0611754c7ba17e961905ca3990@AMSPR06MB053.eurprd06.prod.outlook.com>
- <52D8FCC9.3050905@pengutronix.de>
- <eb86d5cebc2e43f2935fc5b97cf507ad@AMSPR06MB053.eurprd06.prod.outlook.com>
- <52D93798.2050804@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
+Date: Sat, 18 Jan 2014 18:34:32 +0100
+Message-ID: <52DABB28.4070608@hartkopp.net>
+References: <52D6CB48.9010206@hartkopp.net> <52D8DF40.7050405@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3lp0078.outbound.protection.outlook.com ([213.199.154.78]:48172
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752066AbaARO0F (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sat, 18 Jan 2014 09:26:05 -0500
-In-Reply-To: <52D93798.2050804@pengutronix.de>
-Content-Language: fr-FR
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:53343 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750933AbaARRei (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 18 Jan 2014 12:34:38 -0500
+In-Reply-To: <52D8DF40.7050405@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Olivier Sobrie <olivier@sobrie.be>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Daniel Berglund <db@kvaser.com>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGkgTWFyYywNCg0KSSB3b3VsZCBzdWdnZXN0IHRvIGhhbmRsZSB0aGUgZGlmZmVyZW50IGt2YXNl
-ciBVU0IgZGV2aWNlIGZhbWlsaWVzIGluIGRlZGljYXRlZCBtb2R1bGVzLg0KDQpNeSBwb2ludHMg
-YXJlOg0KKiB3aGlsZSwgY3VycmVudGx5LCB0aGUgVVNCIGNvbW1hbmRzIHVzZWQgaW4gdGhlIG5l
-dGRyaXZlciBzZWVtcyB0byBiZSBxdWl0ZSBzaW1pbGFyLCAgdGhleSByZXByZXNlbnQgYSBzbWFs
-bCBzdWJzZXQgb2YgYWxsIGZpbG8gYW5kIGhlbGlvcyBrdmFzZXIgVVNCIGNvbW1hbmRzLiBJbiBv
-cHBvc2l0aW9uLCB0aGUgZnVsbCBsaXN0IG9mIGZpbG8gYW5kIGhlbGlvcyBVU0IgY29tbWFuZHMg
-c2hvd3MgYSBsYXJnZSBudW1iZXIgb2YgZGlzY3JlcGVuY2llcy4gSWYsICBpbiB0aGUgZnV0dXJl
-LCB0aGUgbmV0ZHJpdmVyIHNob3VsZCBiZSBpbXByb3ZlZCB0byBzdXBwb3J0IG1vcmUgZnVuY3Rp
-b25hbGl0aWVzLCB0aGVuIGhhdmluZyBhIHNpbmdsZSBtb2R1bGUgd2lsbCBtYWtlIHRoaXMgdGFz
-ayBtb3JlIGNvbXBsZXguIEZvciBpbnN0YW5jZSwgS3Zhc2VyIHByb3ZpZGVzIGEgZnVsbCBpbXBs
-ZW1lbnRhdGlvbiBmb3IgYm90aCBmYW1pbGllcyBpbiBkaWZmZXJlbnQgZmlsZXMuIEFuZCBhIGxh
-cmdlIG51bWJlciBvZiBkaWZmZXJlbmNlIHNob3dzIHVwIGJldHdlZW4gdGhlbS4gU3VwcG9ydGlu
-ZyBib3RoIGZhbWlsaWVzIGluIGEgc2luZ2xlIG1vZHVsZSB3aWxsIGJlIGVhc2llciBhdCB0aGUg
-YmVnaW5uaW5nIGJ1dCB3aWxsIGJlY29tZSBtb3JlIGFuZCBtb3JlIHBhaW5mdWxsIHdoZW4gZmVh
-dHVyZXMgd2lsbCBiZSBhZGRlZC4NCiogaW4gYSBzaW5nbGUgbW9kdWxlLCB3ZSB3aWxsIGhhdmUg
-dG8gZHluYW1pY2FsbHkgc2VsZWN0IG9uZSBVU0IgY29tbWFuZCBzZXQgZGVwZW5kaW5nIG9uIHRo
-ZSBkZXZpY2UgaWQuIEkgZG8gbm90IHRoaW5rIHRoYXQgd2UgY291bGQgZGVzaWduIGEgc2luZ2xl
-ICJhYnN0cmFjdCIgY29tbWFuZCBzZXQgdGhhdCBjb3VsZCBmaXQgYWxsIHB1cnBvc2VzLiBUaGlz
-IHdpbGwgbWFrZSBhICJjb21tb24iIGRyaXZlciAoYSBsaXR0bGUgYml0KSBsZXNzIGVmZmljaWVu
-dCAoaW4gdGVybSBvZiBDUFUgdXNhZ2UpLiBBbmQsIGFzIG15IGluaXRpYWwgZ29hbCBpcyB0byBo
-YXZlIHN1Y2ggYSBkcml2ZXIgb24gYW4gZW50cnkgbGV2ZWwgQ1BVLCBpdCBtYXR0ZXJzIChmb3Ig
-bWUpLg0KDQpXaGF0IGRvIHlvdSB0aGluayA/DQoNCkFub3RoZXIgcXVlc3Rpb246IHN1cHBvc2lu
-ZyB0aGF0IEkgY29tZSB3aXRoIGEgcGVyZmVjdCBzb3VyY2UgY29kZSA6LSksIHdoYXQgaXMgdGhl
-IHByb2Nlc3MgdG8gaGF2ZSBpdCBtYWlubGluZWQgPyBTaG91bGQgSSB1c2UgZ2l0IGFuZCBwdXNo
-IHNvbWV0aGluZyBzb21ld2hlcmUgPyAgT3IgLi4uPyAgDQoNCkNoZWVycywNCg0KUGllcnJlDQoN
-Ci0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogTWFyYyBLbGVpbmUtQnVkZGUgW21h
-aWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdIA0KRW52b3nDqcKgOiB2ZW5kcmVkaSAxNyBqYW52aWVy
-IDIwMTQgMTU6MDENCsOAwqA6IEdBUk5FUk8sIFBJRVJSRSAoUC4pOyBPbGl2aWVyIFNvYnJpZQ0K
-Q2PCoDogT2xpdmVyIEhhcnRrb3BwOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBEYW5pZWwg
-QmVyZ2x1bmQNCk9iamV0wqA6IFJlOiBLdmF6ZXIgVVNCIENBTiBkcml2ZXINCg0KT24gMDEvMTcv
-MjAxNCAwMjo1MCBQTSwgR0FSTkVSTywgUElFUlJFIChQLikgd3JvdGU6DQo+IFllcy4gSSB3aWxs
-IHRyeSB0byBkbyBzby4gSG93ZXZlciwgSSBhbSBhIG5ld2JpZSBpbiB0aGlzIGFyZWEsIHNvIGEg
-DQo+IHBvaW50ZXIgb24gaG93IHRvIHByb2NlZWQgd2lsbCBiZSBtb3JlIHRoYW4gd2VsY29tZSAo
-bWF5YmUgaW4gYSANCj4gcHJpdmF0ZSBtYWlsIGluIG9yZGVyIG5vdCB0byBwb2xsdXRlIHRoZSBt
-YWlsaW5nIGxpc3QgPykuDQoNCk5vIDopIFRoaXMgZGlzY3Vzc2lvbiBzaG91bGQgdGFrZSBwbGFj
-ZSBvbiB0aGUgbWFpbGluZ2xpc3QsIGFzIHRoZXJlIG1pZ2h0IGJlIG1vcmUgcGVvcGxlIGhlcmUs
-IHdobyB3YW50IHRvIGxlYXJuIHNvbWV0aGluZy4gQW5kIHRoaXMgbWFpbGluZ2xpc3QgaXMgcmVh
-bGx5IGxvdyB0cmFmZmljLg0KDQpJIHRoaW5rIHRoZSBmaXJzdCBzdGVwIHNob3VsZCBiZSB0byBt
-YWtlIHRoZSBzdHJ1Y3RzIGRlc2NyaWJpbmcgdGhlIFVTQiBtZXNzYWdlcyBjb21wYXRpYmxlLg0K
-DQpNYXJjDQoNCi0tIA0KUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBL
-bGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAg
-ICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQpWZXJ0cmV0dW5nIFdlc3QvRG9ydG11
-bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KQW10c2dlcmljaHQg
-SGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+Hi Stephane,
+
+On 17.01.2014 08:44, Stephane Grosjean wrote:
+
+>> +#define CAN_CTRLMODE_FD            0x20    /* CAN FD mode */
+> 
+> - What is exactly the goal of this new CAN_CTRLMODE_FD please? Did you define
+> it to allow user to enable the CANFD function into the hardware, for example?
+> If yes, isn't it redundant with setting the MTU to 72 bytes?
+> 
+> - Moreover, how a CANFD -able driver has to handle a CANFD frame read from the
+> CANFD controller, when its network device MTU *ISNOT* == 72 ??? Should it
+> discard the CANFD frame?
+
+The stuff in linux/net/can/ takes care that only applications that know (and
+enable) CAN FD get CAN frames with a length > 8 byte.
+
+E.g. today a CAN FD frame with only 8 bytes (aka CANFD8) can be passed to
+applications that are not CAN FD capable. In this case the size (MTU)
+is reduced from CANFD_MTU to CAN_MTU, see:
+
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/net/can/raw.c?id=e2d265d3b587f5f6f8febc0222aace93302ff0be
+
+and 
+
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/net/can/raw.c#n753
+
+This leads IMO to two questions:
+
+1. Is it a good idea to provide CANFD8 frames to legacy applications?
+2. If yes, should the CAN FD controller driver be able to make legacy frames
+   CANDF8 frames to support the higher data bitrate for legacy applications?
+
+Maybe even the first question has to be denied (and the adaption in can/raw.c
+should be removed then) ?!?
+
+My idea behind CAN_CTRLMODE_FD is to enable/disable the CAN FD mode in the
+CAN FD capable controller chip.
+
+Depending on this CAN_CTRLMODE_FD the CAN FD functionality is enabled when
+this feature is supported(!) by the driver, see priv->ctrlmode_supported:
+
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/net/can/dev.c#n669
+
+Depending on CAN_CTRLMODE_FD the MTU is then set to CAN_MTU or CANFD_MTU
+(note that the interface has to be 'down' when configuring this feature -
+that's just the same as with configuring the bitrate).
+
+When CAN_CTRLMODE_FD was set but the second bitrate was *not* set before the
+interface is requested to be set to 'up' this leads to the same error as if
+the (single and only) bitrate is missing today.
+
+I hope this would be a reasonable solution and I was able to describe it well.
+
+Comming back to question 2 from above, we would then need an additional
+controlmode:
+
+#define CAN_CTRLMODE_TX_FD8 0x40    /* send legacy CAN frames in FD mode */
+
+But I'm not really sure if these two 'compatibility' tweaks for legacy
+applications to use CAN FD8 is a wanted/needed feature.
+
+Any thoughts?
+
+> 
+>>     /*
+>>    * CAN device statistics
+>> @@ -122,6 +123,9 @@ enum {
+>>       IFLA_CAN_RESTART_MS,
+>>       IFLA_CAN_RESTART,
+>>       IFLA_CAN_BERR_COUNTER,
+>> +    IFLA_CAN_DATA_BITTIMING,
+>> +    IFLA_CAN_DATA_BITTIMING_CONST,
+>> +    IFLA_CAN_DATA_CLOCK,
+>>       __IFLA_CAN_MAX
+>>   };
+> 
+> - by defining another clock for the data bitrate, do you suppose that some
+> hardwares could use different clocks for both arbitration and data bitrates?
+
+Yes. But this is probably not necessary. I just looked into the M_CAN
+specification. They have *one* CAN clock and two different baud rate
+prescalers. So I would tend to remove IFLA_CAN_DATA_CLOCK in the next RFC
+until a real requirement emerges from some real hardware.
+
+Best regards,
+Oliver
+
