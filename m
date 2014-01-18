@@ -1,94 +1,127 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux
- kernel into include/linux
-Date: Fri, 17 Jan 2014 21:36:05 +0100
-Message-ID: <20140117203605.GF25911@pengutronix.de>
-References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
- <1389888754-23013-6-git-send-email-mkl@pengutronix.de>
- <20140116192818.GC25911@pengutronix.de>
- <52D85910.8000200@pengutronix.de>
- <20140117133709.GD25911@pengutronix.de>
- <52D93885.5040109@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux kernel
+ into include/linux
+Date: Sat, 18 Jan 2014 13:18:14 +0100
+Message-ID: <52DA7106.5000300@hartkopp.net>
+References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de> <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de> <52D85910.8000200@pengutronix.de> <20140117133709.GD25911@pengutronix.de> <52D93885.5040109@pengutronix.de> <20140117203605.GF25911@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56904 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753661AbaAQUgH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jan 2014 15:36:07 -0500
-Content-Disposition: inline
-In-Reply-To: <52D93885.5040109@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:63963 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752492AbaARMSR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 18 Jan 2014 07:18:17 -0500
+In-Reply-To: <20140117203605.GF25911@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org
 
-On Fri, Jan 17, 2014 at 03:04:53PM +0100, Marc Kleine-Budde wrote:
-> On 01/17/2014 02:37 PM, Uwe Kleine-K=F6nig wrote:
-> > Hallo Marc,
-> >=20
-> > On Thu, Jan 16, 2014 at 11:11:28PM +0100, Marc Kleine-Budde wrote:
-> >> On 01/16/2014 08:28 PM, Uwe Kleine-K=F6nig wrote:
-> >>> On Thu, Jan 16, 2014 at 05:12:34PM +0100, Marc Kleine-Budde wrote=
-:
-> >>>> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> >>>>
-> >>>> This makes it possible to update the copies more easily, e.g.:
-> >>>>
-> >>>> 	cd $path_to_linux_repo
-> >>>> 	make headers_install
-> >>>> 	rsync -a --delete --exclude .\* usr/include/linux/can* $path_to=
-_can_utils/include/linux
-> >>>>
-> >>>> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> >>>> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> >>
-> >>> I want to have pointed out in the commit log that it was you who =
-added
-> >>> isotp.h to the move. I don't care that much for your split into t=
-wo
-> >>> patches to fix the #includes first, but IMHO that should be docum=
-ented,
-> >>> too.
-> >>
-> >> Yes, but no. I imported the isotp header, but not from the kernel.=
- It
-> >> was imported from the berlios svn repo.
->=20
-> > I didn't mean isotp when it was added to can-utils, but compared to=
- my
-> > patch "include: Move includes copied from the Linux kernel into
-> > include/linux" you also moved isotp.h from socketcan/can to linux/c=
-an in
-> > can-utils. That's what I thought you should point out. That this ch=
-ange
-> > makes the changelog wrong is another issue.
->=20
-> Then I'll change the commit message to "move all headers from
-> socketcan/can to linux/can".
-and please also add something like:
+On 17.01.2014 21:36, Uwe Kleine-K=F6nig wrote:
 
-	[mkl: also move isotp.h although Uwe skipped it as it is not
-	part of the upstream kernel; adapt commit log accordingly]
+>>
+>> https://gitorious.org/linux-can/can-modules
+> Is it a possibility to merge can-modules and can-utils?
 
-> > Where can this external kernel module be found? IMHO it would be wo=
-rth
-> > to point to its (hopefully) git repository in isotp{*.c,.h}.
->=20
-> https://gitorious.org/linux-can/can-modules
-Is it a possibility to merge can-modules and can-utils? Then there woul=
-d
-only a single instance of isotp.h be needed. IIUC the source of isotp.h
-is in can-modules. If so, adding a license to it should be done in
-can-modules, too.
+NO!
 
-Best regards
-Uwe
+> Then there would
+> only a single instance of isotp.h be needed.=20
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
-    |
-Industrial Linux Solutions                 | http://www.pengutronix.de/=
-  |
+NO!
+
+> IIUC the source of isotp.h
+> is in can-modules. If so, adding a license to it should be done in
+> can-modules, too.
+
+Uwe,
+
+please take a look at the history of the things you are trying to re-or=
+ganize
+all the time.
+
+If you look at the original BerliOS SVN
+
+	http://developer.berlios.de/svn/?group_id=3D6475
+
+you'll see that it was exactly like this.
+
+There were utils, test applications and the kernel stuff in one single =
+SVN
+referring one single include directory which was located in
+
+	trunk/kernel/2.6/include/socketcan
+
+to not interfere with existing or different kernel includes.
+
+This worked pretty fine that time as it also was intended to be able to
+backport updated CAN stuff into older kernels like 2.6.18.
+
+Therefore several scripts (see trunk/mkpatch) had been used to create p=
+atches
+that remove the existing stuff in linux/net/can and update the entire C=
+AN
+subsystem with a newer version with bugfixes and feature enhancements.
+
+Doing this we were able to include e.g. the can-gw or the developed iso=
+tp into
+an older OSELAS BSP with 2.6.28.10 kernel.
+
+But that's history.
+
+With the move to gitorious the SVN trunk was splitted into several inde=
+pendent
+git repos that were just in sub-directories before:
+
+- can-utils
+- can-tests
+- can-misc
+- can-modules
+- can-modules-24
+
+To have these separate git repos the includes became part of every sing=
+le repo
+- which is not very optimal ...
+
+Btw. the iproute2 package has a similar requirements to contain updated=
+ kernel
+includes.
+
+So today (6 years after PF_CAN mainline) the stuff in can-modules(-24) =
+is not
+really maintained anymore as supporting 2.4.x and 2.6.2x kernels is not=
+ that
+relevant now. The only stuff that needs to be brought to mainline isotp=
+=2Ec .
+
+So I would just let the hands off can-modules(-24) as the new developme=
+nt is
+done in recent git repos like https://gitorious.org/linux-can/linux-can=
+-next.
+
+The isotp socket API has been established for a while now and is used b=
+y
+several peoples. As I do not expect any changes to isotp.h it's ok to h=
+ost it
+together(!) with the other kernel includes we've been discussion before=
+=2E
+
+As we only talk about userspace applications now the way using
+include/socketcan which was needed for the stuff in trunk/kernel/2.6/ne=
+t/can
+became obviously obsolete in can-utils and can-tests.
+
+The stuff in can-utils and can-tests are widely used and therefore I
+appreciate your work to clean up the includes and update the license
+information there. But you can omit any further activities in can-modul=
+es.
+
+Regards,
+Oliver
+
+ps. @Marc: Your patch "[PATCH v6 5/5] include: Move includes from
+include/socketcan to include/linux" moves the *current* files. There ar=
+e still
+no updates in the license information in can.h, can/raw.h, ... Tnx
+
