@@ -1,127 +1,74 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux kernel
- into include/linux
-Date: Sat, 18 Jan 2014 13:18:14 +0100
-Message-ID: <52DA7106.5000300@hartkopp.net>
-References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de> <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de> <52D85910.8000200@pengutronix.de> <20140117133709.GD25911@pengutronix.de> <52D93885.5040109@pengutronix.de> <20140117203605.GF25911@pengutronix.de>
+From: "GARNERO, PIERRE (P.)" <pgarnero@visteon.com>
+Subject: RE: Kvazer USB CAN driver
+Date: Sat, 18 Jan 2014 14:26:01 +0000
+Message-ID: <5e703d274b0c4a1799bb4ff772b28f34@AMSPR06MB053.eurprd06.prod.outlook.com>
+References: <a8d74bed340445f081325afedf044bb5@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <1389107792.5708.9.camel@blackbox>
+ <85d7d20e09a64996a182e491c6d250e0@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <52CDC307.1020102@hartkopp.net>
+ <64b7875c88bc4d9c914241f2fac0d448@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <20140116110204.GA5286@hposo>
+ <eaaaec0611754c7ba17e961905ca3990@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <52D8FCC9.3050905@pengutronix.de>
+ <eb86d5cebc2e43f2935fc5b97cf507ad@AMSPR06MB053.eurprd06.prod.outlook.com>
+ <52D93798.2050804@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:63963 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752492AbaARMSR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 18 Jan 2014 07:18:17 -0500
-In-Reply-To: <20140117203605.GF25911@pengutronix.de>
+Received: from mail-db3lp0078.outbound.protection.outlook.com ([213.199.154.78]:48172
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752066AbaARO0F (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 18 Jan 2014 09:26:05 -0500
+In-Reply-To: <52D93798.2050804@pengutronix.de>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Olivier Sobrie <olivier@sobrie.be>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Daniel Berglund <db@kvaser.com>
 
-On 17.01.2014 21:36, Uwe Kleine-K=F6nig wrote:
-
->>
->> https://gitorious.org/linux-can/can-modules
-> Is it a possibility to merge can-modules and can-utils?
-
-NO!
-
-> Then there would
-> only a single instance of isotp.h be needed.=20
-
-NO!
-
-> IIUC the source of isotp.h
-> is in can-modules. If so, adding a license to it should be done in
-> can-modules, too.
-
-Uwe,
-
-please take a look at the history of the things you are trying to re-or=
-ganize
-all the time.
-
-If you look at the original BerliOS SVN
-
-	http://developer.berlios.de/svn/?group_id=3D6475
-
-you'll see that it was exactly like this.
-
-There were utils, test applications and the kernel stuff in one single =
-SVN
-referring one single include directory which was located in
-
-	trunk/kernel/2.6/include/socketcan
-
-to not interfere with existing or different kernel includes.
-
-This worked pretty fine that time as it also was intended to be able to
-backport updated CAN stuff into older kernels like 2.6.18.
-
-Therefore several scripts (see trunk/mkpatch) had been used to create p=
-atches
-that remove the existing stuff in linux/net/can and update the entire C=
-AN
-subsystem with a newer version with bugfixes and feature enhancements.
-
-Doing this we were able to include e.g. the can-gw or the developed iso=
-tp into
-an older OSELAS BSP with 2.6.28.10 kernel.
-
-But that's history.
-
-With the move to gitorious the SVN trunk was splitted into several inde=
-pendent
-git repos that were just in sub-directories before:
-
-- can-utils
-- can-tests
-- can-misc
-- can-modules
-- can-modules-24
-
-To have these separate git repos the includes became part of every sing=
-le repo
-- which is not very optimal ...
-
-Btw. the iproute2 package has a similar requirements to contain updated=
- kernel
-includes.
-
-So today (6 years after PF_CAN mainline) the stuff in can-modules(-24) =
-is not
-really maintained anymore as supporting 2.4.x and 2.6.2x kernels is not=
- that
-relevant now. The only stuff that needs to be brought to mainline isotp=
-=2Ec .
-
-So I would just let the hands off can-modules(-24) as the new developme=
-nt is
-done in recent git repos like https://gitorious.org/linux-can/linux-can=
--next.
-
-The isotp socket API has been established for a while now and is used b=
-y
-several peoples. As I do not expect any changes to isotp.h it's ok to h=
-ost it
-together(!) with the other kernel includes we've been discussion before=
-=2E
-
-As we only talk about userspace applications now the way using
-include/socketcan which was needed for the stuff in trunk/kernel/2.6/ne=
-t/can
-became obviously obsolete in can-utils and can-tests.
-
-The stuff in can-utils and can-tests are widely used and therefore I
-appreciate your work to clean up the includes and update the license
-information there. But you can omit any further activities in can-modul=
-es.
-
-Regards,
-Oliver
-
-ps. @Marc: Your patch "[PATCH v6 5/5] include: Move includes from
-include/socketcan to include/linux" moves the *current* files. There ar=
-e still
-no updates in the license information in can.h, can/raw.h, ... Tnx
-
+SGkgTWFyYywNCg0KSSB3b3VsZCBzdWdnZXN0IHRvIGhhbmRsZSB0aGUgZGlmZmVyZW50IGt2YXNl
+ciBVU0IgZGV2aWNlIGZhbWlsaWVzIGluIGRlZGljYXRlZCBtb2R1bGVzLg0KDQpNeSBwb2ludHMg
+YXJlOg0KKiB3aGlsZSwgY3VycmVudGx5LCB0aGUgVVNCIGNvbW1hbmRzIHVzZWQgaW4gdGhlIG5l
+dGRyaXZlciBzZWVtcyB0byBiZSBxdWl0ZSBzaW1pbGFyLCAgdGhleSByZXByZXNlbnQgYSBzbWFs
+bCBzdWJzZXQgb2YgYWxsIGZpbG8gYW5kIGhlbGlvcyBrdmFzZXIgVVNCIGNvbW1hbmRzLiBJbiBv
+cHBvc2l0aW9uLCB0aGUgZnVsbCBsaXN0IG9mIGZpbG8gYW5kIGhlbGlvcyBVU0IgY29tbWFuZHMg
+c2hvd3MgYSBsYXJnZSBudW1iZXIgb2YgZGlzY3JlcGVuY2llcy4gSWYsICBpbiB0aGUgZnV0dXJl
+LCB0aGUgbmV0ZHJpdmVyIHNob3VsZCBiZSBpbXByb3ZlZCB0byBzdXBwb3J0IG1vcmUgZnVuY3Rp
+b25hbGl0aWVzLCB0aGVuIGhhdmluZyBhIHNpbmdsZSBtb2R1bGUgd2lsbCBtYWtlIHRoaXMgdGFz
+ayBtb3JlIGNvbXBsZXguIEZvciBpbnN0YW5jZSwgS3Zhc2VyIHByb3ZpZGVzIGEgZnVsbCBpbXBs
+ZW1lbnRhdGlvbiBmb3IgYm90aCBmYW1pbGllcyBpbiBkaWZmZXJlbnQgZmlsZXMuIEFuZCBhIGxh
+cmdlIG51bWJlciBvZiBkaWZmZXJlbmNlIHNob3dzIHVwIGJldHdlZW4gdGhlbS4gU3VwcG9ydGlu
+ZyBib3RoIGZhbWlsaWVzIGluIGEgc2luZ2xlIG1vZHVsZSB3aWxsIGJlIGVhc2llciBhdCB0aGUg
+YmVnaW5uaW5nIGJ1dCB3aWxsIGJlY29tZSBtb3JlIGFuZCBtb3JlIHBhaW5mdWxsIHdoZW4gZmVh
+dHVyZXMgd2lsbCBiZSBhZGRlZC4NCiogaW4gYSBzaW5nbGUgbW9kdWxlLCB3ZSB3aWxsIGhhdmUg
+dG8gZHluYW1pY2FsbHkgc2VsZWN0IG9uZSBVU0IgY29tbWFuZCBzZXQgZGVwZW5kaW5nIG9uIHRo
+ZSBkZXZpY2UgaWQuIEkgZG8gbm90IHRoaW5rIHRoYXQgd2UgY291bGQgZGVzaWduIGEgc2luZ2xl
+ICJhYnN0cmFjdCIgY29tbWFuZCBzZXQgdGhhdCBjb3VsZCBmaXQgYWxsIHB1cnBvc2VzLiBUaGlz
+IHdpbGwgbWFrZSBhICJjb21tb24iIGRyaXZlciAoYSBsaXR0bGUgYml0KSBsZXNzIGVmZmljaWVu
+dCAoaW4gdGVybSBvZiBDUFUgdXNhZ2UpLiBBbmQsIGFzIG15IGluaXRpYWwgZ29hbCBpcyB0byBo
+YXZlIHN1Y2ggYSBkcml2ZXIgb24gYW4gZW50cnkgbGV2ZWwgQ1BVLCBpdCBtYXR0ZXJzIChmb3Ig
+bWUpLg0KDQpXaGF0IGRvIHlvdSB0aGluayA/DQoNCkFub3RoZXIgcXVlc3Rpb246IHN1cHBvc2lu
+ZyB0aGF0IEkgY29tZSB3aXRoIGEgcGVyZmVjdCBzb3VyY2UgY29kZSA6LSksIHdoYXQgaXMgdGhl
+IHByb2Nlc3MgdG8gaGF2ZSBpdCBtYWlubGluZWQgPyBTaG91bGQgSSB1c2UgZ2l0IGFuZCBwdXNo
+IHNvbWV0aGluZyBzb21ld2hlcmUgPyAgT3IgLi4uPyAgDQoNCkNoZWVycywNCg0KUGllcnJlDQoN
+Ci0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogTWFyYyBLbGVpbmUtQnVkZGUgW21h
+aWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdIA0KRW52b3nDqcKgOiB2ZW5kcmVkaSAxNyBqYW52aWVy
+IDIwMTQgMTU6MDENCsOAwqA6IEdBUk5FUk8sIFBJRVJSRSAoUC4pOyBPbGl2aWVyIFNvYnJpZQ0K
+Q2PCoDogT2xpdmVyIEhhcnRrb3BwOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBEYW5pZWwg
+QmVyZ2x1bmQNCk9iamV0wqA6IFJlOiBLdmF6ZXIgVVNCIENBTiBkcml2ZXINCg0KT24gMDEvMTcv
+MjAxNCAwMjo1MCBQTSwgR0FSTkVSTywgUElFUlJFIChQLikgd3JvdGU6DQo+IFllcy4gSSB3aWxs
+IHRyeSB0byBkbyBzby4gSG93ZXZlciwgSSBhbSBhIG5ld2JpZSBpbiB0aGlzIGFyZWEsIHNvIGEg
+DQo+IHBvaW50ZXIgb24gaG93IHRvIHByb2NlZWQgd2lsbCBiZSBtb3JlIHRoYW4gd2VsY29tZSAo
+bWF5YmUgaW4gYSANCj4gcHJpdmF0ZSBtYWlsIGluIG9yZGVyIG5vdCB0byBwb2xsdXRlIHRoZSBt
+YWlsaW5nIGxpc3QgPykuDQoNCk5vIDopIFRoaXMgZGlzY3Vzc2lvbiBzaG91bGQgdGFrZSBwbGFj
+ZSBvbiB0aGUgbWFpbGluZ2xpc3QsIGFzIHRoZXJlIG1pZ2h0IGJlIG1vcmUgcGVvcGxlIGhlcmUs
+IHdobyB3YW50IHRvIGxlYXJuIHNvbWV0aGluZy4gQW5kIHRoaXMgbWFpbGluZ2xpc3QgaXMgcmVh
+bGx5IGxvdyB0cmFmZmljLg0KDQpJIHRoaW5rIHRoZSBmaXJzdCBzdGVwIHNob3VsZCBiZSB0byBt
+YWtlIHRoZSBzdHJ1Y3RzIGRlc2NyaWJpbmcgdGhlIFVTQiBtZXNzYWdlcyBjb21wYXRpYmxlLg0K
+DQpNYXJjDQoNCi0tIA0KUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBL
+bGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAg
+ICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQpWZXJ0cmV0dW5nIFdlc3QvRG9ydG11
+bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KQW10c2dlcmljaHQg
+SGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
