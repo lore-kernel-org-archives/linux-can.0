@@ -1,83 +1,76 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2] can: flexcan: fix flexcan driver build for big endian on ARM and little endian on PowerPc
-Date: Mon, 20 Jan 2014 12:44:15 +0100
-Message-ID: <1390218255-19074-1-git-send-email-mkl@pengutronix.de>
-References: <52DD0A5E.6010303@pengutronix.de>
+Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
+Date: Mon, 20 Jan 2014 12:47:13 +0100
+Message-ID: <52DD0CC1.70205@pengutronix.de>
+References: <201312270037.15822.sergei.shtylyov@cogentembedded.com> <CAMuHMdWZJUvcW9OzM39aB2m+VdKqmZ6EOGR_rZcAdV7Cmwx3kg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="5pvnuu9f5L2gjpckVidOAb2fF86L26aNW"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35856 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35908 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752630AbaATLoS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Jan 2014 06:44:18 -0500
-In-Reply-To: <52DD0A5E.6010303@pengutronix.de>
+	with ESMTP id S1750758AbaATLrW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Jan 2014 06:47:22 -0500
+In-Reply-To: <CAMuHMdWZJUvcW9OzM39aB2m+VdKqmZ6EOGR_rZcAdV7Cmwx3kg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, vksavl@gmail.com
 
-=46rom: Arnd Bergmann <arnd@arndb.de>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5pvnuu9f5L2gjpckVidOAb2fF86L26aNW
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-There is no reason to disallow building the driver on big-endian ARM ke=
-rnels.
-=46urthermore, the current behavior is actually broken on little-endian=
- PowerPC
-as well.
+On 01/20/2014 12:43 PM, Geert Uytterhoeven wrote:
+> Hi Sergei,
+>=20
+> On Thu, Dec 26, 2013 at 10:37 PM, Sergei Shtylyov
+> <sergei.shtylyov@cogentembedded.com> wrote:
+>> Changes in version 3:
+>=20
+>> - added '__packed' to 'struct rcar_can_mbox_regs' and 'struct rcar_can=
+_regs';
+>> - removed unneeded type cast in the probe() method.
+>=20
+>> +/* Mailbox registers structure */
+>> +struct rcar_can_mbox_regs {
+>> +       u32 id;         /* IDE and RTR bits, SID and EID */
+>> +       u8 stub;        /* Not used */
+>> +       u8 dlc;         /* Data Length Code - bits [0..3] */
+>> +       u8 data[8];     /* Data Bytes */
+>> +       u8 tsh;         /* Time Stamp Higher Byte */
+>> +       u8 tsl;         /* Time Stamp Lower Byte */
+>> +} __packed;
+>=20
+> Sorry, I missed the earlier discussion, but why the _packed?
+> One u32 and 12 bytes makes a nice multiple of 4.
 
-The choice of register accessor functions must purely depend on the CPU
-architecture, not which endianess the CPU is running on. Note that we n=
-owadays
-allow both big-endian ARM and little-endian PowerPC kernels.
+Better safe than sorry, it's the layout of the registers in hardware,
+don't let the compiler optimize here.
 
-With this patch applied, we will do the right thing in all four combina=
-tions.
+Marc
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Changes since v1:
-* squash the revert of the original patch with the wrong fix
-
- drivers/net/can/Kconfig   | 2 +-
- drivers/net/can/flexcan.c | 7 +++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index d447b88..9e7d95d 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -104,7 +104,7 @@ config CAN_JANZ_ICAN3
-=20
- config CAN_FLEXCAN
- 	tristate "Support for Freescale FLEXCAN based chips"
--	depends on (ARM && CPU_LITTLE_ENDIAN) || PPC
-+	depends on ARM || PPC
- 	---help---
- 	  Say Y here if you want to support for Freescale FlexCAN.
-=20
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index aaed97b..320bef2 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -235,9 +235,12 @@ static const struct can_bittiming_const flexcan_bi=
-ttiming_const =3D {
- };
-=20
- /*
-- * Abstract off the read/write for arm versus ppc.
-+ * Abstract off the read/write for arm versus ppc. This
-+ * assumes that PPC uses big-endian registers and everything
-+ * else uses little-endian registers, independent of CPU
-+ * endianess.
-  */
--#if defined(__BIG_ENDIAN)
-+#if defined(CONFIG_PPC)
- static inline u32 flexcan_read(void __iomem *addr)
- {
- 	return in_be32(addr);
 --=20
-1.8.5.2
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--5pvnuu9f5L2gjpckVidOAb2fF86L26aNW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLdDMEACgkQjTAFq1RaXHO+dQCfQzgPHEgMko9Aqv6jet1CwdU9
+qfEAn1lwT8tai+Ary25PpCuOLgUZs8I4
+=rDFG
+-----END PGP SIGNATURE-----
+
+--5pvnuu9f5L2gjpckVidOAb2fF86L26aNW--
