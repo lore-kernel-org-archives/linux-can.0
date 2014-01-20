@@ -1,46 +1,83 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
-Date: Mon, 20 Jan 2014 12:43:40 +0100
-Message-ID: <CAMuHMdWZJUvcW9OzM39aB2m+VdKqmZ6EOGR_rZcAdV7Cmwx3kg@mail.gmail.com>
-References: <201312270037.15822.sergei.shtylyov@cogentembedded.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v2] can: flexcan: fix flexcan driver build for big endian on ARM and little endian on PowerPc
+Date: Mon, 20 Jan 2014 12:44:15 +0100
+Message-ID: <1390218255-19074-1-git-send-email-mkl@pengutronix.de>
+References: <52DD0A5E.6010303@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <201312270037.15822.sergei.shtylyov@cogentembedded.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35856 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752630AbaATLoS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Jan 2014 06:44:18 -0500
+In-Reply-To: <52DD0A5E.6010303@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hi Sergei,
+=46rom: Arnd Bergmann <arnd@arndb.de>
 
-On Thu, Dec 26, 2013 at 10:37 PM, Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
-> Changes in version 3:
+There is no reason to disallow building the driver on big-endian ARM ke=
+rnels.
+=46urthermore, the current behavior is actually broken on little-endian=
+ PowerPC
+as well.
 
-> - added '__packed' to 'struct rcar_can_mbox_regs' and 'struct rcar_can_regs';
-> - removed unneeded type cast in the probe() method.
+The choice of register accessor functions must purely depend on the CPU
+architecture, not which endianess the CPU is running on. Note that we n=
+owadays
+allow both big-endian ARM and little-endian PowerPC kernels.
 
-> +/* Mailbox registers structure */
-> +struct rcar_can_mbox_regs {
-> +       u32 id;         /* IDE and RTR bits, SID and EID */
-> +       u8 stub;        /* Not used */
-> +       u8 dlc;         /* Data Length Code - bits [0..3] */
-> +       u8 data[8];     /* Data Bytes */
-> +       u8 tsh;         /* Time Stamp Higher Byte */
-> +       u8 tsl;         /* Time Stamp Lower Byte */
-> +} __packed;
+With this patch applied, we will do the right thing in all four combina=
+tions.
 
-Sorry, I missed the earlier discussion, but why the _packed?
-One u32 and 12 bytes makes a nice multiple of 4.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v1:
+* squash the revert of the original patch with the wrong fix
 
-Gr{oetje,eeting}s,
+ drivers/net/can/Kconfig   | 2 +-
+ drivers/net/can/flexcan.c | 7 +++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-                        Geert
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index d447b88..9e7d95d 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -104,7 +104,7 @@ config CAN_JANZ_ICAN3
+=20
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+-	depends on (ARM && CPU_LITTLE_ENDIAN) || PPC
++	depends on ARM || PPC
+ 	---help---
+ 	  Say Y here if you want to support for Freescale FlexCAN.
+=20
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index aaed97b..320bef2 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -235,9 +235,12 @@ static const struct can_bittiming_const flexcan_bi=
+ttiming_const =3D {
+ };
+=20
+ /*
+- * Abstract off the read/write for arm versus ppc.
++ * Abstract off the read/write for arm versus ppc. This
++ * assumes that PPC uses big-endian registers and everything
++ * else uses little-endian registers, independent of CPU
++ * endianess.
+  */
+-#if defined(__BIG_ENDIAN)
++#if defined(CONFIG_PPC)
+ static inline u32 flexcan_read(void __iomem *addr)
+ {
+ 	return in_be32(addr);
+--=20
+1.8.5.2
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
