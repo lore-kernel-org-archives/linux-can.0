@@ -1,49 +1,94 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: commit 40d4511 "can: Disable flexcan driver build for big endian
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: commit 40d4511 "can: Disable flexcan driver build for big endian
  CPU on ARM" breaks Flexcan on ARM
-Date: Mon, 20 Jan 2014 12:32:57 +0100
-Message-ID: <20140120123257.573205a9@ipc1.ka-ro>
+Date: Mon, 20 Jan 2014 12:37:02 +0100
+Message-ID: <52DD0A5E.6010303@pengutronix.de>
+References: <20140120123257.573205a9@ipc1.ka-ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Guenter Roeck <linux@roeck-us.net>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="O0aN9QxEAoP1c7uNv2ORSqAvbQKGQ6QI0"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48519 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750807AbaATLhQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Jan 2014 06:37:16 -0500
+In-Reply-To: <20140120123257.573205a9@ipc1.ka-ro>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>, Guenter Roeck <linux@roeck-us.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-SGksCgpUaGUgY29tbWl0IDQwZDQ1MTE4MWE3ZmE1N2UzMmJjYTQ2MzJhZTdiMjJmODA4NjFhNzMK
-fEF1dGhvcjogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMubmV0Pgp8RGF0ZTogICBNb24g
-SmFuIDYgMDU6MjE6MDMgMjAxNCAtMDgwMAp8CnwgICAgY2FuOiBEaXNhYmxlIGZsZXhjYW4gZHJp
-dmVyIGJ1aWxkIGZvciBiaWcgZW5kaWFuIENQVSBvbiBBUk0KfCAgICAKfCAgICBCdWlsZGluZyBh
-cm06YWxsbW9kY29uZmlnIGZhaWxzIHdpdGgKfCAgICAKfCAgICBmbGV4Y2FuLmM6IEluIGZ1bmN0
-aW9uICdmbGV4Y2FuX3JlYWQnOgp8ICAgIGZsZXhjYW4uYzoyNDM6MjogZXJyb3I6IGltcGxpY2l0
-IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdpbl9iZTMyJwp8ICAgIGZsZXhjYW4uYzogSW4gZnVu
-Y3Rpb24gJ2ZsZXhjYW5fd3JpdGUnOgp8ICAgIGZsZXhjYW4uYzoyNDg6MjogZXJyb3I6IGltcGxp
-Y2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdvdXRfYmUzMicKfCAgICAKfCAgICBpbl9iZTMy
-IGFuZCBvdXRfYmUzMiBkbyBub3QgKG9yIG5vIGxvbmdlcikgZXhpc3QgZm9yIEFSTSB0YXJnZXRz
-Lgp8ICAgIERpc2FibGUgdGhlIGJ1aWxkIGZvciBBUk0gb24gYmlnIGVuZGlhbiBDUFVzLgp8ICAg
-IAp8ICAgIFNpZ25lZC1vZmYtYnk6IEd1ZW50ZXIgUm9lY2sgPGxpbnV4QHJvZWNrLXVzLm5ldD4K
-fCAgICBTaWduZWQtb2ZmLWJ5OiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRl
-Pgp8CnxkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL0tjb25maWcgYi9kcml2ZXJzL25ldC9j
-YW4vS2NvbmZpZwp8aW5kZXggOWU3ZDk1ZC4uZDQ0N2I4OCAxMDA2NDQKfC0tLSBhL2RyaXZlcnMv
-bmV0L2Nhbi9LY29uZmlnCnwrKysgYi9kcml2ZXJzL25ldC9jYW4vS2NvbmZpZwp8QEAgLTEwNCw3
-ICsxMDQsNyBAQCBjb25maWcgQ0FOX0pBTlpfSUNBTjMKfCAKfCBjb25maWcgQ0FOX0ZMRVhDQU4K
-fCAgICAgICAgdHJpc3RhdGUgIlN1cHBvcnQgZm9yIEZyZWVzY2FsZSBGTEVYQ0FOIGJhc2VkIGNo
-aXBzIgp8LSAgICAgICBkZXBlbmRzIG9uIEFSTSB8fCBQUEMKfCsgICAgICAgZGVwZW5kcyBvbiAo
-QVJNICYmIENQVV9MSVRUTEVfRU5ESUFOKSB8fCBQUEMKfCAgICAgICAgLS0taGVscC0tLQp8ICAg
-ICAgICAgIFNheSBZIGhlcmUgaWYgeW91IHdhbnQgdG8gc3VwcG9ydCBmb3IgRnJlZXNjYWxlIEZs
-ZXhDQU4uCj4KY29tcGxldGVseSBkaXNhYmxlcyB0aGUgZmxleGNhbiBkcml2ZXIgZm9yIGFsbCBB
-Uk0gcGxhdGZvcm1zLCBzaW5jZSB0aGUKc3ltYm9sIENQVV9MSVRUTEVfRU5ESUFOIGRvZXMgbm90
-IGV4aXN0IG9uIEFSTSEKCgpMb3RoYXIgV2HDn21hbm4KCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0Cmxp
-bnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--O0aN9QxEAoP1c7uNv2ORSqAvbQKGQ6QI0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 01/20/2014 12:32 PM, Lothar Wa=C3=9Fmann wrote:
+> Hi,
+>=20
+> The commit 40d451181a7fa57e32bca4632ae7b22f80861a73
+> |Author: Guenter Roeck <linux@roeck-us.net>
+> |Date:   Mon Jan 6 05:21:03 2014 -0800
+> |
+> |    can: Disable flexcan driver build for big endian CPU on ARM
+> |   =20
+> |    Building arm:allmodconfig fails with
+> |   =20
+> |    flexcan.c: In function 'flexcan_read':
+> |    flexcan.c:243:2: error: implicit declaration of function 'in_be32'=
+
+> |    flexcan.c: In function 'flexcan_write':
+> |    flexcan.c:248:2: error: implicit declaration of function 'out_be32=
+'
+> |   =20
+> |    in_be32 and out_be32 do not (or no longer) exist for ARM targets.
+> |    Disable the build for ARM on big endian CPUs.
+> |   =20
+> |    Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> |    Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> |
+> |diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> |index 9e7d95d..d447b88 100644
+> |--- a/drivers/net/can/Kconfig
+> |+++ b/drivers/net/can/Kconfig
+> |@@ -104,7 +104,7 @@ config CAN_JANZ_ICAN3
+> |=20
+> | config CAN_FLEXCAN
+> |        tristate "Support for Freescale FLEXCAN based chips"
+> |-       depends on ARM || PPC
+> |+       depends on (ARM && CPU_LITTLE_ENDIAN) || PPC
+> |        ---help---
+> |          Say Y here if you want to support for Freescale FlexCAN.
+>>
+> completely disables the flexcan driver for all ARM platforms, since the=
+
+> symbol CPU_LITTLE_ENDIAN does not exist on ARM!
+
+Arnd Bergmann posted a better patch, which I'll include in a pull
+request once the net tree is open again.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--O0aN9QxEAoP1c7uNv2ORSqAvbQKGQ6QI0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLdCl4ACgkQjTAFq1RaXHNejQCfZFRjFAn4BJGZbNhxP9Yzu0Fm
+xPIAn3mcnUhS+/y2l/nCEJd34tMboY1N
+=9OlK
+-----END PGP SIGNATURE-----
+
+--O0aN9QxEAoP1c7uNv2ORSqAvbQKGQ6QI0--
