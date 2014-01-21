@@ -1,106 +1,63 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
-Date: Tue, 21 Jan 2014 10:56:15 +0100
-Message-ID: <52DE443F.9080105@hartkopp.net>
-References: <52D6CB48.9010206@hartkopp.net> <52D8DF40.7050405@peak-system.com> <52DABB28.4070608@hartkopp.net> <52DE32FD.5010300@peak-system.com>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux
+ kernel into include/linux
+Date: Tue, 21 Jan 2014 10:59:41 +0100
+Message-ID: <CAGm1_kuUdfzHKedRfEi1vX3k7ALUBv4t6gzUzDqwSchpr_3xzg@mail.gmail.com>
+References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
+ <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de>
+ <52D85910.8000200@pengutronix.de> <20140117133709.GD25911@pengutronix.de>
+ <52D93885.5040109@pengutronix.de> <20140117203605.GF25911@pengutronix.de>
+ <52DA7106.5000300@hartkopp.net> <20140121095337.GR25911@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:44367 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754316AbaAUJ4W (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 04:56:22 -0500
-In-Reply-To: <52DE32FD.5010300@peak-system.com>
+Received: from mail-bk0-f47.google.com ([209.85.214.47]:65090 "EHLO
+	mail-bk0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753946AbaAUKAE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 05:00:04 -0500
+Received: by mail-bk0-f47.google.com with SMTP id d7so1715434bkh.6
+        for <linux-can@vger.kernel.org>; Tue, 21 Jan 2014 02:00:01 -0800 (PST)
+In-Reply-To: <20140121095337.GR25911@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 21.01.2014 09:42, Stephane Grosjean wrote:
-> Le 18/01/2014 18:34, Oliver Hartkopp a =C3=A9crit :
-
->> 1. Is it a good idea to provide CANFD8 frames to legacy applications=
-?
->=20
-> Well, at first, I didn't very agree with this idea ... But I'm not ab=
-le to
-> find an example against, so ...
-
-Ok. Me too :-)
-
-I'll better create a new thread for this compatibility question ...
-
->> My idea behind CAN_CTRLMODE_FD is to enable/disable the CAN FD mode =
-in the
->> CAN FD capable controller chip.
+On Tue, Jan 21, 2014 at 10:53 AM, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+> On Sat, Jan 18, 2014 at 01:18:14PM +0100, Oliver Hartkopp wrote:
+>> On 17.01.2014 21:36, Uwe Kleine-K=C3=B6nig wrote:
 >>
->> Depending on this CAN_CTRLMODE_FD the CAN FD functionality is enable=
-d when
->> this feature is supported(!) by the driver, see priv->ctrlmode_suppo=
-rted:
->=20
-> Ok I agree with the usage of this new flag in "ctrmode_supported".
->=20
->> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/=
-drivers/net/can/dev.c#n669
+>> >>
+>> >> https://gitorious.org/linux-can/can-modules
+>> > Is it a possibility to merge can-modules and can-utils?
 >>
+>> NO!
+> Did I hit another red button? If so I'm sorry, that was not my
+> intention.
+>
+>> > Then there would
+>> > only a single instance of isotp.h be needed.
 >>
->> Depending on CAN_CTRLMODE_FD the MTU is then set to CAN_MTU or CANFD=
-_MTU
->=20
-> So? Do you mean that the *CAN core* will set the MTU to CAN_MTU or CA=
-NFD_MTU
-> according to "priv->ctrlmode_supported & CAN_CTRLMODE_FD" ?
-> (Atm, the MTU is changed from user space only).
+>> NO!
+> ?? If can-modules and can-utils were merged both the kernel module an=
+d
+> the userspace stuff could use the same header. I don't understand you
+> "NO!" here.
+>
+>> [...]
+> I don't see a real reason here, but I read between the lines that you
+> prefer isotp to go into the kernel directly instead of into can-utils
+> first.
+> Anyhow, what I care for is to be able to package can-utils for Debian=
+=2E
+> That's what I can do once the updated headers hit can-utils so IMO we
+> can stop arguing even if we don't agree 100%.
 
-Not really. Not the CAN core but the driver does so.
+@Uwe: do you mean fixing this bug
+(http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D568303)? Two devs
+are already preparing the package, so the final license clean up would
+be great to finish the packaging process.
 
-What you see is, that the MTU for the VCAN is set at configuration(!) t=
-ime.
-But this is an exception to me, as the VCAN does not use the stuff from=
- dev.c
-as it has no bitrate setting, etc.
-
-Therefore the MTU for the VCAN is set by root - and not by any applicat=
-ion.
-
-Usually AFAIK the MTU is not set by root but from the driver side.
-
-Here: Setting CAN_CTRLMODE_FD at configuration time leads to CAN_MTU or
-CANFD_MTU set by the driver when the interface is set to 'up'.
-
-The mode of the driver can be checked by *reading* dev->mtu then.
-
->=20
->> (note that the interface has to be 'down' when configuring this feat=
-ure -
->> that's just the same as with configuring the bitrate).
->>
->> When CAN_CTRLMODE_FD was set but the second bitrate was *not* set be=
-fore the
->> interface is requested to be set to 'up' this leads to the same erro=
-r as if
->> the (single and only) bitrate is missing today.
->=20
-> So, this means that the arbitration bitrate could not be the default =
-data
-> bitrate, doesn't it?
->=20
-
-You think about copying the arbitration bitrate into the data bitrate w=
-hen the
-data bitrate was not set (with CAN_CTRLMODE_FD), right?
-
-Yes, this could be an idea too.
-
-The question is if this convenience functionality is confusing people o=
-r not.
-IMO your idea is nice.
-
-When you set a different bitrate this will be used. If not, the arbitra=
-tion
-bitrate is used for data bitrate too. No objections.
-
-Regards,
-Oliver
-
+Yegor
