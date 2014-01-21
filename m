@@ -1,63 +1,37 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: usb_8dev: firmware and windows library
-Date: Tue, 21 Jan 2014 12:50:07 +0100
-Message-ID: <52DE5EEF.6080100@hartkopp.net>
-References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux kernel
+ into include/linux
+Date: Tue, 21 Jan 2014 12:51:17 +0100
+Message-ID: <52DE5F35.2040905@hartkopp.net>
+References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de> <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de> <52D85910.8000200@pengutronix.de> <20140117133709.GD25911@pengutronix.de> <52D93885.5040109@pengutronix.de> <20140117203605.GF25911@pengutronix.de> <52DA7106.5000300@hartkopp.net> <20140121095337.GR25911@pengutronix.de> <52DE5B3F.3010900@hartkopp.net> <52DE5C12.70503@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:38472 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:52081 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754382AbaAULuO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 06:50:14 -0500
-In-Reply-To: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+	with ESMTP id S1754403AbaAULvW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 06:51:22 -0500
+In-Reply-To: <52DE5C12.70503@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Bernd_Krumb=F6ck?= <krumboeck@universalnet.at>, linux-can@vger.kernel.org
-Cc: gediminas@8devices.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7Zu?= =?UTF-8?B?aWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-Hello Bernd,
+On 21.01.2014 12:37, Marc Kleine-Budde wrote:
+> On 01/21/2014 12:34 PM, Oliver Hartkopp wrote:
+> 
+>>> @Marc or Oliver: Can you please give me a ping as soon as the headers
+>>> hit your public repo. Thanks.
+>>
+>> Indeed I would vote for your latest patch set (v5) as the only missing thing
+>> there would be to move isotp.h from include/socketcan/can/isotp.h to
+>> include/linux/can/isotp.h and delete the socketcan directory then.
+>>
+>> In Marcs patch set (v6) the license updates got lost at some point.
+> 
+> Uwe's patchs never included the actual import of the kernel headers,
+> which bring the license information. I'll post a follow up patch v7,
+> that import the kernel headers, too.
 
-I noticed that there was a firmware update from v1.4 to v1.5 for the 8d=
-evices
-USB2CAN interface:
-
-http://8devices.com/usb2can#downloads
-
-Do you know if there's any change which would be relevant for the usb_8=
-dev
-driver in Linux?
-
-Will there be an update of the sources at github?
-
-Many thanks,
-Oliver
-
-
-On 17.01.2013 10:03, "Bernd Krumb=F6ck" wrote:
-> Hello!
->=20
->=20
-> 8 devices (http://www.8devices.com/) allowed me to publish the firmwa=
-re to
-> the public:
->=20
-> firmware:
-> https://github.com/krumboeck/usb2can_firmware
->=20
-> canal library:
-> https://github.com/krumboeck/usb2can_canal
->=20
->=20
-> Many thanks to 8 devices!
->=20
-> regards,
-> Bernd
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+ok tnx!
