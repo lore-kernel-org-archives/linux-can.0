@@ -1,44 +1,29 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v7 09/10] include: gw.h: update comment
-Date: Tue, 21 Jan 2014 15:41:08 +0100
-Message-ID: <52DE8704.1060606@hartkopp.net>
-References: <1390309204-19854-1-git-send-email-mkl@pengutronix.de> <1390309204-19854-10-git-send-email-mkl@pengutronix.de> <20140121132419.GD26766@pengutronix.de>
+From: Gediminas Simanskis <gediminas@8devices.com>
+Subject: Re: usb_8dev: firmware and windows library
+Date: Tue, 21 Jan 2014 18:03:50 +0200
+Message-ID: <52DE9A66.5070703@8devices.com>
+References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>	<52DE5EEF.6080100@hartkopp.net>	<52DE60C7.3050906@8devices.com> <21214.26072.886368.818659@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:53851 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754274AbaAUOlL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 09:41:11 -0500
-In-Reply-To: <20140121132419.GD26766@pengutronix.de>
+Received: from mail-ea0-f181.google.com ([209.85.215.181]:40156 "EHLO
+	mail-ea0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754844AbaAUQDv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 11:03:51 -0500
+Received: by mail-ea0-f181.google.com with SMTP id m10so3854114eaj.26
+        for <linux-can@vger.kernel.org>; Tue, 21 Jan 2014 08:03:50 -0800 (PST)
+In-Reply-To: <21214.26072.886368.818659@gargle.gargle.HOWL>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: bon@elektron.ikp.physik.tu-darmstadt.de
 Cc: linux-can@vger.kernel.org
 
+Hi,
+this image was compiled using commercial version IAR compiller for ARM.
 
-
-On 21.01.2014 14:24, Uwe Kleine-K=F6nig wrote:
-> On Tue, Jan 21, 2014 at 02:00:03PM +0100, Marc Kleine-Budde wrote:
->> This comment was added to the kernel in patch:
->>
->>     391ac12 can: gw: add a per rule limitation of frame hops
-> The corresponding can-utils commit is:
->=20
-> 	ad7f44095ac3 (cangw: add an option for the per rule limitation of fr=
-ame hops)
->=20
-> which somehow introduced the difference even though it referenced com=
-mit
-> 391ac12.
->=20
-
-Ugh.
-
-I obviously did this small change before posting the upstream patch.
-Now it get's back to the correct kernel header source.
-
-Tnx.
-Oliver
+Gediminas,
+https://github.com/krumboeck/usb2can_firmware has no Makefile(.am) or 
+CMakeLists.txt. Can you perhaps send me a build log so I could try to 
+create a build environment? Thanks
 
