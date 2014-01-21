@@ -1,107 +1,203 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
-Date: Mon, 20 Jan 2014 22:17:47 +0100
-Message-ID: <52DD927B.2060500@pengutronix.de>
-References: <52DD0CC1.70205@pengutronix.de>	<CAMuHMdV5sMUnXb1Z1HeRk9+_dCGWrbD-DS62S7T4Be-77HvsvA@mail.gmail.com>	<52DD0F72.1000005@pengutronix.de> <20140120.111614.394228612374217980.davem@davemloft.net> <52DD9F3C.7000408@cogentembedded.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH RFC] can fd: Add separate bittiming infrastructure
+Date: Tue, 21 Jan 2014 09:42:37 +0100
+Message-ID: <52DE32FD.5010300@peak-system.com>
+References: <52D6CB48.9010206@hartkopp.net> <52D8DF40.7050405@peak-system.com>
+ <52DABB28.4070608@hartkopp.net>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="X94qe1MDDFOxoKFEsLSULd3bPca3mhDTt"
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <52DD9F3C.7000408@cogentembedded.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Miller <davem@davemloft.net>
-Cc: geert@linux-m68k.org, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.peak-system.com ([213.157.13.214]:40725 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751801AbaAUImw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 03:42:52 -0500
+In-Reply-To: <52DABB28.4070608@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---X94qe1MDDFOxoKFEsLSULd3bPca3mhDTt
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Le 18/01/2014 18:34, Oliver Hartkopp a =C3=A9crit :
+> Hi Stephane,
+>
+> On 17.01.2014 08:44, Stephane Grosjean wrote:
+>
+>>> +#define CAN_CTRLMODE_FD            0x20    /* CAN FD mode */
+>> - What is exactly the goal of this new CAN_CTRLMODE_FD please? Did y=
+ou define
+>> it to allow user to enable the CANFD function into the hardware, for=
+ example?
+>> If yes, isn't it redundant with setting the MTU to 72 bytes?
+>>
+>> - Moreover, how a CANFD -able driver has to handle a CANFD frame rea=
+d from the
+>> CANFD controller, when its network device MTU *ISNOT* =3D=3D 72 ??? =
+Should it
+>> discard the CANFD frame?
+> The stuff in linux/net/can/ takes care that only applications that kn=
+ow (and
+> enable) CAN FD get CAN frames with a length > 8 byte.
+>
+> E.g. today a CAN FD frame with only 8 bytes (aka CANFD8) can be passe=
+d to
+> applications that are not CAN FD capable. In this case the size (MTU)
+> is reduced from CANFD_MTU to CAN_MTU, see:
+>
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit=
+/net/can/raw.c?id=3De2d265d3b587f5f6f8febc0222aace93302ff0be
+>
+> and
+>
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/n=
+et/can/raw.c#n753
+>
+> This leads IMO to two questions:
+>
+> 1. Is it a good idea to provide CANFD8 frames to legacy applications?
 
-On 01/20/2014 11:12 PM, Sergei Shtylyov wrote:
-[...]
+Well, at first, I didn't very agree with this idea ... But I'm not able=
+=20
+to find an example against, so ...
+My first option was to define a new socket option, or using the=20
+"dev->mtu" field value:
 
->> I truly think using packed here is rediculous, please remove it unless=
+If the application sets this option to "on" (or the MTU to 72) so it=20
+tells the CAN core that it is able to receive ANY CANFD frames.
+If the application doesn't set one or the other option, as all existing=
+=20
+"legacy" CAN applications does not, well, the CAN core won't give it AN=
+Y=20
+incoming CANFD frame, that is, any CAN frame with "skb->len !=3D CAN_MT=
+U"=20
+if "dev->mtu !=3D 72". Something like
 
->> you can prove that things won't work without it.
->=20
->    They will. But how about the following 'struct rcar_can_regs'?
+  static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+                     struct packet_type *pt, struct net_device *orig_de=
+v)
+  {
+          struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
 
-The strcuts in question are:
+          if (unlikely(!net_eq(dev_net(dev), &init_net)))
+                  goto drop;
 
-> +/* Mailbox registers structure */
-> +struct rcar_can_mbox_regs {
-> +	u32 id;		/* IDE and RTR bits, SID and EID */
-> +	u8 stub;	/* Not used */
-> +	u8 dlc;		/* Data Length Code - bits [0..3] */
-> +	u8 data[8];	/* Data Bytes */
-> +	u8 tsh;		/* Time Stamp Higher Byte */
-> +	u8 tsl;		/* Time Stamp Lower Byte */
-> +} __packed;
-> +
-> +struct rcar_can_regs {
-> +	struct rcar_can_mbox_regs mb[RCAR_CAN_N_MBX]; /* Mailbox registers */=
++        if (dev->mtu !=3D CANFD_MTU)
++               goto drop;
++
+          if (WARN_ONCE(dev->type !=3D ARPHRD_CAN ||
+                        skb->len !=3D CANFD_MTU ||
+                        cfd->len > CANFD_MAX_DLEN,
+                        "PF_CAN: dropped non conform CAN FD skbuf: "
+                        "dev type %d, len %d, datalen %d\n",
+                        dev->type, skb->len, cfd->len))
+                  goto drop;
 
-> +	u32 mkr_2_9[8];	/* Mask Registers 2-9 */
-> +	u32 fidcr[2];	/* FIFO Received ID Compare Register */
-> +	u32 mkivlr1;	/* Mask Invalid Register 1 */
-> +	u32 mier1;	/* Mailbox Interrupt Enable Register 1 */
-> +	u32 mkr_0_1[2];	/* Mask Registers 0-1 */
-> +	u32 mkivlr0;    /* Mask Invalid Register 0*/
-> +	u32 mier0;      /* Mailbox Interrupt Enable Register 0 */
-> +	u8 pad_440[0x3c0];
-> +	u8 mctl[64];	/* Message Control Registers */
-> +	u16 ctlr;	/* Control Register */
-> +	u16 str;	/* Status register */
-> +	u8 bcr[3];	/* Bit Configuration Register */
-> +	u8 clkr;	/* Clock Select Register */
-> +	u8 rfcr;	/* Receive FIFO Control Register */
-> +	u8 rfpcr;	/* Receive FIFO Pointer Control Register */
-> +	u8 tfcr;	/* Transmit FIFO Control Register */
-> +	u8 tfpcr;       /* Transmit FIFO Pointer Control Register */
-> +	u8 eier;	/* Error Interrupt Enable Register */
-> +	u8 eifr;	/* Error Interrupt Factor Judge Register */
-> +	u8 recr;	/* Receive Error Count Register */
-> +	u8 tecr;        /* Transmit Error Count Register */
-> +	u8 ecsr;	/* Error Code Store Register */
-> +	u8 cssr;	/* Channel Search Support Register */
-> +	u8 mssr;	/* Mailbox Search Status Register */
-> +	u8 msmr;	/* Mailbox Search Mode Register */
-> +	u16 tsr;	/* Time Stamp Register */
-> +	u8 afsr;	/* Acceptance Filter Support Register */
-> +	u8 pad_857;
-> +	u8 tcr;		/* Test Control Register */
-> +	u8 pad_859[7];
-> +	u8 ier;		/* Interrupt Enable Register */
-> +	u8 isr;		/* Interrupt Status Register */
-> +	u8 pad_862;
-> +	u8 mbsmr;	/* Mailbox Search Mask Register */
-> +} __packed;
+          can_receive(skb, dev);
+          return NET_RX_SUCCESS;
 
-I think they should work without packed, too.
+  drop:
+          kfree_skb(skb);
+          return NET_RX_DROP;
+  }
 
-Marc
+Why trying to be backward compatible at any price?
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 2. If yes, should the CAN FD controller driver be able to make legacy=
+ frames
+>     CANDF8 frames to support the higher data bitrate for legacy appli=
+cations?
 
+Same as above, I have no real arguments against this.
 
---X94qe1MDDFOxoKFEsLSULd3bPca3mhDTt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> Maybe even the first question has to be denied (and the adaption in c=
+an/raw.c
+> should be removed then) ?!?
+> My idea behind CAN_CTRLMODE_FD is to enable/disable the CAN FD mode i=
+n the
+> CAN FD capable controller chip.
+>
+> Depending on this CAN_CTRLMODE_FD the CAN FD functionality is enabled=
+ when
+> this feature is supported(!) by the driver, see priv->ctrlmode_suppor=
+ted:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+Ok I agree with the usage of this new flag in "ctrmode_supported".
 
-iEYEARECAAYFAlLdknsACgkQjTAFq1RaXHM/PACglbz/ThfOyCmL3FzYLO/tjJ6y
-lzYAnieHk/rY7O6f01mrljat8n6T/cre
-=pASO
------END PGP SIGNATURE-----
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/d=
+rivers/net/can/dev.c#n669
+>
+> Depending on CAN_CTRLMODE_FD the MTU is then set to CAN_MTU or CANFD_=
+MTU
 
---X94qe1MDDFOxoKFEsLSULd3bPca3mhDTt--
+So? Do you mean that the *CAN core* will set the MTU to CAN_MTU or=20
+CANFD_MTU according to "priv->ctrlmode_supported & CAN_CTRLMODE_FD" ?
+(Atm, the MTU is changed from user space only).
+
+> (note that the interface has to be 'down' when configuring this featu=
+re -
+> that's just the same as with configuring the bitrate).
+>
+> When CAN_CTRLMODE_FD was set but the second bitrate was *not* set bef=
+ore the
+> interface is requested to be set to 'up' this leads to the same error=
+ as if
+> the (single and only) bitrate is missing today.
+
+So, this means that the arbitration bitrate could not be the default=20
+data bitrate, doesn't it?
+
+> I hope this would be a reasonable solution and I was able to describe=
+ it well.
+>
+> Comming back to question 2 from above, we would then need an addition=
+al
+> controlmode:
+>
+> #define CAN_CTRLMODE_TX_FD8 0x40    /* send legacy CAN frames in FD m=
+ode */
+
+=2E..
+> But I'm not really sure if these two 'compatibility' tweaks for legac=
+y
+> applications to use CAN FD8 is a wanted/needed feature.
+>
+> Any thoughts?
+>
+>>>      /*
+>>>     * CAN device statistics
+>>> @@ -122,6 +123,9 @@ enum {
+>>>        IFLA_CAN_RESTART_MS,
+>>>        IFLA_CAN_RESTART,
+>>>        IFLA_CAN_BERR_COUNTER,
+>>> +    IFLA_CAN_DATA_BITTIMING,
+>>> +    IFLA_CAN_DATA_BITTIMING_CONST,
+>>> +    IFLA_CAN_DATA_CLOCK,
+>>>        __IFLA_CAN_MAX
+>>>    };
+>> - by defining another clock for the data bitrate, do you suppose tha=
+t some
+>> hardwares could use different clocks for both arbitration and data b=
+itrates?
+> Yes. But this is probably not necessary. I just looked into the M_CAN
+> specification. They have *one* CAN clock and two different baud rate
+> prescalers. So I would tend to remove IFLA_CAN_DATA_CLOCK in the next=
+ RFC
+> until a real requirement emerges from some real hardware.
+
+Ack
+
+> Best regards,
+> Oliver
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
