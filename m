@@ -1,63 +1,147 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: [PATCH v5 5/5] include: Move includes copied from the Linux
- kernel into include/linux
-Date: Tue, 21 Jan 2014 10:59:41 +0100
-Message-ID: <CAGm1_kuUdfzHKedRfEi1vX3k7ALUBv4t6gzUzDqwSchpr_3xzg@mail.gmail.com>
-References: <1389888754-23013-1-git-send-email-mkl@pengutronix.de>
- <1389888754-23013-6-git-send-email-mkl@pengutronix.de> <20140116192818.GC25911@pengutronix.de>
- <52D85910.8000200@pengutronix.de> <20140117133709.GD25911@pengutronix.de>
- <52D93885.5040109@pengutronix.de> <20140117203605.GF25911@pengutronix.de>
- <52DA7106.5000300@hartkopp.net> <20140121095337.GR25911@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC] can fd: backward compatibility for CANFD8
+Date: Tue, 21 Jan 2014 11:22:11 +0100
+Message-ID: <52DE4A53.9080503@hartkopp.net>
+References: <52D6CB48.9010206@hartkopp.net> <52D8DF40.7050405@peak-system.com> <52DABB28.4070608@hartkopp.net> <52DE32FD.5010300@peak-system.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f47.google.com ([209.85.214.47]:65090 "EHLO
-	mail-bk0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753946AbaAUKAE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 05:00:04 -0500
-Received: by mail-bk0-f47.google.com with SMTP id d7so1715434bkh.6
-        for <linux-can@vger.kernel.org>; Tue, 21 Jan 2014 02:00:01 -0800 (PST)
-In-Reply-To: <20140121095337.GR25911@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:13615 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754500AbaAUKWS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2014 05:22:18 -0500
+In-Reply-To: <52DE32FD.5010300@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Jan 21, 2014 at 10:53 AM, Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
-> On Sat, Jan 18, 2014 at 01:18:14PM +0100, Oliver Hartkopp wrote:
->> On 17.01.2014 21:36, Uwe Kleine-K=C3=B6nig wrote:
+On 21.01.2014 09:42, Stephane Grosjean wrote:
+> Le 18/01/2014 18:34, Oliver Hartkopp a =C3=A9crit :
+
+>> The stuff in linux/net/can/ takes care that only applications that k=
+now (and
+>> enable) CAN FD get CAN frames with a length > 8 byte.
 >>
->> >>
->> >> https://gitorious.org/linux-can/can-modules
->> > Is it a possibility to merge can-modules and can-utils?
+>> E.g. today a CAN FD frame with only 8 bytes (aka CANFD8) can be pass=
+ed to
+>> applications that are not CAN FD capable. In this case the size (MTU=
+)
+>> is reduced from CANFD_MTU to CAN_MTU, see:
 >>
->> NO!
-> Did I hit another red button? If so I'm sorry, that was not my
-> intention.
->
->> > Then there would
->> > only a single instance of isotp.h be needed.
+>> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commi=
+t/net/can/raw.c?id=3De2d265d3b587f5f6f8febc0222aace93302ff0be
 >>
->> NO!
-> ?? If can-modules and can-utils were merged both the kernel module an=
-d
-> the userspace stuff could use the same header. I don't understand you
-> "NO!" here.
->
->> [...]
-> I don't see a real reason here, but I read between the lines that you
-> prefer isotp to go into the kernel directly instead of into can-utils
-> first.
-> Anyhow, what I care for is to be able to package can-utils for Debian=
+>>
+>> and
+>>
+>> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/=
+net/can/raw.c#n753
+>>
+>>
+>> This leads IMO to two questions:
+>>
+>> 1. Is it a good idea to provide CANFD8 frames to legacy applications=
+?
+>=20
+> Well, at first, I didn't very agree with this idea ... But I'm not ab=
+le to
+> find an example against, so ...
+> My first option was to define a new socket option, or using the "dev-=
+>mtu"
+> field value:
+>=20
+> If the application sets this option to "on" (or the MTU to 72) so it =
+tells the
+> CAN core that it is able to receive ANY CANFD frames.
+
+Please distinguish application and configuration.
+
+At configuration time CAN_CTRLMODE_FD can be set by 'root' which leads =
+to
+CAN_MTU or CANFD_MTU in dev->mtu when the interface is brought 'up'.
+
+The application (e.g. at the CAN_RAW socket) can enable the socket opti=
+on
+
+	CAN_RAW_FD_FRAMES,      /* allow CAN FD frames (default:off) */
+
+which means that it is able to cope with CAN frames *and* CAN FD frames=
 =2E
-> That's what I can do once the updated headers hit can-utils so IMO we
-> can stop arguing even if we don't agree 100%.
 
-@Uwe: do you mean fixing this bug
-(http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D568303)? Two devs
-are already preparing the package, so the final license clean up would
-be great to finish the packaging process.
+A CAN controller which is CAN FD enabled is always able to receive 'leg=
+acy'
+CAN frames too.
 
-Yegor
+> If the application doesn't set one or the other option, as all existi=
+ng
+> "legacy" CAN applications does not, well, the CAN core won't give it =
+ANY
+> incoming CANFD frame, that is, any CAN frame with "skb->len !=3D CAN_=
+MTU" if
+> "dev->mtu !=3D 72".
+
+When CAN_RAW_FD_FRAMES sockopt is not set, the application does not see=
+ CAN FD
+frames (CAN_MTU =3D=3D 72).
+
+But currently it might see CANFD8 frames, where the size which is read =
+from
+the socket is reduced from CANFD_MTU to CAN_MTU.
+
+
+> Something like
+>=20
+>  static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+>                     struct packet_type *pt, struct net_device *orig_d=
+ev)
+>  {
+>          struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
+>=20
+>          if (unlikely(!net_eq(dev_net(dev), &init_net)))
+>                  goto drop;
+>=20
+> +        if (dev->mtu !=3D CANFD_MTU)
+> +               goto drop;
+> +
+
+IMO that's not relevant fo application, when we test for skb->len !=3D =
+CANFD_MTU
+some line later.
+
+>          if (WARN_ONCE(dev->type !=3D ARPHRD_CAN ||
+>                        skb->len !=3D CANFD_MTU ||
+>                        cfd->len > CANFD_MAX_DLEN,
+>                        "PF_CAN: dropped non conform CAN FD skbuf: "
+>                        "dev type %d, len %d, datalen %d\n",
+>                        dev->type, skb->len, cfd->len))
+>                  goto drop;
+>=20
+>          can_receive(skb, dev);
+>          return NET_RX_SUCCESS;
+>=20
+>  drop:
+>          kfree_skb(skb);
+>          return NET_RX_DROP;
+>  }
+>=20
+> Why trying to be backward compatible at any price?
+
+Today you can enable CAN FD on a per socket basis, depending on your ab=
+ility
+to cope with CAN FD.
+
+>=20
+>> 2. If yes, should the CAN FD controller driver be able to make legac=
+y frames
+>>     CANDF8 frames to support the higher data bitrate for legacy appl=
+ications?
+>=20
+> Same as above, I have no real arguments against this.
+>=20
+
+I'm just not sure, if someone will ever need this ...
+
+Regards,
+Oliver
+
