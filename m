@@ -1,76 +1,91 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] slcand: accept both tty* and /dev/tty* device names
-Date: Thu, 23 Jan 2014 13:47:19 +0100
-Message-ID: <52E10F57.5020000@pengutronix.de>
-References: <1390466963-9519-1-git-send-email-yegorslists@googlemail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v7 08/10] include: can.h: update comment about introduction
+ of __kernel_sa_family_t
+Date: Thu, 23 Jan 2014 14:18:41 +0100
+Message-ID: <52E116B1.5070608@hartkopp.net>
+References: <1390309204-19854-1-git-send-email-mkl@pengutronix.de> <1390309204-19854-9-git-send-email-mkl@pengutronix.de> <20140121132055.GB26766@pengutronix.de> <52DE841D.5070705@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Ox3iM0H3aAJqBpN36CWBmlXnprfRmdvOX"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41360 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751359AbaAWMrZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jan 2014 07:47:25 -0500
-In-Reply-To: <1390466963-9519-1-git-send-email-yegorslists@googlemail.com>
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:50509 "EHLO
+	mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750869AbaAWNSs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jan 2014 08:18:48 -0500
+In-Reply-To: <52DE841D.5070705@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ox3iM0H3aAJqBpN36CWBmlXnprfRmdvOX
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 01/23/2014 09:49 AM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
+would you like to apply the include cleanup series too after changing t=
+his
+point below - following the suggestion from Uwe?
+
+Regards,
+Oliver
+
+On 21.01.2014 15:28, Oliver Hartkopp wrote:
 >=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->  slcand.c |    8 +++++---
->  1 files changed, 5 insertions(+), 3 deletions(-)
 >=20
-> diff --git a/slcand.c b/slcand.c
-> index 69d30f7..f682645 100644
-> --- a/slcand.c
-> +++ b/slcand.c
-> @@ -251,10 +251,12 @@ int main(int argc, char *argv[])
-> =20
->  	/* Prepare the tty device name string */
->  	pch =3D strstr(tty, devprefix);
-> -	if (pch =3D=3D tty)
-> -		print_usage(argv[0]);
-> +	if (pch !=3D tty) {
-> +		snprintf(ttypath, TTYPATH_LENGTH, "%s%s", devprefix, tty);
-> +	} else {
-> +		snprintf(ttypath, TTYPATH_LENGTH, "%s", tty);
-> +	}
-
-I've remove the { } after if and else, as there is only a single line.
-Applied to master.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Ox3iM0H3aAJqBpN36CWBmlXnprfRmdvOX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLhD1cACgkQjTAFq1RaXHMhGACffdxZrCOQcMcyIiobI+Pto22o
-UR4AnRi8rHmt4cAmzpuB5eEuP0LTiBhV
-=zz4k
------END PGP SIGNATURE-----
-
---Ox3iM0H3aAJqBpN36CWBmlXnprfRmdvOX--
+> On 21.01.2014 14:20, Uwe Kleine-K=F6nig wrote:
+>> Hello Marc,
+>>
+>> On Tue, Jan 21, 2014 at 02:00:02PM +0100, Marc Kleine-Budde wrote:
+>=20
+>=20
+>> I'd make this:
+>>
+>> -// typedef unsigned short __kernel_sa_family_t;
+>> -// introduced in Linux 3.2 commit 6602a4baf4d1a73cc4685a39ef859e1c5=
+ddf654c
+>> +/*
+>> + * This typedef was introduced in Linux v3.1-rc2
+>> + * (commit 6602a4baf4d1a73cc4685a39ef859e1c5ddf654c) in <linux/sock=
+et.h>.
+>> + * It must be duplicated here to make the can headers self-containe=
+d.
+>> + */
+>> + typedef unsigned short __kernel_sa_family_t;
+>>
+>> and then drop the following hunk. That should work as intended also =
+on
+>> systems that have kernel headers newer than v3.1-rc2 because a
+>> duplicated typedef shouldn't hurt. (Note I didn't test that or tried=
+ to
+>> find a proof in my C book.)
+>>
+>=20
+> Good idea!
+>=20
+> I double checked this by simply adding two identical typedefs:
+>=20
+> --- a/include/socketcan/can.h
+> +++ b/include/socketcan/can.h
+> @@ -126,6 +126,10 @@ struct canfd_frame {
+>  // typedef unsigned short __kernel_sa_family_t;
+>  // introduced in Linux 3.2 commit 6602a4baf4d1a73cc4685a39ef859e1c5d=
+df654c
+>=20
+> +
+> +typedef unsigned short __kernel_sa_family_t;
+> +typedef unsigned short __kernel_sa_family_t;
+> +
+>  /**
+>   * struct sockaddr_can - the sockaddr structure for CAN sockets
+>   * @can_family:  address family number AF_CAN.
+>=20
+> It compiles without problems (and warnings).
+>=20
+> Tnx!
+>=20
+> Oliver
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
