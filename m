@@ -1,44 +1,44 @@
 From: Michal Sojka <sojkam1@fel.cvut.cz>
-Subject: Re: [PATCH v2 1/2] can: Decrease default size of CAN_RAW socket send queue
-Date: Fri, 24 Jan 2014 13:14:09 +0100
-Message-ID: <87mwilbmr2.fsf@steelpick.2x.cz>
-References: <1390379257-9040-1-git-send-email-sojkam1@fel.cvut.cz> <20140123.124108.891860564230946746.davem@davemloft.net> <52E18331.6050607@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain
+Subject: [PATCH] can: Propagate SO_PRIORITY of raw sockets to skbs
+Date: Fri, 24 Jan 2014 13:17:37 +0100
+Message-ID: <1390565857-10417-1-git-send-email-sojkam1@fel.cvut.cz>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from max.feld.cvut.cz ([147.32.192.36]:35463 "EHLO max.feld.cvut.cz"
+Received: from max.feld.cvut.cz ([147.32.192.36]:36140 "EHLO max.feld.cvut.cz"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752112AbaAXMOX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 24 Jan 2014 07:14:23 -0500
-In-Reply-To: <52E18331.6050607@pengutronix.de>
+	id S1751185AbaAXMSD (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 24 Jan 2014 07:18:03 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, David Miller <davem@davemloft.net>
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, lisovy@gmail.com, Michal Sojka <sojkam1@fel.cvut.cz>
 
-On Thu, Jan 23 2014, Marc Kleine-Budde wrote:
-> On 01/23/2014 09:41 PM, David Miller wrote:
->> From: Michal Sojka <sojkam1@fel.cvut.cz>
->> Date: Wed, 22 Jan 2014 09:27:36 +0100
->> 
->>> Since the length of the qdisc queue was set by default to 10
->>> packets, this is exactly what was happening.
->> 
->> This is your bug, set the qdisc limit to something more reasonable.
->> 
->> Something large enough to absorb the traffic wrt. the speed at which
->> the CAN device can sink the data.
->
-> Hmmm, the problem is on i686 I have to increase the txqueuelen to 366
-> before the socket works as expected (writes are blocking). This means if
-> there are two processes one sending a stream of bulk data and the other
-> one occasionally more important data there will be a lot of frames in
-> front of the important ones.
+From: Rostislav Lisovy <lisovy@gmail.com>
 
-This problem can be solved with queuing disciplines. See
-https://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf.
+This allows controlling certain queueing disciplines by setting the
+socket's SO_PRIORITY option.
 
-This reminds me that I have another patch that makes qdisc work better
-with CAN raw sockets. I'll send the patch to linux-can.
+For example, with the default pfifo_fast queueing discipline, which
+provides three priorities, socket priority TC_PRIO_CONTROL means
+higher than default and TC_PRIO_BULK means lower than default.
 
--Michal
+Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
+Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+---
+ net/can/raw.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 641e1c8..01c5fbf 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -716,6 +716,7 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
+ 
+ 	skb->dev = dev;
+ 	skb->sk  = sk;
++	skb->priority = sk->sk_priority;
+ 
+ 	err = can_send(skb, ro->loopback);
+ 
+-- 
+1.8.5.2
+
