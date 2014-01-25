@@ -1,71 +1,90 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can-utils: Add exact CAN frame length calculation (including
- bitstuffing)
-Date: Sat, 25 Jan 2014 16:19:53 +0100
-Message-ID: <52E3D619.4070702@hartkopp.net>
-References: <1390571983-16040-1-git-send-email-sojkam1@fel.cvut.cz>
+From: Brennan Ashton <bashton@brennanashton.com>
+Subject: Re: usb_8dev: firmware and windows library
+Date: Sat, 25 Jan 2014 07:55:39 -0800
+Message-ID: <CANQdSEH20nr9i0ASEKTBDSayDn8VasnBQYKv7XSx5rp5myFqWQ@mail.gmail.com>
+References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>
+	<52DE5EEF.6080100@hartkopp.net>
+	<52DE60C7.3050906@8devices.com>
+	<52DFC08C.2040400@universalnet.at>
+	<52DFD9B7.40300@pengutronix.de>
+	<52E36208.3020100@universalnet.at>
+	<CANQdSEHrxThB8KkmTY8UUqbp6kCdcSAt4-Gu0w1jV08gpHEhxw@mail.gmail.com>
+	<52E37EF4.3090807@universalnet.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:11119 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751558AbaAYPT4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 25 Jan 2014 10:19:56 -0500
-In-Reply-To: <1390571983-16040-1-git-send-email-sojkam1@fel.cvut.cz>
+Received: from mail-ve0-f170.google.com ([209.85.128.170]:48366 "EHLO
+	mail-ve0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751277AbaAYPzl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 25 Jan 2014 10:55:41 -0500
+Received: by mail-ve0-f170.google.com with SMTP id cz12so2655633veb.1
+        for <linux-can@vger.kernel.org>; Sat, 25 Jan 2014 07:55:40 -0800 (PST)
+In-Reply-To: <52E37EF4.3090807@universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michal Sojka <sojkam1@fel.cvut.cz>, linux-can@vger.kernel.org
+To: Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Gediminas Simanskis <gediminas@8devices.com>, linux-can@vger.kernel.org
 
-Hello Michal,
+Bernd,
+Assuming it's not coming from the Arctic Circle or something I have no
+problem covering the cost of shipping. Just shoot me a private email
+with how much shipping is and how to get the funds to you.
 
-On 24.01.2014 14:59, Michal Sojka wrote:
-> This adds an algorithm for calculating the exact number of bits a CAN
-> frame occupies on the bus and uses this algorithm in canbusload.
+--Brennan
 
-
-> +++ b/canframelen.h
-> @@ -0,0 +1,8 @@
-> +#ifndef CANFRAMELEN_H
-> +#define CANFRAMELEN_H
-> +
-> +#include <linux/can.h>
-> +
-> +unsigned can_frame_length(struct can_frame *frame);
-> +
-> +#endif
-> 
-
-I would suggest two things:
-
-1. Add some comment about the function (e.g. that it returns the length in
-bits with/without inter frame gap).
-
-2. I would prefer to add some calculation mode identifier here and provide all
-calculation modes in canframelen.c
-
-Including this stuff and it's comments:
-
-https://gitorious.org/linux-can/can-utils/source/canbusload.c#L375
-
-E.g. some
-
-enum {
-	NO_BITSTUFFING, /* plain bit calculation without bitstuffing */
-	BITSTUFFING, /* with bitstuffing following Tindle estimation */
-	PRECISE, /* precise calculation including bitstuffing in CRC */
-}
-
-To be future proof with CAN I would suggest to add some CAN / CAN FD switch.
-
-E.g.
-
-unsigned can_frame_length(struct canfd_frame *cfd, int mode, int mtu);
-
-Where mtu is CAN_MTU or CANFD_MTU to distinguish the frame types.
-In the first step supporting CAN_MTU would be sufficient.
-As a return value of zero always shows a problem this can be used to indicated
-unsupported calculation modes/frame types.
-
-Regards,
-Oliver
+On 1/25/14, Bernd Krumboeck <krumboeck@universalnet.at> wrote:
+> I could lend, but the delivery costs would eat my pocket. ;-)
+>
+> Maybe I could find some time in the next days.
+> Are you willing to assist by mail?
+>
+>
+> regards,
+> Bernd
+>
+>
+>
+> Am 2014-01-25 09:29, schrieb Brennan Ashton:
+>> If there is interest and someone can lend me one of these for a bit of
+>> time I'm sure I could get this ported over to the GCC arm tool chain.
+>> I have done a few IAR to GCC ports and besides a few tricks they
+>> usually are not too bad.
+>>
+>> --Brennan Ashton
+>>
+>> On 1/24/14, Bernd Krumboeck <krumboeck@universalnet.at> wrote:
+>>> Hi!
+>>>
+>>>
+>>> Source code from firmware v1.5:
+>>> https://github.com/krumboeck/usb2can_firmware
+>>>
+>>>
+>>> After some experiments I was able to flash the firmware with dfu-util
+>>> under
+>>> linux:
+>>> https://github.com/krumboeck/usb2can_firmware#flash-the-device-linux-experimental
+>>>
+>>>
+>>> Sadly I don't know the way how to build the firmware with a free tools
+>>> chain.
+>>>
+>>>
+>>> regards,
+>>> Bernd
+>>>
+>>>
+>>> Am 2014-01-22 15:46, schrieb Marc Kleine-Budde:
+>>>> On 01/22/2014 01:58 PM, Bernd Krumboeck wrote:
+>>>>> May I kindly ask you to send me a diff/patch about the changes, so I
+>>>>> can
+>>>>> update the firmware sources on github.
+>>>>
+>>>> A complete new set of sources will do, too. Git will create the diff
+>>>> for
+>>>> you. :)
+>>>>
+>>>> Marc
+>>>>
+>
+>
