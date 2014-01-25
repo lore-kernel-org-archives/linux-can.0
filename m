@@ -1,106 +1,104 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2 1/2] can: Decrease default size of CAN_RAW socket send
- queue
-Date: Sat, 25 Jan 2014 17:31:53 +0100
-Message-ID: <52E3E6F9.8030401@hartkopp.net>
-References: <1390379257-9040-1-git-send-email-sojkam1@fel.cvut.cz> <20140123.124108.891860564230946746.davem@davemloft.net> <52E18331.6050607@pengutronix.de> <20140123.144243.998328685775607324.davem@davemloft.net> <87sisdbqky.fsf@steelpick.2x.cz>
+Subject: Re: usb_8dev: firmware and windows library
+Date: Sat, 25 Jan 2014 17:55:43 +0100
+Message-ID: <52E3EC8F.30200@hartkopp.net>
+References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at>	<52DE5EEF.6080100@hartkopp.net>	<52DE60C7.3050906@8devices.com>	<52DFC08C.2040400@universalnet.at>	<52DFD9B7.40300@pengutronix.de>	<52E36208.3020100@universalnet.at>	<CANQdSEHrxThB8KkmTY8UUqbp6kCdcSAt4-Gu0w1jV08gpHEhxw@mail.gmail.com>	<52E37EF4.3090807@universalnet.at> <CANQdSEH20nr9i0ASEKTBDSayDn8VasnBQYKv7XSx5rp5myFqWQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:8037 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:32716 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751843AbaAYQb5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 25 Jan 2014 11:31:57 -0500
-In-Reply-To: <87sisdbqky.fsf@steelpick.2x.cz>
+	with ESMTP id S1751914AbaAYQzp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 25 Jan 2014 11:55:45 -0500
+In-Reply-To: <CANQdSEH20nr9i0ASEKTBDSayDn8VasnBQYKv7XSx5rp5myFqWQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michal Sojka <sojkam1@fel.cvut.cz>, mkl@pengutronix.de
-Cc: linux-can@vger.kernel.org
+To: Brennan Ashton <bashton@brennanashton.com>, Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Gediminas Simanskis <gediminas@8devices.com>, linux-can@vger.kernel.org
 
-(reduced the mail participants to CAN ML)
+Hello Brennan,
 
-On 24.01.2014 11:51, Michal Sojka wrote:
+a packet from Germany to the US is about 16 EUR with DHL and 60EUR with UPS??
+Maybe I missed anything with the UPS Website while trying to get some shipping
+costs %-]
 
-> 
-> What about the following?
-> 
-> ----8<--------8<-----
-> Subject: [PATCH v3] can: Decrease default size of CAN_RAW socket send queue
-> 
+Btw. with all the customs stuff it looks pretty pointless to sent this adapter
+to you from Germany and back again :-(
 
-(..)
-
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 1870c47..a0bce83 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -492,7 +492,7 @@ static void can_setup(struct net_device *dev)
->  	dev->mtu = CAN_MTU;
->  	dev->hard_header_len = 0;
->  	dev->addr_len = 0;
-> -	dev->tx_queue_len = 10;
-> +	dev->tx_queue_len = 100;
->  
->  	/* New-style flags. */
->  	dev->flags = IFF_NOARP;
-> diff --git a/net/can/raw.c b/net/can/raw.c
-> index fdda5f6..4293197 100644
-> --- a/net/can/raw.c
-> +++ b/net/can/raw.c
-> @@ -291,6 +291,9 @@ static int raw_init(struct sock *sk)
->  {
->  	struct raw_sock *ro = raw_sk(sk);
->  
-> +	/* This limits the number of queued CAN frames to approximately 11 */
-> +	sk->sk_sndbuf = SOCK_MIN_SNDBUF;
-> +
->  	ro->bound            = 0;
->  	ro->ifindex          = 0;
->  
-
-Good thing: It works fine :-)
-
-Having two interfaces with sja1000 in my Laptop I can run
-
-	cangen -g 0 can0
-
-without any -ENOBUFS issues.
-
-The bad(?) thing:
-
-	canbusload can0@500000 can1@500000
-
-only leads to
-
- can0@500000  3166  343905 145968  68%
- can1@500000  3166  343905 145968  68%
-
-When running
-
-	cangen -g 0 can0
-	cangen -g 0 can1
-
-it shows up
-
- can0@500000  5111  553913 234584 110%
- can1@500000  5111  553913 234584 110%
-
-
-With a mainline kernel I can get
-
- can0@500000  4109  445113 188416  89%
- can1@500000  4109  445113 188416  89%
-
-with
-	cangen -g 0 can0 -i
-	                 ^^^
-
-Of course this burns lots of CPU time and returns thousands of -ENOBUFS then.
-
-Do you have an idea why we only get ~68% with the 'good' solution?
-Could this be due to some scheduling behaviour?
+I know some guys in the US that bought some of these adapters last year.
+I'll try to contact them on Monday if it's possible to lend you one of the
+adapters and ship it inside the US.
 
 Regards,
 Oliver
 
+On 25.01.2014 16:55, Brennan Ashton wrote:
+> Bernd,
+> Assuming it's not coming from the Arctic Circle or something I have no
+> problem covering the cost of shipping. Just shoot me a private email
+> with how much shipping is and how to get the funds to you.
+> 
+> --Brennan
+> 
+> On 1/25/14, Bernd Krumboeck <krumboeck@universalnet.at> wrote:
+>> I could lend, but the delivery costs would eat my pocket. ;-)
+>>
+>> Maybe I could find some time in the next days.
+>> Are you willing to assist by mail?
+>>
+>>
+>> regards,
+>> Bernd
+>>
+>>
+>>
+>> Am 2014-01-25 09:29, schrieb Brennan Ashton:
+>>> If there is interest and someone can lend me one of these for a bit of
+>>> time I'm sure I could get this ported over to the GCC arm tool chain.
+>>> I have done a few IAR to GCC ports and besides a few tricks they
+>>> usually are not too bad.
+>>>
+>>> --Brennan Ashton
+>>>
+>>> On 1/24/14, Bernd Krumboeck <krumboeck@universalnet.at> wrote:
+>>>> Hi!
+>>>>
+>>>>
+>>>> Source code from firmware v1.5:
+>>>> https://github.com/krumboeck/usb2can_firmware
+>>>>
+>>>>
+>>>> After some experiments I was able to flash the firmware with dfu-util
+>>>> under
+>>>> linux:
+>>>> https://github.com/krumboeck/usb2can_firmware#flash-the-device-linux-experimental
+>>>>
+>>>>
+>>>> Sadly I don't know the way how to build the firmware with a free tools
+>>>> chain.
+>>>>
+>>>>
+>>>> regards,
+>>>> Bernd
+>>>>
+>>>>
+>>>> Am 2014-01-22 15:46, schrieb Marc Kleine-Budde:
+>>>>> On 01/22/2014 01:58 PM, Bernd Krumboeck wrote:
+>>>>>> May I kindly ask you to send me a diff/patch about the changes, so I
+>>>>>> can
+>>>>>> update the firmware sources on github.
+>>>>>
+>>>>> A complete new set of sources will do, too. Git will create the diff
+>>>>> for
+>>>>> you. :)
+>>>>>
+>>>>> Marc
+>>>>>
+>>
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
