@@ -1,44 +1,43 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: Propagate SO_PRIORITY of raw sockets to skbs
-Date: Mon, 27 Jan 2014 10:21:13 +0100
-Message-ID: <52E62509.7020008@pengutronix.de>
-References: <1390565857-10417-1-git-send-email-sojkam1@fel.cvut.cz>
+Subject: Re: [PATCH] can-utils: Add exact CAN frame length calculation (including
+ bitstuffing)
+Date: Mon, 27 Jan 2014 10:26:52 +0100
+Message-ID: <52E6265C.7040601@pengutronix.de>
+References: <1390571983-16040-1-git-send-email-sojkam1@fel.cvut.cz> <52E3D619.4070702@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="pB2fvL8e78ibb1S0ml5NKIfO23EESOaKo"
+ boundary="jkElsrd2foWCACXx4g9opvVWHhpIrAUO8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46535 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50074 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753653AbaA0JVT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jan 2014 04:21:19 -0500
-In-Reply-To: <1390565857-10417-1-git-send-email-sojkam1@fel.cvut.cz>
+	with ESMTP id S1751135AbaA0J1B (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jan 2014 04:27:01 -0500
+In-Reply-To: <52E3D619.4070702@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michal Sojka <sojkam1@fel.cvut.cz>, linux-can@vger.kernel.org
-Cc: lisovy@gmail.com
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Michal Sojka <sojkam1@fel.cvut.cz>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pB2fvL8e78ibb1S0ml5NKIfO23EESOaKo
+--jkElsrd2foWCACXx4g9opvVWHhpIrAUO8
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/24/2014 01:17 PM, Michal Sojka wrote:
-> From: Rostislav Lisovy <lisovy@gmail.com>
->=20
-> This allows controlling certain queueing disciplines by setting the
-> socket's SO_PRIORITY option.
->=20
-> For example, with the default pfifo_fast queueing discipline, which
-> provides three priorities, socket priority TC_PRIO_CONTROL means
-> higher than default and TC_PRIO_BULK means lower than default.
->=20
-> Signed-off-by: Rostislav Lisovy <lisovy@gmail.com>
-> Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+On 01/25/2014 04:19 PM, Oliver Hartkopp wrote:
+[...]
 
-Applied to can.
+> https://gitorious.org/linux-can/can-utils/source/canbusload.c#L375
+>=20
+> E.g. some
+>=20
+> enum {
+> 	NO_BITSTUFFING, /* plain bit calculation without bitstuffing */
+> 	BITSTUFFING, /* with bitstuffing following Tindle estimation */
+> 	PRECISE, /* precise calculation including bitstuffing in CRC */
+> }
 
-Tnx,
+Please add a prefix to those enums.
+
 Marc
 
 --=20
@@ -48,7 +47,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---pB2fvL8e78ibb1S0ml5NKIfO23EESOaKo
+--jkElsrd2foWCACXx4g9opvVWHhpIrAUO8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -57,9 +56,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLmJQkACgkQjTAFq1RaXHPLnwCfRzigr4nGhPT5p0cyBhuuP6Ui
-8+sAn0xt7Kp3R3c/2qdK7vfHjXDcBQfp
-=mVsX
+iEYEARECAAYFAlLmJlwACgkQjTAFq1RaXHOQNACfcTbLyBkfHHws5ju0xKB8sXto
+sCEAnAv5RIRdyJ0tF4iSbzk1XKDqrBvc
+=aiCc
 -----END PGP SIGNATURE-----
 
---pB2fvL8e78ibb1S0ml5NKIfO23EESOaKo--
+--jkElsrd2foWCACXx4g9opvVWHhpIrAUO8--
