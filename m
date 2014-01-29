@@ -1,68 +1,46 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Janz ICAN3 build warnings
-Date: Wed, 29 Jan 2014 21:30:43 +0100
-Message-ID: <52E964F3.9040007@pengutronix.de>
-References: <52E90BEB.9040608@hartkopp.net> <20140129175824.GC20561@ovro.caltech.edu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH stable 3.11+] can: use private sk reference to detect
+ originating socket
+Date: Wed, 29 Jan 2014 21:40:58 +0100
+Message-ID: <52E9675A.4070201@hartkopp.net>
+References: <52E905C8.1060408@hartkopp.net>		 <1391007745.28432.36.camel@edumazet-glaptop2.roam.corp.google.com>		 <1391009406.28432.38.camel@edumazet-glaptop2.roam.corp.google.com>	 <1391010437.28432.39.camel@edumazet-glaptop2.roam.corp.google.com>	 <52E956E6.7090002@hartkopp.net> <1391025348.28432.63.camel@edumazet-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Pbiga6rnTKftbcEGoKClr7QNhpbdV59Sp"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60082 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751475AbaA2Uax (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Jan 2014 15:30:53 -0500
-In-Reply-To: <20140129175824.GC20561@ovro.caltech.edu>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:59934 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751126AbaA2UlC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Jan 2014 15:41:02 -0500
+In-Reply-To: <1391025348.28432.63.camel@edumazet-glaptop2.roam.corp.google.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ira W. Snyder" <iws@ovro.caltech.edu>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: David Miller <davem@davemloft.net>, Linux Netdev List <netdev@vger.kernel.org>, Andre Naujoks <nautsch2@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Pbiga6rnTKftbcEGoKClr7QNhpbdV59Sp
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 29.01.2014 20:55, Eric Dumazet wrote:
 
-On 01/29/2014 06:58 PM, Ira W. Snyder wrote:
-> From 90dd8d23b90d837d8d2bc5d53d0319b15f1db5a8 Mon Sep 17 00:00:00 2001
-> From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-> Date: Wed, 29 Jan 2014 09:51:48 -0800
-> Subject: [PATCH] can: janz-ican3: fix uninitialized variable warnings
->=20
-> Analysis of the code shows that the struct ican3_msg variable cannot be=
+>> 2. The check for sk and the additional skb_orphan() is not needed as the
+>> can_skb_set_owner() is invoked only after 'fresh' skb allocation or after
+>> clone/skb_orphan() - so we know the skb state very good.
+> 
+> Yep, but then you added skb_orphan() calls. when skb is not shared.
 
-> used uninitialized. Error conditions are checked and the loop terminate=
-s
-> before calling the ican3_handle_message() function with an uninitialize=
-d
-> value.
->=20
-> Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
+I did that e.g. in the sources placed in driver/net/can because I assume that
+I can not be sure that I always get skbs created by AF_CAN.
 
-Applied to can/master.
+E.g. one could also use AF_PACKET to send CAN frames to the CAN interfaces.
 
-Tnx,
-Marc
+Btw. assuming AF_PACKET does it correct too with the destructor I will omit
+the skb_orphan() / can_skb_set_owner() sequence in drivers/net/can in the next
+attempt.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Tnx
+Oliver
 
+> 
+> I think you really should have a helper instead of copying this 3 times.
+> 
 
---Pbiga6rnTKftbcEGoKClr7QNhpbdV59Sp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ok
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLpZPQACgkQjTAFq1RaXHOoEQCgjkJ/dDPZFOO6VxXe9kUb8WSz
-wdYAmgPSAa1xluLgnisFs2ZAGxiIT+1c
-=i6WF
------END PGP SIGNATURE-----
-
---Pbiga6rnTKftbcEGoKClr7QNhpbdV59Sp--
