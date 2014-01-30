@@ -1,67 +1,31 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/5] can: sja1000: cleanups and new OF property
-Date: Thu, 30 Jan 2014 17:52:42 +0100
-Message-ID: <52EA835A.9040102@pengutronix.de>
-References: <1391092168-21246-1-git-send-email-florian.vaussard@epfl.ch> <52EA6E31.2030604@pengutronix.de> <52EA6F6E.1010405@epfl.ch> <52EA718B.3090006@pengutronix.de> <52EA82F5.5000004@epfl.ch>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH stable 3.9+] can: add destructor for self generated skbs
+Date: Thu, 30 Jan 2014 15:10:03 -0800
+Message-ID: <1391123403.28432.81.camel@edumazet-glaptop2.roam.corp.google.com>
+References: <52EA1740.2010108@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="kDMpQqhh7oaMVRsAiUaRXefvXP0mnAIpn"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40244 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751168AbaA3Qws (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 30 Jan 2014 11:52:48 -0500
-In-Reply-To: <52EA82F5.5000004@epfl.ch>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: florian.vaussard@epfl.ch, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <52EA1740.2010108@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: David Miller <davem@davemloft.net>, Andre Naujoks <nautsch2@gmail.com>, Linux Netdev List <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kDMpQqhh7oaMVRsAiUaRXefvXP0mnAIpn
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2014-01-30 at 10:11 +0100, Oliver Hartkopp wrote:
+> Self generated skbuffs in net/can/bcm.c are setting a skb->sk reference but
+> no explicit destructor which is enforced since Linux 3.11 with commit
+> 376c7311bdb6 (net: add a temporary sanity check in skb_orphan()).
+> 
+> This patch adds some helper functions to make sure that a destructor is
+> properly defined when a sock reference is assigned to a CAN related skb.
+> To create an unshared skb owned by the original sock a common helper function
+> has been introduced to replace open coded functions to create CAN echo skbs.
+> 
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Tested-by: Andre Naujoks <nautsch2@gmail.com>
+> 
+> ---
 
-On 01/30/2014 05:51 PM, Florian Vaussard wrote:
->>> Fine. Is an incremental patch on top of this series ok for you ?
->>
->> I'd rather see patches 1 and 2 you have already posted, then probably =
-a
->> modernization patch which converts the platform driver to use devm_ an=
-d
->> friends. Then a patch adding the existing of bindings [1]. This patch =
-is
->> probably quite small if you prepare the driver in the modernization
->> patch properly. The last patch will add the new reg-io-width property.=
-
->>
->=20
-> Ok, I will do it.
-
-If you have questions or work in progress patches feel free to ask.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---kDMpQqhh7oaMVRsAiUaRXefvXP0mnAIpn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLqg1oACgkQjTAFq1RaXHOjwQCcCGS+SIwwCqqugDCazxHxhG1Q
-nFcAnAmV/IzAMEVajNsAsv9h81TBlAaM
-=fwaj
------END PGP SIGNATURE-----
-
---kDMpQqhh7oaMVRsAiUaRXefvXP0mnAIpn--
+Reviewed-by: Eric Dumazet <edumazet@google.com>
