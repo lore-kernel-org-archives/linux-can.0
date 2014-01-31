@@ -1,52 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] Add license to canframelen.h
-Date: Fri, 31 Jan 2014 11:52:46 +0100
-Message-ID: <52EB807E.3060500@pengutronix.de>
-References: <52EB7830.2080604@pengutronix.de> <1391164766-28324-1-git-send-email-sojkam1@fel.cvut.cz>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI"
+From: yegorslists@googlemail.com
+Subject: [PATCH] slcand: include <sys/socket.h>
+Date: Fri, 31 Jan 2014 11:54:09 +0100
+Message-ID: <1391165649-5280-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33363 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754086AbaAaKwt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:52:49 -0500
-In-Reply-To: <1391164766-28324-1-git-send-email-sojkam1@fel.cvut.cz>
+Received: from hhlx01.vscom.de ([62.145.30.242]:38631 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754040AbaAaKy2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:54:28 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michal Sojka <sojkam1@fel.cvut.cz>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Yegor Yefremov <yegorslists@googlemail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-On 01/31/2014 11:39 AM, Michal Sojka wrote:
-> Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+Linux build compiles without errors, but Android build
+complains about undefined routines and macros.
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+ slcand.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Tnx,
-Marc
+diff --git a/slcand.c b/slcand.c
+index 831e8c6..d71ba4d 100644
+--- a/slcand.c
++++ b/slcand.c
+@@ -28,6 +28,7 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/socket.h>
+ #include <fcntl.h>
+ #include <syslog.h>
+ #include <errno.h>
+-- 
+1.7.7
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLrgH4ACgkQjTAFq1RaXHOjwQCdEPnm2nbw2nGfiv0IR3qV6f7q
-+xgAnjxsRsPMH+gxU5RyDp1udcEVQW9k
-=Nh17
------END PGP SIGNATURE-----
-
---jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI--
