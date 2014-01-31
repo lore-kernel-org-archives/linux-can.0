@@ -1,59 +1,60 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] Android.mk: canbusload: make use of libcan
-Date: Fri, 31 Jan 2014 11:25:24 +0100
-Message-ID: <1391163924-31563-1-git-send-email-mkl@pengutronix.de>
+From: Florian Vaussard <florian.vaussard@epfl.ch>
+Subject: [PATCH v2 0/6] can: sja1000: cleanups and new OF property
+Date: Fri, 31 Jan 2014 11:35:07 +0100
+Message-ID: <1391164513-11529-1-git-send-email-florian.vaussard@epfl.ch>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58956 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751463AbaAaKZ0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:25:26 -0500
+Received: from smtp4.epfl.ch ([128.178.224.219]:37421 "EHLO smtp4.epfl.ch"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751410AbaAaKf0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 31 Jan 2014 05:35:26 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, florian.vaussard@epfl.ch
 
-In commit
+Hello,
 
-    2206f92 canbusload: Add exact CAN frame length calculation (including bitstuffing)
+Changes sinces v1:
+- Merge sja1000_of_platform.c into sja1000_platform.c (patch 4)
 
-the function to calculate the can_frame_length was moved into a seperate file
-(canframelen.c). This patch for the Android makefile adds canframelen.c to the
-lib, too and lets canbusload link against the lib.
+The first part of this series performs serveral small cleanups
+(patches 1 to 3).
 
-Cc: Yegor Yefremov <yegorslists@googlemail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello Yegor,
+Patch 4 merges sja1000_of_platform.c into sja1000_platform.c.
+Changes are pretty conservatives (mostly copy/paste/move). IRQ
+is treated differently in the OF and non-OF versions, thus this
+is where the fused version differs the most.
 
-can you please test if current master + this patch compiles again on Android?
+The final part introduces the 'reg-io-width' binding (already used
+by some other drivers) to perform a similar job as what was done
+with IORESOURCE_MEM_XXBIT. This is needed on my system to correctly
+take into account the aliasing of the address bus.
 
-regards,
-Marc
+All patches were tested using OF boot on my OMAP3 system with a
+memory-mapped SJA1000. Thus, the non-OF path is not tested, as
+I do not have a platform data at hand.
 
- Android.mk | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Regards,
+Florian
 
-diff --git a/Android.mk b/Android.mk
-index ffac957..1901197 100644
---- a/Android.mk
-+++ b/Android.mk
-@@ -11,7 +11,7 @@ PRIVATE_LOCAL_CFLAGS := -O2 -g -W -Wall		\
- 
- include $(CLEAR_VARS)
- 
--LOCAL_SRC_FILES := lib.c
-+LOCAL_SRC_FILES := lib.c canframelen.c
- LOCAL_MODULE := libcan
- LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
- LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
-@@ -86,6 +86,7 @@ include $(CLEAR_VARS)
- LOCAL_SRC_FILES := canbusload.c
- LOCAL_MODULE := canbusload
- LOCAL_MODULE_TAGS := optional
-+LOCAL_STATIC_LIBRARIES := libcan
- LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
- LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
- 
+Florian Vaussard (6):
+  can: sja1000: remove unused defines
+  can: sja1000: convert printk to use netdev API
+  can: sja1000: platform: use devm_* APIs
+  can: sja1000: fuse of_platform into platform
+  Documentation: devicetree: sja1000: add reg-io-width binding
+  can: sja1000: of: add reg-io-width property for 8, 16 and 32-bit
+    register access
+
+ .../devicetree/bindings/net/can/sja1000.txt        |   4 +
+ drivers/net/can/sja1000/Kconfig                    |  13 +-
+ drivers/net/can/sja1000/Makefile                   |   1 -
+ drivers/net/can/sja1000/sja1000.c                  |   3 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c      | 221 ---------------------
+ drivers/net/can/sja1000/sja1000_platform.c         | 194 ++++++++++++------
+ 6 files changed, 141 insertions(+), 295 deletions(-)
+ delete mode 100644 drivers/net/can/sja1000/sja1000_of_platform.c
+
 -- 
-1.8.5.3
+1.8.1.2
 
