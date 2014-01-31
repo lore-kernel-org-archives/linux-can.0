@@ -1,68 +1,86 @@
-From: Florian Vaussard <florian.vaussard@epfl.ch>
-Subject: Re: [PATCH v3 0/5] can: sja1000: cleanups and new OF property
-Date: Fri, 31 Jan 2014 15:08:53 +0100
-Message-ID: <52EBAE75.6050803@epfl.ch>
-References: <1391175277-19833-1-git-send-email-florian.vaussard@epfl.ch> <52EBA7E2.6090007@pengutronix.de> <52EBAA28.1070307@gaisler.com>
-Reply-To: florian.vaussard@epfl.ch
+From: Francesco Giovannini <francesco.giovannini@iit.it>
+Subject: Can't start ESD CAN-USB/2
+Date: Fri, 31 Jan 2014 17:09:49 +0100
+Message-ID: <52EBCACD.9080906@iit.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp5.epfl.ch ([128.178.224.8]:38319 "EHLO smtp5.epfl.ch"
+Received: from mx.iit.it ([90.147.26.161]:44537 "EHLO es400ra02.iit.it"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932395AbaAaOI5 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 31 Jan 2014 09:08:57 -0500
-In-Reply-To: <52EBAA28.1070307@gaisler.com>
+	id S1754033AbaAaQJr (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 31 Jan 2014 11:09:47 -0500
+Received: from es400ra02.iit.it (127.0.0.1) id htf5cm0171s7 for <linux-can@vger.kernel.org>; Fri, 31 Jan 2014 17:09:46 +0100 (envelope-from <prvs=1108748f8e=Francesco.Giovannini@iit.it>)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
+
+Hi guys!
+
+I am running OpenSuse 12.2, kernel 3.4.63-2.44-desktop. I downloaded and 
+installed libsocketcan v0.0.9 and canutils v4.0.6. I then compiled the 
+esd_can2 module and modprobed it correctly. When i plug in my CAN-USB/2 
+device i get the following from dmesg:
+
+    [186823.262021] usb 1-10: new high-speed USB device number 22 using
+    ehci_hcd
+    [186823.826031] usb 1-10: device not accepting address 22, error -71
+    [186823.877025] hub 1-0:1.0: unable to enumerate USB device on port 10
+    [186827.879018] usb 1-10: new high-speed USB device number 24 using
+    ehci_hcd
+    [186827.995429] usb 1-10: New USB device found, idVendor=0ab4,
+    idProduct=0010
+    [186827.995432] usb 1-10: New USB device strings: Mfr=1, Product=2,
+    SerialNumber=3
+    [186827.995435] usb 1-10: Product: USB2292
+    [186827.995438] usb 1-10: Manufacturer: esd electronic system design
+    gmbh (www.esd-electronics.com)
+    [186827.995440] usb 1-10: SerialNumber: GM001950
+    [186827.997824] esd_usb2 1-10:1.0: can0: device can0 registered
+
+The device appears to be correctly recognised and the can0 interface is 
+ready to be used. I then set the bitrate and several other paramters with:
+
+    # canconfig can0 bittiming  prop-seg 2 phase-seg1 12 phase-seg2 5
+    sjw 1 brp 3 tq 50
+
+    can0 bittiming:
+         tq: 50, prop-seq: 2 phase-seq1: 12 phase-seq2: 5 sjw: 1, brp: 3
+    can0 bitrate: 1000000, sample-point: 0.750
+
+However when i try to start the interface with # ifconfig can0 up, I get 
+the following error:
+
+    SIOCSIFFLAGS: Invalid argument
+
+If I look at the details for the can0 interface it seems that all the 
+configuration parameters I sent earlier are not taken into account:
+
+    # ip -d link show can0
+    16: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT qlen 10
+         link/can
+         can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+         bitrate 0 sample-point 0.000
+         tq 0 prop-seg 0 phase-seg1 0 phase-seg2 0 sjw 0
+         esd_usb2: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
+         clock 60000000
+
+Also, for reference sake, my kernel is compiled with 
+CONFIG_CAN_CALC_BITTIMING=y. I am of course running all of these 
+commands as root.
+
+I must say this is a very weird behaviour. I have been struggling 
+without being able to see the light and I really hope one of you guys 
+might have a clue about what is going on.
 
 
-
-On 01/31/2014 02:50 PM, Andreas Larsson wrote:
-> On 2014-01-31 14:40, Marc Kleine-Budde wrote:
->> On 01/31/2014 02:34 PM, Florian Vaussard wrote:
->>> Hello,
->>>
->>> (could someone with a SJA1000 on SPARC perform a functional test
->>> to see if interrupts are working? it would be great :-)
->>>
->>> Changes since v2:
->>> - Dropped patch 1 "can: sja1000: remove unused defines"
->>> - Addressed Marc's comments on patch 4 and 6 (now 3 and 5)
->>>
->>> Changes since v1:
->>> - Merge sja1000_of_platform.c into sja1000_platform.c (patch 4)
->>>
->>> The first part of this series performs serveral small cleanups
->>> (patches 1 and 2).
->>>
->>> Patch 3 merges sja1000_of_platform.c into sja1000_platform.c.
->>> Changes are pretty conservatives (mostly copy/paste/move). IRQ
->>> is treated differently in the OF and non-OF versions, thus this
->>> is where the fused version differs the most.
->>>
->>> The final part introduces the 'reg-io-width' binding (already used
->>> by some other drivers) to perform a similar job as what was done
->>> with IORESOURCE_MEM_XXBIT. This is needed on my system to correctly
->>> take into account the aliasing of the address bus.
->>>
->>> All patches were tested using OF boot on my OMAP3 system with a
->>> memory-mapped SJA1000. Thus, the non-OF path is not tested, as
->>> I do not have a platform data at hand.
->>
->> Nice, looks good now. I'll give Andreas some time to test on sparc and
->> then apply the patches.
-> 
-> 
-> I am on it. I will dig up some hardware for this on Monday to test it.
-> 
-
-Many thanks :o)
-
-(be careful to enable CAN_SJA1000_PLATFORM, as I removed
-CAN_SJA1000_PLATFORM_OF)
-
-Regards,
-Florian
+Thanks a lot!
+Francesco
+-- 
+*Francesco Giovannini*
+Research Fellow
+iCub Facility
+*Istituto Italiano di Tecnologia*
+Via Morego, 30 16163 Genova
+/email:/ francesco.giovannini@iit.it <mailto://francesco.giovannini@iit.it>
+www.iit.it <http://www.iit.it>
