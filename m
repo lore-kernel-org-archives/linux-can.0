@@ -1,68 +1,55 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] Android.mk: canbusload: make use of libcan
-Date: Fri, 31 Jan 2014 11:47:24 +0100
-Message-ID: <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
-References: <1391163924-31563-1-git-send-email-mkl@pengutronix.de>
+Date: Fri, 31 Jan 2014 11:51:08 +0100
+Message-ID: <52EB801C.50107@pengutronix.de>
+References: <1391163924-31563-1-git-send-email-mkl@pengutronix.de> <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bk0-f54.google.com ([209.85.214.54]:51424 "EHLO
-	mail-bk0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751411AbaAaKrt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:47:49 -0500
-Received: by mail-bk0-f54.google.com with SMTP id u14so2103931bkz.13
-        for <linux-can@vger.kernel.org>; Fri, 31 Jan 2014 02:47:47 -0800 (PST)
-In-Reply-To: <1391163924-31563-1-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33809 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751410AbaAaKvN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:51:13 -0500
+In-Reply-To: <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Yegor Yefremov <yegorslists@googlemail.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Fri, Jan 31, 2014 at 11:25 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> In commit
->
->     2206f92 canbusload: Add exact CAN frame length calculation (including bitstuffing)
->
-> the function to calculate the can_frame_length was moved into a seperate file
-> (canframelen.c). This patch for the Android makefile adds canframelen.c to the
-> lib, too and lets canbusload link against the lib.
->
-> Cc: Yegor Yefremov <yegorslists@googlemail.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
-> Hello Yegor,
->
-> can you please test if current master + this patch compiles again on Android?
->
-> regards,
-> Marc
->
->  Android.mk | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Android.mk b/Android.mk
-> index ffac957..1901197 100644
-> --- a/Android.mk
-> +++ b/Android.mk
-> @@ -11,7 +11,7 @@ PRIVATE_LOCAL_CFLAGS := -O2 -g -W -Wall               \
->
->  include $(CLEAR_VARS)
->
-> -LOCAL_SRC_FILES := lib.c
-> +LOCAL_SRC_FILES := lib.c canframelen.c
->  LOCAL_MODULE := libcan
->  LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
->  LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
-> @@ -86,6 +86,7 @@ include $(CLEAR_VARS)
->  LOCAL_SRC_FILES := canbusload.c
->  LOCAL_MODULE := canbusload
->  LOCAL_MODULE_TAGS := optional
-> +LOCAL_STATIC_LIBRARIES := libcan
->  LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
->  LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-It compiles on Android.
+On 01/31/2014 11:47 AM, Yegor Yefremov wrote:
+> It compiles on Android.
+>=20
+> Tested-by: Yegor Yefremov <yegorslists@googlemail.com>
 
-Tested-by: Yegor Yefremov <yegorslists@googlemail.com>
+Tnx,
+Marc
 
-Yegor
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLrgBwACgkQjTAFq1RaXHPeVgCgkJqKPwPJ/C+TZ92ru42mQmfd
+eZIAniNLR86UlCIhF8sA2ShjSw+wuYSk
+=UTgv
+-----END PGP SIGNATURE-----
+
+--28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg--
