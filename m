@@ -1,77 +1,68 @@
-From: Michal Sojka <sojkam1@fel.cvut.cz>
-Subject: [PATCH] Add license to canframelen.h
-Date: Fri, 31 Jan 2014 11:39:26 +0100
-Message-ID: <1391164766-28324-1-git-send-email-sojkam1@fel.cvut.cz>
-References: <52EB7830.2080604@pengutronix.de>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH] Android.mk: canbusload: make use of libcan
+Date: Fri, 31 Jan 2014 11:47:24 +0100
+Message-ID: <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
+References: <1391163924-31563-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from max.feld.cvut.cz ([147.32.192.36]:37582 "EHLO max.feld.cvut.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932256AbaAaKkU (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 31 Jan 2014 05:40:20 -0500
-In-Reply-To: <52EB7830.2080604@pengutronix.de>
+Received: from mail-bk0-f54.google.com ([209.85.214.54]:51424 "EHLO
+	mail-bk0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751411AbaAaKrt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:47:49 -0500
+Received: by mail-bk0-f54.google.com with SMTP id u14so2103931bkz.13
+        for <linux-can@vger.kernel.org>; Fri, 31 Jan 2014 02:47:47 -0800 (PST)
+In-Reply-To: <1391163924-31563-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de, Michal Sojka <sojkam1@fel.cvut.cz>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
----
- canframelen.h | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+On Fri, Jan 31, 2014 at 11:25 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> In commit
+>
+>     2206f92 canbusload: Add exact CAN frame length calculation (including bitstuffing)
+>
+> the function to calculate the can_frame_length was moved into a seperate file
+> (canframelen.c). This patch for the Android makefile adds canframelen.c to the
+> lib, too and lets canbusload link against the lib.
+>
+> Cc: Yegor Yefremov <yegorslists@googlemail.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> Hello Yegor,
+>
+> can you please test if current master + this patch compiles again on Android?
+>
+> regards,
+> Marc
+>
+>  Android.mk | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/Android.mk b/Android.mk
+> index ffac957..1901197 100644
+> --- a/Android.mk
+> +++ b/Android.mk
+> @@ -11,7 +11,7 @@ PRIVATE_LOCAL_CFLAGS := -O2 -g -W -Wall               \
+>
+>  include $(CLEAR_VARS)
+>
+> -LOCAL_SRC_FILES := lib.c
+> +LOCAL_SRC_FILES := lib.c canframelen.c
+>  LOCAL_MODULE := libcan
+>  LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+>  LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
+> @@ -86,6 +86,7 @@ include $(CLEAR_VARS)
+>  LOCAL_SRC_FILES := canbusload.c
+>  LOCAL_MODULE := canbusload
+>  LOCAL_MODULE_TAGS := optional
+> +LOCAL_STATIC_LIBRARIES := libcan
+>  LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+>  LOCAL_CFLAGS := $(PRIVATE_LOCAL_CFLAGS)
 
-diff --git a/canframelen.h b/canframelen.h
-index 39b7706..4f39404 100644
---- a/canframelen.h
-+++ b/canframelen.h
-@@ -1,3 +1,48 @@
-+/*
-+ * canframelen.h
-+ *
-+ * Copyright (c) 2013, 2014 Czech Technical University in Prague
-+ *
-+ * Author: Michal Sojka <sojkam1@fel.cvut.cz>
-+ *
-+ * Redistribution and use in source and binary forms, with or without
-+ * modification, are permitted provided that the following conditions
-+ * are met:
-+ * 1. Redistributions of source code must retain the above copyright
-+ *    notice, this list of conditions and the following disclaimer.
-+ * 2. Redistributions in binary form must reproduce the above copyright
-+ *    notice, this list of conditions and the following disclaimer in the
-+ *    documentation and/or other materials provided with the distribution.
-+ * 3. Neither the name of Czech Technical University in Prague nor the
-+ *    names of its contributors may be used to endorse or promote
-+ *    products derived from this software without specific prior
-+ *    written permission.
-+ *
-+ * Alternatively, provided that this notice is retained in full, this
-+ * software may be distributed under the terms of the GNU General
-+ * Public License ("GPL") version 2, in which case the provisions of the
-+ * GPL apply INSTEAD OF those given above.
-+ *
-+ * The provided data structures and external interfaces from this code
-+ * are not restricted to be used by modules with a GPL compatible license.
-+ *
-+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-+ * DAMAGE.
-+ *
-+ * Send feedback to <linux-can@vger.kernel.org>
-+ *
-+ */
-+
- #ifndef CANFRAMELEN_H
- #define CANFRAMELEN_H
- 
--- 
-1.8.5.2
+It compiles on Android.
 
+Tested-by: Yegor Yefremov <yegorslists@googlemail.com>
+
+Yegor
