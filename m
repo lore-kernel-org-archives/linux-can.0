@@ -1,32 +1,29 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] Android.mk: canbusload: make use of libcan
-Date: Fri, 31 Jan 2014 11:51:08 +0100
-Message-ID: <52EB801C.50107@pengutronix.de>
-References: <1391163924-31563-1-git-send-email-mkl@pengutronix.de> <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
+Subject: Re: [PATCH] Add license to canframelen.h
+Date: Fri, 31 Jan 2014 11:52:46 +0100
+Message-ID: <52EB807E.3060500@pengutronix.de>
+References: <52EB7830.2080604@pengutronix.de> <1391164766-28324-1-git-send-email-sojkam1@fel.cvut.cz>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg"
+ boundary="jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33809 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33363 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751410AbaAaKvN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:51:13 -0500
-In-Reply-To: <CAGm1_kvHPrRCZjsJHpKb7jj6TGb9RbYLNs-QJUk3o5KzpJb_mg@mail.gmail.com>
+	with ESMTP id S1754086AbaAaKwt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2014 05:52:49 -0500
+In-Reply-To: <1391164766-28324-1-git-send-email-sojkam1@fel.cvut.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Michal Sojka <sojkam1@fel.cvut.cz>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg
+--jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/31/2014 11:47 AM, Yegor Yefremov wrote:
-> It compiles on Android.
->=20
-> Tested-by: Yegor Yefremov <yegorslists@googlemail.com>
+On 01/31/2014 11:39 AM, Michal Sojka wrote:
+> Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
 
 Tnx,
 Marc
@@ -38,7 +35,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg
+--jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -47,9 +44,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLrgBwACgkQjTAFq1RaXHPeVgCgkJqKPwPJ/C+TZ92ru42mQmfd
-eZIAniNLR86UlCIhF8sA2ShjSw+wuYSk
-=UTgv
+iEYEARECAAYFAlLrgH4ACgkQjTAFq1RaXHOjwQCdEPnm2nbw2nGfiv0IR3qV6f7q
++xgAnjxsRsPMH+gxU5RyDp1udcEVQW9k
+=Nh17
 -----END PGP SIGNATURE-----
 
---28sAs2mQMgNd7ioAO0mqRIPJ02oig9cSg--
+--jmBvfM9sEvFwpanKOfsK9KoRwkBqfBWtI--
