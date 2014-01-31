@@ -1,84 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 0/5] can: sja1000: cleanups and new OF property
-Date: Fri, 31 Jan 2014 14:51:19 +0100
-Message-ID: <52EBAA57.1030006@pengutronix.de>
-References: <1391175277-19833-1-git-send-email-florian.vaussard@epfl.ch> <52EBA7E2.6090007@pengutronix.de> <52EBAA28.1070307@gaisler.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v3 5/5] can: sja1000: of: add reg-io-width property for
+ 8, 16 and 32-bit register access
+Date: Fri, 31 Jan 2014 18:08:01 +0400
+Message-ID: <52EBAE41.8060403@cogentembedded.com>
+References: <1391175277-19833-1-git-send-email-florian.vaussard@epfl.ch> <1391175277-19833-6-git-send-email-florian.vaussard@epfl.ch>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Q66oVvLNa2SSR9OQ93aLclqkqo1uSPIxk"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52EBAA28.1070307@gaisler.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas Larsson <andreas@gaisler.com>, Florian Vaussard <florian.vaussard@epfl.ch>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <1391175277-19833-6-git-send-email-florian.vaussard@epfl.ch>
+Sender: sparclinux-owner@vger.kernel.org
+To: Florian Vaussard <florian.vaussard@epfl.ch>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Andreas Larsson <andreas@gaisler.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Q66oVvLNa2SSR9OQ93aLclqkqo1uSPIxk
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello.
 
-On 01/31/2014 02:50 PM, Andreas Larsson wrote:
-> On 2014-01-31 14:40, Marc Kleine-Budde wrote:
->> On 01/31/2014 02:34 PM, Florian Vaussard wrote:
->>> Hello,
->>>
->>> (could someone with a SJA1000 on SPARC perform a functional test
->>> to see if interrupts are working? it would be great :-)
->>>
->>> Changes since v2:
->>> - Dropped patch 1 "can: sja1000: remove unused defines"
->>> - Addressed Marc's comments on patch 4 and 6 (now 3 and 5)
->>>
->>> Changes since v1:
->>> - Merge sja1000_of_platform.c into sja1000_platform.c (patch 4)
->>>
->>> The first part of this series performs serveral small cleanups
->>> (patches 1 and 2).
->>>
->>> Patch 3 merges sja1000_of_platform.c into sja1000_platform.c.
->>> Changes are pretty conservatives (mostly copy/paste/move). IRQ
->>> is treated differently in the OF and non-OF versions, thus this
->>> is where the fused version differs the most.
->>>
->>> The final part introduces the 'reg-io-width' binding (already used
->>> by some other drivers) to perform a similar job as what was done
->>> with IORESOURCE_MEM_XXBIT. This is needed on my system to correctly
->>> take into account the aliasing of the address bus.
->>>
->>> All patches were tested using OF boot on my OMAP3 system with a
->>> memory-mapped SJA1000. Thus, the non-OF path is not tested, as
->>> I do not have a platform data at hand.
->>
->> Nice, looks good now. I'll give Andreas some time to test on sparc and=
+On 31-01-2014 17:34, Florian Vaussard wrote:
 
->> then apply the patches.
->=20
->=20
-> I am on it. I will dig up some hardware for this on Monday to test it.
+> Add the 'reg-io-width' property for 8, 16 and 32-bit access, like
+> what is currently done with IORESOURCE_MEM_{8,16,32}BIT for non-OF
+> boot.
 
-\o/
+> Signed-off-by: Florian Vaussard <florian.vaussard@epfl.ch>
+> ---
+>   drivers/net/can/sja1000/sja1000_platform.c | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+> index 50dece8..25122bf 100644
+> --- a/drivers/net/can/sja1000/sja1000_platform.c
+> +++ b/drivers/net/can/sja1000/sja1000_platform.c
+> @@ -102,8 +102,20 @@ static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+>   	int err;
+>   	u32 prop;
+>
+> -	priv->read_reg = sp_read_reg8;
+> -	priv->write_reg = sp_write_reg8;
+> +	err = of_property_read_u32(of, "reg-io-width", &prop);
+> +	if (err)
+> +		prop = 1;
+> +
+> +	if (prop == 4) {
 
+    This is asking to be a *switch* statement instead.
 
---Q66oVvLNa2SSR9OQ93aLclqkqo1uSPIxk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> +		priv->read_reg = sp_read_reg32;
+> +		priv->write_reg = sp_write_reg32;
+> +	} else if (prop == 2) {
+> +		priv->read_reg = sp_read_reg16;
+> +		priv->write_reg = sp_write_reg16;
+> +	} else {
+> +		priv->read_reg = sp_read_reg8;
+> +		priv->write_reg = sp_write_reg8;
+> +	}
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+WBR, Sergei
 
-iEYEARECAAYFAlLrqlcACgkQjTAFq1RaXHMLlwCggtdKRGfRQMoiORcWHmFgy7tp
-OJ0An3YK5gt+UVu+53rkdrFhYsoeUbDQ
-=eKLA
------END PGP SIGNATURE-----
-
---Q66oVvLNa2SSR9OQ93aLclqkqo1uSPIxk--
