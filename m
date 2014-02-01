@@ -1,78 +1,80 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Can't start ESD CAN-USB/2
-Date: Sat, 01 Feb 2014 15:27:04 +0100
-Message-ID: <52ED0438.2060100@pengutronix.de>
-References: <52EBCACD.9080906@iit.it> <52EBCBFA.2090205@pengutronix.de> <52EBD794.3020503@iit.it> <52EBDCD2.6000301@pengutronix.de>,<52EBDD1D.4060503@pengutronix.de> <B83FB8757830C3428B64299F968D0F68034C56FE@IITMXWGE012.iit.local> <52EBE0D4.2060907@pengutronix.de> <52EBE25E.40707@iit.it> <52EBE3EA.6030706@pengutronix.de> <52EBF7C5.9050309@iit.it> <52ECE6BB.7000602@pengutronix.de> <52ECEE3D.4000701@iit.it>
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Subject: [INFO] BCM and ISOTP crashes Linux 3.11 - 3.13 when running on REAL
+ HW CAN interfaces
+Date: Sat, 01 Feb 2014 19:14:43 +0100
+Message-ID: <52ED3993.2080404@hartkopp.net>
+References: <20140130.162723.1124545320708055175.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="lrbuoXk2FeSs7DvjKaBvPLwuATaBmhNF9"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52436 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933177AbaBAO1Q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Feb 2014 09:27:16 -0500
-In-Reply-To: <52ECEE3D.4000701@iit.it>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Francesco Giovannini <francesco.giovannini@iit.it>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <opensuse-kernel+bounces-5461-glsk-opensuse-kernel=m.gmane.org-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Post: <mailto:opensuse-kernel-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:opensuse-kernel+help-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Subscribe: <mailto:opensuse-kernel+subscribe-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Unsubscribe: <mailto:opensuse-kernel+unsubscribe-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Owner: <mailto:opensuse-kernel+owner-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
+List-Archive: <http://lists.opensuse.org/opensuse-kernel/>
+In-Reply-To: <20140130.162723.1124545320708055175.davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+To: "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Boris Baskevitch <boris.baskevitch-8eWYsXVvN4PZIJhgGyx37A@public.gmane.org>, Daniele Venzano <linux-aa24p/qCTT1g9hUCZPvPmw@public.gmane.org>, Josselin Costanzi <josselin.costanzi-Tny/h2m1dROW3RwJEphJ61AUjnlXr6A1@public.gmane.org>, Nathan Conrad <nconrad.mlock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dirk Rohleder <dirk-pmyc6AMmRiliEfu1fGPkyA@public.gmane.org>, Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>, kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org, opensuse-kernel-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lrbuoXk2FeSs7DvjKaBvPLwuATaBmhNF9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello all,
 
->>> Any chance you might have a last minute inspiration? ;)
->> Can you make a firmware update of the USB adapter? Does the adapter wo=
-rk
->> under windows?
+at 2013-08-01 Eric Dumazet created this patch to make sure some
+networking rules are enforced in the Linux Kernel in Linux 3.11:
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=376c7311bdb6efea3322310333576a04d73fbe4c
 
-> So yesterday I tried the same esd device on my Debian machine running
-> Wheezy and kernel 3.2.0 (so an older kernel than the OpenSuse one) and
-> everything worked fine. I was able to set the bitrate and dump data fro=
-m
-> the device. And yes the device works flawlessly under windows.
+This affects CAN BCM and CAN ISOTP and leads to a KERNEL CRASH
+when you are *sending* with the BCM or ISOTP on REAL(!) CAN interfaces.
 
-Okay, the device is working. Even under Linux :)
+AFAIK there are not so many use cases. That's why it lasted 6 months to detect it :-(
+Virtual CAN and SLCAN interfaces do not have this problem (no echo skbs).
 
-> With Suse I also tried switching esd devices and cables without any luc=
-k.
+Do I have to care about this issue?
 
-But the Suse is a different machine, so different USB
-controller/hardware and different USB driver.
+Usually the embedded systems do not have such a recent kernel.
+Regarding desktop distributions Redhat 7 runs a 3.10 kernel which is safe.
 
-> Do you think this behaviour might be due caused by problems on the
-> driver side or on the canutils side? As in: should I raise this issue
-> with the ESD driver developers?
+But e.g. OpenSuse 13.1 and Ubuntu 13.10 / Linux Mint Petra are based on
+Linux 3.11 and Debian Jessie (current Debian testing) is on Linux 3.12.
 
-It's not the canutils, they just send the parameters into the kernel.
-The kernel driver hasn't changed much. Feel free to contact the driver
-developer Matthias Fuchs <matthias.fuchs@esd.eu>, keep the mailinglist
-on Cc, if possible.
+The latter have the described problem with BCM / ISOTP until this patch 
 
-regards,
-Marc
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=0ae89beb283a0db5980d1d4781c7d7be2f2810d6
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+is applied by the stable kernel maintainers and distribution maintainers.
+The patch is already upstream for Linux 3.14 but it will take some time
+until it gets into the stable kernels 3.11 - 3.13 and the distributions.
+
+As Linux 3.11 is already end-of-life [EOL] I'll address the Ubuntu and
+OpenSuse maintainers directly so that this patch for 3.11 does not get lost.
+David Miller already queued this patch up for -stable
+Original post: http://marc.info/?l=linux-netdev&m=139107310226665&w=2
+
+Take care,
+Oliver
 
 
---lrbuoXk2FeSs7DvjKaBvPLwuATaBmhNF9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+-------- Original Message --------
+Subject: Re: [PATCH stable 3.9+] can: add destructor for self generated skbs
+Date: Thu, 30 Jan 2014 16:27:23 -0800 (PST)
+From: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+To: socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org
+CC: eric.dumazet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, nautsch2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Date: Thu, 30 Jan 2014 10:11:28 +0100
 
-iEYEARECAAYFAlLtBDgACgkQjTAFq1RaXHNr5ACcCIy5Na/m9nZj3tUiLPLXuZmo
-VMcAoJgz9UImI+pKPfy5roJ3g05zgEPt
-=Nz/t
------END PGP SIGNATURE-----
+> Self generated skbuffs in net/can/bcm.c are setting a skb->sk reference but
+> no explicit destructor which is enforced since Linux 3.11 with commit
+> 376c7311bdb6 (net: add a temporary sanity check in skb_orphan()).
+> 
+> This patch adds some helper functions to make sure that a destructor is
+> properly defined when a sock reference is assigned to a CAN related skb.
+> To create an unshared skb owned by the original sock a common helper function
+> has been introduced to replace open coded functions to create CAN echo skbs.
+> 
+> Signed-off-by: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+> Tested-by: Andre Naujoks <nautsch2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
---lrbuoXk2FeSs7DvjKaBvPLwuATaBmhNF9--
+Applied and queued up for -stable, thanks.
