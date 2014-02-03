@@ -1,40 +1,50 @@
-From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: [INFO] BCM and ISOTP crashes Linux 3.11 - 3.13 when running on
- REAL HW CAN interfaces
-Date: Sun, 02 Feb 2014 20:29:12 +0100
-Message-ID: <52EE9C88.1010902@hartkopp.net>
-References: <20140130.162723.1124545320708055175.davem@davemloft.net> <52ED3993.2080404@hartkopp.net> <20140202180018.GB5717@hercules>
+From: Florian Vaussard <florian.vaussard@epfl.ch>
+Subject: Re: [PATCH v2 5/6] Documentation: devicetree: sja1000: add reg-io-width
+ binding
+Date: Mon, 03 Feb 2014 09:11:37 +0100
+Message-ID: <52EF4F39.8010403@epfl.ch>
+References: <1391164513-11529-1-git-send-email-florian.vaussard@epfl.ch> <1391164513-11529-6-git-send-email-florian.vaussard@epfl.ch> <52EB9723.3080008@pengutronix.de>
+Reply-To: florian.vaussard@epfl.ch
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <opensuse-kernel+bounces-5464-glsk-opensuse-kernel=m.gmane.org-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Post: <mailto:opensuse-kernel-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:opensuse-kernel+help-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Subscribe: <mailto:opensuse-kernel+subscribe-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Unsubscribe: <mailto:opensuse-kernel+unsubscribe-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Owner: <mailto:opensuse-kernel+owner-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org>
-List-Archive: <http://lists.opensuse.org/opensuse-kernel/>
-In-Reply-To: <20140202180018.GB5717@hercules>
-To: Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Cc: "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Boris Baskevitch <boris.baskevitch-8eWYsXVvN4PZIJhgGyx37A@public.gmane.org>, Daniele Venzano <linux-aa24p/qCTT1g9hUCZPvPmw@public.gmane.org>, Josselin Costanzi <josselin.costanzi-Tny/h2m1dROW3RwJEphJ61AUjnlXr6A1@public.gmane.org>, Nathan Conrad <nconrad.mlock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dirk Rohleder <dirk-pmyc6AMmRiliEfu1fGPkyA@public.gmane.org>, kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org, opensuse-kernel-stAJ6ESoqRxg9hUCZPvPmw@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp5.epfl.ch ([128.178.224.8]:58973 "EHLO smtp5.epfl.ch"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750844AbaBCILm (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 3 Feb 2014 03:11:42 -0500
+In-Reply-To: <52EB9723.3080008@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
 
-On 02.02.2014 19:00, Luis Henriques wrote:
 
-> I've just checked David Miller's net -stable queue[1] and it looks like he
-> has in fact already queued it.  We usually pick his stable patches when he
-> sends them to the stable mailing list, so I guess we'll just wait for this
-> to happen.
+
+On 01/31/2014 01:29 PM, Marc Kleine-Budde wrote:
+> On 01/31/2014 11:35 AM, Florian Vaussard wrote:
+>> Add the reg-io-width property to describe the width of the memory
+>> accesses.
+>>
+>> Cc: Grant Likely <grant.likely@linaro.org>
+>> Cc: Rob Herring <robh+dt@kernel.org>
+>> Cc: Pawel Moll <pawel.moll@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
+>> Cc: Kumar Gala <galak@codeaurora.org>
+>> Cc: devicetree@vger.kernel.org
+>> Acked-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Florian Vaussard <florian.vaussard@epfl.ch>
 > 
-> [1] http://patchwork.ozlabs.org/bundle/davem/stable/?state=*
+> I think it makes sense to squash into patch 6.
+> 
 
-Hi Luis,
+According to recent guidelines from the DT maintainers [1], the
+documentation part should be a separate patch. I guess it makes sense to
+ease the review process for new bindings.
 
-I was not aware about Daves stable queue URL and especially not about the
-process for the end-of-life kernels. Good to know that you check the lists
-yourself for potential relevant stuff :-)
+Regards
+Florian
 
-Many thanks for your work!
-
-Best regards,
-Oliver
+[1]
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/submitting-patches.txt
