@@ -1,74 +1,84 @@
-From: "Sandro Anders | CarMedialab" <sandro.anders@carmedialab.com>
-Subject: AW: AW: netlink error -95 (Operation not supported) with can-utils/cangw
-Date: Tue, 4 Feb 2014 17:46:09 +0100
-Message-ID: <18F8639CFC8C7C4D819AB347808079D4026C6A86@pluto.office.rac.de>
-References: <18F8639CFC8C7C4D819AB347808079D4026C69FC@pluto.office.rac.de> <52F0D101.6050500@hartkopp.net> <18F8639CFC8C7C4D819AB347808079D4026C6A12@pluto.office.rac.de> <CAGm1_kstmWLjejYMy3Sd2jUpzdUv5o5OT+9VvfA=MOTbxTWx2Q@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: AW: AW: netlink error -95 (Operation not supported) with can-utils/cangw
+Date: Tue, 04 Feb 2014 19:19:54 +0100
+Message-ID: <52F12F4A.9040504@hartkopp.net>
+References: <18F8639CFC8C7C4D819AB347808079D4026C69FC@pluto.office.rac.de> <52F0D101.6050500@hartkopp.net> <18F8639CFC8C7C4D819AB347808079D4026C6A12@pluto.office.rac.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rac.de ([213.144.11.11]:47307 "EHLO mail.rac.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751333AbaBDQqM (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 4 Feb 2014 11:46:12 -0500
-Content-class: urn:content-classes:message
-In-Reply-To: <CAGm1_kstmWLjejYMy3Sd2jUpzdUv5o5OT+9VvfA=MOTbxTWx2Q@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:45773 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753792AbaBDST4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2014 13:19:56 -0500
+In-Reply-To: <18F8639CFC8C7C4D819AB347808079D4026C6A12@pluto.office.rac.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Sandro Anders | CarMedialab <sandro.anders@carmedialab.com>
+Cc: linux-can@vger.kernel.org
 
-SGkgWWVnb3IsIEhpIE9sbGksDQoNCnRoYW5rcyB0byB5b3UgaXQncyB3b3JraW5nIG5vdy4gDQoN
-ClJlZ2FyZHMsDQpTYW5kcm8NCg0KPiAtLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0t
-DQo+IFZvbjogbGludXgtY2FuLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOmxpbnV4LWNh
-bi0NCj4gb3duZXJAdmdlci5rZXJuZWwub3JnXSBJbSBBdWZ0cmFnIHZvbiBZZWdvciBZZWZyZW1v
-dg0KPiBHZXNlbmRldDogRGllbnN0YWcsIDQuIEZlYnJ1YXIgMjAxNCAxNzowMw0KPiBBbjogU2Fu
-ZHJvIEFuZGVycyB8IENhck1lZGlhbGFiDQo+IENjOiBPbGl2ZXIgSGFydGtvcHA7IGxpbnV4LWNh
-bkB2Z2VyLmtlcm5lbC5vcmcNCj4gQmV0cmVmZjogUmU6IEFXOiBuZXRsaW5rIGVycm9yIC05NSAo
-T3BlcmF0aW9uIG5vdCBzdXBwb3J0ZWQpIHdpdGggY2FuLQ0KPiB1dGlscy9jYW5ndw0KPiANCj4g
-SGkgU2FuZHJvLA0KPiANCj4geW91IGNvdWxkIGNhbmd3IGRlc2NyaXB0aW9uIGhlcmU6IGh0dHA6
-Ly9lbGludXgub3JnL0Nhbi11dGlscyBhcyBzb29uDQo+IGFzIHlvdSBzb3J0IHRoZSB0aGluZ3Mg
-b3V0Lg0KPiANCj4gUmVnYXJkcywNCj4gWWVnb3INCj4gDQo+IE9uIFR1ZSwgRmViIDQsIDIwMTQg
-YXQgMTowMiBQTSwgU2FuZHJvIEFuZGVycyB8IENhck1lZGlhbGFiDQo+IDxzYW5kcm8uYW5kZXJz
-QGNhcm1lZGlhbGFiLmNvbT4gd3JvdGU6DQo+ID4gSGkgT2xsaSwNCj4gPg0KPiA+IEhtbSBpdCB3
-YXNuJ3QgY2xlYXIgdG8gbWUgdGhhdCBhbiBhZGRpdGlvbmFsIG1vZHVsZSBpcyBuZWNlc3Nhcnkg
-Zm9yDQo+IHVzaW5nIHRoaXMgZmVhdHVyZS4gQnV0IGFueXdheSB0aGlzIGV4cGxhaW5zIHRoZSBi
-ZWhhdmlvdXIuIElzIHRoZXJlIGFueQ0KPiBkb2N1bWVudGF0aW9uPyBJIGNvdWxkbid0IGZpbmQg
-YW55dGhpbmcgYWJvdXQgY2FuLWd3IGluIHRoZSBjYW4udHh0IGZpbGUuDQo+ID4NCj4gPiBNYW55
-IHRoYW5rcyB0byB5b3UgYW5kIGJlc3QgcmVnYXJkcywNCj4gPiBTYW5kcm8NCj4gPg0KPiA+PiAt
-LS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQo+ID4+IFZvbjogbGludXgtY2FuLW93
-bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOmxpbnV4LWNhbi0NCj4gPj4gb3duZXJAdmdlci5r
-ZXJuZWwub3JnXSBJbSBBdWZ0cmFnIHZvbiBPbGl2ZXIgSGFydGtvcHANCj4gPj4gR2VzZW5kZXQ6
-IERpZW5zdGFnLCA0LiBGZWJydWFyIDIwMTQgMTI6MzgNCj4gPj4gQW46IFNhbmRybyBBbmRlcnMg
-fCBDYXJNZWRpYWxhYjsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiA+PiBCZXRyZWZmOiBS
-ZTogQVc6IG5ldGxpbmsgZXJyb3IgLTk1IChPcGVyYXRpb24gbm90IHN1cHBvcnRlZCkgd2l0aCBj
-YW4tDQo+ID4+IHV0aWxzL2Nhbmd3DQo+ID4+DQo+ID4+IEhpIFNhbmRybywNCj4gPj4NCj4gPj4g
-ZGlkIHlvdSBsb2FkIHRoZSBjYW4tZ3cgbW9kdWxlPw0KPiA+Pg0KPiA+PiBXaGVuIGNhbi1ndyBp
-cyBub3QgbG9hZGVkIHRoZSBuZXRsaW5rIGZ1bmN0aW9ucyBmb3IgY2FuZ3cgYXJlIG5vdA0KPiA+
-PiByZWdpc3RlcmVkLg0KPiA+Pg0KPiA+PiBSZWdhcmRzLA0KPiA+PiBPbGl2ZXINCj4gPj4NCj4g
-Pj4gT24gMDQuMDIuMjAxNCAxMTo1NSwgU2FuZHJvIEFuZGVycyB8IENhck1lZGlhbGFiIHdyb3Rl
-Og0KPiA+PiA+IEhpIGFsbCwNCj4gPj4gPg0KPiA+PiA+IEkgd2FzIGFibGUgdG8gY29tcGlsZSB0
-aGUgY2FuLXV0aWxzLyogYXBwcyB3aXRob3V0IGFueSBlcnJvcnMgYW5kIHRoZQ0KPiA+PiA+IG1v
-c3QgYXJlIHdvcmtpbmcuIEJ1dCBpZiBJIGNhbGwgdGhlIGNhbmd3IGNvbW1hbmQgSSBnZXQgdGhl
-IGZvbGxvd2luZw0KPiA+PiA+IGVycm9yIG1lc3NhZ2U6IGNhbmd3IC1BIC1zIGNhbjEgLWQgY2Fu
-Mw0KPiA+PiA+IG5ldGxpbmsgZXJyb3IgLTk1IChPcGVyYXRpb24gbm90IHN1cHBvcnRlZCkNCj4g
-Pj4gPg0KPiA+PiA+IEJvdGggQ0FOJ3MgYXJlIHVwIGFuZCBydW5uaW5nLiBNeSBhc3N1bXB0aW9u
-IGlzIHRoYXQgdGhlcmUgaXMgc29tZQ0KPiA+PiA+IG5ldGxpbmsgc3VwcG9ydCBtaXNzaW5nIGlu
-IG15IEtlcm5lbCwgaXNuJ3QgaXQ/IFRoYW5rcyBmb3IgeW91ciBoZWxwLg0KPiA+PiA+DQo+ID4+
-ID4gU2FuZHJvDQo+ID4+ID4gLS0NCj4gPj4gPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlz
-dDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtY2FuIg0KPiBpbg0KPiA+PiA+IHRo
-ZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+ID4+ID4g
-TW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8t
-aW5mby5odG1sDQo+ID4+ID4NCj4gPj4gLS0NCj4gPj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlz
-IGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiIgaW4NCj4gPj4gdGhl
-IGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCj4gPj4gTW9y
-ZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5m
-by5odG1sDQo+ID4gLS0NCj4gPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0
-aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtY2FuIiBpbg0KPiA+IHRoZSBib2R5IG9mIGEgbWVz
-c2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+ID4gTW9yZSBtYWpvcmRvbW8gaW5m
-byBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQo+IC0tDQo+
-IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmli
-ZSBsaW51eC1jYW4iIGluDQo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdl
-ci5rZXJuZWwub3JnDQo+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5l
-bC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
+On 04.02.2014 13:02, Sandro Anders | CarMedialab wrote:
+> 
+> Is there any documentation?
+> 
+
+Hi Sandro,
+
+it's mostly 'documented by sourcecode' :-)
+
+E.g. the netlink interface is described here:
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/can/gw.h
+
+and the cangw tool (which C-file is a good example too) has a big help text:
+
+$ cangw 
+
+Usage: cangw [options]
+
+Commands:  -A (add a new rule)
+           -D (delete a rule)
+           -F (flush / delete all rules)
+           -L (list all rules)
+Mandatory: -s <src_dev>  (source netdevice)
+           -d <dst_dev>  (destination netdevice)
+Options:   -t (preserve src_dev rx timestamp)
+           -e (echo sent frames - recommended on vcanx)
+           -i (allow to route to incoming interface)
+           -l <hops> (limit the number of frame hops / routings)
+           -f <filter> (set CAN filter)
+           -m <mod> (set frame modifications)
+           -x <from_idx>:<to_idx>:<result_idx>:<init_xor_val> (XOR checksum)
+           -c <from>:<to>:<result>:<init_val>:<xor_val>:<crctab[256]> (CRC8 cs)
+           -p <profile>:[<profile_data>] (CRC8 checksum profile & parameters)
+
+Values are given and expected in hexadecimal values. Leading 0s can be omitted.
+
+<filter> is a <value><mask> CAN identifier filter
+   <can_id>:<can_mask> (matches when <received_can_id> & mask == can_id & mask)
+   <can_id>~<can_mask> (matches when <received_can_id> & mask != can_id & mask)
+
+<mod> is a CAN frame modification instruction consisting of
+<instruction>:<can_frame-elements>:<can_id>.<can_dlc>.<can_data>
+ - <instruction> is one of 'AND' 'OR' 'XOR' 'SET'
+ - <can_frame-elements> is _one_ or _more_ of 'I'dentifier 'L'ength 'D'ata
+ - <can_id> is an u32 value containing the CAN Identifier
+ - <can_dlc> is an u8 value containing the data length code (0 .. 8)
+ - <can_data> is always eight(!) u8 values containing the CAN frames data
+The max. four modifications are performed in the order AND -> OR -> XOR -> SET
+
+Example:
+cangw -A -s can0 -d vcan3 -e -f 123:C00007FF -m SET:IL:333.4.1122334455667788
+
+Supported CRC 8 profiles:
+Profile '1' (1U8)       - add one additional u8 value
+Profile '2' (16U8)      - add u8 value from table[16] indexed by (data[1] & 0xF)
+Profile '3' (SFFID_XOR) - add u8 value (can_id & 0xFF) ^ (can_id >> 8 & 0xFF)
+
+$ _
+
+The idea behind the output format of 'cangw -L' is, that all the routing jobs
+can be re-directed into a (script-)file to set up the configuration again.
+
+Regards,
+Oliver
+
