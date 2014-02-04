@@ -1,57 +1,32 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 0/5] can: sja1000: cleanups and new OF property
-Date: Tue, 04 Feb 2014 09:28:57 +0100
-Message-ID: <52F0A4C9.9060306@pengutronix.de>
-References: <1391175277-19833-1-git-send-email-florian.vaussard@epfl.ch> <52EBA7E2.6090007@pengutronix.de> <52EBAA28.1070307@gaisler.com> <52F0A29C.9000604@gaisler.com>
+From: "Sandro Anders | CarMedialab" <sandro.anders@carmedialab.com>
+Subject: AW: netlink error -95 (Operation not supported) with can-utils/cangw
+Date: Tue, 4 Feb 2014 11:55:50 +0100
+Message-ID: <18F8639CFC8C7C4D819AB347808079D4026C69FC@pluto.office.rac.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="4fAHtNshMupKGqoWSBxT0DGbLa4Gxmit6"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48814 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750937AbaBDKzp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2014 05:55:45 -0500
-In-Reply-To: <52F0A29C.9000604@gaisler.com>
+Received: from mail.rac.de ([213.144.11.11]:37938 "EHLO mail.rac.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753612AbaBDKz4 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2014 05:55:56 -0500
+Received: from pluto.office.rac.de (gate [213.144.11.9])
+	by smtp.office.rac.de (Postfix) with ESMTP id BEF116084E
+	for <linux-can@vger.kernel.org>; Tue,  4 Feb 2014 11:55:51 +0100 (CET)
+Content-class: urn:content-classes:message
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>, Florian Vaussard <florian.vaussard@epfl.ch>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4fAHtNshMupKGqoWSBxT0DGbLa4Gxmit6
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On 02/04/2014 09:19 AM, Andreas Larsson wrote:
+I was able to compile the can-utils/* apps without any errors and the
+most are working. But if I call the cangw command I get the following
+error message: cangw -A -s can1 -d can3
+netlink error -95 (Operation not supported)
 
-> Works splendidly. You can add:
->=20
-> Tested-by: Andreas Larsson <andreas@gaisler.com>
+Both CAN's are up and running. My assumption is that there is some
+netlink support missing in my Kernel, isn't it? Thanks for your help.
 
-Thanks,
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---4fAHtNshMupKGqoWSBxT0DGbLa4Gxmit6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLwpMkACgkQjTAFq1RaXHOgSgCfQtKZ6mHOKcBNMNpHNvkmo/m1
-Kx4An2FBWVgNhIsip+DW4t0DjU2ofNyt
-=cNUl
------END PGP SIGNATURE-----
-
---4fAHtNshMupKGqoWSBxT0DGbLa4Gxmit6--
+Sandro 
