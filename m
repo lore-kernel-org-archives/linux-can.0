@@ -1,84 +1,59 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: AW: AW: netlink error -95 (Operation not supported) with can-utils/cangw
-Date: Tue, 04 Feb 2014 19:19:54 +0100
-Message-ID: <52F12F4A.9040504@hartkopp.net>
-References: <18F8639CFC8C7C4D819AB347808079D4026C69FC@pluto.office.rac.de> <52F0D101.6050500@hartkopp.net> <18F8639CFC8C7C4D819AB347808079D4026C6A12@pluto.office.rac.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Michal Sojka <sojkam1@fel.cvut.cz>
+Subject: [PATCH] cangw: Print error message on misspelled interface
+Date: Wed,  5 Feb 2014 16:48:30 +0100
+Message-ID: <1391615310-10731-1-git-send-email-sojkam1@fel.cvut.cz>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:45773 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753792AbaBDST4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2014 13:19:56 -0500
-In-Reply-To: <18F8639CFC8C7C4D819AB347808079D4026C6A12@pluto.office.rac.de>
+Received: from max.feld.cvut.cz ([147.32.192.36]:44596 "EHLO max.feld.cvut.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750971AbaBEPsq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Feb 2014 10:48:46 -0500
+Received: from localhost (unknown [192.168.200.7])
+	by max.feld.cvut.cz (Postfix) with ESMTP id A75073CFE84
+	for <linux-can@vger.kernel.org>; Wed,  5 Feb 2014 16:48:45 +0100 (CET)
+Received: from max.feld.cvut.cz ([192.168.200.1])
+	by localhost (styx.feld.cvut.cz [192.168.200.7]) (amavisd-new, port 10044)
+	with ESMTP id cfWBFJnpGYEM for <linux-can@vger.kernel.org>;
+	Wed,  5 Feb 2014 16:48:41 +0100 (CET)
+Received: from imap.feld.cvut.cz (imap.feld.cvut.cz [147.32.192.34])
+	by max.feld.cvut.cz (Postfix) with ESMTP id 6EB6919F35DC
+	for <linux-can@vger.kernel.org>; Wed,  5 Feb 2014 16:48:41 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sandro Anders | CarMedialab <sandro.anders@carmedialab.com>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Michal Sojka <sojkam1@fel.cvut.cz>
 
-On 04.02.2014 13:02, Sandro Anders | CarMedialab wrote:
-> 
-> Is there any documentation?
-> 
+If can interface is misspelled or the kernel is configured without netlink
+cangw displayed only generic usage instruction. Now, an appropriate error
+message is displayed.
 
-Hi Sandro,
+Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+---
+ cangw.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-it's mostly 'documented by sourcecode' :-)
-
-E.g. the netlink interface is described here:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/can/gw.h
-
-and the cangw tool (which C-file is a good example too) has a big help text:
-
-$ cangw 
-
-Usage: cangw [options]
-
-Commands:  -A (add a new rule)
-           -D (delete a rule)
-           -F (flush / delete all rules)
-           -L (list all rules)
-Mandatory: -s <src_dev>  (source netdevice)
-           -d <dst_dev>  (destination netdevice)
-Options:   -t (preserve src_dev rx timestamp)
-           -e (echo sent frames - recommended on vcanx)
-           -i (allow to route to incoming interface)
-           -l <hops> (limit the number of frame hops / routings)
-           -f <filter> (set CAN filter)
-           -m <mod> (set frame modifications)
-           -x <from_idx>:<to_idx>:<result_idx>:<init_xor_val> (XOR checksum)
-           -c <from>:<to>:<result>:<init_val>:<xor_val>:<crctab[256]> (CRC8 cs)
-           -p <profile>:[<profile_data>] (CRC8 checksum profile & parameters)
-
-Values are given and expected in hexadecimal values. Leading 0s can be omitted.
-
-<filter> is a <value><mask> CAN identifier filter
-   <can_id>:<can_mask> (matches when <received_can_id> & mask == can_id & mask)
-   <can_id>~<can_mask> (matches when <received_can_id> & mask != can_id & mask)
-
-<mod> is a CAN frame modification instruction consisting of
-<instruction>:<can_frame-elements>:<can_id>.<can_dlc>.<can_data>
- - <instruction> is one of 'AND' 'OR' 'XOR' 'SET'
- - <can_frame-elements> is _one_ or _more_ of 'I'dentifier 'L'ength 'D'ata
- - <can_id> is an u32 value containing the CAN Identifier
- - <can_dlc> is an u8 value containing the data length code (0 .. 8)
- - <can_data> is always eight(!) u8 values containing the CAN frames data
-The max. four modifications are performed in the order AND -> OR -> XOR -> SET
-
-Example:
-cangw -A -s can0 -d vcan3 -e -f 123:C00007FF -m SET:IL:333.4.1122334455667788
-
-Supported CRC 8 profiles:
-Profile '1' (1U8)       - add one additional u8 value
-Profile '2' (16U8)      - add u8 value from table[16] indexed by (data[1] & 0xF)
-Profile '3' (SFFID_XOR) - add u8 value (can_id & 0xFF) ^ (can_id >> 8 & 0xFF)
-
-$ _
-
-The idea behind the output format of 'cangw -L' is, that all the routing jobs
-can be re-directed into a (script-)file to set up the configuration again.
-
-Regards,
-Oliver
+diff --git a/cangw.c b/cangw.c
+index b908fe4..effb7ed 100644
+--- a/cangw.c
++++ b/cangw.c
+@@ -595,10 +595,18 @@ int main(int argc, char **argv)
+ 
+ 		case 's':
+ 			src_ifindex = if_nametoindex(optarg);
++			if (src_ifindex == 0) {
++				perror(optarg);
++				return 1;
++			}
+ 			break;
+ 
+ 		case 'd':
+ 			dst_ifindex = if_nametoindex(optarg);
++			if (dst_ifindex == 0) {
++				perror(optarg);
++				return 1;
++			}
+ 			break;
+ 
+ 		case 't':
+-- 
+1.8.5.2
 
