@@ -1,57 +1,70 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH can-next] Add CAN FD driver infrastructure
-Date: Thu, 06 Feb 2014 20:02:11 +0100
-Message-ID: <52F3DC33.6080402@hartkopp.net>
-References: <52F291D8.90008@hartkopp.net> <52F374DC.3000105@pengutronix.de>
+Date: Thu, 06 Feb 2014 21:39:14 +0100
+Message-ID: <52F3F2F2.2030202@pengutronix.de>
+References: <52F291D8.90008@hartkopp.net> <52F374DC.3000105@pengutronix.de> <52F3DC33.6080402@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="u54vplAQFLVQ2CdFAXucproxTNoSthIVO"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:26491 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753250AbaBFTCQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 14:02:16 -0500
-In-Reply-To: <52F374DC.3000105@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33092 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751500AbaBFUjX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 15:39:23 -0500
+In-Reply-To: <52F3DC33.6080402@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-On 06.02.2014 12:41, Marc Kleine-Budde wrote:
-> On 02/05/2014 08:32 PM, Oliver Hartkopp wrote:
->> This is a combined patch to create the CAN FD driver infrastructure.
->>
->> - add a separate configuration for data bittiming (incl. netlink)
->> - the bitrate information is only provided when the bittiming const exist
->> - add the helper to create canfd frame skbs
->> - do not overwrite the skb->protocol in can_put_echo_skb()
-> 
-> Can you split up the patch into the above mentioned aspects? More
-> comments inline.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--u54vplAQFLVQ2CdFAXucproxTNoSthIVO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Yes. Will do.
+On 02/06/2014 08:02 PM, Oliver Hartkopp wrote:
 
->>  
->> +struct sk_buff *alloc_canfd_skb(struct net_device *dev,
->> +				struct canfd_frame **cfd)
-> 
-> Stephane already posted a patch to add this function. I've already
-> queued it. Please base you patch on linux-can-next/testing
-> 
+> My patch is currently based on Davems net-tree, as this patch
+>=20
+> http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=3D=
+0ae89beb283a0db5980d1d4781c7d7be2f2810d6
+>=20
+> is currently not in mainline nor in net-next nor in linux-can-next.
+>=20
+> As the above patch clashes with the changes I did, I'll wait for Daves
+> net-next tree to be opened for development again before sending the pat=
+ch set.
 
-Oh.
+Yes, we have to wait until he has merged net back to net-next. If it
+takes "too long" we can ask him to do so.
 
-My patch is currently based on Davems net-tree, as this patch
+> Btw. nice to see that there are no general problems besides the formal =
+aspect.
 
-http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=0ae89beb283a0db5980d1d4781c7d7be2f2810d6
+I'll do a proper review, once the patch is separated :)
 
-is currently not in mainline nor in net-next nor in linux-can-next.
+Marc
 
-As the above patch clashes with the changes I did, I'll wait for Daves
-net-next tree to be opened for development again before sending the patch set.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Btw. nice to see that there are no general problems besides the formal aspect.
 
-Tnx,
-Oliver
+--u54vplAQFLVQ2CdFAXucproxTNoSthIVO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlLz8vIACgkQjTAFq1RaXHM7HgCfRCrGIQjSC8yvML/VMt9BwAYR
++/cAnRweI7vfLj6CnxesMfCbYFZ2phHu
+=o12d
+-----END PGP SIGNATURE-----
+
+--u54vplAQFLVQ2CdFAXucproxTNoSthIVO--
