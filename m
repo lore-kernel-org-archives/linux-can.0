@@ -1,37 +1,65 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH RFC] libsocketcan: Fix return value for get{set}_link()
- function
-Date: Thu, 06 Feb 2014 11:47:06 +0100
-Message-ID: <52F3682A.9080609@pengutronix.de>
-References: <1391420421-20930-1-git-send-email-shc_work@mail.ru>
+Subject: Re: [PATCH v3 5/5] can: sja1000: of: add reg-io-width property for
+ 8, 16 and 32-bit register access
+Date: Thu, 06 Feb 2014 11:57:46 +0100
+Message-ID: <52F36AAA.9000704@pengutronix.de>
+References: <1391175277-19833-1-git-send-email-florian.vaussard@epfl.ch> <1391175277-19833-6-git-send-email-florian.vaussard@epfl.ch> <52EBAE41.8060403@cogentembedded.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="Go4kWBHxGelX9cwggfwoVkRRR0LcFMJEO"
+ boundary="GXkxwWb545oR4MXOXRBlnhG69k877C0W4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34192 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42485 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755706AbaBFKrM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 05:47:12 -0500
-In-Reply-To: <1391420421-20930-1-git-send-email-shc_work@mail.ru>
+	with ESMTP id S1755997AbaBFK6E (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 05:58:04 -0500
+In-Reply-To: <52EBAE41.8060403@cogentembedded.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>, linux-can@vger.kernel.org
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Florian Vaussard <florian.vaussard@epfl.ch>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Andreas Larsson <andreas@gaisler.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Go4kWBHxGelX9cwggfwoVkRRR0LcFMJEO
+--GXkxwWb545oR4MXOXRBlnhG69k877C0W4
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/03/2014 10:40 AM, Alexander Shiyan wrote:
-> This patch makes return value negative when open_nl_sock() function
-> fail and removes excess labels.
+On 01/31/2014 03:08 PM, Sergei Shtylyov wrote:
+> Hello.
 >=20
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> On 31-01-2014 17:34, Florian Vaussard wrote:
+>=20
+>> Add the 'reg-io-width' property for 8, 16 and 32-bit access, like
+>> what is currently done with IORESOURCE_MEM_{8,16,32}BIT for non-OF
+>> boot.
+>=20
+>> Signed-off-by: Florian Vaussard <florian.vaussard@epfl.ch>
+>> ---
+>>   drivers/net/can/sja1000/sja1000_platform.c | 16 ++++++++++++++--
+>>   1 file changed, 14 insertions(+), 2 deletions(-)
+>=20
+>> diff --git a/drivers/net/can/sja1000/sja1000_platform.c
+>> b/drivers/net/can/sja1000/sja1000_platform.c
+>> index 50dece8..25122bf 100644
+>> --- a/drivers/net/can/sja1000/sja1000_platform.c
+>> +++ b/drivers/net/can/sja1000/sja1000_platform.c
+>> @@ -102,8 +102,20 @@ static void sp_populate_of(struct sja1000_priv
+>> *priv, struct device_node *of)
+>>       int err;
+>>       u32 prop;
+>>
+>> -    priv->read_reg =3D sp_read_reg8;
+>> -    priv->write_reg =3D sp_write_reg8;
+>> +    err =3D of_property_read_u32(of, "reg-io-width", &prop);
+>> +    if (err)
+>> +        prop =3D 1;
+>> +
+>> +    if (prop =3D=3D 4) {
+>=20
+>    This is asking to be a *switch* statement instead.
 
-Applied.
+Good point, I'll send a v4.
 
-Tnx,
 Marc
 
 --=20
@@ -41,7 +69,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Go4kWBHxGelX9cwggfwoVkRRR0LcFMJEO
+--GXkxwWb545oR4MXOXRBlnhG69k877C0W4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -50,9 +78,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlLzaCoACgkQjTAFq1RaXHM75gCfTB0jXdj6cfv/1jWBK43P/KbY
-UXMAoI2+YuC1H9vHG0udCye1wGOM1Myg
-=DkxH
+iEYEARECAAYFAlLzaqoACgkQjTAFq1RaXHNO1gCfb/yEcJjJwDr+JfgsIbzd+1rA
+VXYAn10t+Ad+bq+d3MJuAwxFoiciVpSK
+=bbVC
 -----END PGP SIGNATURE-----
 
---Go4kWBHxGelX9cwggfwoVkRRR0LcFMJEO--
+--GXkxwWb545oR4MXOXRBlnhG69k877C0W4--
