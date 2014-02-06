@@ -1,107 +1,57 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Driver for CAN in at91
-Date: Thu, 06 Feb 2014 15:29:09 +0100
-Message-ID: <52F39C35.8040601@pengutronix.de>
-References: <CACwGGRJ2WX2fJJVfvwAk27mp2JhRfLMT8ZeNwfw0w1kPPCAvoA@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH can-next] Add CAN FD driver infrastructure
+Date: Thu, 06 Feb 2014 20:02:11 +0100
+Message-ID: <52F3DC33.6080402@hartkopp.net>
+References: <52F291D8.90008@hartkopp.net> <52F374DC.3000105@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="rtpVsnjghGVKsmgr2i7MlFR57Mgk689N7"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33010 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751837AbaBFO3O (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 09:29:14 -0500
-In-Reply-To: <CACwGGRJ2WX2fJJVfvwAk27mp2JhRfLMT8ZeNwfw0w1kPPCAvoA@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:26491 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753250AbaBFTCQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2014 14:02:16 -0500
+In-Reply-To: <52F374DC.3000105@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yoann DI RUZZA <ydiruzza@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rtpVsnjghGVKsmgr2i7MlFR57Mgk689N7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 06.02.2014 12:41, Marc Kleine-Budde wrote:
+> On 02/05/2014 08:32 PM, Oliver Hartkopp wrote:
+>> This is a combined patch to create the CAN FD driver infrastructure.
+>>
+>> - add a separate configuration for data bittiming (incl. netlink)
+>> - the bitrate information is only provided when the bittiming const exist
+>> - add the helper to create canfd frame skbs
+>> - do not overwrite the skb->protocol in can_put_echo_skb()
+> 
+> Can you split up the patch into the above mentioned aspects? More
+> comments inline.
 
-On 02/06/2014 03:13 PM, Yoann DI RUZZA wrote:
-> I'll send you a patch to add the listen only mode in AT91 CAN driver.
-> I don't know if it is the good way to send a patch.
+Yes. Will do.
 
-Thanks for your contribution, please add the linux-can mailinglist on
-Cc, too.
+>>  
+>> +struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+>> +				struct canfd_frame **cfd)
+> 
+> Stephane already posted a patch to add this function. I've already
+> queued it. Please base you patch on linux-can-next/testing
+> 
 
-> I'm working and testing this patch with the 3.6.9 kernel version on a
-> at91sam9x35-ek.
-> cordially,
->=20
-> Yoann DI RUZZA
+Oh.
 
-Can you add your Signed-off-by to the next patch. See
-http://elinux.org/Developer_Certificate_Of_Origin for more information.
+My patch is currently based on Davems net-tree, as this patch
 
->=20
-> can_listenonly.patch
->=20
->=20
-> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-> index 1cf6104..d4c3213 100644
-> --- a/drivers/net/can/at91_can.c
-> +++ b/drivers/net/can/at91_can.c
-> @@ -422,7 +422,11 @@ static void at91_chip_start(struct net_device *dev=
-)
->  	at91_transceiver_switch(priv, 1);
-> =20
->  	/* enable chip */
-> -	at91_write(priv, AT91_MR, AT91_MR_CANEN);
-> +	if(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-> +		reg_mr =3D reg_mr | AT91_MR_CANEN | AT91_MR_ABM;
-> +	else
-> +		reg_mr =3D reg_mr | AT91_MR_CANEN;
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=0ae89beb283a0db5980d1d4781c7d7be2f2810d6
 
-The documentation says it's "autobaud/liste mode". Is this another name
-for listen only?
+is currently not in mainline nor in net-next nor in linux-can-next.
 
-Your patch does change what's written to the CAN core, the original code
-writes only AT91_MR_CANEN, you preserve the original contents. Who will
-clear AT91_MR_ABM if you switch from listen only to normal mode?
+As the above patch clashes with the changes I did, I'll wait for Daves
+net-next tree to be opened for development again before sending the patch set.
 
-> +	at91_write(priv, AT91_MR, reg_mr);
-> =20
->  	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-> =20
-> @@ -1345,7 +1349,7 @@ static int __devinit at91_can_probe(struct platfo=
-rm_device *pdev)
->  	priv->can.bittiming_const =3D &at91_bittiming_const;
->  	priv->can.do_set_mode =3D at91_set_mode;
->  	priv->can.do_get_berr_counter =3D at91_get_berr_counter;
-> -	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES;
-> +	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMOD=
-E_LISTENONLY;
->  	priv->dev =3D dev;
->  	priv->reg_base =3D addr;
->  	priv->devtype_data =3D *devtype_data;
->=20
+Btw. nice to see that there are no general problems besides the formal aspect.
 
-Marc
+Tnx,
+Oliver
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---rtpVsnjghGVKsmgr2i7MlFR57Mgk689N7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlLznDUACgkQjTAFq1RaXHMPVACeOCtJb+zEV1V4TUTsUFU8Y+M2
-WjAAnRTPQ1TpKQh4RNjMt5FDAdvm21/N
-=gwhT
------END PGP SIGNATURE-----
-
---rtpVsnjghGVKsmgr2i7MlFR57Mgk689N7--
