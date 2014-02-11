@@ -1,41 +1,60 @@
-From: Olivier Sobrie <olivier@sobrie.be>
-Subject: [PATCH] can: kvaser_usb: check number of channels returned by HW
-Date: Tue, 11 Feb 2014 11:01:23 +0100
-Message-ID: <1392112884-27101-1-git-send-email-olivier@sobrie.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: kvaser_usb: check number of channels returned by
+ HW
+Date: Tue, 11 Feb 2014 11:09:57 +0100
+Message-ID: <52F9F6F5.6090209@pengutronix.de>
+References: <1392112884-27101-1-git-send-email-olivier@sobrie.be>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="IxH4KX6bXK3CUKHdKQs0SlEgjtoGncbW6"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ea0-f175.google.com ([209.85.215.175]:40781 "EHLO
-	mail-ea0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750812AbaBKKC6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Feb 2014 05:02:58 -0500
-Received: by mail-ea0-f175.google.com with SMTP id n15so787293ead.34
-        for <linux-can@vger.kernel.org>; Tue, 11 Feb 2014 02:02:56 -0800 (PST)
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:32931 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751013AbaBKKKD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Feb 2014 05:10:03 -0500
+In-Reply-To: <1392112884-27101-1-git-send-email-olivier@sobrie.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Olivier Sobrie <olivier@sobrie.be>
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: linux-can@vger.kernel.org
 
-It is needed to check the number of channels returned by the HW
-because it cannot be greater than MAX_NET_DEVICES otherwise
-it will crash.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IxH4KX6bXK3CUKHdKQs0SlEgjtoGncbW6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
----
- drivers/net/can/usb/kvaser_usb.c |    2 ++
- 1 file changed, 2 insertions(+)
+On 02/11/2014 11:01 AM, Olivier Sobrie wrote:
+> It is needed to check the number of channels returned by the HW
+> because it cannot be greater than MAX_NET_DEVICES otherwise
+> it will crash.
+>
+> Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
 
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 4b2d5ed..cc3df8a 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -474,6 +474,8 @@ static int kvaser_usb_get_card_info(struct kvaser_usb *dev)
- 		return err;
- 
- 	dev->nchannels = msg.u.cardinfo.nchannels;
-+	if (dev->nchannels > MAX_NET_DEVICES)
-+		return -EINVAL;
- 
- 	return 0;
- }
--- 
-1.7.9.5
+Does this bug occur on any kvaser USB hardware?
+However, I think, I'll add stable on Cc
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--IxH4KX6bXK3CUKHdKQs0SlEgjtoGncbW6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlL59vUACgkQjTAFq1RaXHNGKQCfVV3czMtaYXizUG1ydxdBvXkg
+zxAAnjngVNtCOaMT4OX877NTUAzqpMP8
+=2wVA
+-----END PGP SIGNATURE-----
+
+--IxH4KX6bXK3CUKHdKQs0SlEgjtoGncbW6--
