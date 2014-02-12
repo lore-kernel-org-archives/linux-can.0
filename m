@@ -1,44 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2014-02-12
-Date: Wed, 12 Feb 2014 11:35:39 +0100
-Message-ID: <1392201340-6909-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Subject: Re: [PATCH can-next] Add CAN FD driver infrastructure
+Date: Wed, 12 Feb 2014 12:15:09 +0100
+Message-ID: <52FB57BD.90704@pengutronix.de>
+References: <52F291D8.90008@hartkopp.net> <52F374DC.3000105@pengutronix.de> <52F3DC33.6080402@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="5J5VuUC9ek2j6paOKOAl5vtO7T5hU3k4x"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42316 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751917AbaBLLPM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Feb 2014 06:15:12 -0500
+In-Reply-To: <52F3DC33.6080402@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Hello David,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5J5VuUC9ek2j6paOKOAl5vtO7T5hU3k4x
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-this is a pull request with one patch for net/master, for the current release
-cycle. Olivier Sobrie noticed and fixed that the kvaser_usb driver doesn't
-check the number of channels value from the hardware, which may result in
-writing over the bounds of an array in the driver.
+On 02/06/2014 08:02 PM, Oliver Hartkopp wrote:
+> My patch is currently based on Davems net-tree, as this patch
+>=20
+> http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=3D=
+0ae89beb283a0db5980d1d4781c7d7be2f2810d6
+>=20
+> is currently not in mainline nor in net-next nor in linux-can-next.
+>=20
+> As the above patch clashes with the changes I did, I'll wait for Daves
+> net-next tree to be opened for development again before sending the pat=
+ch set.
 
-regards,
+net-next is open and I've send a pull request to merge can-next/testing
+branch. Do you have a series with split patches I can have a look at?
+
 Marc
 
----
-
-The following changes since commit 738b52bb9845da183b6ff46a8f685b56a63379d1:
-
-  Merge tag 'microblaze-3.14-rc3' of git://git.monstr.eu/linux-2.6-microblaze (2014-02-11 12:24:35 -0800)
-
-are available in the git repository at:
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-  git://gitorious.org/linux-can/linux-can.git tags/linux-can-fixes-for-3.14-20140212
+--5J5VuUC9ek2j6paOKOAl5vtO7T5hU3k4x
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-for you to fetch changes up to 862474f8b46f6c1e600d4934e40ba40646c696ec:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-  can: kvaser_usb: check number of channels returned by HW (2014-02-12 10:42:02 +0100)
+iEYEARECAAYFAlL7V70ACgkQjTAFq1RaXHMucwCggDtXJOEgF2+NlBl2vU4i49kx
+2eMAoJlJgurBGVAMUfpoe1/qi9aA4oxY
+=c6Rj
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-linux-can-fixes-for-3.14-20140212
-
-----------------------------------------------------------------
-Olivier Sobrie (1):
-      can: kvaser_usb: check number of channels returned by HW
-
- drivers/net/can/usb/kvaser_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+--5J5VuUC9ek2j6paOKOAl5vtO7T5hU3k4x--
