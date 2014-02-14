@@ -1,28 +1,74 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2014-02-12
-Date: Thu, 13 Feb 2014 18:17:56 -0500 (EST)
-Message-ID: <20140213.181756.1724218328769353398.davem@davemloft.net>
-References: <1392201340-6909-1-git-send-email-mkl@pengutronix.de>
+From: Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH v2] can: xilinx CAN controller support.
+Date: Fri, 14 Feb 2014 09:55:26 +0100
+Message-ID: <52FDD9FE.8040908@monstr.eu>
+References: <\> <0dc128ac-e5cd-47bd-9ab1-3a545c3e2043@CO9EHSMHS012.ehs.local> <52FD1B16.6020600@pengutronix.de>
+Reply-To: monstr@monstr.eu
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:51257 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752056AbaBMXR6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Feb 2014 18:17:58 -0500
-In-Reply-To: <1392201340-6909-1-git-send-email-mkl@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="cafLha3RjWhHeNvLUaACRjLplUrb21vHE"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <52FD1B16.6020600@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Kedareswara rao Appana <appana.durga.rao@xilinx.com>, wg@grandegger.com, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 12 Feb 2014 11:35:39 +0100
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cafLha3RjWhHeNvLUaACRjLplUrb21vHE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> this is a pull request with one patch for net/master, for the current release
-> cycle. Olivier Sobrie noticed and fixed that the kvaser_usb driver doesn't
-> check the number of channels value from the hardware, which may result in
-> writing over the bounds of an array in the driver.
+Hi Marc,
 
-Pulled, thank you.
+>> +	int waiting_ech_skb_num;
+>> +	int xcan_echo_skb_max_tx;
+>> +	int xcan_echo_skb_max_rx;
+>> +	struct napi_struct napi;
+>> +	spinlock_t ech_skb_lock;
+>> +	u32 (*read_reg)(const struct xcan_priv *priv, int reg);
+>> +	void (*write_reg)(const struct xcan_priv *priv, int reg, u32 val);
+>=20
+> Please remove read_reg, write_reg, as long as there isn't any BE suppor=
+t
+> in the driver, call them directly.
+
+That's not entirely truth. If you look at Microblaze then you will see
+that Microblaze can be BE and LE.
+There is just missing endian detection which we will add to the next vers=
+ion.
+
+But because MB io helper functions are broken for a while you should be
+able to use this driver on both endianess.
+
+btw: I would prefer to use ioread32 and ioread32be instead of readl.
+Is it OK for you?
+
+Thanks,
+Michal
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
+
+
+
+--cafLha3RjWhHeNvLUaACRjLplUrb21vHE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlL92f4ACgkQykllyylKDCFSbwCaAmXxeKjT7a64na83jdx4Dwv4
+t+gAoImSI59tzdRYMwx5PuSO2r2WBIdc
+=rhln
+-----END PGP SIGNATURE-----
+
+--cafLha3RjWhHeNvLUaACRjLplUrb21vHE--
