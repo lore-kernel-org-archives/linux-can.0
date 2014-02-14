@@ -1,50 +1,49 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/4] can: preserve skbuff protocol in can_put_echo_skb
-Date: Fri, 14 Feb 2014 21:57:24 +0100
-Message-ID: <1392411447-9105-1-git-send-email-socketcan@hartkopp.net>
+Subject: Re: [PATCH can-next] Add CAN FD driver infrastructure
+Date: Fri, 14 Feb 2014 21:58:55 +0100
+Message-ID: <52FE838F.6030601@hartkopp.net>
+References: <52F291D8.90008@hartkopp.net> <52F374DC.3000105@pengutronix.de> <52F3DC33.6080402@hartkopp.net> <52FB57BD.90704@pengutronix.de> <52FBCC8B.3090905@hartkopp.net> <52FCB2AF.1010400@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:44063 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:29792 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751972AbaBNU5i (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Feb 2014 15:57:38 -0500
+	with ESMTP id S1752180AbaBNU65 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Feb 2014 15:58:57 -0500
+In-Reply-To: <52FCB2AF.1010400@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
-can_put_echo_skb(). With CAN FD this value has to be preserved.
-This patch changes the hard assignment of the protocol value to a check of
-valid protocol values for CAN and CAN FD.
+My first git send-email is just out now :-)
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+BR Oliver
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index c0563f1..e1a3741 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	BUG_ON(idx >= priv->echo_skb_max);
- 
- 	/* check flag whether this packet has to be looped back */
--	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
-+	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
-+	    (skb->protocol != htons(ETH_P_CAN) &&
-+	     skb->protocol != htons(ETH_P_CANFD))) {
- 		kfree_skb(skb);
- 		return;
- 	}
-@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 			return;
- 
- 		/* make settings for echo to reduce code in irq context */
--		skb->protocol = htons(ETH_P_CAN);
- 		skb->pkt_type = PACKET_BROADCAST;
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 		skb->dev = dev;
--- 
-1.9.0.rc3
-
+On 13.02.2014 12:55, Marc Kleine-Budde wrote:
+> On 02/12/2014 08:33 PM, Oliver Hartkopp wrote:
+>> On 12.02.2014 12:15, Marc Kleine-Budde wrote:
+>>> On 02/06/2014 08:02 PM, Oliver Hartkopp wrote:
+>>>> My patch is currently based on Davems net-tree, as this patch
+>>>>
+>>>> http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=0ae89beb283a0db5980d1d4781c7d7be2f2810d6
+>>>>
+>>>> is currently not in mainline nor in net-next nor in linux-can-next.
+>>>>
+>>>> As the above patch clashes with the changes I did, I'll wait for Daves
+>>>> net-next tree to be opened for development again before sending the patch set.
+>>>
+>>> net-next is open and I've send a pull request to merge can-next/testing
+>>> branch. Do you have a series with split patches I can have a look at?
+>>>
+>>
+>> Not yet. I'll try to prepare them asap.
+>> As the current pull request is just out I hope it's ok to prepare them this
+>> weekend ?!?
+> 
+> Sure, but I'm working on the berr_limit feature again, which will extend
+> the netlink interface, too.
+> 
+> Marc
+> 
