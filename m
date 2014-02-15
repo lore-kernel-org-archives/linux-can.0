@@ -1,118 +1,48 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 3/5] can: provide a separate bittiming_const parameter to bittiming functions
-Date: Sat, 15 Feb 2014 08:08:40 +0100
-Message-ID: <1392448122-4689-3-git-send-email-socketcan@hartkopp.net>
-References: <1392448122-4689-1-git-send-email-socketcan@hartkopp.net>
+Subject: Re: [PATCH 2/4] can: netlink send bittiming data only when bittiming_const
+ is available
+Date: Sat, 15 Feb 2014 08:10:44 +0100
+Message-ID: <52FF12F4.5010905@hartkopp.net>
+References: <1392411447-9105-1-git-send-email-socketcan@hartkopp.net> <1392411447-9105-2-git-send-email-socketcan@hartkopp.net> <52FE8A0B.6090405@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:39295 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:44385 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752168AbaBOHIz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 15 Feb 2014 02:08:55 -0500
-In-Reply-To: <1392448122-4689-1-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1751952AbaBOHKp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 15 Feb 2014 02:10:45 -0500
+In-Reply-To: <52FE8A0B.6090405@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-As the bittiming calculation functions are to be used with different
-bittiming_const structures for CAN and CAN FD the direct reference to
-priv->bittiming_const inside these functions has to be removed.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 9f99255..3a19333 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -99,10 +99,10 @@ static int can_update_spt(const struct can_bittiming_const *btc,
- 	return 1000 * (tseg + 1 - *tseg2) / (tseg + 1);
- }
- 
--static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
-+static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+			      const struct can_bittiming_const *btc)
- {
- 	struct can_priv *priv = netdev_priv(dev);
--	const struct can_bittiming_const *btc = priv->bittiming_const;
- 	long rate, best_rate = 0;
- 	long best_error = 1000000000, error = 0;
- 	int best_tseg = 0, best_brp = 0, brp = 0;
-@@ -110,7 +110,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	int spt_error = 1000, spt = 0, sampl_pt;
- 	u64 v64;
- 
--	if (!priv->bittiming_const)
-+	if (!btc)
- 		return -ENOTSUPP;
- 
- 	/* Use CIA recommended sample points */
-@@ -204,7 +204,8 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	return 0;
- }
- #else /* !CONFIG_CAN_CALC_BITTIMING */
--static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
-+static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+			      const struct can_bittiming_const *btc)
- {
- 	netdev_err(dev, "bit-timing calculation not available\n");
- 	return -EINVAL;
-@@ -217,14 +218,14 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
-  * prescaler value brp. You can find more information in the header
-  * file linux/can/netlink.h.
-  */
--static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt)
-+static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+			       const struct can_bittiming_const *btc)
- {
- 	struct can_priv *priv = netdev_priv(dev);
--	const struct can_bittiming_const *btc = priv->bittiming_const;
- 	int tseg1, alltseg;
- 	u64 brp64;
- 
--	if (!priv->bittiming_const)
-+	if (!btc)
- 		return -ENOTSUPP;
- 
- 	tseg1 = bt->prop_seg + bt->phase_seg1;
-@@ -254,21 +255,21 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	return 0;
- }
- 
--static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
-+static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+			     const struct can_bittiming_const *btc)
- {
--	struct can_priv *priv = netdev_priv(dev);
- 	int err;
- 
- 	/* Check if the CAN device has bit-timing parameters */
--	if (priv->bittiming_const) {
-+	if (btc) {
- 
- 		/* Non-expert mode? Check if the bitrate has been pre-defined */
- 		if (!bt->tq)
- 			/* Determine bit-timing parameters */
--			err = can_calc_bittiming(dev, bt);
-+			err = can_calc_bittiming(dev, bt, btc);
- 		else
- 			/* Check bit-timing params and calculate proper brp */
--			err = can_fixup_bittiming(dev, bt);
-+			err = can_fixup_bittiming(dev, bt, btc);
- 		if (err)
- 			return err;
- 	}
-@@ -669,7 +670,7 @@ static int can_changelink(struct net_device *dev,
- 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
- 		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
- 			return -EINVAL;
--		err = can_get_bittiming(dev, &bt);
-+		err = can_get_bittiming(dev, &bt, priv->bittiming_const);
- 		if (err)
- 			return err;
- 		memcpy(&priv->bittiming, &bt, sizeof(bt));
--- 
-1.9.0.rc3
+On 14.02.2014 22:26, Marc Kleine-Budde wrote:
+> On 02/14/2014 09:57 PM, Oliver Hartkopp wrote:
+>> The bittiming information is only valid when the CAN driver has a valid
+>> structure of bittiming_const. Therefore provide the information of the
+>> bittiming only when bittiming_const exists.
+> 
+> What about intelligent CAN controllers which only support fixed
+> bitrates? We once hat such a device and it was a design goal to support
+> such devices.
+> 
+>> This is also a preparation for the CAN FD specific bittiming_const structure
+>> which is not existing in non-FD drivers. Therefore all the CAN FD bittiming
+>> stuff has to be disabled when the CAN FD specific bittiming_const structure is
+>> missing.
+> 
+> Can we use bitrate == 0 as an indicator?
+> 
 
+Good idea.
+This is done in another place too.
+
+Updated patchset sent.
+
+How do I make it a "v2" ??
+
+Regards,
+Oliver
