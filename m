@@ -1,12 +1,12 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 5/5] can: allow to change the device mtu for CAN FD capable devices
-Date: Sat, 15 Feb 2014 17:32:14 +0100
-Message-ID: <1392481934-12569-5-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v3 4/5] can: introduce the data bitrate configuration for CAN FD
+Date: Sat, 15 Feb 2014 17:32:13 +0100
+Message-ID: <1392481934-12569-4-git-send-email-socketcan@hartkopp.net>
 References: <1392481934-12569-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:45418 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:62277 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753469AbaBOQc2 (ORCPT
+	with ESMTP id S1753467AbaBOQc2 (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Sat, 15 Feb 2014 11:32:28 -0500
 In-Reply-To: <1392481934-12569-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,102 +14,125 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The configuration for CAN FD depends on CAN_CTRLMODE_FD enabled in the driver
-specific ctrlmode_supported capabilities.
-
-The configuration can be done either with the 'fd { on | off }' option in the
-'ip' tool from iproute2 or by setting the CAN netdevice MTU to CAN_MTU (16) or
-to CANFD_MTU (72).
-
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/dev.c            | 40 ++++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h          |  1 +
- include/uapi/linux/can/netlink.h |  1 +
- 3 files changed, 42 insertions(+)
+ drivers/net/can/dev.c            | 42 +++++++++++++++++++++++++++++++++++++++-
+ include/linux/can/dev.h          |  6 ++++--
+ include/uapi/linux/can/netlink.h |  2 ++
+ 3 files changed, 47 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index a2b9bce..397efa4 100644
+index 3a19333..a2b9bce 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -598,6 +598,40 @@ void free_candev(struct net_device *dev)
- EXPORT_SYMBOL_GPL(free_candev);
+@@ -650,6 +650,10 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+ 				= { .len = sizeof(struct can_bittiming_const) },
+ 	[IFLA_CAN_CLOCK]	= { .len = sizeof(struct can_clock) },
+ 	[IFLA_CAN_BERR_COUNTER]	= { .len = sizeof(struct can_berr_counter) },
++	[IFLA_CAN_DATA_BITTIMING]
++				= { .len = sizeof(struct can_bittiming) },
++	[IFLA_CAN_DATA_BITTIMING_CONST]
++				= { .len = sizeof(struct can_bittiming_const) },
+ };
  
- /*
-+ * changing MTU and control mode for CAN/CANFD devices
-+ */
-+int can_change_mtu(struct net_device *dev, int new_mtu)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	/* Do not allow changing the MTU while running */
-+	if (dev->flags & IFF_UP)
-+		return -EBUSY;
-+
-+	/* allow change of MTU according to the CANFD ability of the device */
-+	switch (new_mtu) {
-+
-+	case CAN_MTU:
-+		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
-+		break;
-+
-+	case CANFD_MTU:
-+		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
-+			return -EINVAL;
-+
-+		priv->ctrlmode |= CAN_CTRLMODE_FD;
-+		break;
-+
-+	default:
-+			return -EINVAL;
-+	}
-+
-+	dev->mtu = new_mtu;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_change_mtu);
-+
-+/*
-  * Common open function when the device gets opened.
-  *
-  * This function should be called in the open function of the device
-@@ -721,6 +755,12 @@ static int can_changelink(struct net_device *dev,
- 			return -EOPNOTSUPP;
- 		priv->ctrlmode &= ~cm->mask;
- 		priv->ctrlmode |= cm->flags;
-+
-+		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
-+		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-+			dev->mtu = CANFD_MTU;
-+		else
-+			dev->mtu = CAN_MTU;
+ static int can_changelink(struct net_device *dev,
+@@ -683,6 +687,29 @@ static int can_changelink(struct net_device *dev,
+ 		}
  	}
  
- 	if (data[IFLA_CAN_RESTART_MS]) {
++	if (data[IFLA_CAN_DATA_BITTIMING]) {
++		struct can_bittiming bt;
++
++		/* Do not allow changing bittiming while running */
++		if (dev->flags & IFF_UP)
++			return -EBUSY;
++		memcpy(&bt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
++		       sizeof(bt));
++		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
++			return -EINVAL;
++		err = can_get_bittiming(dev, &bt, priv->data_bittiming_const);
++		if (err)
++			return err;
++		memcpy(&priv->data_bittiming, &bt, sizeof(bt));
++
++		if (priv->do_set_data_bittiming) {
++			/* Finally, set the bit-timing registers */
++			err = priv->do_set_data_bittiming(dev);
++			if (err)
++				return err;
++		}
++	}
++
+ 	if (data[IFLA_CAN_CTRLMODE]) {
+ 		struct can_ctrlmode *cm;
+ 
+@@ -730,6 +757,10 @@ static size_t can_get_size(const struct net_device *dev)
+ 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
+ 	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
+ 		size += nla_total_size(sizeof(struct can_berr_counter));
++	if (priv->data_bittiming.bitrate)			/* IFLA_DATA_CAN_BITTIMING */
++		size += nla_total_size(sizeof(struct can_bittiming));
++	if (priv->data_bittiming_const)				/* IFLA_DATA_CAN_BITTIMING_CONST */
++		size += nla_total_size(sizeof(struct can_bittiming_const));
+ 
+ 	return size;
+ }
+@@ -759,8 +790,17 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 
+ 	    (priv->do_get_berr_counter &&
+ 	     !priv->do_get_berr_counter(dev, &bec) &&
+-	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)))
++	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
++
++	    (priv->data_bittiming.bitrate &&
++	     nla_put(skb, IFLA_CAN_DATA_BITTIMING,
++		     sizeof(priv->data_bittiming), &priv->data_bittiming)) ||
++
++	    (priv->data_bittiming_const &&
++	     nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
++		     sizeof(*priv->data_bittiming_const), priv->data_bittiming_const)))
+ 		return -EMSGSIZE;
++
+ 	return 0;
+ }
+ 
 diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 8adaee9..3ce5e52 100644
+index dc5f902..8adaee9 100644
 --- a/include/linux/can/dev.h
 +++ b/include/linux/can/dev.h
-@@ -113,6 +113,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
+@@ -33,8 +33,9 @@ enum can_mode {
+ struct can_priv {
+ 	struct can_device_stats can_stats;
  
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-+int can_change_mtu(struct net_device *dev, int new_mtu);
+-	struct can_bittiming bittiming;
+-	const struct can_bittiming_const *bittiming_const;
++	struct can_bittiming bittiming, data_bittiming;
++	const struct can_bittiming_const *bittiming_const,
++		*data_bittiming_const;
+ 	struct can_clock clock;
  
- int register_candev(struct net_device *dev);
- void unregister_candev(struct net_device *dev);
+ 	enum can_state state;
+@@ -45,6 +46,7 @@ struct can_priv {
+ 	struct timer_list restart_timer;
+ 
+ 	int (*do_set_bittiming)(struct net_device *dev);
++	int (*do_set_data_bittiming)(struct net_device *dev);
+ 	int (*do_set_mode)(struct net_device *dev, enum can_mode mode);
+ 	int (*do_get_state)(const struct net_device *dev,
+ 			    enum can_state *state);
 diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index b41933d..7e2e186 100644
+index df944ed..b41933d 100644
 --- a/include/uapi/linux/can/netlink.h
 +++ b/include/uapi/linux/can/netlink.h
-@@ -96,6 +96,7 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
- #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
- #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
-+#define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+@@ -122,6 +122,8 @@ enum {
+ 	IFLA_CAN_RESTART_MS,
+ 	IFLA_CAN_RESTART,
+ 	IFLA_CAN_BERR_COUNTER,
++	IFLA_CAN_DATA_BITTIMING,
++	IFLA_CAN_DATA_BITTIMING_CONST,
+ 	__IFLA_CAN_MAX
+ };
  
- /*
-  * CAN device statistics
 -- 
 1.9.0.rc3
 
