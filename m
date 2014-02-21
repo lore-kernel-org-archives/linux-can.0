@@ -1,50 +1,52 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v4 0/7] Add CAN FD infrastructure for CAN driver
-Date: Fri, 21 Feb 2014 19:56:58 +0100
-Message-ID: <1393009025-4903-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v4 1/7] can: preserve skbuff protocol in can_put_echo_skb
+Date: Fri, 21 Feb 2014 19:56:59 +0100
+Message-ID: <1393009025-4903-2-git-send-email-socketcan@hartkopp.net>
+References: <1393009025-4903-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:53825 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:52512 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751971AbaBUS5U (ORCPT
+	with ESMTP id S1752843AbaBUS5U (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Feb 2014 13:57:20 -0500
+In-Reply-To: <1393009025-4903-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is the patch series to extend the CAN driver infrastructure with CAN FD.
+The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
+can_put_echo_skb(). With CAN FD this value has to be preserved.
+This patch changes the hard assignment of the protocol value to a check of
+valid protocol values for CAN and CAN FD.
 
-Changes v3->v4:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/dev.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-- fix a comment in patch 4 pointed out by Stephane
-- added patches 6 & 7
-
-Patch 6 fixes a semantic issue and is probably a stable candidate.
-
-Patch 7 can be applied later - when patch 6 emerges in the -next trees.
-
-Regarding the discussion for patch 5: Does anyone have a better idea for it?
-
-Regards,
-Oliver
-
-*** BLURB HERE ***
-
-Oliver Hartkopp (7):
-  can: preserve skbuff protocol in can_put_echo_skb
-  can: netlink send bittiming data only when a bitrate is available
-  can: provide a separate bittiming_const parameter to bittiming
-    functions
-  can: introduce the data bitrate configuration for CAN FD
-  can: allow to change the device mtu for CAN FD capable devices
-  can: fix bitrate check semantics at interface open time
-  can: add bittiming check at interface open for CAN FD
-
- drivers/net/can/dev.c            | 144 +++++++++++++++++++++++++++++++++------
- include/linux/can/dev.h          |   7 +-
- include/uapi/linux/can/netlink.h |   3 +
- 3 files changed, 131 insertions(+), 23 deletions(-)
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c0563f1..e1a3741 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	BUG_ON(idx >= priv->echo_skb_max);
+ 
+ 	/* check flag whether this packet has to be looped back */
+-	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
++	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
++	    (skb->protocol != htons(ETH_P_CAN) &&
++	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+ 		return;
+ 	}
+@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 			return;
+ 
+ 		/* make settings for echo to reduce code in irq context */
+-		skb->protocol = htons(ETH_P_CAN);
+ 		skb->pkt_type = PACKET_BROADCAST;
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 		skb->dev = dev;
 -- 
 1.9.0
 
