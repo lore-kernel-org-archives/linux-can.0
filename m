@@ -1,119 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: MCP2515 DTS support
-Date: Wed, 26 Feb 2014 18:50:04 +0100
-Message-ID: <530E294C.4050209@pengutronix.de>
-References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com> <1393388253.686159171@f330.i.mail.ru> <530DE824.2060803@gmail.com> <1393426239.267518204@f362.i.mail.ru> <530E262C.2040603@gmail.com>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IE1DUDI1MTUgRFRTIHN1cHBvcnQ=?=
+Date: Wed, 26 Feb 2014 22:01:47 +0400
+Message-ID: <1393437707.859123970@f386.i.mail.ru>
+References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com>
+ <530E262C.2040603@gmail.com>
+ <530E294C.4050209@pengutronix.de>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48710 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750980AbaBZRuI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 12:50:08 -0500
-In-Reply-To: <530E262C.2040603@gmail.com>
+Received: from fallback8.mail.ru ([94.100.176.136]:41606 "EHLO
+	fallback8.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751809AbaBZSCz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:02:55 -0500
+Received: from f386.i.mail.ru (f386.i.mail.ru [185.5.136.57])
+	by fallback8.mail.ru (mPOP.Fallback_MX) with ESMTP id 264C051E2771
+	for <linux-can@vger.kernel.org>; Wed, 26 Feb 2014 22:02:00 +0400 (MSK)
+In-Reply-To: <530E294C.4050209@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Lucas Zampar Bernardi <lucas.zampar@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-can@vger.kernel.org
+To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
+Cc: =?UTF-8?B?THVjYXMgWmFtcGFyIEJlcm5hcmRp?= <lucas.zampar@gmail.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 02/26/2014 06:36 PM, Lucas Zampar Bernardi wrote:
-> You are right Alexander!
-> The CONFIG_COMMON_CLK hasn't enable!
-> But for all SOC AT91_SAM9x5 still uses old clock style (AT91_USE_OLD_CL=
-K):
->=20
-> config SOC_AT91SAM9X5
->         bool "AT91SAM9x5 family"
->         select HAVE_AT91_DBGU0
->         select HAVE_FB_ATMEL
->         select SOC_AT91SAM9
->         select AT91_USE_OLD_CLK
->         select HAVE_AT91_UTMI
->         select HAVE_AT91_SMD
->         select HAVE_AT91_USB_CLK
->=20
-> and one of dependencies for COMMON_CLK_AT91 is don't be AT91_USE_OLD_CL=
-K
->=20
-> config COMMON_CLK_AT91
->         bool
->        default AT91_PMC_UNIT && USE_OF && !AT91_USE_OLD_CLK
->         select COMMON_CLK
->=20
-> config OLD_CLK_AT91
->         bool
->         default AT91_PMC_UNIT && AT91_USE_OLD_CLK
->=20
->=20
->=20
->=20
-> Now came my question: Can I use CONFIG_COMMON_CLK without my ARCH
-> support? If not, how we will support devices that need CONFIG_COMMON_CL=
-K?
-
-You probably have to wait for common clock support. However you can
-still hook platform data to your spi device. For a mxs add this to
-arch/arm/mach-mxs/mach-mxs.c:
-
-static int abc_spi_notifier_call(struct notifier_block *nb,
-					unsigned long event, void *data)
-{
-	struct device *dev =3D data;
-
-	if (event =3D=3D BUS_NOTIFY_BIND_DRIVER)
-		if (strcmp(dev_name(dev), "spi32766.0") =3D=3D 0)
-			dev->platform_data =3D &abc_pdata;
-
-	return NOTIFY_OK;
-}
-
-static struct notifier_block abc_spi_nb =3D {
-	.notifier_call =3D abc_spi_notifier_call,
-};
-
-static void __init abc_post_init(void)
-{
-	bus_register_notifier(&spi_bus_type, &abc_spi_nb);
-}
-
-static void __init mxs_machine_init(void)
-{
-
-	of_platform_populate(NULL, of_default_bus_match_table,
-			     mxs_auxdata_lookup, NULL);
-
-	if (of_machine_is_compatible("123,abc"))
-		abc_post_init();
-}
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMOKUwACgkQjTAFq1RaXHNQfACfe3dj15BCcu5keU5l2sgPZUH1
-G/YAnidvq2ln25Q/OSqLmkQE2TSTcSWp
-=uYL0
------END PGP SIGNATURE-----
-
---1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4--
+0KHRgNC10LTQsCwgMjYg0YTQtdCy0YDQsNC70Y8gMjAxNCwgMTg6NTAgKzAxOjAwINC+0YIgTWFy
+YyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT46Cj4gT24gMDIvMjYvMjAxNCAwNjoz
+NiBQTSwgTHVjYXMgWmFtcGFyIEJlcm5hcmRpIHdyb3RlOgo+ID4gWW91IGFyZSByaWdodCBBbGV4
+YW5kZXIhCj4gPiBUaGUgQ09ORklHX0NPTU1PTl9DTEsgaGFzbid0IGVuYWJsZSEKPiA+IEJ1dCBm
+b3IgYWxsIFNPQyBBVDkxX1NBTTl4NSBzdGlsbCB1c2VzIG9sZCBjbG9jayBzdHlsZSAoQVQ5MV9V
+U0VfT0xEX0NMSyk6Cj4gPiAKPiA+IGNvbmZpZyBTT0NfQVQ5MVNBTTlYNQo+ID4gICAgICAgICBi
+b29sICJBVDkxU0FNOXg1IGZhbWlseSIKPiA+ICAgICAgICAgc2VsZWN0IEhBVkVfQVQ5MV9EQkdV
+MAo+ID4gICAgICAgICBzZWxlY3QgSEFWRV9GQl9BVE1FTAo+ID4gICAgICAgICBzZWxlY3QgU09D
+X0FUOTFTQU05Cj4gPiAgICAgICAgIHNlbGVjdCBBVDkxX1VTRV9PTERfQ0xLCj4gPiAgICAgICAg
+IHNlbGVjdCBIQVZFX0FUOTFfVVRNSQo+ID4gICAgICAgICBzZWxlY3QgSEFWRV9BVDkxX1NNRAo+
+ID4gICAgICAgICBzZWxlY3QgSEFWRV9BVDkxX1VTQl9DTEsKPiA+IAo+ID4gYW5kIG9uZSBvZiBk
+ZXBlbmRlbmNpZXMgZm9yIENPTU1PTl9DTEtfQVQ5MSBpcyBkb24ndCBiZSBBVDkxX1VTRV9PTERf
+Q0xLCj4gPiAKPiA+IGNvbmZpZyBDT01NT05fQ0xLX0FUOTEKPiA+ICAgICAgICAgYm9vbAo+ID4g
+ICAgICAgIGRlZmF1bHQgQVQ5MV9QTUNfVU5JVCAmJiBVU0VfT0YgJiYgIUFUOTFfVVNFX09MRF9D
+TEsKPiA+ICAgICAgICAgc2VsZWN0IENPTU1PTl9DTEsKPiA+IAo+ID4gY29uZmlnIE9MRF9DTEtf
+QVQ5MQo+ID4gICAgICAgICBib29sCj4gPiAgICAgICAgIGRlZmF1bHQgQVQ5MV9QTUNfVU5JVCAm
+JiBBVDkxX1VTRV9PTERfQ0xLCj4gPiAKPiA+IAo+ID4gCj4gPiAKPiA+IE5vdyBjYW1lIG15IHF1
+ZXN0aW9uOiBDYW4gSSB1c2UgQ09ORklHX0NPTU1PTl9DTEsgd2l0aG91dCBteSBBUkNICj4gPiBz
+dXBwb3J0PyBJZiBub3QsIGhvdyB3ZSB3aWxsIHN1cHBvcnQgZGV2aWNlcyB0aGF0IG5lZWQgQ09O
+RklHX0NPTU1PTl9DTEs/Cj4gCj4gWW91IHByb2JhYmx5IGhhdmUgdG8gd2FpdCBmb3IgY29tbW9u
+IGNsb2NrIHN1cHBvcnQuIEhvd2V2ZXIgeW91IGNhbgo+IHN0aWxsIGhvb2sgcGxhdGZvcm0gZGF0
+YSB0byB5b3VyIHNwaSBkZXZpY2UuIEZvciBhIG14cyBhZGQgdGhpcyB0bwo+IGFyY2gvYXJtL21h
+Y2gtbXhzL21hY2gtbXhzLmM6Cj4gCj4gc3RhdGljIGludCBhYmNfc3BpX25vdGlmaWVyX2NhbGwo
+c3RydWN0IG5vdGlmaWVyX2Jsb2NrICpuYiwKPiAJCQkJCXVuc2lnbmVkIGxvbmcgZXZlbnQsIHZv
+aWQgKmRhdGEpCi4uLgoKTmV2ZXJ0aGVsZXNzLCBzdXBwb3J0IGZvciB0aGUgQ0xLIEFQSSBmb3Ig
+U09DIEFUOTFfU0FNOXg1IHNlZW1zCmFscmVhZHkgaW4gdGhlIGtlcm5lbC4KaHR0cHM6Ly9naXQu
+a2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvbmV4dC9saW51eC1uZXh0LmdpdC90cmVl
+L2RyaXZlcnMvY2xrL2F0OTEvcG1jLmM/aWQ9MDUyMDI4NzJjYTk4ZjhlYTYxOTQzYTliNTMwNDE3
+YzU1MDNiODE2ZgoKWW91IGNhbiBhc2sgYWJvdXQgdGhlIENMSyBzdGF0dXMgaW4gdGhlIEFUOTEg
+bWFpbGluZyBsaXN0LgoKLS0tCg==
