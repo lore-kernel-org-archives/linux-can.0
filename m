@@ -1,122 +1,69 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] can: xilinx CAN controller support.
-Date: Wed, 26 Feb 2014 14:22:04 +0100
-Message-ID: <530DEA7C.6010609@pengutronix.de>
-References: <74d607e9-ac9c-4a9b-ac49-e84ae49d20c2@TX2EHSMHS031.ehs.local> <530D0A9C.5090402@pengutronix.de> <cd00fb2d-c8a7-423d-8aa0-2b413e9ac101@CO9EHSMHS017.ehs.local>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: Any chance to get the Vector CANcardXL working with SocketCAN?
+Date: Wed, 26 Feb 2014 15:37:51 +0100
+Message-ID: <20140226143751.GC25369@vandijck-laurijssen.be>
+References: <D91D9A33E1E2B046B8FBA4F6EDF45FD53D056D5D@kgtz-mb01.ds.fh-kl.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="WLaE7bP6u1l5645uGMVJRtbhg45ixMqLi"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38222 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751368AbaBZNWQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 08:22:16 -0500
-In-Reply-To: <cd00fb2d-c8a7-423d-8aa0-2b413e9ac101@CO9EHSMHS017.ehs.local>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:2678 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750954AbaBZOiB convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 26 Feb 2014 09:38:01 -0500
+Content-Disposition: inline
+In-Reply-To: <D91D9A33E1E2B046B8FBA4F6EDF45FD53D056D5D@kgtz-mb01.ds.fh-kl.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+To: Sascha =?utf-8?B?TcO8bnpiZXJn?= <samu0007@stud.fh-kl.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WLaE7bP6u1l5645uGMVJRtbhg45ixMqLi
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hey,
 
-On 02/26/2014 02:07 PM, Appana Durga Kedareswara Rao wrote:
->> This loop looks broken. Can you explain how it works.
->>
->> What it shoud do is:
->> We have put (priv->tx_head - priv->tx_tail) CAN frames into the FIFO.
->> This means at maximum there could be this amount of CAN frames which
->> have been successfully transmitted. For every cycle in this while loop=
- you
->> should:
->> a) check if a CAN frame has successfully been transmitted
->>    (as this CAN core uses a FIFO it should be "oldest")
->>    A read_reg() of some kind is missing in your loop.
->> b) if needed, remove this event from the FIFO or
->>    mark the interrupt as done. Whatever you hardware needs.
->> c) update your statistics
->> d) Use can_get_echo_skb to push this frame into the networking stack
->> e) As a CAN frame has been transmitted successfully, wake the tx_queue=
-=2E
->>
->>> +   while (priv->tx_head - priv->tx_tail > 0) {
->>> +           if (isr & XCAN_IXR_TXFLL_MASK) {
->>> +                   priv->write_reg(priv, XCAN_ICR_OFFSET,
->>> +                                   XCAN_IXR_TXFLL_MASK);
->>> +                   netif_stop_queue(ndev);
->>
->> Why do you stop the queue here? A CAN frame has successfully been
->> transmitted, there should be room in the FIFO.
->>
->>> +                   break;
->>> +           }
->>> +           can_get_echo_skb(ndev, priv->tx_tail %
->>> +                                   priv->xcan_echo_skb_max_tx);
->>> +           priv->tx_tail++;
->>> +   }
->>> +
+I wrote the softing driver because of the need to reuse our
+bunch of softing PCMCIA cards.
+See my comments below ...
+
+On Tue, Feb 25, 2014 at 01:52:36PM +0000, Sascha M=C3=BCnzberg wrote:
+> Hello,
 >=20
-> The below are the bit fields available for the Transmit FIFO.
-> 1) In the ISR(interrupt status register)  Tx Ok interrupt and Tx fifo f=
-ull interrupt.
-> 2) in the SR(Status Register) Tx fifo full condition.
+> I wonder if I could get the CANcardXL from Vector working with Socket=
+CAN.=20
+> Reading the info for the kernel module 'softing_cs' gave me some hope=
+=2E=20
+> However, I did not succeed. Here are some details about the hardware:
 >=20
+> -----
+
+> Type: CANcardXL
+> Controller: Phillips SJA 1000 (another small pice of hope, since soft=
+ing_cs.c=20
+>                                                explicitly lists a 'Ve=
+ctor-CANcard-SJA')
+> Transceiver: CANcab 251 opto (Highspeed)
 >=20
-> I am modifying the entire tx interrupt logic to like below.
+> wusel:~/# pccardctl ident
 >=20
-> static void xcan_tx_interrupt(struct net_device *ndev, u32 isr)
-> {
->         struct xcan_priv *priv =3D netdev_priv(ndev);
->         struct net_device_stats *stats =3D &ndev->stats;
->=20
->             while (priv->tx_head - priv->tx_tail > 0) {
->                 if (isr & XCAN_IXR_TXFLL_MASK) {
->                         priv->write_reg(priv, XCAN_ICR_OFFSET,
->                                         XCAN_IXR_TXFLL_MASK);
->                           break;
->                 }
->                 can_get_echo_skb(ndev, priv->tx_tail %
->                                         priv->xcan_echo_skb_max_tx);
->                 priv->tx_tail++;
->          stats->tx_packets++;
->         netif_wake_queue(ndev);
->               can_led_event(ndev, CAN_LED_EVENT_TX);
->=20
->         }
+> Socket 0:
+> product info: "VECTOR
+> ", "CANcardXL
+> ", "", ""
+> manfid: 0x02e6, 0x0100
+> -----
 
-You just need to wake the queue once.
+I found on
+http://vector.com/vi_cancardxl_en.html
+that the board has an Atmel ARM7 cpu.
+The firmware of the softing driver is targeted for Infineon C166 series
+of cpu's.
+So, first conclusion is: there's no firmware for that device.
+You can load the first 2 firmware blobs, but those are just written
+in the cards iomem space and read back, without target acknowledge.
+That seems to succeed, so at least the same amount of RAM is present th=
+ere.
 
-> }
->=20
->=20
-> Are you Ok with the above logic?
+I have no idea to even investigate if it could work...
 
-No, how can you tell how many frames have been transmitted?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---WLaE7bP6u1l5645uGMVJRtbhg45ixMqLi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMN6nwACgkQjTAFq1RaXHPQGQCffOrc4qe/mhVZnM1NvNN3XTMq
-JfAAn3poCqSBHxbeZtkG8DiW4dHP6rDk
-=fs9R
------END PGP SIGNATURE-----
-
---WLaE7bP6u1l5645uGMVJRtbhg45ixMqLi--
+Kind regards,
+Kurt
