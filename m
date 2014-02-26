@@ -1,37 +1,34 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/3] configure: add checks for large file support (LFS)
-Date: Wed, 26 Feb 2014 19:28:33 +0100
-Message-ID: <1393439313-18030-4-git-send-email-mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 0/3] adding LFS support
+Date: Wed, 26 Feb 2014 19:40:03 +0100
+Message-ID: <530E3503.60006@hartkopp.net>
 References: <1393439313-18030-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53111 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752810AbaBZS2h (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:28:37 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:58786 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751401AbaBZSkG (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:40:06 -0500
 In-Reply-To: <1393439313-18030-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- configure.ac | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index 0a24e1a..2fa16ce 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -54,6 +54,8 @@ AC_CHECK_HEADERS([ \
- # Checks for typedefs, structures, and compiler characteristics.
- #
- AC_C_INLINE
-+AC_SYS_LARGEFILE
-+AC_TYPE_OFF_T
- AC_TYPE_PID_T
- AC_TYPE_UINT64_T
- 
--- 
-1.9.0.rc3
+
+On 26.02.2014 19:28, Marc Kleine-Budde wrote:
+> Picking up Oliver's patch, addressing ukl's comment and adding LFS support to
+> the autotools version, too.
+
+Many thanks!!
+
+> 
+> Oliver, can I add your S-o-b to the patch?
+
+Yes you can :-)
+
+Tnx,
+Oliver
 
