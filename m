@@ -1,35 +1,170 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: =?UTF-8?B?UmU6IE1DUDI1MTUgRFRTIHN1cHBvcnQ=?=
-Date: Wed, 26 Feb 2014 18:50:39 +0400
-Message-ID: <1393426239.267518204@f362.i.mail.ru>
-References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com>
- <1393388253.686159171@f330.i.mail.ru>
- <530DE824.2060803@gmail.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+Date: Wed, 26 Feb 2014 16:43:14 +0100
+Message-ID: <530E0B92.5010903@pengutronix.de>
+References: <74d607e9-ac9c-4a9b-ac49-e84ae49d20c2@TX2EHSMHS031.ehs.local> <530D0A9C.5090402@pengutronix.de> <cd00fb2d-c8a7-423d-8aa0-2b413e9ac101@CO9EHSMHS017.ehs.local> <530DEA7C.6010609@pengutronix.de> <678ca296-8687-4e7c-9014-ae69d886a068@CO9EHSMHS014.ehs.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="pLrNo12Q9JO65kgWkwNPQd1MnkbN5SB08"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback2.mail.ru ([94.100.176.87]:37071 "EHLO
-	fallback2.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751140AbaBZOwR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 09:52:17 -0500
-Received: from f362.i.mail.ru (f362.i.mail.ru [217.69.141.4])
-	by fallback2.mail.ru (mPOP.Fallback_MX) with ESMTP id A056AFFB7E84
-	for <linux-can@vger.kernel.org>; Wed, 26 Feb 2014 18:50:56 +0400 (MSK)
-In-Reply-To: <530DE824.2060803@gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40703 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752729AbaBZPn0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 10:43:26 -0500
+In-Reply-To: <678ca296-8687-4e7c-9014-ae69d886a068@CO9EHSMHS014.ehs.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?THVjYXMgWmFtcGFyIEJlcm5hcmRp?= <lucas.zampar@gmail.com>
-Cc: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 
-0KHRgNC10LTQsCwgMjYg0YTQtdCy0YDQsNC70Y8gMjAxNCwgMTA6MTIgLTAzOjAwINC+0YIgTHVj
-YXMgWmFtcGFyIEJlcm5hcmRpIDxsdWNhcy56YW1wYXJAZ21haWwuY29tPjoKPiBIZWxsbyBBbGV4
-YW5kZXIsCj4gCj4gCj4gRm9sbG93IGF0dGFjaCBteSBEVFMgZmlsZSBhbmQgbXkgZG1lc2cgbG9n
-Lgo+IEhvdyB5b3UgY2FuIHNlZSwgd2UgaGF2ZSAibWNwMjUxeDogcHJvYmUgb2Ygc3BpMzI3NjYu
-MiBmYWlsZWQgd2l0aCBlcnJvciAKPiAtMi4iLgo+IEkgZGlzY292ZXJlZCB0aGF0IHRoZSBjYXVz
-ZSBpcyB0aGUgY2xvY2sgY29uZmlnIHN0cnVjdHVyZSwgYmVjYXVzZSBpZiAKPiBJJ3ZlIGZvcmNl
-ZCBhIGZyZXF1ZW5jeSBoYXJkY29kZSBhbGwgZHJpdmVyIHdvcmtzLgo+IFRoZSBwb2ludCB3aGVy
-ZSBJJ3ZlIGZvcmNlZCBpczoKLi4uCgpTZWVtcywgeW91IGFyZSBtaXNzaW5nICJmaXhlZC1jbG9j
-ayIgZHJpdmVyIGluIHRoZSBrZXJuZWwuCklzIENPTkZJR19DT01NT05fQ0xLIG9wdGlvbiBpcyBl
-bmFibGVkIGluIHlvdXIgLmNvbmZpZz8KCi0tLQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pLrNo12Q9JO65kgWkwNPQd1MnkbN5SB08
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 02/26/2014 03:46 PM, Appana Durga Kedareswara Rao wrote:
+> Hi Marc,
+>=20
+>=20
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Wednesday, February 26, 2014 6:52 PM
+>> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek;
+>> grant.likely@linaro.org; robh+dt@kernel.org; linux-can@vger.kernel.org=
+
+>> Cc: netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linu=
+x-
+>> kernel@vger.kernel.org; devicetree@vger.kernel.org
+>> Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+>>
+>> On 02/26/2014 02:07 PM, Appana Durga Kedareswara Rao wrote:
+>>>> This loop looks broken. Can you explain how it works.
+>>>>
+>>>> What it shoud do is:
+>>>> We have put (priv->tx_head - priv->tx_tail) CAN frames into the FIFO=
+=2E
+>>>> This means at maximum there could be this amount of CAN frames which=
+
+>>>> have been successfully transmitted. For every cycle in this while
+>>>> loop you
+>>>> should:
+>>>> a) check if a CAN frame has successfully been transmitted
+>>>>    (as this CAN core uses a FIFO it should be "oldest")
+>>>>    A read_reg() of some kind is missing in your loop.
+>>>> b) if needed, remove this event from the FIFO or
+>>>>    mark the interrupt as done. Whatever you hardware needs.
+>>>> c) update your statistics
+>>>> d) Use can_get_echo_skb to push this frame into the networking stack=
+
+>>>> e) As a CAN frame has been transmitted successfully, wake the tx_que=
+ue.
+>>>>
+>>>>> +   while (priv->tx_head - priv->tx_tail > 0) {
+>>>>> +           if (isr & XCAN_IXR_TXFLL_MASK) {
+>>>>> +                   priv->write_reg(priv, XCAN_ICR_OFFSET,
+>>>>> +                                   XCAN_IXR_TXFLL_MASK);
+>>>>> +                   netif_stop_queue(ndev);
+>>>>
+>>>> Why do you stop the queue here? A CAN frame has successfully been
+>>>> transmitted, there should be room in the FIFO.
+>>>>
+>>>>> +                   break;
+>>>>> +           }
+>>>>> +           can_get_echo_skb(ndev, priv->tx_tail %
+>>>>> +                                   priv->xcan_echo_skb_max_tx);
+>>>>> +           priv->tx_tail++;
+>>>>> +   }
+>>>>> +
+>>>
+>>> The below are the bit fields available for the Transmit FIFO.
+>>> 1) In the ISR(interrupt status register)  Tx Ok interrupt and Tx fifo=
+ full
+>> interrupt.
+>>> 2) in the SR(Status Register) Tx fifo full condition.
+>>>
+>>>
+>>> I am modifying the entire tx interrupt logic to like below.
+>>>
+>>> static void xcan_tx_interrupt(struct net_device *ndev, u32 isr) {
+>>>         struct xcan_priv *priv =3D netdev_priv(ndev);
+>>>         struct net_device_stats *stats =3D &ndev->stats;
+>>>
+>>>             while (priv->tx_head - priv->tx_tail > 0) {
+>>>                 if (isr & XCAN_IXR_TXFLL_MASK) {
+>>>                         priv->write_reg(priv, XCAN_ICR_OFFSET,
+>>>                                         XCAN_IXR_TXFLL_MASK);
+>>>                           break;
+>>>                 }
+>>>                 can_get_echo_skb(ndev, priv->tx_tail %
+>>>                                         priv->xcan_echo_skb_max_tx);
+>>>                 priv->tx_tail++;
+>>>          stats->tx_packets++;
+>>>         netif_wake_queue(ndev);
+>>>               can_led_event(ndev, CAN_LED_EVENT_TX);
+>>>
+>>>         }
+>>
+>> You just need to wake the queue once.
+>=20
+> Ok
+>>
+>>> }
+>>>
+>>>
+>>> Are you Ok with the above logic?
+>>
+>> No, how can you tell how many frames have been transmitted?
+>=20
+> There is no register to read how many can frames are transmitted.
+> The only way to know Is by reading this parameter (stats->tx_packets++;=
+) through ip command
+
+stats->tx_packets is calculated in the above loop and the loop is
+broken. Let me illustrate the problem:
+
+- xmit is called 10 times in a row
+- this means you have 10 CAN frames in the TX FIFO
+- a single CAN frame gets transmitted
+- you get an interrupt
+- you enter the above routine and loop 10 times and echo the CAN frame
+  back into the stack
+
+Now every application sees 10 transmitted packages, but there is only
+one transmitted. Every time you loop you have to check if the CAN frame
+has already been transmitted or not. Is that possible with the hardware?
+
+> ip -d -s link show can
+> Or using ifconfig command.
+>=20
+> At the h/w level it can transmit Max upto 64 packets (Max fifo depth)
+> We need to monitor the Tx fifo full bit in the ISR(Interrupt Status Reg=
+ister)  or Tx fifo full bit in the SR(Status Register) and if it is full =
+we need to stop the queue that is
+> I am doing in the _xmit by reading the status register before proceedin=
+g the   packet transmission.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--pLrNo12Q9JO65kgWkwNPQd1MnkbN5SB08
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMOC5IACgkQjTAFq1RaXHOO/wCdHe54PqTUu8mFN3zIwWQUgMMj
+fKEAn1bsIGaXKtF2HBYURWYAchExjecR
+=6BdZ
+-----END PGP SIGNATURE-----
+
+--pLrNo12Q9JO65kgWkwNPQd1MnkbN5SB08--
