@@ -1,85 +1,119 @@
-From: Lucas Zampar Bernardi <lucas.zampar@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: MCP2515 DTS support
-Date: Wed, 26 Feb 2014 14:36:44 -0300
-Message-ID: <530E262C.2040603@gmail.com>
-References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com> <1393388253.686159171@f330.i.mail.ru> <530DE824.2060803@gmail.com> <1393426239.267518204@f362.i.mail.ru>
+Date: Wed, 26 Feb 2014 18:50:04 +0100
+Message-ID: <530E294C.4050209@pengutronix.de>
+References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com> <1393388253.686159171@f330.i.mail.ru> <530DE824.2060803@gmail.com> <1393426239.267518204@f362.i.mail.ru> <530E262C.2040603@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yk0-f174.google.com ([209.85.160.174]:43268 "EHLO
-	mail-yk0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752776AbaBZRgu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 12:36:50 -0500
-Received: by mail-yk0-f174.google.com with SMTP id 20so3353084yks.5
-        for <linux-can@vger.kernel.org>; Wed, 26 Feb 2014 09:36:49 -0800 (PST)
-In-Reply-To: <1393426239.267518204@f362.i.mail.ru>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48710 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750980AbaBZRuI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 12:50:08 -0500
+In-Reply-To: <530E262C.2040603@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Lucas Zampar Bernardi <lucas.zampar@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
+Cc: linux-can@vger.kernel.org
 
-You are right Alexander!
-The CONFIG_COMMON_CLK hasn't enable!
-But for all SOC AT91_SAM9x5 still uses old clock style (AT91_USE_OLD_CL=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 02/26/2014 06:36 PM, Lucas Zampar Bernardi wrote:
+> You are right Alexander!
+> The CONFIG_COMMON_CLK hasn't enable!
+> But for all SOC AT91_SAM9x5 still uses old clock style (AT91_USE_OLD_CL=
 K):
-
-config SOC_AT91SAM9X5
-         bool "AT91SAM9x5 family"
-         select HAVE_AT91_DBGU0
-         select HAVE_FB_ATMEL
-         select SOC_AT91SAM9
-         select AT91_USE_OLD_CLK
-         select HAVE_AT91_UTMI
-         select HAVE_AT91_SMD
-         select HAVE_AT91_USB_CLK
-
-and one of dependencies for COMMON_CLK_AT91 is don't be AT91_USE_OLD_CL=
+>=20
+> config SOC_AT91SAM9X5
+>         bool "AT91SAM9x5 family"
+>         select HAVE_AT91_DBGU0
+>         select HAVE_FB_ATMEL
+>         select SOC_AT91SAM9
+>         select AT91_USE_OLD_CLK
+>         select HAVE_AT91_UTMI
+>         select HAVE_AT91_SMD
+>         select HAVE_AT91_USB_CLK
+>=20
+> and one of dependencies for COMMON_CLK_AT91 is don't be AT91_USE_OLD_CL=
 K
-
-config COMMON_CLK_AT91
-         bool
-        default AT91_PMC_UNIT && USE_OF && !AT91_USE_OLD_CLK
-         select COMMON_CLK
-
-config OLD_CLK_AT91
-         bool
-         default AT91_PMC_UNIT && AT91_USE_OLD_CLK
-
-
-
-
-Now came my question: Can I use CONFIG_COMMON_CLK without my ARCH=20
-support? If not, how we will support devices that need CONFIG_COMMON_CL=
+>=20
+> config COMMON_CLK_AT91
+>         bool
+>        default AT91_PMC_UNIT && USE_OF && !AT91_USE_OLD_CLK
+>         select COMMON_CLK
+>=20
+> config OLD_CLK_AT91
+>         bool
+>         default AT91_PMC_UNIT && AT91_USE_OLD_CLK
+>=20
+>=20
+>=20
+>=20
+> Now came my question: Can I use CONFIG_COMMON_CLK without my ARCH
+> support? If not, how we will support devices that need CONFIG_COMMON_CL=
 K?
 
+You probably have to wait for common clock support. However you can
+still hook platform data to your spi device. For a mxs add this to
+arch/arm/mach-mxs/mach-mxs.c:
+
+static int abc_spi_notifier_call(struct notifier_block *nb,
+					unsigned long event, void *data)
+{
+	struct device *dev =3D data;
+
+	if (event =3D=3D BUS_NOTIFY_BIND_DRIVER)
+		if (strcmp(dev_name(dev), "spi32766.0") =3D=3D 0)
+			dev->platform_data =3D &abc_pdata;
+
+	return NOTIFY_OK;
+}
+
+static struct notifier_block abc_spi_nb =3D {
+	.notifier_call =3D abc_spi_notifier_call,
+};
+
+static void __init abc_post_init(void)
+{
+	bus_register_notifier(&spi_bus_type, &abc_spi_nb);
+}
+
+static void __init mxs_machine_init(void)
+{
+
+	of_platform_populate(NULL, of_default_bus_match_table,
+			     mxs_auxdata_lookup, NULL);
+
+	if (of_machine_is_compatible("123,abc"))
+		abc_post_init();
+}
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-regards,
+--1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-Lucas
+iEYEARECAAYFAlMOKUwACgkQjTAFq1RaXHNQfACfe3dj15BCcu5keU5l2sgPZUH1
+G/YAnidvq2ln25Q/OSqLmkQE2TSTcSWp
+=uYL0
+-----END PGP SIGNATURE-----
 
-On 26-02-2014 11:50, Alexander Shiyan wrote:
-> =D0=A1=D1=80=D0=B5=D0=B4=D0=B0, 26 =D1=84=D0=B5=D0=B2=D1=80=D0=B0=D0=BB=
-=D1=8F 2014, 10:12 -03:00 =D0=BE=D1=82 Lucas Zampar Bernardi <lucas.zam=
-par@gmail.com>:
->> Hello Alexander,
->>
->>
->> Follow attach my DTS file and my dmesg log.
->> How you can see, we have "mcp251x: probe of spi32766.2 failed with e=
-rror
->> -2.".
->> I discovered that the cause is the clock config structure, because i=
-f
->> I've forced a frequency hardcode all driver works.
->> The point where I've forced is:
-> ...
->
-> Seems, you are missing "fixed-clock" driver in the kernel.
-> Is CONFIG_COMMON_CLK option is enabled in your .config?
->
-> ---
-
+--1NsOeSEERuMErI5OdbbrTDvbpgRjVl3m4--
