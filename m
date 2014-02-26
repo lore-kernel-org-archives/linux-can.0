@@ -1,34 +1,58 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 0/3] adding LFS support
-Date: Wed, 26 Feb 2014 19:40:03 +0100
-Message-ID: <530E3503.60006@hartkopp.net>
-References: <1393439313-18030-1-git-send-email-mkl@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH v4 7/7] can: add bittiming check at interface open for
+ CAN FD
+Date: Wed, 26 Feb 2014 20:52:08 +0100
+Message-ID: <20140226195208.GA10876@vandijck-laurijssen.be>
+References: <1393009025-4903-1-git-send-email-socketcan@hartkopp.net>
+ <1393009025-4903-8-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:58786 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751401AbaBZSkG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:40:06 -0500
-In-Reply-To: <1393439313-18030-1-git-send-email-mkl@pengutronix.de>
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171]:51413 "EHLO
+	mailrelay005.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753013AbaBZTwT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 14:52:19 -0500
+Content-Disposition: inline
+In-Reply-To: <1393009025-4903-8-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
+Hi Oliver,
 
-
-On 26.02.2014 19:28, Marc Kleine-Budde wrote:
-> Picking up Oliver's patch, addressing ukl's comment and adding LFS support to
-> the autotools version, too.
-
-Many thanks!!
-
+On Fri, Feb 21, 2014 at 07:57:05PM +0100, Oliver Hartkopp wrote:
+> Additionally to have the second (data) bitrate available the data bitrate
+> has to be greater or equal to the arbitration bitrate in CAN FD.
 > 
-> Oliver, can I add your S-o-b to the patch?
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  drivers/net/can/dev.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index d9f7281..9c3fb51 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -652,6 +652,14 @@ int open_candev(struct net_device *dev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	/* For CAN FD the data bitrate has to be >= the arbitration bitrate */
+> +	if ((priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
+> +	    (!priv->data_bittiming.tq || !priv->data_bittiming.bitrate ||
+> +	     (priv->data_bittiming.bitrate < priv->bittiming.bitrate))) {
 
-Yes you can :-)
+This prevents to configure a data bitrate slower than the arbitration bitrate.
+Such configuration is useless, but is it really "incorrect" or wrong?
 
-Tnx,
-Oliver
+> +		netdev_err(dev, "incorrect/missing data bit-timing\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* Switch carrier on if device was stopped while in bus-off state */
+>  	if (!netif_carrier_ok(dev))
+>  		netif_carrier_on(dev);
 
+Kind regards,
+Kurt
