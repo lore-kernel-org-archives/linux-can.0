@@ -1,55 +1,87 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: =?UTF-8?B?UmU6IE1DUDI1MTUgRFRTIHN1cHBvcnQ=?=
-Date: Wed, 26 Feb 2014 22:01:47 +0400
-Message-ID: <1393437707.859123970@f386.i.mail.ru>
-References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com>
- <530E262C.2040603@gmail.com>
- <530E294C.4050209@pengutronix.de>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Lucas Zampar Bernardi <lucas.zampar@gmail.com>
+Subject: Re: MCP2515 DTS support
+Date: Wed, 26 Feb 2014 15:17:02 -0300
+Message-ID: <530E2F9E.2030809@gmail.com>
+References: <144554558e0.2748.cbaa067694a7e68fb76a213b35423fb5@gmail.com> <530E262C.2040603@gmail.com> <530E294C.4050209@pengutronix.de> <1393437707.859123970@f386.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback8.mail.ru ([94.100.176.136]:41606 "EHLO
-	fallback8.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751809AbaBZSCz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:02:55 -0500
-Received: from f386.i.mail.ru (f386.i.mail.ru [185.5.136.57])
-	by fallback8.mail.ru (mPOP.Fallback_MX) with ESMTP id 264C051E2771
-	for <linux-can@vger.kernel.org>; Wed, 26 Feb 2014 22:02:00 +0400 (MSK)
-In-Reply-To: <530E294C.4050209@pengutronix.de>
+Received: from mail-yh0-f48.google.com ([209.85.213.48]:45238 "EHLO
+	mail-yh0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751720AbaBZSRO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2014 13:17:14 -0500
+Received: by mail-yh0-f48.google.com with SMTP id z6so1281266yhz.35
+        for <linux-can@vger.kernel.org>; Wed, 26 Feb 2014 10:17:14 -0800 (PST)
+In-Reply-To: <1393437707.859123970@f386.i.mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
-Cc: =?UTF-8?B?THVjYXMgWmFtcGFyIEJlcm5hcmRp?= <lucas.zampar@gmail.com>, linux-can@vger.kernel.org
+To: Alexander Shiyan <shc_work@mail.ru>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-0KHRgNC10LTQsCwgMjYg0YTQtdCy0YDQsNC70Y8gMjAxNCwgMTg6NTAgKzAxOjAwINC+0YIgTWFy
-YyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT46Cj4gT24gMDIvMjYvMjAxNCAwNjoz
-NiBQTSwgTHVjYXMgWmFtcGFyIEJlcm5hcmRpIHdyb3RlOgo+ID4gWW91IGFyZSByaWdodCBBbGV4
-YW5kZXIhCj4gPiBUaGUgQ09ORklHX0NPTU1PTl9DTEsgaGFzbid0IGVuYWJsZSEKPiA+IEJ1dCBm
-b3IgYWxsIFNPQyBBVDkxX1NBTTl4NSBzdGlsbCB1c2VzIG9sZCBjbG9jayBzdHlsZSAoQVQ5MV9V
-U0VfT0xEX0NMSyk6Cj4gPiAKPiA+IGNvbmZpZyBTT0NfQVQ5MVNBTTlYNQo+ID4gICAgICAgICBi
-b29sICJBVDkxU0FNOXg1IGZhbWlseSIKPiA+ICAgICAgICAgc2VsZWN0IEhBVkVfQVQ5MV9EQkdV
-MAo+ID4gICAgICAgICBzZWxlY3QgSEFWRV9GQl9BVE1FTAo+ID4gICAgICAgICBzZWxlY3QgU09D
-X0FUOTFTQU05Cj4gPiAgICAgICAgIHNlbGVjdCBBVDkxX1VTRV9PTERfQ0xLCj4gPiAgICAgICAg
-IHNlbGVjdCBIQVZFX0FUOTFfVVRNSQo+ID4gICAgICAgICBzZWxlY3QgSEFWRV9BVDkxX1NNRAo+
-ID4gICAgICAgICBzZWxlY3QgSEFWRV9BVDkxX1VTQl9DTEsKPiA+IAo+ID4gYW5kIG9uZSBvZiBk
-ZXBlbmRlbmNpZXMgZm9yIENPTU1PTl9DTEtfQVQ5MSBpcyBkb24ndCBiZSBBVDkxX1VTRV9PTERf
-Q0xLCj4gPiAKPiA+IGNvbmZpZyBDT01NT05fQ0xLX0FUOTEKPiA+ICAgICAgICAgYm9vbAo+ID4g
-ICAgICAgIGRlZmF1bHQgQVQ5MV9QTUNfVU5JVCAmJiBVU0VfT0YgJiYgIUFUOTFfVVNFX09MRF9D
-TEsKPiA+ICAgICAgICAgc2VsZWN0IENPTU1PTl9DTEsKPiA+IAo+ID4gY29uZmlnIE9MRF9DTEtf
-QVQ5MQo+ID4gICAgICAgICBib29sCj4gPiAgICAgICAgIGRlZmF1bHQgQVQ5MV9QTUNfVU5JVCAm
-JiBBVDkxX1VTRV9PTERfQ0xLCj4gPiAKPiA+IAo+ID4gCj4gPiAKPiA+IE5vdyBjYW1lIG15IHF1
-ZXN0aW9uOiBDYW4gSSB1c2UgQ09ORklHX0NPTU1PTl9DTEsgd2l0aG91dCBteSBBUkNICj4gPiBz
-dXBwb3J0PyBJZiBub3QsIGhvdyB3ZSB3aWxsIHN1cHBvcnQgZGV2aWNlcyB0aGF0IG5lZWQgQ09O
-RklHX0NPTU1PTl9DTEs/Cj4gCj4gWW91IHByb2JhYmx5IGhhdmUgdG8gd2FpdCBmb3IgY29tbW9u
-IGNsb2NrIHN1cHBvcnQuIEhvd2V2ZXIgeW91IGNhbgo+IHN0aWxsIGhvb2sgcGxhdGZvcm0gZGF0
-YSB0byB5b3VyIHNwaSBkZXZpY2UuIEZvciBhIG14cyBhZGQgdGhpcyB0bwo+IGFyY2gvYXJtL21h
-Y2gtbXhzL21hY2gtbXhzLmM6Cj4gCj4gc3RhdGljIGludCBhYmNfc3BpX25vdGlmaWVyX2NhbGwo
-c3RydWN0IG5vdGlmaWVyX2Jsb2NrICpuYiwKPiAJCQkJCXVuc2lnbmVkIGxvbmcgZXZlbnQsIHZv
-aWQgKmRhdGEpCi4uLgoKTmV2ZXJ0aGVsZXNzLCBzdXBwb3J0IGZvciB0aGUgQ0xLIEFQSSBmb3Ig
-U09DIEFUOTFfU0FNOXg1IHNlZW1zCmFscmVhZHkgaW4gdGhlIGtlcm5lbC4KaHR0cHM6Ly9naXQu
-a2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvbmV4dC9saW51eC1uZXh0LmdpdC90cmVl
-L2RyaXZlcnMvY2xrL2F0OTEvcG1jLmM/aWQ9MDUyMDI4NzJjYTk4ZjhlYTYxOTQzYTliNTMwNDE3
-YzU1MDNiODE2ZgoKWW91IGNhbiBhc2sgYWJvdXQgdGhlIENMSyBzdGF0dXMgaW4gdGhlIEFUOTEg
-bWFpbGluZyBsaXN0LgoKLS0tCg==
+Tnks a lot guys!
+
+I will check for COMMON_CLK support at linux-at91, but for while, I wil=
+l=20
+use the hardcode frequency!
+
+regards,
+
+lucas
+
+On 26-02-2014 15:01, Alexander Shiyan wrote:
+> =D0=A1=D1=80=D0=B5=D0=B4=D0=B0, 26 =D1=84=D0=B5=D0=B2=D1=80=D0=B0=D0=BB=
+=D1=8F 2014, 18:50 +01:00 =D0=BE=D1=82 Marc Kleine-Budde <mkl@pengutron=
+ix.de>:
+>> On 02/26/2014 06:36 PM, Lucas Zampar Bernardi wrote:
+>>> You are right Alexander!
+>>> The CONFIG_COMMON_CLK hasn't enable!
+>>> But for all SOC AT91_SAM9x5 still uses old clock style (AT91_USE_OL=
+D_CLK):
+>>>
+>>> config SOC_AT91SAM9X5
+>>>          bool "AT91SAM9x5 family"
+>>>          select HAVE_AT91_DBGU0
+>>>          select HAVE_FB_ATMEL
+>>>          select SOC_AT91SAM9
+>>>          select AT91_USE_OLD_CLK
+>>>          select HAVE_AT91_UTMI
+>>>          select HAVE_AT91_SMD
+>>>          select HAVE_AT91_USB_CLK
+>>>
+>>> and one of dependencies for COMMON_CLK_AT91 is don't be AT91_USE_OL=
+D_CLK
+>>>
+>>> config COMMON_CLK_AT91
+>>>          bool
+>>>         default AT91_PMC_UNIT && USE_OF && !AT91_USE_OLD_CLK
+>>>          select COMMON_CLK
+>>>
+>>> config OLD_CLK_AT91
+>>>          bool
+>>>          default AT91_PMC_UNIT && AT91_USE_OLD_CLK
+>>>
+>>>
+>>>
+>>>
+>>> Now came my question: Can I use CONFIG_COMMON_CLK without my ARCH
+>>> support? If not, how we will support devices that need CONFIG_COMMO=
+N_CLK?
+>> You probably have to wait for common clock support. However you can
+>> still hook platform data to your spi device. For a mxs add this to
+>> arch/arm/mach-mxs/mach-mxs.c:
+>>
+>> static int abc_spi_notifier_call(struct notifier_block *nb,
+>> 					unsigned long event, void *data)
+> ...
+>
+> Nevertheless, support for the CLK API for SOC AT91_SAM9x5 seems
+> already in the kernel.
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/tree=
+/drivers/clk/at91/pmc.c?id=3D05202872ca98f8ea61943a9b530417c5503b816f
+>
+> You can ask about the CLK status in the AT91 mailing list.
+>
+> ---
+
