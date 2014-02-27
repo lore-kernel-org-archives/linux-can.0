@@ -1,64 +1,47 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v6 2/7] can: only send bitrate data via netlink when available
-Date: Thu, 27 Feb 2014 19:15:07 +0100
-Message-ID: <1393524912-12970-3-git-send-email-socketcan@hartkopp.net>
-References: <1393524912-12970-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v6 0/7] Add CAN FD infrastructure for CAN driver
+Date: Thu, 27 Feb 2014 19:15:05 +0100
+Message-ID: <1393524912-12970-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:45937 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:59323 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753756AbaB0SPX (ORCPT
+	with ESMTP id S1753753AbaB0SPX (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Feb 2014 13:15:23 -0500
-In-Reply-To: <1393524912-12970-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-When setting the bitrate both can_calc_bittiming() and can_fixup_bittiming()
-lead to the bitrate variable to be set, when a proper bit timing is available.
-Only then the bitrate configuration is stored for the device, so checking for
-priv->bittiming.bitrate is always sufficient.
+This is the patch series to extend the CAN driver infrastructure with CAN FD.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Changes v5 -> v6:
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e1a3741..de04eac 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -606,7 +606,7 @@ int open_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	if (!priv->bittiming.tq && !priv->bittiming.bitrate) {
-+	if (!priv->bittiming.bitrate) {
- 		netdev_err(dev, "bit-timing not yet defined\n");
- 		return -EINVAL;
- 	}
-@@ -719,7 +719,8 @@ static size_t can_get_size(const struct net_device *dev)
- 	struct can_priv *priv = netdev_priv(dev);
- 	size_t size = 0;
- 
--	size += nla_total_size(sizeof(struct can_bittiming));	/* IFLA_CAN_BITTIMING */
-+	if (priv->bittiming.bitrate)				/* IFLA_CAN_BITTIMING */
-+		size += nla_total_size(sizeof(struct can_bittiming));
- 	if (priv->bittiming_const)				/* IFLA_CAN_BITTIMING_CONST */
- 		size += nla_total_size(sizeof(struct can_bittiming_const));
- 	size += nla_total_size(sizeof(struct can_clock));	/* IFLA_CAN_CLOCK */
-@@ -741,8 +742,9 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 
- 	if (priv->do_get_state)
- 		priv->do_get_state(dev, &state);
--	if (nla_put(skb, IFLA_CAN_BITTIMING,
--		    sizeof(priv->bittiming), &priv->bittiming) ||
-+	if ((priv->bittiming.bitrate &&
-+	     nla_put(skb, IFLA_CAN_BITTIMING,
-+		     sizeof(priv->bittiming), &priv->bittiming)) ||
- 	    (priv->bittiming_const &&
- 	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
- 		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
+The new helper function candev_has_bitrate() can be removed as the 'bitrate'
+element is sufficient to detect a correct bitrate.
+In patch 3 a sanity check has been moved to reduce the new CAN FD code.
+
+The more I look into the patches the shorter they get :-)
+
+Regards,
+Oliver
+
+*** BLURB HERE ***
+
+Oliver Hartkopp (7):
+  can: preserve skbuff protocol in can_put_echo_skb
+  can: only send bitrate data via netlink when available
+  can: move sanity check for bitrate and tq into can_get_bittiming
+  can: provide a separate bittiming_const parameter to bittiming
+    functions
+  can: introduce the data bitrate configuration for CAN FD
+  can: allow to change the device mtu for CAN FD capable devices
+  can: add bittiming check at interface open for CAN FD
+
+ drivers/net/can/dev.c            | 148 ++++++++++++++++++++++++++++++++-------
+ include/linux/can/dev.h          |   7 +-
+ include/uapi/linux/can/netlink.h |   3 +
+ 3 files changed, 132 insertions(+), 26 deletions(-)
+
 -- 
 1.9.0
 
