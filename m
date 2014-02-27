@@ -1,63 +1,90 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v6 3/7] can: move sanity check for bitrate and tq into can_get_bittiming
-Date: Thu, 27 Feb 2014 19:15:08 +0100
-Message-ID: <1393524912-12970-4-git-send-email-socketcan@hartkopp.net>
-References: <1393524912-12970-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH] can: remove CAN FD compatibility for CAN 2.0 sockets
+Date: Thu, 27 Feb 2014 21:16:57 +0100
+Message-ID: <530F9D39.1010500@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:24701 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:20433 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753761AbaB0SPX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Feb 2014 13:15:23 -0500
-In-Reply-To: <1393524912-12970-1-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1750904AbaB0URA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Feb 2014 15:17:00 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-This patch moves a sanity check in order to have a second user for CAN FD.
+In commit e2d265d3b587 (canfd: add support for CAN FD in CAN_RAW sockets)
+CAN FD frames with a payload length up to 8 byte are passed to legacy
+sockets where the CAN FD support was not enabled by the application.
+
+After some discussions with developers at a fair this well meant feature
+leads to confusion as no clean switch for CAN / CAN FD is provided to the
+application programmer. Additionally a compatibility like this for legacy
+CAN_RAW sockets requires some compatibility handling for the sending, e.g.
+make CAN2.0 frames a CAN FD frame with BRS at transmission time (?!?).
+
+This will become a mess when people start to develop applications with
+real CAN FD hardware. This patch reverts the bad compatibility code.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index de04eac..89fc798 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -263,12 +263,19 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	if (priv->bittiming_const) {
+---
+
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 8be757c..081e81f 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -121,13 +121,9 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 	if (!ro->recv_own_msgs && oskb->sk == sk)
+ 		return;
  
- 		/* Non-expert mode? Check if the bitrate has been pre-defined */
--		if (!bt->tq)
-+		if (!bt->tq) {
- 			/* Determine bit-timing parameters */
--			err = can_calc_bittiming(dev, bt);
--		else
-+			if (bt->bitrate)
-+				err = can_calc_bittiming(dev, bt);
-+			else
-+				return -EINVAL;
-+		} else {
- 			/* Check bit-timing params and calculate proper brp */
--			err = can_fixup_bittiming(dev, bt);
-+			if (!bt->bitrate)
-+				err = can_fixup_bittiming(dev, bt);
-+			else
-+				return -EINVAL;
-+		}
- 		if (err)
- 			return err;
- 	}
-@@ -667,8 +674,6 @@ static int can_changelink(struct net_device *dev,
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
- 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
--			return -EINVAL;
- 		err = can_get_bittiming(dev, &bt);
- 		if (err)
- 			return err;
--- 
-1.9.0
+-	/* do not pass frames with DLC > 8 to a legacy socket */
+-	if (!ro->fd_frames) {
+-		struct canfd_frame *cfd = (struct canfd_frame *)oskb->data;
+-
+-		if (unlikely(cfd->len > CAN_MAX_DLEN))
+-			return;
+-	}
++	/* do not pass non-CAN2.0 frames to a legacy socket */
++	if (!ro->fd_frames && oskb->len != CAN_MTU)
++		return;
+ 
+ 	/* clone the given skb to be able to enqueue it into the rcv queue */
+ 	skb = skb_clone(oskb, GFP_ATOMIC);
+@@ -738,9 +734,7 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
+ 		       struct msghdr *msg, size_t size, int flags)
+ {
+ 	struct sock *sk = sock->sk;
+-	struct raw_sock *ro = raw_sk(sk);
+ 	struct sk_buff *skb;
+-	int rxmtu;
+ 	int err = 0;
+ 	int noblock;
+ 
+@@ -751,20 +745,10 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
+ 	if (!skb)
+ 		return err;
+ 
+-	/*
+-	 * when serving a legacy socket the DLC <= 8 is already checked inside
+-	 * raw_rcv(). Now check if we need to pass a canfd_frame to a legacy
+-	 * socket and cut the possible CANFD_MTU/CAN_MTU length to CAN_MTU
+-	 */
+-	if (!ro->fd_frames)
+-		rxmtu = CAN_MTU;
+-	else
+-		rxmtu = skb->len;
+-
+-	if (size < rxmtu)
++	if (size < skb->len)
+ 		msg->msg_flags |= MSG_TRUNC;
+ 	else
+-		size = rxmtu;
++		size = skb->len;
+ 
+ 	err = memcpy_toiovec(msg->msg_iov, skb->data, size);
+ 	if (err < 0) {
+
 
