@@ -1,162 +1,70 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/7] can: flexcan: fix transition from and to low power mode in chip_{en,dis}able
-Date: Fri, 28 Feb 2014 23:06:25 +0100
-Message-ID: <1393625189-5568-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 7/7] can: flexcan: factor out soft reset into seperate funtion
+Date: Fri, 28 Feb 2014 23:06:29 +0100
+Message-ID: <1393625189-5568-8-git-send-email-mkl@pengutronix.de>
 References: <1393625189-5568-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43114 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43124 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752765AbaB1WGe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 17:06:34 -0500
+	with ESMTP id S1752799AbaB1WGg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 17:06:36 -0500
 In-Reply-To: <1393625189-5568-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 
-In flexcan_chip_enable() and flexcan_chip_disable() fixed delays are used.
-Experiments have shown that the transition from and to low power mode may take
-several microseconds.
-
-This patch adds a while loop which polls the Low Power Mode ACK bit (LPM_ACK)
-that indicates a successfull mode change. If the function runs into a timeout a
-error value is returned.
+This patch moves the soft reset into a seperate function.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 50 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 12 deletions(-)
+ drivers/net/can/flexcan.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 30af702..5af60ab 100644
+index 01c2e81..3734df2 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -144,6 +144,8 @@
- 
- #define FLEXCAN_MB_CODE_MASK		(0xf0ffffff)
- 
-+#define FLEXCAN_TIMEOUT_US             (50)
-+
- /*
-  * FLEXCAN hardware feature flags
-  *
-@@ -269,26 +271,42 @@ static inline int flexcan_has_and_handle_berr(const struct flexcan_priv *priv,
- 		(reg_esr & FLEXCAN_ESR_ERR_BUS);
+@@ -363,6 +363,21 @@ static int flexcan_chip_unfreeze(struct flexcan_priv *priv)
+ 	return 0;
  }
  
--static inline void flexcan_chip_enable(struct flexcan_priv *priv)
-+static int flexcan_chip_enable(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->base;
++static int flexcan_chip_softreset(struct flexcan_priv *priv)
++{
++	struct flexcan_regs __iomem *regs = priv->base;
 +	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
- 	u32 reg;
- 
- 	reg = flexcan_read(&regs->mcr);
- 	reg &= ~FLEXCAN_MCR_MDIS;
- 	flexcan_write(reg, &regs->mcr);
- 
--	udelay(10);
-+	while (timeout-- && (flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++
++	flexcan_write(FLEXCAN_MCR_SOFTRST, &regs->mcr);
++	while (timeout-- && (flexcan_read(&regs->mcr) & FLEXCAN_MCR_SOFTRST))
 +		usleep_range(10, 20);
 +
-+	if (flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
++	if (flexcan_read(&regs->mcr) & FLEXCAN_MCR_SOFTRST)
 +		return -ETIMEDOUT;
 +
 +	return 0;
- }
- 
--static inline void flexcan_chip_disable(struct flexcan_priv *priv)
-+static int flexcan_chip_disable(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->base;
-+	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
- 	u32 reg;
- 
- 	reg = flexcan_read(&regs->mcr);
- 	reg |= FLEXCAN_MCR_MDIS;
- 	flexcan_write(reg, &regs->mcr);
++}
 +
-+	while (timeout-- && !(flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
-+		usleep_range(10, 20);
-+
-+	if (!(flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
-+		return -ETIMEDOUT;
-+
-+	return 0;
- }
- 
  static int flexcan_get_berr_counter(const struct net_device *dev,
-@@ -709,7 +727,9 @@ static int flexcan_chip_start(struct net_device *dev)
- 	u32 reg_mcr, reg_ctrl;
- 
- 	/* enable module */
--	flexcan_chip_enable(priv);
-+	err = flexcan_chip_enable(priv);
-+	if (err)
-+		return err;
+ 				    struct can_berr_counter *bec)
+ {
+@@ -786,16 +801,9 @@ static int flexcan_chip_start(struct net_device *dev)
+ 		return err;
  
  	/* soft reset */
- 	flexcan_write(FLEXCAN_MCR_SOFTRST, &regs->mcr);
-@@ -949,12 +969,16 @@ static int register_flexcandev(struct net_device *dev)
- 		goto out_disable_ipg;
- 
- 	/* select "bus clock", chip must be disabled */
--	flexcan_chip_disable(priv);
-+	err = flexcan_chip_disable(priv);
-+	if (err)
-+		goto out_disable_per;
- 	reg = flexcan_read(&regs->ctrl);
- 	reg |= FLEXCAN_CTRL_CLK_SRC;
- 	flexcan_write(reg, &regs->ctrl);
- 
--	flexcan_chip_enable(priv);
-+	err = flexcan_chip_enable(priv);
-+	if (err)
-+		goto out_chip_disable;
- 
- 	/* set freeze, halt and activate FIFO, restrict register access */
- 	reg = flexcan_read(&regs->mcr);
-@@ -971,14 +995,15 @@ static int register_flexcandev(struct net_device *dev)
- 	if (!(reg & FLEXCAN_MCR_FEN)) {
- 		netdev_err(dev, "Could not enable RX FIFO, unsupported core\n");
- 		err = -ENODEV;
--		goto out_disable_per;
-+		goto out_chip_disable;
- 	}
- 
- 	err = register_candev(dev);
- 
-- out_disable_per:
- 	/* disable core and turn off clocks */
-+ out_chip_disable:
- 	flexcan_chip_disable(priv);
-+ out_disable_per:
- 	clk_disable_unprepare(priv->clk_per);
-  out_disable_ipg:
- 	clk_disable_unprepare(priv->clk_ipg);
-@@ -1121,8 +1146,11 @@ static int flexcan_suspend(struct device *device)
- {
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
-+	int err;
- 
--	flexcan_chip_disable(priv);
-+	err = flexcan_chip_disable(priv);
-+	if (err)
-+		return err;
- 
- 	if (netif_running(dev)) {
- 		netif_stop_queue(dev);
-@@ -1143,9 +1171,7 @@ static int flexcan_resume(struct device *device)
- 		netif_device_attach(dev);
- 		netif_start_queue(dev);
- 	}
--	flexcan_chip_enable(priv);
+-	flexcan_write(FLEXCAN_MCR_SOFTRST, &regs->mcr);
+-	udelay(10);
 -
--	return 0;
-+	return flexcan_chip_enable(priv);
- }
- #endif /* CONFIG_PM_SLEEP */
+-	reg_mcr = flexcan_read(&regs->mcr);
+-	if (reg_mcr & FLEXCAN_MCR_SOFTRST) {
+-		netdev_err(dev, "Failed to softreset can module (mcr=0x%08x)\n",
+-			   reg_mcr);
+-		err = -ENODEV;
++	err = flexcan_chip_softreset(priv);
++	if (err)
+ 		goto out_chip_disable;
+-	}
+ 
+ 	flexcan_set_bittiming(dev);
  
 -- 
 1.9.0.rc3
