@@ -1,72 +1,220 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
- for CAN FD
-Date: Fri, 28 Feb 2014 13:52:15 +0100
-Message-ID: <5310867F.8060503@pengutronix.de>
-References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net> <53106B6B.6040307@pengutronix.de> <53107F29.1080109@hartkopp.net> <53108165.5050606@pengutronix.de> <53108210.6070700@hartkopp.net>
+Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+Date: Fri, 28 Feb 2014 13:56:56 +0100
+Message-ID: <53108798.7090902@pengutronix.de>
+References: <74d607e9-ac9c-4a9b-ac49-e84ae49d20c2@TX2EHSMHS031.ehs.local> <530D0A9C.5090402@pengutronix.de> <cd00fb2d-c8a7-423d-8aa0-2b413e9ac101@CO9EHSMHS017.ehs.local> <530DEA7C.6010609@pengutronix.de> <678ca296-8687-4e7c-9014-ae69d886a068@CO9EHSMHS014.ehs.local> <530E0B92.5010903@pengutronix.de> <2e3bfd38-37d5-4102-af79-821196c6c732@CH1EHSMHS006.ehs.local> <53104995.4010305@pengutronix.de> <48409965-e214-43b7-8b6a-08bf075707e1@CO9EHSMHS001.ehs.local>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="QSTM2CdOgxKaC9aAICwjJMcSCq3AcQwxG"
+ boundary="7D2huhx9aobJdMq0U5vqmEUqrNprpCSNA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34047 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49449 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751066AbaB1MwU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 07:52:20 -0500
-In-Reply-To: <53108210.6070700@hartkopp.net>
+	with ESMTP id S1751912AbaB1M5F (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 07:57:05 -0500
+In-Reply-To: <48409965-e214-43b7-8b6a-08bf075707e1@CO9EHSMHS001.ehs.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---QSTM2CdOgxKaC9aAICwjJMcSCq3AcQwxG
+--7D2huhx9aobJdMq0U5vqmEUqrNprpCSNA
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/28/2014 01:33 PM, Oliver Hartkopp wrote:
+On 02/28/2014 01:44 PM, Appana Durga Kedareswara Rao wrote:
+> Hi Marc,
 >=20
 >=20
-> On 28.02.2014 13:30, Marc Kleine-Budde wrote:
->> On 02/28/2014 01:20 PM, Oliver Hartkopp wrote:
->>>
->>>
->>> On 28.02.2014 11:56, Marc Kleine-Budde wrote:
->>>> On 02/27/2014 07:05 PM, Oliver Hartkopp wrote:
->>>>> On 27.02.2014 09:43, Marc Kleine-Budde wrote:
->>>>>
->>>>>>> +		if (priv->do_set_data_bittiming) {
->>>
->>>
->>>>
->>>>> The bitrate is always set via do_set[_data]_bittiming() when the in=
-terface is
->>>>> down - and *not* during the open process.
->>>>
->>>> No, not _always_. The flexcan and at91 drivers (maybe others, too) w=
-rite
->>>> the values during open().
->>>
->>> flexcan does not assign priv->do_set_bittiming() and does the bitrate=
- setting
->>> at open time.
->>>
->>> Thats ok too.
->>>
->>> This is up to the driver, whether do_set[_data]_bittiming() is assign=
-ed and
->>> when the stuff in the bitrate structures is set into the registers.
->>>
->>> I don't understand your problem.
->>
->> A new do_set_data_bittiming() callback is not needed, as it's better d=
-o
->> set the data and "normal" bit timing registers during open().
->=20
-> With this argumentation do_set_bittiming() has to be removed too.
->=20
-> Is this your intention?
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Friday, February 28, 2014 2:02 PM
+>> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek;
+>> grant.likely@linaro.org; robh+dt@kernel.org; linux-can@vger.kernel.org=
 
-Yes. But it's in many drivers so let's keep it, for now.
+>> Cc: netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linu=
+x-
+>> kernel@vger.kernel.org; devicetree@vger.kernel.org
+>> Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+>>
+>> On 02/28/2014 06:50 AM, Appana Durga Kedareswara Rao wrote:
+>>> Hi Marc,
+>>>
+>>>
+>>>> -----Original Message-----
+>>>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>>>> Sent: Wednesday, February 26, 2014 9:13 PM
+>>>> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek;
+>>>> grant.likely@linaro.org; robh+dt@kernel.org;
+>>>> linux-can@vger.kernel.org
+>>>> Cc: netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+>>>> linux- kernel@vger.kernel.org; devicetree@vger.kernel.org
+>>>> Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+>>>>
+>>>> On 02/26/2014 03:46 PM, Appana Durga Kedareswara Rao wrote:
+>>>>> Hi Marc,
+>>>>>
+>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>>>>>> Sent: Wednesday, February 26, 2014 6:52 PM
+>>>>>> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal
+>> Simek;
+>>>>>> grant.likely@linaro.org; robh+dt@kernel.org;
+>>>>>> linux-can@vger.kernel.org
+>>>>>> Cc: netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+>>>>>> linux- kernel@vger.kernel.org; devicetree@vger.kernel.org
+>>>>>> Subject: Re: [PATCH v4] can: xilinx CAN controller support.
+>>>>>>
+>>>>>> On 02/26/2014 02:07 PM, Appana Durga Kedareswara Rao wrote:
+>>>>>>>> This loop looks broken. Can you explain how it works.
+>>>>>>>>
+>>>>>>>> What it shoud do is:
+>>>>>>>> We have put (priv->tx_head - priv->tx_tail) CAN frames into the
+>> FIFO.
+>>>>>>>> This means at maximum there could be this amount of CAN frames
+>>>>>>>> which have been successfully transmitted. For every cycle in thi=
+s
+>>>>>>>> while loop you
+>>>>>>>> should:
+>>>>>>>> a) check if a CAN frame has successfully been transmitted
+>>>>>>>>    (as this CAN core uses a FIFO it should be "oldest")
+>>>>>>>>    A read_reg() of some kind is missing in your loop.
+>>>>>>>> b) if needed, remove this event from the FIFO or
+>>>>>>>>    mark the interrupt as done. Whatever you hardware needs.
+>>>>>>>> c) update your statistics
+>>>>>>>> d) Use can_get_echo_skb to push this frame into the networking
+>>>>>>>> stack
+>>>>>>>> e) As a CAN frame has been transmitted successfully, wake the
+>>>> tx_queue.
+>>>>>>>>
+>>>>>>>>> +   while (priv->tx_head - priv->tx_tail > 0) {
+>>>>>>>>> +           if (isr & XCAN_IXR_TXFLL_MASK) {
+>>>>>>>>> +                   priv->write_reg(priv, XCAN_ICR_OFFSET,
+>>>>>>>>> +                                   XCAN_IXR_TXFLL_MASK);
+>>>>>>>>> +                   netif_stop_queue(ndev);
+>>>>>>>>
+>>>>>>>> Why do you stop the queue here? A CAN frame has successfully
+>> been
+>>>>>>>> transmitted, there should be room in the FIFO.
+>>>>>>>>
+>>>>>>>>> +                   break;
+>>>>>>>>> +           }
+>>>>>>>>> +           can_get_echo_skb(ndev, priv->tx_tail %
+>>>>>>>>> +                                   priv->xcan_echo_skb_max_tx)=
+;
+>>>>>>>>> +           priv->tx_tail++;
+>>>>>>>>> +   }
+>>>>>>>>> +
+>>>>>>>
+>>>>>>> The below are the bit fields available for the Transmit FIFO.
+>>>>>>> 1) In the ISR(interrupt status register)  Tx Ok interrupt and Tx
+>>>>>>> fifo full
+>>>>>> interrupt.
+>>>>>>> 2) in the SR(Status Register) Tx fifo full condition.
+>>>>>>>
+>>>>>>>
+>>>>>>> I am modifying the entire tx interrupt logic to like below.
+>>>>>>>
+>>>>>>> static void xcan_tx_interrupt(struct net_device *ndev, u32 isr) {=
+
+>>>>>>>         struct xcan_priv *priv =3D netdev_priv(ndev);
+>>>>>>>         struct net_device_stats *stats =3D &ndev->stats;
+>>>>>>>
+>>>>>>>             while (priv->tx_head - priv->tx_tail > 0) {
+>>>>>>>                 if (isr & XCAN_IXR_TXFLL_MASK) {
+>>>>>>>                         priv->write_reg(priv, XCAN_ICR_OFFSET,
+>>>>>>>                                         XCAN_IXR_TXFLL_MASK);
+>>>>>>>                           break;
+>>>>>>>                 }
+>>>>>>>                 can_get_echo_skb(ndev, priv->tx_tail %
+>>>>>>>                                         priv->xcan_echo_skb_max_t=
+x);
+>>>>>>>                 priv->tx_tail++;
+>>>>>>>          stats->tx_packets++;
+>>>>>>>         netif_wake_queue(ndev);
+>>>>>>>               can_led_event(ndev, CAN_LED_EVENT_TX);
+>>>>>>>
+>>>>>>>         }
+>>>>>>
+>>>>>> You just need to wake the queue once.
+>>>>>
+>>>>> Ok
+>>>>>>
+>>>>>>> }
+>>>>>>>
+>>>>>>>
+>>>>>>> Are you Ok with the above logic?
+>>>>>>
+>>>>>> No, how can you tell how many frames have been transmitted?
+>>>>>
+>>>>> There is no register to read how many can frames are transmitted.
+>>>>> The only way to know Is by reading this parameter
+>>>>> (stats->tx_packets++;) through ip command
+>>>>
+>>>> stats->tx_packets is calculated in the above loop and the loop is
+>>>> broken. Let me illustrate the problem:
+>>>>
+>>>> - xmit is called 10 times in a row
+>>>> - this means you have 10 CAN frames in the TX FIFO
+>>>> - a single CAN frame gets transmitted
+>>>> - you get an interrupt
+>>>> - you enter the above routine and loop 10 times and echo the CAN fra=
+me
+>>>>   back into the stack
+>>>>
+>>>> Now every application sees 10 transmitted packages, but there is onl=
+y
+>>>> one transmitted. Every time you loop you have to check if the CAN
+>>>> frame has already been transmitted or not. Is that possible with the=
+
+>> hardware?
+>>>
+>>>         The only way to know whether the TX packet is transmitted
+>> successfully or not is by using the Tx Ok interrupt from the ISR.
+>>> This interrupt will come for every Tx Packet.
+>>> So I am thinking of there is no loop required in the TX interrupt rou=
+tine. As
+>> it is called for each and every packet.
+>>
+>> What happens if the interrupt handler is delayed? For example in a RT
+>> enabled system the interrupt handler runs as a thread. There might be =
+other
+>> threads with higher priority. The hardware will probably send all CAN
+>> frames in the FIFO, so you want to reduce the overhead and loop in the=
+ tx
+>> complete handler.
+>>
+> Yes I agree with your comment.
+> It will be good to have a loop in the Tx interrupt handler
+> I am modifying the Tx interrupt handler like below.
+>=20
+> static void xcan_tx_interrupt(struct net_device *ndev, u32 isr)
+> {
+>         struct xcan_priv *priv =3D netdev_priv(ndev);
+>         struct net_device_stats *stats =3D &ndev->stats;
+>=20
+>         while (priv->tx_head - priv->tx_tail > 0) {
+>                 if (!(isr & XCAN_IXR_TXOK_MASK)) {
+>                         break;
+>                 }
+>                 can_get_echo_skb(ndev, priv->tx_tail %
+>                                         priv->xcan_echo_skb_max_tx);
+>                 priv->tx_tail++;
+>                 stats->tx_packets++;
+>                 can_led_event(ndev, CAN_LED_EVENT_TX);
+>                 isr =3D priv->read_reg(priv, XCAN_ISR_OFFSET);
+>         }
+>         netif_wake_queue(ndev);
+> }
+>=20
+> Are you Ok with this?
+
+Do you have to ACK the interrupt, so that TXOK_MASK is finally cleared?
+The use case is here: m CAN frames are put into the FIFO, n out of m CAN
+frames are transferred, where n < m. In this case you have to leave the
+loop after n, but "priv->tx_head - priv->tx_tail =3D=3D m".
 
 Marc
 
@@ -77,7 +225,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---QSTM2CdOgxKaC9aAICwjJMcSCq3AcQwxG
+--7D2huhx9aobJdMq0U5vqmEUqrNprpCSNA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -86,9 +234,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlMQhn8ACgkQjTAFq1RaXHPTGgCfUqS3/4ID1JipFGYTVgn6/sZB
-jSYAn2Dt4zK7ivH7wXEkYqGlRAlJJoPN
-=0nJI
+iEYEARECAAYFAlMQh5gACgkQjTAFq1RaXHOtyACdEESsQId7xYGmcwoGaD8uMthI
+z24AmwcTTVKE8YAmEqDNKIvkkGqCeNi2
+=k2pi
 -----END PGP SIGNATURE-----
 
---QSTM2CdOgxKaC9aAICwjJMcSCq3AcQwxG--
+--7D2huhx9aobJdMq0U5vqmEUqrNprpCSNA--
