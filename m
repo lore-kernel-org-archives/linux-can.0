@@ -1,12 +1,12 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v9 6/7] can: allow to change the device mtu for CAN FD capable devices
-Date: Fri, 28 Feb 2014 16:36:24 +0100
-Message-ID: <1393601785-4631-7-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v9 4/7] can: provide a separate bittiming_const parameter to bittiming functions
+Date: Fri, 28 Feb 2014 16:36:22 +0100
+Message-ID: <1393601785-4631-5-git-send-email-socketcan@hartkopp.net>
 References: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:40222 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:42006 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752335AbaB1Pgg (ORCPT
+	with ESMTP id S1752302AbaB1Pgg (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 10:36:36 -0500
 In-Reply-To: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,102 +14,136 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The configuration for CAN FD depends on CAN_CTRLMODE_FD enabled in the driver
-specific ctrlmode_supported capabilities.
+As the bittiming calculation functions are to be used with different
+bittiming_const structures for CAN and CAN FD the direct reference to
+priv->bittiming_const inside these functions has to be removed.
 
-The configuration can be done either with the 'fd { on | off }' option in the
-'ip' tool from iproute2 or by setting the CAN netdevice MTU to CAN_MTU (16) or
-to CANFD_MTU (72).
+Also simplify the return value generation in can_get_bittiming() as only
+correct return values of can_[calc|fixup]_bittiming() lead to a return value
+of zero. And moved the check for existing bittiming const to one place.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/dev.c            | 40 ++++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h          |  1 +
- include/uapi/linux/can/netlink.h |  1 +
- 3 files changed, 42 insertions(+)
+ drivers/net/can/dev.c | 59 ++++++++++++++++++++++-----------------------------
+ 1 file changed, 25 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 1eafa6cc..f3151d9 100644
+index 89fc798..8141290 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -595,6 +595,40 @@ void free_candev(struct net_device *dev)
- EXPORT_SYMBOL_GPL(free_candev);
+@@ -99,10 +99,10 @@ static int can_update_spt(const struct can_bittiming_const *btc,
+ 	return 1000 * (tseg + 1 - *tseg2) / (tseg + 1);
+ }
+ 
+-static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
++static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
++			      const struct can_bittiming_const *btc)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	const struct can_bittiming_const *btc = priv->bittiming_const;
+ 	long rate, best_rate = 0;
+ 	long best_error = 1000000000, error = 0;
+ 	int best_tseg = 0, best_brp = 0, brp = 0;
+@@ -110,9 +110,6 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 	int spt_error = 1000, spt = 0, sampl_pt;
+ 	u64 v64;
+ 
+-	if (!priv->bittiming_const)
+-		return -ENOTSUPP;
+-
+ 	/* Use CIA recommended sample points */
+ 	if (bt->sample_point) {
+ 		sampl_pt = bt->sample_point;
+@@ -204,7 +201,8 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 	return 0;
+ }
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+-static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
++static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
++			      const struct can_bittiming_const *btc)
+ {
+ 	netdev_err(dev, "bit-timing calculation not available\n");
+ 	return -EINVAL;
+@@ -217,16 +215,13 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt)
+  * prescaler value brp. You can find more information in the header
+  * file linux/can/netlink.h.
+  */
+-static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt)
++static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
++			       const struct can_bittiming_const *btc)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	const struct can_bittiming_const *btc = priv->bittiming_const;
+ 	int tseg1, alltseg;
+ 	u64 brp64;
+ 
+-	if (!priv->bittiming_const)
+-		return -ENOTSUPP;
+-
+ 	tseg1 = bt->prop_seg + bt->phase_seg1;
+ 	if (!bt->sjw)
+ 		bt->sjw = 1;
+@@ -254,33 +249,29 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 	return 0;
+ }
+ 
+-static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
++static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
++			     const struct can_bittiming_const *btc)
+ {
+-	struct can_priv *priv = netdev_priv(dev);
+ 	int err;
+ 
+ 	/* Check if the CAN device has bit-timing parameters */
+-	if (priv->bittiming_const) {
+-
+-		/* Non-expert mode? Check if the bitrate has been pre-defined */
+-		if (!bt->tq) {
+-			/* Determine bit-timing parameters */
+-			if (bt->bitrate)
+-				err = can_calc_bittiming(dev, bt);
+-			else
+-				return -EINVAL;
+-		} else {
+-			/* Check bit-timing params and calculate proper brp */
+-			if (!bt->bitrate)
+-				err = can_fixup_bittiming(dev, bt);
+-			else
+-				return -EINVAL;
+-		}
+-		if (err)
+-			return err;
+-	}
++	if (!btc)
++		return -ENOTSUPP;
+ 
+-	return 0;
++	/*
++	 * Depending on the given can_bittiming parameter structure the CAN
++	 * timing parameters are calculated based on the provided bitrate OR
++	 * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
++	 * provided directly which are then checked and fixed up.
++	 */
++	if (!bt->tq && bt->bitrate)
++		err = can_calc_bittiming(dev, bt, btc);
++	else if (bt->tq && !bt->bitrate)
++		err = can_fixup_bittiming(dev, bt, btc);
++	else
++		err = -EINVAL;
++
++	return err;
+ }
  
  /*
-+ * changing MTU and control mode for CAN/CANFD devices
-+ */
-+int can_change_mtu(struct net_device *dev, int new_mtu)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	/* Do not allow changing the MTU while running */
-+	if (dev->flags & IFF_UP)
-+		return -EBUSY;
-+
-+	/* allow change of MTU according to the CANFD ability of the device */
-+	switch (new_mtu) {
-+
-+	case CAN_MTU:
-+		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
-+		break;
-+
-+	case CANFD_MTU:
-+		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
-+			return -EINVAL;
-+
-+		priv->ctrlmode |= CAN_CTRLMODE_FD;
-+		break;
-+
-+	default:
-+			return -EINVAL;
-+	}
-+
-+	dev->mtu = new_mtu;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_change_mtu);
-+
-+/*
-  * Common open function when the device gets opened.
-  *
-  * This function should be called in the open function of the device
-@@ -714,6 +748,12 @@ static int can_changelink(struct net_device *dev,
- 			return -EOPNOTSUPP;
- 		priv->ctrlmode &= ~cm->mask;
- 		priv->ctrlmode |= cm->flags;
-+
-+		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
-+		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-+			dev->mtu = CANFD_MTU;
-+		else
-+			dev->mtu = CAN_MTU;
- 	}
- 
- 	if (data[IFLA_CAN_RESTART_MS]) {
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 8adaee9..3ce5e52 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -113,6 +113,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
- 
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-+int can_change_mtu(struct net_device *dev, int new_mtu);
- 
- int register_candev(struct net_device *dev);
- void unregister_candev(struct net_device *dev);
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index b41933d..7e2e186 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -96,6 +96,7 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
- #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
- #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
-+#define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
- 
- /*
-  * CAN device statistics
+@@ -674,7 +665,7 @@ static int can_changelink(struct net_device *dev,
+ 		if (dev->flags & IFF_UP)
+ 			return -EBUSY;
+ 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
+-		err = can_get_bittiming(dev, &bt);
++		err = can_get_bittiming(dev, &bt, priv->bittiming_const);
+ 		if (err)
+ 			return err;
+ 		memcpy(&priv->bittiming, &bt, sizeof(bt));
 -- 
 1.9.0
 
