@@ -1,192 +1,74 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v7 4/7] can: provide a separate bittiming_const parameter
- to bittiming functions
-Date: Fri, 28 Feb 2014 11:46:51 +0100
-Message-ID: <5310691B.1090507@pengutronix.de>
-References: <1393583188-13307-1-git-send-email-socketcan@hartkopp.net> <1393583188-13307-5-git-send-email-socketcan@hartkopp.net>
+Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
+ for CAN FD
+Date: Fri, 28 Feb 2014 11:56:43 +0100
+Message-ID: <53106B6B.6040307@pengutronix.de>
+References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="B5AtSnNBA9MMgC687oKId2KxeBrG36mRE"
+ boundary="4hPNsCicwmxhSbLPEXJSrHsmb6U0LfUTN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42400 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45904 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751342AbaB1Kq5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 05:46:57 -0500
-In-Reply-To: <1393583188-13307-5-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1750927AbaB1K4u (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 05:56:50 -0500
+In-Reply-To: <530F7E6A.4050307@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---B5AtSnNBA9MMgC687oKId2KxeBrG36mRE
+--4hPNsCicwmxhSbLPEXJSrHsmb6U0LfUTN
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/28/2014 11:26 AM, Oliver Hartkopp wrote:
-> As the bittiming calculation functions are to be used with different
-> bittiming_const structures for CAN and CAN FD the direct reference to
-> priv->bittiming_const inside these functions has to be removed.
+On 02/27/2014 07:05 PM, Oliver Hartkopp wrote:
+> On 27.02.2014 09:43, Marc Kleine-Budde wrote:
 >=20
-> Also simplify the return value generation in can_get_bittiming() as onl=
-y
-> correct return values of can_[calc|fixup]_bittiming() lead to a return =
-value
-> of zero. And moved the check for existing bittiming const to one place.=
-
+>>> +		if (priv->do_set_data_bittiming) {
+>>> +			/* Finally, set the bit-timing registers */
+>>> +			err =3D priv->do_set_data_bittiming(dev);
+>>> +			if (err)
+>>> +				return err;
+>>> +		}
+>>
+>> Do we really need the do_set_data_bittiming() callback? Allmost all
+>> drivers set the bitrate during open and not asynchronously (when the
+>> interface is down) via the set_bittiming() callback. If there is a
+>> driver which really needs this callback, we can introduce it.
 >=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/dev.c | 59 ++++++++++++++++++++++---------------------=
---------
->  1 file changed, 25 insertions(+), 34 deletions(-)
->=20
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 89fc798..c8cd528 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -99,10 +99,10 @@ static int can_update_spt(const struct can_bittimin=
-g_const *btc,
->  	return 1000 * (tseg + 1 - *tseg2) / (tseg + 1);
->  }
-> =20
-> -static int can_calc_bittiming(struct net_device *dev, struct can_bitti=
-ming *bt)
-> +static int can_calc_bittiming(struct net_device *dev, struct can_bitti=
-ming *bt,
-> +			      const struct can_bittiming_const *btc)
->  {
->  	struct can_priv *priv =3D netdev_priv(dev);
-> -	const struct can_bittiming_const *btc =3D priv->bittiming_const;
->  	long rate, best_rate =3D 0;
->  	long best_error =3D 1000000000, error =3D 0;
->  	int best_tseg =3D 0, best_brp =3D 0, brp =3D 0;
-> @@ -110,9 +110,6 @@ static int can_calc_bittiming(struct net_device *de=
-v, struct can_bittiming *bt)
->  	int spt_error =3D 1000, spt =3D 0, sampl_pt;
->  	u64 v64;
-> =20
-> -	if (!priv->bittiming_const)
-> -		return -ENOTSUPP;
-> -
->  	/* Use CIA recommended sample points */
->  	if (bt->sample_point) {
->  		sampl_pt =3D bt->sample_point;
-> @@ -204,7 +201,8 @@ static int can_calc_bittiming(struct net_device *de=
-v, struct can_bittiming *bt)
->  	return 0;
->  }
->  #else /* !CONFIG_CAN_CALC_BITTIMING */
-> -static int can_calc_bittiming(struct net_device *dev, struct can_bitti=
-ming *bt)
-> +static int can_calc_bittiming(struct net_device *dev, struct can_bitti=
-ming *bt,
-> +			      const struct can_bittiming_const *btc)
->  {
->  	netdev_err(dev, "bit-timing calculation not available\n");
->  	return -EINVAL;
-> @@ -217,16 +215,13 @@ static int can_calc_bittiming(struct net_device *=
-dev, struct can_bittiming *bt)
->   * prescaler value brp. You can find more information in the header
->   * file linux/can/netlink.h.
->   */
-> -static int can_fixup_bittiming(struct net_device *dev, struct can_bitt=
-iming *bt)
-> +static int can_fixup_bittiming(struct net_device *dev, struct can_bitt=
-iming *bt,
-> +			       const struct can_bittiming_const *btc)
->  {
->  	struct can_priv *priv =3D netdev_priv(dev);
-> -	const struct can_bittiming_const *btc =3D priv->bittiming_const;
->  	int tseg1, alltseg;
->  	u64 brp64;
-> =20
-> -	if (!priv->bittiming_const)
-> -		return -ENOTSUPP;
-> -
->  	tseg1 =3D bt->prop_seg + bt->phase_seg1;
->  	if (!bt->sjw)
->  		bt->sjw =3D 1;
-> @@ -254,33 +249,29 @@ static int can_fixup_bittiming(struct net_device =
-*dev, struct can_bittiming *bt)
->  	return 0;
->  }
-> =20
-> -static int can_get_bittiming(struct net_device *dev, struct can_bittim=
-ing *bt)
-> +static int can_get_bittiming(struct net_device *dev, struct can_bittim=
-ing *bt,
-> +			     const struct can_bittiming_const *btc)
->  {
-> -	struct can_priv *priv =3D netdev_priv(dev);
-> -	int err;
-> +	int err =3D -EINVAL;
+> No. I assume you did not check the current implementation %-)
 
-Keep err uninitialized and make an explicit else err =3D -EINVAL.... see
-below:
+Yes, but...no :)
 
-> =20
->  	/* Check if the CAN device has bit-timing parameters */
-> -	if (priv->bittiming_const) {
-> -
-> -		/* Non-expert mode? Check if the bitrate has been pre-defined */
-> -		if (!bt->tq) {
-> -			/* Determine bit-timing parameters */
-> -			if (bt->bitrate)
-> -				err =3D can_calc_bittiming(dev, bt);
-> -			else
-> -				return -EINVAL;
-> -		} else {
-> -			/* Check bit-timing params and calculate proper brp */
-> -			if (!bt->bitrate)
-> -				err =3D can_fixup_bittiming(dev, bt);
-> -			else
-> -				return -EINVAL;
-> -		}
-> -		if (err)
-> -			return err;
-> +	if (!btc)
-> +		return -ENOTSUPP;
-> +
-> +	if (!bt->tq) {
-> +		/* non-expert mode: Determine bit-timing parameters */
-> +		if (bt->bitrate)
+> The bitrate is always set via do_set[_data]_bittiming() when the interf=
+ace is
+> down - and *not* during the open process.
 
-Why not:
-	if (!bt->tq && bt->bitrate) {
+No, not _always_. The flexcan and at91 drivers (maybe others, too) write
+the values during open().
 
-> +			err =3D can_calc_bittiming(dev, bt, btc);
-> +	} else {
+> In the open process only the availability of the bitrate(s) is checked =
+before
+> the controller is set into operational mode.
 
-	} else if (bt->tq && !bt->bitrate) {
+Yes, by the framework. This is good.
 
-> +		/*
-> +		 * expert mode: Check bit-timing parameters and
-> +		 * calculate proper brp and a human readable bitrate
-> +		 */
-> +		if (!bt->bitrate)
-> +			err =3D can_fixup_bittiming(dev, bt, btc);
->  	}
-	} else {
-		err =3D -EINVAL;
-	}
-> =20
-> -	return 0;
-> +	return err;
->  }
-> =20
->  /*
-> @@ -674,7 +665,7 @@ static int can_changelink(struct net_device *dev,
->  		if (dev->flags & IFF_UP)
->  			return -EBUSY;
->  		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
-> -		err =3D can_get_bittiming(dev, &bt);
-> +		err =3D can_get_bittiming(dev, &bt, priv->bittiming_const);
->  		if (err)
->  			return err;
->  		memcpy(&priv->bittiming, &bt, sizeof(bt));
->=20
+> It is pretty straight forward to introduce do_set_data_bittiming() as a=
 
+> different register set is addressed for CAN FD.
+
+The reason why I don't want to introduce a do_set_data_bittiming() is
+that it makes the driver more complicated. If you really want to write
+it into the registers, you have to power up you CAN core, as on modern
+controllers you cannot write to regs if the clocks are turned off. So
+you have to turn on the clock, power up your chip, get into the correct
+mode, write the bittiming and power down everything again. During open()
+you do the same thing again but don't write the bit timing registers. So
+better keep things simple.
+
+Marc
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -195,7 +77,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---B5AtSnNBA9MMgC687oKId2KxeBrG36mRE
+--4hPNsCicwmxhSbLPEXJSrHsmb6U0LfUTN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -204,9 +86,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlMQaRsACgkQjTAFq1RaXHPjVgCeK3JeH+NDCt3jhaeksqI6zce1
-GOQAnj3kxV1e4gPuLTMAJcwI/vdWrAN+
-=PZox
+iEYEARECAAYFAlMQa2sACgkQjTAFq1RaXHMQEQCfcTSnmmDAKE7eEeIk3TC1qf9y
+l5cAmgNqwnOGb6oQuX/XbXj2K5tN5T6K
+=0Ieg
 -----END PGP SIGNATURE-----
 
---B5AtSnNBA9MMgC687oKId2KxeBrG36mRE--
+--4hPNsCicwmxhSbLPEXJSrHsmb6U0LfUTN--
