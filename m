@@ -1,64 +1,89 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v8 2/7] can: only send bitrate data via netlink when available
-Date: Fri, 28 Feb 2014 14:19:04 +0100
-Message-ID: <1393593549-23072-3-git-send-email-socketcan@hartkopp.net>
-References: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:43626 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751514AbaB1NT1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 08:19:27 -0500
-In-Reply-To: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Appana Durga Kedareswara Rao <appana.durga.rao-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH v4] can: xilinx CAN controller support.
+Date: Fri, 28 Feb 2014 13:27:37 +0000
+Message-ID: <f7b303dd-bf23-40f2-bbd4-4594cba8f345@CO9EHSMHS026.ehs.local>
+References: <74d607e9-ac9c-4a9b-ac49-e84ae49d20c2@TX2EHSMHS031.ehs.local>
+ <530D0A9C.5090402@pengutronix.de>
+ <cd00fb2d-c8a7-423d-8aa0-2b413e9ac101@CO9EHSMHS017.ehs.local>
+ <530DEA7C.6010609@pengutronix.de>
+ <678ca296-8687-4e7c-9014-ae69d886a068@CO9EHSMHS014.ehs.local>
+ <530E0B92.5010903@pengutronix.de>
+ <2e3bfd38-37d5-4102-af79-821196c6c732@CH1EHSMHS006.ehs.local>
+ <53104995.4010305@pengutronix.de>
+ <48409965-e214-43b7-8b6a-08bf075707e1@CO9EHSMHS001.ehs.local>
+ <53108798.7090902@pengutronix.de>
+ <4902b8d8-139a-4fd0-9e6e-a30ce7e6683b@CH1EHSMHS019.ehs.local>
+ <53108BEF.1020308@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <53108BEF.1020308-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org" <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Michal Simek <michals-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-When setting the bitrate both can_calc_bittiming() and can_fixup_bittiming()
-lead to the bitrate variable to be set, when a proper bit timing is available.
-Only then the bitrate configuration is stored for the device, so checking for
-priv->bittiming.bitrate is always sufficient.
+SGkgTWFyYywNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
+S2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBGcmlkYXks
+IEZlYnJ1YXJ5IDI4LCAyMDE0IDY6NDUgUE0NCj4gVG86IEFwcGFuYSBEdXJnYSBLZWRhcmVzd2Fy
+YSBSYW87IHdnQGdyYW5kZWdnZXIuY29tOyBNaWNoYWwgU2ltZWs7DQo+IGdyYW50Lmxpa2VseUBs
+aW5hcm8ub3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcN
+Cj4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgbGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRldmljZXRyZWVA
+dmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjRdIGNhbjogeGlsaW54IENB
+TiBjb250cm9sbGVyIHN1cHBvcnQuDQo+DQo+IE9uIDAyLzI4LzIwMTQgMDI6MDcgUE0sIEFwcGFu
+YSBEdXJnYSBLZWRhcmVzd2FyYSBSYW8gd3JvdGU6DQo+ID4+Pj4gV2hhdCBoYXBwZW5zIGlmIHRo
+ZSBpbnRlcnJ1cHQgaGFuZGxlciBpcyBkZWxheWVkPyBGb3IgZXhhbXBsZSBpbiBhDQo+ID4+Pj4g
+UlQgZW5hYmxlZCBzeXN0ZW0gdGhlIGludGVycnVwdCBoYW5kbGVyIHJ1bnMgYXMgYSB0aHJlYWQu
+IFRoZXJlDQo+ID4+Pj4gbWlnaHQgYmUgb3RoZXIgdGhyZWFkcyB3aXRoIGhpZ2hlciBwcmlvcml0
+eS4gVGhlIGhhcmR3YXJlIHdpbGwNCj4gPj4+PiBwcm9iYWJseSBzZW5kIGFsbCBDQU4gZnJhbWVz
+IGluIHRoZSBGSUZPLCBzbyB5b3Ugd2FudCB0byByZWR1Y2UgdGhlDQo+ID4+Pj4gb3ZlcmhlYWQg
+YW5kIGxvb3AgaW4gdGhlIHR4IGNvbXBsZXRlIGhhbmRsZXIuDQo+ID4+Pj4NCj4gPj4+IFllcyBJ
+IGFncmVlIHdpdGggeW91ciBjb21tZW50Lg0KPiA+Pj4gSXQgd2lsbCBiZSBnb29kIHRvIGhhdmUg
+YSBsb29wIGluIHRoZSBUeCBpbnRlcnJ1cHQgaGFuZGxlciBJIGFtDQo+ID4+PiBtb2RpZnlpbmcg
+dGhlIFR4IGludGVycnVwdCBoYW5kbGVyIGxpa2UgYmVsb3cuDQo+ID4+Pg0KPiA+Pj4gc3RhdGlj
+IHZvaWQgeGNhbl90eF9pbnRlcnJ1cHQoc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYsIHUzMiBpc3Ip
+IHsNCj4gPj4+ICAgICAgICAgc3RydWN0IHhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KG5k
+ZXYpOw0KPiA+Pj4gICAgICAgICBzdHJ1Y3QgbmV0X2RldmljZV9zdGF0cyAqc3RhdHMgPSAmbmRl
+di0+c3RhdHM7DQo+ID4+Pg0KPiA+Pj4gICAgICAgICB3aGlsZSAocHJpdi0+dHhfaGVhZCAtIHBy
+aXYtPnR4X3RhaWwgPiAwKSB7DQo+ID4+PiAgICAgICAgICAgICAgICAgaWYgKCEoaXNyICYgWENB
+Tl9JWFJfVFhPS19NQVNLKSkgew0KPiA+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7
+DQo+ID4+PiAgICAgICAgICAgICAgICAgfQ0KPiA+Pj4gICAgICAgICAgICAgICAgIGNhbl9nZXRf
+ZWNob19za2IobmRldiwgcHJpdi0+dHhfdGFpbCAlDQo+ID4+PiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcHJpdi0+eGNhbl9lY2hvX3NrYl9tYXhfdHgpOw0KPiA+Pj4g
+ICAgICAgICAgICAgICAgIHByaXYtPnR4X3RhaWwrKzsNCj4gPj4+ICAgICAgICAgICAgICAgICBz
+dGF0cy0+dHhfcGFja2V0cysrOw0KPiA+Pj4gICAgICAgICAgICAgICAgIGNhbl9sZWRfZXZlbnQo
+bmRldiwgQ0FOX0xFRF9FVkVOVF9UWCk7DQo+DQo+IFByb2JhYmx5IGZpcnN0IGNsZWFyIHRoZSBp
+bnRlcnJ1cHQsIGJlY2F1c2UgeW91J3ZlIGp1c3QgaGFuZGxlZCBpdCwgdGhlbiBjaGVjaw0KPiBp
+ZiBpdCdzIHN0aWxsIHByZXNlbnQuIFRoZSBxdWVzdGlvbiBpcywgZG8geW91IGhhdmUgdG8gY2xl
+YXIgdGhlIElSUSBmb3IgZWFjaA0KPiB0cmFuc21pdHRlZCBmcmFtZSwgb3IgZG9lcyBvbmUgY2xl
+YW4gb2YgdGhlIGludGVycnVwdCBjbGVhciB0aGUgYml0IGZvciBtb3JlDQo+IHRoZW4gb25lIHRy
+YW5zbWl0dGVkIGZyYW1lPw0KPg0KDQpXZSBhbHJlYWR5IHdlcmUgY2xlYXJpbmcgaXQgaW4gdGhl
+IGludGVycnVwdCByb3V0aW5lICh4Y2FuX2ludGVycnVwdCkuIFRoYXQncyB3aHkgY2xlYXJpbmcg
+aXQgYXQgdGhlIGVuZCBvZiB0aGUgbG9vcC4NCldlIGhhdmUgdG8gY2xlYXIgdGhlIElSUSAoVFhP
+SykgZm9yIGVhY2ggdHJhbnNtaXR0ZWQgZnJhbWUuDQoNClJlZ2FyZHMsDQpLZWRhci4NCg0KDQo+
+ID4+PiAgICAgICAgICAgICAgICAgaXNyID0gcHJpdi0+cmVhZF9yZWcocHJpdiwgWENBTl9JU1Jf
+T0ZGU0VUKTsNCj4gPiAgICAgICAgICAgICAtLT4gY2xlYXIgVHggT0sgaW50ZXJydXB0Lg0KPg0K
+PiA+DQo+ID4+PiAgICAgICAgIH0NCj4gPj4+ICAgICAgICAgbmV0aWZfd2FrZV9xdWV1ZShuZGV2
+KTsNCj4gPj4+IH0NCj4gPj4+DQo+ID4+PiBBcmUgeW91IE9rIHdpdGggdGhpcz8NCj4NCj4gV2Vy
+ZSBnZXR0aW5nIHRoZXJlIDopDQo+DQo+IE1hcmMNCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAg
+ICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0
+cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAg
+IHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIx
+LTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0
+cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0KDQoNClRoaXMgZW1haWwgYW5kIGFueSBhdHRh
+Y2htZW50cyBhcmUgaW50ZW5kZWQgZm9yIHRoZSBzb2xlIHVzZSBvZiB0aGUgbmFtZWQgcmVjaXBp
+ZW50KHMpIGFuZCBjb250YWluKHMpIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiB0aGF0IG1heSBi
+ZSBwcm9wcmlldGFyeSwgcHJpdmlsZWdlZCBvciBjb3B5cmlnaHRlZCB1bmRlciBhcHBsaWNhYmxl
+IGxhdy4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgZG8gbm90IHJlYWQs
+IGNvcHksIG9yIGZvcndhcmQgdGhpcyBlbWFpbCBtZXNzYWdlIG9yIGFueSBhdHRhY2htZW50cy4g
+RGVsZXRlIHRoaXMgZW1haWwgbWVzc2FnZSBhbmQgYW55IGF0dGFjaG1lbnRzIGltbWVkaWF0ZWx5
+Lg0KDQoKCg==
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e1a3741..de04eac 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -606,7 +606,7 @@ int open_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	if (!priv->bittiming.tq && !priv->bittiming.bitrate) {
-+	if (!priv->bittiming.bitrate) {
- 		netdev_err(dev, "bit-timing not yet defined\n");
- 		return -EINVAL;
- 	}
-@@ -719,7 +719,8 @@ static size_t can_get_size(const struct net_device *dev)
- 	struct can_priv *priv = netdev_priv(dev);
- 	size_t size = 0;
- 
--	size += nla_total_size(sizeof(struct can_bittiming));	/* IFLA_CAN_BITTIMING */
-+	if (priv->bittiming.bitrate)				/* IFLA_CAN_BITTIMING */
-+		size += nla_total_size(sizeof(struct can_bittiming));
- 	if (priv->bittiming_const)				/* IFLA_CAN_BITTIMING_CONST */
- 		size += nla_total_size(sizeof(struct can_bittiming_const));
- 	size += nla_total_size(sizeof(struct can_clock));	/* IFLA_CAN_CLOCK */
-@@ -741,8 +742,9 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 
- 	if (priv->do_get_state)
- 		priv->do_get_state(dev, &state);
--	if (nla_put(skb, IFLA_CAN_BITTIMING,
--		    sizeof(priv->bittiming), &priv->bittiming) ||
-+	if ((priv->bittiming.bitrate &&
-+	     nla_put(skb, IFLA_CAN_BITTIMING,
-+		     sizeof(priv->bittiming), &priv->bittiming)) ||
- 	    (priv->bittiming_const &&
- 	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
- 		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
--- 
-1.9.0
-
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
