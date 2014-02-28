@@ -1,75 +1,52 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
-Date: Fri, 28 Feb 2014 10:08:46 +0100
-Message-ID: <5310521E.6000708@pengutronix.de>
-References: <201312270037.15822.sergei.shtylyov@cogentembedded.com> <52DCE9E4.7010209@pengutronix.de> <52E3148E.2010608@cogentembedded.com> <52FCB6C5.6020001@pengutronix.de> <53069445.80408@cogentembedded.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="vdwRBM0BKrMlqF48DM2shFAeuhRovLXH7"
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v7 1/7] can: preserve skbuff protocol in can_put_echo_skb
+Date: Fri, 28 Feb 2014 11:26:22 +0100
+Message-ID: <1393583188-13307-2-git-send-email-socketcan@hartkopp.net>
+References: <1393583188-13307-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53234 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751570AbaB1JIy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 04:08:54 -0500
-In-Reply-To: <53069445.80408@cogentembedded.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:50472 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751066AbaB1K0s (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 05:26:48 -0500
+In-Reply-To: <1393583188-13307-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vdwRBM0BKrMlqF48DM2shFAeuhRovLXH7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
+can_put_echo_skb(). With CAN FD this value has to be preserved.
+This patch changes the hard assignment of the protocol value to a check of
+valid protocol values for CAN and CAN FD.
 
-On 02/21/2014 12:48 AM, Sergei Shtylyov wrote:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/dev.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
->>> 1. According to documentation BCR is the 24-bit register.
->>> Actually we can consider some 32-bit register that combines BCR and
->>> CLKR but according to documentation there are two separate registers.=
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c0563f1..e1a3741 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	BUG_ON(idx >= priv->echo_skb_max);
+ 
+ 	/* check flag whether this packet has to be looped back */
+-	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
++	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
++	    (skb->protocol != htons(ETH_P_CAN) &&
++	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+ 		return;
+ 	}
+@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 			return;
+ 
+ 		/* make settings for echo to reduce code in irq context */
+-		skb->protocol = htons(ETH_P_CAN);
+ 		skb->pkt_type = PACKET_BROADCAST;
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 		skb->dev = dev;
+-- 
+1.9.0
 
->>> 2. BCR has 8- ,16-, and 32-bit access (according to documentation).
->>> 3. This is the algorithm that the documentation suggests.
->>> 4. We had a driver version with byte access but 32-bit access seems
->>> shorter.
->=20
->> Please use a normal read-modify-write 32 bit access.
->=20
->    IMO, reading 32-bits is futile, as we're going to completely
-> overwrite those 24 bits that constitute BCR. So I kept the 8-bit CLKR
-> read but removed the CLKR write in the end. I've also added a comment
-> clarifying why CLKR is positioned in the LSBs of 32-bit word (while it'=
-s
-> address would assume MSBs).
-> The host bus is big-endian but byte-swaps at least 16- and 32-bit
-> accesses, so that read[wl]()/write[wl]() work. 8-bit accesses are not
-> byte swapped, despite what the figure in the manual shows.
-
-A 32 bit read/modify/write is a standard operation, nothing special, no
-need to worry about byte swapping or anything like this.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---vdwRBM0BKrMlqF48DM2shFAeuhRovLXH7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMQUh4ACgkQjTAFq1RaXHOL/gCfVB0CQCS8bxPFZ+p3BfueID+p
-upcAnjsmpW/BuEcxMuH7RdSP2dHoZAO9
-=1Abm
------END PGP SIGNATURE-----
-
---vdwRBM0BKrMlqF48DM2shFAeuhRovLXH7--
