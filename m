@@ -1,60 +1,52 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
-Date: Fri, 28 Feb 2014 12:41:37 +0100
-Message-ID: <CAMuHMdUuaX0pGmdOuJ9CJwj-ZTYo4PqTtZmYHh8swamQ754s2A@mail.gmail.com>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v5] can: add Renesas R-Car CAN driver
+Date: Fri, 28 Feb 2014 11:47:27 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6D0F6CDBD9@AcuExch.aculab.com>
 References: <201312270037.15822.sergei.shtylyov@cogentembedded.com>
-	<52DCE9E4.7010209@pengutronix.de>
-	<52E3148E.2010608@cogentembedded.com>
-	<52FCB6C5.6020001@pengutronix.de>
-	<53069445.80408@cogentembedded.com>
-	<5310521E.6000708@pengutronix.de>
-	<53107007.7050802@cogentembedded.com>
+	<52DCE9E4.7010209@pengutronix.de>	<52E3148E.2010608@cogentembedded.com>
+	<52FCB6C5.6020001@pengutronix.de>	<53069445.80408@cogentembedded.com>
+	<5310521E.6000708@pengutronix.de>	<53107007.7050802@cogentembedded.com>
 	<531074F5.8090702@pengutronix.de>
+ <CAMuHMdUuaX0pGmdOuJ9CJwj-ZTYo4PqTtZmYHh8swamQ754s2A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pb0-f42.google.com ([209.85.160.42]:55925 "EHLO
-	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751851AbaB1Lli (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 06:41:38 -0500
-In-Reply-To: <531074F5.8090702@pengutronix.de>
+Received: from mx0.aculab.com ([213.249.233.131]:54941 "HELO mx0.aculab.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+	id S1751612AbaB1Lsk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 28 Feb 2014 06:48:40 -0500
+Received: from mx0.aculab.com ([127.0.0.1])
+ by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
+ id 06209-01 for <linux-can@vger.kernel.org>;
+ Fri, 28 Feb 2014 11:48:37 +0000 (GMT)
+In-Reply-To: <CAMuHMdUuaX0pGmdOuJ9CJwj-ZTYo4PqTtZmYHh8swamQ754s2A@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Pavel Kiryukhin <vksavl@gmail.com>
+To: 'Geert Uytterhoeven' <geert@linux-m68k.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Pavel Kiryukhin <vksavl@gmail.com>
 
-On Fri, Feb 28, 2014 at 12:37 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->>> A 32 bit read/modify/write is a standard operation, nothing special, no
->>> need to worry about byte swapping or anything like this.
->>
->>    Oh, really? 8-)
->>    Don't you know that read[bwlq]() assume little-endian memory layout
->> and to read from big-endian 32-bit register one normally needs readl_be()?
->
-> I assume you are on little endian ARM only (for now).
->
-> If you use a standard 32 bit read, then modify the correct bits in that
-> 32 bit word and write it back, with the corresponding 32 bit write
-> everything should be fine. For this usecase you just have yo figure out
-> which 24 of the 32 bit are the one you have to change and which are the
-> 8 that must not be modified.
->
-> Looking at the register layout:
->
->> +     u8 bcr[3];      /* Bit Configuration Register */
->> +     u8 clkr;        /* Clock Select Register */
->
-> I think clkr would be the lowest 8 bit and bcr[] are the upper 24.
-
-That would be the outcome on big endian ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IE9uIEZyaSwgRmViIDI4LCAyMDE0IGF0IDEyOjM3
+IFBNLCBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPiB3cm90ZToNCj4gPj4+
+IEEgMzIgYml0IHJlYWQvbW9kaWZ5L3dyaXRlIGlzIGEgc3RhbmRhcmQgb3BlcmF0aW9uLCBub3Ro
+aW5nIHNwZWNpYWwsIG5vDQo+ID4+PiBuZWVkIHRvIHdvcnJ5IGFib3V0IGJ5dGUgc3dhcHBpbmcg
+b3IgYW55dGhpbmcgbGlrZSB0aGlzLg0KPiA+Pg0KPiA+PiAgICBPaCwgcmVhbGx5PyA4LSkNCj4g
+Pj4gICAgRG9uJ3QgeW91IGtub3cgdGhhdCByZWFkW2J3bHFdKCkgYXNzdW1lIGxpdHRsZS1lbmRp
+YW4gbWVtb3J5IGxheW91dA0KPiA+PiBhbmQgdG8gcmVhZCBmcm9tIGJpZy1lbmRpYW4gMzItYml0
+IHJlZ2lzdGVyIG9uZSBub3JtYWxseSBuZWVkcyByZWFkbF9iZSgpPw0KPiA+DQo+ID4gSSBhc3N1
+bWUgeW91IGFyZSBvbiBsaXR0bGUgZW5kaWFuIEFSTSBvbmx5IChmb3Igbm93KS4NCj4gPg0KPiA+
+IElmIHlvdSB1c2UgYSBzdGFuZGFyZCAzMiBiaXQgcmVhZCwgdGhlbiBtb2RpZnkgdGhlIGNvcnJl
+Y3QgYml0cyBpbiB0aGF0DQo+ID4gMzIgYml0IHdvcmQgYW5kIHdyaXRlIGl0IGJhY2ssIHdpdGgg
+dGhlIGNvcnJlc3BvbmRpbmcgMzIgYml0IHdyaXRlDQo+ID4gZXZlcnl0aGluZyBzaG91bGQgYmUg
+ZmluZS4gRm9yIHRoaXMgdXNlY2FzZSB5b3UganVzdCBoYXZlIHlvIGZpZ3VyZSBvdXQNCj4gPiB3
+aGljaCAyNCBvZiB0aGUgMzIgYml0IGFyZSB0aGUgb25lIHlvdSBoYXZlIHRvIGNoYW5nZSBhbmQg
+d2hpY2ggYXJlIHRoZQ0KPiA+IDggdGhhdCBtdXN0IG5vdCBiZSBtb2RpZmllZC4NCj4gPg0KPiA+
+IExvb2tpbmcgYXQgdGhlIHJlZ2lzdGVyIGxheW91dDoNCj4gPg0KPiA+PiArICAgICB1OCBiY3Jb
+M107ICAgICAgLyogQml0IENvbmZpZ3VyYXRpb24gUmVnaXN0ZXIgKi8NCj4gPj4gKyAgICAgdTgg
+Y2xrcjsgICAgICAgIC8qIENsb2NrIFNlbGVjdCBSZWdpc3RlciAqLw0KPiA+DQo+ID4gSSB0aGlu
+ayBjbGtyIHdvdWxkIGJlIHRoZSBsb3dlc3QgOCBiaXQgYW5kIGJjcltdIGFyZSB0aGUgdXBwZXIg
+MjQuDQo+IA0KPiBUaGF0IHdvdWxkIGJlIHRoZSBvdXRjb21lIG9uIGJpZyBlbmRpYW4gOy0pDQoN
+Ckxvb2tzIHRvIG1lIGFzIHRob3VnaCBpdCBzaG91bGQgYmUgZGVmaW5lZCBhcyBhIDMyYml0IGZp
+ZWxkIGFuZCB0aGVuDQp0aGUgYXBwcm9wcmlhdGUgYml0IGRlZmluaXRpb25zIGFuZCBtYXNrcyBh
+cHBsaWVkLg0KDQoJRGF2aWQNCg0K
