@@ -1,52 +1,63 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v8 1/7] can: preserve skbuff protocol in can_put_echo_skb
-Date: Fri, 28 Feb 2014 14:19:03 +0100
-Message-ID: <1393593549-23072-2-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v8 3/7] can: move sanity check for bitrate and tq into can_get_bittiming
+Date: Fri, 28 Feb 2014 14:19:05 +0100
+Message-ID: <1393593549-23072-4-git-send-email-socketcan@hartkopp.net>
 References: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:46689 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:41089 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751495AbaB1NT1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 08:19:27 -0500
+	with ESMTP id S1751523AbaB1NT2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 08:19:28 -0500
 In-Reply-To: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
-can_put_echo_skb(). With CAN FD this value has to be preserved.
-This patch changes the hard assignment of the protocol value to a check of
-valid protocol values for CAN and CAN FD.
+This patch moves a sanity check in order to have a second user for CAN FD.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/dev.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/can/dev.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index c0563f1..e1a3741 100644
+index de04eac..89fc798 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	BUG_ON(idx >= priv->echo_skb_max);
+@@ -263,12 +263,19 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 	if (priv->bittiming_const) {
  
- 	/* check flag whether this packet has to be looped back */
--	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
-+	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
-+	    (skb->protocol != htons(ETH_P_CAN) &&
-+	     skb->protocol != htons(ETH_P_CANFD))) {
- 		kfree_skb(skb);
- 		return;
+ 		/* Non-expert mode? Check if the bitrate has been pre-defined */
+-		if (!bt->tq)
++		if (!bt->tq) {
+ 			/* Determine bit-timing parameters */
+-			err = can_calc_bittiming(dev, bt);
+-		else
++			if (bt->bitrate)
++				err = can_calc_bittiming(dev, bt);
++			else
++				return -EINVAL;
++		} else {
+ 			/* Check bit-timing params and calculate proper brp */
+-			err = can_fixup_bittiming(dev, bt);
++			if (!bt->bitrate)
++				err = can_fixup_bittiming(dev, bt);
++			else
++				return -EINVAL;
++		}
+ 		if (err)
+ 			return err;
  	}
-@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 			return;
- 
- 		/* make settings for echo to reduce code in irq context */
--		skb->protocol = htons(ETH_P_CAN);
- 		skb->pkt_type = PACKET_BROADCAST;
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 		skb->dev = dev;
+@@ -667,8 +674,6 @@ static int can_changelink(struct net_device *dev,
+ 		if (dev->flags & IFF_UP)
+ 			return -EBUSY;
+ 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
+-		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
+-			return -EINVAL;
+ 		err = can_get_bittiming(dev, &bt);
+ 		if (err)
+ 			return err;
 -- 
 1.9.0
 
