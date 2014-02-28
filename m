@@ -1,46 +1,41 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v9 7/7] can: add bittiming check at interface open for CAN FD
-Date: Fri, 28 Feb 2014 16:36:25 +0100
-Message-ID: <1393601785-4631-8-git-send-email-socketcan@hartkopp.net>
-References: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v9 0/7] Add CAN FD infrastructure for CAN driver
+Date: Fri, 28 Feb 2014 16:36:18 +0100
+Message-ID: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:38347 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:38083 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752308AbaB1Pgg (ORCPT
+	with ESMTP id S1752343AbaB1Pgg (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 10:36:36 -0500
-In-Reply-To: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Additionally to have the second (data) bitrate available the data bitrate
-has to be greater or equal to the arbitration bitrate in CAN FD.
+This is the patch series to extend the CAN driver infrastructure with CAN FD.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Changes v8 -> v9:
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index f3151d9..6fce037 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -643,6 +643,14 @@ int open_candev(struct net_device *dev)
- 		return -EINVAL;
- 	}
- 
-+	/* For CAN FD the data bitrate has to be >= the arbitration bitrate */
-+	if ((priv->ctrlmode & CAN_CTRLMODE_FD) &&
-+	    (!priv->data_bittiming.bitrate ||
-+	     (priv->data_bittiming.bitrate < priv->bittiming.bitrate))) {
-+		netdev_err(dev, "incorrect/missing data bit-timing\n");
-+		return -EINVAL;
-+	}
-+
- 	/* Switch carrier on if device was stopped while in bus-off state */
- 	if (!netif_carrier_ok(dev))
- 		netif_carrier_on(dev);
+Fixed a whitepace issue in patch 4 and added a comment about the different
+configuration options.
+
+*** BLURB HERE ***
+
+Oliver Hartkopp (7):
+  can: preserve skbuff protocol in can_put_echo_skb
+  can: only send bitrate data via netlink when available
+  can: move sanity check for bitrate and tq into can_get_bittiming
+  can: provide a separate bittiming_const parameter to bittiming
+    functions
+  can: introduce the data bitrate configuration for CAN FD
+  can: allow to change the device mtu for CAN FD capable devices
+  can: add bittiming check at interface open for CAN FD
+
+ drivers/net/can/dev.c            | 160 ++++++++++++++++++++++++++++++---------
+ include/linux/can/dev.h          |   7 +-
+ include/uapi/linux/can/netlink.h |   3 +
+ 3 files changed, 133 insertions(+), 37 deletions(-)
+
 -- 
 1.9.0
 
