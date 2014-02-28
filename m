@@ -1,58 +1,46 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
- for CAN FD
-Date: Fri, 28 Feb 2014 13:33:20 +0100
-Message-ID: <53108210.6070700@hartkopp.net>
-References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net> <53106B6B.6040307@pengutronix.de> <53107F29.1080109@hartkopp.net> <53108165.5050606@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v5] can: add Renesas R-Car CAN driver
+Date: Fri, 28 Feb 2014 16:34:06 +0400
+Message-ID: <5310823E.1020104@cogentembedded.com>
+References: <201312270037.15822.sergei.shtylyov@cogentembedded.com>	<52DCE9E4.7010209@pengutronix.de>	<52E3148E.2010608@cogentembedded.com>	<52FCB6C5.6020001@pengutronix.de>	<53069445.80408@cogentembedded.com>	<5310521E.6000708@pengutronix.de>	<53107007.7050802@cogentembedded.com>	<531074F5.8090702@pengutronix.de> <CAMuHMdUuaX0pGmdOuJ9CJwj-ZTYo4PqTtZmYHh8swamQ754s2A@mail.gmail.com> <531077AC.7050804@pengutronix.de> <53107B7B.8040800@cogentembedded.com> <063D6719AE5E284EB5DD2968C1650D6D0F6CDC95@AcuExch.aculab.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:50494 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751677AbaB1MdZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 07:33:25 -0500
-In-Reply-To: <53108165.5050606@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D0F6CDC95@AcuExch.aculab.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: David Laight <David.Laight@ACULAB.COM>, Marc Kleine-Budde <mkl@pengutronix.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Pavel Kiryukhin <vksavl@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
+Hello.
 
+On 28-02-2014 16:17, David Laight wrote:
 
-On 28.02.2014 13:30, Marc Kleine-Budde wrote:
-> On 02/28/2014 01:20 PM, Oliver Hartkopp wrote:
->>
->>
->> On 28.02.2014 11:56, Marc Kleine-Budde wrote:
->>> On 02/27/2014 07:05 PM, Oliver Hartkopp wrote:
->>>> On 27.02.2014 09:43, Marc Kleine-Budde wrote:
->>>>
->>>>>> +		if (priv->do_set_data_bittiming) {
->>
->>
->>>
->>>> The bitrate is always set via do_set[_data]_bittiming() when the interface is
->>>> down - and *not* during the open process.
->>>
->>> No, not _always_. The flexcan and at91 drivers (maybe others, too) write
->>> the values during open().
->>
->> flexcan does not assign priv->do_set_bittiming() and does the bitrate setting
->> at open time.
->>
->> Thats ok too.
->>
->> This is up to the driver, whether do_set[_data]_bittiming() is assigned and
->> when the stuff in the bitrate structures is set into the registers.
->>
->> I don't understand your problem.
-> 
-> A new do_set_data_bittiming() callback is not needed, as it's better do
-> set the data and "normal" bit timing registers during open().
+>>      This is not a 32-bit register but 24- and 8-bit one. I'm afraid we won't
+>> be able to test on BE soon as the machine we're debugging on is LE only.
+>> Anyway, for the big-endian configured Superhyway bus the big-endian HPB bus
+>> the CAN controller resides on shouldn't swap bytes.
 
-With this argumentation do_set_bittiming() has to be removed too.
+> Except that you aren't going to get any cpu I know about to do a bus
+> access with only three of the four byte enables asserted (except as part
+> of a misaligned 32 bit transfer).
 
-Is this your intention?
+> So you either have four 8-bit registers, or one 32-bit one.
 
-Regards,
-Oliver
+    I have what is described in the manual, 24-bit register allowing 8-, 16-, 
+and 32-bit access.
+
+> I'd suggest keeping both parts in the driver data area
+
+    Well, I'm keeping CLKR value in the platform data. But there is absolutely 
+no need to keep BCR anywhere because I'd never use the saved value.
+
+> and oring them together before writing to the device.
+
+    That's what I'm doing.
+
+> 	David
+
+WBR, Sergei
+
