@@ -1,63 +1,46 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v8 3/7] can: move sanity check for bitrate and tq into can_get_bittiming
-Date: Fri, 28 Feb 2014 14:19:05 +0100
-Message-ID: <1393593549-23072-4-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v8 7/7] can: add bittiming check at interface open for CAN FD
+Date: Fri, 28 Feb 2014 14:19:09 +0100
+Message-ID: <1393593549-23072-8-git-send-email-socketcan@hartkopp.net>
 References: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:41089 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:61462 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751523AbaB1NT2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 08:19:28 -0500
+	with ESMTP id S1751523AbaB1NTa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 08:19:30 -0500
 In-Reply-To: <1393593549-23072-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This patch moves a sanity check in order to have a second user for CAN FD.
+Additionally to have the second (data) bitrate available the data bitrate
+has to be greater or equal to the arbitration bitrate in CAN FD.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/dev.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/net/can/dev.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index de04eac..89fc798 100644
+index 713a459..83b0147 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -263,12 +263,19 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
- 	if (priv->bittiming_const) {
- 
- 		/* Non-expert mode? Check if the bitrate has been pre-defined */
--		if (!bt->tq)
-+		if (!bt->tq) {
- 			/* Determine bit-timing parameters */
--			err = can_calc_bittiming(dev, bt);
--		else
-+			if (bt->bitrate)
-+				err = can_calc_bittiming(dev, bt);
-+			else
-+				return -EINVAL;
-+		} else {
- 			/* Check bit-timing params and calculate proper brp */
--			err = can_fixup_bittiming(dev, bt);
-+			if (!bt->bitrate)
-+				err = can_fixup_bittiming(dev, bt);
-+			else
-+				return -EINVAL;
-+		}
- 		if (err)
- 			return err;
+@@ -637,6 +637,14 @@ int open_candev(struct net_device *dev)
+ 		return -EINVAL;
  	}
-@@ -667,8 +674,6 @@ static int can_changelink(struct net_device *dev,
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
- 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
--			return -EINVAL;
- 		err = can_get_bittiming(dev, &bt);
- 		if (err)
- 			return err;
+ 
++	/* For CAN FD the data bitrate has to be >= the arbitration bitrate */
++	if ((priv->ctrlmode & CAN_CTRLMODE_FD) &&
++	    (!priv->data_bittiming.bitrate ||
++	     (priv->data_bittiming.bitrate < priv->bittiming.bitrate))) {
++		netdev_err(dev, "incorrect/missing data bit-timing\n");
++		return -EINVAL;
++	}
++
+ 	/* Switch carrier on if device was stopped while in bus-off state */
+ 	if (!netif_carrier_ok(dev))
+ 		netif_carrier_on(dev);
 -- 
 1.9.0
 
