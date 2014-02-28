@@ -1,34 +1,48 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH v5] can: add Renesas R-Car CAN driver
-Date: Fri, 28 Feb 2014 12:17:16 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D0F6CDC95@AcuExch.aculab.com>
-References: <201312270037.15822.sergei.shtylyov@cogentembedded.com>
-	<52DCE9E4.7010209@pengutronix.de>	<52E3148E.2010608@cogentembedded.com>
-	<52FCB6C5.6020001@pengutronix.de>	<53069445.80408@cogentembedded.com>
-	<5310521E.6000708@pengutronix.de>	<53107007.7050802@cogentembedded.com>
-	<531074F5.8090702@pengutronix.de>
- <CAMuHMdUuaX0pGmdOuJ9CJwj-ZTYo4PqTtZmYHh8swamQ754s2A@mail.gmail.com>
- <531077AC.7050804@pengutronix.de> <53107B7B.8040800@cogentembedded.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
+ for CAN FD
+Date: Fri, 28 Feb 2014 13:20:57 +0100
+Message-ID: <53107F29.1080109@hartkopp.net>
+References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net> <53106B6B.6040307@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <53107B7B.8040800@cogentembedded.com>
-Content-Language: en-US
-Sender: linux-sh-owner@vger.kernel.org
-To: 'Sergei Shtylyov' <sergei.shtylyov@cogentembedded.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Pavel Kiryukhin <vksavl@gmail.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:38447 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752185AbaB1MVF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Feb 2014 07:21:05 -0500
+In-Reply-To: <53106B6B.6040307@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-RnJvbTogU2VyZ2VpIFNodHlseW92DQo+ICAgICBUaGlzIGlzIG5vdCBhIDMyLWJpdCByZWdpc3Rl
-ciBidXQgMjQtIGFuZCA4LWJpdCBvbmUuIEknbSBhZnJhaWQgd2Ugd29uJ3QNCj4gYmUgYWJsZSB0
-byB0ZXN0IG9uIEJFIHNvb24gYXMgdGhlIG1hY2hpbmUgd2UncmUgZGVidWdnaW5nIG9uIGlzIExF
-IG9ubHkuDQo+IEFueXdheSwgZm9yIHRoZSBiaWctZW5kaWFuIGNvbmZpZ3VyZWQgU3VwZXJoeXdh
-eSBidXMgdGhlIGJpZy1lbmRpYW4gSFBCIGJ1cw0KPiB0aGUgQ0FOIGNvbnRyb2xsZXIgcmVzaWRl
-cyBvbiBzaG91bGRuJ3Qgc3dhcCBieXRlcy4NCg0KRXhjZXB0IHRoYXQgeW91IGFyZW4ndCBnb2lu
-ZyB0byBnZXQgYW55IGNwdSBJIGtub3cgYWJvdXQgdG8gZG8gYSBidXMNCmFjY2VzcyB3aXRoIG9u
-bHkgdGhyZWUgb2YgdGhlIGZvdXIgYnl0ZSBlbmFibGVzIGFzc2VydGVkIChleGNlcHQgYXMgcGFy
-dA0Kb2YgYSBtaXNhbGlnbmVkIDMyIGJpdCB0cmFuc2ZlcikuDQoNClNvIHlvdSBlaXRoZXIgaGF2
-ZSBmb3VyIDgtYml0IHJlZ2lzdGVycywgb3Igb25lIDMyLWJpdCBvbmUuDQoNCkknZCBzdWdnZXN0
-IGtlZXBpbmcgYm90aCBwYXJ0cyBpbiB0aGUgZHJpdmVyIGRhdGEgYXJlYSBhbmQgb3JpbmcNCnRo
-ZW0gdG9nZXRoZXIgYmVmb3JlIHdyaXRpbmcgdG8gdGhlIGRldmljZS4NCg0KCURhdmlkDQoNCg==
+
+
+On 28.02.2014 11:56, Marc Kleine-Budde wrote:
+> On 02/27/2014 07:05 PM, Oliver Hartkopp wrote:
+>> On 27.02.2014 09:43, Marc Kleine-Budde wrote:
+>>
+>>>> +		if (priv->do_set_data_bittiming) {
+
+
+> 
+>> The bitrate is always set via do_set[_data]_bittiming() when the interface is
+>> down - and *not* during the open process.
+> 
+> No, not _always_. The flexcan and at91 drivers (maybe others, too) write
+> the values during open().
+
+flexcan does not assign priv->do_set_bittiming() and does the bitrate setting
+at open time.
+
+Thats ok too.
+
+This is up to the driver, whether do_set[_data]_bittiming() is assigned and
+when the stuff in the bitrate structures is set into the registers.
+
+I don't understand your problem.
+
+Regards,
+Oliver
+
