@@ -1,111 +1,45 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v2] can: remove CAN FD compatibility for CAN 2.0 sockets
-Date: Sat, 01 Mar 2014 15:31:53 +0100
-Message-ID: <5311EF59.6060200@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:14797 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752676AbaCAOb5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 1 Mar 2014 09:31:57 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 2/8] can: flexcan: flexcan_open(): fix error path if flexcan_chip_start() fails
+Date: Mon,  3 Mar 2014 14:54:29 +0100
+Message-ID: <1393854875-8171-3-git-send-email-mkl@pengutronix.de>
+References: <1393854875-8171-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1393854875-8171-1-git-send-email-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-In commit e2d265d3b587 (canfd: add support for CAN FD in CAN_RAW sockets)
-CAN FD frames with a payload length up to 8 byte are passed to legacy
-sockets where the CAN FD support was not enabled by the application.
+If flexcan_chip_start() in flexcan_open() fails, the interrupt is not freed,
+this patch adds the missing cleanup.
 
-After some discussions with developers at a fair this well meant feature
-leads to confusion as no clean switch for CAN / CAN FD is provided to the
-application programmer. Additionally a compatibility like this for legacy
-CAN_RAW sockets requires some compatibility handling for the sending, e.g.
-make CAN2.0 frames a CAN FD frame with BRS at transmission time (?!?).
-
-This will become a mess when people start to develop applications with
-real CAN FD hardware. This patch reverts the bad compatibility code
-together with the documentation describing the removed feature.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Acked-by: Stephane Grosjean <s.grosjean@peak-system.com> 
-
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/flexcan.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
-index f3089d4..0cbe6ec 100644
---- a/Documentation/networking/can.txt
-+++ b/Documentation/networking/can.txt
-@@ -554,12 +554,6 @@ solution for a couple of reasons:
-   not specified in the struct can_frame and therefore it is only valid in
-   CANFD_MTU sized CAN FD frames.
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index dcd69c9..30af702 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -868,7 +868,7 @@ static int flexcan_open(struct net_device *dev)
+ 	/* start chip and queuing */
+ 	err = flexcan_chip_start(dev);
+ 	if (err)
+-		goto out_close;
++		goto out_free_irq;
  
--  As long as the payload length is <=8 the received CAN frames from CAN FD
--  capable CAN devices can be received and read by legacy sockets too. When
--  user-generated CAN FD frames have a payload length <=8 these can be send
--  by legacy CAN network interfaces too. Sending CAN FD frames with payload
--  length > 8 to a legacy CAN network interface returns an -EMSGSIZE error.
--
-   Implementation hint for new CAN applications:
+ 	can_led_event(dev, CAN_LED_EVENT_OPEN);
  
-   To build a CAN FD aware application use struct canfd_frame as basic CAN
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 8be757c..081e81f 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -121,13 +121,9 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (!ro->recv_own_msgs && oskb->sk == sk)
- 		return;
+@@ -877,6 +877,8 @@ static int flexcan_open(struct net_device *dev)
  
--	/* do not pass frames with DLC > 8 to a legacy socket */
--	if (!ro->fd_frames) {
--		struct canfd_frame *cfd = (struct canfd_frame *)oskb->data;
--
--		if (unlikely(cfd->len > CAN_MAX_DLEN))
--			return;
--	}
-+	/* do not pass non-CAN2.0 frames to a legacy socket */
-+	if (!ro->fd_frames && oskb->len != CAN_MTU)
-+		return;
+ 	return 0;
  
- 	/* clone the given skb to be able to enqueue it into the rcv queue */
- 	skb = skb_clone(oskb, GFP_ATOMIC);
-@@ -738,9 +734,7 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
- 		       struct msghdr *msg, size_t size, int flags)
- {
- 	struct sock *sk = sock->sk;
--	struct raw_sock *ro = raw_sk(sk);
- 	struct sk_buff *skb;
--	int rxmtu;
- 	int err = 0;
- 	int noblock;
- 
-@@ -751,20 +745,10 @@ static int raw_recvmsg(struct kiocb *iocb, struct socket *sock,
- 	if (!skb)
- 		return err;
- 
--	/*
--	 * when serving a legacy socket the DLC <= 8 is already checked inside
--	 * raw_rcv(). Now check if we need to pass a canfd_frame to a legacy
--	 * socket and cut the possible CANFD_MTU/CAN_MTU length to CAN_MTU
--	 */
--	if (!ro->fd_frames)
--		rxmtu = CAN_MTU;
--	else
--		rxmtu = skb->len;
--
--	if (size < rxmtu)
-+	if (size < skb->len)
- 		msg->msg_flags |= MSG_TRUNC;
- 	else
--		size = rxmtu;
-+		size = skb->len;
- 
- 	err = memcpy_toiovec(msg->msg_iov, skb->data, size);
- 	if (err < 0) {
-
-
-
-
++ out_free_irq:
++	free_irq(dev->irq, dev);
+  out_close:
+ 	close_candev(dev);
+  out_disable_per:
+-- 
+1.9.0
