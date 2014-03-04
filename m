@@ -1,13 +1,13 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v12 6/7] can: allow to change the device mtu for CAN FD capable devices
-Date: Tue,  4 Mar 2014 23:26:55 +0100
-Message-ID: <1393972016-18383-7-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v12 1/7] can: preserve skbuff protocol in can_put_echo_skb
+Date: Tue,  4 Mar 2014 23:26:50 +0100
+Message-ID: <1393972016-18383-2-git-send-email-mkl@pengutronix.de>
 References: <1393972016-18383-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58402 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58379 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755619AbaCDW1C (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 17:27:02 -0500
+	with ESMTP id S1754396AbaCDW1B (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 17:27:01 -0500
 In-Reply-To: <1393972016-18383-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -16,103 +16,41 @@ Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The configuration for CAN FD depends on CAN_CTRLMODE_FD enabled in the driver
-specific ctrlmode_supported capabilities.
-
-The configuration can be done either with the 'fd { on | off }' option in the
-'ip' tool from iproute2 or by setting the CAN netdevice MTU to CAN_MTU (16) or
-to CANFD_MTU (72).
+The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
+can_put_echo_skb(). With CAN FD this value has to be preserved.
+This patch changes the hard assignment of the protocol value to a check of
+valid protocol values for CAN and CAN FD.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c            | 39 +++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h          |  1 +
- include/uapi/linux/can/netlink.h |  1 +
- 3 files changed, 41 insertions(+)
+ drivers/net/can/dev.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 8ebe112..4e20d82b 100644
+index c0563f1..e1a3741 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -595,6 +595,39 @@ void free_candev(struct net_device *dev)
- EXPORT_SYMBOL_GPL(free_candev);
+@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	BUG_ON(idx >= priv->echo_skb_max);
  
- /*
-+ * changing MTU and control mode for CAN/CANFD devices
-+ */
-+int can_change_mtu(struct net_device *dev, int new_mtu)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	/* Do not allow changing the MTU while running */
-+	if (dev->flags & IFF_UP)
-+		return -EBUSY;
-+
-+	/* allow change of MTU according to the CANFD ability of the device */
-+	switch (new_mtu) {
-+	case CAN_MTU:
-+		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
-+		break;
-+
-+	case CANFD_MTU:
-+		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
-+			return -EINVAL;
-+
-+		priv->ctrlmode |= CAN_CTRLMODE_FD;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	dev->mtu = new_mtu;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_change_mtu);
-+
-+/*
-  * Common open function when the device gets opened.
-  *
-  * This function should be called in the open function of the device
-@@ -693,6 +726,12 @@ static int can_changelink(struct net_device *dev,
- 			return -EOPNOTSUPP;
- 		priv->ctrlmode &= ~cm->mask;
- 		priv->ctrlmode |= cm->flags;
-+
-+		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
-+		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-+			dev->mtu = CANFD_MTU;
-+		else
-+			dev->mtu = CAN_MTU;
+ 	/* check flag whether this packet has to be looped back */
+-	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
++	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
++	    (skb->protocol != htons(ETH_P_CAN) &&
++	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+ 		return;
  	}
+@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 			return;
  
- 	if (data[IFLA_CAN_RESTART_MS]) {
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 8adaee9..3ce5e52 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -113,6 +113,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
- 
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-+int can_change_mtu(struct net_device *dev, int new_mtu);
- 
- int register_candev(struct net_device *dev);
- void unregister_candev(struct net_device *dev);
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index b41933d..7e2e186 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -96,6 +96,7 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
- #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
- #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
-+#define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
- 
- /*
-  * CAN device statistics
+ 		/* make settings for echo to reduce code in irq context */
+-		skb->protocol = htons(ETH_P_CAN);
+ 		skb->pkt_type = PACKET_BROADCAST;
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 		skb->dev = dev;
 -- 
 1.9.0
 
