@@ -1,92 +1,77 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: mscan: fix sparse warning
-Date: Tue,  4 Mar 2014 21:11:29 +0100
-Message-ID: <1393963889-1291-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
+ for CAN FD
+Date: Tue, 04 Mar 2014 21:44:03 +0100
+Message-ID: <53163B13.90900@pengutronix.de>
+References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net> <53106B6B.6040307@pengutronix.de> <53107F29.1080109@hartkopp.net> <53108165.5050606@pengutronix.de> <53108210.6070700@hartkopp.net> <5310867F.8060503@pengutronix.de> <531087FB.6010008@hartkopp.net> <531089AB.2010602@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="oEqxFJk5a3ackruq19OfRcQGNs40BcL0O"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36704 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54675 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755261AbaCDULh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 15:11:37 -0500
+	with ESMTP id S932782AbaCDUoJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 15:44:09 -0500
+In-Reply-To: <531089AB.2010602@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This patch fixes the following sparse warning by adding the missing __iomem
-annotations and using proper {in,out}_8 to access the mscan register space.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--oEqxFJk5a3ackruq19OfRcQGNs40BcL0O
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-drivers/net/can/mscan/mpc5xxx_can.c:385:36: warning: cast removes address space of expression
-drivers/net/can/mscan/mpc5xxx_can.c:387:37: warning: incorrect type in argument 2 (different address spaces)
-drivers/net/can/mscan/mpc5xxx_can.c:387:37:    expected void const volatile [noderef] <asn:2>*src
-drivers/net/can/mscan/mpc5xxx_can.c:387:37:    got struct mscan_regs *regs
-drivers/net/can/mscan/mpc5xxx_can.c:396:36: warning: cast removes address space of expression
-drivers/net/can/mscan/mpc5xxx_can.c:408:23: warning: incorrect type in argument 1 (different address spaces)
-drivers/net/can/mscan/mpc5xxx_can.c:408:23:    expected void volatile [noderef] <asn:2>*dest
-drivers/net/can/mscan/mpc5xxx_can.c:408:23:    got unsigned short *<noident>
+On 02/28/2014 02:05 PM, Marc Kleine-Budde wrote:
+> On 02/28/2014 01:58 PM, Oliver Hartkopp wrote:
+>>>>> A new do_set_data_bittiming() callback is not needed, as it's bette=
+r do
+>>>>> set the data and "normal" bit timing registers during open().
+>>>>
+>>>> With this argumentation do_set_bittiming() has to be removed too.
+>>>>
+>>>> Is this your intention?
+>>>
+>>> Yes. But it's in many drivers so let's keep it, for now.
+>>>
+>>
+>> Good.
+>>
+>> Btw. this could be a general simplification topic for the future.
+>=20
+> Yes, removing do_set_bittiming() is a different topic.
+>=20
+>> I do not have any objections to remove the callbacks in can_priv and c=
+all the
+>> device specific functions for the (data) bittiming setting in the open=
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/mscan/mpc5xxx_can.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+>> function then.
 
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index 4472529..80045a8 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -382,7 +382,7 @@ static int mpc5xxx_can_suspend(struct platform_device *ofdev, pm_message_t state
- {
- 	struct net_device *dev = platform_get_drvdata(ofdev);
- 	struct mscan_priv *priv = netdev_priv(dev);
--	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
-+	struct mscan_regs __iomem *regs = priv->reg_base;
- 
- 	_memcpy_fromio(&saved_regs, regs, sizeof(*regs));
- 
-@@ -393,26 +393,32 @@ static int mpc5xxx_can_resume(struct platform_device *ofdev)
- {
- 	struct net_device *dev = platform_get_drvdata(ofdev);
- 	struct mscan_priv *priv = netdev_priv(dev);
--	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
-+	struct mscan_regs __iomem *regs = priv->reg_base;
-+	u8 val;
- 
--	regs->canctl0 |= MSCAN_INITRQ;
--	while (!(regs->canctl1 & MSCAN_INITAK))
-+	val = in_8(&regs->canctl0);
-+	val |= MSCAN_INITRQ;
-+	out_8(&regs->canctl0, val);
-+
-+	while (!(in_8(&regs->canctl1) & MSCAN_INITAK))
- 		udelay(10);
- 
--	regs->canctl1 = saved_regs.canctl1;
--	regs->canbtr0 = saved_regs.canbtr0;
--	regs->canbtr1 = saved_regs.canbtr1;
--	regs->canidac = saved_regs.canidac;
-+	out_8(&regs->canctl1, saved_regs.canctl1);
-+	out_8(&regs->canbtr0, saved_regs.canbtr0);
-+	out_8(&regs->canbtr1, saved_regs.canbtr1);
-+	out_8(&regs->canidac, saved_regs.canidac);
- 
- 	/* restore masks, buffers etc. */
- 	_memcpy_toio(&regs->canidar1_0, (void *)&saved_regs.canidar1_0,
- 		     sizeof(*regs) - offsetof(struct mscan_regs, canidar1_0));
- 
--	regs->canctl0 &= ~MSCAN_INITRQ;
--	regs->cantbsel = saved_regs.cantbsel;
--	regs->canrier = saved_regs.canrier;
--	regs->cantier = saved_regs.cantier;
--	regs->canctl0 = saved_regs.canctl0;
-+	val = in_8(&regs->canctl0);
-+	val &= ~MSCAN_INITRQ;
-+	out_8(&regs->canctl0, val);
-+	out_8(&regs->cantbsel, saved_regs.cantbsel);
-+	out_8(&regs->canrier, saved_regs.canrier);
-+	out_8(&regs->cantier, saved_regs.cantier);
-+	out_8(&regs->canctl0, saved_regs.canctl0);
- 
- 	return 0;
- }
--- 
-1.9.0
+It's still present in v9, I'll send a v10 which removes the
+"priv->do_set_data_bittiming()" callback.
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--oEqxFJk5a3ackruq19OfRcQGNs40BcL0O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMWOxQACgkQjTAFq1RaXHMAyQCeOYLHKral8HC+YGgI4i7u+WKe
+xW4An2BUWBX+r0sz77TDzq+JFpNBtRAD
+=qTF9
+-----END PGP SIGNATURE-----
+
+--oEqxFJk5a3ackruq19OfRcQGNs40BcL0O--
