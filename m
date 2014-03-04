@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v10 2/7] can: only send bitrate data via netlink when available
-Date: Tue,  4 Mar 2014 21:44:10 +0100
-Message-ID: <1393965855-3408-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v10 3/7] can: move sanity check for bitrate and tq into can_get_bittiming
+Date: Tue,  4 Mar 2014 21:44:11 +0100
+Message-ID: <1393965855-3408-4-git-send-email-mkl@pengutronix.de>
 References: <1393965855-3408-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54688 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54689 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932479AbaCDUoU (ORCPT
+	with ESMTP id S932784AbaCDUoU (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 15:44:20 -0500
 In-Reply-To: <1393965855-3408-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -16,53 +16,64 @@ Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-When setting the bitrate both can_calc_bittiming() and can_fixup_bittiming()
-lead to the bitrate variable to be set, when a proper bit timing is available.
-Only then the bitrate configuration is stored for the device, so checking for
-priv->bittiming.bitrate is always sufficient.
+This patch moves a sanity check in order to have a second user for CAN FD.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/can/dev.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e1a3741..de04eac 100644
+index de04eac..e5f1faf 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -606,7 +606,7 @@ int open_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
+@@ -260,20 +260,23 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt)
+ 	int err;
  
--	if (!priv->bittiming.tq && !priv->bittiming.bitrate) {
-+	if (!priv->bittiming.bitrate) {
- 		netdev_err(dev, "bit-timing not yet defined\n");
- 		return -EINVAL;
- 	}
-@@ -719,7 +719,8 @@ static size_t can_get_size(const struct net_device *dev)
- 	struct can_priv *priv = netdev_priv(dev);
- 	size_t size = 0;
+ 	/* Check if the CAN device has bit-timing parameters */
+-	if (priv->bittiming_const) {
++	if (!priv->bittiming_const)
++		return 0;
  
--	size += nla_total_size(sizeof(struct can_bittiming));	/* IFLA_CAN_BITTIMING */
-+	if (priv->bittiming.bitrate)				/* IFLA_CAN_BITTIMING */
-+		size += nla_total_size(sizeof(struct can_bittiming));
- 	if (priv->bittiming_const)				/* IFLA_CAN_BITTIMING_CONST */
- 		size += nla_total_size(sizeof(struct can_bittiming_const));
- 	size += nla_total_size(sizeof(struct can_clock));	/* IFLA_CAN_CLOCK */
-@@ -741,8 +742,9 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+-		/* Non-expert mode? Check if the bitrate has been pre-defined */
+-		if (!bt->tq)
+-			/* Determine bit-timing parameters */
+-			err = can_calc_bittiming(dev, bt);
+-		else
+-			/* Check bit-timing params and calculate proper brp */
+-			err = can_fixup_bittiming(dev, bt);
+-		if (err)
+-			return err;
+-	}
++	/*
++	 * Depending on the given can_bittiming parameter structure the CAN
++	 * timing parameters are calculated based on the provided bitrate OR
++	 * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
++	 * provided directly which are then checked and fixed up.
++	 */
++	if (!bt->tq && bt->bitrate)
++		err = can_calc_bittiming(dev, bt);
++	else if (bt->tq && !bt->bitrate)
++		err = can_fixup_bittiming(dev, bt);
++	else
++		err = -EINVAL;
  
- 	if (priv->do_get_state)
- 		priv->do_get_state(dev, &state);
--	if (nla_put(skb, IFLA_CAN_BITTIMING,
--		    sizeof(priv->bittiming), &priv->bittiming) ||
-+	if ((priv->bittiming.bitrate &&
-+	     nla_put(skb, IFLA_CAN_BITTIMING,
-+		     sizeof(priv->bittiming), &priv->bittiming)) ||
- 	    (priv->bittiming_const &&
- 	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
- 		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
+-	return 0;
++	return err;
+ }
+ 
+ /*
+@@ -667,8 +670,6 @@ static int can_changelink(struct net_device *dev,
+ 		if (dev->flags & IFF_UP)
+ 			return -EBUSY;
+ 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
+-		if ((!bt.bitrate && !bt.tq) || (bt.bitrate && bt.tq))
+-			return -EINVAL;
+ 		err = can_get_bittiming(dev, &bt);
+ 		if (err)
+ 			return err;
 -- 
 1.9.0
 
