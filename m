@@ -1,77 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 4/6] can: introduce the data bitrate configuration
- for CAN FD
-Date: Tue, 04 Mar 2014 21:44:03 +0100
-Message-ID: <53163B13.90900@pengutronix.de>
-References: <1393452662-3154-1-git-send-email-socketcan@hartkopp.net> <1393452662-3154-5-git-send-email-socketcan@hartkopp.net> <530EFAA0.4090000@pengutronix.de> <530F7E6A.4050307@hartkopp.net> <53106B6B.6040307@pengutronix.de> <53107F29.1080109@hartkopp.net> <53108165.5050606@pengutronix.de> <53108210.6070700@hartkopp.net> <5310867F.8060503@pengutronix.de> <531087FB.6010008@hartkopp.net> <531089AB.2010602@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="oEqxFJk5a3ackruq19OfRcQGNs40BcL0O"
+Subject: [PATCH v10 1/7] can: preserve skbuff protocol in can_put_echo_skb
+Date: Tue,  4 Mar 2014 21:44:09 +0100
+Message-ID: <1393965855-3408-2-git-send-email-mkl@pengutronix.de>
+References: <1393965855-3408-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54675 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54710 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932782AbaCDUoJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 15:44:09 -0500
-In-Reply-To: <531089AB.2010602@pengutronix.de>
+	with ESMTP id S932782AbaCDUo1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 15:44:27 -0500
+In-Reply-To: <1393965855-3408-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oEqxFJk5a3ackruq19OfRcQGNs40BcL0O
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-On 02/28/2014 02:05 PM, Marc Kleine-Budde wrote:
-> On 02/28/2014 01:58 PM, Oliver Hartkopp wrote:
->>>>> A new do_set_data_bittiming() callback is not needed, as it's bette=
-r do
->>>>> set the data and "normal" bit timing registers during open().
->>>>
->>>> With this argumentation do_set_bittiming() has to be removed too.
->>>>
->>>> Is this your intention?
->>>
->>> Yes. But it's in many drivers so let's keep it, for now.
->>>
->>
->> Good.
->>
->> Btw. this could be a general simplification topic for the future.
->=20
-> Yes, removing do_set_bittiming() is a different topic.
->=20
->> I do not have any objections to remove the callbacks in can_priv and c=
-all the
->> device specific functions for the (data) bittiming setting in the open=
+The skbuff protocol value was formerly fixed/sanitized to ETH_P_CAN in
+can_put_echo_skb(). With CAN FD this value has to be preserved.
+This patch changes the hard assignment of the protocol value to a check of
+valid protocol values for CAN and CAN FD.
 
->> function then.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/dev.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-It's still present in v9, I'll send a v10 which removes the
-"priv->do_set_data_bittiming()" callback.
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c0563f1..e1a3741 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -317,7 +317,9 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	BUG_ON(idx >= priv->echo_skb_max);
+ 
+ 	/* check flag whether this packet has to be looped back */
+-	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK) {
++	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
++	    (skb->protocol != htons(ETH_P_CAN) &&
++	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+ 		return;
+ 	}
+@@ -329,7 +331,6 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 			return;
+ 
+ 		/* make settings for echo to reduce code in irq context */
+-		skb->protocol = htons(ETH_P_CAN);
+ 		skb->pkt_type = PACKET_BROADCAST;
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 		skb->dev = dev;
+-- 
+1.9.0
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---oEqxFJk5a3ackruq19OfRcQGNs40BcL0O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMWOxQACgkQjTAFq1RaXHMAyQCeOYLHKral8HC+YGgI4i7u+WKe
-xW4An2BUWBX+r0sz77TDzq+JFpNBtRAD
-=qTF9
------END PGP SIGNATURE-----
-
---oEqxFJk5a3ackruq19OfRcQGNs40BcL0O--
