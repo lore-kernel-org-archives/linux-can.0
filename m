@@ -1,315 +1,310 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v7] can: add Renesas R-Car CAN driver
-Date: Wed, 05 Mar 2014 01:18:21 +0300
-Message-ID: <5316512D.7060802@cogentembedded.com>
-References: <201402210222.50283.sergei.shtylyov@cogentembedded.com> <530F4B51.5020904@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] can: janz-ican3: convert dev_<level> printing to netdev_<level>
+Date: Tue,  4 Mar 2014 22:22:07 +0100
+Message-ID: <1393968127-7295-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f178.google.com ([209.85.217.178]:64029 "EHLO
-	mail-lb0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758011AbaCDVSU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 16:18:20 -0500
-Received: by mail-lb0-f178.google.com with SMTP id s7so70525lbd.23
-        for <linux-can@vger.kernel.org>; Tue, 04 Mar 2014 13:18:18 -0800 (PST)
-In-Reply-To: <530F4B51.5020904@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46110 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754890AbaCDVWP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 16:22:15 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, "Ira W. Snyder" <iws@ovro.caltech.edu>
 
-Hello.
+This patch converts the dev_<level> printing to netdev_<level>, this makes it
+possible to remove the "struct device *dev" pointer from the "struct
+ican3_dev".
 
-On 02/27/2014 05:27 PM, Marc Kleine-Budde wrote:
+Cc: Ira W. Snyder <iws@ovro.caltech.edu>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/janz-ican3.c | 64 +++++++++++++++++++++-----------------------
+ 1 file changed, 30 insertions(+), 34 deletions(-)
 
->> Add support for the CAN controller found in Renesas R-Car SoCs.
-
->> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-
-> See comments inline.
-
-    Thanks.
-    Had to cut out large fragments you didn't comment on. I think everybody 
-would be grateful if you did it instead, and they didn't have to scroll thru 
-the large mail searching for comments.
-
-> Marc
-
-[...]
->> Index: linux-can-next/drivers/net/can/rcar_can.c
->> ===================================================================
->> --- /dev/null
->> +++ linux-can-next/drivers/net/can/rcar_can.c
->> @@ -0,0 +1,858 @@
-[...]
->> +struct rcar_can_regs {
->> +	struct rcar_can_mbox_regs mb[RCAR_CAN_N_MBX]; /* Mailbox registers */
->> +	u32 mkr_2_9[8];	/* Mask Registers 2-9 */
->> +	u32 fidcr[2];	/* FIFO Received ID Compare Register */
->> +	u32 mkivlr1;	/* Mask Invalid Register 1 */
->> +	u32 mier1;	/* Mailbox Interrupt Enable Register 1 */
->> +	u32 mkr_0_1[2];	/* Mask Registers 0-1 */
->> +	u32 mkivlr0;    /* Mask Invalid Register 0*/
->> +	u32 mier0;      /* Mailbox Interrupt Enable Register 0 */
->> +	u8 pad_440[0x3c0];
->> +	u8 mctl[64];	/* Message Control Registers */
->> +	u16 ctlr;	/* Control Register */
->> +	u16 str;	/* Status register */
->> +	u8 bcr[3];	/* Bit Configuration Register */
->> +	u8 clkr;	/* Clock Select Register */
-
-> What about making this a u32?
-
-    No, these are two distinct registers.
-
->> +	u8 rfcr;	/* Receive FIFO Control Register */
->> +	u8 rfpcr;	/* Receive FIFO Pointer Control Register */
->> +	u8 tfcr;	/* Transmit FIFO Control Register */
->> +	u8 tfpcr;       /* Transmit FIFO Pointer Control Register */
->> +	u8 eier;	/* Error Interrupt Enable Register */
->> +	u8 eifr;	/* Error Interrupt Factor Judge Register */
->> +	u8 recr;	/* Receive Error Count Register */
->> +	u8 tecr;        /* Transmit Error Count Register */
->> +	u8 ecsr;	/* Error Code Store Register */
->> +	u8 cssr;	/* Channel Search Support Register */
->> +	u8 mssr;	/* Mailbox Search Status Register */
->> +	u8 msmr;	/* Mailbox Search Mode Register */
->> +	u16 tsr;	/* Time Stamp Register */
->> +	u8 afsr;	/* Acceptance Filter Support Register */
->> +	u8 pad_857;
->> +	u8 tcr;		/* Test Control Register */
->> +	u8 pad_859[7];
->> +	u8 ier;		/* Interrupt Enable Register */
->> +	u8 isr;		/* Interrupt Status Register */
->> +	u8 pad_862;
->> +	u8 mbsmr;	/* Mailbox Search Mask Register */
->> +};
->> +
->> +struct rcar_can_priv {
->> +	struct can_priv can;	/* Must be the first member! */
->> +	struct net_device *ndev;
->> +	struct napi_struct napi;
->> +	struct rcar_can_regs __iomem *regs;
->> +	struct clk *clk;
->> +	u8 tx_dlc[RCAR_CAN_FIFO_DEPTH];
->> +	u8 echo_skb_head;
->> +	u8 echo_skb_tail;
-
-> better make the head and tail unsinged int, please name them
-> tx_{head,tail} as in the xilinx driver
-
-    OK.
-
-[...]
->> +static void rcar_can_tx_done(struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	struct net_device_stats *stats = &ndev->stats;
->> +
-
-> If you have a TX FIFO, there can more than one frame transmitted since
-> you've been here, you should add some kind of loop here.
-
-    So what? We'll just get more interrupts.
-
-> The loop should looke like this:
-
->      while (priv->tx_head - priv->tx_tail > 0) {
-> 	if (!check_hardware_if_frame_has_been_traansmitted())
-> 		break;
-
-    I can only use the interrupt bit (ISR.TXFF) in this check. I'm not sure 
-what this achieves other than some micro-optimization.
-
->> +	stats->tx_packets++;
->> +	stats->tx_bytes += priv->tx_dlc[priv->echo_skb_tail];
-> 		+= priv->tx_dlc[priv->tx_tail % RCAR_CAN_FIFO_DEPTH]
-
-     Are you sure modulus used here and all over the code is more efficient 
-than two *if* statements? It's not so obvious...
-
->> +	priv->tx_dlc[priv->echo_skb_tail] = 0;
->> +	can_get_echo_skb(ndev, priv->echo_skb_tail);
-				priv->tx_tail % RCAR_CAN_FIFO_DEPTH
->> +	if (++priv->echo_skb_tail >= RCAR_CAN_FIFO_DEPTH)
->> +		priv->echo_skb_tail = 0;
-
-> 		pric->tx_tail++;
-> 	}
-
->> +	can_led_event(ndev, CAN_LED_EVENT_TX);
->> +	netif_wake_queue(ndev);
->> +}
->> +
->> +static irqreturn_t rcar_can_interrupt(int irq, void *dev_id)
->> +{
->> +	struct net_device *ndev = dev_id;
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	u8 isr;
->> +
->> +	isr = readb(&priv->regs->isr);
->> +	if (!(isr & priv->ier))
->> +		return IRQ_NONE;
->> +
->> +	if (isr & RCAR_CAN_ISR_ERSF)
->> +		rcar_can_error(ndev);
->> +
->> +	if (isr & RCAR_CAN_ISR_TXFF) {
->> +		/* Clear interrupt */
->> +		writeb(isr & ~RCAR_CAN_ISR_TXFF, &priv->regs->isr);
-
-> Does this clean the IRQ for the just transmitted CAN frame or for all,
-> if there is more then one frame transmitted successfully?
-
-    In my understanding, this bit is set after each transmitted frame (as 
-selected by MIER1.MB57. So clearing this bit should clear interrupt for all 
-transmitted frames. So I have doubt in the current algorithm now: if for some 
-reason (interrupt latency) we get this interrupt with 2 or more trasmitted 
-frames, we only register one, and the loop you're suggesting above won't help 
-here. I guess the previously used scheme with FIFO TX interrupt firing after 
-FIFO was completely empty better suited this case.
-
->> +		rcar_can_tx_done(ndev);
->> +	}
-[...]
->> +static void rcar_can_set_bittiming(struct net_device *dev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(dev);
->> +	struct can_bittiming *bt = &priv->can.bittiming;
->> +	u32 bcr;
->> +	u8 clkr;
->> +
->> +	/* Don't overwrite CLKR with 32-bit BCR access */
->> +	/* CLKR has 8-bit access */
-
-> Why don't you do a 32 bit read - then modify - then write 32 bit?
-
-    I hope I've cleared the matter enough now in another thread.
-
->> +	clkr = readb(&priv->regs->clkr);
-
-    I'll consider using platform data instead of a hardware read...
-
->> +	bcr = RCAR_CAN_BCR_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
->> +	      RCAR_CAN_BCR_BPR(bt->brp - 1) | RCAR_CAN_BCR_SJW(bt->sjw - 1) |
->> +	      RCAR_CAN_BCR_TSEG2(bt->phase_seg2 - 1);
->> +	/* All the registers are big-endian but they get byte-swapped on 32-bit
->> +	 * read/write (but not on 8-bit, contrary to the manuals)...
->> +	 */
-
-> If you use 32bit for both read and write, there should be nothing
-> special to worry abaut.
-
-    I hope I've cleared the matter enough now in another thread.
-
->> +	writel((bcr << 8) | clkr, &priv->regs->bcr);
->> +}
->> +
->> +static void rcar_can_start(struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	u16 ctlr;
->> +	int i;
->> +
->> +	/* Set controller to known mode:
->> +	 * - FIFO mailbox mode
->> +	 * - accept all messages
->> +	 * - overrun mode
->> +	 * CAN is in sleep mode after MCU hardware or software reset.
->> +	 */
->> +	ctlr = readw(&priv->regs->ctlr);
->> +	ctlr &= ~RCAR_CAN_CTLR_SLPM;
->> +	writew(ctlr, &priv->regs->ctlr);
->> +	/* Go to reset mode */
->> +	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
->> +	writew(ctlr, &priv->regs->ctlr);
->> +	for (i = 0; i < MAX_STR_READS; i++) {
->> +		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
-
-> How long does it take? Do you need some kind of usleep_range() here?
-
-    Actually, single status read is enough, loop was added just in case.
-So, no need to sleep.
-
->> +			break;
->> +	}
-[...]
->> +static void rcar_can_stop(struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	u16 ctlr;
->> +	int i;
->> +
->> +	/* Go to (force) reset mode */
->> +	ctlr = readw(&priv->regs->ctlr);
->> +	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
->> +	writew(ctlr, &priv->regs->ctlr);
->> +	for (i = 0; i < MAX_STR_READS; i++) {
->> +		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
-
-> sleep needed?
-
-    No, see above.
-
->> +			break;
->> +	}
->> +	writel(0, &priv->regs->mier0);
->> +	writel(0, &priv->regs->mier1);
->> +	writeb(0, &priv->regs->ier);
->> +	writeb(0, &priv->regs->eier);
->> +	/* Go to sleep mode */
->> +	ctlr |= RCAR_CAN_CTLR_SLPM;
->> +	writew(ctlr, &priv->regs->ctlr);
->> +	priv->can.state = CAN_STATE_STOPPED;
->> +}
->> +
->> +static int rcar_can_close(struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +
->> +	netif_stop_queue(ndev);
-
-> A running interrupt may restart the queue.
-
-    OK, should move this below the next call.
-
->> +	rcar_can_stop(ndev);
->> +	free_irq(ndev->irq, ndev);
->> +	napi_disable(&priv->napi);
-
-> Better disable napi at first.
-
-    No, it's not actually better. You'll risk RX interrupt storm if a packet 
-arrives after NAPI is disabled.
-
-[...]
->> +static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
->> +				       struct net_device *ndev)
->> +{
->> +	struct rcar_can_priv *priv = netdev_priv(ndev);
->> +	struct can_frame *cf = (struct can_frame *)skb->data;
->> +	u32 data, i;
->> +	u8 tfcr;
->> +
->> +	if (can_dropped_invalid_skb(ndev, skb))
->> +		return NETDEV_TX_OK;
->> +	tfcr = readb(&priv->regs->tfcr);
->> +	/* Stop queue if we are to fill the last FIFO entry */
->> +	if ((tfcr & RCAR_CAN_TFCR_TFUST) >> RCAR_CAN_TFCR_TFUST_SHIFT >= 3)
-
-> Where does the magic "3" come from?
-
-    Should have used RCAR_CAN_FIFO_DEPTH - 1...
-
-> BTW: no need to read the hardware here, can rely on your own counting:
-> 	if ((priv->tx_head - priv->tx_tail) == RCAR_CAN_FIFO_DEPTH)
-
->> +		netif_stop_queue(ndev);
-
-> But move it to the end of this function, after you have incremented tx_head.
-
-    OK.
-
-WBR, Sergei
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 71594e5..b47df5e 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -198,9 +198,6 @@ struct ican3_dev {
+ 	struct net_device *ndev;
+ 	struct napi_struct napi;
+ 
+-	/* Device for printing */
+-	struct device *dev;
+-
+ 	/* module number */
+ 	unsigned int num;
+ 
+@@ -295,7 +292,7 @@ static int ican3_old_recv_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	xord = locl ^ peer;
+ 
+ 	if ((xord & MSYNC_RB_MASK) == 0x00) {
+-		dev_dbg(mod->dev, "no mbox for reading\n");
++		netdev_dbg(mod->ndev, "no mbox for reading\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -340,7 +337,7 @@ static int ican3_old_send_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	xord = locl ^ peer;
+ 
+ 	if ((xord & MSYNC_WB_MASK) == MSYNC_WB_MASK) {
+-		dev_err(mod->dev, "no mbox for writing\n");
++		netdev_err(mod->ndev, "no mbox for writing\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -542,7 +539,7 @@ static int ican3_new_send_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	memcpy_fromio(&desc, desc_addr, sizeof(desc));
+ 
+ 	if (!(desc.control & DESC_VALID)) {
+-		dev_dbg(mod->dev, "%s: no free buffers\n", __func__);
++		netdev_dbg(mod->ndev, "%s: no free buffers\n", __func__);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -573,7 +570,7 @@ static int ican3_new_recv_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	memcpy_fromio(&desc, desc_addr, sizeof(desc));
+ 
+ 	if (!(desc.control & DESC_VALID)) {
+-		dev_dbg(mod->dev, "%s: no buffers to recv\n", __func__);
++		netdev_dbg(mod->ndev, "%s: no buffers to recv\n", __func__);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -883,7 +880,7 @@ static void can_frame_to_ican3(struct ican3_dev *mod,
+  */
+ static void ican3_handle_idvers(struct ican3_dev *mod, struct ican3_msg *msg)
+ {
+-	dev_dbg(mod->dev, "IDVERS response: %s\n", msg->data);
++	netdev_dbg(mod->ndev, "IDVERS response: %s\n", msg->data);
+ }
+ 
+ static void ican3_handle_msglost(struct ican3_dev *mod, struct ican3_msg *msg)
+@@ -899,7 +896,7 @@ static void ican3_handle_msglost(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	 * error frame for userspace
+ 	 */
+ 	if (msg->spec == MSG_MSGLOST) {
+-		dev_err(mod->dev, "lost %d control messages\n", msg->data[0]);
++		netdev_err(mod->ndev, "lost %d control messages\n", msg->data[0]);
+ 		return;
+ 	}
+ 
+@@ -939,13 +936,13 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+ 
+ 	/* we can only handle the SJA1000 part */
+ 	if (msg->data[1] != CEVTIND_CHIP_SJA1000) {
+-		dev_err(mod->dev, "unable to handle errors on non-SJA1000\n");
++		netdev_err(mod->ndev, "unable to handle errors on non-SJA1000\n");
+ 		return -ENODEV;
+ 	}
+ 
+ 	/* check the message length for sanity */
+ 	if (le16_to_cpu(msg->len) < 6) {
+-		dev_err(mod->dev, "error message too short\n");
++		netdev_err(mod->ndev, "error message too short\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -967,7 +964,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+ 	 */
+ 	if (isrc == CEVTIND_BEI) {
+ 		int ret;
+-		dev_dbg(mod->dev, "bus error interrupt\n");
++		netdev_dbg(mod->ndev, "bus error interrupt\n");
+ 
+ 		/* TX error */
+ 		if (!(ecc & ECC_DIR)) {
+@@ -983,7 +980,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+ 		 */
+ 		ret = ican3_set_buserror(mod, 1);
+ 		if (ret) {
+-			dev_err(mod->dev, "unable to re-enable bus-error\n");
++			netdev_err(mod->ndev, "unable to re-enable bus-error\n");
+ 			return ret;
+ 		}
+ 
+@@ -998,7 +995,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+ 
+ 	/* data overrun interrupt */
+ 	if (isrc == CEVTIND_DOI || isrc == CEVTIND_LOST) {
+-		dev_dbg(mod->dev, "data overrun interrupt\n");
++		netdev_dbg(mod->ndev, "data overrun interrupt\n");
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+ 		stats->rx_over_errors++;
+@@ -1007,7 +1004,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+ 
+ 	/* error warning + passive interrupt */
+ 	if (isrc == CEVTIND_EI) {
+-		dev_dbg(mod->dev, "error warning + passive interrupt\n");
++		netdev_dbg(mod->ndev, "error warning + passive interrupt\n");
+ 		if (status & SR_BS) {
+ 			state = CAN_STATE_BUS_OFF;
+ 			cf->can_id |= CAN_ERR_BUSOFF;
+@@ -1088,7 +1085,7 @@ static void ican3_handle_inquiry(struct ican3_dev *mod, struct ican3_msg *msg)
+ 		complete(&mod->termination_comp);
+ 		break;
+ 	default:
+-		dev_err(mod->dev, "received an unknown inquiry response\n");
++		netdev_err(mod->ndev, "received an unknown inquiry response\n");
+ 		break;
+ 	}
+ }
+@@ -1096,7 +1093,7 @@ static void ican3_handle_inquiry(struct ican3_dev *mod, struct ican3_msg *msg)
+ static void ican3_handle_unknown_message(struct ican3_dev *mod,
+ 					struct ican3_msg *msg)
+ {
+-	dev_warn(mod->dev, "received unknown message: spec 0x%.2x length %d\n",
++	netdev_warn(mod->ndev, "received unknown message: spec 0x%.2x length %d\n",
+ 			   msg->spec, le16_to_cpu(msg->len));
+ }
+ 
+@@ -1105,7 +1102,7 @@ static void ican3_handle_unknown_message(struct ican3_dev *mod,
+  */
+ static void ican3_handle_message(struct ican3_dev *mod, struct ican3_msg *msg)
+ {
+-	dev_dbg(mod->dev, "%s: modno %d spec 0x%.2x len %d bytes\n", __func__,
++	netdev_dbg(mod->ndev, "%s: modno %d spec 0x%.2x len %d bytes\n", __func__,
+ 			   mod->num, msg->spec, le16_to_cpu(msg->len));
+ 
+ 	switch (msg->spec) {
+@@ -1406,7 +1403,7 @@ static int ican3_reset_module(struct ican3_dev *mod)
+ 		msleep(10);
+ 	} while (time_before(jiffies, start + HZ / 4));
+ 
+-	dev_err(mod->dev, "failed to reset CAN module\n");
++	netdev_err(mod->ndev, "failed to reset CAN module\n");
+ 	return -ETIMEDOUT;
+ }
+ 
+@@ -1425,7 +1422,7 @@ static int ican3_startup_module(struct ican3_dev *mod)
+ 
+ 	ret = ican3_reset_module(mod);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to reset module\n");
++		netdev_err(mod->ndev, "unable to reset module\n");
+ 		return ret;
+ 	}
+ 
+@@ -1434,41 +1431,41 @@ static int ican3_startup_module(struct ican3_dev *mod)
+ 
+ 	ret = ican3_msg_connect(mod);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to connect to module\n");
++		netdev_err(mod->ndev, "unable to connect to module\n");
+ 		return ret;
+ 	}
+ 
+ 	ican3_init_new_host_interface(mod);
+ 	ret = ican3_msg_newhostif(mod);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to switch to new-style interface\n");
++		netdev_err(mod->ndev, "unable to switch to new-style interface\n");
+ 		return ret;
+ 	}
+ 
+ 	/* default to "termination on" */
+ 	ret = ican3_set_termination(mod, true);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to enable termination\n");
++		netdev_err(mod->ndev, "unable to enable termination\n");
+ 		return ret;
+ 	}
+ 
+ 	/* default to "bus errors enabled" */
+ 	ret = ican3_set_buserror(mod, 1);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to set bus-error\n");
++		netdev_err(mod->ndev, "unable to set bus-error\n");
+ 		return ret;
+ 	}
+ 
+ 	ican3_init_fast_host_interface(mod);
+ 	ret = ican3_msg_fasthostif(mod);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to switch to fast host interface\n");
++		netdev_err(mod->ndev, "unable to switch to fast host interface\n");
+ 		return ret;
+ 	}
+ 
+ 	ret = ican3_set_id_filter(mod, true);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to set acceptance filter\n");
++		netdev_err(mod->ndev, "unable to set acceptance filter\n");
+ 		return ret;
+ 	}
+ 
+@@ -1487,14 +1484,14 @@ static int ican3_open(struct net_device *ndev)
+ 	/* open the CAN layer */
+ 	ret = open_candev(ndev);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to start CAN layer\n");
++		netdev_err(mod->ndev, "unable to start CAN layer\n");
+ 		return ret;
+ 	}
+ 
+ 	/* bring the bus online */
+ 	ret = ican3_set_bus_state(mod, true);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to set bus-on\n");
++		netdev_err(mod->ndev, "unable to set bus-on\n");
+ 		close_candev(ndev);
+ 		return ret;
+ 	}
+@@ -1518,7 +1515,7 @@ static int ican3_stop(struct net_device *ndev)
+ 	/* bring the bus offline, stop receiving packets */
+ 	ret = ican3_set_bus_state(mod, false);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to set bus-off\n");
++		netdev_err(mod->ndev, "unable to set bus-off\n");
+ 		return ret;
+ 	}
+ 
+@@ -1545,7 +1542,7 @@ static int ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 
+ 	/* check that we can actually transmit */
+ 	if (!ican3_txok(mod)) {
+-		dev_err(mod->dev, "BUG: no free descriptors\n");
++		netdev_err(mod->ndev, "BUG: no free descriptors\n");
+ 		spin_unlock_irqrestore(&mod->lock, flags);
+ 		return NETDEV_TX_BUSY;
+ 	}
+@@ -1657,7 +1654,7 @@ static int ican3_set_mode(struct net_device *ndev, enum can_mode mode)
+ 	/* bring the bus online */
+ 	ret = ican3_set_bus_state(mod, true);
+ 	if (ret) {
+-		dev_err(mod->dev, "unable to set bus-on\n");
++		netdev_err(ndev, "unable to set bus-on\n");
+ 		return ret;
+ 	}
+ 
+@@ -1682,7 +1679,7 @@ static int ican3_get_berr_counter(const struct net_device *ndev,
+ 
+ 	ret = wait_for_completion_timeout(&mod->buserror_comp, HZ);
+ 	if (ret == 0) {
+-		dev_info(mod->dev, "%s timed out\n", __func__);
++		netdev_info(mod->ndev, "%s timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -1708,7 +1705,7 @@ static ssize_t ican3_sysfs_show_term(struct device *dev,
+ 
+ 	ret = wait_for_completion_timeout(&mod->termination_comp, HZ);
+ 	if (ret == 0) {
+-		dev_info(mod->dev, "%s timed out\n", __func__);
++		netdev_info(mod->ndev, "%s timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -1778,7 +1775,6 @@ static int ican3_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, ndev);
+ 	mod = netdev_priv(ndev);
+ 	mod->ndev = ndev;
+-	mod->dev = &pdev->dev;
+ 	mod->num = pdata->modno;
+ 	netif_napi_add(ndev, &mod->napi, ican3_napi, ICAN3_RX_BUFFERS);
+ 	skb_queue_head_init(&mod->echoq);
+-- 
+1.9.0
 
