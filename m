@@ -1,79 +1,67 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 Subject: Re: [PATCH v9 0/7] Add CAN FD infrastructure for CAN driver
-Date: Tue, 04 Mar 2014 10:22:25 +0100
-Message-ID: <53159B51.4020704@pengutronix.de>
+Date: Tue, 04 Mar 2014 13:15:47 +0100
+Message-ID: <5315C3F3.4090206@peak-system.com>
 References: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
+ <53159B51.4020704@pengutronix.de>
+Reply-To: Stephane Grosjean <s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="uuPo7GdB8CpaqWBtIstM1Ugi1nlJXKOfa"
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41380 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752195AbaCDJWc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 04:22:32 -0500
-In-Reply-To: <1393601785-4631-1-git-send-email-socketcan@hartkopp.net>
+Received: from mail.peak-system.com ([213.157.13.214]:50011 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756931AbaCDMP5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 07:15:57 -0500
+In-Reply-To: <53159B51.4020704@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uuPo7GdB8CpaqWBtIstM1Ugi1nlJXKOfa
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 02/28/2014 04:36 PM, Oliver Hartkopp wrote:
-> This is the patch series to extend the CAN driver infrastructure with C=
-AN FD.
->=20
-> Changes v8 -> v9:
->=20
-> Fixed a whitepace issue in patch 4 and added a comment about the differ=
-ent
-> configuration options.
->=20
-> *** BLURB HERE ***
->=20
-> Oliver Hartkopp (7):
->   can: preserve skbuff protocol in can_put_echo_skb
->   can: only send bitrate data via netlink when available
->   can: move sanity check for bitrate and tq into can_get_bittiming
->   can: provide a separate bittiming_const parameter to bittiming
->     functions
->   can: introduce the data bitrate configuration for CAN FD
->   can: allow to change the device mtu for CAN FD capable devices
->   can: add bittiming check at interface open for CAN FD
->=20
->  drivers/net/can/dev.c            | 160 ++++++++++++++++++++++++++++++-=
---------
->  include/linux/can/dev.h          |   7 +-
->  include/uapi/linux/can/netlink.h |   3 +
->  3 files changed, 133 insertions(+), 37 deletions(-)
+You did well !
 
-Stephane, I'll add your Acked-by that you have given for the v8 of this
-series.
+St=C3=A9phane
 
-Marc
+Le 04/03/2014 10:22, Marc Kleine-Budde a =C3=A9crit :
+> On 02/28/2014 04:36 PM, Oliver Hartkopp wrote:
+>> This is the patch series to extend the CAN driver infrastructure wit=
+h CAN FD.
+>>
+>> Changes v8 -> v9:
+>>
+>> Fixed a whitepace issue in patch 4 and added a comment about the dif=
+ferent
+>> configuration options.
+>>
+>> *** BLURB HERE ***
+>>
+>> Oliver Hartkopp (7):
+>>    can: preserve skbuff protocol in can_put_echo_skb
+>>    can: only send bitrate data via netlink when available
+>>    can: move sanity check for bitrate and tq into can_get_bittiming
+>>    can: provide a separate bittiming_const parameter to bittiming
+>>      functions
+>>    can: introduce the data bitrate configuration for CAN FD
+>>    can: allow to change the device mtu for CAN FD capable devices
+>>    can: add bittiming check at interface open for CAN FD
+>>
+>>   drivers/net/can/dev.c            | 160 +++++++++++++++++++++++++++=
++++---------
+>>   include/linux/can/dev.h          |   7 +-
+>>   include/uapi/linux/can/netlink.h |   3 +
+>>   3 files changed, 133 insertions(+), 37 deletions(-)
+> Stephane, I'll add your Acked-by that you have given for the v8 of th=
+is
+> series.
+>
+> Marc
+>
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---uuPo7GdB8CpaqWBtIstM1Ugi1nlJXKOfa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMVm1EACgkQjTAFq1RaXHNBhACfbY822HJpHaeM7HLLaT+4NFlN
-YykAnj/seKGJUedRBSNmiri5R5DFQCtb
-=bNhY
------END PGP SIGNATURE-----
-
---uuPo7GdB8CpaqWBtIstM1Ugi1nlJXKOfa--
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
