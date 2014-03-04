@@ -1,47 +1,68 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v11 0/7] Add CAN FD infrastructure for CAN driver
-Date: Tue, 04 Mar 2014 23:17:45 +0100
-Message-ID: <9212ed8d-717a-462c-ae61-261db554ca48@email.android.com>
-References: <1393970417-15399-1-git-send-email-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v12 2/7] can: only send bitrate data via netlink when available
+Date: Tue,  4 Mar 2014 23:26:51 +0100
+Message-ID: <1393972016-18383-3-git-send-email-mkl@pengutronix.de>
+References: <1393972016-18383-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:35704 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755769AbaCDWRm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 17:17:42 -0500
-In-Reply-To: <1393970417-15399-1-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58382 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754483AbaCDW1B (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 17:27:01 -0500
+In-Reply-To: <1393972016-18383-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
+When setting the bitrate both can_calc_bittiming() and can_fixup_bittiming()
+lead to the bitrate variable to be set, when a proper bit timing is available.
+Only then the bitrate configuration is stored for the device, so checking for
+priv->bittiming.bitrate is always sufficient.
 
-On 4. M=C3=A4rz 2014 23:00:10 MEZ, Marc Kleine-Budde <mkl@pengutronix.d=
-e> wrote:
->Again, it's me messing in Oliver's patches.
->
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/dev.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-:-)
-
-tnx.
-looks better now. Your changes made it even clearer.
-
-=46inal nitpick:
-The commit msg in 4/7 regarding the simplification could be removed as =
-you moved that part to 3/7 now.
-
-Cheers,=20
-Oliver
-
->changes since v10
->- 5/7: Re-add call to priv->do_set_data_bittiming().
->- 6/7 + 7/7: don't touch "if (data[IFLA_CAN_DATA_BITTIMING])" in 7/7,
->but in 6/7
->
->Marc
->
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index e1a3741..de04eac 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -606,7 +606,7 @@ int open_candev(struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+-	if (!priv->bittiming.tq && !priv->bittiming.bitrate) {
++	if (!priv->bittiming.bitrate) {
+ 		netdev_err(dev, "bit-timing not yet defined\n");
+ 		return -EINVAL;
+ 	}
+@@ -719,7 +719,8 @@ static size_t can_get_size(const struct net_device *dev)
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	size_t size = 0;
+ 
+-	size += nla_total_size(sizeof(struct can_bittiming));	/* IFLA_CAN_BITTIMING */
++	if (priv->bittiming.bitrate)				/* IFLA_CAN_BITTIMING */
++		size += nla_total_size(sizeof(struct can_bittiming));
+ 	if (priv->bittiming_const)				/* IFLA_CAN_BITTIMING_CONST */
+ 		size += nla_total_size(sizeof(struct can_bittiming_const));
+ 	size += nla_total_size(sizeof(struct can_clock));	/* IFLA_CAN_CLOCK */
+@@ -741,8 +742,9 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 
+ 	if (priv->do_get_state)
+ 		priv->do_get_state(dev, &state);
+-	if (nla_put(skb, IFLA_CAN_BITTIMING,
+-		    sizeof(priv->bittiming), &priv->bittiming) ||
++	if ((priv->bittiming.bitrate &&
++	     nla_put(skb, IFLA_CAN_BITTIMING,
++		     sizeof(priv->bittiming), &priv->bittiming)) ||
+ 	    (priv->bittiming_const &&
+ 	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
+ 		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
+-- 
+1.9.0
 
