@@ -1,26 +1,79 @@
-From: "Harrington, Sean M." <harrington.234@buckeyemail.osu.edu>
-Subject: RE: C-Can or Other SocketCAN Issue
-Date: Wed, 5 Mar 2014 01:10:04 +0000
-Message-ID: <1786e34eed984578b2a6cc121101865b@BN1PR01MB071.prod.exchangelabs.com>
-References: <d634b30117cf40dfb954c723bef01b65@BN1PR01MB071.prod.exchangelabs.com>,<5314AF7F.3010701@pengutronix.de>,<4179fe0897d74eccba72d6c9ba63694c@BN1PR01MB071.prod.exchangelabs.com>
- <914f07d33a6c473ba415edb4bd05f7b5@BN1PR01MB071.prod.exchangelabs.com>
- <5314D4F2.4010405@pengutronix.de>,<5314D9EC.7060107@hartkopp.net>
- <41be4e6aa0ed40b9a4374aa6c565f8b4@BN1PR01MB071.prod.exchangelabs.com>,<53157887.1040000@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v5] can: xilinx CAN controller support.
+Date: Wed, 05 Mar 2014 07:58:49 +0100
+Message-ID: <5316CB29.7040200@hartkopp.net>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local> <1b9f22ac-4dde-4ecc-885a-3d8081157081@AM1EHSMHS012.ehs.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0210.outbound.protection.outlook.com ([207.46.163.210]:3528
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753904AbaCEBKZ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Mar 2014 20:10:25 -0500
-In-Reply-To: <53157887.1040000@hartkopp.net>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:22739 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750995AbaCEG7V (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Mar 2014 01:59:21 -0500
+In-Reply-To: <1b9f22ac-4dde-4ecc-885a-3d8081157081@AM1EHSMHS012.ehs.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: =?UTF-8?B?U8O2cmVuIEJyaW5rbWFubg==?= <soren.brinkmann@xilinx.com>, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-This has fixed the issue I was experiencing. Thanks for the help with locating the patch and the guide.
 
-Sean
+
+On 05.03.2014 00:51, S=C3=B6ren Brinkmann wrote:
+> Hi Kedar,
+>=20
+> On Tue, 2014-03-04 at 06:50PM +0530, Kedareswara rao Appana wrote:
+>> This patch adds xilinx CAN controller support.
+>> This driver supports both ZYNQ CANPS and Soft IP
+>> AXI CAN controller.
+>>
+> [...]
+>> diff --git a/Documentation/devicetree/bindings/net/can/xilinx_can.tx=
+t b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+>> new file mode 100644
+>> index 0000000..0e57103
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+>> @@ -0,0 +1,45 @@
+>> +Xilinx Axi CAN/Zynq CANPS controller Device Tree Bindings
+>> +---------------------------------------------------------
+>> +
+>> +Required properties:
+>> +- compatible		: Should be "xlnx,zynq-can-1.00.a" for Zynq CAN
+>> +			  controllers and "xlnx,axi-can-1.00.a" for Axi CAN
+>> +			  controllers.
+>> +- reg			: Physical base address and size of the Axi CAN/Zynq
+>> +			  CANPS registers map.
+>> +- interrupts		: Property with a value describing the interrupt
+>> +			  number.
+>> +- interrupt-parent	: Must be core interrupt controller
+>> +- clock-names		: List of input clock names - "ref_clk", "aper_clk"
+>=20
+> Let's reconsider these names. These are rather Zynq specific names. D=
+oes
+> the IP documentation use these as well? The names should match the
+> naming used for the IP, rather than the SOC. Is this the correct data=
+ sheet:
+> http://www.xilinx.com/support/documentation/ip_documentation/axi_can/=
+v1_03_a/ds791_axi_can.pdf
+> ? According to that the names should rather be 's_axi_aclk' and
+> 'can_clk', IMHO.
+>=20
+> 	S=C3=B6ren
+>=20
+
+And when renaming stuff anyway:
+
++
++#define DRIVER_NAME	"XILINX_CAN"
++
+
+should be changed to
+
++
++#define DRIVER_NAME	"xilinx_can"
++
+
+Regards,
+Oliver
+
