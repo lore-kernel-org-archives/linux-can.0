@@ -1,88 +1,89 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: About timestamping and can-utils
-Date: Thu, 06 Mar 2014 19:47:47 +0100
-Message-ID: <5318C2D3.30005@hartkopp.net>
-References: <53183F0E.7050309@peak-system.com> <53184641.1040506@hartkopp.net> <53185614.5040307@peak-system.com>
+From: Stanislav Meduna <stano@meduna.org>
+Subject: FlexCAN on i.MX28 interrupt flooding retrying send
+Date: Fri, 07 Mar 2014 09:08:42 +0100
+Message-ID: <53197E8A.5050409@meduna.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:9693 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751837AbaCFSru (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Mar 2014 13:47:50 -0500
-In-Reply-To: <53185614.5040307@peak-system.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-On 06.03.2014 12:03, Stephane Grosjean wrote:
+Hi,
 
-> Meanwhile, I finally found by myself how to get the "hardware" timestamps the
-> (peak_usb) driver is saving for each CAN frame it receives...
+I am using a FlexCAN CAN controller on a Freescale i.MX28 platform [1].
+If a packet is being sent when the bus is disconnected, I am getting
+an interrupt flooed that basically kills the machine.
 
-Yes. That was a quick patch that time to put the PCAN USB hw timestamp to a
-less bad place :-)
+This is _not_ the same problem as [2] - my kernel already has
+the fix.
 
-> Comparing to your candump patch, there are several things a bit different I
-> want to discuss about:
-> 
-> Your patch enables to get the (so-called) "hardware raw timestamp" as well as
-> the "hardware system transformed timestamp", right ?
+The first interrupt comes with ESR 0x00028652, i.e.
 
-In the patch I was using the getnstime_raw_and_real(&tsraw, &tsreal) function
-to test the syscall API. As the SJA1000 does not have any hw timestamp I just
-wanted the standard sys timestamp and a monotonic clock. The latter is
-important for logfiles as you don't want to have clock adjustments or clock
-jumps (e.g. from ntp) in your logfile.
+TXWRN_INT
+BIT1_ERR
+STF_ERR
+TX_WRN
+TXRX
+FLT_CONF error passive
+ERR_INT
 
-> 
-> When I look into net/socket.c, both timestamps are copied by
-> "__sock_recv_timestamp()", according to:
-> 
-> - SOCK_TIMESTAMPING_RAW_HARDWARE flag ("shhwtstamps->hwtstamp" is copied into
-> the skb ctrlmsg)
-> - SOCK_TIMESTAMPING_SYS_HARDWARE flag ("shhwtstamps->syststamp" is copied into
-> the skb ctrlmsg)
-> 
-> If I understand well:
-> 
-> "hwtstamp" is the RAW timestamp received from the CAN device, without ANY
-> transformation, while "syststamp" is a "system transformed hardware
-> timestamp", which I understand as a timestamp the CAN device driver has
-> computed (according to the "raw timestamp" for example), to be consistent with
-> the system/kernel time.
+The next ones come the same without the acked TXWRN_INT.
+Reading the ESR again immediately after acking gives
+0x00000250, i.e.
 
-That's my understanding too.
+TX_WRN
+TXRX
+FLT_CONF error passive
 
-> So, a well-mannered linux-can device driver should (in case it is able to get
-> hardware timestamps from its device):
-> 
-> - store in "hwstamp" the raw value received from the device
-> - store in "syststamp" the "transformed" value the driver computes
-> 
-> Is it right?
+so everything ackable has actually been acked.
 
-Yes. But to me a
+I think that the problem is that the FlexCAN tries to retransmit
+the frame indefinitely. Each retry senses the bus in the invalid
+state (BIT1_ERR) and immediately fires a new ERR_INT. To verify
+this I aborted the transmitted frame in the error state in the
+interrupt handler
 
-- hwtstamp (raw from the device)
-- monotonic systime (just a monotonic clock)
-- tstamp (standard system time - might be changed by ntp)
+#define FLEXCAN_ESR_ERR_TRANSMIT \
+	(FLEXCAN_ESR_BIT1_ERR | FLEXCAN_ESR_BIT0_ERR | FLEXCAN_ESR_ACK_ERR)
 
-makes more sense.
+if (reg_esr & FLEXCAN_ESR_ERR_TRANSMIT) {
 
-To me it's unclear how this magic "transformation" is intended to work.
-Did you find any handy description what this transformation should do?
+	/* In case of a transmission error the packet is retried and
+	 * if the error persists, we will get another interrupt right
+	 * away. Abort the transmission - a lost packet is better than
+	 * an irq storm.
+	 */
+	if(printk_ratelimit())
+		netdev_err(dev, "Aborted transmission, ESR %08x\n", reg_esr);
 
-Btw. there was a recent discussion on netdev ML where the unclear timestamp
-definitions were discussed too:
+	can_get_echo_skb(dev, 0);
+	flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
+		&regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+	netif_wake_queue(dev);
+}
 
-http://marc.info/?t=139389972600001&r=1&w=2
+and the problem disappeared as expected. However, the correct
+way is probably to retry during some reasonable (configurable?)
+time interval.
 
-Which led to this patch:
-http://marc.info/?l=linux-netdev&m=139398266230777&w=2
+What puzzles me is that I did not found any other instance
+of this problem in the relevant mailing lists, only the original [2].
 
-Regards,
-Oliver
+I am using the 3.4.77 kernel with the realtime patches, but the
+code in the latest mainline looks the same in this respect.
+Maybe the realtime patches change some bevaviour, but I don't
+think they affect the core problem. I am not really an expert
+in the network devices, NAPI etc - maybe in that case the error
+interrupt should be disabled and re-enabled only if the
+error condition goes away? - I don't know...
 
+Please Cc: me when answering to the list.
+
+[1] http://www.tq-group.com/en/products/product-details/prod/embedded-modul-tqma28/extb/Main/productdetail/
+[2] https://gitorious.org/linux-can/wg-linux-can-next/commit/8ad94fa
+
+Thanks
+-- 
+                                           Stano
