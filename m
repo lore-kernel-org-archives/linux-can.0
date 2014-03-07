@@ -1,285 +1,121 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: Unify MTU settings for CAN interfaces
-Date: Fri, 07 Mar 2014 09:23:41 +0100
-Message-ID: <5319820D.6060104@hartkopp.net>
+From: "Matthias Klein" <matthias.klein@optimeas.de>
+Subject: Re: FlexCAN on i.MX28 interrupt flooding retrying send
+Date: Fri, 07 Mar 2014 08:32:57 +0000
+Message-ID: <emb03a570d-a7ce-4ae7-b026-29c159b98a36@nb-mak>
+References: <53197E8A.5050409@meduna.org>
+Reply-To: "Matthias Klein" <matthias.klein@optimeas.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:44726 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751027AbaCGIXo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Mar 2014 03:23:44 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-rt-users-owner@vger.kernel.org>
+In-Reply-To: <53197E8A.5050409@meduna.org>
+Sender: linux-rt-users-owner@vger.kernel.org
+To: Stanislav Meduna <stano@meduna.org>, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-CAN interfaces only support MTU values of 16 (CAN 2.0) and 72 (CAN FD).
-Setting the MTU to other values is pointless but it does not really hurt.
-With the introduction of the CAN FD support in drivers/net/can a new
-function to switch the MTU for CAN FD has been introduced.
+Hello Stanislav,
 
-This patch makes use of this can_change_mtu() function to check for correct
-MTU settings also in legacy CAN (2.0) devices.
+I made a similar observation on an i.MX537 with the 3.12.12-rt19 kernel: 
+I see the same interrupt flooed when the bus is disconnected.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
----
-
-In sja1000.c and mscan.c the spaces at the beginning of the line have been
-replaced by tabs as checkpatch.pl complained about it.
+What do you mean with "kills the machine"? I have a high interrupt load, 
+but the machine is still responsive.
 
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 1d00b95..f07fa89 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -1194,6 +1194,7 @@ static const struct net_device_ops at91_netdev_ops = {
- 	.ndo_open	= at91_open,
- 	.ndo_stop	= at91_close,
- 	.ndo_start_xmit	= at91_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static ssize_t at91_sysfs_show_mb0_id(struct device *dev,
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 8d2b89a..543ecce 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -528,6 +528,7 @@ static const struct net_device_ops bfin_can_netdev_ops = {
- 	.ndo_open               = bfin_can_open,
- 	.ndo_stop               = bfin_can_close,
- 	.ndo_start_xmit         = bfin_can_start_xmit,
-+	.ndo_change_mtu         = can_change_mtu,
- };
- 
- static int bfin_can_probe(struct platform_device *pdev)
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 951bfed..9c32e9e 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -1277,6 +1277,7 @@ static const struct net_device_ops c_can_netdev_ops = {
- 	.ndo_open = c_can_open,
- 	.ndo_stop = c_can_close,
- 	.ndo_start_xmit = c_can_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- int register_c_can_dev(struct net_device *dev)
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 0f12abf..d837927 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -823,6 +823,7 @@ static const struct net_device_ops cc770_netdev_ops = {
- 	.ndo_open = cc770_open,
- 	.ndo_stop = cc770_close,
- 	.ndo_start_xmit = cc770_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- int register_cc770dev(struct net_device *dev)
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 61376ab..5380e58 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1011,6 +1011,7 @@ static const struct net_device_ops flexcan_netdev_ops = {
- 	.ndo_open	= flexcan_open,
- 	.ndo_stop	= flexcan_close,
- 	.ndo_start_xmit	= flexcan_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static int register_flexcandev(struct net_device *dev)
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index ab506d6..3fd9fd9 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1578,6 +1578,7 @@ static const struct net_device_ops grcan_netdev_ops = {
- 	.ndo_open	= grcan_open,
- 	.ndo_stop	= grcan_close,
- 	.ndo_start_xmit	= grcan_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static int grcan_setup_netdev(struct platform_device *ofdev,
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 71594e5..31092c4 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1597,6 +1597,7 @@ static const struct net_device_ops ican3_netdev_ops = {
- 	.ndo_open	= ican3_open,
- 	.ndo_stop	= ican3_stop,
- 	.ndo_start_xmit	= ican3_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- /*
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index cdb9808..92dc132 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -996,6 +996,7 @@ static const struct net_device_ops mcp251x_netdev_ops = {
- 	.ndo_open = mcp251x_open,
- 	.ndo_stop = mcp251x_stop,
- 	.ndo_start_xmit = mcp251x_hard_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct of_device_id mcp251x_of_match[] = {
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index b9f3faa..e0c9be5 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -647,9 +647,10 @@ static int mscan_close(struct net_device *dev)
- }
- 
- static const struct net_device_ops mscan_netdev_ops = {
--       .ndo_open               = mscan_open,
--       .ndo_stop               = mscan_close,
--       .ndo_start_xmit         = mscan_start_xmit,
-+	.ndo_open	= mscan_open,
-+	.ndo_stop	= mscan_close,
-+	.ndo_start_xmit	= mscan_start_xmit,
-+	.ndo_change_mtu	= can_change_mtu,
- };
- 
- int register_mscandev(struct net_device *dev, int mscan_clksrc)
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 6c077eb..6472562 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -950,6 +950,7 @@ static const struct net_device_ops pch_can_netdev_ops = {
- 	.ndo_open		= pch_can_open,
- 	.ndo_stop		= pch_close,
- 	.ndo_start_xmit		= pch_xmit,
-+	.ndo_change_mtu		= can_change_mtu,
- };
- 
- static void pch_can_remove(struct pci_dev *pdev)
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 55cce47..f31499a 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -642,9 +642,10 @@ void free_sja1000dev(struct net_device *dev)
- EXPORT_SYMBOL_GPL(free_sja1000dev);
- 
- static const struct net_device_ops sja1000_netdev_ops = {
--       .ndo_open               = sja1000_open,
--       .ndo_stop               = sja1000_close,
--       .ndo_start_xmit         = sja1000_start_xmit,
-+	.ndo_open	= sja1000_open,
-+	.ndo_stop	= sja1000_close,
-+	.ndo_start_xmit	= sja1000_start_xmit,
-+	.ndo_change_mtu	= can_change_mtu,
- };
- 
- int register_sja1000dev(struct net_device *dev)
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 3fcdae2..f5b16e0 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -411,10 +411,16 @@ static void slc_free_netdev(struct net_device *dev)
- 	slcan_devs[i] = NULL;
- }
- 
-+static int slcan_change_mtu(struct net_device *dev, int new_mtu)
-+{
-+	return -EINVAL;
-+}
-+
- static const struct net_device_ops slc_netdev_ops = {
- 	.ndo_open               = slc_open,
- 	.ndo_stop               = slc_close,
- 	.ndo_start_xmit         = slc_xmit,
-+	.ndo_change_mtu         = slcan_change_mtu,
- };
- 
- static void slc_setup(struct net_device *dev)
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 9ea0dcd..3766bd9 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -628,6 +628,7 @@ static const struct net_device_ops softing_netdev_ops = {
- 	.ndo_open = softing_netdev_open,
- 	.ndo_stop = softing_netdev_stop,
- 	.ndo_start_xmit	= softing_netdev_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct can_bittiming_const softing_btr_const = {
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 2c62fe6..258b9c4 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -871,6 +871,7 @@ static const struct net_device_ops ti_hecc_netdev_ops = {
- 	.ndo_open		= ti_hecc_open,
- 	.ndo_stop		= ti_hecc_close,
- 	.ndo_start_xmit		= ti_hecc_xmit,
-+	.ndo_change_mtu		= can_change_mtu,
- };
- 
- static int ti_hecc_probe(struct platform_device *pdev)
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 52c42fd..00f2534 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -883,6 +883,7 @@ static const struct net_device_ops ems_usb_netdev_ops = {
- 	.ndo_open = ems_usb_open,
- 	.ndo_stop = ems_usb_close,
- 	.ndo_start_xmit = ems_usb_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct can_bittiming_const ems_usb_bittiming_const = {
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index 7fbe859..1f8ce91 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -888,6 +888,7 @@ static const struct net_device_ops esd_usb2_netdev_ops = {
- 	.ndo_open = esd_usb2_open,
- 	.ndo_stop = esd_usb2_close,
- 	.ndo_start_xmit = esd_usb2_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct can_bittiming_const esd_usb2_bittiming_const = {
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index e77d110..ea596b5 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -1388,6 +1388,7 @@ static const struct net_device_ops kvaser_usb_netdev_ops = {
- 	.ndo_open = kvaser_usb_open,
- 	.ndo_stop = kvaser_usb_close,
- 	.ndo_start_xmit = kvaser_usb_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct can_bittiming_const kvaser_usb_bittiming_const = {
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 0b7a4c3..93e4a55 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -702,6 +702,7 @@ static const struct net_device_ops peak_usb_netdev_ops = {
- 	.ndo_open = peak_usb_ndo_open,
- 	.ndo_stop = peak_usb_ndo_stop,
- 	.ndo_start_xmit = peak_usb_ndo_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- /*
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index a0fa1fd..cde2634 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -887,6 +887,7 @@ static const struct net_device_ops usb_8dev_netdev_ops = {
- 	.ndo_open = usb_8dev_open,
- 	.ndo_stop = usb_8dev_close,
- 	.ndo_start_xmit = usb_8dev_start_xmit,
-+	.ndo_change_mtu = can_change_mtu,
- };
- 
- static const struct can_bittiming_const usb_8dev_bittiming_const = {
+Best regards,
+
+Matthias
 
 
+------ Originalnachricht ------
+Von: "Stanislav Meduna" <stano@meduna.org>
+An: wg@grandegger.com; mkl@pengutronix.de; linux-can@vger.kernel.org; 
+"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>; 
+"linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+Gesendet: 07.03.2014 09:08:42
+Betreff: FlexCAN on i.MX28 interrupt flooding retrying send
+>Hi,
+>
+>I am using a FlexCAN CAN controller on a Freescale i.MX28 platform [1].
+>If a packet is being sent when the bus is disconnected, I am getting
+>an interrupt flooed that basically kills the machine.
+>
+>This is _not_ the same problem as [2] - my kernel already has
+>the fix.
+>
+>The first interrupt comes with ESR 0x00028652, i.e.
+>
+>TXWRN_INT
+>BIT1_ERR
+>STF_ERR
+>TX_WRN
+>TXRX
+>FLT_CONF error passive
+>ERR_INT
+>
+>The next ones come the same without the acked TXWRN_INT.
+>Reading the ESR again immediately after acking gives
+>0x00000250, i.e.
+>
+>TX_WRN
+>TXRX
+>FLT_CONF error passive
+>
+>so everything ackable has actually been acked.
+>
+>I think that the problem is that the FlexCAN tries to retransmit
+>the frame indefinitely. Each retry senses the bus in the invalid
+>state (BIT1_ERR) and immediately fires a new ERR_INT. To verify
+>this I aborted the transmitted frame in the error state in the
+>interrupt handler
+>
+>#define FLEXCAN_ESR_ERR_TRANSMIT \
+>  (FLEXCAN_ESR_BIT1_ERR | FLEXCAN_ESR_BIT0_ERR | FLEXCAN_ESR_ACK_ERR)
+>
+>if (reg_esr & FLEXCAN_ESR_ERR_TRANSMIT) {
+>
+>  /* In case of a transmission error the packet is retried and
+>   * if the error persists, we will get another interrupt right
+>   * away. Abort the transmission - a lost packet is better than
+>   * an irq storm.
+>   */
+>  if(printk_ratelimit())
+>   netdev_err(dev, "Aborted transmission, ESR %08x\n", reg_esr);
+>
+>  can_get_echo_skb(dev, 0);
+>  flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
+>   &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+>  netif_wake_queue(dev);
+>}
+>
+>and the problem disappeared as expected. However, the correct
+>way is probably to retry during some reasonable (configurable?)
+>time interval.
+>
+>What puzzles me is that I did not found any other instance
+>of this problem in the relevant mailing lists, only the original [2].
+>
+>I am using the 3.4.77 kernel with the realtime patches, but the
+>code in the latest mainline looks the same in this respect.
+>Maybe the realtime patches change some bevaviour, but I don't
+>think they affect the core problem. I am not really an expert
+>in the network devices, NAPI etc - maybe in that case the error
+>interrupt should be disabled and re-enabled only if the
+>error condition goes away? - I don't know...
+>
+>Please Cc: me when answering to the list.
+>
+>[1] 
+>http://www.tq-group.com/en/products/product-details/prod/embedded-modul-tqma28/extb/Main/productdetail/
+>[2] https://gitorious.org/linux-can/wg-linux-can-next/commit/8ad94fa
+>
+>Thanks
+>--
+>                                            Stano
+>--
+>To unsubscribe from this list: send the line "unsubscribe 
+>linux-rt-users" in
+>the body of a message to majordomo@vger.kernel.org
+>More majordomo info at http://vger.kernel.org/majordomo-info.html
+>
 
