@@ -1,69 +1,78 @@
-From: Stanislav Meduna <stano@meduna.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: FlexCAN on i.MX28 interrupt flooding retrying send
-Date: Fri, 07 Mar 2014 14:36:24 +0100
-Message-ID: <5319CB58.4070708@meduna.org>
-References: <53197E8A.5050409@meduna.org> <53198753.8000900@pengutronix.de>
+Date: Fri, 07 Mar 2014 14:54:47 +0100
+Message-ID: <5319CFA7.7040402@pengutronix.de>
+References: <53197E8A.5050409@meduna.org> <53198753.8000900@pengutronix.de> <5319CB58.4070708@meduna.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="IHBpVPKpNi4vbRlWxnkJmRuUiCtuWTdqI"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.meduna.org ([92.240.244.38]:34623 "EHLO meduna.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752229AbaCGNgf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 7 Mar 2014 08:36:35 -0500
-In-Reply-To: <53198753.8000900@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41451 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751545AbaCGNyx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Mar 2014 08:54:53 -0500
+In-Reply-To: <5319CB58.4070708@meduna.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, linux-can@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+To: Stanislav Meduna <stano@meduna.org>, wg@grandegger.com, linux-can@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
 
-On 07.03.2014 09:46, Marc Kleine-Budde wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IHBpVPKpNi4vbRlWxnkJmRuUiCtuWTdqI
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> Adding the linux-can mailinglist to Cc.
+On 03/07/2014 02:36 PM, Stanislav Meduna wrote:
+>> Adding the linux-can mailinglist to Cc.
+>=20
+> I am not subscribed so maybe that's why the original mail
+> did not get through - I did Cc: linux-can@vger.kernel.org
 
-I am not subscribed so maybe that's why the original mail
-did not get through - I did Cc: linux-can@vger.kernel.org
+My bad, linux-can was on Cc, but it arrived on linux-can late.
 
-> Your kernel is missing the patch:
-> 
-> e358784 can: flexcan: fix mx28 detection by rearanging OF match table
-> 
-> With this patch the CAN core properly detected as an mx28, so that bus
-> errors stay disabled (unless you enable them). If you need bus errors to
-> detect not connected CAN busses, you need another patchset berr_limit,
-> which is not yet mainline. I can repost it here, if you need it.
+>> Your kernel is missing the patch:
+>>
+>> e358784 can: flexcan: fix mx28 detection by rearanging OF match table
+>>
+>> With this patch the CAN core properly detected as an mx28, so that bus=
 
-Ah ok.
+>> errors stay disabled (unless you enable them). If you need bus errors =
+to
+>> detect not connected CAN busses, you need another patchset berr_limit,=
 
-Thank you, this probably points me to the right direction - I'll try
-to implement this behaviour in my kernel (unfortunately
-I cannot move to more recent one at the moment).
+>> which is not yet mainline. I can repost it here, if you need it.
+>=20
+> Ah ok.
+>=20
+> Thank you, this probably points me to the right direction - I'll try
+> to implement this behaviour in my kernel (unfortunately
+> I cannot move to more recent one at the moment).
 
-On 07.03.2014 09:40, Wolfgang Grandegger wrote:
+The flexcan driver in you kernel doesn't have the improvements for mx28,
+i.e. that the bus error is not needed on that CAN core. I think for non
+DT we never added that support.
 
-> Maybe there is something wrong with you platform code or DTS file. What
-> kernel are you using and how is the DTS can node defined in your DTS file?
+Marc
 
-This is a the 3.4.77 kernel with the realtime patches and without
-the device tree, so these settings are missing and the patch does
-not apply.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-On 07.03.2014 09:32, Matthias Klein wrote:
 
-> I made a similar observation on an i.MX537 with the 3.12.12-rt19
-> kernel: I see the same interrupt flooed when the bus is
-> disconnected.
->
-> What do you mean with "kills the machine"? I have a high interrupt
-> load, but the machine is still responsive.
+--IHBpVPKpNi4vbRlWxnkJmRuUiCtuWTdqI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-In my case the ssh connection became hung or updated once per several
-seconds etc. In one case it was even necessary to ifconfig down/up
-the ethernet interface (NAPI overload? - no idea). The exact behaviour
-might be related to the realtime patches - we need guaranteed response
-times and runaway interrupt processing hogging the CPU at the realtime
-priority is a problem.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-Many thanks
--- 
-                                      Stano
+iEYEARECAAYFAlMZz6cACgkQjTAFq1RaXHMYjgCdGlf3gH577VT96aw0cPFBefd8
+65sAmwZ6AdIK9bhiIVb4UEnuCnD9WAXK
+=Kgy0
+-----END PGP SIGNATURE-----
 
+--IHBpVPKpNi4vbRlWxnkJmRuUiCtuWTdqI--
