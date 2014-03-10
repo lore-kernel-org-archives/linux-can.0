@@ -1,94 +1,61 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: Populating netdev::dev_id for udev discrimination
-Date: Mon, 10 Mar 2014 12:01:03 +0100
-Message-ID: <531D9B6F.9010603@pengutronix.de>
+Date: Mon, 10 Mar 2014 13:15:01 +0100
+Message-ID: <531DACC5.8090804@hartkopp.net>
 References: <1394294420.3356.15.camel@NREC-014563> <531CBB6F.7090803@pengutronix.de> <531D6D3B.9020900@hartkopp.net> <20140310104650.GA456@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="gB2go5gOkQUBvuI4oiBGNEbsU8H9lvlJt"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37623 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752158AbaCJLBe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Mar 2014 07:01:34 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:44229 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752471AbaCJMPJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Mar 2014 08:15:09 -0400
 In-Reply-To: <20140310104650.GA456@vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gB2go5gOkQUBvuI4oiBGNEbsU8H9lvlJt
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hey Kurt!
 
-On 03/10/2014 11:46 AM, Kurt Van Dijck wrote:
-> Hey Christopher & Oliver,
->=20
-> On Mon, Mar 10, 2014 at 08:43:55AM +0100, Oliver Hartkopp wrote:
->> Hello Christopher,
+On 10.03.2014 11:46, Kurt Van Dijck wrote:
+
+>> Do you have an idea how to proceed with USB or other devices that bring their
+>> own identification (like a serial number / device id) ??
 >>
->> On 09.03.2014 20:05, Marc Kleine-Budde wrote:
->>> On 03/08/2014 05:00 PM, Christopher R. Baker wrote:
+>> E.g. the Softing Card provides some serial number through sysfs:
 >>
->>> You are the first one to address this issue. \o/
->>
->> I remember we discussed this issue years ago - but it was not really b=
-rought
->> to an end. So I really appreciate Christophers attempt :-)
->>
->>>> udevadm info gives me the KERNELS=3D... incantation to match the pci=
- bus
->>>> address, but there are no other differences in the udev listing for =
-my
->>>> various CAN ports (at least for my peak_pci device)
->>>>
->>>> Digging into the semantics of ATTRS{...}, "dev_id" stood out as havi=
-ng
->>>> the intention of discriminating between physical ports
->=20
-> I find this attempt attractive, because it moves multichannel device id=
-entification
-> to generic netdev infrastructure.
->=20
-> The patch obsoletes the 'channel' sysfs property of the softing device =
-driver.
-> That property did exactly what can now be done with 'dev_id'.
-> I'll prepare a patch when this gets accepted.
-> That patch would not only remove 1 property.
-> The 'channel' property required the attr_group to be present at device =
-creation.
-> Whithout 'channel', I could use the regular sysfs_create_group which ma=
-kes
-> the code even simpler.
+>> http://lxr.free-electrons.com/source/drivers/net/can/softing/softing_main.c#L719
+> 
+> I still think this is the correct way.
 
-You can create a patch against the testing branch of linux-can-next[1]
+Yes. You are right.
 
-Marc
+> udev identifies the device based on anyting device related (serial number, driver, ...)
+> and identifies the channel of the device based on the netdev (now through dev_id).
+> The netdev links to the device, so there is be no problem with identification.
 
-[1]
-https://gitorious.org/linux-can/linux-can-next/source/e7bf719dbbad1985704=
-0ef50ed8b2cfefd81d78c:
+Looking into your code IMO a similar thing has to be done for the other CAN
+interfaces providing HW/SW versions and unique IDs like e.g. a serial number.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+E.g. the PEAK USB adapters or the USB8DEV adapter, etc.
 
+It already looks pretty good for a general usage.
 
---gB2go5gOkQUBvuI4oiBGNEbsU8H9lvlJt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Do you know what your attributes "frequency" and "tx_pending" have been used
+for in the softing driver? Are they still needed?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+> Putting somehing else into the MAC address field is not right.
 
-iEYEARECAAYFAlMdm28ACgkQjTAFq1RaXHOtJACfd5H0AO2/FJHekszDTo9czTYi
-LnsAnjmS4U2TV/UoLAnV04P4TD4aTdtW
-=Dt0D
------END PGP SIGNATURE-----
+Ack. It was just a suggestion. But after looking into your sysfs code you
+convinced me :-)
 
---gB2go5gOkQUBvuI4oiBGNEbsU8H9lvlJt--
+> What problem do you try to solve here?
+
+Just to have a unique ID to identify CAN USB adapters to set them to the right
+bitrate and netdevice name via udev when they are attached.
+
+Best regards,
+Oliver
+
