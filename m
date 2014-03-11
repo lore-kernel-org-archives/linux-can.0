@@ -1,205 +1,224 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v5] can: xilinx CAN controller support.
-Date: Tue, 11 Mar 2014 14:08:47 +0000
-Message-ID: <a99feda0-7463-4781-bb73-90b99e65b014@CO9EHSMHS028.ehs.local>
-References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
- <531DD2C4.5060109@pengutronix.de>
- <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local>
- <531F0636.4050608@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v5] can: xilinx CAN controller support.
+Date: Tue, 11 Mar 2014 15:31:12 +0100
+Message-ID: <531F1E30.4040203@pengutronix.de>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local> <531DD2C4.5060109@pengutronix.de> <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local> <531F0636.4050608@pengutronix.de> <a99feda0-7463-4781-bb73-90b99e65b014@CO9EHSMHS028.ehs.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]:19210
-	"EHLO co9outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750944AbaCKOJA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Mar 2014 10:09:00 -0400
-In-Reply-To: <531F0636.4050608@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Michal Simek <michals@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "fengguang.wu@intel.com" <fengguang.wu@intel.com>, Soren Brinkmann <sorenb@xilinx.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="s6hbhFM2k7JuRJMTdBPESiGGTKRN0GCnw"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <a99feda0-7463-4781-bb73-90b99e65b014-QhSrsHip19sNTaRkHJHP0bjjLBE8jN/0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Appana Durga Kedareswara Rao <appana.durga.rao-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
+Cc: "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Michal Simek <michals-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>, "wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org" <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, "fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org" <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Soren Brinkmann <sorenb-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
-S2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBUdWVzZGF5
-LCBNYXJjaCAxMSwgMjAxNCA2OjE5IFBNDQo+IFRvOiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEg
-UmFvDQo+IENjOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwu
-b3JnOyBsaW51eC1hcm0tDQo+IGtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgcm9iaCtk
-dEBrZXJuZWwub3JnOyBncmFudC5saWtlbHlAbGluYXJvLm9yZzsNCj4gTWljaGFsIFNpbWVrOyB3
-Z0BncmFuZGVnZ2VyLmNvbTsgZmVuZ2d1YW5nLnd1QGludGVsLmNvbQ0KPiBTdWJqZWN0OiBSZTog
-W1BBVENIIHY1XSBjYW46IHhpbGlueCBDQU4gY29udHJvbGxlciBzdXBwb3J0Lg0KPg0KPiBPbiAw
-My8xMS8yMDE0IDAxOjM0IFBNLCBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEgUmFvIHdyb3RlOg0K
-Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9LY29uZmlnIGIvZHJpdmVycy9u
-ZXQvY2FuL0tjb25maWcgaW5kZXgNCj4gPj4+IDllN2Q5NWQuLmIxODAyMzkgMTAwNjQ0DQo+ID4+
-PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vS2NvbmZpZw0KPiA+Pj4gKysrIGIvZHJpdmVycy9uZXQv
-Y2FuL0tjb25maWcNCj4gPj4+IEBAIC0xMjUsNiArMTI1LDEzIEBAIGNvbmZpZyBDQU5fR1JDQU4N
-Cj4gPj4+ICAgICAgIGVuZGlhbiBzeW50aGVzZXMgb2YgdGhlIGNvcmVzIHdvdWxkIG5lZWQgc29t
-ZSBtb2RpZmljYXRpb25zIG9uDQo+ID4+PiAgICAgICB0aGUgaGFyZHdhcmUgbGV2ZWwgdG8gd29y
-ay4NCj4gPj4+DQo+ID4+PiArY29uZmlnIENBTl9YSUxJTlhDQU4NCj4gPj4+ICsgICB0cmlzdGF0
-ZSAiWGlsaW54IENBTiINCj4gPj4+ICsgICBkZXBlbmRzIG9uIEFSQ0hfWllOUSB8fCBNSUNST0JM
-QVpFDQo+ID4+DQo+ID4+IElzIFp5bnEgbXVsdGlhcmNoIGFscmVhZHk/DQo+ID4gRGlzY3Vzc2lv
-bnMgYXJlIGdvaW5nIG9uIHRoaXMNCj4gPiBTbyB0aGUgZmluYWwgdGhpbmcgdGhhdCBGZW5nZ3Vh
-bmcgKCBmZW5nZ3Vhbmcud3VAaW50ZWwuY29tKSBQcm9wb3NlZA0KPiA+IGlzDQo+ID4gICAgICAg
-ICBjb25maWcgQ0FOX1hJTElOWA0KPiA+ICAgICAgICAgdHJpc3RhdGUgIlhpbGlueCBDQU4iDQo+
-ID4gICAgICAgICBkZXBlbmRzIG9uIEFSQ0hfWllOUSB8fCBNSUNST0JMQVpFIHx8IENPTVBJTEVf
-VEVTVA0KPiA+ICAgICAgICAgZGVwZW5kcyBvbiBDT01NT05fQ0xLICYmIEhBU19NTUlPICAjIHdo
-YXRldmVyIHlvdSBuZWVkIGZvcg0KPiA+IG90aGVyIGFyY2hpdGVjdHVyZXMNCj4NCj4gPiBBcmUg
-eW91IE9rIGZvciB0aGlzPw0KPg0KPiBZb3UgaGF2ZSB0byBmaWxsIHRoZSAybmQgZGVwZW5kcyBv
-biB3aXRoIHNvbWUgc2FuZSB2YWx1ZXMsIHRob3VnaC4NCj4NCj4gWy4uLl0NCj4NCk9rDQoNCj4g
-Pj4+ICsvKioNCj4gPj4+ICsgKiBzdHJ1Y3QgeGNhbl9wcml2IC0gVGhpcyBkZWZpbml0aW9uIGRl
-ZmluZSBDQU4gZHJpdmVyIGluc3RhbmNlDQo+ID4+PiArICogQGNhbjogICAgICAgICAgICAgICAg
-ICAgQ0FOIHByaXZhdGUgZGF0YSBzdHJ1Y3R1cmUuDQo+ID4+PiArICogQHR4X2hlYWQ6ICAgICAg
-ICAgICAgICAgICAgICAgICBUeCBDQU4gcGFja2V0cyByZWFkeSB0byBzZW5kIG9uIHRoZQ0KPiA+
-PiBxdWV1ZQ0KPiA+Pj4gKyAqIEB0eF90YWlsOiAgICAgICAgICAgICAgICAgICAgICAgVHggQ0FO
-IHBhY2tldHMgc3VjY2Vzc2Z1bGx5IHNlbmRlZCBvbiB0aGUNCj4gPj4gcXVldWUNCj4gPj4+ICsg
-KiBAdHhfbWF4OiAgICAgICAgICAgICAgICAgICAgICAgIE1heGltdW0gbnVtYmVyIHBhY2tldHMg
-dGhlIGRyaXZlciBjYW4NCj4gPj4gc2VuZA0KPiA+Pj4gKyAqIEBuYXBpOiAgICAgICAgICAgICAg
-ICAgIE5BUEkgc3RydWN0dXJlDQo+ID4+PiArICogQHJlYWRfcmVnOiAgICAgICAgICAgICAgICAg
-ICAgICBGb3IgcmVhZGluZyBkYXRhIGZyb20gQ0FOIHJlZ2lzdGVycw0KPiA+Pj4gKyAqIEB3cml0
-ZV9yZWc6ICAgICAgICAgICAgICAgICAgICAgRm9yIHdyaXRpbmcgZGF0YSB0byBDQU4gcmVnaXN0
-ZXJzDQo+ID4+PiArICogQGRldjogICAgICAgICAgICAgICAgICAgTmV0d29yayBkZXZpY2UgZGF0
-YSBzdHJ1Y3R1cmUNCj4gPj4+ICsgKiBAcmVnX2Jhc2U6ICAgICAgICAgICAgICAgICAgICAgIElv
-cmVtYXBwZWQgYWRkcmVzcyB0byByZWdpc3RlcnMNCj4gPj4+ICsgKiBAaXJxX2ZsYWdzOiAgICAg
-ICAgICAgICAgICAgICAgIEZvciByZXF1ZXN0X2lycSgpDQo+ID4+PiArICogQGFwZXJjbGs6ICAg
-ICAgICAgICAgICAgICAgICAgICBQb2ludGVyIHRvIHN0cnVjdCBjbGsNCj4gPj4+ICsgKiBAZGV2
-Y2xrOiAgICAgICAgICAgICAgICAgICAgICAgIFBvaW50ZXIgdG8gc3RydWN0IGNsaw0KPiA+Pj4g
-KyAqLw0KPiA+Pj4gK3N0cnVjdCB4Y2FuX3ByaXYgew0KPiA+Pj4gKyAgIHN0cnVjdCBjYW5fcHJp
-diBjYW47DQo+ID4+PiArICAgdW5zaWduZWQgaW50IHR4X2hlYWQ7DQo+ID4+PiArICAgdW5zaWdu
-ZWQgaW50IHR4X3RhaWw7DQo+ID4+PiArICAgdTMyIHR4X21heDsNCj4gPj4gUGxlYXNlIG1ha2Ug
-aXQgYW4gdW5zaWduZWQgaW50LCB0b28uDQo+ID4+DQo+ID4gT2sNCj4gPg0KPiA+DQo+ID4+PiAr
-ICAgc3RydWN0IG5hcGlfc3RydWN0IG5hcGk7DQo+ID4+PiArICAgdTMyICgqcmVhZF9yZWcpKGNv
-bnN0IHN0cnVjdCB4Y2FuX3ByaXYgKnByaXYsIGVudW0geGNhbl9yZWcgcmVnKTsNCj4gPj4+ICsg
-ICB2b2lkICgqd3JpdGVfcmVnKShjb25zdCBzdHJ1Y3QgeGNhbl9wcml2ICpwcml2LCBlbnVtIHhj
-YW5fcmVnIHJlZywNCj4gPj4+ICsgICAgICAgICAgICAgICAgICAgdTMyIHZhbCk7DQo+ID4+PiAr
-ICAgc3RydWN0IG5ldF9kZXZpY2UgKmRldjsNCj4gPj4+ICsgICB2b2lkIF9faW9tZW0gKnJlZ19i
-YXNlOw0KPiA+Pj4gKyAgIHVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOw0KPiA+Pj4gKyAgIHN0cnVj
-dCBjbGsgKmFwZXJjbGs7DQo+ID4+PiArICAgc3RydWN0IGNsayAqZGV2Y2xrOw0KPiA+Pg0KPiA+
-PiBQbGVhc2UgcmVuYW1lIHRoZSBjbG9jayB2YXJpYWJsZXMgdG8gbWF0Y2ggdGhlIG5hbWVzIGlu
-IHRoZSBEVC4NCj4gPj4NCj4gPiBUaGUgY2xvY2sgbmFtZXMgYXJlIGRpZmZlcmVudCBmb3IgYXhp
-IENBTiBhbmQgQ0FOUFMgY2FzZS4NCj4gPiBTbyB3aWxsIG1ha2UgdGhlbSBhcyBidXNjbGsgYW5k
-IGRldmNsayBBcmUgeW91IG9rIHdpdGggdGhpcz8NCj4NCj4gV2h5IG5vdCAicmVmX2NsayIgYW5k
-ICJhcGVyX2NsayIgYXMgdXNlZCBpbiB0aGUgRFQ/DQo+DQpPbmUgb2YgdGhlIGNvbW1lbnRzIEkg
-Z290IGZyb20gdGhlIFNvcmVuKHNvcmVuYkB4aWxpbnguY29tKQ0KSXMgdGhlICBjbG9jay1uYW1l
-cyBtdXN0IG1hdGNoIHRoZSBkYXRhIHNoZWV0Lg0KSWYgSSBNb2RpZnkgdGhlIGNsb2NrIG5hbWVz
-IHRoZW4gaXQgaXMgZGlmZmVyZW50IG5hbWVzIGZvciBBWEkgQ0FODQphbmQgQ0FOUFMgY2FzZS4N
-Cg0KPiA+Pj4gK307DQo+ID4+PiArDQo+DQo+IFsuLi5dDQo+DQo+ID4+PiArLyoqDQo+ID4+PiAr
-ICogeGNhbl9jaGlwX3N0YXJ0IC0gVGhpcyB0aGUgZHJpdmVycyBzdGFydCByb3V0aW5lDQo+ID4+
-PiArICogQG5kZXY6ICBQb2ludGVyIHRvIG5ldF9kZXZpY2Ugc3RydWN0dXJlDQo+ID4+PiArICoN
-Cj4gPj4+ICsgKiBUaGlzIGlzIHRoZSBkcml2ZXJzIHN0YXJ0IHJvdXRpbmUuDQo+ID4+PiArICog
-QmFzZWQgb24gdGhlIFN0YXRlIG9mIHRoZSBDQU4gZGV2aWNlIGl0IHB1dHMNCj4gPj4+ICsgKiB0
-aGUgQ0FOIGRldmljZSBpbnRvIGEgcHJvcGVyIG1vZGUuDQo+ID4+PiArICoNCj4gPj4+ICsgKiBS
-ZXR1cm46IDAgb24gc3VjY2VzcyBhbmQgZmFpbHVyZSB2YWx1ZSBvbiBlcnJvciAgKi8gc3RhdGlj
-IGludA0KPiA+Pj4gK3hjYW5fY2hpcF9zdGFydChzdHJ1Y3QgbmV0X2RldmljZSAqbmRldikgew0K
-PiA+Pj4gKyAgIHN0cnVjdCB4Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihuZGV2KTsNCj4g
-Pj4+ICsgICB1MzIgZXJyOw0KPiA+Pj4gKyAgIHVuc2lnbmVkIGxvbmcgdGltZW91dDsNCj4gPj4+
-ICsNCj4gPj4+ICsgICAvKiBDaGVjayBpZiBpdCBpcyBpbiByZXNldCBtb2RlICovDQo+ID4+PiAr
-ICAgZXJyID0gc2V0X3Jlc2V0X21vZGUobmRldik7DQo+ID4+PiArICAgaWYgKGVyciA8IDApDQo+
-ID4+PiArICAgICAgICAgICByZXR1cm4gZXJyOw0KPiA+Pj4gKw0KPiA+Pj4gKyAgIGVyciA9IHhj
-YW5fc2V0X2JpdHRpbWluZyhuZGV2KTsNCj4gPj4+ICsgICBpZiAoZXJyIDwgMCkNCj4gPj4+ICsg
-ICAgICAgICAgIHJldHVybiBlcnI7DQo+ID4+PiArDQo+ID4+PiArICAgLyogRW5hYmxlIGludGVy
-cnVwdHMgKi8NCj4gPj4+ICsgICBwcml2LT53cml0ZV9yZWcocHJpdiwgWENBTl9JRVJfT0ZGU0VU
-LCBYQ0FOX0lOVFJfQUxMKTsNCj4gPj4+ICsNCj4gPj4+ICsgICAvKiBDaGVjayB3aGV0aGVyIGl0
-IGlzIGxvb3BiYWNrIG1vZGUgb3Igbm9ybWFsIG1vZGUgICovDQo+ID4+PiArICAgaWYgKHByaXYt
-PmNhbi5jdHJsbW9kZSAmIENBTl9DVFJMTU9ERV9MT09QQkFDSykNCj4gPj4+ICsgICAgICAgICAg
-IC8qIFB1dCBkZXZpY2UgaW50byBsb29wYmFjayBtb2RlICovDQo+ID4+PiArICAgICAgICAgICBw
-cml2LT53cml0ZV9yZWcocHJpdiwgWENBTl9NU1JfT0ZGU0VULA0KPiA+PiBYQ0FOX01TUl9MQkFD
-S19NQVNLKTsNCj4gPj4+ICsgICBlbHNlDQo+ID4+PiArICAgICAgICAgICAvKiBUaGUgZGV2aWNl
-IGlzIGluIG5vcm1hbCBtb2RlICovDQo+ID4+PiArICAgICAgICAgICBwcml2LT53cml0ZV9yZWco
-cHJpdiwgWENBTl9NU1JfT0ZGU0VULCAwKTsNCj4gPj4+ICsNCj4gPj4+ICsgICBpZiAocHJpdi0+
-Y2FuLnN0YXRlID09IENBTl9TVEFURV9TVE9QUEVEKSB7DQo+ID4+DQo+ID4+IFlvdXIgZGV2aWNl
-IGlzIGluIHN0b3BwZWQgbW9kZSwgYWRkIHlvdSBnbyB0aG91Z2ggc2V0X3Jlc2V0X21vZGUoKQ0K
-PiA+PiBhbHJlYWR5Lg0KPiA+DQo+ID4gV2lsbCByZW1vdmUgdGhpcyBpZiBjb25kaXRpb24gSSBw
-dXR0ZWQgdGhpcyBjb25kaXRpb24gaGVyZSBiZWNhdXNlIGluDQo+ID4gc2V0X3Jlc2V0X21vZGUg
-d2UgYXJlIHB1dHRpbmcgdGhlIERldmljZSBzdGF0ZSBpbiBTdG9wcGVkIHN0YXRlLg0KPg0KPiBT
-byB0aGUgZGV2aWNlIGlzIGluIENBTl9TVEFURV9TVE9QUEVELCBhcyB0aGlzIGNvZGUganVzdCB3
-ZW50IHRocm91Z2gNCj4gc2V0X3Jlc2V0X21vZGUoKSBzb21lIGxpbmVzIGFnby4gc28gaXQgbWFr
-ZXMgbm8gc2Vuc2UgdG8gY2hlY2sgaWYgaXQNCj4gKHN0aWxsKSBpcyAodGhlIGNvZGUgcnVucyBz
-ZXJpYWxpemVkIGhlcmUpLg0KPg0KDQpBZnRlciByZW1vdmluZyB0aGUgaWYgY29uZGl0aW9uIGFu
-ZCB0aGUgbGluZShDQU5fU1RBVEVfU1RPUFBFRCBmcm9tIHRoZSBzZXRfcmVzZXRfbW9kZSkNCnRo
-ZSBjb2RlIGZvciBjaGlwX3N0YXJ0IGlzIGJlbG93IEl0IGlzIGJldHRlciB0byBjaGVjayB3aGV0
-aGVyIGl0IGlzIHJlYWxseSBDb25maWd1cmVkIGluIHRoZSBsb29wYmFjayBvciBub3JtYWwgbW9k
-ZQ0KVGhhdCdzIHdoeSBrZXB0IHRoZSBsb29wcyBhcyBpdCBpcy4NCg0Kc3RhdGljIGludCB4Y2Fu
-X2NoaXBfc3RhcnQoc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYpDQp7DQogICAgICAgIHN0cnVjdCB4
-Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihuZGV2KTsNCiAgICAgICAgdTMyIGVycjsNCiAg
-ICAgICAgdW5zaWduZWQgbG9uZyB0aW1lb3V0Ow0KDQogICAgICAgIC8qIENoZWNrIGlmIGl0IGlz
-IGluIHJlc2V0IG1vZGUgKi8NCiAgICAgICAgZXJyID0gc2V0X3Jlc2V0X21vZGUobmRldik7DQog
-ICAgICAgIGlmIChlcnIgPCAwKQ0KICAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQoNCiAgICAg
-ICAgZXJyID0geGNhbl9zZXRfYml0dGltaW5nKG5kZXYpOw0KICAgICAgICBpZiAoZXJyIDwgMCkN
-CiAgICAgICAgICAgICAgICByZXR1cm4gZXJyOw0KDQogICAgICAgIC8qIEVuYWJsZSBpbnRlcnJ1
-cHRzICovDQogICAgICAgIHByaXYtPndyaXRlX3JlZyhwcml2LCBYQ0FOX0lFUl9PRkZTRVQsIFhD
-QU5fSU5UUl9BTEwpOw0KDQogICAgICAgIC8qIENoZWNrIHdoZXRoZXIgaXQgaXMgbG9vcGJhY2sg
-bW9kZSBvciBub3JtYWwgbW9kZSAgKi8NCiAgICAgICAgaWYgKHByaXYtPmNhbi5jdHJsbW9kZSAm
-IENBTl9DVFJMTU9ERV9MT09QQkFDSykNCiAgICAgICAgICAgICAgICAvKiBQdXQgZGV2aWNlIGlu
-dG8gbG9vcGJhY2sgbW9kZSAqLw0KICAgICAgICAgICAgICAgIHByaXYtPndyaXRlX3JlZyhwcml2
-LCBYQ0FOX01TUl9PRkZTRVQsIFhDQU5fTVNSX0xCQUNLX01BU0spOw0KICAgICAgICBlbHNlDQog
-ICAgICAgICAgICAgICAgLyogVGhlIGRldmljZSBpcyBpbiBub3JtYWwgbW9kZSAqLw0KICAgICAg
-ICAgICAgICAgIHByaXYtPndyaXRlX3JlZyhwcml2LCBYQ0FOX01TUl9PRkZTRVQsIDApOw0KDQog
-ICAgICAgIHByaXYtPndyaXRlX3JlZyhwcml2LCBYQ0FOX1NSUl9PRkZTRVQsIFhDQU5fU1JSX0NF
-Tl9NQVNLKTsNCiAgICAgICAgdGltZW91dCA9IGppZmZpZXMgKyBYQ0FOX1RJTUVPVVQ7DQogICAg
-ICAgIGlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfTE9PUEJBQ0spIHsNCiAg
-ICAgICAgICAgICAgICB3aGlsZSAoKHByaXYtPnJlYWRfcmVnKHByaXYsIFhDQU5fU1JfT0ZGU0VU
-KQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAmIFhDQU5fU1JfTEJBQ0tfTUFTSykg
-PT0gMCkgew0KICAgICAgICAgICAgICAgICAgICAgICAgaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywg
-dGltZW91dCkpIHsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmV0ZGV2X3dhcm4o
-bmRldiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidGltZWRvdXQg
-Zm9yIGxvb3BiYWNrIG1vZGVcbiIpOw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBy
-ZXR1cm4gLUVUSU1FRE9VVDsNCiAgICAgICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAg
-ICAgICAgICAgICAgIHVzbGVlcF9yYW5nZSg1MDAsIDEwMDAwKTsNCiAgICAgICAgICAgICAgICB9
-DQogICAgICAgIH0gZWxzZSB7DQogICAgICAgICAgICAgICAgd2hpbGUgKChwcml2LT5yZWFkX3Jl
-Zyhwcml2LCBYQ0FOX1NSX09GRlNFVCkNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-JiBYQ0FOX1NSX05PUk1BTF9NQVNLKSA9PSAwKSB7DQogICAgICAgICAgICAgICAgICAgICAgICBp
-ZiAodGltZV9hZnRlcihqaWZmaWVzLCB0aW1lb3V0KSkgew0KICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBuZXRkZXZfd2FybihuZGV2LA0KICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICJ0aW1lZG91dCBmb3Igbm9ybWFsIG1vZGVcbiIpOw0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVUSU1FRE9VVDsNCiAgICAgICAgICAgICAgICAg
-ICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgICAgIHVzbGVlcF9yYW5nZSg1MDAsIDEwMDAw
-KTsNCiAgICAgICAgICAgICAgICB9DQogICAgICAgIH0NCiAgICAgICAgbmV0ZGV2X2RiZyhuZGV2
-LCAic3RhdHVzOiN4JTA4eFxuIiwNCiAgICAgICAgICAgICAgICAgICAgICAgIHByaXYtPnJlYWRf
-cmVnKHByaXYsIFhDQU5fU1JfT0ZGU0VUKSk7DQoNCiAgICAgICAgcHJpdi0+Y2FuLnN0YXRlID0g
-Q0FOX1NUQVRFX0VSUk9SX0FDVElWRTsNCiAgICAgICAgcmV0dXJuIDA7DQp9DQoNCg0KUmVnYXJk
-cywNCktlZGFyLg0KDQo+ID4+DQo+ID4+PiArICAgICAgICAgICAvKiBFbmFibGUgWGlsaW54IENB
-TiAqLw0KPiA+Pj4gKyAgICAgICAgICAgcHJpdi0+d3JpdGVfcmVnKHByaXYsIFhDQU5fU1JSX09G
-RlNFVCwNCj4gPj4gWENBTl9TUlJfQ0VOX01BU0spOw0KPiA+Pj4gKyAgICAgICAgICAgcHJpdi0+
-Y2FuLnN0YXRlID0gQ0FOX1NUQVRFX0VSUk9SX0FDVElWRTsNCj4gPj4+ICsgICAgICAgICAgIHRp
-bWVvdXQgPSBqaWZmaWVzICsgWENBTl9USU1FT1VUOw0KPiA+Pj4gKyAgICAgICAgICAgaWYgKHBy
-aXYtPmNhbi5jdHJsbW9kZSAmIENBTl9DVFJMTU9ERV9MT09QQkFDSykgew0KPiA+Pj4gKyAgICAg
-ICAgICAgICAgICAgICB3aGlsZSAoKHByaXYtPnJlYWRfcmVnKHByaXYsIFhDQU5fU1JfT0ZGU0VU
-KQ0KPiA+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJiBYQ0FOX1NSX0xC
-QUNLX01BU0spID09IDApIHsNCj4gPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAo
-dGltZV9hZnRlcihqaWZmaWVzLCB0aW1lb3V0KSkgew0KPiA+Pj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgbmV0ZGV2X3dhcm4obmRldiwNCj4gPj4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInRpbWVkb3V0IGZvciBsb29wYmFjaw0KPiA+
-PiBtb2RlXG4iKTsNCj4gPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
-dHVybiAtRVRJTUVET1VUOw0KPiA+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4g
-Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICB1c2xlZXBfcmFuZ2UoNTAwLCAxMDAwMCk7
-DQo+ID4+PiArICAgICAgICAgICAgICAgICAgIH0NCj4gPj4+ICsgICAgICAgICAgIH0gZWxzZSB7
-DQo+ID4+PiArICAgICAgICAgICAgICAgICAgIHdoaWxlICgocHJpdi0+cmVhZF9yZWcocHJpdiwg
-WENBTl9TUl9PRkZTRVQpDQo+ID4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAmIFhDQU5fU1JfTk9STUFMX01BU0spID09IDApIHsNCj4gPj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBpZiAodGltZV9hZnRlcihqaWZmaWVzLCB0aW1lb3V0KSkgew0KPiA+Pj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmV0ZGV2X3dhcm4obmRldiwNCj4gPj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInRpbWVkb3V0IGZv
-ciBub3JtYWwNCj4gPj4gbW9kZVxuIik7DQo+ID4+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICByZXR1cm4gLUVUSU1FRE9VVDsNCj4gPj4+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB9DQo+ID4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgdXNsZWVwX3Jhbmdl
-KDUwMCwgMTAwMDApOw0KPiA+Pj4gKyAgICAgICAgICAgICAgICAgICB9DQo+ID4+PiArICAgICAg
-ICAgICB9DQo+ID4+PiArICAgICAgICAgICBuZXRkZXZfZGJnKG5kZXYsICJzdGF0dXM6I3glMDh4
-XG4iLA0KPiA+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIHByaXYtPnJlYWRfcmVnKHBy
-aXYsIFhDQU5fU1JfT0ZGU0VUKSk7DQo+ID4+PiArICAgfQ0KPiA+Pj4gKyAgIHByaXYtPmNhbi5z
-dGF0ZSA9IENBTl9TVEFURV9FUlJPUl9BQ1RJVkU7DQo+ID4+PiArICAgcmV0dXJuIDA7DQo+ID4+
-PiArfQ0KPg0KPiBNYXJjDQo+DQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAg
-ICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXgg
-U29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRy
-ZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1
-NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVu
-Z3V0cm9uaXguZGUgICB8DQoNCg0KDQpUaGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJl
-IGludGVuZGVkIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIG5hbWVkIHJlY2lwaWVudChzKSBhbmQg
-Y29udGFpbihzKSBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvcHJpZXRh
-cnksIHByaXZpbGVnZWQgb3IgY29weXJpZ2h0ZWQgdW5kZXIgYXBwbGljYWJsZSBsYXcuIElmIHlv
-dSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIGRvIG5vdCByZWFkLCBjb3B5LCBvciBm
-b3J3YXJkIHRoaXMgZW1haWwgbWVzc2FnZSBvciBhbnkgYXR0YWNobWVudHMuIERlbGV0ZSB0aGlz
-IGVtYWlsIG1lc3NhZ2UgYW5kIGFueSBhdHRhY2htZW50cyBpbW1lZGlhdGVseS4NCg0KCgo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--s6hbhFM2k7JuRJMTdBPESiGGTKRN0GCnw
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 03/11/2014 03:08 PM, Appana Durga Kedareswara Rao wrote:
+
+>>>>> +   struct napi_struct napi;
+>>>>> +   u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg=
+);
+>>>>> +   void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg r=
+eg,
+>>>>> +                   u32 val);
+>>>>> +   struct net_device *dev;
+>>>>> +   void __iomem *reg_base;
+>>>>> +   unsigned long irq_flags;
+>>>>> +   struct clk *aperclk;
+>>>>> +   struct clk *devclk;
+>>>>
+>>>> Please rename the clock variables to match the names in the DT.
+>>>>
+>>> The clock names are different for axi CAN and CANPS case.
+>>> So will make them as busclk and devclk Are you ok with this?
+>>
+>> Why not "ref_clk" and "aper_clk" as used in the DT?
+>>
+> One of the comments I got from the Soren(sorenb-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org)
+> Is the  clock-names must match the data sheet.
+> If I Modify the clock names then it is different names for AXI CAN
+> and CANPS case.
+
+Sorry, my faul, I thought the names are already these from the
+datasheet. As S=C3=B6ren pointed out please use 's_axi_aclk' and
+'can_clk' for the DT and for the the variable names in the private
+struct, too.
+
+The 'official' name of the ip core seems to be axi_can, should we rename
+the driver? I suspect, that Michal wants to keep xilinx in the name for
+marketing reasons :P
+
+[...]
+
+>>>>> +/**
+>>>>> + * xcan_chip_start - This the drivers start routine
+>>>>> + * @ndev:  Pointer to net_device structure
+>>>>> + *
+>>>>> + * This is the drivers start routine.
+>>>>> + * Based on the State of the CAN device it puts
+>>>>> + * the CAN device into a proper mode.
+>>>>> + *
+>>>>> + * Return: 0 on success and failure value on error  */ static int
+>>>>> +xcan_chip_start(struct net_device *ndev) {
+>>>>> +   struct xcan_priv *priv =3D netdev_priv(ndev);
+>>>>> +   u32 err;
+>>>>> +   unsigned long timeout;
+>>>>> +
+>>>>> +   /* Check if it is in reset mode */
+>>>>> +   err =3D set_reset_mode(ndev);
+>>>>> +   if (err < 0)
+>>>>> +           return err;
+>>>>> +
+>>>>> +   err =3D xcan_set_bittiming(ndev);
+>>>>> +   if (err < 0)
+>>>>> +           return err;
+>>>>> +
+>>>>> +   /* Enable interrupts */
+>>>>> +   priv->write_reg(priv, XCAN_IER_OFFSET, XCAN_INTR_ALL);
+>>>>> +
+>>>>> +   /* Check whether it is loopback mode or normal mode  */
+>>>>> +   if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+>>>>> +           /* Put device into loopback mode */
+>>>>> +           priv->write_reg(priv, XCAN_MSR_OFFSET,
+>>>> XCAN_MSR_LBACK_MASK);
+>>>>> +   else
+>>>>> +           /* The device is in normal mode */
+>>>>> +           priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
+>>>>> +
+>>>>> +   if (priv->can.state =3D=3D CAN_STATE_STOPPED) {
+>>>>
+>>>> Your device is in stopped mode, add you go though set_reset_mode()
+>>>> already.
+>>>
+>>> Will remove this if condition I putted this condition here because in=
+
+>>> set_reset_mode we are putting the Device state in Stopped state.
+>>
+>> So the device is in CAN_STATE_STOPPED, as this code just went through
+>> set_reset_mode() some lines ago. so it makes no sense to check if it
+>> (still) is (the code runs serialized here).
+>>
+>=20
+> After removing the if condition and the line(CAN_STATE_STOPPED from
+> the set_reset_mode) the code for chip_start is below It is better to
+> check whether it is really Configured in the loopback or normal mode=20
+> That's why kept the loops as it is.
+>=20
+> static int xcan_chip_start(struct net_device *ndev)
+> {
+>         struct xcan_priv *priv =3D netdev_priv(ndev);
+>         u32 err;
+>         unsigned long timeout;
+>=20
+>         /* Check if it is in reset mode */
+>         err =3D set_reset_mode(ndev);
+>         if (err < 0)
+>                 return err;
+>=20
+>         err =3D xcan_set_bittiming(ndev);
+>         if (err < 0)
+>                 return err;
+>=20
+>         /* Enable interrupts */
+>         priv->write_reg(priv, XCAN_IER_OFFSET, XCAN_INTR_ALL);
+>=20
+>         /* Check whether it is loopback mode or normal mode  */
+>         if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+>                 /* Put device into loopback mode */
+>                 priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_LBACK_M=
+ASK);
+>         else
+>                 /* The device is in normal mode */
+>                 priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
+
+What about using two temp variables? Like this (untested, though):
+
+	u32 reg_msg;
+	u32 reg_sr_mask;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
+		reg_msr =3D XCAN_MSR_LBACK_MASK;
+		reg_sr_mask =3D XCAN_SR_LBACK_MASK;
+	} else {
+		reg_msr =3D 0x0;
+		reg_sr_mask =3D XCAN_SR_NORMAL_MASK;
+	}
+
+	priv->write_reg(priv, XCAN_MSR_OFFSET, reg_msr);
+	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
+
+	timeout =3D jiffies + XCAN_TIMEOUT;
+	while (!(priv->read_reg(priv, XCAN_SR_OFFSET) & reg_sr_mask)) {
+		if (time_after(jiffies, timeout)) {
+			netdev_warn(ndev, "time out waiting for correct mode\n")
+			return -ETIMEDOUT;
+			}
+		usleep_range(500, 10000);
+	}
+
+>=20
+>         priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
+>         timeout =3D jiffies + XCAN_TIMEOUT;
+>         if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
+>                 while ((priv->read_reg(priv, XCAN_SR_OFFSET)
+>                                 & XCAN_SR_LBACK_MASK) =3D=3D 0) {
+>                         if (time_after(jiffies, timeout)) {
+>                                 netdev_warn(ndev,
+>                                         "timedout for loopback mode\n")=
+;
+>                                 return -ETIMEDOUT;
+>                         }
+>                         usleep_range(500, 10000);
+>                 }
+>         } else {
+>                 while ((priv->read_reg(priv, XCAN_SR_OFFSET)
+>                                 & XCAN_SR_NORMAL_MASK) =3D=3D 0) {
+>                         if (time_after(jiffies, timeout)) {
+>                                 netdev_warn(ndev,
+>                                         "timedout for normal mode\n");
+>                                 return -ETIMEDOUT;
+>                         }
+>                         usleep_range(500, 10000);
+>                 }
+>         }
+>         netdev_dbg(ndev, "status:#x%08x\n",
+>                         priv->read_reg(priv, XCAN_SR_OFFSET));
+>=20
+>         priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>         return 0;
+> }
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--s6hbhFM2k7JuRJMTdBPESiGGTKRN0GCnw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMfHjAACgkQjTAFq1RaXHPucACgklJJ6wu+OQoyQs41gCD9WM/t
+uW8AnAmGAiSzSZZftZT9G3wZ2KY0N4xg
+=EpQl
+-----END PGP SIGNATURE-----
+
+--s6hbhFM2k7JuRJMTdBPESiGGTKRN0GCnw--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
