@@ -1,68 +1,137 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Populating netdev::dev_id for udev discrimination
-Date: Tue, 11 Mar 2014 20:45:56 +0100
-Message-ID: <531F67F4.20907@pengutronix.de>
-References: <1394294420.3356.15.camel@NREC-014563> <531CBB6F.7090803@pengutronix.de> <531D6D3B.9020900@hartkopp.net> <20140310104650.GA456@vandijck-laurijssen.be> <531D9B6F.9010603@pengutronix.de> <531DAD8F.7090602@hartkopp.net> <531F5F14.50302@pengutronix.de> <531F66F8.2060506@hartkopp.net>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: Stuck vcan
+Date: Tue, 11 Mar 2014 13:37:32 -0700
+Message-ID: <CANGgnMbtfaowdGjVRbQ9L8TJBKmbAaNxjApPsc=JDM7e28U8LA@mail.gmail.com>
+References: <CANGgnMZLZ+Uhdjpw0QC1ER74FFyot6sjSpcL0Q+HK7ydQTynsg@mail.gmail.com>
+	<531EB5A4.1090302@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="wnNOAKkAlGvM5vI3vgQIbvLl9fwjsTPN6"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:32934 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754341AbaCKTqE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Mar 2014 15:46:04 -0400
-In-Reply-To: <531F66F8.2060506@hartkopp.net>
+Received: from mail-ie0-f172.google.com ([209.85.223.172]:52715 "EHLO
+	mail-ie0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755804AbaCKUhd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Mar 2014 16:37:33 -0400
+Received: by mail-ie0-f172.google.com with SMTP id as1so9569269iec.31
+        for <linux-can@vger.kernel.org>; Tue, 11 Mar 2014 13:37:33 -0700 (PDT)
+In-Reply-To: <531EB5A4.1090302@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wnNOAKkAlGvM5vI3vgQIbvLl9fwjsTPN6
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 03/11/2014 08:41 PM, Oliver Hartkopp wrote:
->>> FYI:
->>>
->>> Tested with PEAK PCAN USB pro and EMS PCMCIA (both with two channels)=
- and the
->>> dev_id works like expected (first channel dev_id =3D 0x0, second chan=
-nel 0x1).
+On Tue, Mar 11, 2014 at 12:05 AM, Oliver Hartkopp
+<socketcan@hartkopp.net> wrote:
+> Hi Austin,
+>
+>
+>
+> On 11.03.2014 01:22, Austin Schuh wrote:
+>
+>> $ Linux vpc3 3.10-3-rt-amd64 #1 SMP PREEMPT RT Debian 3.10.11-1
+>
+> Oh, one of these -rt kernels again %-)
+>
+>> Mar 10 16:49:12 vpc3 kernel: [356480.638351] Dead loop on virtual device
+>> vcan2, fix it urgently!
+>
+> The vcan driver usually does not set the IFF_ECHO flag:
 >>
->> Can I add your Tested-by for the Peak and the EMS?
->>
->=20
-> Oh, yes.
->=20
-> At least for these two adapters I checked it myself.
+>> austin[4262] vpc3 ~
+>> $ ifconfig vcan2
+>> vcan2     Link encap:UNSPEC  HWaddr
+>> 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+>>           UP RUNNING NOARP  MTU:16  Metric:1
+>                             ^^
+> Which would be indicated here then.
+>
+> Therefore the 'shortcut' in af_can.c is used to provide the echo:
+>
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/net/can/af_can.c#n283
+>
+> which increases performance but may lead to funny effects as the sending
+> process leads to a reception event which is probably already handled by the
+> receiver when the write() of the sender returns.
+>
+> Two things I would suggest:
+>
+> 1. Let the vcan really handle the frames by enabling IFF_ECHO
+> 2. Add a queue (queue length != 0) to the vcan interface
+>
+> For 1: Insert the vcan module with the parameter echo=1, e.g.
+>
+> # rmmod vcan
+> # modprobe vcan echo=1
+> # ip link add type vcan
+> # ip link show vcan0
+> 26: vcan0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default
+>     link/can
+>
+> And see if this already fixes your problem ('ECHO' is enabled here).
+>
+> For 2: Add a queue length to your vcan with
+>
+> # ip link set vcan0 txqueuelen 10
+> # ip link show vcan0
+> 26: vcan0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
+>     link/can
+>
+> This urges the network subsystem to used the normal packet flow, as a queue
+> length of zero is only feasible for software devices like loopback / vcan ...
+>
+> Please give a feedback if it solves the problem in your -rt kernel.
+>
+> Best regards,
+> Oliver
+>
 
-I've added:
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net> [PEAK PCAN-USB pro an=
-d EMS PCMCIA]
+Hi Oliver,
 
-Marc
+I'm not trying to cause problems ;)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Neither of those helped.
 
+# ifconfig vcan0
+vcan0     Link encap:UNSPEC  HWaddr
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:428406 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:428406 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:3427248 (3.2 MiB)  TX bytes:3427248 (3.2 MiB)
 
---wnNOAKkAlGvM5vI3vgQIbvLl9fwjsTPN6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+# ip link show vcan0
+17: vcan0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc noqueue state UNKNOWN
+mode DEFAULT
+    link/can
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+# ifconfig vcan0
+vcan0     Link encap:UNSPEC  HWaddr
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:1400094 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1400094 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:10
+          RX bytes:11200752 (10.6 MiB)  TX bytes:11200752 (10.6 MiB)
 
-iEYEARECAAYFAlMfZ/QACgkQjTAFq1RaXHMxPACePkNhFPiS+ZEtJsknAgo1GaQn
-WlMAmgLTGxt59b125Pbn4WkGySf4JdO5
-=sCxa
------END PGP SIGNATURE-----
+# ip link show vcan0
+17: vcan0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc noqueue state UNKNOWN
+mode DEFAULT qlen 10
+    link/can
 
---wnNOAKkAlGvM5vI3vgQIbvLl9fwjsTPN6--
+Both times, I get the following.
+
+Mar 11 13:28:58 aschuh-peloton kernel: [96229.460901] Dead loop on
+virtual device vcan0, fix it urgently!
+Mar 11 13:28:59 aschuh-peloton kernel: [96230.313875] Dead loop on
+virtual device vcan0, fix it urgently!
+Mar 11 13:28:59 aschuh-peloton kernel: [96230.319494] Dead loop on
+virtual device vcan0, fix it urgently!
+Mar 11 13:29:00 aschuh-peloton kernel: [96231.072617] Dead loop on
+virtual device vcan0, fix it urgently!
+
+Luckily, it is easy to reproduce.  I have some trivial code which
+sends out 10,000 msgs/sec on the vcan.  I run 3+ copies of the code on
+a dual core machine with hyperthreads enabled.  More parallel sends
+should cause it to occur more frequently.
+
+Austin
