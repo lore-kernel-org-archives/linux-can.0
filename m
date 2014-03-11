@@ -1,137 +1,223 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH v5] can: xilinx CAN controller support.
-Date: Tue, 11 Mar 2014 12:35:13 +0000
-Message-ID: <21dba33d-9def-43e1-becd-335f6cb5fd83@CO9EHSMHS011.ehs.local>
-References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
- <CAL_JsqL3V7Gmkx5MoAhzwbM8Po6QURUY+g3ytxs+H_u-FLR6SQ@mail.gmail.com>
- <531DD8C3.5050006@xilinx.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v5] can: xilinx CAN controller support.
+Date: Tue, 11 Mar 2014 13:48:54 +0100
+Message-ID: <531F0636.4050608@pengutronix.de>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local> <531DD2C4.5060109@pengutronix.de> <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <531DD8C3.5050006-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Michal Simek <michals-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, netdev <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="suD0cqq8XrJJSQR2n7FFKTRB1voTPGq4L"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41436 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752496AbaCKMtL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Mar 2014 08:49:11 -0400
+In-Reply-To: <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Michal Simek <michals@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "fengguang.wu@intel.com" <fengguang.wu@intel.com>
 
-Hi Michal,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--suD0cqq8XrJJSQR2n7FFKTRB1voTPGq4L
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Michal Simek [mailto:michal.simek-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org]
-> Sent: Monday, March 10, 2014 8:53 PM
-> To: Rob Herring
-> Cc: Appana Durga Kedareswara Rao; Wolfgang Grandegger; Marc Kleine-
-> Budde; Michal Simek; Grant Likely; Rob Herring; linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
-> netdev; linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org; linux-
-> kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; Appana Durga
-> Kedareswara Rao
-> Subject: Re: [PATCH v5] can: xilinx CAN controller support.
->
-> On 03/10/2014 04:15 PM, Rob Herring wrote:
-> > On Tue, Mar 4, 2014 at 7:20 AM, Kedareswara rao Appana
-> > <appana.durga.rao-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org> wrote:
-> >> This patch adds xilinx CAN controller support.
-> >> This driver supports both ZYNQ CANPS and Soft IP AXI CAN controller.
-> >>
-> >> Signed-off-by: Kedareswara rao Appana <appanad-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
-> >> ---
-> >> This patch is rebased on the 3.14 rc5 kernel.
-> >> Changes for v5:
-> >> - Updated the driver with the review comments.
-> >> - Remove the check for the tx fifo full interrupt condition
-> >>   form Tx interrupt routine as we are checking it in the _xmit
-> >>   routine.
-> >> - Clearing the txok interrupt in the tx interrupt routine for
-> >>   every Tx can frame.
-> >> Changes for v4:
-> >> - Added check for the tx fifo full interrupt condition in
-> >>   Tx interrupt routine.
-> >> - Added be iohelper functions.
-> >> - Moved the clock enable/disable to probe/remove because of
-> >>   Added big endian support for AXI CAN controller case(reading
-> >>   a register during probe for that we need to enable clock).
-> >> Changes for v3:
-> >> - Updated the driver with the review comments.
-> >> - Modified the tranmit logic as per Marc suggestion.
-> >> - Enabling the clock when the interface is up to reduce the
-> >>   Power consumption.
-> >> Changes for v2:
-> >> - Updated with the review comments.
-> >> - Removed the unnecessary debug prints.
-> >> - include tx,rx fifo depths in ZYNQ CANPS case also.
-> >> ---
-> >>  .../devicetree/bindings/net/can/xilinx_can.txt     |   45 +
-> >>  drivers/net/can/Kconfig                            |    7 +
-> >>  drivers/net/can/Makefile                           |    1 +
-> >>  drivers/net/can/xilinx_can.c                       | 1195 ++++++++++++++++++++
-> >>  4 files changed, 1248 insertions(+), 0 deletions(-)  create mode
-> >> 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> >>  create mode 100644 drivers/net/can/xilinx_can.c
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> >> b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> >> new file mode 100644
-> >> index 0000000..0e57103
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> >> @@ -0,0 +1,45 @@
-> >> +Xilinx Axi CAN/Zynq CANPS controller Device Tree Bindings
-> >> +---------------------------------------------------------
-> >> +
-> >> +Required properties:
-> >> +- compatible           : Should be "xlnx,zynq-can-1.00.a" for Zynq CAN
-> >> +                         controllers and "xlnx,axi-can-1.00.a" for Axi CAN
-> >> +                         controllers.
-> >> +- reg                  : Physical base address and size of the Axi CAN/Zynq
-> >> +                         CANPS registers map.
-> >> +- interrupts           : Property with a value describing the interrupt
-> >> +                         number.
-> >> +- interrupt-parent     : Must be core interrupt controller
-> >> +- clock-names          : List of input clock names - "ref_clk", "aper_clk"
-> >> +                         (See clock bindings for details. Two clocks are
-> >> +                          required for Zynq CAN. For Axi CAN
-> >> +                          case it is one(ref_clk)).
-> >> +- clocks               : Clock phandles (see clock bindings for details).
-> >> +- tx-fifo-depth                : Can Tx fifo depth.
-> >> +- rx-fifo-depth                : Can Rx fifo depth.
-> >> +
-> >> +
-> >> +Example:
-> >> +
-> >> +For Zynq CANPS Dts file:
-> >> +       zynq_can_0: zynq-can@e0008000 {
-> >
-> > The preferred node name convention is to use the type of device. There
-> > is no standard in this case, but I would use just "can@...".
-> >
-> > Otherwise, for the binding:
-> >
-> > Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
->
-> Thanks Rob for your ACK.
->
-> Kedar: You have got more things to change from Marc that's why please
-> change this too.
->
-Thanks Rob for the ACk
-Michal@  I  will do
+On 03/11/2014 01:34 PM, Appana Durga Kedareswara Rao wrote:
 
-Regards,
-Kedar.
+>>> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig index
+>>> 9e7d95d..b180239 100644
+>>> --- a/drivers/net/can/Kconfig
+>>> +++ b/drivers/net/can/Kconfig
+>>> @@ -125,6 +125,13 @@ config CAN_GRCAN
+>>>       endian syntheses of the cores would need some modifications on
+>>>       the hardware level to work.
+>>>
+>>> +config CAN_XILINXCAN
+>>> +   tristate "Xilinx CAN"
+>>> +   depends on ARCH_ZYNQ || MICROBLAZE
+>>
+>> Is Zynq multiarch already?
+> Discussions are going on this
+> So the final thing that Fengguang ( fengguang.wu@intel.com)
+> Proposed is
+>         config CAN_XILINX
+>         tristate "Xilinx CAN"
+>         depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+>         depends on COMMON_CLK && HAS_MMIO  # whatever you need for othe=
+r architectures
+
+> Are you Ok for this?
+
+You have to fill the 2nd depends on with some sane values, though.
+
+[...]
+
+>>> +/**
+>>> + * struct xcan_priv - This definition define CAN driver instance
+>>> + * @can:                   CAN private data structure.
+>>> + * @tx_head:                       Tx CAN packets ready to send on t=
+he
+>> queue
+>>> + * @tx_tail:                       Tx CAN packets successfully sende=
+d on the
+>> queue
+>>> + * @tx_max:                        Maximum number packets the driver=
+ can
+>> send
+>>> + * @napi:                  NAPI structure
+>>> + * @read_reg:                      For reading data from CAN registe=
+rs
+>>> + * @write_reg:                     For writing data to CAN registers=
+
+>>> + * @dev:                   Network device data structure
+>>> + * @reg_base:                      Ioremapped address to registers
+>>> + * @irq_flags:                     For request_irq()
+>>> + * @aperclk:                       Pointer to struct clk
+>>> + * @devclk:                        Pointer to struct clk
+>>> + */
+>>> +struct xcan_priv {
+>>> +   struct can_priv can;
+>>> +   unsigned int tx_head;
+>>> +   unsigned int tx_tail;
+>>> +   u32 tx_max;
+>> Please make it an unsigned int, too.
+>>
+> Ok
+>=20
+>=20
+>>> +   struct napi_struct napi;
+>>> +   u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg);=
+
+>>> +   void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg=
+,
+>>> +                   u32 val);
+>>> +   struct net_device *dev;
+>>> +   void __iomem *reg_base;
+>>> +   unsigned long irq_flags;
+>>> +   struct clk *aperclk;
+>>> +   struct clk *devclk;
+>>
+>> Please rename the clock variables to match the names in the DT.
+>>
+> The clock names are different for axi CAN and CANPS case.
+> So will make them as busclk and devclk
+> Are you ok with this?
+
+Why not "ref_clk" and "aper_clk" as used in the DT?
+
+>>> +};
+>>> +
+
+[...]
+
+>>> +/**
+>>> + * xcan_chip_start - This the drivers start routine
+>>> + * @ndev:  Pointer to net_device structure
+>>> + *
+>>> + * This is the drivers start routine.
+>>> + * Based on the State of the CAN device it puts
+>>> + * the CAN device into a proper mode.
+>>> + *
+>>> + * Return: 0 on success and failure value on error  */ static int
+>>> +xcan_chip_start(struct net_device *ndev) {
+>>> +   struct xcan_priv *priv =3D netdev_priv(ndev);
+>>> +   u32 err;
+>>> +   unsigned long timeout;
+>>> +
+>>> +   /* Check if it is in reset mode */
+>>> +   err =3D set_reset_mode(ndev);
+>>> +   if (err < 0)
+>>> +           return err;
+>>> +
+>>> +   err =3D xcan_set_bittiming(ndev);
+>>> +   if (err < 0)
+>>> +           return err;
+>>> +
+>>> +   /* Enable interrupts */
+>>> +   priv->write_reg(priv, XCAN_IER_OFFSET, XCAN_INTR_ALL);
+>>> +
+>>> +   /* Check whether it is loopback mode or normal mode  */
+>>> +   if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+>>> +           /* Put device into loopback mode */
+>>> +           priv->write_reg(priv, XCAN_MSR_OFFSET,
+>> XCAN_MSR_LBACK_MASK);
+>>> +   else
+>>> +           /* The device is in normal mode */
+>>> +           priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
+>>> +
+>>> +   if (priv->can.state =3D=3D CAN_STATE_STOPPED) {
+>>
+>> Your device is in stopped mode, add you go though set_reset_mode()
+>> already.
+>=20
+> Will remove this if condition I putted this condition here because in s=
+et_reset_mode we are putting the
+> Device state in Stopped state.
+
+So the device is in CAN_STATE_STOPPED, as this code just went through
+set_reset_mode() some lines ago. so it makes no sense to check if it
+(still) is (the code runs serialized here).
+
+>>
+>>> +           /* Enable Xilinx CAN */
+>>> +           priv->write_reg(priv, XCAN_SRR_OFFSET,
+>> XCAN_SRR_CEN_MASK);
+>>> +           priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>>> +           timeout =3D jiffies + XCAN_TIMEOUT;
+>>> +           if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
+>>> +                   while ((priv->read_reg(priv, XCAN_SR_OFFSET)
+>>> +                                   & XCAN_SR_LBACK_MASK) =3D=3D 0) {=
+
+>>> +                           if (time_after(jiffies, timeout)) {
+>>> +                                   netdev_warn(ndev,
+>>> +                                           "timedout for loopback
+>> mode\n");
+>>> +                                   return -ETIMEDOUT;
+>>> +                           }
+>>> +                           usleep_range(500, 10000);
+>>> +                   }
+>>> +           } else {
+>>> +                   while ((priv->read_reg(priv, XCAN_SR_OFFSET)
+>>> +                                   & XCAN_SR_NORMAL_MASK) =3D=3D 0) =
+{
+>>> +                           if (time_after(jiffies, timeout)) {
+>>> +                                   netdev_warn(ndev,
+>>> +                                           "timedout for normal
+>> mode\n");
+>>> +                                   return -ETIMEDOUT;
+>>> +                           }
+>>> +                           usleep_range(500, 10000);
+>>> +                   }
+>>> +           }
+>>> +           netdev_dbg(ndev, "status:#x%08x\n",
+>>> +                           priv->read_reg(priv, XCAN_SR_OFFSET));
+>>> +   }
+>>> +   priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>>> +   return 0;
+>>> +}
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> Thanks,
-> Michal
->
->
+--suD0cqq8XrJJSQR2n7FFKTRB1voTPGq4L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
+iEYEARECAAYFAlMfBjYACgkQjTAFq1RaXHO3HgCdFPWt6PHc7gid8sZPzLaNhqLd
+sZwAn2WC+wU7uWOFt3SmS65rFhhX9zpL
+=DirU
+-----END PGP SIGNATURE-----
 
-This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--suD0cqq8XrJJSQR2n7FFKTRB1voTPGq4L--
