@@ -1,88 +1,118 @@
-From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
-Subject: Re: [PATCH v5] can: xilinx CAN controller support.
-Date: Wed, 12 Mar 2014 09:18:15 -0700
-Message-ID: <baa90f80-fe7b-49f1-a482-8f173793b5dd@CH1EHSMHS043.ehs.local>
-References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
- <531DD2C4.5060109@pengutronix.de>
- <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local>
- <531F0636.4050608@pengutronix.de>
- <a99feda0-7463-4781-bb73-90b99e65b014@CO9EHSMHS028.ehs.local>
- <531F1E30.4040203@pengutronix.de>
- <5320348B.7030401@monstr.eu>
+From: <tthayer.linux@gmail.com>
+Subject: [PATCH] net: can: c_can_platform: Add D_CAN Module RAM Init
+Date: Wed, 12 Mar 2014 18:01:27 -0500
+Message-ID: <1394665287-9687-2-git-send-email-tthayer.linux@gmail.com>
+References: <1394665287-9687-1-git-send-email-tthayer.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5320348B.7030401@monstr.eu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Michal Simek <monstr@monstr.eu>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Michal Simek <michals@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "fengguang.wu@intel.com" <fengguang.wu@intel.com>, Soren Brinkmann <sorenb@xilinx.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2on0117.outbound.protection.outlook.com ([65.55.169.117]:61178
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752254AbaCLXOK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 12 Mar 2014 19:14:10 -0400
+In-Reply-To: <1394665287-9687-1-git-send-email-tthayer.linux@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, anilkumar@ti.com
+Cc: linux-can@vger.kernel.org, Thor Thayer <tthayer@altera.com>, Thor Thayer <tthayer.linux@gmail.com>
 
-On Wed, 2014-03-12 at 11:18AM +0100, Michal Simek wrote:
-> Hi guys,
->=20
->=20
-> On 03/11/2014 03:31 PM, Marc Kleine-Budde wrote:
-> > On 03/11/2014 03:08 PM, Appana Durga Kedareswara Rao wrote:
-> >=20
-> >>>>>> +   struct napi_struct napi;
-> >>>>>> +   u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_re=
-g reg);
-> >>>>>> +   void (*write_reg)(const struct xcan_priv *priv, enum xcan_=
-reg reg,
-> >>>>>> +                   u32 val);
-> >>>>>> +   struct net_device *dev;
-> >>>>>> +   void __iomem *reg_base;
-> >>>>>> +   unsigned long irq_flags;
-> >>>>>> +   struct clk *aperclk;
-> >>>>>> +   struct clk *devclk;
-> >>>>>
-> >>>>> Please rename the clock variables to match the names in the DT.
-> >>>>>
-> >>>> The clock names are different for axi CAN and CANPS case.
-> >>>> So will make them as busclk and devclk Are you ok with this?
-> >>>
-> >>> Why not "ref_clk" and "aper_clk" as used in the DT?
-> >>>
-> >> One of the comments I got from the Soren(sorenb@xilinx.com)
-> >> Is the  clock-names must match the data sheet.
-> >> If I Modify the clock names then it is different names for AXI CAN
-> >> and CANPS case.
-> >=20
-> > Sorry, my faul, I thought the names are already these from the
-> > datasheet. As S=C3=B6ren pointed out please use 's_axi_aclk' and
-> > 'can_clk' for the DT and for the the variable names in the private
-> > struct, too.
-> >=20
-> > The 'official' name of the ip core seems to be axi_can, should we r=
-ename
-> > the driver? I suspect, that Michal wants to keep xilinx in the name=
- for
-> > marketing reasons :P
->=20
-> I hope that I am not moving to marketing position.  :-)
->=20
-> opb_can, plb_can, axi_can, amba_can are all valid options for this IP=
-=2E
->=20
-> Maybe in future Xilinx will decide to use different bus and then will=
- just move
-> all current soft IPs to new bus and drivers will be compatible.
-> This is exactly what happened when Xilinx moved from OPB to PLB and t=
-hen
-> from PLB to AXI.
-> That's why I think in general having bus name in name doesn't fit for=
- our case.
->=20
-> The same is for clock name which has bus name in it.
-> For PLB it was called SPLB_Clk and I don't have OPB version but
-> at least standalone driver points to OPB version where I believe
-> SPLB_Clk name was not used.
+From: Thor Thayer <tthayer@altera.com>
 
-Okay, then 'bus_clk' would probably be fine. That is hopefully obvious
-enough to be mapped to a clock input of that IP, while being generic
-enough to allow other buses as well.
+The D_CAN driver was written to support the TI D_CAN implementation
+which placed the D_CAN RAM reset in a separate register. In the
+standard D_CAN module case the RAM Init is in the D_CAN module so
+handle the RAM Init differently.
 
-	S=C3=B6ren
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: AnilKumar Ch <anilkumar@ti.com>
+Cc: linux-can@vger.kernel.org
+Signed-off-by: Thor Thayer <tthayer.linux@gmail.com>
+---
+ drivers/net/can/c_can/c_can.h          |    3 +++
+ drivers/net/can/c_can/c_can_platform.c |   21 ++++++++++++++++++---
+ 2 files changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index d2e1c21..be2dc65 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -61,6 +61,7 @@ enum reg {
+ 	C_CAN_INTPND2_REG,
+ 	C_CAN_MSGVAL1_REG,
+ 	C_CAN_MSGVAL2_REG,
++	C_CAN_FUNCTION_REG,
+ };
+ 
+ static const u16 reg_map_c_can[] = {
+@@ -112,6 +113,7 @@ static const u16 reg_map_d_can[] = {
+ 	[C_CAN_BRPEXT_REG]	= 0x0E,
+ 	[C_CAN_INT_REG]		= 0x10,
+ 	[C_CAN_TEST_REG]	= 0x14,
++	[C_CAN_FUNCTION_REG]	= 0x18,
+ 	[C_CAN_TXRQST1_REG]	= 0x88,
+ 	[C_CAN_TXRQST2_REG]	= 0x8A,
+ 	[C_CAN_NEWDAT1_REG]	= 0x9C,
+@@ -172,6 +174,7 @@ struct c_can_priv {
+ 	u32 __iomem *raminit_ctrlreg;
+ 	unsigned int instance;
+ 	void (*raminit) (const struct c_can_priv *priv, bool enable);
++	unsigned int raminit_bit;
+ };
+ 
+ struct net_device *alloc_c_can_dev(void);
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index d66ac26..b4e62f1 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -38,6 +38,7 @@
+ #include "c_can.h"
+ 
+ #define CAN_RAMINIT_START_MASK(i)	(1 << (i))
++#define DCAN_RAM_INIT_BIT		3
+ 
+ /*
+  * 16-bit c_can registers can be arranged differently in the memory
+@@ -75,9 +76,9 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
+ 
+ 	val = readl(priv->raminit_ctrlreg);
+ 	if (enable)
+-		val |= CAN_RAMINIT_START_MASK(priv->instance);
++		val |= CAN_RAMINIT_START_MASK(priv->raminit_bit);
+ 	else
+-		val &= ~CAN_RAMINIT_START_MASK(priv->instance);
++		val &= ~CAN_RAMINIT_START_MASK(priv->raminit_bit);
+ 	writel(val, priv->raminit_ctrlreg);
+ }
+ 
+@@ -194,11 +195,25 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 			priv->instance = pdev->id;
+ 
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
++		/* Not all D_CAN module have a separate register for the D_CAN
++		 * RAM initialization. Use default RAM init bit in D_CAN module
++		 * if not specified in DT.
++		 */
++		if (!res) {
++			priv->raminit = c_can_hw_raminit;
++			priv->raminit_bit = DCAN_RAM_INIT_BIT;
++			priv->raminit_ctrlreg = addr +
++				priv->regs[C_CAN_FUNCTION_REG];
++			break;
++		} else {
++			priv->raminit_ctrlreg =
++				devm_ioremap_resource(&pdev->dev, res);
++		}
+ 		if (IS_ERR(priv->raminit_ctrlreg) || (int)priv->instance < 0)
+ 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
+ 		else
+ 			priv->raminit = c_can_hw_raminit;
++			priv->raminit_bit = priv->instance;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-- 
+1.7.9.5
+
