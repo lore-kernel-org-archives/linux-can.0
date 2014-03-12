@@ -1,61 +1,98 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: Stuck vcan
-Date: Tue, 11 Mar 2014 14:55:22 -0700
-Message-ID: <CANGgnMYEmR0msgSPEnJh837SU6uPND17HcfZK6Mgohieimq9Pw@mail.gmail.com>
-References: <CANGgnMZLZ+Uhdjpw0QC1ER74FFyot6sjSpcL0Q+HK7ydQTynsg@mail.gmail.com>
-	<531EB5A4.1090302@hartkopp.net>
-	<CANGgnMbtfaowdGjVRbQ9L8TJBKmbAaNxjApPsc=JDM7e28U8LA@mail.gmail.com>
-	<531F8020.7090603@hartkopp.net>
+From: Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH v5] can: xilinx CAN controller support.
+Date: Wed, 12 Mar 2014 11:01:44 +0100
+Message-ID: <53203088.2070605@monstr.eu>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local> <531DD2C4.5060109@pengutronix.de> <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local> <531F0636.4050608@pengutronix.de>
+Reply-To: monstr@monstr.eu
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="ldFvFjGoGEJrjV5t1gFhQXOG5BcuKQW8j"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ig0-f182.google.com ([209.85.213.182]:48145 "EHLO
-	mail-ig0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752081AbaCKVzX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 11 Mar 2014 17:55:23 -0400
-Received: by mail-ig0-f182.google.com with SMTP id uy17so12444582igb.3
-        for <linux-can@vger.kernel.org>; Tue, 11 Mar 2014 14:55:22 -0700 (PDT)
-In-Reply-To: <531F8020.7090603@hartkopp.net>
+Received: from mail-ea0-f179.google.com ([209.85.215.179]:35599 "EHLO
+	mail-ea0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752178AbaCLKBu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 12 Mar 2014 06:01:50 -0400
+Received: by mail-ea0-f179.google.com with SMTP id q10so4824620ead.24
+        for <linux-can@vger.kernel.org>; Wed, 12 Mar 2014 03:01:49 -0700 (PDT)
+In-Reply-To: <531F0636.4050608@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Michal Simek <michals@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "fengguang.wu@intel.com" <fengguang.wu@intel.com>
 
-On Tue, Mar 11, 2014 at 2:29 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->
->
-> On 11.03.2014 21:37, Austin Schuh wrote:
->
->> # ip link show vcan0
->> 17: vcan0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc noqueue state UNKNOWN
->> mode DEFAULT qlen 10
->>     link/can
->>
->> Both times, I get the following.
->>
->> Mar 11 13:28:58 aschuh-peloton kernel: [96229.460901] Dead loop on
->> virtual device vcan0, fix it urgently!
->
-> As you can see above the qdisc is 'noqueue'
->
-> Please check out the __dev_queue_xmit() function in
->
-> http://lxr.free-electrons.com/source/net/core/dev.c#L2782
->
-> which creates the 'fix urgently' message.
->
-> I assume when creating a qdisc which is not 'noqueue' the handling for skb
-> queueing is forced.
->
-> See:
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
->
-> Regards,
-> Oliver
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ldFvFjGoGEJrjV5t1gFhQXOG5BcuKQW8j
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the pointers Oliver.  I'll take a look and see what I can
-find.  It will probably be a week or two before I can really sit down
-and dig through this.
+On 03/11/2014 01:48 PM, Marc Kleine-Budde wrote:
+> On 03/11/2014 01:34 PM, Appana Durga Kedareswara Rao wrote:
+>=20
+>>>> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig index=
 
-Austin
+>>>> 9e7d95d..b180239 100644
+>>>> --- a/drivers/net/can/Kconfig
+>>>> +++ b/drivers/net/can/Kconfig
+>>>> @@ -125,6 +125,13 @@ config CAN_GRCAN
+>>>>       endian syntheses of the cores would need some modifications on=
+
+>>>>       the hardware level to work.
+>>>>
+>>>> +config CAN_XILINXCAN
+>>>> +   tristate "Xilinx CAN"
+>>>> +   depends on ARCH_ZYNQ || MICROBLAZE
+>>>
+>>> Is Zynq multiarch already?
+>> Discussions are going on this
+>> So the final thing that Fengguang ( fengguang.wu@intel.com)
+>> Proposed is
+>>         config CAN_XILINX
+>>         tristate "Xilinx CAN"
+>>         depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+>>         depends on COMMON_CLK && HAS_MMIO  # whatever you need for oth=
+er architectures
+>=20
+>> Are you Ok for this?
+>=20
+> You have to fill the 2nd depends on with some sane values, though.
+
+This should be that one
+config CAN_XILINX
+         tristate "Xilinx CAN"
+         depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+         depends on COMMON_CLK && HAS_IOMEM
+
+
+Is there any driver which is in CAN which not use MMIO accesses?
+If not, maybe we should just add dependency to
+
+Thanks,
+Michal
+
+
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
+
+
+
+--ldFvFjGoGEJrjV5t1gFhQXOG5BcuKQW8j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlMgMIgACgkQykllyylKDCEE2QCgjus6aeMcpmM2WD1fQEEEd1/g
+IWMAn2/4zK08QsMZT8fws8gj4gUZQCdM
+=Mwlw
+-----END PGP SIGNATURE-----
+
+--ldFvFjGoGEJrjV5t1gFhQXOG5BcuKQW8j--
