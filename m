@@ -1,36 +1,52 @@
-From: <tthayer.linux@gmail.com>
-Subject: [PATCH] Add D_CAN Module RAM Init
-Date: Wed, 12 Mar 2014 18:01:26 -0500
-Message-ID: <1394665287-9687-1-git-send-email-tthayer.linux@gmail.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [PATCH v5] can: xilinx CAN controller support.
+Date: Thu, 13 Mar 2014 19:21:12 +0800
+Message-ID: <20140313112112.GB8806@localhost>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
+ <531DD493.3030306@monstr.eu>
+ <531DD5E7.7090406@pengutronix.de>
+ <3245971.RIuVmbVL0Z@wuerfel>
+ <1964213d-6bd9-49fa-805e-42e1e0630fd5@VA3EHSMHS029.ehs.local>
+ <20140311044555.GA12373@localhost>
+ <546dbc60-dd7b-4249-bab8-ad7e008b9aad@AM1EHSMHS001.ehs.local>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0112.outbound.protection.outlook.com ([207.46.100.112]:39902
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752135AbaCLXyl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 12 Mar 2014 19:54:41 -0400
+Received: from [143.182.124.21] ([143.182.124.21]:35080 "EHLO mga03.intel.com"
+	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753981AbaCMLVZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 13 Mar 2014 07:21:25 -0400
+Content-Disposition: inline
+In-Reply-To: <546dbc60-dd7b-4249-bab8-ad7e008b9aad@AM1EHSMHS001.ehs.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, anilkumar@ti.com
-Cc: linux-can@vger.kernel.org, Thor Thayer <tthayer.linux@gmail.com>
+To: Michal Simek <michal.simek@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, Marc Kleine-Budde <mkl@pengutronix.de>, monstr@monstr.eu, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, robh+dt@kernel.org, Kedareswara rao Appana <appana.durga.rao@xilinx.com>, grant.likely@linaro.org, Kedareswara rao Appana <appanad@xilinx.com>, wg@grandegger.com
 
-From: Thor Thayer <tthayer.linux@gmail.com>
+Hi Michal,
 
-The Bosch D_CAN module supports initializing the RAM memories. The
-existing D_CAN support was written for a specific D_CAN implementation
-that placed the RAM Init bit in a separate register. This patch
-uses the default Bosch D_CAN Module RAM Initialization bit in the 
-CAN Function Register (CFR [offset 0x18]).
-Request testing the TI D_CAN module and the C_CAN module.
+On Tue, Mar 11, 2014 at 10:38:14AM +0100, Michal Simek wrote:
+> On 03/11/2014 05:45 AM, Fengguang Wu wrote:
+> >>> You probably want something like
+> >>>
+> >>> 	config CAN_XILINX
+> >>> 	tristate "Xilinx CAN"
+> >>> 	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+> >>> 	depends on COMMON_CLK && HAS_MMIO  # whatever you need for other architectures
+> >>
+> >> Fengguang: Are you use COMPILE_TEST in zero day testing system?
+> > 
+> > Yeah, the randconfig build/boot tests should cover both COMPILE_TEST
+> > and !COMPILE_TEST cases.
+> 
+> But the point is that randconfig is really random it means it definitely can
+> cover but not there is no certainty that for that build, you are running,
+> has both option for all architectures enabled.
+> Or do I read it wrongly?
 
-Thor Thayer (1):
-  net: can: c_can_platform: Add D_CAN Module RAM Init
+Good point!  Since the 0day system is running randconfig tests
+everyday, it has very good opportunity to cover the COMPILE_TEST case.
+But to be sure, I'll explicitly enable COMPILE_TEST in some cases.
 
- drivers/net/can/c_can/c_can.h          |    3 +++
- drivers/net/can/c_can/c_can_platform.c |   21 ++++++++++++++++++---
- 2 files changed, 21 insertions(+), 3 deletions(-)
-
--- 
-1.7.9.5
-
+Thanks,
+Fengguang
