@@ -1,65 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: mcp251x: Fix regulators operation without CONFIG_REGULATOR
-Date: Fri, 14 Mar 2014 10:59:31 +0100
-Message-ID: <5322D303.8000601@pengutronix.de>
-References: <1394786780-24083-1-git-send-email-shc_work@mail.ru> <5322D0B0.9070006@pengutronix.de> <1394790917.548655659@f79.i.mail.ru>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gY2FuOiBtY3AyNTF4OiBGaXggcmVndWxhdG9ycyBvcGVy?=
+ =?UTF-8?B?YXRpb24gd2l0aG91dCBDT05GSUdfUkVHVUxBVE9S?=
+Date: Fri, 14 Mar 2014 14:11:44 +0400
+Message-ID: <1394791904.45849417@f382.i.mail.ru>
+References: <1394786780-24083-1-git-send-email-shc_work@mail.ru>
+ <1394790917.548655659@f79.i.mail.ru>
+ <5322D303.8000601@pengutronix.de>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="av1D4qDlcBoITK79FL1DSn0CCB2r8n363"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56966 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753734AbaCNJ7q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Mar 2014 05:59:46 -0400
-In-Reply-To: <1394790917.548655659@f79.i.mail.ru>
+Received: from fallback1.mail.ru ([94.100.176.18]:39198 "EHLO
+	fallback1.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751618AbaCNKMA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Mar 2014 06:12:00 -0400
+Received: from f382.i.mail.ru (f382.i.mail.ru [185.5.136.53])
+	by fallback1.mail.ru (mPOP.Fallback_MX) with ESMTP id A1F95352EFAB
+	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2014 14:11:58 +0400 (MSK)
+In-Reply-To: <5322D303.8000601@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---av1D4qDlcBoITK79FL1DSn0CCB2r8n363
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 03/14/2014 10:55 AM, Alexander Shiyan wrote:
-> =D0=9F=D1=8F=D1=82=D0=BD=D0=B8=D1=86=D0=B0, 14 =D0=BC=D0=B0=D1=80=D1=82=
-=D0=B0 2014, 10:49 +01:00 =D0=BE=D1=82 Marc Kleine-Budde <mkl@pengutronix=
-=2Ede>:
->> On 03/14/2014 09:46 AM, Alexander Shiyan wrote:
->>> If CONFIG_REGULATOR is not set, devm_regulator_get() returns NULL,
->>> so use IS_ERR_OR_NULL() macro for checks.
->>>
->>> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
->>
->> This should probably go into net, right?
-
-I mean this is a patch for David Miller's net tree, not for net-next.
-
-> net/can? I usually use the tag "can". Something wrong?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---av1D4qDlcBoITK79FL1DSn0CCB2r8n363
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMi0wMACgkQjTAFq1RaXHMdjwCfZYFFAeTCcr64pHOOTw5+RUST
-OmsAniRjB3GTOBK0ZNTfGYb6QfgjnXsv
-=DjaI
------END PGP SIGNATURE-----
-
---av1D4qDlcBoITK79FL1DSn0CCB2r8n363--
+0J/Rj9GC0L3QuNGG0LAsIDE0INC80LDRgNGC0LAgMjAxNCwgMTA6NTkgKzAxOjAwINC+0YIgTWFy
+YyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT46Cj4gT24gMDMvMTQvMjAxNCAxMDo1
+NSBBTSwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+INCf0Y/RgtC90LjRhtCwLCAxNCDQvNCw
+0YDRgtCwIDIwMTQsIDEwOjQ5ICswMTowMCDQvtGCIE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVu
+Z3V0cm9uaXguZGU+Ogo+ID4+IE9uIDAzLzE0LzIwMTQgMDk6NDYgQU0sIEFsZXhhbmRlciBTaGl5
+YW4gd3JvdGU6Cj4gPj4+IElmIENPTkZJR19SRUdVTEFUT1IgaXMgbm90IHNldCwgZGV2bV9yZWd1
+bGF0b3JfZ2V0KCkgcmV0dXJucyBOVUxMLAo+ID4+PiBzbyB1c2UgSVNfRVJSX09SX05VTEwoKSBt
+YWNybyBmb3IgY2hlY2tzLgo+ID4+Pgo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgU2hp
+eWFuIDxzaGNfd29ya0BtYWlsLnJ1Pgo+ID4+Cj4gPj4gVGhpcyBzaG91bGQgcHJvYmFibHkgZ28g
+aW50byBuZXQsIHJpZ2h0Pwo+IAo+IEkgbWVhbiB0aGlzIGlzIGEgcGF0Y2ggZm9yIERhdmlkIE1p
+bGxlcidzIG5ldCB0cmVlLCBub3QgZm9yIG5ldC1uZXh0LgoKVGhpcyBpcyBub3QgYSBjcml0aWNh
+bCBwYXRjaCwgcGF0Y2gganVzdCBtYWtlcyB0aGUgcmlnaHQgY2hlY2tzLgoKLS0tCg==
