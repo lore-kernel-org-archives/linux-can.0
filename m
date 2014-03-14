@@ -1,52 +1,50 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [PATCH v5] can: xilinx CAN controller support.
-Date: Thu, 13 Mar 2014 19:21:12 +0800
-Message-ID: <20140313112112.GB8806@localhost>
-References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
- <531DD493.3030306@monstr.eu>
- <531DD5E7.7090406@pengutronix.de>
- <3245971.RIuVmbVL0Z@wuerfel>
- <1964213d-6bd9-49fa-805e-42e1e0630fd5@VA3EHSMHS029.ehs.local>
- <20140311044555.GA12373@localhost>
- <546dbc60-dd7b-4249-bab8-ad7e008b9aad@AM1EHSMHS001.ehs.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] can: mcp251x: Fix regulators operation without CONFIG_REGULATOR
+Date: Fri, 14 Mar 2014 12:46:20 +0400
+Message-ID: <1394786780-24083-1-git-send-email-shc_work@mail.ru>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from [143.182.124.21] ([143.182.124.21]:35080 "EHLO mga03.intel.com"
-	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753981AbaCMLVZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 13 Mar 2014 07:21:25 -0400
-Content-Disposition: inline
-In-Reply-To: <546dbc60-dd7b-4249-bab8-ad7e008b9aad@AM1EHSMHS001.ehs.local>
+Received: from fallback5.mail.ru ([94.100.176.59]:32941 "EHLO
+	fallback5.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755514AbaCNIqx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Mar 2014 04:46:53 -0400
+Received: from smtp21.mail.ru (smtp21.mail.ru [94.100.176.174])
+	by fallback5.mail.ru (mPOP.Fallback_MX) with ESMTP id 3C65D1106AF12
+	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2014 12:46:52 +0400 (MSK)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michal Simek <michal.simek@xilinx.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, Marc Kleine-Budde <mkl@pengutronix.de>, monstr@monstr.eu, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, robh+dt@kernel.org, Kedareswara rao Appana <appana.durga.rao@xilinx.com>, grant.likely@linaro.org, Kedareswara rao Appana <appanad@xilinx.com>, wg@grandegger.com
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Shiyan <shc_work@mail.ru>
 
-Hi Michal,
+If CONFIG_REGULATOR is not set, devm_regulator_get() returns NULL,
+so use IS_ERR_OR_NULL() macro for checks.
 
-On Tue, Mar 11, 2014 at 10:38:14AM +0100, Michal Simek wrote:
-> On 03/11/2014 05:45 AM, Fengguang Wu wrote:
-> >>> You probably want something like
-> >>>
-> >>> 	config CAN_XILINX
-> >>> 	tristate "Xilinx CAN"
-> >>> 	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
-> >>> 	depends on COMMON_CLK && HAS_MMIO  # whatever you need for other architectures
-> >>
-> >> Fengguang: Are you use COMPILE_TEST in zero day testing system?
-> > 
-> > Yeah, the randconfig build/boot tests should cover both COMPILE_TEST
-> > and !COMPILE_TEST cases.
-> 
-> But the point is that randconfig is really random it means it definitely can
-> cover but not there is no certainty that for that build, you are running,
-> has both option for all architectures enabled.
-> Or do I read it wrongly?
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/net/can/mcp251x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Good point!  Since the 0day system is running randconfig tests
-everyday, it has very good opportunity to cover the COMPILE_TEST case.
-But to be sure, I'll explicitly enable COMPILE_TEST in some cases.
+diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
+index cdb9808..1b6acb1 100644
+--- a/drivers/net/can/mcp251x.c
++++ b/drivers/net/can/mcp251x.c
+@@ -672,7 +672,7 @@ static int mcp251x_hw_probe(struct spi_device *spi)
+ 
+ static int mcp251x_power_enable(struct regulator *reg, int enable)
+ {
+-	if (IS_ERR(reg))
++	if (IS_ERR_OR_NULL(reg))
+ 		return 0;
+ 
+ 	if (enable)
+@@ -1221,7 +1221,7 @@ static int mcp251x_can_suspend(struct device *dev)
+ 		priv->after_suspend = AFTER_SUSPEND_DOWN;
+ 	}
+ 
+-	if (!IS_ERR(priv->power)) {
++	if (!IS_ERR_OR_NULL(priv->power)) {
+ 		regulator_disable(priv->power);
+ 		priv->after_suspend |= AFTER_SUSPEND_POWER;
+ 	}
+-- 
+1.8.3.2
 
-Thanks,
-Fengguang
