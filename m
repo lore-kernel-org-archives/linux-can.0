@@ -1,50 +1,57 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH] can: mcp251x: Fix regulators operation without CONFIG_REGULATOR
-Date: Fri, 14 Mar 2014 12:46:20 +0400
-Message-ID: <1394786780-24083-1-git-send-email-shc_work@mail.ru>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: mcp251x: Fix regulators operation without CONFIG_REGULATOR
+Date: Fri, 14 Mar 2014 10:49:36 +0100
+Message-ID: <5322D0B0.9070006@pengutronix.de>
+References: <1394786780-24083-1-git-send-email-shc_work@mail.ru>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="6s6VF5vvLdcFe2rsrpp0R5UJGjLC6soLN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback5.mail.ru ([94.100.176.59]:32941 "EHLO
-	fallback5.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755514AbaCNIqx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Mar 2014 04:46:53 -0400
-Received: from smtp21.mail.ru (smtp21.mail.ru [94.100.176.174])
-	by fallback5.mail.ru (mPOP.Fallback_MX) with ESMTP id 3C65D1106AF12
-	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2014 12:46:52 +0400 (MSK)
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54436 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755914AbaCNJti (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Mar 2014 05:49:38 -0400
+In-Reply-To: <1394786780-24083-1-git-send-email-shc_work@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Shiyan <shc_work@mail.ru>
+To: Alexander Shiyan <shc_work@mail.ru>, linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>
 
-If CONFIG_REGULATOR is not set, devm_regulator_get() returns NULL,
-so use IS_ERR_OR_NULL() macro for checks.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6s6VF5vvLdcFe2rsrpp0R5UJGjLC6soLN
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- drivers/net/can/mcp251x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 03/14/2014 09:46 AM, Alexander Shiyan wrote:
+> If CONFIG_REGULATOR is not set, devm_regulator_get() returns NULL,
+> so use IS_ERR_OR_NULL() macro for checks.
+>=20
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index cdb9808..1b6acb1 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -672,7 +672,7 @@ static int mcp251x_hw_probe(struct spi_device *spi)
- 
- static int mcp251x_power_enable(struct regulator *reg, int enable)
- {
--	if (IS_ERR(reg))
-+	if (IS_ERR_OR_NULL(reg))
- 		return 0;
- 
- 	if (enable)
-@@ -1221,7 +1221,7 @@ static int mcp251x_can_suspend(struct device *dev)
- 		priv->after_suspend = AFTER_SUSPEND_DOWN;
- 	}
- 
--	if (!IS_ERR(priv->power)) {
-+	if (!IS_ERR_OR_NULL(priv->power)) {
- 		regulator_disable(priv->power);
- 		priv->after_suspend |= AFTER_SUSPEND_POWER;
- 	}
--- 
-1.8.3.2
+This should probably go into net, right?
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--6s6VF5vvLdcFe2rsrpp0R5UJGjLC6soLN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMi0LAACgkQjTAFq1RaXHNQoACfUvzJarlrjop4Re19agMBwfy6
+bp8AoIAr8BTjXkSbLIijQMU+m+MTrveY
+=qWC2
+-----END PGP SIGNATURE-----
+
+--6s6VF5vvLdcFe2rsrpp0R5UJGjLC6soLN--
