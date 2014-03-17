@@ -1,28 +1,37 @@
-From: <TsetseroTsetse@gmail.com>
-Subject: =?utf-8?B?0JfQtNGA0LDQstGBbdCy0YPQudGC0LUhINCSYWMgddC90YJlcGVjedGObSDQutC70LjQtdC9bdGBa9C40LUg0LFh0LfRiyDQtNCw0L3QvdGL0YU/?=
-Date: Sun, 16 Mar 2014 05:34:37 -0300 (BRT)
-Message-ID: <20140316083437.D2974281525@email1.dufrio.com.br>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: mcp251x: Fix regulators operation without CONFIG_REGULATOR
+Date: Mon, 17 Mar 2014 08:07:38 +0100
+Message-ID: <53269F3A.1040708@hartkopp.net>
+References: <1394786780-24083-1-git-send-email-shc_work@mail.ru> <1394790917.548655659@f79.i.mail.ru> <5322D303.8000601@pengutronix.de> <1394791904.45849417@f382.i.mail.ru> <5322D6B2.90904@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from email1.dufrio.com.br ([187.58.133.174]:39212 "EHLO
-	email1.dufrio.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750837AbaCPIoY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 16 Mar 2014 04:44:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by email1.dufrio.com.br (Postfix) with ESMTP id 6F7A9281492
-	for <linux-can@vger.kernel.org>; Sun, 16 Mar 2014 05:34:39 -0300 (BRT)
-Received: from email1.dufrio.com.br ([127.0.0.1])
-	by localhost (email1.dufrio.com.br [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id kzc5wiZNrAiJ for <linux-can@vger.kernel.org>;
-	Sun, 16 Mar 2014 05:34:39 -0300 (BRT)
-Received: from SRVDF014 (srvdf014.dufrio.local [192.168.0.234])
-	by email1.dufrio.com.br (Postfix) with ESMTP id D2974281525
-	for <linux-can@vger.kernel.org>; Sun, 16 Mar 2014 05:34:37 -0300 (BRT)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:18650 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753429AbaCQHHp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Mar 2014 03:07:45 -0400
+In-Reply-To: <5322D6B2.90904@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Shiyan <shc_work@mail.ru>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-=C7=E4=F0=E0=E2=F1m=E2=F3=E9=F2=E5! =C2ac u=ED=F2epecy=FEm =EA=EB=E8=E5=
-=EDm=F1k=E8=E5 =E1a=E7=FB =E4=E0=ED=ED=FB=F5?
+On 14.03.2014 11:15, Marc Kleine-Budde wrote:
+
+> 
+> Okay, applied to can-next, that goes via net-next into v3.15.
+> 
+
+Hello Marc,
+
+Linus just tagged 3.14-rc7 with a relaxed comment:
+
+	https://lkml.org/lkml/2014/3/16/166
+
+So net-next might close this week.
+
+Just FYI :-)
+
+Regards,
+Oliver
