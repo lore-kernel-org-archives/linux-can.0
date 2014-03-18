@@ -1,122 +1,176 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/2] can: c_can: check return value to users of c_can_set_bittiming()
-Date: Tue, 18 Mar 2014 19:24:01 +0100
-Message-ID: <1395167041-6618-3-git-send-email-mkl@pengutronix.de>
-References: <1395167041-6618-1-git-send-email-mkl@pengutronix.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 08/12 V2] can: c_can: Makethe code readable
+Date: Tue, 18 Mar 2014 19:27:42 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1403181924440.18573@ionos.tec.linutronix.de>
+References: <20140318171007.528610837@linutronix.de>  <20140318171127.430027680@linutronix.de> <1395164220.2812.59.camel@joe-AO722>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39993 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756973AbaCRSYI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Mar 2014 14:24:08 -0400
-In-Reply-To: <1395167041-6618-1-git-send-email-mkl@pengutronix.de>
+Received: from www.linutronix.de ([62.245.132.108]:56369 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757234AbaCRS1f (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Mar 2014 14:27:35 -0400
+In-Reply-To: <1395164220.2812.59.camel@joe-AO722>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: tglx@linutronix.de, b.spranger@linutronix.de, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joe Perches <joe@perches.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Benedikt Spranger <b.spranger@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-This patch adds return value checking to all direct and indirect users of
-c_can_set_bittiming().
+If every other line contains line breaks, that's a clear sign for
+indentation level madness. Split out the inner loop and move the code
+to a separate function. gcc creates slightly worse code for that, but
+we'll fix that in the next step.
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ V2: Remove the pointless multiwhile. Noted by Joe Perches
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 6c03731..6883938 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -631,7 +631,7 @@ static void c_can_configure_msg_objects(struct net_device *dev)
-  * - set operating mode
-  * - configure message objects
+     Sorry for the noise.
+
+ drivers/net/can/c_can/c_can.c |  107 +++++++++++++++++++++---------------------
+ 1 file changed, 56 insertions(+), 51 deletions(-)
+
+Index: linux/drivers/net/can/c_can/c_can.c
+===================================================================
+--- linux.orig/drivers/net/can/c_can/c_can.c
++++ linux/drivers/net/can/c_can/c_can.c
+@@ -840,6 +840,52 @@ static u32 c_can_adjust_pending(u32 pend
+ 	return pend & ~((1 << lasts) - 1);
+ }
+ 
++static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
++			      u32 pend, int quota)
++{
++	u32 pkts = 0, ctrl, obj;
++
++	while ((obj = ffs(pend)) && quota > 0) {
++		pend &= ~BIT(obj - 1);
++
++		c_can_object_get(dev, IF_RX, obj, IF_COMM_ALL &	~IF_COMM_TXRQST);
++		ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_RX));
++
++		if (ctrl & IF_MCONT_MSGLST) {
++			int n = c_can_handle_lost_msg_obj(dev, IF_RX, obj, ctrl);
++
++			pkts += n;
++			quota -= n;
++			continue;
++		}
++
++		/*
++		 * This really should not happen, but this covers some
++		 * odd HW behaviour. Do not remove that unless you
++		 * want to brick your machine.
++		 */
++		if (!(ctrl & IF_MCONT_NEWDAT))
++			continue;
++
++		/* read the data from the message object */
++		c_can_read_msg_object(dev, IF_RX, ctrl);
++
++		if (obj < C_CAN_MSG_RX_LOW_LAST)
++			c_can_mark_rx_msg_obj(dev, IF_RX, ctrl, obj);
++		else if (obj > C_CAN_MSG_RX_LOW_LAST)
++			/* activate this msg obj */
++			c_can_activate_rx_msg_obj(dev, IF_RX, ctrl, obj);
++		else if (obj == C_CAN_MSG_RX_LOW_LAST)
++			/* activate all lower message objects */
++			c_can_activate_all_lower_rx_msg_obj(dev, IF_RX, ctrl);
++
++		pkts++;
++		quota--;
++	}
++
++	return pkts;
++}
++
+ /*
+  * theory of operation:
+  *
+@@ -864,10 +910,8 @@ static u32 c_can_adjust_pending(u32 pend
   */
--static void c_can_chip_config(struct net_device *dev)
-+static int c_can_chip_config(struct net_device *dev)
+ static int c_can_do_rx_poll(struct net_device *dev, int quota)
  {
+-	u32 num_rx_pkts = 0;
+-	unsigned int msg_obj, msg_ctrl_save;
  	struct c_can_priv *priv = netdev_priv(dev);
+-	u32 val, pend = 0;
++	u32 pkts = 0, pend = 0, toread, n;
  
-@@ -668,15 +668,18 @@ static void c_can_chip_config(struct net_device *dev)
- 	priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
+ 	/*
+ 	 * It is faster to read only one 16bit register. This is only possible
+@@ -877,65 +921,26 @@ static int c_can_do_rx_poll(struct net_d
+ 			"Implementation does not support more message objects than 16");
  
- 	/* set bittiming params */
--	c_can_set_bittiming(dev);
-+	return c_can_set_bittiming(dev);
- }
- 
--static void c_can_start(struct net_device *dev)
-+static int c_can_start(struct net_device *dev)
- {
- 	struct c_can_priv *priv = netdev_priv(dev);
-+	int err;
- 
- 	/* basic c_can configuration */
--	c_can_chip_config(dev);
-+	err = c_can_chip_config(dev);
-+	if (err)
-+		return err;
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
-@@ -685,6 +688,8 @@ static void c_can_start(struct net_device *dev)
- 
- 	/* enable status change, error and module interrupts */
- 	c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
-+
-+	return 0;
- }
- 
- static void c_can_stop(struct net_device *dev)
-@@ -700,9 +705,13 @@ static void c_can_stop(struct net_device *dev)
- 
- static int c_can_set_mode(struct net_device *dev, enum can_mode mode)
- {
-+	int err;
-+
- 	switch (mode) {
- 	case CAN_MODE_START:
--		c_can_start(dev);
-+		err = c_can_start(dev);
-+		if (err)
-+			return err;
- 		netif_wake_queue(dev);
- 		break;
- 	default:
-@@ -1133,17 +1142,20 @@ static int c_can_open(struct net_device *dev)
- 		goto exit_irq_fail;
+ 	while (quota > 0) {
+-
+ 		if (!pend) {
+ 			pend = priv->read_reg(priv, C_CAN_INTPND1_REG);
+ 			if (!pend)
+-				return num_rx_pkts;
++				break;
+ 			/*
+ 			 * If the pending field has a gap, handle the
+ 			 * bits above the gap first.
+ 			 */
+-			val = c_can_adjust_pending(pend);
++			toread = c_can_adjust_pending(pend);
+ 		} else {
+-			val = pend;
++			toread = pend;
+ 		}
+ 		/* Remove the bits from pend */
+-		pend &= ~val;
+-
+-		while ((msg_obj = ffs(val)) && quota > 0) {
+-			val &= ~BIT(msg_obj - 1);
+-
+-			c_can_object_get(dev, IF_RX, msg_obj, IF_COMM_ALL &
+-					~IF_COMM_TXRQST);
+-			msg_ctrl_save = priv->read_reg(priv,
+-					C_CAN_IFACE(MSGCTRL_REG, IF_RX));
+-
+-			if (msg_ctrl_save & IF_MCONT_MSGLST) {
+-				int n;
+-
+-				n = c_can_handle_lost_msg_obj(dev, IF_RX,
+-							      msg_obj,
+-							      msg_ctrl_save);
+-				num_rx_pkts += n;
+-				quota -=n;
+-				continue;
+-			}
+-
+-			if (!(msg_ctrl_save & IF_MCONT_NEWDAT))
+-				continue;
+-
+-			/* read the data from the message object */
+-			c_can_read_msg_object(dev, IF_RX, msg_ctrl_save);
+-
+-			if (msg_obj < C_CAN_MSG_RX_LOW_LAST)
+-				c_can_mark_rx_msg_obj(dev, IF_RX,
+-						msg_ctrl_save, msg_obj);
+-			else if (msg_obj > C_CAN_MSG_RX_LOW_LAST)
+-				/* activate this msg obj */
+-				c_can_activate_rx_msg_obj(dev, IF_RX,
+-						msg_ctrl_save, msg_obj);
+-			else if (msg_obj == C_CAN_MSG_RX_LOW_LAST)
+-				/* activate all lower message objects */
+-				c_can_activate_all_lower_rx_msg_obj(dev,
+-						IF_RX, msg_ctrl_save);
+-
+-			num_rx_pkts++;
+-			quota--;
+-		}
++		pend &= ~toread;
++		/* Read the objects */
++		n = c_can_read_objects(dev, priv, toread, quota);
++		pkts += n;
++		quota -= n;
  	}
- 
--	napi_enable(&priv->napi);
-+	/* start the c_can controller */
-+	err = c_can_start(dev);
-+	if (err)
-+		goto exit_start_fail;
- 
- 	can_led_event(dev, CAN_LED_EVENT_OPEN);
- 
--	/* start the c_can controller */
--	c_can_start(dev);
 -
-+	napi_enable(&priv->napi);
- 	netif_start_queue(dev);
- 
- 	return 0;
- 
-+exit_start_fail:
-+	free_irq(dev->irq, dev);
- exit_irq_fail:
- 	close_candev(dev);
- exit_open_fail:
-@@ -1260,9 +1272,7 @@ int c_can_power_up(struct net_device *dev)
- 	if (time_after(jiffies, time_out))
- 		return -ETIMEDOUT;
- 
--	c_can_start(dev);
--
--	return 0;
-+	return c_can_start(dev);
+-	return num_rx_pkts;
++	return pkts;
  }
- EXPORT_SYMBOL_GPL(c_can_power_up);
- #endif
--- 
-1.9.0.279.gdc9e3eb
-
+ 
+ static inline int c_can_has_and_handle_berr(struct c_can_priv *priv)
