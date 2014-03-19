@@ -1,35 +1,60 @@
-From: Robert Schwebel <r.schwebel@pengutronix.de>
-Subject: [PATCH] can: Documentation: fix spelling of sample-point
-Date: Wed, 19 Mar 2014 09:49:42 +0100
-Message-ID: <1395218982-20306-1-git-send-email-r.schwebel@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: Documentation: fix spelling of sample-point
+Date: Wed, 19 Mar 2014 10:20:42 +0100
+Message-ID: <5329616A.6050502@pengutronix.de>
+References: <1395218982-20306-1-git-send-email-r.schwebel@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34025 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46793 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932670AbaCSIul (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Mar 2014 04:50:41 -0400
+	with ESMTP id S1758132AbaCSJUt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Mar 2014 05:20:49 -0400
+In-Reply-To: <1395218982-20306-1-git-send-email-r.schwebel@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, mkl@pengutronix.de
-Cc: Robert Schwebel <r.schwebel@pengutronix.de>
+To: Robert Schwebel <r.schwebel@pengutronix.de>, linux-can@vger.kernel.org
 
-Signed-off-by: Robert Schwebel <r.schwebel@pengutronix.de>
----
- Documentation/networking/can.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
-index 0cbe6ec..2fa44cb 100644
---- a/Documentation/networking/can.txt
-+++ b/Documentation/networking/can.txt
-@@ -1017,7 +1017,7 @@ solution for a couple of reasons:
- 	in case of a bus-off condition after the specified delay time
- 	in milliseconds. By default it's off.
- 
--    "bitrate 125000 sample_point 0.875"
-+    "bitrate 125000 sample-point 0.875"
- 	Shows the real bit-rate in bits/sec and the sample-point in the
- 	range 0.000..0.999. If the calculation of bit-timing parameters
- 	is enabled in the kernel (CONFIG_CAN_CALC_BITTIMING=y), the
--- 
-1.9.0
+On 03/19/2014 09:49 AM, Robert Schwebel wrote:
+> Signed-off-by: Robert Schwebel <r.schwebel@pengutronix.de>
 
+Applied to can-next, adjusted the commit message as follows:
+
+> can: Documentation: fix parameter name "sample-point"
+>=20
+> This patch fixes the name of the parameter to configure the sample poin=
+t used
+> in iproute2's ip command. The correct writing is "sample-point" not
+> "sample_point"
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMpYWoACgkQjTAFq1RaXHPjZQCfX0cMXmDL6DC63DFDPOYjHCtc
+yyYAnj3Ulk99TWdtV0OeE8C/MiR5dz3Z
+=eEOL
+-----END PGP SIGNATURE-----
+
+--Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm--
