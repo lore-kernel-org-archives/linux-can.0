@@ -1,60 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: Documentation: fix spelling of sample-point
-Date: Wed, 19 Mar 2014 10:20:42 +0100
-Message-ID: <5329616A.6050502@pengutronix.de>
-References: <1395218982-20306-1-git-send-email-r.schwebel@pengutronix.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 02/12] can: c_can: Fix hardware raminit function
+Date: Wed, 19 Mar 2014 10:22:27 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1403191016280.18573@ionos.tec.linutronix.de>
+References: <20140318171007.528610837@linutronix.de> <20140318171126.720944558@linutronix.de> <532892BC.7080406@pengutronix.de> <alpine.DEB.2.02.1403182313110.18573@ionos.tec.linutronix.de> <53293B31.2060406@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46793 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758132AbaCSJUt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 19 Mar 2014 05:20:49 -0400
-In-Reply-To: <1395218982-20306-1-git-send-email-r.schwebel@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Robert Schwebel <r.schwebel@pengutronix.de>, linux-can@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <53293B31.2060406@hartkopp.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, LKML <linux-kernel@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Markus Pargmann <mpa@pengutronix.de>, Benedikt Spranger <b.spranger@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, 19 Mar 2014, Oliver Hartkopp wrote:
+> On 18.03.2014 23:15, Thomas Gleixner wrote:
+> > On Tue, 18 Mar 2014, Marc Kleine-Budde wrote:
+> >> On 03/18/2014 06:19 PM, Thomas Gleixner wrote:
+> >>> +static void c_can_hw_raminit_wait(const struct c_can_priv *priv, u32 mask,
+> >>> +				  u32 val)
+> >>> +{
+> >>> +	/* We look only at the bits of our instance. */
+> >>> +	val &= mask;
+> >>> +	while ((readl(priv->raminit_ctrlreg) & mask) != val)
+> >>> +		udelay(1);
+> >>
+> >> Do we have to add a timeout here, or is it "safe" to have a potential
+> >> endless loop here? As you have probably tortured the hardware and driver
+> >> a lot (or have been tortured by them), I assume you would have added a
+> >> timeout check if you had seen a lockup here.
+> > 
+> > I haven't seen any failure on that. We could add a timeout for
+> > paranoia reasons. I'm quite sure that the raminit works as advertised
+> > when we do it the right way. The only way to wreckage it so far is by
+> > not waiting for it to complete.
+> 
+> As long as it is 100% guaranteed that we
+> 
+> 1. really work on a valid C_CAN core
+> 2. this CAN controller can not be unplugged
+> 
+> not adding a timeout would be ok.
 
-On 03/19/2014 09:49 AM, Robert Schwebel wrote:
-> Signed-off-by: Robert Schwebel <r.schwebel@pengutronix.de>
+The raminit port is a D_CAN specific thing. But yeah, adding a timeout
+wouldn't hurt at all.
 
-Applied to can-next, adjusted the commit message as follows:
+Though the driver is incomplete anyway as not all D_CAN incarnations
+use the raminit port. There is another way to do that via the CFR
+register, which is not implemented in the driver.
 
-> can: Documentation: fix parameter name "sample-point"
->=20
-> This patch fixes the name of the parameter to configure the sample poin=
-t used
-> in iproute2's ip command. The correct writing is "sample-point" not
-> "sample_point"
+It seems the chip integrator can chose between raminit port and CFR.
 
-Marc
+Thanks,
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMpYWoACgkQjTAFq1RaXHPjZQCfX0cMXmDL6DC63DFDPOYjHCtc
-yyYAnj3Ulk99TWdtV0OeE8C/MiR5dz3Z
-=eEOL
------END PGP SIGNATURE-----
-
---Rpl3uVIAJVEOX8r6j3SMesgoMEH1Mqkkm--
+	tglx
