@@ -1,55 +1,76 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 02/12] can: c_can: Fix hardware raminit function
-Date: Wed, 19 Mar 2014 10:22:27 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1403191016280.18573@ionos.tec.linutronix.de>
-References: <20140318171007.528610837@linutronix.de> <20140318171126.720944558@linutronix.de> <532892BC.7080406@pengutronix.de> <alpine.DEB.2.02.1403182313110.18573@ionos.tec.linutronix.de> <53293B31.2060406@hartkopp.net>
+From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Subject: RE: [PATCH v5] can: xilinx CAN controller support.
+Date: Thu, 20 Mar 2014 04:41:56 +0000
+Message-ID: <45bec219-6349-4bcf-be8a-7ee1dfd1bcb9@TX2EHSMHS014.ehs.local>
+References: <5254bfec-c6fd-4681-a34d-706d51e60fbb@VA3EHSMHS004.ehs.local>
+ <531DD2C4.5060109@pengutronix.de>
+ <f1e2f08f-05fc-40d3-8437-4c6817d631cb@AM1EHSMHS010.ehs.local>
+ <531F0636.4050608@pengutronix.de> <53203088.2070605@monstr.eu>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53293B31.2060406@hartkopp.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, LKML <linux-kernel@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Markus Pargmann <mpa@pengutronix.de>, Benedikt Spranger <b.spranger@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]:23764 "EHLO
+	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750854AbaCTEmE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 20 Mar 2014 00:42:04 -0400
+In-Reply-To: <53203088.2070605@monstr.eu>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "monstr@monstr.eu" <monstr@monstr.eu>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Michal Simek <michals@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "fengguang.wu@intel.com" <fengguang.wu@intel.com>
 
-On Wed, 19 Mar 2014, Oliver Hartkopp wrote:
-> On 18.03.2014 23:15, Thomas Gleixner wrote:
-> > On Tue, 18 Mar 2014, Marc Kleine-Budde wrote:
-> >> On 03/18/2014 06:19 PM, Thomas Gleixner wrote:
-> >>> +static void c_can_hw_raminit_wait(const struct c_can_priv *priv, u32 mask,
-> >>> +				  u32 val)
-> >>> +{
-> >>> +	/* We look only at the bits of our instance. */
-> >>> +	val &= mask;
-> >>> +	while ((readl(priv->raminit_ctrlreg) & mask) != val)
-> >>> +		udelay(1);
-> >>
-> >> Do we have to add a timeout here, or is it "safe" to have a potential
-> >> endless loop here? As you have probably tortured the hardware and driver
-> >> a lot (or have been tortured by them), I assume you would have added a
-> >> timeout check if you had seen a lockup here.
-> > 
-> > I haven't seen any failure on that. We could add a timeout for
-> > paranoia reasons. I'm quite sure that the raminit works as advertised
-> > when we do it the right way. The only way to wreckage it so far is by
-> > not waiting for it to complete.
-> 
-> As long as it is 100% guaranteed that we
-> 
-> 1. really work on a valid C_CAN core
-> 2. this CAN controller can not be unplugged
-> 
-> not adding a timeout would be ok.
+SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaWNoYWwg
+U2ltZWsgW21haWx0bzptb25zdHJAbW9uc3RyLmV1XQ0KPiBTZW50OiBXZWRuZXNkYXksIE1hcmNo
+IDEyLCAyMDE0IDM6MzIgUE0NCj4gVG86IE1hcmMgS2xlaW5lLUJ1ZGRlDQo+IENjOiBBcHBhbmEg
+RHVyZ2EgS2VkYXJlc3dhcmEgUmFvOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOw0KPiBuZXRk
+ZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7
+IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVs
+Lm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBncmFudC5saWtlbHlAbGluYXJvLm9yZzsgTWlj
+aGFsIFNpbWVrOyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gZmVuZ2d1YW5nLnd1QGludGVsLmNvbQ0K
+PiBTdWJqZWN0OiBSZTogW1BBVENIIHY1XSBjYW46IHhpbGlueCBDQU4gY29udHJvbGxlciBzdXBw
+b3J0Lg0KPg0KPiBPbiAwMy8xMS8yMDE0IDAxOjQ4IFBNLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90
+ZToNCj4gPiBPbiAwMy8xMS8yMDE0IDAxOjM0IFBNLCBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEg
+UmFvIHdyb3RlOg0KPiA+DQo+ID4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9LY29u
+ZmlnIGIvZHJpdmVycy9uZXQvY2FuL0tjb25maWcNCj4gPj4+PiBpbmRleA0KPiA+Pj4+IDllN2Q5
+NWQuLmIxODAyMzkgMTAwNjQ0DQo+ID4+Pj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL0tjb25maWcN
+Cj4gPj4+PiArKysgYi9kcml2ZXJzL25ldC9jYW4vS2NvbmZpZw0KPiA+Pj4+IEBAIC0xMjUsNiAr
+MTI1LDEzIEBAIGNvbmZpZyBDQU5fR1JDQU4NCj4gPj4+PiAgICAgICBlbmRpYW4gc3ludGhlc2Vz
+IG9mIHRoZSBjb3JlcyB3b3VsZCBuZWVkIHNvbWUgbW9kaWZpY2F0aW9ucyBvbg0KPiA+Pj4+ICAg
+ICAgIHRoZSBoYXJkd2FyZSBsZXZlbCB0byB3b3JrLg0KPiA+Pj4+DQo+ID4+Pj4gK2NvbmZpZyBD
+QU5fWElMSU5YQ0FODQo+ID4+Pj4gKyAgIHRyaXN0YXRlICJYaWxpbnggQ0FOIg0KPiA+Pj4+ICsg
+ICBkZXBlbmRzIG9uIEFSQ0hfWllOUSB8fCBNSUNST0JMQVpFDQo+ID4+Pg0KPiA+Pj4gSXMgWnlu
+cSBtdWx0aWFyY2ggYWxyZWFkeT8NCj4gPj4gRGlzY3Vzc2lvbnMgYXJlIGdvaW5nIG9uIHRoaXMN
+Cj4gPj4gU28gdGhlIGZpbmFsIHRoaW5nIHRoYXQgRmVuZ2d1YW5nICggZmVuZ2d1YW5nLnd1QGlu
+dGVsLmNvbSkgUHJvcG9zZWQNCj4gPj4gaXMNCj4gPj4gICAgICAgICBjb25maWcgQ0FOX1hJTElO
+WA0KPiA+PiAgICAgICAgIHRyaXN0YXRlICJYaWxpbnggQ0FOIg0KPiA+PiAgICAgICAgIGRlcGVu
+ZHMgb24gQVJDSF9aWU5RIHx8IE1JQ1JPQkxBWkUgfHwgQ09NUElMRV9URVNUDQo+ID4+ICAgICAg
+ICAgZGVwZW5kcyBvbiBDT01NT05fQ0xLICYmIEhBU19NTUlPICAjIHdoYXRldmVyIHlvdSBuZWVk
+IGZvcg0KPiA+PiBvdGhlciBhcmNoaXRlY3R1cmVzDQo+ID4NCj4gPj4gQXJlIHlvdSBPayBmb3Ig
+dGhpcz8NCj4gPg0KPiA+IFlvdSBoYXZlIHRvIGZpbGwgdGhlIDJuZCBkZXBlbmRzIG9uIHdpdGgg
+c29tZSBzYW5lIHZhbHVlcywgdGhvdWdoLg0KPg0KPiBUaGlzIHNob3VsZCBiZSB0aGF0IG9uZQ0K
+PiBjb25maWcgQ0FOX1hJTElOWA0KPiAgICAgICAgICB0cmlzdGF0ZSAiWGlsaW54IENBTiINCj4g
+ICAgICAgICAgZGVwZW5kcyBvbiBBUkNIX1pZTlEgfHwgTUlDUk9CTEFaRSB8fCBDT01QSUxFX1RF
+U1QNCj4gICAgICAgICAgZGVwZW5kcyBvbiBDT01NT05fQ0xLICYmIEhBU19JT01FTQ0KPg0KPg0K
+PiBJcyB0aGVyZSBhbnkgZHJpdmVyIHdoaWNoIGlzIGluIENBTiB3aGljaCBub3QgdXNlIE1NSU8g
+YWNjZXNzZXM/DQo+IElmIG5vdCwgbWF5YmUgd2Ugc2hvdWxkIGp1c3QgYWRkIGRlcGVuZGVuY3kg
+dG8NCg0KDQoNCkNhbiB5b3UgcGxlYXNlIGNvbW1lbnQgb24gdGhpcz8NCkkgaGFkIHVwZGF0ZSBk
+cml2ZXIgd2l0aCBhbGwgdGhlIG90aGVyIGNvbW1lbnRzIEkgaGFkIGEgbGl0dGxlIGNvbmZ1c2lv
+biByZWdhcmRpbmcNCldoaWNoIEtjb25maWcgb3B0aW9ucyBJIG5lZWQgdG8gdXNlLg0KDQpSZWdh
+cmRzLA0KS2VkYXIuDQoNCg0KPiBUaGFua3MsDQo+IE1pY2hhbA0KPg0KPg0KPg0KPiAtLQ0KPiBN
+aWNoYWwgU2ltZWssIEluZy4gKE0uRW5nKSwgT3BlblBHUCAtPiBLZXlJRDogRkUzRDFGOTENCj4g
+dzogd3d3Lm1vbnN0ci5ldSBwOiArNDItMC03MjE4NDI4NTQNCj4gTWFpbnRhaW5lciBvZiBMaW51
+eCBrZXJuZWwgLSBNaWNyb2JsYXplIGNwdSAtIGh0dHA6Ly93d3cubW9uc3RyLmV1L2ZkdC8NCj4g
+TWFpbnRhaW5lciBvZiBMaW51eCBrZXJuZWwgLSBYaWxpbnggWnlucSBBUk0gYXJjaGl0ZWN0dXJl
+IE1pY3JvYmxhemUgVS0NCj4gQk9PVCBjdXN0b2RpYW4gYW5kIHJlc3BvbnNpYmxlIGZvciB1LWJv
+b3QgYXJtIHp5bnEgcGxhdGZvcm0NCj4NCg0KDQoNClRoaXMgZW1haWwgYW5kIGFueSBhdHRhY2ht
+ZW50cyBhcmUgaW50ZW5kZWQgZm9yIHRoZSBzb2xlIHVzZSBvZiB0aGUgbmFtZWQgcmVjaXBpZW50
+KHMpIGFuZCBjb250YWluKHMpIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiB0aGF0IG1heSBiZSBw
+cm9wcmlldGFyeSwgcHJpdmlsZWdlZCBvciBjb3B5cmlnaHRlZCB1bmRlciBhcHBsaWNhYmxlIGxh
+dy4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgZG8gbm90IHJlYWQsIGNv
+cHksIG9yIGZvcndhcmQgdGhpcyBlbWFpbCBtZXNzYWdlIG9yIGFueSBhdHRhY2htZW50cy4gRGVs
+ZXRlIHRoaXMgZW1haWwgbWVzc2FnZSBhbmQgYW55IGF0dGFjaG1lbnRzIGltbWVkaWF0ZWx5Lg0K
+DQoKCg==
 
-The raminit port is a D_CAN specific thing. But yeah, adding a timeout
-wouldn't hurt at all.
 
-Though the driver is incomplete anyway as not all D_CAN incarnations
-use the raminit port. There is another way to do that via the CFR
-register, which is not implemented in the driver.
-
-It seems the chip integrator can chose between raminit port and CFR.
-
-Thanks,
-
-	tglx
