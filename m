@@ -1,115 +1,83 @@
-From: Francesco Giovannini <francesco.giovannini@iit.it>
-Subject: Re: esd CAN USB/2 and SocketCAN
-Date: Fri, 21 Mar 2014 20:06:43 +0100
-Message-ID: <532C8DC3.5070503@iit.it>
-References: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BA841ABD00@esd-s3.esd.local>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v1 2/3] CAN: CAN driver to support multiple CAN bus on
+ SPI interface
+Date: Fri, 21 Mar 2014 22:42:16 +0100
+Message-ID: <532CB238.9000909@hartkopp.net>
+References: <1395404758-21977-1-git-send-email-sbabic@denx.de> <1395404758-21977-3-git-send-email-sbabic@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx.iit.it ([90.147.26.161]:38715 "EHLO es400ra02.iit.it"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750745AbaCUTGk (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 21 Mar 2014 15:06:40 -0400
-Received: from es400ra02.iit.it (127.0.0.1) id h5i6s00171s7 for <linux-can@vger.kernel.org>; Fri, 21 Mar 2014 20:06:39 +0100 (envelope-from <prvs=11572a55c0=Francesco.Giovannini@iit.it>)
-In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BA841ABD00@esd-s3.esd.local>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:58224 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750954AbaCUVmW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Mar 2014 17:42:22 -0400
+In-Reply-To: <1395404758-21977-3-git-send-email-sbabic@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?ISO-8859-1?Q?Thomas_K=F6rper?= <Thomas.Koerper@esd.eu>
-Cc: Matthias Fuchs <Matthias.Fuchs@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+
+Hello Stephano,
+
+I definitely like this driver as it implements a full featured CAN netdev over
+SPI with all the SocketCAN specific configuration stuff :-)
+
+First some general comments:
+
+There's a mixup of the driver name:
+
+spican
+spi_can
+#define DRV_NAME		"imxhcscan"
+
+>  drivers/net/can/Kconfig             |   11 +
+>  drivers/net/can/Makefile            |    1 +
+>  drivers/net/can/spi_can.c           | 1533 +++++++++++++++++++++++++++++++++++
+>  include/linux/can/platform/spican.h |   36 +
+
+I would first suggest to create a new directory
+
+linux/drivers/net/can/spi
+
+and move the mcp251x there (including the Kconfig stuff which is only entered
+when SPI is enabled similar to the CAN USB adapter configs).
+
+As the driver and it's communication concept is not very specific for the
+hcs12 or imx35 (or should no be very specific) I would tend to name it
+
+	spi_can
+
+and rename the 'hcs12' or 'imx' named functions to something more generic,
+e.g. spi_slave, spi_can or something better.
+
+Maybe when there is really imx35 or hcs12 specific stuff to handle, this
+should be made clear, e.g. with a imx_spi_can driver which uses the spi_can
+driver?!?
+
+And then there has to be a Kconfig option which depends on IMX35/ARM.
 
 
-On 18/03/14 12:04, Thomas K=F6rper wrote:
-> Hello,
->
-> I tried to reproduce your problems with our USB/2 CAN module, see fol=
-lowing output.
-> But there seems to be no issue specific to that software combination.
->
-> The disconnection while setting the baudrate therefore seems to be ca=
-used by USB power issues. (When setting the baudrate the module needs m=
-ore power: exactly the moment the disconnect occurs)
->
-> So how does that CAN USB/2 behave at another PC, or without/with powe=
-red USB-Hub etc.?
->
->
-> Kind Regards,
->      Thomas K=F6rper
->
-> linux-su5w:/usr/src/linux # uname -a
-> Linux linux-su5w 3.4.63-2.44-desktop #1 SMP PREEMPT Wed Oct 2 11:18:3=
-2 UTC 2013 (d91a619) i686 i686 i386 GNU/Linux
-> linux-su5w:/usr/src/linux # modinfo esd_usb2
-> filename:       /lib/modules/3.4.63-2.44-desktop/extra/esd_usb2.ko
-> license:        GPL v2
-> description:    CAN driver for esd CAN-USB/2 interfaces
-> author:         Matthias Fuchs <matthias.fuchs@esd.eu>
-> srcversion:     BB525C832956175CE3B9316
-> alias:          usb:v0AB4p0010d*dc*dsc*dp*ic*isc*ip*
-> depends:
-> vermagic:       3.4.63-2.44-desktop SMP preempt mod_unload modversion=
-s 686
-> linux-su5w:/usr/src/linux # canconfig can0 stop
-> can0 state: STOPPED
-> linux-su5w:/usr/src/linux # canconfig can0 bittiming prop-seg 2 phase=
--seg1 12 phase-seg2 5 sjw 1 brp 3 tq 50
-> can0 bittiming:
->          tq: 50, prop-seq: 2 phase-seq1: 12 phase-seq2: 5 sjw: 1, brp=
-: 3
-> can0 bitrate: 1000000, sample-point: 0.750
-> linux-su5w:/usr/src/linux # ip -d link show can0
-> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN mode DEFAULT=
- qlen 10
->      link/can
->      can state STOPPED (berr-counter tx 0 rx 160) restart-ms 0
->      bitrate 1000000 sample-point 0.750
->      tq 50 prop-seg 2 phase-seg1 12 phase-seg2 5 sjw 1
->      esd_usb2: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
->      clock 60000000
-> linux-su5w:/usr/src/linux # dmesg -c
-> [  886.429642] esd_usb2 1-1:1.0: can0: setting BTR=3D0x804d0002
-> linux-su5w:/usr/src/linux # canconfig can0 start
-> can0 state: ERROR-ACTIVE
-> linux-su5w:/usr/src/linux # cansend can0 000#112233
-> interface =3D can0, family =3D 29, type =3D 3, proto =3D 1
-> linux-su5w:/usr/src/linux # cat /sys/class/net/can0/device/firmware
-> 1.1.0
->
+> +#ifndef __CAN_PLATFORM_SPICAN_H__
+> +#define __CAN_PLATFORM_SPICAN_H__
+> +
+> +#include <linux/spi/spi.h>
+> +
+> +/*
+> + * struct hcs12_imx_platform_data - i.MX to HCS12 CAN controller platform data
+> + */
+> +
+> +struct hcs12_imx_platform_data {
+> +	unsigned int can_channels;
+> +	unsigned int gpio;
+> +	unsigned int active;
+> +	unsigned int slow_freq;
+> +};
+> +
+> +#endif
+> 
 
-Hello,
+Is this really i.MX or HCS12 specific??
 
-I tried the same device on a Debian 7.4, kernel 3.2.0-4-amd64 #1 SMP=20
-Debian 3.2.54-2 x86_64 GNU/Linux, can kernel module coming from the=20
-kernel source tree. Everything works fine.
-
-I asked my colleagues and it seems that this "peak current" problem is=20
-well known. Some of us even resorted to opening the CAN-USB and adding =
-a=20
-capacitor to fix the problem. :)
-
-I must say that I was plugging it in the USB ports which are at the=20
-front of the case. It is therefore plausible that those ports could not=
-=20
-draw enough power when needed. I have since then resorted to using=20
-Windows 7 and the necessary driver on the same machine. Everything work=
-s=20
-fine there, albeit the device is a CAN mini.
-
-
-Thanks for investigating this, guys!
-
-=46rancesco
-
---=20
-*Francesco Giovannini*
-Research Fellow
-iCub Facility
-*Istituto Italiano di Tecnologia*
-Via Morego, 30 16163 Genova
-/email:/ francesco.giovannini@iit.it <mailto://francesco.giovannini@iit=
-=2Eit>
-www.iit.it <http://www.iit.it>
-
-iit-logo-icub
+Regards,
+Oliver
