@@ -1,124 +1,115 @@
-From: "Rost, Martin" <Martin.Rost@tonfunk.de>
-Subject: mcp251x: mcp2515 stops receiving
-Date: Fri, 21 Mar 2014 12:40:30 +0000
-Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DB3F120@mailserver>
+From: Francesco Giovannini <francesco.giovannini@iit.it>
+Subject: Re: esd CAN USB/2 and SocketCAN
+Date: Fri, 21 Mar 2014 20:06:43 +0100
+Message-ID: <532C8DC3.5070503@iit.it>
+References: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BA841ABD00@esd-s3.esd.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----A44A9F6734AA0A75364A20F0BF869B0B"
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from tonfunk.biz ([145.253.128.114]:39060 "EHLO mail.tonfunk.biz"
+Received: from mx.iit.it ([90.147.26.161]:38715 "EHLO es400ra02.iit.it"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1759943AbaCUMkl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 21 Mar 2014 08:40:41 -0400
-Received: from [129.84.3.7] (port=23049 helo=tonfunk.biz)
-	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76)
-	(envelope-from <Martin.Rost@tonfunk.de>)
-	id 1WQykY-0003t6-0d
-	for linux-can@vger.kernel.org; Fri, 21 Mar 2014 13:40:38 +0100
+	id S1750745AbaCUTGk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 21 Mar 2014 15:06:40 -0400
+Received: from es400ra02.iit.it (127.0.0.1) id h5i6s00171s7 for <linux-can@vger.kernel.org>; Fri, 21 Mar 2014 20:06:39 +0100 (envelope-from <prvs=11572a55c0=Francesco.Giovannini@iit.it>)
+In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BA841ABD00@esd-s3.esd.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: =?ISO-8859-1?Q?Thomas_K=F6rper?= <Thomas.Koerper@esd.eu>
+Cc: Matthias Fuchs <Matthias.Fuchs@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an S/MIME signed message
 
-------A44A9F6734AA0A75364A20F0BF869B0B
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+On 18/03/14 12:04, Thomas K=F6rper wrote:
+> Hello,
+>
+> I tried to reproduce your problems with our USB/2 CAN module, see fol=
+lowing output.
+> But there seems to be no issue specific to that software combination.
+>
+> The disconnection while setting the baudrate therefore seems to be ca=
+used by USB power issues. (When setting the baudrate the module needs m=
+ore power: exactly the moment the disconnect occurs)
+>
+> So how does that CAN USB/2 behave at another PC, or without/with powe=
+red USB-Hub etc.?
+>
+>
+> Kind Regards,
+>      Thomas K=F6rper
+>
+> linux-su5w:/usr/src/linux # uname -a
+> Linux linux-su5w 3.4.63-2.44-desktop #1 SMP PREEMPT Wed Oct 2 11:18:3=
+2 UTC 2013 (d91a619) i686 i686 i386 GNU/Linux
+> linux-su5w:/usr/src/linux # modinfo esd_usb2
+> filename:       /lib/modules/3.4.63-2.44-desktop/extra/esd_usb2.ko
+> license:        GPL v2
+> description:    CAN driver for esd CAN-USB/2 interfaces
+> author:         Matthias Fuchs <matthias.fuchs@esd.eu>
+> srcversion:     BB525C832956175CE3B9316
+> alias:          usb:v0AB4p0010d*dc*dsc*dp*ic*isc*ip*
+> depends:
+> vermagic:       3.4.63-2.44-desktop SMP preempt mod_unload modversion=
+s 686
+> linux-su5w:/usr/src/linux # canconfig can0 stop
+> can0 state: STOPPED
+> linux-su5w:/usr/src/linux # canconfig can0 bittiming prop-seg 2 phase=
+-seg1 12 phase-seg2 5 sjw 1 brp 3 tq 50
+> can0 bittiming:
+>          tq: 50, prop-seq: 2 phase-seq1: 12 phase-seq2: 5 sjw: 1, brp=
+: 3
+> can0 bitrate: 1000000, sample-point: 0.750
+> linux-su5w:/usr/src/linux # ip -d link show can0
+> 2: can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN mode DEFAULT=
+ qlen 10
+>      link/can
+>      can state STOPPED (berr-counter tx 0 rx 160) restart-ms 0
+>      bitrate 1000000 sample-point 0.750
+>      tq 50 prop-seg 2 phase-seg1 12 phase-seg2 5 sjw 1
+>      esd_usb2: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
+>      clock 60000000
+> linux-su5w:/usr/src/linux # dmesg -c
+> [  886.429642] esd_usb2 1-1:1.0: can0: setting BTR=3D0x804d0002
+> linux-su5w:/usr/src/linux # canconfig can0 start
+> can0 state: ERROR-ACTIVE
+> linux-su5w:/usr/src/linux # cansend can0 000#112233
+> interface =3D can0, family =3D 29, type =3D 3, proto =3D 1
+> linux-su5w:/usr/src/linux # cat /sys/class/net/can0/device/firmware
+> 1.1.0
+>
 
-Hello List,
+Hello,
 
-We are using the MCP2515 on a tegra3 (Toradex Colibri T30, to be precise) a=
-nd every now and then the driver just stops.
-The interrupt line stays low, and the driver does not collect the data.
-From my investigations I conclude, that the MCP lowers the IRQ line before =
-the value in the INTF register is  updated,=20
-so when the driver reads the INTF register, a 0 is returned, and the driver=
- assumes nothing has to be done.
+I tried the same device on a Debian 7.4, kernel 3.2.0-4-amd64 #1 SMP=20
+Debian 3.2.54-2 x86_64 GNU/Linux, can kernel module coming from the=20
+kernel source tree. Everything works fine.
+
+I asked my colleagues and it seems that this "peak current" problem is=20
+well known. Some of us even resorted to opening the CAN-USB and adding =
+a=20
+capacitor to fix the problem. :)
+
+I must say that I was plugging it in the USB ports which are at the=20
+front of the case. It is therefore plausible that those ports could not=
 =20
-(
-Chances are I'm misinterpreting my observations.=20
-It might as well be that the call to the IST is suspended, because the prev=
-ious instance is still running and processes the new irq cause as well,=20
-so the next call will not see the signal at all.=20
-But in that case the driver should not stop with the irq line held low, or =
-should it?
-)
-=20
-We are using the 3.1.10 kernel from the toradex repository, which should be=
- in sync with the nvidia tegra4linux one.
-I have browsed through the patches between 3.1.10 and head and have applied=
- all those that seem to address issues and don't interfere with the 3.1.10 =
-kernel structures, but to no avail.
-In fact, these patches have been applied:
-cab32f39dcc5b35db96497dc0a026b5dea76e4e7
-db388d6460ffa53b3b38429da6f70a913f89b048
-ae5d589e5f9f3217656ada632869968178886ac6
-b1ef05a5a20afe50d4188a5b59579bd140758cf0
-I have changed the IST loop to poll the INTF register beforehand for up to =
-10ms, and now the driver seems a lot more stable in our environment.
-Has someone seen this issue before, or can confirm I am not completely off =
-the path?
-=20
-On a side note, I have a second reason that makes the driver stop, which ha=
-s to do with smp somehow.
-Disabling core1..3 keeps that from happening, but the problem addressed abo=
-ve would persist.
-Switching the irq to a different core by setting /proc/irq/91/smp_affinity =
-does not trigger this problem.
-Any insights or starting point on this would also be greatly appreciated.
-=20
-Best regards
-Martin=20
+draw enough power when needed. I have since then resorted to using=20
+Windows 7 and the necessary driver on the same machine. Everything work=
+s=20
+fine there, albeit the device is a CAN mini.
 
-------A44A9F6734AA0A75364A20F0BF869B0B
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
 
-MIIH2wYJKoZIhvcNAQcCoIIHzDCCB8gCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3
-DQEHAaCCBcwwggLVMIICPqADAgECAgkAvMrc21OtG8kwDQYJKoZIhvcNAQEFBQAw
-UTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkxFzAV
-BgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZTAeFw0wOTExMjQxMjA2
-MTVaFw0yOTExMTkxMjA2MTVaMFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAw
-DgYDVQQLEwdHYXRld2F5MRcwFQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UE
-BhMCZGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOmcYL9cTddZ0whp7cdz
-Lvlbr73uir65Z7nSTXG+RYDaUkaLhgVuJms16/EWECMa5K0qhFNVA0aE8tUqKJcj
-TuhR1flVnPq6koG8ArpudfBoNQk7v4Jgadj6ReVwJhjvQZ+dGFU+oH8F8jODhklv
-cvGjdfSKNlRHMirVsBIR8FtjAgMBAAGjgbQwgbEwHQYDVR0OBBYEFF0bok+BXaTx
-L3YfvzwzI7JjlCXIMIGBBgNVHSMEejB4gBRdG6JPgV2k8S92H788MyOyY5QlyKFV
-pFMwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkx
-FzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZYIJALzK3NtTrRvJ
-MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAV9GoynO+nRC9zmnf9h6T
-tFuqLMX6ITJ4CBChBrlWOc+290rANXBxiwQS+QqY+zc3VxAiMDoY64fvgvnNCtsy
-fL5W1ycyRq9vvBffdF/K7MjZS+zke1XRuv6vJJABpRYMcW97E4UdBj+qH8vLfZ2f
-YjuAK58Zua5S6C54zvcvRUgwggLvMIICWKADAgECAgEBMA0GCSqGSIb3DQEBBQUA
-MFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAwDgYDVQQLEwdHYXRld2F5MRcw
-FQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UEBhMCZGUwHhcNMDkxMTI1MDgw
-NzQ5WhcNMjkxMTIwMDgwNzQ5WjB1MQswCQYDVQQGEwJkZTEXMBUGA1UEChMOVG9u
-ZnVuayBHcnVwcGUxEDAOBgNVBAsTB0dhdGV3YXkxFDASBgNVBAMTC01hcnRpbiBS
-b3N0MSUwIwYJKoZIhvcNAQkBFhZNYXJ0aW4uUm9zdEB0b25mdW5rLmRlMIGfMA0G
-CSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3Ys/1C5iWSvFiKA4QAFiZNcdgc8nyycCc
-BCi/96l1YC/DIrgLeLNP4MtNK/F6BMRhOfCmlXIUmprANiAsET7cVW8qOt6KWr8b
-2SeZseE+jmqI0qeUaWjvF5ykjOo8D1X+YklVYIH/h82Wdozfa2xGW3WXm5ucDExR
-azpH5aNQxQIDAQABo4GyMIGvMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgSw
-MCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0ZTAd
-BgNVHQ4EFgQUwxDoSCAXpA8PB15z3pIKjewUaxIwHwYDVR0jBBgwFoAUXRuiT4Fd
-pPEvdh+/PDMjsmOUJcgwIQYDVR0RBBowGIEWTWFydGluLlJvc3RAdG9uZnVuay5k
-ZTANBgkqhkiG9w0BAQUFAAOBgQDa8BMQmQnuoHPGiTuyyy1AvcHwkMfn96vVOPQy
-OT0fSQmCwVer1E9/h691pa3hfFdkE9FyqfKp9TTihPMLzpA/aL7GVBftKNVt91JZ
-txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
-yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
-BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
-EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
-HAYJKoZIhvcNAQkFMQ8XDTE0MDMyMTEyNDA0MFowIwYJKoZIhvcNAQkEMRYEFA21
-9GlixayRZS13vNo37S+2ku6aMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
-AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
-CSqGSIb3DQEBAQUABIGAQmFePts/7YHuQo5pbqYtEg0qRKL994QWVPUE1fWUZr+b
-BlGnNsyC4fCMf35DWLuFk/oBgB1AnSvnF6JFAmCF1FISRld6qPdgwazFLw2PTegZ
-3VcWZPEX86qcvm0RyJU27TIKj5t4h6W9RJzozYS+VwSGig+nKwue8mve4mgq8Cs=
+Thanks for investigating this, guys!
 
-------A44A9F6734AA0A75364A20F0BF869B0B--
+=46rancesco
 
+--=20
+*Francesco Giovannini*
+Research Fellow
+iCub Facility
+*Istituto Italiano di Tecnologia*
+Via Morego, 30 16163 Genova
+/email:/ francesco.giovannini@iit.it <mailto://francesco.giovannini@iit=
+=2Eit>
+www.iit.it <http://www.iit.it>
+
+iit-logo-icub
