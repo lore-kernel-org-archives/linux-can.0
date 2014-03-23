@@ -1,72 +1,111 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: mcp251x: mcp2515 stops receiving
-Date: Sat, 22 Mar 2014 21:15:41 +0100
-Message-ID: <532DEF6D.3010208@hartkopp.net>
-References: <2E9F00CBB66AB544A1ACDC59627518BA0DB3F120@mailserver>
+From: Stefano Babic <sbabic@denx.de>
+Subject: Re: [PATCH v1 2/3] CAN: CAN driver to support multiple CAN bus on
+ SPI interface
+Date: Sun, 23 Mar 2014 13:01:31 +0100
+Message-ID: <532ECD1B.5010500@denx.de>
+References: <1395404758-21977-1-git-send-email-sbabic@denx.de> <1395404758-21977-3-git-send-email-sbabic@denx.de> <532CB238.9000909@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:15387 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750915AbaCVUPn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 22 Mar 2014 16:15:43 -0400
-In-Reply-To: <2E9F00CBB66AB544A1ACDC59627518BA0DB3F120@mailserver>
+Received: from mail-out.m-online.net ([212.18.0.10]:57701 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750838AbaCWMBu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 23 Mar 2014 08:01:50 -0400
+In-Reply-To: <532CB238.9000909@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Rost, Martin" <Martin.Rost@tonfunk.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi Martin,
+Hi Oliver,
 
-I'm not really deep in any of these MCP251x and SPI topic but I know from an
-intern who was using the Raspberry Pi together with a MCP2515 that he tried a
-different driver (mcp2515 instead of mcp251x) and also a SPI low latency patch
-which seems to enable some DMA functionality in the Raspberry Pi:
-
-	http://elinux.org/RPi_CANBus
-
-Don't know what of these tweaks should go into mainline as I personally do not
-have any experiences with this stuff.
-
-Maybe it helps in your environment.
-
-Btw. I did not want to prevent others (with more experiences on this mcp251x
-topic) to answer your question in a more specific way ;-)
-
-Regards,
-Oliver
-
-
-On 21.03.2014 13:40, Rost, Martin wrote:
-> Hello List,
+On 21/03/2014 22:42, Oliver Hartkopp wrote:
+> Hello Stephano,
 > 
-> We are using the MCP2515 on a tegra3 (Toradex Colibri T30, to be precise) and every now and then the driver just stops.
-> The interrupt line stays low, and the driver does not collect the data.
-> From my investigations I conclude, that the MCP lowers the IRQ line before the value in the INTF register is  updated, 
-> so when the driver reads the INTF register, a 0 is returned, and the driver assumes nothing has to be done.
->  
-> (
-> Chances are I'm misinterpreting my observations. 
-> It might as well be that the call to the IST is suspended, because the previous instance is still running and processes the new irq cause as well, 
-> so the next call will not see the signal at all. 
-> But in that case the driver should not stop with the irq line held low, or should it?
-> )
->  
-> We are using the 3.1.10 kernel from the toradex repository, which should be in sync with the nvidia tegra4linux one.
-> I have browsed through the patches between 3.1.10 and head and have applied all those that seem to address issues and don't interfere with the 3.1.10 kernel structures, but to no avail.
-> In fact, these patches have been applied:
-> cab32f39dcc5b35db96497dc0a026b5dea76e4e7
-> db388d6460ffa53b3b38429da6f70a913f89b048
-> ae5d589e5f9f3217656ada632869968178886ac6
-> b1ef05a5a20afe50d4188a5b59579bd140758cf0
-> I have changed the IST loop to poll the INTF register beforehand for up to 10ms, and now the driver seems a lot more stable in our environment.
-> Has someone seen this issue before, or can confirm I am not completely off the path?
->  
-> On a side note, I have a second reason that makes the driver stop, which has to do with smp somehow.
-> Disabling core1..3 keeps that from happening, but the problem addressed above would persist.
-> Switching the irq to a different core by setting /proc/irq/91/smp_affinity does not trigger this problem.
-> Any insights or starting point on this would also be greatly appreciated.
->  
-> Best regards
-> Martin 
+> I definitely like this driver as it implements a full featured CAN netdev over
+> SPI with all the SocketCAN specific configuration stuff :-)
 > 
+
+Thanks !
+
+> First some general comments:
+> 
+> There's a mixup of the driver name:
+> 
+> spican
+> spi_can
+> #define DRV_NAME		"imxhcscan"
+> 
+>>  drivers/net/can/Kconfig             |   11 +
+>>  drivers/net/can/Makefile            |    1 +
+>>  drivers/net/can/spi_can.c           | 1533 +++++++++++++++++++++++++++++++++++
+>>  include/linux/can/platform/spican.h |   36 +
+> 
+> I would first suggest to create a new directory
+> 
+> linux/drivers/net/can/spi
+
+Understood - I'll do for V2.
+
+> 
+> and move the mcp251x there (including the Kconfig stuff which is only entered
+> when SPI is enabled similar to the CAN USB adapter configs).
+> 
+> As the driver and it's communication concept is not very specific for the
+> hcs12 or imx35 (or should no be very specific) I would tend to name it
+> 
+> 	spi_can
+> 
+> and rename the 'hcs12' or 'imx' named functions to something more generic,
+> e.g. spi_slave, spi_can or something better.
+
+Right.
+
+> 
+> Maybe when there is really imx35 or hcs12 specific stuff to handle, this
+> should be made clear, e.g. with a imx_spi_can driver which uses the spi_can
+> driver?!?
+
+There is nothing really specific to these two processors. I will check
+all names to be consistent.
+
+> 
+> And then there has to be a Kconfig option which depends on IMX35/ARM.
+> 
+> 
+>> +#ifndef __CAN_PLATFORM_SPICAN_H__
+>> +#define __CAN_PLATFORM_SPICAN_H__
+>> +
+>> +#include <linux/spi/spi.h>
+>> +
+>> +/*
+>> + * struct hcs12_imx_platform_data - i.MX to HCS12 CAN controller platform data
+>> + */
+>> +
+>> +struct hcs12_imx_platform_data {
+>> +	unsigned int can_channels;
+>> +	unsigned int gpio;
+>> +	unsigned int active;
+>> +	unsigned int slow_freq;
+>> +};
+>> +
+>> +#endif
+>>
+> 
+> Is this really i.MX or HCS12 specific??
+
+It is neither i.MX35 nor HCS12 specific. I will drop both names in next
+version.
+
+Thanks for reviewing,
+Stefano
+
+
+
+-- 
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
+=====================================================================
