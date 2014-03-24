@@ -1,58 +1,35 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: libsocketcan: release 0.0.10
-Date: Mon, 24 Mar 2014 10:34:14 +0100
-Message-ID: <532FFC16.7040403@pengutronix.de>
-References: <CAGm1_ktZgvBoR0pN1Cbuq1c4QhAzLdRyu65kMAj+KAtTUJNtxQ@mail.gmail.com> <CAGm1_kt5M9tzoOpR=D4KmJKdb+vhqQeOMs2WC692UkVPsec4dQ@mail.gmail.com>
+From: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
+Subject: [PATCH: 3.11] usb_8dev: Fix memory leak in usb_8dev_start_xmit
+Date: Mon, 24 Mar 2014 15:13:54 +0100
+Message-ID: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="hDPMlWokhCvmnn3j4LdsFSMh6pQBicUXx"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55223 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752454AbaCXJeo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Mar 2014 05:34:44 -0400
-In-Reply-To: <CAGm1_kt5M9tzoOpR=D4KmJKdb+vhqQeOMs2WC692UkVPsec4dQ@mail.gmail.com>
+Received: from mail-oa0-f42.google.com ([209.85.219.42]:41832 "EHLO
+	mail-oa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750984AbaCXONz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Mar 2014 10:13:55 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Jan Luebbe <jlu@pengutronix.de>
+To: krumboeck@universalnet.at, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hDPMlWokhCvmnn3j4LdsFSMh6pQBicUXx
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Fixed a memory leak when an error occurred in the transmit function.
+In the error handling the urb wasn't freed before returning. There was
+also a call to the usb_unanchor_urb() function but the urb wasn't
+anchored.
 
-On 03/24/2014 10:01 AM, Yegor Yefremov wrote:
-> On Thu, Mar 20, 2014 at 9:31 AM, Yegor Yefremov
-> <yegorslists@googlemail.com> wrote:
->> It seems like the release tarball is missing LICENSE file.
+Signed-off-by: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
 
-Fixed in git. Will be included in the next release.
+---
+--- drivers/net/can/usb/usb_8dev.c.orig 2014-03-24 13:40:45.000000000 +0100
++++ drivers/net/can/usb/usb_8dev.c 2014-03-24 13:44:32.076086036 +0100
+@@ -698,8 +698,8 @@ static netdev_tx_t usb_8dev_start_xmit(s
+  return NETDEV_TX_OK;
 
->> What about moving git repo to https://gitorious.org/linux-can?
+ nofreecontext:
+- usb_unanchor_urb(urb);
+  usb_free_coherent(priv->udev, size, buf, urb->transfer_dma);
++ usb_free_urb(urb);
 
-I have to talk to my boss about this.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---hDPMlWokhCvmnn3j4LdsFSMh6pQBicUXx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlMv/BwACgkQjTAFq1RaXHMe4QCfRi3M57J+kjP7SGrg+QgSSqWf
-nWYAnjVZdVamKftqKe8f7BUyeQhynZR5
-=LZxi
------END PGP SIGNATURE-----
-
---hDPMlWokhCvmnn3j4LdsFSMh6pQBicUXx--
+  netdev_warn(netdev, "couldn't find free context");
