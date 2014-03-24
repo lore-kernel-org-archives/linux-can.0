@@ -1,35 +1,60 @@
-From: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
-Subject: [PATCH: 3.11] usb_8dev: Fix memory leak in usb_8dev_start_xmit
-Date: Mon, 24 Mar 2014 15:13:54 +0100
-Message-ID: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH: 3.11] usb_8dev: Fix memory leak in usb_8dev_start_xmit
+Date: Mon, 24 Mar 2014 15:34:14 +0100
+Message-ID: <53304266.2060200@pengutronix.de>
+References: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="4BxXFMgP27k7aG9M8lretMcCKXEeH2dpx"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-oa0-f42.google.com ([209.85.219.42]:41832 "EHLO
-	mail-oa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750984AbaCXONz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Mar 2014 10:13:55 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50902 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752923AbaCXOeW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Mar 2014 10:34:22 -0400
+In-Reply-To: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: krumboeck@universalnet.at, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+To: Bjorn Van Tilt <bjorn.vantilt@gmail.com>, krumboeck@universalnet.at, wg@grandegger.com, linux-can@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 
-Fixed a memory leak when an error occurred in the transmit function.
-In the error handling the urb wasn't freed before returning. There was
-also a call to the usb_unanchor_urb() function but the urb wasn't
-anchored.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4BxXFMgP27k7aG9M8lretMcCKXEeH2dpx
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
+On 03/24/2014 03:13 PM, Bjorn Van Tilt wrote:
+> Fixed a memory leak when an error occurred in the transmit function.
+> In the error handling the urb wasn't freed before returning. There was
+> also a call to the usb_unanchor_urb() function but the urb wasn't
+> anchored.
+>=20
+> Signed-off-by: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
 
----
---- drivers/net/can/usb/usb_8dev.c.orig 2014-03-24 13:40:45.000000000 +0100
-+++ drivers/net/can/usb/usb_8dev.c 2014-03-24 13:44:32.076086036 +0100
-@@ -698,8 +698,8 @@ static netdev_tx_t usb_8dev_start_xmit(s
-  return NETDEV_TX_OK;
+Applied to the can tree.
 
- nofreecontext:
-- usb_unanchor_urb(urb);
-  usb_free_coherent(priv->udev, size, buf, urb->transfer_dma);
-+ usb_free_urb(urb);
+Tnx,
+Marc
 
-  netdev_warn(netdev, "couldn't find free context");
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--4BxXFMgP27k7aG9M8lretMcCKXEeH2dpx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlMwQmYACgkQjTAFq1RaXHPalwCdHKXhTEQdgpj9Wt3mzFxrmESf
+9BQAnRoWQ9w4Syma/bm99ViKmN/E2vGc
+=KnL4
+-----END PGP SIGNATURE-----
+
+--4BxXFMgP27k7aG9M8lretMcCKXEeH2dpx--
