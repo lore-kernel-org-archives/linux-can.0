@@ -1,66 +1,48 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v6] can: xilinx CAN controller support
-Date: Tue, 25 Mar 2014 22:39:17 -0700
-Message-ID: <1395812357.3726.14.camel@joe-AO722>
-References: <5ff46a21-3047-40ff-9221-f08e476f9ce6@VA3EHSMHS030.ehs.local>
+From: Stefano Babic <sbabic@denx.de>
+Subject: Re: [PATCH v2 1/3] Add documentation for SPI to CAN driver
+Date: Wed, 26 Mar 2014 09:07:00 +0100
+Message-ID: <53328AA4.9070507@denx.de>
+References: <1395757822-22283-1-git-send-email-sbabic@denx.de> <1395757822-22283-2-git-send-email-sbabic@denx.de> <5331C773.9070505@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtprelay0051.hostedemail.com ([216.40.44.51]:34228 "EHLO
-	smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1750727AbaCZFjV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Mar 2014 01:39:21 -0400
-In-Reply-To: <5ff46a21-3047-40ff-9221-f08e476f9ce6@VA3EHSMHS030.ehs.local>
+Received: from mail-out.m-online.net ([212.18.0.10]:43671 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752035AbaCZIHF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Mar 2014 04:07:05 -0400
+In-Reply-To: <5331C773.9070505@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: Stefano Babic <sbabic@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-On Wed, 2014-03-26 at 10:56 +0530, Kedareswara rao Appana wrote:
-> This patch adds xilinx CAN controller support.
-> This driver supports both ZYNQ CANPS and Soft IP
-> AXI CAN controller.
+Hi Oliver,
 
-Just trivial notes about dmesg logging output.
+On 25/03/2014 19:14, Oliver Hartkopp wrote:
+> Please check the patch with checkpatch.pl ...
+> 
+> There are thousands of lines > 80 chars :-)
+> 
 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-[]
-> +static int set_reset_mode(struct net_device *ndev)
-> +{
-[]
-> +			netdev_warn(ndev, "timedout waiting for config mode\n");
+Well, checkpatch ran over the patches:
 
-timed out
+scripts/checkpatch.pl 0001-Add-documentation-for-SPI-to-CAN-driver.patch
+total: 0 errors, 0 warnings, 707 lines checked
 
-> +static int xcan_set_bittiming(struct net_device *ndev)
-> +{
-[]
-> +	if (!is_config_mode) {
-> +		netdev_alert(ndev,
-> +			"BUG! Cannot set bittiming can is notin config mode\n");
+0001-Add-documentation-for-SPI-to-CAN-driver.patch has no obvious style
+problems and is ready for submission.
 
-"Cannot set bit timing - CAN is not in config mode\n"
+Anyway, the patch contains tons of long lines. I will check tjem
+manually before submitting and fix them.
 
-> +static int xcan_chip_start(struct net_device *ndev)
-> +{
-
-> +			netdev_warn(ndev,
-> +				"time out waiting for correct mode\n");
-
-Please be consistent.  Maybe
-"timed out waiting for correct mode\n"
-
-> +static int xcan_open(struct net_device *ndev)
-> +{
-> +	struct xcan_priv *priv = netdev_priv(ndev);
-> +	int ret;
-> +
-> +	ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
-> +			ndev->name, ndev);
-> +	if (ret < 0) {
-> +		netdev_err(ndev, "Irq allocation for CAN failed\n");
-
-irq is almost always lower case.
+Best regards,
+Stefano Babic
 
 
+-- 
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
+=====================================================================
