@@ -1,408 +1,240 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v2 3/3] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Wed, 26 Mar 2014 10:01:44 +0100
-Message-ID: <53329778.7080409@denx.de>
-References: <1395757822-22283-1-git-send-email-sbabic@denx.de> <1395757822-22283-4-git-send-email-sbabic@denx.de> <5331D0F3.4050207@hartkopp.net>
+From: Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH v6] can: xilinx CAN controller support
+Date: Thu, 27 Mar 2014 15:14:46 +0100
+Message-ID: <53343256.8020802@monstr.eu>
+References: <5ff46a21-3047-40ff-9221-f08e476f9ce6@VA3EHSMHS030.ehs.local>
+Reply-To: monstr@monstr.eu
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="1O1wFkfqdC5vAbhH64RkQeBFEONTGuAPS"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:60809 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750953AbaCZJBt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Mar 2014 05:01:49 -0400
-In-Reply-To: <5331D0F3.4050207@hartkopp.net>
+Received: from mail-ee0-f41.google.com ([74.125.83.41]:58066 "EHLO
+	mail-ee0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754802AbaC0OOu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Mar 2014 10:14:50 -0400
+Received: by mail-ee0-f41.google.com with SMTP id t10so2968285eei.0
+        for <linux-can@vger.kernel.org>; Thu, 27 Mar 2014 07:14:49 -0700 (PDT)
+In-Reply-To: <5ff46a21-3047-40ff-9221-f08e476f9ce6@VA3EHSMHS030.ehs.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: Stefano Babic <sbabic@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>, linux-arm-kernel@lists.infradead.org
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--1O1wFkfqdC5vAbhH64RkQeBFEONTGuAPS
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+Hi Kedar,
 
-On 25/03/2014 19:54, Oliver Hartkopp wrote:
-> 
-> 
-> On 25.03.2014 15:30, Stefano Babic wrote:
->> This driver implements a simple protocol
->> to transfer CAN messages to and from an external
->> microcontroller via SPI interface.
->> Multiple busses can be tranfered on the same SPI channel.
->>
->> It was tested on a i.MX35 connected to a Freescale's
->> HCS12 16-bit controller with 5 CAN busses.
->>
->> Signed-off-by: Stefano Babic <sbabic@denx.de>
->>
->> ---
->>
->> Changes in v2:
->> - drop all references to i.MX35 and HCS12
-> 
-> See include/linux/can/platform/spican.h
-> 
-> There are still some of them.
+On 03/26/2014 06:26 AM, Kedareswara rao Appana wrote:
+> This patch adds xilinx CAN controller support.
+> This driver supports both ZYNQ CANPS and Soft IP
+> AXI CAN controller.
+>=20
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+> This patch is rebased on the 3.14 rc8 kernel
+> Chnages for v6:
+> - Updated the driver with review comments.
+> - Used the clock names specified in the IP data sheet.
+> - Updated the devicetree bindings doc as per Rob suggestion.
+> Changes for v5:
+> - Updated the driver with the review comments.
+> - Remove the check for the tx fifo full interrupt condition
+>   form Tx interrupt routine as we are checking it in the _xmit
+>   routine.
+> - Clearing the txok interrupt in the tx interrupt routine for
+>   every Tx can frame.
+> Changes for v4:
+> - Added check for the tx fifo full interrupt condition in
+>   Tx interrupt routine.
+> - Added be iohelper functions.
+> - Moved the clock enable/disable to probe/remove because of
+>   Added big endian support for AXI CAN controller case(reading
+>   a register during probe for that we need to enable clock).
+> Changes for v3:
+> - Updated the driver with the review comments.
+> - Modified the tranmit logic as per Marc suggestion.
+> - Enabling the clock when the interface is up to reduce the
+>   Power consumption.
+> Changes for v2:
+> - Updated with the review comments.
+> - Removed the unnecessary debug prints.
+> - include tx,rx fifo depths in ZYNQ CANPS case also.
+> ---
+>  .../devicetree/bindings/net/can/xilinx_can.txt     |   44 +
+>  drivers/net/can/Kconfig                            |    7 +
+>  drivers/net/can/Makefile                           |    1 +
+>  drivers/net/can/xilinx_can.c                       | 1179 ++++++++++++=
+++++++++
+>  4 files changed, 1231 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/xilinx_ca=
+n.txt
+>  create mode 100644 drivers/net/can/xilinx_can.c
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/xilinx_can.txt b=
+/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+> new file mode 100644
+> index 0000000..4646396
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+> @@ -0,0 +1,44 @@
+> +Xilinx Axi CAN/Zynq CANPS controller Device Tree Bindings
+> +---------------------------------------------------------
+> +
+> +Required properties:
+> +- compatible		: Should be "xlnx,zynq-can-1.00.a" for Zynq CAN
 
-Thanks to find them.
+We should do one more change and better now than later.
+Please use just "xlnx,zynq-can-1.0" compatible string here.
 
-> 
->>
->>  drivers/net/can/spi/Kconfig         |   10 +
->>  drivers/net/can/spi/Makefile        |    1 +
->>  drivers/net/can/spi/spi_can.c       | 1534 +++++++++++++++++++++++++++++++++++
->>  include/linux/can/platform/spican.h |   36 +
->>  4 files changed, 1581 insertions(+)
->>  create mode 100644 drivers/net/can/spi/spi_can.c
->>  create mode 100644 include/linux/can/platform/spican.h
-> 
-> spi_can.h
+> +			  controllers and "xlnx,axi-can-1.00.a" for Axi CAN
+> +			  controllers.
+> +- reg			: Physical base address and size of the Axi CAN/Zynq
+> +			  CANPS registers map.
+> +- interrupts		: Property with a value describing the interrupt
+> +			  number.
+> +- interrupt-parent	: Must be core interrupt controller
+> +- clock-names		: List of input clock names - "can_clk", "pclk"
+> +			  (For CANPS), "can_clk" , "s_axi_aclk"(For AXI CAN)
+> +			  (See clock bindings for details).
+> +- clocks		: Clock phandles (see clock bindings for details).
+> +- tx-fifo-depth		: Can Tx fifo depth.
+> +- rx-fifo-depth		: Can Rx fifo depth.
+> +
+> +
+> +Example:
+> +
+> +For Zynq CANPS Dts file:
+> +	zynq_can_0: can@e0008000 {
+> +			compatible =3D "xlnx,zynq-can-1.00.a";
 
-Ok
+the same here.
 
-> 
->>
->> diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
->> index 148cae5..299d71ca 100644
->> --- a/drivers/net/can/spi/Kconfig
->> +++ b/drivers/net/can/spi/Kconfig
->> @@ -7,4 +7,14 @@ config CAN_MCP251X
->>  	---help---
->>  	  Driver for the Microchip MCP251x SPI CAN controllers.
->>  
->> +config CAN_SPI
->> +	tristate "Support for CAN over SPI"
->> +	depends on CAN_DEV
-> 
-> This all depends on CAN_DEV anyway.
-> You can remove this dependency here.
+> +			clocks =3D <&clkc 19>, <&clkc 36>;
+> +			clock-names =3D "can_clk", "pclk";
+> +			reg =3D <0xe0008000 0x1000>;
+> +			interrupts =3D <0 28 4>;
+> +			interrupt-parent =3D <&intc>;
+> +			tx-fifo-depth =3D <0x40>;
+> +			rx-fifo-depth =3D <0x40>;
+> +		};
+> +For Axi CAN Dts file:
+> +	axi_can_0: axi-can@40000000 {
+> +			compatible =3D "xlnx,axi-can-1.00.a";
+> +			clocks =3D <&clkc 0>;
+> +			clock-names =3D "can_clk","s_axi_aclk" ;
+> +			reg =3D <0x40000000 0x10000>;
+> +			interrupt-parent =3D <&intc>;
+> +			interrupts =3D <0 59 1>;
+> +			tx-fifo-depth =3D <0x40>;
+> +			rx-fifo-depth =3D <0x40>;
+> +		};
 
-Right, I will remove it.
-
-> 
->> +	---help---
->> +	  Driver to transfer CAN messages to a microcontroller
->> +	  connected via the SPI interface using a simple messaged based
->> +	  protocol.
->> +
->> +	  Say Y here if you want to support for CAN to SPI.
->> +
->>  endmenu
->> diff --git a/drivers/net/can/spi/Makefile b/drivers/net/can/spi/Makefile
->> index 90bcacf..0fd2126 100644
->> --- a/drivers/net/can/spi/Makefile
->> +++ b/drivers/net/can/spi/Makefile
->> @@ -4,5 +4,6 @@
->>  
->>  
->>  obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
->> +obj-$(CONFIG_CAN_SPI)		+= spi_can.o
->>  
->>  ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
->> diff --git a/drivers/net/can/spi/spi_can.c b/drivers/net/can/spi/spi_can.c
->> new file mode 100644
->> index 0000000..aee924a
->> --- /dev/null
->> +++ b/drivers/net/can/spi/spi_can.c
-> 
-> 
->> +
->> +#define MAX_CAN_CHANNELS	16
->> +#define CFG_CHANNEL		0xFF
->> +#define DRV_NAME		"canoverspi"
-> 
-> spi_can ?
-
-Well, sometimes I search for new names...I will change to be consistent ;-)
-
-
-> 
-> 
->> +
->> +/* Message IDs for SPI Frame */
->> +enum msg_type {
->> +	SPI_MSG_STATUS_REQ	= 0x01,
->> +	SPI_MSG_SEND_DATA	= 0x02,
->> +	SPI_MSG_SYNC		= 0x03,
->> +	SPI_MSG_CFG		= 0x04,
->> +	SPI_MSG_REQ_DATA	= 0x05
->> +};
-> 
-> 
->> + */
->> +
->> +struct msg_channel_data {
->> +	u8	channel;
->> +	u32	timestamp;
->> +	u32	can_id;
->> +	u8	dlc;
->> +	u8	data[8];
->> +} __packed;
->> +
-> 
-> I assume CAN FD capable SPI/CAN capable controllers to emerge in the mid
-> future. What's your concept for that?
-
-IMHO the driver should be backward compatible as CAN FD is. The CAN
-frame is now encapsulated inside a SPI_MSG_SEND_DATA. To support CAN FD,
-the driver should, exactly as most drivers should do, check for IDE-bit
-(Identifier extension). As dlc is only 4 bits, we we could use the rest
-to detect the format.
-
-However, I will not add some extensions now - I have no way to test it,
-and I think we can easy add CAN FD support later when the driver is merged.
-
-> E.g. define SPI_MSG_SEND_FD_DATA then?
-
-No, I do not thinks so. SPI_MSG_SEND_DATA is only thought as a way for
-the master to provide enough clock cycles (if it has nothing to send) to
-the slave, allowing the slave to send back the received packets.
-
-I can also imagine that there is a mix between channels, some of them
-are CAN FD and some of them no. If we use a different message as
-SPI_MSG_SEND_FD_DATA, the master should know before starting a
-communication which are the packets that the slave wants to send, and it
-cannot know. It is better to have a "neutral" message (an anonymous
-SPI_SEND_DATA), checking then in the received SPI frame which is the
-type of CAN data. Of course, the slave should do the same in the other
-direction.
+I don't know which thread I discussed this with Rob but please send this =
+binding
+separately out of this and copy devicetree@vger.kernel.org for this patch=
+=2E
+They should give us ACK on device-tree binding.
 
 
-> 
->> +/* CFG message */
->> +struct msg_cfg_data {
->> +	u8	channel;
->> +	u8	enabled;
->> +	struct can_bittiming bt;
->> +} __packed;
-> 
-> Why don't you pass this configuration stuff like
-> 
-> - enable/disable
-> - set bitrate
-> 
-> in a message which is sent via the dedicated interface (mux) channel?
-> 
-> I don't see the need for an extra configuration channel.A (new designed)
-> SPI_MSG_CFG message should be able to be processed by every interface channel.
-> 
+> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> index 9e7d95d..9049884 100644
+> --- a/drivers/net/can/Kconfig
+> +++ b/drivers/net/can/Kconfig
+> @@ -125,6 +125,13 @@ config CAN_GRCAN
+>  	  endian syntheses of the cores would need some modifications on
+>  	  the hardware level to work.
+> =20
+> +config CAN_XILINXCAN
+> +	tristate "Xilinx CAN"
+> +	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+> +	depends on COMMON_CLK && HAS_IOMEM
+> +	---help---
+> +	  Xilinx CAN driver. This driver supports both soft AXI CAN IP and
+> +	  Zynq CANPS IP.
+>  source "drivers/net/can/mscan/Kconfig"
+> =20
+>  source "drivers/net/can/sja1000/Kconfig"
+> diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
+> index c744039..0b8e11e 100644
+> --- a/drivers/net/can/Makefile
+> +++ b/drivers/net/can/Makefile
+> @@ -25,5 +25,6 @@ obj-$(CONFIG_CAN_JANZ_ICAN3)	+=3D janz-ican3.o
+>  obj-$(CONFIG_CAN_FLEXCAN)	+=3D flexcan.o
+>  obj-$(CONFIG_PCH_CAN)		+=3D pch_can.o
+>  obj-$(CONFIG_CAN_GRCAN)		+=3D grcan.o
+> +obj-$(CONFIG_CAN_XILINXCAN)	+=3D xilinx_can.o
+> =20
+>  ccflags-$(CONFIG_CAN_DEBUG_DEVICES) :=3D -DDEBUG
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.=
+c
+> new file mode 100644
+> index 0000000..3bb289c
+> --- /dev/null
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -0,0 +1,1179 @@
+> +/* Xilinx CAN device driver
+> + *
+> + * Copyright (C) 2012 - 2014 Xilinx, Inc.
+> + * Copyright (C) 2009 PetaLogix. All rights reserved.
+> + *
+> + * Description:
+> + * This driver is developed for Axi CAN IP and for Zynq CANPS Controll=
+er.
+> + * This program is free software: you can redistribute it and/or modif=
+y
+> + * it under the terms of the GNU General Public License as published b=
+y
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program.  If not, see <http://www.gnu.org/licenses/=
+>.
 
-I explain this just a bit later.
+Please remove this paragraph. Some testing tools reports this
+as a problematic part.
 
-> Other questions:
-> 
-> 1. Why can't the SPI always run in the high speed?
+<snip>
 
-This can be a limitation on the HCS-12, but it could be a general
-limitation. The HCS-12 have a "boot" firmware, able to run only at lower
-speed, and able to get a new firmware image (there is no software to
-manage the can busses). After upgrading or if a valid image is found,
-the slave is able to run at full speed. It is not a limitation on the
-main controller side.
+> +/* Match table for OF platform binding */
+> +static struct of_device_id xcan_of_match[] =3D {
+> +	{ .compatible =3D "xlnx,zynq-can-1.00.a", },
 
-> 2. The number of CAN interfaces is taken from the OF information. IMHO the SPI
-> CAN micro controller should give the number of available interfaces when it is
-> asked for (via new SPI_MSG_CFG message?).
+And here also xlnx,zynq-can-1.0
 
-Not always. Agree that we can add a query to get the number of physical
-channels. However, the OF/platform data channels is thought to limit the
-number of provided network interface. The slave controller can have
-multiple bus, but only a few of them are physically active and it is
-required to expone only some CAN interfaces.
+Thanks,
+Michal
 
-> 
-> What's your concept regarding the SPI firmware update?
-> E.g. what about a new message type SPI_MSG_FW_UPDATE which is supported by the
-> micro controller but not by the CAN netdevice driver.
-> 
-> E.g. is something like this possible:
-> 
-> rmmod spi_can
-> fw-upload-tool /dev/spi0 firmware.img
-
-No, there is another concept. The reason to have a separate
-configuration channel is to provide a general way to exchange packets
-between the Application Layer and the Slave, without intervention of the
-driver. A sort of out-of-band data. The driver should not know anything
-about the type of exchanged packets on this channel.
-
-The application layer starts to send packets on the CFG channel, that
-are interpreted as firmware update by the slave. These data can be very
-microcontroller or project specific and I cared that the driver does not
-check inside this channel. Not only: it is also possible to update the
-slave reducing the time of out of service, because the old software can
-(or could) also run. If we remove the module and start a new tool to
-upgrade the slave, the CAN busses are not available until the update is
-ready. Using the CFG channel, the out of service time is limited to the
-time for the slave to switch the software.
-
-There are many other usage for the CFG channel. Some examples:
-
-- the slave has also some GPIOs that the Application Layer can set up.
-The Application use the CFG channel to inform the slave how to handle.
-
-- the slave can implement some other proprietary interface and must
-communicate something with the application. This can be also very
-project specific
-
-The CFG channel is a way to let the application in user space on the
-main controller to communicate directly with the slave without
-intervention of the underlying (this driver) layers. The driver shows to
-the application a socket-CAN interface, even for the CFG channel, and
-this is consistent. It is then duty of the application on the main and
-slave controller to specify which messages and which functions they want
-to exchange.
-
->> +
->> +/* Default Values */
->> +static struct can_bittiming_const spi_can_bittiming_const = {
->> +	.name = DRV_NAME,
->> +	.tseg1_min = 4,
->> +	.tseg1_max = 16,
->> +	.tseg2_min = 2,
->> +	.tseg2_max = 8,
->> +	.sjw_max = 4,
->> +	.brp_min = 1,
->> +	.brp_max = 64,
->> +	.brp_inc = 1,
->> +};
-> 
-> This also depends on the CAN controllers in the micro controller.
-
-You are right.
-
-> Therefore the struct can_bittiming_const has to be retrieved from the micro
-> controller at setup time (via new SPI_MSG_CFG message).
-
-The structure is only there to have a default and it is not used at all.
-I am not sure, can I drop it completely and not set can.bittiming_const
-before registering the network interface ?
-
-The slave, as defined in protocol, receives the data for configuration
-(bitrate, ..) exactly as the driver has received from socket-CAN. The
-driver converts only the values as big endian, but it does not
-interprete them (function spi_can_cfg). The driver itself does not use
-this structure.
-
-> 
-> 
->> +/* Provide a way to disable checksum */
->> +static unsigned int chksum_en;
->> +module_param(chksum_en, uint, 0);
->> +MODULE_PARM_DESC(chksum_en,
->> +	"Enable checksum test on received frames (default is disabled)");
-> 
-> Why did you define and implement a checksum, switch it off by default and then
-> provide an interface to enable it again?
-
-This was a hard debate during the development. If the checksum is quite
-useless on the main controller side, it was very helpful for the
-firmware developers on the slave to check for issues (missing
-interrupts, ...) on their side. Disabling the checksum is then a way if
-performance (on the slave side, of course..) are affected.
-
-> 
-> IMO remove this module parameter and switch it on.
-
-Agree on switching on as default. However, I will let the module
-parametr for fine tuning if needed.
-
-> Or remove the checksum stuff entirely.
-> 
->> +static unsigned int freq;
->> +module_param(freq, uint, 0);
->> +MODULE_PARM_DESC(freq,
->> +	"SPI clock frequency (default is set by platform device)");
-> 
-> Really needed?
-> 
->> +static unsigned int slow_freq;
->> +module_param(slow_freq, uint, 0);
->> +MODULE_PARM_DESC(slow_freq,
->> +	"SPI clock frequency to be used in supervisor mode (default 1 Mhz)");
-> 
-> Why not always use the high SPI clock?
-
-I explained this before.
-
-> 
->> +static unsigned int debug;
->> +module_param(debug, uint, 0);
->> +MODULE_PARM_DESC(freq, "enables dump of received bytes");
->                     ^^^^
-> Obviously never used :-))
-> 
-> If you really think about debugging this better add an extra define or use
-> CAN_DEBUG_DEVICES.
-> 
-> 
->> +SHOW_SYS_ATTR(spi_sent_bytes, spibytes);
->> +SHOW_SYS_ATTR(max_req_bytes, maxreqbytes);
->> +SHOW_SYS_ATTR(canmsg_sent, cantxmsg);
->> +SHOW_SYS_ATTR(canmsg_received, canrxmsg);
->> +SHOW_SYS_ATTR(cfgmsg_sent, cfgmsg);
->> +SHOW_SYS_ATTR(messages_in_queue, messages_in_queue);
->> +SHOW_SYS_ATTR(average_length, average_length);
->> +SHOW_SYS_ATTR(current_length, current_length);
->> +SHOW_SYS_ATTR(short_frames, short_frames);
->> +SHOW_SYS_ATTR(spi_sent_frames, spi_sent_frames);
-> 
-> This is definitely debug stuff.
-
-Absolutely, right.
-
-> 
-> Are you use it's needed in production code?
-
-I will tend to discharge them
-
-> Or at least with CAN_DEBUG_DEVICES only??
-
-I will check both of them. I am not a fan of #ifdef, but I agree this is
-all debug stuff.
-
-> 
-> Don't be disappointed by my remarks.
-
-Absolutely, I am not ! I am glad you are reviewing my code, many thanks !
-
-> I really like the idea - but IMO there's relly some space for improvements ;-)
-> 
-
-Of course..I will try my best to make the code suitable for merging. I
-will work now for V3.
-
-
-> Best regards,
-> Oliver
-> 
->> +++ b/include/linux/can/platform/spican.h
-> 
-> spi_can.h
-> 
->> +#ifndef __CAN_PLATFORM_SPICAN_H__
-> 
-> __CAN_PLATFORM_SPI_CAN_H__
-> 
->> +#define __CAN_PLATFORM_SPICAN_H__
->> +
->> +#include <linux/spi/spi.h>
->> +
->> +/*
->> + * struct hcs12_imx_platform_data - i.MX to HCS12 CAN controller platform data
->              ^^^^^^^^^^                ^^^^    ^^^^^
-
-Right, I missed to fix the comment, too. Thanks !
-
-
-Best regards,
-Stefano
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
 
 
 
--- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+--1O1wFkfqdC5vAbhH64RkQeBFEONTGuAPS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlM0MlYACgkQykllyylKDCH9zQCgnIsixyuI2xvQD5kaZb/os8g8
+RzoAn0pWBZzATIe2F2GLy9sl48ralZGq
+=+FL0
+-----END PGP SIGNATURE-----
+
+--1O1wFkfqdC5vAbhH64RkQeBFEONTGuAPS--
