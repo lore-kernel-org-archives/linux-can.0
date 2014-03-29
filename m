@@ -1,95 +1,50 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH 2/4] can: mcp251x: Improve mcp251x_hw_reset()
-Date: Fri, 28 Mar 2014 14:14:45 +0400
-Message-ID: <1396001687-7092-2-git-send-email-shc_work@mail.ru>
-References: <1396001687-7092-1-git-send-email-shc_work@mail.ru>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
+Subject: Re: [PATCH: 3.11] usb_8dev: Fix memory leak in usb_8dev_start_xmit
+Date: Sat, 29 Mar 2014 08:17:44 +0100
+Message-ID: <53367398.7010006@universalnet.at>
+References: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback2.mail.ru ([94.100.176.87]:56802 "EHLO
-	fallback6.mail.ru" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1750951AbaC1KVm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Mar 2014 06:21:42 -0400
-Received: from smtp11.mail.ru (smtp11.mail.ru [94.100.176.85])
-	by fallback6.mail.ru (mPOP.Fallback_MX) with ESMTP id AC1D23535114
-	for <linux-can@vger.kernel.org>; Fri, 28 Mar 2014 14:15:17 +0400 (MSK)
-In-Reply-To: <1396001687-7092-1-git-send-email-shc_work@mail.ru>
+Received: from smtp.xy24.at ([85.126.109.136]:55612 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750928AbaC2HZh (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 29 Mar 2014 03:25:37 -0400
+In-Reply-To: <CAMEA=P1AaDL94S8kaep-F012WAseimAyB7ME11Qzd0UMbp-BGg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Alexander Shiyan <shc_work@mail.ru>
+To: Bjorn Van Tilt <bjorn.vantilt@gmail.com>, linux-can@vger.kernel.org
 
-The MCP251x utilizes an oscillator startup timer (OST), which holds the
-chip in reset, to insure that the oscillator has stabilized before the
-internal state machine begins to operate. The OST maintains reset for
-the first 128 OSC clock cycles after power up or reset.
-So, this patch removes unnecessary loops and reduce delay for power on
-and reset to the safe value.
+Applied to the driver sources (outside kernel tree): https://github.com/krumboeck/usb2can
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- drivers/net/can/mcp251x.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+Thank you!
 
-diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-index 26879c7..fea41b4 100644
---- a/drivers/net/can/mcp251x.c
-+++ b/drivers/net/can/mcp251x.c
-@@ -214,6 +214,8 @@
- 
- #define TX_ECHO_SKB_MAX	1
- 
-+#define MCP251X_OST_DELAY_MS	(5)
-+
- #define DEVICE_NAME "mcp251x"
- 
- static int mcp251x_enable_dma; /* Enable SPI DMA. Default: 0 (Off) */
-@@ -625,28 +627,20 @@ static int mcp251x_hw_reset(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
- 	int ret;
--	unsigned long timeout;
-+
-+	/* Wait for oscillator startup timer after power up */
-+	mdelay(MCP251X_OST_DELAY_MS);
- 
- 	priv->spi_tx_buf[0] = INSTRUCTION_RESET;
--	ret = spi_write(spi, priv->spi_tx_buf, 1);
--	if (ret) {
--		dev_err(&spi->dev, "reset failed: ret = %d\n", ret);
--		return -EIO;
--	}
-+	ret = mcp251x_spi_trans(spi, 1);
-+	if (ret)
-+		return ret;
- 
--	/* Wait for reset to finish */
--	timeout = jiffies + HZ;
--	mdelay(10);
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK)
--	       != CANCTRL_REQOP_CONF) {
--		schedule();
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev, "MCP251x didn't"
--				" enter in conf mode after reset\n");
--			return -EBUSY;
--		}
--	}
--	return 0;
-+	/* Wait for oscillator startup timer after reset */
-+	mdelay(MCP251X_OST_DELAY_MS);
-+	
-+	return ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) ==
-+		CANCTRL_REQOP_CONF) ? 0 : -ENODEV;
- }
- 
- static int mcp251x_hw_probe(struct spi_device *spi)
-@@ -776,7 +770,6 @@ static void mcp251x_restart_work_handler(struct work_struct *ws)
- 
- 	mutex_lock(&priv->mcp_lock);
- 	if (priv->after_suspend) {
--		mdelay(10);
- 		mcp251x_hw_reset(spi);
- 		mcp251x_setup(net, priv, spi);
- 		if (priv->after_suspend & AFTER_SUSPEND_RESTART) {
--- 
-1.8.3.2
+
+regards,
+Bernd
+
+
+
+Am 2014-03-24 15:13, schrieb Bjorn Van Tilt:
+> Fixed a memory leak when an error occurred in the transmit function.
+> In the error handling the urb wasn't freed before returning. There was
+> also a call to the usb_unanchor_urb() function but the urb wasn't
+> anchored.
+>
+> Signed-off-by: Bjorn Van Tilt <bjorn.vantilt@gmail.com>
+>
+> ---
+> --- drivers/net/can/usb/usb_8dev.c.orig 2014-03-24 13:40:45.000000000 +0100
+> +++ drivers/net/can/usb/usb_8dev.c 2014-03-24 13:44:32.076086036 +0100
+> @@ -698,8 +698,8 @@ static netdev_tx_t usb_8dev_start_xmit(s
+>    return NETDEV_TX_OK;
+>
+>   nofreecontext:
+> - usb_unanchor_urb(urb);
+>    usb_free_coherent(priv->udev, size, buf, urb->transfer_dma);
+> + usb_free_urb(urb);
+>
+>    netdev_warn(netdev, "couldn't find free context");
+>
 
