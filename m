@@ -1,94 +1,141 @@
-From: Pavel Kirienko <pavel.kirienko.list@gmail.com>
-Subject: Re: TX timestamping
-Date: Sun, 30 Mar 2014 21:31:07 +0400
-Message-ID: <CAGfq0uuQA7GTssg0GrY34V1AcomWPgPX4zLw42XNUBbhZ3eUwg@mail.gmail.com>
-References: <CAGfq0uugZi8+BrF_D1cLXjVZ9nePuKeX2fQ5c9vLGRiYQO0RQg@mail.gmail.com>
-	<532DE306.1060302@hartkopp.net>
-	<CAGfq0uvZWzNCUq6FtOwU7WAfm8UibqJ-47cD3VPTFSUdxgFLhg@mail.gmail.com>
+From: Mylene Josserand <Mylene.Josserand@navocap.com>
+Subject: RE: mcp251x: mcp2515 stops receiving
+Date: Mon, 31 Mar 2014 08:29:51 +0000
+Message-ID: <ef6bcef63bd74fb890ed2a4145f481cf@courrier2014.nvp.local>
+References: <2E9F00CBB66AB544A1ACDC59627518BA0DB3F120@mailserver>,<20140329181521.GB31437@griso.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yh0-f46.google.com ([209.85.213.46]:33070 "EHLO
-	mail-yh0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752369AbaC3RbI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 30 Mar 2014 13:31:08 -0400
-Received: by mail-yh0-f46.google.com with SMTP id b6so6774457yha.5
-        for <linux-can@vger.kernel.org>; Sun, 30 Mar 2014 10:31:07 -0700 (PDT)
-In-Reply-To: <CAGfq0uvZWzNCUq6FtOwU7WAfm8UibqJ-47cD3VPTFSUdxgFLhg@mail.gmail.com>
+Received: from mailhost-c5-m0.nerim.net ([78.40.49.141]:11415 "EHLO
+	smtp-delay2.nerim.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1752967AbaCaIkI convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 31 Mar 2014 04:40:08 -0400
+Received: from maiev.nerim.net (smtp-151-monday.nerim.net [194.79.134.151])
+	by smtp-delay2.nerim.net (Postfix) with ESMTP id 8304F19CF8EB
+	for <linux-can@vger.kernel.org>; Mon, 31 Mar 2014 10:30:33 +0200 (CEST)
+In-Reply-To: <20140329181521.GB31437@griso.site>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: John Whitmore <arigead@gmail.com>, "Rost, Martin" <Martin.Rost@tonfunk.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Whoops sorry, I messed up msghdr initialization. Of course
-msg_controllen would be zero since I provided no buffer for the
-control message.
-Works now.
+Hi everyone,
 
-On Sun, Mar 30, 2014 at 9:17 PM, Pavel Kirienko
-<pavel.kirienko.list@gmail.com> wrote:
-> Thanks Oliver!
+
+I have previously posted on this list because of a freeze problem while=
+ using the MCP2515 + imx27 : http://marc.info/?l=3Dlinux-can&m=3D136559=
+970919837&w=3D2 and http://marc.info/?l=3Dlinux-can&m=3D136559970919837=
+&w=3D2
+
+
+We find a "solution" of this freeze issue with old kernel 2.6.32.
+I did not test it in newer kernel and I did not know the impact on othe=
+r devices but for the MCP2515 (that is the only device on our SPI bus..=
+ with many devices, maybe, it is not a good solution), it works. I ran =
+CAN simulation during 2 weeks and it did not freeze anymore.
+
+The solution to this issue is linked to SPI imx driver. I have checked =
+and sometimes, the value of tx-fifo buffer of the spi-imx was equals to=
+ 429496729.
+With some external help, we see it was due to the register MX27_INTREG_=
+TEEN reading instead of
+the MX27_INTREG_TSHFEEN register.=20
+
+
+With these changes (reading of the register TSHFEEN), for me, it works =
+well.
+I hope it can help.
+
+
+Best regards,
+
+
+Mylene JOSSERAND
+
+
+________________________________________
+De : linux-can-owner@vger.kernel.org <linux-can-owner@vger.kernel.org> =
+de la part de John Whitmore <arigead@gmail.com>
+Envoy=E9 : samedi 29 mars 2014 19:15
+=C0 : Rost, Martin
+Cc : linux-can@vger.kernel.org
+Objet : Re: mcp251x: mcp2515 stops receiving
+
+Sorry Martin just catching up with this list.
+
+On Fri, Mar 21, 2014 at 12:40:30PM +0000, Rost, Martin wrote:
+> Hello List,
 >
-> I'm facing an issue with timestamping (not only TX), I hope someone
-> could help me with that.
+> We are using the MCP2515 on a tegra3 (Toradex Colibri T30, to be prec=
+ise) and every now and then the driver just stops.
+> The interrupt line stays low, and the driver does not collect the dat=
+a.
+> From my investigations I conclude, that the MCP lowers the IRQ line b=
+efore the value in the INTF register is  updated,
+> so when the driver reads the INTF register, a 0 is returned, and the =
+driver assumes nothing has to be done.
 >
-> The problem is that I don't receive control message with timestamp
-> from recvmsg(), although SO_TIMESTAMP is enabled.
-> Here's how I open the socket and read from it: http://pastebin.com/2iQrQuY3
-> Problem is at line 78 - recvmsg() returns no control messages.
+
+What you have described is something that I've been getting with the
+MCP2515. I do have the MCP2515 connected on the RPi, but I've not been =
+using
+that setup for a few weeks. I'm currently working with a MCP2515 connec=
+ted to
+a Microchip PIC24 and cannot get the MCP2515 to work in Interrupt mode =
+as it
+triggers an Interrupt but the Flags are zero indicating that there is n=
+o
+interrupt so my driver does nothing and the interrupt line is locked lo=
+w. I
+can only get the 2515 to work in polled mode.
+
+All that is of no help to you but I'll have a look at my RPi setup and =
+really
+test it on a network and see if I can recreate that problem there.
+
+
+> (
+> Chances are I'm misinterpreting my observations.
+> It might as well be that the call to the IST is suspended, because th=
+e previous instance is still running and processes the new irq cause as=
+ well,
+> so the next call will not see the signal at all.
+> But in that case the driver should not stop with the irq line held lo=
+w, or should it?
+> )
 >
-> $ uname -a
-> Linux spym-pc 3.2.0-60-generic #91-Ubuntu SMP Wed Feb 19 03:54:44 UTC
-> 2014 x86_64 x86_64 x86_64 GNU/Linux
+> We are using the 3.1.10 kernel from the toradex repository, which sho=
+uld be in sync with the nvidia tegra4linux one.
+> I have browsed through the patches between 3.1.10 and head and have a=
+pplied all those that seem to address issues and don't interfere with t=
+he 3.1.10 kernel structures, but to no avail.
+> In fact, these patches have been applied:
+> cab32f39dcc5b35db96497dc0a026b5dea76e4e7
+> db388d6460ffa53b3b38429da6f70a913f89b048
+> ae5d589e5f9f3217656ada632869968178886ac6
+> b1ef05a5a20afe50d4188a5b59579bd140758cf0
+> I have changed the IST loop to poll the INTF register beforehand for =
+up to 10ms, and now the driver seems a lot more stable in our environme=
+nt.
+> Has someone seen this issue before, or can confirm I am not completel=
+y off the path?
 >
-> What I'm doing wrong?
+> On a side note, I have a second reason that makes the driver stop, wh=
+ich has to do with smp somehow.
+> Disabling core1..3 keeps that from happening, but the problem address=
+ed above would persist.
+> Switching the irq to a different core by setting /proc/irq/91/smp_aff=
+inity does not trigger this problem.
+> Any insights or starting point on this would also be greatly apprecia=
+ted.
 >
-> Thanks in advance,
-> Pavel.
->
-> On Sat, Mar 22, 2014 at 11:22 PM, Oliver Hartkopp
-> <socketcan@hartkopp.net> wrote:
->> Hello Pavel,
->>
->> On 20.03.2014 17:28, Pavel Kirienko wrote:
->>> Hi linux-can,
->>>
->>> What are my options to get the hardware TX timestamp of an outgoing
->>> CAN frame? I couldn't find complete manual for that, but here's what I
->>> googled so far:
->>>
->>> 1. Use generic socket timestamping, as described in the network man
->>> (http://os1a.cs.columbia.edu/lxr/source/Documentation/networking/timestamping.txt?a=x86);
->>>
->>> 2. Read my own frames back through CAN_RAW_RECV_OWN_MSGS, supposedly
->>> RX timestamps of the loopbacked frames will be the same as their TX
->>> timestamps.
->>>
->>> Are these the correct methods?
->>
->> Yes.
->>
->> With CAN_RAW_RECV_OWN_MSGS you get the echoed frame on a socket which
->> originally sent the frame.
->>
->> The timestamps are currently only set at RX time.
->>
->> http://os1a.cs.columbia.edu/lxr/source/net/core/dev.c?a=x86#2864
->> http://os1a.cs.columbia.edu/lxr/source/net/core/dev.c?a=x86#1463
->>
->> As you can see in net_timestamp_check()
->>
->> http://os1a.cs.columbia.edu/lxr/source/net/core/dev.c?a=x86#1471
->>
->> the timestamp is only set if it was empty before.
->>
->> E.g. if you forward a CAN frame with can-gw there's an extra option to not
->> clear the timestamp when routing the frame (option -t [preserve src_dev rx
->> timestamp]).
->>
->> As the sent frames are echoed back you are pretty right that the RX timestamp
->> and the TX timestamp are the same.
->>
->> Regards,
->> Oliver
->>
+> Best regards
+> Martin
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-can" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
