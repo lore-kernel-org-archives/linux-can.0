@@ -1,76 +1,77 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 00/12] can: c_can: Fix a series of serious bugs and
- improve the performance
-Date: Tue, 1 Apr 2014 00:35:24 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1403312355280.14882@ionos.tec.linutronix.de>
-References: <20140318171007.528610837@linutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [patch 00/12] can: c_can: Fix a series of serious bugs and improve
+ the performance
+Date: Tue, 01 Apr 2014 10:09:19 +0200
+Message-ID: <533A742F.4090703@pengutronix.de>
+References: <20140318171007.528610837@linutronix.de> <alpine.DEB.2.02.1403312355280.14882@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="EWCB91vJrpcPbhIxtuuWrBWgXnbRwSOn9"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:36991 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751311AbaCaWfP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 31 Mar 2014 18:35:15 -0400
-In-Reply-To: <20140318171007.528610837@linutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54727 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751138AbaDAIJa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Apr 2014 04:09:30 -0400
+In-Reply-To: <alpine.DEB.2.02.1403312355280.14882@ionos.tec.linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Benedikt Spranger <b.spranger@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Miller <davem@davemloft.net>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Markus Pargmann <mpa@pengutronix.de>, Benedikt Spranger <b.spranger@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Miller <davem@davemloft.net>
 
-Dear Maintainers,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EWCB91vJrpcPbhIxtuuWrBWgXnbRwSOn9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 18 Mar 2014, Thomas Gleixner wrote:
-> The driver is full of serious bugs:
-> 
->     - Two HW init routines are not spec compliant.
-> 
->     - Completely defective message buffer handling in several ways
->       That leads to interrupt storms and complete lockups.
-> 
->     - Complete lack of SMP awareness
-> 
-> What's amazing is that people "optimize" and "fix" the driver over and
-> over, but nobody bothered to understand the manual and repair the code
-> for real.
-> 
-> The series fixes _ALL_ bugs which I found so far, but I'm sure there
-> are more issues burried in that unreadable mess. I'm just not able to
-> trigger them.
+On 04/01/2014 12:35 AM, Thomas Gleixner wrote:
+> Dear Maintainers,
+>=20
+> On Tue, 18 Mar 2014, Thomas Gleixner wrote:
+>> The driver is full of serious bugs:
+>>
+>>     - Two HW init routines are not spec compliant.
+>>
+>>     - Completely defective message buffer handling in several ways
+>>       That leads to interrupt storms and complete lockups.
+>>
+>>     - Complete lack of SMP awareness
+>>
+>> What's amazing is that people "optimize" and "fix" the driver over and=
 
-What's the state of this series?
+>> over, but nobody bothered to understand the manual and repair the code=
 
-The only reaction so far was a hasty commit of cosmetic add ons to my
-findings at [1] accompanied with the following mail which was not a
-direct reply to my patches but merily a new mail to the can mailing
-list:
+>> for real.
+>>
+>> The series fixes _ALL_ bugs which I found so far, but I'm sure there
+>> are more issues burried in that unreadable mess. I'm just not able to
+>> trigger them.
+>=20
+> What's the state of this series?
 
-  " Subject: [PATCH 1/2] can: c_can: improve error checking
+I'll apply your patches today.
 
-    as mentioned in the other mail, a patch that adds return value
-    checking to all users of c_can_set_bittiming(). Another patch adds
-    the missing netif_napi_del(). Feel free to include the patches in
-    your series or use the testing-c_can branch [1] as your git base.
-  "
+regards,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-I'm really grateful, that you allowed me to include these patches to
-my series. But that does not help anything at all:
 
- - The driver is still broken as it has been for years
+--EWCB91vJrpcPbhIxtuuWrBWgXnbRwSOn9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
- - You as the maintainer reacted by submitting a pointless patch to
-   base my series on instead of applying the obvious and well
-   documented bug fixes right away.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
- - Just for the record, the series fixes the fatal issues of that
-   driver with and without the extra cosmetic fixes which are just a
-   supplement for the real issues.
-  
-What's going on here?  Are we going to have another few kernel
-releases with a completely defunct driver in place?
+iEYEARECAAYFAlM6dC8ACgkQjTAFq1RaXHOFOACaAtXIoGSUNPBLjRMmEIjNdo81
+lcgAn3Wy6+7nWuvi66RESejTkhVHbgZQ
+=XWTr
+-----END PGP SIGNATURE-----
 
-Thanks,
-
-	tglx
----
-[1] git://gitorious.org/linux-can/linux-can-next.git testing-c_can
-
+--EWCB91vJrpcPbhIxtuuWrBWgXnbRwSOn9--
