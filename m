@@ -1,102 +1,99 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/4] can: mcp251x: Improve mcp251x_hw_probe()
-Date: Tue, 01 Apr 2014 22:46:02 +0200
-Message-ID: <533B258A.3030801@pengutronix.de>
-References: <1396001687-7092-1-git-send-email-shc_work@mail.ru> <1396001687-7092-3-git-send-email-shc_work@mail.ru>
+Subject: Re: [PATCH 2/4] can: mcp251x: Improve mcp251x_hw_reset()
+Date: Tue, 01 Apr 2014 22:47:19 +0200
+Message-ID: <533B25D7.8000701@pengutronix.de>
+References: <1396001687-7092-1-git-send-email-shc_work@mail.ru> <1396001687-7092-2-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="M4OGbL6C4v1boMwOiR0Ep0CgSKHBAxVLm"
+ boundary="VdI1FUobThwAjkvStoOUulCfQRWPBuK3T"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49480 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49486 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751476AbaDAUqK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Apr 2014 16:46:10 -0400
-In-Reply-To: <1396001687-7092-3-git-send-email-shc_work@mail.ru>
+	with ESMTP id S1751439AbaDAUrV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Apr 2014 16:47:21 -0400
+In-Reply-To: <1396001687-7092-2-git-send-email-shc_work@mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Alexander Shiyan <shc_work@mail.ru>, linux-can@vger.kernel.org
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---M4OGbL6C4v1boMwOiR0Ep0CgSKHBAxVLm
+--VdI1FUobThwAjkvStoOUulCfQRWPBuK3T
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
 On 03/28/2014 11:14 AM, Alexander Shiyan wrote:
-> This patch adds check for mcp251x_hw_reset() result on startup and
-> removes unnecessary checking for CANSTAT register since this value
-> is being checked in mcp251x_hw_reset().
+> The MCP251x utilizes an oscillator startup timer (OST), which holds the=
+
+> chip in reset, to insure that the oscillator has stabilized before the
+> internal state machine begins to operate. The OST maintains reset for
+> the first 128 OSC clock cycles after power up or reset.
+> So, this patch removes unnecessary loops and reduce delay for power on
+> and reset to the safe value.
 >=20
 > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 > ---
->  drivers/net/can/mcp251x.c | 41 ++++++++++++++++++---------------------=
---
->  1 file changed, 18 insertions(+), 23 deletions(-)
+>  drivers/net/can/mcp251x.c | 33 +++++++++++++--------------------
+>  1 file changed, 13 insertions(+), 20 deletions(-)
 >=20
 > diff --git a/drivers/net/can/mcp251x.c b/drivers/net/can/mcp251x.c
-> index fea41b4..f4786c8 100644
+> index 26879c7..fea41b4 100644
 > --- a/drivers/net/can/mcp251x.c
 > +++ b/drivers/net/can/mcp251x.c
-> @@ -645,23 +645,19 @@ static int mcp251x_hw_reset(struct spi_device *sp=
+> @@ -214,6 +214,8 @@
+> =20
+>  #define TX_ECHO_SKB_MAX	1
+> =20
+> +#define MCP251X_OST_DELAY_MS	(5)
+> +
+>  #define DEVICE_NAME "mcp251x"
+> =20
+>  static int mcp251x_enable_dma; /* Enable SPI DMA. Default: 0 (Off) */
+> @@ -625,28 +627,20 @@ static int mcp251x_hw_reset(struct spi_device *sp=
 i)
-> =20
->  static int mcp251x_hw_probe(struct spi_device *spi)
 >  {
-> -	int st1, st2;
-> +	u8 ctrl;
-> +	int ret;
+>  	struct mcp251x_priv *priv =3D spi_get_drvdata(spi);
+>  	int ret;
+> -	unsigned long timeout;
+> +
+> +	/* Wait for oscillator startup timer after power up */
+> +	mdelay(MCP251X_OST_DELAY_MS);
 > =20
-> -	mcp251x_hw_reset(spi);
-> +	ret =3D mcp251x_hw_reset(spi);
+>  	priv->spi_tx_buf[0] =3D INSTRUCTION_RESET;
+> -	ret =3D spi_write(spi, priv->spi_tx_buf, 1);
+> -	if (ret) {
+> -		dev_err(&spi->dev, "reset failed: ret =3D %d\n", ret);
+> -		return -EIO;
+> -	}
+> +	ret =3D mcp251x_spi_trans(spi, 1);
 > +	if (ret)
 > +		return ret;
 > =20
-> -	/*
-> -	 * Please note that these are "magic values" based on after
-> -	 * reset defaults taken from data sheet which allows us to see
-> -	 * if we really have a chip on the bus (we avoid common all
-> -	 * zeroes or all ones situations)
-> -	 */
-> -	st1 =3D mcp251x_read_reg(spi, CANSTAT) & 0xEE;
-> -	st2 =3D mcp251x_read_reg(spi, CANCTRL) & 0x17;
-> +	ctrl =3D mcp251x_read_reg(spi, CANCTRL);
-> =20
-> -	dev_dbg(&spi->dev, "CANSTAT 0x%02x CANCTRL 0x%02x\n", st1, st2);
-> +	dev_dbg(&spi->dev, "CANCTRL 0x%02x\n", ctrl);
-> =20
-> -	/* Check for power up default values */
-> -	return (st1 =3D=3D 0x80 && st2 =3D=3D 0x07) ? 1 : 0;
-> +	/* Check for power up default value */
-> +	return ((ctrl & 0x17) =3D=3D 0x07) ? 0 : -ENODEV;
-
-I've converted this into:
-
-+       if ((ctrl & 0x17) !=3D 0x07)
-+               return -ENODEV;
-+
-+       return 0;
-
-=2E..which is more readable, IMHO.
-
->  }
-> =20
->  static int mcp251x_power_enable(struct regulator *reg, int enable)
-> @@ -1138,19 +1134,18 @@ static int mcp251x_can_probe(struct spi_device =
-*spi)
->  	SET_NETDEV_DEV(net, &spi->dev);
-> =20
->  	/* Here is OK to not lock the MCP, no one knows about it yet */
-> -	if (!mcp251x_hw_probe(spi)) {
-> -		ret =3D -ENODEV;
-> -		goto error_probe;
+> -	/* Wait for reset to finish */
+> -	timeout =3D jiffies + HZ;
+> -	mdelay(10);
+> -	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK)
+> -	       !=3D CANCTRL_REQOP_CONF) {
+> -		schedule();
+> -		if (time_after(jiffies, timeout)) {
+> -			dev_err(&spi->dev, "MCP251x didn't"
+> -				" enter in conf mode after reset\n");
+> -			return -EBUSY;
+> -		}
 > -	}
-> -	mcp251x_hw_sleep(spi);
-> +	ret =3D mcp251x_hw_probe(spi);
-> +	if (!ret) {
+> -	return 0;
+> +	/* Wait for oscillator startup timer after reset */
+> +	mdelay(MCP251X_OST_DELAY_MS);
+> +=09
+> +	return ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) =3D=3D
+> +		CANCTRL_REQOP_CONF) ? 0 : -ENODEV;
 
-I don't like the idea due to readability, that the non-error path is
-inside the if () { }. I've fixed this, the diff is even smaller.
+I've converted this into a more standard/readable:
+
++       reg =3D mcp251x_read_reg(spi, CANSTAT);
++       if ((reg & CANCTRL_REQOP_MASK) !=3D CANCTRL_REQOP_CONF)
++               return -ENODEV;
 
 Marc
 
@@ -107,7 +104,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---M4OGbL6C4v1boMwOiR0Ep0CgSKHBAxVLm
+--VdI1FUobThwAjkvStoOUulCfQRWPBuK3T
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -116,9 +113,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlM7JYoACgkQjTAFq1RaXHNYPwCgjvO+gMb/o2qMo7672SgUOJc4
-SjQAni/K6kEqibZzUHFRFokb9CkJaFLm
-=mqCf
+iEYEARECAAYFAlM7JdcACgkQjTAFq1RaXHPOmQCdGYNXqBJXbbVJGzjL965SohUw
++bkAn1ReukOvowv0X+ewDjbQN/2UTFgC
+=4Sc1
 -----END PGP SIGNATURE-----
 
---M4OGbL6C4v1boMwOiR0Ep0CgSKHBAxVLm--
+--VdI1FUobThwAjkvStoOUulCfQRWPBuK3T--
