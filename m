@@ -1,72 +1,69 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v3 2/2] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Wed, 02 Apr 2014 19:21:12 +0200
-Message-ID: <533C4708.8030600@hartkopp.net>
-References: <1396423121-28949-1-git-send-email-sbabic@denx.de> <1396423121-28949-3-git-send-email-sbabic@denx.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 4/4] can: mcp251x: Remove unnecessary power disabling
+Date: Wed, 02 Apr 2014 09:05:55 +0200
+Message-ID: <533BB6D3.401@pengutronix.de>
+References: <1396001687-7092-1-git-send-email-shc_work@mail.ru> <1396001687-7092-4-git-send-email-shc_work@mail.ru> <533B234B.3030907@pengutronix.de> <1396419467.957204803@f401.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="PTOHjv0doQjd62WPTeigktKG6bPkC2enM"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:16150 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932305AbaDBRVR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 13:21:17 -0400
-In-Reply-To: <1396423121-28949-3-git-send-email-sbabic@denx.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34012 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757453AbaDBHGD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 03:06:03 -0400
+In-Reply-To: <1396419467.957204803@f401.i.mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Hello Stefano,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PTOHjv0doQjd62WPTeigktKG6bPkC2enM
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 02.04.2014 09:18, Stefano Babic wrote:
+On 04/02/2014 08:17 AM, Alexander Shiyan wrote:
+> Tue, 01 Apr 2014 22:36:27 +0200 =D0=BE=D1=82 Marc Kleine-Budde <mkl@pen=
+gutronix.de>:
+>> On 03/28/2014 11:14 AM, Alexander Shiyan wrote:
+>>> This patch remove unnecessary power disabling on error and on module
+>>> exit since this is already done by regulator API.
+>>
+>> Oh really? Can you point me to the commit in mainline which introduces=
 
-> +
-> +/* CFG message */
-> +struct msg_cfg_data {
-> +	u8	channel;
-> +	u8	enabled;
-> +	struct can_bittiming bt;
-> +} __packed;
+>> this change? As far as I understand devm just callss
+>> devm_regulator_release(), which calls regulator_put().
+>=20
+> It seems that you are right. I thought that the regulator is switched o=
+ff when
+> the usage count reaches zero, but it is not.
+> In this case, please drop the [4/4] patch.
+
+Will do, I'll push the remaining three patches to the can-next as soon
+as you give me your okay for the v2 series.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> +static int spi_can_probe(struct spi_device *spi)
-> +{
+--PTOHjv0doQjd62WPTeigktKG6bPkC2enM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-(..)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-> +
-> +		/* Set CAN specific parameters */
-> +		priv->can.clock.freq = SLAVE_CLK_FREQ;
-> +		priv->can.bittiming_const = NULL;
-> +		priv->can.do_set_mode = spi_can_set_mode;
-> +		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
-> +			CAN_CTRLMODE_LISTENONLY	| CAN_CTRLMODE_3_SAMPLES;
+iEYEARECAAYFAlM7ttMACgkQjTAFq1RaXHOAGACfSE0Ler21CCyYFOrXq/adpeZs
+PYoAn3s7iFpboknv6v00wDbWvav4XQPG
+=t9Rr
+-----END PGP SIGNATURE-----
 
-This looks wrong to me.
-
-In the one case (ctrlmode_supported) you aim to know about the SPI CAN
-controllers e.g. if they support LISTENONLY.
-
-In the other case (bittiming_const) you don't know anything about the
-controller??
-
-How do you set the bitrate without defining bittiming_const??
-And how does
-
-	ip -det link show can0
-
-look like for your device then?
-
-Setting the bitrate with the ip tools requires bittiming_const to be set:
-
-http://git.kernel.org/cgit/linux/kernel/git/davem/net-next.git/tree/drivers/net/can/dev.c#n252
-
-IMO both ctrlmode_supported and bittiming_const need to be retrieved from
-each remote SPI attached CAN controller at startup initialization time.
-So that the configuration can be done with the standard tools.
-
-Regards,
-Oliver
-
+--PTOHjv0doQjd62WPTeigktKG6bPkC2enM--
