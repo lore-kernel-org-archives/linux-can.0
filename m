@@ -1,52 +1,63 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: [PATCH 2/2] net can softing: remove unused sysfs attributes
-Date: Wed,  2 Apr 2014 21:17:48 +0200
-Message-ID: <1396466269-28444-2-git-send-email-dev.kurt@vandijck-laurijssen.be>
-References: <1396466269-28444-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 4/4] can: mcp251x: Remove unnecessary power disabling
+Date: Wed, 02 Apr 2014 09:08:55 +0200
+Message-ID: <533BB787.4030808@pengutronix.de>
+References: <1396386139-20238-1-git-send-email-mkl@pengutronix.de> <1396386139-20238-5-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="jSW2xHL2tFpiq5PpPiJ0WAQQbn6RAswsV"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:2508 "EHLO
-	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932723AbaDBTSC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 15:18:02 -0400
-Received: from airbook.e-circ.lan (unknown [192.168.0.70])
-	by cylon.vandijck-laurijssen.be (Postfix) with ESMTP id 3CE3D4CE6C
-	for <linux-can@vger.kernel.org>; Wed,  2 Apr 2014 21:17:59 +0200 (CEST)
-In-Reply-To: <1396466269-28444-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43200 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757453AbaDBHI6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 03:08:58 -0400
+In-Reply-To: <1396386139-20238-5-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Alexander Shiyan <shc_work@mail.ru>
 
-'frequency' indicates the embedded cpu's frequency, but that
-should not be necessary for any purpose.
-'txpending' is an attribute for debugging.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jSW2xHL2tFpiq5PpPiJ0WAQQbn6RAswsV
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
----
- drivers/net/can/softing/softing_main.c |    4 ----
- 1 file changed, 4 deletions(-)
+On 04/01/2014 11:02 PM, Marc Kleine-Budde wrote:
+> From: Alexander Shiyan <shc_work@mail.ru>
+>=20
+> This patch remove unnecessary power disabling on error and on module
+> exit since this is already done by regulator API.
+>=20
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> Hello,
+>=20
+> I'm not sure if this actually works.
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 6cfbccd..fb5312c 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -714,8 +714,6 @@ DEV_ATTR_RO(firmware_version, id.fw_version);
- DEV_ATTR_RO_STR(hardware, pdat->name);
- DEV_ATTR_RO(hardware_version, id.hw_version);
- DEV_ATTR_RO(license, id.license);
--DEV_ATTR_RO(frequency, id.freq);
--DEV_ATTR_RO(txpending, tx.pending);
- 
- static struct attribute *softing_pdev_attrs[] = {
- 	&dev_attr_serial.attr,
-@@ -724,8 +722,6 @@ static struct attribute *softing_pdev_attrs[] = {
- 	&dev_attr_hardware.attr,
- 	&dev_attr_hardware_version.attr,
- 	&dev_attr_license.attr,
--	&dev_attr_frequency.attr,
--	&dev_attr_txpending.attr,
- 	NULL,
- };
- 
--- 
-1.7.10.4
+Dropped as discussed.
 
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--jSW2xHL2tFpiq5PpPiJ0WAQQbn6RAswsV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlM7t4cACgkQjTAFq1RaXHPfswCfT1AU3UGbUIzlSoicj7Ju+y1m
+Cs8An17r6no2e33yI4LK2aIzsA/p1Vef
+=TyrH
+-----END PGP SIGNATURE-----
+
+--jSW2xHL2tFpiq5PpPiJ0WAQQbn6RAswsV--
