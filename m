@@ -1,83 +1,74 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: [PATCH 1/2] net can softing: drop 'channel' sysfs attribute
-Date: Wed,  2 Apr 2014 21:17:47 +0200
-Message-ID: <1396466269-28444-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v2 3/3] can: add documentation for CAN filter usage optimisation
+Date: Wed,  2 Apr 2014 20:25:27 +0200
+Message-ID: <1396463127-25541-4-git-send-email-socketcan@hartkopp.net>
+References: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay011.isp.belgacom.be ([195.238.6.178]:59736 "EHLO
-	mailrelay011.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932906AbaDBTSC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 15:18:02 -0400
-Received: from airbook.e-circ.lan (unknown [192.168.0.70])
-	by cylon.vandijck-laurijssen.be (Postfix) with ESMTP id 2E9B94CD4E
-	for <linux-can@vger.kernel.org>; Wed,  2 Apr 2014 21:17:59 +0200 (CEST)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:61993 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932795AbaDBSZh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 14:25:37 -0400
+In-Reply-To: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-netdev->dev_id obsoletes this property.
-None of the remaining properties contribute to udev detection methods.
-The regular calls for the sysfs group can thus safely be restored.
+To benefit from special filters for single SFF or single EFF CAN identifier
+subscriptions the CAN_EFF_FLAG bit and the CAN_RTR_FLAG bit has to be set
+together with the CAN_(SFF|EFF)_MASK in can_filter.mask.
 
-Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/softing/softing_main.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ Documentation/networking/can.txt | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 65eef1e..6cfbccd 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -558,15 +558,6 @@ failed:
- /*
-  * netdev sysfs
-  */
--static ssize_t show_channel(struct device *dev, struct device_attribute *attr,
--		char *buf)
--{
--	struct net_device *ndev = to_net_dev(dev);
--	struct softing_priv *priv = netdev2softing(ndev);
--
--	return sprintf(buf, "%i\n", priv->index);
--}
--
- static ssize_t show_chip(struct device *dev, struct device_attribute *attr,
- 		char *buf)
- {
-@@ -611,12 +602,10 @@ static ssize_t store_output(struct device *dev, struct device_attribute *attr,
- 	return count;
- }
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index 0cbe6ec..9261fe8 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -469,6 +469,41 @@ solution for a couple of reasons:
+   having this 'send only' use-case we may remove the receive list in the
+   Kernel to save a little (really a very little!) CPU usage.
  
--static const DEVICE_ATTR(channel, S_IRUGO, show_channel, NULL);
- static const DEVICE_ATTR(chip, S_IRUGO, show_chip, NULL);
- static const DEVICE_ATTR(output, S_IRUGO | S_IWUSR, show_output, store_output);
- 
- static const struct attribute *const netdev_sysfs_attrs[] = {
--	&dev_attr_channel.attr,
- 	&dev_attr_chip.attr,
- 	&dev_attr_output.attr,
- 	NULL,
-@@ -680,17 +669,20 @@ static int softing_netdev_register(struct net_device *netdev)
- {
- 	int ret;
- 
--	netdev->sysfs_groups[0] = &netdev_sysfs_group;
- 	ret = register_candev(netdev);
- 	if (ret) {
- 		dev_alert(&netdev->dev, "register failed\n");
- 		return ret;
- 	}
-+	if (sysfs_create_group(&netdev->dev.kobj, &netdev_sysfs_group) < 0)
-+		netdev_alert(netdev, "sysfs group failed\n");
++  4.1.1.1 CAN filter usage optimisation
 +
- 	return 0;
- }
++  The CAN filters are processed in per-device filter lists at CAN frame
++  reception time. To reduce the number of checks that need to be performed
++  while walking through the filter lists the CAN core provides an optimized
++  filter handling when the filter subscription focusses on a single CAN ID.
++
++  For the possible 2048 SFF CAN identifiers the identifier is used as an index
++  to access the corresponding subscription list without any further checks.
++  For the 2^29 possible EFF CAN identifiers a 10 bit XOR folding is used as
++  hash function to retrieve the EFF table index.
++
++  To benefit from the optimized filters for single CAN identifiers the
++  CAN_SFF_MASK or CAN_EFF_MASK have to be set into can_filter.mask together
++  with set CAN_EFF_FLAG and CAN_RTR_FLAG bits. A set CAN_EFF_FLAG bit in the
++  can_filter.mask makes clear that it matters whether a SFF or EFF CAN ID is
++  subscribed. E.g. in the example from above
++
++    rfilter[0].can_id   = 0x123;
++    rfilter[0].can_mask = CAN_SFF_MASK;
++
++  both SFF frames with CAN ID 0x123 and EFF frames with 0xXXXXX123 can pass.
++
++  To filter for only 0x123 (SFF) and 0x12345678 (EFF) CAN identifiers the
++  filter has to be defined in this way to benefit from the optimized filters:
++
++    struct can_filter rfilter[2];
++
++    rfilter[0].can_id   = 0x123;
++    rfilter[0].can_mask = (CAN_EFF_FLAG | CAN_RTR_FLAG | CAN_SFF_MASK);
++    rfilter[1].can_id   = 0x12345678 | CAN_EFF_FLAG;
++    rfilter[1].can_mask = (CAN_EFF_FLAG | CAN_RTR_FLAG | CAN_EFF_MASK);
++
++    setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
++
+   4.1.2 RAW socket option CAN_RAW_ERR_FILTER
  
- static void softing_netdev_cleanup(struct net_device *netdev)
- {
-+	sysfs_remove_group(&netdev->dev.kobj, &netdev_sysfs_group);
- 	unregister_candev(netdev);
- 	free_candev(netdev);
- }
+   As described in chapter 3.4 the CAN interface driver can generate so
 -- 
-1.7.10.4
+1.9.1
 
