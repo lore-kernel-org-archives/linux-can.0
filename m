@@ -1,60 +1,71 @@
-From: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
-Subject: Re: Regarding  J1939 support on freescale imx6 BSP
-Date: Thu, 3 Apr 2014 11:59:11 +0530
-Message-ID: <533CFFB7.3020300@tataelxsi.co.in>
-References: <533BAD63.80202@tataelxsi.co.in> <20140402183759.GA4780@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v3 2/2] CAN: CAN driver to support multiple CAN bus on
+ SPI interface
+Date: Thu, 03 Apr 2014 14:02:47 +0200
+Message-ID: <533D4DE7.5090408@hartkopp.net>
+References: <1396423121-28949-1-git-send-email-sbabic@denx.de> <1396423121-28949-3-git-send-email-sbabic@denx.de> <533C4708.8030600@hartkopp.net> <533D2286.1020609@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-hk1lp0121.outbound.protection.outlook.com ([207.46.51.121]:29840
-	"EHLO APAC01-HK1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1162285AbaDCGaF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 3 Apr 2014 02:30:05 -0400
-In-Reply-To: <20140402183759.GA4780@vandijck-laurijssen.be>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:55291 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751918AbaDCMCz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 08:02:55 -0400
+In-Reply-To: <533D2286.1020609@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: linux-can@vger.kernel.org
+To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi Kurt,
+Hi Stefano,
 
-Thanks for your response,
+two more remarks:
 
-I just confirmed from my team ,we want j1939  stack into our socketCAN 
-layer.
-
-is j1939  stack part of mainstream kernel? do I need to manually update 
-my Linux BSP with the source code and resolve the conflicts.
-
-Going further, I want to implement this as a patch with the yocto build, 
-what is the best way to move ahead.
-
-
-Thanks,
-Ratheendran
-
-On 4/3/2014 12:07 AM, Kurt Van Dijck wrote:
-> Hi Ratheendran,
->
-> On Wed, Apr 02, 2014 at 11:55:39AM +0530, Ratheendran wrote:
->> Hi All,
+>> On 02.04.2014 09:18, Stefano Babic wrote:
 >>
->> I am new to Linux CAN module, want to know the how I can include
->> this J1939 support in my free-scale imx6 BSP. do you have a
->> ready-made patch.
->>
->> Please note, there is no requirement that the driver handle J1939
->> protocol, it must simply allow J1939 to be fully functional.
-> Do you refer to my J1939 stack in the linux kernel tree that you can find at
-> git@gitorious.org:linux-can/linux-can-j1939.git ?
->
-> Or is it something else that you seek?
-> That is not clear to me.
->
-> Kind regards,
-> Kurt
-> .
->
+>>> +
+>>> +/* CFG message */
+>>> +struct msg_cfg_data {
+>>> +	u8	channel;
+>>> +	u8	enabled;
+>>> +	struct can_bittiming bt;
+>>> +} __packed;
+
+When you transfer this structure via SPI.
+What are your assumptions about the host specifc byte order?
+
+Does the SPI CAN adapter autodetect the host byte order?
+
+> Only to check what is happening:
+> 
+> 5: hcan2: <NOARP> mtu 16 qdisc noop state DOWN qlen 10
+>     link/can
+>     can state STOPPED restart-ms 0
+>     bitrate 0 sample-point 0.000
+>     tq 0 prop-seg 0 phase-seg1 0 phase-seg2 0 sjw 0
+>     clock 100000000
+
+Ah - you also have a CAN clock :-)
+
+
+> Agree, it is the best way. I will add a SPI_MSG_GET_CFG to retrieve the
+> timing from the controller in probe(). In my case, the controller cannot
+> have different timing for each channel, but I agree the query must be
+> done for each channel, in case a microcontroller supports it.
+
+Yep.
+
+Just to make sure what is needed:
+
+>>> +		priv->can.clock.freq = SLAVE_CLK_FREQ;
+>>> +		priv->can.bittiming_const = NULL;
+>>> +		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+>>> +			CAN_CTRLMODE_LISTENONLY	| CAN_CTRLMODE_3_SAMPLES;
+
+These three controller specific settings - which are usually constant values
+in other CAN drivers - need to be provided by SPI_MSG_GET_CFG.
+
+Best regards,
+Oliver
 
