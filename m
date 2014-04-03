@@ -1,31 +1,80 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Coverity CID 712278: c_can_pci_probe() doesn't check pci_enable_msi()
- return value
-Date: Thu, 3 Apr 2014 10:53:01 -0600
-Message-ID: <CAErSpo4hujoq8Ni7sSrNQv61rf4Xz4s3GjYxNQR6TDLDm0N-Jw@mail.gmail.com>
+From: "Max S." <max@schneidersoft.net>
+Subject: Re: SocketCAN over Ethernet
+Date: Thu, 03 Apr 2014 16:51:23 +0000
+Message-ID: <1396543883.12659.25.camel@blackbox>
+References: <loom.20140403T134741-892@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ie0-f179.google.com ([209.85.223.179]:42972 "EHLO
-	mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752427AbaDCQxW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 12:53:22 -0400
-Received: by mail-ie0-f179.google.com with SMTP id lx4so2120219iec.38
-        for <linux-can@vger.kernel.org>; Thu, 03 Apr 2014 09:53:21 -0700 (PDT)
+Received: from mail.schneidersoft.net ([173.45.248.65]:46645 "EHLO
+	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752822AbaDCQzW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 12:55:22 -0400
+In-Reply-To: <loom.20140403T134741-892@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Alexander Gordeev <agordeev@redhat.com>, linux-can@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+To: Daniel =?ISO-8859-1?Q?Bostr=F6m?= <daniel.bostrom@maximatecc.com>
+Cc: linux-can@vger.kernel.org
 
-Coverity complains that c_can_pci_probe() calls pci_enable_msi()
-without checking the result:
+Hello,
+
+I don't know of a direct way of hooking up two socket can interfaces
+over eth.
+
+If this is just a quick fix or development crutch and not for productio=
+n
+you could try the following: Create a VCAN interface on both machines.
+Create a simple userspace program (perhaps in C) to listen to the VCAN
+interface, and transmit the frames read, via UDP (or TCP), to the other
+machine. Create another program to listen to the UDP traffic and dumps
+it into the VCAN interface on the other host. invert the roles and
+you've got duplex.
+
+If the arch of the two hosts is binary compatible you don't even need t=
+o
+encode data.
+
+I have done this while I was working on a display software, It allowed
+me to work on the laptop on the sofa using live can data aggregated by
+sensors and a server elsewhere.
+
+Regards,
+Maximilian Schneider.
+
+On Thu, 2014-04-03 at 11:52 +0000, Daniel Bostr=C3=B6m wrote:
+> Hello,
+>=20
+> I am going to try to explain our scenario briefly.
+>=20
+> We want to setup a simulation environment for our system running on U=
+buntu=20
+> so that we can use it together with our Windows based simulation tool=
+=20
+> suite. Currently we are running Ubuntu in a virtual machine using=20
+> VirtualBox on a Windows host. In Ubuntu we use SocketCAN and we would=
+ like=20
+> to continue to do so but instead of using real CAN hardware somehow s=
+etup=20
+> CAN communication over Ethernet to the Windows host.
+>=20
+> I am new to CAN on Linux but I have been reading about SocketCAN and =
+was=20
+> wondering if we could use virtual can (vcan) somehow?
+>=20
+> I appreciate any help clarifying if, and if so, how SocketCAN over=20
+> Ethernet could be achieved. If you need additional information about =
+our=20
+> scenario please let me know.
+>=20
+> Best regards
+> Daniel
+> =20
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
-CID 712278 (#1 of 1): Unchecked return value (CHECKED_RETURN)
-3. check_return: Calling pci_enable_msi_block without checking return
-value (as is done elsewhere 88 out of 105 times).
- 88        pci_enable_msi(pdev);
-
-This is CID 712278.
-
-Bjorn
