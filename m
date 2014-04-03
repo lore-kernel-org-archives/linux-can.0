@@ -1,89 +1,173 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v3 2/2] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Thu, 03 Apr 2014 14:14:23 +0200
-Message-ID: <533D509F.4000908@denx.de>
-References: <1396423121-28949-1-git-send-email-sbabic@denx.de> <1396423121-28949-3-git-send-email-sbabic@denx.de> <533C4708.8030600@hartkopp.net> <533D2286.1020609@denx.de> <533D4DE7.5090408@hartkopp.net>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: c_can: wrong frame order reception
+Date: Thu, 03 Apr 2014 15:41:38 +0200
+Message-ID: <1451869.V7QBi99RiY@ws-stein>
+References: <2323199.vffRdFDsB5@ws-stein> <7234338.9RqiOdiLOY@ws-stein> <533B067A.3030609@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:55364 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751946AbaDCMO0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 08:14:26 -0400
-In-Reply-To: <533D4DE7.5090408@hartkopp.net>
+Received: from webbox1416.server-home.net ([77.236.96.61]:55086 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752082AbaDCNmx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 09:42:53 -0400
+In-Reply-To: <533B067A.3030609@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hi Oliver,
+Hello Oliver,
 
-On 03/04/2014 14:02, Oliver Hartkopp wrote:
-> Hi Stefano,
+On Tuesday 01 April 2014 20:33:30, Oliver Hartkopp wrote:
+> don't know if you monitored the patch set which was posted by Thomas Gleixner:
 > 
-> two more remarks:
+> There was one patch "c_can: Make it SMP safe"
 > 
->>> On 02.04.2014 09:18, Stefano Babic wrote:
->>>
->>>> +
->>>> +/* CFG message */
->>>> +struct msg_cfg_data {
->>>> +	u8	channel;
->>>> +	u8	enabled;
->>>> +	struct can_bittiming bt;
->>>> +} __packed;
+> 	http://marc.info/?l=linux-can&m=139516364829052&w=2
 > 
-> When you transfer this structure via SPI.
-> What are your assumptions about the host specifc byte order?
+> which addressed some issues, you obviously fixed with your below patch too.
 > 
-> Does the SPI CAN adapter autodetect the host byte order?
+> Your patch below additionally implements the PCH_CAN support for C_CAN.
 > 
+> Can you please check, if the patchset from Thomas which is available here
+> 
+> 	tag 'linux-can-fixes-for-3.15-20140401'
+> 	in https://gitorious.org/linux-can/linux-can
+> 
+> fixes the frame order reception in your setup too - and if so, sent a rebased
+> patch for the PCH_CAN support?
+> 
+> Unfortunately I don't have a eg20t here :-]
 
-The general assumption (I am sure/hope this is described in the doc) is
-that data are transferred in big-endian mode on the SPI-Bus. The driver
-calls then cpu_to_be32() in spi_can_cfg() before putting the data on the
-bus.
-
->> Only to check what is happening:
->>
->> 5: hcan2: <NOARP> mtu 16 qdisc noop state DOWN qlen 10
->>     link/can
->>     can state STOPPED restart-ms 0
->>     bitrate 0 sample-point 0.000
->>     tq 0 prop-seg 0 phase-seg1 0 phase-seg2 0 sjw 0
->>     clock 100000000
-> 
-> Ah - you also have a CAN clock :-)
-> 
-> 
->> Agree, it is the best way. I will add a SPI_MSG_GET_CFG to retrieve the
->> timing from the controller in probe(). In my case, the controller cannot
->> have different timing for each channel, but I agree the query must be
->> done for each channel, in case a microcontroller supports it.
-> 
-> Yep.
-> 
-> Just to make sure what is needed:
-> 
->>>> +		priv->can.clock.freq = SLAVE_CLK_FREQ;
->>>> +		priv->can.bittiming_const = NULL;
->>>> +		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
->>>> +			CAN_CTRLMODE_LISTENONLY	| CAN_CTRLMODE_3_SAMPLES;
-> 
-> These three controller specific settings - which are usually constant values
-> in other CAN drivers - need to be provided by SPI_MSG_GET_CFG.
-
-ok, got it (I hope). Time to work for V4...
+I tried my test based on linux-can-fixes-for-3.15-20140401 + a few patches for my board and the inlined one.
+I noticed that I got no message swaps any more, the order is correct. BUT: I notice message losts, I think noticeable more than before. Interestingly it is only one message each time the counters don't match.
 
 Best regards,
-Stefano
+Alexander
 
+From b96317dcb5dafee8ea3eb75e376ba7cb9d69837a Mon Sep 17 00:00:00 2001
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Date: Tue, 1 Apr 2014 09:02:46 +0200
+Subject: [PATCH] c_can: Add support for eg20t (pch_can)
 
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ drivers/net/can/c_can/c_can_pci.c | 50 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index bce0be5..ac2f1bb 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -19,9 +19,13 @@
+ 
+ #include "c_can.h"
+ 
++#define PCI_DEVICE_ID_PCH_CAN	0x8818
++#define PCH_PCI_SOFT_RESET	0x01fc
++
+ enum c_can_pci_reg_align {
+ 	C_CAN_REG_ALIGN_16,
+ 	C_CAN_REG_ALIGN_32,
++	C_CAN_REG_32,
+ };
+ 
+ struct c_can_pci_data {
+@@ -31,6 +35,10 @@ struct c_can_pci_data {
+ 	enum c_can_pci_reg_align reg_align;
+ 	/* Set the frequency */
+ 	unsigned int freq;
++	/* PCI bar number */
++	int bar;
++	/* Callback for reset */
++	void (*init) (const struct c_can_priv *priv, bool enable);
+ };
+ 
+ /*
+@@ -63,6 +71,29 @@ static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
+ 	writew(val, priv->base + 2 * priv->regs[index]);
+ }
+ 
++static u16 c_can_pci_read_reg_32bit(struct c_can_priv *priv,
++				    enum reg index)
++{
++	return (u16)ioread32(priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_write_reg_32bit(struct c_can_priv *priv,
++				      enum reg index, u16 val)
++{
++	iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_reset_pch(const struct c_can_priv *priv, bool enable)
++{
++	if (enable) {
++		u32 __iomem *addr = priv->base + PCH_PCI_SOFT_RESET;
++
++		/* write to sw reset register */
++		iowrite32(1, addr);
++		iowrite32(0, addr);
++	}
++}
++
+ static int c_can_pci_probe(struct pci_dev *pdev,
+ 			   const struct pci_device_id *ent)
+ {
+@@ -87,7 +118,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 	pci_set_master(pdev);
+ 	pci_enable_msi(pdev);
+ 
+-	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
++	addr = pci_iomap(pdev, c_can_pci_data->bar, pci_resource_len(pdev, 0));
+ 	if (!addr) {
+ 		dev_err(&pdev->dev,
+ 			"device has no PCI memory resources, "
+@@ -142,11 +173,17 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 		priv->read_reg = c_can_pci_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_pci_write_reg_aligned_to_16bit;
+ 		break;
++	case C_CAN_REG_32:
++		priv->read_reg = c_can_pci_read_reg_32bit;
++		priv->write_reg = c_can_pci_write_reg_32bit;
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		goto out_free_c_can;
+ 	}
+ 
++	priv->raminit = c_can_pci_data->init;
++
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -193,6 +230,15 @@ static struct c_can_pci_data c_can_sta2x11= {
+ 	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_ALIGN_32,
+ 	.freq = 52000000, /* 52 Mhz */
++	.bar = 0,
++};
++
++static struct c_can_pci_data c_can_pch = {
++	.type = BOSCH_C_CAN,
++	.reg_align = C_CAN_REG_32,
++	.freq = 50000000, /* 50 MHz */
++	.init = c_can_pci_reset_pch,
++	.bar = 1,
+ };
+ 
+ #define C_CAN_ID(_vend, _dev, _driverdata) {		\
+@@ -202,6 +248,8 @@ static struct c_can_pci_data c_can_sta2x11= {
+ static DEFINE_PCI_DEVICE_TABLE(c_can_pci_tbl) = {
+ 	C_CAN_ID(PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_CAN,
+ 		 c_can_sta2x11),
++	C_CAN_ID(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_PCH_CAN,
++		 c_can_pch),
+ 	{},
+ };
+ static struct pci_driver c_can_pci_driver = {
 -- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+1.8.3.2
+
+
