@@ -1,182 +1,109 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v2 2/3] can: add hash based access to single EFF frame filters
-Date: Wed,  2 Apr 2014 20:25:26 +0200
-Message-ID: <1396463127-25541-3-git-send-email-socketcan@hartkopp.net>
-References: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
+From: Stefano Babic <sbabic@denx.de>
+Subject: Re: [PATCH v3 2/2] CAN: CAN driver to support multiple CAN bus on
+ SPI interface
+Date: Thu, 03 Apr 2014 10:57:42 +0200
+Message-ID: <533D2286.1020609@denx.de>
+References: <1396423121-28949-1-git-send-email-sbabic@denx.de> <1396423121-28949-3-git-send-email-sbabic@denx.de> <533C4708.8030600@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:19259 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932809AbaDBSZh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Apr 2014 14:25:37 -0400
-In-Reply-To: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
+Received: from mail-out.m-online.net ([212.18.0.9]:33809 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1162715AbaDCI5t (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 04:57:49 -0400
+In-Reply-To: <533C4708.8030600@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-In contrast to the direct access to the single SFF frame filters (which are
-indexed by the SFF CAN ID itself) the single EFF frame filters are arranged
-in a single linked hlist. To reduce the hlist traversal in the case of many
-filter subscriptions a hash based access is introduced for single EFF filters.
+Hi Oliver,
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/af_can.c | 31 ++++++++++++++++++++++++++-----
- net/can/af_can.h |  5 ++++-
- net/can/proc.c   | 48 +++++++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 75 insertions(+), 9 deletions(-)
+On 02/04/2014 19:21, Oliver Hartkopp wrote:
+> Hello Stefano,
+> 
+> On 02.04.2014 09:18, Stefano Babic wrote:
+> 
+>> +
+>> +/* CFG message */
+>> +struct msg_cfg_data {
+>> +	u8	channel;
+>> +	u8	enabled;
+>> +	struct can_bittiming bt;
+>> +} __packed;
+> 
+> 
+>> +static int spi_can_probe(struct spi_device *spi)
+>> +{
+> 
+> (..)
+> 
+>> +
+>> +		/* Set CAN specific parameters */
+>> +		priv->can.clock.freq = SLAVE_CLK_FREQ;
+>> +		priv->can.bittiming_const = NULL;
+>> +		priv->can.do_set_mode = spi_can_set_mode;
+>> +		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+>> +			CAN_CTRLMODE_LISTENONLY	| CAN_CTRLMODE_3_SAMPLES;
+> 
+> This looks wrong to me.
+> 
+> In the one case (ctrlmode_supported) you aim to know about the SPI CAN
+> controllers e.g. if they support LISTENONLY.
+> 
+> In the other case (bittiming_const) you don't know anything about the
+> controller??
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index a27f8aa..ce82337 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -338,6 +338,29 @@ static struct dev_rcv_lists *find_dev_rcv_lists(struct net_device *dev)
- }
- 
- /**
-+ * effhash - hash function for 29 bit CAN identifier reduction
-+ * @can_id: 29 bit CAN identifier
-+ *
-+ * Description:
-+ *  To reduce the linear traversal in one linked list of _single_ EFF CAN
-+ *  frame subscriptions the 29 bit identifier is mapped to 10 bits.
-+ *  (see CAN_EFF_RCV_HASH_BITS definition)
-+ *
-+ * Return:
-+ *  Hash value from 0x000 - 0x3FF ( enforced by CAN_EFF_RCV_HASH_BITS mask )
-+ */
-+static unsigned int effhash(canid_t can_id)
-+{
-+	unsigned int hash;
-+
-+	hash = can_id;
-+	hash ^= can_id >> CAN_EFF_RCV_HASH_BITS;
-+	hash ^= can_id >> (2 * CAN_EFF_RCV_HASH_BITS);
-+
-+	return hash & ((1 << CAN_EFF_RCV_HASH_BITS) - 1);
-+}
-+
-+/**
-  * find_rcv_list - determine optimal filterlist inside device filter struct
-  * @can_id: pointer to CAN identifier of a given can_filter
-  * @mask: pointer to CAN mask of a given can_filter
-@@ -400,10 +423,8 @@ static struct hlist_head *find_rcv_list(canid_t *can_id, canid_t *mask,
- 	    !(*can_id & CAN_RTR_FLAG)) {
- 
- 		if (*can_id & CAN_EFF_FLAG) {
--			if (*mask == (CAN_EFF_MASK | CAN_EFF_RTR_FLAGS)) {
--				/* RFC: a future use-case for hash-tables? */
--				return &d->rx[RX_EFF];
--			}
-+			if (*mask == (CAN_EFF_MASK | CAN_EFF_RTR_FLAGS))
-+				return &d->rx_eff[effhash(*can_id)];
- 		} else {
- 			if (*mask == (CAN_SFF_MASK | CAN_EFF_RTR_FLAGS))
- 				return &d->rx_sff[*can_id];
-@@ -632,7 +653,7 @@ static int can_rcv_filter(struct dev_rcv_lists *d, struct sk_buff *skb)
- 		return matches;
- 
- 	if (can_id & CAN_EFF_FLAG) {
--		hlist_for_each_entry_rcu(r, &d->rx[RX_EFF], list) {
-+		hlist_for_each_entry_rcu(r, &d->rx_eff[effhash(can_id)], list) {
- 			if (r->can_id == can_id) {
- 				deliver(skb, r);
- 				matches++;
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index b4bdaa3..fca0fe9 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -60,13 +60,16 @@ struct receiver {
- };
- 
- #define CAN_SFF_RCV_ARRAY_SZ (1 << CAN_SFF_ID_BITS)
-+#define CAN_EFF_RCV_HASH_BITS 10
-+#define CAN_EFF_RCV_ARRAY_SZ (1 << CAN_EFF_RCV_HASH_BITS)
- 
--enum { RX_ERR, RX_ALL, RX_FIL, RX_INV, RX_EFF, RX_MAX };
-+enum { RX_ERR, RX_ALL, RX_FIL, RX_INV, RX_MAX };
- 
- /* per device receive filters linked at dev->ml_priv */
- struct dev_rcv_lists {
- 	struct hlist_head rx[RX_MAX];
- 	struct hlist_head rx_sff[CAN_SFF_RCV_ARRAY_SZ];
-+	struct hlist_head rx_eff[CAN_EFF_RCV_ARRAY_SZ];
- 	int remove_on_zero_entries;
- 	int entries;
- };
-diff --git a/net/can/proc.c b/net/can/proc.c
-index 1621e59..1a19b98 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -80,7 +80,6 @@ static const char rx_list_name[][8] = {
- 	[RX_ALL] = "rx_all",
- 	[RX_FIL] = "rx_fil",
- 	[RX_INV] = "rx_inv",
--	[RX_EFF] = "rx_eff",
- };
- 
- /*
-@@ -456,6 +455,49 @@ static const struct file_operations can_rcvlist_sff_proc_fops = {
- 	.release	= single_release,
- };
- 
-+
-+static int can_rcvlist_eff_proc_show(struct seq_file *m, void *v)
-+{
-+	struct net_device *dev;
-+	struct dev_rcv_lists *d;
-+
-+	/* RX_EFF */
-+	seq_puts(m, "\nreceive list 'rx_eff':\n");
-+
-+	rcu_read_lock();
-+
-+	/* eff receive list for 'all' CAN devices (dev == NULL) */
-+	d = &can_rx_alldev_list;
-+	can_rcvlist_proc_show_array(m, NULL, d->rx_eff, ARRAY_SIZE(d->rx_eff));
-+
-+	/* eff receive list for registered CAN devices */
-+	for_each_netdev_rcu(&init_net, dev) {
-+		if (dev->type == ARPHRD_CAN && dev->ml_priv) {
-+			d = dev->ml_priv;
-+			can_rcvlist_proc_show_array(m, dev, d->rx_eff,
-+						    ARRAY_SIZE(d->rx_eff));
-+		}
-+	}
-+
-+	rcu_read_unlock();
-+
-+	seq_putc(m, '\n');
-+	return 0;
-+}
-+
-+static int can_rcvlist_eff_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, can_rcvlist_eff_proc_show, NULL);
-+}
-+
-+static const struct file_operations can_rcvlist_eff_proc_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= can_rcvlist_eff_proc_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
- /*
-  * proc utility functions
-  */
-@@ -495,8 +537,8 @@ void can_init_proc(void)
- 					   &can_rcvlist_proc_fops, (void *)RX_FIL);
- 	pde_rcvlist_inv = proc_create_data(CAN_PROC_RCVLIST_INV, 0644, can_dir,
- 					   &can_rcvlist_proc_fops, (void *)RX_INV);
--	pde_rcvlist_eff = proc_create_data(CAN_PROC_RCVLIST_EFF, 0644, can_dir,
--					   &can_rcvlist_proc_fops, (void *)RX_EFF);
-+	pde_rcvlist_eff = proc_create(CAN_PROC_RCVLIST_EFF, 0644, can_dir,
-+				      &can_rcvlist_eff_proc_fops);
- 	pde_rcvlist_sff = proc_create(CAN_PROC_RCVLIST_SFF, 0644, can_dir,
- 				      &can_rcvlist_sff_proc_fops);
- }
+I agreee, this is wrong and must be fixed.
+
+> 
+> How do you set the bitrate without defining bittiming_const??
+> And how does
+> 
+> 	ip -det link show can0
+> 
+> look like for your device then?
+
+Only to check what is happening:
+
+5: hcan2: <NOARP> mtu 16 qdisc noop state DOWN qlen 10
+    link/can
+    can state STOPPED restart-ms 0
+    bitrate 0 sample-point 0.000
+    tq 0 prop-seg 0 phase-seg1 0 phase-seg2 0 sjw 0
+    clock 100000000
+
+Everything is zeroed...
+
+
+> 
+> Setting the bitrate with the ip tools requires bittiming_const to be set:
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/davem/net-next.git/tree/drivers/net/can/dev.c#n252
+> 
+
+In fact I had supposed that setting the bitrate generates an OOPS in
+can_calc_bittiming(). It does not, I have not checked why...in any case
+the behavior must be fixed.
+
+> IMO both ctrlmode_supported and bittiming_const need to be retrieved from
+> each remote SPI attached CAN controller at startup initialization time.
+> So that the configuration can be done with the standard tools.
+
+Agree, it is the best way. I will add a SPI_MSG_GET_CFG to retrieve the
+timing from the controller in probe(). In my case, the controller cannot
+have different timing for each channel, but I agree the query must be
+done for each channel, in case a microcontroller supports it.
+
+Thanks for reviewing,
+
+Stefano Babic
+
+
 -- 
-1.9.1
-
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
+=====================================================================
