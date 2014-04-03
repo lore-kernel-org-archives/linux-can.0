@@ -1,88 +1,49 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Regarding  J1939 support on freescale imx6 BSP
-Date: Thu, 3 Apr 2014 15:39:34 +0200
-Message-ID: <20140403133934.GA449@vandijck-laurijssen.be>
-References: <533BAD63.80202@tataelxsi.co.in>
- <20140402183759.GA4780@vandijck-laurijssen.be>
- <533CFFB7.3020300@tataelxsi.co.in>
+From: Daniel =?utf-8?b?Qm9zdHLDtm0=?= <daniel.bostrom@maximatecc.com>
+Subject: SocketCAN over Ethernet
+Date: Thu, 3 Apr 2014 11:52:49 +0000 (UTC)
+Message-ID: <loom.20140403T134741-892@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:4406 "EHLO
-	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752052AbaDCNjl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Apr 2014 09:39:41 -0400
-Content-Disposition: inline
-In-Reply-To: <533CFFB7.3020300@tataelxsi.co.in>
+Received: from plane.gmane.org ([80.91.229.3]:60886 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752382AbaDCNtx (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 3 Apr 2014 09:49:53 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1WVhYp-0003Ho-Lp
+	for linux-can@vger.kernel.org; Thu, 03 Apr 2014 15:20:03 +0200
+Received: from 193.15.169.28 ([193.15.169.28])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 03 Apr 2014 15:20:03 +0200
+Received: from daniel.bostrom by 193.15.169.28 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 03 Apr 2014 15:20:03 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Hi Ratheendran,
+Hello,
 
-On Thu, Apr 03, 2014 at 11:59:11AM +0530, Ratheendran wrote:
-> Hi Kurt,
-> 
-> Thanks for your response,
-> 
-> I just confirmed from my team ,we want j1939  stack into our
-> socketCAN layer.
+I am going to try to explain our scenario briefly.
 
-Great.
+We want to setup a simulation environment for our system running on Ubuntu 
+so that we can use it together with our Windows based simulation tool 
+suite. Currently we are running Ubuntu in a virtual machine using 
+VirtualBox on a Windows host. In Ubuntu we use SocketCAN and we would like 
+to continue to do so but instead of using real CAN hardware somehow setup 
+CAN communication over Ethernet to the Windows host.
 
-> 
-> is j1939  stack part of mainstream kernel?
+I am new to CAN on Linux but I have been reading about SocketCAN and was 
+wondering if we could use virtual can (vcan) somehow?
 
-no, you can find it at 
-git@gitorious.org:linux-can/linux-can-j1939.git ?
+I appreciate any help clarifying if, and if so, how SocketCAN over 
+Ethernet could be achieved. If you need additional information about our 
+scenario please let me know.
 
-> do I need to manually
-> update my Linux BSP with the source code and resolve the conflicts.
+Best regards
+Daniel
+ 
 
-If you already develop your kernel with git, then
-you would do something as:
-	$ git remote add j1939 git@gitorious.org:...
-	$ git remote update j1939
-	$ git merge j1939/j1939-v3.0b
-
-The latter command merges the j1939-v3.0b branch into your git repository.
-Several similar branches exists, which only differ in the mainline version
-that they forked off.
-
-> 
-> Going further, I want to implement this as a patch with the yocto
-> build, what is the best way to move ahead.
-
-I'm not enough familiar with Yocto to answer that.
-
-Kind regards,
-Kurt
-> 
-> 
-> Thanks,
-> Ratheendran
-> 
-> On 4/3/2014 12:07 AM, Kurt Van Dijck wrote:
-> >Hi Ratheendran,
-> >
-> >On Wed, Apr 02, 2014 at 11:55:39AM +0530, Ratheendran wrote:
-> >>Hi All,
-> >>
-> >>I am new to Linux CAN module, want to know the how I can include
-> >>this J1939 support in my free-scale imx6 BSP. do you have a
-> >>ready-made patch.
-> >>
-> >>Please note, there is no requirement that the driver handle J1939
-> >>protocol, it must simply allow J1939 to be fully functional.
-> >Do you refer to my J1939 stack in the linux kernel tree that you can find at
-> >git@gitorious.org:linux-can/linux-can-j1939.git ?
-> >
-> >Or is it something else that you seek?
-> >That is not clear to me.
-> >
-> >Kind regards,
-> >Kurt
-> >.
-> >
-> 
