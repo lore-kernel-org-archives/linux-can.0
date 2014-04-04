@@ -1,71 +1,73 @@
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 06/10] can: c_can: Always update error stats
-Date: Fri, 04 Apr 2014 15:24:26 -0000
-Message-ID: <20140404134857.333228984@linutronix.de>
+Subject: [patch 02/10] can: c_can: Make bus off interrupt disable logic work
+Date: Fri, 04 Apr 2014 15:24:24 -0000
+Message-ID: <20140404134856.464317949@linutronix.de>
 References: <20140404134816.751883017@linutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:41543 "EHLO
+Received: from www.linutronix.de ([62.245.132.108]:41518 "EHLO
 	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753271AbaDDPYN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Apr 2014 11:24:13 -0400
-Content-Disposition: inline; filename=can-c_can-always-update-error-stats.patch
+	with ESMTP id S1753010AbaDDPYL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Apr 2014 11:24:11 -0400
+Content-Disposition: inline;
+ filename=can-c_can-Make-bus-off-interrupt-disable-logic-work.patch
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can <linux-can@vger.kernel.org>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-If berr reporting is disabled or the allocation of the error skb
-fails, we still want to see the error statistics.
+The state change handler is called with device interrupts disabled
+already. So no point in disabling them again when we enter bus off
+state.
+
+But what's worse is that we reenable the interrupts at the end of NAPI
+poll unconditionally. So c_can_start() which is called from the
+restart timer can trigger interrupts which confuse the hell out of the
+half reinitialized driver/hw.
+
+Remove the pointless device interrupt disable in the BUS_OFF handler
+and prevent reenabling the device interrupts at the end of the poll
+routine when the current state is BUS_OFF.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/net/can/c_can/c_can.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/can/c_can/c_can.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 Index: linux-can/drivers/net/can/c_can/c_can.c
 ===================================================================
 --- linux-can.orig/drivers/net/can/c_can/c_can.c
 +++ linux-can/drivers/net/can/c_can/c_can.c
-@@ -378,6 +378,9 @@ static int c_can_handle_lost_msg_obj(str
- 	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
- 	c_can_object_put(dev, iface, objno, IF_COMM_CONTROL);
+@@ -954,11 +954,6 @@ static int c_can_handle_state_change(str
+ 		/* bus-off state */
+ 		priv->can.state = CAN_STATE_BUS_OFF;
+ 		cf->can_id |= CAN_ERR_BUSOFF;
+-		/*
+-		 * disable all interrupts in bus-off mode to ensure that
+-		 * the CPU is not hogged down
+-		 */
+-		c_can_enable_all_interrupts(priv, DISABLE_ALL_INTERRUPTS);
+ 		can_bus_off(dev);
+ 		break;
+ 	default:
+@@ -1089,6 +1084,7 @@ static int c_can_poll(struct napi_struct
+ 			netdev_dbg(dev, "entered bus off state\n");
+ 			work_done += c_can_handle_state_change(dev,
+ 						C_CAN_BUS_OFF);
++			goto end;
+ 		}
  
-+	stats->rx_errors++;
-+	stats->rx_over_errors++;
-+
- 	/* create an error msg */
- 	skb = alloc_can_err_skb(dev, &frame);
- 	if (unlikely(!skb))
-@@ -385,8 +388,6 @@ static int c_can_handle_lost_msg_obj(str
+ 		/* handle bus recovery events */
+@@ -1122,8 +1118,9 @@ static int c_can_poll(struct napi_struct
+ end:
+ 	if (work_done < quota) {
+ 		napi_complete(napi);
+-		/* enable all IRQs */
+-		c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
++		/* enable all IRQs if we are not in bus off state */
++		if (priv->can.state != CAN_STATE_BUS_OFF)
++			c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
+ 	}
  
- 	frame->can_id |= CAN_ERR_CRTL;
- 	frame->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
--	stats->rx_errors++;
--	stats->rx_over_errors++;
- 
- 	netif_receive_skb(skb);
- 	return 1;
-@@ -993,6 +994,10 @@ static int c_can_handle_bus_err(struct n
- 	if (lec_type == LEC_UNUSED || lec_type == LEC_NO_ERROR)
- 		return 0;
- 
-+	/* common for all type of bus errors */
-+	priv->can.can_stats.bus_error++;
-+	stats->rx_errors++;
-+
- 	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
- 		return 0;
- 
-@@ -1005,10 +1010,6 @@ static int c_can_handle_bus_err(struct n
- 	 * check for 'last error code' which tells us the
- 	 * type of the last error to occur on the CAN bus
- 	 */
--
--	/* common for all type of bus errors */
--	priv->can.can_stats.bus_error++;
--	stats->rx_errors++;
- 	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
- 	cf->data[2] |= CAN_ERR_PROT_UNSPEC;
- 
+ 	return work_done;
 
 
