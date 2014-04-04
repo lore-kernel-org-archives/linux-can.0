@@ -1,78 +1,71 @@
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 07/10] can: c_can: Simplify buffer reenabling
+Subject: [patch 06/10] can: c_can: Always update error stats
 Date: Fri, 04 Apr 2014 15:24:26 -0000
-Message-ID: <20140404134857.523481518@linutronix.de>
+Message-ID: <20140404134857.333228984@linutronix.de>
 References: <20140404134816.751883017@linutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:41549 "EHLO
+Received: from www.linutronix.de ([62.245.132.108]:41543 "EHLO
 	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753010AbaDDPYO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Apr 2014 11:24:14 -0400
-Content-Disposition: inline;
- filename=can-c_can-Simplify-buffer-reenabling.patch
+	with ESMTP id S1753271AbaDDPYN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Apr 2014 11:24:13 -0400
+Content-Disposition: inline; filename=can-c_can-always-update-error-stats.patch
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can <linux-can@vger.kernel.org>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-Instead of writing to the message object we can simply clear the
-NewDat bit with the get method.
+If berr reporting is disabled or the allocation of the error skb
+fails, we still want to see the error statistics.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/net/can/c_can/c_can.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/net/can/c_can/c_can.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 Index: linux-can/drivers/net/can/c_can/c_can.c
 ===================================================================
 --- linux-can.orig/drivers/net/can/c_can/c_can.c
 +++ linux-can/drivers/net/can/c_can/c_can.c
-@@ -108,6 +108,7 @@
- #define IF_COMM_CONTROL		BIT(4)
- #define IF_COMM_CLR_INT_PND	BIT(3)
- #define IF_COMM_TXRQST		BIT(2)
-+#define IF_COMM_CLR_NEWDAT	IF_COMM_TXRQST
- #define IF_COMM_DATAA		BIT(1)
- #define IF_COMM_DATAB		BIT(0)
- #define IF_COMM_ALL		(IF_COMM_MASK | IF_COMM_ARB | \
-@@ -120,7 +121,7 @@
- 				 IF_COMM_DATAA | IF_COMM_DATAB)
+@@ -378,6 +378,9 @@ static int c_can_handle_lost_msg_obj(str
+ 	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
+ 	c_can_object_put(dev, iface, objno, IF_COMM_CONTROL);
  
- /* For the high buffers we clear the interrupt bit and newdat */
--#define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_TXRQST)
-+#define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
++	stats->rx_errors++;
++	stats->rx_over_errors++;
++
+ 	/* create an error msg */
+ 	skb = alloc_can_err_skb(dev, &frame);
+ 	if (unlikely(!skb))
+@@ -385,8 +388,6 @@ static int c_can_handle_lost_msg_obj(str
  
- /* IFx arbitration */
- #define IF_ARB_MSGVAL		BIT(15)
-@@ -353,17 +354,12 @@ static void c_can_write_msg_object(struc
- }
+ 	frame->can_id |= CAN_ERR_CRTL;
+ 	frame->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+-	stats->rx_errors++;
+-	stats->rx_over_errors++;
  
- static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
--						int iface,
--						int ctrl_mask)
-+						       int iface)
- {
- 	int i;
--	struct c_can_priv *priv = netdev_priv(dev);
+ 	netif_receive_skb(skb);
+ 	return 1;
+@@ -993,6 +994,10 @@ static int c_can_handle_bus_err(struct n
+ 	if (lec_type == LEC_UNUSED || lec_type == LEC_NO_ERROR)
+ 		return 0;
  
--	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++) {
--		priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface),
--				ctrl_mask & ~IF_MCONT_NEWDAT);
--		c_can_object_put(dev, iface, i, IF_COMM_CONTROL);
--	}
-+	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
-+		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
- }
++	/* common for all type of bus errors */
++	priv->can.can_stats.bus_error++;
++	stats->rx_errors++;
++
+ 	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+ 		return 0;
  
- static int c_can_handle_lost_msg_obj(struct net_device *dev,
-@@ -829,7 +825,7 @@ static int c_can_read_objects(struct net
+@@ -1005,10 +1010,6 @@ static int c_can_handle_bus_err(struct n
+ 	 * check for 'last error code' which tells us the
+ 	 * type of the last error to occur on the CAN bus
+ 	 */
+-
+-	/* common for all type of bus errors */
+-	priv->can.can_stats.bus_error++;
+-	stats->rx_errors++;
+ 	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+ 	cf->data[2] |= CAN_ERR_PROT_UNSPEC;
  
- 		if (obj == C_CAN_MSG_RX_LOW_LAST)
- 			/* activate all lower message objects */
--			c_can_activate_all_lower_rx_msg_obj(dev, IF_RX, ctrl);
-+			c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
- 
- 		pkts++;
- 		quota--;
 
 
