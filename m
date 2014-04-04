@@ -1,53 +1,51 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 10/10] can: c_can : Disable rx split as workaround
-Date: Fri, 4 Apr 2014 20:55:34 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1404042055020.14882@ionos.tec.linutronix.de>
-References: <20140404134816.751883017@linutronix.de> <20140404134858.173427806@linutronix.de> <533EEEC8.3090905@hartkopp.net>
+From: Michal Sojka <sojkam1@fel.cvut.cz>
+Subject: Re: SocketCAN over Ethernet
+Date: Fri, 04 Apr 2014 21:17:32 +0200
+Message-ID: <87lhvkhpkj.fsf@steelpick.2x.cz>
+References: <loom.20140403T134741-892@post.gmane.org> <1396543883.12659.25.camel@blackbox>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:42724 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754104AbaDDSzY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Apr 2014 14:55:24 -0400
-In-Reply-To: <533EEEC8.3090905@hartkopp.net>
+Received: from max.feld.cvut.cz ([147.32.192.36]:34065 "EHLO max.feld.cvut.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753844AbaDDT0W (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 4 Apr 2014 15:26:22 -0400
+In-Reply-To: <1396543883.12659.25.camel@blackbox>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
+To: "Max S." <max@schneidersoft.net>, Daniel =?utf-8?Q?Bostr=C3=B6m?= <daniel.bostrom@maximatecc.com>
+Cc: linux-can@vger.kernel.org
 
-On Fri, 4 Apr 2014, Oliver Hartkopp wrote:
+Hi,
 
-> 
-> -------- Original Message --------
-> Subject: [patch 10/10] can: c_can : Disable rx split as workaround
-> 
-> (..)
-> 
-> +config CAN_C_CAN_NO_RX_SPLIT
-> +	bool "Disable RX Split buffer"
-> +	---help---
-> +	  RX Split buffer prevents packet reordering but can cause packet
-> +	  loss. Select the less of the two evils.
-> +
-> 
-> Can you try to use something more understandable for the Kconfig option?
-> 
-> AFAICS there are the options:
-> 
-> 1. Frames are in order but may get lost.
-> 2. Frames do not get lost but may be disordered.
-> 
-> No user/kernel builder knows about "rx split buffers" ...
-> 
-> What about
-> 
-> +config CAN_C_CAN_STRICT_FRAME_ORDERING
-> +	bool "Force a strict RX CAN frame order (may cause frame loss)"
-> +	---help---
-> +	  The RX split buffer prevents packet reordering but can cause packet
-> +	  loss. Only enable this option when you accept to lose CAN frames
-> +	  in favor of getting the received CAN frames in the correct order.
-> +
+On Thu, Apr 03 2014, Max S. wrote:
+> I don't know of a direct way of hooking up two socket can interfaces
+> over eth.
 
-Way better :)
+This won't probably help Daniel, but some time ago, we implemented
+an in-kernel CAN-UDP gateway.
+
+Kernel patch is available at
+https://rtime.felk.cvut.cz/gitweb/can-eth-gw-linux.git/commit/3f7fc0265e9555dea75cef7709720e62d8da37d8
+
+The commit message says:
+> CAN-Ethernet gateway - kernel part
+>  
+> This patch implements CAN-Ethernet (or more precisely CAN-UDP) gateway.
+> The code here is only responsible for routing the messages in kernel
+> space. Initial configuration and setup of the involved sockets is done
+> in user space with cegw utility.
+>  
+> Currently, the gateway support IPv4 and IPv6.  CAN_FD frames are note
+> supported.
+
+The user-space counterpart is at
+https://rtime.felk.cvut.cz/gitweb/can-utils.git/blob/refs/heads/cegw:/cegw.c
+
+Probably, the only reason, why the gateway should be implemented in the
+kernel is performance. We measured that the kernel gateway is 12% faster
+than an user space one (which is not much).
+
+If somebody is interested in more details, let me know.
+
+-Michal
