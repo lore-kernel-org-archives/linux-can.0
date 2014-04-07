@@ -1,69 +1,138 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2 3/3] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Sun, 06 Apr 2014 21:42:03 +0200
-Message-ID: <5341AE0B.4090101@hartkopp.net>
-References: <1395757822-22283-1-git-send-email-sbabic@denx.de> <1395757822-22283-4-git-send-email-sbabic@denx.de> <534170AD.50506@grandegger.com> <5341A497.9090409@hartkopp.net> <5341A966.5080202@grandegger.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH v2] c_can: Add support for eg20t (pch_can)
+Date: Mon,  7 Apr 2014 08:52:03 +0200
+Message-ID: <1396853523-14941-1-git-send-email-alexander.stein@systec-electronic.com>
+References: <"<533DB663.3030408@hartkopp.net>">
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:22177 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750797AbaDFTmL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 6 Apr 2014 15:42:11 -0400
-In-Reply-To: <5341A966.5080202@grandegger.com>
+Received: from webbox1416.server-home.net ([77.236.96.61]:50915 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750863AbaDGGxa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Apr 2014 02:53:30 -0400
+In-Reply-To: <"<533DB663.3030408@hartkopp.net>">
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "Max S." <max@schneidersoft.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Thomas Gleixner <tglx@linutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 06.04.2014 21:22, Wolfgang Grandegger wrote:
-> On 04/06/2014 09:01 PM, Oliver Hartkopp wrote:
->> On 06.04.2014 17:20, Wolfgang Grandegger wrote:
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+This is the correct version of this patch I use.
+It has no spinlock which is not needed, AFAICT.
 
->>> This driver is rather special in various
->>> respects. As I see it, it does not support:
->>>
->>>   - loopback (echo_skbs)
->>>   - error state handling
->>>   - any error reporting (CAN error messages)
->>>   - any error counting (net and CAN stats)
->>>   - recovery from bus-off
->>>
->>> Any chance to improve on that? At least some kind of error reporting
->>> would be nice otherwise the app does not realize any problems. Or how
->>> does your app handle error cases.
->>
->> You are right on asking this.
->>
->> On the other had I suggested to name it "spi_can" in all places to make it a
->> generic driver to attach micro controllers which have CAN and SPI in a common way.
-> 
-> But it depends on the firmware running on the micro controller. I still
-> think that "spi_can" will confuse people. Anyway, just a name.
-> 
+ drivers/net/can/c_can/c_can_pci.c | 50 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
-Thinking about your remark:
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index bce0be5..128788c 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -19,9 +19,13 @@
+ 
+ #include "c_can.h"
+ 
++#define PCI_DEVICE_ID_PCH_CAN	0x8818
++#define PCH_PCI_SOFT_RESET	0x01fc
++
+ enum c_can_pci_reg_align {
+ 	C_CAN_REG_ALIGN_16,
+ 	C_CAN_REG_ALIGN_32,
++	C_CAN_REG_32,
+ };
+ 
+ struct c_can_pci_data {
+@@ -31,6 +35,10 @@ struct c_can_pci_data {
+ 	enum c_can_pci_reg_align reg_align;
+ 	/* Set the frequency */
+ 	unsigned int freq;
++	/* PCI bar number */
++	int bar;
++	/* Callback for reset */
++	void (*init)(const struct c_can_priv *priv, bool enable);
+ };
+ 
+ /*
+@@ -63,6 +71,29 @@ static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
+ 	writew(val, priv->base + 2 * priv->regs[index]);
+ }
+ 
++static u16 c_can_pci_read_reg_32bit(struct c_can_priv *priv,
++				    enum reg index)
++{
++	return (u16)ioread32(priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_write_reg_32bit(struct c_can_priv *priv,
++				      enum reg index, u16 val)
++{
++	iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
++}
++
++static void c_can_pci_reset_pch(const struct c_can_priv *priv, bool enable)
++{
++	if (enable) {
++		u32 __iomem *addr = priv->base + PCH_PCI_SOFT_RESET;
++
++		/* write to sw reset register */
++		iowrite32(1, addr);
++		iowrite32(0, addr);
++	}
++}
++
+ static int c_can_pci_probe(struct pci_dev *pdev,
+ 			   const struct pci_device_id *ent)
+ {
+@@ -87,7 +118,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 	pci_set_master(pdev);
+ 	pci_enable_msi(pdev);
+ 
+-	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
++	addr = pci_iomap(pdev, c_can_pci_data->bar, pci_resource_len(pdev, 0));
+ 	if (!addr) {
+ 		dev_err(&pdev->dev,
+ 			"device has no PCI memory resources, "
+@@ -142,11 +173,17 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 		priv->read_reg = c_can_pci_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_pci_write_reg_aligned_to_16bit;
+ 		break;
++	case C_CAN_REG_32:
++		priv->read_reg = c_can_pci_read_reg_32bit;
++		priv->write_reg = c_can_pci_write_reg_32bit;
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		goto out_free_c_can;
+ 	}
+ 
++	priv->raminit = c_can_pci_data->init;
++
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -193,6 +230,15 @@ static struct c_can_pci_data c_can_sta2x11= {
+ 	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_ALIGN_32,
+ 	.freq = 52000000, /* 52 Mhz */
++	.bar = 0,
++};
++
++static struct c_can_pci_data c_can_pch = {
++	.type = BOSCH_C_CAN,
++	.reg_align = C_CAN_REG_32,
++	.freq = 50000000, /* 50 MHz */
++	.init = c_can_pci_reset_pch,
++	.bar = 1,
+ };
+ 
+ #define C_CAN_ID(_vend, _dev, _driverdata) {		\
+@@ -202,6 +248,8 @@ static struct c_can_pci_data c_can_sta2x11= {
+ static DEFINE_PCI_DEVICE_TABLE(c_can_pci_tbl) = {
+ 	C_CAN_ID(PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_CAN,
+ 		 c_can_sta2x11),
++	C_CAN_ID(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_PCH_CAN,
++		 c_can_pch),
+ 	{},
+ };
+ static struct pci_driver c_can_pci_driver = {
+-- 
+1.8.3.2
 
-The difference to other SPI CAN drivers is, that it does not access the
-controller registers via (very short) SPI messages (like the mcp251x) but adds
-a message protocol for some kind of 'remove CAN controller'.
-
-With this message protocol some 'intelligence' can probably be moved down to
-the attached micro controller (e.g. the error state handling).
-
-But indeed the loopback (IFF_ECHO) handling should be implemented correctly.
-
-AFAIK only the gs_usb driver from Max Schneider
-
-	http://marc.info/?l=linux-can&m=138791254416497&w=2
-
-did this in a correct way. Search for
-
-	"/* echo_id == hf->echo_id */"
-
-in the above patch.
-
-Best regards,
-Oliver
