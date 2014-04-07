@@ -1,48 +1,115 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] c_can: Add support for eg20t (pch_can)
-Date: Mon, 7 Apr 2014 20:15:05 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1404072014360.14882@ionos.tec.linutronix.de>
-References: <1396534451-9654-1-git-send-email-alexander.stein@systec-electronic.com> <8704553.bJQG1oassy@ws-stein> <alpine.DEB.2.02.1404071524550.14882@ionos.tec.linutronix.de> <1589068.2zsYHU9sGb@ws-stein> <alpine.DEB.2.02.1404071659360.14882@ionos.tec.linutronix.de>
- <5342EA52.6080904@pengutronix.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: [PATCH] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Mon, 7 Apr 2014 11:38:58 -0700
+Message-ID: <CANGgnMZZu6tX0LyK4mQaYhixY9uhbQYee7XO5_HtNfT0REPghA@mail.gmail.com>
+References: <CANGgnMbszHzYe9pF2C6wag4MY_PfBG2qrMCC=rMmQnb-jyXXXw@mail.gmail.com>
+	<52CAB05F.4010303@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:53091 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753777AbaDGSOy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Apr 2014 14:14:54 -0400
-In-Reply-To: <5342EA52.6080904@pengutronix.de>
+Received: from mail-ie0-f177.google.com ([209.85.223.177]:53940 "EHLO
+	mail-ie0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755624AbaDGSi6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Apr 2014 14:38:58 -0400
+Received: by mail-ie0-f177.google.com with SMTP id rl12so6581237iec.22
+        for <linux-can@vger.kernel.org>; Mon, 07 Apr 2014 11:38:58 -0700 (PDT)
+In-Reply-To: <52CAB05F.4010303@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, 7 Apr 2014, Marc Kleine-Budde wrote:
+Hi Thomas,
 
-> On 04/07/2014 05:24 PM, Thomas Gleixner wrote:
-> > On Mon, 7 Apr 2014, Alexander Stein wrote:
-> >> On Monday 07 April 2014 15:31:20, Thomas Gleixner wrote:
-> >>> What other patches do you have applied?
-> >>
-> >> I have shrinked them a bit to the absolute necessity. In general
-> >> these are patches for the current hardware to make them working.
-> > 
-> >> 53b385c37e4eb155cf9d515913ddf76750e2ac24 c_can: Add support for eg20t (pch_can)
-> > 
-> > I can't see anything whats wrong with that one.
-> > 
-> > Can you check, whether the following check in c_can_read_objects()
-> > 
-> >                if (!(ctrl & IF_MCONT_NEWDAT))
-> >                         continue;
-> 
-> On TI's D_CAN with all your patches applied and the split buffer
-> approach active, I haven't this trigger in a ~4h test run. Athough there
-> are regularly missing frames, apart from this, they are in the correct
-> order.
-
-If you disable the split buffer is the message loss gone?
+Did anything come of this patch?  Both Oliver and I have found that it
+fixes real problems.  I have multiple machines which have been running
+with the patch since December with no ill effects.
 
 Thanks,
+  Austin
 
-	tglx
+On Mon, Jan 6, 2014 at 5:32 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> Hi Thomas,
+>
+> I just wanted to add my
+>
+> Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>
+> In my setup with Core i7 and 20 CAN busses SJA1000 PCIe the problem
+> disappeared with the discussed patch with the -rt kernel.
+>
+> The system was running at full CAN bus load over the weekend more than 72
+> hours of operation without problems:
+>
+>            CPU0       CPU1       CPU2       CPU3
+>   0:         40          0          0          0   IO-APIC-edge      timer
+>   1:          1          0          0          0   IO-APIC-edge      i8042
+>   8:          0          0          1          0   IO-APIC-edge      rtc0
+>   9:         42         45         45         42   IO-APIC-fasteoi   acpi
+>  16:          9          8          8          8   IO-APIC-fasteoi   ahci, ehci_hcd:usb1, can4, can5, can6, can7
+>  17:  441468642  443275488  443609061  441436145   IO-APIC-fasteoi   can8, can10, can11, can9
+>  18:  441975412  438811422  437317802  441209092   IO-APIC-fasteoi   can12, can13, can14, can15
+>  19:  427310388  428661677  429813687  428095739   IO-APIC-fasteoi   can0, can1, can2, can3, can16, can17, can18, can19
+> (..)
+>
+> Before the having the patch, it lasted 1 minutes to 1.5 hours (usually ~3
+> minutes) until the irq was killed due to the spurious detection using Linux
+> 3.10.11-rt (Debian linux-image-3.10-0.bpo.3-rt-686-pae).
+>
+> I also tested the patch on different latest 3.13-rc5+ (non-rt) kernels for two
+> weeks now without problems.
+>
+> If you want me to test an improved version (as Austin suggested below) please
+> send a patch.
+>
+> Best regards,
+> Oliver
+>
+> On 23.12.2013 20:25, Austin Schuh wrote:
+>> Hi Thomas,
+>>
+>> Did anything happen with your patch to note_interrupt, originally
+>> posted on May 8th of 2013?  (https://lkml.org/lkml/2013/3/7/222)
+>>
+>> I am seeing an issue on a machine right now running a
+>> config-preempt-rt kernel and a SJA1000 CAN card from PEAK.  It works
+>> for ~1 day, and then proceeds to die with a "Disabling IRQ #18"
+>> message.  I posted on the Linux CAN mailing list, and Oliver Hartkopp
+>> was able to reproduce the issue only on a realtime kernel.  A function
+>> trace ending when the IRQ was disabled shows that note_interrupt is
+>> being called regularly from the IRQ handler threads, and one of the
+>> threads is doing work (and therefore calling note_interrupt with
+>> IRQ_HANDLED).
+>>
+>> Oliver Hartkopp and I ran tests over the weekend on numerous machines
+>> and verified that the patch that you proposed fixes the problem.  We
+>> think that the race condition that Till reported is causing the
+>> problem here.
+>>
+>> In reply to the comment about using the upper bit of
+>> threads_handled_last for holding the SPURIOUS_DEFERRED flag, while
+>> that may still be an over-optimization, the code should still work.
+>> All comparisons are done with the bit set, which just makes it a 31
+>> bit counter.  It will take 8 more days for the counter to overflow on
+>> my machine, so I won't know for certain until then.
+>>
+>> My only concern is that there may still be a small race condition with
+>> this new code.  If the interrupt handler thread is running at a
+>> realtime priority, but lower than another task, it may not get run
+>> until a large number of IRQs get triggered, and then process them
+>> quickly.  With your new handler code, this would be counted as one
+>> single handled interrupt.  With the current constants, this is only a
+>> problem if more than 1000 calls to the handler happen between IRQs.  I
+>> starved my card's irq threads by running 4 tasks at a higher realtime
+>> priority than the handler threads, and saw the number of unhandled
+>> IRQs jump from 1/100000 to 3/100000, so that problem may not show up
+>> in practice.
+>>
+>> Austin Schuh
+>>
+>> Tested-by: Austin Schuh <austin@peloton-tech.com>
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
