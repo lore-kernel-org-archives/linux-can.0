@@ -1,138 +1,99 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH v2] c_can: Add support for eg20t (pch_can)
-Date: Mon,  7 Apr 2014 08:52:03 +0200
-Message-ID: <1396853523-14941-1-git-send-email-alexander.stein@systec-electronic.com>
-References: <"<533DB663.3030408@hartkopp.net>">
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:50915 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750863AbaDGGxa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Apr 2014 02:53:30 -0400
-In-Reply-To: <"<533DB663.3030408@hartkopp.net>">
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Thomas Gleixner <tglx@linutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH v7 1/2] can: xilinx CAN controller support
+Date: Mon, 07 Apr 2014 08:56:50 +0200
+Message-ID: <53424C32.7090000@monstr.eu>
+References: <3e750ec3-9d47-4b4e-8173-56698ab19786@CH1EHSMHS029.ehs.local>
+Reply-To: monstr@monstr.eu
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="WtPjUIdcbAiEAWTVRw2qqJmVhPaiGXxNM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <3e750ec3-9d47-4b4e-8173-56698ab19786@CH1EHSMHS029.ehs.local>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+List-Id: linux-can.vger.kernel.org
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
-This is the correct version of this patch I use.
-It has no spinlock which is not needed, AFAICT.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WtPjUIdcbAiEAWTVRw2qqJmVhPaiGXxNM
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
- drivers/net/can/c_can/c_can_pci.c | 50 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+On 04/02/2014 03:13 PM, Kedareswara rao Appana wrote:
+> This patch adds xilinx CAN controller support.
+> This driver supports both ZYNQ CANPS and Soft IP
+> AXI CAN controller.
+>=20
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+> Changes for v7:
+> - Updated the driver with review comments.
+> - Moved the driver bindings doc as a separte patch.
+> Changes for v6:
+> - Updated the driver with review comments.
+> - Used the clock names specified in the data sheet.
+> - Updated the devicetree bindings doc as per Rob suggestion.
+> Changes for v5:
+> - Updated the driver with the review comments.
+> - Remove the check for the tx fifo full interrupt condition
+>   form Tx interrupt routine as we are checking it in the _xmit
+>   routine.
+> - Clearing the txok interrupt in the tx interrupt routine for
+>   every Tx can frame.
+> Changes for v4:
+> - Added check for the tx fifo full interrupt condition in
+> Tx interrupt routine.
+> - Added be iohelper functions.
+> - Moved the clock enable/disable to probe/remove because of
+>   Added big endian support for AXI CAN controller case(reading
+>   a register during probe for that we need to enable clock).
+> Changes for v3:
+> - Updated the driver with the review comments.
+> - Modified the tranmit logic as per Marc suggestion.
+> - Enabling the clock when the interface is up to reduce the
+>   Power consumption.
+> Changes for v2:
+> - Updated with the review comments.
+> - Removed the unnecessary debug prints.
+> - include tx,rx fifo depths in ZYNQ CANPS case also
+> ---
+>  drivers/net/can/Kconfig      |    7 +
+>  drivers/net/can/Makefile     |    1 +
+>  drivers/net/can/xilinx_can.c | 1176 ++++++++++++++++++++++++++++++++++=
+++++++++
+>  3 files changed, 1184 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/net/can/xilinx_can.c
 
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index bce0be5..128788c 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -19,9 +19,13 @@
- 
- #include "c_can.h"
- 
-+#define PCI_DEVICE_ID_PCH_CAN	0x8818
-+#define PCH_PCI_SOFT_RESET	0x01fc
-+
- enum c_can_pci_reg_align {
- 	C_CAN_REG_ALIGN_16,
- 	C_CAN_REG_ALIGN_32,
-+	C_CAN_REG_32,
- };
- 
- struct c_can_pci_data {
-@@ -31,6 +35,10 @@ struct c_can_pci_data {
- 	enum c_can_pci_reg_align reg_align;
- 	/* Set the frequency */
- 	unsigned int freq;
-+	/* PCI bar number */
-+	int bar;
-+	/* Callback for reset */
-+	void (*init)(const struct c_can_priv *priv, bool enable);
- };
- 
- /*
-@@ -63,6 +71,29 @@ static void c_can_pci_write_reg_aligned_to_32bit(struct c_can_priv *priv,
- 	writew(val, priv->base + 2 * priv->regs[index]);
- }
- 
-+static u16 c_can_pci_read_reg_32bit(struct c_can_priv *priv,
-+				    enum reg index)
-+{
-+	return (u16)ioread32(priv->base + 2 * priv->regs[index]);
-+}
-+
-+static void c_can_pci_write_reg_32bit(struct c_can_priv *priv,
-+				      enum reg index, u16 val)
-+{
-+	iowrite32((u32)val, priv->base + 2 * priv->regs[index]);
-+}
-+
-+static void c_can_pci_reset_pch(const struct c_can_priv *priv, bool enable)
-+{
-+	if (enable) {
-+		u32 __iomem *addr = priv->base + PCH_PCI_SOFT_RESET;
-+
-+		/* write to sw reset register */
-+		iowrite32(1, addr);
-+		iowrite32(0, addr);
-+	}
-+}
-+
- static int c_can_pci_probe(struct pci_dev *pdev,
- 			   const struct pci_device_id *ent)
- {
-@@ -87,7 +118,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
- 	pci_set_master(pdev);
- 	pci_enable_msi(pdev);
- 
--	addr = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
-+	addr = pci_iomap(pdev, c_can_pci_data->bar, pci_resource_len(pdev, 0));
- 	if (!addr) {
- 		dev_err(&pdev->dev,
- 			"device has no PCI memory resources, "
-@@ -142,11 +173,17 @@ static int c_can_pci_probe(struct pci_dev *pdev,
- 		priv->read_reg = c_can_pci_read_reg_aligned_to_16bit;
- 		priv->write_reg = c_can_pci_write_reg_aligned_to_16bit;
- 		break;
-+	case C_CAN_REG_32:
-+		priv->read_reg = c_can_pci_read_reg_32bit;
-+		priv->write_reg = c_can_pci_write_reg_32bit;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto out_free_c_can;
- 	}
- 
-+	priv->raminit = c_can_pci_data->init;
-+
- 	ret = register_c_can_dev(dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
-@@ -193,6 +230,15 @@ static struct c_can_pci_data c_can_sta2x11= {
- 	.type = BOSCH_C_CAN,
- 	.reg_align = C_CAN_REG_ALIGN_32,
- 	.freq = 52000000, /* 52 Mhz */
-+	.bar = 0,
-+};
-+
-+static struct c_can_pci_data c_can_pch = {
-+	.type = BOSCH_C_CAN,
-+	.reg_align = C_CAN_REG_32,
-+	.freq = 50000000, /* 50 MHz */
-+	.init = c_can_pci_reset_pch,
-+	.bar = 1,
- };
- 
- #define C_CAN_ID(_vend, _dev, _driverdata) {		\
-@@ -202,6 +248,8 @@ static struct c_can_pci_data c_can_sta2x11= {
- static DEFINE_PCI_DEVICE_TABLE(c_can_pci_tbl) = {
- 	C_CAN_ID(PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_CAN,
- 		 c_can_sta2x11),
-+	C_CAN_ID(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_PCH_CAN,
-+		 c_can_pch),
- 	{},
- };
- static struct pci_driver c_can_pci_driver = {
--- 
-1.8.3.2
+Mark: Any update on this one?
+BTW: When you apply these patches you should apply 2/2 before 1/2. There =
+is
+new checking for binding.
 
+Thanks,
+Michal
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
+
+
+
+--WtPjUIdcbAiEAWTVRw2qqJmVhPaiGXxNM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlNCTDIACgkQykllyylKDCG1EgCeLE2XknDSTycp+m4/LnRJNFgf
+Ht0An3Z5dCr0Dd/TEcg1ZoPKU0OIAYo+
+=0rwI
+-----END PGP SIGNATURE-----
+
+--WtPjUIdcbAiEAWTVRw2qqJmVhPaiGXxNM--
