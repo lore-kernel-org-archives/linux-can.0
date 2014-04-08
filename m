@@ -1,81 +1,63 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH] c_can: Add support for eg20t (pch_can)
-Date: Tue, 08 Apr 2014 10:36:23 +0200
-Message-ID: <3071984.okmx4UfXFK@ws-stein>
-References: <1396534451-9654-1-git-send-email-alexander.stein@systec-electronic.com> <1513830.2DNAbkNIid@ws-stein> <alpine.DEB.2.02.1404081017370.14882@ionos.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Subject: [PATCH] can: c_can: Fix bit clearing and message object read
+Date: Tue,  8 Apr 2014 11:46:22 +0200
+Message-ID: <1396950382-13091-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:60574 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:32829 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756351AbaDHIhh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Apr 2014 04:37:37 -0400
-In-Reply-To: <alpine.DEB.2.02.1404081017370.14882@ionos.tec.linutronix.de>
+	by vger.kernel.org with ESMTP id S1756398AbaDHJrj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Apr 2014 05:47:39 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
 
-On Tuesday 08 April 2014 10:26:23, Thomas Gleixner wrote:
-> > So I noticed that with CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING=n
-> > (NEWDAT and INTPEND cleared immediately) the "odd behavior" occurs
-> > pretty often.
-> > Before
-> >   c_can_rx_object_get(dev, obj);
-> > NEWDAT is still set, but afterwards it is already cleared in
-> > C_CAN_NEWDAT1_REG.
-> 
-> Which is expected. We clear the newdat bit in c_can_rx_object_get(),
-> which updates C_CAN_NEWDAT1_REG as well.
-> 
-> > I guess the NEWDAT is already cleared in the message object before
-> > reading from the message object with this line
-> 
-> > > ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_RX));
-> > 
-> > So I removed that IF_MCONT_NEWDAT check (see below) and I didn't
-> > lose any message, but get 5 duplicates in 250000 messages (no
-> > reordering though).
-> > 
-> > Setting CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING=y with that patch I
-> > lose ~650msg per 250000 frames.
-> 
-> What happens, if you apply the patch below?
-> 
-> Thanks,
-> 
-> 	tglx
-> 
-> Index: linux-2.6/drivers/net/can/c_can/c_can.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/net/can/c_can/c_can.c
-> +++ linux-2.6/drivers/net/can/c_can/c_can.c
-> @@ -880,7 +880,7 @@ static int c_can_do_rx_poll(struct net_d
->  
->  	while (quota > 0) {
->  		if (!pend) {
-> -			pend = priv->read_reg(priv, C_CAN_INTPND1_REG);
-> +			pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
->  			if (!pend)
->  				break;
->  			/*
+It seems that clearing some bits in a message object using COMMSK_REG and
+reading this object afterwards using COMREQ_REG is not race free.
+It might occur that the read message object still contains the
+IF_MCONT_NEWDAT bit set while it was already cleared upon write to
+COMMSK_REG. So insert a dummy read to the hardware.
 
-Your patch "can: c_can: Get rid of pointless interrupts" already did that change. Or did you mean the reverse?
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ drivers/net/can/c_can/c_can.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-Regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 0e9f974..625f8e2 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -290,6 +290,13 @@ static inline void c_can_object_get(struct net_device *dev,
+ 	 */
+ 	priv->write_reg(priv, C_CAN_IFACE(COMMSK_REG, iface),
+ 			IFX_WRITE_LOW_16BIT(mask));
++
++	/*
++	 * Insert additional dummy read to let
++	 * the write to COMMSK_REG take effect
++	 */
++	priv->read_reg(priv, C_CAN_IFACE(COMREQ_REG, iface));
++
+ 	priv->write_reg(priv, C_CAN_IFACE(COMREQ_REG, iface),
+ 			IFX_WRITE_LOW_16BIT(objno));
  
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+@@ -832,12 +839,11 @@ static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
+ 		}
+ 
+ 		/*
+-		 * This really should not happen, but this covers some
+-		 * odd HW behaviour. Do not remove that unless you
+-		 * want to brick your machine.
++		 * This really should not happen, but this warns about some
++		 * odd HW behaviour.
+ 		 */
+-		if (!(ctrl & IF_MCONT_NEWDAT))
+-			continue;
++		if ((ctrl & IF_MCONT_NEWDAT))
++			netdev_warn(dev, "IF_MCONT_NEWDAT still set on obj: %d", obj);
+ 
+ 		/* read the data from the message object */
+ 		c_can_read_msg_object(dev, IF_RX, ctrl);
+-- 
+1.8.3.2
 
