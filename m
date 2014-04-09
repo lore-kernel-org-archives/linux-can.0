@@ -1,91 +1,45 @@
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
 Subject: Re: [PATCH] can: c_can: Fix bit clearing and message object read
-Date: Wed, 9 Apr 2014 02:42:57 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1404090232400.14882@ionos.tec.linutronix.de>
-References: <1396950382-13091-1-git-send-email-alexander.stein@systec-electronic.com> <6189770.Mjp8LixSFl@ws-stein> <alpine.DEB.2.02.1404081613141.14882@ionos.tec.linutronix.de> <8083460.0p0S3IB599@ws-stein>
+Date: Wed, 09 Apr 2014 09:40:11 +0200
+Message-ID: <155230474.Qal719xsr7@ws-stein>
+References: <1396950382-13091-1-git-send-email-alexander.stein@systec-electronic.com> <8083460.0p0S3IB599@ws-stein> <alpine.DEB.2.02.1404090232400.14882@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:35059 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756286AbaDIAmr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Apr 2014 20:42:47 -0400
-In-Reply-To: <8083460.0p0S3IB599@ws-stein>
+Received: from webbox1416.server-home.net ([77.236.96.61]:48877 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750814AbaDIHly (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Apr 2014 03:41:54 -0400
+In-Reply-To: <alpine.DEB.2.02.1404090232400.14882@ionos.tec.linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
+To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-B1;3202;0cOn Tue, 8 Apr 2014, Alexander Stein wrote:
-> On Tuesday 08 April 2014 16:15:37, Thomas Gleixner wrote:
-> > On Tue, 8 Apr 2014, Alexander Stein wrote:
-> > > On Tuesday 08 April 2014 15:07:10, Thomas Gleixner wrote:
-> > > The problem is that NEWDAT in the crtl register readout is most of the time set, but sometimes not.
-> > > Adding the delay above it is unset all the time :(
-> > 
-> > Now what happens if you disable interrupts across the writes:
-> > 
-> >     local_irq_disable()
-> >     write(COMMSK)
-> >     write(COMREQ)
-> >     local_irq_enable()
+On Wednesday 09 April 2014 02:42:57, Thomas Gleixner wrote:
+> I found the issue after a I got hold of a PCH afflicted system. It
+> might not apply cleanly as I changed a few other things in my patch
+> queue, but you get the idea. Too tired now to write changelogs, run
+> tests ....
 > 
-> There are still message objects where NEWDAT is unset. Even if the c_can_msg_obj_is_busy check is included.
-> 
+> W/o that patch I observe the same problems as you. With that applied I
+> did not observe any dropout with a 10 * 1e6 packet run.
 
-I found the issue after a I got hold of a PCH afflicted system. It
-might not apply cleanly as I changed a few other things in my patch
-queue, but you get the idea. Too tired now to write changelogs, run
-tests ....
+Applying your patch I run my test with 5.000.000 CAN frames where none got lost and only a single one got switched.
 
-W/o that patch I observe the same problems as you. With that applied I
-did not observe any dropout with a 10 * 1e6 packet run.
+Tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
 
-Thanks,
+Just for the reference I added my actually applied patch.
 
-	tglx
--------------->
-Subject: can: c_can: Work around C_CAN RX wreckage
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Tue, 08 Apr 2014 21:41:51 +0200
+Thanks and best regards,
+Alexander
 
-Alexander reported that the new optimized handling of the RX fifo
-causes random packet loss on Intel PCH C_CAN hardware.
-
-After a few fruitless debugging sessions I got hold of a PCH (eg20t)
-afflicted system. That machine does not have the CAN interface wired
-up, but it was possible to reproduce the issue with the HW loopback
-mode.
-
-As Alexander observed correctly, clearing the NewDat flag along with
-reading out the message buffer causes that issue on C_CAN, while D_CAN
-handles that correctly.
-
-Instead of restoring the original message buffer handling horror the
-following workaround solves the issue:
-
-    transfer buffer to IF without clearing the NewDat
-    handle the message
-    clear NewDat bit
-
-That's similar to the original code but conditional for C_CAN.
-
-I really wonder why all user manuals (C_CAN, Intel PCH and some more)
-recommend to clear the NewDat bit right away. The knows it all Oracle
-operated by Gurgle does not unearth any useful information either. I
-simply cannot believe that we are the first to uncover that HW issue.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/net/can/c_can/c_can.c |   13 ++++++++++---
- drivers/net/can/c_can/c_can.h |    1 +
- 2 files changed, 11 insertions(+), 3 deletions(-)
-
-Index: linux-2.6/drivers/net/can/c_can/c_can.c
-===================================================================
---- linux-2.6.orig/drivers/net/can/c_can/c_can.c
-+++ linux-2.6/drivers/net/can/c_can/c_can.c
-@@ -644,6 +644,10 @@ static int c_can_start(struct net_device
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 0e9f974..b27b147 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -645,6 +645,10 @@ static int c_can_start(struct net_device *dev)
  	if (err)
  		return err;
  
@@ -96,7 +50,7 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.c
  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
  
  	/* reset tx helper pointers and the rx mask */
-@@ -788,14 +792,15 @@ static u32 c_can_adjust_pending(u32 pend
+@@ -789,14 +793,15 @@ static u32 c_can_adjust_pending(u32 pend)
  	return pend & ~((1 << lasts) - 1);
  }
  
@@ -113,8 +67,8 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.c
 +		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
  }
  
- static inline void c_can_rx_finalize(struct net_device *dev,
-@@ -810,6 +815,8 @@ static inline void c_can_rx_finalize(str
+ static inline void c_can_rx_finalize(struct net_device *dev, struct c_can_priv *priv, u32 obj)
+@@ -810,6 +815,8 @@ static inline void c_can_rx_finalize(struct net_device *dev, struct c_can_priv *
  		c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
  	}
  #endif
@@ -123,7 +77,7 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.c
  }
  
  static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
-@@ -820,7 +827,7 @@ static int c_can_read_objects(struct net
+@@ -820,7 +827,7 @@ static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
  	while ((obj = ffs(pend)) && quota > 0) {
  		pend &= ~BIT(obj - 1);
  
@@ -132,10 +86,10 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.c
  		ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_RX));
  
  		if (ctrl & IF_MCONT_MSGLST) {
-Index: linux-2.6/drivers/net/can/c_can/c_can.h
-===================================================================
---- linux-2.6.orig/drivers/net/can/c_can/c_can.h
-+++ linux-2.6/drivers/net/can/c_can/c_can.h
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index cd91960..792944c 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
 @@ -198,6 +198,7 @@ struct c_can_priv {
  	u32 __iomem *raminit_ctrlreg;
  	unsigned int instance;
@@ -144,3 +98,17 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.h
  	u32 rxmasked;
  	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
  };
+-- 
+Dipl.-Inf. Alexander Stein
+
+SYS TEC electronic GmbH
+Am Windrad 2
+08468 Heinsdorfergrund
+Tel.: 03765 38600-1156
+Fax: 03765 38600-4100
+Email: alexander.stein@systec-electronic.com
+Website: www.systec-electronic.com
+ 
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Chemnitz, HRB 28082
+
