@@ -1,88 +1,51 @@
-From: swapnil <patilswa@gmail.com>
-Subject: Re: J1939 Interpacket Delay
-Date: Thu, 10 Apr 2014 14:12:20 +0000 (UTC)
-Message-ID: <loom.20140410T155519-838@post.gmane.org>
-References: <loom.20140409T155830-71@post.gmane.org> <20140409194939.GD15221@vandijck-laurijssen.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: [PATCH 2/3] can: kvaser_usb: add support for Kvaser Leaf v2 and usb mini PCIe
+Date: Thu, 10 Apr 2014 21:44:22 +0200
+Message-ID: <1397159063-12790-2-git-send-email-olivier@sobrie.be>
+References: <1397159063-12790-1-git-send-email-olivier@sobrie.be>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:42753 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S934020AbaDJOMi (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 10 Apr 2014 10:12:38 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1WYFiV-0000M7-Uj
-	for linux-can@vger.kernel.org; Thu, 10 Apr 2014 16:12:35 +0200
-Received: from 192.158.48.18 ([192.158.48.18])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 10 Apr 2014 16:12:35 +0200
-Received: from patilswa by 192.158.48.18 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 10 Apr 2014 16:12:35 +0200
+Received: from mail-ee0-f47.google.com ([74.125.83.47]:58301 "EHLO
+	mail-ee0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S935701AbaDJTqU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Apr 2014 15:46:20 -0400
+Received: by mail-ee0-f47.google.com with SMTP id b15so3404255eek.34
+        for <linux-can@vger.kernel.org>; Thu, 10 Apr 2014 12:46:19 -0700 (PDT)
+In-Reply-To: <1397159063-12790-1-git-send-email-olivier@sobrie.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Olivier Sobrie <olivier@sobrie.be>
 
-Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
+This patch adds support for the Kvaser Leaf v2 and Leaf usb mini
+PCIe card.
 
-> 
-> Hey,
-> 
-> Part 1 of the answer...
-> 
-> On Wed, Apr 09, 2014 at 02:17:11PM +0000, swapnil wrote:
-> > Hi All,
-> > 
-> >         Hey Kurt I am using the J1939 stack on begalbone 
-> > I am halfway through. I am getting some issue while testing with 
-different 
-> > engine control modules
-> > 
-> > 1. Is it possible to add inter packet delay in 2 frames. Now the gap 
-between 
-> > two frame is 540 to 555 uSec which is very fast. My other engine control 
-> > module is not that fast ..
-> 
-> You're ECU supports transport protocol with flow control, but cannot
-> hanle back-to-back CAN frames?
-> That is weird at least.
-> The requirements are orthogonal. Fast vs. not too fast.
-> 
-> That is beyond j1939, and I did not integrate any support for such 
-usecase.
-> 
-> >     please check the Log 
-> > 1387762862.278774) can0 18EC00F9#104906E6E600EF00
-> > (1387762862.279388) can0 18ECF900#11E601FFFF00EF00
-> > (1387762862.280160) can0 18EB00F9#014D000010800000
-> > (1387762862.280705) can0 18EB00F9#020640FB05FFFFFF
-> > (1387762862.281284) can0 18EB00F9#03FFFFFF00000000
-> >                         .
-> >                         .
-> >                         .  
-> > (1387762862.566022) can0 18EB00F9#E45F4D0000000841
-> > (1387762862.566574) can0 18EB00F9#E55850325F4E0000
-> > (1387762862.567091) can0 18EB00F9#E6000841585431
-> > (1387762863.822072) can0 18EC00F9#FF03FFFFFF00EF00
-> > 
-> > The other End is not sending message if i use adapter It receive EOM
-> >    i want to make difference between to packet is 600uSec
-> 
-> I tend to believe that this can be solved with traffic shaping
-> on CAN, regardless of CAN.
-> 
-> But I'm not very familiar with traffic shaping. Oliver?
-I will keep searching on how to use this option (traffic shaping) for can
-Is it possible that i can modify the code for j1939 for adding some delay 
-for my use only -- if yes
-can u tell in which function can i add that delay.
-This is the most important part in my project.. actually i am able to 
-monitor the parameters using j1939 stack but if i want to calibrate ECU
-it fails.
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+---
+ drivers/net/can/usb/kvaser_usb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index cd5ec5b..d2826e8 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -54,6 +54,8 @@
+ #define USB_OEM_MERCURY_PRODUCT_ID	34
+ #define USB_OEM_LEAF_PRODUCT_ID		35
+ #define USB_CAN_R_PRODUCT_ID		39
++#define USB_LEAF_LITE_V2_PRODUCT_ID	288
++#define USB_MINI_PCIE_HS_PRODUCT_ID	289
+ 
+ /* USB devices features */
+ #define KVASER_HAS_SILENT_MODE		BIT(0)
+@@ -357,6 +359,8 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 		.driver_info = KVASER_HAS_TXRX_ERRORS },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_CAN_R_PRODUCT_ID),
+ 		.driver_info = KVASER_HAS_TXRX_ERRORS },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_V2_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_HS_PRODUCT_ID) },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(usb, kvaser_usb_table);
+-- 
+1.9.0
 
