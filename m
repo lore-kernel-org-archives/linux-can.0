@@ -1,131 +1,96 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch V2 13/21] can: c_can: Cleanup irq enable/disable
-Date: Fri, 11 Apr 2014 08:13:17 -0000
-Message-ID: <20140411080652.741486071@linutronix.de>
-References: <20140411080547.845836199@linutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 Interpacket Delay
+Date: Fri, 11 Apr 2014 10:31:39 +0200
+Message-ID: <20140411083139.GB449@vandijck-laurijssen.be>
+References: <loom.20140409T155830-71@post.gmane.org>
+ <20140409194939.GD15221@vandijck-laurijssen.be>
+ <loom.20140410T155519-838@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:52429 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755555AbaDKINE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Apr 2014 04:13:04 -0400
-Content-Disposition: inline; filename=can-c_can-cleanup-irq-enable-stuff.patch
+Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:51847 "EHLO
+	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751932AbaDKIbv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Apr 2014 04:31:51 -0400
+Content-Disposition: inline
+In-Reply-To: <loom.20140410T155519-838@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Mark <mark5@del-llc.com>
+To: swapnil <patilswa@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/net/can/c_can/c_can.c |   37 ++++++++++++-------------------------
- 1 file changed, 12 insertions(+), 25 deletions(-)
+Hey,
 
-Index: linux-2.6/drivers/net/can/c_can/c_can.c
-===================================================================
---- linux-2.6.orig/drivers/net/can/c_can/c_can.c
-+++ linux-2.6/drivers/net/can/c_can/c_can.c
-@@ -60,6 +60,8 @@
- #define CONTROL_IE		BIT(1)
- #define CONTROL_INIT		BIT(0)
- 
-+#define CONTROL_IRQMSK		(CONTROL_EIE | CONTROL_IE | CONTROL_SIE)
-+
- /* test register */
- #define TEST_RX			BIT(7)
- #define TEST_TX1		BIT(6)
-@@ -146,13 +148,6 @@
- #define IF_RX			0
- #define IF_TX			1
- 
--/* status interrupt */
--#define STATUS_INTERRUPT	0x8000
--
--/* global interrupt masks */
--#define ENABLE_ALL_INTERRUPTS	1
--#define DISABLE_ALL_INTERRUPTS	0
--
- /* minimum timeout for checking BUSY status */
- #define MIN_TIMEOUT_VALUE	6
- 
-@@ -246,18 +241,14 @@ static u32 c_can_read_reg32(struct c_can
- 	return val;
- }
- 
--static void c_can_enable_all_interrupts(struct c_can_priv *priv,
--						int enable)
-+static void c_can_irq_control(struct c_can_priv *priv, bool enable)
- {
--	unsigned int cntrl_save = priv->read_reg(priv,
--						C_CAN_CTRL_REG);
-+	u32 ctrl = priv->read_reg(priv,	C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
- 
- 	if (enable)
--		cntrl_save |= (CONTROL_SIE | CONTROL_EIE | CONTROL_IE);
--	else
--		cntrl_save &= ~(CONTROL_EIE | CONTROL_IE | CONTROL_SIE);
-+		ctrl |= CONTROL_IRQMSK;
- 
--	priv->write_reg(priv, C_CAN_CTRL_REG, cntrl_save);
-+	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
- }
- 
- static inline int c_can_msg_obj_is_busy(struct c_can_priv *priv, int iface)
-@@ -664,10 +655,7 @@ static void c_can_stop(struct net_device
- {
- 	struct c_can_priv *priv = netdev_priv(dev);
- 
--	/* disable all interrupts */
--	c_can_enable_all_interrupts(priv, DISABLE_ALL_INTERRUPTS);
--
--	/* set the state as STOPPED */
-+	c_can_irq_control(priv, false);
- 	priv->can.state = CAN_STATE_STOPPED;
- }
- 
-@@ -682,8 +670,7 @@ static int c_can_set_mode(struct net_dev
- 		if (err)
- 			return err;
- 		netif_wake_queue(dev);
--		/* enable status change, error and module interrupts */
--		c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
-+		c_can_irq_control(priv, true);
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
-@@ -1144,7 +1131,7 @@ end:
- 		napi_complete(napi);
- 		/* enable all IRQs if we are not in bus off state */
- 		if (priv->can.state != CAN_STATE_BUS_OFF)
--			c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
-+			c_can_irq_control(priv, true);
- 	}
- 
- 	return work_done;
-@@ -1159,7 +1146,7 @@ static irqreturn_t c_can_isr(int irq, vo
- 		return IRQ_NONE;
- 
- 	/* disable all interrupts and schedule the NAPI */
--	c_can_enable_all_interrupts(priv, DISABLE_ALL_INTERRUPTS);
-+	c_can_irq_control(priv, false);
- 	napi_schedule(&priv->napi);
- 
- 	return IRQ_HANDLED;
-@@ -1197,7 +1184,7 @@ static int c_can_open(struct net_device
- 
- 	napi_enable(&priv->napi);
- 	/* enable status change, error and module interrupts */
--	c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
-+	c_can_irq_control(priv, true);
- 	netif_start_queue(dev);
- 
- 	return 0;
-@@ -1324,7 +1311,7 @@ int c_can_power_up(struct net_device *de
- 
- 	ret = c_can_start(dev);
- 	if (!ret)
--		c_can_enable_all_interrupts(priv, ENABLE_ALL_INTERRUPTS);
-+		c_can_irq_control(priv, true);
- 
- 	return ret;
- }
+> > Hey,
+> > 
+> > Part 1 of the answer...
+> > 
+> > On Wed, Apr 09, 2014 at 02:17:11PM +0000, swapnil wrote:
+> > > Hi All,
+> > > 
+> > >         Hey Kurt I am using the J1939 stack on begalbone 
+> > > I am halfway through. I am getting some issue while testing with 
+> different 
+> > > engine control modules
+> > > 
+> > > 1. Is it possible to add inter packet delay in 2 frames. Now the gap 
+> between 
+> > > two frame is 540 to 555 uSec which is very fast. My other engine control 
+> > > module is not that fast ..
+> > 
+> > You're ECU supports transport protocol with flow control, but cannot
+> > hanle back-to-back CAN frames?
+> > That is weird at least.
+> > The requirements are orthogonal. Fast vs. not too fast.
+> > 
+> > That is beyond j1939, and I did not integrate any support for such 
+> usecase.
+> > > 
+[...]
+> > > The other End is not sending message if i use adapter It receive EOM
+> > >    i want to make difference between to packet is 600uSec
+> > 
+> > I tend to believe that this can be solved with traffic shaping
+> > on CAN, regardless of CAN.
+> > 
+> > But I'm not very familiar with traffic shaping. Oliver?
+> I will keep searching on how to use this option (traffic shaping) for can
+> Is it possible that i can modify the code for j1939 for adding some delay 
+> for my use only -- if yes
 
+yes, you can. It's GPL
 
+> can u tell in which function can i add that delay.
+> This is the most important part in my project..
+
+You can patch the code like shown below.
+If that helps you releasing a product, don't hesitate.
+
+I'll keep your usecase in mind for the future.
+
+> actually i am able to 
+> monitor the parameters using j1939 stack but if i want to calibrate ECU
+> it fails.
+
+in net/can/j1939/transport.c, around line 1046, add this.
+
+	case tp_cmd_bam:
+		...
+		while (session->pkt.tx < pkt_end) {
+			...
+			if (j1939cb_is_broadcast(session->cb)) {
+				if (session->pkt.tx < session->pkt.total)
+					j1939tp_schedule_txtimer(session, 50);
+				break;
++			} else {
++				j1939tp_schedule_txtimer(session, 1);
++				break;
+			}
+		}
+
+this will add 1+ msec delay between packets.
+You may need to use bigger delays, like 5msec, as this is the delay
+that is used to schedule the packet into the queue, and you want to
+delay the point that the CAN frames leave the queue onto the CAN bus.
+
+Kurt
