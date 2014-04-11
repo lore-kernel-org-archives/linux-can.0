@@ -1,28 +1,22 @@
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch V2 06/21] can: c_can: Fix berr reporting
-Date: Fri, 11 Apr 2014 08:13:13 -0000
-Message-ID: <20140411080651.369398044@linutronix.de>
+Subject: [patch V2 08/21] can: c_can: Simplify buffer reenabling
+Date: Fri, 11 Apr 2014 08:13:14 -0000
+Message-ID: <20140411080651.754307405@linutronix.de>
 References: <20140411080547.845836199@linutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:52376 "EHLO
+Received: from www.linutronix.de ([62.245.132.108]:52392 "EHLO
 	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754913AbaDKINA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Apr 2014 04:13:00 -0400
-Content-Disposition: inline; filename=can-c_can-fix-berr-reporting.patch
+	with ESMTP id S1753107AbaDKINB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Apr 2014 04:13:01 -0400
+Content-Disposition: inline;
+ filename=can-c_can-Simplify-buffer-reenabling.patch
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can <linux-can@vger.kernel.org>
 Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Mark <mark5@del-llc.com>
 
-Reading the LEC type with
-
-  return (mode & ENABLED) && (status & LEC_MASK);
-
-is not guaranteed to return (status & LEC_MASK) if the enabled bit in
-mode is set. It's guaranteed to return 0 or !=0.
-
-Remove the inline function and call unconditionally into the
-berr_handling code and return early when the reporting is disabled.
+Instead of writing to the message object we can simply clear the
+NewDat bit with the get method.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
@@ -33,56 +27,52 @@ Index: linux-2.6/drivers/net/can/c_can/c_can.c
 ===================================================================
 --- linux-2.6.orig/drivers/net/can/c_can/c_can.c
 +++ linux-2.6/drivers/net/can/c_can/c_can.c
-@@ -171,6 +171,7 @@ enum c_can_lec_type {
- 	LEC_BIT0_ERROR,
- 	LEC_CRC_ERROR,
- 	LEC_UNUSED,
-+	LEC_MASK = LEC_UNUSED,
- };
+@@ -108,6 +108,7 @@
+ #define IF_COMM_CONTROL		BIT(4)
+ #define IF_COMM_CLR_INT_PND	BIT(3)
+ #define IF_COMM_TXRQST		BIT(2)
++#define IF_COMM_CLR_NEWDAT	IF_COMM_TXRQST
+ #define IF_COMM_DATAA		BIT(1)
+ #define IF_COMM_DATAB		BIT(0)
+ #define IF_COMM_ALL		(IF_COMM_MASK | IF_COMM_ARB | \
+@@ -120,7 +121,7 @@
+ 				 IF_COMM_DATAA | IF_COMM_DATAB)
  
- /*
-@@ -897,12 +898,6 @@ static int c_can_do_rx_poll(struct net_d
- 	return pkts;
+ /* For the high buffers we clear the interrupt bit and newdat */
+-#define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_TXRQST)
++#define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
+ 
+ /* IFx arbitration */
+ #define IF_ARB_MSGVAL		BIT(15)
+@@ -353,17 +354,12 @@ static void c_can_write_msg_object(struc
  }
  
--static inline int c_can_has_and_handle_berr(struct c_can_priv *priv)
--{
--	return (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
--		(priv->current_status & LEC_UNUSED);
--}
--
- static int c_can_handle_state_change(struct net_device *dev,
- 				enum c_can_bus_error_types error_type)
+ static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
+-						int iface,
+-						int ctrl_mask)
++						       int iface)
  {
-@@ -998,6 +993,9 @@ static int c_can_handle_bus_err(struct n
- 	if (lec_type == LEC_UNUSED || lec_type == LEC_NO_ERROR)
- 		return 0;
+ 	int i;
+-	struct c_can_priv *priv = netdev_priv(dev);
  
-+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
-+		return 0;
-+
- 	/* propagate the error condition to the CAN stack */
- 	skb = alloc_can_err_skb(dev, &cf);
- 	if (unlikely(!skb))
-@@ -1057,7 +1055,6 @@ static int c_can_handle_bus_err(struct n
- static int c_can_poll(struct napi_struct *napi, int quota)
- {
- 	u16 irqstatus;
--	int lec_type = 0;
- 	int work_done = 0;
- 	struct net_device *dev = napi->dev;
- 	struct c_can_priv *priv = netdev_priv(dev);
-@@ -1116,9 +1113,8 @@ static int c_can_poll(struct napi_struct
- 		priv->last_status = priv->current_status;
+-	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++) {
+-		priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface),
+-				ctrl_mask & ~IF_MCONT_NEWDAT);
+-		c_can_object_put(dev, iface, i, IF_COMM_CONTROL);
+-	}
++	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
++		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
+ }
  
- 		/* handle lec errors on the bus */
--		lec_type = c_can_has_and_handle_berr(priv);
--		if (lec_type)
--			work_done += c_can_handle_bus_err(dev, lec_type);
-+		work_done += c_can_handle_bus_err(dev,
-+					priv->current_status & LEC_MASK);
- 	} else if ((irqstatus >= C_CAN_MSG_OBJ_RX_FIRST) &&
- 			(irqstatus <= C_CAN_MSG_OBJ_RX_LAST)) {
- 		/* handle events corresponding to receive message objects */
+ static int c_can_handle_lost_msg_obj(struct net_device *dev,
+@@ -829,7 +825,7 @@ static int c_can_read_objects(struct net
+ 
+ 		if (obj == C_CAN_MSG_RX_LOW_LAST)
+ 			/* activate all lower message objects */
+-			c_can_activate_all_lower_rx_msg_obj(dev, IF_RX, ctrl);
++			c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
+ 
+ 		pkts++;
+ 		quota--;
 
 
