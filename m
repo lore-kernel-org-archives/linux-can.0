@@ -1,113 +1,115 @@
-From: Steffen Rose <ro@emtas.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: Error Active
-Date: Mon, 14 Apr 2014 14:13:33 +0200
-Message-ID: <2625052.FRqudkDGEA@lisa>
-References: <15704970.EHNVEi1RO0@lisa> <11552477.qsHBqKfRM3@lisa> <a60984530bb93305b1c3dfac1b3403d4@grandegger.com>
+Date: Mon, 14 Apr 2014 14:38:44 +0000
+Message-ID: <81adc4d92d94ab4bcbd3cdadbd56853e@grandegger.com>
+References: <15704970.EHNVEi1RO0@lisa> <11552477.qsHBqKfRM3@lisa>
+ <a60984530bb93305b1c3dfac1b3403d4@grandegger.com> <2625052.FRqudkDGEA@lisa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.131]:58766 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754563AbaDNMOO convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Apr 2014 08:14:14 -0400
-In-Reply-To: <a60984530bb93305b1c3dfac1b3403d4@grandegger.com>
+Received: from pluto.manitu.net ([217.11.48.9]:56677 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752858AbaDNOip (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 14 Apr 2014 10:38:45 -0400
+In-Reply-To: <2625052.FRqudkDGEA@lisa>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
+To: Steffen Rose <ro@emtas.de>
 Cc: linux-can@vger.kernel.org
 
-Hello Wolfgang,
-
-thank you very much for your answers.
-=20
-> libsocketcan, like ip uses a netlink socket to get the configuration =
+On Mon, 14 Apr 2014 14:13:33 +0200, Steffen Rose <ro@emtas.de> wrote:
+> Hello Wolfgang,
+> 
+> thank you very much for your answers.
+>  
+>> libsocketcan, like ip uses a netlink socket to get the configuration
 and
-> statistics of the CAN device. This includes the "state" property.
+>> statistics of the CAN device. This includes the "state" property.
+> 
+> Do all implementation support the netlink socket, especially the CAN
+state?
 
-Do all implementation support the netlink socket, especially the CAN st=
-ate?
-I think, state is UNKNOWN and don't mean the Can state, is it?
+Yes.
 
-$ ip -det -stat link show can0
-3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast *state* UNKNO=
-WN qlen=20
-10000
-    link/can=20
-    *can state* ERROR-ACTIVE restart-ms 0=20
-    bitrate 250000 sample-point 0.875=20
-    tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
-    ems_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-    clock 8000000
-    re-started bus-errors arbit-lost error-warn error-pass bus-off
-    0          0          0          0          0          0        =20
-    RX: bytes  packets  errors  dropped overrun mcast  =20
-    0          0        0       0       0       0     =20
-    TX: bytes  packets  errors  dropped carrier collsns=20
-    0          0        0       0       0       0     =20
+> I think, state is UNKNOWN and don't mean the Can state, is it?
 
-=20
-> > Do socketcan have different ways to get the current state? Is it a =
+> $ ip -det -stat link show can0
+> 3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast *state*
+UNKNOWN
+> qlen 
+
+This "state" is network related.
+
+> 10000
+
+It follows the CAN related settings and statistics.
+
+>     link/can 
+>     *can state* ERROR-ACTIVE restart-ms 0 
+>     bitrate 250000 sample-point 0.875 
+>     tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+>     ems_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+>     clock 8000000
+>     re-started bus-errors arbit-lost error-warn error-pass bus-off
+>     0          0          0          0          0          0         
+>     RX: bytes  packets  errors  dropped overrun mcast   
+>     0          0        0       0       0       0      
+>     TX: bytes  packets  errors  dropped carrier collsns 
+>     0          0        0       0       0       0      
+> 
+>  
+>> > Do socketcan have different ways to get the current state? Is it a
 low
-> > level
-> > driver part to read and hold the current state?
->=20
-> No. Both get the infos via netlink socket from the kernel.
+>> > level
+>> > driver part to read and hold the current state?
+>> 
+>> No. Both get the infos via netlink socket from the kernel.
 
-I'm not so familiar with the parts of the system and the correct naming=
- of it.
+This answer is wrong. It has nothing to do with the netlink socket.
+Sorry for confusion. Yes, the low-level driver does handle the state
+changes
+reported by the CAN hardware.
 
-I understand, that socketcan has a common part for all (many) driver=20
-adaptations  (can_bcm, can_raw) and a CAN controller specific part (can=
-).
-As I understand, for the last point exists many different implementatio=
-ns with=20
-different feature implementation.
-=20
-> > (I'm sorry. I'm unsure about the driver I tested in this situation.=
- I
-> > think,
-> > it was the EMS CPC driver and kernel 3.2.0-60-generic. )
->=20
-> This device uses a SJA1000.
->=20
+> I'm not so familiar with the parts of the system and the correct naming
+of
+> it.
+> 
+> I understand, that socketcan has a common part for all (many) driver 
+> adaptations  (can_bcm, can_raw) and a CAN controller specific part
+(can).
 
-My mistake
-USB interface from EMS
+There is CAN protocol, common CAN devices interface and specific device
+drivers.
 
-vcan                   12686  0=20
-can_bcm                22077  0=20
-can_raw                17120  0=20
-can                    36556  2 can_bcm,can_raw
-ems_usb                17510  0=20
-can_dev                15321  1 ems_usb
+> As I understand, for the last point exists many different
+implementations
+> with 
+> different feature implementation.
 
+Ideally they do implement the same features but it depends on the hardware
+to some extend, of course. The big goal is to provide a *common* interface
+for CAN error state and error message handling.
 
---=20
+>> > (I'm sorry. I'm unsure about the driver I tested in this situation. I
+>> > think,
+>> > it was the EMS CPC driver and kernel 3.2.0-60-generic. )
+>> 
+>> This device uses a SJA1000.
+>> 
+> 
+> My mistake
+> USB interface from EMS
+> 
+> vcan                   12686  0 
+> can_bcm                22077  0 
+> can_raw                17120  0 
+> can                    36556  2 can_bcm,can_raw
+> ems_usb                17510  0 
+> can_dev                15321  1 ems_usb
 
-Mit freundlichen Gr=C3=BC=C3=9Fen
+OK.
 
-    Steffen Rose
-
------------------------------------------------------------------------=
---
-
-emtas - your embedded solution partner
-=20
-N=C3=A4chste CANopen Schulung am 06. Mai in Merseburg
-N=C3=A4chste EnergyBus Schulung am 07. Mai in Merseburg
-
------------------------------------------------------------------------=
---
-emtas GmbH
-=46ritz-Haber-Stra=C3=9Fe 9
-06217 Merseburg
-Tel.:  +49(0)3461-79416-0
-=46ax.:  +49(0)3461-79416-10
-www.emtas.de - service@emtas.de
-Gesch=C3=A4ftsf=C3=BChrer: Andreas Boebel, Torsten Gedenk, Steffen Rose
-Registergericht: Amtsgericht Stendal
-Registernummer:  HRB 17616=20
------------------------------------------------------------------------=
---
+Wolfgang.
 
