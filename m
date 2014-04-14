@@ -1,138 +1,79 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [patch V2 12/21] can: c_can": Work around C_CAN RX wreckage
-Date: Mon, 14 Apr 2014 10:38:57 +0200
-Message-ID: <1607542.s21fNX8q9K@ws-stein>
-References: <20140411080547.845836199@linutronix.de> <20140411080652.540058139@linutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Error Active
+Date: Mon, 14 Apr 2014 08:50:11 +0000
+Message-ID: <945463a5ffbafb3300795ee2636584f9@grandegger.com>
+References: <15704970.EHNVEi1RO0@lisa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:54956 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750975AbaDNIkN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Apr 2014 04:40:13 -0400
-In-Reply-To: <20140411080652.540058139@linutronix.de>
+Received: from pluto.manitu.net ([217.11.48.9]:49893 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750878AbaDNIuN (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 14 Apr 2014 04:50:13 -0400
+In-Reply-To: <15704970.EHNVEi1RO0@lisa>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-can <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Mark <mark5@del-llc.com>
+To: Steffen Rose <ro@emtas.de>
+Cc: linux-can@vger.kernel.org
 
-I think the " in the subject got there by accident :-)
+Hi Stefan,
 
-Alexander
+On Mon, 14 Apr 2014 10:03:51 +0200, Steffen Rose <ro@emtas.de> wrote:
+> Hello,
+> 
+> I write a generic application, that should work with different socketcan
+> driver implementations. 
+> I know, there are different possibilities to get the CAN controller
+state.
+> And I see, that different 
+> implementation do not implement all of them.
+> 
+> What is the standard way to get the state change from Error Passive to
+> Error Active?
 
-On Friday 11 April 2014 08:13:17, Thomas Gleixner wrote:
-> Alexander reported that the new optimized handling of the RX fifo
-> causes random packet loss on Intel PCH C_CAN hardware.
-> 
-> After a few fruitless debugging sessions I got hold of a PCH (eg20t)
-> afflicted system. That machine does not have the CAN interface wired
-> up, but it was possible to reproduce the issue with the HW loopback
-> mode.
-> 
-> As Alexander observed correctly, clearing the NewDat flag along with
-> reading out the message buffer causes that issue on C_CAN, while D_CAN
-> handles that correctly.
-> 
-> Instead of restoring the original message buffer handling horror the
-> following workaround solves the issue:
-> 
->     transfer buffer to IF without clearing the NewDat
->     handle the message
->     clear NewDat bit
-> 
-> That's similar to the original code but conditional for C_CAN.
-> 
-> I really wonder why all user manuals (C_CAN, Intel PCH and some more)
-> recommend to clear the NewDat bit right away. The knows it all Oracle
-> operated by Gurgle does not unearth any useful information either. I
-> simply cannot believe that we are the first to uncover that HW issue.
-> 
-> Reported-and-tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  drivers/net/can/c_can/c_can.c |   13 ++++++++++---
->  drivers/net/can/c_can/c_can.h |    1 +
->  2 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> Index: linux-2.6/drivers/net/can/c_can/c_can.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/net/can/c_can/c_can.c
-> +++ linux-2.6/drivers/net/can/c_can/c_can.c
-> @@ -647,6 +647,10 @@ static int c_can_start(struct net_device
->  	if (err)
->  		return err;
->  
-> +	/* Setup the command for new messages */
-> +	priv->comm_rcv_high = priv->type != BOSCH_D_CAN ?
-> +		IF_COMM_RCV_LOW : IF_COMM_RCV_HIGH;
-> +
->  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
->  
->  	/* reset tx helper pointers and the rx mask */
-> @@ -791,14 +795,15 @@ static u32 c_can_adjust_pending(u32 pend
->  	return pend & ~((1 << lasts) - 1);
->  }
->  
-> -static inline void c_can_rx_object_get(struct net_device *dev, u32 obj)
-> +static inline void c_can_rx_object_get(struct net_device *dev,
-> +				       struct c_can_priv *priv, u32 obj)
->  {
->  #ifdef CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING
->  	if (obj < C_CAN_MSG_RX_LOW_LAST)
->  		c_can_object_get(dev, IF_RX, obj, IF_COMM_RCV_LOW);
->  	else
->  #endif
-> -		c_can_object_get(dev, IF_RX, obj, IF_COMM_RCV_HIGH);
-> +		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
->  }
->  
->  static inline void c_can_rx_finalize(struct net_device *dev,
-> @@ -813,6 +818,8 @@ static inline void c_can_rx_finalize(str
->  		c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
->  	}
->  #endif
-> +	if (priv->type != BOSCH_D_CAN)
-> +		c_can_object_get(dev, IF_RX, obj, IF_COMM_CLR_NEWDAT);
->  }
->  
->  static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
-> @@ -823,7 +830,7 @@ static int c_can_read_objects(struct net
->  	while ((obj = ffs(pend)) && quota > 0) {
->  		pend &= ~BIT(obj - 1);
->  
-> -		c_can_rx_object_get(dev, obj);
-> +		c_can_rx_object_get(dev, priv, obj);
->  		ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_RX));
->  
->  		if (ctrl & IF_MCONT_MSGLST) {
-> Index: linux-2.6/drivers/net/can/c_can/c_can.h
-> ===================================================================
-> --- linux-2.6.orig/drivers/net/can/c_can/c_can.h
-> +++ linux-2.6/drivers/net/can/c_can/c_can.h
-> @@ -198,6 +198,7 @@ struct c_can_priv {
->  	u32 __iomem *raminit_ctrlreg;
->  	unsigned int instance;
->  	void (*raminit) (const struct c_can_priv *priv, bool enable);
-> +	u32 comm_rcv_high;
->  	u32 rxmasked;
->  	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
->  };
-> 
-> 
-> 
+Historically we only supported "increasing" state changes
+"active->warning->passive->bus-off". A few recent drivers do 
+also support "passive->warning->active" but most don't (yet).
 
--- 
-Dipl.-Inf. Alexander Stein
+> My current way (in short incomplete form):
+> 
+> can_err_mask_t err_mask = CAN_ERR_FLAG | CAN_ERR_CRTL | CAN_ERR_PROT |
+> CAN_ERR_BUSOFF;
+> setsockopt(mBSDSocket, SOL_CAN_RAW, CAN_RAW_ERR_FILTER, &err_mask,
+> sizeof(err_mask));
+> 
+> got = read(mBSDSocket, &frame, sizeof(struct can_frame));
+> if (frame.can_id & CAN_ERR_FLAG) {
+>   if (frame.can_id & CAN_ERR_PROT) {
+>     if (frame.data[2] & CAN_ERR_PROT_ACTIVE) {
+> 
+> => change to Error active
 
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
- 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+Yes, that would be the correct way but as I said above, only a few drivers
+use CAN_ERR_PROT_ACTIVE (do a "grep -r CAN_ERR_PROT_ACTIVE
+drivers/net/can").
+...
+
+> This will work with the Systec USB interface, but do not work with Peak,
+> Beagle bone, EMS CPC.
+
+Some time ago I have posted an RFC for providing "decreasing" state
+changes
+as well including proper bus-off recovery for the SJA1000. If would dig it
+out in case you are interested.
+
+> I have seen the implementation in the can utils.
+> 
+> I know, the libsocketcan implements a different way. But I cannot
+extract
+> the relevant parts. 
+> And I think a have to poll the current state with it and I search an
+event
+> based mechanism.
+
+It's not a matter of libsocketcan or ip/iproute2.
+
+Wolfgang.
 
