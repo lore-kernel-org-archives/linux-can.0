@@ -1,121 +1,113 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
+From: Steffen Rose <ro@emtas.de>
 Subject: Re: Error Active
-Date: Mon, 14 Apr 2014 11:05:08 +0000
-Message-ID: <a60984530bb93305b1c3dfac1b3403d4@grandegger.com>
-References: <15704970.EHNVEi1RO0@lisa>
- <945463a5ffbafb3300795ee2636584f9@grandegger.com> <11552477.qsHBqKfRM3@lisa>
+Date: Mon, 14 Apr 2014 14:13:33 +0200
+Message-ID: <2625052.FRqudkDGEA@lisa>
+References: <15704970.EHNVEi1RO0@lisa> <11552477.qsHBqKfRM3@lisa> <a60984530bb93305b1c3dfac1b3403d4@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:35644 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753117AbaDNLFK (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 14 Apr 2014 07:05:10 -0400
-In-Reply-To: <11552477.qsHBqKfRM3@lisa>
+Received: from moutng.kundenserver.de ([212.227.126.131]:58766 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754563AbaDNMOO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Apr 2014 08:14:14 -0400
+In-Reply-To: <a60984530bb93305b1c3dfac1b3403d4@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Steffen Rose <ro@emtas.de>
+To: Wolfgang Grandegger <wg@grandegger.com>
 Cc: linux-can@vger.kernel.org
 
-Hi Stefan,
+Hello Wolfgang,
 
-On Mon, 14 Apr 2014 11:56:54 +0200, Steffen Rose <ro@emtas.de> wrote:
-> Hello Wolfgang,
-> 
->> > What is the standard way to get the state change from Error Passive
-to
->> > Error Active?
->> 
->> Historically we only supported "increasing" state changes
->> "active->warning->passive->bus-off". A few recent drivers do
->> also support "passive->warning->active" but most don't (yet).
-> 
-> Historically:
-> What was the correct error handling in state error passive? Did you
-ignore
-> it 
-> in the application? My concrete question is, how did you "define" an
-error
-> free 
-> system after this state change in earlier time?
+thank you very much for your answers.
+=20
+> libsocketcan, like ip uses a netlink socket to get the configuration =
+and
+> statistics of the CAN device. This includes the "state" property.
 
-Well, as I said. The state was never decreased from error passive, which
-is wrong, I agree. So far nobody cared.
+Do all implementation support the netlink socket, especially the CAN st=
+ate?
+I think, state is UNKNOWN and don't mean the Can state, is it?
 
->> > This will work with the Systec USB interface, but do not work with
->> > Peak,
->> > Beagle bone, EMS CPC.
->> 
->> Some time ago I have posted an RFC for providing "decreasing" state
->> changes
->> as well including proper bus-off recovery for the SJA1000. If would dig
->> it
->> out in case you are interested.
-> 
-> I'm afraid, I do not write / change my supported socketcan drivers. But
-> I'm 
-> interested to read the RFC.
+$ ip -det -stat link show can0
+3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast *state* UNKNO=
+WN qlen=20
+10000
+    link/can=20
+    *can state* ERROR-ACTIVE restart-ms 0=20
+    bitrate 250000 sample-point 0.875=20
+    tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+    ems_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+    clock 8000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          0          0          0        =20
+    RX: bytes  packets  errors  dropped overrun mcast  =20
+    0          0        0       0       0       0     =20
+    TX: bytes  packets  errors  dropped carrier collsns=20
+    0          0        0       0       0       0     =20
 
-Check 
+=20
+> > Do socketcan have different ways to get the current state? Is it a =
+low
+> > level
+> > driver part to read and hold the current state?
+>=20
+> No. Both get the infos via netlink socket from the kernel.
 
-https://gitorious.org/linux-can/wg-linux-can-next/commits/eec921ac28fde243456078a557768808d93d94a3
+I'm not so familiar with the parts of the system and the correct naming=
+ of it.
 
-Especially the commits for "can: sja1000: consolidate error state
-handling" and
-"can: sja1000: consolidate bus-off handling", which can be regarded as the
-reference. The commit messages also shows traces. That's how they should
-look
-like.
+I understand, that socketcan has a common part for all (many) driver=20
+adaptations  (can_bcm, can_raw) and a CAN controller specific part (can=
+).
+As I understand, for the last point exists many different implementatio=
+ns with=20
+different feature implementation.
+=20
+> > (I'm sorry. I'm unsure about the driver I tested in this situation.=
+ I
+> > think,
+> > it was the EMS CPC driver and kernel 3.2.0-60-generic. )
+>=20
+> This device uses a SJA1000.
+>=20
 
->> > I have seen the implementation in the can utils.
->> > I know, the libsocketcan implements a different way. But I cannot 
->> > extract 
->> > the relevant parts.
+My mistake
+USB interface from EMS
 
-libsocketcan, like ip uses a netlink socket to get the configuration and
-statistics of the CAN device. This includes the "state" property.
-
->> > And I think a have to poll the current state with it and I search an 
->> > event 
->> > based mechanism.
-
-That's a bad idea. Looking to the state changes via error messages is far
-more elegant.
-
->> It's not a matter of libsocketcan or ip/iproute2.
-> 
-> I have seen a difference of the can state between
-> candump -e can0,0~0,#FFFFFFFF
-> (increase errors - last was error passive)
-> 
-> and
-> ip -det -stat link show can0
-> (show error warning state)
-> 
-> This difference was during transmission on an open can bus with Ack
-error
-> and 
-> state error passive.
-> ip got the correct state error passive after receiving a message later,
-as
-> I 
-> did check the error active state change.
-> 
-> Do socketcan have different ways to get the current state? Is it a low
-> level 
-> driver part to read and hold the current state?
-
-No. Both get the infos via netlink socket from the kernel.
-
-> (I'm sorry. I'm unsure about the driver I tested in this situation. I
-> think, 
-> it was the EMS CPC driver and kernel 3.2.0-60-generic. )
-
-This device uses a SJA1000.
-
-Wolfgang.
+vcan                   12686  0=20
+can_bcm                22077  0=20
+can_raw                17120  0=20
+can                    36556  2 can_bcm,can_raw
+ems_usb                17510  0=20
+can_dev                15321  1 ems_usb
 
 
+--=20
+
+Mit freundlichen Gr=C3=BC=C3=9Fen
+
+    Steffen Rose
+
+-----------------------------------------------------------------------=
+--
+
+emtas - your embedded solution partner
+=20
+N=C3=A4chste CANopen Schulung am 06. Mai in Merseburg
+N=C3=A4chste EnergyBus Schulung am 07. Mai in Merseburg
+
+-----------------------------------------------------------------------=
+--
+emtas GmbH
+=46ritz-Haber-Stra=C3=9Fe 9
+06217 Merseburg
+Tel.:  +49(0)3461-79416-0
+=46ax.:  +49(0)3461-79416-10
+www.emtas.de - service@emtas.de
+Gesch=C3=A4ftsf=C3=BChrer: Andreas Boebel, Torsten Gedenk, Steffen Rose
+Registergericht: Amtsgericht Stendal
+Registernummer:  HRB 17616=20
+-----------------------------------------------------------------------=
+--
 
