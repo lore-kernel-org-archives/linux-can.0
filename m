@@ -1,94 +1,127 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [patch V2 00/21] can: c_can: Another pile of fixes and improvements
-Date: Mon, 14 Apr 2014 10:38:04 +0200
-Message-ID: <2227317.E2ytjs4Wd3@ws-stein>
-References: <20140411080547.845836199@linutronix.de>
+Subject: Re: [patch V2 12/21] can: c_can": Work around C_CAN RX wreckage
+Date: Mon, 14 Apr 2014 10:38:57 +0200
+Message-ID: <1607542.s21fNX8q9K@ws-stein>
+References: <20140411080547.845836199@linutronix.de> <20140411080652.540058139@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:54950 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:54956 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751100AbaDNIjQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Apr 2014 04:39:16 -0400
-In-Reply-To: <20140411080547.845836199@linutronix.de>
+	by vger.kernel.org with ESMTP id S1750975AbaDNIkN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Apr 2014 04:40:13 -0400
+In-Reply-To: <20140411080652.540058139@linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: linux-can <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Mark <mark5@del-llc.com>
 
-On Friday 11 April 2014 08:13:09, Thomas Gleixner wrote:
-> Changes since V1:
-> 
->  - Slightly modified version of the interrupt reduction patch
->  - Included the fix for PCH / C_CAN
->  - Lockless XMIT path
->  - Further reduction of register access
->  - Add the missing can.type setup in c_can_pci.c
->  - A pile of code cleanups.
-> 
-> It would be nice to reduce the register access some more by relying
-> completely on the status interrupt, but it turned out that the TX/RXOK
-> is not reliable enough. So we need to invalidate the message objects
-> in the tx softirq handling.
-> 
-> But the overall change of this series is that the I/O load gets
-> reduced by about 45% according to perf top. Though that PCH thing
-> sucks. The beaglebone manages to almost saturate the bus with short
-> packets at 1Mbit while PCH fails miserably and thats solely related to
-> the miserable I/O performance.
-> 
-> time cangen can0 -g0 -p10 -I5A5 -L0 -x -n 1000000 
-> 
-> arm: real	0m51.510s 	I/O read:  ~6%  I/O write: 1.5%  ~3.5s
-> x86: real	1m48.533s	I/O read: ~29%  I/O write: 0.8%  ~32 s!!
-> 
-> That's both with HW loopback on, as my PCH does not have a
-> tranceiver. Granted the C_CAN in the PCH needs the double IF transfer
-> to prevent the message loss versus the D_CAN in the ARM chip, but even
-> that taken into account makes a whopping 16s per 1M messages vs. 3.5s
-> on ARM.
-> 
-> w/o loopback the arm I/O read load drops to ~3.5% on the sender side
-> and ~5.5% on the receiver side. The time drops to 50.5s on the
-> transmit side if we do not have to get all the RX packets from HW
-> loopback. On TX we have a ~10us large gap every 16 packets which is
-> caused by the queue stall as we have to wait for the last
-> packet in the "FIFO" to be transferred. 
-> 
-> It seems there is a reason why the ATOM perf events do not expose the
-> stalled cpu cycles. But it's easy to figure out. You can compare the
-> CAN load case with some other scenario which has 100% CPU utilization
-> by running 
-> 
-> # perf stat -a sleep 60
-> 
-> The interesting part is: insns per cycle
-> 
-> CAN:	 0.23  insns per cycle
-> Other:	 0.53  insns per cycle
-> 
-> I don't have comparison numbers for ARM due to not supported perf
-> events, but the perf top numbers and the transfer performance tell a
-> clear story.
-> 
-> There might be room for a few improvements, but I'm running out of
-> cycles and I really want to get the IF3 DMA feature functional on the
-> TI chips, but that seems to be an equally tedious reverse engineering
-> problem as the rest of this.
+I think the " in the subject got there by accident :-)
 
-Run this patchset on top of linux-can-fixes-for-3.15-20140401 on idle system and with running iperf and I2C:
-idle: 10 runs with 2 x 250'000 frames each, _no_ losts or swaps at all
-load: 10 runs with 2 x 250'000 frames each, _no_ losts or swaps at all
-\o/
-
-CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING is not set. Maybe we can drop it now?
-
-Despite that:
-Tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
-
-Thanks a lot and best regards,
 Alexander
+
+On Friday 11 April 2014 08:13:17, Thomas Gleixner wrote:
+> Alexander reported that the new optimized handling of the RX fifo
+> causes random packet loss on Intel PCH C_CAN hardware.
+> 
+> After a few fruitless debugging sessions I got hold of a PCH (eg20t)
+> afflicted system. That machine does not have the CAN interface wired
+> up, but it was possible to reproduce the issue with the HW loopback
+> mode.
+> 
+> As Alexander observed correctly, clearing the NewDat flag along with
+> reading out the message buffer causes that issue on C_CAN, while D_CAN
+> handles that correctly.
+> 
+> Instead of restoring the original message buffer handling horror the
+> following workaround solves the issue:
+> 
+>     transfer buffer to IF without clearing the NewDat
+>     handle the message
+>     clear NewDat bit
+> 
+> That's similar to the original code but conditional for C_CAN.
+> 
+> I really wonder why all user manuals (C_CAN, Intel PCH and some more)
+> recommend to clear the NewDat bit right away. The knows it all Oracle
+> operated by Gurgle does not unearth any useful information either. I
+> simply cannot believe that we are the first to uncover that HW issue.
+> 
+> Reported-and-tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/net/can/c_can/c_can.c |   13 ++++++++++---
+>  drivers/net/can/c_can/c_can.h |    1 +
+>  2 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> Index: linux-2.6/drivers/net/can/c_can/c_can.c
+> ===================================================================
+> --- linux-2.6.orig/drivers/net/can/c_can/c_can.c
+> +++ linux-2.6/drivers/net/can/c_can/c_can.c
+> @@ -647,6 +647,10 @@ static int c_can_start(struct net_device
+>  	if (err)
+>  		return err;
+>  
+> +	/* Setup the command for new messages */
+> +	priv->comm_rcv_high = priv->type != BOSCH_D_CAN ?
+> +		IF_COMM_RCV_LOW : IF_COMM_RCV_HIGH;
+> +
+>  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>  
+>  	/* reset tx helper pointers and the rx mask */
+> @@ -791,14 +795,15 @@ static u32 c_can_adjust_pending(u32 pend
+>  	return pend & ~((1 << lasts) - 1);
+>  }
+>  
+> -static inline void c_can_rx_object_get(struct net_device *dev, u32 obj)
+> +static inline void c_can_rx_object_get(struct net_device *dev,
+> +				       struct c_can_priv *priv, u32 obj)
+>  {
+>  #ifdef CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING
+>  	if (obj < C_CAN_MSG_RX_LOW_LAST)
+>  		c_can_object_get(dev, IF_RX, obj, IF_COMM_RCV_LOW);
+>  	else
+>  #endif
+> -		c_can_object_get(dev, IF_RX, obj, IF_COMM_RCV_HIGH);
+> +		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
+>  }
+>  
+>  static inline void c_can_rx_finalize(struct net_device *dev,
+> @@ -813,6 +818,8 @@ static inline void c_can_rx_finalize(str
+>  		c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
+>  	}
+>  #endif
+> +	if (priv->type != BOSCH_D_CAN)
+> +		c_can_object_get(dev, IF_RX, obj, IF_COMM_CLR_NEWDAT);
+>  }
+>  
+>  static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
+> @@ -823,7 +830,7 @@ static int c_can_read_objects(struct net
+>  	while ((obj = ffs(pend)) && quota > 0) {
+>  		pend &= ~BIT(obj - 1);
+>  
+> -		c_can_rx_object_get(dev, obj);
+> +		c_can_rx_object_get(dev, priv, obj);
+>  		ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_RX));
+>  
+>  		if (ctrl & IF_MCONT_MSGLST) {
+> Index: linux-2.6/drivers/net/can/c_can/c_can.h
+> ===================================================================
+> --- linux-2.6.orig/drivers/net/can/c_can/c_can.h
+> +++ linux-2.6/drivers/net/can/c_can/c_can.h
+> @@ -198,6 +198,7 @@ struct c_can_priv {
+>  	u32 __iomem *raminit_ctrlreg;
+>  	unsigned int instance;
+>  	void (*raminit) (const struct c_can_priv *priv, bool enable);
+> +	u32 comm_rcv_high;
+>  	u32 rxmasked;
+>  	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
+>  };
+> 
+> 
+> 
+
 -- 
 Dipl.-Inf. Alexander Stein
 
