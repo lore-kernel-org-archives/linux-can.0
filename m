@@ -1,119 +1,65 @@
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 3/5] can: slcan: Send open/close command upon interface up/down
-Date: Tue, 15 Apr 2014 16:51:06 +0200
-Message-ID: <1397573468-7619-4-git-send-email-alexander.stein@systec-electronic.com>
+Subject: [PATCH 1/5] can: slcan: Fix spinlock variant
+Date: Tue, 15 Apr 2014 16:51:04 +0200
+Message-ID: <1397573468-7619-2-git-send-email-alexander.stein@systec-electronic.com>
 References: <1397573468-7619-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:40112 "EHLO
+Received: from webbox1416.server-home.net ([77.236.96.61]:40120 "EHLO
 	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750953AbaDOOw0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Apr 2014 10:52:26 -0400
+	by vger.kernel.org with ESMTP id S1751001AbaDOOwa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Apr 2014 10:52:30 -0400
 In-Reply-To: <1397573468-7619-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-In case a command could not be sent, print a warning. E.g. when slcand
-is killed before the interface is shutdown.
-Always close serial CAN device upon CAN interface initialization.
-Otherwise no bitrate setting can be done.
+slc_xmit is called within softirq context and locks sl->lock, but
+slcan_write_wakeup is not softirq context, so we need to use
+spin_[un]lock_bh!
+Detected using kernel lock debugging mechanism.
 
 Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
- drivers/net/can/slcan.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+I found this by just enabling the kernel config options named in
+Documentation/SubmitChecklist :)
+> 12: Has been tested with CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT,
+>    CONFIG_DEBUG_SLAB, CONFIG_DEBUG_PAGEALLOC, CONFIG_DEBUG_MUTEXES,
+>    CONFIG_DEBUG_SPINLOCK, CONFIG_DEBUG_ATOMIC_SLEEP, CONFIG_PROVE_RCU
+>    and CONFIG_DEBUG_OBJECTS_RCU_HEAD all simultaneously enabled.
+
+ drivers/net/can/slcan.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 337e6e3..8a578bb 100644
+index 3fcdae2..2577c1e 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -103,6 +103,40 @@ struct slcan {
- static struct net_device **slcan_devs;
- static DEFINE_MUTEX(slcan_mutex);
+@@ -322,13 +322,13 @@ static void slcan_write_wakeup(struct tty_struct *tty)
+ 	if (!sl || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev))
+ 		return;
  
-+#define CLOSE_COMMAND "C\r"
-+#define OPEN_COMMAND "O\r"
-+
-+static int slc_open_device(struct slcan *sl) __must_hold(&sl->lock)
-+{
-+	int written;
-+
-+	if (sl->tty) {
-+		written = sl->tty->ops->write(sl->tty, OPEN_COMMAND,
-+					      strlen(OPEN_COMMAND));
-+		if (written != strlen(OPEN_COMMAND)) {
-+			netdev_warn(sl->dev, "Open command could not be sent. Serial interface still inactive!\n");
-+			return -EIO;
-+		}
-+	}
-+	sl->can.state = CAN_STATE_ERROR_ACTIVE;
-+	return 0;
-+}
-+
-+static int slc_close_device(struct slcan *sl) __must_hold(&sl->lock)
-+{
-+	int written;
-+
-+	if (sl->tty) {
-+		written = sl->tty->ops->write(sl->tty, CLOSE_COMMAND,
-+					      strlen(CLOSE_COMMAND));
-+		if (written != strlen(CLOSE_COMMAND)) {
-+			netdev_warn(sl->dev, "Close command could not be sent. Serial interface still active!\n");
-+			return -EIO;
-+		}
-+	}
-+	return 0;
-+}
-+
-  /************************************************************************
-   *			SLCAN ENCAPSULATION FORMAT			 *
-   ************************************************************************/
-@@ -373,10 +407,13 @@ static int slc_close(struct net_device *dev)
- 	struct slcan *sl = netdev_priv(dev);
- 
- 	spin_lock_bh(&sl->lock);
-+
- 	if (sl->tty) {
- 		/* TTY discipline is running. */
- 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
- 	}
-+
-+	slc_close_device(sl);
- 	netif_stop_queue(dev);
- 	sl->rcount   = 0;
- 	sl->xleft    = 0;
-@@ -402,10 +439,18 @@ static int slc_open(struct net_device *dev)
- 	if (err)
- 		return err;
- 
--	sl->can.state = CAN_STATE_ERROR_ACTIVE;
+-	spin_lock(&sl->lock);
 +	spin_lock_bh(&sl->lock);
-+
-+	err = slc_open_device(sl);
-+	if (err) {
+ 	if (sl->xleft <= 0)  {
+ 		/* Now serial buffer is almost free & we can start
+ 		 * transmission of another packet */
+ 		sl->dev->stats.tx_packets++;
+ 		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+-		spin_unlock(&sl->lock);
 +		spin_unlock_bh(&sl->lock);
-+		return err;
-+	}
-+
- 	sl->flags &= (1 << SLF_INUSE);
- 	netif_start_queue(dev);
- 
+ 		netif_wake_queue(sl->dev);
+ 		return;
+ 	}
+@@ -336,7 +336,7 @@ static void slcan_write_wakeup(struct tty_struct *tty)
+ 	actual = tty->ops->write(tty, sl->xhead, sl->xleft);
+ 	sl->xleft -= actual;
+ 	sl->xhead += actual;
+-	spin_unlock(&sl->lock);
 +	spin_unlock_bh(&sl->lock);
- 	return 0;
  }
  
-@@ -559,6 +604,10 @@ static int slcan_open(struct tty_struct *tty)
- 	sl->tty = tty;
- 	tty->disc_data = sl;
- 
-+	err = slc_close_device(sl);
-+	if (err)
-+		goto err_free_chan;
-+
- 	if (!test_bit(SLF_INUSE, &sl->flags)) {
- 		/* Perform the low-level SLCAN initialization. */
- 		sl->rcount   = 0;
+ /* Send a can_frame to a TTY queue. */
 -- 
 1.8.3.2
 
