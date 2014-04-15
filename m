@@ -1,60 +1,74 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: Problem with Eurotech COM1273 Dual Channel CAN PC104 Module.
-Date: Tue, 15 Apr 2014 09:55:51 +0000
-Message-ID: <164afc991761b9eeb0eec6902814d00e@grandegger.com>
-References: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com>
+Date: Tue, 15 Apr 2014 12:50:40 +0200
+Message-ID: <534D0F00.7000202@hartkopp.net>
+References: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com> <164afc991761b9eeb0eec6902814d00e@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:51754 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751352AbaDOJzx (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 15 Apr 2014 05:55:53 -0400
-In-Reply-To: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:23277 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751232AbaDOKvD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Apr 2014 06:51:03 -0400
+In-Reply-To: <164afc991761b9eeb0eec6902814d00e@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: khurram gulzar <khurramgulzar@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, socketcan-users@lists.berlios.de, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, khurram gulzar <khurramgulzar@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Hi Khurram,
+Hello Khurram,
 
-we have switched to a new mailing list some time ago, which I have
-therefore added to the CC.
+we're obviously in a time loop :-)
 
-On Tue, 15 Apr 2014 11:07:15 +0300, khurram gulzar
-<khurramgulzar@gmail.com> wrote:
-> Hi Oliver and Wolfgang,=C2=A0
-> Thanks for your support in advance=C2=A0
-> I have recently updated the system from Kernel 2.6 to use the new ker=
-nel
-> 3.2 for linux.=C2=A0I have noticed that the socket-can is integrated =
-in the
-> kernel.=C2=A0 I enabled the driver in the kernel from the kernel conf=
-ig.=C2=A0
-> The drivers are loaded successfully and both the CAN are transmitting
-the
-> packets.=C2=A0However its unable to receive any packets on any of the=
- CAN.=C2=A0
-> The system configurations are still the same=C2=A0loaded drivers=C2=A0
-> -> can.ko-> can-raw.ko-> sja1000-iomux
+See your same request ~5 years ago:
 
-There is now module named "sja1000-iomux" in the mainline kernel.
-Where did you get it from?
+http://socket-can.996257.n3.nabble.com/Support-needed-for-Eurotech-COM1273-Dual-Channel-CAN-PC104-Module-td1524.html
 
-> The address of can is configured to base=3D0x200,0x204 and irq=3D10,1=
-1 with
-> speed=3D1000,1000 i.e. 1Mbits/sec=C2=A0=20
-> I have checked the irq in /proc/interrupts. IRQ 10 and 11 =C2=A0are s=
-howing
-> connected to CAN0 and CAN1.
+I assume the sja1000_isa driver will be the right one for this old card.
+It is part of mainline Linux - so no need to compile old SocketCAN sources from the SVN.
 
-Do the IRQ counts increase when you send messages?
+Regards,
+Oliver
 
-> Can you please tell me what seems to be wrong-=C2=A0 Waiting for your
-> reply=C2=A0
-
-Could you switch to a recent mainline kernel version?
-
-Wolfgang.
-
+On 15.04.2014 11:55, Wolfgang Grandegger wrote:
+> Hi Khurram,
+> 
+> we have switched to a new mailing list some time ago, which I have
+> therefore added to the CC.
+> 
+> On Tue, 15 Apr 2014 11:07:15 +0300, khurram gulzar
+> <khurramgulzar@gmail.com> wrote:
+>> Hi Oliver and Wolfgang, 
+>> Thanks for your support in advance 
+>> I have recently updated the system from Kernel 2.6 to use the new kernel
+>> 3.2 for linux. I have noticed that the socket-can is integrated in the
+>> kernel.  I enabled the driver in the kernel from the kernel config. 
+>> The drivers are loaded successfully and both the CAN are transmitting
+> the
+>> packets. However its unable to receive any packets on any of the CAN. 
+>> The system configurations are still the same loaded drivers 
+>> -> can.ko-> can-raw.ko-> sja1000-iomux
+> 
+> There is now module named "sja1000-iomux" in the mainline kernel.
+> Where did you get it from?
+> 
+>> The address of can is configured to base=0x200,0x204 and irq=10,11 with
+>> speed=1000,1000 i.e. 1Mbits/sec  
+>> I have checked the irq in /proc/interrupts. IRQ 10 and 11  are showing
+>> connected to CAN0 and CAN1.
+> 
+> Do the IRQ counts increase when you send messages?
+> 
+>> Can you please tell me what seems to be wrong-  Waiting for your
+>> reply 
+> 
+> Could you switch to a recent mainline kernel version?
+> 
+> Wolfgang.
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
