@@ -1,39 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] c_can: Add support for eg20t (pch_can)
-Date: Thu, 17 Apr 2014 21:53:24 +0200
-Message-ID: <53503134.4060607@pengutronix.de>
-References: <1396534451-9654-1-git-send-email-alexander.stein@systec-electronic.com> <533DAB54.8010008@grandegger.com>
+Subject: Re: Coverity CID 712278: c_can_pci_probe() doesn't check pci_enable_msi()
+ return value
+Date: Thu, 17 Apr 2014 22:11:35 +0200
+Message-ID: <53503577.1020809@pengutronix.de>
+References: <CAErSpo4hujoq8Ni7sSrNQv61rf4Xz4s3GjYxNQR6TDLDm0N-Jw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="J7WMsc1JVihmqhNbCVCI3JGaRlBeg2Uxp"
+ boundary="HtBa9ro3lce0XPLNlUrHVoSiMwPqoFTME"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51650 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51546 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751102AbaDQTxa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Apr 2014 15:53:30 -0400
-In-Reply-To: <533DAB54.8010008@grandegger.com>
+	with ESMTP id S1750983AbaDQULn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Apr 2014 16:11:43 -0400
+In-Reply-To: <CAErSpo4hujoq8Ni7sSrNQv61rf4Xz4s3GjYxNQR6TDLDm0N-Jw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc@systec-electronic.de
-Cc: linux-can@vger.kernel.org
+To: Bjorn Helgaas <bhelgaas@google.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Alexander Gordeev <agordeev@redhat.com>, linux-can@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---J7WMsc1JVihmqhNbCVCI3JGaRlBeg2Uxp
+--HtBa9ro3lce0XPLNlUrHVoSiMwPqoFTME
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/03/2014 08:41 PM, Wolfgang Grandegger wrote:
-> From 8cc3c5fde12d0dc36b658483433d5b12be693492 Mon Sep 17 00:00:00 2001
-> From: Wolfgang Grandegger <wg@grandegger.com>
-> Date: Sat, 4 May 2013 22:28:43 +0200
-> Subject: [PATCH 07/12] c_can_pci: enable PCI bus master only for MSI
+On 04/03/2014 06:53 PM, Bjorn Helgaas wrote:
+> Coverity complains that c_can_pci_probe() calls pci_enable_msi()
+> without checking the result:
 >=20
-> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+>=20
+> CID 712278 (#1 of 1): Unchecked return value (CHECKED_RETURN)
+> 3. check_return: Calling pci_enable_msi_block without checking return
+> value (as is done elsewhere 88 out of 105 times).
+>  88        pci_enable_msi(pdev);
+>=20
+> This is CID 712278.
 
-Applied to can/master
+Thanks, I've applied Wolfgang's patch ("can: c_can_pci: enable PCI bus
+master only for MSI"), which fixes this problem.
 
-Thanks,
 Marc
 
 --=20
@@ -43,7 +48,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---J7WMsc1JVihmqhNbCVCI3JGaRlBeg2Uxp
+--HtBa9ro3lce0XPLNlUrHVoSiMwPqoFTME
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -52,9 +57,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlNQMTQACgkQjTAFq1RaXHNxOACdF6oESXCJ8UYs0vmFeiH550yE
-68cAnjSDg7lXvrmZ/FttnFZb6PIMFeGQ
-=KRLq
+iEYEARECAAYFAlNQNXcACgkQjTAFq1RaXHOkrACbBXeshhOVEv3QMHwTO5hdmznq
+3GcAn3jNNsZiA7G8y7PjpUet+lLZBO2M
+=d69i
 -----END PGP SIGNATURE-----
 
---J7WMsc1JVihmqhNbCVCI3JGaRlBeg2Uxp--
+--HtBa9ro3lce0XPLNlUrHVoSiMwPqoFTME--
