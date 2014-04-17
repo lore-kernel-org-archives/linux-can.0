@@ -1,53 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] can: kvaser_usb: add retries/timeout to kvaser_usb_wait_msg()
-Date: Thu, 17 Apr 2014 22:19:42 +0200
-Message-ID: <5350375E.3030605@pengutronix.de>
-References: <1397159063-12790-1-git-send-email-olivier@sobrie.be>
+Subject: Re: [PATCH v2] c_can: Add support for eg20t (pch_can)
+Date: Thu, 17 Apr 2014 22:23:07 +0200
+Message-ID: <5350382B.6050803@pengutronix.de>
+References: <"<533DB663.3030408@hartkopp.net>"> <1396853523-14941-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="uiPdgdg6EJv8XxmAx4PKtDw3KjU1qtg1c"
+ boundary="qkWpn7dCah5xThOogJMJc8f8WX5G4ttlu"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49583 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:40116 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751342AbaDQUTx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Apr 2014 16:19:53 -0400
-In-Reply-To: <1397159063-12790-1-git-send-email-olivier@sobrie.be>
+	with ESMTP id S1752034AbaDQUXK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Apr 2014 16:23:10 -0400
+In-Reply-To: <1396853523-14941-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Olivier Sobrie <olivier@sobrie.be>
-Cc: linux-can@vger.kernel.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uiPdgdg6EJv8XxmAx4PKtDw3KjU1qtg1c
+--qkWpn7dCah5xThOogJMJc8f8WX5G4ttlu
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/10/2014 09:44 PM, Olivier Sobrie wrote:
-> On some Kvaser hardware, the firmware returns extra messages after the
-> request for card info. For instance on a Leaf Light v2:
->   --> CMD_GET_CARD_INFO
->   <-- CMD_USB_THROTTLE
->   <-- CMD_GET_CARD_INFO2
->   <-- CMD_GET_CARD_INFO_REQ
-> When it happens, the probing function fails because we only read
-> the first usb message.
->=20
-> To overcome this issue, we add a mechanism of retries to the
-> kvaser_usb_wait_msg() function.
->=20
-> I tested this patch with the following hardware:
->  - Kvaser Leaf Light
->  - Kvaser Leaf Light v2
->  - Kvaser USBCan R
->=20
-> This patch is necessary for the Leaf Light v2 hardware.
->=20
-> Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+On 04/07/2014 08:52 AM, Alexander Stein wrote:
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 
-Applied all 3 to net-next/master
+Applied to can-next/master
 
-Thanks,
+> ---
+> This is the correct version of this patch I use.
+> It has no spinlock which is not needed, AFAICT.
+>=20
+>  drivers/net/can/c_can/c_can_pci.c | 50 +++++++++++++++++++++++++++++++=
++++++++-
+>  1 file changed, 49 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/=
+c_can_pci.c
+> index bce0be5..128788c 100644
+> --- a/drivers/net/can/c_can/c_can_pci.c
+> +++ b/drivers/net/can/c_can/c_can_pci.c
+
+[...]
+
+> @@ -87,7 +118,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+>  	pci_set_master(pdev);
+>  	pci_enable_msi(pdev);
+> =20
+> -	addr =3D pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
+> +	addr =3D pci_iomap(pdev, c_can_pci_data->bar, pci_resource_len(pdev, =
+0));
+
+	addr =3D pci_iomap(pdev, c_can_pci_data->bar,
+			 pci_resource_len(pdev, c_can_pci_data->bar));
+
+With this fix applied.
+
 Marc
 
 --=20
@@ -57,7 +66,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---uiPdgdg6EJv8XxmAx4PKtDw3KjU1qtg1c
+--qkWpn7dCah5xThOogJMJc8f8WX5G4ttlu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -66,9 +75,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlNQN14ACgkQjTAFq1RaXHPZiACfTW1kUKSYgu2WWNsw+dD1z182
-oeIAni6nt0I0vpTymz6uXQCi6T4YYqjO
-=8u7Z
+iEYEARECAAYFAlNQOCsACgkQjTAFq1RaXHNCSACeM7AEqbQC0YuoarUVtiXxeEsv
+8tcAn2vpjT8ZHp1igEE+pFCksScu0nyK
+=wSLh
 -----END PGP SIGNATURE-----
 
---uiPdgdg6EJv8XxmAx4PKtDw3KjU1qtg1c--
+--qkWpn7dCah5xThOogJMJc8f8WX5G4ttlu--
