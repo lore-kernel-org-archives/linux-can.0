@@ -1,163 +1,81 @@
-From: <tthayer@altera.com>
-Subject: [PATCHv2] net: c_can: Add support for D_CAN Module RAM Init
-Date: Fri, 18 Apr 2014 09:03:14 -0500
-Message-ID: <1397829794-9714-2-git-send-email-tthayer@altera.com>
-References: <1397829794-9714-1-git-send-email-tthayer@altera.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH 1/2] net can softing: drop 'channel' sysfs attribute
+Date: Fri, 18 Apr 2014 16:39:26 +0200
+Message-ID: <20140418143926.GA12094@vandijck-laurijssen.be>
+References: <1396466269-28444-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
+ <535039A8.1050002@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0114.outbound.protection.outlook.com ([65.55.169.114]:19958
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752764AbaDRN65 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 18 Apr 2014 09:58:57 -0400
-In-Reply-To: <1397829794-9714-1-git-send-email-tthayer@altera.com>
+Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:26288 "EHLO
+	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751429AbaDROjg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Apr 2014 10:39:36 -0400
+Content-Disposition: inline
+In-Reply-To: <535039A8.1050002@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, tglx@linutronix.de
-Cc: socketcan@hartkopp.net, anilkumar@ti.com, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, tthayer.linux@gmail.com, Thor Thayer <tthayer@altera.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-From: Thor Thayer <tthayer@altera.com>
+On Thu, Apr 17, 2014 at 10:29:28PM +0200, Marc Kleine-Budde wrote:
+> On 04/02/2014 09:17 PM, Kurt Van Dijck wrote:
+> > netdev->dev_id obsoletes this property.
+> > None of the remaining properties contribute to udev detection methods.
+> > The regular calls for the sysfs group can thus safely be restored.
+> > 
+> > Signed-off-by: Kurt Van Dijck <kurt.van.dijck@eia.be>
+> > ---
+> >  drivers/net/can/softing/softing_main.c |   16 ++++------------
+> >  1 file changed, 4 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+> > index 65eef1e..6cfbccd 100644
+> > --- a/drivers/net/can/softing/softing_main.c
+> > +++ b/drivers/net/can/softing/softing_main.c
+[...]
+> > @@ -680,17 +669,20 @@ static int softing_netdev_register(struct net_device *netdev)
+> >  {
+> >  	int ret;
+> >  
+> > -	netdev->sysfs_groups[0] = &netdev_sysfs_group;
+> >  	ret = register_candev(netdev);
+> >  	if (ret) {
+> >  		dev_alert(&netdev->dev, "register failed\n");
+> >  		return ret;
+> >  	}
+> > +	if (sysfs_create_group(&netdev->dev.kobj, &netdev_sysfs_group) < 0)
+> > +		netdev_alert(netdev, "sysfs group failed\n");
+> > +
+> 
+> What is the difference between using sysfs_create_group() and
+> netdev->sysfs_groups[0]?
+> 
 
-The D_CAN driver was written to support the TI D_CAN implementation
-which placed the D_CAN RAM reset in a separate register. In the
-standard D_CAN module the RAM Init is in the D_CAN module so
-handle the RAM Init differently.
-This patch has only been tested on the standard D_CAN module (but not
-on the TI D_CAN module).
+register_candev() will (indirectly) add a sysfs node
+and trigger a uevent.
 
-Signed-off-by: Thor Thayer <tthayer@altera.com>
----
-Changes in v2:
--Rename raminit_type_flag to raminit_type
--New constants for raminit_type
----
----
- drivers/net/can/c_can/c_can.h          |    3 ++
- drivers/net/can/c_can/c_can_platform.c |   51 +++++++++++++++++++++++++-------
- 2 files changed, 44 insertions(+), 10 deletions(-)
+calling sysfs_create_group only after that implies that the uevent
+is fired potentially before the attr_group is added, and your uevent
+handling code will not see it.
 
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index faa8404..73c6c88 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -88,6 +88,7 @@ enum reg {
- 	C_CAN_INTPND2_REG,
- 	C_CAN_MSGVAL1_REG,
- 	C_CAN_MSGVAL2_REG,
-+	C_CAN_FUNCTION_REG,
- };
- 
- static const u16 reg_map_c_can[] = {
-@@ -139,6 +140,7 @@ static const u16 reg_map_d_can[] = {
- 	[C_CAN_BRPEXT_REG]	= 0x0E,
- 	[C_CAN_INT_REG]		= 0x10,
- 	[C_CAN_TEST_REG]	= 0x14,
-+	[C_CAN_FUNCTION_REG]	= 0x18,
- 	[C_CAN_TXRQST1_REG]	= 0x88,
- 	[C_CAN_TXRQST2_REG]	= 0x8A,
- 	[C_CAN_NEWDAT1_REG]	= 0x9C,
-@@ -201,6 +203,7 @@ struct c_can_priv {
- 	unsigned int instance;
- 	void (*raminit) (const struct c_can_priv *priv, bool enable);
- 	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
-+	u32 raminit_type;
- };
- 
- struct net_device *alloc_c_can_dev(void);
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 806d927..af3366f 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -41,6 +41,14 @@
- #define CAN_RAMINIT_DONE_MASK(i)	(0x100 << (i))
- #define CAN_RAMINIT_ALL_MASK(i)		(0x101 << (i))
- static DEFINE_SPINLOCK(raminit_lock);
-+#define DCAN_RAM_INIT_BIT		(1 << 3)
-+struct c_can_ram_init_masks {
-+	u32 start;
-+	u32 done;
-+	u32 all;
-+};
-+#define CAN_RAMINIT_TYPE_STANDARD	0
-+#define CAN_RAMINIT_TYPE_TI		1
- /*
-  * 16-bit c_can registers can be arranged differently in the memory
-  * architecture of different implementations. For example: 16-bit
-@@ -82,9 +90,19 @@ static void c_can_hw_raminit_wait(const struct c_can_priv *priv, u32 mask,
- 
- static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- {
--	u32 mask = CAN_RAMINIT_ALL_MASK(priv->instance);
-+	struct c_can_ram_init_masks ram_init_masks;
- 	u32 ctrl;
- 
-+	if (priv->raminit_type == CAN_RAMINIT_TYPE_TI) {
-+		ram_init_masks.start = CAN_RAMINIT_START_MASK(priv->instance);
-+		ram_init_masks.done = CAN_RAMINIT_DONE_MASK(priv->instance);
-+		ram_init_masks.all = CAN_RAMINIT_ALL_MASK(priv->instance);
-+	} else {
-+		ram_init_masks.start = DCAN_RAM_INIT_BIT;
-+		ram_init_masks.done = 0;
-+		ram_init_masks.all = 0;
-+	}
-+
- 	spin_lock(&raminit_lock);
- 
- 	ctrl = readl(priv->raminit_ctrlreg);
-@@ -92,18 +110,18 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- 	 * looking at the 0 -> transition, but is not self clearing;
- 	 * And we clear the init done bit as well.
- 	 */
--	ctrl &= ~CAN_RAMINIT_START_MASK(priv->instance);
--	ctrl |= CAN_RAMINIT_DONE_MASK(priv->instance);
-+	ctrl &= ~ram_init_masks.start;
-+	ctrl |= ram_init_masks.done;
- 	writel(ctrl, priv->raminit_ctrlreg);
--	ctrl &= ~CAN_RAMINIT_DONE_MASK(priv->instance);
--	c_can_hw_raminit_wait(priv, ctrl, mask);
-+	ctrl &= ~ram_init_masks.done;
-+	c_can_hw_raminit_wait(priv, ctrl, ram_init_masks.all);
- 
- 	if (enable) {
- 		/* Set start bit and wait for the done bit. */
--		ctrl |= CAN_RAMINIT_START_MASK(priv->instance);
-+		ctrl |= ram_init_masks.start;
- 		writel(ctrl, priv->raminit_ctrlreg);
--		ctrl |= CAN_RAMINIT_DONE_MASK(priv->instance);
--		c_can_hw_raminit_wait(priv, ctrl, mask);
-+		ctrl |= ram_init_masks.done;
-+		c_can_hw_raminit_wait(priv, ctrl, ram_init_masks.all);
- 	}
- 	spin_unlock(&raminit_lock);
- }
-@@ -221,11 +239,24 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 			priv->instance = pdev->id;
- 
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+		/* Not all D_CAN module have a separate register for the D_CAN
-+		 * RAM initialization. Use default RAM init bit in D_CAN module
-+		 * if not specified in DT.
-+		 */
-+		if (!res) {
-+			priv->raminit = c_can_hw_raminit;
-+			priv->raminit_type = CAN_RAMINIT_TYPE_STANDARD;
-+			priv->raminit_ctrlreg = addr +
-+				priv->regs[C_CAN_FUNCTION_REG];
-+			break;
-+		}
- 		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
--		if (IS_ERR(priv->raminit_ctrlreg) || (int)priv->instance < 0)
-+		if (IS_ERR(priv->raminit_ctrlreg) || (int)priv->instance < 0) {
- 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
--		else
-+		} else {
- 			priv->raminit = c_can_hw_raminit;
-+			priv->raminit_type = CAN_RAMINIT_TYPE_TI;
-+		}
- 		break;
- 	default:
- 		ret = -EINVAL;
--- 
-1.7.9.5
+If you introduce sysfs attributes that way that are used to
+discriminate between net_devices, then a race condition is introduced.
 
+calling sysfs_create_group before register_candev doesn't work because
+the sysfs node is not yet there.
+
+netdev->sysfs_groups was introduced (at the same time as I needed this)
+to avoid the race condition: the attr_groups listed there are added
+before the uevent is fired, and after the sysfs device is created.
+
+I needed to add to sysfs_groups because I added a sysfs attribute
+that indicated the channel, potentially used to identify the can net_device.
+
+So, the answer to your question is:
+The point in time relative to the uevent at which the attr_group is added.
+
+I dropped that sysfs attribute, and so I can use the sysfs_create_group,
+which is more common and therefore a better choice.
+
+Kurt
