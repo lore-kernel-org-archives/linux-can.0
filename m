@@ -1,99 +1,165 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Bitrate and CAN status support for slcan
-Date: Sat, 19 Apr 2014 21:24:28 +0200
-Message-ID: <5352CD6C.2090601@hartkopp.net>
-References: <1397573468-7619-1-git-send-email-alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH 5/5] can: slcan: Add CAN status flag support
+Date: Sat, 19 Apr 2014 22:38:43 +0200
+Message-ID: <5352DED3.8080900@hartkopp.net>
+References: <1397573468-7619-1-git-send-email-alexander.stein@systec-electronic.com> <1397573468-7619-6-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:55045 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:8554 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751095AbaDSTYb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 19 Apr 2014 15:24:31 -0400
-In-Reply-To: <1397573468-7619-1-git-send-email-alexander.stein@systec-electronic.com>
+	with ESMTP id S1751241AbaDSUir (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 19 Apr 2014 16:38:47 -0400
+In-Reply-To: <1397573468-7619-6-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Alexander Stein <alexander.stein@systec-electronic.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org
 
-Hello Alexander,
-
-IMO your entire patch set has a major design flaw.
-
-The general serial line discipline concept is a data encapsulation driver
-which converts PDUs into a serial line data stream.
-
-If you check other implementations of serial line disciplines from
-
-http://lxr.free-electrons.com/source/include/uapi/linux/tty.h
-
-you'll see that their functionality is to encapsulate datagramms and/or
-support different modes for this functionality on the serial line.
-
-There's no interaction on the serial stream triggered by open/close of the
-device - which additionally breaks the current userspace, which assumes to be
-responsible for the ASCII open/close commands.
-
-And when there are working queues that talk to the serial line, these are e.g.
-for line fills to prevent tty hangups.
-
-I don't know if the first CAN frame can get lost when slcand issues the open
-command and then switches to the line discipline with the ioctl() ???
-
-Therefore the idea to create the open/close commands in slcan.c *may* prevent
-a race condition at startup. Do you know whether the received ASCII characters
-remain queued when they are not read by slcand which controls the tty until
-the line discipline is switched to slcan.c ??
-
-When this is really needed to prevent this kind of startup glitch the
-open/close commands need to be created by newly introduced ioctl() calls, so
-that slcand can check if the (new) ioctl() exists to decide if it has to send
-the ASCII 'open' command before the ldisc ioctl() OR send the 'open' ioctl()
-after the ldisc ioctl().
-
-Same problem with the status polling:
-It introduces a functionality which has impacts to statistics depending on the
-given poll rate. Are the values consumed with answer to the 'F' command or
-does the next polled status represent the same status content?
-
-You introduced an automatism which does not look reliable to me.
-
-What about creating a 'F' command on the serial line when you send a CAN frame
-with the CAN_ERR_FLAG set down to the slcan device?
-The answer of the slcan device can then be converted to a CAN frame similar to
-the way you suggested in patch 5.
-
-Finally the bitrate setting approach is broken too:
-1. it breaks the serial line discipline design again
-2. there's obviously no race problem which is potentially solved
-3. there's no bittiming_const which is needed to fill the bitrate via ip tool
-
-Summary:
-
-- Can you please double check if there's a change for a race condition in the
-'open' command before the ldisc ioctl() which may? lead to drop the first CAN
-frame? I assume there's no such problem as every other line discipline would
-have a similar problem then. And if there's no race there's no need to put
-open/close into the driver.
-
-- Remove the bitrate setting stuff
-- Don't make the slcan driver depend on the CAN_DEV stuff: It's just
-encapsulation which is done in slcan.c - it's no really a CAN controller driver.
-
-Sorry but finally only the 'on demand' retrieval of the SLCAN status via
-CAN_ERR_FLAG set in a sent CAN frame looks like a potentially valuable
-improvement to me.
-
-Thanks for your contribution & best regards,
-Oliver
+Hi Alexander,
 
 On 15.04.2014 16:51, Alexander Stein wrote:
-> This series adds bitrate selection support. It uses the API described
-> in the SLCAN-API which is identical on all listed serial interfaces.
-> Thus slcan only supports that limited set of bitrates, as only a bitrate
-> index is sent over serial wire.
-> Patch 5 also adds support for CAN status polling. This has do be done
-> regulrarly from CPU side.
-> Tests have been done on a LAWICEL CANUSB device.
+> CAN status flags have to be polled from the serial device. So send the
+> request every 10ms by default.
+
+here's my suggestion for the status retrieval from the user space by
+sending a CAN frame with CAN_ERR_FLAG to the slcan device.
+
+(I don't have this hardware with me - therefore compile tested only)
+
+Regards,
+Oliver
+
+---
+
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index f5b16e0..750b002 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -54,6 +54,7 @@
+ #include <linux/kernel.h>
+ #include <linux/can.h>
+ #include <linux/can/skb.h>
++#include <linux/can/error.h>
+ 
+ static __initconst const char banner[] =
+ 	KERN_INFO "slcan: serial line CAN interface driver\n";
+@@ -78,6 +79,16 @@ MODULE_PARM_DESC(maxdev, "Maximum number of slcan interfaces");
+ #define SLC_SFF_ID_LEN 3
+ #define SLC_EFF_ID_LEN 8
+ 
++/* slcan status bits returned in 'F' response */
++#define SLC_CAN_FLAG_ERR_WARN   BIT(2)
++#define SLC_CAN_FLAG_OVERRUN    BIT(3)
++#define SLC_CAN_FLAG_ERR_PASV   BIT(5)
++#define SLC_CAN_FLAG_ARB_LOST   BIT(6)
++#define SLC_CAN_FLAG_BUS_ERR    BIT(7)
++#define SLC_CAN_FLAG_VALID (SLC_CAN_FLAG_ERR_WARN | SLC_CAN_FLAG_OVERRUN \
++			    | SLC_CAN_FLAG_ERR_PASV | SLC_CAN_FLAG_ARB_LOST \
++			    | SLC_CAN_FLAG_BUS_ERR)
++
+ struct slcan {
+ 	int			magic;
+ 
+@@ -135,6 +146,46 @@ static struct net_device **slcan_devs;
+  *
+  */
+ 
++void slc_fill_err_msg(struct can_frame *cf, int tmp)
++{
++	tmp &= SLC_CAN_FLAG_VALID;
++
++	cf->can_id = CAN_ERR_FLAG;
++	cf->can_dlc = CAN_ERR_DLC;
++	*(u64 *) (&cf->data) = 0; /* clear payload */
++
++	if (tmp & SLC_CAN_FLAG_ARB_LOST)
++		cf->can_id |= CAN_ERR_LOSTARB;
++
++	if (tmp & SLC_CAN_FLAG_OVERRUN) {
++		cf->can_id |= CAN_ERR_CRTL;
++		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
++	}
++
++	/* CAN state: Check most severe problems first */
++
++	if (tmp & SLC_CAN_FLAG_BUS_ERR) {
++		cf->can_id |= CAN_ERR_BUSOFF;
++		return;
++	}
++
++	if (tmp & SLC_CAN_FLAG_ERR_PASV) {
++		cf->can_id |= CAN_ERR_CRTL;
++		cf->data[1] = CAN_ERR_CRTL_RX_PASSIVE |	CAN_ERR_CRTL_TX_PASSIVE;
++		return;
++	}
++
++	if (tmp & SLC_CAN_FLAG_ERR_WARN) {
++		cf->can_id |= CAN_ERR_CRTL;
++		cf->data[1] = CAN_ERR_CRTL_RX_WARNING |	CAN_ERR_CRTL_TX_WARNING;
++		return;
++	}
++
++	/* error active - no real problem detected */
++	cf->can_id |= CAN_ERR_PROT;
++	cf->data[2] = CAN_ERR_PROT_ACTIVE;
++}
++
+  /************************************************************************
+   *			STANDARD SLCAN DECAPSULATION			 *
+   ************************************************************************/
+@@ -151,6 +202,14 @@ static void slc_bump(struct slcan *sl)
+ 	cf.can_id = 0;
+ 
+ 	switch (*cmd) {
++	case 'F':
++		/* retrieve adapter status information */
++		cmd += SLC_CMD_LEN;
++		tmp = hex_to_bin(*cmd);
++		if (tmp < 0)
++			return;
++		slc_fill_err_msg(&cf, tmp);
++		goto send_cf;
+ 	case 'r':
+ 		cf.can_id = CAN_RTR_FLAG;
+ 		/* fallthrough */
+@@ -203,6 +262,7 @@ static void slc_bump(struct slcan *sl)
+ 		}
+ 	}
+ 
++send_cf:
+ 	skb = dev_alloc_skb(sizeof(struct can_frame) +
+ 			    sizeof(struct can_skb_priv));
+ 	if (!skb)
+@@ -229,7 +289,7 @@ static void slcan_unesc(struct slcan *sl, unsigned char s)
+ {
+ 	if ((s == '\r') || (s == '\a')) { /* CR or BEL ends the pdu */
+ 		if (!test_and_clear_bit(SLF_ERROR, &sl->flags) &&
+-		    (sl->rcount > 4))  {
++		    (sl->rcount > 2))  {
+ 			slc_bump(sl);
+ 		}
+ 		sl->rcount = 0;
+@@ -260,6 +320,11 @@ static void slc_encaps(struct slcan *sl, struct can_frame *cf)
+ 
+ 	pos = sl->xbuff;
+ 
++	if (cf->can_id & CAN_ERR_FLAG) {
++		*pos++ = 'F';
++		goto cmd_done;
++	}
++
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		*pos = 'R'; /* becomes 'r' in standard frame format (SFF) */
+ 	else
+@@ -292,6 +357,7 @@ static void slc_encaps(struct slcan *sl, struct can_frame *cf)
+ 			pos = hex_byte_pack_upper(pos, cf->data[i]);
+ 	}
+ 
++cmd_done:
+ 	*pos++ = '\r';
+ 
+ 	/* Order of next two lines is *very* important.
+
 
