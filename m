@@ -1,112 +1,167 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: sja1000_isa: add locking for indirect register access
- mode
-Date: Mon, 21 Apr 2014 19:39:49 +0200
-Message-ID: <535557E5.8060907@hartkopp.net>
-References: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com>	<164afc991761b9eeb0eec6902814d00e@grandegger.com>	<534D0F00.7000202@hartkopp.net> <CA+s8Zrqrd_U0g1GRCDzXncgWLA_kO3Hyhjwy6Oe1S0cYohm2og@mail.gmail.com> <534D1F63.6080101@hartkopp.net> <534D270D.5060705@pengutronix.de> <534D31EF.6050107@hartkopp.net> <534D3748.6060602@pengutronix.de> <534D6C98.4020109@hartkopp.net>
+Subject: Re: Kvaser socketCAN support
+Date: Mon, 21 Apr 2014 19:48:44 +0200
+Message-ID: <535559FC.70506@hartkopp.net>
+References: <f0331cq3H1VPknv.RZmta@smtp.rzone.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:64011 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:54883 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752779AbaDURjv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Apr 2014 13:39:51 -0400
-In-Reply-To: <534D6C98.4020109@hartkopp.net>
+	with ESMTP id S1752660AbaDURss (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Apr 2014 13:48:48 -0400
+In-Reply-To: <f0331cq3H1VPknv.RZmta@smtp.rzone.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: khurram gulzar <khurramgulzar@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: "Smith, Christopher - 0999 - MITLL" <chris.smith@ll.mit.edu>
+Cc: "Kvaser Support (support@kvaser.com)" <support@kvaser.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Olivier Sobrie <olivier@sobrie.be>
 
-Hello Khurram,
+Hello Christopher,
 
-is it possible for you to test this patch with your hardware?
+the Kvaser Leaf USB driver has been contributed by Olivier Sobrie (see =
+CC).
 
-It should apply on your used kernel without problems.
+See log messages of the driver in the Linux Mainline repository:
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/log/driv=
+ers/net/can/usb/kvaser_usb.c
 
-Thanks & best regards,
+The initial support was added at 2012-11-27 and emerged in Linux 3.8.
+
+Regards,
 Oliver
 
-On 15.04.2014 19:30, Oliver Hartkopp wrote:
-> When accessing the SJA1000 controller registers in the indirect access mode,
-> writing the register number and reading/writing the data has to be an atomic
-> attempt.
-> 
-> As the sja1000_isa driver is an old style driver with a fixed number of
-> instances the locking variable depends on the same index like all the other
-> configuration elements given on the module command line.
-> 
-> As a positive side effect dev->dev_id is populated by the instance index,
-> which was missing in 3e66d0138c05d9 ("can: populate netdev::dev_id for udev
-> discrimination").
-> 
-> Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> ---
-> 
-> diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
-> index df136a2..014695d 100644
-> --- a/drivers/net/can/sja1000/sja1000_isa.c
-> +++ b/drivers/net/can/sja1000/sja1000_isa.c
-> @@ -46,6 +46,7 @@ static int clk[MAXDEV];
->  static unsigned char cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
->  static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
->  static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
-> +static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
->  
->  module_param_array(port, ulong, NULL, S_IRUGO);
->  MODULE_PARM_DESC(port, "I/O port number");
-> @@ -101,19 +102,26 @@ static void sja1000_isa_port_write_reg(const struct sja1000_priv *priv,
->  static u8 sja1000_isa_port_read_reg_indirect(const struct sja1000_priv *priv,
->  					     int reg)
->  {
-> -	unsigned long base = (unsigned long)priv->reg_base;
-> +	unsigned long flags, base = (unsigned long)priv->reg_base;
-> +	u8 readval;
->  
-> +	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
->  	outb(reg, base);
-> -	return inb(base + 1);
-> +	readval = inb(base + 1);
-> +	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
-> +
-> +	return readval;
->  }
->  
->  static void sja1000_isa_port_write_reg_indirect(const struct sja1000_priv *priv,
->  						int reg, u8 val)
->  {
-> -	unsigned long base = (unsigned long)priv->reg_base;
-> +	unsigned long flags, base = (unsigned long)priv->reg_base;
->  
-> +	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
->  	outb(reg, base);
->  	outb(val, base + 1);
-> +	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
->  }
->  
->  static int sja1000_isa_probe(struct platform_device *pdev)
-> @@ -169,6 +177,7 @@ static int sja1000_isa_probe(struct platform_device *pdev)
->  		if (iosize == SJA1000_IOSIZE_INDIRECT) {
->  			priv->read_reg = sja1000_isa_port_read_reg_indirect;
->  			priv->write_reg = sja1000_isa_port_write_reg_indirect;
-> +			spin_lock_init(&indirect_lock[idx]);
->  		} else {
->  			priv->read_reg = sja1000_isa_port_read_reg;
->  			priv->write_reg = sja1000_isa_port_write_reg;
-> @@ -198,6 +207,7 @@ static int sja1000_isa_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, dev);
->  	SET_NETDEV_DEV(dev, &pdev->dev);
-> +	dev->dev_id = idx;
->  
->  	err = register_sja1000dev(dev);
->  	if (err) {
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+ps. feel free to ask this kind of questions on the linux-can mailing li=
+st
+which I added in CC. Tnx
+
+
+On 17.04.2014 03:31, Smith, Christopher - 0999 - MITLL wrote:
+> Hi, I was just looking to get confirmation and a few points for getti=
+ng the
+> initial install figured out.=20
+>=20
+> =20
+>=20
+> I have a kvaser leaf device that I'd like to use with socketCAN.  Is =
+this in
+> fact supported?
+>=20
+> =20
+>=20
+> I noticed the general process for setting up socketCAN documented on =
+wikipedia
+> <http://en.wikipedia.org/wiki/SocketCAN>.  When I issue the following=
+ command:
+>=20
+> =20
+>=20
+> ip link add dev vcan0 type vcan
+>=20
+> =20
+>=20
+> What do I replace vcan0 with?  I=92ve tried can0 with no luck.  Is th=
+ere a way
+> to check which devices are registered?  I=92m not entirely sure that =
+when I
+> plugged in the USB device the proper drivers were recognized.  I may =
+need some
+> of the lower level drivers distributed by Kvaser.
+>=20
+> =20
+>=20
+> Thank you,
+>=20
+> =20
+>=20
+> Chris
+>=20
+> =20
+>=20
+> -----Original Message-----
+> From: Kvaser Support [mailto:support@kvaser.com]
+> Sent: Monday, April 14, 2014 3:24 PM
+> To: Smith, Christopher - 0999 - MITLL
+> Subject: Re: (Case 14217) Linux driver support
+>=20
+> =20
+>=20
+> Did the response below answer your questions?
+>=20
+> =20
+>=20
+> Or do you need more information?
+>=20
+> =20
+>=20
+> Best regards,
+>=20
+> =20
+>=20
+> Troy
+>=20
+> --=20
+>=20
+> Kvaser Support
+>=20
+> support@kvaser.com <mailto:support@kvaser.com>
+>=20
+> ---------------------------------------------------------------------=
+------
+>=20
+> =20
+>=20
+> =20
+>=20
+> =20
+>=20
+> -----Original Message-----
+>=20
+> From: "Kvaser Support" <support@kvaser.com <mailto:support@kvaser.com=
+>>
+>=20
+> Reply-To: "Kvaser Support" <support@kvaser.com <mailto:support@kvaser=
+=2Ecom>>
+>=20
+> Date: Mon, 31 Mar 2014 22:29:00 +02:00
+>=20
+> To: "Smith, Christopher - 0999 - MITLL" <chris.smith@ll.mit.edu
+> <mailto:chris.smith@ll.mit.edu>>
+>=20
+> Subject: Re: (Case 14217) Linux driver support
+>=20
+> =20
+>=20
+>>To our knowledge, support for the Leaf family was added to socketcan =
+by
+> Oliver Harkopp in 2012.
+>=20
+>>=20
+>=20
+>>I tried to perform a google search to determine which version of Linu=
+x this
+> has been included in without good results.
+>=20
+>>=20
+>=20
+>>I hope the socketcan community can point you to the version that incl=
+udes
+> this patch.
+>=20
+>>=20
+>=20
+>>Best regards,
+>=20
+>>=20
+>=20
+>>Troy
+>=20
+>>--
+>=20
+>>Kvaser Support
+>=20
+>>support@kvaser.com <mailto:support@kvaser.com>
+>=20
+>>---------------------------------------------------------------------=
+------
+>=20
