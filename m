@@ -1,170 +1,112 @@
-From: swapnil <patilswa@gmail.com>
-Subject: Re: J1939 Interpacket Delay - issue of EOM
-Date: Mon, 21 Apr 2014 15:04:12 +0000 (UTC)
-Message-ID: <loom.20140421T164905-320@post.gmane.org>
-References: <loom.20140409T155830-71@post.gmane.org> <20140409194939.GD15221@vandijck-laurijssen.be> <loom.20140410T155519-838@post.gmane.org> <20140411083139.GB449@vandijck-laurijssen.be> <loom.20140417T051332-76@post.gmane.org> <20140417201835.GA12665@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: sja1000_isa: add locking for indirect register access
+ mode
+Date: Mon, 21 Apr 2014 19:39:49 +0200
+Message-ID: <535557E5.8060907@hartkopp.net>
+References: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com>	<164afc991761b9eeb0eec6902814d00e@grandegger.com>	<534D0F00.7000202@hartkopp.net> <CA+s8Zrqrd_U0g1GRCDzXncgWLA_kO3Hyhjwy6Oe1S0cYohm2og@mail.gmail.com> <534D1F63.6080101@hartkopp.net> <534D270D.5060705@pengutronix.de> <534D31EF.6050107@hartkopp.net> <534D3748.6060602@pengutronix.de> <534D6C98.4020109@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:49668 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752351AbaDUPEZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 21 Apr 2014 11:04:25 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1WcFlg-0006rM-CL
-	for linux-can@vger.kernel.org; Mon, 21 Apr 2014 17:04:24 +0200
-Received: from 192.158.48.18 ([192.158.48.18])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 21 Apr 2014 17:04:24 +0200
-Received: from patilswa by 192.158.48.18 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 21 Apr 2014 17:04:24 +0200
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:64011 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752779AbaDURjv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Apr 2014 13:39:51 -0400
+In-Reply-To: <534D6C98.4020109@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: khurram gulzar <khurramgulzar@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
+Hello Khurram,
 
->=20
-> On Thu, Apr 17, 2014 at 03:18:44AM +0000, swapnil wrote:
-> > Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
-> >=20
-> > >=20
-> > > Hey,
-> > >=20
-> > > > > Hey,
-> > > > >=20
-> [...]
-> > > > Is it possible that i can modify the code for j1939 for adding =
-some=20
-> > delay=20
-> > > > for my use only -- if yes
-> > >=20
-> > > yes, you can. It's GPL
-> > >=20
-> > > > can u tell in which function can i add that delay.
-> > > > This is the most important part in my project..
-> > >=20
-> > > You can patch the code like shown below.
-> > > If that helps you releasing a product, don't hesitate.
-> > >=20
-> > > I'll keep your usecase in mind for the future.
-> > >=20
-> > > > actually i am able to=20
-> > > > monitor the parameters using j1939 stack but if i want to calib=
-rate=20
-ECU
-> > > > it fails.
-> > >=20
-> > > in net/can/j1939/transport.c, around line 1046, add this.
-> > >=20
-> > > 	case tp_cmd_bam:
-> > > 		...
-> > > 		while (session->pkt.tx < pkt_end) {
-> > > 			...
-> > > 			if (j1939cb_is_broadcast(session->cb)) {
-> > > 				if (session->pkt.tx < session->pkt.total)
-> > > 					j1939tp_schedule_txtimer(session,=20
-> > 50);
-> > > 				break;
-> > > +			} else {
-> > > +				j1939tp_schedule_txtimer(session, 1);
-> > > +				break;
-> > > 			}
-> > > 		}
-> > >=20
-> > > this will add 1+ msec delay between packets.
-> > > You may need to use bigger delays, like 5msec, as this is the del=
-ay
-> > > that is used to schedule the packet into the queue, and you want =
-to
-> > > delay the point that the CAN frames leave the queue onto the CAN =
-bus.
-> > >=20
-> >=20
-> > Thanks Kurt i merged this change and it is showing delay of 1 ms in=
- each=20
-> > packet from my test program .I will try this on ECU.
-> > log from candump
-> > 1387768377.823498) can0 18EC00F9#10B2001A1A00EF00
-> > (1387768377.824306) can0 1CECF900#111A01FFFF00EF00
-> > (1387768377.825045) can0 18EB00F9#0100112233445566
-> > (1387768377.826136) can0 18EB00F9#0200112233445566
-> > (1387768377.827230) can0 18EB00F9#0300112233445566
-> > (1387768377.828566) can0 18EB00F9#0400112233445566
-> > (1387768377.829635) can0 18EB00F9#0544556600112233
-> > (1387768377.830779) can0 18EB00F9#0644556644556600
-> > (1387768377.831878) can0 18EB00F9#0711223344556644
-> > (1387768377.832988) can0 18EB00F9#0855660011223344
-> > (1387768377.834063) can0 18EB00F9#0955664455660011
-> > (1387768377.835134) can0 18EB00F9#0A22334455664455
-> > (1387768377.836277) can0 18EB00F9#0B66001122334455
-> > (1387768377.837373) can0 18EB00F9#0C66445566001122
-> > (1387768377.838451) can0 18EB00F9#0D33445566445566
-> > (1387768377.839655) can0 18EB00F9#0E00112233445566
-> > (1387768377.840645) can0 18EB00F9#0F44556600112233
-> > (1387768377.841721) can0 18EB00F9#1044556644556600
-> > (1387768377.842796) can0 18EB00F9#1111223344556644
-> > (1387768377.843926) can0 18EB00F9#1255660011223344
-> > (1387768377.845020) can0 18EB00F9#1355664455660011
-> > (1387768377.846148) can0 18EB00F9#1422334455664455
-> > (1387768377.847236) can0 18EB00F9#1566001122334455
-> > (1387768377.848366) can0 18EB00F9#1666445566001122
-> > (1387768377.849429) can0 18EB00F9#1733445566445566
-> > (1387768377.850531) can0 18EB00F9#1800112233445566
-> > (1387768377.851619) can0 18EB00F9#1944556600112233
-> > (1387768377.852570) can0 18EB00F9#1A445566
-> > (1387768377.853316) can0 1CECF900#13B2001AFF00EF00
-> > Thanks once again=20
->=20
-> I'm glad it works as expected!
->=20
-> I'll investigate to add a decent API to control such thing from users=
-pace
-> via sockets, some day.
->=20
-> Kind regards,
-> Kurt
+is it possible for you to test this patch with your hardware?
+
+It should apply on your used kernel without problems.
+
+Thanks & best regards,
+Oliver
+
+On 15.04.2014 19:30, Oliver Hartkopp wrote:
+> When accessing the SJA1000 controller registers in the indirect access mode,
+> writing the register number and reading/writing the data has to be an atomic
+> attempt.
+> 
+> As the sja1000_isa driver is an old style driver with a fixed number of
+> instances the locking variable depends on the same index like all the other
+> configuration elements given on the module command line.
+> 
+> As a positive side effect dev->dev_id is populated by the instance index,
+> which was missing in 3e66d0138c05d9 ("can: populate netdev::dev_id for udev
+> discrimination").
+> 
+> Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> 
+> ---
+> 
+> diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+> index df136a2..014695d 100644
+> --- a/drivers/net/can/sja1000/sja1000_isa.c
+> +++ b/drivers/net/can/sja1000/sja1000_isa.c
+> @@ -46,6 +46,7 @@ static int clk[MAXDEV];
+>  static unsigned char cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+>  static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+>  static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+> +static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
+>  
+>  module_param_array(port, ulong, NULL, S_IRUGO);
+>  MODULE_PARM_DESC(port, "I/O port number");
+> @@ -101,19 +102,26 @@ static void sja1000_isa_port_write_reg(const struct sja1000_priv *priv,
+>  static u8 sja1000_isa_port_read_reg_indirect(const struct sja1000_priv *priv,
+>  					     int reg)
+>  {
+> -	unsigned long base = (unsigned long)priv->reg_base;
+> +	unsigned long flags, base = (unsigned long)priv->reg_base;
+> +	u8 readval;
+>  
+> +	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
+>  	outb(reg, base);
+> -	return inb(base + 1);
+> +	readval = inb(base + 1);
+> +	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
+> +
+> +	return readval;
+>  }
+>  
+>  static void sja1000_isa_port_write_reg_indirect(const struct sja1000_priv *priv,
+>  						int reg, u8 val)
+>  {
+> -	unsigned long base = (unsigned long)priv->reg_base;
+> +	unsigned long flags, base = (unsigned long)priv->reg_base;
+>  
+> +	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
+>  	outb(reg, base);
+>  	outb(val, base + 1);
+> +	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
+>  }
+>  
+>  static int sja1000_isa_probe(struct platform_device *pdev)
+> @@ -169,6 +177,7 @@ static int sja1000_isa_probe(struct platform_device *pdev)
+>  		if (iosize == SJA1000_IOSIZE_INDIRECT) {
+>  			priv->read_reg = sja1000_isa_port_read_reg_indirect;
+>  			priv->write_reg = sja1000_isa_port_write_reg_indirect;
+> +			spin_lock_init(&indirect_lock[idx]);
+>  		} else {
+>  			priv->read_reg = sja1000_isa_port_read_reg;
+>  			priv->write_reg = sja1000_isa_port_write_reg;
+> @@ -198,6 +207,7 @@ static int sja1000_isa_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, dev);
+>  	SET_NETDEV_DEV(dev, &pdev->dev);
+> +	dev->dev_id = idx;
+>  
+>  	err = register_sja1000dev(dev);
+>  	if (err) {
+> 
+> 
 > --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo <at> vger.kernel.org
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
->=20
-
-Hi Kurt ,
-
- I am able to find out why ECU is not sending the end of message (EOM)
-its because i am not padding(or filling) the renaming bytes=20
-please check the log
-
-without padding=20
-(1387768742.573470) can0 18EC00F9#100A00020200EF00
-(1387768742.574075) can0 18ECF900#110201FFFF00EF00
-(1387768742.574802) can0 18EB00F9#0100112233445566
-(1387768742.575741) can0 18EB00F9#02778899
-(1387768743.830696) can0 18EC00F9#FF03FFFFFF00EF00
-
-with padding reply
-(1387768780.530352) can0 18EC00F9#100E00020200EF00
-(1387768780.530957) can0 18ECF900#110201FFFF00EF00
-(1387768780.531675) can0 18EB00F9#0100112233445566
-(1387768780.532752) can0 18EB00F9#0277889911223344
-(1387768780.533427) can0 18ECF900#130E0002FF00EF00
-
-following lines from sae j1939
-5.10.4 Transport Protocol=E2=80=94Data Transfer Message (TP.DT)
-
-Packetized Data (7 bytes). Note the last packet of a multipacket
-Parameter Group may require less than 8 data bytes. The extra bytes
-should be filled with FF.
-
-is it good to add in j1939 module ? or in my application=20
-
-Thank You Swapnil
-
-
+> 
