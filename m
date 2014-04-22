@@ -1,104 +1,70 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH v7 1/2] can: xilinx CAN controller support
-Date: Tue, 22 Apr 2014 07:56:46 +0000
-Message-ID: <707ea084-ed82-407b-8967-1e82a994b784@AM1EHSMHS003.ehs.local>
-References: <3e750ec3-9d47-4b4e-8173-56698ab19786@CH1EHSMHS029.ehs.local>
- <53424C32.7090000@monstr.eu>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: J1939 packet stuffing
+Date: Tue, 22 Apr 2014 10:31:15 +0200
+Message-ID: <20140422083115.GB12818@vandijck-laurijssen.be>
+References: <loom.20140409T155830-71@post.gmane.org>
+ <20140409194939.GD15221@vandijck-laurijssen.be>
+ <loom.20140410T155519-838@post.gmane.org>
+ <20140411083139.GB449@vandijck-laurijssen.be>
+ <loom.20140417T051332-76@post.gmane.org>
+ <20140417201835.GA12665@vandijck-laurijssen.be>
+ <loom.20140421T164905-320@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <53424C32.7090000-pSz03upnqPeHXe+LvDLADg@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org" <monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org>
-Cc: "wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org" <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, "mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org" <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Michal Simek <michals-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:56035 "EHLO
+	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751261AbaDVIbS convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 22 Apr 2014 04:31:18 -0400
+Content-Disposition: inline
+In-Reply-To: <loom.20140421T164905-320@post.gmane.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: swapnil <patilswa@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Hi Marc,
+Hey,
 
-> -----Original Message-----
-> From: Michal Simek [mailto:monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org]
-> Sent: Monday, April 07, 2014 12:27 PM
-> To: Appana Durga Kedareswara Rao
-> Cc: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org; mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org; Michal Simek;
-> grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org; robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
-> netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org; linux-
-> kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; Appana Durga
-> Kedareswara Rao
-> Subject: Re: [PATCH v7 1/2] can: xilinx CAN controller support
->
-> On 04/02/2014 03:13 PM, Kedareswara rao Appana wrote:
-> > This patch adds xilinx CAN controller support.
-> > This driver supports both ZYNQ CANPS and Soft IP AXI CAN controller.
-> >
-> > Signed-off-by: Kedareswara rao Appana <appanad-gjFFaj9aHVfQT0dZR+AlfA@public.gmane.org>
-> > ---
-> > Changes for v7:
-> > - Updated the driver with review comments.
-> > - Moved the driver bindings doc as a separte patch.
-> > Changes for v6:
-> > - Updated the driver with review comments.
-> > - Used the clock names specified in the data sheet.
-> > - Updated the devicetree bindings doc as per Rob suggestion.
-> > Changes for v5:
-> > - Updated the driver with the review comments.
-> > - Remove the check for the tx fifo full interrupt condition
-> >   form Tx interrupt routine as we are checking it in the _xmit
-> >   routine.
-> > - Clearing the txok interrupt in the tx interrupt routine for
-> >   every Tx can frame.
-> > Changes for v4:
-> > - Added check for the tx fifo full interrupt condition in Tx interrupt
-> > routine.
-> > - Added be iohelper functions.
-> > - Moved the clock enable/disable to probe/remove because of
-> >   Added big endian support for AXI CAN controller case(reading
-> >   a register during probe for that we need to enable clock).
-> > Changes for v3:
-> > - Updated the driver with the review comments.
-> > - Modified the tranmit logic as per Marc suggestion.
-> > - Enabling the clock when the interface is up to reduce the
-> >   Power consumption.
-> > Changes for v2:
-> > - Updated with the review comments.
-> > - Removed the unnecessary debug prints.
-> > - include tx,rx fifo depths in ZYNQ CANPS case also
-> > ---
-> >  drivers/net/can/Kconfig      |    7 +
-> >  drivers/net/can/Makefile     |    1 +
-> >  drivers/net/can/xilinx_can.c | 1176
-> > ++++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 1184 insertions(+), 0 deletions(-)  create mode
-> > 100644 drivers/net/can/xilinx_can.c
->
-> Mark: Any update on this one?
-> BTW: When you apply these patches you should apply 2/2 before 1/2. There
-> is new checking for binding.
->
+On Mon, Apr 21, 2014 at 03:04:12PM +0000, swapnil wrote:
+>=20
+> without padding=20
+> (1387768742.573470) can0 18EC00F9#100A00020200EF00
+> (1387768742.574075) can0 18ECF900#110201FFFF00EF00
+> (1387768742.574802) can0 18EB00F9#0100112233445566
+> (1387768742.575741) can0 18EB00F9#02778899
+> (1387768743.830696) can0 18EC00F9#FF03FFFFFF00EF00
+>=20
+> with padding reply
+> (1387768780.530352) can0 18EC00F9#100E00020200EF00
+> (1387768780.530957) can0 18ECF900#110201FFFF00EF00
+> (1387768780.531675) can0 18EB00F9#0100112233445566
+> (1387768780.532752) can0 18EB00F9#0277889911223344
+> (1387768780.533427) can0 18ECF900#130E0002FF00EF00
+>=20
+> following lines from sae j1939
+> 5.10.4 Transport Protocol=E2=80=94Data Transfer Message (TP.DT)
+>=20
+> Packetized Data (7 bytes). Note the last packet of a multipacket
+> Parameter Group may require less than 8 data bytes. The extra bytes
+> should be filled with FF.
+>=20
+> is it good to add in j1939 module ? or in my application=20
 
-Ping?
+I'm aware of this rule in the spec.
+I had expected that no ECU would ever complain about
+missing stuffer bytes, as this appear a little stupid to me.
+We passed the Isobus certification with this DLC < 8 thing.
 
-Regards,
-Kedar.
+Since you encountered such ECU, I must change opinion a little bit.
 
-> Thanks,
-> Michal
->
-> --
-> Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-> w: www.monstr.eu p: +42-0-721842854
-> Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
-> Maintainer of Linux kernel - Xilinx Zynq ARM architecture Microblaze U-
-> BOOT custodian and responsible for u-boot arm zynq platform
->
+The right place to fix is not in userspace, but in the j1939 module.
+I'll propose a patch soon that adds a modules parameter.
+I'm thinking about adding a socket option, but I didn't find time yet.
 
+Can you elaborate a bit on the ECU's that you found that expose this
+behaviour? Which ECU's, which manufacturer, does all ECU's you found
+have this behaviour?
 
-
-This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Kurt
