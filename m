@@ -1,120 +1,92 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v7 1/2] can: xilinx CAN controller support
-Date: Tue, 22 Apr 2014 10:58:30 +0200
-Message-ID: <53562F36.6020005@pengutronix.de>
-References: <3e750ec3-9d47-4b4e-8173-56698ab19786@CH1EHSMHS029.ehs.local> <53424C32.7090000@monstr.eu> <707ea084-ed82-407b-8967-1e82a994b784@AM1EHSMHS003.ehs.local>
+From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Subject: RE: [PATCH v7 1/2] can: xilinx CAN controller support
+Date: Tue, 22 Apr 2014 10:06:14 +0000
+Message-ID: <bbe8aafc-8fce-4065-91b3-c051ad5c150f@CH1EHSMHS043.ehs.local>
+References: <3e750ec3-9d47-4b4e-8173-56698ab19786@CH1EHSMHS029.ehs.local>
+ <53424C32.7090000@monstr.eu>
+ <707ea084-ed82-407b-8967-1e82a994b784@AM1EHSMHS003.ehs.local>
+ <53562F36.6020005@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="9CxfKEqGoHewKFOiBSMidlRv0KJjxfEu1"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60715 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755010AbaDVI6t (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Apr 2014 04:58:49 -0400
-In-Reply-To: <707ea084-ed82-407b-8967-1e82a994b784@AM1EHSMHS003.ehs.local>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "monstr@monstr.eu" <monstr@monstr.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <53562F36.6020005@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "monstr@monstr.eu" <monstr@monstr.eu>
 Cc: "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9CxfKEqGoHewKFOiBSMidlRv0KJjxfEu1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 04/22/2014 09:56 AM, Appana Durga Kedareswara Rao wrote:
-> Hi Marc,
->=20
->> -----Original Message-----
->> From: Michal Simek [mailto:monstr@monstr.eu]
->> Sent: Monday, April 07, 2014 12:27 PM
->> To: Appana Durga Kedareswara Rao
->> Cc: wg@grandegger.com; mkl@pengutronix.de; Michal Simek;
->> grant.likely@linaro.org; robh+dt@kernel.org; linux-can@vger.kernel.org=
-;
->> netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
->> kernel@vger.kernel.org; devicetree@vger.kernel.org; Appana Durga
->> Kedareswara Rao
->> Subject: Re: [PATCH v7 1/2] can: xilinx CAN controller support
->>
->> On 04/02/2014 03:13 PM, Kedareswara rao Appana wrote:
->>> This patch adds xilinx CAN controller support.
->>> This driver supports both ZYNQ CANPS and Soft IP AXI CAN controller.
->>>
->>> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
->>> ---
->>> Changes for v7:
->>> - Updated the driver with review comments.
->>> - Moved the driver bindings doc as a separte patch.
->>> Changes for v6:
->>> - Updated the driver with review comments.
->>> - Used the clock names specified in the data sheet.
->>> - Updated the devicetree bindings doc as per Rob suggestion.
->>> Changes for v5:
->>> - Updated the driver with the review comments.
->>> - Remove the check for the tx fifo full interrupt condition
->>>   form Tx interrupt routine as we are checking it in the _xmit
->>>   routine.
->>> - Clearing the txok interrupt in the tx interrupt routine for
->>>   every Tx can frame.
->>> Changes for v4:
->>> - Added check for the tx fifo full interrupt condition in Tx interrup=
-t
->>> routine.
->>> - Added be iohelper functions.
->>> - Moved the clock enable/disable to probe/remove because of
->>>   Added big endian support for AXI CAN controller case(reading
->>>   a register during probe for that we need to enable clock).
->>> Changes for v3:
->>> - Updated the driver with the review comments.
->>> - Modified the tranmit logic as per Marc suggestion.
->>> - Enabling the clock when the interface is up to reduce the
->>>   Power consumption.
->>> Changes for v2:
->>> - Updated with the review comments.
->>> - Removed the unnecessary debug prints.
->>> - include tx,rx fifo depths in ZYNQ CANPS case also
->>> ---
->>>  drivers/net/can/Kconfig      |    7 +
->>>  drivers/net/can/Makefile     |    1 +
->>>  drivers/net/can/xilinx_can.c | 1176
->>> ++++++++++++++++++++++++++++++++++++++++++
->>>  3 files changed, 1184 insertions(+), 0 deletions(-)  create mode
->>> 100644 drivers/net/can/xilinx_can.c
->>
->> Mark: Any update on this one?
->> BTW: When you apply these patches you should apply 2/2 before 1/2. The=
-re
->> is new checking for binding.
->>
->=20
-> Ping?
-
-Done, when you repost, can you change the order of the patches, so that
-the binding comes first.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---9CxfKEqGoHewKFOiBSMidlRv0KJjxfEu1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlNWLzYACgkQjTAFq1RaXHNYFQCfcqxljLE6h68CrKf3hvHif2Pk
-tMgAnR9nVNBljRf/Sbo8yh0b+kLg0pia
-=dEH0
------END PGP SIGNATURE-----
-
---9CxfKEqGoHewKFOiBSMidlRv0KJjxfEu1--
+SGkgTWFyYywNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
+S2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBUdWVzZGF5
+LCBBcHJpbCAyMiwgMjAxNCAyOjI5IFBNDQo+IFRvOiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEg
+UmFvOyBtb25zdHJAbW9uc3RyLmV1DQo+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgTWljaGFsIFNp
+bWVrOyBncmFudC5saWtlbHlAbGluYXJvLm9yZzsNCj4gcm9iaCtkdEBrZXJuZWwub3JnOyBsaW51
+eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1h
+cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc7DQo+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
+djcgMS8yXSBjYW46IHhpbGlueCBDQU4gY29udHJvbGxlciBzdXBwb3J0DQo+DQo+IE9uIDA0LzIy
+LzIwMTQgMDk6NTYgQU0sIEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSBSYW8gd3JvdGU6DQo+ID4g
+SGkgTWFyYywNCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9t
+OiBNaWNoYWwgU2ltZWsgW21haWx0bzptb25zdHJAbW9uc3RyLmV1XQ0KPiA+PiBTZW50OiBNb25k
+YXksIEFwcmlsIDA3LCAyMDE0IDEyOjI3IFBNDQo+ID4+IFRvOiBBcHBhbmEgRHVyZ2EgS2VkYXJl
+c3dhcmEgUmFvDQo+ID4+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgbWtsQHBlbmd1dHJvbml4LmRl
+OyBNaWNoYWwgU2ltZWs7DQo+ID4+IGdyYW50Lmxpa2VseUBsaW5hcm8ub3JnOyByb2JoK2R0QGtl
+cm5lbC5vcmc7DQo+ID4+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtl
+cm5lbC5vcmc7DQo+ID4+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGlu
+dXgtIGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4+IGRldmljZXRyZWVAdmdlci5rZXJuZWwu
+b3JnOyBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEgUmFvDQo+ID4+IFN1YmplY3Q6IFJlOiBbUEFU
+Q0ggdjcgMS8yXSBjYW46IHhpbGlueCBDQU4gY29udHJvbGxlciBzdXBwb3J0DQo+ID4+DQo+ID4+
+IE9uIDA0LzAyLzIwMTQgMDM6MTMgUE0sIEtlZGFyZXN3YXJhIHJhbyBBcHBhbmEgd3JvdGU6DQo+
+ID4+PiBUaGlzIHBhdGNoIGFkZHMgeGlsaW54IENBTiBjb250cm9sbGVyIHN1cHBvcnQuDQo+ID4+
+PiBUaGlzIGRyaXZlciBzdXBwb3J0cyBib3RoIFpZTlEgQ0FOUFMgYW5kIFNvZnQgSVAgQVhJIENB
+TiBjb250cm9sbGVyLg0KPiA+Pj4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6IEtlZGFyZXN3YXJhIHJh
+byBBcHBhbmEgPGFwcGFuYWRAeGlsaW54LmNvbT4NCj4gPj4+IC0tLQ0KPiA+Pj4gQ2hhbmdlcyBm
+b3Igdjc6DQo+ID4+PiAtIFVwZGF0ZWQgdGhlIGRyaXZlciB3aXRoIHJldmlldyBjb21tZW50cy4N
+Cj4gPj4+IC0gTW92ZWQgdGhlIGRyaXZlciBiaW5kaW5ncyBkb2MgYXMgYSBzZXBhcnRlIHBhdGNo
+Lg0KPiA+Pj4gQ2hhbmdlcyBmb3IgdjY6DQo+ID4+PiAtIFVwZGF0ZWQgdGhlIGRyaXZlciB3aXRo
+IHJldmlldyBjb21tZW50cy4NCj4gPj4+IC0gVXNlZCB0aGUgY2xvY2sgbmFtZXMgc3BlY2lmaWVk
+IGluIHRoZSBkYXRhIHNoZWV0Lg0KPiA+Pj4gLSBVcGRhdGVkIHRoZSBkZXZpY2V0cmVlIGJpbmRp
+bmdzIGRvYyBhcyBwZXIgUm9iIHN1Z2dlc3Rpb24uDQo+ID4+PiBDaGFuZ2VzIGZvciB2NToNCj4g
+Pj4+IC0gVXBkYXRlZCB0aGUgZHJpdmVyIHdpdGggdGhlIHJldmlldyBjb21tZW50cy4NCj4gPj4+
+IC0gUmVtb3ZlIHRoZSBjaGVjayBmb3IgdGhlIHR4IGZpZm8gZnVsbCBpbnRlcnJ1cHQgY29uZGl0
+aW9uDQo+ID4+PiAgIGZvcm0gVHggaW50ZXJydXB0IHJvdXRpbmUgYXMgd2UgYXJlIGNoZWNraW5n
+IGl0IGluIHRoZSBfeG1pdA0KPiA+Pj4gICByb3V0aW5lLg0KPiA+Pj4gLSBDbGVhcmluZyB0aGUg
+dHhvayBpbnRlcnJ1cHQgaW4gdGhlIHR4IGludGVycnVwdCByb3V0aW5lIGZvcg0KPiA+Pj4gICBl
+dmVyeSBUeCBjYW4gZnJhbWUuDQo+ID4+PiBDaGFuZ2VzIGZvciB2NDoNCj4gPj4+IC0gQWRkZWQg
+Y2hlY2sgZm9yIHRoZSB0eCBmaWZvIGZ1bGwgaW50ZXJydXB0IGNvbmRpdGlvbiBpbiBUeA0KPiA+
+Pj4gaW50ZXJydXB0IHJvdXRpbmUuDQo+ID4+PiAtIEFkZGVkIGJlIGlvaGVscGVyIGZ1bmN0aW9u
+cy4NCj4gPj4+IC0gTW92ZWQgdGhlIGNsb2NrIGVuYWJsZS9kaXNhYmxlIHRvIHByb2JlL3JlbW92
+ZSBiZWNhdXNlIG9mDQo+ID4+PiAgIEFkZGVkIGJpZyBlbmRpYW4gc3VwcG9ydCBmb3IgQVhJIENB
+TiBjb250cm9sbGVyIGNhc2UocmVhZGluZw0KPiA+Pj4gICBhIHJlZ2lzdGVyIGR1cmluZyBwcm9i
+ZSBmb3IgdGhhdCB3ZSBuZWVkIHRvIGVuYWJsZSBjbG9jaykuDQo+ID4+PiBDaGFuZ2VzIGZvciB2
+MzoNCj4gPj4+IC0gVXBkYXRlZCB0aGUgZHJpdmVyIHdpdGggdGhlIHJldmlldyBjb21tZW50cy4N
+Cj4gPj4+IC0gTW9kaWZpZWQgdGhlIHRyYW5taXQgbG9naWMgYXMgcGVyIE1hcmMgc3VnZ2VzdGlv
+bi4NCj4gPj4+IC0gRW5hYmxpbmcgdGhlIGNsb2NrIHdoZW4gdGhlIGludGVyZmFjZSBpcyB1cCB0
+byByZWR1Y2UgdGhlDQo+ID4+PiAgIFBvd2VyIGNvbnN1bXB0aW9uLg0KPiA+Pj4gQ2hhbmdlcyBm
+b3IgdjI6DQo+ID4+PiAtIFVwZGF0ZWQgd2l0aCB0aGUgcmV2aWV3IGNvbW1lbnRzLg0KPiA+Pj4g
+LSBSZW1vdmVkIHRoZSB1bm5lY2Vzc2FyeSBkZWJ1ZyBwcmludHMuDQo+ID4+PiAtIGluY2x1ZGUg
+dHgscnggZmlmbyBkZXB0aHMgaW4gWllOUSBDQU5QUyBjYXNlIGFsc28NCj4gPj4+IC0tLQ0KPiA+
+Pj4gIGRyaXZlcnMvbmV0L2Nhbi9LY29uZmlnICAgICAgfCAgICA3ICsNCj4gPj4+ICBkcml2ZXJz
+L25ldC9jYW4vTWFrZWZpbGUgICAgIHwgICAgMSArDQo+ID4+PiAgZHJpdmVycy9uZXQvY2FuL3hp
+bGlueF9jYW4uYyB8IDExNzYNCj4gPj4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKw0KPiA+Pj4gIDMgZmlsZXMgY2hhbmdlZCwgMTE4NCBpbnNlcnRpb25zKCspLCAw
+IGRlbGV0aW9ucygtKSAgY3JlYXRlIG1vZGUNCj4gPj4+IDEwMDY0NCBkcml2ZXJzL25ldC9jYW4v
+eGlsaW54X2Nhbi5jDQo+ID4+DQo+ID4+IE1hcms6IEFueSB1cGRhdGUgb24gdGhpcyBvbmU/DQo+
+ID4+IEJUVzogV2hlbiB5b3UgYXBwbHkgdGhlc2UgcGF0Y2hlcyB5b3Ugc2hvdWxkIGFwcGx5IDIv
+MiBiZWZvcmUgMS8yLg0KPiA+PiBUaGVyZSBpcyBuZXcgY2hlY2tpbmcgZm9yIGJpbmRpbmcuDQo+
+ID4+DQo+ID4NCj4gPiBQaW5nPw0KPg0KPiBEb25lLCB3aGVuIHlvdSByZXBvc3QsIGNhbiB5b3Ug
+Y2hhbmdlIHRoZSBvcmRlciBvZiB0aGUgcGF0Y2hlcywgc28gdGhhdCB0aGUNCj4gYmluZGluZyBj
+b21lcyBmaXJzdC4NCj4NCk9rIFN1cmUuDQoNClJlZ2FyZHMsDQpLZWRhci4NCg0KPiBNYXJjDQo+
+DQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5l
+LUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8
+IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVu
+ZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0
+IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoN
+Cg0KDQpUaGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGludGVuZGVkIGZvciB0aGUg
+c29sZSB1c2Ugb2YgdGhlIG5hbWVkIHJlY2lwaWVudChzKSBhbmQgY29udGFpbihzKSBjb25maWRl
+bnRpYWwgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvcHJpZXRhcnksIHByaXZpbGVnZWQgb3Ig
+Y29weXJpZ2h0ZWQgdW5kZXIgYXBwbGljYWJsZSBsYXcuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRl
+bmRlZCByZWNpcGllbnQsIGRvIG5vdCByZWFkLCBjb3B5LCBvciBmb3J3YXJkIHRoaXMgZW1haWwg
+bWVzc2FnZSBvciBhbnkgYXR0YWNobWVudHMuIERlbGV0ZSB0aGlzIGVtYWlsIG1lc3NhZ2UgYW5k
+IGFueSBhdHRhY2htZW50cyBpbW1lZGlhdGVseS4NCg0KCgo=
