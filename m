@@ -1,44 +1,37 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: fix return value from can_get_bittiming()
-Date: Wed, 23 Apr 2014 22:10:55 +0200
-Message-ID: <1398283855-14725-1-git-send-email-socketcan@hartkopp.net>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v8] can: add Renesas R-Car CAN driver
+Date: Thu, 24 Apr 2014 02:25:42 +0400
+Message-ID: <53583DE6.2050908@cogentembedded.com>
+References: <201404120152.02366.sergei.shtylyov@cogentembedded.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:49380 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757564AbaDWULK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Apr 2014 16:11:10 -0400
+Received: from mail-la0-f52.google.com ([209.85.215.52]:35742 "EHLO
+	mail-la0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751759AbaDWWZo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Apr 2014 18:25:44 -0400
+Received: by mail-la0-f52.google.com with SMTP id mc6so176948lab.39
+        for <linux-can@vger.kernel.org>; Wed, 23 Apr 2014 15:25:42 -0700 (PDT)
+In-Reply-To: <201404120152.02366.sergei.shtylyov@cogentembedded.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
 
-When trying to set a data bitrate on non CAN FD devices the 'ip' tool
-answers with:
+Hello.
 
-	RTNETLINK answers: Unknown error 524
+On 04/12/2014 01:52 AM, Sergei Shtylyov wrote:
 
-Rename '-ENOTSUPP' to '-EOPNOTSUPP' so that 'ip' answers correctly:
+> Add support for the CAN controller found in Renesas R-Car SoCs.
 
-       RTNETLINK answers: Operation not supported
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+> The patch is against the 'linux-can-next.git' repo.
+> Not posting to netdev@vger.kernel.org this time or DaveM will scold me. :-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index c7a2604..e318e87 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -256,7 +256,7 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 
- 	/* Check if the CAN device has bit-timing parameters */
- 	if (!btc)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	/*
- 	 * Depending on the given can_bittiming parameter structure the CAN
--- 
-1.9.2
+    Marc, Wolfgang, any feedback on the driver?
+
+WBR, Sergei
 
