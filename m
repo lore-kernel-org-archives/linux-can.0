@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 17/26] can: c_can: Cleanup c_can_msg_obj_put/get()
-Date: Fri, 25 Apr 2014 00:00:20 +0200
-Message-ID: <1398376829-6771-18-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 15/26] can: c_can: Cleanup setup of receive buffers
+Date: Fri, 25 Apr 2014 00:00:18 +0200
+Message-ID: <1398376829-6771-16-git-send-email-mkl@pengutronix.de>
 References: <1398376829-6771-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46133 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46125 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932559AbaDXWAn (ORCPT
+	with ESMTP id S932538AbaDXWAn (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Apr 2014 18:00:43 -0400
 In-Reply-To: <1398376829-6771-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -16,97 +16,91 @@ Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Thoma
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Sigh!
-
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 60 ++++++++++++-------------------------------
- 1 file changed, 16 insertions(+), 44 deletions(-)
+ drivers/net/can/c_can/c_can.c | 38 +++++++++++++++++---------------------
+ 1 file changed, 17 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index bf3aed4..c654efb 100644
+index d0daef8..e4eaa84 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -261,61 +261,33 @@ static void c_can_irq_control(struct c_can_priv *priv, bool enable)
- 	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
- }
+@@ -125,6 +125,10 @@
+ /* For the high buffers we clear the interrupt bit and newdat */
+ #define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
  
--static inline int c_can_msg_obj_is_busy(struct c_can_priv *priv, int iface)
-+static void c_can_obj_update(struct net_device *dev, int iface, u32 cmd, u32 obj)
- {
--	int count = MIN_TIMEOUT_VALUE;
-+	struct c_can_priv *priv = netdev_priv(dev);
-+	int cnt, reg = C_CAN_IFACE(COMREQ_REG, iface);
 +
-+	priv->write_reg(priv, reg + 1, cmd);
-+	priv->write_reg(priv, reg, obj);
++/* Receive setup of message objects */
++#define IF_COMM_RCV_SETUP	(IF_COMM_MASK | IF_COMM_ARB | IF_COMM_CONTROL)
++
+ /* IFx arbitration */
+ #define IF_ARB_MSGVAL		BIT(15)
+ #define IF_ARB_MSGXTD		BIT(14)
+@@ -142,6 +146,9 @@
+ #define IF_MCONT_EOB		BIT(7)
+ #define IF_MCONT_DLC_MASK	0xf
  
--	while (count && priv->read_reg(priv,
--				C_CAN_IFACE(COMREQ_REG, iface)) &
--				IF_COMR_BUSY) {
--		count--;
-+	for (cnt = MIN_TIMEOUT_VALUE; cnt; cnt--) {
-+		if (!(priv->read_reg(priv, reg) & IF_COMR_BUSY))
-+			return;
- 		udelay(1);
- 	}
-+	netdev_err(dev, "Updating object timed out\n");
- 
--	if (!count)
--		return 1;
--
--	return 0;
++#define IF_MCONT_RCV		(IF_MCONT_RXIE | IF_MCONT_UMASK)
++#define IF_MCONT_RCV_EOB	(IF_MCONT_RCV | IF_MCONT_EOB)
++
+ /*
+  * Use IF1 for RX and IF2 for TX
+  */
+@@ -424,30 +431,20 @@ static int c_can_read_msg_object(struct net_device *dev, int iface, u32 ctrl)
  }
  
--static inline void c_can_object_get(struct net_device *dev,
--					int iface, int objno, int mask)
-+static inline void c_can_object_get(struct net_device *dev, int iface,
-+				    u32 obj, u32 cmd)
+ static void c_can_setup_receive_object(struct net_device *dev, int iface,
+-					int objno, unsigned int mask,
+-					unsigned int id, unsigned int mcont)
++				       u32 obj, u32 mask, u32 id, u32 mcont)
  {
--	struct c_can_priv *priv = netdev_priv(dev);
--
--	/*
--	 * As per specs, after writting the message object number in the
--	 * IF command request register the transfer b/w interface
--	 * register and message RAM must be complete in 6 CAN-CLK
--	 * period.
--	 */
--	priv->write_reg(priv, C_CAN_IFACE(COMMSK_REG, iface),
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	priv->write_reg(priv, C_CAN_IFACE(MASK1_REG, iface),
 -			IFX_WRITE_LOW_16BIT(mask));
--	priv->write_reg(priv, C_CAN_IFACE(COMREQ_REG, iface),
--			IFX_WRITE_LOW_16BIT(objno));
 -
--	if (c_can_msg_obj_is_busy(priv, iface))
--		netdev_err(dev, "timed out in object get\n");
-+	c_can_obj_update(dev, iface, cmd, obj);
- }
- 
--static inline void c_can_object_put(struct net_device *dev,
--					int iface, int objno, int mask)
-+static inline void c_can_object_put(struct net_device *dev, int iface,
-+				    u32 obj, u32 cmd)
- {
--	struct c_can_priv *priv = netdev_priv(dev);
--
--	/*
--	 * As per specs, after writting the message object number in the
--	 * IF command request register the transfer b/w interface
--	 * register and message RAM must be complete in 6 CAN-CLK
--	 * period.
+-	/* According to C_CAN documentation, the reserved bit
+-	 * in IFx_MASK2 register is fixed 1
 -	 */
--	priv->write_reg(priv, C_CAN_IFACE(COMMSK_REG, iface),
--			(IF_COMM_WR | IFX_WRITE_LOW_16BIT(mask)));
--	priv->write_reg(priv, C_CAN_IFACE(COMREQ_REG, iface),
--			IFX_WRITE_LOW_16BIT(objno));
+-	priv->write_reg(priv, C_CAN_IFACE(MASK2_REG, iface),
+-			IFX_WRITE_HIGH_16BIT(mask) | BIT(13));
++	mask |= BIT(29);
++	priv->write_reg(priv, C_CAN_IFACE(MASK1_REG, iface), mask);
++	priv->write_reg(priv, C_CAN_IFACE(MASK2_REG, iface), mask >> 16);
+ 
+-	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface),
+-			IFX_WRITE_LOW_16BIT(id));
+-	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface),
+-			(IF_ARB_MSGVAL | IFX_WRITE_HIGH_16BIT(id)));
++	id |= IF_ARB_MSGVAL << 16;
++	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface), id);
++	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface), id >> 16);
+ 
+ 	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), mcont);
+-	c_can_object_put(dev, iface, objno, IF_COMM_ALL & ~IF_COMM_TXRQST);
 -
--	if (c_can_msg_obj_is_busy(priv, iface))
--		netdev_err(dev, "timed out in object put\n");
-+	c_can_obj_update(dev, iface, cmd | IF_COMM_WR, obj);
+-	netdev_dbg(dev, "obj no:%d, msgval:0x%08x\n", objno,
+-			c_can_read_reg32(priv, C_CAN_MSGVAL1_REG));
++	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
  }
  
- static void c_can_write_msg_object(struct net_device *dev,
+ static void c_can_inval_msg_object(struct net_device *dev, int iface, int objno)
+@@ -581,11 +578,10 @@ static void c_can_configure_msg_objects(struct net_device *dev)
+ 
+ 	/* setup receive message objects */
+ 	for (i = C_CAN_MSG_OBJ_RX_FIRST; i < C_CAN_MSG_OBJ_RX_LAST; i++)
+-		c_can_setup_receive_object(dev, IF_RX, i, 0, 0,
+-					   IF_MCONT_RXIE | IF_MCONT_UMASK);
++		c_can_setup_receive_object(dev, IF_RX, i, 0, 0, IF_MCONT_RCV);
+ 
+ 	c_can_setup_receive_object(dev, IF_RX, C_CAN_MSG_OBJ_RX_LAST, 0, 0,
+-			IF_MCONT_EOB | IF_MCONT_RXIE | IF_MCONT_UMASK);
++				   IF_MCONT_RCV_EOB);
+ }
+ 
+ /*
 -- 
 1.9.0.279.gdc9e3eb
 
