@@ -1,65 +1,69 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] slip: fix spinlock variant
-Date: Sat, 26 Apr 2014 21:18:32 +0200
-Message-ID: <535C0688.604@hartkopp.net>
-References: <CA+s8ZrqFBun4bo2rJJFHb0FrV7m7PLybUVM+jjahKsdW8bdnaQ@mail.gmail.com>	<164afc991761b9eeb0eec6902814d00e@grandegger.com>	<534D0F00.7000202@hartkopp.net> <CA+s8Zrqrd_U0g1GRCDzXncgWLA_kO3Hyhjwy6Oe1S0cYohm2og@mail.gmail.com> <534D1F63.6080101@hartkopp.net> <534D270D.5060705@pengutronix.de> <534D31EF.6050107@hartkopp.net> <534D3748.6060602@pengutronix.de>
+From: Pavel Machek <pavel@denx.de>
+Subject: Re: can problems on socfpga [was Re: [PATCH v2 4/6] ARM: socfpga:
+ dts: add can0+1]
+Date: Sat, 26 Apr 2014 22:31:31 +0200
+Message-ID: <20140426203131.GA21832@amd.pavel.ucw.cz>
+References: <1396422700-3962-1-git-send-email-s.trumtrar@pengutronix.de>
+ <1396422700-3962-4-git-send-email-s.trumtrar@pengutronix.de>
+ <20140404102815.GA9242@amd.pavel.ucw.cz>
+ <20140425195319.GA3677@amd.pavel.ucw.cz>
+ <1398457446.26387.0.camel@linux-builds1>
+ <1398461518.3587.11.camel@dinh-ubuntu>
+ <20140426093646.GE8730@amd.pavel.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:41625 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750756AbaDZTSf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Apr 2014 15:18:35 -0400
-In-Reply-To: <534D3748.6060602@pengutronix.de>
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:38473 "EHLO
+	atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751716AbaDZUbe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Apr 2014 16:31:34 -0400
+Content-Disposition: inline
+In-Reply-To: <20140426093646.GE8730@amd.pavel.ucw.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: Andre Naujoks <nautsch2@gmail.com>, Linux Netdev List <netdev@vger.kernel.org>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Thor Thayer <tthayer@altera.com>
+Cc: Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com, mkl@pengutronix.de, tthayer.linux@gmail.com
 
-With commit cc9fa74e2a ("slip/slcan: added locking in wakeup function") a
-formerly missing locking was added to slip.c and slcan.c by Andre Naujoks.
+On Sat 2014-04-26 11:36:46, Pavel Machek wrote:
+> Hi!
+> 
+> > To get this working well, I had to install a few of the patches that
+> > Benedict Spranger submitted ([PATCH 05/16] c_can: use 32 bit access for
+> > D_CAN) on 9/9/2013.
+> > 
+> > I have the patches on our rocketboard branch
+> > (rocketboards.org/gitweb/?p=linux-socfpga-git;a=summary)
+> > 
+> > I planned to upstream these changes but there have been some major
+> > changes to CAN recently that may require some refactoring.
+> 
+> I ported those changes to 3.15-rc2 (but can't test them at the
+> moment).
 
-Alexander Stein contributed the fix 367525c8c2 ("can: slcan: Fix spinlock
-variant") as the kernel lock debugging advised to use spin_lock_bh() instead
-of just using spin_lock().
+Ok, it seems it is possible to test CAN without actual can hardware
+using loopback:
 
-This fix has to be applied to the same code section in slip.c for the same
-reason too.
+ip link set can0 up type can bitrate 125000 loopback on
+ifconfig can0 up
+candump can0 &
+cansend can0 "123#DEADBEEF"
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Moreover, it seems that previous two patches do the trick. Packets are
+now echoed as expected. (Ok, small question is "why twice", but I
+guess that's just CAN...?)
 
----
+root@sockit:~# ip link set can0 up type can bitrate 125000 loopback on
+c_can_platform ffc00000.d_can can0: setting BTR=1c31 BRPE=0000
+root@sockit:~# ifconfig can0 up
+root@sockit:~# candump can0 &
+root@sockit:~# cansend can0 "123#DEADBEEF"
+  can0  123   [4]  DE AD BE EF
+  can0  123   [4]  DE AD BE EF
+root@sockit:~# 
 
-diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
-index cc70ecf..ad4a94e 100644
---- a/drivers/net/slip/slip.c
-+++ b/drivers/net/slip/slip.c
-@@ -429,13 +429,13 @@ static void slip_write_wakeup(struct tty_struct *tty)
- 	if (!sl || sl->magic != SLIP_MAGIC || !netif_running(sl->dev))
- 		return;
- 
--	spin_lock(&sl->lock);
-+	spin_lock_bh(&sl->lock);
- 	if (sl->xleft <= 0)  {
- 		/* Now serial buffer is almost free & we can start
- 		 * transmission of another packet */
- 		sl->dev->stats.tx_packets++;
- 		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
--		spin_unlock(&sl->lock);
-+		spin_unlock_bh(&sl->lock);
- 		sl_unlock(sl);
- 		return;
- 	}
-@@ -443,7 +443,7 @@ static void slip_write_wakeup(struct tty_struct *tty)
- 	actual = tty->ops->write(tty, sl->xhead, sl->xleft);
- 	sl->xleft -= actual;
- 	sl->xhead += actual;
--	spin_unlock(&sl->lock);
-+	spin_unlock_bh(&sl->lock);
- }
- 
- static void sl_tx_timeout(struct net_device *dev)
+Best regards,
+								Pavel
 
-
-
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
