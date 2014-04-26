@@ -1,69 +1,77 @@
-From: Pavel Machek <pavel@denx.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: can problems on socfpga [was Re: [PATCH v2 4/6] ARM: socfpga:
  dts: add can0+1]
-Date: Sat, 26 Apr 2014 22:31:31 +0200
-Message-ID: <20140426203131.GA21832@amd.pavel.ucw.cz>
-References: <1396422700-3962-1-git-send-email-s.trumtrar@pengutronix.de>
- <1396422700-3962-4-git-send-email-s.trumtrar@pengutronix.de>
- <20140404102815.GA9242@amd.pavel.ucw.cz>
- <20140425195319.GA3677@amd.pavel.ucw.cz>
- <1398457446.26387.0.camel@linux-builds1>
- <1398461518.3587.11.camel@dinh-ubuntu>
- <20140426093646.GE8730@amd.pavel.ucw.cz>
+Date: Sat, 26 Apr 2014 22:51:02 +0200
+Message-ID: <535C1C36.40007@hartkopp.net>
+References: <1396422700-3962-1-git-send-email-s.trumtrar@pengutronix.de> <1396422700-3962-4-git-send-email-s.trumtrar@pengutronix.de> <20140404102815.GA9242@amd.pavel.ucw.cz> <20140425195319.GA3677@amd.pavel.ucw.cz> <1398457446.26387.0.camel@linux-builds1> <1398461518.3587.11.camel@dinh-ubuntu> <20140426093646.GE8730@amd.pavel.ucw.cz> <20140426203131.GA21832@amd.pavel.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:38473 "EHLO
-	atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751716AbaDZUbe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Apr 2014 16:31:34 -0400
-Content-Disposition: inline
-In-Reply-To: <20140426093646.GE8730@amd.pavel.ucw.cz>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:18525 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752294AbaDZUvI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Apr 2014 16:51:08 -0400
+In-Reply-To: <20140426203131.GA21832@amd.pavel.ucw.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thor Thayer <tthayer@altera.com>
-Cc: Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com, mkl@pengutronix.de, tthayer.linux@gmail.com
+To: Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>
+Cc: Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, tthayer.linux@gmail.com
 
-On Sat 2014-04-26 11:36:46, Pavel Machek wrote:
-> Hi!
+
+
+On 26.04.2014 22:31, Pavel Machek wrote:
+> On Sat 2014-04-26 11:36:46, Pavel Machek wrote:
+>> Hi!
+>>
+>>> To get this working well, I had to install a few of the patches that
+>>> Benedict Spranger submitted ([PATCH 05/16] c_can: use 32 bit access for
+>>> D_CAN) on 9/9/2013.
+>>>
+>>> I have the patches on our rocketboard branch
+>>> (rocketboards.org/gitweb/?p=linux-socfpga-git;a=summary)
+>>>
+>>> I planned to upstream these changes but there have been some major
+>>> changes to CAN recently that may require some refactoring.
+>>
+>> I ported those changes to 3.15-rc2 (but can't test them at the
+>> moment).
 > 
-> > To get this working well, I had to install a few of the patches that
-> > Benedict Spranger submitted ([PATCH 05/16] c_can: use 32 bit access for
-> > D_CAN) on 9/9/2013.
-> > 
-> > I have the patches on our rocketboard branch
-> > (rocketboards.org/gitweb/?p=linux-socfpga-git;a=summary)
-> > 
-> > I planned to upstream these changes but there have been some major
-> > changes to CAN recently that may require some refactoring.
+> Ok, it seems it is possible to test CAN without actual can hardware
+> using loopback:
 > 
-> I ported those changes to 3.15-rc2 (but can't test them at the
-> moment).
+> ip link set can0 up type can bitrate 125000 loopback on
+> ifconfig can0 up
+> candump can0 &
+> cansend can0 "123#DEADBEEF"
+> 
+> Moreover, it seems that previous two patches do the trick. Packets are
+> now echoed as expected. (Ok, small question is "why twice", but I
+> guess that's just CAN...?)
 
-Ok, it seems it is possible to test CAN without actual can hardware
-using loopback:
+Usually the CAN frame is echo'ed back when the CAN frame is successfully sent
+on the medium (tx ok interrupt, see: echo skb functionality in
+drivers/net/can/dev.c and in can.txt for multiuser capabilites).
 
-ip link set can0 up type can bitrate 125000 loopback on
-ifconfig can0 up
-candump can0 &
-cansend can0 "123#DEADBEEF"
+The second CAN frame is obviouly created by some rx interrupt which occurs due
+to the loopback functionality inside the C_CAN controller - which is usually
+not enabled.
 
-Moreover, it seems that previous two patches do the trick. Packets are
-now echoed as expected. (Ok, small question is "why twice", but I
-guess that's just CAN...?)
-
-root@sockit:~# ip link set can0 up type can bitrate 125000 loopback on
-c_can_platform ffc00000.d_can can0: setting BTR=1c31 BRPE=0000
-root@sockit:~# ifconfig can0 up
-root@sockit:~# candump can0 &
-root@sockit:~# cansend can0 "123#DEADBEEF"
-  can0  123   [4]  DE AD BE EF
-  can0  123   [4]  DE AD BE EF
-root@sockit:~# 
+So it's a correct behaviour.
 
 Best regards,
-								Pavel
+Oliver
 
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+> 
+> root@sockit:~# ip link set can0 up type can bitrate 125000 loopback on
+> c_can_platform ffc00000.d_can can0: setting BTR=1c31 BRPE=0000
+> root@sockit:~# ifconfig can0 up
+> root@sockit:~# candump can0 &
+> root@sockit:~# cansend can0 "123#DEADBEEF"
+>   can0  123   [4]  DE AD BE EF
+>   can0  123   [4]  DE AD BE EF
+> root@sockit:~# 
+> 
+> Best regards,
+> 								Pavel
+> 
