@@ -1,71 +1,67 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: can problems on socfpga [was Re: [PATCH v2 4/6] ARM: socfpga: dts: add can0+1]
-Date: Sat, 26 Apr 2014 23:37:57 +0100
-Message-ID: <6bf951b6-51e7-4b90-b054-9ba5b6e93874@email.android.com>
-References: <1396422700-3962-1-git-send-email-s.trumtrar@pengutronix.de> <1396422700-3962-4-git-send-email-s.trumtrar@pengutronix.de> <20140404102815.GA9242@amd.pavel.ucw.cz> <20140425195319.GA3677@amd.pavel.ucw.cz> <1398457446.26387.0.camel@linux-builds1> <1398461518.3587.11.camel@dinh-ubuntu> <20140426093646.GE8730@amd.pavel.ucw.cz> <20140426203131.GA21832@amd.pavel.ucw.cz>
+From: John Whitmore <arigead@gmail.com>
+Subject: Re: detect auto baud rate on can bus in linux driver.
+Date: Sun, 27 Apr 2014 10:44:22 +0100
+Message-ID: <20140427094418.GB28319@griso.site>
+References: <53590FB6.6090707@tataelxsi.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47075 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751605AbaDZWiL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 26 Apr 2014 18:38:11 -0400
-In-Reply-To: <20140426203131.GA21832@amd.pavel.ucw.cz>
+Received: from mail-wg0-f51.google.com ([74.125.82.51]:58109 "EHLO
+	mail-wg0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753160AbaD0Jo1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 27 Apr 2014 05:44:27 -0400
+Received: by mail-wg0-f51.google.com with SMTP id z12so4068100wgg.22
+        for <linux-can@vger.kernel.org>; Sun, 27 Apr 2014 02:44:25 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <53590FB6.6090707@tataelxsi.co.in>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>
-Cc: Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com, tthayer.linux@gmail.com
+To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
+Cc: linux-can@vger.kernel.org
 
-Hello,
-
-I'm not in the office (and fighting with my phone's email client) until 5th of May, however please rebase all your patches against the latest net/master from David Miller, as this tree includes all c_can fixes by Thomas.
-
-Marc
-
-(This probability end as a tofu)
-
-On 26 April 2014 21:31:31 BST, Pavel Machek <pavel@denx.de> wrote:
->On Sat 2014-04-26 11:36:46, Pavel Machek wrote:
->> Hi!
->> 
->> > To get this working well, I had to install a few of the patches
->that
->> > Benedict Spranger submitted ([PATCH 05/16] c_can: use 32 bit access
->for
->> > D_CAN) on 9/9/2013.
->> > 
->> > I have the patches on our rocketboard branch
->> > (rocketboards.org/gitweb/?p=linux-socfpga-git;a=summary)
->> > 
->> > I planned to upstream these changes but there have been some major
->> > changes to CAN recently that may require some refactoring.
->> 
->> I ported those changes to 3.15-rc2 (but can't test them at the
->> moment).
+On Thu, Apr 24, 2014 at 06:50:54PM +0530, Ratheendran wrote:
+> Hi All,
+> 
+> Need you help in understanding detecting auto baud rate of CAN bus.
+> please share your valuable experience.
+> 
+> I am using imx6 processor which has flexcan hardware driver
+> implemented as socketcan stack.
 >
->Ok, it seems it is possible to test CAN without actual can hardware
->using loopback:
->
->ip link set can0 up type can bitrate 125000 loopback on
->ifconfig can0 up
->candump can0 &
->cansend can0 "123#DEADBEEF"
->
->Moreover, it seems that previous two patches do the trick. Packets are
->now echoed as expected. (Ok, small question is "why twice", but I
->guess that's just CAN...?)
->
->root@sockit:~# ip link set can0 up type can bitrate 125000 loopback on
->c_can_platform ffc00000.d_can can0: setting BTR=1c31 BRPE=0000
->root@sockit:~# ifconfig can0 up
->root@sockit:~# candump can0 &
->root@sockit:~# cansend can0 "123#DEADBEEF"
->  can0  123   [4]  DE AD BE EF
->  can0  123   [4]  DE AD BE EF
->root@sockit:~# 
->
->Best regards,
->								Pavel
 
+I've used auto baud rate detection with the Microchip MCP2515 CAN Controller
+connected to a PIC controller, but not with Linux, as yet. I'm working on my
+own CAN Bus network so have control of all the nodes. There is a "Ping"
+Protocol built into the nodes so that if there is no network traffic in a
+certain period of time a random node will fire a "Ping" frame onto the CAN
+Bus. That way I'm guaranteed that there will be network traffic to listen to.
+
+In addition to network traffic my network uses a fixed number of baud rates:
+
+10K, 20K, 50K, 125K, 250K, 500, 800K, and 1M
+
+Now given all that on the network I simply set the MCP2515 into listen only
+mode at a baud rate of 10K. If the Ping message is set for 10 seconds and I
+listen for 30 Seconds I should at least get 3 CAN Frames. If I've got the
+wrong baud rate I'll get MERRE errors in listen mode. My driver simply, when
+in listen mode, counts received good frames and errors. If after 30 seconds
+I've got good frames and no errors then I've found the baud rate being used by
+the network and I can drop out of listen mode. If there are any errors then
+simply move up to the next baud rate and start listening again.
+
+This all works for me as I'm assured of traffic and have a limited number of
+baud rates to search through.
+
+I keep meaning to look at this on Linux but I've been distracted with other
+work. I'll get back to it. Not sure how it would fit into the Linux can
+architecture. The Driver code would have to count errors and userspace would
+have to look at the results and change baud rate, or connect.
+
+Hope that's of some help.
+ 
+> With Regards,
+> Ratheendran
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
