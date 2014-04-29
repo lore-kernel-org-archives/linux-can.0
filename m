@@ -1,63 +1,165 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: am335x: d_can: rx issue
-Date: Tue, 29 Apr 2014 09:30:03 +0200
-Message-ID: <CAGm1_ks=xU3tomPy+YhFtACqsbPLSP6D-hocC=pkhdtA5L_cQQ@mail.gmail.com>
-References: <CAGm1_ktbB6SOGd5PygOrh4FOZU1fofAK4omAur-VHeo1Tw9tJQ@mail.gmail.com>
- <alpine.DEB.2.02.1404281510170.6261@ionos.tec.linutronix.de>
+From: "Ratheendran S. Rajeshwaran" <ba.rsrajeshwaran@tataelxsi.co.in>
+Subject: RE: detect auto baud rate on can bus in linux driver.
+Date: Tue, 29 Apr 2014 08:33:59 +0000
+Message-ID: <1398760380297.91253@tataelxsi.co.in>
+References: <53590FB6.6090707@tataelxsi.co.in>
+ <20140427094418.GB28319@griso.site>,<20140427180135.GB21176@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pb0-f48.google.com ([209.85.160.48]:59953 "EHLO
-	mail-pb0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932678AbaD2HaY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 03:30:24 -0400
-Received: by mail-pb0-f48.google.com with SMTP id md12so6820338pbc.35
-        for <linux-can@vger.kernel.org>; Tue, 29 Apr 2014 00:30:23 -0700 (PDT)
-In-Reply-To: <alpine.DEB.2.02.1404281510170.6261@ionos.tec.linutronix.de>
+Received: from mail-hk1lp0126.outbound.protection.outlook.com ([207.46.51.126]:5415
+	"EHLO APAC01-HK1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750971AbaD2IeE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 04:34:04 -0400
+In-Reply-To: <20140427180135.GB21176@vandijck-laurijssen.be>
+Content-Language: en-IN
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: John Whitmore <arigead@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon, Apr 28, 2014 at 4:37 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Mon, 28 Apr 2014, Yegor Yefremov wrote:
->> I'm testing 3.15.0-rc3-00006-gd497c20-dirty with latest commit:
->>
->> Merge tag 'linux-can-fixes-for-3.15-20140401' of
->> git://gitorious.org/linux-can/linux-can
->>
->>     linux-can-fixes-for-3.15-20140401
->>
->>     Marc Kleine-Budde says:
->>
->>     ====================
->>     this is a pull request of 16 patches for the 3.15 release cycle.
->>
->>     Bjorn Van Tilt contributes a patch which fixes a memory leak in usb_8dev's
->>     usb_8dev_start_xmit()s error path. A patch by Robert Schwebel
->> fixes a typo in
->>     the can documentation. The remaining patches all target the c_can
->> driver. Two
->>     of them are by me; they add a missing netif_napi_del() and return value
->>     checking. Thomas Gleixner contributes 12 patches, which address several
->>     shortcomings in the driver like hardware initialisation,
->> concurrency, message
->>     ordering and poor performance.
->>     ====================
->>
->> TX is working, but rx not. Am I missing any patches, that fix this issue?
+
+Thanks John , Kurt  for your valuable support.
+
+I am going ahead with the shell script & iproute2 supported tool testing a set of fixed baud rate from table.
+
+My observations with the existing imx6 flexcan hardware running linux 3.0.x.
+
+Two imx6 board ,both are enabled for FLEXCAN  communication.
+CAN dev bring up command with baud rate.
+command -> ip link set can0 up type can bitrate 125000
+one board run cansend while other end candump--e command
+
+
+Case 1 both imx6 operate on same CAN baudrate
+  cansend can0 -i0x100 11 22 33 44
+  on candump terminal I receive  <0x100> [4] 0b 16 21 2c
+ 
+I do  ip -details -statistics link show can0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 10
+    link/can
+    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+    bitrate 250000 sample-point 0.866
+    tq 266 prop-seg 6 phase-seg1 6 phase-seg2 2 sjw 1
+    flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+    clock 30000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          5          0          0        
+    RX: bytes  packets  errors  dropped overrun mcast  
+    40         5        0       0       0       0     
+    TX: bytes  packets  errors  dropped carrier collsns
+    32         8        0       2       0       0   
+ 
+  Case 2: imx6 CAN on different baud rate. 
+ received packets( I am not able to interpret the below packet)
+ <0x004> [8] 00 04 00 00 00 00 00 00 
+ ip -details -statistics link show can0                                             
+ 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 10
+    link/can
+    can state ERROR-WARNING (berr-counter tx 0 rx 128) restart-ms 0
+    bitrate 250000 sample-point 0.866
+    tq 266 prop-seg 6 phase-seg1 6 phase-seg2 2 sjw 1
+    flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+    clock 30000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    0          0          0          14         1          0        
+    RX: bytes  packets  errors  dropped overrun mcast  
+    144        22       0       0       0       0     
+    TX: bytes  packets  errors  dropped carrier collsns
+    0          0        0       0       0       0   
+
+I am wondering a shell script setting the different baud rate and then checking the can status to decide the correct baud rate.
+our custom application need two can bus,one raw and other j1939.in case of j1939 I will use iproute2-j1939 and can-utility for j1939.
+
+is there any better approach to do it,I am open for better Ideas.
+
+Regards,
+Ratheendran
+
+________________________________________
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Sent: 27 April 2014 23:31
+To: Ratheendran S. Rajeshwaran
+Cc: John Whitmore; linux-can@vger.kernel.org
+Subject: Re: detect auto baud rate on can bus in linux driver.
+
+Hey,
+
+On Sun, Apr 27, 2014 at 10:44:22AM +0100, John Whitmore wrote:
+> On Thu, Apr 24, 2014 at 06:50:54PM +0530, Ratheendran wrote:
+> > Hi All,
+> >
+> > Need you help in understanding detecting auto baud rate of CAN bus.
+> > please share your valuable experience.
+
+The baudrate detection principle is: configure your CAN chip, and if you receive
+something, then the baudrate was good. This can only work when there is traffic.
+The CAN chip should be set in a mode that does not disturb the bus.
+This mode is called 'listen-only' for CAN.
+
+Be sure to read
+http://www.can-cia.org/fileadmin/cia/files/icc/9/koppe.pdf
+I did only read it quickly, and it appears most items have been explained
+a bit.
+
+John Whitmore explained his scenario very well.
+I just want to add some comments with special regard to linux.
+
+> >
+> > I am using imx6 processor which has flexcan hardware driver
+> > implemented as socketcan stack.
+> >
+
+Theoretically/ideally, all linux-can drivers behave the same.
+Practically, a required feature for baudrate detection on CAN is
+the listen-only mode. linux-can provides the API, but not all
+drivers/devices support it.
+Look into the code for CAN_CTRLMODE_LISTENONLY. My 3.12 tree flexcan driver
+seems to support it, but I clearly did not test with real hardware.
+
 >
-> I bet, TX is not working either. You probably fall over the issue with
-> the startup logic.
+> I've used auto baud rate detection with the Microchip MCP2515 CAN Controller
+> connected to a PIC controller, but not with Linux, as yet.
+
+> I'm working on my
+> own CAN Bus network so have control of all the nodes. There is a "Ping"
+> Protocol built into the nodes so that if there is no network traffic in a
+> certain period of time a random node will fire a "Ping" frame onto the CAN
+> Bus. That way I'm guaranteed that there will be network traffic to listen to.
 >
-> Does the following patch fix your issue?
+> In addition to network traffic my network uses a fixed number of baud rates:
 >
->     http://patchwork.ozlabs.org/patch/342518/
+> 10K, 20K, 50K, 125K, 250K, 500, 800K, and 1M
+>
+> Now given all that on the network I simply set the MCP2515 into listen only
+> mode at a baud rate of 10K. If the Ping message is set for 10 seconds and I
+> listen for 30 Seconds I should at least get 3 CAN Frames. If I've got the
+> wrong baud rate I'll get MERRE errors in listen mode. My driver simply, when
+> in listen mode, counts received good frames and errors. If after 30 seconds
+> I've got good frames and no errors then I've found the baud rate being used by
+> the network and I can drop out of listen mode. If there are any errors then
+> simply move up to the next baud rate and start listening again.
+>
+> This all works for me as I'm assured of traffic and have a limited number of
+> baud rates to search through.
+>
+> I keep meaning to look at this on Linux but I've been distracted with other
+> work. I'll get back to it. Not sure how it would fit into the Linux can
+> architecture.
 
-Yes, it does.
+Autobaud is, IMO, a userspace thing.
+The principle has been explained, and with iproute2 & candump piping into
+grep or wc, you could even make a shell script for that.
 
-Thanks.
+> The Driver code would have to count errors and userspace would
+> have to look at the results and change baud rate, or connect.
+>
+> Hope that's of some help.
+>
+> > With Regards,
+> > Ratheendran
 
-Are these patches going to hit 3.15-rc4?
+Kurt
 
-Yegor
