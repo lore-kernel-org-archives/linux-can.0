@@ -1,74 +1,62 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <oe@emtas.de>
-Subject: Re: detect auto baud rate on can bus in linux driver.
-Date: Tue, 29 Apr 2014 16:12:51 +0200
-Message-ID: <8638796.WNtrS54FvS@laura>
-References: <53590FB6.6090707@tataelxsi.co.in> <21197917.OgRarI4yV7@laura> <535FA7BB.3070700@tataelxsi.co.in>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: am335x: d_can: rx issue
+Date: Tue, 29 Apr 2014 19:10:28 +0200
+Message-ID: <535FDD04.2050804@hartkopp.net>
+References: <CAGm1_ktbB6SOGd5PygOrh4FOZU1fofAK4omAur-VHeo1Tw9tJQ@mail.gmail.com> <alpine.DEB.2.02.1404281510170.6261@ionos.tec.linutronix.de> <CAGm1_ks=xU3tomPy+YhFtACqsbPLSP6D-hocC=pkhdtA5L_cQQ@mail.gmail.com> <alpine.DEB.2.02.1404291102240.6261@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1695738.XLPzDzzLf8"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.kundenserver.de ([212.227.126.187]:63835 "EHLO
-	mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750952AbaD2ONn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 10:13:43 -0400
-In-Reply-To: <535FA7BB.3070700@tataelxsi.co.in>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:55028 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932491AbaD2RKc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 13:10:32 -0400
+In-Reply-To: <alpine.DEB.2.02.1404291102240.6261@ionos.tec.linutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>, Yegor Yefremov <yegorslists@googlemail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
+On 29.04.2014 11:03, Thomas Gleixner wrote:
+> On Tue, 29 Apr 2014, Yegor Yefremov wrote:
 
---nextPart1695738.XLPzDzzLf8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+>>>> TX is working, but rx not. Am I missing any patches, that fix this issue?
+>>>
+>>> I bet, TX is not working either. You probably fall over the issue with
+>>> the startup logic.
+>>>
+>>> Does the following patch fix your issue?
+>>>
+>>>     http://patchwork.ozlabs.org/patch/342518/
+>>
+>> Yes, it does.
+>>
+>> Thanks.
+>>
+>> Are these patches going to hit 3.15-rc4?
+> 
+> Marc, can you expedite that one for 3.15 please?
+> 
 
-Am Dienstag, 29. April 2014, 18:53:07 schrieb Ratheendran:
-> this mode, transmission is disabled, all error counters are frozen an=
-d=20
-> the module operates
-> in a CAN Error Passive mode. Only messages *acknowledged by another C=
-AN=20
-> station* will be received.
+Hi Thomas,
 
-In this case always two nodes already communicating are needed in order=
- for=20
-the node doing the auto detection.
+Marc is out of office until May 5th.
+See: http://marc.info/?l=linux-can&m=139855189427393&w=2
 
-> If FLEXCAN detects a message that has not been acknowledged, it will
-> flag a BIT0 error (without changing the REC), as if it was trying to=20=
+But this requested patch has already been pulled into Dave Millers net-tree:
 
-> acknowledge the message."
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=bed11db3d4095e5f818f5e8bf7f43ef2beb36d4e
 
-Is this BIT0 somehow exported to user space by SocketCAN to get the=20
-information
- "received valid (+ CRC) message but without seeing an ACK" ?
+So it will hit mainline with the next pull request from Dave to Linus.
+3.15-rc4 looks therefore really feasible :-)
 
-=2D-=20
+Btw. I'm currently running Daves net-tree here and was forced to define 
+CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING during 'make oldconfig' ...
 
-Mit freundlichen Gr=FC=DFen
+Can this Kconfig option probably be removed in the 3.15-rc phase when
+it's not really needed anymore?
 
-    Heinz-J=FCrgen Oertel
+See: http://marc.info/?l=linux-can&m=139746476821294&w=2
 
-=2D----------------------------------------------------------------------=
-=2D-
-
-emtas - your embedded solution partner
- 
---nextPart1695738.XLPzDzzLf8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAABAgAGBQJTX7NjAAoJENViPQy9fcm73QUH/i/wzfGOvFdJ7j6DiPsEXsA1
-G1Pwnqz9F7NoL79cRE3gWbbatqqzSyvqEVLXus73LvTtICE7kgcTqdu/ZgNfZfm9
-KkLgjZ1n9L8ptki9U/U646Shh5VMuiLh3qTT5paJc5l2mwg3QGkSyOH2zYMrLUJ7
-wx/pLBR8UMU6M9rCEuNhAUoOWcwpJMxCvFb/9bmN4Rvp7b3UZ5AK/lacenWbcJCW
-fo0uP/CQYy1xL4uUimEnFLAoG1ECTW0w6UgTPBPE3Lt+OFC9VsLO+4PqeUljUjd4
-zB43nzCJSatQlRA9kHkpjykA2nYB5eI69P3vyno1ktAHbE/sz21O2dKXsLjwEBc=
-=/DWC
------END PGP SIGNATURE-----
-
---nextPart1695738.XLPzDzzLf8--
-
+Regards,
+Oliver
