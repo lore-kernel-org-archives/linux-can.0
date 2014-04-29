@@ -1,118 +1,77 @@
-From: =?ISO-8859-1?Q?Heinz=2DJ=FCrgen?= Oertel <oe@emtas.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: detect auto baud rate on can bus in linux driver.
-Date: Tue, 29 Apr 2014 14:47:19 +0200
-Message-ID: <21197917.OgRarI4yV7@laura>
-References: <53590FB6.6090707@tataelxsi.co.in> <20140427094418.GB28319@griso.site> <20140427180135.GB21176@vandijck-laurijssen.be>
+Date: Tue, 29 Apr 2014 15:33:55 +0200
+Message-ID: <20140429133355.GA20084@vandijck-laurijssen.be>
+References: <53590FB6.6090707@tataelxsi.co.in>
+ <20140427094418.GB28319@griso.site>
+ <20140427180135.GB21176@vandijck-laurijssen.be>
+ <535F5449.7000108@tataelxsi.co.in>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart22565244.VSuzhFX62g"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.kundenserver.de ([212.227.126.131]:60659 "EHLO
-	mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751167AbaD2MsK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 08:48:10 -0400
-In-Reply-To: <20140427180135.GB21176@vandijck-laurijssen.be>
+Received: from mailrelay001.isp.belgacom.be ([195.238.6.51]:21965 "EHLO
+	mailrelay001.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751330AbaD2NeA convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 29 Apr 2014 09:34:00 -0400
+Content-Disposition: inline
+In-Reply-To: <535F5449.7000108@tataelxsi.co.in>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>, John Whitmore <arigead@gmail.com>, linux-can@vger.kernel.org
+To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
+Cc: linux-can@vger.kernel.org, John Whitmore <arigead@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-
---nextPart22565244.VSuzhFX62g
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-Am Sonntag, 27. April 2014, 20:01:35 schrieb Kurt Van Dijck:
+On Tue, Apr 29, 2014 at 12:57:05PM +0530, Ratheendran wrote:
+> Thanks John , Kurt Van Dijck for your valuable support.
 >=20
-> Autobaud is, IMO, a userspace thing.
-> The principle has been explained, and with iproute2 & candump piping =
-into
-> grep or wc, you could even make a shell script for that.
+> I am going ahead with the shell script & iproute2 supported tool test=
+ing a set
+> of fixed baud rate from table.
+>=20
+> My observations with the existing imx6 flexcan hardware running linux=
+ 3.0.x.
+>=20
+> Two imx6 board ,both are enabled for FLEXCAN=C2=A0 communication.
+> CAN dev bring up command with baud rate.
+> command -> ip link set can0 up type can bitrate 125000
+> one board run cansend while other end candump--e command
 
+The 'autobaud' node must do
+	$ ip link set canX type can listen-only on
 
-In can4linux it can be done in user space, like
+>=20
+>=20
+> Case 1 both imx6 operate on same CAN baudrate
+> =C2=A0 cansend can0 -i0x100 11 22 33 44
+> =C2=A0 on candump terminal I receive=C2=A0 <0x100> [4] 0b 16 21 2c
 
-int do_autobaud(can_fd)
-{
-int bitrate[] =3D {10, 20,  50, 125, 250, 500, 800, 1000 , 0};
-int i;
-int ret;
-can_statuspar_t status;
+Do you use the latest tools from gitorious?
+The syntax of cansend and the output of candump look different.
 
-=09printf("\tswitch into listen only mode\n");=20
-=09set_lomode(can_fd, 1);
-=09/* for all possible bit rates */
-=09for (i =3D 0; ; i++) {
-=09=09if (bitrate[i] =3D=3D 0) {
-=09=09=09ret =3D 0;
-=09=09=09break;
-=09=09}
-=09=09printf("\tTry %d Kbit/s\n", bitrate[i]);
-=09=09set_bitrate(can_fd, bitrate[i]);
-=09=09/* wait one second */
-=09=09sleep(1);
-=09=09ioctl(can_fd, CAN_IOCTL_STATUS, &status);
-=09=09/* printf("Rx buffer: %d\n", status.rx_buffer_used); */
-=09=09if (status.rx_buffer_used > 1) {
-=09=09=09printf("\t\tCould receive frames. Switch back to=20
-active mode\n");
-=09=09=09ret =3D bitrate[i];
-=09=09=09break;
-=09=09}
-=09}
-=09if (ret > 0) {
-=09=09/* bit rate detected */
-=09=09set_lomode(can_fd, 0);
-=09}
-=09return ret;
-}
+[...]
+> =C2=A0 Case 2: imx6 CAN on different baud rate.=C2=A0
+> =C2=A0received packets( I am not able to interpret the below packet)
+> =C2=A0<0x004> [8] 00 04 00 00 00 00 00 00=C2=A0
 
+Well, this is not ok.
+I'd expect an error or status frame, but I don't see it in your candump=
+ output.
+I do notice that the received frame has 8 bytes, and only 1 bit set.
+So, if I suppose that the CAN_ERR_FLAG has been set,
+I see (with include/linux/can/error.h aside)
+<0x004> Controller problem, info in data[1]
 
-Of course the CAN controller should have a 'listen only' mode.
+data[1] 04: Reached warning level for RX errors.
 
-On a running EnergyBus it looks like:
+I'd expect something like that.
+Wolfgang Grandegger may explain more, as he did author these.
 
-using CAN device /dev/can1
-doing auto bit rate detection now
-take care that traffic is on the bus
-        switch into listen only mode
-        Try 10 Kbit/s
-        Try 20 Kbit/s
-        Try 50 Kbit/s
-        Try 125 Kbit/s
-        Try 250 Kbit/s
-                Could receive frames. Switch back to active mode
+Next step is to make a script that does all that, and that makes candum=
+p
+stop after a limited time (few seconds).
+I would suggest to skip a baudrate if you receive any error frame, so t=
+he
+interpretation may be not necessary.
 
-
-
-
-=2D-=20
-
-Mit freundlichen Gr=FC=DFen
-
-    Heinz-J=FCrgen Oertel
-
-=2D----------------------------------------------------------------------=
-=2D-
-
-emtas - your embedded solution partner
-=20
-
---nextPart22565244.VSuzhFX62g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAABAgAGBQJTX59XAAoJENViPQy9fcm71fsIAPKTkclh53kb+rnKJha22J8m
-HBKGnZ6bFUFAxOGRkeDgaq3hmqRssLbqElLLR+R4z7gMlQy3V6WFBg+1HfGR6eYX
-AaO4FbAesimJAGeSBeRyhPm3ifRsR6iOoZfCo0/rs/MEHBEdEu4yx6CH8srsq/Rk
-I1XTrHgC+2PLUz/J223flsAcSr94oNdVHUI/FniKUpcOMcciSNxOCBUB1wKHTznL
-i0bWznLRFxpWUzD+JUpYTpdOXeLn0FTtLb1fRT1ghb/unDjjgV7nYm5jux4AaiAF
-pJloOp8BnAWUC/66oFMHPxnTz4UeAYIBdrwHSa8SfGy/Ys/t48Hqnh556hMHbfs=
-=81uF
------END PGP SIGNATURE-----
-
---nextPart22565244.VSuzhFX62g--
-
+Kurt
