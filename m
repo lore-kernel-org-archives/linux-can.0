@@ -1,24 +1,24 @@
 From: "Ratheendran S. Rajeshwaran" <ba.rsrajeshwaran@tataelxsi.co.in>
 Subject: RE: detect auto baud rate on can bus in linux driver.
-Date: Tue, 29 Apr 2014 08:33:59 +0000
-Message-ID: <1398760380297.91253@tataelxsi.co.in>
+Date: Tue, 29 Apr 2014 08:35:15 +0000
+Message-ID: <1398760456201.28136@tataelxsi.co.in>
 References: <53590FB6.6090707@tataelxsi.co.in>
- <20140427094418.GB28319@griso.site>,<20140427180135.GB21176@vandijck-laurijssen.be>
+ <20140427094418.GB28319@griso.site>,<20140427180135.GB21176@vandijck-laurijssen.be>,<1398760380297.91253@tataelxsi.co.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-hk1lp0126.outbound.protection.outlook.com ([207.46.51.126]:5415
-	"EHLO APAC01-HK1-obe.outbound.protection.outlook.com"
+Received: from mail-sg1lp0094.outbound.protection.outlook.com ([207.46.51.94]:47296
+	"EHLO APAC01-SG1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750971AbaD2IeE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 04:34:04 -0400
-In-Reply-To: <20140427180135.GB21176@vandijck-laurijssen.be>
+	id S932739AbaD2IfU convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Apr 2014 04:35:20 -0400
+In-Reply-To: <1398760380297.91253@tataelxsi.co.in>
 Content-Language: en-IN
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: John Whitmore <arigead@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 
 Thanks John , Kurt  for your valuable support.
@@ -36,7 +36,7 @@ one board run cansend while other end candump--e command
 Case 1 both imx6 operate on same CAN baudrate
   cansend can0 -i0x100 11 22 33 44
   on candump terminal I receive  <0x100> [4] 0b 16 21 2c
- 
+
 I do  ip -details -statistics link show can0
 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 10
     link/can
@@ -46,16 +46,16 @@ I do  ip -details -statistics link show can0
     flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
     clock 30000000
     re-started bus-errors arbit-lost error-warn error-pass bus-off
-    0          0          0          5          0          0        
-    RX: bytes  packets  errors  dropped overrun mcast  
-    40         5        0       0       0       0     
+    0          0          0          5          0          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    40         5        0       0       0       0
     TX: bytes  packets  errors  dropped carrier collsns
-    32         8        0       2       0       0   
- 
-  Case 2: imx6 CAN on different baud rate. 
+    32         8        0       2       0       0
+
+  Case 2: imx6 CAN on different baud rate.
  received packets( I am not able to interpret the below packet)
- <0x004> [8] 00 04 00 00 00 00 00 00 
- ip -details -statistics link show can0                                             
+ <0x004> [8] 00 04 00 00 00 00 00 00
+ ip -details -statistics link show can0
  2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT qlen 10
     link/can
     can state ERROR-WARNING (berr-counter tx 0 rx 128) restart-ms 0
@@ -64,11 +64,11 @@ I do  ip -details -statistics link show can0
     flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
     clock 30000000
     re-started bus-errors arbit-lost error-warn error-pass bus-off
-    0          0          0          14         1          0        
-    RX: bytes  packets  errors  dropped overrun mcast  
-    144        22       0       0       0       0     
+    0          0          0          14         1          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    144        22       0       0       0       0
     TX: bytes  packets  errors  dropped carrier collsns
-    0          0        0       0       0       0   
+    0          0        0       0       0       0
 
 I am wondering a shell script setting the different baud rate and then checking the can status to decide the correct baud rate.
 our custom application need two can bus,one raw and other j1939.in case of j1939 I will use iproute2-j1939 and can-utility for j1939.
