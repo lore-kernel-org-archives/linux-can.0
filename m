@@ -1,52 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 02/26] can: c_can: Fix startup logic
-Date: Fri, 02 May 2014 14:37:58 +0200
-Message-ID: <536391A6.2040800@pengutronix.de>
-References: <1398376829-6771-1-git-send-email-mkl@pengutronix.de> <1398376829-6771-3-git-send-email-mkl@pengutronix.de> <CAGm1_ks-Kw2AtNCNpng6Tp2v3wS=HK7DGWTD0iFcMVMhASSO5A@mail.gmail.com>
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: Re: Kvaser socketCAN support
+Date: Sat, 3 May 2014 15:18:16 +0200
+Message-ID: <20140503131816.GA29125@thinkoso.home>
+References: <f0331cq3H1VPknv.RZmta@smtp.rzone.de>
+ <535559FC.70506@hartkopp.net>
+ <r049e3q3UHfiSQJ.RZmta@smtp.rzone.de>
+ <53620C3B.9080402@hartkopp.net>
+ <R0595dq41EVg2BS.RZmta@smtp.rzone.de>
+ <53627522.7000106@hartkopp.net>
+ <53628879.751e8c0a.6be4.ffffc061SMTPIN_ADDED_MISSING@mx.google.com>
+ <20140501204609.GA25569@thinkoso.home>
+ <5363a95a.e3208c0a.bc54.574dSMTPIN_ADDED_MISSING@mx.google.com>
+Reply-To: Olivier Sobrie <olivier@sobrie.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59313 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751721AbaEBMiH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 2 May 2014 08:38:07 -0400
-In-Reply-To: <CAGm1_ks-Kw2AtNCNpng6Tp2v3wS=HK7DGWTD0iFcMVMhASSO5A@mail.gmail.com>
+Received: from mail-ee0-f48.google.com ([74.125.83.48]:49424 "EHLO
+	mail-ee0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751805AbaECNSH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 3 May 2014 09:18:07 -0400
+Received: by mail-ee0-f48.google.com with SMTP id e49so2741053eek.21
+        for <linux-can@vger.kernel.org>; Sat, 03 May 2014 06:18:06 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5363a95a.e3208c0a.bc54.574dSMTPIN_ADDED_MISSING@mx.google.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: netdev <netdev@vger.kernel.org>, David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, kernel@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>
+To: "Smith, Christopher - 0999 - MITLL" <chris.smith@ll.mit.edu>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "Adams, Shawn - 0999 - MITLL" <shawn.adams@ll.mit.edu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Kvaser Support (support@kvaser.com)" <support@kvaser.com>
 
-On 04/29/2014 09:29 AM, Yegor Yefremov wrote:
-> On Fri, Apr 25, 2014 at 12:00 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->>
->> c_can_start() enables interrupts way too early. The first enabling
->> happens when setting the control mode in c_can_chip_config() and then
->> again at the end of the function.
->>
->> But that happens before napi_enable() and that means that an interrupt
->> which comes in will disable interrupts again and call napi_schedule,
->> which ignores the request and the later napi_enable() is not making
->> thinks work either. So the interface is up with all device interrupts
->> disabled.
->>
->> Move the device interrupt after napi_enable() and add it to the other
->> callsites of c_can_start() in c_can_set_mode() and c_can_power_up()
->>
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Hello Christopher,
+
+On Fri, May 02, 2014 at 10:19:02AM -0400, Smith, Christopher - 0999 - MITLL wrote:
+> Sorry for the mix up to the Olivers.  I should have paid closer attention!
+> The only thing I can figure at this point is something about the new
+> firmware breaks the driver.  We've tried on a few machines and get the same
+> error.  I also upgraded to device firmware 3.2.302 and see the same thing.
+> I'm not sure how to downgrade the firmware as kvaser doesn't post those
+> binaries.  
 > 
-> Tested-by: Yegor Yefremov <yegorslists@googlemail.com>
+> As for the kernel version, we're running 3.12.0 so I believe you're saying
+> that does include the fix?
 
-Thanks, as this branch is already merged by David, it's too late to add
-your Tested-by.
+Yes this version includes the fix.
 
-Marc
+Is it possible for you to take a wireshark capture on the usb bus when
+the probing of the device is made by the kvaser_usb driver?
+Can you also check if the device is correclty probed by the Kvaser leaf
+driver, i.e. the one you can find on the kvaser website?
+
+Thanks,
 
 -- 
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Olivier
