@@ -1,9 +1,8 @@
 From: Pavel Machek <pavel@denx.de>
-Subject: [PATCH 1/2] hwinit support for non-TI devices
-Date: Mon, 5 May 2014 14:08:10 +0200
-Message-ID: <20140505120810.GB16461@amd.pavel.ucw.cz>
-References: <20140426203131.GA21832@amd.pavel.ucw.cz>
- <6bf951b6-51e7-4b90-b054-9ba5b6e93874@email.android.com>
+Subject: Re: [PATCHv2] Fix CAN on socfpga, for net/master
+Date: Mon, 5 May 2014 14:07:59 +0200
+Message-ID: <20140505120759.GA16649@amd.pavel.ucw.cz>
+References: <6bf951b6-51e7-4b90-b054-9ba5b6e93874@email.android.com>
  <20140427122510.GB12901@amd.pavel.ucw.cz>
  <1398716449.836.4.camel@dinh-ubuntu>
  <20140428211505.GA28242@amd.pavel.ucw.cz>
@@ -12,159 +11,144 @@ References: <20140426203131.GA21832@amd.pavel.ucw.cz>
  <20140430215359.GA15148@amd.pavel.ucw.cz>
  <CAF03EBewoV0pOOmNQBwPrKgm-zhaSbFcNd_UiEhFWyUrq91-Jg@mail.gmail.com>
  <20140502084851.GA5730@amd.pavel.ucw.cz>
+ <53638F17.6000702@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:59992 "EHLO
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:59963 "EHLO
 	atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756486AbaEEMIM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 5 May 2014 08:08:12 -0400
+	with ESMTP id S1756486AbaEEMIB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 5 May 2014 08:08:01 -0400
 Content-Disposition: inline
-In-Reply-To: <20140502084851.GA5730@amd.pavel.ucw.cz>
+In-Reply-To: <53638F17.6000702@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thor Thayer <tthayer.linux@gmail.com>
-Cc: Thor Thayer <tthayer@altera.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Thor Thayer <tthayer.linux@gmail.com>, Thor Thayer <tthayer@altera.com>, Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com
 
-Non-TI chips (including socfpga) needs different raminit
-sequence. Implement it.
+Hi!
+
+> On 05/02/2014 10:48 AM, Pavel Machek wrote:
+> > Apparently, socfpga CAN needs 32-bit accesses and different raminit
+> > sequence.
+> 
+> Please split into several patches:
+> - add 32 bit accessor functions
+>   and replace two 16 bit accesses by a single 32 bit access
+
+Can do. 2/2.
+
+> - if-DCAN-then-32bit access
+>   please explain in the commit message why this is needed
+
+That patch is below... but I guess I'll need help from Altera
+here. Can you explain why it is needed?
+
+> - add hwinit support for non ti devices
+
+Can do. 1/2.
+
+Thanks,
+									Pavel
 
 Tested-by: Thor Thayer <tthayer@altera.com>
 Signed-off-by: Thor Thayer <tthayer@altera.com>
 Signed-off-by: Pavel Machek <pavel@denx.de>
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 1df0b32..476d1e0 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -40,6 +40,7 @@
- #define CAN_RAMINIT_START_MASK(i)	(0x001 << (i))
- #define CAN_RAMINIT_DONE_MASK(i)	(0x100 << (i))
- #define CAN_RAMINIT_ALL_MASK(i)		(0x101 << (i))
-+#define DCAN_RAM_INIT_BIT	(1 << 3)
- static DEFINE_SPINLOCK(raminit_lock);
- /*
-  * 16-bit c_can registers can be arranged differently in the memory
-@@ -80,7 +81,7 @@ static void c_can_hw_raminit_wait(const struct c_can_priv *priv, u32 mask,
- 		udelay(1);
- }
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index a2ca820..824ec21 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -48,6 +48,7 @@
+ #define C_CAN_IFACE(reg, iface)	(C_CAN_IF1_##reg + (iface) * IF_ENUM_REG_LEN)
  
--static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
-+static void c_can_hw_raminit_ti(const struct c_can_priv *priv, bool enable)
+ /* control extension register D_CAN specific */
++#define CONTROL_MIL		BIT(17)
+ #define CONTROL_EX_PDR		BIT(8)
+ 
+ /* control register */
+@@ -239,12 +240,20 @@ static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
+ 
+ static void c_can_irq_control(struct c_can_priv *priv, bool enable)
  {
- 	u32 mask = CAN_RAMINIT_ALL_MASK(priv->instance);
- 	u32 ctrl;
-@@ -88,7 +89,8 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- 	spin_lock(&raminit_lock);
- 
- 	ctrl = readl(priv->raminit_ctrlreg);
--	/* We clear the done and start bit first. The start bit is
-+	/*
-+	 * We clear the done and start bit first. The start bit is
- 	 * looking at the 0 -> transition, but is not self clearing;
- 	 * And we clear the init done bit as well.
- 	 */
-@@ -108,6 +110,54 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- 	spin_unlock(&raminit_lock);
- }
- 
-+static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
-+{
+-	u32 ctrl = priv->read_reg(priv,	C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
 +	u32 ctrl;
 +
-+	spin_lock(&raminit_lock);
-+
-+	ctrl = readl(priv->raminit_ctrlreg);
-+	ctrl &= ~DCAN_RAM_INIT_BIT;
-+	writel(ctrl, priv->raminit_ctrlreg);
-+	c_can_hw_raminit_wait(priv, ctrl, 0);
-+
-+	if (enable) {
-+		/* Set start bit. */
-+		ctrl |= DCAN_RAM_INIT_BIT;
-+		writel(ctrl, priv->raminit_ctrlreg);
-+		c_can_hw_raminit_wait(priv, ctrl, 0);
-+	}
-+	spin_unlock(&raminit_lock);
-+}
-+
-+static u32 c_can_plat_read_reg32(struct c_can_priv *priv, enum reg index)
-+{
-+	u32 val;
-+
-+	val = priv->read_reg(priv, index);
-+	val |= ((u32) priv->read_reg(priv, index + 1)) << 16;
-+
-+	return val;
-+}
-+
-+static void c_can_plat_write_reg32(struct c_can_priv *priv, enum reg index,
-+		u32 val)
-+{
-+	priv->write_reg(priv, index + 1, val>>16);
-+	priv->write_reg(priv, index, val);
-+}
-+
-+static u32 d_can_plat_read_reg32(struct c_can_priv *priv, enum reg index)
-+{
-+	return readl(priv->base + priv->regs[index]);
-+}
-+
-+static void d_can_plat_write_reg32(struct c_can_priv *priv, enum reg index,
-+		u32 val)
-+{
-+	writel(val, priv->base + priv->regs[index]);
-+}
-+
- static struct platform_device_id c_can_id_table[] = {
- 	[BOSCH_C_CAN_PLATFORM] = {
- 		.name = KBUILD_MODNAME,
-@@ -201,11 +251,15 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		case IORESOURCE_MEM_32BIT:
- 			priv->read_reg = c_can_plat_read_reg_aligned_to_32bit;
- 			priv->write_reg = c_can_plat_write_reg_aligned_to_32bit;
-+			priv->read_reg32 = c_can_plat_read_reg32;
-+			priv->write_reg32 = c_can_plat_write_reg32;
- 			break;
- 		case IORESOURCE_MEM_16BIT:
- 		default:
- 			priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
- 			priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+			priv->read_reg32 = c_can_plat_read_reg32;
-+			priv->write_reg32 = c_can_plat_write_reg32;
- 			break;
- 		}
- 		break;
-@@ -214,6 +268,8 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
- 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
- 		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
-+		priv->read_reg32 = d_can_plat_read_reg32;
-+		priv->write_reg32 = d_can_plat_write_reg32;
++	if (priv->type == BOSCH_D_CAN)
++		ctrl = priv->read_reg32(priv, C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
++	else
++		ctrl = priv->read_reg(priv, C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
  
- 		if (pdev->dev.of_node)
- 			priv->instance = of_alias_get_id(pdev->dev.of_node, "d_can");
-@@ -221,11 +277,22 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 			priv->instance = pdev->id;
+ 	if (enable)
+ 		ctrl |= CONTROL_IRQMSK;
  
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+		/*
-+		 * Not all D_CAN module have a separate register for the D_CAN
-+		 * RAM initialization. Use default RAM init bit in D_CAN module
-+		 * if not specified in DT.
-+		 */
-+		if (!res) {
-+			priv->raminit = c_can_hw_raminit;
-+			priv->raminit_ctrlreg = addr + priv->regs[C_CAN_FUNCTION_REG];
-+			break;
-+		}
-+
- 		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
- 		if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
- 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
- 		else
--			priv->raminit = c_can_hw_raminit;
-+			priv->raminit = c_can_hw_raminit_ti;
- 		break;
- 	default:
- 		ret = -EINVAL;
+-	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
++	if (priv->type == BOSCH_D_CAN)
++		priv->write_reg32(priv, C_CAN_CTRL_REG, ctrl);
++	else
++		priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
+ }
+ 
+ static void c_can_obj_update(struct net_device *dev, int iface, u32 cmd, u32 obj)
+@@ -510,16 +514,22 @@ static int c_can_set_bittiming(struct net_device *dev)
+ 	netdev_info(dev,
+ 		"setting BTR=%04x BRPE=%04x\n", reg_btr, reg_brpe);
+ 
+-	ctrl_save = priv->read_reg(priv, C_CAN_CTRL_REG);
++	if (priv->type == BOSCH_D_CAN)
++		ctrl_save = priv->read_reg32(priv, C_CAN_CTRL_REG);
++	else
++		ctrl_save = priv->read_reg(priv, C_CAN_CTRL_REG);
+ 	ctrl_save &= ~CONTROL_INIT;
+-	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_CCE | CONTROL_INIT);
++	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_CCE | CONTROL_INIT); /* FIXME: want to do write32? */
+ 	res = c_can_wait_for_ctrl_init(dev, priv, CONTROL_INIT);
+ 	if (res)
+ 		return res;
+ 
+ 	priv->write_reg(priv, C_CAN_BTR_REG, reg_btr);
+ 	priv->write_reg(priv, C_CAN_BRPEXT_REG, reg_brpe);
+-	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl_save);
++	if (priv->type == BOSCH_D_CAN)
++		priv->write_reg32(priv, C_CAN_CTRL_REG, ctrl_save);
++	else
++		priv->write_reg(priv, C_CAN_CTRL_REG, ctrl_save);
+ 
+ 	return c_can_wait_for_ctrl_init(dev, priv, 0);
+ }
+@@ -1240,7 +1250,7 @@ int c_can_power_up(struct net_device *dev)
+ 
+ 	/* Clear PDR and INIT bits */
+ 	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
+-	val &= ~CONTROL_EX_PDR;
++	val &= ~(CONTROL_EX_PDR | CONTROL_MIL);
+ 	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
+ 	val = priv->read_reg(priv, C_CAN_CTRL_REG);
+ 	val &= ~CONTROL_INIT;
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index c56f1b1..10c3fd2 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -78,6 +78,7 @@ enum reg {
+ 	C_CAN_INTPND2_REG,
+ 	C_CAN_MSGVAL1_REG,
+ 	C_CAN_MSGVAL2_REG,
++	C_CAN_FUNCTION_REG,
+ };
+ 
+ static const u16 reg_map_c_can[] = {
+@@ -129,6 +130,7 @@ static const u16 reg_map_d_can[] = {
+ 	[C_CAN_BRPEXT_REG]	= 0x0E,
+ 	[C_CAN_INT_REG]		= 0x10,
+ 	[C_CAN_TEST_REG]	= 0x14,
++	[C_CAN_FUNCTION_REG]	= 0x18,
+ 	[C_CAN_TXRQST1_REG]	= 0x88,
+ 	[C_CAN_TXRQST2_REG]	= 0x8A,
+ 	[C_CAN_NEWDAT1_REG]	= 0x9C,
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
