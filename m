@@ -1,55 +1,102 @@
-From: "Kvaser Support" <support@kvaser.com>
-Subject: Re: (Case 14420) Kvaser socketCAN support
-Date: Sun, 04 May 2014 23:23:02 +0200
-Message-ID: <5366afb6.077ee00a.59c9.11fa@mx.google.com>
-References: <20140504201458.GA27956@thinkoso.home>
+From: Pavel Machek <pavel@denx.de>
+Subject: Re: [PATCH 1/2] hwinit support for non-TI devices
+Date: Mon, 5 May 2014 14:58:11 +0200
+Message-ID: <20140505125811.GC16649@amd.pavel.ucw.cz>
+References: <20140427122510.GB12901@amd.pavel.ucw.cz>
+ <1398716449.836.4.camel@dinh-ubuntu>
+ <20140428211505.GA28242@amd.pavel.ucw.cz>
+ <CAF03EBf9KXqB4W9GuDduhLwp_kwFjUEi3syU7fX3KpXfZEFxHg@mail.gmail.com>
+ <CAF03EBd19PC5RAsLR6-dMPF2x3XRf9X4bFPgX2kRdCYWUQBYcA@mail.gmail.com>
+ <20140430215359.GA15148@amd.pavel.ucw.cz>
+ <CAF03EBewoV0pOOmNQBwPrKgm-zhaSbFcNd_UiEhFWyUrq91-Jg@mail.gmail.com>
+ <20140502084851.GA5730@amd.pavel.ucw.cz>
+ <20140505120810.GB16461@amd.pavel.ucw.cz>
+ <5367824D.2070406@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qg0-f48.google.com ([209.85.192.48]:63612 "EHLO
-	mail-qg0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751492AbaEDVXE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 4 May 2014 17:23:04 -0400
-Received: by mail-qg0-f48.google.com with SMTP id i50so5583898qgf.35
-        for <linux-can@vger.kernel.org>; Sun, 04 May 2014 14:23:03 -0700 (PDT)
-In-Reply-To: <20140504201458.GA27956@thinkoso.home>
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:34122 "EHLO
+	atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932596AbaEEM6N (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 5 May 2014 08:58:13 -0400
+Content-Disposition: inline
+In-Reply-To: <5367824D.2070406@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Olivier Sobrie <olivier@sobrie.be>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "Adams, Shawn - 0999 - MITLL" <shawn.adams@ll.mit.edu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Smith, Christopher - 0999 - MITLL" <chris.smith@ll.mit.edu>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Thor Thayer <tthayer.linux@gmail.com>, Thor Thayer <tthayer@altera.com>, Dinh Nguyen <dinguyen@altera.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com
 
-Correct.  You will need to use a Windows machine to perform the firmware upgrade.
+On Mon 2014-05-05 14:21:33, Marc Kleine-Budde wrote:
+> On 05/05/2014 02:08 PM, Pavel Machek wrote:
+> > Non-TI chips (including socfpga) needs different raminit
+> > sequence. Implement it.
+> > 
+> > Tested-by: Thor Thayer <tthayer@altera.com>
+> > Signed-off-by: Thor Thayer <tthayer@altera.com>
+> > Signed-off-by: Pavel Machek <pavel@denx.de>
+> > 
+> > @@ -88,7 +89,8 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
+> >  	spin_lock(&raminit_lock);
+> >  
+> >  	ctrl = readl(priv->raminit_ctrlreg);
+> > -	/* We clear the done and start bit first. The start bit is
+> > +	/*
+> > +	 * We clear the done and start bit first. The start bit is
+> 
+> Please don't reformat comments.
 
-Best regards,
+Previous one is not correct coding style. I'd like to get it fixed.
 
-Troy
+priv, bool enable)
+> >  	spin_unlock(&raminit_lock);
+> >  }
+> >  
+> > +static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
+> > +{
+> > +	u32 ctrl;
+> > +
+> > +	spin_lock(&raminit_lock);
+> 
+> Why do you need this spinlock?
+
+_ti() used spinlock, so I assume I need it, too.
+
+> > +	ctrl = readl(priv->raminit_ctrlreg);
+> > +	ctrl &= ~DCAN_RAM_INIT_BIT;
+> > +	writel(ctrl, priv->raminit_ctrlreg);
+> 
+> Why don't use use the reg directly? Have you read my previous
+> review?
+
+Can you repost it? I don't think I seen it.
+
+> > +	c_can_hw_raminit_wait(priv, ctrl, 0);
+> > +
+> > +	if (enable) {
+> > +		/* Set start bit. */
+> > +		ctrl |= DCAN_RAM_INIT_BIT;
+> > +		writel(ctrl, priv->raminit_ctrlreg);
+> > +		c_can_hw_raminit_wait(priv, ctrl, 0);
+> > +	}
+> > +	spin_unlock(&raminit_lock);
+> > +}
+> > +
+> > +static u32 c_can_plat_read_reg32(struct c_can_priv *priv, enum reg index)
+> > +{
+> > +	u32 val;
+> > +
+> > +	val = priv->read_reg(priv, index);
+> > +	val |= ((u32) priv->read_reg(priv, index + 1)) << 16;
+> > +
+> > +	return val;
+> > +}
+> 
+> Why are you adding the read32() support here? Your commit message
+> doesn't mention it. Please move this into a different patch.
+
+Should be different patch, yes.
+
+									Pavel
 -- 
-Kvaser Support
-support@kvaser.com
----------------------------------------------------------------------------
-
-
-
------Original Message-----
-From: "Olivier Sobrie" <olivier@sobrie.be>
-Reply-To: "Olivier Sobrie" <olivier@sobrie.be>
-Date: Sun, 4 May 2014 22:14:58 +0200
-To: "Kvaser Support" <support@kvaser.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Adams, Shawn - 0999 - MITLL" <shawn.adams@ll.mit.edu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Smith, Christopher - 0999 - MITLL" <chris.smith@ll.mit.edu>
-Subject: Re: (Case 14420) Kvaser socketCAN support
-
->Hi Jerry,
->
->On Sun, May 04, 2014 at 08:00:57AM +0200, Kvaser Support wrote:
->> Hi guys,
->> 
->> Some, but not all, versions of older firmware are available on the download page of the website, just click the Older versions link on the specific download. If you need another version than available, just let me know and I'll post it.
->
->Ok thanks.
->I assume it is still not possible to upgrade the firmware from a Linux
->machine?
->
->Kr,
->
->Olivier
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
