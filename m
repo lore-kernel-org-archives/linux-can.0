@@ -1,74 +1,130 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Fwd: [PATCH v2 0/3] can: add support for hash based access to EFF
- frame filters
-Date: Tue, 06 May 2014 19:55:49 +0200
-Message-ID: <53692225.3020304@hartkopp.net>
-References: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH] c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option
+Date: Tue, 06 May 2014 19:45:38 +0200
+Message-ID: <53691FC2.3080200@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:12199 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:64474 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752511AbaEFRzw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 6 May 2014 13:55:52 -0400
-In-Reply-To: <1396463127-25541-1-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1750829AbaEFRpl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 6 May 2014 13:45:41 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Alexander Stein <alexander.stein@systec-electronic.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hey Marc,
+In 2b9aecdce2 ("can: c_can: Disable rx split as workaround") a new Kcon=
+fig
+option was introduced as a workaround. The tests performed by Alexander=
+ Stein
+confirmed this option to be obsolete with all the other cleanups and fi=
+xes
+that had been discussed that time:
+http://marc.info/?l=3Dlinux-can&m=3D139746476821294&w=3D2
 
-what about this patch set for can-next you had so much fun to review?
+Both (author and tester) agreed to remove this Kconfig option again:
+http://marc.info/?l=3Dlinux-can&m=3D139883820714229&w=3D2
 
-:-)
+As some more cleanups took place since then a simple revert is not poss=
+ible.
+This patch removes the entire option as it would behave when disabled.
+=46urther beautification=92s can be done later.
 
-I was running this patch for a month now and it still applies properly.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Tested-by: Alexander Stein <alexander.stein@systec-electronic.com>
 
-Regards,
-Oliver
+---
 
--------- Original Message --------
-Subject: [PATCH v2 0/3] can: add support for hash based access to EFF frame
-filters
-Date: Wed,  2 Apr 2014 20:25:24 +0200
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-CC: Oliver Hartkopp <socketcan@hartkopp.net>
-
-In contrast to the direct access to the single SFF frame filters (which are
-indexed by the SFF CAN ID itself) the single EFF frame filters are arranged
-in a single linked hlist. To reduce the hlist traversal in the case of many
-filter subscriptions a hash based access is introduced for single EFF filters.
-
-This patch set enhances and documents the hash based EFF filter sets in
-af_can.c .
-
-Changes in v2:
-Some coding style fixes, like
-- indroduce spaces arround shift operations
-- use ARRAY_SIZE(d->rx_sff) instead of CAN_SFF_RCV_ARRAY_SZ
-- use ARRAY_SIZE(d->rx_eff) instead of CAN_EFF_RCV_ARRAY_SZ
-- change to forward hash function as suggested by Marc
-
-Oliver Hartkopp (3):
-  can: proc: make array printing function indenpendent from sff frames
-  can: add hash based access to single EFF frame filters
-  can: add documentation for CAN filter usage optimisation
-
- Documentation/networking/can.txt | 35 ++++++++++++++++++
- net/can/af_can.c                 | 31 +++++++++++++---
- net/can/af_can.h                 |  9 +++--
- net/can/proc.c                   | 76 ++++++++++++++++++++++++++++++++--------
- 4 files changed, 129 insertions(+), 22 deletions(-)
-
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-can" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+diff --git a/drivers/net/can/c_can/Kconfig b/drivers/net/can/c_can/Kcon=
+fig
+index 8ab7103..61ffc12 100644
+--- a/drivers/net/can/c_can/Kconfig
++++ b/drivers/net/can/c_can/Kconfig
+@@ -14,13 +14,6 @@ config CAN_C_CAN_PLATFORM
+ 	  SPEAr1310 and SPEAr320 evaluation boards & TI (www.ti.com)
+ 	  boards like am335x, dm814x, dm813x and dm811x.
+=20
+-config CAN_C_CAN_STRICT_FRAME_ORDERING
+-	bool "Force a strict RX CAN frame order (may cause frame loss)"
+-	---help---
+-	  The RX split buffer prevents packet reordering but can cause packet
+-	  loss. Only enable this option when you accept to lose CAN frames
+-	  in favour of getting the received CAN frames in the correct order.
+-
+ config CAN_C_CAN_PCI
+ 	tristate "Generic PCI Bus based C_CAN/D_CAN driver"
+ 	depends on PCI
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
+n.c
+index a2ca820..95e04e2 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -732,26 +732,12 @@ static u32 c_can_adjust_pending(u32 pend)
+ static inline void c_can_rx_object_get(struct net_device *dev,
+ 				       struct c_can_priv *priv, u32 obj)
+ {
+-#ifdef CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING
+-	if (obj < C_CAN_MSG_RX_LOW_LAST)
+-		c_can_object_get(dev, IF_RX, obj, IF_COMM_RCV_LOW);
+-	else
+-#endif
+ 		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
+ }
+=20
+ static inline void c_can_rx_finalize(struct net_device *dev,
+ 				     struct c_can_priv *priv, u32 obj)
+ {
+-#ifdef CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING
+-	if (obj < C_CAN_MSG_RX_LOW_LAST)
+-		priv->rxmasked |=3D BIT(obj - 1);
+-	else if (obj =3D=3D C_CAN_MSG_RX_LOW_LAST) {
+-		priv->rxmasked =3D 0;
+-		/* activate all lower message objects */
+-		c_can_activate_all_lower_rx_msg_obj(dev, IF_RX);
+-	}
+-#endif
+ 	if (priv->type !=3D BOSCH_D_CAN)
+ 		c_can_object_get(dev, IF_RX, obj, IF_COMM_CLR_NEWDAT);
+ }
+@@ -799,9 +785,6 @@ static inline u32 c_can_get_pending(struct c_can_pr=
+iv *priv)
+ {
+ 	u32 pend =3D priv->read_reg(priv, C_CAN_NEWDAT1_REG);
+=20
+-#ifdef CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING
+-	pend &=3D ~priv->rxmasked;
+-#endif
+ 	return pend;
+ }
+=20
+@@ -814,25 +797,6 @@ static inline u32 c_can_get_pending(struct c_can_p=
+riv *priv)
+  * has arrived. To work-around this issue, we keep two groups of messa=
+ge
+  * objects whose partitioning is defined by C_CAN_MSG_OBJ_RX_SPLIT.
+  *
+- * If CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING =3D y
+- *
+- * To ensure in-order frame reception we use the following
+- * approach while re-activating a message object to receive further
+- * frames:
+- * - if the current message object number is lower than
+- *   C_CAN_MSG_RX_LOW_LAST, do not clear the NEWDAT bit while clearing
+- *   the INTPND bit.
+- * - if the current message object number is equal to
+- *   C_CAN_MSG_RX_LOW_LAST then clear the NEWDAT bit of all lower
+- *   receive message objects.
+- * - if the current message object number is greater than
+- *   C_CAN_MSG_RX_LOW_LAST then clear the NEWDAT bit of
+- *   only this message object.
+- *
+- * This can cause packet loss!
+- *
+- * If CONFIG_CAN_C_CAN_STRICT_FRAME_ORDERING =3D n
+- *
+  * We clear the newdat bit right away.
+  *
+  * This can result in packet reordering when the readout is slow.
 
