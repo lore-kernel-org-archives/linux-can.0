@@ -1,127 +1,190 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: mcp251x issue
-Date: Wed, 07 May 2014 17:52:45 +0200
-Message-ID: <536A56CD.8020709@hartkopp.net>
-References: <CADZ8cjkTH5=iYz1fD2Pua2nMZns1xinA+gEWaDLHqMM=WxR62g@mail.gmail.com>	<5367BDDC.70709@hartkopp.net> <CADZ8cjnEUT6r8EUxZdKbnuVADQ3bCbYJ1cU5evXxJrorJmNK3g@mail.gmail.com>
+From: "Rost, Martin" <Martin.Rost@tonfunk.de>
+Subject: RE: mcp251x issue
+Date: Thu, 8 May 2014 06:17:51 +0000
+Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ECF5@mailserver>
+References: <CADZ8cjkTH5=iYz1fD2Pua2nMZns1xinA+gEWaDLHqMM=WxR62g@mail.gmail.com>
+	<5367BDDC.70709@hartkopp.net>
+ <CADZ8cjnEUT6r8EUxZdKbnuVADQ3bCbYJ1cU5evXxJrorJmNK3g@mail.gmail.com>
+ <536A56CD.8020709@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----369FE57642944699A9C85985496CF8BE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:34360 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934016AbaEGPwv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 May 2014 11:52:51 -0400
-In-Reply-To: <CADZ8cjnEUT6r8EUxZdKbnuVADQ3bCbYJ1cU5evXxJrorJmNK3g@mail.gmail.com>
+Received: from tonfunk.biz ([145.253.128.114]:52416 "EHLO mail.tonfunk.biz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751625AbaEHGZB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 8 May 2014 02:25:01 -0400
+Received: from [129.84.3.7] (port=54805 helo=tonfunk.biz)
+	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76)
+	(envelope-from <Martin.Rost@tonfunk.de>)
+	id 1WiHeV-0008Fe-11
+	for linux-can@vger.kernel.org; Thu, 08 May 2014 08:17:55 +0200
+In-Reply-To: <536A56CD.8020709@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Francesco Rocca <roccafrancesco@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Francesco Rocca <roccafrancesco@gmail.com>
 
-Hello Francesco,
+This is an S/MIME signed message
 
-the mcp251x is an SPI attached CAN controller which was reported to have some issues on your 2.6.36 Kernel.
+------369FE57642944699A9C85985496CF8BE
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 
-Please take a look to the 2.6.36 log:
-http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/log/drivers/net/can/mcp251x.c?h=linux-2.6.36.y
+SGksDQoNCnRoaXMgaXMgZXhhY3RseSB0aGUgcHJvYmxlbSBJJ3ZlIGJlZW4gc2VlaW5nLg0KRm9y
+IHJlZmVyZW5jZTogc2VlIGh0dHA6Ly9hcnRpY2xlLmdtYW5lLm9yZy9nbWFuZS5saW51eC5jYW4v
+NTMxOQ0KDQpJJ2xsIHByZXBhcmUgYSBwYXRjaCBmcm9tIG15IGNvZGUuDQoNCk1pdCBmcmV1bmRs
+aWNoZW4gR3J1ZXNzZW4NCkJlc3QgcmVnYXJkcw0KDQpNYXJ0aW4gUm9zdA0KDQoNCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXw0KVG9uZnVuayBTeXN0ZW1lbnR3aWNrbHVuZyB1bmQgU2VydmljZSBHbWJILCBB
+bmdlciAyMCBPVCBFcm1zbGViZW4sIDA2NDYzIEZhbGtlbnN0ZWluLyBIYXJ6LCBEZXV0c2NobGFu
+ZA0KUGhvbmU6ICs0OSAzNDc0MyA1MDMyDQpGYXg6IA0KTW9iaWw6IA0KRW1haWw6IE1hcnRpbi5S
+b3N0QHRvbmZ1bmsuZGUNCmh0dHA6Ly93d3cudG9uZnVuay5kZQ0KDQpHZXNjaGFlZnRzZnVlaHJl
+cjogUmVuw6kgR3J6ZWdhLCBGcmVkIExpbmRlY2tlDQpBRyBTdGVuZGFsIEhSQiAxMTUyNDINClN0
+LU5yLjogMTE3LzEwNy8wNDM3OCwgVXN0LUlkTnIuOiBERTI0ODM2MjI1Ng0KDQpEaWVzZSBFLU1h
+aWwgZW50aGFlbHQgdmVydHJhdWxpY2hlIHVuZC9vZGVyIHJlY2h0bGljaCBnZXNjaHVldHp0ZSBJ
+bmZvcm1hdGlvbmVuLg0KV2VubiBTaWUgbmljaHQgZGVyIHJpY2h0aWdlIEFkcmVzc2F0IHNpbmQg
+b2RlciBkaWVzZSBFLU1haWwgaXJydHVlbWxpY2ggZXJoYWx0ZW4gaGFiZW4sIGluZm9ybWllcmVu
+IFNpZSBiaXR0ZSBzb2ZvcnQgZGVuIEFic2VuZGVyIHVuZCB2ZXJuaWNodGVuIFNpZSBkaWVzZSBN
+YWlsLg0KRGFzIHVuZXJsYXVidGUgS29waWVyZW4gc293aWUgZGllIHVuYmVmdWd0ZSBXZWl0ZXJn
+YWJlIGRpZXNlciBNYWlsIGlzdCBuaWNodCBnZXN0YXR0ZXQuDQoNClRoaXMgZS1tYWlsIG1heSBj
+b250YWluIGNvbmZpZGVudGlhbCBhbmQvIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24uDQpJZiB5
+b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50IChvciBoYXZlIHJlY2VpdmVkIHRoaXMg
+ZS1tYWlsIGluIGVycm9yKSBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkgYW5k
+IGRlc3Ryb3kgdGhpcyBlLW1haWwuDQpBbnkgdW5hdXRob3JpemVkIGNvcHlpbmcsIGRpc2Nsb3N1
+cmUgb3IgZGlzdHJpYnV0aW9uIG9mIHRoZSBtYXRlcmlhbCBpbiB0aGlzIGUtbWFpbCBpcyBzdHJp
+Y3RseSBmb3JiaWRkZW4uDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
+OiBsaW51eC1jYW4tb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bGludXgtY2FuLQ0KPiBv
+d25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFsZiBPZiBPbGl2ZXIgSGFydGtvcHANCj4gU2Vu
+dDogV2VkbmVzZGF5LCBNYXkgMDcsIDIwMTQgNTo1MyBQTQ0KPiBUbzogRnJhbmNlc2NvIFJvY2Nh
+DQo+IENjOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IG1jcDI1MXggaXNz
+dWUNCj4gDQo+IEhlbGxvIEZyYW5jZXNjbywNCj4gDQo+IHRoZSBtY3AyNTF4IGlzIGFuIFNQSSBh
+dHRhY2hlZCBDQU4gY29udHJvbGxlciB3aGljaCB3YXMgcmVwb3J0ZWQgdG8gaGF2ZQ0KPiBzb21l
+IGlzc3VlcyBvbiB5b3VyIDIuNi4zNiBLZXJuZWwuDQo+IA0KPiBQbGVhc2UgdGFrZSBhIGxvb2sg
+dG8gdGhlIDIuNi4zNiBsb2c6DQo+IGh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tl
+cm5lbC9naXQvc3RhYmxlL2xpbnV4LQ0KPiBzdGFibGUuZ2l0L2xvZy9kcml2ZXJzL25ldC9jYW4v
+bWNwMjUxeC5jP2g9bGludXgtMi42LjM2LnkNCj4gDQo+IEFuZCBoZXJlIHRoZSBsYXRlc3Qgb25l
+Og0KPiBodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9s
+aW51eC0NCj4gc3RhYmxlLmdpdC9sb2cvZHJpdmVycy9uZXQvY2FuL21jcDI1MXguYz9oPWxpbnV4
+LTMuMTQueQ0KPiANCj4gSSB3b3VsZCBzdWdnZXN0IHRvIHVwZ3JhZGUgeW91ciBMaW51eCBrZXJu
+ZWwuDQo+IA0KPiBBcyB5b3Ugc3RpbGwoISkgZGlkIG5vdCB3cml0ZSBhYm91dCB5b3VyIGtpbmQg
+b2YgZW1iZWRkZWQgaGFyZHdhcmUsIGl0J3MgaGFyZA0KPiB0byBoZWxwLg0KPiANCj4gRS5nLiBm
+b3IgdGhlIFJhc3BiZXJyeSBQaSB0aGVyZSBhcmUgbWFueSBjb21tdW5pdHkgaGludHMgZm9jdXNp
+bmcgdGhlIChvZnRlbg0KPiB1c2VkKSBtY3AyNTF4IC0gYnV0IHRoZXkgYXJlIGFscmVhZHkgdXNp
+bmcgYSBMaW51eCAzLjYuDQo+IA0KPiBBaCAtIGFuZCBJIENDJ2VkIHRoZSBMaW51eCBDQU4gbWFp
+bGluZyBsaXN0Lg0KPiBQbGVhc2UgYWx3YXlzIGFzayBxdWVzdGlvbnMgbGlrZSB0aGlzIG9uIHRo
+ZSBtYWlsaW5nIGxpc3QgYW5kIG5vdCB0byBtZS4NCj4gSSdtIG5vdCBhIG1jcDI1MXggZXhwZXJ0
+IC0gYnV0IHlvdSBtaWdodCBmaW5kIHRoZW0gaGVyZS4NCj4gDQo+IFJlZ2FyZHMsDQo+IE9saXZl
+cg0KPiANCj4gT24gMDcuMDUuMjAxNCAwODoyNiwgRnJhbmNlc2NvIFJvY2NhIHdyb3RlOg0KPiA+
+IGhlbGxvDQo+ID4gdGhhbmsgeW91IGZvciB5b3VyIHN1cHBvcnQuIHRoZSBkYXRhIHJlcXVlc3Qg
+YXJlIGZvbGxvd2luZzoNCj4gPg0KPiA+IGJlZm9yZQ0KPiA+DQo+ID4gMzogY2FuMDogPE5PQVJQ
+LFVQLExPV0VSX1VQLEVDSE8+IG10dSAxNiBxZGlzYyBwZmlmb19mYXN0IHN0YXRlDQo+IFVOS05P
+V04gcWxlbiAxMA0KPiA+ICAgICBsaW5rL2Nhbg0KPiA+ICAgICBjYW4gc3RhdGUgRVJST1ItQUNU
+SVZFIHJlc3RhcnQtbXMgMA0KPiA+ICAgICBiaXRyYXRlIDUwMDAwMCBzYW1wbGUtcG9pbnQgMC44
+NzUNCj4gPiAgICAgdHEgMTI1IHByb3Atc2VnIDYgcGhhc2Utc2VnMSA3IHBoYXNlLXNlZzIgMiBz
+ancgMQ0KPiA+ICAgICBtY3AyNTF4OiB0c2VnMSAzLi4xNiB0c2VnMiAyLi44IHNqdyAxLi40IGJy
+cCAxLi42NCBicnAtaW5jIDENCj4gPiAgICAgY2xvY2sgODAwMDAwMA0KPiA+DQo+ID4NCj4gPiBh
+ZnRlcg0KPiA+IDM6IGNhbjA6IDxOTy1DQVJSSUVSLE5PQVJQLFVQLEVDSE8+IG10dSAxNiBxZGlz
+YyBwZmlmb19mYXN0IHN0YXRlDQo+IERPV04gcWxlbiAxMA0KPiA+ICAgICBsaW5rL2Nhbg0KPiA+
+ICAgICBjYW4gc3RhdGUgQlVTLU9GRiByZXN0YXJ0LW1zIDANCj4gPiAgICAgYml0cmF0ZSA1MDAw
+MDAgc2FtcGxlLXBvaW50IDAuODc1DQo+ID4gICAgIHRxIDEyNSBwcm9wLXNlZyA2IHBoYXNlLXNl
+ZzEgNyBwaGFzZS1zZWcyIDIgc2p3IDENCj4gPiAgICAgbWNwMjUxeDogdHNlZzEgMy4uMTYgdHNl
+ZzIgMi4uOCBzancgMS4uNCBicnAgMS4uNjQgYnJwLWluYyAxDQo+ID4gICAgIGNsb2NrIDgwMDAw
+MDANCj4gPg0KPiA+IHlvdSBjYW4gc2VlIHRoZSBidXMgZ29lcyBPRkYgYWZ0ZXIgZmV3IG1pbnV0
+ZXMhIFBlcmZvcm1pbmcgY2FuIGRvd24gYW5kDQo+IGFnYWluDQo+ID4gY2FuIHVwIHRoZSBDQU4g
+bW9kdWxlIHN0YXJ0IHRvIHdvcmshIGRvIHlvdSBzdWdnZXN0IHRvIGluc2VydCB0aGUNCj4gY29t
+bWFuZCAgaXANCj4gPiBsaW5rIHNldCBjYW4wIHR5cGUgY2FuIHJlc3RhcnQtbXMgNTAwPyBhbnl3
+YXkgaXMgaXQgYSBub3JtYWwgYmVoYXZpb3I/IGlzDQo+ID4gdGhlcmUgYSB3YXkgdG8gYXZvaWQg
+dGhlIGJ1cyBvZmY/DQo+ID4gdGhhbmsgeW91IHZlcnkgbXVjaCBpbiBhZHZhbmNlISENCj4gPg0K
+PiA+IGZyYW5jZXNjbw0KPiA+DQo+ID4NCj4gPg0KPiA+IC0tLS0tLS0tLS0gRm9yd2FyZGVkIG1l
+c3NhZ2UgLS0tLS0tLS0tLQ0KPiA+IEZyb206ICpPbGl2ZXIgSGFydGtvcHAqIDxzb2NrZXRjYW5A
+aGFydGtvcHAubmV0DQo+IDxtYWlsdG86c29ja2V0Y2FuQGhhcnRrb3BwLm5ldD4+DQo+ID4gRGF0
+ZTogMjAxNC0wNS0wNSAxODozNSBHTVQrMDI6MDANCj4gPiBTdWJqZWN0OiBSZTogU29ja2V0IENB
+TiBJc3N1ZQ0KPiA+IFRvOiBGcmFuY2VzY28gUm9jY2EgPHJvY2NhZnJhbmNlc2NvQGdtYWlsLmNv
+bQ0KPiA8bWFpbHRvOnJvY2NhZnJhbmNlc2NvQGdtYWlsLmNvbT4+DQo+ID4NCj4gPg0KPiA+IFdo
+YXQga2luZCBvZiBDQU4gaGFyZHdhcmUgYXJlIHlvdSB1c2luZz8NCj4gPg0KPiA+IFBsZWFzZSBz
+ZW5kIHRoZSBvdXRwdXQgb2Y6DQo+ID4NCj4gPiBpcCAtZGV0YWlscyBsaW5rIHNob3cgY2FuMA0K
+PiA+DQo+ID4gQXQgdGhlIGJlZ2lubmluZyAoYmVmb3JlIHJ1bm5pbmcgeW91ciBhcHApIGFuZCB3
+aGVuIGl0IGlzIHN0dWNrIChhZnRlcg0KPiBydW5uaW5nDQo+ID4geW91ciBhcHApLg0KPiA+DQo+
+ID4NCj4gPiBSZWdhcmRzLA0KPiA+IE9saXZlcg0KPiA+DQo+ID4NCj4gPiBPbiAwNS4wNS4yMDE0
+IDEyOjAzLCBGcmFuY2VzY28gUm9jY2Egd3JvdGU6DQo+ID4+IEhlbGxvDQo+ID4+IEkgd3JvdGUg
+eW91IGxhc3QgdGltZSBhYm91dCBCQ00gSW50ZXJmYWNlOyBpIFRyaWVkIHRvIHVzZSBpdCBidXQg
+aSBoYWQNCj4gcHJvYmxlbTsNCj4gPj4gSSB1c2UgRW1iZWRkZWQgc3lzdGVtIHdpdGggTGludXgg
+a2VybmVsIDIuNi4zNi4NCj4gPj4gTXkgTXV0bGlodHJhZGluZyBhcHBsaWNhdGlvbiBoYXZlIGEg
+Q0FOIEJVUyBzb2Z0d2FyZSBtb2R1bGUNCj4gY29ubmVjdGVkIHRvDQo+ID4+IG1hY2hpbmUgdGhh
+dCByZWNlaXZlIG1lc3NhZ2UgYW5kIGFuc3dlciB0byB0aGVtLiAgVGhlIENBTiBNT0RVTEUNCj4g
+b3BlbiB0aGUNCj4gPj4gc29ja2V0ICBvbiByZWFsIGludGVyZmFjZSAiY2FuMCIgYW5kIHBlcmZv
+cm0gYXMgZm9sbG93aW5nOg0KPiA+Pg0KPiA+PiAtIFNlbmQgQ3ljbGluZyByZXF1ZXN0DQo+ID4+
+IC0gUGVyZm9ybSBmaWx0ZXJpbmcgb24gc3BlY2lmaWMgY2FuIGlkDQo+ID4+IC1BIGxvb3AgdGhh
+dCByZWFkIHRoZSBhbnN3ZXJzLg0KPiA+Pg0KPiA+PiBBIGxvb3AgaXMgYnVpbHQgdXNpbmcgQ0FO
+IHV0aWxpdHkgYXMgYmFzZShDQU4gIGR1bXAsIGNhbiBzbmlmZmVyIGV0YykNCj4gPj4gQWZ0ZXIg
+ZmV3IHNlY29uZHMgdGhlIG1vZHVsZSBkb2Vzbid0IHdvcmsgYW55bW9yZSBhbHNvIGlmIGkgdHJ5
+IHRvIG9wZW4NCj4gYWdhaW4NCj4gPj4gdGhlIHNvY2tldCEhDQo+ID4+DQo+ID4+IFRoZSBzYW1l
+IHRoaW5ncyBoYXBwZW4gaWYgaSB1c2UgUkFXIFByb3RvY29sOyBpbiB0aGlzIGxhc3QgY2FzZSBp
+IHRyaWVkIHRvDQo+IHVzZQ0KPiA+PiBhbHNvIG9wZW4gYW5kIGNsb3NlIGNvbm50ZWN0aW9uIGZv
+ciBhbnkgcmVxdWVzdCBidXQgYWZ0ZXIgMTUgbWludXRlcw0KPiBtb3JlIG9yDQo+ID4+IGxlc3Mg
+ZG9lcyd0IHdvcmsgYW55bW9yZSEhIQ0KPiA+Pg0KPiA+PiBJJ20gdXNpbmcgcmVhZCBhbmQgd2ly
+dGUgZnVjdGlvbiBpbiB0aGUgY29kZSBhbmQgdGhlIG90aGVyIG1vZHVsZSBvZiBteQ0KPiA+PiBh
+cHBsaWNhdGlvbiBhcyB0aGUgQ0FOIG1vZHVsZSB3cml0ZSBvbiBsb2cgZmlsZSBieSBmcHJpbnRm
+IGZ1bmN0aW9uLiBJcyBpdA0KPiA+PiBwb3NzaWJsZSB0aGF0IGlzIHRoZXJlIGludGVyYWN0aW9u
+IGluIHRoZSBidWZmZXIgSS9PPw0KPiA+PiBJcyBpdCB0aGUgbGludXggdmVyc2lvbiB0b28gb2xk
+Pw0KPiA+PiBJdCB3b3VsZCBiZSBhIHBsZWFzdXJlIGlmIHlvdSBzdWdnZXN0IHdoYXQgaSBoYXZl
+IHRvIGRvIHRvIGF2b2lkIHRoaXMgaGF2eQ0KPiA+PiBwcm9ibGVtISENCj4gPj4NCj4gPj4gQmVz
+dCBSZWdhcmRzDQo+ID4+IEZyYW5jZXNjbw0KPiA+DQo+IC0tDQo+IFRvIHVuc3Vic2NyaWJlIGZy
+b20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBsaW51eC1jYW4iIGluDQo+
+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+IE1v
+cmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWlu
+Zm8uaHRtbA0K
 
-And here the latest one:
-http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/log/drivers/net/can/mcp251x.c?h=linux-3.14.y
+------369FE57642944699A9C85985496CF8BE
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
 
-I would suggest to upgrade your Linux kernel.
+MIIH2wYJKoZIhvcNAQcCoIIHzDCCB8gCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3
+DQEHAaCCBcwwggLVMIICPqADAgECAgkAvMrc21OtG8kwDQYJKoZIhvcNAQEFBQAw
+UTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkxFzAV
+BgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZTAeFw0wOTExMjQxMjA2
+MTVaFw0yOTExMTkxMjA2MTVaMFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAw
+DgYDVQQLEwdHYXRld2F5MRcwFQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UE
+BhMCZGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOmcYL9cTddZ0whp7cdz
+Lvlbr73uir65Z7nSTXG+RYDaUkaLhgVuJms16/EWECMa5K0qhFNVA0aE8tUqKJcj
+TuhR1flVnPq6koG8ArpudfBoNQk7v4Jgadj6ReVwJhjvQZ+dGFU+oH8F8jODhklv
+cvGjdfSKNlRHMirVsBIR8FtjAgMBAAGjgbQwgbEwHQYDVR0OBBYEFF0bok+BXaTx
+L3YfvzwzI7JjlCXIMIGBBgNVHSMEejB4gBRdG6JPgV2k8S92H788MyOyY5QlyKFV
+pFMwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkx
+FzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZYIJALzK3NtTrRvJ
+MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAV9GoynO+nRC9zmnf9h6T
+tFuqLMX6ITJ4CBChBrlWOc+290rANXBxiwQS+QqY+zc3VxAiMDoY64fvgvnNCtsy
+fL5W1ycyRq9vvBffdF/K7MjZS+zke1XRuv6vJJABpRYMcW97E4UdBj+qH8vLfZ2f
+YjuAK58Zua5S6C54zvcvRUgwggLvMIICWKADAgECAgEBMA0GCSqGSIb3DQEBBQUA
+MFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAwDgYDVQQLEwdHYXRld2F5MRcw
+FQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UEBhMCZGUwHhcNMDkxMTI1MDgw
+NzQ5WhcNMjkxMTIwMDgwNzQ5WjB1MQswCQYDVQQGEwJkZTEXMBUGA1UEChMOVG9u
+ZnVuayBHcnVwcGUxEDAOBgNVBAsTB0dhdGV3YXkxFDASBgNVBAMTC01hcnRpbiBS
+b3N0MSUwIwYJKoZIhvcNAQkBFhZNYXJ0aW4uUm9zdEB0b25mdW5rLmRlMIGfMA0G
+CSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3Ys/1C5iWSvFiKA4QAFiZNcdgc8nyycCc
+BCi/96l1YC/DIrgLeLNP4MtNK/F6BMRhOfCmlXIUmprANiAsET7cVW8qOt6KWr8b
+2SeZseE+jmqI0qeUaWjvF5ykjOo8D1X+YklVYIH/h82Wdozfa2xGW3WXm5ucDExR
+azpH5aNQxQIDAQABo4GyMIGvMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgSw
+MCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0ZTAd
+BgNVHQ4EFgQUwxDoSCAXpA8PB15z3pIKjewUaxIwHwYDVR0jBBgwFoAUXRuiT4Fd
+pPEvdh+/PDMjsmOUJcgwIQYDVR0RBBowGIEWTWFydGluLlJvc3RAdG9uZnVuay5k
+ZTANBgkqhkiG9w0BAQUFAAOBgQDa8BMQmQnuoHPGiTuyyy1AvcHwkMfn96vVOPQy
+OT0fSQmCwVer1E9/h691pa3hfFdkE9FyqfKp9TTihPMLzpA/aL7GVBftKNVt91JZ
+txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
+yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
+BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
+EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
+HAYJKoZIhvcNAQkFMQ8XDTE0MDUwODA2MTgwMFowIwYJKoZIhvcNAQkEMRYEFFzS
+yL6vv5RA/gSynYklDPwkkUhBMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
+AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
+CSqGSIb3DQEBAQUABIGAAsxSEZOFpR2UK4x6TEad8J0Cbi0WAzO0qlWMVggmR01e
++P8WWBRg+y2ry9VkdmVC5+c8MnCDMrKAmj9ysqXcQh5mbf/mucFtbuTeYuNjgGAl
+3Xf49tMxzzZv6H1nJ8TqPTeOACpHKOu73VXdbfJyBfqgd8rtb8bmdDN2AkMWcts=
 
-As you still(!) did not write about your kind of embedded hardware, it's hard to help.
+------369FE57642944699A9C85985496CF8BE--
 
-E.g. for the Raspberry Pi there are many community hints focusing the (often used) mcp251x - but they are already using a Linux 3.6.
-
-Ah - and I CC'ed the Linux CAN mailing list.
-Please always ask questions like this on the mailing list and not to me.
-I'm not a mcp251x expert - but you might find them here.
-
-Regards,
-Oliver
-
-On 07.05.2014 08:26, Francesco Rocca wrote:
-> hello
-> thank you for your support. the data request are following:
-> 
-> before
-> 
-> 3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN qlen 10
->     link/can
->     can state ERROR-ACTIVE restart-ms 0
->     bitrate 500000 sample-point 0.875
->     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->     mcp251x: tseg1 3..16 tseg2 2..8 sjw 1..4 brp 1..64 brp-inc 1
->     clock 8000000
-> 
-> 
-> after
-> 3: can0: <NO-CARRIER,NOARP,UP,ECHO> mtu 16 qdisc pfifo_fast state DOWN qlen 10
->     link/can
->     can state BUS-OFF restart-ms 0
->     bitrate 500000 sample-point 0.875
->     tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
->     mcp251x: tseg1 3..16 tseg2 2..8 sjw 1..4 brp 1..64 brp-inc 1
->     clock 8000000
-> 
-> you can see the bus goes OFF after few minutes! Performing can down and again
-> can up the CAN module start to work! do you suggest to insert the command  ip
-> link set can0 type can restart-ms 500? anyway is it a normal behavior? is
-> there a way to avoid the bus off?
-> thank you very much in advance!!
-> 
-> francesco
-> 
-> 
-> 
-> ---------- Forwarded message ----------
-> From: *Oliver Hartkopp* <socketcan@hartkopp.net <mailto:socketcan@hartkopp.net>>
-> Date: 2014-05-05 18:35 GMT+02:00
-> Subject: Re: Socket CAN Issue
-> To: Francesco Rocca <roccafrancesco@gmail.com <mailto:roccafrancesco@gmail.com>>
-> 
-> 
-> What kind of CAN hardware are you using?
-> 
-> Please send the output of:
-> 
-> ip -details link show can0
-> 
-> At the beginning (before running your app) and when it is stuck (after running
-> your app).
-> 
-> 
-> Regards,
-> Oliver
-> 
-> 
-> On 05.05.2014 12:03, Francesco Rocca wrote:
->> Hello
->> I wrote you last time about BCM Interface; i Tried to use it but i had problem;
->> I use Embedded system with Linux kernel 2.6.36.
->> My Mutlihtrading application have a CAN BUS software module connected to
->> machine that receive message and answer to them.  The CAN MODULE open the
->> socket  on real interface "can0" and perform as following:
->>
->> - Send Cycling request
->> - Perform filtering on specific can id
->> -A loop that read the answers.
->>
->> A loop is built using CAN utility as base(CAN  dump, can sniffer etc)
->> After few seconds the module doesn't work anymore also if i try to open again
->> the socket!!
->>
->> The same things happen if i use RAW Protocol; in this last case i tried to use
->> also open and close conntection for any request but after 15 minutes more or
->> less does't work anymore!!!
->>
->> I'm using read and wirte fuction in the code and the other module of my
->> application as the CAN module write on log file by fprintf function. Is it
->> possible that is there interaction in the buffer I/O?
->> Is it the linux version too old?
->> It would be a pleasure if you suggest what i have to do to avoid this havy
->> problem!!
->>
->> Best Regards
->> Francesco
-> 
