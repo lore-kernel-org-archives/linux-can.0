@@ -1,158 +1,252 @@
-From: "Rost, Martin" <Martin.Rost@tonfunk.de>
-Subject: [PATCH] mcp251x: mcp2515 stops receiving
-Date: Thu, 8 May 2014 06:33:52 +0000
-Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----9066E08081876EFC958EE8CF83C42DF0"
+From: David Jander <david@protonic.nl>
+Subject: [PATCH] net: CAN: at91_can.c: decrease likelyhood of RX overruns
+Date: Thu,  8 May 2014 16:55:10 +0200
+Message-ID: <1399560910-17271-1-git-send-email-david@protonic.nl>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from tonfunk.biz ([145.253.128.114]:52474 "EHLO mail.tonfunk.biz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751881AbaEHGeC (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 8 May 2014 02:34:02 -0400
-Received: from [129.84.3.7] (port=6639 helo=tonfunk.biz)
-	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76)
-	(envelope-from <Martin.Rost@tonfunk.de>)
-	id 1WiHu2-0000UR-2N
-	for linux-can@vger.kernel.org; Thu, 08 May 2014 08:33:58 +0200
+Received: from protonic.xs4all.nl ([83.163.252.89]:27598 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752428AbaEHP0A (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 May 2014 11:26:00 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "Hans J. Koch" <hjk@hansjkoch.de>, Marcel Gielen <Marcel.Gielen@kvernelandgroup.com>, David Jander <david@protonic.nl>
 
-This is an S/MIME signed message
+Use an RX kfifo to empty receive message boxes as soon as possible in
+the interrupt handler to avoid RX overruns if napi polls are late due to
+latency.
 
-------9066E08081876EFC958EE8CF83C42DF0
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-
-
-The mcp2515 sometimes seems to trigger an interrupt with the corresponding =
-register not being set yet.
-This makes the driver exit the interrupt because there is obviously nothing=
- to do, but the interrupt line is kept low.
-Therefore the driver does not see any more interrupts until the chip is res=
-et (via interface down/up).
-
-This patch changes the IST to first check the IRQ registers, and wait up to=
- 10 ms if an event really occurrs.
-If the IRQ register is still empty after 10ms, a kernel message gets issued=
-.
-The IST loop is rearranged to evaluate the IRQ register at the last moment =
-before exiting, to not miss a late irq event.
-
+Signed-off-by: David Jander <david@protonic.nl>
 ---
-diff --git "a/mcp251x.c" "b/mcp251x.c"
-index ad58ac6..668ce63 100644
---- "a/mcp251x.c"=09
-+++ "b/mcp251x.c"=09
-@@ -806,15 +806,29 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev=
-_id)
- 	struct mcp251x_priv *priv =3D dev_id;
- 	struct spi_device *spi =3D priv->spi;
- 	struct net_device *net =3D priv->net;
-+	u8 intf, eflag;
-+	u8 retrycount =3D 10;
-=20
- 	mutex_lock(&priv->mcp_lock);
--	while (!priv->force_quit) {
-+=09
-+	do {
-+	mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-+		if (!intf) {
-+//			printk(KERN_CRIT "MCP251x: IRQ delaying.\r\n");
-+			mdelay(1);
-+		}
-+	} while (!intf && (retrycount--));
-+=09
-+	if (!intf)
-+		printk(KERN_CRIT "MCP251x: IRQ without a cause.\r\n");
-+=09
-+	while ((!priv->force_quit) && (intf)) {
- 		enum can_state new_state;
--		u8 intf, eflag;
-+//		u8 intf, eflag;
- 		u8 clear_intf =3D 0;
- 		int can_id =3D 0, data1 =3D 0;
-=20
--		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-+//		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-=20
- 		/* mask out flags we don't care about */
- 		intf &=3D CANINTF_RX | CANINTF_TX | CANINTF_ERR;
-@@ -913,8 +927,8 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_i=
-d)
- 			}
- 		}
-=20
--		if (intf =3D=3D 0)
--			break;
-+//		if (intf =3D=3D 0)
-+//			break;
-=20
- 		if (intf & CANINTF_TX) {
- 			net->stats.tx_packets++;
-@@ -926,6 +940,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_i=
-d)
- 			netif_wake_queue(net);
- 		}
-=20
-+		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
+ drivers/net/can/at91_can.c | 100 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 71 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 6ee1acd..1c53a44 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -24,6 +24,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
++#include <linux/kfifo.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+@@ -153,6 +154,16 @@ struct at91_priv {
+ 	struct at91_can_data *pdata;
+ 
+ 	canid_t mb0_id;
++
++/*
++ * The AT91 SoC CAN controller (specially the one in some newer SoCs)
++ * has very little message boxes. On a busy high-speed network, latency
++ * may be too high for napi to catch up before RX overrun occurs.
++ * Therefor we declare a big enough kfifo and fill it directly from
++ * interrupt.
++ */
++#define RX_KFIFO_SIZE 512
++	DECLARE_KFIFO_PTR(rx_fifo, struct sk_buff *);
+ };
+ 
+ static const struct at91_devtype_data at91_at91sam9263_data = {
+@@ -449,6 +460,26 @@ static void at91_chip_stop(struct net_device *dev, enum can_state state)
+ 	priv->can.state = state;
+ }
+ 
++static int at91_rx_fifo_in(struct net_device *dev, struct sk_buff *skb)
++{
++	struct at91_priv *priv = netdev_priv(dev);
++	unsigned int len = kfifo_put(&priv->rx_fifo, skb);
++
++	if (len == sizeof(skb))
++		return 0;
++	return -ENOMEM;
++}
++
++static int at91_rx_fifo_out(struct net_device *dev, struct sk_buff **skb)
++{
++	struct at91_priv *priv = netdev_priv(dev);
++	unsigned int len = kfifo_get(&priv->rx_fifo, skb);
++
++	if (len == sizeof(skb))
++		return 0;
++	return -ENOENT;
++}
++
+ /*
+  * theory of operation:
+  *
+@@ -578,7 +609,7 @@ static void at91_rx_overflow_err(struct net_device *dev)
+ 
+ 	cf->can_id |= CAN_ERR_CRTL;
+ 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+-	netif_receive_skb(skb);
++	at91_rx_fifo_in(dev, skb);
+ 
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
+@@ -643,7 +674,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
  	}
- 	mutex_unlock(&priv->mcp_lock);
- 	return IRQ_HANDLED;
-
----
-
-
-------9066E08081876EFC958EE8CF83C42DF0
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-MIIH2wYJKoZIhvcNAQcCoIIHzDCCB8gCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3
-DQEHAaCCBcwwggLVMIICPqADAgECAgkAvMrc21OtG8kwDQYJKoZIhvcNAQEFBQAw
-UTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkxFzAV
-BgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZTAeFw0wOTExMjQxMjA2
-MTVaFw0yOTExMTkxMjA2MTVaMFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAw
-DgYDVQQLEwdHYXRld2F5MRcwFQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UE
-BhMCZGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOmcYL9cTddZ0whp7cdz
-Lvlbr73uir65Z7nSTXG+RYDaUkaLhgVuJms16/EWECMa5K0qhFNVA0aE8tUqKJcj
-TuhR1flVnPq6koG8ArpudfBoNQk7v4Jgadj6ReVwJhjvQZ+dGFU+oH8F8jODhklv
-cvGjdfSKNlRHMirVsBIR8FtjAgMBAAGjgbQwgbEwHQYDVR0OBBYEFF0bok+BXaTx
-L3YfvzwzI7JjlCXIMIGBBgNVHSMEejB4gBRdG6JPgV2k8S92H788MyOyY5QlyKFV
-pFMwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkx
-FzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZYIJALzK3NtTrRvJ
-MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAV9GoynO+nRC9zmnf9h6T
-tFuqLMX6ITJ4CBChBrlWOc+290rANXBxiwQS+QqY+zc3VxAiMDoY64fvgvnNCtsy
-fL5W1ycyRq9vvBffdF/K7MjZS+zke1XRuv6vJJABpRYMcW97E4UdBj+qH8vLfZ2f
-YjuAK58Zua5S6C54zvcvRUgwggLvMIICWKADAgECAgEBMA0GCSqGSIb3DQEBBQUA
-MFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAwDgYDVQQLEwdHYXRld2F5MRcw
-FQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UEBhMCZGUwHhcNMDkxMTI1MDgw
-NzQ5WhcNMjkxMTIwMDgwNzQ5WjB1MQswCQYDVQQGEwJkZTEXMBUGA1UEChMOVG9u
-ZnVuayBHcnVwcGUxEDAOBgNVBAsTB0dhdGV3YXkxFDASBgNVBAMTC01hcnRpbiBS
-b3N0MSUwIwYJKoZIhvcNAQkBFhZNYXJ0aW4uUm9zdEB0b25mdW5rLmRlMIGfMA0G
-CSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3Ys/1C5iWSvFiKA4QAFiZNcdgc8nyycCc
-BCi/96l1YC/DIrgLeLNP4MtNK/F6BMRhOfCmlXIUmprANiAsET7cVW8qOt6KWr8b
-2SeZseE+jmqI0qeUaWjvF5ykjOo8D1X+YklVYIH/h82Wdozfa2xGW3WXm5ucDExR
-azpH5aNQxQIDAQABo4GyMIGvMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgSw
-MCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0ZTAd
-BgNVHQ4EFgQUwxDoSCAXpA8PB15z3pIKjewUaxIwHwYDVR0jBBgwFoAUXRuiT4Fd
-pPEvdh+/PDMjsmOUJcgwIQYDVR0RBBowGIEWTWFydGluLlJvc3RAdG9uZnVuay5k
-ZTANBgkqhkiG9w0BAQUFAAOBgQDa8BMQmQnuoHPGiTuyyy1AvcHwkMfn96vVOPQy
-OT0fSQmCwVer1E9/h691pa3hfFdkE9FyqfKp9TTihPMLzpA/aL7GVBftKNVt91JZ
-txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
-yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
-BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
-EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
-HAYJKoZIhvcNAQkFMQ8XDTE0MDUwODA2MzQwMFowIwYJKoZIhvcNAQkEMRYEFPVf
-TnZ8/tyU0qtf1QNqPgVbHRekMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
-AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
-CSqGSIb3DQEBAQUABIGANt/gFKCzpzKqBGqKQC3vK0K3nvg+14+tTz0IVatN2UBo
-1Ypf8WHQ6fblLT2j9zhJ7BKg0eT71z5Do8UND7gsSCWfpk+OBcF5bMzt64AFEpWM
-5bTCuNJCTr6zasPRqJT6REMfmtlJDRnKRbjPqo1S/sZiey7wnTpm8Eb+H/342LQ=
-
-------9066E08081876EFC958EE8CF83C42DF0--
+ 
+ 	at91_read_mb(dev, mb, cf);
+-	netif_receive_skb(skb);
++	at91_rx_fifo_in(dev, skb);
+ 
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
+@@ -700,7 +731,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
+  * quota.
+  *
+  */
+-static int at91_poll_rx(struct net_device *dev, int quota)
++static int at91_poll_rx(struct net_device *dev)
+ {
+ 	struct at91_priv *priv = netdev_priv(dev);
+ 	u32 reg_sr = at91_read(priv, AT91_SR);
+@@ -708,14 +739,9 @@ static int at91_poll_rx(struct net_device *dev, int quota)
+ 	unsigned int mb;
+ 	int received = 0;
+ 
+-	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+-	    reg_sr & get_mb_rx_low_mask(priv))
+-		netdev_info(dev,
+-			"order of incoming frames cannot be guaranteed\n");
+-
+  again:
+ 	for (mb = find_next_bit(addr, get_mb_tx_first(priv), priv->rx_next);
+-	     mb < get_mb_tx_first(priv) && quota > 0;
++	     mb < get_mb_tx_first(priv);
+ 	     reg_sr = at91_read(priv, AT91_SR),
+ 	     mb = find_next_bit(addr, get_mb_tx_first(priv), ++priv->rx_next)) {
+ 		at91_read_msg(dev, mb);
+@@ -729,12 +755,11 @@ static int at91_poll_rx(struct net_device *dev, int quota)
+ 			at91_activate_rx_mb(priv, mb);
+ 
+ 		received++;
+-		quota--;
+ 	}
+ 
+ 	/* upper group completed, look again in lower */
+ 	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+-	    quota > 0 && mb > get_mb_rx_last(priv)) {
++	    mb > get_mb_rx_last(priv)) {
+ 		priv->rx_next = get_mb_rx_first(priv);
+ 		goto again;
+ 	}
+@@ -790,20 +815,17 @@ static void at91_poll_err_frame(struct net_device *dev,
+ 	}
+ }
+ 
+-static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
++static int at91_poll_err(struct net_device *dev, u32 reg_sr)
+ {
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
+ 
+-	if (quota == 0)
+-		return 0;
+-
+ 	skb = alloc_can_err_skb(dev, &cf);
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+ 	at91_poll_err_frame(dev, cf, reg_sr);
+-	netif_receive_skb(skb);
++	at91_rx_fifo_in(dev, skb);
+ 
+ 	dev->stats.rx_packets++;
+ 	dev->stats.rx_bytes += cf->can_dlc;
+@@ -811,15 +833,14 @@ static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
+ 	return 1;
+ }
+ 
+-static int at91_poll(struct napi_struct *napi, int quota)
++static void at91_poll(struct net_device *dev)
+ {
+-	struct net_device *dev = napi->dev;
+ 	const struct at91_priv *priv = netdev_priv(dev);
+ 	u32 reg_sr = at91_read(priv, AT91_SR);
+-	int work_done = 0;
++	u32 reg_ier;
+ 
+ 	if (reg_sr & get_irq_mb_rx(priv))
+-		work_done += at91_poll_rx(dev, quota - work_done);
++		at91_poll_rx(dev);
+ 
+ 	/*
+ 	 * The error bits are clear on read,
+@@ -827,17 +848,30 @@ static int at91_poll(struct napi_struct *napi, int quota)
+ 	 */
+ 	reg_sr |= priv->reg_sr;
+ 	if (reg_sr & AT91_IRQ_ERR_FRAME)
+-		work_done += at91_poll_err(dev, quota - work_done, reg_sr);
++		at91_poll_err(dev, reg_sr);
+ 
+-	if (work_done < quota) {
+-		/* enable IRQs for frame errors and all mailboxes >= rx_next */
+-		u32 reg_ier = AT91_IRQ_ERR_FRAME;
+-		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
++	/* enable IRQs for frame errors and all mailboxes >= rx_next */
++	reg_ier = AT91_IRQ_ERR_FRAME;
++	reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
++	at91_write(priv, AT91_IER, reg_ier);
++}
+ 
+-		napi_complete(napi);
+-		at91_write(priv, AT91_IER, reg_ier);
++static int at91_napi_poll(struct napi_struct *napi, int quota)
++{
++	struct net_device *dev = napi->dev;
++	const struct at91_priv *priv = netdev_priv(dev);
++	int work_done = 0;
++	struct sk_buff *skb = NULL;
++
++	while(!(kfifo_is_empty(&priv->rx_fifo)) && (work_done < quota)) {
++		at91_rx_fifo_out(dev, &skb);
++		netif_receive_skb(skb);
++		work_done ++;
+ 	}
+ 
++	if(work_done < quota)
++		napi_complete(napi);
++
+ 	return work_done;
+ }
+ 
+@@ -1096,7 +1130,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
+ 
+ 	handled = IRQ_HANDLED;
+ 
+-	/* Receive or error interrupt? -> napi */
++	/* Receive or error interrupt? -> put in rx_fifo and call napi */
+ 	if (reg_sr & (get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME)) {
+ 		/*
+ 		 * The error bits are clear on read,
+@@ -1105,6 +1139,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
+ 		priv->reg_sr = reg_sr;
+ 		at91_write(priv, AT91_IDR,
+ 			   get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME);
++		at91_poll(dev);
+ 		napi_schedule(&priv->napi);
+ 	}
+ 
+@@ -1356,7 +1391,14 @@ static int at91_can_probe(struct platform_device *pdev)
+ 	priv->pdata = dev_get_platdata(&pdev->dev);
+ 	priv->mb0_id = 0x7ff;
+ 
+-	netif_napi_add(dev, &priv->napi, at91_poll, get_mb_rx_num(priv));
++	err = kfifo_alloc(&priv->rx_fifo, RX_KFIFO_SIZE, GFP_KERNEL);
++	if (err) {
++		dev_err(&pdev->dev, "allocating RX fifo failed\n");
++		goto exit_iounmap;
++	}
++
++	netif_napi_add(dev, &priv->napi, at91_napi_poll,
++			RX_KFIFO_SIZE > 64 ? 64 : RX_KFIFO_SIZE);
+ 
+ 	if (at91_is_sam9263(priv))
+ 		dev->sysfs_groups[0] = &at91_sysfs_attr_group;
+-- 
+1.9.1
 
