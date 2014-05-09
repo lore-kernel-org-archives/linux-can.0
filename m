@@ -1,252 +1,165 @@
-From: David Jander <david@protonic.nl>
-Subject: [PATCH] net: CAN: at91_can.c: decrease likelyhood of RX overruns
-Date: Thu,  8 May 2014 16:55:10 +0200
-Message-ID: <1399560910-17271-1-git-send-email-david@protonic.nl>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:27598 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752428AbaEHP0A (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 May 2014 11:26:00 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "Hans J. Koch" <hjk@hansjkoch.de>, Marcel Gielen <Marcel.Gielen@kvernelandgroup.com>, David Jander <david@protonic.nl>
+From: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
+Subject: [PATCH 0/2] CAN SJA100 controller emulation and SocketCAN based host
+ CAN bus access
+Date: Fri, 9 May 2014 20:10:19 +0200
+Message-ID: <201405092010.19482.pisa@cmp.felk.cvut.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <rtems-devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://www.rtems.org/mailman/options/rtems-devel>,
+ <mailto:rtems-devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://www.rtems.org/pipermail/rtems-devel/>
+List-Post: <mailto:rtems-devel-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org>
+List-Help: <mailto:rtems-devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=help>
+List-Subscribe: <http://www.rtems.org/mailman/listinfo/rtems-devel>,
+ <mailto:rtems-devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=subscribe>
+Errors-To: rtems-devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org
+Sender: rtems-devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org
+To: "qemu-devel-qX2TKyscuCcdnm+yROfE0A@public.gmane.org" <qemu-devel-qX2TKyscuCcdnm+yROfE0A@public.gmane.org>, Oliver Hartkopp A <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, jinyang.sia-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: Stefan Weil <sw-QDXxdeohBKYb1SvskN2V4Q@public.gmane.org>, rtems-devel-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org, Andreas =?iso-8859-1?q?F=E4rber?= <afaerber-l3A5Bk7waGM@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Use an RX kfifo to empty receive message boxes as soon as possible in
-the interrupt handler to avoid RX overruns if napi polls are late due to
-latency.
+Hello everybody,
 
-Signed-off-by: David Jander <david@protonic.nl>
----
- drivers/net/can/at91_can.c | 100 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 71 insertions(+), 29 deletions(-)
+I have invested some time to wrap-up and get back
+on the track 2013 GSoC Jin Yang work on QEMU CAN
+bus emulation done in frame of RTEMS project preparation
+for future RTEMS CAN bus infrastructure preparation.
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 6ee1acd..1c53a44 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -24,6 +24,7 @@
- #include <linux/if_arp.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-+#include <linux/kfifo.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
-@@ -153,6 +154,16 @@ struct at91_priv {
- 	struct at91_can_data *pdata;
- 
- 	canid_t mb0_id;
-+
-+/*
-+ * The AT91 SoC CAN controller (specially the one in some newer SoCs)
-+ * has very little message boxes. On a busy high-speed network, latency
-+ * may be too high for napi to catch up before RX overrun occurs.
-+ * Therefor we declare a big enough kfifo and fill it directly from
-+ * interrupt.
-+ */
-+#define RX_KFIFO_SIZE 512
-+	DECLARE_KFIFO_PTR(rx_fifo, struct sk_buff *);
- };
- 
- static const struct at91_devtype_data at91_at91sam9263_data = {
-@@ -449,6 +460,26 @@ static void at91_chip_stop(struct net_device *dev, enum can_state state)
- 	priv->can.state = state;
- }
- 
-+static int at91_rx_fifo_in(struct net_device *dev, struct sk_buff *skb)
-+{
-+	struct at91_priv *priv = netdev_priv(dev);
-+	unsigned int len = kfifo_put(&priv->rx_fifo, skb);
-+
-+	if (len == sizeof(skb))
-+		return 0;
-+	return -ENOMEM;
-+}
-+
-+static int at91_rx_fifo_out(struct net_device *dev, struct sk_buff **skb)
-+{
-+	struct at91_priv *priv = netdev_priv(dev);
-+	unsigned int len = kfifo_get(&priv->rx_fifo, skb);
-+
-+	if (len == sizeof(skb))
-+		return 0;
-+	return -ENOENT;
-+}
-+
- /*
-  * theory of operation:
-  *
-@@ -578,7 +609,7 @@ static void at91_rx_overflow_err(struct net_device *dev)
- 
- 	cf->can_id |= CAN_ERR_CRTL;
- 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
--	netif_receive_skb(skb);
-+	at91_rx_fifo_in(dev, skb);
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-@@ -643,7 +674,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
- 	}
- 
- 	at91_read_mb(dev, mb, cf);
--	netif_receive_skb(skb);
-+	at91_rx_fifo_in(dev, skb);
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-@@ -700,7 +731,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
-  * quota.
-  *
-  */
--static int at91_poll_rx(struct net_device *dev, int quota)
-+static int at91_poll_rx(struct net_device *dev)
- {
- 	struct at91_priv *priv = netdev_priv(dev);
- 	u32 reg_sr = at91_read(priv, AT91_SR);
-@@ -708,14 +739,9 @@ static int at91_poll_rx(struct net_device *dev, int quota)
- 	unsigned int mb;
- 	int received = 0;
- 
--	if (priv->rx_next > get_mb_rx_low_last(priv) &&
--	    reg_sr & get_mb_rx_low_mask(priv))
--		netdev_info(dev,
--			"order of incoming frames cannot be guaranteed\n");
--
-  again:
- 	for (mb = find_next_bit(addr, get_mb_tx_first(priv), priv->rx_next);
--	     mb < get_mb_tx_first(priv) && quota > 0;
-+	     mb < get_mb_tx_first(priv);
- 	     reg_sr = at91_read(priv, AT91_SR),
- 	     mb = find_next_bit(addr, get_mb_tx_first(priv), ++priv->rx_next)) {
- 		at91_read_msg(dev, mb);
-@@ -729,12 +755,11 @@ static int at91_poll_rx(struct net_device *dev, int quota)
- 			at91_activate_rx_mb(priv, mb);
- 
- 		received++;
--		quota--;
- 	}
- 
- 	/* upper group completed, look again in lower */
- 	if (priv->rx_next > get_mb_rx_low_last(priv) &&
--	    quota > 0 && mb > get_mb_rx_last(priv)) {
-+	    mb > get_mb_rx_last(priv)) {
- 		priv->rx_next = get_mb_rx_first(priv);
- 		goto again;
- 	}
-@@ -790,20 +815,17 @@ static void at91_poll_err_frame(struct net_device *dev,
- 	}
- }
- 
--static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
-+static int at91_poll_err(struct net_device *dev, u32 reg_sr)
- {
- 	struct sk_buff *skb;
- 	struct can_frame *cf;
- 
--	if (quota == 0)
--		return 0;
--
- 	skb = alloc_can_err_skb(dev, &cf);
- 	if (unlikely(!skb))
- 		return 0;
- 
- 	at91_poll_err_frame(dev, cf, reg_sr);
--	netif_receive_skb(skb);
-+	at91_rx_fifo_in(dev, skb);
- 
- 	dev->stats.rx_packets++;
- 	dev->stats.rx_bytes += cf->can_dlc;
-@@ -811,15 +833,14 @@ static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
- 	return 1;
- }
- 
--static int at91_poll(struct napi_struct *napi, int quota)
-+static void at91_poll(struct net_device *dev)
- {
--	struct net_device *dev = napi->dev;
- 	const struct at91_priv *priv = netdev_priv(dev);
- 	u32 reg_sr = at91_read(priv, AT91_SR);
--	int work_done = 0;
-+	u32 reg_ier;
- 
- 	if (reg_sr & get_irq_mb_rx(priv))
--		work_done += at91_poll_rx(dev, quota - work_done);
-+		at91_poll_rx(dev);
- 
- 	/*
- 	 * The error bits are clear on read,
-@@ -827,17 +848,30 @@ static int at91_poll(struct napi_struct *napi, int quota)
- 	 */
- 	reg_sr |= priv->reg_sr;
- 	if (reg_sr & AT91_IRQ_ERR_FRAME)
--		work_done += at91_poll_err(dev, quota - work_done, reg_sr);
-+		at91_poll_err(dev, reg_sr);
- 
--	if (work_done < quota) {
--		/* enable IRQs for frame errors and all mailboxes >= rx_next */
--		u32 reg_ier = AT91_IRQ_ERR_FRAME;
--		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
-+	/* enable IRQs for frame errors and all mailboxes >= rx_next */
-+	reg_ier = AT91_IRQ_ERR_FRAME;
-+	reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
-+	at91_write(priv, AT91_IER, reg_ier);
-+}
- 
--		napi_complete(napi);
--		at91_write(priv, AT91_IER, reg_ier);
-+static int at91_napi_poll(struct napi_struct *napi, int quota)
-+{
-+	struct net_device *dev = napi->dev;
-+	const struct at91_priv *priv = netdev_priv(dev);
-+	int work_done = 0;
-+	struct sk_buff *skb = NULL;
-+
-+	while(!(kfifo_is_empty(&priv->rx_fifo)) && (work_done < quota)) {
-+		at91_rx_fifo_out(dev, &skb);
-+		netif_receive_skb(skb);
-+		work_done ++;
- 	}
- 
-+	if(work_done < quota)
-+		napi_complete(napi);
-+
- 	return work_done;
- }
- 
-@@ -1096,7 +1130,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
- 
- 	handled = IRQ_HANDLED;
- 
--	/* Receive or error interrupt? -> napi */
-+	/* Receive or error interrupt? -> put in rx_fifo and call napi */
- 	if (reg_sr & (get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME)) {
- 		/*
- 		 * The error bits are clear on read,
-@@ -1105,6 +1139,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
- 		priv->reg_sr = reg_sr;
- 		at91_write(priv, AT91_IDR,
- 			   get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME);
-+		at91_poll(dev);
- 		napi_schedule(&priv->napi);
- 	}
- 
-@@ -1356,7 +1391,14 @@ static int at91_can_probe(struct platform_device *pdev)
- 	priv->pdata = dev_get_platdata(&pdev->dev);
- 	priv->mb0_id = 0x7ff;
- 
--	netif_napi_add(dev, &priv->napi, at91_poll, get_mb_rx_num(priv));
-+	err = kfifo_alloc(&priv->rx_fifo, RX_KFIFO_SIZE, GFP_KERNEL);
-+	if (err) {
-+		dev_err(&pdev->dev, "allocating RX fifo failed\n");
-+		goto exit_iounmap;
-+	}
-+
-+	netif_napi_add(dev, &priv->napi, at91_napi_poll,
-+			RX_KFIFO_SIZE > 64 ? 64 : RX_KFIFO_SIZE);
- 
- 	if (at91_is_sam9263(priv))
- 		dev->sysfs_groups[0] = &at91_sysfs_attr_group;
--- 
-1.9.1
+I think that code is important for much wider community.
 
+RTEMS page for original QEMU 1.4 work
+
+  http://www.rtems.org/wiki/index.php/Qemu_simulations
+
+Be warned, page is not yet updated for redesigned CAN
+infrastructure conecept
+
+The patch series consists of
+
+  - CAN bus simple SJA1000 PCI card emulation for QEMU
+
+    Files:
+
+      - include/net/can_emu.h
+          - basic CAN bus related types. Those which could possibly clash
+            with Linux kernel prepended by "qemu_".
+          - prototypes for CAN buses naming and clients registration
+          - original Jin Yang approach uses chardev, but that does not
+            map well to little different semantics of CAN messages
+            distribution. I have considered common vlan code but
+            I have not found how to use it with CAN well too.
+
+      - hw/net/can_core.c
+          - implementation of CAN messages delivery
+          - support to connect into real host CAN bus network for case
+            of Linux SocketCAN
+
+      - hw/net/can_sja1000.h
+          - declarations of SJA1000 CAN controller registers
+            and connection type independent part of API
+
+      - hw/net/can_sja1000.c
+          - SJA1000 CAN controller registers and registers model
+            implementation - hard part implemented by Jin Yang
+
+      - hw/net/can_pci.c
+          - connection of above infrastructure to the minimal PCI
+            card with only one mmio BAR and no bridge interrupts setup
+            and control. Unfortuantelly, I am not aware of any such
+            straightforward card but it is great for testing and
+            drivers porting. Used vendor and product ID are random ones
+            chosen by Jin Yang, if there is some consensus that work worth
+            for integration then I suggest to ask RedHat for unique PCI ID
+            donation
+
+  - CAN bus Kvaser PCI CAN-S (single SJA1000 channel)
+
+    Files:
+      - hw/net/can_kvaser_pci.c
+            Implementation of 
+
+
+Testing:
+
+I have implemented first simple single SJA1000 memory mapped PCI
+board support for LinCAN
+
+Setup real or virtual can in host system
+
+  modprobe can-raw 
+  modprobe vcan
+  ip link add dev can0 type vcan
+  ip link set can0 up
+
+QEMU run with some subset of next parameters
+
+  $QEMU -enable-kvm -kernel /boot/vmlinuz-3.2.0-4-amd64 \
+      -initrd ramdisk.cpio \
+      -virtfs local,path=shareddir,security_model=none,mount_tag=shareddir \
+      -vga cirrus \
+      -device can_pci,model=SJA1000,canbus=canbus0,host=can0 \
+      -nographic -append "console=ttyS0"
+
+Run in the guest system
+
+  modprobe lincan hw=pcisja1000mm io=0
+  mdev -s
+
+  sendburst
+  readburst
+
+Test with Kvaser
+
+  $QEMU -enable-kvm -kernel /boot/vmlinuz-3.2.0-4-amd64 \
+      -initrd ramdisk.cpio \
+      -virtfs local,path=shareddir,security_model=none,mount_tag=shareddir \
+      -vga cirrus \
+      -device kvaser_pci,canbus=canbus0,host=can0 \
+      -nographic -append "console=ttyS0"
+
+Run in the guest system
+
+  modprobe lincan hw=pcican-s io=0
+  mdev -s
+
+SocketCAN in the guest system
+
+No load lincan or rmmod lincan
+Then SocketCAN in inner system setup
+
+  modprobe can-raw
+  modprobe kvaser-pci
+  ip link set can0 type can bitrate 1000000
+  ip link set can0 up
+
+  cangen can0 -e -I 123 -g 1000 -D 11223344DEADBEEF -L 8
+  candump can0
+
+Visualization in host / outer system possible by QCANalyzer
+for example
+  
+  http://ortcan.sourceforge.net/qcanalyzer/
+
+Code is really hot and more or less proof of concept
+but worked for me stable for some while.
+
+There is no buffering in CAN bus model for now
+so messages can be easily lost or overwritten.
+No CAN filters are in real use for now.
+Some filters union and application to the SocketCAN
+can be usesfull for future. But separation of CAN
+bus model out of chardev and or vlan allows to
+implement CAN specific things more easily.
+
+Best wishes,
+
+                Pavel
+--
+                Pavel Pisa
+    e-mail:     pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org
+    www:        http://cmp.felk.cvut.cz/~pisa
+    university: http://dce.fel.cvut.cz/
+    company:    http://www.pikron.com/
