@@ -1,57 +1,55 @@
 From: "Rost, Martin" <Martin.Rost@tonfunk.de>
-Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
-Date: Mon, 12 May 2014 17:27:51 +0000
-Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC8872A@mailserver>
+Subject: AW: [PATCH] mcp251x: mcp2515 stops receiving
+Date: Mon, 12 May 2014 17:34:14 +0000
+Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC8873C@mailserver>
+References: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
+ <5370FE36.8020901@pengutronix.de>,<1399914895.885192215@f95.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----FDD43C258460D4213D7822F941047708"
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----B8A9FAFC2B775519F998D7D6F0A8E99E"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from keys.tonfunk.biz ([145.253.128.114]:34324 "EHLO
-	mail.tonfunk.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751291AbaELR2C (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 13:28:02 -0400
-Received: from [129.84.3.7] (port=33285 helo=tonfunk.biz)
+Received: from svn.tonfunk.biz ([145.253.128.114]:34332 "EHLO mail.tonfunk.biz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1759156AbaELReV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 12 May 2014 13:34:21 -0400
+Received: from [129.84.3.7] (port=33333 helo=tonfunk.biz)
 	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
 	(Exim 4.76)
 	(envelope-from <Martin.Rost@tonfunk.de>)
-	id 1Wju14-0002BH-0b
-	for linux-can@vger.kernel.org; Mon, 12 May 2014 19:27:54 +0200
+	id 1Wju7F-0002Wq-1l
+	for linux-can@vger.kernel.org; Mon, 12 May 2014 19:34:18 +0200
+In-Reply-To: <1399914895.885192215@f95.i.mail.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Alexander Shiyan <shc_work@mail.ru>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an S/MIME signed message
 
-------FDD43C258460D4213D7822F941047708
+------B8A9FAFC2B775519F998D7D6F0A8E99E
 Content-Language: de-DE
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 
+Hello Alexander,=0A=
 =0A=
-Hello Marc,=0A=
+> I absolutely don't like the patch. This is not a solution to the problem =
+but=0A=
+> ways to circumvent it.=0A=
 =0A=
-> Hmmmm, I think level triggered interrupt would help here. However not=0A=
-> all interrupt controller support level interrupts and=0A=
-> arch/arm/mach-pxa/icontrol.c sets the trigger to rising edge.=0A=
+True that. I whish I had a better solution.=0A=
 =0A=
-That was my first attempt. That explains why it didn't help, too.=0A=
+> I would recommend to make a temporary parameter for sysfs, then when a=0A=
+> problem occurs, you could take a snapshot from all registers (including a=
+n=0A=
+> interrupt status register) and understand what the problem is.=0A=
 =0A=
-> What happens if the register is still empty after 10ms? Can we do=0A=
-> something better than the print, which will probably not fix the probem..=
-.=0A=
-=0A=
-I thought about re-checking the line if the IRQ line was released, but I ha=
-ve no clue how to do that...=0A=
-I haven't seen a problem when returning regardless (in my setup), but I'd l=
-ike to give a hint at least in case someone runs into the same problem.=0A=
-=0A=
-> I'll send a cleaned version of you patch.=0A=
-much appreciated.=0A=
+I've never done that. Any hints on how to start on this?=0A=
 =0A=
 Regards,=0A=
-Martin.=
+Martin=
 
-------FDD43C258460D4213D7822F941047708
+------B8A9FAFC2B775519F998D7D6F0A8E99E
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -91,13 +89,13 @@ txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
 yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
 BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
 EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
-HAYJKoZIhvcNAQkFMQ8XDTE0MDUxMjE3MjgwMFowIwYJKoZIhvcNAQkEMRYEFBf0
-X+wqngUX2r9ENayMZA61DAu9MHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
+HAYJKoZIhvcNAQkFMQ8XDTE0MDUxMjE3MzQyMFowIwYJKoZIhvcNAQkEMRYEFAPm
+hIRgdMPETqMIBtX3JlieumWbMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
 MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
 AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
-CSqGSIb3DQEBAQUABIGAC3EzWrtpibLZH+LJwzWEAbmnUln2v1BqQlmMj2Pn1J42
-iR5qbhNj8eNHabXHD7dS2+8CXMyf23YY1DsZeYRMj6E+5+eMLaQl3l4KRkFi77CP
-DYW9vJkcNChODhPYjnGk5hprKQZj9xMfsUzu/8TgeI0Bybz9fLXD3DaDGa5AwbI=
+CSqGSIb3DQEBAQUABIGACjZH1Ia+ecwhCun7qx0Bq/b/PwqSaLHG6obDY91ct445
+cJ5T+AtPzE+LN98wIfT49OtvbzTGpiGWWgqVA7kn+8lLehU2NBTLExyX5fv02w2t
+zRN4wbY2NgnWflPW+C1HQXbmr35nBC5K0r9LjzmQ0df3kkt7JQfjy1ZvjtVT6WA=
 
-------FDD43C258460D4213D7822F941047708--
+------B8A9FAFC2B775519F998D7D6F0A8E99E--
 
