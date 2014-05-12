@@ -1,45 +1,60 @@
-From: Jeff Holtz <jeff.holtz@movimentogroup.com>
-Subject: Re: Rebuild Drivers for Ubuntu
-Date: Mon, 12 May 2014 06:54:57 +0000 (UTC)
-Message-ID: <loom.20140512T085000-3@post.gmane.org>
-References: <loom.20140512T070934-65@post.gmane.org> <537068BB.5040901@hartkopp.net>
+From: Peter Crosthwaite <peter.crosthwaite@xilinx.com>
+Subject: Re: [Qemu-devel] [PATCH 1/2] CAN bus simple SJA1000 PCI card
+ emulation for QEMU
+Date: Mon, 12 May 2014 19:01:52 +1000
+Message-ID: <CAEgOgz7sCAWuyVFOR94omp=2DEpisio+nUQDWBCzq3e-Y_WCVw@mail.gmail.com>
+References: <201405092010.19482.pisa@cmp.felk.cvut.cz>
+	<201405092014.32116.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:59485 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754133AbaELGzO (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 12 May 2014 02:55:14 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1Wjk8j-0008Es-NQ
-	for linux-can@vger.kernel.org; Mon, 12 May 2014 08:55:09 +0200
-Received: from c-69-246-11-150.hsd1.mi.comcast.net ([69.246.11.150])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 12 May 2014 08:55:09 +0200
-Received: from jeff.holtz by c-69-246-11-150.hsd1.mi.comcast.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 12 May 2014 08:55:09 +0200
+Received: from mail-ve0-f171.google.com ([209.85.128.171]:47590 "EHLO
+	mail-ve0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750778AbaELJBx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 05:01:53 -0400
+Received: by mail-ve0-f171.google.com with SMTP id oz11so8495156veb.30
+        for <linux-can@vger.kernel.org>; Mon, 12 May 2014 02:01:53 -0700 (PDT)
+In-Reply-To: <201405092014.32116.pisa@cmp.felk.cvut.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, Oliver Hartkopp A <socketcan@hartkopp.net>, jinyang.sia@gmail.com, Stefan Weil <sw@weilnetz.de>, rtems-devel@rtems.org, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, linux-can@vger.kernel.org
 
+Hi Pavel,
 
-BRILLIANT!!
+On Sat, May 10, 2014 at 4:14 AM, Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
+> The work is based on Jin Yang GSoC 2013 work funded
+> by Google and mentored in frame of RTEMS project GSoC
+> slot donated to QEMU.
+>
+> Update from QEMU-1.4 version and architecture cleanup
+> by Pavel Pisa (Czech Technical University in Prague).
+>
+> The core SJA1000 support is independent of provided
+> PCI board. The simple core CAN bus infrastructure
+> is independent as well.
+>
+> Connection to the real host CAN bus network through
+> SocketCAN network interface is available for Linux
+> host system as well.
+>
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> ---
+>  default-configs/pci.mak |   2 +
+>  hw/net/Makefile.objs    |   4 +
+>  hw/net/can_core.c       | 350 +++++++++++++++++++
+>  hw/net/can_pci.c        | 238 +++++++++++++
+>  hw/net/can_sja1000.c    | 878 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  hw/net/can_sja1000.h    | 163 +++++++++
+>  include/net/can_emu.h   | 123 +++++++
+>  7 files changed, 1758 insertions(+)
 
-Thanks.  This worked.  I had tried to simply do a make and it wasn't
+That's a big patch. And it seems to add a new API/framework, then new
+users of that API. Can you add your core as a single patch, then
+incrementally bring your devices stuff as subsequent patches? My guess
+is this should be about 3 patches - are there any circular deps,
+requiring you to bring your three c files all at once or is there a
+logical order you can add them for ease of review?
 
-working.  Found the error since I am on Trusty 3.13 and PDE is no longer
-
-valid (need to use PDE_DATA)
- 
-
-I'd love to figure out how to simply place can-modules into source and
-
-rebuild everything but seeing as I have what I'm looking for now I'm good to
-
-do.  THANKS AGAIN!!!
-
-
+Regards,
+Peter
