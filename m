@@ -1,41 +1,57 @@
 From: "Rost, Martin" <Martin.Rost@tonfunk.de>
-Subject: Re: [PATCH] can: mp251x: fix mcp2515 stops receiving problem
-Date: Mon, 12 May 2014 17:17:55 +0000
-Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC86712@mailserver>
+Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
+Date: Mon, 12 May 2014 17:27:51 +0000
+Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC8872A@mailserver>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----85A71BF599D2A34A7F1FC202941EDE46"
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----FDD43C258460D4213D7822F941047708"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smartman.tonfunk.biz ([145.253.128.114]:34321 "EHLO
+Received: from keys.tonfunk.biz ([145.253.128.114]:34324 "EHLO
 	mail.tonfunk.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759217AbaELRYB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 13:24:01 -0400
-Received: from [129.84.3.7] (port=28375 helo=tonfunk.biz)
+	with ESMTP id S1751291AbaELR2C (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 13:28:02 -0400
+Received: from [129.84.3.7] (port=33285 helo=tonfunk.biz)
 	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
 	(Exim 4.76)
 	(envelope-from <Martin.Rost@tonfunk.de>)
-	id 1WjtrS-0001zK-2M
-	for linux-can@vger.kernel.org; Mon, 12 May 2014 19:17:58 +0200
+	id 1Wju14-0002BH-0b
+	for linux-can@vger.kernel.org; Mon, 12 May 2014 19:27:54 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an S/MIME signed message
 
-------85A71BF599D2A34A7F1FC202941EDE46
+------FDD43C258460D4213D7822F941047708
 Content-Language: de-DE
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 
->> Not-Signed-off-by: Martin Rost <Martin.Rost@tonfunk.de>=0A=
-> Martin, can I add your S-o-b [1]?=0A=
 =0A=
-Please do so. Sorry, I was not aware when an S-o-b is due.=0A=
+Hello Marc,=0A=
+=0A=
+> Hmmmm, I think level triggered interrupt would help here. However not=0A=
+> all interrupt controller support level interrupts and=0A=
+> arch/arm/mach-pxa/icontrol.c sets the trigger to rising edge.=0A=
+=0A=
+That was my first attempt. That explains why it didn't help, too.=0A=
+=0A=
+> What happens if the register is still empty after 10ms? Can we do=0A=
+> something better than the print, which will probably not fix the probem..=
+.=0A=
+=0A=
+I thought about re-checking the line if the IRQ line was released, but I ha=
+ve no clue how to do that...=0A=
+I haven't seen a problem when returning regardless (in my setup), but I'd l=
+ike to give a hint at least in case someone runs into the same problem.=0A=
+=0A=
+> I'll send a cleaned version of you patch.=0A=
+much appreciated.=0A=
 =0A=
 Regards,=0A=
-Martin=
+Martin.=
 
-------85A71BF599D2A34A7F1FC202941EDE46
+------FDD43C258460D4213D7822F941047708
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -75,13 +91,13 @@ txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
 yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
 BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
 EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
-HAYJKoZIhvcNAQkFMQ8XDTE0MDUxMjE3MTgwMFowIwYJKoZIhvcNAQkEMRYEFOpB
-fS023STYX/c6mBkc1OdFVKNsMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
+HAYJKoZIhvcNAQkFMQ8XDTE0MDUxMjE3MjgwMFowIwYJKoZIhvcNAQkEMRYEFBf0
+X+wqngUX2r9ENayMZA61DAu9MHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
 MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
 AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
-CSqGSIb3DQEBAQUABIGAllaeDz/xz/6fNgSL3ZQRDf1xpzwd7ijoHpwSAtRKsuM1
-s3XVU0uPl148vYhuuvvj2KT8/tEeloKtLXkJPZIgxdz0upSCSCrD5sE6ZJnRZgNp
-zFvaUblX8lAOfxbdJE+0lJDhWqdiHcIlEVxQlgIfUOeijhigurClchgo+bK1h5I=
+CSqGSIb3DQEBAQUABIGAC3EzWrtpibLZH+LJwzWEAbmnUln2v1BqQlmMj2Pn1J42
+iR5qbhNj8eNHabXHD7dS2+8CXMyf23YY1DsZeYRMj6E+5+eMLaQl3l4KRkFi77CP
+DYW9vJkcNChODhPYjnGk5hprKQZj9xMfsUzu/8TgeI0Bybz9fLXD3DaDGa5AwbI=
 
-------85A71BF599D2A34A7F1FC202941EDE46--
+------FDD43C258460D4213D7822F941047708--
 
