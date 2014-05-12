@@ -1,81 +1,57 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: mp251x: fix mcp2515 stops receiving problem
-Date: Mon, 12 May 2014 19:07:08 +0200
-Message-ID: <5370FFBC.6040008@pengutronix.de>
-References: <1399914360-7146-1-git-send-email-mkl@pengutronix.de>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbWNwMjUxeDogbWNwMjUxNSBzdG9wcyByZWNlaXZpbmc=?=
+Date: Mon, 12 May 2014 21:14:55 +0400
+Message-ID: <1399914895.885192215@f95.i.mail.ru>
+References: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
+ <5370FE36.8020901@pengutronix.de>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="JXrhc00NnFAispBt5Qd0fE24WAmOvxDNu"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59411 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759121AbaELRHR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 13:07:17 -0400
-In-Reply-To: <1399914360-7146-1-git-send-email-mkl@pengutronix.de>
+Received: from fallback5.mail.ru ([94.100.176.59]:54787 "EHLO
+	fallback5.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758831AbaELRQK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 May 2014 13:16:10 -0400
+Received: from f95.i.mail.ru (f95.i.mail.ru [94.100.185.20])
+	by fallback5.mail.ru (mPOP.Fallback_MX) with ESMTP id E003D1168AA2C
+	for <linux-can@vger.kernel.org>; Mon, 12 May 2014 21:15:07 +0400 (MSK)
+In-Reply-To: <5370FE36.8020901@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, "Rost, Martin" <Martin.Rost@tonfunk.de>, Alexander Shiyan <shc_work@mail.ru>
+To: =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>
+Cc: =?UTF-8?B?IlJvc3QsIE1hcnRpbiI=?= <Martin.Rost@tonfunk.de>, =?UTF-8?B?bGludXgtY2FuQHZnZXIua2VybmVsLm9yZw==?= <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JXrhc00NnFAispBt5Qd0fE24WAmOvxDNu
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 05/12/2014 07:06 PM, Marc Kleine-Budde wrote:
-> From: "Rost, Martin" <Martin.Rost@tonfunk.de>
->=20
-> The mcp2515 sometimes seems to trigger an interrupt with the correspond=
-ing
-> register not being set yet. This makes the driver exit the interrupt be=
-cause
-> there is obviously nothing to do, but the interrupt line is kept low.
-> Therefore the driver does not see any more interrupts until the chip is=
- reset
-> (via interface down/up).
->=20
-> This patch changes the IST to first check the IRQ registers, and wait u=
-p to 10
-> ms if an event really occurrs. If the IRQ register is still empty after=
- 10ms,
-> a kernel message gets issued. The IST loop is rearranged to evaluate th=
-e IRQ
-> register at the last moment before exiting, to not miss a late irq even=
-t.
->=20
-> Not-Signed-off-by: Martin Rost <Martin.Rost@tonfunk.de>
-
-Martin, can I add your S-o-b [1]?
-
-> Cc: Alexander Shiyan <shc_work@mail.ru>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-[1]
-http://lxr.free-electrons.com/source/Documentation/SubmittingPatches#L307=
-
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---JXrhc00NnFAispBt5Qd0fE24WAmOvxDNu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlNw/7wACgkQjTAFq1RaXHNZXwCbBn24Q2friYhjSBS5zwpVuJ05
-vKcAoIUY/jc+gXZnYeSwTu08VJzs5I5f
-=3N5a
------END PGP SIGNATURE-----
-
---JXrhc00NnFAispBt5Qd0fE24WAmOvxDNu--
+TW9uLCAxMiBNYXkgMjAxNCAxOTowMDozOCArMDIwMCDQvtGCIE1hcmMgS2xlaW5lLUJ1ZGRlIDxt
+a2xAcGVuZ3V0cm9uaXguZGU+Ogo+IEhleSBNYXJ0aW4sCj4gCj4gT24gMDUvMDgvMjAxNCAwODoz
+MyBBTSwgUm9zdCwgTWFydGluIHdyb3RlOgo+ID4gVGhlIG1jcDI1MTUgc29tZXRpbWVzIHNlZW1z
+IHRvIHRyaWdnZXIgYW4gaW50ZXJydXB0IHdpdGggdGhlCj4gPiBjb3JyZXNwb25kaW5nIHJlZ2lz
+dGVyIG5vdCBiZWluZyBzZXQgeWV0LiBUaGlzIG1ha2VzIHRoZSBkcml2ZXIgZXhpdAo+ID4gdGhl
+IGludGVycnVwdCBiZWNhdXNlIHRoZXJlIGlzIG9idmlvdXNseSBub3RoaW5nIHRvIGRvLCBidXQg
+dGhlCj4gPiBpbnRlcnJ1cHQgbGluZSBpcyBrZXB0IGxvdy4gVGhlcmVmb3JlIHRoZSBkcml2ZXIg
+ZG9lcyBub3Qgc2VlIGFueQo+ID4gbW9yZSBpbnRlcnJ1cHRzIHVudGlsIHRoZSBjaGlwIGlzIHJl
+c2V0ICh2aWEgaW50ZXJmYWNlIGRvd24vdXApLgo+IAo+IEhtbW1tLCBJIHRoaW5rIGxldmVsIHRy
+aWdnZXJlZCBpbnRlcnJ1cHQgd291bGQgaGVscCBoZXJlLiBIb3dldmVyIG5vdAo+IGFsbCBpbnRl
+cnJ1cHQgY29udHJvbGxlciBzdXBwb3J0IGxldmVsIGludGVycnVwdHMgYW5kCj4gYXJjaC9hcm0v
+bWFjaC1weGEvaWNvbnRyb2wuYyBzZXRzIHRoZSB0cmlnZ2VyIHRvIHJpc2luZyBlZGdlLgo+IAo+
+ID4gVGhpcyBwYXRjaCBjaGFuZ2VzIHRoZSBJU1QgdG8gZmlyc3QgY2hlY2sgdGhlIElSUSByZWdp
+c3RlcnMsIGFuZCB3YWl0Cj4gPiB1cCB0byAxMCBtcyBpZiBhbiBldmVudCByZWFsbHkgb2NjdXJy
+cy4gSWYgdGhlIElSUSByZWdpc3RlciBpcyBzdGlsbAo+ID4gZW1wdHkgYWZ0ZXIgMTBtcywgYSBr
+ZXJuZWwgbWVzc2FnZSBnZXRzIGlzc3VlZC4KPiAKPiBXaGF0IGhhcHBlbnMgaWYgdGhlIHJlZ2lz
+dGVyIGlzIHN0aWxsIGVtcHR5IGFmdGVyIDEwbXM/IENhbiB3ZSBkbwo+IHNvbWV0aGluZyBiZXR0
+ZXIgdGhhbiB0aGUgcHJpbnQsIHdoaWNoIHdpbGwgcHJvYmFibHkgbm90IGZpeCB0aGUgcHJvYmVt
+Li4uCj4gCj4gPiBUaGUgSVNUIGxvb3AgaXMgcmVhcnJhbmdlZCB0byBldmFsdWF0ZSB0aGUgSVJR
+IHJlZ2lzdGVyIGF0IHRoZSBsYXN0Cj4gPiBtb21lbnQgYmVmb3JlIGV4aXRpbmcsIHRvIG5vdCBt
+aXNzIGEgbGF0ZSBpcnEgZXZlbnQuCj4gCj4gQWxleGFuZGVyLCBoYXZlIHlvdSBzZWVuIG9yIGhl
+YXJkIG9mIHRoaXMgcHJvYmxlbSBiZWZvcmU/IFdoYXQgZG8geW91Cj4gdGhpbmsgYWJvdXQgdGhp
+cyB3b3JrYXJvdW5kPwoKSSBlbmNvdW50ZXJlZCBhIHNpbWlsYXIgcHJvYmxlbSBvbmx5IG9uY2Us
+IGJ1dCBpdCB3YXMgcmVzb2x2ZWQgYnkgdXNpbmcKY2FuX3NldF9yZXN0YXJ0X21zKCkgOiksIGJl
+Y2F1c2UgdGhlIHByb2JsZW0gd2FzIHRoYXQgdGhlIGNvbnRyb2xsZXIKdHJhbnNpdGlvbnMgdG8g
+dGhlIEJVU19PRkYgc3RhdGUuCgpJIGFic29sdXRlbHkgZG9uJ3QgbGlrZSB0aGUgcGF0Y2guIFRo
+aXMgaXMgbm90IGEgc29sdXRpb24gdG8gdGhlIHByb2JsZW0gYnV0CndheXMgdG8gY2lyY3VtdmVu
+dCBpdC4KCkkgd291bGQgcmVjb21tZW5kIHRvIG1ha2UgYSB0ZW1wb3JhcnkgcGFyYW1ldGVyIGZv
+ciBzeXNmcywgdGhlbiB3aGVuIGEKcHJvYmxlbSBvY2N1cnMsIHlvdSBjb3VsZCB0YWtlIGEgc25h
+cHNob3QgZnJvbSBhbGwgcmVnaXN0ZXJzIChpbmNsdWRpbmcgYW4KaW50ZXJydXB0IHN0YXR1cyBy
+ZWdpc3RlcikgYW5kIHVuZGVyc3RhbmQgd2hhdCB0aGUgcHJvYmxlbSBpcy4KUmVhbGl6aW5nIHdo
+YXQgd2FzIHJlYWxseSBnb2luZyBvbiwgd2UgY2FuIG1ha2UgdGhlIHJpZ2h0IGRlY2lzaW9uLgoK
+LS0tCgo=
