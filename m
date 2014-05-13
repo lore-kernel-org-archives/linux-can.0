@@ -1,94 +1,81 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: share thought on socketcan for flexcan driver on imx6 platform
-Date: Tue, 13 May 2014 16:36:21 +0200
-Message-ID: <53722DE5.6040103@pengutronix.de>
-References: <536A2408.70608@tataelxsi.co.in>
+Subject: Re: Request for proper hardware dependencies
+Date: Tue, 13 May 2014 16:37:20 +0200
+Message-ID: <53722E20.9080405@pengutronix.de>
+References: <21352.42929.159377.243822@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="rdwRUVNEODw4oE6oqrlcjChh4ftH3dnne"
+ boundary="PWaHFsFO3iI1w20cIgTIF0oVAAbVsHEQ0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54525 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54538 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932657AbaEMOgb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 13 May 2014 10:36:31 -0400
-In-Reply-To: <536A2408.70608@tataelxsi.co.in>
+	with ESMTP id S933327AbaEMOhY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 13 May 2014 10:37:24 -0400
+In-Reply-To: <21352.42929.159377.243822@gargle.gargle.HOWL>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, linux-can@vger.kernel.org
+Cc: Jean Delvare <jdelvare@suse.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rdwRUVNEODw4oE6oqrlcjChh4ftH3dnne
+--PWaHFsFO3iI1w20cIgTIF0oVAAbVsHEQ0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 05/07/2014 02:16 PM, Ratheendran wrote:
-> The mail I  write  to get more insight on socketcan implementation for
-> flexcan driver on imx6 platform.
+On 05/06/2014 11:13 AM, Uwe Bonnes wrote:
+> Hallo,
 >=20
-> Our customer need mode change implementation to be implemented on the
-> driver.
-> Freeze -> Listen-Only
-
-Listen only mode ist supported by the driver, you can use iproute2's ip
-utility, canconfig for shell, or libsocketcan for C.
-
-    canconfig can0 ctrlmode listen-only on
-    ifconfig can0 up
-
-> Freeze -> Normal
-
-it's just a normal ifconfig up, just to be sure switch listen only mode o=
-ff:
-
-    canconfig can0 ctrlmode listen-only off
-    ifconfig can0 up
-
-> Listen-Only -> Normal
-
-    ifconfig can0 down
-    canconfig can0 ctrlmode listen-only off
-    ifconfig can0 up
-
-> Normal ->Freeze
-> Freeze -> Disable
-
-ifconfig down is whatever state, usually normal -> freeze, then disable
-
-    ifconfig can0 down
-
-> Disable -> Freeze
-
-This happens during ifconfig up, but then the device goes straight into
-normal mode.
-
-> I very well know this can be achieved with iproute2 utilities with the
-> existing driver implementation.
-
-Not quite, we don't distinguish between disable and freeze.
-
-> I can also tweak the driver code to bring in this mode changes with the=
-
-> implementation of ioctl calls,the thought bothers me to go ahead is thi=
-s
-> changes with lead to undesired consequences on socketcan stack.
-> for example debugging an application with ipoute2 related commands will=
-
-> not give the correct status on the on below stack below when the mode
-> changes occurs at the c code level.
-
-ioctls are out of fashion, nowadays we use netlink to control the
-network devices.
-
-> So I need to understand any better way to achieve the scope apart from
-> command line tools, probably by enhancing the upper layer stack to
-> accommodate the mode change ioctl implementation.
+> the number of kernel driver exploded in the last years and so the kerne=
+l
+> configuration. Distribution mantainers must at some point limit compile=
+d
+> driver at least partly to the driver needed one on a given arch. Howeve=
+r the
+> distribution maintainers mosty can't always know what they deal about.
 >=20
-> I will be great help if you all can share your valuable thoughts.
+> For me this resulted in loosing socketcan from the Opensuse Kernels in
+> between 12.3 up to some weeks ago, as one maintainer (not Jean) matched=
 
-Use libsocketcan for a C interface.
+> socketcan in error with "SPI" which is not related to normal desktop
+> machines. See
+> http://lists.opensuse.org/archive/opensuse-bugs/2014-01/msg00970.html.
+> Opensuse 13.1 recent kernels and the next release will have socketcan a=
+gain,
+> but in the course of the discussion Jean Delvare pointed some weak poin=
+ts in
+> socketcan configuration, leading to compilation on driver not needed on=
+ some
+> archs:
+>=20
+>>>>>> "Jean" =3D=3D Jean Delvare <jdelvare@suse.com> writes:
+>=20
+>     Jean> For the record, hardware dependencies on CAN device drivers a=
+ren't
+>     Jean> that bad in general, I've seen worse in several other subsyst=
+ems.
+>=20
+>     Jean> That being said, there is still some room for improvement. Fo=
+r
+>     Jean> example, CAN_AT91 could depend on ARCH_AT91 instead of just A=
+RM,
+>     Jean> PCH_CAN could depend on X86, and a few drivers with "ISA" in =
+their
+>     Jean> description should probably depend on ISA. I'm also not sure =
+why
+>     Jean> CAN_MSCAN alternatively depends on M68K instead of just
+>     Jean> ARM. That's just from a quick look from the non-initiate I am=
+,
+>     Jean> there may be more dependency fix-ups possible.  I'll send a f=
+ew
+>     Jean> patches out if I can find some time for that today.
+>=20
+> Please consider openly his patches or even better consider a cleanup yo=
+urself.
 
+I've applied all 3 patches by Jean to can-next.
+
+Tnx,
 Marc
 
 --=20
@@ -98,7 +85,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---rdwRUVNEODw4oE6oqrlcjChh4ftH3dnne
+--PWaHFsFO3iI1w20cIgTIF0oVAAbVsHEQ0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -107,9 +94,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlNyLeUACgkQjTAFq1RaXHPsMQCgiL8wFZJtZSLCzoc+7SCh3DIK
-eOsAn02gWk4ufwoJHY/R/4Du9GfMnw7A
-=h0qg
+iEYEARECAAYFAlNyLiAACgkQjTAFq1RaXHMgLgCfTI8dIbFOhOyvwyf9FFf7f2ul
+QaQAn0BsHxSTCMAgdMcqsWAjnWjzdjsI
+=04kF
 -----END PGP SIGNATURE-----
 
---rdwRUVNEODw4oE6oqrlcjChh4ftH3dnne--
+--PWaHFsFO3iI1w20cIgTIF0oVAAbVsHEQ0--
