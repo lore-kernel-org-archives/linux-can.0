@@ -1,85 +1,53 @@
-From: Jean Delvare <jdelvare@suse.com>
-Subject: Re: Request for proper hardware dependencies
-Date: Tue, 13 May 2014 17:31:30 +0200
-Message-ID: <1399995090.4341.401.camel@chaos.site>
-References: <21352.42929.159377.243822@gargle.gargle.HOWL>
-	 <53722E20.9080405@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: building  j1939 stack
+Date: Wed, 14 May 2014 16:06:34 +0200
+Message-ID: <20140514140634.GA27309@vandijck-laurijssen.be>
+References: <loom.20140510T062609-546@post.gmane.org>
+ <20140510220639.GA18571@vandijck-laurijssen.be>
+ <loom.20140513T153515-14@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from nat28.tlf.novell.com ([130.57.49.28]:55117 "EHLO
-	nat28.tlf.novell.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754440AbaEMPbf (ORCPT
-	<rfc822;groupwise-linux-can@vger.kernel.org:0:0>);
-	Tue, 13 May 2014 11:31:35 -0400
-In-Reply-To: <53722E20.9080405@pengutronix.de>
+Received: from mailrelay008.isp.belgacom.be ([195.238.6.174]:23600 "EHLO
+	mailrelay008.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752335AbaENOGk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 May 2014 10:06:40 -0400
+Content-Disposition: inline
+In-Reply-To: <loom.20140513T153515-14@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, linux-can@vger.kernel.org
+To: swapnil <patilswa@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-Le Tuesday 13 May 2014 =C3=A0 16:37 +0200, Marc Kleine-Budde a =C3=A9cr=
-it :
-> On 05/06/2014 11:13 AM, Uwe Bonnes wrote:
-> > Hallo,
-> >=20
-> > the number of kernel driver exploded in the last years and so the k=
-ernel
-> > configuration. Distribution mantainers must at some point limit com=
-piled
-> > driver at least partly to the driver needed one on a given arch. Ho=
-wever the
-> > distribution maintainers mosty can't always know what they deal abo=
-ut.
-> >=20
-> > For me this resulted in loosing socketcan from the Opensuse Kernels=
- in
-> > between 12.3 up to some weeks ago, as one maintainer (not Jean) mat=
-ched
-> > socketcan in error with "SPI" which is not related to normal deskto=
-p
-> > machines. See
-> > http://lists.opensuse.org/archive/opensuse-bugs/2014-01/msg00970.ht=
-ml.
-> > Opensuse 13.1 recent kernels and the next release will have socketc=
-an again,
-> > but in the course of the discussion Jean Delvare pointed some weak =
-points in
-> > socketcan configuration, leading to compilation on driver not neede=
-d on some
-> > archs:
-> >=20
-> >>>>>> "Jean" =3D=3D Jean Delvare <jdelvare@suse.com> writes:
-> >=20
-> >     Jean> For the record, hardware dependencies on CAN device drive=
-rs aren't
-> >     Jean> that bad in general, I've seen worse in several other sub=
-systems.
-> >=20
-> >     Jean> That being said, there is still some room for improvement=
-=2E For
-> >     Jean> example, CAN_AT91 could depend on ARCH_AT91 instead of ju=
-st ARM,
-> >     Jean> PCH_CAN could depend on X86, and a few drivers with "ISA"=
- in their
-> >     Jean> description should probably depend on ISA. I'm also not s=
-ure why
-> >     Jean> CAN_MSCAN alternatively depends on M68K instead of just
-> >     Jean> ARM. That's just from a quick look from the non-initiate =
-I am,
-> >     Jean> there may be more dependency fix-ups possible.  I'll send=
- a few
-> >     Jean> patches out if I can find some time for that today.
-> >=20
-> > Please consider openly his patches or even better consider a cleanu=
-p yourself.
->=20
-> I've applied all 3 patches by Jean to can-next.
+On Tue, May 13, 2014 at 01:45:33PM +0000, swapnil wrote:
+> Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
+> 
+> > 
+> > Hey,
+> > 
+> > I found already that my can-j1939 does not compile on a 3.12 kernel
+> > that I'm using.
+> > I'm working to bring can-j1939 to 3.12 for my own use.
+> > 
+> > What kernel version do you use before & now?
+> I am using 3.8
+> i missed to do checkout git checkout origin/am33x-v3.8
+> that's why it did not worked.. I am able to compile now :).
 
-Great, thank you!
+Such things happen.
+It's fine to hear that it works now.
 
---=20
-Jean Delvare
-SUSE L3 Support
-
+> I am targeting to boot my Kernal in 2 Seconds.   
+> Thanks 
+> > 
+> > Kurt
+> > 
+> 
+> 
+> 
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
