@@ -1,53 +1,47 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: building  j1939 stack
-Date: Wed, 14 May 2014 16:06:34 +0200
-Message-ID: <20140514140634.GA27309@vandijck-laurijssen.be>
-References: <loom.20140510T062609-546@post.gmane.org>
- <20140510220639.GA18571@vandijck-laurijssen.be>
- <loom.20140513T153515-14@post.gmane.org>
+Subject: Re: regarding iproute2-j1939 package
+Date: Wed, 14 May 2014 16:12:40 +0200
+Message-ID: <20140514141240.GB27309@vandijck-laurijssen.be>
+References: <5373669A.1020301@tataelxsi.co.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay008.isp.belgacom.be ([195.238.6.174]:23600 "EHLO
-	mailrelay008.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752335AbaENOGk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 14 May 2014 10:06:40 -0400
+Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:57610 "EHLO
+	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751103AbaENOMn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 May 2014 10:12:43 -0400
 Content-Disposition: inline
-In-Reply-To: <loom.20140513T153515-14@post.gmane.org>
+In-Reply-To: <5373669A.1020301@tataelxsi.co.in>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: swapnil <patilswa@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Ratheendran <ba.rsrajeshwaran@tataelxsi.co.in>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, May 13, 2014 at 01:45:33PM +0000, swapnil wrote:
-> Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
+On Wed, May 14, 2014 at 06:20:34PM +0530, Ratheendran wrote:
+> Hi All,
 > 
-> > 
-> > Hey,
-> > 
-> > I found already that my can-j1939 does not compile on a 3.12 kernel
-> > that I'm using.
-> > I'm working to bring can-j1939 to 3.12 for my own use.
-> > 
-> > What kernel version do you use before & now?
-> I am using 3.8
-> i missed to do checkout git checkout origin/am33x-v3.8
-> that's why it did not worked.. I am able to compile now :).
+> I want to use iproute2 available with 'git clone git@gitorious.org:linux-can/
+> iproute2-j1939.git'
+> 
+> I noticed from the patch the some sub-directories missing in iproute-j1939
+> package, need to understand if there is could lead to undesired consequences on
+> iproute2 functionality on other protocols.
+> 
+> snapshot of the patch created from 'iproute2-3.10.0'
+> --- iproute2-3.10.0/Makefile    2013-07-16 10:06:36.000000000 -0700
+> +++ iproute2-j1939/Makefile    2014-05-05 03:00:29.000000000 -0700
+> 
+> -SUBDIRS=lib ip tc bridge misc netem genl man
+> +SUBDIRS=lib ip tc misc netem genl
 
-Such things happen.
-It's fine to hear that it works now.
+the iproute2-j1939 branch does not really follow the iproute2 development closely
+due to time considerations.
+The bridge & man subdirectory may have been added recently, that is perfectly possible.
 
-> I am targeting to boot my Kernal in 2 Seconds.   
-> Thanks 
-> > 
-> > Kurt
-> > 
-> 
-> 
-> 
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+older iproute2 versions, like the iproute2-j1939 that you have,
+still work on recent kernels, but you may not be able to achieve settings
+that became available recently.
+
+With regard to can & j1939, the iproute-j1939 is still up to date I believe.
+
+Kurt
