@@ -1,157 +1,94 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2014-05-19
-Date: Mon, 19 May 2014 09:46:22 +0200
-Message-ID: <5379B6CE.60004@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH] peak_pci: fix use after free in netdev teardown
+Date: Mon, 19 May 2014 11:14:47 +0200
+Message-ID: <5379CB87.20106@peak-system.com>
+References: <1397072720.22713.19.camel@acrs-z800-1>
+ <5379AE8C.9050406@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="oramG9CR3IlvUJ1t2KBqdvnSFwbstFn9F"
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33071 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751215AbaESHqg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 May 2014 03:46:36 -0400
+Received: from mail.peak-system.com ([213.157.13.214]:36030 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753841AbaESJOz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 May 2014 05:14:55 -0400
+In-Reply-To: <5379AE8C.9050406@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oramG9CR3IlvUJ1t2KBqdvnSFwbstFn9F
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi All,
 
-Hello David,
+So I finally had a look to the diff file. It clearly does what=20
+Christopher says, that is, it fixes some memory access order issues whe=
+n=20
+the CAN devices have to be removed from the system, either when probing=
+=20
+has failed or when the driver is unloaded from the system.
 
-this is a pull request of 13 patches for net-next/master.
+The diff file has to be re-written into a Linux-coding style patch, and=
+=20
+yes, maybe all this removing stuff could be put into a (new) single=20
+function made for that.
 
-A patch by Dan Carpenter fixes a coccinelle warning in the mcp251x
-driver. Jean Delvare contributes three patches to tightening the
-Kconfig dependencies for some drivers. Then come three patches by Pavel
-Machek that improve the c_can driver support on the socfpga platform.
-Sergei Shtylyov's patch brings support for the CAN hardware found on
-Renesas R-Car CAN controllers. Four patches by Oliver Hartkopp, the
-first cleans up the guard macros in the CAN headers the other three
-improve the EFF frame filtering. Maximilian Schneider's patch adds
-support for the GS_USB CAN devices.
+So, how do we proceed, please ?
 
-Marc
+Regards,
 
----
-The following changes since commit b6052af61a9e0dee236bcf4c69843126c0d28e=
-4f:
+St=C3=A9phane
 
-  Merge tag 'batman-adv-for-davem' of git://git.open-mesh.org/linux-merge=
- (2014-05-18 21:27:09 -0400)
+Le 19/05/2014 09:11, Marc Kleine-Budde a =C3=A9crit :
+> On 04/09/2014 09:45 PM, Christopher R. Baker wrote:
+>> Hi All,
+>>
+>> In the course of tracking down (and eventually backporting) a fix to=
+ one
+>> of my systems that is still running a 3.2 kernel, I noticed what I
+>> believe to be a pair of use-after-free bugs in peak_pci.c pertaining=
+ to
+>> the linked list of netdevs that is maintained for multi-port cards.
+>> These bugs persist in 3.14, so I thought I should send along a patch=
+ for
+>> review.
+>>
+>> Basically, the "prev_dev" pointer that is used for this list lives i=
+n
+>> memory that is allocated by alloc_sja1000dev(), but it is referenced
+>> after the call to free_sja1000dev() when walking the list during
+>> teardown, both in the failure case of peak_pci_probe and in
+>> peak_pci_remove.  Unless I'm missing something, these are toes waiti=
+ng
+>> to be stubbed...
+>>
+>> Caveats:
+>>   - This is a growing blob of copy-pasta that should probably be
+>> refactored to a common location.  For example, peak_pci_remove could=
+ be
+>> restructured to incrementally check and free allocated resources,
+>> allowing the "failure_remove_channels" label to delegate the cleanup=
+ to
+>> peak_pci_remove.  I didn't want to bite off too much this time, thou=
+gh,
+>> so I left that alone.
+>>   - I don't have an expresscard adapter to check the placement of th=
+e
+>> pciec_remove stanzas.  By inspection, unregister_sja1000dev does not
+>> appear to have a path back to the pciec stuff, but I may have missed
+>> something.
+>>
+>> -ChrisR
+>>
+>> Signed-of-by: Christopher R. Baker <cbaker@rec.ri.cmu.edu>
+> Stephane, can you please have a look at the patch.
+>
+> Marc
+>
 
-are available in the git repository at:
-
-
-  git://gitorious.org/linux-can/linux-can-next.git linux-can-next-for-3.1=
-6-20140519
-
-for you to fetch changes up to d08e973a77d128b25e01a08c34d89593fdf222da:
-
-  can: gs_usb: Added support for the GS_USB CAN devices (2014-05-19 09:38=
-:25 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-3.16-20140519
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      can: mcp251x: fix coccinelle warnings
-
-Jean Delvare (3):
-      can: at91_can: Fix Kconfig dependencies
-      can: mscan: Fix Kconfig dependencies
-      can: pch_can: Fix Kconfig dependencies
-
-Maximilian Schneider (1):
-      can: gs_usb: Added support for the GS_USB CAN devices
-
-Oliver Hartkopp (4):
-      can: unify identifiers to ensure unique include processing
-      can: proc: make array printing function indenpendent from sff frame=
-s
-      can: add hash based access to single EFF frame filters
-      can: add documentation for CAN filter usage optimisation
-
-Pavel Machek (3):
-      can: c_can: make {read,write}_reg functions const
-      can: c_can: Add and make use of 32-bit accesses functions
-      can: c_can: add hwinit support for non-TI devices
-
-Sergei Shtylyov (1):
-      can: add Renesas R-Car CAN driver
-
- Documentation/networking/can.txt       |  35 ++
- drivers/net/can/Kconfig                |  14 +-
- drivers/net/can/Makefile               |   1 +
- drivers/net/can/c_can/c_can.c          |  15 +-
- drivers/net/can/c_can/c_can.h          |   8 +-
- drivers/net/can/c_can/c_can_pci.c      |  31 +-
- drivers/net/can/c_can/c_can_platform.c |  84 ++-
- drivers/net/can/mscan/Kconfig          |   2 +-
- drivers/net/can/rcar_can.c             | 876 +++++++++++++++++++++++++++=
-++
- drivers/net/can/spi/mcp251x.c          |   2 +-
- drivers/net/can/usb/Kconfig            |   8 +
- drivers/net/can/usb/Makefile           |   1 +
- drivers/net/can/usb/gs_usb.c           | 971 +++++++++++++++++++++++++++=
-++++++
- include/linux/can/core.h               |   6 +-
- include/linux/can/dev.h                |   6 +-
- include/linux/can/led.h                |   6 +-
- include/linux/can/platform/cc770.h     |   6 +-
- include/linux/can/platform/mcp251x.h   |   6 +-
- include/linux/can/platform/rcar_can.h  |  17 +
- include/linux/can/platform/sja1000.h   |   6 +-
- include/linux/can/platform/ti_hecc.h   |   6 +-
- include/linux/can/skb.h                |   6 +-
- include/uapi/linux/can.h               |   6 +-
- include/uapi/linux/can/bcm.h           |   6 +-
- include/uapi/linux/can/error.h         |   6 +-
- include/uapi/linux/can/gw.h            |   6 +-
- include/uapi/linux/can/netlink.h       |   6 +-
- include/uapi/linux/can/raw.h           |   6 +-
- net/can/af_can.c                       |  31 +-
- net/can/af_can.h                       |   9 +-
- net/can/proc.c                         |  76 ++-
- 31 files changed, 2170 insertions(+), 95 deletions(-)
- create mode 100644 drivers/net/can/rcar_can.c
- create mode 100644 drivers/net/can/usb/gs_usb.c
- create mode 100644 include/linux/can/platform/rcar_can.h
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
-
-
-
-
-
-
-
-
-
---oramG9CR3IlvUJ1t2KBqdvnSFwbstFn9F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlN5ts4ACgkQjTAFq1RaXHMPSgCdFFnO62SLL8R8AobXiqOvcmTm
-5CMAnjJNDjEjskVlAcM1629r5AQvDe/r
-=/645
------END PGP SIGNATURE-----
-
---oramG9CR3IlvUJ1t2KBqdvnSFwbstFn9F--
+--
+PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
+Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
+HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
+Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
+--
