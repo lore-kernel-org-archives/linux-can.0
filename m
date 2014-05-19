@@ -1,126 +1,60 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH] peak_pci: fix use after free in netdev teardown
-Date: Mon, 19 May 2014 14:06:45 +0200
-Message-ID: <5379F3D5.6020909@peak-system.com>
-References: <1397072720.22713.19.camel@acrs-z800-1>
- <5379AE8C.9050406@pengutronix.de> <5379CB87.20106@peak-system.com>
- <5379CCDF.90809@pengutronix.de>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: SocketCAN: Matlab support
+Date: Mon, 19 May 2014 16:06:15 +0200
+Message-ID: <201405191606.15857.pisa@cmp.felk.cvut.cz>
+References: <CAGm1_ktOSQwWgmoZFuBtn0+hJ4zWiEs7iukzEZoQJWNu+zeDHA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:43764 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753161AbaESMGx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 May 2014 08:06:53 -0400
-In-Reply-To: <5379CCDF.90809@pengutronix.de>
+Received: from relay.felk.cvut.cz ([147.32.80.7]:12467 "EHLO
+	relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754317AbaESOGg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 May 2014 10:06:36 -0400
+In-Reply-To: <CAGm1_ktOSQwWgmoZFuBtn0+hJ4zWiEs7iukzEZoQJWNu+zeDHA@mail.gmail.com>
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org
+To: Yegor Yefremov <yegorslists@googlemail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michal Sojka <sojkam1@fel.cvut.cz>
 
-Hi again,
+Hello Yegor,
 
-After having a deeper look to the code, it looks like we don't actually=
-=20
-need all of these modifications.
+we have some experience there with Simulink on Linux
+with fully preemptive-kernel there at CTU.
 
-It's ok that some pointers have to be saved BEFORE calling=20
-free_sja1000dev(), but I checked the other things more deeply:
+Mainly my colleague, Michal Sojka, and his students work
+on Simulink embedded coded support. CAN blockset
+for embedded Cortex-R4 system is expected to be finished
+in next two or three months. This work is part
+of our TMS570LS3137 Simulink support.
 
-- peak_pciec_remove() calls don't need to be moved: this function=20
-clearly doesn't deal with any netdev neither candev stuff. So, it=20
-doesn't actually need to be called before free_sja1000dev().
+ http://rtime.felk.cvut.cz/rpp-tms570/
 
-- IMHO, no need to restore "pci_set_drvdata(pdev,NULL);" before=20
-returning an errno status from the _probe() function (neither from=20
-peak_pci_remove()): the pci device object won't be used next (AFAIK).
+When we have CAN support compliant to the common
+Simulink CAN blocks rules implemented for this target
+we expect to port that implementation to SocketCAN
+and integrate it with our Linux Target for Simulink
+Embedded Coder project
 
-- same in peak_pci_remove(): the prev link has to be saved before=20
-freeing the current candev object.
+  http://lintarget.sourceforge.net/
 
-So I assume that Christopher's fix could be summarized to:
+So that is our actual state of progress in this
+area. We would be happy to find others with
+interrest in similar projects.
 
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -551,7 +551,7 @@ static int peak_pci_probe(struct pci_dev *pdev,=20
-const struct
-  {
-         struct sja1000_priv *priv;
-         struct peak_pci_chan *chan;
--       struct net_device *dev;
-+       struct net_device *dev, *prev_dev;
-         void __iomem *cfg_base, *reg_base;
-         u16 sub_sys_id, icr;
-         int i, err, channels;
-@@ -688,11 +688,13 @@ failure_remove_channels:
-         writew(0x0, cfg_base + PITA_ICR + 2);
+Best wishes,
 
-         chan =3D NULL;
--       for (dev =3D pci_get_drvdata(pdev); dev; dev =3D chan->prev_dev=
-) {
--               unregister_sja1000dev(dev);
--               free_sja1000dev(dev);
-+       for (dev =3D pci_get_drvdata(pdev); dev; dev =3D prev_dev) {
-                 priv =3D netdev_priv(dev);
-                 chan =3D priv->priv;
-+               prev_dev =3D chan->prev_dev;
-+
-+               unregister_sja1000dev(dev);
-+               free_sja1000dev(dev);
-         }
+             Pavel Pisa
 
-         /* free any PCIeC resources too */
-@@ -726,10 +728,12 @@ static void peak_pci_remove(struct pci_dev *pdev)
-
-         /* Loop over all registered devices */
-         while (1) {
-+               struct net_device *prev_dev =3D chan->prev_dev;
-+
-                 dev_info(&pdev->dev, "removing device %s\n", dev->name=
-);
-                 unregister_sja1000dev(dev);
-                 free_sja1000dev(dev);
--               dev =3D chan->prev_dev;
-+               dev =3D prev_dev;
-
-                 if (!dev) {
-                         /* do that only for first channel */
-
-If ok, I'll push a well formatted patch asap, as soon as I have finishe=
-d=20
-with building my local linux-can-next and have tested these changes.
-
-Regards,
-
-St=C3=A9phane
-
-Le 19/05/2014 11:20, Marc Kleine-Budde a =C3=A9crit :
-> On 05/19/2014 11:14 AM, Stephane Grosjean wrote:
->> Hi All,
->>
->> So I finally had a look to the diff file. It clearly does what
->> Christopher says, that is, it fixes some memory access order issues =
-when
->> the CAN devices have to be removed from the system, either when prob=
-ing
->> has failed or when the driver is unloaded from the system.
->>
->> The diff file has to be re-written into a Linux-coding style patch, =
-and
->> yes, maybe all this removing stuff could be put into a (new) single
->> function made for that.
->>
->> So, how do we proceed, please ?
-> Make it so.
+On Friday 16 of May 2014 12:14:45 Yegor Yefremov wrote:
+> Has anyone experience with Matlab and SocketCAN? So far I couldn't
+> find anything usable via Google.
 >
-> Marc
->
-
---
-PEAK-System Technik GmbH, Otto-Roehm-Strasse 69, D-64293 Darmstadt=20
-Geschaeftsleitung: A.Gach/U.Wilhelm,St.Nr.:007/241/13586 FA Darmstadt=20
-HRB-9183 Darmstadt, Ust.IdNr.:DE 202220078, WEE-Reg.-Nr.: DE39305391=20
-Tel.+49 (0)6151-817320 / Fax:+49 (0)6151-817329, info@peak-system.com
---
+> Regards,
+> Yegor
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
