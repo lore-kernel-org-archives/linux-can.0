@@ -1,68 +1,78 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: SocketCAN: Matlab support
-Date: Mon, 19 May 2014 16:17:50 +0200
-Message-ID: <CAGm1_ks89UjyXrXsO4MewvafDZuag1DwBrHspv+SENgvEoQe3g@mail.gmail.com>
-References: <CAGm1_ktOSQwWgmoZFuBtn0+hJ4zWiEs7iukzEZoQJWNu+zeDHA@mail.gmail.com>
- <201405191606.15857.pisa@cmp.felk.cvut.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH] can: peak_pci: prevent use after free at netdev removal
+Date: Tue, 20 May 2014 11:38:56 +0200
+Message-ID: <1400578736-15381-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f172.google.com ([209.85.217.172]:55573 "EHLO
-	mail-lb0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751630AbaESOSM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 May 2014 10:18:12 -0400
-Received: by mail-lb0-f172.google.com with SMTP id l4so4115177lbv.17
-        for <linux-can@vger.kernel.org>; Mon, 19 May 2014 07:18:10 -0700 (PDT)
-In-Reply-To: <201405191606.15857.pisa@cmp.felk.cvut.cz>
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:48718 "EHLO
+	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750747AbaETJjN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 May 2014 05:39:13 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michal Sojka <sojkam1@fel.cvut.cz>
+To: linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>
 
-Hi Pavel,
+As remarked by Christopher R. Baker in his post at
 
-thanks for the info. Will look into it.
+http://marc.info/?l=linux-can&m=139707295706465&w=2
 
-Best regards,
-Yegor
+there's a possibility for an use after free condition at device removal.
 
-On Mon, May 19, 2014 at 4:06 PM, Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
-> Hello Yegor,
->
-> we have some experience there with Simulink on Linux
-> with fully preemptive-kernel there at CTU.
->
-> Mainly my colleague, Michal Sojka, and his students work
-> on Simulink embedded coded support. CAN blockset
-> for embedded Cortex-R4 system is expected to be finished
-> in next two or three months. This work is part
-> of our TMS570LS3137 Simulink support.
->
->  http://rtime.felk.cvut.cz/rpp-tms570/
->
-> When we have CAN support compliant to the common
-> Simulink CAN blocks rules implemented for this target
-> we expect to port that implementation to SocketCAN
-> and integrate it with our Linux Target for Simulink
-> Embedded Coder project
->
->   http://lintarget.sourceforge.net/
->
-> So that is our actual state of progress in this
-> area. We would be happy to find others with
-> interrest in similar projects.
->
-> Best wishes,
->
->              Pavel Pisa
->
-> On Friday 16 of May 2014 12:14:45 Yegor Yefremov wrote:
->> Has anyone experience with Matlab and SocketCAN? So far I couldn't
->> find anything usable via Google.
->>
->> Regards,
->> Yegor
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This simplified patch introduces an additional variable to prevent the issue.
+Thanks for catching this.
+
+Reported-by: Christopher R. Baker <cbaker@rec.ri.cmu.edu>
+CC: Christopher R. Baker <cbaker@rec.ri.cmu.edu>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+
+---
+ drivers/net/can/sja1000/peak_pci.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index c540e3d..564933a 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -551,7 +551,7 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	struct sja1000_priv *priv;
+ 	struct peak_pci_chan *chan;
+-	struct net_device *dev;
++	struct net_device *dev, *prev_dev;
+ 	void __iomem *cfg_base, *reg_base;
+ 	u16 sub_sys_id, icr;
+ 	int i, err, channels;
+@@ -688,11 +688,13 @@ failure_remove_channels:
+ 	writew(0x0, cfg_base + PITA_ICR + 2);
+ 
+ 	chan = NULL;
+-	for (dev = pci_get_drvdata(pdev); dev; dev = chan->prev_dev) {
+-		unregister_sja1000dev(dev);
+-		free_sja1000dev(dev);
++	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
+ 		priv = netdev_priv(dev);
+ 		chan = priv->priv;
++		prev_dev = chan->prev_dev;
++
++		unregister_sja1000dev(dev);
++		free_sja1000dev(dev);
+ 	}
+ 
+ 	/* free any PCIeC resources too */
+@@ -726,10 +728,12 @@ static void peak_pci_remove(struct pci_dev *pdev)
+ 
+ 	/* Loop over all registered devices */
+ 	while (1) {
++		struct net_device *prev_dev = chan->prev_dev;
++
+ 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
+ 		unregister_sja1000dev(dev);
+ 		free_sja1000dev(dev);
+-		dev = chan->prev_dev;
++		dev = prev_dev;
+ 
+ 		if (!dev) {
+ 			/* do that only for first channel */
+-- 
+1.9.1
+
