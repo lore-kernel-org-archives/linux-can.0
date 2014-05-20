@@ -1,78 +1,110 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can: peak_pci: prevent use after free at netdev removal
-Date: Tue, 20 May 2014 11:38:56 +0200
-Message-ID: <1400578736-15381-1-git-send-email-s.grosjean@peak-system.com>
+From: Timothy Vieregge <tvieregge@clearpathrobotics.com>
+Subject: Kernel Oops when setting j1939 device on
+Date: Tue, 20 May 2014 11:21:33 -0400
+Message-ID: <CAJdBzeATNb2pBOdp5bpx86Bw+K00wYwjgFOuRGbtZSPXvMoBuQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary=001a11c31938669ac004f9d66fbf
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:48718 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750747AbaETJjN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 May 2014 05:39:13 -0400
+Received: from mail-ig0-f171.google.com ([209.85.213.171]:34079 "EHLO
+	mail-ig0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753763AbaETPVe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 May 2014 11:21:34 -0400
+Received: by mail-ig0-f171.google.com with SMTP id c1so4994913igq.4
+        for <linux-can@vger.kernel.org>; Tue, 20 May 2014 08:21:34 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>
+To: linux-can@vger.kernel.org
 
-As remarked by Christopher R. Baker in his post at
+--001a11c31938669ac004f9d66fbf
+Content-Type: text/plain; charset=UTF-8
 
-http://marc.info/?l=linux-can&m=139707295706465&w=2
+After creating a vcan device (vcan0) I run the command
 
-there's a possibility for an use after free condition at device removal.
+ip link set vcan0 j1939 on
 
-This simplified patch introduces an additional variable to prevent the issue.
-Thanks for catching this.
+and the terminal locks up and and my network goes down.
+When I use dmesg it shows a kernel NULL pointer dereference.
+Anyone know if I'm doing something wrong, or if it's a bug?
 
-Reported-by: Christopher R. Baker <cbaker@rec.ri.cmu.edu>
-CC: Christopher R. Baker <cbaker@rec.ri.cmu.edu>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+I've attached the dmesg output and I'm running Ubuntu 12.04 with the
+3.8 kernel in a VM
 
----
- drivers/net/can/sja1000/peak_pci.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+--001a11c31938669ac004f9d66fbf
+Content-Type: text/plain; charset=US-ASCII; name="temp.txt"
+Content-Disposition: attachment; filename="temp.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hvfckl5n0
 
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index c540e3d..564933a 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -551,7 +551,7 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- {
- 	struct sja1000_priv *priv;
- 	struct peak_pci_chan *chan;
--	struct net_device *dev;
-+	struct net_device *dev, *prev_dev;
- 	void __iomem *cfg_base, *reg_base;
- 	u16 sub_sys_id, icr;
- 	int i, err, channels;
-@@ -688,11 +688,13 @@ failure_remove_channels:
- 	writew(0x0, cfg_base + PITA_ICR + 2);
- 
- 	chan = NULL;
--	for (dev = pci_get_drvdata(pdev); dev; dev = chan->prev_dev) {
--		unregister_sja1000dev(dev);
--		free_sja1000dev(dev);
-+	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
- 		priv = netdev_priv(dev);
- 		chan = priv->priv;
-+		prev_dev = chan->prev_dev;
-+
-+		unregister_sja1000dev(dev);
-+		free_sja1000dev(dev);
- 	}
- 
- 	/* free any PCIeC resources too */
-@@ -726,10 +728,12 @@ static void peak_pci_remove(struct pci_dev *pdev)
- 
- 	/* Loop over all registered devices */
- 	while (1) {
-+		struct net_device *prev_dev = chan->prev_dev;
-+
- 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
- 		unregister_sja1000dev(dev);
- 		free_sja1000dev(dev);
--		dev = chan->prev_dev;
-+		dev = prev_dev;
- 
- 		if (!dev) {
- 			/* do that only for first channel */
--- 
-1.9.1
-
+WyAgMTIzLjM0NjA3OF0gQlVHOiB1bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIg
+ZGVyZWZlcmVuY2UgYXQgMDAwMDAwMDAwMDAwMDAxMApbICAxMjMuMzQ2MDgyXSBJUDogWzxmZmZm
+ZmZmZmEwMDUxMDIwPl0gY2FuX3ZhbGlkYXRlX2xpbmtfYWYrMHgxMDAvMHgxNDAgW2Nhbl0KWyAg
+MTIzLjM0NjA4N10gUEdEIDVlNzk4MDY3IFBVRCA1ZTc5NzA2NyBQTUQgMCAKWyAgMTIzLjM0NjA4
+OV0gT29wczogMDAwMCBbIzFdIFNNUCAKWyAgMTIzLjM0NjA5MV0gTW9kdWxlcyBsaW5rZWQgaW46
+IHZlc2FmYiBibmVwIHJmY29tbSBibHVldG9vdGggc25kX2ludGVsOHgwIGpveWRldiBzbmRfYWM5
+N19jb2RlYyBoaWRfZ2VuZXJpYyBhYzk3X2J1cyB1c2JoaWQgaGlkIHNuZF9wY20gc25kX3NlcV9t
+aWRpIHNuZF9yYXdtaWRpIHNuZF9zZXFfbWlkaV9ldmVudCBzbmRfc2VxIHNuZF90aW1lciBzbmRf
+c2VxX2RldmljZSBzbmQgcHNtb3VzZSBzb3VuZGNvcmUgc25kX3BhZ2VfYWxsb2Mgc2VyaW9fcmF3
+IG1pY3JvY29kZSBtYWNfaGlkIGkyY19waWl4NCBwcGRldiBwYXJwb3J0X3BjIGNhbl9yYXcgdmNh
+biBjYW4gbHAgcGFycG9ydCBlMTAwMCBhaGNpIGxpYmFoY2kKWyAgMTIzLjM0NjEwNF0gQ1BVIDAg
+ClsgIDEyMy4zNDYxMDddIFBpZDogMjE0NiwgY29tbTogaXAgTm90IHRhaW50ZWQgMy44LjAtNDEt
+Z2VuZXJpYyAjNTl+cHJlY2lzZTEgaW5ub3RlayBHbWJIIFZpcnR1YWxCb3gvVmlydHVhbEJveApb
+ICAxMjMuMzQ2MTA4XSBSSVA6IDAwMTA6WzxmZmZmZmZmZmEwMDUxMDIwPl0gIFs8ZmZmZmZmZmZh
+MDA1MTAyMD5dIGNhbl92YWxpZGF0ZV9saW5rX2FmKzB4MTAwLzB4MTQwIFtjYW5dClsgIDEyMy4z
+NDYxMTFdIFJTUDogMDAxODpmZmZmODgwMDVlNzNmN2U4ICBFRkxBR1M6IDAwMDEwMjQ2ClsgIDEy
+My4zNDYxMTJdIFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDAwMDAwMDAwMGMgUkNY
+OiAwMDAwMDAwMDAwMDAwMDFhClsgIDEyMy4zNDYxMTNdIFJEWDogMDAwMDAwMDAwMDAwMDAxZCBS
+U0k6IGZmZmY4ODAwN2E1ZjU2MjQgUkRJOiAwMDAwMDAwMDAwMDAwMDA3ClsgIDEyMy4zNDYxMTRd
+IFJCUDogZmZmZjg4MDA1ZTczZjgxOCBSMDg6IGZmZmZmZmZmODE4OGZkYzAgUjA5OiBmZmZmODgw
+MDVlNzNmODgwClsgIDEyMy4zNDYxMTVdIFIxMDogZmZmZjg4MDA3ZDAwYTQwMCBSMTE6IDAwMDAw
+MDAwMDAwMDAyNDYgUjEyOiBmZmZmODgwMDdhNWY1NjI4ClsgIDEyMy4zNDYxMTZdIFIxMzogMDAw
+MDAwMDAwMDAwMDAwMCBSMTQ6IGZmZmY4ODAwN2IwZDgwMDAgUjE1OiAwMDAwMDAwMDAwMDAwMDAw
+ClsgIDEyMy4zNDYxMTddIEZTOiAgMDAwMDdmYzk3NzljMDcwMCgwMDAwKSBHUzpmZmZmODgwMDdm
+YzAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDAKWyAgMTIzLjM0NjExOF0gQ1M6ICAw
+MDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwpbICAxMjMuMzQ2MTE5
+XSBDUjI6IDAwMDAwMDAwMDAwMDAwMTAgQ1IzOiAwMDAwMDAwMDVlNzk1MDAwIENSNDogMDAwMDAw
+MDAwMDAwMDZmMApbICAxMjMuMzQ2MTIzXSBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAw
+MDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMApbICAxMjMuMzQ2MTI0XSBEUjM6IDAw
+MDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogMDAwMDAwMDAwMDAwMDQw
+MApbICAxMjMuMzQ2MTI1XSBQcm9jZXNzIGlwIChwaWQ6IDIxNDYsIHRocmVhZGluZm8gZmZmZjg4
+MDA1ZTczZTAwMCwgdGFzayBmZmZmODgwMDdhNTY4MDAwKQpbICAxMjMuMzQ2MTI1XSBTdGFjazoK
+WyAgMTIzLjM0NjEyNl0gIDAwMDAwMDAwMDAwMDAwMTQgMDAwMDAwMDAwMDAwMDAxMCBmZmZmODgw
+MDdhNWY1NjI0IGZmZmY4ODAwN2IwZDgwMDAKWyAgMTIzLjM0NjEyOF0gIGZmZmY4ODAwN2MwMjc4
+MDAgMDAwMDAwMDAwMDAwMDAwMCBmZmZmODgwMDVlNzNmODQ4IGZmZmZmZmZmODE1ZjRhYjUKWyAg
+MTIzLjM0NjEzMF0gIGZmZmY4ODAwN2E1ZjU2MDAgZmZmZjg4MDA3YTVmNTYwMCBmZmZmODgwMDdh
+NWY1NjAwIGZmZmY4ODAwN2IwZDgwMDAKWyAgMTIzLjM0NjEzMl0gQ2FsbCBUcmFjZToKWyAgMTIz
+LjM0NjEzN10gIFs8ZmZmZmZmZmY4MTVmNGFiNT5dIHZhbGlkYXRlX2xpbmttc2crMHhmNS8weDE1
+MApbICAxMjMuMzQ2MTM4XSAgWzxmZmZmZmZmZjgxNWY4ODU4Pl0gcnRubF9uZXdsaW5rKzB4Yzgv
+MHg1YzAKWyAgMTIzLjM0NjE0Ml0gIFs8ZmZmZmZmZmY4MTZlM2E0OD5dID8gX19zbGFiX2ZyZWUr
+MHgxZDMvMHgyZmIKWyAgMTIzLjM0NjE0NV0gIFs8ZmZmZmZmZmY4MTEzZDkwNT5dID8gcHJlcF9u
+ZXdfcGFnZSsweDE0NS8weDFlMApbICAxMjMuMzQ2MTQ4XSAgWzxmZmZmZmZmZjgxMzE1NTI3Pl0g
+PyBhcHBhcm1vcl9jYXBhYmxlKzB4MjcvMHhhMApbICAxMjMuMzQ2MTUwXSAgWzxmZmZmZmZmZjgx
+NWY4MzFkPl0gcnRuZXRsaW5rX3Jjdl9tc2crMHgxMWQvMHgzMTAKWyAgMTIzLjM0NjE1Ml0gIFs8
+ZmZmZmZmZmY4MTVkYWNkYj5dID8gX19hbGxvY19za2IrMHg4Yi8weDJhMApbICAxMjMuMzQ2MTU0
+XSAgWzxmZmZmZmZmZjgxNWY4MjAwPl0gPyBfX3J0bmxfdW5sb2NrKzB4MjAvMHgyMApbICAxMjMu
+MzQ2MTU2XSAgWzxmZmZmZmZmZjgxNjExNjQ5Pl0gbmV0bGlua19yY3Zfc2tiKzB4YTkvMHhkMApb
+ICAxMjMuMzQ2MTU3XSAgWzxmZmZmZmZmZjgxNWY1YWM1Pl0gcnRuZXRsaW5rX3JjdisweDI1LzB4
+NDAKWyAgMTIzLjM0NjE1OV0gIFs8ZmZmZmZmZmY4MTYxMGY5MT5dIG5ldGxpbmtfdW5pY2FzdCsw
+eDFiMS8weDIzMApbICAxMjMuMzQ2MTYwXSAgWzxmZmZmZmZmZjgxNjExMzBlPl0gbmV0bGlua19z
+ZW5kbXNnKzB4MmZlLzB4M2IwClsgIDEyMy4zNDYxNjNdICBbPGZmZmZmZmZmODE1Y2RjNjI+XSBz
+b2NrX3NlbmRtc2crMHhkMi8weGYwClsgIDEyMy4zNDYxNjZdICBbPGZmZmZmZmZmODExNWQ2ZDc+
+XSA/IGRvX3dwX3BhZ2UrMHgyYzcvMHg3YzAKWyAgMTIzLjM0NjE2N10gIFs8ZmZmZmZmZmY4MTVk
+MDViYT5dID8gbW92ZV9hZGRyX3RvX2tlcm5lbCsweDVhLzB4YTAKWyAgMTIzLjM0NjE2OV0gIFs8
+ZmZmZmZmZmY4MTVkY2RkZT5dID8gdmVyaWZ5X2lvdmVjKzB4NWUvMHhlMApbICAxMjMuMzQ2MTcx
+XSAgWzxmZmZmZmZmZjgxNWNmYWNjPl0gX19fc3lzX3NlbmRtc2crMHgzY2MvMHgzZTAKWyAgMTIz
+LjM0NjE3M10gIFs8ZmZmZmZmZmY4MTE2MTFiMD5dID8gaGFuZGxlX21tX2ZhdWx0KzB4MmEwLzB4
+M2UwClsgIDEyMy4zNDYxNzZdICBbPGZmZmZmZmZmODE2ZmI3ODg+XSA/IF9fZG9fcGFnZV9mYXVs
+dCsweDJhOC8weDU2MApbICAxMjMuMzQ2MTc4XSAgWzxmZmZmZmZmZjgxMTY0YWZmPl0gPyB2bWFf
+bGluaysweGNmLzB4ZTAKWyAgMTIzLjM0NjE3OV0gIFs8ZmZmZmZmZmY4MTE2NjhiMz5dID8gZG9f
+YnJrKzB4MWIzLzB4MzMwClsgIDEyMy4zNDYxODFdICBbPGZmZmZmZmZmODE1ZDE1ZDk+XSBfX3N5
+c19zZW5kbXNnKzB4NDkvMHg5MApbICAxMjMuMzQ2MTgzXSAgWzxmZmZmZmZmZjgxNWQxNjM5Pl0g
+c3lzX3NlbmRtc2crMHgxOS8weDIwClsgIDEyMy4zNDYxODVdICBbPGZmZmZmZmZmODE3MDAzOWQ+
+XSBzeXN0ZW1fY2FsbF9mYXN0cGF0aCsweDFhLzB4MWYKWyAgMTIzLjM0NjE4Nl0gQ29kZTogMDQg
+MjQgODMgYzAgMDMgODMgZTAgZmMgMjkgYzMgODMgZmIgMDMgN2YgOGMgNDUgMzEgZmYgNDggODMg
+YzQgMDggNDQgODkgZjggNWIgNDEgNWMgNDEgNWQgNDEgNWUgNDEgNWYgNWQgYzMgMGYgMWYgODAg
+MDAgMDAgMDAgMDAgPDQ5PiA4YiA0NSAxMCA0MSBiZiBhMyBmZiBmZiBmZiA0OCA4YiBiOCA0MCAw
+MSAwMCAwMCBlOCBmYSBlNSAwNiAKWyAgMTIzLjM0NjIwM10gUklQICBbPGZmZmZmZmZmYTAwNTEw
+MjA+XSBjYW5fdmFsaWRhdGVfbGlua19hZisweDEwMC8weDE0MCBbY2FuXQpbICAxMjMuMzQ2MjA2
+XSAgUlNQIDxmZmZmODgwMDVlNzNmN2U4PgpbICAxMjMuMzQ2MjA2XSBDUjI6IDAwMDAwMDAwMDAw
+MDAwMTAKWyAgMTIzLjM0NjIwOF0gLS0tWyBlbmQgdHJhY2UgZGI2MmU5NDI0YWU3YmM4ZiBdLS0t
+Cg==
+--001a11c31938669ac004f9d66fbf--
