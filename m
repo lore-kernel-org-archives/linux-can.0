@@ -1,51 +1,57 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v8 2/2] can: xilinx CAN controller support.
-Date: Wed, 21 May 2014 11:53:13 +0000
-Message-ID: <e806ce16-917f-473d-9876-d7e85aa95bc7@BN1BFFO11FD029.protection.gbl>
-References: <30fc07d6-4404-4745-8c03-1c5ae775e4f1@BY2FFO11FD047.protection.gbl>
- <537C8E00.404@pengutronix.de>
- <72e9a444-0de4-42ce-a9d3-ee247948f0e6@BN1AFFO11FD030.protection.gbl>
- <537C92C2.4090204@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v8 1/2] can: Add xilinx CAN device tree bindings documentation.
+Date: Wed, 21 May 2014 14:53:07 +0200
+Message-ID: <537CA1B3.6030603@pengutronix.de>
+References: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="OA18bPXHFkMhNgQv47qwovqBE7SgLHs90"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0212.outbound.protection.outlook.com ([207.46.163.212]:1460
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751018AbaEULxd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 21 May 2014 07:53:33 -0400
-In-Reply-To: <537C92C2.4090204@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50039 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751670AbaEUMxX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 08:53:23 -0400
+In-Reply-To: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, michal.simek@xilinx.com
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEts
-ZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogV2VkbmVzZGF5
-LCBNYXkgMjEsIDIwMTQgNToxOSBQTQ0KPiBUbzogQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIFJh
-bzsgd2dAZ3JhbmRlZ2dlci5jb207IE1pY2hhbCBTaW1lazsNCj4gZ3JhbnQubGlrZWx5QGxpbmFy
-by5vcmc7IHJvYmgrZHRAa2VybmVsLm9yZw0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9y
-ZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLQ0KPiBrZXJuZWxAbGlzdHMuaW5m
-cmFkZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTog
-W1BBVENIIHY4IDIvMl0gY2FuOiB4aWxpbnggQ0FOIGNvbnRyb2xsZXIgc3VwcG9ydC4NCj4NCj4g
-T24gMDUvMjEvMjAxNCAwMTozMiBQTSwgQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIFJhbyB3cm90
-ZToNCj4gPiBIaSBNYXJjLA0KPiA+DQo+ID4gICAgICAgICBZZXMgZm9yIERULWJpbmRpbmdzIFJv
-YiBhbHJlYWR5IGhhZCBnaXZlbiBhY2suDQo+ID4gU29ycnkgSSBmb3Jnb3QgdG8gYWRkIHRoZSBB
-Y2tlZC1ieSBsaW5lIGluIHRoYXQgcGF0Y2guDQo+DQo+IFlvdSBtZWFuIFJvYiBIZXJyaW5nPw0K
-Pg0KDQpZZXMgUm9iIEhlcnJpbmcuDQpJbiB0aGUgdmVyc2lvbiA1IHBhdGNoIGhlIGhhZCBnaXZl
-biB0aGUgYWNrLg0KDQpSZWdhcmRzLA0KS2VkYXIuDQoNCj4gICAgIEFja2VkLWJ5OiBSb2IgSGVy
-cmluZyA8cm9iaEBrZXJuZWwub3JnPg0KPg0KPiBNYXJjDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUu
-Sy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IElu
-ZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0
-ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDkt
-NTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8
-IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg0KDQpUaGlzIGVtYWlsIGFuZCBhbnkg
-YXR0YWNobWVudHMgYXJlIGludGVuZGVkIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIG5hbWVkIHJl
-Y2lwaWVudChzKSBhbmQgY29udGFpbihzKSBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gdGhhdCBt
-YXkgYmUgcHJvcHJpZXRhcnksIHByaXZpbGVnZWQgb3IgY29weXJpZ2h0ZWQgdW5kZXIgYXBwbGlj
-YWJsZSBsYXcuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIGRvIG5vdCBy
-ZWFkLCBjb3B5LCBvciBmb3J3YXJkIHRoaXMgZW1haWwgbWVzc2FnZSBvciBhbnkgYXR0YWNobWVu
-dHMuIERlbGV0ZSB0aGlzIGVtYWlsIG1lc3NhZ2UgYW5kIGFueSBhdHRhY2htZW50cyBpbW1lZGlh
-dGVseS4NCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OA18bPXHFkMhNgQv47qwovqBE7SgLHs90
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 05/21/2014 01:41 PM, Kedareswara rao Appana wrote:
+> Add xilinx CAN bindings documentation.
+>=20
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+
+Applied both to can-next.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--OA18bPXHFkMhNgQv47qwovqBE7SgLHs90
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlN8obMACgkQjTAFq1RaXHMPuwCeLQgO8KVxco4cPD3LAfOFiT1d
+5KoAoJbqvZr+Fw+XX2tj0k/xHHlSi04X
+=LI0a
+-----END PGP SIGNATURE-----
+
+--OA18bPXHFkMhNgQv47qwovqBE7SgLHs90--
