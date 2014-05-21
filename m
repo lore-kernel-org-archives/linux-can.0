@@ -1,50 +1,79 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v8 2/2] can: xilinx CAN controller support.
-Date: Wed, 21 May 2014 11:40:23 +0000
-Message-ID: <ba000a58-677b-44ed-955b-8c024fb7a451@BN1AFFO11FD034.protection.gbl>
-References: <30fc07d6-4404-4745-8c03-1c5ae775e4f1@BY2FFO11FD047.protection.gbl>
- <537C8E00.404@pengutronix.de>
- <72e9a444-0de4-42ce-a9d3-ee247948f0e6@BN1AFFO11FD030.protection.gbl>
- <537C8FEF.9040407@pengutronix.de>
+From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Subject: [PATCH v8 1/2] can: Add xilinx CAN device tree bindings documentation.
+Date: Wed, 21 May 2014 17:11:29 +0530
+Message-ID: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1blp0184.outbound.protection.outlook.com ([207.46.163.184]:53806
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751254AbaEULka (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 21 May 2014 07:40:30 -0400
-In-Reply-To: <537C8FEF.9040407@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, michal.simek@xilinx.com
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KICAgICAgICBPayBzdXJlIHdpbGwgcmVzZW5kLg0KDQpSZWdhcmRzLA0KS2Vk
-YXIuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUt
-QnVkZGUgW21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IFdlZG5lc2RheSwgTWF5
-IDIxLCAyMDE0IDU6MDcgUE0NCj4gVG86IEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSBSYW87IHdn
-QGdyYW5kZWdnZXIuY29tOyBNaWNoYWwgU2ltZWs7DQo+IGdyYW50Lmxpa2VseUBsaW5hcm8ub3Jn
-OyByb2JoK2R0QGtlcm5lbC5vcmcNCj4gQ2M6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVh
-ZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRD
-SCB2OCAyLzJdIGNhbjogeGlsaW54IENBTiBjb250cm9sbGVyIHN1cHBvcnQuDQo+DQo+IE9uIDA1
-LzIxLzIwMTQgMDE6MzIgUE0sIEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSBSYW8gd3JvdGU6DQo+
-ID4gSGkgTWFyYywNCj4gPg0KPiA+ICAgICAgICAgWWVzIGZvciBEVC1iaW5kaW5ncyBSb2IgYWxy
-ZWFkeSBoYWQgZ2l2ZW4gYWNrLg0KPiA+IFNvcnJ5IEkgZm9yZ290IHRvIGFkZCB0aGUgQWNrZWQt
-YnkgbGluZSBpbiB0aGF0IHBhdGNoLg0KPg0KPiBUaGUgRFQgcGF0Y2ggZGlkbid0IG1ha2UgaXQg
-dG8gdGhlIGxpbnV4LWNhbiBtYWlsaW5nbGlzdCwgY2FuIHlvdSBwbGVhc2UNCj4gcmVzZW5kLg0K
-Pg0KPiBNYXJjDQo+DQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8
-IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRp
-b25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcg
-V2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+
-IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9u
-aXguZGUgICB8DQoNCg0KDQpUaGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGludGVu
-ZGVkIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIG5hbWVkIHJlY2lwaWVudChzKSBhbmQgY29udGFp
-bihzKSBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvcHJpZXRhcnksIHBy
-aXZpbGVnZWQgb3IgY29weXJpZ2h0ZWQgdW5kZXIgYXBwbGljYWJsZSBsYXcuIElmIHlvdSBhcmUg
-bm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIGRvIG5vdCByZWFkLCBjb3B5LCBvciBmb3J3YXJk
-IHRoaXMgZW1haWwgbWVzc2FnZSBvciBhbnkgYXR0YWNobWVudHMuIERlbGV0ZSB0aGlzIGVtYWls
-IG1lc3NhZ2UgYW5kIGFueSBhdHRhY2htZW50cyBpbW1lZGlhdGVseS4NCg0K
+Add xilinx CAN bindings documentation.
+
+Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+---
+Changes for v8:
+- None.
+Changes for v7:
+- Split the devicetree bindings doc as a seperate patch
+---
+ .../devicetree/bindings/net/can/xilinx_can.txt     |   44 ++++++++++++++++++++
+ 1 files changed, 44 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/xilinx_can.txt b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+new file mode 100644
+index 0000000..fe38847
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
+@@ -0,0 +1,44 @@
++Xilinx Axi CAN/Zynq CANPS controller Device Tree Bindings
++---------------------------------------------------------
++
++Required properties:
++- compatible		: Should be "xlnx,zynq-can-1.0" for Zynq CAN
++			  controllers and "xlnx,axi-can-1.00.a" for Axi CAN
++			  controllers.
++- reg			: Physical base address and size of the Axi CAN/Zynq
++			  CANPS registers map.
++- interrupts		: Property with a value describing the interrupt
++			  number.
++- interrupt-parent	: Must be core interrupt controller
++- clock-names		: List of input clock names - "can_clk", "pclk"
++			  (For CANPS), "can_clk" , "s_axi_aclk"(For AXI CAN)
++			  (See clock bindings for details).
++- clocks		: Clock phandles (see clock bindings for details).
++- tx-fifo-depth		: Can Tx fifo depth.
++- rx-fifo-depth		: Can Rx fifo depth.
++
++
++Example:
++
++For Zynq CANPS Dts file:
++	zynq_can_0: can@e0008000 {
++			compatible = "xlnx,zynq-can-1.0";
++			clocks = <&clkc 19>, <&clkc 36>;
++			clock-names = "can_clk", "pclk";
++			reg = <0xe0008000 0x1000>;
++			interrupts = <0 28 4>;
++			interrupt-parent = <&intc>;
++			tx-fifo-depth = <0x40>;
++			rx-fifo-depth = <0x40>;
++		};
++For Axi CAN Dts file:
++	axi_can_0: axi-can@40000000 {
++			compatible = "xlnx,axi-can-1.00.a";
++			clocks = <&clkc 0>, <&clkc 1>;
++			clock-names = "can_clk","s_axi_aclk" ;
++			reg = <0x40000000 0x10000>;
++			interrupt-parent = <&intc>;
++			interrupts = <0 59 1>;
++			tx-fifo-depth = <0x40>;
++			rx-fifo-depth = <0x40>;
++		};
+-- 
+1.7.4
+
+
