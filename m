@@ -1,57 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v8 1/2] can: Add xilinx CAN device tree bindings documentation.
-Date: Wed, 21 May 2014 14:53:07 +0200
-Message-ID: <537CA1B3.6030603@pengutronix.de>
-References: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: Kernel Oops when setting j1939 device on
+Date: Wed, 21 May 2014 21:12:15 +0200
+Message-ID: <20140521191215.GA581@vandijck-laurijssen.be>
+References: <CAJdBzeATNb2pBOdp5bpx86Bw+K00wYwjgFOuRGbtZSPXvMoBuQ@mail.gmail.com>
+ <20140520201654.GD25701@vandijck-laurijssen.be>
+ <CAJdBzeBEL=pz4imZvywVwZsjj3o7Gh6JshgKrm3aSbYOjMiZ6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="OA18bPXHFkMhNgQv47qwovqBE7SgLHs90"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50039 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751670AbaEUMxX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 08:53:23 -0400
-In-Reply-To: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
+Received: from mailrelay002.isp.belgacom.be ([195.238.6.175]:18586 "EHLO
+	mailrelay002.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751801AbaEUTMT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 15:12:19 -0400
+Content-Disposition: inline
+In-Reply-To: <CAJdBzeBEL=pz4imZvywVwZsjj3o7Gh6JshgKrm3aSbYOjMiZ6Q@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, michal.simek@xilinx.com
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+To: Timothy Vieregge <tvieregge@clearpathrobotics.com>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OA18bPXHFkMhNgQv47qwovqBE7SgLHs90
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hey Timothy,
 
-On 05/21/2014 01:41 PM, Kedareswara rao Appana wrote:
-> Add xilinx CAN bindings documentation.
->=20
-> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+On Tue, May 20, 2014 at 04:46:10PM -0400, Timothy Vieregge wrote:
+> I compiled the j1939-v3.8 branch into the kernel.
 
-Applied both to can-next.
+To be honest, I do not really understand what you did exactly here.
+Did you:
+* use an ubuntu kernel and compiled the new kernel next to it.
+* use an ubuntu kernel and compiled the new kernel with the .config
+  from that sock kernel.
+* Use some git repository of the ubuntu kernel and merged can-j1939 into that.
+* not use anything of an ubuntu kernel.
 
-Thanks,
-Marc
+Can you clarify.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> Also, I'm using the j1939-v3.6 branch of iproute2-j1939.
+> 
+> I didn't specifically replace any of the modules, I simply loaded the
+> ones that were present in the custom kernel (can, vcan and can_raw).
 
+1. did you "insmod xxx" or "modprobe xxx"
+2. Didn't you load can-j1939?
 
---OA18bPXHFkMhNgQv47qwovqBE7SgLHs90
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> Although I assume that those were changed during the compilation.
+> 
+> Let me know if you want any more of my system info. The behaviour was
+> reproducible in a clean VM
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+The thing is, I can't yet reproduce the problem on my 3.8.2 kernel.
+So I keep looking around.
 
-iEYEARECAAYFAlN8obMACgkQjTAFq1RaXHMPuwCeLQgO8KVxco4cPD3LAfOFiT1d
-5KoAoJbqvZr+Fw+XX2tj0k/xHHlSi04X
-=LI0a
------END PGP SIGNATURE-----
-
---OA18bPXHFkMhNgQv47qwovqBE7SgLHs90--
+Kind regards,
+Kurt
