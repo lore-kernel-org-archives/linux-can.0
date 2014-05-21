@@ -1,79 +1,58 @@
-From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Subject: [PATCH v8 1/2] can: Add xilinx CAN device tree bindings documentation.
-Date: Wed, 21 May 2014 17:11:29 +0530
-Message-ID: <17489036-3743-4393-afc6-a9064325b4d5@BN1BFFO11FD053.protection.gbl>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v8 2/2] can: xilinx CAN controller support.
+Date: Wed, 21 May 2014 13:49:22 +0200
+Message-ID: <537C92C2.4090204@pengutronix.de>
+References: <30fc07d6-4404-4745-8c03-1c5ae775e4f1@BY2FFO11FD047.protection.gbl> <537C8E00.404@pengutronix.de> <72e9a444-0de4-42ce-a9d3-ee247948f0e6@BN1AFFO11FD030.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, michal.simek@xilinx.com
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="DNR1DLrqLF72aeKBiGa0mBXm9n3QBeJOx"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58568 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751018AbaEULti (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 07:49:38 -0400
+In-Reply-To: <72e9a444-0de4-42ce-a9d3-ee247948f0e6@BN1AFFO11FD030.protection.gbl>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Add xilinx CAN bindings documentation.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DNR1DLrqLF72aeKBiGa0mBXm9n3QBeJOx
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
----
-Changes for v8:
-- None.
-Changes for v7:
-- Split the devicetree bindings doc as a seperate patch
----
- .../devicetree/bindings/net/can/xilinx_can.txt     |   44 ++++++++++++++++++++
- 1 files changed, 44 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
+On 05/21/2014 01:32 PM, Appana Durga Kedareswara Rao wrote:
+> Hi Marc,
+>=20
+>         Yes for DT-bindings Rob already had given ack.
+> Sorry I forgot to add the Acked-by line in that patch.
 
-diff --git a/Documentation/devicetree/bindings/net/can/xilinx_can.txt b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
-new file mode 100644
-index 0000000..fe38847
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/xilinx_can.txt
-@@ -0,0 +1,44 @@
-+Xilinx Axi CAN/Zynq CANPS controller Device Tree Bindings
-+---------------------------------------------------------
-+
-+Required properties:
-+- compatible		: Should be "xlnx,zynq-can-1.0" for Zynq CAN
-+			  controllers and "xlnx,axi-can-1.00.a" for Axi CAN
-+			  controllers.
-+- reg			: Physical base address and size of the Axi CAN/Zynq
-+			  CANPS registers map.
-+- interrupts		: Property with a value describing the interrupt
-+			  number.
-+- interrupt-parent	: Must be core interrupt controller
-+- clock-names		: List of input clock names - "can_clk", "pclk"
-+			  (For CANPS), "can_clk" , "s_axi_aclk"(For AXI CAN)
-+			  (See clock bindings for details).
-+- clocks		: Clock phandles (see clock bindings for details).
-+- tx-fifo-depth		: Can Tx fifo depth.
-+- rx-fifo-depth		: Can Rx fifo depth.
-+
-+
-+Example:
-+
-+For Zynq CANPS Dts file:
-+	zynq_can_0: can@e0008000 {
-+			compatible = "xlnx,zynq-can-1.0";
-+			clocks = <&clkc 19>, <&clkc 36>;
-+			clock-names = "can_clk", "pclk";
-+			reg = <0xe0008000 0x1000>;
-+			interrupts = <0 28 4>;
-+			interrupt-parent = <&intc>;
-+			tx-fifo-depth = <0x40>;
-+			rx-fifo-depth = <0x40>;
-+		};
-+For Axi CAN Dts file:
-+	axi_can_0: axi-can@40000000 {
-+			compatible = "xlnx,axi-can-1.00.a";
-+			clocks = <&clkc 0>, <&clkc 1>;
-+			clock-names = "can_clk","s_axi_aclk" ;
-+			reg = <0x40000000 0x10000>;
-+			interrupt-parent = <&intc>;
-+			interrupts = <0 59 1>;
-+			tx-fifo-depth = <0x40>;
-+			rx-fifo-depth = <0x40>;
-+		};
--- 
-1.7.4
+You mean Rob Herring?
+
+    Acked-by: Rob Herring <robh@kernel.org>
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--DNR1DLrqLF72aeKBiGa0mBXm9n3QBeJOx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlN8ksIACgkQjTAFq1RaXHN0HACfVSSVOynmlG2+7ugv7JzDXJYD
+4ksAnAu/Rjweh8kDN16NLVg8uYAw0QOH
+=/3Pv
+-----END PGP SIGNATURE-----
+
+--DNR1DLrqLF72aeKBiGa0mBXm9n3QBeJOx--
