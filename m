@@ -1,29 +1,30 @@
-From: Timothy Vieregge <tvieregge@clearpathrobotics.com>
-Subject: Re: Kernel Oops when setting j1939 device on
-Date: Tue, 20 May 2014 16:46:10 -0400
-Message-ID: <CAJdBzeBEL=pz4imZvywVwZsjj3o7Gh6JshgKrm3aSbYOjMiZ6Q@mail.gmail.com>
-References: <CAJdBzeATNb2pBOdp5bpx86Bw+K00wYwjgFOuRGbtZSPXvMoBuQ@mail.gmail.com>
-	<20140520201654.GD25701@vandijck-laurijssen.be>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2014-05-19
+Date: Wed, 21 May 2014 01:59:44 -0400 (EDT)
+Message-ID: <20140521.015944.1169846883934244597.davem@davemloft.net>
+References: <1400484782-16521-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ig0-f175.google.com ([209.85.213.175]:59350 "EHLO
-	mail-ig0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750721AbaETUqL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 May 2014 16:46:11 -0400
-Received: by mail-ig0-f175.google.com with SMTP id uq10so5375971igb.8
-        for <linux-can@vger.kernel.org>; Tue, 20 May 2014 13:46:11 -0700 (PDT)
-In-Reply-To: <20140520201654.GD25701@vandijck-laurijssen.be>
+Received: from shards.monkeyblade.net ([149.20.54.216]:46106 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750761AbaEUF7q (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 01:59:46 -0400
+In-Reply-To: <1400484782-16521-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Timothy Vieregge <tvieregge@clearpathrobotics.com>, linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-I compiled the j1939-v3.8 branch into the kernel.
-Also, I'm using the j1939-v3.6 branch of iproute2-j1939.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 19 May 2014 09:33:01 +0200
 
-I didn't specifically replace any of the modules, I simply loaded the
-ones that were present in the custom kernel (can, vcan and can_raw).
-Although I assume that those were changed during the compilation.
+> this is a pull request for net/master, for the v3.15 release cycle, with a
+> single patch.
+> 
+> Oliver Hartkopp's patch removes a Kconfig option in the c_can driver, which was
+> added as a workaround during the v3.15 development. With all cleanup patches
+> this workaround is not needed anymore.
 
-Let me know if you want any more of my system info. The behaviour was
-reproducible in a clean VM
+Pulled, thanks.
