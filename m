@@ -1,150 +1,112 @@
-From: John Whitmore <arigead@gmail.com>
-Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
-Date: Thu, 22 May 2014 00:53:47 +0100
-Message-ID: <20140521235346.GA15375@griso.site>
+From: "Rost, Martin" <Martin.Rost@tonfunk.de>
+Subject: RE: [PATCH] mcp251x: mcp2515 stops receiving
+Date: Thu, 22 May 2014 06:38:18 +0000
+Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA0DC96DCF@mailserver>
 References: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
- <5370FE36.8020901@pengutronix.de>
+ <5370FE36.8020901@pengutronix.de> <20140521235346.GA15375@griso.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----CA5814B779243F44AB5A0CCBA8BDDAB6"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f169.google.com ([209.85.212.169]:36827 "EHLO
-	mail-wi0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753451AbaEUXxU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 May 2014 19:53:20 -0400
-Received: by mail-wi0-f169.google.com with SMTP id hi2so9164674wib.0
-        for <linux-can@vger.kernel.org>; Wed, 21 May 2014 16:53:19 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <5370FE36.8020901@pengutronix.de>
+Received: from smartman.tonfunk.biz ([145.253.128.114]:40729 "EHLO
+	mail.tonfunk.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751196AbaEVGvE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 May 2014 02:51:04 -0400
+Received: from [129.84.3.7] (port=17590 helo=tonfunk.biz)
+	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76)
+	(envelope-from <Martin.Rost@tonfunk.de>)
+	id 1WnMe1-0007ei-0T
+	for linux-can@vger.kernel.org; Thu, 22 May 2014 08:38:25 +0200
+In-Reply-To: <20140521235346.GA15375@griso.site>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "Rost, Martin" <Martin.Rost@tonfunk.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Alexander Shiyan <shc_work@mail.ru>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: John Whitmore <arigead@gmail.com>
 
-On Mon, May 12, 2014 at 07:00:38PM +0200, Marc Kleine-Budde wrote:
-> Hey Martin,
-> 
-> On 05/08/2014 08:33 AM, Rost, Martin wrote:
-> > The mcp2515 sometimes seems to trigger an interrupt with the
-> > corresponding register not being set yet. This makes the driver exit
-> > the interrupt because there is obviously nothing to do, but the
-> > interrupt line is kept low. Therefore the driver does not see any
-> > more interrupts until the chip is reset (via interface down/up).
-> 
-> Hmmmm, I think level triggered interrupt would help here. However not
-> all interrupt controller support level interrupts and
-> arch/arm/mach-pxa/icontrol.c sets the trigger to rising edge.
-> 
-> > This patch changes the IST to first check the IRQ registers, and wait
-> > up to 10 ms if an event really occurrs. If the IRQ register is still
-> > empty after 10ms, a kernel message gets issued.
-> 
-> What happens if the register is still empty after 10ms? Can we do
-> something better than the print, which will probably not fix the probem...
-> 
-> > The IST loop is rearranged to evaluate the IRQ register at the last
-> > moment before exiting, to not miss a late irq event.
-> 
-> Alexander, have you seen or heard of this problem before? What do you
-> think about this workaround?
-> 
+This is an S/MIME signed message
 
-I've had this problem before but with the MCP2515 connected to a Microchip
-Microcontroller. I've been working on other stuff and just got back to looking
-into this problem. Whilst it's not Linux based I was getting this exact
-problem and was forced to poll the MCP2515 instead of managing it via
-interrupts. Earlier today I got the best of both worlds by doing nothing in
-the ISR other then setting a FLAG and clearing the interrupt. The Flag is then
-picked up in the main processing loop of the code. It's a race condition and a
-flaw in the MCP2515, in my opinion. 
-
-I'm not an expert in the Linux Driver code nor the implemented fix but I can
-confirm that the Interrupt is generated with no flags set. I'm not sure of the
-10mS timing but I'd imagine that should work.
+------CA5814B779243F44AB5A0CCBA8BDDAB6
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 
 
+Hello John,
 
-> > ---
-> > diff --git "a/mcp251x.c" "b/mcp251x.c"
-> > index ad58ac6..668ce63 100644
-> > --- "a/mcp251x.c"	
-> > +++ "b/mcp251x.c"	
-> > @@ -806,15 +806,29 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
-> >  	struct mcp251x_priv *priv = dev_id;
-> >  	struct spi_device *spi = priv->spi;
-> >  	struct net_device *net = priv->net;
-> > +	u8 intf, eflag;
-> > +	u8 retrycount = 10;
-> >  
-> >  	mutex_lock(&priv->mcp_lock);
-> > -	while (!priv->force_quit) {
-> > +	
-> > +	do {
-> > +	mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-> > +		if (!intf) {
-> > +//			printk(KERN_CRIT "MCP251x: IRQ delaying.\r\n");
-> 
-> please remove that line
-> 
-> > +			mdelay(1);
-> > +		}
-> > +	} while (!intf && (retrycount--));
-> > +	
-> > +	if (!intf)
-> > +		printk(KERN_CRIT "MCP251x: IRQ without a cause.\r\n");
-> 
-> In Linux, we use \n only, also dev_LEVEL() is preferred over plain printk.
-> 
-> > +	
-> > +	while ((!priv->force_quit) && (intf)) {
-> >  		enum can_state new_state;
-> > -		u8 intf, eflag;
-> > +//		u8 intf, eflag;
-> 
-> please remove, not comment out.
-> 
-> >  		u8 clear_intf = 0;
-> >  		int can_id = 0, data1 = 0;
-> >  
-> > -		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-> > +//		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-> 
-> same here
-> 
-> >  
-> >  		/* mask out flags we don't care about */
-> >  		intf &= CANINTF_RX | CANINTF_TX | CANINTF_ERR;
-> > @@ -913,8 +927,8 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
-> >  			}
-> >  		}
-> >  
-> > -		if (intf == 0)
-> > -			break;
-> > +//		if (intf == 0)
-> > +//			break;
-> 
-> same here
-> 
-> >  
-> >  		if (intf & CANINTF_TX) {
-> >  			net->stats.tx_packets++;
-> > @@ -926,6 +940,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
-> >  			netif_wake_queue(net);
-> >  		}
-> >  
-> > +		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
-> >  	}
-> >  	mutex_unlock(&priv->mcp_lock);
-> >  	return IRQ_HANDLED;
-> 
-> I'll send a cleaned version of you patch.
-> 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+> -----Original Message-----
+> From: linux-can-owner@vger.kernel.org [mailto:linux-can-
+> owner@vger.kernel.org] On Behalf Of John Whitmore
+> Sent: Thursday, May 22, 2014 1:54 AM
+> To: Marc Kleine-Budde
+> Cc: Rost, Martin; linux-can@vger.kernel.org; Alexander Shiyan
+> Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
+>=20
+> I'm not an expert in the Linux Driver code nor the implemented fix but I =
+can
+> confirm that the Interrupt is generated with no flags set. I'm not sure o=
+f the
+> 10mS timing but I'd imagine that should work.
+>=20
 
+Thanks for confirming it.
+I fiddled a bit with the timing, and it seemed that 5ms would catch some bu=
+t not all occurrences of this problem.
+So I went for 10 to make sure.
+
+I'm not too deep into kernel internals, so is there some best practice to t=
+his?
+
+Regards,
+Martin
+
+------CA5814B779243F44AB5A0CCBA8BDDAB6
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+MIIH2wYJKoZIhvcNAQcCoIIHzDCCB8gCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3
+DQEHAaCCBcwwggLVMIICPqADAgECAgkAvMrc21OtG8kwDQYJKoZIhvcNAQEFBQAw
+UTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkxFzAV
+BgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZTAeFw0wOTExMjQxMjA2
+MTVaFw0yOTExMTkxMjA2MTVaMFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAw
+DgYDVQQLEwdHYXRld2F5MRcwFQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UE
+BhMCZGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOmcYL9cTddZ0whp7cdz
+Lvlbr73uir65Z7nSTXG+RYDaUkaLhgVuJms16/EWECMa5K0qhFNVA0aE8tUqKJcj
+TuhR1flVnPq6koG8ArpudfBoNQk7v4Jgadj6ReVwJhjvQZ+dGFU+oH8F8jODhklv
+cvGjdfSKNlRHMirVsBIR8FtjAgMBAAGjgbQwgbEwHQYDVR0OBBYEFF0bok+BXaTx
+L3YfvzwzI7JjlCXIMIGBBgNVHSMEejB4gBRdG6JPgV2k8S92H788MyOyY5QlyKFV
+pFMwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAOBgNVBAsTB0dhdGV3YXkx
+FzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQGEwJkZYIJALzK3NtTrRvJ
+MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAV9GoynO+nRC9zmnf9h6T
+tFuqLMX6ITJ4CBChBrlWOc+290rANXBxiwQS+QqY+zc3VxAiMDoY64fvgvnNCtsy
+fL5W1ycyRq9vvBffdF/K7MjZS+zke1XRuv6vJJABpRYMcW97E4UdBj+qH8vLfZ2f
+YjuAK58Zua5S6C54zvcvRUgwggLvMIICWKADAgECAgEBMA0GCSqGSIb3DQEBBQUA
+MFExFzAVBgNVBAMTDmZ3LnRvbmZ1bmsuYml6MRAwDgYDVQQLEwdHYXRld2F5MRcw
+FQYDVQQKEw5Ub25mdW5rIEdydXBwZTELMAkGA1UEBhMCZGUwHhcNMDkxMTI1MDgw
+NzQ5WhcNMjkxMTIwMDgwNzQ5WjB1MQswCQYDVQQGEwJkZTEXMBUGA1UEChMOVG9u
+ZnVuayBHcnVwcGUxEDAOBgNVBAsTB0dhdGV3YXkxFDASBgNVBAMTC01hcnRpbiBS
+b3N0MSUwIwYJKoZIhvcNAQkBFhZNYXJ0aW4uUm9zdEB0b25mdW5rLmRlMIGfMA0G
+CSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3Ys/1C5iWSvFiKA4QAFiZNcdgc8nyycCc
+BCi/96l1YC/DIrgLeLNP4MtNK/F6BMRhOfCmlXIUmprANiAsET7cVW8qOt6KWr8b
+2SeZseE+jmqI0qeUaWjvF5ykjOo8D1X+YklVYIH/h82Wdozfa2xGW3WXm5ucDExR
+azpH5aNQxQIDAQABo4GyMIGvMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgSw
+MCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0ZTAd
+BgNVHQ4EFgQUwxDoSCAXpA8PB15z3pIKjewUaxIwHwYDVR0jBBgwFoAUXRuiT4Fd
+pPEvdh+/PDMjsmOUJcgwIQYDVR0RBBowGIEWTWFydGluLlJvc3RAdG9uZnVuay5k
+ZTANBgkqhkiG9w0BAQUFAAOBgQDa8BMQmQnuoHPGiTuyyy1AvcHwkMfn96vVOPQy
+OT0fSQmCwVer1E9/h691pa3hfFdkE9FyqfKp9TTihPMLzpA/aL7GVBftKNVt91JZ
+txTrw8bATe4dh7YjP+70gkzFJ3v4xbQkiclskoeE+QS2eyR5dGvnGJRTjYjh4qd/
+yRkeITGCAdcwggHTAgEBMFYwUTEXMBUGA1UEAxMOZncudG9uZnVuay5iaXoxEDAO
+BgNVBAsTB0dhdGV3YXkxFzAVBgNVBAoTDlRvbmZ1bmsgR3J1cHBlMQswCQYDVQQG
+EwJkZQIBATAJBgUrDgMCGgUAoIHYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEw
+HAYJKoZIhvcNAQkFMQ8XDTE0MDUyMjA2MzgzMFowIwYJKoZIhvcNAQkEMRYEFHmb
+EdZvY/UNY05X0MYcgkhpniYvMHkGCSqGSIb3DQEJDzFsMGowCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcN
+AwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
+CSqGSIb3DQEBAQUABIGAFxtzzmF1+/y7AZI8WPiFP4oRloH9AkOubkWyQvjSRlDx
+fRyT9Z7r2h4G/hSJf3KgAfnjfo1E34Uaq5uy9QFpr9JOAxx7vmR34MeRBzzvdpAa
+LpitLx2BaAv1L2SOUbEMe0gPz2W+j8m4hFgWYMycfCMDWRaR186QeEKhdo9Q/+s=
+
+------CA5814B779243F44AB5A0CCBA8BDDAB6--
 
