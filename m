@@ -1,92 +1,55 @@
-From: Maxime Jayat <maxime@artisandeveloppeur.fr>
-Subject: Re: Kernel Oops when setting j1939 device on
-Date: Thu, 22 May 2014 11:57:28 +0200
-Message-ID: <537DCA08.4040000@artisandeveloppeur.fr>
-References: <CAJdBzeATNb2pBOdp5bpx86Bw+K00wYwjgFOuRGbtZSPXvMoBuQ@mail.gmail.com> <20140520201654.GD25701@vandijck-laurijssen.be> <CAJdBzeBEL=pz4imZvywVwZsjj3o7Gh6JshgKrm3aSbYOjMiZ6Q@mail.gmail.com> <20140521191215.GA581@vandijck-laurijssen.be> <CAJdBzeA8=UVGa0yR2AUexEJjhtcd16P=iwdoM8+MqM=UHvfdCw@mail.gmail.com> <20140522092927.GA23173@vandijck-laurijssen.be>
-Reply-To: maxime@artisandeveloppeur.fr
+From: John Whitmore <arigead@gmail.com>
+Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
+Date: Thu, 22 May 2014 11:28:44 +0100
+Message-ID: <20140522102442.GB3826@griso.site>
+References: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
+ <5370FE36.8020901@pengutronix.de>
+ <20140521235346.GA15375@griso.site>
+ <2E9F00CBB66AB544A1ACDC59627518BA0DC96DCF@mailserver>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f170.google.com ([74.125.82.170]:39586 "EHLO
-	mail-we0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751993AbaEVJ5c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 May 2014 05:57:32 -0400
-Received: by mail-we0-f170.google.com with SMTP id u57so3278110wes.15
-        for <linux-can@vger.kernel.org>; Thu, 22 May 2014 02:57:31 -0700 (PDT)
-In-Reply-To: <20140522092927.GA23173@vandijck-laurijssen.be>
+Received: from mail-wi0-f170.google.com ([209.85.212.170]:44806 "EHLO
+	mail-wi0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754507AbaEVK2S (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 May 2014 06:28:18 -0400
+Received: by mail-wi0-f170.google.com with SMTP id bs8so9645805wib.5
+        for <linux-can@vger.kernel.org>; Thu, 22 May 2014 03:28:16 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <2E9F00CBB66AB544A1ACDC59627518BA0DC96DCF@mailserver>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Timothy Vieregge <tvieregge@clearpathrobotics.com>, linux-can@vger.kernel.org, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: "Rost, Martin" <Martin.Rost@tonfunk.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Le 22/05/2014 11:29, Kurt Van Dijck a =C3=A9crit :
-> On Wed, May 21, 2014 at 05:01:44PM -0400, Timothy Vieregge wrote:
->> On Wed, May 21, 2014 at 3:12 PM, Kurt Van Dijck
->> <dev.kurt@vandijck-laurijssen.be> wrote:
->>> Hey Timothy,
->>>
->>> On Tue, May 20, 2014 at 04:46:10PM -0400, Timothy Vieregge wrote:
-> [...]
->>>>
->>>> I didn't specifically replace any of the modules, I simply loaded =
-the
->>>> ones that were present in the custom kernel (can, vcan and can_raw=
-).
->>>
->>> 1. did you "insmod xxx" or "modprobe xxx"
->>> 2. Didn't you load can-j1939?
->>
->> I used modprobe.
->>
->> I did not. Unsurprisingly that fixed my problems.
->> I'll update the elinux wiki slightly once I have access. That should
->> avoid some of
->> the questions like this in the future.
->=20
-> That is a fine idea.
-> Anyway, 'ip link set vcan0 j1939 on' should return with something
-> like 'protocol not supported', as does my system, until you manually
-> load can-j1939.
->=20
-> loading can-j1939 automatically did not work due to the netlink locks=
-=2E
->=20
-> Kind regards,
-> Kurt
+On Thu, May 22, 2014 at 06:38:18AM +0000, Rost, Martin wrote:
+> 
+> Hello John,
+> 
+> > -----Original Message-----
+> > From: linux-can-owner@vger.kernel.org [mailto:linux-can-
+> > owner@vger.kernel.org] On Behalf Of John Whitmore
+> > Sent: Thursday, May 22, 2014 1:54 AM
+> > To: Marc Kleine-Budde
+> > Cc: Rost, Martin; linux-can@vger.kernel.org; Alexander Shiyan
+> > Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
+> > 
+> > I'm not an expert in the Linux Driver code nor the implemented fix but I can
+> > confirm that the Interrupt is generated with no flags set. I'm not sure of the
+> > 10mS timing but I'd imagine that should work.
+> > 
+> 
+> Thanks for confirming it.
+> I fiddled a bit with the timing, and it seemed that 5ms would catch some but not all occurrences of this problem.
+> So I went for 10 to make sure.
+> 
+> I'm not too deep into kernel internals, so is there some best practice to this?
+>
 
-Hi Timothy and Kurt,
+I honestly can't answer about best practice on working around apparent flaws in
+Hardware ;-) I'll leave somebody else to answer that one. 
+ 
+> Regards,
+> Martin
 
-I've hit the same problem as Timothy in the past. I've looked into it
-and the reason for it is that the code in
-https://gitorious.org/linux-can/linux-can-j1939/source/j1939-v3.8:net/c=
-an/af_can.c#L1020-1041
-is different from the code in
-https://gitorious.org/linux-can/can-j1939-modules/source/master:net/can=
-/af_can.c#L1169
-and the former still has a bug that is fixed in the latter in can_valid=
-ate_link_af.
-
-In particular:
-		cp =3D can_get_proto(nla_type(prot));
-		if (!cp || !cp->rtnl_link_ops)
-			ret =3D -EPROTONOSUPPORT;
-		else if (!cp->rtnl_link_ops->validate_link_af)
-			ret =3D 0;
-		else
-			ret =3D cp->rtnl_link_ops->validate_link_af(dev, prot);
-		can_put_proto(cp);
-		if (ret < 0)
-			return ret;
-
-doesn't end well for can_put_proto when can_get_proto returns NULL.
-
-I find it not very clear to see what is the most up-to-date repo for J1=
-939
-and whether all the branches in linux-can-j1939 are supposed to be main=
-tained
-along with can-j1939-modules.
-And the terrible commit history view of gitorious doesn't help.
-
---=20
-Maxime Jayat
 
