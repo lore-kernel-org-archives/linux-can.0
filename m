@@ -1,107 +1,100 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Kernel Oops when setting j1939 device on
-Date: Thu, 22 May 2014 13:47:03 +0200
-Message-ID: <537DE3B7.7080302@pengutronix.de>
-References: <CAJdBzeATNb2pBOdp5bpx86Bw+K00wYwjgFOuRGbtZSPXvMoBuQ@mail.gmail.com> <20140520201654.GD25701@vandijck-laurijssen.be> <CAJdBzeBEL=pz4imZvywVwZsjj3o7Gh6JshgKrm3aSbYOjMiZ6Q@mail.gmail.com> <20140521191215.GA581@vandijck-laurijssen.be> <CAJdBzeA8=UVGa0yR2AUexEJjhtcd16P=iwdoM8+MqM=UHvfdCw@mail.gmail.com> <20140522092927.GA23173@vandijck-laurijssen.be> <537DCA08.4040000@artisandeveloppeur.fr> <20140522113920.GB23173@vandijck-laurijssen.be>
+From: "Gerhard Bertelsmann" <info@gerhard-bertelsmann.de>
+Subject: RE: [PATCH] mcp251x: mcp2515 stops receiving
+Date: Thu, 22 May 2014 18:08:47 +0200 (CEST)
+Message-ID: <4902.212.149.48.42.1400774927.squirrel@webmail.rdts.de>
+References: <2E9F00CBB66AB544A1ACDC59627518BA0DC7ED11@mailserver>
+    <5370FE36.8020901@pengutronix.de> <20140521235346.GA15375@griso.site>
+    <2E9F00CBB66AB544A1ACDC59627518BA0DC96DCF@mailserver>
+Reply-To: info@gerhard-bertelsmann.de
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Fp2sTvbVwBLHSHKijh0qDdu5F4uPGx5uh"
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52501 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752696AbaEVLrS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 May 2014 07:47:18 -0400
-In-Reply-To: <20140522113920.GB23173@vandijck-laurijssen.be>
+Received: from mail.rdts.de ([195.243.153.28]:50113 "EHLO mail.rdts.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751477AbaEVQOv (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 May 2014 12:14:51 -0400
+Received: from webmail.rdts.de (unknown [195.243.153.19])
+	by mail.rdts.de (Postfix) with ESMTP id ED8A5A071F
+	for <linux-can@vger.kernel.org>; Thu, 22 May 2014 18:08:47 +0200 (CEST)
+In-Reply-To: <2E9F00CBB66AB544A1ACDC59627518BA0DC96DCF@mailserver>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Maxime Jayat <maxime@artisandeveloppeur.fr>, Timothy Vieregge <tvieregge@clearpathrobotics.com>, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Fp2sTvbVwBLHSHKijh0qDdu5F4uPGx5uh
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 05/22/2014 01:39 PM, Kurt Van Dijck wrote:
-> Hey Maxime & Timothy,
->=20
-> On Thu, May 22, 2014 at 11:57:28AM +0200, Maxime Jayat wrote:
-> [...]
+interesting conversation here regarding the mcp251x module ...
+
+Am Do, 22.05.2014, 08:38, schrieb Rost, Martin:
+>
+> Hello John,
+>
+>> -----Original Message-----
+>> From: linux-can-owner@vger.kernel.org [mailto:linux-can-
+>> owner@vger.kernel.org] On Behalf Of John Whitmore
+>> Sent: Thursday, May 22, 2014 1:54 AM
+>> To: Marc Kleine-Budde
+>> Cc: Rost, Martin; linux-can@vger.kernel.org; Alexander Shiyan
+>> Subject: Re: [PATCH] mcp251x: mcp2515 stops receiving
 >>
->> I've hit the same problem as Timothy in the past. I've looked into it
->> and the reason for it is that the code in
->> https://gitorious.org/linux-can/linux-can-j1939/source/j1939-v3.8:net/=
-can/af_can.c#L1020-1041
->> is different from the code in
->> https://gitorious.org/linux-can/can-j1939-modules/source/master:net/ca=
-n/af_can.c#L1169
->> and the former still has a bug that is fixed in the latter in can_vali=
-date_link_af.
+>> I'm not an expert in the Linux Driver code nor the implemented fix but I can
+>> confirm that the Interrupt is generated with no flags set. I'm not sure of the
+>> 10mS timing but I'd imagine that should work.
 >>
->> In particular:
->> 		cp =3D can_get_proto(nla_type(prot));
->> 		if (!cp || !cp->rtnl_link_ops)
->> 			ret =3D -EPROTONOSUPPORT;
->> 		else if (!cp->rtnl_link_ops->validate_link_af)
->> 			ret =3D 0;
->> 		else
->> 			ret =3D cp->rtnl_link_ops->validate_link_af(dev, prot);
->> 		can_put_proto(cp);
->> 		if (ret < 0)
->> 			return ret;
->>
->> doesn't end well for can_put_proto when can_get_proto returns NULL.
->=20
-> That explains things, but I'm still puzzled why it did work on my machi=
-nes.
-> Maybe some other config option makes the call to module_put inside can_=
-put_proto
-> behave different?
->=20
-> Anyway, you pointed to a real problem, and I promptly pushed a patch fo=
-r it.
-> Timothy, pulling in git and building again should really solve the prob=
-lem
-> that the systems fails. You will still need to load can-j1939, but you =
-will
-> informed better about this, and the system itself should not fail.
->=20
->>
->> I find it not very clear to see what is the most up-to-date repo for J=
-1939
->> and whether all the branches in linux-can-j1939 are supposed to be mai=
-ntained
->> along with can-j1939-modules.
->=20
-> out-of-tree modules become old-fashioned with the use of git.
-> can-j1939-modules is a remainder of the state we were in on berlios usi=
-ng SVN.
-> I don't intend to spend much effort on the out-of-tree modules ...
+>
+> Thanks for confirming it.
+> I fiddled a bit with the timing, and it seemed that 5ms would catch some but not all occurrences
+> of this problem.
+> So I went for 10 to make sure.
+>
+> I'm not too deep into kernel internals, so is there some best practice to this?
+>
+> Regards,
+> Martin
+>
 
-If you don't maintain the modules anymore, can you delete the repo? Or
-add a prefix like -depreaced.
+IMHO a delay isn't a good idea. I've spent lots of hours in fron of my osci
+http://www.raspberrypi.org/forums/viewtopic.php?f=44&t=7027&start=103
+to get the MCP2515 working with RPi. After fiddling the GPIOs for the MCP2515
+interrupt I got a working setup with the RPI and 3.1.x+ kernel. The setup was
+stable even after upgrading to 3.2.x+ kernel. There were packet losts if the
+CAN frame rate was high but the interface was "stable" - no hangup.
 
-Marc
+Things got worse after upgrading to 3.6.x+ kernel. The driver wasn't stable
+anymore - the interface hang due to missed interrupts. From my point of view
+this has to do with the IRQF_ONESHOT. The drivers have to set this flag in newer
+kernels if you don't have a primary IRQ handler - the MCP2515 doesn't use it,
+because the interrupt will be cleared if you read the buffer for example. This
+is a feature of the CAN-Controller and the kernel module use it to reduce
+SPI requests.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+AFAIK the IRQF_ONESHOT feature was added to avoid endless interrupt retriggering.
+But a retrigger is needed by the mc251x module: If you read the first buffer,
+there must be a second interrupt if the second buffer is also full.
+
+If you are curious you could do the following test: Write some (useless) code into the
+primary IRQ routine:
+
+static irqreturn_t mcp251x_can_hardirq(int irq, void *dev_id)
+{
+        ....
+        return IRQ_WAKE_THREAD;
+}
+...
+static int mcp251x_open(struct net_device *net)
+{
+...
+        ret = request_threaded_irq(spi->irq, mcp251x_can_hardirq, mcp251x_can_ist,
+                  pdata->irq_flags ? pdata->irq_flags : IRQF_TRIGGER_FALLING,
+                  DEVICE_NAME, priv);
 
 
---Fp2sTvbVwBLHSHKijh0qDdu5F4uPGx5uh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+to avoid the IRQF_ONESHOT flag to be set. There is no guarantee that this will work,
+of course. But give it a try ;-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+Regards
 
-iEYEARECAAYFAlN947cACgkQjTAFq1RaXHN8HgCdHZUOID2dRaXVcnL+NgdtDtdn
-kp0An1Qg4gQ1c6O5webpemDEEaIgTmpn
-=WkyF
------END PGP SIGNATURE-----
+Gerd
 
---Fp2sTvbVwBLHSHKijh0qDdu5F4uPGx5uh--
+
