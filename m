@@ -1,83 +1,60 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2014-05-23
-Date: Fri, 23 May 2014 09:22:00 +0200
-Message-ID: <537EF718.2020203@pengutronix.de>
+From: Stefan Hajnoczi <stefanha@gmail.com>
+Subject: Re: [Qemu-devel] [PATCH 0/2] CAN SJA100 controller emulation and
+ SocketCAN based host CAN bus access
+Date: Fri, 23 May 2014 11:42:25 +0200
+Message-ID: <20140523094225.GA1260@stefanha-thinkpad.redhat.com>
+References: <201405092010.19482.pisa@cmp.felk.cvut.cz>
+ <CAJSP0QXLCZYrvHpPQH6CSTkfL2ezdvZya32kuHfs4FgYvC_Btg@mail.gmail.com>
+ <201405151553.07872.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="p1LMreKut4VUrPfmmfenTdaMuSKxR4Eks"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wi0-f174.google.com ([209.85.212.174]:51667 "EHLO
+	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751269AbaEWJm3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 23 May 2014 05:42:29 -0400
+Received: by mail-wi0-f174.google.com with SMTP id r20so539049wiv.13
+        for <linux-can@vger.kernel.org>; Fri, 23 May 2014 02:42:27 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <201405151553.07872.pisa@cmp.felk.cvut.cz>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, Peter Crosthwaite <peter.crosthwaite@xilinx.com>, "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, Oliver Hartkopp A <socketcan@hartkopp.net>, jinyang.sia@gmail.com, Stefan Weil <sw@weilnetz.de>, rtems-devel@rtems.org, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---p1LMreKut4VUrPfmmfenTdaMuSKxR4Eks
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 15, 2014 at 03:53:07PM +0200, Pavel Pisa wrote:
+> The decisions for further development
+> 
+> Should be minimal working solution included in the QEMU
+> mainline in short term?
+> (months .. or rather wait for agreement on final
+> infrastructure, may be years because of our other load
+> and complexity of full model task)
+> 
+> Is preferred approach to open CAN QEMU fork on GitHub?
+> Etc...
 
-Hello David,
+It sounds like there is doubt about whether anyone has enough time to
+implement CAN more fully.  I'm not thrilled about reviewing patches if
+it's a partial implementation with few end users - something like that
+can be kept out-of-tree until someone with enough resources can polish
+it and push it upstream.
 
-this is a pull request of two patches for net-next/master. Kedareswara
-rao Appana contributes support for the xilinx CAN core found on the
-zynq and microblaze SOCs.
+A few more comments about the network subsystem:
 
-Marc
+The QEMU network subsystem doesn't emulate Ethernet.  It's just a way to
+connect an emulated NIC with a host netdev (tap, socket, etc) with a few
+extra services like link down/up, flow control, etc.
 
----
-The following changes since commit 091b64868b43ed84334c6623ea6a08497529d4=
-ff:
+In the CAN world it would connect a CAN controller (e.g. Kvaser PCI)
+with a host device (e.g. using libcan or whatever).  I don't think it's
+necessary to emulate bus arbitration in this model, that should happen
+via the host device (which is talking to an real CAN bus).
 
-  Merge branch 'mlx4-next' (2014-05-22 17:17:34 -0400)
+The question is whether the network subsystem's send/receive model works
+or whether you need something CAN-specific like publishing RX/TX objects
+along with their metadata (IDs, priorities, deadlines, etc).  That would
+be a major difference and it would probably make sense it implement it
+as a separate subsystem.
 
-are available in the git repository at:
-
-
-  git://gitorious.org/linux-can/linux-can-next.git tags/linux-can-next-fo=
-r-3.16-20140523
-
-for you to fetch changes up to 05be386b709b5feacfaa0d3582dca63e1e435b26:
-
-  can: xilinx CAN controller support (2014-05-23 08:59:21 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-3.16-20140523
-
-----------------------------------------------------------------
-Kedareswara rao Appana (2):
-      can: Add xilinx CAN device tree bindings documentation
-      can: xilinx CAN controller support
-
- .../devicetree/bindings/net/can/xilinx_can.txt     | 44 ++++++++++++++++=
-++++++
- drivers/net/can/Kconfig                            |  8 ++++
- drivers/net/can/Makefile                           |  1 +
- 3 files changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.=
-txt
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
-
---p1LMreKut4VUrPfmmfenTdaMuSKxR4Eks
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlN+9xgACgkQjTAFq1RaXHMqHgCZAcM8qn+WAku0dAeAx8ecw4O1
-R2kAnR6K1IaC47CMV+ZXaeY+oOBZDbvZ
-=H+lp
------END PGP SIGNATURE-----
-
---p1LMreKut4VUrPfmmfenTdaMuSKxR4Eks--
+Stefan
