@@ -1,80 +1,94 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: j1939 for linux 3.12 problem
-Date: Sun, 25 May 2014 20:18:34 +0200
-Message-ID: <20140525181834.GB1055@vandijck-laurijssen.be>
-References: <CALoSW66s1aWz6g=RRLebh_Le6j7Br1Phet_tuisC2oWbGwQzJA@mail.gmail.com>
- <CALoSW65MXVzugeZVyi7q1znDWgbxxLiUE-apUcgSLRU+XmN9Bw@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2014-05-26
+Date: Mon, 26 May 2014 09:41:59 +0200
+Message-ID: <5382F047.2030600@pengutronix.de>
+References: <537EF718.2020203@pengutronix.de>	<20140523.154433.1565372421278669500.davem@davemloft.net> <20140523.162554.1697403825084761042.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:26466 "EHLO
-	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751071AbaEYSSs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 25 May 2014 14:18:48 -0400
-Content-Disposition: inline
-In-Reply-To: <CALoSW65MXVzugeZVyi7q1znDWgbxxLiUE-apUcgSLRU+XmN9Bw@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Nimai Mahajan <nimaim@gmail.com>
-Cc: linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="a7u8SHu8E3Cu9FVdAmJxNEUoid27EH5Cl"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20140523.162554.1697403825084761042.davem@davemloft.net>
+Sender: netdev-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-Hey,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--a7u8SHu8E3Cu9FVdAmJxNEUoid27EH5Cl
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I apologize for not having seen your first post.
-I had some problems using my company email.
+On 05/23/2014 10:25 PM, David Miller wrote:
+>>> this is a pull request of two patches for net-next/master. Kedareswar=
+a
+>>> rao Appana contributes support for the xilinx CAN core found on the
+>>> zynq and microblaze SOCs.
 
-On Sat, May 24, 2014 at 06:44:59PM -0400, Nimai Mahajan wrote:
-> Kurt,
-> 
-> I posted this on the gname mailing list months ago but I guess it never made it
-> there. Here is my humble request (we have an application that requires the use
-> of the RP1210 API; however, I believe they are using all J1939 calls so getting
-> your stuff to work in Linux would be most appreciated):
-> 
-> How much work would it be to get this working in a newer kernel? Why haven't
-> these changes gotten merged into the official socketcan libraries?
-> 
-> ---------- Forwarded message ----------
-> From: Nimai Mahajan <nimaim@gmail.com>
-> Date: Sun, Mar 16, 2014 at 12:29 PM
-> Subject: Problem
-> To: Nimai Mahajan <nimaim@gmail.com>
-> 
-> 
-> Kurt, I apologize for bumping this but this is the most recent thread I saw
-> where you were still active. Are you still maintaining J1939 support in later
-> versions of the Linux kernel (as well as the newer can-utils and iproute2
-> packages)?
+> Somethings not right, it looks like a forgotten git add on your side.
 
-Thanks for your interest.
-Yes, I'm still doing that with the ultimate goal of being integrated in mainline.
-I'm incorporating advice from the linux-can mailing list.
-You may have noticed that the development pace has slowed down a bit :-)
+Doh, yes, the file is in my tree, but not in the patch. Now the fixed
+version:
 
-> I am seeking support for this for a Buildroot embedded system for
-> vehicle diagnostics and it is important for us to get it working to avoid
-> creating our own J1939 wrappers would be too significant an effort. While I'm
-> still new to the protocols and all, my understanding is that I will have to use
-> CAN_RAW and manual CAN frames to communicate with our devices here (versus
-> specific J1939 methods you've written) and I rather not do that. I've
-> cross-compiled iproute2 and can-utils from your repo successfully with
-> Buildroot libraries with some minor tweaking of the config files. Even though
-> you modified older packages of the two, I don't see any significant commits
-> since then.
-> 
-> My problem is merging your j1939-v3.8 branch to the 3.12.13 kernel (3.8 is no
-> longer supported and kernel.org states that 3.10.x and 3.12.x are the latest
-> longterm supported kernels, so it would be great if I can get it to work on one
-> of these). The merge works fine, here is the result of that:
+This is a pull request of two patches for net-next/master. Kedareswara
+rao Appana contributes support for the xilinx CAN core found on the
+zynq and microblaze SoCs.
 
-Aha, I started with a 3.12 port, and noticed netlink and procfs changes.
+Marc
+---
 
-You got quite far on your own.
-I'll create a branch solving the core issues soon.
-A reworked version with modified core functionality must be tested first
-and that will take too long now.
+The following changes since commit 3bea8eddfebe1c61ea824dd2880d4368791edc=
+1f:
 
-Can you wait a few days?
+  Merge branch 'net-sysfs-docs' (2014-05-26 01:02:39 -0400)
 
-Kind regards,
-Kurt
+are available in the git repository at:
+
+
+  git://gitorious.org/linux-can/linux-can-next.git tags/linux-can-next-fo=
+r-3.16-20140526
+
+for you to fetch changes up to b1201e44f50b017a4972a337058b36b40c90abca:
+
+  can: xilinx CAN controller support (2014-05-26 09:36:31 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-3.16-20140526
+
+----------------------------------------------------------------
+Kedareswara rao Appana (2):
+      can: Add xilinx CAN device tree bindings documentation
+      can: xilinx CAN controller support
+
+ .../devicetree/bindings/net/can/xilinx_can.txt     |   44 +
+ drivers/net/can/Kconfig                            |    8 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/xilinx_can.c                       | 1208 ++++++++++++++=
+++++++
+ 4 files changed, 1261 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.=
+txt
+ create mode 100644 drivers/net/can/xilinx_can.c
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--a7u8SHu8E3Cu9FVdAmJxNEUoid27EH5Cl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOC8EcACgkQjTAFq1RaXHOtOQCfbokQ6casDnJnQ9ycjY9kFyZs
++F4AmgL+5RUp8s+Bj2VsdSx9LXmamR3K
+=4btF
+-----END PGP SIGNATURE-----
+
+--a7u8SHu8E3Cu9FVdAmJxNEUoid27EH5Cl--
