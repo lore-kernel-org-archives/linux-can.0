@@ -1,49 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2014-05-28
-Date: Wed, 28 May 2014 10:04:42 +0200
-Message-ID: <1401264283-9353-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH] can: only rename enabled led triggers when changing the netdev name
+Date: Wed, 28 May 2014 10:04:43 +0200
+Message-ID: <1401264283-9353-2-git-send-email-mkl@pengutronix.de>
+References: <1401264283-9353-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41879 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41892 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754151AbaE1IEz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 28 May 2014 04:04:55 -0400
+	with ESMTP id S1754486AbaE1IFW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 May 2014 04:05:22 -0400
+In-Reply-To: <1401264283-9353-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Fabio Baltieri <fabio.baltieri@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello David,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-here's a pull request for v3.15, hope it's not too late.
+Commit a1ef7bd9fce8 ("can: rename LED trigger name on netdev renames") renames
+the led trigger names according to the changed netdevice name.
 
-Oliver Hartkopp fixed a bug in the CAN led trigger device renaming code.
+As not every CAN driver supports and initializes the led triggers, checking for
+the CAN private datastructure with safe_candev_priv() in the notifier chain is
+not enough.
 
-regards,
-Marc
+This patch adds a check when CONFIG_CAN_LEDS is enabled and the driver does not
+support led triggers.
 
+Cc: Fabio Baltieri <fabio.baltieri@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: linux-stable <stable@vger.kernel.org> # >= v3.9
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-
-The following changes since commit 8646224cdb945eca4293e2131e5be47930ce3e80:
-
-  Merge branch 'for-davem' of git://git.kernel.org/pub/scm/linux/kernel/git/linville/wireless (2014-05-24 14:06:19 -0400)
-
-are available in the git repository at:
-
-
-  git://gitorious.org/linux-can/linux-can.git tags/linux-can-fixes-for-3.15-20140528
-
-for you to fetch changes up to 45fb4f8d81578e0a17c45c4593a3305afbf7a48b:
-
-  can: only rename enabled led triggers when changing the netdev name (2014-05-27 15:05:41 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-3.15-20140528
-
-----------------------------------------------------------------
-Oliver Hartkopp (1):
-      can: only rename enabled led triggers when changing the netdev name
-
  drivers/net/can/led.c | 3 +++
  1 file changed, 3 insertions(+)
 
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
+index a3d99a8..ab7f1b0 100644
+--- a/drivers/net/can/led.c
++++ b/drivers/net/can/led.c
+@@ -97,6 +97,9 @@ static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
+ 	if (!priv)
+ 		return NOTIFY_DONE;
+ 
++	if (!priv->tx_led_trig || !priv->rx_led_trig)
++		return NOTIFY_DONE;
++
+ 	if (msg == NETDEV_CHANGENAME) {
+ 		snprintf(name, sizeof(name), "%s-tx", netdev->name);
+ 		led_trigger_rename_static(name, priv->tx_led_trig);
+-- 
+2.0.0.rc2
 
