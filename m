@@ -1,54 +1,74 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: only rename enabled led triggers when changing the netdev name
-Date: Wed, 28 May 2014 10:04:43 +0200
-Message-ID: <1401264283-9353-2-git-send-email-mkl@pengutronix.de>
-References: <1401264283-9353-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH] can: only rename enabled led triggers when changing the
+ netdev name
+Date: Wed, 28 May 2014 10:06:33 +0200
+Message-ID: <53859909.4090904@pengutronix.de>
+References: <1401190256-2963-1-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="rb63Mj2uNSpv4sCvO9Huh3PrNW9he2OCP"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:41892 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44810 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754486AbaE1IFW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 28 May 2014 04:05:22 -0400
-In-Reply-To: <1401264283-9353-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751744AbaE1INU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 May 2014 04:13:20 -0400
+In-Reply-To: <1401190256-2963-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Fabio Baltieri <fabio.baltieri@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: dev.kurt@vandijck-laurijssen.be, fabio.baltieri@gmail.com
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--rb63Mj2uNSpv4sCvO9Huh3PrNW9he2OCP
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Commit a1ef7bd9fce8 ("can: rename LED trigger name on netdev renames") renames
-the led trigger names according to the changed netdevice name.
+On 05/27/2014 01:30 PM, Oliver Hartkopp wrote:
+> Commit a1ef7bd9fce8 ("can: rename LED trigger name on netdev renames") =
+renames
+> the led trigger names according to the changed netdevice name.
+>=20
+> As not every CAN driver supports and initializes the led triggers, chec=
+king for
+> the CAN private datastructure with safe_candev_priv() in the notifier c=
+hain is
+> not enough.
+>=20
+> This patch adds a check when CONFIG_CAN_LEDS is enabled and the driver =
+does not
+> support led triggers.
+>=20
+> For stable 3.9+
+>=20
+> CC: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> CC: Fabio Baltieri <fabio.baltieri@gmail.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-As not every CAN driver supports and initializes the led triggers, checking for
-the CAN private datastructure with safe_candev_priv() in the notifier chain is
-not enough.
+Applied to can.
 
-This patch adds a check when CONFIG_CAN_LEDS is enabled and the driver does not
-support led triggers.
+Thanks,
+Marc
 
-Cc: Fabio Baltieri <fabio.baltieri@gmail.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.9
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/led.c | 3 +++
- 1 file changed, 3 insertions(+)
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
-index a3d99a8..ab7f1b0 100644
---- a/drivers/net/can/led.c
-+++ b/drivers/net/can/led.c
-@@ -97,6 +97,9 @@ static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
- 	if (!priv)
- 		return NOTIFY_DONE;
- 
-+	if (!priv->tx_led_trig || !priv->rx_led_trig)
-+		return NOTIFY_DONE;
-+
- 	if (msg == NETDEV_CHANGENAME) {
- 		snprintf(name, sizeof(name), "%s-tx", netdev->name);
- 		led_trigger_rename_static(name, priv->tx_led_trig);
--- 
-2.0.0.rc2
 
+--rb63Mj2uNSpv4sCvO9Huh3PrNW9he2OCP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOFmQ0ACgkQjTAFq1RaXHNBqwCfbDlloeJX19W/QeFDkY7kogD/
+iUoAnRfr56zvTQ/OIPmZ7STumL5F5lMC
+=TcFQ
+-----END PGP SIGNATURE-----
+
+--rb63Mj2uNSpv4sCvO9Huh3PrNW9he2OCP--
