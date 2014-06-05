@@ -1,50 +1,336 @@
-From: "Kvaser Support" <support@kvaser.com>
-Subject: Re: (Case 14383) SocketCAN Supported Controllers information updates
-Date: Thu, 05 Jun 2014 09:18:22 +0200
-Message-ID: <539019be.d0a0e00a.068f.ffffc7c1@mx.google.com>
+From: Maxime Jayat <maxime@artisandeveloppeur.fr>
+Subject: Re: linux-can ISOTP module
+Date: Thu, 05 Jun 2014 12:18:18 +0200
+Message-ID: <539043EA.6030001@artisandeveloppeur.fr>
+References: <loom.20140604T144601-350@post.gmane.org>	<538F6836.3060508@hartkopp.net> <CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>
+Reply-To: maxime@artisandeveloppeur.fr
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qa0-f41.google.com ([209.85.216.41]:37255 "EHLO
-	mail-qa0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750722AbaFEHSX convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jun 2014 03:18:23 -0400
-Received: by mail-qa0-f41.google.com with SMTP id dc16so820613qab.28
-        for <linux-can@vger.kernel.org>; Thu, 05 Jun 2014 00:18:23 -0700 (PDT)
+Received: from mail-wi0-f180.google.com ([209.85.212.180]:50207 "EHLO
+	mail-wi0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750864AbaFEKSX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Jun 2014 06:18:23 -0400
+Received: by mail-wi0-f180.google.com with SMTP id hi2so3106969wib.1
+        for <linux-can@vger.kernel.org>; Thu, 05 Jun 2014 03:18:21 -0700 (PDT)
+In-Reply-To: <CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Yegor Yefremov <yegorslists@googlemail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Olivier Sobrie <olivier@sobrie.be>
+To: laurent vaudoit <laurent.vaudoit@gmail.com>, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
 
-We have added the following FAQ to our website to point customers to you website for SocketCAN information:
+Hi,
 
-http://www.kvaser.com/faq/linux-can-use-socketcan-kvaser-interface/
+Le 05/06/2014 09:16, laurent vaudoit a =C3=A9crit :
+> Hi Oliver,
+> thank you for your answer.
+> I'm sorry but there is still somethings i do not understand.
+>=20
+>=20
+> Ok, with isotp.h api, i understand that we can parameter block size, =
+stmin,
+> wftmax, transmission time (n_ax), padding.
+> But how can i specify the timing n_CS (time between flow control rece=
+ption
+> and first consecutive frame) and the timing n_BS (time between first =
+frame
+> reception and flow control emission)? In the same way, is it possible=
+ to
+> specify according timeout (n_BR for flow control timeout reception, a=
+nd n_CR
+> for consecutive frame timeout reception)?
+>>
+>>>
+>>> For extended adressing method, it seems that both rx and tx frame m=
+ust have
+>>> the same first byte in can frame (the one set by ext_address field =
+of the
+>>> structure). This is correct for mixed addressing method (see Iso157=
+65-2),
+>>> but for extended adressing method, we should be able to specify dif=
+ferent
+>>> Target and source adress. I have not seen anything like this.
+>>
+>> One socket represents one virtual 1:1 connection (defined by two CAN
+>> identifiers and optional with one address extension) on the CAN bus.
+>>
+>> If you want to receive from different sources just create different =
+sockets
+>> (and e.g. use select() to listen to many open socket file descriptor=
+s).
+>>
+>> The protocol engine has always to answer with the correct address in=
+formation.
+>>
+> With this method, how can i have a segmented transfer like this:
+> 0x6a7  0x55 0x10 0x08 ........
+> 0x687  0xAA 0x30 0x00 0x00
+> 0x6a7  0x55 0x21 .....
+>=20
+> The connection i need is between two ECU, using IDs 0x6a7/687 and one=
+ has
+> adress extension 0x55, the other 0xAA (this adressing method is used =
+on some
+> FIAT ECUs for example), but i don't see how it can work using two soc=
+ket.
+I confirm.
+This is a problem that we also encountered on a BMW ECU with the curren=
+t
+implementation of ISOTP.
+The use-case is real and not currently supported.
+I had to hack isotp.c, adding a socket option to be able to choose an
+address extension for the reception. Probably not the best solution but
+it worked.
 
-Best regards,
+> just after posting and some debug, i found that the problem was the
+> txqueulen. By increasing this parameter through ifconfig tool, i'm ab=
+le to
+> send 255 bytes frames with stmin=3D0.
+>>
+>>
+>> Regards,
+>> Oliver
+>=20
+> Regards
+> Laurent
+>=20
+> On Wed, Jun 4, 2014 at 8:40 PM, Oliver Hartkopp <socketcan@hartkopp.n=
+et> wrote:
+>> Hi Laurent,
+>>
+>> On 04.06.2014 14:55, laurent vaudoit wrote:
+>>
+>>> i'm using isotp module for some work purpose,
+>>> on a imx25 board, with kernel 3.10.
+>>>
+>>> I have integrated the module isotp and the correct header file in m=
+y
+>>> kernel.
+>>>
+>>> I'm able to use isotpsend adn isotprecv functions but i have some q=
+uestions:
+>>>
+>>> Comming from automotiv diagnostic, we are used to configure a lots =
+of
+>>> parameters in our baremetal Iso15765 protocol firmware (stmin,
+>>> bs,n_cs,n_bs...)
+>>> I have not seen anything to parameter timings such as n_cs, n_bs.
+>>> Is their something i missed?
+>>
+>> Definitely :-)
+>>
+>> See the help text from isotprecv:
+>>
+>> ---
+>>
+>> Usage: isotprecv [options] <CAN interface>
+>> Options: -s <can_id>  (source can_id. Use 8 digits for extended IDs)
+>>          -d <can_id>  (destination can_id. Use 8 digits for extended=
+ IDs)
+>>          -x <addr>    (extended addressing mode.)
+>>          -p <byte>    (set and enable padding byte)
+>>          -P <mode>    (check padding in SF/CF. (l)ength (c)ontent (a=
+)ll)
+>>          -b <bs>      (blocksize. 0 =3D off)
+>>          -m <val>     (STmin in ms/ns. See spec.)
+>>          -f <time ns> (force rx stmin value in nanosecs)
+>>          -w <num>     (max. wait frame transmissions.)
+>>          -l           (loop: do not exit after pdu receiption.)
+>>
+>> CAN IDs and addresses are given and expected in hexadecimal values.
+>> The pdu data is written on STDOUT in space separated ASCII hex value=
+s.
+>>
+>> ---
+>>
+>> Please check out the isotprecv.c source code to see how these parame=
+ters are
+>> to be set with setsockopt() syscall.
+>>
+>> See isotp.h for all socketoptions and structures:
+>> https://gitorious.org/linux-can/can-modules/source/f306f8ef6154d5625=
+f261374917ec6226910fbbb:include/socketcan/can/isotp.h
+>>
+>> isotprecv.c and isotpsend.c make use of all possible options which c=
+an be
+>> triggerd by commandline options.
+>>
+>>>
+>>> For extended adressing method, it seems that both rx and tx frame m=
+ust have
+>>> the same first byte in can frame (the one set by ext_address field =
+of the
+>>> structure). This is correct for mixed addressing method (see Iso157=
+65-2),
+>>> but for extended adressing method, we should be able to specify dif=
+ferent
+>>> Target and source adress. I have not seen anything like this.
+>>
+>> One socket represents one virtual 1:1 connection (defined by two CAN
+>> identifiers and optional with one address extension) on the CAN bus.
+>>
+>> If you want to receive from different sources just create different =
+sockets
+>> (and e.g. use select() to listen to many open socket file descriptor=
+s).
+>>
+>> The protocol engine has always to answer with the correct address in=
+formation.
+>>
+>>>
+>>> Last point, if i want to send a 255 bytes frame, with bs=3D0 and st=
+min=3D0
+>>> (requested by the receiver), transfer start well SN 0x01 to SN 0x0B=
+) but
+>>> after i have a frame with SN 0x03 instead of SN =3D 0x0C and everyt=
+hing stop.
+>>>
+>>> Does anyone encountered this kind of problem?
+>>>
+>>
+>> No.
+>>
+>> Using the isotpsend from my canfd4isotp-can-utils git repository (wh=
+ich
+>> supports the -D <num> option to create a PDU with the given length:
+>>
+>> $ ./isotpsend vcan0 -s 123 -d 321 -D 255
+>>
+>> On another terminal it looks like this then:
+>>
+>> $ isotprecv vcan0 -s 321 -d 123
+>> 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17=
+ 18 19 1A
+>> 1B 1C 1D 1E 1F 20 21 22 23 24 25 26 27 28 29 2A 2B 2C 2D 2E 2F 30 31=
+ 32 33 34
+>> 35 36 37 38 39 3A 3B 3C 3D 3E 3F 40 41 42 43 44 45 46 47 48 49 4A 4B=
+ 4C 4D 4E
+>> 4F 50 51 52 53 54 55 56 57 58 59 5A 5B 5C 5D 5E 5F 60 61 62 63 64 65=
+ 66 67 68
+>> 69 6A 6B 6C 6D 6E 6F 70 71 72 73 74 75 76 77 78 79 7A 7B 7C 7D 7E 7F=
+ 80 81 82
+>> 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 99=
+ 9A 9B 9C
+>> 9D 9E 9F A0 A1 A2 A3 A4 A5 A6 A7 A8 A9 AA AB AC AD AE AF B0 B1 B2 B3=
+ B4 B5 B6
+>> B7 B8 B9 BA BB BC BD BE BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD=
+ CE CF D0
+>> D1 D2 D3 D4 D5 D6 D7 D8 D9 DA DB DC DD DE DF E0 E1 E2 E3 E4 E5 E6 E7=
+ E8 E9 EA
+>> EB EC ED EE EF F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD FE FF
+>>
+>> with candump:
+>>
+>> $ candump vcan0
+>>   vcan0  123   [8]  10 FF 01 02 03 04 05 06
+>>   vcan0  321   [3]  30 00 00
+>>   vcan0  123   [8]  21 07 08 09 0A 0B 0C 0D
+>>   vcan0  123   [8]  22 0E 0F 10 11 12 13 14
+>>   vcan0  123   [8]  23 15 16 17 18 19 1A 1B
+>>   vcan0  123   [8]  24 1C 1D 1E 1F 20 21 22
+>>   vcan0  123   [8]  25 23 24 25 26 27 28 29
+>>   vcan0  123   [8]  26 2A 2B 2C 2D 2E 2F 30
+>>   vcan0  123   [8]  27 31 32 33 34 35 36 37
+>>   vcan0  123   [8]  28 38 39 3A 3B 3C 3D 3E
+>>   vcan0  123   [8]  29 3F 40 41 42 43 44 45
+>>   vcan0  123   [8]  2A 46 47 48 49 4A 4B 4C
+>>   vcan0  123   [8]  2B 4D 4E 4F 50 51 52 53
+>>   vcan0  123   [8]  2C 54 55 56 57 58 59 5A
+>>   vcan0  123   [8]  2D 5B 5C 5D 5E 5F 60 61
+>>   vcan0  123   [8]  2E 62 63 64 65 66 67 68
+>>   vcan0  123   [8]  2F 69 6A 6B 6C 6D 6E 6F
+>>   vcan0  123   [8]  20 70 71 72 73 74 75 76
+>>   vcan0  123   [8]  21 77 78 79 7A 7B 7C 7D
+>>   vcan0  123   [8]  22 7E 7F 80 81 82 83 84
+>>   vcan0  123   [8]  23 85 86 87 88 89 8A 8B
+>>   vcan0  123   [8]  24 8C 8D 8E 8F 90 91 92
+>>   vcan0  123   [8]  25 93 94 95 96 97 98 99
+>>   vcan0  123   [8]  26 9A 9B 9C 9D 9E 9F A0
+>>   vcan0  123   [8]  27 A1 A2 A3 A4 A5 A6 A7
+>>   vcan0  123   [8]  28 A8 A9 AA AB AC AD AE
+>>   vcan0  123   [8]  29 AF B0 B1 B2 B3 B4 B5
+>>   vcan0  123   [8]  2A B6 B7 B8 B9 BA BB BC
+>>   vcan0  123   [8]  2B BD BE BF C0 C1 C2 C3
+>>   vcan0  123   [8]  2C C4 C5 C6 C7 C8 C9 CA
+>>   vcan0  123   [8]  2D CB CC CD CE CF D0 D1
+>>   vcan0  123   [8]  2E D2 D3 D4 D5 D6 D7 D8
+>>   vcan0  123   [8]  2F D9 DA DB DC DD DE DF
+>>   vcan0  123   [8]  20 E0 E1 E2 E3 E4 E5 E6
+>>   vcan0  123   [8]  21 E7 E8 E9 EA EB EC ED
+>>   vcan0  123   [8]  22 EE EF F0 F1 F2 F3 F4
+>>   vcan0  123   [8]  23 F5 F6 F7 F8 F9 FA FB
+>>   vcan0  123   [5]  24 FC FD FE FF
+>>
+>> with isotpdump:
+>>
+>> $ isotpdump -s 123 -d 321 vcan0
+>>  vcan0  123  [8]  [FF] ln: 255  data: 01 02 03 04 05 06
+>>  vcan0  321  [3]  [FC] FC: 0 =3D CTS # BS: 0 =3D off # STmin: 0x00 =3D=
+ 0 ms
+>>  vcan0  123  [8]  [CF] sn: 1    data: 07 08 09 0A 0B 0C 0D
+>>  vcan0  123  [8]  [CF] sn: 2    data: 0E 0F 10 11 12 13 14
+>>  vcan0  123  [8]  [CF] sn: 3    data: 15 16 17 18 19 1A 1B
+>>  vcan0  123  [8]  [CF] sn: 4    data: 1C 1D 1E 1F 20 21 22
+>>  vcan0  123  [8]  [CF] sn: 5    data: 23 24 25 26 27 28 29
+>>  vcan0  123  [8]  [CF] sn: 6    data: 2A 2B 2C 2D 2E 2F 30
+>>  vcan0  123  [8]  [CF] sn: 7    data: 31 32 33 34 35 36 37
+>>  vcan0  123  [8]  [CF] sn: 8    data: 38 39 3A 3B 3C 3D 3E
+>>  vcan0  123  [8]  [CF] sn: 9    data: 3F 40 41 42 43 44 45
+>>  vcan0  123  [8]  [CF] sn: A    data: 46 47 48 49 4A 4B 4C
+>>  vcan0  123  [8]  [CF] sn: B    data: 4D 4E 4F 50 51 52 53
+>>  vcan0  123  [8]  [CF] sn: C    data: 54 55 56 57 58 59 5A
+>>  vcan0  123  [8]  [CF] sn: D    data: 5B 5C 5D 5E 5F 60 61
+>>  vcan0  123  [8]  [CF] sn: E    data: 62 63 64 65 66 67 68
+>>  vcan0  123  [8]  [CF] sn: F    data: 69 6A 6B 6C 6D 6E 6F
+>>  vcan0  123  [8]  [CF] sn: 0    data: 70 71 72 73 74 75 76
+>>  vcan0  123  [8]  [CF] sn: 1    data: 77 78 79 7A 7B 7C 7D
+>>  vcan0  123  [8]  [CF] sn: 2    data: 7E 7F 80 81 82 83 84
+>>  vcan0  123  [8]  [CF] sn: 3    data: 85 86 87 88 89 8A 8B
+>>  vcan0  123  [8]  [CF] sn: 4    data: 8C 8D 8E 8F 90 91 92
+>>  vcan0  123  [8]  [CF] sn: 5    data: 93 94 95 96 97 98 99
+>>  vcan0  123  [8]  [CF] sn: 6    data: 9A 9B 9C 9D 9E 9F A0
+>>  vcan0  123  [8]  [CF] sn: 7    data: A1 A2 A3 A4 A5 A6 A7
+>>  vcan0  123  [8]  [CF] sn: 8    data: A8 A9 AA AB AC AD AE
+>>  vcan0  123  [8]  [CF] sn: 9    data: AF B0 B1 B2 B3 B4 B5
+>>  vcan0  123  [8]  [CF] sn: A    data: B6 B7 B8 B9 BA BB BC
+>>  vcan0  123  [8]  [CF] sn: B    data: BD BE BF C0 C1 C2 C3
+>>  vcan0  123  [8]  [CF] sn: C    data: C4 C5 C6 C7 C8 C9 CA
+>>  vcan0  123  [8]  [CF] sn: D    data: CB CC CD CE CF D0 D1
+>>  vcan0  123  [8]  [CF] sn: E    data: D2 D3 D4 D5 D6 D7 D8
+>>  vcan0  123  [8]  [CF] sn: F    data: D9 DA DB DC DD DE DF
+>>  vcan0  123  [8]  [CF] sn: 0    data: E0 E1 E2 E3 E4 E5 E6
+>>  vcan0  123  [8]  [CF] sn: 1    data: E7 E8 E9 EA EB EC ED
+>>  vcan0  123  [8]  [CF] sn: 2    data: EE EF F0 F1 F2 F3 F4
+>>  vcan0  123  [8]  [CF] sn: 3    data: F5 F6 F7 F8 F9 FA FB
+>>  vcan0  123  [5]  [CF] sn: 4    data: FC FD FE FF
+>>
+>> Please check out the README.isotp:
+>>
+>> https://gitorious.org/linux-can/can-modules/source/f306f8ef6154d5625=
+f261374917ec6226910fbbb:README.isotp
+>>
+>> Did you probably run your test on a real CAN interface but did not i=
+ncrease
+>> the tx queue length of the CAN netdevice accordingly??
+>>
+>>> I will search for this problem as it is a big problem if we want to=
+ make
+>>> some download through isotp.
+>>
+>> I flashed several instrument clusters and climate control ECUs with =
+this
+>> implementation :-)
+>>
+>> Regards,
+>> Oliver
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
 
-Troy
--- 
-Kvaser Support
-support@kvaser.com
----------------------------------------------------------------------------
+--=20
+Maxime Jayat
 
-
-
------Original Message-----
-From: "Kvaser Support" <support@kvaser.com>
-Reply-To: "Kvaser Support" <support@kvaser.com>
-Date: Mon, 28 Apr 2014 02:24:51 +02:00
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Yegor Yefremov" <yegorslists@googlemail.com>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Olivier Sobrie" <olivier@sobrie.be>
-Subject: Re: (Case 14383) SocketCAN Supported Controllers information updates
-
->Looks good.  Thanks for updating this information.  I will let you know when we have our FAQ page up so you can comment.
->
->Best regards,
->
->Troy
->-- 
->Kvaser Support
->support@kvaser.com
->---------------------------------------------------------------------------
