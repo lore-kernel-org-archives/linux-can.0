@@ -1,59 +1,58 @@
-From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+From: Alexander GQ Gerasiov <gq@cs.msu.su>
 Subject: Re: SJA1000 loopback feature
-Date: Tue, 17 Jun 2014 15:41:14 +0400
-Message-ID: <CAEJ7JO1a_5Z2yKYDw30XjXh3qt4Qr-yRUVMUkz9s3MRv=zLWhA@mail.gmail.com>
+Date: Tue, 17 Jun 2014 16:13:47 +0400
+Message-ID: <20140617161347.25cb639e@snail>
 References: <CAEJ7JO2ejHBVANYWXxXe_DstXCW-hm9xzJYXifiU+RwYNS3M1A@mail.gmail.com>
 	<539F3DDF.70007@hartkopp.net>
+	<CAEJ7JO1a_5Z2yKYDw30XjXh3qt4Qr-yRUVMUkz9s3MRv=zLWhA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-oa0-f47.google.com ([209.85.219.47]:33163 "EHLO
-	mail-oa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755023AbaFQLlO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Jun 2014 07:41:14 -0400
-Received: by mail-oa0-f47.google.com with SMTP id n16so8174780oag.34
-        for <linux-can@vger.kernel.org>; Tue, 17 Jun 2014 04:41:14 -0700 (PDT)
-In-Reply-To: <539F3DDF.70007@hartkopp.net>
+Received: from eol.lvk.cs.msu.su ([158.250.17.73]:44698 "EHLO
+	eol.lvk.cs.msu.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932455AbaFQMWH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Jun 2014 08:22:07 -0400
+Received: from snail (unknown [192.168.131.93])
+	by eol.lvk.cs.msu.su (Postfix) with ESMTPSA id 48B84140077
+	for <linux-can@vger.kernel.org>; Tue, 17 Jun 2014 16:13:05 +0400 (MSK)
+In-Reply-To: <CAEJ7JO1a_5Z2yKYDw30XjXh3qt4Qr-yRUVMUkz9s3MRv=zLWhA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On Mon, Jun 16, 2014 at 10:56 PM, Oliver Hartkopp <socketcan@hartkopp.net>
-wrote:
-> CAN_CTRLMODE_LOOPBACK means, that the controller is able to 'shortcut' the TX
-> line with the RX line.
+Tue, 17 Jun 2014 15:41:14 +0400
+Nikita Edward Baruzdin <nebaruzdin@gmail.com> wrote:
 
-So that is what I called a hardware loopback. For SJA1000 it is done with the
-SRR (Self Reception Request) feature. Note also that with SJA1000 you can't put
-message from TX to RX buffer without actually sending it to the bus.
+> 
+> You see, we, for instance, don't really need hardware loopback for
+> our case. What we need is to have software loopback working. And for
+> that STM is necessary. If we enable SRR feature as well, we'll have
+> each message loopbacked twice: once by software
+> (can_{put|get}_echo_skb() functions) and once by hardware (message in
+> controller's RX buffer). Thus we'll probably have to disable the
+> software loopback per socket (CAN_RAW_LOOPBACK option) which is not
+> really convenient.
 
-> This means that you send a CAN frame to your own input pin without the need
-> for external CAN nodes (including acks).
+Just to clarify situation, Nikita is working on distributed system,
+where N components are working on M physical hosts (N >> M) and should
+be able to intercommunicate with each other via can bus even if M==1.
+In such case, ACKs are absent on the bus, but frames are transmited
+between several components within one host.
 
-And this is the STM (Self Test Mode) in SJA1000.
+So we want to be able to tune CAN subsystem to ignore ACK absence.
+As we understand, SJA1000 has the mode we are looking for (but lacks
+support in driver/subsystem).
 
->> I attached a patch that adds support for the Self Test Mode using the
->> CAN_CTRLMODE_LOOPBACK netlink option. As it is not exactly a loopback mode we
->> enable with that option, it might be a better idea to have a separate one for
->> that, smth like CAN_CTRLMODE_SELF_TEST. What do you think?
->
-> I think CAN_CTRLMODE_LOOPBACK still is the right description.
->
-> But when you read the SJA1000 spec, you would need to set CMD_SRR (self
-> reception request) instead of CMD_TR (transmission request) to have the
-> loopback functionality when the MOD_STM (self test mode) is enabled, right?
+As LOOPBACK option for interface means that TX should be passed to RX,
+thats not exactly what we need. (As for loopback we already have it
+on the socket with CAN_RAW_LOOPBACK and CAN_RAW_RECV_OWN_MSGS.) I think
+we could add one more interface mode "ignore-no-ack", but we'd like to
+stay as much closer to vanilla kernel as possible and contribute our
+modifications, so we need your opinion on
 
-Yes, but not necessarily. My point is: STM and SRR are in fact separate
-features, so maybe they should be controlled separately. Of course, we can say
-CAN_CTRLMODE_LOOPBACK = STM + SRR for SJA1000. But that is not what I wanted.
+Is this the common situation? Do you interested in such mode and our
+modifications? How should we realize thees modifications?
 
-You see, we, for instance, don't really need hardware loopback for our case.
-What we need is to have software loopback working. And for that STM is
-necessary. If we enable SRR feature as well, we'll have each message loopbacked
-twice: once by software (can_{put|get}_echo_skb() functions) and once by
-hardware (message in controller's RX buffer). Thus we'll probably have to
-disable the software loopback per socket (CAN_RAW_LOOPBACK option) which is not
-really convenient.
-
-Thanks for the quick response,
-Nikita
+-- 
+Alexander.
