@@ -1,92 +1,71 @@
-From: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH v2 1/2] flexcan: add err_irq handler for flexcan
-Date: Fri, 20 Jun 2014 11:19:25 -0500
-Message-ID: <1403281165.12851.186.camel@snotra.buserror.net>
-References: <1403229664-33912-1-git-send-email-B45475@freescale.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: linux-can ISOTP module
+Date: Fri, 20 Jun 2014 21:08:09 +0200
+Message-ID: <53A48699.6030605@hartkopp.net>
+References: <loom.20140604T144601-350@post.gmane.org>	<538F6836.3060508@hartkopp.net>	<CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>	<539043EA.6030001@artisandeveloppeur.fr>	<5390B575.7030506@hartkopp.net> <CAA7hF3xomuS-mDRQWmkC=D9YfbDPt+TwXKc7+ZFtUNwkg5cMdQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1blp0181.outbound.protection.outlook.com ([207.46.163.181]:5485
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S934450AbaFTQTg (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 20 Jun 2014 12:19:36 -0400
-In-Reply-To: <1403229664-33912-1-git-send-email-B45475@freescale.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:54553 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751431AbaFTTIN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Jun 2014 15:08:13 -0400
+In-Reply-To: <CAA7hF3xomuS-mDRQWmkC=D9YfbDPt+TwXKc7+ZFtUNwkg5cMdQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Zhao Qiang <B45475@freescale.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, B07421@freescale.com
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: maxime@artisandeveloppeur.fr, linux-can@vger.kernel.org
 
-On Fri, 2014-06-20 at 10:01 +0800, Zhao Qiang wrote:
-> when flexcan is not physically linked, command 'cantest' will
-> trigger an err_irq, add err_irq handler for it.
+Hello Laurent,
+
+On 06.06.2014 08:42, laurent vaudoit wrote:
+
+>>>> With this method, how can i have a segmented transfer like this:
+>>>> 0x6a7  0x55 0x10 0x08 ........
+>>>> 0x687  0xAA 0x30 0x00 0x00
+>>>> 0x6a7  0x55 0x21 .....
+>>>>
+>>>> The connection i need is between two ECU, using IDs 0x6a7/687 and one has
+>>>> adress extension 0x55, the other 0xAA (this adressing method is used on some
+>>>> FIAT ECUs for example), but i don't see how it can work using two socket.
+>>> I confirm.
+>>> This is a problem that we also encountered on a BMW ECU with the current
+>>> implementation of ISOTP.
+>>> The use-case is real and not currently supported.
+
+I added the funtionality of a different rx_ext_addr to a specific branch of
+can-utils and can-modules:
+
+https://gitorious.org/linux-can/can-utils/commits/rx_ext_addr
+https://gitorious.org/linux-can/can-modules/commits/rx_ext_addr
+
+Please check them out for a test. As all the isotp tools (in the branch)
+support the new feature too, it should be easy to do.
+
+> In my opinion, it would be better to have all normalization parameters
+> in the structure:
+> __u8 Adressing_method
+> __u8 TA
+> __u8 SA
+> __u8 AE
 > 
-> Signed-off-by: Zhao Qiang <B45475@freescale.com>
-> ---
-> Changes for v2:
-> 	- use a space instead of tab
-> 	- use flexcan_poll_state instead of print
-> 
->  drivers/net/can/flexcan.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index f425ec2..7432ba4 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -208,6 +208,7 @@ struct flexcan_priv {
->  	void __iomem *base;
->  	u32 reg_esr;
->  	u32 reg_ctrl_default;
-> +	unsigned int err_irq;
+> Because depending on the Adressing method used, you have to use TA
+> (target adress) and SA (Source Adress) for first byte of the frame (TA
+> in emission, SA in reception) or AE (adress extension) for both
+> emission and reception (case of mixed adressing, see ISO15765-2
+> normalization)
+> But i don't know if it is available, due to compatibility.
 
-Why unsigned?
+I wonder whether this should be part of a syscall interface API.
+The ISO15765-2 protocol is a CAN transport protocol which creates a virtual
+point-to-point data connection with help of two CAN identifiers.
+There are many use-cases for transport protocols besides diagnosis.
 
-> +static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
-> +{
-> +	struct net_device *dev = dev_id;
-> +	struct flexcan_priv *priv = netdev_priv(dev);
-> +	struct flexcan_regs __iomem *regs = priv->base;
-> +	u32 reg_ctrl, reg_esr;
-> +
-> +	reg_esr = flexcan_read(&regs->esr);
-> +	reg_ctrl = flexcan_read(&regs->ctrl);
-> +	if (reg_esr & FLEXCAN_ESR_TX_WRN) {
-> +		flexcan_write(reg_esr & ~FLEXCAN_ESR_TX_WRN, &regs->esr);
-> +		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
-> +		flexcan_poll_state(dev, reg_esr);
-> +	}
-> +	return IRQ_HANDLED;
-> +}
+The fact that the ISO15765-2 appendix defines an assignment of logical
+addresses to CAN identifiers does not mean that a socket API needs to provide
+this assignment pattern. This can be done by some library too.
 
-You should only return IRQ_HANDLED if there was something to handle.
-
-> @@ -944,6 +962,12 @@ static int flexcan_open(struct net_device *dev)
->  	if (err)
->  		goto out_close;
->  
-> +	if (priv->err_irq)
-> +		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
-> +				  dev->name, dev);
-> +	if (err)
-> +		goto out_close;
-
-Is this really a fatal error?  And why do you check err outside the "if
-(priv->err_irq)" block?  What if some previous code left err non-zero
-(either now or after some future code change)?
-
-> @@ -1126,6 +1150,10 @@ static int flexcan_probe(struct platform_device *pdev)
->  	if (irq <= 0)
->  		return -ENODEV;
->  
-> +	err_irq = platform_get_irq(pdev, 1);
-> +	if (err_irq <= 0)
-> +		err_irq = 0;
-> +
-
-Why is this <= 0 check needed?
-
--Scott
-
+Regards,
+Oliver
 
