@@ -1,91 +1,109 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: vcan to can0 bridging
-Date: Thu, 19 Jun 2014 22:32:39 +0200
-Message-ID: <20140619203239.GB12476@vandijck-laurijssen.be>
-References: <CAEJ7JO2ejHBVANYWXxXe_DstXCW-hm9xzJYXifiU+RwYNS3M1A@mail.gmail.com>
- <539F3DDF.70007@hartkopp.net>
- <CAEJ7JO1a_5Z2yKYDw30XjXh3qt4Qr-yRUVMUkz9s3MRv=zLWhA@mail.gmail.com>
- <20140617161347.25cb639e@snail>
- <53A1EDA7.7040504@hartkopp.net>
- <20140619164424.244e5634@snail>
- <53A2F9EC.4060107@hartkopp.net>
- <20140619200110.7427bdfe@snail>
- <53A32133.7050300@hartkopp.net>
- <20140619220710.580a0879@snail>
+From: Zhao Qiang <B45475@freescale.com>
+Subject: [PATCH v2 1/2] flexcan: add err_irq handler for flexcan
+Date: Fri, 20 Jun 2014 10:01:03 +0800
+Message-ID: <1403229664-33912-1-git-send-email-B45475@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay003.isp.belgacom.be ([195.238.6.53]:46145 "EHLO
-	mailrelay003.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932071AbaFSUc6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Jun 2014 16:32:58 -0400
-Content-Disposition: inline
-In-Reply-To: <20140619220710.580a0879@snail>
+Received: from mail-bn1blp0186.outbound.protection.outlook.com ([207.46.163.186]:58691
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1754201AbaFTCEW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 19 Jun 2014 22:04:22 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander GQ Gerasiov <gq@cs.msu.su>
-Cc: linux-can@vger.kernel.org
+To: linuxppc-dev@lists.ozlabs.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, B07421@freescale.com
+Cc: Zhao Qiang <B45475@freescale.com>
 
-Hey,
+when flexcan is not physically linked, command 'cantest' will
+trigger an err_irq, add err_irq handler for it.
 
-This idea just crossed my mind.
+Signed-off-by: Zhao Qiang <B45475@freescale.com>
+---
+Changes for v2:
+	- use a space instead of tab
+	- use flexcan_poll_state instead of print
 
-You have 2 orthogonal requirements for, I suppose, different applications.
-Both requirement conflict when you're alone on the bus.
-The key to success is to have each application require only 1 thing:
-or you are able to communicate always,
-or you receive exactly what is on physical CAN.
+ drivers/net/can/flexcan.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-You can setup vcan & can0, as Oliver explained.
-* applications that require permanent communication connect to vcan
-* applications that require strict ordering connect to can0
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f425ec2..7432ba4 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -208,6 +208,7 @@ struct flexcan_priv {
+ 	void __iomem *base;
+ 	u32 reg_esr;
+ 	u32 reg_ctrl_default;
++	unsigned int err_irq;
+ 
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+@@ -744,6 +745,23 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
++{
++	struct net_device *dev = dev_id;
++	struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_regs __iomem *regs = priv->base;
++	u32 reg_ctrl, reg_esr;
++
++	reg_esr = flexcan_read(&regs->esr);
++	reg_ctrl = flexcan_read(&regs->ctrl);
++	if (reg_esr & FLEXCAN_ESR_TX_WRN) {
++		flexcan_write(reg_esr & ~FLEXCAN_ESR_TX_WRN, &regs->esr);
++		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
++		flexcan_poll_state(dev, reg_esr);
++	}
++	return IRQ_HANDLED;
++}
++
+ static void flexcan_set_bittiming(struct net_device *dev)
+ {
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+@@ -944,6 +962,12 @@ static int flexcan_open(struct net_device *dev)
+ 	if (err)
+ 		goto out_close;
+ 
++	if (priv->err_irq)
++		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
++				  dev->name, dev);
++	if (err)
++		goto out_close;
++
+ 	/* start chip and queuing */
+ 	err = flexcan_chip_start(dev);
+ 	if (err)
+@@ -1099,7 +1123,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	struct resource *mem;
+ 	struct clk *clk_ipg = NULL, *clk_per = NULL;
+ 	void __iomem *base;
+-	int err, irq;
++	int err, irq, err_irq;
+ 	u32 clock_freq = 0;
+ 
+ 	if (pdev->dev.of_node)
+@@ -1126,6 +1150,10 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	if (irq <= 0)
+ 		return -ENODEV;
+ 
++	err_irq = platform_get_irq(pdev, 1);
++	if (err_irq <= 0)
++		err_irq = 0;
++
+ 	base = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -1149,6 +1177,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	dev->flags |= IFF_ECHO;
+ 
+ 	priv = netdev_priv(dev);
++	priv->err_irq = err_irq;
+ 	priv->can.clock.freq = clock_freq;
+ 	priv->can.bittiming_const = &flexcan_bittiming_const;
+ 	priv->can.do_set_mode = flexcan_set_mode;
+-- 
+1.8.5
 
-If you're alone on the bus, your 'strict ordering' applications will
-receive nothing, and that exactly what appears on the physical bus.
-Your 'permanent communication' cannot receive strict ordering,
-since nothing can be communicated then.
-
-Kurt
-
-On Thu, Jun 19, 2014 at 10:07:10PM +0400, Alexander GQ Gerasiov wrote:
-> Thu, 19 Jun 2014 19:43:15 +0200
-> Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> > So your hosts are absolutely synchronized (via ntp)??
-> Offtopic: yes, ntp for dirty synchronization and then LinuxPPS
-> for +/-5 microseconds precision.
-> 
-> > > On vcan you will see A (on T+dt1), B (on T+dt1+dt2).
-> > 
-> > How do you get the timestamp information then?
-> 
-> I put timestamps here just for example.
-> 
-> I just need that events traced by testbench software (on vcan in your
-> example) should go in the same order as events real hardware (we are
-> testing) will see on its interface.
-> 
-> > E.g. you can configute the routing rule with '-t' option to preserve
-> > the src_dev rx timestamp. You would see the timestamp from the real
-> > CAN tnen.
-> > 
-> > > On bus you will see B (on T+dt3), A (on T+dt3+dt4).
-> > 
-> > Hm - i wonder if you would really see a difference as the networking
-> > stack is not real-time anyway.
-> 
-> Timestamps are not a problem (in real life they are :) ). I'm speaking
-> about event's order 
-> 
-> > When sending on vcan (which has no
-> > receive queue) the rx is performed instantly which leads to en-queue
-> > the frame into the real CAN interface immediately.
-> 
-> Yes, after frame will be transmitted via vcan our soft will trace
-> successfull send, but then this frame will go into tx-queue and here it
-> could stuck because another (e.g. high prio) frame is transmitted by
-> other host (real hardware) the same time.
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
