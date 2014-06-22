@@ -1,61 +1,119 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Kvaser lapcan driver (init and probe)
-Date: Sat, 21 Jun 2014 23:28:23 +0200
-Message-ID: <20140621212823.GA28234@vandijck-laurijssen.be>
-References: <CAGqyy=ZHGDovR1i_ZzKqTYqp5QAVhbSco6uwE2-nFefL-g+ouw@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: c_can: convert to use devm * api
+Date: Sun, 22 Jun 2014 12:56:24 +0200
+Message-ID: <53A6B658.6030709@pengutronix.de>
+References: <1403265574-12923-1-git-send-email-prabhakar.csengg@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="fgMfhWC7AtGXTHDrHh2UnqpNvTOg1N88w"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:21016 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755605AbaFUV2b (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 21 Jun 2014 17:28:31 -0400
-Content-Disposition: inline
-In-Reply-To: <CAGqyy=ZHGDovR1i_ZzKqTYqp5QAVhbSco6uwE2-nFefL-g+ouw@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50267 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751569AbaFVK4m (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 22 Jun 2014 06:56:42 -0400
+In-Reply-To: <1403265574-12923-1-git-send-email-prabhakar.csengg@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Luis de Arquer <ldearquer@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
 
-Hey Luis,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fgMfhWC7AtGXTHDrHh2UnqpNvTOg1N88w
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 21, 2014 at 02:51:13PM +0100, Luis de Arquer wrote:
-> Hi all,
-> 
-> We have some Kvaser Lapcan PCMCIA cards at work which I found are not
-> supported for linux -there is an old driver, but it is not compatible
-> with current pcmcia subsystem and is not socketcan either.
+On 06/20/2014 01:59 PM, Lad, Prabhakar wrote:
+> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+>=20
+> this patch uses devm_* APIs as they are device managed
+> and make code simpler.
+>=20
+> Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
 
-I experienced the same situation. We had quite a few Softing CANcards.
-So a wrote a driver.
-I'm in no means a PCMCIA specialist. I'm only looking for some years
-already to the (infrequent) changes there.
+Thanks for the patch. Applied to can-next with minor change (see inline).=
 
-[...]
-> 
-> 2- What is the counterpart of 'pcmcia_request_io()'? There seems to be
-> a 'pcmcia_release_io()', but it is not accessible. It is internally
-> called by 'pcmcia_disable_device()', but 'pcmcia_disable_device()' is,
-> on itself, the counterpart for 'pcmcia_enable_device()'. So, what is
-> the right thing to do if 'pcmcia_request_io()' succeeds, but
-> 'pcmcia_enable_device()' fails?
 
-It may be usefull to understand the history of the pcmcia subsystem.
-In the 2.4 days, it was hotpluggable while the rest of the kernel was not.
-Today, the entire device model is hotpluggable, and a lot of the pcmcia_
-system had been migrated.
+> ---
+>  Note: This patch is compile tested only.
+> =20
+>  drivers/net/can/c_can/c_can_platform.c | 41 ++++++++------------------=
+--------
+>  1 file changed, 9 insertions(+), 32 deletions(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
+_can/c_can_platform.c
+> index 1df0b32..e0dcbcf 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -157,40 +157,31 @@ static int c_can_plat_probe(struct platform_devic=
+e *pdev)
+>  	}
+> =20
+>  	/* get the appropriate clk */
+> -	clk =3D clk_get(&pdev->dev, NULL);
+> +	clk =3D devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(clk)) {
+> -		dev_err(&pdev->dev, "no clock defined\n");
+> -		ret =3D -ENODEV;
+> +		ret =3D PTR_ERR(clk);
+>  		goto exit;
+>  	}
+> =20
+>  	/* get the platform data */
+>  	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	irq =3D platform_get_irq(pdev, 0);
+> -	if (!mem || irq <=3D 0) {
+> -		ret =3D -ENODEV;
+> -		goto exit_free_clk;
+> -	}
+> -
+> -	if (!request_mem_region(mem->start, resource_size(mem),
+> -				KBUILD_MODNAME)) {
+> -		dev_err(&pdev->dev, "resource unavailable\n");
+> +	if (irq <=3D 0) {
+>  		ret =3D -ENODEV;
+> -		goto exit_free_clk;
+> +		goto exit;
+>  	}
+> =20
+> -	addr =3D ioremap(mem->start, resource_size(mem));
+> -	if (!addr) {
+> -		dev_err(&pdev->dev, "failed to map can port\n");
+> -		ret =3D -ENOMEM;
+> -		goto exit_release_mem;
 
-Did you try to use request_resource, and ommitting pcmcia_request_io.
+I've moved the mem =3D platform_get_resource() for slightly better
+readability here....
 
-I can imagine that pcmcia_enable_device must come first, as resources
-are not available when the device is disabled.
+> +	addr =3D devm_ioremap_resource(&pdev->dev, mem);
+> +	if (IS_ERR(addr)) {
+> +		ret =3D  PTR_ERR(addr);
+> +		goto exit;
+>  	}
 
-> 
-> 3- I am requesting the IRQ *after* the call to
-> 'pcmcia_enable_device()' -as seen in the peak_pcmcia driver. Would it
-> be better to do it before?
+Thanks,
+Marc
 
-The IRQ should only be fired when the CAN chip is running, which is way later.
-You did well.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Kurt
+
+--fgMfhWC7AtGXTHDrHh2UnqpNvTOg1N88w
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOmtlsACgkQjTAFq1RaXHNXSgCfQi30zV/CnoMzok0XdmLDaAED
+gaUAn2UX++T09aAp1w/KiL4CMBSirhD6
+=c4pQ
+-----END PGP SIGNATURE-----
+
+--fgMfhWC7AtGXTHDrHh2UnqpNvTOg1N88w--
