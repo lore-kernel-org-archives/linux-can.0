@@ -1,121 +1,88 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 1/2] flexcan: add err_irq handler for flexcan
-Date: Mon, 23 Jun 2014 09:37:18 +0200
-Message-ID: <53A7D92E.4060708@pengutronix.de>
-References: <1403507484-46547-1-git-send-email-B45475@freescale.com> <53A7D497.7080806@pengutronix.de> <d7e8cae0bc584530bedc8febf5476fcf@BLUPR03MB341.namprd03.prod.outlook.com>
+From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
+Subject: RE: [PATCH v3 1/2] flexcan: add err_irq handler for flexcan
+Date: Mon, 23 Jun 2014 08:15:11 +0000
+Message-ID: <c0ae03364c7946bb8278bf20b03bab90@BLUPR03MB341.namprd03.prod.outlook.com>
+References: <1403507484-46547-1-git-send-email-B45475@freescale.com>
+ <53A7D497.7080806@pengutronix.de>
+ <d7e8cae0bc584530bedc8febf5476fcf@BLUPR03MB341.namprd03.prod.outlook.com>
+ <53A7D92E.4060708@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="FtQmtj7FT19Ktb18XjeNbudQ5wcqEE0mv"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36268 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751099AbaFWHha (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Jun 2014 03:37:30 -0400
-In-Reply-To: <d7e8cae0bc584530bedc8febf5476fcf@BLUPR03MB341.namprd03.prod.outlook.com>
+Received: from mail-bn1blp0184.outbound.protection.outlook.com ([207.46.163.184]:45724
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750722AbaFWIPO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 23 Jun 2014 04:15:14 -0400
+In-Reply-To: <53A7D92E.4060708@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Scott Wood <scottwood@freescale.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Scott Wood <scottwood@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FtQmtj7FT19Ktb18XjeNbudQ5wcqEE0mv
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 06/23/2014 09:26 AM, qiang.zhao@freescale.com wrote:
->=20
-> On 06/23/2014 03:18 PM, Marc Kleine-Budde wrote:
->=20
->>
->> On 06/23/2014 09:11 AM, Zhao Qiang wrote:
->>> when flexcan is not physically linked, command 'cantest' will trigger=
-
->>> an err_irq, add err_irq handler for it.
->>>
->>> Signed-off-by: Zhao Qiang <B45475@freescale.com>
->>> ---
->>> Changes for v2:
->>> 	- use a space instead of tab
->>> 	- use flexcan_poll_state instead of print Changes for v3:
->>> 	- return IRQ_HANDLED if err is triggered
->>> 	- stop transmitted packets when there is an err_interrupt
->>>
->>>  drivers/net/can/flexcan.c | 35 ++++++++++++++++++++++++++++++++++-
->>>  1 file changed, 34 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
->>> index f425ec2..6802a25 100644
->>> --- a/drivers/net/can/flexcan.c
->>> +++ b/drivers/net/can/flexcan.c
->>> @@ -208,6 +208,7 @@ struct flexcan_priv {
->>>  	void __iomem *base;
->>>  	u32 reg_esr;
->>>  	u32 reg_ctrl_default;
->>> +	unsigned int err_irq;
->>>
->>>  	struct clk *clk_ipg;
->>>  	struct clk *clk_per;
->>> @@ -744,6 +745,24 @@ static irqreturn_t flexcan_irq(int irq, void
->> *dev_id)
->>>  	return IRQ_HANDLED;
->>>  }
->>>
->>> +static irqreturn_t flexcan_err_irq(int irq, void *dev_id) {
->>> +	struct net_device *dev =3D dev_id;
->>> +	struct flexcan_priv *priv =3D netdev_priv(dev);
->>> +	struct flexcan_regs __iomem *regs =3D priv->base;
->>> +	u32 reg_ctrl, reg_esr;
->>> +
->>> +	reg_esr =3D flexcan_read(&regs->esr);
->>> +	reg_ctrl =3D flexcan_read(&regs->ctrl);
->>> +	if (reg_esr & FLEXCAN_ESR_TX_WRN) {
->>
->> When does the hardware trigger the interrupt?
->=20
-> When there is no wire link between tx and rx, tx start transfer and doe=
-sn=E2=80=99t get the ack.
-
-You are testing for the warning interrupt, not for the
-FLEXCAN_ESR_ACK_ERR (which is triggered there isn't any ACK).
-
->>> +		flexcan_write(reg_esr & ~FLEXCAN_ESR_TX_WRN, &regs->esr);
->>> +		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
->>> +		netif_stop_queue(dev);
->>
->> Why are you stopping the txqueue?
->=20
-> There is no wire link, tx can't transfer successfully.=20
-
-You are testing for the warning interrupt, which is triggered if the
-error counter increases from 95 to 96. And the error counter can
-increase due to several reasons. No link is only one of them. If the CAN
-core cannot transmit new packages any more the flow control in the
-driver will take care.
-
-What about calling the normal interrupt if er err_irq occurs, as this
-function will take care of both normal and error interrupts anyway?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---FtQmtj7FT19Ktb18XjeNbudQ5wcqEE0mv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlOn2S4ACgkQjTAFq1RaXHPTmQCfcQDcpXO1pAKj+oiM53B7FGvX
-E4wAn06axydfZnKAH+1ml9BooZbj/9t7
-=326+
------END PGP SIGNATURE-----
-
---FtQmtj7FT19Ktb18XjeNbudQ5wcqEE0mv--
+T24gMDYvMjMvMjAxNCAwMzozNyBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQoNCj4gLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVkZGUgW21haWx0
+bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IE1vbmRheSwgSnVuZSAyMywgMjAxNCAzOjM3
+IFBNDQo+IFRvOiBaaGFvIFFpYW5nLUI0NTQ3NTsgbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5v
+cmc7IGxpbnV4LQ0KPiBjYW5Admdlci5rZXJuZWwub3JnOyB3Z0BncmFuZGVnZ2VyLmNvbTsgV29v
+ZCBTY290dC1CMDc0MjENCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MyAxLzJdIGZsZXhjYW46IGFk
+ZCBlcnJfaXJxIGhhbmRsZXIgZm9yIGZsZXhjYW4NCj4gDQo+IE9uIDA2LzIzLzIwMTQgMDk6MjYg
+QU0sIHFpYW5nLnpoYW9AZnJlZXNjYWxlLmNvbSB3cm90ZToNCj4gPg0KPiA+IE9uIDA2LzIzLzIw
+MTQgMDM6MTggUE0sIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPiA+DQo+ID4+DQo+ID4+IE9u
+IDA2LzIzLzIwMTQgMDk6MTEgQU0sIFpoYW8gUWlhbmcgd3JvdGU6DQo+ID4+PiB3aGVuIGZsZXhj
+YW4gaXMgbm90IHBoeXNpY2FsbHkgbGlua2VkLCBjb21tYW5kICdjYW50ZXN0JyB3aWxsDQo+ID4+
+PiB0cmlnZ2VyIGFuIGVycl9pcnEsIGFkZCBlcnJfaXJxIGhhbmRsZXIgZm9yIGl0Lg0KPiA+Pj4N
+Cj4gPj4+IFNpZ25lZC1vZmYtYnk6IFpoYW8gUWlhbmcgPEI0NTQ3NUBmcmVlc2NhbGUuY29tPg0K
+PiA+Pj4gLS0tDQo+ID4+PiBDaGFuZ2VzIGZvciB2MjoNCj4gPj4+IAktIHVzZSBhIHNwYWNlIGlu
+c3RlYWQgb2YgdGFiDQo+ID4+PiAJLSB1c2UgZmxleGNhbl9wb2xsX3N0YXRlIGluc3RlYWQgb2Yg
+cHJpbnQgQ2hhbmdlcyBmb3IgdjM6DQo+ID4+PiAJLSByZXR1cm4gSVJRX0hBTkRMRUQgaWYgZXJy
+IGlzIHRyaWdnZXJlZA0KPiA+Pj4gCS0gc3RvcCB0cmFuc21pdHRlZCBwYWNrZXRzIHdoZW4gdGhl
+cmUgaXMgYW4gZXJyX2ludGVycnVwdA0KPiA+Pj4NCj4gPj4+ICBkcml2ZXJzL25ldC9jYW4vZmxl
+eGNhbi5jIHwgMzUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPj4+ICAx
+IGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+Pj4NCj4g
+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQv
+Y2FuL2ZsZXhjYW4uYw0KPiA+Pj4gaW5kZXggZjQyNWVjMi4uNjgwMmEyNSAxMDA2NDQNCj4gPj4+
+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPj4+ICsrKyBiL2RyaXZlcnMvbmV0
+L2Nhbi9mbGV4Y2FuLmMNCj4gPj4+IEBAIC0yMDgsNiArMjA4LDcgQEAgc3RydWN0IGZsZXhjYW5f
+cHJpdiB7DQo+ID4+PiAgCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPj4+ICAJdTMyIHJlZ19lc3I7
+DQo+ID4+PiAgCXUzMiByZWdfY3RybF9kZWZhdWx0Ow0KPiA+Pj4gKwl1bnNpZ25lZCBpbnQgZXJy
+X2lycTsNCj4gPj4+DQo+ID4+PiAgCXN0cnVjdCBjbGsgKmNsa19pcGc7DQo+ID4+PiAgCXN0cnVj
+dCBjbGsgKmNsa19wZXI7DQo+ID4+PiBAQCAtNzQ0LDYgKzc0NSwyNCBAQCBzdGF0aWMgaXJxcmV0
+dXJuX3QgZmxleGNhbl9pcnEoaW50IGlycSwgdm9pZA0KPiA+PiAqZGV2X2lkKQ0KPiA+Pj4gIAly
+ZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4+PiAgfQ0KPiA+Pj4NCj4gPj4+ICtzdGF0aWMgaXJxcmV0
+dXJuX3QgZmxleGNhbl9lcnJfaXJxKGludCBpcnEsIHZvaWQgKmRldl9pZCkgew0KPiA+Pj4gKwlz
+dHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gZGV2X2lkOw0KPiA+Pj4gKwlzdHJ1Y3QgZmxleGNhbl9w
+cml2ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gPj4+ICsJc3RydWN0IGZsZXhjYW5fcmVn
+cyBfX2lvbWVtICpyZWdzID0gcHJpdi0+YmFzZTsNCj4gPj4+ICsJdTMyIHJlZ19jdHJsLCByZWdf
+ZXNyOw0KPiA+Pj4gKw0KPiA+Pj4gKwlyZWdfZXNyID0gZmxleGNhbl9yZWFkKCZyZWdzLT5lc3Ip
+Ow0KPiA+Pj4gKwlyZWdfY3RybCA9IGZsZXhjYW5fcmVhZCgmcmVncy0+Y3RybCk7DQo+ID4+PiAr
+CWlmIChyZWdfZXNyICYgRkxFWENBTl9FU1JfVFhfV1JOKSB7DQo+ID4+DQo+ID4+IFdoZW4gZG9l
+cyB0aGUgaGFyZHdhcmUgdHJpZ2dlciB0aGUgaW50ZXJydXB0Pw0KPiA+DQo+ID4gV2hlbiB0aGVy
+ZSBpcyBubyB3aXJlIGxpbmsgYmV0d2VlbiB0eCBhbmQgcngsIHR4IHN0YXJ0IHRyYW5zZmVyIGFu
+ZA0KPiBkb2VzbuKAmXQgZ2V0IHRoZSBhY2suDQo+IA0KPiBZb3UgYXJlIHRlc3RpbmcgZm9yIHRo
+ZSB3YXJuaW5nIGludGVycnVwdCwgbm90IGZvciB0aGUNCj4gRkxFWENBTl9FU1JfQUNLX0VSUiAo
+d2hpY2ggaXMgdHJpZ2dlcmVkIHRoZXJlIGlzbid0IGFueSBBQ0spLg0KPiANCj4gPj4+ICsJCWZs
+ZXhjYW5fd3JpdGUocmVnX2VzciAmIH5GTEVYQ0FOX0VTUl9UWF9XUk4sICZyZWdzLT5lc3IpOw0K
+PiA+Pj4gKwkJZmxleGNhbl93cml0ZShyZWdfY3RybCAmIH5GTEVYQ0FOX0NUUkxfRVJSX01TSywg
+JnJlZ3MtPmN0cmwpOw0KPiA+Pj4gKwkJbmV0aWZfc3RvcF9xdWV1ZShkZXYpOw0KPiA+Pg0KPiA+
+PiBXaHkgYXJlIHlvdSBzdG9wcGluZyB0aGUgdHhxdWV1ZT8NCj4gPg0KPiA+IFRoZXJlIGlzIG5v
+IHdpcmUgbGluaywgdHggY2FuJ3QgdHJhbnNmZXIgc3VjY2Vzc2Z1bGx5Lg0KPiANCj4gWW91IGFy
+ZSB0ZXN0aW5nIGZvciB0aGUgd2FybmluZyBpbnRlcnJ1cHQsIHdoaWNoIGlzIHRyaWdnZXJlZCBp
+ZiB0aGUNCj4gZXJyb3IgY291bnRlciBpbmNyZWFzZXMgZnJvbSA5NSB0byA5Ni4gQW5kIHRoZSBl
+cnJvciBjb3VudGVyIGNhbiBpbmNyZWFzZQ0KPiBkdWUgdG8gc2V2ZXJhbCByZWFzb25zLiBObyBs
+aW5rIGlzIG9ubHkgb25lIG9mIHRoZW0uIElmIHRoZSBDQU4gY29yZQ0KPiBjYW5ub3QgdHJhbnNt
+aXQgbmV3IHBhY2thZ2VzIGFueSBtb3JlIHRoZSBmbG93IGNvbnRyb2wgaW4gdGhlIGRyaXZlciB3
+aWxsDQo+IHRha2UgY2FyZS4NCg0KV2hlbiBUeCBlcnJvciBjb3VudGVyIGluY3JlYXNlcyBmcm9t
+IDk1IHRvIDk2LCB0aGVyZSBtdXN0IGJlIGlzc3VlIGZvciB0eCwNClNvIHdoeSBjYW4ndCBJIHN0
+b3AgdGhlIHR4cXVldWU/IA0KWW91IHNhaWQgdGhhdCB0aGVyZSBhcmUgc2V2ZXJhbCByZWFzb25z
+LCB3b3VsZCB5b3UgbGlrZSB0byB0YWtlIHNvbWUgZXhhbXBsZXM/DQoNCj4gDQo+IFdoYXQgYWJv
+dXQgY2FsbGluZyB0aGUgbm9ybWFsIGludGVycnVwdCBpZiBlciBlcnJfaXJxIG9jY3VycywgYXMg
+dGhpcw0KPiBmdW5jdGlvbiB3aWxsIHRha2UgY2FyZSBvZiBib3RoIG5vcm1hbCBhbmQgZXJyb3Ig
+aW50ZXJydXB0cyBhbnl3YXk/DQoNCkNhbGxpbmcgdGhlIG5vcm1hbCBpbnRlcnJ1cHQgZG9lc24n
+dCB3b3JrLg0KDQo+IA0KPiBNYXJjDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAg
+ICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiBJbmR1c3RyaWFs
+IExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0K
+PiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2
+OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8v
+d3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
