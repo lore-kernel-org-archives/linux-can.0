@@ -1,110 +1,51 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 1/2] flexcan: add err_irq handler for flexcan
-Date: Mon, 23 Jun 2014 10:31:17 +0200
-Message-ID: <53A7E5D5.4070003@pengutronix.de>
-References: <1403507484-46547-1-git-send-email-B45475@freescale.com> <53A7D497.7080806@pengutronix.de> <d7e8cae0bc584530bedc8febf5476fcf@BLUPR03MB341.namprd03.prod.outlook.com> <53A7D92E.4060708@pengutronix.de> <c0ae03364c7946bb8278bf20b03bab90@BLUPR03MB341.namprd03.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [Gitorious] Activity: prabhakar requested a merge of prab...
+Date: Mon, 23 Jun 2014 18:12:12 +0200
+Message-ID: <53A851DC.2060801@hartkopp.net>
+References: <53a829dc98811_78d23ff48250bea851769@ratt.gitorious.c.bitbit.net.mail>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="HjSnKCvPjB2acmVa4BKHUjxSQEIfIrbcr"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44039 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750723AbaFWIbc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Jun 2014 04:31:32 -0400
-In-Reply-To: <c0ae03364c7946bb8278bf20b03bab90@BLUPR03MB341.namprd03.prod.outlook.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:60385 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753945AbaFWQMP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Jun 2014 12:12:15 -0400
+In-Reply-To: <53a829dc98811_78d23ff48250bea851769@ratt.gitorious.c.bitbit.net.mail>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, Scott Wood <scottwood@freescale.com>
+To: prabhakar.csengg@gmail.com
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HjSnKCvPjB2acmVa4BKHUjxSQEIfIrbcr
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Prabhakar,
 
-On 06/23/2014 10:15 AM, qiang.zhao@freescale.com wrote:
-[...]
->>>>> +	reg_esr =3D flexcan_read(&regs->esr);
->>>>> +	reg_ctrl =3D flexcan_read(&regs->ctrl);
->>>>> +	if (reg_esr & FLEXCAN_ESR_TX_WRN) {
->>>>
->>>> When does the hardware trigger the interrupt?
->>>
->>> When there is no wire link between tx and rx, tx start transfer and
->> doesn=E2=80=99t get the ack.
->>
->> You are testing for the warning interrupt, not for the
->> FLEXCAN_ESR_ACK_ERR (which is triggered there isn't any ACK).
->>
->>>>> +		flexcan_write(reg_esr & ~FLEXCAN_ESR_TX_WRN, &regs->esr);
->>>>> +		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
->>>>> +		netif_stop_queue(dev);
->>>>
->>>> Why are you stopping the txqueue?
->>>
->>> There is no wire link, tx can't transfer successfully.
->>
->> You are testing for the warning interrupt, which is triggered if the
->> error counter increases from 95 to 96. And the error counter can incre=
-ase
->> due to several reasons. No link is only one of them. If the CAN core
->> cannot transmit new packages any more the flow control in the driver w=
-ill
->> take care.
->=20
-> When Tx error counter increases from 95 to 96, there must be issue for =
-tx,
-> So why can't I stop the txqueue?=20
+thanks for your patch.
 
-Why do you want to stop the queue? It's compliant with the CAN spec to
-keep sending CAN frames if the error counter increases to 96. If there
-isn't any problem with the CAN bus anymore, the TX error counters will
-decrease with every successfully transmitted CAN frame.
+Can you please send it with git send-email to the mailing list for a review?
 
-> You said that there are several reasons, would you like to take some ex=
-amples?
+Additionally:
 
-See CAN Error Confinement Rules in
-http://www.can-wiki.info/doku.php?id=3Dcan_faq_erors
+Does this patch introduce any backward compatibility restrictions (e.g. you
+need at least the includes from 2.6.14+ to build candump ...).
 
->> What about calling the normal interrupt if er err_irq occurs, as this
->> function will take care of both normal and error interrupts anyway?
->=20
-> Calling the normal interrupt doesn't work.
+You only provide to configure a value for SCHED_RR.
+Does it make sense to provide other scheduling policies too?
 
-Why?
-
-flexcan_irq() if FLEXCAN_CTRL_TWRN_MSK is set and will schedule the NAPI
-routine:
-
-> 	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
-> 	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
-> 	    flexcan_has_and_handle_berr(priv, reg_esr)) {
-[...]
-> 		napi_schedule(&priv->napi);
-> 	}
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Regards,
+Oliver
 
 
---HjSnKCvPjB2acmVa4BKHUjxSQEIfIrbcr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlOn5dUACgkQjTAFq1RaXHMdnwCcCC9//6eH7b7Qmb9aOKp/JSI7
-BVUAoJS0zUsGgDAw1Cf8MnMRlKaPQZXa
-=7FI6
------END PGP SIGNATURE-----
-
---HjSnKCvPjB2acmVa4BKHUjxSQEIfIrbcr--
+On 23.06.2014 15:21, Gitorious wrote:
+> 
+> Hello hartkopp,
+> 
+> One of your favorites has a new activity:
+> ------------------------------------------------------------------------
+> prabhakar requested a merge of prabhakar-can-utils with can-utils.
+> The merge request is at https://gitorious.org/linux-can/can-utils/merge_requests/2
+> ------------------------------------------------------------------------
+> 
+> You are receiving this email because you have chosen to be notified by
+> email whenever this favorite has new activity. You can manage your
+> favorite subscriptions at https://gitorious.org/favorites
+> 
