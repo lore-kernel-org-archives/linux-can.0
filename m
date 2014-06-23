@@ -1,54 +1,71 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Kvaser lapcan driver (init and probe)
-Date: Sun, 22 Jun 2014 22:02:12 +0200
-Message-ID: <20140622200212.GB14910@vandijck-laurijssen.be>
-References: <CAGqyy=ZHGDovR1i_ZzKqTYqp5QAVhbSco6uwE2-nFefL-g+ouw@mail.gmail.com>
- <20140621212823.GA28234@vandijck-laurijssen.be>
- <1403455122.3506.12.camel@PCLUK>
+From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
+Subject: RE: [PATCH v2 1/2] flexcan: add err_irq handler for flexcan
+Date: Mon, 23 Jun 2014 06:20:51 +0000
+Message-ID: <fc0a7150924249768aee8e4361c654a1@BLUPR03MB341.namprd03.prod.outlook.com>
+References: <1403229664-33912-1-git-send-email-B45475@freescale.com>
+ <1403281165.12851.186.camel@snotra.buserror.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:28786 "EHLO
-	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752184AbaFVUCZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 22 Jun 2014 16:02:25 -0400
-Content-Disposition: inline
-In-Reply-To: <1403455122.3506.12.camel@PCLUK>
+Received: from mail-bn1blp0189.outbound.protection.outlook.com ([207.46.163.189]:25186
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751332AbaFWGUz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 23 Jun 2014 02:20:55 -0400
+In-Reply-To: <1403281165.12851.186.camel@snotra.buserror.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Luis de Arquer <ldearquer@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Scott Wood <scottwood@freescale.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
 
-On Sun, Jun 22, 2014 at 05:38:42PM +0100, Luis de Arquer wrote:
-> Hi Kurt,
-> 
-> Thanks for revising.
-> 
-> > 
-> > Did you try to use request_resource, and ommitting pcmcia_request_io.
-> > 
-> 
-> It may be ok to use request_resource, but I am not too sure about
-> it. That sounds to me a bit like bypassing the pcmcia socket module,
-> which knows the actual range of I/O ports that can be requested -all I
-> really know is that I need 3 I/O lines. 
-
-I think pcmcia_enable_device prepares the pcmcia socket for all resources. 
-Your driver will just claim it's use.
-
-Kurt
-
-> 
-> 
-> > The IRQ should only be fired when the CAN chip is running, which is way later.
-> > You did well.
-> > 
-> 
-> Thanks, that's reassuring :)
-> 
-> Luis
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gU2F0LCAyMDE0LTA2LTIxIGF0IDEyOjE5LCBXb29kIFNjb3R0IHdyb3RlOg0KDQo+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdvb2QgU2NvdHQtQjA3NDIxDQo+IFNlbnQ6
+IFNhdHVyZGF5LCBKdW5lIDIxLCAyMDE0IDEyOjE5IEFNDQo+IFRvOiBaaGFvIFFpYW5nLUI0NTQ3
+NQ0KPiBDYzogbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmc7IGxpbnV4LWNhbkB2Z2VyLmtl
+cm5lbC5vcmc7DQo+IHdnQGdyYW5kZWdnZXIuY29tOyBta2xAcGVuZ3V0cm9uaXguZGU7IFdvb2Qg
+U2NvdHQtQjA3NDIxDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMS8yXSBmbGV4Y2FuOiBhZGQg
+ZXJyX2lycSBoYW5kbGVyIGZvciBmbGV4Y2FuDQo+IA0KPiBPbiBGcmksIDIwMTQtMDYtMjAgYXQg
+MTA6MDEgKzA4MDAsIFpoYW8gUWlhbmcgd3JvdGU6DQo+ID4gd2hlbiBmbGV4Y2FuIGlzIG5vdCBw
+aHlzaWNhbGx5IGxpbmtlZCwgY29tbWFuZCAnY2FudGVzdCcgd2lsbCB0cmlnZ2VyDQo+ID4gYW4g
+ZXJyX2lycSwgYWRkIGVycl9pcnEgaGFuZGxlciBmb3IgaXQuDQo+ID4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBaaGFvIFFpYW5nIDxCNDU0NzVAZnJlZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFu
+Z2VzIGZvciB2MjoNCj4gPiAJLSB1c2UgYSBzcGFjZSBpbnN0ZWFkIG9mIHRhYg0KPiA+IAktIHVz
+ZSBmbGV4Y2FuX3BvbGxfc3RhdGUgaW5zdGVhZCBvZiBwcmludA0KPiA+DQo+ID4gIGRyaXZlcnMv
+bmV0L2Nhbi9mbGV4Y2FuLmMgfCAzMSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKystDQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4N
+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0
+L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRleCBmNDI1ZWMyLi43NDMyYmE0IDEwMDY0NA0KPiA+IC0t
+LSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jDQo+ID4gQEAgLTIwOCw2ICsyMDgsNyBAQCBzdHJ1Y3QgZmxleGNhbl9wcml2IHsN
+Cj4gPiAgCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPiAgCXUzMiByZWdfZXNyOw0KPiA+ICAJdTMy
+IHJlZ19jdHJsX2RlZmF1bHQ7DQo+ID4gKwl1bnNpZ25lZCBpbnQgZXJyX2lycTsNCj4gDQo+IFdo
+eSB1bnNpZ25lZD8NCkVycl9pcnEgaXMgZnJvbSAwLg0KPiANCj4gPiArc3RhdGljIGlycXJldHVy
+bl90IGZsZXhjYW5fZXJyX2lycShpbnQgaXJxLCB2b2lkICpkZXZfaWQpIHsNCj4gPiArCXN0cnVj
+dCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfaWQ7DQo+ID4gKwlzdHJ1Y3QgZmxleGNhbl9wcml2ICpw
+cml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gPiArCXN0cnVjdCBmbGV4Y2FuX3JlZ3MgX19pb21l
+bSAqcmVncyA9IHByaXYtPmJhc2U7DQo+ID4gKwl1MzIgcmVnX2N0cmwsIHJlZ19lc3I7DQo+ID4g
+Kw0KPiA+ICsJcmVnX2VzciA9IGZsZXhjYW5fcmVhZCgmcmVncy0+ZXNyKTsNCj4gPiArCXJlZ19j
+dHJsID0gZmxleGNhbl9yZWFkKCZyZWdzLT5jdHJsKTsNCj4gPiArCWlmIChyZWdfZXNyICYgRkxF
+WENBTl9FU1JfVFhfV1JOKSB7DQo+ID4gKwkJZmxleGNhbl93cml0ZShyZWdfZXNyICYgfkZMRVhD
+QU5fRVNSX1RYX1dSTiwgJnJlZ3MtPmVzcik7DQo+ID4gKwkJZmxleGNhbl93cml0ZShyZWdfY3Ry
+bCAmIH5GTEVYQ0FOX0NUUkxfRVJSX01TSywgJnJlZ3MtPmN0cmwpOw0KPiA+ICsJCWZsZXhjYW5f
+cG9sbF9zdGF0ZShkZXYsIHJlZ19lc3IpOw0KPiA+ICsJfQ0KPiA+ICsJcmV0dXJuIElSUV9IQU5E
+TEVEOw0KPiA+ICt9DQo+IA0KPiBZb3Ugc2hvdWxkIG9ubHkgcmV0dXJuIElSUV9IQU5ETEVEIGlm
+IHRoZXJlIHdhcyBzb21ldGhpbmcgdG8gaGFuZGxlLg0KPiANCj4gPiBAQCAtOTQ0LDYgKzk2Miwx
+MiBAQCBzdGF0aWMgaW50IGZsZXhjYW5fb3BlbihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KPiA+
+ICAJaWYgKGVycikNCj4gPiAgCQlnb3RvIG91dF9jbG9zZTsNCj4gPg0KPiA+ICsJaWYgKHByaXYt
+PmVycl9pcnEpDQo+ID4gKwkJZXJyID0gcmVxdWVzdF9pcnEocHJpdi0+ZXJyX2lycSwgZmxleGNh
+bl9lcnJfaXJxLCBJUlFGX1NIQVJFRCwNCj4gPiArCQkJCSAgZGV2LT5uYW1lLCBkZXYpOw0KPiA+
+ICsJaWYgKGVycikNCj4gPiArCQlnb3RvIG91dF9jbG9zZTsNCj4gDQo+IElzIHRoaXMgcmVhbGx5
+IGEgZmF0YWwgZXJyb3I/ICBBbmQgd2h5IGRvIHlvdSBjaGVjayBlcnIgb3V0c2lkZSB0aGUgImlm
+DQo+IChwcml2LT5lcnJfaXJxKSIgYmxvY2s/ICBXaGF0IGlmIHNvbWUgcHJldmlvdXMgY29kZSBs
+ZWZ0IGVyciBub24temVybw0KPiAoZWl0aGVyIG5vdyBvciBhZnRlciBzb21lIGZ1dHVyZSBjb2Rl
+IGNoYW5nZSk/DQo+IA0KPiA+IEBAIC0xMTI2LDYgKzExNTAsMTAgQEAgc3RhdGljIGludCBmbGV4
+Y2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAlpZiAoaXJx
+IDw9IDApDQo+ID4gIAkJcmV0dXJuIC1FTk9ERVY7DQo+ID4NCj4gPiArCWVycl9pcnEgPSBwbGF0
+Zm9ybV9nZXRfaXJxKHBkZXYsIDEpOw0KPiA+ICsJaWYgKGVycl9pcnEgPD0gMCkNCj4gPiArCQll
+cnJfaXJxID0gMDsNCj4gPiArDQo+IA0KPiBXaHkgaXMgdGhpcyA8PSAwIGNoZWNrIG5lZWRlZD8N
+Cg0KSW50ZXJydXB0WzFdIGlzIG9wdGlvbmFsLiBJZiB0aGVyZSBpcyBub3QgaW50ZXJydXB0WzFd
+IGluIGR0YiwgZXJyX2lycSB3aWxsIGJlIDw9MC4NCg0KPiANCj4gLVNjb3R0DQo+IA0KDQo=
