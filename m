@@ -1,95 +1,67 @@
-From: laurent vaudoit <laurent.vaudoit@gmail.com>
-Subject: Re: N_Cs timing - was Re: linux-can ISOTP module
-Date: Mon, 23 Jun 2014 20:13:08 +0200
-Message-ID: <CAA7hF3w6GQ1zCMxUfkqZWSSMwWNhwOYf-szkvdGj1qpB2cuuTQ@mail.gmail.com>
-References: <loom.20140604T144601-350@post.gmane.org>
-	<538F6836.3060508@hartkopp.net>
-	<CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>
-	<53A569EA.9030701@hartkopp.net>
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Subject: Re: [Gitorious] Activity: prabhakar requested a merge of prab...
+Date: Tue, 24 Jun 2014 12:06:00 +0100
+Message-ID: <CA+V-a8tcsgj1h+Qu0OSXGEoXvpbm7r0itQTRnmDpQgXiz1t-PA@mail.gmail.com>
+References: <53a829dc98811_78d23ff48250bea851769@ratt.gitorious.c.bitbit.net.mail>
+ <53A851DC.2060801@hartkopp.net> <53A85445.8070400@pengutronix.de>
+ <53A8560F.4060607@hartkopp.net> <53A859E5.7050107@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qc0-f170.google.com ([209.85.216.170]:65207 "EHLO
-	mail-qc0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752628AbaFWSNJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Jun 2014 14:13:09 -0400
-Received: by mail-qc0-f170.google.com with SMTP id l6so6466702qcy.15
-        for <linux-can@vger.kernel.org>; Mon, 23 Jun 2014 11:13:08 -0700 (PDT)
-In-Reply-To: <53A569EA.9030701@hartkopp.net>
+Received: from mail-we0-f181.google.com ([74.125.82.181]:45089 "EHLO
+	mail-we0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752081AbaFXLGd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jun 2014 07:06:33 -0400
+Received: by mail-we0-f181.google.com with SMTP id q59so153293wes.26
+        for <linux-can@vger.kernel.org>; Tue, 24 Jun 2014 04:06:30 -0700 (PDT)
+In-Reply-To: <53A859E5.7050107@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Oliver,
+Hi
 
-On Sat, Jun 21, 2014 at 1:18 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> Hi Laurent,
->
-> as the extended address specification for the rx path is discussed/answered
-> in another thread I changed the subject for the timing discussion ...
-
-ok no problem, it will be more clear.
->
-> On 05.06.2014 09:16, laurent vaudoit wrote:
->
+On Mon, Jun 23, 2014 at 5:46 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 06/23/2014 06:30 PM, Oliver Hartkopp wrote:
+>> On 23.06.2014 18:22, Marc Kleine-Budde wrote:
+>>> On 06/23/2014 06:12 PM, Oliver Hartkopp wrote:
+>>>> Hi Prabhakar,
+>>>>
+>>>> thanks for your patch.
+>>>>
+>>>> Can you please send it with git send-email to the mailing list for a review?
+>>>>
+>>>> Additionally:
+>>>>
+>>>> Does this patch introduce any backward compatibility restrictions (e.g. you
+>>>> need at least the includes from 2.6.14+ to build candump ...).
+>>>
+>>> When was CAN support added to the linux kernel? :)
 >>
->> Ok, with isotp.h api, i understand that we can parameter block size, stmin,
->> wftmax, transmission time (n_ax), padding.
->> But how can i specify the timing n_CS (time between flow control reception
->> and first consecutive frame)
+>> I know that you would detect this joke ;-)
+>> Btw. I backported SocketCAN to 2.6.13 - so my question is not totally
+>> brain-damaged when talking about the can-utils which are not sticking to a
+>> specific kernel version.
 >
-> N_Cs is defined by the received STmin.
+> I was assuming that there was a certain seriousness in your statement :D
 >
-> Then the tx_gap time is calculated by tx_gap = N_As + N_Cs
+> Do you mean the inclusion of "sched.h"? I think this comes from the
+> glibc. However, we can add autotool support to detect this.
 >
-> https://gitorious.org/linux-can/can-modules/source/027899c01aa2482423376e1e9f2a5875c316303a:net/can/isotp.c#L324
+>>>> You only provide to configure a value for SCHED_RR.
+>>>> Does it make sense to provide other scheduling policies too?
+>>>
+>>> I would use chrt to start the tool, if I need non standard scheduling
+>>> policies.
+>>
+>> But then you would like to specifiy the scheduling policy??
 >
-> Finally the timer for the tx job is started relatively with this value
-> which leads to the required gap between the FC reception and the first CF.
+> You can use chrt to start another program with different scheduling
+> policies, it's like nice, but with more functionality. See man page of
+> chrt for more information.
 >
-Yes i saw this in the code.
-In my opinion, it should be two different timing, N_CS for emission of
-the first Consecutive frame and then stmin given by ECU from flow
-control.
-After, this implementation will work in most of the case, but it is a
-little  different from iso15765-2.
+What do you suggest to go with the patch or just use chrt ?
 
-
->> and the timing n_BS (time between first frame
->> reception and flow control emission)?
->
-> N_Bs = N_Br + N_Ar
->
-> N_Ar is defined by the frame transmission time (on the real CAN bus)
-> N_Br has no setting but only a performance requirement:
->
-> N_Br + N_Ar < 0.9 * N_Bs timeout
->
-> N_Bs timeout = 1000ms => N_Br + N_Ar < 900ms
->
-> So AFAICS there's no way to specify N_Br. It can be as small as possible.
-> Therefore N_Bs is at least N_Ar + some various time for the protocol machine.
-
-Hum, this can be a blocking fact for some ECU diagnostic.
-I had this implementation (sending flow control as quick as possible),
-and some ECUs (seen on PSA car) did not answer to the request, because
-i had not 25ms before flow control sending.
->
->> In the same way, is it possible to
->> specify according timeout (n_BR for flow control timeout reception, and n_CR
->> for consecutive frame timeout reception)?
->
-> Due to the spec these timeouts are defined to be 1000ms.
-> Or did I miss something here?
->
-Coming from diagnostic, i prefer to be able to configure all protocol
-timing (in order to deal with the maximum ECU number (even very old
-ecu, which may be very slow). Constructor gives us the timing we must
-respect, sometimes different from the normalization....
-but 1000ms is enough i think for most of the case.
-> Regards,
-> Oliver
->
-regards
-Laurent
+Regards,
+--Prabhakar
