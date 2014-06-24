@@ -1,63 +1,66 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: cansniffer loop time
-Date: Tue, 24 Jun 2014 17:44:26 +0200
-Message-ID: <53A99CDA.9090906@hartkopp.net>
-References: <53A99784.5020609@thm-motorsport.de> <53A99ABD.7020407@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] cansniffer: totally untested hack to reduce display update by factor of 10
+Date: Tue, 24 Jun 2014 18:24:05 +0200
+Message-ID: <1403627045-27811-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:11973 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754650AbaFXPo2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jun 2014 11:44:28 -0400
-In-Reply-To: <53A99ABD.7020407@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60007 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756470AbaFXQYK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jun 2014 12:24:10 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Felix Seitz <felix.seitz@thm-motorsport.de>, linux-can@vger.kernel.org
+To: felix.seitz@thm-motorsport.de
+Cc: linux-can@vger.kernel.org, socketcan@hartkopp.net, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hi Marc,
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ cansniffer.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-the cansniffer (from can-utils) opens a CAN_BCM socket and configures filter
-jobs to get updates on every data change (content change in the payload).
+diff --git a/cansniffer.c b/cansniffer.c
+index c8ee58e..81806b3 100644
+--- a/cansniffer.c
++++ b/cansniffer.c
+@@ -86,9 +86,9 @@
+ 
+ /* time defaults */
+ 
+-#define TIMEOUT 50 /* in 100ms */
+-#define HOLD    10 /* in 100ms */
+-#define LOOP     2 /* in 100ms */
++#define TIMEOUT 500 /* in 10ms */
++#define HOLD    100 /* in 10ms */
++#define LOOP      2 /* in 10ms */
+ 
+ #define MAXANI 8
+ const char anichar[MAXANI] = {'|', '/', '-', '\\', '|', '/', '-', '\\'};
+@@ -174,7 +174,7 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -f         (filter on CAN-ID only)\n");
+ 	fprintf(stderr, "         -t <time>  (timeout for ID display [x100ms] default: %d, 0 = OFF)\n", TIMEOUT);
+ 	fprintf(stderr, "         -h <time>  (hold marker on changes [x100ms] default: %d)\n", HOLD);
+-	fprintf(stderr, "         -l <time>  (loop time (display) [x100ms] default: %d)\n", LOOP);
++	fprintf(stderr, "         -l <time>  (loop time (display) [x10ms] default: %d)\n", LOOP);
+ 	fprintf(stderr, "Use interface name '%s' to receive from all can-interfaces\n", ANYDEV);
+ 	fprintf(stderr, "\n");
+ 	fprintf(stderr, "%s", manual);
+@@ -329,7 +329,7 @@ int main(int argc, char **argv)
+ 		FD_SET(s, &rdfs);
+ 
+ 		timeo.tv_sec  = 0;
+-		timeo.tv_usec = 100000 * loop;
++		timeo.tv_usec = 10000 * loop;
+ 
+ 		if ((ret = select(s+1, &rdfs, NULL, NULL, &timeo)) < 0) {
+ 			//perror("select");
+@@ -338,7 +338,7 @@ int main(int argc, char **argv)
+ 		}
+ 
+ 		gettimeofday(&tv, NULL);
+-		currcms = (tv.tv_sec - start_tv.tv_sec) * 10 + (tv.tv_usec / 100000);
++		currcms = (tv.tv_sec - start_tv.tv_sec) * 100 + (tv.tv_usec / 10000);
+ 
+ 		if (FD_ISSET(0, &rdfs))
+ 			running &= handle_keyb(s);
+-- 
+2.0.0
 
-There's a loop parameter that can be tuned to ensure a proper (cyclic) update
-on the screen, which can be set in x100ms steps.
-
-Indeed I did not look into this (useful) tool since 2007 :-)
-
-Still looks like a good coding style - but I really did not get behind it's
-functionality in two minutes to answer Felix' question.
-
-Obviously some comments would enhance the coding style then :-)
-
-Cheers,
-Oliver
-
-On 24.06.2014 17:35, Marc Kleine-Budde wrote:
-> Hey Felix,
-> 
-> On 06/24/2014 05:21 PM, Felix Seitz wrote:
->> we from THM Motorsport are using the cansniffer running on a Raspberry
-> 
-> What is "the cansniffer"?
-> 
->> Pi to read out sensor data traffic on the CANbus in our car.
->> I would like to set the cansniffer's loop time lower than 100ms. I tried
->> to changing the source code but apparently I don't fully understand
->> where the loop delay comes from.
->> Could you give me some tips on how to set a lower delay for the
->> cansniffer? 20ms delay would be perfect.
-> 
-> Despite the fact, that the rpi is not the best hardware/software for
-> doing CAN under Linux, there is no delay within the Linux Kernel that
-> would cause a loop delay.
-> 
-> If you see such a delay it's probably in the application of "the
-> cansniffer". The rpi has no CAN controller on the board, there are
-> several possibilities to upgrade CAN support. The worst solution is to
-> attach an mcp2515 via SPI, USB based CAN dongles give much better
-> performance. However USB on the rpi is quite bad, too...
-> 
-> Marc
-> 
