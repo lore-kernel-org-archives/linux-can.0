@@ -1,59 +1,115 @@
-From: Felix Seitz <felix.seitz@thm-motorsport.de>
-Subject: Re: [PATCH v2] cansniffer: totally untested hack to reduce display
- update by factor of 10
-Date: Tue, 24 Jun 2014 20:09:10 +0200
-Message-ID: <53A9BEC6.5070907@thm-motorsport.de>
-References: <1403627167-28287-1-git-send-email-mkl@pengutronix.de> <53A9A96E.5030407@hartkopp.net> <d65e3040-e640-4c05-baa3-d97ce7a448b6@email.android.com> <53A9BAAE.2000101@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH] cansniffer: increase resolution for timeout values
+Date: Tue, 24 Jun 2014 21:31:03 +0200
+Message-ID: <1403638263-4019-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.kundenserver.de ([212.227.17.24]:52072 "EHLO
-	mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754765AbaFXSJU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jun 2014 14:09:20 -0400
-In-Reply-To: <53A9BAAE.2000101@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:57762 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750762AbaFXTbO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Jun 2014 15:31:14 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Hi Marc and Oliver,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-thank you both for your quick help. I will try this out tomorrow.
+As requested by Felix Seitz the timeout for screen updates should be
+configurable to values smaller than 100ms. Marc Kleine-Budde provided the
+original patch to increase the resolution of the timing relevant variables.
 
-Regards,
-Felix
+The rotating animation was replaced by a rolling screen update counter.
+Additionally the CAN-ID is now printed in the same ASCII hex representation
+as the CAN data.
 
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ cansniffer.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-Am 24.06.2014 19:51, schrieb Oliver Hartkopp:
-> Ok, it IS faster (and will therefore help Felix).
->
-> But the tiny animation is broken now.
->
-> I probably have to rework the animation - will send an updated patch.
->
-> Thanks for your support,
-> Oliver
->
-> On 24.06.2014 18:44, Marc Kleine-Budde wrote:
->>
->> On 24 June 2014 18:38:06 CEST, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>> I'll check it and give a feedback.
->>>
->>> Btw. it needs a v3:
->>>
->>>>   /* time defaults */
->>>>   
->>>> -#define TIMEOUT 50 /* in 100ms */
->>>> -#define HOLD    10 /* in 100ms */
->>>> -#define LOOP     2 /* in 100ms */
->>>> +#define TIMEOUT 500 /* in 10ms */
->>>> +#define HOLD    100 /* in 10ms */
->>>> +#define LOOP      2 /* in 10ms */
->>> LOOP has to be *10 too.
->> Yes, if we want unchanged behaviour, which would be better for mainlining. With my patch the default is now 20ms.
->>
->> Marc
->>
+diff --git a/cansniffer.c b/cansniffer.c
+index c8ee58e..39b3e2b 100644
+--- a/cansniffer.c
++++ b/cansniffer.c
+@@ -86,16 +86,13 @@
+ 
+ /* time defaults */
+ 
+-#define TIMEOUT 50 /* in 100ms */
+-#define HOLD    10 /* in 100ms */
+-#define LOOP     2 /* in 100ms */
+-
+-#define MAXANI 8
+-const char anichar[MAXANI] = {'|', '/', '-', '\\', '|', '/', '-', '\\'};
++#define TIMEOUT 500 /* in 10ms */
++#define HOLD    100 /* in 10ms */
++#define LOOP     20 /* in 10ms */
+ 
+ #define ATTCOLOR ATTBOLD FGRED
+ 
+-#define STARTLINESTR "X  time    ID  data ... "
++#define STARTLINESTR "XX delta   ID  data ... "
+ 
+ struct snif {
+ 	int flags;
+@@ -172,9 +169,9 @@ void print_usage(char *prg)
+ 	fprintf(stderr, "         -B         (start with binary mode with gap - exceeds 80 chars!)\n");
+ 	fprintf(stderr, "         -c         (color changes)\n");
+ 	fprintf(stderr, "         -f         (filter on CAN-ID only)\n");
+-	fprintf(stderr, "         -t <time>  (timeout for ID display [x100ms] default: %d, 0 = OFF)\n", TIMEOUT);
+-	fprintf(stderr, "         -h <time>  (hold marker on changes [x100ms] default: %d)\n", HOLD);
+-	fprintf(stderr, "         -l <time>  (loop time (display) [x100ms] default: %d)\n", LOOP);
++	fprintf(stderr, "         -t <time>  (timeout for ID display [x10ms] default: %d, 0 = OFF)\n", TIMEOUT);
++	fprintf(stderr, "         -h <time>  (hold marker on changes [x10ms] default: %d)\n", HOLD);
++	fprintf(stderr, "         -l <time>  (loop time (display) [x10ms] default: %d)\n", LOOP);
+ 	fprintf(stderr, "Use interface name '%s' to receive from all can-interfaces\n", ANYDEV);
+ 	fprintf(stderr, "\n");
+ 	fprintf(stderr, "%s", manual);
+@@ -329,7 +326,7 @@ int main(int argc, char **argv)
+ 		FD_SET(s, &rdfs);
+ 
+ 		timeo.tv_sec  = 0;
+-		timeo.tv_usec = 100000 * loop;
++		timeo.tv_usec = 10000 * loop;
+ 
+ 		if ((ret = select(s+1, &rdfs, NULL, NULL, &timeo)) < 0) {
+ 			//perror("select");
+@@ -338,7 +335,7 @@ int main(int argc, char **argv)
+ 		}
+ 
+ 		gettimeofday(&tv, NULL);
+-		currcms = (tv.tv_sec - start_tv.tv_sec) * 10 + (tv.tv_usec / 100000);
++		currcms = (tv.tv_sec - start_tv.tv_sec) * 100 + (tv.tv_usec / 10000);
+ 
+ 		if (FD_ISSET(0, &rdfs))
+ 			running &= handle_keyb(s);
+@@ -538,6 +535,7 @@ int handle_timeo(int fd, long currcms){
+ 
+ 	int i;
+ 	int force_redraw = 0;
++	static unsigned int frame_count;
+ 
+ 	if (clearscreen) {
+ 		char startline[80];
+@@ -555,7 +553,8 @@ int handle_timeo(int fd, long currcms){
+ 	}
+ 
+ 	printf("%s", CSR_HOME);
+-	printf("%c\n", anichar[currcms % MAXANI]); /* funny animation */
++	printf("%02d\n", frame_count++); /* rolling display update counter */
++	frame_count %= 100;
+ 
+ 	for (i=0; i < 2048; i++) {
+ 
+@@ -608,7 +607,7 @@ void print_snifline(int id){
+ 	if (diffsec > 10)
+ 		diffsec = 9, diffusec = 999999;
+ 
+-	printf("%ld.%06ld  %3x  ", diffsec, diffusec, id);
++	printf("%ld.%06ld  %3X  ", diffsec, diffusec, id);
+ 
+ 	if (binary) {
+ 
+-- 
+2.0.0
 
