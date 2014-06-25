@@ -1,51 +1,106 @@
-From: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>
-Subject: RE: [PATCH] net: can: Remodel FlexCAN register read/write APIs for BE
- instances
-Date: Wed, 25 Jun 2014 14:16:33 +0000
-Message-ID: <28c405ed255b42d09307274fccbec41e@BN1PR03MB220.namprd03.prod.outlook.com>
-References: <1403625285-27824-1-git-send-email-bhupesh.sharma@freescale.com>
- <53AA8805.3050309@pengutronix.de>
- <ae6e49865206432ea871b08b159bae55@BN1PR03MB220.namprd03.prod.outlook.com>
- <53AAA3E9.6030409@pengutronix.de>
- <536c077e2e8b4dfabb4c07f696753a3c@BN1PR03MB220.namprd03.prod.outlook.com>
- <53AAAD84.1010400@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] net: can: Remodel FlexCAN register read/write APIs for
+ BE instances
+Date: Wed, 25 Jun 2014 21:00:12 +0200
+Message-ID: <53AB1C3C.8@pengutronix.de>
+References: <1403625285-27824-1-git-send-email-bhupesh.sharma@freescale.com> <53AA8805.3050309@pengutronix.de> <ae6e49865206432ea871b08b159bae55@BN1PR03MB220.namprd03.prod.outlook.com> <53AAA3E9.6030409@pengutronix.de> <536c077e2e8b4dfabb4c07f696753a3c@BN1PR03MB220.namprd03.prod.outlook.com> <53AAAD84.1010400@pengutronix.de> <28c405ed255b42d09307274fccbec41e@BN1PR03MB220.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="9JDoRAv5VFOt5sMuGbt7M1vtXMPoIO2Jd"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0209.outbound.protection.outlook.com ([207.46.163.209]:1923
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755444AbaFYOQt (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 25 Jun 2014 10:16:49 -0400
-In-Reply-To: <53AAAD84.1010400@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44821 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754496AbaFYTA0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Jun 2014 15:00:26 -0400
+In-Reply-To: <28c405ed255b42d09307274fccbec41e@BN1PR03MB220.namprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
-bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogV2VkbmVzZGF5LCBKdW5lIDI1LCAy
-MDE0IDQ6MzggUE0NCj4gVG86IFNoYXJtYSBCaHVwZXNoLUI0NTM3MDsgbGludXgtY2FuQHZnZXIu
-a2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5ldGRldkB2Z2VyLmtlcm5lbC5v
-cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gbmV0OiBjYW46IFJlbW9kZWwgRmxleENBTiByZWdp
-c3RlciByZWFkL3dyaXRlIEFQSXMNCj4gZm9yIEJFIGluc3RhbmNlcw0KPiANCj4gT24gMDYvMjUv
-MjAxNCAwMTowMSBQTSwgYmh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbSB3cm90ZToNCj4gPj4g
-V2hhdCBhYm91dCBmdW5jdGlvbiBwb2ludGVycyBpbiB0aGUgcHJpdj8gU28gdGhhdCBmbGV4Y2Fu
-X3JlYWQoKQ0KPiA+PiBiZWNvbWVzDQo+ID4+IHByaXYtPnJlYWQoKS4NCj4gDQo+ID4gVGhhdCdz
-IHdoYXQgSSBwcm9wb3NlIChzaW1pbGFyIHRvIHdoYXQgSSBkaWQgZm9yIENfQ0FOIGRyaXZlciBm
-b3INCj4gPiAxNi1iaXQgYW5kIDMyLWJpdCByZWcgaW50ZXJmYWNlcyB1c2luZyBwbGF0Zm9ybSBk
-YXRhKToNCj4gDQo+IFllcy4uLmJ1dC4uLg0KPiANCj4gPiBib29sIG1vZHVsZV9pc19iZSA9IGZh
-bHNlOw0KPiANCj4gLi4ubW9kdWxlX2lzX2JlIGlzIG5vdCB0aGF0IHNpbXBsZSwgb24gUFBDIHRy
-dWUgbXVzdCBiZSB0aGUgZGVmYXVsdCB0byBiZQ0KPiBjb21wYXRpYmxlIHdpdGggZXhpc3Rpbmcg
-ZHRzLg0KDQpIb3cgZG9lcyB0aGlzIGxvb2sgKGEgYml0IG1lc3NlZCB1cCwgc28gSSBhbSBvcGVu
-IGZvciBjb21tZW50cyk6DQoNCiNpZiBkZWZpbmVkKENPTkZJR19BUk0pDQpzdGF0aWMgaW5saW5l
-IHUzMiBmbGV4Y2FuX3JlYWRfaXBfaXNfYmUodm9pZCBfX2lvbWVtICphZGRyKQ0Kew0KCXJldHVy
-biBpb3JlYWQzMmJlKGFkZHIpOw0KfQ0KDQpzdGF0aWMgaW5saW5lIHUzMiBmbGV4Y2FuX3JlYWRf
-aXBfaXNfbGUodm9pZCBfX2lvbWVtICphZGRyKQ0Kew0KCXJldHVybiBpb3JlYWQzMihhZGRyKTsN
-Cn0NCiNlbmRpZg0KDQojaWYgZGVmaW5lZChDT05GSUdfUFBDKQ0Kc3RhdGljIGlubGluZSB1MzIg
-ZmxleGNhbl9yZWFkX2lwX2lzX2JlKHZvaWQgX19pb21lbSAqYWRkcikNCnsNCglyZXR1cm4gaW9y
-ZWFkMzIoYWRkcik7DQp9DQoNCnN0YXRpYyBpbmxpbmUgdTMyIGZsZXhjYW5fcmVhZF9pcF9pc19s
-ZSh2b2lkIF9faW9tZW0gKmFkZHIpDQp7DQoJcmV0dXJuIGlvcmVhZDMyYmUoYWRkcik7DQp9DQoj
-ZW5kaWYNCg0KWy4uIHNuaXBdDQoNClJlZ2FyZHMsDQpCaHVwZXNoDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9JDoRAv5VFOt5sMuGbt7M1vtXMPoIO2Jd
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 06/25/2014 04:16 PM, bhupesh.sharma@freescale.com wrote:
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Wednesday, June 25, 2014 4:38 PM
+>> To: Sharma Bhupesh-B45370; linux-can@vger.kernel.org
+>> Cc: wg@grandegger.com; netdev@vger.kernel.org
+>> Subject: Re: [PATCH] net: can: Remodel FlexCAN register read/write API=
+s
+>> for BE instances
+>>
+>> On 06/25/2014 01:01 PM, bhupesh.sharma@freescale.com wrote:
+>>>> What about function pointers in the priv? So that flexcan_read()
+>>>> becomes
+>>>> priv->read().
+>>
+>>> That's what I propose (similar to what I did for C_CAN driver for
+>>> 16-bit and 32-bit reg interfaces using platform data):
+>>
+>> Yes...but...
+>>
+>>> bool module_is_be =3D false;
+>>
+>> ...module_is_be is not that simple, on PPC true must be the default to=
+ be
+>> compatible with existing dts.
+>=20
+> How does this look (a bit messed up, so I am open for comments):
+
+What about:
+
+static u32 flexcan_read_le(void __iomem *addr)
+{
+	return ioread32(addr);
+}
+
+static u32 flexcan_read_be(void __iomem *addr)
+{
+	return ioread32be(addr);
+}
+
+flexcan_probe ()
+{
+	bool core_is_little =3D true;
+
+	/* or #ifdef __BIG_ENDIAN ... #endif instead of IS_ENABLED() */
+	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) ||
+	    of_property_read_bool(dev->dev.of_node, "big-endian"))
+		core_is_little =3D false;
+
+	if (core_is_little)
+		priv->read =3D flexcan_read_le;
+	else
+		priv->read =3D flexcan_read_be;
+
+}
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--9JDoRAv5VFOt5sMuGbt7M1vtXMPoIO2Jd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOrHEEACgkQjTAFq1RaXHO7BgCdEMM1Bl5uQ6OUOkHAOS0yX6bT
+h2MAoJnNZtIzYgCurBiI9WtikH6Y5ha5
+=Zjn8
+-----END PGP SIGNATURE-----
+
+--9JDoRAv5VFOt5sMuGbt7M1vtXMPoIO2Jd--
