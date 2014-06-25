@@ -1,50 +1,68 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH] net: can: Remodel FlexCAN register read/write APIs for
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] net: can: Remodel FlexCAN register read/write APIs for
  BE instances
-Date: Wed, 25 Jun 2014 10:29:22 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D17264BA8@AcuExch.aculab.com>
-References: <1403625285-27824-1-git-send-email-bhupesh.sharma@freescale.com>
- <53AA8805.3050309@pengutronix.de>
- <ae6e49865206432ea871b08b159bae55@BN1PR03MB220.namprd03.prod.outlook.com>
+Date: Wed, 25 Jun 2014 12:34:20 +0200
+Message-ID: <53AAA5AC.5070707@pengutronix.de>
+References: <1403625285-27824-1-git-send-email-bhupesh.sharma@freescale.com> <53AA8805.3050309@pengutronix.de> <ae6e49865206432ea871b08b159bae55@BN1PR03MB220.namprd03.prod.outlook.com> <063D6719AE5E284EB5DD2968C1650D6D17264BA8@AcuExch.aculab.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="OGTPKaQx5lmaie8UiDI7VtFXP7w8GrWhW"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx0.aculab.com ([213.249.233.131]:52930 "HELO mx0.aculab.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1752609AbaFYKaE (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 25 Jun 2014 06:30:04 -0400
-Received: from mx0.aculab.com ([127.0.0.1])
- by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 22331-01 for <linux-can@vger.kernel.org>;
- Wed, 25 Jun 2014 11:29:51 +0100 (BST)
-In-Reply-To: <ae6e49865206432ea871b08b159bae55@BN1PR03MB220.namprd03.prod.outlook.com>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37972 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755478AbaFYKee (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Jun 2014 06:34:34 -0400
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D17264BA8@AcuExch.aculab.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "'bhupesh.sharma@freescale.com'" <bhupesh.sharma@freescale.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: David Laight <David.Laight@ACULAB.COM>, "'bhupesh.sharma@freescale.com'" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-RnJvbTogYmh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbQ0KPiA+IEZyb206IE1hcmMgS2xlaW5l
-LUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiA+IE9uIDA2LzI0LzIwMTQgMDU6
-NTQgUE0sIEJodXBlc2ggU2hhcm1hIHdyb3RlOg0KPiA+ID4gVGhlIEZsZXhDQU4gSVAgb24gY2Vy
-dGFpbiBTb0NzIGxpa2UgKEZyZWVzY2FsZSdzIExTMTAyMUEpIGlzIG1vZGVsbGVkDQo+ID4gPiBp
-biBhIGJpZy1lbmRpYW4gZmFzaGlvbiwgaS5lLiB0aGUgcmVnaXN0ZXJzIGFuZCB0aGUgbWVzc2Fn
-ZSBidWZmZXJzDQo+ID4gPiBhcmUgb3JnYW5pemVkIGluIGEgQkUgd2F5Lg0KPiA+DQo+ID4gRG8g
-eW91IGhhdmUgYW55IGlkZWEsIHdoeSBmc2wgZGlkIHRoaXM/IFRoZSBtZXNzZWQgdXAgdGhlIG5l
-dHdvcmsNCj4gPiBjb250cm9sbGVyIG9uIHRoZSBteDI4LCB0b28uIDovDQo+IA0KPiBOb3QgcmVh
-bGx5LiBJIGd1ZXNzIHMvdyBkcml2ZXJzIGFyZSBtZWFudCB0byBoaWRlIGgvdyBvYnNjdXJpdGll
-cyA6KQ0KDQpJIHNvbWV0aW1lcyB0aGluayB0aGV5IGp1c3QgbGlrZSBtYWtpbmcgbGlmZSBoYXJk
-IGZvciBzb2Z0d2FyZSBlbmdpbmVlcnMuDQpJdCBpc24ndCBhcyB0aG91Z2ggJ2dhdGUgY291bnQn
-IGlzIGxpa2VseSB0byBiZSBjcml0aWNhbCB0aGVzZSBkYXlzLg0KDQouLi4NCj4gT2suIE9yIHNo
-b3VsZCBJIGNyZWF0ZSB0d28gZnVuY3Rpb25zIGZvciByZWFkIGFuZCB3cml0ZSAtIG9uZSBkb2Vz
-IGl0IGluIExFIHdheSBhbmQgdGhlIG90aGVyDQo+IGluIEJFIHdheSBhbmQgcGFyc2UgdGhlIERU
-IHRvIHVuZGVyc3RhbmQgd2hpY2ggZW5kaWFubmVzcyB0aGUgbW9kdWxlIHN1cHBvcnRzLg0KDQpB
-biBpbmRpcmVjdCBjYWxsIGlzIGxpa2VseSB0byBiZSBzbG93ZXIgdGhhbiBhIGNvbmRpdGlvbmFs
-Lg0KVGhlIGNvbmRpdGlvbmFsIGluc2lkZSBhIG5vbi1pbmxpbmVkIGZ1bmN0aW9uIGlzIGxpa2Vs
-eSB0byBnZXQNCnByZWRpY3RlZCBjb3JyZWN0bHkgb24gYW55IGNvZGUgcGF0aHMgdGhhdCBtYXR0
-ZXIuDQpVbmZvcnR1bmF0ZWx5IHVzaW5nIGEgcmVhbCBmdW5jdGlvbiBpbmNyZWFzZXMgcmVnaXN0
-ZXIgcHJlc3N1cmUuDQoNCk1heWJlIGEgY29tcGlsZS10aW1lIG9wdGlvbiBmb3IgQkUsIExFIG9y
-IGJvdGguDQpTbyBhICdnZW5lcmljJyBrZXJuZWwgY2FuIHdvcmssIGJ1dCBhIFNvQyBzcGVjaWZp
-YyBvbmUgd2lsbCBiZSBmYXN0ZXIuDQpUaGVuIGhhdmUgdGhlIGRyaXZlciBsb2FkL2F0dGFjaC9p
-bml0IGZhaWwgaWYgaXQgaXMgdGhlIHdyb25nIGVuZGlhbm5lc3MuDQoNCglEYXZpZA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OGTPKaQx5lmaie8UiDI7VtFXP7w8GrWhW
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 06/25/2014 12:29 PM, David Laight wrote:
+>> Ok. Or should I create two functions for read and write - one does it =
+in LE way and the other
+>> in BE way and parse the DT to understand which endianness the module s=
+upports.
+>=20
+> An indirect call is likely to be slower than a conditional.
+> The conditional inside a non-inlined function is likely to get
+> predicted correctly on any code paths that matter.
+> Unfortunately using a real function increases register pressure.
+>=20
+> Maybe a compile-time option for BE, LE or both.
+> So a 'generic' kernel can work, but a SoC specific one will be faster.
+> Then have the driver load/attach/init fail if it is the wrong endiannes=
+s.
+
+Don't overengineer, CAN is max 1 MiB/s.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--OGTPKaQx5lmaie8UiDI7VtFXP7w8GrWhW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOqpawACgkQjTAFq1RaXHOdmwCfbFjxp5NMshjUlHjNMl7M/DkP
+DRkAn32Nj/aU2b3V4BucV0yRSHCGtaDy
+=NUXJ
+-----END PGP SIGNATURE-----
+
+--OGTPKaQx5lmaie8UiDI7VtFXP7w8GrWhW--
