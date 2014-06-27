@@ -1,66 +1,60 @@
-From: "Max S." <max@schneidersoft.net>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: Bus off
-Date: Thu, 26 Jun 2014 22:54:23 +0000
-Message-ID: <1403823263.24938.12.camel@blackbox>
+Date: Fri, 27 Jun 2014 07:05:12 +0200
+Message-ID: <20140627050512.GA1291@vandijck-laurijssen.be>
 References: <CANGgnMZyG1UDVigM-68tu27=oNYfaw0OWxCv4uT+NfN4v=vm2A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.schneidersoft.net ([173.45.248.65]:52240 "EHLO
-	mail.schneidersoft.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752120AbaFZWz4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Jun 2014 18:55:56 -0400
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172]:23311 "EHLO
+	mailrelay006.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752019AbaF0FFZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 27 Jun 2014 01:05:25 -0400
+Content-Disposition: inline
 In-Reply-To: <CANGgnMZyG1UDVigM-68tu27=oNYfaw0OWxCv4uT+NfN4v=vm2A@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Austin Schuh <austin@peloton-tech.com>
 Cc: linux-can@vger.kernel.org
 
-When there is only one node. The lone node will continuously attempt to
-transmit.
+Hey,
 
-the tx error counter will increase and the node will move from
-error_active to error_passive, and then to bus_off. At least one node I
-know of will leave bus_off when it receives 128x11 consecutive dominant
-bits and ten try to send again.
-
-If the controller will wait for linux to restart it, it will probably
-retry transmitting the frame upon being restart.
-
-Restart does not mean reset as far as i know.
-
-Regardless of what state the linux queue is in the frame in the
-controllers outgoing message objects will continue to try to send,
-unless explicitly told to cancel transmission. (at least on the
-controllers i know. not that many :/)
-
-Hence you will see the cycling error frames.
-
-typically heartbeat frames are used to tell if a node exists or not.
-each node send a predefined message at a desired interval, and you just
-listen.
-
-Regards,
-Max S.
-
-On Thu, 2014-06-26 at 10:13 -0700, Austin Schuh wrote:
+On Thu, Jun 26, 2014 at 10:13:17AM -0700, Austin Schuh wrote:
 > Does anyone know if the TX queues are cleared on BUS-OFF?
+
+No queues are emptied, you will only loose the curent pending transmission.
+
 > 
 > I have a machine connected to a network where all the other CAN nodes
 > shut off periodically.  I monitor whether or not they are sending, and
 > don't send messages unless I think they are on.  Right after they shut
-> off, I occasionally send out a message when they are off, which
-> triggers a bus-off.  I'm seeing lots of bus-off/restarts due to
+> off, I occasionally send out a message when they are off,
+
+I assume this cannot be avoided due to timeouts.
+
+> which triggers a bus-off.
+> I'm seeing lots of bus-off/restarts due to
 > restart-ms=1000 after the nodes shut down, and I'm pretty certain that
 > I'm not sending anything at that time.  Any ideas on what is going on
 > would be appreciated.
-> 
-> Thanks,
->     Austin
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+If you're not alone, a transmission is (normally) acked immediately
+and the bus becomes idle again.
 
+When you are the only active CAN chip, noone acks your message
+and your transmission will be continuously repeated.
+This makes you vulnerable for any bad bus condition.
+
+If your bus conditions were good all the time, your would never
+enter bus-off even if you transmit and are alone on the bus.
+
+So, I _think_ that during shutdown or startup of your nodes, they
+do (mayby shortly) bring a bad condition on the bus.
+I would investigate the shutdown sequence of your nodes.
+Some conditions I could think of/have experienced:
+* after stopping the CAN chip, the CAN-TX pin returns being a GPIO
+  and it's set as output.
+* The CAN chip is stopped in the middle of transmission.
+...
+
+Kurt
