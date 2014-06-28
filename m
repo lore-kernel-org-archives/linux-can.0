@@ -1,22 +1,18 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.14 087/110] genirq: Sanitize spurious interrupt detection of threaded irqs
-Date: Sat, 28 Jun 2014 10:47:24 -0700
-Message-ID: <20140628174550.679120789@linuxfoundation.org>
-References: <20140628174545.354748696@linuxfoundation.org>
+Subject: [PATCH 3.15 110/139] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Sat, 28 Jun 2014 10:47:51 -0700
+Message-ID: <20140628174610.439852592@linuxfoundation.org>
+References: <20140628174605.352098823@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12]:53585 "EHLO
-	mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932166AbaF1RuZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 28 Jun 2014 13:50:25 -0400
-In-Reply-To: <20140628174545.354748696@linuxfoundation.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140628174605.352098823@linuxfoundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Till Straumann <strauman@slac.stanford.edu>, Thomas Gleixner <tglx@linutronix.de>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-3.14-stable review patch.  If anyone has any objections, please let me know.
+3.15-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -93,7 +89,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #ifdef CONFIG_SMP
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
-@@ -856,8 +856,8 @@ static int irq_thread(void *data)
+@@ -886,8 +886,8 @@ static int irq_thread(void *data)
  		irq_thread_check_affinity(desc, action);
  
  		action_ret = handler_fn(desc, action);
@@ -231,5 +227,3 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	if (unlikely(action_ret == IRQ_NONE)) {
  		/*
  		 * If we are seeing only the odd spurious IRQ caused by
-
-
