@@ -1,18 +1,18 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.10 59/77] genirq: Sanitize spurious interrupt detection of threaded irqs
-Date: Sat, 28 Jun 2014 10:46:52 -0700
-Message-ID: <20140628174524.668489320@linuxfoundation.org>
-References: <20140628174521.691276402@linuxfoundation.org>
+Subject: [PATCH 3.4 34/43] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Sat, 28 Jun 2014 10:46:25 -0700
+Message-ID: <20140628174451.344408621@linuxfoundation.org>
+References: <20140628174449.788784511@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140628174521.691276402@linuxfoundation.org>
+In-Reply-To: <20140628174449.788784511@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Till Straumann <strauman@slac.stanford.edu>, Thomas Gleixner <tglx@linutronix.de>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-3.10-stable review patch.  If anyone has any objections, please let me know.
+3.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -69,7 +69,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/include/linux/irqdesc.h
 +++ b/include/linux/irqdesc.h
-@@ -27,6 +27,8 @@ struct irq_desc;
+@@ -27,6 +27,8 @@ struct module;
   * @irq_count:		stats field to detect stalled irqs
   * @last_unhandled:	aging timer for unhandled count
   * @irqs_unhandled:	stats field for spurious unhandled interrupts
@@ -89,7 +89,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #ifdef CONFIG_SMP
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
-@@ -861,8 +861,8 @@ static int irq_thread(void *data)
+@@ -809,8 +809,8 @@ static int irq_thread(void *data)
  		irq_thread_check_affinity(desc, action);
  
  		action_ret = handler_fn(desc, action);
