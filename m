@@ -1,23 +1,20 @@
 From: Jiri Slaby <jslaby@suse.cz>
-Subject: [patch added to the 3.12 stable tree] genirq: Sanitize spurious interrupt detection of threaded irqs
-Date: Mon, 30 Jun 2014 13:28:49 +0200
-Message-ID: <1404127747-32441-61-git-send-email-jslaby@suse.cz>
-References: <1404127747-32441-1-git-send-email-jslaby@suse.cz>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ip4-83-240-18-248.cust.nbox.cz ([83.240.18.248]:51607 "EHLO
-	ip4-83-240-18-248.cust.nbox.cz" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752412AbaF3L3K (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Jun 2014 07:29:10 -0400
-In-Reply-To: <1404127747-32441-1-git-send-email-jslaby@suse.cz>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Subject: [PATCH 3.12 160/181] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Mon, 30 Jun 2014 13:53:01 +0200
+Message-ID: <652b082d06254db40f5fec53543a036ee4f4275f.1404128998.git.jslaby@suse.cz>
+References: <61844d8e25eb8899b0836afa9796fa239db80f1f.1404128997.git.jslaby@suse.cz>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <61844d8e25eb8899b0836afa9796fa239db80f1f.1404128997.git.jslaby@suse.cz>
+In-Reply-To: <cover.1404128997.git.jslaby@suse.cz>
+References: <cover.1404128997.git.jslaby@suse.cz>
+Sender: linux-kernel-owner@vger.kernel.org
 To: stable@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+List-Id: linux-can.vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-This patch has been added to the 3.12 stable tree. If you have any
-objections, please let us know.
+3.12-stable review patch.  If anyone has any objections, please let me know.
 
 ===============
 
@@ -236,4 +233,3 @@ index 7b5f012bde9d..febcee3c2aa9 100644
  		 * If we are seeing only the odd spurious IRQ caused by
 -- 
 2.0.0
-
