@@ -1,152 +1,239 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
-Date: Mon, 30 Jun 2014 16:26:38 +0800
-Message-ID: <20140630082622.GB25689@shlinux1.ap.freescale.net>
-References: <1403863246-18822-1-git-send-email-b29396@freescale.com>
- <1403863246-18822-2-git-send-email-b29396@freescale.com>
- <53ADB1E8.1030504@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [patch added to the 3.12 stable tree] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Mon, 30 Jun 2014 13:28:49 +0200
+Message-ID: <1404127747-32441-61-git-send-email-jslaby@suse.cz>
+References: <1404127747-32441-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0212.outbound.protection.outlook.com ([207.46.163.212]:12903
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754952AbaF3J6d (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 30 Jun 2014 05:58:33 -0400
-Content-Disposition: inline
-In-Reply-To: <53ADB1E8.1030504@hartkopp.net>
+Received: from ip4-83-240-18-248.cust.nbox.cz ([83.240.18.248]:51607 "EHLO
+	ip4-83-240-18-248.cust.nbox.cz" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752412AbaF3L3K (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Jun 2014 07:29:10 -0400
+In-Reply-To: <1404127747-32441-1-git-send-email-jslaby@suse.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, devicetree@vger.kernel.org
+To: stable@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
 
-On Fri, Jun 27, 2014 at 08:03:20PM +0200, Oliver Hartkopp wrote:
-> Hello Dong,
-> 
-> some general remarks from my side ...
-> 
-> On 27.06.2014 12:00, Dong Aisheng wrote:
-> >
-> > M_CAN also supports CANFD protocol features like data payload up to 64 bytes
-> > and bitrate switch at runtime, however, this patch still does not add the
-> > support for these features.
-> 
-> What is the reason for not supporting CAN FD?
-> The infrastructure is ready for it since Linux 3.15.
-> 
-> http://www.can-newsletter.org/engineering/standardization/140513_can-fd-linux-tools-and-driver-infrastructure_peak_vw/
-> 
-> For details see my commits for Linux 3.15.
-> 
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Thanks for the information.
-Of course i will add CAN FD support.
-Mainly because the driver is just newly written these days, CAN FD feature
-is still under development. :-)
+This patch has been added to the 3.12 stable tree. If you have any
+objections, please let us know.
 
-> > +  The left cell are all the number of each elements inside the message ram.
-> > +  Please refer to 2.4.1 Message RAM Con.guration in Bosch M_CAN user mannual
->                                          ^^^
-> typo.
-> 
+===============
 
-Got it, thanks.
+commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
 
-> > +  for each elements definition.
-> > +
-> > +Example:
-> > +canfd1: canfd@020e8000 {
->    ^^^^^^  ^^^^^
-> 
-> There's no reason to name this canfd. The fact that the controller supports
-> CAN FD is provided by priv->ctrlmode_supported and the CAN_CTRLMODE_FD bit.
-> 
+Till reported that the spurious interrupt detection of threaded
+interrupts is broken in two ways:
 
-Just because mx6sx spec calling it CANFD at many places.
-e.g.
-Interrupts:
-146 CANFD1 CANFD1 interrupt request
-147 CANFD2 CANFD2 interrupt request
-Memory Map:
-020F_0000 020F_3FFF CANFD2 16 KB
-020E_8000 020E_BFFF CANFD1 16 KB
-So i used canfd firstly.
-CCM:
-CANFD
-ips_clk can_clk_root CCGR1[CG15] (canfd_clk_enable)
-m_can_0_cclk can_clk_root CCGR1[CG15] (canfd_clk_enable)
-m_can_0_ips_clk can_clk_root CCGR1[CG15] (canfd_clk_enable)
+- note_interrupt() is called for each action thread of a shared
+  interrupt line. That's wrong as we are only interested whether none
+  of the device drivers felt responsible for the interrupt, but by
+  calling multiple times for a single interrupt line we account
+  IRQ_NONE even if one of the drivers felt responsible.
 
-> Just write
-> 
-> can1: can@020e8000 {
-> 
+- note_interrupt() when called from the thread handler is not
+  serialized. That leaves the members of irq_desc which are used for
+  the spurious detection unprotected.
 
-I'm ok with this style.
-Maybe the following is better:
-m_can1: can@020e8000 {
+To solve this we need to defer the spurious detection of a threaded
+interrupt to the next hardware interrupt context where we have
+implicit serialization.
 
-> > +	compatible = "bosch,m_can";
-> > +	reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
-> > +	reg-names = "canfd", "message_ram";
->                      ^^^^^
-> dito.
-> 
-How about m_can?
-Since it's IP driver, not depends on how SoC naming it.
+If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
+check whether the previous interrupt requested a deferred check. If
+not, we request a deferred check for the next hardware interrupt and
+return.
 
-> > +	interrupts = <0 114 0x04>;
-> > +	clocks = <&clks IMX6SX_CLK_CANFD>;
->                                    ^^^^^
-> dito.
-> 
+If set, we check whether one of the interrupt threads signaled
+success. Depending on this information we feed the result into the
+spurious detector.
 
-Not for this one, because imx6sx spec calling it CANFD in Clock
-chaptor.
-We want to align with our spec since it's arch code.
+If one primary handler of a shared interrupt returns IRQ_HANDLED we
+disable the deferred check of irq threads on the same line, as we have
+found at least one device driver who cared.
 
-> > --- a/drivers/net/can/Kconfig
-> > +++ b/drivers/net/can/Kconfig
-> > @@ -137,6 +137,11 @@ config CAN_XILINXCAN
-> >  	  Xilinx CAN driver. This driver supports both soft AXI CAN IP and
-> >  	  Zynq CANPS IP.
-> >  
-> > +config CAN_M_CAN
-> > +	tristate "Bosch M_CAN devices"
-> > +	---help---
-> > +	  Say Y here if you want to support for Bosch M_CAN controller.
-> > +
-> 
-> source "drivers/net/can/m_can/Kconfig"
-> 
-> >  source "drivers/net/can/mscan/Kconfig"
-> >  
-> >  source "drivers/net/can/sja1000/Kconfig"
-> > diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-> > index 1697f22..69dee2c 100644
-> > --- a/drivers/net/can/Makefile
-> > +++ b/drivers/net/can/Makefile
-> > @@ -17,6 +17,7 @@ obj-y				+= softing/
-> >  obj-$(CONFIG_CAN_SJA1000)	+= sja1000/
-> >  obj-$(CONFIG_CAN_MSCAN)		+= mscan/
-> >  obj-$(CONFIG_CAN_C_CAN)		+= c_can/
-> > +obj-$(CONFIG_CAN_M_CAN)		+= m_can.o
-> 
-> Please create a new m_can directory and a Kconfig in this directory analogue
-> to the c_can IP core approach.
-> 
+Reported-by: Till Straumann <strauman@slac.stanford.edu>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Austin Schuh <austin@peloton-tech.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+---
+ include/linux/irqdesc.h |   4 ++
+ kernel/irq/manage.c     |   4 +-
+ kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 108 insertions(+), 6 deletions(-)
 
-Got it, thanks.
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 56fb646909dc..a7b4b61fc026 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -27,6 +27,8 @@ struct irq_desc;
+  * @irq_count:		stats field to detect stalled irqs
+  * @last_unhandled:	aging timer for unhandled count
+  * @irqs_unhandled:	stats field for spurious unhandled interrupts
++ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
++ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
+  * @lock:		locking for SMP
+  * @affinity_hint:	hint to user space for preferred irq affinity
+  * @affinity_notify:	context for notification of affinity changes
+@@ -52,6 +54,8 @@ struct irq_desc {
+ 	unsigned int		irq_count;	/* For detecting broken IRQs */
+ 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
+ 	unsigned int		irqs_unhandled;
++	atomic_t		threads_handled;
++	int			threads_handled_last;
+ 	raw_spinlock_t		lock;
+ 	struct cpumask		*percpu_enabled;
+ #ifdef CONFIG_SMP
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 9e31fa71908d..75a976a8ed58 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -856,8 +856,8 @@ static int irq_thread(void *data)
+ 		irq_thread_check_affinity(desc, action);
+ 
+ 		action_ret = handler_fn(desc, action);
+-		if (!noirqdebug)
+-			note_interrupt(action->irq, desc, action_ret);
++		if (action_ret == IRQ_HANDLED)
++			atomic_inc(&desc->threads_handled);
+ 
+ 		wake_threads_waitq(desc);
+ 	}
+diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+index 7b5f012bde9d..febcee3c2aa9 100644
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
+ 	return action && (action->flags & IRQF_IRQPOLL);
+ }
+ 
++#define SPURIOUS_DEFERRED	0x80000000
++
+ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 		    irqreturn_t action_ret)
+ {
+ 	if (desc->istate & IRQS_POLL_INPROGRESS)
+ 		return;
+ 
+-	/* we get here again via the threaded handler */
+-	if (action_ret == IRQ_WAKE_THREAD)
+-		return;
+-
+ 	if (bad_action_ret(action_ret)) {
+ 		report_bad_irq(irq, desc, action_ret);
+ 		return;
+ 	}
+ 
++	/*
++	 * We cannot call note_interrupt from the threaded handler
++	 * because we need to look at the compound of all handlers
++	 * (primary and threaded). Aside of that in the threaded
++	 * shared case we have no serialization against an incoming
++	 * hardware interrupt while we are dealing with a threaded
++	 * result.
++	 *
++	 * So in case a thread is woken, we just note the fact and
++	 * defer the analysis to the next hardware interrupt.
++	 *
++	 * The threaded handlers store whether they sucessfully
++	 * handled an interrupt and we check whether that number
++	 * changed versus the last invocation.
++	 *
++	 * We could handle all interrupts with the delayed by one
++	 * mechanism, but for the non forced threaded case we'd just
++	 * add pointless overhead to the straight hardirq interrupts
++	 * for the sake of a few lines less code.
++	 */
++	if (action_ret & IRQ_WAKE_THREAD) {
++		/*
++		 * There is a thread woken. Check whether one of the
++		 * shared primary handlers returned IRQ_HANDLED. If
++		 * not we defer the spurious detection to the next
++		 * interrupt.
++		 */
++		if (action_ret == IRQ_WAKE_THREAD) {
++			int handled;
++			/*
++			 * We use bit 31 of thread_handled_last to
++			 * denote the deferred spurious detection
++			 * active. No locking necessary as
++			 * thread_handled_last is only accessed here
++			 * and we have the guarantee that hard
++			 * interrupts are not reentrant.
++			 */
++			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
++				desc->threads_handled_last |= SPURIOUS_DEFERRED;
++				return;
++			}
++			/*
++			 * Check whether one of the threaded handlers
++			 * returned IRQ_HANDLED since the last
++			 * interrupt happened.
++			 *
++			 * For simplicity we just set bit 31, as it is
++			 * set in threads_handled_last as well. So we
++			 * avoid extra masking. And we really do not
++			 * care about the high bits of the handled
++			 * count. We just care about the count being
++			 * different than the one we saw before.
++			 */
++			handled = atomic_read(&desc->threads_handled);
++			handled |= SPURIOUS_DEFERRED;
++			if (handled != desc->threads_handled_last) {
++				action_ret = IRQ_HANDLED;
++				/*
++				 * Note: We keep the SPURIOUS_DEFERRED
++				 * bit set. We are handling the
++				 * previous invocation right now.
++				 * Keep it for the current one, so the
++				 * next hardware interrupt will
++				 * account for it.
++				 */
++				desc->threads_handled_last = handled;
++			} else {
++				/*
++				 * None of the threaded handlers felt
++				 * responsible for the last interrupt
++				 *
++				 * We keep the SPURIOUS_DEFERRED bit
++				 * set in threads_handled_last as we
++				 * need to account for the current
++				 * interrupt as well.
++				 */
++				action_ret = IRQ_NONE;
++			}
++		} else {
++			/*
++			 * One of the primary handlers returned
++			 * IRQ_HANDLED. So we don't care about the
++			 * threaded handlers on the same line. Clear
++			 * the deferred detection bit.
++			 *
++			 * In theory we could/should check whether the
++			 * deferred bit is set and take the result of
++			 * the previous run into account here as
++			 * well. But it's really not worth the
++			 * trouble. If every other interrupt is
++			 * handled we never trigger the spurious
++			 * detector. And if this is just the one out
++			 * of 100k unhandled ones which is handled
++			 * then we merily delay the spurious detection
++			 * by one hard interrupt. Not a real problem.
++			 */
++			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
++		}
++	}
++
+ 	if (unlikely(action_ret == IRQ_NONE)) {
+ 		/*
+ 		 * If we are seeing only the odd spurious IRQ caused by
+-- 
+2.0.0
 
-> >  obj-$(CONFIG_CAN_CC770)		+= cc770/
-> >  obj-$(CONFIG_CAN_AT91)		+= at91_can.o
-> >  obj-$(CONFIG_CAN_TI_HECC)	+= ti_hecc.o
-> 
-> Thanks for your contribution,
-> Oliver
-> 
-
-Thanks for the review.
-
-Regards
-Dong Aisheng
