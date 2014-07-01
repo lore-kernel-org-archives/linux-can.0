@@ -1,235 +1,121 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 3.12 160/181] genirq: Sanitize spurious interrupt detection of threaded irqs
-Date: Mon, 30 Jun 2014 13:53:01 +0200
-Message-ID: <652b082d06254db40f5fec53543a036ee4f4275f.1404128998.git.jslaby@suse.cz>
-References: <61844d8e25eb8899b0836afa9796fa239db80f1f.1404128997.git.jslaby@suse.cz>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <61844d8e25eb8899b0836afa9796fa239db80f1f.1404128997.git.jslaby@suse.cz>
-In-Reply-To: <cover.1404128997.git.jslaby@suse.cz>
-References: <cover.1404128997.git.jslaby@suse.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
-List-Id: linux-can.vger.kernel.org
+From: Zhao Qiang <B45475@freescale.com>
+Subject: [PATCH v4] flexcan: add err_irq handler for flexcan
+Date: Tue, 1 Jul 2014 16:03:29 +0800
+Message-ID: <1404201809-7010-1-git-send-email-B45475@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2lp0204.outbound.protection.outlook.com ([207.46.163.204]:41025
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1757398AbaGAIHN (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 1 Jul 2014 04:07:13 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linuxppc-dev@lists.ozlabs.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, B07421@freescale.com
+Cc: Zhao Qiang <B45475@freescale.com>
 
-From: Thomas Gleixner <tglx@linutronix.de>
+when flexcan is not physically linked, command 'cantest' will
+trigger an err_irq, add err_irq handler for it.
 
-3.12-stable review patch.  If anyone has any objections, please let me know.
-
-===============
-
-commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
-
-Till reported that the spurious interrupt detection of threaded
-interrupts is broken in two ways:
-
-- note_interrupt() is called for each action thread of a shared
-  interrupt line. That's wrong as we are only interested whether none
-  of the device drivers felt responsible for the interrupt, but by
-  calling multiple times for a single interrupt line we account
-  IRQ_NONE even if one of the drivers felt responsible.
-
-- note_interrupt() when called from the thread handler is not
-  serialized. That leaves the members of irq_desc which are used for
-  the spurious detection unprotected.
-
-To solve this we need to defer the spurious detection of a threaded
-interrupt to the next hardware interrupt context where we have
-implicit serialization.
-
-If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
-check whether the previous interrupt requested a deferred check. If
-not, we request a deferred check for the next hardware interrupt and
-return.
-
-If set, we check whether one of the interrupt threads signaled
-success. Depending on this information we feed the result into the
-spurious detector.
-
-If one primary handler of a shared interrupt returns IRQ_HANDLED we
-disable the deferred check of irq threads on the same line, as we have
-found at least one device driver who cared.
-
-Reported-by: Till Straumann <strauman@slac.stanford.edu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Austin Schuh <austin@peloton-tech.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Signed-off-by: Zhao Qiang <B45475@freescale.com>
 ---
- include/linux/irqdesc.h |   4 ++
- kernel/irq/manage.c     |   4 +-
- kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 108 insertions(+), 6 deletions(-)
+Changes for v2:
+	- use a space instead of tab
+	- use flexcan_poll_state instead of print
+Changes for v3:
+	- return IRQ_HANDLED if err is triggered
+	- stop transmitted packets when there is an err_interrupt 
+Changes for v4:
+	- call flexcan_irq 
 
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 56fb646909dc..a7b4b61fc026 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -27,6 +27,8 @@ struct irq_desc;
-  * @irq_count:		stats field to detect stalled irqs
-  * @last_unhandled:	aging timer for unhandled count
-  * @irqs_unhandled:	stats field for spurious unhandled interrupts
-+ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
-+ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
-  * @lock:		locking for SMP
-  * @affinity_hint:	hint to user space for preferred irq affinity
-  * @affinity_notify:	context for notification of affinity changes
-@@ -52,6 +54,8 @@ struct irq_desc {
- 	unsigned int		irq_count;	/* For detecting broken IRQs */
- 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
- 	unsigned int		irqs_unhandled;
-+	atomic_t		threads_handled;
-+	int			threads_handled_last;
- 	raw_spinlock_t		lock;
- 	struct cpumask		*percpu_enabled;
- #ifdef CONFIG_SMP
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 9e31fa71908d..75a976a8ed58 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -856,8 +856,8 @@ static int irq_thread(void *data)
- 		irq_thread_check_affinity(desc, action);
+ drivers/net/can/flexcan.c | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f425ec2..098fcac 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -208,6 +208,7 @@ struct flexcan_priv {
+ 	void __iomem *base;
+ 	u32 reg_esr;
+ 	u32 reg_ctrl_default;
++	int err_irq;
  
- 		action_ret = handler_fn(desc, action);
--		if (!noirqdebug)
--			note_interrupt(action->irq, desc, action_ret);
-+		if (action_ret == IRQ_HANDLED)
-+			atomic_inc(&desc->threads_handled);
- 
- 		wake_threads_waitq(desc);
- 	}
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index 7b5f012bde9d..febcee3c2aa9 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
- 	return action && (action->flags & IRQF_IRQPOLL);
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+@@ -744,6 +745,27 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
  }
  
-+#define SPURIOUS_DEFERRED	0x80000000
++static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
++{
++	struct net_device *dev = dev_id;
++	struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_regs __iomem *regs = priv->base;
++	u32 reg_ctrl, reg_esr;
 +
- void note_interrupt(unsigned int irq, struct irq_desc *desc,
- 		    irqreturn_t action_ret)
++	reg_esr = flexcan_read(&regs->esr);
++	reg_ctrl = flexcan_read(&regs->ctrl);
++
++	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
++		if (reg_esr & FLEXCAN_ESR_ERR_INT)
++			flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK,
++				      &regs->ctrl);
++		flexcan_irq(irq, dev);
++		return IRQ_HANDLED;
++	}
++
++	return IRQ_NONE;
++}
++
+ static void flexcan_set_bittiming(struct net_device *dev)
  {
- 	if (desc->istate & IRQS_POLL_INPROGRESS)
- 		return;
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+@@ -944,6 +966,15 @@ static int flexcan_open(struct net_device *dev)
+ 	if (err)
+ 		goto out_close;
  
--	/* we get here again via the threaded handler */
--	if (action_ret == IRQ_WAKE_THREAD)
--		return;
--
- 	if (bad_action_ret(action_ret)) {
- 		report_bad_irq(irq, desc, action_ret);
- 		return;
- 	}
- 
-+	/*
-+	 * We cannot call note_interrupt from the threaded handler
-+	 * because we need to look at the compound of all handlers
-+	 * (primary and threaded). Aside of that in the threaded
-+	 * shared case we have no serialization against an incoming
-+	 * hardware interrupt while we are dealing with a threaded
-+	 * result.
-+	 *
-+	 * So in case a thread is woken, we just note the fact and
-+	 * defer the analysis to the next hardware interrupt.
-+	 *
-+	 * The threaded handlers store whether they sucessfully
-+	 * handled an interrupt and we check whether that number
-+	 * changed versus the last invocation.
-+	 *
-+	 * We could handle all interrupts with the delayed by one
-+	 * mechanism, but for the non forced threaded case we'd just
-+	 * add pointless overhead to the straight hardirq interrupts
-+	 * for the sake of a few lines less code.
-+	 */
-+	if (action_ret & IRQ_WAKE_THREAD) {
-+		/*
-+		 * There is a thread woken. Check whether one of the
-+		 * shared primary handlers returned IRQ_HANDLED. If
-+		 * not we defer the spurious detection to the next
-+		 * interrupt.
-+		 */
-+		if (action_ret == IRQ_WAKE_THREAD) {
-+			int handled;
-+			/*
-+			 * We use bit 31 of thread_handled_last to
-+			 * denote the deferred spurious detection
-+			 * active. No locking necessary as
-+			 * thread_handled_last is only accessed here
-+			 * and we have the guarantee that hard
-+			 * interrupts are not reentrant.
-+			 */
-+			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
-+				desc->threads_handled_last |= SPURIOUS_DEFERRED;
-+				return;
-+			}
-+			/*
-+			 * Check whether one of the threaded handlers
-+			 * returned IRQ_HANDLED since the last
-+			 * interrupt happened.
-+			 *
-+			 * For simplicity we just set bit 31, as it is
-+			 * set in threads_handled_last as well. So we
-+			 * avoid extra masking. And we really do not
-+			 * care about the high bits of the handled
-+			 * count. We just care about the count being
-+			 * different than the one we saw before.
-+			 */
-+			handled = atomic_read(&desc->threads_handled);
-+			handled |= SPURIOUS_DEFERRED;
-+			if (handled != desc->threads_handled_last) {
-+				action_ret = IRQ_HANDLED;
-+				/*
-+				 * Note: We keep the SPURIOUS_DEFERRED
-+				 * bit set. We are handling the
-+				 * previous invocation right now.
-+				 * Keep it for the current one, so the
-+				 * next hardware interrupt will
-+				 * account for it.
-+				 */
-+				desc->threads_handled_last = handled;
-+			} else {
-+				/*
-+				 * None of the threaded handlers felt
-+				 * responsible for the last interrupt
-+				 *
-+				 * We keep the SPURIOUS_DEFERRED bit
-+				 * set in threads_handled_last as we
-+				 * need to account for the current
-+				 * interrupt as well.
-+				 */
-+				action_ret = IRQ_NONE;
-+			}
-+		} else {
-+			/*
-+			 * One of the primary handlers returned
-+			 * IRQ_HANDLED. So we don't care about the
-+			 * threaded handlers on the same line. Clear
-+			 * the deferred detection bit.
-+			 *
-+			 * In theory we could/should check whether the
-+			 * deferred bit is set and take the result of
-+			 * the previous run into account here as
-+			 * well. But it's really not worth the
-+			 * trouble. If every other interrupt is
-+			 * handled we never trigger the spurious
-+			 * detector. And if this is just the one out
-+			 * of 100k unhandled ones which is handled
-+			 * then we merily delay the spurious detection
-+			 * by one hard interrupt. Not a real problem.
-+			 */
-+			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
++	if (priv->err_irq) {
++		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
++				  dev->name, dev);
++		if (err) {
++			free_irq(priv->err_irq, dev);
++			goto out_free_irq;
 +		}
 +	}
 +
- 	if (unlikely(action_ret == IRQ_NONE)) {
- 		/*
- 		 * If we are seeing only the odd spurious IRQ caused by
+ 	/* start chip and queuing */
+ 	err = flexcan_chip_start(dev);
+ 	if (err)
+@@ -1099,7 +1130,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	struct resource *mem;
+ 	struct clk *clk_ipg = NULL, *clk_per = NULL;
+ 	void __iomem *base;
+-	int err, irq;
++	int err, irq, err_irq;
+ 	u32 clock_freq = 0;
+ 
+ 	if (pdev->dev.of_node)
+@@ -1126,6 +1157,10 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	if (irq <= 0)
+ 		return -ENODEV;
+ 
++	err_irq = platform_get_irq(pdev, 1);
++	if (err_irq <= 0)
++		err_irq = 0;
++
+ 	base = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -1149,6 +1184,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	dev->flags |= IFF_ECHO;
+ 
+ 	priv = netdev_priv(dev);
++	priv->err_irq = err_irq;
+ 	priv->can.clock.freq = clock_freq;
+ 	priv->can.bittiming_const = &flexcan_bittiming_const;
+ 	priv->can.do_set_mode = flexcan_set_mode;
 -- 
-2.0.0
+1.8.5
+
