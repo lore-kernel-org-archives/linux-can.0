@@ -1,104 +1,77 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] flexcan: add err_irq handler for flexcan
-Date: Wed, 02 Jul 2014 11:02:13 +0200
-Message-ID: <53B3CA95.9070600@pengutronix.de>
-References: <1404201809-7010-1-git-send-email-B45475@freescale.com> <53B287A6.10707@pengutronix.de> <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com> <53B3AEEC.4060507@pengutronix.de> <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] rcar_can: add device tree support
+Date: Wed, 2 Jul 2014 11:14:37 +0100
+Message-ID: <20140702101437.GC14665@leverpostej>
+References: <201407020227.04235.sergei.shtylyov@cogentembedded.com>
+ <53B33B45.1060205@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42624 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751876AbaGBJC1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Jul 2014 05:02:27 -0400
-In-Reply-To: <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53B33B45.1060205@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "vksavl@gmail.com" <vksavl@gmail.com>, "rdunlap@infradead.org" <rdunlap@infradead.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 01, 2014 at 11:50:45PM +0100, Marc Kleine-Budde wrote:
+> On 07/02/2014 12:27 AM, Sergei Shtylyov wrote:
+> > Add support of the device tree probing for the Renesas R-Car CAN controllers
+> > documenting the device tree bindings as necessary.
+> 
+> Please put the DT documentation into a separate patch, make it the first
+> one. When reposting, please put the device tree mailing list on Cc.
+> 
+> > Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> > 
+> > ---
+> > The patch is against the Dave Miller's 'net-next.git' repo ('linux-can-next.git'
+> > repo still doesn't have the R-Car CAN driver for some reason).
+> 
+> Should be fixed now :)
+> 
+> > 
+> >  Documentation/devicetree/bindings/net/can/rcar_can.txt |   40 +++++++++++++++++
+> >  drivers/net/can/rcar_can.c                             |   28 +++++++++--
+> >  2 files changed, 63 insertions(+), 5 deletions(-)
+> > 
+> > Index: net-next/Documentation/devicetree/bindings/net/can/rcar_can.txt
+> > ===================================================================
+> > --- /dev/null
+> > +++ net-next/Documentation/devicetree/bindings/net/can/rcar_can.txt
+> > @@ -0,0 +1,40 @@
+> > +Renesas R-Car CAN controller Device Tree Bindings
+> > +-------------------------------------------------
+> > +
+> > +Required properties:
+> > +- compatible: "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
+> > +	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
+> > +	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
+> > +	      "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
+> 
+> AFAIK we usually specify the first SoC with this core as the only
+> compatible.
 
-On 07/02/2014 10:32 AM, qiang.zhao@freescale.com wrote:
-> On 07/02/2014 03:04 PM, Marc Kleine-Budde wrote:
->> -----Original Message-----
->> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->> Sent: Wednesday, July 02, 2014 3:04 PM
->> To: Zhao Qiang-B45475; linuxppc-dev@lists.ozlabs.org; wg@grandegger.co=
-m;
->> linux-can@vger.kernel.org; Wood Scott-B07421
->> Subject: Re: [PATCH v4] flexcan: add err_irq handler for flexcan
->>
->> On 07/02/2014 04:00 AM, qiang.zhao@freescale.com wrote:
->>>>> +static irqreturn_t flexcan_err_irq(int irq, void *dev_id) {
->>>>> +	struct net_device *dev =3D dev_id;
->>>>> +	struct flexcan_priv *priv =3D netdev_priv(dev);
->>>>> +	struct flexcan_regs __iomem *regs =3D priv->base;
->>>>> +	u32 reg_ctrl, reg_esr;
->>>>> +
->>>>> +	reg_esr =3D flexcan_read(&regs->esr);
->>>>> +	reg_ctrl =3D flexcan_read(&regs->ctrl);
->>>>> +
->>>>> +	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
->>>>> +		if (reg_esr & FLEXCAN_ESR_ERR_INT)
->>>>> +			flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK,
->>>>> +				      &regs->ctrl);
->>>>> +		flexcan_irq(irq, dev);
->>>>
->>>> I still don't understand why you need a special flexcan_err_irq()
->>>> function. Why don't you just call:
->>>>
->>>> request_irq(priv->err_irq, flexcan_irq, IRQF_SHARED, dev->name, dev)=
-;
->>>>
->>>> instead?
->>>
->>> Flexcan_irq is for flexcan normal interrupt(such as Message Buffer,
->> Wake up and so on).
->>> And it will return IRQ_HANDLED if flexcan_irq is triggered.
->>> But err_irq is shared with other devices, it should return IRQ_HANDLE=
-D
->>> when the interrupt is triggered by flexcan device, if not return
->> IRQ_NONE.
->>
->> What about fixing flexcan_irq() first and the make use of it?
->=20
-> Err_irq is a shared interrupt with other device,=20
-> I hope that its handler is independent.
-> However, if you persist in your opinion, I will do it as you said.
+Not quite. While the driver only needs to have support for that and
+DTS files should have that string in the compatible list, the other
+strings can be present in the binding and earlier in the compatible list
+to allow us to distinguish the variants later (without requiring changes
+to DTBs).
 
-There is another option, you can move all of the error interrupt
-handling code from flexcan_irq() to flexcan_irq_err(). To keep the ARM
-SoCs supported, you need to call flexcan_irq_err() form the
-flexcan_irq() handler.
+> > +- reg: physical base address and size of the R-Car CAN register map.
+> > +- interrupts: interrupt specifier for the sole interrupt.
+> > +- clocks: phandle and clock specifier for the R-Car CAN clock input.
+> > +- pinctrl-0: pin control group to be used for this controller.
+> > +- pinctrl-names: must be "default".
+> > +
+> > +Optional properties:
+> > +- clock-select: R-Car CAN Clock Source Select. Valid values are:
+> > +		<0x0> (default) : Peripheral clock (clkp1)
+> > +		<0x1> : Peripheral clock (clkp2)
+> > +		<0x3> : Externally input clock
 
-What I don't want is a) code duplication and b) no fishy wrapper
-functions around flexcan_irq() that work around flexcan_irq() returning
-IRQ_HANDLED unconditionally.
+What's this for, and how does this interact with the single clock listed
+above?
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlOzypUACgkQjTAFq1RaXHNHWQCfezS9fm3zxRVGrjNA6dGpFo0g
-XAIAn1o42qwmYDP1Dv543eNhjgkP6a0f
-=rAyT
------END PGP SIGNATURE-----
-
---M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx--
+THanks,
+Mark.
