@@ -1,68 +1,50 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Andre Naujoks <nautsch2@gmail.com>
 Subject: Re: [PATCH] do not use --symlink for autoreconf
-Date: Wed, 02 Jul 2014 14:18:22 +0200
-Message-ID: <53B3F88E.2080202@pengutronix.de>
-References: <1404303178-24608-1-git-send-email-nautsch2@gmail.com>
+Date: Wed, 02 Jul 2014 14:34:42 +0200
+Message-ID: <53B3FC62.1030209@gmail.com>
+References: <1404303178-24608-1-git-send-email-nautsch2@gmail.com> <53B3F88E.2080202@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="vIjTEjlHPMbvcwaOOErOV1JxORMAk1LGr"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50650 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750869AbaGBMXz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Jul 2014 08:23:55 -0400
-In-Reply-To: <1404303178-24608-1-git-send-email-nautsch2@gmail.com>
+Received: from mail-we0-f174.google.com ([74.125.82.174]:45863 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751775AbaGBMmU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Jul 2014 08:42:20 -0400
+Received: by mail-we0-f174.google.com with SMTP id u57so11356439wes.33
+        for <linux-can@vger.kernel.org>; Wed, 02 Jul 2014 05:42:19 -0700 (PDT)
+In-Reply-To: <53B3F88E.2080202@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andre Naujoks <nautsch2@gmail.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 Cc: socketcan@hartkopp.net
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vIjTEjlHPMbvcwaOOErOV1JxORMAk1LGr
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 02.07.2014 14:18, Marc Kleine-Budde wrote:
+> On 07/02/2014 02:12 PM, Andre Naujoks wrote:
+>> When packaging the can-utils, I understand, that the generation
+>> step for autoconf should be done beforehand. However using the
+>> --symlink option in the autoreconf step installs links instead of
+>> the actual files, which leads to a build failure when trying to
+>> build on another host with different autotools installed.
+>> 
+>> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+> 
+> How do you package the can-utils? The usual steps are:
+> 
+> ./autogen.sh ./configure make dist
 
-On 07/02/2014 02:12 PM, Andre Naujoks wrote:
-> When packaging the can-utils, I understand, that the generation step fo=
-r
-> autoconf should be done beforehand. However using the --symlink option =
-in the
-> autoreconf step installs links instead of the actual files, which leads=
- to a
-> build failure when trying to build on another host with different autot=
-ools
-> installed.
->=20
-> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+with git archive. Something like
 
-How do you package the can-utils? The usual steps are:
+git archive --prefix=can-utils-`git describe --always --dirty`/ -o
+can-utils-`git describe --always --dirty`.tar.gz HEAD
 
-=2E/autogen.sh
-=2E/configure
-make dist
+I was not aware of the dist target. Why do I have to configure before
+creating the dist? Isn't the configure step just for adaptations for
+the build-host and target?
 
-Marc
+Andre
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+> Marc
+> 
 
-
---vIjTEjlHPMbvcwaOOErOV1JxORMAk1LGr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlOz+I4ACgkQjTAFq1RaXHMjEQCeMBZ+maE+qSwK1ZDMEDpwDybB
-rAEAniPf8SCzxRY1soGmtGO8nG/z69Kb
-=O2LU
------END PGP SIGNATURE-----
-
---vIjTEjlHPMbvcwaOOErOV1JxORMAk1LGr--
