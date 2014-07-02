@@ -1,163 +1,60 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
-Date: Wed, 2 Jul 2014 14:33:49 +0800
-Message-ID: <20140702063348.GC10397@shlinux1.ap.freescale.net>
-References: <1403863246-18822-1-git-send-email-b29396@freescale.com>
- <1403863246-18822-2-git-send-email-b29396@freescale.com>
- <53B28D7D.5080005@pengutronix.de>
- <20140702061944.GA8762@shlinux1.ap.freescale.net>
- <53B3BB7E.6040903@pengutronix.de>
+From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
+Subject: RE: [PATCH v4] flexcan: add err_irq handler for flexcan
+Date: Wed, 2 Jul 2014 08:32:44 +0000
+Message-ID: <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
+References: <1404201809-7010-1-git-send-email-B45475@freescale.com>
+ <53B287A6.10707@pengutronix.de>
+ <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
+ <53B3AEEC.4060507@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0209.outbound.protection.outlook.com ([207.46.163.209]:30087
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1lp0139.outbound.protection.outlook.com ([207.46.163.139]:14986
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751110AbaGBIGW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 2 Jul 2014 04:06:22 -0400
-Content-Disposition: inline
-In-Reply-To: <53B3BB7E.6040903@pengutronix.de>
+	id S1750895AbaGBIcy (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 2 Jul 2014 04:32:54 -0400
+In-Reply-To: <53B3AEEC.4060507@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, wg@grandegger.com, devicetree@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
 
-On Wed, Jul 02, 2014 at 09:57:50AM +0200, Marc Kleine-Budde wrote:
-> On 07/02/2014 08:20 AM, Dong Aisheng wrote:
-> [...]
-> 
-> >>> +static int m_can_do_rx_poll(struct net_device *dev, int quota)
-> >>> +{
-> >>> +	struct m_can_priv *priv = netdev_priv(dev);
-> >>> +	struct net_device_stats *stats = &dev->stats;
-> >>> +	struct sk_buff *skb;
-> >>> +	struct can_frame *frame;
-> >>> +	u32 rxfs, flags, fgi;
-> >>> +	u32 num_rx_pkts = 0;
-> >>> +
-> >>> +	rxfs = m_can_read(priv, M_CAN_RXF0S);
-> >>> +	if (!(rxfs & RXFS_FFL_MASK)) {
-> >>> +		netdev_dbg(dev, "no messages in fifo0\n");
-> >>> +		return 0;
-> >>> +	}
-> >>> +
-> >>> +	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-> >>> +		netdev_dbg(dev, "fifo0 status 0x%x\n", rxfs);
-> >>
-> >> Please remove the netdev_dbg(), once the driver is stable it should be
-> >> of no use.
-> >>
-> > 
-> > Got it.
-> > 
-> >>> +		if (rxfs & RXFS_RFL)
-> >>> +			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
-> >>
-> >> What does that mean? Can you still rx the message if it's lost?
-> >>
-> > 
-> > It just warns that there's a message lost, but there are still other
-> > message in fifo to receive.
-> > 
-> >>> +
-> >>> +		skb = alloc_can_skb(dev, &frame);
-> >>> +		if (!skb) {
-> >>> +			stats->rx_dropped++;
-> >>> +			return -ENOMEM;
-> >>
-> >> Have a look at the user of m_can_do_rx_poll() and how it makes use of
-> >> the return value.
-> >>
-> > 
-> > Right, thanks for spotting it.
-> > 
-> >>> +		}
-> >>> +
-> >>> +		fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
-> >>
-> >> BTW: Is this a _real_ fifo? Or evolution of the c_can/d_can interface
-> >> where it's not a fifo at all.
-> >>
-> > 
-> > Yes, it is real fifo in the message ram.
-> > 
-> >>> +		flags = readl(priv->mram_base + priv->rxf0_off + fgi * 16);
-> >>> +		if (flags & RX_BUF_XTD)
-> >>> +			frame->can_id = (flags & CAN_EFF_MASK) | CAN_EFF_FLAG;
-> >>> +		else
-> >>> +			frame->can_id = (flags >> 18) & CAN_SFF_MASK;
-> >>> +		netdev_dbg(dev, "R0 0x%x\n", flags);
-> >>
-> >> please remove dbg
-> >>> +
-> >>> +		if (flags & RX_BUF_RTR) {
-> >>> +			frame->can_id |= CAN_RTR_FLAG;
-> >>> +		} else {
-> >>> +			flags = readl(priv->mram_base +
-> >>> +					priv->rxf0_off + fgi * 16 + 0x4);
-> >>> +			frame->can_dlc = get_can_dlc((flags >> 16) & 0x0F);
-> >>> +			netdev_dbg(dev, "R1 0x%x\n", flags);
-> >>
-> >> please remove
-> >>
-> >>> +
-> >>> +			*(u32 *)(frame->data + 0) = readl(priv->mram_base +
-> >>> +					priv->rxf0_off + fgi * 16 + 0x8);
-> >>> +			*(u32 *)(frame->data + 4) = readl(priv->mram_base +
-> >>> +					priv->rxf0_off + fgi * 16 + 0xC);
-> >>
-> >>
-> >> can you create a wrapper function to hide the pointer arithmetics here?
-> >> Somethig like m_can_read_fifo()
-> >>
-> > 
-> > Yes, i could make a wrapper function for it.
-> > 
-> >>> +			netdev_dbg(dev, "R2 0x%x\n", *(u32 *)(frame->data + 0));
-> >>> +			netdev_dbg(dev, "R3 0x%x\n", *(u32 *)(frame->data + 4));
-> >>> +		}
-> >>> +
-> >>> +		/* acknowledge rx fifo 0 */
-> >>> +		m_can_write(priv, M_CAN_RXF0A, fgi);
-> >>> +
-> >>> +		netif_receive_skb(skb);
-> >>> +		netdev_dbg(dev, "new packet received\n");
-> >>> +
-> >>> +		stats->rx_packets++;
-> >>> +		stats->rx_bytes += frame->can_dlc;
-> >>
-> >> Please move the stats handling in front of netif_receive_skb() as the
-> >> skb and thus frame is not a valid pointer anymore.
-> >>
-> > 
-> > Good catch!
-> > Will change it.
-> > 
-> >>> +
-> >>> +		can_led_event(dev, CAN_LED_EVENT_RX);
-> >>
-> >> Please move out of the loop so that it is just called once (if a CAN
-> >> frame is rx'ed) per  m_can_do_rx_poll().
-> 
-> > Why that?
-> > The purpose is calling it for each new packet received.
-> 
-> It will only trigger LED blinking, and tglx pointed out, that we don't
-> need the overhead of calling it for every CAN frame.
-> 
-
-Okay, got it, thanks for this information.
-
-Regards
-Dong Aisheng
-
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
-
-
+T24gMDcvMDIvMjAxNCAwMzowNCBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86
+bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bHkgMDIsIDIwMTQgMzow
+NCBQTQ0KPiBUbzogWmhhbyBRaWFuZy1CNDU0NzU7IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMu
+b3JnOyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgV29v
+ZCBTY290dC1CMDc0MjENCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NF0gZmxleGNhbjogYWRkIGVy
+cl9pcnEgaGFuZGxlciBmb3IgZmxleGNhbg0KPiANCj4gT24gMDcvMDIvMjAxNCAwNDowMCBBTSwg
+cWlhbmcuemhhb0BmcmVlc2NhbGUuY29tIHdyb3RlOg0KPiA+Pj4gK3N0YXRpYyBpcnFyZXR1cm5f
+dCBmbGV4Y2FuX2Vycl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKSB7DQo+ID4+PiArCXN0cnVj
+dCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfaWQ7DQo+ID4+PiArCXN0cnVjdCBmbGV4Y2FuX3ByaXYg
+KnByaXYgPSBuZXRkZXZfcHJpdihkZXYpOw0KPiA+Pj4gKwlzdHJ1Y3QgZmxleGNhbl9yZWdzIF9f
+aW9tZW0gKnJlZ3MgPSBwcml2LT5iYXNlOw0KPiA+Pj4gKwl1MzIgcmVnX2N0cmwsIHJlZ19lc3I7
+DQo+ID4+PiArDQo+ID4+PiArCXJlZ19lc3IgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmVzcik7DQo+
+ID4+PiArCXJlZ19jdHJsID0gZmxleGNhbl9yZWFkKCZyZWdzLT5jdHJsKTsNCj4gPj4+ICsNCj4g
+Pj4+ICsJaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5UKSB7DQo+ID4+PiArCQlpZiAo
+cmVnX2VzciAmIEZMRVhDQU5fRVNSX0VSUl9JTlQpDQo+ID4+PiArCQkJZmxleGNhbl93cml0ZShy
+ZWdfY3RybCAmIH5GTEVYQ0FOX0NUUkxfRVJSX01TSywNCj4gPj4+ICsJCQkJICAgICAgJnJlZ3Mt
+PmN0cmwpOw0KPiA+Pj4gKwkJZmxleGNhbl9pcnEoaXJxLCBkZXYpOw0KPiA+Pg0KPiA+PiBJIHN0
+aWxsIGRvbid0IHVuZGVyc3RhbmQgd2h5IHlvdSBuZWVkIGEgc3BlY2lhbCBmbGV4Y2FuX2Vycl9p
+cnEoKQ0KPiA+PiBmdW5jdGlvbi4gV2h5IGRvbid0IHlvdSBqdXN0IGNhbGw6DQo+ID4+DQo+ID4+
+IHJlcXVlc3RfaXJxKHByaXYtPmVycl9pcnEsIGZsZXhjYW5faXJxLCBJUlFGX1NIQVJFRCwgZGV2
+LT5uYW1lLCBkZXYpOw0KPiA+Pg0KPiA+PiBpbnN0ZWFkPw0KPiA+DQo+ID4gRmxleGNhbl9pcnEg
+aXMgZm9yIGZsZXhjYW4gbm9ybWFsIGludGVycnVwdChzdWNoIGFzIE1lc3NhZ2UgQnVmZmVyLA0K
+PiBXYWtlIHVwIGFuZCBzbyBvbikuDQo+ID4gQW5kIGl0IHdpbGwgcmV0dXJuIElSUV9IQU5ETEVE
+IGlmIGZsZXhjYW5faXJxIGlzIHRyaWdnZXJlZC4NCj4gPiBCdXQgZXJyX2lycSBpcyBzaGFyZWQg
+d2l0aCBvdGhlciBkZXZpY2VzLCBpdCBzaG91bGQgcmV0dXJuIElSUV9IQU5ETEVEDQo+ID4gd2hl
+biB0aGUgaW50ZXJydXB0IGlzIHRyaWdnZXJlZCBieSBmbGV4Y2FuIGRldmljZSwgaWYgbm90IHJl
+dHVybg0KPiBJUlFfTk9ORS4NCj4gDQo+IFdoYXQgYWJvdXQgZml4aW5nIGZsZXhjYW5faXJxKCkg
+Zmlyc3QgYW5kIHRoZSBtYWtlIHVzZSBvZiBpdD8NCg0KRXJyX2lycSBpcyBhIHNoYXJlZCBpbnRl
+cnJ1cHQgd2l0aCBvdGhlciBkZXZpY2UsIA0KSSBob3BlIHRoYXQgaXRzIGhhbmRsZXIgaXMgaW5k
+ZXBlbmRlbnQuDQpIb3dldmVyLCBpZiB5b3UgcGVyc2lzdCBpbiB5b3VyIG9waW5pb24sIEkgd2ls
+bCBkbyBpdCBhcyB5b3Ugc2FpZC4NCg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9u
+aXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwN
+Cj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgy
+Ni05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAg
+ICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2
+ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
