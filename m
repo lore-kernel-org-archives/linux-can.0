@@ -1,204 +1,107 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] rcar_can: add device tree support
-Date: Wed, 02 Jul 2014 00:50:45 +0200
-Message-ID: <53B33B45.1060205@pengutronix.de>
-References: <201407020227.04235.sergei.shtylyov@cogentembedded.com>
+From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
+Subject: RE: [PATCH v4] flexcan: add err_irq handler for flexcan
+Date: Wed, 2 Jul 2014 02:00:02 +0000
+Message-ID: <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
+References: <1404201809-7010-1-git-send-email-B45475@freescale.com>
+ <53B287A6.10707@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Jux4XWldmuaXqkRp0m2Hwquw5cnrSP1Ei"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35730 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755665AbaGAWvM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Jul 2014 18:51:12 -0400
-In-Reply-To: <201407020227.04235.sergei.shtylyov@cogentembedded.com>
+Received: from mail-bn1blp0189.outbound.protection.outlook.com ([207.46.163.189]:10408
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S932463AbaGBCAG (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 1 Jul 2014 22:00:06 -0400
+In-Reply-To: <53B287A6.10707@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, grant.likely@linaro.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com, rdunlap@infradead.org, linux-doc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Jux4XWldmuaXqkRp0m2Hwquw5cnrSP1Ei
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 07/02/2014 12:27 AM, Sergei Shtylyov wrote:
-> Add support of the device tree probing for the Renesas R-Car CAN contro=
-llers
-> documenting the device tree bindings as necessary.
-
-Please put the DT documentation into a separate patch, make it the first
-one. When reposting, please put the device tree mailing list on Cc.
-
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->=20
-> ---
-> The patch is against the Dave Miller's 'net-next.git' repo ('linux-can-=
-next.git'
-> repo still doesn't have the R-Car CAN driver for some reason).
-
-Should be fixed now :)
-
->=20
->  Documentation/devicetree/bindings/net/can/rcar_can.txt |   40 ++++++++=
-+++++++++
->  drivers/net/can/rcar_can.c                             |   28 ++++++++=
-+--
->  2 files changed, 63 insertions(+), 5 deletions(-)
->=20
-> Index: net-next/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- /dev/null
-> +++ net-next/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> @@ -0,0 +1,40 @@
-> +Renesas R-Car CAN controller Device Tree Bindings
-> +-------------------------------------------------
-> +
-> +Required properties:
-> +- compatible: "renesas,can-r8a7778" if CAN controller is a part of R8A=
-7778 SoC.
-> +	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 So=
-C.
-> +	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 So=
-C.
-> +	      "renesas,can-r8a7791" if CAN controller is a part of R8A7791 So=
-C.
-
-AFAIK we usually specify the first SoC with this core as the only
-compatible.
-
-> +- reg: physical base address and size of the R-Car CAN register map.
-> +- interrupts: interrupt specifier for the sole interrupt.
-> +- clocks: phandle and clock specifier for the R-Car CAN clock input.
-> +- pinctrl-0: pin control group to be used for this controller.
-> +- pinctrl-names: must be "default".
-> +
-> +Optional properties:
-> +- clock-select: R-Car CAN Clock Source Select. Valid values are:
-> +		<0x0> (default) : Peripheral clock (clkp1)
-> +		<0x1> : Peripheral clock (clkp2)
-> +		<0x3> : Externally input clock
-> +
-> +Example
-> +-------
-> +
-> +SoC common .dtsi file:
-> +
-> +	can0: can@e6e80000 {
-> +		compatible =3D "renesas,can-r8a7791";
-> +		reg =3D <0 0xe6e80000 0 0x1000>;
-> +		interrupts =3D <0 186 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks =3D <&mstp9_clks R8A7791_CLK_RCAN0>;
-> +		status =3D "disabled";
-> +	};
-> +
-> +Board specific .dts file:
-> +
-> +&can0 {
-> +	pinctrl-0 =3D <&can0_pins>;
-> +	pinctrl-names =3D "default";
-> +	status =3D "okay";
-> +};
-> Index: net-next/drivers/net/can/rcar_can.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- net-next.orig/drivers/net/can/rcar_can.c
-> +++ net-next/drivers/net/can/rcar_can.c
-> @@ -20,6 +20,7 @@
->  #include <linux/can/dev.h>
->  #include <linux/clk.h>
->  #include <linux/can/platform/rcar_can.h>
-> +#include <linux/of.h>
-> =20
->  #define RCAR_CAN_DRV_NAME	"rcar_can"
-> =20
-> @@ -722,13 +723,20 @@ static int rcar_can_probe(struct platfor
->  	struct net_device *ndev;
->  	struct resource *mem;
->  	void __iomem *addr;
-> +	u32 clock_select =3D 0;
->  	int err =3D -ENODEV;
->  	int irq;
-> =20
-> -	pdata =3D dev_get_platdata(&pdev->dev);
-> -	if (!pdata) {
-> -		dev_err(&pdev->dev, "No platform data provided!\n");
-> -		goto fail;
-> +	if (!pdev->dev.of_node) {
-
-nitpick: please make it positive logic.
-
-> +		pdata =3D dev_get_platdata(&pdev->dev);
-> +		if (!pdata) {
-> +			dev_err(&pdev->dev, "No platform data provided!\n");
-> +			goto fail;
-> +		}
-> +		clock_select =3D pdata->clock_select;
-> +	} else {
-> +		of_property_read_u32(pdev->dev.of_node, "clock-select",
-> +				     &clock_select);
->  	}
-> =20
->  	irq =3D platform_get_irq(pdev, 0);
-> @@ -765,7 +773,7 @@ static int rcar_can_probe(struct platfor
->  	ndev->flags |=3D IFF_ECHO;
->  	priv->ndev =3D ndev;
->  	priv->regs =3D addr;
-> -	priv->clock_select =3D pdata->clock_select;
-> +	priv->clock_select =3D clock_select;
->  	priv->can.clock.freq =3D clk_get_rate(priv->clk);
->  	priv->can.bittiming_const =3D &rcar_can_bittiming_const;
->  	priv->can.do_set_mode =3D rcar_can_do_set_mode;
-> @@ -858,10 +866,20 @@ static int __maybe_unused rcar_can_resum
-> =20
->  static SIMPLE_DEV_PM_OPS(rcar_can_pm_ops, rcar_can_suspend, rcar_can_r=
-esume);
-> =20
-> +static const struct of_device_id rcar_can_of_table[] __maybe_unused =3D=
- {
-> +	{ .compatible =3D "renesas,can-r8a7778" },
-> +	{ .compatible =3D "renesas,can-r8a7779" },
-> +	{ .compatible =3D "renesas,can-r8a7790" },
-> +	{ .compatible =3D "renesas,can-r8a7791" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, rcar_can_of_table);
-> +
->  static struct platform_driver rcar_can_driver =3D {
->  	.driver =3D {
->  		.name =3D RCAR_CAN_DRV_NAME,
->  		.owner =3D THIS_MODULE,
-> +		.of_match_table =3D of_match_ptr(rcar_can_of_table),
->  		.pm =3D &rcar_can_pm_ops,
->  	},
->  	.probe =3D rcar_can_probe,
->=20
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Jux4XWldmuaXqkRp0m2Hwquw5cnrSP1Ei
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlOzO0UACgkQjTAFq1RaXHNc5ACcDvlJPiXfzmtee7wqICQVLf39
-i0MAn1zrarh5I6OiLo1D0RVgCEuvck5Z
-=Il/0
------END PGP SIGNATURE-----
-
---Jux4XWldmuaXqkRp0m2Hwquw5cnrSP1Ei--
+T24gMDcvMDEvMjAxNCAwNjowNCBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86
+bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBUdWVzZGF5LCBKdWx5IDAxLCAyMDE0IDY6MDQg
+UE0NCj4gVG86IFpoYW8gUWlhbmctQjQ1NDc1OyBsaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9y
+Zzsgd2dAZ3JhbmRlZ2dlci5jb207DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IFdvb2Qg
+U2NvdHQtQjA3NDIxDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjRdIGZsZXhjYW46IGFkZCBlcnJf
+aXJxIGhhbmRsZXIgZm9yIGZsZXhjYW4NCj4gDQo+IE9uIDA3LzAxLzIwMTQgMTA6MDMgQU0sIFpo
+YW8gUWlhbmcgd3JvdGU6DQo+ID4gd2hlbiBmbGV4Y2FuIGlzIG5vdCBwaHlzaWNhbGx5IGxpbmtl
+ZCwgY29tbWFuZCAnY2FudGVzdCcgd2lsbCB0cmlnZ2VyDQo+ID4gYW4gZXJyX2lycSwgYWRkIGVy
+cl9pcnEgaGFuZGxlciBmb3IgaXQuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaGFvIFFpYW5n
+IDxCNDU0NzVAZnJlZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGZvciB2MjoNCj4g
+PiAJLSB1c2UgYSBzcGFjZSBpbnN0ZWFkIG9mIHRhYg0KPiA+IAktIHVzZSBmbGV4Y2FuX3BvbGxf
+c3RhdGUgaW5zdGVhZCBvZiBwcmludCBDaGFuZ2VzIGZvciB2MzoNCj4gPiAJLSByZXR1cm4gSVJR
+X0hBTkRMRUQgaWYgZXJyIGlzIHRyaWdnZXJlZA0KPiA+IAktIHN0b3AgdHJhbnNtaXR0ZWQgcGFj
+a2V0cyB3aGVuIHRoZXJlIGlzIGFuIGVycl9pbnRlcnJ1cHQgQ2hhbmdlcw0KPiBmb3INCj4gPiB2
+NDoNCj4gPiAJLSBjYWxsIGZsZXhjYW5faXJxDQo+ID4NCj4gPiAgZHJpdmVycy9uZXQvY2FuL2Zs
+ZXhjYW4uYyB8IDM4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystDQo+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMNCj4gPiBpbmRleCBmNDI1ZWMyLi4wOThmY2FjIDEwMDY0NA0KPiA+IC0tLSBh
+L2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxl
+eGNhbi5jDQo+ID4gQEAgLTIwOCw2ICsyMDgsNyBAQCBzdHJ1Y3QgZmxleGNhbl9wcml2IHsNCj4g
+PiAgCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPiAgCXUzMiByZWdfZXNyOw0KPiA+ICAJdTMyIHJl
+Z19jdHJsX2RlZmF1bHQ7DQo+ID4gKwlpbnQgZXJyX2lycTsNCj4gPg0KPiA+ICAJc3RydWN0IGNs
+ayAqY2xrX2lwZzsNCj4gPiAgCXN0cnVjdCBjbGsgKmNsa19wZXI7DQo+ID4gQEAgLTc0NCw2ICs3
+NDUsMjcgQEAgc3RhdGljIGlycXJldHVybl90IGZsZXhjYW5faXJxKGludCBpcnEsIHZvaWQNCj4g
+KmRldl9pZCkNCj4gPiAgCXJldHVybiBJUlFfSEFORExFRDsNCj4gPiAgfQ0KPiA+DQo+ID4gK3N0
+YXRpYyBpcnFyZXR1cm5fdCBmbGV4Y2FuX2Vycl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKSB7
+DQo+ID4gKwlzdHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gZGV2X2lkOw0KPiA+ICsJc3RydWN0IGZs
+ZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ID4gKwlzdHJ1Y3QgZmxleGNh
+bl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5iYXNlOw0KPiA+ICsJdTMyIHJlZ19jdHJsLCBy
+ZWdfZXNyOw0KPiA+ICsNCj4gPiArCXJlZ19lc3IgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmVzcik7
+DQo+ID4gKwlyZWdfY3RybCA9IGZsZXhjYW5fcmVhZCgmcmVncy0+Y3RybCk7DQo+ID4gKw0KPiA+
+ICsJaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5UKSB7DQo+ID4gKwkJaWYgKHJlZ19l
+c3IgJiBGTEVYQ0FOX0VTUl9FUlJfSU5UKQ0KPiA+ICsJCQlmbGV4Y2FuX3dyaXRlKHJlZ19jdHJs
+ICYgfkZMRVhDQU5fQ1RSTF9FUlJfTVNLLA0KPiA+ICsJCQkJICAgICAgJnJlZ3MtPmN0cmwpOw0K
+PiA+ICsJCWZsZXhjYW5faXJxKGlycSwgZGV2KTsNCj4gDQo+IEkgc3RpbGwgZG9uJ3QgdW5kZXJz
+dGFuZCB3aHkgeW91IG5lZWQgYSBzcGVjaWFsIGZsZXhjYW5fZXJyX2lycSgpDQo+IGZ1bmN0aW9u
+LiBXaHkgZG9uJ3QgeW91IGp1c3QgY2FsbDoNCj4gDQo+IHJlcXVlc3RfaXJxKHByaXYtPmVycl9p
+cnEsIGZsZXhjYW5faXJxLCBJUlFGX1NIQVJFRCwgZGV2LT5uYW1lLCBkZXYpOw0KPiANCj4gaW5z
+dGVhZD8NCg0KRmxleGNhbl9pcnEgaXMgZm9yIGZsZXhjYW4gbm9ybWFsIGludGVycnVwdChzdWNo
+IGFzIE1lc3NhZ2UgQnVmZmVyLCBXYWtlIHVwIGFuZCBzbyBvbikuDQpBbmQgaXQgd2lsbCByZXR1
+cm4gSVJRX0hBTkRMRUQgaWYgZmxleGNhbl9pcnEgaXMgdHJpZ2dlcmVkLg0KQnV0IGVycl9pcnEg
+aXMgc2hhcmVkIHdpdGggb3RoZXIgZGV2aWNlcywgaXQgc2hvdWxkIHJldHVybiBJUlFfSEFORExF
+RCB3aGVuIHRoZSBpbnRlcnJ1cHQgDQppcyB0cmlnZ2VyZWQgYnkgZmxleGNhbiBkZXZpY2UsIGlm
+IG5vdCByZXR1cm4gSVJRX05PTkUuDQoNCj4gDQo+ID4gKwkJcmV0dXJuIElSUV9IQU5ETEVEOw0K
+PiA+ICsJfQ0KPiA+ICsNCj4gPiArCXJldHVybiBJUlFfTk9ORTsNCj4gPiArfQ0KPiA+ICsNCj4g
+PiAgc3RhdGljIHZvaWQgZmxleGNhbl9zZXRfYml0dGltaW5nKHN0cnVjdCBuZXRfZGV2aWNlICpk
+ZXYpICB7DQo+ID4gIAljb25zdCBzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0gbmV0ZGV2X3By
+aXYoZGV2KTsgQEAgLTk0NCw2DQo+ID4gKzk2NiwxNSBAQCBzdGF0aWMgaW50IGZsZXhjYW5fb3Bl
+bihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KPiA+ICAJaWYgKGVycikNCj4gPiAgCQlnb3RvIG91
+dF9jbG9zZTsNCj4gPg0KPiA+ICsJaWYgKHByaXYtPmVycl9pcnEpIHsNCj4gPiArCQllcnIgPSBy
+ZXF1ZXN0X2lycShwcml2LT5lcnJfaXJxLCBmbGV4Y2FuX2Vycl9pcnEsIElSUUZfU0hBUkVELA0K
+PiA+ICsJCQkJICBkZXYtPm5hbWUsIGRldik7DQo+ID4gKwkJaWYgKGVycikgew0KPiA+ICsJCQlm
+cmVlX2lycShwcml2LT5lcnJfaXJxLCBkZXYpOw0KPiANCj4gV2h5IGRvIHlvdSB3YW50IHRvIGZy
+ZWUgdGhlIGVycl9pcnEsIGlmIHJlcXVlc3RpbmcgdGhlIGVycl9pcnEgZmFpbHM/DQo+IEhvd2V2
+ZXIgeW91IHNob3VsZCBhZGp1c3QgYWxsIGVycm9yIGNsZWFudXAgcGF0aCBmb2xsb3dpbmcgdGhp
+cyByZXF1ZXN0DQo+IGlycSwgc28gdGhhdCBpdCB3aWxsIGJlIGZyZWVkLg0KPiANCj4gQlRXOiB3
+aGVyZSBpcyB0aGUgY29ycmVzcG9uZGluZyBmcmVlX2lycSgpIGluIGZsZXhjYW5fY2xvc2UoKT8N
+Cg0KSGVyZSwgSSB0aGluayB5b3UgYXJlIHJpZ2h0LiBUaGFua3MgZm9yIHlvdXIgcmVtaW5kZXIu
+DQpJIHdpbGwgbW9kaWZ5IGl0Lg0KDQo+IA0KPiA+ICsJCQlnb3RvIG91dF9mcmVlX2lycTsNCj4g
+PiArCQl9DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICAJLyogc3RhcnQgY2hpcCBhbmQgcXVldWluZyAq
+Lw0KPiA+ICAJZXJyID0gZmxleGNhbl9jaGlwX3N0YXJ0KGRldik7DQo+ID4gIAlpZiAoZXJyKQ0K
+PiA+IEBAIC0xMDk5LDcgKzExMzAsNyBAQCBzdGF0aWMgaW50IGZsZXhjYW5fcHJvYmUoc3RydWN0
+IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikNCj4gPiAgCXN0cnVjdCByZXNvdXJjZSAqbWVtOw0K
+PiA+ICAJc3RydWN0IGNsayAqY2xrX2lwZyA9IE5VTEwsICpjbGtfcGVyID0gTlVMTDsNCj4gPiAg
+CXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPiAtCWludCBlcnIsIGlycTsNCj4gPiArCWludCBlcnIs
+IGlycSwgZXJyX2lycTsNCj4gPiAgCXUzMiBjbG9ja19mcmVxID0gMDsNCj4gPg0KPiA+ICAJaWYg
+KHBkZXYtPmRldi5vZl9ub2RlKQ0KPiA+IEBAIC0xMTI2LDYgKzExNTcsMTAgQEAgc3RhdGljIGlu
+dCBmbGV4Y2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAlp
+ZiAoaXJxIDw9IDApDQo+ID4gIAkJcmV0dXJuIC1FTk9ERVY7DQo+ID4NCj4gPiArCWVycl9pcnEg
+PSBwbGF0Zm9ybV9nZXRfaXJxKHBkZXYsIDEpOw0KPiA+ICsJaWYgKGVycl9pcnEgPD0gMCkNCj4g
+PiArCQllcnJfaXJxID0gMDsNCj4gPiArDQo+ID4gIAliYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291
+cmNlKCZwZGV2LT5kZXYsIG1lbSk7DQo+ID4gIAlpZiAoSVNfRVJSKGJhc2UpKQ0KPiA+ICAJCXJl
+dHVybiBQVFJfRVJSKGJhc2UpOw0KPiA+IEBAIC0xMTQ5LDYgKzExODQsNyBAQCBzdGF0aWMgaW50
+IGZsZXhjYW5fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikNCj4gPiAgCWRl
+di0+ZmxhZ3MgfD0gSUZGX0VDSE87DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZfcHJpdihkZXYp
+Ow0KPiA+ICsJcHJpdi0+ZXJyX2lycSA9IGVycl9pcnE7DQo+ID4gIAlwcml2LT5jYW4uY2xvY2su
+ZnJlcSA9IGNsb2NrX2ZyZXE7DQo+ID4gIAlwcml2LT5jYW4uYml0dGltaW5nX2NvbnN0ID0gJmZs
+ZXhjYW5fYml0dGltaW5nX2NvbnN0Ow0KPiA+ICAJcHJpdi0+Y2FuLmRvX3NldF9tb2RlID0gZmxl
+eGNhbl9zZXRfbW9kZTsNCj4gPg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXgg
+ZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4g
+SW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05
+MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0
+OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYg
+IHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
