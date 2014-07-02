@@ -1,107 +1,80 @@
-From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
-Subject: RE: [PATCH v4] flexcan: add err_irq handler for flexcan
-Date: Wed, 2 Jul 2014 02:00:02 +0000
-Message-ID: <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
-References: <1404201809-7010-1-git-send-email-B45475@freescale.com>
- <53B287A6.10707@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4] flexcan: add err_irq handler for flexcan
+Date: Wed, 02 Jul 2014 09:04:12 +0200
+Message-ID: <53B3AEEC.4060507@pengutronix.de>
+References: <1404201809-7010-1-git-send-email-B45475@freescale.com> <53B287A6.10707@pengutronix.de> <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="GGLLxhCXX9LpIxgRqFM11pHcgSSPBxR7B"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1blp0189.outbound.protection.outlook.com ([207.46.163.189]:10408
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932463AbaGBCAG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 1 Jul 2014 22:00:06 -0400
-In-Reply-To: <53B287A6.10707@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52464 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751017AbaGBHEe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Jul 2014 03:04:34 -0400
+In-Reply-To: <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
+To: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
 
-T24gMDcvMDEvMjAxNCAwNjowNCBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IC0tLS0t
-T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86
-bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBUdWVzZGF5LCBKdWx5IDAxLCAyMDE0IDY6MDQg
-UE0NCj4gVG86IFpoYW8gUWlhbmctQjQ1NDc1OyBsaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9y
-Zzsgd2dAZ3JhbmRlZ2dlci5jb207DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IFdvb2Qg
-U2NvdHQtQjA3NDIxDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjRdIGZsZXhjYW46IGFkZCBlcnJf
-aXJxIGhhbmRsZXIgZm9yIGZsZXhjYW4NCj4gDQo+IE9uIDA3LzAxLzIwMTQgMTA6MDMgQU0sIFpo
-YW8gUWlhbmcgd3JvdGU6DQo+ID4gd2hlbiBmbGV4Y2FuIGlzIG5vdCBwaHlzaWNhbGx5IGxpbmtl
-ZCwgY29tbWFuZCAnY2FudGVzdCcgd2lsbCB0cmlnZ2VyDQo+ID4gYW4gZXJyX2lycSwgYWRkIGVy
-cl9pcnEgaGFuZGxlciBmb3IgaXQuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaGFvIFFpYW5n
-IDxCNDU0NzVAZnJlZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGZvciB2MjoNCj4g
-PiAJLSB1c2UgYSBzcGFjZSBpbnN0ZWFkIG9mIHRhYg0KPiA+IAktIHVzZSBmbGV4Y2FuX3BvbGxf
-c3RhdGUgaW5zdGVhZCBvZiBwcmludCBDaGFuZ2VzIGZvciB2MzoNCj4gPiAJLSByZXR1cm4gSVJR
-X0hBTkRMRUQgaWYgZXJyIGlzIHRyaWdnZXJlZA0KPiA+IAktIHN0b3AgdHJhbnNtaXR0ZWQgcGFj
-a2V0cyB3aGVuIHRoZXJlIGlzIGFuIGVycl9pbnRlcnJ1cHQgQ2hhbmdlcw0KPiBmb3INCj4gPiB2
-NDoNCj4gPiAJLSBjYWxsIGZsZXhjYW5faXJxDQo+ID4NCj4gPiAgZHJpdmVycy9uZXQvY2FuL2Zs
-ZXhjYW4uYyB8IDM4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystDQo+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4g
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nh
-bi9mbGV4Y2FuLmMNCj4gPiBpbmRleCBmNDI1ZWMyLi4wOThmY2FjIDEwMDY0NA0KPiA+IC0tLSBh
-L2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxl
-eGNhbi5jDQo+ID4gQEAgLTIwOCw2ICsyMDgsNyBAQCBzdHJ1Y3QgZmxleGNhbl9wcml2IHsNCj4g
-PiAgCXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPiAgCXUzMiByZWdfZXNyOw0KPiA+ICAJdTMyIHJl
-Z19jdHJsX2RlZmF1bHQ7DQo+ID4gKwlpbnQgZXJyX2lycTsNCj4gPg0KPiA+ICAJc3RydWN0IGNs
-ayAqY2xrX2lwZzsNCj4gPiAgCXN0cnVjdCBjbGsgKmNsa19wZXI7DQo+ID4gQEAgLTc0NCw2ICs3
-NDUsMjcgQEAgc3RhdGljIGlycXJldHVybl90IGZsZXhjYW5faXJxKGludCBpcnEsIHZvaWQNCj4g
-KmRldl9pZCkNCj4gPiAgCXJldHVybiBJUlFfSEFORExFRDsNCj4gPiAgfQ0KPiA+DQo+ID4gK3N0
-YXRpYyBpcnFyZXR1cm5fdCBmbGV4Y2FuX2Vycl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKSB7
-DQo+ID4gKwlzdHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gZGV2X2lkOw0KPiA+ICsJc3RydWN0IGZs
-ZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ID4gKwlzdHJ1Y3QgZmxleGNh
-bl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5iYXNlOw0KPiA+ICsJdTMyIHJlZ19jdHJsLCBy
-ZWdfZXNyOw0KPiA+ICsNCj4gPiArCXJlZ19lc3IgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmVzcik7
-DQo+ID4gKwlyZWdfY3RybCA9IGZsZXhjYW5fcmVhZCgmcmVncy0+Y3RybCk7DQo+ID4gKw0KPiA+
-ICsJaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5UKSB7DQo+ID4gKwkJaWYgKHJlZ19l
-c3IgJiBGTEVYQ0FOX0VTUl9FUlJfSU5UKQ0KPiA+ICsJCQlmbGV4Y2FuX3dyaXRlKHJlZ19jdHJs
-ICYgfkZMRVhDQU5fQ1RSTF9FUlJfTVNLLA0KPiA+ICsJCQkJICAgICAgJnJlZ3MtPmN0cmwpOw0K
-PiA+ICsJCWZsZXhjYW5faXJxKGlycSwgZGV2KTsNCj4gDQo+IEkgc3RpbGwgZG9uJ3QgdW5kZXJz
-dGFuZCB3aHkgeW91IG5lZWQgYSBzcGVjaWFsIGZsZXhjYW5fZXJyX2lycSgpDQo+IGZ1bmN0aW9u
-LiBXaHkgZG9uJ3QgeW91IGp1c3QgY2FsbDoNCj4gDQo+IHJlcXVlc3RfaXJxKHByaXYtPmVycl9p
-cnEsIGZsZXhjYW5faXJxLCBJUlFGX1NIQVJFRCwgZGV2LT5uYW1lLCBkZXYpOw0KPiANCj4gaW5z
-dGVhZD8NCg0KRmxleGNhbl9pcnEgaXMgZm9yIGZsZXhjYW4gbm9ybWFsIGludGVycnVwdChzdWNo
-IGFzIE1lc3NhZ2UgQnVmZmVyLCBXYWtlIHVwIGFuZCBzbyBvbikuDQpBbmQgaXQgd2lsbCByZXR1
-cm4gSVJRX0hBTkRMRUQgaWYgZmxleGNhbl9pcnEgaXMgdHJpZ2dlcmVkLg0KQnV0IGVycl9pcnEg
-aXMgc2hhcmVkIHdpdGggb3RoZXIgZGV2aWNlcywgaXQgc2hvdWxkIHJldHVybiBJUlFfSEFORExF
-RCB3aGVuIHRoZSBpbnRlcnJ1cHQgDQppcyB0cmlnZ2VyZWQgYnkgZmxleGNhbiBkZXZpY2UsIGlm
-IG5vdCByZXR1cm4gSVJRX05PTkUuDQoNCj4gDQo+ID4gKwkJcmV0dXJuIElSUV9IQU5ETEVEOw0K
-PiA+ICsJfQ0KPiA+ICsNCj4gPiArCXJldHVybiBJUlFfTk9ORTsNCj4gPiArfQ0KPiA+ICsNCj4g
-PiAgc3RhdGljIHZvaWQgZmxleGNhbl9zZXRfYml0dGltaW5nKHN0cnVjdCBuZXRfZGV2aWNlICpk
-ZXYpICB7DQo+ID4gIAljb25zdCBzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0gbmV0ZGV2X3By
-aXYoZGV2KTsgQEAgLTk0NCw2DQo+ID4gKzk2NiwxNSBAQCBzdGF0aWMgaW50IGZsZXhjYW5fb3Bl
-bihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KPiA+ICAJaWYgKGVycikNCj4gPiAgCQlnb3RvIG91
-dF9jbG9zZTsNCj4gPg0KPiA+ICsJaWYgKHByaXYtPmVycl9pcnEpIHsNCj4gPiArCQllcnIgPSBy
-ZXF1ZXN0X2lycShwcml2LT5lcnJfaXJxLCBmbGV4Y2FuX2Vycl9pcnEsIElSUUZfU0hBUkVELA0K
-PiA+ICsJCQkJICBkZXYtPm5hbWUsIGRldik7DQo+ID4gKwkJaWYgKGVycikgew0KPiA+ICsJCQlm
-cmVlX2lycShwcml2LT5lcnJfaXJxLCBkZXYpOw0KPiANCj4gV2h5IGRvIHlvdSB3YW50IHRvIGZy
-ZWUgdGhlIGVycl9pcnEsIGlmIHJlcXVlc3RpbmcgdGhlIGVycl9pcnEgZmFpbHM/DQo+IEhvd2V2
-ZXIgeW91IHNob3VsZCBhZGp1c3QgYWxsIGVycm9yIGNsZWFudXAgcGF0aCBmb2xsb3dpbmcgdGhp
-cyByZXF1ZXN0DQo+IGlycSwgc28gdGhhdCBpdCB3aWxsIGJlIGZyZWVkLg0KPiANCj4gQlRXOiB3
-aGVyZSBpcyB0aGUgY29ycmVzcG9uZGluZyBmcmVlX2lycSgpIGluIGZsZXhjYW5fY2xvc2UoKT8N
-Cg0KSGVyZSwgSSB0aGluayB5b3UgYXJlIHJpZ2h0LiBUaGFua3MgZm9yIHlvdXIgcmVtaW5kZXIu
-DQpJIHdpbGwgbW9kaWZ5IGl0Lg0KDQo+IA0KPiA+ICsJCQlnb3RvIG91dF9mcmVlX2lycTsNCj4g
-PiArCQl9DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICAJLyogc3RhcnQgY2hpcCBhbmQgcXVldWluZyAq
-Lw0KPiA+ICAJZXJyID0gZmxleGNhbl9jaGlwX3N0YXJ0KGRldik7DQo+ID4gIAlpZiAoZXJyKQ0K
-PiA+IEBAIC0xMDk5LDcgKzExMzAsNyBAQCBzdGF0aWMgaW50IGZsZXhjYW5fcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikNCj4gPiAgCXN0cnVjdCByZXNvdXJjZSAqbWVtOw0K
-PiA+ICAJc3RydWN0IGNsayAqY2xrX2lwZyA9IE5VTEwsICpjbGtfcGVyID0gTlVMTDsNCj4gPiAg
-CXZvaWQgX19pb21lbSAqYmFzZTsNCj4gPiAtCWludCBlcnIsIGlycTsNCj4gPiArCWludCBlcnIs
-IGlycSwgZXJyX2lycTsNCj4gPiAgCXUzMiBjbG9ja19mcmVxID0gMDsNCj4gPg0KPiA+ICAJaWYg
-KHBkZXYtPmRldi5vZl9ub2RlKQ0KPiA+IEBAIC0xMTI2LDYgKzExNTcsMTAgQEAgc3RhdGljIGlu
-dCBmbGV4Y2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAlp
-ZiAoaXJxIDw9IDApDQo+ID4gIAkJcmV0dXJuIC1FTk9ERVY7DQo+ID4NCj4gPiArCWVycl9pcnEg
-PSBwbGF0Zm9ybV9nZXRfaXJxKHBkZXYsIDEpOw0KPiA+ICsJaWYgKGVycl9pcnEgPD0gMCkNCj4g
-PiArCQllcnJfaXJxID0gMDsNCj4gPiArDQo+ID4gIAliYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291
-cmNlKCZwZGV2LT5kZXYsIG1lbSk7DQo+ID4gIAlpZiAoSVNfRVJSKGJhc2UpKQ0KPiA+ICAJCXJl
-dHVybiBQVFJfRVJSKGJhc2UpOw0KPiA+IEBAIC0xMTQ5LDYgKzExODQsNyBAQCBzdGF0aWMgaW50
-IGZsZXhjYW5fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikNCj4gPiAgCWRl
-di0+ZmxhZ3MgfD0gSUZGX0VDSE87DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZfcHJpdihkZXYp
-Ow0KPiA+ICsJcHJpdi0+ZXJyX2lycSA9IGVycl9pcnE7DQo+ID4gIAlwcml2LT5jYW4uY2xvY2su
-ZnJlcSA9IGNsb2NrX2ZyZXE7DQo+ID4gIAlwcml2LT5jYW4uYml0dGltaW5nX2NvbnN0ID0gJmZs
-ZXhjYW5fYml0dGltaW5nX2NvbnN0Ow0KPiA+ICAJcHJpdi0+Y2FuLmRvX3NldF9tb2RlID0gZmxl
-eGNhbl9zZXRfbW9kZTsNCj4gPg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXgg
-ZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4g
-SW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05
-MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0
-OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYg
-IHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GGLLxhCXX9LpIxgRqFM11pHcgSSPBxR7B
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 07/02/2014 04:00 AM, qiang.zhao@freescale.com wrote:
+>>> +static irqreturn_t flexcan_err_irq(int irq, void *dev_id) {
+>>> +	struct net_device *dev =3D dev_id;
+>>> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+>>> +	struct flexcan_regs __iomem *regs =3D priv->base;
+>>> +	u32 reg_ctrl, reg_esr;
+>>> +
+>>> +	reg_esr =3D flexcan_read(&regs->esr);
+>>> +	reg_ctrl =3D flexcan_read(&regs->ctrl);
+>>> +
+>>> +	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
+>>> +		if (reg_esr & FLEXCAN_ESR_ERR_INT)
+>>> +			flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK,
+>>> +				      &regs->ctrl);
+>>> +		flexcan_irq(irq, dev);
+>>
+>> I still don't understand why you need a special flexcan_err_irq()
+>> function. Why don't you just call:
+>>
+>> request_irq(priv->err_irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
+>>
+>> instead?
+>=20
+> Flexcan_irq is for flexcan normal interrupt(such as Message Buffer, Wak=
+e up and so on).
+> And it will return IRQ_HANDLED if flexcan_irq is triggered.
+> But err_irq is shared with other devices, it should return IRQ_HANDLED =
+when the interrupt=20
+> is triggered by flexcan device, if not return IRQ_NONE.
+
+What about fixing flexcan_irq() first and the make use of it?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--GGLLxhCXX9LpIxgRqFM11pHcgSSPBxR7B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOzruwACgkQjTAFq1RaXHNIoQCfevQDasjs+wezjMLO3mgwpRGU
+4K4AnApL43vz1N7MPuFIkn25fgKGjvmf
+=YSao
+-----END PGP SIGNATURE-----
+
+--GGLLxhCXX9LpIxgRqFM11pHcgSSPBxR7B--
