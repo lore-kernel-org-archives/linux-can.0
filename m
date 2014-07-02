@@ -1,60 +1,104 @@
-From: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>
-Subject: RE: [PATCH v4] flexcan: add err_irq handler for flexcan
-Date: Wed, 2 Jul 2014 08:32:44 +0000
-Message-ID: <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
-References: <1404201809-7010-1-git-send-email-B45475@freescale.com>
- <53B287A6.10707@pengutronix.de>
- <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com>
- <53B3AEEC.4060507@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4] flexcan: add err_irq handler for flexcan
+Date: Wed, 02 Jul 2014 11:02:13 +0200
+Message-ID: <53B3CA95.9070600@pengutronix.de>
+References: <1404201809-7010-1-git-send-email-B45475@freescale.com> <53B287A6.10707@pengutronix.de> <a77a3b25e46f45c4951e0ec517904460@BLUPR03MB341.namprd03.prod.outlook.com> <53B3AEEC.4060507@pengutronix.de> <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1lp0139.outbound.protection.outlook.com ([207.46.163.139]:14986
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750895AbaGBIcy (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 2 Jul 2014 04:32:54 -0400
-In-Reply-To: <53B3AEEC.4060507@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42624 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751876AbaGBJC1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Jul 2014 05:02:27 -0400
+In-Reply-To: <175067a435ce4d5c9a194a459e950544@BLUPR03MB341.namprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
+To: "qiang.zhao@freescale.com" <qiang.zhao@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Scott Wood <scottwood@freescale.com>
 
-T24gMDcvMDIvMjAxNCAwMzowNCBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IC0tLS0t
-T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86
-bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bHkgMDIsIDIwMTQgMzow
-NCBQTQ0KPiBUbzogWmhhbyBRaWFuZy1CNDU0NzU7IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMu
-b3JnOyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgV29v
-ZCBTY290dC1CMDc0MjENCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NF0gZmxleGNhbjogYWRkIGVy
-cl9pcnEgaGFuZGxlciBmb3IgZmxleGNhbg0KPiANCj4gT24gMDcvMDIvMjAxNCAwNDowMCBBTSwg
-cWlhbmcuemhhb0BmcmVlc2NhbGUuY29tIHdyb3RlOg0KPiA+Pj4gK3N0YXRpYyBpcnFyZXR1cm5f
-dCBmbGV4Y2FuX2Vycl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKSB7DQo+ID4+PiArCXN0cnVj
-dCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfaWQ7DQo+ID4+PiArCXN0cnVjdCBmbGV4Y2FuX3ByaXYg
-KnByaXYgPSBuZXRkZXZfcHJpdihkZXYpOw0KPiA+Pj4gKwlzdHJ1Y3QgZmxleGNhbl9yZWdzIF9f
-aW9tZW0gKnJlZ3MgPSBwcml2LT5iYXNlOw0KPiA+Pj4gKwl1MzIgcmVnX2N0cmwsIHJlZ19lc3I7
-DQo+ID4+PiArDQo+ID4+PiArCXJlZ19lc3IgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmVzcik7DQo+
-ID4+PiArCXJlZ19jdHJsID0gZmxleGNhbl9yZWFkKCZyZWdzLT5jdHJsKTsNCj4gPj4+ICsNCj4g
-Pj4+ICsJaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5UKSB7DQo+ID4+PiArCQlpZiAo
-cmVnX2VzciAmIEZMRVhDQU5fRVNSX0VSUl9JTlQpDQo+ID4+PiArCQkJZmxleGNhbl93cml0ZShy
-ZWdfY3RybCAmIH5GTEVYQ0FOX0NUUkxfRVJSX01TSywNCj4gPj4+ICsJCQkJICAgICAgJnJlZ3Mt
-PmN0cmwpOw0KPiA+Pj4gKwkJZmxleGNhbl9pcnEoaXJxLCBkZXYpOw0KPiA+Pg0KPiA+PiBJIHN0
-aWxsIGRvbid0IHVuZGVyc3RhbmQgd2h5IHlvdSBuZWVkIGEgc3BlY2lhbCBmbGV4Y2FuX2Vycl9p
-cnEoKQ0KPiA+PiBmdW5jdGlvbi4gV2h5IGRvbid0IHlvdSBqdXN0IGNhbGw6DQo+ID4+DQo+ID4+
-IHJlcXVlc3RfaXJxKHByaXYtPmVycl9pcnEsIGZsZXhjYW5faXJxLCBJUlFGX1NIQVJFRCwgZGV2
-LT5uYW1lLCBkZXYpOw0KPiA+Pg0KPiA+PiBpbnN0ZWFkPw0KPiA+DQo+ID4gRmxleGNhbl9pcnEg
-aXMgZm9yIGZsZXhjYW4gbm9ybWFsIGludGVycnVwdChzdWNoIGFzIE1lc3NhZ2UgQnVmZmVyLA0K
-PiBXYWtlIHVwIGFuZCBzbyBvbikuDQo+ID4gQW5kIGl0IHdpbGwgcmV0dXJuIElSUV9IQU5ETEVE
-IGlmIGZsZXhjYW5faXJxIGlzIHRyaWdnZXJlZC4NCj4gPiBCdXQgZXJyX2lycSBpcyBzaGFyZWQg
-d2l0aCBvdGhlciBkZXZpY2VzLCBpdCBzaG91bGQgcmV0dXJuIElSUV9IQU5ETEVEDQo+ID4gd2hl
-biB0aGUgaW50ZXJydXB0IGlzIHRyaWdnZXJlZCBieSBmbGV4Y2FuIGRldmljZSwgaWYgbm90IHJl
-dHVybg0KPiBJUlFfTk9ORS4NCj4gDQo+IFdoYXQgYWJvdXQgZml4aW5nIGZsZXhjYW5faXJxKCkg
-Zmlyc3QgYW5kIHRoZSBtYWtlIHVzZSBvZiBpdD8NCg0KRXJyX2lycSBpcyBhIHNoYXJlZCBpbnRl
-cnJ1cHQgd2l0aCBvdGhlciBkZXZpY2UsIA0KSSBob3BlIHRoYXQgaXRzIGhhbmRsZXIgaXMgaW5k
-ZXBlbmRlbnQuDQpIb3dldmVyLCBpZiB5b3UgcGVyc2lzdCBpbiB5b3VyIG9waW5pb24sIEkgd2ls
-bCBkbyBpdCBhcyB5b3Ugc2FpZC4NCg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9u
-aXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwN
-Cj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgy
-Ni05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAg
-ICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2
-ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 07/02/2014 10:32 AM, qiang.zhao@freescale.com wrote:
+> On 07/02/2014 03:04 PM, Marc Kleine-Budde wrote:
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Wednesday, July 02, 2014 3:04 PM
+>> To: Zhao Qiang-B45475; linuxppc-dev@lists.ozlabs.org; wg@grandegger.co=
+m;
+>> linux-can@vger.kernel.org; Wood Scott-B07421
+>> Subject: Re: [PATCH v4] flexcan: add err_irq handler for flexcan
+>>
+>> On 07/02/2014 04:00 AM, qiang.zhao@freescale.com wrote:
+>>>>> +static irqreturn_t flexcan_err_irq(int irq, void *dev_id) {
+>>>>> +	struct net_device *dev =3D dev_id;
+>>>>> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+>>>>> +	struct flexcan_regs __iomem *regs =3D priv->base;
+>>>>> +	u32 reg_ctrl, reg_esr;
+>>>>> +
+>>>>> +	reg_esr =3D flexcan_read(&regs->esr);
+>>>>> +	reg_ctrl =3D flexcan_read(&regs->ctrl);
+>>>>> +
+>>>>> +	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
+>>>>> +		if (reg_esr & FLEXCAN_ESR_ERR_INT)
+>>>>> +			flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK,
+>>>>> +				      &regs->ctrl);
+>>>>> +		flexcan_irq(irq, dev);
+>>>>
+>>>> I still don't understand why you need a special flexcan_err_irq()
+>>>> function. Why don't you just call:
+>>>>
+>>>> request_irq(priv->err_irq, flexcan_irq, IRQF_SHARED, dev->name, dev)=
+;
+>>>>
+>>>> instead?
+>>>
+>>> Flexcan_irq is for flexcan normal interrupt(such as Message Buffer,
+>> Wake up and so on).
+>>> And it will return IRQ_HANDLED if flexcan_irq is triggered.
+>>> But err_irq is shared with other devices, it should return IRQ_HANDLE=
+D
+>>> when the interrupt is triggered by flexcan device, if not return
+>> IRQ_NONE.
+>>
+>> What about fixing flexcan_irq() first and the make use of it?
+>=20
+> Err_irq is a shared interrupt with other device,=20
+> I hope that its handler is independent.
+> However, if you persist in your opinion, I will do it as you said.
+
+There is another option, you can move all of the error interrupt
+handling code from flexcan_irq() to flexcan_irq_err(). To keep the ARM
+SoCs supported, you need to call flexcan_irq_err() form the
+flexcan_irq() handler.
+
+What I don't want is a) code duplication and b) no fishy wrapper
+functions around flexcan_irq() that work around flexcan_irq() returning
+IRQ_HANDLED unconditionally.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlOzypUACgkQjTAFq1RaXHNHWQCfezS9fm3zxRVGrjNA6dGpFo0g
+XAIAn1o42qwmYDP1Dv543eNhjgkP6a0f
+=rAyT
+-----END PGP SIGNATURE-----
+
+--M7eqBoRG4wHQGaTrVAbUkRl54FOMLr7bx--
