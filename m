@@ -1,172 +1,91 @@
-From: Zhao Qiang <B45475@freescale.com>
-Subject: [PATCH v5] flexcan: add err_irq handler for flexcan
-Date: Thu, 3 Jul 2014 10:23:00 +0800
-Message-ID: <1404354180-46431-1-git-send-email-B45475@freescale.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
+Date: Thu, 3 Jul 2014 11:48:41 +0800
+Message-ID: <20140703034839.GA20450@shlinux1.ap.freescale.net>
+References: <1403863246-18822-1-git-send-email-b29396@freescale.com>
+ <1403863246-18822-2-git-send-email-b29396@freescale.com>
+ <53ADB1E8.1030504@hartkopp.net>
+ <20140630082622.GB25689@shlinux1.ap.freescale.net>
+ <53B4473B.2050003@hartkopp.net> <53B459C3.6070807@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0203.outbound.protection.outlook.com ([207.46.163.203]:11262
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1blp0181.outbound.protection.outlook.com ([207.46.163.181]:27598
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750809AbaGCC0t (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 2 Jul 2014 22:26:49 -0400
+	id S1750822AbaGCDtl (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 2 Jul 2014 23:49:41 -0400
+Content-Disposition: inline
+In-Reply-To: <53B459C3.6070807@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linuxppc-dev@lists.ozlabs.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, B07421@freescale.com
-Cc: Zhao Qiang <B45475@freescale.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, devicetree@vger.kernel.org
 
-when flexcan is not physically linked, command 'cantest' will
-trigger an err_irq, add err_irq handler for it.
+On Wed, Jul 02, 2014 at 09:13:07PM +0200, Marc Kleine-Budde wrote:
+> On 07/02/2014 07:54 PM, Oliver Hartkopp wrote:
+> > I'm not really familiar with the naming concept in device trees.
+> > 
+> > What is your opinion about the remarks below?
+> 
+> The entries in the DT, at least on freescale baords, follow the naming
+> scheme of the reference manual. E.g. on the mx25 it's can1 and can2:
+> 
+>     can1: can@43f88000 { ... }
+>     can2: can@43f8c000 { ... }
+> 
+> And on the mx28, its:
+> 
+>     can0: can@80032000 { ... }
+>     can1: can@80034000 { ... }
+> 
+> Because the imx25 datasheet uses a "1" based counting scheme, while the
+> imx28 uses a "0" based one.
+> 
+> So it's best practise to follow the naming and numbering scheme of the
+> hardware reference manual.....and if you have access to the
+> documentation of the m_can core, use clock names of the m_can core for
+> the clock-names property.
+> 
 
-Signed-off-by: Zhao Qiang <B45475@freescale.com>
----
-Changes for v2:
-	- use a space instead of tab
-	- use flexcan_poll_state instead of print
-Changes for v3:
-	- return IRQ_HANDLED if err is triggered
-	- stop transmitted packets when there is an err_interrupt 
-Changes for v4:
-	- call flexcan_irq 
-Changes for v5:
-	- move err_int_handling code from flexcan_irq to flexcan_err_irq
-	- call flexcan_err_irq from flexcan_irq
+Based on my knowledge, device tree allows define phandle name according to
+the real device name of HW according spec while the device node name should
+be general(e.g can@80032000 rather than flexcan@80032000).
+For imx6sx, there are already following entries in
+arch/arm/boot/dts/imx6sx.dtsi
+flexcan1: can@02090000 {...}
+flexcan2: can@02094000 {...}
+So i'd prefer to define as:
+m_can1: canfd@020e8000 {...}
+m_can2: canfd@020f0000 {...}
 
- drivers/net/can/flexcan.c | 55 ++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index f425ec2..a12d3a4 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -208,6 +208,7 @@ struct flexcan_priv {
- 	void __iomem *base;
- 	u32 reg_esr;
- 	u32 reg_ctrl_default;
-+	int err_irq;
- 
- 	struct clk *clk_ipg;
- 	struct clk *clk_per;
-@@ -690,19 +691,22 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
- 	return work_done;
- }
- 
--static irqreturn_t flexcan_irq(int irq, void *dev_id)
-+static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
- {
- 	struct net_device *dev = dev_id;
--	struct net_device_stats *stats = &dev->stats;
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	struct flexcan_regs __iomem *regs = priv->base;
--	u32 reg_iflag1, reg_esr;
-+	u32 reg_ctrl, reg_esr, reg_iflag1;
-+	irqreturn_t ret = IRQ_NONE;
- 
--	reg_iflag1 = flexcan_read(&regs->iflag1);
- 	reg_esr = flexcan_read(&regs->esr);
--	/* ACK all bus error and state change IRQ sources */
--	if (reg_esr & FLEXCAN_ESR_ALL_INT)
-+	reg_ctrl = flexcan_read(&regs->ctrl);
-+	reg_iflag1 = flexcan_read(&regs->iflag1);
-+
-+	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
- 		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-+		ret = IRQ_HANDLED;
-+	}
- 
- 	/*
- 	 * schedule NAPI in case of:
-@@ -725,6 +729,23 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 		napi_schedule(&priv->napi);
- 	}
- 
-+	if (reg_esr & FLEXCAN_ESR_ERR_INT)
-+		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
-+
-+	return ret;
-+}
-+
-+static irqreturn_t flexcan_irq(int irq, void *dev_id)
-+{
-+	struct net_device *dev = dev_id;
-+	struct net_device_stats *stats = &dev->stats;
-+	struct flexcan_priv *priv = netdev_priv(dev);
-+	struct flexcan_regs __iomem *regs = priv->base;
-+	u32 reg_iflag1;
-+
-+	reg_iflag1 = flexcan_read(&regs->iflag1);
-+
-+	flexcan_err_irq(irq, dev);
- 	/* FIFO overflow */
- 	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
- 		flexcan_write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
-@@ -944,10 +965,17 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_close;
- 
-+	if (priv->err_irq) {
-+		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
-+				  dev->name, dev);
-+		if (err)
-+			goto out_free_irq;
-+	}
-+
- 	/* start chip and queuing */
- 	err = flexcan_chip_start(dev);
- 	if (err)
--		goto out_free_irq;
-+		goto out_free_err_irq;
- 
- 	can_led_event(dev, CAN_LED_EVENT_OPEN);
- 
-@@ -956,6 +984,9 @@ static int flexcan_open(struct net_device *dev)
- 
- 	return 0;
- 
-+ out_free_err_irq:
-+	if (priv->err_irq)
-+		free_irq(priv->err_irq, dev);
-  out_free_irq:
- 	free_irq(dev->irq, dev);
-  out_close:
-@@ -977,6 +1008,9 @@ static int flexcan_close(struct net_device *dev)
- 	flexcan_chip_stop(dev);
- 
- 	free_irq(dev->irq, dev);
-+	if (priv->err_irq)
-+		free_irq(priv->err_irq, dev);
-+
- 	clk_disable_unprepare(priv->clk_per);
- 	clk_disable_unprepare(priv->clk_ipg);
- 
-@@ -1099,7 +1133,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	struct resource *mem;
- 	struct clk *clk_ipg = NULL, *clk_per = NULL;
- 	void __iomem *base;
--	int err, irq;
-+	int err, irq, err_irq;
- 	u32 clock_freq = 0;
- 
- 	if (pdev->dev.of_node)
-@@ -1126,6 +1160,10 @@ static int flexcan_probe(struct platform_device *pdev)
- 	if (irq <= 0)
- 		return -ENODEV;
- 
-+	err_irq = platform_get_irq(pdev, 1);
-+	if (err_irq <= 0)
-+		err_irq = 0;
-+
- 	base = devm_ioremap_resource(&pdev->dev, mem);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
-@@ -1149,6 +1187,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	dev->flags |= IFF_ECHO;
- 
- 	priv = netdev_priv(dev);
-+	priv->err_irq = err_irq;
- 	priv->can.clock.freq = clock_freq;
- 	priv->can.bittiming_const = &flexcan_bittiming_const;
- 	priv->can.do_set_mode = flexcan_set_mode;
--- 
-1.8.5
+One problem is there're can alias already.
+aliases {
+	can0 = &flexcan1;
+	can1 = &flexcan2;
+	...
+}
+I'm not sure adding can2&can3 for mcan is properly:
+aliases {
+	can0 = &flexcan1;
+	can1 = &flexcan2;
+	can2 = &m_can1;
+	can3 = &m_can2;
+	...
+}
+Since the m_can driver does not need to use aliases,
+so i will not add them.
+
+Regards
+Dong Aisheng
+
+> Marc
+> -- 
+> Pengutronix e.K.                  | Marc Klein-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+
 
