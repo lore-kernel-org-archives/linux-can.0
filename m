@@ -1,234 +1,157 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: [PATCH 3.11 013/198] genirq: Sanitize spurious interrupt detection of threaded irqs
-Date: Thu,  3 Jul 2014 10:17:36 +0100
-Message-ID: <1404379241-8590-14-git-send-email-luis.henriques@canonical.com>
-References: <1404379241-8590-1-git-send-email-luis.henriques@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404379241-8590-1-git-send-email-luis.henriques@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org, kernel-team@lists.ubuntu.com
-Cc: Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Luis Henriques <luis.henriques@canonical.com>
-List-Id: linux-can.vger.kernel.org
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
+Date: Thu, 3 Jul 2014 18:39:23 +0800
+Message-ID: <20140703103922.GB26480@shlinux1.ap.freescale.net>
+References: <53ADB1E8.1030504@hartkopp.net>
+ <20140630082622.GB25689@shlinux1.ap.freescale.net>
+ <53B4473B.2050003@hartkopp.net> <53B459C3.6070807@pengutronix.de>
+ <20140703034839.GA20450@shlinux1.ap.freescale.net>
+ <53B50271.8070307@pengutronix.de>
+ <20140703084803.GA11012@shlinux1.ap.freescale.net>
+ <53B51CA4.3060203@pengutronix.de>
+ <20140703090957.GA26480@shlinux1.ap.freescale.net>
+ <53B5205B.2060206@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2lp0208.outbound.protection.outlook.com ([207.46.163.208]:46176
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1757083AbaGCKkd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 3 Jul 2014 06:40:33 -0400
+Content-Disposition: inline
+In-Reply-To: <53B5205B.2060206@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, devicetree@vger.kernel.org
 
-3.11.10.13 -stable review patch.  If anyone has any objections, please let me know.
+On Thu, Jul 03, 2014 at 11:20:27AM +0200, Marc Kleine-Budde wrote:
+> On 07/03/2014 11:09 AM, Dong Aisheng wrote:
+> > On Thu, Jul 03, 2014 at 11:04:36AM +0200, Marc Kleine-Budde wrote:
+> >> On 07/03/2014 10:48 AM, Dong Aisheng wrote:
+> >>> On Thu, Jul 03, 2014 at 09:12:49AM +0200, Marc Kleine-Budde wrote:
+> >>>> On 07/03/2014 05:48 AM, Dong Aisheng wrote:
+> >>>>> On Wed, Jul 02, 2014 at 09:13:07PM +0200, Marc Kleine-Budde wrote:
+> >>>>>> On 07/02/2014 07:54 PM, Oliver Hartkopp wrote:
+> >>>>>>> I'm not really familiar with the naming concept in device trees.
+> >>>>>>>
+> >>>>>>> What is your opinion about the remarks below?
+> >>>>>>
+> >>>>>> The entries in the DT, at least on freescale baords, follow the naming
+> >>>>>> scheme of the reference manual. E.g. on the mx25 it's can1 and can2:
+> >>>>>>
+> >>>>>>     can1: can@43f88000 { ... }
+> >>>>>>     can2: can@43f8c000 { ... }
+> >>>>>>
+> >>>>>> And on the mx28, its:
+> >>>>>>
+> >>>>>>     can0: can@80032000 { ... }
+> >>>>>>     can1: can@80034000 { ... }
+> >>>>>>
+> >>>>>> Because the imx25 datasheet uses a "1" based counting scheme, while the
+> >>>>>> imx28 uses a "0" based one.
+> >>>>>>
+> >>>>>> So it's best practise to follow the naming and numbering scheme of the
+> >>>>>> hardware reference manual.....and if you have access to the
+> >>>>>> documentation of the m_can core, use clock names of the m_can core for
+> >>>>>> the clock-names property.
+> >>>>>>
+> >>>>>
+> >>>>> Based on my knowledge, device tree allows define phandle name according to
+> >>>>> the real device name of HW according spec while the device node name should
+> >>>>> be general(e.g can@80032000 rather than flexcan@80032000).
+> >>>>> For imx6sx, there are already following entries in
+> >>>>> arch/arm/boot/dts/imx6sx.dtsi
+> >>>>> flexcan1: can@02090000 {...}
+> >>>>> flexcan2: can@02094000 {...}
+> >>>>> So i'd prefer to define as:
+> >>>>> m_can1: canfd@020e8000 {...}
+> >>>>> m_can2: canfd@020f0000 {...}
+> >>>>>
+> >>>>>
+> >>>>> One problem is there're can alias already.
+> >>>>> aliases {
+> >>>>> 	can0 = &flexcan1;
+> >>>>> 	can1 = &flexcan2;
+> >>>>> 	...
+> >>>>> }
+> >>>>> I'm not sure adding can2&can3 for mcan is properly:
+> >>>>> aliases {
+> >>>>> 	can0 = &flexcan1;
+> >>>>> 	can1 = &flexcan2;
+> >>>>> 	can2 = &m_can1;
+> >>>>> 	can3 = &m_can2;
+> >>>>> 	...
+> >>>>> }
+> >>>>> Since the m_can driver does not need to use aliases,
+> >>>>> so i will not add them.
+> >>>>
+> >>>> IMHO It's fine too add the can{2,3} aliases to m_can, too.
+> >>>>
+> >>>
+> >>> I think the main problem for doing this way is that the meaning of id
+> >>> return by of_alias_get_id may be not persistent.
+> >>> e.g
+> >>> For MX6SX
+> >>> aliases {
+> >>> 	can0 = &flexcan1;
+> >>> 	can1 = &flexcan2;
+> >>> 	can2 = &m_can1;
+> >>> 	can3 = &m_can2;
+> >>> 	...
+> >>> }
+> >>>
+> >>> For other platform, it could be:
+> >>> aliases {
+> >>> 	can0 = &m_can1;
+> >>> 	can1 = &m_can2;
+> >>> 	...
+> >>> }
+> >>> It's hard for driver to use.
+> >>
+> >> The driver doesn't make use of it, does it?
+> >>
+> >>> And actually the M_CAN driver does not need to use the alias.
+> >>> So i wonder if it makes sense to add the alias for m_can devices
+> >>> like that.
+> >>
+> >> For example the imx53 has two different SPI units, in the alias section
+> >> we see:
+> >>
+> >>                 spi0 = &ecspi1;
+> >>                 spi1 = &ecspi2;
+> >>                 spi2 = &cspi;
+> > 
+> > Thanks for the info.
+> > I'm not clear what's our purpose adding alias like this?
+> > Can you help explain it a bit?
+> 
+> You can use the alias in your dts to refer to the node instead of the
+> more complicate name.
+> Further you bring a order to all devices of the
+> same type and you can make use of the number in the alias for other
+> purposes, which is however not used for CAN afaik.
+> 
+> > Do we need adding alias for all exist devices?
+> 
+> Have a look at the existing imx*.dtsi files. If there are already
+> aliases for a given device type, then it makes sense to add new devices
+> of that type to the alias aswell.
+> 
 
-------------------
+Okay, clear now, thanks for the information.
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Regards
+Dong Aisheng
 
-commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
 
-Till reported that the spurious interrupt detection of threaded
-interrupts is broken in two ways:
 
-- note_interrupt() is called for each action thread of a shared
-  interrupt line. That's wrong as we are only interested whether none
-  of the device drivers felt responsible for the interrupt, but by
-  calling multiple times for a single interrupt line we account
-  IRQ_NONE even if one of the drivers felt responsible.
-
-- note_interrupt() when called from the thread handler is not
-  serialized. That leaves the members of irq_desc which are used for
-  the spurious detection unprotected.
-
-To solve this we need to defer the spurious detection of a threaded
-interrupt to the next hardware interrupt context where we have
-implicit serialization.
-
-If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
-check whether the previous interrupt requested a deferred check. If
-not, we request a deferred check for the next hardware interrupt and
-return.
-
-If set, we check whether one of the interrupt threads signaled
-success. Depending on this information we feed the result into the
-spurious detector.
-
-If one primary handler of a shared interrupt returns IRQ_HANDLED we
-disable the deferred check of irq threads on the same line, as we have
-found at least one device driver who cared.
-
-Reported-by: Till Straumann <strauman@slac.stanford.edu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Austin Schuh <austin@peloton-tech.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
-[ luis: backported to 3.11: adjusted context ]
-Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
----
- include/linux/irqdesc.h |   4 ++
- kernel/irq/manage.c     |   4 +-
- kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 108 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 623325e2ff97..078bc2fc74ff 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -27,6 +27,8 @@ struct irq_desc;
-  * @irq_count:		stats field to detect stalled irqs
-  * @last_unhandled:	aging timer for unhandled count
-  * @irqs_unhandled:	stats field for spurious unhandled interrupts
-+ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
-+ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
-  * @lock:		locking for SMP
-  * @affinity_hint:	hint to user space for preferred irq affinity
-  * @affinity_notify:	context for notification of affinity changes
-@@ -52,6 +54,8 @@ struct irq_desc {
- 	unsigned int		irq_count;	/* For detecting broken IRQs */
- 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
- 	unsigned int		irqs_unhandled;
-+	atomic_t		threads_handled;
-+	int			threads_handled_last;
- 	raw_spinlock_t		lock;
- 	struct cpumask		*percpu_enabled;
- #ifdef CONFIG_SMP
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 9e31fa71908d..75a976a8ed58 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -856,8 +856,8 @@ static int irq_thread(void *data)
- 		irq_thread_check_affinity(desc, action);
- 
- 		action_ret = handler_fn(desc, action);
--		if (!noirqdebug)
--			note_interrupt(action->irq, desc, action_ret);
-+		if (action_ret == IRQ_HANDLED)
-+			atomic_inc(&desc->threads_handled);
- 
- 		wake_threads_waitq(desc);
- 	}
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index 7b5f012bde9d..febcee3c2aa9 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
- 	return action && (action->flags & IRQF_IRQPOLL);
- }
- 
-+#define SPURIOUS_DEFERRED	0x80000000
-+
- void note_interrupt(unsigned int irq, struct irq_desc *desc,
- 		    irqreturn_t action_ret)
- {
- 	if (desc->istate & IRQS_POLL_INPROGRESS)
- 		return;
- 
--	/* we get here again via the threaded handler */
--	if (action_ret == IRQ_WAKE_THREAD)
--		return;
--
- 	if (bad_action_ret(action_ret)) {
- 		report_bad_irq(irq, desc, action_ret);
- 		return;
- 	}
- 
-+	/*
-+	 * We cannot call note_interrupt from the threaded handler
-+	 * because we need to look at the compound of all handlers
-+	 * (primary and threaded). Aside of that in the threaded
-+	 * shared case we have no serialization against an incoming
-+	 * hardware interrupt while we are dealing with a threaded
-+	 * result.
-+	 *
-+	 * So in case a thread is woken, we just note the fact and
-+	 * defer the analysis to the next hardware interrupt.
-+	 *
-+	 * The threaded handlers store whether they sucessfully
-+	 * handled an interrupt and we check whether that number
-+	 * changed versus the last invocation.
-+	 *
-+	 * We could handle all interrupts with the delayed by one
-+	 * mechanism, but for the non forced threaded case we'd just
-+	 * add pointless overhead to the straight hardirq interrupts
-+	 * for the sake of a few lines less code.
-+	 */
-+	if (action_ret & IRQ_WAKE_THREAD) {
-+		/*
-+		 * There is a thread woken. Check whether one of the
-+		 * shared primary handlers returned IRQ_HANDLED. If
-+		 * not we defer the spurious detection to the next
-+		 * interrupt.
-+		 */
-+		if (action_ret == IRQ_WAKE_THREAD) {
-+			int handled;
-+			/*
-+			 * We use bit 31 of thread_handled_last to
-+			 * denote the deferred spurious detection
-+			 * active. No locking necessary as
-+			 * thread_handled_last is only accessed here
-+			 * and we have the guarantee that hard
-+			 * interrupts are not reentrant.
-+			 */
-+			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
-+				desc->threads_handled_last |= SPURIOUS_DEFERRED;
-+				return;
-+			}
-+			/*
-+			 * Check whether one of the threaded handlers
-+			 * returned IRQ_HANDLED since the last
-+			 * interrupt happened.
-+			 *
-+			 * For simplicity we just set bit 31, as it is
-+			 * set in threads_handled_last as well. So we
-+			 * avoid extra masking. And we really do not
-+			 * care about the high bits of the handled
-+			 * count. We just care about the count being
-+			 * different than the one we saw before.
-+			 */
-+			handled = atomic_read(&desc->threads_handled);
-+			handled |= SPURIOUS_DEFERRED;
-+			if (handled != desc->threads_handled_last) {
-+				action_ret = IRQ_HANDLED;
-+				/*
-+				 * Note: We keep the SPURIOUS_DEFERRED
-+				 * bit set. We are handling the
-+				 * previous invocation right now.
-+				 * Keep it for the current one, so the
-+				 * next hardware interrupt will
-+				 * account for it.
-+				 */
-+				desc->threads_handled_last = handled;
-+			} else {
-+				/*
-+				 * None of the threaded handlers felt
-+				 * responsible for the last interrupt
-+				 *
-+				 * We keep the SPURIOUS_DEFERRED bit
-+				 * set in threads_handled_last as we
-+				 * need to account for the current
-+				 * interrupt as well.
-+				 */
-+				action_ret = IRQ_NONE;
-+			}
-+		} else {
-+			/*
-+			 * One of the primary handlers returned
-+			 * IRQ_HANDLED. So we don't care about the
-+			 * threaded handlers on the same line. Clear
-+			 * the deferred detection bit.
-+			 *
-+			 * In theory we could/should check whether the
-+			 * deferred bit is set and take the result of
-+			 * the previous run into account here as
-+			 * well. But it's really not worth the
-+			 * trouble. If every other interrupt is
-+			 * handled we never trigger the spurious
-+			 * detector. And if this is just the one out
-+			 * of 100k unhandled ones which is handled
-+			 * then we merily delay the spurious detection
-+			 * by one hard interrupt. Not a real problem.
-+			 */
-+			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
-+		}
-+	}
-+
- 	if (unlikely(action_ret == IRQ_NONE)) {
- 		/*
- 		 * If we are seeing only the odd spurious IRQ caused by
--- 
-1.9.1
