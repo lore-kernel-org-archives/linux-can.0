@@ -1,157 +1,193 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
-Date: Thu, 3 Jul 2014 18:39:23 +0800
-Message-ID: <20140703103922.GB26480@shlinux1.ap.freescale.net>
-References: <53ADB1E8.1030504@hartkopp.net>
- <20140630082622.GB25689@shlinux1.ap.freescale.net>
- <53B4473B.2050003@hartkopp.net> <53B459C3.6070807@pengutronix.de>
- <20140703034839.GA20450@shlinux1.ap.freescale.net>
- <53B50271.8070307@pengutronix.de>
- <20140703084803.GA11012@shlinux1.ap.freescale.net>
- <53B51CA4.3060203@pengutronix.de>
- <20140703090957.GA26480@shlinux1.ap.freescale.net>
- <53B5205B.2060206@pengutronix.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: skbuff panic
+Date: Thu, 3 Jul 2014 16:03:01 -0700
+Message-ID: <CANGgnMbu511sgePeix3hjitO+xEazCw1j7Ya_81SA1GsN6W+QA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2lp0208.outbound.protection.outlook.com ([207.46.163.208]:46176
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1757083AbaGCKkd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 3 Jul 2014 06:40:33 -0400
-Content-Disposition: inline
-In-Reply-To: <53B5205B.2060206@pengutronix.de>
+Received: from mail-ie0-f179.google.com ([209.85.223.179]:55588 "EHLO
+	mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753565AbaGCXDW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Jul 2014 19:03:22 -0400
+Received: by mail-ie0-f179.google.com with SMTP id lx4so5887iec.24
+        for <linux-can@vger.kernel.org>; Thu, 03 Jul 2014 16:03:22 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, devicetree@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On Thu, Jul 03, 2014 at 11:20:27AM +0200, Marc Kleine-Budde wrote:
-> On 07/03/2014 11:09 AM, Dong Aisheng wrote:
-> > On Thu, Jul 03, 2014 at 11:04:36AM +0200, Marc Kleine-Budde wrote:
-> >> On 07/03/2014 10:48 AM, Dong Aisheng wrote:
-> >>> On Thu, Jul 03, 2014 at 09:12:49AM +0200, Marc Kleine-Budde wrote:
-> >>>> On 07/03/2014 05:48 AM, Dong Aisheng wrote:
-> >>>>> On Wed, Jul 02, 2014 at 09:13:07PM +0200, Marc Kleine-Budde wrote:
-> >>>>>> On 07/02/2014 07:54 PM, Oliver Hartkopp wrote:
-> >>>>>>> I'm not really familiar with the naming concept in device trees.
-> >>>>>>>
-> >>>>>>> What is your opinion about the remarks below?
-> >>>>>>
-> >>>>>> The entries in the DT, at least on freescale baords, follow the naming
-> >>>>>> scheme of the reference manual. E.g. on the mx25 it's can1 and can2:
-> >>>>>>
-> >>>>>>     can1: can@43f88000 { ... }
-> >>>>>>     can2: can@43f8c000 { ... }
-> >>>>>>
-> >>>>>> And on the mx28, its:
-> >>>>>>
-> >>>>>>     can0: can@80032000 { ... }
-> >>>>>>     can1: can@80034000 { ... }
-> >>>>>>
-> >>>>>> Because the imx25 datasheet uses a "1" based counting scheme, while the
-> >>>>>> imx28 uses a "0" based one.
-> >>>>>>
-> >>>>>> So it's best practise to follow the naming and numbering scheme of the
-> >>>>>> hardware reference manual.....and if you have access to the
-> >>>>>> documentation of the m_can core, use clock names of the m_can core for
-> >>>>>> the clock-names property.
-> >>>>>>
-> >>>>>
-> >>>>> Based on my knowledge, device tree allows define phandle name according to
-> >>>>> the real device name of HW according spec while the device node name should
-> >>>>> be general(e.g can@80032000 rather than flexcan@80032000).
-> >>>>> For imx6sx, there are already following entries in
-> >>>>> arch/arm/boot/dts/imx6sx.dtsi
-> >>>>> flexcan1: can@02090000 {...}
-> >>>>> flexcan2: can@02094000 {...}
-> >>>>> So i'd prefer to define as:
-> >>>>> m_can1: canfd@020e8000 {...}
-> >>>>> m_can2: canfd@020f0000 {...}
-> >>>>>
-> >>>>>
-> >>>>> One problem is there're can alias already.
-> >>>>> aliases {
-> >>>>> 	can0 = &flexcan1;
-> >>>>> 	can1 = &flexcan2;
-> >>>>> 	...
-> >>>>> }
-> >>>>> I'm not sure adding can2&can3 for mcan is properly:
-> >>>>> aliases {
-> >>>>> 	can0 = &flexcan1;
-> >>>>> 	can1 = &flexcan2;
-> >>>>> 	can2 = &m_can1;
-> >>>>> 	can3 = &m_can2;
-> >>>>> 	...
-> >>>>> }
-> >>>>> Since the m_can driver does not need to use aliases,
-> >>>>> so i will not add them.
-> >>>>
-> >>>> IMHO It's fine too add the can{2,3} aliases to m_can, too.
-> >>>>
-> >>>
-> >>> I think the main problem for doing this way is that the meaning of id
-> >>> return by of_alias_get_id may be not persistent.
-> >>> e.g
-> >>> For MX6SX
-> >>> aliases {
-> >>> 	can0 = &flexcan1;
-> >>> 	can1 = &flexcan2;
-> >>> 	can2 = &m_can1;
-> >>> 	can3 = &m_can2;
-> >>> 	...
-> >>> }
-> >>>
-> >>> For other platform, it could be:
-> >>> aliases {
-> >>> 	can0 = &m_can1;
-> >>> 	can1 = &m_can2;
-> >>> 	...
-> >>> }
-> >>> It's hard for driver to use.
-> >>
-> >> The driver doesn't make use of it, does it?
-> >>
-> >>> And actually the M_CAN driver does not need to use the alias.
-> >>> So i wonder if it makes sense to add the alias for m_can devices
-> >>> like that.
-> >>
-> >> For example the imx53 has two different SPI units, in the alias section
-> >> we see:
-> >>
-> >>                 spi0 = &ecspi1;
-> >>                 spi1 = &ecspi2;
-> >>                 spi2 = &cspi;
-> > 
-> > Thanks for the info.
-> > I'm not clear what's our purpose adding alias like this?
-> > Can you help explain it a bit?
-> 
-> You can use the alias in your dts to refer to the node instead of the
-> more complicate name.
-> Further you bring a order to all devices of the
-> same type and you can make use of the number in the alias for other
-> purposes, which is however not used for CAN afaik.
-> 
-> > Do we need adding alias for all exist devices?
-> 
-> Have a look at the existing imx*.dtsi files. If there are already
-> aliases for a given device type, then it makes sense to add new devices
-> of that type to the alias aswell.
-> 
+I'm seeing the following panic.  I've seen it on multiple kernel
+versions (3.10.24 patched, and 3.14.3).
 
-Okay, clear now, thanks for the information.
+uname -a
+Linux vpc5 3.14.3-rt4abs+ #16 SMP PREEMPT RT Tue Jul 1 16:28:26 PDT
+2014 x86_64 GNU/Linux
 
-Regards
-Dong Aisheng
-
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+Jul  3 12:18:28 vpc7 kernel: [   16.691928] skbuff: skb_under_panic:
+text:ffffffff814fb64d len:-65447 put:-65463 head:ffff880407415080
+data:ffff88030742507f tail:0x58 end:0x80 dev:can0
+Jul  3 12:18:28 vpc7 kernel: [   16.692207] ------------[ cut here ]------------
+Jul  3 12:18:28 vpc7 kernel: [   16.692209] kernel BUG at net/core/skbuff.c:100!
+Jul  3 12:18:28 vpc7 kernel: [   16.692215] invalid opcode: 0000 [#1]
+PREEMPT SMP
+Jul  3 12:18:28 vpc7 kernel: [   16.692268] Modules linked in: ext3
+mbcache jbd vcan loop snd_hda_codec_hdmi snd_hda_codec_realtek
+snd_hda_codec_generic iTCO_wdt iTCO_vendor_support
+x86_pkg_temp_thermal coretemp crc32c_intel ghash_clmulni_intel
+aesni_intel aes_x86_64 ablk_helper cryptd lrw gf128mul glue_helper
+evdev psmouse pcspkr serio_raw parport_pc parport tpm_tis tpm
+snd_hda_intel snd_hda_codec peak_pci sja1000 i915 snd_hwdep can_dev
+snd_pcm video snd_timer mei_me e1000e lpc_ich ac i2c_i801 mfd_core snd
+mei ptp intel_gtt pps_core ata_generic drm_kms_helper button processor
+ahci libahci fan thermal
+Jul  3 12:18:28 vpc7 kernel: [   16.692274] CPU: 1 PID: 2080 Comm:
+irq/18-can0 Not tainted 3.14.3-rt4abs+ #16
+Jul  3 12:18:28 vpc7 kernel: [   16.692276] Hardware name: CompuLab
+Intense-PC/Intense-PC, BIOS CR_2.2.0.400 X64 12/12/2013
+Jul  3 12:18:28 vpc7 kernel: [   16.692279] task: ffff88040c5ad680 ti:
+ffff880407cba000 task.ti: ffff880407cba000
+Jul  3 12:18:28 vpc7 kernel: [   16.692293] RIP:
+0010:[<ffffffff81512339>]  [<ffffffff81512339>] skb_panic+0x63/0x65
+Jul  3 12:18:28 vpc7 kernel: [   16.692295] RSP: 0000:ffff880407cbbba8
+ EFLAGS: 00010292
+Jul  3 12:18:28 vpc7 kernel: [   16.692298] RAX: 000000000000008c RBX:
+ffff88040be50200 RCX: 0000000016f816f7
+Jul  3 12:18:28 vpc7 kernel: [   16.692300] RDX: 0000000000000001 RSI:
+0000000000000000 RDI: 00000000ffffffff
+Jul  3 12:18:28 vpc7 kernel: [   16.692301] RBP: ffff880407cbbbc8 R08:
+0000000000000000 R09: 0000000000000000
+Jul  3 12:18:28 vpc7 kernel: [   16.692304] R10: 00000000ffffffff R11:
+00000000ffffffff R12: ffff88040be3f000
+Jul  3 12:18:28 vpc7 kernel: [   16.692306] R13: ffff88040bf29000 R14:
+ffff88040be3f000 R15: 0000000000000000
+Jul  3 12:18:28 vpc7 kernel: [   16.692309] FS:
+0000000000000000(0000) GS:ffff88042e080000(0000)
+knlGS:0000000000000000
+Jul  3 12:18:28 vpc7 kernel: [   16.692311] CS:  0010 DS: 0000 ES:
+0000 CR0: 0000000080050033
+Jul  3 12:18:28 vpc7 kernel: [   16.692313] CR2: 00007fe8a7fd34cc CR3:
+00000004070ec000 CR4: 00000000001407e0
+Jul  3 12:18:28 vpc7 kernel: [   16.692314] Stack:
+Jul  3 12:18:28 vpc7 kernel: [   16.692320]  ffff88030742507f
+0000000000000058 0000000000000080 ffff88040be3f000
+Jul  3 12:18:28 vpc7 kernel: [   16.692324]  ffff880407cbbbd8
+ffffffff8143e142 ffff880407cbbc08 ffffffff814fb64d
+Jul  3 12:18:28 vpc7 kernel: [   16.692328]  ffff88040bf29880
+ffffffff81ac40e8 ffffffff81ac4110 ffff88040be3f000
+Jul  3 12:18:28 vpc7 kernel: [   16.692330] Call Trace:
+Jul  3 12:18:28 vpc7 kernel: [   16.692340]  [<ffffffff8143e142>]
+skb_push+0x38/0x39
+Jul  3 12:18:28 vpc7 kernel: [   16.692348]  [<ffffffff814fb64d>]
+packet_rcv_spkt+0x98/0xdf
+Jul  3 12:18:28 vpc7 kernel: [   16.692357]  [<ffffffff8144b8f8>]
+__netif_receive_skb_core+0x459/0x4dc
+Jul  3 12:18:28 vpc7 kernel: [   16.692363]  [<ffffffff8106b2db>] ?
+get_parent_ip+0xe/0x3e
+Jul  3 12:18:28 vpc7 kernel: [   16.692369]  [<ffffffff8144b9ce>]
+__netif_receive_skb+0x53/0x65
+Jul  3 12:18:28 vpc7 kernel: [   16.692376]  [<ffffffff8144ba40>]
+process_backlog+0x60/0x13d
+Jul  3 12:18:28 vpc7 kernel: [   16.692384]  [<ffffffff8144be10>]
+net_rx_action+0x91/0x1bd
+Jul  3 12:18:28 vpc7 kernel: [   16.692395]  [<ffffffff81046793>]
+do_current_softirqs+0x1a5/0x35b
+Jul  3 12:18:28 vpc7 kernel: [   16.692404]  [<ffffffff81089c0e>] ?
+irq_thread_fn+0x3a/0x3a
+Jul  3 12:18:28 vpc7 kernel: [   16.692409]  [<ffffffff810469c7>]
+__local_bh_enable+0x41/0x68
+Jul  3 12:18:28 vpc7 kernel: [   16.692413]  [<ffffffff810469fc>]
+local_bh_enable+0xe/0x10
+Jul  3 12:18:28 vpc7 kernel: [   16.692417]  [<ffffffff81089c57>]
+irq_forced_thread_fn+0x49/0x55
+Jul  3 12:18:28 vpc7 kernel: [   16.692422]  [<ffffffff8108a3cb>]
+irq_thread+0x8e/0x174
+Jul  3 12:18:28 vpc7 kernel: [   16.692426]  [<ffffffff81089b32>] ?
+irq_finalize_oneshot+0x9c/0x9c
+Jul  3 12:18:28 vpc7 kernel: [   16.692431]  [<ffffffff8108a33d>] ?
+irq_affinity_notify+0x14/0x14
+Jul  3 12:18:28 vpc7 kernel: [   16.692437]  [<ffffffff8105f7cf>]
+kthread+0xdc/0xe4
+Jul  3 12:18:28 vpc7 kernel: [   16.692443]  [<ffffffff8105f6f3>] ?
+flush_kthread_worker+0xe1/0xe1
+Jul  3 12:18:28 vpc7 kernel: [   16.692449]  [<ffffffff815158ac>]
+ret_from_fork+0x7c/0xb0
+Jul  3 12:18:28 vpc7 kernel: [   16.692454]  [<ffffffff8105f6f3>] ?
+flush_kthread_worker+0xe1/0xe1
+Jul  3 12:18:28 vpc7 kernel: [   16.692498] Code: 00 00 48 89 44 24 10
+8b 87 c8 00 00 00 48 89 44 24 08 48 8b 87 d8 00 00 00 48 c7 c7 fb 46
+7b 81 48 89 04 24 31 c0 e8 37 b2 ff ff <0f> 0b 55 48 89 e5 0f 0b 55 48
+c7 c2 a0 66 d8 81 48 89 e5 53 48
+Jul  3 12:18:28 vpc7 kernel: [   16.692503] RIP  [<ffffffff81512339>]
+skb_panic+0x63/0x65
+Jul  3 12:18:28 vpc7 kernel: [   16.692505]  RSP <ffff880407cbbba8>
+Jul  3 12:18:28 vpc7 kernel: [   16.849291] ---[ end trace 0000000000000002 ]---
 
 
+Here are the skbuffs from a number of crashes.  The call traces seem
+to be similar to the one above, but I haven't exhaustively checked.
+
+Jul  3 12:18:28 vpc7 kernel: [   16.691928] skbuff: skb_under_panic:
+text:ffffffff814fb64d len:-65447 put:-65463 head:ffff880407415080
+data:ffff88030742507f tail:0x58 end:0x80 dev:can0
+
+The following are from kernel version 'Linux version 3.10.24-rt22abs
+(austin@aschuh-peloton) (gcc version 4.7.2 (Debian 4.7.2-5abs) ) #15
+SMP PREEMPT RT Tue May 13 14:42:22 PDT'
+
+Jul  3 09:25:11 vpc6 kernel: [    7.994591] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8802151eaa00
+data:ffff8802151ea9ff tail:0x58 end:0x80 dev:can0
+Jul  3 09:32:46 vpc6 kernel: [    7.887542] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8802176a9a40
+data:ffff8802176a9a3f tail:0x58 end:0x80 dev:can1
+Jun 28 08:56:19 vpc7 kernel: [    8.157864] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8803f4d49a40
+data:ffff8803f4d49a3f tail:0x58 end:0x80 dev:can0
+Jun 28 08:56:19 vpc7 kernel: [    8.157868] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8803f41881c0
+data:ffff8803f41881bf tail:0x58 end:0x80 dev:can1
+Jun 30 15:01:59 vpc6 kernel: [   11.481219] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8802150f8540
+data:ffff8802150f853f tail:0x58 end:0x80 dev:can1
+Jun 30 14:42:13 vpc6 kernel: [    9.660556] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff88021733f1c0
+data:ffff88021733f1bf tail:0x58 end:0x80 dev:can1
+Jun 30 12:55:40 vpc6 kernel: [    8.782069] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff880214f63d40
+data:ffff880214f63d3f tail:0x58 end:0x80 dev:can1
+Jun 30 12:17:30 vpc6 kernel: [   10.016782] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff880217cb9180
+data:ffff880217cb917f tail:0x58 end:0x80 dev:can1
+Jun 30 12:48:04 vpc6 kernel: [    8.720439] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff880214bb88c0
+data:ffff880214bb88bf tail:0x58 end:0x80 dev:can1
+Jun 27 18:46:38 vpc7 kernel: [    7.953504] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8803f22d0700
+data:ffff8803f22d06ff tail:0x58 end:0x80 dev:can0
+Jun 27 18:54:15 vpc7 kernel: [    8.861305] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8803f2cdbf00
+data:ffff8803f2cdbeff tail:0x58 end:0x80 dev:can1
+Jun 27 04:57:37 vpc6 kernel: [    8.336231] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff88021a81d780
+data:ffff88021a81d77f tail:0x58 end:0x80 dev:can1
+Jun 27 04:57:37 vpc6 kernel: [    8.336251] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff880218756740
+data:ffff88021875673f tail:0x58 end:0x80 dev:can0
+Jun 23 00:22:42 vpc7 kernel: [    7.924303] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8803f21e7e00
+data:ffff8803f21e7dff tail:0x58 end:0x80 dev:can0
+Jun 17 04:04:30 vpc6 kernel: [    7.776512] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff880215b19500
+data:ffff880215b194ff tail:0x58 end:0x80 dev:can1
+Jun 17 03:56:57 vpc6 kernel: [   11.906063] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff88021830a140
+data:ffff88021830a13f tail:0x58 end:0x80 dev:can0
+Jun 17 04:12:06 vpc6 kernel: [    7.656869] skbuff: skb_under_panic:
+text:ffffffff81492274 len:89 put:73 head:ffff8802148b4ec0
+data:ffff8802148b4ebf tail:0x58 end:0x80 dev:can0
+
+Any ideas what is causing it?  The issue seems to be that the data
+pointer is less than the head pointer, from reading the code.  It only
+happens right at startup.
+
+Thanks,
+  Austin
