@@ -1,169 +1,165 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/3] can: m_can: add Bosch M_CAN controller support
-Date: Thu, 03 Jul 2014 11:20:27 +0200
-Message-ID: <53B5205B.2060206@pengutronix.de>
-References: <1403863246-18822-1-git-send-email-b29396@freescale.com> <1403863246-18822-2-git-send-email-b29396@freescale.com> <53ADB1E8.1030504@hartkopp.net> <20140630082622.GB25689@shlinux1.ap.freescale.net> <53B4473B.2050003@hartkopp.net> <53B459C3.6070807@pengutronix.de> <20140703034839.GA20450@shlinux1.ap.freescale.net> <53B50271.8070307@pengutronix.de> <20140703084803.GA11012@shlinux1.ap.freescale.net> <53B51CA4.3060203@pengutronix.de> <20140703090957.GA26480@shlinux1.ap.freescale.net>
+From: Zhao Qiang <B45475@freescale.com>
+Subject: [PATCH v6] flexcan: add err_irq handler for flexcan
+Date: Thu, 3 Jul 2014 17:22:17 +0800
+Message-ID: <1404379337-15351-1-git-send-email-B45475@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="McWt7dqme4G9Rc4DvAfP9mQ08TVpBEb2V"
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50231 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754853AbaGCJUp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Jul 2014 05:20:45 -0400
-In-Reply-To: <20140703090957.GA26480@shlinux1.ap.freescale.net>
+Received: from mail-by2lp0240.outbound.protection.outlook.com ([207.46.163.240]:52728
+	"EHLO na01-by2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1030595AbaGCJZv (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 3 Jul 2014 05:25:51 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, devicetree@vger.kernel.org
+To: linuxppc-dev@lists.ozlabs.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, B07421@freescale.com
+Cc: Zhao Qiang <B45475@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---McWt7dqme4G9Rc4DvAfP9mQ08TVpBEb2V
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+when flexcan is not physically linked, command 'cantest' will
+trigger an err_irq, add err_irq handler for it.
 
-On 07/03/2014 11:09 AM, Dong Aisheng wrote:
-> On Thu, Jul 03, 2014 at 11:04:36AM +0200, Marc Kleine-Budde wrote:
->> On 07/03/2014 10:48 AM, Dong Aisheng wrote:
->>> On Thu, Jul 03, 2014 at 09:12:49AM +0200, Marc Kleine-Budde wrote:
->>>> On 07/03/2014 05:48 AM, Dong Aisheng wrote:
->>>>> On Wed, Jul 02, 2014 at 09:13:07PM +0200, Marc Kleine-Budde wrote:
->>>>>> On 07/02/2014 07:54 PM, Oliver Hartkopp wrote:
->>>>>>> I'm not really familiar with the naming concept in device trees.
->>>>>>>
->>>>>>> What is your opinion about the remarks below?
->>>>>>
->>>>>> The entries in the DT, at least on freescale baords, follow the na=
-ming
->>>>>> scheme of the reference manual. E.g. on the mx25 it's can1 and can=
-2:
->>>>>>
->>>>>>     can1: can@43f88000 { ... }
->>>>>>     can2: can@43f8c000 { ... }
->>>>>>
->>>>>> And on the mx28, its:
->>>>>>
->>>>>>     can0: can@80032000 { ... }
->>>>>>     can1: can@80034000 { ... }
->>>>>>
->>>>>> Because the imx25 datasheet uses a "1" based counting scheme, whil=
-e the
->>>>>> imx28 uses a "0" based one.
->>>>>>
->>>>>> So it's best practise to follow the naming and numbering scheme of=
- the
->>>>>> hardware reference manual.....and if you have access to the
->>>>>> documentation of the m_can core, use clock names of the m_can core=
- for
->>>>>> the clock-names property.
->>>>>>
->>>>>
->>>>> Based on my knowledge, device tree allows define phandle name accor=
-ding to
->>>>> the real device name of HW according spec while the device node nam=
-e should
->>>>> be general(e.g can@80032000 rather than flexcan@80032000).
->>>>> For imx6sx, there are already following entries in
->>>>> arch/arm/boot/dts/imx6sx.dtsi
->>>>> flexcan1: can@02090000 {...}
->>>>> flexcan2: can@02094000 {...}
->>>>> So i'd prefer to define as:
->>>>> m_can1: canfd@020e8000 {...}
->>>>> m_can2: canfd@020f0000 {...}
->>>>>
->>>>>
->>>>> One problem is there're can alias already.
->>>>> aliases {
->>>>> 	can0 =3D &flexcan1;
->>>>> 	can1 =3D &flexcan2;
->>>>> 	...
->>>>> }
->>>>> I'm not sure adding can2&can3 for mcan is properly:
->>>>> aliases {
->>>>> 	can0 =3D &flexcan1;
->>>>> 	can1 =3D &flexcan2;
->>>>> 	can2 =3D &m_can1;
->>>>> 	can3 =3D &m_can2;
->>>>> 	...
->>>>> }
->>>>> Since the m_can driver does not need to use aliases,
->>>>> so i will not add them.
->>>>
->>>> IMHO It's fine too add the can{2,3} aliases to m_can, too.
->>>>
->>>
->>> I think the main problem for doing this way is that the meaning of id=
+Signed-off-by: Zhao Qiang <B45475@freescale.com>
+---
+Changes for v2:
+	- use a space instead of tab
+	- use flexcan_poll_state instead of print
+Changes for v3:
+	- return IRQ_HANDLED if err is triggered
+	- stop transmitted packets when there is an err_interrupt 
+Changes for v4:
+	- call flexcan_irq 
+Changes for v5:
+	- move err_int_handling code from flexcan_irq to flexcan_err_irq
+	- call flexcan_err_irq from flexcan_irq
+Changes for v6:
+	- move RX_IRQ handling back to flexcan_irq
 
->>> return by of_alias_get_id may be not persistent.
->>> e.g
->>> For MX6SX
->>> aliases {
->>> 	can0 =3D &flexcan1;
->>> 	can1 =3D &flexcan2;
->>> 	can2 =3D &m_can1;
->>> 	can3 =3D &m_can2;
->>> 	...
->>> }
->>>
->>> For other platform, it could be:
->>> aliases {
->>> 	can0 =3D &m_can1;
->>> 	can1 =3D &m_can2;
->>> 	...
->>> }
->>> It's hard for driver to use.
->>
->> The driver doesn't make use of it, does it?
->>
->>> And actually the M_CAN driver does not need to use the alias.
->>> So i wonder if it makes sense to add the alias for m_can devices
->>> like that.
->>
->> For example the imx53 has two different SPI units, in the alias sectio=
-n
->> we see:
->>
->>                 spi0 =3D &ecspi1;
->>                 spi1 =3D &ecspi2;
->>                 spi2 =3D &cspi;
->=20
-> Thanks for the info.
-> I'm not clear what's our purpose adding alias like this?
-> Can you help explain it a bit?
+ drivers/net/can/flexcan.c | 52 +++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 46 insertions(+), 6 deletions(-)
 
-You can use the alias in your dts to refer to the node instead of the
-more complicate name. Further you bring a order to all devices of the
-same type and you can make use of the number in the alias for other
-purposes, which is however not used for CAN afaik.
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f425ec2..f6c92bc 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -208,6 +208,7 @@ struct flexcan_priv {
+ 	void __iomem *base;
+ 	u32 reg_esr;
+ 	u32 reg_ctrl_default;
++	int err_irq;
+ 
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+@@ -690,6 +691,28 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 	return work_done;
+ }
+ 
++static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
++{
++	struct net_device *dev = dev_id;
++	struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_regs __iomem *regs = priv->base;
++	u32 reg_ctrl, reg_esr;
++	irqreturn_t ret = IRQ_NONE;
++
++	reg_esr = flexcan_read(&regs->esr);
++	reg_ctrl = flexcan_read(&regs->ctrl);
++
++	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
++		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
++		ret = IRQ_HANDLED;
++	}
++
++	if (reg_esr & FLEXCAN_ESR_ERR_INT)
++		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
++
++	return ret;
++}
++
+ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = dev_id;
+@@ -698,11 +721,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	u32 reg_iflag1, reg_esr;
+ 
+-	reg_iflag1 = flexcan_read(&regs->iflag1);
+ 	reg_esr = flexcan_read(&regs->esr);
+-	/* ACK all bus error and state change IRQ sources */
+-	if (reg_esr & FLEXCAN_ESR_ALL_INT)
+-		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
++	reg_iflag1 = flexcan_read(&regs->iflag1);
++
++	flexcan_err_irq(irq, dev);
+ 
+ 	/*
+ 	 * schedule NAPI in case of:
+@@ -944,10 +966,17 @@ static int flexcan_open(struct net_device *dev)
+ 	if (err)
+ 		goto out_close;
+ 
++	if (priv->err_irq) {
++		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
++				  dev->name, dev);
++		if (err)
++			goto out_free_irq;
++	}
++
+ 	/* start chip and queuing */
+ 	err = flexcan_chip_start(dev);
+ 	if (err)
+-		goto out_free_irq;
++		goto out_free_err_irq;
+ 
+ 	can_led_event(dev, CAN_LED_EVENT_OPEN);
+ 
+@@ -956,6 +985,9 @@ static int flexcan_open(struct net_device *dev)
+ 
+ 	return 0;
+ 
++ out_free_err_irq:
++	if (priv->err_irq)
++		free_irq(priv->err_irq, dev);
+  out_free_irq:
+ 	free_irq(dev->irq, dev);
+  out_close:
+@@ -977,6 +1009,9 @@ static int flexcan_close(struct net_device *dev)
+ 	flexcan_chip_stop(dev);
+ 
+ 	free_irq(dev->irq, dev);
++	if (priv->err_irq)
++		free_irq(priv->err_irq, dev);
++
+ 	clk_disable_unprepare(priv->clk_per);
+ 	clk_disable_unprepare(priv->clk_ipg);
+ 
+@@ -1099,7 +1134,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	struct resource *mem;
+ 	struct clk *clk_ipg = NULL, *clk_per = NULL;
+ 	void __iomem *base;
+-	int err, irq;
++	int err, irq, err_irq;
+ 	u32 clock_freq = 0;
+ 
+ 	if (pdev->dev.of_node)
+@@ -1126,6 +1161,10 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	if (irq <= 0)
+ 		return -ENODEV;
+ 
++	err_irq = platform_get_irq(pdev, 1);
++	if (err_irq <= 0)
++		err_irq = 0;
++
+ 	base = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -1149,6 +1188,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	dev->flags |= IFF_ECHO;
+ 
+ 	priv = netdev_priv(dev);
++	priv->err_irq = err_irq;
+ 	priv->can.clock.freq = clock_freq;
+ 	priv->can.bittiming_const = &flexcan_bittiming_const;
+ 	priv->can.do_set_mode = flexcan_set_mode;
+-- 
+1.8.5
 
-> Do we need adding alias for all exist devices?
-
-Have a look at the existing imx*.dtsi files. If there are already
-aliases for a given device type, then it makes sense to add new devices
-of that type to the alias aswell.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---McWt7dqme4G9Rc4DvAfP9mQ08TVpBEb2V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlO1IFsACgkQjTAFq1RaXHNHpACfc8ePUdtEtJRcRYJiASkANCN2
-EcYAn1xFuhQ9n0rn632FC85LJSCvZznY
-=Us47
------END PGP SIGNATURE-----
-
---McWt7dqme4G9Rc4DvAfP9mQ08TVpBEb2V--
