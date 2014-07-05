@@ -1,155 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V2 1/1] net: can: Remodel FlexCAN register read/write
- APIs for BE instances
-Date: Fri, 04 Jul 2014 15:53:16 +0200
-Message-ID: <53B6B1CC.5080702@pengutronix.de>
-References: <1404478881-21853-1-git-send-email-bhupesh.sharma@freescale.com> <53B6AEF4.6080301@pengutronix.de> <f1a24210440e496381238a53d9a23db7@BN1PR03MB220.namprd03.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: skbuff panic
+Date: Sat, 05 Jul 2014 12:40:59 +0200
+Message-ID: <53B7D63B.2060108@hartkopp.net>
+References: <CANGgnMbu511sgePeix3hjitO+xEazCw1j7Ya_81SA1GsN6W+QA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="JA7B9lOLici4a86j3aKP0oeLFibew2FEp"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40808 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752129AbaGDNxT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Jul 2014 09:53:19 -0400
-In-Reply-To: <f1a24210440e496381238a53d9a23db7@BN1PR03MB220.namprd03.prod.outlook.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:34889 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754044AbaGEKlE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 5 Jul 2014 06:41:04 -0400
+In-Reply-To: <CANGgnMbu511sgePeix3hjitO+xEazCw1j7Ya_81SA1GsN6W+QA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Austin Schuh <austin@peloton-tech.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JA7B9lOLici4a86j3aKP0oeLFibew2FEp
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 04.07.2014 01:03, Austin Schuh wrote:
+> I'm seeing the following panic.  I've seen it on multiple kernel
+> versions (3.10.24 patched, and 3.14.3).
+> 
+> uname -a
+> Linux vpc5 3.14.3-rt4abs+ #16 SMP PREEMPT RT Tue Jul 1 16:28:26 PDT
+> 2014 x86_64 GNU/Linux
+> 
+> Jul  3 12:18:28 vpc7 kernel: [   16.691928] skbuff: skb_under_panic:
+> text:ffffffff814fb64d len:-65447 put:-65463 head:ffff880407415080
+> data:ffff88030742507f tail:0x58 end:0x80 dev:can0
+> Jul  3 12:18:28 vpc7 kernel: [   16.692207] ------------[ cut here ]------------
+> Jul  3 12:18:28 vpc7 kernel: [   16.692209] kernel BUG at net/core/skbuff.c:100!
+(..)
+> Jul  3 12:18:28 vpc7 kernel: [   16.692330] Call Trace:
+> Jul  3 12:18:28 vpc7 kernel: [   16.692340]  [<ffffffff8143e142>]
+> skb_push+0x38/0x39
+> Jul  3 12:18:28 vpc7 kernel: [   16.692348]  [<ffffffff814fb64d>]
+> packet_rcv_spkt+0x98/0xdf
+> Jul  3 12:18:28 vpc7 kernel: [   16.692357]  [<ffffffff8144b8f8>]
+> __netif_receive_skb_core+0x459/0x4dc
 
-On 07/04/2014 03:47 PM, bhupesh.sharma@freescale.com wrote:
-> Hi Marc,
->=20
-> Thanks for your review.
->=20
->> -----Original Message-----
->> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->> Sent: Friday, July 04, 2014 7:11 PM
->> To: Sharma Bhupesh-B45370; linux-can@vger.kernel.org
->> Cc: wg@grandegger.com; netdev@vger.kernel.org
->> Subject: Re: [PATCH V2 1/1] net: can: Remodel FlexCAN register read/wr=
-ite
->> APIs for BE instances
->>
->> On 07/04/2014 03:01 PM, Bhupesh Sharma wrote:
->>> The FlexCAN IP on certain SoCs like (Freescale's LS1021A) is modelled=
+> 
+> Any ideas what is causing it?  The issue seems to be that the data
+> pointer is less than the head pointer, from reading the code.  It only
+> happens right at startup.
 
->>> in a big-endian fashion, i.e. the registers and the message buffers
->>> are organized in a BE way.
->>>
->>> More details about the LS1021A SoC can be seen here:
->>> http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=3DLS10=
-21A
->>> &nodeId=3D018rH325E4017B#
->>>
->>> This patch ensures that the register read/write APIs are remodelled t=
-o
->>> address such cases, while ensuring that existing platforms (where the=
+Hi Austin,
 
->>> FlexCAN IP was modelled in LE way) do not break.
->>>
->>> Tested on LS1021A-QDS board.
->>>
->>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
->>> ---
->>> Changes since v1:
->>> - Addressed Marc's review comments.
->>> - Also tried on ARM big-endian kernel
->>>
->>> Rebased against v3.16-rc2
->>
->> Please use net-next or linux-can-next, but I think this makes no
->> difference here.
->>
->>>  drivers/net/can/flexcan.c |  192
->>> +++++++++++++++++++++++++++------------------
->>>  1 file changed, 114 insertions(+), 78 deletions(-)
->>
->> I'm missing the DT documentation update.
->=20
-> Yes. I just wanted to get some early comments on this.
->=20
->> [...]
->>
->> 		of_property_read_u32(pdev->dev.of_node,
->>> @@ -1149,6 +1166,25 @@ static int flexcan_probe(struct platform_devic=
-e
->> *pdev)
->>>  	dev->flags |=3D IFF_ECHO;
->>>
->>>  	priv =3D netdev_priv(dev);
->>> +
->>> +	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
->>> +		core_is_little =3D false;
->>> +
->>> +	if (of_property_read_bool(dev->dev.of_node, "big-endian"))
->>> +		module_is_little =3D false;
->>> +
->>> +	if ((core_is_little && module_is_little) ||
->>> +	    (!core_is_little && !module_is_little)) {
->>
->> I think this is broken on PPC, where both core and module are BE. Plea=
-se
->> assume native endianess an default, if neither big-endian nor little-
->> endian is present.
->=20
-> On PPC platforms (which are BE) the IP is essentially LE (I verified th=
-is on P1010 RDB).
->=20
-> If both are BE, then we need no swap operations, right? Or am I missing=
- something.
+as you are using the PF_PACKET socket here - where packet_rcv_spkt() is using
+skb_push() - the things are slightly different to the PF_CAN handling.
 
-Have a look at the existing code:
+Are these kernel panics related to the reception of CAN frames - or do they
+only show up when you send CAN frames (via PF_PACKET socket)??
 
-> /*
->  * Abstract off the read/write for arm versus ppc. This
->  * assumes that PPC uses big-endian registers and everything
->  * else uses little-endian registers, independent of CPU
->  * endianess.
->  */
-> #if defined(CONFIG_PPC)
-> static inline u32 flexcan_read(void __iomem *addr)
-> {
-> 	return in_be32(addr);
-> }
->=20
-> static inline void flexcan_write(u32 val, void __iomem *addr)
-> {
-> 	out_be32(addr, val);
-> }
-> #else
+Can you tell something more about how you send and receive CAN frames in your
+setup?
 
-I think in_be32() does the same regarding to endianess as ioread32be()
+Best regards,
+Oliver
 
-Marc
-
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---JA7B9lOLici4a86j3aKP0oeLFibew2FEp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlO2scwACgkQjTAFq1RaXHN3xQCcCoCaQSfJH8YnOXbSKgG3UYhR
-BKMAnjI9K9GFE7Q+v4xWS1aO/uJRAzk3
-=kRSc
------END PGP SIGNATURE-----
-
---JA7B9lOLici4a86j3aKP0oeLFibew2FEp--
