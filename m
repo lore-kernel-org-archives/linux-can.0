@@ -1,73 +1,63 @@
-From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-Subject: [PATCH 4/4] can: sja1000: Add support for CAN_CTRLMODE_PRESUME_ACK
-Date: Wed,  9 Jul 2014 23:31:13 +0400
-Message-ID: <1404934273-19233-4-git-send-email-nebaruzdin@gmail.com>
-References: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Socketcan correct way to bootup...
+Date: Thu, 10 Jul 2014 01:45:04 +0200
+Message-ID: <53BDD400.70904@hartkopp.net>
+References: <53BD1BE1.8050403@eurekelettronica.it> <53BD248F.5030608@pengutronix.de> <CAGm1_kuBTJEsTjrYCtop6vcdB+pyNe64bjVgMbz6F0bXsGsHeg@mail.gmail.com> <53BD3766.6090202@pengutronix.de> <CAGm1_ku46OgLXoMPZqKMSQ06=vQV5MjbbvEKkBagJ1_C9g7BUg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f54.google.com ([209.85.215.54]:61573 "EHLO
-	mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756721AbaGITbe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 15:31:34 -0400
-Received: by mail-la0-f54.google.com with SMTP id mc6so5446496lab.13
-        for <linux-can@vger.kernel.org>; Wed, 09 Jul 2014 12:31:33 -0700 (PDT)
-Received: from localhost.localdomain ([89.249.162.12])
-        by mx.google.com with ESMTPSA id uh6sm22425493lac.13.2014.07.09.12.31.32
-        for <linux-can@vger.kernel.org>
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 09 Jul 2014 12:31:32 -0700 (PDT)
-In-Reply-To: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:36677 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753923AbaGIXqA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 19:46:00 -0400
+In-Reply-To: <CAGm1_ku46OgLXoMPZqKMSQ06=vQV5MjbbvEKkBagJ1_C9g7BUg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Yegor Yefremov <yegorslists@googlemail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, gianluca <gianlucarenzi@eurekelettronica.it>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SJA1000 has a self test mode (STM) which does not require
-acknowledgement for the successful message transmission. In this mode a
-node test is possible without any other active node on the bus.
+For Debian systems I use this script:
 
-This patch adds a possibility to set STM for SJA1000 controller through
-specifying the corresponding CAN_CTRLMODE_PRESUME_ACK netlink flag.
+https://gitorious.org/linux-can/can-misc/source/etc/can_if
 
-Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
----
- drivers/net/can/sja1000/sja1000.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Just copy can_if to /etc/init.d and say
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index c480bce..fd6ee05 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -141,6 +141,7 @@ static void set_normal_mode(struct net_device *dev)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
- 	unsigned char status = priv->read_reg(priv, SJA1000_MOD);
-+	u8 mod_reg_val = 0x00;
- 	int i;
- 
- 	for (i = 0; i < 100; i++) {
-@@ -158,9 +159,10 @@ static void set_normal_mode(struct net_device *dev)
- 
- 		/* set chip to normal mode */
- 		if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
--			priv->write_reg(priv, SJA1000_MOD, MOD_LOM);
--		else
--			priv->write_reg(priv, SJA1000_MOD, 0x00);
-+			mod_reg_val |= MOD_LOM;
-+		if (priv->can.ctrlmode & CAN_CTRLMODE_PRESUME_ACK)
-+			mod_reg_val |= MOD_STM;
-+		priv->write_reg(priv, SJA1000_MOD, mod_reg_val);
- 
- 		udelay(10);
- 
-@@ -632,7 +634,8 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
- 				     | CAN_CTRLMODE_LISTENONLY
- 				     | CAN_CTRLMODE_3_SAMPLES
- 				     | CAN_CTRLMODE_ONE_SHOT
--				     | CAN_CTRLMODE_BERR_REPORTING;
-+				     | CAN_CTRLMODE_BERR_REPORTING
-+				     | CAN_CTRLMODE_PRESUME_ACK;
- 
- 	spin_lock_init(&priv->cmdreg_lock);
- 
--- 
-2.0.1
+update-rc.d can_if defaults
 
+Btw. Debian changed to systemd. So far this script still run's with
+the latest Debian unstable (which used systemd).
+
+Regards,
+Oliver
+
+
+On 09.07.2014 14:44, Yegor Yefremov wrote:
+> On Wed, Jul 9, 2014 at 2:36 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>> On 07/09/2014 02:29 PM, Yegor Yefremov wrote:
+>>>> BTW: you probably want to integrate your application into the automatic
+>>>> startup via an init script or in new designs with systemd...and _not_
+>>>> start it by hand.
+>>>
+>>> You can also use libsocketcan or libnl to configure CAN interface
+>>> directly from your application.
+>>
+>> Good point.
+>>
+>> here's libsocketcan's API:
+>>
+>> http://git.pengutronix.de/?p=tools/libsocketcan.git;a=blob;f=include/libsocketcan.h;h=dc52053b824d1a8976126b043de4ee5d843c1401;hb=0c91940da1c16e01e8220e9fa18c703852ba6d1b
+>>
+>> http://www.pengutronix.de/software/libsocketcan/download/
+> 
+> If you're using Buildroot (http://buildroot.uclibc.org/) or OpenWrt
+> (https://openwrt.org/) you'll find libsocketcan already being
+> integrated into their repositories. I don't know about OpenEmbedded
+> universe.
+> 
+> Yegor
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
