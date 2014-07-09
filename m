@@ -1,44 +1,77 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: Socketcan correct way to bootup...
-Date: Wed, 9 Jul 2014 14:44:57 +0200
-Message-ID: <CAGm1_ku46OgLXoMPZqKMSQ06=vQV5MjbbvEKkBagJ1_C9g7BUg@mail.gmail.com>
-References: <53BD1BE1.8050403@eurekelettronica.it> <53BD248F.5030608@pengutronix.de>
- <CAGm1_kuBTJEsTjrYCtop6vcdB+pyNe64bjVgMbz6F0bXsGsHeg@mail.gmail.com> <53BD3766.6090202@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+Subject: [PATCH 1/4] can: sja1000: Add support for CAN_CTRLMODE_LOOPBACK
+Date: Wed,  9 Jul 2014 23:31:10 +0400
+Message-ID: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f47.google.com ([209.85.220.47]:56588 "EHLO
-	mail-pa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751871AbaGIMpS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 08:45:18 -0400
-Received: by mail-pa0-f47.google.com with SMTP id kq14so9121718pab.20
-        for <linux-can@vger.kernel.org>; Wed, 09 Jul 2014 05:45:17 -0700 (PDT)
-In-Reply-To: <53BD3766.6090202@pengutronix.de>
+Received: from mail-la0-f52.google.com ([209.85.215.52]:54177 "EHLO
+	mail-la0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756062AbaGITba (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 15:31:30 -0400
+Received: by mail-la0-f52.google.com with SMTP id gl10so27936lab.11
+        for <linux-can@vger.kernel.org>; Wed, 09 Jul 2014 12:31:29 -0700 (PDT)
+Received: from localhost.localdomain ([89.249.162.12])
+        by mx.google.com with ESMTPSA id uh6sm22425493lac.13.2014.07.09.12.31.27
+        for <linux-can@vger.kernel.org>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 09 Jul 2014 12:31:28 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: gianluca <gianlucarenzi@eurekelettronica.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On Wed, Jul 9, 2014 at 2:36 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 07/09/2014 02:29 PM, Yegor Yefremov wrote:
->>> BTW: you probably want to integrate your application into the automatic
->>> startup via an init script or in new designs with systemd...and _not_
->>> start it by hand.
->>
->> You can also use libsocketcan or libnl to configure CAN interface
->> directly from your application.
->
-> Good point.
->
-> here's libsocketcan's API:
->
-> http://git.pengutronix.de/?p=tools/libsocketcan.git;a=blob;f=include/libsocketcan.h;h=dc52053b824d1a8976126b043de4ee5d843c1401;hb=0c91940da1c16e01e8220e9fa18c703852ba6d1b
->
-> http://www.pengutronix.de/software/libsocketcan/download/
+This adds support for hardware loopback in SJA1000 by utilising its self
+reception request (SRR) feature. Upon SRR the message is transmitted and
+received simultaneously, meaning you can't have hardware loopback
+without actually sending a message to the CAN bus in case of SJA1000.
 
-If you're using Buildroot (http://buildroot.uclibc.org/) or OpenWrt
-(https://openwrt.org/) you'll find libsocketcan already being
-integrated into their repositories. I don't know about OpenEmbedded
-universe.
+Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+---
+ drivers/net/can/sja1000/sja1000.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-Yegor
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index f31499a..c480bce 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -278,6 +278,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 	uint8_t dlc;
+ 	canid_t id;
+ 	uint8_t dreg;
++	u8 cmd_reg_val = 0x00;
+ 	int i;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+@@ -312,9 +313,14 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+ 	can_put_echo_skb(skb, dev, 0);
+ 
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+-		sja1000_write_cmdreg(priv, CMD_TR | CMD_AT);
++		cmd_reg_val |= CMD_AT;
++
++	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
++		cmd_reg_val |= CMD_SRR;
+ 	else
+-		sja1000_write_cmdreg(priv, CMD_TR);
++		cmd_reg_val |= CMD_TR;
++
++	sja1000_write_cmdreg(priv, cmd_reg_val);
+ 
+ 	return NETDEV_TX_OK;
+ }
+@@ -622,9 +628,11 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
+ 	priv->can.do_set_bittiming = sja1000_set_bittiming;
+ 	priv->can.do_set_mode = sja1000_set_mode;
+ 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
+-	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+-		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_ONE_SHOT;
++	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK
++				     | CAN_CTRLMODE_LISTENONLY
++				     | CAN_CTRLMODE_3_SAMPLES
++				     | CAN_CTRLMODE_ONE_SHOT
++				     | CAN_CTRLMODE_BERR_REPORTING;
+ 
+ 	spin_lock_init(&priv->cmdreg_lock);
+ 
+-- 
+2.0.1
+
