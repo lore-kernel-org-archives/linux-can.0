@@ -1,77 +1,50 @@
 From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-Subject: [PATCH 1/4] can: sja1000: Add support for CAN_CTRLMODE_LOOPBACK
-Date: Wed,  9 Jul 2014 23:31:10 +0400
-Message-ID: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
+Subject: [PATCH 3/4] can: netlink: Add CAN_CTRLMODE_PRESUME_ACK flag
+Date: Wed,  9 Jul 2014 23:31:12 +0400
+Message-ID: <1404934273-19233-3-git-send-email-nebaruzdin@gmail.com>
+References: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f52.google.com ([209.85.215.52]:54177 "EHLO
-	mail-la0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756062AbaGITba (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 15:31:30 -0400
-Received: by mail-la0-f52.google.com with SMTP id gl10so27936lab.11
-        for <linux-can@vger.kernel.org>; Wed, 09 Jul 2014 12:31:29 -0700 (PDT)
+Received: from mail-la0-f53.google.com ([209.85.215.53]:48291 "EHLO
+	mail-la0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756723AbaGITbd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 15:31:33 -0400
+Received: by mail-la0-f53.google.com with SMTP id b8so5310313lan.40
+        for <linux-can@vger.kernel.org>; Wed, 09 Jul 2014 12:31:32 -0700 (PDT)
 Received: from localhost.localdomain ([89.249.162.12])
-        by mx.google.com with ESMTPSA id uh6sm22425493lac.13.2014.07.09.12.31.27
+        by mx.google.com with ESMTPSA id uh6sm22425493lac.13.2014.07.09.12.31.30
         for <linux-can@vger.kernel.org>
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 09 Jul 2014 12:31:28 -0700 (PDT)
+        Wed, 09 Jul 2014 12:31:31 -0700 (PDT)
+In-Reply-To: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-This adds support for hardware loopback in SJA1000 by utilising its self
-reception request (SRR) feature. Upon SRR the message is transmitted and
-received simultaneously, meaning you can't have hardware loopback
-without actually sending a message to the CAN bus in case of SJA1000.
+Most CAN controllers have a support for ignoring ACK absence. Some of
+them refer to this feature as a self test mode (e. g. SJA1000) and some
+include it as a part of a loopback mode (e. g. MCP2510).
+
+Setting the introduced flag via netlink should make CAN controller
+perform a successful transmission, even if there is no acknowledgement
+(dominant ACK bit) received.
 
 Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
 ---
- drivers/net/can/sja1000/sja1000.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ include/uapi/linux/can/netlink.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index f31499a..c480bce 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -278,6 +278,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
- 	uint8_t dlc;
- 	canid_t id;
- 	uint8_t dreg;
-+	u8 cmd_reg_val = 0x00;
- 	int i;
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 3bbf5c7..3e4323a 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -97,6 +97,7 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
+ #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+ #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
++#define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
  
- 	if (can_dropped_invalid_skb(dev, skb))
-@@ -312,9 +313,14 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
- 	can_put_echo_skb(skb, dev, 0);
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
--		sja1000_write_cmdreg(priv, CMD_TR | CMD_AT);
-+		cmd_reg_val |= CMD_AT;
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
-+		cmd_reg_val |= CMD_SRR;
- 	else
--		sja1000_write_cmdreg(priv, CMD_TR);
-+		cmd_reg_val |= CMD_TR;
-+
-+	sja1000_write_cmdreg(priv, cmd_reg_val);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -622,9 +628,11 @@ struct net_device *alloc_sja1000dev(int sizeof_priv)
- 	priv->can.do_set_bittiming = sja1000_set_bittiming;
- 	priv->can.do_set_mode = sja1000_set_mode;
- 	priv->can.do_get_berr_counter = sja1000_get_berr_counter;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
--		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_ONE_SHOT;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK
-+				     | CAN_CTRLMODE_LISTENONLY
-+				     | CAN_CTRLMODE_3_SAMPLES
-+				     | CAN_CTRLMODE_ONE_SHOT
-+				     | CAN_CTRLMODE_BERR_REPORTING;
- 
- 	spin_lock_init(&priv->cmdreg_lock);
- 
+ /*
+  * CAN device statistics
 -- 
 2.0.1
 
