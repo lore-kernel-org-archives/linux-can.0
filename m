@@ -1,236 +1,86 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 3.2 003/125] genirq: Sanitize spurious interrupt detection
- of threaded irqs
-Date: Tue, 08 Jul 2014 20:01:50 +0100
-Message-ID: <lsq.1404846110.451812438@decadent.org.uk>
-References: <lsq.1404846109.699842714@decadent.org.uk>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Socketcan correct way to bootup...
+Date: Wed, 09 Jul 2014 13:16:31 +0200
+Message-ID: <53BD248F.5030608@pengutronix.de>
+References: <53BD1BE1.8050403@eurekelettronica.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="XvHvowK9T8TEROuV1hMkaPqnp27IS63jJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:54564 "EHLO
-	shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755821AbaGHTIr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Jul 2014 15:08:47 -0400
-Content-Disposition: inline
-In-Reply-To: <lsq.1404846109.699842714@decadent.org.uk>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36108 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755123AbaGILQj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Jul 2014 07:16:39 -0400
+In-Reply-To: <53BD1BE1.8050403@eurekelettronica.it>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: akpm@linux-foundation.org, Wolfgang Grandegger <wg@grandegger.com>, Thomas Gleixner <tglx@linutronix.de>, Austin Schuh <austin@peloton-tech.com>, Till Straumann <strauman@slac.stanford.edu>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To: gianluca <gianlucarenzi@eurekelettronica.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-3.2.61-rc1 review patch.  If anyone has any objections, please let me know.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XvHvowK9T8TEROuV1hMkaPqnp27IS63jJ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-------------------
+On 07/09/2014 12:39 PM, gianluca wrote:
+> I was wondering if there is some "Offical" way to bring-up a socketcan
+> interface during bootup of a Linux System. Actually I write a simple
+> script BEFORE running my application in this way:
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Depends on your Distribution/init system.
 
-commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
+> # run.sh 125000 75 can0
+>=20
+> [ run.sh ]
+> #!/bin/sh
+> BITRATE=3D$1
+> SAMPLE=3D".$2"
+> INTERFACE=3D$3
+> ip link set $INTERFACE up type can bitrate ${BITRATE} sample-point
+> ${SAMPLE}
+> ip -details link show $INTERFACE
+> while [ true ];
+> do
+>     ./myapplication
+> done
+>=20
+> Are there some guidelines on how to approach this startup? i.e. I was
+> thinking about similar to ifup /etc/network/interface but with the
+> addendum of the bitrate and sample point...
 
-Till reported that the spurious interrupt detection of threaded
-interrupts is broken in two ways:
+On recent Debian based Distris you can use ifup/ifdown for CAN
+interfaces. See the man page of interfaces.
 
-- note_interrupt() is called for each action thread of a shared
-  interrupt line. That's wrong as we are only interested whether none
-  of the device drivers felt responsible for the interrupt, but by
-  calling multiple times for a single interrupt line we account
-  IRQ_NONE even if one of the drivers felt responsible.
+If you use busybox's ifup/ifdown you can fall back to the "inet manual"
+mode and specify /sbin/ip commands to configure and up/down your
+interface. On systemd you can add a service that starts CAN and runs
+before your actual program.
 
-- note_interrupt() when called from the thread handler is not
-  serialized. That leaves the members of irq_desc which are used for
-  the spurious detection unprotected.
+Marc
 
-To solve this we need to defer the spurious detection of a threaded
-interrupt to the next hardware interrupt context where we have
-implicit serialization.
+BTW: you probably want to integrate your application into the automatic
+startup via an init script or in new designs with systemd...and _not_
+start it by hand.
 
-If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
-check whether the previous interrupt requested a deferred check. If
-not, we request a deferred check for the next hardware interrupt and
-return.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-If set, we check whether one of the interrupt threads signaled
-success. Depending on this information we feed the result into the
-spurious detector.
 
-If one primary handler of a shared interrupt returns IRQ_HANDLED we
-disable the deferred check of irq threads on the same line, as we have
-found at least one device driver who cared.
+--XvHvowK9T8TEROuV1hMkaPqnp27IS63jJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Reported-by: Till Straumann <strauman@slac.stanford.edu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Austin Schuh <austin@peloton-tech.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
-[bwh: Backported to 3.2: adjust context, indentation]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
- include/linux/irqdesc.h |   4 ++
- kernel/irq/manage.c     |   4 +-
- kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 108 insertions(+), 6 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -27,6 +27,8 @@ struct module;
-  * @irq_count:		stats field to detect stalled irqs
-  * @last_unhandled:	aging timer for unhandled count
-  * @irqs_unhandled:	stats field for spurious unhandled interrupts
-+ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
-+ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
-  * @lock:		locking for SMP
-  * @affinity_hint:	hint to user space for preferred irq affinity
-  * @affinity_notify:	context for notification of affinity changes
-@@ -53,6 +55,8 @@ struct irq_desc {
- 	unsigned int		irq_count;	/* For detecting broken IRQs */
- 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
- 	unsigned int		irqs_unhandled;
-+	atomic_t		threads_handled;
-+	int			threads_handled_last;
- 	raw_spinlock_t		lock;
- 	struct cpumask		*percpu_enabled;
- #ifdef CONFIG_SMP
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -813,8 +813,8 @@ static int irq_thread(void *data)
- 
- 			raw_spin_unlock_irq(&desc->lock);
- 			action_ret = handler_fn(desc, action);
--			if (!noirqdebug)
--				note_interrupt(action->irq, desc, action_ret);
-+			if (action_ret == IRQ_HANDLED)
-+				atomic_inc(&desc->threads_handled);
- 		}
- 
- 		wake = atomic_dec_and_test(&desc->threads_active);
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, stru
- 	return action && (action->flags & IRQF_IRQPOLL);
- }
- 
-+#define SPURIOUS_DEFERRED	0x80000000
-+
- void note_interrupt(unsigned int irq, struct irq_desc *desc,
- 		    irqreturn_t action_ret)
- {
- 	if (desc->istate & IRQS_POLL_INPROGRESS)
- 		return;
- 
--	/* we get here again via the threaded handler */
--	if (action_ret == IRQ_WAKE_THREAD)
--		return;
--
- 	if (bad_action_ret(action_ret)) {
- 		report_bad_irq(irq, desc, action_ret);
- 		return;
- 	}
- 
-+	/*
-+	 * We cannot call note_interrupt from the threaded handler
-+	 * because we need to look at the compound of all handlers
-+	 * (primary and threaded). Aside of that in the threaded
-+	 * shared case we have no serialization against an incoming
-+	 * hardware interrupt while we are dealing with a threaded
-+	 * result.
-+	 *
-+	 * So in case a thread is woken, we just note the fact and
-+	 * defer the analysis to the next hardware interrupt.
-+	 *
-+	 * The threaded handlers store whether they sucessfully
-+	 * handled an interrupt and we check whether that number
-+	 * changed versus the last invocation.
-+	 *
-+	 * We could handle all interrupts with the delayed by one
-+	 * mechanism, but for the non forced threaded case we'd just
-+	 * add pointless overhead to the straight hardirq interrupts
-+	 * for the sake of a few lines less code.
-+	 */
-+	if (action_ret & IRQ_WAKE_THREAD) {
-+		/*
-+		 * There is a thread woken. Check whether one of the
-+		 * shared primary handlers returned IRQ_HANDLED. If
-+		 * not we defer the spurious detection to the next
-+		 * interrupt.
-+		 */
-+		if (action_ret == IRQ_WAKE_THREAD) {
-+			int handled;
-+			/*
-+			 * We use bit 31 of thread_handled_last to
-+			 * denote the deferred spurious detection
-+			 * active. No locking necessary as
-+			 * thread_handled_last is only accessed here
-+			 * and we have the guarantee that hard
-+			 * interrupts are not reentrant.
-+			 */
-+			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
-+				desc->threads_handled_last |= SPURIOUS_DEFERRED;
-+				return;
-+			}
-+			/*
-+			 * Check whether one of the threaded handlers
-+			 * returned IRQ_HANDLED since the last
-+			 * interrupt happened.
-+			 *
-+			 * For simplicity we just set bit 31, as it is
-+			 * set in threads_handled_last as well. So we
-+			 * avoid extra masking. And we really do not
-+			 * care about the high bits of the handled
-+			 * count. We just care about the count being
-+			 * different than the one we saw before.
-+			 */
-+			handled = atomic_read(&desc->threads_handled);
-+			handled |= SPURIOUS_DEFERRED;
-+			if (handled != desc->threads_handled_last) {
-+				action_ret = IRQ_HANDLED;
-+				/*
-+				 * Note: We keep the SPURIOUS_DEFERRED
-+				 * bit set. We are handling the
-+				 * previous invocation right now.
-+				 * Keep it for the current one, so the
-+				 * next hardware interrupt will
-+				 * account for it.
-+				 */
-+				desc->threads_handled_last = handled;
-+			} else {
-+				/*
-+				 * None of the threaded handlers felt
-+				 * responsible for the last interrupt
-+				 *
-+				 * We keep the SPURIOUS_DEFERRED bit
-+				 * set in threads_handled_last as we
-+				 * need to account for the current
-+				 * interrupt as well.
-+				 */
-+				action_ret = IRQ_NONE;
-+			}
-+		} else {
-+			/*
-+			 * One of the primary handlers returned
-+			 * IRQ_HANDLED. So we don't care about the
-+			 * threaded handlers on the same line. Clear
-+			 * the deferred detection bit.
-+			 *
-+			 * In theory we could/should check whether the
-+			 * deferred bit is set and take the result of
-+			 * the previous run into account here as
-+			 * well. But it's really not worth the
-+			 * trouble. If every other interrupt is
-+			 * handled we never trigger the spurious
-+			 * detector. And if this is just the one out
-+			 * of 100k unhandled ones which is handled
-+			 * then we merily delay the spurious detection
-+			 * by one hard interrupt. Not a real problem.
-+			 */
-+			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
-+		}
-+	}
-+
- 	if (unlikely(action_ret == IRQ_NONE)) {
- 		/*
- 		 * If we are seeing only the odd spurious IRQ caused by
+iEYEARECAAYFAlO9JI8ACgkQjTAFq1RaXHP55QCfbsGCEnLUuUZ8S14/mikViW+q
+5cwAoIeP28QIqfHVnk6boO6zpfioHwwB
+=TgaX
+-----END PGP SIGNATURE-----
 
+--XvHvowK9T8TEROuV1hMkaPqnp27IS63jJ--
