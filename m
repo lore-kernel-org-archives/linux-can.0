@@ -1,54 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v7 31/33] net: slcan - set name assign type
-Date: Thu, 10 Jul 2014 10:51:04 +0200
-Message-ID: <53BE53F8.9090405@pengutronix.de>
-References: <1404980258-30853-1-git-send-email-teg@jklm.no> <1404980258-30853-32-git-send-email-teg@jklm.no>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/4] can: netlink: Add CAN_CTRLMODE_PRESUME_ACK flag
+Date: Thu, 10 Jul 2014 10:06:47 -0400
+Message-ID: <53BE9DF7.6020608@hartkopp.net>
+References: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com> <1404934273-19233-3-git-send-email-nebaruzdin@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="3NThhxWj3tlRBlbxiOJleNhGoA8t3Q9eX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404980258-30853-32-git-send-email-teg@jklm.no>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Gundersen <teg@jklm.no>, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, David Herrmann <dh.herrmann@gmail.com>, Kay Sievers <kay@vrfy.org>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:52863 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751134AbaGJOG6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Jul 2014 10:06:58 -0400
+In-Reply-To: <1404934273-19233-3-git-send-email-nebaruzdin@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com
+Cc: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3NThhxWj3tlRBlbxiOJleNhGoA8t3Q9eX
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello Marc and Wolfgang,
 
-On 07/10/2014 10:17 AM, Tom Gundersen wrote:
-> Names are given by the first available SLCAN channel, so order
-> of device creation matters.
->=20
-> Signed-off-by: Tom Gundersen <teg@jklm.no>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: linux-can@vger.kernel.org
+what do you think about this extension.
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+ From my side the patchset makes sense.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Regards,
+Oliver
 
-
---3NThhxWj3tlRBlbxiOJleNhGoA8t3Q9eX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlO+U/gACgkQjTAFq1RaXHMpmQCggsNcSP8juogA2SKk/SeMIS24
-pswAn1E8kgIno+JcjRvowGfmQlKUXtM5
-=eUHW
------END PGP SIGNATURE-----
-
---3NThhxWj3tlRBlbxiOJleNhGoA8t3Q9eX--
+On 09.07.2014 15:31, Nikita Edward Baruzdin wrote:
+> Most CAN controllers have a support for ignoring ACK absence. Some of
+> them refer to this feature as a self test mode (e. g. SJA1000) and some
+> include it as a part of a loopback mode (e. g. MCP2510).
+>
+> Setting the introduced flag via netlink should make CAN controller
+> perform a successful transmission, even if there is no acknowledgement
+> (dominant ACK bit) received.
+>
+> Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+> ---
+>   include/uapi/linux/can/netlink.h | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+> index 3bbf5c7..3e4323a 100644
+> --- a/include/uapi/linux/can/netlink.h
+> +++ b/include/uapi/linux/can/netlink.h
+> @@ -97,6 +97,7 @@ struct can_ctrlmode {
+>   #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
+>   #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+>   #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+> +#define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
+>
+>   /*
+>    * CAN device statistics
+>
