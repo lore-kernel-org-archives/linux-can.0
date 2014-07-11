@@ -1,152 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 1/2] can: m_can: add device tree binding documentation
-Date: Fri, 11 Jul 2014 14:54:00 +0200
-Message-ID: <53BFDE68.4040405@pengutronix.de>
-References: <1405074557-5519-1-git-send-email-b29396@freescale.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/4] can: netlink: Add CAN_CTRLMODE_PRESUME_ACK flag
+Date: Fri, 11 Jul 2014 09:18:37 -0400
+Message-ID: <53BFE42D.20700@hartkopp.net>
+References: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com> <1404934273-19233-3-git-send-email-nebaruzdin@gmail.com> <53BE9DF7.6020608@hartkopp.net> <53BE9F35.9060509@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7"
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37740 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752000AbaGKMyk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 08:54:40 -0400
-In-Reply-To: <1405074557-5519-1-git-send-email-b29396@freescale.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:13800 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752391AbaGKNSq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 09:18:46 -0400
+In-Reply-To: <53BE9F35.9060509@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com
+Cc: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I tried to find a short name for:
 
-On 07/11/2014 12:29 PM, Dong Aisheng wrote:
-> add M_CAN device tree binding documentation
->=20
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: Varka Bhadram <varkabhadram@gmail.com>
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> ---
->  .../devicetree/bindings/net/can/m_can.txt          |   65 ++++++++++++=
-++++++++
->  1 files changed, 65 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt=
+- do not wait for ack
+- ignore missing ack
+- broadcast that doesn't require an ack
+- ...
 
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Docu=
-mentation/devicetree/bindings/net/can/m_can.txt
-> new file mode 100644
-> index 0000000..c4cb263
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-> @@ -0,0 +1,65 @@
-> +Bosch MCAN controller Device Tree Bindings
-> +-------------------------------------------------
-> +
-> +Required properties:
-> +- compatible		: Should be "bosch,m_can" for M_CAN controllers
-> +- reg			: physical base address and size of the M_CAN
-> +			  registers map and Message RAM
-> +- reg-names		: Should be "m_can" and "message_ram"
-> +- interrupts		: Should be the interrupt number of M_CAN interrupt
-> +			  line 0 and line 1, could be same if sharing
-> +			  the same interrupt.
-> +- interrupt-names	: Should contain "int0" and "int1"
-> +- clocks		: Clocks used by controller, should be host clock
-> +			  and CAN clock.
-> +- clock-names		: Should contain "hclk" and "cclk"
-> +- pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinct=
-rl-bindings.txt
-> +- pinctrl-names		: Names corresponding to the numbered pinctrl states
-> +- mram-cfg		: Message RAM configuration data.
-> +  Multiple M_CAN instances can share the same Message RAM and each ele=
-ment(e.g
-> +  Rx FIFO or Tx Buffer and etc) number in Message RAM is also configur=
-able,
-> +  so this property is telling driver how the shared or private Message=
- RAM
-> +  are used by this M_CAN controller.
+I'm really open for an alternative ;-)
 
-Will you have to modify the binding, espeically the mram-cfg, if you add
-canfd support to the driver?
-
-I think mram-cfg should have a vendor prefix, e.g.: bosch,mram-cfg
-
-> +
-> +  The format should be as follows:
-> +  <offset sidf_elems xidf_elems rxf0_elems rxf1_elems rxb_elems
-> +   txe_elems txb_elems>
-> +  The 'offset' is an address offset of the Message RAM where the follo=
-wing
-> +  elements start from. This is usually set to 0x0 if you're using a pr=
-ivate
-> +  Message RAM. The remain cells are used to specify how many elements =
-are used
-> +  for each FIFO/Buffer.
-> +
-> +M_CAN includes the following elements according to user manual:
-> +11-bit Filter	0-128 elements / 0-128 words
-> +29-bit Filter	0-64 elements / 0-128 words
-> +Rx FIFO 0	0-64 elements / 0-1152 words
-> +Rx FIFO 1	0-64 elements / 0-1152 words
-> +Rx Buffers	0-64 elements / 0-1152 words
-> +Tx Event FIFO	0-32 elements / 0-64 words
-> +Tx Buffers	0-32 elements / 0-576 words
-> +
-> +Please refer to 2.4.1 Message RAM Configuration in Bosch M_CAN user ma=
-nual
-> +for details.
-> +
-> +Example:
-> +SoC dtsi:
-> +m_can1: can@020e8000 {
-> +	compatible =3D "bosch,m_can";
-> +	reg =3D <0x020e8000 0x4000>, <0x02298000 0x4000>;
-> +	reg-names =3D "m_can", "message_ram";
-> +	interrupts =3D <0 114 0x04>,
-> +		     <0 114 0x04>;
-> +	interrupt-names =3D "int0", "int1";
-> +	clocks =3D <&clks IMX6SX_CLK_CANFD>,
-> +		 <&clks IMX6SX_CLK_CANFD>;
-> +	clock-names =3D "hclk", "cclk";
-> +	mram-cfg =3D <0x0 0 0 32 0 0 0 1>;
-> +	status =3D "disabled";
-> +};
-> +
-> +Board dtsi:
-> +&m_can1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&pinctrl_m_can1>;
-> +	status =3D "enabled";
-> +};
->=20
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlO/3mgACgkQjTAFq1RaXHMIDgCeORLAvW2aCKNMZiBQz19qablD
-GecAmwSppdP8vIpQ9bbSHiCcqDEMfrbE
-=3wNX
------END PGP SIGNATURE-----
-
---5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7--
+On 10.07.2014 10:12, Marc Kleine-Budde wrote:
+> On 07/10/2014 04:06 PM, Oliver Hartkopp wrote:
+>> what do you think about this extension.
+>>
+>>  From my side the patchset makes sense.
+>>> +#define CAN_CTRLMODE_PRESUME_ACK    0x40    /* Ignore missing CAN
+>>> ACKs */
+>
+> Is this a good name? Does anyone come up with an alternative/better one?
+>
+> Marc
+>
