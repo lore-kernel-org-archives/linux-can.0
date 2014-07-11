@@ -1,123 +1,259 @@
-From: Varka Bhadram <varkabhadram@gmail.com>
-Subject: Re: [PATCH v3 1/2] can: m_can: add device tree binding documentation
-Date: Fri, 11 Jul 2014 16:11:03 +0530
-Message-ID: <53BFBF3F.8040804@gmail.com>
-References: <1405074557-5519-1-git-send-email-b29396@freescale.com>
+From: Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] can: flexcan: add vf61x support for flexcan
+Date: Fri, 11 Jul 2014 12:52:13 +0200
+Message-ID: <1405075933-22317-1-git-send-email-stefan@agner.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pd0-f181.google.com ([209.85.192.181]:37542 "EHLO
-	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752009AbaGKKmQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 06:42:16 -0400
-In-Reply-To: <1405074557-5519-1-git-send-email-b29396@freescale.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, socketcan@hartkopp.net, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: mkl@pengutronix.de
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, stefan@agner.ch, linux-can@vger.kernel.org, wg@grandegger.com, kernel@pengutronix.de, shawn.guo@freescale.com
+List-Id: linux-can.vger.kernel.org
 
-On 07/11/2014 03:59 PM, Dong Aisheng wrote:
-> add M_CAN device tree binding documentation
->
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: Varka Bhadram <varkabhadram@gmail.com>
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> ---
->   .../devicetree/bindings/net/can/m_can.txt          |   65 ++++++++++++++++++++
->   1 files changed, 65 insertions(+), 0 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
->
-> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-> new file mode 100644
-> index 0000000..c4cb263
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-> @@ -0,0 +1,65 @@
-> +Bosch MCAN controller Device Tree Bindings
-> +-------------------------------------------------
-> +
-> +Required properties:
-> +- compatible		: Should be "bosch,m_can" for M_CAN controllers
-> +- reg			: physical base address and size of the M_CAN
-> +			  registers map and Message RAM
-> +- reg-names		: Should be "m_can" and "message_ram"
-> +- interrupts		: Should be the interrupt number of M_CAN interrupt
-> +			  line 0 and line 1, could be same if sharing
-> +			  the same interrupt.
-> +- interrupt-names	: Should contain "int0" and "int1"
-> +- clocks		: Clocks used by controller, should be host clock
-> +			  and CAN clock.
-> +- clock-names		: Should contain "hclk" and "cclk"
-> +- pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinctrl-bindings.txt
+Extend FlexCAN driver to support Vybrid. Vybrids variant of the IP
+has ECC support which is controlled through the memory error
+control register (MECR). There is also an errata which leads to
+false positive error detections (ID e5295). This patch disables
+the memory error detection completely.
 
-I think this should be pinctrl-0
+Also extend the clock control for FlexCAN to enable the clocks
+in the Clock Divider (CCM_CSCDR2) register too.
 
-> +- pinctrl-names		: Names corresponding to the numbered pinctrl states
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+Marc, this patch requires your patch regarding clock enable
+for reading the ECR register:
+http://marc.info/?l=linux-can&m=136861025221160&w=2
+So I also tested that patch and it proved solving that issue
+hence
+Tested-By <stefan@agner.ch>
 
-remove 1 tab space before :
+I'm not sure whether its ok to include the device tree and
+clock changes in one patch, let me know if you prefer that
+splitted patches.
 
-> +- mram-cfg		: Message RAM configuration data.
-> +  Multiple M_CAN instances can share the same Message RAM and each element(e.g
-> +  Rx FIFO or Tx Buffer and etc) number in Message RAM is also configurable,
-> +  so this property is telling driver how the shared or private Message RAM
-> +  are used by this M_CAN controller.
-> +
+--
+Stefan
 
-It may written like:
-mram-cfg		: Message RAM configuration data
-			  Multiple M_CAN instances can share the same Message RAM and each element
-			  (e.g Rx FIFO or Tx Buffer and etc) number in Message RAM is also configurable,
-			  ...
+ arch/arm/boot/dts/vf610.dtsi  | 25 ++++++++++++++-
+ arch/arm/mach-imx/clk-vf610.c |  6 ++--
+ drivers/net/can/flexcan.c     | 73 +++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 92 insertions(+), 12 deletions(-)
 
-> +  The format should be as follows:
-> +  <offset sidf_elems xidf_elems rxf0_elems rxf1_elems rxb_elems
-> +   txe_elems txb_elems>
-> +  The 'offset' is an address offset of the Message RAM where the following
-> +  elements start from. This is usually set to 0x0 if you're using a private
-> +  Message RAM. The remain cells are used to specify how many elements are used
-> +  for each FIFO/Buffer.
-> +
-> +M_CAN includes the following elements according to user manual:
-> +11-bit Filter	0-128 elements / 0-128 words
-> +29-bit Filter	0-64 elements / 0-128 words
-> +Rx FIFO 0	0-64 elements / 0-1152 words
-> +Rx FIFO 1	0-64 elements / 0-1152 words
-> +Rx Buffers	0-64 elements / 0-1152 words
-> +Tx Event FIFO	0-32 elements / 0-64 words
-> +Tx Buffers	0-32 elements / 0-576 words
-> +
-> +Please refer to 2.4.1 Message RAM Configuration in Bosch M_CAN user manual
-> +for details.
-> +
-> +Example:
-> +SoC dtsi:
-> +m_can1: can@020e8000 {
-> +	compatible = "bosch,m_can";
-> +	reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
-> +	reg-names = "m_can", "message_ram";
-> +	interrupts = <0 114 0x04>,
-> +		     <0 114 0x04>;
-> +	interrupt-names = "int0", "int1";
-> +	clocks = <&clks IMX6SX_CLK_CANFD>,
-> +		 <&clks IMX6SX_CLK_CANFD>;
-> +	clock-names = "hclk", "cclk";
-> +	mram-cfg = <0x0 0 0 32 0 0 0 1>;
-> +	status = "disabled";
-> +};
-> +
-> +Board dtsi:
-> +&m_can1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_m_can1>;
-> +	status = "enabled";
-> +};
-
-
+diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
+index 3fb127a..f38d8d8 100644
+--- a/arch/arm/boot/dts/vf610.dtsi
++++ b/arch/arm/boot/dts/vf610.dtsi
+@@ -14,6 +14,8 @@
+ 
+ / {
+ 	aliases {
++		can0 = &can0;
++		can1 = &can1;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
+@@ -103,6 +105,16 @@
+ 					<&clks VF610_CLK_DMAMUX1>;
+ 			};
+ 
++			can0: flexcan@40020000 {
++				compatible = "fsl,vf610-flexcan";
++				reg = <0x40020000 0x4000>;
++				interrupts = <0 58 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clks VF610_CLK_FLEXCAN0>,
++					 <&clks VF610_CLK_FLEXCAN0>;
++				clock-names = "ipg", "per";
++				status = "disabled";
++			};
++
+ 			uart0: serial@40027000 {
+ 				compatible = "fsl,vf610-lpuart";
+ 				reg = <0x40027000 0x1000>;
+@@ -362,7 +374,7 @@
+ 
+ 			esdhc1: esdhc@400b2000 {
+ 				compatible = "fsl,imx53-esdhc";
+-				reg = <0x400b2000 0x4000>;
++				reg = <0x400b2000 0x1000>;
+ 				interrupts = <0 28 0x04>;
+ 				clocks = <&clks VF610_CLK_IPG_BUS>,
+ 					<&clks VF610_CLK_PLATFORM_BUS>,
+@@ -414,6 +426,17 @@
+ 				clock-names = "nfc";
+ 				status = "disabled";
+ 			};
++
++			can1: flexcan@400d4000 {
++				compatible = "fsl,vf610-flexcan";
++				reg = <0x400d4000 0x4000>;
++				interrupts = <0 59 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clks VF610_CLK_FLEXCAN1>,
++					 <&clks VF610_CLK_FLEXCAN1>;
++				clock-names = "ipg", "per";
++				status = "disabled";
++			};
++
+ 		};
+ 	};
+ };
+diff --git a/arch/arm/mach-imx/clk-vf610.c b/arch/arm/mach-imx/clk-vf610.c
+index 22dc3ee..b12b888 100644
+--- a/arch/arm/mach-imx/clk-vf610.c
++++ b/arch/arm/mach-imx/clk-vf610.c
+@@ -295,8 +295,10 @@ static void __init vf610_clocks_init(struct device_node *ccm_node)
+ 
+ 	clk[VF610_CLK_ASRC] = imx_clk_gate2("asrc", "ipg_bus", CCM_CCGR4, CCM_CCGRx_CGn(1));
+ 
+-	clk[VF610_CLK_FLEXCAN0] = imx_clk_gate2("flexcan0", "ipg_bus", CCM_CCGR0, CCM_CCGRx_CGn(0));
+-	clk[VF610_CLK_FLEXCAN1] = imx_clk_gate2("flexcan1", "ipg_bus", CCM_CCGR9, CCM_CCGRx_CGn(4));
++	clk[VF610_CLK_FLEXCAN0] = imx_clk_gate("flexcan0_en", "ipg_bus", CCM_CSCDR2, 11);
++	clk[VF610_CLK_FLEXCAN0] = imx_clk_gate2("flexcan0", "flexcan0_en", CCM_CCGR0, CCM_CCGRx_CGn(0));
++	clk[VF610_CLK_FLEXCAN1] = imx_clk_gate("flexcan1_en", "ipg_bus", CCM_CSCDR2, 12);
++	clk[VF610_CLK_FLEXCAN1] = imx_clk_gate2("flexcan1", "flexcan1_en", CCM_CCGR9, CCM_CCGRx_CGn(4));
+ 
+ 	clk[VF610_CLK_DMAMUX0] = imx_clk_gate2("dmamux0", "platform_bus", CCM_CCGR0, CCM_CCGRx_CGn(4));
+ 	clk[VF610_CLK_DMAMUX1] = imx_clk_gate2("dmamux1", "platform_bus", CCM_CCGR0, CCM_CCGRx_CGn(5));
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f425ec2..1601247 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -92,6 +92,27 @@
+ #define FLEXCAN_CTRL_ERR_ALL \
+ 	(FLEXCAN_CTRL_ERR_BUS | FLEXCAN_CTRL_ERR_STATE)
+ 
++/* FLEXCAN control register 2 (CTRL2) bits */
++#define FLEXCAN_CRL2_ECRWRE		BIT(29)
++#define FLEXCAN_CRL2_WRMFRZ		BIT(28)
++#define FLEXCAN_CRL2_RFFN(x)		(((x) & 0x0f) << 24)
++#define FLEXCAN_CRL2_TASD(x)		(((x) & 0x1f) << 19)
++#define FLEXCAN_CRL2_MRP		BIT(18)
++#define FLEXCAN_CRL2_RRS		BIT(17)
++#define FLEXCAN_CRL2_EACEN		BIT(16)
++
++/* FLEXCAN memory error control register (MECR) bits */
++#define FLEXCAN_MECR_ECRWRDIS		BIT(31)
++#define FLEXCAN_MECR_HANCEI_MSK		BIT(19)
++#define FLEXCAN_MECR_FANCEI_MSK		BIT(18)
++#define FLEXCAN_MECR_CEI_MSK		BIT(16)
++#define FLEXCAN_MECR_HAERRIE		BIT(15)
++#define FLEXCAN_MECR_FAERRIE		BIT(14)
++#define FLEXCAN_MECR_EXTERRIE		BIT(13)
++#define FLEXCAN_MECR_RERRDIS		BIT(9)
++#define FLEXCAN_MECR_ECCDIS		BIT(8)
++#define FLEXCAN_MECR_NCEFAFRZ		BIT(7)
++
+ /* FLEXCAN error and status register (ESR) bits */
+ #define FLEXCAN_ESR_TWRN_INT		BIT(17)
+ #define FLEXCAN_ESR_RWRN_INT		BIT(16)
+@@ -150,18 +171,20 @@
+  * FLEXCAN hardware feature flags
+  *
+  * Below is some version info we got:
+- *    SOC   Version   IP-Version  Glitch-  [TR]WRN_INT
+- *                                Filter?   connected?
+- *   MX25  FlexCAN2  03.00.00.00     no         no
+- *   MX28  FlexCAN2  03.00.04.00    yes        yes
+- *   MX35  FlexCAN2  03.00.00.00     no         no
+- *   MX53  FlexCAN2  03.00.00.00    yes         no
+- *   MX6s  FlexCAN3  10.00.12.00    yes        yes
++ *    SOC   Version   IP-Version  Glitch-  [TR]WRN_INT  Memory err
++ *                                Filter?   connected?  detection
++ *   MX25  FlexCAN2  03.00.00.00     no         no	   no
++ *   MX28  FlexCAN2  03.00.04.00    yes        yes	   no
++ *   MX35  FlexCAN2  03.00.00.00     no         no	   no
++ *   MX53  FlexCAN2  03.00.00.00    yes         no	   no
++ *   MX6s  FlexCAN3  10.00.12.00    yes        yes	   no
++ *   VFxx  FlexCAN3  ?		     no		no	  yes
+  *
+  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
+  */
+ #define FLEXCAN_HAS_V10_FEATURES	BIT(1) /* For core version >= 10 */
+ #define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* [TR]WRN_INT not connected */
++#define FLEXCAN_HAS_MECR_FEATURES	BIT(3) /* Memory error detection */
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -192,8 +215,11 @@ struct flexcan_regs {
+ 	u32 crcr;		/* 0x44 */
+ 	u32 rxfgmask;		/* 0x48 */
+ 	u32 rxfir;		/* 0x4c */
+-	u32 _reserved3[12];
++	u32 _reserved3[12];	/* 0x50 */
+ 	struct flexcan_mb cantxfg[64];
++	u32 _reserved4[408];
++	u32 mecr;		/* 0xae0 */
++	u32 erriar;		/* 0xae4 */
+ };
+ 
+ struct flexcan_devtype_data {
+@@ -223,6 +249,9 @@ static struct flexcan_devtype_data fsl_imx28_devtype_data;
+ static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 	.features = FLEXCAN_HAS_V10_FEATURES,
+ };
++static struct flexcan_devtype_data fsl_vf610_devtype_data = {
++	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES,
++};
+ 
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	.name = DRV_NAME,
+@@ -793,7 +822,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	int err;
+-	u32 reg_mcr, reg_ctrl;
++	u32 reg_mcr, reg_ctrl, reg_crl2, reg_mecr;
+ 
+ 	/* enable module */
+ 	err = flexcan_chip_enable(priv);
+@@ -870,6 +899,31 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
+ 		flexcan_write(0x0, &regs->rxfgmask);
+ 
++	/*
++	 * On Vybrid, disable memory error detection interrupts
++	 * and freeze mode.
++	 * This also works around errata e5295 which generates
++	 * false positive memory errors and put the device in
++	 * freeze mode.
++	 */
++	if (priv->devtype_data->features & FLEXCAN_HAS_MECR_FEATURES) {
++		/*
++		 * Follow the protocol as described in "Detection
++		 * and Correction of Memory Errors" to write to
++		 * MECR register
++		 */
++		reg_crl2 = flexcan_read(&regs->crl2);
++		reg_crl2 |= FLEXCAN_CRL2_ECRWRE;
++		flexcan_write(reg_crl2, &regs->crl2);
++
++		reg_mecr = flexcan_read(&regs->mecr);
++		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
++		flexcan_write(reg_mecr, &regs->mecr);
++		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
++				FLEXCAN_MECR_FANCEI_MSK);
++		flexcan_write(reg_mecr, &regs->mecr);
++	}
++
+ 	err = flexcan_transceiver_enable(priv);
+ 	if (err)
+ 		goto out_chip_disable;
+@@ -1080,6 +1134,7 @@ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+ 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
++	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, flexcan_of_match);
 -- 
-Regards,
-Varka Bhadram.
-
+2.0.1
