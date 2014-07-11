@@ -1,41 +1,66 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: skbuff panic
-Date: Fri, 11 Jul 2014 09:27:19 -0400
-Message-ID: <53BFE637.2030905@hartkopp.net>
-References: <CANGgnMbu511sgePeix3hjitO+xEazCw1j7Ya_81SA1GsN6W+QA@mail.gmail.com> <53B7D63B.2060108@hartkopp.net> <CANGgnMYu7DOWr5Zy934GkrGW=+FcaVKRCgZejMcugx0DCyN83A@mail.gmail.com> <53B8504C.4070808@hartkopp.net> <CANGgnMZHumyQNz3Z2ULYJWeNaqnbtenbSaL7gm=OwDjPnfdGcw@mail.gmail.com> <53B93D45.5090505@hartkopp.net> <53B97598.50400@hartkopp.net> <53B9A5AD.8050403@pengutronix.de> <CANGgnMZdKsB6WhorMMnLTNTB=rSq78ZEbMkH69x=FxGE_BXyCw@mail.gmail.com> <CANGgnMbb+2OodO7a4L5CSgn2wKTjwbu1tnZ8wAa=5RME_S_Nyw@mail.gmail.com> <CANGgnMY4+PTnkd9CBUSS4EM6ZjP9r1wp8JYDJ4fYv+P1Qg6-vg@mail.gmail.com>
+From: Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH] can: flexcan: add vf61x support for flexcan
+Date: Fri, 11 Jul 2014 15:58:37 +0200
+Message-ID: <dac76ccd134f41b86f00352d10cfae4b@agner.ch>
+References: <1405075933-22317-1-git-send-email-stefan@agner.ch>
+ <53BFD401.8030101@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:59254 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753543AbaGKN1W (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 09:27:22 -0400
-In-Reply-To: <CANGgnMY4+PTnkd9CBUSS4EM6ZjP9r1wp8JYDJ4fYv+P1Qg6-vg@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Austin Schuh <austin@peloton-tech.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <53BFD401.8030101@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: wg@grandegger.com, shawn.guo@freescale.com, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Thanks for testing, Austin!
+Hi Marc,
 
-I'll cook a patch for stable to add these settings.
-Even if we do not know why someone requests obviously all netdev skbs and 
-treats them to be Ethernet/IP packets we should fix it in our code.
+Am 2014-07-11 14:09, schrieb Marc Kleine-Budde:
+> IMHO it should be 4 seperate patches:
+> - dt
+> - clocks
+> - flexcan_get_berr_counter fixes
+> - your flexcan enhancements
 
-If we fix it somewhere else it will last one year until some of the 
-is-there-anything-else-than-ethernet-networking guys will break it again. ;-)
+Ok, will split.
 
-Best regards,
-Oliver
+>> @@ -362,7 +374,7 @@
+>>
+>>  			esdhc1: esdhc@400b2000 {
+>>  				compatible = "fsl,imx53-esdhc";
+>> -				reg = <0x400b2000 0x4000>;
+>> +				reg = <0x400b2000 0x1000>;
+> 
+> What's that doing here? :)
 
-On 10.07.2014 13:37, Austin Schuh wrote:
-> On Wed, Jul 9, 2014 at 5:07 PM, Austin Schuh <austin@peloton-tech.com> wrote:
->> With Oliver's patch, I'm able to get to 60 reboots and counting, so it
->> looks like that was the problem.  I'll leave it rebooting over night
->> to be sure.
->
-> The machine survived 216 reboots with no panics over the night.  Thanks Oliver!
->
-> Tested-by: Austin Schuh <austin@peloton-tech.com>
->
+That's an error I just stumbled upon. I know it's not related but it's
+such a small change... Do I need to make a separate patch for that or
+can I include it in the FlexCAN dt commit?
+
+>> @@ -150,18 +171,20 @@
+>>   * FLEXCAN hardware feature flags
+>>   *
+>>   * Below is some version info we got:
+>> - *    SOC   Version   IP-Version  Glitch-  [TR]WRN_INT
+>> - *                                Filter?   connected?
+>> - *   MX25  FlexCAN2  03.00.00.00     no         no
+>> - *   MX28  FlexCAN2  03.00.04.00    yes        yes
+>> - *   MX35  FlexCAN2  03.00.00.00     no         no
+>> - *   MX53  FlexCAN2  03.00.00.00    yes         no
+>> - *   MX6s  FlexCAN3  10.00.12.00    yes        yes
+>> + *    SOC   Version   IP-Version  Glitch-  [TR]WRN_INT  Memory err
+>> + *                                Filter?   connected?  detection
+>> + *   MX25  FlexCAN2  03.00.00.00     no         no	   no
+>> + *   MX28  FlexCAN2  03.00.04.00    yes        yes	   no
+>> + *   MX35  FlexCAN2  03.00.00.00     no         no	   no
+>> + *   MX53  FlexCAN2  03.00.00.00    yes         no	   no
+>> + *   MX6s  FlexCAN3  10.00.12.00    yes        yes	   no
+>> + *   VFxx  FlexCAN3  ?		     no		no	  yes
+> 
+> Please use either tabs or space to indent in this table.
+
+Ok, btw, do you know how I can obtain the IP version?
+
+--
+Stefan
