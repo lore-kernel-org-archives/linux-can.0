@@ -1,40 +1,41 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 3/4] can: netlink: Add CAN_CTRLMODE_PRESUME_ACK flag
-Date: Fri, 11 Jul 2014 09:18:37 -0400
-Message-ID: <53BFE42D.20700@hartkopp.net>
-References: <1404934273-19233-1-git-send-email-nebaruzdin@gmail.com> <1404934273-19233-3-git-send-email-nebaruzdin@gmail.com> <53BE9DF7.6020608@hartkopp.net> <53BE9F35.9060509@pengutronix.de>
+Subject: Re: skbuff panic
+Date: Fri, 11 Jul 2014 09:27:19 -0400
+Message-ID: <53BFE637.2030905@hartkopp.net>
+References: <CANGgnMbu511sgePeix3hjitO+xEazCw1j7Ya_81SA1GsN6W+QA@mail.gmail.com> <53B7D63B.2060108@hartkopp.net> <CANGgnMYu7DOWr5Zy934GkrGW=+FcaVKRCgZejMcugx0DCyN83A@mail.gmail.com> <53B8504C.4070808@hartkopp.net> <CANGgnMZHumyQNz3Z2ULYJWeNaqnbtenbSaL7gm=OwDjPnfdGcw@mail.gmail.com> <53B93D45.5090505@hartkopp.net> <53B97598.50400@hartkopp.net> <53B9A5AD.8050403@pengutronix.de> <CANGgnMZdKsB6WhorMMnLTNTB=rSq78ZEbMkH69x=FxGE_BXyCw@mail.gmail.com> <CANGgnMbb+2OodO7a4L5CSgn2wKTjwbu1tnZ8wAa=5RME_S_Nyw@mail.gmail.com> <CANGgnMY4+PTnkd9CBUSS4EM6ZjP9r1wp8JYDJ4fYv+P1Qg6-vg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:13800 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:59254 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752391AbaGKNSq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 09:18:46 -0400
-In-Reply-To: <53BE9F35.9060509@pengutronix.de>
+	with ESMTP id S1753543AbaGKN1W (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 09:27:22 -0400
+In-Reply-To: <CANGgnMY4+PTnkd9CBUSS4EM6ZjP9r1wp8JYDJ4fYv+P1Qg6-vg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com
-Cc: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
+To: Austin Schuh <austin@peloton-tech.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-I tried to find a short name for:
+Thanks for testing, Austin!
 
-- do not wait for ack
-- ignore missing ack
-- broadcast that doesn't require an ack
-- ...
+I'll cook a patch for stable to add these settings.
+Even if we do not know why someone requests obviously all netdev skbs and 
+treats them to be Ethernet/IP packets we should fix it in our code.
 
-I'm really open for an alternative ;-)
+If we fix it somewhere else it will last one year until some of the 
+is-there-anything-else-than-ethernet-networking guys will break it again. ;-)
 
-On 10.07.2014 10:12, Marc Kleine-Budde wrote:
-> On 07/10/2014 04:06 PM, Oliver Hartkopp wrote:
->> what do you think about this extension.
->>
->>  From my side the patchset makes sense.
->>> +#define CAN_CTRLMODE_PRESUME_ACK    0x40    /* Ignore missing CAN
->>> ACKs */
+Best regards,
+Oliver
+
+On 10.07.2014 13:37, Austin Schuh wrote:
+> On Wed, Jul 9, 2014 at 5:07 PM, Austin Schuh <austin@peloton-tech.com> wrote:
+>> With Oliver's patch, I'm able to get to 60 reboots and counting, so it
+>> looks like that was the problem.  I'll leave it rebooting over night
+>> to be sure.
 >
-> Is this a good name? Does anyone come up with an alternative/better one?
+> The machine survived 216 reboots with no panics over the night.  Thanks Oliver!
 >
-> Marc
+> Tested-by: Austin Schuh <austin@peloton-tech.com>
 >
