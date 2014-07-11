@@ -1,164 +1,133 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 2/2] can: m_can: add Bosch M_CAN controller support
-Date: Fri, 11 Jul 2014 14:22:00 +0200
-Message-ID: <53BFD6E8.8080109@pengutronix.de>
-References: <1405074557-5519-1-git-send-email-b29396@freescale.com> <1405074557-5519-2-git-send-email-b29396@freescale.com> <53BFC6CE.9090408@gmail.com> <53BFD28A.5090202@pengutronix.de> <53BFD4DF.7030003@gmail.com>
+Subject: Re: [PATCH v3 1/2] can: m_can: add device tree binding documentation
+Date: Fri, 11 Jul 2014 14:54:00 +0200
+Message-ID: <53BFDE68.4040405@pengutronix.de>
+References: <1405074557-5519-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="s5QoM6O2GGIEieIPeVpEQp170DWGBnK7K"
+ boundary="5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36025 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37740 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752391AbaGKMWo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 08:22:44 -0400
-In-Reply-To: <53BFD4DF.7030003@gmail.com>
+	with ESMTP id S1752000AbaGKMyk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Jul 2014 08:54:40 -0400
+In-Reply-To: <1405074557-5519-1-git-send-email-b29396@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Varka Bhadram <varkabhadram@gmail.com>, Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com
+To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---s5QoM6O2GGIEieIPeVpEQp170DWGBnK7K
+--5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 07/11/2014 02:13 PM, Varka Bhadram wrote:
-[...]
-
->>>> +static const struct of_device_id m_can_of_table[] =3D {
->>>> +    { .compatible =3D "bosch,m_can", .data =3D NULL },
->>> we can simply give '0' . No need of .data =3D NULL. Things should be
->>> simple right....  :-)
->> .data should be a pointer, while "0" isn't. (Although 0 is valid C, we=
-
->> don't want a integer 0 to initialize a pointer.) However, you can omit=
-
->> .data =3D NULL completely. When initialzing via C99, any omited member=
-s of
->> the struct will automatically be initialized with 0x0. I like to see t=
-he
->> .data =3D NULL because it documents that there isn't any data (yet), o=
-nce
->> another compatible is added, we need the .data anyways.
+On 07/11/2014 12:29 PM, Dong Aisheng wrote:
+> add M_CAN device tree binding documentation
 >=20
-> static const struct of_device_id m_can_of_table[] =3D {
->     { .compatible =3D "bosch,m_can", },
-> };
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: Varka Bhadram <varkabhadram@gmail.com>
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> ---
+>  .../devicetree/bindings/net/can/m_can.txt          |   65 ++++++++++++=
+++++++++
+>  1 files changed, 65 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt=
+
 >=20
-> This is enough... right ?
+> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Docu=
+mentation/devicetree/bindings/net/can/m_can.txt
+> new file mode 100644
+> index 0000000..c4cb263
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
+> @@ -0,0 +1,65 @@
+> +Bosch MCAN controller Device Tree Bindings
+> +-------------------------------------------------
+> +
+> +Required properties:
+> +- compatible		: Should be "bosch,m_can" for M_CAN controllers
+> +- reg			: physical base address and size of the M_CAN
+> +			  registers map and Message RAM
+> +- reg-names		: Should be "m_can" and "message_ram"
+> +- interrupts		: Should be the interrupt number of M_CAN interrupt
+> +			  line 0 and line 1, could be same if sharing
+> +			  the same interrupt.
+> +- interrupt-names	: Should contain "int0" and "int1"
+> +- clocks		: Clocks used by controller, should be host clock
+> +			  and CAN clock.
+> +- clock-names		: Should contain "hclk" and "cclk"
+> +- pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinct=
+rl-bindings.txt
+> +- pinctrl-names		: Names corresponding to the numbered pinctrl states
+> +- mram-cfg		: Message RAM configuration data.
+> +  Multiple M_CAN instances can share the same Message RAM and each ele=
+ment(e.g
+> +  Rx FIFO or Tx Buffer and etc) number in Message RAM is also configur=
+able,
+> +  so this property is telling driver how the shared or private Message=
+ RAM
+> +  are used by this M_CAN controller.
 
-Yes....
+Will you have to modify the binding, espeically the mram-cfg, if you add
+canfd support to the driver?
 
-Not having .data =3D NULL is correct, but I'd like to see it, just to
-document: "there is no data needed, nobody forgot it"
+I think mram-cfg should have a vendor prefix, e.g.: bosch,mram-cfg
 
-=2E..but...
-
-Just must have a NULL-element terminating that list:
-
->>>> +    { /* sentinel */ },
-          ^^^^^^^^^^^^^^^^^^
->>>> +};
-
->>>> +MODULE_DEVICE_TABLE(of, m_can_of_table);
->>>> +
->>>> +static int m_can_of_parse_mram(struct platform_device *pdev,
->>>> +                   struct m_can_priv *priv)
->>>> +{
->>>> +    struct device_node *np =3D pdev->dev.of_node;
->>>> +    struct resource *res;
->>>> +    void __iomem *addr;
->>>> +    u32 out_val[MRAM_CFG_LEN];
->>>> +    int ret;
->>>> +
->>>> +    /* message ram could be shared */
->>>> +    res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM,
->>>> "message_ram");
->>>> +    if (!res)
->>>> +        return -ENODEV;
->>>> +
->>>> +    addr =3D devm_ioremap(&pdev->dev, res->start, resource_size(res=
-));
->>>> +    if (!addr)
->>>> +        return -ENODEV;
->>> Is this err return is appropriate ... ?
->> -ENOMEM seems to be more commonly used.
->>
->>>> +
->>>> +    /* get message ram configuration */
->>>> +    ret =3D of_property_read_u32_array(np, "mram-cfg",
->>>> +                     out_val, sizeof(out_val) / 4);
->>>> +    if (ret) {
->>>> +        dev_err(&pdev->dev, "can not get message ram
->>>> configuration\n");
->>>> +        return -ENODEV;
->>>> +    }
->>>> +
->>> Is this err return is appropriate ... ?
->> Whay do you suggest?
->>
->>>> +    priv->mram_base =3D addr;
->>>> +    priv->mcfg[MRAM_SIDF].off =3D out_val[0];
->>>> +    priv->mcfg[MRAM_SIDF].num =3D out_val[1];
->>>> +    priv->mcfg[MRAM_XIDF].off =3D priv->mcfg[MRAM_SIDF].off +
->>>> +            priv->mcfg[MRAM_SIDF].num * SIDF_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_XIDF].num =3D out_val[2];
->>>> +    priv->mcfg[MRAM_RXF0].off =3D priv->mcfg[MRAM_XIDF].off +
->>>> +            priv->mcfg[MRAM_XIDF].num * XIDF_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_RXF0].num =3D out_val[3] & RXFC_FS_MASK;
->>>> +    priv->mcfg[MRAM_RXF1].off =3D priv->mcfg[MRAM_RXF0].off +
->>>> +            priv->mcfg[MRAM_RXF0].num * RXF0_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_RXF1].num =3D out_val[4] & RXFC_FS_MASK;
->>>> +    priv->mcfg[MRAM_RXB].off =3D priv->mcfg[MRAM_RXF1].off +
->>>> +            priv->mcfg[MRAM_RXF1].num * RXF1_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_RXB].num =3D out_val[5];
->>>> +    priv->mcfg[MRAM_TXE].off =3D priv->mcfg[MRAM_RXB].off +
->>>> +            priv->mcfg[MRAM_RXB].num * RXB_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_TXE].num =3D out_val[6];
->>>> +    priv->mcfg[MRAM_TXB].off =3D priv->mcfg[MRAM_TXE].off +
->>>> +            priv->mcfg[MRAM_TXE].num * TXE_ELEMENT_SIZE;
->>>> +    priv->mcfg[MRAM_TXB].num =3D out_val[7] & TXBC_NDTB_MASK;
->>>> +
->>>> +    dev_dbg(&pdev->dev, "mram_base %p sidf 0x%x %d xidf 0x%x %d rxf=
-0
->>>> 0x%x %d rxf1 0x%x %d rxb 0x%x %d txe 0x%x %d txb 0x%x %d\n",
->>>> +        priv->mram_base,
->>>> +        priv->mcfg[MRAM_SIDF].off, priv->mcfg[MRAM_SIDF].num,
->>>> +        priv->mcfg[MRAM_XIDF].off, priv->mcfg[MRAM_XIDF].num,
->>>> +        priv->mcfg[MRAM_RXF0].off, priv->mcfg[MRAM_RXF0].num,
->>>> +        priv->mcfg[MRAM_RXF1].off, priv->mcfg[MRAM_RXF1].num,
->>>> +        priv->mcfg[MRAM_RXB].off, priv->mcfg[MRAM_RXB].num,
->>>> +        priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
->>>> +        priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
->>>> +
->>> dev_dbg() will insert the new lines in b/w. It wont print the values =
-as
->>> you expected.
->>> Check this by enabling debug ...
->> What do you mean by b/w?
-
-b/w =3D=3D between ?
-
-here: b/w !=3D black/white :)
-
-> You are expecting the data to be print in format like:
-> pdev->dev/name: mram_base %p sidf 0x%x %d xidf 0x%x %d rxf0 0x%x %d rxf=
-1
-> 0x%x %d rxb 0x%x %d txe 0x%x %d txb 0x%x %d
+> +
+> +  The format should be as follows:
+> +  <offset sidf_elems xidf_elems rxf0_elems rxf1_elems rxb_elems
+> +   txe_elems txb_elems>
+> +  The 'offset' is an address offset of the Message RAM where the follo=
+wing
+> +  elements start from. This is usually set to 0x0 if you're using a pr=
+ivate
+> +  Message RAM. The remain cells are used to specify how many elements =
+are used
+> +  for each FIFO/Buffer.
+> +
+> +M_CAN includes the following elements according to user manual:
+> +11-bit Filter	0-128 elements / 0-128 words
+> +29-bit Filter	0-64 elements / 0-128 words
+> +Rx FIFO 0	0-64 elements / 0-1152 words
+> +Rx FIFO 1	0-64 elements / 0-1152 words
+> +Rx Buffers	0-64 elements / 0-1152 words
+> +Tx Event FIFO	0-32 elements / 0-64 words
+> +Tx Buffers	0-32 elements / 0-576 words
+> +
+> +Please refer to 2.4.1 Message RAM Configuration in Bosch M_CAN user ma=
+nual
+> +for details.
+> +
+> +Example:
+> +SoC dtsi:
+> +m_can1: can@020e8000 {
+> +	compatible =3D "bosch,m_can";
+> +	reg =3D <0x020e8000 0x4000>, <0x02298000 0x4000>;
+> +	reg-names =3D "m_can", "message_ram";
+> +	interrupts =3D <0 114 0x04>,
+> +		     <0 114 0x04>;
+> +	interrupt-names =3D "int0", "int1";
+> +	clocks =3D <&clks IMX6SX_CLK_CANFD>,
+> +		 <&clks IMX6SX_CLK_CANFD>;
+> +	clock-names =3D "hclk", "cclk";
+> +	mram-cfg =3D <0x0 0 0 32 0 0 0 1>;
+> +	status =3D "disabled";
+> +};
+> +
+> +Board dtsi:
+> +&m_can1 {
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_m_can1>;
+> +	status =3D "enabled";
+> +};
 >=20
-> But when we use the dev_dbg()/pr_debug()... It will put data like:
-> pdev->dev/name: mram_base %p sidf 0x%x
-> 0x%x %d rxf0 0x%x
-> rxf1 0x%x %d rxb
-> ....
->=20
-> check this by enable DEBUG...
-
-Okay, thanks for pointing out.
 
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -166,7 +135,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---s5QoM6O2GGIEieIPeVpEQp170DWGBnK7K
+--5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -175,9 +144,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlO/1ugACgkQjTAFq1RaXHMTzQCfTNVs5uEhT3y0zyeIQP2gFoS7
-iW8AnRvNQfJogh4ZA4K/aFcBcrjWWHMQ
-=O98g
+iEYEARECAAYFAlO/3mgACgkQjTAFq1RaXHMIDgCeORLAvW2aCKNMZiBQz19qablD
+GecAmwSppdP8vIpQ9bbSHiCcqDEMfrbE
+=3wNX
 -----END PGP SIGNATURE-----
 
---s5QoM6O2GGIEieIPeVpEQp170DWGBnK7K--
+--5wjAIv2KUdBeeALe3sfrXN0KQ31lfUBO7--
