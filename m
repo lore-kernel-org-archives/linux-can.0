@@ -1,105 +1,457 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2014-07-15
-Date: Tue, 15 Jul 2014 09:44:18 +0200
-Message-ID: <53C4DBD2.8010309@pengutronix.de>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH v4 2/2] can: m_can: add Bosch M_CAN controller support
+Date: Tue, 15 Jul 2014 16:26:40 +0800
+Message-ID: <20140715082637.GA2601@shlinux1.ap.freescale.net>
+References: <1405338041-19945-1-git-send-email-b29396@freescale.com>
+ <1405338041-19945-2-git-send-email-b29396@freescale.com>
+ <53C3C97A.7080102@pengutronix.de>
+ <20140715033324.GC21584@shlinux1.ap.freescale.net>
+ <53C4D872.9060707@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="SrvoRqa5b1HcG5sVBLlT9mktXAxfp8uIC"
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54526 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932438AbaGOHo2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jul 2014 03:44:28 -0400
+Received: from mail-bl2lp0212.outbound.protection.outlook.com ([207.46.163.212]:56237
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1756256AbaGOIcC (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 15 Jul 2014 04:32:02 -0400
+Content-Disposition: inline
+In-Reply-To: <53C4D872.9060707@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SrvoRqa5b1HcG5sVBLlT9mktXAxfp8uIC
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 15, 2014 at 09:29:54AM +0200, Marc Kleine-Budde wrote:
+> On 07/15/2014 05:33 AM, Dong Aisheng wrote:
+> > On Mon, Jul 14, 2014 at 02:13:46PM +0200, Marc Kleine-Budde wrote:
+> >> On 07/14/2014 01:40 PM, Dong Aisheng wrote:
+> >>> The patch adds the basic CAN TX/RX function support for Bosch M_CAN controller.
+> >>> For TX, only one dedicated tx buffer is used for sending data.
+> >>> For RX, RXFIFO 0 is used for receiving data to avoid overflow.
+> >>> Rx FIFO 1 and Rx Buffers are not used currently, as well as Tx Event FIFO.
+> >>>
+> >>> Due to the message ram can be shared by multi m_can instances
+> >>> and the fifo element is configurable which is SoC dependant,
+> >>> the design is to parse the message ram related configuration data from device
+> >>> tree rather than hardcode define it in driver which can make the message
+> >>> ram sharing fully transparent to M_CAN controller driver,
+> >>> then we can gain better driver maintainability and future features upgrade.
+> >>>
+> >>> M_CAN also supports CANFD protocol features like data payload up to 64 bytes
+> >>> and bitrate switch at runtime, however, this patch still does not add the
+> >>> support for these features.
+> >>>
+> >>> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> >>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> >>> Cc: Mark Rutland <mark.rutland@arm.com>
+> >>> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> >>> Cc: Varka Bhadram <varkabhadram@gmail.com>
+> >>> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> >>
+> >> [...]
+> >>
+> >>> +static inline u32 m_can_fifo_read(const struct m_can_priv *priv,
+> >>> +				  u32 fgi, unsigned int offset)
+> >>> +{
+> >>> +	return readl(priv->mram_base + priv->mcfg[MRAM_RXF0].off +
+> >>> +				fgi * RXF0_ELEMENT_SIZE + offset);
+> >>> +}
+> >>
+> >> Can you add a similar function for fifo_write, please?
+> > 
+> > Unlike fifo_read, we only use one tx buffer for tx function,
+> > fpi, correspding to fgi, is always 0.
+> > So i planned to add it later when adding using multi tx buffers before.
+> > If you like it, i could add it now.
+> > It could be:
+> > +static inline void m_can_fifo_write(const struct m_can_priv *priv,
+> > +                                 u32 fpi, unsigned int offset, u32 val)
+> > +{
+> > +       return writel(val, priv->mram_base + priv->mcfg[MRAM_TXB].off +
+> > +                               fpi * TXB_ELEMENT_SIZE + offset);
+> > +}
+> > +
+> 
+> Yes, looks good.
+> 
+> >  static inline void m_can_config_endisable(const struct m_can_priv *priv,
+> >                                           bool enable)
+> >  {
+> > @@ -973,12 +980,10 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+> >         }
+> > 
+> >         /* message ram configuration */
+> > -       fifo_addr = priv->mram_base + priv->mcfg[MRAM_TXB].off;
+> > -       writel(id | flags, fifo_addr);
+> > -       writel(cf->can_dlc << 16, fifo_addr + 0x4);
+> > -       writel(*(u32 *)(cf->data + 0), fifo_addr + 0x8);
+> > -       writel(*(u32 *)(cf->data + 4), fifo_addr + 0xc);
+> > -
+> > +       m_can_fifo_write(priv, 0, 0x0, id | flags);
+> > +       m_can_fifo_write(priv, 0, 0x4, cf->can_dlc << 16);
+> > +       m_can_fifo_write(priv, 0, 0x8, *(u32 *)(cf->data + 0));
+> > +       m_can_fifo_write(priv, 0, 0xc, *(u32 *)(cf->data + 4));
+> >         can_put_echo_skb(skb, dev, 0);
+> > 
+> >         /* enable first TX buffer to start transfer  */
+> > 
+> > The '0' parameter may cause a bit misleading now, do you think it's ok?
+> 
+> Yes.
+> 
+> >>> +
+> >>> +static inline void m_can_config_endisable(const struct m_can_priv *priv,
+> >>> +					  bool enable)
+> >>> +{
+> >>> +	u32 cccr = m_can_read(priv, M_CAN_CCCR);
+> >>> +	u32 timeout = 10;
+> >>> +	u32 val = 0;
+> >>> +
+> >>> +	if (enable) {
+> >>> +		/* enable m_can configuration */
+> >>> +		m_can_write(priv, M_CAN_CCCR, cccr | CCCR_INIT);
+> >>> +		/* CCCR.CCE can only be set/reset while CCCR.INIT = '1' */
+> >>> +		m_can_write(priv, M_CAN_CCCR, cccr | CCCR_INIT | CCCR_CCE);
+> >>> +	} else {
+> >>> +		m_can_write(priv, M_CAN_CCCR, cccr & ~(CCCR_INIT | CCCR_CCE));
+> >>> +	}
+> >>> +
+> >>> +	/* there's a delay for module initialization */
+> >>> +	if (enable)
+> >>> +		val = CCCR_INIT | CCCR_CCE;
+> >>> +
+> >>> +	while ((m_can_read(priv, M_CAN_CCCR) & (CCCR_INIT | CCCR_CCE))
+> >>> +				!= val) {
+> >>> +		if (timeout == 0) {
+> >>> +			netdev_warn(priv->dev, "Failed to init module\n");
+> >>> +			return;
+> >>> +		}
+> >>> +		timeout--;
+> >>> +		udelay(1);
+> >>> +	}
+> >>> +}
+> >>> +
+> >>> +static inline void m_can_enable_all_interrupts(const struct m_can_priv *priv)
+> >>> +{
+> >>> +	m_can_write(priv, M_CAN_ILE, ILE_EINT0 | ILE_EINT1);
+> >>> +}
+> >>> +
+> >>> +static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+> >>> +{
+> >>> +	m_can_write(priv, M_CAN_ILE, 0x0);
+> >>> +}
+> >>> +
+> >>> +static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+> >>> +			    u32 rxfs)
+> >>> +{
+> >>> +	struct m_can_priv *priv = netdev_priv(dev);
+> >>> +	u32 flags, fgi;
+> >>> +
+> >>> +	/* calculate the fifo get index for where to read data */
+> >>> +	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
+> >>> +	flags = m_can_fifo_read(priv, fgi, 0x0);
+> >>                                            ^^^
+> >>
+> >> Can you introduce an enum for the offsets, please adjust the signature
+> >> of m_can_fifo_read() accordingly.
+> >>
+> > 
+> > I wonder enum may not be suitable.
+> > The Rx Buffer and FIFO Element is as follows:
+> >    31 24 23 16 15 8 7 0
+> > R0 ESI XTD RTR ID[28:0]
+> 
+> M_CAN_FIFO_ID
+> 
+> > R1 ANMF FIDX[6:0] res EDL BRS DLC[3:0] RXTS[15:0]
+> 
+> M_CAN_FIFO_DLC
+> 
+> > R2 DB3[7:0] DB2[7:0] DB1[7:0] DB0[7:0]
+> > R3 DB7[7:0] DB6[7:0] DB5[7:0] DB4[7:0]
+> 
+> M_CAN_FIFO_DATA0
+> M_CAN_FIFO_DATA1
+> 
 
-Hello David,
+You mean as follows?
+enum m_can_fifo {
+        M_CAN_FIFO_ID = 0,
+        M_CAN_FIFO_DLC,
+        M_CAN_FIFO_DATA0,
+        M_CAN_FIFO_DATA1,
+};
 
-this is a pull request of 4 patches for net-next/master.
+static inline u32 m_can_fifo_read(const struct m_can_priv *priv,
+                                  u32 fgi, enum m_can_fifo fifo)
+{
+        return readl(priv->mram_base + priv->mcfg[MRAM_RXF0].off +
+                     fgi * RXF0_ELEMENT_SIZE + fifo * 0x4);
+}
 
-Prabhakar Lad contributes a patch that converts the c_can driver to use
-the devm api. The remaining four patches by Nikita Edward Baruzdin
-improve the SJA1000 driver with loopback testing support and introduce
-a new testing mode presume ack, for successful transmission even if no
-ACK is received.
+id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_ID);
 
-Marc
+The problem is when adding long frames support, it becomes:
+enum m_can_fifo {
+        M_CAN_FIFO_ID = 0,
+        M_CAN_FIFO_DLC,
+        M_CAN_FIFO_DATA0,
+        M_CAN_FIFO_DATA1,
+        ....
+        M_CAN_FIFO_DATA15,
+};
 
----
-
-The following changes since commit 0854a7f13206d7523abe773235bbe4d13958fc=
-4b:
-
-  Merge branch 'amd811e-cleanups' (2014-07-14 19:14:44 -0700)
-
-are available in the git repository at:
-
-  git://gitorious.org/linux-can/linux-can-next.git tags/linux-can-next-fo=
-r-3.17-20140715
-
-for you to fetch changes up to 5b853ec3494e34eb4882f65ebbcd04b495ff3c85:
-
-  can: sja1000: Add support for CAN_CTRLMODE_PRESUME_ACK (2014-07-15 09:3=
-4:27 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-3.17-20140715
-
-----------------------------------------------------------------
-Lad, Prabhakar (1):
-      can: c_can: convert to use devm * api
-
-Nikita Edward Baruzdin (4):
-      can: netlink: Remove space before tab
-      can: netlink: Add CAN_CTRLMODE_PRESUME_ACK flag
-      can: sja1000: Add support for CAN_CTRLMODE_LOOPBACK
-      can: sja1000: Add support for CAN_CTRLMODE_PRESUME_ACK
-
- drivers/net/can/c_can/c_can_platform.c | 43 ++++++++--------------------=
-------
- drivers/net/can/sja1000/sja1000.c      | 27 ++++++++++++++-------
- include/uapi/linux/can/netlink.h       |  3 ++-
- 3 files changed, 31 insertions(+), 42 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+But it's useless because we may not use enum to read fifo data anymore.
+It's not suitable to read fifo one by one:
+m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA0);
+m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA1);
+..
+m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA15);
 
 
+Instead, we may read data according to real dlc value within a for loop like:
+#define M_CAN_FIFO(n)   (n * 0x4)
+id = m_can_fifo_read(priv, fgi, M_CAN_FIFO(0));
+dlc = m_can_fifo_read(priv, fgi, M_CAN_FIFO(1));
+for (i = 0; dlc > 0; dlc -= 0x4, i++) {
+        ....
+        data[i] = m_can_fifo_read(priv, fgi, M_CAN_FIFO(i + 2));
+}
+
+So i'm not sure define that enum now is really needed.
+
+> > ... ... ... ... ...
+> > Rn DBm[7:0] DBm-1[7:0] DBm-2[7:0] DBm-3[7:0]
+> > Maybe #define a macro for it is better, like:
+> > #define RX_BUFFER_Rn(n)	(n * 0x4)
+> > #define TX_BUFFER_Tn(n)	(n * 0x4)
+> > #define TXE_BUFFER_En(n)(n * 0x4)
+> > But i'm not sure if it's worthy to do that now.
+> > I also planed to update it later when adding canfd format support before.
+> 
+> IMHO, there's no need for {RX,TX}_BUFER_Rn() yet.
+> 
+> >>> +	if (flags & RX_BUF_XTD)
+> >>> +		cf->can_id = (flags & CAN_EFF_MASK) | CAN_EFF_FLAG;
+> >>> +	else
+> >>> +		cf->can_id = (flags >> 18) & CAN_SFF_MASK;
+> >>> +
+> >>> +	if (flags & RX_BUF_RTR) {
+> >>> +		cf->can_id |= CAN_RTR_FLAG;
+> >>> +	} else {
+> >>> +		flags = m_can_fifo_read(priv, fgi, 0x4);
+> >>> +		cf->can_dlc = get_can_dlc((flags >> 16) & 0x0F);
+> >>> +		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi, 0x8);
+> >>> +		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi, 0xC);
+> >>> +	}
+> >>> +
+> >>> +	/* acknowledge rx fifo 0 */
+> >>> +	m_can_write(priv, M_CAN_RXF0A, fgi);
+> >>> +}
+> >>> +
+> >>> +static int m_can_do_rx_poll(struct net_device *dev, int quota)
+> >>> +{
+> >>> +	struct m_can_priv *priv = netdev_priv(dev);
+> >>> +	struct net_device_stats *stats = &dev->stats;
+> >>> +	struct sk_buff *skb;
+> >>> +	struct can_frame *frame;
+> >>> +	u32 pkts = 0;
+> >>> +	u32 rxfs;
+> >>> +
+> >>> +	rxfs = m_can_read(priv, M_CAN_RXF0S);
+> >>> +	if (!(rxfs & RXFS_FFL_MASK)) {
+> >>> +		netdev_dbg(dev, "no messages in fifo0\n");
+> >>> +		return 0;
+> >>> +	}
+> >>> +
+> >>> +	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
+> >>> +		if (rxfs & RXFS_RFL)
+> >>> +			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
+> >>> +
+> >>> +		skb = alloc_can_skb(dev, &frame);
+> >>> +		if (!skb) {
+> >>> +			stats->rx_dropped++;
+> >>> +			return 0;
+> >>
+> >> return pkts;
+> >>  - or -
+> >> goto out;
+> >>
+> > 
+> > Good catch. Will update it.
+> > 
+> >>> +		}
+> >>> +
+> >>> +		m_can_read_fifo(dev, frame, rxfs);
+> >>> +
+> >>> +		stats->rx_packets++;
+> >>> +		stats->rx_bytes += frame->can_dlc;
+> >>> +
+> >>> +		netif_receive_skb(skb);
+> >>> +
+> >>> +		quota--;
+> >>> +		pkts++;
+> >>> +		rxfs = m_can_read(priv, M_CAN_RXF0S);
+> >>> +	};
+> >>> +
+> >>
+> >> out:
+> >>> +	if (pkts)
+> >>> +		can_led_event(dev, CAN_LED_EVENT_RX);
+> >>> +
+> >>> +	return pkts;
+> >>> +}
+> >>> +
+> >>
+> >> [...]
+> >>
+> >>> +static int m_can_handle_lec_err(struct net_device *dev,
+> >>> +				enum m_can_lec_type lec_type)
+> >>> +{
+> >>> +	struct m_can_priv *priv = netdev_priv(dev);
+> >>> +	struct net_device_stats *stats = &dev->stats;
+> >>> +	struct can_frame *cf;
+> >>> +	struct sk_buff *skb;
+> >>> +
+> >>> +	/* early exit if no lec update */
+> >>> +	if (lec_type == LEC_UNUSED)
+> >>> +		return 0;
+> >>
+> >> I think this is not needed, as checked by the only caller.
+> > 
+> > You mean move it to caller as follows?
+> >         /* handle lec errors on the bus */
+> >         if ((psr & LEC_UNUSED) && ((psr & LEC_UNUSED)!= LEC_UNUSED) &&
+> 
+> yes - or something like this:
+> 
+> static inline bool is_lec(u32 psr)
+> {
+> 	u32 psr &= LEC_UNUSED
+> 
+> 	return psr && (psr != LEC_UNUSED)
+> }
+> 
+> 	if ((priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
+> 		is_lec(psr)) {
+> 	}
+> 
 
 
+Looks fine.
+Maybe is_lec_err(u32 psr) better? :-)
+
+Regards
+Dong Aisheng
+
+> >                 (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+> >                 work_done += m_can_handle_lec_err(dev,
+> >                                 psr & LEC_UNUSED);
+> > It seems not look good.
+> > 
+> > How about keep it here and move the later one to caller like:
+> >         /* handle lec errors on the bus */
+> >         if ((psr & LEC_UNUSED) &&
+> >                 (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+> >                 work_done += m_can_handle_lec_err(dev,
+> >                                 psr & LEC_UNUSED);
+> > 
+> >>> +
+> >>> +	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+> >>> +		return 0;
+> >>
+> >> Can you move this to the caller, too?
+> >>
+> >>> +
+> >>> +	priv->can.can_stats.bus_error++;
+> >>> +	stats->rx_errors++;
+> >>> +
+> >>> +	/* propagate the error condition to the CAN stack */
+> >>> +	skb = alloc_can_err_skb(dev, &cf);
+> >>> +	if (unlikely(!skb))
+> >>> +		return 0;
+> >>> +
+> >>> +	/* check for 'last error code' which tells us the
+> >>> +	 * type of the last error to occur on the CAN bus
+> >>> +	 */
+> >>> +	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+> >>> +	cf->data[2] |= CAN_ERR_PROT_UNSPEC;
+> >>> +
+> >>> +	switch (lec_type) {
+> >>> +	case LEC_STUFF_ERROR:
+> >>> +		netdev_dbg(dev, "stuff error\n");
+> >>> +		cf->data[2] |= CAN_ERR_PROT_STUFF;
+> >>> +		break;
+> >>> +	case LEC_FORM_ERROR:
+> >>> +		netdev_dbg(dev, "form error\n");
+> >>> +		cf->data[2] |= CAN_ERR_PROT_FORM;
+> >>> +		break;
+> >>> +	case LEC_ACK_ERROR:
+> >>> +		netdev_dbg(dev, "ack error\n");
+> >>> +		cf->data[3] |= (CAN_ERR_PROT_LOC_ACK |
+> >>> +				CAN_ERR_PROT_LOC_ACK_DEL);
+> >>> +		break;
+> >>> +	case LEC_BIT1_ERROR:
+> >>> +		netdev_dbg(dev, "bit1 error\n");
+> >>> +		cf->data[2] |= CAN_ERR_PROT_BIT1;
+> >>> +		break;
+> >>> +	case LEC_BIT0_ERROR:
+> >>> +		netdev_dbg(dev, "bit0 error\n");
+> >>> +		cf->data[2] |= CAN_ERR_PROT_BIT0;
+> >>> +		break;
+> >>> +	case LEC_CRC_ERROR:
+> >>> +		netdev_dbg(dev, "CRC error\n");
+> >>> +		cf->data[3] |= (CAN_ERR_PROT_LOC_CRC_SEQ |
+> >>> +				CAN_ERR_PROT_LOC_CRC_DEL);
+> >>> +		break;
+> >>> +	default:
+> >>> +		break;
+> >>> +	}
+> >>> +
+> >>> +	stats->rx_packets++;
+> >>> +	stats->rx_bytes += cf->can_dlc;
+> >>> +	netif_receive_skb(skb);
+> >>> +
+> >>> +	return 1;
+> >>> +}
+> >>> +
+> >>
+> >> [...]
+> >>
+> >>> +static void m_can_handle_other_err(struct net_device *dev, u32 irqstatus)
+> >>> +{
+> >>> +	if (irqstatus & IR_WDI)
+> >>> +		netdev_err(dev, "Message RAM Watchdog event due to missing READY\n");
+> >>> +	if (irqstatus & IR_BEU)
+> >>> +		netdev_err(dev, "Error Logging Overflow\n");
+> >>> +	if (irqstatus & IR_BEU)
+> >>> +		netdev_err(dev, "Bit Error Uncorrected\n");
+> >>> +	if (irqstatus & IR_BEC)
+> >>> +		netdev_err(dev, "Bit Error Corrected\n");
+> >>> +	if (irqstatus & IR_TOO)
+> >>> +		netdev_err(dev, "Timeout reached\n");
+> >>> +	if (irqstatus & IR_MRAF)
+> >>> +		netdev_err(dev, "Message RAM access failure occurred\n");
+> >>> +}
+> >>
+> >> Have you ever seen these error messages? Better rate limit these, though.
+> >>
+> > 
+> > Normally we will not see those errors.
+> > It just for telling the user if something errors happened.
+> > Still not sure about the rate.
+> > Could it be improved later when we meet the real issue?
+> 
+> Meh, there is not netdev_ratelimited_LEVEL(), okay, keep it this way.
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
 
 
-
-
-
-
-
-
-
-
---SrvoRqa5b1HcG5sVBLlT9mktXAxfp8uIC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlPE29IACgkQjTAFq1RaXHPtcACgkfKiKy6HkFOj8pDYkP6b+Nml
-gjAAnjShsKF4DjoBcshAZqrjo/u3tDoQ
-=qK4j
------END PGP SIGNATURE-----
-
---SrvoRqa5b1HcG5sVBLlT9mktXAxfp8uIC--
