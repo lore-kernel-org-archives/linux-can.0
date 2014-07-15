@@ -1,171 +1,258 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH v4 2/2] can: m_can: add Bosch M_CAN controller support
-Date: Tue, 15 Jul 2014 18:40:06 +0800
-Message-ID: <20140715104005.GA3837@shlinux1.ap.freescale.net>
-References: <1405338041-19945-1-git-send-email-b29396@freescale.com>
- <1405338041-19945-2-git-send-email-b29396@freescale.com>
- <53C3C97A.7080102@pengutronix.de>
- <20140715033324.GC21584@shlinux1.ap.freescale.net>
- <53C4D872.9060707@pengutronix.de>
- <20140715082637.GA2601@shlinux1.ap.freescale.net>
- <53C4EA68.5090606@pengutronix.de>
- <20140715090719.GA3374@shlinux1.ap.freescale.net>
- <53C4F2B5.7050704@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Kamal Mostafa <kamal@canonical.com>
+Subject: [3.13.y.z extended stable] Patch "genirq: Sanitize spurious interrupt detection of threaded irqs" has been added to staging queue
+Date: Tue, 15 Jul 2014 14:29:11 -0700
+Message-ID: <1405459751-7424-1-git-send-email-kamal@canonical.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1lp0144.outbound.protection.outlook.com ([207.46.163.144]:27919
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1758690AbaGOKpO (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 15 Jul 2014 06:45:14 -0400
-Content-Disposition: inline
-In-Reply-To: <53C4F2B5.7050704@pengutronix.de>
+Received: from youngberry.canonical.com ([91.189.89.112]:52719 "EHLO
+	youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751301AbaGOV3U (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jul 2014 17:29:20 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Till Straumann <strauman@slac.stanford.edu>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
 
-On Tue, Jul 15, 2014 at 11:21:57AM +0200, Marc Kleine-Budde wrote:
-> On 07/15/2014 11:07 AM, Dong Aisheng wrote:
-> > On Tue, Jul 15, 2014 at 10:46:32AM +0200, Marc Kleine-Budde wrote:
-> >> On 07/15/2014 10:26 AM, Dong Aisheng wrote:
-> >>>>>>> +static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
-> >>>>>>> +			    u32 rxfs)
-> >>>>>>> +{
-> >>>>>>> +	struct m_can_priv *priv = netdev_priv(dev);
-> >>>>>>> +	u32 flags, fgi;
-> >>>>>>> +
-> >>>>>>> +	/* calculate the fifo get index for where to read data */
-> >>>>>>> +	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
-> >>>>>>> +	flags = m_can_fifo_read(priv, fgi, 0x0);
-> >>>>>>                                            ^^^
-> >>>>>>
-> >>>>>> Can you introduce an enum for the offsets, please adjust the signature
-> >>>>>> of m_can_fifo_read() accordingly.
-> >>>>>>
-> >>>>>
-> >>>>> I wonder enum may not be suitable.
-> >>>>> The Rx Buffer and FIFO Element is as follows:
-> >>>>>    31 24 23 16 15 8 7 0
-> >>>>> R0 ESI XTD RTR ID[28:0]
-> >>>>
-> >>>> M_CAN_FIFO_ID
-> >>>>
-> >>>>> R1 ANMF FIDX[6:0] res EDL BRS DLC[3:0] RXTS[15:0]
-> >>>>
-> >>>> M_CAN_FIFO_DLC
-> >>>>
-> >>>>> R2 DB3[7:0] DB2[7:0] DB1[7:0] DB0[7:0]
-> >>>>> R3 DB7[7:0] DB6[7:0] DB5[7:0] DB4[7:0]
-> >>>>
-> >>>> M_CAN_FIFO_DATA0
-> >>>> M_CAN_FIFO_DATA1
-> >>>>
-> >>>
-> >>> You mean as follows?
-> >>> enum m_can_fifo {
-> >>>         M_CAN_FIFO_ID = 0,
-> >>>         M_CAN_FIFO_DLC,
-> >> = 0x4,
-> >>>         M_CAN_FIFO_DATA0,
-> >> = 0x8,
-> >>>         M_CAN_FIFO_DATA1,
-> >> = 0xc,
-> >>> };
-> >>>
-> >>> static inline u32 m_can_fifo_read(const struct m_can_priv *priv,
-> >>>                                   u32 fgi, enum m_can_fifo fifo)
-> >>> {
-> >>>         return readl(priv->mram_base + priv->mcfg[MRAM_RXF0].off +
-> >>>                      fgi * RXF0_ELEMENT_SIZE + fifo * 0x4);
-> >>> }
-> >>
-> >> without the * 0x4
-> >>
-> >>> id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_ID);
-> >>>
-> >>> The problem is when adding long frames support, it becomes:
-> >>> enum m_can_fifo {
-> >>>         M_CAN_FIFO_ID = 0,
-> >>>         M_CAN_FIFO_DLC,
-> >>>         M_CAN_FIFO_DATA0,
-> >>>         M_CAN_FIFO_DATA1,
-> >>>         ....
-> >>>         M_CAN_FIFO_DATA15,
-> >>> };
-> >>
-> >> #define M_CAN_FIFO_DATA(n)
-> >> 	(enum m_can_fifo)(M_CAN_FIFO_DATA_0 + (n) << 2)
-> >>
-> > 
-> > This is a bit strange using and we may still have to define other M_CAN_FIFO_DATAx
-> > to avoid the enum value exceeds the defined range.
-> > enum m_can_fifo {
-> >         M_CAN_FIFO_ID = 0,
-> >         M_CAN_FIFO_DLC = 0x4,
-> >         M_CAN_FIFO_DATA0 = 0x8,
-> >         M_CAN_FIFO_DATA1 = 0xc,
-> > 	....
-> >         M_CAN_FIFO_DATA15 = 0xc,
-> > };
-> > 
-> > However, actually we will not use them at all after introducing M_CAN_FIFO_DATA(n).
-> > If that, why we still need define them in enum?
-> > 
-> > Comparing to this way, why not simply just do as follows:
-> > #define M_CAN_FIFO_ID		0x0
-> > #define M_CAN_FIFO_DLC		0x4
-> > #define M_CAN_FIFO_DATA(n)	(0x8 + (n) << 2)
-> > 
-> > What do you think?
-> 
-> Looks good.
-> 
-> > 
-> >>> But it's useless because we may not use enum to read fifo data anymore.
-> >>> It's not suitable to read fifo one by one:
-> >>> m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA0);
-> >>> m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA1);
-> >>> ..
-> >>> m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA15);
-> >>>
-> >>>
-> >>> Instead, we may read data according to real dlc value within a for loop like:
-> >>> #define M_CAN_FIFO(n)   (n * 0x4)
-> >>> id = m_can_fifo_read(priv, fgi, M_CAN_FIFO(0));
-> >>> dlc = m_can_fifo_read(priv, fgi, M_CAN_FIFO(1));
-> >>> for (i = 0; dlc > 0; dlc -= 0x4, i++) {
-> >>>         ....
-> >>>         data[i] = m_can_fifo_read(priv, fgi, M_CAN_FIFO(i + 2));
-> >>> }
-> >>
-> >> id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_ID);
-> >> dlc = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
-> >> for (i = 0; i <= dlc; i++)
-> >> 	data[i] = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA(i));
-> > 
-> > Does it work?
-> > The dlc is in bytes while m_can_fifo_read is read in words.
-> 
-> Doh! probably not :) But should work with something like this:
-> 
-> int len = DIV_ROUND_UP(dlc, 4);
-> 
+This is a note to let you know that I have just added a patch titled
 
-Good point!
-Will try this when adding canfd format support.
+    genirq: Sanitize spurious interrupt detection of threaded irqs
 
-Regards
-Dong Aisheng
+to the linux-3.13.y-queue branch of the 3.13.y.z extended stable tree 
+which can be found at:
 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+ http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.13.y-queue
 
+This patch is scheduled to be released in version 3.13.11.5.
+
+If you, or anyone else, feels it should not be added to this tree, please 
+reply to this email.
+
+For more information about the 3.13.y.z tree, see
+https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
+
+Thanks.
+-Kamal
+
+------
+
+From 481110a491f639ab7071f8036f3e5a84a9df4b4c Mon Sep 17 00:00:00 2001
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Thu, 7 Mar 2013 14:53:45 +0100
+Subject: genirq: Sanitize spurious interrupt detection of threaded irqs
+
+commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
+
+Till reported that the spurious interrupt detection of threaded
+interrupts is broken in two ways:
+
+- note_interrupt() is called for each action thread of a shared
+  interrupt line. That's wrong as we are only interested whether none
+  of the device drivers felt responsible for the interrupt, but by
+  calling multiple times for a single interrupt line we account
+  IRQ_NONE even if one of the drivers felt responsible.
+
+- note_interrupt() when called from the thread handler is not
+  serialized. That leaves the members of irq_desc which are used for
+  the spurious detection unprotected.
+
+To solve this we need to defer the spurious detection of a threaded
+interrupt to the next hardware interrupt context where we have
+implicit serialization.
+
+If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
+check whether the previous interrupt requested a deferred check. If
+not, we request a deferred check for the next hardware interrupt and
+return.
+
+If set, we check whether one of the interrupt threads signaled
+success. Depending on this information we feed the result into the
+spurious detector.
+
+If one primary handler of a shared interrupt returns IRQ_HANDLED we
+disable the deferred check of irq threads on the same line, as we have
+found at least one device driver who cared.
+
+Reported-by: Till Straumann <strauman@slac.stanford.edu>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Austin Schuh <austin@peloton-tech.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+---
+ include/linux/irqdesc.h |   4 ++
+ kernel/irq/manage.c     |   4 +-
+ kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 108 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 56fb646..a7b4b61 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -27,6 +27,8 @@ struct irq_desc;
+  * @irq_count:		stats field to detect stalled irqs
+  * @last_unhandled:	aging timer for unhandled count
+  * @irqs_unhandled:	stats field for spurious unhandled interrupts
++ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
++ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
+  * @lock:		locking for SMP
+  * @affinity_hint:	hint to user space for preferred irq affinity
+  * @affinity_notify:	context for notification of affinity changes
+@@ -52,6 +54,8 @@ struct irq_desc {
+ 	unsigned int		irq_count;	/* For detecting broken IRQs */
+ 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
+ 	unsigned int		irqs_unhandled;
++	atomic_t		threads_handled;
++	int			threads_handled_last;
+ 	raw_spinlock_t		lock;
+ 	struct cpumask		*percpu_enabled;
+ #ifdef CONFIG_SMP
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 66a1b46..ebb8a9e 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -856,8 +856,8 @@ static int irq_thread(void *data)
+ 		irq_thread_check_affinity(desc, action);
+
+ 		action_ret = handler_fn(desc, action);
+-		if (!noirqdebug)
+-			note_interrupt(action->irq, desc, action_ret);
++		if (action_ret == IRQ_HANDLED)
++			atomic_inc(&desc->threads_handled);
+
+ 		wake_threads_waitq(desc);
+ 	}
+diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+index a1d8cc6..e2514b0 100644
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -270,6 +270,8 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
+ 	return action && (action->flags & IRQF_IRQPOLL);
+ }
+
++#define SPURIOUS_DEFERRED	0x80000000
++
+ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 		    irqreturn_t action_ret)
+ {
+@@ -277,15 +279,111 @@ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 	    irq_settings_is_polled(desc))
+ 		return;
+
+-	/* we get here again via the threaded handler */
+-	if (action_ret == IRQ_WAKE_THREAD)
+-		return;
+-
+ 	if (bad_action_ret(action_ret)) {
+ 		report_bad_irq(irq, desc, action_ret);
+ 		return;
+ 	}
+
++	/*
++	 * We cannot call note_interrupt from the threaded handler
++	 * because we need to look at the compound of all handlers
++	 * (primary and threaded). Aside of that in the threaded
++	 * shared case we have no serialization against an incoming
++	 * hardware interrupt while we are dealing with a threaded
++	 * result.
++	 *
++	 * So in case a thread is woken, we just note the fact and
++	 * defer the analysis to the next hardware interrupt.
++	 *
++	 * The threaded handlers store whether they sucessfully
++	 * handled an interrupt and we check whether that number
++	 * changed versus the last invocation.
++	 *
++	 * We could handle all interrupts with the delayed by one
++	 * mechanism, but for the non forced threaded case we'd just
++	 * add pointless overhead to the straight hardirq interrupts
++	 * for the sake of a few lines less code.
++	 */
++	if (action_ret & IRQ_WAKE_THREAD) {
++		/*
++		 * There is a thread woken. Check whether one of the
++		 * shared primary handlers returned IRQ_HANDLED. If
++		 * not we defer the spurious detection to the next
++		 * interrupt.
++		 */
++		if (action_ret == IRQ_WAKE_THREAD) {
++			int handled;
++			/*
++			 * We use bit 31 of thread_handled_last to
++			 * denote the deferred spurious detection
++			 * active. No locking necessary as
++			 * thread_handled_last is only accessed here
++			 * and we have the guarantee that hard
++			 * interrupts are not reentrant.
++			 */
++			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
++				desc->threads_handled_last |= SPURIOUS_DEFERRED;
++				return;
++			}
++			/*
++			 * Check whether one of the threaded handlers
++			 * returned IRQ_HANDLED since the last
++			 * interrupt happened.
++			 *
++			 * For simplicity we just set bit 31, as it is
++			 * set in threads_handled_last as well. So we
++			 * avoid extra masking. And we really do not
++			 * care about the high bits of the handled
++			 * count. We just care about the count being
++			 * different than the one we saw before.
++			 */
++			handled = atomic_read(&desc->threads_handled);
++			handled |= SPURIOUS_DEFERRED;
++			if (handled != desc->threads_handled_last) {
++				action_ret = IRQ_HANDLED;
++				/*
++				 * Note: We keep the SPURIOUS_DEFERRED
++				 * bit set. We are handling the
++				 * previous invocation right now.
++				 * Keep it for the current one, so the
++				 * next hardware interrupt will
++				 * account for it.
++				 */
++				desc->threads_handled_last = handled;
++			} else {
++				/*
++				 * None of the threaded handlers felt
++				 * responsible for the last interrupt
++				 *
++				 * We keep the SPURIOUS_DEFERRED bit
++				 * set in threads_handled_last as we
++				 * need to account for the current
++				 * interrupt as well.
++				 */
++				action_ret = IRQ_NONE;
++			}
++		} else {
++			/*
++			 * One of the primary handlers returned
++			 * IRQ_HANDLED. So we don't care about the
++			 * threaded handlers on the same line. Clear
++			 * the deferred detection bit.
++			 *
++			 * In theory we could/should check whether the
++			 * deferred bit is set and take the result of
++			 * the previous run into account here as
++			 * well. But it's really not worth the
++			 * trouble. If every other interrupt is
++			 * handled we never trigger the spurious
++			 * detector. And if this is just the one out
++			 * of 100k unhandled ones which is handled
++			 * then we merily delay the spurious detection
++			 * by one hard interrupt. Not a real problem.
++			 */
++			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
++		}
++	}
++
+ 	if (unlikely(action_ret == IRQ_NONE)) {
+ 		/*
+ 		 * If we are seeing only the odd spurious IRQ caused by
+--
+1.9.1
 
