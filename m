@@ -1,43 +1,24 @@
 From: Kamal Mostafa <kamal@canonical.com>
-Subject: [3.13.y.z extended stable] Patch "genirq: Sanitize spurious interrupt detection of threaded irqs" has been added to staging queue
-Date: Tue, 15 Jul 2014 14:29:11 -0700
-Message-ID: <1405459751-7424-1-git-send-email-kamal@canonical.com>
+Subject: [PATCH 3.13 023/198] genirq: Sanitize spurious interrupt detection of threaded irqs
+Date: Tue, 15 Jul 2014 14:28:13 -0700
+Message-ID: <1405459868-15089-24-git-send-email-kamal@canonical.com>
+References: <1405459868-15089-1-git-send-email-kamal@canonical.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from youngberry.canonical.com ([91.189.89.112]:52719 "EHLO
+Received: from youngberry.canonical.com ([91.189.89.112]:54444 "EHLO
 	youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751301AbaGOV3U (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jul 2014 17:29:20 -0400
+	with ESMTP id S1759351AbaGOVgC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Jul 2014 17:36:02 -0400
+In-Reply-To: <1405459868-15089-1-git-send-email-kamal@canonical.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Till Straumann <strauman@slac.stanford.edu>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org, kernel-team@lists.ubuntu.com
+Cc: Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>
 
-This is a note to let you know that I have just added a patch titled
+3.13.11.5 -stable review patch.  If anyone has any objections, please let me know.
 
-    genirq: Sanitize spurious interrupt detection of threaded irqs
+------------------
 
-to the linux-3.13.y-queue branch of the 3.13.y.z extended stable tree 
-which can be found at:
-
- http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.13.y-queue
-
-This patch is scheduled to be released in version 3.13.11.5.
-
-If you, or anyone else, feels it should not be added to this tree, please 
-reply to this email.
-
-For more information about the 3.13.y.z tree, see
-https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
-
-Thanks.
--Kamal
-
-------
-
-From 481110a491f639ab7071f8036f3e5a84a9df4b4c Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 7 Mar 2013 14:53:45 +0100
-Subject: genirq: Sanitize spurious interrupt detection of threaded irqs
 
 commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
 
@@ -115,13 +96,13 @@ index 66a1b46..ebb8a9e 100644
 +++ b/kernel/irq/manage.c
 @@ -856,8 +856,8 @@ static int irq_thread(void *data)
  		irq_thread_check_affinity(desc, action);
-
+ 
  		action_ret = handler_fn(desc, action);
 -		if (!noirqdebug)
 -			note_interrupt(action->irq, desc, action_ret);
 +		if (action_ret == IRQ_HANDLED)
 +			atomic_inc(&desc->threads_handled);
-
+ 
  		wake_threads_waitq(desc);
  	}
 diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
@@ -131,7 +112,7 @@ index a1d8cc6..e2514b0 100644
 @@ -270,6 +270,8 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
  	return action && (action->flags & IRQF_IRQPOLL);
  }
-
+ 
 +#define SPURIOUS_DEFERRED	0x80000000
 +
  void note_interrupt(unsigned int irq, struct irq_desc *desc,
@@ -140,7 +121,7 @@ index a1d8cc6..e2514b0 100644
 @@ -277,15 +279,111 @@ void note_interrupt(unsigned int irq, struct irq_desc *desc,
  	    irq_settings_is_polled(desc))
  		return;
-
+ 
 -	/* we get here again via the threaded handler */
 -	if (action_ret == IRQ_WAKE_THREAD)
 -		return;
@@ -149,7 +130,7 @@ index a1d8cc6..e2514b0 100644
  		report_bad_irq(irq, desc, action_ret);
  		return;
  	}
-
+ 
 +	/*
 +	 * We cannot call note_interrupt from the threaded handler
 +	 * because we need to look at the compound of all handlers
@@ -253,6 +234,6 @@ index a1d8cc6..e2514b0 100644
  	if (unlikely(action_ret == IRQ_NONE)) {
  		/*
  		 * If we are seeing only the odd spurious IRQ caused by
---
+-- 
 1.9.1
 
