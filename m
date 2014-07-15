@@ -1,28 +1,42 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH v4 1/2] can: m_can: add device tree binding
- documentation
-Date: Tue, 15 Jul 2014 10:26:35 +0800
-Message-ID: <20140715022634.GB21584@shlinux1.ap.freescale.net>
+Subject: Re: [PATCH v4 2/2] can: m_can: add Bosch M_CAN controller support
+Date: Tue, 15 Jul 2014 11:33:25 +0800
+Message-ID: <20140715033324.GC21584@shlinux1.ap.freescale.net>
 References: <1405338041-19945-1-git-send-email-b29396@freescale.com>
- <53C3C469.6080705@pengutronix.de>
+ <1405338041-19945-2-git-send-email-b29396@freescale.com>
+ <53C3C97A.7080102@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2lp0244.outbound.protection.outlook.com ([207.46.163.244]:15547
+Received: from mail-by2lp0242.outbound.protection.outlook.com ([207.46.163.242]:29327
 	"EHLO na01-by2-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753577AbaGOCbf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 14 Jul 2014 22:31:35 -0400
+	id S1753577AbaGODiU (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 14 Jul 2014 23:38:20 -0400
 Content-Disposition: inline
-In-Reply-To: <53C3C469.6080705@pengutronix.de>
+In-Reply-To: <53C3C97A.7080102@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com
 
-On Mon, Jul 14, 2014 at 01:52:09PM +0200, Marc Kleine-Budde wrote:
+On Mon, Jul 14, 2014 at 02:13:46PM +0200, Marc Kleine-Budde wrote:
 > On 07/14/2014 01:40 PM, Dong Aisheng wrote:
-> > add M_CAN device tree binding documentation
+> > The patch adds the basic CAN TX/RX function support for Bosch M_CAN controller.
+> > For TX, only one dedicated tx buffer is used for sending data.
+> > For RX, RXFIFO 0 is used for receiving data to avoid overflow.
+> > Rx FIFO 1 and Rx Buffers are not used currently, as well as Tx Event FIFO.
+> > 
+> > Due to the message ram can be shared by multi m_can instances
+> > and the fifo element is configurable which is SoC dependant,
+> > the design is to parse the message ram related configuration data from device
+> > tree rather than hardcode define it in driver which can make the message
+> > ram sharing fully transparent to M_CAN controller driver,
+> > then we can gain better driver maintainability and future features upgrade.
+> > 
+> > M_CAN also supports CANFD protocol features like data payload up to 64 bytes
+> > and bitrate switch at runtime, however, this patch still does not add the
+> > support for these features.
 > > 
 > > Cc: Wolfgang Grandegger <wg@grandegger.com>
 > > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
@@ -30,100 +44,336 @@ On Mon, Jul 14, 2014 at 01:52:09PM +0200, Marc Kleine-Budde wrote:
 > > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 > > Cc: Varka Bhadram <varkabhadram@gmail.com>
 > > Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> > ---
-> > 
-> > Changes since v3:
-> > - change mram-cfg property name to bosch,mram-cfg
-> > - indent change
-> > ---
-> >  .../devicetree/bindings/net/can/m_can.txt          |   67 ++++++++++++++++++++
-> >  1 files changed, 67 insertions(+), 0 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-> > new file mode 100644
-> > index 0000000..5cff839
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-> > @@ -0,0 +1,67 @@
-> > +Bosch MCAN controller Device Tree Bindings
-> > +-------------------------------------------------
-> > +
-> > +Required properties:
-> > +- compatible		: Should be "bosch,m_can" for M_CAN controllers
-> > +- reg			: physical base address and size of the M_CAN
-> > +			  registers map and Message RAM
-> > +- reg-names		: Should be "m_can" and "message_ram"
-> > +- interrupts		: Should be the interrupt number of M_CAN interrupt
-> > +			  line 0 and line 1, could be same if sharing
-> > +			  the same interrupt.
-> > +- interrupt-names	: Should contain "int0" and "int1"
-> > +- clocks		: Clocks used by controller, should be host clock
-> > +			  and CAN clock.
-> > +- clock-names		: Should contain "hclk" and "cclk"
-> > +- pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinctrl-bindings.txt
-> > +- pinctrl-names 	: Names corresponding to the numbered pinctrl states
-> > +- bosch,mram-cfg	: Message RAM configuration data.
-> > +			  Multiple M_CAN instances can share the same Message
-> > +			  RAM and each element(e.g Rx FIFO or Tx Buffer and etc)
-> > +			  number in Message RAM is also configurable,
-> > +			  so this property is telling driver how the shared or
-> > +			  private Message RAM are used by this M_CAN controller.
-> > +
-> > +			  The format should be as follows:
-> > +			  <offset sidf_elems xidf_elems rxf0_elems rxf1_elems
-> > +			   rxb_elems txe_elems txb_elems>
-> > +			  The 'offset' is an address offset of the Message RAM
-> > +			  where the following elements start from. This is
-> > +			  usually set to 0x0 if you're using a private Message
-> > +			  RAM. The remain cells are used to specify how many
-> > +			  elements are used for each FIFO/Buffer.
-> > +
-> > +			  M_CAN includes the following elements according to user manual:
-> > +			  11-bit Filter	0-128 elements / 0-128 words
-> > +			  29-bit Filter	0-64 elements / 0-128 words
-> > +			  Rx FIFO 0	0-64 elements / 0-1152 words
-> > +			  Rx FIFO 1	0-64 elements / 0-1152 words
-> > +			  Rx Buffers	0-64 elements / 0-1152 words
-> > +			  Tx Event FIFO	0-32 elements / 0-64 words
-> > +			  Tx Buffers	0-32 elements / 0-576 words
-> > +
-> > +			  Please refer to 2.4.1 Message RAM Configuration in
-> > +			  Bosch M_CAN user manual for details.
-> > +
-> > +Example:
-> > +SoC dtsi:
-> > +m_can1: can@020e8000 {
-> > +	compatible = "bosch,m_can";
-> > +	reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
-> > +	reg-names = "m_can", "message_ram";
-> > +	interrupts = <0 114 0x04>,
-> > +		     <0 114 0x04>;
-> > +	interrupt-names = "int0", "int1";
-> > +	clocks = <&clks IMX6SX_CLK_CANFD>,
-> > +		 <&clks IMX6SX_CLK_CANFD>;
-> > +	clock-names = "hclk", "cclk";
-> > +	bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
-> > +	status = "disabled";
-> > +};
-> > +
-> > +Board dtsi:
->          ^^^^
 > 
-> The board is typically a dts, isn't it?
+> [...]
+> 
+> > +static inline u32 m_can_fifo_read(const struct m_can_priv *priv,
+> > +				  u32 fgi, unsigned int offset)
+> > +{
+> > +	return readl(priv->mram_base + priv->mcfg[MRAM_RXF0].off +
+> > +				fgi * RXF0_ELEMENT_SIZE + offset);
+> > +}
+> 
+> Can you add a similar function for fifo_write, please?
+
+Unlike fifo_read, we only use one tx buffer for tx function,
+fpi, correspding to fgi, is always 0.
+So i planned to add it later when adding using multi tx buffers before.
+If you like it, i could add it now.
+It could be:
++static inline void m_can_fifo_write(const struct m_can_priv *priv,
++                                 u32 fpi, unsigned int offset, u32 val)
++{
++       return writel(val, priv->mram_base + priv->mcfg[MRAM_TXB].off +
++                               fpi * TXB_ELEMENT_SIZE + offset);
++}
++
+ static inline void m_can_config_endisable(const struct m_can_priv *priv,
+                                          bool enable)
+ {
+@@ -973,12 +980,10 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+        }
+
+        /* message ram configuration */
+-       fifo_addr = priv->mram_base + priv->mcfg[MRAM_TXB].off;
+-       writel(id | flags, fifo_addr);
+-       writel(cf->can_dlc << 16, fifo_addr + 0x4);
+-       writel(*(u32 *)(cf->data + 0), fifo_addr + 0x8);
+-       writel(*(u32 *)(cf->data + 4), fifo_addr + 0xc);
+-
++       m_can_fifo_write(priv, 0, 0x0, id | flags);
++       m_can_fifo_write(priv, 0, 0x4, cf->can_dlc << 16);
++       m_can_fifo_write(priv, 0, 0x8, *(u32 *)(cf->data + 0));
++       m_can_fifo_write(priv, 0, 0xc, *(u32 *)(cf->data + 4));
+        can_put_echo_skb(skb, dev, 0);
+
+        /* enable first TX buffer to start transfer  */
+
+The '0' parameter may cause a bit misleading now, do you think it's ok?
+
+> > +
+> > +static inline void m_can_config_endisable(const struct m_can_priv *priv,
+> > +					  bool enable)
+> > +{
+> > +	u32 cccr = m_can_read(priv, M_CAN_CCCR);
+> > +	u32 timeout = 10;
+> > +	u32 val = 0;
+> > +
+> > +	if (enable) {
+> > +		/* enable m_can configuration */
+> > +		m_can_write(priv, M_CAN_CCCR, cccr | CCCR_INIT);
+> > +		/* CCCR.CCE can only be set/reset while CCCR.INIT = '1' */
+> > +		m_can_write(priv, M_CAN_CCCR, cccr | CCCR_INIT | CCCR_CCE);
+> > +	} else {
+> > +		m_can_write(priv, M_CAN_CCCR, cccr & ~(CCCR_INIT | CCCR_CCE));
+> > +	}
+> > +
+> > +	/* there's a delay for module initialization */
+> > +	if (enable)
+> > +		val = CCCR_INIT | CCCR_CCE;
+> > +
+> > +	while ((m_can_read(priv, M_CAN_CCCR) & (CCCR_INIT | CCCR_CCE))
+> > +				!= val) {
+> > +		if (timeout == 0) {
+> > +			netdev_warn(priv->dev, "Failed to init module\n");
+> > +			return;
+> > +		}
+> > +		timeout--;
+> > +		udelay(1);
+> > +	}
+> > +}
+> > +
+> > +static inline void m_can_enable_all_interrupts(const struct m_can_priv *priv)
+> > +{
+> > +	m_can_write(priv, M_CAN_ILE, ILE_EINT0 | ILE_EINT1);
+> > +}
+> > +
+> > +static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+> > +{
+> > +	m_can_write(priv, M_CAN_ILE, 0x0);
+> > +}
+> > +
+> > +static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+> > +			    u32 rxfs)
+> > +{
+> > +	struct m_can_priv *priv = netdev_priv(dev);
+> > +	u32 flags, fgi;
+> > +
+> > +	/* calculate the fifo get index for where to read data */
+> > +	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
+> > +	flags = m_can_fifo_read(priv, fgi, 0x0);
+>                                            ^^^
+> 
+> Can you introduce an enum for the offsets, please adjust the signature
+> of m_can_fifo_read() accordingly.
 > 
 
-IMX has board dtsi.
-But yes, i could change to dts which is more common.
+I wonder enum may not be suitable.
+The Rx Buffer and FIFO Element is as follows:
+   31 24 23 16 15 8 7 0
+R0 ESI XTD RTR ID[28:0]
+R1 ANMF FIDX[6:0] res EDL BRS DLC[3:0] RXTS[15:0]
+R2 DB3[7:0] DB2[7:0] DB1[7:0] DB0[7:0]
+R3 DB7[7:0] DB6[7:0] DB5[7:0] DB4[7:0]
+... ... ... ... ...
+Rn DBm[7:0] DBm-1[7:0] DBm-2[7:0] DBm-3[7:0]
+Maybe #define a macro for it is better, like:
+#define RX_BUFFER_Rn(n)	(n * 0x4)
+#define TX_BUFFER_Tn(n)	(n * 0x4)
+#define TXE_BUFFER_En(n)(n * 0x4)
+But i'm not sure if it's worthy to do that now.
+I also planed to update it later when adding canfd format support before.
 
-> > +&m_can1 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&pinctrl_m_can1>;
-> > +	status = "enabled";
-> > +};
-> > 
+> > +	if (flags & RX_BUF_XTD)
+> > +		cf->can_id = (flags & CAN_EFF_MASK) | CAN_EFF_FLAG;
+> > +	else
+> > +		cf->can_id = (flags >> 18) & CAN_SFF_MASK;
+> > +
+> > +	if (flags & RX_BUF_RTR) {
+> > +		cf->can_id |= CAN_RTR_FLAG;
+> > +	} else {
+> > +		flags = m_can_fifo_read(priv, fgi, 0x4);
+> > +		cf->can_dlc = get_can_dlc((flags >> 16) & 0x0F);
+> > +		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi, 0x8);
+> > +		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi, 0xC);
+> > +	}
+> > +
+> > +	/* acknowledge rx fifo 0 */
+> > +	m_can_write(priv, M_CAN_RXF0A, fgi);
+> > +}
+> > +
+> > +static int m_can_do_rx_poll(struct net_device *dev, int quota)
+> > +{
+> > +	struct m_can_priv *priv = netdev_priv(dev);
+> > +	struct net_device_stats *stats = &dev->stats;
+> > +	struct sk_buff *skb;
+> > +	struct can_frame *frame;
+> > +	u32 pkts = 0;
+> > +	u32 rxfs;
+> > +
+> > +	rxfs = m_can_read(priv, M_CAN_RXF0S);
+> > +	if (!(rxfs & RXFS_FFL_MASK)) {
+> > +		netdev_dbg(dev, "no messages in fifo0\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
+> > +		if (rxfs & RXFS_RFL)
+> > +			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
+> > +
+> > +		skb = alloc_can_skb(dev, &frame);
+> > +		if (!skb) {
+> > +			stats->rx_dropped++;
+> > +			return 0;
+> 
+> return pkts;
+>  - or -
+> goto out;
+> 
+
+Good catch. Will update it.
+
+> > +		}
+> > +
+> > +		m_can_read_fifo(dev, frame, rxfs);
+> > +
+> > +		stats->rx_packets++;
+> > +		stats->rx_bytes += frame->can_dlc;
+> > +
+> > +		netif_receive_skb(skb);
+> > +
+> > +		quota--;
+> > +		pkts++;
+> > +		rxfs = m_can_read(priv, M_CAN_RXF0S);
+> > +	};
+> > +
+> 
+> out:
+> > +	if (pkts)
+> > +		can_led_event(dev, CAN_LED_EVENT_RX);
+> > +
+> > +	return pkts;
+> > +}
+> > +
+> 
+> [...]
+> 
+> > +static int m_can_handle_lec_err(struct net_device *dev,
+> > +				enum m_can_lec_type lec_type)
+> > +{
+> > +	struct m_can_priv *priv = netdev_priv(dev);
+> > +	struct net_device_stats *stats = &dev->stats;
+> > +	struct can_frame *cf;
+> > +	struct sk_buff *skb;
+> > +
+> > +	/* early exit if no lec update */
+> > +	if (lec_type == LEC_UNUSED)
+> > +		return 0;
+> 
+> I think this is not needed, as checked by the only caller.
+
+You mean move it to caller as follows?
+        /* handle lec errors on the bus */
+        if ((psr & LEC_UNUSED) && ((psr & LEC_UNUSED)!= LEC_UNUSED) &&
+                (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+                work_done += m_can_handle_lec_err(dev,
+                                psr & LEC_UNUSED);
+It seems not look good.
+
+How about keep it here and move the later one to caller like:
+        /* handle lec errors on the bus */
+        if ((psr & LEC_UNUSED) &&
+                (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+                work_done += m_can_handle_lec_err(dev,
+                                psr & LEC_UNUSED);
+
+> > +
+> > +	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+> > +		return 0;
+> 
+> Can you move this to the caller, too?
+> 
+> > +
+> > +	priv->can.can_stats.bus_error++;
+> > +	stats->rx_errors++;
+> > +
+> > +	/* propagate the error condition to the CAN stack */
+> > +	skb = alloc_can_err_skb(dev, &cf);
+> > +	if (unlikely(!skb))
+> > +		return 0;
+> > +
+> > +	/* check for 'last error code' which tells us the
+> > +	 * type of the last error to occur on the CAN bus
+> > +	 */
+> > +	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+> > +	cf->data[2] |= CAN_ERR_PROT_UNSPEC;
+> > +
+> > +	switch (lec_type) {
+> > +	case LEC_STUFF_ERROR:
+> > +		netdev_dbg(dev, "stuff error\n");
+> > +		cf->data[2] |= CAN_ERR_PROT_STUFF;
+> > +		break;
+> > +	case LEC_FORM_ERROR:
+> > +		netdev_dbg(dev, "form error\n");
+> > +		cf->data[2] |= CAN_ERR_PROT_FORM;
+> > +		break;
+> > +	case LEC_ACK_ERROR:
+> > +		netdev_dbg(dev, "ack error\n");
+> > +		cf->data[3] |= (CAN_ERR_PROT_LOC_ACK |
+> > +				CAN_ERR_PROT_LOC_ACK_DEL);
+> > +		break;
+> > +	case LEC_BIT1_ERROR:
+> > +		netdev_dbg(dev, "bit1 error\n");
+> > +		cf->data[2] |= CAN_ERR_PROT_BIT1;
+> > +		break;
+> > +	case LEC_BIT0_ERROR:
+> > +		netdev_dbg(dev, "bit0 error\n");
+> > +		cf->data[2] |= CAN_ERR_PROT_BIT0;
+> > +		break;
+> > +	case LEC_CRC_ERROR:
+> > +		netdev_dbg(dev, "CRC error\n");
+> > +		cf->data[3] |= (CAN_ERR_PROT_LOC_CRC_SEQ |
+> > +				CAN_ERR_PROT_LOC_CRC_DEL);
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	stats->rx_packets++;
+> > +	stats->rx_bytes += cf->can_dlc;
+> > +	netif_receive_skb(skb);
+> > +
+> > +	return 1;
+> > +}
+> > +
+> 
+> [...]
+> 
+> > +static void m_can_handle_other_err(struct net_device *dev, u32 irqstatus)
+> > +{
+> > +	if (irqstatus & IR_WDI)
+> > +		netdev_err(dev, "Message RAM Watchdog event due to missing READY\n");
+> > +	if (irqstatus & IR_BEU)
+> > +		netdev_err(dev, "Error Logging Overflow\n");
+> > +	if (irqstatus & IR_BEU)
+> > +		netdev_err(dev, "Bit Error Uncorrected\n");
+> > +	if (irqstatus & IR_BEC)
+> > +		netdev_err(dev, "Bit Error Corrected\n");
+> > +	if (irqstatus & IR_TOO)
+> > +		netdev_err(dev, "Timeout reached\n");
+> > +	if (irqstatus & IR_MRAF)
+> > +		netdev_err(dev, "Message RAM access failure occurred\n");
+> > +}
+> 
+> Have you ever seen these error messages? Better rate limit these, though.
+> 
+
+Normally we will not see those errors.
+It just for telling the user if something errors happened.
+Still not sure about the rate.
+Could it be improved later when we meet the real issue?
+
+> > +
+> > +static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
+> > +				   u32 psr)
+> > +{
+> > +	int work_done = 0;
+> > +
+> > +	if (irqstatus & IR_RF0L)
+> > +		work_done += m_can_handle_lost_msg(dev);
+> > +
+> > +	/* handle lec errors on the bus */
+> > +	if (psr & LEC_UNUSED)
+> > +		work_done += m_can_handle_lec_err(dev,
+> > +				psr & LEC_UNUSED);
+> > +
+> > +	/* other unproccessed error interrupts */
+> > +	m_can_handle_other_err(dev, irqstatus);
+> > +
+> > +	return work_done;
+> > +}
+> 
 > Marc
-> 
 > -- 
 > Pengutronix e.K.                  | Marc Kleine-Budde           |
 > Industrial Linux Solutions        | Phone: +49-231-2826-924     |
