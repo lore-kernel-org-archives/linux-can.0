@@ -1,60 +1,68 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Date: Fri, 18 Jul 2014 11:05:39 -0700
-Message-ID: <1405706739.14358.68.camel@joe-AO725>
-References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
-	 <20140718162213.GC31114@tuxdriver.com> <20140718164340.GA24960@kroah.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: CAN Utils
+Date: Fri, 18 Jul 2014 20:08:19 +0200
+Message-ID: <20140718180819.GA24305@vandijck-laurijssen.be>
+References: <ahafkglomfqdhtkargpl@sawx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-crypto-owner@vger.kernel.org>
-In-Reply-To: <20140718164340.GA24960@kroah.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Greg KH <greg@kroah.com>
-Cc: "John W. Linville" <linville@tuxdriver.com>, Benoit Taine <benoit.taine@lip6.fr>, linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-mmc@vger.kernel.org, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, xen-devel@lists.xenproject.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, users@rt2x00.serialmonkey.com, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.orgdeve
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mailrelay011.isp.belgacom.be ([195.238.6.178]:22301 "EHLO
+	mailrelay011.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1422813AbaGRSIZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Jul 2014 14:08:25 -0400
+Content-Disposition: inline
+In-Reply-To: <ahafkglomfqdhtkargpl@sawx>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Jan Kinkazu <kinkazu@interia.eu>
+Cc: linux-can@vger.kernel.org
 
-On Fri, 2014-07-18 at 09:43 -0700, Greg KH wrote:
-> On Fri, Jul 18, 2014 at 12:22:13PM -0400, John W. Linville wrote:
-> > On Fri, Jul 18, 2014 at 05:26:47PM +0200, Benoit Taine wrote:
-> > > We should prefer `const struct pci_device_id` over
-> > > `DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
-> > > This issue was reported by checkpatch.
-> >  scripts/checkpatch.pl | 4 ++--
-> > Honestly, I prefer the macro -- it stands-out more.  Maybe the style
-> > guidelines and/or checkpatch should change instead?
+On Fri, Jul 18, 2014 at 10:14:21AM +0200, Jan Kinkazu wrote:
+> Hi Kurt.
 > 
-> The macro is horrid, no other bus has this type of thing just to save a
-> few characters in typing, so why should PCI be "special" in this regard
-> anymore?
+> Sorry for botherring you on your private email, but I don't know which forum to
+> join to have a contact with you.
+> 
+> I would like to ask you 2 questions regardig your J1939 stack and can utils.
+> 
+> I have very very limited knowledge how CAN or J1939 works, but I was able to
+> include your patch to kernel, install iproute with your commits, install your
+> can-j1939-utils.
+> 
+> The first question is:
+> 
+> Do I need your J1939 stack if the only think I want to do is receive data from
+> the J1939 engine?
 
-I think it doesn't matter much.
+If you want to seamlessly use transport protocol,
+you could use my J1939 stack.
+dynamic addressing (address claiming) is probably not usefull since engine controllers
+sit on 0x00.
 
-The PCI_DEVICE and PCI_VDEVICE macro uses are somewhat similar
-and are frequently used with PCI_DEVICE_TABLE, so there's some
-commonality there.
+> 
+> I have both can-utils and can-J1939-utils and candump shows exactly the same
+> info.
 
-The checkpatch message could be made --strict/CHK instead of
-WARN so most people would never see it.
+can-j1939-utils is can-utils + some j1939 specific tools.
+candump is supposed to work exactly the same.
 
-Of course it could be removed altogether too.  I don't care.
----
-(suggested patch is for -next)
+> 
+> The second question is:
+> 
+> Why cansniffer shows nothing wile candump shows properly can0 traffic?
 
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm not familiar with cansiffer.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index dc72a9b..754fbf2 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3018,8 +3018,8 @@ sub process {
- 
- # check for uses of DEFINE_PCI_DEVICE_TABLE
- 		if ($line =~ /\bDEFINE_PCI_DEVICE_TABLE\s*\(\s*(\w+)\s*\)\s*=/) {
--			if (WARN("DEFINE_PCI_DEVICE_TABLE",
--				 "Prefer struct pci_device_id over deprecated DEFINE_PCI_DEVICE_TABLE\n" . $herecurr) &&
-+			if (CHK("DEFINE_PCI_DEVICE_TABLE",
-+				"Prefer struct pci_device_id over deprecated DEFINE_PCI_DEVICE_TABLE\n" . $herecurr) &&
- 			    $fix) {
- 				$fixed[$fixlinenr] =~ s/\b(?:static\s+|)DEFINE_PCI_DEVICE_TABLE\s*\(\s*(\w+)\s*\)\s*=\s*/static const struct pci_device_id $1\[\] = /;
- 			}
+> 
+> Kind Regards
+> 
+> 
+> P.S
+> 
+> If you tell me where, i will post my questions on the forum so everybody can
+> drink from the well of your wisdom
+
+the proper place is linux-can@vger.kernel.org
+which I added in CC
+
+> 
