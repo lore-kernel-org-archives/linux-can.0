@@ -1,64 +1,46 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH v5 1/2] can: m_can: add device tree binding
- documentation
-Date: Wed, 16 Jul 2014 18:40:54 +0800
-Message-ID: <20140716104054.GB20184@shlinux1.ap.freescale.net>
-References: <1405503050-16796-1-git-send-email-b29396@freescale.com>
- <53C64E51.9050606@pengutronix.de>
+From: Benoit Taine <benoit.taine@lip6.fr>
+Subject: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+Date: Fri, 18 Jul 2014 17:26:47 +0200
+Message-ID: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2lp0237.outbound.protection.outlook.com ([207.46.163.237]:3681
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754376AbaGPKqQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 16 Jul 2014 06:46:16 -0400
-Content-Disposition: inline
-In-Reply-To: <53C64E51.9050606@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, mark.rutland@arm.com, varkabhadram@gmail.com, robh+dt@kernel.org, grant.likely@linaro.org
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: linux-pci@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, benoit.taine@lip6.fr, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, users@rt2x00.serialmonkey.com, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
+List-Id: linux-can.vger.kernel.org
 
-On Wed, Jul 16, 2014 at 12:05:05PM +0200, Marc Kleine-Budde wrote:
-> On 07/16/2014 11:30 AM, Dong Aisheng wrote:
-> > add M_CAN device tree binding documentation
-> > 
-> > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> > Cc: Varka Bhadram <varkabhadram@gmail.com>
-> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> > ---
-> > Changes since v4:
-> > - change the name of board dtsi to board dts which is more common
-> > 
-> > Changes since v3:
-> > - change mram-cfg property name to bosch,mram-cfg
-> > - indent change
-> > ---
-> >  .../devicetree/bindings/net/can/m_can.txt          |   67 ++++++++++++++++++++
-> >  1 files changed, 67 insertions(+), 0 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
-> 
-> I'll apply this series once we've got an Ack for the DT folks.
-> 
+We should prefer `const struct pci_device_id` over
+`DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
+This issue was reported by checkpatch.
 
-Okay, thanks!
+A simplified version of the semantic patch that makes this change is as
+follows (http://coccinelle.lip6.fr/):
 
-Copy Grant, Rob and Mark in case they have comments.
+// <smpl>
 
-Regards
-Dong Aisheng
+@@
+identifier i;
+declarer name DEFINE_PCI_DEVICE_TABLE;
+initializer z;
+@@
 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+- DEFINE_PCI_DEVICE_TABLE(i)
++ const struct pci_device_id i[]
+= z;
 
+// </smpl>
 
+I have 103 patches ready, and will only send a few for you to judge if
+it is useful enough, and to prevent from spamming too much.
+
+Thanks.
