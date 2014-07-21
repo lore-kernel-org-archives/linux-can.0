@@ -1,258 +1,112 @@
-From: Kamal Mostafa <kamal@canonical.com>
-Subject: [3.8.y.z extended stable] Patch "genirq: Sanitize spurious interrupt detection of threaded irqs" has been added to staging queue
-Date: Mon, 21 Jul 2014 14:21:27 -0700
-Message-ID: <1405977687-32525-1-git-send-email-kamal@canonical.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from youngberry.canonical.com ([91.189.89.112]:37007 "EHLO
-	youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753278AbaGUVVg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Jul 2014 17:21:36 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Till Straumann <strauman@slac.stanford.edu>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+Date: Mon, 21 Jul 2014 17:16:03 -0600
+Message-ID: <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
+References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
+	<20140718162213.GC31114@tuxdriver.com>
+	<20140718164340.GA24960@kroah.com>
+	<1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
+	<20140718181759.GB2193@kroah.com>
+	<1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <virtualization-bounces@lists.linux-foundation.org>
+In-Reply-To: <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
+List-Post: <mailto:virtualization@lists.linux-foundation.org>
+List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
+Sender: virtualization-bounces@lists.linux-foundation.org
+Errors-To: virtualization-bounces@lists.linux-foundation.org
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-fbdev@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, users@rt2x00.serialmonkey.com, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Jingoo Han <jg1.han@samsung.com>, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, Greg KH <greg@kroah.com>, linux-wireless <linux-wireless@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, John
+List-Id: linux-can.vger.kernel.org
 
-This is a note to let you know that I have just added a patch titled
-
-    genirq: Sanitize spurious interrupt detection of threaded irqs
-
-to the linux-3.8.y-queue branch of the 3.8.y.z extended stable tree 
-which can be found at:
-
- http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.8.y-queue
-
-This patch is scheduled to be released in version 3.8.13.27.
-
-If you, or anyone else, feels it should not be added to this tree, please 
-reply to this email.
-
-For more information about the 3.8.y.z tree, see
-https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
-
-Thanks.
--Kamal
-
-------
-
-From 7dbeba98ab984e8fda7bfff004b69a21e6d083fb Mon Sep 17 00:00:00 2001
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 7 Mar 2013 14:53:45 +0100
-Subject: genirq: Sanitize spurious interrupt detection of threaded irqs
-
-commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
-
-Till reported that the spurious interrupt detection of threaded
-interrupts is broken in two ways:
-
-- note_interrupt() is called for each action thread of a shared
-  interrupt line. That's wrong as we are only interested whether none
-  of the device drivers felt responsible for the interrupt, but by
-  calling multiple times for a single interrupt line we account
-  IRQ_NONE even if one of the drivers felt responsible.
-
-- note_interrupt() when called from the thread handler is not
-  serialized. That leaves the members of irq_desc which are used for
-  the spurious detection unprotected.
-
-To solve this we need to defer the spurious detection of a threaded
-interrupt to the next hardware interrupt context where we have
-implicit serialization.
-
-If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
-check whether the previous interrupt requested a deferred check. If
-not, we request a deferred check for the next hardware interrupt and
-return.
-
-If set, we check whether one of the interrupt threads signaled
-success. Depending on this information we feed the result into the
-spurious detector.
-
-If one primary handler of a shared interrupt returns IRQ_HANDLED we
-disable the deferred check of irq threads on the same line, as we have
-found at least one device driver who cared.
-
-Reported-by: Till Straumann <strauman@slac.stanford.edu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Austin Schuh <austin@peloton-tech.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
-
-Signed-off-by: Kamal Mostafa <kamal@canonical.com>
----
- include/linux/irqdesc.h |   4 ++
- kernel/irq/manage.c     |   4 +-
- kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 108 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 623325e..078bc2f 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -27,6 +27,8 @@ struct irq_desc;
-  * @irq_count:		stats field to detect stalled irqs
-  * @last_unhandled:	aging timer for unhandled count
-  * @irqs_unhandled:	stats field for spurious unhandled interrupts
-+ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
-+ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
-  * @lock:		locking for SMP
-  * @affinity_hint:	hint to user space for preferred irq affinity
-  * @affinity_notify:	context for notification of affinity changes
-@@ -52,6 +54,8 @@ struct irq_desc {
- 	unsigned int		irq_count;	/* For detecting broken IRQs */
- 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
- 	unsigned int		irqs_unhandled;
-+	atomic_t		threads_handled;
-+	int			threads_handled_last;
- 	raw_spinlock_t		lock;
- 	struct cpumask		*percpu_enabled;
- #ifdef CONFIG_SMP
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index edbe80e..f26e367 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -860,8 +860,8 @@ static int irq_thread(void *data)
- 		irq_thread_check_affinity(desc, action);
-
- 		action_ret = handler_fn(desc, action);
--		if (!noirqdebug)
--			note_interrupt(action->irq, desc, action_ret);
-+		if (action_ret == IRQ_HANDLED)
-+			atomic_inc(&desc->threads_handled);
-
- 		wake_threads_waitq(desc);
- 	}
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index 7b5f012..febcee3c 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
- 	return action && (action->flags & IRQF_IRQPOLL);
- }
-
-+#define SPURIOUS_DEFERRED	0x80000000
-+
- void note_interrupt(unsigned int irq, struct irq_desc *desc,
- 		    irqreturn_t action_ret)
- {
- 	if (desc->istate & IRQS_POLL_INPROGRESS)
- 		return;
-
--	/* we get here again via the threaded handler */
--	if (action_ret == IRQ_WAKE_THREAD)
--		return;
--
- 	if (bad_action_ret(action_ret)) {
- 		report_bad_irq(irq, desc, action_ret);
- 		return;
- 	}
-
-+	/*
-+	 * We cannot call note_interrupt from the threaded handler
-+	 * because we need to look at the compound of all handlers
-+	 * (primary and threaded). Aside of that in the threaded
-+	 * shared case we have no serialization against an incoming
-+	 * hardware interrupt while we are dealing with a threaded
-+	 * result.
-+	 *
-+	 * So in case a thread is woken, we just note the fact and
-+	 * defer the analysis to the next hardware interrupt.
-+	 *
-+	 * The threaded handlers store whether they sucessfully
-+	 * handled an interrupt and we check whether that number
-+	 * changed versus the last invocation.
-+	 *
-+	 * We could handle all interrupts with the delayed by one
-+	 * mechanism, but for the non forced threaded case we'd just
-+	 * add pointless overhead to the straight hardirq interrupts
-+	 * for the sake of a few lines less code.
-+	 */
-+	if (action_ret & IRQ_WAKE_THREAD) {
-+		/*
-+		 * There is a thread woken. Check whether one of the
-+		 * shared primary handlers returned IRQ_HANDLED. If
-+		 * not we defer the spurious detection to the next
-+		 * interrupt.
-+		 */
-+		if (action_ret == IRQ_WAKE_THREAD) {
-+			int handled;
-+			/*
-+			 * We use bit 31 of thread_handled_last to
-+			 * denote the deferred spurious detection
-+			 * active. No locking necessary as
-+			 * thread_handled_last is only accessed here
-+			 * and we have the guarantee that hard
-+			 * interrupts are not reentrant.
-+			 */
-+			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
-+				desc->threads_handled_last |= SPURIOUS_DEFERRED;
-+				return;
-+			}
-+			/*
-+			 * Check whether one of the threaded handlers
-+			 * returned IRQ_HANDLED since the last
-+			 * interrupt happened.
-+			 *
-+			 * For simplicity we just set bit 31, as it is
-+			 * set in threads_handled_last as well. So we
-+			 * avoid extra masking. And we really do not
-+			 * care about the high bits of the handled
-+			 * count. We just care about the count being
-+			 * different than the one we saw before.
-+			 */
-+			handled = atomic_read(&desc->threads_handled);
-+			handled |= SPURIOUS_DEFERRED;
-+			if (handled != desc->threads_handled_last) {
-+				action_ret = IRQ_HANDLED;
-+				/*
-+				 * Note: We keep the SPURIOUS_DEFERRED
-+				 * bit set. We are handling the
-+				 * previous invocation right now.
-+				 * Keep it for the current one, so the
-+				 * next hardware interrupt will
-+				 * account for it.
-+				 */
-+				desc->threads_handled_last = handled;
-+			} else {
-+				/*
-+				 * None of the threaded handlers felt
-+				 * responsible for the last interrupt
-+				 *
-+				 * We keep the SPURIOUS_DEFERRED bit
-+				 * set in threads_handled_last as we
-+				 * need to account for the current
-+				 * interrupt as well.
-+				 */
-+				action_ret = IRQ_NONE;
-+			}
-+		} else {
-+			/*
-+			 * One of the primary handlers returned
-+			 * IRQ_HANDLED. So we don't care about the
-+			 * threaded handlers on the same line. Clear
-+			 * the deferred detection bit.
-+			 *
-+			 * In theory we could/should check whether the
-+			 * deferred bit is set and take the result of
-+			 * the previous run into account here as
-+			 * well. But it's really not worth the
-+			 * trouble. If every other interrupt is
-+			 * handled we never trigger the spurious
-+			 * detector. And if this is just the one out
-+			 * of 100k unhandled ones which is handled
-+			 * then we merily delay the spurious detection
-+			 * by one hard interrupt. Not a real problem.
-+			 */
-+			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
-+		}
-+	}
-+
- 	if (unlikely(action_ret == IRQ_NONE)) {
- 		/*
- 		 * If we are seeing only the odd spurious IRQ caused by
---
-1.9.1
-
+WytjYyBKaW5nb29dCgpPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAxMjo1MCBQTSwgSmFtZXMgQm90
+dG9tbGV5CjxKYW1lcy5Cb3R0b21sZXlAaGFuc2VucGFydG5lcnNoaXAuY29tPiB3cm90ZToKPiBP
+biBGcmksIDIwMTQtMDctMTggYXQgMTE6MTcgLTA3MDAsIEdyZWcgS0ggd3JvdGU6Cj4+IE9uIEZy
+aSwgSnVsIDE4LCAyMDE0IGF0IDA5OjU0OjMyQU0gLTA3MDAsIEphbWVzIEJvdHRvbWxleSB3cm90
+ZToKPj4gPiBPbiBGcmksIDIwMTQtMDctMTggYXQgMDk6NDMgLTA3MDAsIEdyZWcgS0ggd3JvdGU6
+Cj4+ID4gPiBPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAxMjoyMjoxM1BNIC0wNDAwLCBKb2huIFcu
+IExpbnZpbGxlIHdyb3RlOgo+PiA+ID4gPiBPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAwNToyNjo0
+N1BNICswMjAwLCBCZW5vaXQgVGFpbmUgd3JvdGU6Cj4+ID4gPiA+ID4gV2Ugc2hvdWxkIHByZWZl
+ciBgY29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWRgIG92ZXIKPj4gPiA+ID4gPiBgREVGSU5FX1BD
+SV9ERVZJQ0VfVEFCTEVgIHRvIG1lZXQga2VybmVsIGNvZGluZyBzdHlsZSBndWlkZWxpbmVzLgo+
+PiA+ID4gPiA+IFRoaXMgaXNzdWUgd2FzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2guCj4+ID4gPiA+
+Cj4+ID4gPiA+IEhvbmVzdGx5LCBJIHByZWZlciB0aGUgbWFjcm8gLS0gaXQgc3RhbmRzLW91dCBt
+b3JlLiAgTWF5YmUgdGhlIHN0eWxlCj4+ID4gPiA+IGd1aWRlbGluZXMgYW5kL29yIGNoZWNrcGF0
+Y2ggc2hvdWxkIGNoYW5nZSBpbnN0ZWFkPwo+PiA+ID4KPj4gPiA+IFRoZSBtYWNybyBpcyBob3Jy
+aWQsIG5vIG90aGVyIGJ1cyBoYXMgdGhpcyB0eXBlIG9mIHRoaW5nIGp1c3QgdG8gc2F2ZSBhCj4+
+ID4gPiBmZXcgY2hhcmFjdGVycyBpbiB0eXBpbmcKPj4gPgo+PiA+IE9LLCBzbyB0aGlzIGlzIHRo
+ZSBtYWNybzoKPj4gPgo+PiA+ICNkZWZpbmUgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUoX3RhYmxl
+KSBcCj4+ID4gICAgIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkIF90YWJsZVtdCj4+ID4KPj4g
+PiBDb3VsZCB5b3UgZXhwbGFpbiB3aGF0J3Mgc28gaG9ycmlibGU/Cj4+ID4KPj4gPiBUaGUgcmVh
+c29uIGl0J3MgdXNlZnVsIHRvZGF5IGlzIHRoYXQgcGVvcGxlIGZvcmdldCB0aGUgY29uc3QgKGFu
+ZAo+PiA+IHNvbWV0aW1lcyB0aGUgW10gbWFraW5nIGl0IGEgdHJ1ZSB0YWJsZSBpbnN0ZWFkIG9m
+IGEgcG9pbnRlcikuICBJZiB5b3UKPj4gPiB1c2UgdGhlIERFRklORV9QQ0lfREVWSUNFX1RBQkxF
+IG1hY3JvLCB0aGUgY29tcGlsZSBicmVha3MgaWYgeW91IHVzZSBpdAo+PiA+IHdyb25nbHkgKGdv
+b2QpIGFuZCB5b3UgYXV0b21hdGljYWxseSBnZXQgdGhlIGNvcnJlY3QgYW5ub3RhdGlvbnMuCj4+
+Cj4+IFdlIGhhdmUgYWxtb3N0IDEwMDAgbW9yZSB1c2VzIG9mIHRoZSBub24tbWFjcm8gdmVyc2lv
+biB0aGFuIHRoZSAibWFjcm8iCj4+IHZlcnNpb24gaW4gdGhlIGtlcm5lbCB0b2RheToKPj4gJCBn
+aXQgZ3JlcCAtdyBERUZJTkVfUENJX0RFVklDRV9UQUJMRSB8IHdjIC1sCj4+IDI2Mgo+PiAkIGdp
+dCBncmVwICJjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCIgfCB3YyAtbAo+PiAxMjU0Cj4+Cj4+
+IE15IGJpZyBjb21wbGFpbnQgaXMgdGhhdCB3ZSBuZWVkIHRvIGJlIGNvbnNpc3RhbnQsIGVpdGhl
+ciBwaWNrIG9uZSBvcgo+PiB0aGUgb3RoZXIgYW5kIHN0aWNrIHRvIGl0LiAgQXMgdGhlIG1hY3Jv
+IGlzIHRoZSBsZWFzdCB1c2VkLCBpdCdzIGVhc2llc3QKPj4gdG8gZml4IHVwLCBhbmQgaXQgYWxz
+byBpcyBtb3JlIGNvbnNpc3RhbnQgd2l0aCBhbGwgb3RoZXIga2VybmVsCj4+IHN1YnN5c3RlbXMg
+d2hpY2ggZG8gbm90IGhhdmUgc3VjaCBhIG1hY3JvLgo+Cj4gSSd2ZSBhIHdlYWsgcHJlZmVyZW5j
+ZSBmb3IgY29uc2lzdGVuY3ksIGJ1dCBub3QgYXQgdGhlIGV4cGVuc2Ugb2YKPiBodW5kcmVkcyBv
+ZiBwYXRjaGVzIGNodXJuaW5nIHRoZSBrZXJuZWwgdG8gcmVtb3ZlIGFuIGlubm9jdW91cyBtYWNy
+by4KPiBDaHVybiBjb3N0cyB0aW1lIGFuZCBlZmZvcnQuCj4KPj4gQXMgdGhlcmUgaXMgbm8gbmVl
+ZCBmb3IgdGhlIF9faW5pdCBtYWNybyBtZXNzIGFueW1vcmUsIHRoZXJlJ3Mgbm8gcmVhbAo+PiBu
+ZWVkIGZvciB0aGUgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUgbWFjcm8gZWl0aGVyLiAgSSB0aGlu
+ayBjaGVja3BhdGNoCj4+IHdpbGwgY2F0Y2ggdGhlIHVzZSBvZiBub24tY29uc3QgdXNlcnMgZm9y
+IHRoZSBpZCB0YWJsZSBhbHJlYWR5IHRvZGF5LCBpdAo+PiBjYXRjaGVzIGxvdHMgb2Ygb3RoZXIg
+dXNlcyBsaWtlIHRoaXMgYWxyZWFkeS4KPj4KPj4gPiA+ICwgc28gd2h5IHNob3VsZCBQQ0kgYmUg
+InNwZWNpYWwiIGluIHRoaXMgcmVnYXJkCj4+ID4gPiBhbnltb3JlPwo+PiA+Cj4+ID4gSSB0aGlu
+ayB0aGUgUENJIHVzYWdlIGR3YXJmcyBtb3N0IG90aGVyIGJ1cyB0eXBlcyBub3csIHNvIHlvdSBj
+b3VsZCB0dXJuCj4+ID4gdGhlIHF1ZXN0aW9uIGFyb3VuZC4gIEhvd2V2ZXIsIEkgZG9uJ3QgdGhp
+bmsgbWFqb3JpdHkgdm90aW5nIGlzIGEgZ29vZAo+PiA+IGd1aWRlIHRvIGJlc3QgcHJhY3Rpc2U7
+IGxldHMgZGViYXRlIHRoZSBtZXJpdHMgZm9yIHRoZWlyIG93biBzYWtlLgo+Pgo+PiBOb3QgcmVh
+bGx5ICJkd2FyZiIsIFVTQiBpcyBjbG9zZSB3aXRoIG92ZXIgNzAwIHN1Y2ggc3RydWN0dXJlczoK
+Pj4gJCBnaXQgZ3JlcCAiY29uc3Qgc3RydWN0IHVzYl9kZXZpY2VfaWQiIHwgd2MgLWwKPj4gNzI1
+Cj4+Cj4+IEFuZCBpMmMgaXMgYWxtb3N0IGp1c3QgYXMgYmlnIGFzIFBDSToKPj4gJCBnaXQgZ3Jl
+cCAiY29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQiIHwgd2MgLWwKPj4gMTIyMwo+Pgo+PiBTbyBh
+Z2FpbiwgdGhpcyBtYWNybyBpcyBub3QgY29uc2lzdGVudCB3aXRoIHRoZSBtYWpvcml0eSBvZiBQ
+Q0kgZHJpdmVycywKPj4gbm9yIHdpdGggYW55IG90aGVyIHR5cGUgb2YgImRldmljZSBpZCIgZGVj
+bGFyYXRpb24gaW4gdGhlIGtlcm5lbCwgd2hpY2gKPj4gaXMgd2h5IEkgZmVlbCBpdCBzaG91bGQg
+YmUgcmVtb3ZlZC4KPj4KPj4gQW5kIGZpbmFsbHksIHRoZSBQQ0kgZG9jdW1lbnRhdGlvbiBpdHNl
+bGYgc2F5cyB0byBub3QgdXNlIHRoaXMgbWFjcm8sIHNvCj4+IHRoaXMgaXNuJ3QgYSAibmV3IiB0
+aGluZy4gIEZyb20gRG9jdW1lbnRhdGlvbi9QQ0kvcGNpLnR4dDoKPj4KPj4gICAgICAgVGhlIElE
+IHRhYmxlIGlzIGFuIGFycmF5IG9mIHN0cnVjdCBwY2lfZGV2aWNlX2lkIGVudHJpZXMgZW5kaW5n
+IHdpdGggYW4KPj4gICAgICAgYWxsLXplcm8gZW50cnkuICBEZWZpbml0aW9ucyB3aXRoIHN0YXRp
+YyBjb25zdCBhcmUgZ2VuZXJhbGx5IHByZWZlcnJlZC4KPj4gICAgICAgVXNlIG9mIHRoZSBkZXBy
+ZWNhdGVkIG1hY3JvIERFRklORV9QQ0lfREVWSUNFX1RBQkxFIHNob3VsZCBiZSBhdm9pZGVkLgo+
+Pgo+PiBUaGF0IHdvcmRpbmcgd2VudCBpbnRvIHRoZSBmaWxlIGxhc3QgRGVjZW1iZXIsIHdoZW4g
+d2UgbGFzdCB0YWxrZWQgYWJvdXQKPj4gdGhpcyBhbmQgZXZlcnlvbmUgaW4gdGhhdCBkaXNjdXNz
+aW9uIGFncmVlZCB0byByZW1vdmUgdGhlIG1hY3JvIGZvciB0aGUKPj4gYWJvdmUgcmVhc29ucy4K
+Pj4KPj4gQ29uc2lzdGVuY3kgbWF0dGVycy4KPgo+IEluIHRoaXMgY2FzZSwgSSBkb24ndCB0aGlu
+ayBpdCBkb2VzIHRoYXQgbXVjaCAuLi4gYSBjdXQgYW5kIHBhc3RlIGVpdGhlcgo+IHdheSAoZnJv
+bSBhIG1hY3JvIG9yIG5vbi1tYWNybyBiYXNlZCBkcml2ZXIpIHlpZWxkcyBjb3JyZWN0IGNvZGUu
+ICBTaW5jZQo+IHRoZXJlJ3Mgbm8gYnVnIGhlcmUgYW5kIG5vIGFwcGFyZW50IHdheSB0byBtaXN1
+c2UgdGhlIG1hY3JvLCB3aHkgYm90aGVyPwo+Cj4gQW55d2F5LCBpdCdzIFBDSSBjb2RlIC4uLiBs
+ZXQgdGhlIFBDSSBtYWludGFpbmVyIGRlY2lkZS4gIEhvd2V2ZXIsIGlmIGhlCj4gZG9lcyB3YW50
+IHRoaXMgZG8gaXQgYXMgb25lIGJpZyBiYW5nIHBhdGNoIHZpYSBlaXRoZXIgdGhlIFBDSSBvciBU
+cml2aWFsCj4gdHJlZSAobGF0dGVyIGJlY2F1c2UgSmnFmcOtIGhhcyBleHBlcmllbmNlIGRvaW5n
+IHRoaXMsIGJ1dCB0aGUgZm9ybWVyCj4gbWlnaHQgYmUgdXNlZnVsIHNvIHRoZSBkZWNpZGVyIGZl
+ZWxzIHRoZSBwYWluIC4uLikKCkkgZG9uJ3QgZmVlbCBzdHJvbmdseSBlaXRoZXIgd2F5LCBzbyBJ
+IGd1ZXNzIEknbSBPSyB3aXRoIHRoaXMsIGFuZCBpbgp0aGUgc3Bpcml0IG9mIGZlZWxpbmcgdGhl
+IHBhaW4sIEknbSB3aWxsaW5nIHRvIGhhbmRsZSBpdC4gIEppbmdvbwpwcm9wb3NlZCBzaW1pbGFy
+IHBhdGNoZXMsIHNvIGl0IG1pZ2h0IGJlIG5pY2UgdG8gZ2l2ZSBoaW0gc29tZSBjcmVkaXQuCgpC
+ZW5vaXQsIGhvdyBhYm91dCBpZiB5b3Ugd2FpdCB1bnRpbCBhYm91dCBoYWxmLXdheSB0aHJvdWdo
+IHRoZSBtZXJnZQp3aW5kb3cgYWZ0ZXIgdjMuMTYgcmVsZWFzZXMsIGdlbmVyYXRlIGFuIHVwLXRv
+LWRhdGUgc2luZ2xlIHBhdGNoLCBhbmQKcG9zdCB0aGF0PyAgVGhlbiB3ZSBjYW4gdHJ5IHRvIGdl
+dCBpdCBpbiBiZWZvcmUgdjMuMTctcmMxIHRvIG1pbmltaXplCm1lcmdlIGhhc3NsZXMuCgpCam9y
+bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpWaXJ0dWFs
+aXphdGlvbiBtYWlsaW5nIGxpc3QKVmlydHVhbGl6YXRpb25AbGlzdHMubGludXgtZm91bmRhdGlv
+bi5vcmcKaHR0cHM6Ly9saXN0cy5saW51eGZvdW5kYXRpb24ub3JnL21haWxtYW4vbGlzdGluZm8v
+dmlydHVhbGl6YXRpb24=
