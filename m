@@ -1,46 +1,44 @@
-From: Greg KH <greg@kroah.com>
+From: David Miller <davem@davemloft.net>
 Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Date: Fri, 18 Jul 2014 14:27:00 -0700
-Message-ID: <20140718212700.GA12121@kroah.com>
+Date: Sun, 20 Jul 2014 21:18:13 -0700 (PDT)
+Message-ID: <20140720.211813.942862864883062133.davem@davemloft.net>
 References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
-	<20140718162213.GC31114@tuxdriver.com>
-	<20140718164340.GA24960@kroah.com>
-	<1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
-	<20140718181759.GB2193@kroah.com>
-	<CAPM=9tzgWdnv7jc+xjsJUf0EcyGU+V7nFHzzQ16ui1eE0ihyQA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <virtualization-bounces@lists.linux-foundation.org>
-Content-Disposition: inline
-In-Reply-To: <CAPM=9tzgWdnv7jc+xjsJUf0EcyGU+V7nFHzzQ16ui1eE0ihyQA@mail.gmail.com>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
-List-Post: <mailto:virtualization@lists.linux-foundation.org>
-List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
-Sender: virtualization-bounces@lists.linux-foundation.org
-Errors-To: virtualization-bounces@lists.linux-foundation.org
-To: Dave Airlie <airlied@gmail.com>
-Cc: linux-mips@linux-mips.org, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-pci@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, James Bottomley <James.Bottomley@hansenpartnership.com>, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, Linux SCSI List <linux-scsi@vger.kernel.org>, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, Linux Wireless List <linux-wireless@vger.kernel.org>, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, Network
+Return-path: <linux-crypto-owner@vger.kernel.org>
+In-Reply-To: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
+Sender: linux-crypto-owner@vger.kernel.org
+To: benoit.taine@lip6.fr
+Cc: linux-pci@vger.kernel.org, ath5k-devel@venema.h4ckr.net, ath9k-devel@venema.h4ckr.net, linux-hippi@sunsite.dk, dri-devel@lists.freedesktop.org, linux-acenic@sunsite.dk, wil6210@qca.qualcomm.com, platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, virtualization@lists.linux-foundation.org, industrypack-devel@lists.sourceforge.net, linux-can@vger.kernel.org, linux-mmc@vger.kernel.org, linux-fbdev@vger.kernel.org, ath10k@lists.infradead.org, linux-crypto@vger.kernel.org, MPT-FusionLinux.pdl@avagotech.com, devel@linuxdriverproject.org, xen-devel@lists.xenproject.org, linux-pcmcia@lists.infradead.org, e1000-devel@lists.sourceforge.net
 List-Id: linux-can.vger.kernel.org
 
-On Sat, Jul 19, 2014 at 07:14:12AM +1000, Dave Airlie wrote:
-> >
-> > We have almost 1000 more uses of the non-macro version than the "macro"
-> > version in the kernel today:
-> > $ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
-> > 262
-> > $ git grep "const struct pci_device_id" | wc -l
-> > 1254
+From: Benoit Taine <benoit.taine@lip6.fr>
+Date: Fri, 18 Jul 2014 17:26:47 +0200
+
+> We should prefer `const struct pci_device_id` over
+> `DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
+> This issue was reported by checkpatch.
 > 
-> did you check for non-const ones? just to see if we have any of the
-> broken case in the tree :-)
+> A simplified version of the semantic patch that makes this change is as
+> follows (http://coccinelle.lip6.fr/):
+> 
+> // <smpl>
+> 
+> @@
+> identifier i;
+> declarer name DEFINE_PCI_DEVICE_TABLE;
+> initializer z;
+> @@
+> 
+> - DEFINE_PCI_DEVICE_TABLE(i)
+> + const struct pci_device_id i[]
+> = z;
+> 
+> // </smpl>
+> 
+> I have 103 patches ready, and will only send a few for you to judge if
+> it is useful enough, and to prevent from spamming too much.
 
-I didn't :)
-
-> as for consistency, pci_dev vs usb_device :-P
-
-Read farther down the email...
+I'm fine with this wrt. the networking changes, but I don't think this should
+be merged via my tree.
