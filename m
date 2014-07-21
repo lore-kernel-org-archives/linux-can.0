@@ -1,62 +1,258 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [iproute2 1/2] Update CAN netlink header
-Date: Mon, 21 Jul 2014 19:51:43 +0200
-Message-ID: <53CD532F.90905@hartkopp.net>
-References: <1405935800-26622-1-git-send-email-nebaruzdin@gmail.com> <1405935800-26622-2-git-send-email-nebaruzdin@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: Kamal Mostafa <kamal@canonical.com>
+Subject: [3.8.y.z extended stable] Patch "genirq: Sanitize spurious interrupt detection of threaded irqs" has been added to staging queue
+Date: Mon, 21 Jul 2014 14:21:27 -0700
+Message-ID: <1405977687-32525-1-git-send-email-kamal@canonical.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:22676 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933094AbaGURvt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Jul 2014 13:51:49 -0400
-In-Reply-To: <1405935800-26622-2-git-send-email-nebaruzdin@gmail.com>
+Received: from youngberry.canonical.com ([91.189.89.112]:37007 "EHLO
+	youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753278AbaGUVVg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Jul 2014 17:21:36 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Till Straumann <strauman@slac.stanford.edu>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Pavel Pisa <pisa@cmp.felk.cvut.cz>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
 
-Hello Nikita,
+This is a note to let you know that I have just added a patch titled
 
-On 21.07.2014 11:43, Nikita Edward Baruzdin wrote:
-> Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-> ---
->  include/linux/can/netlink.h | 12 ++++++++----
+    genirq: Sanitize spurious interrupt detection of threaded irqs
 
+to the linux-3.8.y-queue branch of the 3.8.y.z extended stable tree 
+which can be found at:
 
->   * CAN device statistics
-> @@ -122,9 +124,11 @@ enum {
->  	IFLA_CAN_RESTART_MS,
->  	IFLA_CAN_RESTART,
->  	IFLA_CAN_BERR_COUNTER,
-> +	IFLA_CAN_DATA_BITTIMING,
-> +	IFLA_CAN_DATA_BITTIMING_CONST,
->  	__IFLA_CAN_MAX
->  };
+ http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.8.y-queue
 
-This change has already been applied to the iproute2 git repository from
-Stephen Hemminger:
+This patch is scheduled to be released in version 3.8.13.27.
 
-http://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/
+If you, or anyone else, feels it should not be added to this tree, please 
+reply to this email.
 
-See:
+For more information about the 3.8.y.z tree, see
+https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
 
-http://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/diff/include/linux/can/netlink.h?id=e4d5edba68970124c5ce245a11a5c5cd4dde9ae1
+Thanks.
+-Kamal
 
-The best is, to wait until Stephen has pulled the Linux headers into his tree.
-This will usually happen when the merge window for the Kernel 3.17(!) is
-closed - e.g. in 4-6 weeks from now.
+------
 
-After the kernel header update in the iproute2 git repository it makes sense
-to post your patch 2/2 as
+From 7dbeba98ab984e8fda7bfff004b69a21e6d083fb Mon Sep 17 00:00:00 2001
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Thu, 7 Mar 2013 14:53:45 +0100
+Subject: genirq: Sanitize spurious interrupt detection of threaded irqs
 
-	iproute2: add support for CAN presume-ack feature
+commit 1e77d0a1ed7417d2a5a52a7b8d32aea1833faa6c upstream.
 
-and send this simultaneously on linux-can and linux-netdev ML.
+Till reported that the spurious interrupt detection of threaded
+interrupts is broken in two ways:
 
-So let's wait for Stephen updating his iproute2 tree ...
+- note_interrupt() is called for each action thread of a shared
+  interrupt line. That's wrong as we are only interested whether none
+  of the device drivers felt responsible for the interrupt, but by
+  calling multiple times for a single interrupt line we account
+  IRQ_NONE even if one of the drivers felt responsible.
 
-Thanks,
-Oliver
+- note_interrupt() when called from the thread handler is not
+  serialized. That leaves the members of irq_desc which are used for
+  the spurious detection unprotected.
+
+To solve this we need to defer the spurious detection of a threaded
+interrupt to the next hardware interrupt context where we have
+implicit serialization.
+
+If note_interrupt is called with action_ret == IRQ_WAKE_THREAD, we
+check whether the previous interrupt requested a deferred check. If
+not, we request a deferred check for the next hardware interrupt and
+return.
+
+If set, we check whether one of the interrupt threads signaled
+success. Depending on this information we feed the result into the
+spurious detector.
+
+If one primary handler of a shared interrupt returns IRQ_HANDLED we
+disable the deferred check of irq threads on the same line, as we have
+found at least one device driver who cared.
+
+Reported-by: Till Straumann <strauman@slac.stanford.edu>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Austin Schuh <austin@peloton-tech.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Link: http://lkml.kernel.org/r/alpine.LFD.2.02.1303071450130.22263@ionos
+
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+---
+ include/linux/irqdesc.h |   4 ++
+ kernel/irq/manage.c     |   4 +-
+ kernel/irq/spurious.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 108 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 623325e..078bc2f 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -27,6 +27,8 @@ struct irq_desc;
+  * @irq_count:		stats field to detect stalled irqs
+  * @last_unhandled:	aging timer for unhandled count
+  * @irqs_unhandled:	stats field for spurious unhandled interrupts
++ * @threads_handled:	stats field for deferred spurious detection of threaded handlers
++ * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
+  * @lock:		locking for SMP
+  * @affinity_hint:	hint to user space for preferred irq affinity
+  * @affinity_notify:	context for notification of affinity changes
+@@ -52,6 +54,8 @@ struct irq_desc {
+ 	unsigned int		irq_count;	/* For detecting broken IRQs */
+ 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
+ 	unsigned int		irqs_unhandled;
++	atomic_t		threads_handled;
++	int			threads_handled_last;
+ 	raw_spinlock_t		lock;
+ 	struct cpumask		*percpu_enabled;
+ #ifdef CONFIG_SMP
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index edbe80e..f26e367 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -860,8 +860,8 @@ static int irq_thread(void *data)
+ 		irq_thread_check_affinity(desc, action);
+
+ 		action_ret = handler_fn(desc, action);
+-		if (!noirqdebug)
+-			note_interrupt(action->irq, desc, action_ret);
++		if (action_ret == IRQ_HANDLED)
++			atomic_inc(&desc->threads_handled);
+
+ 		wake_threads_waitq(desc);
+ 	}
+diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+index 7b5f012..febcee3c 100644
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -265,21 +265,119 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
+ 	return action && (action->flags & IRQF_IRQPOLL);
+ }
+
++#define SPURIOUS_DEFERRED	0x80000000
++
+ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 		    irqreturn_t action_ret)
+ {
+ 	if (desc->istate & IRQS_POLL_INPROGRESS)
+ 		return;
+
+-	/* we get here again via the threaded handler */
+-	if (action_ret == IRQ_WAKE_THREAD)
+-		return;
+-
+ 	if (bad_action_ret(action_ret)) {
+ 		report_bad_irq(irq, desc, action_ret);
+ 		return;
+ 	}
+
++	/*
++	 * We cannot call note_interrupt from the threaded handler
++	 * because we need to look at the compound of all handlers
++	 * (primary and threaded). Aside of that in the threaded
++	 * shared case we have no serialization against an incoming
++	 * hardware interrupt while we are dealing with a threaded
++	 * result.
++	 *
++	 * So in case a thread is woken, we just note the fact and
++	 * defer the analysis to the next hardware interrupt.
++	 *
++	 * The threaded handlers store whether they sucessfully
++	 * handled an interrupt and we check whether that number
++	 * changed versus the last invocation.
++	 *
++	 * We could handle all interrupts with the delayed by one
++	 * mechanism, but for the non forced threaded case we'd just
++	 * add pointless overhead to the straight hardirq interrupts
++	 * for the sake of a few lines less code.
++	 */
++	if (action_ret & IRQ_WAKE_THREAD) {
++		/*
++		 * There is a thread woken. Check whether one of the
++		 * shared primary handlers returned IRQ_HANDLED. If
++		 * not we defer the spurious detection to the next
++		 * interrupt.
++		 */
++		if (action_ret == IRQ_WAKE_THREAD) {
++			int handled;
++			/*
++			 * We use bit 31 of thread_handled_last to
++			 * denote the deferred spurious detection
++			 * active. No locking necessary as
++			 * thread_handled_last is only accessed here
++			 * and we have the guarantee that hard
++			 * interrupts are not reentrant.
++			 */
++			if (!(desc->threads_handled_last & SPURIOUS_DEFERRED)) {
++				desc->threads_handled_last |= SPURIOUS_DEFERRED;
++				return;
++			}
++			/*
++			 * Check whether one of the threaded handlers
++			 * returned IRQ_HANDLED since the last
++			 * interrupt happened.
++			 *
++			 * For simplicity we just set bit 31, as it is
++			 * set in threads_handled_last as well. So we
++			 * avoid extra masking. And we really do not
++			 * care about the high bits of the handled
++			 * count. We just care about the count being
++			 * different than the one we saw before.
++			 */
++			handled = atomic_read(&desc->threads_handled);
++			handled |= SPURIOUS_DEFERRED;
++			if (handled != desc->threads_handled_last) {
++				action_ret = IRQ_HANDLED;
++				/*
++				 * Note: We keep the SPURIOUS_DEFERRED
++				 * bit set. We are handling the
++				 * previous invocation right now.
++				 * Keep it for the current one, so the
++				 * next hardware interrupt will
++				 * account for it.
++				 */
++				desc->threads_handled_last = handled;
++			} else {
++				/*
++				 * None of the threaded handlers felt
++				 * responsible for the last interrupt
++				 *
++				 * We keep the SPURIOUS_DEFERRED bit
++				 * set in threads_handled_last as we
++				 * need to account for the current
++				 * interrupt as well.
++				 */
++				action_ret = IRQ_NONE;
++			}
++		} else {
++			/*
++			 * One of the primary handlers returned
++			 * IRQ_HANDLED. So we don't care about the
++			 * threaded handlers on the same line. Clear
++			 * the deferred detection bit.
++			 *
++			 * In theory we could/should check whether the
++			 * deferred bit is set and take the result of
++			 * the previous run into account here as
++			 * well. But it's really not worth the
++			 * trouble. If every other interrupt is
++			 * handled we never trigger the spurious
++			 * detector. And if this is just the one out
++			 * of 100k unhandled ones which is handled
++			 * then we merily delay the spurious detection
++			 * by one hard interrupt. Not a real problem.
++			 */
++			desc->threads_handled_last &= ~SPURIOUS_DEFERRED;
++		}
++	}
++
+ 	if (unlikely(action_ret == IRQ_NONE)) {
+ 		/*
+ 		 * If we are seeing only the odd spurious IRQ caused by
+--
+1.9.1
 
