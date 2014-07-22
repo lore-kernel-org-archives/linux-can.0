@@ -1,44 +1,72 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: Canutils can not up can0
-Date: Tue, 22 Jul 2014 15:36:21 +0200
-Message-ID: <CAGm1_ktkqP+9ONN_zX5vA+=s0-GeY4RwQ3iX-YGEt+rhjbgOKA@mail.gmail.com>
-References: <53CE4BDC.1000508@gmail.com> <53CE4E59.90602@pengutronix.de>
- <53CE54BA.2070609@gmail.com> <53CE56F1.2070907@pengutronix.de>
+From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+Subject: Re: [iproute2 1/2] Update CAN netlink header
+Date: Tue, 22 Jul 2014 18:09:44 +0400
+Message-ID: <1406038184.9500.2.camel@gmail.com>
+References: <1405935800-26622-1-git-send-email-nebaruzdin@gmail.com>
+	 <1405935800-26622-2-git-send-email-nebaruzdin@gmail.com>
+	 <53CD532F.90905@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f48.google.com ([209.85.220.48]:50704 "EHLO
-	mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750870AbaGVNgm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Jul 2014 09:36:42 -0400
-Received: by mail-pa0-f48.google.com with SMTP id et14so11885635pad.21
-        for <linux-can@vger.kernel.org>; Tue, 22 Jul 2014 06:36:41 -0700 (PDT)
-In-Reply-To: <53CE56F1.2070907@pengutronix.de>
+Received: from mail-la0-f42.google.com ([209.85.215.42]:44007 "EHLO
+	mail-la0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752450AbaGVOJu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Jul 2014 10:09:50 -0400
+Received: by mail-la0-f42.google.com with SMTP id pv20so5586356lab.1
+        for <linux-can@vger.kernel.org>; Tue, 22 Jul 2014 07:09:48 -0700 (PDT)
+In-Reply-To: <53CD532F.90905@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: grommerin <grommerin@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Jul 22, 2014 at 2:20 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> Mikita,
->
-> please keep the mailing list on Cc.
->
-> On 07/22/2014 02:10 PM, grommerin wrote:
->> Now I try using this version:
->> https://gitorious.org/linux-can/can-utils/source/518faef3acc79bb4f31ae2b55b266eb540850f39:
->
-> There is no canconfig in the gitoruous can-utils.
->
->> Working version: git://git.pengutronix.de/git/tools/canutils.git
->> No error messages. The problem is that I can not configure can0 and set
->> bitrate.
->> I can not attach a message "dmesg". "ifconfig" sees can0 but it is not
->> configured.
->
-> Which canconfig are you using?
+On Mon, 2014-07-21 at 19:51 +0200, Oliver Hartkopp wrote:
+> Hello Nikita,
+> 
+> On 21.07.2014 11:43, Nikita Edward Baruzdin wrote:
+> > Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+> > ---
+> >  include/linux/can/netlink.h | 12 ++++++++----
+> 
+> 
+> >   * CAN device statistics
+> > @@ -122,9 +124,11 @@ enum {
+> >  	IFLA_CAN_RESTART_MS,
+> >  	IFLA_CAN_RESTART,
+> >  	IFLA_CAN_BERR_COUNTER,
+> > +	IFLA_CAN_DATA_BITTIMING,
+> > +	IFLA_CAN_DATA_BITTIMING_CONST,
+> >  	__IFLA_CAN_MAX
+> >  };
+> 
+> This change has already been applied to the iproute2 git repository from
+> Stephen Hemminger:
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/
+> 
+> See:
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/diff/include/linux/can/netlink.h?id=e4d5edba68970124c5ce245a11a5c5cd4dde9ae1
+> 
+> The best is, to wait until Stephen has pulled the Linux headers into his tree.
+> This will usually happen when the merge window for the Kernel 3.17(!) is
+> closed - e.g. in 4-6 weeks from now.
+> 
+> After the kernel header update in the iproute2 git repository it makes sense
+> to post your patch 2/2 as
+> 
+> 	iproute2: add support for CAN presume-ack feature
+> 
+> and send this simultaneously on linux-can and linux-netdev ML.
+> 
+> So let's wait for Stephen updating his iproute2 tree ...
+> 
+> Thanks,
+> Oliver
+> 
 
-Please take a look at our turorial
-http://elinux.org/Bringing_CAN_interface_up too.
+Got it, I was looking at linux-can/iproute2 tree.
 
-Yegor
+And what about libsocketcan patches?
+
