@@ -1,816 +1,1675 @@
 From: Stefano Babic <sbabic@denx.de>
-Subject: [PATCH v4 1/3] Add documentation for SPI to CAN driver
-Date: Thu, 24 Jul 2014 12:11:44 +0200
-Message-ID: <1406196706-4548-2-git-send-email-sbabic@denx.de>
+Subject: [PATCH v4 3/3] CAN: CAN driver to support multiple CAN bus on SPI interface
+Date: Thu, 24 Jul 2014 12:11:46 +0200
+Message-ID: <1406196706-4548-4-git-send-email-sbabic@denx.de>
 References: <1406196706-4548-1-git-send-email-sbabic@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp1.ngi.it ([88.149.128.112]:55458 "EHLO smtp1.ngi.it"
+Received: from smtp1.ngi.it ([88.149.128.112]:55398 "EHLO smtp1.ngi.it"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S933391AbaGXKSM (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 24 Jul 2014 06:18:12 -0400
+	id S935307AbaGXKSO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 24 Jul 2014 06:18:14 -0400
 In-Reply-To: <1406196706-4548-1-git-send-email-sbabic@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>
 
+This driver implements a simple protocol
+to transfer CAN messages to and from an external
+microcontroller via SPI interface.
+Multiple busses can be tranfered on the same SPI channel.
+
+It was tested on a i.MX35 connected to a Freescale's
+HCS12 16-bit controller with 5 CAN busses.
+
 Signed-off-by: Stefano Babic <sbabic@denx.de>
 
 ---
 
 Changes in v4:
-- added GET_CFG message to query bit timing to the remote controller.
+- implement GET_CFG message to ask the microcontroller
+  for bittiming consts.
+- drop set_mode (never called)
+- drop echo_index (never used)
+- fix inconsistencies using int variable (int/u32)
+- add reference to documentation in Kconfig help
+- s/refTime/ref_time/
+- move module parameters on the top
+- use variable to get sizeof inside kzalloc/memset
+- fix missing close_candev() in open entry point
+- fix return values (spi_can_fill_skb_msg())
+- not access skb after calling net_receive_skb()
+- fix minor coding style issues
+- add missing free_irq() and gpio_free() in probe when fails
 
 Changes in v3:
-- format documentation, check for lines > 80 chars (O. Hartkopp)
-- patch 2/3 already aqpplied to can-next, removed from patchset
+- spican.h renamed to spi_can.h
+- drop further references to i.MX and HCS12, not yet cleaned
+- drop CAN_DEV depend from Kconfig
+- drop debug stuff via sysfs, not required in production code
+- drop debug module parameter, use CAN_DEBUG_DEVICES
+- drop unused bittiming constant
+- chksum on as default. It could still be disabled via
+  DT/pdata, but not via module parameter.
 
-Changes in v2: None
+Changes in v2:
+- drop all references to i.MX35 and HCS12
 
- Documentation/networking/spi_can.txt | 774 +++++++++++++++++++++++++++++++++++
- 1 file changed, 774 insertions(+)
- create mode 100644 Documentation/networking/spi_can.txt
+ drivers/net/can/spi/Kconfig          |   11 +
+ drivers/net/can/spi/Makefile         |    1 +
+ drivers/net/can/spi/spi_can.c        | 1531 ++++++++++++++++++++++++++++++++++
+ include/linux/can/platform/spi_can.h |   33 +
+ 4 files changed, 1576 insertions(+)
+ create mode 100644 drivers/net/can/spi/spi_can.c
+ create mode 100644 include/linux/can/platform/spi_can.h
 
-diff --git a/Documentation/networking/spi_can.txt b/Documentation/networking/spi_can.txt
+diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
+index 148cae5..e7323d2 100644
+--- a/drivers/net/can/spi/Kconfig
++++ b/drivers/net/can/spi/Kconfig
+@@ -7,4 +7,15 @@ config CAN_MCP251X
+ 	---help---
+ 	  Driver for the Microchip MCP251x SPI CAN controllers.
+ 
++config CAN_SPI
++	tristate "Support for CAN over SPI"
++	---help---
++	  Driver to transfer CAN messages to a microcontroller
++	  connected via the SPI interface using a simple messaged based
++	  protocol.
++	  Further information and details on the protocol can be found
++	  in Documentation/networking/spi_can.txt
++
++	  Say Y here if you want to support for CAN to SPI.
++
+ endmenu
+diff --git a/drivers/net/can/spi/Makefile b/drivers/net/can/spi/Makefile
+index 90bcacf..0fd2126 100644
+--- a/drivers/net/can/spi/Makefile
++++ b/drivers/net/can/spi/Makefile
+@@ -4,5 +4,6 @@
+ 
+ 
+ obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
++obj-$(CONFIG_CAN_SPI)		+= spi_can.o
+ 
+ ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
+diff --git a/drivers/net/can/spi/spi_can.c b/drivers/net/can/spi/spi_can.c
 new file mode 100644
-index 0000000..82f33e7
+index 0000000..5f7925f
 --- /dev/null
-+++ b/Documentation/networking/spi_can.txt
-@@ -0,0 +1,774 @@
-+The spi_can driver is intended to provide a general protocol
-+to support CAN interface that are not directly connected or
-+part of the main controller, but they are available on a
-+separate controller, such as a low cost/low power microcontroller
-+(for example, very simple 16 bit controllers providing multiple CAN
-+ busses).
-+
-+This document is intended to describe the internal protocol
-+on the SPI interface between the linux system (main controller)
-+and the remote CAN controller(s).
-+
-+1. Overview
-+----------------------
-+
-+The CAN controller processors supports up to N Can Busses. The Main Controller
-+driver should be able to manage all CAN busses. It is then
-+responsibility of the SW Main Application to decide which controllers
-+(which CAN channels) should be opened and used.
-+
-+There is the requirement to configure the CAN controller, sending some
-+parameters or commands not strictly related to the CAN interfaces. For example,
-+it is required that the application sends periodically a message to the CAN
-+controller, that has the responsibility to supervise the Main Controller. If the
-+message is not received in time, the CAN controller must perform a reset of the
-+Main Controller controller (Watchdog message).
-+Another known use case is to configure the wake-up mechanism, that is
-+under which circumstances the CAN controller must awake the Main Controller
-+(ignition, opened door,...). The protocol foresees an additional channel (CFG)
-+used to exchange data between the application layer and the CAN controller.
-+
-+The document sets the rules to exchange messages between the Main Controller and
-+the CAN controller and allows to extend the functionalities with new messages
-+(see Chapter 5) in the future.
-+
-+2. Interface to upper layer
-+------------------------------
-+
-+The driver must provide a socket CAN interface. In this way, the
-+application is able to communicate with CAN via usual sockets.
-+A detailed description can be found in the kernel documentation
-+(Documentation/networking/can.txt).
-+
-+On the application level there will be network interfaces, and
-+they can be set up with Linux tools such as "ifconfig" and "ip".
-+
-+For the CAN controller configuration it is proposed to add a further network
-+device ("cfg") to have a consistent interface. In this way, the
-+driver must not expone itself in a different way to the application SW.
-+Configuration packets are simply forward to the CAN controller exactly as it is
-+done for the other channels. The application fills data for the cfg
-+interface and the Main Controller driver does not need to look inside.
-+Configuration data are treated by the CAN driver exactly as all other CAN
-+packets.
-+Only the SW application and CAN controller-SW are aware of it.
-+
-+The driver must be able to mux/demux packets from the socket can interface.
-+Indeed, there is only one SPI interface to to communicate with the CAN
-+controller, and the driver instantiates automatically multiple network
-+interfaces.
-+On the downstream direction, the driver must take packets from all interfaces
-+(hcan0,..hcan4), set up a frame header (message type,
-+channel number, etc.) and send it to CAN controller via the SPI interface.
-+
-+
-+             hcan0  hcan1 hcan2  hcan3  hcan4 cfg
-+               |     |    |       |       |    |
-+               |     |    |       |       |    |
-+            ,__|_____|____|_______|_______|____|_
-+            |                                    |
-+            |                                    |
-+            |      SOCKET CAN (Kernel)           |
-+            |                                    |
-+            L________________,.__________________|
-+                            ,!!;
-+                            ,!!;
-+                            `!!.
-+                            ;!!.
-+            ,'''''''''''''''''''''''''''''''''''`.
-+            |  +------------------------------.  |
-+            |  |    Channel Mux/Demux         |  |
-+            |  L______________________________|  |
-+            |                                    |
-+            |  +------------------------------.  |
-+            |  |       Can to SPI controller  |  |
-+            |  L______________________________|  |
-+            |..................................../
-+
-+
-+On the upstream direction, the driver must be able to demux the received
-+frames and forward them to the related network interface.
-+
-+The cfg is a special CAN interface used only to set up the
-+CAN controller behavior and does not map to a physical CAN channel, as the other
-+CAN interfaces do. The scope of such interface is to provide a way to
-+exchange messages with the CAN controller processor that are not strictly
-+related to the CAN bus. As example for such messages, a watchdog message must
-+be sent regularly by the Main Controller to the CAN controller, and it is sent
-+as CAN data to channel that matches the imxhcs12.  The driver is not aware of
-+these messages, as they are seen as normal data messages for a CAN channel.
-+This guarantees that it is possible in future to extend the list of these
-+configuration messages without changing the driver. The partners that must know
-+their format are the application software in user space and the CAN controller
-+Software.
-+
-+3. Interface to HW
-+---------------------------
-+
-+The CAN controller is connected to the Main Controller via the SPI interface.
-+
-+3.1 SPI Hardware Connection
-+---------------------------
-+
-+ - Main Controller is always the Master and the CAN controller in slave mode.
-+
-+ - Maximal frequency:
-+   The limit is set by the CAN controller, because it must serve an interrupt
-+   request before the next two bytes are sent.
-+
-+   The CAN controller has two operational modes: "User Mode" and
-+   "Supervisor / Maintenance" Mode. The last one is used to update
-+   the software on the CAN controller.
-+   In Supervisor Mode, the CAN controller runs with little support for its
-+   peripherals. The maximum SPI frequency is limited to 1 Mhz.
-+   The driver must support two different operational frequencies,
-+   and must be able to switch between them.
-+   This is done using the CFG_MSG_SET for the CFG channel, see details in chapter 6.
-+
-+ - bit x words : it was tested with 32 bits. This means that the Main Controller
-+   deactive the chip select automatically (without intervention by Software)
-+   each 4 bytes. No interrupts are generated on the Main Controller because they
-+   are ruled by the internal FIFO.
-+
-+ - GPIO(s):
-+	IRQ GPIO: set active by CAN controller when it has something to send
-+		it raises an interrupt on Main Controller side.
-+
-+To transfer data, some frame header will be included. If a field contains more
-+as one byte, a big endian convention is used (MSB is transmitted first).
-+
-+The SPI interface is full duplex. This means, both Main Controller and CAN
-+controller are transmitting data at the same time. It is possible to transfer
-+CAN messages to and from the CAN controller in the same SPI transfer.
-+
-+4. SPI Protocol between Main Controller and CAN controller
-+----------------------------------------------------------
-+
-+The format of the frames exchanged between Main Controller and CAN controller
-+is:
-+
-+
-+    ,'''''''','''''''''''''''','''''''''''''''''''''''','''''''''''''|
-+    |MSG ID  |  Length(16 bit)|    DATA                |  CHECKSUM   |
-+    L________|________________|________________________|_____________|
-+
-+The checksum is thought to be used in the development phase to check
-+for implementation's error. It should be possible to disable it after
-+the development is finished. The SPI interface ensures that data are
-+transfered without modification between the two processors.
-+
-+The checksum is computed as 16 bit 2's complement of the sum (module 16)
-+of  all bytes in the message, excluded the checksum itself.
-+On the receive side, it is enough to sum all bytes including the checksum
-+to verify if the message was received correctly (the sum must be zero).
-+
-+The MSG-ID (1 byte) identifies the type of exchange data. For basic exchange
-+of frames, the following messages are used:
-+
-+	SEND_DATA_MSG
-+	STATUS_MSG
-+	SYNC_MSG
-+	CFG_MSG_SET
-+	CFG_MSG_GET
-+	REQ_DATA_MSG
-+
-+The SEND_DATA_MSG is used when one of the two processors needs to send a CAN
-+message.
-+
-+The STATUS_MSG is used to inform the partner about the number of bytes ready
-+to be transfered. This is used by the Main Controller when it has several
-+messages to send, and it needs a longer frame as usual to sen all CAN messages
-+back.
-+
-+The SYNC_MSG is used to start up the communication and in case an error is
-+detected. It is the first message that the Main Controller will send to the
-+CAN controller.
-+Because the Main Controller will always send the MSG ID as first byte in the
-+frame, the SYNC_MSG is used to signalize the start of a frame to the CAN
-+controller.
-+The SYNC_MSG is used also to initialize or reinitialize the time on the
-+CAN controller. It is not required to the CAN controller to have an absolute
-+time synchronized to the Main Controller. It is enough to have a relative time,
-+and the Main Controller computes the absolute time to add it as timestamp to
-+the received packets.
-+
-+The CFG_MSG_SET is sent to configure the CAN channel for bitrate and timing.
-+The driver on the Main Controller does not need to parse the parameters and it
-+forwards them to the corresponding CAN controller's CAN interface.
-+
-+The CFG_MSG_GET is sent at the start up to query the CAN controller about its
-+internal timing, making them available to the netlink interface. CAN drivers
-+have usually fest values for can_bittiming_const. In case of a remote
-+CAN controller driven via SPI, the Main Controller cannot know the timing
-+and must ask them to the CAN controller before instantiating a CAN device.
-+For this reason, the message is sent only once in the probe() entry point.
-+
-+The REQ_DATA is sent only by the Main Controller when the Main Controller
-+signals it has packets to be transfered, but the Main Controller has nothing
-+to sent. Its scope is mainly to signalize to the Main Controller the Start of
-+the Frame and to pass in the LENGTH field the number of bytes of the frame
-+itself.
-+After receiving the REQ_DATA message, the CAN controller knows how many bytes
-+is allowed to send without fragmenting frames on the Main Controller's side.
-+
-+4.1 Start of the comunication
-+-----------------------------
-+
-+The Main Controller does not poll continuosly the CAN controller.
-+If it has nothing to send, it waits to get an interrupt on the GPIO-line.
-+
-+If the CAN controller has packets to be sent, it sets the GPIO-IRQ,
-+and this raises an interrupt on Main Controller side.
-+
-+The CAN controller can sends enough messages as they can fit inside
-+the SPI transfer. The number of bytes (=SPI clock cycles)
-+to be transfered is set by the Main Controller inside the Status Message.
-+
-+               |                               |
-+               |GPIO(IRQ for Main Controller)  |
-+               |<------------------------------'
-+               |                               |
-+               |  First SPI Transfer started   |
-+               |      SPI:REQ_DATA             |
-+               |------------------------------>|
-+               |      SPI:Send Data            |
-+               |<------------------------------|
-+               |      SPI:Send Data            |
-+               |<------------------------------|
-+               |      SPI: Status              |
-+               |<------------------------------|
-+               |                               |
-+               |  New SPI Transfer started     |
-+               |      SPI:Send Data            |
-+               |------------------------------>|
-+               |      SPI:Send Data            |
-+               |<------------------------------|
-+               |                               |
-+               |                               |
-+               |                               |
-+	Example of SPI transfer.
-+
-+The CAN controller sets the GPIO-IRQ, and this raises an interrupt on the
-+Main Controller.
-+The protocol uses several Message-IDs to identify what is really exchanged.
-+
-+From the Main Controller point of view, a SPI Transfer is initiated when the
-+first byte is written into the internal FIFO and it is finished when the all
-+bytes are transmitted. The protocol relies on the positional place of the
-+bytes, that means there is no need to wait for a start-frame byte.
-+
-+On the receive side, due to CAN controller limitations, the Main Controller
-+must drop the first 4 bytes received from the CAN controller, as they have
-+no meaning.
-+It must be ensured by the CAN controller software that the first valid byte
-+is the fifth in the SPI transfer.
-+
-+The Main Controller has no knowledge at the beginning how many messages the
-+CAN controller will send and it starts with a 32-bytes transfer because this
-+matches the internal FIFO and raises only one interrupt.
-+If the CAN controller has communicated with the status message
-+the number of bytes it needs for the next SPI frame, the Main Controller will
-+start a SPI transfer for a number of bytes equal or greater
-+as the received value.
-+Sending imediately a new SPI transfer should minimize the delay to transfer
-+CAN messages into the socket CAN layer, and setting the transfer to
-+a multiple of 32 is a best-effort for the CPU load on the Main Controller side,
-+because it matches the internal FIFO size (tested on i.MX35). However, there is
-+no restrictions about the number of bytes to be transfered, and it is duty of
-+the Main Controller driver to find the most valuable length to be used.
-+
-+A SPI transfer is *NOT* delimited by changes of the chip select signal. Indeed,
-+the chip select is ruled internally by the bits x word setup, and it is made
-+suitable for both CAN controller and Main Controller. Bits x words must be a
-+multiple of 2, because the CAN controller gets an interrupt each 2 bytes.
-+
-+
-+5. SPI Communication scenarios
-+-------------------------------
-+
-+5.1 The CAN controller wants to send data, no data from Main Controller
-+-----------------------------------------------------------------------
-+
-+The CAN controller sets the GPIO to raise an interrupt on the Main Controller.
-+The CAN controller sets always the GPIO if it has something to sent, and it is
-+duty of the Main Controller to disable and enable the interrupt source depending
-+on the status of the transmission.
-+
-+After getting the interrupt, the Main Controller (that has no knowledge about
-+the amount of data to be transfered from the CAN controller), will start a SPI
-+transfer for a total of 32 bytes (default), sending a REQ_DATA message.
-+
-+This is the best-effort way for the Main Controller, as it will transfer so many
-+bytes as the internal FIFO can, and only one ISR is raised to terminate the
-+transfer.
-+Taking into account that the header requires 3 bytes (MSG-ID + length) and the
-+checksum further two bytes, there are still 27 bytes available for the CAN
-+messages.
-+This is always enough to send at least one CAN message.
-+
-+The CAN controller answers with the SEND_DATA_MSG. The Main Controller knows
-+that there is no message from the Main Controller, because the MSG-ID is not
-+set to SEND_DATA, and acquires the number of bytes to be transfered from the
-+length field.
-+The CAN controller packs so many CAN messages inside the SEND_DATA_MSG
-+(usually 1 or 2), delimiting the packet with the checksum as described before.
-+
-+
-+ Main Controller       ,''''''''''''''''''''''''''''''''''''''''''''''''''|
-+ (MOSI)             '''| REQ_DATA                                         |
-+                       |__________________________________________________|
-+
-+
-+
-+ CAN Contr.,'''''''''''''''''''''',''''''''''''''''''''''''''''|
-+ (MISO)    |Do not care (4 bytes) |  Send DATA MSG             |
-+           |                      |                            |
-+           '`''''''''''''''''''''''`''''''''''''''''''''''''''''
-+                              32 bytes long transfer
-+   '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-+
-+There are two options at this point:
-+
-+5.2 The CAN controller has sent all CAN messages.
-+-------------------------------------------------
-+
-+In this case, the CAN controller deasserts the GPIO line to avoid further
-+interrupts for the Main Controller.
-+
-+5.3 The CAN controller has more data to be sent.
-+------------------------------------------------
-+
-+It can send a STATUS_MSG message, if it fits into the current transfer.
-+There is no rule about when sending this message. The main constraint for
-+the CAN controller is that the packets must not be fragmented, that is, there is
-+still enough place inside the current frame to send the STATUS_MSG.
-+The CAN controller can decide also to send the Status Message before the
-+SEND_DATA_MSG.
-+Anyway, because the length of a STATUS_MSG is fixed (5 bytes), it is sure that
-+the CAN controller is always able to send a SEND_DATA_MSG and a STATUS_MSG
-+inside a standard (=32 bytes) SPI transfer.
-+
-+
-+ Main Controller       ,''''''''''''''''''''''''''''''''''''''''''''''''''|
-+ (MOSI)             '''| REQ_DATA                                         |
-+                       |__________________________________________________|
-+
-+
-+CAN Controller   ,'''''''''''''''''''''''''''''',''''''''''''''|
-+                 |   SEND DATA                  |  STATUS      |
-+                 |                              |              |
-+                  `''''''''''''''''''''''''''''''`'''''''''''''
-+
-+
-+After receiving the STATUS_MSG, the Main Controller is aware of the number of
-+bytes the S12 wants to send. It starts without waiting for the GPIO-ISR
-+and sends (if it has no messages for the CAN controller) a new REQ_DATA
-+with the length of the SPI transfer, followed by dummies 0x00.
-+The length could be changed by the Main Controller, but it must not be smaller
-+as the value required by the Main Controller in the STATUS_MSG.
-+
-+ Main Controller       ,''''''''''''''''''''''''''''''''''''''''''''''''''''''|
-+ (MOSI)             '''| REQ_DATA                                             |
-+                       |______________________________________________________|
-+
-+
-+                  ,''''''''''''''''''''''''''''  ,''''''''''''''''''''''''''''',
-+                  |   SEND DATA                  |   SEND DATA                 |
-+                  |                              |                             |
-+                   `'''''''''''''''''''''''''''   `'''''''''''''''''''''''''''''
-+
-+The CAN controller has now enough SPI clock cycles to send all data
-+to the Main Controller. After sending all data, it will fill also any
-+remaining bytes until the end of transfer with dummy bytes.
-+
-+In case there is no place for the STATUS_MSG and because it is not allowed
-+to fragment packets, the CAN controller must maintain assert the GPIO-IRQ line
-+and wait until the Main Controller will start a new transfer again.
-+
-+5.4 Both CAN controller and Main Controller has data to be sent
-+----------------------------------------------------------------
-+
-+The CAN controller asserts the GPIO line to raise an interrupt. The interrupt
-+can be served or not, depending if the Main Controller has already recognized
-+that it must send data. The GPIO is used from the Main Controller as
-+level-interrupt, and the Main Controller is able to activate it when no transfer
-+is running, and to deactivate it when it already knows there are messages
-+to be exchanged.
-+
-+The scenario is quite the same as previously:
-+
-+
-+
-+      ,'''''''''''''''''''''''''''''''''''''''''''''''''''''''''|
-+Main  |   SEND DATA                                             | ...........
-+      |                                                         |
-+       `''''''''''''''''''''''''''''''`''''''''''''''''''''''''''
-+
-+                  ,'''''''''''''''''''''''''''',
-+CAN Controller    |   SEND DATA                |
-+                  |                            |
-+                   `'''''''''''''''''''''''''''
-+
-+The Main Controller starts with the SEND_DATA_MSG. If it has a lot of CAN
-+messages to be sent, it sets accordingly the length field and it packs all CAN
-+messages inside the same single SEND_DATA_MSG.
-+
-+The CAN Controller, that has something to send, will answer with the
-+SEND_DATA_MSG, too.
-+Because it has already received the length of the incoming message, it is
-+aware about how many bytes are transfered and can act as in 5.3 if it has more
-+messages to send.
-+
-+5.5 The CAN controller gets new data during a transfer
-+------------------------------------------------------
-+
-+In this case, there are the following options:
-+
-+- the new messages can be fit inside the actual transfer.
-+Then the CAN controller will append a new SEND_DATA_MSG to the end of the
-+data that it is currently sending on the SPI line.
-+
-+ Main     ,''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''|
-+ (MOSI) '''| REQ_DATA                                                          |
-+           |___________________________________________________________________|
-+
-+
-+                  ,''''''''''''''''''''''''''''  ,''''''''''''''''''''''''''''',
-+CAN Controller    |   SEND DATA                  |   SEND DATA                 |
-+                  |                              |                             |
-+                   `'''''''''''''''''''''''''''   `'''''''''''''''''''''''''''''
-+			^--at this point, new can message(s) is(are) received
-+
-+- the new messages cannot be fit inside the actual SPI transfer
-+but there is place for a STATUS_MSG.
-+
-+The CAN controller will append a STATUS_MSG after the SEND_DATA as in 5.3.
-+After receiving STATUS_MSG, the Main Controller will start a new SPI transfer
-+for the requested amout of data.
-+
-+
-+ Main      ,'''''''''''''''''''''''''''''''''''''''''''''''''''|
-+ (MOSI) '''| REQ_DATA                                          |
-+           |___________________________________________________|
-+
-+
-+
-+CAN Controller   ,'''''''''''''''''''''''''''''',''''''''''''''|
-+                 |   SEND DATA                  |  STATUS      |
-+                 |                              |              |
-+                  `''''''''''''''''''''''''''''''`'''''''''''''
-+
-+- There is no place for the new message and/or the STATUS_MSG
-+
-+In this case, and because it is not allowed to fragment packets, the CAN
-+controller must maintain assert the GPIO-IRQ line and wait until the Main
-+Controller will start a new transfer again.
-+
-+5.6 Communication with upper layer
-+----------------------------------
-+
-+After reception of data, the CAN-Main Controller driver should demux data and
-+send them to the correct CAN interface via the API provided by socket CAN.
-+
-+6. Time synchronization
-+----------------------------
-+
-+As the CAN controller sends a timestamp to the Main Controller, it is required
-+to have the same time base. The CAN controller inserts timestamp with 1mSec
-+resolution, because it is programmed with 1mSec timer interrupt.
-+This resolution is enough for diagnostic protocols and higher resolution
-+timestamps are not reliable inside the CAN controller itself.
-+
-+To allow to the Main Controller to compute the absolute time, the Main
-+Controller and the CAN controller must compute elapsed time from the same base.
-+
-+The SYNC_MSG is used to reset the CAN controller's internal counter.
-+The Main Controller sends this message at the start up, and it can send it
-+when there is no traffic to maintain time synchronized.
-+The following actions are taken:
-+
-+1. The Main Controller sends a SYNC_MSG, and stores its absolute time.
-+   The SYNC_MSG is sent as single message in a 32 byte transfer.
-+   The remaining bytes are filled with zeros by the Main Controller.
-+   This makes easy to recognize the SYNC_MSG if the snchronization is lost.
-+2. After receiving the SYNC_MSG, the CAN controller resets its internal
-+   counter to zero.
-+   As the SYNC_MSG is used to signalize the start of frame, the CAN controller
-+   synchronize itself for the next transfer.
-+
-+When the CAN controller will send data, it will add the elapsed milliseconds
-+from the receiving of the SYNC_MSG as timestamps. As 4 bytes are used for
-+timestamp, the timestamp will roll over after 1193 days.
-+
-+7. CAN configuration
-+----------------------------------
-+
-+It is foreseen that the CAN controller's CAN channels are configured in the
-+usual way under Linux via the "ip" command. In fact, the CAN interface cannot
-+be set to "up" if it was not configured before.
-+
-+With ip, the following parameters can be set:
-+
-+ip link set DEVICE type can
-+	[ bitrate BITRATE [ sample-point SAMPLE-POINT] ] |
-+	[ tq TQ prop-seg PROP_SEG phase-seg1 PHASE-SEG1
-+	  phase-seg2 PHASE-SEG2 [ sjw SJW ] ]
-+
-+	[ loopback { on | off } ]
-+	[ listen-only { on | off } ]
-+	[ triple-sampling { on | off } ]
-+	[ one-shot { on | off } ]
-+	[ berr-reporting { on | off } ]
-+
-+	[ restart-ms TIME-MS ]
-+	[ restart ]
-+
-+	Where: BITRATE       := { 1..1000000 }
-+	       SAMPLE-POINT  := { 0.000..0.999 }
-+	       TQ            := { NUMBER }
-+	       PROP-SEG      := { 1..8 }
-+	       PHASE-SEG1    := { 1..8 }
-+	       PHASE-SEG2    := { 1..8 }
-+	       SJW           := { 1..4 }
-+	       RESTART-MS    := { 0 | NUMBER }
-+
-+After using the ip command, the driver will receive from the socketCAN layer
-+the following structure, defined in include/linux/can/netlink.h:
-+
++++ b/drivers/net/can/spi/spi_can.c
+@@ -0,0 +1,1531 @@
 +/*
-+ * CAN bit-timing parameters
++ * (C) Copyright 2012-2014
++ * Stefano Babic, DENX Software Engineering, sbabic@denx.de.
 + *
-+ * For futher information, please read chapter "8 BIT TIMING
-+ * REQUIREMENTS" of the "Bosch CAN Specification version 2.0"
-+ * at http://www.semiconductors.bosch.de/pdf/can2spec.pdf.
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
 + */
-+struct can_bittiming {
-+        __u32 bitrate;          /* Bit-rate in bits/second */
-+        __u32 sample_point;     /* Sample point in one-tenth of a percent */
-+        __u32 tq;               /* Time quanta (TQ) in nanoseconds */
-+        __u32 prop_seg;         /* Propagation segment in TQs */
-+        __u32 phase_seg1;       /* Phase buffer segment 1 in TQs */
-+        __u32 phase_seg2;       /* Phase buffer segment 2 in TQs */
-+        __u32 sjw;              /* Synchronisation jump width in TQs */
-+        __u32 brp;              /* Bit-rate prescaler */
++
++#include <linux/netdevice.h>
++#include <linux/can.h>
++#include <linux/can/dev.h>
++#include <linux/can/error.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/mutex.h>
++#include <linux/wait.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/kthread.h>
++#include <linux/workqueue.h>
++#include <linux/can/platform/spi_can.h>
++#include <linux/spi/spi.h>
++#include <linux/gpio.h>
++#include <linux/net_tstamp.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++
++#define MAX_CAN_CHANNELS	16
++#define CFG_CHANNEL		0xFF
++#define DRV_NAME		"spican"
++#define DRV_VERSION		"0.10"
++
++/* SPI constants */
++#define SPI_MAX_FRAME_LEN	1472	/* max total length of a SPI frame */
++#define BITS_X_WORD		32	/* 4 bytes */
++#define SPI_MIN_TRANSFER_LENGTH	32	/* Minimum SPI frame length */
++#define CAN_FRAME_MAX_DATA_LEN	8	/* max data lenght in a CAN message */
++#define MAX_ITERATIONS		100	/* Used to check if GPIO stucks */
++#define SPI_CAN_ECHO_SKB_MAX	4
++#define SLAVE_CLK_FREQ		100000000
++#define SLAVE_SUPERVISOR_FREQ	((u32)1000000)
++
++#define IS_GPIO_ACTIVE(p)	(!!gpio_get_value(p->gpio) == p->gpio_active)
++#define MS_TO_US(ms)		((ms) * 1000)
++
++/* more RX buffers are required for delayed processing */
++#define	SPI_RX_NBUFS		MAX_CAN_CHANNELS
++
++/* Provide a way to disable checksum */
++static unsigned int chksum_en = 1;
++
++static unsigned int freq;
++module_param(freq, uint, 0);
++MODULE_PARM_DESC(freq,
++	"SPI clock frequency (default is set by platform device)");
++static unsigned int slow_freq;
++module_param(slow_freq, uint, 0);
++MODULE_PARM_DESC(slow_freq,
++	"SPI clock frequency to be used in supervisor mode (default 1 Mhz)");
++
++/* CAN channel status to drop not required frames */
++enum {
++	CAN_CHANNEL_DISABLED = 0,
++	CAN_CHANNEL_ENABLED	= 1,
 +};
 +
-+The parameters are not interpreted by the driver, but they are encapsulated
-+as they are in a SPI frame with MSG-ID=CFG_MSG_SET and sent to the corresponding CAN
-+channel.
-+It is then duty of the CAN controller to set up the hardware on base of
-+the received parameters. According to the rules set in this document,
-+single parameters are sent in a big-endian order (MSB first).
++/* operational mode to set the SPI frequency */
++enum {
++	SLAVE_SUPERVISOR_MODE	= 0,
++	SLAVE_USER_MODE		= 1,
++};
 +
-+A special case is the setup for the CFG channel. This channel is not mapped to
-+a real CAN bus, but it is used to instantiate a communication
-+between the CAN controller software and the Application in User Space.
-+Data are not interpreted at all by the driver, and anybody can set its internal
-+protocol to add commands and features to the CAN controller software.
-+One example is the Watchdog triggering already mentioned.
-+The CAN_MSG is ignored by the CAN controller for the CFG channel, and its values
-+do not change the hardware setup.
-+Using this message it is possible to switch the CAN controller between two
-+operational modes:
-+	- Supervisor / Maintenance mode:	slow, max SPI frequency 1 Mhz
-+	- User / Normal mode			max SPI frequency set at startup
++/* Message between Master and Slave
++ *
++ * see spi_can_spi.txt for details
++ *
++ *	,'''''''','''''''''''''''','''''''''''''''''''''''','''''''''''''|
++ *	|MSG ID  |  Length(16 bit)|    DATA                |  CHECKSUM   |
++ *	L________|________________|________________________|_____________|
++ */
++struct spi_can_frame_header {
++	u8	msgid;
++	u16	length;
++} __packed;
 +
-+The driver will start setting the SPI frequency to the lower value.
-+When the CFG channel is opened, the driver checks the bitrate of the
-+can_bittiming structure, and takes the following actions:
++struct spi_can_frame {
++	struct spi_can_frame_header	header;
++	u8	data[1];
++} __packed;
 +
-+	- bitrate = 125000		sets SPI frequency to low value
-+	- bitrate > 125000		sets SPI frequency to high value
++/* Message IDs for SPI Frame */
++enum msg_type {
++	SPI_MSG_STATUS_REQ	= 0x01,
++	SPI_MSG_SEND_DATA	= 0x02,
++	SPI_MSG_SYNC		= 0x03,
++	SPI_MSG_CFG_SET		= 0x04,
++	SPI_MSG_REQ_DATA	= 0x05,
++	SPI_MSG_CFG_GET		= 0x06
++};
 +
-+In user space it is then possible to switch the CAN controller between the two
-+operational modes simply issueing the "ip link" command and setting
-+the bitrate for the CFG channel.
++/* CAN data sent inside a
++ * SPI_MSG_SEND_DATA message
++ *
++ *  _____,________________
++ * |     |                ,''''''''''''''''',''''''''''''|       ,'''''''|
++ * |ID=2 | LENGTH         | CAN MESSAGE     |CAN MESSAGE |       |CHECKSUM
++ * |_____L________________|_________________|____________|       L_______|
++ *                    _.-'                  `--._
++ *               _,,-'                           ``-.._
++ *           _.-'                                      `--._
++ *      _,--'                                               ``-.._
++ *  ,.-'                                                          `-.._
++ *  ,'''''',''''''''''''','''''''''''''','''''',''''''|     ,'''''''''|
++ *  | CH   |TIMESTAMP    |  CAN ID      |DLC   |D[0]  |     |D[dlc-1] |
++ *  L______L_____________|______________L______|______|     L_________|
++ */
 +
-+To set the CAN controller in supervisor mode:
-+	ip link set cfg type can bitrate 125000
++struct msg_channel_data {
++	u8	channel;
++	u32	timestamp;
++	u32	can_id;
++	u8	dlc;
++	u8	data[8];
++} __packed;
 +
-+To set the CAN controller in user mode:
-+	ip link set cfg type can bitrate 500000
++/* CFG message */
++struct msg_cfg_set_data {
++	u8	channel;
++	u8	enabled;
++	struct can_bittiming bt;
++} __packed;
++
++struct msg_cfg_get_data {
++	u8	channel;
++	u8	tseg1_min;
++	u8	tseg1_max;
++	u8	tseg2_min;
++	u8	tseg2_max;
++	u8	sjw_max;
++	u32	brp_min;
++	u32	brp_max;
++	u32	brp_inc;
++	u8	ctrlmode;
++	u32	clock_hz;
++} __packed;
++
++/* Status message */
++struct msg_status_data {
++	u16	length;
++} __packed;
++
++/* The ndo_start_xmit entry point
++ * insert the CAN messages into a list that
++ * is then read by the working thread.
++ */
++struct msg_queue_tx {
++	struct list_head	list;
++	u32			channel;
++	u32			enabled;
++	struct sk_buff		*skb;
++	enum msg_type		type;
++};
++
++struct msg_queue_rx {
++	struct list_head	list;
++	struct spi_can_frame	*frame;
++	u32			len;
++	u32			bufindex;
++};
++
++struct spi_rx_data {
++	u8 __aligned(4) spi_rx_buf[SPI_MAX_FRAME_LEN];
++	u32		msg_in_buf;
++	struct mutex	bufmutex;
++};
++
++/* Private data for the SPI device. */
++struct spi_can_data {
++	struct spi_device	*spi;
++	u32			gpio;
++	u32			gpio_active;
++	u32			num_channels;
++	u32			freq;
++	u32			slow_freq;
++	u32			max_freq;
++	u32			slave_op_mode;
++	struct net_device	*can_dev[MAX_CAN_CHANNELS + 1];
++	spinlock_t		lock;
++	struct msg_queue_tx	msgtx;
++	struct msg_queue_rx	msgrx;
++	struct mutex		lock_wqlist;
++	wait_queue_head_t	wait;
++	struct workqueue_struct *wq;
++	struct work_struct	work;
++	/* buffers must be 32-bit aligned  ! */
++	u8 __aligned(4)		spi_tx_buf[SPI_MAX_FRAME_LEN];
++	struct spi_rx_data	rx_data[SPI_RX_NBUFS];
++	struct timeval		ref_time;
++};
++
++/* Private data of the CAN devices */
++struct spi_can_priv {
++	struct can_priv		can;
++	struct net_device	*dev;
++	struct spi_can_data	*spi_priv;
++	struct can_bittiming_const spi_can_bittiming_const;
++	u32			channel;
++	u32			devstatus;
++	u32			ctrlmode;
++};
++
++/* Pointer to the worker task */
++static struct task_struct *spi_can_task;
++
++#ifdef DEBUG
++static void dump_frame(u8 *buf, int len)
++{
++	int i;
++
++	for (i = 0; i < min(len, SPI_MAX_FRAME_LEN); i++) {
++		if (!(i % 16))
++			printk(KERN_ERR "\n0x%04X: ", i);
++		printk("0x%02x ", *buf++);
++	}
++	printk("\n");
++}
++#endif
++
++static inline u16 compute_checksum(char *buf, u32 len)
++{
++	u32 i;
++	u16 chksum = 0;
++
++	if (!chksum_en)
++		return 0;
++	for (i = 0; i < len; i++, buf++)
++		chksum += *buf;
++
++	return (~chksum + 1) & 0xFFFF;
++}
++
++static u32 verify_checksum(struct spi_device *spi, char *buf, u32 len)
++{
++	u32 i = 0;
++	u16 chksum = 0;
++	u16 received_checksum;
++	u32 nwords = 0;
++	u32 end = len - 2;
++	u32 val;
++
++	if (!chksum_en)
++		return 0;
++
++	if (!((u32)buf & 0x03)) {
++		nwords = (end / 4);
++		for (i = 0 ; i < nwords; i++, buf += 4) {
++			val = *(u32 *)buf;
++			chksum += (val & 0xFF) + ((val & 0xFF00) >> 8) +
++				((val & 0xFF0000) >> 16) + (val >> 24);
++		}
++	}
++
++	for (i = nwords * 4; i < len - 2; i++, buf++)
++		chksum += *buf;
++
++	/* The last two bytes contain the checksum as 16 bit value */
++	received_checksum = *buf++;
++	received_checksum =  (received_checksum << 8) + *buf;
++
++	if ((chksum + received_checksum) & 0xFFFF) {
++		dev_err(&spi->dev,
++		"Received wrong checksum: computed 0x%04x received 0x%04x\n",
++		chksum, received_checksum);
++		return -EPROTO;
++	}
++
++	return 0;
++}
++
++/* The protocol requires to send data in big-endian
++ * format. The processor can have a different endianess.
++ * Because the protocol uses 32 bits x word (bits sent
++ * in one chip select cycle), the function checks that the buffer
++ * length is a multiple of four.
++ */
++static int format_frame_output(char *buf, u32 len)
++{
++	u32 *p;
++	unsigned int cnt;
++
++	if (len % (BITS_X_WORD / 8))
++		return -1;
++
++	len /= (BITS_X_WORD / 8);
++	p = (u32 *)buf;
++
++	for (cnt = 0; cnt < len; cnt++, p++)
++		*p = cpu_to_be32(*p);
++
++	return 0;
++}
++
++static int format_frame_input(char *buf, u32 len)
++{
++	u32 *p;
++	unsigned int cnt;
++
++	if (len % (BITS_X_WORD / 8))
++		return -1;
++
++	len /= (BITS_X_WORD / 8);
++	p = (u32 *)buf;
++
++	for (cnt = 0; cnt < len; cnt++, p++)
++		*p = be32_to_cpu(*p);
++
++	return 0;
++}
++
++/* The processor manages 32-bit aligned buffer.
++ * At least 32 bytes are always sent.
++ * The function fills the buffer with trailing zero to fullfill
++ * these requirements
++ */
++static int fix_spi_len(char *buf, u32 len)
++{
++	unsigned int tmp;
++
++	if (len < SPI_MIN_TRANSFER_LENGTH) {
++		memset(&buf[len], 0, SPI_MIN_TRANSFER_LENGTH - len);
++		len = SPI_MIN_TRANSFER_LENGTH;
++	}
++
++	tmp = len % (BITS_X_WORD / 8);
++	if (tmp) {
++		tmp = (BITS_X_WORD / 8) - tmp;
++		memset(&buf[len], 0, tmp);
++		len += tmp;
++	}
++
++	return len;
++}
++
++static int check_rx_len(u32 len, u16 frame_len)
++{
++	if (frame_len > len ||
++		frame_len < sizeof(struct spi_can_frame_header))
++		return -1;
++
++	return 0;
++}
++
++static void spi_can_set_timestamps(struct sk_buff *skb,
++	struct msg_channel_data *msg)
++{
++	msg->timestamp = ktime_to_ns(skb->tstamp);
++}
++
++static struct net_device *candev_from_channel(struct spi_can_data *spi_data,
++	u8 channel)
++{
++	/* Last device is the CFG device */
++	if (channel == CFG_CHANNEL)
++		return spi_data->can_dev[spi_data->num_channels];
++	if (channel < spi_data->num_channels)
++		return spi_data->can_dev[channel];
++
++	return NULL;
++}
++
++static int insert_cfg_msg(struct net_device *dev, int enabled)
++{
++	struct spi_can_priv *priv = netdev_priv(dev);
++	struct spi_can_data	*spi_priv = priv->spi_priv;
++	struct msg_queue_tx *tx_pkt;
++	unsigned long flags;
++
++	tx_pkt = kzalloc(sizeof(*tx_pkt), GFP_KERNEL);
++	if (!tx_pkt) {
++		dev_err(&dev->dev, "out of memory");
++		return -ENOMEM;
++	}
++	tx_pkt->channel = priv->channel;
++	tx_pkt->enabled = enabled;
++	tx_pkt->type = SPI_MSG_CFG_SET;
++
++	priv->devstatus = enabled;
++
++	spin_lock_irqsave(&spi_priv->lock, flags);
++	list_add_tail(&(tx_pkt->list), &(spi_priv->msgtx.list));
++	spin_unlock_irqrestore(&spi_priv->lock, flags);
++
++	/*  Wakeup thread */
++	wake_up_interruptible(&spi_priv->wait);
++
++	return 0;
++}
++
++static int spi_can_open(struct net_device *dev)
++{
++	int ret;
++
++	ret = open_candev(dev);
++	if (ret)
++		return ret;
++
++	ret = insert_cfg_msg(dev, CAN_CHANNEL_ENABLED);
++	if (ret) {
++		close_candev(dev);
++		return ret;
++	}
++
++	netif_start_queue(dev);
++
++	return 0;
++}
++
++static int spi_can_close(struct net_device *dev)
++{
++	netif_stop_queue(dev);
++
++	insert_cfg_msg(dev, CAN_CHANNEL_DISABLED);
++
++	close_candev(dev);
++
++	return 0;
++}
++
++static int spi_can_hwtstamp_ioctl(struct net_device *netdev,
++	struct ifreq *ifr, int cmd)
++{
++	struct hwtstamp_config config;
++
++	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
++		return -EFAULT;
++
++	if (config.flags)
++		return -EINVAL;
++
++	switch (config.tx_type) {
++	case HWTSTAMP_TX_OFF:
++		break;
++	case HWTSTAMP_TX_ON:
++		break;
++	default:
++		return -ERANGE;
++	}
++
++	switch (config.rx_filter) {
++	case HWTSTAMP_FILTER_NONE:
++		break;
++	default:
++		config.rx_filter = HWTSTAMP_FILTER_ALL;
++		break;
++	}
++
++	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ?
++		-EFAULT : 0;
++}
++
++static int spi_can_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
++{
++	if (!netif_running(dev))
++		return -EINVAL;
++
++	if (cmd == SIOCSHWTSTAMP)
++		return spi_can_hwtstamp_ioctl(dev, rq, cmd);
++
++	return -EINVAL;
++}
++
++static int spi_can_start_xmit(struct sk_buff *skb, struct net_device *dev)
++{
++	struct spi_can_priv *priv = netdev_priv(dev);
++	struct spi_can_data	*spi_priv = priv->spi_priv;
++	struct msg_queue_tx *tx_pkt;
++	unsigned long flags;
++
++	if (can_dropped_invalid_skb(dev, skb))
++		return NETDEV_TX_OK;
++
++	tx_pkt = kzalloc(sizeof(struct msg_queue_tx), GFP_KERNEL);
++	tx_pkt->channel = priv->channel;
++	tx_pkt->skb = skb;
++	tx_pkt->type = SPI_MSG_SEND_DATA;
++	INIT_LIST_HEAD(&(tx_pkt->list));
++
++	/* Add the incoming message to the end of the list */
++	spin_lock_irqsave(&spi_priv->lock, flags);
++	list_add_tail(&(tx_pkt->list), &(spi_priv->msgtx.list));
++	spin_unlock_irqrestore(&spi_priv->lock, flags);
++
++	/*  Wakeup thread */
++	wake_up_interruptible(&spi_priv->wait);
++
++	return NETDEV_TX_OK;
++}
++
++static const struct net_device_ops spi_can_netdev_ops = {
++	.ndo_open	= spi_can_open,
++	.ndo_stop	= spi_can_close,
++	.ndo_start_xmit	= spi_can_start_xmit,
++	.ndo_do_ioctl = spi_can_ioctl,
++};
++
++/* GPIO Interrupt Handler.
++ * when the Slave has something to send, it raises
++ * an interrupt changing a GPIO. The handler does
++ * nothing else than waking up the worker.
++ */
++static irqreturn_t spi_can_irq(int irq, void *pdata)
++{
++	struct spi_can_data *spi_priv = (struct spi_can_data *)pdata;
++	int val;
++
++	val = gpio_get_value(spi_priv->gpio);
++
++	/* Wakeup thread */
++	wake_up_interruptible(&spi_priv->wait);
++
++	return IRQ_HANDLED;
++}
++
++/* The parameters for SPI are fixed and cannot be changed due
++ * to hardware limitation in Slave.
++ * Only the frequency can be changed
++ */
++static void spi_can_initialize(struct spi_device *spi, u32 freq)
++{
++	/* Configure the SPI bus */
++	spi->mode = SPI_MODE_1;
++	spi->bits_per_word = BITS_X_WORD;
++	spi_setup(spi);
++}
++
++static int spi_can_transfer(struct spi_can_data *priv,
++				u32 bufindex, u32 len)
++{
++	struct spi_device *spi = priv->spi;
++	struct spi_message m;
++	struct spi_transfer t;
++	int ret = 0;
++
++	memset(&t, 0, sizeof(t));
++	t.tx_buf = priv->spi_tx_buf;
++	t.rx_buf = priv->rx_data[bufindex].spi_rx_buf;
++	t.len = len;
++	t.cs_change = 0;
++	if (priv->freq)
++		t.speed_hz = priv->freq;
++
++	spi_message_init(&m);
++	spi_message_add_tail(&t, &m);
++
++	ret = spi_sync(spi, &m);
++	if (ret)
++		dev_err(&spi->dev, "spi transfer failed: ret = %d\n", ret);
++	return ret;
++}
++
++/* Prepare a SYNC message to synchronize with the start of frame */
++static u32 spi_can_spi_sync_msg(struct spi_can_data *spi_data, char *buf)
++{
++	struct spi_can_frame_header *header;
++	u32 len;
++
++	header = (struct spi_can_frame_header *)spi_data->spi_tx_buf;
++
++	header->msgid = SPI_MSG_SYNC;
++	*buf++ = 0xAA;
++	*buf++ = 0x55;
++	*buf++ = 0x55;
++	*buf++ = 0xAA;
++	len = 4;
++
++	do_gettimeofday(&spi_data->ref_time);
++
++	return len;
++}
++
++static int spi_can_fill_skb_msg(struct net_device *dev,
++	struct msg_channel_data *pcan, struct timeval *timeref)
++{
++	struct spi_can_priv *priv = netdev_priv(dev);
++	struct net_device_stats *stats = &dev->stats;
++	struct can_frame *cf;
++	struct sk_buff *skb;
++	struct skb_shared_hwtstamps *shhwtstamps;
++	ktime_t tstamp;
++	u64 ns;
++
++	if (priv->devstatus != CAN_CHANNEL_ENABLED) {
++		dev_err(&dev->dev, "frame received when CAN deactivated\n");
++		return -EPERM;
++	}
++	skb = alloc_can_skb(dev, &cf);
++	if (unlikely(!skb)) {
++		stats->rx_dropped++;
++		return -ENOMEM;
++	}
++
++	cf->can_id = pcan->can_id;
++	cf->can_dlc = pcan->dlc;
++	memcpy(cf->data, pcan->data,  pcan->dlc);
++
++	/* Set HW timestamps */
++	shhwtstamps = skb_hwtstamps(skb);
++	memset(shhwtstamps, 0, sizeof(*shhwtstamps));
++	ns = MS_TO_US(pcan->timestamp);
++	tstamp = ktime_add_us(timeval_to_ktime(*timeref), ns);
++	shhwtstamps->hwtstamp = tstamp;
++	skb->tstamp = tstamp;
++
++	stats->rx_packets++;
++	stats->rx_bytes += cf->can_dlc;
++	netif_receive_skb(skb);
++
++	return 0;
++}
++
++/* parse_can_msg gets all CAN messages encapsulated
++ * in a SEND_DATA message, and sends them upstream
++ */
++static int parse_can_msg(struct spi_can_data *spi_data,
++	struct spi_can_frame *frame,
++	u32 len)
++{
++	struct msg_channel_data *pcan;
++	char *pbuf = frame->data;
++	struct spi_device *spi = spi_data->spi;
++	struct net_device	*netdev;
++	u32 can_msg_length;
++	int ret = 0;
++
++	while (len > 0) {
++		if (len < sizeof(struct msg_channel_data) -
++			CAN_FRAME_MAX_DATA_LEN) {
++			dev_err(&spi->dev,
++				"Received incompleted CAN message: length %d pbuf 0x%x\n",
++				len, *pbuf);
++			ret = -1;
++			break;
++		}
++		pcan = (struct msg_channel_data *)pbuf;
++		if ((pcan->channel > spi_data->num_channels) &&
++			(pcan->channel != CFG_CHANNEL)) {
++			dev_err(&spi->dev,
++				"Frame with wrong channel %d, frame dropped",
++				pcan->channel);
++			ret = -1;
++			break;
++		}
++
++		/* Check for a valid CAN message lenght */
++		if (pcan->dlc > CAN_FRAME_MAX_DATA_LEN) {
++			dev_err(&spi->dev,
++				"CAN message with wrong length: id 0x%x dlc %d",
++				pcan->can_id, pcan->dlc);
++			ret = -1;
++			break;
++		}
++
++		pcan->can_id = be32_to_cpu(pcan->can_id);
++		pcan->timestamp = be32_to_cpu(pcan->timestamp);
++
++		/* Get the device corresponding to the channel */
++		netdev = candev_from_channel(spi_data, pcan->channel);
++
++		if (spi_can_fill_skb_msg(netdev, pcan, &spi_data->ref_time))
++			dev_err(&spi->dev,
++				"Error sending data to upper layer");
++		can_msg_length = (sizeof(struct msg_channel_data) + pcan->dlc -
++			CAN_FRAME_MAX_DATA_LEN);
++
++		len -= can_msg_length;
++		pbuf += can_msg_length;
++	}
++
++	return ret;
++}
 +
 +
-+8. SPI Frame definition and Messages
-+----------------------------------------
++static void spi_can_extract_msg(struct spi_can_data *spi_data,
++	struct msg_queue_rx *msg)
++{
++	/* Extract all CAN messages, do not check
++	 * the last two bytes as they are reserved for checksum
++	 */
++	mutex_lock(&spi_data->rx_data[msg->bufindex].bufmutex);
++	if (parse_can_msg(spi_data, msg->frame, msg->len - 2) < 0) {
++#ifdef DEBUG
++		dump_frame(spi_data->rx_data[msg->bufindex].spi_rx_buf,
++				msg->len);
++#endif
++	}
 +
-+A SPI Frame begins with a 4-bytes header:
++	/* I can now set the message as processed and decrease
++	 * the number of messages in the SPI buffer.
++	 * When all messages are processed, the TX thread
++	 * can use the SPI buffer again
++	 */
++	spi_data->rx_data[msg->bufindex].msg_in_buf--;
++	mutex_unlock(&spi_data->rx_data[msg->bufindex].bufmutex);
++}
 +
-+bytes:
-+	0		Message ID
-+	1-2		Message Length.
-+			Length is computed including 2 bytes for checksum,
-+			but without Message ID and Length itself.
-+	3 .. N-2	Depending on Message-ID
-+	N-1 .. N	Checksum
++static void spi_can_rx_handler(struct work_struct *ws)
++{
++	struct spi_can_data *spi_data = container_of(ws,
++			struct spi_can_data, work);
++	struct msg_queue_rx *msg;
 +
-+Command codes:
-+	0x01	Status Request
-+	0x02	Send Data
-+	0x03	Sync message
-+	0x04	Configuration Message
-+	....	t.b.d.
++	while (1) {
 +
-+8.1 Format of Send Data Message
-+-------------------------------
++		if (list_empty(&spi_data->msgrx.list))
++			break;
 +
-+  _____,________________
-+ |     |                ,''''''''''''''''',''''''''''''|       ,'''''''|
-+ |ID=2 | LENGTH         | CAN MESSAGE     |CAN MESSAGE |       |CHECKSUM
-+ |_____L________________|_________________|____________|       L_______|
-+                     _.-'                  `--._
-+                _,,-'                           ``-.._
-+            _.-'                                      `--._
-+       _,--'                                               ``-.._
-+   ,.-'                                                          `-.._
-+   ,'''''',''''''''''''','''''''''''''','''''',''''''|     ,'''''''''|
-+   | CH   |TIMESTAMP    |  CAN ID      |DLC   |D[0]  |     |D[dlc-1] |
-+   L______L_____________|______________L______|______|     L_________|
++		mutex_lock(&spi_data->lock_wqlist);
++		msg = list_first_entry(&spi_data->msgrx.list,
++				struct msg_queue_rx, list);
++		list_del(&msg->list);
++		mutex_unlock(&spi_data->lock_wqlist);
 +
++		spi_can_extract_msg(spi_data, msg);
++		kfree(msg);
++	}
++}
 +
-+	Offset
-+	0		0x02 (SEND_DATA_MSG)
-+	1 - 2		Length of message
++/* This is called in overload condition to process a siongle frame and
++ * free a SPI frame for transfer
++ * This is called by the thread
++ */
++static void spi_can_process_single_frame(struct spi_can_data *spi_data,
++	u32 index)
++{
++	struct list_head *pos;
++	struct msg_queue_rx *msg;
++	unsigned int found = 0, freed;
 +
++	mutex_lock(&spi_data->lock_wqlist);
++	list_for_each(pos, &spi_data->msgrx.list) {
++		msg = list_entry(pos, struct msg_queue_rx, list);
++		if (msg->bufindex == index) {
++			found = 1;
++			break;
++		}
++	}
 +
-+Each CAN message has the following format
++	/* Drop the message from the list */
++	if (found)
++		list_del(&msg->list);
++	mutex_unlock(&spi_data->lock_wqlist);
 +
-+	0		Channel Number
-+			Values:
-+			1-n	CAN Channel
-+			0xFF	CFG channel
-+	1 - 4		Timestamp
-+	5 - 8		can_id
-+	9		dlc (length of can message)
-+	10..N		Variable number of data (max 8)
++	if (!found) {
 +
-+Note: Channel 0 is reserved for configuration.
++		/* I cannot parse the buffer because it is worked
++		 * by another task, check when it is finished
++		 */
 +
-+The flag for Standard and Extended frame format (SFF and EFF
-+in socketCAN framework) is a flag in the can_id.
++		do {
++			mutex_lock(&spi_data->rx_data[index].bufmutex);
++			freed = (spi_data->rx_data[index].msg_in_buf == 0);
++			mutex_unlock(&spi_data->rx_data[index].bufmutex);
++		} while (!freed);
 +
-+8.2 Format of Status Message
-+----------------------------
++		return;
++	}
 +
-+  _____,________________
-+ |     |                ,''''''''''''''''''|'''''''|
-+ |ID=1 | LENGTH=4       | Length (2 bytes) |CHECKSUM
-+ |_____L________________|__________________|_______|
++	spi_can_extract_msg(spi_data, msg);
 +
++}
 +
-+	Offset
-+	0	0x01 (STATUS_MSG)
-+	1-2	4
-+	3-4	Desired mionimal length for next transfer
-+	5-6	Checksum
++static int spi_can_process_get(struct spi_can_data *spi_data,
++	struct msg_cfg_get_data *msg)
++{
++	struct spi_can_priv *priv;
++	struct net_device *dev;
++	int index;
++	struct can_bittiming_const *bittiming;
++	int ret = -ENODEV;
 +
-+8.3 Format of Sync Message
-+--------------------------
++	index = msg->channel;
++	if (index != CFG_CHANNEL && index >= spi_data->num_channels)
++		return -ENODEV;
 +
-+  _____,________________
-+ |     |                ,'''''''''''''''''''|'''''''|
-+ |ID=3 | LENGTH=6       | AA | 55 | 55 | AA |CHECKSUM
-+ |_____L________________|____|____|____|____|_______|
++	dev = alloc_candev(sizeof(struct spi_can_priv), 0);
++	if (!dev)
++		return -ENOMEM;
 +
++	bittiming = kzalloc(sizeof(*bittiming), GFP_KERNEL);
++	if (!bittiming) {
++		free_candev(dev);
++		return -ENOMEM;
++	}
 +
-+	Offset
-+	0	0x02 (SYNC_MSG)
-+	1-2	6
-+	3	0xAA
-+	4	0x55
-+	5	0x55
-+	6	0xAA
-+	7-8	Checksum
++	/* Get the pointer to the driver data */
++	priv = netdev_priv(dev);
 +
-+8.5 Format of Set Configuration Message
-+----------------------------------------
-+  _____,________
-+ |     |        ,'''''''''''''''''''''''''''''''''''''''''|'''''''''|..
-+ |ID=4 | LEN=40 | channel | Enabled  |  bitrate | sample  | tq      |  |CHECKSUM
-+ |_____L________|_________|__________|__________|_________|_________..
++	/* Last channel is used for configuration only */
++	if (index == CFG_CHANNEL) {
++		strncpy(dev->name, "cfg", IFNAMSIZ);
++		priv->channel = CFG_CHANNEL;
++	} else {
++		snprintf(dev->name, IFNAMSIZ, "hcan%d", index);
++		priv->channel = index;
++		spi_data->num_channels++;
++	}
 +
++	dev->netdev_ops = &spi_can_netdev_ops;
 +
-+	Offset
-+	0	0x04 (CFG_MSG_SET)
-+	1-2	36
-+	3	channel number
-+		0xFF = CFG
-+		0..n = CAN controller CAN channel
-+	4	Enabled/disabled
-+		Bit 0 is defined.
-+			0 = disabled
-+			1 = enabled
-+		bit 1..7 = reserved (do not care)
-+	5-8	bitrate
-+	9-12	sample point
-+	13-16	Time quanta (tq)
-+	17-20	Propagation segment
-+	21-24	Phase Buffer segment 1
-+	25-28	Phase Buffer segment 2
-+	29-32	Sync jump width
-+	33-36	Bit rate prescaler
-+	37-40	ctrlmode
-+	41-42	Checksum
++	priv->spi_priv = spi_data;
++	priv->dev = dev;
++	priv->devstatus = CAN_CHANNEL_DISABLED;
 +
-+There is no answer from the CAN controller after receiving a CFG_MSG_SET, and the
-+CAN controller is not allowed to send a data frame in answer to a CFG_MSG_SET. After
-+setting the channel, the communication will go on as usual.
++	/* In most cases, only the bitrate can be set
++	 * on the remote microcontroller.
++	 * The driver asks anyway for the timing
++	 * and fill the bittiming_const structure
++	 */
 +
-+8.6 Format of REQ_DATA Message
-+------------------------------
++	priv->can.clock.freq = be32_to_cpu(msg->clock_hz);
++	bittiming->tseg1_min = msg->tseg1_min;
++	bittiming->tseg1_max = msg->tseg1_max;
++	bittiming->tseg2_min = msg->tseg2_min;
++	bittiming->tseg2_max = msg->tseg2_max;
++	bittiming->sjw_max = msg->sjw_max;
++	bittiming->brp_min = be32_to_cpu(msg->brp_min);
++	bittiming->brp_max = be32_to_cpu(msg->brp_max);
++	bittiming->brp_inc = be32_to_cpu(msg->brp_inc);
 +
-+  _____,________________
-+ |     |                ,''''''''''''''''''''''''''|'''''''|
-+ |ID=5 | LENGTH=n       | 00 | 00 | 00 |           |CHECKSUM
-+ |_____L________________|____|____|____|___________|_______|
++	priv->can.bittiming_const = bittiming;
 +
++	priv->ctrlmode = msg->ctrlmode & 0x7F;
 +
-+	Offset
-+	0	0x05 (REQ_DATA)
-+	1-2	Length of the message.
-+		This value is not fiixed and tells the CAN controller
-+		how many bytes it can send back
-+	3:(n-2)	Filled with zero
-+	(n-1):n	Checksum
++	ret = register_candev(dev);
++	if (ret) {
++		dev_err(&spi_data->spi->dev,
++			"registering netdev %d failed with 0x%x\n",
++			index, ret);
++		free_candev(dev);
++		return -ENODEV;
++	}
 +
-+8.6 Format of Get Configuration Message
-+----------------------------------------
++	if (index != CFG_CHANNEL)
++		spi_data->can_dev[index] = dev;
++	else
++		spi_data->can_dev[spi_data->num_channels] = dev;
 +
-+Format of the frame sent by Main Controller:
-+  _____,________
-+ |     |        ,'''''''''|'''''''''|
-+ |ID=6 | LEN=3  | channel |CHECKSUM |
-+ |_____L________|_________|_________|
++	dev_info(&spi_data->spi->dev, "CAN device %d registered\n",
++		 index);
 +
-+Answer from CAN Controller:
-+  _____,________
-+ |     |        ,''''''''''''''''''''|''''''''''|'''''''''|'''''''''|..
-+ |ID=6 | LEN=25 | channel |tseg1_min |tseg2_max |tseg2_min|         |CHECKSUM
-+ |_____L________|_________|__________|__________|_________|_________..
++	return 0;
++}
 +
-+	Offset
-+	0	0x06 (CFG_MSG_GET)
-+	1-2	25
-+	3	channel number
-+		0xFF = CFG
-+		0..n = CAN controller CAN channel
-+	5	tseg1_min
-+	6	tseg1_max
-+	7	tseg2_min
-+	8	tseg2_max
-+	9	sjw_max
-+	10-13	brp_min
-+	14-17	brp_max
-+	18-21	brp_inc
-+	22	ctrlmode
-+	23-27	clock
-+	28-29	Checksum
++static int spi_can_receive(struct spi_can_data *spi_data,
++	int len, u32 bufindex, u16 *req_bytes)
++{
++	unsigned int i, start = 0;
++	char *pbuf, *pspibuf;
++	struct spi_can_frame *frame;
++	struct msg_status_data *status_msg;
++	struct msg_cfg_get_data *getcfg_msg;
++	struct msg_queue_rx	*rxmsg;
++	u16 rx_len;
++	struct spi_device *spi = spi_data->spi;
++	u32 rx_frames = 0;
 +
-+The CAN controller answers after receiving a CFG_MSG_GET with the can bittiming and
-+capabilities. The meaning of bittiming is as explained in netlink.h for
-+struct can_bittiming_const.
++	pspibuf = spi_data->rx_data[bufindex].spi_rx_buf;
++	format_frame_input(pspibuf, len);
 +
-+ctrlmode contains the CAN controller capabilities. It is a wired-or byte, whose bits
-+are defined in netlink.h.
++	/* Requested bytes for next SPI frame.
++	 * The value is updated by a SEND_STATUS message.
++	 */
++	*req_bytes = 0;
++
++	while ((len - start) > 1) {
++		/* first search for start of frame */
++		for (i = start; i < len; i++) {
++			if (pspibuf[i] != 0)
++				break;
++		}
++
++		/* No more frame to be examined */
++		if (i == len)
++			return rx_frames;
++
++		/* Set start in the buffer for next iteration */
++		start = i;
++
++		frame = (struct spi_can_frame *)&pspibuf[i];
++		switch (frame->header.msgid) {
++		case SPI_MSG_STATUS_REQ:
++			status_msg = (struct msg_status_data *)frame->data;
++			rx_len = be16_to_cpu(status_msg->length);
++			*req_bytes = rx_len;
++			rx_frames++;
++			break;
++
++		case SPI_MSG_SEND_DATA:
++			rx_len = be16_to_cpu(frame->header.length);
++			if (check_rx_len(len - start, rx_len)) {
++				dev_err(&spi->dev,
++				"Frame fragmented received, frame dropped\n");
++#ifdef DEBUG
++				dump_frame(pspibuf, len);
++#endif
++				return -EPROTO;
++			}
++			if (verify_checksum(spi, (char *)frame,
++				rx_len + sizeof(frame->header)) < 0)
++				return -EPROTO;
++			pbuf = frame->data;
++
++			/* Put the recognized frame into the receive list
++			 * to be processed by the workqueue
++			 */
++			rxmsg = kzalloc(sizeof(*rxmsg),
++					GFP_KERNEL);
++			if (!rxmsg) {
++				dev_err(&spi->dev, "out of memory");
++				return -ENOMEM;
++			}
++			rxmsg->frame = frame;
++			rxmsg->len = rx_len;
++			rxmsg->bufindex = bufindex;
++
++			/* Add the frame to be processed to the rx list */
++			mutex_lock(&spi_data->lock_wqlist);
++			spi_data->rx_data[bufindex].msg_in_buf++;
++			if (spi_data->rx_data[bufindex].msg_in_buf > 1)
++				dev_err(&spi->dev, "More as one SEND_DATA\n");
++			list_add_tail(&(rxmsg->list), &spi_data->msgrx.list);
++			mutex_unlock(&spi_data->lock_wqlist);
++
++			rx_frames++;
++			break;
++
++		case SPI_MSG_CFG_GET:
++			getcfg_msg = (struct msg_cfg_get_data *)frame->data;
++			rx_len = be16_to_cpu(frame->header.length);
++			if (check_rx_len(len - start, rx_len) &&
++					rx_len != sizeof(*getcfg_msg)) {
++				dev_err(&spi->dev,
++				"Broken GET CFG frame\n");
++#ifdef DEBUG
++				dump_frame(pspibuf, len);
++#endif
++				return -EPROTO;
++			}
++
++			spi_can_process_get(spi_data, getcfg_msg);
++			rx_frames++;
++			break;
++
++		default:
++			dev_err(&spi->dev, "wrong frame received with MSG-ID=0x%x\n",
++				frame->header.msgid);
++#ifdef DEBUG
++			dump_frame(pspibuf, len);
++#endif
++			return -EPROTO;
++		}
++
++		rx_len += sizeof(frame->header);
++		start += rx_len;
++	}
++
++	return rx_frames;
++}
++
++/* The function sends setup for the
++ * CAN channel. No answer is allowed from Slave,
++ * as this is a high-priority message.
++ */
++static u32 spi_can_cfg(struct spi_can_data *spi_data,
++	struct msg_queue_tx *msg, char *buf)
++{
++	struct net_device *dev;
++	struct spi_can_priv *priv;
++	struct msg_cfg_set_data can_cfg;
++	struct spi_device *spi = spi_data->spi;
++	int i;
++	u32 *pbe_bt, *pbt;
++	u8 channel;
++
++	channel = msg->channel & 0xFF;
++
++	can_cfg.channel = channel;
++	can_cfg.enabled = msg->enabled;
++
++	dev = candev_from_channel(spi_data, channel);
++	priv = netdev_priv(dev);
++
++	/* Configuration values are interpreted by the Slave
++	 * firmware only. Values on the SPI line are in big
++	 * endian order and must be converted before to be put
++	 * on the line.
++	 */
++	for (i = 0, pbe_bt = (u32 *)&can_cfg.bt,
++		pbt = (u32 *)&priv->can.bittiming;
++		i < (sizeof(struct can_bittiming) / sizeof(*pbe_bt));
++		i += sizeof(u32)) {
++			*pbe_bt++ = cpu_to_be32(*pbt++);
++	}
++
++	memcpy(buf, &can_cfg, sizeof(can_cfg));
++
++	if (channel == CFG_CHANNEL) {
++		u32 changed = 0;
++
++		switch (spi_data->slave_op_mode) {
++		case SLAVE_SUPERVISOR_MODE:
++			if (priv->can.bittiming.bitrate > 125000) {
++				spi_data->freq = spi_data->max_freq;
++				spi_data->slave_op_mode = SLAVE_USER_MODE;
++				changed = 1;
++			}
++			break;
++		case SLAVE_USER_MODE:
++			if (priv->can.bittiming.bitrate <= 125000) {
++				spi_data->freq = spi_data->slow_freq;
++				spi_data->slave_op_mode = SLAVE_SUPERVISOR_MODE;
++				changed = 1;
++			}
++			break;
++		default:
++			dev_err(&spi_data->spi->dev, "Erroneous Slave OP Mode %d\n",
++				spi_data->slave_op_mode);
++			spi_data->slave_op_mode = SLAVE_SUPERVISOR_MODE;
++		}
++		if (changed) {
++			spi_can_initialize(spi, spi_data->freq);
++			dev_info(&spi->dev,
++				"Slave into %s mode, SPI frequency set to %d\n",
++				(spi_data->slave_op_mode == SLAVE_USER_MODE) ?
++					"User" : "Supervisor",
++				spi_data->freq);
++		}
++	}
++
++	return sizeof(struct msg_cfg_set_data);
++}
++
++static int spi_send_getcfg(struct spi_can_data *spi_data,
++	struct msg_queue_tx *msg, char *buf)
++{
++
++	struct msg_cfg_get_data *query_msg;
++	u32 len;
++
++	/* Prepare MSG_CFG_GET to ask bit timing constants */
++	query_msg = (struct msg_cfg_get_data *)buf;
++	memset(query_msg, 0, sizeof(*query_msg));
++	query_msg->channel = msg->channel;
++
++	len = sizeof(*query_msg);
++
++	return len;
++}
++
++static u32 spi_can_send_data(struct spi_can_data *spi_data,
++	struct msg_queue_tx *msg, char *buf)
++{
++	struct sk_buff		*skb;
++	struct msg_channel_data can_spi_msg;
++	struct can_frame *frame;
++	u16 len = 0;
++	struct spi_can_priv *priv;
++	struct net_device *dev;
++	struct net_device_stats *stats;
++
++	/* Encapsulate the CAN message inside the SPI frame */
++	skb = msg->skb;
++	frame = (struct can_frame *)skb->data;
++	if (frame->can_dlc > CAN_FRAME_MAX_DATA_LEN)
++		frame->can_dlc = CAN_FRAME_MAX_DATA_LEN;
++
++	can_spi_msg.channel = msg->channel & 0xFF;
++
++	spi_can_set_timestamps(skb, &can_spi_msg);
++
++	can_spi_msg.can_id = cpu_to_be32(frame->can_id);
++	can_spi_msg.dlc = frame->can_dlc;
++	memcpy(can_spi_msg.data,
++		frame->data, frame->can_dlc);
++	len = sizeof(struct msg_channel_data) +
++		frame->can_dlc - CAN_FRAME_MAX_DATA_LEN;
++	memcpy(buf, &can_spi_msg, len);
++
++	dev = candev_from_channel(spi_data, can_spi_msg.channel);
++	priv = netdev_priv(dev);
++
++	/* Update statistics for device */
++	stats = &dev->stats;
++	stats->tx_bytes += frame->can_dlc;
++	stats->tx_packets++;
++	netif_wake_queue(dev);
++
++	return len;
++}
++
++static int spi_can_thread(void *data)
++{
++	struct spi_can_data *spi_data = (struct spi_can_data *)data;
++	u16 len = 0;
++	u16 alen = 0;
++	u16 req_bytes = 0;
++	u32 cnt = 0, resync_required = 1;
++	u32 bufindex = 0;
++	int rx_frames;
++	struct msg_queue_tx	*msg, *tmp;
++	char *buf;
++	struct spi_can_frame_header *header;
++	u16 chksum;
++	unsigned long flags;
++	struct spi_device *spi = spi_data->spi;
++
++	/* Only to zero the whole buffers */
++	len = SPI_MAX_FRAME_LEN;
++
++	while (1) {
++		if (kthread_should_stop())
++			break;
++
++		if (spi_data->rx_data[bufindex].msg_in_buf)
++			spi_can_process_single_frame(spi_data, bufindex);
++
++		/* Clear buffers from last transfer */
++		memset(spi_data->spi_tx_buf, 0, len);
++
++		len = 0;
++		header = (struct spi_can_frame_header *)spi_data->spi_tx_buf;
++		buf = ((struct spi_can_frame *)spi_data->spi_tx_buf)->data;
++
++		/* There is not yet any message */
++		header->msgid = 0;
++
++		/* getting CAN message from upper layer */
++		spin_lock_irqsave(&spi_data->lock, flags);
++		list_for_each_entry_safe(msg, tmp,
++			&spi_data->msgtx.list, list) {
++
++			/* we cannot mix messages of different type.
++			 * If the new request is of different type,
++			 * stop scanning the list
++			 * and send the actual message first
++			 */
++			if (header->msgid && (header->msgid != msg->type ||
++				header->msgid == SPI_MSG_CFG_GET))
++				break;
++
++			/* Extract packet and remove it from the list */
++			list_del(&msg->list);
++
++			alen = 0;
++
++			switch (msg->type) {
++
++			case SPI_MSG_SEND_DATA:
++				/* There are data to be sent */
++				header->msgid = SPI_MSG_SEND_DATA;
++				alen = spi_can_send_data(spi_data, msg, buf);
++				break;
++
++			case SPI_MSG_CFG_SET:
++				header->msgid = SPI_MSG_CFG_SET;
++				alen = spi_can_cfg(spi_data, msg, buf);
++				break;
++
++			case SPI_MSG_CFG_GET:
++				header->msgid = SPI_MSG_CFG_GET;
++				alen = spi_send_getcfg(spi_data, msg, buf);
++				break;
++
++			default:
++				dev_err(&spi->dev,
++					"Message to Slave wrong: type %d",
++					msg->type);
++			}
++
++			/* Update total length with length of CAN message */
++			len += alen;
++			buf += alen;
++
++			/* Free the memory for message, not used anymore */
++			if (msg->skb)
++				kfree_skb(msg->skb);
++			kfree(msg);
++
++			/* Check if there is enough place for other messages
++			 * else messages will be transfered in the next
++			 * iteration
++			 */
++			if ((len + sizeof(chksum) +
++				sizeof(*header) +
++				sizeof(u32)) >= SPI_MAX_FRAME_LEN)
++					break;
++		}
++		spin_unlock_irqrestore(&spi_data->lock, flags);
++
++		/* Check if a resync is required. It is sent
++		 * the first time the thread is started and when an error
++		 * is recognized. Not required if data must be sent.
++		 */
++		if (!len) {
++			if (resync_required) {
++				len = spi_can_spi_sync_msg(spi_data, buf);
++				resync_required = 0;
++			} else {
++				header->msgid = SPI_MSG_REQ_DATA;
++				len = max(req_bytes,
++					(u16)((SPI_MIN_TRANSFER_LENGTH) -
++					sizeof(*header) -
++					sizeof(u16) /* checksum */));
++			}
++			buf += len;
++		} else {
++			int delta = req_bytes - len;
++
++			if ((delta > 0) &&
++				(header->msgid == SPI_MSG_SEND_DATA)) {
++
++				/* buf points to the next CAN message */
++				buf += delta;
++				len += delta;
++			}
++		}
++
++		/* Take into account CHECKSUM
++		 * MSGID and LENGTH are not computed in the lenght field
++		 */
++		len += sizeof(chksum);
++		header->length = cpu_to_be16(len);
++		len += sizeof(*header);
++
++		/* Compute checksum */
++		chksum = compute_checksum(spi_data->spi_tx_buf,
++					  len - sizeof(chksum));
++		chksum = cpu_to_be16(chksum);
++		memcpy(buf, &chksum, sizeof(chksum));
++
++		len = fix_spi_len(spi_data->spi_tx_buf, len);
++
++		format_frame_output(spi_data->spi_tx_buf, len);
++
++		spi_can_transfer(spi_data, bufindex, len);
++		rx_frames = spi_can_receive(spi_data, len, bufindex,
++				&req_bytes);
++
++		/* Trigger the workqueue for RX processing */
++		queue_work(spi_data->wq, &spi_data->work);
++
++		if (rx_frames < 0)
++			resync_required = 1;
++
++		bufindex++;
++		if (bufindex == SPI_RX_NBUFS)
++			bufindex = 0;
++
++		/* Check if the GPIO is still set,
++		 * because the Slave wants to send more data
++		 */
++		if (IS_GPIO_ACTIVE(spi_data) && (rx_frames <= 0))  {
++			cnt++;
++			if (cnt > MAX_ITERATIONS) {
++				dev_err(&spi->dev,
++				"GPIO stuck ! Send SYNC message");
++				resync_required = 1;
++				cnt = 0;
++			}
++		} else {
++			cnt = 0;
++		}
++
++		wait_event_interruptible(spi_data->wait,
++			(!list_empty(&spi_data->msgtx.list) ||
++				IS_GPIO_ACTIVE(spi_data) ||
++				resync_required) ||
++				(req_bytes > 0) ||
++				kthread_should_stop());
++	}
++
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct spi_device_id spi_can_ids[] = {
++	{ "spican", 0},
++	{ "canoverspi", 0},
++	{ },
++};
++MODULE_DEVICE_TABLE(spi, spi_can_ids);
++#endif
++
++static int spi_can_probe(struct spi_device *spi)
++{
++	struct spi_can_platform_data *pdata = spi->dev.platform_data;
++	int ret = -ENODEV;
++	struct spi_can_data *spi_data;
++	int index;
++	u32 can_channels;
++	u32 active = GPIO_ACTIVE_LOW;
++	u32 data_gpio;
++	u32 flags;
++	struct msg_queue_tx *tx_pkt;
++
++	if (spi->dev.of_node) {
++		if (of_property_read_u32(spi->dev.of_node,
++			    "channels", &can_channels))
++			return -ENODEV;
++		if (!slow_freq) {
++			of_property_read_u32(spi->dev.of_node,
++			    "slowfreq", &slow_freq);
++		}
++		if (!freq) {
++			of_property_read_u32(spi->dev.of_node,
++			    "freq", &freq);
++		}
++		of_property_read_u32(spi->dev.of_node,
++			    "chksum_en", &chksum_en);
++		data_gpio = of_get_gpio_flags(spi->dev.of_node,
++				0, &flags);
++		active = (flags & GPIO_ACTIVE_LOW) ? 0 : 1;
++	} else {
++		if (!pdata || (pdata->can_channels < 0) ||
++			(pdata->can_channels > MAX_CAN_CHANNELS))
++			return -ENODEV;
++		if (pdata->slow_freq)
++			slow_freq = pdata->slow_freq;
++		data_gpio = pdata->gpio;
++		active = pdata->active;
++		can_channels = pdata->can_channels;
++		chksum_en = pdata->chksum_en;
++	}
++
++	if (!gpio_is_valid(data_gpio)) {
++		dev_err(&spi->dev,
++			"Wrong data valid GPIO: %d\n",
++			data_gpio);
++		return -EINVAL;
++	}
++
++	dev_info(&spi->dev, "Channels: %d, gpio %d active %s\n",
++				can_channels,
++				data_gpio,
++				active ? "high" : "low");
++	/* It is possible to adjust frequency at loading time
++	 * if the driver is compiled as module
++	 */
++	if (freq) {
++		if (freq > spi->max_speed_hz) {
++			dev_err(&spi->dev,
++				"Frequency too high: %d Hz > %d Hz. Falling back to %d\n",
++				freq,
++				spi->max_speed_hz,
++				spi->max_speed_hz);
++			freq = spi->max_speed_hz;
++		}
++	}
++
++	/* Check if the supervisor frequency is passed as parameter
++	 * Fallback to 1 Mhz
++	 */
++	if (!slow_freq)
++		slow_freq = SLAVE_SUPERVISOR_FREQ;
++
++	if ((freq && (slow_freq > freq)) ||
++		(slow_freq > SLAVE_SUPERVISOR_FREQ)) {
++		dev_err(&spi->dev,
++			"Supervisor frequency too high: %d Hz > %d Hz. Falling back to %d\n",
++			slow_freq,
++			min(freq, SLAVE_SUPERVISOR_FREQ),
++			min(freq, SLAVE_SUPERVISOR_FREQ));
++			slow_freq = min(freq, SLAVE_SUPERVISOR_FREQ);
++	}
++
++	ret = gpio_request(data_gpio, "spican-irq");
++	if (ret) {
++		dev_err(&spi->dev,
++			"gpio %d cannot be acquired\n",
++			data_gpio);
++		return -ENODEV;
++	}
++
++	/* The SPI structure is common to all CAN devices */
++	spi_data = (struct spi_can_data *)
++		kzalloc(sizeof(struct spi_can_data), GFP_KERNEL | __GFP_ZERO);
++	if (!spi_data)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&spi_data->msgtx.list);
++	INIT_LIST_HEAD(&spi_data->msgrx.list);
++
++	/* Get the GPIO used as interrupt. The Slave raises
++	 * an interrupt when there are messages to be sent
++	 */
++	gpio_direction_input(data_gpio);
++	ret = request_irq(gpio_to_irq(data_gpio), spi_can_irq,
++		(active ? IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING) ,
++		"spican-rx", spi_data);
++	if (ret) {
++		gpio_free(data_gpio);
++		kfree(spi_data);
++		return -ENODEV;
++	}
++
++	spi_data->num_channels = can_channels;
++	spi_data->gpio = data_gpio;
++	spi_data->gpio_active = active;
++	spi_data->spi = spi;
++	spi_data->max_freq = freq;
++	spi_data->slow_freq = slow_freq;
++	spi_data->freq = slow_freq;
++	spi_data->slave_op_mode = SLAVE_SUPERVISOR_MODE;
++	spin_lock_init(&spi_data->lock);
++	mutex_init(&spi_data->lock_wqlist);
++	for (index = 0; index < SPI_RX_NBUFS; index++)
++		mutex_init(&spi_data->rx_data[index].bufmutex);
++
++	/* Initialize SPI interface */
++	dev_set_drvdata(&spi->dev, spi_data);
++	spi_can_initialize(spi, freq);
++
++	/* Now alloc the CAN devices */
++	for (index = 0; index < (can_channels + 1); index++) {
++		tx_pkt = kzalloc(sizeof(*tx_pkt), GFP_KERNEL);
++		if (!tx_pkt)
++			return -ENOMEM;
++
++		if (index != can_channels)
++			tx_pkt->channel = index;
++		else
++			tx_pkt->channel = CFG_CHANNEL;
++		tx_pkt->type = SPI_MSG_CFG_GET;
++		list_add_tail(&(tx_pkt->list), &(spi_data->msgtx.list));
++	}
++
++	init_waitqueue_head(&spi_data->wait);
++	/* Initialize work que for RX background processing */
++	spi_data->wq = alloc_workqueue("spican_wq",
++			WQ_HIGHPRI | WQ_MEM_RECLAIM, 1);
++	INIT_WORK(&spi_data->work, spi_can_rx_handler);
++
++	spi_can_task = kthread_run(spi_can_thread, spi_data, "kspican");
++	if (!spi_can_task) {
++		ret = -EIO;
++		goto failed_start_task;
++	}
++
++	dev_info(&spi->dev, "%s version %s initialized\n",
++		DRV_NAME, DRV_VERSION);
++	dev_info(&spi->dev, "SPI frequency %d, supervisor frequency %d : now set to %d\n",
++		spi_data->max_freq, spi_data->slow_freq, spi_data->freq);
++
++	return 0;
++
++failed_start_task:
++
++	free_irq(gpio_to_irq(spi_data->gpio), spi_data);
++	gpio_free(spi_data->gpio);
++
++	return ret;
++}
++
++static int spi_can_remove(struct spi_device *spi)
++{
++	struct spi_can_data *priv = dev_get_drvdata(&spi->dev);
++	int index;
++
++	if (spi_can_task)
++		kthread_stop(spi_can_task);
++	if (priv->wq) {
++		flush_workqueue(priv->wq);
++		destroy_workqueue(priv->wq);
++	}
++
++	for (index = 0; index < (priv->num_channels + 1); index++) {
++		if (priv->can_dev[index]) {
++			unregister_candev(priv->can_dev[index]);
++			free_candev(priv->can_dev[index]);
++		}
++	}
++
++	free_irq(gpio_to_irq(priv->gpio), priv);
++	gpio_free(priv->gpio);
++
++	return 0;
++}
++
++static struct spi_driver spi_can_driver = {
++	.probe = spi_can_probe,
++	.remove = spi_can_remove,
++#if CONFIG_OF
++	.id_table = spi_can_ids,
++#endif
++	.driver = {
++		.name = DRV_NAME,
++		.bus = &spi_bus_type,
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init spi_can_init(void)
++{
++	return spi_register_driver(&spi_can_driver);
++}
++
++static void __exit spi_can_exit(void)
++{
++	spi_unregister_driver(&spi_can_driver);
++}
++
++module_init(spi_can_init);
++module_exit(spi_can_exit);
++
++MODULE_AUTHOR("Stefano Babic <sbabic@denx.de");
++MODULE_DESCRIPTION("CAN over SPI driver");
++MODULE_LICENSE("GPL v2");
++MODULE_VERSION(DRV_VERSION);
+diff --git a/include/linux/can/platform/spi_can.h b/include/linux/can/platform/spi_can.h
+new file mode 100644
+index 0000000..95ee330
+--- /dev/null
++++ b/include/linux/can/platform/spi_can.h
+@@ -0,0 +1,33 @@
++/*
++ * (C) Copyright 2010-2014
++ * Stefano Babic, DENX Software Engineering, sbabic@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#ifndef __CAN_PLATFORM_SPICAN_H__
++#define __CAN_PLATFORM_SPICAN_H__
++
++#include <linux/spi/spi.h>
++
++struct spi_can_platform_data {
++	u32 can_channels;
++	u32 gpio;
++	u32 active;
++	unsigned int slow_freq;
++	unsigned int chksum_en;
++};
++
++#endif
 -- 
 1.9.1
 
