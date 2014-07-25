@@ -1,45 +1,70 @@
-From: Mugunthan V N <mugunthanvnm@ti.com>
-Subject: [can-next PATCH 1/1] net: can: c_can_platform: Use devm_ioremap instead of devm_ioremap_resource.
-Date: Fri, 25 Jul 2014 11:49:41 +0530
-Message-ID: <1406269181-4092-1-git-send-email-mugunthanvnm@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: C_CAN: can frame drops
+Date: Fri, 25 Jul 2014 09:17:56 +0200
+Message-ID: <53D204A4.1060502@pengutronix.de>
+References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from comal.ext.ti.com ([198.47.26.152]:50094 "EHLO comal.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758834AbaGYGUR (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 25 Jul 2014 02:20:17 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45544 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750976AbaGYHSH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 03:18:07 -0400
+In-Reply-To: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>, Prabhakar Lad <prabhakar.csengg@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Wolfram Sang <wsa@sang-engineering.com>, Chen Gang <gang.chen@asianux.com>, George Cherian <george.cherian@ti.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Mugunthan V N <mugunthanvnm@ti.com>
+To: Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: George Cherian <george.cherian@ti.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The raminit register is shared register for both can0 and can1.
-Using devm_ioremap_resource fails the mapping for can1 interface
-leading to a non functional can interface.
+On 07/23/2014 04:48 PM, Ssagarr Patil wrote:
+> Hi,
+>=20
+> I am using the c_can driver for latest kernel and using the latest canu=
+tils to dump to a file.
+> My can bus is set at a rate of 1Mb (receiving 7000fps bus load of 80%).=
 
-Signed-off-by: George Cherian <george.cherian@ti.com>
-Signed-off-by: Mugunthan V N <mugunthanvnm@ti.com>
----
- drivers/net/can/c_can/c_can_platform.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> When I use the candump tool to dump can frames I get following message,=
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index e29b6d0..5dede6e 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -278,7 +278,8 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 			break;
- 		}
- 
--		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
-+		priv->raminit_ctrlreg = devm_ioremap(&pdev->dev, res->start,
-+						     resource_size(res));
- 		if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
- 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
- 		else
--- 
-2.0.2.673.g9ab0882
+>=20
+> 'DROPCOUNT: dropped 2223 CAN frames on 'any' socket (total drops 162909=
+2)'
 
+These are the CAN frames dropped by the socket, this means as Oliver
+pointed out, that the candump fails to read the CAN frames fast enough
+from the socket. How do you connect to the linux box with the c_can?
+Where are the CAN frames printed to?
+
+Dropped CAN frames by the hardware should be counted in the rx dropped
+in ifconfig.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlPSBKQACgkQjTAFq1RaXHOd3gCfU1HU/fi1f3oYrJMH0Gp4g4mP
+wQIAoI7A/G36lp2tjtVB59RlDPw8ousM
+=5Q5p
+-----END PGP SIGNATURE-----
+
+--G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO--
