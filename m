@@ -1,40 +1,45 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v4 2/3] CAN: moved SPI drivers into a separate directory
-Date: Thu, 24 Jul 2014 20:31:01 +0200
-Message-ID: <53D150E5.6080204@denx.de>
-References: <1406196706-4548-1-git-send-email-sbabic@denx.de> <1406196706-4548-3-git-send-email-sbabic@denx.de> <53D14CB3.9040901@hartkopp.net>
+From: Mugunthan V N <mugunthanvnm@ti.com>
+Subject: [can-next PATCH 1/1] net: can: c_can_platform: Use devm_ioremap instead of devm_ioremap_resource.
+Date: Fri, 25 Jul 2014 11:49:41 +0530
+Message-ID: <1406269181-4092-1-git-send-email-mugunthanvnm@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:34059 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757022AbaGXSbF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Jul 2014 14:31:05 -0400
-In-Reply-To: <53D14CB3.9040901@hartkopp.net>
+Received: from comal.ext.ti.com ([198.47.26.152]:50094 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1758834AbaGYGUR (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 25 Jul 2014 02:20:17 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>, Prabhakar Lad <prabhakar.csengg@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Wolfram Sang <wsa@sang-engineering.com>, Chen Gang <gang.chen@asianux.com>, George Cherian <george.cherian@ti.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Mugunthan V N <mugunthanvnm@ti.com>
 
-Hi Oliver,
+From: George Cherian <george.cherian@ti.com>
 
-On 24/07/2014 20:13, Oliver Hartkopp wrote:
-> Hi Stefano,
-> 
-> this patch was already applied by Marc the last time.
-> 
-> It is now in Linus' tree:
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=869ba1e67a894f45ba3da32af66f25104fab7d8f
-> 
+The raminit register is shared register for both can0 and can1.
+Using devm_ioremap_resource fails the mapping for can1 interface
+leading to a non functional can interface.
 
-Thanks, I will drop it in the next version.
+Signed-off-by: George Cherian <george.cherian@ti.com>
+Signed-off-by: Mugunthan V N <mugunthanvnm@ti.com>
+---
+ drivers/net/can/c_can/c_can_platform.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Stefano
-
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index e29b6d0..5dede6e 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -278,7 +278,8 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 			break;
+ 		}
+ 
+-		priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
++		priv->raminit_ctrlreg = devm_ioremap(&pdev->dev, res->start,
++						     resource_size(res));
+ 		if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
+ 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
+ 		else
 -- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+2.0.2.673.g9ab0882
+
