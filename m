@@ -1,179 +1,105 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] net: can: flexcan: reset the error counter after leaving
- passive state
-Date: Fri, 25 Jul 2014 22:46:34 +0200
-Message-ID: <53D2C22A.80406@pengutronix.de>
-References: <1406312202-2542-1-git-send-email-matthias.klein@optimeas.de> <1406312202-2542-4-git-send-email-matthias.klein@optimeas.de> <20140725185117.GB24839@linutronix.de>
+Subject: Re: [PATCH 2/5] net: can: flexcan: disable error interrupts in non
+ ERR-Active state
+Date: Sat, 26 Jul 2014 00:17:00 +0200
+Message-ID: <53D2D75C.2040607@pengutronix.de>
+References: <1406312202-2542-1-git-send-email-matthias.klein@optimeas.de> <1406312202-2542-2-git-send-email-matthias.klein@optimeas.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="TA6iF8lx2NBaNvsgt88DhMjvg9JMWxIoD"
+ boundary="VLX3fOR1hkSsPVlHa05DmOB1pX5GXp4pX"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33514 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60949 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753693AbaGYUqq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 16:46:46 -0400
-In-Reply-To: <20140725185117.GB24839@linutronix.de>
+	with ESMTP id S1751550AbaGYWRJ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 18:17:09 -0400
+In-Reply-To: <1406312202-2542-2-git-send-email-matthias.klein@optimeas.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Matthias Klein <matthias.klein@optimeas.de>
-Cc: wg@grandegger.com, linux-can@vger.kernel.org, support@karo-electronics.de
+To: Matthias Klein <matthias.klein@optimeas.de>, wg@grandegger.com, linux-can@vger.kernel.org, support@karo-electronics.de
+Cc: bigeasy@linutronix.de
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---TA6iF8lx2NBaNvsgt88DhMjvg9JMWxIoD
+--VLX3fOR1hkSsPVlHa05DmOB1pX5GXp4pX
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 07/25/2014 08:51 PM, Sebastian Andrzej Siewior wrote:
-> The reasoning of why is done what is done is described in the longer
-> comment which I do not repeat here.
-> While pleaying with the HALT/Freeze mode/bit I noticed that the manual
-> says that one has to wait until the core completed the request or
->  "otherwise FLEXCAN may operate in an unpredictable way"
-> therefore flexcan_wait_for_frz() is added to places where the HALT bit
-> is set / cleared.
-
-Please have a look at a recent kernel, especially patch
-
-    b1aa1c7 can: flexcan: fix transition from and to freeze mode
-                          in chip_{,un}freeze
-
+On 07/25/2014 08:16 PM, Matthias Klein wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 >=20
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  drivers/net/can/flexcan.c | 61 +++++++++++++++++++++++++++++++++++++++=
-++++++++
->  1 file changed, 61 insertions(+)
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index f6f95ae..0ac99c5 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -441,6 +441,61 @@ static int flexcan_poll_bus_err(struct net_device =
-*dev, u32 reg_esr)
->  	return 1;
->  }
-> =20
-> +static void flexcan_wait_for_frz(struct net_device *dev, int en)
-> +{
-> +	struct flexcan_priv *priv =3D netdev_priv(dev);
-> +	struct flexcan_regs __iomem *regs =3D priv->base;
-> +	u32 reg_mcr;
-> +	u32 loops =3D 25;
-> +
-> +	do {
-> +		reg_mcr =3D flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK;
-> +		if ((en && reg_mcr) || (!en && !reg_mcr))
-> +			return;
-> +
-> +		loops--;
-> +		udelay(1);
-> +	} while (loops);
-> +
-> +	netdev_err(dev, "Timeout during for the FRZ bit\n");
-> +}
-> +
-> +static void flexcan_reset_err_reg(struct net_device *dev)
-> +{
-> +	struct flexcan_priv *priv =3D netdev_priv(dev);
-> +	struct flexcan_regs __iomem *regs =3D priv->base;
-> +	u32 reg_mcr;
-> +
-> +	/*
-> +	 * The reset of the error counter is ugly but I don't see any other w=
-ay.
-> +	 * Open the CAN bus, send packet =3D> HW goes to ERR-pasive, TX-err
-> +	 * counter is around 128 (maybe 129). Close the CAN-Bus, the TX-err
-> +	 * counter drops down to somewhere between 126 =E2=80=A6 127, HW goes=
- to
-> +	 * ERR-Warning, everything is fine.
-> +	 *
-> +	 * Now: Repeat the above procedure. What happens is that on send the
-> +	 * TX-err increases to around 134=E2=80=A6136 and on connect it drops=
- to
-> +	 * around 130. Occording to ESR the HW is still in passive mode _but_=
- it
-> +	 * is possible send packets - that means can send packets but has no
-> +	 * clue about it.
+> On imx53 I receive continuously STF_ERR error interrupts after sending =
+a
+> CAN frame on an open BUS.
+> This patch disables error interrupts once we leave the ERR-Active state=
 
-As far as I know, it's perfectly legal to send CAN frame while in "error
-passive" mode. While in error passive mode you cannot send an active
-error flag, just a passive one. I don't have a link to the standard at
-hand, but have a look at the CAN wiki:
+> since I doubt further error interrupts are of any interest especially i=
+f
+> they render the system unresponsible.
 
-http://www.can-wiki.info/doku.php?id=3Dcan_faq_erors
+For some use cases and users this is important. However I think we all
+don't want to have an unresponsive system. Have a look the "can:
+berr_limit support" series [1], which introduces a configurable time-out
+before the error interrupts are re-enabled.
 
-> +	 * To get a consistent behavior here, the error counter are reset so =
-we
-> +	 * fall back to Err-Active mode and the second "can send on open bus"=
+[1] http://comments.gmane.org/gmane.linux.can/4070
 
-> +	 * behaves just like the first one.
-> +	 */
-> +
-> +	reg_mcr =3D flexcan_read(&regs->mcr);
-> +	reg_mcr |=3D FLEXCAN_MCR_HALT;
-> +	flexcan_write(reg_mcr, &regs->mcr);
-> +
-> +	flexcan_wait_for_frz(dev, 1);
-> +
-> +	flexcan_write(0, &regs->ecr);
-> +
-> +	reg_mcr &=3D ~FLEXCAN_MCR_HALT;
-> +	flexcan_write(reg_mcr, &regs->mcr);
-> +	flexcan_wait_for_frz(dev, 0);
-> +}
-> +
->  static void do_state(struct net_device *dev,
->  		     struct can_frame *cf, enum can_state new_state)
->  {
-> @@ -499,6 +554,8 @@ static void do_state(struct net_device *dev,
->  		cf->data[1] =3D (bec.txerr > bec.rxerr) ?
->  			CAN_ERR_CRTL_TX_WARNING :
->  			CAN_ERR_CRTL_RX_WARNING;
-> +
-> +		flexcan_reset_err_reg(dev);
->  		break;
->  	case CAN_STATE_ERROR_ACTIVE:
->  		netdev_dbg(dev, "Error Active\n");
-> @@ -801,6 +858,7 @@ static int flexcan_chip_start(struct net_device *de=
-v)
->  		FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
->  	netdev_dbg(dev, "%s: writing mcr=3D0x%08x", __func__, reg_mcr);
->  	flexcan_write(reg_mcr, &regs->mcr);
-> +	flexcan_wait_for_frz(dev, 1);
-> =20
->  	/*
->  	 * CTRL
-> @@ -852,6 +910,7 @@ static int flexcan_chip_start(struct net_device *de=
-v)
->  	reg_mcr =3D flexcan_read(&regs->mcr);
->  	reg_mcr &=3D ~FLEXCAN_MCR_HALT;
->  	flexcan_write(reg_mcr, &regs->mcr);
-> +	flexcan_wait_for_frz(dev, 0);
-> =20
->  	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-> =20
-> @@ -885,6 +944,7 @@ static void flexcan_chip_stop(struct net_device *de=
-v)
->  	reg =3D flexcan_read(&regs->mcr);
->  	reg |=3D FLEXCAN_MCR_MDIS | FLEXCAN_MCR_HALT;
->  	flexcan_write(reg, &regs->mcr);
-> +	flexcan_wait_for_frz(dev, 1);
-> =20
->  	/* Disable all interrupts */
->  	flexcan_write(0, &regs->imask1);
-> @@ -1018,6 +1078,7 @@ static int register_flexcandev(struct net_device =
-*dev)
->  	reg |=3D FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
->  		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
->  	flexcan_write(reg, &regs->mcr);
-> +	flexcan_wait_for_frz(dev, 1);
-> =20
->  	/*
->  	 * Currently we only support newer versions of this core
->=20
+The series needs some polishing and there are some open questions to
+address.
 
 Marc
+
+> According to the manual in this case the system remains in passive stat=
+e
+> and RX-err counter is >127 and won't increment any further and so it
+> won't enter BUS-Off state. Once the system receives a CAN message, the
+> RX-error counter should by set to 119 =E2=80=A6 127 which brings the CA=
+N module
+> back to ERR-active state which then should activate error reporting
+> again.
+>=20
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Matthias Klein <matthias.klein@optimeas.de>
+> ---
+>  drivers/net/can/flexcan.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index f677b49..2b98da2 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -628,7 +628,17 @@ static int flexcan_poll(struct napi_struct *napi, =
+int quota)
+>  		napi_complete(napi);
+>  		/* enable IRQs */
+>  		flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
+> -		flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+> +		/*
+> +		 * On an open CAN-bus the iMX51 keeps reporting the STF_ERR
+> +		 * event after an attempt to send a CAN message. This will
+> +		 * disable further error reports (or that one that keeps
+> +		 * nagging) once we leave the ERR-Active state.
+> +		 */
+> +		if (reg_esr & FLEXCAN_ESR_FLT_CONF_MASK)
+> +			flexcan_write(priv->reg_ctrl_default &
+> +					~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
+> +		else
+> +			flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+>  	}
+> =20
+>  	return work_done;
+> @@ -656,8 +666,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
+d)
+>  	 * - bus error IRQ and bus error reporting is activated
+>  	 */
+>  	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+> -	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+> -	    flexcan_has_and_handle_berr(priv, reg_esr)) {
+> +	    (reg_esr & FLEXCAN_ESR_ERR_ALL)) {
+> +
+>  		/*
+>  		 * The error bits are cleared on read,
+>  		 * save them for later use.
+>=20
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -182,7 +108,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---TA6iF8lx2NBaNvsgt88DhMjvg9JMWxIoD
+--VLX3fOR1hkSsPVlHa05DmOB1pX5GXp4pX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -191,9 +117,9 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Icedove - http://www.enigmail.net/
 
-iEYEARECAAYFAlPSwioACgkQjTAFq1RaXHMlZwCfdbEf0vcrMKdnQJ62+04edZzw
-vUQAn25ONbP3YPCVBZX3MJpQzWq9oBSI
-=wBT2
+iEYEARECAAYFAlPS11wACgkQjTAFq1RaXHPdyACgk8r/cx61PPgL0QJArS+QNpeh
+LHkAn3MocAroepAprMRDhqv7o7ZVOvu8
+=dgXg
 -----END PGP SIGNATURE-----
 
---TA6iF8lx2NBaNvsgt88DhMjvg9JMWxIoD--
+--VLX3fOR1hkSsPVlHa05DmOB1pX5GXp4pX--
