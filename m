@@ -1,58 +1,61 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v4 3/3] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Fri, 25 Jul 2014 09:57:19 +0200
-Message-ID: <53D20DDF.6000301@denx.de>
-References: <1406196706-4548-1-git-send-email-sbabic@denx.de> <1406196706-4548-4-git-send-email-sbabic@denx.de> <53D0ED0C.4080400@gmail.com> <53D11E25.6010704@denx.de> <53D122C7.4020504@gmail.com>
+From: Ssagarr Patil <hugarsagar@outlook.com>
+Subject: RE: C_CAN: can frame drops
+Date: Fri, 25 Jul 2014 13:43:47 +0530
+Message-ID: <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl>
+References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>,<53D204A4.1060502@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:38629 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750828AbaGYH5Z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 03:57:25 -0400
-In-Reply-To: <53D122C7.4020504@gmail.com>
+Received: from bay004-omc4s17.hotmail.com ([65.54.190.219]:60595 "EHLO
+	BAY004-OMC4S17.hotmail.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757022AbaGYINr convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 25 Jul 2014 04:13:47 -0400
+In-Reply-To: <53D204A4.1060502@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Varka Bhadram <varkabhadram@gmail.com>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Varka,
+Hi Marc,
 
+>>
+>> I am using the c_can driver for latest kernel and using the latest c=
+anutils to dump to a file.
+>> My can bus is set at a rate of 1Mb (receiving 7000fps bus load of 80=
+%).
+>>
+>> When I use the candump tool to dump can frames I get following messa=
+ge,
+>>
+>> 'DROPCOUNT: dropped 2223 CAN frames on 'any' socket (total drops 162=
+9092)'
+>
+> These are the CAN frames dropped by the socket, this means as Oliver
+> pointed out, that the candump fails to read the CAN frames fast enoug=
+h
+> from the socket. How do you connect to the linux box with the c_can?
+> Where are the CAN frames printed to?
+>
+Agreed this is dropped by the socket, so for this to solve I increased =
+the socket size
+(with -r option of candump to 111173056) after doing this I see that th=
+ere is frame drop in
+the driver ie I see this function c_can_handle_lost_msg_obj() being cal=
+led frequently in which
+can frame is overwritten.
 
-On 24/07/2014 17:14, Varka Bhadram wrote:
+I have a can frame generator which I have connected to the EVM, the EVM=
+ is recieving the
+frames and just dumping it on stdout going ahead I need to log the canf=
+rames to SD card.
+=A0
+> Dropped CAN frames by the hardware should be counted in the rx droppe=
+d
+> in ifconfig.
 
->>   In last case CONFIG_OF is not set
->> and a platform device sets the data.
-> 
-> In our case we can load the driver by DT or Non-DT way.
-> 
-> If the DT approach is not used means CONFIG_OF is not set. In this case
-> the device ids wont be added in the kernel device ids. For this we have
-> to define spi_device_ids and update .id_table in struct spi_driver.
-> 
+Yes I can even see this too.
 
-I think we are doing the same thing with only a slight difference in the
-implementation. For mcp251x the driver data is fix with the chip type
-and there is not values set by the board. This let define the
-driver_data inside the driver.
-
-In my case I let that the platform data can be set, when CONFIG_OF=n, by
-the board as it was common in the past, because I have some values that
-depend on the board (number of channels, checksum enabled,..).
-
-> For DT approach(CONFIG_OF = y) we have to define of_device_ids
-> and update .driver.of_match_table with this ids.
-
-Agree - exacttly the same is done in this driver.
-
-Best regards,
-Stefano Babic
-
--- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+Thanks,
+--Sagar
+ 		 	   		  
