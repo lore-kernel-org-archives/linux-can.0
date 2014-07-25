@@ -1,57 +1,59 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] GNUmakefile.am: include canpump
-Date: Fri, 25 Jul 2014 13:11:54 +0200
-Message-ID: <53D23B7A.9050402@hartkopp.net>
-References: <1406285604-20942-1-git-send-email-mkl@pengutronix.de>
+From: Ssagarr Patil <hugarsagar@outlook.com>
+Subject: RE: C_CAN: can frame drops
+Date: Fri, 25 Jul 2014 16:52:16 +0530
+Message-ID: <BAY176-W2797C4257A9D55478CDF55D3FC0@phx.gbl>
+References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>,<53D204A4.1060502@pengutronix.de>
+ <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl>,<53D2126C.40600@pengutronix.de>
+ <BAY176-W426E5C1C47CA0379DFCD84D3FC0@phx.gbl>,<53D214E2.7020205@pengutronix.de>
+ <BAY176-W40C40CD192EBD241673159D3FC0@phx.gbl>,<53D219E8.5060307@pengutronix.de>
+ <BAY176-W36138D837FA40B1721062ED3FC0@phx.gbl>,<53D22D0F.3020001@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:64889 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1760132AbaGYLL7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 07:11:59 -0400
-In-Reply-To: <1406285604-20942-1-git-send-email-mkl@pengutronix.de>
+Received: from bay004-omc4s22.hotmail.com ([65.54.190.224]:64126 "EHLO
+	BAY004-OMC4S22.hotmail.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751860AbaGYLWR convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 25 Jul 2014 07:22:17 -0400
+In-Reply-To: <53D22D0F.3020001@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Ssagarr Patil <hugarsagar@outlook.com>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Tnx!
+Hi Marc,
 
-Applied to the canpump tree.
+>
+> On 07/25/2014 11:47 AM, Ssagarr Patil wrote:
+>>>> Any suggestion on how to still improve the performance so as there is zero frame loss ?
+>>>> either on driver or application side.
+>>>
+>>> Use the latest kernel, at least v3.15 which has tglx's patches
+>>> integrated. v3.16 might even be better. If you want to log all CAN
+>>> messages, you can probably make use of recvmmsg() to receive more than
+>>> one CAN frame at a time (instead of using recvmsg() or read()). When
+>>> writing to disk, don't write a single CAN frame at a time, it's better
+>>> to write large blocks, i.e. several 4k of data.
+>>>
+>> I am using the v3.16 (the master branch from git://gitorious.org/linux-can/linux-can.git)
+>>
+>> OK will try experiment with recvmmsg() & and writing to disk with large blocks.
+>>
+>>> Depending on the actual c_can/d_can implementation you're using, there
+>>> might be some optimisation left in the driver, i.e. use 32 bit access if
+>>> possible. However before touching the driver, measurement to identify
+>>> the hot spots should be done.
+>>>
+>> OK
+>>
+>>> The next step would be to switch to preempt rt enabled system.
+>>>
+>> I am afraid I cant use this, as project needs to be run on normal Linux.
+>
+> Preempt-rt is a normal Linux system, though. :)
+>
+Yes but our requirement is to not to have on rt-linux :(
 
-I tried this canpump to check out the recvmmsg() call.
-
-But the most effective performance enhancement seemed to be the update of the
-open coded ASCII conversion in this patch:
-
-https://gitorious.org/linux-can/can-utils/commit/4a68366bac433d9e95fb74147d68d1386d62cc0a
-
-@Sagar: Do you already use the latest can-utils containing these improvements?
-
-Regards,
-Oliver
-
-
-On 25.07.2014 12:53, Marc Kleine-Budde wrote:
-> This patch makes it possible to compile canpump with autotools, too.
-> 
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  GNUmakefile.am | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/GNUmakefile.am b/GNUmakefile.am
-> index 27767e8..1381d20 100644
-> --- a/GNUmakefile.am
-> +++ b/GNUmakefile.am
-> @@ -38,6 +38,7 @@ bin_PROGRAMS = \
->  	cangw \
->  	canlogserver \
->  	canplayer \
-> +	canpump \
->  	cansend \
->  	cansniffer \
->  	isotpdump \
-> 
+Thanks,
+--Sagar
+ 		 	   		  
