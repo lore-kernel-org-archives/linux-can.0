@@ -1,70 +1,49 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: C_CAN: can frame drops
-Date: Fri, 25 Jul 2014 09:17:56 +0200
-Message-ID: <53D204A4.1060502@pengutronix.de>
-References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO"
+Subject: pull-request: can 2014-07-25
+Date: Fri, 25 Jul 2014 09:36:49 +0200
+Message-ID: <1406273810-19116-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45544 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51483 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750976AbaGYHSH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 03:18:07 -0400
-In-Reply-To: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl>
+	with ESMTP id S1759322AbaGYHhE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 03:37:04 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello David,
 
-On 07/23/2014 04:48 PM, Ssagarr Patil wrote:
-> Hi,
->=20
-> I am using the c_can driver for latest kernel and using the latest canu=
-tils to dump to a file.
-> My can bus is set at a rate of 1Mb (receiving 7000fps bus load of 80%).=
+this is a pull request of one patch for the net tree, hoping to get into the
+3.16 release.
 
->=20
-> When I use the candump tool to dump can frames I get following message,=
+The patch by George Cherian fixes a regression in the c_can platform driver.
+When using two interfaces the regression leads to a non function second
+interface.
 
->=20
-> 'DROPCOUNT: dropped 2223 CAN frames on 'any' socket (total drops 162909=
-2)'
-
-These are the CAN frames dropped by the socket, this means as Oliver
-pointed out, that the candump fails to read the CAN frames fast enough
-from the socket. How do you connect to the linux box with the c_can?
-Where are the CAN frames printed to?
-
-Dropped CAN frames by the hardware should be counted in the rx dropped
-in ifconfig.
-
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
 
+The following changes since commit 15ba2236f3556fc01b9ca91394465152b5ea74b6:
 
---G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2014-07-21 22:46:01 -0700)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+are available in the git repository at:
 
-iEYEARECAAYFAlPSBKQACgkQjTAFq1RaXHOd3gCfU1HU/fi1f3oYrJMH0Gp4g4mP
-wQIAoI7A/G36lp2tjtVB59RlDPw8ousM
-=5Q5p
------END PGP SIGNATURE-----
+  git://gitorious.org/linux-can/linux-can.git tags/linux-can-fixes-for-3.16-20140725
 
---G5IndGBx0u3kgrOn6BwjnRL37NuWw5HiO--
+for you to fetch changes up to 33cf75656923ff11d67a937a4f8e9344f58cea77:
+
+  can: c_can_platform: Fix raminit, use devm_ioremap() instead of devm_ioremap_resource() (2014-07-25 09:23:08 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-3.16-20140725
+
+----------------------------------------------------------------
+George Cherian (1):
+      can: c_can_platform: Fix raminit, use devm_ioremap() instead of devm_ioremap_resource()
+
+ drivers/net/can/c_can/c_can_platform.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
