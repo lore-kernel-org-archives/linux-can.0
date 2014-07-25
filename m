@@ -1,51 +1,78 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: can: flexcan: problems with bus error reporting om i.MX53
-Date: Fri, 25 Jul 2014 21:04:25 +0200
-Message-ID: <20140725190425.GC24839@linutronix.de>
-References: <53D29F02.8010708@optimeas.de>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH] can: c_can_platform: Fix raminit, use devm_ioremap()
+ instead of devm_ioremap_resource()
+Date: Fri, 25 Jul 2014 13:21:01 -0700
+Message-ID: <CAGVrzcZT0e2vLF5N-fwgkxYGtLxtcp0_SvV1iYGBfd2+PB=-Ng@mail.gmail.com>
+References: <1406273810-19116-1-git-send-email-mkl@pengutronix.de> <1406273810-19116-2-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:59271 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932659AbaGYTE2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 15:04:28 -0400
-Content-Disposition: inline
-In-Reply-To: <53D29F02.8010708@optimeas.de>
+Received: from mail-oi0-f53.google.com ([209.85.218.53]:54204 "EHLO
+	mail-oi0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932659AbaGYUVm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Jul 2014 16:21:42 -0400
+In-Reply-To: <1406273810-19116-2-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Matthias Klein <matthias.klein@optimeas.de>
-Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, support@karo-electronics.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev <netdev@vger.kernel.org>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, kernel <kernel@pengutronix.de>, George Cherian <george.cherian@ti.com>, Mugunthan V N <mugunthanvnm@ti.com>, linux-stable <stable@vger.kernel.org>, "jg1.han@samsung.com" <jg1.han@samsung.com>
 
-* Matthias Klein | 2014-07-25 20:16:34 [+0200]:
-
->Hi all,
+2014-07-25 0:36 GMT-07:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+> From: George Cherian <george.cherian@ti.com>
 >
->we had the following problems when we enabled bus error reporting on
->an i.MX537 (Ka-Ro TX53-8130):
->- interrupt flooding when sending a packet on an open bus
+> The raminit register is shared register for both can0 and can1. Since commit:
+>
+>     32766ff net: can: Convert to use devm_ioremap_resource
+>
+> devm_ioremap_resource() is used to map raminit register. When using both
+> interfaces the mapping for the can1 interface fails, leading to a non
+> functional can interface.
 
-This happens because
-#1 the ISR always returns that it handled the interrupt even if it did
-   nothing
-#2 on error the interrupt source remains asserted on an open CAN bus as
-   long as the CAN bus is open. This was verified on iMX53 (which has
-   FLEXCAN_HAS_BROKEN_ERR_STATE) and imx6q
+Unfortunately, this is not the first time that devres conversions
+break drivers because they were semi-automatic conversions without
+taking a look at what the driver expects, see:
 
->- bus state change notifications did not work properly
-The error-passive -> error warning transition was not reported to
-userland, #3
+6892b41d9701283085b655c6086fb57a5d63fa47 ("net: davinci: emac: Convert
+to devm_* api") and
+33b7107f59a61236d94ecd6b45e20283cd5abcc8 ("net: davinci_emac: Replace
+devm_request_irq with request_irq")
 
->- second bus state change after bus recovery was not properly notified
-The second transition from error-passive to error-warning does not work
-properly. By second is meant a transition while the error counter >0
-(in test scenarion  120 < x < 128). After the BUS was closed, the CAN
-controller was able to send packages (they were received) but the
-internal state said passive mode and the error counter was >128 and
-decrementing with each can message sent.
-New #4.
+arguably, a comment here explaining why the request_mem_region() on
+this resource should not be done might help people using automated
+tools not to break things in the future...
 
->Best regards,
->Matthias Klein
+>
+> Signed-off-by: George Cherian <george.cherian@ti.com>
+> Signed-off-by: Mugunthan V N <mugunthanvnm@ti.com>
+> Cc: linux-stable <stable@vger.kernel.org> # >= v3.11
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/c_can/c_can_platform.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+> index 824108c..12430be 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -287,7 +287,8 @@ static int c_can_plat_probe(struct platform_device *pdev)
+>                         break;
+>                 }
+>
+> -               priv->raminit_ctrlreg = devm_ioremap_resource(&pdev->dev, res);
+> +               priv->raminit_ctrlreg = devm_ioremap(&pdev->dev, res->start,
+> +                                                    resource_size(res));
+>                 if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
+>                         dev_info(&pdev->dev, "control memory is not used for raminit\n");
+>                 else
+> --
+> 2.0.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netdev" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Sebastian
+
+
+-- 
+Florian
