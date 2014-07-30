@@ -1,53 +1,115 @@
-From: Prabhakar Lad <prabhakar.csengg@gmail.com>
-Subject: Re: C_CAN: can frame drops
-Date: Wed, 30 Jul 2014 12:28:15 +0100
-Message-ID: <CA+V-a8vm+WQXcSwPp7e7yKQehs0+BYkHhZg-EfEL1gWE_cBF=g@mail.gmail.com>
-References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl> <53D204A4.1060502@pengutronix.de>
- <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl> <53D2126C.40600@pengutronix.de>
- <BAY176-W426E5C1C47CA0379DFCD84D3FC0@phx.gbl> <53D214E2.7020205@pengutronix.de>
- <BAY176-W40C40CD192EBD241673159D3FC0@phx.gbl> <53D219E8.5060307@pengutronix.de>
- <BAY176-W36138D837FA40B1721062ED3FC0@phx.gbl> <53D234D9.2010602@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v3 4/4] can: flexcan: add vf610 support for FlexCAN
+Date: Wed, 30 Jul 2014 13:47:09 +0200
+Message-ID: <53D8DB3D.7030403@pengutronix.de>
+References: <cover.1405428166.git.stefan@agner.ch> <ff2ea1726b13dc2ffa3519ce9244f3633cf1420d.1405428166.git.stefan@agner.ch> <53C5398F.2000005@pengutronix.de> <1b8a8ca03b4a160027a79b722f697e25@agner.ch> <601adb6fe47279c115c1cc607365a00e@agner.ch> <53D25C9D.5080803@pengutronix.de> <e88108c655e2c16dc9cf6c4194547e73@agner.ch> <53D67A46.3060202@pengutronix.de> <b815c5c1f7faed334d1ed5370d51c180@agner.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="EBHREmTE9hk3Sc9v2BAQ4CrwIAAScgr20"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f47.google.com ([74.125.82.47]:39043 "EHLO
-	mail-wg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752106AbaG3L2r (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Jul 2014 07:28:47 -0400
-Received: by mail-wg0-f47.google.com with SMTP id b13so1025300wgh.18
-        for <linux-can@vger.kernel.org>; Wed, 30 Jul 2014 04:28:45 -0700 (PDT)
-In-Reply-To: <53D234D9.2010602@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47382 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751955AbaG3Lrs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Jul 2014 07:47:48 -0400
+In-Reply-To: <b815c5c1f7faed334d1ed5370d51c180@agner.ch>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Ssagarr Patil <hugarsagar@outlook.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: shawn.guo@freescale.com, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EBHREmTE9hk3Sc9v2BAQ4CrwIAAScgr20
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 25, 2014 at 11:43 AM, Oliver Hartkopp
-<socketcan@hartkopp.net> wrote:
-> Hi Sagar,
->
->>>
->>>  If you want to log all CAN
->>> messages, you can probably make use of recvmmsg() to receive more than
->>> one CAN frame at a time (instead of using recvmsg() or read()). When
->>> writing to disk, don't write a single CAN frame at a time, it's better
->>> to write large blocks, i.e. several 4k of data.
->>>
->> I am using the v3.16 (the master branch from git://gitorious.org/linux-can/linux-can.git)
+On 07/29/2014 09:29 AM, Stefan Agner wrote:
+> Am 2014-07-28 18:28, schrieb Marc Kleine-Budde:
+>> On 07/28/2014 06:20 PM, Stefan Agner wrote:
+>>> I'm not sure whether you really want to keep the FLEXCAN_CTRL_ERR_STA=
+TE
+>>> commented out...
 >>
->> OK will try experiment with recvmmsg() & and writing to disk with large blocks.
+>> No, please remove this change and redo the test.
 >>
->
-> I implemented a proof-of-concept for recvmmsg() for candump.
->
-> You can try:
->
-> https://gitorious.org/linux-can/canpump
->
+>=20
+> Ok, removed that change and did the tests again:
+>=20
+> =3D=3D Wrong Bitrate test
+>=20
+> [  146.485022] flexcan 40020000.flexcan can0: bitrate error 0.7%
+> [  148.401793] flexcan 40020000.flexcan can0: writing ctrl=3D0x17092001=
 
-Any plans of adding this into mainline can-utils ?
+> [  148.408263] flexcan 40020000.flexcan can0: flexcan_set_bittiming:
+> mcr=3D0x5980000f ctrl=3D0x17092001
+> [  148.408298] flexcan 40020000.flexcan can0: flexcan_chip_start:
+> writing mcr=3D0x79a20208
+> [  148.408328] flexcan 40020000.flexcan can0: flexcan_chip_start:
+> writing ctrl=3D0x1709ac51
+> [  148.414373] flexcan 40020000.flexcan can0: flexcan_chip_start:
+> reading mcr=3D0x60a20208 ctrl=3D0x1709ac51
+> ^---- Initialization
+> [  152.968685] flexcan_irq, esr=3D00040080
+> [  152.972386] flexcan_irq, ctrl=3D1709ac51
+> [  155.488623] flexcan_irq, esr=3D00040080
+> [  155.492326] flexcan_irq, ctrl=3D1709ac51
+> ^---- Two messages with right bitrate
+> [  171.014124] flexcan_irq, esr=3D00058d0a
+> [  171.017823] flexcan_irq, ctrl=3D1709ac51
+> ^---- One message with wrong bitrate
+> [  171.021631] flexcan 40020000.flexcan can0: Error Warning IRQ
+> [  171.021660] flexcan 40020000.flexcan can0: Error Passive IRQ
 
-Thanks,
---Prabhakar Lad
+Thanks for the test, so far looks promising :) With this setup the other
+CAN node repeats the CAN frame until it's ACKed. Because there is no
+node with a compatible bitrate, there is no ACking CAN node.
+
+Can you add a third CAN node to the network. The second and third node
+should use the same bitrate, while your vf610 uses a different one. With
+the new setup it should take more than one frame until the vf610 goes
+into error warning and even more frames to error passive. This way we
+can see it the error warning interrupt is connected or not. The error
+counters should increase with each "wrong" bitrate frame it sees, you
+can check with:
+
+    ip -details link show can0
+
+The output looks like this:
+
+> 4: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ mode DEFAULT qlen 10
+>     link/can
+>     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+                              ^^^^^^^^^^^^^^^^^^^^^^
+>     bitrate 1000000 sample-point 0.750
+>     tq 125 prop-seg 2 phase-seg1 3 phase-seg2 2 sjw 1
+>     sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+>     clock 8000000
+
+When one of the berr-counter crosses 96 (and stays below 128) a warning
+interrupt should be generated.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--EBHREmTE9hk3Sc9v2BAQ4CrwIAAScgr20
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlPY2z0ACgkQjTAFq1RaXHNpmgCcDJ/4wFxUcXv9bsx2/Fi60ezF
+YP0AnRKWDhvmaCOthoWfKPGGaNwYEHb5
+=f9UO
+-----END PGP SIGNATURE-----
+
+--EBHREmTE9hk3Sc9v2BAQ4CrwIAAScgr20--
