@@ -1,162 +1,53 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] rcar_can: add device tree support
-Date: Wed, 30 Jul 2014 09:38:23 +0200
-Message-ID: <53D8A0EF.7060903@pengutronix.de>
-References: <201407300253.42491.sergei.shtylyov@cogentembedded.com>
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Subject: Re: C_CAN: can frame drops
+Date: Wed, 30 Jul 2014 12:28:15 +0100
+Message-ID: <CA+V-a8vm+WQXcSwPp7e7yKQehs0+BYkHhZg-EfEL1gWE_cBF=g@mail.gmail.com>
+References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl> <53D204A4.1060502@pengutronix.de>
+ <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl> <53D2126C.40600@pengutronix.de>
+ <BAY176-W426E5C1C47CA0379DFCD84D3FC0@phx.gbl> <53D214E2.7020205@pengutronix.de>
+ <BAY176-W40C40CD192EBD241673159D3FC0@phx.gbl> <53D219E8.5060307@pengutronix.de>
+ <BAY176-W36138D837FA40B1721062ED3FC0@phx.gbl> <53D234D9.2010602@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="rq23u4nhKIUkTlQfnOCHkcb6cqd8jb3dr"
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <201407300253.42491.sergei.shtylyov@cogentembedded.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, robh+dt@kernel.org, grant.likely@linaro.org, devicetree@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rq23u4nhKIUkTlQfnOCHkcb6cqd8jb3dr
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wg0-f47.google.com ([74.125.82.47]:39043 "EHLO
+	mail-wg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752106AbaG3L2r (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Jul 2014 07:28:47 -0400
+Received: by mail-wg0-f47.google.com with SMTP id b13so1025300wgh.18
+        for <linux-can@vger.kernel.org>; Wed, 30 Jul 2014 04:28:45 -0700 (PDT)
+In-Reply-To: <53D234D9.2010602@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Ssagarr Patil <hugarsagar@outlook.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 07/30/2014 12:53 AM, Sergei Shtylyov wrote:
-> Add support of the device tree probing for the Renesas R-Car CAN contro=
-llers.
->=20
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->=20
-> ---
-> The patch is against the 'linux-can-next.git' repo plus the CAN clock h=
-andling
-> patch I've just posted.
->=20
-> Changes in version 2:
-> - split the device tree bindings document into a separate patch;
-> - replaced 0 with CLKR_CLKP1 in the 'clock_select' variable intializer
-> - reversed the condition in the *if* stetement handling the reading of =
-the
->   CAN clock selector from the device tree or the paltfrom data;
-> - renamed the "clock-select" property to "renesas,can-clock-select";
-> - rebased the patch on top of the CAN clock handling fix.
->=20
->  drivers/net/can/rcar_can.c |   33 +++++++++++++++++++++++++--------
->  1 file changed, 25 insertions(+), 8 deletions(-)
->=20
-> Index: linux-can-next/drivers/net/can/rcar_can.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-can-next.orig/drivers/net/can/rcar_can.c
-> +++ linux-can-next/drivers/net/can/rcar_can.c
-> @@ -20,6 +20,7 @@
->  #include <linux/can/dev.h>
->  #include <linux/clk.h>
->  #include <linux/can/platform/rcar_can.h>
-> +#include <linux/of.h>
-> =20
->  #define RCAR_CAN_DRV_NAME	"rcar_can"
-> =20
-> @@ -738,13 +739,20 @@ static int rcar_can_probe(struct platfor
->  	struct net_device *ndev;
->  	struct resource *mem;
->  	void __iomem *addr;
-> +	u32 clock_select =3D CLKR_CLKP1;
+Hi Oliver,
 
-If you introduce the variable clock_select in the patch "rcar_can:
-support all input clocks", this diff would be smaller.
+On Fri, Jul 25, 2014 at 11:43 AM, Oliver Hartkopp
+<socketcan@hartkopp.net> wrote:
+> Hi Sagar,
+>
+>>>
+>>>  If you want to log all CAN
+>>> messages, you can probably make use of recvmmsg() to receive more than
+>>> one CAN frame at a time (instead of using recvmsg() or read()). When
+>>> writing to disk, don't write a single CAN frame at a time, it's better
+>>> to write large blocks, i.e. several 4k of data.
+>>>
+>> I am using the v3.16 (the master branch from git://gitorious.org/linux-can/linux-can.git)
+>>
+>> OK will try experiment with recvmmsg() & and writing to disk with large blocks.
+>>
+>
+> I implemented a proof-of-concept for recvmmsg() for candump.
+>
+> You can try:
+>
+> https://gitorious.org/linux-can/canpump
+>
 
->  	int err =3D -ENODEV;
->  	int irq;
-> =20
-> -	pdata =3D dev_get_platdata(&pdev->dev);
-> -	if (!pdata) {
-> -		dev_err(&pdev->dev, "No platform data provided!\n");
-> -		goto fail;
-> +	if (pdev->dev.of_node) {
-> +		of_property_read_u32(pdev->dev.of_node,
-> +				     "renesas,can-clock-select", &clock_select);
-> +	} else {
-> +		pdata =3D dev_get_platdata(&pdev->dev);
-> +		if (!pdata) {
-> +			dev_err(&pdev->dev, "No platform data provided!\n");
-> +			goto fail;
-> +		}
-> +		clock_select =3D pdata->clock_select;
->  	}
-> =20
->  	irq =3D platform_get_irq(pdev, 0);
-> @@ -776,13 +784,12 @@ static int rcar_can_probe(struct platfor
->  		goto fail_clk;
->  	}
-> =20
-> -	if (pdata->clock_select > CLKR_CLKEXT) {
-> +	if (clock_select > CLKR_CLKEXT) {
->  		err =3D -EINVAL;
->  		dev_err(&pdev->dev, "invalid CAN clock selected\n");
->  		goto fail_clk;
->  	}
-> -	priv->can_clk =3D devm_clk_get(&pdev->dev,
-> -				     clock_names[pdata->clock_select]);
-> +	priv->can_clk =3D devm_clk_get(&pdev->dev, clock_names[clock_select])=
-;
->  	if (IS_ERR(priv->can_clk)) {
->  		err =3D PTR_ERR(priv->can_clk);
->  		dev_err(&pdev->dev, "cannot get CAN clock: %d\n", err);
-> @@ -794,7 +801,7 @@ static int rcar_can_probe(struct platfor
->  	ndev->flags |=3D IFF_ECHO;
->  	priv->ndev =3D ndev;
->  	priv->regs =3D addr;
-> -	priv->clock_select =3D pdata->clock_select;
-> +	priv->clock_select =3D clock_select;
->  	priv->can.clock.freq =3D clk_get_rate(priv->can_clk);
->  	priv->can.bittiming_const =3D &rcar_can_bittiming_const;
->  	priv->can.do_set_mode =3D rcar_can_do_set_mode;
-> @@ -887,10 +894,20 @@ static int __maybe_unused rcar_can_resum
-> =20
->  static SIMPLE_DEV_PM_OPS(rcar_can_pm_ops, rcar_can_suspend, rcar_can_r=
-esume);
-> =20
-> +static const struct of_device_id rcar_can_of_table[] __maybe_unused =3D=
- {
-> +	{ .compatible =3D "renesas,can-r8a7778" },
-> +	{ .compatible =3D "renesas,can-r8a7779" },
-> +	{ .compatible =3D "renesas,can-r8a7790" },
-> +	{ .compatible =3D "renesas,can-r8a7791" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, rcar_can_of_table);
-> +
->  static struct platform_driver rcar_can_driver =3D {
->  	.driver =3D {
->  		.name =3D RCAR_CAN_DRV_NAME,
->  		.owner =3D THIS_MODULE,
-> +		.of_match_table =3D of_match_ptr(rcar_can_of_table),
->  		.pm =3D &rcar_can_pm_ops,
->  	},
->  	.probe =3D rcar_can_probe,
->=20
+Any plans of adding this into mainline can-utils ?
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---rq23u4nhKIUkTlQfnOCHkcb6cqd8jb3dr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlPYoO8ACgkQjTAFq1RaXHM54QCePaaURomLxae22K2+GbVixfCE
-oYMAni1pOSPt2heG8siViLQUyakTkRwx
-=vs5x
------END PGP SIGNATURE-----
-
---rq23u4nhKIUkTlQfnOCHkcb6cqd8jb3dr--
+Thanks,
+--Prabhakar Lad
