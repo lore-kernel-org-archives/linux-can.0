@@ -1,197 +1,183 @@
-From: Zhao Qiang <B45475@freescale.com>
-Subject: [PATCH v7] flexcan: add err_irq handler for flexcan
-Date: Wed, 30 Jul 2014 10:17:44 +0800
-Message-ID: <1406686664-32716-1-git-send-email-B45475@freescale.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] rcar_can: support all input clocks
+Date: Wed, 30 Jul 2014 09:32:14 +0200
+Message-ID: <53D89F7E.3020204@pengutronix.de>
+References: <201407300145.34797.sergei.shtylyov@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="XQaiERijwWQOKa7U750hwJpR4W2EOvswA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from dns-bn1lp0143.outbound.protection.outlook.com ([207.46.163.143]:23679
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754203AbaG3CWL (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 29 Jul 2014 22:22:11 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34276 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754477AbaG3HcS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 30 Jul 2014 03:32:18 -0400
+In-Reply-To: <201407300145.34797.sergei.shtylyov@cogentembedded.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linuxppc-dev@lists.ozlabs.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, B07421@freescale.com
-Cc: Zhao Qiang <B45475@freescale.com>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
 
-when flexcan is not physically linked, command 'cantest' will
-trigger an err_irq, add err_irq handler for it.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XQaiERijwWQOKa7U750hwJpR4W2EOvswA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhao Qiang <B45475@freescale.com>
+On 07/29/2014 11:45 PM, Sergei Shtylyov wrote:
+> When writing the driver, I didn't give enough attention to the possible=
+ sources
+> of the CAN clock: although the value of the CLKR register was specified=
+ by  the
+> platform data, the driver only handled one case, that is CAN clock bein=
+g sourced
+> from the clkp1 clock, the same that clocks the whole CAN module. In ord=
+er to fix
+> that overlook, we'll have to handle the CAN clock separately from the p=
+eripheral
+> clock (however, clkp1 will be specified for a CAN device only once)...
+>=20
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+Looks good, nitpick inline:
+>=20
+> ---
+> The patch is against the 'linux-can-next.git' repo, however it's a fix,=
+ not a
+> cleanup.
+>=20
+>  drivers/net/can/rcar_can.c |   39 ++++++++++++++++++++++++++++++++++--=
 ---
-Changes for v2:
-	- use a space instead of tab
-	- use flexcan_poll_state instead of print
-Changes for v3:
-	- return IRQ_HANDLED if err is triggered
-	- stop transmitted packets when there is an err_interrupt 
-Changes for v4:
-	- call flexcan_irq 
-Changes for v5:
-	- move err_int_handling code from flexcan_irq to flexcan_err_irq
-	- call flexcan_err_irq from flexcan_irq
-Changes for v6:
-	- move RX_IRQ handling back to flexcan_irq
-Changes for v7:
-	- seperate err_irq_handling code from rx_irq_handling code and move it to err_irq_handler.
+>  1 file changed, 34 insertions(+), 5 deletions(-)
+>=20
+> Index: linux-can-next/drivers/net/can/rcar_can.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-can-next.orig/drivers/net/can/rcar_can.c
+> +++ linux-can-next/drivers/net/can/rcar_can.c
+> @@ -87,6 +87,7 @@ struct rcar_can_priv {
+>  	struct napi_struct napi;
+>  	struct rcar_can_regs __iomem *regs;
+>  	struct clk *clk;
+> +	struct clk *can_clk;
+>  	u8 tx_dlc[RCAR_CAN_FIFO_DEPTH];
+>  	u32 tx_head;
+>  	u32 tx_tail;
+> @@ -505,14 +506,20 @@ static int rcar_can_open(struct net_devi
+> =20
+>  	err =3D clk_prepare_enable(priv->clk);
+>  	if (err) {
+> -		netdev_err(ndev, "clk_prepare_enable() failed, error %d\n",
+> +		netdev_err(ndev, "failed to enable periperal clock, error %d\n",
+>  			   err);
+>  		goto out;
+>  	}
+> +	err =3D clk_prepare_enable(priv->can_clk);
+> +	if (err) {
+> +		netdev_err(ndev, "failed to enable CAN clock, error %d\n",
+> +			   err);
+> +		goto out_clock;
+> +	}
+>  	err =3D open_candev(ndev);
+>  	if (err) {
+>  		netdev_err(ndev, "open_candev() failed, error %d\n", err);
+> -		goto out_clock;
+> +		goto out_can_clock;
+>  	}
+>  	napi_enable(&priv->napi);
+>  	err =3D request_irq(ndev->irq, rcar_can_interrupt, 0, ndev->name, nde=
+v);
+> @@ -527,6 +534,8 @@ static int rcar_can_open(struct net_devi
+>  out_close:
+>  	napi_disable(&priv->napi);
+>  	close_candev(ndev);
+> +out_can_clock:
+> +	clk_disable_unprepare(priv->can_clk);
+>  out_clock:
+>  	clk_disable_unprepare(priv->clk);
+>  out:
+> @@ -565,6 +574,7 @@ static int rcar_can_close(struct net_dev
+>  	rcar_can_stop(ndev);
+>  	free_irq(ndev->irq, ndev);
+>  	napi_disable(&priv->napi);
+> +	clk_disable_unprepare(priv->can_clk);
+>  	clk_disable_unprepare(priv->clk);
+>  	close_candev(ndev);
+>  	can_led_event(ndev, CAN_LED_EVENT_STOP);
+> @@ -715,6 +725,12 @@ static int rcar_can_get_berr_counter(con
+>  	return 0;
+>  }
+> =20
+> +static const char * const clock_names[] =3D {
+> +	[CLKR_CLKP1]	=3D "clkp1",
+> +	[CLKR_CLKP2]	=3D "clkp2",
+> +	[CLKR_CLKEXT]	=3D "can_clk",
+> +};
+> +
+>  static int rcar_can_probe(struct platform_device *pdev)
+>  {
+>  	struct rcar_can_platform_data *pdata;
+> @@ -753,10 +769,23 @@ static int rcar_can_probe(struct platfor
+> =20
+>  	priv =3D netdev_priv(ndev);
+> =20
+> -	priv->clk =3D devm_clk_get(&pdev->dev, NULL);
+> +	priv->clk =3D devm_clk_get(&pdev->dev, "clkp1");
+>  	if (IS_ERR(priv->clk)) {
+>  		err =3D PTR_ERR(priv->clk);
+> -		dev_err(&pdev->dev, "cannot get clock: %d\n", err);
+> +		dev_err(&pdev->dev, "cannot get peripheral clock: %d\n", err);
+> +		goto fail_clk;
+> +	}
+> +
+> +	if (pdata->clock_select > CLKR_CLKEXT) {
 
- drivers/net/can/flexcan.c | 73 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 57 insertions(+), 16 deletions(-)
+Please use ARRAY_SIZE instead of CLKR_CLKEXT.
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index f425ec2..12385f8 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -208,6 +208,7 @@ struct flexcan_priv {
- 	void __iomem *base;
- 	u32 reg_esr;
- 	u32 reg_ctrl_default;
-+	int err_irq;
- 
- 	struct clk *clk_ipg;
- 	struct clk *clk_per;
-@@ -690,6 +691,38 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
- 	return work_done;
- }
- 
-+static irqreturn_t flexcan_err_irq(int irq, void *dev_id)
-+{
-+	struct net_device *dev = dev_id;
-+	struct flexcan_priv *priv = netdev_priv(dev);
-+	struct flexcan_regs __iomem *regs = priv->base;
-+	u32 reg_ctrl, reg_esr;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	reg_esr = flexcan_read(&regs->esr);
-+	reg_ctrl = flexcan_read(&regs->ctrl);
-+
-+	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
-+		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (reg_esr & FLEXCAN_ESR_ERR_INT)
-+		flexcan_write(reg_ctrl & ~FLEXCAN_CTRL_ERR_MSK, &regs->ctrl);
-+
-+	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
-+	    flexcan_has_and_handle_berr(priv, reg_esr)) {
-+		/* The error bits are cleared on read,
-+		 * save them for later use.
-+		 */
-+		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
-+		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
-+			      &regs->ctrl);
-+		napi_schedule(&priv->napi);
-+	}
-+	return ret;
-+}
-+
- static irqreturn_t flexcan_irq(int irq, void *dev_id)
- {
- 	struct net_device *dev = dev_id;
-@@ -698,11 +731,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 	struct flexcan_regs __iomem *regs = priv->base;
- 	u32 reg_iflag1, reg_esr;
- 
--	reg_iflag1 = flexcan_read(&regs->iflag1);
- 	reg_esr = flexcan_read(&regs->esr);
--	/* ACK all bus error and state change IRQ sources */
--	if (reg_esr & FLEXCAN_ESR_ALL_INT)
--		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-+	reg_iflag1 = flexcan_read(&regs->iflag1);
-+
-+	flexcan_err_irq(irq, dev);
- 
- 	/*
- 	 * schedule NAPI in case of:
-@@ -710,18 +742,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 	 * - state change IRQ
- 	 * - bus error IRQ and bus error reporting is activated
- 	 */
--	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
--	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
--	    flexcan_has_and_handle_berr(priv, reg_esr)) {
--		/*
--		 * The error bits are cleared on read,
--		 * save them for later use.
--		 */
--		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
-+	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) {
- 		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
- 			~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
--		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
--		       &regs->ctrl);
- 		napi_schedule(&priv->napi);
- 	}
- 
-@@ -944,10 +967,17 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_close;
- 
-+	if (priv->err_irq) {
-+		err = request_irq(priv->err_irq, flexcan_err_irq, IRQF_SHARED,
-+				  dev->name, dev);
-+		if (err)
-+			goto out_free_irq;
-+	}
-+
- 	/* start chip and queuing */
- 	err = flexcan_chip_start(dev);
- 	if (err)
--		goto out_free_irq;
-+		goto out_free_err_irq;
- 
- 	can_led_event(dev, CAN_LED_EVENT_OPEN);
- 
-@@ -956,6 +986,9 @@ static int flexcan_open(struct net_device *dev)
- 
- 	return 0;
- 
-+ out_free_err_irq:
-+	if (priv->err_irq)
-+		free_irq(priv->err_irq, dev);
-  out_free_irq:
- 	free_irq(dev->irq, dev);
-  out_close:
-@@ -977,6 +1010,9 @@ static int flexcan_close(struct net_device *dev)
- 	flexcan_chip_stop(dev);
- 
- 	free_irq(dev->irq, dev);
-+	if (priv->err_irq)
-+		free_irq(priv->err_irq, dev);
-+
- 	clk_disable_unprepare(priv->clk_per);
- 	clk_disable_unprepare(priv->clk_ipg);
- 
-@@ -1099,7 +1135,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	struct resource *mem;
- 	struct clk *clk_ipg = NULL, *clk_per = NULL;
- 	void __iomem *base;
--	int err, irq;
-+	int err, irq, err_irq;
- 	u32 clock_freq = 0;
- 
- 	if (pdev->dev.of_node)
-@@ -1126,6 +1162,10 @@ static int flexcan_probe(struct platform_device *pdev)
- 	if (irq <= 0)
- 		return -ENODEV;
- 
-+	err_irq = platform_get_irq(pdev, 1);
-+	if (err_irq <= 0)
-+		err_irq = 0;
-+
- 	base = devm_ioremap_resource(&pdev->dev, mem);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
-@@ -1149,6 +1189,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	dev->flags |= IFF_ECHO;
- 
- 	priv = netdev_priv(dev);
-+	priv->err_irq = err_irq;
- 	priv->can.clock.freq = clock_freq;
- 	priv->can.bittiming_const = &flexcan_bittiming_const;
- 	priv->can.do_set_mode = flexcan_set_mode;
--- 
-1.8.5
+> +		err =3D -EINVAL;
+> +		dev_err(&pdev->dev, "invalid CAN clock selected\n");
+> +		goto fail_clk;
+> +	}
+> +	priv->can_clk =3D devm_clk_get(&pdev->dev,
+> +				     clock_names[pdata->clock_select]);
+> +	if (IS_ERR(priv->can_clk)) {
+> +		err =3D PTR_ERR(priv->can_clk);
+> +		dev_err(&pdev->dev, "cannot get CAN clock: %d\n", err);
+>  		goto fail_clk;
+>  	}
+> =20
+> @@ -766,7 +795,7 @@ static int rcar_can_probe(struct platfor
+>  	priv->ndev =3D ndev;
+>  	priv->regs =3D addr;
+>  	priv->clock_select =3D pdata->clock_select;
+> -	priv->can.clock.freq =3D clk_get_rate(priv->clk);
+> +	priv->can.clock.freq =3D clk_get_rate(priv->can_clk);
+>  	priv->can.bittiming_const =3D &rcar_can_bittiming_const;
+>  	priv->can.do_set_mode =3D rcar_can_do_set_mode;
+>  	priv->can.do_get_berr_counter =3D rcar_can_get_berr_counter;
+>=20
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--XQaiERijwWQOKa7U750hwJpR4W2EOvswA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlPYn34ACgkQjTAFq1RaXHPPVwCgmN7VYtORYKKQcGmIq+vVDA3s
+O9UAn0AUEON6GeEJb3h9y6t1BVrKw12Y
+=S9BB
+-----END PGP SIGNATURE-----
+
+--XQaiERijwWQOKa7U750hwJpR4W2EOvswA--
