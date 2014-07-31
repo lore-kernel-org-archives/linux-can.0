@@ -1,59 +1,157 @@
-From: Prabhakar Lad <prabhakar.csengg@gmail.com>
-Subject: Re: C_CAN: can frame drops
-Date: Thu, 31 Jul 2014 15:19:06 +0100
-Message-ID: <CA+V-a8uhnn9cfuxULZQ4oBScy9jYfev+n50SphK+HDTVLPVO_g@mail.gmail.com>
-References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl> <53D204A4.1060502@pengutronix.de>
- <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl> <53D2126C.40600@pengutronix.de>
- <BAY176-W426E5C1C47CA0379DFCD84D3FC0@phx.gbl> <53D214E2.7020205@pengutronix.de>
- <BAY176-W40C40CD192EBD241673159D3FC0@phx.gbl> <53D219E8.5060307@pengutronix.de>
- <BAY176-W36138D837FA40B1721062ED3FC0@phx.gbl> <53D234D9.2010602@hartkopp.net>
- <CA+V-a8vm+WQXcSwPp7e7yKQehs0+BYkHhZg-EfEL1gWE_cBF=g@mail.gmail.com>
- <53D91AB5.5060507@hartkopp.net> <BAY176-W523AF4513C195E7972FE52D3E60@phx.gbl>
- <53DA39CF.2070303@pengutronix.de> <53DA4E89.1080206@hartkopp.net>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: [PATCH v2] rcar_can: support all input clocks
+Date: Fri, 1 Aug 2014 01:23:32 +0400
+Message-ID: <201408010123.33528.sergei.shtylyov@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f180.google.com ([74.125.82.180]:37705 "EHLO
-	mail-we0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750762AbaGaOTm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 31 Jul 2014 10:19:42 -0400
-Received: by mail-we0-f180.google.com with SMTP id w61so2815467wes.11
-        for <linux-can@vger.kernel.org>; Thu, 31 Jul 2014 07:19:38 -0700 (PDT)
-In-Reply-To: <53DA4E89.1080206@hartkopp.net>
+Received: from mail-lb0-f180.google.com ([209.85.217.180]:47048 "EHLO
+	mail-lb0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752751AbaGaVXd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 31 Jul 2014 17:23:33 -0400
+Received: by mail-lb0-f180.google.com with SMTP id v6so2494088lbi.39
+        for <linux-can@vger.kernel.org>; Thu, 31 Jul 2014 14:23:32 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
 
-Hi Oliver,
+When writing the driver, I didn't give enough attention to the possible sources
+of the CAN clock: although the value of the CLKR register was specified by  the
+platform data, the driver only handled one case, that is CAN clock being sourced
+from the clkp1 clock, the same that clocks the whole CAN module. In order to fix
+that overlook, we'll have to handle the CAN clock separately from the peripheral
+clock (however, clkp1 will be specified for a CAN device only once)...
 
-On Thu, Jul 31, 2014 at 3:11 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 31.07.2014 14:42, Marc Kleine-Budde wrote:
->> On 07/31/2014 02:41 PM, Ssagarr Patil wrote:
->
->>>> But so far there was no feedback from Sagar, if it was at least helpful.
->>>>
->>> Yes it was beneficial I used MSG_WAITALL flag for recvmmsg() so that
->>> it waits for n frames and there is no memory wastage.
->>>
->
-> This is probably not usable for candump, which has to provide the displayed
-> CAN frames pretty fast. I think there's some timeout mechanism too, to stop
-> the infinitive waiting for n frames.
->
-It would be helpful with -l option being enabled ?
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-Regards,
---Prabhakar Lad
+---
+The patch is against the 'linux-can-next.git' repo, however it's a fix, not
+a new feature.
 
->>> Also is it possible to configure qdiscs for improving the performance ?
->>
->> AFAIK qdiscs are only used in the tx path.
->
-> Yep! See:
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
->
->
-> Regards,
-> Oliver
->
+Changes in version 2:
+- added 'clock_select' local variable in the probe() method;
+- used ARRAY_SIZE() in the 'clock_select' variable sanity check.
+
+ drivers/net/can/rcar_can.c |   42 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 36 insertions(+), 6 deletions(-)
+
+Index: linux-can-next/drivers/net/can/rcar_can.c
+===================================================================
+--- linux-can-next.orig/drivers/net/can/rcar_can.c
++++ linux-can-next/drivers/net/can/rcar_can.c
+@@ -87,6 +87,7 @@ struct rcar_can_priv {
+ 	struct napi_struct napi;
+ 	struct rcar_can_regs __iomem *regs;
+ 	struct clk *clk;
++	struct clk *can_clk;
+ 	u8 tx_dlc[RCAR_CAN_FIFO_DEPTH];
+ 	u32 tx_head;
+ 	u32 tx_tail;
+@@ -505,14 +506,20 @@ static int rcar_can_open(struct net_devi
+ 
+ 	err = clk_prepare_enable(priv->clk);
+ 	if (err) {
+-		netdev_err(ndev, "clk_prepare_enable() failed, error %d\n",
++		netdev_err(ndev, "failed to enable periperal clock, error %d\n",
+ 			   err);
+ 		goto out;
+ 	}
++	err = clk_prepare_enable(priv->can_clk);
++	if (err) {
++		netdev_err(ndev, "failed to enable CAN clock, error %d\n",
++			   err);
++		goto out_clock;
++	}
+ 	err = open_candev(ndev);
+ 	if (err) {
+ 		netdev_err(ndev, "open_candev() failed, error %d\n", err);
+-		goto out_clock;
++		goto out_can_clock;
+ 	}
+ 	napi_enable(&priv->napi);
+ 	err = request_irq(ndev->irq, rcar_can_interrupt, 0, ndev->name, ndev);
+@@ -527,6 +534,8 @@ static int rcar_can_open(struct net_devi
+ out_close:
+ 	napi_disable(&priv->napi);
+ 	close_candev(ndev);
++out_can_clock:
++	clk_disable_unprepare(priv->can_clk);
+ out_clock:
+ 	clk_disable_unprepare(priv->clk);
+ out:
+@@ -565,6 +574,7 @@ static int rcar_can_close(struct net_dev
+ 	rcar_can_stop(ndev);
+ 	free_irq(ndev->irq, ndev);
+ 	napi_disable(&priv->napi);
++	clk_disable_unprepare(priv->can_clk);
+ 	clk_disable_unprepare(priv->clk);
+ 	close_candev(ndev);
+ 	can_led_event(ndev, CAN_LED_EVENT_STOP);
+@@ -715,6 +725,12 @@ static int rcar_can_get_berr_counter(con
+ 	return 0;
+ }
+ 
++static const char * const clock_names[] = {
++	[CLKR_CLKP1]	= "clkp1",
++	[CLKR_CLKP2]	= "clkp2",
++	[CLKR_CLKEXT]	= "can_clk",
++};
++
+ static int rcar_can_probe(struct platform_device *pdev)
+ {
+ 	struct rcar_can_platform_data *pdata;
+@@ -722,6 +738,7 @@ static int rcar_can_probe(struct platfor
+ 	struct net_device *ndev;
+ 	struct resource *mem;
+ 	void __iomem *addr;
++	u32 clock_select;
+ 	int err = -ENODEV;
+ 	int irq;
+ 
+@@ -730,6 +747,7 @@ static int rcar_can_probe(struct platfor
+ 		dev_err(&pdev->dev, "No platform data provided!\n");
+ 		goto fail;
+ 	}
++	clock_select = pdata->clock_select;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (!irq) {
+@@ -753,10 +771,22 @@ static int rcar_can_probe(struct platfor
+ 
+ 	priv = netdev_priv(ndev);
+ 
+-	priv->clk = devm_clk_get(&pdev->dev, NULL);
++	priv->clk = devm_clk_get(&pdev->dev, "clkp1");
+ 	if (IS_ERR(priv->clk)) {
+ 		err = PTR_ERR(priv->clk);
+-		dev_err(&pdev->dev, "cannot get clock: %d\n", err);
++		dev_err(&pdev->dev, "cannot get peripheral clock: %d\n", err);
++		goto fail_clk;
++	}
++
++	if (clock_select >= ARRAY_SIZE(clock_names)) {
++		err = -EINVAL;
++		dev_err(&pdev->dev, "invalid CAN clock selected\n");
++		goto fail_clk;
++	}
++	priv->can_clk = devm_clk_get(&pdev->dev, clock_names[clock_select]);
++	if (IS_ERR(priv->can_clk)) {
++		err = PTR_ERR(priv->can_clk);
++		dev_err(&pdev->dev, "cannot get CAN clock: %d\n", err);
+ 		goto fail_clk;
+ 	}
+ 
+@@ -765,8 +795,8 @@ static int rcar_can_probe(struct platfor
+ 	ndev->flags |= IFF_ECHO;
+ 	priv->ndev = ndev;
+ 	priv->regs = addr;
+-	priv->clock_select = pdata->clock_select;
+-	priv->can.clock.freq = clk_get_rate(priv->clk);
++	priv->clock_select = clock_select;
++	priv->can.clock.freq = clk_get_rate(priv->can_clk);
+ 	priv->can.bittiming_const = &rcar_can_bittiming_const;
+ 	priv->can.do_set_mode = rcar_can_do_set_mode;
+ 	priv->can.do_get_berr_counter = rcar_can_get_berr_counter;
