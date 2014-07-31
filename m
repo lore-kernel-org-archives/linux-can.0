@@ -1,98 +1,128 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v3 2/2] rcar_can: add device tree support
-Date: Fri, 1 Aug 2014 01:25:53 +0400
-Message-ID: <201408010125.54723.sergei.shtylyov@cogentembedded.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v3 1/2] rcar_can: document device tree bindings
+Date: Thu, 31 Jul 2014 23:31:59 +0200
+Message-ID: <53DAB5CF.8000407@pengutronix.de>
+References: <201408010124.26505.sergei.shtylyov@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="FsXowED51Aco8VL12W78o92IgaqntontE"
 Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <201408010124.26505.sergei.shtylyov@cogentembedded.com>
 Sender: linux-sh-owner@vger.kernel.org
-To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, robh+dt@kernel.org, grant.likely@linaro.org, devicetree@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, vksavl@gmail.com
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, devicetree@vger.kernel.org
+Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
 List-Id: linux-can.vger.kernel.org
 
-Add support of the device tree probing for the Renesas R-Car CAN controllers.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FsXowED51Aco8VL12W78o92IgaqntontE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+On 07/31/2014 11:24 PM, Sergei Shtylyov wrote:
+> Document the R-Car CAN device tree bindings.
+>=20
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
----
-The patch is against the 'linux-can-next.git' repo plus the CAN clock handling
-patch I've just posted.
+The series looks good from the CAN perpective. I'll apply the patches
+after we've got an Acked-by from the DT folks.
 
-Changes in version 3:
-- resolved rejects due to the 'clock_select' variable declaration being moved to
-  the CAN clock handling patch.
+Marc
 
-Changes in version 2:
-- split the device tree bindings document into a separate patch;
-- replaced 0 with CLKR_CLKP1 in the 'clock_select' variable intializer
-- reversed the condition in the *if* stetement handling the reading of the
-  CAN clock selector from the device tree or the paltfrom data;
-- renamed the "clock-select" property to "renesas,can-clock-select";
-- rebased the patch on top of the CAN clock handling fix.
+>=20
+> ---
+> The patch is against the 'linux-can-next.git' repo.
+>=20
+> Changes in version 2:
+> - new patch, split from the driver's device tree support patch;
+> - adjusted "clocks" property to refer to 3 clocks instead of 1;
+> - added mandatory "clock-names" property;
+> - renamed the "clock-select" property to "renesas,can-clock-select".
+>=20
+>  Documentation/devicetree/bindings/net/can/rcar_can.txt |   43 ++++++++=
++++++++++
+>  1 file changed, 43 insertions(+)
+>=20
+> Index: linux-can-next/Documentation/devicetree/bindings/net/can/rcar_ca=
+n.txt
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- /dev/null
+> +++ linux-can-next/Documentation/devicetree/bindings/net/can/rcar_can.t=
+xt
+> @@ -0,0 +1,43 @@
+> +Renesas R-Car CAN controller Device Tree Bindings
+> +-------------------------------------------------
+> +
+> +Required properties:
+> +- compatible: "renesas,can-r8a7778" if CAN controller is a part of R8A=
+7778 SoC.
+> +	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 So=
+C.
+> +	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 So=
+C.
+> +	      "renesas,can-r8a7791" if CAN controller is a part of R8A7791 So=
+C.
+> +- reg: physical base address and size of the R-Car CAN register map.
+> +- interrupts: interrupt specifier for the sole interrupt.
+> +- clocks: phandles and clock specifiers for 3 CAN clock inputs.
+> +- clock-names: 3 clock input name strings: "clkp1", "clkp2", "can_clk"=
+=2E
+> +- pinctrl-0: pin control group to be used for this controller.
+> +- pinctrl-names: must be "default".
+> +
+> +Optional properties:
+> +- renesas,can-clock-select: R-Car CAN Clock Source Select. Valid value=
+s are:
+> +			    <0x0> (default) : Peripheral clock (clkp1)
+> +			    <0x1> : Peripheral clock (clkp2)
+> +			    <0x3> : Externally input clock
+> +
+> +Example
+> +-------
+> +
+> +SoC common .dtsi file:
+> +
+> +	can0: can@e6e80000 {
+> +		compatible =3D "renesas,can-r8a7791";
+> +		reg =3D <0 0xe6e80000 0 0x1000>;
+> +		interrupts =3D <0 186 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks =3D <&mstp9_clks R8A7791_CLK_RCAN0>,
+> +		       	 <&cpg_clocks R8A7791_CLK_RCAN>, <&can_clk>;
+> +		clock-names =3D "clkp1", "clkp2", "can_clk";
+> +		status =3D "disabled";
+> +	};
+> +
+> +Board specific .dts file:
+> +
+> +&can0 {
+> +	pinctrl-0 =3D <&can0_pins>;
+> +	pinctrl-names =3D "default";
+> +	status =3D "okay";
+> +};
+>=20
 
- drivers/net/can/rcar_can.c |   28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
 
-Index: linux-can-next/drivers/net/can/rcar_can.c
-===================================================================
---- linux-can-next.orig/drivers/net/can/rcar_can.c
-+++ linux-can-next/drivers/net/can/rcar_can.c
-@@ -20,6 +20,7 @@
- #include <linux/can/dev.h>
- #include <linux/clk.h>
- #include <linux/can/platform/rcar_can.h>
-+#include <linux/of.h>
- 
- #define RCAR_CAN_DRV_NAME	"rcar_can"
- 
-@@ -738,16 +739,21 @@ static int rcar_can_probe(struct platfor
- 	struct net_device *ndev;
- 	struct resource *mem;
- 	void __iomem *addr;
--	u32 clock_select;
-+	u32 clock_select = CLKR_CLKP1;
- 	int err = -ENODEV;
- 	int irq;
- 
--	pdata = dev_get_platdata(&pdev->dev);
--	if (!pdata) {
--		dev_err(&pdev->dev, "No platform data provided!\n");
--		goto fail;
-+	if (pdev->dev.of_node) {
-+		of_property_read_u32(pdev->dev.of_node,
-+				     "renesas,can-clock-select", &clock_select);
-+	} else {
-+		pdata = dev_get_platdata(&pdev->dev);
-+		if (!pdata) {
-+			dev_err(&pdev->dev, "No platform data provided!\n");
-+			goto fail;
-+		}
-+		clock_select = pdata->clock_select;
- 	}
--	clock_select = pdata->clock_select;
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (!irq) {
-@@ -888,10 +894,20 @@ static int __maybe_unused rcar_can_resum
- 
- static SIMPLE_DEV_PM_OPS(rcar_can_pm_ops, rcar_can_suspend, rcar_can_resume);
- 
-+static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
-+	{ .compatible = "renesas,can-r8a7778" },
-+	{ .compatible = "renesas,can-r8a7779" },
-+	{ .compatible = "renesas,can-r8a7790" },
-+	{ .compatible = "renesas,can-r8a7791" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rcar_can_of_table);
-+
- static struct platform_driver rcar_can_driver = {
- 	.driver = {
- 		.name = RCAR_CAN_DRV_NAME,
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(rcar_can_of_table),
- 		.pm = &rcar_can_pm_ops,
- 	},
- 	.probe = rcar_can_probe,
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--FsXowED51Aco8VL12W78o92IgaqntontE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iEYEARECAAYFAlPatc8ACgkQjTAFq1RaXHOcowCgl/LMlK7JEu0EsxGWyxQ6X6nQ
+GcQAnRa1j7v8IAd0fiBZeQkuGHVht3H9
+=9LoU
+-----END PGP SIGNATURE-----
+
+--FsXowED51Aco8VL12W78o92IgaqntontE--
