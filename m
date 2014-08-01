@@ -1,33 +1,25 @@
-From: Fabian Morision <fmorision4@gmail.com>
-Subject: -- Re: Very Urgent............
-Date: Fri, 1 Aug 2014 12:28:39 +0200
-Message-ID: <CAPnz-TbxDErDjS5YvDqiqkEoJu5kHkj1ATHnf72Z5v73N6e7nQ__12590.319015044$1406890542$gmane$org@mail.gmail.com>
+From: Wolfram Sang <wsa@sang-engineering.com>
+Subject: Re: [patch] can: c_can: checking IS_ERR() instead of NULL
+Date: Fri, 01 Aug 2014 20:16:20 +0200
+Message-ID: <53DBD974.3000307@sang-engineering.com>
+References: <20140801085344.GA31702@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qg0-f67.google.com ([209.85.192.67]:56036 "EHLO
-	mail-qg0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753793AbaHAKzb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 1 Aug 2014 06:55:31 -0400
-Received: by mail-qg0-f67.google.com with SMTP id f51so1646330qge.6
-        for <linux-can@vger.kernel.org>; Fri, 01 Aug 2014 03:55:30 -0700 (PDT)
+Received: from www.zeus03.de ([194.117.254.33]:37644 "EHLO mail.zeus03.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750851AbaHASQ2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 1 Aug 2014 14:16:28 -0400
+In-Reply-To: <20140801085344.GA31702@mwanda>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Wolfgang Grandegger <wg@grandegger.com>, George Cherian <george.cherian@ti.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Thor Thayer <tthayer@altera.com>, Pavel Machek <pavel@denx.de>, Mugunthan V N <mugunthanvnm@ti.com>, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, linux-can@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-.
-Greetings from gulf region
+> Fixes: 33cf75656923 ('can: c_can_platform: Fix raminit, use devm_ioremap() instead of devm_ioremap_resource()')
 
-Thanks for the e-mail. I am very interested on funding lucrative
-business partnership with you acting as the manager and sole
-controller of the investment while i remain a silent investor for a
-period of ten yrs , though I am only looking at investment
-opportunities within the range you specified for a start. You can
-reply me here (fmorision@yahoo.com)
+Reverting this patch is the correct solution. Its approach is totally 
+bogus anyhow.
 
-Let me know your thought asap
 
-Regards
-
-Financial Consultant
-
-Mr.Fabian Morision
