@@ -1,50 +1,119 @@
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Subject: [PATCH] can: dev: remove unused variable from can_calc_bittiming() function
-Date: Thu,  7 Aug 2014 09:17:24 +0100
-Message-ID: <1407399444-16427-1-git-send-email-prabhakar.csengg@gmail.com>
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Subject: [PATCH 1/1] net: can: sja1000: Validate initialization state in start method
+Date: Fri,  8 Aug 2014 14:30:50 +0200
+Message-ID: <1407501050-16156-1-git-send-email-mirza.krak@hostmobility.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-we0-f169.google.com ([74.125.82.169]:61369 "EHLO
-	mail-we0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754033AbaHGIRx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Aug 2014 04:17:53 -0400
+Received: from mail-wg0-f42.google.com ([74.125.82.42]:57760 "EHLO
+	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755942AbaHHMbF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Aug 2014 08:31:05 -0400
+Received: by mail-wg0-f42.google.com with SMTP id l18so5507811wgh.1
+        for <linux-can@vger.kernel.org>; Fri, 08 Aug 2014 05:31:03 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+To: linux-can@vger.kernel.org, mkl@pengutronix.de
+Cc: Mirza Krak <mirza.krak@hostmobility.com>
 
-this patch removes best_rate variable from can_calc_bittiming()
-function which was set but was never used.
+When sja1000 is not compiled as module the SJA1000 chip is only
+initialized during device registration on kernel boot. Should the chip
+get a hardware reset there is no way to reinitialize it without re-
+booting the Linux kernel.
 
-Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+This patch adds a check in sja1000_start if the chip is initialized, if
+not we initialize it.
+
+Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
 ---
- drivers/net/can/dev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/sja1000/sja1000.c | 62 +++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e318e87..56e1069 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -103,11 +103,11 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 			      const struct can_bittiming_const *btc)
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index f31499a..ba9d423 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -170,6 +170,35 @@ static void set_normal_mode(struct net_device *dev)
+ 	netdev_err(dev, "setting SJA1000 into normal mode failed!\n");
+ }
+
++/*
++ * initialize SJA1000 chip:
++ *   - reset chip
++ *   - set output mode
++ *   - set baudrate
++ *   - enable interrupts
++ *   - start operating mode
++ */
++static void chipset_init(struct net_device *dev)
++{
++	struct sja1000_priv *priv = netdev_priv(dev);
++
++	/* set clock divider and output control register */
++	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
++
++	/* set acceptance filter (accept all) */
++	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC1, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC2, 0x00);
++	priv->write_reg(priv, SJA1000_ACCC3, 0x00);
++
++	priv->write_reg(priv, SJA1000_ACCM0, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM1, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM2, 0xFF);
++	priv->write_reg(priv, SJA1000_ACCM3, 0xFF);
++
++	priv->write_reg(priv, SJA1000_OCR, priv->ocr | OCR_MODE_NORMAL);
++}
++
+ static void sja1000_start(struct net_device *dev)
  {
- 	struct can_priv *priv = netdev_priv(dev);
--	long rate, best_rate = 0;
- 	long best_error = 1000000000, error = 0;
- 	int best_tseg = 0, best_brp = 0, brp = 0;
- 	int tsegall, tseg = 0, tseg1 = 0, tseg2 = 0;
- 	int spt_error = 1000, spt = 0, sampl_pt;
-+	long rate;
- 	u64 v64;
- 
- 	/* Use CIA recommended sample points */
-@@ -152,7 +152,6 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 		}
- 		best_tseg = tseg / 2;
- 		best_brp = brp;
--		best_rate = rate;
- 		if (error == 0)
- 			break;
- 	}
--- 
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+@@ -178,6 +207,10 @@ static void sja1000_start(struct net_device *dev)
+ 	if (priv->can.state != CAN_STATE_STOPPED)
+ 		set_reset_mode(dev);
+
++	/* Initialize chip if uninitialized at this stage */
++	if (!(priv->read_reg(priv, SJA1000_CDR) & CDR_PELICAN))
++		chipset_init(dev);
++
+ 	/* Clear error counters and error code capture */
+ 	priv->write_reg(priv, SJA1000_TXERR, 0x0);
+ 	priv->write_reg(priv, SJA1000_RXERR, 0x0);
+@@ -235,35 +268,6 @@ static int sja1000_get_berr_counter(const struct net_device *dev,
+ }
+
+ /*
+- * initialize SJA1000 chip:
+- *   - reset chip
+- *   - set output mode
+- *   - set baudrate
+- *   - enable interrupts
+- *   - start operating mode
+- */
+-static void chipset_init(struct net_device *dev)
+-{
+-	struct sja1000_priv *priv = netdev_priv(dev);
+-
+-	/* set clock divider and output control register */
+-	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
+-
+-	/* set acceptance filter (accept all) */
+-	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
+-	priv->write_reg(priv, SJA1000_ACCC1, 0x00);
+-	priv->write_reg(priv, SJA1000_ACCC2, 0x00);
+-	priv->write_reg(priv, SJA1000_ACCC3, 0x00);
+-
+-	priv->write_reg(priv, SJA1000_ACCM0, 0xFF);
+-	priv->write_reg(priv, SJA1000_ACCM1, 0xFF);
+-	priv->write_reg(priv, SJA1000_ACCM2, 0xFF);
+-	priv->write_reg(priv, SJA1000_ACCM3, 0xFF);
+-
+-	priv->write_reg(priv, SJA1000_OCR, priv->ocr | OCR_MODE_NORMAL);
+-}
+-
+-/*
+  * transmit a CAN message
+  * message layout in the sk_buff should be like this:
+  * xx xx xx xx	 ff	 ll   00 11 22 33 44 55 66 77
+--
 1.9.1
 
