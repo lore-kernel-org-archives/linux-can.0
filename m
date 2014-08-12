@@ -1,78 +1,40 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Writing socketCAN module for my own hardware
-Date: Tue, 12 Aug 2014 10:24:07 +0200
-Message-ID: <53E9CF27.90400@pengutronix.de>
-References: <53E9C774.3040401@ep1.ruhr-uni-bochum.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="CMBP2Mf1cVwDrVqrKQQsMdMnGtVqgr0XV"
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH] can: flexcan: Disable error interrupt when bus error reporting is disabled
+Date: Tue, 12 Aug 2014 10:47:21 +0200
+Message-ID: <1407833241-26850-1-git-send-email-alexander.stein@systec-electronic.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:40418 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751493AbaHLIYN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Aug 2014 04:24:13 -0400
-In-Reply-To: <53E9C774.3040401@ep1.ruhr-uni-bochum.de>
+Received: from webbox1416.server-home.net ([77.236.96.61]:41426 "EHLO
+	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752178AbaHLIur (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Aug 2014 04:50:47 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CMBP2Mf1cVwDrVqrKQQsMdMnGtVqgr0XV
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In case we don't have FLEXCAN_HAS_BROKEN_ERR_STATE and the user set
+CAN_CTRLMODE_BERR_REPORTING once it can not be unset again until reboot.
+So in case neither hardware nor user wants the error interrupt disable
+the bit.
 
-On 08/12/2014 09:51 AM, Florian Feldbauer wrote:
-> I have developed a CAN interface for the Raspberry Pi computer using th=
-e
-> SJA1000 directly connected to the GPIOs of the CPU.
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+ drivers/net/can/flexcan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This sounds very slow :)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 33aea7eb9337..fd79dd40840b 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -862,6 +862,8 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	if (priv->devtype_data->features & FLEXCAN_HAS_BROKEN_ERR_STATE ||
+ 	    priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+ 		reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
++	else
++		reg_ctrl &= ~FLEXCAN_CTRL_ERR_MSK;
+ 
+ 	/* save for later use */
+ 	priv->reg_ctrl_default = reg_ctrl;
+-- 
+1.8.5.5
 
-> So far this interface is used as chardev and works fine.
-> But I'm also developing a user-space program using this CAN interface.
-> This program should also be compatible with other CAN interfaces like
-> the ones from PEAK or Kvazer. So I thought using socketCAN would be a
-> good idea.
-
-Yes.
-
-> Is there any documentation on how to write a socketCAN compatible kerne=
-l
-> module for my own hardware?
-> I tried writing something similar to the sja1000_isa driver...
-
-IMHO sja1000_platform.c is a better blueprint, as it uses the device
-tree to describe the hardware and does not rely on module parameters.
-
-> So far my modified kernel compiles and I can change bitrate and bring
-> the interface up.
-> But as soon as I try to send a CAN frame I get the error:
-> Error 105: No buffer space available
-
-You are sending CAN frames faster than the driver is able to send them,
-you have to wait a bit, before sending new CAN frames.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---CMBP2Mf1cVwDrVqrKQQsMdMnGtVqgr0XV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlPpzycACgkQjTAFq1RaXHOeuwCeLwGVJjego9OPqeaisVWS6iOl
-etoAoIdaA8P23cFpGiwMLO3Kf06TP4t0
-=R5tr
------END PGP SIGNATURE-----
-
---CMBP2Mf1cVwDrVqrKQQsMdMnGtVqgr0XV--
