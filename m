@@ -1,119 +1,61 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: [PATCH 1/1] net: can: sja1000: Validate initialization state in start method
-Date: Fri,  8 Aug 2014 14:30:50 +0200
-Message-ID: <1407501050-16156-1-git-send-email-mirza.krak@hostmobility.com>
+From: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>
+Subject: Writing socketCAN module for my own hardware
+Date: Tue, 12 Aug 2014 09:51:16 +0200
+Message-ID: <53E9C774.3040401@ep1.ruhr-uni-bochum.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f42.google.com ([74.125.82.42]:57760 "EHLO
-	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755942AbaHHMbF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Aug 2014 08:31:05 -0400
-Received: by mail-wg0-f42.google.com with SMTP id l18so5507811wgh.1
-        for <linux-can@vger.kernel.org>; Fri, 08 Aug 2014 05:31:03 -0700 (PDT)
+Received: from mail.kph.uni-mainz.de ([134.93.132.3]:27927 "EHLO
+	mail.kph.uni-mainz.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752604AbaHLIPk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Aug 2014 04:15:40 -0400
+Received: from dell33pvf5j.him.kph ([10.32.91.234])
+	(authenticated bits=0)
+	by mail.kph.uni-mainz.de (8.14.5/8.14.5) with ESMTP id s7C7pJPh048275
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
+	for <linux-can@vger.kernel.org>; Tue, 12 Aug 2014 09:51:19 +0200 (CEST)
+	(envelope-from florian@ep1.ruhr-uni-bochum.de)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, mkl@pengutronix.de
-Cc: Mirza Krak <mirza.krak@hostmobility.com>
+To: linux-can@vger.kernel.org
 
-When sja1000 is not compiled as module the SJA1000 chip is only
-initialized during device registration on kernel boot. Should the chip
-get a hardware reset there is no way to reinitialize it without re-
-booting the Linux kernel.
+Hey all,
 
-This patch adds a check in sja1000_start if the chip is initialized, if
-not we initialize it.
+I have developed a CAN interface for the Raspberry Pi computer using th=
+e=20
+SJA1000 directly connected to the GPIOs of the CPU.
+So far this interface is used as chardev and works fine.
+But I'm also developing a user-space program using this CAN interface.=20
+This program should also be compatible with other CAN interfaces like=20
+the ones from PEAK or Kvazer. So I thought using socketCAN would be a=20
+good idea.
 
-Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
----
- drivers/net/can/sja1000/sja1000.c | 62 +++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 29 deletions(-)
+Is there any documentation on how to write a socketCAN compatible kerne=
+l=20
+module for my own hardware?
+I tried writing something similar to the sja1000_isa driver...
+So far my modified kernel compiles and I can change bitrate and bring=20
+the interface up.
+But as soon as I try to send a CAN frame I get the error:
+Error 105: No buffer space available
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index f31499a..ba9d423 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -170,6 +170,35 @@ static void set_normal_mode(struct net_device *dev)
- 	netdev_err(dev, "setting SJA1000 into normal mode failed!\n");
- }
+Any help appreciated!
 
-+/*
-+ * initialize SJA1000 chip:
-+ *   - reset chip
-+ *   - set output mode
-+ *   - set baudrate
-+ *   - enable interrupts
-+ *   - start operating mode
-+ */
-+static void chipset_init(struct net_device *dev)
-+{
-+	struct sja1000_priv *priv = netdev_priv(dev);
-+
-+	/* set clock divider and output control register */
-+	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
-+
-+	/* set acceptance filter (accept all) */
-+	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
-+	priv->write_reg(priv, SJA1000_ACCC1, 0x00);
-+	priv->write_reg(priv, SJA1000_ACCC2, 0x00);
-+	priv->write_reg(priv, SJA1000_ACCC3, 0x00);
-+
-+	priv->write_reg(priv, SJA1000_ACCM0, 0xFF);
-+	priv->write_reg(priv, SJA1000_ACCM1, 0xFF);
-+	priv->write_reg(priv, SJA1000_ACCM2, 0xFF);
-+	priv->write_reg(priv, SJA1000_ACCM3, 0xFF);
-+
-+	priv->write_reg(priv, SJA1000_OCR, priv->ocr | OCR_MODE_NORMAL);
-+}
-+
- static void sja1000_start(struct net_device *dev)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
-@@ -178,6 +207,10 @@ static void sja1000_start(struct net_device *dev)
- 	if (priv->can.state != CAN_STATE_STOPPED)
- 		set_reset_mode(dev);
+Best regards,
+=46lorian
 
-+	/* Initialize chip if uninitialized at this stage */
-+	if (!(priv->read_reg(priv, SJA1000_CDR) & CDR_PELICAN))
-+		chipset_init(dev);
-+
- 	/* Clear error counters and error code capture */
- 	priv->write_reg(priv, SJA1000_TXERR, 0x0);
- 	priv->write_reg(priv, SJA1000_RXERR, 0x0);
-@@ -235,35 +268,6 @@ static int sja1000_get_berr_counter(const struct net_device *dev,
- }
-
- /*
-- * initialize SJA1000 chip:
-- *   - reset chip
-- *   - set output mode
-- *   - set baudrate
-- *   - enable interrupts
-- *   - start operating mode
-- */
--static void chipset_init(struct net_device *dev)
--{
--	struct sja1000_priv *priv = netdev_priv(dev);
--
--	/* set clock divider and output control register */
--	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
--
--	/* set acceptance filter (accept all) */
--	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
--	priv->write_reg(priv, SJA1000_ACCC1, 0x00);
--	priv->write_reg(priv, SJA1000_ACCC2, 0x00);
--	priv->write_reg(priv, SJA1000_ACCC3, 0x00);
--
--	priv->write_reg(priv, SJA1000_ACCM0, 0xFF);
--	priv->write_reg(priv, SJA1000_ACCM1, 0xFF);
--	priv->write_reg(priv, SJA1000_ACCM2, 0xFF);
--	priv->write_reg(priv, SJA1000_ACCM3, 0xFF);
--
--	priv->write_reg(priv, SJA1000_OCR, priv->ocr | OCR_MODE_NORMAL);
--}
--
--/*
-  * transmit a CAN message
-  * message layout in the sk_buff should be like this:
-  * xx xx xx xx	 ff	 ll   00 11 22 33 44 55 66 77
---
-1.9.1
+--=20
+----------------------------------------
+| Dr. Florian Feldbauer                |
+|                                      |
+| Helmholtz-Institut Mainz /           |
+| Johannes Gutenberg-Universit=E4t Mainz |
+| Johann-Joachim-Becher-Weg 36         |
+| D-55128 Mainz                        |
+|                                      |
+| Office: SB1 / 00-213                 |
+| Phone:  (+49)6131 / 39-29605         |
+----------------------------------------
 
