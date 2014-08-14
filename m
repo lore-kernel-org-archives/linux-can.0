@@ -1,39 +1,41 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 1/2] rcar_can: document device tree bindings
-Date: Thu, 14 Aug 2014 12:07:08 +0200
-Message-ID: <53EC8A4C.101@pengutronix.de>
-References: <201408010124.26505.sergei.shtylyov@cogentembedded.com> <53DAB5CF.8000407@pengutronix.de>
+Subject: Re: [PATCH] can: c_can: Fix return value check in c_can_plat_probe()
+Date: Thu, 14 Aug 2014 12:11:35 +0200
+Message-ID: <53EC8B57.6070300@pengutronix.de>
+References: <1407977939-15287-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="huIXsEdOghKHtgik9NehnKIfrhbKKXf1K"
+ boundary="xTHf24oj5adGBeUdotujF50GRjsdkRsSL"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38364 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33286 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754365AbaHNKHV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Aug 2014 06:07:21 -0400
-In-Reply-To: <53DAB5CF.8000407@pengutronix.de>
+	with ESMTP id S1752531AbaHNKMD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Aug 2014 06:12:03 -0400
+In-Reply-To: <1407977939-15287-1-git-send-email-weiyj_lk@163.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, devicetree@vger.kernel.org
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org, linux-sh@vger.kernel.org, vksavl@gmail.com
+To: weiyj_lk@163.com, Wolfgang Grandegger <wg@grandegger.com>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Chen Gang <gang.chen@asianux.com>, George Cherian <george.cherian@ti.com>, Sachin Kamat <sachin.kamat@linaro.org>, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>, Mugunthan V N <mugunthanvnm@ti.com>, Wolfram Sang <wsa@sang-engineering.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---huIXsEdOghKHtgik9NehnKIfrhbKKXf1K
+--xTHf24oj5adGBeUdotujF50GRjsdkRsSL
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 07/31/2014 11:31 PM, Marc Kleine-Budde wrote:
-> On 07/31/2014 11:24 PM, Sergei Shtylyov wrote:
->> Document the R-Car CAN device tree bindings.
->>
->> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+On 08/14/2014 02:58 AM, weiyj_lk@163.com wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >=20
-> The series looks good from the CAN perpective. I'll apply the patches
-> after we've got an Acked-by from the DT folks.
+> In case of error, the function devm_ioremap() returns NULL pointer
+> not ERR_PTR(). The IS_ERR() test in the return value check should
+> be replaced with NULL test.
+>=20
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Applied both to linux-can-next.
+Dan Carpenter already provided this fix. It will be included in my next
+pull request to David's net.
 
+Thanks,
 Marc
 
 --=20
@@ -43,7 +45,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---huIXsEdOghKHtgik9NehnKIfrhbKKXf1K
+--xTHf24oj5adGBeUdotujF50GRjsdkRsSL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -51,9 +53,9 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlPsikwACgkQjTAFq1RaXHNh7ACeIWidDw7u9rBMF/UpJbyacQr4
-f+YAn2cLEmLeTbEccFH/Oo4Mil1SMK3q
-=6r3X
+iEYEARECAAYFAlPsi1cACgkQjTAFq1RaXHOG+QCbBcCEd47GOKmJq2SRwo/WxshI
+LX8An0aSDZkCPONqP23zyNm0rHtPmspO
+=1+wN
 -----END PGP SIGNATURE-----
 
---huIXsEdOghKHtgik9NehnKIfrhbKKXf1K--
+--xTHf24oj5adGBeUdotujF50GRjsdkRsSL--
