@@ -1,28 +1,41 @@
-From: Financial Service <cardi@banknagari.co.id>
-Subject: Quick Cash
-Date: Wed, 13 Aug 2014 21:54:47 +0530
-Message-ID: <20140813162519.D0FC035CC2A@mail.wika.co.id>
-Reply-To: cash.4u@muskurahat.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: weiyj_lk@163.com
+Subject: [PATCH] can: c_can: Fix return value check in c_can_plat_probe()
+Date: Thu, 14 Aug 2014 08:58:59 +0800
+Message-ID: <1407977939-15287-1-git-send-email-weiyj_lk@163.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailcleaner.wika.co.id ([202.159.16.230]:42880 "EHLO
-	mailcleaner.wika.co.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753255AbaHMQga convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Aug 2014 12:36:30 -0400
-Content-Description: Mail message body
+Received: from m12-12.163.com ([220.181.12.12]:58722 "EHLO m12-12.163.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752307AbaHNBA1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 13 Aug 2014 21:00:27 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <cardi@banknagari.co.id>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Chen Gang <gang.chen@asianux.com>, George Cherian <george.cherian@ti.com>, Sachin Kamat <sachin.kamat@linaro.org>, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, Pavel Machek <pavel@denx.de>, Thor Thayer <tthayer@altera.com>, Mugunthan V N <mugunthanvnm@ti.com>, Wolfram Sang <wsa@sang-engineering.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Good Day,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Do you need a LOAN or Financing of any type? Have you been turned down =
-by your bank due to bad credit? Do you have unpaid bills or debt? For q=
-uick response contact us with the below information's. Our loan program=
-me is mainly in any currency USD, CAD, KWD, OMR, SGD, GBP, AUD, MYR=F0 =
-INR.
+In case of error, the function devm_ioremap() returns NULL pointer
+not ERR_PTR(). The IS_ERR() test in the return value check should
+be replaced with NULL test.
 
-Sincerely,
-Mr,william Ramadas
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ drivers/net/can/c_can/c_can_platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 5dede6e..109cb44 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -280,7 +280,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 
+ 		priv->raminit_ctrlreg = devm_ioremap(&pdev->dev, res->start,
+ 						     resource_size(res));
+-		if (IS_ERR(priv->raminit_ctrlreg) || priv->instance < 0)
++		if (!priv->raminit_ctrlreg || priv->instance < 0)
+ 			dev_info(&pdev->dev, "control memory is not used for raminit\n");
+ 		else
+ 			priv->raminit = c_can_hw_raminit_ti;
+
