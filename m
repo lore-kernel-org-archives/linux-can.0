@@ -1,69 +1,67 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 4/4] can: flexcan: Disable error irq when in error passive
-Date: Thu, 14 Aug 2014 15:58:19 +0200
-Message-ID: <53ECC07B.8030105@pengutronix.de>
-References: <1407850987-26707-1-git-send-email-alexander.stein@systec-electronic.com> <1407850987-26707-4-git-send-email-alexander.stein@systec-electronic.com> <53EC9B17.80600@pengutronix.de> <2700138.iRYuM1TADC@ws-stein>
+Subject: Re: [PATCH 2/4] can: flexcan: Detect error passive state change
+Date: Fri, 15 Aug 2014 10:07:06 +0200
+Message-ID: <53EDBFAA.3070809@pengutronix.de>
+References: <1407850987-26707-1-git-send-email-alexander.stein@systec-electronic.com> <1407850987-26707-2-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="JnSHrFn6T824pEpLj6hawA089PxQQKjnn"
+ boundary="VTRdqjs5QCRHeaBjU9grrWO5Ua7DcP7gH"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39445 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48816 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755103AbaHNN63 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Aug 2014 09:58:29 -0400
-In-Reply-To: <2700138.iRYuM1TADC@ws-stein>
+	with ESMTP id S1750771AbaHOIHN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 Aug 2014 04:07:13 -0400
+In-Reply-To: <1407850987-26707-2-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JnSHrFn6T824pEpLj6hawA089PxQQKjnn
+--VTRdqjs5QCRHeaBjU9grrWO5Ua7DcP7gH
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/14/2014 03:19 PM, Alexander Stein wrote:
-> On Thursday 14 August 2014 13:18:47, Marc Kleine-Budde wrote:
->> On 08/12/2014 03:43 PM, Alexander Stein wrote:
->>> If the error irq is enabled and the hardware is trying to send a CAN
->>> message to an open bus it will receive a lot of acknowledge errors an=
-d
->>> generating lots of interrupts. So error interrupts are disabled when
->>> entering error passive and reenable them when leaving error passive.
->>> We can only leave error passive by receiving CAN frames in which case=
- NAPI
->>> is scheduled anyway or by sending more CAN frames when send is possib=
-le
->>> again. But with the transition of error counters from 96 to 95 the fl=
-ags
->>> TX_WRN and RX_WRN are gone again, so we need to remember the flags st=
-ate
->>> to detect a change there.
->>
->> There are use cases where the error interrupts even when in passive mo=
-de
->> are essential. You have a use case, where you'd like to turn them off
->> completely. Have you had a look at the bus error limiting patches?
+On 08/12/2014 03:43 PM, Alexander Stein wrote:
+> Assuming there is no CAN frame reception or CAN_CTRLMODE_BERR_REPORTING=
+:
+> If the Tx error counter steps from 127 to 128 the hardware enters error=
+
+> passive. But in this case the FLEXCAN_ESR_ERR_STATE bits are unset:
+> TWRN_INT and RWRN_INT are not set during the transition from <96 to >=3D=
+96.
+
+Which hardware are you using? According to the documentation TWRN_INT
+and RWRN_INT _are_ actually set during the transition from <96 to >=3D96.=
+
+
+> So we do not schedule NAPI thus not evaluating the error counters.
+> So we also check TX_WRN and RX_WRN in order to detect error passive.
 >=20
-> Do you mean "[PATCH v7] flexcan: add err_irq handler for flexcan" from =
-Zhao Qiang?
-
-No, sorry I assumes you were following the discussion with Matthias
-Klein and Sebastian Andrzej Siewior [1].
-
-I was talking about the patch from
-http://comments.gmane.org/gmane.linux.can/4070
-
-The idea behind this series is to not enable the bus error interrupt
-right after it has served, but after a configurable delay, e.g. 100ms.
-Even with an open or otherwise faulty but, you then receive just 10
-error frames per second.
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> ---
+>  drivers/net/can/flexcan.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index fd79dd40840b..5e391ec70a2b 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -721,7 +721,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
+d)
+>  	 * - bus error IRQ and bus error reporting is activated
+>  	 */
+>  	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+> -	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+> +	    (reg_esr & (FLEXCAN_ESR_ERR_STATE |
+> +			FLEXCAN_ESR_TX_WRN | FLEXCAN_ESR_RX_WRN)) ||
+>  	    flexcan_has_and_handle_berr(priv, reg_esr)) {
+>  		/*
+>  		 * The error bits are cleared on read,
+>=20
 
 Marc
-
-[1] http://thread.gmane.org/gmane.linux.can/6271
-[2] http://thread.gmane.org/gmane.linux.can/6280
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -72,7 +70,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---JnSHrFn6T824pEpLj6hawA089PxQQKjnn
+--VTRdqjs5QCRHeaBjU9grrWO5Ua7DcP7gH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -80,9 +78,9 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlPswHsACgkQjTAFq1RaXHOwDwCfTFLzlLH96D17XyMEaAu5hNwx
-TSgAoIWOhJGUpQS+OjjTp5DJPc3vm3v6
-=iSsV
+iEYEARECAAYFAlPtv6oACgkQjTAFq1RaXHPcswCfS6xJFdnwRCljxdlQKBlGpHBb
+UpYAn2jwgua1g9REgBkxBBlJyNin901j
+=y4fV
 -----END PGP SIGNATURE-----
 
---JnSHrFn6T824pEpLj6hawA089PxQQKjnn--
+--VTRdqjs5QCRHeaBjU9grrWO5Ua7DcP7gH--
