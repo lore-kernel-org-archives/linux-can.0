@@ -1,52 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/4] can: flexcan: handle state passive -> warning transition
-Date: Thu, 21 Aug 2014 11:23:22 +0200
-Message-ID: <1408613002-29693-5-git-send-email-mkl@pengutronix.de>
-References: <1408613002-29693-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH 1/1] net: can: sja1000: Validate initialization state
+ in start method
+Date: Thu, 21 Aug 2014 11:26:46 +0200
+Message-ID: <53F5BB56.5060006@pengutronix.de>
+References: <1407501050-16156-1-git-send-email-mirza.krak@hostmobility.com> <53EC8CD8.2040703@pengutronix.de> <53F5B184.4050907@hostmobility.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="xfuqjJbhO0pkK3ExXNcWvi3JfTfq9TJj3"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42669 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42744 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754246AbaHUJXo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 21 Aug 2014 05:23:44 -0400
-In-Reply-To: <1408613002-29693-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751007AbaHUJ0x (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 21 Aug 2014 05:26:53 -0400
+In-Reply-To: <53F5B184.4050907@hostmobility.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Matthias Klein <matthias.klein@optimeas.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Mirza Krak <mirza.krak@hostmobility.com>, linux-can@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xfuqjJbhO0pkK3ExXNcWvi3JfTfq9TJj3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Once the CAN-bus is open and a packet is sent, the controller switches
-into the PASSIVE state. Once the BUS is closed again it goes the back
-err-warning. The TX error counter goes 0 -> 0x80 -> 0x7f.
-This patch makes sure that the user learns about this state chang
-(CAN_STATE_ERROR_WARNING => CAN_STATE_ERROR_PASSIVE)
+On 08/21/2014 10:44 AM, Mirza Krak wrote:
+[...]
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Matthias Klein <matthias.klein@optimeas.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+>>> This patch adds a check in sja1000_start if the chip is initialized, =
+if
+>>> not we initialize it.
+>> Applied to can.
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a691651..944aa5d 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -549,6 +549,13 @@ static void do_state(struct net_device *dev,
- 
- 	/* process state changes depending on the new state */
- 	switch (new_state) {
-+	case CAN_STATE_ERROR_WARNING:
-+		netdev_dbg(dev, "Error Warning\n");
-+		cf->can_id |= CAN_ERR_CRTL;
-+		cf->data[1] = (bec.txerr > bec.rxerr) ?
-+			CAN_ERR_CRTL_TX_WARNING :
-+			CAN_ERR_CRTL_RX_WARNING;
-+		break;
- 	case CAN_STATE_ERROR_ACTIVE:
- 		netdev_dbg(dev, "Error Active\n");
- 		cf->can_id |= CAN_ERR_PROT;
--- 
-2.1.0.rc1
+> I am sorry but applied to what? I haven't seen it been applied anywhere=
 
+> when browsing linux-can on gitorious.
+
+Until 5 minutes ago, it was on my hard drive only :D
+But now it's included in the pull request I send to David, you can find
+it on gitorious under the tag linux-can-fixes-for-3.17-20140821.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--xfuqjJbhO0pkK3ExXNcWvi3JfTfq9TJj3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlP1u1YACgkQjTAFq1RaXHNbWgCfT73ZBZVwQou2w7Qo0M2U3YRW
+I1wAnjTkA0nXv8PFEYWbavND3OigJwds
+=I9wT
+-----END PGP SIGNATURE-----
+
+--xfuqjJbhO0pkK3ExXNcWvi3JfTfq9TJj3--
