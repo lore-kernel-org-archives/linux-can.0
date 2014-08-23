@@ -1,30 +1,32 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2014-08-21
-Date: Thu, 21 Aug 2014 21:53:39 -0700 (PDT)
-Message-ID: <20140821.215339.1016944928830108729.davem@davemloft.net>
-References: <1408613002-29693-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: pull-request: can-next 2014-08-20
+Date: Fri, 22 Aug 2014 19:43:06 -0700 (PDT)
+Message-ID: <20140822.194306.1213839822576773356.davem@davemloft.net>
+References: <53F4B580.3030802@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:46338 "EHLO
+Received: from shards.monkeyblade.net ([149.20.54.216]:56864 "EHLO
 	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751232AbaHVExk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 22 Aug 2014 00:53:40 -0400
-In-Reply-To: <1408613002-29693-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751776AbaHWCnH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 22 Aug 2014 22:43:07 -0400
+In-Reply-To: <53F4B580.3030802@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 21 Aug 2014 11:23:18 +0200
+Date: Wed, 20 Aug 2014 16:49:36 +0200
 
-> The first patch is from Mirza Krak, it fixes the initialization of the hardware
-> in the sja1000 driver. The next patch is contributed by Dan Carpenter, it fixes
-> the error handling in the c_can's probe function. Then there are two patches
-> for the flexcan driver, one by Alexander Stein, which fixes the resetting of
-> the bus error interrupt mask, the other one by Sebastian Andrzej Siewior which
-> adds an additional error state transition message.
+> There is one patch by Wolfram Sang to clean up the build system.
+> Two patches by Stefan Agner that add vf610 support to the flexcan
+> driver. Dong Aisheng add support for bosch's m_can core, which is found
+> in the new freescale ARM SoCs. Sergei Shtylyov improves the rcar_can
+> driver by supporting all input clocks and adding device tree support.
+> The next patch is a small cleanup for the bit rate calculation function
+> by Lad, Prabhakar. And finally a patch by Himangi Saraogi, which
+> converts the mcp251x driver to use dmam_alloc_coherent.
 
 Pulled, thanks Marc.
