@@ -1,56 +1,58 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [PATCH 1/3] can: flexcan.c: Correctly initialize mailboxes
-Date: Tue, 2 Sep 2014 12:37:25 +0200
-Message-ID: <20140902123725.01808f36@archvile>
-References: <1409133487-23367-1-git-send-email-david@protonic.nl>
-	<1409133487-23367-2-git-send-email-david@protonic.nl>
-	<54059ADC.60309@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] flexcan.c: avoid calling usleep_range from interrupt
+ context
+Date: Tue, 02 Sep 2014 12:54:10 +0200
+Message-ID: <5405A1D2.5040406@pengutronix.de>
+References: <1409133736-23526-1-git-send-email-david@protonic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="FRvIJPiRxMoDrwTPJlGSBup2EJc2rn76G"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:5124 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751180AbaIBKhN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 2 Sep 2014 06:37:13 -0400
-In-Reply-To: <54059ADC.60309@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54501 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750863AbaIBKyN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 2 Sep 2014 06:54:13 -0400
+In-Reply-To: <1409133736-23526-1-git-send-email-david@protonic.nl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: wg@grandegger.com, linux-can@vger.kernel.org
+To: David Jander <david@protonic.nl>, wg@grandegger.com
+Cc: linux-can@vger.kernel.org
 
-On Tue, 02 Sep 2014 12:24:28 +0200
-Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FRvIJPiRxMoDrwTPJlGSBup2EJc2rn76G
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> On 08/27/2014 11:58 AM, David Jander wrote:
-> > Apparently mailboxes may contain random data at startup, causing some of
-> > them being prepared for message reception. This causes overruns being
-> > missed or even confusing the IRQ check for trasmitted messages, increasing
-> > the transmit counter instead of the error counter.
-> > 
-> > Signed-off-by: David Jander <david@protonic.nl>
-> 
-> Before patch
-> 
-> 0d1862e can: flexcan: fix flexcan_chip_start() on imx6
-> 
-> there was a loop clearing the whole cantxfg register space. But this
-> turned out to be bogus, as message buffers 1...7 are reserved by the
-> FIFO engine and we're not allowed to tough them. This lead to some kind
-> of abort on imx6.
-> 
-> You may need this patch once you don't make use of the FIFO engine any more.
+On 08/27/2014 12:02 PM, David Jander wrote:
+> Apparently can_restart() runs from a (timer-) interrupt and can call
+> flexcan_chip_[en|dis]able(), so avoid using usleep_range()
+>=20
+> Signed-off-by: David Jander <david@protonic.nl>
 
-You will need this patch in either case, but indeed, if you use the FIFO, you
-should skip the MB's that are shadowed by the FIFO.
-If you don't clear the rest of the MB's they may still contain random data and
-the problem remains.
-IMHO 0d1862e is wrong, since buffers are not in reset default values. There is
-no indication of that in the reference manual, and I have observed that they
-are indeed not cleared after reset.
+Applied to can-master.
 
-Best regards,
+Thanks,
+Marc
 
--- 
-David Jander
-Protonic Holland.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--FRvIJPiRxMoDrwTPJlGSBup2EJc2rn76G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlQFodIACgkQjTAFq1RaXHP45gCeLjo6CJ1p2DH8ZwdZlBXTTbW+
+0ncAnA93g9eKPXHNGKsP8HA374aKiTTe
+=IZFa
+-----END PGP SIGNATURE-----
+
+--FRvIJPiRxMoDrwTPJlGSBup2EJc2rn76G--
