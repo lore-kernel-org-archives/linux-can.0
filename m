@@ -1,63 +1,47 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 1/2] can: flexcan: Correctly initialize mailboxes
-Date: Wed,  3 Sep 2014 11:08:33 +0200
-Message-ID: <1409735314-27504-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v3 2/2] can: flexcan: increase FLEXCAN_MCR_MAXMB() macro to 7 bits
+Date: Wed,  3 Sep 2014 11:08:34 +0200
+Message-ID: <1409735314-27504-2-git-send-email-mkl@pengutronix.de>
+References: <1409735314-27504-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56209 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56211 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756017AbaICJIj (ORCPT
+	with ESMTP id S1755919AbaICJIj (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Sep 2014 05:08:39 -0400
+In-Reply-To: <1409735314-27504-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: David Jander <david@protonic.nl>
+This patch increases the mask in the FLEXCAN_MCR_MAXMB() to 7 bits as in the
+newer flexcan cores the MAXMB field is 7 bits wide.
 
-Apparently mailboxes may contain random data at startup, causing some of
-them being prepared for message reception. This causes overruns being
-missed or even confusing the IRQ check for trasmitted messages, increasing
-the transmit counter instead of the error counter.
-
-Signed-off-by: David Jander <david@protonic.nl>
+Reported-by: David Jander <david@protonic.nl>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-Changes since v2: 
-- move before FLEXCAN_TX_BUF_ID
-- start loop at FLEXCAN_TX_BUF_ID
+Changes since v2:
+- none
 
 Changes since v1:
-- don't remove existing initialization of FLEXCAN_TX_BUF_ID
-- start loop at FLEXCAN_TX_BUF_ID + 1
+- new
 
- drivers/net/can/flexcan.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 630c7bf..56eb375 100644
+index 56eb375..32b1057 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -801,6 +801,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 	struct flexcan_regs __iomem *regs = priv->base;
- 	int err;
- 	u32 reg_mcr, reg_ctrl;
-+	int i;
- 
- 	/* enable module */
- 	err = flexcan_chip_enable(priv);
-@@ -867,6 +868,12 @@ static int flexcan_chip_start(struct net_device *dev)
- 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
- 	flexcan_write(reg_ctrl, &regs->ctrl);
- 
-+	/* Clear and invalidate all mailboxes first */
-+	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg; i++) {
-+		flexcan_write(FLEXCAN_MB_CNT_CODE(0x0),
-+		      &regs->cantxfg[i].can_ctrl);
-+	}
-+
- 	/* Abort any pending TX, mark Mailbox as INACTIVE */
- 	flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
- 		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+@@ -62,7 +62,7 @@
+ #define FLEXCAN_MCR_BCC			BIT(16)
+ #define FLEXCAN_MCR_LPRIO_EN		BIT(13)
+ #define FLEXCAN_MCR_AEN			BIT(12)
+-#define FLEXCAN_MCR_MAXMB(x)		((x) & 0x1f)
++#define FLEXCAN_MCR_MAXMB(x)		((x) & 0x7f)
+ #define FLEXCAN_MCR_IDAM_A		(0 << 8)
+ #define FLEXCAN_MCR_IDAM_B		(1 << 8)
+ #define FLEXCAN_MCR_IDAM_C		(2 << 8)
 -- 
 2.1.0
 
