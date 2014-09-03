@@ -1,73 +1,63 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [PATCH 2/3] can: flexcan.c: Re-write receive path to use MB
- queue instead of FIFO
-Date: Wed, 3 Sep 2014 09:19:54 +0200
-Message-ID: <20140903091954.611e527e@archvile>
-References: <1409133487-23367-1-git-send-email-david@protonic.nl>
-	<1409133487-23367-3-git-send-email-david@protonic.nl>
-	<5405AA50.6040100@pengutronix.de>
-	<20140902140407.1ee9db68@archvile>
-	<5405D9FA.6050207@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v3 1/2] can: flexcan: Correctly initialize mailboxes
+Date: Wed,  3 Sep 2014 11:08:33 +0200
+Message-ID: <1409735314-27504-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:8057 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755424AbaICHTm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Sep 2014 03:19:42 -0400
-In-Reply-To: <5405D9FA.6050207@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56209 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756017AbaICJIj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Sep 2014 05:08:39 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: wg@grandegger.com, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-On Tue, 02 Sep 2014 16:53:46 +0200
-Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+From: David Jander <david@protonic.nl>
 
-> On 09/02/2014 02:04 PM, David Jander wrote:
-> > On Tue, 02 Sep 2014 13:30:24 +0200
-> > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > 
-> >> On 08/27/2014 11:58 AM, David Jander wrote:
-> >>> The FlexCAN controller has a RX FIFO that is only 6 messages deep, and a
-> >>> mailbox space capable of holding up to 63 messages.
-> >>> This space was largely unused, limiting the permissible latency from
-> >>> interrupt to NAPI to only 6 messages. This patch uses all available MBs
-> >>> for message reception and frees the MBs in the IRQ handler to greatly
-> >>> decrease the likelihood of receive overruns.
-> >>
-> >> What about the order of the incoming CAN frames? Is it still preserved?
-> > 
-> > Yes, it is preserved as long as latency doesn't exceed 30 frames, which is
-> > way more than the original driver could take. The algorithm is not trivial,
-> > therefor I included an explanatory comment to flexcan_copy_rxmbs().
-> 
-> To be honest, I haven't looked at the algorithm in detail. I think we
-> first have to fix both bugs (the errata and the mailbox initialization
-> issue).
+Apparently mailboxes may contain random data at startup, causing some of
+them being prepared for message reception. This causes overruns being
+missed or even confusing the IRQ check for trasmitted messages, increasing
+the transmit counter instead of the error counter.
 
-Ok, I agree.
+Signed-off-by: David Jander <david@protonic.nl>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v2: 
+- move before FLEXCAN_TX_BUF_ID
+- start loop at FLEXCAN_TX_BUF_ID
 
-> >> You make use of the CTRL2 register, which is not present on some older
-> >> (but supported) flexcan IP cores. You increase FLEXCAN_MCR_MAXMB to
-> >> 0x40, which is not supported on older IPs. The register rximr, is also
-> >> not present on older cores. Don't break support for the older CAN cores.
-> > 
-> > Oops. Thanks for pointing that out. I will check the reference manual of
-> > the i.MX53 (which should have be the oldest supported version of this IP
-> > core, right?). Of course I do not want to break older CAN cores.
-> > I will check correctness testing the code on an i.MX28 board which I have.
-> 
-> Regarding the versions of the IP cores, we should not trust them, as
-> they are not public available..
+Changes since v1:
+- don't remove existing initialization of FLEXCAN_TX_BUF_ID
+- start loop at FLEXCAN_TX_BUF_ID + 1
 
-Ok. I fear that for this last patch we will need some run-time check for the
-version of the flexcan we have. I suppose the typical table with OF ids and
-flags will do?
+ drivers/net/can/flexcan.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Best regards,
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 630c7bf..56eb375 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -801,6 +801,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	int err;
+ 	u32 reg_mcr, reg_ctrl;
++	int i;
+ 
+ 	/* enable module */
+ 	err = flexcan_chip_enable(priv);
+@@ -867,6 +868,12 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
+ 	flexcan_write(reg_ctrl, &regs->ctrl);
+ 
++	/* Clear and invalidate all mailboxes first */
++	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg; i++) {
++		flexcan_write(FLEXCAN_MB_CNT_CODE(0x0),
++		      &regs->cantxfg[i].can_ctrl);
++	}
++
+ 	/* Abort any pending TX, mark Mailbox as INACTIVE */
+ 	flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
+ 		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
 -- 
-David Jander
-Protonic Holland.
+2.1.0
+
