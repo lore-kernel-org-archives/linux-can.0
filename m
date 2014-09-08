@@ -1,75 +1,71 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Inconsistent error state transition error frames
-Date: Mon, 08 Sep 2014 18:36:38 +0200
-Message-ID: <540DDB16.8010304@pengutronix.de>
-References: <7EAA3DE6DC6BA14D830C95541CC66EBC9F72FED6@GRBSR0004.marel.net>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 05/13] ARM: dts: DRA7: Add DCAN nodes
+Date: Mon, 08 Sep 2014 20:40:00 +0400
+Message-ID: <540DDBE0.5090004@cogentembedded.com>
+References: <1410185442-907-1-git-send-email-rogerq@ti.com> <1410185442-907-6-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="580W6woxxOke813SlU62SIsrSa84OdjLJ"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42940 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752925AbaIHQgp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Sep 2014 12:36:45 -0400
-In-Reply-To: <7EAA3DE6DC6BA14D830C95541CC66EBC9F72FED6@GRBSR0004.marel.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <Andri.Yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1410185442-907-6-git-send-email-rogerq@ti.com>
+Sender: netdev-owner@vger.kernel.org
+To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, mkl@pengutronix.de, tony@atomide.com
+Cc: tglx@linutronix.de, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---580W6woxxOke813SlU62SIsrSa84OdjLJ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello.
 
-On 09/08/2014 06:26 PM, Andri Yngvason wrote:
-> I've been working on a userspace program to monitor the CAN bus and I
-> found that it only works as expected on one platform (flexcan). The
-> problem is that on most other platforms, no error frame is emitted
-> when the controller transitions back to error-active state. I see
-> that you've already discussed this on this list here:
-> http://thread.gmane.org/gmane.linux.can/201
->
-> Why hasn't this been resolved?
+On 9/8/2014 6:10 PM, Roger Quadros wrote:
 
-I assume no one needed this feature so far, I assume. And/or cared not
-enough to upstream these patches.
+> The SoC supports 2 DCAN nodes. Add them.
 
-> I already patched the mscan and sja1000 drivers myself, and I was
-> considering submitting them, but since you've already done some work
-> on this (which I believe is superior to mine), my work is unlikely to
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>   arch/arm/boot/dts/dra7.dtsi | 30 ++++++++++++++++++++++++++++++
+>   1 file changed, 30 insertions(+)
 
-Wolfgang mentioned in this mail, that he had some patches back than. Do
-you still have them, Wolfgang?
+> diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dts=
+i
+> index 370009e..4ce1a4f 100644
+> --- a/arch/arm/boot/dts/dra7.dtsi
+> +++ b/arch/arm/boot/dts/dra7.dtsi
+[...]
+> @@ -1267,6 +1269,34 @@
+>   			ti,irqs-skip =3D <10 133 139 140>;
+>   			ti,irqs-safe-map =3D <0>;
+>   		};
+> +
+> +		dcan1: d_can@481cc000 {
 
-> be of any consequence to this community, except to show that this
-> inconsistency does indeed result in wasted effort and frustration.
+    The ePAPR standard has something to say here:
 
-Feel free to post your patches.
+ >>
+The name of a node should be somewhat generic, reflecting the function =
+of the=20
+device and not its precise programming model. If appropriate, the name =
+should=20
+be one of the following choices:
 
-> Of course, I'll help out if I can, e.g. by testing on the platforms
-> that I have available.
+	=95 can
+ >>
 
-Marc
+> +			compatible =3D "bosch,d_can";
+> +			ti,hwmods =3D "dcan1";
+> +			reg =3D <0x4ae3c000 0x2000>,
+> +			      <0x558 0x4>; /* index to RAMINIT reg within syscon */
+> +			raminit-syscon =3D <&dra7_ctrl_core>;
+> +			raminit-start-bit =3D <3>;
+> +			raminit-done-bit =3D <1>;
+> +			raminit-pulse;
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+    Hm, aren't the above 4 properties vendor specific? If so, they shou=
+ld=20
+start with a vendor prefix and comma.
 
+> +			interrupts =3D <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&dcan1_sys_clk_mux>;
+> +			status =3D "disabled";
+> +		};
 
---580W6woxxOke813SlU62SIsrSa84OdjLJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlQN2xYACgkQjTAFq1RaXHM/NQCgiCIUBM9jFfbVAp67921CeY/3
-B44AoIZrhpmN/83GpPrxJZaWpOemiv8G
-=Adkn
------END PGP SIGNATURE-----
-
---580W6woxxOke813SlU62SIsrSa84OdjLJ--
+WBR, Sergei
