@@ -1,46 +1,75 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 05/13] ARM: dts: DRA7: Add DCAN nodes
-Date: Tue, 9 Sep 2014 11:37:28 +0300
-Message-ID: <540EBC48.70302@ti.com>
-References: <1410185442-907-1-git-send-email-rogerq@ti.com> <1410185442-907-6-git-send-email-rogerq@ti.com> <540DDBE0.5090004@cogentembedded.com> <540EBABA.9090009@ti.com> <540EBBAE.9030300@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Inconsistent error state transition error frames
+Date: Tue, 09 Sep 2014 12:48:53 +0200
+Message-ID: <a62de8d447dda55b1aa30711f0dc4605@grandegger.com>
+References: <7EAA3DE6DC6BA14D830C95541CC66EBC9F72FED6@GRBSR0004.marel.net>
+ <540DDB16.8010304@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <540EBBAE.9030300@pengutronix.de>
-Sender: linux-omap-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, wg@grandegger.com, tony@atomide.com
-Cc: tglx@linutronix.de, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from pluto.manitu.net ([217.11.48.9]:54956 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752992AbaIIK6j (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 9 Sep 2014 06:58:39 -0400
+In-Reply-To: <540DDB16.8010304@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Andri Yngvason <Andri.Yngvason@marel.com>, linux-can@vger.kernel.org
 
-Hi Marc,
+On Mon, 08 Sep 2014 18:36:38 +0200, Marc Kleine-Budde <mkl@pengutronix.de>
+wrote:
+> On 09/08/2014 06:26 PM, Andri Yngvason wrote:
+>> I've been working on a userspace program to monitor the CAN bus and I
+>> found that it only works as expected on one platform (flexcan). The
+>> problem is that on most other platforms, no error frame is emitted
+>> when the controller transitions back to error-active state. I see
 
-On 09/09/2014 11:34 AM, Marc Kleine-Budde wrote:
-> On 09/09/2014 10:30 AM, Roger Quadros wrote:
->>>> +            compatible = "bosch,d_can";
->>>> +            ti,hwmods = "dcan1";
->>>> +            reg = <0x4ae3c000 0x2000>,
->>>> +                  <0x558 0x4>; /* index to RAMINIT reg within syscon */
->>>> +            raminit-syscon = <&dra7_ctrl_core>;
->>>> +            raminit-start-bit = <3>;
->>>> +            raminit-done-bit = <1>;
->>>> +            raminit-pulse;
->>>
->>>    Hm, aren't the above 4 properties vendor specific? If so, they should start with a vendor prefix and comma.
+Also the Flexcan implementation does not correctly change the error
+states backwards, IIRC.
+
+>> that you've already discussed this on this list here:
+>> http://thread.gmane.org/gmane.linux.can/201
 >>
->> At least for now I don't know about any other platform other than TI using a RAMINIT register outside the
->> CAN register space. However the mechanism is generic enough and not limited to TI platforms.
->>
->> I don't mind vendor prefix or not, but would like to hear the opinion of the CAN maintainers as to what they would prefer.
+>> Why hasn't this been resolved?
 > 
-> I don't know of any c_can/d_can implementation outside of TI that
-> implements the raminit outside of the register space. So a "ti," prefix
-> seems appropriate.
+> I assume no one needed this feature so far, I assume. And/or cared not
+> enough to upstream these patches.
+
+Yep, little time left for free software development, lack of hardware,
+etc. Somebody needs to care and post patches. Anyway, that's a good
+occasion to start a migration path, maybe first for the Flexcan and
+SJA1000 and MSCAN.
+
+>> I already patched the mscan and sja1000 drivers myself, and I was
+>> considering submitting them, but since you've already done some work
+>> on this (which I believe is superior to mine), my work is unlikely to
 > 
+> Wolfgang mentioned in this mail, that he had some patches back than. Do
+> you still have them, Wolfgang?
 
-Fine, I'll re-spin this with the "ti," prefix. Thanks.
+The patches to consolidate bus-off and error-state handling are still
+at:
 
-cheers,
--roger
- 
+https://gitorious.org/linux-can/wg-linux-can-next/commits/eec921ac28fde243456078a557768808d93d94a3
+https://gitorious.org/linux-can/wg-linux-can-next/commit/825f9bcb961aa193bacb9af6fb0d8491ee8fd02e
 
+They introduce the can_id flag CAN_ERR_STATE_CHANGE and the data[1] flag
+CAN_ERR_CRTL_ACTIVE, which I think would simplify migration. Also
+there is now a common function can_change_state() which should make
+the driver code more readable.
+
+>> be of any consequence to this community, except to show that this
+>> inconsistency does indeed result in wasted effort and frustration.
+> 
+> Feel free to post your patches.
+> 
+>> Of course, I'll help out if I can, e.g. by testing on the platforms
+>> that I have available.
+
+That would be very useful. Currently I do not have any CAN hardware at
+hand.
+
+Wolfgang.
