@@ -1,101 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 05/12] arm: dts: am4372: Add dcan nodes
-Date: Tue, 09 Sep 2014 17:09:30 +0200
-Message-ID: <540F182A.9010702@pengutronix.de>
-References: <1410274534-22826-1-git-send-email-rogerq@ti.com> <1410274534-22826-6-git-send-email-rogerq@ti.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Inconsistent error state transition error frames
+Date: Tue, 09 Sep 2014 17:41:12 +0200
+Message-ID: <1a51435a44c2ebd32cca3feee3799af3@grandegger.com>
+References: <7EAA3DE6DC6BA14D830C95541CC66EBC9F72FED6@GRBSR0004.marel.net>
+ <540DDB16.8010304@pengutronix.de>
+ <a62de8d447dda55b1aa30711f0dc4605@grandegger.com>
+ <540EEBA0.9080209@marel.com>
+ <56f33e0559ffda649925492dca2720fd@grandegger.com>
+ <540F1396.2030702@marel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="XQpdEdXJUb9DE7dI3rjtr5si9nkQvOGk6"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52032 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756818AbaIIPJk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Sep 2014 11:09:40 -0400
-In-Reply-To: <1410274534-22826-6-git-send-email-rogerq@ti.com>
+Received: from pluto.manitu.net ([217.11.48.9]:58486 "EHLO pluto.manitu.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751004AbaIIPlO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 9 Sep 2014 11:41:14 -0400
+In-Reply-To: <540F1396.2030702@marel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roger Quadros <rogerq@ti.com>, tony@atomide.com
-Cc: wg@grandegger.com, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, Afzal Mohammed <afzal@ti.com>
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XQpdEdXJUb9DE7dI3rjtr5si9nkQvOGk6
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, 9 Sep 2014 14:49:58 +0000, Andri Yngvason
+<andri.yngvason@marel.com> wrote:
+> On =C3=BEri 9.sep 2014 13:53, Wolfgang Grandegger wrote:
+>> On Tue, 9 Sep 2014 11:59:28 +0000, Andri Yngvason
+>> <andri.yngvason@marel.com> wrote:
+>>> On =C3=BEri 9.sep 2014 10:48, Wolfgang Grandegger wrote:
+=2E..
+>>> haven't posted patches to the kernel before, but I've read the
+>>> documentation and hopefully I'll get it right. ;)
+>> Don't worry. You will learn it quickly.
+> Thanks for the reassurance. Which branch should I rebase against,=20
+> linux-can or linux-can-next?
 
-On 09/09/2014 04:55 PM, Roger Quadros wrote:
-> From: Afzal Mohammed <afzal@ti.com>
+linux-can-next please.
+
+=2E..
+> It seems that 'data' is fully occupied, although 'data[5..7]' isn't=20
+> reserved for anything specific but rather "controller specific=20
+> additional information". Could we maybe put the version into data 5, =
+6
+or
+> 7?
+
+data[6..7] is used for the tx and rx error counts.
+=20
+> Another option is to place it into the 3 or 4 msb of the id; somethin=
+g=20
+> like this:
+> #define CAN_ERR_VERSION_MASK 0x1E000000U  // Note: CAN_ERR_MASK is=20
+> 0x1FFFFFFFU
 >=20
-> Add dcan nodes.
->=20
-> Signed-off-by: Afzal Mohammed <afzal@ti.com>
-> Signed-off-by: Mugunthan V N <mugunthanvnm@ti.com>
-> Signed-off-by: George Cherian <george.cherian@ti.com>
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  arch/arm/boot/dts/am4372.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.d=
-tsi
-> index 8689949..3514d0a 100644
-> --- a/arch/arm/boot/dts/am4372.dtsi
-> +++ b/arch/arm/boot/dts/am4372.dtsi
-> @@ -885,6 +885,28 @@
->  				clock-names =3D "fck";
->  			};
->  		};
-> +
-> +		dcan0: can@481cc000 {
-> +			compatible =3D "bosch,d_can";
-> +			ti,hwmods =3D "d_can0";
-> +			clocks =3D <&dcan0_fck>;
-> +			clock-names =3D "fck";
-> +			reg =3D <0x481cc000 0x2000
-> +				0x44e10644 0x4>;
-> +			interrupts =3D <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+> Are 15 possible versions enough (or even too much)?
 
-Where are the syscon phandles?
+I would prefer an unsued field otherwise old can-util tools will report
+rubbish. data[5] sounds good. But we should add a version number only
+if we really need it.
 
-> +			status =3D "disabled";
-> +		};
-> +
-> +		dcan1: can@481d0000 {
-> +			compatible =3D "bosch,d_can";
-> +			ti,hwmods =3D "d_can1";
-> +			clocks =3D <&dcan1_fck>;
-> +			clock-names =3D "fck";
-> +			reg =3D <0x481d0000 0x2000
-> +				0x44e10644 0x4>;
-> +			interrupts =3D <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
-> +			status =3D "disabled";
-> +		};
->  	};
->  };
-> =20
->=20
+Wolfgang.
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---XQpdEdXJUb9DE7dI3rjtr5si9nkQvOGk6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlQPGCoACgkQjTAFq1RaXHO/FwCfRhzGv6myCBlZaHYV+tZSRI7/
-SNwAn2CaEbqCTl7lfgc36MkufINq3AGs
-=refp
------END PGP SIGNATURE-----
-
---XQpdEdXJUb9DE7dI3rjtr5si9nkQvOGk6--
