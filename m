@@ -1,30 +1,39 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2014-09-11
-Date: Fri, 12 Sep 2014 18:05:00 -0400 (EDT)
-Message-ID: <20140912.180500.36960714875196384.davem@davemloft.net>
-References: <1410421984-15125-1-git-send-email-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] net: can: sja1000: peak_pcmcia.c:  Cleaning up missing null-terminate in conjunction with strncpy
+Date: Sun, 14 Sep 2014 19:30:33 +0200
+Message-ID: <1410715833-15809-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:51789 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751056AbaILWFC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 12 Sep 2014 18:05:02 -0400
-In-Reply-To: <1410421984-15125-1-git-send-email-mkl@pengutronix.de>
+Received: from mail-la0-f54.google.com ([209.85.215.54]:50557 "EHLO
+	mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752742AbaINR2o (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 14 Sep 2014 13:28:44 -0400
+Received: by mail-la0-f54.google.com with SMTP id ge10so3345941lab.41
+        for <linux-can@vger.kernel.org>; Sun, 14 Sep 2014 10:28:42 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 11 Sep 2014 09:53:03 +0200
+Replacing strncpy with strlcpy to avoid strings that lacks null terminate.
 
-> this is a pull request for the current release cycle of a single patch.
-> 
-> The patch by David Jander fixes a scheduling while atomic problem in the
-> flexcan driver, that was introduced by me in v3.14-rc6.
- ...
->   git://gitorious.org/linux-can/linux-can.git tags/linux-can-fixes-for-3.17-20140911
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+---
+ drivers/net/can/sja1000/peak_pcmcia.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pulled, thanks Marc.
+diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
+index dd56133..fc9f8b01 100644
+--- a/drivers/net/can/sja1000/peak_pcmcia.c
++++ b/drivers/net/can/sja1000/peak_pcmcia.c
+@@ -487,7 +487,7 @@ static void pcan_free_channels(struct pcan_pccard *card)
+ 		if (!netdev)
+ 			continue;
+ 
+-		strncpy(name, netdev->name, IFNAMSIZ);
++		strlcpy(name, netdev->name, IFNAMSIZ);
+ 
+ 		unregister_sja1000dev(netdev);
+ 
+-- 
+1.7.10.4
+
