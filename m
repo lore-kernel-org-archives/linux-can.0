@@ -1,61 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v4 1/5] can: flexcan: mark TX mailbox as TX_INACTIVE
-Date: Tue, 16 Sep 2014 16:20:30 +0200
-Message-ID: <1410877234-29751-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: RFC: [PATCH v2] can: flexcan: Implement errata ERR005829
+Date: Tue, 16 Sep 2014 16:29:25 +0200
+Message-ID: <54184945.90900@pengutronix.de>
+References: <1409755642-28233-1-git-send-email-david@protonic.nl>	<54081940.6060402@pengutronix.de>	<20140904104440.5766d764@archvile>	<5418238B.6010600@pengutronix.de> <20140916142846.2ae8335c@archvile>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="1kVpETSGn23KllDpLBDSTBHeb8bgBjA4I"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34276 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57881 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754023AbaIPOUi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 10:20:38 -0400
+	with ESMTP id S1753873AbaIPO3b (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 10:29:31 -0400
+In-Reply-To: <20140916142846.2ae8335c@archvile>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
+To: David Jander <david@protonic.nl>
+Cc: linux-can@vger.kernel.org
 
-This patch fixes the initialization of the TX mailbox. It is now correctly
-initialized as TX_INACTIVE not RX_EMPTY.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--1kVpETSGn23KllDpLBDSTBHeb8bgBjA4I
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Changes since v3:
-- new
+On 09/16/2014 02:28 PM, David Jander wrote:
+> Is it time to revisit my other patch(es) yet? If so, from where should =
+I pull
+> the base?
 
- drivers/net/can/flexcan.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+Please review the flexcan series (v4) I just sent around. That will go
+into net/master then.
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 630c7bf..76dcbca 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -136,6 +136,17 @@
- 
- /* FLEXCAN message buffers */
- #define FLEXCAN_MB_CNT_CODE(x)		(((x) & 0xf) << 24)
-+#define FLEXCAN_MB_CODE_RX_INACTIVE	(0x0 << 24)
-+#define FLEXCAN_MB_CODE_RX_EMPTY	(0x4 << 24)
-+#define FLEXCAN_MB_CODE_RX_FULL		(0x2 << 24)
-+#define FLEXCAN_MB_CODE_RX_OVERRRUN	(0x6 << 24)
-+#define FLEXCAN_MB_CODE_RX_RANSWER	(0xa << 24)
-+
-+#define FLEXCAN_MB_CODE_TX_INACTIVE	(0x8 << 24)
-+#define FLEXCAN_MB_CODE_TX_ABORT	(0x9 << 24)
-+#define FLEXCAN_MB_CODE_TX_DATA		(0xc << 24)
-+#define FLEXCAN_MB_CODE_TX_TANSWER	(0xe << 24)
-+
- #define FLEXCAN_MB_CNT_SRR		BIT(22)
- #define FLEXCAN_MB_CNT_IDE		BIT(21)
- #define FLEXCAN_MB_CNT_RTR		BIT(20)
-@@ -867,8 +878,8 @@ static int flexcan_chip_start(struct net_device *dev)
- 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
- 	flexcan_write(reg_ctrl, &regs->ctrl);
- 
--	/* Abort any pending TX, mark Mailbox as INACTIVE */
--	flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
-+	/* mark TX mailbox as INACTIVE */
-+	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
- 		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
- 
- 	/* acceptance mask/acceptance code (accept everything) */
--- 
-2.1.0
+For new the new flexcan features please use this as your base:
 
+git://gitorious.org/linux-can/linux-can-next.git flexcan-next
+
+It's net-next merged to the latest can patches.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--1kVpETSGn23KllDpLBDSTBHeb8bgBjA4I
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlQYSUUACgkQjTAFq1RaXHNDuwCfQMhnZevm35OCiannMxEEZybh
+Na8AniY9cUw8B6YEIB4oJwtZTae4n/U6
+=A1Hz
+-----END PGP SIGNATURE-----
+
+--1kVpETSGn23KllDpLBDSTBHeb8bgBjA4I--
