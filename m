@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v4 3/5] can: flexcan: implement workaround for errata ERR005829
-Date: Tue, 16 Sep 2014 16:20:32 +0200
-Message-ID: <1410877234-29751-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v4 2/5] can: flexcan: correctly initialize mailboxes
+Date: Tue, 16 Sep 2014 16:20:31 +0200
+Message-ID: <1410877234-29751-2-git-send-email-mkl@pengutronix.de>
 References: <1410877234-29751-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34280 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34278 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754107AbaIPOUj (ORCPT
+	with ESMTP id S1754082AbaIPOUj (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 10:20:39 -0400
 In-Reply-To: <1410877234-29751-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -16,71 +16,44 @@ Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
 From: David Jander <david@protonic.nl>
 
-This patch implements the workaround mentioned in ERR005829:
+Apparently mailboxes may contain random data at startup, causing some of them
+being prepared for message reception. This causes overruns being missed or even
+confusing the IRQ check for trasmitted messages, increasing the transmit
+counter instead of the error counter.
 
-    ERR005829: FlexCAN: FlexCAN does not transmit a message that is enabled to
-    be transmitted in a specific moment during the arbitration process.
-
-Workaround: The workaround consists of two extra steps after setting up a
-message for transmission:
-
-Step 8: Reserve the first valid mailbox as an inactive mailbox (CODE=0b1000).
-If RX FIFO is disabled, this mailbox must be message buffer 0. Otherwise, the
-first valid mailbox can be found using the "RX FIFO filters" table in the
-FlexCAN chapter of the chip reference manual.
-
-Step 9: Write twice INACTIVE code (0b1000) into the first valid mailbox.
+This patch initializes all mailboxes after the FIFO as RX_INACTIVE.
 
 Signed-off-by: David Jander <david@protonic.nl>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
 
-changes since v3:
-- renamed mailbox affected by errata to FLEXCAN_TX_BUF_RESERVED
-- make use of FLEXCAN_MB_CODE_TX_INACTIVE
-- initialize FLEXCAN_TX_BUF_RESERVED as FLEXCAN_MB_CODE_TX_INACTIVE in
-  chip_start, too
+Changes since v3:
+- make use of FLEXCAN_MB_CODE_RX_INACTIVE instead of using magic numbers
 
- drivers/net/can/flexcan.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index fc076952..54061c4 100644
+index 76dcbca..fc076952 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -125,7 +125,9 @@
- 	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+@@ -812,6 +812,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	int err;
+ 	u32 reg_mcr, reg_ctrl;
++	int i;
  
- /* FLEXCAN interrupt flag register (IFLAG) bits */
--#define FLEXCAN_TX_BUF_ID		8
-+/* Errata ERR005829 step7: Reserve first valid MB */
-+#define FLEXCAN_TX_BUF_RESERVED		8
-+#define FLEXCAN_TX_BUF_ID		9
- #define FLEXCAN_IFLAG_BUF(x)		BIT(x)
- #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
- #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
-@@ -439,6 +441,14 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	flexcan_write(can_id, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_id);
- 	flexcan_write(ctrl, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+ 	/* enable module */
+ 	err = flexcan_chip_enable(priv);
+@@ -878,6 +879,12 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
+ 	flexcan_write(reg_ctrl, &regs->ctrl);
  
-+	/* Errata ERR005829 step8:
-+	 * Write twice INACTIVE(0x8) code to first MB.
-+	 */
-+	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
-+		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
-+		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+
- 	return NETDEV_TX_OK;
- }
- 
-@@ -885,6 +895,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 			      &regs->cantxfg[i].can_ctrl);
- 	}
- 
-+	/* Errata ERR005829: mark first TX mailbox as INACTIVE */
-+	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
-+		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
++	/* clear and invalidate all mailboxes first */
++	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg); i++) {
++		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE,
++			      &regs->cantxfg[i].can_ctrl);
++	}
 +
  	/* mark TX mailbox as INACTIVE */
  	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
