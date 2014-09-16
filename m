@@ -1,71 +1,32 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can] peak_pci: add PCI ID definition pcie card variant
-Date: Tue, 16 Sep 2014 10:05:41 +0200
-Message-ID: <5417EF55.9050805@hartkopp.net>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH] net: can: usb: peak_usb: pcan_usb_core.c: Cleaning up
+ missing null-terminate in conjunction with strncpy
+Date: Tue, 16 Sep 2014 08:40:57 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6D17493206@AcuExch.aculab.com>
+References: <1410715898-15904-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+ <063D6719AE5E284EB5DD2968C1650D6D17491F2B@AcuExch.aculab.com>
+ <5416A65D.6010500@pengutronix.de>
+ <063D6719AE5E284EB5DD2968C1650D6D17491F83@AcuExch.aculab.com>
+ <CAFo99gb9Rqnc7HrPbN7UVyQwPv_a=fxAbe+FTtm+9GgsjG7StA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:60515 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752026AbaIPIFt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 04:05:49 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAFo99gb9Rqnc7HrPbN7UVyQwPv_a=fxAbe+FTtm+9GgsjG7StA@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Rickard Strandqvist' <rickard_strandqvist@spectrumdigital.se>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Alexey Khoroshilov <khoroshilov@ispras.ru>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Add PCI ID definition for the single channel PCAN ExpressCard 34 adapter.
-Due to the subsystem id evaluation the correct number of channels (here 1)
-is created at initialization time. Tested including the LED functionality.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-CC: Stephane Grosjean <s.grosjean@peak-system.com>
-
----
-
-Hi Marc,
-
-as this is 'just a PCI ID definition' this patch should go into Daves
-net-tree for 3.17-rc upstream. The USB guys do it the same as there is no
-risk of breaking other peoples work at that stage.
-
-Tnx,
-Oliver
-
-
-
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 7a85590..e5fac36 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -70,6 +70,8 @@ struct peak_pci_chan {
- #define PEAK_PC_104P_DEVICE_ID	0x0006	/* PCAN-PC/104+ cards */
- #define PEAK_PCI_104E_DEVICE_ID	0x0007	/* PCAN-PCI/104 Express cards */
- #define PEAK_MPCIE_DEVICE_ID	0x0008	/* The miniPCIe slot cards */
-+#define PEAK_PCIE_OEM_ID	0x0009	/* PCAN-PCI Express OEM */
-+#define PEAK_PCIEC34_DEVICE_ID	0x000A	/* PCAN-PCI Express 34 (one channel) */
- 
- #define PEAK_PCI_CHAN_MAX	4
- 
-@@ -87,6 +89,7 @@ static const struct pci_device_id peak_pci_tbl[] = {
- 	{PEAK_PCI_VENDOR_ID, PEAK_CPCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
- #ifdef CONFIG_CAN_PEAK_PCIEC
- 	{PEAK_PCI_VENDOR_ID, PEAK_PCIEC_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PEAK_PCIEC34_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
- #endif
- 	{0,}
- };
-@@ -653,7 +656,8 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		 * This must be done *before* register_sja1000dev() but
- 		 * *after* devices linkage
- 		 */
--		if (pdev->device == PEAK_PCIEC_DEVICE_ID) {
-+		if (pdev->device == PEAK_PCIEC_DEVICE_ID ||
-+		    pdev->device == PEAK_PCIEC34_DEVICE_ID) {
- 			err = peak_pciec_probe(pdev, dev);
- 			if (err) {
- 				dev_err(&pdev->dev,
-
-
-
+RnJvbTogUmlja2FyZCBTdHJhbmRxdmlzdCANCj4gPiAyMDE0LTA5LTE1IDEwOjQ3IEdNVCswMjow
+MCBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBhY3VsYWIuY29tPjoNCi4uLg0KPiA+IE9yOg0K
+PiA+ICAgICBjaGFyIG5hbWVbc2l6ZW9mIG5ldGRldi0+bmFtZV07DQo+ID4gICAgIG1lbWNweShu
+YW1lLCBuZXRkZXYtPm5hbWUsIHNpemVvZiBuZXRkZXYtPm5hbWUpOw0KPiA+DQouLi4NCj4gSSBs
+aWtlZCB0aGUgdmFyaWFudDoNCj4gY2hhciBuYW1lW3NpemVvZihuZXRkZXYtPm5hbWUpXTsNCj4g
+DQo+IEJ1dCBkaXNsaWtlIGFuZCBkbyBub3QgdW5kZXJzdGFuZCB3aGF0IHRoZSBwb2ludCB3b3Vs
+ZCBiZSB3aXRoIG1lbWNweSB2YXJpYW50Lg0KDQpUaGUgbWVtY3B5KCkgd2lsbCBiZSBhIGxvdCBm
+YXN0ZXIgdGhhbiBhbnkgb2YgdGhlIHN0cmluZyBjb3B5IGZ1bmN0aW9ucw0KYmVjYXVzZSBpdCBk
+b2Vzbid0IG5lZWQgdG8gd29ycnkgYWJvdXQgdGhlIHRlcm1pbmF0b3IuDQpJbiBtYW55IGNhc2Vz
+IGl0IHdpbGwgYmUgaW5saW5lZCB0byBhIHNob3J0IHNlcmllcyBvZiBsb2FkIGFuZCBzdG9yZXMu
+DQoNCglEYXZpZA0KDQo=
