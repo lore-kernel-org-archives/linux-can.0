@@ -1,43 +1,61 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can] peak_pci: add PCI ID definition pcie card variant
-Date: Tue, 16 Sep 2014 16:01:14 +0200
-Message-ID: <541842AA.4020500@pengutronix.de>
-References: <5417EF55.9050805@hartkopp.net>
+Subject: Re: [PATCH] net: can: usb: peak_usb: pcan_usb_core.c:  Cleaning up
+ missing null-terminate in conjunction with strncpy
+Date: Tue, 16 Sep 2014 16:09:32 +0200
+Message-ID: <5418449C.7060808@pengutronix.de>
+References: <1410715898-15904-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="kxDNQUeqtlsoAAL30hGXtnGFj1WvpE36H"
+ boundary="uAgvDBGiaJiASEu6KDPo4wcV8jQiumRKC"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37572 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35166 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754405AbaIPOBW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 10:01:22 -0400
-In-Reply-To: <5417EF55.9050805@hartkopp.net>
+	with ESMTP id S1753169AbaIPOJu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 10:09:50 -0400
+In-Reply-To: <1410715898-15904-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Alexey Khoroshilov <khoroshilov@ispras.ru>, "Christopher R. Baker" <cbaker@rec.ri.cmu.edu>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kxDNQUeqtlsoAAL30hGXtnGFj1WvpE36H
+--uAgvDBGiaJiASEu6KDPo4wcV8jQiumRKC
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 09/16/2014 10:05 AM, Oliver Hartkopp wrote:
-> Add PCI ID definition for the single channel PCAN ExpressCard 34 adapte=
-r.
-> Due to the subsystem id evaluation the correct number of channels (here=
- 1)
-> is created at initialization time. Tested including the LED functionali=
-ty.
+On 09/14/2014 07:31 PM, Rickard Strandqvist wrote:
+> Replacing strncpy with strlcpy to avoid strings that lacks null termina=
+te.
 >=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> CC: Stephane Grosjean <s.grosjean@peak-system.com>
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital=
+=2Ese>
+> ---
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net=
+/can/usb/peak_usb/pcan_usb_core.c
+> index 644e6ab..d4fe8ac 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -830,7 +830,7 @@ static void peak_usb_disconnect(struct usb_interfac=
+e *intf)
+>  		char name[IFNAMSIZ];
+> =20
+>  		dev->state &=3D ~PCAN_USB_STATE_CONNECTED;
+> -		strncpy(name, netdev->name, IFNAMSIZ);
+> +		strlcpy(name, netdev->name, IFNAMSIZ);
+> =20
+>  		unregister_netdev(netdev);
+>  		free_candev(netdev);
+>=20
 
-Applied to can.
+What about removing the dev_info(), the name array and the str?cpy()
+completely?
 
-Thnx,
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -45,7 +63,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---kxDNQUeqtlsoAAL30hGXtnGFj1WvpE36H
+--uAgvDBGiaJiASEu6KDPo4wcV8jQiumRKC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -53,9 +71,9 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlQYQqoACgkQjTAFq1RaXHMSygCeJHT0CPZuaVvNO1aA9WjRN07E
-sPgAnivzWjGVL7O812fJMrcpD7Ss9wGg
-=lRjx
+iEYEARECAAYFAlQYRJwACgkQjTAFq1RaXHNFVgCfTa+BDlMUpQkqqLbrm+yAxnKg
+0xEAn0XC/whypEq/c1aDdTX0NPFJY/Vu
+=yOFv
 -----END PGP SIGNATURE-----
 
---kxDNQUeqtlsoAAL30hGXtnGFj1WvpE36H--
+--uAgvDBGiaJiASEu6KDPo4wcV8jQiumRKC--
