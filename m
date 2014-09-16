@@ -1,100 +1,117 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: RFC: [PATCH v2] can: flexcan: Implement errata ERR005829
-Date: Tue, 16 Sep 2014 14:58:01 +0200
-Message-ID: <541833D9.2060607@pengutronix.de>
-References: <1409755642-28233-1-git-send-email-david@protonic.nl>	<54081940.6060402@pengutronix.de>	<20140904104440.5766d764@archvile>	<5418238B.6010600@pengutronix.de> <20140916142846.2ae8335c@archvile>
+From: Stefano Babic <sbabic@denx.de>
+Subject: Re: [PATCH v5 0/2] Adding support for CAN busses via SPI interface
+Date: Tue, 16 Sep 2014 15:01:28 +0200
+Message-ID: <541834A8.9010106@denx.de>
+References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <53E3339A.2020106@denx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="CsM6huEsf83WItbKp0hMn5wxAhic16tJE"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36241 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754000AbaIPM6H (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 08:58:07 -0400
-In-Reply-To: <20140916142846.2ae8335c@archvile>
+Received: from mail-out.m-online.net ([212.18.0.10]:55573 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753836AbaIPNBd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Sep 2014 09:01:33 -0400
+In-Reply-To: <53E3339A.2020106@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: linux-can@vger.kernel.org
+To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CsM6huEsf83WItbKp0hMn5wxAhic16tJE
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 09/16/2014 02:28 PM, David Jander wrote:
+On 07/08/2014 10:06, Stefano Babic wrote:
+> Hi everybody,
+> 
+> has the last version fixed all open issues ? Maybe is it ready to be
+> applied ;-) ?
+> 
+> Thanks,
+> Stefano
+> 
 
->>> Please note that if the silicon bug didn't exist, none of the two wri=
-tes
->>> would be necessary.
->>> Once you create a quirk for this, how are we supposed to know which
->>> versions need this quirk, and which don't? Can we trust the existence=
- of
->>> erratas for the different i.MX Soc's, and should we just go and check=
- them
->>> all?
+Ping ?
+
+Best regards,
+Stefano Babic
+
+> On 28/07/2014 18:38, Stefano Babic wrote:
+>> Hi all,
 >>
->> I had a patch with the quirk, but I removed it, as you suggested, just=
+>> after some time, I post an updated version of the spi_can driver.
+>> Sorry for that, but I had to wait for the requested modifications
+>> on the microcontroller's firmware to test it again.
+>>
+>> The majork change is the GET_CFG message to query the remote
+>> CAN microcontroller for the CAN bittiming. I hope also I have fixed
+>> all issues from previous reviews.
+>>
+>>
+>> Changes in v5:
+>> - drop Patch 2/3, already applied.
+>> - sort include headers
+>> - match open parenthesis (globally fixed)
+>> - add newline to dev_err() in insert_cfg_msg()
+>> - use sizeof(*p)
+>> - drop unused variable val in ISR
+>> - proper return code instead of -1
+>> - move device ids after probe/remove
+>> - drop #ifdef CONFIG_OF (not needed anymore)
+>> - use devm_ API
+>> - use module_spi_driver()
+>>
+>> Changes in v4:
+>> - added GET_CFG message to query bit timing to the remote controller.
+>> - implement GET_CFG message to ask the microcontroller
+>>   for bittiming consts.
+>> - drop set_mode (never called)
+>> - drop echo_index (never used)
+>> - fix inconsistencies using int variable (int/u32)
+>> - add reference to documentation in Kconfig help
+>> - s/refTime/ref_time/
+>> - move module parameters on the top
+>> - use variable to get sizeof inside kzalloc/memset
+>> - fix missing close_candev() in open entry point
+>> - fix return values (spi_can_fill_skb_msg())
+>> - not access skb after calling net_receive_skb()
+>> - fix minor coding style issues
+>> - add missing free_irq() and gpio_free() in probe when fails
+>>
+>> Changes in v3:
+>> - format documentation, check for lines > 80 chars (O. Hartkopp)
+>> - patch 2/3 already aqpplied to can-next, removed from patchset
+>> - spican.h renamed to spi_can.h
+>> - drop further references to i.MX and HCS12, not yet cleaned
+>> - drop CAN_DEV depend from Kconfig
+>> - drop debug stuff via sysfs, not required in production code
+>> - drop debug module parameter, use CAN_DEBUG_DEVICES
+>> - drop unused bittiming constant
+>> - chksum on as default. It could still be disabled via
+>>   DT/pdata, but not via module parameter.
+>>
+>> Changes in v2:
+>> - drop all references to i.MX35 and HCS12
+>>
+>> Stefano Babic (2):
+>>   Add documentation for SPI to CAN driver
+>>   CAN: CAN driver to support multiple CAN bus on SPI interface
+>>
+>>  Documentation/networking/spi_can.txt |  774 +++++++++++++++++
+>>  drivers/net/can/spi/Kconfig          |   11 +
+>>  drivers/net/can/spi/Makefile         |    1 +
+>>  drivers/net/can/spi/spi_can.c        | 1506 ++++++++++++++++++++++++++++++++++
+>>  include/linux/can/platform/spi_can.h |   33 +
+>>  5 files changed, 2325 insertions(+)
+>>  create mode 100644 Documentation/networking/spi_can.txt
+>>  create mode 100644 drivers/net/can/spi/spi_can.c
+>>  create mode 100644 include/linux/can/platform/spi_can.h
+>>
+> 
+> 
 
->> in case.
->=20
-> I did not directly suggest to NOT use a quirk, I only had some concerns=
-=2E In
 
-Not directly, but between the lines :D
-
-> the meantime I have checked a few of the SoCs for erratas, and found th=
-is
-> errata only for i.MX6 and Vybrid VF6xx, which makes me suspect this pro=
-blem is
-> unique to IP version 10 (if the IP version table at the beginning of th=
-e
-> source-code is to be trusted).
-
-We don't even know the IP version of the flexcan core on the vybrid, it
-has different features than the imx6 one.
-
-> OTOH, if you decided to leave the unconditional writes in there, I am f=
-ine
-> with that. I don't think they do much harm.
->=20
-> Is it time to revisit my other patch(es) yet? If so, from where should =
-I pull
-> the base?
-
-Sorry, no time yet, but I've found another (luckily only a minor)
-problem with the mailboxes. After sending a RTR frame the TX mailbox
-gets automatically converted into a RX one.
-
-See imx6 data sheet Table 26-5. Message Buffer Code for Tx buffers:
-
-> Transmit remote request frame unconditionally once. After
-> transmission, the MB automatically becomes an Rx Empty MB
-> with the same ID.
-
-I'll prepare a patch.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---CsM6huEsf83WItbKp0hMn5wxAhic16tJE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlQYM9kACgkQjTAFq1RaXHPwBgCgjRcti2NJwQA9rnVgzYfe3N1o
-4qEAoJc5tvb8TU0hOtGGEEcQCuIbl7R2
-=9HGZ
------END PGP SIGNATURE-----
-
---CsM6huEsf83WItbKp0hMn5wxAhic16tJE--
+-- 
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
+=====================================================================
