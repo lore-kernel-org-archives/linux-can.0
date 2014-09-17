@@ -1,33 +1,64 @@
-From: "D. Dueck" <davidcdueck@googlemail.com>
-Subject: Re: [PATCH] can: at91_can: prepare and unprepare the clock
-Date: Wed, 17 Sep 2014 12:11:38 +0200
-Message-ID: <CANfhG651svVhhLch9ekjSESTgoS3-0rB1C9RJLkX_=Y=GKOxbA@mail.gmail.com>
-References: <1410944721-32325-1-git-send-email-davidcdueck@googlemail.com>
-	<54195097.1000106@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: David Dueck <davidcdueck@googlemail.com>
+Subject: [PATCHv2] can: at91_can: prepare and unprepare the clock
+Date: Wed, 17 Sep 2014 14:26:48 +0200
+Message-ID: <1410956808-1964-1-git-send-email-davidcdueck@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f44.google.com ([209.85.215.44]:55929 "EHLO
-	mail-la0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753132AbaIQKLk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 17 Sep 2014 06:11:40 -0400
-Received: by mail-la0-f44.google.com with SMTP id q1so353060lam.31
-        for <linux-can@vger.kernel.org>; Wed, 17 Sep 2014 03:11:38 -0700 (PDT)
-In-Reply-To: <54195097.1000106@pengutronix.de>
+Received: from mail-la0-f41.google.com ([209.85.215.41]:42920 "EHLO
+	mail-la0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754634AbaIQMZk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 17 Sep 2014 08:25:40 -0400
+Received: by mail-la0-f41.google.com with SMTP id s18so1744037lam.28
+        for <linux-can@vger.kernel.org>; Wed, 17 Sep 2014 05:25:38 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, wg@grandegger.com, nicolas.ferre@atmel.com, Anthony Harivel <anthony.harivel@emtrion.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, nicolas.ferre@atmel.com, Anthony Harivel <anthony.harivel@emtrion.de>
 
-2014-09-17 11:12 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+Make the driver work with the common clock framework.
 
-> Which warning?
+Signed-off-by: David Dueck <davidcdueck@googlemail.com>
+Signed-off-by: Anthony Harivel <anthony.harivel@emtrion.de>
+---
+Changes since v1:
+- improve commit message
+- check return value of clk_prepare_enable
 
-I will rephrase this. When using COMMON_CLK, for example on sama5d3, we
-have to prepare the clock first. I will send v2.
+ drivers/net/can/at91_can.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-> Can you please check the return value of clock_prepare_enbale().
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index f07fa89..05e1aa0 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1123,7 +1123,9 @@ static int at91_open(struct net_device *dev)
+ 	struct at91_priv *priv = netdev_priv(dev);
+ 	int err;
+ 
+-	clk_enable(priv->clk);
++	err = clk_prepare_enable(priv->clk);
++	if (err)
++		return err;
+ 
+ 	/* check or determine and set bittime */
+ 	err = open_candev(dev);
+@@ -1149,7 +1151,7 @@ static int at91_open(struct net_device *dev)
+  out_close:
+ 	close_candev(dev);
+  out:
+-	clk_disable(priv->clk);
++	clk_disable_unprepare(priv->clk);
+ 
+ 	return err;
+ }
+@@ -1166,7 +1168,7 @@ static int at91_close(struct net_device *dev)
+ 	at91_chip_stop(dev, CAN_STATE_STOPPED);
+ 
+ 	free_irq(dev->irq, dev);
+-	clk_disable(priv->clk);
++	clk_disable_unprepare(priv->clk);
+ 
+ 	close_candev(dev);
+ 
+-- 
+2.1.0
 
-Yes, sorry I missed that.
-
-David
