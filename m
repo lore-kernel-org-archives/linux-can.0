@@ -1,40 +1,115 @@
 From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH 0/4] Consolidate and unify state change handling
-Date: Thu, 18 Sep 2014 16:37:30 +0000
-Message-ID: <541B0A4A.1050008@marel.com>
+Subject: [PATCH 2/4] Consolidate and unify state change handling
+Date: Thu, 18 Sep 2014 16:38:29 +0000
+Message-ID: <541B0A85.4000906@marel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0063.outbound.protection.outlook.com ([65.55.169.63]:14112
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1bon0074.outbound.protection.outlook.com ([157.56.111.74]:14631
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1756463AbaIRQhj (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 18 Sep 2014 12:37:39 -0400
+	id S1756714AbaIRQig (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 18 Sep 2014 12:38:36 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 
-Hi,
+Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+---
+  drivers/net/can/flexcan.c | 66 
++++--------------------------------------------
+  1 file changed, 3 insertions(+), 63 deletions(-)
 
-Here are my patches to improve consistency of error-state handling 
-between platforms.
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 2700865..96a0755 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -559,74 +559,15 @@ static int flexcan_poll_bus_err(struct net_device 
+*dev, u32 reg_esr)
+  static void do_state(struct net_device *dev,
+               struct can_frame *cf, enum can_state new_state)
+  {
+-    struct flexcan_priv *priv = netdev_priv(dev);
+      struct can_berr_counter bec;
 
-These are also my first patches posted to the linux kernel, so I 
-apologise in advance if I'm doing something wrong.
+      __flexcan_get_berr_counter(dev, &bec);
 
-Andri Yngvason (4):
-  can: dev: Add generic error-state-change handling
-  can: flexcan: Use generic error-state-change handling
-  can: mscan: Use generic error-state-change handling
-  can: sja1000: Use generic error-state-change handling
+-    switch (priv->can.state) {
+-    case CAN_STATE_ERROR_ACTIVE:
+-        /*
+-         * from: ERROR_ACTIVE
+-         * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
+-         * =>  : there was a warning int
+-         */
+-        if (new_state >= CAN_STATE_ERROR_WARNING &&
+-            new_state <= CAN_STATE_BUS_OFF) {
+-            netdev_dbg(dev, "Error Warning IRQ\n");
+-            priv->can.can_stats.error_warning++;
+-
+-            cf->can_id |= CAN_ERR_CRTL;
+-            cf->data[1] = (bec.txerr > bec.rxerr) ?
+-                CAN_ERR_CRTL_TX_WARNING :
+-                CAN_ERR_CRTL_RX_WARNING;
+-        }
+-    case CAN_STATE_ERROR_WARNING:    /* fallthrough */
+-        /*
+-         * from: ERROR_ACTIVE, ERROR_WARNING
+-         * to  : ERROR_PASSIVE, BUS_OFF
+-         * =>  : error passive int
+-         */
+-        if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+-            new_state <= CAN_STATE_BUS_OFF) {
+-            netdev_dbg(dev, "Error Passive IRQ\n");
+-            priv->can.can_stats.error_passive++;
+-
+-            cf->can_id |= CAN_ERR_CRTL;
+-            cf->data[1] = (bec.txerr > bec.rxerr) ?
+-                CAN_ERR_CRTL_TX_PASSIVE :
+-                CAN_ERR_CRTL_RX_PASSIVE;
+-        }
+-        break;
+-    case CAN_STATE_BUS_OFF:
+-        netdev_err(dev, "BUG! "
+-               "hardware recovered automatically from BUS_OFF\n");
+-        break;
+-    default:
+-        break;
+-    }
++    can_change_state(dev, cf, new_state,
++             can_get_err_dir(bec.rxerr, bec.txerr));
 
-  drivers/net/can/dev.c             | 79 
-+++++++++++++++++++++++++++++++++++++++
-  drivers/net/can/flexcan.c         | 66 ++------------------------------
-  drivers/net/can/mscan/mscan.c     | 62 ++++++++++++++----------------
-  drivers/net/can/sja1000/sja1000.c | 29 +++++---------
-  include/linux/can/dev.h           | 10 +++++
-  include/uapi/linux/can/error.h    |  1 +
-  6 files changed, 130 insertions(+), 117 deletions(-)
+-    /* process state changes depending on the new state */
+-    switch (new_state) {
+-    case CAN_STATE_ERROR_WARNING:
+-        netdev_dbg(dev, "Error Warning\n");
+-        cf->can_id |= CAN_ERR_CRTL;
+-        cf->data[1] = (bec.txerr > bec.rxerr) ?
+-            CAN_ERR_CRTL_TX_WARNING :
+-            CAN_ERR_CRTL_RX_WARNING;
+-        break;
+-    case CAN_STATE_ERROR_ACTIVE:
+-        netdev_dbg(dev, "Error Active\n");
+-        cf->can_id |= CAN_ERR_PROT;
+-        cf->data[2] = CAN_ERR_PROT_ACTIVE;
+-        break;
+-    case CAN_STATE_BUS_OFF:
+-        cf->can_id |= CAN_ERR_BUSOFF;
++    if (unlikely(new_state == CAN_STATE_BUS_OFF))
+          can_bus_off(dev);
+-        break;
+-    default:
+-        break;
+-    }
+  }
 
+  static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+@@ -658,7 +599,6 @@ static int flexcan_poll_state(struct net_device 
+*dev, u32 reg_esr)
+          return 0;
+
+      do_state(dev, cf, new_state);
+-    priv->can.state = new_state;
+      netif_receive_skb(skb);
+
+      dev->stats.rx_packets++;
