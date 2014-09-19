@@ -1,183 +1,144 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 1/4] Consolidate and unify state change handling
-Date: Fri, 19 Sep 2014 22:33:10 +0200
-Message-ID: <541C9306.1020800@grandegger.com>
-References: <541B078C.2020007@marel.com>
+Subject: Re: [PATCH 2/4] Consolidate and unify state change handling
+Date: Fri, 19 Sep 2014 23:10:48 +0200
+Message-ID: <541C9BD8.8070303@grandegger.com>
+References: <541B0792.5030002@marel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:53286 "EHLO
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:59221 "EHLO
 	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757906AbaISUdQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Sep 2014 16:33:16 -0400
-In-Reply-To: <541B078C.2020007@marel.com>
+	with ESMTP id S1757848AbaISVKv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Sep 2014 17:10:51 -0400
+In-Reply-To: <541B0792.5030002@marel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Andri Yngvason <andri.yngvason@marel.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
 On 09/18/2014 06:25 PM, Andri Yngvason wrote:
-
-Please add a brief patch description. E.g. what is it good for and what
-does it improve.
-
 > Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 > ---
->  drivers/net/can/dev.c          | 79
-> ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/can/dev.h        | 10 ++++++
->  include/uapi/linux/can/error.h |  1 +
->  3 files changed, 90 insertions(+)
+>  drivers/net/can/flexcan.c | 66
+> +++--------------------------------------------
+>  1 file changed, 3 insertions(+), 63 deletions(-)
 > 
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 02492d2..d238b68 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -273,6 +273,85 @@ static int can_get_bittiming(struct net_device
-> *dev, struct can_bittiming *bt,
->      return err;
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 2700865..96a0755 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -559,74 +559,15 @@ static int flexcan_poll_bus_err(struct net_device
+> *dev, u32 reg_esr)
+>  static void do_state(struct net_device *dev,
+>               struct can_frame *cf, enum can_state new_state)
+>  {
+> -    struct flexcan_priv *priv = netdev_priv(dev);
+>      struct can_berr_counter bec;
+> 
+>      __flexcan_get_berr_counter(dev, &bec);
+> 
+> -    switch (priv->can.state) {
+> -    case CAN_STATE_ERROR_ACTIVE:
+> -        /*
+> -         * from: ERROR_ACTIVE
+> -         * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
+> -         * =>  : there was a warning int
+> -         */
+> -        if (new_state >= CAN_STATE_ERROR_WARNING &&
+> -            new_state <= CAN_STATE_BUS_OFF) {
+> -            netdev_dbg(dev, "Error Warning IRQ\n");
+> -            priv->can.can_stats.error_warning++;
+> -
+> -            cf->can_id |= CAN_ERR_CRTL;
+> -            cf->data[1] = (bec.txerr > bec.rxerr) ?
+> -                CAN_ERR_CRTL_TX_WARNING :
+> -                CAN_ERR_CRTL_RX_WARNING;
+
+Hm, can_change_state() handles the equal case differently. In the
+SJA1000 manual I found:
+
+"Errors detected during reception or transmission will affect the error
+counters according to the CAN 2.0B protocol
+specification. The error status bit is set when at least one of the
+error counters has reached or exceeded the CPU
+warning limit of 96. An error interrupt is generated, if enabled."
+
+If both are equal we do not known if rx or tx has caused the state
+change and therefore setting "CAN_ERR_CRTL_TX_WARNING |
+CAN_ERR_CRTL_RX_WARNING" seems more logical, indeed. But maybe it simply
+does not happen. Any other opinions?
+
+> -        }
+> -    case CAN_STATE_ERROR_WARNING:    /* fallthrough */
+> -        /*
+> -         * from: ERROR_ACTIVE, ERROR_WARNING
+> -         * to  : ERROR_PASSIVE, BUS_OFF
+> -         * =>  : error passive int
+> -         */
+> -        if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+> -            new_state <= CAN_STATE_BUS_OFF) {
+> -            netdev_dbg(dev, "Error Passive IRQ\n");
+> -            priv->can.can_stats.error_passive++;
+> -
+> -            cf->can_id |= CAN_ERR_CRTL;
+> -            cf->data[1] = (bec.txerr > bec.rxerr) ?
+> -                CAN_ERR_CRTL_TX_PASSIVE :
+> -                CAN_ERR_CRTL_RX_PASSIVE;
+> -        }
+> -        break;
+> -    case CAN_STATE_BUS_OFF:
+> -        netdev_err(dev, "BUG! "
+> -               "hardware recovered automatically from BUS_OFF\n");
+> -        break;
+> -    default:
+> -        break;
+> -    }
+> +    can_change_state(dev, cf, new_state,
+> +             can_get_err_dir(bec.rxerr, bec.txerr));
+
+Saves a lot of lines :).
+
+> 
+> -    /* process state changes depending on the new state */
+> -    switch (new_state) {
+> -    case CAN_STATE_ERROR_WARNING:
+> -        netdev_dbg(dev, "Error Warning\n");
+> -        cf->can_id |= CAN_ERR_CRTL;
+> -        cf->data[1] = (bec.txerr > bec.rxerr) ?
+> -            CAN_ERR_CRTL_TX_WARNING :
+> -            CAN_ERR_CRTL_RX_WARNING;
+> -        break;
+> -    case CAN_STATE_ERROR_ACTIVE:
+> -        netdev_dbg(dev, "Error Active\n");
+> -        cf->can_id |= CAN_ERR_PROT;
+> -        cf->data[2] = CAN_ERR_PROT_ACTIVE;
+> -        break;
+> -    case CAN_STATE_BUS_OFF:
+> -        cf->can_id |= CAN_ERR_BUSOFF;
+> +    if (unlikely(new_state == CAN_STATE_BUS_OFF))
+>          can_bus_off(dev);
+> -        break;
+> -    default:
+> -        break;
+> -    }
 >  }
 > 
-> +enum can_err_dir can_get_err_dir(unsigned int txerr, unsigned int rxerr)
-> +{
-> +    if (txerr > rxerr)
-> +        return CAN_ERR_DIR_TX;
-> +
-> +    if (rxerr < rxerr)
-> +        return CAN_ERR_DIR_RX;
-> +
-> +    return CAN_ERR_DIR_UNKNOWN;
-> +}
-> +EXPORT_SYMBOL_GPL(can_get_err_dir);
-> +
-> +static int can_make_state_warning(enum can_err_dir err_dir)
-> +{
-> +    switch (err_dir) {
-> +    case CAN_ERR_DIR_TX:
-> +        return CAN_ERR_CRTL_TX_WARNING;
-> +    case CAN_ERR_DIR_RX:
-> +        return CAN_ERR_CRTL_RX_WARNING;
-> +    default:
-> +        return CAN_ERR_CRTL_TX_WARNING | CAN_ERR_CRTL_RX_WARNING;
-> +    }
-> +}
-> +
-> +static int can_make_state_passive(enum can_err_dir err_dir)
-> +{
-> +    switch (err_dir) {
-> +    case CAN_ERR_DIR_TX:
-> +        return CAN_ERR_CRTL_TX_PASSIVE;
-> +    case CAN_ERR_DIR_RX:
-> +        return CAN_ERR_CRTL_RX_PASSIVE;
-> +    default:
-> +        return CAN_ERR_CRTL_TX_PASSIVE | CAN_ERR_CRTL_RX_PASSIVE;
-> +    }
-> +}
-> +
-> +void can_change_state(struct net_device *dev, struct can_frame *cf,
-> +              enum can_state state, enum can_err_dir err_dir)
-
-Thinking about it... passing txerr and rxerr directly here would make
-the err_dir obsolete and the code more simpler. CAN controllers
-not supporting tx/rx error counter should pass "0, 0".
-
-Also s/state/new_state/ would improve readability.
-
-> +{
-> +    struct can_priv *priv = netdev_priv(dev);
-> +
-> +    if (unlikely(state == priv->state)) {
-> +        netdev_warn(dev, "%s: oops, state did not change", __func__);
-> +        return;
-> +    }
-> +
-> +    if (state != CAN_STATE_BUS_OFF)
-> +        cf->can_id |= CAN_ERR_CRTL;
-> +
-> +    switch (state) {
-> +    case CAN_STATE_ERROR_WARNING:
-> +        if (state > priv->state)
-> +            priv->can_stats.error_warning++;
-> +        cf->data[1] = can_make_state_warning(err_dir);
-> +        break;
-> +
-> +    case CAN_STATE_ERROR_PASSIVE:
-> +        if (state > priv->state)
-> +            priv->can_stats.error_passive++;
-> +        cf->data[1] = can_make_state_passive(err_dir);
-> +        break;
-> +
-> +    case CAN_STATE_ERROR_ACTIVE:
-> +        cf->data[1] = CAN_ERR_CRTL_ACTIVE;
-> +        break;
-> +
-> +    case CAN_STATE_BUS_OFF:
-> +        priv->can_stats.bus_off++;
-> +        cf->can_id |= CAN_ERR_BUSOFF;
-> +        break;
-> +
-> +    default:
-
-A netdev_warn would be nice here.
-
-> +        break;
-> +    };
-> +
-> +    priv->state = state;
-> +}
-> +EXPORT_SYMBOL_GPL(can_change_state);
-> +
->  /*
->   * Local echo of CAN messages
->   *
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index 6992afc..9ef20fe 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-> @@ -27,6 +27,12 @@ enum can_mode {
->      CAN_MODE_SLEEP
->  };
+>  static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+> @@ -658,7 +599,6 @@ static int flexcan_poll_state(struct net_device
+> *dev, u32 reg_esr)
+>          return 0;
 > 
-> +enum can_err_dir {
-> +    CAN_ERR_DIR_UNKNOWN = 0,
-> +    CAN_ERR_DIR_RX,
-> +    CAN_ERR_DIR_TX
-> +};
-
-See my comment above.
-
->  /*
->   * CAN common private data
->   */
-> @@ -121,6 +127,10 @@ void unregister_candev(struct net_device *dev);
->  int can_restart_now(struct net_device *dev);
->  void can_bus_off(struct net_device *dev);
+>      do_state(dev, cf, new_state);
+> -    priv->can.state = new_state;
+>      netif_receive_skb(skb);
 > 
-> +enum can_err_dir can_get_err_dir(unsigned int txerr, unsigned int rxerr);
-> +void can_change_state(struct net_device *dev, struct can_frame *cf,
-> +        enum can_state state, enum can_err_dir err_dir);
-> +
->  void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
->                unsigned int idx);
->  unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
-> diff --git a/include/uapi/linux/can/error.h
-> b/include/uapi/linux/can/error.h
-> index c247446..1c508be 100644
-> --- a/include/uapi/linux/can/error.h
-> +++ b/include/uapi/linux/can/error.h
-> @@ -71,6 +71,7 @@
->  #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status
-> TX */
->                        /* (at least one error counter exceeds */
->                        /* the protocol-defined level of 127)  */
-> +#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active
-> state */
-> 
->  /* error in CAN protocol (type) / data[2] */
->  #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
+>      dev->stats.rx_packets++;
 > -- 
 
+To validate the correct behaviour could you please send messages while
+the cable is disconnected. Then reconnect the cable and see how the
+error state decreases. You can monitor the behaviour with ""candump -td
+-e any,0:0,#FFFFFFFF" in another shell.
+
 Wolfgang.
-
-
 
