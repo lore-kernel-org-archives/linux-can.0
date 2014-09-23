@@ -1,129 +1,90 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: flexcan: make use of FLEXCAN_MB_CODE_
-Date: Tue, 23 Sep 2014 15:25:39 +0200
-Message-ID: <1411478739-17894-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH v4] can: flexcan: Re-write receive path to use MB queue
+ instead of FIFO
+Date: Tue, 23 Sep 2014 15:34:35 +0200
+Message-ID: <542176EB.6050308@pengutronix.de>
+References: <1411048090-16837-1-git-send-email-david@protonic.nl> <54216E5F.2010804@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="0QN6iHPAxFngUHDf3pGKRX3wXueSac0js"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:37802 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:33007 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751688AbaIWNZn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Sep 2014 09:25:43 -0400
+	with ESMTP id S1751860AbaIWNen (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Sep 2014 09:34:43 -0400
+In-Reply-To: <54216E5F.2010804@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: david@protonic.nl
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: David Jander <david@protonic.nl>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hey David,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0QN6iHPAxFngUHDf3pGKRX3wXueSac0js
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-this is an incremental patch to get rid of open coded values for the mailbox
-code. Please review and feel free to squash in your patch.
+On 09/23/2014 02:58 PM, Marc Kleine-Budde wrote:
+> On 09/18/2014 03:48 PM, David Jander wrote:
+>> > The FlexCAN controller has a RX FIFO that is only 6 messages deep, a=
+nd a
+>> > mailbox space capable of holding up to 63 messages.
+>> > This space was largely unused, limiting the permissible latency from=
 
-Use just updated linux-can-next/flexcan-next, it already your and this patch.
+>> > interrupt to NAPI to only 6 messages. This patch uses all available =
+MBs
+>> > for message reception and frees the MBs in the IRQ handler to greatl=
+y
+>> > decrease the likelihood of receive overruns.
+>> >=20
+>> > Signed-off-by: David Jander <david@protonic.nl>
+> I think we can improve the algorithm a bit.
+>=20
+> I see a problem when you receive 4 CAN frames:
+>=20
+> 0-1-2-3
+>=20
+> then the irq handler starts, 0 gets processed and is empty (E)
+>=20
+> E-1-2-3
+>=20
+> while in the interrupt handler another two frames come in:
+>=20
+> 4-1-2-3-5
+>=20
+> I suggest add a variable to the priv which indicates the next MB to rea=
+d
+> from. Further, don't clear the mailbox direclty after it's been read,
+> wait until a certain amount of read mailboxes accumulate, .e.g. when th=
+e
+> rx_next point to 32. I have a work-in-progress code which to abstract
+> this algorithm, but it limited to 32 mailboxes. It should work on the
+> at91 but I don't know if it's flexible enought yet to work on the
+> flexcan, too.
+
+For the algorithm see the rx-fifo branch on linux-can-next. Feel free to
+comment.
 
 Marc
 
- drivers/net/can/flexcan.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index acfb7ab..7bd251b 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -158,6 +158,8 @@
- #define FLEXCAN_IFLAG2_DEFAULT 		(0xffffffff)
- 
- /* FLEXCAN message buffers */
-+#define FLEXCAN_MB_CODE_MASK		(0xf << 24)
-+#define FLEXCAN_MB_CODE_RX_BUSY_BIT	(0x1 << 24)
- #define FLEXCAN_MB_CODE_RX_INACTIVE	(0x0 << 24)
- #define FLEXCAN_MB_CODE_RX_EMPTY	(0x4 << 24)
- #define FLEXCAN_MB_CODE_RX_FULL		(0x2 << 24)
-@@ -711,10 +713,11 @@ static int flexcan_read_frame(struct net_device *dev, int n)
- 	u32 code;
- 
- 	reg_ctrl = mb->can_ctrl;
--	code = (reg_ctrl & FLEXCAN_MB_CODE_MASK) >> FLEXCAN_MB_CODE_SHIFT;
-+	code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
- 
- 	/* is this MB empty? */
--	if ((code != 0x2) && (code != 0x6))
-+	if ((code != FLEXCAN_MB_CODE_RX_FULL) &&
-+	    (code != FLEXCAN_MB_CODE_RX_OVERRRUN))
- 		return 0;
- 
- 	skb = alloc_can_skb(dev, &cf);
-@@ -805,12 +808,12 @@ static u32 flexcan_copy_one_rxmb(struct flexcan_priv *priv, int i)
- 	mb = &regs->cantxfg[i];
- 	dst = &priv->cantxfg_copy[priv->rx_idx];
- 	reg_ctrl = flexcan_read(&mb->can_ctrl);
--	code = (reg_ctrl & FLEXCAN_MB_CODE_MASK) >> FLEXCAN_MB_CODE_SHIFT;
-+	code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
- 
--	while (code & 1) {
-+	while (code & FLEXCAN_MB_CODE_RX_BUSY_BIT) {
- 		/* MB busy, shouldn't take long */
- 		reg_ctrl = flexcan_read(&mb->can_ctrl);
--		code = (reg_ctrl & FLEXCAN_MB_CODE_MASK) >> FLEXCAN_MB_CODE_SHIFT;
-+		code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
- 	}
- 
- 	/* Copy contents */
-@@ -820,14 +823,15 @@ static u32 flexcan_copy_one_rxmb(struct flexcan_priv *priv, int i)
- 	dst->data[1] = flexcan_read(&mb->data[1]);
- 
- 	/* If it's FULL or OVERRUN, clear the interrupt flag and lock MB */
--	if ((code == 0x2) || (code == 0x6)) {
-+	if ((code == FLEXCAN_MB_CODE_RX_FULL) ||
-+	    (code == FLEXCAN_MB_CODE_RX_OVERRRUN)) {
- 		if (i < 32)
- 			flexcan_write(BIT(i), &regs->iflag1);
- 		else
- 			flexcan_write(BIT(i - 32), &regs->iflag2);
--		flexcan_write(FLEXCAN_MB_CNT_CODE(0x0), &mb->can_ctrl);
--		if ((code == 0x6) || (priv->rx_idx ==
--				(ARRAY_SIZE(priv->cantxfg_copy) - 1))) {
-+		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE, &mb->can_ctrl);
-+		if ((code == FLEXCAN_MB_CODE_RX_OVERRRUN) ||
-+		    (priv->rx_idx == (ARRAY_SIZE(priv->cantxfg_copy) - 1))) {
- 			/* This MB was overrun, we lost data */
- 			priv->dev->stats.rx_over_errors++;
- 			priv->dev->stats.rx_errors++;
-@@ -848,9 +852,9 @@ static void flexcan_unlock_if_locked(struct flexcan_priv *priv, int i)
- 
- 	mb = &regs->cantxfg[i];
- 	reg_ctrl = flexcan_read(&mb->can_ctrl);
--	code = (reg_ctrl & FLEXCAN_MB_CODE_MASK) >> FLEXCAN_MB_CODE_SHIFT;
--	if (!code)
--		flexcan_write(FLEXCAN_MB_CNT_CODE(0x4), &mb->can_ctrl);
-+	code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
-+	if (code == FLEXCAN_MB_CODE_RX_INACTIVE)
-+		flexcan_write(FLEXCAN_MB_CODE_RX_EMPTY, &mb->can_ctrl);
- }
- 
- /*
-@@ -897,7 +901,7 @@ static void flexcan_copy_rxmbs(struct flexcan_priv *priv, u32 iflag1, u32 iflag2
- 	for(i = 1; i < 64; i++) {
- 		if (i == FLEXCAN_TX_BUF_ID)
- 			continue;
--		if (flexcan_copy_one_rxmb(priv, i) == 0x4)
-+		if (flexcan_copy_one_rxmb(priv, i) == FLEXCAN_MB_CODE_RX_EMPTY)
- 			break;
- 	}
- 
-@@ -1099,10 +1103,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 	/* Prepare mailboxes. Skip the first, use one for TX the rest for RX */
- 	for (i = 1; i < ARRAY_SIZE(regs->cantxfg); i++) {
- 		if (i == FLEXCAN_TX_BUF_ID)
--			flexcan_write(FLEXCAN_MB_CNT_CODE(0x8),
-+			flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
- 				&regs->cantxfg[i].can_ctrl);
- 		else
--			flexcan_write(FLEXCAN_MB_CNT_CODE(0x4),
-+			flexcan_write(FLEXCAN_MB_CODE_RX_EMPTY,
- 			      &regs->cantxfg[i].can_ctrl);
- 		flexcan_write(0, &regs->rximr[i]); /* Clear filter */
- 	}
--- 
-2.1.0
 
+--0QN6iHPAxFngUHDf3pGKRX3wXueSac0js
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlQhdusACgkQjTAFq1RaXHMO0gCfWv/iCXiwn3HaW7rhmOnMo14r
+kywAoJJIcWzkSfcX8K6g4T6g1WqkUI29
+=QlyJ
+-----END PGP SIGNATURE-----
+
+--0QN6iHPAxFngUHDf3pGKRX3wXueSac0js--
