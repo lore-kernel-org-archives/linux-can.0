@@ -1,98 +1,185 @@
-From: Brian Gregory <bdg@theptrgroup.com>
-Subject: Re: AW: ESD CAN-USB/2 Linux Mint 16 kernel 3.11
-Date: Fri, 26 Sep 2014 07:21:30 -0400
-Message-ID: <D04AC383.21199%bdg@theptrgroup.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: [PATCH v2 1/4] can: dev: Consolidate and unify state change handling.
+Date: Fri, 26 Sep 2014 18:25:24 +0000
+Message-ID: <5425AF94.5000206@marel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.theptrgroup.com ([71.178.251.9]:60224 "EHLO
-	mail.theptrgroup.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753533AbaIZLVe convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 26 Sep 2014 07:21:34 -0400
+Received: from mail-bl2on0079.outbound.protection.outlook.com ([65.55.169.79]:38407
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1755453AbaIZSZb (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 26 Sep 2014 14:25:31 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas =?ISO-8859-1?B?S/ZycGVy?= <Thomas.Koerper@esd.eu>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>
 
-Thomas,
+The handling of can error states is different between platforms.
+This is an attempt to correct that problem.
 
-Thanks for your response. I did have it working for Ubuntu 10.04 (kerne=
-l
-2.6).
-That said, I think the driver came from ESD.
+I've moved this handling into a generic function for changing the
+error state. This ensures that error state changes are handled
+the same way everywhere (where this function is used).
 
-I will look into it and post the details to the list shortly.
+What's changed from the last version of this patch-set is that
+can_change_state() now relies on the individual states of the rx/tx
+counters rather than their individual count values.
 
--Brian
+Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+---
+ drivers/net/can/dev.c          | 106 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/dev.h        |   5 ++
+ include/uapi/linux/can/error.h |   1 +
+ 3 files changed, 112 insertions(+)
 
-On 9/26/14 1:35 AM, "Thomas K=F6rper" <Thomas.Koerper@esd.eu> wrote:
-
->Hi Brian,
->
->the dmesg output shows that it's actually a "CAN USB/Mini", not a CAN
->USB/2. (The label at the back shows CAN USB instead of CAN USB/2)
->
->No SocketCAN driver for this device exists, sorry.
->
->
->Regards,
->    Thomas
->
->
->-----Urspr=FCngliche Nachricht-----
->Von: linux-can-owner@vger.kernel.org
->[mailto:linux-can-owner@vger.kernel.org] Im Auftrag von Brian Gregory
->Gesendet: Donnerstag, 25. September 2014 19:02
->An: linux-can@vger.kernel.org
->Betreff: ESD CAN-USB/2 Linux Mint 16 kernel 3.11
->
->I am having trouble trying to get this to work and I have been unable =
-to
->find a relevant email on the list.
->
->I am running Linux Mint 16 64bit (kernel 3.11) and I have confirmed th=
-at
->can-dev and esd_usb2 support is configured as kernel modules.
->I have loaded these modules and confirmed with lsmod:
->
->slcan 13049 0
->vcan 12726 0
->can_dev 20692 4 esd_usb2,ems_usb,peak_usb,usb_8dev
->can_raw 17120 0
->can 36503 1 can_raw
->
->The device (ESD CAN-USB/2) is recognized when plugged in (dmesg output=
-):
->
->[ 1672.932148] usb 4-2: new full-speed USB device number 2 using uhci_=
-hcd
->[ 1673.100268] usb 4-2: New USB device found, idVendor=3D0ab4,
->idProduct=3D0001 [ 1673.100281] usb 4-2: New USB device strings: Mfr=3D=
-4,
->Product=3D22,
->SerialNumber=3D46
->[ 1673.100289] usb 4-2: Product: CAN-USB 543 [ 1673.100296] usb 4-2:
->Manufacturer: esd-gmbh [ 1673.100303] usb 4-2: SerialNumber: GL002971
->
->Although there is no output indicating that the /sys/class/net/can0 no=
-de
->is created, and there are no can# nodes under /sys/class/net.
->I have confirmed that the virtual can bus works via the tutorial.
->
->What am I missing?
->
->Thanks,
->Brian Gregory
->
->
->--
->To unsubscribe from this list: send the line "unsubscribe linux-can" i=
-n
->the body of a message to majordomo@vger.kernel.org More majordomo info=
- at
-> http://vger.kernel.org/majordomo-info.html
->
->
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 02492d2..f2ad15e 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -273,6 +273,112 @@ static int can_get_bittiming(struct net_device *dev,
+struct can_bittiming *bt,
+     return err;
+ }
+ 
++static void can_update_error_counters(struct net_device *dev,
++                      enum can_state new_state)
++{
++    struct can_priv *priv = netdev_priv(dev);
++
++    if (new_state <= priv->state)
++        return;
++
++    switch (new_state) {
++    case CAN_STATE_ERROR_ACTIVE:
++        netdev_warn(dev, "%s: did we come from a state less than error-active?",
++                __func__);
++        break;
++    case CAN_STATE_ERROR_WARNING:
++        priv->can_stats.error_warning++;
++        break;
++    case CAN_STATE_ERROR_PASSIVE:
++        priv->can_stats.error_passive++;
++        break;
++    case CAN_STATE_BUS_OFF:
++        priv->can_stats.bus_off++;
++        break;
++    default:
++        netdev_warn(dev, "%s: %d is not a state", __func__, new_state);
++        break;
++    };
++}
++
++static int can_txstate_to_frame(struct net_device *dev, enum can_state state)
++{
++    switch (state) {
++    case CAN_STATE_ERROR_ACTIVE:
++        return CAN_ERR_CRTL_ACTIVE;
++    case CAN_STATE_ERROR_WARNING:
++        return CAN_ERR_CRTL_TX_WARNING;
++    case CAN_STATE_ERROR_PASSIVE:
++        return CAN_ERR_CRTL_TX_PASSIVE;
++    case CAN_STATE_BUS_OFF:
++        netdev_warn(dev, "%s: bus-off is not handled here", __func__);
++        return 0;
++    default:
++        netdev_warn(dev, "%s: %d is not a state", __func__, state);
++        return 0;
++    }
++}
++
++static int can_rxstate_to_frame(struct net_device *dev, enum can_state state)
++{
++    switch (state) {
++    case CAN_STATE_ERROR_ACTIVE:
++        return CAN_ERR_CRTL_ACTIVE;
++    case CAN_STATE_ERROR_WARNING:
++        return CAN_ERR_CRTL_RX_WARNING;
++    case CAN_STATE_ERROR_PASSIVE:
++        return CAN_ERR_CRTL_RX_PASSIVE;
++    case CAN_STATE_BUS_OFF:
++        netdev_warn(dev, "%s: bus-off is not handled here", __func__);
++        return 0;
++    default:
++        netdev_warn(dev, "%s: %d is not a state", __func__, state);
++        return 0;
++    }
++}
++
++void can_change_state(struct net_device *dev, struct can_frame *cf,
++              enum can_state new_state, enum can_state tx_state,
++              enum can_state rx_state)
++{
++    struct can_priv *priv = netdev_priv(dev);
++
++    if (unlikely(new_state == priv->state)) {
++        netdev_warn(dev, "%s: oops, state did not change", __func__);
++        return;
++    }
++
++    can_update_error_counters(dev, new_state);
++
++    if (unlikely(new_state == CAN_STATE_BUS_OFF)) {
++        cf->can_id |= CAN_ERR_BUSOFF;
++    } else {
++        cf->can_id |= CAN_ERR_CRTL;
++        if (tx_state > rx_state)
++            cf->data[1] |= can_txstate_to_frame(dev, tx_state);
++        else if (tx_state < rx_state)
++            cf->data[1] |= can_rxstate_to_frame(dev, rx_state);
++        else
++            cf->data[1] |= can_txstate_to_frame(dev, tx_state)
++                    |  can_rxstate_to_frame(dev, rx_state);
++    }
++
++    priv->state = new_state;
++}
++EXPORT_SYMBOL_GPL(can_change_state);
++
++enum can_state can_errcnt_to_state(unsigned int count)
++{
++    if (unlikely(count > 127))
++        return CAN_STATE_ERROR_PASSIVE;
++
++    if (unlikely(count > 96))
++        return CAN_STATE_ERROR_WARNING;
++
++    return CAN_STATE_ERROR_ACTIVE;
++}
++EXPORT_SYMBOL_GPL(can_errcnt_to_state);
++
+ /*
+  * Local echo of CAN messages
+  *
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 6992afc..6505208 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -121,6 +121,11 @@ void unregister_candev(struct net_device *dev);
+ int can_restart_now(struct net_device *dev);
+ void can_bus_off(struct net_device *dev);
+ 
++void can_change_state(struct net_device *dev, struct can_frame *cf,
++              enum can_state new_state, enum can_state tx_state,
++              enum can_state rx_state);
++enum can_state can_errcnt_to_state(unsigned int count);
++
+ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+               unsigned int idx);
+ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
+index c247446..1c508be 100644
+--- a/include/uapi/linux/can/error.h
++++ b/include/uapi/linux/can/error.h
+@@ -71,6 +71,7 @@
+ #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status TX */
+                       /* (at least one error counter exceeds */
+                       /* the protocol-defined level of 127)  */
++#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
+ 
+ /* error in CAN protocol (type) / data[2] */
+ #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
+-- 
+1.9.1
 
