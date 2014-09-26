@@ -1,113 +1,82 @@
 From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH v2 3/4] can: mscan: Consolidate and unify state change handling.
-Date: Fri, 26 Sep 2014 18:25:53 +0000
-Message-ID: <5425AFB1.6020209@marel.com>
+Subject: [PATCH v2 4/4] can: sja1000: Consolidate and unify state change handling.
+Date: Fri, 26 Sep 2014 18:26:01 +0000
+Message-ID: <5425AFB9.8050507@marel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1on0096.outbound.protection.outlook.com ([157.56.110.96]:38352
+Received: from mail-bn1bon0066.outbound.protection.outlook.com ([157.56.111.66]:3073
 	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755453AbaIZS0H (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 26 Sep 2014 14:26:07 -0400
+	id S1755453AbaIZS0K (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 26 Sep 2014 14:26:10 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>
 
 Replacing error state change handling with the new mechanism.
 
 Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 ---
- drivers/net/can/mscan/mscan.c | 47 ++++++++++++-------------------------------
- 1 file changed, 13 insertions(+), 34 deletions(-)
+ drivers/net/can/sja1000/sja1000.c | 33 +++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index e0c9be5..d370483 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -289,18 +289,15 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb,
-struct net_device *dev)
-     return NETDEV_TX_OK;
- }
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index b27ac60..953bf2d 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -392,6 +392,8 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc,
+uint8_t status)
+     struct can_frame *cf;
+     struct sk_buff *skb;
+     enum can_state state = priv->can.state;
++    enum can_state rx_state, tx_state;
++    unsigned int rxerr, txerr;
+     uint8_t ecc, alc;
  
--/* This function returns the old state to see where we came from */
--static enum can_state check_set_state(struct net_device *dev, u8 canrflg)
-+static enum can_state get_new_state(struct net_device *dev, u8 canrflg)
- {
-     struct mscan_priv *priv = netdev_priv(dev);
--    enum can_state state, old_state = priv->can.state;
- 
--    if (canrflg & MSCAN_CSCIF && old_state <= CAN_STATE_BUS_OFF) {
--        state = state_map[max(MSCAN_STATE_RX(canrflg),
--                      MSCAN_STATE_TX(canrflg))];
--        priv->can.state = state;
--    }
--    return old_state;
-+    if (unlikely(canrflg & MSCAN_CSCIF))
-+        return state_map[max(MSCAN_STATE_RX(canrflg),
-+                 MSCAN_STATE_TX(canrflg))];
-+
-+    return priv->can.state;
- }
- 
- static void mscan_get_rx_frame(struct net_device *dev, struct can_frame *frame)
-@@ -349,7 +346,7 @@ static void mscan_get_err_frame(struct net_device *dev,
-struct can_frame *frame,
-     struct mscan_priv *priv = netdev_priv(dev);
-     struct mscan_regs __iomem *regs = priv->reg_base;
-     struct net_device_stats *stats = &dev->stats;
--    enum can_state old_state;
-+    enum can_state new_state;
- 
-     netdev_dbg(dev, "error interrupt (canrflg=%#x)\n", canrflg);
-     frame->can_id = CAN_ERR_FLAG;
-@@ -363,27 +360,12 @@ static void mscan_get_err_frame(struct net_device *dev,
-struct can_frame *frame,
-         frame->data[1] = 0;
+     skb = alloc_can_err_skb(dev, &cf);
+@@ -467,27 +469,18 @@ static int sja1000_err(struct net_device *dev, uint8_t
+isrc, uint8_t status)
+         cf->data[0] = alc & 0x1f;
      }
  
--    old_state = check_set_state(dev, canrflg);
--    /* State changed */
--    if (old_state != priv->can.state) {
--        switch (priv->can.state) {
--        case CAN_STATE_ERROR_WARNING:
--            frame->can_id |= CAN_ERR_CRTL;
+-    if (state != priv->can.state && (state == CAN_STATE_ERROR_WARNING ||
+-                     state == CAN_STATE_ERROR_PASSIVE)) {
+-        uint8_t rxerr = priv->read_reg(priv, SJA1000_RXERR);
+-        uint8_t txerr = priv->read_reg(priv, SJA1000_TXERR);
+-        cf->can_id |= CAN_ERR_CRTL;
+-        if (state == CAN_STATE_ERROR_WARNING) {
 -            priv->can.can_stats.error_warning++;
--            if ((priv->shadow_statflg & MSCAN_RSTAT_MSK) <
--                (canrflg & MSCAN_RSTAT_MSK))
--                frame->data[1] |= CAN_ERR_CRTL_RX_WARNING;
--            if ((priv->shadow_statflg & MSCAN_TSTAT_MSK) <
--                (canrflg & MSCAN_TSTAT_MSK))
--                frame->data[1] |= CAN_ERR_CRTL_TX_WARNING;
--            break;
--        case CAN_STATE_ERROR_PASSIVE:
--            frame->can_id |= CAN_ERR_CRTL;
+-            cf->data[1] = (txerr > rxerr) ?
+-                CAN_ERR_CRTL_TX_WARNING :
+-                CAN_ERR_CRTL_RX_WARNING;
+-        } else {
 -            priv->can.can_stats.error_passive++;
--            frame->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
--            break;
--        case CAN_STATE_BUS_OFF:
--            frame->can_id |= CAN_ERR_BUSOFF;
-+    new_state = get_new_state(dev, canrflg);
-+    if (new_state != priv->can.state) {
-+        can_change_state(dev, frame, new_state, MSCAN_STATE_TX(canrflg),
-+                 MSCAN_STATE_RX(canrflg));
+-            cf->data[1] = (txerr > rxerr) ?
+-                CAN_ERR_CRTL_TX_PASSIVE :
+-                CAN_ERR_CRTL_RX_PASSIVE;
+-        }
+-        cf->data[6] = txerr;
+-        cf->data[7] = rxerr;
+-    }
++    if (state != priv->can.state) {
++        txerr = priv->read_reg(priv, SJA1000_TXERR);
++        rxerr = priv->read_reg(priv, SJA1000_RXERR);
+ 
+-    priv->can.state = state;
++        tx_state = can_errcnt_to_state(txerr);
++        rx_state = can_errcnt_to_state(rxerr);
 +
-+        if (priv->can.state == CAN_STATE_BUS_OFF) {
-             /*
-              * The MSCAN on the MPC5200 does recover from bus-off
-              * automatically. To avoid that we stop the chip doing
-@@ -396,9 +378,6 @@ static void mscan_get_err_frame(struct net_device *dev,
-struct can_frame *frame,
-                      MSCAN_SLPRQ | MSCAN_INITRQ);
-             }
-             can_bus_off(dev);
--            break;
--        default:
--            break;
-         }
-     }
-     priv->shadow_statflg = canrflg & MSCAN_STAT_MSK;
++        can_change_state(dev, cf, state, tx_state, rx_state);
++
++        cf->data[6] = rxerr;
++        cf->data[7] = txerr;
++    }
+ 
+     netif_rx(skb);
+ 
 -- 
 1.9.1
 
