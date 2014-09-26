@@ -1,185 +1,123 @@
 From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH v2 1/4] can: dev: Consolidate and unify state change handling.
-Date: Fri, 26 Sep 2014 18:25:24 +0000
-Message-ID: <5425AF94.5000206@marel.com>
+Subject: [PATCH v2 2/4] can: flexcan: Consolidate and unify state change handling.
+Date: Fri, 26 Sep 2014 18:25:38 +0000
+Message-ID: <5425AFA2.3040804@marel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0079.outbound.protection.outlook.com ([65.55.169.79]:38407
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1on0088.outbound.protection.outlook.com ([157.56.110.88]:41888
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755453AbaIZSZb (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 26 Sep 2014 14:25:31 -0400
+	id S1755453AbaIZSZq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 26 Sep 2014 14:25:46 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 
-The handling of can error states is different between platforms.
-This is an attempt to correct that problem.
-
-I've moved this handling into a generic function for changing the
-error state. This ensures that error state changes are handled
-the same way everywhere (where this function is used).
-
-What's changed from the last version of this patch-set is that
-can_change_state() now relies on the individual states of the rx/tx
-counters rather than their individual count values.
+Replacing error state change handling with the new mechanism.
 
 Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 ---
- drivers/net/can/dev.c          | 106 +++++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h        |   5 ++
- include/uapi/linux/can/error.h |   1 +
- 3 files changed, 112 insertions(+)
+ drivers/net/can/flexcan.c | 69 +++++------------------------------------------
+ 1 file changed, 6 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 02492d2..f2ad15e 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -273,6 +273,112 @@ static int can_get_bittiming(struct net_device *dev,
-struct can_bittiming *bt,
-     return err;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 2700865..e0aee9a 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -559,74 +559,18 @@ static int flexcan_poll_bus_err(struct net_device *dev,
+u32 reg_esr)
+ static void do_state(struct net_device *dev,
+              struct can_frame *cf, enum can_state new_state)
+ {
+-    struct flexcan_priv *priv = netdev_priv(dev);
+     struct can_berr_counter bec;
++    enum can_state rx_state, tx_state;
+ 
+     __flexcan_get_berr_counter(dev, &bec);
+ 
+-    switch (priv->can.state) {
+-    case CAN_STATE_ERROR_ACTIVE:
+-        /*
+-         * from: ERROR_ACTIVE
+-         * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
+-         * =>  : there was a warning int
+-         */
+-        if (new_state >= CAN_STATE_ERROR_WARNING &&
+-            new_state <= CAN_STATE_BUS_OFF) {
+-            netdev_dbg(dev, "Error Warning IRQ\n");
+-            priv->can.can_stats.error_warning++;
+-
+-            cf->can_id |= CAN_ERR_CRTL;
+-            cf->data[1] = (bec.txerr > bec.rxerr) ?
+-                CAN_ERR_CRTL_TX_WARNING :
+-                CAN_ERR_CRTL_RX_WARNING;
+-        }
+-    case CAN_STATE_ERROR_WARNING:    /* fallthrough */
+-        /*
+-         * from: ERROR_ACTIVE, ERROR_WARNING
+-         * to  : ERROR_PASSIVE, BUS_OFF
+-         * =>  : error passive int
+-         */
+-        if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+-            new_state <= CAN_STATE_BUS_OFF) {
+-            netdev_dbg(dev, "Error Passive IRQ\n");
+-            priv->can.can_stats.error_passive++;
+-
+-            cf->can_id |= CAN_ERR_CRTL;
+-            cf->data[1] = (bec.txerr > bec.rxerr) ?
+-                CAN_ERR_CRTL_TX_PASSIVE :
+-                CAN_ERR_CRTL_RX_PASSIVE;
+-        }
+-        break;
+-    case CAN_STATE_BUS_OFF:
+-        netdev_err(dev, "BUG! "
+-               "hardware recovered automatically from BUS_OFF\n");
+-        break;
+-    default:
+-        break;
+-    }
++    tx_state = can_errcnt_to_state(bec.txerr);
++    rx_state = can_errcnt_to_state(bec.rxerr);
+ 
+-    /* process state changes depending on the new state */
+-    switch (new_state) {
+-    case CAN_STATE_ERROR_WARNING:
+-        netdev_dbg(dev, "Error Warning\n");
+-        cf->can_id |= CAN_ERR_CRTL;
+-        cf->data[1] = (bec.txerr > bec.rxerr) ?
+-            CAN_ERR_CRTL_TX_WARNING :
+-            CAN_ERR_CRTL_RX_WARNING;
+-        break;
+-    case CAN_STATE_ERROR_ACTIVE:
+-        netdev_dbg(dev, "Error Active\n");
+-        cf->can_id |= CAN_ERR_PROT;
+-        cf->data[2] = CAN_ERR_PROT_ACTIVE;
+-        break;
+-    case CAN_STATE_BUS_OFF:
+-        cf->can_id |= CAN_ERR_BUSOFF;
++    can_change_state(dev, cf, new_state, tx_state, rx_state);
++
++    if (unlikely(new_state == CAN_STATE_BUS_OFF))
+         can_bus_off(dev);
+-        break;
+-    default:
+-        break;
+-    }
  }
  
-+static void can_update_error_counters(struct net_device *dev,
-+                      enum can_state new_state)
-+{
-+    struct can_priv *priv = netdev_priv(dev);
-+
-+    if (new_state <= priv->state)
-+        return;
-+
-+    switch (new_state) {
-+    case CAN_STATE_ERROR_ACTIVE:
-+        netdev_warn(dev, "%s: did we come from a state less than error-active?",
-+                __func__);
-+        break;
-+    case CAN_STATE_ERROR_WARNING:
-+        priv->can_stats.error_warning++;
-+        break;
-+    case CAN_STATE_ERROR_PASSIVE:
-+        priv->can_stats.error_passive++;
-+        break;
-+    case CAN_STATE_BUS_OFF:
-+        priv->can_stats.bus_off++;
-+        break;
-+    default:
-+        netdev_warn(dev, "%s: %d is not a state", __func__, new_state);
-+        break;
-+    };
-+}
-+
-+static int can_txstate_to_frame(struct net_device *dev, enum can_state state)
-+{
-+    switch (state) {
-+    case CAN_STATE_ERROR_ACTIVE:
-+        return CAN_ERR_CRTL_ACTIVE;
-+    case CAN_STATE_ERROR_WARNING:
-+        return CAN_ERR_CRTL_TX_WARNING;
-+    case CAN_STATE_ERROR_PASSIVE:
-+        return CAN_ERR_CRTL_TX_PASSIVE;
-+    case CAN_STATE_BUS_OFF:
-+        netdev_warn(dev, "%s: bus-off is not handled here", __func__);
-+        return 0;
-+    default:
-+        netdev_warn(dev, "%s: %d is not a state", __func__, state);
-+        return 0;
-+    }
-+}
-+
-+static int can_rxstate_to_frame(struct net_device *dev, enum can_state state)
-+{
-+    switch (state) {
-+    case CAN_STATE_ERROR_ACTIVE:
-+        return CAN_ERR_CRTL_ACTIVE;
-+    case CAN_STATE_ERROR_WARNING:
-+        return CAN_ERR_CRTL_RX_WARNING;
-+    case CAN_STATE_ERROR_PASSIVE:
-+        return CAN_ERR_CRTL_RX_PASSIVE;
-+    case CAN_STATE_BUS_OFF:
-+        netdev_warn(dev, "%s: bus-off is not handled here", __func__);
-+        return 0;
-+    default:
-+        netdev_warn(dev, "%s: %d is not a state", __func__, state);
-+        return 0;
-+    }
-+}
-+
-+void can_change_state(struct net_device *dev, struct can_frame *cf,
-+              enum can_state new_state, enum can_state tx_state,
-+              enum can_state rx_state)
-+{
-+    struct can_priv *priv = netdev_priv(dev);
-+
-+    if (unlikely(new_state == priv->state)) {
-+        netdev_warn(dev, "%s: oops, state did not change", __func__);
-+        return;
-+    }
-+
-+    can_update_error_counters(dev, new_state);
-+
-+    if (unlikely(new_state == CAN_STATE_BUS_OFF)) {
-+        cf->can_id |= CAN_ERR_BUSOFF;
-+    } else {
-+        cf->can_id |= CAN_ERR_CRTL;
-+        if (tx_state > rx_state)
-+            cf->data[1] |= can_txstate_to_frame(dev, tx_state);
-+        else if (tx_state < rx_state)
-+            cf->data[1] |= can_rxstate_to_frame(dev, rx_state);
-+        else
-+            cf->data[1] |= can_txstate_to_frame(dev, tx_state)
-+                    |  can_rxstate_to_frame(dev, rx_state);
-+    }
-+
-+    priv->state = new_state;
-+}
-+EXPORT_SYMBOL_GPL(can_change_state);
-+
-+enum can_state can_errcnt_to_state(unsigned int count)
-+{
-+    if (unlikely(count > 127))
-+        return CAN_STATE_ERROR_PASSIVE;
-+
-+    if (unlikely(count > 96))
-+        return CAN_STATE_ERROR_WARNING;
-+
-+    return CAN_STATE_ERROR_ACTIVE;
-+}
-+EXPORT_SYMBOL_GPL(can_errcnt_to_state);
-+
- /*
-  * Local echo of CAN messages
-  *
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 6992afc..6505208 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -121,6 +121,11 @@ void unregister_candev(struct net_device *dev);
- int can_restart_now(struct net_device *dev);
- void can_bus_off(struct net_device *dev);
+ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+@@ -658,7 +602,6 @@ static int flexcan_poll_state(struct net_device *dev, u32
+reg_esr)
+         return 0;
  
-+void can_change_state(struct net_device *dev, struct can_frame *cf,
-+              enum can_state new_state, enum can_state tx_state,
-+              enum can_state rx_state);
-+enum can_state can_errcnt_to_state(unsigned int count);
-+
- void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
-               unsigned int idx);
- unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
-diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
-index c247446..1c508be 100644
---- a/include/uapi/linux/can/error.h
-+++ b/include/uapi/linux/can/error.h
-@@ -71,6 +71,7 @@
- #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status TX */
-                       /* (at least one error counter exceeds */
-                       /* the protocol-defined level of 127)  */
-+#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
+     do_state(dev, cf, new_state);
+-    priv->can.state = new_state;
+     netif_receive_skb(skb);
  
- /* error in CAN protocol (type) / data[2] */
- #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
+     dev->stats.rx_packets++;
 -- 
 1.9.1
 
