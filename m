@@ -1,148 +1,77 @@
-From: Brian Gregory <bdg@theptrgroup.com>
-Subject: Re: AW: ESD CAN-USB/2 Linux Mint 16 kernel 3.11
-Date: Mon, 29 Sep 2014 10:05:34 -0400
-Message-ID: <D04EDEB9.211DE%bdg@theptrgroup.com>
-References: <D04AC383.21199%bdg@theptrgroup.com>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5] can: flexcan: Re-write receive path to use MB queue
+ instead of FIFO
+Date: Mon, 29 Sep 2014 16:39:32 +0200
+Message-ID: <20140929163932.055fae8f@archvile>
+References: <1411995175-13540-1-git-send-email-david@protonic.nl>
+	<8124948.gcTnPkg5PL@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.theptrgroup.com ([71.178.251.9]:39642 "EHLO
-	mail.theptrgroup.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753313AbaI2OFk convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Sep 2014 10:05:40 -0400
-Received: from [10.11.21.74] (unknown [10.11.21.74])
-	by mail.theptrgroup.com (Postfix) with ESMTP id 6E7C9E0963
-	for <linux-can@vger.kernel.org>; Mon, 29 Sep 2014 10:05:36 -0400 (EDT)
-In-Reply-To: <D04AC383.21199%bdg@theptrgroup.com>
+Received: from protonic.xs4all.nl ([83.163.252.89]:4906 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752243AbaI2Oja (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Sep 2014 10:39:30 -0400
+In-Reply-To: <8124948.gcTnPkg5PL@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-
-Thomas,
-
-I have received this confirmation from the vendor (ESD):
-
----
-Please note:
-
-With the release of the Linux kernel 2.6.25 an extension was added, whi=
-ch
-only accepts USB drivers, which are published under a GPL license, and
-which code must therefore be open source. The company esd however is no=
-t
-able to place their USB drivers under a GPL license and therefore canno=
-t
-offer an USB driver for the standard esd CAN-API starting from kernel
-version 2.6.25.
-
-In the mean time we found a solution for our model CAN-USB/2,
-unfortunately not for the CAN-USB-Mini. There is an open source project
-for Linux drivers for CAN interfaces which is called "Socket CAN". We
-offer a support of Linux drivers for our CAN USB/2 modules which are
-compatible to this CAN-API. Additionally to that we offer a wrapper to =
-the
-most of the esd CAN-API functionalities which is based on the Socket CA=
-N
-driver. Please note that not all esd CAN-API function calls are support=
-ed.
-
-So you have to change to the CAN-USB/2 if you want to use later Linux
-kernel versions.
----
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
 
-Thanks for your support.
+Dear Alexander,
 
--Brian Gregory
+On Mon, 29 Sep 2014 15:29:28 +0200
+Alexander Stein <alexander.stein@systec-electronic.com> wrote:
 
-On 9/26/14 7:21 AM, "Brian Gregory" <bdg@theptrgroup.com> wrote:
+> On Monday 29 September 2014 14:52:55, David Jander wrote:
+> > The FlexCAN controller has a RX FIFO that is only 6 messages deep, and a
+> > mailbox space capable of holding up to 63 messages.
+> > 
+> > This space was largely unused, limiting the permissible latency from
+> > interrupt to NAPI to only 6 messages. This patch uses all available MBs
+> > for message reception and frees the MBs in the IRQ handler to greatly
+> > decrease the likelihood of receive overruns.
+> > 
+> > Signed-off-by: David Jander <david@protonic.nl>
+> 
+> AFAICT, If you disable Rx FIFO mode, you essentially break RTR reception on
+> (at least) i.MX3. Please refere to the reference manual 24.4.8.1 Remote
+> Frames. Vybrid and i.MX6 (not sure about i.MX5) seem to have more features
+> about RTR reception.
 
->Thomas,
->
->Thanks for your response. I did have it working for Ubuntu 10.04 (kern=
-el
->2.6).
->That said, I think the driver came from ESD.
->
->I will look into it and post the details to the list shortly.
->
->-Brian
->
->On 9/26/14 1:35 AM, "Thomas K=F6rper" <Thomas.Koerper@esd.eu> wrote:
->
->>Hi Brian,
->>
->>the dmesg output shows that it's actually a "CAN USB/Mini", not a CAN
->>USB/2. (The label at the back shows CAN USB instead of CAN USB/2)
->>
->>No SocketCAN driver for this device exists, sorry.
->>
->>
->>Regards,
->>    Thomas
->>
->>
->>-----Urspr=FCngliche Nachricht-----
->>Von: linux-can-owner@vger.kernel.org
->>[mailto:linux-can-owner@vger.kernel.org] Im Auftrag von Brian Gregory
->>Gesendet: Donnerstag, 25. September 2014 19:02
->>An: linux-can@vger.kernel.org
->>Betreff: ESD CAN-USB/2 Linux Mint 16 kernel 3.11
->>
->>I am having trouble trying to get this to work and I have been unable=
- to
->>find a relevant email on the list.
->>
->>I am running Linux Mint 16 64bit (kernel 3.11) and I have confirmed t=
-hat
->>can-dev and esd_usb2 support is configured as kernel modules.
->>I have loaded these modules and confirmed with lsmod:
->>
->>slcan 13049 0
->>vcan 12726 0
->>can_dev 20692 4 esd_usb2,ems_usb,peak_usb,usb_8dev
->>can_raw 17120 0
->>can 36503 1 can_raw
->>
->>The device (ESD CAN-USB/2) is recognized when plugged in (dmesg outpu=
-t):
->>
->>[ 1672.932148] usb 4-2: new full-speed USB device number 2 using uhci=
-_hcd
->>[ 1673.100268] usb 4-2: New USB device found, idVendor=3D0ab4,
->>idProduct=3D0001 [ 1673.100281] usb 4-2: New USB device strings: Mfr=3D=
-4,
->>Product=3D22,
->>SerialNumber=3D46
->>[ 1673.100289] usb 4-2: Product: CAN-USB 543 [ 1673.100296] usb 4-2:
->>Manufacturer: esd-gmbh [ 1673.100303] usb 4-2: SerialNumber: GL002971
->>
->>Although there is no output indicating that the /sys/class/net/can0 n=
-ode
->>is created, and there are no can# nodes under /sys/class/net.
->>I have confirmed that the virtual can bus works via the tutorial.
->>
->>What am I missing?
->>
->>Thanks,
->>Brian Gregory
->>
->>
->>--
->>To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
->>the body of a message to majordomo@vger.kernel.org More majordomo inf=
-o at
->> http://vger.kernel.org/majordomo-info.html
->>
->>
->
->
->--
->To unsubscribe from this list: send the line "unsubscribe linux-can" i=
-n
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Argh! Looks like you are right!
+RTR reception did not work for i.MX6 either, but that is because I forgot to
+set RRS bit in CTRL2... which does not exist on i.MX53 nor i.MX35.
+What's strange is the fact that the i.MX53 RM does not contain the chapter you
+mention (it is contained in the i.MX35 RM though), and this is the only place
+that clearly seems to indicate that this indeed will not work on the i.MX3:
 
+"A received remote request frame is not stored in a receive buffer. It is only
+used to trigger a transmission of a frame in response."
 
+AFAICS, we have little choice but to use the Rx FIFO, at least for i.MX3/5 or
+older IPs...
+
+Maybe I can re-factor the code in such a way that the same construction is
+used outside the IRQ context, but the IRQ routine will either empty the FIFO
+(for revision 3 and older flexcan) or the while MB area (for revision 10 and
+newer).
+
+The BIG drawback of using the RX FIFO is that it is really tiny. Not using it
+is really a big win for i.MX6 and newer... which I'd like to keep.
+
+Nevertheless, emptying the FIFO in the IRQ handler will still be a big
+improvement, since the only thing that could still kill the driver and cause
+message loss is interrupt latency, which normally should not be so high. NAPI
+scheduling latency is probably much worse, and this is the biggest issue with
+the current driver.
+
+Any suggestion on what to do?
+
+Best regards,
+
+-- 
+David Jander
+Protonic Holland.
