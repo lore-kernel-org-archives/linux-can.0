@@ -1,80 +1,65 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Writing socketCAN module for my own hardware
-Date: Wed, 01 Oct 2014 15:11:56 +0200
-Message-ID: <542BFD9C.1000308@pengutronix.de>
-References: <53E9C774.3040401@ep1.ruhr-uni-bochum.de> <53E9CF27.90400@pengutronix.de> <53E9D6F3.4050206@ep1.ruhr-uni-bochum.de> <53E9E614.7060303@pengutronix.de> <542BACC0.4050707@ep1.ruhr-uni-bochum.de> <542BB21B.4030200@pengutronix.de> <542BF456.3030201@ep1.ruhr-uni-bochum.de> <542BF687.1000800@pengutronix.de> <542BF9FD.5060209@ep1.ruhr-uni-bochum.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: randconfig build error with next-20141001, in drivers/i2c/algos/i2c-algo-bit.c
+Date: Wed, 01 Oct 2014 16:26:11 -0700
+Message-ID: <542C8D93.8090008@infradead.org>
+References: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="sAR6KGSw4H1iWHKsFwKMWK8B0uAb8BwD0"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46797 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751053AbaJANMD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Oct 2014 09:12:03 -0400
-In-Reply-To: <542BF9FD.5060209@ep1.ruhr-uni-bochum.de>
+Received: from casper.infradead.org ([85.118.1.10]:53543 "EHLO
+	casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751777AbaJAX0W (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Oct 2014 19:26:22 -0400
+In-Reply-To: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>, linux-can@vger.kernel.org
+To: Jim Davis <jim.epost@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next <linux-next@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, wsa@the-dreams.de, khali@linux-fr.org, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-i2c@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-can@vger.kernel.org, linux-media <linux-media@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---sAR6KGSw4H1iWHKsFwKMWK8B0uAb8BwD0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 10/01/14 14:37, Jim Davis wrote:
+> Building with the attached random configuration file,
 
-On 10/01/2014 02:56 PM, Florian Feldbauer wrote:
->> BTW: what's the use-case of the rpi, better buy a beagle bone black.
->> IIRC you need to attach the CAN phy, and you're ready to go. It comes
->> with two internal CAN cores, the first one is quite easy to setup, the=
+Also:
+warning: (CAN_PEAK_PCIEC && SFC && IGB && VIDEO_TW68 && DRM && FB_DDC &=
+& FB_VIA) selects I2C_ALGOBIT which has unmet direct dependencies (I2C)
 
->> second one uses the same pins as one the the I2C busses, which has to =
-be
->> disabled then... And you can use a proper mainline kernel.
+> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_bus=92:
+> drivers/i2c/algos/i2c-algo-bit.c:658:33: error: =91i2c_add_adapter=92
+> undeclared (first use in this function)
+>   return __i2c_bit_add_bus(adap, i2c_add_adapter);
+>                                  ^
+> drivers/i2c/algos/i2c-algo-bit.c:658:33: note: each undeclared
+> identifier is reported only once for each function it appears in
+> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_numbered=
+_bus=92:
+> drivers/i2c/algos/i2c-algo-bit.c:664:33: error:
+> =91i2c_add_numbered_adapter=92 undeclared (first use in this function=
+)
+>   return __i2c_bit_add_bus(adap, i2c_add_numbered_adapter);
+>                                  ^
+>   CC      net/openvswitch/actions.o
+> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_bus=92:
+> drivers/i2c/algos/i2c-algo-bit.c:659:1: warning: control reaches end =
+of non-void
+>  function [-Wreturn-type]
+>  }
+>  ^
+> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_numbered=
+_bus=92:
+> drivers/i2c/algos/i2c-algo-bit.c:665:1: warning: control reaches end =
+of non-void
+>  function [-Wreturn-type]
+>  }
+>  ^
+> make[3]: *** [drivers/i2c/algos/i2c-algo-bit.o] Error 1
 
-> I'm working at the university for experimental hadron physik. And for
-> our experiment we need a low budget, high performance CANbus interface
-> running under Linux.
+In drivers/media/pci/tw68/Kconfig, VIDEO_TW68 should depend on I2C in o=
+rder
+to make it safe to select I2C_ALGOBIT.
 
-High performance and bit banging in one sentence (or SoC) is a bit
-contradictory :)
+In drivers/net/can/sja1000/Kconfig, CAN_PEAK_PCIEC should depend on I2C
+instead of selecting I2C (and change the help text).
 
-> We came up with the idea of the Rpi, since it's small, it has ethernet,=
-
-> and it is
-> cheap (~30 euro). And with the sja1000 connected to the GPIOs you can
-> achieve
-> the high data throughput (up to 6666 extended data frames with 8 byte
-> length @1Mbit/s)
-
-Beagle Bone is about ~60=E2=82=AC in single quantities.
-
-> Actually I don't know if any other embedded linux board like the beagle=
-
-> bone
-> was considered...
-
-:(
-
-Marc
 
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---sAR6KGSw4H1iWHKsFwKMWK8B0uAb8BwD0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlQr/ZwACgkQjTAFq1RaXHNhoQCaAj+ECUWOoNTxnN5iS++UkTGj
-/IwAn1IXeELeOS+zOWsjghOHPehkTvUg
-=uA+D
------END PGP SIGNATURE-----
-
---sAR6KGSw4H1iWHKsFwKMWK8B0uAb8BwD0--
+~Randy
