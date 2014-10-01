@@ -1,58 +1,54 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH v2 2/3] net: can: c_can: Add syscon/regmap RAMINIT mechanism
-Date: Wed, 1 Oct 2014 12:06:55 +0300
-Message-ID: <542BC42F.2010406@ti.com>
-References: <1410273070-22485-1-git-send-email-rogerq@ti.com> <1410273070-22485-3-git-send-email-rogerq@ti.com> <20140930132650.GN1325@katana> <542AB137.30507@ti.com> <20140930135226.GO1325@katana> <542AB6E9.9000907@ti.com> <20140930141909.GP1325@katana> <542ABC90.7010900@pengutronix.de> <20140930144950.GQ1325@katana> <542AC5B2.9040406@pengutronix.de> <20140930152550.GR1325@katana> <542AD483.2020808@pengutronix.de> <542BBF3F.2040803@ti.com> <542BBFBE.90406@pengutronix.de>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5] can: flexcan: Re-write receive path to use MB queue
+ instead of FIFO
+Date: Wed, 1 Oct 2014 11:07:41 +0200
+Message-ID: <20141001110741.0e8e5ffb@archvile>
+References: <1411995175-13540-1-git-send-email-david@protonic.nl>
+	<1952804.jDdF5Ah5L9@ws-stein>
+	<542BAA22.7010508@pengutronix.de>
+	<4712537.n1vM034J9B@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <542BBFBE.90406@pengutronix.de>
-Sender: linux-omap-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfram Sang <wsa@the-dreams.de>
-Cc: wg@grandegger.com, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from protonic.xs4all.nl ([83.163.252.89]:10737 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751214AbaJAJHh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Oct 2014 05:07:37 -0400
+In-Reply-To: <4712537.n1vM034J9B@ws-stein>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-On 10/01/2014 11:47 AM, Marc Kleine-Budde wrote:
-> On 10/01/2014 10:45 AM, Roger Quadros wrote:
->> On 09/30/2014 07:04 PM, Marc Kleine-Budde wrote:
->>> On 09/30/2014 05:25 PM, Wolfram Sang wrote:
->>>>
->>>>> Yes, but syscon_regmap_lookup_by_phandle() doesn't need any support for
->>>>> additional parameters. Have a look at:
->>>>>
->>>>> drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
->>>>>
->>>>> First get the regmap, then the 1st argument is the offset in the regmap,
->>>>> the 2nd and 3rd could be the bits.
->>>>
->>>> So, for one driver the extra arguments are: <reg> <start_bit> <stop_bit>
->>>> For another driver (the stmmac example): <reg_offset> <reg_shift>
->>>
->>> The DCAN's "reg" is a "reg_offset" as in the stmmc.
->>>
->>> Roger, can we derive both start and done bit from a common reg_shift?
->>
->> I'm sorry I didn't understand what you meant.
->>
->> <&syscon_phandl> <reg offset> <start bit> <stop bit> should work well for us.
->> Even though reg offset is the same for both the DCAN instances.
+On Wed, 01 Oct 2014 10:29:41 +0200
+Alexander Stein <alexander.stein@systec-electronic.com> wrote:
+
+> On Wednesday 01 October 2014 09:15:46, Marc Kleine-Budde wrote:
+> > On 10/01/2014 09:11 AM, Alexander Stein wrote:
+> > > BTW: You posted a patch for at91_can in June (Din't get opportunity
+> > > to try it yet), where you use a kfifo to accomplish the same, why not
+> > > here?
+> > 
+> > The cyclic buffer approach is okay, from my point of view.
 > 
-> What's start bit and stop bit for instance 0 and 1 on that SoC that has
-> two instances??
-> 
+> I'M just wondering why 2 different approaches have been chosen.
 
-we have 3 SoCs at the moment, all have 2 DCAN instances.
+Good question.... I did the at91_can modification a long time ago, and the
+initial approach was more or less guided by the current architecture of the
+at91_can driver. I also probably got better ideas when doing something very
+similar for the second time (flexcan).
+Also, I can imagine that there are more CAN drivers that have similar
+problems, and maybe we should think about a solution in the SocketCAN
+framework itself instead.
 
-AM33xx & AM43xx
-instance	start	stop
-1		0	8
-2		1	9	
+Talking about at91_can... I have posted that patch twice already and had
+no reaction so far. Unfortunately now I don't have the hardware anymore, so I
+doubt I can pick this up again, let alone re-write that patch, unless someone
+is willing to help with testing...
 
-DRA7xx
-instance	start	stop
-1		3	1
-2		5	2
+Best regards,
 
-cheers,
--roger
+-- 
+David Jander
+Protonic Holland.
