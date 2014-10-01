@@ -1,45 +1,69 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH v5] can: flexcan: Re-write receive path to use MB queue instead of FIFO
-Date: Wed, 01 Oct 2014 10:29:41 +0200
-Message-ID: <4712537.n1vM034J9B@ws-stein>
-References: <1411995175-13540-1-git-send-email-david@protonic.nl> <1952804.jDdF5Ah5L9@ws-stein> <542BAA22.7010508@pengutronix.de>
+From: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH v2 2/3] net: can: c_can: Add syscon/regmap RAMINIT mechanism
+Date: Wed, 1 Oct 2014 11:45:51 +0300
+Message-ID: <542BBF3F.2040803@ti.com>
+References: <1410273070-22485-1-git-send-email-rogerq@ti.com> <1410273070-22485-3-git-send-email-rogerq@ti.com> <20140930132650.GN1325@katana> <542AB137.30507@ti.com> <20140930135226.GO1325@katana> <542AB6E9.9000907@ti.com> <20140930141909.GP1325@katana> <542ABC90.7010900@pengutronix.de> <20140930144950.GQ1325@katana> <542AC5B2.9040406@pengutronix.de> <20140930152550.GR1325@katana> <542AD483.2020808@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:58838 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751053AbaJAI2z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Oct 2014 04:28:55 -0400
-In-Reply-To: <542BAA22.7010508@pengutronix.de>
+Received: from arroyo.ext.ti.com ([192.94.94.40]:43218 "EHLO arroyo.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750782AbaJAIqV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 1 Oct 2014 04:46:21 -0400
+In-Reply-To: <542AD483.2020808@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David Jander <david@protonic.nl>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfram Sang <wsa@the-dreams.de>
+Cc: wg@grandegger.com, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-On Wednesday 01 October 2014 09:15:46, Marc Kleine-Budde wrote:
-> On 10/01/2014 09:11 AM, Alexander Stein wrote:
-> > BTW: You posted a patch for at91_can in June (Din't get opportunity
-> > to try it yet), where you use a kfifo to accomplish the same, why not
-> > here?
+On 09/30/2014 07:04 PM, Marc Kleine-Budde wrote:
+> On 09/30/2014 05:25 PM, Wolfram Sang wrote:
+>>
+>>> Yes, but syscon_regmap_lookup_by_phandle() doesn't need any support for
+>>> additional parameters. Have a look at:
+>>>
+>>> drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+>>>
+>>> First get the regmap, then the 1st argument is the offset in the regmap,
+>>> the 2nd and 3rd could be the bits.
+>>
+>> So, for one driver the extra arguments are: <reg> <start_bit> <stop_bit>
+>> For another driver (the stmmac example): <reg_offset> <reg_shift>
 > 
-> The cyclic buffer approach is okay, from my point of view.
+> The DCAN's "reg" is a "reg_offset" as in the stmmc.
+> 
+> Roger, can we derive both start and done bit from a common reg_shift?
 
-I'M just wondering why 2 different approaches have been chosen.
+I'm sorry I didn't understand what you meant.
 
-Regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
+<&syscon_phandl> <reg offset> <start bit> <stop bit> should work well for us.
+Even though reg offset is the same for both the DCAN instances.
 
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
- 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+> 
+>> Phew... Then we should really have a "syscon-raminit" property probably,
+>> so that at least plain "syscon" has a consistent syntax?
+> 
+> I think^whope we can have the same syntax as the stmmc :D
 
+I agree too.
+
+> 
+>>>> So, I'd rather drop additional arguments.
+>>>>
+>>>> Why would you like to have it encoded in DT?
+>>>
+>>> Where put the information then? Into the driver, but where do you get
+>>> the reference which instance of the DCAN you are, so that you can look
+>>> up the correct bits?
+>>
+>> Agreed. I thought we had this information in the driver already, but we
+>> haven't...
+>>
+> 
+> The current driver relies on the of_alias_get_id(), which isn't
+> considered best practice, is it? So I want to avoid this when switching
+> to syscon.
+
+cheers,
+-roger
