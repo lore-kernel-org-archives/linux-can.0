@@ -1,88 +1,162 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [RESEND] [PATCH] net: CAN: at91_can.c: decrease likelyhood of RX overruns
-Date: Mon, 06 Oct 2014 10:52:05 +0200
-Message-ID: <5282990.80afdvE4aW@ws-stein>
-References: <1403775686-19352-1-git-send-email-david@protonic.nl> <1547907.ZK2VXCpURP@ws-stein> <20141003110141.0ba3c33d@archvile>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: Fwd: Re: randconfig build error with next-20141001, in
+ drivers/i2c/algos/i2c-algo-bit.c
+Date: Mon, 06 Oct 2014 10:42:52 +0200
+Message-ID: <5432560C.8070103@peak-system.com>
+References: <542C8D93.8090008@infradead.org> <542D6CB5.40206@hartkopp.net>
+ <54324A53.50409@peak-system.com> <54324E56.2030109@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:48591 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751289AbaJFIvT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 6 Oct 2014 04:51:19 -0400
-In-Reply-To: <20141003110141.0ba3c33d@archvile>
+Received: from mail.peak-system.com ([213.157.13.214]:54160 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750809AbaJFIvS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 6 Oct 2014 04:51:18 -0400
+In-Reply-To: <54324E56.2030109@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "Hans J. Koch" <hjk@hansjkoch.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello David,
+Hi Oliver,
 
-On Friday 03 October 2014 11:01:41, David Jander wrote:
-> On Thu, 02 Oct 2014 14:41:25 +0200
-> Alexander Stein <alexander.stein@systec-electronic.com> wrote:
-> 
-> > finally I got the chance to test your patch. I originally expected to test
-> > it on a AT91SAM9263, but I did it now on a AT91SAM9X35. The tests were done
-> > on a v3.17-rc7 kernel + a DT patch. If I only run my CAN burst test without
-> > any other load on the ARM everything works fine, on the unpatched kernel,
-> > with your patch and also with rx-fifo branch of
-> > https://gitorious.org/linux-can/linux-can-next. When running an iperf
-> > (client on PC) in parallel, the situation is as follows: unpatched kernel:
-> > driver hangs after ~15s. No messages are received again while the kernel is
-> > still running. your patch: 37346 of 500000 msg lost rx-fifo: 36806 of 500000
-> > msg lost
-> 
-> Thanks a lot for taking the time to look at this.
-> I just looked at the rx-fifo patch, but I still don't understand how it is
-> supposed to improve the situation of this driver.... beats me.
-> Nevertheless you just proved that it is at least as good as my patch.
-> AFAIK, there is nothing that should work as well as off-loading the CAN
-> controller in the IRQ handler by a far margin. But the rx-fifo patch does not
-> do that, so it is hard for me to believe it is really that good.
-> Could you repeat your test at a lower bitrate? The only thing I can think of
-> is that 37000 out of 500000 messages the latency has spiked on your system,
-> but that spike should be a lot more contained with my patch than with rx-fifo,
-> so if I'm right, then lowering the bitrate we might see a situation in which
-> rx-fifo still loses a message here and there, while my patch doesn't.
-> Other than that, I am tempted to think my patch is simply broken.
+Le 06/10/2014 10:09, Oliver Hartkopp a =E9crit :
+> Hi Stephane,
+>
+> I'm back home.
+>
+> But I wondered if this problem really is a problem with our current K=
+config.
 
-Ok, here is another test run (including iperf) at 250kBit/s. Did all tests 3 times.
-plain:      0, 2, lockup
-your patch: 0, 0, 0
-rx-fifo:   26, 0, 43
+Well, you're right when you say that the PEAK_PCIEC option won't be=20
+visible if CONFIG_I2C is not selected.
+AFAIR, my first  version of Kconfig used the "depends on" keyword rathe=
+r=20
+then the "select" one.
+Anyway, if we had to change this Kconfig, we could take the opportunity=
+=20
+to upgrade the help text, by adding the info of the support of the new=20
+PCAN-ExpressCard 34.
 
-When the plain driver lockups I see those kernel messages:
-at91_can f8004000.can can0: order of incoming frames cannot be guaranteed
+Regards,
 
-And the same with 500kBit/s:
-plain:      0, 0, lockup
-your patch: 0, 0, 0
-rx-fifo:    0, 0, 0
+St=E9phane
 
-I'm wondering why here rx-fifo doesn't raise any misses at 500kBit/s while there were some at 250kBit/s, maybe I just got lucky to detect it then... I get the impression that iperf influence is somewhat different from time to time. For this reason I redid the test at 1MBit/s:
-plain:      lockup, lockup, lockup
-your patch: 37904, 36436, 37570
-rx-fifo:    35626, 34018, 36451
+>
+> Let's first wait for the answer from the complaining guys.
+>
+> Best regards,
+> Oliver
+>
+> On 10/06/2014 09:52 AM, Stephane Grosjean wrote:
+>> Hi Oliver,
+>>
+>> Sorry I was not at the office last week too ... :-/
+>>
+>> So, I send the patch to Marc asap ...
+>>
+>> Regards,
+>>
+>> St=E9phane
+>>
+>>
+>>
+>> Le 02/10/2014 17:18, Oliver Hartkopp a =E9crit :
+>>> Hello Stephane,
+>>>
+>>> can you please send a short patch for that to Marc/linux-can ?
+>>> I'm currently out of office.
+>>>
+>>> Tnx,
+>>> Oliver
+>>>
+>>>
+>>> -------- Forwarded Message --------
+>>> Subject: Re: randconfig build error with next-20141001, in
+>>> drivers/i2c/algos/i2c-algo-bit.c
+>>> Date: Wed, 01 Oct 2014 16:26:11 -0700
+>>> From: Randy Dunlap <rdunlap@infradead.org>
+>>> To: Jim Davis <jim.epost@gmail.com>, Stephen Rothwell <sfr@canb.auu=
+g.org.au>,
+>>> linux-next <linux-next@vger.kernel.org>, linux-kernel
+>>> <linux-kernel@vger.kernel.org>, wsa@the-dreams.de, khali@linux-fr.o=
+rg, Paul
+>>> Gortmaker <paul.gortmaker@windriver.com>, linux-i2c@vger.kernel.org=
+,
+>>> netdev@vger.kernel.org <netdev@vger.kernel.org>, linux-can@vger.ker=
+nel.org,
+>>> linux-media <linux-media@vger.kernel.org>, Hans Verkuil <hverkuil@x=
+s4all.nl>
+>>>
+>>> On 10/01/14 14:37, Jim Davis wrote:
+>>>> Building with the attached random configuration file,
+>>> Also:
+>>> warning: (CAN_PEAK_PCIEC && SFC && IGB && VIDEO_TW68 && DRM && FB_D=
+DC &&
+>>> FB_VIA) selects I2C_ALGOBIT which has unmet direct dependencies (I2=
+C)
+>>>
+>>>> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_bus=92=
+:
+>>>> drivers/i2c/algos/i2c-algo-bit.c:658:33: error: =91i2c_add_adapter=
+=92
+>>>> undeclared (first use in this function)
+>>>>     return __i2c_bit_add_bus(adap, i2c_add_adapter);
+>>>>                                    ^
+>>>> drivers/i2c/algos/i2c-algo-bit.c:658:33: note: each undeclared
+>>>> identifier is reported only once for each function it appears in
+>>>> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_numbe=
+red_bus=92:
+>>>> drivers/i2c/algos/i2c-algo-bit.c:664:33: error:
+>>>> =91i2c_add_numbered_adapter=92 undeclared (first use in this funct=
+ion)
+>>>>     return __i2c_bit_add_bus(adap, i2c_add_numbered_adapter);
+>>>>                                    ^
+>>>>     CC      net/openvswitch/actions.o
+>>>> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_bus=92=
+:
+>>>> drivers/i2c/algos/i2c-algo-bit.c:659:1: warning: control reaches e=
+nd of
+>>>> non-void
+>>>>    function [-Wreturn-type]
+>>>>    }
+>>>>    ^
+>>>> drivers/i2c/algos/i2c-algo-bit.c: In function =91i2c_bit_add_numbe=
+red_bus=92:
+>>>> drivers/i2c/algos/i2c-algo-bit.c:665:1: warning: control reaches e=
+nd of
+>>>> non-void
+>>>>    function [-Wreturn-type]
+>>>>    }
+>>>>    ^
+>>>> make[3]: *** [drivers/i2c/algos/i2c-algo-bit.o] Error 1
+>>> In drivers/media/pci/tw68/Kconfig, VIDEO_TW68 should depend on I2C =
+in order
+>>> to make it safe to select I2C_ALGOBIT.
+>>>
+>>> In drivers/net/can/sja1000/Kconfig, CAN_PEAK_PCIEC should depend on=
+ I2C
+>>> instead of selecting I2C (and change the help text).
+>>>
+>>>
+>> --=20
+>> PEAK-System Technik GmbH
+>> Sitz der Gesellschaft Darmstadt
+>> Handelsregister Darmstadt HRB 9183 Geschaeftsfuehrung: Alexander Gac=
+h, Uwe
+>> Wilhelm
+>> --=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-As expected all variants lost frames while with the unmodified kernel the driver lockups.
-
-I only have firmware for the embedded devices which support those bitrates tested, so I can't run again with e.g. 800kBit/s, but it shows that your patch improves the situation a lot. No more driver lockups, and no message losts at at least smaller bitrates.
-
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
- 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
-
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
