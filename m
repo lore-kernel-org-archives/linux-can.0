@@ -1,87 +1,63 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [RESEND] [PATCH] net: CAN: at91_can.c: decrease likelyhood of
- RX overruns
-Date: Tue, 7 Oct 2014 10:31:48 +0200
-Message-ID: <20141007103148.5404a4cd@archvile>
-References: <1403775686-19352-1-git-send-email-david@protonic.nl>
-	<2417882.RxeThGvgsF@ws-stein>
-	<20141006133942.0f1c820b@archvile>
-	<3545685.3jS4Whu5tJ@ws-stein>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: randconfig build error with next-20141001, in drivers/i2c/algos/i2c-algo-bit.c
+Date: Tue, 07 Oct 2014 10:58:25 +0200
+Message-ID: <5433AB31.9090603@hartkopp.net>
+References: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com> <542C8D93.8090008@infradead.org> <54324D68.6070309@hartkopp.net> <5432C8C6.7060506@infradead.org> <5432D3E6.9020805@hartkopp.net> <5432DAE8.5030509@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:6811 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752758AbaJGIbj convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Oct 2014 04:31:39 -0400
-In-Reply-To: <3545685.3jS4Whu5tJ@ws-stein>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:29407 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751447AbaJGI7D (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Oct 2014 04:59:03 -0400
+In-Reply-To: <5432DAE8.5030509@infradead.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "Hans J. Koch" <hjk@hansjkoch.de>
+To: Randy Dunlap <rdunlap@infradead.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Jim Davis <jim.epost@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next <linux-next@vger.kernel.org>, linux-i2c@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-can@vger.kernel.org
 
-On Mon, 06 Oct 2014 16:14:05 +0200
-Alexander Stein <alexander.stein@systec-electronic.com> wrote:
+On 10/06/2014 08:09 PM, Randy Dunlap wrote:
+> On 10/06/14 10:39, Oliver Hartkopp wrote:
 
-> On Monday 06 October 2014 13:39:42, David Jander wrote:
-> > > > One interesting control-metric would be to monitor the amount of
-> > > > messages/second your test-devices are able to generate.
-> > > 
-> > > I just noticed that this testing hardware has a DDR2 with only 16bit
-> > > interface. I think this will also reduce performance considerably. The
-> > 
-> > 16-bit DDR2 (even at its lowest clock of 200MHz) is not exactly slow...
-> > why do you think that could be a bottleneck?
+>> AFAICS there is 'just' a style problem as 'configs should not enable entire
+>> subsystems'. But it finally is a correct and valid Kconfig, right?
 > 
-> It's a 133MHz clock, so 266MHz effective.
+> Yes, right.
 
-Sorry, my fault. The lowest permitted DDR2 clock is 125MHz.
+(..)
 
-> I had done similar tests with i.MX28-EVK which also has only a 16-bit DDR
-> interface. The rusults were horrible. Even without that ethernet bug... 
+> In the unlikely case that I2C is not enabled, the user should have to enable
+> it instead of a solitary driver enabling it.  IOW, if a subsystem is disabled,
+> the user probably wanted it that way and a single driver should not override
+> that setting.
 
-Horrible seems a bit of a stretch... I have an i.MX28 board on my desk (with
-16-bit 200MHz DDR2), which is capable of spewing out 12200 messages per second
-at 1Mbaud when idle. The theoretical maximum bus load (DLC=1) would be around
-20000 messages per second, so at least I am able to keep up with the bandwidth
-corresponding to a 500kbaud bus at 100% load.
-From my PC (with a Peak USB CAN dongle) I can send only 5200 messages per
-second (and this is a Core-i7 with 128bit DDR3 memory interface clocked at
-800MHz ;-), so if the interfaces from SYS-Tec are significantly better than
-that we might have a deal... ;-)
+Due to the fact that a change to 'depends on I2C' would make the config option
+invisible (and therefore not selectable) in the case I2C was (unlikely)
+disabled I would finally vote to leave it as-is.
 
-> Now, doing the same tests (also CPU and Memory) again, it is worse than a
-> AT91SAM9G20 with 32-bit SDR RAM, which also has 400 MHz. I expected both
-> would be equally. If you're correct and the RAM is not the bottleneck it
-> seems that the cache (16kByte each, 32kByte on AT91SAM9G20) would be it.
+The current Kconfig entry already contains a description that points to the
+requirement to have I2C and I2C_ALGOBIT to be enabled to compile this driver:
 
-The i.MX28 and the AT91SAM9 have totally different CAN controllers to start
-with, so it is more like comparing apples with oranges I guess.
+config CAN_PEAK_PCIEC
+	bool "PEAK PCAN-ExpressCard Cards"
+	depends on CAN_PEAK_PCI
+	select I2C
+	select I2C_ALGOBIT
+	default y
+	---help---
+	  Say Y here if you want to use a PCAN-ExpressCard from PEAK-System
+	  Technik. This will also automatically select I2C and I2C_ALGO
+	  configuration options.
 
-> > > embedded device send ~1000 CAN frames/s, each which is an average
-> > > busload of 20%, but in burst time, it should be 100%.
-> > 
-> > You mean the bursts of 250 messages you talked about earlier should
-> > produce a bus load of 100%? I think it is important to get some certainty
-> > about what's really going on on the bus, specially if we see things we
-> > cannot explain. You don't have access to a PC with a CAN interface or an
-> > oscilloscope, do you?
-> 
-> My PC has our USB-CAN-Modules attached (single or dual channel), so what do
-> you want to see? a candump log? My access to oscilloscopes rather limited
-> and not reliable.
+AFAIK the PEAK PCAN-ExpressCard is usually used in x86 architecture Laptops,
+so it's near to an academic discussion as x86 usually selects I2C ;-)
 
-You can try this (which is what I do):
+@Stephane: When updating the help text to introduce the PCAN-ExpressCard 34
+support anyway you might probably add some more information *why* the I2C
+support is needed (for CAN transceiver settings and status LED).
 
-$ time cangen -g 0 -I 123 -L 1 -D i -p 2 -n 10000 can0
+And /s/I2C_ALGO/I2C_ALGOBIT/ :-)
 
-If you tx-queue is smallish compared to the 10000 messages sent, then the
-"real" time reported by "time" will correspond approximately to the amount of
-time it took to actually transmit 10000 messages.
-
-Best regards,
-
--- 
-David Jander
-Protonic Holland.
+Tnx & best regards,
+Oliver
