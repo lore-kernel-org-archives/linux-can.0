@@ -1,85 +1,87 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: randconfig build error with next-20141001, in drivers/i2c/algos/i2c-algo-bit.c
-Date: Mon, 06 Oct 2014 11:09:44 -0700
-Message-ID: <5432DAE8.5030509@infradead.org>
-References: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com> <542C8D93.8090008@infradead.org> <54324D68.6070309@hartkopp.net> <5432C8C6.7060506@infradead.org> <5432D3E6.9020805@hartkopp.net>
+From: David Jander <david@protonic.nl>
+Subject: Re: [RESEND] [PATCH] net: CAN: at91_can.c: decrease likelyhood of
+ RX overruns
+Date: Tue, 7 Oct 2014 10:31:48 +0200
+Message-ID: <20141007103148.5404a4cd@archvile>
+References: <1403775686-19352-1-git-send-email-david@protonic.nl>
+	<2417882.RxeThGvgsF@ws-stein>
+	<20141006133942.0f1c820b@archvile>
+	<3545685.3jS4Whu5tJ@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <5432D3E6.9020805@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Jim Davis <jim.epost@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-next <linux-next@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-i2c@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from protonic.xs4all.nl ([83.163.252.89]:6811 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752758AbaJGIbj convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Oct 2014 04:31:39 -0400
+In-Reply-To: <3545685.3jS4Whu5tJ@ws-stein>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "Hans J. Koch" <hjk@hansjkoch.de>
 
-On 10/06/14 10:39, Oliver Hartkopp wrote:
+On Mon, 06 Oct 2014 16:14:05 +0200
+Alexander Stein <alexander.stein@systec-electronic.com> wrote:
+
+> On Monday 06 October 2014 13:39:42, David Jander wrote:
+> > > > One interesting control-metric would be to monitor the amount of
+> > > > messages/second your test-devices are able to generate.
+> > > 
+> > > I just noticed that this testing hardware has a DDR2 with only 16bit
+> > > interface. I think this will also reduce performance considerably. The
+> > 
+> > 16-bit DDR2 (even at its lowest clock of 200MHz) is not exactly slow...
+> > why do you think that could be a bottleneck?
 > 
+> It's a 133MHz clock, so 266MHz effective.
+
+Sorry, my fault. The lowest permitted DDR2 clock is 125MHz.
+
+> I had done similar tests with i.MX28-EVK which also has only a 16-bit DDR
+> interface. The rusults were horrible. Even without that ethernet bug... 
+
+Horrible seems a bit of a stretch... I have an i.MX28 board on my desk (with
+16-bit 200MHz DDR2), which is capable of spewing out 12200 messages per second
+at 1Mbaud when idle. The theoretical maximum bus load (DLC=1) would be around
+20000 messages per second, so at least I am able to keep up with the bandwidth
+corresponding to a 500kbaud bus at 100% load.
+From my PC (with a Peak USB CAN dongle) I can send only 5200 messages per
+second (and this is a Core-i7 with 128bit DDR3 memory interface clocked at
+800MHz ;-), so if the interfaces from SYS-Tec are significantly better than
+that we might have a deal... ;-)
+
+> Now, doing the same tests (also CPU and Memory) again, it is worse than a
+> AT91SAM9G20 with 32-bit SDR RAM, which also has 400 MHz. I expected both
+> would be equally. If you're correct and the RAM is not the bottleneck it
+> seems that the cache (16kByte each, 32kByte on AT91SAM9G20) would be it.
+
+The i.MX28 and the AT91SAM9 have totally different CAN controllers to start
+with, so it is more like comparing apples with oranges I guess.
+
+> > > embedded device send ~1000 CAN frames/s, each which is an average
+> > > busload of 20%, but in burst time, it should be 100%.
+> > 
+> > You mean the bursts of 250 messages you talked about earlier should
+> > produce a bus load of 100%? I think it is important to get some certainty
+> > about what's really going on on the bus, specially if we see things we
+> > cannot explain. You don't have access to a PC with a CAN interface or an
+> > oscilloscope, do you?
 > 
-> On 10/06/2014 06:52 PM, Randy Dunlap wrote:
->> On 10/06/14 01:06, Oliver Hartkopp wrote:
->>> Hello all,
->>>
->>> just to get it right:
->>>
->>> So far it looks like this in linux/drivers/net/can/sja1000/Kconfig
->>>
->>> config CAN_PEAK_PCIEC
->>>         bool "PEAK PCAN-ExpressCard Cards"
->>>         depends on CAN_PEAK_PCI
->>>         select I2C
->>>         select I2C_ALGOBIT
->>>
->>> If one would change the
->>>
->>>         select I2C
->>>
->>> into
->>>
->>>         depends on I2C
->>>
->>> IMHO the CAN_PEAK_PCIEC hardware would *only* be visible and selectable when
->>> I2C was selected before (from anyone else?).
->>
->> That is correct.
->>
->>> So what it wrong on the current Kconfig entry?
->>> Is 'select' deprecated?
->>
->> No, it's not deprecated.  It's just dangerous.  and driver configs should not
->> enable entire subsystems via 'select'.
->>
->>> Or did randconfig generate a configuration that would not be possible by
->>> properly generating the config file with 'make menuconfig' ??
->>
->> randconfig generated a config for another driver which causes a build error,
->> not for a CAN driver.  The CAN driver does not have a build error AFAIK.
->> Its Kconfig is just doing something with a very big & ugly stick.
-> 
-> But when it is not done like this, we might have an invisible config option in
-> the corner case that I2C is not enabled by anyone else.
-> 
-> So what would you propose then?
-> 
-> AFAICS there is 'just' a style problem as 'configs should not enable entire
-> subsystems'. But it finally is a correct and valid Kconfig, right?
+> My PC has our USB-CAN-Modules attached (single or dual channel), so what do
+> you want to see? a candump log? My access to oscilloscopes rather limited
+> and not reliable.
 
-Yes, right.
+You can try this (which is what I do):
 
-> When I2C is already enabled - fine. If (unlikely) I2C is not enabled, we need
-> to pull the ugly stick. So what is dangerous on this? Was there any misuse of
-> select statements before?
+$ time cangen -g 0 -I 123 -L 1 -D i -p 2 -n 10000 can0
 
-No syntactic misuse, more of a style thing, like you say.
+If you tx-queue is smallish compared to the 10000 messages sent, then the
+"real" time reported by "time" will correspond approximately to the amount of
+time it took to actually transmit 10000 messages.
 
-The danger is in select being a big stick that does not check for symbol
-dependencies.
-
-In the unlikely case that I2C is not enabled, the user should have to enable
-it instead of a solitary driver enabling it.  IOW, if a subsystem is disabled,
-the user probably wanted it that way and a single driver should not override
-that setting.
-
+Best regards,
 
 -- 
-~Randy
+David Jander
+Protonic Holland.
