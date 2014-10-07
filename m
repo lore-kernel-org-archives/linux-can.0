@@ -1,63 +1,142 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: randconfig build error with next-20141001, in drivers/i2c/algos/i2c-algo-bit.c
-Date: Tue, 07 Oct 2014 10:58:25 +0200
-Message-ID: <5433AB31.9090603@hartkopp.net>
-References: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com> <542C8D93.8090008@infradead.org> <54324D68.6070309@hartkopp.net> <5432C8C6.7060506@infradead.org> <5432D3E6.9020805@hartkopp.net> <5432DAE8.5030509@infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: David Jander <david@protonic.nl>
+Subject: [RFC PATCH 1/2] can: rx-fifo: Increase MB size limit from 32 to 64
+Date: Tue,  7 Oct 2014 11:30:04 +0200
+Message-ID: <1412674205-23882-1-git-send-email-david@protonic.nl>
+References: <20141006131751.75823c82@archvile>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:29407 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751447AbaJGI7D (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Oct 2014 04:59:03 -0400
-In-Reply-To: <5432DAE8.5030509@infradead.org>
+Received: from protonic.xs4all.nl ([83.163.252.89]:6941 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751447AbaJGJaI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Oct 2014 05:30:08 -0400
+In-Reply-To: <20141006131751.75823c82@archvile>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>, Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: Jim Davis <jim.epost@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next <linux-next@vger.kernel.org>, linux-i2c@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>, David Jander <david@protonic.nl>
 
-On 10/06/2014 08:09 PM, Randy Dunlap wrote:
-> On 10/06/14 10:39, Oliver Hartkopp wrote:
+Signed-off-by: David Jander <david@protonic.nl>
+---
+ drivers/net/can/dev.c   | 24 ++++++++++++------------
+ include/linux/can/dev.h | 12 ++++++------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
->> AFAICS there is 'just' a style problem as 'configs should not enable entire
->> subsystems'. But it finally is a correct and valid Kconfig, right?
-> 
-> Yes, right.
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c1e53e9..fe45516 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -289,20 +289,20 @@ static unsigned int can_rx_fifo_inc(struct can_rx_fifo *fifo, unsigned int *val)
+ 		return (*val)--;
+ }
+ 
+-static u32 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
++static u64 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
+ {
+ 	if (fifo->inc)
+-		return ~0U >> (32 + fifo->low_first - fifo->high_first) << fifo->low_first;
++		return ~0U >> (64 + fifo->low_first - fifo->high_first) << fifo->low_first;
+ 	else
+-		return ~0U >> (32 - fifo->low_first + fifo->high_first) << (fifo->high_first + 1);
++		return ~0U >> (64 - fifo->low_first + fifo->high_first) << (fifo->high_first + 1);
+ }
+ 
+-static u32 can_rx_fifo_mask_high(struct can_rx_fifo *fifo)
++static u64 can_rx_fifo_mask_high(struct can_rx_fifo *fifo)
+ {
+ 	if (fifo->inc)
+-		return ~0U >> (32 + fifo->high_first - fifo->high_last - 1) << fifo->high_first;
++		return ~0U >> (64 + fifo->high_first - fifo->high_last - 1) << fifo->high_first;
+ 	else
+-		return ~0U >> (32 - fifo->high_first + fifo->high_last - 1) << fifo->high_last;
++		return ~0U >> (64 - fifo->high_first + fifo->high_last - 1) << fifo->high_last;
+ }
+ 
+ int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
+@@ -331,7 +331,7 @@ int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
+ 
+ 	netdev_dbg(dev, "%s: low_first=%d, high_first=%d, high_last=%d\n", __func__,
+ 		   fifo->low_first, fifo->high_first, fifo->high_last);
+-	netdev_dbg(dev, "%s: mask_low=0x%08x mask_high=0x%08x\n", __func__,
++	netdev_dbg(dev, "%s: mask_low=0x%016llx mask_high=0x%016llx\n", __func__,
+ 		   fifo->mask_low, fifo->mask_high);
+ 
+ 	return 0;
+@@ -341,14 +341,14 @@ EXPORT_SYMBOL_GPL(can_rx_fifo_add);
+ int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
+ {
+ 	int received = 0;
+-	u32 pending;
++	u64 pending;
+ 	unsigned int mb;
+ 
+ 	do {
+ 		pending = fifo->read_pending(fifo);
+ 		pending &= fifo->active;
+ 
+-		if (!(pending & BIT(fifo->next))) {
++		if (!(pending & BIT_ULL(fifo->next))) {
+ 			/*
+ 			 * Wrap around only if:
+ 			 * - we are in the upper group and
+@@ -356,7 +356,7 @@ int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
+ 			 *   of the lower group.
+ 			 */
+ 			if (can_rx_fifo_ge(fifo, fifo->next, fifo->high_first) &&
+-			    (pending & BIT(fifo->low_first))) {
++			    (pending & BIT_ULL(fifo->low_first))) {
+ 				fifo->next = fifo->low_first;
+ 
+ 				fifo->active |= fifo->mask_high;
+@@ -369,7 +369,7 @@ int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
+ 		mb = can_rx_fifo_inc(fifo, &fifo->next);
+ 
+ 		/* disable mailbox */
+-		fifo->active &= ~BIT(mb);
++		fifo->active &= ~BIT_ULL(mb);
+ 		fifo->mailbox_disable(fifo, mb);
+ 
+ 		fifo->mailbox_receive(fifo, mb);
+@@ -387,7 +387,7 @@ int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
+ }
+ EXPORT_SYMBOL_GPL(can_rx_fifo_poll);
+ 
+-u32 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo)
++u64 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo)
+ {
+ 	return fifo->active;
+ }
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index e9468d0..ed46f7d 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -71,14 +71,14 @@ struct can_rx_fifo {
+ 	unsigned int high_first;
+ 	unsigned int high_last;		/* not needed during runtime */
+ 
+-	u32 (*read_pending)(struct can_rx_fifo *rx_fifo);
+-	void (*mailbox_enable_mask)(struct can_rx_fifo *rx_fifo, u32 mask);
++	u64 (*read_pending)(struct can_rx_fifo *rx_fifo);
++	void (*mailbox_enable_mask)(struct can_rx_fifo *rx_fifo, u64 mask);
+ 	void (*mailbox_disable)(struct can_rx_fifo *rx_fifo, unsigned int mb);
+ 	void (*mailbox_receive)(struct can_rx_fifo *rx_fifo, unsigned int mb);
+ 
+-	u32 mask_low;
+-	u32 mask_high;
+-	u32 active;
++	u64 mask_low;
++	u64 mask_high;
++	u64 active;
+ 
+ 	unsigned int next;
+ 
+@@ -128,7 +128,7 @@ u8 can_len2dlc(u8 len);
+ 
+ int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo);
+ int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota);
+-u32 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo);
++u64 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo);
+ 
+ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
+ void free_candev(struct net_device *dev);
+-- 
+1.9.1
 
-(..)
-
-> In the unlikely case that I2C is not enabled, the user should have to enable
-> it instead of a solitary driver enabling it.  IOW, if a subsystem is disabled,
-> the user probably wanted it that way and a single driver should not override
-> that setting.
-
-Due to the fact that a change to 'depends on I2C' would make the config option
-invisible (and therefore not selectable) in the case I2C was (unlikely)
-disabled I would finally vote to leave it as-is.
-
-The current Kconfig entry already contains a description that points to the
-requirement to have I2C and I2C_ALGOBIT to be enabled to compile this driver:
-
-config CAN_PEAK_PCIEC
-	bool "PEAK PCAN-ExpressCard Cards"
-	depends on CAN_PEAK_PCI
-	select I2C
-	select I2C_ALGOBIT
-	default y
-	---help---
-	  Say Y here if you want to use a PCAN-ExpressCard from PEAK-System
-	  Technik. This will also automatically select I2C and I2C_ALGO
-	  configuration options.
-
-AFAIK the PEAK PCAN-ExpressCard is usually used in x86 architecture Laptops,
-so it's near to an academic discussion as x86 usually selects I2C ;-)
-
-@Stephane: When updating the help text to introduce the PCAN-ExpressCard 34
-support anyway you might probably add some more information *why* the I2C
-support is needed (for CAN transceiver settings and status LED).
-
-And /s/I2C_ALGO/I2C_ALGOBIT/ :-)
-
-Tnx & best regards,
-Oliver
