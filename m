@@ -1,64 +1,109 @@
-From: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
-Subject: Re: randconfig build error with next-20141001, in drivers/i2c/algos/i2c-algo-bit.c
-Date: Tue, 07 Oct 2014 10:03:29 -0700
-Message-ID: <54341CE1.5020902@infradead.org>
-References: <CA+r1ZhiL1y9aeLeJjpd_1DtzOG_oyoPg7XsTPJ9G-XY5G2DfCQ@mail.gmail.com> <542C8D93.8090008@infradead.org> <54324D68.6070309@hartkopp.net> <5432C8C6.7060506@infradead.org> <5432D3E6.9020805@hartkopp.net> <5432DAE8.5030509@infradead.org> <5433AB31.9090603@hartkopp.net>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5] can: flexcan: Re-write receive path to use MB queue
+ instead of FIFO
+Date: Wed, 8 Oct 2014 11:08:39 +0200
+Message-ID: <20141008110839.489a786d@archvile>
+References: <1411995175-13540-1-git-send-email-david@protonic.nl>
+	<4712537.n1vM034J9B@ws-stein>
+	<20141001110741.0e8e5ffb@archvile>
+	<5856354.jaFqUxgnZF@ws-stein>
+	<20141001113432.18ec8bed@archvile>
+	<542BD038.2070106@pengutronix.de>
+	<20141006092825.765bd50d@archvile>
+	<54326823.7030000@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5433AB31.9090603-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, Stephane Grosjean <s.grosjean-g4cQ8AsIbFbL9ATBNaCtXw@public.gmane.org>
-Cc: Jim Davis <jim.epost-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Rothwell <sfr-3FnU+UHB4dNDw9hX6IcOSA@public.gmane.org>, linux-next <linux-next-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from protonic.xs4all.nl ([83.163.252.89]:10662 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753664AbaJHJIa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 8 Oct 2014 05:08:30 -0400
+In-Reply-To: <54326823.7030000@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 
-On 10/07/14 01:58, Oliver Hartkopp wrote:
-> On 10/06/2014 08:09 PM, Randy Dunlap wrote:
->> On 10/06/14 10:39, Oliver Hartkopp wrote:
-> 
->>> AFAICS there is 'just' a style problem as 'configs should not enable entire
->>> subsystems'. But it finally is a correct and valid Kconfig, right?
->>
->> Yes, right.
-> 
-> (..)
-> 
->> In the unlikely case that I2C is not enabled, the user should have to enable
->> it instead of a solitary driver enabling it.  IOW, if a subsystem is disabled,
->> the user probably wanted it that way and a single driver should not override
->> that setting.
-> 
-> Due to the fact that a change to 'depends on I2C' would make the config option
-> invisible (and therefore not selectable) in the case I2C was (unlikely)
-> disabled I would finally vote to leave it as-is.
-> 
-> The current Kconfig entry already contains a description that points to the
-> requirement to have I2C and I2C_ALGOBIT to be enabled to compile this driver:
-> 
-> config CAN_PEAK_PCIEC
-> 	bool "PEAK PCAN-ExpressCard Cards"
-> 	depends on CAN_PEAK_PCI
-> 	select I2C
-> 	select I2C_ALGOBIT
-> 	default y
-> 	---help---
-> 	  Say Y here if you want to use a PCAN-ExpressCard from PEAK-System
-> 	  Technik. This will also automatically select I2C and I2C_ALGO
-> 	  configuration options.
-> 
-> AFAIK the PEAK PCAN-ExpressCard is usually used in x86 architecture Laptops,
-> so it's near to an academic discussion as x86 usually selects I2C ;-)
 
-Pray tell where does x86 usually select I2C?
+Dear Marc,
+
+On Mon, 06 Oct 2014 12:00:03 +0200
+Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+
+> On 10/06/2014 09:28 AM, David Jander wrote:
+> >>> 2.- Since the problem addressed by my patch to at91_can is very similar,
+> >>> what about solving these problems in the SocketCAN framework (if that is
+> >>> possible)?
+> >>
+> >> Have you had a look at my rx-fifo branch in
+> >> https://gitorious.org/linux-can/linux-can-next? It already tries to
+> >> abstract the simulation of the FIFO with the linear mailboxes.
+> > 
+> > Looks interesting. I think it is a good idea to do this in dev.c, since
+> > there are obviously more CAN drivers that can use this. Unfortunately it
+> > seems you are still pretending the napi-poll handler to call
+> > can_rx_fifo_poll(). Wouldn't it be better to just empty all MBs into a
+> > circular buffer or kfifo from the interrupt handler instead?
+> 
+> Yes probably, I started the rx-fifo patch before you came up with that idea.
+> 
+> > I still don't understand the results Alexander is getting, though....
+> > 
+> > What are you going to do with the rx-fifo work? Do you recommend to base my
+> > patch on that? In that case, calling can_rx_fifo_poll() from the interrupt
+> > handler will look a little awkward... but it should work. Or should I
+> > propose an extension to rx-fifo?
+> 
+> My plans, or rather the points that need to be addressed for the rx-fifo
+> are:
+> - improve to work with more than 32 mailboxes. 64 are probably enough
+>   for everybody :)
+> - make it work with the flexcan linear buffers
+> - make it work with the ti_hecc driver
+> - add option or convert to run from interrupt handler and copy to
+>   kfifo/cyclic buffer/...
+
+Can you lend you brain for a sec on this problem... I think I discovered a
+race condition in your rx-fifo code, but it might just be me not understanding
+it correctly....
+
+	do {
+		pending = fifo->read_pending(fifo);
+		pending &= fifo->active;
+
+		if (!(pending & BIT_ULL(fifo->next))) {
+			/*
+			 * Wrap around only if:
+			 * - we are in the upper group and
+			 * - there is a CAN frame in the first mailbox
+			 *   of the lower group.
+			 */
+			if (can_rx_fifo_ge(fifo, fifo->next, fifo->high_first) &&
+			    (pending & BIT_ULL(fifo->low_first))) {
+				fifo->next = fifo->low_first;
+				fifo->active |= fifo->mask_high;
+				fifo->mailbox_enable_mask(fifo, fifo->mask_high);
+			} else {
+				break;
+			}
+		}
+
+In this piece of code, suppose that fifo->next is in the upper half and a
+message is being written to the MB it is pointing at, but it is still not
+pending. The lower half has already been enabled and filled up completely (due
+to latency). In that case, fifo-next will jump back to fifo->low_first and
+leave a lonely filled MB in the middle of the upper half, that will trigger
+and infinite loop between IRQ and can_rx_fifo_poll(). The interrupt will never
+get cleared again.
+I know this is an extreme case of latency being so high as to fill more than
+the complete lower half, but if it strikes, it results in a lock-up. Am I
+right, or did I screw up somewhere?
+
 Thanks.
 
-> @Stephane: When updating the help text to introduce the PCAN-ExpressCard 34
-> support anyway you might probably add some more information *why* the I2C
-> support is needed (for CAN transceiver settings and status LED).
-> 
-> And /s/I2C_ALGO/I2C_ALGOBIT/ :-)
-
+Best regards,
 
 -- 
-~Randy
+David Jander
+Protonic Holland.
