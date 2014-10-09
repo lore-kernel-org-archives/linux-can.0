@@ -1,404 +1,127 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [RFC V2 PATCH 2/2] can: rx-fifo: Change to do controller
- off-load in interrupt and NAPI poll
-Date: Thu, 9 Oct 2014 14:19:42 +0200
-Message-ID: <20141009141942.54d25921@archvile>
-References: <1412849884-15004-1-git-send-email-david@protonic.nl>
-	<1412849884-15004-2-git-send-email-david@protonic.nl>
+From: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>
+Subject: Re: Writing socketCAN module for my own hardware
+Date: Thu, 09 Oct 2014 17:06:42 +0200
+Message-ID: <5436A482.4040001@ep1.ruhr-uni-bochum.de>
+References: <53E9C774.3040401@ep1.ruhr-uni-bochum.de> <53E9CF27.90400@pengutronix.de> <53E9D6F3.4050206@ep1.ruhr-uni-bochum.de> <53E9E614.7060303@pengutronix.de> <542BACC0.4050707@ep1.ruhr-uni-bochum.de> <542BB21B.4030200@pengutronix.de> <542BF456.3030201@ep1.ruhr-uni-bochum.de> <542BF687.1000800@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:14794 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751315AbaJIMTc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Oct 2014 08:19:32 -0400
-In-Reply-To: <1412849884-15004-2-git-send-email-david@protonic.nl>
+Received: from mi.ruhr-uni-bochum.de ([134.147.64.53]:35974 "HELO
+	mx4.rz.ruhr-uni-bochum.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with SMTP id S1752158AbaJIPGt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Oct 2014 11:06:49 -0400
+In-Reply-To: <542BF687.1000800@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+
+Hey all,
+
+I now checked everything with a mixed signal scope and
+one thing came to my eye:
+
+After loading the module, I get the error:
+[   16.806860] sja1000_raspi sja1000_raspi.0: registering sja1000_raspi=
+=20
+device (reg_base=3D0xf2200000, irq=3D174)
+[   16.836560] sja1000_raspi sja1000_raspi.0 (unregistered net_device):=
+=20
+setting SJA1000 into reset mode failed!
+[   16.871684] sja1000_raspi sja1000_raspi.0: sja1000_raspi device=20
+registered (reg_base=3D0xf2200000, irq=3D174)
+
+Although I can see at the scope, that reading register 0 of the SJA1000=
+=20
+returns the value 1 as it should be.
+Also, it seems that there is some kind of endless loop reading this=20
+register.
+
+Now, what I don't understand at all:
+Removing the module and loading it again works.
+I don't get the error that setting the SJA1000 into reset mode failed,
+the register is only read once after loading the module,
+and sending/reading CAN frames from the bus after setting a proper=20
+bitrate works too....
+
+Any Ideas why the first initialization of the kernel module doesn't wor=
+k?
+When is the probe function of the module actually called?
+
+A completely other question: I wanted to use libsocketcan to check the=20
+state of the interface,
+bringing it up in case it's down, within my C/C++ Program.
+Is there a way to use this lib as a normal user? Maybe some group the=20
+user has to be in?
+
+Regards,
+=46lorian
+
+On 10/01/2014 02:41 PM, Marc Kleine-Budde wrote:
+> On 10/01/2014 02:32 PM, Florian Feldbauer wrote:
+>>> Do you get any interrupts?
+>> Seems not the case
+>> Sending doesn't work either...
+>>  From a very quick look, it seems the GPIOs are not set...But to be =
+sure
+>> I have to build a small adapter in order to properly connect our dig=
+ital
+>> scope to it...
+> Let's see if there is actual output on the GPIO lines...
+>
+> BTW: what's the use-case of the rpi, better buy a beagle bone black.
+> IIRC you need to attach the CAN phy, and you're ready to go. It comes
+> with two internal CAN cores, the first one is quite easy to setup, th=
+e
+> second one uses the same pins as one the the I2C busses, which has to=
+ be
+> disabled then... And you can use a proper mainline kernel.
+>
+>>>> I'm working with the raspberry pi kernel
+>>>> (https://github.com/raspberrypi/linux)
+>>>> version 3.12.y commit c256eb9968c8997dce47350d2075e42f1b3991d3
+>>>>
+>>>> Source of my own kernel module is also on github
+>>>> https://github.com/ffeldbauer/epics_RPi_can/blob/ver3.0.0/CAN_inte=
+rface/driver/sja1000_raspi.c
+>>>>
+>>>>
+>>>>
+>>>> As written before, I could not find a documentation of socketCAN a=
+nd
+>>>> simply tried
+>>>> to "copy" the sja1000_isa.c driver...naybe I did something complet=
+ely
+>>>> wrong or missed
+>>>> something?
+>>> Yes, making a copy of the driver is probably not the right thing...=
+=2E
+>>> BTW: where's are the original copyright notes?
+>> "Copy" in this case means: I looked into
+>> sja1000_isa.c/sja1000_platform.c to see what function have
+>> to be implemented and what parameters do they use.
+>> I copied the corresponding functions from my chardev driver and modi=
+fied
+>> them
+>> accordingly....
+> IANAL, but it's best practice to state which parts of your driver is
+> based on the work of others.
+>
+> Marc
+>
 
 
-Hi Marc,
+--=20
+----------------------------------------
+| Dr. Florian Feldbauer                |
+|                                      |
+| Helmholtz-Institut Mainz /           |
+| Johannes Gutenberg-Universit=C3=A4t Mainz |
+| Johann-Joachim-Becher-Weg 36         |
+| D-55128 Mainz                        |
+|                                      |
+| Office: SB1 / 00-213                 |
+| Phone:  (+49)6131 / 39-29605         |
+----------------------------------------
 
-On Thu,  9 Oct 2014 12:18:04 +0200
-David Jander <david@protonic.nl> wrote:
-
-> WIP
-> The idea is to use rx-fifo from interrupt context and take away the need
-> for NAPI polling from the driver. Currently no support for error-handling
-> is included.
-
-About how to implement error handling...
-I see two options, but I don't know which is the right one:
-
-1.- Insert hooks for error- and state polling in the NAPI poll handler (see
-below) or
-
-2.- Do error- and state handling from interrupt and insert proper error frames
-in the circular buffer?
-
-The advantage of 1. over 2. is that it takes less (and unnecessary?) work in
-the interrupt handler. We want can_rx_fifo_irq_offload() to be as short and
-lean as possible, right?
-
-OTOH, option 2.- might ensure better synchronization between frame reception
-and error reporting.... no idea if that's important.
-
-> Signed-off-by: David Jander <david@protonic.nl>
-> ---
-> 
-> Changed since V1:
->  - Nearly total re-write.
->  - Removed support for fifo-in-napi-poll.
-> 
->  drivers/net/can/dev.c   | 213
-> +++++++++++++++++++++++++++++++++++++----------- include/linux/can/dev.h |
-> 21 +++-- 2 files changed, 180 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 930b9f4..9abd5a4 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -26,6 +26,7 @@
->  #include <linux/can/skb.h>
->  #include <linux/can/netlink.h>
->  #include <linux/can/led.h>
-> +#include <linux/circ_buf.h>
->  #include <net/rtnetlink.h>
->  
->  #define MOD_DESC "CAN device driver interface"
-> @@ -281,6 +282,14 @@ static bool can_rx_fifo_ge(struct can_rx_fifo *fifo,
-> unsigned int a, unsigned in return a <= b;
->  }
->  
-> +static bool can_rx_fifo_le(struct can_rx_fifo *fifo, unsigned int a,
-> unsigned int b) +{
-> +	if (fifo->inc)
-> +		return a <= b;
-> +	else
-> +		return a >= b;
-> +}
-> +
->  static unsigned int can_rx_fifo_inc(struct can_rx_fifo *fifo, unsigned int
-> *val) {
->  	if (fifo->inc)
-> @@ -305,27 +314,100 @@ static u64 can_rx_fifo_mask_high(struct can_rx_fifo
-> *fifo) return ~0LLU >> (64 - fifo->high_first + fifo->high_last - 1) <<
-> fifo->high_last; }
->  
-> +static int can_rx_fifo_read_napi_frame(struct can_rx_fifo *fifo, int index)
-> +{
-> +	struct net_device *dev = fifo->dev;
-> +	struct net_device_stats *stats = &dev->stats;
-> +	struct sk_buff *skb;
-> +	struct can_frame *cf;
-> +
-> +	skb = alloc_can_skb(dev, &cf);
-> +	if (unlikely(!skb)) {
-> +		stats->rx_dropped++;
-> +		return 0;
-> +	}
-> +
-> +	memcpy(cf, &fifo->ring[index], sizeof(*cf));
-> +
-> +	netif_receive_skb(skb);
-> +
-> +	stats->rx_packets++;
-> +	stats->rx_bytes += cf->can_dlc;
-> +
-> +	can_led_event(dev, CAN_LED_EVENT_RX);
-> +
-> +	return 1;
-> +}
-> +
-> +static int can_rx_fifo_napi_poll(struct napi_struct *napi, int quota)
-> +{
-> +	struct can_rx_fifo *fifo = container_of(napi, struct can_rx_fifo,
-> napi);
-> +	int work_done = 0;
-> +	int ret;
-> +	unsigned int head;
-> +	unsigned int tail;
-> +
-> +restart_poll:
-> +	/* handle mailboxes */
-> +	head = smp_load_acquire(&fifo->ring_head);
-> +	tail = fifo->ring_tail;
-> +	while ((CIRC_CNT(head, tail, fifo->ring_size) >= 1) &&
-> +			(work_done < quota)) {
-> +		ret = can_rx_fifo_read_napi_frame(fifo, tail);
-> +		work_done += ret;
-> +		tail = (tail + 1) & (fifo->ring_size -1);
-> +		smp_store_release(&fifo->ring_tail, tail);
-> +	}
-
-Option 1. (see above): Insert hooks here, like:
-
-	if (work_done < quota)
-		work_done += fifo->mailbox_poll_state(fifo);
-
-	if (work_done < quota)
-		work_done += fifo->mailbox_poll_error(fifo);
-
-> +
-> +	if (work_done < quota) {
-> +		napi_complete(napi);
-> +
-> +		/* Check if there was another interrupt */
-> +		head = smp_load_acquire(&fifo->ring_head);
-> +		if ((CIRC_CNT(head, tail, fifo->ring_size) >= 1) &&
-> +		    napi_reschedule(&fifo->napi))
-> +			goto restart_poll;
-> +	}
-> +
-> +	return work_done;
-> +}
-> +
->  int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
->  {
-> +	unsigned int weight;
->  	fifo->dev = dev;
->  
->  	if ((fifo->low_first < fifo->high_first) &&
-> -	    (fifo->high_first < fifo->high_last))
-> +	    (fifo->high_first < fifo->high_last)) {
->  		fifo->inc = true;
-> -	else if ((fifo->low_first > fifo->high_first) &&
-> -		 (fifo->high_first > fifo->high_last))
-> +		weight = fifo->high_last - fifo->low_first;
-> +	} else if ((fifo->low_first > fifo->high_first) &&
-> +		 (fifo->high_first > fifo->high_last)) {
->  		fifo->inc = false;
-> -	else
-> +		weight = fifo->low_first - fifo->high_last;
-> +	} else
->  		return -EINVAL;
->  
-> -	if (!fifo->read_pending || !fifo->mailbox_enable_mask ||
-> -	    !fifo->mailbox_disable || !fifo->mailbox_receive)
-> +	if (!fifo->mailbox_enable_mask || !fifo->mailbox_move_to_buffer ||
-> +	    !fifo->mailbox_enable)
->  		return -EINVAL;
->  
-> +	/* Make ring-buffer a sensible size that is a power of 2 */
-> +	fifo->ring_size = (2 << fls(weight));
-> +	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
-> +			     GFP_KERNEL);
-> +	if (!fifo->ring)
-> +		return -ENOMEM;
-> +
-> +	fifo->ring_head = fifo->ring_tail = 0;
-> +
-> +	/* Take care of NAPI handling */
-> +	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
-> +
->  	/* init variables */
->  	fifo->mask_low = can_rx_fifo_mask_low(fifo);
->  	fifo->mask_high = can_rx_fifo_mask_high(fifo);
-> -	fifo->next = fifo->low_first;
-> +	fifo->second_first = 0;
->  	fifo->active = fifo->mask_low | fifo->mask_high;
->  	fifo->mailbox_enable_mask(fifo, fifo->active);
->  
-> @@ -338,60 +420,95 @@ int can_rx_fifo_add(struct net_device *dev, struct
-> can_rx_fifo *fifo) }
->  EXPORT_SYMBOL_GPL(can_rx_fifo_add);
->  
-> -int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
-> +static unsigned int can_rx_fifo_offload_if_full(struct can_rx_fifo *fifo,
-> unsigned int n) +{
-> +	unsigned int head = fifo->ring_head;
-> +	unsigned int tail = ACCESS_ONCE(fifo->ring_tail);
-> +	unsigned int ret = 0;
-> +
-> +	if (CIRC_SPACE(head, tail, fifo->ring_size) >= 1) {
-> +		ret = fifo->mailbox_move_to_buffer(fifo, &fifo->ring[head],
-> n);
-> +		if (ret)
-> +			smp_store_release(&fifo->ring_head,
-> +				(head + 1) & (fifo->ring_size - 1));
-> +	} else {
-> +		ret = fifo->mailbox_move_to_buffer(fifo, &fifo->overflow,
-> n);
-> +		if (ret)
-> +			fifo->dev->stats.rx_dropped++;
-> +	}
-> +	return ret;
-> +}
-> +
-> +int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo)
->  {
-> -	int received = 0;
-> -	u64 pending;
-> -	unsigned int mb;
-> -
-> -	do {
-> -		pending = fifo->read_pending(fifo);
-> -		pending &= fifo->active;
-> -
-> -		if (!(pending & BIT_ULL(fifo->next))) {
-> -			/*
-> -			 * Wrap around only if:
-> -			 * - we are in the upper group and
-> -			 * - there is a CAN frame in the first mailbox
-> -			 *   of the lower group.
-> -			 */
-> -			if (can_rx_fifo_ge(fifo, fifo->next,
-> fifo->high_first) &&
-> -			    (pending & BIT_ULL(fifo->low_first))) {
-> -				fifo->next = fifo->low_first;
-> -
-> -				fifo->active |= fifo->mask_high;
-> -				fifo->mailbox_enable_mask(fifo,
-> fifo->mask_high);
-> -			} else {
-> -				break;
-> -			}
-> +	unsigned int i;
-> +	unsigned int ret;
-> +	unsigned int received = 0;
-> +
-> +	if (fifo->second_first) {
-> +		for (i = fifo->high_first;
-> +		     can_rx_fifo_le(fifo, i, fifo->high_last);
-> +		     can_rx_fifo_inc(fifo, &i)) {
-> +			received += can_rx_fifo_offload_if_full(fifo, i);
-> +			fifo->active |= BIT_ULL(i);
-> +			fifo->mailbox_enable(fifo, i);
->  		}
-> +	}
->  
-> -		mb = can_rx_fifo_inc(fifo, &fifo->next);
-> +	/* Copy and disable FULL MBs */
-> +	for (i = fifo->low_first; can_rx_fifo_le(fifo, i, fifo->high_last);
-> +			can_rx_fifo_inc(fifo, &i)) {
-> +		if (!(fifo->active & BIT_ULL(i)))
-> +			continue;
-> +		ret = can_rx_fifo_offload_if_full(fifo, i);
-> +		if (!ret)
-> +			break;
-> +		received += ret;
-> +		fifo->active &= ~BIT_ULL(i);
-> +	}
->  
-> -		/* disable mailbox */
-> -		fifo->active &= ~BIT_ULL(mb);
-> -		fifo->mailbox_disable(fifo, mb);
-> +	if (can_rx_fifo_ge(fifo, i, fifo->high_first) && fifo->second_first)
-> +		netdev_warn(fifo->dev, "%s: RX order cannot be guaranteed."
-> +			" (count=%d)\n", __FUNCTION__, i);
->  
-> -		fifo->mailbox_receive(fifo, mb);
-> +	fifo->second_first = false;
->  
-> -		if (fifo->next == fifo->high_first) {
-> -			fifo->active |= fifo->mask_low;
-> -			fifo->mailbox_enable_mask(fifo, fifo->mask_low);
-> -		}
-> +	/* No EMPTY MB in first half? */
-> +	if (can_rx_fifo_ge(fifo, i, fifo->high_first)) {
-> +		/* Re-enable all disabled MBs */
-> +		fifo->active = fifo->mask_low | fifo->mask_high;
-> +		fifo->mailbox_enable_mask(fifo, fifo->active);
-> +
-> +		/* Next time we need to check the second half first */
-> +		fifo->second_first = true;
-> +	}
->  
-> -		received++;
-> -		quota--;
-> -	} while (quota);
-> +	if (received)
-> +		napi_schedule(&fifo->napi);
->  
->  	return received;
->  }
-> -EXPORT_SYMBOL_GPL(can_rx_fifo_poll);
-> +EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload);
-> +
-> +void can_rx_fifo_napi_enable(struct can_rx_fifo *fifo)
-> +{
-> +	napi_enable(&fifo->napi);
-> +}
-> +EXPORT_SYMBOL_GPL(can_rx_fifo_napi_enable);
-> +
-> +void can_rx_fifo_napi_disable(struct can_rx_fifo *fifo)
-> +{
-> +	napi_disable(&fifo->napi);
-> +}
-> +EXPORT_SYMBOL_GPL(can_rx_fifo_napi_disable);
->  
-> -u64 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo)
-> +void can_rx_fifo_del(struct can_rx_fifo *fifo)
->  {
-> -	return fifo->active;
-> +	if (fifo->ring)
-> +		kfree(fifo->ring);
-> +	netif_napi_del(&fifo->napi);
->  }
-> -EXPORT_SYMBOL_GPL(can_rx_fifo_get_active_mb_mask);
-> +EXPORT_SYMBOL_GPL(can_rx_fifo_del);
->  
->  /*
->   * Local echo of CAN messages
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index ed46f7d..64a8de3 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-> @@ -71,18 +71,25 @@ struct can_rx_fifo {
->  	unsigned int high_first;
->  	unsigned int high_last;		/* not needed during runtime
-> */ 
-> -	u64 (*read_pending)(struct can_rx_fifo *rx_fifo);
->  	void (*mailbox_enable_mask)(struct can_rx_fifo *rx_fifo, u64 mask);
-> -	void (*mailbox_disable)(struct can_rx_fifo *rx_fifo, unsigned int
-> mb);
-> -	void (*mailbox_receive)(struct can_rx_fifo *rx_fifo, unsigned int
-> mb);
-> +	void (*mailbox_enable)(struct can_rx_fifo *rx_fifo, unsigned int
-> mb);
-> +	unsigned int (*mailbox_move_to_buffer)(struct can_rx_fifo *rx_fifo,
-> +		struct can_frame *frame, unsigned int mb);
->  
->  	u64 mask_low;
->  	u64 mask_high;
->  	u64 active;
->  
-> -	unsigned int next;
-> +	unsigned int second_first;
->  
->  	bool inc;
-> +
-> +	struct can_frame *ring;
-> +	struct can_frame overflow;
-> +	size_t ring_size;
-> +	unsigned int ring_head;
-> +	unsigned int ring_tail;
-> +	struct napi_struct napi;
->  };
->  
->  /*
-> @@ -127,8 +134,10 @@ u8 can_dlc2len(u8 can_dlc);
->  u8 can_len2dlc(u8 len);
->  
->  int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo);
-> -int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota);
-> -u64 can_rx_fifo_get_active_mb_mask(const struct can_rx_fifo *fifo);
-> +int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo);
-> +void can_rx_fifo_napi_enable(struct can_rx_fifo *fifo);
-> +void can_rx_fifo_napi_disable(struct can_rx_fifo *fifo);
-> +void can_rx_fifo_del(struct can_rx_fifo *fifo);
->  
->  struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
->  void free_candev(struct net_device *dev);
-
-
-
--- 
-David Jander
-Protonic Holland.
-tel.: +31 (0) 229 212928
-fax.: +31 (0) 229 210930
-Factorij 36 / 1689 AL Zwaag
