@@ -1,78 +1,82 @@
-From: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>
-Subject: Re: Writing socketCAN module for my own hardware
-Date: Fri, 10 Oct 2014 10:09:22 +0200
-Message-ID: <54379432.3040009@ep1.ruhr-uni-bochum.de>
-References: <53E9C774.3040401@ep1.ruhr-uni-bochum.de> <53E9CF27.90400@pengutronix.de> <53E9D6F3.4050206@ep1.ruhr-uni-bochum.de> <53E9E614.7060303@pengutronix.de> <542BACC0.4050707@ep1.ruhr-uni-bochum.de> <542BB21B.4030200@pengutronix.de> <542BF456.3030201@ep1.ruhr-uni-bochum.de> <542BF687.1000800@pengutronix.de> <5436A482.4040001@ep1.ruhr-uni-bochum.de> <5436B443.10606@pengutronix.de> <54378E35.6000205@ep1.ruhr-uni-bochum.de> <54379389.5040005@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: David Jander <david@protonic.nl>
+Subject: [PATCH 02/15] can: flexcan: rename crl2 -> ctrl2
+Date: Fri, 10 Oct 2014 17:46:47 +0200
+Message-ID: <1412956020-21489-3-git-send-email-david@protonic.nl>
+References: <1412956020-21489-1-git-send-email-david@protonic.nl>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mi.ruhr-uni-bochum.de ([134.147.64.53]:60126 "HELO
-	mx4.rz.ruhr-uni-bochum.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1751389AbaJJIJZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Oct 2014 04:09:25 -0400
-In-Reply-To: <54379389.5040005@pengutronix.de>
+Received: from protonic.xs4all.nl ([83.163.252.89]:18363 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751312AbaJJPrA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 10 Oct 2014 11:47:00 -0400
+In-Reply-To: <1412956020-21489-1-git-send-email-david@protonic.nl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-On 10/10/2014 10:06 AM, Marc Kleine-Budde wrote:
-> On 10/10/2014 09:43 AM, Florian Feldbauer wrote:
->>>> Although I can see at the scope, that reading register 0 of the SJ=
-A1000
->>>> returns the value 1 as it should be.
->>>> Also, it seems that there is some kind of endless loop reading thi=
-s
->>>> register.
->>> No, just a loop of up to 100 :)
->> Maybe it's correlated with the issue that the message
->> [  129.210423] sja1000_raspi sja1000_raspi.0 can0: bit-timing not ye=
-t
->> appears over and over again in dmesg, but register 0 is definitely
->> read more than 100 times...
-> As mentioned earlier, you have probably a mechanism running on your
-> system, that tries to enable the CAN interface. Bringing up the
-> interface without a set bit-rate is not allowed.
->
-> [...]
->
->>>> Any Ideas why the first initialization of the kernel module doesn'=
-t
->>>> work?
->>>> When is the probe function of the module actually called?
->>> As soon as there is a matching driver//device combination on a bus.
->>> Looking at your driver, it's racy. You should not do any hardware s=
-etup
->>> in the init function.
->> Ok...I moved the whole configuration of the GPIOs into the probe
->> function (instead of the init)
->> and now it works! Thanks!
->>
->> Now I only have to solve the problem, that bringing the interface do=
-wn
->> is not possible....
->> Always need to reboot just to change bitrate is no fun.
->> Maybe I should consult the Raspberry community, if there is some kin=
-d of
->> network manager...
-> What kind of distribution are you using?
-raspbian wheezy, version from 2014-09-09
->
-> Marc
->
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/flexcan.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
---=20
-----------------------------------------
-| Dr. Florian Feldbauer                |
-|                                      |
-| Helmholtz-Institut Mainz /           |
-| Johannes Gutenberg-Universit=C3=A4t Mainz |
-| Johann-Joachim-Becher-Weg 36         |
-| D-55128 Mainz                        |
-|                                      |
-| Office: SB1 / 00-213                 |
-| Phone:  (+49)6131 / 39-29605         |
-----------------------------------------
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 2e70a27..b287367 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -93,13 +93,13 @@
+ 	(FLEXCAN_CTRL_ERR_BUS | FLEXCAN_CTRL_ERR_STATE)
+ 
+ /* FLEXCAN control register 2 (CTRL2) bits */
+-#define FLEXCAN_CRL2_ECRWRE		BIT(29)
+-#define FLEXCAN_CRL2_WRMFRZ		BIT(28)
+-#define FLEXCAN_CRL2_RFFN(x)		(((x) & 0x0f) << 24)
+-#define FLEXCAN_CRL2_TASD(x)		(((x) & 0x1f) << 19)
+-#define FLEXCAN_CRL2_MRP		BIT(18)
+-#define FLEXCAN_CRL2_RRS		BIT(17)
+-#define FLEXCAN_CRL2_EACEN		BIT(16)
++#define FLEXCAN_CTRL2_ECRWRE		BIT(29)
++#define FLEXCAN_CTRL2_WRMFRZ		BIT(28)
++#define FLEXCAN_CTRL2_RFFN(x)		(((x) & 0x0f) << 24)
++#define FLEXCAN_CTRL2_TASD(x)		(((x) & 0x1f) << 19)
++#define FLEXCAN_CTRL2_MRP		BIT(18)
++#define FLEXCAN_CTRL2_RRS		BIT(17)
++#define FLEXCAN_CTRL2_EACEN		BIT(16)
+ 
+ /* FLEXCAN memory error control register (MECR) bits */
+ #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
+@@ -221,7 +221,7 @@ struct flexcan_regs {
+ 	u32 imask1;		/* 0x28 */
+ 	u32 iflag2;		/* 0x2c */
+ 	u32 iflag1;		/* 0x30 */
+-	u32 crl2;		/* 0x34 */
++	u32 ctrl2;		/* 0x34 */
+ 	u32 esr2;		/* 0x38 */
+ 	u32 imeur;		/* 0x3c */
+ 	u32 lrfr;		/* 0x40 */
+@@ -893,7 +893,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	int err;
+-	u32 reg_mcr, reg_ctrl, reg_crl2, reg_mecr;
++	u32 reg_mcr, reg_ctrl, reg_ctrl2, reg_mecr;
+ 	int i;
+ 
+ 	/* enable module */
+@@ -996,9 +996,9 @@ static int flexcan_chip_start(struct net_device *dev)
+ 		 * and Correction of Memory Errors" to write to
+ 		 * MECR register
+ 		 */
+-		reg_crl2 = flexcan_read(&regs->crl2);
+-		reg_crl2 |= FLEXCAN_CRL2_ECRWRE;
+-		flexcan_write(reg_crl2, &regs->crl2);
++		reg_ctrl2 = flexcan_read(&regs->ctrl2);
++		reg_ctrl2 |= FLEXCAN_CTRL2_ECRWRE;
++		flexcan_write(reg_ctrl2, &regs->ctrl2);
+ 
+ 		reg_mecr = flexcan_read(&regs->mecr);
+ 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
+-- 
+1.9.1
 
