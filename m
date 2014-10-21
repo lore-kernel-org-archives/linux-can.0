@@ -1,75 +1,115 @@
-From: =?utf-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>
-Subject: AW: [PATCH 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Tue, 21 Oct 2014 09:46:47 +0200
-Message-ID: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1B54B@esd-s3.esd.local>
-References: <1413199410-42938-1-git-send-email-Thomas.Koerper@esd.eu>
- <544537AE.6030607@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: AW: [PATCH 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Tue, 21 Oct 2014 10:27:52 +0200
+Message-ID: <54461908.2040502@hartkopp.net>
+References: <1413199410-42938-1-git-send-email-Thomas.Koerper@esd.eu> <544537AE.6030607@hartkopp.net> <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1B54B@esd-s3.esd.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mxu01.htp-tel.de ([81.14.242.8]:44396 "EHLO mxuout01.htp-tel.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753430AbaJUHrB (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 21 Oct 2014 03:47:01 -0400
-In-Reply-To: <544537AE.6030607@hartkopp.net>
-Content-Language: de-DE
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:53114 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751014AbaJUI17 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Oct 2014 04:27:59 -0400
+In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1B54B@esd-s3.esd.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: =?UTF-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGVsbG8gT2xpdmVyLA0KDQp0aGFua3MgZm9yIHRoZSBmZWVkYmFjayAtIGFuIHVwZGF0ZWQgcGF0
-Y2ggd2lsbCBmb2xsb3cuIFJlbWFpbmluZyBjb21tZW50cy9xdWVzdGlvbnMgYmVsb3cuDQoNCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgS8O2cnBlciA8VGhvbWFzLktvZXJwZXJAZXNkLmV1Pg0K
-PiANCj4gQ2FwaXRhbCBsZXR0ZXJzIGluIG1haWwgYWRkcmVzc2VzIC0gdWdoLg0KDQpBdCBsZWFz
-dCBpbiB0aGUgU2lnbmVkLW9mZiBzdHJpbmcgSSB3aWxsL2NhbiBmaXggaXQgOikNCkJ0dywgd2hh
-dCBhYm91dCB0aGUgdW1sYXV0PywgaGF2ZW4ndCBmb3VuZCBpbmZvcyBvbiBob3cgc291cmNlIG1h
-eS9zaGFsbCBiZSBlbmNvZGVkLg0KDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9LY29u
-ZmlnICAgICAgfCAgICAyICsNCj4gPiAgZHJpdmVycy9uZXQvY2FuL01ha2VmaWxlICAgICB8ICAg
-IDEgKw0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZXNkL0tjb25maWcgIHwgICAgNiArDQo+ID4gIGRy
-aXZlcnMvbmV0L2Nhbi9lc2QvTWFrZWZpbGUgfCAgICA0ICsNCj4gPiAgZHJpdmVycy9uZXQvY2Fu
-L2VzZC9lc2Q0MDIuYyB8IDExMTUgDQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9lc2QvZXNkNDAyLmggfCAgMzMyICsr
-KysrKysrKysrKysNCj4gPiAgNiBmaWxlcyBjaGFuZ2VkLCAxNDYwIGluc2VydGlvbnMoKykNCj4g
-PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbmV0L2Nhbi9lc2QvS2NvbmZpZyAgY3JlYXRl
-IG1vZGUgMTAwNjQ0IA0KPiA+IGRyaXZlcnMvbmV0L2Nhbi9lc2QvTWFrZWZpbGUgIGNyZWF0ZSBt
-b2RlIDEwMDY0NCANCj4gPiBkcml2ZXJzL25ldC9jYW4vZXNkL2VzZDQwMi5jICBjcmVhdGUgbW9k
-ZSAxMDA2NDQgDQo+ID4gZHJpdmVycy9uZXQvY2FuL2VzZC9lc2Q0MDIuaA0KPiANCj4gQXMgdGhl
-IGVzZEFDQyBjb3JlIGlzIGF2YWlsYWJsZSBpbiBzZXZlcmFsIGhhcmR3YXJlIGNhcmRzIEkgd291
-bGQgc3VnZ2VzdCB0byBzcGxpdCB5b3VyIGZpbGVzIGluIGFub3RoZXIgd2F5Lg0KPiANCj4gRS5n
-LiBpbnRyb2R1Y2UgYSBlc2RhY2MuaCBpbmNsdWRlIGFuZCBlc2RhY2MuYyB3aGljaCBjb250YWlu
-cyB0aGUgZXNkQUNDIHNwZWNpZmljIHN0dWZmIChjb21wYXJlIHRvIHNqYTEwMDAuW2NoXSkuDQoN
-Ckdvb2QgaWRlYSwgZXNkNDAyLmggd2lsbCBiZWNvbWUgZXNkYWNjLmggYW5kIGFub3RoZXIgc291
-cmNlIGVzZGFjYy5jIHdpbGwgYmUgYWRkZWQuDQoNCj4gRG9lcyB5b3VyIGRyaXZlciBzdXBwb3J0
-IHRoZSBQQ0k0MDAgdG9vPw0KPiBodHRwOi8vZXNkLmV1L2VuL3Byb2R1Y3RzL2Nhbi1wY2k0MDAN
-Cj4gDQo+IFlvdSBiZWNhdXNlIEkgaGF2ZSBvbmUgb2YgaXQgYW5kIGNvdWxkIGRvIHNvbWUgdGVz
-dGluZyB0aGVuLg0KDQpOby4gQnV0IGlmIHlvdSdkIGxpa2UgdG8gaGF2ZSBhIFBDSWUvNDAyIGZv
-ciB0ZXN0aW5nIHRoaXMgc2hvdWxkbid0IGJlIHByb2JsZW0sIEkgZ3Vlc3MuDQoNCj4gPiAgY29u
-ZmlnIENBTl9ERUJVR19ERVZJQ0VTDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9N
-YWtlZmlsZSBiL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZSBpbmRleCANCj4gPiAxNjk3ZjIyLi41
-Yjg2ODFlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZQ0KPiA+ICsr
-KyBiL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZQ0KPiA+IEBAIC0xMyw2ICsxMyw3IEBAIGNhbi1k
-ZXYtJChDT05GSUdfQ0FOX0xFRFMpCSs9IGxlZC5vDQo+ID4gIG9iai15CQkJCSs9IHNwaS8NCj4g
-PiAgb2JqLXkJCQkJKz0gdXNiLw0KPiA+ICBvYmoteQkJCQkrPSBzb2Z0aW5nLw0KPiA+ICtvYmot
-eQkJCQkrPSBlc2QvDQo+IA0KPiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gbmFtZSB0aGUgZGlyZWN0
-b3J5ICdlc2RhY2MnID8NCj4gVGhlcmUgaXMgRVNEIGhhcmR3YXJlIGluIGRyaXZlcnMvbmV0L2Nh
-bi91c2IgdG9vLg0KPiANCj4gV2l0aCBlc2RhY2Mgd2Ugd291bGQgaGF2ZSBhIENBTiBJUCBjb3Jl
-IHNwZWNpZmljIGRpcmVjdG9yeSBsaWtlIHdlIGhhdmUgZm9yIHRoZSBzamExMDAwLCBjX2Nhbiwg
-ZXRjIC4uLg0KDQpJIGRvbid0IGtub3cuIEkgd2FzIHRoaW5raW5nIG9mIG1vcmUgKGFsc28gbm9u
-ZS1lc2RBQ0MpIGVzZCBjYXJkcyB0aGF0IG1pZ2h0IGJlIGFkZGVkIGluIHRoZSBmdXR1cmUuDQoN
-Cj4gPiArCSAgU3VwcG9ydCBmb3IgQ0FOIFBDSWUvNDAyIGNhcmRzIGZyb20gZXNkIGVsZWN0cm9u
-aWMgc3lzdGVtIGRlc2lnbiANCj4gPiArZ21iaA0KPiANCj4gR21iSCA/Pw0KDQpOby4uLg0KDQo+
-ID4gKyNkZWZpbmUgRFJWX05BTUUJCQkiZXNkNDAyX2RyaXZlciINCj4gDQo+IGVzZDQwMl9wY2ll
-DQo+IA0KPiA/DQoNCkJ1dCBhIFBDSS80MDIgaXMgdW5kZXIgZGV2ZWxvcG1lbnQsIHNvIHdoYXQg
-YWJvdXQgZXNkNDAyX3BjaT8NCiANCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgdTMyIG92X3Jl
-YWQzMihzdHJ1Y3QgZXNkX3BjaTQwMl9jYXJkICpjYXJkLCB1bnNpZ25lZCANCj4gPiArc2hvcnQg
-b2Zmcykgew0KPiA+ICsJcmV0dXJuIGlvcmVhZDMyYmUoY2FyZC0+YWRkcl9vdmVydmlldyArIG9m
-ZnMpOyB9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5lIHZvaWQgb3Zfd3JpdGUzMihzdHJ1Y3Qg
-ZXNkX3BjaTQwMl9jYXJkICpjYXJkLA0KPiA+ICsJCQkgICAgICB1bnNpZ25lZCBzaG9ydCBvZmZz
-LCB1MzIgdikNCj4gPiArew0KPiA+ICsJaW93cml0ZTMyYmUodiwgY2FyZC0+YWRkcl9vdmVydmll
-dyArIG9mZnMpOyB9DQo+IA0KPiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gcHV0IHRoZXNlIGFjY2Vz
-cyBmdW5jdGlvbnMgaW50byB0aGUgc2FtZSBpbmRpcmVjdGlvbiBhcyB5b3UgY2FuIHNlZSBpbiB0
-aGUgc2phMTAwMCBvciBjX2NhbiBkcml2ZXI/DQoNCllvdSBtZWFuIHRoZSBwcml2IHBvaW50ZXIg
-aW5zdGVhZCBvZiBteSBjYXJkIHBvaW50ZXI/IFRoaW5rIGl0IHNob3VsZCBiZWNvbWUgc29tZSBh
-Y2MgcG9pbnRlciB3aGVuIG1vdmVkIHRvIGVzZGFjYy5jLg0KDQoNClJlZ2FyZHMsDQoJVGhvbWFz
-DQo=
+On 21.10.2014 09:46, Thomas K=C3=B6rper wrote:
+>>> Signed-off-by: Thomas K=C3=B6rper <Thomas.Koerper@esd.eu>
+>>
+>> Capital letters in mail addresses - ugh.
+>
+> At least in the Signed-off string I will/can fix it :)
+> Btw, what about the umlaut?, haven't found infos on how source may/sh=
+all be encoded.
+
+Some people use UTF-8 and many setups display strange things afterwards=
+=2E
+If you don't mind try 'oe' like in the mail address :-)
+
+
+>> E.g. introduce a esdacc.h include and esdacc.c which contains the es=
+dACC specific stuff (compare to sja1000.[ch]).
+>
+> Good idea, esd402.h will become esdacc.h and another source esdacc.c =
+will be added.
+
+cool
+
+>
+>> Does your driver support the PCI400 too?
+>> http://esd.eu/en/products/can-pci400
+>>
+>> You because I have one of it and could do some testing then.
+>
+> No. But if you'd like to have a PCIe/402 for testing this shouldn't b=
+e problem, I guess.
+
+Thanks but I just lack some PCIe capable PC :-)
+Do you plan to support the PCI400 later?
+
+
+>> Does it make sense to name the directory 'esdacc' ?
+>> There is ESD hardware in drivers/net/can/usb too.
+>>
+>> With esdacc we would have a CAN IP core specific directory like we h=
+ave for the sja1000, c_can, etc ...
+>
+> I don't know. I was thinking of more (also none-esdACC) esd cards tha=
+t might be added in the future.
+>
+
+ok. When you support active cards (like the softing cards) naming it es=
+d fits=20
+indeed. But SJA1000 based cards (from ESD) should still go into the sja=
+1000 tree.
+
+>>> +	  Support for CAN PCIe/402 cards from esd electronic system desig=
+n
+>>> +gmbh
+>>
+>> GmbH ??
+>
+> No...
+
+Ah - I've seen it on your website.
+'gmbh' looks like a part of a brand name.
+
+Together with the website URL it looks fine.
+
+>
+>>> +#define DRV_NAME			"esd402_driver"
+>>
+>> esd402_pcie
+>>
+>> ?
+>
+> But a PCI/402 is under development, so what about esd402_pci?
+
+ACK.
+
+>
+>>> +
+>>> +static inline u32 ov_read32(struct esd_pci402_card *card, unsigned
+>>> +short offs) {
+>>> +	return ioread32be(card->addr_overview + offs); }
+>>> +
+>>> +static inline void ov_write32(struct esd_pci402_card *card,
+>>> +			      unsigned short offs, u32 v)
+>>> +{
+>>> +	iowrite32be(v, card->addr_overview + offs); }
+>>
+>> Does it make sense to put these access functions into the same indir=
+ection as you can see in the sja1000 or c_can driver?
+>
+> You mean the priv pointer instead of my card pointer? Think it should=
+ become some acc pointer when moved to esdacc.c.
+
+Yes. Exactly this was my intention.
+
+Regards,
+Oliver
+
