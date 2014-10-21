@@ -1,53 +1,75 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 1/4] can: dev: Consolidate and unify state change handling.
-Date: Mon, 20 Oct 2014 21:45:46 +0200
-Message-ID: <5445666A.6090601@grandegger.com>
-References: <5425AF94.5000206@marel.com>
+From: =?utf-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>
+Subject: AW: [PATCH 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Tue, 21 Oct 2014 09:46:47 +0200
+Message-ID: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1B54B@esd-s3.esd.local>
+References: <1413199410-42938-1-git-send-email-Thomas.Koerper@esd.eu>
+ <544537AE.6030607@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:41242 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753183AbaJTTpt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Oct 2014 15:45:49 -0400
-In-Reply-To: <5425AF94.5000206@marel.com>
+Received: from mxu01.htp-tel.de ([81.14.242.8]:44396 "EHLO mxuout01.htp-tel.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753430AbaJUHrB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 21 Oct 2014 03:47:01 -0400
+In-Reply-To: <544537AE.6030607@hartkopp.net>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Andri,
-
-sorry for the long delay...
-
-On 09/26/2014 08:25 PM, Andri Yngvason wrote:
-> The handling of can error states is different between platforms.
-> This is an attempt to correct that problem.
-> 
-> I've moved this handling into a generic function for changing the
-> error state. This ensures that error state changes are handled
-> the same way everywhere (where this function is used).
-> 
-> What's changed from the last version of this patch-set is that
-> can_change_state() now relies on the individual states of the rx/tx
-> counters rather than their individual count values.
-
-To see if the state changes occur as expected could you please record
-error message traces with candump for the following two scenarios:
-
-1. send messages with cangen
-   disconnect the cable
-   reconnect the cable after a while until the error active state is
-   reached.
-
-2. set restart-ms=100
-   send messages with cangen
-   provoke a bus-off short-circuiting CAN low and high
-   remove the short-circuit
-
-Start with the SJA100 first.
-
-Thanks,
-
-Wolfgang.
-
+SGVsbG8gT2xpdmVyLA0KDQp0aGFua3MgZm9yIHRoZSBmZWVkYmFjayAtIGFuIHVwZGF0ZWQgcGF0
+Y2ggd2lsbCBmb2xsb3cuIFJlbWFpbmluZyBjb21tZW50cy9xdWVzdGlvbnMgYmVsb3cuDQoNCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgS8O2cnBlciA8VGhvbWFzLktvZXJwZXJAZXNkLmV1Pg0K
+PiANCj4gQ2FwaXRhbCBsZXR0ZXJzIGluIG1haWwgYWRkcmVzc2VzIC0gdWdoLg0KDQpBdCBsZWFz
+dCBpbiB0aGUgU2lnbmVkLW9mZiBzdHJpbmcgSSB3aWxsL2NhbiBmaXggaXQgOikNCkJ0dywgd2hh
+dCBhYm91dCB0aGUgdW1sYXV0PywgaGF2ZW4ndCBmb3VuZCBpbmZvcyBvbiBob3cgc291cmNlIG1h
+eS9zaGFsbCBiZSBlbmNvZGVkLg0KDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9LY29u
+ZmlnICAgICAgfCAgICAyICsNCj4gPiAgZHJpdmVycy9uZXQvY2FuL01ha2VmaWxlICAgICB8ICAg
+IDEgKw0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZXNkL0tjb25maWcgIHwgICAgNiArDQo+ID4gIGRy
+aXZlcnMvbmV0L2Nhbi9lc2QvTWFrZWZpbGUgfCAgICA0ICsNCj4gPiAgZHJpdmVycy9uZXQvY2Fu
+L2VzZC9lc2Q0MDIuYyB8IDExMTUgDQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9lc2QvZXNkNDAyLmggfCAgMzMyICsr
+KysrKysrKysrKysNCj4gPiAgNiBmaWxlcyBjaGFuZ2VkLCAxNDYwIGluc2VydGlvbnMoKykNCj4g
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbmV0L2Nhbi9lc2QvS2NvbmZpZyAgY3JlYXRl
+IG1vZGUgMTAwNjQ0IA0KPiA+IGRyaXZlcnMvbmV0L2Nhbi9lc2QvTWFrZWZpbGUgIGNyZWF0ZSBt
+b2RlIDEwMDY0NCANCj4gPiBkcml2ZXJzL25ldC9jYW4vZXNkL2VzZDQwMi5jICBjcmVhdGUgbW9k
+ZSAxMDA2NDQgDQo+ID4gZHJpdmVycy9uZXQvY2FuL2VzZC9lc2Q0MDIuaA0KPiANCj4gQXMgdGhl
+IGVzZEFDQyBjb3JlIGlzIGF2YWlsYWJsZSBpbiBzZXZlcmFsIGhhcmR3YXJlIGNhcmRzIEkgd291
+bGQgc3VnZ2VzdCB0byBzcGxpdCB5b3VyIGZpbGVzIGluIGFub3RoZXIgd2F5Lg0KPiANCj4gRS5n
+LiBpbnRyb2R1Y2UgYSBlc2RhY2MuaCBpbmNsdWRlIGFuZCBlc2RhY2MuYyB3aGljaCBjb250YWlu
+cyB0aGUgZXNkQUNDIHNwZWNpZmljIHN0dWZmIChjb21wYXJlIHRvIHNqYTEwMDAuW2NoXSkuDQoN
+Ckdvb2QgaWRlYSwgZXNkNDAyLmggd2lsbCBiZWNvbWUgZXNkYWNjLmggYW5kIGFub3RoZXIgc291
+cmNlIGVzZGFjYy5jIHdpbGwgYmUgYWRkZWQuDQoNCj4gRG9lcyB5b3VyIGRyaXZlciBzdXBwb3J0
+IHRoZSBQQ0k0MDAgdG9vPw0KPiBodHRwOi8vZXNkLmV1L2VuL3Byb2R1Y3RzL2Nhbi1wY2k0MDAN
+Cj4gDQo+IFlvdSBiZWNhdXNlIEkgaGF2ZSBvbmUgb2YgaXQgYW5kIGNvdWxkIGRvIHNvbWUgdGVz
+dGluZyB0aGVuLg0KDQpOby4gQnV0IGlmIHlvdSdkIGxpa2UgdG8gaGF2ZSBhIFBDSWUvNDAyIGZv
+ciB0ZXN0aW5nIHRoaXMgc2hvdWxkbid0IGJlIHByb2JsZW0sIEkgZ3Vlc3MuDQoNCj4gPiAgY29u
+ZmlnIENBTl9ERUJVR19ERVZJQ0VTDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9N
+YWtlZmlsZSBiL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZSBpbmRleCANCj4gPiAxNjk3ZjIyLi41
+Yjg2ODFlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZQ0KPiA+ICsr
+KyBiL2RyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZQ0KPiA+IEBAIC0xMyw2ICsxMyw3IEBAIGNhbi1k
+ZXYtJChDT05GSUdfQ0FOX0xFRFMpCSs9IGxlZC5vDQo+ID4gIG9iai15CQkJCSs9IHNwaS8NCj4g
+PiAgb2JqLXkJCQkJKz0gdXNiLw0KPiA+ICBvYmoteQkJCQkrPSBzb2Z0aW5nLw0KPiA+ICtvYmot
+eQkJCQkrPSBlc2QvDQo+IA0KPiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gbmFtZSB0aGUgZGlyZWN0
+b3J5ICdlc2RhY2MnID8NCj4gVGhlcmUgaXMgRVNEIGhhcmR3YXJlIGluIGRyaXZlcnMvbmV0L2Nh
+bi91c2IgdG9vLg0KPiANCj4gV2l0aCBlc2RhY2Mgd2Ugd291bGQgaGF2ZSBhIENBTiBJUCBjb3Jl
+IHNwZWNpZmljIGRpcmVjdG9yeSBsaWtlIHdlIGhhdmUgZm9yIHRoZSBzamExMDAwLCBjX2Nhbiwg
+ZXRjIC4uLg0KDQpJIGRvbid0IGtub3cuIEkgd2FzIHRoaW5raW5nIG9mIG1vcmUgKGFsc28gbm9u
+ZS1lc2RBQ0MpIGVzZCBjYXJkcyB0aGF0IG1pZ2h0IGJlIGFkZGVkIGluIHRoZSBmdXR1cmUuDQoN
+Cj4gPiArCSAgU3VwcG9ydCBmb3IgQ0FOIFBDSWUvNDAyIGNhcmRzIGZyb20gZXNkIGVsZWN0cm9u
+aWMgc3lzdGVtIGRlc2lnbiANCj4gPiArZ21iaA0KPiANCj4gR21iSCA/Pw0KDQpOby4uLg0KDQo+
+ID4gKyNkZWZpbmUgRFJWX05BTUUJCQkiZXNkNDAyX2RyaXZlciINCj4gDQo+IGVzZDQwMl9wY2ll
+DQo+IA0KPiA/DQoNCkJ1dCBhIFBDSS80MDIgaXMgdW5kZXIgZGV2ZWxvcG1lbnQsIHNvIHdoYXQg
+YWJvdXQgZXNkNDAyX3BjaT8NCiANCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgdTMyIG92X3Jl
+YWQzMihzdHJ1Y3QgZXNkX3BjaTQwMl9jYXJkICpjYXJkLCB1bnNpZ25lZCANCj4gPiArc2hvcnQg
+b2Zmcykgew0KPiA+ICsJcmV0dXJuIGlvcmVhZDMyYmUoY2FyZC0+YWRkcl9vdmVydmlldyArIG9m
+ZnMpOyB9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5lIHZvaWQgb3Zfd3JpdGUzMihzdHJ1Y3Qg
+ZXNkX3BjaTQwMl9jYXJkICpjYXJkLA0KPiA+ICsJCQkgICAgICB1bnNpZ25lZCBzaG9ydCBvZmZz
+LCB1MzIgdikNCj4gPiArew0KPiA+ICsJaW93cml0ZTMyYmUodiwgY2FyZC0+YWRkcl9vdmVydmll
+dyArIG9mZnMpOyB9DQo+IA0KPiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gcHV0IHRoZXNlIGFjY2Vz
+cyBmdW5jdGlvbnMgaW50byB0aGUgc2FtZSBpbmRpcmVjdGlvbiBhcyB5b3UgY2FuIHNlZSBpbiB0
+aGUgc2phMTAwMCBvciBjX2NhbiBkcml2ZXI/DQoNCllvdSBtZWFuIHRoZSBwcml2IHBvaW50ZXIg
+aW5zdGVhZCBvZiBteSBjYXJkIHBvaW50ZXI/IFRoaW5rIGl0IHNob3VsZCBiZWNvbWUgc29tZSBh
+Y2MgcG9pbnRlciB3aGVuIG1vdmVkIHRvIGVzZGFjYy5jLg0KDQoNClJlZ2FyZHMsDQoJVGhvbWFz
+DQo=
