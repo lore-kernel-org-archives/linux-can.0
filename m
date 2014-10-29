@@ -1,87 +1,123 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v5 1/2] Add documentation for SPI to CAN driver
-Date: Wed, 29 Oct 2014 21:33:48 +0100
-Message-ID: <54514F2C.10108@hartkopp.net>
-References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-2-git-send-email-sbabic@denx.de>
+Subject: Re: [PATCH v5 2/2] CAN: CAN driver to support multiple CAN bus on
+ SPI interface
+Date: Wed, 29 Oct 2014 21:57:34 +0100
+Message-ID: <545154BE.8000603@hartkopp.net>
+References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-3-git-send-email-sbabic@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:11834 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:56030 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755312AbaJ2Udz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Oct 2014 16:33:55 -0400
-In-Reply-To: <1406565510-10783-2-git-send-email-sbabic@denx.de>
+	with ESMTP id S1751917AbaJ2U5h (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Oct 2014 16:57:37 -0400
+In-Reply-To: <1406565510-10783-3-git-send-email-sbabic@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi Stefano,
-
-sorry that I did not find some time to review your driver again :-(
-
-I found some small issues:
-
 On 28.07.2014 18:38, Stefano Babic wrote:
-> Signed-off-by: Stefano Babic <sbabic@denx.de>
+
+> --- a/drivers/net/can/spi/Makefile
+> +++ b/drivers/net/can/spi/Makefile
+> @@ -4,5 +4,6 @@
+>
+>
+>   obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
+> +obj-$(CONFIG_CAN_SPI)		+= spi_can.o
+>
+>   ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
+
+This ccflags stuff already has been remove - so it needs a tiny rebase here.
+Sorry.
+
+> diff --git a/drivers/net/can/spi/spi_can.c b/drivers/net/can/spi/spi_can.c
+> new file mode 100644
+> index 0000000..087e6b7
+> --- /dev/null
+> +++ b/drivers/net/can/spi/spi_can.c
 
 
-> +The CFG_MSG_GET is sent at the start up to query the CAN controller about its
-> +internal timing, making them available to the netlink interface. CAN drivers
-> +have usually fest values for can_bittiming_const.
+> +struct msg_cfg_get_data {
+> +	u8	channel;
+> +	u8	tseg1_min;
+> +	u8	tseg1_max;
+> +	u8	tseg2_min;
+> +	u8	tseg2_max;
+> +	u8	sjw_max;
+> +	u32	brp_min;
+> +	u32	brp_max;
+> +	u32	brp_inc;
+> +	u8	ctrlmode;
 
-fest -> fixed
+u32 ?
 
-> In case of a remote
-> +CAN controller driven via SPI, the Main Controller cannot know the timing
-> +and must ask them to the CAN controller before instantiating a CAN device.
-> +For this reason, the message is sent only once in the probe() entry point.
+
+> +static int spi_can_hwtstamp_ioctl(struct net_device *netdev,
+> +			struct ifreq *ifr, int cmd)
+> +{
+> +	struct hwtstamp_config config;
 > +
-> +The REQ_DATA is sent only by the Main Controller when the Main Controller
-> +signals it has packets to be transfered, but the Main Controller has nothing
-> +to sent.
-
-?? Didn't understand this - really ;-)
-
-
-> +8.6 Format of Get Configuration Message
-> +----------------------------------------
+> +	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
+> +		return -EFAULT;
 > +
-> +Format of the frame sent by Main Controller:
-> +  _____,________
-> + |     |        ,'''''''''|'''''''''|
-> + |ID=6 | LEN=3  | channel |CHECKSUM |
-> + |_____L________|_________|_________|
+> +	if (config.flags)
+> +		return -EINVAL;
 > +
-> +Answer from CAN Controller:
-> +  _____,________
-> + |     |        ,''''''''''''''''''''|''''''''''|'''''''''|'''''''''|..
-> + |ID=6 | LEN=25 | channel |tseg1_min |tseg2_max |tseg2_min|         |CHECKSUM
-> + |_____L________|_________|__________|__________|_________|_________..
+> +	switch (config.tx_type) {
+> +	case HWTSTAMP_TX_OFF:
+> +		break;
+> +	case HWTSTAMP_TX_ON:
+> +		break;
+> +	default:
+> +		return -ERANGE;
+> +	}
 > +
-> +	Offset
-> +	0	0x06 (CFG_MSG_GET)
-> +	1-2	25
-> +	3	channel number
-> +		0xFF = CFG
-> +		0..n = CAN controller CAN channel
-> +	5	tseg1_min
-> +	6	tseg1_max
-> +	7	tseg2_min
-> +	8	tseg2_max
-> +	9	sjw_max
-> +	10-13	brp_min
-> +	14-17	brp_max
-> +	18-21	brp_inc
-> +	22	ctrlmode
+> +	switch (config.rx_filter) {
+> +	case HWTSTAMP_FILTER_NONE:
+> +		break;
+> +	default:
+> +		config.rx_filter = HWTSTAMP_FILTER_ALL;
+> +		break;
+> +	}
+> +
+> +	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ?
+> +		-EFAULT : 0;
+> +}
+> +
+> +static int spi_can_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+> +{
+> +	if (!netif_running(dev))
+> +		return -EINVAL;
+> +
+> +	if (cmd == SIOCSHWTSTAMP)
+> +		return spi_can_hwtstamp_ioctl(dev, rq, cmd);
+> +
+> +	return -EINVAL;
+> +}
 
-Why is ctrlmode not 32 bit?
+What is this ioctl() intended for?
 
-> +	23-27	clock
-> +	28-29	Checksum
+Can this be handled by the standard Linux configuration interface for hardware 
+timestamping?
 
-Some more stuff in the other patch.
+
+Finally I would like to ask you about IFF_ECHO support (again).
+I know that you had some concerns about the SPI performance when putting the 
+sent CAN frame into the SPI receive path.
+
+But I would at least suggest to make the SPI message interface capable to 
+support IFF_ECHO on the slave CPU. E.g. by sending some index (!=0) from an 
+echo skb store to/from the slave to detect originated frames in the receive path.
+
+The SPI slave should announce if it supports IFF_ECHO. And some 8 bit value 
+which goes down to the slave and is received together with a CAN frame would 
+help to detect local frames.
+
+Probably we can also use the high nibble from the dlc for that.
 
 Regards,
 Oliver
+
