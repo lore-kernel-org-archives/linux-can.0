@@ -1,122 +1,116 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: flexcan napi poll and error frames
-Date: Mon, 27 Oct 2014 15:53:18 +0000
-Message-ID: <20141027155318.GB29093@shannon>
-References: <544A2943.1080808@marel.com> <544A64A1.3050104@marel.com>
- <544A78A8.40909@marel.com> <4764001.1dH8LXDQX4@lisa>
- <544A8F03.8040906@marel.com> <20141027082955.52ecece2@archvile>
- <544E2C19.1050608@marel.com> <20141027150111.08248771@archvile>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH 1/7] can: m_can: fix possible sleep in napi poll
+Date: Wed, 29 Oct 2014 18:45:21 +0800
+Message-ID: <1414579527-31100-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1on0066.outbound.protection.outlook.com ([157.56.110.66]:29024
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+Received: from mail-by2on0143.outbound.protection.outlook.com ([207.46.100.143]:16288
+	"EHLO na01-by2-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751060AbaJ0Pxd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 27 Oct 2014 11:53:33 -0400
-Content-Disposition: inline
-In-Reply-To: <20141027150111.08248771@archvile>
+	id S932779AbaJ2Lvf (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 29 Oct 2014 07:51:35 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, b29396@freescale.com, linux-arm-kernel@lists.infradead.org
 
-On Mon, Oct 27, 2014 at 03:01:11PM +0100, David Jander wrote:
-> On Mon, 27 Oct 2014 11:27:21 +0000
-> Andri Yngvason <andri.yngvason@marel.com> wrote:
->=20
-> > Hi David,
-> >=20
-> > On m=E1n 27.okt 2014 07:29, David Jander wrote:
-> > > Andri Yngvason <andri.yngvason@marel.com> wrote:
-> > >
-> > >> On f=F6s 24.okt 2014 16:36, Steffen Rose wrote:
-> > >>> Hello,
-> > >>>
-> > >>> Am Freitag, 24. Oktober 2014, 16:04:56 schrieben Sie:
-> > >>>>> We can do little if the CAN controller does not notify the So=
-ftware
-> > >>>>>> via interrupt.
-> > >>>>> Yes, that's why I wanted to figure out if it's a controller p=
-roblem or
-> > >>>>> not.
-> > >>>>> Turns out it's a controller problem, but perhaps we can work =
-around it?
-> > >>>>> E.g. if we check esr for state changes every time someone tra=
-nsmits a
-> > >>>>> frame, both of these problems would go away. Would it be unac=
-ceptable
-> > >>>>> overhead to do so?
-> > >>>> I've just confirmed that this "fix" works, but only if berr-re=
-porting is
-> > >>>> enabled.
-> > >>> Is this workaround working in case of an open CAN Bus?
-> > >>> (Ack error situation)
-> > >> Yes
-> > >>> The flexcan can generate an error interrupt after every CAN bus=
- error.
-> > >>> But in case of an error situation the interrupt load would be v=
-ery high
-> > >>> (e.g. short circuit of the CAN).
-> > >>>
-> > >> That's what berr-reporting does, right? Considering that when th=
-e bus is
-> > >> flooded with errors, things are in a pretty bad shape anyway, I =
-think it's
-> > >> not really going to contribute much to the over-all mess to just=
- leave the
-> > >> error interrupts on all the time. It's far worse if the user doe=
-sn't get
-> > >> the correct error state.
-> > >>
-> > >> Anyway, defensive measures can be taken. When the bus has reache=
-d
-> > >> error-passive, the driver is not going to need those interrupts =
-any more
-> > >> so it could turn off the interrupts until the bus goes to bus-of=
-f or back
-> > >> down to warning or active; except when berr-reporting is enabled=
-=2E
-> > > Would you mind trying out the patch series posted a few days ago =
-here:
-> > >
-> > > http://article.gmane.org/gmane.linux.can/6654
-> > >
-> > > It applies to the flexcan-next branch of
-> > > git://gitorious.org/linux-can/linux-can-next.git
-> > > (base commit should be 907aa2d61697035a921cad6375c0d546b1d18af6 i=
-f HEAD
-> > > fails).
-> > >
-> > > I think it solves your problem.
-> > >
-> > Sure, I'll try those patches, but applying them is non-trivial. I.e=
-=2E they
-> > don't apply. Patching the base commit fails after "Applying: can: r=
-x-fifo:
-> > fix long lines". Could you maybe just send me a link to a git repo =
-or branch
-> > where they're already applied? A single .patch file might also work=
-=2E
->=20
-> Hmmm. It seems that tree is kind of a moving target sometimes....
-> Here's a link to the whole series re-based on top of vanilla 3.17:
->=20
-> https://github.com/yope/linux/tree/flexcan-v3.17
->=20
-> I hope this works for you.
->=20
-Thanks for rabasing this for me. It turns out that the source of all my=
- problems
-was my mail client (Thunderbird). It seems to mangle even maildir.
+The m_can_get_berr_counter function can sleep and it may be called in napi poll function.
+Rework it to fix the following warning.
+root@imx6qdlsolo:~# cangen can0 -f -L 12 -D 112233445566778899001122
+[ 1846.017565] m_can 20e8000.can can0: entered error warning state
+[ 1846.023551] ------------[ cut here ]------------
+[ 1846.028216] WARNING: CPU: 0 PID: 560 at kernel/locking/mutex.c:867 mutex_trylock+0x218/0x23c()
+[ 1846.036889] DEBUG_LOCKS_WARN_ON(in_interrupt())
+[ 1846.041263] Modules linked in:
+[ 1846.044594] CPU: 0 PID: 560 Comm: cangen Not tainted 3.17.0-rc4-next-20140915-00010-g032d018-dirty #477
+[ 1846.054033] Backtrace:
+[ 1846.056557] [<80012448>] (dump_backtrace) from [<80012728>] (show_stack+0x18/0x1c)
+[ 1846.064180]  r6:809a07ec r5:809a07ec r4:00000000 r3:00000000
+[ 1846.069966] [<80012710>] (show_stack) from [<806c9ee0>] (dump_stack+0x8c/0xa4)
+[ 1846.077264] [<806c9e54>] (dump_stack) from [<8002aa78>] (warn_slowpath_common+0x70/0x94)
+[ 1846.085403]  r6:806cd1b0 r5:00000009 r4:be1d5c20 r3:be07b0c0
+[ 1846.091204] [<8002aa08>] (warn_slowpath_common) from [<8002aad4>] (warn_slowpath_fmt+0x38/0x40)
+[ 1846.099951]  r8:8119106c r7:80515aa4 r6:be027000 r5:00000001 r4:809d1df4
+[ 1846.106830] [<8002aaa0>] (warn_slowpath_fmt) from [<806cd1b0>] (mutex_trylock+0x218/0x23c)
+[ 1846.115141]  r3:80851c88 r2:8084fb74
+[ 1846.118804] [<806ccf98>] (mutex_trylock) from [<80515aa4>] (clk_prepare_lock+0x14/0xf4)
+[ 1846.126859]  r8:00000040 r7:be1d5cec r6:be027000 r5:be255800 r4:be027000
+[ 1846.133737] [<80515a90>] (clk_prepare_lock) from [<80517660>] (clk_prepare+0x14/0x2c)
+[ 1846.141583]  r5:be255800 r4:be027000
+[ 1846.145272] [<8051764c>] (clk_prepare) from [<8041ff14>] (m_can_get_berr_counter+0x20/0xd4)
+[ 1846.153672]  r4:be255800 r3:be07b0c0
+[ 1846.157325] [<8041fef4>] (m_can_get_berr_counter) from [<80420428>] (m_can_poll+0x310/0x8fc)
+[ 1846.165809]  r7:bd4dc540 r6:00000744 r5:11300000 r4:be255800
+[ 1846.171590] [<80420118>] (m_can_poll) from [<8056a468>] (net_rx_action+0xcc/0x1b4)
+[ 1846.179204]  r10:00000101 r9:be255ebc r8:00000040 r7:be7c3208 r6:8097c100 r5:be7c3200
+[ 1846.187192]  r4:0000012c
+[ 1846.189779] [<8056a39c>] (net_rx_action) from [<8002deec>] (__do_softirq+0xfc/0x2c4)
+[ 1846.197568]  r10:00000101 r9:8097c088 r8:00000003 r7:8097c080 r6:40000001 r5:8097c08c
+[ 1846.205559]  r4:00000020
+[ 1846.208144] [<8002ddf0>] (__do_softirq) from [<8002e194>] (do_softirq+0x7c/0x88)
+[ 1846.215588]  r10:00000000 r9:bd516a60 r8:be18ce00 r7:00000000 r6:be255800 r5:8056c0ec
+[ 1846.223578]  r4:60000093
+[ 1846.226163] [<8002e118>] (do_softirq) from [<8002e288>] (__local_bh_enable_ip+0xe8/0x10c)
+[ 1846.234386]  r4:00000200 r3:be1d4000
+[ 1846.238036] [<8002e1a0>] (__local_bh_enable_ip) from [<8056c108>] (__dev_queue_xmit+0x314/0x6b0)
+[ 1846.246868]  r6:be255800 r5:bd516a00 r4:00000000 r3:be07b0c0
+[ 1846.252645] [<8056bdf4>] (__dev_queue_xmit) from [<8056c4b8>] (dev_queue_xmit+0x14/0x18)
 
-I switched to offlineimap and mutt, and the patches applied. I've been =
-trying to
-make thunderbird work because co-workers keep sending me HTML mail...
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+---
+ drivers/net/can/m_can/m_can.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Sorry for making you do that extra work.
-
---
-Andri
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 10d571e..8692848 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -481,11 +481,23 @@ static int m_can_handle_lec_err(struct net_device *dev,
+ 	return 1;
+ }
+ 
++static int __m_can_get_berr_counter(const struct net_device *dev,
++				    struct can_berr_counter *bec)
++{
++	struct m_can_priv *priv = netdev_priv(dev);
++	unsigned int ecr;
++
++	ecr = m_can_read(priv, M_CAN_ECR);
++	bec->rxerr = (ecr & ECR_REC_MASK) >> ECR_REC_SHIFT;
++	bec->txerr = ecr & ECR_TEC_MASK;
++
++	return 0;
++}
++
+ static int m_can_get_berr_counter(const struct net_device *dev,
+ 				  struct can_berr_counter *bec)
+ {
+ 	struct m_can_priv *priv = netdev_priv(dev);
+-	unsigned int ecr;
+ 	int err;
+ 
+ 	err = clk_prepare_enable(priv->hclk);
+@@ -498,9 +510,7 @@ static int m_can_get_berr_counter(const struct net_device *dev,
+ 		return err;
+ 	}
+ 
+-	ecr = m_can_read(priv, M_CAN_ECR);
+-	bec->rxerr = (ecr & ECR_REC_MASK) >> ECR_REC_SHIFT;
+-	bec->txerr = ecr & ECR_TEC_MASK;
++	__m_can_get_berr_counter(dev, bec);
+ 
+ 	clk_disable_unprepare(priv->cclk);
+ 	clk_disable_unprepare(priv->hclk);
+@@ -544,7 +554,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+-	m_can_get_berr_counter(dev, &bec);
++	__m_can_get_berr_counter(dev, &bec);
+ 
+ 	switch (new_state) {
+ 	case CAN_STATE_ERROR_ACTIVE:
+-- 
+1.9.1
 
