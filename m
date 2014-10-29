@@ -1,116 +1,335 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH 1/7] can: m_can: fix possible sleep in napi poll
-Date: Wed, 29 Oct 2014 18:45:21 +0800
-Message-ID: <1414579527-31100-1-git-send-email-b29396@freescale.com>
+Subject: [PATCH 6/7] can: m_can: update to support CAN FD features
+Date: Wed, 29 Oct 2014 18:45:26 +0800
+Message-ID: <1414579527-31100-6-git-send-email-b29396@freescale.com>
+References: <1414579527-31100-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0143.outbound.protection.outlook.com ([207.46.100.143]:16288
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1bon0140.outbound.protection.outlook.com ([157.56.111.140]:32704
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932779AbaJ2Lvf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 29 Oct 2014 07:51:35 -0400
+	id S932710AbaJ2Lvt (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 29 Oct 2014 07:51:49 -0400
+In-Reply-To: <1414579527-31100-1-git-send-email-b29396@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, b29396@freescale.com, linux-arm-kernel@lists.infradead.org
 
-The m_can_get_berr_counter function can sleep and it may be called in napi poll function.
-Rework it to fix the following warning.
-root@imx6qdlsolo:~# cangen can0 -f -L 12 -D 112233445566778899001122
-[ 1846.017565] m_can 20e8000.can can0: entered error warning state
-[ 1846.023551] ------------[ cut here ]------------
-[ 1846.028216] WARNING: CPU: 0 PID: 560 at kernel/locking/mutex.c:867 mutex_trylock+0x218/0x23c()
-[ 1846.036889] DEBUG_LOCKS_WARN_ON(in_interrupt())
-[ 1846.041263] Modules linked in:
-[ 1846.044594] CPU: 0 PID: 560 Comm: cangen Not tainted 3.17.0-rc4-next-20140915-00010-g032d018-dirty #477
-[ 1846.054033] Backtrace:
-[ 1846.056557] [<80012448>] (dump_backtrace) from [<80012728>] (show_stack+0x18/0x1c)
-[ 1846.064180]  r6:809a07ec r5:809a07ec r4:00000000 r3:00000000
-[ 1846.069966] [<80012710>] (show_stack) from [<806c9ee0>] (dump_stack+0x8c/0xa4)
-[ 1846.077264] [<806c9e54>] (dump_stack) from [<8002aa78>] (warn_slowpath_common+0x70/0x94)
-[ 1846.085403]  r6:806cd1b0 r5:00000009 r4:be1d5c20 r3:be07b0c0
-[ 1846.091204] [<8002aa08>] (warn_slowpath_common) from [<8002aad4>] (warn_slowpath_fmt+0x38/0x40)
-[ 1846.099951]  r8:8119106c r7:80515aa4 r6:be027000 r5:00000001 r4:809d1df4
-[ 1846.106830] [<8002aaa0>] (warn_slowpath_fmt) from [<806cd1b0>] (mutex_trylock+0x218/0x23c)
-[ 1846.115141]  r3:80851c88 r2:8084fb74
-[ 1846.118804] [<806ccf98>] (mutex_trylock) from [<80515aa4>] (clk_prepare_lock+0x14/0xf4)
-[ 1846.126859]  r8:00000040 r7:be1d5cec r6:be027000 r5:be255800 r4:be027000
-[ 1846.133737] [<80515a90>] (clk_prepare_lock) from [<80517660>] (clk_prepare+0x14/0x2c)
-[ 1846.141583]  r5:be255800 r4:be027000
-[ 1846.145272] [<8051764c>] (clk_prepare) from [<8041ff14>] (m_can_get_berr_counter+0x20/0xd4)
-[ 1846.153672]  r4:be255800 r3:be07b0c0
-[ 1846.157325] [<8041fef4>] (m_can_get_berr_counter) from [<80420428>] (m_can_poll+0x310/0x8fc)
-[ 1846.165809]  r7:bd4dc540 r6:00000744 r5:11300000 r4:be255800
-[ 1846.171590] [<80420118>] (m_can_poll) from [<8056a468>] (net_rx_action+0xcc/0x1b4)
-[ 1846.179204]  r10:00000101 r9:be255ebc r8:00000040 r7:be7c3208 r6:8097c100 r5:be7c3200
-[ 1846.187192]  r4:0000012c
-[ 1846.189779] [<8056a39c>] (net_rx_action) from [<8002deec>] (__do_softirq+0xfc/0x2c4)
-[ 1846.197568]  r10:00000101 r9:8097c088 r8:00000003 r7:8097c080 r6:40000001 r5:8097c08c
-[ 1846.205559]  r4:00000020
-[ 1846.208144] [<8002ddf0>] (__do_softirq) from [<8002e194>] (do_softirq+0x7c/0x88)
-[ 1846.215588]  r10:00000000 r9:bd516a60 r8:be18ce00 r7:00000000 r6:be255800 r5:8056c0ec
-[ 1846.223578]  r4:60000093
-[ 1846.226163] [<8002e118>] (do_softirq) from [<8002e288>] (__local_bh_enable_ip+0xe8/0x10c)
-[ 1846.234386]  r4:00000200 r3:be1d4000
-[ 1846.238036] [<8002e1a0>] (__local_bh_enable_ip) from [<8056c108>] (__dev_queue_xmit+0x314/0x6b0)
-[ 1846.246868]  r6:be255800 r5:bd516a00 r4:00000000 r3:be07b0c0
-[ 1846.252645] [<8056bdf4>] (__dev_queue_xmit) from [<8056c4b8>] (dev_queue_xmit+0x14/0x18)
+Bosch M_CAN is CAN FD capable device.
+This patch implements the CAN FD features include up to 64 bytes
+payload and bitrate switch function.
 
 Signed-off-by: Dong Aisheng <b29396@freescale.com>
 ---
- drivers/net/can/m_can/m_can.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/net/can/m_can/m_can.c | 138 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 110 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 10d571e..8692848 100644
+index 6160b9c..219e0e3 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -481,11 +481,23 @@ static int m_can_handle_lec_err(struct net_device *dev,
- 	return 1;
+@@ -105,14 +105,36 @@ enum m_can_mram_cfg {
+ 	MRAM_CFG_NUM,
+ };
+ 
++/* Fast Bit Timing & Prescaler Register (FBTP) */
++#define FBTR_FBRP_MASK		0x1f
++#define FBTR_FBRP_SHIFT		16
++#define FBTR_FTSEG1_SHIFT	8
++#define FBTR_FTSEG1_MASK	(0xf << FBTR_FTSEG1_SHIFT)
++#define FBTR_FTSEG2_SHIFT	4
++#define FBTR_FTSEG2_MASK	(0x7 << FBTR_FTSEG2_SHIFT)
++#define FBTR_FSJW_SHIFT		0
++#define FBTR_FSJW_MASK		0x3
++
+ /* Test Register (TEST) */
+ #define TEST_LBCK	BIT(4)
+ 
+ /* CC Control Register(CCCR) */
+-#define CCCR_TEST	BIT(7)
+-#define CCCR_MON	BIT(5)
+-#define CCCR_CCE	BIT(1)
+-#define CCCR_INIT	BIT(0)
++#define CCCR_TEST		BIT(7)
++#define CCCR_CMR_MASK		0x3
++#define CCCR_CMR_SHIFT		10
++#define CCCR_CMR_CANFD		0x1
++#define CCCR_CMR_CANFD_BRS	0x2
++#define CCCR_CMR_CAN		0x3
++#define CCCR_CME_MASK		0x3
++#define CCCR_CME_SHIFT		8
++#define CCCR_CME_CAN		0
++#define CCCR_CME_CANFD		0x1
++#define CCCR_CME_CANFD_BRS	0x2
++#define CCCR_TEST		BIT(7)
++#define CCCR_MON		BIT(5)
++#define CCCR_CCE		BIT(1)
++#define CCCR_INIT		BIT(0)
++#define CCCR_CANFD		0x10
+ 
+ /* Bit Timing & Prescaler Register (BTP) */
+ #define BTR_BRP_MASK		0x3ff
+@@ -204,6 +226,7 @@ enum m_can_mram_cfg {
+ 
+ /* Rx Buffer / FIFO Element Size Configuration (RXESC) */
+ #define M_CAN_RXESC_8BYTES	0x0
++#define M_CAN_RXESC_64BYTES	0x777
+ 
+ /* Tx Buffer Configuration(TXBC) */
+ #define TXBC_NDTB_OFF		16
+@@ -211,6 +234,7 @@ enum m_can_mram_cfg {
+ 
+ /* Tx Buffer Element Size Configuration(TXESC) */
+ #define TXESC_TBDS_8BYTES	0x0
++#define TXESC_TBDS_64BYTES	0x7
+ 
+ /* Tx Event FIFO Con.guration (TXEFC) */
+ #define TXEFC_EFS_OFF		16
+@@ -219,11 +243,11 @@ enum m_can_mram_cfg {
+ /* Message RAM Configuration (in bytes) */
+ #define SIDF_ELEMENT_SIZE	4
+ #define XIDF_ELEMENT_SIZE	8
+-#define RXF0_ELEMENT_SIZE	16
+-#define RXF1_ELEMENT_SIZE	16
++#define RXF0_ELEMENT_SIZE	72
++#define RXF1_ELEMENT_SIZE	72
+ #define RXB_ELEMENT_SIZE	16
+ #define TXE_ELEMENT_SIZE	8
+-#define TXB_ELEMENT_SIZE	16
++#define TXB_ELEMENT_SIZE	72
+ 
+ /* Message RAM Elements */
+ #define M_CAN_FIFO_ID		0x0
+@@ -231,11 +255,17 @@ enum m_can_mram_cfg {
+ #define M_CAN_FIFO_DATA(n)	(0x8 + ((n) << 2))
+ 
+ /* Rx Buffer Element */
++/* R0 */
+ #define RX_BUF_ESI		BIT(31)
+ #define RX_BUF_XTD		BIT(30)
+ #define RX_BUF_RTR		BIT(29)
++/* R1 */
++#define RX_BUF_ANMF		BIT(31)
++#define RX_BUF_EDL		BIT(21)
++#define RX_BUF_BRS		BIT(20)
+ 
+ /* Tx Buffer Element */
++/* R0 */
+ #define TX_BUF_XTD		BIT(30)
+ #define TX_BUF_RTR		BIT(29)
+ 
+@@ -327,11 +357,12 @@ static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+ 	m_can_write(priv, M_CAN_ILE, 0x0);
  }
  
-+static int __m_can_get_berr_counter(const struct net_device *dev,
-+				    struct can_berr_counter *bec)
-+{
-+	struct m_can_priv *priv = netdev_priv(dev);
-+	unsigned int ecr;
-+
-+	ecr = m_can_read(priv, M_CAN_ECR);
-+	bec->rxerr = (ecr & ECR_REC_MASK) >> ECR_REC_SHIFT;
-+	bec->txerr = ecr & ECR_TEC_MASK;
-+
-+	return 0;
-+}
-+
- static int m_can_get_berr_counter(const struct net_device *dev,
- 				  struct can_berr_counter *bec)
+-static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
++static void m_can_read_fifo(const struct net_device *dev, struct canfd_frame *cf,
+ 			    u32 rxfs)
  {
  	struct m_can_priv *priv = netdev_priv(dev);
--	unsigned int ecr;
- 	int err;
+ 	u32 id, fgi;
++	int i;
  
- 	err = clk_prepare_enable(priv->hclk);
-@@ -498,9 +510,7 @@ static int m_can_get_berr_counter(const struct net_device *dev,
- 		return err;
+ 	/* calculate the fifo get index for where to read data */
+ 	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
+@@ -341,15 +372,23 @@ static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+ 	else
+ 		cf->can_id = (id >> 18) & CAN_SFF_MASK;
+ 
++	if (id & RX_BUF_ESI) {
++		cf->flags |= CANFD_ESI;
++		netdev_dbg(dev, "ESI Error\n");
++	}
++
+ 	if (id & RX_BUF_RTR) {
+ 		cf->can_id |= CAN_RTR_FLAG;
+ 	} else {
+ 		id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
+-		cf->can_dlc = get_can_dlc((id >> 16) & 0x0F);
+-		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi,
+-							 M_CAN_FIFO_DATA(0));
+-		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi,
+-							 M_CAN_FIFO_DATA(1));
++		cf->len = can_dlc2len(get_canfd_dlc((id >> 16) & 0x0F));
++
++		if (id & RX_BUF_BRS)
++			cf->flags |= CANFD_BRS;
++
++		for (i = 0; i < cf->len; i += 4)
++			*(u32 *)(cf->data + i) =
++				m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA(i / 4));
  	}
  
--	ecr = m_can_read(priv, M_CAN_ECR);
--	bec->rxerr = (ecr & ECR_REC_MASK) >> ECR_REC_SHIFT;
--	bec->txerr = ecr & ECR_TEC_MASK;
-+	__m_can_get_berr_counter(dev, bec);
+ 	/* acknowledge rx fifo 0 */
+@@ -361,7 +400,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 	struct m_can_priv *priv = netdev_priv(dev);
+ 	struct net_device_stats *stats = &dev->stats;
+ 	struct sk_buff *skb;
+-	struct can_frame *frame;
++	struct canfd_frame *frame;
+ 	u32 pkts = 0;
+ 	u32 rxfs;
  
- 	clk_disable_unprepare(priv->cclk);
- 	clk_disable_unprepare(priv->hclk);
-@@ -544,7 +554,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	if (unlikely(!skb))
- 		return 0;
+@@ -375,7 +414,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 		if (rxfs & RXFS_RFL)
+ 			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
  
--	m_can_get_berr_counter(dev, &bec);
-+	__m_can_get_berr_counter(dev, &bec);
+-		skb = alloc_can_skb(dev, &frame);
++		skb = alloc_canfd_skb(dev, &frame);
+ 		if (!skb) {
+ 			stats->rx_dropped++;
+ 			return pkts;
+@@ -384,7 +423,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 		m_can_read_fifo(dev, frame, rxfs);
  
- 	switch (new_state) {
- 	case CAN_STATE_ERROR_ACTIVE:
+ 		stats->rx_packets++;
+-		stats->rx_bytes += frame->can_dlc;
++		stats->rx_bytes += frame->len;
+ 
+ 		netif_receive_skb(skb);
+ 
+@@ -744,10 +783,23 @@ static const struct can_bittiming_const m_can_bittiming_const = {
+ 	.brp_inc = 1,
+ };
+ 
++static const struct can_bittiming_const m_can_data_bittiming_const = {
++	.name = KBUILD_MODNAME,
++	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
++	.tseg1_max = 16,
++	.tseg2_min = 1,		/* Time segment 2 = phase_seg2 */
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 32,
++	.brp_inc = 1,
++};
++
+ static int m_can_set_bittiming(struct net_device *dev)
+ {
+ 	struct m_can_priv *priv = netdev_priv(dev);
+ 	const struct can_bittiming *bt = &priv->can.bittiming;
++	const struct can_bittiming *dbt = &priv->can.data_bittiming;
+ 	u16 brp, sjw, tseg1, tseg2;
+ 	u32 reg_btp;
+ 
+@@ -758,7 +810,17 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 	reg_btp = (brp << BTR_BRP_SHIFT) | (sjw << BTR_SJW_SHIFT) |
+ 			(tseg1 << BTR_TSEG1_SHIFT) | (tseg2 << BTR_TSEG2_SHIFT);
+ 	m_can_write(priv, M_CAN_BTP, reg_btp);
+-	netdev_dbg(dev, "setting BTP 0x%x\n", reg_btp);
++
++	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
++		brp = dbt->brp - 1;
++		sjw = dbt->sjw - 1;
++		tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
++		tseg2 = dbt->phase_seg2 - 1;
++		reg_btp = (brp << FBTR_FBRP_SHIFT) | (sjw << FBTR_FSJW_SHIFT) |
++				(tseg1 << FBTR_FTSEG1_SHIFT) |
++				(tseg2 << FBTR_FTSEG2_SHIFT);
++		m_can_write(priv, M_CAN_FBTP, reg_btp);
++	}
+ 
+ 	return 0;
+ }
+@@ -778,8 +840,8 @@ static void m_can_chip_config(struct net_device *dev)
+ 
+ 	m_can_config_endisable(priv, true);
+ 
+-	/* RX Buffer/FIFO Element Size 8 bytes data field */
+-	m_can_write(priv, M_CAN_RXESC, M_CAN_RXESC_8BYTES);
++	/* RX Buffer/FIFO Element Size 64 bytes data field */
++	m_can_write(priv, M_CAN_RXESC, M_CAN_RXESC_64BYTES);
+ 
+ 	/* Accept Non-matching Frames Into FIFO 0 */
+ 	m_can_write(priv, M_CAN_GFC, 0x0);
+@@ -788,8 +850,8 @@ static void m_can_chip_config(struct net_device *dev)
+ 	m_can_write(priv, M_CAN_TXBC, (1 << TXBC_NDTB_OFF) |
+ 		    priv->mcfg[MRAM_TXB].off);
+ 
+-	/* only support 8 bytes firstly */
+-	m_can_write(priv, M_CAN_TXESC, TXESC_TBDS_8BYTES);
++	/* support 64 bytes payload */
++	m_can_write(priv, M_CAN_TXESC, TXESC_TBDS_64BYTES);
+ 
+ 	m_can_write(priv, M_CAN_TXEFC, (1 << TXEFC_EFS_OFF) |
+ 		    priv->mcfg[MRAM_TXE].off);
+@@ -804,7 +866,8 @@ static void m_can_chip_config(struct net_device *dev)
+ 		    RXFC_FWM_1 | priv->mcfg[MRAM_RXF1].off);
+ 
+ 	cccr = m_can_read(priv, M_CAN_CCCR);
+-	cccr &= ~(CCCR_TEST | CCCR_MON);
++	cccr &= ~(CCCR_TEST | CCCR_MON | (CCCR_CMR_MASK << CCCR_CMR_SHIFT) |
++		(CCCR_CME_MASK << CCCR_CME_SHIFT));
+ 	test = m_can_read(priv, M_CAN_TEST);
+ 	test &= ~TEST_LBCK;
+ 
+@@ -816,6 +879,9 @@ static void m_can_chip_config(struct net_device *dev)
+ 		test |= TEST_LBCK;
+ 	}
+ 
++	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
++		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
++
+ 	m_can_write(priv, M_CAN_CCCR, cccr);
+ 	m_can_write(priv, M_CAN_TEST, test);
+ 
+@@ -880,11 +946,13 @@ static struct net_device *alloc_m_can_dev(void)
+ 
+ 	priv->dev = dev;
+ 	priv->can.bittiming_const = &m_can_bittiming_const;
++	priv->can.data_bittiming_const = &m_can_data_bittiming_const;
+ 	priv->can.do_set_mode = m_can_set_mode;
+ 	priv->can.do_get_berr_counter = m_can_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+ 					CAN_CTRLMODE_LISTENONLY |
+-					CAN_CTRLMODE_BERR_REPORTING;
++					CAN_CTRLMODE_BERR_REPORTING |
++					CAN_CTRLMODE_FD;
+ 
+ 	return dev;
+ }
+@@ -967,8 +1035,9 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 				    struct net_device *dev)
+ {
+ 	struct m_can_priv *priv = netdev_priv(dev);
+-	struct can_frame *cf = (struct can_frame *)skb->data;
+-	u32 id;
++	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
++	u32 id, cccr;
++	int i;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+@@ -987,11 +1056,24 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 
+ 	/* message ram configuration */
+ 	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
+-	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, cf->can_dlc << 16);
+-	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), *(u32 *)(cf->data + 0));
+-	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), *(u32 *)(cf->data + 4));
++	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
++
++	for (i = 0; i < cf->len; i += 4)
++		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
++				 *(u32 *)(cf->data + i));
++
+ 	can_put_echo_skb(skb, dev, 0);
+ 
++	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
++		cccr = m_can_read(priv, M_CAN_CCCR);
++		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
++		if (cf->flags & CANFD_BRS
++			cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
++		else
++			cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
++		m_can_write(priv, M_CAN_CCCR, cccr);
++	}
++
+ 	/* enable first TX buffer to start transfer  */
+ 	m_can_write(priv, M_CAN_TXBTIE, 0x1);
+ 	m_can_write(priv, M_CAN_TXBAR, 0x1);
 -- 
 1.9.1
 
