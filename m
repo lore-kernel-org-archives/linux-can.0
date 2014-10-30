@@ -1,135 +1,105 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v5 1/2] Add documentation for SPI to CAN driver
-Date: Thu, 30 Oct 2014 17:21:24 +0100
-Message-ID: <54526584.3060300@denx.de>
-References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-2-git-send-email-sbabic@denx.de> <54514F2C.10108@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 6/7] can: m_can: update to support CAN FD features
+Date: Thu, 30 Oct 2014 21:32:49 +0100
+Message-ID: <5452A071.2000307@hartkopp.net>
+References: <1414579527-31100-1-git-send-email-b29396@freescale.com> <1414579527-31100-6-git-send-email-b29396@freescale.com> <54513E38.4020703@hartkopp.net> <20141030024226.GA29572@shlinux1.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:43423 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758162AbaJ3QVc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 30 Oct 2014 12:21:32 -0400
-In-Reply-To: <54514F2C.10108@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:46503 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932513AbaJ3UdA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 30 Oct 2014 16:33:00 -0400
+In-Reply-To: <20141030024226.GA29572@shlinux1.ap.freescale.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-Hi Oliver,
 
-On 29/10/2014 21:33, Oliver Hartkopp wrote:
-> Hi Stefano,
+On 10/30/2014 03:42 AM, Dong Aisheng wrote:
+> On Wed, Oct 29, 2014 at 08:21:28PM +0100, Oliver Hartkopp wrote:
+
+>> So first I would suggest to check the core release register (CREL) to be
+>> version 3.0.x and quit the driver initialization if it doesn't fit this
+>> version. I would suggest to provide a separate patch for that check. What
+>> about printing the core release version into the kernel log at driver
+>> initialization time?
+>>
 > 
-> sorry that I did not find some time to review your driver again :-(
+> One question is that if v3.1.0 and v3.2.0 will be backward compatible with
+> v3.0.1, if yes, how about let the driver still work for them instead of
+> simply quit?
 
-Do not worry, I understand ;-)
+There are several important differences between 3.0.x and 3.1.x.
+E.g. the CCCR, BTP, PSR and others are changed and a register for the
+transmitter delay compensation is added.
 
+I assume from 3.1.x to 3.2.x the controller registers will only change in
+small details as the main update will be on the wire and not in the functionality.
+
+> And then we can add new features according new released IP version.
+
+Yes. We probably can wait for 3.[12].x to become available before adding the
+special code that behaves according the core release register content.
+
+>>> @@ -375,7 +414,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+>>>  		if (rxfs & RXFS_RFL)
+>>>  			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
+>>>  
+>>> -		skb = alloc_can_skb(dev, &frame);
+>>> +		skb = alloc_canfd_skb(dev, &frame);
+>>
+>> You are *always* allocating CAN FD frames now?
+>>
 > 
-> I found some small issues:
+> Yes, currently it is.
+> The test seemed ok using CAN FD frames even receive normal frame.
+
+When you put CAN frame content into a CAN FD skb it becomes a CAN FD frame -
+which is wrong.
+
+CAN 2.0 frame (EDL is clear) -> alloc_can_skb()
+CAN FD frame (EDL is set) -> alloc_canfd_skb()
+
+You can have a CAN FD frame with a DLC of 8, which does *not* mean that you
+have a CAN 2.0 frame.
+
+> The issue i know is that candump seemed can not recognize remote frame reported
+> by the driver.
+
+Do you use the latest candump from
+
+	https://gitorious.org/linux-can/can-utils/
+??
+
+The latest candump switches the CAN_RAW socket into the mode to accept both
+CAN *and* CAN FD frames and displays the frames correctly.
+
+> Not sure if it's caused by canfd_frame used.
+
+Yes. CAN FD frames do not have a RTR bit.
+
+> Will test and check.
 > 
-> On 28.07.2014 18:38, Stefano Babic wrote:
->> Signed-off-by: Stefano Babic <sbabic@denx.de>
+>> Depending on RX_BUF_EDL in the RX FIFO message you should create a CAN or CAN
+>> FD frame.
+>>
+>> Of course you can use the struct canfd_frame in m_can_read_fifo() as the
+>> layout of the struct can_frame is identical when filled with 'normal' CAN
+>> frame content.
+>>
+>> But you need to distinguish whether it is a CAN or CAN FD frame when
+>> allocating the skb based on the RX_BUF_EDL value.
+>>
 > 
-> 
->> +The CFG_MSG_GET is sent at the start up to query the CAN controller
->> about its
->> +internal timing, making them available to the netlink interface. CAN
->> drivers
->> +have usually fest values for can_bittiming_const.
-> 
-> fest -> fixed
+> Yes, i think it's good to do that.
+> One obvious benefit is it saves memory at least.
 
-ooppps...wrong language, I fix it !
+The main point is that CAN frames and CAN FD frames are separated by this
+(MTU) length information. It's not about saving memory.
+A CAN FD frame with DLC 8 still has 64 data bytes inside it's data structure.
 
-> 
->> In case of a remote
->> +CAN controller driven via SPI, the Main Controller cannot know the
->> timing
->> +and must ask them to the CAN controller before instantiating a CAN
->> device.
->> +For this reason, the message is sent only once in the probe() entry
->> point.
->> +
->> +The REQ_DATA is sent only by the Main Controller when the Main
->> Controller
->> +signals it has packets to be transfered, but the Main Controller has
->> nothing
->> +to sent.
-> 
-> ?? Didn't understand this - really ;-)
-
-Well, I read the phrase again and I confess I cannot understand it
-myself :-D
-
-I try to rephrase it:
-
-The REQ_DATA is a replacement for the SEND_DATA message. It is sent by
-the Main Controller when the Slave Controller has signalled in a
-previous frame that it has packets to be transfered, but the Main
-Controller has nothing to sent.
-
-
-> 
-> 
->> +8.6 Format of Get Configuration Message
->> +----------------------------------------
->> +
->> +Format of the frame sent by Main Controller:
->> +  _____,________
->> + |     |        ,'''''''''|'''''''''|
->> + |ID=6 | LEN=3  | channel |CHECKSUM |
->> + |_____L________|_________|_________|
->> +
->> +Answer from CAN Controller:
->> +  _____,________
->> + |     |        ,''''''''''''''''''''|''''''''''|'''''''''|'''''''''|..
->> + |ID=6 | LEN=25 | channel |tseg1_min |tseg2_max |tseg2_min|        
->> |CHECKSUM
->> + |_____L________|_________|__________|__________|_________|_________..
->> +
->> +    Offset
->> +    0    0x06 (CFG_MSG_GET)
->> +    1-2    25
->> +    3    channel number
->> +        0xFF = CFG
->> +        0..n = CAN controller CAN channel
->> +    5    tseg1_min
->> +    6    tseg1_max
->> +    7    tseg2_min
->> +    8    tseg2_max
->> +    9    sjw_max
->> +    10-13    brp_min
->> +    14-17    brp_max
->> +    18-21    brp_inc
->> +    22    ctrlmode
-> 
-> Why is ctrlmode not 32 bit?
-> 
->> +    23-27    clock
->> +    28-29    Checksum
-> 
-
-I admit this is a limitation on the Slave Controller. I was asked to not
-send a configuration frame bigger as 32 bytes, and I have tried to save
-space in some ways. Indeed, only some bits in the ctrlmode are used.
-
-Anyway, I was unsure if I can reduce the size for the brp_* fields.
-Using 32bit for brp_min looks like excessive, and I could drop its size
-instead of ctrlmode. Do you think I can use 8bit values for all brp_*
-fields ?
-
-> Some more stuff in the other patch.
-
-I check it, thanks for review !
-
-Best regards,
-Stefano
-
--- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+Regards,
+Oliver
