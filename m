@@ -1,105 +1,189 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Calling can_free_echo_skb() from interrupt causes WARN
-Date: Wed, 29 Oct 2014 22:00:15 +0100
-Message-ID: <5451555F.1090800@hartkopp.net>
-References: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65718FFE@esd-s3.esd.local>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH 6/7] can: m_can: update to support CAN FD features
+Date: Thu, 30 Oct 2014 10:42:29 +0800
+Message-ID: <20141030024226.GA29572@shlinux1.ap.freescale.net>
+References: <1414579527-31100-1-git-send-email-b29396@freescale.com>
+ <1414579527-31100-6-git-send-email-b29396@freescale.com>
+ <54513E38.4020703@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:42051 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755698AbaJ2VAS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Oct 2014 17:00:18 -0400
-In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65718FFE@esd-s3.esd.local>
+Received: from mail-bn1bon0110.outbound.protection.outlook.com ([157.56.111.110]:27733
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752169AbaJ3DMr (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 29 Oct 2014 23:12:47 -0400
+Content-Disposition: inline
+In-Reply-To: <54513E38.4020703@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?windows-1252?Q?Thomas_K=F6rper?= <Thomas.Koerper@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-Hi Thomas,
+On Wed, Oct 29, 2014 at 08:21:28PM +0100, Oliver Hartkopp wrote:
+> Hello Dong,
+> 
+> thanks for your update to support CAN FD with the 3.0.x M_CAN IP core.
+> 
+> AFAIK from the last CAN in Automation (CiA) Plugfest which took place in
+> Nuremberg yesterday, there are two more IP cores on the way:
+> 
+> v3.0.1 / v3.0.2 (the current spec from the Bosch website)
+> 
+> v3.1.0 which will support per-frame CAN/CANFD switching in the tx path
+> (the FDF/(former)EDL bit and the BRS bit appear in the TX buffer element at
+> the bit position you know from reading the RX FIFO element)
+> 
+> v3.2.0 which will support the final(?) ISO specification with a bitstuffing
+> counter before the CRC in the frame on the wire.
+> 
 
-did you fix this - or do we need to change it in can_free_echo_skb() gl=
-obally?
+Sounds good.
 
-Regards,
-Oliver
+> So first I would suggest to check the core release register (CREL) to be
+> version 3.0.x and quit the driver initialization if it doesn't fit this
+> version. I would suggest to provide a separate patch for that check. What
+> about printing the core release version into the kernel log at driver
+> initialization time?
+> 
 
-On 30.09.2014 06:21, Thomas K=F6rper wrote:
-> Hi linux-can,
->
-> I'm working on a new driver for one of our CAN cards.
->
-> In the TX error interrupt I call can_free_echo_skb(), but I get a war=
-ning and stack trace then. I'd say its kfree_skb() must not be called f=
-rom interrupt context - replacing it by dev_kfree_skb_any() seems to fi=
-x it.
->
-> But I'm not the first one calling can_free_echo_skb() from interrupt.=
-=2E. so, what am I missing?
->
->
-> Regards,
->      Thomas
->
->
-> [ 1153.360705] ------------[ cut here ]------------
-> [ 1153.360715] WARNING: CPU: 0 PID: 31 at net/core/skbuff.c:563 skb_r=
-elease_head_state+0xb9/0xd0()
-> [ 1153.360717] Modules linked in: can_raw esd402(O) can_dev(O) can ar=
-c4 md4 nls_utf8 cifs nfsv3 i915 nfsd auth_rpcgss nfs_acl rfcomm bnep nf=
-s bluetooth hisax lockd video drm_kms_helper sunrpc drm coretemp kvm is=
-dn fscache dell_wmi gpio_ich sparse_keymap i2c_algo_bit crc_ccitt binfm=
-t_misc dcdbas lpc_ich serio_raw wmi mac_hid parport_pc ppdev lp parport=
- hid_generic usbhid hid r8169 e1000e mii psmouse ptp pps_core
-> [ 1153.360754] CPU: 0 PID: 31 Comm: kworker/0:1 Tainted: G           =
-O   3.17.0-rc4+ #1
-> [ 1153.360756] Hardware name: Dell Inc. OptiPlex 760                 =
-/0M858N, BIOS A05 08/17/2009
-> [ 1153.360760]  00000000 00000000 f580dedc c167906f 00000000 f580df0c=
- c105bb7e c187cf30
-> [ 1153.360764]  00000000 0000001f c1911ffb 00000233 c158b909 c158b909=
- f4e1a600 00000003
-> [ 1153.360768]  f4e1a600 f580df1c c105bc42 00000009 00000000 f580df28=
- c158b909 f4e1a600
-> [ 1153.360772] Call Trace:
-> [ 1153.360778]  [<c167906f>] dump_stack+0x41/0x52
-> [ 1153.360782]  [<c105bb7e>] warn_slowpath_common+0x7e/0xa0
-> [ 1153.360784]  [<c158b909>] ? skb_release_head_state+0xb9/0xd0
-> [ 1153.360786]  [<c158b909>] ? skb_release_head_state+0xb9/0xd0
-> [ 1153.360788]  [<c105bc42>] warn_slowpath_null+0x22/0x30
-> [ 1153.360791]  [<c158b909>] skb_release_head_state+0xb9/0xd0
-> [ 1153.360793]  [<c158be90>] skb_release_all+0x10/0x30
-> [ 1153.360795]  [<c158bf06>] kfree_skb+0x36/0x80
-> [ 1153.360799]  [<f8486938>] ? can_free_echo_skb+0x28/0x40 [can_dev]
-> [ 1153.360802]  [<f8486938>] can_free_echo_skb+0x28/0x40 [can_dev]
-> [ 1153.360805]  [<f849a12c>] esd_pci402_interrupt+0x34c/0x57a [esd402=
-]
-> [ 1153.360809]  [<c10a75b5>] handle_irq_event_percpu+0x35/0x180
-> [ 1153.360811]  [<c10a7623>] ? handle_irq_event_percpu+0xa3/0x180
-> [ 1153.360813]  [<c10a7731>] handle_irq_event+0x31/0x50
-> [ 1153.360816]  [<c10a9c7f>] handle_fasteoi_irq+0x6f/0x120
-> [ 1153.360818]  [<c10a9c10>] ? handle_edge_irq+0x110/0x110
-> [ 1153.360822]  [<c1011b61>] handle_irq+0x71/0x90
-> [ 1153.360823]  <IRQ>  [<c168152c>] do_IRQ+0x3c/0xd0
-> [ 1153.360829]  [<c1680b6c>] common_interrupt+0x2c/0x34
-> [ 1153.360834]  [<c107d277>] ? finish_task_switch+0x47/0xf0
-> [ 1153.360836]  [<c167c27b>] __schedule+0x35b/0x7e0
-> [ 1153.360839]  [<c10a5334>] ? console_unlock+0x2c4/0x4d0
-> [ 1153.360842]  [<c13df500>] ? n_tty_receive_buf_common+0x890/0x890
-> [ 1153.360845]  [<c10707b6>] ? process_one_work+0x196/0x370
-> [ 1153.360847]  [<c167c723>] schedule+0x23/0x60
-> [ 1153.360849]  [<c1070de1>] worker_thread+0x161/0x460
-> [ 1153.360852]  [<c1090fcf>] ? __wake_up_locked+0x1f/0x30
-> [ 1153.360854]  [<c1070c80>] ? rescuer_thread+0x2f0/0x2f0
-> [ 1153.360856]  [<c1074f01>] kthread+0xa1/0xc0
-> [ 1153.360859]  [<c1680401>] ret_from_kernel_thread+0x21/0x30
-> [ 1153.360861]  [<c1074e60>] ? kthread_create_on_node+0x110/0x110
-> [ 1153.360863] ---[ end trace 5ff83639cbb74b35 ]---
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+One question is that if v3.1.0 and v3.2.0 will be backward compatible with
+v3.0.1, if yes, how about let the driver still work for them instead of
+simply quit?
+And then we can add new features according new released IP version.
+
+> Regarding the CAN FD support in this patch I have some remarks in the text ...
+> 
+> On 10/29/2014 11:45 AM, Dong Aisheng wrote:
+> 
+> >  /* Rx Buffer Element */
+> > +/* R0 */
+> >  #define RX_BUF_ESI		BIT(31)
+> >  #define RX_BUF_XTD		BIT(30)
+> >  #define RX_BUF_RTR		BIT(29)
+> > +/* R1 */
+> > +#define RX_BUF_ANMF		BIT(31)
+> > +#define RX_BUF_EDL		BIT(21)
+> > +#define RX_BUF_BRS		BIT(20)
+> >  
+> >  /* Tx Buffer Element */
+> > +/* R0 */
+> >  #define TX_BUF_XTD		BIT(30)
+> >  #define TX_BUF_RTR		BIT(29)
+> >  
+> > @@ -327,11 +357,12 @@ static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+> >  	m_can_write(priv, M_CAN_ILE, 0x0);
+> >  }
+> >  
+> > -static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+> > +static void m_can_read_fifo(const struct net_device *dev, struct canfd_frame *cf,
+> >  			    u32 rxfs)
+> >  {
+> >  	struct m_can_priv *priv = netdev_priv(dev);
+> >  	u32 id, fgi;
+> > +	int i;
+> >  
+> >  	/* calculate the fifo get index for where to read data */
+> >  	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
+> > @@ -341,15 +372,23 @@ static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+> >  	else
+> >  		cf->can_id = (id >> 18) & CAN_SFF_MASK;
+> >  
+> > +	if (id & RX_BUF_ESI) {
+> > +		cf->flags |= CANFD_ESI;
+> > +		netdev_dbg(dev, "ESI Error\n");
+> > +	}
+> > +
+> >  	if (id & RX_BUF_RTR) {
+> >  		cf->can_id |= CAN_RTR_FLAG;
+> 
+> When RX_BUF_EDL is set you should not check for RX_BUF_RTR as RTR is not
+> allowed for CAN FD.
+> 
+
+Right, will change it.
+
+> >  	} else {
+> >  		id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
+> > -		cf->can_dlc = get_can_dlc((id >> 16) & 0x0F);
+> > -		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi,
+> > -							 M_CAN_FIFO_DATA(0));
+> > -		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi,
+> > -							 M_CAN_FIFO_DATA(1));
+> > +		cf->len = can_dlc2len(get_canfd_dlc((id >> 16) & 0x0F));
+> > +
+> > +		if (id & RX_BUF_BRS)
+> > +			cf->flags |= CANFD_BRS;
+> > +
+> > +		for (i = 0; i < cf->len; i += 4)
+> > +			*(u32 *)(cf->data + i) =
+> > +				m_can_fifo_read(priv, fgi, M_CAN_FIFO_DATA(i / 4));
+> >  	}
+> >  
+> >  	/* acknowledge rx fifo 0 */
+> > @@ -361,7 +400,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+> >  	struct m_can_priv *priv = netdev_priv(dev);
+> >  	struct net_device_stats *stats = &dev->stats;
+> >  	struct sk_buff *skb;
+> > -	struct can_frame *frame;
+> > +	struct canfd_frame *frame;
+> >  	u32 pkts = 0;
+> >  	u32 rxfs;
+> >  
+> > @@ -375,7 +414,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+> >  		if (rxfs & RXFS_RFL)
+> >  			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
+> >  
+> > -		skb = alloc_can_skb(dev, &frame);
+> > +		skb = alloc_canfd_skb(dev, &frame);
+> 
+> You are *always* allocating CAN FD frames now?
+> 
+
+Yes, currently it is.
+The test seemed ok using CAN FD frames even receive normal frame.
+
+The issue i know is that candump seemed can not recognize remote frame reported
+by the driver.
+Not sure if it's caused by canfd_frame used.
+Will test and check.
+
+> Depending on RX_BUF_EDL in the RX FIFO message you should create a CAN or CAN
+> FD frame.
+> 
+> Of course you can use the struct canfd_frame in m_can_read_fifo() as the
+> layout of the struct can_frame is identical when filled with 'normal' CAN
+> frame content.
+> 
+> But you need to distinguish whether it is a CAN or CAN FD frame when
+> allocating the skb based on the RX_BUF_EDL value.
+> 
+
+Yes, i think it's good to do that.
+One obvious benefit is it saves memory at least.
+
+> >  		if (!skb) {
+> >  			stats->rx_dropped++;
+> >  			return pkts;
+> > @@ -384,7 +423,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+> >  		m_can_read_fifo(dev, frame, rxfs);
+> >  
+> >  		stats->rx_packets++;
+> > -		stats->rx_bytes += frame->can_dlc;
+> > +		stats->rx_bytes += frame->len;
+> >  
+> >  		netif_receive_skb(skb);
+> >  
+> 
+> The rest of your entire patch set looks very good from my perspective.
+> 
+
+Thanks for the review. :-)
+
+> Best regards,
+> Oliver
+> 
+> 
+
+Regards
+Dong Aisheng
