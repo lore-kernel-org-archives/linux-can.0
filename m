@@ -1,128 +1,224 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Request for advice on CAN driver writing
-Date: Mon, 03 Nov 2014 13:32:44 +0100
-Message-ID: <545775EC.7030800@pengutronix.de>
-References: <54F29680670EE04E9BB46A703116517492D781@dtxvm2010.dtxinc.com>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH 07/15] can: rx-fifo: Change to do controller off-load in
+ interrupt and NAPI poll
+Date: Mon, 3 Nov 2014 13:44:12 +0100
+Message-ID: <20141103134412.60107f15@archvile>
+References: <1412956020-21489-1-git-send-email-david@protonic.nl>
+	<1412956020-21489-8-git-send-email-david@protonic.nl>
+	<20141019220909.GC428@pengutronix.de>
+	<20141020090613.63044885@archvile>
+	<54576299.6080907@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="iIeVtf1dOrSTtuihFsOcx7MsIv8I81Nd3"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51079 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751739AbaKCMcx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Nov 2014 07:32:53 -0500
-In-Reply-To: <54F29680670EE04E9BB46A703116517492D781@dtxvm2010.dtxinc.com>
+Received: from protonic.xs4all.nl ([83.163.252.89]:4297 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751104AbaKCMnk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 3 Nov 2014 07:43:40 -0500
+In-Reply-To: <54576299.6080907@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dan Naughton <Dan.Naughton@dtx.com>, "'wg@grandegger.com'" <wg@grandegger.com>, "'linux-can@vger.kernel.org'" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iIeVtf1dOrSTtuihFsOcx7MsIv8I81Nd3
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, 03 Nov 2014 12:10:17 +0100
+Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 
-Hello Dan,
+> On 10/20/2014 09:06 AM, David Jander wrote:
+> >>> +static int can_rx_fifo_napi_poll(struct napi_struct *napi, int quota)
+> >>> +{
+> >>> +	struct can_rx_fifo *fifo = container_of(napi, struct
+> >>> can_rx_fifo, napi);
+> >>> +	int work_done = 0;
+> >>> +	int ret;
+> >>> +	unsigned int head;
+> >>> +	unsigned int tail;
+> >>> +
+> >>> +restart_poll:
+> >>> +	/* handle mailboxes */
+> >>> +	head = smp_load_acquire(&fifo->ring_head);
+> >>> +	tail = fifo->ring_tail;
+> >>> +	while ((CIRC_CNT(head, tail, fifo->ring_size) >= 1) &&
+> >>> +			(work_done < quota)) {
+> >>> +		ret = can_rx_fifo_read_napi_frame(fifo, tail);
+> >>> +		work_done += ret;
+> >>> +		tail = (tail + 1) & (fifo->ring_size -1);
+> >>> +		smp_store_release(&fifo->ring_tail, tail);
+> >>> +	}
+> >>> +
+> >>> +	if (work_done < quota) {
+> >>> +		napi_complete(napi);
+> >>> +
+> >>> +		/* Check if there was another interrupt */
+> >>> +		head = smp_load_acquire(&fifo->ring_head);
+> >>> +		if ((CIRC_CNT(head, tail, fifo->ring_size) >= 1) &&
+> >>> +		    napi_reschedule(&fifo->napi))
+> >>> +			goto restart_poll;
+> >>
+> >> Hmmm, this looks a bit strange. If I understand the code correctly you ask
+> >> that napi should be started again, but then jump directly to the
+> >> beginning.
+> > 
+> > The documentation seems to say that one should use it like that:
+> > 
+> > http://www.linuxfoundation.org/collaborate/workgroups/networking/napi
+> 
+> Some drivers do it this way, other don't.
+> 
+> > If you still think it is wrong, then tell me how to re-enable napi and
+> > continue correctly. AFAIK it is done like this in order to avoid a race
+> > when the interrupt is called while NAPI polling was underway.
+> > napi_schedule() just sets a flag, and does _not_ add work to a queue...
+> 
+> I think your code is correct. There are several aspects to it, as far as
+> I understand the NAPI code:
+> - NAPI_STATE_SCHED means a poll is scheduled
+> - napi_reschedule(): if NAPI_STATE_SCHED is already set it will return
+>   false. Otherwise NAPI_STATE_SCHED will be set and a sofirq will be
+>   raised, true is returned.
+> - I think the "goto restart_poll" is an optimisation, as the softirq
+>   will schedule the poll function again. But AFAICS it's fine, as
+>   napi_complete() checks for NAPI_STATE_SCHED set.
+> - The above code is needed for devices on an edge triggered interrupt
+>   line. As there is a race window between checking the RX buffer and
+>   enabling the interrupt line. As we don't have an interrupt here at
+>   all, we must have this code. Good work!
 
-On 10/31/2014 06:40 PM, Dan Naughton wrote:
-> I found your names on the kernel maintainers list for CAN driver and I
-> was hoping you could help with some advice.  I have two companies that
-> are writing drivers for their CAN cards for me (http://goo.gl/mca7Ao an=
-d
-> http://goo.gl/S00PDT ), but I am not a driver developer.     I would
-> like them to submit their drivers to kernel.org =E2=80=93 but I would l=
-ike to
-> make sure that the drivers are not garbage.  So I was looking for advic=
-e:
+Exactly. Thanks!
 
-that depends on your agreement with these companies ;)
+> >>> +	}
+> >>> +
+> >>> +	return work_done;
+> >>> +}
+> >>> +
+> >>>  int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
+> >>>  {
+> >>> +	unsigned int weight;
+> >>>  	fifo->dev = dev;
+> >>>  
+> >>>  	if ((fifo->low_first < fifo->high_first) &&
+> >>> -	    (fifo->high_first < fifo->high_last))
+> >>> +	    (fifo->high_first < fifo->high_last)) {
+> >>>  		fifo->inc = true;
+> >>> -	else if ((fifo->low_first > fifo->high_first) &&
+> >>> -		 (fifo->high_first > fifo->high_last))
+> >>> +		weight = fifo->high_last - fifo->low_first;
+> >>> +	} else if ((fifo->low_first > fifo->high_first) &&
+> >>> +		 (fifo->high_first > fifo->high_last)) {
+> >>>  		fifo->inc = false;
+> >>> -	else
+> >>> +		weight = fifo->low_first - fifo->high_last;
+> >>> +	} else
+> >>>  		return -EINVAL;
+> >>
+> >> Please but { } at every branch of the if else.
+> > 
+> > Ok, will do.
+> > 
+> >>>  
+> >>> -	if (!fifo->read_pending || !fifo->mailbox_enable_mask ||
+> >>> -	    !fifo->mailbox_disable || !fifo->mailbox_receive)
+> >>> +	if (!fifo->mailbox_enable_mask || !fifo->mailbox_move_to_buffer
+> >>> ||
+> >>> +	    !fifo->mailbox_enable)
+> >>>  		return -EINVAL;
+> >>>  
+> >>> +	/* Make ring-buffer a sensible size that is a power of 2 */
+> >>> +	fifo->ring_size = (2 << fls(weight));
+> >>> +	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
+> >>> +			     GFP_KERNEL);
+> >>> +	if (!fifo->ring)
+> >>> +		return -ENOMEM;
+> >>> +
+> >>> +	fifo->ring_head = fifo->ring_tail = 0;
+> >>> +
+> >>> +	/* Take care of NAPI handling */
+> >>> +	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
+> >>
+> >> I'm not sure, if the rx-fifo should take care of the whole NAPI, I think
+> >> it's better to provide helper functions instead.
+> > 
+> > Why not? We are removing the messages from the CAN controller in the IRQ
+> > already, so why would the CAN driver have to even care about NAPI which
+> > happens _after_ all that? Can you come up with an example where this may
+> > not be desirable?
+> 
+> If NAPI is handled by the rx-fifo exclusively, everything else i.e.
+> tx-complete and error handling cannot be done in NAPI. Thinking more
+> about this and looking at the above discussed code, maybe it's better to
+> have the napi in the rx-fifo code.
 
-> My list of requirements:
->=20
-> =C2=B7         libsocketcan.h  API compatible.
+Ok, so we keep it there...
 
-If you add "upstream CAN driver to official linux tree at kernel.org" to
-your requirements there the drivers will sooner or later end up here.
-And eventually they're being reviewed.
+> > Can you illustrate your idea with helper functions?
+> 
+> Something like can_rx_fifo_napi_poll() would be our helper function,
+> it's supposed to be called from the NAPI handler the driver has
+> registered. But the driver has to take care about the napi_complete()
+> and napi_reschedule(), which is probably quite fragile.... So keep it as
+> it is.
 
-There also is the possibility to book commercial CAN driver
-reviewing/mainlining/writing support, e.g. by you (your company) or the
-hardware manufacturer. Contact me directly for more information.
+That's what I thought too.
 
-> =C2=B7         ???  I=E2=80=99m stuck =E2=80=93 is there one of the dri=
-vers here that we
-> should model it after
-> (http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/dr=
-ivers/net/can)
+> > 
+> >>> +
+> >>>  	/* init variables */
+> >>>  	fifo->mask_low = can_rx_fifo_mask_low(fifo);
+> >>>  	fifo->mask_high = can_rx_fifo_mask_high(fifo);
+> >>> -	fifo->next = fifo->low_first;
+> >>> +	fifo->second_first = false;
+> >>>  	fifo->active = fifo->mask_low | fifo->mask_high;
+> >>>  	fifo->mailbox_enable_mask(fifo, fifo->active);
+> >>>  
+> >>> @@ -338,60 +420,95 @@ int can_rx_fifo_add(struct net_device *dev, struct
+> >>> can_rx_fifo *fifo) }
+> >>>  EXPORT_SYMBOL_GPL(can_rx_fifo_add);
+> >>>  
+> >>> -int can_rx_fifo_poll(struct can_rx_fifo *fifo, int quota)
+> >>> +static unsigned int can_rx_fifo_offload_if_full(struct can_rx_fifo
+> >>> *fifo, unsigned int n) +{
+> >>> +	unsigned int head = fifo->ring_head;
+> >>> +	unsigned int tail = ACCESS_ONCE(fifo->ring_tail);
+> >>> +	unsigned int ret = 0;
+> >>> +
+> >>> +	if (CIRC_SPACE(head, tail, fifo->ring_size) >= 1) {
+> >>> +		ret = fifo->mailbox_move_to_buffer(fifo,
+> >>> &fifo->ring[head], n);
+> >>> +		if (ret)
+> >>> +			smp_store_release(&fifo->ring_head,
+> >>> +				(head + 1) & (fifo->ring_size - 1));
+> >>> +	} else {
+> >>> +		ret = fifo->mailbox_move_to_buffer(fifo,
+> >>> &fifo->overflow, n);
+> >>> +		if (ret)
+> >>> +			fifo->dev->stats.rx_dropped++;
+> >>> +	}
+> >>
+> >> That's the purpose of the overflow mailbox? fifo-> overflow seems to be
+> >> write only?
+> > 
+> > Yes.
+> > The idea is to simplify the code for the user. mailbox_move_to_buffer()
+> > should just move the corresponding can message to the provided buffer and
+> > do all interrupt-flag clearing and stuff the driver needs to do in order
+> > to free the MB. Its just that in the case we don't have space in the
+> > circular buffer, I don't want to complicate things for the driver and tell
+> > him that this message should be discarded. Just think of fifo->overflow as
+> > a sort of /dev/null. Of course I could just pass NULL to that function,
+> > but IMHO that's dangerous because since it happens only very seldom, a
+> > missing check for NULL in that function may bite you when it is already
+> > too late (i.e. the driver already hit mainline).
+> 
+> Okay, got it, nice idea. Can you put a comment in the struct rx-fifo.
+> Can you also document the requirements on the mailbox_move_to_buffer()
+> callback, I remember you've written this in some email....
 
-Regarding the hardware:
+Ok, will do. It might take a few days until I can post the next version
+unfortunately....
 
-- MPE-CAN+CAN-C
-The documentation situation is quite shallow :) But it says a
-PIC32MX795F512L (MIPS based) processor is used. As far as I can see the
-processor has a USB, but no PCI controller. So the card uses probably
-the USB within the PCIe connector. So the drivers in
-"drivers/net/can/usb" are worth to look at. The "usb_8dev.c" supports an
-ARM based chip, where the hardware and firmware is open source. The
-"gs_usb.c" serves a device, which firmware is modelled to fit the
-linux-can quite easily.
+Best regards,
 
-But as the MPE-CAN+CAN-C hardware is already available, I assume the
-firmware is already finished and a new Linux driver has to be written.
-
-- MPX-2515
-Hearing the numbers "2515" next to CAN, gives me shivers :) There is the
-MCP2515 SPI CAN controller, which is the second worst CAN chip I know
-(the MCP2510 is the worst one). And indeed:
-
-> CYPRESS CY8C24794-24LTXI PSoC
-> Microchip MCP-2515 CAN Controller
-> Microchip MCP-2551 High-Speed CAN Transceiver
-
-They probably have attached the MCP2515 to the SPI bus of the CYPRESS
-processor, which has a USB Interface. So this hardware is only using the
-USB part of the PCIe connector. BTW: the USB is only working in 12
-Mbit/s (instead of the full 480 Mbit/s of USB-2.0). From the used chips,
-this hardware must/should significantly cheaper than the MPE-CAN+CAN-C :)=
-
-
-As this is a USB hardware, the same comments about existing CAN-USB
-driver apply.
-
-> Thanks for your assistance.  We would like to contribute the CAN driver=
-
-> support =E2=80=93 I would like to avoid contributing garbage
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---iIeVtf1dOrSTtuihFsOcx7MsIv8I81Nd3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUV3XsAAoJECte4hHFiupUgecQAIRScmUQ8jxIO6RAQ/vRH2di
-YBqLBWxEHAx6cbGIiz1pM9pzrXJJb8jvgmaAqJPB2K1OCxkWFRSYOMCexdtvF/7I
-sHbVg3WU/amwNx6uaW44iOK39fZbJ0FEc37MZ0x19eANttOv+uEkghB0BYHeEK1U
-VGklaey58eqpQqxSnzSz4ZYCm79bGctbe+9sZR+bpNGDGrLyXtH5NY3J/zUQjpzW
-8DVVIOXUepAElNPI1YJEDPqUcIf2ZPP9EHU7HXPD6UBTIIkFfPjd+NDKtrA0QJng
-DCezU0Vky8cWUE8jBK2COzpBIyGO1KXcTYeS0V03N6HEyr6hFYRcR8eTvG44d6dz
-R58GzgD4uV9pmKgNF8HLHGa7e25dNjT/9Ruc6J0K2l8WFjEHyqjeZkQ/q98TPar2
-iRm+mvVILcGdZ4Ayp+OmIxAax0M07QxJCEcdaF1XDDrCBkasbBnTWZ1HgcfHlFAE
-p4q1QuwX1JK53iXi84YNwdLmTgK34OlZ2B2AQJ6nV/o4a2OJ5iqOuEthzaFGANtM
-FftuJImPS02tZ6iPASkx5ygKvfSIqbjPZbbCeUdiVi5/4O0SgTtXH28tTwFQZQia
-lMTDjaBUrN2/gDu+zWoM4fCYXlMiIKcaof0hP9tMII73dA7WEDR3Ey07Ljf5w4Ta
-UXGNhy8dYrxTh6bjC0ax
-=+ZQU
------END PGP SIGNATURE-----
-
---iIeVtf1dOrSTtuihFsOcx7MsIv8I81Nd3--
+-- 
+David Jander
+Protonic Holland.
