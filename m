@@ -1,7 +1,7 @@
 From: Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v3 08/10] ARM: dts: am33xx: Add control module syscon node
-Date: Tue, 4 Nov 2014 12:48:52 +0200
-Message-ID: <1415098134-26405-9-git-send-email-rogerq@ti.com>
+Subject: [PATCH v3 09/10] ARM: dts: am33xx: Update DCAN nodes
+Date: Tue, 4 Nov 2014 12:48:53 +0200
+Message-ID: <1415098134-26405-10-git-send-email-rogerq@ti.com>
 References: <1415098134-26405-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,30 +12,53 @@ To: tony@atomide.com
 Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org, Roger Quadros <rogerq@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-Use syscon regmap to expose the Control module register space.
-This register space is shared between many users e.g. DCAN, USB, display, etc.
+Add "raminit-syscon" property to specify the RAMINIT register.
+Add clock information.
+Rename can nodes from "d_can" to "can" to be compliant
+with the ePAPR specs.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/am33xx.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/am33xx.dtsi | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 8318105..9f3058c 100644
+index 9f3058c..f227ba1 100644
 --- a/arch/arm/boot/dts/am33xx.dtsi
 +++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -83,6 +83,11 @@
+@@ -338,20 +338,24 @@
+ 			interrupts = <91>;
  		};
- 	};
  
-+	am33xx_control_module: control_module@4a002000 {
-+		compatible = "syscon";
-+		reg = <0x44e10000 0x7fc>;
-+	};
-+
- 	am33xx_pinmux: pinmux@44e10800 {
- 		compatible = "pinctrl-single";
- 		reg = <0x44e10800 0x0238>;
+-		dcan0: d_can@481cc000 {
+-			compatible = "bosch,d_can";
++		dcan0: can@481cc000 {
++			compatible = "ti,am3352-d_can0";
+ 			ti,hwmods = "d_can0";
+-			reg = <0x481cc000 0x2000
+-				0x44e10644 0x4>;
++			reg = <0x481cc000 0x2000>;
++			clocks = <&dcan0_fck>;
++			clock-names = "fck";
++			syscon-raminitn = <&am33xx_control_module 0x644>;
+ 			interrupts = <52>;
+ 			status = "disabled";
+ 		};
+ 
+-		dcan1: d_can@481d0000 {
+-			compatible = "bosch,d_can";
++		dcan1: can@481d0000 {
++			compatible = "ti,am3352-d_can1";
+ 			ti,hwmods = "d_can1";
+-			reg = <0x481d0000 0x2000
+-				0x44e10644 0x4>;
++			reg = <0x481d0000 0x2000>;
++			clocks = <&dcan1_fck>;
++			clock-names = "fck";
++			syscon-raminit = <&am33xx_control_module 0x644>;
+ 			interrupts = <55>;
+ 			status = "disabled";
+ 		};
 -- 
 1.8.3.2
 
