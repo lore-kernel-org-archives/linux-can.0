@@ -1,136 +1,154 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH 6/7] can: m_can: update to support CAN FD features
-Date: Tue, 4 Nov 2014 15:12:08 +0800
-Message-ID: <20141104071146.GA17367@shlinux1.ap.freescale.net>
+Subject: Re: [PATCH 7/7] can: m_can: workaround for transmit data less than
+ 4 bytes
+Date: Tue, 4 Nov 2014 16:25:11 +0800
+Message-ID: <20141104082505.GA8060@shlinux1.ap.freescale.net>
 References: <1414579527-31100-1-git-send-email-b29396@freescale.com>
- <1414579527-31100-6-git-send-email-b29396@freescale.com>
- <54513E38.4020703@hartkopp.net>
- <20141030024226.GA29572@shlinux1.ap.freescale.net>
- <5452A071.2000307@hartkopp.net>
+ <1414579527-31100-7-git-send-email-b29396@freescale.com>
+ <5457B1D1.6080301@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2on0145.outbound.protection.outlook.com ([65.55.169.145]:53520
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752224AbaKDIzl (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 4 Nov 2014 03:55:41 -0500
 Content-Disposition: inline
-In-Reply-To: <5452A071.2000307@hartkopp.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: netdev@vger.kernel.org, varkabhadram@gmail.com, linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+In-Reply-To: <5457B1D1.6080301@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
 
-On Thu, Oct 30, 2014 at 09:32:49PM +0100, Oliver Hartkopp wrote:
+On Mon, Nov 03, 2014 at 05:48:17PM +0100, Marc Kleine-Budde wrote:
+> On 10/29/2014 11:45 AM, Dong Aisheng wrote:
+> > We meet an IC issue that we have to write the full 8 bytes (whatever
+> > value for the second word) in Message RAM to avoid bit error for transmit
+> > data less than 4 bytes.
 > 
-> On 10/30/2014 03:42 AM, Dong Aisheng wrote:
-> > On Wed, Oct 29, 2014 at 08:21:28PM +0100, Oliver Hartkopp wrote:
+> Is this a SoC or a m_can problem? Are all versions of the SoC/m_can
+> affected? Is there a m_can version register somewhere?
 > 
-> >> So first I would suggest to check the core release register (CREL) to be
-> >> version 3.0.x and quit the driver initialization if it doesn't fit this
-> >> version. I would suggest to provide a separate patch for that check. What
-> >> about printing the core release version into the kernel log at driver
-> >> initialization time?
-> >>
+
+I'm still not sure it's SoC or m_can problem.
+Our IC guys ran the simulation code and found this issue.
+But due to some reasons, it may be very slow for they to investigate
+and get the conclusion.
+
+> > Without the workaround, we can easily see the following errors:
+> > root@imx6qdlsolo:~# ip link set can0 up type can bitrate 1000000
+> > [   66.882520] IPv6: ADDRCONF(NETDEV_CHANGE): can0: link becomes ready
+> > root@imx6qdlsolo:~# cansend can0 123#112233
+> > [   66.935640] m_can 20e8000.can can0: Bit Error Uncorrected
 > > 
-> > One question is that if v3.1.0 and v3.2.0 will be backward compatible with
-> > v3.0.1, if yes, how about let the driver still work for them instead of
-> > simply quit?
-> 
-> There are several important differences between 3.0.x and 3.1.x.
-> E.g. the CCCR, BTP, PSR and others are changed and a register for the
-> transmitter delay compensation is added.
-> 
-> I assume from 3.1.x to 3.2.x the controller registers will only change in
-> small details as the main update will be on the wire and not in the functionality.
-> 
-> > And then we can add new features according new released IP version.
-> 
-> Yes. We probably can wait for 3.[12].x to become available before adding the
-> special code that behaves according the core release register content.
-> 
-
-Okay
-
-> >>> @@ -375,7 +414,7 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
-> >>>  		if (rxfs & RXFS_RFL)
-> >>>  			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
-> >>>  
-> >>> -		skb = alloc_can_skb(dev, &frame);
-> >>> +		skb = alloc_canfd_skb(dev, &frame);
-> >>
-> >> You are *always* allocating CAN FD frames now?
-> >>
+> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> > ---
+> >  drivers/net/can/m_can/m_can.c | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
 > > 
-> > Yes, currently it is.
-> > The test seemed ok using CAN FD frames even receive normal frame.
+> > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> > index 219e0e3..f2d9ebe 100644
+> > --- a/drivers/net/can/m_can/m_can.c
+> > +++ b/drivers/net/can/m_can/m_can.c
+> > @@ -1058,10 +1058,19 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+> >  	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
+> >  	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
+> >  
+> > -	for (i = 0; i < cf->len; i += 4)
+> > +	for (i = 0; i < cf->len; i += 4) {
+> >  		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
+> >  				 *(u32 *)(cf->data + i));
+> >  
+> > +		/* FIXME: we meet an IC issue that we have to write the full 8
 > 
-> When you put CAN frame content into a CAN FD skb it becomes a CAN FD frame -
-> which is wrong.
-> 
-> CAN 2.0 frame (EDL is clear) -> alloc_can_skb()
-> CAN FD frame (EDL is set) -> alloc_canfd_skb()
-> 
-> You can have a CAN FD frame with a DLC of 8, which does *not* mean that you
-> have a CAN 2.0 frame.
-> 
-> > The issue i know is that candump seemed can not recognize remote frame reported
-> > by the driver.
-> 
-> Do you use the latest candump from
+> FIXME usually indicates that the driver needs some work here. Just
+> describe your hardware bug, you might add a reference to an errata if
+> available, though.
 > 
 
-Yes, i'm using latest candump.
+We don't have an errata for it now.
+Because i'm not sure this is the final workaround and also not sure if other
+SoC vendors having the same issue, so i used FIXME here firstly.
+Since the code is harmless, so i wish we could put it here first
+until we find evidence no need for other SoC or only belong to specific
+IP version.
 
-> 	https://gitorious.org/linux-can/can-utils/
-> ??
+> > +		 * bytes (whatever value for the second word) in Message RAM to
+> > +		 * avoid bit error for transmit data less than 4 bytes
+> > +		 */
+> > +		if (cf->len <= 4)
+> > +			m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4 + 1),
+> > +					 0x0);
 > 
-> The latest candump switches the CAN_RAW socket into the mode to accept both
-> CAN *and* CAN FD frames and displays the frames correctly.
-> 
-> > Not sure if it's caused by canfd_frame used.
-> 
-> Yes. CAN FD frames do not have a RTR bit.
+> This workaround doesn't handle the dlc == 0 case, your error description
+> isn't completely if this is a problem, too.
 > 
 
 You're right.
-It's indeed caused by using the CAN FD frames to receive RTR frame.
-After switch to normal frame, candump showed it well.
+I just checked the dlc == 0 case also had such issue and it also needs
+the extra 8 bytes write to avoid such issue.
 
-> > Will test and check.
-> > 
-> >> Depending on RX_BUF_EDL in the RX FIFO message you should create a CAN or CAN
-> >> FD frame.
-> >>
-> >> Of course you can use the struct canfd_frame in m_can_read_fifo() as the
-> >> layout of the struct can_frame is identical when filled with 'normal' CAN
-> >> frame content.
-> >>
-> >> But you need to distinguish whether it is a CAN or CAN FD frame when
-> >> allocating the skb based on the RX_BUF_EDL value.
-> >>
-> > 
-> > Yes, i think it's good to do that.
-> > One obvious benefit is it saves memory at least.
+BTW the issue only happened on the first time when you send a frame with no
+data(dlc == 0) at the first time.
+e.g.
+root@imx6sxsabresd:~# ip link set can0 up type can bitrate 1000000
+[   62.326014] IPv6: ADDRCONF(NETDEV_CHANGE): can0: link becomes ready
+root@imx6sxsabresd:~# cansend can0 123#R
+[   69.233645] m_can 20e8000.can can0: Bit Error Uncorrected
+[   69.239167] m_can 20e8000.can can0: Bit Error Corrected
+
+If we send a frame success first (e.g. 5 bytes data), it will not fail
+again even you send no data frame (dlc == 0) later.
+
+The former failure of sending data less than 4 bytes is similar.
+
+Looks like the first 8 bytes of message ram has to be initialised
+for the first using.
+
+> It should be possible to change the for loop to go always to 8, or
+> simply unroll the loop:
 > 
-> The main point is that CAN frames and CAN FD frames are separated by this
-> (MTU) length information. It's not about saving memory.
-> A CAN FD frame with DLC 8 still has 64 data bytes inside it's data structure.
+> /* errata description goes here */
+> m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), *(u32 *)(cf->data + 0));
+> m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), *(u32 *)(cf->data + 4));
 > 
 
-For normal can frame, the CAN_MAX_DLEN is 8 while CANFD_MAX_DLEN is 64.
-So i meant using struct canfd_frame to receive normal frame is a bit waste memory.
-And besides, actually it's wrong as you already indicated.
-I will send out the updated patch with this changed in v2 soon.
-Thanks for pointing out this.
+Yes, i tried to fix it as follows.
+
+/* FIXME: we meet an IC issue that we have to write the full 8
+ * bytes (whatever value for the second word) in Message RAM to
+ * avoid bit error for transmit data less than 4 bytes
+ */
+if (cf->len <= 4) {
+        m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0),
+                         *(u32 *)(cf->data + 0));
+        m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1),
+                         *(u32 *)(cf->data + 4));
+} else {
+        for (i = 0; i < cf->len; i += 4)
+                m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
+                                 *(u32 *)(cf->data + i));
+
+Will update the patch.
 
 Regards
 Dong Aisheng
 
-> Regards,
-> Oliver
+> > +	}
+> > +
+> >  	can_put_echo_skb(skb, dev, 0);
+> >  
+> >  	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+> > 
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
+
+
