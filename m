@@ -1,55 +1,72 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v3 10/10] ARM: dts: am335x-evm: Add DCAN1 details
-Date: Tue, 4 Nov 2014 12:48:54 +0200
-Message-ID: <1415098134-26405-11-git-send-email-rogerq@ti.com>
-References: <1415098134-26405-1-git-send-email-rogerq@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 7/7] can: m_can: workaround for transmit data less than
+ 4 bytes
+Date: Tue, 04 Nov 2014 14:13:30 +0100
+Message-ID: <5458D0FA.1040504@hartkopp.net>
+References: <1414579527-31100-1-git-send-email-b29396@freescale.com> <1414579527-31100-7-git-send-email-b29396@freescale.com> <5457B1D1.6080301@pengutronix.de> <20141104082505.GA8060@shlinux1.ap.freescale.net> <54589AC8.4010106@pengutronix.de> <20141104092651.GC8060@shlinux1.ap.freescale.net> <5458AB65.7000500@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1415098134-26405-1-git-send-email-rogerq@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: tony@atomide.com
-Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org, Roger Quadros <rogerq@ti.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:42925 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751228AbaKDNNq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Nov 2014 08:13:46 -0500
+In-Reply-To: <5458AB65.7000500@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Dong Aisheng <b29396@freescale.com>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-DCAN1 is routed to CAN port (J11) when Profile 1 is selected on the
-profile selection switch.
-Provide information for DCAN1 pins and node but keep it disabled
-by default. User has to manually enable it if Profile 1 is chosen.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- arch/arm/boot/dts/am335x-evm.dts | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index e2156a5..7b7bd8f 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -307,6 +307,13 @@
- 			0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
- 		>;
- 	};
-+
-+	dcan1_pins_default: dcan1_pins_default {
-+		pinctrl-single,pins = <
-+			0x168 (PIN_OUTPUT | MUX_MODE2) /* uart0_ctsn.d_can1_tx */
-+			0x16c (PIN_INPUT_PULLDOWN | MUX_MODE2) /* uart0_rtsn.d_can1_rx */
-+		>;
-+	};
- };
- 
- &uart0 {
-@@ -664,3 +671,9 @@
- &aes {
- 	status = "okay";
- };
-+
-+&dcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&dcan1_pins_default>;
-+	status = "disabled";	/* Enable only if Profile 1 is selected */
-+};
--- 
-1.8.3.2
+On 04.11.2014 11:33, Marc Kleine-Budde wrote:
+> On 11/04/2014 10:27 AM, Dong Aisheng wrote:
+
+
+>> +       /* We meet an IC issue that we have to write the full 8
+>
+> At least on the *insert SoC name here*, an issue with the Message RAM
+> was discovered. Sending CAN frames with dlc less than 4 bytes will lead
+> to bit errors, when the first 8 bytes of the Message RAM have not been
+> initialized (i.e. written to). To work around this issue, the first 8
+> bytes are initialized here.
+
+Yes. Also put the current IP revision (3.0.x) into the comment.
+Did inform the Bosch guys from this issue - or is it already in some errata sheet?
+
+>
+>> +        * bytes (whatever value for the second word) in Message RAM to
+>> +        * avoid bit error for transmit data less than 4 bytes at the first
+>> +        * time. By initializing the first 8 bytes of tx buffer before using
+>> +        * it can avoid such issue.
+>> +        */
+>> +       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), 0x0);
+>> +       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), 0x0);
+>> +
+>>          m_can_config_endisable(priv, false);
+>>   }
+>
+> Can you trigger the issue when sending CAN-FD frames with dlc > 8 && dlc
+> < 64?
+
+Just a nitpick:
+
+DLC can just be 0 .. 15
+
+and the length (struct canfd_frame.len) can be from 0 .. 64
+
+See:
+
+http://lxr.free-electrons.com/source/include/uapi/linux/can.h#L83
+
+That's the reason for all these helpers
+
+http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L36
+
+that hide the evil "DLC" from userspace now and make 'len' a usable loop 
+variable as we were able to use the former dlc for classic CAN :-)
+
+Regards,
+Oliver
 
