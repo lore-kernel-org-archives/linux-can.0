@@ -1,123 +1,35 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 7/7] can: m_can: workaround for transmit data less than
- 4 bytes
-Date: Tue, 04 Nov 2014 14:28:52 +0100
-Message-ID: <5458D494.3040700@pengutronix.de>
-References: <1414579527-31100-1-git-send-email-b29396@freescale.com> <1414579527-31100-7-git-send-email-b29396@freescale.com> <5457B1D1.6080301@pengutronix.de> <20141104082505.GA8060@shlinux1.ap.freescale.net> <54589AC8.4010106@pengutronix.de> <20141104092651.GC8060@shlinux1.ap.freescale.net> <5458AB65.7000500@pengutronix.de> <5458D0FA.1040504@hartkopp.net>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3 00/10] ARM: dts: TI: Add CAN support
+Date: Tue, 4 Nov 2014 07:55:03 -0800
+Message-ID: <20141104155502.GS31454@atomide.com>
+References: <1415098134-26405-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="havlQAmuTjMHkw3keLmlXkABOhXQIB37n"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51398 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753822AbaKDN3N (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Nov 2014 08:29:13 -0500
-In-Reply-To: <5458D0FA.1040504@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Dong Aisheng <b29396@freescale.com>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1415098134-26405-1-git-send-email-rogerq@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Roger Quadros <rogerq@ti.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---havlQAmuTjMHkw3keLmlXkABOhXQIB37n
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+* Roger Quadros <rogerq@ti.com> [141104 02:50]:
+> Hi Tony,
+> 
+> These patches add CAN support for am33xx, am43xx and dra7 platforms.
+> They must go in together with CAN driver RAMINIT Syscon support [1].
 
-On 11/04/2014 02:13 PM, Oliver Hartkopp wrote:
->=20
->=20
-> On 04.11.2014 11:33, Marc Kleine-Budde wrote:
->> On 11/04/2014 10:27 AM, Dong Aisheng wrote:
->=20
->=20
->>> +       /* We meet an IC issue that we have to write the full 8
->>
->> At least on the *insert SoC name here*, an issue with the Message RAM
->> was discovered. Sending CAN frames with dlc less than 4 bytes will lea=
-d
->> to bit errors, when the first 8 bytes of the Message RAM have not been=
+Can you make this series not depend on [1] for most part without
+breaking existing functionality?
 
->> initialized (i.e. written to). To work around this issue, the first 8
->> bytes are initialized here.
->=20
-> Yes. Also put the current IP revision (3.0.x) into the comment.
+Then we can do a single follow-up patch to enable things after [1]
+has been merged.
 
-Good idea - also add the SoC's mask revision.
+That would remove a dependency between driver changes and .dts changes.
 
-> Did inform the Bosch guys from this issue - or is it already in some
-> errata sheet?
->=20
->>
->>> +        * bytes (whatever value for the second word) in Message RAM =
-to
->>> +        * avoid bit error for transmit data less than 4 bytes at the=
+Regards,
 
->>> first
->>> +        * time. By initializing the first 8 bytes of tx buffer
->>> before using
->>> +        * it can avoid such issue.
->>> +        */
->>> +       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), 0x0);
->>> +       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), 0x0);
->>> +
->>>          m_can_config_endisable(priv, false);
->>>   }
->>
->> Can you trigger the issue when sending CAN-FD frames with dlc > 8 && d=
-lc
->> < 64?
->=20
-> Just a nitpick:
->=20
-> DLC can just be 0 .. 15
+Tony
 
-Correct, I was talking about the length
-
-> and the length (struct canfd_frame.len) can be from 0 .. 64
->=20
-> See:
->=20
-> http://lxr.free-electrons.com/source/include/uapi/linux/can.h#L83
->=20
-> That's the reason for all these helpers
->=20
-> http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L36
->=20
-> that hide the evil "DLC" from userspace now and make 'len' a usable loo=
-p
-> variable as we were able to use the former dlc for classic CAN :-)
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---havlQAmuTjMHkw3keLmlXkABOhXQIB37n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUWNSUAAoJECte4hHFiupU+LgP/jn7xpzdB2LN1y/nOazcG7gK
-DxLw6k+bCALnl+tuuHXy5R0yJ9Xqr6DqIgjzb3T8XNteVPc5fAgX3gMy7QC5DueH
-MX9ybqgHpdmSCr4mYHmElOMXNGhqywmj53BwYZh8mOjX5oMhThSaCB3qz4/eVTsK
-ePnoVSmwkNcAD05FbEB8UrHm4lXpDEowFah2jaDIXrgRrv+MY1AoPvhjfa0bzhZS
-oJh3uMWTmHyKKoOAs1XUcqhhSvysioa/4p7xjpI6sZFpvNPOwfx56i/clUeu+Hef
-X+s7jzv57WrVDtdsRfT1OhCL+1Kp3EyZk2DmET71uE8QuEDJgJ8zaEj96fGUalsy
-ryKI8eyakczrlJpzxPTy0dHtt8IR3oDC+cLmSNWSEUO1vFIj23HltaKLwK7Z31N8
-yCGZMkyy2SBEOQFla26FPAX56hznOV+zFWMdaa4IguTIuNVFeHGBkI2kmoi4A89D
-DHza5V4UfuVa4DPvzax90CPXsSRWdePqCYvzAIY0mb6x3MlP8q8MX43PU++iKJWp
-yJ42JtyP7CoIuFjOtoy3UmkI1PadhtmuqPZOWvE79RC1LLgdKJSv8NVRUdvmZszC
-ogtduhukOVVDqTprilzJGziY6SXVUs3heYiINwtYvYrVmpr7DRvCRtJI+3QIRYON
-9RW0TKbt+FzpGMcZv03T
-=GG5J
------END PGP SIGNATURE-----
-
---havlQAmuTjMHkw3keLmlXkABOhXQIB37n--
+> [1] - CAN driver RAMINIT Syscon support
+> http://article.gmane.org/gmane.linux.can/6773
