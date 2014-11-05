@@ -1,43 +1,57 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH V3 2/3] can: m_can: update to support CAN FD features
-Date: Wed, 05 Nov 2014 15:42:00 +0100
-Message-ID: <545A3738.2010007@hartkopp.net>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-2-git-send-email-b29396@freescale.com> <545A34B9.2060001@pengutronix.de>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH V3 1/3] can: add can_is_canfd_skb() API
+Date: Wed, 05 Nov 2014 08:22:13 -0800
+Message-ID: <1415204533.13896.7.camel@edumazet-glaptop2.roam.corp.google.com>
+References: <1415193393-30023-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:38129 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754644AbaKEOmJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 09:42:09 -0500
-In-Reply-To: <545A34B9.2060001@pengutronix.de>
+Received: from mail-ig0-f169.google.com ([209.85.213.169]:35614 "EHLO
+	mail-ig0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754655AbaKEQWQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 11:22:16 -0500
+In-Reply-To: <1415193393-30023-1-git-send-email-b29396@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
 
-Looks good to me now.
+On Wed, 2014-11-05 at 21:16 +0800, Dong Aisheng wrote:
+> The CAN device drivers can use it to check if the frame to send is on
+> CAN FD mode or normal CAN mode.
+> 
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> ---
+> ChangesLog:
+>  * v1->v2: change to skb->len == CANFD_MTU;
+> ---
+>  include/linux/can/dev.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 6992afc..4c3919c 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -99,6 +99,11 @@ inval_skb:
+>  	return 1;
+>  }
+>  
 
-Thanks for your patience.
+This looks a bit strange to assume that skb->len == magical_value is CAN
+FD. A comment would be nice.
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> +static inline int can_is_canfd_skb(struct sk_buff *skb)
 
-On 05.11.2014 15:31, Marc Kleine-Budde wrote:
-> On 11/05/2014 02:16 PM, Dong Aisheng wrote:
->> Bosch M_CAN is CAN FD capable device. This patch implements the CAN
->> FD features include up to 64 bytes payload and bitrate switch function.
->> 1) Change the Rx FIFO and Tx Buffer to 64 bytes for support CAN FD
->>     up to 64 bytes payload. It's backward compatible with old 8 bytes
->>     normal CAN frame.
->> 2) Allocate can frame or canfd frame based on EDL bit
->> 3) Bitrate Switch function is disabled by default and will be enabled
->>     according to CANFD_BRS bit in cf->flags.
->>
->> Signed-off-by: Dong Aisheng <b29396@freescale.com>
->
-> I'm waiting on Oliver's Ack on this patch, then I'll apply 1+2.
->
-> regards,
-> Marc
->
+static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+
+> +{
+> +	return skb->len == CANFD_MTU;
+> +}
+> +
+>  /* get data length from can_dlc with sanitized can_dlc */
+>  u8 can_dlc2len(u8 can_dlc);
+>  
+
+
