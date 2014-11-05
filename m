@@ -1,80 +1,133 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 7/8] net: can: c_can: Add support for TI DRA7 DCAN
-Date: Wed, 05 Nov 2014 14:43:39 +0100
-Message-ID: <545A298B.6090505@pengutronix.de>
-References: <1415096461-25576-1-git-send-email-rogerq@ti.com> <1415096461-25576-8-git-send-email-rogerq@ti.com> <545A2679.2000905@pengutronix.de> <545A27E8.9090600@ti.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH V2 1/4] can: m_can: update to support CAN FD features
+Date: Wed, 5 Nov 2014 21:46:26 +0800
+Message-ID: <20141105134625.GG4007@shlinux1.ap.freescale.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com>
+ <5459F808.3020903@hartkopp.net>
+ <20141105112639.GB4007@shlinux1.ap.freescale.net>
+ <545A21AD.5040608@hartkopp.net> <545A23DA.7030303@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="mJApGBNlnFX4hMixwNw970i3xmK981ES0"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <545A27E8.9090600@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-by2on0101.outbound.protection.outlook.com ([207.46.100.101]:33602
+	"EHLO na01-by2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753996AbaKEOQd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Nov 2014 09:16:33 -0500
+Content-Disposition: inline
+In-Reply-To: <545A23DA.7030303@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mJApGBNlnFX4hMixwNw970i3xmK981ES0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 11/05/2014 02:36 PM, Roger Quadros wrote:
-> On 11/05/2014 03:30 PM, Marc Kleine-Budde wrote:
->> On 11/04/2014 11:21 AM, Roger Quadros wrote:
->>> DRA7 SoC has 2 CAN IPs. Provide compatible IDs and RAMINIT
->>> register data for both.
->>
->> My understanding of the discussion with Wolfram was:
->> - We should put the number of the Interface into to DT as a regmap
->>   parameter.
->> - We put the method how to find the correct bits into the DT, via the
->>   compatible.
->>
->> So for both CAN instances on the DRA7 we have a single compatible
->> "ti,dra7-d_can" and in the driver a mechanism that translates the numb=
-er
->> of the instance into the needed bit offsets, e.g. via two arrays.
->>
+On Wed, Nov 05, 2014 at 02:19:22PM +0100, Marc Kleine-Budde wrote:
+> On 11/05/2014 02:10 PM, Oliver Hartkopp wrote:
+> > On 05.11.2014 12:26, Dong Aisheng wrote:
+> >> On Wed, Nov 05, 2014 at 11:12:24AM +0100, Oliver Hartkopp wrote:
+> >>> On 05.11.2014 08:58, Dong Aisheng wrote:
+> >=20
+> >=20
+> >>> Unfortunately No. Here it becomes complicated due to the fact tha=
+t
+> >>> the revision 3.0.x does not support per-frame switching for FD/BR=
+S
+> >>> ...
+> >>
+> >> I'm not sure i got your point.
+> >>  From m_can spec, it allows switch CAN mode by setting CMR bit.
+> >>
+> >> Bits 11:10 CMR[1:0]: CAN Mode Request
+> >> A change of the CAN operation mode is requested by writing to this=
+ bit
+> >> field. After change to the
+> >> requested operation mode the bit field is reset to =E2=80=9C00=E2=80=
+=9D and the status
+> >> flags FDBS and FDO are set
+> >> accordingly. In case the requested CAN operation mode is not enabl=
+ed,
+> >> the value written to CMR is
+> >> retained until it is overwritten by the next mode change request. =
+In
+> >> case CME =3D =E2=80=9C01=E2=80=9D/=E2=80=9D10=E2=80=9D/=E2=80=9D11=
+=E2=80=9D a
+> >> change to CAN operation according to ISO 11898-1 is always possibl=
+e.
+> >> Default is CAN operation
+> >> according to ISO11898-1.
+> >> 00 unchanged
+> >> 01 Request CAN FD operation
+> >> 10 Request CAN FD operation with bit rate switching
+> >> 11 Request CAN operation according ISO11898-1
+> >>
+> >> So what's the difference between this function and the per-frame
+> >> switching
+> >> you mentioned?
+> >>
+> >>>
+> >>> When (priv->can.ctrlmode & CAN_CTRLMODE_FD) is true this *only*
+> >>> tells us, that the controller is _capable_ to send either CAN or =
+CAN
+> >>> FD frames.
+> >>>
+> >>> It does not configure the controller into one of these specific
+> >>> settings!
+> >>>
+> >>> Additionally: AFAIK when writing to the CCCR you have to make sur=
+e
+> >>> that there's currently no ongoing transfer.
+> >>>
+> >>
+> >> I don't know about it before.
+> >> By searching m_can user manual v302 again, i still did not find th=
+is
+> >> limitation. Can you point me if you know where it is?
+> >>
+> >> BTW, since we only use one Tx Buffer for transmission currently, s=
+o we
+> >> should not meet that case that CAN mode is switched during transfe=
+r.
+> >> So the issue you concern may not happen.
+> >=20
+> > Yes. You are right. Having a FIFO with a size of 1 will help here :=
+-)
 >=20
-> OK. I'll revise this series.
+> Errrr....sorry...no.
 >=20
-> The new syscon-raminit property will be like
-> syscon-raminit =3D <syscon_phandle raminit-reg-offset dcan-interface-nu=
-mber>;
+> Taking an easy route here but making it x times harder to extend the
+> driver to make use of the FIFO is not an option.
+>=20
 
-Yes. Wolfram?
+Hmm, this way is just following the original approach the current drive=
+r
+used. It's initial work and won't make things complicated.
 
-Marc
+Extend the driver to use FIFO for TX is another story and based on
+my understanding it may be a bit complicated to do CAN FD mode switch o=
+n this
+case due to hw limitation that the revision 3.0.x does not support per-=
+frame
+switching for FD/BRS as Oliver pointed out.
+(e.g. how to switch FD MODE for each frame on Tx FIFO?)
+Probably that's why the 3.1.x version will add the FD/BRS bit controlle=
+r
+in Tx Buffer to fix this issue.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Anyway, that's future work and we can discuss it when adding FIFO suppo=
+rt
+for Tx function.
+
+Regards
+Dong Aisheng
+
+> Marc
+>=20
+> --=20
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>=20
 
 
---mJApGBNlnFX4hMixwNw970i3xmK981ES0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUWimLAAoJECte4hHFiupUe3AP/jU5A7EUah+AGbdM8xboevir
-GI7G4eex+AVXjrKys/zbR2BJvg5BQ2r/w7llG+T7o3sR5QNqeUbgeGEvlrRDrsya
-FL/sp7P74zY9QChrVI6bIYHPIgeM062eKX6uD/G4R2j3vehVawRSAxW7n0nrVEIS
-ypnlC44f04fiPR2y0PtH6ZtTSdz5GC5GKAg4vTptsX/aR039oGsiPG6z5iuAiSCO
-SPIeXKUfA54JNlU4739SvYZLwCtn19fn8iGDjuod3f62n3G94Phc1zXsUoIO4ccm
-HmjHHTc5jK6ZqzMmbsch1Dzd1arSMCMAStfR72iqaiAv3kTt2/z4izb/D6R8g6NV
-zwU5xDqLMr3aC5HIds0ywUFcXeZQvCy80uG7yYl30B7WDlTDK1Q0Yv5HSisms7zp
-L4oVa54dBwJohbnOvu+0w78wJLADWSXKwDc9VfEld00BS4u/DXXdCoJrtZKS7+Vi
-5PpzLDRPt67Y8O9vh/xXhMmkkFasjNUqp055sYu+XZE6D+ObkYMA62Fn+kVGjJwG
-5KUbmSLIYlJXJDa+L2JqcWgMauRhQ9Bl1SiE+Q+oxZ4mgvrVeu+VHKl55Xl4j5iO
-P6Yp363Nf94mp59r1c5TAi8Rc+6ip4AjWQZ+w8FgWHgHEIrCZJSxRqrk5bkxsdK1
-3AXc2HK1ZE+hhuaqkxxx
-=ZKql
------END PGP SIGNATURE-----
-
---mJApGBNlnFX4hMixwNw970i3xmK981ES0--
