@@ -1,93 +1,146 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: AW: [PATCH v3 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Wed, 05 Nov 2014 11:11:01 +0100
-Message-ID: <5459F7B5.7080002@pengutronix.de>
-References: <1415080039-38327-1-git-send-email-thomas.koerper@esd.eu> <5458D372.3020604@hartkopp.net> <5458D403.9040803@pengutronix.de> <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local> <5459EA11.4060600@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH V2 1/4] can: m_can: update to support CAN FD features
+Date: Wed, 05 Nov 2014 11:12:24 +0100
+Message-ID: <5459F808.3020903@hartkopp.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="rwhnBdgjQUUqgShcbUvctfpQKhS99SNWH"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43788 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754000AbaKEKLJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 05:11:09 -0500
-In-Reply-To: <5459EA11.4060600@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:17918 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754070AbaKEKMi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 05:12:38 -0500
+In-Reply-To: <1415174326-6623-1-git-send-email-b29396@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, =?UTF-8?B?VGhvbWFzIEvDtnJwZQ==?= =?UTF-8?B?cg==?= <Thomas.Koerper@esd.eu>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rwhnBdgjQUUqgShcbUvctfpQKhS99SNWH
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 05.11.2014 08:58, Dong Aisheng wrote:
 
-On 11/05/2014 10:12 AM, Oliver Hartkopp wrote:
-> On 05.11.2014 05:21, Thomas K=C3=B6rper wrote:
->=20
->> already was afraid the module param should be removed :)
->> May I print all these infos unconditionally?  ...If someone has
->> trouble with the card we really like to see that stuff first.
->=20
-> Oh. It's no problem to print hardware specific information at startup.
-> But this is IMO only too much because of it's formatting
->=20
-> +	if (dump_infos) {
-> +		dev_info(dev, "  Probe register: 0x%.8x\n",
-> +			 acc_ov_read32(ov, ACC_OV_OF_PROBE));
-> +		dev_info(dev, "  Features: 0x%.4x\n", ov->features);
-> +		dev_info(dev, "  FPGA Version: 0x%.4x\n",
-> +			 ov->version);
-> +		dev_info(dev, "  Strappings: 0x%.4x\n",
-> +			 acc_ov_read32(ov, ACC_OV_OF_INFO) >> 16);
-> +		dev_info(dev, "  Active cores: %u\n",
-> +			 ov->active_cores);
-> +		dev_info(dev, "  Total cores: %u\n",
-> +			 ov->total_cores);
-> +		dev_info(dev, "  Core frequency: %u\n",
-> +			 ov->core_frequency);
-> +		dev_info(dev, "  Timestamp frequency: %u\n",
-> +			 ov->timestamp_frequency);
+> @@ -327,41 +357,65 @@ static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+>   	m_can_write(priv, M_CAN_ILE, 0x0);
+>   }
+>
+> -static void m_can_read_fifo(const struct net_device *dev, struct can_frame *cf,
+> -			    u32 rxfs)
+> +static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+>   {
+> +	struct net_device_stats *stats = &dev->stats;
+>   	struct m_can_priv *priv = netdev_priv(dev);
+> -	u32 id, fgi;
+> +	struct canfd_frame *cf;
+> +	struct sk_buff *skb;
+> +	u32 id, fgi, dlc;
+> +	int i;
+>
+>   	/* calculate the fifo get index for where to read data */
+>   	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
+> +	dlc = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
+> +	if (dlc & RX_BUF_EDL)
+> +		skb = alloc_canfd_skb(dev, &cf);
+> +	else
+> +		skb = alloc_can_skb(dev, (struct can_frame **)&cf);
+
+Yes. That's the way it should look like ;-)
+
+> +	if (!skb) {
+> +		stats->rx_dropped++;
+> +		return;
 > +	}
->=20
-> What about putting these information in just one or two lines, e.g.
->=20
-> esdacc: FPGA rev x.xx @ 3000Hz (TS @ 400Hz), probe reg x.xx, feat. x.xx=
-, X of Y cores active=20
+> +
+>   	id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_ID);
+>   	if (id & RX_BUF_XTD)
+>   		cf->can_id = (id & CAN_EFF_MASK) | CAN_EFF_FLAG;
+>   	else
+>   		cf->can_id = (id >> 18) & CAN_SFF_MASK;
+>
+> -	if (id & RX_BUF_RTR) {
+> +	if (id & RX_BUF_ESI) {
+> +		cf->flags |= CANFD_ESI;
+> +		netdev_dbg(dev, "ESI Error\n");
+> +	}
+> +
+> +	if (!(dlc & RX_BUF_EDL) && (id & RX_BUF_RTR)) {
+>   		cf->can_id |= CAN_RTR_FLAG;
+>   	} else {
+>   		id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
+> -		cf->can_dlc = get_can_dlc((id >> 16) & 0x0F);
+> -		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi,
+> -							 M_CAN_FIFO_DATA(0));
+> -		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi,
+> -							 M_CAN_FIFO_DATA(1));
+> +		cf->len = can_dlc2len(get_canfd_dlc((id >> 16) & 0x0F));
 
-One line would be fine.
+if (dlc & RX_BUF_EDL)
+	cf->len = can_dlc2len((id >> 16) & 0x0F);
+else
+	cf->len = get_can_dlc((id >> 16) & 0x0F);
 
-Marc
+(..)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> @@ -804,7 +870,8 @@ static void m_can_chip_config(struct net_device *dev)
+>   		    RXFC_FWM_1 | priv->mcfg[MRAM_RXF1].off);
+>
+>   	cccr = m_can_read(priv, M_CAN_CCCR);
+> -	cccr &= ~(CCCR_TEST | CCCR_MON);
+> +	cccr &= ~(CCCR_TEST | CCCR_MON | (CCCR_CMR_MASK << CCCR_CMR_SHIFT) |
+> +		(CCCR_CME_MASK << CCCR_CME_SHIFT));
+>   	test = m_can_read(priv, M_CAN_TEST);
+>   	test &= ~TEST_LBCK;
+>
+> @@ -816,6 +883,9 @@ static void m_can_chip_config(struct net_device *dev)
+>   		test |= TEST_LBCK;
+>   	}
+>
+> +	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> +		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
+> +
+>   	m_can_write(priv, M_CAN_CCCR, cccr);
+>   	m_can_write(priv, M_CAN_TEST, test);
+>
 
+(..)
 
---rwhnBdgjQUUqgShcbUvctfpQKhS99SNWH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>
+> +	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+> +		cccr = m_can_read(priv, M_CAN_CCCR);
+> +		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
+> +		if (cf->flags & CANFD_BRS)
+> +			cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
+> +		else
+> +			cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
+> +		m_can_write(priv, M_CAN_CCCR, cccr);
+> +	}
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Unfortunately No. Here it becomes complicated due to the fact that the 
+revision 3.0.x does not support per-frame switching for FD/BRS ...
 
-iQIcBAEBAgAGBQJUWfe1AAoJECte4hHFiupU8/oQAJqMDeAAE9VxHJPopORfkM6C
-WFYwIn87S8oZRnqWgGuXhYbto/einOaIC35PAc9LjMFYsqmfWW+SExq3A4dSAl3E
-jZ826TOHI3LdmDo8r+RlkO8dCBZGahNdQ/ZcN0VDdz+bpmIUq+NzgAi4mBex/a3v
-IhQHL6v2hnEbrizfbnygYZwZ//5aGVnSssj6BvV2JlD5U+Ln8j1C0jhiEixuwx2Y
-twFHmQ3SH6EIUTKAMTm8kPMtwwW29flw0UqJSEwyT2kdkFC+CGHKnNUEBV+ExuwL
-co7flf7m6Jsycmqt9WRjsqUDdShupVCatbf4VzQE2K4+ZG0/xHjrnapw2HTmcdYm
-V8cqFS893F+Qv7kpEKlyl/DD3R8g+0MvQ8Vw9m+KzBkL8RxEE5FI79PcXHyB2zbk
-RmJRJZUlaEx17nHHf/fFxAGAe7TUE2cEjj+6xcNu0uPpKMjKBG2rzkgoyJ3B7eD6
-tsQY+zdiRWYogEJz14+OfOXK4hYf6Y7/Brl/y6yev+ttx9isuso2GLMhV+SRcZ2j
-RnU7zs89Kri3AOe35YPkCFKoxVV+qB09qgmD53AcGgVg61KHvfa2Rkae618Myu6n
-peX0/tdQM4657NSULd3tf0Bh46Rcp4qdPPkpj4u8yushlI2dRGNX7XHEywSQ347H
-htS4yA8uoPlwva/2GTGQ
-=Z6YF
------END PGP SIGNATURE-----
+When (priv->can.ctrlmode & CAN_CTRLMODE_FD) is true this *only* tells us, that 
+the controller is _capable_ to send either CAN or CAN FD frames.
 
---rwhnBdgjQUUqgShcbUvctfpQKhS99SNWH--
+It does not configure the controller into one of these specific settings!
+
+Additionally: AFAIK when writing to the CCCR you have to make sure that 
+there's currently no ongoing transfer.
+
+I would suggest the following approach to make the revision 3.0.x act like a 
+correct CAN FD capable controller:
+
+- create a helper function to switch FD and BRS while taking care of ongoing 
+transmissions
+
+- create a variable that knows the current tx_mode for FD and BRS
+
+When we need to send a CAN frame which doesn't fit the settings in the tx_mode 
+we need to switch the CCCR and update the tx_mode variable.
+
+This at least reduces the needed CCCR operations.
+
+And it also addresses the intention of your patch
+[PATCH V1 4/4] can: m_can: allow to send std frame on CAN FD mode
+
+Regards,
+Oliver
+
