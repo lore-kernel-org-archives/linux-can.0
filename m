@@ -1,73 +1,147 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V3 2/3] can: m_can: update to support CAN FD features
-Date: Wed, 05 Nov 2014 15:31:21 +0100
-Message-ID: <545A34B9.2060001@pengutronix.de>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-2-git-send-email-b29396@freescale.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH V2 1/4] can: m_can: update to support CAN FD features
+Date: Wed, 05 Nov 2014 15:35:38 +0100
+Message-ID: <545A35BA.8050607@hartkopp.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com> <5459F808.3020903@hartkopp.net> <20141105112639.GB4007@shlinux1.ap.freescale.net> <545A21AD.5040608@hartkopp.net> <545A23DA.7030303@pengutronix.de> <20141105134625.GG4007@shlinux1.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="n2uof6CVanXhGMk20TwpPqjLshS8AV6FT"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39900 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754112AbaKEOb2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 09:31:28 -0500
-In-Reply-To: <1415193393-30023-2-git-send-email-b29396@freescale.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:17173 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754937AbaKEOfv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 09:35:51 -0500
+In-Reply-To: <20141105134625.GG4007@shlinux1.ap.freescale.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---n2uof6CVanXhGMk20TwpPqjLshS8AV6FT
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 11/05/2014 02:16 PM, Dong Aisheng wrote:
-> Bosch M_CAN is CAN FD capable device. This patch implements the CAN
-> FD features include up to 64 bytes payload and bitrate switch function.=
-
-> 1) Change the Rx FIFO and Tx Buffer to 64 bytes for support CAN FD
->    up to 64 bytes payload. It's backward compatible with old 8 bytes
->    normal CAN frame.
-> 2) Allocate can frame or canfd frame based on EDL bit
-> 3) Bitrate Switch function is disabled by default and will be enabled
->    according to CANFD_BRS bit in cf->flags.
->=20
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-
-I'm waiting on Oliver's Ack on this patch, then I'll apply 1+2.
-
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+To: Dong Aisheng <b29396@freescale.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
 
---n2uof6CVanXhGMk20TwpPqjLshS8AV6FT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+On 05.11.2014 14:46, Dong Aisheng wrote:
+> On Wed, Nov 05, 2014 at 02:19:22PM +0100, Marc Kleine-Budde wrote:
+>> On 11/05/2014 02:10 PM, Oliver Hartkopp wrote:
+>>> On 05.11.2014 12:26, Dong Aisheng wrote:
+>>>> On Wed, Nov 05, 2014 at 11:12:24AM +0100, Oliver Hartkopp wrote:
+>>>>> On 05.11.2014 08:58, Dong Aisheng wrote:
+>>>
+>>>
+>>>>> Unfortunately No. Here it becomes complicated due to the fact tha=
+t
+>>>>> the revision 3.0.x does not support per-frame switching for FD/BR=
+S
+>>>>> ...
+>>>>
+>>>> I'm not sure i got your point.
+>>>>   From m_can spec, it allows switch CAN mode by setting CMR bit.
+>>>>
+>>>> Bits 11:10 CMR[1:0]: CAN Mode Request
+>>>> A change of the CAN operation mode is requested by writing to this=
+ bit
+>>>> field. After change to the
+>>>> requested operation mode the bit field is reset to =E2=80=9C00=E2=80=
+=9D and the status
+>>>> flags FDBS and FDO are set
+>>>> accordingly. In case the requested CAN operation mode is not enabl=
+ed,
+>>>> the value written to CMR is
+>>>> retained until it is overwritten by the next mode change request. =
+In
+>>>> case CME =3D =E2=80=9C01=E2=80=9D/=E2=80=9D10=E2=80=9D/=E2=80=9D11=
+=E2=80=9D a
+>>>> change to CAN operation according to ISO 11898-1 is always possibl=
+e.
+>>>> Default is CAN operation
+>>>> according to ISO11898-1.
+>>>> 00 unchanged
+>>>> 01 Request CAN FD operation
+>>>> 10 Request CAN FD operation with bit rate switching
+>>>> 11 Request CAN operation according ISO11898-1
+>>>>
+>>>> So what's the difference between this function and the per-frame
+>>>> switching
+>>>> you mentioned?
+>>>>
+>>>>>
+>>>>> When (priv->can.ctrlmode & CAN_CTRLMODE_FD) is true this *only*
+>>>>> tells us, that the controller is _capable_ to send either CAN or =
+CAN
+>>>>> FD frames.
+>>>>>
+>>>>> It does not configure the controller into one of these specific
+>>>>> settings!
+>>>>>
+>>>>> Additionally: AFAIK when writing to the CCCR you have to make sur=
+e
+>>>>> that there's currently no ongoing transfer.
+>>>>>
+>>>>
+>>>> I don't know about it before.
+>>>> By searching m_can user manual v302 again, i still did not find th=
+is
+>>>> limitation. Can you point me if you know where it is?
+>>>>
+>>>> BTW, since we only use one Tx Buffer for transmission currently, s=
+o we
+>>>> should not meet th
+> Regards
+> Dong Aisheng
+>
+>> Marc
+>>
+>> --
+>> Pengutronix e.K.                  | Marc Kleine-Budde           |
+>> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+>> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+>> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>>
+>
+>
+at case that CAN mode is switched during transfer.
+>>>> So the issue you concern may not happen.
+>>>
+>>> Yes. You are right. Having a FIFO with a size of 1 will help here :=
+-)
+>>
+>> Errrr....sorry...no.
+>>
+>> Taking an easy route here but making it x times harder to extend the
+>> driver to make use of the FIFO is not an option.
+>>
+>
+> Hmm, this way is just following the original approach the current dri=
+ver
+> used. It's initial work and won't make things complicated.
+>
+> Extend the driver to use FIFO for TX is another story and based on
+> my understanding it may be a bit complicated to do CAN FD mode switch=
+ on this
+> case due to hw limitation that the revision 3.0.x does not support pe=
+r-frame
+> switching for FD/BRS as Oliver pointed out.
+> (e.g. how to switch FD MODE for each frame on Tx FIFO?)
+> Probably that's why the 3.1.x version will add the FD/BRS bit control=
+ler
+> in Tx Buffer to fix this issue.
+>
+> Anyway, that's future work and we can discuss it when adding FIFO sup=
+port
+> for Tx function.
+>
 
-iQIcBAEBAgAGBQJUWjS5AAoJECte4hHFiupUy8IP/3/GvGV9t5hZkXlvHEBHPvid
-4W9AIJtEMKZacUogKRx94mmkuWKP2Qq2sIqbbhECjPzYOx7Fgmcw3R2am9IPLEV0
-6Mv/Oqlgrb7baRGMdafTjonwNGiNCoaKEwUV7t6QPJNSixB8CPfuJwDYNp7yWgOg
-mVrEI98JNtYMVCyY1gO2DK3qRzY4DBvJ8mjOVfvY3s+OcpMjhReSyB9MKEH534jM
-DAtXRBpUTxE1LTjEdJ+HbywbYCWC9sTjP0BHPMtqV1e25cLszWL7oUxGl5rwFK8Z
-jyHcXhItlcZJ2PAiPdZdcJYVr7ez2J5bPS7XOP5FoNP/7W9MLohjub6UWZcd77oY
-UZud9t3dmSEam/Sgvmue9/SAZoJi4wPDni68nO2oYycAEz+bE8wwJ/eQkNe875J/
-BANRXhVDsi0PB7bpGRSksK6EazZjbTY03YuDm3Krs/z4kHyQ9vkz7xu5MxJUnlYb
-yLTkff6xAoFoERqInZfm1Pxb6uE59shEpwDPkJfwUDu/7yk6p3AjLQopaUbuZKjB
-LU9/sq7atq/lvyAYtnoIYesFepQ7eoLtjWm3cjbyhaoLWzW+4at+dqio/nUvfU2Q
-qZGgdj2y7r5LYnTDBmowq/xPGAHohzeZaEfo7wVaN5xodFoTYI/mJnMhYDcLYxH8
-wExIlhEdg+RymLvtpQp9
-=dKDD
------END PGP SIGNATURE-----
+Yes. I have to second this opinion.
 
---n2uof6CVanXhGMk20TwpPqjLshS8AV6FT--
+I also would like to have a TX FIFO. But due to the limitations of the =
+3.0.x=20
+M_CAN I would suggest to prefer a 'correct" CAN FD driver implementatio=
+n in=20
+favor of having a TX FIFO which is unusable for mixed CAN frame types.
+
+Let's try the FIFO stuff with the next M_CAN revision.
+
+It's a bit of a SJA1000 for CAN FD :-)
+
+Regards,
+Oliver
