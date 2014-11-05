@@ -1,94 +1,161 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 2/2] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Wed, 05 Nov 2014 14:15:54 +0100
-Message-ID: <545A230A.4020107@pengutronix.de>
-References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-3-git-send-email-sbabic@denx.de>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH V2 1/4] can: m_can: update to support CAN FD features
+Date: Wed, 5 Nov 2014 20:47:09 +0800
+Message-ID: <20141105124708.GE4007@shlinux1.ap.freescale.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com>
+ <5459F808.3020903@hartkopp.net>
+ <20141105112639.GB4007@shlinux1.ap.freescale.net>
+ <545A21AD.5040608@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="CGlNo2eDKxheCJXNXSEFN2bHFJvpeWDFX"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44808 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753888AbaKENQK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 08:16:10 -0500
-In-Reply-To: <1406565510-10783-3-git-send-email-sbabic@denx.de>
+Received: from mail-bl2on0113.outbound.protection.outlook.com ([65.55.169.113]:11134
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753888AbaKENR0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Nov 2014 08:17:26 -0500
+Content-Disposition: inline
+In-Reply-To: <545A21AD.5040608@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CGlNo2eDKxheCJXNXSEFN2bHFJvpeWDFX
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 07/28/2014 06:38 PM, Stefano Babic wrote:
-> This driver implements a simple protocol
-> to transfer CAN messages to and from an external
-> microcontroller via SPI interface.
-> Multiple busses can be tranfered on the same SPI channel.
+On Wed, Nov 05, 2014 at 02:10:05PM +0100, Oliver Hartkopp wrote:
+> On 05.11.2014 12:26, Dong Aisheng wrote:
+> >On Wed, Nov 05, 2014 at 11:12:24AM +0100, Oliver Hartkopp wrote:
+> >>On 05.11.2014 08:58, Dong Aisheng wrote:
 >=20
-> It was tested on a i.MX35 connected to a Freescale's
-> HCS12 16-bit controller with 5 CAN busses.
 >=20
-> Signed-off-by: Stefano Babic <sbabic@denx.de>
+> >>Unfortunately No. Here it becomes complicated due to the fact that
+> >>the revision 3.0.x does not support per-frame switching for FD/BRS
+> >>...
+> >
+> >I'm not sure i got your point.
+> > From m_can spec, it allows switch CAN mode by setting CMR bit.
+> >
+> >Bits 11:10 CMR[1:0]: CAN Mode Request
+> >A change of the CAN operation mode is requested by writing to this b=
+it field. After change to the
+> >requested operation mode the bit field is reset to =E2=80=9C00=E2=80=
+=9D and the status flags FDBS and FDO are set
+> >accordingly. In case the requested CAN operation mode is not enabled=
+, the value written to CMR is
+> >retained until it is overwritten by the next mode change request. In=
+ case CME =3D =E2=80=9C01=E2=80=9D/=E2=80=9D10=E2=80=9D/=E2=80=9D11=E2=80=
+=9D a
+> >change to CAN operation according to ISO 11898-1 is always possible.=
+ Default is CAN operation
+> >according to ISO11898-1.
+> >00 unchanged
+> >01 Request CAN FD operation
+> >10 Request CAN FD operation with bit rate switching
+> >11 Request CAN operation according ISO11898-1
+> >
+> >So what's the difference between this function and the per-frame swi=
+tching
+> >you mentioned?
+> >
+> >>
+> >>When (priv->can.ctrlmode & CAN_CTRLMODE_FD) is true this *only*
+> >>tells us, that the controller is _capable_ to send either CAN or CA=
+N
+> >>FD frames.
+> >>
+> >>It does not configure the controller into one of these specific set=
+tings!
+> >>
+> >>Additionally: AFAIK when writing to the CCCR you have to make sure
+> >>that there's currently no ongoing transfer.
+> >>
+> >
+> >I don't know about it before.
+> >By searching m_can user manual v302 again, i still did not find this
+> >limitation. Can you point me if you know where it is?
+> >
+> >BTW, since we only use one Tx Buffer for transmission currently, so =
+we
+> >should not meet that case that CAN mode is switched during transfer.
+> >So the issue you concern may not happen.
+>=20
+> Yes. You are right. Having a FIFO with a size of 1 will help here :-)
+>=20
+> >
+> >Additionally it looks to me like m_can does allow set CMR bit at run=
+time
+> >since the mode change will take affect when controller becomes idle.
+> >See below:
+> >
+> >"A mode change requested by writing to CCCR.CMR will be executed nex=
+t
+> >time the CAN protocol controller FSM reaches idle phase between CAN =
+frames.
+> >Upon this event CCCR.CMR is reset to =E2=80=9C00=E2=80=9D and the st=
+atus flags CCCR.FDBS
+> >and CCCR.FDO are set accordingly. In case the requested
+> >CAN operation mode is not enabled, the value written to CCCR.CMR is
+> >retained until it is overwritten by the next mode change request.
+> >Default is CAN operation according to ISO11898-1."
+>=20
+> Ah. I assumed we have to take care to set these bits in the idle stat=
+e.
+>=20
+> So when thinking about the one and only tx buffer your current
+> approach should work indeed. Sorry for my confusion.
+>=20
+> >
+> >>I would suggest the following approach to make the revision 3.0.x
+> >>act like a correct CAN FD capable controller:
+> >>
+> >>- create a helper function to switch FD and BRS while taking care o=
+f
+> >>ongoing transmissions
+> >>
+> >>- create a variable that knows the current tx_mode for FD and BRS
+> >>
+> >>When we need to send a CAN frame which doesn't fit the settings in
+> >>the tx_mode we need to switch the CCCR and update the tx_mode
+> >>variable.
+> >>
+> >>This at least reduces the needed CCCR operations.
+> >>
+> >
+> >Yes, i can do like that.
+> >But what i see by doing that is only reduces the needed CCCR operati=
+ons?
+> >Any other benefits i missed?
+>=20
+> No. I just thought about a function that also takes care of the idle
+> phase to switch the bits. But now you made it clear that this is not
+> needed - so you can stay on your current implementation: Setting the
+> CCCR each time before sending the frame.
+>=20
 
-No line by line review, but some fundamental comments and questions:
+Okay
 
-Can you please use a consistent indention scheme for struct and enums, I
-favour a single space against aligning with tab, as it ony fits 95% of
-the time and breaks during upgrades.
+> With the 3.1.x or 3.2.x this code will become obsolete then as the
+> EDL and BRS seeting will get extra bits in the Tx Buffer.
+> But that's a future point.
+>=20
 
-Please only use u16, u32 and friends where the size of the register is
-important, use plain int, unsinged int otherwise.
+Got it.
+Will update it in the future when the new IP doc is available.
 
-I'm not sure of fiddling with the GPIO which you requested as an
-interrupt is a good idea. This is probably not available on all platforms=
-=2E
+> >And the test for current code showed it seemed work well on the Mode
+> >switch among std frame/fd frame/brs frame.
+>=20
+> Fine.
+>=20
+> Btw. I would suggest to integrate patch [4/4] into [3/4].
+>=20
 
-Why do you have two functions calculating the checksum? Have you checked
-if the kernel offers you a library for this?
+Yes, will do it.
+Thanks
 
-Can you explain me the endianess, I don't get why you need
-format_frame_output() and format_frame_input() and while your structs
-that go over the wire have no specific endianess (i.e. no __be32 in the
-struct msg_*).
+Regards
+Dong Aisheng
 
-Have you thought about using threaded interrupts? Or even better make
-use of the asynchronous SPI framework?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---CGlNo2eDKxheCJXNXSEFN2bHFJvpeWDFX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUWiMKAAoJECte4hHFiupUvmAP/35/nJgDHADg4/iMTlBNMGJZ
-dj3gzG+ojmlAw4ZSPkLQ4gzkOZTAPCE3Or8rWD+1NEGhQMBhLk2qoubVzzyK+gy+
-Cm1KtzZbD+g8vRMu081WLqec3ndJai5NXfL7qLADodeS7dkGteIqAt/o5qiXH0Y0
-8A8Okh74ugYBDXHSHeDs4da9ig44rsi7YnzGNnZh9zcvorAmNQXGGBUprq1FFaZo
-EzLC6H2FGM0GcfaTEaDOVuTauvrw0QTJqT7p9eXpuqGyPYKZoe12B4LuMXriVr27
-UPuQge1ygSnmTeS4V2TSaXrQiMyZ7Unm6O6wqDlY/qUDLAp+2hxzajToWghjPJI2
-IK7OXEjq9l4mUURnriO75I2nWEeeGNazfXXOyJaxRx7YZRk+vOSwDVSe8Ae5V0g1
-fppIUJ7LtfKvSqNuU6dm/mUw80Ln+foRfwbMcrho3Gyr3B3KBoWHOubbffROZHIU
-Tbvm0eZpzNh7ZKtJX/oY5ahDWQoWnHXKCx9riRH2DBH/SVi9pcWlAsHRm4wVUdbI
-hH/R/83E68nyWgN0lqMow8KiKFT9OqZ3V9T+cCFLAYwLVxy/X1BPemHqXhXQLMIr
-6UnKYqyvhYu0jkYDlTYTkMybxX1C8uYMfoYmQJyBZU92vu0b9pHMEm9n2hMLMlZB
-U99kFoFrCdj8XBqkximo
-=KvB1
------END PGP SIGNATURE-----
-
---CGlNo2eDKxheCJXNXSEFN2bHFJvpeWDFX--
+> Best regards,
+> Oliver
+>=20
