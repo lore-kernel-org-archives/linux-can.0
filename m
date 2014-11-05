@@ -1,91 +1,96 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V1 4/4] can: m_can: allow to send std frame on CAN FD
- mode
-Date: Wed, 05 Nov 2014 11:41:34 +0100
-Message-ID: <5459FEDE.9050405@pengutronix.de>
-References: <1415174326-6623-1-git-send-email-b29396@freescale.com> <1415174326-6623-4-git-send-email-b29396@freescale.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH V2 2/4] can: m_can: workaround for transmit data less
+ than 4 bytes
+Date: Wed, 5 Nov 2014 18:33:53 +0800
+Message-ID: <20141105103349.GA4007@shlinux1.ap.freescale.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com>
+ <1415174326-6623-2-git-send-email-b29396@freescale.com>
+ <5459F94C.1030506@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="8mfk62x5dMTtLWV1KSJO16IGvwiHSeWWx"
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54626 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751198AbaKEKlr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 05:41:47 -0500
-In-Reply-To: <1415174326-6623-4-git-send-email-b29396@freescale.com>
+Received: from mail-by2on0109.outbound.protection.outlook.com ([207.46.100.109]:20726
+	"EHLO na01-by2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751198AbaKELEB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 5 Nov 2014 06:04:01 -0500
+Content-Disposition: inline
+In-Reply-To: <5459F94C.1030506@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8mfk62x5dMTtLWV1KSJO16IGvwiHSeWWx
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 05, 2014 at 11:17:48AM +0100, Marc Kleine-Budde wrote:
+> On 11/05/2014 08:58 AM, Dong Aisheng wrote:
+> > At least on the i.MX6SX with M_CAN IP version 3.0.x, an issue with
+> 
+> Can you add the imx mask revision, too and the exact m_can version (is
+> available).
+> 
 
-On 11/05/2014 08:58 AM, Dong Aisheng wrote:
-> The current code sends all CAN frames on CAN FD format(with BRS or not)=
+What do you mean imx mask revision?
 
-> if CAN_CTRLMODE_FD is enabled.
-> However, even CAN_CTRLMODE_FD is enabled, the can tool may still
-> send normal frames.
-> e.g.
-> ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on
-> cansend can0 123#112233
->=20
-> Therefore sending normal CAN frame on FD format seems not reasonable
-> and the CAN FD incapable device may not be able to receive it correctly=
-=2E
->=20
-> The patch switches the M_CAN operation mode to ISO11898-1 instead of
-> staying on CAN FD operation mode by writing "11" to CMR bit if find
-> we're sending a normal can skb.
+By reading the Core Release Register (CREL), it seems the exact m_can
+version is 3.0.1. (CREL = 30130506).
 
-With this patch applied and Olivre's version of 3/4, how does the
-application send CAN-FD frames?
-1. witch on CAN-FD via "ip fd on"
-2. write a struct canfd_frame
+So what about changing to as follows?
+"At least on the i.MX6SX with M_CAN IP version 3.0.1 (CREL = 30130506),
+an issue with"
 
-Correct?
+Regards
+Dong Aisheng
 
-What happens if:
-3. write a struct can_frame
+> > the Message RAM was discovered. Sending CAN frames with dlc less
+> > than 4 bytes will lead to bit errors, when the first 8 bytes of
+> > the Message RAM have not been initialized (i.e. written to).
+> > To work around this issue, the first 8 bytes are initialized in open()
+> > function.
+> > 
+> > Without the workaround, we can easily see the following errors:
+> > root@imx6qdlsolo:~# ip link set can0 up type can bitrate 1000000
+> > [   66.882520] IPv6: ADDRCONF(NETDEV_CHANGE): can0: link becomes ready
+> > root@imx6qdlsolo:~# cansend can0 123#112233
+> > [   66.935640] m_can 20e8000.can can0: Bit Error Uncorrected
+> > 
+> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> > ---
+> > ChangeLog since v1:
+> >  * initialize the first 8 bytes of Tx Buffer of Message RAM in open()
+> >    to workaround the issue
+> > ---
+> >  drivers/net/can/m_can/m_can.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> > index 664fe30..f47c200 100644
+> > --- a/drivers/net/can/m_can/m_can.c
+> > +++ b/drivers/net/can/m_can/m_can.c
+> > @@ -902,6 +902,15 @@ static void m_can_chip_config(struct net_device *dev)
+> >  	/* set bittiming params */
+> >  	m_can_set_bittiming(dev);
+> >  
+> > +	/* At least on the i.MX6SX with M_CAN IP version 3.0.x, an issue with
+> > +	 * the Message RAM was discovered. Sending CAN frames with dlc less
+> > +	 * than 4 bytes will lead to bit errors, when the first 8 bytes of
+> > +	 * the Message RAM have not been initialized (i.e. written to).
+> > +	 * To work around this issue, the first 8 bytes are initialized here.
+> > +	 */
+> > +	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), 0x0);
+> > +	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), 0x0);
+> > +
+> >  	m_can_config_endisable(priv, false);
+> >  }
+> >  
+> > 
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
 
-A CAN frame is send?
 
-Oliver are you okay with this behaviour?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---8mfk62x5dMTtLWV1KSJO16IGvwiHSeWWx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUWf7eAAoJECte4hHFiupUWrgP/3ygsf7y3Zb+hC9lbiPdYp5i
-RQ0yofgF67Ffypg/sXAKMd825kZn6Jp65p+PYkzec13LolkzOTeefthx1GprYVzP
-YM9BBmBGGXvZ4kaEMc7ZX2BAAPqvYmazRt+CfmSZGwE+otbKVHphUKEnoK9X2iD3
-jJTTHDYhwvfuXaKaynEXXfYIiPwju9HwwVyeHt01NnKWLZtZLXA4CNyJwdaY5Ndq
-tl9e5Q/zBMp4TsQXpIOkDoHMEsUnBD9vjgbQYlKTMbfDP7k2LjnwJ40RClUnEydt
-voCKcg7rhu8Vhi5vjOyfWffDp9jBgbWAf+UDZmaZ7bChDbc2P6VJ4izrBX0e/oa6
-ecwuc0Uctm0s35euyf9iufjhfuWJqx3LN0MashykGiyDyc4ehCZR0F5Je6RWInMk
-8CtTBb4C+tQduYqrho7aM3W0bmizz6kb7x2fS6UZ1Ax7BVeSeHQjD9wfNY/IFDd1
-IT3uwBcSpwRbHMS31m/vM2AOiK2pZKpqwvdInvh3dXCyczoKNAoXfuVwZ5rNutlg
-0B1sSY+xvoJz01Q5+hDqUVK/y0p1M9t2xwPn+cPwhOegp4dnTu2/1jSqjavNzz+h
-FidB+FYC4upOJTCRoR6rkp22RiUTfzBO3FbEQLk81aeBSwNnyyTk8WcbjzHqxhmU
-WAO+g4UbjRrHPapfZvXy
-=uQvh
------END PGP SIGNATURE-----
-
---8mfk62x5dMTtLWV1KSJO16IGvwiHSeWWx--
