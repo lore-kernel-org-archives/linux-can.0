@@ -1,88 +1,49 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH 7/7] can: m_can: workaround for transmit data less than
- 4 bytes
-Date: Wed, 5 Nov 2014 10:07:40 +0800
-Message-ID: <20141105020739.GB18982@shlinux1.ap.freescale.net>
-References: <1414579527-31100-1-git-send-email-b29396@freescale.com>
- <1414579527-31100-7-git-send-email-b29396@freescale.com>
- <5457B1D1.6080301@pengutronix.de>
- <20141104082505.GA8060@shlinux1.ap.freescale.net>
- <54589AC8.4010106@pengutronix.de>
- <20141104092651.GC8060@shlinux1.ap.freescale.net>
- <5458AB65.7000500@pengutronix.de> <5458D0FA.1040504@hartkopp.net>
+From: =?utf-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>
+Subject: AW: [PATCH v3 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Wed, 5 Nov 2014 05:21:39 +0100
+Message-ID: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local>
+References: <1415080039-38327-1-git-send-email-thomas.koerper@esd.eu>
+ <5458D372.3020604@hartkopp.net> <5458D403.9040803@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1on0139.outbound.protection.outlook.com ([157.56.110.139]:41568
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752382AbaKEChr (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 4 Nov 2014 21:37:47 -0500
-Content-Disposition: inline
-In-Reply-To: <5458D0FA.1040504@hartkopp.net>
+Received: from mxu01.htp-tel.de ([81.14.242.8]:60117 "EHLO mxuout01.htp-tel.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752388AbaKEEWJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 4 Nov 2014 23:22:09 -0500
+In-Reply-To: <5458D403.9040803@pengutronix.de>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Tue, Nov 04, 2014 at 02:13:30PM +0100, Oliver Hartkopp wrote:
-> 
-> 
-> On 04.11.2014 11:33, Marc Kleine-Budde wrote:
-> >On 11/04/2014 10:27 AM, Dong Aisheng wrote:
-> 
-> 
-> >>+       /* We meet an IC issue that we have to write the full 8
-> >
-> >At least on the *insert SoC name here*, an issue with the Message RAM
-> >was discovered. Sending CAN frames with dlc less than 4 bytes will lead
-> >to bit errors, when the first 8 bytes of the Message RAM have not been
-> >initialized (i.e. written to). To work around this issue, the first 8
-> >bytes are initialized here.
-> 
-> Yes. Also put the current IP revision (3.0.x) into the comment.
-> Did inform the Bosch guys from this issue - or is it already in some errata sheet?
-> 
-
-Good idea, will add it.
-I will try if we can talk Bosch guys about this issue.
-
-Regards
-Dong Aisheng
-
-> >
-> >>+        * bytes (whatever value for the second word) in Message RAM to
-> >>+        * avoid bit error for transmit data less than 4 bytes at the first
-> >>+        * time. By initializing the first 8 bytes of tx buffer before using
-> >>+        * it can avoid such issue.
-> >>+        */
-> >>+       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(0), 0x0);
-> >>+       m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(1), 0x0);
-> >>+
-> >>         m_can_config_endisable(priv, false);
-> >>  }
-> >
-> >Can you trigger the issue when sending CAN-FD frames with dlc > 8 && dlc
-> >< 64?
-> 
-> Just a nitpick:
-> 
-> DLC can just be 0 .. 15
-> 
-> and the length (struct canfd_frame.len) can be from 0 .. 64
-> 
-> See:
-> 
-> http://lxr.free-electrons.com/source/include/uapi/linux/can.h#L83
-> 
-> That's the reason for all these helpers
-> 
-> http://lxr.free-electrons.com/source/drivers/net/can/dev.c#L36
-> 
-> that hide the evil "DLC" from userspace now and make 'len' a usable
-> loop variable as we were able to use the former dlc for classic CAN
-> :-)
-> 
-> Regards,
-> Oliver
-> 
+SGksDQoNCmFscmVhZHkgd2FzIGFmcmFpZCB0aGUgbW9kdWxlIHBhcmFtIHNob3VsZCBiZSByZW1v
+dmVkIDopDQpNYXkgSSBwcmludCBhbGwgdGhlc2UgaW5mb3MgdW5jb25kaXRpb25hbGx5PyAgLi4u
+SWYgc29tZW9uZSBoYXMNCnRyb3VibGUgd2l0aCB0aGUgY2FyZCB3ZSByZWFsbHkgbGlrZSB0byBz
+ZWUgdGhhdCBzdHVmZiBmaXJzdC4NCg0KQW5kIGFib3V0IHRoZSBjb21taXQgbWVzc2FnZTogbWF5
+YmUNCiJUaGlzIHBhdGNoIGFkZHMgc3VwcG9ydCBmb3IgdGhlIENBTiBQQ0llLzQwMiBjYXJkIGZy
+b20gZXNkIGVsZWN0cm9uaWMNCnN5c3RlbSBkZXNpZ24gZ21iaC4gRlBHQSBiYXNlZCBDQU4gY29u
+dHJvbGxlciwgc3VwcG9ydGluZyB1cCB0byA0DQpuZXRzLCBNU0kgYW5kIGJ1cyBtYXN0ZXJpbmcs
+IHNlZSBodHRwOi8vZXNkLmV1L2VuL3Byb2R1Y3RzL2Nhbi1wY2llNDAyDQpmb3IgZGV0YWlscy4i
+Pywgb3Igc29tZXRoaW5nIHNwZWNpZmljIHlvdSdyZSBtaXNzaW5nPw0KDQpSZWdhcmRzLA0KICAg
+IFRob21hcw0KDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogTWFy
+YyBLbGVpbmUtQnVkZGUgW21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdIA0KR2VzZW5kZXQ6IERp
+ZW5zdGFnLCA0LiBOb3ZlbWJlciAyMDE0IDE0OjI2DQpBbjogT2xpdmVyIEhhcnRrb3BwOyBUaG9t
+YXMgS8O2cnBlcg0KQ2M6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCkJldHJlZmY6IFJlOiBb
+UEFUQ0ggdjMgMS8xXSBjYW46IEFkZCBzdXBwb3J0IGZvciBlc2QgQ0FOIFBDSWUvNDAyIGNhcmQN
+Cg0KT24gMTEvMDQvMjAxNCAwMjoyNCBQTSwgT2xpdmVyIEhhcnRrb3BwIHdyb3RlOg0KPiBIZWxs
+byBUaG9tYXMsDQo+IA0KPiBsb29rcyBmYXIgYmV0dGVyIHRvIG1lIG5vdy4gVGhhbmtzLg0KPiAN
+Cj4gQE1hcmM6IFRoZSBvbmx5IHR3byBxdWVzdGlvbnMgSSB3b3VsZCBoYXZlIGlzIHRoaXMgcHJl
+dHR5IHNob3J0IGNvbW1pdCANCj4gbWVzc2FnZSBhbmQgdGhlIG1vZHVsZSBwYXJhbWV0ZXIuDQo+
+IFdoYXQgZG8geW91IHRoaW5rIGFib3V0IGl0IChhbmQgdGhlIHJlc3QpPw0KDQpZZXMsIHRoZSBj
+b21taXQgbWVzc2FnZSBzaG91bGQgYmUgYSBiaXQgbW9yZSB2ZXJib3NlLiBBbmQgdGhlIG1vZHVs
+ZSBwYXJhbWV0ZXIgc2hvdWxkIHByb2JhYmx5IGJlIHJlbW92ZWQuDQoNCkknbSBjdXJyZW50bHkg
+cmV2aWV3aW5nIFN0ZWZhbm8gQmFiaWMncyBTUEkgZHJpdmVyLCB3aGljaCBoYXMgYmVlbiB3YWl0
+aW5nIGZvciByZXZpZXcgYSBiaXQgbG9uZ2VyLg0KDQpNYXJjDQoNCi0tIA0KUGVuZ3V0cm9uaXgg
+ZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCklu
+ZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0
+ICAgICB8DQpWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUx
+MjEtMjA2OTE3LTU1NTUgfA0KQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0
+cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
