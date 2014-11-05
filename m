@@ -1,46 +1,93 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH v3 00/10] ARM: dts: TI: Add CAN support
-Date: Wed, 5 Nov 2014 13:06:28 +0200
-Message-ID: <545A04B4.1010508@ti.com>
-References: <1415098134-26405-1-git-send-email-rogerq@ti.com> <20141104155502.GS31454@atomide.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH V1 4/4] can: m_can: allow to send std frame on CAN FD
+ mode
+Date: Wed, 05 Nov 2014 12:08:21 +0100
+Message-ID: <545A0525.107@hartkopp.net>
+References: <1415174326-6623-1-git-send-email-b29396@freescale.com> <1415174326-6623-4-git-send-email-b29396@freescale.com> <5459FEDE.9050405@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:52514 "EHLO
-	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753923AbaKELGs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 06:06:48 -0500
-In-Reply-To: <20141104155502.GS31454@atomide.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:31054 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753991AbaKELIg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 5 Nov 2014 06:08:36 -0500
+In-Reply-To: <5459FEDE.9050405@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On 11/04/2014 05:55 PM, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [141104 02:50]:
->> Hi Tony,
+
+
+On 05.11.2014 11:41, Marc Kleine-Budde wrote:
+> On 11/05/2014 08:58 AM, Dong Aisheng wrote:
+>> The current code sends all CAN frames on CAN FD format(with BRS or not)
+>> if CAN_CTRLMODE_FD is enabled.
+>> However, even CAN_CTRLMODE_FD is enabled, the can tool may still
+>> send normal frames.
+>> e.g.
+>> ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on
+>> cansend can0 123#112233
 >>
->> These patches add CAN support for am33xx, am43xx and dra7 platforms.
->> They must go in together with CAN driver RAMINIT Syscon support [1].
-> 
-> Can you make this series not depend on [1] for most part without
-> breaking existing functionality?
+>> Therefore sending normal CAN frame on FD format seems not reasonable
+>> and the CAN FD incapable device may not be able to receive it correctly.
+>>
+>> The patch switches the M_CAN operation mode to ISO11898-1 instead of
+>> staying on CAN FD operation mode by writing "11" to CMR bit if find
+>> we're sending a normal can skb.
+>
+> With this patch applied and Olivre's version of 3/4, how does the
+> application send CAN-FD frames?
 
-I just checked that we haven't enabled DCAN on any of the boards
-so we don't risk breaking anything even if these 2 series don't go in
-together. 
+This patch becomes obsolete when we do it like in my answer of [3/4].
 
-> 
-> Then we can do a single follow-up patch to enable things after [1]
-> has been merged.
-> 
-> That would remove a dependency between driver changes and .dts changes.
+> 1. witch on CAN-FD via "ip fd on"
 
-Apart from patches 1, 3 and 8, that add the control module nodes the rest
-pretty much depend on the driver DT binding changes.
+With
 
-I can send them separately if needed.
+ip link set can0 type can fd on
 
-cheers,
--roger
+the netdevice switches to the MTU of CAN FD (72) instead of 16.
+
+This means that this netdevice can handle CAN frames (MTU 16) and CAN FD 
+frames (MTU 72).
+
+When you send a standard CAN frame, e.g.
+
+	cansend can0 123#112233
+
+you would get a CAN 2.0 frame (dlc = 3) on the bus.
+
+When you send a CAN FD frame, e.g.
+
+	cansend can0 123##0112233
+
+you would get a CAN FD frame (dlc = 3) on the bus.
+
+With
+
+	cansend can0 123##1112233
+
+you would get a CAN FD frame (dlc = 3) with BRS on the bus.
+
+Whether it is CAN or CAN FD is given by checking skb->len for CAN_MTU of 
+CANFD_MTU in the driver.
+
+Regards,
+Oliver
+
+
+> 2. write a struct canfd_frame
+>
+> Correct?
+>
+> What happens if:
+> 3. write a struct can_frame
+>
+> A CAN frame is send?
+>
+> Oliver are you okay with this behaviour?
+>
+> Marc
+>
