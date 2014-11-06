@@ -1,81 +1,549 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
- 3/3] can: m_can: workaround for transmit data less than 4 bytes
-Date: Thu, 06 Nov 2014 13:47:20 +0100
-Message-ID: <545B6DD8.6010906@pengutronix.de>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net> <20141106080940.GA22964@shlinux1.ap.freescale.net> <545B6AB4.70003@hartkopp.net>
+From: Stefano Babic <sbabic@denx.de>
+Subject: Re: [PATCH v5 1/2] Add documentation for SPI to CAN driver
+Date: Thu, 06 Nov 2014 14:48:21 +0100
+Message-ID: <545B7C25.9000208@denx.de>
+References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-2-git-send-email-sbabic@denx.de> <545A15C7.2060505@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53902 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751249AbaKFMrx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 07:47:53 -0500
-In-Reply-To: <545B6AB4.70003@hartkopp.net>
+Received: from mail-out.m-online.net ([212.18.0.9]:42403 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750975AbaKFNs3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 08:48:29 -0500
+In-Reply-To: <545A15C7.2060505@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Dong Aisheng <b29396@freescale.com>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 11/06/2014 01:33 PM, Oliver Hartkopp wrote:
->> So i'm not sure memset() the entire TX FIFO element is neccesary...
->=20
-> It's no big deal - so we should be defensive here.
-> And memset() is not working as Marc pointed out in another mail.
->=20
-> So we would need to loop with
->=20
->     m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i), 0x0);
->=20
->>
->> Do you think we could keep the current solution firstly and updated la=
-ter
->> if needed?
->=20
-> No :-)
->=20
-> I would like to have all data bytes to be written at startup.
+On 05/11/2014 13:19, Marc Kleine-Budde wrote:
+> On 07/28/2014 06:38 PM, Stefano Babic wrote:
+>> Signed-off-by: Stefano Babic <sbabic@denx.de>
+> 
+> Here my review of the protocol documentation. As I'm not a native speaker, by
+> remarks about language and grammar are probably not 100% correct :)
 
-Me, too. As this happens only once during ifconfig up it should not hurt
-performance, either send an incremental or new patch. I'll sort it out.
+Thanks a lot ! I fix them - here only the open points:
 
-Marc
+>> +
+>> +1. Overview
+>> +----------------------
+>> +
+> 
+> Can you please define what it the:
+> - CAN Controller
+> - Main Controller
+> 
+> As far as I understand the Main Controller is the system running Linux,
+> which has at least a SPI master controller. The CAN Controller is
+> connected via SPI as a slave to the Main Controller.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Right. I will add their definition in the next version.
+
+>> +message is not received in time, the CAN controller must perform a reset of the
+>> +Main Controller controller (Watchdog message).
+> 
+> The CAN Controller will reset the Linux System? I think that should be out of the
+> scope of the specification of this interface.
+
+Absolutely. This is a specific part of the project and it has nothing to
+do with the protocol.
+
+>> +On the downstream direction, the driver must take packets from all interfaces
+>> +(hcan0,..hcan4), set up a frame header (message type,
+>> +channel number, etc.) and send it to CAN controller via the SPI interface.
+> 
+> Why are the normal interfaces named "hcan%d"? Why not keep the usual
+> name "can%d"?
+
+It was a requirement for my driver to have a different name (all "h"
+channels are on the slave), but I agree this is uncommon. I will change
+in the doc and in the code to use the default "can%d".
+
+>> +as CAN data to channel that matches the imxhcs12.  The driver is not aware of
+>                                            ^^^^^^^^
+> Old name leftover?
+
+Yes, it is ;-) !
+
+>> +   each 4 bytes. No interrupts are generated on the Main Controller because they
+>> +   are ruled by the internal FIFO.
+> 
+> Why is this point mentioned here?
+
+This part must be also be removed. It contains incomplete details about
+the spi master driver that have no sense here. I will drop it.
+
+> 
+> IIRC this is a non standard mode of SPI operation, usually the chip
+> select stays active while the communication is taking place with the SPI
+> slave. Your original code is based on a i.MX SoC, right? IIRC in the
+> mx35 the chip select generated by the SPI controller has a big
+> limitation (bug),
+
+It seems we had to fight in the past with the same *feature* on
+i.MX31/MX35 :-)
+
+SPI works as usual with this driver, even if my document let think the
+opposite ;-)
+
+> so we always used the GPIO chip select.
+
+Right. And this driver does not uses any chip select on its own - this
+is as usual part of the binding with the SPI master driver. I will dop
+this confusing phrases.
+
+> 
+>> +the development is finished. The SPI interface ensures that data are
+>> +transfered without modification between the two processors.
+> 
+> I'm not sure if the last sentence is correct. As far as I know there
+> isn't any bit error detection or correction on a SPI bus.
+
+I admit, the sentence is misleading. What I wanted to say is that we
+have a local bus, and there is in principle no "external" agent that
+damage the comunication (noise, collision, and so on).
+
+Really, checksum is used to detect if something is going wrong on the
+CAN controller. It is also a helpful tool for the firmware developers,
+because it helps them to find soon criticity in the firmware, such as
+missing interrupts (what I saw) and so on.
+
+>> +The checksum is computed as 16 bit 2's complement of the sum (module 16)
+>> +of  all bytes in the message, excluded the checksum itself.
+>> +On the receive side, it is enough to sum all bytes including the checksum
+>> +to verify if the message was received correctly (the sum must be zero).
+>> +
+>> +The MSG-ID (1 byte) identifies the type of exchange data. For basic exchange
+>> +of frames, the following messages are used:
+>> +
+>> +	SEND_DATA_MSG
+>> +	STATUS_MSG
+>> +	SYNC_MSG
+>> +	CFG_MSG_SET
+>> +	CFG_MSG_GET
+>> +	REQ_DATA_MSG
+>> +
+>> +The SEND_DATA_MSG is used when one of the two processors needs to send a CAN
+>> +message.
+>> +
+>> +The STATUS_MSG is used to inform the partner about the number of bytes ready
+>> +to be transfered. This is used by the Main Controller when it has several
+>> +messages to send, and it needs a longer frame as usual to sen all CAN messages
+>                                                              ^^^ send
+>> +back.
+> 
+> What do you mean by the back in: "send all CAN message _back_"?
+
+I see I have wrongly exchanged (and not only here) "Main Controller"
+with "CAN Controller (slave)". STATUS_MSG is sent by the slave to inform
+the master how long the next frame should be. I will rephrase it.
+
+>> +CAN controller driven via SPI, the Main Controller cannot know the timing
+>> +and must ask them to the CAN controller before instantiating a CAN device.
+>                 ^^^^^^^ remove
+>> +For this reason, the message is sent only once in the probe() entry point.
+>> +
+>> +The REQ_DATA is sent only by the Main Controller when the Main Controller
+>> +signals it has packets to be transfered, but the Main Controller has nothing
+>> +to sent. Its scope is mainly to signalize to the Main Controller the Start of
+> 
+> The second and fourth Mail Controller has probably to be replaced by CAN
+> Controller?
+
+Right.
+
+>> +
+>                             what do you mean by enough?
+>                                 VVVVVV
+>> +The CAN controller can sends enough messages as they can fit inside
+>                           ^^^^^ send
+>> +the SPI transfer. The number of bytes (=SPI clock cycles)
+> 
+> Do you want to say:
+> 
+> The CAN controller can send as many CAN frames as fit inside a SPI transfer?
+
+Exactly, I used only a *very* confused way to say this ;-).
+
+> 
+>> +to be transfered is set by the Main Controller inside the Status Message.
+>> +
+> 
+> I assume on the left is the Main Controller and on the right we have the
+> CAN Controller?
+
+I will add labels on the top to define  the actors of the transfer.
+
+>> +
+>> +The CAN controller sets the GPIO-IRQ, and this raises an interrupt on the
+>                                          ^^^ remove
+>> +Main Controller.
+>> +The protocol uses several Message-IDs to identify what is really exchanged.
+>> +
+>> +From the Main Controller point of view, a SPI Transfer is initiated when the
+>             Main Controller's
+>> +first byte is written into the internal FIFO and it is finished when the all
+> 
+> Under Linux a SPI transfer is usually started with spi_sync() or it's
+> asynchronous variant.
+
+Yes, but I had to inform Firmware's developers when and how a byte is
+put on the SPI bus, and they preferred a description as near as possible
+to the hardware. I agree that this part should be dropped or changed -
+not all SPI controllers have a FIFO (like your example with bitbanged SPI).
+
+> 
+>> +bytes are transmitted. The protocol relies on the positional place of the
+>> +bytes, that means there is no need to wait for a start-frame byte.
+> 
+> I don't get the last sentence, maybe it's get more clear later....
+
+I wanted only to say that there is no special start-of-frame character.
+The message-id (first byte in the protocol, always != 0) acts as start
+of frame. The driver scans the received frame searching for the first
+not-zero byte.
+
+>> +On the receive side, due to CAN controller limitations, the Main Controller
+>> +must drop the first 4 bytes received from the CAN controller, as they have
+>> +no meaning.
+>> +It must be ensured by the CAN controller software that the first valid byte
+>> +is the fifth in the SPI transfer.
+>> +
+>> +The Main Controller has no knowledge at the beginning how many messages the
+>> +CAN controller will send and it starts with a 32-bytes transfer because this
+>> +matches the internal FIFO and raises only one interrupt.
+> 
+> We should not put any assumptions about the Main Controller's hardware into the
+> specification of the protocol. Under Linux you can run a (somewhat slow) SPI bus
+> on bit-banged GPIOs. Just specify then length of the SPI frame.
+
+Agree. I will check then in the whole document, I understand now there
+are several places with reference to the hardware.
+
+> 
+>> +no restrictions about the number of bytes to be transfered, and it is duty of
+>> +the Main Controller driver to find the most valuable length to be used.
+> 
+> Earlier you say you have to transfer equal or more bytes as requested, now you
+> state there aren't any restrictions.
+> 
+>> +
+>> +A SPI transfer is *NOT* delimited by changes of the chip select signal. Indeed,
+>> +the chip select is ruled internally by the bits x word setup, and it is made
+>> +suitable for both CAN controller and Main Controller. Bits x words must be a
+>> +multiple of 2, because the CAN controller gets an interrupt each 2 bytes.
+> 
+> Sorry I don't get what you mean...The chip select under Linux is usually
+> controlled on a struct spi_transfer base with the cs_change member of that struct.
+
+Right.
+
+> What you describe sounds like a special hardware feature of the imx35.
+
+Indeed, it must be removed.
+
+>> +duty of the Main Controller to disable and enable the interrupt source depending
+>> +on the status of the transmission.
+> 
+> Transmission of the SPI messages?
+
+No, status of the communication. The driver checks if the line is
+asserted after each iteration (=after each SPI transfer) and enables the
+interrupt only if the line is not asserted (it means that the Slave has
+nothing more to send and it is currently idle), to be waked up later
+when the slave has new CAN messages to send.
+
+The driver verifies that the GPIO is not continuosly asserted,
+meaning that maybe the slave is stucked (in any case, this is not a
+normal behavior), and also in that case the IRQ is disabled.
+
+> 
+>> +
+>> +After getting the interrupt, the Main Controller (that has no knowledge about
+>> +the amount of data to be transfered from the CAN controller), will start a SPI
+>> +transfer for a total of 32 bytes (default), sending a REQ_DATA message.
+> 
+> Specify the length or give it a name that is specified later, e.g. in some kind of table.
+
+ok
+
+> 
+
+>> +Taking into account that the header requires 3 bytes (MSG-ID + length) and the
+>> +checksum further two bytes, there are still 27 bytes available for the CAN
+>> +messages.
+> 
+> Is the checksum optional or not?
+
+The two bytes for checksum are always sent on the bus and they are part
+of the protocol. However, if checksum is disabled, these two bytes are
+set to zero.
+
+> What about the 4 bogus bytes in the beginning of the message?
+
+Well, this is only a remark about how the firmware works on the slave I
+have, but without any effects in the code of the driver. The firmware on
+the slave adds always these 4 bogus bytes at the beginning of a frame,
+because it requires some time before being able to send an answer.
+However, my driver does not rely on that, and
+the received bytes are scanned until a message-id is recognized (=start
+of a message).
+
+> 
+>> +This is always enough to send at least one CAN message.
+>> +
+>> +The CAN controller answers with the SEND_DATA_MSG. The Main Controller knows
+>> +that there is no message from the Main Controller, because the MSG-ID is not
+> 
+> The Main Controller knows that there is no message from the Main Controller?
+
+:-D
+
+Ok, I used one time more the wrong actor !
+
+> 
+>> +set to SEND_DATA, and acquires the number of bytes to be transfered from the
+>> +length field.
+>> +The CAN controller packs so many CAN messages inside the SEND_DATA_MSG
+>                             ^^ who many? as many as possible/fit?
+>> +(usually 1 or 2), delimiting the packet with the checksum as described before.
+> 
+> The checksum was specified as optional?
+
+Maybe I should explain that computation and verification of the checksum
+is optional, but bytes for checksum, even if zeroed, are always put on
+the bus.
+
+>> +
+>> +In this case, the CAN controller deasserts the GPIO line to avoid further
+>                                                   ^^^^
+> Better name it IRQ line, it's just an implementation details that it's a GPIO on the Can Controller :)
+
+ok
+
+> 
+>> +interrupts for the Main Controller.
+> 
+> This means the IRQ is level triggered, please specify this when describing the IRQ.
+
+ok
+
+>> +The CAN controller has now enough SPI clock cycles to send all data
+>            C
+>> +to the Main Controller. After sending all data, it will fill also any
+>> +remaining bytes until the end of transfer with dummy bytes.
+>                                                   ^^^^^^^^^^^ 
+> just "0x0", sounds more professional than dummy bytes.
+
+;-)
+
+>> +Because it has already received the length of the incoming message, it is
+>> +aware about how many bytes are transfered and can act as in 5.3 if it has more
+>> +messages to send.
+>> +
+>> +5.5 The CAN controller gets new data during a transfer
+>                C
+>> +------------------------------------------------------
+>> +
+>> +In this case, there are the following options:
+>> +
+>> +- the new messages can be fit inside the actual transfer.
+>                       ^^^^^^^^^^ fits
+>> +Then the CAN controller will append a new SEND_DATA_MSG to the end of the
+>> +data that it is currently sending on the SPI line.
+> 
+> What will happen if a new CAN frame comes in while REQ DATA is still running,
+> but the first SEND_DATA is already done and the CAN Controller is already inserting
+> stuffing/dummy 0x0?
 
 
---9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This is a use case. The slave/CAN controller knows how many bytes are
+still available
+until the end of the SPI frame, and can decide if there is enough space
+to send a new SEND_DATA
+message, stopping to fill with zeroes. The driver checks in any case the
+whole SPI frame and extracts each single SEND_DATA message.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Multiple SEND_DATA messages are not only allowed, but desired,
+because it increase the throughput.
 
-iQIcBAEBAgAGBQJUW23YAAoJECte4hHFiupUGm0QAKl7VeBNmfSqjliLbRciZxAR
-5YgLyXQd9rwTO1TpVs7WX6f3YjiNFBL0Gp+p++LTK6cIF9EHUE8PRvBUt3dsItRf
-aYjLq/u/hkamWr3WSwT3evUpZYlgGHlVtJ7XJoJxaQG/yQulLNKSRl2PpMHumO8n
-v8C4QwZQcq+YjLNyAt/m/ruIRWRefeOkFDxOQi8M6us5rIsLmeKpcLMY/7BzCRZb
-jdC5fW6AM7CyA3bZfZmi7P/FcnySEUg3mwUSiTo4IkJLNxo7M1Yb4eYwc8cIUg+o
-1I8shs7DAhCghCOY0nBH7Oa/7DBwrdw25kQyPb9WWnG5U+lC6dK78lc4DbaCgutp
-t18DqWy017sQTYuaSMeapl8hA/170UAU65kUoZlAIukoNgaZ3LriY1xnN82vdlof
-Q7k7dVvaXp5YbQabd46a5YmFEg0GqGg7Ai+qHzitP0kwBZwl6zMY3xa/N/AwBc6d
-EWHmnJhQur5RTpv6DtLhO45kRZv9wEO63TdWb0jwqXeOH6GomBeErJAlimPH389S
-iqukVFUqtSK2g3Mmj1Ssg6BeLYeci49TP+BWurDZ9FQCHp2EqvaE4QXUM4S8olm7
-OXj0PGqB+oXVSeQMSpnW3AxTzR7UXQFOVhaG5LYLmbJFsZkzJ9rrB+0ocdXWzcBf
-+UUkRM8G1ctwBpL9tI3Q
-=nFch
------END PGP SIGNATURE-----
+> 
+> In the protocol we should not car about the internals of the CAN Controller.
 
---9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN--
+Agree, I will check those points and remove them.
+
+> 
+> How is the absolute time encoded? ms since 1970? Or ms since an arbitrary value? 
+
+ms since 1970.
+
+>> +
+>> +When the CAN controller will send data, it will add the elapsed milliseconds
+>> +from the receiving of the SYNC_MSG as timestamps. As 4 bytes are used for
+>    ^^^^ since
+>> +timestamp, the timestamp will roll over after 1193 days.
+> 
+> -> 2^32 / 1000 / 60 / 60 / 24
+>  = 49.710270
+> 
+> I've calculated 49 days.
+
+You're right. Missed a factor, thanks !
+
+> 
+>> +
+>> +7. CAN configuration
+>> +----------------------------------
+>> +
+>> +It is foreseen that the CAN controller's CAN channels are configured in the
+>> +usual way under Linux via the "ip" command. In fact, the CAN interface cannot
+>> +be set to "up" if it was not configured before.
+>> +
+>> +With ip, the following parameters can be set:
+> 
+> This should not be scope of the protocol documentation, just refer the existing CAN documentation in the kernel.
+
+ok
+
+
+>> +The parameters are not interpreted by the driver, but they are encapsulated
+>> +as they are in a SPI frame with MSG-ID=CFG_MSG_SET and sent to the corresponding CAN
+>> +channel.
+> 
+> This is not a good idea, as a kernel internal change will break your firmware.
+
+Well, it is not exactly so. The parameters are put into a CFG_MSG_SET,
+that is defined in the protocol. Of course, now fields in CFG_MSG_SET
+are exactly as the parameters in kernel (why doing differently ?). If in
+future there will be a kernel internal change, this will require that
+the driver must map the new parameters to fit again into a CFG_MSG_SET.
+
+>> +It is then duty of the CAN controller to set up the hardware on base of
+>> +the received parameters. According to the rules set in this document,
+>> +single parameters are sent in a big-endian order (MSB first).
+>> +
+>> +A special case is the setup for the CFG channel. This channel is not mapped to
+>> +a real CAN bus, but it is used to instantiate a communication
+>> +between the CAN controller software and the Application in User Space.
+>> +Data are not interpreted at all by the driver, and anybody can set its internal
+>> +protocol to add commands and features to the CAN controller software.
+>> +One example is the Watchdog triggering already mentioned.
+>> +The CAN_MSG is ignored by the CAN controller for the CFG channel, and its values
+>> +do not change the hardware setup.
+>> +Using this message it is possible to switch the CAN controller between two
+>> +operational modes:
+>> +	- Supervisor / Maintenance mode:	slow, max SPI frequency 1 Mhz
+>> +	- User / Normal mode			max SPI frequency set at startup
+>> +
+>> +The driver will start setting the SPI frequency to the lower value.
+>> +When the CFG channel is opened, the driver checks the bitrate of the
+>> +can_bittiming structure, and takes the following actions:
+>> +
+>> +	- bitrate = 125000		sets SPI frequency to low value
+>> +	- bitrate > 125000		sets SPI frequency to high value
+> 
+> 125 kbit/s? Why this arbitrary value?
+
+I cannot correct answer to this. I get this requirement, but about the
+exact value I do not know.
+
+>> +In user space it is then possible to switch the CAN controller between the two
+>> +operational modes simply issueing the "ip link" command and setting
+>> +the bitrate for the CFG channel.
+>> +
+>> +To set the CAN controller in supervisor mode:
+>> +	ip link set cfg type can bitrate 125000
+>> +
+>> +To set the CAN controller in user mode:
+>> +	ip link set cfg type can bitrate 500000
+> 
+> Can you come up with a cleaner solution for this problem?
+
+Let's see. What I thought as alternative was to add .ndo_do_ioctl to
+perform the frequency change. Can this be a better way ?
+
+> 
+>> +
+>> +
+>> +8. SPI Frame definition and Messages
+>> +----------------------------------------
+>> +
+>> +A SPI Frame begins with a 4-bytes header:
+>> +
+>> +bytes:
+>> +	0		Message ID
+>> +	1-2		Message Length.
+>> +			Length is computed including 2 bytes for checksum,
+>> +			but without Message ID and Length itself.
+> 
+> So N in this example?
+> 
+>> +	3 .. N-2	Depending on Message-ID
+>> +	N-1 .. N	Checksum
+> 
+> Is the checksum optional or not?
+
+In the frame, it is mandatory.
+
+> 
+>> +
+>> +Command codes:
+>> +	0x01	Status Request
+>> +	0x02	Send Data
+>> +	0x03	Sync message
+>> +	0x04	Configuration Message
+>> +	....	t.b.d.
+> 
+> Can you please reuse the name you've established before? Like SEND_DATA_MSG.
+> In the beginning of this document there are 6 messages defined.
+
+ok
+
+>> +Each CAN message has the following format
+>> +
+>> +	0		Channel Number
+>> +			Values:
+>> +			1-n	CAN Channel
+>> +			0xFF	CFG channel
+>> +	1 - 4		Timestamp
+>> +	5 - 8		can_id
+>> +	9		dlc (length of can message)
+>> +	10..N		Variable number of data (max 8)
+>> +
+>> +Note: Channel 0 is reserved for configuration.
+> 
+> What's Channel 0xff then?
+
+It is foreseen to have an additional logical channel that does not map
+to a physical CAN bus. The reason is to have a way for an application in
+user space to communicate (via CAN messages) to the slave
+microcontroller. Because the driver is transparent to this (it creates
+only an additional channel), changing in the protocol/messages between
+application and firmware does not require to modify the driver itself.
+
+Some examples: the CAN controller has additional features that can be
+activated by the Application. LEDs, GPIOs, ... (I do not know all
+details). This channel can be also be used to make some configuration of
+the slave microcontroller itself.
+
+>> +
+>> +The flag for Standard and Extended frame format (SFF and EFF
+>> +in socketCAN framework) is a flag in the can_id.
+> 
+> Better use a separate define, although these flags are Linux userspace API/ABI
+
+ok
+
+Regards,
+Stefano
+
+-- 
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
+=====================================================================
