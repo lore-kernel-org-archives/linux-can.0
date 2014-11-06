@@ -1,155 +1,114 @@
-From: David Jander <david@protonic.nl>
-Subject: [PATCH 08/14] can: rx-fifo: Add support for simple irq offloading
-Date: Thu,  6 Nov 2014 09:34:07 +0100
-Message-ID: <1415262853-22907-9-git-send-email-david@protonic.nl>
-References: <1415262853-22907-1-git-send-email-david@protonic.nl>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
+ 3/3] can: m_can: workaround for transmit data less than 4 bytes
+Date: Thu, 6 Nov 2014 16:09:44 +0800
+Message-ID: <20141106080940.GA22964@shlinux1.ap.freescale.net>
+References: <1415193393-30023-1-git-send-email-b29396@freescale.com>
+ <1415193393-30023-3-git-send-email-b29396@freescale.com>
+ <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net>
+ <20141106015716.GB7642@shlinux1.ap.freescale.net>
+ <545B1D71.4000408@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:26402 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751873AbaKFIeI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 03:34:08 -0500
-In-Reply-To: <1415262853-22907-1-git-send-email-david@protonic.nl>
+Received: from mail-bn1bon0135.outbound.protection.outlook.com ([157.56.111.135]:36967
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751021AbaKFIjw (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 6 Nov 2014 03:39:52 -0500
+Content-Disposition: inline
+In-Reply-To: <545B1D71.4000408@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>, David Jander <david@protonic.nl>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-Some CAN controllers have a usable FIFO already but can still benefit from
-off-loading the CAN controller FIFO in the interrupt into an extra ring-
-buffer. Add support for these simpler cases also.
+On Thu, Nov 06, 2014 at 08:04:17AM +0100, Oliver Hartkopp wrote:
+> On 06.11.2014 02:57, Dong Aisheng wrote:
+> >On Wed, Nov 05, 2014 at 07:15:10PM +0100, Oliver Hartkopp wrote:
+> 
+> >>The Message RAM is usually equipped with a parity or ECC functionality.
+> >>But RAM cells suffer a hardware reset and can therefore hold
+> >>arbitrary content at startup - including parity and/or ECC bits.
+> >>
+> >>So when you write only the CAN ID and the first four bytes the last
+> >>four bytes remain untouched. Then the M_CAN starts to read in 32bit
+> >>words from the start of the Tx Message element. So it is very likely
+> >>to trigger the message RAM error when reading the uninitialized
+> >>32bit word from the last four bytes.
+> >>
+> >>Finally it turns out that an initial writing (with any kind of data)
+> >>to the entire message RAM is mandatory to create valid parity/ECC
+> >>checksums.
+> >>
+> >>That's it.
+> >>
+> >
+> >Thanks for sharing this information.
+> >Does it mean this issue is related to the nature of Message RAM and is
+> >supposed to exist on all M_CAN IP versions?
+> 
+> From what I know from the 3.1.x revision there's no change regarding
+> IR.BRU and IR.BEC - so I would assume this to stay on all M_CAN IP
+> revisions.
+> 
+> But after some sleep I wonder if this patch [3/3] would need an update too.
+> 
+> Writing to the TX message RAM is obviously no workaround but a valid
+> and needed initialization process.
+> 
+> I would tend to make this patch:
+> 
+> ---
+> 
+> can: m_can: add missing TX message RAM initialization
+> 
+> The M_CAN message RAM is usually equipped with a parity or ECC functionality.
+> But RAM cells suffer a hardware reset and can therefore hold
+> arbitrary content at startup - including parity and/or ECC bits.
+> 
+> To prevent the M_CAN controller detecting checksum errors when
+> reading potentially uninitialized TX message RAM content to transmit
+> CAN frames the TX message RAM has to be written with (any kind of)
+> initial data.
+> 
 
-Signed-off-by: David Jander <david@protonic.nl>
----
- drivers/net/can/dev.c   | 79 +++++++++++++++++++++++++++++++++++++++++--------
- include/linux/can/dev.h |  2 ++
- 2 files changed, 69 insertions(+), 12 deletions(-)
+The key point of the issue is that why M_CAN will read potentially uninitialized
+TX message RAM content which should not happen?
+e.g. for our case of the issue, if we sending a no data frame or a less
+than 4 bytes frame, why m_can will read extra 4 bytes uninitialized/unset
+data which seems not reasonable?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index ffa4f60..2741d42 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -384,10 +384,54 @@ restart_poll:
- 	return work_done;
- }
- 
-+static int can_rx_fifo_init_ring(struct net_device *dev,
-+		struct can_rx_fifo *fifo, unsigned int weight)
-+{
-+	fifo->dev = dev;
-+
-+	/* Make ring-buffer a sensible size that is a power of 2 */
-+	fifo->ring_size = (2 << fls(weight));
-+	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
-+			     GFP_KERNEL);
-+	if (!fifo->ring)
-+		return -ENOMEM;
-+
-+	fifo->ring_head = fifo->ring_tail = 0;
-+
-+	/* Take care of NAPI handling */
-+	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
-+
-+	fifo->poll_errors = false;
-+
-+	return 0;
-+}
-+
-+static int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo)
-+{
-+	int ret;
-+
-+	if (!fifo->mailbox_move_to_buffer || !fifo->poll_bus_error ||
-+	    !fifo->poll_can_state)
-+		return -EINVAL;
-+
-+	ret = can_rx_fifo_init_ring(dev, fifo, 64);
-+	if (ret)
-+		return ret;
-+
-+	/* init variables */
-+	fifo->mask_low = 0;
-+	fifo->mask_high = 0;
-+
-+	return 0;
-+}
-+
- int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
- {
- 	unsigned int weight;
--	fifo->dev = dev;
-+	int ret;
-+
-+	if (fifo->simple_offload)
-+		return can_rx_fifo_add_simple(dev, fifo);
- 
- 	if ((fifo->low_first < fifo->high_first) &&
- 	    (fifo->high_first < fifo->high_last)) {
-@@ -405,17 +449,9 @@ int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
- 	    !fifo->mailbox_enable)
- 		return -EINVAL;
- 
--	/* Make ring-buffer a sensible size that is a power of 2 */
--	fifo->ring_size = (2 << fls(weight));
--	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
--			     GFP_KERNEL);
--	if (!fifo->ring)
--		return -ENOMEM;
--
--	fifo->ring_head = fifo->ring_tail = 0;
--
--	/* Take care of NAPI handling */
--	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
-+	ret = can_rx_fifo_init_ring(dev, fifo, weight);
-+	if (ret)
-+		return ret;
- 
- 	/* init variables */
- 	fifo->mask_low = can_rx_fifo_mask_low(fifo);
-@@ -453,12 +489,31 @@ static unsigned int can_rx_fifo_offload_if_full(struct can_rx_fifo *fifo, unsign
- 	return ret;
- }
- 
-+static int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
-+{
-+	unsigned int received = 0;
-+	unsigned int ret;
-+
-+	do {
-+		ret = can_rx_fifo_offload_if_full(fifo, 0);
-+		received += ret;
-+	} while (ret);
-+
-+	if (received)
-+		can_rx_fifo_napi_schedule(fifo);
-+
-+	return received;
-+}
-+
- int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo)
- {
- 	unsigned int i;
- 	unsigned int ret;
- 	unsigned int received = 0;
- 
-+	if (fifo->simple_offload)
-+		return can_rx_fifo_irq_offload_simple(fifo);
-+
- 	if (fifo->scan_high_first) {
- 		for (i = fifo->high_first;
- 		     can_rx_fifo_le(fifo, i, fifo->high_last);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index a44108d..c8b8519 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -71,6 +71,8 @@ struct can_rx_fifo {
- 	unsigned int high_first;
- 	unsigned int high_last;
- 
-+	bool simple_offload;
-+
- 	void (*mailbox_enable_mask)(struct can_rx_fifo *rx_fifo, u64 mask);
- 	void (*mailbox_enable)(struct can_rx_fifo *rx_fifo, unsigned int mb);
- 	unsigned int (*mailbox_move_to_buffer)(struct can_rx_fifo *rx_fifo,
--- 
-1.9.1
+From IP code logic, it will read full 8 bytes of data no matter how many data
+actually to be transfered which is strange.
 
+For sending data over 4 bytes, since the Message RAM content will be filled
+with the real data to be transfered so there's no such issue.
+
+> ---
+> 
+> Then the code should memset() the entire TX FIFO element - and not
+> only the 8 data bytes we are addressing now.
+> 
+
+Our IC guy told me the issue only happened on transferring a data size
+of less than 4 bytes and my test also proved that.
+So i'm not sure memset() the entire TX FIFO element is neccesary...
+
+Do you think we could keep the current solution firstly and updated later
+if needed?
+
+> Maybe it makes sense to send the entire updated patch set (3) again ...
+> 
+> [1/3] can: add can_is_canfd_skb() API
+> [2/3] can: m_can: update to support CAN FD features
+> [3/3] can: m_can: add missing message RAM initialization
+> 
+> Are you ok with that?
+> 
+> Regards,
+> Oliver
+> 
+
+Regards
+Dong Aisheng
