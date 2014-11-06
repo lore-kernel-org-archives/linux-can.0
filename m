@@ -1,126 +1,92 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [PATCH 11/15] can: rx-fifo: Add support for can state tracking
- and error polling
-Date: Thu, 6 Nov 2014 12:07:59 +0100
-Message-ID: <20141106120759.74750d72@archvile>
-References: <1412956020-21489-1-git-send-email-david@protonic.nl>
-	<1412956020-21489-12-git-send-email-david@protonic.nl>
-	<545765D8.7090906@pengutronix.de>
-	<20141103135135.10fd4c6f@archvile>
-	<54577C03.7010609@pengutronix.de>
-	<20141103140921.4ffd55e7@archvile>
-	<5457822B.5090200@pengutronix.de>
-	<20141105181612.569be441@archvile>
-	<545B4B67.80300@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
+ 3/3] can: m_can: workaround for transmit data less than 4 bytes
+Date: Thu, 06 Nov 2014 13:33:56 +0100
+Message-ID: <545B6AB4.70003@hartkopp.net>
+References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net> <20141106080940.GA22964@shlinux1.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:26791 "EHLO
-	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751051AbaKFLHY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 06:07:24 -0500
-In-Reply-To: <545B4B67.80300@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:61365 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751322AbaKFMeO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 07:34:14 -0500
+In-Reply-To: <20141106080940.GA22964@shlinux1.ap.freescale.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On Thu, 06 Nov 2014 11:20:23 +0100
-Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+On 06.11.2014 09:09, Dong Aisheng wrote:
+> On Thu, Nov 06, 2014 at 08:04:17AM +0100, Oliver Hartkopp wrote:
 
-> On 11/05/2014 06:16 PM, David Jander wrote:
-> > On Mon, 03 Nov 2014 14:24:59 +0100
-> > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > 
-> >> On 11/03/2014 02:09 PM, David Jander wrote:
-> >>> On Mon, 03 Nov 2014 13:58:43 +0100
-> >>> Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> >>>
-> >>>> On 11/03/2014 01:51 PM, David Jander wrote:
-> >>>>>> On 10/10/2014 05:46 PM, David Jander wrote:
-> >>>>>>> The interrupt handler should store the error flags if needed and call
-> >>>>>>> can_rx_fifo_irq_error() if there was an error flag set. This will
-> >>>>>>> trigger a napi-poll that will call poll_can_state() and
-> >>>>>>> poll_bus_error() callbacks. Those should handle can state machine and
-> >>>>>>> send error frames as needed.
-> >>>>>>>
-> >>>>>>> Signed-off-by: David Jander <david@protonic.nl>
-> >>>>>>> ---
-> >>>>>>>  drivers/net/can/dev.c   | 23 ++++++++++++++++++++---
-> >>>>>>>  include/linux/can/dev.h |  9 +++++++++
-> >>>>>>>  2 files changed, 29 insertions(+), 3 deletions(-)
-> >>>>>>>
-> >>>>>>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> >>>>>>> index fc35d28..dac7579 100644
-> >>>>>>> --- a/drivers/net/can/dev.c
-> >>>>>>> +++ b/drivers/net/can/dev.c
-> >>>>>>> @@ -352,6 +352,9 @@ static int can_rx_fifo_napi_poll(struct
-> >>>>>>> napi_struct *napi, int quota) unsigned int tail;
-> >>>>>>>  
-> >>>>>>>  restart_poll:
-> >>>>>>> +	if (work_done < quota)
-> >>>>>>> +		work_done += fifo->poll_can_state(fifo);
-> >>>>>>> +
-> >>>>>>
-> >>>>>> Do we need two callbacks in the poll-loop? I think one should be
-> >>>>>> enough. The driver can call as many non-rx related functions as
-> >>>>>> needed then. E.g. state change, bus error handling, tx-completion
-> >>>>>> handling, etc...
-> >>>>>
-> >>>>> Ok. I split it into two handlers, because I saw most drivers doing
-> >>>>> first state-handling then message reception and last error handling...
-> >>>>> in this particular order. If that order is not important, we can use
-> >>>>> one poll() function for both state- and error-handling.
-> >>>>> In that case... should the poll() handler be called _before_ or _after_
-> >>>>> handling the mailboxes?
-> >>>>
-> >>>> Following the general rule zero-one-infinity ("Allow none of foo, one of
-> >>>> foo, or any number of foo" [1]) one callback should be fine. As we are
-> >>>> optimizing for not loosing RX CAN frames I tend to say it should come
-> >>>> after rx.
-> >>>
-> >>> Hahaha, ok, I got it :)
-> >>> Any idea on how to call this function? Just "poll" seems a little bit
-> >>> under-documented...
-> >>
-> >> Yes, what about extra_poll, poll_extra?
-> > 
-> > Oops. I just realized this isn't so easy... nor is this really a
-> > zero-one-infinity case. On top of that the solution will get quite ugly
-> > too:
-> > 
-> > poll_can_state() and poll_bus_error() have two distinct functions and
-> > _both_ can generate a (error-) CAN frame. If I consolidate this into just
-> > one handler, that handler could potentially generate 0, 1 or 2 CAN frames,
-> > so I'd be forced to introduce an extra parameter to keep track of NAPI
-> > quota inside the driver callback! This seems quite ugly to me, don't you
-> > think?
-> 
-> What about:
->     work_done += fifo->poll_error(fifo, quota - work_done);
 
-That would produce extra code like the following in flexcan.c:
+>> To prevent the M_CAN controller detecting checksum errors when
+>> reading potentially uninitialized TX message RAM content to transmit
+>> CAN frames the TX message RAM has to be written with (any kind of)
+>> initial data.
+>>
+>
+> The key point of the issue is that why M_CAN will read potentially uninitialized
+> TX message RAM content which should not happen?
+> e.g. for our case of the issue, if we sending a no data frame or a less
+> than 4 bytes frame, why m_can will read extra 4 bytes uninitialized/unset
+> data which seems not reasonable?
+>
+>  From IP code logic, it will read full 8 bytes of data no matter how many data
+> actually to be transfered which is strange.
 
-static unsigned int flexcan_poll_extra(struct can_rx_fifo *fifo, quota)
-{
-	unsigned int ret;
+Yes.
 
-	ret = flexcan_poll_state(fifo);
-	if (ret < quota)
-		ret += flexcan_poll_bus_err(fifo);
+>
+> For sending data over 4 bytes, since the Message RAM content will be filled
+> with the real data to be transfered so there's no such issue.
 
-	return ret;
-}
+E.g. think about the transfer of a CAN FD frame with 32 byte.
+When you only fill up content until 28 byte the last four bytes still remain 
+uninitialized.
 
-... which is quite ugly IMHO.
+Did you try this 28 byte use-case with an uninitialized TX message RAM ?
 
-I just posted a new version, and I did not include this change yet. If you
-still prefer to do it with just one handler (although I think they have two
-distinct and defined functions), I will change it in the next version.
+cansend can0 123##1001122334566778899AABBCCDDEEFF001122334566778899AABB
 
-Best regards,
+To me it looks too risky when we only initialize the first 8 byte.
 
--- 
-David Jander
-Protonic Holland.
+>
+>> ---
+>>
+>> Then the code should memset() the entire TX FIFO element - and not
+>> only the 8 data bytes we are addressing now.
+>>
+>
+> Our IC guy told me the issue only happened on transferring a data size
+> of less than 4 bytes and my test also proved that.
+
+'less than'?
+
+So you might try to use 26 bytes too:
+
+cansend can0 123##1001122334566778899AABBCCDDEEFF001122334566778899
+
+
+> So i'm not sure memset() the entire TX FIFO element is neccesary...
+
+It's no big deal - so we should be defensive here.
+And memset() is not working as Marc pointed out in another mail.
+
+So we would need to loop with
+
+	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i), 0x0);
+
+>
+> Do you think we could keep the current solution firstly and updated later
+> if needed?
+
+No :-)
+
+I would like to have all data bytes to be written at startup.
+
+Regards,
+Oliver
+
