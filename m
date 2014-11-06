@@ -1,92 +1,81 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
  3/3] can: m_can: workaround for transmit data less than 4 bytes
-Date: Thu, 06 Nov 2014 13:33:56 +0100
-Message-ID: <545B6AB4.70003@hartkopp.net>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net> <20141106080940.GA22964@shlinux1.ap.freescale.net>
+Date: Thu, 06 Nov 2014 13:47:20 +0100
+Message-ID: <545B6DD8.6010906@pengutronix.de>
+References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net> <20141106080940.GA22964@shlinux1.ap.freescale.net> <545B6AB4.70003@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:61365 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751322AbaKFMeO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 07:34:14 -0500
-In-Reply-To: <20141106080940.GA22964@shlinux1.ap.freescale.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:53902 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751249AbaKFMrx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 07:47:53 -0500
+In-Reply-To: <545B6AB4.70003@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Dong Aisheng <b29396@freescale.com>
+Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On 06.11.2014 09:09, Dong Aisheng wrote:
-> On Thu, Nov 06, 2014 at 08:04:17AM +0100, Oliver Hartkopp wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-
->> To prevent the M_CAN controller detecting checksum errors when
->> reading potentially uninitialized TX message RAM content to transmit
->> CAN frames the TX message RAM has to be written with (any kind of)
->> initial data.
+On 11/06/2014 01:33 PM, Oliver Hartkopp wrote:
+>> So i'm not sure memset() the entire TX FIFO element is neccesary...
+>=20
+> It's no big deal - so we should be defensive here.
+> And memset() is not working as Marc pointed out in another mail.
+>=20
+> So we would need to loop with
+>=20
+>     m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i), 0x0);
+>=20
 >>
->
-> The key point of the issue is that why M_CAN will read potentially uninitialized
-> TX message RAM content which should not happen?
-> e.g. for our case of the issue, if we sending a no data frame or a less
-> than 4 bytes frame, why m_can will read extra 4 bytes uninitialized/unset
-> data which seems not reasonable?
->
->  From IP code logic, it will read full 8 bytes of data no matter how many data
-> actually to be transfered which is strange.
+>> Do you think we could keep the current solution firstly and updated la=
+ter
+>> if needed?
+>=20
+> No :-)
+>=20
+> I would like to have all data bytes to be written at startup.
 
-Yes.
+Me, too. As this happens only once during ifconfig up it should not hurt
+performance, either send an incremental or new patch. I'll sort it out.
 
->
-> For sending data over 4 bytes, since the Message RAM content will be filled
-> with the real data to be transfered so there's no such issue.
+Marc
 
-E.g. think about the transfer of a CAN FD frame with 32 byte.
-When you only fill up content until 28 byte the last four bytes still remain 
-uninitialized.
-
-Did you try this 28 byte use-case with an uninitialized TX message RAM ?
-
-cansend can0 123##1001122334566778899AABBCCDDEEFF001122334566778899AABB
-
-To me it looks too risky when we only initialize the first 8 byte.
-
->
->> ---
->>
->> Then the code should memset() the entire TX FIFO element - and not
->> only the 8 data bytes we are addressing now.
->>
->
-> Our IC guy told me the issue only happened on transferring a data size
-> of less than 4 bytes and my test also proved that.
-
-'less than'?
-
-So you might try to use 26 bytes too:
-
-cansend can0 123##1001122334566778899AABBCCDDEEFF001122334566778899
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> So i'm not sure memset() the entire TX FIFO element is neccesary...
+--9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-It's no big deal - so we should be defensive here.
-And memset() is not working as Marc pointed out in another mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-So we would need to loop with
+iQIcBAEBAgAGBQJUW23YAAoJECte4hHFiupUGm0QAKl7VeBNmfSqjliLbRciZxAR
+5YgLyXQd9rwTO1TpVs7WX6f3YjiNFBL0Gp+p++LTK6cIF9EHUE8PRvBUt3dsItRf
+aYjLq/u/hkamWr3WSwT3evUpZYlgGHlVtJ7XJoJxaQG/yQulLNKSRl2PpMHumO8n
+v8C4QwZQcq+YjLNyAt/m/ruIRWRefeOkFDxOQi8M6us5rIsLmeKpcLMY/7BzCRZb
+jdC5fW6AM7CyA3bZfZmi7P/FcnySEUg3mwUSiTo4IkJLNxo7M1Yb4eYwc8cIUg+o
+1I8shs7DAhCghCOY0nBH7Oa/7DBwrdw25kQyPb9WWnG5U+lC6dK78lc4DbaCgutp
+t18DqWy017sQTYuaSMeapl8hA/170UAU65kUoZlAIukoNgaZ3LriY1xnN82vdlof
+Q7k7dVvaXp5YbQabd46a5YmFEg0GqGg7Ai+qHzitP0kwBZwl6zMY3xa/N/AwBc6d
+EWHmnJhQur5RTpv6DtLhO45kRZv9wEO63TdWb0jwqXeOH6GomBeErJAlimPH389S
+iqukVFUqtSK2g3Mmj1Ssg6BeLYeci49TP+BWurDZ9FQCHp2EqvaE4QXUM4S8olm7
+OXj0PGqB+oXVSeQMSpnW3AxTzR7UXQFOVhaG5LYLmbJFsZkzJ9rrB+0ocdXWzcBf
++UUkRM8G1ctwBpL9tI3Q
+=nFch
+-----END PGP SIGNATURE-----
 
-	m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i), 0x0);
-
->
-> Do you think we could keep the current solution firstly and updated later
-> if needed?
-
-No :-)
-
-I would like to have all data bytes to be written at startup.
-
-Regards,
-Oliver
-
+--9UrCQKUT0KoLh6C24V8S3x7dSjBiFOSJN--
