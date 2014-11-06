@@ -1,80 +1,50 @@
 From: David Jander <david@protonic.nl>
-Subject: [PATCH 05/14] can: rx-fifo: Add can_rx_fifo_reset() function
-Date: Thu,  6 Nov 2014 09:34:04 +0100
-Message-ID: <1415262853-22907-6-git-send-email-david@protonic.nl>
+Subject: [PATCH 10/14] can: flexcan: add documentation about mailbox organizaiton
+Date: Thu,  6 Nov 2014 09:34:09 +0100
+Message-ID: <1415262853-22907-11-git-send-email-david@protonic.nl>
 References: <1415262853-22907-1-git-send-email-david@protonic.nl>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:26397 "EHLO
+Received: from protonic.xs4all.nl ([83.163.252.89]:26404 "EHLO
 	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751788AbaKFIeH (ORCPT
+	with ESMTP id S1751870AbaKFIeH (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 03:34:07 -0500
 In-Reply-To: <1415262853-22907-1-git-send-email-david@protonic.nl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>, David Jander <david@protonic.nl>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-This function needs to be called every time the CAN controller is reset
-and before interrupts are enabled. Otherwise the irq-offload loop gets
-out of sync. Detect this and WARN() to the user if he forgot.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Signed-off-by: David Jander <david@protonic.nl>
+This patch adds a short documentation snippet about the mailbox organization as
+it's regularly not correct in freescale's datasheets.
+
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c   | 21 +++++++++++++++++++--
- include/linux/can/dev.h |  1 +
- 2 files changed, 20 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 3e32ec3..186ce54 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -488,8 +488,18 @@ int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo)
- 		fifo->scan_high_first = true;
- 	}
- 
--	if (received)
--		napi_schedule(&fifo->napi);
-+	if (received) {
-+		can_rx_fifo_napi_schedule(fifo);
-+	} else {
-+		/*
-+		 * This should only happen if the CAN conroller was reset, but
-+		 * can_rx_fifo_reset() was not called. WARN() the user and try
-+		 * to recover. This may fail and the system may hang though.
-+		 */
-+		WARN(true, "%s: No messages found,"
-+			    " RX-FIFO out of sync?\n", __func__);
-+		can_rx_fifo_reset(fifo);
-+	}
- 
- 	return received;
- }
-@@ -507,6 +517,13 @@ void can_rx_fifo_napi_disable(struct can_rx_fifo *fifo)
- }
- EXPORT_SYMBOL_GPL(can_rx_fifo_napi_disable);
- 
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo)
-+{
-+	fifo->scan_high_first = false;
-+	fifo->active = fifo->mask_low | fifo->mask_high;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_reset);
-+
- void can_rx_fifo_del(struct can_rx_fifo *fifo)
- {
- 	kfree(fifo->ring);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 66b0228..334626c 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -145,6 +145,7 @@ int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo);
- int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo);
- void can_rx_fifo_napi_enable(struct can_rx_fifo *fifo);
- void can_rx_fifo_napi_disable(struct can_rx_fifo *fifo);
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo);
- void can_rx_fifo_del(struct can_rx_fifo *fifo);
- 
- struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 172065c..2e70a27 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -230,6 +230,16 @@ struct flexcan_regs {
+ 	u32 rxfir;		/* 0x4c */
+ 	u32 _reserved3[12];	/* 0x50 */
+ 	struct flexcan_mb cantxfg[64];	/* 0x80 */
++	/* FIFO-mode:
++	 *			MB
++	 * 0x080...0x08f	0	RX message buffer
++	 * 0x090...0x0df	1-5	reserverd
++	 * 0x0e0...0x0ff	6-7	8 entry ID table
++	 *				(mx25, mx28, mx35, mx53)
++	 * 0x0e0...0x2df	6-7..37	8..128 entry ID table
++	 *			  	size conf'ed via ctrl2::RFFN
++	 *				(mx6, vf610)
++	 */
+ 	u32 _reserved4[408];
+ 	u32 mecr;		/* 0xae0 */
+ 	u32 erriar;		/* 0xae4 */
 -- 
 1.9.1
 
