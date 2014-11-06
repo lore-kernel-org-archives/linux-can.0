@@ -1,121 +1,126 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
- 3/3] can: m_can: workaround for transmit data less than 4 bytes
-Date: Thu, 06 Nov 2014 10:00:34 +0100
-Message-ID: <545B38B2.6000003@pengutronix.de>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH 11/15] can: rx-fifo: Add support for can state tracking
+ and error polling
+Date: Thu, 6 Nov 2014 12:07:59 +0100
+Message-ID: <20141106120759.74750d72@archvile>
+References: <1412956020-21489-1-git-send-email-david@protonic.nl>
+	<1412956020-21489-12-git-send-email-david@protonic.nl>
+	<545765D8.7090906@pengutronix.de>
+	<20141103135135.10fd4c6f@archvile>
+	<54577C03.7010609@pengutronix.de>
+	<20141103140921.4ffd55e7@archvile>
+	<5457822B.5090200@pengutronix.de>
+	<20141105181612.569be441@archvile>
+	<545B4B67.80300@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="1LnNlr9sPCIoB1VBDMCBUCqODasEWf3fD"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38529 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751330AbaKFKsZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 05:48:25 -0500
-In-Reply-To: <545B1D71.4000408@hartkopp.net>
+Received: from protonic.xs4all.nl ([83.163.252.89]:26791 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751051AbaKFLHY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 06:07:24 -0500
+In-Reply-To: <545B4B67.80300@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Dong Aisheng <b29396@freescale.com>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1LnNlr9sPCIoB1VBDMCBUCqODasEWf3fD
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, 06 Nov 2014 11:20:23 +0100
+Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 
-On 11/06/2014 08:04 AM, Oliver Hartkopp wrote:
-> On 06.11.2014 02:57, Dong Aisheng wrote:
->> On Wed, Nov 05, 2014 at 07:15:10PM +0100, Oliver Hartkopp wrote:
->=20
->>> The Message RAM is usually equipped with a parity or ECC functionalit=
-y.
->>> But RAM cells suffer a hardware reset and can therefore hold
->>> arbitrary content at startup - including parity and/or ECC bits.
->>>
->>> So when you write only the CAN ID and the first four bytes the last
->>> four bytes remain untouched. Then the M_CAN starts to read in 32bit
->>> words from the start of the Tx Message element. So it is very likely
->>> to trigger the message RAM error when reading the uninitialized
->>> 32bit word from the last four bytes.
->>>
->>> Finally it turns out that an initial writing (with any kind of data)
->>> to the entire message RAM is mandatory to create valid parity/ECC
->>> checksums.
->>>
->>> That's it.
->>>
->>
->> Thanks for sharing this information.
->> Does it mean this issue is related to the nature of Message RAM and is=
+> On 11/05/2014 06:16 PM, David Jander wrote:
+> > On Mon, 03 Nov 2014 14:24:59 +0100
+> > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > 
+> >> On 11/03/2014 02:09 PM, David Jander wrote:
+> >>> On Mon, 03 Nov 2014 13:58:43 +0100
+> >>> Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> >>>
+> >>>> On 11/03/2014 01:51 PM, David Jander wrote:
+> >>>>>> On 10/10/2014 05:46 PM, David Jander wrote:
+> >>>>>>> The interrupt handler should store the error flags if needed and call
+> >>>>>>> can_rx_fifo_irq_error() if there was an error flag set. This will
+> >>>>>>> trigger a napi-poll that will call poll_can_state() and
+> >>>>>>> poll_bus_error() callbacks. Those should handle can state machine and
+> >>>>>>> send error frames as needed.
+> >>>>>>>
+> >>>>>>> Signed-off-by: David Jander <david@protonic.nl>
+> >>>>>>> ---
+> >>>>>>>  drivers/net/can/dev.c   | 23 ++++++++++++++++++++---
+> >>>>>>>  include/linux/can/dev.h |  9 +++++++++
+> >>>>>>>  2 files changed, 29 insertions(+), 3 deletions(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> >>>>>>> index fc35d28..dac7579 100644
+> >>>>>>> --- a/drivers/net/can/dev.c
+> >>>>>>> +++ b/drivers/net/can/dev.c
+> >>>>>>> @@ -352,6 +352,9 @@ static int can_rx_fifo_napi_poll(struct
+> >>>>>>> napi_struct *napi, int quota) unsigned int tail;
+> >>>>>>>  
+> >>>>>>>  restart_poll:
+> >>>>>>> +	if (work_done < quota)
+> >>>>>>> +		work_done += fifo->poll_can_state(fifo);
+> >>>>>>> +
+> >>>>>>
+> >>>>>> Do we need two callbacks in the poll-loop? I think one should be
+> >>>>>> enough. The driver can call as many non-rx related functions as
+> >>>>>> needed then. E.g. state change, bus error handling, tx-completion
+> >>>>>> handling, etc...
+> >>>>>
+> >>>>> Ok. I split it into two handlers, because I saw most drivers doing
+> >>>>> first state-handling then message reception and last error handling...
+> >>>>> in this particular order. If that order is not important, we can use
+> >>>>> one poll() function for both state- and error-handling.
+> >>>>> In that case... should the poll() handler be called _before_ or _after_
+> >>>>> handling the mailboxes?
+> >>>>
+> >>>> Following the general rule zero-one-infinity ("Allow none of foo, one of
+> >>>> foo, or any number of foo" [1]) one callback should be fine. As we are
+> >>>> optimizing for not loosing RX CAN frames I tend to say it should come
+> >>>> after rx.
+> >>>
+> >>> Hahaha, ok, I got it :)
+> >>> Any idea on how to call this function? Just "poll" seems a little bit
+> >>> under-documented...
+> >>
+> >> Yes, what about extra_poll, poll_extra?
+> > 
+> > Oops. I just realized this isn't so easy... nor is this really a
+> > zero-one-infinity case. On top of that the solution will get quite ugly
+> > too:
+> > 
+> > poll_can_state() and poll_bus_error() have two distinct functions and
+> > _both_ can generate a (error-) CAN frame. If I consolidate this into just
+> > one handler, that handler could potentially generate 0, 1 or 2 CAN frames,
+> > so I'd be forced to introduce an extra parameter to keep track of NAPI
+> > quota inside the driver callback! This seems quite ugly to me, don't you
+> > think?
+> 
+> What about:
+>     work_done += fifo->poll_error(fifo, quota - work_done);
 
->> supposed to exist on all M_CAN IP versions?
->=20
-> From what I know from the 3.1.x revision there's no change regarding
-> IR.BRU and IR.BEC - so I would assume this to stay on all M_CAN IP
-> revisions.
->=20
-> But after some sleep I wonder if this patch [3/3] would need an update =
-too.
->=20
-> Writing to the TX message RAM is obviously no workaround but a valid an=
-d
-> needed initialization process.
->=20
-> I would tend to make this patch:
->=20
-> ---
->=20
-> can: m_can: add missing TX message RAM initialization
->=20
-> The M_CAN message RAM is usually equipped with a parity or ECC
-> functionality.
-> But RAM cells suffer a hardware reset and can therefore hold arbitrary
-> content at startup - including parity and/or ECC bits.
->=20
-> To prevent the M_CAN controller detecting checksum errors when reading
-> potentially uninitialized TX message RAM content to transmit CAN frames=
+That would produce extra code like the following in flexcan.c:
 
-> the TX message RAM has to be written with (any kind of) initial data.
->=20
-> ---
->=20
-> Then the code should memset() the entire TX FIFO element - and not only=
+static unsigned int flexcan_poll_extra(struct can_rx_fifo *fifo, quota)
+{
+	unsigned int ret;
 
-> the 8 data bytes we are addressing now.
+	ret = flexcan_poll_state(fifo);
+	if (ret < quota)
+		ret += flexcan_poll_bus_err(fifo);
 
-No literal memset() as this is iomem
+	return ret;
+}
 
-Marc
+... which is quite ugly IMHO.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+I just posted a new version, and I did not include this change yet. If you
+still prefer to do it with just one handler (although I think they have two
+distinct and defined functions), I will change it in the next version.
 
+Best regards,
 
---1LnNlr9sPCIoB1VBDMCBUCqODasEWf3fD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUWziyAAoJECte4hHFiupU8+MP/icuevFzr0fogxmg75RpZY/j
-6x+cXI7N3rpPRtIGfXE3WtwiExSyPyhMOqxbgaLvcWMr5VtmhpW0rCLPbAqkZbC9
-PpKmPqrj8l+D16/iD7P5hay2EBjJa6u9VjFDiKBu8mfv3wdh+MrvbjyaSD4NnSoh
-pbsIyn+9DEviUSVyhYLuk/iXdktFg9+VAlOHVKbaDdz0JVXNKeNJ1lmeJQJOQK/n
-XaNrVxJAk6b/2w34/dS5xptwfZgWiF3EkOzuXpK+we2GfRivEmXPa4X+II1oBTt3
-JWoktkuAHyetdyBc/T6kSmfB0grJVaAjuKfAUtRoKQCp4kk9lHb8JWi+uUOjp5zm
-6LH1x7QG1rxXr3+XGWTZt9C7hXSRqxnAij7/9chm66tXsZKX6iqW8uC5yEWwh0nH
-uPOOqh1PUogFh/4HPh7i+4JHERBvBK++6DnHDA28rRGpiRuElDEYqjlRdzXToB5Q
-1Vfbj2Dx4Lg0UZt8EVprAMeyH0DDda9maPeDwGp+YVzpx7wy0vaxd0CbHcZzAnht
-Jv3Oveqib7VzVB6610FB/STWSv8Fq4WAqY0Le6BfDmoEjtNbyigi+pZ2g5cf5KNG
-jIZzpphKMsRabxg9+3tWrLNHsxMvhwNwTHDeMuLD1SFPgtXtRqN7qY5AnXu/ThVU
-f333fH96ycymvEll/NaH
-=EZ+5
------END PGP SIGNATURE-----
-
---1LnNlr9sPCIoB1VBDMCBUCqODasEWf3fD--
+-- 
+David Jander
+Protonic Holland.
