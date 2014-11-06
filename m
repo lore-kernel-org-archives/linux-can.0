@@ -1,125 +1,95 @@
-From: Stefano Babic <sbabic@denx.de>
-Subject: Re: [PATCH v5 2/2] CAN: CAN driver to support multiple CAN bus on
- SPI interface
-Date: Thu, 06 Nov 2014 17:13:01 +0100
-Message-ID: <545B9E0D.5020907@denx.de>
-References: <1406565510-10783-1-git-send-email-sbabic@denx.de> <1406565510-10783-3-git-send-email-sbabic@denx.de> <545A230A.4020107@pengutronix.de>
+From: David Jander <david@protonic.nl>
+Subject: Re: [PATCH 02/14] can: rx-fifo: Increase MB size limit from 32 to
+ 64
+Date: Thu, 6 Nov 2014 17:20:52 +0100
+Message-ID: <20141106172052.6299c1d1@archvile>
+References: <1415262853-22907-1-git-send-email-david@protonic.nl>
+	<1415262853-22907-3-git-send-email-david@protonic.nl>
+	<545B3457.9030207@pengutronix.de>
+	<20141106170330.54b6ed7e@archvile>
+	<545B9C3E.1010002@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:52030 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750963AbaKFQNI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 11:13:08 -0500
-In-Reply-To: <545A230A.4020107@pengutronix.de>
+Received: from protonic.xs4all.nl ([83.163.252.89]:27694 "EHLO
+	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751156AbaKFQUQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 11:20:16 -0500
+In-Reply-To: <545B9C3E.1010002@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stefano Babic <sbabic@denx.de>, linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-Hi Marc,
+On Thu, 06 Nov 2014 17:05:18 +0100
+Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 
-On 05/11/2014 14:15, Marc Kleine-Budde wrote:
-> On 07/28/2014 06:38 PM, Stefano Babic wrote:
->> This driver implements a simple protocol
->> to transfer CAN messages to and from an external
->> microcontroller via SPI interface.
->> Multiple busses can be tranfered on the same SPI channel.
->>
->> It was tested on a i.MX35 connected to a Freescale's
->> HCS12 16-bit controller with 5 CAN busses.
->>
->> Signed-off-by: Stefano Babic <sbabic@denx.de>
+> On 11/06/2014 05:03 PM, David Jander wrote:
+> > On Thu, 06 Nov 2014 09:41:59 +0100
+> > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > 
+> >> On 11/06/2014 09:34 AM, David Jander wrote:
+> >>> Signed-off-by: David Jander <david@protonic.nl>
+> >>> ---
+> >>>  drivers/net/can/dev.c   | 24 ++++++++++++------------
+> >>>  include/linux/can/dev.h | 12 ++++++------
+> >>>  2 files changed, 18 insertions(+), 18 deletions(-)
+> >>>
+> >>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> >>> index c1e53e9..930b9f4 100644
+> >>> --- a/drivers/net/can/dev.c
+> >>> +++ b/drivers/net/can/dev.c
+> >>> @@ -289,20 +289,20 @@ static unsigned int can_rx_fifo_inc(struct
+> >>> can_rx_fifo *fifo, unsigned int *val) return (*val)--;
+> >>>  }
+> >>>  
+> >>> -static u32 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
+> >>> +static u64 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
+> >>>  {
+> >>>  	if (fifo->inc)
+> >>> -		return ~0U >> (32 + fifo->low_first - fifo->high_first)
+> >>> << fifo->low_first;
+> >>> +		return ~0LLU >> (64 + fifo->low_first -
+> >>> fifo->high_first) << fifo->low_first; else
+> >>> -		return ~0U >> (32 - fifo->low_first + fifo->high_first)
+> >>> << (fifo->high_first + 1);
+> >>> +		return ~0LLU >> (64 - fifo->low_first +
+> >>> fifo->high_first) << (fifo->high_first + 1);
+> >>
+> >> Yesterday I stumbled over GENMASK_ULL
+> >> http://lxr.free-electrons.com/source/include/linux/bitops.h#L22
+> >> Does it make sense to use it here?
+> > 
+> > Looks like its exactly what is needed here.... nice.
+> > 
+> > Btw, there is a subtle bug in the line you linked to:
+> > 
+> >> #define GENMASK_ULL(h, l)       (((U64_C(1) << ((h) - (l) + 1)) - 1) <<
+> >> (l))
+> > 
+> > The _ULL in the name of the macro seems to hint to "unsigned long long",
+> > while the implementation seems to assume that it means U64_C. This is
+> > obviously wrong, although for most platforms that are currently capable of
+> > running Linux, those are probably equivalent...
 > 
-> No line by line review, but some fundamental comments and questions:
-> 
+> #define U64_C(x) x ## ULL
 
-Fine.
+This line:
 
-> Can you please use a consistent indention scheme for struct and enums, I
-> favour a single space against aligning with tab, as it ony fits 95% of
-> the time and breaks during upgrades.
+http://lxr.free-electrons.com/source/include/asm-generic/int-ll64.h#L4
 
-ok - but let see if I well understood. I confess I align always with
-tab, using the rule:
+...seems to indicate, that it may not always be the case :-)
+AFAIK, C99 specifies that "long long" should at _least_ have 64 bit length,
+but says nothing about when it may be larger.
+OTOH, I have yet to find a machine/compiler combination that defines "long
+long" as more than 64bit... at least not running Linux.
+A correct definition should be trivial though:
 
-struct something {
-<tab>.....<tab>/* comment if any */
+#define GENMASK_ULL(h, l)       (((1ULL << ((h) - (l) + 1)) - 1) << (l))
 
-Because this is largely rule in kernel. You mean:
-
-struct something {
-<spaces>....<spaces> /*comment if any */
-
-but this is reported as warning by checkpatch as :
-WARNING: please, no spaces at the start of a line
-
-I see only (or mainly) <tab> for structs/enum in kernel. Can you better
-explain what are you meaning ? Thanks !
-
-
-> 
-> Please only use u16, u32 and friends where the size of the register is
-> important, use plain int, unsinged int otherwise.
-> 
-
-ok
-
-> I'm not sure of fiddling with the GPIO which you requested as an
-> interrupt is a good idea. This is probably not available on all platforms.
-
-I see in this way: SPI is a master/slave protocol and there is no
-standard way for the slave to send an event when it needs a transfer.
-Not only, the microcontroller is very simple and what it can generally
-do is to assert or to release a line - this can be done by all controllers.
-
-The same way to operate is done by several touchscreen driver.
-Communication runs on the SPI/I2C bus, a GPIO is used to generate an
-interrupt. My driver makes exactly the same, no new invention.
-
-> 
-> Why do you have two functions calculating the checksum? Have you checked
-> if the kernel offers you a library for this?
-
-I have checked inside lib/, but I see only the functions for computing
-the checksum on a UDP header. But it looks very strange for me to call
-some ip_* function inside the driver code, because the drivers has
-nothing to do with IP. Anyway these functions sum only all bytes
-together - a very simple checksum.
-
-> 
-> Can you explain me the endianess, I don't get why you need
-> format_frame_output() and format_frame_input() and while your structs
-> that go over the wire have no specific endianess (i.e. no __be32 in the
-> struct msg_*).
-
-On the SPI bus, data are big endian. This is defined in the
-documentation of the protocol.
-All structs in the driver are defined without endianess and the messages
-are converted before and after each transfer on the bus.
-
-> 
-> Have you thought about using threaded interrupts? Or even better make
-> use of the asynchronous SPI framework?
-
-Yes, I did, but I have to revert back.
-
-The main issue is that I have to reduce the delay between the slave has
-asserted the IRQ line and the SPI frame is put on the bus. In fact, the
-slave controller has very limited way to store incoming CAN packets, and
-if the Master does not react very soon, packets are lost.
-
-I see that moving to the async framework, the delay before the frame was
-put on the bus was not acceptable. The current design has given the best
-results, with a kernel thread dealing the SPI transfer and a work queue
-to process the received messages.
-
-Stefano
+Best regards,
 
 -- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+David Jander
+Protonic Holland.
