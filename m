@@ -1,114 +1,92 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
- 3/3] can: m_can: workaround for transmit data less than 4 bytes
-Date: Thu, 6 Nov 2014 16:09:44 +0800
-Message-ID: <20141106080940.GA22964@shlinux1.ap.freescale.net>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com>
- <1415193393-30023-3-git-send-email-b29396@freescale.com>
- <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net>
- <20141106015716.GB7642@shlinux1.ap.freescale.net>
- <545B1D71.4000408@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 02/14] can: rx-fifo: Increase MB size limit from 32 to
+ 64
+Date: Thu, 06 Nov 2014 09:41:59 +0100
+Message-ID: <545B3457.9030207@pengutronix.de>
+References: <1415262853-22907-1-git-send-email-david@protonic.nl> <1415262853-22907-3-git-send-email-david@protonic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="kPO54VUD92tm9Td0NUTCgfvnqIhr5FWC7"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1bon0135.outbound.protection.outlook.com ([157.56.111.135]:36967
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751021AbaKFIjw (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 6 Nov 2014 03:39:52 -0500
-Content-Disposition: inline
-In-Reply-To: <545B1D71.4000408@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38522 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751062AbaKFKsW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Nov 2014 05:48:22 -0500
+In-Reply-To: <1415262853-22907-3-git-send-email-david@protonic.nl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: David Jander <david@protonic.nl>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 
-On Thu, Nov 06, 2014 at 08:04:17AM +0100, Oliver Hartkopp wrote:
-> On 06.11.2014 02:57, Dong Aisheng wrote:
-> >On Wed, Nov 05, 2014 at 07:15:10PM +0100, Oliver Hartkopp wrote:
-> 
-> >>The Message RAM is usually equipped with a parity or ECC functionality.
-> >>But RAM cells suffer a hardware reset and can therefore hold
-> >>arbitrary content at startup - including parity and/or ECC bits.
-> >>
-> >>So when you write only the CAN ID and the first four bytes the last
-> >>four bytes remain untouched. Then the M_CAN starts to read in 32bit
-> >>words from the start of the Tx Message element. So it is very likely
-> >>to trigger the message RAM error when reading the uninitialized
-> >>32bit word from the last four bytes.
-> >>
-> >>Finally it turns out that an initial writing (with any kind of data)
-> >>to the entire message RAM is mandatory to create valid parity/ECC
-> >>checksums.
-> >>
-> >>That's it.
-> >>
-> >
-> >Thanks for sharing this information.
-> >Does it mean this issue is related to the nature of Message RAM and is
-> >supposed to exist on all M_CAN IP versions?
-> 
-> From what I know from the 3.1.x revision there's no change regarding
-> IR.BRU and IR.BEC - so I would assume this to stay on all M_CAN IP
-> revisions.
-> 
-> But after some sleep I wonder if this patch [3/3] would need an update too.
-> 
-> Writing to the TX message RAM is obviously no workaround but a valid
-> and needed initialization process.
-> 
-> I would tend to make this patch:
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kPO54VUD92tm9Td0NUTCgfvnqIhr5FWC7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 11/06/2014 09:34 AM, David Jander wrote:
+> Signed-off-by: David Jander <david@protonic.nl>
 > ---
-> 
-> can: m_can: add missing TX message RAM initialization
-> 
-> The M_CAN message RAM is usually equipped with a parity or ECC functionality.
-> But RAM cells suffer a hardware reset and can therefore hold
-> arbitrary content at startup - including parity and/or ECC bits.
-> 
-> To prevent the M_CAN controller detecting checksum errors when
-> reading potentially uninitialized TX message RAM content to transmit
-> CAN frames the TX message RAM has to be written with (any kind of)
-> initial data.
-> 
+>  drivers/net/can/dev.c   | 24 ++++++++++++------------
+>  include/linux/can/dev.h | 12 ++++++------
+>  2 files changed, 18 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index c1e53e9..930b9f4 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -289,20 +289,20 @@ static unsigned int can_rx_fifo_inc(struct can_rx=
+_fifo *fifo, unsigned int *val)
+>  		return (*val)--;
+>  }
+> =20
+> -static u32 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
+> +static u64 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
+>  {
+>  	if (fifo->inc)
+> -		return ~0U >> (32 + fifo->low_first - fifo->high_first) << fifo->low=
+_first;
+> +		return ~0LLU >> (64 + fifo->low_first - fifo->high_first) << fifo->l=
+ow_first;
+>  	else
+> -		return ~0U >> (32 - fifo->low_first + fifo->high_first) << (fifo->hi=
+gh_first + 1);
+> +		return ~0LLU >> (64 - fifo->low_first + fifo->high_first) << (fifo->=
+high_first + 1);
 
-The key point of the issue is that why M_CAN will read potentially uninitialized
-TX message RAM content which should not happen?
-e.g. for our case of the issue, if we sending a no data frame or a less
-than 4 bytes frame, why m_can will read extra 4 bytes uninitialized/unset
-data which seems not reasonable?
+Yesterday I stumbled over GENMASK_ULL
+http://lxr.free-electrons.com/source/include/linux/bitops.h#L22
+Does it make sense to use it here?
 
-From IP code logic, it will read full 8 bytes of data no matter how many data
-actually to be transfered which is strange.
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-For sending data over 4 bytes, since the Message RAM content will be filled
-with the real data to be transfered so there's no such issue.
 
-> ---
-> 
-> Then the code should memset() the entire TX FIFO element - and not
-> only the 8 data bytes we are addressing now.
-> 
+--kPO54VUD92tm9Td0NUTCgfvnqIhr5FWC7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Our IC guy told me the issue only happened on transferring a data size
-of less than 4 bytes and my test also proved that.
-So i'm not sure memset() the entire TX FIFO element is neccesary...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Do you think we could keep the current solution firstly and updated later
-if needed?
+iQIcBAEBAgAGBQJUWzRXAAoJECte4hHFiupUM/YP/3r7od7uIDd+cXt59A2uGZ90
+WkgNQLHNCdCiQvG8p+9GGjkzh7YlTpemL+JdvCl+RqkwAMqbKx7GeBVaz0aS8yUV
+LyAb6djiGfFeBpJXUpnjI3xERHu+yxhiufeLU1ZYG80swvG5X/8hKYfXEHDjAL2V
+8ctCnjcMjSNkHkdqffi5J/VmrbkhpRyzI6Pu0a1lY1vUl0vZad//GvGduf3w5dhF
+eqW9H5mYOVqx+c1yB3IPFtVgBPZ54fPV+KOJCskz6L/ghZOVSS2YOA12NzCIgJYP
+a74d4jpbfbyNAfKSB8+7Cx/oh8shygFAvo1JPZ8ZCfxp1bF9cHtgBZEx3DGPnXNB
+QSuyk3agwCz6usDjYCXnv6QNhr93a3y0Dne/A6MOCgKXmjLCIQjJmEyjacwx7X9X
+/NwEc1Ulxg6qn5MJofu3ZZCXbeDfXLi8Pgrd9mRjjhBykjtJ9Z/S+G0wcJVe2V0/
+znpklvirrfGTr/HgmfqM4UnIsj5lY9B02ky2HALyy31HyxRrOkrop7n8Lxge1eeF
+cxtRgCdYJ29SYYn9eyhcoJ5btaGd3QV6RqtQ9PVEQv6zZYpG8IkBuNPYuRiFERiC
+kODFIEdQmyxh3mEF4fOLexi+E0ZkMFqTaCFIFhtfTAVx+K42PzYvtF9XbXR6j1F/
+q7g8HqOGlk8JLV3pljHF
+=+4j9
+-----END PGP SIGNATURE-----
 
-> Maybe it makes sense to send the entire updated patch set (3) again ...
-> 
-> [1/3] can: add can_is_canfd_skb() API
-> [2/3] can: m_can: update to support CAN FD features
-> [3/3] can: m_can: add missing message RAM initialization
-> 
-> Are you ok with that?
-> 
-> Regards,
-> Oliver
-> 
-
-Regards
-Dong Aisheng
+--kPO54VUD92tm9Td0NUTCgfvnqIhr5FWC7--
