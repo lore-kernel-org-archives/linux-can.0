@@ -1,58 +1,50 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: M_CAN message RAM initialization AppNote  - was: Re: [PATCH V3
- 3/3] can: m_can: workaround for transmit data less than 4 bytes
-Date: Fri, 7 Nov 2014 16:40:52 +0800
-Message-ID: <20141107084051.GB23086@shlinux1.ap.freescale.net>
-References: <1415193393-30023-1-git-send-email-b29396@freescale.com>
- <1415193393-30023-3-git-send-email-b29396@freescale.com>
- <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net>
- <20141106015716.GB7642@shlinux1.ap.freescale.net>
- <545B1D71.4000408@hartkopp.net>
- <20141106080940.GA22964@shlinux1.ap.freescale.net>
- <545B6AB4.70003@hartkopp.net> <545B6DD8.6010906@pengutronix.de>
+Subject: [PATCH V4 1/3] can: add can_is_canfd_skb() API
+Date: Fri, 7 Nov 2014 16:45:12 +0800
+Message-ID: <1415349914-9145-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <545B6DD8.6010906@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2on0146.outbound.protection.outlook.com ([65.55.169.146]:40908
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751209AbaKGJvo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 7 Nov 2014 04:51:44 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, b29396@freescale.com, linux-arm-kernel@lists.infradead.org
 
-On Thu, Nov 06, 2014 at 01:47:20PM +0100, Marc Kleine-Budde wrote:
-> On 11/06/2014 01:33 PM, Oliver Hartkopp wrote:
-> >> So i'm not sure memset() the entire TX FIFO element is neccesary...
-> > 
-> > It's no big deal - so we should be defensive here.
-> > And memset() is not working as Marc pointed out in another mail.
-> > 
-> > So we would need to loop with
-> > 
-> >     m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i), 0x0);
-> > 
-> >>
-> >> Do you think we could keep the current solution firstly and updated later
-> >> if needed?
-> > 
-> > No :-)
-> > 
-> > I would like to have all data bytes to be written at startup.
-> 
-> Me, too. As this happens only once during ifconfig up it should not hurt
-> performance, either send an incremental or new patch. I'll sort it out.
-> 
+The CAN device drivers can use it to check if the frame to send is on
+CAN FD mode or normal CAN mode.
 
-I will send a new patch for this.
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+---
+ChangesLog:
+ * v3->v4: add comments and change prototype a bit
+ * v1->v2: change to skb->len == CANFD_MTU;
+---
+ include/linux/can/dev.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Regards
-Dong Aisheng
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 6992afc..b37ea95 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -99,6 +99,12 @@ inval_skb:
+ 	return 1;
+ }
+ 
++static inline bool can_is_canfd_skb(const struct sk_buff *skb)
++{
++	/* the CAN specific type of skb is identified by its data length */
++	return skb->len == CANFD_MTU;
++}
++
+ /* get data length from can_dlc with sanitized can_dlc */
+ u8 can_dlc2len(u8 can_dlc);
+ 
+-- 
+1.9.1
 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
