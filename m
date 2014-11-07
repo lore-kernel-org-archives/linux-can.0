@@ -1,92 +1,77 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [PATCH V4 3/3] can: m_can: add missing message RAM
- initialization
-Date: Fri, 7 Nov 2014 18:21:35 +0800
-Message-ID: <20141107102130.GA7309@shlinux1.ap.freescale.net>
-References: <1415349914-9145-1-git-send-email-b29396@freescale.com>
- <1415349914-9145-3-git-send-email-b29396@freescale.com>
- <545C9F4E.3040901@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH V4 3/3] can: m_can: add missing message RAM initialization
+Date: Fri, 07 Nov 2014 12:53:10 +0100
+Message-ID: <545CB2A6.1010703@hartkopp.net>
+References: <1415349914-9145-1-git-send-email-b29396@freescale.com> <1415349914-9145-3-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0105.outbound.protection.outlook.com ([207.46.100.105]:24344
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751262AbaKGKvl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 7 Nov 2014 05:51:41 -0500
-Content-Disposition: inline
-In-Reply-To: <545C9F4E.3040901@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:37645 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751897AbaKGLxl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Nov 2014 06:53:41 -0500
+In-Reply-To: <1415349914-9145-3-git-send-email-b29396@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
+To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On Fri, Nov 07, 2014 at 11:30:38AM +0100, Marc Kleine-Budde wrote:
-> On 11/07/2014 09:45 AM, Dong Aisheng wrote:
-> > The M_CAN message RAM is usually equipped with a parity or ECC functionality.
-> > But RAM cells suffer a hardware reset and can therefore hold arbitrary
-> > content at startup - including parity and/or ECC bits.
-> > 
-> > To prevent the M_CAN controller detecting checksum errors when reading
-> > potentially uninitialized TX message RAM content to transmit CAN
-> > frames the TX message RAM has to be written with (any kind of) initial
-> > data.
-> > 
-> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> > ---
-> > ChangeLog:
-> > v3-v4:
-> >  * initialize the entire Message RAM in use instead of only 8 bytes
-> >    since this is a valid and needed initialization process.
-> >    Patch title also changed.
-> > ---
-> >  drivers/net/can/m_can/m_can.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> > index eee1533..de742d0 100644
-> > --- a/drivers/net/can/m_can/m_can.c
-> > +++ b/drivers/net/can/m_can/m_can.c
-> > @@ -1114,7 +1114,7 @@ static int m_can_of_parse_mram(struct platform_device *pdev,
-> >  	struct resource *res;
-> >  	void __iomem *addr;
-> >  	u32 out_val[MRAM_CFG_LEN];
-> > -	int ret;
-> > +	int i, start, end, ret;
-> >  
-> >  	/* message ram could be shared */
-> >  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "message_ram");
-> > @@ -1165,6 +1165,15 @@ static int m_can_of_parse_mram(struct platform_device *pdev,
-> >  		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
-> >  		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
-> >  
-> > +	/* initialize the entire Message RAM in use to avoid possible
-> > +	 * ECC/parity checksum errors when reading an uninitialized buffer
-> > +	 */
-> > +	start = priv->mcfg[MRAM_SIDF].off;
-> > +	end = priv->mcfg[MRAM_TXB].off +
-> > +		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
-> > +	for (i = start; i < end; i += 4)
-> > +		writel(0x0, priv->mram_base + i);
-> 
-> Can we access the mram without turning on the clock?
-> 
+Thanks!
 
-Yes, we can.
-Since it's CPU access, it seems it does not depend on M_CAN clocks.
-What i see from M_CAN subsystem block diagram of MX6SX,
-it requires CPU clock which should always be enabled.
+Hopefully we can manage to push the patch series via can/master ;-)
 
-Regards
-Dong Aisheng
+Regards,
+Oliver
 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
-
-
+On 07.11.2014 09:45, Dong Aisheng wrote:
+> The M_CAN message RAM is usually equipped with a parity or ECC functionality.
+> But RAM cells suffer a hardware reset and can therefore hold arbitrary
+> content at startup - including parity and/or ECC bits.
+>
+> To prevent the M_CAN controller detecting checksum errors when reading
+> potentially uninitialized TX message RAM content to transmit CAN
+> frames the TX message RAM has to be written with (any kind of) initial
+> data.
+>
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> ---
+> ChangeLog:
+> v3-v4:
+>   * initialize the entire Message RAM in use instead of only 8 bytes
+>     since this is a valid and needed initialization process.
+>     Patch title also changed.
+> ---
+>   drivers/net/can/m_can/m_can.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index eee1533..de742d0 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1114,7 +1114,7 @@ static int m_can_of_parse_mram(struct platform_device *pdev,
+>   	struct resource *res;
+>   	void __iomem *addr;
+>   	u32 out_val[MRAM_CFG_LEN];
+> -	int ret;
+> +	int i, start, end, ret;
+>
+>   	/* message ram could be shared */
+>   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "message_ram");
+> @@ -1165,6 +1165,15 @@ static int m_can_of_parse_mram(struct platform_device *pdev,
+>   		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
+>   		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
+>
+> +	/* initialize the entire Message RAM in use to avoid possible
+> +	 * ECC/parity checksum errors when reading an uninitialized buffer
+> +	 */
+> +	start = priv->mcfg[MRAM_SIDF].off;
+> +	end = priv->mcfg[MRAM_TXB].off +
+> +		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
+> +	for (i = start; i < end; i += 4)
+> +		writel(0x0, priv->mram_base + i);
+> +
+>   	return 0;
+>   }
+>
+>
