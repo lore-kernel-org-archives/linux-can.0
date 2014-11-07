@@ -1,59 +1,28 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH v3 00/10] ARM: dts: TI: Add CAN support
-Date: Fri, 7 Nov 2014 14:44:28 +0200
-Message-ID: <545CBEAC.4050601@ti.com>
-References: <1415098134-26405-1-git-send-email-rogerq@ti.com> <20141104155502.GS31454@atomide.com> <545A04B4.1010508@ti.com> <20141105184953.GX31454@atomide.com>
+From: Paul Lever <svjeorgia@gmail.com>
+Subject: candump error flags
+Date: Fri, 7 Nov 2014 09:57:41 -0400
+Message-ID: <CAHuoermNC-Cc79pK_qxkS4t+SjU=JkKtbxN9oZoBZRDUEnvYmA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:42934 "EHLO
-	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751299AbaKGMou (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Nov 2014 07:44:50 -0500
-In-Reply-To: <20141105184953.GX31454@atomide.com>
+Received: from mail-yh0-f42.google.com ([209.85.213.42]:38249 "EHLO
+	mail-yh0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752558AbaKGN5m (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Nov 2014 08:57:42 -0500
+Received: by mail-yh0-f42.google.com with SMTP id b6so2451673yha.29
+        for <linux-can@vger.kernel.org>; Fri, 07 Nov 2014 05:57:41 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On 11/05/2014 08:49 PM, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [141105 03:08]:
->> On 11/04/2014 05:55 PM, Tony Lindgren wrote:
->>> * Roger Quadros <rogerq@ti.com> [141104 02:50]:
->>>> Hi Tony,
->>>>
->>>> These patches add CAN support for am33xx, am43xx and dra7 platforms.
->>>> They must go in together with CAN driver RAMINIT Syscon support [1].
->>>
->>> Can you make this series not depend on [1] for most part without
->>> breaking existing functionality?
->>
->> I just checked that we haven't enabled DCAN on any of the boards
->> so we don't risk breaking anything even if these 2 series don't go in
->> together. 
-> 
-> OK 
->  
->>> Then we can do a single follow-up patch to enable things after [1]
->>> has been merged.
->>>
->>> That would remove a dependency between driver changes and .dts changes.
->>
->> Apart from patches 1, 3 and 8, that add the control module nodes the rest
->> pretty much depend on the driver DT binding changes.
->>
->> I can send them separately if needed.
-> 
-> Well sounds like I can already apply the .dts changes without
-> affecting anything until the driver changes are merged.
-> 
-> Let me know if that's the case and I'll apply these assuming
-> the binding is OK and not going to change.
+I'm trying to use the candump -e and -d options to catch errors. I
+know that frames are being dropped, as I can see missing packets in
+known sequences, yet I never see anything printed from candump
+indicating any errors or dropped packets. Is there additional steps
+needed to get output from -e/-d options? This is on a Beaglebone Black
+platform.
+My cmd line is:
+candump -t a -e -d -r 16000 can0 > /media/testdata.raw&
 
-There is one change in the binding so I'll have to post a v4.
-
-cheers,
--roger
-
-
+Regards
+Paul
