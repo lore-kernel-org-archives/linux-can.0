@@ -1,70 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: candump error flags
-Date: Fri, 07 Nov 2014 15:30:13 +0100
-Message-ID: <545CD775.1030200@pengutronix.de>
-References: <CAHuoermNC-Cc79pK_qxkS4t+SjU=JkKtbxN9oZoBZRDUEnvYmA@mail.gmail.com>
+From: Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v4 0/8] net: can: Use syscon regmap for TI specific RAMINIT register
+Date: Fri, 7 Nov 2014 16:49:14 +0200
+Message-ID: <1415371762-29885-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="4TmqkAdnOiBfVIGPS0Dpjj0GBPO8WTeJQ"
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34822 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751579AbaKGOaZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Nov 2014 09:30:25 -0500
-In-Reply-To: <CAHuoermNC-Cc79pK_qxkS4t+SjU=JkKtbxN9oZoBZRDUEnvYmA@mail.gmail.com>
+Received: from bear.ext.ti.com ([192.94.94.41]:52466 "EHLO bear.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751880AbaKGOuE (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 7 Nov 2014 09:50:04 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Lever <svjeorgia@gmail.com>, linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, Roger Quadros <rogerq@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4TmqkAdnOiBfVIGPS0Dpjj0GBPO8WTeJQ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 11/07/2014 02:57 PM, Paul Lever wrote:
-> I'm trying to use the candump -e and -d options to catch errors. I
-> know that frames are being dropped, as I can see missing packets in
-> known sequences, yet I never see anything printed from candump
-> indicating any errors or dropped packets. Is there additional steps
-> needed to get output from -e/-d options? This is on a Beaglebone Black
-> platform.
-> My cmd line is:
-> candump -t a -e -d -r 16000 can0 > /media/testdata.raw&
+Some hardware (TI am43xx) has a buggy RAMINIT DONE mechanism and it might
+not always set the DONE bit. This will result in a lockup in c_can_hw_raminit_wait_ti(),
+so patch 1 adds a timeout mechanism there.
 
-Make sure you're running a recent new kernel (v3.15 or better) as a lot
-of fixes went into the driver.
+There is a non compliancy within TI platforms with respect to the
+layout of the RAMINIT register. The patches 3 and 4 address this issue
+and make a flexible but standard way of defining the RAMINIT hardware register
+layout in the device tree. The RAMINIT register is accessed using the syscon
+regmap framework.
 
-Marc
+Patches available at
+git@github.com:rogerq/linux.git	[for-v3.19/can]
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Patches are tested on am335x-evm, am437x-gp-evm and dra7-evm.
+Board support files to allow CAN testing on these boards are available at
+git@github.com:rogerq/linux.git	[for-v3.19/omap-dts-dcan]
 
+Changelog:
 
---4TmqkAdnOiBfVIGPS0Dpjj0GBPO8WTeJQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+v4:
+- updated "syscon-raminit" binding to contain the CAN instance id. We no longer
+use different compatible ids for multiple CAN IPs on the same SoC. The instance
+ID is used instead to locate the start/stop bit positions from driver data.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+v3:
+- allow driver data to be more than just CAN_ID
+- RAMINIT register data moved to driver data instead of device tree file.
 
-iQIcBAEBAgAGBQJUXNd1AAoJECte4hHFiupUgaIQAKIvT2rDiEORcKqSO8TK5Xn5
-1Vtfi93H2oNnPjOR9ABwOAO8dzRm0aWndfVp7JKGcvYaoY3A3xr4aEn6XKt0vpRt
-8VxZGkbpDvJoubEnwQ+Iry7un3RTAp/LoM8uVAXem2Sgg55jAZ2tkp22gkGdbbQS
-Xi9JkXJW09plCVB4j6TInpcx/mNFqUCqx37Hy/hby4JuZdLJJYbVycwnf4BM1ZMk
-RvDan48TmbdSXuIaRZ6FXqH+aI8lBeYNPF9GMuv9VVOEw354l3KNEpW6bZ5Ulujz
-HM7lq91M18QEshi3Tv3wzX8Wa4AHgQmrYLNbWBwbS0d6Wn5wWgonQ5Sqn7zruUQW
-7psRuUFb2PNegIPMv4wCMybS7oolTGmcHW3GI92Almh4JF5RTkcXglntAljcThyx
-zkgJvDpx6KXJDttmsYxVWxQpnYAGlOpt7pUsUcKMBu2FtZj6fVa277159c0gLsAt
-QLsW5FfVRThMaupjgzNGdAuBBiEuedoSwPTqAXSyfIUNBte2i9X1Jd83ZgfcU7mf
-pYi4AShpCW9ZKStYAJMKCOsB7HJf0F+VcuJ24WqB6yJ9tiwLSX3cJLwN4r+s28k8
-/3waBIqTXCHahw8V3F7qo6ogVoxNdqYUesMl6vwvGre9lc5D6iKRhFZBmezMh6R5
-lmOH3kkbERxux3tiRnGV
-=ucC8
------END PGP SIGNATURE-----
+v2:
+- added "ti" vendor prefix to TI specific raminit properties.
+- split DTS changes into a separate series
 
---4TmqkAdnOiBfVIGPS0Dpjj0GBPO8WTeJQ--
+cheers,
+-roger
+
+---
+Roger Quadros (8):
+  net: can: c_can: Add timeout to c_can_hw_raminit_ti()
+  net: can: c_can: Introduce c_can_driver_data structure
+  net: can: c_can: Add RAMINIT register information to driver data
+  net: can: c_can: Add syscon/regmap RAMINIT mechanism
+  net: can: c_can: Add support for START pulse in RAMINIT sequence
+  net: can: c_can: Disable pins when CAN interface is down
+  net: can: c_can: Add support for TI DRA7 DCAN
+  net: can: c_can: Add support for TI am3352 DCAN
+
+ .../devicetree/bindings/net/can/c_can.txt          |   4 +
+ drivers/net/can/c_can/c_can.c                      |  20 ++
+ drivers/net/can/c_can/c_can.h                      |  23 ++-
+ drivers/net/can/c_can/c_can_platform.c             | 217 +++++++++++++++------
+ 4 files changed, 203 insertions(+), 61 deletions(-)
+
+-- 
+1.8.3.2
+
