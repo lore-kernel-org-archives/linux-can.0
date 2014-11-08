@@ -1,61 +1,76 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: candump error flags
-Date: Sat, 08 Nov 2014 17:44:22 +0100
-Message-ID: <545E4866.1070003@hartkopp.net>
-References: <CAHuoermNC-Cc79pK_qxkS4t+SjU=JkKtbxN9oZoBZRDUEnvYmA@mail.gmail.com>	<545CD775.1030200@pengutronix.de>	<545CDD93.1080600@hartkopp.net>	<CAHuoernFKhHJZKTYDc+qpbhwkrx6cWAr7vreH=Sa=FoinVG6dw@mail.gmail.com>	<545E301F.7090708@hartkopp.net>	<CAHuoerkEB==OqEPasu7xWZXxFw8_AQFRNRMAx5qbbC09cff2pA@mail.gmail.com>	<545E36F2.5040005@hartkopp.net> <CAHuoerk0S9FxsoQiCm-gc5ohvAGqjVnVpSJ2ev1jD8e31-5_Dw@mail.gmail.com>
+Date: Sat, 08 Nov 2014 17:46:08 +0100
+Message-ID: <545E48D0.3020409@pengutronix.de>
+References: <CAHuoermNC-Cc79pK_qxkS4t+SjU=JkKtbxN9oZoBZRDUEnvYmA@mail.gmail.com>	<545CD775.1030200@pengutronix.de>	<545CDD93.1080600@hartkopp.net>	<CAHuoernFKhHJZKTYDc+qpbhwkrx6cWAr7vreH=Sa=FoinVG6dw@mail.gmail.com>	<545E301F.7090708@hartkopp.net> <CAHuoerkEB==OqEPasu7xWZXxFw8_AQFRNRMAx5qbbC09cff2pA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="iMdFXPWdSrjce0IhecwvV1okIgxUjxFi0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:17946 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753218AbaKHQo0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Nov 2014 11:44:26 -0500
-In-Reply-To: <CAHuoerk0S9FxsoQiCm-gc5ohvAGqjVnVpSJ2ev1jD8e31-5_Dw@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42596 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753861AbaKHQqo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 8 Nov 2014 11:46:44 -0500
+In-Reply-To: <CAHuoerkEB==OqEPasu7xWZXxFw8_AQFRNRMAx5qbbC09cff2pA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Lever <svjeorgia@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Paul Lever <svjeorgia@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-On 11/08/2014 04:34 PM, Paul Lever wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iMdFXPWdSrjce0IhecwvV1okIgxUjxFi0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
->> In this case the -d option should work.
->> But just for the records: The -d option detects drops from the network layer
->> to the application which opened the socket (here: candump).
+On 11/08/2014 04:14 PM, Paul Lever wrote:
+>>>> ps. additionally "candump -r 16000 -l can0 &" would be better :-)
+>>> I need the timestamps.
 >>
->> So it basically detects problems when your user space application is not fast
->> enough to read and handle the CAN frames. It does NOT detect whether the CAN
->> driver dropped any frames.
-> 
-> 
-> Thanks for the info. Is there an easy way to detect driver level
-> packet drops or overruns?The CANBUS is at 250,000 bitrate.
+>> The logfile format contains a unix timestamp (usec resolution) for eve=
+ry CAN
+>> frame (and error message).
+> Correct if I use the -t option. I was just commenting on the
+> suggestion not to use the option. Not sure why it was suggested.
+>=20
+>=20
+>> I'll better wait for the kernel version until answering based on assum=
+ptions.
+> The kernel is
+>  Image Name:   Linux-3.12.9-00111-gcad6b9e
 
-When the CAN driver supports it, there's a bit in the error message
+As I said, make sue you use at least v3.15.
 
-	CAN_ERR_CRTL_RX_OVERFLOW
+Marc
 
-for that.
-
-See:
-http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/include/uapi/linux/can/error.h?h=linux-3.17.y#n63
-
-Looking for it in the tree:
-http://lxr.free-electrons.com/ident?i=CAN_ERR_CRTL_RX_OVERFLOW
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-It is used in c_can_handle_lost_msg_obj()
+--iMdFXPWdSrjce0IhecwvV1okIgxUjxFi0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-http://lxr.free-electrons.com/source/drivers/net/can/c_can/c_can.c#L348
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-So it should also increase rx_errors and rx_over_errors.
+iQIcBAEBAgAGBQJUXkjQAAoJECte4hHFiupUZOUP/jWY14YkSeoLt0UioWGaCpF4
+pR010IpPN8IEvG09ZqCnzPYwbBH6KfDzVVaZnlkwr2UUO/9k5k8WLRLtS/u5RMRw
+nFUMDLR1Ikmf2cHOu8nHin+axrQnWQbYbmStWGeKXQMZVTXe+h7fxTG4ykyqZM18
+0U3fD/kxHrSFNF7yC/DuF/mZ5plRxti5LD8Lskg3IWS92hO0+p2Bgu+uKb1jbL28
+IyjT55B+SQyGiKRT9r4CjwuwTNrKnrwjk+c4NFGASChuMQieadEBlR1tmEupLPjH
+Bb4kWMysHcxo1KhX+EDFDPcNlMJB5P3mneRNxVh33iCRpo9oJKX8IwkO3rxdlqgN
+e8/GNpvABJi7BTtaRD08Ox23q0mC6SDNANrqGtqVfXQqAzW1CYMwmZShMetPvwWv
+7UmnGTFdnMxOhHM5diMWlYrE+g8qzJgpB/JSrJD4dkSYSHFT8IsUlvcJZvAPRH0o
+v8A+uRndL1sE1HeHDp7ZAtrw3lhE2LmoCmcgbDBjVLM3Pl7sPELPala4CFLX8Rte
+hCWWHvHfx2faMMqPef+qIKcBvSIrFtwgy7S/LXUaeE4+rtddomYmqQ7tDgoBTXQC
+0uSxYM1YP7zg0316BZiKxk6O5ktkDnb56j2zWy0MKJ892w54B/500DgjDukrasSK
+iPE49K/W5SUbdOM7Hnba
+=aLlr
+-----END PGP SIGNATURE-----
 
-I'm not familiar with c_can - but can you see these statistics increasing the
-values in your setup?
-
-ip -stats link show can0
-
-should display them.
-
-Regards,
-Oliver
+--iMdFXPWdSrjce0IhecwvV1okIgxUjxFi0--
