@@ -1,152 +1,77 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v5 6/8] net: can: c_can: Disable pins when CAN interface is
- down
-Date: Wed, 12 Nov 2014 16:16:48 +0200
-Message-ID: <54636BD0.2010208@ti.com>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-7-git-send-email-rogerq@ti.com>
+From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Subject: [PATCH] can: Fix bug in suspend/resume
+Date: Thu, 13 Nov 2014 12:28:11 +0530
+Message-ID: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1415371762-29885-7-git-send-email-rogerq@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, Roger Quadros <rogerq@ti.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org
+Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>, linux-arm-kernel@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-DRA7 CAN IP suffers from a problem which causes it to be prevented
-from fully turning OFF (i.e. stuck in transition) if the module was
-disabled while there was traffic on the CAN_RX line.
+When accessing the priv structure use container_of instead of dev_get_drvdata.
+Enable the clocks in the suspend before accessing the registers of the CAN.
 
-To work around this issue we select the SLEEP pin state by default
-on probe and use the DEFAULT pin state on CAN up and back to the
-SLEEP pin state on CAN down.
-
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
 ---
- drivers/net/can/c_can/c_can.c          | 21 +++++++++++++++++++++
- drivers/net/can/c_can/c_can.h          |  1 +
- drivers/net/can/c_can/c_can_platform.c | 20 ++++++++++++++++++++
- 3 files changed, 42 insertions(+)
+ drivers/net/can/xilinx_can.c |   20 ++++++++++++++++++--
+ 1 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 8e78bb4..a950eea 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -35,6 +35,7 @@
- #include <linux/list.h>
- #include <linux/io.h>
- #include <linux/pm_runtime.h>
-+#include <linux/pinctrl/consumer.h>
- 
- #include <linux/can.h>
- #include <linux/can/dev.h>
-@@ -587,6 +588,21 @@ static int c_can_chip_config(struct net_device *dev)
- 	return c_can_set_bittiming(dev);
- }
- 
-+/*
-+ * Selects the pinctrl state specified in the name.
-+ */
-+static void c_can_pinctrl_select_state(struct c_can_priv *priv,
-+				      const char *name)
-+{
-+	if (!IS_ERR(priv->pinctrl)) {
-+		struct pinctrl_state *s;
-+
-+		s = pinctrl_lookup_state(priv->pinctrl, name);
-+		if (!IS_ERR(s))
-+			pinctrl_select_state(priv->pinctrl, s);
-+	}
-+}
-+
- static int c_can_start(struct net_device *dev)
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 5e8b560..63ef645 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -972,15 +972,30 @@ static const struct net_device_ops xcan_netdev_ops = {
+  */
+ static int __maybe_unused xcan_suspend(struct device *dev)
  {
- 	struct c_can_priv *priv = netdev_priv(dev);
-@@ -603,6 +619,8 @@ static int c_can_start(struct net_device *dev)
+-	struct platform_device *pdev = dev_get_drvdata(dev);
++	struct platform_device *pdev = container_of(dev,
++			struct platform_device, dev);
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
++	int ret;
  
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
-+	/* activate pins */
-+	c_can_pinctrl_select_state(priv, PINCTRL_STATE_DEFAULT);
- 	return 0;
- }
- 
-@@ -611,6 +629,9 @@ static void c_can_stop(struct net_device *dev)
- 	struct c_can_priv *priv = netdev_priv(dev);
- 
- 	c_can_irq_control(priv, false);
-+
-+	/* deactivate pins */
-+	c_can_pinctrl_select_state(priv, PINCTRL_STATE_SLEEP);
- 	priv->can.state = CAN_STATE_STOPPED;
- }
- 
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index c6715ca..3cedf48 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -210,6 +210,7 @@ struct c_can_priv {
- 	u32 comm_rcv_high;
- 	u32 rxmasked;
- 	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
-+	struct pinctrl *pinctrl;
- };
- 
- struct net_device *alloc_c_can_dev(void);
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index b838c6b..71b9063 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -34,6 +34,7 @@
- #include <linux/of_device.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
-+#include <linux/pinctrl/consumer.h>
- 
- #include <linux/can/dev.h>
- 
-@@ -230,6 +231,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	struct clk *clk;
- 	const struct c_can_driver_data *drvdata;
- 	struct device_node *np = pdev->dev.of_node;
-+	struct pinctrl *pinctrl;
- 
- 	match = of_match_device(c_can_of_table, &pdev->dev);
- 	if (match) {
-@@ -241,6 +243,23 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		return -ENODEV;
+ 	if (netif_running(ndev)) {
+ 		netif_stop_queue(ndev);
+ 		netif_device_detach(ndev);
  	}
  
-+	pinctrl = devm_pinctrl_get(&pdev->dev);
-+	if (!IS_ERR(pinctrl)) {
-+		struct pinctrl_state *s;
-+
-+		/* Deactivate pins to prevent DRA7 DCAN IP from being
-+		 * stuck in transition when module is disabled.
-+		 * Pins are activated in c_can_start() and deactivated
-+		 * in c_can_stop()
-+		 */
-+		s = pinctrl_lookup_state(pinctrl, PINCTRL_STATE_SLEEP);
-+		if (!IS_ERR(s))
-+			pinctrl_select_state(pinctrl, s);
-+	} else {
-+		dev_warn(&pdev->dev,
-+			 "failed to get pinctrl\n");
++	ret = clk_prepare_enable(priv->can_clk);
++	if (ret) {
++		dev_err(dev, "unable to enable device clock\n");
++		return ret;
 +	}
 +
- 	/* get the appropriate clk */
- 	clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(clk)) {
-@@ -270,6 +289,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	}
++	ret = clk_prepare_enable(priv->bus_clk);
++	if (ret) {
++		dev_err(dev, "unable to enable bus clock\n");
++		clk_disable_unprepare(priv->can_clk);
++		return ret;
++	}
++
+ 	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
+ 	priv->can.state = CAN_STATE_SLEEPING;
  
- 	priv = netdev_priv(dev);
-+	priv->pinctrl = pinctrl;
- 
- 	switch (drvdata->id) {
- 	case BOSCH_C_CAN:
+@@ -999,7 +1014,8 @@ static int __maybe_unused xcan_suspend(struct device *dev)
+  */
+ static int __maybe_unused xcan_resume(struct device *dev)
+ {
+-	struct platform_device *pdev = dev_get_drvdata(dev);
++	struct platform_device *pdev = container_of(dev,
++			struct platform_device, dev);
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
+ 	int ret;
 -- 
-1.8.3.2
-
-
+1.7.4
