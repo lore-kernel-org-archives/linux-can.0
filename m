@@ -1,120 +1,98 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V4 2/3] can: m_can: update to support CAN FD features
-Date: Thu, 13 Nov 2014 11:10:10 +0100
-Message-ID: <54648382.9080105@pengutronix.de>
-References: <1415349914-9145-1-git-send-email-b29396@freescale.com> <1415349914-9145-2-git-send-email-b29396@freescale.com>
+Subject: Re: [PATCH] can: Fix bug in suspend/resume
+Date: Thu, 13 Nov 2014 11:15:53 +0100
+Message-ID: <546484D9.4030005@pengutronix.de>
+References: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="ULtU4q3d12GRug08IDPtHFJ79otnoqwxR"
+ boundary="uqLsaDjP18VDNT8tK35mx9f0IL97xFwaK"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60217 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55750 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932164AbaKMKKU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 05:10:20 -0500
-In-Reply-To: <1415349914-9145-2-git-send-email-b29396@freescale.com>
+	with ESMTP id S932164AbaKMKQK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 05:16:10 -0500
+In-Reply-To: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>, wg@grandegger.com, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ULtU4q3d12GRug08IDPtHFJ79otnoqwxR
+--uqLsaDjP18VDNT8tK35mx9f0IL97xFwaK
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/07/2014 09:45 AM, Dong Aisheng wrote:
-> Bosch M_CAN is CAN FD capable device. This patch implements the CAN
-> FD features include up to 64 bytes payload and bitrate switch function.=
+On 11/13/2014 07:58 AM, Kedareswara rao Appana wrote:
+> When accessing the priv structure use container_of instead of dev_get_d=
+rvdata.
 
-> 1) Change the Rx FIFO and Tx Buffer to 64 bytes for support CAN FD
->    up to 64 bytes payload. It's backward compatible with old 8 bytes
->    normal CAN frame.
-> 2) Allocate can frame or canfd frame based on EDL bit
-> 3) Bitrate Switch function is disabled by default and will be enabled
->    according to CANFD_BRS bit in cf->flags.
+Why?
+
+> Enable the clocks in the suspend before accessing the registers of the =
+CAN.
 >=20
-> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-
-[...]
-
-> -static void m_can_read_fifo(const struct net_device *dev, struct can_f=
-rame *cf,
-> -			    u32 rxfs)
-> +static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+>  drivers/net/can/xilinx_can.c |   20 ++++++++++++++++++--
+>  1 files changed, 18 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.=
+c
+> index 5e8b560..63ef645 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -972,15 +972,30 @@ static const struct net_device_ops xcan_netdev_op=
+s =3D {
+>   */
+>  static int __maybe_unused xcan_suspend(struct device *dev)
 >  {
-> +	struct net_device_stats *stats =3D &dev->stats;
->  	struct m_can_priv *priv =3D netdev_priv(dev);
-> -	u32 id, fgi;
-> +	struct canfd_frame *cf;
-> +	struct sk_buff *skb;
-> +	u32 id, fgi, dlc;
-> +	int i;
+> -	struct platform_device *pdev =3D dev_get_drvdata(dev);
+> +	struct platform_device *pdev =3D container_of(dev,
+> +			struct platform_device, dev);
+>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+> +	int ret;
 > =20
->  	/* calculate the fifo get index for where to read data */
->  	fgi =3D (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_OFF;
-> +	dlc =3D m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
-> +	if (dlc & RX_BUF_EDL)
-> +		skb =3D alloc_canfd_skb(dev, &cf);
-> +	else
-> +		skb =3D alloc_can_skb(dev, (struct can_frame **)&cf);
-> +	if (!skb) {
-> +		stats->rx_dropped++;
-> +		return;
-> +	}
-> +
->  	id =3D m_can_fifo_read(priv, fgi, M_CAN_FIFO_ID);
->  	if (id & RX_BUF_XTD)
->  		cf->can_id =3D (id & CAN_EFF_MASK) | CAN_EFF_FLAG;
->  	else
->  		cf->can_id =3D (id >> 18) & CAN_SFF_MASK;
-> =20
-> -	if (id & RX_BUF_RTR) {
-> +	if (id & RX_BUF_ESI) {
-> +		cf->flags |=3D CANFD_ESI;
-> +		netdev_dbg(dev, "ESI Error\n");
-> +	}
-> +
-> +	if (!(dlc & RX_BUF_EDL) && (id & RX_BUF_RTR)) {
->  		cf->can_id |=3D CAN_RTR_FLAG;
-
-I just noticed, that you don't set the cf->dlc (or cf->len) in the RTR
-case. Please create a separate patch that fixes this problem.
-
->  	} else {
->  		id =3D m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
-> -		cf->can_dlc =3D get_can_dlc((id >> 16) & 0x0F);
-> -		*(u32 *)(cf->data + 0) =3D m_can_fifo_read(priv, fgi,
-> -							 M_CAN_FIFO_DATA(0));
-> -		*(u32 *)(cf->data + 4) =3D m_can_fifo_read(priv, fgi,
-> -							 M_CAN_FIFO_DATA(1));
-> +		if (dlc & RX_BUF_EDL)
-> +			cf->len =3D can_dlc2len((id >> 16) & 0x0F);
-> +		else
-> +			cf->len =3D get_can_dlc((id >> 16) & 0x0F);
-> +
-> +		if (id & RX_BUF_BRS)
-> +			cf->flags |=3D CANFD_BRS;
-> +
-> +		for (i =3D 0; i < cf->len; i +=3D 4)
-> +			*(u32 *)(cf->data + i) =3D
-> +				m_can_fifo_read(priv, fgi,
-> +						M_CAN_FIFO_DATA(i / 4));
+>  	if (netif_running(ndev)) {
+>  		netif_stop_queue(ndev);
+>  		netif_device_detach(ndev);
 >  	}
 > =20
->  	/* acknowledge rx fifo 0 */
->  	m_can_write(priv, M_CAN_RXF0A, fgi);
+> +	ret =3D clk_prepare_enable(priv->can_clk);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable device clock\n");
+> +		return ret;
+> +	}
 > +
-> +	stats->rx_packets++;
-> +	stats->rx_bytes +=3D cf->len;
-> +
-> +	netif_receive_skb(skb);
->  }
+> +	ret =3D clk_prepare_enable(priv->bus_clk);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable bus clock\n");
+> +		clk_disable_unprepare(priv->can_clk);
+> +		return ret;
+> +	}
 
-Regards,
+Now you have clock imbalance. Per suspend/resume cycle the clocks are
+enabled twice, but disabled only once.
+
+> +
+>  	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
+>  	priv->can.state =3D CAN_STATE_SLEEPING;
+> =20
+> @@ -999,7 +1014,8 @@ static int __maybe_unused xcan_suspend(struct devi=
+ce *dev)
+>   */
+>  static int __maybe_unused xcan_resume(struct device *dev)
+>  {
+> -	struct platform_device *pdev =3D dev_get_drvdata(dev);
+> +	struct platform_device *pdev =3D container_of(dev,
+> +			struct platform_device, dev);
+>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>  	int ret;
+>=20
+
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -122,7 +100,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---ULtU4q3d12GRug08IDPtHFJ79otnoqwxR
+--uqLsaDjP18VDNT8tK35mx9f0IL97xFwaK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -130,19 +108,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUZIOCAAoJECte4hHFiupU2fAP+wR+RDkSe6THhucHvpa/EQQe
-WMgZ858tnE5OH/G7Mzntza1jeo0v4lasTfyGZqRJt8RLhcIKS2ZOXKdJKWZT1JpH
-lw7fgkZiUb4zQXFwrUpOz0PlMxR5CENMoJiUCKowxra9ik6nxuderRYkRcTALStP
-9TlgTimFGiZopfLJAMFyx4afyYe6LSINUUig3riUMBNNuHZZBZX/xdOgPGtzy7Qw
-7l8WTlQvYdlO3TaSc9cEm97zgYKnEkb8vJ+p38VzJLU1vOHrCWr4S16gvKcTwTnZ
-M8ycmBQdgQYc990obwMqhpoojybd7DFbPmQ5YuIRMU/acCV4Z/Fc1o75dePUXTMj
-kOy9Y89Tv0g5EvSyCXQZ/U8Fz0zWCJvptYBKkkh1D5OEhQ0oUlg/k1Gj0HgUM1DA
-jia9RUyp/LEyac7a4zrI6JpA8sIJZGTj/hEKmO04w0selJsufHF753RoDyZ6b1EN
-Kx7pcHjsr9SR0XhQG6vOO9PZ+1YhU554IxhQZWxhYG90Aytm/mEy/cMfAzB1nheg
-cjw2DbdYih/QtSbHxrwc+PfKiqI/GOzpwfS3LiZerMkXs/LvffuQl2snjWeAvfVk
-S+pVyy41+0H16Z00wLqDB9GIMbexsr7rMCxAlj4Fb3+tYhQGWze2Vvag4wOQHHwV
-j708Sv+FAHIkUrcMhXkl
-=qlhI
+iQIcBAEBAgAGBQJUZITZAAoJECte4hHFiupUgTYP/3DFIdl1XXBiCTcyHmjjDHvK
+QLXY1+am7O77NzvuMbjLYwNUc20/JGhwaOLeqs72+dC98+vZwOUu3ImgXEVXfqkJ
+w0ebpxJruM5OhiSYMkc8qHisbQl3GegMfp5kQuwWDJGNTZxU8Zt+tZepzCIx9Voe
+5SmE9/eZSJlS9cYyH0gM9R5QYeo8ro2AR71NvcG1tdT53nYW3bPxGwVMK7wUXkPO
+vfC+RFa+n16KdS/bVWOeZabmBaUzwOi3soX7PtqsKZibWhZdLyctUbUosT2mO8vC
+ICFcJR/v+huZljKoWcUsrKKAnv28WWXEZic0sSzW8hoeM2A4UrzFsl2rvFGX5I4u
+2I7rA3PqRYTG3CwUOFjh2T2FEMWQai8NyQUwnBqkDKH3hPKU34xsJ9OgTiGYmqVW
+njHpI1HFulNl0VxoqmGD22B3nlvU9nZULKNYocH9uVLWEFiwQVfa7UHA8Lzeb63P
+gKQVYIoRPnyBQcU46r2jUOj1Z/IW0xIdpMMytKyZMpmJF0POSuuuFFg/ycjeyV1O
+UKYv4UUxt/vCsZHbzD2B1V40ufEYxVU1a0d9oHoNwHYo4J/Pzfu+9IR87AjF5DMH
+Nk/Zmm6pW/z3/RKyBWBEE+NPha5wBpHFTMKAtyAgP2IZPx99r3YZgJqTnkpZ7iS6
+4+Ub1xiF4LcZ1JhV9m85
+=nlfw
 -----END PGP SIGNATURE-----
 
---ULtU4q3d12GRug08IDPtHFJ79otnoqwxR--
+--uqLsaDjP18VDNT8tK35mx9f0IL97xFwaK--
