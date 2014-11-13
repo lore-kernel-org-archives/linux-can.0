@@ -1,96 +1,73 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] can: Fix bug in suspend/resume
-Date: Thu, 13 Nov 2014 12:32:18 +0100
-Message-ID: <20141113123218.79850236@ipc1.ka-ro>
-References: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
-	<546484D9.4030005@pengutronix.de>
-	<54648BF4.60007@pengutronix.de>
-	<9455da2b86c74d5aafe9bf118edec7bb@BN1AFFO11FD045.protection.gbl>
+Date: Thu, 13 Nov 2014 13:03:22 +0100
+Message-ID: <54649E0A.7030607@pengutronix.de>
+References: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>	<546484D9.4030005@pengutronix.de>	<54648BF4.60007@pengutronix.de>	<9455da2b86c74d5aafe9bf118edec7bb@BN1AFFO11FD045.protection.gbl> <20141113123218.79850236@ipc1.ka-ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="4wE7Jg7KguPfsGsbBXRRgDfE747xg132x"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.karo-electronics.de ([81.173.242.67]:59640 "EHLO
-	mail.karo-electronics.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932525AbaKMLcm convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 06:32:42 -0500
-In-Reply-To: <9455da2b86c74d5aafe9bf118edec7bb@BN1AFFO11FD045.protection.gbl>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39854 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932329AbaKMMDj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 07:03:39 -0500
+In-Reply-To: <20141113123218.79850236@ipc1.ka-ro>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4wE7Jg7KguPfsGsbBXRRgDfE747xg132x
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Appana Durga Kedareswara Rao wrote:
-> Hi Marc,
+On 11/13/2014 12:32 PM, Lothar Wa=C3=9Fmann wrote:
+>>>>  static int __maybe_unused xcan_suspend(struct device *dev)  {
+>>>> -    struct platform_device *pdev =3D dev_get_drvdata(dev);
+>>>> +    struct platform_device *pdev =3D container_of(dev,
+>>>> +                    struct platform_device, dev);
+>>>>      struct net_device *ndev =3D platform_get_drvdata(pdev);
+>>>>      struct xcan_priv *priv =3D netdev_priv(ndev);
+>>
+> Why not simply:
+> 	struct net_device *ndev =3D dev_get_drvdata(dev);
 >=20
-> -----Original Message-----
-> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
-> Sent: Thursday, November 13, 2014 4:16 PM
-> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek; So=
-ren Brinkmann; grant.likely@linaro.org; robh+dt@kernel.org
-> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-kern=
-el@lists.infradead.org; linux-kernel@vger.kernel.org; devicetree@vger.k=
-ernel.org; Appana Durga Kedareswara Rao
-> Subject: Re: [PATCH] can: Fix bug in suspend/resume
->=20
-> On 11/13/2014 11:15 AM, Marc Kleine-Budde wrote:
-> > On 11/13/2014 07:58 AM, Kedareswara rao Appana wrote:
-> >> When accessing the priv structure use container_of instead of dev_=
-get_drvdata.
-> >
-> > Why?
->=20
-> The drvdata here is the struct net_device, not the platform device.
-> Please state this in the commit message.
->=20
-> If I understand the code correct, you can make use of the existing he=
-lper function to_platform_device():
->=20
-> http://lxr.free-electrons.com/source/include/linux/platform_device.h#=
-L42
->=20
-> Thanks for the suggestion.
->  Will use this macro(to_platform_device)  .
->=20
-> >
-> >> Enable the clocks in the suspend before accessing the registers of=
- the CAN.
-> >>
-> >> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
-> >> ---
-> >>  drivers/net/can/xilinx_can.c |   20 ++++++++++++++++++--
-> >>  1 files changed, 18 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/net/can/xilinx_can.c
-> >> b/drivers/net/can/xilinx_can.c index 5e8b560..63ef645 100644
-> >> --- a/drivers/net/can/xilinx_can.c
-> >> +++ b/drivers/net/can/xilinx_can.c
-> >> @@ -972,15 +972,30 @@ static const struct net_device_ops xcan_netd=
-ev_ops =3D {
-> >>   */
-> >>  static int __maybe_unused xcan_suspend(struct device *dev)  {
-> >> -    struct platform_device *pdev =3D dev_get_drvdata(dev);
-> >> +    struct platform_device *pdev =3D container_of(dev,
-> >> +                    struct platform_device, dev);
-> >>      struct net_device *ndev =3D platform_get_drvdata(pdev);
-> >>      struct xcan_priv *priv =3D netdev_priv(ndev);
->
-Why not simply:
-	struct net_device *ndev =3D dev_get_drvdata(dev);
+> There is no need for a struct platform_device* at all.
 
-There is no need for a struct platform_device* at all.
+ACK
 
+Marc
 
-Lothar Wa=C3=9Fmann
 --=20
-___________________________________________________________
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+--4wE7Jg7KguPfsGsbBXRRgDfE747xg132x
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUZJ4KAAoJECte4hHFiupU718P/jAARGmiFL2vp3iAHwiDcj4V
+e81t+DyNqBn2blQBvT61+XA6e8iAf9f5tsAzIyvAYMZiBi74b4S1cIl6AG3Re8Pq
+QyDNkngyEWkxG7W+PdxDY6KBcHXJMCRH4Y3G3jYjIdk95QFrH3t1b0G4/Sq8tKqP
+whI4hikmXzt2zG09Opc0D5zn/9Yv1PB1r+J0q0yM767F7FaI0lT2Bwwjb0b0tVbN
+d+QJcGnj1OMapHFiAUSwRc8VqMGqCpguDEwbMjJJutIgpp0dcSL4Gk8j6iUwo2yF
+MIqL2Rc1Hz5K5s3qJ7GJB5UU67SFkBwqUl4NgbNmdc7tOj2TmtsNtNHLGLBzqatC
+cQgVz5AdVH1QsfNg+BgCUEJBfDcoRygDofTpnGLMWleVZ4CWJN9MWxAQc75k8HC+
+E2eqs7vv2Gd0IJj/c1r7BvRK9BhlZXGa07YBSnbEGQ7706mk6fBw29MWvKOG5zmA
+F/UScHHsBuKCmzLTuYhfJviZw5e1UTc1LBB7LBy7wKBWcb28ZmR1WZ2oPDk4OK2p
+xusP7v6WeumzOzNLCpRGj2LCnrYht4ncV6+Jbu2cdFO8cdiszzCZDB8drlOI8sPC
+Iagmfra7+/bA7B4t9YO0AOcE1e7KlmbVdeBQ0zVTH2Pacd5Z6coAsHyvmy+O57Cq
+RRb5GEu/rOoc61v9T1SJ
+=G+o9
+-----END PGP SIGNATURE-----
+
+--4wE7Jg7KguPfsGsbBXRRgDfE747xg132x--
