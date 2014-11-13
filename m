@@ -1,237 +1,108 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH v4 4/8] net: can: c_can: Add syscon/regmap RAMINIT mechanism
-Date: Thu, 13 Nov 2014 15:07:44 +0200
-Message-ID: <5464AD20.3080005@ti.com>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-5-git-send-email-rogerq@ti.com> <5464A79F.1070304@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4 06/10] ARM: dts: am4372: Add DCAN nodes
+Date: Thu, 13 Nov 2014 15:07:52 +0100
+Message-ID: <5464BB38.7020402@pengutronix.de>
+References: <1415881371-4982-1-git-send-email-rogerq@ti.com> <1415881371-4982-7-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="BHJVNKOeO1HLWmKphmWEEG4pXlOBLssxE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:47668 "EHLO
-	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932832AbaKMNIH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 08:08:07 -0500
-In-Reply-To: <5464A79F.1070304@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50844 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932756AbaKMOIS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 09:08:18 -0500
+In-Reply-To: <1415881371-4982-7-git-send-email-rogerq@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Roger Quadros <rogerq@ti.com>, tony@atomide.com
+Cc: wg@grandegger.com, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
 
-On 11/13/2014 02:44 PM, Marc Kleine-Budde wrote:
-> On 11/07/2014 03:49 PM, Roger Quadros wrote:
->> Some TI SoCs like DRA7 have a RAMINIT register specification
->> different from the other AMxx SoCs and as expected by the
->> existing driver.
->>
->> To add more insanity, this register is shared with other
->> IPs like DSS, PCIe and PWM.
->>
->> Provides a more generic mechanism to specify the RAMINIT
->> register location and START/DONE bit position and use the
->> syscon/regmap framework to access the register.
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>  .../devicetree/bindings/net/can/c_can.txt          |   3 +
->>  drivers/net/can/c_can/c_can.h                      |  11 +-
->>  drivers/net/can/c_can/c_can_platform.c             | 112 ++++++++++++++-------
->>  3 files changed, 86 insertions(+), 40 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
->> index 8f1ae81..a3ca3ee 100644
->> --- a/Documentation/devicetree/bindings/net/can/c_can.txt
->> +++ b/Documentation/devicetree/bindings/net/can/c_can.txt
->> @@ -12,6 +12,9 @@ Required properties:
->>  Optional properties:
->>  - ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
->>  			  instance number
->> +- syscon-raminit	: Handle to system control region that contains the
->> +			  RAMINIT register, register offset to the RAMINIT
->> +			  register and the CAN instance number (0 offset).
->>  
->>  Note: "ti,hwmods" field is used to fetch the base address and irq
->>  resources from TI, omap hwmod data base during device registration.
->> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
->> index 3c305a1..0e17c7b 100644
->> --- a/drivers/net/can/c_can/c_can.h
->> +++ b/drivers/net/can/c_can/c_can.h
->> @@ -179,6 +179,14 @@ struct c_can_driver_data {
->>  	bool raminit_pulse;	/* If set, sets and clears START bit (pulse) */
->>  };
->>  
->> +/* Out of band RAMINIT register access via syscon regmap */
->> +struct c_can_raminit {
->> +	struct regmap *syscon;	/* for raminit ctrl. reg. access */
->> +	unsigned int reg;	/* register index within syscon */
->> +	u8 start_bit;
->> +	u8 done_bit;
->> +};
->> +
->>  /* c_can private data structure */
->>  struct c_can_priv {
->>  	struct can_priv can;	/* must be the first member */
->> @@ -196,8 +204,7 @@ struct c_can_priv {
->>  	const u16 *regs;
->>  	void *priv;		/* for board-specific data */
->>  	enum c_can_dev_id type;
->> -	u32 __iomem *raminit_ctrlreg;
->> -	int instance;
->> +	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
->>  	void (*raminit) (const struct c_can_priv *priv, bool enable);
->>  	u32 comm_rcv_high;
->>  	u32 rxmasked;
->> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
->> index 20deb67..3776483 100644
->> --- a/drivers/net/can/c_can/c_can_platform.c
->> +++ b/drivers/net/can/c_can/c_can_platform.c
->> @@ -32,14 +32,13 @@
->>  #include <linux/clk.h>
->>  #include <linux/of.h>
->>  #include <linux/of_device.h>
->> +#include <linux/mfd/syscon.h>
->> +#include <linux/regmap.h>
->>  
->>  #include <linux/can/dev.h>
->>  
->>  #include "c_can.h"
->>  
->> -#define CAN_RAMINIT_START_MASK(i)	(0x001 << (i))
->> -#define CAN_RAMINIT_DONE_MASK(i)	(0x100 << (i))
->> -#define CAN_RAMINIT_ALL_MASK(i)		(0x101 << (i))
->>  #define DCAN_RAM_INIT_BIT		(1 << 3)
->>  static DEFINE_SPINLOCK(raminit_lock);
->>  /*
->> @@ -72,47 +71,61 @@ static void c_can_plat_write_reg_aligned_to_32bit(const struct c_can_priv *priv,
->>  	writew(val, priv->base + 2 * priv->regs[index]);
->>  }
->>  
->> -static void c_can_hw_raminit_wait_ti(const struct c_can_priv *priv, u32 mask,
->> -				  u32 val)
->> +static void c_can_hw_raminit_wait_syscon(const struct c_can_priv *priv,
->> +					 u32 mask, u32 val)
->>  {
->>  	int timeout = 0;
->> +	const struct c_can_raminit *raminit = &priv->raminit_sys;
->> +	u32 ctrl;
->> +
->>  	/* We look only at the bits of our instance. */
->>  	val &= mask;
->> -	while ((readl(priv->raminit_ctrlreg) & mask) != val) {
->> +	do {
->>  		udelay(1);
->>  		timeout++;
->>  
->> +		regmap_read(raminit->syscon, raminit->reg, &ctrl);
->>  		if (timeout == 1000) {
->>  			dev_err(&priv->dev->dev, "%s: time out\n", __func__);
->>  			break;
->>  		}
->> -	}
->> +	} while ((ctrl & mask) != val);
->>  }
->>  
->> -static void c_can_hw_raminit_ti(const struct c_can_priv *priv, bool enable)
->> +static void c_can_hw_raminit_syscon(const struct c_can_priv *priv, bool enable)
->>  {
->> -	u32 mask = CAN_RAMINIT_ALL_MASK(priv->instance);
->> +	u32 mask;
->>  	u32 ctrl;
->> +	const struct c_can_raminit *raminit = &priv->raminit_sys;
->> +	u8 start_bit, done_bit;
->> +
->> +	start_bit = raminit->start_bit;
->> +	done_bit = raminit->done_bit;
->>  
->>  	spin_lock(&raminit_lock);
->>  
->> -	ctrl = readl(priv->raminit_ctrlreg);
->> +	mask = 1 << start_bit | 1 << done_bit;
->> +	regmap_read(raminit->syscon, raminit->reg, &ctrl);
->> +
->>  	/* We clear the done and start bit first. The start bit is
->>  	 * looking at the 0 -> transition, but is not self clearing;
->>  	 * And we clear the init done bit as well.
->> +	 * NOTE: DONE must be written with 1 to clear it.
->>  	 */
->> -	ctrl &= ~CAN_RAMINIT_START_MASK(priv->instance);
->> -	ctrl |= CAN_RAMINIT_DONE_MASK(priv->instance);
->> -	writel(ctrl, priv->raminit_ctrlreg);
->> -	ctrl &= ~CAN_RAMINIT_DONE_MASK(priv->instance);
->> -	c_can_hw_raminit_wait_ti(priv, mask, ctrl);
->> +	ctrl &= ~(1 << start_bit);
->> +	ctrl |= 1 << done_bit;
->> +	regmap_write(raminit->syscon, raminit->reg, ctrl);
->> +
->> +	ctrl &= ~(1 << done_bit);
->> +	c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
->>  
->>  	if (enable) {
->>  		/* Set start bit and wait for the done bit. */
->> -		ctrl |= CAN_RAMINIT_START_MASK(priv->instance);
->> -		writel(ctrl, priv->raminit_ctrlreg);
->> -		ctrl |= CAN_RAMINIT_DONE_MASK(priv->instance);
->> -		c_can_hw_raminit_wait_ti(priv, mask, ctrl);
->> +		ctrl |= 1 << start_bit;
->> +		regmap_write(raminit->syscon, raminit->reg, ctrl);
->> +
->> +		ctrl |= 1 << done_bit;
->> +		c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
->>  	}
->>  	spin_unlock(&raminit_lock);
->>  }
->> @@ -206,10 +219,11 @@ static int c_can_plat_probe(struct platform_device *pdev)
->>  	struct net_device *dev;
->>  	struct c_can_priv *priv;
->>  	const struct of_device_id *match;
->> -	struct resource *mem, *res;
->> +	struct resource *mem;
->>  	int irq;
->>  	struct clk *clk;
->>  	const struct c_can_driver_data *drvdata;
->> +	struct device_node *np = pdev->dev.of_node;
->>  
->>  	match = of_match_device(c_can_of_table, &pdev->dev);
->>  	if (match) {
->> @@ -278,27 +292,49 @@ static int c_can_plat_probe(struct platform_device *pdev)
->>  		priv->read_reg32 = d_can_plat_read_reg32;
->>  		priv->write_reg32 = d_can_plat_write_reg32;
->>  
->> -		if (pdev->dev.of_node)
->> -			priv->instance = of_alias_get_id(pdev->dev.of_node, "d_can");
->> -		else
->> -			priv->instance = pdev->id;
->> -
->> -		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> -		/* Not all D_CAN modules have a separate register for the D_CAN
->> -		 * RAM initialization. Use default RAM init bit in D_CAN module
->> -		 * if not specified in DT.
->> +		/* Check if we need custom RAMINIT via syscon. Mostly for TI
->> +		 * platforms. Only supported with DT boot.
->>  		 */
->> -		if (!res) {
->> +		if (np && of_property_read_bool(np, "syscon-raminit")) {
->> +			u32 id;
->> +			struct c_can_raminit *raminit = &priv->raminit_sys;
->> +
->> +			ret = -EINVAL;
->> +			raminit->syscon = syscon_regmap_lookup_by_phandle(np,
->> +									  "syscon-raminit");
-> 
-> You should return PTR_ERR() here, as it it might be -EPROBE_DEFER
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BHJVNKOeO1HLWmKphmWEEG4pXlOBLssxE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Good catch.
+On 11/13/2014 01:22 PM, Roger Quadros wrote:
+> The SoC contains 2 DCAN modules. Add them.
+>=20
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  arch/arm/boot/dts/am4372.dtsi | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.d=
+tsi
+> index 899c57c..12fb1db 100644
+> --- a/arch/arm/boot/dts/am4372.dtsi
+> +++ b/arch/arm/boot/dts/am4372.dtsi
+> @@ -901,6 +901,28 @@
+>  			compatible =3D "mmio-sram";
+>  			reg =3D <0x40300000 0x40000>; /* 256k */
+>  		};
+> +
+> +		dcan0: can@481cc000 {
+> +			compatible =3D "ti,am3352-d_can";
 
-> 
->> +			if (IS_ERR(raminit->syscon)) {
->> +				dev_err(&pdev->dev,
->> +					"couldn't get syscon regmap for RAMINIT\n");
->> +				goto exit_free_device;
->> +			}
-> 
-> ...and maybe remove this error message completely.
+You should add "ti,am4372-d_can" as first compatible here.
 
-OK.
+> +			ti,hwmods =3D "d_can0";
+> +			clocks =3D <&dcan0_fck>;
+> +			clock-names =3D "fck";
+> +			reg =3D <0x481cc000 0x2000>;
+> +			syscon-raminit =3D <&am43xx_control_module 0x644 0>;
+> +			interrupts =3D <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		dcan1: can@481d0000 {
+> +			compatible =3D "ti,am3352-d_can";
 
-cheers,
--roger
+Same here.
 
+> +			ti,hwmods =3D "d_can1";
+> +			clocks =3D <&dcan1_fck>;
+> +			clock-names =3D "fck";
+> +			reg =3D <0x481d0000 0x2000>;
+> +			syscon-raminit =3D <&am43xx_control_module 0x644 1>;
+> +			interrupts =3D <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+> +			status =3D "disabled";
+> +		};
+>  	};
+>  };
+> =20
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--BHJVNKOeO1HLWmKphmWEEG4pXlOBLssxE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUZLs4AAoJECte4hHFiupUla4QAIFE9OwX7qdb/K4WP788hh2V
+ZlDIrzwhaGHqkFxmfaqbzyZBm7pWNjnev3UfNPUotnJ8nOL3qWL6U76+5QWvX8TK
+koXa/RVhi+XbcDJ3WcsLLfMMu3VklxaOhCkvt+f0DzHkKqDYv13pfvGJsK9eJZpt
+GUzMzAFjFSFItT2yipfQZfyYjheT8MXxVMXob1585Toc1N3QX1vYzcwn/msqbVYH
+SO17Cng2W77W4LyYgk3bXE/gz9oWAqaC/nU3TCw4I/bigT47fzCvICyQvd8+MJcM
+E0SmHUa0K4Bgc7PsLuq48HshpFbqSK58lo7xgYTCFGnPNEt+gUyjh35CBI8a+WzS
+p+Ho6oy8Ryr0m6GdGIz3WHppxi20Qy7XPfWaPA1/9rBjnIGYVcdk7yN70wMXr58o
+V0u1u6yOq/l/EpjD0IZAcLI8D1ro1JNm33JSb1DHv19lfpFy4hTFB6mJfAO9990x
+yvCoOioEvjf51GxQfRCOf31ZC72nDe66NUp2hYrq1typyVwUCebxKY2eB3abXbJs
+Mmi8YNMdHJWnnG8qitwxQZlraA6ECh2CmwhLP+ku+9AlloP8G6bdgmNfa/+/8tlj
+UaTjTMm3FKUHzKugG7X5ZZw6m1VyfNbEgkr3DCLrc/W+BT/4CZxGt8GB/6hfpZ89
+519zcIhmdVHdpdtbyutw
+=gXIH
+-----END PGP SIGNATURE-----
+
+--BHJVNKOeO1HLWmKphmWEEG4pXlOBLssxE--
