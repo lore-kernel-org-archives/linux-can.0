@@ -1,246 +1,177 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 4/8] net: can: c_can: Add syscon/regmap RAMINIT mechanism
-Date: Thu, 13 Nov 2014 13:44:15 +0100
-Message-ID: <5464A79F.1070304@pengutronix.de>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-5-git-send-email-rogerq@ti.com>
+Subject: Re: [PATCH v5 6/8] net: can: c_can: Disable pins when CAN interface
+ is down
+Date: Thu, 13 Nov 2014 13:56:01 +0100
+Message-ID: <5464AA61.4080606@pengutronix.de>
+References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-7-git-send-email-rogerq@ti.com> <54636BD0.2010208@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="P6h8VqiH1FAU4duNX5KNWtGX3TB41hKVj"
+ boundary="kOTqacTIno06t2xEXbdo6q2CNKwmxH1cN"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1415371762-29885-5-git-send-email-rogerq@ti.com>
+In-Reply-To: <54636BD0.2010208@ti.com>
 Sender: netdev-owner@vger.kernel.org
 To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com
 Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---P6h8VqiH1FAU4duNX5KNWtGX3TB41hKVj
+--kOTqacTIno06t2xEXbdo6q2CNKwmxH1cN
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/07/2014 03:49 PM, Roger Quadros wrote:
-> Some TI SoCs like DRA7 have a RAMINIT register specification
-> different from the other AMxx SoCs and as expected by the
-> existing driver.
+On 11/12/2014 03:16 PM, Roger Quadros wrote:
+> DRA7 CAN IP suffers from a problem which causes it to be prevented
+> from fully turning OFF (i.e. stuck in transition) if the module was
+> disabled while there was traffic on the CAN_RX line.
 >=20
-> To add more insanity, this register is shared with other
-> IPs like DSS, PCIe and PWM.
->=20
-> Provides a more generic mechanism to specify the RAMINIT
-> register location and START/DONE bit position and use the
-> syscon/regmap framework to access the register.
+> To work around this issue we select the SLEEP pin state by default
+> on probe and use the DEFAULT pin state on CAN up and back to the
+> SLEEP pin state on CAN down.
 >=20
 > Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  .../devicetree/bindings/net/can/c_can.txt          |   3 +
->  drivers/net/can/c_can/c_can.h                      |  11 +-
->  drivers/net/can/c_can/c_can_platform.c             | 112 +++++++++++++=
-+-------
->  3 files changed, 86 insertions(+), 40 deletions(-)
+>  drivers/net/can/c_can/c_can.c          | 21 +++++++++++++++++++++
+>  drivers/net/can/c_can/c_can.h          |  1 +
+>  drivers/net/can/c_can/c_can_platform.c | 20 ++++++++++++++++++++
+>  3 files changed, 42 insertions(+)
 >=20
-> diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Docu=
-mentation/devicetree/bindings/net/can/c_can.txt
-> index 8f1ae81..a3ca3ee 100644
-> --- a/Documentation/devicetree/bindings/net/can/c_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/c_can.txt
-> @@ -12,6 +12,9 @@ Required properties:
->  Optional properties:
->  - ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
->  			  instance number
-> +- syscon-raminit	: Handle to system control region that contains the
-> +			  RAMINIT register, register offset to the RAMINIT
-> +			  register and the CAN instance number (0 offset).
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_ca=
+n.c
+> index 8e78bb4..a950eea 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/list.h>
+>  #include <linux/io.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pinctrl/consumer.h>
 > =20
->  Note: "ti,hwmods" field is used to fetch the base address and irq
->  resources from TI, omap hwmod data base during device registration.
+>  #include <linux/can.h>
+>  #include <linux/can/dev.h>
+> @@ -587,6 +588,21 @@ static int c_can_chip_config(struct net_device *de=
+v)
+>  	return c_can_set_bittiming(dev);
+>  }
+> =20
+> +/*
+> + * Selects the pinctrl state specified in the name.
+> + */
+> +static void c_can_pinctrl_select_state(struct c_can_priv *priv,
+> +				      const char *name)
+> +{
+> +	if (!IS_ERR(priv->pinctrl)) {
+
+What happens if priv->pinctrl is NULL? This is probably the case with
+the c_can_pci driver.
+
+> +		struct pinctrl_state *s;
+> +
+> +		s =3D pinctrl_lookup_state(priv->pinctrl, name);
+> +		if (!IS_ERR(s))
+> +			pinctrl_select_state(priv->pinctrl, s);
+> +	}
+> +}
+> +
+>  static int c_can_start(struct net_device *dev)
+>  {
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> @@ -603,6 +619,8 @@ static int c_can_start(struct net_device *dev)
+> =20
+>  	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+> =20
+> +	/* activate pins */
+> +	c_can_pinctrl_select_state(priv, PINCTRL_STATE_DEFAULT);
+>  	return 0;
+>  }
+> =20
+> @@ -611,6 +629,9 @@ static void c_can_stop(struct net_device *dev)
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+> =20
+>  	c_can_irq_control(priv, false);
+> +
+> +	/* deactivate pins */
+> +	c_can_pinctrl_select_state(priv, PINCTRL_STATE_SLEEP);
+>  	priv->can.state =3D CAN_STATE_STOPPED;
+>  }
+> =20
 > diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_ca=
 n.h
-> index 3c305a1..0e17c7b 100644
+> index c6715ca..3cedf48 100644
 > --- a/drivers/net/can/c_can/c_can.h
 > +++ b/drivers/net/can/c_can/c_can.h
-> @@ -179,6 +179,14 @@ struct c_can_driver_data {
->  	bool raminit_pulse;	/* If set, sets and clears START bit (pulse) */
->  };
-> =20
-> +/* Out of band RAMINIT register access via syscon regmap */
-> +struct c_can_raminit {
-> +	struct regmap *syscon;	/* for raminit ctrl. reg. access */
-> +	unsigned int reg;	/* register index within syscon */
-> +	u8 start_bit;
-> +	u8 done_bit;
-> +};
-> +
->  /* c_can private data structure */
->  struct c_can_priv {
->  	struct can_priv can;	/* must be the first member */
-> @@ -196,8 +204,7 @@ struct c_can_priv {
->  	const u16 *regs;
->  	void *priv;		/* for board-specific data */
->  	enum c_can_dev_id type;
-> -	u32 __iomem *raminit_ctrlreg;
-> -	int instance;
-> +	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
->  	void (*raminit) (const struct c_can_priv *priv, bool enable);
+> @@ -210,6 +210,7 @@ struct c_can_priv {
 >  	u32 comm_rcv_high;
 >  	u32 rxmasked;
+>  	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
+> +	struct pinctrl *pinctrl;
+>  };
+> =20
+>  struct net_device *alloc_c_can_dev(void);
 > diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
 _can/c_can_platform.c
-> index 20deb67..3776483 100644
+> index b838c6b..71b9063 100644
 > --- a/drivers/net/can/c_can/c_can_platform.c
 > +++ b/drivers/net/can/c_can/c_can_platform.c
-> @@ -32,14 +32,13 @@
->  #include <linux/clk.h>
->  #include <linux/of.h>
+> @@ -34,6 +34,7 @@
 >  #include <linux/of_device.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/regmap.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/regmap.h>
+> +#include <linux/pinctrl/consumer.h>
 > =20
 >  #include <linux/can/dev.h>
 > =20
->  #include "c_can.h"
-> =20
-> -#define CAN_RAMINIT_START_MASK(i)	(0x001 << (i))
-> -#define CAN_RAMINIT_DONE_MASK(i)	(0x100 << (i))
-> -#define CAN_RAMINIT_ALL_MASK(i)		(0x101 << (i))
->  #define DCAN_RAM_INIT_BIT		(1 << 3)
->  static DEFINE_SPINLOCK(raminit_lock);
->  /*
-> @@ -72,47 +71,61 @@ static void c_can_plat_write_reg_aligned_to_32bit(c=
-onst struct c_can_priv *priv,
->  	writew(val, priv->base + 2 * priv->regs[index]);
->  }
-> =20
-> -static void c_can_hw_raminit_wait_ti(const struct c_can_priv *priv, u3=
-2 mask,
-> -				  u32 val)
-> +static void c_can_hw_raminit_wait_syscon(const struct c_can_priv *priv=
-,
-> +					 u32 mask, u32 val)
->  {
->  	int timeout =3D 0;
-> +	const struct c_can_raminit *raminit =3D &priv->raminit_sys;
-> +	u32 ctrl;
-> +
->  	/* We look only at the bits of our instance. */
->  	val &=3D mask;
-> -	while ((readl(priv->raminit_ctrlreg) & mask) !=3D val) {
-> +	do {
->  		udelay(1);
->  		timeout++;
-> =20
-> +		regmap_read(raminit->syscon, raminit->reg, &ctrl);
->  		if (timeout =3D=3D 1000) {
->  			dev_err(&priv->dev->dev, "%s: time out\n", __func__);
->  			break;
->  		}
-> -	}
-> +	} while ((ctrl & mask) !=3D val);
->  }
-> =20
-> -static void c_can_hw_raminit_ti(const struct c_can_priv *priv, bool en=
-able)
-> +static void c_can_hw_raminit_syscon(const struct c_can_priv *priv, boo=
-l enable)
->  {
-> -	u32 mask =3D CAN_RAMINIT_ALL_MASK(priv->instance);
-> +	u32 mask;
->  	u32 ctrl;
-> +	const struct c_can_raminit *raminit =3D &priv->raminit_sys;
-> +	u8 start_bit, done_bit;
-> +
-> +	start_bit =3D raminit->start_bit;
-> +	done_bit =3D raminit->done_bit;
-> =20
->  	spin_lock(&raminit_lock);
-> =20
-> -	ctrl =3D readl(priv->raminit_ctrlreg);
-> +	mask =3D 1 << start_bit | 1 << done_bit;
-> +	regmap_read(raminit->syscon, raminit->reg, &ctrl);
-> +
->  	/* We clear the done and start bit first. The start bit is
->  	 * looking at the 0 -> transition, but is not self clearing;
->  	 * And we clear the init done bit as well.
-> +	 * NOTE: DONE must be written with 1 to clear it.
->  	 */
-> -	ctrl &=3D ~CAN_RAMINIT_START_MASK(priv->instance);
-> -	ctrl |=3D CAN_RAMINIT_DONE_MASK(priv->instance);
-> -	writel(ctrl, priv->raminit_ctrlreg);
-> -	ctrl &=3D ~CAN_RAMINIT_DONE_MASK(priv->instance);
-> -	c_can_hw_raminit_wait_ti(priv, mask, ctrl);
-> +	ctrl &=3D ~(1 << start_bit);
-> +	ctrl |=3D 1 << done_bit;
-> +	regmap_write(raminit->syscon, raminit->reg, ctrl);
-> +
-> +	ctrl &=3D ~(1 << done_bit);
-> +	c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
-> =20
->  	if (enable) {
->  		/* Set start bit and wait for the done bit. */
-> -		ctrl |=3D CAN_RAMINIT_START_MASK(priv->instance);
-> -		writel(ctrl, priv->raminit_ctrlreg);
-> -		ctrl |=3D CAN_RAMINIT_DONE_MASK(priv->instance);
-> -		c_can_hw_raminit_wait_ti(priv, mask, ctrl);
-> +		ctrl |=3D 1 << start_bit;
-> +		regmap_write(raminit->syscon, raminit->reg, ctrl);
-> +
-> +		ctrl |=3D 1 << done_bit;
-> +		c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
->  	}
->  	spin_unlock(&raminit_lock);
->  }
-> @@ -206,10 +219,11 @@ static int c_can_plat_probe(struct platform_devic=
-e *pdev)
->  	struct net_device *dev;
->  	struct c_can_priv *priv;
->  	const struct of_device_id *match;
-> -	struct resource *mem, *res;
-> +	struct resource *mem;
->  	int irq;
+> @@ -230,6 +231,7 @@ static int c_can_plat_probe(struct platform_device =
+*pdev)
 >  	struct clk *clk;
 >  	const struct c_can_driver_data *drvdata;
-> +	struct device_node *np =3D pdev->dev.of_node;
+>  	struct device_node *np =3D pdev->dev.of_node;
+> +	struct pinctrl *pinctrl;
 > =20
 >  	match =3D of_match_device(c_can_of_table, &pdev->dev);
 >  	if (match) {
-> @@ -278,27 +292,49 @@ static int c_can_plat_probe(struct platform_devic=
-e *pdev)
->  		priv->read_reg32 =3D d_can_plat_read_reg32;
->  		priv->write_reg32 =3D d_can_plat_write_reg32;
+> @@ -241,6 +243,23 @@ static int c_can_plat_probe(struct platform_device=
+ *pdev)
+>  		return -ENODEV;
+>  	}
 > =20
-> -		if (pdev->dev.of_node)
-> -			priv->instance =3D of_alias_get_id(pdev->dev.of_node, "d_can");
-> -		else
-> -			priv->instance =3D pdev->id;
-> -
-> -		res =3D platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -		/* Not all D_CAN modules have a separate register for the D_CAN
-> -		 * RAM initialization. Use default RAM init bit in D_CAN module
-> -		 * if not specified in DT.
-> +		/* Check if we need custom RAMINIT via syscon. Mostly for TI
-> +		 * platforms. Only supported with DT boot.
->  		 */
-> -		if (!res) {
-> +		if (np && of_property_read_bool(np, "syscon-raminit")) {
-> +			u32 id;
-> +			struct c_can_raminit *raminit =3D &priv->raminit_sys;
+> +	pinctrl =3D devm_pinctrl_get(&pdev->dev);
+> +	if (!IS_ERR(pinctrl)) {
+> +		struct pinctrl_state *s;
 > +
-> +			ret =3D -EINVAL;
-> +			raminit->syscon =3D syscon_regmap_lookup_by_phandle(np,
-> +									  "syscon-raminit");
+> +		/* Deactivate pins to prevent DRA7 DCAN IP from being
+> +		 * stuck in transition when module is disabled.
+> +		 * Pins are activated in c_can_start() and deactivated
+> +		 * in c_can_stop()
+> +		 */
+> +		s =3D pinctrl_lookup_state(pinctrl, PINCTRL_STATE_SLEEP);
+> +		if (!IS_ERR(s))
+> +			pinctrl_select_state(pinctrl, s);
+> +	} else {
+> +		dev_warn(&pdev->dev,
+> +			 "failed to get pinctrl\n");
+> +	}
 
-You should return PTR_ERR() here, as it it might be -EPROBE_DEFER
+Can you move the initial setting into c_can.c, register_c_can_dev()
+should be a good candidate.
 
-> +			if (IS_ERR(raminit->syscon)) {
-> +				dev_err(&pdev->dev,
-> +					"couldn't get syscon regmap for RAMINIT\n");
-> +				goto exit_free_device;
-> +			}
+> +
+>  	/* get the appropriate clk */
+>  	clk =3D devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(clk)) {
+> @@ -270,6 +289,7 @@ static int c_can_plat_probe(struct platform_device =
+*pdev)
+>  	}
+> =20
+>  	priv =3D netdev_priv(dev);
+> +	priv->pinctrl =3D pinctrl;
+> =20
+>  	switch (drvdata->id) {
+>  	case BOSCH_C_CAN:
+>=20
 
-=2E..and maybe remove this error message completely.
-
-regards,
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -248,7 +179,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---P6h8VqiH1FAU4duNX5KNWtGX3TB41hKVj
+--kOTqacTIno06t2xEXbdo6q2CNKwmxH1cN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -256,19 +187,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUZKefAAoJECte4hHFiupUi2MP/0OhWTPqNL8BAcDt9WEJF9f5
-GPRZytsQxzdlU3Jm6U9PXJGntn8sO9njY7YxndPXwgonjNWr8wYa23CcYu5V4H8w
-j8Js3qbhZZQ0DiBaFZaWB1lQnr6JKuyc3YKzwq6SZPshvwaUSWH+Ji4tBRFGH397
-8IEwAAP5usA12PFDIb1z+DPgaFR9bB/YqK3+D4Rqbx1MRc5gSODmLHbkIpP8OQNw
-6xndMyuNzKFiJA3buXsvfSDncKaaQcTOFGheOgZM4u8GnkVRDXqh+3VEt5PQ7R0c
-1jIRiODzTExeChNdSMicbCKtnYMGy1Pdsz36ei8Zc/uuZgPzISnlRetaTypbUwun
-bVREZUJbUh9Y4nP0M5MlnHodtBhhf4Qvf+7gqfAsQ3+UdDnGS9rovHPmaE7KhiX1
-cgUwHIA4RGK95RWYuaUaF4PYcHIlDdCRWQ8c3hESpVB4IDeZ4bjP6JU4KHwEeXos
-xnCz2xxmn7i4LDD5EdrVQNFKWegXJzwhOM6+GFRX/US8M75+mOnuwFatt5Z2lF/q
-d8VjefFK8UXu+fdwl5+uL6bedZB29AztAckGyn4+EU8WuKKpVr6jIyRVbLh2KrKv
-BiIaRUDjJ4Ij7znEXnRe7CkI9tE9jXF7pN5SHPUl+qZDEtbtPtuRde0VmnRr5Gw0
-NNbdUQ0QwmwBVl6HGGFS
-=A6aa
+iQIcBAEBAgAGBQJUZKphAAoJECte4hHFiupU5AwP/RZrznaO73ysmRqJuwhUplrk
+S25oGtoOGOGsTwwiwmldO6kRBI3q+nyjpDTXqQjM2eOZ1AG+2jE292zd85y+5vZe
+d90fh4bEM7pOD8RgHJ3NLysTtjdJiN24Hs1imh3/gI4nPRHAs2jScikN7obUXol1
+qwIyHaohgn/XJvMQSn7FtLycPWLhYr6DLpaZYKNqRM/uGOdq/lNu+if7ezi4DAzN
+7TsNWxl3YUnr+pqD2l1Xy2DJHaJyz2hVd+AMXMYpwKhSQ/uyohRhe7UBRpagweVN
+yLRrBs1HbywZPa7EoLZiIZDhO3GZfO3b2iRhCToeY9roD39oDy2Rdm19JG5AKua/
+GDX4rcZPLFNkXSAe/ijbcTztpHbIv4BSwe5iU20VCGXY9CULuJk3e+aetC1hV0Th
+sl1OmYiMH9uQYFFGpUg44YJ3wDbKUhHFyscUmvtV4jIb3bojZ+XktVYzxgBqSqLZ
+pSf5wUnhjTR2KESvpUeRQ568VZht+sft4aFqy9DJSG9L6yowK3FubUvt2agsUrNU
+ZUHrWwTkb241chG4eP4nWJOtN1LLef+lP2gG0eOtS8IEhwwVPd22g/V1TKeFSHEa
+Sd1xqMe20Kc05eYoHlksNlrpIFTj+G5GH3okqFVI0BTHNRgZqt8MGKEJws32zFJK
+hsokk6M6WcwpmAZMnNGi
+=jD25
 -----END PGP SIGNATURE-----
 
---P6h8VqiH1FAU4duNX5KNWtGX3TB41hKVj--
+--kOTqacTIno06t2xEXbdo6q2CNKwmxH1cN--
