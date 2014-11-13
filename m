@@ -1,58 +1,71 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH V4 2/3] can: m_can: update to support CAN FD features
-Date: Thu, 13 Nov 2014 17:56:55 +0100
-Message-ID: <5464E2D7.7010906@hartkopp.net>
-References: <1415349914-9145-1-git-send-email-b29396@freescale.com> <1415349914-9145-2-git-send-email-b29396@freescale.com> <54648382.9080105@pengutronix.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v4 06/10] ARM: dts: am4372: Add DCAN nodes
+Date: Thu, 13 Nov 2014 09:40:44 -0800
+Message-ID: <20141113174044.GN26481@atomide.com>
+References: <1415881371-4982-1-git-send-email-rogerq@ti.com>
+ <1415881371-4982-7-git-send-email-rogerq@ti.com>
+ <5464BB38.7020402@pengutronix.de>
+ <5464C2C4.2070907@ti.com>
+ <5464C3B1.2030908@pengutronix.de>
+ <5464C4E8.9060103@ti.com>
+ <5464C609.9070800@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:47338 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932245AbaKMQ5G (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 11:57:06 -0500
-In-Reply-To: <54648382.9080105@pengutronix.de>
+Received: from mho-03-ewr.mailhop.org ([204.13.248.66]:63086 "EHLO
+	mho-01-ewr.mailhop.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S933560AbaKMRl0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 12:41:26 -0500
+Content-Disposition: inline
+In-Reply-To: <5464C609.9070800@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
 
-On 11/13/2014 11:10 AM, Marc Kleine-Budde wrote:
-> On 11/07/2014 09:45 AM, Dong Aisheng wrote:
-
->>  
->> -	if (id & RX_BUF_RTR) {
->> +	if (id & RX_BUF_ESI) {
->> +		cf->flags |= CANFD_ESI;
->> +		netdev_dbg(dev, "ESI Error\n");
->> +	}
->> +
->> +	if (!(dlc & RX_BUF_EDL) && (id & RX_BUF_RTR)) {
->>  		cf->can_id |= CAN_RTR_FLAG;
+* Marc Kleine-Budde <mkl@pengutronix.de> [141113 06:55]:
+> On 11/13/2014 03:49 PM, Roger Quadros wrote:
+> > On 11/13/2014 04:44 PM, Marc Kleine-Budde wrote:
+> >> On 11/13/2014 03:40 PM, Roger Quadros wrote:
+> >>> On 11/13/2014 04:07 PM, Marc Kleine-Budde wrote:
+> >>>> On 11/13/2014 01:22 PM, Roger Quadros wrote:
+> >>>>> The SoC contains 2 DCAN modules. Add them.
+> >>>>>
+> >>>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> >>>>> ---
+> >>>>>  arch/arm/boot/dts/am4372.dtsi | 22 ++++++++++++++++++++++
+> >>>>>  1 file changed, 22 insertions(+)
+> >>>>>
+> >>>>> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
+> >>>>> index 899c57c..12fb1db 100644
+> >>>>> --- a/arch/arm/boot/dts/am4372.dtsi
+> >>>>> +++ b/arch/arm/boot/dts/am4372.dtsi
+> >>>>> @@ -901,6 +901,28 @@
+> >>>>>  			compatible = "mmio-sram";
+> >>>>>  			reg = <0x40300000 0x40000>; /* 256k */
+> >>>>>  		};
+> >>>>> +
+> >>>>> +		dcan0: can@481cc000 {
+> >>>>> +			compatible = "ti,am3352-d_can";
+> >>>>
+> >>>> You should add "ti,am4372-d_can" as first compatible here.
+> >>>>
+> >>> We don't have a separate compatible id for am4372-d_can
+> >>> as it the IP exactly same as am3352-d_can.
+> >>
+> >> Having the "ti,am4372-d_can" compatible gives you the freedom to add
+> >> some spacial handling for the IP if there turns that you need to without
+> >> needing to modify the device tree. (We do this on imx.)
+> > 
+> > Agreed. On OMAP platforms we don't add new compatible IDs unless we really need to.
+> > Can we add "ti,am4372-d_can" even if it is not mentioned in Documentation/devicetree/bindings?
+> > 
+> > Tony what is your preference?
 > 
-> I just noticed, that you don't set the cf->dlc (or cf->len) in the RTR
-> case. Please create a separate patch that fixes this problem.
-> 
->>  	} else {
->>  		id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
->> -		cf->can_dlc = get_can_dlc((id >> 16) & 0x0F);
->> -		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi,
->> -							 M_CAN_FIFO_DATA(0));
->> -		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi,
->> -							 M_CAN_FIFO_DATA(1));
->> +		if (dlc & RX_BUF_EDL)
->> +			cf->len = can_dlc2len((id >> 16) & 0x0F);
->> +		else
->> +			cf->len = get_can_dlc((id >> 16) & 0x0F);
->> +
+> I don't insist, do it the Omap way :)
 
-Grr. I missed that one too :-(
-
-Thanks for catching it.
-
-As you committed patch 1 & 3 you expect a new single patch containing the
-(fixed) content of this patch 2, right?
+I agree it's good to add if we need to add custom handling later on.
 
 Regards,
-Oliver
 
+Tony
