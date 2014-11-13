@@ -1,71 +1,56 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v4 06/10] ARM: dts: am4372: Add DCAN nodes
-Date: Thu, 13 Nov 2014 09:40:44 -0800
-Message-ID: <20141113174044.GN26481@atomide.com>
-References: <1415881371-4982-1-git-send-email-rogerq@ti.com>
- <1415881371-4982-7-git-send-email-rogerq@ti.com>
- <5464BB38.7020402@pengutronix.de>
- <5464C2C4.2070907@ti.com>
- <5464C3B1.2030908@pengutronix.de>
- <5464C4E8.9060103@ti.com>
- <5464C609.9070800@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: linux-can ISOTP module
+Date: Thu, 13 Nov 2014 18:47:48 +0100
+Message-ID: <5464EEC4.1080009@hartkopp.net>
+References: <loom.20140604T144601-350@post.gmane.org>	<538F6836.3060508@hartkopp.net>	<CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>	<539043EA.6030001@artisandeveloppeur.fr>	<5390B575.7030506@hartkopp.net>	<CAA7hF3xomuS-mDRQWmkC=D9YfbDPt+TwXKc7+ZFtUNwkg5cMdQ@mail.gmail.com>	<53A48699.6030605@hartkopp.net> <CAA7hF3yzM8KZjj+4d8m2rUZaDWPuC2hygYZ6PzFz4jWu1Y8e_A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]:63086 "EHLO
-	mho-01-ewr.mailhop.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S933560AbaKMRl0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 12:41:26 -0500
-Content-Disposition: inline
-In-Reply-To: <5464C609.9070800@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:14114 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933296AbaKMRrw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 12:47:52 -0500
+In-Reply-To: <CAA7hF3yzM8KZjj+4d8m2rUZaDWPuC2hygYZ6PzFz4jWu1Y8e_A@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: maxime@artisandeveloppeur.fr, linux-can@vger.kernel.org
 
-* Marc Kleine-Budde <mkl@pengutronix.de> [141113 06:55]:
-> On 11/13/2014 03:49 PM, Roger Quadros wrote:
-> > On 11/13/2014 04:44 PM, Marc Kleine-Budde wrote:
-> >> On 11/13/2014 03:40 PM, Roger Quadros wrote:
-> >>> On 11/13/2014 04:07 PM, Marc Kleine-Budde wrote:
-> >>>> On 11/13/2014 01:22 PM, Roger Quadros wrote:
-> >>>>> The SoC contains 2 DCAN modules. Add them.
-> >>>>>
-> >>>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> >>>>> ---
-> >>>>>  arch/arm/boot/dts/am4372.dtsi | 22 ++++++++++++++++++++++
-> >>>>>  1 file changed, 22 insertions(+)
-> >>>>>
-> >>>>> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
-> >>>>> index 899c57c..12fb1db 100644
-> >>>>> --- a/arch/arm/boot/dts/am4372.dtsi
-> >>>>> +++ b/arch/arm/boot/dts/am4372.dtsi
-> >>>>> @@ -901,6 +901,28 @@
-> >>>>>  			compatible = "mmio-sram";
-> >>>>>  			reg = <0x40300000 0x40000>; /* 256k */
-> >>>>>  		};
-> >>>>> +
-> >>>>> +		dcan0: can@481cc000 {
-> >>>>> +			compatible = "ti,am3352-d_can";
-> >>>>
-> >>>> You should add "ti,am4372-d_can" as first compatible here.
-> >>>>
-> >>> We don't have a separate compatible id for am4372-d_can
-> >>> as it the IP exactly same as am3352-d_can.
-> >>
-> >> Having the "ti,am4372-d_can" compatible gives you the freedom to add
-> >> some spacial handling for the IP if there turns that you need to without
-> >> needing to modify the device tree. (We do this on imx.)
-> > 
-> > Agreed. On OMAP platforms we don't add new compatible IDs unless we really need to.
-> > Can we add "ti,am4372-d_can" even if it is not mentioned in Documentation/devicetree/bindings?
-> > 
-> > Tony what is your preference?
+Hello Laurent,
+
+On 23.06.2014 20:01, laurent vaudoit wrote:
+> On Fri, Jun 20, 2014 at 9:08 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+>> On 06.06.2014 08:42, laurent vaudoit wrote:
+>>
+>>>>>> With this method, how can i have a segmented transfer like this:
+>>>>>> 0x6a7  0x55 0x10 0x08 ........
+>>>>>> 0x687  0xAA 0x30 0x00 0x00
+>>>>>> 0x6a7  0x55 0x21 .....
+>>>>>>
+>>>>>> The connection i need is between two ECU, using IDs 0x6a7/687 and one has
+>>>>>> adress extension 0x55, the other 0xAA (this adressing method is used on some
+>>>>>> FIAT ECUs for example), but i don't see how it can work using two socket.
+>>>>> I confirm.
+>>>>> This is a problem that we also encountered on a BMW ECU with the current
+>>>>> implementation of ISOTP.
+>>>>> The use-case is real and not currently supported.
+>>
+>> I added the funtionality of a different rx_ext_addr to a specific branch of
+>> can-utils and can-modules:
+>>
+>> https://gitorious.org/linux-can/can-utils/commits/rx_ext_addr
+>> https://gitorious.org/linux-can/can-modules/commits/rx_ext_addr
+>>
+>> Please check them out for a test. As all the isotp tools (in the branch)
+>> support the new feature too, it should be easy to do.
 > 
-> I don't insist, do it the Omap way :)
+> i did not have time for test but regarding the source code, it should be ok.
 
-I agree it's good to add if we need to add custom handling later on.
+Did you find some time to check this change?
+
+I would like to move this patch into the master branch before continuing the
+development.
 
 Regards,
-
-Tony
+Oliver
