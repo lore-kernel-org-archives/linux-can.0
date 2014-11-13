@@ -1,74 +1,96 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 4/8] net: can: c_can: Add syscon/regmap RAMINIT mechanism
-Date: Thu, 13 Nov 2014 12:09:07 +0100
-Message-ID: <54649153.409@pengutronix.de>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-5-git-send-email-rogerq@ti.com>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH] can: Fix bug in suspend/resume
+Date: Thu, 13 Nov 2014 12:32:18 +0100
+Message-ID: <20141113123218.79850236@ipc1.ka-ro>
+References: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
+	<546484D9.4030005@pengutronix.de>
+	<54648BF4.60007@pengutronix.de>
+	<9455da2b86c74d5aafe9bf118edec7bb@BN1AFFO11FD045.protection.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="AVSbkhbQHi8SEJNsH8CKnsSxRmoLxRP7O"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34117 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932364AbaKMLJn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 06:09:43 -0500
-In-Reply-To: <1415371762-29885-5-git-send-email-rogerq@ti.com>
+Received: from mail.karo-electronics.de ([81.173.242.67]:59640 "EHLO
+	mail.karo-electronics.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932525AbaKMLcm convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 06:32:42 -0500
+In-Reply-To: <9455da2b86c74d5aafe9bf118edec7bb@BN1AFFO11FD045.protection.gbl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AVSbkhbQHi8SEJNsH8CKnsSxRmoLxRP7O
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 11/07/2014 03:49 PM, Roger Quadros wrote:
-> Some TI SoCs like DRA7 have a RAMINIT register specification
-> different from the other AMxx SoCs and as expected by the
-> existing driver.
+Appana Durga Kedareswara Rao wrote:
+> Hi Marc,
 >=20
-> To add more insanity, this register is shared with other
-> IPs like DSS, PCIe and PWM.
+> -----Original Message-----
+> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+> Sent: Thursday, November 13, 2014 4:16 PM
+> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek; So=
+ren Brinkmann; grant.likely@linaro.org; robh+dt@kernel.org
+> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-kern=
+el@lists.infradead.org; linux-kernel@vger.kernel.org; devicetree@vger.k=
+ernel.org; Appana Durga Kedareswara Rao
+> Subject: Re: [PATCH] can: Fix bug in suspend/resume
 >=20
-> Provides a more generic mechanism to specify the RAMINIT
-> register location and START/DONE bit position and use the
-> syscon/regmap framework to access the register.
+> On 11/13/2014 11:15 AM, Marc Kleine-Budde wrote:
+> > On 11/13/2014 07:58 AM, Kedareswara rao Appana wrote:
+> >> When accessing the priv structure use container_of instead of dev_=
+get_drvdata.
+> >
+> > Why?
+>=20
+> The drvdata here is the struct net_device, not the platform device.
+> Please state this in the commit message.
+>=20
+> If I understand the code correct, you can make use of the existing he=
+lper function to_platform_device():
+>=20
+> http://lxr.free-electrons.com/source/include/linux/platform_device.h#=
+L42
+>=20
+> Thanks for the suggestion.
+>  Will use this macro(to_platform_device)  .
+>=20
+> >
+> >> Enable the clocks in the suspend before accessing the registers of=
+ the CAN.
+> >>
+> >> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> >> ---
+> >>  drivers/net/can/xilinx_can.c |   20 ++++++++++++++++++--
+> >>  1 files changed, 18 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/net/can/xilinx_can.c
+> >> b/drivers/net/can/xilinx_can.c index 5e8b560..63ef645 100644
+> >> --- a/drivers/net/can/xilinx_can.c
+> >> +++ b/drivers/net/can/xilinx_can.c
+> >> @@ -972,15 +972,30 @@ static const struct net_device_ops xcan_netd=
+ev_ops =3D {
+> >>   */
+> >>  static int __maybe_unused xcan_suspend(struct device *dev)  {
+> >> -    struct platform_device *pdev =3D dev_get_drvdata(dev);
+> >> +    struct platform_device *pdev =3D container_of(dev,
+> >> +                    struct platform_device, dev);
+> >>      struct net_device *ndev =3D platform_get_drvdata(pdev);
+> >>      struct xcan_priv *priv =3D netdev_priv(ndev);
+>
+Why not simply:
+	struct net_device *ndev =3D dev_get_drvdata(dev);
 
-What about the existing device trees that don't have the syscon-raminit
-phandle? We can either keep the existing init routines or create regmap
-in the platform driver an use the new ones.
+There is no need for a struct platform_device* at all.
 
-Marc
 
+Lothar Wa=C3=9Fmann
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+___________________________________________________________
 
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
---AVSbkhbQHi8SEJNsH8CKnsSxRmoLxRP7O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUZJFTAAoJECte4hHFiupUwokQAI0H4xlC3GWl+lFFavvt1zQG
-NFz/6gTXaH1Pb9CmnCEShIj/nZs5i/Y814T8rheOKSSQLzmt7mYTIqYevNXAIcjM
-k+xWK2ZXp/9yVB3dYG1DDBV9StK7PJzJamlQ39paRHNYYX/eKgXYP6DkL4lEiGBO
-inC9OiJFn1b3L4I9y+0OHZ21XFAfNGV65ITFolJuJaQL1aRy8XWFBFCD7X2MArch
-EVSMv8CvSd0eLeOkSmgkdiEuRUXCv2z5Pe0oPldwXsLd48mqi8A9JAa0fwHnf3jQ
-4amO/AZPYl8prLKajpY9oWaWEJ+CS7xEEtwLRZhZSIr5/rqFqrXBEHkmvk3JY/f2
-7c7qfBocWSzLQ/ilTFlSX4DqC4KC+hcrzgyWXOmUlUu/WgFq8rJabndZSuLqSDJ1
-OobADoSOPxCrgaj9xlQPlX+zNivkMlCYB6Kuep+SO4vCtSOnn8Ypv23MoELs8bXl
-lxVUr4S+NZu+ulsFA+dhMg5/WKcIg39moND+4qgugArp4RAfSLDcVFdGtLgnu/yH
-nXfFdKDqHPRDC6zerg7n2jgbi96CogN5QzDJXmY02oLtJieKo/UYUaPNDfsuotRK
-Tgv3aoCayfQaK/VC/02nQv3bUO3MQdVhcpnvqHNr6CfnA4vmcgtmLAcQ2Gz6KitJ
-ACcAuPlPf591cMti/0/3
-=8lWb
------END PGP SIGNATURE-----
-
---AVSbkhbQHi8SEJNsH8CKnsSxRmoLxRP7O--
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
