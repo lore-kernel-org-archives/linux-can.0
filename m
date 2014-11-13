@@ -1,59 +1,58 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH v4 8/8] net: can: c_can: Add support for TI am3352 DCAN
-Date: Thu, 13 Nov 2014 17:06:58 +0100
-Message-ID: <20141113160658.GB1275@katana>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com>
- <1415371762-29885-9-git-send-email-rogerq@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH V4 2/3] can: m_can: update to support CAN FD features
+Date: Thu, 13 Nov 2014 17:56:55 +0100
+Message-ID: <5464E2D7.7010906@hartkopp.net>
+References: <1415349914-9145-1-git-send-email-b29396@freescale.com> <1415349914-9145-2-git-send-email-b29396@freescale.com> <54648382.9080105@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pd0ReVV5GZGQvF3a"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from sauhun.de ([89.238.76.85]:54765 "EHLO pokefinder.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752938AbaKMQFo (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 13 Nov 2014 11:05:44 -0500
-Content-Disposition: inline
-In-Reply-To: <1415371762-29885-9-git-send-email-rogerq@ti.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:47338 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932245AbaKMQ5G (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 11:57:06 -0500
+In-Reply-To: <54648382.9080105@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roger Quadros <rogerq@ti.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
+On 11/13/2014 11:10 AM, Marc Kleine-Budde wrote:
+> On 11/07/2014 09:45 AM, Dong Aisheng wrote:
 
---Pd0ReVV5GZGQvF3a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>  
+>> -	if (id & RX_BUF_RTR) {
+>> +	if (id & RX_BUF_ESI) {
+>> +		cf->flags |= CANFD_ESI;
+>> +		netdev_dbg(dev, "ESI Error\n");
+>> +	}
+>> +
+>> +	if (!(dlc & RX_BUF_EDL) && (id & RX_BUF_RTR)) {
+>>  		cf->can_id |= CAN_RTR_FLAG;
+> 
+> I just noticed, that you don't set the cf->dlc (or cf->len) in the RTR
+> case. Please create a separate patch that fixes this problem.
+> 
+>>  	} else {
+>>  		id = m_can_fifo_read(priv, fgi, M_CAN_FIFO_DLC);
+>> -		cf->can_dlc = get_can_dlc((id >> 16) & 0x0F);
+>> -		*(u32 *)(cf->data + 0) = m_can_fifo_read(priv, fgi,
+>> -							 M_CAN_FIFO_DATA(0));
+>> -		*(u32 *)(cf->data + 4) = m_can_fifo_read(priv, fgi,
+>> -							 M_CAN_FIFO_DATA(1));
+>> +		if (dlc & RX_BUF_EDL)
+>> +			cf->len = can_dlc2len((id >> 16) & 0x0F);
+>> +		else
+>> +			cf->len = get_can_dlc((id >> 16) & 0x0F);
+>> +
 
-On Fri, Nov 07, 2014 at 04:49:22PM +0200, Roger Quadros wrote:
-> AM3352 SoC has 2 DCAN modules. Add compatible id and
-> raminit driver data for am3352 DCAN.
->=20
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
+Grr. I missed that one too :-(
 
-Acked-by: Wolfram Sang <wsa@the-dreams.de>
+Thanks for catching it.
 
+As you committed patch 1 & 3 you expect a new single patch containing the
+(fixed) content of this patch 2, right?
 
---Pd0ReVV5GZGQvF3a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Regards,
+Oliver
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUZNciAAoJEBQN5MwUoCm2r5wQAKJ6jZC7x/RSLmp+JTKLeeuB
-RhNrk0tkk93UuSTlCWmtlfv2dQE+9AJ5YaWx571bJSgwQOGv5wbeHJAHhlO+UKuQ
-L43RbkvevgVcdiewteazzOIev5xcMaZv4KE6lGGKpYrzo8Jcd3yyFAE+5xe/Hhr3
-c0/QoS1aGnk/J7b8UK5wdhvrIukesMJ0MTBzhzFuvfhHrZPDZk32iQ4CRAcZPsCT
-VTbswvnP2sHXwQuEvu+ujJaWv8Ibq2SxsjwfGcUVQTy2vAQo4pl3PgWa8YIZTZUR
-XbEroF3dtgVhX7VSheUdUeZR2Dm5/sf92sO+Uq2PWgVTGMeACOleS+47U6RrAOQj
-SX4OinfLJps2o6EKQz99Ft/mUCCGClgW39GFZ4v+9I14Khi8bSeUp2hu2TqjCG8H
-WpGCA16pYnFecMmnWPxuHSQoRP7DWhaLUeyY/hXh5/NAZDzM66R9GZdZbR7+JsV1
-C3R2VfjDhAeg6V+5klkQAZ9Gt5zV06tDRnP0y7JHtwqY7HVQq7SQgZeybH+h13Zi
-rsdBRhhynKHhAZxO60BvSfO6F5Mrwi4mAgGlo33Zo692S00hqtWlaPCEa3H/WL0v
-BVXGmVKzgxAKhK3L+FvgrGpw2hthW5AJvqeNqYszaevNRoOba719CH6IFZ4ajs8M
-RhR5qsBICnBDI+a7f1HS
-=JgWW
------END PGP SIGNATURE-----
-
---Pd0ReVV5GZGQvF3a--
