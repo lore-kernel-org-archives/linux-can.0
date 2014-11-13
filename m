@@ -1,77 +1,64 @@
-From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Subject: [PATCH] can: Fix bug in suspend/resume
-Date: Thu, 13 Nov 2014 12:28:11 +0530
-Message-ID: <a44efc1fb0144cca9d0c4851cc51db25@BL2FFO11FD024.protection.gbl>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH V4 1/3] can: add can_is_canfd_skb() API
+Date: Thu, 13 Nov 2014 11:04:56 +0100
+Message-ID: <54648248.1020400@pengutronix.de>
+References: <1415349914-9145-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="dwa2gn93AFKXWAgqNtl00iBWo0JvBwXR6"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52158 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932164AbaKMKFM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 05:05:12 -0500
+In-Reply-To: <1415349914-9145-1-git-send-email-b29396@freescale.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, varkabhadram@gmail.com, netdev@vger.kernel.org, socketcan@hartkopp.net, linux-arm-kernel@lists.infradead.org
 
-When accessing the priv structure use container_of instead of dev_get_drvdata.
-Enable the clocks in the suspend before accessing the registers of the CAN.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dwa2gn93AFKXWAgqNtl00iBWo0JvBwXR6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
----
- drivers/net/can/xilinx_can.c |   20 ++++++++++++++++++--
- 1 files changed, 18 insertions(+), 2 deletions(-)
+On 11/07/2014 09:45 AM, Dong Aisheng wrote:
+> The CAN device drivers can use it to check if the frame to send is on
+> CAN FD mode or normal CAN mode.
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 5e8b560..63ef645 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -972,15 +972,30 @@ static const struct net_device_ops xcan_netdev_ops = {
-  */
- static int __maybe_unused xcan_suspend(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
-+	struct platform_device *pdev = container_of(dev,
-+			struct platform_device, dev);
- 	struct net_device *ndev = platform_get_drvdata(pdev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
-+	int ret;
- 
- 	if (netif_running(ndev)) {
- 		netif_stop_queue(ndev);
- 		netif_device_detach(ndev);
- 	}
- 
-+	ret = clk_prepare_enable(priv->can_clk);
-+	if (ret) {
-+		dev_err(dev, "unable to enable device clock\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(priv->bus_clk);
-+	if (ret) {
-+		dev_err(dev, "unable to enable bus clock\n");
-+		clk_disable_unprepare(priv->can_clk);
-+		return ret;
-+	}
-+
- 	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
-@@ -999,7 +1014,8 @@ static int __maybe_unused xcan_suspend(struct device *dev)
-  */
- static int __maybe_unused xcan_resume(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
-+	struct platform_device *pdev = container_of(dev,
-+			struct platform_device, dev);
- 	struct net_device *ndev = platform_get_drvdata(pdev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
--- 
-1.7.4
+Applied patches 1 and 3.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--dwa2gn93AFKXWAgqNtl00iBWo0JvBwXR6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUZIJMAAoJECte4hHFiupUDH4QAJFu9/TTOSdZ1n+2B5li1Ufo
+b4wbh93h6zLrMYEJf2pnVW9deyHQ9CpsFqoNILbRTyVniOeSPe6c7z98wOWvF/E2
+Xgw7IyLcGB/VFE3rA8gaOmr8hKcriTEsW+Z5HKe/JwoBjqjRrsCdyI/fdBWzy6c4
+IEMTn6/BeyS/wTBzGpiTGS+prstnIv+Dryx5bvTen0pps2gPlXkJQbcNRgUtU3nu
+V4G44D2M8OCdBL+9ZWyiC+1OHeAAQE1nMnw0dNWdcJ7mPNrl+bV+bX5OwUzMBP7L
+v9ej0N40YXDXgwGzTGXjqIX3BlZohzBMaZNUBOe/YNtHXSQgQVPMghLHjQPoe1mv
+C86WpLSphmMWa4goxN/1aTWaC/Z5lvChYQrnVYUCBFISm1cHPiEeQTa1KJuEzx6+
+tuSvG6AG15vwFp+egUfMjOmqRCnJZVayzWA8aVJp8tF6QBpgKrqvXLIm2z1avT62
+I4GGu170mGBbMWCKV5Y8X/l/6Vi9/w2YnaWIz6NUnQsmNVgmFuZWdv9NfZCsqaFo
+ZZ2cWnrjvY3euuyZ3WATkq/Bn+UVuaP9mu3Mk+zXOTIs5A+cwwZddAW0zGmGnEPm
+8eG8FRJQL5KjQ0ERQawH0CCS2OXUR7fcn6E+EN9htIuH/cnz/w1qmqexXP8LkpBr
+twfn+zN3HNvZgxTdBv9a
+=cwUo
+-----END PGP SIGNATURE-----
+
+--dwa2gn93AFKXWAgqNtl00iBWo0JvBwXR6--
