@@ -1,40 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 8/8] net: can: c_can: Add support for TI am3352 DCAN
-Date: Fri, 14 Nov 2014 10:25:55 +0100
-Message-ID: <5465CAA3.5030301@pengutronix.de>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-9-git-send-email-rogerq@ti.com> <20141113160658.GB1275@katana>
+Subject: Re: Sockect Can with j1939 protocol in LINUX
+Date: Fri, 14 Nov 2014 11:56:32 +0100
+Message-ID: <5465DFE0.1030003@pengutronix.de>
+References: <CAPTUpGE59=gbhMW-MFvSW2VHPdiijqANbEi-BdCt4Ft9LNePRA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="Hv8Vi8IQ6wo7o5Ahia5TuLVWQ2Sm3r66m"
+ boundary="joGWE8fi8m4Q01qX8EMceHbAd0FDvifPa"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38401 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39291 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754547AbaKNJ0I (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Nov 2014 04:26:08 -0500
-In-Reply-To: <20141113160658.GB1275@katana>
+	with ESMTP id S964781AbaKNK4f (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Nov 2014 05:56:35 -0500
+In-Reply-To: <CAPTUpGE59=gbhMW-MFvSW2VHPdiijqANbEi-BdCt4Ft9LNePRA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfram Sang <wsa@the-dreams.de>, Roger Quadros <rogerq@ti.com>
-Cc: wg@grandegger.com, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Jesus Jimenez Martinez <jjimenezm1990@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Hv8Vi8IQ6wo7o5Ahia5TuLVWQ2Sm3r66m
+--joGWE8fi8m4Q01qX8EMceHbAd0FDvifPa
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/13/2014 05:06 PM, Wolfram Sang wrote:
-> On Fri, Nov 07, 2014 at 04:49:22PM +0200, Roger Quadros wrote:
->> AM3352 SoC has 2 DCAN modules. Add compatible id and
->> raminit driver data for am3352 DCAN.
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
+Hey Jesus,
+
+please use the linux-can mailinglist for CAN related questions.
+
+On 11/14/2014 11:20 AM, Jesus Jimenez Martinez wrote:
+> I want to use J1939 protocol under Linux. I is not sure if this protoco=
+l
+> is implemented in Sockect Can. I read
+> http://events.linuxfoundation.org/sites/events/files/slides/elce2013-Kl=
+eine-Budde.pdf
 >=20
-> Acked-by: Wolfram Sang <wsa@the-dreams.de>
+> In wikipedia (http://elinux.org/J1939) I found it but the commands not
+> work.
 
-For the whole series or just this patch?
+Kurt Van Dijck has the j1939 kernel and userspace code in his
+repositorys, see bottom of http://elinux.org/J1939 how to build it.
 
+Regards,
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -42,7 +50,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Hv8Vi8IQ6wo7o5Ahia5TuLVWQ2Sm3r66m
+--joGWE8fi8m4Q01qX8EMceHbAd0FDvifPa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -50,19 +58,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUZcqjAAoJECte4hHFiupUL5QQAKxDMSdS4JzfruuaJkFD3Fba
-14hmaXDvWt46HhxB5KwMBAro965pMBU5ZJsa4CRdWkz+kfRvM6HdlVoLuv/sZKvU
-wqvm05yv9TlQ+jO2volIuZ6GeLEz/bqDZFB7+2MQ6W5GrQco9X2rCtMjP4WCGstA
-ncxOo5aZIPqXsWezM/71nrnaILtG5QBntQHbrHf59IHtMZk+9wbe5Cbm91j/+2jn
-Fe4j6J8qpi0ChKtE+yGz6cYZ1XWKEetUQK/tX1i5JPKB2VRxIGXErCJWM/UXlhFa
-JOThwgM8S5qi9PJqnjOgmSqdrJiuY0+4LmNhs+teMUgaf2GpfX76qWxD1267rN8q
-cFGfN9HUjgYaEUGoc8kYJMEpqSYpFJQMUHfvmW2ARpvj8t8vV7c6z7BlguGvk1/O
-SIXQEuV8cxtsWzgvSEe8bbNvLKfHVLkKr8sPdEhm14dCnx6eGye2RlKGsgVqoluh
-o2E3ARFGzxysTy+rXwB0HPWu4N86VCDxsQEzifa2TjlKpbXvHhqBRSAu8c84LmTA
-hXrWLrb040sh87RcZGOfa14/9M0U5iwpKB0Uy7Awjqo6YC1Ws+9jOfWMOGf7AUKV
-s0mUfH7qXhnRKtOvGLQV81zFmf+yW+fS3HDvWFaeR+bmPFHWaZqbh/CRBLTJGvMm
-7MQ4kw468BEiX94N7xAd
-=mUeo
+iQIcBAEBAgAGBQJUZd/gAAoJECte4hHFiupUwfkQAI7Ezpt7LoM54S5hGoOx4x3z
+kgAx8d3PO5UGpy7eDrV8yDW7gWBi/kuQDX5Z6RCh2/C61yX2KIuUi6BrxwquyH6p
+zNhXbi5F7J2kk2zYytaD30QGBOZJOLbPYbNLAXKnFG8jcrguSH5c0xI19PQwyXsx
+cQyrYR4jSEnLe65btVV5E1jFFOl87AdwdbbptJekT08kmY580Ik9pVo4vO0GGLBB
+cqmfWZbBuXIL0Ou7/SKbRWP/F/ZzMTKp2WhFEfDcGtZ+CrJMgUkElu3GqkexbjWS
+BscqdTkxp6EnCgyNVwNtqrid6ZfGlns8J/g+y/rlu1coO2HKy0Csrdw6f6nrqk20
+1N753+MuHFN7OUqNDYGgPHvqHEZyhtPxBpqPoXeJQlt5Kf8nfiAO91bqRdR3IVoU
+dfQYEC+f/WddDFQZipFGll8FGgc/G2L8kIooVl4jOQzJ2V6DB5XD0as0HrLzwnwa
+wG/9ISLQEZ9jdKWI9hQ8DIqE6HzEKDEkqrgjm33H68YePBhQxZQkRMKE5i3gZL3s
+zWxX10RIALwWmEHA77IwveeX23OVWAZaP+bL5J/SbBpHlkPWoIuX3aRBb+awapOi
+OUMuKAZDLrIMuquFoN56MPSLaafLabLJQ16hta+XUr4hYPEpqd0LsvlcgrjljXk2
+gao9HB2m+8oeOQEOf24T
+=Qj0a
 -----END PGP SIGNATURE-----
 
---Hv8Vi8IQ6wo7o5Ahia5TuLVWQ2Sm3r66m--
+--joGWE8fi8m4Q01qX8EMceHbAd0FDvifPa--
