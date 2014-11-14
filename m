@@ -1,114 +1,83 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 3/8] net: can: c_can: Add RAMINIT register information
- to driver data
-Date: Fri, 14 Nov 2014 18:55:30 +0100
-Message-ID: <54664212.8080206@pengutronix.de>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-4-git-send-email-rogerq@ti.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v4 06/10] ARM: dts: am4372: Add DCAN nodes
+Date: Fri, 14 Nov 2014 10:07:46 -0800
+Message-ID: <20141114180746.GV31250@atomide.com>
+References: <1415881371-4982-1-git-send-email-rogerq@ti.com>
+ <1415881371-4982-7-git-send-email-rogerq@ti.com>
+ <5464BB38.7020402@pengutronix.de>
+ <5464C2C4.2070907@ti.com>
+ <5464C3B1.2030908@pengutronix.de>
+ <5464C4E8.9060103@ti.com>
+ <5464C609.9070800@pengutronix.de>
+ <20141113174044.GN26481@atomide.com>
+ <54662C3D.8050103@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="ub8ulLvilUfPbnqmGk77AvWG8K6NX3WWp"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1415371762-29885-4-git-send-email-rogerq@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72]:65061 "EHLO
+	mho-02-ewr.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1161175AbaKNSIY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 14 Nov 2014 13:08:24 -0500
+Content-Disposition: inline
+In-Reply-To: <54662C3D.8050103@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Roger Quadros <rogerq@ti.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ub8ulLvilUfPbnqmGk77AvWG8K6NX3WWp
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+* Roger Quadros <rogerq@ti.com> [141114 08:24]:
+> On 11/13/2014 07:40 PM, Tony Lindgren wrote:
+> > * Marc Kleine-Budde <mkl@pengutronix.de> [141113 06:55]:
+> >> On 11/13/2014 03:49 PM, Roger Quadros wrote:
+> >>> On 11/13/2014 04:44 PM, Marc Kleine-Budde wrote:
+> >>>> On 11/13/2014 03:40 PM, Roger Quadros wrote:
+> >>>>> On 11/13/2014 04:07 PM, Marc Kleine-Budde wrote:
+> >>>>>> On 11/13/2014 01:22 PM, Roger Quadros wrote:
+> >>>>>>> The SoC contains 2 DCAN modules. Add them.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> >>>>>>> ---
+> >>>>>>>  arch/arm/boot/dts/am4372.dtsi | 22 ++++++++++++++++++++++
+> >>>>>>>  1 file changed, 22 insertions(+)
+> >>>>>>>
+> >>>>>>> diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
+> >>>>>>> index 899c57c..12fb1db 100644
+> >>>>>>> --- a/arch/arm/boot/dts/am4372.dtsi
+> >>>>>>> +++ b/arch/arm/boot/dts/am4372.dtsi
+> >>>>>>> @@ -901,6 +901,28 @@
+> >>>>>>>  			compatible = "mmio-sram";
+> >>>>>>>  			reg = <0x40300000 0x40000>; /* 256k */
+> >>>>>>>  		};
+> >>>>>>> +
+> >>>>>>> +		dcan0: can@481cc000 {
+> >>>>>>> +			compatible = "ti,am3352-d_can";
+> >>>>>>
+> >>>>>> You should add "ti,am4372-d_can" as first compatible here.
+> >>>>>>
+> >>>>> We don't have a separate compatible id for am4372-d_can
+> >>>>> as it the IP exactly same as am3352-d_can.
+> >>>>
+> >>>> Having the "ti,am4372-d_can" compatible gives you the freedom to add
+> >>>> some spacial handling for the IP if there turns that you need to without
+> >>>> needing to modify the device tree. (We do this on imx.)
+> >>>
+> >>> Agreed. On OMAP platforms we don't add new compatible IDs unless we really need to.
+> >>> Can we add "ti,am4372-d_can" even if it is not mentioned in Documentation/devicetree/bindings?
+> >>>
+> >>> Tony what is your preference?
+> >>
+> >> I don't insist, do it the Omap way :)
+> > 
+> > I agree it's good to add if we need to add custom handling later on.
+> 
+> As of now I don't foresee any custom handling for am4372-d_can vs am3352-d_can, but I can
+> add am4372-d_can anyways. In that case, do I need to mention it in 
+> Documentation/devicetree/bindings/net/can/c_can.txt?
+>
+> I guess not, cause we don't do anything specific to am4372-d_can there.
 
-On 11/07/2014 03:49 PM, Roger Quadros wrote:
-> Some platforms (e.g. TI) need special RAMINIT register handling.
-> Provide a way to store RAMINIT register description in driver data.
->=20
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  drivers/net/can/c_can/c_can.h          | 6 ++++++
->  drivers/net/can/c_can/c_can_platform.c | 1 +
->  2 files changed, 7 insertions(+)
->=20
-> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_ca=
-n.h
-> index 26c975d..3c305a1 100644
-> --- a/drivers/net/can/c_can/c_can.h
-> +++ b/drivers/net/can/c_can/c_can.h
-> @@ -171,6 +171,12 @@ enum c_can_dev_id {
-> =20
->  struct c_can_driver_data {
->  	enum c_can_dev_id id;
-> +
-> +	/* RAMINIT register description. Optional. */
-> +	u8 num_can;		/* Number of CAN instances on the SoC */
-> +	u8 *raminit_start_bits;	/* Array of START bit positions */
-> +	u8 *raminit_done_bits;	/* Array of DONE bit positions */
+I think you should to avoid checkpatch.pl warnings.
 
-What do you think about making this a struct:
+Regards,
 
-+struct raminit_bits {
-+       u8 start;
-+       u8 done;
-+};
-
- struct c_can_driver_data {
-        enum c_can_dev_id id;
-+
-+       /* RAMINIT register description. Optional. */
-+       const struct raminit_bits *raminit_bits; /* Array of START/DONE b=
-it positions */
-+       u8 raminit_num;         /* Number of CAN instances on the SoC */
-+       bool raminit_pulse;     /* If set, sets and clears START bit (pul=
-se) */
- };
-
-The driver data looks like this:
-
-+static const struct raminit_bits dra7_raminit_bits[] =3D {
-+       [0] =3D { .start =3D 3, .done =3D 1, },
-+       [1] =3D { .start =3D 5, .done =3D 2, },
-+};
-+
-+static const struct c_can_driver_data dra7_dcan_drvdata =3D {
-+       .id =3D BOSCH_D_CAN,
-+       .raminit_num =3D ARRAY_SIZE(dra7_raminit_bits),
-+       .raminit_bits =3D dra7_raminit_bits,
-+       .raminit_pulse =3D true,
-+};
-
-I'll send an updated series.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---ub8ulLvilUfPbnqmGk77AvWG8K6NX3WWp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUZkISAAoJECte4hHFiupUeZoQAJIc5VIEoRwFAkPnG9wdV5Pw
-X2ccOjItaQzTfE07WuyLjNhparwtLKJ6IfU1VRpDAgoUbeqq3UZHoK/X/kPCBUiH
-mFKAGrY6z8tPiXPJ7hEmQMuX/tREqWc7iV1LaMUATd6zhQZbmUyDZWluGuos+vsS
-l23rxv7gVRMadw4AjXgxvAc5hwabxti0hFEGZtsHT6YZgLrT3bd4ahZBn1R4hgds
-U9+owpMB52H7RgR7NpJ1lanOqGI99USZU+Jjn1Neloe3/RHZyXEvxDU6rVy6Cu64
-2qTt9IXOgfZ02htATS4v4bGDSbG9K/ZBTs7elQlUWI5YooYxLEyOxud/hv0yOoHu
-2ucGIzEgG0b7lnQ9fKbyTQ/jF7jKcHZV29kh7xNrJMvTwPc0MfbUIvIbXBYIwgd3
-asnLbYTdfaFNORVuQVwGDbgHUuDLG5bxiXHMqtPw/3E8hqLUiqgpnYM6IKSAsd71
-bl961PWfOTp1viwA39gfUT59n9SLAuPdLGf5CgrBpRa1hI6Lel8MVxcDFeLMJ9lm
-tvXU/u3an3qq2UwexPGPF/yPJNMeFkbQ7xP5UiBm6jeNi+sh15z2QJdvyZPru9bI
-xCcpfbhIzXx2FaaJk6ly6NdeDNaJW7CVx7b0XstOAlV/BMkltuemGKJV0T5arqij
-OC3n5HflP25rvSvlqySw
-=aVHL
------END PGP SIGNATURE-----
-
---ub8ulLvilUfPbnqmGk77AvWG8K6NX3WWp--
+Tony
