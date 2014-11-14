@@ -1,56 +1,82 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: linux-can ISOTP module
-Date: Thu, 13 Nov 2014 18:47:48 +0100
-Message-ID: <5464EEC4.1080009@hartkopp.net>
-References: <loom.20140604T144601-350@post.gmane.org>	<538F6836.3060508@hartkopp.net>	<CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>	<539043EA.6030001@artisandeveloppeur.fr>	<5390B575.7030506@hartkopp.net>	<CAA7hF3xomuS-mDRQWmkC=D9YfbDPt+TwXKc7+ZFtUNwkg5cMdQ@mail.gmail.com>	<53A48699.6030605@hartkopp.net> <CAA7hF3yzM8KZjj+4d8m2rUZaDWPuC2hygYZ6PzFz4jWu1Y8e_A@mail.gmail.com>
+From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Subject: [PATCH v2] can: Fix bug in suspend/resume
+Date: Fri, 14 Nov 2014 13:46:19 +0530
+Message-ID: <e7070431858e49e29cd03d76fd7a66c3@BN1AFFO11FD055.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:14114 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933296AbaKMRrw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Nov 2014 12:47:52 -0500
-In-Reply-To: <CAA7hF3yzM8KZjj+4d8m2rUZaDWPuC2hygYZ6PzFz4jWu1Y8e_A@mail.gmail.com>
+Received: from mail-bn1bon0055.outbound.protection.outlook.com ([157.56.111.55]:16299
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1754440AbaKNIQe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 14 Nov 2014 03:16:34 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: maxime@artisandeveloppeur.fr, linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-Hello Laurent,
+The drvdata in the suspend/resume is of type struct net_device,
+not the platform device.Enable the clocks in the suspend before
+accessing the registers of the CAN.
 
-On 23.06.2014 20:01, laurent vaudoit wrote:
-> On Fri, Jun 20, 2014 at 9:08 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->> On 06.06.2014 08:42, laurent vaudoit wrote:
->>
->>>>>> With this method, how can i have a segmented transfer like this:
->>>>>> 0x6a7  0x55 0x10 0x08 ........
->>>>>> 0x687  0xAA 0x30 0x00 0x00
->>>>>> 0x6a7  0x55 0x21 .....
->>>>>>
->>>>>> The connection i need is between two ECU, using IDs 0x6a7/687 and one has
->>>>>> adress extension 0x55, the other 0xAA (this adressing method is used on some
->>>>>> FIAT ECUs for example), but i don't see how it can work using two socket.
->>>>> I confirm.
->>>>> This is a problem that we also encountered on a BMW ECU with the current
->>>>> implementation of ISOTP.
->>>>> The use-case is real and not currently supported.
->>
->> I added the funtionality of a different rx_ext_addr to a specific branch of
->> can-utils and can-modules:
->>
->> https://gitorious.org/linux-can/can-utils/commits/rx_ext_addr
->> https://gitorious.org/linux-can/can-modules/commits/rx_ext_addr
->>
->> Please check them out for a test. As all the isotp tools (in the branch)
->> support the new feature too, it should be easy to do.
-> 
-> i did not have time for test but regarding the source code, it should be ok.
+Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+---
+Changes for v2:
+  - Removed the struct platform_device* from suspend/resume
+    as suggest by Lothar.
+  - The clocks are getting disabled and un prepared at the end of the probe. 
+    In the suspend the driver is doing a register write.In order
+    To do that register write we have to again enable and prepare the clocks.
 
-Did you find some time to check this change?
+  
+ drivers/net/can/xilinx_can.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
 
-I would like to move this patch into the master branch before continuing the
-development.
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 5e8b560..485262f 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -972,15 +972,28 @@ static const struct net_device_ops xcan_netdev_ops = {
+  */
+ static int __maybe_unused xcan_suspend(struct device *dev)
+ {
+-	struct platform_device *pdev = dev_get_drvdata(dev);
+-	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
++	int ret;
+ 
+ 	if (netif_running(ndev)) {
+ 		netif_stop_queue(ndev);
+ 		netif_device_detach(ndev);
+ 	}
+ 
++	ret = clk_prepare_enable(priv->can_clk);
++	if (ret) {
++		dev_err(dev, "unable to enable device clock\n");
++		return ret;
++	}
++
++	ret = clk_prepare_enable(priv->bus_clk);
++	if (ret) {
++		dev_err(dev, "unable to enable bus clock\n");
++		clk_disable_unprepare(priv->can_clk);
++		return ret;
++	}
++
+ 	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
+ 	priv->can.state = CAN_STATE_SLEEPING;
+ 
+@@ -999,8 +1012,7 @@ static int __maybe_unused xcan_suspend(struct device *dev)
+  */
+ static int __maybe_unused xcan_resume(struct device *dev)
+ {
+-	struct platform_device *pdev = dev_get_drvdata(dev);
+-	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
+ 	int ret;
+ 
+-- 
+1.7.4
 
-Regards,
-Oliver
