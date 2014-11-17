@@ -1,32 +1,34 @@
 From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH v4 3/8] net: can: c_can: Add RAMINIT register information
- to driver data
-Date: Mon, 17 Nov 2014 13:29:54 +0200
-Message-ID: <5469DC32.1020505@ti.com>
-References: <1415371762-29885-1-git-send-email-rogerq@ti.com> <1415371762-29885-4-git-send-email-rogerq@ti.com> <54664212.8080206@pengutronix.de> <5469D964.8020804@ti.com> <5469DA69.7030602@pengutronix.de>
+Subject: Re: [PATCH v8 0/8] can: c_can: Use syscon regmap for TI specific
+ RAMINIT register
+Date: Mon, 17 Nov 2014 14:07:37 +0200
+Message-ID: <5469E509.3000700@ti.com>
+References: <1415988591-6032-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from devils.ext.ti.com ([198.47.26.153]:60931 "EHLO
-	devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752315AbaKQLa0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Nov 2014 06:30:26 -0500
-In-Reply-To: <5469DA69.7030602@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com
-Cc: wsa@the-dreams.de, tony@atomide.com, tglx@linutronix.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1415988591-6032-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: wsa@the-dreams.de, linux-omap@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-On 11/17/2014 01:22 PM, Marc Kleine-Budde wrote:
-> On 11/17/2014 12:17 PM, Roger Quadros wrote:
->>> I'll send an updated series.
->>
->> Looks better. Thanks.
+On 11/14/2014 08:09 PM, Marc Kleine-Budde wrote:
+> Picking up Roger's work:
 > 
-> Can you make a quick test with the new series on real hardware.
+> Changes since v7:
+> - combined raminit start and done bit into a struct (3/8, 7/8, 8/8)
+> - constified struct c_can_driver_data (2/8, 7/8, 8/8)
+> - silenced compiler warning in c_can_hw_raminit_{wait,}_syscon (4/8)
+> - use platform_get_device_id in probe() instead of open coding it (2/8)
+> 
 
-Yes. I'll let you know in a while and respond on the v8 thread.
+Thanks for saving me one more iteration :).
+I've tested this to work on AM437x-evm and DRA7-evm.
+
+Please pick patch 9 as well which I will send in response to this thread.
+That one adds compatible id for am4372-d_can.
 
 cheers,
 -roger
