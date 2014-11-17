@@ -1,81 +1,88 @@
-From: Roger Quadros <rogerq@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v8 9/9] net: can: c_can: Add support for TI am4372 DCAN
-Date: Mon, 17 Nov 2014 16:19:01 +0200
-Message-ID: <546A03D5.5080103@ti.com>
-References: <1415988591-6032-1-git-send-email-mkl@pengutronix.de> <5469E55F.1050502@ti.com> <5469E61D.4050507@pengutronix.de> <5469EABB.10506@ti.com>
+Date: Mon, 17 Nov 2014 15:31:33 +0100
+Message-ID: <546A06C5.3020601@pengutronix.de>
+References: <1415988591-6032-1-git-send-email-mkl@pengutronix.de> <5469E55F.1050502@ti.com> <5469E61D.4050507@pengutronix.de> <5469EABB.10506@ti.com> <546A03D5.5080103@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5469EABB.10506@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="2e9kUVrwcJdnqL8b6tbgswgJInPU1CgwK"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41474 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752734AbaKQObl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 17 Nov 2014 09:31:41 -0500
+In-Reply-To: <546A03D5.5080103@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Roger Quadros <rogerq@ti.com>, linux-can@vger.kernel.org
 Cc: wsa@the-dreams.de, linux-omap@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
 
-On 11/17/2014 02:31 PM, Roger Quadros wrote:
-> On 11/17/2014 02:12 PM, Marc Kleine-Budde wrote:
->> On 11/17/2014 01:09 PM, Roger Quadros wrote:
->>> AM4372 SoC has 2 DCAN modules. Add compatible id and
->>> raminit driver data for it. The driver data is same as AM3352
->>> but this gives us flexibility to add AM4372 specific quirks
->>> if required later.
->>
->> Strictly speaking we don't need the hunk in
->> "drivers/net/can/c_can/c_can_platform.c" yet, iff the AM4372 dts(i) has
->> this compatible:
->>
->> "ti,am4372-d_can", "ti,am3352-d_can"
-> 
-> I tried with that, but checkpatch still gives this warning
-> WARNING: DT compatible string "ti,am4372-d_can" appears un-documented -- check ./Documentation/devicetree/bindings/
-> 
-> I guess we can just live with it. Please ignore this patch in that case.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2e9kUVrwcJdnqL8b6tbgswgJInPU1CgwK
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Did you meant that we still need to add it in the binding documentation?
-It is not usable by itself so won't it be a problem to exist in documentation?
-
-cheers,
--roger
-
-> 
->>
+On 11/17/2014 03:19 PM, Roger Quadros wrote:
+> On 11/17/2014 02:31 PM, Roger Quadros wrote:
+>> On 11/17/2014 02:12 PM, Marc Kleine-Budde wrote:
+>>> On 11/17/2014 01:09 PM, Roger Quadros wrote:
+>>>> AM4372 SoC has 2 DCAN modules. Add compatible id and
+>>>> raminit driver data for it. The driver data is same as AM3352
+>>>> but this gives us flexibility to add AM4372 specific quirks
+>>>> if required later.
 >>>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> ---
->>>  Documentation/devicetree/bindings/net/can/c_can.txt | 3 ++-
->>>  drivers/net/can/c_can/c_can_platform.c              | 1 +
->>>  2 files changed, 3 insertions(+), 1 deletion(-)
+>>> Strictly speaking we don't need the hunk in
+>>> "drivers/net/can/c_can/c_can_platform.c" yet, iff the AM4372 dts(i) h=
+as
+>>> this compatible:
 >>>
->>> diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
->>> index 6731730..5a1d8b0 100644
->>> --- a/Documentation/devicetree/bindings/net/can/c_can.txt
->>> +++ b/Documentation/devicetree/bindings/net/can/c_can.txt
->>> @@ -4,7 +4,8 @@ Bosch C_CAN/D_CAN controller Device Tree Bindings
->>>  Required properties:
->>>  - compatible		: Should be "bosch,c_can" for C_CAN controllers and
->>>  			  "bosch,d_can" for D_CAN controllers.
->>> -			  Can be "ti,dra7-d_can" or "ti,am3352-d_can".
->>> +			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
->>> +			  "ti,am4372-d_can".
->>>  - reg			: physical base address and size of the C_CAN/D_CAN
->>>  			  registers map
->>>  - interrupts		: property with a value describing the interrupt
->>> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
->>> index f4488e5..a4535d2 100644
->>> --- a/drivers/net/can/c_can/c_can_platform.c
->>> +++ b/drivers/net/can/c_can/c_can_platform.c
->>> @@ -235,6 +235,7 @@ static const struct of_device_id c_can_of_table[] = {
->>>  	{ .compatible = "bosch,d_can", .data = &d_can_drvdata },
->>>  	{ .compatible = "ti,dra7-d_can", .data = &dra7_dcan_drvdata },
->>>  	{ .compatible = "ti,am3352-d_can", .data = &am3352_dcan_drvdata },
->>> +	{ .compatible = "ti,am4372-d_can", .data = &am3352_dcan_drvdata },
->>>  	{ /* sentinel */ },
->>>  };
->>>  MODULE_DEVICE_TABLE(of, c_can_of_table);
->>>
+>>> "ti,am4372-d_can", "ti,am3352-d_can"
 >>
->> Marc
+>> I tried with that, but checkpatch still gives this warning
+>> WARNING: DT compatible string "ti,am4372-d_can" appears un-documented =
+-- check ./Documentation/devicetree/bindings/
 >>
-> 
+>> I guess we can just live with it. Please ignore this patch in that cas=
+e.
+>=20
+> Did you meant that we still need to add it in the binding documentation=
+?
+> It is not usable by itself so won't it be a problem to exist in documen=
+tation?
 
+I'll take patch 9 as is, since checkpatch is a bit more picky now :)
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--2e9kUVrwcJdnqL8b6tbgswgJInPU1CgwK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUagbFAAoJECte4hHFiupUW6YQAJYpP4oEncsl0jHSjvvCMrtH
+QKYWzlICFdXRqU3ULO1jJ3rhvI+SSf924gIx7eJvtXPpf0KoHlQnVWfyBAepm8pr
+IaSh5J8jWmucwyB1iCea5WkF9Z4zv5RJE7RV8qez7gJAtYuJZftZw7CpJCBl5Abi
+q49F5GjlQmRzg7IeEp+2xY+9kebbovbk1dVazW1IKqPveouQRI/G03RXd06ZOdjn
+stAPX/2h7CkDmkkf7fz4/Rybmkbb/IUTzQR2XTuHSRKp/LAMx9zwvY3PE/YA3Sw5
+rH8ExdUArSaiN2DeFiPKi3PfBpesAoTvZdKsdqFZTPhu0MTQpdfZh5zMAH7OF6Ig
+41C8D9fYMNyXpJCjcB3fpTceEV9Ly3eleDhwZiMaDvMgl0OrtXg2Y/GFFSPd0N0e
+1CV0vJO7fdiaCWzDGF0H7OTY/Me5Hgz6wmnZYoAZByaUjgUxhh2JmPV74m5iTalp
+oNMkd/ERkt9une7a54Nl352MO3iut5QrOPTRfOLILL3GJx839sYcMaCuUwjABG9d
+A+1KMBp4rZ/8AhscXoflvjfAz85hf3PSk4mHukr8zex8mfdOk4m7Y+j4VIe8Pg5z
+6uxYrYCSy39bmp80bSFEF7mGz1I6YlChBa6az+9nKPYBxMrKcfTvmbE/wIPd35WG
+TYdyjlGJ/esNVK2eKy9C
+=zLtL
+-----END PGP SIGNATURE-----
+
+--2e9kUVrwcJdnqL8b6tbgswgJInPU1CgwK--
