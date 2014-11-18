@@ -1,56 +1,126 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 2/2] net: can: comparison of unsigned variable
-Date: Tue, 18 Nov 2014 17:47:02 +0100
-Message-ID: <67e24b2a43564b55960a31c62e5d44ca@BY2FFO11FD055.protection.gbl>
-References: <1416318427-28676-1-git-send-email-sudipm.mukherjee@gmail.com>
- <1416318427-28676-2-git-send-email-sudipm.mukherjee@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2014-11-18
+Date: Tue, 18 Nov 2014 21:37:30 +0100
+Message-ID: <1416343067-9810-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1416318427-28676-2-git-send-email-sudipm.mukherjee@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michal Simek <michal.simek@xilinx.com>, =?windows-1252?Q?S=F6ren_Brinkmann?= <soren.brinkmann@xilinx.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47271 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754223AbaKRUh4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Nov 2014 15:37:56 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-On 11/18/2014 02:47 PM, Sudip Mukherjee wrote:
-> err was of the type u32. it was being compared with < 0, and being
-> an unsigned variable the comparison would have been always false.
-> 
-> moreover, err was getting the return value from set_reset_mode()
-> and xcan_set_bittiming(), and both are returning int.
-> 
-> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-> ---
->  drivers/net/can/xilinx_can.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index 72fe96f..67c2dd4 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -300,7 +300,8 @@ static int xcan_set_bittiming(struct net_device *ndev)
->  static int xcan_chip_start(struct net_device *ndev)
->  {
->  	struct xcan_priv *priv = netdev_priv(ndev);
-> -	u32 err, reg_msr, reg_sr_mask;
-> +	u32 reg_msr, reg_sr_mask;
-> +	int err;
->  	unsigned long timeout;
->  
->  	/* Check if it is in reset mode */
-> 
+Hello David,
 
-Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+this is a pull request of 17 patches for net/master for the v3.18 relea=
+se
+cycle.
 
-Thanks,
-Michal
+The last patch of this pull request ("can: m_can: update to support CAN=
+ FD
+features") adds, as the description says, a new feature to the m_can dr=
+iver. As
+the m_can driver has been added in v3.18 there is no risk of causing a
+regression. Give me a note if this is not okay and I'll create a new pu=
+ll
+request without it.
+
+There is a patch for the CAN infrastructure by Thomas K=C3=B6rper which=
+ fixes
+calling kfree_skb() from interrupt context. Roman Fietze fixes a typo a=
+lso in
+the infrastructure. A patch by Dong Aisheng adds a generic helper funct=
+ion to
+tell if a skb is normal CAN or CAN-FD frame. Alexey Khoroshilov of the =
+Linux
+Driver Verification project fixes a memory leak in the esd_usb2 driver.=
+ Two
+patches by Sudip Mukherjee remove unused variables and fixe the signess=
+ of a
+variable. Three patches by me add the missing .ndo_change_mtu callback =
+to the
+xilinx_can, rcar_can and gs_usb driver.
+
+The remaining patches improve the m_can driver: David Cohen adds the mi=
+ssing
+CONFIG_HAS_IOMEM dependency. Dong Aisheng provides 6 bugfix patches (mo=
+st
+important: missing RAM init, sleep in NAPI poll, dlc in RTR). While the=
+ last of
+his patches adds CAN FD support to the driver.
+
+regards,
+Marc
+
+---
+
+The following changes since commit feb91a02ccb09661507f170b2a444aec94f3=
+07f9:
+
+  ipv6: mld: fix add_grhead skb_over_panic for devs with large MTUs (20=
+14-11-16 16:55:06 -0500)
+
+are available in the git repository at:
+
+  git://gitorious.org/linux-can/linux-can.git tags/linux-can-fixes-for-=
+3.18-20141118
+
+for you to fetch changes up to 80646733f11c2e9de3b6339f7e635047e6087280=
+:
+
+  can: m_can: update to support CAN FD features (2014-11-18 21:35:06 +0=
+100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-3.18-20141118
+
+----------------------------------------------------------------
+Alexey Khoroshilov (1):
+      can: esd_usb2: fix memory leak on disconnect
+
+David Cohen (1):
+      can: m_can: add CONFIG_HAS_IOMEM dependence
+
+Dong Aisheng (8):
+      can: dev: add can_is_canfd_skb() API
+      can: m_can: add .ndo_change_mtu function
+      can: m_can: add missing message RAM initialization
+      can: m_can: fix possible sleep in napi poll
+      can: m_can: fix not set can_dlc for remote frame
+      can: m_can: add missing delay after setting CCCR_INIT bit
+      can: m_can: fix incorrect error messages
+      can: m_can: update to support CAN FD features
+
+Marc Kleine-Budde (3):
+      can: xilinx_can: add .ndo_change_mtu function
+      can: rcar_can: add .ndo_change_mtu function
+      can: gs_usb: add .ndo_change_mtu function
+
+Roman Fietze (1):
+      can: dev: fix typo CIA -> CiA, CAN in Automation
+
+Sudip Mukherjee (2):
+      can: remove unused variable
+      can: xilinx_can: fix comparison of unsigned variable
+
+Thomas K=C3=B6rper (1):
+      can: dev: avoid calling kfree_skb() from interrupt context
+
+ drivers/net/can/dev.c                |   4 +-
+ drivers/net/can/m_can/Kconfig        |   1 +
+ drivers/net/can/m_can/m_can.c        | 219 ++++++++++++++++++++++++++-=
+--------
+ drivers/net/can/rcar_can.c           |   1 +
+ drivers/net/can/sja1000/kvaser_pci.c |   5 +-
+ drivers/net/can/usb/ems_usb.c        |   3 +-
+ drivers/net/can/usb/esd_usb2.c       |   3 +-
+ drivers/net/can/usb/gs_usb.c         |   1 +
+ drivers/net/can/xilinx_can.c         |   4 +-
+ include/linux/can/dev.h              |   6 +
+ 10 files changed, 183 insertions(+), 64 deletions(-)
+
