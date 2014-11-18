@@ -1,61 +1,46 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] net: can: remove unused variable
-Date: Tue, 18 Nov 2014 21:39:00 +0100
-Message-ID: <546BAE64.7030406@pengutronix.de>
-References: <1416318427-28676-1-git-send-email-sudipm.mukherjee@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="2SIFd2A4enKJhnqeVUJotQIuriOILaqj9"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416318427-28676-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Subject: [PATCH 02/17] can: dev: fix typo CIA -> CiA, CAN in Automation
+Date: Tue, 18 Nov 2014 21:37:32 +0100
+Message-ID: <1416343067-9810-3-git-send-email-mkl@pengutronix.de>
+References: <1416343067-9810-1-git-send-email-mkl@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47282 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932109AbaKRUh6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Nov 2014 15:37:58 -0500
+In-Reply-To: <1416343067-9810-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Roman Fietze <roman.fietze@telemotive.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2SIFd2A4enKJhnqeVUJotQIuriOILaqj9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Roman Fietze <roman.fietze@telemotive.de>
 
-On 11/18/2014 02:47 PM, Sudip Mukherjee wrote:
-> these variable were only assigned some values, but then never
-> reused again.
-> so they are safe to be removed.
+This patch fixes a typo in CAN's dev.c:
 
-Thanks, I've applied both patches.
+    CIA -> CiA
 
-Marc
+which stands for CAN in Automation.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Signed-off-by: Roman Fietze <roman.fietze@telemotive.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 509d5e063d8c..2cfe5012e4e5 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -110,7 +110,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 	long rate;
+ 	u64 v64;
+ 
+-	/* Use CIA recommended sample points */
++	/* Use CiA recommended sample points */
+ 	if (bt->sample_point) {
+ 		sampl_pt = bt->sample_point;
+ 	} else {
+-- 
+2.1.3
 
---2SIFd2A4enKJhnqeVUJotQIuriOILaqj9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUa65kAAoJECte4hHFiupU4k0P/iJTMIH/d2Shj0PibwHfTbz/
-oz5DalefJNoxkaMcmbpOMHRn27KwJijCbn+G5Dgy5HA7kKp1Y2fkITqjlqlwS5AE
-z5jH4zXDW4IzzsloZhy1XSLzVW56UIh1H8lcd2fyLNn8Qa+QQ25/QxRTLtokKXXx
-TBwrK03yjt3R9Mj1pvaoc7yUSYxLChjvoYl9i9bVh9xEeQLj3wBP0KdJmjxWnd1Z
-Sq6AmuZXrIi2crNeBoQCCJZwYEPr60UCDKFpltjHjcWk3eZKHNE4kkEj2jef39dn
-jBmclYsPh5UINByZK4Xu+nDo0cFioMXyd7CcjghRfqYOfrueWOsnDT99UrWpd5XR
-2TDHSOF0qFxN09+RdPBHe70e0ONfiTJHIQvBNEG3AVyFJxrkFqAfDZYzTVmB4re4
-xe8L4S0U+yyuOmwadrHHnPpJXHazABBmv9Va2uFOU2bigSnWWLU82rlHFLgyqlse
-qxhve57jq/t2VR01q/5HjbUQvuJ9VL1FJPo5lt9r9aA4GufZ1ZLRnKnFYe0G4LJ1
-xpo43iWuuxt6xOYl8WXCmQOc7mvmuFsKAPOkw+ojO8uOq5WewuTgEbNpJjbDE9Pw
-Eq6xYsCs9Dc643wlSxS7JAY0/VvItDeXwAWWCSaL58zIQOIUFleOxodFrTsKv4Cx
-Xb8jeYEoQiPVB4snH/2t
-=NaXV
------END PGP SIGNATURE-----
-
---2SIFd2A4enKJhnqeVUJotQIuriOILaqj9--
