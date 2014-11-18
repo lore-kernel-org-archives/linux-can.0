@@ -1,35 +1,35 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] net/can/dev.c: fix typo CIA -> CiA, CAN in Automation
-Date: Tue, 18 Nov 2014 21:45:14 +0100
-Message-ID: <546BAFDA.40806@pengutronix.de>
-References: <4920416.2Hro7iNePH@rfietze>
+Subject: Re: [PATCH 1/1] can: Avoid calling kfree_skb from interrupt context
+Date: Tue, 18 Nov 2014 21:45:25 +0100
+Message-ID: <546BAFE5.60405@pengutronix.de>
+References: <1414737234-31132-1-git-send-email-thomas.koerper@esd.eu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="ChsqhorPjBFNnwdRnB5AWmnTVmD8CD1aK"
+ boundary="ev8gSbPETS9owlk1H7rqxh2dHVLCKrsAr"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60847 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60863 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754558AbaKRUpR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Nov 2014 15:45:17 -0500
-In-Reply-To: <4920416.2Hro7iNePH@rfietze>
+	with ESMTP id S1754558AbaKRUp2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 18 Nov 2014 15:45:28 -0500
+In-Reply-To: <1414737234-31132-1-git-send-email-thomas.koerper@esd.eu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roman Fietze <roman.fietze@telemotive.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: =?UTF-8?B?VGhvbWFzIEvDtnJwZXI=?= <thomas.koerper@esd.eu>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ChsqhorPjBFNnwdRnB5AWmnTVmD8CD1aK
+--ev8gSbPETS9owlk1H7rqxh2dHVLCKrsAr
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 10/20/2014 10:32 AM, Roman Fietze wrote:
-> It's a realy tiny fix, so not to whirl up too much dust I'll send it
-> to you directly.
+On 10/31/2014 07:33 AM, Thomas K=C3=B6rper wrote:
+> Called in can_free_echo_skb, which might be called from (TX Error) inte=
+rrupt.
 
-Please use the mailing list in the future. Applied to can/master.
+Applied to can/master.
 
-Thanks for contributing,
-Marc
+Thanks, Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -38,8 +38,7 @@ Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
 
-
---ChsqhorPjBFNnwdRnB5AWmnTVmD8CD1aK
+--ev8gSbPETS9owlk1H7rqxh2dHVLCKrsAr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -47,19 +46,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUa6/aAAoJECte4hHFiupU498P/2aFjxpk5uI3Fjpr03QtMiGZ
-q8hvP6eJ3C3QanoTFWeGV5MBnrA74WuMAiMjDJCXBl6oqtxPQVvywElDFijpka/q
-B+w4ao7w9NWrza3LtJy+8gUaaBqLQ8/gtkokjyPknl6IfpadwTTaTOtM6l5Ca8QZ
-RKKsGOalpat0/OqkaJmu1Vg5KgdDJSNQjqHP9BYlROg5JsCVPXMgr3wCCa+BGUYW
-vbndzt/DAqDIKNN7QARYK6Qg9Hgj1CJghk3JfXaXpkyPZP8mzLdjxAM6ELKiCJ7w
-gm4gtgukKx7jGByDoZ0h0PTTcUpTOGx00H6f605WlJyPqxBkrbOKWxBlMmmFRenw
-j4eQadVEWuxB2x/D7juDt4ym96UF3EyE+McpYFZgo1DTredpv0vJHQR51t68fPzq
-0n8F72UURK/eAnxgtvLY8MW58uGPWJdlkWJA+4QZBpH+H+lo/I05C2eapXwTRCJy
-GgWl6dV64sFipmSvEeSHmpmT8hQQLDH+C5zs5IeqZPf7CRxdsTQIjwusVn7U07am
-DrAbeqPkUBweWUAgm8xiE7laxGHASizX3xR51185TaehnbXHvSZxnQOjN3p6uYAq
-5/Mv01MKjxD2nGKatUOi4FbE4CzOfrulkmVUzzYHPyB0AyxnbaJh7qCV4xeP/n4+
-x5n0fMiM1ugprcqrhwg2
-=CYlE
+iQIcBAEBAgAGBQJUa6/lAAoJECte4hHFiupUYjgQAJYQKc6Ax1R9xSBLQaRYA33F
+pxAzRIoZLqjducofuezKObI4fo4LM1G2yguvcvxnXpDXlxIf31Zfjv0dhQuOLbjH
+2XIa/IwbFM+Xl0J/HSgRwC7KdStubtKiUqGLRYvrMtpNWyLzxx9/kqGM62A+knpV
+PpVAk9y+Pa43VCVJ+IKlIDH3EExaqY9c79COX/S9l5xziSCeuKP2K+EjfAFgAOl8
+cEnj30XeHdFQBkzDYQGI9iSEWYnkp+KVj4JU5cDS7Zw2GjHE8JGKtZ14g/DuEyT/
+L3wpJIikA2dpmlDcNdevTZ1oSOedTMG7u8FIlQD24rQMdyIxI7av9TOGLQ/T51CV
+PU32oC6vu1tUkyIKlCvdAql2bTcMKmp8hXKbdiR5EfwWvJ1meM6RMlDyeGhQW8Jy
+Z4c/fXiYCVHpndTQ1jHqaja09IW+DlrfMfMlpPIWOmGpcB967+XRQeB+urgR+dyT
+p/5h0HIbT12F7zg/GpiL7uDMh7Mm6j1thvKXi4vfy0S6xEez2I1s0BuqIK3e1Nw+
+RenPCokhx6YKs9u/p3SaW4nKExVp5Igl4xw7e1s+Oy16LuZNMqUyEYcyM611ZnWo
+mWtK43nYiPaqlvbr2in6v1zkITdmgDCNIsXg01tiasjlm8w7qSVyOSjAsGmjaTs1
+uQ0VVpo3oL+7v8f+0pT4
+=gg6/
 -----END PGP SIGNATURE-----
 
---ChsqhorPjBFNnwdRnB5AWmnTVmD8CD1aK--
+--ev8gSbPETS9owlk1H7rqxh2dHVLCKrsAr--
