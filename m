@@ -1,57 +1,100 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v5 06/10] ARM: dts: am4372: Add DCAN nodes
-Date: Fri, 21 Nov 2014 16:08:54 -0800
-Message-ID: <20141122000853.GI7046@atomide.com>
-References: <1415881371-4982-1-git-send-email-rogerq@ti.com>
- <1415881371-4982-7-git-send-email-rogerq@ti.com>
- <5469F35D.80504@ti.com>
- <20141121235032.GC7046@atomide.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Jeremiah Mahler <jmmahler@gmail.com>
+Subject: [PATCH] can: eliminate banner[] variable and switch to pr_info()
+Date: Fri, 21 Nov 2014 23:42:35 -0800
+Message-ID: <1416642155-31816-1-git-send-email-jmmahler@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]:51100 "EHLO
-	mho-01-ewr.mailhop.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1752160AbaKVAJJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 21 Nov 2014 19:09:09 -0500
-Content-Disposition: inline
-In-Reply-To: <20141121235032.GC7046@atomide.com>
+Received: from mail-pa0-f43.google.com ([209.85.220.43]:42962 "EHLO
+	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750762AbaKVHnN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 22 Nov 2014 02:43:13 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roger Quadros <rogerq@ti.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, wsa@the-dreams.de, mugunthanvnm@ti.com, george.cherian@ti.com, balbi@ti.com, nsekhar@ti.comnm@ti.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jeremiah Mahler <jmmahler@gmail.com>
 
-* Tony Lindgren <tony@atomide.com> [141121 15:52]:
-> * Roger Quadros <rogerq@ti.com> [141117 05:10]:
-> > The SoC contains 2 DCAN modules. Add them.
-> 
-> Thanks applying all into omap-for-v3.19/dt-v2.
+Several CAN modules use a design pattern with a banner[] variable at the
+top which defines a string that is used once during init to print the
+banner.  The string is also embedded with KERN_INFO which makes it
+printk() specific.
 
-Oops, have to drop these as they cause this on make dtbs:
+Improve the code by eliminating the banner[] variable and moving the
+string to where it is printed.  Then switch from printk(KERN_INFO to
+pr_info() for the lines that were changed.
 
-  DTC     arch/arm/boot/dts/dra7-evm.dtb
-Warning (reg_format): "reg" property in /soc/can@481cc000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (reg_format): "reg" property in /soc/can@481d0000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481d0000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481d0000
-  DTC     arch/arm/boot/dts/am57xx-beagle-x15.dtb
-Warning (reg_format): "reg" property in /soc/can@481cc000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (reg_format): "reg" property in /soc/can@481d0000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481d0000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481d0000
-  DTC     arch/arm/boot/dts/dra72-evm.dtb
-Warning (reg_format): "reg" property in /soc/can@481cc000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (reg_format): "reg" property in /soc/can@481d0000 has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481cc000
-Warning (avoid_default_addr_size): Relying on default #address-cells value for /soc/can@481d0000
-Warning (avoid_default_addr_size): Relying on default #size-cells value for /soc/can@481d0000
+Signed-off-by: Jeremiah Mahler <jmmahler@gmail.com>
+---
+ net/can/af_can.c | 5 +----
+ net/can/bcm.c    | 4 +---
+ net/can/raw.c    | 4 +---
+ 3 files changed, 3 insertions(+), 10 deletions(-)
 
-Care to update the patches for that and then do a pull request for me?
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index ce82337..ac05be1 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -64,9 +64,6 @@
+ 
+ #include "af_can.h"
+ 
+-static __initconst const char banner[] = KERN_INFO
+-	"can: controller area network core (" CAN_VERSION_STRING ")\n";
+-
+ MODULE_DESCRIPTION("Controller Area Network PF_CAN core");
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Urs Thuermann <urs.thuermann@volkswagen.de>, "
+@@ -896,7 +893,7 @@ static __init int can_init(void)
+ 		     offsetof(struct can_frame, data) !=
+ 		     offsetof(struct canfd_frame, data));
+ 
+-	printk(banner);
++	pr_info("can: controller area network core (" CAN_VERSION_STRING ")\n");
+ 
+ 	memset(&can_rx_alldev_list, 0, sizeof(can_rx_alldev_list));
+ 
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index dcb75c0..9aa3f76 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -78,8 +78,6 @@
+ 		     (CAN_SFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG))
+ 
+ #define CAN_BCM_VERSION CAN_VERSION
+-static __initconst const char banner[] = KERN_INFO
+-	"can: broadcast manager protocol (rev " CAN_BCM_VERSION " t)\n";
+ 
+ MODULE_DESCRIPTION("PF_CAN broadcast manager protocol");
+ MODULE_LICENSE("Dual BSD/GPL");
+@@ -1615,7 +1613,7 @@ static int __init bcm_module_init(void)
+ {
+ 	int err;
+ 
+-	printk(banner);
++	pr_info("can: broadcast manager protocol (rev " CAN_BCM_VERSION " t)\n");
+ 
+ 	err = can_proto_register(&bcm_can_proto);
+ 	if (err < 0) {
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 081e81f..e3250e2 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -56,8 +56,6 @@
+ #include <net/net_namespace.h>
+ 
+ #define CAN_RAW_VERSION CAN_VERSION
+-static __initconst const char banner[] =
+-	KERN_INFO "can: raw protocol (rev " CAN_RAW_VERSION ")\n";
+ 
+ MODULE_DESCRIPTION("PF_CAN raw protocol");
+ MODULE_LICENSE("Dual BSD/GPL");
+@@ -810,7 +808,7 @@ static __init int raw_module_init(void)
+ {
+ 	int err;
+ 
+-	printk(banner);
++	pr_info("can: raw protocol (rev " CAN_RAW_VERSION ")\n");
+ 
+ 	err = can_proto_register(&raw_can_proto);
+ 	if (err < 0)
+-- 
+2.1.3
 
-Regards,
-
-Tony
