@@ -1,46 +1,46 @@
-From: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>
-Subject: Enable both CAN interfaces of BeagleBone Black
-Date: Mon, 24 Nov 2014 17:15:02 +0100
-Message-ID: <54735986.2090603@ep1.ruhr-uni-bochum.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Enable both CAN interfaces of BeagleBone Black
+Date: Mon, 24 Nov 2014 19:13:00 +0100
+Message-ID: <5473752C.8090505@hartkopp.net>
+References: <54735986.2090603@ep1.ruhr-uni-bochum.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mi.ruhr-uni-bochum.de ([134.147.64.33]:59293 "HELO
-	mx5.rz.ruhr-uni-bochum.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1753138AbaKXQVq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Nov 2014 11:21:46 -0500
-Received: from dell33pvf5j.him.kph (host0017.kph.uni-mainz.de [134.93.132.17])
-	(Authenticated sender: feldbfbm)
-	by mail1.mail.ruhr-uni-bochum.de (Postfix) with ESMTPSA id 242D1200BA
-	for <linux-can@vger.kernel.org>; Mon, 24 Nov 2014 17:15:03 +0100 (CET)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:8814 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751304AbaKXSOM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Nov 2014 13:14:12 -0500
+In-Reply-To: <54735986.2090603@ep1.ruhr-uni-bochum.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de>, linux-can@vger.kernel.org
 
-Hey all,
+Hello Florian,
 
-I've a BeagleBone Black here, and I would like to use
-_both_ CAN interfaces of the SoC.
-Does anybody know how to enable them?
+the problem is that the pins for DCAN0 are usually used by the I2C for the 
+EEPROM that contains device-tree informations for the beagle-cape.
 
-I'm using the debian sd-card image from
-http://beagleboard.org/latest-images
+So you need to disable the I2C device-tree automatism (if enabled) and then 
+assign the two pins to be DCAN0.
 
-Best regards,
-=46lorian
+The best tutorial I've seen so far is here:
+http://www.embedded-things.com/bbb/enable-canbus-on-the-beaglebone-black/
 
---=20
-----------------------------------------
-| Dr. Florian Feldbauer                |
-|                                      |
-| Helmholtz-Institut Mainz /           |
-| Johannes Gutenberg-Universit=C3=A4t Mainz |
-| Johann-Joachim-Becher-Weg 36         |
-| D-55128 Mainz                        |
-|                                      |
-| Office: SB1 / 00-213                 |
-| Phone:  (+49)6131 / 39-29605         |
-----------------------------------------
+Regards,
+Oliver
 
+
+On 24.11.2014 17:15, Florian Feldbauer wrote:
+> Hey all,
+>
+> I've a BeagleBone Black here, and I would like to use
+> _both_ CAN interfaces of the SoC.
+> Does anybody know how to enable them?
+>
+> I'm using the debian sd-card image from
+> http://beagleboard.org/latest-images
+>
+> Best regards,
+> Florian
+>
