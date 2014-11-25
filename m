@@ -1,98 +1,211 @@
-From: gianluca <gianlucarenzi@eurekelettronica.it>
-Subject: Re: MCP2515 implementation is slow
-Date: Tue, 25 Nov 2014 17:47:57 +0100
-Message-ID: <5474B2BD.1030901@eurekelettronica.it>
-References: <84a1d29551f84f5494b309e1ad1e0840@SGPMBX1004.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v3 1/4] can: dev: Consolidate and unify state change handling
+Date: Tue, 25 Nov 2014 21:55:22 +0100
+Message-ID: <5474ECBA.3060505@grandegger.com>
+References: <43755b0f-30ca-4baf-b3e3-410eaeab636a@GRBSR0089.marel.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx7.acantho.net ([213.174.182.181]:34947 "EHLO mx7.acantho.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751287AbaKYQzH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 25 Nov 2014 11:55:07 -0500
-Received: (from root@localhost)
-	by mx7.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id sAPGn7Un010742
-	for <linux-can@vger.kernel.org>; Tue, 25 Nov 2014 17:49:07 +0100
-In-Reply-To: <84a1d29551f84f5494b309e1ad1e0840@SGPMBX1004.APAC.bosch.com>
+Received: from ngcobalt02.manitu.net ([217.11.48.102]:35342 "EHLO
+	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751194AbaKYUz0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 25 Nov 2014 15:55:26 -0500
+In-Reply-To: <43755b0f-30ca-4baf-b3e3-410eaeab636a@GRBSR0089.marel.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
-Cc: linux-can@vger.kernel.org
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de
 
-On 11/25/2014 05:19 PM, Pankajkumar Misra (RBEI/EEA2) wrote:
-> Hello Guys,
->
-> I have compiled MCP251x.c kernel driver module for Olimex A20-Olinuxi=
-no Micro.
->
-> The device is working fine for one frame at a time at 500ms. If I sen=
-d two or more frame at the same time,
-> CAN is going to bus-off due to overrun errors.
-> Even if I send one frame at faster rate say, 100ms,results in bus-off=
-=2E
->
-> I am communicating with module with ip commands, cansend & candump.
-> Also my SPI module is working only at 250K baud, not any other baud.
->
-> Any suggestions.
->
-> Best Regards,
-> Pankaj
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+On 09/26/2014 07:19 PM, Andri Yngvason wrote:
+> The handling of can error states is different between platforms.
+> This is an attempt to correct that problem.
+> 
+> I've moved this handling into a generic function for changing the
+> error state. This ensures that error state changes are handled
+> the same way everywhere (where this function is used).
 
-Once upon a time there were a custom mcp2515.c driver rewritten by=20
-Oliveira and modified by myself to obtain the maximum performance=20
-possible with this VERY POOR chip.
+I think it's also important to note that now also *decreasing* error
+states are reported.
 
-http://clientes.netvisao.pt/anbadeol/mcp2515.html
+> Changes made since last proposal:
+> can: dev: remove can_errcnt_to_state
+> can: dev: reduce nesting in can_change_state
 
-If you are interested, please feel-free to contact me to obtain a=20
-modified version (maybe better? :-P ) of this driver.
+Please move the changes after the "---" line below.
 
-Actually it runs on a 2.6.27 kernel with a Samsung S3C2442 SoC. It runs=
-=20
-without any problem running @ 250Kbit/s and 125Kbit/s with some burst o=
-f=20
-a frame every 2 or 4 msecs. For sure your application has to be 'niced'=
-=20
-to a be almost-real-time over other processes and the socket receive=20
-queues have to be increased a little bit.
-But it works good over the past 3 years with approx. 1k custom boards=20
-batch worldwide sold.
+> Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+> ---
+>  drivers/net/can/dev.c          | 94 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/can/dev.h        |  4 ++
+>  include/uapi/linux/can/error.h |  1 +
+>  3 files changed, 99 insertions(+)
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 02492d2..a10b6ab 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -273,6 +273,100 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
+>  	return err;
+>  }
+>  
+> +static void can_update_error_counters(struct net_device *dev,
+> +				      enum can_state new_state)
 
-It would not so difficult to adapt it to run over a 3.x kernel and mayb=
-e=20
-in a near future I will add a DEVICE TREE support for it.
+s/can_update_error_counters/can_update_error_stats/ ?
 
-Best regards,
---=20
-            ,,,
-           (o o)
-=3D=3D=3D=3D=3D=3DoOO=3D=3D(_)=3D=3DOOo=3D=3D=3D=3D=3D=3D
+Error counters are usually txerr/rxerr.
 
-Gianluca Renzi
-R&D
-phone: +39.0542.609120
-fax:   +39.0542.609212
+> +{
+> +	struct can_priv *priv = netdev_priv(dev);
+> +
+> +	if (new_state <= priv->state)
+> +		return;
+> +
+> +	switch (new_state) {
+> +	case CAN_STATE_ERROR_ACTIVE:
+> +		netdev_warn(dev, "%s: did we come from a state less than error-active?",
+> +			    __func__);
 
-       .oooO  Oooo.
-=3D=3D=3D=3D=3D=3D(   )=3D=3D(   )=3D=3D=3D=3D=3D=3D=3D
-        \ (    ) /
-         \_)  (_/
+Please remove __func__ here and below and use a more meaningful warning
+message. Such messages should make sense to non-experts as well...
+at least a little bit.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
-  \ source code!  /
-   ---------------
-     =C2=AF\_(".)_/=C2=AF
+> +		break;
+> +	case CAN_STATE_ERROR_WARNING:
+> +		priv->can_stats.error_warning++;
+> +		break;
+> +	case CAN_STATE_ERROR_PASSIVE:
+> +		priv->can_stats.error_passive++;
+> +		break;
+> +	case CAN_STATE_BUS_OFF:
+> +		priv->can_stats.bus_off++;
+
+Be careful here. This counter will also be incremented in can_bus_off().
+
+> +		break;
+> +	default:
+> +		netdev_warn(dev, "%s: %d is not a state", __func__, new_state);
+
+"%d is not a valid state" ?
+
+> +		break;
+> +	};
+> +}
+> +
+> +static int can_txstate_to_frame(struct net_device *dev, enum can_state state)
+
+s/txstate/tx_state/ ?
+
+> +{
+> +	switch (state) {
+> +	case CAN_STATE_ERROR_ACTIVE:
+> +		return CAN_ERR_CRTL_ACTIVE;
+> +	case CAN_STATE_ERROR_WARNING:
+> +		return CAN_ERR_CRTL_TX_WARNING;
+> +	case CAN_STATE_ERROR_PASSIVE:
+> +		return CAN_ERR_CRTL_TX_PASSIVE;
+> +	case CAN_STATE_BUS_OFF:
+> +		netdev_warn(dev, "%s: bus-off is not handled here", __func__);
+
+Then we may silently ignore it?
+
+> +		return 0;
+> +	default:
+> +		netdev_warn(dev, "%s: %d is not a state", __func__, state);
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int can_rxstate_to_frame(struct net_device *dev, enum can_state state)
+
+s/rxstate/rx_state/
+
+> +{
+> +	switch (state) {
+> +	case CAN_STATE_ERROR_ACTIVE:
+> +		return CAN_ERR_CRTL_ACTIVE;
+> +	case CAN_STATE_ERROR_WARNING:
+> +		return CAN_ERR_CRTL_RX_WARNING;
+> +	case CAN_STATE_ERROR_PASSIVE:
+> +		return CAN_ERR_CRTL_RX_PASSIVE;
+> +	case CAN_STATE_BUS_OFF:
+> +		netdev_warn(dev, "%s: bus-off is not handled here", __func__);
+> +		return 0;
+
+See above.
+
+> +	default:
+> +		netdev_warn(dev, "%s: %d is not a state", __func__, state);
+> +		return 0;
+> +	}
+> +}
+> +
+> +void can_change_state(struct net_device *dev, struct can_frame *cf,
+> +		      enum can_state new_state, enum can_state tx_state,
+> +		      enum can_state rx_state)
+> +{
+> +	struct can_priv *priv = netdev_priv(dev);
+> +
+> +	if (unlikely(new_state == priv->state)) {
+> +		netdev_warn(dev, "%s: oops, state did not change", __func__);
+> +		return;
+> +	}
+> +
+> +	can_update_error_counters(dev, new_state);
+> +	priv->state = new_state;
+> +
+> +	if (unlikely(new_state == CAN_STATE_BUS_OFF)) {
+> +		cf->can_id |= CAN_ERR_BUSOFF;
+> +		return;
+> +	}
+> +
+> +	if (unlikely(tx_state != new_state && rx_state != new_state))
+> +		netdev_warn(dev, "%s: neither rx nor tx state match new state", __func__);
+
+Is this worth a warning or is it even an error?
+
+> +
+> +	cf->can_id |= CAN_ERR_CRTL;
+> +	cf->data[1] |= tx_state >= rx_state ?
+> +		       can_txstate_to_frame(dev, tx_state) : 0;
+> +	cf->data[1] |= tx_state <= rx_state ?
+> +		       can_rxstate_to_frame(dev, rx_state) : 0;
+
+OK, I can live with that solution.
+
+> +}
+> +EXPORT_SYMBOL_GPL(can_change_state);
+> +
+>  /*
+>   * Local echo of CAN messages
+>   *
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 6992afc..1902bff 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -121,6 +121,10 @@ void unregister_candev(struct net_device *dev);
+>  int can_restart_now(struct net_device *dev);
+>  void can_bus_off(struct net_device *dev);
+>  
+> +void can_change_state(struct net_device *dev, struct can_frame *cf,
+> +		      enum can_state new_state, enum can_state tx_state,
+> +		      enum can_state rx_state);
+> +
+>  void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+>  		      unsigned int idx);
+>  unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+> diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
+> index c247446..1c508be 100644
+> --- a/include/uapi/linux/can/error.h
+> +++ b/include/uapi/linux/can/error.h
+> @@ -71,6 +71,7 @@
+>  #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status TX */
+>  				      /* (at least one error counter exceeds */
+>  				      /* the protocol-defined level of 127)  */
+> +#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
+>  
+>  /* error in CAN protocol (type) / data[2] */
+>  #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
+> 
+
