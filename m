@@ -1,129 +1,65 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v3 0/4] Consolidate and unify state change handling
-Date: Tue, 25 Nov 2014 22:07:11 +0100
-Message-ID: <5474EF7F.6060008@grandegger.com>
-References: <212bdd30-5398-4189-b928-5b9e674ebaa8@GRBSR0089.marel.net> <54723716.5000509@grandegger.com> <20141125155145.30778.82976@shannon>
+From: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
+Subject: RE: MCP2515 implementation is slow
+Date: Wed, 26 Nov 2014 05:02:52 +0000
+Message-ID: <45c8e0a27f1140be831e1c21d65a2091@SGPMBX1004.APAC.bosch.com>
+References: <84a1d29551f84f5494b309e1ad1e0840@SGPMBX1004.APAC.bosch.com>
+ <5474B2BD.1030901@eurekelettronica.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:37606 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750869AbaKYVHO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 25 Nov 2014 16:07:14 -0500
-In-Reply-To: <20141125155145.30778.82976@shannon>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:28523 "EHLO
+	smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750962AbaKZFC6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Nov 2014 00:02:58 -0500
+In-Reply-To: <5474B2BD.1030901@eurekelettronica.it>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de
+To: gianluca <gianlucarenzi@eurekelettronica.it>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/25/2014 04:51 PM, Andri Yngvason wrote:
-> Quoting Wolfgang Grandegger (2014-11-23 19:35:50)
->> On 11/22/2014 06:41 PM, Andri Yngvason wrote:
->>> Tested on sja1000 using:
->>>  cangen -g 100 can0
->>> and
->>>  candump -ta -e can0,0:0,#FFFFFFFF
->>>
-> ...
->>>  (1416683061.571115)  can0  643   [8]  D9 BB 20 19 28 A0 56 77
->>>  (1416683061.671163)  can0  736   [7]  62 00 39 0E 13 F4 7E
->>>  (1416683061.770988)  can0  2E4   [3]  D2 3F C0
->>
->> This looks now good for the SJA1000 ...
->>
->>> Tested on mscan using:
->>>  cangen -g 100 can0
->>> and
->>>  candump -ta -e can0,0:0,#FFFFFFFF
->>>
-> ...
->>>  (0000088454.071587)  can0  07F   [7]  4A 5B 1E B3 5F 63 1E
->>>  (0000088454.171299)  can0  092   [1]  5A
->>>  (0000088454.271898)  can0  492   [8]  41 1C 23 91 77 76 27 D7
->>
->> and MSCAN.
->>
->>> Tested on flexcan using:
->>>  cangen -g 1000 can0
->>>  cangen -g 1000 can1
->>> and
->>>  candump -ta -e can0,0:0,#FFFFFFFF
->>> and
->>>  berr-reporting on
->>
->> I think you need this because your Flexcan platform data are wrong as
->> mentioned earlier.
->>
-> I need this because of missing interrupts from the controller and failure to
-> address this in the driver. This could be fixed by always leaving the bus error
-> interrupts on and polling the state on tx. I'm not sure if either of those are a
-> good idea.
-
-You should fix your Flexcan platform binding.
-
->>> Disconnected bus:
->>>  (000.190615)  can0  2AA   [3]  2F 73 B5
->>>  (000.809397)  can0  3B5   [7]  1F C1 79 77 5D 56 3E
->>>  (000.190926)  can0  4AA   [6]  8A 01 7F 1B 43 CA
->>>  (001.007441)  can0  200000A8   [8]  00 00 00 19 00 00 00 00   ERRORFRAME
-> ...
->>>       restarted-after-bus-off
->>>  (000.750963)  can0  6BF   [8]  5A 26 E0 13 B3 FA DE 0E
->>>  (000.190390)  can0  6CD   [4]  09 97 46 75
->>>  (000.809340)  can0  5EC   [2]  9A 2B
->>
->> Looks good as well. Would be nice if you use cangen with a message count
->> in the data.
-> I'll keep that in mind next time.
->>
->>> Note: I made the following changes to can-utils:
->>> diff --git a/lib.c b/lib.c
->>> index 2c8df32..973be52 100644
->>> --- a/lib.c
->>> +++ b/lib.c
->>> @@ -446,6 +446,7 @@ static const char *controller_problems[] = {
->>>       "tx-error-warning",
->>>       "rx-error-passive",
->>>       "tx-error-passive",
->>> +     "back-to-error-active",
->>>  };
->>>  
->>>  static const char *protocol_violation_types[] = {
->>> @@ -455,7 +456,7 @@ static const char *protocol_violation_types[] = {
->>>       "tx-dominant-bit-error",
->>>       "tx-recessive-bit-error",
->>>       "bus-overload",
->>> -     "back-to-error-active",
->>> +     "active-error",
->>>       "error-on-tx",
->>>  };
-
-Please post a separate patch for the can-utils.
-
->>> Andri Yngvason (4):
->>>   can: dev: Consolidate and unify state change handling.
->>>   can: sja1000: Consolidate and unify state change handling.
->>>   can: mscan: Consolidate and unify state change handling.
->>>   can: flexcan: Consolidate and unify state change handling.
->>>
->>>  drivers/net/can/dev.c             |  94 +++++++++++++++++++++++++++++++++++
->>>  drivers/net/can/flexcan.c         | 101 +++++++-------------------------------
->>>  drivers/net/can/mscan/mscan.c     |  48 ++++++------------
->>>  drivers/net/can/sja1000/sja1000.c |  49 +++++++++---------
->>>  include/linux/can/dev.h           |   4 ++
->>>  include/uapi/linux/can/error.h    |   1 +
->>>  6 files changed, 153 insertions(+), 144 deletions(-)
->>
->> I will have a closer look to the patches tomorrow.
->>
-> You must be travelling at a relativistic speed. ;)
-
-As fast as I can (in my free time) ;)
-
-Apart from my comments the patchset looks good now... also saving a lot
-of lines.
-
-Thanks for your patience.
-
-Wolfgang.
+VGhhbmtzIEdpYW5sdWNhLA0KDQpCdXQgd2UgYXJlIGRvaW5nIGl0IG9uIEtlcm5lbCB2ZXJzaW9u
+IDMuNC4NCg0KTGV0cyBzZWUgd2hhdCBpcyBwb3NzaWJsZS4NCg0KQmVzdCBSZWdhcmRzLA0KUGFu
+a2FqDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBnaWFubHVjYSBbbWFpbHRv
+OmdpYW5sdWNhcmVuemlAZXVyZWtlbGV0dHJvbmljYS5pdF0gDQpTZW50OiAyNSDgpKjgpLXgpK7g
+pY3gpKzgpLAgMjAxNCAyMjoxOA0KVG86IFBhbmthamt1bWFyIE1pc3JhIChSQkVJL0VFQTIpDQpD
+YzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IE1DUDI1MTUgaW1wbGVt
+ZW50YXRpb24gaXMgc2xvdw0KDQpPbiAxMS8yNS8yMDE0IDA1OjE5IFBNLCBQYW5rYWprdW1hciBN
+aXNyYSAoUkJFSS9FRUEyKSB3cm90ZToNCj4gSGVsbG8gR3V5cywNCj4NCj4gSSBoYXZlIGNvbXBp
+bGVkIE1DUDI1MXguYyBrZXJuZWwgZHJpdmVyIG1vZHVsZSBmb3IgT2xpbWV4IEEyMC1PbGludXhp
+bm8gTWljcm8uDQo+DQo+IFRoZSBkZXZpY2UgaXMgd29ya2luZyBmaW5lIGZvciBvbmUgZnJhbWUg
+YXQgYSB0aW1lIGF0IDUwMG1zLiBJZiBJIHNlbmQgdHdvIG9yIG1vcmUgZnJhbWUgYXQgdGhlIHNh
+bWUgdGltZSwNCj4gQ0FOIGlzIGdvaW5nIHRvIGJ1cy1vZmYgZHVlIHRvIG92ZXJydW4gZXJyb3Jz
+Lg0KPiBFdmVuIGlmIEkgc2VuZCBvbmUgZnJhbWUgYXQgZmFzdGVyIHJhdGUgc2F5LCAxMDBtcyxy
+ZXN1bHRzIGluIGJ1cy1vZmYuDQo+DQo+IEkgYW0gY29tbXVuaWNhdGluZyB3aXRoIG1vZHVsZSB3
+aXRoIGlwIGNvbW1hbmRzLCBjYW5zZW5kICYgY2FuZHVtcC4NCj4gQWxzbyBteSBTUEkgbW9kdWxl
+IGlzIHdvcmtpbmcgb25seSBhdCAyNTBLIGJhdWQsIG5vdCBhbnkgb3RoZXIgYmF1ZC4NCj4NCj4g
+QW55IHN1Z2dlc3Rpb25zLg0KPg0KPiBCZXN0IFJlZ2FyZHMsDQo+IFBhbmthag0KPiAtLQ0KPiBU
+byB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUg
+bGludXgtY2FuIiBpbg0KPiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIu
+a2VybmVsLm9yZw0KPiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwu
+b3JnL21ham9yZG9tby1pbmZvLmh0bWwNCj4NCj4NCg0KT25jZSB1cG9uIGEgdGltZSB0aGVyZSB3
+ZXJlIGEgY3VzdG9tIG1jcDI1MTUuYyBkcml2ZXIgcmV3cml0dGVuIGJ5IA0KT2xpdmVpcmEgYW5k
+IG1vZGlmaWVkIGJ5IG15c2VsZiB0byBvYnRhaW4gdGhlIG1heGltdW0gcGVyZm9ybWFuY2UgDQpw
+b3NzaWJsZSB3aXRoIHRoaXMgVkVSWSBQT09SIGNoaXAuDQoNCmh0dHA6Ly9jbGllbnRlcy5uZXR2
+aXNhby5wdC9hbmJhZGVvbC9tY3AyNTE1Lmh0bWwNCg0KSWYgeW91IGFyZSBpbnRlcmVzdGVkLCBw
+bGVhc2UgZmVlbC1mcmVlIHRvIGNvbnRhY3QgbWUgdG8gb2J0YWluIGEgDQptb2RpZmllZCB2ZXJz
+aW9uIChtYXliZSBiZXR0ZXI/IDotUCApIG9mIHRoaXMgZHJpdmVyLg0KDQpBY3R1YWxseSBpdCBy
+dW5zIG9uIGEgMi42LjI3IGtlcm5lbCB3aXRoIGEgU2Ftc3VuZyBTM0MyNDQyIFNvQy4gSXQgcnVu
+cyANCndpdGhvdXQgYW55IHByb2JsZW0gcnVubmluZyBAIDI1MEtiaXQvcyBhbmQgMTI1S2JpdC9z
+IHdpdGggc29tZSBidXJzdCBvZiANCmEgZnJhbWUgZXZlcnkgMiBvciA0IG1zZWNzLiBGb3Igc3Vy
+ZSB5b3VyIGFwcGxpY2F0aW9uIGhhcyB0byBiZSAnbmljZWQnIA0KdG8gYSBiZSBhbG1vc3QtcmVh
+bC10aW1lIG92ZXIgb3RoZXIgcHJvY2Vzc2VzIGFuZCB0aGUgc29ja2V0IHJlY2VpdmUgDQpxdWV1
+ZXMgaGF2ZSB0byBiZSBpbmNyZWFzZWQgYSBsaXR0bGUgYml0Lg0KQnV0IGl0IHdvcmtzIGdvb2Qg
+b3ZlciB0aGUgcGFzdCAzIHllYXJzIHdpdGggYXBwcm94LiAxayBjdXN0b20gYm9hcmRzIA0KYmF0
+Y2ggd29ybGR3aWRlIHNvbGQuDQoNCkl0IHdvdWxkIG5vdCBzbyBkaWZmaWN1bHQgdG8gYWRhcHQg
+aXQgdG8gcnVuIG92ZXIgYSAzLngga2VybmVsIGFuZCBtYXliZSANCmluIGEgbmVhciBmdXR1cmUg
+SSB3aWxsIGFkZCBhIERFVklDRSBUUkVFIHN1cHBvcnQgZm9yIGl0Lg0KDQpCZXN0IHJlZ2FyZHMs
+DQotLSANCiAgICAgICAgICAgICwsLA0KICAgICAgICAgICAobyBvKQ0KPT09PT09b09PPT0oXyk9
+PU9Pbz09PT09PQ0KDQpHaWFubHVjYSBSZW56aQ0KUiZEDQpwaG9uZTogKzM5LjA1NDIuNjA5MTIw
+DQpmYXg6ICAgKzM5LjA1NDIuNjA5MjEyDQoNCiAgICAgICAub29vTyAgT29vby4NCj09PT09PSgg
+ICApPT0oICAgKT09PT09PT0NCiAgICAgICAgXCAoICAgICkgLw0KICAgICAgICAgXF8pICAoXy8N
+Cg0KPT09PT09PT09PT09PT09PT09PQ0KfCBJIHdvdWxkIGxpa2UgdG8gfA0KfCBmaXggdGhlIHdv
+cmxkLCAgfA0KfCBidXQgdGhleSdyZSBub3QgfA0KfCBnaXZpbmcgbWUgdGhlICAgfA0KICBcIHNv
+dXJjZSBjb2RlISAgLw0KICAgLS0tLS0tLS0tLS0tLS0tDQogICAgIMKvXF8oIi4pXy/Crw0K
