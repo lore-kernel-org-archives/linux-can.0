@@ -1,183 +1,40 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v3 0/4] Consolidate and unify state change handling
-Date: Wed, 26 Nov 2014 11:29:01 +0100
-Message-ID: <9f68402e21956c1c56c495f49bc693dd@grandegger.com>
-References: <212bdd30-5398-4189-b928-5b9e674ebaa8@GRBSR0089.marel.net>
- <54723716.5000509@grandegger.com> <20141125155145.30778.82976@shannon>
- <5474EF7F.6060008@grandegger.com> <20141126101219.715.59065@shannon>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH 0/2] Add support for PEAK CAN-FD USB adapters
+Date: Wed, 26 Nov 2014 11:21:29 +0100
+Message-ID: <1416997291-23092-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from pluto.manitu.net ([217.11.48.9]:59434 "EHLO pluto.manitu.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751142AbaKZK3E (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 26 Nov 2014 05:29:04 -0500
-In-Reply-To: <20141126101219.715.59065@shannon>
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:21218 "EHLO
+	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750864AbaKZK30 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Nov 2014 05:29:26 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-On Wed, 26 Nov 2014 10:12:19 +0000, Andri Yngvason
-<andri.yngvason@marel.com> wrote:
-> Quoting Wolfgang Grandegger (2014-11-25 21:07:11)
->> On 11/25/2014 04:51 PM, Andri Yngvason wrote:
->> > Quoting Wolfgang Grandegger (2014-11-23 19:35:50)
->> >> On 11/22/2014 06:41 PM, Andri Yngvason wrote:
->> >>> Tested on sja1000 using:
->> >>>  cangen -g 100 can0
->> >>> and
->> >>>  candump -ta -e can0,0:0,#FFFFFFFF
->> >>>
->> > ...
->> >>>  (1416683061.571115)  can0  643   [8]  D9 BB 20 19 28 A0 56 77
->> >>>  (1416683061.671163)  can0  736   [7]  62 00 39 0E 13 F4 7E
->> >>>  (1416683061.770988)  can0  2E4   [3]  D2 3F C0
->> >>
->> >> This looks now good for the SJA1000 ...
->> >>
->> >>> Tested on mscan using:
->> >>>  cangen -g 100 can0
->> >>> and
->> >>>  candump -ta -e can0,0:0,#FFFFFFFF
->> >>>
->> > ...
->> >>>  (0000088454.071587)  can0  07F   [7]  4A 5B 1E B3 5F 63 1E
->> >>>  (0000088454.171299)  can0  092   [1]  5A
->> >>>  (0000088454.271898)  can0  492   [8]  41 1C 23 91 77 76 27 D7
->> >>
->> >> and MSCAN.
->> >>
->> >>> Tested on flexcan using:
->> >>>  cangen -g 1000 can0
->> >>>  cangen -g 1000 can1
->> >>> and
->> >>>  candump -ta -e can0,0:0,#FFFFFFFF
->> >>> and
->> >>>  berr-reporting on
->> >>
->> >> I think you need this because your Flexcan platform data are wrong
-as
->> >> mentioned earlier.
->> >>
->> > I need this because of missing interrupts from the controller and
->> > failure to
->> > address this in the driver. This could be fixed by always leaving the
->> > bus error
->> > interrupts on and polling the state on tx. I'm not sure if either of
->> > those are a
->> > good idea.
->> 
->> You should fix your Flexcan platform binding.
->>
-> I'm not quite sure what that means. Should I add the tx-polling and
-leave
-> the
-> interrupts on, or do you think there might be something wrong with my
-> device
-> tree or architecture specific code?
-> 
-> The imx6 manual doesn't really say explicitly which "events" will
-trigger
-> interrupts; it only says which interrupts can be turned on/off. I'm
-> assuming
-> those are the available interrupts. State transition interrupts are not
-> among
-> them (except for "warning" which isn't really a state, and bus-off).
+That serie of two patches adds support for the new PEAK-System Technik USB
+adapters that enable access to CAN-FD standard, from the linux-can socket based
+API.
 
-I'm referring to the "[TR]WRN_INT not connected" bug mentioned here:
+Stephane Grosjean (2):
+  can/peak_usb: preparing existing files for CAN-FD
+  can/peak_usb: add support for new PEAK CAN-FD adapters
 
-http://lxr.free-electrons.com/source/drivers/net/can/flexcan.c#L162
+ drivers/net/can/usb/Kconfig                  |  14 +-
+ drivers/net/can/usb/peak_usb/Makefile        |   2 +-
+ drivers/net/can/usb/peak_usb/pcan_ucan.h     | 208 ++++++
+ drivers/net/can/usb/peak_usb/pcan_usb.c      |   1 +
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  84 ++-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |  14 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 955 +++++++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.h   | 108 +++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |  22 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |   8 +
+ 10 files changed, 1377 insertions(+), 39 deletions(-)
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_ucan.h
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.h
 
-If FLEXCAN_HAS_BROKEN_ERR_STATE is set, the bus error interrupt will not
-be disabled. But I'm somehow surprised that tat error shows up in an
-i.MX6.
-
->> >>> Disconnected bus:
->> >>>  (000.190615)  can0  2AA   [3]  2F 73 B5
->> >>>  (000.809397)  can0  3B5   [7]  1F C1 79 77 5D 56 3E
->> >>>  (000.190926)  can0  4AA   [6]  8A 01 7F 1B 43 CA
->> >>>  (001.007441)  can0  200000A8   [8]  00 00 00 19 00 00 00 00  
->> >>>  ERRORFRAME
->> > ...
->> >>>       restarted-after-bus-off
->> >>>  (000.750963)  can0  6BF   [8]  5A 26 E0 13 B3 FA DE 0E
->> >>>  (000.190390)  can0  6CD   [4]  09 97 46 75
->> >>>  (000.809340)  can0  5EC   [2]  9A 2B
->> >>
->> >> Looks good as well. Would be nice if you use cangen with a message
->> >> count
->> >> in the data.
->> > I'll keep that in mind next time.
->> >>
->> >>> Note: I made the following changes to can-utils:
->> >>> diff --git a/lib.c b/lib.c
->> >>> index 2c8df32..973be52 100644
->> >>> --- a/lib.c
->> >>> +++ b/lib.c
->> >>> @@ -446,6 +446,7 @@ static const char *controller_problems[] = {
->> >>>       "tx-error-warning",
->> >>>       "rx-error-passive",
->> >>>       "tx-error-passive",
->> >>> +     "back-to-error-active",
->> >>>  };
->> >>>  
->> >>>  static const char *protocol_violation_types[] = {
->> >>> @@ -455,7 +456,7 @@ static const char *protocol_violation_types[] =
-{
->> >>>       "tx-dominant-bit-error",
->> >>>       "tx-recessive-bit-error",
->> >>>       "bus-overload",
->> >>> -     "back-to-error-active",
->> >>> +     "active-error",
->> >>>       "error-on-tx",
->> >>>  };
->> 
->> Please post a separate patch for the can-utils.
->> 
-> I'll do that.
->>
->> >>> Andri Yngvason (4):
->> >>>   can: dev: Consolidate and unify state change handling.
->> >>>   can: sja1000: Consolidate and unify state change handling.
->> >>>   can: mscan: Consolidate and unify state change handling.
->> >>>   can: flexcan: Consolidate and unify state change handling.
->> >>>
->> >>>  drivers/net/can/dev.c             |  94
->> >>>  +++++++++++++++++++++++++++++++++++
->> >>>  drivers/net/can/flexcan.c         | 101
->> >>>  +++++++-------------------------------
->> >>>  drivers/net/can/mscan/mscan.c     |  48 ++++++------------
->> >>>  drivers/net/can/sja1000/sja1000.c |  49 +++++++++---------
->> >>>  include/linux/can/dev.h           |   4 ++
->> >>>  include/uapi/linux/can/error.h    |   1 +
->> >>>  6 files changed, 153 insertions(+), 144 deletions(-)
->> >>
->> >> I will have a closer look to the patches tomorrow.
->> >>
->> > You must be travelling at a relativistic speed. ;)
->> 
->> As fast as I can (in my free time) ;)
->> 
->> Apart from my comments the patchset looks good now... also saving a lot
->> of lines.
->>
-> Well, it's still a lot of comments. It might not be able to work on this
-> until
-> after a week or two. I'll make the code changes as soon as I can but the
-> testing
-> might have to wait.
-> 
-> How about this: I'll make the changes suggested in the comments and post
-> the
-> new patches immediately, so that I can get feedback sooner, and then
-I'll
-> test
-> the changes and post the results after a week or two.
-
-OK, fine with me.
-
-Wolfgang.
+-- 
+1.9.1
 
