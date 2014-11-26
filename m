@@ -1,235 +1,147 @@
 From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v3 1/4] can: dev: Consolidate and unify state change handling
-Date: Wed, 26 Nov 2014 10:26:59 +0000
-Message-ID: <20141126102659.715.14133@shannon>
-References: <43755b0f-30ca-4baf-b3e3-410eaeab636a@GRBSR0089.marel.net>
- <5474ECBA.3060505@grandegger.com>
+Subject: Re: [PATCH v3 2/4] can: sja1000: Consolidate and unify state change handling
+Date: Wed, 26 Nov 2014 10:44:14 +0000
+Message-ID: <20141126104414.715.67331@shannon>
+References: <26ccec9a-45c6-467c-9f8e-3fb99fa0af9b@GRBSR0089.marel.net>
+ <5474ECCF.8050701@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0054.outbound.protection.outlook.com ([157.56.112.54]:42075
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+Received: from mail-db3on0067.outbound.protection.outlook.com ([157.55.234.67]:14368
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751118AbaKZK3w convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Nov 2014 05:29:52 -0500
-In-Reply-To: <5474ECBA.3060505@grandegger.com>
+	id S1751197AbaKZKpu convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Nov 2014 05:45:50 -0500
+In-Reply-To: <5474ECCF.8050701@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
 Cc: mkl@pengutronix.de
 
-Quoting Wolfgang Grandegger (2014-11-25 20:55:22)
-> On 09/26/2014 07:19 PM, Andri Yngvason wrote:
-> > The handling of can error states is different between platforms.
-> > This is an attempt to correct that problem.
+Quoting Wolfgang Grandegger (2014-11-25 20:55:43)
+> On 09/26/2014 07:35 PM, Andri Yngvason wrote:
+> > Replacing error state change handling with the new mechanism.
 > > 
-> > I've moved this handling into a generic function for changing the
-> > error state. This ensures that error state changes are handled
-> > the same way everywhere (where this function is used).
-> 
-> I think it's also important to note that now also *decreasing* error
-> states are reported.
->
-Roger.
-> 
 > > Changes made since last proposal:
-> > can: dev: remove can_errcnt_to_state
-> > can: dev: reduce nesting in can_change_state
+> > can: sja1000: move bus-off handling and fix state transitions.
+> > can: sja1000: made one line more readable
 > 
-> Please move the changes after the "---" line below.
+> See my previous comment.
 > 
-OK.
->
 > > Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 > > ---
-> >  drivers/net/can/dev.c          | 94 ++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/can/dev.h        |  4 ++
-> >  include/uapi/linux/can/error.h |  1 +
-> >  3 files changed, 99 insertions(+)
+> >  drivers/net/can/sja1000/sja1000.c | 49 ++++++++++++++++++---------------------
+> >  1 file changed, 22 insertions(+), 27 deletions(-)
 > > 
-> > diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> > index 02492d2..a10b6ab 100644
-> > --- a/drivers/net/can/dev.c
-> > +++ b/drivers/net/can/dev.c
-> > @@ -273,6 +273,100 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-> >       return err;
-> >  }
+> > diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+> > index b27ac60..ee94e2c 100644
+> > --- a/drivers/net/can/sja1000/sja1000.c
+> > +++ b/drivers/net/can/sja1000/sja1000.c
+> > @@ -392,12 +392,20 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+> >       struct can_frame *cf;
+> >       struct sk_buff *skb;
+> >       enum can_state state = priv->can.state;
+> > +     enum can_state rx_state, tx_state;
+> > +     unsigned int rxerr, txerr;
+> >       uint8_t ecc, alc;
 > >  
-> > +static void can_update_error_counters(struct net_device *dev,
-> > +                                   enum can_state new_state)
-> 
-> s/can_update_error_counters/can_update_error_stats/ ?
-> 
-Yeah, that makes sense.
->
-> Error counters are usually txerr/rxerr.
-> 
-> > +{
-> > +     struct can_priv *priv = netdev_priv(dev);
+> >       skb = alloc_can_err_skb(dev, &cf);
+> >       if (skb == NULL)
+> >               return -ENOMEM;
+> >  
+> > +     txerr = priv->read_reg(priv, SJA1000_TXERR);
+> > +     rxerr = priv->read_reg(priv, SJA1000_RXERR);
 > > +
-> > +     if (new_state <= priv->state)
-> > +             return;
+> > +     cf->data[6] = txerr;
+> > +     cf->data[7] = rxerr;
 > > +
-> > +     switch (new_state) {
-> > +     case CAN_STATE_ERROR_ACTIVE:
-> > +             netdev_warn(dev, "%s: did we come from a state less than error-active?",
-> > +                         __func__);
-> 
-> Please remove __func__ here and below and use a more meaningful warning
-> message. Such messages should make sense to non-experts as well...
-> at least a little bit.
-> 
-This is actually a warning for the developer. It's means to tell him he's doing
-something seriously wrong. Maybe this should be an error then?
->
-> > +             break;
-> > +     case CAN_STATE_ERROR_WARNING:
-> > +             priv->can_stats.error_warning++;
-> > +             break;
-> > +     case CAN_STATE_ERROR_PASSIVE:
-> > +             priv->can_stats.error_passive++;
-> > +             break;
-> > +     case CAN_STATE_BUS_OFF:
-> > +             priv->can_stats.bus_off++;
-> 
-> Be careful here. This counter will also be incremented in can_bus_off().
->
-Ooops.
-> 
-> > +             break;
-> > +     default:
-> > +             netdev_warn(dev, "%s: %d is not a state", __func__, new_state);
-> 
-> "%d is not a valid state" ?
->
-Same as above. It's meant to tell the developer that he's putting nonsense into
-state.
-> 
-> > +             break;
-> > +     };
-> > +}
+> >       if (isrc & IRQ_DOI) {
+> >               /* data overrun interrupt */
+> >               netdev_dbg(dev, "data overrun interrupt\n");
+> > @@ -412,13 +420,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+> >               /* error warning interrupt */
+> >               netdev_dbg(dev, "error warning interrupt\n");
+> >  
+> > -             if (status & SR_BS) {
+> > +             if (status & SR_BS)
+> >                       state = CAN_STATE_BUS_OFF;
+> > -                     cf->can_id |= CAN_ERR_BUSOFF;
+> > -                     can_bus_off(dev);
+> > -             } else if (status & SR_ES) {
+> > +             else if (status & SR_ES)
+> >                       state = CAN_STATE_ERROR_WARNING;
+> > -             } else
+> > +             else
+> >                       state = CAN_STATE_ERROR_ACTIVE;
+> >       }
+> >       if (isrc & IRQ_BEI) {
+> > @@ -452,10 +458,11 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+> >       if (isrc & IRQ_EPI) {
+> >               /* error passive interrupt */
+> >               netdev_dbg(dev, "error passive interrupt\n");
+> > -             if (status & SR_ES)
+> > -                     state = CAN_STATE_ERROR_PASSIVE;
 > > +
-> > +static int can_txstate_to_frame(struct net_device *dev, enum can_state state)
+> > +             if (state == CAN_STATE_ERROR_PASSIVE)
+> > +                     state = CAN_STATE_ERROR_WARNING;
+> >               else
+> > -                     state = CAN_STATE_ERROR_ACTIVE;
+> > +                     state = CAN_STATE_ERROR_PASSIVE;
+> >       }
+> >       if (isrc & IRQ_ALI) {
+> >               /* arbitration lost interrupt */
+> > @@ -467,27 +474,15 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+> >               cf->data[0] = alc & 0x1f;
+> >       }
+> >  
+> > -     if (state != priv->can.state && (state == CAN_STATE_ERROR_WARNING ||
+> > -                                      state == CAN_STATE_ERROR_PASSIVE)) {
+> > -             uint8_t rxerr = priv->read_reg(priv, SJA1000_RXERR);
+> > -             uint8_t txerr = priv->read_reg(priv, SJA1000_TXERR);
+> > -             cf->can_id |= CAN_ERR_CRTL;
+> > -             if (state == CAN_STATE_ERROR_WARNING) {
+> > -                     priv->can.can_stats.error_warning++;
+> > -                     cf->data[1] = (txerr > rxerr) ?
+> > -                             CAN_ERR_CRTL_TX_WARNING :
+> > -                             CAN_ERR_CRTL_RX_WARNING;
+> > -             } else {
+> > -                     priv->can.can_stats.error_passive++;
+> > -                     cf->data[1] = (txerr > rxerr) ?
+> > -                             CAN_ERR_CRTL_TX_PASSIVE :
+> > -                             CAN_ERR_CRTL_RX_PASSIVE;
+> > -             }
+> > -             cf->data[6] = txerr;
+> > -             cf->data[7] = rxerr;
+> > +     if (state != priv->can.state) {
+> > +             tx_state = txerr >= rxerr ? state : 0;
+> > +             rx_state = txerr <= rxerr ? state : 0;
+> > +
+> > +             can_change_state(dev, cf, state, tx_state, rx_state);
 > 
-> s/txstate/tx_state/ ?
+>                 priv->can.state = can_change_state(dev, cf, state, tx_state, rx_state);
+> 
+> Is maybe more transparent.
+>
+Yes, or maybe:
+priv->can.state = new_state;
+can_update_state_error_stats(dev, tx_state, rx_state);
+can_compose_state_error_frame(dev, cf, tx_state, rx_state);
+
+I can't really think of a function name that describes those three things
+accurately enough, so this is probably the most explicit way to do it.
+> 
+> >       }
+> >  
+> > -     priv->can.state = state;
+> > +     if(state == CAN_STATE_BUS_OFF)
+> > +             can_bus_off(dev);
+> 
+> This could go inside the "if (state != priv->can.state)" block above.
 >
 OK.
 > 
-> > +{
-> > +     switch (state) {
-> > +     case CAN_STATE_ERROR_ACTIVE:
-> > +             return CAN_ERR_CRTL_ACTIVE;
-> > +     case CAN_STATE_ERROR_WARNING:
-> > +             return CAN_ERR_CRTL_TX_WARNING;
-> > +     case CAN_STATE_ERROR_PASSIVE:
-> > +             return CAN_ERR_CRTL_TX_PASSIVE;
-> > +     case CAN_STATE_BUS_OFF:
-> > +             netdev_warn(dev, "%s: bus-off is not handled here", __func__);
-> 
-> Then we may silently ignore it?
-> 
-> > +             return 0;
-> > +     default:
-> > +             netdev_warn(dev, "%s: %d is not a state", __func__, state);
-> > +             return 0;
-> > +     }
-> > +}
-> > +
-> > +static int can_rxstate_to_frame(struct net_device *dev, enum can_state state)
-> 
-> s/rxstate/rx_state/
->
-OK.
-> 
-> > +{
-> > +     switch (state) {
-> > +     case CAN_STATE_ERROR_ACTIVE:
-> > +             return CAN_ERR_CRTL_ACTIVE;
-> > +     case CAN_STATE_ERROR_WARNING:
-> > +             return CAN_ERR_CRTL_RX_WARNING;
-> > +     case CAN_STATE_ERROR_PASSIVE:
-> > +             return CAN_ERR_CRTL_RX_PASSIVE;
-> > +     case CAN_STATE_BUS_OFF:
-> > +             netdev_warn(dev, "%s: bus-off is not handled here", __func__);
-> > +             return 0;
-> 
-> See above.
-> 
-> > +     default:
-> > +             netdev_warn(dev, "%s: %d is not a state", __func__, state);
-> > +             return 0;
-> > +     }
-> > +}
-> > +
-> > +void can_change_state(struct net_device *dev, struct can_frame *cf,
-> > +                   enum can_state new_state, enum can_state tx_state,
-> > +                   enum can_state rx_state)
-> > +{
-> > +     struct can_priv *priv = netdev_priv(dev);
-> > +
-> > +     if (unlikely(new_state == priv->state)) {
-> > +             netdev_warn(dev, "%s: oops, state did not change", __func__);
-> > +             return;
-> > +     }
-> > +
-> > +     can_update_error_counters(dev, new_state);
-> > +     priv->state = new_state;
-> > +
-> > +     if (unlikely(new_state == CAN_STATE_BUS_OFF)) {
-> > +             cf->can_id |= CAN_ERR_BUSOFF;
-> > +             return;
-> > +     }
-> > +
-> > +     if (unlikely(tx_state != new_state && rx_state != new_state))
-> > +             netdev_warn(dev, "%s: neither rx nor tx state match new state", __func__);
-> 
-> Is this worth a warning or is it even an error?
-> 
-Same as above. If I were doing this in user-space, this would be an assert.
-Should we maybe just ignore such things? In that case, passing new_state as an
-argument is redundant because new_state = max(rx_state, tx_state).
->
-> > +
-> > +     cf->can_id |= CAN_ERR_CRTL;
-> > +     cf->data[1] |= tx_state >= rx_state ?
-> > +                    can_txstate_to_frame(dev, tx_state) : 0;
-> > +     cf->data[1] |= tx_state <= rx_state ?
-> > +                    can_rxstate_to_frame(dev, rx_state) : 0;
-> 
-> OK, I can live with that solution.
-> 
-> > +}
-> > +EXPORT_SYMBOL_GPL(can_change_state);
-> > +
-> >  /*
-> >   * Local echo of CAN messages
-> >   *
-> > diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> > index 6992afc..1902bff 100644
-> > --- a/include/linux/can/dev.h
-> > +++ b/include/linux/can/dev.h
-> > @@ -121,6 +121,10 @@ void unregister_candev(struct net_device *dev);
-> >  int can_restart_now(struct net_device *dev);
-> >  void can_bus_off(struct net_device *dev);
 > >  
-> > +void can_change_state(struct net_device *dev, struct can_frame *cf,
-> > +                   enum can_state new_state, enum can_state tx_state,
-> > +                   enum can_state rx_state);
-> > +
-> >  void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
-> >                     unsigned int idx);
-> >  unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
-> > diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
-> > index c247446..1c508be 100644
-> > --- a/include/uapi/linux/can/error.h
-> > +++ b/include/uapi/linux/can/error.h
-> > @@ -71,6 +71,7 @@
-> >  #define CAN_ERR_CRTL_TX_PASSIVE  0x20 /* reached error passive status TX */
-> >                                     /* (at least one error counter exceeds */
-> >                                     /* the protocol-defined level of 127)  */
-> > +#define CAN_ERR_CRTL_ACTIVE      0x40 /* recovered to error active state */
+> >       netif_rx(skb);
 > >  
-> >  /* error in CAN protocol (type) / data[2] */
-> >  #define CAN_ERR_PROT_UNSPEC      0x00 /* unspecified */
 > >
