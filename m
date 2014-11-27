@@ -1,56 +1,53 @@
 From: David Jander <david@protonic.nl>
 Subject: Re: MCP2515 implementation is slow
-Date: Thu, 27 Nov 2014 08:33:46 +0100
-Message-ID: <20141127083346.79d4a5af@archvile>
+Date: Thu, 27 Nov 2014 08:46:27 +0100
+Message-ID: <20141127084627.6888dc6b@archvile>
 References: <84a1d29551f84f5494b309e1ad1e0840@SGPMBX1004.APAC.bosch.com>
+	<5474B2BD.1030901@eurekelettronica.it>
+	<2E9F00CBB66AB544A1ACDC59627518BA4F02C96C@mailserver>
+	<20141126123242.13254.31551@shannon>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:26800 "EHLO
+Received: from protonic.xs4all.nl ([83.163.252.89]:26840 "EHLO
 	protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752656AbaK0Hdq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Nov 2014 02:33:46 -0500
-In-Reply-To: <84a1d29551f84f5494b309e1ad1e0840@SGPMBX1004.APAC.bosch.com>
+	with ESMTP id S1751231AbaK0Hq0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Nov 2014 02:46:26 -0500
+In-Reply-To: <20141126123242.13254.31551@shannon>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, gianluca <gianlucarenzi@eurekelettronica.it>
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Rost, Martin" <Martin.Rost@tonfunk.de>
 
-On Tue, 25 Nov 2014 16:19:33 +0000
-"Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com> wrote:
+On Wed, 26 Nov 2014 12:32:42 +0000
+Andri Yngvason <andri.yngvason@marel.com> wrote:
 
-> I have compiled MCP251x.c kernel driver module for Olimex A20-Olinuxino
-> Micro.
-> 
-> The device is working fine for one frame at a time at 500ms. If I send two
-> or more frame at the same time, CAN is going to bus-off due to overrun
-> errors. Even if I send one frame at faster rate say, 100ms,results in
-> bus-off.
+> Quoting Rost, Martin (2014-11-26 12:02:13)
+> > Hi all,
+> > 
+> > > this VERY POOR chip.
+> > As the mcp251x is voted down by the list members regularly, is there an
+> > alternative you guys would recommend?
+> > 
+> Well, sja1000 is pretty solid. They're used for example in the peak_pci.
 
-I tend to think there is something other wrong with your setup. Maybe you are
-missing bus-termination/biasing? Chip-clock?
-The device should never go in bus-off mode if there are RX-overruns. If it
-goes into bus-off, there is something wrong in the hardware.
+It is actually pretty sad that one still tends to mention this old dinosaur.
+It has a terribly slow parallel multiplexed bus-interface that works on 5V. If
+you want to connect it to a modern ARM SoC, you will have to implement some
+quite expensive level-shifting and then probably bit-bang the interface via
+GPIO's or use an (even more expensive and complicated) CPLD or FPGA to do the
+bus-translation. You are kidding, right?
 
-> I am communicating with module with ip commands, cansend & candump.
-> Also my SPI module is working only at 250K baud, not any other baud.
+To go back to the sad reality of CAN interfaces: No, there seems to be no
+good alternative whatsoever.
 
-We use a MCP2515 with this driver at 250kbit/s receiving back-to-back messages
-without loss on a i.MX51. Please note, that it won't work reliably at any
-higher bitrate and system load is quite high.
-
-The MCP2515 is a very bad design, but the driver performance has improved a lot
-since spi-bitbang started using a kthread instead of a work-queue.
-
-> Any suggestions.
-> 
-> Best Regards,
-> Pankaj
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+If you want SocketCAN on an embedded system, choose a SoC that has built-in CAN
+controllers or connect a supported commercial CAN interface via USB or (if you
+have it) PCIe. Please note that many commercial (USB-) CAN-interfaces are not
+capable of producing 100% bus load at higher bitrates. USB has too much
+latency and the dongles tend to have too little buffer-space (there's often a
+SJA1000 crammed up inside).
 
 Best regards,
 
