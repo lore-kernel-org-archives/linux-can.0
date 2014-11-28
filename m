@@ -1,171 +1,98 @@
 From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH v4 4/6] can: flexcan: Consolidate and unify state change
- handling.
-Date: Fri, 28 Nov 2014 12:12:27 +0000
-Message-ID: <3103cd54-1421-4594-855f-7bfca8f4ef49@GRBSR0089.marel.net>
+Subject: [PATCH v4 6/6] can: handle bus-off in can_change_state()
+Date: Fri, 28 Nov 2014 12:12:28 +0000
+Message-ID: <d9f1108f-a284-4b48-9bd0-2a5906c954f3@GRBSR0089.marel.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0054.outbound.protection.outlook.com ([157.56.112.54]:5856
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+Received: from mail-db3on0082.outbound.protection.outlook.com ([157.55.234.82]:61899
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751046AbaK1MMi (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	id S1751051AbaK1MMi (ORCPT <rfc822;linux-can@vger.kernel.org>);
 	Fri, 28 Nov 2014 07:12:38 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: mkl@pengutronix.de, wg@grandegger.com
 
-Replacing error state change handling with the new mechanism.
-
 Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 ---
-Changes made since last proposal:
-can: flexcan: add FLEXCAN_HAS_BROKEN_ERR_STATE for i.MX6
-can: flexcan: adapt to newer can_change_state
+ drivers/net/can/dev.c             |  1 +
+ drivers/net/can/flexcan.c         |  3 ---
+ drivers/net/can/mscan/mscan.c     | 11 +++++------
+ drivers/net/can/sja1000/sja1000.c |  3 ---
+ 4 files changed, 6 insertions(+), 12 deletions(-)
 
- drivers/net/can/flexcan.c | 103 +++++++++-------------------------------------
- 1 file changed, 19 insertions(+), 84 deletions(-)
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 3e2da66..17fce72 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -340,6 +340,7 @@ void can_change_state(struct net_device *dev, struct can_frame *cf,
+ 
+ 	if (unlikely(new_state == CAN_STATE_BUS_OFF)) {
+ 		cf->can_id |= CAN_ERR_BUSOFF;
++		can_bus_off(dev);
+ 		return;
+ 	}
+ 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 60f86bd..9f91735 100644
+index 9f91735..0823956 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -266,7 +266,7 @@ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
- };
- static struct flexcan_devtype_data fsl_imx28_devtype_data;
- static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
--	.features = FLEXCAN_HAS_V10_FEATURES,
-+	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_BROKEN_ERR_STATE,
- };
- static struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES,
-@@ -577,98 +577,30 @@ static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
- 	return 1;
- }
+@@ -612,9 +612,6 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
  
--static void do_state(struct net_device *dev,
--		     struct can_frame *cf, enum can_state new_state)
--{
--	struct flexcan_priv *priv = netdev_priv(dev);
--	struct can_berr_counter bec;
--
--	__flexcan_get_berr_counter(dev, &bec);
--
--	switch (priv->can.state) {
--	case CAN_STATE_ERROR_ACTIVE:
--		/*
--		 * from: ERROR_ACTIVE
--		 * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
--		 * =>  : there was a warning int
--		 */
--		if (new_state >= CAN_STATE_ERROR_WARNING &&
--		    new_state <= CAN_STATE_BUS_OFF) {
--			netdev_dbg(dev, "Error Warning IRQ\n");
--			priv->can.can_stats.error_warning++;
--
--			cf->can_id |= CAN_ERR_CRTL;
--			cf->data[1] = (bec.txerr > bec.rxerr) ?
--				CAN_ERR_CRTL_TX_WARNING :
--				CAN_ERR_CRTL_RX_WARNING;
--		}
--	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
--		/*
--		 * from: ERROR_ACTIVE, ERROR_WARNING
--		 * to  : ERROR_PASSIVE, BUS_OFF
--		 * =>  : error passive int
--		 */
--		if (new_state >= CAN_STATE_ERROR_PASSIVE &&
--		    new_state <= CAN_STATE_BUS_OFF) {
--			netdev_dbg(dev, "Error Passive IRQ\n");
--			priv->can.can_stats.error_passive++;
--
--			cf->can_id |= CAN_ERR_CRTL;
--			cf->data[1] = (bec.txerr > bec.rxerr) ?
--				CAN_ERR_CRTL_TX_PASSIVE :
--				CAN_ERR_CRTL_RX_PASSIVE;
--		}
--		break;
--	case CAN_STATE_BUS_OFF:
--		netdev_err(dev, "BUG! "
--			   "hardware recovered automatically from BUS_OFF\n");
--		break;
--	default:
--		break;
--	}
--
--	/* process state changes depending on the new state */
--	switch (new_state) {
--	case CAN_STATE_ERROR_WARNING:
--		netdev_dbg(dev, "Error Warning\n");
--		cf->can_id |= CAN_ERR_CRTL;
--		cf->data[1] = (bec.txerr > bec.rxerr) ?
--			CAN_ERR_CRTL_TX_WARNING :
--			CAN_ERR_CRTL_RX_WARNING;
--		break;
--	case CAN_STATE_ERROR_ACTIVE:
--		netdev_dbg(dev, "Error Active\n");
--		cf->can_id |= CAN_ERR_PROT;
--		cf->data[2] = CAN_ERR_PROT_ACTIVE;
--		break;
--	case CAN_STATE_BUS_OFF:
--		cf->can_id |= CAN_ERR_BUSOFF;
+ 	can_change_state(dev, cf, tx_state, rx_state);
+ 
+-	if (unlikely(new_state == CAN_STATE_BUS_OFF))
 -		can_bus_off(dev);
--		break;
--	default:
--		break;
--	}
--}
 -
- static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
- {
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	struct sk_buff *skb;
- 	struct can_frame *cf;
--	enum can_state new_state;
-+	enum can_state new_state = 0, rx_state = 0, tx_state = 0;
- 	int flt;
-+	struct can_berr_counter bec;
- 
- 	flt = reg_esr & FLEXCAN_ESR_FLT_CONF_MASK;
- 	if (likely(flt == FLEXCAN_ESR_FLT_CONF_ACTIVE)) {
--		if (likely(!(reg_esr & (FLEXCAN_ESR_TX_WRN |
--					FLEXCAN_ESR_RX_WRN))))
--			new_state = CAN_STATE_ERROR_ACTIVE;
--		else
--			new_state = CAN_STATE_ERROR_WARNING;
--	} else if (unlikely(flt == FLEXCAN_ESR_FLT_CONF_PASSIVE))
-+		tx_state = unlikely(reg_esr & FLEXCAN_ESR_TX_WRN) ?
-+			   CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIVE;
-+		rx_state = unlikely(reg_esr & FLEXCAN_ESR_RX_WRN) ?
-+			   CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIVE;
-+		new_state = max(tx_state, rx_state);
-+	} else if (unlikely(flt == FLEXCAN_ESR_FLT_CONF_PASSIVE)) {
-+		__flexcan_get_berr_counter(dev, &bec);
- 		new_state = CAN_STATE_ERROR_PASSIVE;
--	else
-+		rx_state = bec.rxerr >= bec.txerr ? new_state : 0;
-+		tx_state = bec.rxerr <= bec.txerr ? new_state : 0;
-+	} else {
- 		new_state = CAN_STATE_BUS_OFF;
-+	}
- 
- 	/* state hasn't changed */
- 	if (likely(new_state == priv->can.state))
-@@ -678,8 +610,11 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
- 	if (unlikely(!skb))
- 		return 0;
- 
--	do_state(dev, cf, new_state);
--	priv->can.state = new_state;
-+	can_change_state(dev, cf, tx_state, rx_state);
-+
-+	if (unlikely(new_state == CAN_STATE_BUS_OFF))
-+		can_bus_off(dev);
-+
  	netif_receive_skb(skb);
  
  	dev->stats.rx_packets++;
+diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
+index e36b740..2eb84f1 100644
+--- a/drivers/net/can/mscan/mscan.c
++++ b/drivers/net/can/mscan/mscan.c
+@@ -362,11 +362,7 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
+ 
+ 	new_state = get_new_state(dev, canrflg);
+ 	if (new_state != priv->can.state) {
+-		can_change_state(dev, frame,
+-				 state_map[MSCAN_STATE_TX(canrflg)],
+-				 state_map[MSCAN_STATE_RX(canrflg)]);
+-
+-		if (priv->can.state == CAN_STATE_BUS_OFF) {
++		if (new_state == CAN_STATE_BUS_OFF) {
+ 			/*
+ 			 * The MSCAN on the MPC5200 does recover from bus-off
+ 			 * automatically. To avoid that we stop the chip doing
+@@ -378,8 +374,11 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
+ 				setbits8(&regs->canctl0,
+ 					 MSCAN_SLPRQ | MSCAN_INITRQ);
+ 			}
+-			can_bus_off(dev);
+ 		}
++
++		can_change_state(dev, frame,
++				 state_map[MSCAN_STATE_TX(canrflg)],
++				 state_map[MSCAN_STATE_RX(canrflg)]);
+ 	}
+ 	priv->shadow_statflg = canrflg & MSCAN_STAT_MSK;
+ 	frame->can_dlc = CAN_ERR_DLC;
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 32bd7f4..37b6392 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -479,9 +479,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 		rx_state = txerr <= rxerr ? state : 0;
+ 
+ 		can_change_state(dev, cf, tx_state, rx_state);
+-
+-		if(state == CAN_STATE_BUS_OFF)
+-			can_bus_off(dev);
+ 	}
+ 
+ 	netif_rx(skb);
 -- 
 1.9.1
 
