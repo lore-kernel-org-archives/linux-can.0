@@ -1,211 +1,114 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH 3/3] can/peak_usb: CAN-FD: driver's core modifications
-Date: Fri, 28 Nov 2014 11:03:11 +0100
-Message-ID: <5478485F.2000809@peak-system.com>
-References: <1417084329-8997-1-git-send-email-s.grosjean@peak-system.com>
- <1417084329-8997-4-git-send-email-s.grosjean@peak-system.com>
- <54770E77.8080108@hartkopp.net>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: [PATCH v4 3/6] can: mscan: Consolidate and unify state change
+ handling.
+Date: Fri, 28 Nov 2014 12:12:26 +0000
+Message-ID: <7cbe55dc-c00a-462a-9022-e7478771b1e3@GRBSR0089.marel.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:46720 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751298AbaK1KMN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Nov 2014 05:12:13 -0500
-In-Reply-To: <54770E77.8080108@hartkopp.net>
+Received: from mail-db3on0064.outbound.protection.outlook.com ([157.55.234.64]:35281
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751046AbaK1MMg (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 28 Nov 2014 07:12:36 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com
 
-Hi Oliver,
+Replacing error state change handling with the new mechanism.
 
-Le 27/11/2014 12:43, Oliver Hartkopp a =E9crit :
-> Hello Stephane,
->
-> I have two more questions:
->
-> On 27.11.2014 11:32, Stephane Grosjean wrote:
->
->> @@ -322,7 +341,9 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struc=
-t=20
->> sk_buff *skb,
->>       }
->>
->>       context->echo_index =3D i;
->> -    context->dlc =3D cf->can_dlc;
->> +
->> +    /* Note: this works with CANFD frames too */
->> +    context->data_len =3D cf->can_dlc;
->>
->>       usb_anchor_urb(urb, &dev->tx_submitted);
->>
->
-> Even with this comment the assignment looks fishy.
->
-> What about defining
->
->     struct canfd_frame *cfd =3D (struct can_frame *)skb->data;
->
-> instead of
->
->     struct can_frame *cf =3D (struct can_frame *)skb->data;
->
-> at the top of the function and assign
->
->     context->data_len =3D cfd->len;
->
-> ??
->
+Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+---
+Changes made since last proposal:
+can: mscan: adapt to newer can_change_state
 
-Simply because I always think in terms of being compatible with (very)=20
-older versions of the Kernel, for example <=3D 3.5, which is obviously =
-not=20
-the right (TM) way of thinking when pushing code into the mainline=20
-Kernel ;-) !
-So I agree with you and will do the changes accordingly.
+ drivers/net/can/mscan/mscan.c | 48 +++++++++++++------------------------------
+ 1 file changed, 14 insertions(+), 34 deletions(-)
 
->
->> @@ -679,19 +700,43 @@ static int peak_usb_set_mode(struct net_device=
-=20
->> *netdev, enum can_mode mode)
->>   }
->>
->>   /*
->> - * candev callback used to set device bitrate.
->> + * candev callback used to set device nominal bitrate.
->
-> Is this the nominal bitrate or the arbitration bitrate ?
->
-> What about stating both:
-> candev callback used to set device nominal/arbitration bitrate.
+diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
+index e0c9be5..e36b740 100644
+--- a/drivers/net/can/mscan/mscan.c
++++ b/drivers/net/can/mscan/mscan.c
+@@ -289,18 +289,15 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
+ 
+-/* This function returns the old state to see where we came from */
+-static enum can_state check_set_state(struct net_device *dev, u8 canrflg)
++static enum can_state get_new_state(struct net_device *dev, u8 canrflg)
+ {
+ 	struct mscan_priv *priv = netdev_priv(dev);
+-	enum can_state state, old_state = priv->can.state;
+ 
+-	if (canrflg & MSCAN_CSCIF && old_state <= CAN_STATE_BUS_OFF) {
+-		state = state_map[max(MSCAN_STATE_RX(canrflg),
+-				      MSCAN_STATE_TX(canrflg))];
+-		priv->can.state = state;
+-	}
+-	return old_state;
++	if (unlikely(canrflg & MSCAN_CSCIF))
++		return state_map[max(MSCAN_STATE_RX(canrflg),
++				 MSCAN_STATE_TX(canrflg))];
++
++	return priv->can.state;
+ }
+ 
+ static void mscan_get_rx_frame(struct net_device *dev, struct can_frame *frame)
+@@ -349,7 +346,7 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
+ 	struct mscan_priv *priv = netdev_priv(dev);
+ 	struct mscan_regs __iomem *regs = priv->reg_base;
+ 	struct net_device_stats *stats = &dev->stats;
+-	enum can_state old_state;
++	enum can_state new_state;
+ 
+ 	netdev_dbg(dev, "error interrupt (canrflg=%#x)\n", canrflg);
+ 	frame->can_id = CAN_ERR_FLAG;
+@@ -363,27 +360,13 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
+ 		frame->data[1] = 0;
+ 	}
+ 
+-	old_state = check_set_state(dev, canrflg);
+-	/* State changed */
+-	if (old_state != priv->can.state) {
+-		switch (priv->can.state) {
+-		case CAN_STATE_ERROR_WARNING:
+-			frame->can_id |= CAN_ERR_CRTL;
+-			priv->can.can_stats.error_warning++;
+-			if ((priv->shadow_statflg & MSCAN_RSTAT_MSK) <
+-			    (canrflg & MSCAN_RSTAT_MSK))
+-				frame->data[1] |= CAN_ERR_CRTL_RX_WARNING;
+-			if ((priv->shadow_statflg & MSCAN_TSTAT_MSK) <
+-			    (canrflg & MSCAN_TSTAT_MSK))
+-				frame->data[1] |= CAN_ERR_CRTL_TX_WARNING;
+-			break;
+-		case CAN_STATE_ERROR_PASSIVE:
+-			frame->can_id |= CAN_ERR_CRTL;
+-			priv->can.can_stats.error_passive++;
+-			frame->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
+-			break;
+-		case CAN_STATE_BUS_OFF:
+-			frame->can_id |= CAN_ERR_BUSOFF;
++	new_state = get_new_state(dev, canrflg);
++	if (new_state != priv->can.state) {
++		can_change_state(dev, frame,
++				 state_map[MSCAN_STATE_TX(canrflg)],
++				 state_map[MSCAN_STATE_RX(canrflg)]);
++
++		if (priv->can.state == CAN_STATE_BUS_OFF) {
+ 			/*
+ 			 * The MSCAN on the MPC5200 does recover from bus-off
+ 			 * automatically. To avoid that we stop the chip doing
+@@ -396,9 +379,6 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
+ 					 MSCAN_SLPRQ | MSCAN_INITRQ);
+ 			}
+ 			can_bus_off(dev);
+-			break;
+-		default:
+-			break;
+ 		}
+ 	}
+ 	priv->shadow_statflg = canrflg & MSCAN_STAT_MSK;
+-- 
+1.9.1
 
-Okay!
-
->
->
->> @@ -735,7 +780,7 @@ static int peak_usb_create_dev(struct=20
->> peak_usb_adapter *peak_usb_adapter,
->>       dev->cmd_buf =3D kmalloc(PCAN_USB_MAX_CMD_LEN, GFP_KERNEL);
->>       if (!dev->cmd_buf) {
->>           err =3D -ENOMEM;
->> -        goto lbl_set_intf_data;
->> +        goto lbl_free_candev;
->
-> These label changes
->
->>       }
->>
->>       dev->udev =3D usb_dev;
->> @@ -750,9 +795,10 @@ static int peak_usb_create_dev(struct=20
->> peak_usb_adapter *peak_usb_adapter,
->>       dev->can.clock =3D peak_usb_adapter->clock;
->>       dev->can.bittiming_const =3D &peak_usb_adapter->bittiming_cons=
-t;
->>       dev->can.do_set_bittiming =3D peak_usb_set_bittiming;
->> +    dev->can.data_bittiming_const =3D=20
->> &peak_usb_adapter->data_bittiming_const;
->> +    dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
->>       dev->can.do_set_mode =3D peak_usb_set_mode;
->> -    dev->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES |
->> -                      CAN_CTRLMODE_LISTENONLY;
->> +    dev->can.ctrlmode_supported =3D peak_usb_adapter->ctrlmode_supp=
-orted;
->>
->>       netdev->netdev_ops =3D &peak_usb_netdev_ops;
->>
->> @@ -770,12 +816,11 @@ static int peak_usb_create_dev(struct=20
->> peak_usb_adapter *peak_usb_adapter,
->>       usb_set_intfdata(intf, dev);
->>
->>       SET_NETDEV_DEV(netdev, &intf->dev);
->> -    netdev->dev_id =3D ctrl_idx;
->>
->>       err =3D register_candev(netdev);
->>       if (err) {
->>           dev_err(&intf->dev, "couldn't register CAN device: %d\n",=20
->> err);
->> -        goto lbl_free_cmd_buf;
->> +        goto lbl_set_intf_data;
->
-> here
->
->>       }
->>
->>       if (dev->prev_siblings)
->> @@ -788,14 +833,14 @@ static int peak_usb_create_dev(struct=20
->> peak_usb_adapter *peak_usb_adapter,
->>       if (dev->adapter->dev_init) {
->>           err =3D dev->adapter->dev_init(dev);
->>           if (err)
->> -            goto lbl_free_cmd_buf;
->> +            goto lbl_unregister;
->
-> here
->
->>       }
->>
->>       /* set bus off */
->>       if (dev->adapter->dev_set_bus) {
->>           err =3D dev->adapter->dev_set_bus(dev, 0);
->>           if (err)
->> -            goto lbl_free_cmd_buf;
->> +            goto lbl_unregister;
->
-> here
->
->>       }
->>
->>       /* get device number early */
->> @@ -807,11 +852,14 @@ static int peak_usb_create_dev(struct=20
->> peak_usb_adapter *peak_usb_adapter,
->>
->>       return 0;
->>
->> -lbl_free_cmd_buf:
->> -    kfree(dev->cmd_buf);
->> +lbl_unregister:
->> +    unregister_netdev(netdev);
->>
->>   lbl_set_intf_data:
->>       usb_set_intfdata(intf, dev->prev_siblings);
->> +    kfree(dev->cmd_buf);
->> +
->> +lbl_free_candev:
->>       free_candev(netdev);
->
-> and here ...
->
-> Are these changes necessary for the current PCAN USB driver too?
-> Should they go into the stable tree with a separate patch?
->
-> If so this separate patch should be the first in the series to be pic=
-ked.
->
-> There's something like this in patch 1/3 too - will send it after thi=
-s=20
-> mail.
-
-Ok! I will prepare a single patch for these changes.
-
->
-> Regards,
-> Oliver
-
-Regards,
-
-St=E9phane
-
-> --=20
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
