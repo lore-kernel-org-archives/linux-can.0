@@ -1,121 +1,65 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v3] can: Convert to runtime_pm
-Date: Fri, 28 Nov 2014 01:49:12 +0000
-Message-ID: <d306383c84b9479d933b15c4b38da532@BN1AFFO11FD025.protection.gbl>
-References: <6b6db31d46074512a322eae6e4ef64d4@BN1BFFO11FD038.protection.gbl>
- <20141127182337.GF17884@xsjandreislx>
+From: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH v7 6/8] net: can: c_can: Disable pins when CAN interface
+ is down
+Date: Fri, 28 Nov 2014 11:22:12 +0200
+Message-ID: <54783EC4.5000909@ti.com>
+References: <1415371762-29885-1-git-send-email-rogerq@ti.com>	<1415371762-29885-7-git-send-email-rogerq@ti.com>	<5464CCFF.5010004@ti.com>	<5466225D.2070202@ti.com> <CACRpkdbVXPi7fNjGEzChayQ1KQg8h2R6sm0TNRsVOFJmAT=YMQ@mail.gmail.com> <54779564.7010309@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1on0091.outbound.protection.outlook.com ([157.56.110.91]:61051
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750981AbaK1Bul (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 27 Nov 2014 20:50:41 -0500
-In-Reply-To: <20141127182337.GF17884@xsjandreislx>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Soren Brinkmann <sorenb@xilinx.com>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <54779564.7010309@pengutronix.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Linus Walleij <linus.walleij@linaro.org>
+Cc: wg@grandegger.com, Wolfram Sang <wsa@the-dreams.de>, Tony Lindgren <tony@atomide.com>, Thomas Gleixner <tglx@linutronix.de>, Mugunthan V N <mugunthanvnm@ti.com>, George Cherian <george.cherian@ti.com>, Felipe Balbi <balbi@ti.com>, Sekhar Nori <nsekhar@ti.com>Nishanth Menon <nm@ti.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-SGkgU29yZW4sDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBTw7ZyZW4gQnJp
-bmttYW5uIFttYWlsdG86c29yZW4uYnJpbmttYW5uQHhpbGlueC5jb21dDQpTZW50OiBUaHVyc2Rh
-eSwgTm92ZW1iZXIgMjcsIDIwMTQgMTE6NTQgUE0NClRvOiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dh
-cmEgUmFvDQpDYzogd2dAZ3JhbmRlZ2dlci5jb207IG1rbEBwZW5ndXRyb25peC5kZTsgTWljaGFs
-IFNpbWVrOyBncmFudC5saWtlbHlAbGluYXJvLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOyBkZXZp
-Y2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgQXBwYW5hIER1
-cmdhIEtlZGFyZXN3YXJhIFJhbzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-DQpTdWJqZWN0OiBSZTogW1BBVENIIHYzXSBjYW46IENvbnZlcnQgdG8gcnVudGltZV9wbQ0KDQpI
-aSBLZWRhciwNCg0KT24gVGh1LCAyMDE0LTExLTI3IGF0IDA2OjM4UE0gKzA1MzAsIEtlZGFyZXN3
-YXJhIHJhbyBBcHBhbmEgd3JvdGU6DQo+IEluc3RlYWQgb2YgZW5hYmxpbmcvZGlzYWJsaW5nIGNs
-b2NrcyBhdCBzZXZlcmFsIGxvY2F0aW9ucyBpbiB0aGUNCj4gZHJpdmVyLCB1c2UgdGhlIHJ1bnRp
-bWVfcG0gZnJhbWV3b3JrLiBUaGlzIGNvbnNvbGlkYXRlcyB0aGUgYWN0aW9ucw0KPiBmb3IgcnVu
-dGltZSBQTSBpbiB0aGUgYXBwcm9wcmlhdGUgY2FsbGJhY2tzIGFuZCBtYWtlcyB0aGUgZHJpdmVy
-IG1vcmUNCj4gcmVhZGFibGUgYW5kIG1hbnRhaW5hYmxlLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBT
-b3JlbiBCcmlua21hbm4gPHNvcmVuLmJyaW5rbWFubkB4aWxpbnguY29tPg0KPiBTaWduZWQtb2Zm
-LWJ5OiBLZWRhcmVzd2FyYSByYW8gQXBwYW5hIDxhcHBhbmFkQHhpbGlueC5jb20+DQo+IC0tLQ0K
-PiBDaGFuZ2VzIGZvciB2MzoNCj4gICAtIENvbnZlcnRlZCB0aGUgZHJpdmVyIHRvIHVzZSBydW50
-aW1lX3BtLg0KPiBDaGFuZ2VzIGZvciB2MjoNCj4gICAtIFJlbW92ZWQgdGhlIHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UqIGZyb20gc3VzcGVuZC9yZXN1bWUNCj4gICAgIGFzIHN1Z2dlc3QgYnkgTG90
-aGFyLg0KPg0KPiAgZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyB8ICAxMTkNCj4gKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZXMgY2hhbmdlZCwg
-NzIgaW5zZXJ0aW9ucygrKSwgNDcgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL25ldC9jYW4veGlsaW54X2Nhbi5jDQo+IGIvZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4u
-YyBpbmRleCA4YTk5OGUzLi4xYmUyOGVkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4v
-eGlsaW54X2Nhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmMNCj4gQEAg
-LTMyLDYgKzMyLDcgQEANCj4gICNpbmNsdWRlIDxsaW51eC9jYW4vZGV2Lmg+DQo+ICAjaW5jbHVk
-ZSA8bGludXgvY2FuL2Vycm9yLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvY2FuL2xlZC5oPg0KPiAr
-I2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4NCj4NCj4gICNkZWZpbmUgRFJJVkVSX05BTUUg
-ICJ4aWxpbnhfY2FuIg0KPg0KPiBAQCAtMTM4LDcgKzEzOSw3IEBAIHN0cnVjdCB4Y2FuX3ByaXYg
-ew0KPiAgICAgICB1MzIgKCpyZWFkX3JlZykoY29uc3Qgc3RydWN0IHhjYW5fcHJpdiAqcHJpdiwg
-ZW51bSB4Y2FuX3JlZyByZWcpOw0KPiAgICAgICB2b2lkICgqd3JpdGVfcmVnKShjb25zdCBzdHJ1
-Y3QgeGNhbl9wcml2ICpwcml2LCBlbnVtIHhjYW5fcmVnIHJlZywNCj4gICAgICAgICAgICAgICAg
-ICAgICAgIHUzMiB2YWwpOw0KPiAtICAgICBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2Ow0KPiArICAg
-ICBzdHJ1Y3QgZGV2aWNlICpkZXY7DQo+ICAgICAgIHZvaWQgX19pb21lbSAqcmVnX2Jhc2U7DQo+
-ICAgICAgIHVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOw0KPiAgICAgICBzdHJ1Y3QgY2xrICpidXNf
-Y2xrOw0KPiBAQCAtODQyLDYgKzg0MywxMyBAQCBzdGF0aWMgaW50IHhjYW5fb3BlbihzdHJ1Y3Qg
-bmV0X2RldmljZSAqbmRldikNCj4gICAgICAgc3RydWN0IHhjYW5fcHJpdiAqcHJpdiA9IG5ldGRl
-dl9wcml2KG5kZXYpOw0KPiAgICAgICBpbnQgcmV0Ow0KPg0KPiArICAgICByZXQgPSBwbV9ydW50
-aW1lX2dldF9zeW5jKHByaXYtPmRldik7DQo+ICsgICAgIGlmIChyZXQgPCAwKSB7DQo+ICsgICAg
-ICAgICAgICAgbmV0ZGV2X2VycihuZGV2LCAiJXM6IHJ1bnRpbWUgQ0FOIHJlc3VtZSBmYWlsZWQo
-JWQpXG5cciIsDQoNClRoZXJlIG1pZ2h0IGJlIG90aGVyIGlzc3VlcyB0aGFuIHRoZSByZXN1bWUg
-dGhhdCBtYWtlIHRoaXMgZmFpbC4gSXQgc2hvdWxkIHByb2JhYmx5IGp1c3Qgc2F5ICdwbV9ydW50
-aW1lX2dldCBmYWlsZWQnLg0KVGhlIENBTiBpbiB0aGUgc3RyaW5nIHNob3VsZCBub3QgYmUgbmVl
-ZGVkLCB0aGUgbmV0ZGV2X2VyciBtYWNybyBtYWtlcyBzdXJlIHRoZSBkZXZpY2UgbmFtZSBpcyBw
-cmludGVkLg0KQ2FuIHdlIGhhdmUgYSBzcGFjZSBiZXR3ZWVuICdmYWlsZWQnIGFuZCB0aGUgZXJy
-b3IgY29kZT8NClRoZXJlIHNob3VsZCBub3QgYmUgYSAnXHInDQoNCksgc3VyZSB3aWxsIG1vZGlm
-eSB0aGUgZXJyb3IgbWVzc2FnZSBhcyB5b3UgZXhwbGFpbmVkIGFib3ZlLg0KDQo+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIF9fZnVuY19fLCByZXQpOw0KPiArICAgICAgICAgICAgIHJl
-dHVybiByZXQ7DQo+ICsgICAgIH0NCj4gKw0KPiAgICAgICByZXQgPSByZXF1ZXN0X2lycShuZGV2
-LT5pcnEsIHhjYW5faW50ZXJydXB0LCBwcml2LT5pcnFfZmxhZ3MsDQo+ICAgICAgICAgICAgICAg
-ICAgICAgICBuZGV2LT5uYW1lLCBuZGV2KTsNCj4gICAgICAgaWYgKHJldCA8IDApIHsNCj4gQEAg
-LTg0OSwyOSArODU3LDE3IEBAIHN0YXRpYyBpbnQgeGNhbl9vcGVuKHN0cnVjdCBuZXRfZGV2aWNl
-ICpuZGV2KQ0KPiAgICAgICAgICAgICAgIGdvdG8gZXJyOw0KPiAgICAgICB9DQo+DQo+IC0gICAg
-IHJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShwcml2LT5jYW5fY2xrKTsNCj4gLSAgICAgaWYgKHJl
-dCkgew0KPiAtICAgICAgICAgICAgIG5ldGRldl9lcnIobmRldiwgInVuYWJsZSB0byBlbmFibGUg
-ZGV2aWNlIGNsb2NrXG4iKTsNCj4gLSAgICAgICAgICAgICBnb3RvIGVycl9pcnE7DQo+IC0gICAg
-IH0NCj4gLQ0KPiAtICAgICByZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUocHJpdi0+YnVzX2Nsayk7
-DQo+IC0gICAgIGlmIChyZXQpIHsNCj4gLSAgICAgICAgICAgICBuZXRkZXZfZXJyKG5kZXYsICJ1
-bmFibGUgdG8gZW5hYmxlIGJ1cyBjbG9ja1xuIik7DQo+IC0gICAgICAgICAgICAgZ290byBlcnJf
-Y2FuX2NsazsNCj4gLSAgICAgfQ0KPiAtDQo+ICAgICAgIC8qIFNldCBjaGlwIGludG8gcmVzZXQg
-bW9kZSAqLw0KPiAgICAgICByZXQgPSBzZXRfcmVzZXRfbW9kZShuZGV2KTsNCj4gICAgICAgaWYg
-KHJldCA8IDApIHsNCj4gICAgICAgICAgICAgICBuZXRkZXZfZXJyKG5kZXYsICJtb2RlIHJlc2V0
-dGluZyBmYWlsZWQhXG4iKTsNCj4gLSAgICAgICAgICAgICBnb3RvIGVycl9idXNfY2xrOw0KPiAr
-ICAgICAgICAgICAgIGdvdG8gZXJyX2lycTsNCj4gICAgICAgfQ0KPg0KPiAgICAgICAvKiBDb21t
-b24gb3BlbiAqLw0KPiAgICAgICByZXQgPSBvcGVuX2NhbmRldihuZGV2KTsNCj4gICAgICAgaWYg
-KHJldCkNCj4gLSAgICAgICAgICAgICBnb3RvIGVycl9idXNfY2xrOw0KPiArICAgICAgICAgICAg
-IGdvdG8gZXJyX2lycTsNCj4NCj4gICAgICAgcmV0ID0geGNhbl9jaGlwX3N0YXJ0KG5kZXYpOw0K
-PiAgICAgICBpZiAocmV0IDwgMCkgew0KPiBAQCAtODg3LDEzICs4ODMsMTEgQEAgc3RhdGljIGlu
-dCB4Y2FuX29wZW4oc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYpDQo+DQo+ICBlcnJfY2FuZGV2Og0K
-PiAgICAgICBjbG9zZV9jYW5kZXYobmRldik7DQo+IC1lcnJfYnVzX2NsazoNCj4gLSAgICAgY2xr
-X2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmJ1c19jbGspOw0KPiAtZXJyX2Nhbl9jbGs6DQo+IC0g
-ICAgIGNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2LT5jYW5fY2xrKTsNCj4gIGVycl9pcnE6DQo+
-ICAgICAgIGZyZWVfaXJxKG5kZXYtPmlycSwgbmRldik7DQo+ICBlcnI6DQo+ICsgICAgIHBtX3J1
-bnRpbWVfcHV0KHByaXYtPmRldik7DQo+ICsNCj4gICAgICAgcmV0dXJuIHJldDsNCj4gIH0NCj4N
-Cj4gQEAgLTkxMCwxMiArOTA0LDExIEBAIHN0YXRpYyBpbnQgeGNhbl9jbG9zZShzdHJ1Y3QgbmV0
-X2RldmljZSAqbmRldikNCj4gICAgICAgbmV0aWZfc3RvcF9xdWV1ZShuZGV2KTsNCj4gICAgICAg
-bmFwaV9kaXNhYmxlKCZwcml2LT5uYXBpKTsNCj4gICAgICAgeGNhbl9jaGlwX3N0b3AobmRldik7
-DQo+IC0gICAgIGNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2LT5idXNfY2xrKTsNCj4gLSAgICAg
-Y2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmNhbl9jbGspOw0KPiAgICAgICBmcmVlX2lycShu
-ZGV2LT5pcnEsIG5kZXYpOw0KPiAgICAgICBjbG9zZV9jYW5kZXYobmRldik7DQo+DQo+ICAgICAg
-IGNhbl9sZWRfZXZlbnQobmRldiwgQ0FOX0xFRF9FVkVOVF9TVE9QKTsNCj4gKyAgICAgcG1fcnVu
-dGltZV9wdXQocHJpdi0+ZGV2KTsNCj4NCj4gICAgICAgcmV0dXJuIDA7DQo+ICB9DQo+IEBAIC05
-MzQsMjcgKzkyNywyMSBAQCBzdGF0aWMgaW50IHhjYW5fZ2V0X2JlcnJfY291bnRlcihjb25zdCBz
-dHJ1Y3QgbmV0X2RldmljZSAqbmRldiwNCj4gICAgICAgc3RydWN0IHhjYW5fcHJpdiAqcHJpdiA9
-IG5ldGRldl9wcml2KG5kZXYpOw0KPiAgICAgICBpbnQgcmV0Ow0KPg0KPiAtICAgICByZXQgPSBj
-bGtfcHJlcGFyZV9lbmFibGUocHJpdi0+Y2FuX2Nsayk7DQo+IC0gICAgIGlmIChyZXQpDQo+IC0g
-ICAgICAgICAgICAgZ290byBlcnI7DQo+ICsgICAgIHJldCA9IHBtX3J1bnRpbWVfZ2V0X3N5bmMo
-cHJpdi0+ZGV2KTsNCj4gKyAgICAgaWYgKHJldCA8IDApIHsNCj4gKyAgICAgICAgICAgICBuZXRk
-ZXZfZXJyKG5kZXYsICIlczogcnVudGltZSByZXN1bWUgZmFpbGVkKCVkKVxuXHIiLA0KPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBfX2Z1bmNfXywgcmV0KTsNCg0KQXMgYWJvdmUuDQoN
-Cksgd2lsbCBtb2RpZnkgdGhpcyB0b28uDQoNClJlZ2FyZHMsDQpLZWRhci4NCiAgICAgICAgU8O2
-cmVuDQoNCg0KVGhpcyBlbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIGFyZSBpbnRlbmRlZCBmb3Ig
-dGhlIHNvbGUgdXNlIG9mIHRoZSBuYW1lZCByZWNpcGllbnQocykgYW5kIGNvbnRhaW4ocykgY29u
-ZmlkZW50aWFsIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2Vk
-IG9yIGNvcHlyaWdodGVkIHVuZGVyIGFwcGxpY2FibGUgbGF3LiBJZiB5b3UgYXJlIG5vdCB0aGUg
-aW50ZW5kZWQgcmVjaXBpZW50LCBkbyBub3QgcmVhZCwgY29weSwgb3IgZm9yd2FyZCB0aGlzIGVt
-YWlsIG1lc3NhZ2Ugb3IgYW55IGF0dGFjaG1lbnRzLiBEZWxldGUgdGhpcyBlbWFpbCBtZXNzYWdl
-IGFuZCBhbnkgYXR0YWNobWVudHMgaW1tZWRpYXRlbHkuDQoNCg==
+On 27/11/14 23:19, Marc Kleine-Budde wrote:
+> On 11/27/2014 02:26 PM, Linus Walleij wrote:
+>> On Fri, Nov 14, 2014 at 4:40 PM, Roger Quadros <rogerq@ti.com> wrote:
+>>
+>>> DRA7 CAN IP suffers from a problem which causes it to be prevented
+>>> from fully turning OFF (i.e. stuck in transition) if the module was
+>>> disabled while there was traffic on the CAN_RX line.
+>>>
+>>> To work around this issue we select the SLEEP pin state by default
+>>> on probe and use the DEFAULT pin state on CAN up and back to the
+>>> SLEEP pin state on CAN down.
+>>>
+>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>>
+>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Thanks, however the patch is already upstream.
+> 
+>>
+>> I see you figured it out all by yourselves :D
+>>
+>> (Sorry for being absent.)
+>>
+>>> +#include <linux/pinctrl/consumer.h>
+>>> +       pinctrl_pm_select_default_state(dev->dev.parent);
+>>> +       pinctrl_pm_select_sleep_state(dev->dev.parent);
+>>> +       pinctrl_pm_select_sleep_state(dev->dev.parent);
+>>
+>> NB: in drivers/base/pinctrl.c:
+>>
+>> #ifdef CONFIG_PM
+>>         /*
+>>          * If power management is enabled, we also look for the optional
+>>          * sleep and idle pin states, with semantics as defined in
+>>          * <linux/pinctrl/pinctrl-state.h>
+>>          */
+>>         dev->pins->sleep_state = pinctrl_lookup_state(dev->pins->p,
+>>                                         PINCTRL_STATE_SLEEP);
+>>
+>> So if these states are necessary for the driver to work, put
+>> depends on PM or select PM in the Kconfig.
+> 
+> Roger, you can prepare a patch, if needed.
+
+As pinctrl sleep is an optional driver feature we don't need to do any changes.
+For the DRA7 specific case, the platform configs ensure that PM is enabled.
+
+cheers,
+-roger
