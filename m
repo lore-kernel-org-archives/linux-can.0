@@ -1,129 +1,73 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH v2 1/3] can/peak_usb: CAN-FD: existing source files modifications
-Date: Tue,  2 Dec 2014 11:31:52 +0100
-Message-ID: <1417516314-17486-2-git-send-email-s.grosjean@peak-system.com>
-References: <1417516314-17486-1-git-send-email-s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 1/3] can/peak_usb: CAN-FD: existing source files modifications
+Date: Tue, 02 Dec 2014 13:14:29 +0100
+Message-ID: <547DAD25.10706@pengutronix.de>
+References: <1417516314-17486-1-git-send-email-s.grosjean@peak-system.com> <1417516314-17486-2-git-send-email-s.grosjean@peak-system.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="oCVe9lq0xAOfqhlFaA9ET0jSvqxAGjTfa"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:60426 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751531AbaLBKcX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 2 Dec 2014 05:32:23 -0500
-In-Reply-To: <1417516314-17486-1-git-send-email-s.grosjean@peak-system.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59383 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932556AbaLBMOo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 2 Dec 2014 07:14:44 -0500
+In-Reply-To: <1417516314-17486-2-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This patch does some modifications to the existing files that support the
-PEAK-System Technik CAN 2.0b USB adapters, for preparing the support of CAN-FD.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--oCVe9lq0xAOfqhlFaA9ET0jSvqxAGjTfa
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-In particular, this patch changes some static identifiers into global ones, to
-share common functionalities with the further incoming CAN-FD specific source
-files.
+On 12/02/2014 11:31 AM, Stephane Grosjean wrote:
+> This patch does some modifications to the existing files that support t=
+he
+> PEAK-System Technik CAN 2.0b USB adapters, for preparing the support of=
+ CAN-FD.
+>=20
+> In particular, this patch changes some static identifiers into global o=
+nes, to
+> share common functionalities with the further incoming CAN-FD specific =
+source
+> files.
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb.c     |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 19 ++++++-------------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h |  8 ++++++++
- 3 files changed, 15 insertions(+), 13 deletions(-)
+Have you read my review of the v1?
+https://www.marc.info/?l=3Dlinux-can&m=3D141712364917425&w=3D2
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 925ab8e..10a4ceb 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -858,6 +858,7 @@ struct peak_usb_adapter pcan_usb = {
- 	.name = "PCAN-USB",
- 	.device_id = PCAN_USB_PRODUCT_ID,
- 	.ctrl_count = 1,
-+	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
- 	.clock = {
- 		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
- 	},
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index f7f796a..10887b0 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -27,14 +27,6 @@
- 
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro adapter");
- 
--/* PCAN-USB Pro Endpoints */
--#define PCAN_USBPRO_EP_CMDOUT		1
--#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
--#define PCAN_USBPRO_EP_MSGOUT_0		2
--#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN)
--#define PCAN_USBPRO_EP_MSGOUT_1		3
--#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_IN)
--
- #define PCAN_USBPRO_CHANNEL_COUNT	2
- 
- /* PCAN-USB Pro adapter internal clock (MHz) */
-@@ -322,8 +314,8 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 	return (i >= PCAN_USBPRO_RSP_SUBMIT_MAX) ? -ERANGE : err;
- }
- 
--static int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
--				 int req_value, void *req_addr, int req_size)
-+int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
-+			  int req_value, void *req_addr, int req_size)
- {
- 	int err;
- 	u8 req_type;
-@@ -475,7 +467,7 @@ static int pcan_usb_pro_set_bittiming(struct peak_usb_device *dev,
- 	return pcan_usb_pro_set_bitrate(dev, ccbt);
- }
- 
--static void pcan_usb_pro_restart_complete(struct urb *urb)
-+void pcan_usb_pro_restart_complete(struct urb *urb)
- {
- 	/* can delete usb resources */
- 	peak_usb_async_complete(urb);
-@@ -931,7 +923,7 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 
- 	return 0;
- 
-- err_out:
-+err_out:
- 	kfree(bi);
- 	kfree(fi);
- 	kfree(usb_if);
-@@ -977,7 +969,7 @@ static void pcan_usb_pro_free(struct peak_usb_device *dev)
- /*
-  * probe function for new PCAN-USB Pro usb interface
-  */
--static int pcan_usb_pro_probe(struct usb_interface *intf)
-+int pcan_usb_pro_probe(struct usb_interface *intf)
- {
- 	struct usb_host_interface *if_desc;
- 	int i;
-@@ -1015,6 +1007,7 @@ struct peak_usb_adapter pcan_usb_pro = {
- 	.name = "PCAN-USB Pro",
- 	.device_id = PCAN_USBPRO_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPRO_CHANNEL_COUNT,
-+	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
- 	.clock = {
- 		.freq = PCAN_USBPRO_CRYSTAL_HZ,
- 	},
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index 32275af..1101c9c 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -27,6 +27,14 @@
- #define PCAN_USBPRO_INFO_BL		0
- #define PCAN_USBPRO_INFO_FW		1
- 
-+/* PCAN-USB Pro (FD) Endpoints */
-+#define PCAN_USBPRO_EP_CMDOUT		1
-+#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
-+#define PCAN_USBPRO_EP_MSGOUT_0		2
-+#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN)
-+#define PCAN_USBPRO_EP_MSGOUT_1		3
-+#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_IN)
-+
- /* Vendor Request value for XXX_FCT */
- #define PCAN_USBPRO_FCT_DRVLD		5 /* tell device driver is loaded */
- #define PCAN_USBPRO_FCT_DRVLD_REQ_LEN	16
--- 
-1.9.1
+Marc
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--oCVe9lq0xAOfqhlFaA9ET0jSvqxAGjTfa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUfa0lAAoJECte4hHFiupU9MIQAJ+fNjXKUpu+/szKVzECCxwL
+Yz1wsJwLxsyREpABaQdmBZJwYHUPkckhDLFmoo0XZPoYitNxsuAGlfD3uFB7zZhe
+BXU96apsTGtcWrHOzTygM18B4RMElf+xQGRABV82VohpAX8vc127f5uaJ5LY+nOE
+IWeueVg/5ikx0kXTPIhE4xxthckbLLn/8qtyMH7VumLwIaGeVO/l1+sMbGDX37Sn
+kIEoMs59NALwWQ1AuKJOOoy8SIKQX3Mx7/YBCMaEP5rH7NRkNLrN2hsUfJgx3pWj
+rL+Hc6hFSMFL+3LmiqFxEmE5YFs5j0ZlXQpGXSoFiKBPg4wO7/sJHAUkJoqMJpYM
+yTeZCtAJFqOpttBRSWhWF6PXulc6kEwDPzPAc7UJ5CgZNpI86b9CjvBmmcUj0NcJ
+cIVcTG+A+h9g8ZghklbZ6mcJBz2jIBfYcEeG0VRfrARt5tCZA3xux38dAU84+WQ8
+KkA8jpDEsuNEZHKWoA6Mn3CLz7Njz8sImn6mGW6k5SzY+IGqw8NCVt340oaj2Com
+jjzm6Ec4TrObqAEz/h0NibZoTcgYD9UBBIHvWgJFZXQyNszFQgsBF8/XBvkoLvLE
+bUMflrVE5qrkvsv4boHPo4NPQFKZRJzc1SWugpxD9Zg/FGA03+L+wAEkEhKa25JY
+xkqaMHY9Vl5cgwJgZMsH
+=ojXL
+-----END PGP SIGNATURE-----
+
+--oCVe9lq0xAOfqhlFaA9ET0jSvqxAGjTfa--
