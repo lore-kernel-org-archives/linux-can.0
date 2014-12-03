@@ -1,111 +1,83 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH 2/3] can/peak_usb: CAN-FD: add new adapters specific files
-Date: Wed, 03 Dec 2014 11:38:31 +0100
-Message-ID: <547EE827.2080004@peak-system.com>
-References: <5477A5A3.9070107@pengutronix.de>
- <547DBAEC.6010903@pengutronix.de> <547DD608.5090403@peak-system.com>
- <547DD81B.9000403@pengutronix.de> <547EDA21.6030802@peak-system.com>
- <547EE315.40703@hartkopp.net>
+Date: Wed, 03 Dec 2014 11:45:30 +0100
+Message-ID: <547EE9CA.8070608@pengutronix.de>
+References: <5477A5A3.9070107@pengutronix.de> <547DBAEC.6010903@pengutronix.de> <547DD608.5090403@peak-system.com> <547DD81B.9000403@pengutronix.de> <547EDA21.6030802@peak-system.com> <547EE315.40703@hartkopp.net> <547EE827.2080004@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="5UJasNEjN0SJIe62sekdTXdb98X70uH91"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:35778 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751086AbaLCKis (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Dec 2014 05:38:48 -0500
-In-Reply-To: <547EE315.40703@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41280 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751086AbaLCKpj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 3 Dec 2014 05:45:39 -0500
+In-Reply-To: <547EE827.2080004@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5UJasNEjN0SJIe62sekdTXdb98X70uH91
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Le 03/12/2014 11:16, Oliver Hartkopp a =C3=A9crit :
-> Hi Stephane,
->
-> when there are defines that are definitely only relevant for one C=20
-> file these defines should go into this specific C file.
->
-> But defines that are (even potentially) relevant for more users shoul=
-d=20
-> go into a .h file, e.g. the ucan defines - or when you have common US=
-B=20
-> functions that are used by PCAN USB and PCAN USB pro.
->
-> But definitions that are *only* PCAN USB pro specific should go into=20
-> pcan_usb_pro.c then.
+On 12/03/2014 11:38 AM, Stephane Grosjean wrote:
+> Well I know that. My remark was about two points:
+>=20
+> - the *kernel 3.4* version of pcan_usb_pro.h defines some data struct
+> and constants that are *only* used by pcan_usb_pro.c (see "struct
+> pcan_usb_pro_fwinfo", for example). Since it has been acked in the
+> mainline in these early times, I simply asked if and when this rule did=
 
-Well I know that. My remark was about two points:
+> evolve? Underlying question: what to do now? Should I (also) post
+> patches to setup things right between pcan_usb_pro.c and pcan_usb_pro.h=
+,
+> in order to define (for ex) "struct pcan_usb_pro_fwinfo" in
+> pcan_usb_pro.c instead? Or do we let things "as is"?
 
-- the *kernel 3.4* version of pcan_usb_pro.h defines some data struct=20
-and constants that are *only* used by pcan_usb_pro.c (see "struct=20
-pcan_usb_pro_fwinfo", for example). Since it has been acked in the=20
-mainline in these early times, I simply asked if and when this rule did=
-=20
-evolve? Underlying question: what to do now? Should I (also) post=20
-patches to setup things right between pcan_usb_pro.c and pcan_usb_pro.h=
-,=20
-in order to define (for ex) "struct pcan_usb_pro_fwinfo" in=20
-pcan_usb_pro.c instead? Or do we let things "as is"?
+No need to clean up the .h files already in the kernel. But please stick
+to the rule when adding new files.
 
-- pcan_ucan.h defines some data structs and constants that will be=20
-common across different kinds of CAN-FD hardwares. How should I include=
-=20
-this "pcan_ucan.h" file from a future (for example) PCI CAN-FD driver=20
-(which, obvioulsy) won't be stored  under "usb/peak_usb" directory).
+> - pcan_ucan.h defines some data structs and constants that will be
+> common across different kinds of CAN-FD hardwares. How should I include=
 
-Regards,
+> this "pcan_ucan.h" file from a future (for example) PCI CAN-FD driver
+> (which, obvioulsy) won't be stored  under "usb/peak_usb" directory).
 
-St=C3=A9phane
->
-> Regards,
-> Oliver
->
->
-> On 03.12.2014 10:38, Stephane Grosjean wrote:
->> Hi Marc,
->>
->> Le 02/12/2014 16:17, Marc Kleine-Budde a =C3=A9crit :
->>> On 12/02/2014 04:08 PM, Stephane Grosjean wrote:
->>>>>> drivers/net/can/usb/peak_usb/pcan_ucan.h   | 208 +++++++
->>>>>>    drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 955
->>>>>> +++++++++++++++++++++++++++++
->>>>>>    drivers/net/can/usb/peak_usb/pcan_usb_fd.h | 108 ++++
->>>>> Please don't create a header file, if it's only included once. Pl=
-ease
->>>>> merge into the correct .c file.
->>>> Ok. So I merge both header files into the .c file. There will be=20
->>>> only a
->>>> single (and big) pcan_usb_fd.c file.
->>> Yes, we only want code in header files that's used in more than one=
-=20
->>> .c file.
->>
->> Is this rule quite recent? I mean, the current version of peak_usb=20
->> contains
->> "pcan_usb_pro.h" which is included only by "pcan_usb_pro.c"?
->>
->> Moreover, "pcan_ucan.h" defines some data structures that might be=20
->> used by
->> some other new "non USB" PEAK -FD devices (peak_pci, for example).
->> So, how to manage to avoid to have to define several times the same =
-data
->> structures and constants, please?
->>
->> St=C3=A9phane
->> --=20
->> PEAK-System Technik GmbH
->> Sitz der Gesellschaft Darmstadt
->> Handelsregister Darmstadt HRB 9183 Geschaeftsfuehrung: Alexander=20
->> Gach, Uwe
->> Wilhelm
->> --=20
+If it's CAN-FD relevant than it will go under include/linux/can/ somewher=
+e.
 
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--5UJasNEjN0SJIe62sekdTXdb98X70uH91
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUfunKAAoJECte4hHFiupUKr0QAJeFTfkNx8cNYCPBDPxWhUi/
+6Swn7lN5YgegWSY0AltJv/weKUliWuc450V2WHPUOmcSMH/W7tRVFr8pWaacLaFo
++KmzCKt6a8krgTbGsZNv281QUaZog/iAav9Dxf4dbofNt9iaIAwe8A1z0BJOli2O
+rQuBUhWmBzA0d2aA6S2UU4T0m6eBg7X+7BLCXbWhsfG8va4yrC2iTbhBP/JAWbtC
+yJakWxvxhVpYtcfs/XcQZERiSjk1IvPpjIrBtOSyW5yqI3gBpvtgIg+/i399isWR
+qICHU4z8MyrdzD/L2dZlyBLxds1Q97F846mw3xKHcTi1d6IHHTorRkCTjqhNyaxF
+ADXIpWXqkQ9TU6Sr97UNnugyWbvxdIfliCjJAITIqfkX97jHsDI3wM1Kf3MzMFO3
+V+NRoY9Pw6RG4df4ykuSDFY74nRT46hMvIm+gTPBwSzXap9WYWFPlqX1Z82qXk1F
+giXzISWE5sZzI36R32ZManc4pHqt0itQyURBdqKlHBhzTUYLIWrIUkHAF71rpfOB
+oaGDwL4ZxHvZGsPotM7la14DrqIgZsbB5AnCNJ+eGwrL8Pv12ZDci7VbKIT6zr2F
+ho4R55jkS7NQC036Uv39m4NEtyfAb4nWaw7zzZLuHfyUkdzV2BiHuXb1saPGn6rP
+0uwAoI5tHgmDkmdJtuZL
+=lWbg
+-----END PGP SIGNATURE-----
+
+--5UJasNEjN0SJIe62sekdTXdb98X70uH91--
