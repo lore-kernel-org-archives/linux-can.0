@@ -1,12 +1,12 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can/peak_usb: fix multi-byte values endianess
-Date: Fri,  5 Dec 2014 12:17:42 +0100
-Message-ID: <1417778262-8330-1-git-send-email-s.grosjean@peak-system.com>
+Subject: [PATCH v2] can/peak_usb: fix multi-byte values endianess
+Date: Fri,  5 Dec 2014 14:11:09 +0100
+Message-ID: <1417785069-20782-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:34667 "EHLO
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:23069 "EHLO
 	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750724AbaLELRq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Dec 2014 06:17:46 -0500
+	with ESMTP id S1750857AbaLENLX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Dec 2014 08:11:23 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
@@ -22,10 +22,11 @@ of a 32-bits local variable for handling the error status
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c     | 14 ++++-----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 20 ++++++------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h | 48 ++++++++++++++---------------
- 3 files changed, 41 insertions(+), 41 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c      | 14 ++++----
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  3 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 20 ++++++------
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  | 48 ++++++++++++++--------------
+ 4 files changed, 43 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
 index 925ab8e..4e1659d 100644
@@ -88,6 +89,27 @@ index 925ab8e..4e1659d 100644
  	}
  
  	cf->can_dlc = get_can_dlc(rec_len);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index dc807e1..c62f48a 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -856,6 +856,7 @@ static int peak_usb_probe(struct usb_interface *intf,
+ 			  const struct usb_device_id *id)
+ {
+ 	struct usb_device *usb_dev = interface_to_usbdev(intf);
++	const u16 usb_id_product = le16_to_cpu(usb_dev->descriptor.idProduct);
+ 	struct peak_usb_adapter *peak_usb_adapter, **pp;
+ 	int i, err = -ENOMEM;
+ 
+@@ -863,7 +864,7 @@ static int peak_usb_probe(struct usb_interface *intf,
+ 
+ 	/* get corresponding PCAN-USB adapter */
+ 	for (pp = peak_usb_adapters_list; *pp; pp++)
+-		if ((*pp)->device_id == usb_dev->descriptor.idProduct)
++		if ((*pp)->device_id == usb_id_product)
+ 			break;
+ 
+ 	peak_usb_adapter = *pp;
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
 index f7f796a..4cfa3b8 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
