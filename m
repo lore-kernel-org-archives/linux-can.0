@@ -1,23 +1,30 @@
 From: Jeremiah Mahler <jmmahler@gmail.com>
-Subject: [PATCH] can: fix spelling errors
-Date: Fri,  5 Dec 2014 06:49:10 -0800
-Message-ID: <1417790950-6161-1-git-send-email-jmmahler@gmail.com>
+Subject: [PATCH v2] can: fix spelling errors
+Date: Fri,  5 Dec 2014 09:54:38 -0800
+Message-ID: <1417802078-9309-1-git-send-email-jmmahler@gmail.com>
+References: <1417790950-6161-1-git-send-email-jmmahler@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f46.google.com ([209.85.220.46]:54826 "EHLO
-	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751023AbaLEOuM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Dec 2014 09:50:12 -0500
-Received: by mail-pa0-f46.google.com with SMTP id lj1so809337pab.33
-        for <linux-can@vger.kernel.org>; Fri, 05 Dec 2014 06:50:12 -0800 (PST)
+Received: from mail-oi0-f51.google.com ([209.85.218.51]:55549 "EHLO
+	mail-oi0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751378AbaLERz1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 5 Dec 2014 12:55:27 -0500
+Received: by mail-oi0-f51.google.com with SMTP id e131so798755oig.10
+        for <linux-can@vger.kernel.org>; Fri, 05 Dec 2014 09:55:27 -0800 (PST)
+In-Reply-To: <1417790950-6161-1-git-send-email-jmmahler@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Jeremiah Mahler <jmmahler@gmail.com>
+Cc: Jochen Frieling <j.frieling@pengutronix.de>, Jeremiah Mahler <jmmahler@gmail.com>
 
 Fix various spelling errors in the comments of the CAN modules.
 
 Signed-off-by: Jeremiah Mahler <jmmahler@gmail.com>
 ---
+
+Notes:
+    Changes in v2:
+      - fix the spelling error in the spelling fix
+
  drivers/net/can/cc770/cc770.c |  2 +-
  net/can/af_can.c              |  2 +-
  net/can/bcm.c                 | 12 ++++++------
@@ -51,7 +58,7 @@ index ac05be1..66e0804 100644
   * @mask: CAN mask
   * @func: callback function on filter match
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 6169aa2..e2157a4 100644
+index 6169aa2..ee9ffd9 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
 @@ -439,7 +439,7 @@ static void bcm_rx_update_and_send(struct bcm_op *op,
@@ -77,7 +84,7 @@ index 6169aa2..e2157a4 100644
  {
  	/*
 -	 * no one uses the MSBs of can_dlc for comparation,
-+	 * no one uses the MSBs of can_dlc for comparaison,
++	 * no one uses the MSBs of can_dlc for comparison,
  	 * so we use it here to detect the first time of reception
  	 */
  
