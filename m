@@ -1,41 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can/peak_usb: add support for PEAK new CANFD USB adapters
-Date: Sun, 07 Dec 2014 21:16:36 +0100
-Message-ID: <5484B5A4.8070507@pengutronix.de>
-References: <1417788355-23306-1-git-send-email-s.grosjean@peak-system.com>
+Subject: Re: [PATCH] can: slcan/vcan: eliminate banner[] variable, switch
+ to pr_info()
+Date: Sun, 07 Dec 2014 21:18:09 +0100
+Message-ID: <5484B601.8070609@pengutronix.de>
+References: <1417596244-5743-1-git-send-email-jmmahler@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="oC1BU7OEup7FvaOl5guk9HirlUMt9Vg9a"
+ boundary="GLiWTMR0IA3X3eqrjn2GJo9c7lGFe874c"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38134 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57954 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752700AbaLGUQj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 7 Dec 2014 15:16:39 -0500
-In-Reply-To: <1417788355-23306-1-git-send-email-s.grosjean@peak-system.com>
+	with ESMTP id S1752700AbaLGUSM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 7 Dec 2014 15:18:12 -0500
+In-Reply-To: <1417596244-5743-1-git-send-email-jmmahler@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Jeremiah Mahler <jmmahler@gmail.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oC1BU7OEup7FvaOl5guk9HirlUMt9Vg9a
+--GLiWTMR0IA3X3eqrjn2GJo9c7lGFe874c
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 12/05/2014 03:05 PM, Stephane Grosjean wrote:
-> This patch adds support for the following new PEAK-System technik
-> CANFD USB adapters:
+On 12/03/2014 09:44 AM, Jeremiah Mahler wrote:
+> Several can modules in drivers/net/can use a banner[] variable at the
+> top which defines a string that is used once during init.  This string
+> is also embedded with KERN_INFO which makes it printk() specific.
 >=20
-> PCAN-USB FD             single CANFD channel USB adapter
-> PCAN-USB Pro FD         dual CANFD channels USB adapter
+> Improve the code by eliminating the banner[] variable and moving the
+> string to where it is printed.  Then switch from printk(KERN_INFO to
+> pr_info() for the lines that were changed.
 >=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> This patch is similar to [1] which was applied to net/can.
+>=20
+>   [1]: https://lkml.org/lkml/2014/11/22/10
+>=20
+> Signed-off-by: Jeremiah Mahler <jmmahler@gmail.com>
 
-I'll take care of this patch next year, after my holidays.
+applied to can-next/master.
 
-regards,
+Tnx,
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -43,7 +50,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---oC1BU7OEup7FvaOl5guk9HirlUMt9Vg9a
+--GLiWTMR0IA3X3eqrjn2GJo9c7lGFe874c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -51,19 +58,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUhLWkAAoJECte4hHFiupUd10P/RUXWxZNWJVKVzqUJUIU41qi
-uskQtmv1WUSFBmxIovSND1paULmSoIjFUyJzhU3+vKVP6iEUlsPdGWNdtgmpoBXG
-IKzPiCGq5wTUKrHaxll9ol/FVwcWYxfVPl8TrnFoKsuzMk/hFLcI4NAeSMpOkWht
-FYCCYvz+z6QS8kASH2NjUdrPVURQqfAir2yOCIOVvHjV2EQ1oyvhjsH3EkL5//zV
-VRNY+b/MIwFr9761I/ngpFEmppR7ucdCkUpbNeR+J77Zine9Uu865QBbJnElXP3X
-dtc4+vYuih35Nv/jdI3esCM48bTioOIzj/YKZ/cnybMpDKGU9CRoEGXA7nVDYesf
-hNIZ9bCqawR3JEKAaxmvq2kuAyfDRYyI6KZfpYZssSJtML5kwpynWKE0U3evvFgx
-S7r4VMM3KOuAs+ASo3B9qLVYnS6Evdwo/3aDLa7941hqU+/WYhXMvzLR9VfBtfTK
-kEKt9dNWVxLQXpGP6hJfQfuCgnlP/P9dlnbxWb5I5UDwps5jI+3gTTjLfAbEA+Gv
-YrJ+/RrTxbn2ZB2EnpksUy3HmAm6jgc4LxWufDBcdG2/b+FJvdMo0044wfKV0oh5
-qZEyRwC/Ik/R40E7uJ87Nu81JYrbdbNIfUXcEX++PdDRvrpSFxdIw/fLP0fr1DVv
-X5z2nVrVRyzyUzkenQse
-=LTbz
+iQIcBAEBAgAGBQJUhLYBAAoJECte4hHFiupUbvAP/0XpEyI95EjpOP/+KFiEjcp2
+fsN0hMevbJyVkbXogwGtdjUt/q/LvnygTbaK52s4MjgOJzrUHPfjh2xbK3y2bfv2
+5fUD7bwAKzso8rLr4QBdnwv87X9I3CbtqhxtUUmfYvYPOtNs4yAi3MBoKl2ZlKx4
+QLA5bTeBg+MrC4KEeJ/sGBi9iBEUQUMqi5MX1QQbkuse6WePlBaxpjqB8x6ofMnB
+HhZ8eSvGZTd/Tt+JkPv34RDkRJkaZ7Y33QRDD7eYc+aVGJpqF+KjdfdEbkSIVUn+
+Q4+S+JaPTJoiFNplvOMejmnr/mVv8tdx8UhlEi+kMC7lIrvEOwVrx5ZJX/TmbMA3
+I4U9FtijksXnKdAyP1BjU9kHBsrIu0CU9+wcpE9YORUc9Bftm2Wka0sfS/1aAm8w
+8MJeB68ZDr9fVnwX3IuWwpVjYHTXsXdCp/yvXKBleJq1AGVGutvEPDgDPXnbLc6Y
+sN/P0YXvrAu6IlzJ9qLZv9kMxzl/m0TxJ4wLAbEN2naxseYYzSfCXdOnBof4hS2D
+y5Ufev1uCG9TOejROw3FTGhOnuj+56AuSTV7lunFQ3fvL5duUcRy8hd2z9MqEt+i
+INEv6mK+Fq/RrzWSrtnW0RzegnST70qgR1FJqUqL66TRYWpAwFsrrrosDRNiwQD6
++/bA7j1Ng/waba2Sr82p
+=Ei5I
 -----END PGP SIGNATURE-----
 
---oC1BU7OEup7FvaOl5guk9HirlUMt9Vg9a--
+--GLiWTMR0IA3X3eqrjn2GJo9c7lGFe874c--
