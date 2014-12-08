@@ -1,97 +1,88 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v5 5/5] can: move can_stats.bus_off++ from can_bus_off into
- can_change_state
-Date: Mon, 8 Dec 2014 11:39:29 +0000
-Message-ID: <20141208113929.27703.12971@shannon>
-References: <470b7276-2306-4075-814b-7ebd624903dc@GRBSR0089.marel.net>
- <5484B56E.10607@pengutronix.de> <20141208104427.22521.6595@shannon>
- <4163e3170207c529ee01185f156a5240@grandegger.com>
+From: Jeremiah Mahler <jmmahler@gmail.com>
+Subject: Re: [PATCH v2] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Mon, 8 Dec 2014 04:26:26 -0800
+Message-ID: <20141208122626.GA8858@hudson.localdomain>
+References: <1418038572-4284-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0064.outbound.protection.outlook.com ([157.55.234.64]:44081
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752111AbaLHLje convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Dec 2014 06:39:34 -0500
-In-Reply-To: <4163e3170207c529ee01185f156a5240@grandegger.com>
+Received: from mail-pa0-f53.google.com ([209.85.220.53]:48819 "EHLO
+	mail-pa0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752717AbaLHM0a (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Dec 2014 07:26:30 -0500
+Received: by mail-pa0-f53.google.com with SMTP id kq14so5143034pab.12
+        for <linux-can@vger.kernel.org>; Mon, 08 Dec 2014 04:26:29 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1418038572-4284-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
 
-Quoting Wolfgang Grandegger (2014-12-08 11:24:41)
-> On Mon, 8 Dec 2014 10:44:27 +0000, Andri Yngvason
-> <andri.yngvason@marel.com> wrote:
-> > Quoting Marc Kleine-Budde (2014-12-07 20:15:42)
-> >> On 12/03/2014 06:54 PM, Andri Yngvason wrote:
-> >> > In order to be able to move the stats increment from can_bus_off()
-> into
-> >> > can_change_state(), the increment had to be moved back into code that
-> >> > was using
-> >> > can_bus_off() but not can_change_state().
-> >> > 
-> >> > Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
-> >> > ---
-> >> >  drivers/net/can/bfin_can.c                  | 1 +
-> >> >  drivers/net/can/c_can/c_can.c               | 1 +
-> >> >  drivers/net/can/cc770/cc770.c               | 1 +
-> >> >  drivers/net/can/dev.c                       | 3 ++-
-> >> >  drivers/net/can/m_can/m_can.c               | 1 +
-> >> >  drivers/net/can/pch_can.c                   | 1 +
-> >> >  drivers/net/can/rcar_can.c                  | 1 +
-> >> >  drivers/net/can/softing/softing_main.c      | 1 +
-> >> >  drivers/net/can/spi/mcp251x.c               | 1 +
-> >> >  drivers/net/can/ti_hecc.c                   | 1 +
-> >> >  drivers/net/can/usb/ems_usb.c               | 1 +
-> >> >  drivers/net/can/usb/esd_usb2.c              | 1 +
-> >> >  drivers/net/can/usb/peak_usb/pcan_usb.c     | 1 +
-> >> >  drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 1 +
-> >> >  drivers/net/can/usb/usb_8dev.c              | 1 +
-> >> >  15 files changed, 16 insertions(+), 1 deletion(-)
-> >> 
-> >> What about:
-> >> 
-> >> > drivers/net/can/c_can/c_can.c-910-            cf->can_id |=
-> >> > CAN_ERR_BUSOFF;
-> >> > drivers/net/can/c_can/c_can.c:911:            can_bus_off(dev);
-> >> 
-> > State changes are counted in the switch above. See line 869.
-> > However, can_bus_off() is called in both of those swiches. Is this a
-> bug?
-> 
-> Yes, the first one should be replaced with
-> "priv->can.can_stats.bus_off++".
-> 
-Ok, I'll just remove the first can_bus_off() then.
->
-> >> > drivers/net/can/janz-ican3.c-1010-                    cf->can_id |=
-> >> > CAN_ERR_BUSOFF;
-> >> > drivers/net/can/janz-ican3.c:1011:                   
-> can_bus_off(dev);
-> >> 
-> > Line 1024. It was there before. That's a bug. This patch actually fixes
-> > it. ;)
-> 
-> At this line "bus_error" is counted:
-> 
-> http://lxr.free-electrons.com/source/drivers/net/can/janz-ican3.c#L1024
->
-Agh, I seem to be having a bad case of the Mondays... 
-> 
-> >> > drivers/net/can/xilinx_can.c-560-             priv->write_reg(priv,
-> >> > XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
-> >> > drivers/net/can/xilinx_can.c:561:             can_bus_off(ndev);
-> >> 
-> > Line 557. Same as for the janz.
-> 
-> This one is (or was after your patch) wrong. It does not need a fix,
-> indeed.
-> 
-> It's fine for me if you just mention the bug fixes in the commit message.
-Ok, I'll add the count to the janz, remove the first can_bus_off() in c_can and
-do nothing for xilinx. I'll mention that this fixes bugs in c_can and xilinx.
+Stephane,
 
-Thanks,
-Andri
+On Mon, Dec 08, 2014 at 12:36:12PM +0100, Stephane Grosjean wrote:
+> Add support for the following new PEAK-System technik CANFD USB adapters:
+> 
+> PCAN-USB FD             single CANFD channel USB adapter
+> PCAN-USB Pro FD         dual CANFD channels USB adapter
+> 
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> ---
+> v2: removes 2 changes that have been erroneously included in
+>     peak_usb_create_dev() (-netdev->dev_id = ctrl_idx;) as well as in
+>     peak_usb_probe() (move of "const u16 usb_id_product" declaration) in the
+>     previous version of this patch.
+> 
+>  drivers/net/can/usb/Kconfig                  |   14 +-
+[...]
+> +};
+> +
+> +#define PCAN_UFD_MSG_OVERRUN		0x101
+> +
+> +#define PCAN_UFD_OVMSG_CHANNEL(o)	((o)->channel & 0xf)
+> +
+> +struct __packed pcan_ufd_ovr_msg {
+> +	__le16	size;
+> +	__le16	type;
+> +	__le32	ts_low;
+> +	__le32	ts_high;
+> +	u8	channel;
+> +	u8	unused[3];
+> +};
+> +
+> +/* Clock mode frequence values */
+                 ^^^^^^^^^
+				 frequency
+
+> +static const u32 pcan_usb_fd_clk_freq[6] = {
+> +	[PCAN_UFD_CLK_80MHZ] = 80000000,
+> +	[PCAN_UFD_CLK_60MHZ] = 60000000,
+> +	[PCAN_UFD_CLK_40MHZ] = 40000000,
+> +	[PCAN_UFD_CLK_30MHZ] = 30000000,
+> +	[PCAN_UFD_CLK_24MHZ] = 24000000,
+> +	[PCAN_UFD_CLK_20MHZ] = 20000000
+> +};
+> +
+> +/* build the opcode_channel field wth respect to the correct endianess */
+                                     ^^^
+									 with
+
+> +static inline __le16 pucan_cmd_opcode_channel(int opcode, int channel)
+> +{
+> +	return cpu_to_le16(PUCAN_CMD_OPCODE_CHANNEL(opcode, channel));
+> +}
+> +
+> +/* return a device USB interface */
+> +static inline
+> +struct pcan_usb_fd_if *pcan_usb_fd_dev_if(struct peak_usb_device *dev)
+> +{
+> +	struct pcan_usb_fd_device *pdev =
+> +			container_of(dev, struct pcan_usb_fd_device, dev);
+> +	return pdev->usb_if;
+> +}
+[...]
+
+-- 
+- Jeremiah Mahler
