@@ -1,27 +1,34 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2014-12-07
-Date: Tue, 09 Dec 2014 16:49:34 -0500 (EST)
-Message-ID: <20141209.164934.2076716794543215133.davem@davemloft.net>
-References: <5484E3C3.5030205@pengutronix.de>
+From: Stephen Hemminger <stephen@networkplumber.org>
+Subject: Re: [PATCH] iproute2: Add support for CAN presume-ack feature
+Date: Tue, 9 Dec 2014 20:35:19 -0800
+Message-ID: <20141209203519.7f0ff71c@urahara>
+References: <1417766390-4587-1-git-send-email-nebaruzdin@gmail.com>
+	<1417768902-5404-1-git-send-email-nebaruzdin@gmail.com>
+	<1417768902-5404-2-git-send-email-nebaruzdin@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <5484E3C3.5030205@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-pa0-f52.google.com ([209.85.220.52]:60045 "EHLO
+	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755388AbaLJEfa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Dec 2014 23:35:30 -0500
+Received: by mail-pa0-f52.google.com with SMTP id eu11so1972188pac.25
+        for <linux-can@vger.kernel.org>; Tue, 09 Dec 2014 20:35:29 -0800 (PST)
+In-Reply-To: <1417768902-5404-2-git-send-email-nebaruzdin@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 08 Dec 2014 00:33:23 +0100
+On Fri,  5 Dec 2014 11:41:42 +0300
+Nikita Edward Baruzdin <nebaruzdin@gmail.com> wrote:
 
-> this is a pull request of 8 patches for net-next/master.
+> This patch makes CAN_CTRLMODE_PRESUME_ACK netlink feature configurable.
+> When enabled, the feature sets CAN controller in mode in which
+> acknowledgement absence is ignored.
 > 
-> Andri Yngvason contributes 4 patches in which the CAN state change
-> handling is consolidated and unified among the sja1000, mscan and
-> flexcan driver. The three patches by Jeremiah Mahler fix spelling
-> mistakes and eliminate the banner[] variable in various parts. And a
-> patch by me that switches on sparse endianess checking by default.
+> Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+> ---
 
-Pulled, thanks Marc.
+Applied.
