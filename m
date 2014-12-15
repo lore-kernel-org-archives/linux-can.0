@@ -1,258 +1,65 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v6] can: move can_stats.bus_off++ from can_bus_off into
- can_change_state
-Date: Fri, 12 Dec 2014 14:00:41 +0100
-Message-ID: <548AE6F9.8020306@grandegger.com>
-References: <b032a1c3-b80d-41a4-998b-4fe0e5a8118b@GRBSR0089.marel.net>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 message length
+Date: Mon, 15 Dec 2014 08:58:14 +0000
+Message-ID: <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+References: <loom.20141211T112702-791@post.gmane.org>
+ <20141212110743.GC10796@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ngcobalt02.manitu.net ([217.11.48.102]:41968 "EHLO
-	ngcobalt02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S967589AbaLLNAo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 12 Dec 2014 08:00:44 -0500
-In-Reply-To: <b032a1c3-b80d-41a4-998b-4fe0e5a8118b@GRBSR0089.marel.net>
+Received: from relais-ias91.francetelecom.com ([193.251.215.91]:43390 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750836AbaLOJEv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 15 Dec 2014 04:04:51 -0500
+In-Reply-To: <20141212110743.GC10796@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 12/11/2014 03:15 PM, Andri Yngvason wrote:
-> In order to be able to move the stats increment from can_bus_off() into
-> can_change_state(), the increment had to be moved back into code that was using
-> can_bus_off() but not can_change_state().
-> 
-> As a side-effect, this patch fixes the following bugs:
->  * Redundant call to can_bus_off() in c_can.
->  * Bus-off counted twice in xilinx_can.
-> 
-> Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
-> ---
->  drivers/net/can/bfin_can.c                  | 1 +
->  drivers/net/can/c_can/c_can.c               | 2 +-
->  drivers/net/can/cc770/cc770.c               | 1 +
->  drivers/net/can/dev.c                       | 3 ++-
->  drivers/net/can/janz-ican3.c                | 1 +
->  drivers/net/can/m_can/m_can.c               | 1 +
->  drivers/net/can/pch_can.c                   | 1 +
->  drivers/net/can/rcar_can.c                  | 1 +
->  drivers/net/can/softing/softing_main.c      | 1 +
->  drivers/net/can/spi/mcp251x.c               | 1 +
->  drivers/net/can/ti_hecc.c                   | 1 +
->  drivers/net/can/usb/ems_usb.c               | 1 +
->  drivers/net/can/usb/esd_usb2.c              | 1 +
->  drivers/net/can/usb/peak_usb/pcan_usb.c     | 1 +
->  drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 1 +
->  drivers/net/can/usb/usb_8dev.c              | 1 +
->  16 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-> index 543ecce..7c89430 100644
-> --- a/drivers/net/can/bfin_can.c
-> +++ b/drivers/net/can/bfin_can.c
-> @@ -352,6 +352,7 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
->  		netdev_dbg(dev, "bus-off mode interrupt\n");
->  		state = CAN_STATE_BUS_OFF;
->  		cf->can_id |= CAN_ERR_BUSOFF;
-> +		stats->bus_off++;
->  		can_bus_off(dev);
->  	}
->  
-> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-> index f94a9fa..70f77e9 100644
-> --- a/drivers/net/can/c_can/c_can.c
-> +++ b/drivers/net/can/c_can/c_can.c
-> @@ -866,7 +866,7 @@ static int c_can_handle_state_change(struct net_device *dev,
->  	case C_CAN_BUS_OFF:
->  		/* bus-off state */
->  		priv->can.state = CAN_STATE_BUS_OFF;
-> -		can_bus_off(dev);
-> +		priv->can.can_stats.bus_off++;
->  		break;
->  	default:
->  		break;
-> diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-> index d837927..eea37cd 100644
-> --- a/drivers/net/can/cc770/cc770.c
-> +++ b/drivers/net/can/cc770/cc770.c
-> @@ -535,6 +535,7 @@ static int cc770_err(struct net_device *dev, u8 status)
->  		cc770_write_reg(priv, control, CTRL_INI);
->  		cf->can_id |= CAN_ERR_BUSOFF;
->  		priv->can.state = CAN_STATE_BUS_OFF;
-> +		priv->can.can_stats.bus_off++;
->  		can_bus_off(dev);
->  	} else if (status & STAT_WARN) {
->  		cf->can_id |= CAN_ERR_CRTL;
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index b4ecb10..f652795 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -289,6 +289,8 @@ static void can_update_state_error_stats(struct net_device *dev,
->  		priv->can_stats.error_passive++;
->  		break;
->  	case CAN_STATE_BUS_OFF:
-> +		priv->can_stats.bus_off++;
-> +		break;
->  	default:
->  		break;
->  	};
-> @@ -544,7 +546,6 @@ void can_bus_off(struct net_device *dev)
->  	netdev_dbg(dev, "bus-off\n");
->  
->  	netif_carrier_off(dev);
-> -	priv->can_stats.bus_off++;
->  
->  	if (priv->restart_ms)
->  		mod_timer(&priv->restart_timer,
-> diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-> index 2382c04..c68b9c0 100644
-> --- a/drivers/net/can/janz-ican3.c
-> +++ b/drivers/net/can/janz-ican3.c
-> @@ -1008,6 +1008,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
->  		if (status & SR_BS) {
->  			state = CAN_STATE_BUS_OFF;
->  			cf->can_id |= CAN_ERR_BUSOFF;
-> +			mod->can.can_stats.bus_off++;
->  			can_bus_off(dev);
->  		} else if (status & SR_ES) {
->  			if (rxerr >= 128 || txerr >= 128)
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index 10d571e..7202885 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -533,6 +533,7 @@ static int m_can_handle_state_change(struct net_device *dev,
->  		/* bus-off state */
->  		priv->can.state = CAN_STATE_BUS_OFF;
->  		m_can_disable_all_interrupts(priv);
-> +		priv->can.can_stats.bus_off++;
->  		can_bus_off(dev);
->  		break;
->  	default:
-> diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-> index a67eb01..e187ca7 100644
-> --- a/drivers/net/can/pch_can.c
-> +++ b/drivers/net/can/pch_can.c
-> @@ -505,6 +505,7 @@ static void pch_can_error(struct net_device *ndev, u32 status)
->  		pch_can_set_rx_all(priv, 0);
->  		state = CAN_STATE_BUS_OFF;
->  		cf->can_id |= CAN_ERR_BUSOFF;
-> +		priv->can.can_stats.bus_off++;
->  		can_bus_off(ndev);
->  	}
->  
-> diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-> index 1abe133..b88fc66 100644
-> --- a/drivers/net/can/rcar_can.c
-> +++ b/drivers/net/can/rcar_can.c
-> @@ -331,6 +331,7 @@ static void rcar_can_error(struct net_device *ndev)
->  		priv->can.state = CAN_STATE_BUS_OFF;
->  		/* Clear interrupt condition */
->  		writeb(~RCAR_CAN_EIFR_BOEIF, &priv->regs->eifr);
-> +		priv->can.can_stats.bus_off++;
->  		can_bus_off(ndev);
->  		if (skb)
->  			cf->can_id |= CAN_ERR_BUSOFF;
-> diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-> index bacd236..566806a 100644
-> --- a/drivers/net/can/softing/softing_main.c
-> +++ b/drivers/net/can/softing/softing_main.c
-> @@ -261,6 +261,7 @@ static int softing_handle_1(struct softing *card)
->  				++priv->can.can_stats.error_passive;
->  			else if (can_state == CAN_STATE_BUS_OFF) {
->  				/* this calls can_close_cleanup() */
-> +				++priv->can.can_stats.bus_off;
->  				can_bus_off(netdev);
->  				netif_stop_queue(netdev);
->  			}
-> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-> index c66d699..bf63fee 100644
-> --- a/drivers/net/can/spi/mcp251x.c
-> +++ b/drivers/net/can/spi/mcp251x.c
-> @@ -905,6 +905,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
->  		if (priv->can.state == CAN_STATE_BUS_OFF) {
->  			if (priv->can.restart_ms == 0) {
->  				priv->force_quit = 1;
-> +				priv->can.can_stats.bus_off++;
->  				can_bus_off(net);
->  				mcp251x_hw_sleep(spi);
->  				break;
-> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-> index 258b9c4..6c775fa 100644
-> --- a/drivers/net/can/ti_hecc.c
-> +++ b/drivers/net/can/ti_hecc.c
-> @@ -715,6 +715,7 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
->  		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
->  		/* Disable all interrupts in bus-off to avoid int hog */
->  		hecc_write(priv, HECC_CANGIM, 0);
-> +		++priv->can.can_stats.bus_off;
->  		can_bus_off(ndev);
->  	}
->  
-> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-> index 00f2534..539df07 100644
-> --- a/drivers/net/can/usb/ems_usb.c
-> +++ b/drivers/net/can/usb/ems_usb.c
-> @@ -347,6 +347,7 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
->  			dev->can.state = CAN_STATE_BUS_OFF;
->  			cf->can_id |= CAN_ERR_BUSOFF;
->  
-> +			dev->can.can_stats.bus_off++;
->  			can_bus_off(dev->netdev);
->  		} else if (state & SJA1000_SR_ES) {
->  			dev->can.state = CAN_STATE_ERROR_WARNING;
-> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-> index b7c9e8b..29f40b2 100644
-> --- a/drivers/net/can/usb/esd_usb2.c
-> +++ b/drivers/net/can/usb/esd_usb2.c
-> @@ -250,6 +250,7 @@ static void esd_usb2_rx_event(struct esd_usb2_net_priv *priv,
->  			case ESD_BUSSTATE_BUSOFF:
->  				priv->can.state = CAN_STATE_BUS_OFF;
->  				cf->can_id |= CAN_ERR_BUSOFF;
-> +				priv->can.can_stats.bus_off++;
->  				can_bus_off(priv->netdev);
->  				break;
->  			case ESD_BUSSTATE_WARN:
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> index 925ab8e..13c737a 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> @@ -488,6 +488,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
->  	switch (new_state) {
->  	case CAN_STATE_BUS_OFF:
->  		cf->can_id |= CAN_ERR_BUSOFF;
-> +		mc->pdev->dev.can.can_stats.bus_off++;
->  		can_bus_off(mc->netdev);
->  		break;
->  
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> index 263dd92..9a3564d 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> @@ -635,6 +635,7 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
->  	switch (new_state) {
->  	case CAN_STATE_BUS_OFF:
->  		can_frame->can_id |= CAN_ERR_BUSOFF;
-> +		dev->can.can_stats.bus_off++;
->  		can_bus_off(netdev);
->  		break;
->  
-> diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-> index ef674ec..dd52c7a 100644
-> --- a/drivers/net/can/usb/usb_8dev.c
-> +++ b/drivers/net/can/usb/usb_8dev.c
-> @@ -377,6 +377,7 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
->  	case USB_8DEV_STATUSMSG_BUSOFF:
->  		priv->can.state = CAN_STATE_BUS_OFF;
->  		cf->can_id |= CAN_ERR_BUSOFF;
-> +		priv->can.can_stats.bus_off++;
->  		can_bus_off(priv->netdev);
->  		break;
->  	case USB_8DEV_STATUSMSG_OVERRUN:
-> 
-
-Looks good now!
-
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-
-Wolfgang.
+SGkgS3VydCwNCg0KSSByZXNvbHZlZCB0aGUgaXNzdWUuIFRoZSBwcm9ibGVtIGFwcGVhcnMgd2l0
+aCBsb25nIG1lc3NhZ2UgYmVjYXVzZSwgYWNjb3JkaW5nIHRvIHRoZSBqMTkzOSBzcGVjaWZpY2F0
+aW9ucywgdGhlIGVuZCBvZiBtZXNzYWdlIGhhcyB0byBiZSBmdWxmaWxsZWQgd2l0aCAweEZGIGlm
+IHRoZSBtZXNzYWdlIGlzIG5vdCBtb2R1bG8gOC4NCkFwcGFyZW50bHksIHRoZSBqMTkzOSAgZHJp
+dmVycyBkb24ndCBtYWtlIHRoZSBwYWRkaW5nIHdpdGggMHhGRi4NClRoZW4gSSBkbyB0aGF0IGlu
+IG15IHNvZnR3YXJlIGFuZCBpdCB3b3JrcyBmaW5lIGtub3cuDQoNClBlcmhhcHMsIEl0IHdpbGwg
+YmUgYSBnb29kIGlkZWEgdG8gYWRkIHRoaXMgaW4gdGhlIGRyaXZlcnMuDQoNCkJlc3QgcmVnYXJk
+cywNCg0KUGFzY2FsDQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogS3VydCBW
+YW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXSANCkVudm95
+w6nCoDogdmVuZHJlZGkgMTIgZMOpY2VtYnJlIDIwMTQgMTI6MDgNCsOAwqA6IHp6ZS1PcGVuIHRo
+ZSBib3ggRklGUkUgUCBleHQgSU1UL09MUFMNCkNjwqA6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5v
+cmcNCk9iamV0wqA6IFJlOiBKMTkzOSBtZXNzYWdlIGxlbmd0aA0KDQpIZXkgUGFzY2FsLA0KDQpP
+biBUaHUsIERlYyAxMSwgMjAxNCBhdCAxMDo0NDozOUFNICswMDAwLCBwYXNjYWwgd3JvdGU6DQo+
+IEhpLA0KPiANCj4gSSd2ZSBpbnN0YWxsZWQgdGhlIHBhdGNoIGZvciB1c2luZyBqMTkzOSBzb2Nr
+ZXQgQ0FOIHVuZGVyIGxpbnV4IA0KPiAoYmVhZ2xlQm9uZSBibGFjaykuDQo+IA0KPiBJdCB3b3Jr
+cyBmaW5lIGZvciByZWNlaXZpbmcgajE5MzkgbWVzc2FnZSBhbmQgc2VuZGluZyBzaG9ydCBtZXNz
+YWdlICg4IA0KPiBieXRlcyBtYXgpLg0KPiANCj4gQnV0IHdoZW4gSSB0cnkgdG8gc2VuZCBsb25n
+IG1lc3NhZ2UgKD44IGJ5dGVzIGxvbmcpLCBidXQgdGhlIG1lc3NhZ2UgDQo+IGhhcyBub3QgYmVl
+biBzZW50Lg0KDQpPay4NCllvdSBwcm92aWRlIGxpdHRsZSBpbmZvIGhvdyB5b3UgZGV0ZWN0IHRo
+YXQgPD04IGJ5dGVzIHdvcmssIGFuZCA+OCBieXRlcyBkbyBub3Qgd29yay4NCg0KV2hhdCBkbyB5
+b3Ugc2VlIG9uIHRoZSAocmF3KSBDQU4gYnVzPw0KDQpBcmUgeW91IGF3YXJlIG9mIHRoZSBUcmFu
+c3BvcnQgUHJvdG9jb2wgb24gSjE5MzkgdGhhdCBkZWxpdmVycyBtZXNzYWdlcyA+OCBieXRlcz8N
+Cg0KS3VydA0KPiANCj4gSSB1c2UgdGhlIHNlbmRUbyBtZXRob2QgdG8gc2VuZCBmcmFtZS4NCj4g
+DQo+IERvIEkgaGF2ZSB0byBkbyBzb21ldGhpbmcgc3BlY2lhbCB0byBzZW5kIGxvbmcgbWVzc2Fn
+ZT8NCg0Kbm8sIG5vdCBuZWNlc3NhcmlseS4NCg0KPiBJJ20gd29ya2luZyB3aXRoIGEgMy44LjEz
+IGtlcm5lbCBvbiBiZWFnbGVib25lIGJsYWNrLg0KDQpLaW5kIHJlZ2FyZHMsDQpLdXJ0DQoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBk
+ZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9p
+dmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0
+b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWls
+bGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBs
+ZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2Nl
+cHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRl
+IHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4K
+ClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlh
+bCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7
+CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBh
+dXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBw
+bGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBh
+dHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJs
+ZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lm
+aWVkLgpUaGFuayB5b3UuCgo=
