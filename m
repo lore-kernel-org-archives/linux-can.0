@@ -1,102 +1,63 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 message length
-Date: Mon, 15 Dec 2014 09:37:25 +0000
-Message-ID: <6724_1418636246_548EABD6_6724_4051_3_F1366246CF364C42B98553900CE0C5CB07FE9609@PEXCVZYM13.corporate.adroot.infra.ftgroup>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [info] Kconfig SELECT statement rules - was: FIXED_PHY is broken...
+Date: Tue, 16 Dec 2014 17:36:45 +0100
+Message-ID: <54905F9D.2090208@hartkopp.net>
+References: <20141216.112534.1684849738404064350.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias91.francetelecom.com ([193.251.215.91]:53766 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751384AbaLOJh2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 15 Dec 2014 04:37:28 -0500
-In-Reply-To: <20141215093136.GA646@vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:36460 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751492AbaLPQgt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 16 Dec 2014 11:36:49 -0500
+Received: from [192.168.178.68] (p5B0B2832.dip0.t-ipconnect.de [91.11.40.50])
+	by smtp.strato.de (RZmta 36.3 DYNA|AUTH)
+	with ESMTPSA id 606ba9qBGGajuWe
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	for <linux-can@vger.kernel.org>;
+	Tue, 16 Dec 2014 17:36:45 +0100 (CET)
+In-Reply-To: <20141216.112534.1684849738404064350.davem@davemloft.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGkgS3VydCwNCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIGFuc3dlci4NClRoZSByZW1vdGUgKG5v
-dCBhbiBFQ1UpIGlzIGEgc29mdHdhcmUgZnJvbSBBRUYgd2hpY2ggaXMgdXNlIHRvIGRpc2NvdmVy
-IHRoZSBJU08gMTE3ODMgRUNVIG9uIHRoZSBDQU4gYnVzLg0KDQpCZXN0IHJlZ2FyZHMsDQoNClBh
-c2NhbA0KDQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERpamNr
-IFttYWlsdG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6IGx1
-bmRpIDE1IGTDqWNlbWJyZSAyMDE0IDEwOjMyDQrDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJF
-IFAgZXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKg
-OiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCg0KSGV5LA0KDQpPbiBNb24sIERlYyAxNSwgMjAx
-NCBhdCAwODo1ODoxNEFNICswMDAwLCBwZmlmcmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6DQo+IEhp
-IEt1cnQsDQo+IA0KPiBJIHJlc29sdmVkIHRoZSBpc3N1ZS4gVGhlIHByb2JsZW0gYXBwZWFycyB3
-aXRoIGxvbmcgbWVzc2FnZSBiZWNhdXNlLCBhY2NvcmRpbmcgdG8gdGhlIGoxOTM5IHNwZWNpZmlj
-YXRpb25zLCB0aGUgZW5kIG9mIG1lc3NhZ2UgaGFzIHRvIGJlIGZ1bGZpbGxlZCB3aXRoIDB4RkYg
-aWYgdGhlIG1lc3NhZ2UgaXMgbm90IG1vZHVsbyA4Lg0KPiBBcHBhcmVudGx5LCB0aGUgajE5Mzkg
-IGRyaXZlcnMgZG9uJ3QgbWFrZSB0aGUgcGFkZGluZyB3aXRoIDB4RkYuDQoNCllvdSdyZSBub3Qg
-dGhlIGZpcnN0IHRvIGZpbmQgYW4gYWN0dWFsIEVDVSBjb21wbGFpbmluZyBvbiB0aGlzLg0KSSBh
-c3NlbWJsZWQgYSBwYXRjaCBlYXJsaWVyIHRoaXMgeWVhciwgc2VlIGh0dHA6Ly9saXN0cy5rZGUu
-b3JnLz9sPWxpbnV4LWNhbiZtPTEzOTgyNTU3MjIwNzQ0OCZ3PTINCg0KPiBUaGVuIEkgZG8gdGhh
-dCBpbiBteSBzb2Z0d2FyZSBhbmQgaXQgd29ya3MgZmluZSBrbm93Lg0KDQpJIGFkdmlzZSB0byBh
-cHBseSB0aGF0IHBhdGNoLCBhbmQgYXZvaWQgdG8gY2FsY3VsYXRlIHBhY2tldCBzaXplcyBpbiB1
-c2Vyc3BhY2UuDQoNCldoaWNoIGlzIHRoZSByZW1vdGUgRUNVIHRoYXQgZG9lcyBub3QgYWNjZXB0
-IHRoZSBwYWNrZXRzPw0KDQo+IA0KPiBQZXJoYXBzLCBJdCB3aWxsIGJlIGEgZ29vZCBpZGVhIHRv
-IGFkZCB0aGlzIGluIHRoZSBkcml2ZXJzLg0KDQpZZXAsIEknbGwgZG8uDQoNCktpbmQgcmVnYXJk
-cywNCkt1cnQNCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gDQo+IFBhc2NhbA0KPiANCj4gLS0tLS1N
-ZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQo+IERlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86ZGV2
-Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0NCj4gRW52b3nDqcKgOiB2ZW5kcmVkaSAxMiBk
-w6ljZW1icmUgMjAxNCAxMjowOCDDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgDQo+IGV4
-dCBJTVQvT0xQUyBDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnIE9iamV0wqA6IFJlOiBK
-MTkzOSBtZXNzYWdlIA0KPiBsZW5ndGgNCj4gDQo+IEhleSBQYXNjYWwsDQo+IA0KPiBPbiBUaHUs
-IERlYyAxMSwgMjAxNCBhdCAxMDo0NDozOUFNICswMDAwLCBwYXNjYWwgd3JvdGU6DQo+ID4gSGks
-DQo+ID4gDQo+ID4gSSd2ZSBpbnN0YWxsZWQgdGhlIHBhdGNoIGZvciB1c2luZyBqMTkzOSBzb2Nr
-ZXQgQ0FOIHVuZGVyIGxpbnV4IA0KPiA+IChiZWFnbGVCb25lIGJsYWNrKS4NCj4gPiANCj4gPiBJ
-dCB3b3JrcyBmaW5lIGZvciByZWNlaXZpbmcgajE5MzkgbWVzc2FnZSBhbmQgc2VuZGluZyBzaG9y
-dCBtZXNzYWdlIA0KPiA+ICg4IGJ5dGVzIG1heCkuDQo+ID4gDQo+ID4gQnV0IHdoZW4gSSB0cnkg
-dG8gc2VuZCBsb25nIG1lc3NhZ2UgKD44IGJ5dGVzIGxvbmcpLCBidXQgdGhlIG1lc3NhZ2UgDQo+
-ID4gaGFzIG5vdCBiZWVuIHNlbnQuDQo+IA0KPiBPay4NCj4gWW91IHByb3ZpZGUgbGl0dGxlIGlu
-Zm8gaG93IHlvdSBkZXRlY3QgdGhhdCA8PTggYnl0ZXMgd29yaywgYW5kID44IGJ5dGVzIGRvIG5v
-dCB3b3JrLg0KPiANCj4gV2hhdCBkbyB5b3Ugc2VlIG9uIHRoZSAocmF3KSBDQU4gYnVzPw0KPiAN
-Cj4gQXJlIHlvdSBhd2FyZSBvZiB0aGUgVHJhbnNwb3J0IFByb3RvY29sIG9uIEoxOTM5IHRoYXQg
-ZGVsaXZlcnMgbWVzc2FnZXMgPjggYnl0ZXM/DQo+IA0KPiBLdXJ0DQo+ID4gDQo+ID4gSSB1c2Ug
-dGhlIHNlbmRUbyBtZXRob2QgdG8gc2VuZCBmcmFtZS4NCj4gPiANCj4gPiBEbyBJIGhhdmUgdG8g
-ZG8gc29tZXRoaW5nIHNwZWNpYWwgdG8gc2VuZCBsb25nIG1lc3NhZ2U/DQo+IA0KPiBubywgbm90
-IG5lY2Vzc2FyaWx5Lg0KPiANCj4gPiBJJ20gd29ya2luZyB3aXRoIGEgMy44LjEzIGtlcm5lbCBv
-biBiZWFnbGVib25lIGJsYWNrLg0KPiANCj4gS2luZCByZWdhcmRzLA0KPiBLdXJ0DQo+IA0KPiBf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXw0KPiANCj4gQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVu
-dCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIA0KPiBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmls
-ZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYyBwYXMgZXRyZSBkaWZmdXNlcywgDQo+IGV4cGxvaXRl
-cyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3Nh
-Z2UgDQo+IHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyIGEgbCdleHBlZGl0ZXVyIGV0
-IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBl
-bGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sIE9yYW5nZSBkZWNs
-aW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZv
-cm1lIG91IGZhbHNpZmllLiBNZXJjaS4NCj4gDQo+IFRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFj
-aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciANCj4gcHJpdmlsZWdlZCBpbmZvcm1h
-dGlvbiB0aGF0IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3OyB0aGV5IHNob3VsZCBub3QgYmUgZGlz
-dHJpYnV0ZWQsIHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4NCj4gSWYgeW91
-IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2Vu
-ZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuDQo+IEFzIGVt
-YWlscyBtYXkgYmUgYWx0ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRo
-YXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4NCj4gVGhhbmsgeW91
-Lg0KPiANCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCgpDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50
-IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVl
-cyBldCBuZSBkb2l2ZW50IGRvbmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3Bp
-ZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3NhZ2UgcGFyIGVy
-cmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIgZXQgbGUgZGV0cnVpcmUg
-YWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMg
-ZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRlY2xpbmUgdG91dGUgcmVz
-cG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgb3UgZmFsc2lm
-aWUuIE1lcmNpLgoKVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4g
-Y29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvdGVj
-dGVkIGJ5IGxhdzsKdGhleSBzaG91bGQgbm90IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNvcGll
-ZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uCklmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZW1haWwg
-aW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVsZXRlIHRoaXMgbWVzc2Fn
-ZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFsdGVyZWQsIE9yYW5nZSBp
-cyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBtb2RpZmllZCwgY2hhbmdl
-ZCBvciBmYWxzaWZpZWQuClRoYW5rIHlvdS4KCg==
+Just a hint from Dave when the SELECT statement is not appropriate when 
+creating Kconfig files ... ;-)
+
+Regards,
+Oliver
+
+
+-------- Forwarded Message --------
+Subject: FIXED_PHY is broken...
+Date: Tue, 16 Dec 2014 11:25:34 -0500 (EST)
+From: David Miller <davem@davemloft.net>
+To: netdev@vger.kernel.org
+CC: f.fainelli@gmail.com
+
+
+I get this now when I run oldconfig:
+
+warning: (NET_DSA_BCM_SF2 && BCMGENET && SYSTEMPORT) selects FIXED_PHY which 
+has unmet direct dependencies (NETDEVICES && PHYLIB=y)
+
+For the thousandth time, you cannot select Kconfig options which have
+dependencies of any kind, because select does not recursively cause
+dependencies to be enabled up to the root of the Kconfig tree.
+
+If you select on something which has a "depends on", stop right there
+because you can't do it.
+
+It only works for pure leaf Kconfig nodes with no deps.
+
+All you needed to do in order to test this was do an allmodconfig
+build.
+
+--
+To unsubscribe from this list: send the line "unsubscribe netdev" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
