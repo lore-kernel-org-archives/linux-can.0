@@ -1,50 +1,40 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v5 0/5] Consolidate and unify state change handling
-Date: Thu, 18 Dec 2014 14:45:40 +0100
-Message-ID: <5492DA84.4070604@hartkopp.net>
-References: <a0f69b4e-b1d5-4c3e-b960-b9f2b34a4e1a@GRBSR0089.marel.net> <loom.20141218T070747-796@post.gmane.org> <549280D0.6060507@hartkopp.net> <3595849.EjdlQbi96i@heinz>
+Subject: Re: [RFC] sched policies for candump
+Date: Thu, 18 Dec 2014 14:51:11 +0100
+Message-ID: <5492DBCF.2010500@hartkopp.net>
+References: <BAY176-W240BDB3FFF425370BF5B47D3FE0@phx.gbl> <53D204A4.1060502@pengutronix.de> <BAY176-W4D41B1290DE5D3B2BD6D0D3FC0@phx.gbl> <53D2126C.40600@pengutronix.de> <BAY176-W426E5C1C47CA0379DFCD84D3FC0@phx.gbl> <53D214E2.7020205@pengutronix.de> <BAY176-W40C40CD192EBD241673159D3FC0@phx.gbl> <53D219E8.5060307@pengutronix.de> <BAY176-W36138D837FA40B1721062ED3FC0@phx.gbl> <53D234D9.2010602@hartkopp.net> <CA+V-a8vm+WQXcSwPp7e7yKQehs0+BYkHhZg-EfEL1gWE_cBF=g@mail.gmail.com> <53D91AB5.5060507@hartkopp.net> <BAY176-W523AF4513C195E7972FE52D3E60@phx.gbl> <53DA39CF.2070303@pengutronix.de> <53DA4E89.1080206@hartkopp.net> <CA+V-a8uhnn9cfuxULZQ4oBScy9jYfev+n50SphK+HDTVLPVO_g@mail.gmail.com> <5492A166.4090806@hartkopp.net> <CA+V-a8uBmfbzAD1eXoejs4H-JQwXWbY+2b0n0fauy54P=BE9sg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:44593 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:38294 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752070AbaLRNpn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 18 Dec 2014 08:45:43 -0500
-In-Reply-To: <3595849.EjdlQbi96i@heinz>
+	with ESMTP id S1750968AbaLRNvO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 18 Dec 2014 08:51:14 -0500
+In-Reply-To: <CA+V-a8uBmfbzAD1eXoejs4H-JQwXWbY+2b0n0fauy54P=BE9sg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?windows-1252?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>, linux-can@vger.kernel.org
-Cc: Tom Evans <tom_usenet@optusnet.com.au>
+To: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 18.12.2014 11:02, Heinz-J=FCrgen Oertel wrote:
-> Am Donnerstag, 18. Dezember 2014, 08:22:56 schrieb Oliver Hartkopp:
->> The candump in can-utils provide this option:
+On 18.12.2014 13:33, Prabhakar Lad wrote:
+
+>> Is this still needed / valuable?
 >>
->>          https://gitorious.org/linux-can/can-utils/
->>
->> You may "git clone" the latest version and build it from source.
->>
+> If I remember correctly we agreed upon using chrt/nice to achieve this.
 >
->
-> You might need to
-> 	sudo apt-get install  autoconf
-> 	sudo apt-get install  libtool
->
-> or on OpenSUSE
-> 	sudo zypper in autoconf
-> 	sudo zypper in libtool
->
-> to build the tools
+> But I still feel having an option in the tool itself would be better
+> choice as some
+> of the novice users might not be aware of chrt/nice.
 >
 
-Yes. That the good way.
+Ah - now I remember myself.
 
-The bad way is to say 'make && make install' as root ;-)
+The point was that you then become in charge to put this into all relevant 
+tools - which is probably not what you want.
 
-Thanks Heinz!
+So increase the awareness for novice users to use chrt/nice looks like the 
+better option ;-)
 
 Best regards,
 Oliver
-
