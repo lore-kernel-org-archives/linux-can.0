@@ -1,77 +1,75 @@
 From: Jeremiah Mahler <jmmahler@gmail.com>
-Subject: [PATCH 4/5] use line discipline number from linux/tty.h
-Date: Fri, 19 Dec 2014 07:22:19 -0800
-Message-ID: <1419002540-2208-5-git-send-email-jmmahler@gmail.com>
+Subject: [PATCH 5/5] slcand: add example scripts for udev/systemd
+Date: Fri, 19 Dec 2014 07:22:20 -0800
+Message-ID: <1419002540-2208-6-git-send-email-jmmahler@gmail.com>
 References: <1419002540-2208-1-git-send-email-jmmahler@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f53.google.com ([209.85.220.53]:57961 "EHLO
-	mail-pa0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751416AbaLSPXN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Dec 2014 10:23:13 -0500
-Received: by mail-pa0-f53.google.com with SMTP id kq14so1359667pab.26
-        for <linux-can@vger.kernel.org>; Fri, 19 Dec 2014 07:23:13 -0800 (PST)
+Received: from mail-pa0-f52.google.com ([209.85.220.52]:57006 "EHLO
+	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751416AbaLSPXP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Dec 2014 10:23:15 -0500
+Received: by mail-pa0-f52.google.com with SMTP id eu11so1376616pac.39
+        for <linux-can@vger.kernel.org>; Fri, 19 Dec 2014 07:23:15 -0800 (PST)
 In-Reply-To: <1419002540-2208-1-git-send-email-jmmahler@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can@vger.kernel.org, Jeremiah Mahler <jmmahler@gmail.com>
 
-The line discipline number is provided in include/linux/tty.h.
-Use that instead of a #define in each program.
+The slcand daemon must be started after a serial CAN device is plugged
+in to create the network interface (e.g. slcan0).  This can be done
+manually but it is inconvenient.
+
+Add example scripts for udev and systemd that can be used to start
+slcand automatically when plugged in and to stop it when unplugged.
 
 Signed-off-by: Jeremiah Mahler <jmmahler@gmail.com>
 ---
- slcan_attach.c | 5 ++---
- slcand.c       | 6 ++----
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ doc/50-slcand.rules | 16 ++++++++++++++++
+ doc/slcand@.service | 11 +++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 doc/50-slcand.rules
+ create mode 100644 doc/slcand@.service
 
-diff --git a/slcan_attach.c b/slcan_attach.c
-index 2c95d22..ab8ff0a 100644
---- a/slcan_attach.c
-+++ b/slcan_attach.c
-@@ -51,8 +51,7 @@
- #include <sys/ioctl.h>
- #include <net/if.h>
- #include <termios.h>
--
--#define LDISC_N_SLCAN 17 /* default slcan line discipline since Kernel 2.6.25 */
-+#include <linux/tty.h>
- 
- void print_usage(char *prg)
- {
-@@ -77,7 +76,7 @@ void print_usage(char *prg)
- int main(int argc, char **argv)
- {
- 	int fd;
--	int ldisc = LDISC_N_SLCAN;
-+	int ldisc = N_SLCAN;
- 	int detach = 0;
- 	int waitkey = 0;
- 	int send_open = 0;
-diff --git a/slcand.c b/slcand.c
-index b72fa4e..e5e4752 100644
---- a/slcand.c
-+++ b/slcand.c
-@@ -37,9 +37,7 @@
- #include <sys/ioctl.h>
- #include <net/if.h>
- #include <termios.h>
--
--/* default slcan line discipline since Kernel 2.6.25 */
--#define LDISC_N_SLCAN 17
-+#include <linux/tty.h>
- 
- /* Change this to whatever your daemon is called */
- #define DAEMON_NAME "slcand"
-@@ -180,7 +178,7 @@ int main(int argc, char *argv[])
- 	char *btr = NULL;
- 	int run_as_daemon = 1;
- 	char *pch;
--	int ldisc = LDISC_N_SLCAN;
-+	int ldisc = N_SLCAN;
- 	int fd;
- 
- 	ttypath[0] = '\0';
+diff --git a/doc/50-slcand.rules b/doc/50-slcand.rules
+new file mode 100644
+index 0000000..bc96e55
+--- /dev/null
++++ b/doc/50-slcand.rules
+@@ -0,0 +1,16 @@
++#
++# udev/rules.d/50-slcand.rules
++#
++# When a LAWICEL LWX154GX serial CANUSB device is plugged in,
++# tell systemd to start the slcand (daemon) service.  When it
++# is un-plugged, stop the service.
++#
++# The $kernel argument to the slcand@.service is the
++# device name (e.g. ttyUSB0).
++#
++#   sudo systemctl status slcand@ttyUSB0
++#
++
++ACTION=="add", SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="ffa8", TAG+="systemd", ENV{SYSTEMD_WANTS}="slcand@$kernel"
++
++ACTION=="remove", ENV{DEVNAME}=="/dev/ttyUSB?", ENV{ID_MODEL_ID}=="ffa8", ENV{ID_VENDOR_ID}=="0403", RUN+="/bin/systemctl stop slcand@$kernel"
+diff --git a/doc/slcand@.service b/doc/slcand@.service
+new file mode 100644
+index 0000000..b823549
+--- /dev/null
++++ b/doc/slcand@.service
+@@ -0,0 +1,11 @@
++#
++# systemd/system/slcand@.service
++#
++
++[Unit]
++Description=Serial CAN daemon (can-utils)
++
++[Service]
++Type=forking
++ExecStart=/usr/bin/slcand -o -c -f -s6 %I
++#  %I is the device name from udev (e.g. ttyUSB0)
 -- 
 2.1.3
 
