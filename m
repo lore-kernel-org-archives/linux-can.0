@@ -1,70 +1,43 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v5 0/5] Consolidate and unify state change handling
-Date: Fri, 19 Dec 2014 10:33:51 +0100
-Message-ID: <5493F0FF.7070101@hartkopp.net>
-References: <a0f69b4e-b1d5-4c3e-b960-b9f2b34a4e1a@GRBSR0089.marel.net> <loom.20141218T070747-796@post.gmane.org> <549280D0.6060507@hartkopp.net> <20141218121502.24633.14829@shannon> <5492D0A8.1060000@hartkopp.net> <5492DC38.9090501@hartkopp.net> <loom.20141219T004928-872@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Jeremiah Mahler <jmmahler@gmail.com>
+Subject: [PATCH 0/5] can-utils: slcand: minor fixes and udev scripts
+Date: Fri, 19 Dec 2014 07:22:15 -0800
+Message-ID: <1419002540-2208-1-git-send-email-jmmahler@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:63355 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751602AbaLSJe7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Dec 2014 04:34:59 -0500
-In-Reply-To: <loom.20141219T004928-872@post.gmane.org>
+Received: from mail-pa0-f51.google.com ([209.85.220.51]:59567 "EHLO
+	mail-pa0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751416AbaLSPWv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Dec 2014 10:22:51 -0500
+Received: by mail-pa0-f51.google.com with SMTP id ey11so1393962pad.10
+        for <linux-can@vger.kernel.org>; Fri, 19 Dec 2014 07:22:50 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Jeremiah Mahler <jmmahler@gmail.com>
 
-On 19.12.2014 01:05, Tom Evans wrote:
->>
->>     https://gitorious.org/linux-can/can-utils/
-> ...
->
-> What is the relationship (if any) between this "can-utils" package and the
-> "canutils" (latest update June 2010) that we're using from here?
->
->      http://www.pengutronix.de/software/socket-can/download/canutils/v4.0/
->
-> I note some common authorship (Marc Kleine-Budde).
->
-> Both have cansend and candump utils, but the Pengutronics one also has
-> "conconfig" which we rely on.
+This is a set of minor fixes to slcand that I made while setting up
+slcand with a USB CAN device.  I also added configuration files for
+udev/systemd to automatically start/stop slcand when the usb serial
+device is plugged in.
 
-This has some historical reasons - of course ;-)
+It is based off the master branch of can-utils.
 
-The can-utils that are now on gitorious.org (former berlios.de) are originally 
-from Volkswagen Group Research.
+  https://gitorious.org/linux-can/can-utils.git
 
-And Pengutronix started their toolset based on the requirements to be able to 
-ship it with OSELAS/ptxdist based board support packages.
-IIRC Pengutronix provided the canconfig they needed even before the netlink 
-configuration (with iproute2) was available.
+Jeremiah Mahler (5):
+  slcand: improve usage examples
+  slcand: remove #define EXIT_FAILURE, EXIT_SUCCESS
+  slcand: consistent use of exit(EXIT_FAILURE)
+  use line discipline number from linux/tty.h
+  slcand: add example scripts for udev/systemd
 
-To build your own CAN interface configuration tools canconfig and the 
-libsocketcan from Pengutronix are a good way to start.
+ doc/50-slcand.rules | 16 ++++++++++++++++
+ doc/slcand@.service | 11 +++++++++++
+ slcan_attach.c      |  5 ++---
+ slcand.c            | 20 ++++++++------------
+ 4 files changed, 37 insertions(+), 15 deletions(-)
+ create mode 100644 doc/50-slcand.rules
+ create mode 100644 doc/slcand@.service
 
-http://git.pengutronix.de/?p=tools/canutils.git
-http://git.pengutronix.de/?p=tools/libsocketcan.git
+-- 
+2.1.3
 
- From the 'just user' perspective to send/dump/replay/visualize CAN stuff the 
-gitorious can-utils are recommended and provide more functionalities.
-
-That's why there is a Debian package can-utils. To be able to make it a Debian 
-package and to support the autotools Marc e.g. provided the needed autotools 
-infrastructure in can-utils.
-
-Regards,
-Oliver
-
-ps. to configure my CAN interfaces I'm using a can_if script for 
-Debian/Ubuntu, where you can configure bitrates for the interfaces using the 
-'ip' tool from iproute2:
-
-https://gitorious.org/linux-can/can-misc/source/etc/can_if
-
-Just put this into /etc/init.d and say
-
-	update-rc.d can_if defaults
-
-Documentation is inside the can_if script.
