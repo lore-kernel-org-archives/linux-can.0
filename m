@@ -1,47 +1,93 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 4/5] use line discipline number from linux/tty.h
-Date: Tue, 23 Dec 2014 18:43:57 +0100
-Message-ID: <5499A9DD.5050109@hartkopp.net>
-References: <1419002540-2208-1-git-send-email-jmmahler@gmail.com> <1419002540-2208-5-git-send-email-jmmahler@gmail.com>
+From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+Subject: Re: [PATCH v4] can: Convert to runtime_pm
+Date: Tue, 23 Dec 2014 14:43:08 -0800
+Message-ID: <46c28dc78c764efb80cc334df189db3b@BY2FFO11FD055.protection.gbl>
+References: <58f37b6fd9104ce185c413c473fe047b@BY2FFO11FD050.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:27338 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751513AbaLWRoH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Dec 2014 12:44:07 -0500
-In-Reply-To: <1419002540-2208-5-git-send-email-jmmahler@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Jeremiah Mahler <jmmahler@gmail.com>
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <58f37b6fd9104ce185c413c473fe047b@BY2FFO11FD050.protection.gbl>
+Sender: netdev-owner@vger.kernel.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+List-Id: linux-can.vger.kernel.org
 
-Hello Jeremiah,
+On Tue, 2014-12-23 at 05:55PM +0530, Kedareswara rao Appana wrote:
+> Instead of enabling/disabling clocks at several locations in the driv=
+er,
+> use the runtime_pm framework. This consolidates the actions for
+> runtime PM in the appropriate callbacks and makes the driver more
+> readable and mantainable.
+>=20
+> Signed-off-by: Soren Brinkmann <soren.brinkmann@xilinx.com>
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+> Chnages for v4:
+>  - Updated with the review comments.
+> Changes for v3:
+>   - Converted the driver to use runtime_pm.
+> Changes for v2:
+>   - Removed the struct platform_device* from suspend/resume
+>     as suggest by Lothar.
+>=20
+>  drivers/net/can/xilinx_can.c |  123 +++++++++++++++++++++++++-------=
+----------
+>  1 files changed, 74 insertions(+), 49 deletions(-)
+>=20
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_ca=
+n.c
+> index 6c67643..c71f683 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/can/dev.h>
+>  #include <linux/can/error.h>
+>  #include <linux/can/led.h>
+> +#include <linux/pm_runtime.h>
+> =20
+>  #define DRIVER_NAME	"xilinx_can"
+> =20
+> @@ -138,7 +139,7 @@ struct xcan_priv {
+>  	u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg);
+>  	void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg,
+>  			u32 val);
+> -	struct net_device *dev;
+> +	struct device *dev;
+>  	void __iomem *reg_base;
+>  	unsigned long irq_flags;
+>  	struct clk *bus_clk;
+> @@ -842,6 +843,13 @@ static int xcan_open(struct net_device *ndev)
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>  	int ret;
+> =20
+> +	ret =3D pm_runtime_get_sync(priv->dev);
+> +	if (ret < 0) {
+> +		netdev_err(ndev, "%s: pm_runtime_get failed\r(%d)\n\r",
 
-thanks for your improvements!
+Does this create the intended output? I haven't seen '\r' anywhere else=
+=2E
+Shouldn't this simply be:
+	netdev_err(ndev, "%s: pm_runtime_get failed (%d)\n",
 
-On 19.12.2014 16:22, Jeremiah Mahler wrote:
-> The line discipline number is provided in include/linux/tty.h.
-> Use that instead of a #define in each program.
+[...]
+> @@ -934,27 +927,20 @@ static int xcan_get_berr_counter(const struct n=
+et_device *ndev,
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>  	int ret;
+> =20
+> -	ret =3D clk_prepare_enable(priv->can_clk);
+> -	if (ret)
+> -		goto err;
+> -
+> -	ret =3D clk_prepare_enable(priv->bus_clk);
+> -	if (ret)
+> -		goto err_clk;
+> +	ret =3D pm_runtime_get_sync(priv->dev);
+> +	if (ret < 0) {
+> +		netdev_err(ndev, "%s: pm_runtime_get failed\r(%d)\n\r",
 
-I have a toolchain which is based on 2.6.18 kernel includes.
-So I probably have to patch the can-utils when building the latest version of 
-can-utils with my 'old' toolchain now.
+ditto
 
-Btw. you are right to use the common includes and remove this kind of hack.
-
-So I applied your patches 1-4.
-
-The UDEV rules are interesting too. But I wonder if a new 'doc' directory is 
-the right place for it. Currently the can_if script to set the CAN interface 
-bitrates and other configurations is placed in the can-misc repository in the 
-'etc' directory.
-
-This is probably a wrong place too.
-
-I have no real idea where to put these kind of useful scripts ...
-
-Regards,
-Oliver
-
+	S=C3=B6ren
