@@ -1,81 +1,87 @@
-From: Jeremiah Mahler <jmmahler@gmail.com>
-Subject: Re: [PATCH 4/5] use line discipline number from linux/tty.h
-Date: Tue, 23 Dec 2014 22:20:16 -0800
-Message-ID: <20141224062016.GA32193@hudson.localdomain>
-References: <1419002540-2208-1-git-send-email-jmmahler@gmail.com>
- <1419002540-2208-5-git-send-email-jmmahler@gmail.com>
- <5499A9DD.5050109@hartkopp.net>
+From: Olivier Sobrie <olivier@sobrie.be>
+Subject: Re: [PATCH] can: kvaser_usb: Don't free packets when tight on URBs
+Date: Wed, 24 Dec 2014 13:31:20 +0100
+Message-ID: <CAEM=fMqwt+=1Du74qu3dLJ7-OLnypkhJZ_N8uSWAAtzTLazmOg@mail.gmail.com>
+References: <20141223154654.GB6460@vivalin-002>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pa0-f54.google.com ([209.85.220.54]:40179 "EHLO
-	mail-pa0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750903AbaLXGUV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Dec 2014 01:20:21 -0500
-Received: by mail-pa0-f54.google.com with SMTP id fb1so9479231pad.13
-        for <linux-can@vger.kernel.org>; Tue, 23 Dec 2014 22:20:20 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <5499A9DD.5050109@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141223154654.GB6460@vivalin-002>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Oliver,
+Hello Ahmed,
 
-On Tue, Dec 23, 2014 at 06:43:57PM +0100, Oliver Hartkopp wrote:
-> Hello Jeremiah,
-> 
-> thanks for your improvements!
-> 
-> On 19.12.2014 16:22, Jeremiah Mahler wrote:
-> >The line discipline number is provided in include/linux/tty.h.
-> >Use that instead of a #define in each program.
-> 
-> I have a toolchain which is based on 2.6.18 kernel includes.
-> So I probably have to patch the can-utils when building the latest version
-> of can-utils with my 'old' toolchain now.
-> 
-Hmm, backward compatibility is good too.
+On Tue, Dec 23, 2014 at 05:46:54PM +0200, Ahmed S. Darwish wrote:
+> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+>
+> Flooding the Kvaser CAN to USB dongle with multiple reads and
+> writes in high frequency caused seemingly-random panics in the
+> kernel.
+>
+> On further inspection, it seems the driver erroneously freed the
+> to-be-transmitted packet upon getting tight on URBs and returning
+> NETDEV_TX_BUSY, leading to invalid memory writes and double frees
+> at a later point in time.
+>
+> Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 
-As long as LDISC_N_SLCAN doesn't change the old way will work on every
-system.  Maybe we should just leave it that way.
+Thank you for the fix.
 
-> Btw. you are right to use the common includes and remove this kind of hack.
-> 
-> So I applied your patches 1-4.
-> 
-> The UDEV rules are interesting too. But I wonder if a new 'doc' directory is
-> the right place for it. Currently the can_if script to set the CAN interface
-> bitrates and other configurations is placed in the can-misc repository in
-> the 'etc' directory.
-> 
-I wasn't sure about this either.
+> ---
+>  drivers/net/can/usb/kvaser_usb.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+>  (Generated over 3.19.0-rc1)
+>
+> diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+> index 541fb7a..34c35d8 100644
+> --- a/drivers/net/can/usb/kvaser_usb.c
+> +++ b/drivers/net/can/usb/kvaser_usb.c
+> @@ -1286,6 +1286,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+>   struct kvaser_msg *msg;
+>   int i, err;
+>   int ret = NETDEV_TX_OK;
+> + bool kfree_skb_on_error = true;
+>
+>   if (can_dropped_invalid_skb(netdev, skb))
+>   return NETDEV_TX_OK;
+> @@ -1336,6 +1337,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+>
+>   if (!context) {
+>   netdev_warn(netdev, "cannot find free context\n");
+> + kfree_skb_on_error = false;
 
-Debian packages often place example configuration files in doc/examples.
-This is what I had in mind, except I left out examples/ because two
-directory levels for two files seemed excessive.
+Instead of using an extra variable, you can also set skb to NULL here.
+Or maybe better, you can move the dev_kfree_skb() in the two previous
+tests (in the check of variables urb and buf).
 
-Using etc/ does make logical sense for system wide configuration files.
-Some projects also use conf/ or config/.
+Thank you,
 
-I imagined these scripts being useful as examples.  But they certainly
-could be installed system wide since the commands are not specific to
-any user.  The can-utils .deb package could install these for example.
+Olivier
 
-> This is probably a wrong place too.
-> 
-> I have no real idea where to put these kind of useful scripts ...
-> 
-
-I am starting to like the etc/ directory for system wide config files.
-
-If these were user specific configuration files, like '.slcanrc', they
-would make sense in a doc/examples directory.
-
-> Regards,
-> Oliver
-> 
-
--- 
-- Jeremiah Mahler
+>   ret =  NETDEV_TX_BUSY;
+>   goto releasebuf;
+>   }
+> @@ -1364,8 +1366,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+>   if (unlikely(err)) {
+>   can_free_echo_skb(netdev, context->echo_index);
+>
+> - skb = NULL; /* set to NULL to avoid double free in
+> -     * dev_kfree_skb(skb) */
+> + kfree_skb_on_error = false;
+>
+>   atomic_dec(&priv->active_tx_urbs);
+>   usb_unanchor_urb(urb);
+> @@ -1389,7 +1390,8 @@ releasebuf:
+>  nobufmem:
+>   usb_free_urb(urb);
+>  nourbmem:
+> - dev_kfree_skb(skb);
+> + if (kfree_skb_on_error)
+> + dev_kfree_skb(skb);
+>   return ret;
+>  }
+>
