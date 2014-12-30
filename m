@@ -1,45 +1,81 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] bfin_can: move the header file to arch independent location
-Date: Mon, 29 Dec 2014 18:36:35 +0100
-Message-ID: <54A19123.5040708@hartkopp.net>
-References: <1419563241-20766-1-git-send-email-Aaron.wu@analog.com> <549E936A.2080904@hartkopp.net> <5234314.TQCbV9cZp1@heinz>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH] can: kvaser_usb: Add support for the Usbcan-II family
+Date: Tue, 30 Dec 2014 10:33:26 -0500
+Message-ID: <20141230153326.GA3798@linux>
+References: <20141223154654.GB6460@vivalin-002>
+ <20141223155311.GA5997@vivalin-002>
+ <CAEM=fMqNnq9QYLiR8WXJ0wN2V=1B1TouxaLB_JLrYOtKvwxBkA@mail.gmail.com>
+ <20141224150417.GB5707@vivalin-002>
+ <20141228215134.GA2548@thinkoso.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:18250 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751429AbaL2Rgm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Dec 2014 12:36:42 -0500
-In-Reply-To: <5234314.TQCbV9cZp1@heinz>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?windows-1252?Q?Heinz-J=FCrgen_Oertel?= <hj.oertel@t-online.de>, mkl@pengutronix.de
-Cc: Aaron Wu <Aaron.wu@analog.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141228215134.GA2548@thinkoso.home>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-On 12/29/2014 05:45 PM, Heinz-J=FCrgen Oertel wrote:
-> Am Samstag, 27. Dezember 2014, 12:09:30 schrieb Oliver Hartkopp:
->> As bfin_can.c is the only user of defines from this include file jus=
-t add the
->> needed(!) defines directly to bfin_can.c
->=20
-> I often include also the yet unneeded definitions, e.g., for unused r=
-egister or unused bit definitions.
-> That makes it easier for someone else to add missing functionality, w=
-hen later on needed.
->=20
+On Sun, Dec 28, 2014 at 10:51:34PM +0100, Olivier Sobrie wrote:
+[...]
+> > > >  
+> > > > +	if (LEAF_PRODUCT_ID(id->idProduct)) {
+> > > > +		dev->family = KVASER_LEAF;
+> > > > +		dev->max_channels = LEAF_MAX_NET_DEVICES;
+> > > > +	} else if (USBCAN_PRODUCT_ID(id->idProduct)) {
+> > > > +		dev->family = KVASER_USBCAN;
+> > > > +		dev->max_channels = USBCAN_MAX_NET_DEVICES;
+> > > > +	} else {
+> > > > +		dev_err(&intf->dev, "Product ID (%d) does not belong to any "
+> > > > +				    "known Kvaser USB family", id->idProduct);
+> > > > +		return -ENODEV;
+> > > > +	}
+> > > > +
+> > > 
+> > > Is it really required to keep max_channels in the kvaser_usb structure?
+> > > If I looked correctly, you use this variable as a replacement for
+> > > MAX_NET_DEVICES in the code and MAX_NET_DEVICES is only used in probe
+> > > and disconnect functions. I think it can even be replaced by nchannels
+> > > in the disconnect path. So I also think that it don't need to be in the
+> > > kvaser_usb structure.
+> > > 
+> > 
+> > hmmm.. given the current state of error arbitration explained
+> > above, where I cannot accept a dev->nchannels > 2, I guess we
+> > have two options:
+> > 
+> > a) Remove max_channels, and hardcode the channels count
+> > correctness logic as follows:
+> > 
+> >         dev->nchannels = msg.u.cardinfo.nchannels;
+> >         if ((dev->family == USBCAN && dev->nchannels > USBCAN_MAX_NET_DEVICES)
+> >             || (dev->family == LEAF && dev->nchannels > LEAF_MAX_NET_DEVICES))
+> >                 return -EINVAL
+> > 
+> > b) Leave max_channels in 'struct kvaser_usb' as is.
+> > 
+> > I personally prefer the solution at 'b)' but I can do it as
+> > in 'a)' if you prefer :-)
+> 
+> Keeping max_channels in the kvaser_usb structure is useless because it
+> is only used in one function that is called in the probe function.
+> 
+> I would prefer to have:
+> 	if (dev->nchannels > MAX_NET_DEVICES)
+> 		return -EINVAL
+> 
+> 	if ((dev->family == USBCAN) &&
+> 	    (dev->nchannels > MAX_USBCAN_NET_DEVICES))
+> 		return -EINVAL
+> 
+> You can remove LEAF_MAX_NET_DEVICES which is not used, keep
+> MAX_NET_DEVICES equals to 3 and remove the MAX() macro.
+> The test specific to the USBCAN family can eventually be moved in the
+> kvaser_usb_probe() function.
+> 
 
-Yes. This can be useful when you can imagine to add functionality into =
-a
-specific direction. But in this case there were tons of mailbox definit=
-ions
-(always defined 32 times each) which we will not use in this way in the=
- netdev
-driver.
-
-Just take a look into bfin_can.h and what is really used in bfin_can.c =
-from
-those defines and you will see.
+Quite nice, will do it that way in v3.
 
 Regards,
-Oliver
+Darwish
