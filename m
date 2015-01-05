@@ -1,56 +1,91 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH stable] can_dev: fix crtlmode_supported check
-Date: Mon, 05 Jan 2015 18:40:15 +0100
-Message-ID: <54AACC7F.5070605@hartkopp.net>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: [PATCH v3 1/4] can: kvaser_usb: Don't free packets when tight on URBs
+Date: Mon, 5 Jan 2015 12:49:10 -0500
+Message-ID: <20150105174910.GA6304@linux>
+References: <20141223154654.GB6460@vivalin-002>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:61804 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752817AbbAERk1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 5 Jan 2015 12:40:27 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141223154654.GB6460@vivalin-002>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-When changing flags in the CAN drivers ctrlmode the provided new content has 
-to be checked whether the bits are allowed to be changed.
-The bits that are to be changed are given as a bitfield in cm->mask.
-Therefore checking against cm->flags is wrong as the content can hold any kind 
-of values.
+From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 
-The iproute2 tool sets the bits in cm->mask and cm->flags depending on the 
-detected command line options. To be robust against bogus user space 
-applications additionally sanitize the provided flags with the provided mask.
+Flooding the Kvaser CAN to USB dongle with multiple reads and
+writes in high frequency caused seemingly-random panics in the
+kernel.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-CC: Wolfgang Grandegger <wg@grandegger.com>
+On further inspection, it seems the driver erroneously freed the
+to-be-transmitted packet upon getting tight on URBs and returning
+NETDEV_TX_BUSY, leading to invalid memory writes and double frees
+at a later point in time.
 
+Note:
+
+Finding no more URBs/transmit-contexts and returning NETDEV_TX_BUSY
+is a driver bug in and out of itself: it means that our start/stop
+queue flow control is broken.
+
+This patch only fixes the (buggy) error handling code; the root
+cause shall be fixed in a later commit.
+
+Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+Acked-by: Olivier Sobrie <olivier@sobrie.be>
 ---
+ drivers/net/can/usb/kvaser_usb.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 3ec8f6f..847c1f8 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -807,10 +807,14 @@ static int can_changelink(struct net_device *dev,
-  		if (dev->flags & IFF_UP)
-  			return -EBUSY;
-  		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
--		if (cm->flags & ~priv->ctrlmode_supported)
-+
-+		/* check whether changed bits are allowed to be modified */
-+		if (cm->mask & ~priv->ctrlmode_supported)
-  			return -EOPNOTSUPP;
-+
-+		/* clear bits to be modified and copy the flag values */
-  		priv->ctrlmode &= ~cm->mask;
--		priv->ctrlmode |= cm->flags;
-+		priv->ctrlmode |= (cm->flags & cm->mask);
+** V3 Changelog:
+- checkpatch.pl suggestions ('net/' commenting style)
 
-  		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
-  		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-
-
-
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 541fb7a..2e7d513 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -1294,12 +1294,14 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	if (!urb) {
+ 		netdev_err(netdev, "No memory left for URBs\n");
+ 		stats->tx_dropped++;
+-		goto nourbmem;
++		dev_kfree_skb(skb);
++		return NETDEV_TX_OK;
+ 	}
+ 
+ 	buf = kmalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
+ 	if (!buf) {
+ 		stats->tx_dropped++;
++		dev_kfree_skb(skb);
+ 		goto nobufmem;
+ 	}
+ 
+@@ -1334,6 +1336,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 		}
+ 	}
+ 
++	/* This should never happen; it implies a flow control bug */
+ 	if (!context) {
+ 		netdev_warn(netdev, "cannot find free context\n");
+ 		ret =  NETDEV_TX_BUSY;
+@@ -1364,9 +1367,6 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	if (unlikely(err)) {
+ 		can_free_echo_skb(netdev, context->echo_index);
+ 
+-		skb = NULL; /* set to NULL to avoid double free in
+-			     * dev_kfree_skb(skb) */
+-
+ 		atomic_dec(&priv->active_tx_urbs);
+ 		usb_unanchor_urb(urb);
+ 
+@@ -1388,8 +1388,6 @@ releasebuf:
+ 	kfree(buf);
+ nobufmem:
+ 	usb_free_urb(urb);
+-nourbmem:
+-	dev_kfree_skb(skb);
+ 	return ret;
+ }
+ 
