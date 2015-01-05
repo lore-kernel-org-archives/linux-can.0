@@ -1,16 +1,15 @@
 From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: [PATCH v3 3/4] can: kvaser_usb: Don't send a RESET_CHIP for
- non-existing channels
-Date: Mon, 5 Jan 2015 12:57:13 -0500
-Message-ID: <20150105175713.GC6304@linux>
+Subject: [PATCH v3 2/4] can: kvaser_usb: Reset all URB tx contexts upon
+ channel close
+Date: Mon, 5 Jan 2015 12:52:06 -0500
+Message-ID: <20150105175206.GB6304@linux>
 References: <20141223154654.GB6460@vivalin-002>
  <20150105174910.GA6304@linux>
- <20150105175206.GB6304@linux>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150105175206.GB6304@linux>
+In-Reply-To: <20150105174910.GA6304@linux>
 Sender: netdev-owner@vger.kernel.org
 To: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
@@ -18,42 +17,71 @@ List-Id: linux-can.vger.kernel.org
 
 From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 
-Recent Leaf firmware versions (>= 3.1.557) do not allow to send
-commands for non-existing channels.  If a command is sent for a
-non-existing channel, the firmware crashes.
+Flooding the Kvaser CAN to USB dongle with multiple reads and
+writes in very high frequency (*), closing the CAN channel while
+all the transmissions are on (#), opening the device again (@),
+then sending a small number of packets would make the driver
+enter an almost infinite loop of:
 
-Reported-by: Christopher Storah <Christopher.Storah@invetech.com.au>
+[....]
+[15959.853988] kvaser_usb 4-3:1.0 can0: cannot find free context
+[15959.853990] kvaser_usb 4-3:1.0 can0: cannot find free context
+[15959.853991] kvaser_usb 4-3:1.0 can0: cannot find free context
+[15959.853993] kvaser_usb 4-3:1.0 can0: cannot find free context
+[15959.853994] kvaser_usb 4-3:1.0 can0: cannot find free context
+[15959.853995] kvaser_usb 4-3:1.0 can0: cannot find free context
+[....]
+
+_dragging the whole system down_ in the process due to the
+excessive logging output.
+
+Initially, this has caused random panics in the kernel due to a
+buggy error recovery path.  That got fixed in an earlier commit.(%)
+This patch aims at solving the root cause. -->
+
+16 tx URBs and contexts are allocated per CAN channel per USB
+device. Such URBs are protected by:
+
+a) A simple atomic counter, up to a value of MAX_TX_URBS (16)
+b) A flag in each URB context, stating if it's free
+c) The fact that ndo_start_xmit calls are themselves protected
+   by the networking layers higher above
+
+After grabbing one of the tx URBs, if the driver noticed that all
+of them are now taken, it stops the netif transmission queue.
+Such queue is worken up again only if an acknowedgment was received
+from the firmware on one of our earlier-sent frames.
+
+Meanwhile, upon channel close (#), the driver sends a CMD_STOP_CHIP
+to the firmware, effectively closing all further communication.  In
+the high traffic case, the atomic counter remains at MAX_TX_URBS,
+and all the URB contexts remain marked as active.  While opening
+the channel again (@), it cannot send any further frames since no
+more free tx URB contexts are available.
+
+Reset all tx URB contexts upon CAN channel close.
+
+(*) 50 parallel instances of `cangen0 -g 0 -ix`
+(#) `ifconfig can0 down`
+(@) `ifconfig can0 up`
+(%) "can: kvaser_usb: Don't free packets when tight on URBs"
+
 Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
 ---
- drivers/net/can/usb/kvaser_usb.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-** V3 Changelog:
-- Update commit log message per Olivier remarks on v2
+ drivers/net/can/usb/kvaser_usb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 9accc82..cc7bfc0 100644
+index 2e7d513..9accc82 100644
 --- a/drivers/net/can/usb/kvaser_usb.c
 +++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -1503,6 +1503,10 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
- 	struct kvaser_usb_net_priv *priv;
- 	int i, err;
+@@ -1246,6 +1246,9 @@ static int kvaser_usb_close(struct net_device *netdev)
+ 	if (err)
+ 		netdev_warn(netdev, "Cannot stop device, error %d\n", err);
  
-+	err = kvaser_usb_send_simple_msg(dev, CMD_RESET_CHIP, channel);
-+	if (err)
-+		return err;
++	/* reset tx contexts */
++	kvaser_usb_unlink_tx_urbs(priv);
 +
- 	netdev = alloc_candev(sizeof(*priv), MAX_TX_URBS);
- 	if (!netdev) {
- 		dev_err(&intf->dev, "Cannot alloc candev\n");
-@@ -1607,9 +1611,6 @@ static int kvaser_usb_probe(struct usb_interface *intf,
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 	close_candev(priv->netdev);
  
- 	usb_set_intfdata(intf, dev);
- 
--	for (i = 0; i < MAX_NET_DEVICES; i++)
--		kvaser_usb_send_simple_msg(dev, CMD_RESET_CHIP, i);
--
- 	err = kvaser_usb_get_software_info(dev);
- 	if (err) {
- 		dev_err(&intf->dev,
