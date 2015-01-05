@@ -1,45 +1,72 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH] can: kvaser_usb: Don't free packets when tight on URBs
-Date: Sat, 3 Jan 2015 16:34:42 +0200
-Message-ID: <20150103143442.GA24998@Darwish.PC>
-References: <20141223154654.GB6460@vivalin-002>
- <20150101135913.6205ce0e@urahara>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v8 4/8] can: c_can: Add syscon/regmap RAMINIT mechanism
+Date: Mon, 5 Jan 2015 11:18:25 +0200
+Message-ID: <54AA56E1.7030105@ti.com>
+References: <1415988591-6032-1-git-send-email-mkl@pengutronix.de> <1415988591-6032-5-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f175.google.com ([209.85.212.175]:47705 "EHLO
-	mail-wi0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751025AbbACQfR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 3 Jan 2015 11:35:17 -0500
-Content-Disposition: inline
-In-Reply-To: <20150101135913.6205ce0e@urahara>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="1LM3iGQDECm3sRp7DMwwRArur2NrDv65L"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1415988591-6032-5-git-send-email-mkl@pengutronix.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, rogerq@ti.com
+Cc: linux-can@vger.kernel.org, wsa@the-dreams.de, linux-omap@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-On Thu, Jan 01, 2015 at 01:59:13PM -0800, Stephen Hemminger wrote:
-> On Tue, 23 Dec 2014 17:46:54 +0200
-> "Ahmed S. Darwish" <darwish.07@gmail.com> wrote:
-> 
-> >  	int ret = NETDEV_TX_OK;
-> > +	bool kfree_skb_on_error = true;
-> >  
-> >  	if (can_dropped_invalid_skb(netdev, skb))
-> >  		return NETDEV_TX_OK;
-> > @@ -1336,6 +1337,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
-> >  
-> >  	if (!context) {
-> >  		netdev_warn(netdev, "cannot find free context\n");
-> > +		kfree_skb_on_error = false;
-> >  		ret =  NETDEV_TX_BUSY;
-> 
-> You already have a flag value (ret == NETDEV_TX_BUSY), why
-> not use that instead of introducing another variable?
+--1LM3iGQDECm3sRp7DMwwRArur2NrDv65L
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Yes, that variable got implicitly removed in v2 patch 1/4.
+Hi Roger,
 
-Thanks,
+On 14/11/14 20:09, Marc Kleine-Budde wrote:
+> From: Roger Quadros <rogerq@ti.com>
+>=20
+> Some TI SoCs like DRA7 have a RAMINIT register specification
+> different from the other AMxx SoCs and as expected by the
+> existing driver.
+>=20
+> To add more insanity, this register is shared with other
+> IPs like DSS, PCIe and PWM.
+>=20
+> Provides a more generic mechanism to specify the RAMINIT
+> register location and START/DONE bit position and use the
+> syscon/regmap framework to access the register.
 
---
-Darwish
+This patch updates the syscon regmap using regmap_read + regmap_write.
+That's not a safe way to update the bits, as some other driver may touch
+the register between the read and write. The change has to be made using
+regmap_update_bits.
+
+We don't have other drivers using the register at the moment, but I
+presume we will sooner or later.
+
+ Tomi
+
+
+
+--1LM3iGQDECm3sRp7DMwwRArur2NrDv65L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUqlbkAAoJEPo9qoy8lh71u0sP/2BmQhqbrVg3RUHcOoeyrW0p
+yZIMl3pcczQmFtNbUuzmuzYqGanvACXOjH0jsiQpdJ77QrPdZq6y8jdBRPgw86Sd
+arGZisIwVTT+FWv7RM3w5ZJwl1vi0HjBC1LJgPNe9Js/AGjzrFJ9OifC6HHFsiwN
+JY3/6nZI3vSPG/RUtdIm+C2O4MFhNCXjRVHW2W2HIh7jCzn8BWzrxbUeTuwye5y3
+TEd2YSic9aQyEZ1iz7u00FT5m94IntABNPpcJzsdGjaAicvReoMI9gAPza4uLj/A
+l/Sh4uxNEkcvqQa3za9jQB/eC0pKadxV4hxZbUAAxuD+t/Q+jo/M8nssJl7p3IdN
+f0kaFhOmiL+VDX16ttszN2Y5sRyiSA5WTPh2lApCWqOB2aBHUuru/srFEmKEbd6p
+Z5LfLUnkON7OdFiAZwOgskTb+WC7b6Gsxrv0bJycgVg1JHhkvXz03RYIyFJjJ8O3
+pAWHWpHYbFIOMB901PDDCN7+5QBwIFWxfyBmZle1bKDlypvtmfJFe33z7uyNutnY
+HerCvYp1EVagUinjCvAhQalgpXVQREElSqlWo/YDrVkh15KG+EW+dwlEMrSKqtvV
+9uBwceo8Tw5f6i9pim2l8Pgl6f318d/PW5OKg8+wdaE7coLMtDl+LSb3Mg2HZIEk
+aXxK0n/A506fcqWAdDfJ
+=1K21
+-----END PGP SIGNATURE-----
+
+--1LM3iGQDECm3sRp7DMwwRArur2NrDv65L--
