@@ -1,69 +1,80 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 3.18+] Tag current CAN FD controllers as non-ISO
-Date: Mon, 05 Jan 2015 19:47:43 +0100
-Message-ID: <54AADC4F.2090404@hartkopp.net>
+From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Subject: RE: [PATCH v4] can: Convert to runtime_pm
+Date: Tue, 6 Jan 2015 06:23:51 +0000
+Message-ID: <7324bcf422d141f0b09f0cc0e8352479@BN1BFFO11FD005.protection.gbl>
+References: <58f37b6fd9104ce185c413c473fe047b@BY2FFO11FD050.protection.gbl>
+ <20141223224308.GC4611@xsjandreislx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:20838 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754263AbbAESrr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 5 Jan 2015 13:47:47 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>, Dong Aisheng <b29396@freescale.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20141223224308.GC4611@xsjandreislx>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Soren Brinkmann <sorenb@xilinx.com>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, Michal Simek <michals@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-During the CAN FD standardization process within the ISO it turned out that
-the failure detection capability has to be improved.
-
-The CAN in Automation organization (CiA) defined the already implemented CAN
-FD controllers as 'non-ISO' and the upcoming improved CAN FD controllers as
-'ISO' compliant. See at http://www.can-cia.com/index.php?id=1937
-
-Finally there will be three types of CAN FD controllers in the future:
-
-1. ISO compliant (fixed)
-2. non-ISO compliant (fixed, like the M_CAN IP v3.0.1 in m_can.c)
-3. ISO/non-ISO CAN FD controllers (switchable, like the PEAK USB FD)
-
-So the current M_CAN driver for the M_CAN IP v3.0.1 has to expose its non-ISO
-implementation by setting the CAN_CTRLMODE_FD_NON_ISO ctrlmode at startup.
-As this bit cannot be switched at configuration time CAN_CTRLMODE_FD_NON_ISO
-must not be set in ctrlmode_supported of the current M_CAN driver.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
----
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index d7bc462..2445298 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -955,6 +955,11 @@ static struct net_device *alloc_m_can_dev(void)
- 	priv->can.data_bittiming_const = &m_can_data_bittiming_const;
- 	priv->can.do_set_mode = m_can_set_mode;
- 	priv->can.do_get_berr_counter = m_can_get_berr_counter;
-+
-+	/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.1 */
-+	priv->can.ctrlmode = CAN_CTRLMODE_FD_NON_ISO;
-+
-+	/* CAN_CTRLMODE_FD_NON_ISO can not be changed with M_CAN IP v3.0.1 */
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
- 					CAN_CTRLMODE_LISTENONLY |
- 					CAN_CTRLMODE_BERR_REPORTING |
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 3e4323a..94ffe0c 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -98,6 +98,7 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
- #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
- #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
-+#define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
- 
- /*
-  * CAN device statistics
-
-
+SGkgTWFyYywNCg0KICAgICAgICBDb3VsZCB5b3UgcGxlYXNlICBwcm92aWRlIHlvdXIgZmVlZGJh
+Y2sgb24gdGhpcyBwYXRjaCA/DQoNCkBTb3JlbiA6IFdpbGwgdXBkYXRlIHRoZSBkcml2ZXIgd2l0
+aCB5b3VyIGNvbW1lbnRzIGR1cmluZyBuZXh0IHZlcnNpb24gb2YgdGhlIHBhdGNoLg0KDQpSZWdh
+cmRzLA0KS2VkYXIuDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBTw7ZyZW4g
+QnJpbmttYW5uIFttYWlsdG86c29yZW4uYnJpbmttYW5uQHhpbGlueC5jb21dDQpTZW50OiBXZWRu
+ZXNkYXksIERlY2VtYmVyIDI0LCAyMDE0IDQ6MTMgQU0NClRvOiBBcHBhbmEgRHVyZ2EgS2VkYXJl
+c3dhcmEgUmFvDQpDYzogd2dAZ3JhbmRlZ2dlci5jb207IG1rbEBwZW5ndXRyb25peC5kZTsgTWlj
+aGFsIFNpbWVrOyBncmFudC5saWtlbHlAbGluYXJvLm9yZzsgbGludXgtY2FuQHZnZXIua2VybmVs
+Lm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+ZzsgQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIFJhbw0KU3ViamVjdDogUmU6IFtQQVRDSCB2NF0g
+Y2FuOiBDb252ZXJ0IHRvIHJ1bnRpbWVfcG0NCg0KT24gVHVlLCAyMDE0LTEyLTIzIGF0IDA1OjU1
+UE0gKzA1MzAsIEtlZGFyZXN3YXJhIHJhbyBBcHBhbmEgd3JvdGU6DQo+IEluc3RlYWQgb2YgZW5h
+YmxpbmcvZGlzYWJsaW5nIGNsb2NrcyBhdCBzZXZlcmFsIGxvY2F0aW9ucyBpbiB0aGUNCj4gZHJp
+dmVyLCB1c2UgdGhlIHJ1bnRpbWVfcG0gZnJhbWV3b3JrLiBUaGlzIGNvbnNvbGlkYXRlcyB0aGUg
+YWN0aW9ucw0KPiBmb3IgcnVudGltZSBQTSBpbiB0aGUgYXBwcm9wcmlhdGUgY2FsbGJhY2tzIGFu
+ZCBtYWtlcyB0aGUgZHJpdmVyIG1vcmUNCj4gcmVhZGFibGUgYW5kIG1hbnRhaW5hYmxlLg0KPg0K
+PiBTaWduZWQtb2ZmLWJ5OiBTb3JlbiBCcmlua21hbm4gPHNvcmVuLmJyaW5rbWFubkB4aWxpbngu
+Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBLZWRhcmVzd2FyYSByYW8gQXBwYW5hIDxhcHBhbmFkQHhp
+bGlueC5jb20+DQo+IC0tLQ0KPiBDaG5hZ2VzIGZvciB2NDoNCj4gIC0gVXBkYXRlZCB3aXRoIHRo
+ZSByZXZpZXcgY29tbWVudHMuDQo+IENoYW5nZXMgZm9yIHYzOg0KPiAgIC0gQ29udmVydGVkIHRo
+ZSBkcml2ZXIgdG8gdXNlIHJ1bnRpbWVfcG0uDQo+IENoYW5nZXMgZm9yIHYyOg0KPiAgIC0gUmVt
+b3ZlZCB0aGUgc3RydWN0IHBsYXRmb3JtX2RldmljZSogZnJvbSBzdXNwZW5kL3Jlc3VtZQ0KPiAg
+ICAgYXMgc3VnZ2VzdCBieSBMb3RoYXIuDQo+DQo+ICBkcml2ZXJzL25ldC9jYW4veGlsaW54X2Nh
+bi5jIHwgIDEyMw0KPiArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0N
+Cj4gIDEgZmlsZXMgY2hhbmdlZCwgNzQgaW5zZXJ0aW9ucygrKSwgNDkgZGVsZXRpb25zKC0pDQo+
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4veGlsaW54X2Nhbi5jDQo+IGIvZHJpdmVy
+cy9uZXQvY2FuL3hpbGlueF9jYW4uYyBpbmRleCA2YzY3NjQzLi5jNzFmNjgzIDEwMDY0NA0KPiAt
+LS0gYS9kcml2ZXJzL25ldC9jYW4veGlsaW54X2Nhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
+bi94aWxpbnhfY2FuLmMNCj4gQEAgLTMyLDYgKzMyLDcgQEANCj4gICNpbmNsdWRlIDxsaW51eC9j
+YW4vZGV2Lmg+DQo+ICAjaW5jbHVkZSA8bGludXgvY2FuL2Vycm9yLmg+DQo+ICAjaW5jbHVkZSA8
+bGludXgvY2FuL2xlZC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4NCj4NCj4g
+ICNkZWZpbmUgRFJJVkVSX05BTUUgICJ4aWxpbnhfY2FuIg0KPg0KPiBAQCAtMTM4LDcgKzEzOSw3
+IEBAIHN0cnVjdCB4Y2FuX3ByaXYgew0KPiAgICAgICB1MzIgKCpyZWFkX3JlZykoY29uc3Qgc3Ry
+dWN0IHhjYW5fcHJpdiAqcHJpdiwgZW51bSB4Y2FuX3JlZyByZWcpOw0KPiAgICAgICB2b2lkICgq
+d3JpdGVfcmVnKShjb25zdCBzdHJ1Y3QgeGNhbl9wcml2ICpwcml2LCBlbnVtIHhjYW5fcmVnIHJl
+ZywNCj4gICAgICAgICAgICAgICAgICAgICAgIHUzMiB2YWwpOw0KPiAtICAgICBzdHJ1Y3QgbmV0
+X2RldmljZSAqZGV2Ow0KPiArICAgICBzdHJ1Y3QgZGV2aWNlICpkZXY7DQo+ICAgICAgIHZvaWQg
+X19pb21lbSAqcmVnX2Jhc2U7DQo+ICAgICAgIHVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOw0KPiAg
+ICAgICBzdHJ1Y3QgY2xrICpidXNfY2xrOw0KPiBAQCAtODQyLDYgKzg0MywxMyBAQCBzdGF0aWMg
+aW50IHhjYW5fb3BlbihzdHJ1Y3QgbmV0X2RldmljZSAqbmRldikNCj4gICAgICAgc3RydWN0IHhj
+YW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KG5kZXYpOw0KPiAgICAgICBpbnQgcmV0Ow0KPg0K
+PiArICAgICByZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKHByaXYtPmRldik7DQo+ICsgICAgIGlm
+IChyZXQgPCAwKSB7DQo+ICsgICAgICAgICAgICAgbmV0ZGV2X2VycihuZGV2LCAiJXM6IHBtX3J1
+bnRpbWVfZ2V0IGZhaWxlZFxyKCVkKVxuXHIiLA0KDQpEb2VzIHRoaXMgY3JlYXRlIHRoZSBpbnRl
+bmRlZCBvdXRwdXQ/IEkgaGF2ZW4ndCBzZWVuICdccicgYW55d2hlcmUgZWxzZS4NClNob3VsZG4n
+dCB0aGlzIHNpbXBseSBiZToNCiAgICAgICAgbmV0ZGV2X2VycihuZGV2LCAiJXM6IHBtX3J1bnRp
+bWVfZ2V0IGZhaWxlZCAoJWQpXG4iLA0KDQpbLi4uXQ0KPiBAQCAtOTM0LDI3ICs5MjcsMjAgQEAg
+c3RhdGljIGludCB4Y2FuX2dldF9iZXJyX2NvdW50ZXIoY29uc3Qgc3RydWN0IG5ldF9kZXZpY2Ug
+Km5kZXYsDQo+ICAgICAgIHN0cnVjdCB4Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihuZGV2
+KTsNCj4gICAgICAgaW50IHJldDsNCj4NCj4gLSAgICAgcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxl
+KHByaXYtPmNhbl9jbGspOw0KPiAtICAgICBpZiAocmV0KQ0KPiAtICAgICAgICAgICAgIGdvdG8g
+ZXJyOw0KPiAtDQo+IC0gICAgIHJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShwcml2LT5idXNfY2xr
+KTsNCj4gLSAgICAgaWYgKHJldCkNCj4gLSAgICAgICAgICAgICBnb3RvIGVycl9jbGs7DQo+ICsg
+ICAgIHJldCA9IHBtX3J1bnRpbWVfZ2V0X3N5bmMocHJpdi0+ZGV2KTsNCj4gKyAgICAgaWYgKHJl
+dCA8IDApIHsNCj4gKyAgICAgICAgICAgICBuZXRkZXZfZXJyKG5kZXYsICIlczogcG1fcnVudGlt
+ZV9nZXQgZmFpbGVkXHIoJWQpXG5cciIsDQoNCmRpdHRvDQoNCiAgICAgICAgU8O2cmVuDQoNCg0K
+VGhpcyBlbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIGFyZSBpbnRlbmRlZCBmb3IgdGhlIHNvbGUg
+dXNlIG9mIHRoZSBuYW1lZCByZWNpcGllbnQocykgYW5kIGNvbnRhaW4ocykgY29uZmlkZW50aWFs
+IGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2VkIG9yIGNvcHly
+aWdodGVkIHVuZGVyIGFwcGxpY2FibGUgbGF3LiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQg
+cmVjaXBpZW50LCBkbyBub3QgcmVhZCwgY29weSwgb3IgZm9yd2FyZCB0aGlzIGVtYWlsIG1lc3Nh
+Z2Ugb3IgYW55IGF0dGFjaG1lbnRzLiBEZWxldGUgdGhpcyBlbWFpbCBtZXNzYWdlIGFuZCBhbnkg
+YXR0YWNobWVudHMgaW1tZWRpYXRlbHkuDQoNCg==
