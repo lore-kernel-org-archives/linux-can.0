@@ -1,83 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] bfin_can: rewrite the blackfin CAN driver into arch independent
- style
-Date: Wed, 07 Jan 2015 15:36:17 +0100
-Message-ID: <54AD4461.1040203@pengutronix.de>
-References: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com>
+Subject: Re: [PATCH v6] can: move can_stats.bus_off++ from can_bus_off into
+ can_change_state
+Date: Wed, 07 Jan 2015 16:23:46 +0100
+Message-ID: <54AD4F82.6030207@pengutronix.de>
+References: <b032a1c3-b80d-41a4-998b-4fe0e5a8118b@GRBSR0089.marel.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="9m8Dof6fL3lMJ8dNLNPLjuDnxWQAqQhRN"
+ boundary="xJjlTH9RxWigOH73hXNt6FidCJjhAc5DS"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51923 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45610 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751419AbbAGOg1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Jan 2015 09:36:27 -0500
-In-Reply-To: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com>
+	with ESMTP id S1752301AbbAGPXx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 7 Jan 2015 10:23:53 -0500
+In-Reply-To: <b032a1c3-b80d-41a4-998b-4fe0e5a8118b@GRBSR0089.marel.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Aaron Wu <Aaron.wu@analog.com>, adi-buildroot-devel@lists.sourceforge.net, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9m8Dof6fL3lMJ8dNLNPLjuDnxWQAqQhRN
+--xJjlTH9RxWigOH73hXNt6FidCJjhAc5DS
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 12/24/2014 04:30 AM, Aaron Wu wrote:
-> Rewrite the blackfin CAN driver into arch independent style
+On 12/11/2014 03:15 PM, Andri Yngvason wrote:
+> In order to be able to move the stats increment from can_bus_off() into=
+
+> can_change_state(), the increment had to be moved back into code that w=
+as using
+> can_bus_off() but not can_change_state().
 >=20
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+> As a side-effect, this patch fixes the following bugs:
+>  * Redundant call to can_bus_off() in c_can.
+>  * Bus-off counted twice in xilinx_can.
 
-[...]
+FTBFS:
 
-> @@ -547,6 +543,11 @@ static int bfin_can_probe(struct platform_device *=
-pdev)
->  	}
-> =20
->  	res_mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (res_mem =3D=3D NULL) {
-> +		dev_err(&pdev->dev, "Cannot get IORESOURCE_MEM\n");
-> +		return -ENOENT;
-> +	}
-> +
->  	rx_irq =3D platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->  	tx_irq =3D platform_get_resource(pdev, IORESOURCE_IRQ, 1);
->  	err_irq =3D platform_get_resource(pdev, IORESOURCE_IRQ, 2);
-> @@ -555,12 +556,6 @@ static int bfin_can_probe(struct platform_device *=
-pdev)
->  		goto exit;
->  	}
-> =20
-> -	if (!request_mem_region(res_mem->start, resource_size(res_mem),
-> -				dev_name(&pdev->dev))) {
-> -		err =3D -EBUSY;
-> -		goto exit;
-> -	}
-
-You should remove the corresponding release_mem_region() from the
-remove() function, too.
-
-> -
->  	/* request peripheral pins */
->  	err =3D peripheral_request_list(pdata, dev_name(&pdev->dev));
->  	if (err)
-> @@ -573,7 +568,13 @@ static int bfin_can_probe(struct platform_device *=
-pdev)
->  	}
-> =20
->  	priv =3D netdev_priv(dev);
-> -	priv->membase =3D (void __iomem *)res_mem->start;
-> +
-> +	priv->membase =3D devm_ioremap_resource(&pdev->dev, res_mem);
-> +	if (IS_ERR((void *)priv->membase)) {
-> +		dev_err(&pdev->dev, "Cannot map IO\n");
-> +		return PTR_ERR((void *)priv->membase);
-
-Is this cast still needed?
-
-Can you move the devm_ conversion into a separate patch?
+> drivers/net/can/bfin_can.c: In function 'bfin_can_err':
+> drivers/net/can/bfin_can.c:355:8: error: 'struct net_device_stats' has =
+no member named 'bus_off'
 
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -85,7 +50,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---9m8Dof6fL3lMJ8dNLNPLjuDnxWQAqQhRN
+--xJjlTH9RxWigOH73hXNt6FidCJjhAc5DS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -93,19 +58,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUrURhAAoJECte4hHFiupUw28P/248PUrbsancWfFjGYEiwPhJ
-ddGM+f3TtTrt9XHEhqgePTGi1Zdp/XA3mO4olu84X2O7ZwcJ/n9NvrI3JuCXpLzw
-Klh80RZYlre2qkGW6HpwpuFcEtvNYMcwrRmUSEbYKupPnQK1poonIG/pfIXUA/rw
-Ea05WsbaxOJRa9KzeG6Jk8jhn/4km68p1HCM4bf81z3eC1MoYE/0ibzDJcb0KjjL
-+PVDrltyejZDjeF6OnOfSHm+CoBKu6k52rPyPh+yC/bzYzp8s5E5EUuflmJJFOEh
-JuyLVATpqdtsxAy3jAdXR0xkF7qgiiAGiMI3JrBisLqLx0roTjJ/vyOv0jGHdYjU
-qV9zNlizDaWgr1TRRtkkKodnF7/mFoKssvkOAavdxQW8Rxq5dm7hIjKmKg0IM4QT
-JYiBT4G4s/7YNUfQx1RnkKx2DXQFVFPTNSi+3YhQ7zTraaWuyl+OuNQX/26TihiQ
-Q7DdrfV7SlYtFHjYgNQdDzvkwceB+b9K3idK6c7obKXSRwTy8fDkan8y3LA6tcZx
-GwS4MyWmvq/A6EnpF8bCSdlj3MbeMZWDt17fCUoDFFMkGFJGUAG9nwFa2cwkAfZI
-s03evZiCP0i1/7u73aZlf9OK8kjdLwIRqOvXHo4lYtdw8T4qX0KmeLQGLovYVyrR
-uUiHYzWsk0ZQvp4pIwvh
-=6aEw
+iQIcBAEBAgAGBQJUrU+CAAoJECte4hHFiupUlSsQAJ7uKI4w64sCaQ5Mtoc99w1z
+1d6f6zx4ga4TZX29eAzpUTufLdJAtc09Ox7tjNZ9bsPsOgBWfTM1UpyMiUSyJP3X
+JtG7rHigYzF8paeUPFUwQsTL/RE7TIN/vLOrlvBxOhg6DjWXrwF8GZIIK5RrUSVv
+yl0NWvilM5px6C1jrHTAolUsPCvX/p6qh/A1KhvfEp5ZFCXkpZSyoc0yfhYf0+AL
+twGIoRSWTJrWvDBoHDnYAoTW3Ax933yPWGxDrypllAhs+aUmELdPmzpXP7S7t1yo
+/GRH2arYQXq3/qKHqHdknO6VxpTVZV2+siIgnWidAWwp12M22CVJycrdXiu1v2Dq
+2CRWPj2unKxPFUcl85wCqEqmuAXITIKDz5QKcDRLpvc8Aa3R9QFxP30mIG4A+vGF
+NAbJZLwPPh6VSI4QGnGU1O1cpL30fjOeard+dhouhgHb9KmMyiholC4CFYRawUzN
+j32DqiMMMgmUo9ZpS9u2MkApzUS8VDBWfE09D5d94LWc4q0AwpA5T55JAGO0R2z4
+Shnl99EFnIJ+k5B+ciLnqAX693Cmk/jxGXVb8n0rTXjlfyiiI1nx/T3eXYpikyaK
+MpBPhLaBvtydPirs6SAbaBNyX7rSD129XTRfzeu8C/IXnMybYv6U9CKqn/20dBhH
+qm+A7XVtQikQGhVLwhAU
+=R3Px
 -----END PGP SIGNATURE-----
 
---9m8Dof6fL3lMJ8dNLNPLjuDnxWQAqQhRN--
+--xJjlTH9RxWigOH73hXNt6FidCJjhAc5DS--
