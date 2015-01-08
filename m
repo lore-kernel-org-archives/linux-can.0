@@ -1,66 +1,68 @@
-From: "Wu, Aaron" <Aaron.Wu@analog.com>
-Subject: RE: [PATCH] bfin_can: rewrite the blackfin CAN driver into arch
- independent style
-Date: Thu, 8 Jan 2015 07:13:53 +0000
-Message-ID: <649EF91064D35D40B9C93A225BF41674612E3EDD@NWD2MBX7.ad.analog.com>
-References: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com>
- <54AD4461.1040203@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] bfin_can: rewrite the blackfin CAN driver into arch independent
+ style
+Date: Thu, 08 Jan 2015 09:28:14 +0100
+Message-ID: <54AE3F9E.7060904@pengutronix.de>
+References: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com> <54AD4461.1040203@pengutronix.de> <649EF91064D35D40B9C93A225BF41674612E3EDD@NWD2MBX7.ad.analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="apjeow0XCp8tobw713n1b7bLr0Tv5PnUm"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0065.outbound.protection.outlook.com ([207.46.100.65]:62000
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750886AbbAHH3W (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 8 Jan 2015 02:29:22 -0500
-In-Reply-To: <54AD4461.1040203@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55554 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756025AbbAHJAa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Jan 2015 04:00:30 -0500
+In-Reply-To: <649EF91064D35D40B9C93A225BF41674612E3EDD@NWD2MBX7.ad.analog.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: "Wu, Aaron" <Aaron.Wu@analog.com>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-SGkgTWFyYw0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuIEkndmUgc3BsaXQgaXQgaW50byB0
-d28gcGFydHMgYW5kIHN1Ym1pdCBwYXRjaGVzIG9mIFYyLg0KRG8geW91IG1pbmQgaWYgSSBmaXgg
-cG90ZW50aWFsIGJ1Z3Mgd2l0aCBmdXR1cmUgcGF0Y2hlcz8gDQoNClJlZ2FyZHMNCkFhcm9uDQoN
-Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVkZGUg
-W21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IDIwMTXlubQx5pyIN+aXpSAyMjoz
-Ng0KPiBUbzogV3UsIEFhcm9uOyBhZGktYnVpbGRyb290LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldDsNCj4gd2dAZ3JhbmRlZ2dlci5jb207IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gYmZpbl9j
-YW46IHJld3JpdGUgdGhlIGJsYWNrZmluIENBTiBkcml2ZXIgaW50byBhcmNoDQo+IGluZGVwZW5k
-ZW50IHN0eWxlDQo+IA0KPiBPbiAxMi8yNC8yMDE0IDA0OjMwIEFNLCBBYXJvbiBXdSB3cm90ZToN
-Cj4gPiBSZXdyaXRlIHRoZSBibGFja2ZpbiBDQU4gZHJpdmVyIGludG8gYXJjaCBpbmRlcGVuZGVu
-dCBzdHlsZQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWFyb24gV3UgPEFhcm9uLnd1QGFuYWxv
-Zy5jb20+DQo+IA0KPiBbLi4uXQ0KPiANCj4gPiBAQCAtNTQ3LDYgKzU0MywxMSBAQCBzdGF0aWMg
-aW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4g
-IAl9DQo+ID4NCj4gPiAgCXJlc19tZW0gPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9S
-RVNPVVJDRV9NRU0sIDApOw0KPiA+ICsJaWYgKHJlc19tZW0gPT0gTlVMTCkgew0KPiA+ICsJCWRl
-dl9lcnIoJnBkZXYtPmRldiwgIkNhbm5vdCBnZXQgSU9SRVNPVVJDRV9NRU1cbiIpOw0KPiA+ICsJ
-CXJldHVybiAtRU5PRU5UOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiAgCXJ4X2lycSA9IHBsYXRmb3Jt
-X2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMCk7DQo+ID4gIAl0eF9pcnEgPSBw
-bGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9JUlEsIDEpOw0KPiA+ICAJZXJy
-X2lycSA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMik7IEBA
-IC0NCj4gNTU1LDEyDQo+ID4gKzU1Niw2IEBAIHN0YXRpYyBpbnQgYmZpbl9jYW5fcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgCQlnb3RvIGV4aXQ7DQo+ID4gIAl9DQo+
-ID4NCj4gPiAtCWlmICghcmVxdWVzdF9tZW1fcmVnaW9uKHJlc19tZW0tPnN0YXJ0LCByZXNvdXJj
-ZV9zaXplKHJlc19tZW0pLA0KPiA+IC0JCQkJZGV2X25hbWUoJnBkZXYtPmRldikpKSB7DQo+ID4g
-LQkJZXJyID0gLUVCVVNZOw0KPiA+IC0JCWdvdG8gZXhpdDsNCj4gPiAtCX0NCj4gDQo+IFlvdSBz
-aG91bGQgcmVtb3ZlIHRoZSBjb3JyZXNwb25kaW5nIHJlbGVhc2VfbWVtX3JlZ2lvbigpIGZyb20g
-dGhlDQo+IHJlbW92ZSgpIGZ1bmN0aW9uLCB0b28uDQo+IA0KPiA+IC0NCj4gPiAgCS8qIHJlcXVl
-c3QgcGVyaXBoZXJhbCBwaW5zICovDQo+ID4gIAllcnIgPSBwZXJpcGhlcmFsX3JlcXVlc3RfbGlz
-dChwZGF0YSwgZGV2X25hbWUoJnBkZXYtPmRldikpOw0KPiA+ICAJaWYgKGVycikNCj4gPiBAQCAt
-NTczLDcgKzU2OCwxMyBAQCBzdGF0aWMgaW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAl9DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZfcHJp
-dihkZXYpOw0KPiA+IC0JcHJpdi0+bWVtYmFzZSA9ICh2b2lkIF9faW9tZW0gKilyZXNfbWVtLT5z
-dGFydDsNCj4gPiArDQo+ID4gKwlwcml2LT5tZW1iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNl
-KCZwZGV2LT5kZXYsIHJlc19tZW0pOw0KPiA+ICsJaWYgKElTX0VSUigodm9pZCAqKXByaXYtPm1l
-bWJhc2UpKSB7DQo+ID4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAiQ2Fubm90IG1hcCBJT1xuIik7
-DQo+ID4gKwkJcmV0dXJuIFBUUl9FUlIoKHZvaWQgKilwcml2LT5tZW1iYXNlKTsNCj4gDQo+IElz
-IHRoaXMgY2FzdCBzdGlsbCBuZWVkZWQ/DQo+IA0KPiBDYW4geW91IG1vdmUgdGhlIGRldm1fIGNv
-bnZlcnNpb24gaW50byBhIHNlcGFyYXRlIHBhdGNoPw0KPiANCj4gTWFyYw0KPiAtLQ0KPiBQZW5n
-dXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAg
-ICAgfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIz
-MS0yODI2LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBG
-YXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBI
-UkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--apjeow0XCp8tobw713n1b7bLr0Tv5PnUm
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 01/08/2015 08:13 AM, Wu, Aaron wrote:
+> Thanks for your comments. I've split it into two parts and submit patch=
+es of V2.
+
+Thanks!
+
+> Do you mind if I fix potential bugs with future patches?=20
+
+Patches, especially bug fixes are always welcome.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--apjeow0XCp8tobw713n1b7bLr0Tv5PnUm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUrj+eAAoJECte4hHFiupUKTEP/0CuZ0sWcX9NYspB1ZL/plDr
+ktujAZq1+eQqNSDYG34wi36e8MszsWnp83itzU1Y6zpVEgsqM2Q2dk+ncC6SrOBS
+W1vIa2LMzXWsrFIpbS2wa9M8Qfpy9WUDdpvEPn6RG4i4oaMD6rO7bb1YIoC8Z/Qb
+C3k2o3C6b7jw/HaE3QtJeEkQNY/F25iS7yu323xJNpKkYAezPYHYYX8lnCF77Yld
+O7nTcO/KiJjO9woUL5CJg1hKPD4/gKIr4z+DkOtN8VHkmsLALhjfidSm1D8PTfmh
+pdV+gXVrtS7nt5ZuEjmBeJr/WkC48y/5/x1s9cZNrqHjX7NzMMVgEkiK/ou9hSXs
+InQowaQnPRr1EXUxWoUSw7N5MeVP48Z4SWTBsU60HsscqsaKMi7fkR7M4Q7ei//F
+L57qXXimmAKOn5gpEJ+Xr32Je2wU+dn1Vd0GKzJE0/iLBAUF2dIOwdTTo5Vax1bI
+K2P+Md3JWulmFrknqMHP59TglueUSE9QMoG0lTTQ82CEy70Mz64yxXjKbZMidWWo
+U5Vs/HEyYSDduUn/xnodm8TeeWKKDi6PdxXpEAb8/hQJjY2JfFNCWYzc1mddpgNB
+ppVQD87Sk0dvU5DNW52o+qoRVhvoC/avR/03tXeuKZbrT7aGdauh+89/juIKf86q
+wsEzxfNFhgkSbC4Kc5LF
+=RCtF
+-----END PGP SIGNATURE-----
+
+--apjeow0XCp8tobw713n1b7bLr0Tv5PnUm--
