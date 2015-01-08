@@ -1,21 +1,21 @@
 From: Aaron Wu <Aaron.wu@analog.com>
-Subject: [PATCH] bfin_can: rewrite the blackfin style of read/write into common ones
-Date: Thu, 8 Jan 2015 14:25:04 +0800
-Message-ID: <1420698305-15741-1-git-send-email-Aaron.wu@analog.com>
+Subject: [PATCH V2 1/2] bfin_can: rewrite the blackfin style of read/write
+Date: Thu, 8 Jan 2015 14:57:33 +0800
+Message-ID: <1420700254-22529-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1bon0072.outbound.protection.outlook.com ([157.56.111.72]:23040
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+Received: from mail-bl2on0096.outbound.protection.outlook.com ([65.55.169.96]:8992
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751943AbbAHGsH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 8 Jan 2015 01:48:07 -0500
+	id S1752979AbbAHHGI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 8 Jan 2015 02:06:08 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: adi-buildroot-devel@lists.sourceforge.net, Aaron Wu <Aaron.wu@analog.com>
 
-Rewrite the blackfin style of read/write to common ones
+Rewrite the blackfin read/write into common style ones
 
 Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
 ---
