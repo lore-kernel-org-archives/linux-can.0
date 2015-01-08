@@ -1,85 +1,66 @@
-From: Aaron Wu <Aaron.wu@analog.com>
-Subject: [PATCH V2 2/2] bfin_can: rewrite the driver to support the common
-Date: Thu, 8 Jan 2015 14:57:34 +0800
-Message-ID: <1420700254-22529-2-git-send-email-Aaron.wu@analog.com>
-References: <1420700254-22529-1-git-send-email-Aaron.wu@analog.com>
+From: "Wu, Aaron" <Aaron.Wu@analog.com>
+Subject: RE: [PATCH] bfin_can: rewrite the blackfin CAN driver into arch
+ independent style
+Date: Thu, 8 Jan 2015 07:13:53 +0000
+Message-ID: <649EF91064D35D40B9C93A225BF41674612E3EDD@NWD2MBX7.ad.analog.com>
+References: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com>
+ <54AD4461.1040203@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0082.outbound.protection.outlook.com ([65.55.169.82]:4704
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-by2on0065.outbound.protection.outlook.com ([207.46.100.65]:62000
+	"EHLO na01-by2-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753017AbbAHHHN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 8 Jan 2015 02:07:13 -0500
-In-Reply-To: <1420700254-22529-1-git-send-email-Aaron.wu@analog.com>
+	id S1750886AbbAHH3W (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 8 Jan 2015 02:29:22 -0500
+In-Reply-To: <54AD4461.1040203@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, Aaron Wu <Aaron.wu@analog.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Rewrite the driver to comply to common style with MMU 
-
-Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
----
- drivers/net/can/bfin_can.c |   21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 0a5eff4..1d116a7 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device *pdev)
- 		goto exit;
- 	}
- 
--	if (!request_mem_region(res_mem->start, resource_size(res_mem),
--				dev_name(&pdev->dev))) {
--		err = -EBUSY;
--		goto exit;
--	}
--
- 	/* request peripheral pins */
- 	err = peripheral_request_list(pdata, dev_name(&pdev->dev));
- 	if (err)
--		goto exit_mem_release;
-+		goto exit;
- 
- 	dev = alloc_bfin_candev();
- 	if (!dev) {
-@@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *pdev)
- 	}
- 
- 	priv = netdev_priv(dev);
--	priv->membase = (void __iomem *)res_mem->start;
-+
-+	priv->membase = devm_ioremap_resource(&pdev->dev, res_mem);
-+	if (IS_ERR((void *)priv->membase)) {
-+		dev_err(&pdev->dev, "Cannot map IO\n");
-+		return PTR_ERR((void *)priv->membase);
-+	}
-+
- 	priv->rx_irq = rx_irq->start;
- 	priv->tx_irq = tx_irq->start;
- 	priv->err_irq = err_irq->start;
-@@ -601,8 +601,6 @@ exit_candev_free:
- 	free_candev(dev);
- exit_peri_pin_free:
- 	peripheral_free_list(pdata);
--exit_mem_release:
--	release_mem_region(res_mem->start, resource_size(res_mem));
- exit:
- 	return err;
- }
-@@ -617,9 +615,6 @@ static int bfin_can_remove(struct platform_device *pdev)
- 
- 	unregister_candev(dev);
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
- 	peripheral_free_list(priv->pin_list);
- 
- 	free_candev(dev);
--- 
-1.7.9.5
-
+SGkgTWFyYw0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuIEkndmUgc3BsaXQgaXQgaW50byB0
+d28gcGFydHMgYW5kIHN1Ym1pdCBwYXRjaGVzIG9mIFYyLg0KRG8geW91IG1pbmQgaWYgSSBmaXgg
+cG90ZW50aWFsIGJ1Z3Mgd2l0aCBmdXR1cmUgcGF0Y2hlcz8gDQoNClJlZ2FyZHMNCkFhcm9uDQoN
+Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVkZGUg
+W21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IDIwMTXlubQx5pyIN+aXpSAyMjoz
+Ng0KPiBUbzogV3UsIEFhcm9uOyBhZGktYnVpbGRyb290LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldDsNCj4gd2dAZ3JhbmRlZ2dlci5jb207IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gYmZpbl9j
+YW46IHJld3JpdGUgdGhlIGJsYWNrZmluIENBTiBkcml2ZXIgaW50byBhcmNoDQo+IGluZGVwZW5k
+ZW50IHN0eWxlDQo+IA0KPiBPbiAxMi8yNC8yMDE0IDA0OjMwIEFNLCBBYXJvbiBXdSB3cm90ZToN
+Cj4gPiBSZXdyaXRlIHRoZSBibGFja2ZpbiBDQU4gZHJpdmVyIGludG8gYXJjaCBpbmRlcGVuZGVu
+dCBzdHlsZQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWFyb24gV3UgPEFhcm9uLnd1QGFuYWxv
+Zy5jb20+DQo+IA0KPiBbLi4uXQ0KPiANCj4gPiBAQCAtNTQ3LDYgKzU0MywxMSBAQCBzdGF0aWMg
+aW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4g
+IAl9DQo+ID4NCj4gPiAgCXJlc19tZW0gPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9S
+RVNPVVJDRV9NRU0sIDApOw0KPiA+ICsJaWYgKHJlc19tZW0gPT0gTlVMTCkgew0KPiA+ICsJCWRl
+dl9lcnIoJnBkZXYtPmRldiwgIkNhbm5vdCBnZXQgSU9SRVNPVVJDRV9NRU1cbiIpOw0KPiA+ICsJ
+CXJldHVybiAtRU5PRU5UOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiAgCXJ4X2lycSA9IHBsYXRmb3Jt
+X2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMCk7DQo+ID4gIAl0eF9pcnEgPSBw
+bGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9JUlEsIDEpOw0KPiA+ICAJZXJy
+X2lycSA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMik7IEBA
+IC0NCj4gNTU1LDEyDQo+ID4gKzU1Niw2IEBAIHN0YXRpYyBpbnQgYmZpbl9jYW5fcHJvYmUoc3Ry
+dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgCQlnb3RvIGV4aXQ7DQo+ID4gIAl9DQo+
+ID4NCj4gPiAtCWlmICghcmVxdWVzdF9tZW1fcmVnaW9uKHJlc19tZW0tPnN0YXJ0LCByZXNvdXJj
+ZV9zaXplKHJlc19tZW0pLA0KPiA+IC0JCQkJZGV2X25hbWUoJnBkZXYtPmRldikpKSB7DQo+ID4g
+LQkJZXJyID0gLUVCVVNZOw0KPiA+IC0JCWdvdG8gZXhpdDsNCj4gPiAtCX0NCj4gDQo+IFlvdSBz
+aG91bGQgcmVtb3ZlIHRoZSBjb3JyZXNwb25kaW5nIHJlbGVhc2VfbWVtX3JlZ2lvbigpIGZyb20g
+dGhlDQo+IHJlbW92ZSgpIGZ1bmN0aW9uLCB0b28uDQo+IA0KPiA+IC0NCj4gPiAgCS8qIHJlcXVl
+c3QgcGVyaXBoZXJhbCBwaW5zICovDQo+ID4gIAllcnIgPSBwZXJpcGhlcmFsX3JlcXVlc3RfbGlz
+dChwZGF0YSwgZGV2X25hbWUoJnBkZXYtPmRldikpOw0KPiA+ICAJaWYgKGVycikNCj4gPiBAQCAt
+NTczLDcgKzU2OCwxMyBAQCBzdGF0aWMgaW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
+bV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAl9DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZfcHJp
+dihkZXYpOw0KPiA+IC0JcHJpdi0+bWVtYmFzZSA9ICh2b2lkIF9faW9tZW0gKilyZXNfbWVtLT5z
+dGFydDsNCj4gPiArDQo+ID4gKwlwcml2LT5tZW1iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNl
+KCZwZGV2LT5kZXYsIHJlc19tZW0pOw0KPiA+ICsJaWYgKElTX0VSUigodm9pZCAqKXByaXYtPm1l
+bWJhc2UpKSB7DQo+ID4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAiQ2Fubm90IG1hcCBJT1xuIik7
+DQo+ID4gKwkJcmV0dXJuIFBUUl9FUlIoKHZvaWQgKilwcml2LT5tZW1iYXNlKTsNCj4gDQo+IElz
+IHRoaXMgY2FzdCBzdGlsbCBuZWVkZWQ/DQo+IA0KPiBDYW4geW91IG1vdmUgdGhlIGRldm1fIGNv
+bnZlcnNpb24gaW50byBhIHNlcGFyYXRlIHBhdGNoPw0KPiANCj4gTWFyYw0KPiAtLQ0KPiBQZW5n
+dXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAg
+ICAgfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIz
+MS0yODI2LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBG
+YXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBI
+UkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
