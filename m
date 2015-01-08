@@ -1,106 +1,113 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V2 2/2] bfin_can: rewrite the driver to support the common
-Date: Thu, 08 Jan 2015 09:59:35 +0100
-Message-ID: <54AE46F7.6030106@pengutronix.de>
-References: <1420700254-22529-1-git-send-email-Aaron.wu@analog.com> <1420700254-22529-2-git-send-email-Aaron.wu@analog.com>
+Subject: Re: iproute2 fd-non-iso PoC - was Re: [PATCH v4] can/peak_usb: add
+ support for PEAK new CANFD USB adapters
+Date: Thu, 08 Jan 2015 10:04:33 +0100
+Message-ID: <54AE4821.3090204@pengutronix.de>
+References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com> <54AD66C5.10908@pengutronix.de> <54AD6ED8.2020808@hartkopp.net> <54AD7D06.5030705@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="VN13KQ7RAgkXVfmCBoGg1NteHvT1UcxLX"
+ boundary="1WuTGaoQGT7oDTiw2w32Ci7i1ESvNW4P0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55553 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54935 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755971AbbAHJA3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Jan 2015 04:00:29 -0500
-In-Reply-To: <1420700254-22529-2-git-send-email-Aaron.wu@analog.com>
+	with ESMTP id S1753613AbbAHJEg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Jan 2015 04:04:36 -0500
+In-Reply-To: <54AD7D06.5030705@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VN13KQ7RAgkXVfmCBoGg1NteHvT1UcxLX
+--1WuTGaoQGT7oDTiw2w32Ci7i1ESvNW4P0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/08/2015 07:57 AM, Aaron Wu wrote:
-> Rewrite the driver to comply to common style with MMU=20
+On 01/07/2015 07:37 PM, Oliver Hartkopp wrote:
+> Just a short test:
 >=20
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+> I added u32 ctrlmode in Stephanes peak_usb_adapter struct for a test:
+>=20
+> @@ -44,8 +46,11 @@ struct peak_usb_device;
+>  struct peak_usb_adapter {
+>         char *name;
+>         u32 device_id;
+> +       u32 ctrlmode_supported;
+> +       u32 ctrlmode;
+>         struct can_clock clock;
+>=20
+> Which looks like this in pcan_usb_pro.c
+>=20
+> @@ -1015,6 +1007,8 @@ struct peak_usb_adapter pcan_usb_pro =3D {
+>         .name =3D "PCAN-USB Pro",
+>         .device_id =3D PCAN_USBPRO_PRODUCT_ID,
+>         .ctrl_count =3D PCAN_USBPRO_CHANNEL_COUNT,
+> +       .ctrlmode =3D 0,
 
-Can you please rephrase the subject into a more complete English
-sentence. You may use something like "convert driver to use
-devm_ioremap_resource()"
+Not needed, as 0 is default.
 
-> ---
->  drivers/net/can/bfin_can.c |   21 ++++++++-------------
->  1 file changed, 8 insertions(+), 13 deletions(-)
+> +       .ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_L=
+ISTENONLY,
+>         .clock =3D {
 >=20
-> diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-> index 0a5eff4..1d116a7 100644
-> --- a/drivers/net/can/bfin_can.c
-> +++ b/drivers/net/can/bfin_can.c
-> @@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device =
-*pdev)
->  		goto exit;
->  	}
-> =20
-> -	if (!request_mem_region(res_mem->start, resource_size(res_mem),
-> -				dev_name(&pdev->dev))) {
-> -		err =3D -EBUSY;
-> -		goto exit;
-> -	}
-> -
->  	/* request peripheral pins */
->  	err =3D peripheral_request_list(pdata, dev_name(&pdev->dev));
->  	if (err)
-> -		goto exit_mem_release;
-> +		goto exit;
-> =20
->  	dev =3D alloc_bfin_candev();
->  	if (!dev) {
-> @@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *=
-pdev)
->  	}
-> =20
->  	priv =3D netdev_priv(dev);
-> -	priv->membase =3D (void __iomem *)res_mem->start;
-> +
-> +	priv->membase =3D devm_ioremap_resource(&pdev->dev, res_mem);
-> +	if (IS_ERR((void *)priv->membase)) {
-Is this cast needed?
-> +		dev_err(&pdev->dev, "Cannot map IO\n");
-> +		return PTR_ERR((void *)priv->membase);
-Is this cast needed?
-> +	}
-> +
->  	priv->rx_irq =3D rx_irq->start;
->  	priv->tx_irq =3D tx_irq->start;
->  	priv->err_irq =3D err_irq->start;
-> @@ -601,8 +601,6 @@ exit_candev_free:
->  	free_candev(dev);
->  exit_peri_pin_free:
->  	peripheral_free_list(pdata);
-> -exit_mem_release:
-> -	release_mem_region(res_mem->start, resource_size(res_mem));
->  exit:
->  	return err;
->  }
-> @@ -617,9 +615,6 @@ static int bfin_can_remove(struct platform_device *=
-pdev)
-> =20
->  	unregister_candev(dev);
-> =20
-> -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	release_mem_region(res->start, resource_size(res));
-> -
->  	peripheral_free_list(priv->pin_list);
-> =20
->  	free_candev(dev);
+> and in pcan_usb_fd.c :
 >=20
+> /* describes the PCAN-USB Pro FD adapter */
+> struct peak_usb_adapter pcan_usb_pro_fd =3D {
+>         .name =3D "PCAN-USB Pro FD",
+>         .device_id =3D PCAN_USBPROFD_PRODUCT_ID,
+>         .ctrl_count =3D PCAN_USBPROFD_CHANNEL_COUNT,
+>         .ctrlmode =3D CAN_CTRLMODE_FD_NON_ISO,
+>         .ctrlmode_supported =3D CAN_CTRLMODE_FD |
+>                         CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONL=
+Y,
+>         .clock =3D {
+>=20
+> Finally the ip tools gives this output (when FD is enabled):
+>=20
+> # ip -det link show can0
+> 17: can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group =
+default qlen 10
+>     link/can  promiscuity 0=20
+>     can <FD,FD-NON-ISO> state STOPPED restart-ms 0=20
+> 	  pcan_usb_fd: tseg1 1..64 tseg2 1..16 sjw 1..16 brp 1..1024 brp-inc 1=
+
+> 	  pcan_usb_fd: dtseg1 1..16 dtseg2 1..8 dsjw 1..4 dbrp 1..1024 dbrp-in=
+c 1
+> 	  clock 80000000
+>=20
+> AND - as expected - removing this flag is denied:
+>=20
+> # ip link set dev can0 type can fd-non-iso off
+> RTNETLINK answers: Operation not supported
+>=20
+> Regards,
+> Oliver
+>=20
+> ps. Current patch for iproute2 is attached. Will send a proper patch wh=
+en
+> CAN_CTRLMODE_FD_NON_ISO found its way into mainline.
+>=20
+>=20
+>=20
+> iproute2-fd-non-iso.patch
+>=20
+>=20
+> diff --git a/include/linux/can/netlink.h b/include/linux/can/netlink.h
+> index 25fd52c..6d4ec2a 100644
+> --- a/include/linux/can/netlink.h
+> +++ b/include/linux/can/netlink.h
+> @@ -98,6 +98,7 @@ struct can_ctrlmode {
+>  #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+>  #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+>  #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
+> +#define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
+
+AFAIC the headers are imported from the Linux tree, so no need to modify
+this file in the final patch. You might have to ask for the import when
+sending these patches, though.
 
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -108,7 +115,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---VN13KQ7RAgkXVfmCBoGg1NteHvT1UcxLX
+--1WuTGaoQGT7oDTiw2w32Ci7i1ESvNW4P0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -116,19 +123,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIbBAEBAgAGBQJUrkb3AAoJECte4hHFiupUAMEP+PHqSsYfbmyTf0ImCOBQcoFn
-5s9F4c6J/+zzsg/OY6Tb4jiXSkg+e+1LQUo5pCxn7MhAem+XP5RwSewBPx7sbDbI
-yxqOTpyZp2NSn/YGh0qTeMoaWoPN/baUHfajmyC2DjAJbIuyqYoP7pHMBgNFEoBA
-XnDJa6Q+bNveFNqUlffRBSlYtq3+SOsmf+yBwe4o0oYQZ6eojV4gzZm7KnWMbdCi
-JKi3OMNHuPvnBpVHyyl4qFkHVGX4Fa3hQdQhMa5sUIE9JbLImFr7n5GsTvBiqFO+
-3Ix3JsbUJFLlWXqjphFtRM+8Ec6KgnrgSiGZGD6IL8mgXBJP7E2vPWrryF9gZCez
-VkNtY+3tMHoHVtCBnXswsmp5pdQ1po/fHkyC7EwI45PDXtbq6iqVVkT4APKRZIvE
-mqtBv+R4ZUzVVxUvqjMrke6ZixjJk9i2iEiOzQDYoumN7h1e2XEkNcfI1tj/Ucjc
-af6E8KncOyJD8twx5oIG16uOdcz8G5mZYED6VsWGiI0ic5bCl2A6/IhJkyR6RKcM
-uQmuH+oyXfhX5cRjPwpR+PODLMW9Lj9QDED/avsIWq9lCDJtTMxbIJqnbm8yrkwu
-iAWW5N+mN5DhaedLat6myj6oFqoDv8mySeysgOMoY+iz0gHm/X4+vGMTkQnmhQIZ
-Sy0EEtVt1vrCqqXpsY4=
-=9vZQ
+iQIcBAEBAgAGBQJUrkghAAoJECte4hHFiupUZwwQAIdXrSVXPPqheIetFaFMBl8d
++QbjMH1jE1YvDl8yy12kqu5kGMyG92sqsaHdrd4t64y4btHSn2XzqKkHdWPUiQR4
+OG0Ffh04XtBguIlpTLxqpOTklPllGUPBMDZKUC49JfN65q4+Ks7Z3g64JKP45B5E
+vCEIMF6dHYfiC9Bgu7tS0DfVW1X6kz6ICR4yDriyB+mljMKjlHZpCPA3TysHwCbA
+Pjx/TFKkMNER/gbmUxSh/KFEwziUz5xTd4tRuC5Jzl41kndvkp+6Am59cid3ne98
+dOvwxifU4CQllmBAIXraSF2W/XLzA+a3xrx3Y1Yczo0F4IzMynWfwaLhdr5eS4fJ
+JvlzQ7ZgpvNyzLByLezSaeF9lFEG07ZSlANngz46iNr/40INDUbFywWDzrUZiQ8q
+cE3h0Qj/azX0Fh1iCYBEnL2L7sdAYEj2ONSfBEjd9go9ADipTFPihY1WqB2xJzJc
+sS2h8tUb2qYx6n8SiNtcu5KGOMvPLnKbK5IMlQnQEqCJ7b39kapS/PYXRMXmVJI/
+BHLz7hujw0GwADNdRE62VNi0kBlYCRL3mAKts2gK/Yyjlk9Ho6eZdNRy8X+3dOwz
+Z32zBOwYo60ZpOVusHONCcByrlEm5BqB8KZtoNiek3sAAD5TgFaQZT68yF+l0MRM
+HozLWsJ+h7vHOqiIOU8A
+=cVJ3
 -----END PGP SIGNATURE-----
 
---VN13KQ7RAgkXVfmCBoGg1NteHvT1UcxLX--
+--1WuTGaoQGT7oDTiw2w32Ci7i1ESvNW4P0--
