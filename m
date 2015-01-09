@@ -1,62 +1,73 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
- register
-Date: Fri, 9 Jan 2015 15:50:40 +0200
-Message-ID: <54AFDCB0.5060908@ti.com>
-References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v3 4/4] can: kvaser_usb: Add support for the Usbcan-II
+ family
+Date: Fri, 09 Jan 2015 15:05:49 +0100
+Message-ID: <54AFE03D.5040509@pengutronix.de>
+References: <20141223154654.GB6460@vivalin-002> <20150105174910.GA6304@linux> <20150105175206.GB6304@linux> <20150105175713.GC6304@linux> <20150105183131.GD6304@linux> <54AE6FC1.6050007@pengutronix.de> <20150109030657.GA1791@vivalin-002>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1420641162-8634-1-git-send-email-rogerq@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Roger Quadros <rogerq@ti.com>
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org
+ protocol="application/pgp-signature";
+ boundary="KF4kD39KBoUua5OAQf1OMwpNjnjsVE3c2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150109030657.GA1791@vivalin-002>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
---nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g
-Content-Type: text/plain; charset=windows-1252
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KF4kD39KBoUua5OAQf1OMwpNjnjsVE3c2
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 07/01/15 16:32, Roger Quadros wrote:
-> use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
-> is not safe as the RAMINIT register can be shared between different dri=
-vers
-> at least for TI SoCs.
+On 01/09/2015 04:06 AM, Ahmed S. Darwish wrote:
+>>>
+>>> 		cf->can_id |=3D CAN_ERR_CRTL;
+>>> 		cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
+>>>
+>>> 		stats->rx_over_errors++;
+>>> 		stats->rx_errors++;
+>>>
+>>> 		netif_rx(skb);
+>>>
+>>> 		stats->rx_packets++;
+>>> 		stats->rx_bytes +=3D cf->can_dlc;
+>>
+>> Another patch would be not to touch cf after netif_rx(), please
+>> move the stats handling before calling netif_rx(). Same applies to
+>> the kvaser_usb_rx_can_msg() function.
+
+> BTW, is it guaranteed from the SocketCAN stack that netif_rx()
+
+netif_rx() is the generic networking stack already.
+
+> will never return NET_RX_DROPPED? Because if no guarantee
+> exists, I guess below fragment cannot be completely correct?
+
+No, it's not guaranteed...
+
 >=20
-> To make the modification atomic we switch to using regmap_update_bits()=
-=2E
+>         stats->rx_packets++;
+>         stats->rx_bytes +=3D cf->can_dlc;
+>         netif_rx(skb);
 >=20
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  drivers/net/can/c_can/c_can_platform.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
-_can/c_can_platform.c
-> index f363972..364209a 100644
-> --- a/drivers/net/can/c_can/c_can_platform.c
-> +++ b/drivers/net/can/c_can/c_can_platform.c
-> @@ -110,6 +110,10 @@ static void c_can_hw_raminit_syscon(const struct c=
-_can_priv *priv, bool enable)
->  	 */
->  	ctrl &=3D ~(1 << raminit->bits.start);
->  	ctrl |=3D 1 << raminit->bits.done;
-> +
-> +	/* we can't use regmap_update_bits here as it will bypass the write
-> +	 * if START is already 0 and DONE is already 1.
-> +	 */
->  	regmap_write(raminit->syscon, raminit->reg, ctrl);
+> On the other hand, I don't see evan a single CAN driver checking
+> netif_rx() return value, so maybe such a check is an overkill...
 
-Can you first use update_bits to change either bit, so that this update
-will be done?
+A quick look shows that almost no ethernet or wireless drivers take care
+about the return value. In case of a RX_DROPPED some increase a drop
+counter, though.
 
- Tomi
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-
---nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g
+--KF4kD39KBoUua5OAQf1OMwpNjnjsVE3c2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -64,19 +75,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJUr9ywAAoJEPo9qoy8lh712+EP/jKguosT/RNHYoUsfRuEY9+9
-wGW8w6WRRoB73pWC/C5nzac0zoGKhIJl7QnOHNnGcnpZoybpIOnK4pO/TMyR8j2C
-whXzPyW4fzH8jWMN2BgtEIfiyR8ZStQaKydc9dPfPBlD8OkrbAEAEe7TGiOULkKv
-T+B7Cl1CgneG6Aq433wjF1Qi4e2NUR/QEDLqX9/txsHSB+4L+uNHHgu8wAngsBCD
-OBAjMSaljA8lfTQV/V6XwyMrjyAZYQA+TM3fD8DMDCt2eSK0IjFubUQGzDWk3YAF
-tQKKv+R36QdHMV4lKNCr7Kmb0ZW/Q1fmVthZXSHpVsNcZlS+ag8Uo5wv/2rL+kQr
-LO6XbfpgTpGNN9sAcq9wSfkvFIdDC91zKNMBlPeQHFUeoexY2BW4RNOwPC86ulRY
-VwaBC7D1SLeGKrNPThwRtNI5rN3y9izxsYXZXx6TyVlWUh5LXVC6XHLZO99ixQaD
-5pbnjsoi23D2S29HYn506OMnvF8Gor4MzAdjf1Ki/cF/VWqu8XzB4JhyMygbF7HV
-ubedACPya+9DgOV5wyzPdwhkSA7QOfPLPshM590RwnCP3rel5dYpb7MYs2Rtoa4x
-tobe0O30A6RLnlnPwK6+RIXBOTQokLfkHVU3/XAjIxv+hPmPpN6MabwOJTc0Dwsc
-ikHCRFxme+Z6T7HBIN1F
-=Ok4V
+iQIcBAEBAgAGBQJUr+A9AAoJECte4hHFiupUUvIP/RPFuWMts6qYX7knfvztzjjd
+Ogow3/KZF5H9lLWgxQh3sYZ+S6p/BMaSkVLACrPCR8VXyI/uDiSrtsrBkh6T2fk0
+aHu7bxU6UAeBk1cgtMMu3EJZ8aFmLw1r0gi9WQ3TFE68JlFqUQQ63MRVvsEJfMgx
+bWHdIIv9maalC01eEmRtfYHonBJuUJw3zahfbJStHxlgTBjdyG/48tDk4y9jPbCh
+b4Hv+VekDE+tQ58BB7+oTeCoYWfogpTMtu/N+43o2LGwGleW2UQPt8rCC7/wovJW
+Pm4uqpL0kO4B9lpoeLirXxEGhq5m536uqEgWn04obhoTpahRVOWxNUYn2d3wu67L
+P2M6PfJc65WNwbdbh+P36rcmuoMSPabVi5gU/a1HZzoy+S00rF9DYmbedDtTdmkL
+7vynsNWulwgm9HaAU6Y7w2n7qSpzzV+a7L3TpyCbFHb95LxCtD1a+nAwShPC2+ik
+wpHJpxvsS1Ym7hvIRyzpVdVL0P9HO4tEraV1nI1Z5eXUz2czjWJ1c2BmwNirK9Tu
+Pj0HAleSUrXAvdSgK3sgtgg01bH6RF1rQPRq0dAPwDdLKBhDm0+UczWeBGvQR9Vt
+gEWtsghkXEouFlSudqGUNkRRDMH30n/hyL96pQ1iFh8+KGGI6JnO7tw+mwD8nUL9
+wQKIu3jo+dddyBO5RL73
+=7GlW
 -----END PGP SIGNATURE-----
 
---nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g--
+--KF4kD39KBoUua5OAQf1OMwpNjnjsVE3c2--
