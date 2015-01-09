@@ -1,59 +1,82 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH v3 4/4] can: kvaser_usb: Add support for the Usbcan-II
- family
-Date: Fri, 9 Jan 2015 05:06:57 +0200
-Message-ID: <20150109030657.GA1791@vivalin-002>
-References: <20141223154654.GB6460@vivalin-002>
- <20150105174910.GA6304@linux>
- <20150105175206.GB6304@linux>
- <20150105175713.GC6304@linux>
- <20150105183131.GD6304@linux>
- <54AE6FC1.6050007@pengutronix.de>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
+ register
+Date: Fri, 9 Jan 2015 15:50:40 +0200
+Message-ID: <54AFDCB0.5060908@ti.com>
+References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f175.google.com ([209.85.212.175]:62274 "EHLO
-	mail-wi0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752509AbbAIDHG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 8 Jan 2015 22:07:06 -0500
-Content-Disposition: inline
-In-Reply-To: <54AE6FC1.6050007@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1420641162-8634-1-git-send-email-rogerq@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Roger Quadros <rogerq@ti.com>
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On Thu, Jan 08, 2015 at 12:53:37PM +0100, Marc Kleine-Budde wrote:
-> On 01/05/2015 07:31 PM, Ahmed S. Darwish wrote:
-> > 
+--nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On 07/01/15 16:32, Roger Quadros wrote:
+> use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
+> is not safe as the RAMINIT register can be shared between different dri=
+vers
+> at least for TI SoCs.
+>=20
+> To make the modification atomic we switch to using regmap_update_bits()=
+=2E
+>=20
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/net/can/c_can/c_can_platform.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c=
+_can/c_can_platform.c
+> index f363972..364209a 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -110,6 +110,10 @@ static void c_can_hw_raminit_syscon(const struct c=
+_can_priv *priv, bool enable)
+>  	 */
+>  	ctrl &=3D ~(1 << raminit->bits.start);
+>  	ctrl |=3D 1 << raminit->bits.done;
+> +
+> +	/* we can't use regmap_update_bits here as it will bypass the write
+> +	 * if START is already 0 and DONE is already 1.
+> +	 */
+>  	regmap_write(raminit->syscon, raminit->reg, ctrl);
 
-> > 
-> > 		cf->can_id |= CAN_ERR_CRTL;
-> > 		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
-> > 
-> > 		stats->rx_over_errors++;
-> > 		stats->rx_errors++;
-> > 
-> > 		netif_rx(skb);
-> > 
-> > 		stats->rx_packets++;
-> > 		stats->rx_bytes += cf->can_dlc;
-> 
-> Another patch would be not to touch cf after netif_rx(), please move the stats handling before calling netif_rx(). Same applies to the kvaser_usb_rx_can_msg() function.
-> 
+Can you first use update_bits to change either bit, so that this update
+will be done?
 
-BTW, is it guaranteed from the SocketCAN stack that netif_rx()
-will never return NET_RX_DROPPED? Because if no guarantee
-exists, I guess below fragment cannot be completely correct?
+ Tomi
 
-        stats->rx_packets++;
-        stats->rx_bytes += cf->can_dlc;
-        netif_rx(skb);
 
-On the other hand, I don't see evan a single CAN driver checking
-netif_rx() return value, so maybe such a check is an overkill...
 
-Thanks,
-Darwish
+--nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUr9ywAAoJEPo9qoy8lh712+EP/jKguosT/RNHYoUsfRuEY9+9
+wGW8w6WRRoB73pWC/C5nzac0zoGKhIJl7QnOHNnGcnpZoybpIOnK4pO/TMyR8j2C
+whXzPyW4fzH8jWMN2BgtEIfiyR8ZStQaKydc9dPfPBlD8OkrbAEAEe7TGiOULkKv
+T+B7Cl1CgneG6Aq433wjF1Qi4e2NUR/QEDLqX9/txsHSB+4L+uNHHgu8wAngsBCD
+OBAjMSaljA8lfTQV/V6XwyMrjyAZYQA+TM3fD8DMDCt2eSK0IjFubUQGzDWk3YAF
+tQKKv+R36QdHMV4lKNCr7Kmb0ZW/Q1fmVthZXSHpVsNcZlS+ag8Uo5wv/2rL+kQr
+LO6XbfpgTpGNN9sAcq9wSfkvFIdDC91zKNMBlPeQHFUeoexY2BW4RNOwPC86ulRY
+VwaBC7D1SLeGKrNPThwRtNI5rN3y9izxsYXZXx6TyVlWUh5LXVC6XHLZO99ixQaD
+5pbnjsoi23D2S29HYn506OMnvF8Gor4MzAdjf1Ki/cF/VWqu8XzB4JhyMygbF7HV
+ubedACPya+9DgOV5wyzPdwhkSA7QOfPLPshM590RwnCP3rel5dYpb7MYs2Rtoa4x
+tobe0O30A6RLnlnPwK6+RIXBOTQokLfkHVU3/XAjIxv+hPmPpN6MabwOJTc0Dwsc
+ikHCRFxme+Z6T7HBIN1F
+=Ok4V
+-----END PGP SIGNATURE-----
+
+--nqjjQkNAXs4GWvmH1HQ1h2jFuxa4tPI3g--
