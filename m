@@ -1,73 +1,246 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
- register
-Date: Mon, 12 Jan 2015 12:43:58 +0000
-Message-ID: <20150112124358.GG4160@sirena.org.uk>
-References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
- <54AFDCB0.5060908@ti.com>
- <54B39A8E.4090006@ti.com>
- <54B39BAD.4070604@ti.com>
- <20150112120541.GD4160@sirena.org.uk>
- <54B3C001.501@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4] can: Convert to runtime_pm
+Date: Mon, 12 Jan 2015 14:25:37 +0100
+Message-ID: <54B3CB51.3060207@pengutronix.de>
+References: <58f37b6fd9104ce185c413c473fe047b@BY2FFO11FD050.protection.gbl> <54AD267C.4060004@pengutronix.de> <12e7202e137e4d5680185748ebf0cf2d@BY2FFO11FD060.protection.gbl> <54B299A0.1000504@pengutronix.de> <bb20847c9546459592241f801be2b536@BY2FFO11FD027.protection.gbl>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="54u2kuW9sGWg/X+X"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54B3C001.501@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Roger Quadros <rogerq@ti.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org
+ protocol="application/pgp-signature";
+ boundary="FC6fjPPgDMvOWsaH2lNiGPIqjbBAq9iEk"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <bb20847c9546459592241f801be2b536@BY2FFO11FD027.protection.gbl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Soren Brinkmann <sorenb@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FC6fjPPgDMvOWsaH2lNiGPIqjbBAq9iEk
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
---54u2kuW9sGWg/X+X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 01/12/2015 07:59 AM, Appana Durga Kedareswara Rao wrote:
+> Hi Marc,
+>=20
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Sunday, January 11, 2015 9:11 PM
+>> To: Appana Durga Kedareswara Rao
+>> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; Soren Brinkmann; grant.likely@linaro.org;
+>> wg@grandegger.com
+>> Subject: Re: [PATCH v4] can: Convert to runtime_pm
+>>
+>> On 01/11/2015 06:34 AM, Appana Durga Kedareswara Rao wrote:
+>> [...]
+>>>>>             return ret;
+>>>>>     }
+>>>>>
+>>>>>     priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
+>>>>>     priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
+>>>>>
+>>>>>     if (netif_running(ndev)) {
+>>>>>             priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>>>>
+>>>> What happens if the device was not in ACTIVE state prior to the
+>>>> runtime_suspend?
+>>>>
+>>>
+>>> I am not sure about the state of CAN at this point of time.
+>>> I just followed what other drivers are following for run time  suspen=
+d :).
+>>
+>> Please check the state of the hardware if you go with bus off into sus=
+pend
+>> and then resume.
+>>
+>=20
+>         if (netif_running(ndev)) {
+>                         if (isr & XCAN_IXR_BSOFF_MASK) {
+>                                 priv->can.state =3D CAN_STATE_BUS_OFF;
+>                            priv->write_reg(priv, XCAN_SRR_OFFSET,
+>                                         XCAN_SRR_RESET_MASK);
+>                 } else if ((status & XCAN_SR_ESTAT_MASK) =3D=3D
+>                                         XCAN_SR_ESTAT_MASK) {
+>                         priv->can.state =3D CAN_STATE_ERROR_PASSIVE;
+>                 } else if (status & XCAN_SR_ERRWRN_MASK) {
+>                         priv->can.state =3D CAN_STATE_ERROR_WARNING;
+>                 } else {
+>                         priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>                 }
+>         }
+>=20
+> Is the above code snippet ok for you?
 
-On Mon, Jan 12, 2015 at 02:37:21PM +0200, Roger Quadros wrote:
-> On 12/01/15 14:05, Mark Brown wrote:
+Yes, but what's the state of the hardware when it wakes up again?
 
-> > The usual thing to do here is an explicit write clearing the latch,
-> > either immediately after setting it or immediately before setting it.
-> > If the register is marked as volatile and the hardware doesn't read back
-> > the latched state that also does the trick.
+>=20
+>>>>>             netif_device_attach(ndev);
+>>>>>             netif_start_queue(ndev);
+>>>>>     }
+>>>>>
+>>>>>     return 0;
+>>>>> }
+>>>>
+>>>>
+>>>>>
+>>>>> @@ -1020,9 +1035,9 @@ static int __maybe_unused xcan_resume(struct
+>>>>> device *dev)
+>>>>>
+>>>>>     priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
+>>>>>     priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
+>>>>> -   priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>>>>>
+>>>>>     if (netif_running(ndev)) {
+>>>>> +           priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>>>>>             netif_device_attach(ndev);
+>>>>>             netif_start_queue(ndev);
+>>>>>     }
+>>>>> @@ -1030,7 +1045,10 @@ static int __maybe_unused
+>> xcan_resume(struct
+>>>> device *dev)
+>>>>>     return 0;
+>>>>>  }
+>>>>>
+>>>>> -static SIMPLE_DEV_PM_OPS(xcan_dev_pm_ops, xcan_suspend,
+>>>> xcan_resume);
+>>>>> +static const struct dev_pm_ops xcan_dev_pm_ops =3D {
+>>>>> +   SET_SYSTEM_SLEEP_PM_OPS(xcan_suspend, xcan_resume)
+>>>>> +   SET_PM_RUNTIME_PM_OPS(xcan_runtime_suspend,
+>>>> xcan_runtime_resume,
+>>>>> +NULL) };
+>>>>>
+>>>>>  /**
+>>>>>   * xcan_probe - Platform registration call @@ -1071,7 +1089,7 @@
+>>>>> static int xcan_probe(struct platform_device *pdev)
+>>>>>             return -ENOMEM;
+>>>>>
+>>>>>     priv =3D netdev_priv(ndev);
+>>>>> -   priv->dev =3D ndev;
+>>>>> +   priv->dev =3D &pdev->dev;
+>>>>>     priv->can.bittiming_const =3D &xcan_bittiming_const;
+>>>>>     priv->can.do_set_mode =3D xcan_do_set_mode;
+>>>>>     priv->can.do_get_berr_counter =3D xcan_get_berr_counter; @@ -
+>>>> 1137,15
+>>>>> +1155,22 @@ static int xcan_probe(struct platform_device *pdev)
+>>>>>
+>>>>>     netif_napi_add(ndev, &priv->napi, xcan_rx_poll, rx_max);
+>>>>>
+>>>>> +   pm_runtime_set_active(&pdev->dev);
+>>>>> +   pm_runtime_irq_safe(&pdev->dev);
+>>>>> +   pm_runtime_enable(&pdev->dev);
+>>>>> +   pm_runtime_get_sync(&pdev->dev);
+>>>> Check error values?
+>>>
+>>> Ok
+>>>>> +
+>>>>>     ret =3D register_candev(ndev);
+>>>>>     if (ret) {
+>>>>>             dev_err(&pdev->dev, "fail to register failed
+>>>>> (err=3D%d)\n",
+>>>> ret);
+>>>>> +           pm_runtime_put(priv->dev);
+>>>>
+>>>> Please move the pm_runtime_put into the common error exit path.
+>>>>
+>>>
+>>> Ok
+>>>
+>>>>>             goto err_unprepare_disable_busclk;
+>>>>>     }
+>>>>>
+>>>>>     devm_can_led_init(ndev);
+>>>>> -   clk_disable_unprepare(priv->bus_clk);
+>>>>> -   clk_disable_unprepare(priv->can_clk);
+>>>>> +
+>>>>> +   pm_runtime_put(&pdev->dev);
+>>>>> +
+>>>>>     netdev_dbg(ndev, "reg_base=3D0x%p irq=3D%d clock=3D%d, tx fifo
+>>>> depth:%d\n",
+>>>>>                     priv->reg_base, ndev->irq, priv->can.clock.freq=
+,
+>>>>>                     priv->tx_max);
+>>>>>
+>>>>
+>>>> I think you have to convert the _remove() function, too. Have a look=
 
-> How does this work if driver has access to only 1 bit that can only be
-> written with 1 to clear a condition? Writing a 0 is no-op.
+>>>> at the gpio-zynq.c driver:
+>>>>
+>>>>> static int zynq_gpio_remove(struct platform_device *pdev) {
+>>>>>     struct zynq_gpio *gpio =3D platform_get_drvdata(pdev);
+>>>>>
+>>>>>     pm_runtime_get_sync(&pdev->dev);
+>>>>
+>>>> However I don't understand why the get_sync() is here. Maybe S=C3=B6=
+ren
+>>>> can help?
+>>>
+>>> I converted the remove function to use the run-time PM and .
+>>> Below is the remove code snippet.
+>>>
+>>>        ret =3D pm_runtime_get_sync(&pdev->dev);
+>>>         if (ret < 0) {
+>>>                 netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
+>>>                                 __func__, ret);
+>>>                 return ret;
+>>>         }
+>>>
+>>>         if (set_reset_mode(ndev) < 0)
+>>>                 netdev_err(ndev, "mode resetting failed!\n");
+>>>
+>>>         unregister_candev(ndev);
+>>>         netif_napi_del(&priv->napi);
+>>>         free_candev(ndev);
+>>
+>>>         pm_runtime_disable(&pdev->dev);
+>>
+>> Can this make a call to xcan_runtime_*()? I'm asking since the ndev ha=
+s
+>> been unregistered and already free()ed. Better move this directly afte=
+r the
+>> set_reset_mode(). This way you are symmetric to the probe() function.
+>=20
+> If I move the  pm_runtime_disable after the set_reset_mode
+> I am getting the below error.
+> ERROR:
+> xilinx_can e0008000.can can0 (unregistering): xcan_get_berr_counter: pm=
+_runtime_get fail
+>=20
+> If I move the pm_runtime_disable after unregister_candev everything is =
+working fine.
 
-The expectation is that for hardware like that writes of zero will be
-ignored so you can just do one (generally this is the point of such
-things - you write to explicitly clear the bits you want to clear so by
-extension other bits are ignored.
+Fine - but who calls xcan_get_berr_counter here? Can you add a
+dump_stack() here?
 
-> It can read back 0 or 1 depending on the condition.
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-If the hardware readback has nothing to do with what's read back then
-by definition this isn't something you should be updating with
-update_bits() - it's doing a read/modify/write cycle so if the read part
-doesn't correspond to the write part things will go wrong.
 
-> I didn't understand the volatile trick :P.
-
-If the hardware always reads back zero then if the register isn't cached
-(which it sounds like this one shouldn't be) the comparison done by
-update_bits() will always show that the latch bit needs writing.
-
---54u2kuW9sGWg/X+X
+--FC6fjPPgDMvOWsaH2lNiGPIqjbBAq9iEk
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBAgAGBQJUs8GNAAoJECTWi3JdVIfQZhgH/2c2uodAbmXAkMWx6pm2WGMM
-uVwkqjtUHT/0KLd7xjnqJEP+05bYkvz08U5QO6dlpMLEFrNgWI83vDtw2EUzqjmv
-21rAPr3GHSM5NXxHXg5DPJl0tacNi5U7g/WP8OKz62hf5R5UpUq2+R9A5iNoXRuM
-tm49cUXKDG9+FywfhidpcTkSN15zsc7CgvAFjbYXUPqxGFXuGDRqTWhAbXg+TK9W
-cIEzeWqS2jXd8SpF5bIt0T4/Gkpx/6yVMSWk5Av7U9ju+EEP4oKzAaXZ/i4I1uTq
-Fxk6/5SYCjUjoyZ3Q9JIm7RBcdMd/L3Nv20TPi6a/HwLmF+EMF6vayYmu0BXrBE=
-=c3xe
+iQIcBAEBAgAGBQJUs8tUAAoJECte4hHFiupUCzYP/AstDCsT2tAj1id4EHRFEgj9
+ZBrJGBEVeRPkxI2iIe18OhKpaE+KCiT5jMyEqIA3+CWtAZ2YUOdEe2g8fYnEwGso
+L8NbLbIy511ZdGavTguA3e/NZG+KsgpAfE/d0tVs93uCLAlLVUxoPPGmxtw3/UlB
+bgcY9lbTpdVScQpRG8pI46Cwg7NLr8EObLiRK3gYxsedTSQSBzXDNh6RGcbpgJ96
+NF2NeC250vGnoWJoxYZXYwLaTOL2ywRP4a7FlbVRF3ObeudWuqSp3qkri+18ST3V
+zUN+MehUIZ+yb/j9SMryQmJ/4/9kL74zLqqOCiSTRp+M/+JjeYbCVeIqZUYu2uNt
+DdT5NJmq3n10omTm98uf9yGvZ/DLDv5oZqhSn/kC6PmVeq/zwKIaCPk6U/TgQVq0
+hwQsVbALekv4eOFkIkT3YK+7XCMRvjSaMzc2czLh9x59MUmeqHQuTqIS+Opewilo
+nW6uXvsdfvDaRwKI+PviYtxzprZKcbdx4y1FF3QwepTGlQiQM0/d7UQEnne4Cizh
+v/dycjKU7tyhjtPrHwqfevz1E+pNjzSPtWJn2Mgxep1uXsj/bGGnr5NjT9BcPwxa
+prE4M7jpJB9Z5f/LKaFXa0g15ZTIUCvqERXEdYmIIMW0UVzGllkRmzSvrQl6fZYd
+fkE4DYFfIYjfnUkonxi9
+=Ejns
 -----END PGP SIGNATURE-----
 
---54u2kuW9sGWg/X+X--
+--FC6fjPPgDMvOWsaH2lNiGPIqjbBAq9iEk--
