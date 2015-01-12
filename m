@@ -1,62 +1,134 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
- register
-Date: Mon, 12 Jan 2015 12:05:41 +0000
-Message-ID: <20150112120541.GD4160@sirena.org.uk>
-References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
- <54AFDCB0.5060908@ti.com>
- <54B39A8E.4090006@ti.com>
- <54B39BAD.4070604@ti.com>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v4 3/4] can: kvaser_usb: Add support for the Usbcan-II
+ family
+Date: Mon, 12 Jan 2015 07:07:41 -0500
+Message-ID: <20150112120741.GC9213@linux>
+References: <20141223154654.GB6460@vivalin-002>
+ <20150111200544.GA8855@linux>
+ <20150111201116.GB8855@linux>
+ <20150111201519.GC8855@linux>
+ <20150111203612.GA8999@linux>
+ <54B3B37C.7090002@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T6xhMxlHU34Bk0ad"
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <54B39BAD.4070604@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Roger Quadros <rogerq@ti.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org
+In-Reply-To: <54B3B37C.7090002@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
+Hi Marc,
 
---T6xhMxlHU34Bk0ad
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 12, 2015 at 12:43:56PM +0100, Marc Kleine-Budde wrote:
+> On 01/11/2015 09:36 PM, Ahmed S. Darwish wrote:
+[...]
+> > diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+> > index 0eb870b..da47d17 100644
+> > --- a/drivers/net/can/usb/kvaser_usb.c
+> > +++ b/drivers/net/can/usb/kvaser_usb.c
+> > @@ -6,10 +6,12 @@
+> >   * Parts of this driver are based on the following:
+> >   *  - Kvaser linux leaf driver (version 4.78)
+> >   *  - CAN driver for esd CAN-USB/2
+> > + *  - Kvaser linux usbcanII driver (version 5.3)
+> >   *
+> >   * Copyright (C) 2002-2006 KVASER AB, Sweden. All rights reserved.
+> >   * Copyright (C) 2010 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
+> >   * Copyright (C) 2012 Olivier Sobrie <olivier@sobrie.be>
+> > + * Copyright (C) 2015 Valeo Corporation
+> >   */
+> >  
+> >  #include <linux/completion.h>
+> > @@ -21,6 +23,15 @@
+> >  #include <linux/can/dev.h>
+> >  #include <linux/can/error.h>
+> >  
+> > +/* Kvaser USB CAN dongles are divided into two major families:
+> > + * - Leaf: Based on Renesas M32C, running firmware labeled as 'filo'
+> > + * - UsbcanII: Based on Renesas M16C, running firmware labeled as 'helios'
+> > + */
+> > +enum kvaser_usb_family {
+> > +	KVASER_LEAF,
+> > +	KVASER_USBCAN,
+> > +};
+> 
+> Nitpick: please move after the #defines
+> 
 
-On Mon, Jan 12, 2015 at 12:02:21PM +0200, Roger Quadros wrote:
-> +Mark with correct id.
+Will do.
 
-Please fix your mail client to word wrap within paragraphs, it amkes
-your mail more legible.
+[...]
+> > @@ -616,53 +810,24 @@ static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
+> >  }
+> >  
+> >  static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
+> > -				const struct kvaser_msg *msg)
+> > +				struct kvaser_error_summary *es)
+> 
+> Can you make "struct kvaser_error_summary *es" const?
+> 
 
-> > The problem here is we can't use regmap_update_bits() because we need t=
-o write a 1 to the DONE bit to clear it and _regmap_update_bits() doesn't a=
-llow us to do that because of commit
-> > d91e8db2c3bb regmap: Suppress noop writes in regmap_update_bits()
-> >=20
-> > Is reverting it going to cause other issues? If yes then can we have a =
-flag to specify forced update?
+Sure.
 
-The usual thing to do here is an explicit write clearing the latch,
-either immediately after setting it or immediately before setting it.
-If the register is marked as volatile and the hardware doesn't read back
-the latched state that also does the trick.
+[...]
+> > +/* For USBCAN, report error to userspace iff the channels's errors counter
+> > + * has increased, or we're the only channel seeing a bus error state.
+> > + */
+> > +static void kvaser_usbcan_conditionally_rx_error(const struct kvaser_usb *dev,
+> > +						 struct kvaser_error_summary *es)
+> 
+> const struct kvaser_error_summary *es?
+>
 
---T6xhMxlHU34Bk0ad
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Ditto.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+[...]
+> > +
+> > +		/* The USBCAN firmware does not support more than 2 channels.
+> 
+> Does USBCAN support always 2 channels or are there models with 1
+> channels, too. I'd rephrase ..."does support up to 2 channels."
+> 
 
-iQEcBAEBAgAGBQJUs7iUAAoJECTWi3JdVIfQ1rcH/Rv/lZZU21G/vMYLWHT8Ug9s
-sfrX37ho0UCgyhxNF9OoeZzD7b828cv9DWqT9domzLY8GZfsFthaoKdp/wrqC8Zs
-+4K6yjIhJ3tQYcfEFV9gUkpqb5+ojgpxgU+ea4FNCaO3WWKkvdpDsd+E2jY4hCX/
-cSMx8U8H+8AcTqr373qia5YNTs+vKM64cSP8COh0nDSTXht6Br3gfmPPT1RlLM27
-v6fmFlbWdnzpLaWbcgOeeDkxjIizPeecev+mS+dPgm3yCaWeZrJ69qwSeAKo2NYo
-oXsKtAeweXSQjgN77OprT+2AL80NOc5PnFtxqhYlb6lop83E7xGrsQdAEn95n60=
-=XizS
------END PGP SIGNATURE-----
+Yup, that will be more accurate.
 
---T6xhMxlHU34Bk0ad--
+[...]
+> > +
+> > +	switch (dev->family) {
+> > +	case KVASER_LEAF:
+> > +		rx_msg = msg->u.leaf.rx_can.msg;
+> > +		break;
+> > +	case KVASER_USBCAN:
+> > +		rx_msg = msg->u.usbcan.rx_can.msg;
+> > +		break;
+> > +	default:
+> > +		dev_err(dev->udev->dev.parent,
+> > +			"Invalid device family (%d)\n", dev->family);
+> >  		return;
+> 
+> should not happen.
+> 
+
+Yes, but otherwise I get GCC warnings of 'rx_msg' possibly
+being unused. I can add __maybe_unused to rx_msg of course,
+but such annotation may hide possible errors in the future.
+
+> > +	switch (dev->family) {
+> > +	case KVASER_LEAF:
+> > +		msg_tx_can_flags = &msg->u.tx_can.leaf.flags;
+> > +		break;
+> > +	case KVASER_USBCAN:
+> > +		msg_tx_can_flags = &msg->u.tx_can.usbcan.flags;
+> > +		break;
+> > +	default:
+> > +		dev_err(dev->udev->dev.parent,
+> > +			"Invalid device family (%d)\n", dev->family);
+> > +		goto releasebuf;
+> should not happen, please remove
+
+Like the 'rx_msg' case above.
+
+Thanks,
+Darwish
