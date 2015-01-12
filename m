@@ -1,63 +1,50 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 2/4] can: kvaser_usb: Update error counters before
- exiting on OOM
-Date: Mon, 12 Jan 2015 12:09:32 +0100
-Message-ID: <54B3AB6C.8020900@pengutronix.de>
-References: <20141223154654.GB6460@vivalin-002> <20150111200544.GA8855@linux> <20150111201116.GB8855@linux> <20150111201519.GC8855@linux>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v4 3/4] can: kvaser_usb: Add support for the Usbcan-II
+ family
+Date: Mon, 12 Jan 2015 06:20:33 -0500
+Message-ID: <20150112112033.GB9213@linux>
+References: <20141223154654.GB6460@vivalin-002>
+ <20150111200544.GA8855@linux>
+ <20150111201116.GB8855@linux>
+ <20150111201519.GC8855@linux>
+ <20150111203612.GA8999@linux>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="Nkn8OlFqRbTlCVRgHfekOXijXlK99XM4C"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150111201519.GC8855@linux>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-we0-f172.google.com ([74.125.82.172]:37642 "EHLO
+	mail-we0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751361AbbALLUi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Jan 2015 06:20:38 -0500
+Content-Disposition: inline
+In-Reply-To: <20150111203612.GA8999@linux>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Nkn8OlFqRbTlCVRgHfekOXijXlK99XM4C
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 01/11/2015 09:15 PM, Ahmed S. Darwish wrote:
+On Sun, Jan 11, 2015 at 03:36:12PM -0500, Ahmed S. Darwish wrote:
 > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
->=20
-> Let the error counters be more accurate in case of Out of
-> Memory conditions.
+> 
+> CAN to USB interfaces sold by the Swedish manufacturer Kvaser are
+> divided into two major families: 'Leaf', and 'UsbcanII'.  From an
+> Operating System perspective, the firmware of both families behave
+> in a not too drastically different fashion.
+> 
+> This patch adds support for the UsbcanII family of devices to the
+> current Kvaser Leaf-only driver.
+> 
+> CAN frames sending, receiving, and error handling paths has been
+> tested using the dual-channel "Kvaser USBcan II HS/LS" dongle. It
+> should also work nicely with other products in the same category.
+> 
 
-Please have a look at kvaser_usb_rx_error(), the whole state handling is
-omitted in case of OOM.
+Please delay applying this to as I've just discovered that
+removal of two of the device family checks introduced two
+un-necessary GCC warnings.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Will send and updated version soon.
 
-
---Nkn8OlFqRbTlCVRgHfekOXijXlK99XM4C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUs6tsAAoJECte4hHFiupUPkMP/24Tulw6tXRPXAY3dfT1XDZ2
-H9SwhCYdho08W7t8H31/VMoKEBJvYZ61cQyGkRSziISII1Ln9v3wIksnb53gMX7F
-XZXlxrWqKx/WHP9Am1lQ0ArSXC5z2bqyQDl7DtVKMAiYoAqajKnVmJgErNPeo/Zc
-GlyKiAIrD+qLpOQZmPtcCIPuMrFldx1IXxzGnsas2Nr82CCXIPQqWJlwaayXh9SM
-Sl3C6NdboucJVAe+g14ObTg24n5tKXErRaiWSIrWfZqNIhMujl4vU9qOETdU5mol
-gGiQF1w8DBrUac3X+Oxd3+wwTii5MTP0XErS3MnAG6nmCI3Y/UJviabuhUAVgMP7
-I9RVZcPQyyeRi/k6n4s91oa9VJiDiGNVUhXrcmog6sMY3AUFy9bTOi5A0qHQ7Olh
-7j5D+FXwXEKUleinkJsOe0lhQGtCqeizqFmhXQk2rYYrw4dB0JeM8gB3PYh7J4D6
-2/pOus/8w1+alOLujiakdI3TwgmCyDeg64YHVjuRUwTfckNVg7Gb4KB3AYTDrXRx
-MEy09WCZV6tkQBqGTamd+cji46zIPoeBDpRwmO2bMO39wFP59hAh8q24MvgxApPa
-G7JQNGHVkmt2Z+VJJHM12sa8WxSIYrzJEDeKkNPIA6O5WMp4rv0Kawfmt4h60nU6
-aX1ELCrihyPqu8Syj5Xy
-=JvbW
------END PGP SIGNATURE-----
-
---Nkn8OlFqRbTlCVRgHfekOXijXlK99XM4C--
+Thanks,
+Darwish
