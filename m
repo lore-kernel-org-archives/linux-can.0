@@ -1,73 +1,46 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH v4 3/4] can: kvaser_usb: Add support for the Usbcan-II
- family
-Date: Mon, 12 Jan 2015 07:36:36 -0500
-Message-ID: <20150112123636.GE9213@linux>
-References: <20141223154654.GB6460@vivalin-002>
- <20150111200544.GA8855@linux>
- <20150111201116.GB8855@linux>
- <20150111201519.GC8855@linux>
- <20150111203612.GA8999@linux>
- <54B3B37C.7090002@pengutronix.de>
- <20150112120741.GC9213@linux>
+From: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
+ register
+Date: Mon, 12 Jan 2015 14:37:21 +0200
+Message-ID: <54B3C001.501@ti.com>
+References: <1420641162-8634-1-git-send-email-rogerq@ti.com> <54AFDCB0.5060908@ti.com> <54B39A8E.4090006@ti.com> <54B39BAD.4070604@ti.com> <20150112120541.GD4160@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150112120741.GC9213@linux>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20150112120541.GD4160@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Mon, Jan 12, 2015 at 07:07:41AM -0500, Ahmed S. Darwish wrote:
-> Hi Marc,
+On 12/01/15 14:05, Mark Brown wrote:
+> On Mon, Jan 12, 2015 at 12:02:21PM +0200, Roger Quadros wrote:
+>> +Mark with correct id.
 > 
-> On Mon, Jan 12, 2015 at 12:43:56PM +0100, Marc Kleine-Budde wrote:
-> > On 01/11/2015 09:36 PM, Ahmed S. Darwish wrote:
-> > > +
-> > > +	switch (dev->family) {
-> > > +	case KVASER_LEAF:
-> > > +		rx_msg = msg->u.leaf.rx_can.msg;
-> > > +		break;
-> > > +	case KVASER_USBCAN:
-> > > +		rx_msg = msg->u.usbcan.rx_can.msg;
-> > > +		break;
-> > > +	default:
-> > > +		dev_err(dev->udev->dev.parent,
-> > > +			"Invalid device family (%d)\n", dev->family);
-> > >  		return;
-> > 
-> > should not happen.
-> > 
+> Please fix your mail client to word wrap within paragraphs, it amkes
+> your mail more legible.
+
+Fixed now. Thanks for pointing out.
+
 > 
-> Yes, but otherwise I get GCC warnings of 'rx_msg' possibly
-> being unused. I can add __maybe_unused to rx_msg of course,
-> but such annotation may hide possible errors in the future.
+>>> The problem here is we can't use regmap_update_bits() because we need to write a 1 to the DONE bit to clear it and _regmap_update_bits() doesn't allow us to do that because of commit
+>>> d91e8db2c3bb regmap: Suppress noop writes in regmap_update_bits()
+>>>
+>>> Is reverting it going to cause other issues? If yes then can we have a flag to specify forced update?
+> 
+> The usual thing to do here is an explicit write clearing the latch,
+> either immediately after setting it or immediately before setting it.
+> If the register is marked as volatile and the hardware doesn't read back
+> the latched state that also does the trick.
 > 
 
-Ah, what I meant is using uninitialized_var() to suppress the
-GCC warning. But, really, using that macro has a bad history
-of hiding errors in the future.
+How does this work if driver has access to only 1 bit that can only be
+written with 1 to clear a condition? Writing a 0 is no-op.
+It can read back 0 or 1 depending on the condition.
 
-Kindly check http://lwn.net/Articles/529954/ for context.
+I didn't understand the volatile trick :P.
 
-Another solution might be initializing rx_msg to NULL.
+cheers,
+-roger
 
-> > > +	switch (dev->family) {
-> > > +	case KVASER_LEAF:
-> > > +		msg_tx_can_flags = &msg->u.tx_can.leaf.flags;
-> > > +		break;
-> > > +	case KVASER_USBCAN:
-> > > +		msg_tx_can_flags = &msg->u.tx_can.usbcan.flags;
-> > > +		break;
-> > > +	default:
-> > > +		dev_err(dev->udev->dev.parent,
-> > > +			"Invalid device family (%d)\n", dev->family);
-> > > +		goto releasebuf;
-> > should not happen, please remove
-> 
-> Like the 'rx_msg' case above.
-> 
-> Thanks,
-> Darwish
