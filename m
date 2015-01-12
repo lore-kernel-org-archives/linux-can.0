@@ -1,63 +1,88 @@
-From: Viktor Babrian <v@renyi.hu>
-Subject: c_can: (newbie) high system load when frame not acked?
-Date: Mon, 12 Jan 2015 18:18:26 +0100
-Message-ID: <alpine.DEB.2.02.1501121751530.28201@login>
-References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net>
+From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+Subject: Re: [PATCH v5] can: Convert to runtime_pm
+Date: Mon, 12 Jan 2015 10:45:04 -0800
+Message-ID: <3a3437c5c8ff48d9a45fee7e81fa8dca@BY2FFO11FD058.protection.gbl>
+References: <baf987c11c0242c2bf87b81f9396b09d@BN1BFFO11FD018.protection.gbl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:55738 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750882AbbALRZG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 12 Jan 2015 12:25:06 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1YAijf-00031K-Jo
-	for linux-can@vger.kernel.org; Mon, 12 Jan 2015 18:25:03 +0100
-Received: from login.renyi.hu ([193.224.79.10])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 12 Jan 2015 18:25:03 +0100
-Received: from v by login.renyi.hu with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 12 Jan 2015 18:25:03 +0100
-In-Reply-To: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <baf987c11c0242c2bf87b81f9396b09d@BN1BFFO11FD018.protection.gbl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+List-Id: linux-can.vger.kernel.org
 
-Hi,
+On Mon, 2015-01-12 at 08:34PM +0530, Kedareswara rao Appana wrote:
+> Instead of enabling/disabling clocks at several locations in the driv=
+er,
+> Use the runtime_pm framework. This consolidates the actions for runti=
+me PM
+> In the appropriate callbacks and makes the driver more readable and m=
+antainable.
+>=20
+> Signed-off-by: Soren Brinkmann <soren.brinkmann@xilinx.com>
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+> Changes for v5:
+>  - Updated with the review comments.
+>    Updated the remove fuction to use runtime_pm.
+> Chnages for v4:
+>  - Updated with the review comments.
+> Changes for v3:
+>   - Converted the driver to use runtime_pm.
+> Changes for v2:
+>   - Removed the struct platform_device* from suspend/resume
+>     as suggest by Lothar.
+>=20
+>  drivers/net/can/xilinx_can.c |  157 ++++++++++++++++++++++++++++----=
+---------
+>  1 files changed, 107 insertions(+), 50 deletions(-)
+[..]
+> +static int __maybe_unused xcan_runtime_resume(struct device *dev)
+>  {
+> -	struct platform_device *pdev =3D dev_get_drvdata(dev);
+> -	struct net_device *ndev =3D platform_get_drvdata(pdev);
+> +	struct net_device *ndev =3D dev_get_drvdata(dev);
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>  	int ret;
+> +	u32 isr, status;
+> =20
+>  	ret =3D clk_enable(priv->bus_clk);
+>  	if (ret) {
+> @@ -1014,15 +1030,28 @@ static int __maybe_unused xcan_resume(struct =
+device *dev)
+>  	ret =3D clk_enable(priv->can_clk);
+>  	if (ret) {
+>  		dev_err(dev, "Cannot enable clock.\n");
+> -		clk_disable_unprepare(priv->bus_clk);
+> +		clk_disable(priv->bus_clk);
+[...]
+> @@ -1173,12 +1219,23 @@ static int xcan_remove(struct platform_device=
+ *pdev)
+>  {
+>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+> +	int ret;
+> +
+> +	ret =3D pm_runtime_get_sync(&pdev->dev);
+> +	if (ret < 0) {
+> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
+> +				__func__, ret);
+> +		return ret;
+> +	}
+> =20
+>  	if (set_reset_mode(ndev) < 0)
+>  		netdev_err(ndev, "mode resetting failed!\n");
+> =20
+>  	unregister_candev(ndev);
+> +	pm_runtime_disable(&pdev->dev);
+>  	netif_napi_del(&priv->napi);
+> +	clk_disable_unprepare(priv->bus_clk);
+> +	clk_disable_unprepare(priv->can_clk);
 
-I am new to linux with can though I have had some experience with both 
-separately.
+Shouldn't pretty much all these occurrences of clk_disable/enable
+disappear? This should all be handled by the runtime_pm framework now.
 
-I have here an am3359 board (having DCAN CAN controller). CAN transciever 
-is terminated by a 60R resistor, no other party connected (no cables etc). 
-I set up a can transmission using cansend:
-# ip link set can1 type can bitrate 500000 triple-sampling on
-# ip link set can1 up
-# cansend can1 5A1#11.2233.44556677.88
-
-Oscilloscope probe is on canh.
-
-Everything works just fine, except:
-- Frame is retransmitted for ever (seen on bus)
-- user experience drops (serial terminal hardly echoes)
-- load is up
-- top shows sirq level of 75-80%
-
-after bringing down can1 with
-# ip link set can1 down,
-I see that load is fine again (=0), however frame retransmission is going 
-on still (observed by oscilloscope).
-Transmission stops only after enabling can1 again:
-# ip link set can1 up
-
-Is this expected? Has anybody seen similar behavior?
-
-I am using linux kernel 3.14.26. I have also tried c_can driver from 
-3.19rc3 ("backported"=copied), same results.
-
-Thanks in advance,
-Viktor babrian
-
+	S=C3=B6ren
