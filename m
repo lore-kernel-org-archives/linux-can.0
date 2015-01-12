@@ -1,75 +1,71 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH] can: c_can: use regmap_update_bits() to modify RAMINIT
- register
-Date: Mon, 12 Jan 2015 12:02:21 +0200
-Message-ID: <54B39BAD.4070604@ti.com>
-References: <1420641162-8634-1-git-send-email-rogerq@ti.com> <54AFDCB0.5060908@ti.com> <54B39A8E.4090006@ti.com>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v4 4/4] can: kvaser_usb: Retry first bulk transfer on
+ -ETIMEDOUT
+Date: Mon, 12 Jan 2015 05:14:07 -0500
+Message-ID: <20150112101407.GA9213@linux>
+References: <20141223154654.GB6460@vivalin-002>
+ <20150111200544.GA8855@linux>
+ <20150111201116.GB8855@linux>
+ <20150111201519.GC8855@linux>
+ <20150111203612.GA8999@linux>
+ <20150111204508.GB8999@linux>
+ <54B2E23E.1090108@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from arroyo.ext.ti.com ([192.94.94.40]:34283 "EHLO arroyo.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752007AbbALKCg (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 12 Jan 2015 05:02:36 -0500
-In-Reply-To: <54B39A8E.4090006@ti.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org, broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54B2E23E.1090108@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux-USB <linux-usb@vger.kernel.org>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-+Mark with correct id.
-
-On 12/01/15 11:57, Roger Quadros wrote:
-> +Mark,
+On Sun, Jan 11, 2015 at 09:51:10PM +0100, Marc Kleine-Budde wrote:
+> On 01/11/2015 09:45 PM, Ahmed S. Darwish wrote:
+> > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> > 
+> > (This is a draft patch, I'm not sure if this fixes the USB
+> > bug or only its psymptom. Feedback from the linux-usb folks
+> > is really appreciated.)
+> > 
+> > When plugging the Kvaser USB/CAN dongle the first time, everything
+> > works as expected and all of the transfers from and to the USB
+> > device succeeds.
+> > 
+> > Meanwhile, after unplugging the device and plugging it again, the
+> > first bulk transfer _always_ returns an -ETIMEDOUT. The following
+> > behaviour was observied:
+> > 
+> > - Setting higher timeout values for the first bulk transfer never
+> >   solved the issue.
+> > 
+> > - Unloading, then loading, our kvaser_usb module in question
+> >   __always__ solved the issue.
+> > 
+> > - Checking first bulk transfer status, and retry the transfer
+> >   again in case of an -ETIMEDOUT also __always__ solved the issue.
+> >   This is what the patch below does.
+> > 
+> > - In the testing done so far, this issue appears only on laptops
+> >   but never on PCs (possibly power related?)
+> > 
+> > Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 > 
-> On 09/01/15 15:50, Tomi Valkeinen wrote:
->> On 07/01/15 16:32, Roger Quadros wrote:
->>> use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
->>> is not safe as the RAMINIT register can be shared between different drivers
->>> at least for TI SoCs.
->>>
->>> To make the modification atomic we switch to using regmap_update_bits().
->>>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> ---
->>>  drivers/net/can/c_can/c_can_platform.c | 9 +++++++--
->>>  1 file changed, 7 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
->>> index f363972..364209a 100644
->>> --- a/drivers/net/can/c_can/c_can_platform.c
->>> +++ b/drivers/net/can/c_can/c_can_platform.c
->>> @@ -110,6 +110,10 @@ static void c_can_hw_raminit_syscon(const struct c_can_priv *priv, bool enable)
->>>  	 */
->>>  	ctrl &= ~(1 << raminit->bits.start);
->>>  	ctrl |= 1 << raminit->bits.done;
->>> +
->>> +	/* we can't use regmap_update_bits here as it will bypass the write
->>> +	 * if START is already 0 and DONE is already 1.
->>> +	 */
->>>  	regmap_write(raminit->syscon, raminit->reg, ctrl);
->>
->> Can you first use update_bits to change either bit, so that this update
->> will be done?
->>
-> 
-> Initial condition is START=0, DONE=1.
-> 
-> Now setting and clearing START bit initiates the start process and will cause the
-> DONE bit to be set after a while.
-> So unfortunately this doesn't work for us.
-> 
-> Mark,
-> 
-> The problem here is we can't use regmap_update_bits() because we need to write a 1 to the DONE bit to clear it and _regmap_update_bits() doesn't allow us to do that because of commit
-> d91e8db2c3bb regmap: Suppress noop writes in regmap_update_bits()
-> 
-> Is reverting it going to cause other issues? If yes then can we have a flag to specify forced update?
-> 
-> cheers,
-> -roger
-> [1] - http://lxr.free-electrons.com/source/drivers/base/regmap/regmap.c#L2332
-> 
+> Does this patch apply apply between 3 and 4? If not, please re-arrange
+> the series. As this is a bug fix, patches 1, 2 and 4 will go via
+> net/master, 3 will go via net-next/master.
 > 
 
+Since no one complained earlier, I guess this issue only affects
+USBCAN devices. That's why I've based it above patch #3: adding
+USBCAN hardware support.
+
+Nonetheless, it won't do any harm for the current Leaf-only
+driver. So _if_ this is the correct fix, I will update the commit
+log, refactor the check into a 'do { } while()' loop, and then
+base it above the Leaf-only net/master fixes on patch #1, and #2.
+
+Any feedback on the USB side of things?
+
+Thanks,
+Darwish
