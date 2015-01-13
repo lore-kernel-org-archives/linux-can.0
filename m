@@ -1,89 +1,66 @@
-From: Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2] can: c_can: use regmap_update_bits() to modify RAMINIT
- register
-Date: Tue, 13 Jan 2015 16:23:11 +0200
-Message-ID: <54B52A4F.8030208@ti.com>
-References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
+From: Viktor Babrian <babrian.viktor@renyi.mta.hu>
+Subject: Re: c_can: (newbie) high system load when frame not acked?
+Date: Tue, 13 Jan 2015 16:10:29 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1501131523290.12789@login>
+References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1420641162-8634-1-git-send-email-rogerq@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: tomi.valkeinen@ti.com, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org, Mark Brown <broonie@kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mx1.renyi.hu ([193.224.79.18]:44682 "EHLO smtp.renyi.hu"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752103AbbAMPKe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 13 Jan 2015 10:10:34 -0500
+In-Reply-To: <54B472B2.4010300@optusnet.com.au>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Tom Evans <tom_usenet@optusnet.com.au>
+Cc: linux-can@vger.kernel.org
 
-use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
-is not safe as the RAMINIT register can be shared between different drivers
-at least for TI SoCs.
+> Maybe you can turn the error interrupts off and still have it function. Maybe 
+> it won't (may be required for bus off recovery).
 
-To make the modification atomic we switch to using regmap_update_bits().
+Thanks for the detailed answer. I read the pages and took a look into the 
+code.
 
-regmap_update_bits() skips writing to the register if it's read content is the
-same as what is going to be written. This causes an issue for us when we
-need to clear the DONE bit with the initial condition START:0, DONE:1 as
-DONE bit must be written with 1 to clear it.
+Regarding state-change behavior, DCAN controller is similar to the one in 
+i.MX6. (It has explicit interrupt source for Act->Warn and Pass->BOFF 
+transitions).
+Although as I understand CAN, you have to have a successful RX or TX event 
+to have the counters decrease. That  means that you will have an immediate 
+report (i.e. interrupt) on Warn->Active, Pass->Warn and BOFF->Active. As 
+far as I see, this latter is explicitly handled by upper layers so driver 
+will have to know it anyway.
+This means that if I turn off bus error monitoring, the only event I will 
+not get immediate report of is Warn->Pass. (Pass->Warn can be reported on 
+successful message events if the driver is implemented accordingly. 
+Currently it isn't). However it could be reported later upon the first 
+successful message event. I beleive missing an accurate report of 
+active->passive state change is far better than having a non-responding 
+system in the field in scenarios that do happen.
 
-So we defer the clearing of DONE bit to later when we set the START bit.
-There we are sure that START bit is changed from 0 to 1 so the write of
-1 to already set DONE bit will happen.
+Anyway I modified the code so that state change interrupt is not 
+enabled when user sets berr-reporting off (as you kindly suggested). It 
+solves the load issue. Bus-off recovery behavior did not change (I made a 
+few tests only). Btw the driver disables all interrupts in bus off so I 
+guess it does not matter what exact flags were set.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/net/can/c_can/c_can_platform.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+> The consequence (depending on the CPU and Linux build options) is 10%-100% 
+> CPU utilisation when there's nothing to ACK the packet, and a higher figure 
+> again when the bus isn't terminated.
+>
+> CAN is meant to be used in cars or factories. Running with only one node or a 
+> disconnected bus is not a "normal" condition, so the hardware and drivers 
+> don't handle those conditions well.
+Well error states are defined by the spec so they ARE normal. What is not 
+normal is to bring down system performace when they happen.
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index f363972..e36d105 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -103,27 +103,34 @@ static void c_can_hw_raminit_syscon(const struct c_can_priv *priv, bool enable)
- 	mask = 1 << raminit->bits.start | 1 << raminit->bits.done;
- 	regmap_read(raminit->syscon, raminit->reg, &ctrl);
- 
--	/* We clear the done and start bit first. The start bit is
-+	/* We clear the start bit first. The start bit is
- 	 * looking at the 0 -> transition, but is not self clearing;
--	 * And we clear the init done bit as well.
- 	 * NOTE: DONE must be written with 1 to clear it.
-+	 * We can't clear the DONE bit here using regmap_update_bits()
-+	 * as it will bypass the write if initial condition is START:0 DONE:1
-+	 * e.g. on DRA7 which needs START pulse.
- 	 */
--	ctrl &= ~(1 << raminit->bits.start);
--	ctrl |= 1 << raminit->bits.done;
--	regmap_write(raminit->syscon, raminit->reg, ctrl);
-+	ctrl &= ~mask;	/* START = 0, DONE = 0 */
-+	regmap_update_bits(raminit->syscon, raminit->reg, mask, ctrl);
- 
--	ctrl &= ~(1 << raminit->bits.done);
--	c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
-+	/* check if START bit is 0. Ignore DONE bit for now
-+	 * as it can be either 0 or 1.
-+	 */
-+	c_can_hw_raminit_wait_syscon(priv, 1 << raminit->bits.start, ctrl);
- 
- 	if (enable) {
--		/* Set start bit and wait for the done bit. */
-+		/* Clear DONE bit & set START bit. */
- 		ctrl |= 1 << raminit->bits.start;
--		regmap_write(raminit->syscon, raminit->reg, ctrl);
--
-+		/* DONE must be written with 1 to clear it */
-+		ctrl |= 1 << raminit->bits.done;
-+		regmap_update_bits(raminit->syscon, raminit->reg, mask, ctrl);
-+		/* prevent further clearing of DONE bit */
-+		ctrl &= ~(1 << raminit->bits.done);
- 		/* clear START bit if start pulse is needed */
- 		if (raminit->needs_pulse) {
- 			ctrl &= ~(1 << raminit->bits.start);
--			regmap_write(raminit->syscon, raminit->reg, ctrl);
-+			regmap_update_bits(raminit->syscon, raminit->reg,
-+					   mask, ctrl);
- 		}
- 
- 		ctrl |= 1 << raminit->bits.done;
--- 
-2.1.0
+
+I alose added a line to put the controller in init mode in 
+c_can_stop() so that bringing the bus down will actually cause the 
+controller stop transmitting. I hope it's the way to do this, it would be 
+nice if some expert could verify this.
+
+Thanks,
+Best Regards,
+Viktor
 
