@@ -1,90 +1,140 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: c_can: (newbie) high system load when frame not acked?
-Date: Tue, 13 Jan 2015 12:19:46 +1100
-Message-ID: <54B472B2.4010300@optusnet.com.au>
-References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login>
-Reply-To: tom_usenet@optusnet.com.au
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v5] can: Convert to runtime_pm
+Date: Tue, 13 Jan 2015 12:08:37 +0100
+Message-ID: <54B4FCB5.6040904@pengutronix.de>
+References: <baf987c11c0242c2bf87b81f9396b09d@BN1BFFO11FD018.protection.gbl> <3a3437c5c8ff48d9a45fee7e81fa8dca@BY2FFO11FD058.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:42048 "EHLO
-	mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751850AbbAMBjR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Jan 2015 20:39:17 -0500
-In-Reply-To: <alpine.DEB.2.02.1501121948370.28201@login>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56358 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751592AbbAMLIz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Jan 2015 06:08:55 -0500
+In-Reply-To: <3a3437c5c8ff48d9a45fee7e81fa8dca@BY2FFO11FD058.protection.gbl>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Viktor Babrian <babrian.viktor@renyi.mta.hu>, =?UTF-8?B?SGVpbnotSsO8cg==?= =?UTF-8?B?Z2VuIE9lcnRlbA==?= <hj.oertel@t-online.de>
-Cc: linux-can@vger.kernel.org
+To: =?UTF-8?B?U8O2cmVuIEJyaW5rbWFubg==?= <soren.brinkmann@xilinx.com>, Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: wg@grandegger.com, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-On 13/01/15 05:50, Viktor Babrian wrote:
-> Hi there,
->
-> thanks for the quick answer
->> please check
->> http://www.can-wiki.info/doku.php?id=can_faq:problem_solving_questions
-> checks out, thanks
->
->> Yes, retransmission is what the CAN controller always does if no other node
->> is connected and gives a ACK to a correct received message
->
-> my main concern is the high system load it causes
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-You're using a "am3359 board (having DCAN CAN controller)". I'm not familiar 
-with that chip.
+On 01/12/2015 07:45 PM, S=C3=B6ren Brinkmann wrote:
+> On Mon, 2015-01-12 at 08:34PM +0530, Kedareswara rao Appana wrote:
+>> Instead of enabling/disabling clocks at several locations in the drive=
+r,
+>> Use the runtime_pm framework. This consolidates the actions for runtim=
+e PM
+>> In the appropriate callbacks and makes the driver more readable and ma=
+ntainable.
+>>
+>> Signed-off-by: Soren Brinkmann <soren.brinkmann@xilinx.com>
+>> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+>> ---
+>> Changes for v5:
+>>  - Updated with the review comments.
+>>    Updated the remove fuction to use runtime_pm.
+>> Chnages for v4:
+>>  - Updated with the review comments.
+>> Changes for v3:
+>>   - Converted the driver to use runtime_pm.
+>> Changes for v2:
+>>   - Removed the struct platform_device* from suspend/resume
+>>     as suggest by Lothar.
+>>
+>>  drivers/net/can/xilinx_can.c |  157 ++++++++++++++++++++++++++++-----=
+--------
+>>  1 files changed, 107 insertions(+), 50 deletions(-)
+> [..]
+>> +static int __maybe_unused xcan_runtime_resume(struct device *dev)
+>>  {
+>> -	struct platform_device *pdev =3D dev_get_drvdata(dev);
+>> -	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>> +	struct net_device *ndev =3D dev_get_drvdata(dev);
+>>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>>  	int ret;
+>> +	u32 isr, status;
+>> =20
+>>  	ret =3D clk_enable(priv->bus_clk);
+>>  	if (ret) {
+>> @@ -1014,15 +1030,28 @@ static int __maybe_unused xcan_resume(struct d=
+evice *dev)
+>>  	ret =3D clk_enable(priv->can_clk);
+>>  	if (ret) {
+>>  		dev_err(dev, "Cannot enable clock.\n");
+>> -		clk_disable_unprepare(priv->bus_clk);
+>> +		clk_disable(priv->bus_clk);
+> [...]
+>> @@ -1173,12 +1219,23 @@ static int xcan_remove(struct platform_device =
+*pdev)
+>>  {
+>>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+>> +	int ret;
+>> +
+>> +	ret =3D pm_runtime_get_sync(&pdev->dev);
+>> +	if (ret < 0) {
+>> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
+>> +				__func__, ret);
+>> +		return ret;
+>> +	}
+>> =20
+>>  	if (set_reset_mode(ndev) < 0)
+>>  		netdev_err(ndev, "mode resetting failed!\n");
+>> =20
+>>  	unregister_candev(ndev);
+>> +	pm_runtime_disable(&pdev->dev);
+>>  	netif_napi_del(&priv->napi);
+>> +	clk_disable_unprepare(priv->bus_clk);
+>> +	clk_disable_unprepare(priv->can_clk);
+>=20
+> Shouldn't pretty much all these occurrences of clk_disable/enable
+> disappear? This should all be handled by the runtime_pm framework now.
 
- > # ip link set can1 type can bitrate 500000 triple-sampling on
+We have:
+- clk_prepare_enable() in probe
+- clk_disable_unprepare() in remove
+- clk_enable() in runtime_resume
+- clk_disable() in runtime_suspend
 
-Does it have a "berr-reporting" option, can you turn it off and does it make 
-it any better?
+Which is, as far as I understand the right way to do it. Maybe
+Kedareswara can post the clock debug output again with this patch
+iteration. Have I missed something?
 
-Searching ... you're probably using:
+regards,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-http://lxr.free-electrons.com/source/drivers/net/can/c_can/c_can.c
 
-It has "CAN_CTRLMODE_BERR_REPORTING", but turning that off doesn't prevent the 
-interrupts. It just prevents it from calling "netif_receive_skb(skb)" with the 
-error information from the poll. It configures the interrupts this way:
+--tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-     /* enable status change, error and module interrupts */
-     #define CONTROL_IRQMSK  (CONTROL_EIE | CONTROL_IE | CONTROL_SIE)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Maybe you can turn the error interrupts off and still have it function. Maybe 
-it won't (may be required for bus off recovery).
+iQIcBAEBAgAGBQJUtPy1AAoJECte4hHFiupUOZwP+wcPUxYKUa1142511vue+Mhp
+zWCTdzlvCzAfEAjHD0lMJtD2WQ3nTivLsJtGffa6rzjHqV2qUJ/n/HNTKEGziZjQ
+01LaV+yH0m0IoIH+79naXb57YUhATjMt0ho9PuLo4riTrKUsjwTAbbT753QCvRxA
+SF9lx21zDeHrA84y3V2qF1fo7JIBo69O5WqUAIZq7re7SolIlqRRa+2IB2SCM/jb
+a/f+WGyENHFwqefgZOe17lVwxAyyuxYrW8fZyRv3AvuJqod0AGxe4yL9siFiS4Vw
+4CplQugbEbIEKjm/kU5zaKn92+vuz0bYZ9j7+hSqpmFMh+aV67N5RnjR7cXP19Ei
+YgMa31imPj8yO+06VVO7iVvdo+bbDLePcIcjby7z0X1kzZAY4oSSIOObTtqCn6Wr
+5ycc4SPerI76iJvqsFTxLoZ7XSTdtzVhWLsfNPBO8CECql+PtH/k8iIcqpJq9d+T
+n0XaOPGq9DpALKRK0k32TM6eFL7LI+tU/97/iULROOUnCD306WpQwbeTxCqDjwxh
+0e9fcvAYzpCRRR38uN3o7GJ9Rde9+dYpacDvT2hiEnNt6sWeyH4UImZy8SHJS70V
+up9r75iIs/M/Q1Ap7hKjTGOkD52lats1QmLO//VipM9PxTkbXlI3p0Oq0hkwQe2R
+4JT/xCOdxx5TTMpw2Owd
+=T8PD
+-----END PGP SIGNATURE-----
 
-I'm familiar with the problems with Freescale FlexCAN controllers. They can't 
-generate interrupts on CAN state-changes, so the driver writers enable *ALL* 
-error interrupts so as to track the state changes. Not many people use or need 
-this facility.
-
-The consequence (depending on the CPU and Linux build options) is 10%-100% CPU 
-utilisation when there's nothing to ACK the packet, and a higher figure again 
-when the bus isn't terminated.
-
-CAN is meant to be used in cars or factories. Running with only one node or a 
-disconnected bus is not a "normal" condition, so the hardware and drivers 
-don't handle those conditions well.
-
-I'd recommend running a shell script that periodically monitors the CAN 
-interrupt rate (or opens an error socket and monitors the error rate) and if 
-it detects this situation to just disables the CAN bus for a while or until 
-the user fixes the problem.
-
-If you read through the following it might give you enough understanding to 
-change your driver, or find another solution.
-
-https://community.freescale.com/thread/333839
-
-Read my final post in that thread.
-
-Search the linux-can list for the series of posts titled "[PATCH] Consolidate 
-and unify state change handling" starting 2014-10-20:
-
-http://article.gmane.org/gmane.linux.can/7165
-
-There have also been proposed patches to recognise when there's a "flood" of 
-error interrupts and to limit the rate, but possibly not for your driver.
-
-Tom
-
+--tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR--
