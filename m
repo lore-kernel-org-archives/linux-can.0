@@ -1,140 +1,142 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5] can: Convert to runtime_pm
-Date: Tue, 13 Jan 2015 12:08:37 +0100
-Message-ID: <54B4FCB5.6040904@pengutronix.de>
-References: <baf987c11c0242c2bf87b81f9396b09d@BN1BFFO11FD018.protection.gbl> <3a3437c5c8ff48d9a45fee7e81fa8dca@BY2FFO11FD058.protection.gbl>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Tue, 13 Jan 2015 14:18:36 +0100
+Message-ID: <54B51B2C.3080404@peak-system.com>
+References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com>
+ <54AD66C5.10908@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56358 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751592AbbAMLIz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Jan 2015 06:08:55 -0500
-In-Reply-To: <3a3437c5c8ff48d9a45fee7e81fa8dca@BY2FFO11FD058.protection.gbl>
+Received: from mail.peak-system.com ([213.157.13.214]:45665 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751877AbbAMN1l (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Jan 2015 08:27:41 -0500
+In-Reply-To: <54AD66C5.10908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?U8O2cmVuIEJyaW5rbWFubg==?= <soren.brinkmann@xilinx.com>, Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Cc: wg@grandegger.com, michal.simek@xilinx.com, grant.likely@linaro.org, robh+dt@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-On 01/12/2015 07:45 PM, S=C3=B6ren Brinkmann wrote:
-> On Mon, 2015-01-12 at 08:34PM +0530, Kedareswara rao Appana wrote:
->> Instead of enabling/disabling clocks at several locations in the drive=
-r,
->> Use the runtime_pm framework. This consolidates the actions for runtim=
-e PM
->> In the appropriate callbacks and makes the driver more readable and ma=
-ntainable.
->>
->> Signed-off-by: Soren Brinkmann <soren.brinkmann@xilinx.com>
->> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
->> ---
->> Changes for v5:
->>  - Updated with the review comments.
->>    Updated the remove fuction to use runtime_pm.
->> Chnages for v4:
->>  - Updated with the review comments.
->> Changes for v3:
->>   - Converted the driver to use runtime_pm.
->> Changes for v2:
->>   - Removed the struct platform_device* from suspend/resume
->>     as suggest by Lothar.
->>
->>  drivers/net/can/xilinx_can.c |  157 ++++++++++++++++++++++++++++-----=
---------
->>  1 files changed, 107 insertions(+), 50 deletions(-)
-> [..]
->> +static int __maybe_unused xcan_runtime_resume(struct device *dev)
->>  {
->> -	struct platform_device *pdev =3D dev_get_drvdata(dev);
->> -	struct net_device *ndev =3D platform_get_drvdata(pdev);
->> +	struct net_device *ndev =3D dev_get_drvdata(dev);
->>  	struct xcan_priv *priv =3D netdev_priv(ndev);
->>  	int ret;
->> +	u32 isr, status;
->> =20
->>  	ret =3D clk_enable(priv->bus_clk);
->>  	if (ret) {
->> @@ -1014,15 +1030,28 @@ static int __maybe_unused xcan_resume(struct d=
-evice *dev)
->>  	ret =3D clk_enable(priv->can_clk);
->>  	if (ret) {
->>  		dev_err(dev, "Cannot enable clock.\n");
->> -		clk_disable_unprepare(priv->bus_clk);
->> +		clk_disable(priv->bus_clk);
-> [...]
->> @@ -1173,12 +1219,23 @@ static int xcan_remove(struct platform_device =
-*pdev)
->>  {
->>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
->>  	struct xcan_priv *priv =3D netdev_priv(ndev);
->> +	int ret;
->> +
->> +	ret =3D pm_runtime_get_sync(&pdev->dev);
->> +	if (ret < 0) {
->> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
->> +				__func__, ret);
->> +		return ret;
->> +	}
->> =20
->>  	if (set_reset_mode(ndev) < 0)
->>  		netdev_err(ndev, "mode resetting failed!\n");
->> =20
->>  	unregister_candev(ndev);
->> +	pm_runtime_disable(&pdev->dev);
->>  	netif_napi_del(&priv->napi);
->> +	clk_disable_unprepare(priv->bus_clk);
->> +	clk_disable_unprepare(priv->can_clk);
->=20
-> Shouldn't pretty much all these occurrences of clk_disable/enable
-> disappear? This should all be handled by the runtime_pm framework now.
+Le 07/01/2015 18:03, Marc Kleine-Budde a =C3=A9crit :
+> On 01/06/2015 11:00 AM, Stephane Grosjean wrote:
+>  =20
+> @@ -750,9 +795,10 @@ static int peak_usb_create_dev(struct peak_usb_a=
+dapter *peak_usb_adapter,
+>   	dev->can.clock =3D peak_usb_adapter->clock;
+>   	dev->can.bittiming_const =3D &peak_usb_adapter->bittiming_const;
+>   	dev->can.do_set_bittiming =3D peak_usb_set_bittiming;
+> +	dev->can.data_bittiming_const =3D &peak_usb_adapter->data_bittiming=
+_const;
+> +	dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
+>   	dev->can.do_set_mode =3D peak_usb_set_mode;
+> -	dev->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES |
+> -				      CAN_CTRLMODE_LISTENONLY;
+> +	dev->can.ctrlmode_supported =3D peak_usb_adapter->ctrlmode_supporte=
+d;
+> All ctrlmode_supported can go into a seperate patch.
 
-We have:
-- clk_prepare_enable() in probe
-- clk_disable_unprepare() in remove
-- clk_enable() in runtime_resume
-- clk_disable() in runtime_suspend
+I'll try but can you please explain why?
 
-Which is, as far as I understand the right way to do it. Maybe
-Kedareswara can post the clock debug output again with this patch
-iteration. Have I missed something?
+>
+>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/=
+net/can/usb/peak_usb/pcan_usb_core.h
+>> index 073b47f..13d44a5 100644
+>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+>> @@ -25,6 +25,8 @@
+>>   /* supported device ids. */
+>>   #define PCAN_USB_PRODUCT_ID		0x000c
+>>   #define PCAN_USBPRO_PRODUCT_ID		0x000d
+>> +#define PCAN_USBPROFD_PRODUCT_ID	0x0011
+>> +#define PCAN_USBFD_PRODUCT_ID		0x0012
+>>  =20
+>>   #define PCAN_USB_DRIVER_NAME		"peak_usb"
+>>  =20
+>> @@ -44,8 +46,10 @@ struct peak_usb_device;
+>>   struct peak_usb_adapter {
+>>   	char *name;
+>>   	u32 device_id;
+>> +	u32 ctrlmode_supported;
+> seperate patch
 
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+same
+>
+> +
+> +/* handle uCAN status message */
+> +static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
+> +				     struct pucan_msg *rx_msg)
+> +{
+> +	struct pucan_status_msg *st =3D (struct pucan_status_msg *)rx_msg;
+> +	struct peak_usb_device *dev =3D usb_if->dev[PUCAN_STMSG_CHANNEL(st)=
+];
+> +	struct pcan_usb_fd_device *pdev =3D
+> +			container_of(dev, struct pcan_usb_fd_device, dev);
+> +	enum can_state new_state =3D CAN_STATE_ERROR_ACTIVE;
+> +	struct net_device *netdev =3D dev->netdev;
+> +	struct can_frame *cf;
+> +	struct sk_buff *skb;
+> Please talk to Wolfgang and Andri Yngvason about the state handling.
 
+Okay.
+>
+> What about the following hunks (but not the .ctrlmode_supported) ? Th=
+ey
+> can go into a seperate patch which comes first?
 
---tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+So. You want me to do a serie of patches, right?
+- a first patch that would change the existing files
+- another one that would add the ctrl_mode_supported chanegs
+- another one that would add the new files
+>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/n=
+et/can/usb/peak_usb/pcan_usb_pro.c
+>> index 4cfa3b8..a764045 100644
+>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+>> @@ -27,14 +27,6 @@
+>>  =20
+>>   MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro adapter");
+>>  =20
+>> -/* PCAN-USB Pro Endpoints */
+>> -#define PCAN_USBPRO_EP_CMDOUT		1
+>> -#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
+>> -#define PCAN_USBPRO_EP_MSGOUT_0		2
+>> -#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN=
+)
+>> -#define PCAN_USBPRO_EP_MSGOUT_1		3
+>> -#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_I=
+N)
+>> -
+>>   #define PCAN_USBPRO_CHANNEL_COUNT	2
+>>  =20
+>>   /* PCAN-USB Pro adapter internal clock (MHz) */
+>> @@ -322,8 +314,8 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb=
+_device *dev,
+>>   	return (i >=3D PCAN_USBPRO_RSP_SUBMIT_MAX) ? -ERANGE : err;
+>>   }
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+>>  =20
+>> +extern int pcan_usb_pro_probe(struct usb_interface *intf);
+>> +extern int pcan_usb_pro_send_req(struct peak_usb_device *dev, int r=
+eq_id,
+>> +		                                 int req_value, void *req_addr,
+>> +						 int req_size);
+>> +extern void pcan_usb_pro_restart_complete(struct urb *urb);
+> IIRC we're killing the "extern" in function definitions in the kernel=
+=2E
 
-iQIcBAEBAgAGBQJUtPy1AAoJECte4hHFiupUOZwP+wcPUxYKUa1142511vue+Mhp
-zWCTdzlvCzAfEAjHD0lMJtD2WQ3nTivLsJtGffa6rzjHqV2qUJ/n/HNTKEGziZjQ
-01LaV+yH0m0IoIH+79naXb57YUhATjMt0ho9PuLo4riTrKUsjwTAbbT753QCvRxA
-SF9lx21zDeHrA84y3V2qF1fo7JIBo69O5WqUAIZq7re7SolIlqRRa+2IB2SCM/jb
-a/f+WGyENHFwqefgZOe17lVwxAyyuxYrW8fZyRv3AvuJqod0AGxe4yL9siFiS4Vw
-4CplQugbEbIEKjm/kU5zaKn92+vuz0bYZ9j7+hSqpmFMh+aV67N5RnjR7cXP19Ei
-YgMa31imPj8yO+06VVO7iVvdo+bbDLePcIcjby7z0X1kzZAY4oSSIOObTtqCn6Wr
-5ycc4SPerI76iJvqsFTxLoZ7XSTdtzVhWLsfNPBO8CECql+PtH/k8iIcqpJq9d+T
-n0XaOPGq9DpALKRK0k32TM6eFL7LI+tU/97/iULROOUnCD306WpQwbeTxCqDjwxh
-0e9fcvAYzpCRRR38uN3o7GJ9Rde9+dYpacDvT2hiEnNt6sWeyH4UImZy8SHJS70V
-up9r75iIs/M/Q1Ap7hKjTGOkD52lats1QmLO//VipM9PxTkbXlI3p0Oq0hkwQe2R
-4JT/xCOdxx5TTMpw2Owd
-=T8PD
------END PGP SIGNATURE-----
+Ok. So I remove all "extern" keywords even from existing files, right?
 
---tKF0c7NqosXqDUeHMTQh4uD42V9tvVtFR--
+> Marc=20
+
+St=C3=A9phane.
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
