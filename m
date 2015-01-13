@@ -1,93 +1,89 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB adapters
-Date: Tue, 13 Jan 2015 14:32:55 +0100
-Message-ID: <54B51E87.30308@pengutronix.de>
-References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com> <54AD66C5.10908@pengutronix.de> <54B51B2C.3080404@peak-system.com> <54B51DB5.2030707@pengutronix.de>
+From: Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2] can: c_can: use regmap_update_bits() to modify RAMINIT
+ register
+Date: Tue, 13 Jan 2015 16:23:11 +0200
+Message-ID: <54B52A4F.8030208@ti.com>
+References: <1420641162-8634-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="qU7h7Mtgtau87sqdEPBl0TqGH7pFkJgH0"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47474 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751220AbbAMNc7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 13 Jan 2015 08:32:59 -0500
-In-Reply-To: <54B51DB5.2030707@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1420641162-8634-1-git-send-email-rogerq@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: tomi.valkeinen@ti.com, linux-can@vger.kernel.org, wsa@the-dreams.de, kernel@pengutronix.de, linux-omap@vger.kernel.org, Mark Brown <broonie@kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qU7h7Mtgtau87sqdEPBl0TqGH7pFkJgH0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
+is not safe as the RAMINIT register can be shared between different drivers
+at least for TI SoCs.
 
-On 01/13/2015 02:29 PM, Marc Kleine-Budde wrote:
-> On 01/13/2015 02:18 PM, Stephane Grosjean wrote:
->> Hi Marc,
->>
->> Le 07/01/2015 18:03, Marc Kleine-Budde a =C3=A9crit :
->>> On 01/06/2015 11:00 AM, Stephane Grosjean wrote:
->>>   @@ -750,9 +795,10 @@ static int peak_usb_create_dev(struct
->>> peak_usb_adapter *peak_usb_adapter,
->>>       dev->can.clock =3D peak_usb_adapter->clock;
->>>       dev->can.bittiming_const =3D &peak_usb_adapter->bittiming_const=
-;
->>>       dev->can.do_set_bittiming =3D peak_usb_set_bittiming;
->>> +    dev->can.data_bittiming_const =3D
->>> &peak_usb_adapter->data_bittiming_const;
->>> +    dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
->>>       dev->can.do_set_mode =3D peak_usb_set_mode;
->>> -    dev->can.ctrlmode_supported =3D CAN_CTRLMODE_3_SAMPLES |
->>> -                      CAN_CTRLMODE_LISTENONLY;
->>> +    dev->can.ctrlmode_supported =3D peak_usb_adapter->ctrlmode_suppo=
-rted;
->>> All ctrlmode_supported can go into a seperate patch.
->>
->> I'll try but can you please explain why?
+To make the modification atomic we switch to using regmap_update_bits().
 
-BTW: you can split a patch into multiple patches with git quite easy:
+regmap_update_bits() skips writing to the register if it's read content is the
+same as what is going to be written. This causes an issue for us when we
+need to clear the DONE bit with the initial condition START:0, DONE:1 as
+DONE bit must be written with 1 to clear it.
 
-# move branch head one patch backwards, working copy stays unmodified:
-git reset HEAD^
+So we defer the clearing of DONE bit to later when we set the START bit.
+There we are sure that START bit is changed from 0 to 1 so the write of
+1 to already set DONE bit will happen.
 
-# for each hunk git will ask you if you want to stage it.
-# you can even split a hunk.
-git add -p
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ drivers/net/can/c_can/c_can_platform.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-or use git gui instead of git add -p.
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index f363972..e36d105 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -103,27 +103,34 @@ static void c_can_hw_raminit_syscon(const struct c_can_priv *priv, bool enable)
+ 	mask = 1 << raminit->bits.start | 1 << raminit->bits.done;
+ 	regmap_read(raminit->syscon, raminit->reg, &ctrl);
+ 
+-	/* We clear the done and start bit first. The start bit is
++	/* We clear the start bit first. The start bit is
+ 	 * looking at the 0 -> transition, but is not self clearing;
+-	 * And we clear the init done bit as well.
+ 	 * NOTE: DONE must be written with 1 to clear it.
++	 * We can't clear the DONE bit here using regmap_update_bits()
++	 * as it will bypass the write if initial condition is START:0 DONE:1
++	 * e.g. on DRA7 which needs START pulse.
+ 	 */
+-	ctrl &= ~(1 << raminit->bits.start);
+-	ctrl |= 1 << raminit->bits.done;
+-	regmap_write(raminit->syscon, raminit->reg, ctrl);
++	ctrl &= ~mask;	/* START = 0, DONE = 0 */
++	regmap_update_bits(raminit->syscon, raminit->reg, mask, ctrl);
+ 
+-	ctrl &= ~(1 << raminit->bits.done);
+-	c_can_hw_raminit_wait_syscon(priv, mask, ctrl);
++	/* check if START bit is 0. Ignore DONE bit for now
++	 * as it can be either 0 or 1.
++	 */
++	c_can_hw_raminit_wait_syscon(priv, 1 << raminit->bits.start, ctrl);
+ 
+ 	if (enable) {
+-		/* Set start bit and wait for the done bit. */
++		/* Clear DONE bit & set START bit. */
+ 		ctrl |= 1 << raminit->bits.start;
+-		regmap_write(raminit->syscon, raminit->reg, ctrl);
+-
++		/* DONE must be written with 1 to clear it */
++		ctrl |= 1 << raminit->bits.done;
++		regmap_update_bits(raminit->syscon, raminit->reg, mask, ctrl);
++		/* prevent further clearing of DONE bit */
++		ctrl &= ~(1 << raminit->bits.done);
+ 		/* clear START bit if start pulse is needed */
+ 		if (raminit->needs_pulse) {
+ 			ctrl &= ~(1 << raminit->bits.start);
+-			regmap_write(raminit->syscon, raminit->reg, ctrl);
++			regmap_update_bits(raminit->syscon, raminit->reg,
++					   mask, ctrl);
+ 		}
+ 
+ 		ctrl |= 1 << raminit->bits.done;
+-- 
+2.1.0
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---qU7h7Mtgtau87sqdEPBl0TqGH7pFkJgH0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUtR6HAAoJECte4hHFiupUqBUP/R/dAIt1YPwUg7Gu++zkhlmx
-Avw8yBwfWIGA8mfag2tPz5t+4EGpDHgGKypi1jMBpnpheDaoiuYIO4GvkNrgxpgB
-EsVbScEpNoAPj+khMUQpslRvh4k/hjKx1QBBU58QCxIa5p0ppWgkS0AjY33/eZbn
-uThQthfDpAap58xDezuFg3HnadYpgGXdvi6gX3d1SJf+wglDACWR4gORVlF732Xo
-/9waRMA8O3cdZf1sdI73epgNdvJ52mubHJFSAWWewMSqcyid4KAXpR1T8fPb0XzC
-j4m4Y1ykoRmG0O1HJFaGhvhyAxg2lojUOCvGH+DFsLUd52++kVOzlqs+4zpSOaUs
-2G4dOsKsu30IkMs+tke7B6ps3e5XupUVrczDim/TdqX5jAu+qBiqEwDn8f4ep920
-/BrWK747T4QOjpebHSDqf+G+4YWeRjf3b9twe2W3oADZH4hXSphvSUzGKzlN0IVF
-uazcVojITMJSFgKzWwtBq+RciH8pTipwx2HeXlA0g4QW5OLOYddNhfqxIAZS2pAR
-AZOHcuG68bs1CKoJCmU8x+o1OhvTPvyaenkD35Q0rAz2po/eMe0UVDtCB8lmbWTh
-mEPQ65XIrXGlcdl3fxbHVgSKjUPvxF9GgwZFPSEX8QP/0q4dcFxzD3uSCE0cRY1M
-nrblcq+TXjXDlUelRoIs
-=05MP
------END PGP SIGNATURE-----
-
---qU7h7Mtgtau87sqdEPBl0TqGH7pFkJgH0--
