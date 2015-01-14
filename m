@@ -1,66 +1,57 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB adapters
-Date: Wed, 14 Jan 2015 11:51:34 +0100
-Message-ID: <54B64A36.80805@pengutronix.de>
-References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com> <54AD66C5.10908@pengutronix.de> <54B649D8.40006@peak-system.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Wed, 14 Jan 2015 11:56:01 +0100
+Message-ID: <54B64B41.2040500@peak-system.com>
+References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com>
+ <54AD66C5.10908@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="e76OM4FBJahvXJ9vjqFjRQlksWHi10vad"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58108 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751332AbbANKvm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 05:51:42 -0500
-In-Reply-To: <54B649D8.40006@peak-system.com>
+Received: from mail.peak-system.com ([213.157.13.214]:57924 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750980AbbANK4I (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 05:56:08 -0500
+In-Reply-To: <54AD66C5.10908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Andri Yngvason <andri.yngvason@marel.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---e76OM4FBJahvXJ9vjqFjRQlksWHi10vad
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi again Marc,
 
-On 01/14/2015 11:50 AM, Stephane Grosjean wrote:
-> Hi Marc,
->=20
-> Sorry, I don't have got Andri's e-mail address... Could you give it to
-> me, please?
+Well... What's wrong?
 
-Cc'ed
+    $ git clone https://gitorious.org/linux-can/linux-can.git
+    Cloning into 'linux-can'...
+    error: RPC failed; result=3D22, HTTP code =3D 504
+    fatal: The remote end hung up unexpectedly
 
-Marc
+(same with linux-can-next...)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Regards,
 
+St=C3=A9phane
 
---e76OM4FBJahvXJ9vjqFjRQlksWHi10vad
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Le 07/01/2015 18:03, Marc Kleine-Budde a =C3=A9crit :
+> On 01/06/2015 11:00 AM, Stephane Grosjean wrote:
+>> >Add support for the following new PEAK-System technik CANFD USB ada=
+pters:
+>> >
+>> >PCAN-USB FD             single CANFD channel USB adapter
+>> >PCAN-USB Pro FD         dual CANFD channels USB adapter
+> Can you please work out the correct ISO/non-ISO for CAN-fd with Olive=
+r.
+> If you need CAN_CTRLMODE_FD_NON_ISO make your patch based on
+>
+>      https://gitorious.org/linux-can/linux-can.git  testing
+>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUtko2AAoJECte4hHFiupUVSEQAKRA/4tWmR8lMY9lb5Nve70r
-GW3Lp5wcvUzCY4H8ZzMQ7+1btBFix0XVvRruLU6bR0Te1yn3hOb/Es0yuDoaroWU
-VvclGRUhKsXCVZ5sVBtX1nRsPHijTAL4Myp1Ji9UeTQpGGZuQ9zB/IDZgbpaodbN
-mOXOIaWV4KYvyIvtgkF/PDWJ4v+5P03dCUQCadXRxeJb4nmn+vtzy6Uej7DN6AD4
-eZ53LZQeAzxs1uZarXGA9jC396WT9KucCAzJHqKPn52VfwExsfQm7emNIAggn2qk
-r+5VQ44mnXkgSI82L5lAZhpgHNsTsctVQR7i6cBXJW7MS+58co3oPrNOJDqCdNqs
-W8KcNwqsOWii09T5JkqG8JAuugk8zPHwl3h/lwL7cQTrHr0Jt/1Ya8lRoAj/alkG
-AxqOjTgrI6Y+AZ4OxCMcOv6tkwtPn5jf7bdh9fW1QO//S9dAwbflEANNFzfaprN6
-DSz1jLFHo9ng7+sFX4lmxCbexa0oPTrmi+vcN6/2b/NZ0QPURIx6IrB6jt9n32AG
-/Xh/nqZOoWCzRujl5Tfz+qxX+1oP9juSAZDREgRPs/OrcCjT98/FQ0C8e8yMY3z9
-x/H2a2w6/CIn7NNLir7SmBBn44xcBcAYNs2Tb8UXijcvexbp1fxBxumANkLBr6Pb
-5ZFEwowke1Bm1rPpYr8R
-=NI10
------END PGP SIGNATURE-----
-
---e76OM4FBJahvXJ9vjqFjRQlksWHi10vad--
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
