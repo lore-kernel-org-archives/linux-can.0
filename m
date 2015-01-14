@@ -1,49 +1,56 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: c_can: (newbie) high system load when frame not acked?
-Date: Wed, 14 Jan 2015 09:55:04 +0000
-Message-ID: <20150114095504.16836.68273@shannon>
-References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net>
- <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz>
- <alpine.DEB.2.02.1501121948370.28201@login>
- <54B472B2.4010300@optusnet.com.au>
- <alpine.DEB.2.02.1501131523290.12789@login>
- <20150113153243.26859.47218@shannon> <54B5C7F2.3060702@optusnet.com.au>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Wed, 14 Jan 2015 11:50:00 +0100
+Message-ID: <54B649D8.40006@peak-system.com>
+References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com>
+ <54AD66C5.10908@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0074.outbound.protection.outlook.com ([157.55.234.74]:28216
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752045AbbANJzN convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 04:55:13 -0500
-In-Reply-To: <54B5C7F2.3060702@optusnet.com.au>
+Received: from mail.peak-system.com ([213.157.13.214]:35600 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750920AbbANKuH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 05:50:07 -0500
+In-Reply-To: <54AD66C5.10908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: tom_usenet@optusnet.com.auTom Evans <tom_usenet@optusnet.com.au>, Viktor Babrian <babrian.viktor@renyi.mta.hu>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Quoting Tom Evans (2015-01-14 01:35:46)
-> On 14/01/15 02:32, Andri Yngvason wrote:
-> > Quoting Viktor Babrian (2015-01-13 15:10:29)
-> >
-> > Note: The FlexCAN driver does actually respect berr-reporting for i.MX6.
-> > However, it does not respect it for some older chips.
-> 
-> The flexcan.c driver behaves differently depending on whether it has 
-> "FLEXCAN_HAS_BROKEN_ERR_STATE" set (on for MX25, MX35, MX53 and off for MX28 
-> and MX6). I don't think this distinction actually helps, or improves matters 
-> enough to be worth the CPU loading this causes in these disconnected/solo CAN 
-> states.
-> 
-I agree.
+Hi Marc,
 
-> ... 
-> Does "FLEXCAN_HAS_BROKEN_ERR_STATE" do anything useful that I've missed? If 
-> not then that code should be removed. I've done that in the old (Linux 3.4) 
-> version of the driver I'm using.
+Sorry, I don't have got Andri's e-mail address... Could you give it to=20
+me, please?
+
+Thx in advance,
+
+St=C3=A9phane
+
+Le 07/01/2015 18:03, Marc Kleine-Budde a =C3=A9crit :
+>> +/* handle uCAN status message */
+>> >+static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if=
+,
+>> >+				     struct pucan_msg *rx_msg)
+>> >+{
+>> >+	struct pucan_status_msg *st =3D (struct pucan_status_msg *)rx_msg=
+;
+>> >+	struct peak_usb_device *dev =3D usb_if->dev[PUCAN_STMSG_CHANNEL(s=
+t)];
+>> >+	struct pcan_usb_fd_device *pdev =3D
+>> >+			container_of(dev, struct pcan_usb_fd_device, dev);
+>> >+	enum can_state new_state =3D CAN_STATE_ERROR_ACTIVE;
+>> >+	struct net_device *netdev =3D dev->netdev;
+>> >+	struct can_frame *cf;
+>> >+	struct sk_buff *skb;
+> Please talk to Wolfgang and Andri Yngvason about the state handling.
 >
-The first step towards making that change is posting patches. ;)
 
 --
-Andri
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
