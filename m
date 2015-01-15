@@ -1,57 +1,33 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: ANNOUNCEMENT: linux-can repos are now at kernel.org
-Date: Thu, 15 Jan 2015 17:14:52 +0100
-Message-ID: <54B7E77C.5040509@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: ANNOUNCEMENT: linux-can repos are now at kernel.org
+Date: Thu, 15 Jan 2015 18:03:55 +0100
+Message-ID: <54B7F2FB.6070301@hartkopp.net>
+References: <54B7E77C.5040509@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="fUATK2DL7Vsn40GVCsVEVmDCS53AFExkH"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:22291 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753124AbbAORED (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Jan 2015 12:04:03 -0500
+In-Reply-To: <54B7E77C.5040509@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fUATK2DL7Vsn40GVCsVEVmDCS53AFExkH
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Very cool!
 
--T: git git://gitorious.org/linux-can/linux-can-next.git
-+T: git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
-+T: git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.=
-git=20
+That was really fast.
 
-'Nuff Said!
+Thanks,
+Oliver
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---fUATK2DL7Vsn40GVCsVEVmDCS53AFExkH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJUt+eAAAoJECte4hHFiupUswwP/iCd6eiiEtZNvdR+OwuFdjxA
-Fi7z5P5eOMVc/EjUVgOJfo0Q6Z1DWWw5Qc0q2OsPY6Ysh3y55yxiAPuQTHhDa1ET
-657WfD/LGBY1GSIpNfrFAEyeZX3KFZTWd93YWGAy0G4Ag1/FyFVHZAYL4yx4TsTK
-2Mkffqk7ZuHLWZtmTez/NeyHChKTuEiLVVo0KY1ei891+4vMF0jp4R8cZEV+OgVE
-b7qpa/WWFr7Cg6fXq//YvJaVPAyxokUOklQZXZt68USwzdXVwwUgDj+Imxt6IxoQ
-0amXZi4eYHx2Jb2UzaB7HusiyT62PoobZu/3eeO6HYLwNAfKRUTpxZizRaBDdKQH
-PZqw/29LcX/ltcYt7eGpcM7KE+GxLRMUV1zQl4J7FnNQkr0T1y4JtxcOICoJ5poJ
-CyfjNOJj2Xf+AJFprMCUPxAey8lM9h2cYVJ1wgx0fik9RtIFt8EE+qLUqNPHlRVW
-jUpRHLo+Cb9wcnKkyp4SvsAUn0/LCCs4qp0SiuMAKYmRIMrC+htX65NGxb6s/yOg
-yVGoPwOtmJ4c079RnIUAtzQErouSQ2Egw2B2iV3ahAdOn/LIK4bbNiBVpzZyAKMW
-qzr2AWzoASFtzu/QHgo2pumB4UECP5np1+i6jj8+d55B3LDElolnXYVMgovJG+iW
-Ana6D/8SYLLmQnaVdSr2
-=Ifu4
------END PGP SIGNATURE-----
-
---fUATK2DL7Vsn40GVCsVEVmDCS53AFExkH--
+On 15.01.2015 17:14, Marc Kleine-Budde wrote:
+> -T: git git://gitorious.org/linux-can/linux-can-next.git
+> +T: git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+> +T: git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+>
+> 'Nuff Said!
+>
