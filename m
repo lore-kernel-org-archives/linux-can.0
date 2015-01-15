@@ -1,74 +1,86 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4] can/peak_usb: add support for PEAK new CANFD USB adapters
-Date: Wed, 14 Jan 2015 21:57:47 +0100
-Message-ID: <54B6D84B.3030106@pengutronix.de>
-References: <1420538446-8336-1-git-send-email-s.grosjean@peak-system.com> <54AD66C5.10908@pengutronix.de> <54B64B41.2040500@peak-system.com> <54B64DDF.5050909@pengutronix.de> <54B6BB9F.2050007@hartkopp.net>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: c_can: (newbie) high system load when frame not acked?
+Date: Thu, 15 Jan 2015 11:29:34 +1100
+Message-ID: <54B709EE.2040602@optusnet.com.au>
+References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login> <20150113153243.26859.47218@shannon> <54B5C7F2.3060702@optusnet.com.au> <20150114095504.16836.68273@shannon>
+Reply-To: tom_usenet@optusnet.com.au
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="soA985b4Qm4V9OeUpVxUXdo6uBPPpn8Fg"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60760 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751792AbbANU55 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 15:57:57 -0500
-In-Reply-To: <54B6BB9F.2050007@hartkopp.net>
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:35200 "EHLO
+	mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751952AbbAOA3i (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 14 Jan 2015 19:29:38 -0500
+In-Reply-To: <20150114095504.16836.68273@shannon>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Andri Yngvason <andri.yngvason@marel.com>, Viktor Babrian <babrian.viktor@renyi.mta.hu>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---soA985b4Qm4V9OeUpVxUXdo6uBPPpn8Fg
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 14/01/15 20:55, Andri Yngvason wrote:
+> Quoting Tom Evans (2015-01-14 01:35:46)
+>> On 14/01/15 02:32, Andri Yngvason wrote:
+>>> Quoting Viktor Babrian (2015-01-13 15:10:29)
+>>>
+>>> Note: The FlexCAN driver does actually respect berr-reporting for i.MX6.
+>>> However, it does not respect it for some older chips.
+>>
+>> The flexcan.c driver behaves differently depending on whether it has
+>> "FLEXCAN_HAS_BROKEN_ERR_STATE" set (on for MX25, MX35, MX53 and off for MX28
+>> and MX6). I don't think this distinction actually helps, or improves matters
+>> enough to be worth the CPU loading this causes in these disconnected/solo CAN
+>> states.
+>>
+> I agree.
+>
+>> ...
+>> Does "FLEXCAN_HAS_BROKEN_ERR_STATE" do anything useful that I've missed? If
+>> not then that code should be removed. I've done that in the old (Linux 3.4)
+>> version of the driver I'm using.
+>>
+> The first step towards making that change is posting patches. ;)
 
-On 01/14/2015 07:55 PM, Oliver Hartkopp wrote:
-> It already gets stuck, when you just try to open the Linux-CAN project
-> start page at https://gitorious.org/linux-can ...
+Of course. But I'm working on a Linux 3.4 code base that was "frozen" about 15 
+linux versions ago. I can only generate AND TEST patches for that version. 
+There have been at least 19 mainstream releases/changes to that code since 
+that time.
 
-grrr :(
+I could generate an untested patch for a later version, but I'd rather not. 
+I'd rather someone who can test the code do this on the current codebase.
 
-> What about trying to host linux-can and linux-can-next on kernel.org ?
+I would propose one of:
 
-I hope my GPG has enough signatures. I'll ask for a kernel.org account
-tomorrow.
+1 - Remove ".features = FLEXCAN_HAS_BROKEN_ERR_STATE," from all structures 
+referencing all chips, like "fsl_p1010_devtype_data". That would be misleading 
+though and would make the code more confusing than it is (and it is bad enough 
+at the moment).
 
-> The userspace stuff can remain on gitorious - as these are small repos.=
+2 - Leave "FLEXCAN_HAS_BROKEN_ERR_STATE" for the chips where the WARNING 
+interrupt doesn't work, but don't DO anything as a consequence. That means 
+changing the following to ONLY set the error mask on 
+"CAN_CTRLMODE_BERR_REPORTING" - removing the condition at line 942:
 
+937         /*
+938          * enable the "error interrupt" (FLEXCAN_CTRL_ERR_MSK),
+939          * on most Flexcan cores, too. Otherwise we don't get
+940          * any error warning or passive interrupts.
+941          */
+942         if (priv->devtype_data->features & FLEXCAN_HAS_BROKEN_ERR_STATE ||
+943             priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+944                 reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
+945         else
+946                 reg_ctrl &= ~FLEXCAN_CTRL_ERR_MSK;
 
-Let's see.
+The comment in the above is very misleading. "Error Interrupts" have nothing 
+to do with "FLEXCAN_HAS_BROKEN_ERR_STATE". Neither does "passive" as no 
+FlexCAN cores can generate "passive interrupts". Some cores can generate 
+"warning", but that's a useless interrupt as it doesn't do anything useful.
 
-Marc
+It should only say the error interrupts are enabled for 
+CAN_CTRLMODE_BERR_REPORTING. For "historical interest" it could say that 
+"FLEXCAN_HAS_BROKEN_ERR_STATE" used to set the error interrupts, but it causes 
+interrupt flooding and can't fix the "state tracking" anyway.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Tom Evans
 
-
---soA985b4Qm4V9OeUpVxUXdo6uBPPpn8Fg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUtthMAAoJECte4hHFiupUTf4P/jjBOWEDAaY28FtGh6LPU7Ru
-yciSt3nX4d6XrDIo9G4K4OSahWVqskmixpbYnAijB2/urG0Sq63jMGqQlzop9zpi
-+EiJ1RHTIT313YEfEzpLbnjDjG/M9de4QzGSF74RKOwQ2HbT8GnApcZMb1TYmXOT
-HA6smTB8UyQPJRco7oCXf4FwWtMkj5T7pXh/PWadNNernlkuky7RE+gmV3aA3szx
-nouZrQxqimJhYU4lMRzrafHtM/aQSBg0tHnywtYkWR1fvdZtHrlftgRkqvB8A1lw
-WS0xNN6el82p7r8T94fa4d1p53arGxfbNMxQOiateKtksRGBXEYpDbZGW1m8TODT
-1fKxO7HKXQutFCWA12NK1+76kQxsFYsWeiRphs6h2FhB9P8nmOT8XfSq7PV+jHtB
-v66WmdD6UWr8ebhUfXy55P56PMpRjqzxjUKJXGaI5ur/I/SeyF0tn2IuYwawHsUV
-Bb1F1xgv5MTWMmiGmjGgQxi0EDYX1/yvpW0FRfZka4lUnR01DDQ/IKv0EMDZxm+7
-cMhtcQTC3dJr/4gtt/EJ8ielSJTRJOXhN6hz2nOYZ4Owzn8+q7HCrxDOwn3DQPN3
-jVxg5S8mgoVJgjCYoS1rv8iTPMfck35s4nlKoZqLStdzO68PfEliqqIIQ2b3XYjZ
-ATd+WXbdSVyKcZJLfszx
-=5PfT
------END PGP SIGNATURE-----
-
---soA985b4Qm4V9OeUpVxUXdo6uBPPpn8Fg--
