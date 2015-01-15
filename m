@@ -1,42 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Does PEAK usb can support getting error count?
-Date: Thu, 15 Jan 2015 12:43:10 +0100
-Message-ID: <54B7A7CE.80500@pengutronix.de>
-References: <4eb3ad60f4ab4f6d9fd71dc4231a1811@SGPMBX1006.APAC.bosch.com>
+Subject: Re: [PATCH v2] can: c_can: use regmap_update_bits() to modify RAMINIT
+ register
+Date: Thu, 15 Jan 2015 15:37:28 +0100
+Message-ID: <54B7D0A8.8050806@pengutronix.de>
+References: <1420641162-8634-1-git-send-email-rogerq@ti.com> <54B52A4F.8030208@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
+Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="qRiHe8bNLEaLIQesEtjMd9liNboeLTLpw"
+ boundary="mX0w9hUJtluj2IJSCDROQ60Lhif5hCGCP"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56906 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59918 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753453AbbAOLnT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Jan 2015 06:43:19 -0500
-In-Reply-To: <4eb3ad60f4ab4f6d9fd71dc4231a1811@SGPMBX1006.APAC.bosch.com>
+	with ESMTP id S1753341AbbAOOhk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Jan 2015 09:37:40 -0500
+In-Reply-To: <54B52A4F.8030208@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ruan TingQuan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Roger Quadros <rogerq@ti.com>
+Cc: wsa@the-dreams.de, Mark Brown <broonie@kernel.org>, linux-can@vger.kernel.org, tomi.valkeinen@ti.com, kernel@pengutronix.de, linux-omap@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qRiHe8bNLEaLIQesEtjMd9liNboeLTLpw
+--mX0w9hUJtluj2IJSCDROQ60Lhif5hCGCP
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/15/2015 03:21 AM, Ruan TingQuan (ST-FIR/ENG1-Zhu) wrote:
-> I am using PEAK-USB-CAN adapter in my linux system (kernel 3.11).=20
-> When I try to get RX/TX error count via netlink interface, return
-> nothing. But it work fine on getting state, bittiming, control mode.
+On 01/13/2015 03:23 PM, Roger Quadros wrote:
+> use of regmap_read() and regmap_write() in c_can_hw_raminit_syscon()
+> is not safe as the RAMINIT register can be shared between different dri=
+vers
+> at least for TI SoCs.
+>=20
+> To make the modification atomic we switch to using regmap_update_bits()=
+=2E
+>=20
+> regmap_update_bits() skips writing to the register if it's read content=
+ is the
+> same as what is going to be written. This causes an issue for us when w=
+e
+> need to clear the DONE bit with the initial condition START:0, DONE:1 a=
+s
+> DONE bit must be written with 1 to clear it.
+>=20
+> So we defer the clearing of DONE bit to later when we set the START bit=
+=2E
+> There we are sure that START bit is changed from 0 to 1 so the write of=
 
-> Does PEAK usb can support error count getting? If not, is there plan
-> to have it?
+> 1 to already set DONE bit will happen.
+>=20
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
 
-No the driver currently doesn't support it. However I think the
-information is present. Currently Stephane is working to get the new
-CANFD devices supported, once this is finished you can add support for
-reading the error counters.
+Applied to linux-can.
 
-regards,
-Marc
+Thanks, Marc
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -45,7 +60,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---qRiHe8bNLEaLIQesEtjMd9liNboeLTLpw
+--mX0w9hUJtluj2IJSCDROQ60Lhif5hCGCP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -53,19 +68,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUt6fRAAoJECte4hHFiupUscMP/3kBNTXdoOQ/8865tv+vhYqw
-kqankZsCMNGha9B3avxjU7WLyuoy6V9Xf8SoE9O2tQ2vbXdw48GHWBXVz6oVPEDq
-vvok9R1EVvQrHGG/8bFpqqFrZsdcb78SD5SfKho6TbFqhxzOum27Rww8tN9Al+FS
-8OVlsf2Jb1eE61LCH6DM9M8UFyY5jNfGmKSsP/MddTCvn6CcrDev7fVuNVvh603m
-4+CfvqpABFIndEkHywNNdCl/1CdGjKJlsE7rz1oDi1jlj8hdduoh8V8+ZKMrAtpV
-Nn14bClsopvtSSh0ek905mqxqblSAsU7dqUjuSkcUGxp+ZLLccjkarquEvhTwq/s
-NOV82ivMUq0vq1Mr57FhclqKyLmbdjco4PRzgN3KTBOWZln50iOyuJrl4gwiDj9u
-qB130mCrjBt47s3kZcqQFcRmWSD5R4UBHzLfwBT35RWVcfllbBhrW8ZAVeurC6kb
-VpZbCVonkqekUDiMWSL8v3nVLlZm/MYzRzGssH8LU4DdAbPp9C4QVmpfYm5YW7CI
-peubDvOLCcQHybY39DQFH2/Zh8bHucO/o9nJih92CsVmMs7Ca4bgJnwL83ye8aEM
-XAcH3L7pUtQQxyNN1QX5NUHn1MeDhLXyak84MZTFRFpr19EXoCW6g4LQWUbG1Qrg
-2OAsfKTp01mvCnVM2Erj
-=ZuUJ
+iQIcBAEBCgAGBQJUt9CtAAoJECte4hHFiupUIwsQAK078XpHdX4AXkbvB+A7T2WW
+xcJQTQf6hblo4r6s82b89jEURamdvw7qUrwViWJ8x11dH0/oDFV9vkkgqdOCI5nZ
+SKAEOdhZs0v9M3TuZoaz0Z8RL3p2RxPcNSquY4OWfupMGlrLyj/lOvpJiya+/frZ
+sF3MAC7t4cq+9getUe7fopRfNSm3Cwsuk27sVKohDZu4QQMdklaHb2WltGuB1dH7
+HkhWzL3GIT63gMaT9/JTkoHCBwR3osKWXL7UTOoLPXDAzGU45uoVTwchA7lGojjN
+cjI3PIjV8ydPAvLDLVlD/q3FUDkDrYTidbukAWTvXa/xR4QRPzlIwf7s+UL8h0wx
+D3cHE/OVVpXAUp4caXNmg5LP+Kf7TVvyVhryFajVLMFeGFj5O+ikiDmQiX6CLqWy
+uMb5a81qJhBNcUlqlooNbZFBFLAeecQE5P+dbb1y2gVtV4aR2pJ6c35YG5n3CHR+
+WkEe/QYooDo4b1PkOAA1ClwDYco0lO0DE4ZbkijIk55jrB/dTlCitUWGwKmxOvMm
+nt4t8RfHruXb94uXF8A9HmbTUfO5tFY4prB3UFpTTU/Jpm5Px0jbfsr+5su9D/MF
+vY7oi2yIWw0SeRKiQacrp0nRYfrbxp1zmraB7bZhywM2Ahj/9SgI0/NcTR0dQ6gA
+tVuT+k0ZtW/FmlNSqQve
+=MInH
 -----END PGP SIGNATURE-----
 
---qRiHe8bNLEaLIQesEtjMd9liNboeLTLpw--
+--mX0w9hUJtluj2IJSCDROQ60Lhif5hCGCP--
