@@ -1,70 +1,36 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: dev: fix semicolon.cocci warnings
-Date: Fri, 16 Jan 2015 09:56:56 +0100
-Message-ID: <54B8D258.6060101@pengutronix.de>
-References: <201501161614.VyaaG8DL%fengguang.wu@intel.com> <20150116085221.GA26042@waimea>
+From: Laurent Vaudoit <laurent.vaudoit@gmail.com>
+Subject: Re: J1939 message length
+Date: Fri, 16 Jan 2015 13:31:57 +0000 (UTC)
+Message-ID: <loom.20150116T143025-691@post.gmane.org>
+References: <loom.20141211T112702-791@post.gmane.org> <20141212110743.GC10796@vandijck-laurijssen.be> <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup> <20141215093136.GA646@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="HGwwq557kkMNGBKuuSBOcPQgdf5olvLbT"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34000 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752384AbbAPI5H (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 16 Jan 2015 03:57:07 -0500
-In-Reply-To: <20150116085221.GA26042@waimea>
+Received: from plane.gmane.org ([80.91.229.3]:39568 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932071AbbAPNcP (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 16 Jan 2015 08:32:15 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1YC70V-0007TU-9X
+	for linux-can@vger.kernel.org; Fri, 16 Jan 2015 14:32:11 +0100
+Received: from LCaen-656-1-152-146.w217-128.abo.wanadoo.fr ([217.128.82.146])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 16 Jan 2015 14:32:11 +0100
+Received: from laurent.vaudoit by LCaen-656-1-152-146.w217-128.abo.wanadoo.fr with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 16 Jan 2015 14:32:11 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kbuild test robot <fengguang.wu@intel.com>, Andri Yngvason <andri.yngvason@marel.com>
-Cc: kbuild-all@01.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HGwwq557kkMNGBKuuSBOcPQgdf5olvLbT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+S3VydCBWYW4gRGlqY2sgPGRldi5rdXJ0IDxhdD4gdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4gd3JpdGVzOgoKSGkgS3VydCwKPiAKPiBIZXksCj4gCj4gT24gTW9uLCBEZWMgMTUsIDIwMTQgYXQgMDg6NTg6MTRBTSArMDAwMCwgcGZpZnJlLmV4dCA8YXQ+IG9yYW5nZS5jb20gCndyb3RlOgo+ID4gSGkgS3VydCwKPiA+IAo+ID4gSSByZXNvbHZlZCB0aGUgaXNzdWUuIFRoZSBwcm9ibGVtIGFwcGVhcnMgd2l0aCBsb25nIG1lc3NhZ2UgYmVjYXVzZSwgCmFjY29yZGluZyB0byB0aGUgajE5MzkKPiBzcGVjaWZpY2F0aW9ucywgdGhlIGVuZCBvZiBtZXNzYWdlIGhhcyB0byBiZSBmdWxmaWxsZWQgd2l0aCAweEZGIGlmIHRoZSAKbWVzc2FnZSBpcyBub3QgbW9kdWxvIDguCj4gPiBBcHBhcmVudGx5LCB0aGUgajE5MzkgIGRyaXZlcnMgZG9uJ3QgbWFrZSB0aGUgcGFkZGluZyB3aXRoIDB4RkYuCj4gCj4gWW91J3JlIG5vdCB0aGUgZmlyc3QgdG8gZmluZCBhbiBhY3R1YWwgRUNVIGNvbXBsYWluaW5nIG9uIHRoaXMuCj4gSSBhc3NlbWJsZWQgYSBwYXRjaCBlYXJsaWVyIHRoaXMgeWVhciwgc2VlIGh0dHA6Ly9saXN0cy5rZGUub3JnLz9sPWxpbnV4LQpjYW4mbT0x
+ Mzk4MjU1NzIyMDc0NDgmdz0yCj4gCj4gPiBUaGVuIEkgZG8gdGhhdCBpbiBteSBzb2Z0d2FyZSBhbmQgaXQgd29ya3MgZmluZSBrbm93Lgo+IAo+IEkgYWR2aXNlIHRvIGFwcGx5IHRoYXQgcGF0Y2gsIGFuZCBhdm9pZCB0byBjYWxjdWxhdGUgcGFja2V0IHNpemVzIGluIAp1c2Vyc3BhY2UuCgpJJ3ZlIHNlZW4gdGhpcyBtZXNzYWdlIGNvbmNlcm5pbmcgYSBidWcgaW4gdGhlIERMQyBjYW4gZnJhbWUgd2hlbiBhIG1vcmUgCnRoYW4gOCBieXRlcyBKMTkzOSBmcmFtZSBpcyBzZW50LgoKTG9va2luZyBhdCB0aGUgcGF0Y2gsIGl0IHNlZW1zIHRoYXQgZXZlcnkgajE5MzkgZnJhbWUgd2lsbCBiZSBwYWRkZWQgd2l0aCAKMHhGRiwgZXZlbiBzaW5nbGUgZnJhbWUgKGxlc3MgdGhhbiA4IGJ5dGVzKS4KSSB0aGluayB0aGlzIGlzIGFuIGVycm9yIGFzIHN0YW5kYXJkIFNBRUoxOTM5LTIxIHNwZWNpZmllcyB0aGF0IGZvciBleGFtcGxlIApQR04gcmVxdWVzdCAoMHhFQTAwKSBpcyAzIGJ5ZXMgbGVuZ3RoLCBhbmQgc28gY2FuIGZyYW1lIGRsYyBtdXN0IGJlIDMgc2V0IAp0byAzLgoKTWF5IGJlIHRoZSBwYXRjaCBzaG91bGQgYmUgbW92ZSBvbiB0aGUgdHJhbn
+ Nwb3J0IG1vZHVsZSB3aG8gbWFuYWdlIERhdGEgCnRyYW5zZmVyIHByb3RvY29sPwpJcyB0aGVyZSBzb21ldGhpbmcgaSBtaXNzZWQ/Cj4gCj4gV2hpY2ggaXMgdGhlIHJlbW90ZSBFQ1UgdGhhdCBkb2VzIG5vdCBhY2NlcHQgdGhlIHBhY2tldHM/Cj4gCj4gPiAKPiA+IFBlcmhhcHMsIEl0IHdpbGwgYmUgYSBnb29kIGlkZWEgdG8gYWRkIHRoaXMgaW4gdGhlIGRyaXZlcnMuCj4gCj4gWWVwLCBJJ2xsIGRvLgo+IAoKQmVzdCByZWdhcmRzLApMYXVyZW50Cj4gS2luZCByZWdhcmRzLAo+IEt1cnQKPiA+IAo+ID4gQmVzdCByZWdhcmRzLAo+ID4gCj4gPiBQYXNjYWwKPiA+IAo+ID4gLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tCj4gPiBEZcKgOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0IDxhdD4gdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gCj4gPiBFbnZvecOpwqA6IHZlbmRyZWRpIDEyIGTDqWNlbWJyZSAyMDE0IDEyOjA4Cj4gPiDDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgZXh0IElNVC9PTFBTCj4gPiBDY8KgOiBsaW51eC1jYW4gPGF0PiB2Z2VyLmtlcm5lbC5vcmcKPiA+IE9iamV0wqA6IFJlOiBKMTkzOSBtZXNzYWdlIGxl
+ bmd0aAo+ID4gCj4gPiBIZXkgUGFzY2FsLAo+ID4gCj4gPiBPbiBUaHUsIERlYyAxMSwgMjAxNCBhdCAxMDo0NDozOUFNICswMDAwLCBwYXNjYWwgd3JvdGU6Cj4gPiA+IEhpLAo+ID4gPiAKPiA+ID4gSSd2ZSBpbnN0YWxsZWQgdGhlIHBhdGNoIGZvciB1c2luZyBqMTkzOSBzb2NrZXQgQ0FOIHVuZGVyIGxpbnV4IAo+ID4gPiAoYmVhZ2xlQm9uZSBibGFjaykuCj4gPiA+IAo+ID4gPiBJdCB3b3JrcyBmaW5lIGZvciByZWNlaXZpbmcgajE5MzkgbWVzc2FnZSBhbmQgc2VuZGluZyBzaG9ydCBtZXNzYWdlIAooOCAKPiA+ID4gYnl0ZXMgbWF4KS4KPiA+ID4gCj4gPiA+IEJ1dCB3aGVuIEkgdHJ5IHRvIHNlbmQgbG9uZyBtZXNzYWdlICg+OCBieXRlcyBsb25nKSwgYnV0IHRoZSBtZXNzYWdlIAo+ID4gPiBoYXMgbm90IGJlZW4gc2VudC4KPiA+IAo+ID4gT2suCj4gPiBZb3UgcHJvdmlkZSBsaXR0bGUgaW5mbyBob3cgeW91IGRldGVjdCB0aGF0IDw9OCBieXRlcyB3b3JrLCBhbmQgPjggCmJ5dGVzIGRvIG5vdCB3b3JrLgo+ID4gCj4gPiBXaGF0IGRvIHlvdSBzZWUgb24gdGhlIChyYXcpIENBTiBidXM/Cj4gPiAKPiA+IEFyZSB5b3UgYXdhcmUgb2YgdGhlIF
+ RyYW5zcG9ydCBQcm90b2NvbCBvbiBKMTkzOSB0aGF0IGRlbGl2ZXJzIG1lc3NhZ2VzIAo+OCBieXRlcz8KPiA+IAo+ID4gS3VydAo+ID4gPiAKPiA+ID4gSSB1c2UgdGhlIHNlbmRUbyBtZXRob2QgdG8gc2VuZCBmcmFtZS4KPiA+ID4gCj4gPiA+IERvIEkgaGF2ZSB0byBkbyBzb21ldGhpbmcgc3BlY2lhbCB0byBzZW5kIGxvbmcgbWVzc2FnZT8KPiA+IAo+ID4gbm8sIG5vdCBuZWNlc3NhcmlseS4KPiA+IAo+ID4gPiBJJ20gd29ya2luZyB3aXRoIGEgMy44LjEzIGtlcm5lbCBvbiBiZWFnbGVib25lIGJsYWNrLgo+ID4gCj4gPiBLaW5kIHJlZ2FyZHMsCj4gPiBLdXJ0Cj4gPiAKPiA+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gCj4gPiBDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgCmNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMgZXQKPiBuZSBkb2l2ZW50IGRvbmMKPiA+IHBhcyBldHJl
+ IGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogCnJlY3UgY2UgbWVzc2FnZSBwYXIgZXJyZXVyLAo+IHZldWlsbGV6IGxlIHNpZ25hbGVyCj4gPiBhIGwnZXhwZWRpdGV1ciBldCBsZSBkZXRydWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgCm1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMgZXRhbnQKPiBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLAo+ID4gT3JhbmdlIGRlY2xpbmUgdG91dGUgcmVzcG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgCm91IGZhbHNpZmllLiBNZXJjaS4KPiA+IAo+ID4gVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgCmluZm9ybWF0aW9uIHRoYXQgbWF5IGJlCj4gcHJvdGVjdGVkIGJ5IGxhdzsKPiA+IHRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgo+ID4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeS
+ B0aGUgc2VuZGVyIGFuZCAKZGVsZXRlIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgo+ID4gQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIApiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4KPiA+IFRoYW5rIHlvdS4KPiA+IAo+IC0tCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiIgaW4KPiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vIDxhdD4gdmdlci5rZXJuZWwub3JnCj4gTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4gCj4gCgoK
 
-On 01/16/2015 09:52 AM, kbuild test robot wrote:
-> drivers/net/can/dev.c:294:2-3: Unneeded semicolon
->=20
->=20
->  Removes unneeded semicolon.
->=20
-> Generated by: scripts/coccinelle/misc/semicolon.cocci
->=20
-> CC: Andri Yngvason <andri.yngvason@marel.com>
-> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-
-Tnx, applied to can/master.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---HGwwq557kkMNGBKuuSBOcPQgdf5olvLbT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJUuNJbAAoJECte4hHFiupUE7gP/2GAc4UBtcsZU0IcpkGTw2BO
-kdDXWMn3RyBrcy+up0PpLa2M94wWG+V2UrtCXQztlSfLq7imHg5XIUYgpHAbpVA4
-/VGoKOlM6ovpQdhOiNswC3b2cxeddlJ97mzOoZ/zDZUaHq+vA8rygkCkmctVz+P9
-DXBpLtvHSJ+y2w2lTSdVmyXSdWDLgJbCyutgz+KuE9iBfQi3/enW9XrBklhAhqyn
-/100qtucocLB7C2gu4LK9+DHsOQZynusaPY/TmRUHT1/hewBNkvyFJmCSLq4iKsO
-H8pB+PUm28Y2WLG23wfQ9e7vIuyWGHBsXHfAilWpmdab1ydlmqkF7BkoejNn4XpB
-CaI//ilHPCdI2lhBQjThPytX4HSY6S0qM9fvn7HOecA8s27CQjcrj7v/9E0Ifndj
-MjSwudBln/U1C6/4vG/w67tmKUeXxjUrru4uL/TJpyHfSEJUqsNopltOdl1AcnAj
-b79c9xo4DRHVPir9W9FsTKnNJSW5pCQQN+5LdbV7FbRnrApHer/53IaZ2GrW/eiH
-253/TkucPaUeFpqWfMAz1utIe3Ol8MsAG8/wnmykBWFnaN39UcdTXvkvaQJ3k2w7
-b2E37swbUlkkZwioRed8UQRzhJ9t9IxIBc9XXkYKPk0Jhv54mj268SqVWh3fFQni
-yERmxIcNDEY/IAT0CLOk
-=7sEt
------END PGP SIGNATURE-----
-
---HGwwq557kkMNGBKuuSBOcPQgdf5olvLbT--
