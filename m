@@ -1,256 +1,91 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH v7] can: move can_stats.bus_off++ from can_bus_off into
- can_change_state
-Date: Fri, 16 Jan 2015 14:30:28 +0000
-Message-ID: <0324fb6a-bfe4-4a0f-8b77-b683694cf252@GRBSR0089.marel.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v4 2/4] can: kvaser_usb: Update error counters before
+ exiting on OOM
+Date: Fri, 16 Jan 2015 15:39:47 +0100
+Message-ID: <54B922B3.1020608@pengutronix.de>
+References: <20141223154654.GB6460@vivalin-002> <20150111200544.GA8855@linux> <20150111201116.GB8855@linux> <20150111201519.GC8855@linux> <54B3AB6C.8020900@pengutronix.de> <20150112203650.GA11355@linux>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0064.outbound.protection.outlook.com ([157.55.234.64]:44288
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754584AbbAPOaf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 16 Jan 2015 09:30:35 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de, wg@grandegger.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150112203650.GA11355@linux>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, andri.yngvason@marel.com
+List-Id: linux-can.vger.kernel.org
 
-In order to be able to move the stats increment from can_bus_off() into
-can_change_state(), the increment had to be moved back into code that was using
-can_bus_off() but not can_change_state().
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-As a side-effect, this patch fixes the following bugs:
- * Redundant call to can_bus_off() in c_can.
- * Bus-off counted twice in xilinx_can.
+On 01/12/2015 09:36 PM, Ahmed S. Darwish wrote:
+> On Mon, Jan 12, 2015 at 12:09:32PM +0100, Marc Kleine-Budde wrote:
+>> On 01/11/2015 09:15 PM, Ahmed S. Darwish wrote:
+>>> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+>>>
+>>> Let the error counters be more accurate in case of Out of
+>>> Memory conditions.
+>>
+>> Please have a look at kvaser_usb_rx_error(), the whole state handling =
+is
+>> omitted in case of OOM.
+>>
+>=20
+> I see. Regarding kvaser_usb_rx_error(), would something like
+> below patch be acceptable?=20
+>=20
+> Kindly note that separating recording interface state from
+> error frame packet building leads to duplication of a good
+> number of if-conditions. Meanwhile, it truly saves _all_
+> of the possible state before any ENOMEM -- the correct thing
+> to do.
+>=20
+> Another solution was to allocate the can frame on the stack,
+> and thus avoiding any code duplication. But this only leads
+> to calls of "kvaser_usb_simple_msg_async", which can fail
+> with -ENOMEM by itself, returning to the very same problem
+> again.=20
+>=20
+> If the patch is acceptable, I'll rebase my USBCAN-II driver
+> above it and re-submit the series (minus the merged patch).
 
-Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
----
-Changes since last patch:
- * Rebase against linux-can-next
- * bfin_can: fix FTBFS
+Looks good from my point of view, stats and state are handled
+independent of the error skb.
 
----
- drivers/net/can/bfin_can.c                  | 1 +
- drivers/net/can/c_can/c_can.c               | 2 +-
- drivers/net/can/cc770/cc770.c               | 1 +
- drivers/net/can/dev.c                       | 3 ++-
- drivers/net/can/janz-ican3.c                | 1 +
- drivers/net/can/m_can/m_can.c               | 1 +
- drivers/net/can/pch_can.c                   | 1 +
- drivers/net/can/rcar_can.c                  | 1 +
- drivers/net/can/softing/softing_main.c      | 1 +
- drivers/net/can/spi/mcp251x.c               | 1 +
- drivers/net/can/ti_hecc.c                   | 1 +
- drivers/net/can/usb/ems_usb.c               | 1 +
- drivers/net/can/usb/esd_usb2.c              | 1 +
- drivers/net/can/usb/peak_usb/pcan_usb.c     | 1 +
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 1 +
- drivers/net/can/usb/usb_8dev.c              | 1 +
- 16 files changed, 17 insertions(+), 2 deletions(-)
+Andri can you have a look at the state handling itself?
 
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 417d5099..e7a6363 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -352,6 +352,7 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
- 		netdev_dbg(dev, "bus-off mode interrupt\n");
- 		state = CAN_STATE_BUS_OFF;
- 		cf->can_id |= CAN_ERR_BUSOFF;
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(dev);
- 	}
- 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index f94a9fa..70f77e9 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -866,7 +866,7 @@ static int c_can_handle_state_change(struct net_device *dev,
- 	case C_CAN_BUS_OFF:
- 		/* bus-off state */
- 		priv->can.state = CAN_STATE_BUS_OFF;
--		can_bus_off(dev);
-+		priv->can.can_stats.bus_off++;
- 		break;
- 	default:
- 		break;
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index c486fe5..c11d449 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -535,6 +535,7 @@ static int cc770_err(struct net_device *dev, u8 status)
- 		cc770_write_reg(priv, control, CTRL_INI);
- 		cf->can_id |= CAN_ERR_BUSOFF;
- 		priv->can.state = CAN_STATE_BUS_OFF;
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(dev);
- 	} else if (status & STAT_WARN) {
- 		cf->can_id |= CAN_ERR_CRTL;
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 3ec8f6f..e54dbc1a 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -289,6 +289,8 @@ static void can_update_state_error_stats(struct net_device *dev,
- 		priv->can_stats.error_passive++;
- 		break;
- 	case CAN_STATE_BUS_OFF:
-+		priv->can_stats.bus_off++;
-+		break;
- 	default:
- 		break;
- 	};
-@@ -544,7 +546,6 @@ void can_bus_off(struct net_device *dev)
- 	netdev_dbg(dev, "bus-off\n");
- 
- 	netif_carrier_off(dev);
--	priv->can_stats.bus_off++;
- 
- 	if (priv->restart_ms)
- 		mod_timer(&priv->restart_timer,
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 1b11839..0eb4d18 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1008,6 +1008,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
- 		if (status & SR_BS) {
- 			state = CAN_STATE_BUS_OFF;
- 			cf->can_id |= CAN_ERR_BUSOFF;
-+			mod->can.can_stats.bus_off++;
- 			can_bus_off(dev);
- 		} else if (status & SR_ES) {
- 			if (rxerr >= 128 || txerr >= 128)
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index d7bc462..b2ecb6c 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -589,6 +589,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 		/* bus-off state */
- 		priv->can.state = CAN_STATE_BUS_OFF;
- 		m_can_disable_all_interrupts(priv);
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(dev);
- 		break;
- 	default:
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index a67eb01..e187ca7 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -505,6 +505,7 @@ static void pch_can_error(struct net_device *ndev, u32 status)
- 		pch_can_set_rx_all(priv, 0);
- 		state = CAN_STATE_BUS_OFF;
- 		cf->can_id |= CAN_ERR_BUSOFF;
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(ndev);
- 	}
- 
-diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-index 91cd48c..7deb80d 100644
---- a/drivers/net/can/rcar_can.c
-+++ b/drivers/net/can/rcar_can.c
-@@ -331,6 +331,7 @@ static void rcar_can_error(struct net_device *ndev)
- 		priv->can.state = CAN_STATE_BUS_OFF;
- 		/* Clear interrupt condition */
- 		writeb(~RCAR_CAN_EIFR_BOEIF, &priv->regs->eifr);
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(ndev);
- 		if (skb)
- 			cf->can_id |= CAN_ERR_BUSOFF;
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 2bf98d8..7621f91 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -261,6 +261,7 @@ static int softing_handle_1(struct softing *card)
- 				++priv->can.can_stats.error_passive;
- 			else if (can_state == CAN_STATE_BUS_OFF) {
- 				/* this calls can_close_cleanup() */
-+				++priv->can.can_stats.bus_off;
- 				can_bus_off(netdev);
- 				netif_stop_queue(netdev);
- 			}
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index c66d699..bf63fee 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -905,6 +905,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
- 		if (priv->can.state == CAN_STATE_BUS_OFF) {
- 			if (priv->can.restart_ms == 0) {
- 				priv->force_quit = 1;
-+				priv->can.can_stats.bus_off++;
- 				can_bus_off(net);
- 				mcp251x_hw_sleep(spi);
- 				break;
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 9a07eaf..e95a9e1 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -715,6 +715,7 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
- 		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
- 		/* Disable all interrupts in bus-off to avoid int hog */
- 		hecc_write(priv, HECC_CANGIM, 0);
-+		++priv->can.can_stats.bus_off;
- 		can_bus_off(ndev);
- 	}
- 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 29d3f09..9376f5e 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -347,6 +347,7 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
- 			dev->can.state = CAN_STATE_BUS_OFF;
- 			cf->can_id |= CAN_ERR_BUSOFF;
- 
-+			dev->can.can_stats.bus_off++;
- 			can_bus_off(dev->netdev);
- 		} else if (state & SJA1000_SR_ES) {
- 			dev->can.state = CAN_STATE_ERROR_WARNING;
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index c063a54..bacca0b 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -250,6 +250,7 @@ static void esd_usb2_rx_event(struct esd_usb2_net_priv *priv,
- 			case ESD_BUSSTATE_BUSOFF:
- 				priv->can.state = CAN_STATE_BUS_OFF;
- 				cf->can_id |= CAN_ERR_BUSOFF;
-+				priv->can.can_stats.bus_off++;
- 				can_bus_off(priv->netdev);
- 				break;
- 			case ESD_BUSSTATE_WARN:
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 4e1659d..2a1c9ce 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -488,6 +488,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
- 	switch (new_state) {
- 	case CAN_STATE_BUS_OFF:
- 		cf->can_id |= CAN_ERR_BUSOFF;
-+		mc->pdev->dev.can.can_stats.bus_off++;
- 		can_bus_off(mc->netdev);
- 		break;
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 4cfa3b8..145fa87 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -634,6 +634,7 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
- 	switch (new_state) {
- 	case CAN_STATE_BUS_OFF:
- 		can_frame->can_id |= CAN_ERR_BUSOFF;
-+		dev->can.can_stats.bus_off++;
- 		can_bus_off(netdev);
- 		break;
- 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index ef674ec..dd52c7a 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -377,6 +377,7 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
- 	case USB_8DEV_STATUSMSG_BUSOFF:
- 		priv->can.state = CAN_STATE_BUS_OFF;
- 		cf->can_id |= CAN_ERR_BUSOFF;
-+		priv->can.can_stats.bus_off++;
- 		can_bus_off(priv->netdev);
- 		break;
- 	case USB_8DEV_STATUSMSG_OVERRUN:
--- 
-1.9.1
+Marc
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJUuSK7AAoJECte4hHFiupUfZYP/jM0kuSDBei+yQ+A0iYf8hem
+2B/djBXZwzUlKLSLzrkMgMrMKYXT3PShMFCCSFDLENl9kartGkMPwUES2mEEPvlM
+P1/3I8ZBKxFuuy6Gbxpt7su821C5IunkBgRiYHbrdRp4icn8x2h81OwewbZvvykj
+PXyytegJcGEAqgtuDdjzqWWtWXx4D58IlgnoViFiTy2bueY9valO4Cr1ooYtSH7U
+ldTplZ62kWfToA3b1k6ub/NjfVmZCTu7ENfGx4spWi1BS4R1j3F2vu+VpAasvF2+
+9V9ZAtq0rCkAuKl90MdoA0o1qa7c7w92DXhYLdDaXej6+XUQBALBiWLNNAvIbKpL
+SVQN0qLkC+Y6O0C1YOja8ZmQkQe1Pb4A6wIvITXm96b9M9dayUEts/dRmh+Z1kco
+nuTUsOwFV6DvGzKO831pNCQYpngP26czHyzT3rt7qiEe+CTGgkH50aTQPbcJFWrn
+B6oIovcBrFWGz9DZoSqEf9KYacjLkkRsgn+7pQA6wZmayK2fhMQvnjNCvTnhQkqd
+dVXWShFLqXHMUO6hn4t6L6j278K73l+/9XyB+nMALCA8HyQQf0bUFU1d4uzs608B
+YqtF61P3lAIIcxA51MckfOdfE3vuGmTv9UnsLLEcS3OZ/XjyFKSV1uyMpZbgGV67
+IWmhPnKnuWoIscrc2G91
+=Dtwe
+-----END PGP SIGNATURE-----
+
+--AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq--
