@@ -1,91 +1,247 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 2/4] can: kvaser_usb: Update error counters before
- exiting on OOM
-Date: Fri, 16 Jan 2015 15:39:47 +0100
-Message-ID: <54B922B3.1020608@pengutronix.de>
-References: <20141223154654.GB6460@vivalin-002> <20150111200544.GA8855@linux> <20150111201116.GB8855@linux> <20150111201519.GC8855@linux> <54B3AB6C.8020900@pengutronix.de> <20150112203650.GA11355@linux>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH v4 2/4] can: kvaser_usb: Update error counters before exiting on
+ OOM
+Date: Fri, 16 Jan 2015 15:50:40 +0000
+Message-ID: <20150116155040.20513.13990@shannon>
+References: <20141223154654.GB6460@vivalin-002> <20150111200544.GA8855@linux>
+ <20150111201116.GB8855@linux> <20150111201519.GC8855@linux>
+ <54B3AB6C.8020900@pengutronix.de> <20150112203650.GA11355@linux>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-am1on0060.outbound.protection.outlook.com ([157.56.112.60]:25198
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751717AbbAPPut convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 16 Jan 2015 10:50:49 -0500
 In-Reply-To: <20150112203650.GA11355@linux>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, andri.yngvason@marel.com
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Linux-CAN <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+See comments below.
 
-On 01/12/2015 09:36 PM, Ahmed S. Darwish wrote:
-> On Mon, Jan 12, 2015 at 12:09:32PM +0100, Marc Kleine-Budde wrote:
->> On 01/11/2015 09:15 PM, Ahmed S. Darwish wrote:
->>> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
->>>
->>> Let the error counters be more accurate in case of Out of
->>> Memory conditions.
->>
->> Please have a look at kvaser_usb_rx_error(), the whole state handling =
-is
->> omitted in case of OOM.
->>
->=20
-> I see. Regarding kvaser_usb_rx_error(), would something like
-> below patch be acceptable?=20
->=20
-> Kindly note that separating recording interface state from
-> error frame packet building leads to duplication of a good
-> number of if-conditions. Meanwhile, it truly saves _all_
-> of the possible state before any ENOMEM -- the correct thing
-> to do.
->=20
-> Another solution was to allocate the can frame on the stack,
-> and thus avoiding any code duplication. But this only leads
-> to calls of "kvaser_usb_simple_msg_async", which can fail
-> with -ENOMEM by itself, returning to the very same problem
-> again.=20
->=20
-> If the patch is acceptable, I'll rebase my USBCAN-II driver
-> above it and re-submit the series (minus the merged patch).
+Quoting Ahmed S. Darwish (2015-01-12 20:36:50)
+...
+> 
+> [ Patch is build-tested, but not _fully_ run-time tested.
+> 
+>   It's based on linux-can/testing commit d642b49f6d84b94bd
+>   "can: kvaser_usb: Don't dereference skb after a netif_rx" ]
+> 
+> Subject: [PATCH] can: kvaser_usb: Update net interface state
+>  before exiting on OOM
+> 
+> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> 
+> Let the network interface can bus state and error counters be
+> more accurate in case of Out of Memory conditions.
+> 
+> Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> ---
+>  drivers/net/can/usb/kvaser_usb.c | 182 +++++++++++++++++++++++----------------
+>  1 file changed, 106 insertions(+), 76 deletions(-)
+> 
+> diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+> index c32cd61..2d0ef76 100644
+> --- a/drivers/net/can/usb/kvaser_usb.c
+> +++ b/drivers/net/can/usb/kvaser_usb.c
+> @@ -273,6 +273,10 @@ struct kvaser_msg {
+>         } u;
+>  } __packed;
+>  
+> +struct kvaser_usb_error_summary {
+> +       u8 channel, status, txerr, rxerr, error_factor;
+> +};
+> +
+>  struct kvaser_usb_tx_urb_context {
+>         struct kvaser_usb_net_priv *priv;
+>         u32 echo_index;
+> @@ -615,6 +619,57 @@ static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
+>                 priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+>  }
+>  
 
-Looks good from my point of view, stats and state are handled
-independent of the error skb.
+This function is doing some things that are now be handled by
+can_change_state(). You can make your state handling code a lot shorter by
+using it.
 
-Andri can you have a look at the state handling itself?
+> +static void kvaser_usb_rx_error_update_state(struct kvaser_usb_net_priv *priv,
+> +                                            const struct kvaser_usb_error_summary *es)
+> +{
+> +       struct net_device_stats *stats;
+> +       unsigned int new_state;
+> +
+> +       stats = &priv->netdev->stats;
+> +       new_state = priv->can.state;
+> +
+> +       netdev_dbg(priv->netdev, "Error status: 0x%02x\n", es->status);
+> +
+> +       if (es->status & M16C_STATE_BUS_OFF) {
+can_change_state() updates the state stats.
+> +               priv->can.can_stats.bus_off++;
+> +               new_state = CAN_STATE_BUS_OFF;
+> +       } else if (es->status & M16C_STATE_BUS_PASSIVE) {
+> +               if (priv->can.state != CAN_STATE_ERROR_PASSIVE) {
+See last comment.
+> +                       priv->can.can_stats.error_passive++;
+> +               }
+> +               new_state = CAN_STATE_ERROR_PASSIVE;
+> +       }
+> +
+> +       if (es->status == M16C_STATE_BUS_ERROR) {
+> +               if ((priv->can.state < CAN_STATE_ERROR_WARNING) &&
+> +                   ((es->txerr >= 96) || (es->rxerr >= 96))) {
+Same as above.
+> +                       priv->can.can_stats.error_warning++;
+> +                       new_state = CAN_STATE_ERROR_WARNING;
+> +               } else if (priv->can.state > CAN_STATE_ERROR_ACTIVE) {
+> +                       new_state = CAN_STATE_ERROR_ACTIVE;
+> +               }
+> +       }
+> +
+> +       if (!es->status) {
+> +               new_state = CAN_STATE_ERROR_ACTIVE;
+> +       }
+> +
+> +       if (priv->can.restart_ms &&
+> +           (priv->can.state >= CAN_STATE_BUS_OFF) &&
+> +           (new_state < CAN_STATE_BUS_OFF)) {
+This is NOT in can_change_state(). Keep it.
+> +               priv->can.can_stats.restarts++;
+> +       }
+> +
+> +       if (es->error_factor) {
+> +               priv->can.can_stats.bus_error++;
+> +               stats->rx_errors++;
+> +       }
+> +
+> +       priv->bec.txerr = es->txerr;
+> +       priv->bec.rxerr = es->rxerr;
+can_change_state() does this too.
+> +       priv->can.state = new_state;
+> +}
+> +
+>  static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
+>                                 const struct kvaser_msg *msg)
+...
+> -       if (status & M16C_STATE_BUS_RESET) {
+> +       if (es.status & M16C_STATE_BUS_RESET) {
+>                 kvaser_usb_unlink_tx_urbs(priv);
+>                 return;
+>         }
+>  
+OK, maybe we need to move "priv->can.state = new_state" out of
+can_change_state(). See explanation below.
+> +       old_state = priv->can.state;
+> +       kvaser_usb_rx_error_update_state(priv, &es);
+> +       new_state = priv->can.state;
+> +
+>         skb = alloc_can_err_skb(priv->netdev, &cf);
+>         if (!skb) {
+>                 stats->rx_dropped++;
+>                 return;
+>         }
+>  
+You should be able to replace this:
+> -       new_state = priv->can.state;
+> -
+> -       netdev_dbg(priv->netdev, "Error status: 0x%02x\n", status);
+> -
+> -       if (status & M16C_STATE_BUS_OFF) {
+> -               cf->can_id |= CAN_ERR_BUSOFF;
+> -
+> -               priv->can.can_stats.bus_off++;
+> +       if (es.status & M16C_STATE_BUS_OFF) {
+>                 if (!priv->can.restart_ms)
+>                         kvaser_usb_simple_msg_async(priv, CMD_STOP_CHIP);
+> -
+>                 netif_carrier_off(priv->netdev);
+>  
+> -               new_state = CAN_STATE_BUS_OFF;
+> -       } else if (status & M16C_STATE_BUS_PASSIVE) {
+> -               if (priv->can.state != CAN_STATE_ERROR_PASSIVE) {
+> +               cf->can_id |= CAN_ERR_BUSOFF;
+> +       } else if (es.status & M16C_STATE_BUS_PASSIVE) {
+> +               if (old_state != CAN_STATE_ERROR_PASSIVE) {
+>                         cf->can_id |= CAN_ERR_CRTL;
+>  
+> -                       if (txerr || rxerr)
+> -                               cf->data[1] = (txerr > rxerr)
+> +                       if (es.txerr || es.rxerr)
+> +                               cf->data[1] = (es.txerr > es.rxerr)
+>                                                 ? CAN_ERR_CRTL_TX_PASSIVE
+>                                                 : CAN_ERR_CRTL_RX_PASSIVE;
+>                         else
+>                                 cf->data[1] = CAN_ERR_CRTL_TX_PASSIVE |
+>                                               CAN_ERR_CRTL_RX_PASSIVE;
+> -
+> -                       priv->can.can_stats.error_passive++;
+>                 }
+> -
+> -               new_state = CAN_STATE_ERROR_PASSIVE;
+>         }
+>  
+> -       if (status == M16C_STATE_BUS_ERROR) {
+> -               if ((priv->can.state < CAN_STATE_ERROR_WARNING) &&
+> -                   ((txerr >= 96) || (rxerr >= 96))) {
+> +       if (es.status == M16C_STATE_BUS_ERROR) {
+> +               if ((old_state < CAN_STATE_ERROR_WARNING) &&
+> +                   ((es.txerr >= 96) || (es.rxerr >= 96))) {
+>                         cf->can_id |= CAN_ERR_CRTL;
+> -                       cf->data[1] = (txerr > rxerr)
+> +                       cf->data[1] = (es.txerr > es.rxerr)
+>                                         ? CAN_ERR_CRTL_TX_WARNING
+>                                         : CAN_ERR_CRTL_RX_WARNING;
+> -
+> -                       priv->can.can_stats.error_warning++;
+> -                       new_state = CAN_STATE_ERROR_WARNING;
+> -               } else if (priv->can.state > CAN_STATE_ERROR_ACTIVE) {
+> +               } else if (old_state > CAN_STATE_ERROR_ACTIVE) {
+>                         cf->can_id |= CAN_ERR_PROT;
+>                         cf->data[2] = CAN_ERR_PROT_ACTIVE;
+> -
+> -                       new_state = CAN_STATE_ERROR_ACTIVE;
+>                 }
+With something like:
+	if(new_state != old_state)
+	{
+		tx_state = get_tx_state(...);
+		rx_state = get_rx_state(...);
+		can_change_state(priv, cf, tx_state, rx_state);
+		if(new_state == CAN_STATE_BUS_OFF)
+			bus_off(...);
+	}
+>         }
+>  
+> -       if (!status) {
+> +       if (!es.status) {
+>                 cf->can_id |= CAN_ERR_PROT;
+>                 cf->data[2] = CAN_ERR_PROT_ACTIVE;
+> -
+> -               new_state = CAN_STATE_ERROR_ACTIVE;
+>         }
+>  
+...
 
-Marc
+I suggest that you create functions named kvaser_get_tx_state and
+kvaser_get_rx_state (or one function that returns to argument if that suits you
+better) based on kvaser_usb_rx_error_update_state.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Because you want to assign the netlink state before you do the skb alloc, you
+need to make a copy of the netlink state before you change it and reassign the
+old state to the netlink structure after the alloc succeeds. This is because
+can_change_state() relies on priv->can.state for the "current state". This is a
+hack. Perhaps we need to split up can_change_state().
 
+See:
+http://article.gmane.org/gmane.linux.can/7164
+http://article.gmane.org/gmane.linux.can/7162
+http://article.gmane.org/gmane.linux.can/7163
+http://article.gmane.org/gmane.linux.can/7167
 
---AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJUuSK7AAoJECte4hHFiupUfZYP/jM0kuSDBei+yQ+A0iYf8hem
-2B/djBXZwzUlKLSLzrkMgMrMKYXT3PShMFCCSFDLENl9kartGkMPwUES2mEEPvlM
-P1/3I8ZBKxFuuy6Gbxpt7su821C5IunkBgRiYHbrdRp4icn8x2h81OwewbZvvykj
-PXyytegJcGEAqgtuDdjzqWWtWXx4D58IlgnoViFiTy2bueY9valO4Cr1ooYtSH7U
-ldTplZ62kWfToA3b1k6ub/NjfVmZCTu7ENfGx4spWi1BS4R1j3F2vu+VpAasvF2+
-9V9ZAtq0rCkAuKl90MdoA0o1qa7c7w92DXhYLdDaXej6+XUQBALBiWLNNAvIbKpL
-SVQN0qLkC+Y6O0C1YOja8ZmQkQe1Pb4A6wIvITXm96b9M9dayUEts/dRmh+Z1kco
-nuTUsOwFV6DvGzKO831pNCQYpngP26czHyzT3rt7qiEe+CTGgkH50aTQPbcJFWrn
-B6oIovcBrFWGz9DZoSqEf9KYacjLkkRsgn+7pQA6wZmayK2fhMQvnjNCvTnhQkqd
-dVXWShFLqXHMUO6hn4t6L6j278K73l+/9XyB+nMALCA8HyQQf0bUFU1d4uzs608B
-YqtF61P3lAIIcxA51MckfOdfE3vuGmTv9UnsLLEcS3OZ/XjyFKSV1uyMpZbgGV67
-IWmhPnKnuWoIscrc2G91
-=Dtwe
------END PGP SIGNATURE-----
-
---AtBsdgaKw3vtg7qVq5JfCQrtTMfNTEMTq--
+Best regards,
+Andri Yngvason
