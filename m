@@ -1,41 +1,86 @@
-From: Viktor Babrian <babrian.viktor@renyi.mta.hu>
-Subject: Re: [PATCH 3.19-rc3] c_can: end transmission on network stop
-Date: Sun, 18 Jan 2015 20:01:40 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1501181931400.32136@login>
-References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login>
- <20150113153243.26859.47218@shannon> <alpine.DEB.2.02.1501181809150.32136@login>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v4 3/4] can: kvaser_usb: Add support for the Usbcan-II
+ family
+Date: Sun, 18 Jan 2015 15:12:21 -0500
+Message-ID: <20150118201221.GA15143@linux>
+References: <20141223154654.GB6460@vivalin-002>
+ <20150111200544.GA8855@linux>
+ <20150111201116.GB8855@linux>
+ <20150111201519.GC8855@linux>
+ <20150111203612.GA8999@linux>
+ <20150112135302.GB18351@hposo>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx1.renyi.hu ([193.224.79.18]:38010 "EHLO smtp.renyi.hu"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751364AbbARTBl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 18 Jan 2015 14:01:41 -0500
-In-Reply-To: <alpine.DEB.2.02.1501181809150.32136@login>
+Received: from mail-wg0-f42.google.com ([74.125.82.42]:41230 "EHLO
+	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751347AbbARUM0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 18 Jan 2015 15:12:26 -0500
+Content-Disposition: inline
+In-Reply-To: <20150112135302.GB18351@hposo>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Andri Yngvason <andri.yngvason@marel.com>, Tom Evans <tom_usenet@optusnet.com.au>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Olivier Sobrie <olivier@sobrie.be>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 
+Hi!
 
-Controller put into init mode in betwork stop to end pending 
-transmission. The issue is observed in cases when transmitted frame is not 
-acked.
+On Mon, Jan 12, 2015 at 02:53:02PM +0100, Olivier Sobrie wrote:
+> Hello,
+> 
+> On Sun, Jan 11, 2015 at 03:36:12PM -0500, Ahmed S. Darwish wrote:
+> > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> > 
 
-Signed-off-by: Viktor Babrian <babrian.viktor@renyi.mta.hu>
----
---- linux-3.19-rc3/drivers/net/can/c_can/c_can.c	2015-01-06 
-02:05:20.000000000 +0100
-+++ linux/drivers/net/can/c_can/c_can.c	2015-01-18 18:07:09.000000000 
-+0100
-@@ -615,6 +615,9 @@ static void c_can_stop(struct net_device
+...
 
-  	c_can_irq_control(priv, false);
+> > @@ -98,7 +128,13 @@
+> >  #define CMD_START_CHIP_REPLY		27
+> >  #define CMD_STOP_CHIP			28
+> >  #define CMD_STOP_CHIP_REPLY		29
+> > -#define CMD_GET_CARD_INFO2		32
+> > +#define CMD_READ_CLOCK			30
+> > +#define CMD_READ_CLOCK_REPLY		31
+> 
+> These two defines are not used.
+> 
 
-+	/* put ctrl to init on stop to end ongoing transmission */
-+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_INIT);
-+
-  	/* deactivate pins */
-  	pinctrl_pm_select_sleep_state(dev->dev.parent);
-  	priv->can.state = CAN_STATE_STOPPED;
+They were added for completeness: the only gap in our continuous
+sequence of command IDs from 12 to 39 ;-) No big deal, to be
+removed in the next submission.
 
+...
+
+> > +
+> > +struct kvaser_msg_tx_acknowledge_header {
+> > +	u8 channel;
+> > +	u8 tid;
+> > +};
+> 
+> Is this struct really needed? Can't you simply use
+> leaf_msg_tx_acknowledge or usbcan_msg_tx_acknowledge
+> structures to read the header.
+> Same for kvaser_msg_rx_can_header.
+> 
+
+They're added to ensure type-safety throughout the code. Basically
+they're the common part of a command that has different wire format
+between the Leaf and the USBCan, but share a common header.  Such
+notation was only added when it was strictly necessary.
+
+For example, there are three functions where 'rx_can_header' is
+referenced in the driver, and one function where 'tx_acknowledge_header'
+is referenced. Without such header structure, I'll have to sprinkle
+3 to 4 extra blocks of:
+
+	switch (dev->family) {
+	       case KVASER_LEAF: 
+	       case KVASER_USBCAN:
+	}
+
+which would be _really_ ugly. The *_header notation ensures that, in
+the body of each function, we're accessing the fields in a very safe
+manner.
+
+Thanks,
+Darwish
