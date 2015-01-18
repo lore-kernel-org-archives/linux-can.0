@@ -1,60 +1,52 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: linux-can ISOTP module
-Date: Fri, 16 Jan 2015 18:31:40 +0100
-Message-ID: <54B94AFC.9080201@hartkopp.net>
-References: <loom.20140604T144601-350@post.gmane.org>	<538F6836.3060508@hartkopp.net>	<CAA7hF3w-W1E0E5M4Gkc=0aYB0NQPrOMJfLp-iSG8K8HJU-sdoA@mail.gmail.com>	<539043EA.6030001@artisandeveloppeur.fr>	<5390B575.7030506@hartkopp.net>	<CAA7hF3xomuS-mDRQWmkC=D9YfbDPt+TwXKc7+ZFtUNwkg5cMdQ@mail.gmail.com>	<53A48699.6030605@hartkopp.net>	<CAA7hF3yzM8KZjj+4d8m2rUZaDWPuC2hygYZ6PzFz4jWu1Y8e_A@mail.gmail.com>	<5464EEC4.1080009@hartkopp.net> <CAA7hF3ypuVbfxbskM+2bn_58a-k0EtCePxQ_1i6j24G5H=zFSQ@mail.gmail.com>
+From: Viktor Babrian <babrian.viktor@renyi.mta.hu>
+Subject: [PATCH 3.19-rc3] c_can: SIE disabled when berr-reporting is off to
+ reduce irq flood
+Date: Sun, 18 Jan 2015 19:30:58 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1501181809150.32136@login>
+References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login>
+ <20150113153243.26859.47218@shannon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:37475 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754946AbbAPRbv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 16 Jan 2015 12:31:51 -0500
-In-Reply-To: <CAA7hF3ypuVbfxbskM+2bn_58a-k0EtCePxQ_1i6j24G5H=zFSQ@mail.gmail.com>
+Received: from mx1.renyi.hu ([193.224.79.18]:37534 "EHLO smtp.renyi.hu"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751277AbbARSbJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sun, 18 Jan 2015 13:31:09 -0500
+In-Reply-To: <20150113153243.26859.47218@shannon>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: maxime@artisandeveloppeur.fr, linux-can@vger.kernel.org
-
-On 15.01.2015 09:45, laurent vaudoit wrote:
-
-> On Thu, Nov 13, 2014 at 6:47 PM, Oliver Hartkopp <socketcan@hartkopp.net
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
 
->     >> I added the funtionality of a different rx_ext_addr to a specific branch of
->     >> can-utils and can-modules:
->     >>
->     >>https://gitorious.org/linux-can/can-utils/commits/rx_ext_addr
->     >>https://gitorious.org/linux-can/can-modules/commits/rx_ext_addr
->     >>
->     >> Please check them out for a test. As all the isotp tools (in the branch)
->     >> support the new feature too, it should be easy to do.
->     >
->     > i did not have time for test but regarding the source code, it should be ok.
+Status interrupt is to be disabled if bus error reporting is off in order 
+to reduce interrupt flood when e.g. a frame is not acked. Side effect is 
+that when berr-reporting off, warn->pass and pass-warn state transitions 
+may be reported later (upon a successful rx/tx event) or even go 
+undetected. With proper implementation, these transitions could always be 
+detected (but still later). It is considered better to have a non-accurate 
+report of these transitions than having a non-responding system in 
+possible scenarios.
 
-(..)
->
-> it works well.
-> I've made some tests sending single frame and segmented frame
-> and receiving some single frame, with different extended adressing mode.
->
-> We are now able to deal with all the addressing method of the Iso15765-2.
+Signed-off-by: Viktor Babrian <babrian.viktor@renyi.mta.hu>
+---
+--- linux-3.19-rc3/drivers/net/can/c_can/c_can.c	2015-01-06 
+02:05:20.000000000 +0100
++++ linux/drivers/net/can/c_can/c_can.c	2015-01-18 17:46:09.000000000 
++0100
+@@ -242,8 +242,11 @@ static void c_can_irq_control(struct c_c
+  {
+  	u32 ctrl = priv->read_reg(priv,	C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
 
-Great! Many thanks for testing!
++	/* do not enable status irq if bus error reporting is not needed 
+*/
+  	if (enable)
+-		ctrl |= CONTROL_IRQMSK;
++		ctrl |= (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) 
+?
++			CONTROL_IRQMSK :
++			(CONTROL_IRQMSK & ~CONTROL_SIE);
 
-> Branch can be merge (by the way it seems kernel evolution is allready merged
-> into master).
-
-Yes, I had some other stuff to add for a complete ISO15765-2:2015 support, 
-e.g. the 32 bit FF_DL and the checks for optimized frame length.
-
-So I needed to extend the API step by step and the rx_ext_addr was already 
-defined - therefore it was hard to continue with integrating new features.
-
-But it's good to know that it fits your needs and the isotp got 'even better' 
-for all use cases in the wild :-)
-
-Best regards,
-Oliver
+  	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
+  }
 
