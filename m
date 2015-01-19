@@ -1,57 +1,61 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can/peak_usb: add adapter BEC callback definition
-Date: Mon, 19 Jan 2015 17:15:27 +0100
-Message-ID: <1421684127-12764-3-git-send-email-s.grosjean@peak-system.com>
-References: <1421684127-12764-1-git-send-email-s.grosjean@peak-system.com>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: [PATCH 3.19-rc3] c_can: SIE disabled when berr-reporting is off
+ to reduce irq flood
+Date: Tue, 20 Jan 2015 09:35:56 +1100
+Message-ID: <54BD86CC.70302@optusnet.com.au>
+References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login> <20150113153243.26859.47218@shannon> <alpine.DEB.2.02.1501181809150.32136@login> <54BBFCAF.2090603@pengutronix.de>
+Reply-To: tom_usenet@optusnet.com.au
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:47723 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750824AbbASQXn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Jan 2015 11:23:43 -0500
-In-Reply-To: <1421684127-12764-1-git-send-email-s.grosjean@peak-system.com>
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60058 "EHLO
+	mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751596AbbASWgC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Jan 2015 17:36:02 -0500
+In-Reply-To: <54BBFCAF.2090603@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Viktor Babrian <babrian.viktor@renyi.mta.hu>, Andri Yngvason <andri.yngvason@marel.com>
+Cc: linux-can@vger.kernel.org
 
-Add the definition of a new callback that enable any PEAK-System CAN USB
-adapter to grant read access to its Bus Error Counters value.
-This ability is not supported by all the PEAK-System adapters, thus,
-for those, the callback pointer will be initiaized to NULL, which is
-correct regarding the linux-can device driver specs.
+On 19/01/15 05:34, Marc Kleine-Budde wrote:
+> On 01/18/2015 07:30 PM, Viktor Babrian wrote:
+>>
+>> Status interrupt is to be disabled if bus error reporting is off in order
+>> to reduce interrupt flood when e.g. a frame is not acked. Side effect is
+>> that when berr-reporting off, warn->pass and pass-warn state transitions
+>> may be reported later (upon a successful rx/tx event) or even go
+>> undetected. With proper implementation, these transitions could always be
+>> detected (but still later). It is considered better to have a non-accurate
+>> report of these transitions than having a non-responding system in
+>> possible scenarios.
+>>
+>> Signed-off-by: Viktor Babrian <babrian.viktor@renyi.mta.hu>
+>
+> NACK. The transitions are important for some applications. I've an not
+> yet mainlined series that limits the bus errors. I'm going to port them
+> to the current kernel tomorrow. Can you test it?
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 ++
- drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 ++
- 2 files changed, 4 insertions(+)
+Those "some applications" can enable "CAN_CTRLMODE_BERR_REPORTING" and get 
+error reporting and prompt (and complete) state reporting.
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index c23609a..7a73060 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -794,6 +794,8 @@ static int peak_usb_create_dev(struct peak_usb_adapter *peak_usb_adapter,
- 	dev->can.data_bittiming_const = &peak_usb_adapter->data_bittiming_const;
- 	dev->can.do_set_data_bittiming = peak_usb_set_data_bittiming;
- 	dev->can.do_set_mode = peak_usb_set_mode;
-+	dev->can.do_get_berr_counter =
-+		peak_usb_adapter->candev_get_berr_counter;
- 	dev->can.ctrlmode_supported = peak_usb_adapter->ctrlmode_supported;
- 
- 	netdev->netdev_ops = &peak_usb_netdev_ops;
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index a58d971..fb402d2 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -70,6 +70,8 @@ struct peak_usb_adapter {
- 	int (*dev_stop)(struct peak_usb_device *dev);
- 	int (*dev_restart_async)(struct peak_usb_device *dev, struct urb *urb,
- 					u8 *buf);
-+	int (*candev_get_berr_counter)(const struct net_device *netdev,
-+				       struct can_berr_counter *bec);
- 	u8 ep_msg_in;
- 	u8 ep_msg_out[PCAN_USB_MAX_CHANNEL];
- 	u8 ts_used_bits;
--- 
-1.9.1
+Doesn't that answer your concern?
+
+That approach was implemented in flexcan.c as per this patch:
+
+ > Author: Wolfgang Grandegger <wg@grandegger.com>  2012-10-11 06:10:42
+ > Committer: Marc Kleine-Budde <mkl@pengutronix.de>  2012-10-24 03:43:17
+
+     can: flexcan: disable bus error interrupts for the i.MX6q
+
+     This patch adds some Flexcan version info and removes the feature flag
+     FLEXCAN_HAS_BROKEN_ERR_STATE for the i.MX6Q. It also has the line
+     [TR]WRN_INT properly connected.
+
+You approved this approach then (although possibly not knowing that that was 
+what the patch was doing then).
+
+Tom Evans
+
 
