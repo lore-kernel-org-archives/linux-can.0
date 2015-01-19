@@ -1,79 +1,32 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 message length
-Date: Mon, 19 Jan 2015 10:13:09 +0100
-Message-ID: <20150119091309.GB18293@vandijck-laurijssen.be>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <loom.20150116T143025-691@post.gmane.org>
+From: Viktor Babrian <babrian.viktor@renyi.mta.hu>
+Subject: Re: [PATCH 3.19-rc3] c_can: SIE disabled when berr-reporting is off
+ to reduce irq flood
+Date: Mon, 19 Jan 2015 12:32:41 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1501191219410.24804@login>
+References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login>
+ <20150113153243.26859.47218@shannon> <alpine.DEB.2.02.1501181809150.32136@login> <54BBFCAF.2090603@pengutronix.de> <alpine.DEB.2.02.1501181938030.32136@login> <54BC01C5.2070803@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:52418 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751357AbbASJNb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Jan 2015 04:13:31 -0500
-Content-Disposition: inline
-In-Reply-To: <loom.20150116T143025-691@post.gmane.org>
+Received: from mx1.renyi.hu ([193.224.79.18]:56394 "EHLO smtp.renyi.hu"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750850AbbASLcw (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 19 Jan 2015 06:32:52 -0500
+In-Reply-To: <54BC01C5.2070803@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Laurent Vaudoit <laurent.vaudoit@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Viktor Babrian <babrian.viktor@renyi.mta.hu>, Andri Yngvason <andri.yngvason@marel.com>, Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org
 
-Hey Laurent,
+>> Also note that when the system is flooded by these error interrupts,
+>> system performace degrades so much that serial terminal echo becomes
+>> annoyingly long. When this happens, I wonder how usable the "accurate"
+>> state transition reports are anyway.
+>
+> As I said, they are vital to some applications. The bus error limiting
+> series will follow.
 
-> Hi Kurt,
-> > 
-> > Hey,
-> > 
-> > On Mon, Dec 15, 2014 at 08:58:14AM +0000, pfifre.ext <at> orange.com 
-> wrote:
-> > > Hi Kurt,
-> > > 
-> > > I resolved the issue. The problem appears with long message because, 
-> according to the j1939
-> > specifications, the end of message has to be fulfilled with 0xFF if the 
-> message is not modulo 8.
-> > > Apparently, the j1939  drivers don't make the padding with 0xFF.
-> > 
-> > You're not the first to find an actual ECU complaining on this.
-> > I assembled a patch earlier this year, see http://lists.kde.org/?l=linux-
-> can&m=139825572207448&w=2
-> > 
-> > > Then I do that in my software and it works fine know.
-> > 
-> > I advise to apply that patch, and avoid to calculate packet sizes in 
-> userspace.
-> 
-> I've seen this message concerning a bug in the DLC can frame when a more 
-> than 8 bytes J1939 frame is sent.
-> 
-> Looking at the patch, it seems that every j1939 frame will be padded with 
-> 0xFF, even single frame (less than 8 bytes).
-> I think this is an error as standard SAEJ1939-21 specifies that for example 
-> PGN request (0xEA00) is 3 byes length, and so can frame dlc must be 3 set 
-> to 3.
-
-You're right,
-0xea00 indeed is defined as 3 bytes.
-
-If I recall correctly, J1939 defines _all_ but 0xea00 to be 8 bytes long,
-and use padding when not all bytes are used.
-Your example happens to be the one and only exception.
-
-> 
-> May be the patch should be move on the transport module who manage Data 
-> transfer protocol?
-
-After thinking again, I realize that moving the fix to the transport protocol
-would solve the problem without introducing any unwanted side effects.
-Ensuring that single frames are padded to 8 bytes may be considered
-a freedom/responsability of the userspace program.
-
-> Is there something i missed?
-
-Apparently not :-)
-
-Kind regards,
-Kurt
+OK. possible compromise is to enable buserr interrupts in Warning state 
+only. This way Warning->Passive transition is detected for sure.
+Interrupt flood can only occur if error counter could stay between 96 and 
+128 which can hardly happen if bus is full of error.
