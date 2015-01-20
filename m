@@ -1,13 +1,13 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v6 5/7] can: peak_usb: add support for PEAK new CANFD USB adapters - pcan_usb_pro_*()
-Date: Tue, 20 Jan 2015 15:15:27 +0100
-Message-ID: <1421763329-21915-5-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v6 4/7] can: peak_usb: upgrade core to new CANFD extension - struct canfd_frame
+Date: Tue, 20 Jan 2015 15:15:26 +0100
+Message-ID: <1421763329-21915-4-git-send-email-mkl@pengutronix.de>
 References: <1421763329-21915-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53251 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:53250 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752081AbbATOPg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Jan 2015 09:15:36 -0500
+	with ESMTP id S1752087AbbATOPf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Jan 2015 09:15:35 -0500
 In-Reply-To: <1421763329-21915-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -16,99 +16,62 @@ Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
 From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Add support for the following new PEAK-System technik CANFD USB adapters:
-
-PCAN-USB FD             single CANFD channel USB adapter
-PCAN-USB Pro FD         dual CANFD channels USB adapter
-
-Communication protocol has been developped using some mechanisms that did exist
-in the PCAN-USB Pro, thus, this patch also changes some previously static
-functions and data into global ones.
+Upgrade PEAK-System USB adapters core to the new data structures (names) and
+callbacks added for the support of the CANFD extension.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 16 ++++------------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h | 13 +++++++++++++
- 2 files changed, 17 insertions(+), 12 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 8 +++++---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index a2fc94ab3f9a..a76404569cb7 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -27,14 +27,6 @@
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 6061d8f3ff44..49004aac0492 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -253,7 +253,7 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
+ 	case 0:
+ 		/* transmission complete */
+ 		netdev->stats.tx_packets++;
+-		netdev->stats.tx_bytes += context->dlc;
++		netdev->stats.tx_bytes += context->data_len;
  
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro adapter");
+ 		/* prevent tx timeout */
+ 		netdev->trans_start = jiffies;
+@@ -289,7 +289,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	struct peak_usb_device *dev = netdev_priv(netdev);
+ 	struct peak_tx_urb_context *context = NULL;
+ 	struct net_device_stats *stats = &netdev->stats;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct urb *urb;
+ 	u8 *obuf;
+ 	int i, err;
+@@ -322,7 +322,9 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	}
  
--/* PCAN-USB Pro Endpoints */
--#define PCAN_USBPRO_EP_CMDOUT		1
--#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
--#define PCAN_USBPRO_EP_MSGOUT_0		2
--#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN)
--#define PCAN_USBPRO_EP_MSGOUT_1		3
--#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_IN)
--
- #define PCAN_USBPRO_CHANNEL_COUNT	2
- 
- /* PCAN-USB Pro adapter internal clock (MHz) */
-@@ -322,8 +314,8 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 	return (i >= PCAN_USBPRO_RSP_SUBMIT_MAX) ? -ERANGE : err;
- }
- 
--static int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
--				 int req_value, void *req_addr, int req_size)
-+int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
-+			  int req_value, void *req_addr, int req_size)
- {
- 	int err;
- 	u8 req_type;
-@@ -475,7 +467,7 @@ static int pcan_usb_pro_set_bittiming(struct peak_usb_device *dev,
- 	return pcan_usb_pro_set_bitrate(dev, ccbt);
- }
- 
--static void pcan_usb_pro_restart_complete(struct urb *urb)
-+void pcan_usb_pro_restart_complete(struct urb *urb)
- {
- 	/* can delete usb resources */
- 	peak_usb_async_complete(urb);
-@@ -977,7 +969,7 @@ static void pcan_usb_pro_free(struct peak_usb_device *dev)
- /*
-  * probe function for new PCAN-USB Pro usb interface
-  */
--static int pcan_usb_pro_probe(struct usb_interface *intf)
-+int pcan_usb_pro_probe(struct usb_interface *intf)
- {
- 	struct usb_host_interface *if_desc;
- 	int i;
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index 837cee267132..a62f7ab8980f 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -27,6 +27,14 @@
- #define PCAN_USBPRO_INFO_BL		0
- #define PCAN_USBPRO_INFO_FW		1
- 
-+/* PCAN-USB Pro (FD) Endpoints */
-+#define PCAN_USBPRO_EP_CMDOUT		1
-+#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
-+#define PCAN_USBPRO_EP_MSGOUT_0		2
-+#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN)
-+#define PCAN_USBPRO_EP_MSGOUT_1		3
-+#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_IN)
+ 	context->echo_index = i;
+-	context->dlc = cf->can_dlc;
 +
- /* Vendor Request value for XXX_FCT */
- #define PCAN_USBPRO_FCT_DRVLD		5 /* tell device driver is loaded */
- #define PCAN_USBPRO_FCT_DRVLD_REQ_LEN	16
-@@ -176,4 +184,9 @@ union pcan_usb_pro_rec {
- 	struct pcan_usb_pro_txmsg	tx_msg;
++	/* Note: this works with CANFD frames too */
++	context->data_len = cfd->len;
+ 
+ 	usb_anchor_urb(urb, &dev->tx_submitted);
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index fdc5c0de58f6..34e24c6fd778 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -98,7 +98,7 @@ struct peak_time_ref {
+ struct peak_tx_urb_context {
+ 	struct peak_usb_device *dev;
+ 	u32 echo_index;
+-	u8 dlc;
++	u8 data_len;
+ 	struct urb *urb;
  };
  
-+int pcan_usb_pro_probe(struct usb_interface *intf);
-+int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
-+			  int req_value, void *req_addr, int req_size);
-+void pcan_usb_pro_restart_complete(struct urb *urb);
-+
- #endif
 -- 
 2.1.4
 
