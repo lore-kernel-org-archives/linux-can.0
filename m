@@ -1,86 +1,89 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3.19-rc3] c_can: end transmission on network stop
-Date: Tue, 20 Jan 2015 15:39:02 +0100
-Message-ID: <54BE6886.5040203@pengutronix.de>
-References: <9c72f211-becc-4c0f-94f6-0700dfb1195e@GRBSR0089.marel.net> <alpine.DEB.2.02.1501121751530.28201@login> <1735533.0yOonAfCy1@heinz> <alpine.DEB.2.02.1501121948370.28201@login> <54B472B2.4010300@optusnet.com.au> <alpine.DEB.2.02.1501131523290.12789@login> <20150113153243.26859.47218@shannon> <alpine.DEB.2.02.1501181809150.32136@login> <alpine.DEB.2.02.1501181931400.32136@login>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH] can/peak_usb: add adapter BEC callback definition
+Date: Tue, 20 Jan 2015 15:46:23 +0100
+Message-ID: <54BE6A3F.40405@peak-system.com>
+References: <1421684127-12764-1-git-send-email-s.grosjean@peak-system.com>
+ <1421684127-12764-3-git-send-email-s.grosjean@peak-system.com>
+ <54BE640B.2050509@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2imwo4lWpH8gPGcT01ib01IeQ4E7Nd2RP"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60398 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751396AbbATOjU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Jan 2015 09:39:20 -0500
-In-Reply-To: <alpine.DEB.2.02.1501181931400.32136@login>
+Received: from mail.peak-system.com ([213.157.13.214]:37810 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751651AbbATOqb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Jan 2015 09:46:31 -0500
+In-Reply-To: <54BE640B.2050509@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Viktor Babrian <babrian.viktor@renyi.mta.hu>, linux-can@vger.kernel.org
-Cc: Andri Yngvason <andri.yngvason@marel.com>, Tom Evans <tom_usenet@optusnet.com.au>
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2imwo4lWpH8gPGcT01ib01IeQ4E7Nd2RP
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 01/18/2015 08:01 PM, Viktor Babrian wrote:
->=20
-> Controller put into init mode in betwork stop to end pending=20
-> transmission. The issue is observed in cases when transmitted frame is =
-not=20
-> acked.
->=20
-> Signed-off-by: Viktor Babrian <babrian.viktor@renyi.mta.hu>
-> ---
-> --- linux-3.19-rc3/drivers/net/can/c_can/c_can.c	2015-01-06=20
-> 02:05:20.000000000 +0100
-> +++ linux/drivers/net/can/c_can/c_can.c	2015-01-18 18:07:09.000000000=20
-> +0100
-> @@ -615,6 +615,9 @@ static void c_can_stop(struct net_device
->=20
->   	c_can_irq_control(priv, false);
->=20
-> +	/* put ctrl to init on stop to end ongoing transmission */
-> +	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_INIT);
-> +
->   	/* deactivate pins */
->   	pinctrl_pm_select_sleep_state(dev->dev.parent);
->   	priv->can.state =3D CAN_STATE_STOPPED;
-
-Your mailer has word-wrapped the patch. I've applied it by hand to
-can/master. Please consider using git send-email in the future.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
 
---2imwo4lWpH8gPGcT01ib01IeQ4E7Nd2RP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Le 20/01/2015 15:19, Marc Kleine-Budde a =C3=A9crit :
+> On 01/19/2015 05:15 PM, Stephane Grosjean wrote:
+>> Add the definition of a new callback that enable any PEAK-System CAN=
+ USB
+>> adapter to grant read access to its Bus Error Counters value.
+>> This ability is not supported by all the PEAK-System adapters, thus,
+>> for those, the callback pointer will be initiaized to NULL, which is
+>> correct regarding the linux-can device driver specs.
+>>
+>> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+>> ---
+>>   drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 ++
+>>   drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 ++
+>>   2 files changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/=
+net/can/usb/peak_usb/pcan_usb_core.c
+>> index c23609a..7a73060 100644
+>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>> @@ -794,6 +794,8 @@ static int peak_usb_create_dev(struct peak_usb_a=
+dapter *peak_usb_adapter,
+>>   	dev->can.data_bittiming_const =3D &peak_usb_adapter->data_bittimi=
+ng_const;
+>>   	dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
+>>   	dev->can.do_set_mode =3D peak_usb_set_mode;
+>> +	dev->can.do_get_berr_counter =3D
+>> +		peak_usb_adapter->candev_get_berr_counter;
+>>   	dev->can.ctrlmode_supported =3D peak_usb_adapter->ctrlmode_suppor=
+ted;
+>>  =20
+>>   	netdev->netdev_ops =3D &peak_usb_netdev_ops;
+>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/=
+net/can/usb/peak_usb/pcan_usb_core.h
+>> index a58d971..fb402d2 100644
+>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+>> @@ -70,6 +70,8 @@ struct peak_usb_adapter {
+>>   	int (*dev_stop)(struct peak_usb_device *dev);
+>>   	int (*dev_restart_async)(struct peak_usb_device *dev, struct urb =
+*urb,
+>>   					u8 *buf);
+>> +	int (*candev_get_berr_counter)(const struct net_device *netdev,
+>                ^^^^^^
+>
+> I think this prefix can be removed. I've done so in my series.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+=46YI: I added this specific prefix because this is the only callback I=
+'m=20
+obliged to use with the "struct net_device *" argument.
+No other way to setup a specific callback to get the BEC.
 
-iQIcBAEBCgAGBQJUvmiMAAoJECte4hHFiupU+p8P/RRXqR8HFipaQ2nsL4qji/4u
-aEsBeO6XbI7gRrZPcXWQj17aCTA5tAtkreHPhzDC5Me6SK58XqxWJzEjlzvwraqt
-ByalVqFmlprd1AvucBRKBG/IzgPkfHTyocXj5EiW8c8Q0pt1QjOMbH9bi5BE0EOo
-f6U6ujmDkywsEF9qpiL7hhEgjyW/oYbsBhuVhAyLmfQlYh5+2mu5F7a3V3/xKkHB
-cLPZNUApL6C7+n9Qi+7yRLE7Xmi4Ekte4MtZd6DAjemDz3aXBeGIsQgRk79R2OWe
-zDLWixuWyyCdYw635H6B/OvO4/sX9Gx8MbXxUR5jVXI65MjlCdgeaqr1Hh6XAfKf
-ATqUlw1z7jfkesW1XwjJ557MpJoUf7g7lFOQ0cWBttHoQDpfOf+cOJsj1hBQDKzT
-YnH9Feuoj0UFJGP1rKycEPnJEOSzQr0uKlAFvrB3VwJQAkCU11C58Um2LPCwzad/
-cknrh+CmMySvDpD6MI7rjQVtw9dtbcYxP8TNlBBg+gbvcuInGzNH+EyTsXWnHlwx
-j/vdaTiJeNQKP0MPA0aDyoLJDAcYes46UdOnY/NilUXrVSwR4P63GJX2RbsHZURs
-m4Q1tdRPCjd6y5M3BYdUBDBdbOPxHC9xAzu8UR6RSbFDWJwxNsKPZg1HdpQJaGnR
-jzNzQzP7j/liPp2tPEST
-=S81d
------END PGP SIGNATURE-----
+>
+>> +				       struct can_berr_counter *bec);
+>>   	u8 ep_msg_in;
+>>   	u8 ep_msg_out[PCAN_USB_MAX_CHANNEL];
+>>   	u8 ts_used_bits;
+>>
+> Marc
 
---2imwo4lWpH8gPGcT01ib01IeQ4E7Nd2RP--
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
