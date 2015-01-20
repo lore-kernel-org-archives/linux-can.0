@@ -1,95 +1,51 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [jtkirshe-net-next:core-queue 1002/1025]
- drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false
- due to limited range of data type
-Date: Fri, 30 Jan 2015 11:26:25 +0000
-Message-ID: <20150130112625.25243.36818@shannon>
-References: <201501301018.HN7rQ3rB%fengguang.wu@intel.com>
- <54CB3B1F.6010406@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v6 0/7] add support for PEAK new CANFD USB adapters
+Date: Tue, 20 Jan 2015 15:07:05 +0100
+Message-ID: <1421762832-21175-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0056.outbound.protection.outlook.com ([157.55.234.56]:30720
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1761241AbbA3L0g convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Jan 2015 06:26:36 -0500
-In-Reply-To: <54CB3B1F.6010406@pengutronix.de>
+Received: from [85.220.165.65] ([85.220.165.65]:38641 "EHLO
+	hardanger.do.blackshift.org" rhost-flags-FAIL-FAIL-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1755679AbbA3MrI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Jan 2015 07:47:08 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: kbuild-all@01.org, "Ahmed S. Darwish" <ahmed.darwish@valeo.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: s.grosjean@peak-system.com
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Quoting Marc Kleine-Budde (2015-01-30 08:04:47)
-> Ahmed S. Darwish Cc'ed
-> 
-> On 01/30/2015 03:53 AM, kbuild test robot wrote:
-> > tree:   jtkirshe-net-next/core-queue
-> > head:   c265eda3429432b5e9e53c8082861ffbd2ffd2c2
-> > commit: 96d7f10634e66b27e23854c774fbcc0a2a654e82 [1002/1025] can: kvaser_usb: Consolidate and unify state change handling
-> > config: avr32-allyesconfig (attached as .config)
-> > reproduce:
-> >   wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
-> >   chmod +x ~/bin/make.cross
-> >   git checkout 96d7f10634e66b27e23854c774fbcc0a2a654e82
-> >   # save the attached .config to linux build tree
-> >   make.cross ARCH=avr32 
-> > 
-> > All warnings:
-> > 
-> >    drivers/net/can/usb/kvaser_usb.c: In function 'kvaser_usb_rx_error_update_can_state':
-> >>> drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false due to limited range of data type
-> >>> drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false due to limited range of data type
-> > 
-> > vim +639 drivers/net/can/usb/kvaser_usb.c
-> > 
-> >    623                                                         const struct kvaser_usb_error_summary *es,
-> >    624                                                         struct can_frame *cf)
-> >    625        {
-> >    626                struct net_device_stats *stats;
-> >    627                enum can_state cur_state, new_state, tx_state, rx_state;
-> >    628        
-> >    629                netdev_dbg(priv->netdev, "Error status: 0x%02x\n", es->status);
-> >    630        
-> >    631                stats = &priv->netdev->stats;
-> >    632                new_state = cur_state = priv->can.state;
-> >    633        
-> >    634                if (es->status & (M16C_STATE_BUS_OFF | M16C_STATE_BUS_RESET))
-> >    635                        new_state = CAN_STATE_BUS_OFF;
-> >    636                else if (es->status & M16C_STATE_BUS_PASSIVE)
-> >    637                        new_state = CAN_STATE_ERROR_PASSIVE;
-> >    638                else if (es->status & M16C_STATE_BUS_ERROR) {
-> >  > 639                        if ((es->txerr >= 256) || (es->rxerr >= 256))
-> >    640                                new_state = CAN_STATE_BUS_OFF;
-> >    641                        else if ((es->txerr >= 128) || (es->rxerr >= 128))
-> >    642                                new_state = CAN_STATE_ERROR_PASSIVE;
-> >    643                        else if ((es->txerr >= 96) || (es->rxerr >= 96))
-> >    644                                new_state = CAN_STATE_ERROR_WARNING;
-> >    645                        else if (cur_state > CAN_STATE_ERROR_ACTIVE)
-> >    646                                new_state = CAN_STATE_ERROR_ACTIVE;
-> >    647                }
-> > 
-> > ---
-> > 0-DAY kernel test infrastructure                Open Source Technology Center
-> > http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
-> > 
-> 
+Hey,
 
-Isn't this redundant anyway? This is always handled by a different interrupt,
-right?
+picking up Stephane's work. This is basically the series split into smaller
+patches. See my comments on the original series for more information.
 
-In case it isn't you could probably do something like this:
-if ((es->txerr >= 128) || (es->rxerr >= 128)) {
-        if(cur_state == CAN_STATE_ERROR_PASSIVE)
-                new_state = CAN_STATE_BUS_OFF;
-        else
-                new_state = CAN_STATE_ERROR_PASSIVE;
-} else if ((es->txerr >= 96) || (es->rxerr >= 96)) {
-        new_state = CAN_STATE_ERROR_WARNING;
-} else if (cur_state > CAN_STATE_ERROR_ACTIVE) {
-        new_state = CAN_STATE_ERROR_ACTIVE;
-}
+regrads,
+Marc
 
---
-Andri
+Stephane Grosjean (7):
+  can: peak_usb: export ctrlmode_supported to adapter specific
+  can: peak_usb: add adapter BEC callback definition
+  can: peak_usb: upgrade core to new CANFD extension -
+    peak_usb_set_data_bittiming()
+  can: peak_usb: upgrade core to new CANFD extension - struct
+    canfd_frame
+  can: peak_usb: add support for PEAK new CANFD USB adapters -
+    pcan_usb_pro_*()
+  can: peak_usb: upgrade core to new CANFD extension - add
+    peak_usb_netif_rx()
+  can: peak_usb: add support for PEAK new CANFD USB adapters
+
+ drivers/net/can/usb/Kconfig                  |   14 +-
+ drivers/net/can/usb/peak_usb/Makefile        |    2 +-
+ drivers/net/can/usb/peak_usb/pcan_ucan.h     |  222 ++++++
+ drivers/net/can/usb/peak_usb/pcan_usb.c      |    1 +
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |   67 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |   16 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 1091 ++++++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |   17 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |   13 +
+ 9 files changed, 1415 insertions(+), 28 deletions(-)
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_ucan.h
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+
+-- 
+2.1.4
+
