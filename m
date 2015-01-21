@@ -1,127 +1,48 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v5 2/5] can: kvaser_usb: Consolidate and unify state change
- handling
-Date: Wed, 21 Jan 2015 16:37:53 +0000
-Message-ID: <20150121163753.2933.88876@shannon>
-References: <20141223154654.GB6460@vivalin-002> <20150120214409.GA16828@linux>
- <20150120214537.GB16828@linux> <20150121103319.14511.57709@shannon>
- <e5439ed067931dc01bda70592eb6ed52@grandegger.com>
- <20150121144323.GA17070@linux> <20150121150015.31351.6605@shannon>
- <20150121153647.GB17070@linux>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2015-01-21
+Date: Wed, 21 Jan 2015 22:46:30 +0100
+Message-ID: <1421876791-31014-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0053.outbound.protection.outlook.com ([157.56.112.53]:55677
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751911AbbAUQku convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Jan 2015 11:40:50 -0500
-In-Reply-To: <20150121153647.GB17070@linux>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:52013 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753386AbbAUVqi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 21 Jan 2015 16:46:38 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-Quoting Ahmed S. Darwish (2015-01-21 15:36:47)
-> On Wed, Jan 21, 2015 at 03:00:15PM +0000, Andri Yngvason wrote:
-> > Quoting Ahmed S. Darwish (2015-01-21 14:43:23)
-> > > Hi!
-> 
-> ...
-> 
-> > > <-- Unplug the cable -->
-> > > 
-> > >  (000.009106)  can0  20000080   [8]  00 00 00 00 00 00 08 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{8}{0}}
-> > >  (000.001872)  can0  20000080   [8]  00 00 00 00 00 00 10 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{16}{0}}
-> > [...]
-> > >         error-counter-tx-rx{{80}{0}}
-> > >  (000.001910)  can0  20000080   [8]  00 00 00 00 00 00 58 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{88}{0}}
-> > >  (000.001753)  can0  20000084   [8]  00 08 00 00 00 00 60 00   ERRORFRAME
-> > >         controller-problem{tx-error-warning}
-> > Good.
-> > >         bus-error
-> > >         error-counter-tx-rx{{96}{0}}
-> 
-> Nice.
-> 
-> > >  (000.001720)  can0  20000080   [8]  00 00 00 00 00 00 68 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{104}{0}}
-> > >  (000.001876)  can0  20000080   [8]  00 00 00 00 00 00 70 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{112}{0}}
-> > >  (000.001749)  can0  20000080   [8]  00 00 00 00 00 00 78 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{120}{0}}
-> > >  (000.001771)  can0  20000084   [8]  00 20 00 00 00 00 80 00   ERRORFRAME
-> > >         controller-problem{tx-error-passive}
-> > Also good.
-> > >         bus-error
-> > >         error-counter-tx-rx{{128}{0}}
-> 
-> Also nice :-)
-> 
-> > >  (000.001868)  can0  20000080   [8]  00 00 00 00 00 00 80 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{128}{0}}
-> > >  (000.001982)  can0  20000080   [8]  00 00 00 00 00 00 80 00   ERRORFRAME
-> > >         bus-error
-> > >         error-counter-tx-rx{{128}{0}}
-> > > 
-> > > (( Then a continous flood, exactly similar to the above packet, appears.
-> > >    Unfortunately this flooding is a firmware problem. ))
-> > > 
-> > > <-- Replug the cable, after a good amount of time -->
-> > >
-> > Where are the reverse state transitions?
-> > > 
-> 
-> Hmmm...
-> 
-> [ ... ]
-> > 
-> > Reverse state transitions are missing from the logs. See comments above.
-> > 
-> 
-> When the device is on the _receiving_ end, and I unplug the CAN cable after
-> introducing some noise to the level of reaching WARNING or PASSIVE, I
-> receive a BUS_ERROR event with the rxerr count reset back to 0 or 1. In
-> that case, the driver correctly transitions back the state to ERROR_ACTIVE
-> and candump produces something similar to:
-> 
->     (000.000362)  can0  2000008C   [8]  00 40 40 00 00 00 00 01   ERRORFRAME
->     controller-problem{}
->     protocol-violation{{back-to-error-active}{}}
->     bus-error
->     error-counter-tx-rx{{0}{1}}
-> 
-> which is, AFAIK, the correct behaviour from the driver side.
-> 
-> Meanwhile, when the device is on the _sending_ end and I re-plug the CAN
-> cable again. Sometimes I receive events with txerr reset to 0 or 1, and
-> the driver correctly reverts back to ERROR_ACTIVE in that case. But on
-> another times like the quoted case above, I don't receive any events
-> resetting txerr back -- only data packets on the bus.
-> 
-> So, What can the driver do given the above?
->
-So what you're telling us is that the state does not got back to error-active
-unless there is something else transmitting on the bus?
-If that's the case, it's almost definitely because state changes aren't
-triggering interrupts.
+Hello David,
 
-An rx event will give you an interrupt which yields a napi poll which means that
-the state will be polled, so in that case you don't need the interrupts.
+this is a pull request for v3.19, net/master, which consists of a single patch.
 
-Look for "Consolidate and unify state change handling" on gmane. There was a lot
-of discussion about this kind of issues, especially regarding FlexCAN.
+Viktor Babrian fixes the issue in the c_can dirver, that the CAN interface
+might continue to send frames after the interface has been shut down.
 
-Best regards,
-Andri
+regards,
+Marc
+
+---
+
+The following changes since commit 06efe0e54018cb19cf0807447dc3ac747ffcfd1c:
+
+  Merge tag 'pinctrl-v3.19-3' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl (2015-01-20 21:23:41 +1200)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-3.19-20150121
+
+for you to fetch changes up to 7ffd7b4e169d619e66928fe5d997723f2c6f1056:
+
+  can: c_can: end pending transmission on network stop (ifdown) (2015-01-21 22:43:14 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-3.19-20150121
+
+----------------------------------------------------------------
+Viktor Babrian (1):
+      can: c_can: end pending transmission on network stop (ifdown)
+
+ drivers/net/can/c_can/c_can.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
