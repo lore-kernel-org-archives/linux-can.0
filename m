@@ -1,36 +1,43 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v5 2/5] can: kvaser_usb: Consolidate and unify state change
- handling
-Date: Thu, 22 Jan 2015 10:14:47 +0000
-Message-ID: <20150122101447.25198.24222@shannon>
-References: <20141223154654.GB6460@vivalin-002> <20150120214409.GA16828@linux>
- <20150120214537.GB16828@linux> <20150121162025.2933.13836@shannon>
- <54C02F4B.80206@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH 0/7 v8] can/peak_usb: upgrade to CANFD
+Date: Thu, 22 Jan 2015 16:24:19 +0100
+Message-ID: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0057.outbound.protection.outlook.com ([157.55.234.57]:38464
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751648AbbAVKO5 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 05:14:57 -0500
-In-Reply-To: <54C02F4B.80206@pengutronix.de>
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:26109 "EHLO
+	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752703AbbAVP0V (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 10:26:21 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-Quoting Marc Kleine-Budde (2015-01-21 22:59:23)
-> On 01/21/2015 05:20 PM, Andri Yngvason wrote:
-> > Marc, could you merge the "move bus_off++" patch before you merge this so that I
-> > won't have to incorporate this patch-set into it?
-> 
-> ...included in the lastest pull-request to David. Use
-> tags/linux-can-next-for-3.20-20150121 of the can-next repo as you new base.
-> 
+That serie of patches upgrades the peak_usb driver by adding modifications
+required to match the support of the CANFD extension, as well as those
+needed to support two new CANFD USB adapters from PEAK-System Technik.
 
-Thanks!
+Stephane Grosjean (7):
+  can/peak_usb: export ctrlmode_supported to adapter specific
+  can/peak_usb: add adapter BEC callback definition
+  can/peak_usb: upgrade core to data bittiming specs
+  can/peak_usb: upgrade core to new struct canfd_frame
+  can/peak_usb: export pcan_usb_pro functions
+  can/peak_usb: add peak_usb_netif_rx() new function
+  can/peak_usb: add support for PEAK new CANFD USB adapters
 
---
-Andri
+ drivers/net/can/usb/Kconfig                  |   14 +-
+ drivers/net/can/usb/peak_usb/Makefile        |    2 +-
+ drivers/net/can/usb/peak_usb/pcan_ucan.h     |  222 ++++++
+ drivers/net/can/usb/peak_usb/pcan_usb.c      |    1 +
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |   67 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |   16 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 1092 ++++++++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |   17 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |   13 +
+ 9 files changed, 1416 insertions(+), 28 deletions(-)
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_ucan.h
+ create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+
+-- 
+1.9.1
+
