@@ -1,12 +1,12 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 4/7 v8] can/peak_usb: upgrade core to new struct canfd_frame
-Date: Thu, 22 Jan 2015 16:24:23 +0100
-Message-ID: <1421940266-6088-5-git-send-email-s.grosjean@peak-system.com>
+Subject: [PATCH 6/7 v8] can/peak_usb: add peak_usb_netif_rx() new function
+Date: Thu, 22 Jan 2015 16:24:25 +0100
+Message-ID: <1421940266-6088-7-git-send-email-s.grosjean@peak-system.com>
 References: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:29452 "EHLO
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:58295 "EHLO
 	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752688AbbAVP0V (ORCPT
+	with ESMTP id S1751906AbbAVP0V (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 10:26:21 -0500
 In-Reply-To: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,63 +14,58 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Upgrade PEAK-System USB adapters core to the new data structures (names) and
-callbacks added for the support of the CANFD extension. This specific patch
-includes changes that deal with the new struct canfd_frame.
+Add a common function that pushes the skb in the network queue with adding
+timestamps information, converted from time values read from the
+PEAK USB adapters.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 8 +++++---
- drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 15 +++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |  4 +++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 6061d8f..49004aa 100644
+index 49004aa..7138433 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -253,7 +253,7 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
- 	case 0:
- 		/* transmission complete */
- 		netdev->stats.tx_packets++;
--		netdev->stats.tx_bytes += context->dlc;
-+		netdev->stats.tx_bytes += context->data_len;
+@@ -165,6 +165,21 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ }
  
- 		/* prevent tx timeout */
- 		netdev->trans_start = jiffies;
-@@ -289,7 +289,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
- 	struct peak_usb_device *dev = netdev_priv(netdev);
- 	struct peak_tx_urb_context *context = NULL;
- 	struct net_device_stats *stats = &netdev->stats;
--	struct can_frame *cf = (struct can_frame *)skb->data;
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct urb *urb;
- 	u8 *obuf;
- 	int i, err;
-@@ -322,7 +322,9 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
- 	}
- 
- 	context->echo_index = i;
--	context->dlc = cf->can_dlc;
+ /*
++ * post received skb after having set any hw timestamp
++ */
++int peak_usb_netif_rx(struct sk_buff *skb,
++		      struct peak_time_ref *time_ref, u32 ts_low, u32 ts_high)
++{
++	struct skb_shared_hwtstamps *hwts = skb_hwtstamps(skb);
++	struct timeval tv;
 +
-+	/* Note: this works with CANFD frames too */
-+	context->data_len = cfd->len;
- 
- 	usb_anchor_urb(urb, &dev->tx_submitted);
- 
++	peak_usb_get_ts_tv(time_ref, ts_low, &tv);
++	hwts->hwtstamp = timeval_to_ktime(tv);
++
++	return netif_rx(skb);
++}
++
++/*
+  * callback for bulk Rx urb
+  */
+ static void peak_usb_read_bulk_callback(struct urb *urb)
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index fdc5c0d..34e24c6 100644
+index 34e24c6..00b881b 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -98,7 +98,7 @@ struct peak_time_ref {
- struct peak_tx_urb_context {
- 	struct peak_usb_device *dev;
- 	u32 echo_index;
--	u8 dlc;
-+	u8 data_len;
- 	struct urb *urb;
- };
- 
+@@ -145,7 +145,9 @@ void peak_usb_update_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
+ void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
+ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
+ 			struct timeval *tv);
+-
++int peak_usb_netif_rx(struct sk_buff *skb,
++		      struct peak_time_ref *time_ref, u32 ts_low, u32 ts_high);
+ void peak_usb_async_complete(struct urb *urb);
+ void peak_usb_restart_complete(struct peak_usb_device *dev);
++
+ #endif
 -- 
 1.9.1
 
