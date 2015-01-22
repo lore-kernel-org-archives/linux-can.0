@@ -1,90 +1,112 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
 Subject: Re: [PATCH 7/7 v8] can/peak_usb: add support for PEAK new CANFD USB
  adapters
-Date: Thu, 22 Jan 2015 16:59:06 +0100
-Message-ID: <54C11E4A.3090303@peak-system.com>
+Date: Thu, 22 Jan 2015 17:07:52 +0100
+Message-ID: <54C12058.8060303@peak-system.com>
 References: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
  <1421940266-6088-8-git-send-email-s.grosjean@peak-system.com>
- <54C11A1B.4090100@pengutronix.de>
+ <20150122160238.12081.76464@shannon>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:42898 "EHLO
+Received: from mail.peak-system.com ([213.157.13.214]:39467 "EHLO
 	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752363AbbAVP7O (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 10:59:14 -0500
-In-Reply-To: <54C11A1B.4090100@pengutronix.de>
+	with ESMTP id S1752067AbbAVQIB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 11:08:01 -0500
+In-Reply-To: <20150122160238.12081.76464@shannon>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
 
-Le 22/01/2015 16:41, Marc Kleine-Budde a =C3=A9crit :
-> On 01/22/2015 04:24 PM, Stephane Grosjean wrote:
->> Add support for the following new PEAK-System technik CANFD USB adap=
-ters:
->>
->> PCAN-USB FD             single CANFD channel USB adapter
->> PCAN-USB Pro FD         dual CANFD channels USB adapter
->>
->> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Le 22/01/2015 17:02, Andri Yngvason a =C3=A9crit :
+> Quoting Stephane Grosjean (2015-01-22 15:24:26)
+> [...]
+>> +/* handle uCAN status message */
+>> +static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
+>> +                                    struct pucan_msg *rx_msg)
+>> +{
+>> +       struct pucan_status_msg *sm =3D (struct pucan_status_msg *)r=
+x_msg;
+>> +       struct peak_usb_device *dev =3D usb_if->dev[pucan_stmsg_get_=
+channel(sm)];
+>> +       struct pcan_usb_fd_device *pdev =3D
+>> +                       container_of(dev, struct pcan_usb_fd_device,=
+ dev);
+>> +       enum can_state new_state =3D CAN_STATE_ERROR_ACTIVE;
+>> +       enum can_state rx_state, tx_state;
+>> +       struct net_device *netdev =3D dev->netdev;
+>> +       struct can_frame *cf;
+>> +       struct sk_buff *skb;
+>> +
+>> +       /* nothing should be sent while in BUS_OFF state */
+>> +       if (dev->can.state =3D=3D CAN_STATE_BUS_OFF)
+>> +               return 0;
+>> +
+>> +       if (sm->channel_p_w_b & PUCAN_BUS_BUSOFF) {
+>> +               new_state =3D CAN_STATE_BUS_OFF;
+>> +       } else if (sm->channel_p_w_b & PUCAN_BUS_PASSIVE) {
+>> +               new_state =3D CAN_STATE_ERROR_PASSIVE;
+>> +       } else if (sm->channel_p_w_b & PUCAN_BUS_WARNING) {
+>> +               new_state =3D CAN_STATE_ERROR_WARNING;
+>> +       } else {
+>> +               /* no error bit (so, no error skb, back to active st=
+ate) */
+>> +               dev->can.state =3D CAN_STATE_ERROR_ACTIVE;
+>> +               pdev->bec.txerr =3D 0;
+>> +               pdev->bec.rxerr =3D 0;
+>> +               return 0;
+>> +       }
+>> +
+>> +       /* state hasn't changed */
+>> +       if (new_state =3D=3D dev->can.state)
+>> +               return 0;
+>> +
+>> +       /* handle bus state change */
+>> +       tx_state =3D (pdev->bec.txerr >=3D pdev->bec.rxerr) ?  new_s=
+tate : 0;
+>> +       rx_state =3D (pdev->bec.txerr <=3D pdev->bec.rxerr) ?  new_s=
+tate : 0;
+> You seem to have extra spaces here -------------------------^
+
+Aaarrrrgh... F*%$ !!!
+>> +
+>> +       /* allocate an skb to store the error frame */
+>> +       skb =3D alloc_can_err_skb(netdev, &cf);
+>> +       if (skb)
+>> +               can_change_state(netdev, cf, tx_state, rx_state);
+>> +
+>> +       /* things must be done even in case of OOM */
+>> +       if (new_state =3D=3D CAN_STATE_BUS_OFF)
+>> +               can_bus_off(netdev);
+>> +
+>> +       if (!skb)
+>> +               return -ENOMEM;
+>> +
+>> +       peak_usb_netif_rx(skb, &usb_if->time_ref,
+>> +                         le32_to_cpu(sm->ts_low), le32_to_cpu(sm->t=
+s_high));
+>> +
+>> +       netdev->stats.rx_packets++;
+>> +       netdev->stats.rx_bytes +=3D cf->can_dlc;
+>> +
+>> +       return 0;
+>> +}
+>> +
 > [...]
 >
->> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/ne=
-t/can/usb/peak_usb/pcan_usb_fd.c
->> new file mode 100644
->> index 0000000..2129549
->> --- /dev/null
->> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> [...]
+> ACK, but you'll probably want to remove those extra spaces *if* you p=
+ost another
+> version of the patch set.
 >
->> +/* handle device specific info used by the netdevices */
->> +struct pcan_usb_fd_if {
->> +	struct peak_usb_device *dev[PCAN_USB_MAX_CHANNEL];
->> +	struct pcan_ufd_fw_info fw_info;
->> +	struct peak_time_ref    time_ref;
->> +	int                     cm_ignore_count;
->> +	int                     dev_opened_count;
-> Please use tab for indention, not space.
->
->> +};
->> +
->> +/* device information */
->> +struct pcan_usb_fd_device {
->> +	struct peak_usb_device  dev;
->> +	struct can_berr_counter bec;
->> +	struct pcan_usb_fd_if  *usb_if;
->> +	u8                     *cmd_buffer_addr;
-> dito
->
-> Marc
->
-Well, I'm afraid I have misunderstood one of your previous reMarks:
+> Best regards,
+> Andri
+Thank you very much for your ACK, Andri.
 
-> +/* device information */
-> +struct pcan_usb_fd_device {
-> +	struct peak_usb_device	dev;
-> +	struct pcan_usb_fd_if *	usb_if;
-> 	struct pcan_usb_fd_if *usb_if
->> +
->> +	u8 *	cmd_buffer_addr;
-> 	u8 *cmd_buffer_addr
->> +
->> +	uint	tx_error_counter;
->> +	uint	rx_error_counter;
-> 	unsigned int
->
-> Please don't use a tab after the struct foo, u8, unsinged int, etc...=
-,
-> as it doesn't align.
->
-
-can u explain a bit more, please ? FYI, checkpatch.pl doesn't see any=20
-warning nor fatal in these indentations...
+Best regards,
 
 St=C3=A9phane
 --
