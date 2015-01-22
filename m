@@ -1,43 +1,76 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 0/7 v8] can/peak_usb: upgrade to CANFD
-Date: Thu, 22 Jan 2015 16:24:19 +0100
-Message-ID: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
+Subject: [PATCH 4/7 v8] can/peak_usb: upgrade core to new struct canfd_frame
+Date: Thu, 22 Jan 2015 16:24:23 +0100
+Message-ID: <1421940266-6088-5-git-send-email-s.grosjean@peak-system.com>
+References: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:26109 "EHLO
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:29452 "EHLO
 	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752703AbbAVP0V (ORCPT
+	with ESMTP id S1752688AbbAVP0V (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Jan 2015 10:26:21 -0500
+In-Reply-To: <1421940266-6088-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-That serie of patches upgrades the peak_usb driver by adding modifications
-required to match the support of the CANFD extension, as well as those
-needed to support two new CANFD USB adapters from PEAK-System Technik.
+Upgrade PEAK-System USB adapters core to the new data structures (names) and
+callbacks added for the support of the CANFD extension. This specific patch
+includes changes that deal with the new struct canfd_frame.
 
-Stephane Grosjean (7):
-  can/peak_usb: export ctrlmode_supported to adapter specific
-  can/peak_usb: add adapter BEC callback definition
-  can/peak_usb: upgrade core to data bittiming specs
-  can/peak_usb: upgrade core to new struct canfd_frame
-  can/peak_usb: export pcan_usb_pro functions
-  can/peak_usb: add peak_usb_netif_rx() new function
-  can/peak_usb: add support for PEAK new CANFD USB adapters
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 8 +++++---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
- drivers/net/can/usb/Kconfig                  |   14 +-
- drivers/net/can/usb/peak_usb/Makefile        |    2 +-
- drivers/net/can/usb/peak_usb/pcan_ucan.h     |  222 ++++++
- drivers/net/can/usb/peak_usb/pcan_usb.c      |    1 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |   67 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |   16 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 1092 ++++++++++++++++++++++++++
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |   17 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |   13 +
- 9 files changed, 1416 insertions(+), 28 deletions(-)
- create mode 100644 drivers/net/can/usb/peak_usb/pcan_ucan.h
- create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 6061d8f..49004aa 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -253,7 +253,7 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
+ 	case 0:
+ 		/* transmission complete */
+ 		netdev->stats.tx_packets++;
+-		netdev->stats.tx_bytes += context->dlc;
++		netdev->stats.tx_bytes += context->data_len;
+ 
+ 		/* prevent tx timeout */
+ 		netdev->trans_start = jiffies;
+@@ -289,7 +289,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	struct peak_usb_device *dev = netdev_priv(netdev);
+ 	struct peak_tx_urb_context *context = NULL;
+ 	struct net_device_stats *stats = &netdev->stats;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct urb *urb;
+ 	u8 *obuf;
+ 	int i, err;
+@@ -322,7 +322,9 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	}
+ 
+ 	context->echo_index = i;
+-	context->dlc = cf->can_dlc;
++
++	/* Note: this works with CANFD frames too */
++	context->data_len = cfd->len;
+ 
+ 	usb_anchor_urb(urb, &dev->tx_submitted);
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index fdc5c0d..34e24c6 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -98,7 +98,7 @@ struct peak_time_ref {
+ struct peak_tx_urb_context {
+ 	struct peak_usb_device *dev;
+ 	u32 echo_index;
+-	u8 dlc;
++	u8 data_len;
+ 	struct urb *urb;
+ };
+ 
 -- 
 1.9.1
 
