@@ -1,260 +1,62 @@
 From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH v5 2/5] can: kvaser_usb: Consolidate and unify state
- change handling
-Date: Sun, 25 Jan 2015 05:21:47 +0200
-Message-ID: <20150125032147.GB6621@Darwish.PC>
+Subject: Re: [PATCH v5 4/5] can: kvaser_usb: Retry the first bulk transfer on
+ -ETIMEDOUT
+Date: Sun, 25 Jan 2015 13:59:19 +0200
+Message-ID: <20150125115919.GA16000@Darwish.PC>
 References: <20141223154654.GB6460@vivalin-002>
  <20150120214409.GA16828@linux>
  <20150120214537.GB16828@linux>
- <20150121162025.2933.13836@shannon>
+ <20150120214709.GC16828@linux>
+ <20150120214834.GD16828@linux>
+ <54BF9A8E.7000202@cogentembedded.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f49.google.com ([74.125.82.49]:61680 "EHLO
-	mail-wg0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751397AbbAYDVy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 24 Jan 2015 22:21:54 -0500
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150121162025.2933.13836@shannon>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <54BF9A8E.7000202@cogentembedded.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi!
-
-On Wed, Jan 21, 2015 at 04:20:25PM +0000, Andri Yngvason wrote:
-> Quoting Ahmed S. Darwish (2015-01-20 21:45:37)
-> > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
-> > 
-> > Replace most of the can interface's state and error counters
-> > handling with the new can-dev can_change_state() mechanism.
-> > 
-> > Suggested-by: Andri Yngvason <andri.yngvason@marel.com>
-> > Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
-> > ---
-> >  drivers/net/can/usb/kvaser_usb.c | 114 +++++++++++++++++++--------------------
-> >  1 file changed, 55 insertions(+), 59 deletions(-)
-> > 
-> > diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-> > index 971c5f9..0386d3f 100644
-> > --- a/drivers/net/can/usb/kvaser_usb.c
-> > +++ b/drivers/net/can/usb/kvaser_usb.c
-> > @@ -620,40 +620,43 @@ static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
-> >  }
-> >  
-> >  static void kvaser_usb_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
-> > -                                                const struct kvaser_usb_error_summary *es)
-> > +                                                const struct kvaser_usb_error_summary *es,
-> > +                                                struct can_frame *cf)
-> >  {
-> >         struct net_device_stats *stats;
-> > -       enum can_state new_state;
-> > -
-> > -       stats = &priv->netdev->stats;
-> > -       new_state = priv->can.state;
-> > +       enum can_state cur_state, new_state, tx_state, rx_state;
-> >  
-> >         netdev_dbg(priv->netdev, "Error status: 0x%02x\n", es->status);
-> >  
-> > -       if (es->status & M16C_STATE_BUS_OFF) {
-> > -               priv->can.can_stats.bus_off++;
-> > +       stats = &priv->netdev->stats;
-> > +       new_state = cur_state = priv->can.state;
-> > +
-> > +       if (es->status & M16C_STATE_BUS_OFF)
-> >                 new_state = CAN_STATE_BUS_OFF;
-> > -       } else if (es->status & M16C_STATE_BUS_PASSIVE) {
-> > -               if (priv->can.state != CAN_STATE_ERROR_PASSIVE)
-> > -                       priv->can.can_stats.error_passive++;
-> > +       else if (es->status & M16C_STATE_BUS_PASSIVE)
-> >                 new_state = CAN_STATE_ERROR_PASSIVE;
-> > -       }
-> >  
-> >         if (es->status == M16C_STATE_BUS_ERROR) {
-> > -               if ((priv->can.state < CAN_STATE_ERROR_WARNING) &&
-> > -                   ((es->txerr >= 96) || (es->rxerr >= 96))) {
-> > -                       priv->can.can_stats.error_warning++;
-> > +               if ((cur_state < CAN_STATE_ERROR_WARNING) &&
-> > +                   ((es->txerr >= 96) || (es->rxerr >= 96)))
-> >                         new_state = CAN_STATE_ERROR_WARNING;
-> > -               } else if (priv->can.state > CAN_STATE_ERROR_ACTIVE) {
-> > +               else if (cur_state > CAN_STATE_ERROR_ACTIVE)
-> >                         new_state = CAN_STATE_ERROR_ACTIVE;
-> > -               }
-> >         }
-> >  
-> >         if (!es->status)
-> >                 new_state = CAN_STATE_ERROR_ACTIVE;
-> >  
-> > +       if (new_state != cur_state) {
-> > +               tx_state = (es->txerr >= es->rxerr) ? new_state : 0;
-> > +               rx_state = (es->txerr <= es->rxerr) ? new_state : 0;
-> > +
-> > +               can_change_state(priv->netdev, cf, tx_state, rx_state);
->
-> This (below) is redundant. It doesn't harm but at this point can_change_state
-> has set priv->can.state to new_state.
->
-> > +               new_state = priv->can.state;
-> > +       }
-> > +
-
-Correct; I will remove it.
-
-> >         if (priv->can.restart_ms &&
-> > -           (priv->can.state >= CAN_STATE_BUS_OFF) &&
-> > +           (cur_state >= CAN_STATE_BUS_OFF) &&
-> >             (new_state < CAN_STATE_BUS_OFF)) {
-> >                 priv->can.can_stats.restarts++;
-> >         }
-> > @@ -665,18 +668,17 @@ static void kvaser_usb_rx_error_update_can_state(struct kvaser_usb_net_priv *pri
-> >  
-> >         priv->bec.txerr = es->txerr;
-> >         priv->bec.rxerr = es->rxerr;
-> > -       priv->can.state = new_state;
-> >  }
-> >  
-> >  static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
-> >                                 const struct kvaser_msg *msg)
-> >  {
-> > -       struct can_frame *cf;
-> > +       struct can_frame *cf, tmp_cf = { .can_id = CAN_ERR_FLAG, .can_dlc = CAN_ERR_DLC };
-> >         struct sk_buff *skb;
-> >         struct net_device_stats *stats;
-> >         struct kvaser_usb_net_priv *priv;
-> >         struct kvaser_usb_error_summary es = { };
-> > -       enum can_state old_state;
-> > +       enum can_state old_state, new_state;
-> >  
-> >         switch (msg->id) {
-> >         case CMD_CAN_ERROR_EVENT:
-> > @@ -721,60 +723,54 @@ static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
-> >         }
-> >  
-> >         /* Update all of the can interface's state and error counters before
-> > -        * trying any skb allocation that can actually fail with -ENOMEM.
-> > +        * trying any memory allocation that can actually fail with -ENOMEM.
-> > +        *
-> > +        * We send a temporary stack-allocated error can frame to
-> > +        * can_change_state() for the very same reason.
-> > +        *
-> > +        * TODO: Split can_change_state() responsibility between updating the
-> > +        * can interface's state and counters, and the setting up of can error
-> > +        * frame ID and data to userspace. Remove stack allocation afterwards.
-> >          */
-> >         old_state = priv->can.state;
-> > -       kvaser_usb_rx_error_update_can_state(priv, &es);
-> > +       kvaser_usb_rx_error_update_can_state(priv, &es, &tmp_cf);
-> > +       new_state = priv->can.state;
-> >  
-> >         skb = alloc_can_err_skb(priv->netdev, &cf);
-> >         if (!skb) {
-> >                 stats->rx_dropped++;
-> >                 return;
-> >         }
-> > +       memcpy(cf, &tmp_cf, sizeof(*cf));
-> >  
-> > -       if (es.status & M16C_STATE_BUS_OFF) {
-> > -               cf->can_id |= CAN_ERR_BUSOFF;
-> > -
-> > -               if (!priv->can.restart_ms)
-> > -                       kvaser_usb_simple_msg_async(priv, CMD_STOP_CHIP);
-> > -               netif_carrier_off(priv->netdev);
-> > -       } else if (es.status & M16C_STATE_BUS_PASSIVE) {
-> > -               if (old_state != CAN_STATE_ERROR_PASSIVE) {
-> > -                       cf->can_id |= CAN_ERR_CRTL;
-> > -
-> > -                       if (es.txerr || es.rxerr)
-> > -                               cf->data[1] = (es.txerr > es.rxerr)
-> > -                                               ? CAN_ERR_CRTL_TX_PASSIVE
-> > -                                               : CAN_ERR_CRTL_RX_PASSIVE;
-> > -                       else
-> > -                               cf->data[1] = CAN_ERR_CRTL_TX_PASSIVE |
-> > -                                             CAN_ERR_CRTL_RX_PASSIVE;
-> > +       if (new_state != old_state) {
-> > +               if (es.status & M16C_STATE_BUS_OFF) {
-> > +                       if (!priv->can.restart_ms)
-> > +                               kvaser_usb_simple_msg_async(priv, CMD_STOP_CHIP);
-> > +                       netif_carrier_off(priv->netdev);
-> > +               }
-> > +
->
-> This block [below] is wrong. The usage of PROT_ACTIVE is based on a misunderstanding.
-> It's used in some drivers to signify back-to-error-active but its original
-> meaning is something completely different, AFAIK.
-> This is handled in can_change_state() using a new CTRL message; namely:
-> CAN_ERR_CTRL_ACTIVE. The newest version of can-utils is up to date with this.
->
-> > +               if (es.status == M16C_STATE_BUS_ERROR) {
-> > +                       if ((old_state >= CAN_STATE_ERROR_WARNING) ||
-> > +                           (es.txerr < 96 && es.rxerr < 96)) {
-> > +                               if (old_state > CAN_STATE_ERROR_ACTIVE) {
-> > +                                       cf->can_id |= CAN_ERR_PROT;
-> > +                                       cf->data[2] = CAN_ERR_PROT_ACTIVE;
-> > +                               }
-> > +                       }
-> >                 }
-
-So I would just make the new_state equals CAN_STATE_ERROR_ACTIVE,
-and then can_change_state() will do the right thing? Excellent!!
-This means the entire block above can be removed ;-)
-
-[ On another note, the block's if conditions above are faulty and
-  fixed in patch #3. This patch (#2) used can_change_state()
-  without changing any of that faulty logic to ease any future
-  bisection. ]
-
-> > -       }
-> >  
-> > -       if (es.status == M16C_STATE_BUS_ERROR) {
-> > -               if ((old_state < CAN_STATE_ERROR_WARNING) &&
-> > -                   ((es.txerr >= 96) || (es.rxerr >= 96))) {
-> > -                       cf->can_id |= CAN_ERR_CRTL;
-> > -                       cf->data[1] = (es.txerr > es.rxerr)
-> > -                                       ? CAN_ERR_CRTL_TX_WARNING
-> > -                                       : CAN_ERR_CRTL_RX_WARNING;
-> > -               } else if (old_state > CAN_STATE_ERROR_ACTIVE) {
->
-> This is also redundant, and wrong:
->
-> > +               if (!es.status) {
-> >                         cf->can_id |= CAN_ERR_PROT;
-> >                         cf->data[2] = CAN_ERR_PROT_ACTIVE;
-> >                 }
-> > -       }
-
-As in the above; extra code to be removed, yay! ;-)
-
-> >  
-> > -       if (!es.status) {
-> > -               cf->can_id |= CAN_ERR_PROT;
-> > -               cf->data[2] = CAN_ERR_PROT_ACTIVE;
-> > -       }
-> > -
-> > -       if (priv->can.restart_ms &&
-> > -           (old_state >= CAN_STATE_BUS_OFF) &&
-> > -           (priv->can.state < CAN_STATE_BUS_OFF)) {
-> > -               cf->can_id |= CAN_ERR_RESTARTED;
-> > -               netif_carrier_on(priv->netdev);
-> > +               if (priv->can.restart_ms &&
-> > +                   (old_state >= CAN_STATE_BUS_OFF) &&
-> > +                   (new_state < CAN_STATE_BUS_OFF)) {
-> > +                       cf->can_id |= CAN_ERR_RESTARTED;
-> > +                       netif_carrier_on(priv->netdev);
-> > +               }
-> >         }
-> >  
-> >         if (es.error_factor) {
-> > -- 
-> > 1.9.1
+On Wed, Jan 21, 2015 at 03:24:46PM +0300, Sergei Shtylyov wrote:
+> Hello.
 > 
-> Looking over the patch again, I've noticed that there
-> are a few things that are not quite right.
+> On 1/21/2015 12:48 AM, Ahmed S. Darwish wrote:
+> 
+> >From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> 
+> >On some x86 laptops, plugging a Kvaser device again after an
+> >unplug makes the firmware always ignore the very first command.
+> >For such a case, provide some room for retries instead of
+> >completly exiting the driver init code.
+> 
+>    Completely.
+> 
+> >Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> >---
+> >  drivers/net/can/usb/kvaser_usb.c | 12 ++++++++++--
+> >  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> >diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+> >index 640b0eb..068e76c 100644
+> >--- a/drivers/net/can/usb/kvaser_usb.c
+> >+++ b/drivers/net/can/usb/kvaser_usb.c
+> [...]
+> >@@ -1632,7 +1632,15 @@ static int kvaser_usb_probe(struct usb_interface *intf,
+> >
+> >  	usb_set_intfdata(intf, dev);
+> >
+> >-	err = kvaser_usb_get_software_info(dev);
+> >+	/* On some x86 laptops, plugging a Kvaser device again after
+> >+	 * an unplug makes the firmware always ignore the very first
+> >+	 * command. For such a case, provide some room for retries
+> >+	 * instead of completly exiting the driver.
+> 
+>    Completely.
 > 
 
-The state-handlig code has become much simpler since your
-reveiw and Kleine-Budde's one. Thanks a lot for all the effort.
+Thanks, both fixed in the next submission :-D
 
 Regards,
 Darwish
