@@ -1,87 +1,223 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v6 0/7] can: kvaser_usb: Leaf bugfixes and USBCan-II support
-Date: Mon, 26 Jan 2015 11:07:22 +0100
-Message-ID: <54C611DA.8050500@pengutronix.de>
-References: <20141223154654.GB6460@vivalin-002> <20150126051755.GA3014@Darwish.PC>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH v5 2/5] can: kvaser_usb: Consolidate and unify state change
+ handling
+Date: Mon, 26 Jan 2015 10:21:34 +0000
+Message-ID: <20150126102134.16360.18418@shannon>
+References: <20150120214409.GA16828@linux>
+ <20150121103319.14511.57709@shannon>
+ <e5439ed067931dc01bda70592eb6ed52@grandegger.com>
+ <20150121144323.GA17070@linux> <20150121150015.31351.6605@shannon>
+ <20150121153647.GB17070@linux>
+ <49707d45a389a1acb9ccec4295d05762@grandegger.com>
+ <20150123060734.GA7949@Darwish.PC> <20150123103213.6205.54618@shannon>
+ <20150125024300.GA6028@Darwish.PC>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="IhcF0iCl1oeMF2mbQfi54CMViQpiSU1HD"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150126051755.GA3014@Darwish.PC>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-am1on0059.outbound.protection.outlook.com ([157.56.112.59]:58400
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1755122AbbAZKVn convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 26 Jan 2015 05:21:43 -0500
+In-Reply-To: <20150125024300.GA6028@Darwish.PC>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Linux-CAN <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IhcF0iCl1oeMF2mbQfi54CMViQpiSU1HD
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Quoting Ahmed S. Darwish (2015-01-25 02:43:00)
+> On Fri, Jan 23, 2015 at 10:32:13AM +0000, Andri Yngvason wrote:
+> > Quoting Ahmed S. Darwish (2015-01-23 06:07:34)
+> > > On Wed, Jan 21, 2015 at 05:13:45PM +0100, Wolfgang Grandegger wrote:
+> > > > On Wed, 21 Jan 2015 10:36:47 -0500, "Ahmed S. Darwish"
+> > > > <darwish.07@gmail.com> wrote:
+> > > > > On Wed, Jan 21, 2015 at 03:00:15PM +0000, Andri Yngvason wrote:
+> > > > >> Quoting Ahmed S. Darwish (2015-01-21 14:43:23)
+> > > > >> > Hi!
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > >> > <-- Unplug the cable -->
+> > > > >> > 
+> > > > >> >  (000.009106)  can0  20000080   [8]  00 00 00 00 00 00 08 00  
+> > > > >> >  ERRORFRAME
+> > > > >> >         bus-error
+> > > > >> >         error-counter-tx-rx{{8}{0}}
+> > > > >> >  (000.001872)  can0  20000080   [8]  00 00 00 00 00 00 10 00  
+> > > > 
+> > > > For a bus-errors I would also expcect some more information in the
+> > > > data[2..3] fields. But these are always zero.
+> > > > 
+> > > 
+> > > M16C error factors made it possible to report things like
+> > > CAN_ERR_PROT_FORM/STUFF/BIT0/BIT1/TX in data[2], and
+> > > CAN_ERR_PROT_LOC_ACK/CRC_DEL in data[3].
+> > > 
+> > > Unfortunately such error factors are only reported in Leaf, but
+> > > not in USBCan-II due to the wire format change in the error event:
+> > > 
+> > >         struct leaf_msg_error_event {
+> > >                 u8 tid;
+> > >                 u8 flags;
+> > >                 __le16 time[3];
+> > >                 u8 channel;
+> > >                 u8 padding;
+> > >                 u8 tx_errors_count;
+> > >                 u8 rx_errors_count;
+> > >                 u8 status;
+> > >                 u8 error_factor;
+> > >         } __packed;
+> > > 
+> > >         struct usbcan_msg_error_event {
+> > >                 u8 tid;
+> > >                 u8 padding;
+> > >                 u8 tx_errors_count_ch0;
+> > >                 u8 rx_errors_count_ch0;
+> > >                 u8 tx_errors_count_ch1;
+> > >                 u8 rx_errors_count_ch1;
+> > >                 u8 status_ch0;
+> > >                 u8 status_ch1;
+> > >                 __le16 time;
+> > >         } __packed;
+> > > 
+> > > I speculate that the wire format was changed due to controller
+> > > bugs in the USBCan-II, which was slightly mentioned in their
+> > > data sheets here:
+> > > 
+> > >         http://www.kvaser.com/canlib-webhelp/page_hardware_specific_can_controllers.html
+> > > 
+> > > So it seems there's really no way for filling such bus error
+> > > info given the very limited amount of data exported :-(
+> > >
+> > We experienced similar problems with FlexCAN.
+> 
+> Hmm, I'll have a look there then...
+> 
+> Although my initial instincts imply that the FlexCAN driver has
+> access to the raw CAN registers, something I'm unable to do here.
+> But maybe there's some black magic I'm missing :-)
+>
+Yes, it's memory mapped.
+> 
+> [...]
+> 
+> > > 
+> > > I've dumped _every_ message I receive from the firmware while
+> > > disconnecting the CAN bus, waiting a while, and connecting it again.
+> > > I really received _nothing_ from the firmware when the CAN bus was
+> > > reconnected and the data packets were flowing again. Not even a
+> > > single CHIP_STATE_EVENT, even after waiting for a long time.
+> > > 
+> > > So it's basically:
+> > > ...
+> > > ERR EVENT, txerr=128, rxerr=0
+> > > ERR EVENT, txerr=128, rxerr=0
+> > > ERR EVENT, txerr=128, rxerr=0
+> > > ...
+> > > 
+> > > then complete silence, except the data frames. I've even tried with
+> > > different versions of the firmware, but the same behaviour persisted.
+> > > 
+> > > > > So, What can the driver do given the above?
+> > > > 
+> > > > Little if the notification does not come.
+> > > > 
+> > > 
+> > > We can poll the state by sending CMD_GET_CHIP_STATE to the firmware,
+> > > and it will hopefully reply with a CHIP_STATE_EVENT response
+> > > containing the new txerr and rxerr values that we can use for
+> > > reverse state transitions.
+> > >
+> > > But do we _really_ want to go through the path? I feel that it will
+> > > open some cans of worms w.r.t. concurrent access to both the netdev
+> > > and USB stacks from a single driver.
+> > >
+> > Honestly, I don't know.
+> > >
+> > > A possible solution can be setting up a kernel thread that queries
+> > > for a CHIP_STATE_EVENT every second?
+> > > 
+> > Have you considered polling in kvaser_usb_tx_acknowledge? You could do something
+> > like:
+> > if(unlikely(dev->can.state != CAN_STATE_ERROR_ACTIVE))
+> > {
+> >     request_state();
+> > }
+> > 
+> 
+> OK, I have four important updates on this issue:
+> 
+> a) My initial testing was done on high-speed channel, at a bitrate
+>    of 50K. After setting the bus to a more reasonable bitrate 500K
+>    or 1M, I was _consistently_ able to receive CHIP_STATE_EVENTs
+>    when plugging the CAN connector again after an unplug.
+> 
+> b) The error counters on this device do not get reset on plugging
+>    after an unplug. I've setup a kernel thread [2] that queries
+>    the chip state event every second, and the error counters stays
+>    the same all the time. [1]
+> 
+> c) There's a single case when the erro counters do indeed get
+>    reversed, and it happens only when introducing some noise in
+>    the bus after the re-plug. In that case, the new error events
+>    get raised with new error counters starting from 0/1 again.
+> 
+> d) I've discovered a bug that forbids the CAN state from
+>    returning to ERROR_ACTIVE in case of the error counters
+>    numbers getting decreased. But independent from that bug, the
+>    verbose debugging messages clearly imply that we only get the
+>    error counters decreased in the case mentioned at `c)' above.
+> 
+> So from [1] and [2], it's now clear that the device do not reset
+> these counters back in the re-plug case. I'll give a check to
+> flexcan as advised, but unfortunately I don't really think there's
+> much I can do about this.
+> 
+> [1]
+> 
+> [  877.207082] CAN_ERROR_: channel=0, txerr=88, rxerr=0
+> [  877.207090] CAN_ERROR_: channel=0, txerr=136, rxerr=0
+> [  877.207094] CAN_ERROR_: channel=0, txerr=144, rxerr=0
+> [  877.207098] CAN_ERROR_: channel=0, txerr=152, rxerr=0
+> [  877.207100] CAN_ERROR_: channel=0, txerr=160, rxerr=0
+> [  877.207102] CAN_ERROR_: channel=0, txerr=168, rxerr=0
+> [  877.208075] CAN_ERROR_: channel=0, txerr=200, rxerr=0 
+> 
+> (( The above error event, staying the same at txerr=200 keeps
+>    flooding the bus until the CAN cable is re-plugged ))
+> 
+> [  878.225116] CHIP_STATE: channel=0, txerr=200, rxerr=0
+> [  878.225143] CHIP_STATE: channel=1, txerr=0, rxerr=0
+> [  879.265167] CHIP_STATE: channel=0, txerr=200, rxerr=0
+> [  879.267152] CHIP_STATE: channel=1, txerr=0, rxerr=0
+> [  879.265167] CHIP_STATE: channel=0, txerr=200, rxerr=0
+> [  879.267152] CHIP_STATE: channel=1, txerr=0, rxerr=0
+> 
+> (( The same counters get repeated every second ))
+> 
+> [2] State was polled using:
+> 
+> static int kvaser_usb_poll_chip_state(void *vpriv) {
+>       struct kvaser_usb_net_priv *priv = vpriv;
+> 
+>       while (!kthread_should_stop()) {
+>               kvaser_usb_simple_msg_async(priv, CMD_GET_CHIP_STATE);
+>               ssleep(1);
+>       }
+> 
+>       return 0;
+> }
+> 
+> > I don't think that anything beyond that would be worth pursuing.
+> > 
+> 
+> I agree, but given the new input, it seems that our problem
+> extends to the error counters themselves not getting decreased
+> on re-plug. So, even polling will not solve the issue: we'll
+> get the same txerr/rxerr values again and again :-(
+> 
+Well, that's a damn shame. Not much you can do about that.
 
-On 01/26/2015 06:17 AM, Ahmed S. Darwish wrote:
-> Hi!
->=20
-> This is an updated patch series for the Kvaser CAN/USB devices:
->=20
-> 1- Extra patches are now added to the series. Most importantly
-> patch #1 which fixes a critical `sleep in atomic context' bug
-> in the current upstream driver. Patch #2 fixes a corruption in
-> the kernel logs, also affecting current upstream driver. Patch
-> #4 was originally USBCan-II only, but since it's a generic fix,
-> it's now retrofitted to the Leaf-only upstream driver first.
->=20
-> 2- The series has been re-organized so that patches #1 -> #4
-> inclusive can go to linux-can/origin, while the rest can move
-> to -next.
->=20
-> 3- There are some important updates regarding the USBCan-II
-> error counters, and how really erratic their heaviour is. All
-> the new details are covered at the bottom of this URL:
->=20
-> 	http://article.gmane.org/gmane.linux.can/7481
->=20
-> 4- Attached below is the new candump traces. Now
-> `back-to-error-active' states appear _if_ the hardware was
-> kind enough and decreased the error counters appropriately.
-> The earlier code did not recognize the error counters going
-> down, thus the `back-to-error-active' transitions did not
-> appear.
-
-For patches 5-7 I'm waiting for an Acked by Andri.
-
-=2E..and we have to wait until Patches 1-4 will show up on net-next/maste=
-r.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---IhcF0iCl1oeMF2mbQfi54CMViQpiSU1HD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJUxhHdAAoJECte4hHFiupUOdUQAKv/8q2FPc1dSy1NTyKH5DOQ
-Oj9cy6lkZzhbLxGP4fhAlbSrxvVFwEF4iOrlzoUJYH0l7ckh3cp97vYvUR3mCiPy
-WuqkVJecB5pef/00PkA0GtITWLXZe6XbdaTEqhEUkcNA9OElgrRQtfLQs3ukYThV
-UQd/VcPBxC/rmQet5kpb27GgPsz+w3auGn3W6Zgoz2zjhpCgEjOFhDl/TSUOeTDs
-ira2uiztJXBnnAD1jFWj9udmRY8wQE9VLcXFDM7jRD2fElL8wA7N5Z6P3T4QfIHB
-ILnISjjl720MOpkFxM2mX/T4ZOyXKr1bFh8LOkwKpKvBsfEAXPcpSnCrs0qWl99F
-FqrONeM5Fi/fB6aV7NJst4rOQxEImCvZAgqxcgbtGlXrzN2Y6rwdJ70Xo/naore2
-C4OsLEM1JZUrqMybqhthqhqCQGyk1ibnoJBOmntiPaHNtuToPWE5IghuEDdibT2t
-H3qH9r+Z1/lX3kqJZx1v3uQpTJ2HrkAnpzfSdcx3M3oB4QQNMfJciWUUcJs1EPEi
-20H4hX5XEzq+KKKXR14ky5CFBk0IBhHB0CRYD8yJte4KAF4XqknWkiFe9596sX/A
-V/uUPdPAfDAxYmiVcC6M9A7poCihzdN+8QmCDyHy6uZizgC5MMdxCp4RjOuwOjEo
-0Kos9VqJO1A4IynMQcSs
-=/6es
------END PGP SIGNATURE-----
-
---IhcF0iCl1oeMF2mbQfi54CMViQpiSU1HD--
+Best regards,
+Andri
