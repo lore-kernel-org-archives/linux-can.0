@@ -1,83 +1,81 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can 2015-01-27
-Date: Tue, 27 Jan 2015 09:14:30 +0100
-Message-ID: <54C748E6.7050106@pengutronix.de>
-References: <1422345687-12839-1-git-send-email-mkl@pengutronix.de> <20150127.001344.1153966258738603652.davem@davemloft.net>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH 7/7 v9] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Tue, 27 Jan 2015 14:02:38 +0100
+Message-ID: <54C78C6E.3070705@peak-system.com>
+References: <1422009085-11858-1-git-send-email-s.grosjean@peak-system.com>
+ <1422009085-11858-8-git-send-email-s.grosjean@peak-system.com>
+ <54C64633.9080204@pengutronix.de> <54C65912.5020309@peak-system.com>
+ <54C659C0.4040207@pengutronix.de> <54C66063.9050500@peak-system.com>
+ <54C6628D.7010902@pengutronix.de> <54C6ABE1.8000504@hartkopp.net>
+ <54C6ACBD.2020806@pengutronix.de> <54C74589.9050603@hartkopp.net>
+ <54C746AE.60801@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="EU0sE2KpwQfcmVTe0WtqGUcWiQGHIBmJh"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43553 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757683AbbA0IOg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 03:14:36 -0500
-In-Reply-To: <20150127.001344.1153966258738603652.davem@davemloft.net>
+Received: from mail.peak-system.com ([213.157.13.214]:57430 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932426AbbA0NCl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 08:02:41 -0500
+In-Reply-To: <54C746AE.60801@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EU0sE2KpwQfcmVTe0WtqGUcWiQGHIBmJh
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi guys,
 
-On 01/27/2015 09:13 AM, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Tue, 27 Jan 2015 09:01:23 +0100
->=20
->> this is another pull request for net/master which consists of 4 patche=
-s.
->>
->> All 4 patches are contributed by Ahmed S. Darwish, he fixes more probl=
-ems in
->> the kvaser_usb driver.
->=20
-> Pulled, thanks.
+Le 27/01/2015 09:05, Marc Kleine-Budde a =C3=A9crit :
+> On 01/27/2015 09:00 AM, Oliver Hartkopp wrote:
+>>>> I assume it is better to set the ctrlmode directly in the struct c=
+an_priv
+>>>> element in  pcan_usb_fd_init() after retrieving the firmware versi=
+on.
+>>> Even better.
+>>>
+>>>> IMO it doesn't make sense to transport this info through the mecha=
+nic above
+>>>> which mostly initialized quasi constant settings for the adapter.
+>>> If we check the firmware version, it doesn't make sende to put the
+>>> information into that struct (IMHO)
+>> Just to be sure: We stated to have the same opinion here, right?
+> Yes, check the firmware version and set ctrlmode directly.
+>
+>>>> +/* describes the PCAN-USB Pro FD adapter */
+>>>> +struct peak_usb_adapter pcan_usb_pro_fd =3D {
+>>>>
+>>>> be
+>>>>
+>>>> +/* describes the PCAN-USB Pro FD adapter */
+>>>> +const struct peak_usb_adapter pcan_usb_pro_fd =3D {
+>>> Yes, but it probably needs some more modifications in the driver.
+>> I don't know if this struct is "read-only" all the time.
+>> If so it is easy to change.
+> I haven't checked but I _think_ it should be possible to make it read
+> only everywhere.
+>
+>> I pity you, Stephane - but we will make it :-))
+> :)
+>
+> Marc
 
-That was fast :)
+My :) as well as my ACK too...
 
->> David, please merge net/master to net-next/master, as we have more kva=
-ser_usb
->> patches in the queue, that target net-next.
->=20
-> I will do so after I send a pull request for 'net' to Linus and he take=
-s it
-> in, thanks.
+But putting "const" here leads to several other changes in=20
+pcan_usb_core.h and pcan_usb_core.c (as well as in older pcan_usb.c and=
+=20
+pcan_usb_pro.c files, where same struct peak_adapter static objects are=
+=20
+used to define the corresponding USB adapter).
 
-Thanks, I'll notice.
+Do you need another patch which does this, once for all?
 
-Marc
+St=C3=A9phane
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---EU0sE2KpwQfcmVTe0WtqGUcWiQGHIBmJh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJUx0jpAAoJECte4hHFiupU734QAKw2cLPjDjqJIjI1nTYp8LhC
-8tl59ZTVygVYI8TS96dCF7FPA9fJFkzjtIPh27sqQTNzdWfRNw0uKftMXTur7TMH
-iYxAhA3ck3EeGXkvy6B+VFKt3425SvdEzL7t2WrK2/JS9yRGBLBVU2rwNwbixO5R
-+I9xfj1bHU7QFqsOY9Qzd2aFWwJUi5qjLGyaDR5+WQ8+wxCDaPoyTj7Xt7amMuHC
-IJqwSw824wL3XQtlbNbSviYmj8sbzVBVF7CNoql/yb+EVfWRtLMS632UjtA4Y3g9
-4elDgBxiE64OMi6RtLfNPjOtoYKRq54QrOTTXSvNzb4MJo1Juu/k05ySfl4ZXJHf
-yD5CaUqynUcSw1prbZav3n7sBYEXtE/aLa6Erf12pkJHj/uF0QNJELzFZ9J1s+eb
-xbWkHqGaUMz3MpIwAx+KSh+tMZFXKcwKKx4MS/6jAkbtfqZFzwSs6wxLT3c1QQRQ
-/hn266re3u+wV89xaNvUjqkRnK218aa71Rfxs1zIgW1wmDAbEp9siicMRQAefDiR
-zxh1QnelPsfsEnt2oKXPuFVTEe8UkVXTy4FjJscM3ZMD5ee2V4F5LEbcCJ6Fs6c9
-2zOFvqMmW25VAcoDDX8I/9U1/DhFldufiHXt5qBO1KTt5aLzJYi6rERuJ90QyLPV
-EcdstifKnnQGIq5NXUhC
-=FyV9
------END PGP SIGNATURE-----
-
---EU0sE2KpwQfcmVTe0WtqGUcWiQGHIBmJh--
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
