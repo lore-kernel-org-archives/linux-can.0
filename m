@@ -1,53 +1,73 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can/peak_usb: mark current PEAK USB FD as non-ISO
-Date: Tue, 27 Jan 2015 20:19:10 +0100
-Message-ID: <54C7E4AE.4080704@hartkopp.net>
-References: <1422381484-3804-1-git-send-email-socketcan@hartkopp.net> <54C7D488.4010203@hartkopp.net> <54C7D81A.3030502@pengutronix.de>
+From: =?ISO-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v10 1/9] can: peak_usb: use ARRAY_SIZE instead off NULL
+ termination for peak_usb_adapters_list
+Date: Tue, 27 Jan 2015 22:02:01 +0100
+Message-ID: <1422392516406850652@MailServerPEAK>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="===axigen=55320611415365718748=axigen==="
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:8434 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751970AbbA0TTZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 14:19:25 -0500
-In-Reply-To: <54C7D81A.3030502@pengutronix.de>
+Received: from mail.peak-system.com ([213.157.13.214]:46643 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932859AbbA0VCF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 16:02:05 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org
 
-Compile-tested & plugged in based on the latest peak-next.
+This is a MIME message. You may need a MIME compliant mail user agent.
+--===axigen=55320611415365718748=axigen===
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
-Looking forward to test it tomorrow morning.
+SGkgTWFyaywKCllvdSd2ZSBnb3QgbXkgQWNrIGZvciB0aGlzIHBhdGNoLgoKVGhhbmtzLAoKU3TD
+qXBoYW5lLkxlIDI3IGphbnYuIDIwMTUgMTc6NDEsIE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVu
+Z3V0cm9uaXguZGU+IGEgw6ljcml0IDoKPgo+IFRoaXMgcGF0Y2ggY29udmVydHMgdGhlIGxpc3Qg
+InN0YXRpYyBzdHJ1Y3QgcGVha191c2JfYWRhcHRlciAKPiAqcGVha191c2JfYWRhcHRlcnNfbGlz
+dFtdIiB0byBiZSB1c2VkIHdpdGggQVJSQVlfU0laRSBub3Qgd2l0aCBhIE5VTEwgCj4gdGVybWlu
+YXRpb24sIGFzIHRoZSBzaXplIGlzIGtub3duIGR1cmluZyBjb21waWxlIHRpbWUuIAo+Cj4gU2ln
+bmVkLW9mZi1ieTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4gCj4gLS0t
+IAo+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIHwgMTAgKysr
+KystLS0tLSAKPiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygt
+KSAKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNi
+X2NvcmUuYyBiL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIAo+
+IGluZGV4IGM2MmY0OGExMTYxZC4uMjZjMGNjM2NlM2IyIDEwMDY0NCAKPiAtLS0gYS9kcml2ZXJz
+L25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYyAKPiArKysgYi9kcml2ZXJzL25l
+dC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYyAKPiBAQCAtNDYsNyArNDYsNiBAQCBN
+T0RVTEVfREVWSUNFX1RBQkxFKHVzYiwgcGVha191c2JfdGFibGUpOyAKPiBzdGF0aWMgc3RydWN0
+IHBlYWtfdXNiX2FkYXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXJzX2xpc3RbXSA9IHsgCj4gJnBjYW5f
+dXNiLCAKPiAmcGNhbl91c2JfcHJvLCAKPiAtIE5VTEwsIAo+IH07IAo+Cj4gLyogCj4gQEAgLTg1
+NywxNyArODU2LDE4IEBAIHN0YXRpYyBpbnQgcGVha191c2JfcHJvYmUoc3RydWN0IHVzYl9pbnRl
+cmZhY2UgKmludGYsIAo+IHsgCj4gc3RydWN0IHVzYl9kZXZpY2UgKnVzYl9kZXYgPSBpbnRlcmZh
+Y2VfdG9fdXNiZGV2KGludGYpOyAKPiBjb25zdCB1MTYgdXNiX2lkX3Byb2R1Y3QgPSBsZTE2X3Rv
+X2NwdSh1c2JfZGV2LT5kZXNjcmlwdG9yLmlkUHJvZHVjdCk7IAo+IC0gc3RydWN0IHBlYWtfdXNi
+X2FkYXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXIsICoqcHA7IAo+ICsgc3RydWN0IHBlYWtfdXNiX2Fk
+YXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXIgPSBOVUxMOyAKPiBpbnQgaSwgZXJyID0gLUVOT01FTTsg
+Cj4KPiB1c2JfZGV2ID0gaW50ZXJmYWNlX3RvX3VzYmRldihpbnRmKTsgCj4KPiAvKiBnZXQgY29y
+cmVzcG9uZGluZyBQQ0FOLVVTQiBhZGFwdGVyICovIAo+IC0gZm9yIChwcCA9IHBlYWtfdXNiX2Fk
+YXB0ZXJzX2xpc3Q7ICpwcDsgcHArKykgCj4gLSBpZiAoKCpwcCktPmRldmljZV9pZCA9PSB1c2Jf
+aWRfcHJvZHVjdCkgCj4gKyBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShwZWFrX3VzYl9hZGFw
+dGVyc19saXN0KTsgaSsrKSAKPiArIGlmIChwZWFrX3VzYl9hZGFwdGVyc19saXN0W2ldLT5kZXZp
+Y2VfaWQgPT0gdXNiX2lkX3Byb2R1Y3QpIHsgCj4gKyBwZWFrX3VzYl9hZGFwdGVyID0gcGVha191
+c2JfYWRhcHRlcnNfbGlzdFtpXTsgCj4gYnJlYWs7IAo+ICsgfSAKPgo+IC0gcGVha191c2JfYWRh
+cHRlciA9ICpwcDsgCj4gaWYgKCFwZWFrX3VzYl9hZGFwdGVyKSB7IAo+IC8qIHNob3VsZCBuZXZl
+ciBjb21lIGV4Y2VwdCBkZXZpY2VfaWQgYmFkIHVzYWdlIGluIHRoaXMgZmlsZSAqLyAKPiBwcl9l
+cnIoIiVzOiBkaWRuJ3QgZmluZCBkZXZpY2UgaWQuIDB4JXggaW4gZGV2aWNlcyBsaXN0XG4iLCAK
+PiAtLSAKPiAyLjEuNCAKPgo=
 
-Tnx!
-Oliver
 
-On 27.01.2015 19:25, Marc Kleine-Budde wrote:
-> On 01/27/2015 07:10 PM, Oliver Hartkopp wrote:
->> your v10 series looks very good. The ARRAY_SIZE stuff is a good improvement!
->>
->> I compiled the peak-next branch and inserting my single PCAN USB FD adapter
->> worked fine. I'll send my tested-by when I can access my second adapter at
->> work tomorrow.
->
-> Thanks.
->
->> The  patch below finally sets the CAN_CTRLMODE_FD_NON_ISO flag.
->> It's tested with the updated ip tool.
->
-> Thanks, squashed into patch 9/9
->
->> But beware: The current linux-can-next is missing the CAN_CTRLMODE_FD_NON_ISO
->> patch for M_CAN. Therefore CAN_CTRLMODE_FD_NON_ISO is not defined until Dave
->> pulled net into net-next. So this patch creates a compile error in the latest
->> linux-can-next.
->
-> I've cherry-picked the missing patch from net/master and put it into the
-> peak-next branch on kernel.org. So the series compiles and when rebasing
-> it to net-next after net has been merged, the patch will disappear.
->
-> regards,
-> Marc
->
+--===axigen=55320611415365718748=axigen===
+Content-Type: text/plain;
+	name="Signature.txt"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline;
+	filename="Signature.txt"
+
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
+--===axigen=55320611415365718748=axigen===--
