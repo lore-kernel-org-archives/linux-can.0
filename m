@@ -1,137 +1,77 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v11 03/10] can: peak_usb: constify struct peak_usb_adapter
-Date: Tue, 27 Jan 2015 19:30:31 +0100
-Message-ID: <1422383438-7432-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v11 01/10] can: m_can: tag current CAN FD controllers as non-ISO
+Date: Tue, 27 Jan 2015 19:30:29 +0100
+Message-ID: <1422383438-7432-2-git-send-email-mkl@pengutronix.de>
 References: <1422383438-7432-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44660 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44655 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757561AbbA0Sap (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 13:30:45 -0500
+	with ESMTP id S1753121AbbA0Sao (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 13:30:44 -0500
 In-Reply-To: <1422383438-7432-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: s.grosjean@peak-system.com
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-A "struct peak_usb_adapter" describes a certain USB adapter, as this doesn't
-change during runtime, this patch marks all USB adapter definitions as const.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
+During the CAN FD standardization process within the ISO it turned out that
+the failure detection capability has to be improved.
+
+The CAN in Automation organization (CiA) defined the already implemented CAN
+FD controllers as 'non-ISO' and the upcoming improved CAN FD controllers as
+'ISO' compliant. See at http://www.can-cia.com/index.php?id=1937
+
+Finally there will be three types of CAN FD controllers in the future:
+
+1. ISO compliant (fixed)
+2. non-ISO compliant (fixed, like the M_CAN IP v3.0.1 in m_can.c)
+3. ISO/non-ISO CAN FD controllers (switchable, like the PEAK USB FD)
+
+So the current M_CAN driver for the M_CAN IP v3.0.1 has to expose its non-ISO
+implementation by setting the CAN_CTRLMODE_FD_NON_ISO ctrlmode at startup.
+As this bit cannot be switched at configuration time CAN_CTRLMODE_FD_NON_ISO
+must not be set in ctrlmode_supported of the current M_CAN driver.
+
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+(cherry picked from commit 6cfda7fbebe8a4fd33ea5722fa0212f98f643c35)
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c      |  2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |  8 ++++----
- drivers/net/can/usb/peak_usb/pcan_usb_core.h | 10 +++++-----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |  2 +-
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/net/can/m_can/m_can.c    | 5 +++++
+ include/uapi/linux/can/netlink.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 2a1c9ce53fae..d57d3f64a5bf 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -855,7 +855,7 @@ static int pcan_usb_probe(struct usb_interface *intf)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index b2ecb6c5e94b..2e04b3aeeb37 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -956,6 +956,11 @@ static struct net_device *alloc_m_can_dev(void)
+ 	priv->can.data_bittiming_const = &m_can_data_bittiming_const;
+ 	priv->can.do_set_mode = m_can_set_mode;
+ 	priv->can.do_get_berr_counter = m_can_get_berr_counter;
++
++	/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.1 */
++	priv->can.ctrlmode = CAN_CTRLMODE_FD_NON_ISO;
++
++	/* CAN_CTRLMODE_FD_NON_ISO can not be changed with M_CAN IP v3.0.1 */
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+ 					CAN_CTRLMODE_LISTENONLY |
+ 					CAN_CTRLMODE_BERR_REPORTING |
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 3e4323a3918d..94ffe0c83ce7 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -98,6 +98,7 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+ #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+ #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
++#define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
+ 
  /*
-  * describe the PCAN-USB adapter
-  */
--struct peak_usb_adapter pcan_usb = {
-+const struct peak_usb_adapter pcan_usb = {
- 	.name = "PCAN-USB",
- 	.device_id = PCAN_USB_PRODUCT_ID,
- 	.ctrl_count = 1,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 26c0cc3ce3b2..729b80d78322 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -43,7 +43,7 @@ static struct usb_device_id peak_usb_table[] = {
- MODULE_DEVICE_TABLE(usb, peak_usb_table);
- 
- /* List of supported PCAN-USB adapters (NULL terminated list) */
--static struct peak_usb_adapter *peak_usb_adapters_list[] = {
-+static const struct peak_usb_adapter *const peak_usb_adapters_list[] = {
- 	&pcan_usb,
- 	&pcan_usb_pro,
- };
-@@ -64,7 +64,7 @@ void pcan_dump_mem(char *prompt, void *p, int l)
-  * initialize a time_ref object with usb adapter own settings
-  */
- void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
--			    struct peak_usb_adapter *adapter)
-+			    const struct peak_usb_adapter *adapter)
- {
- 	if (time_ref) {
- 		memset(time_ref, 0, sizeof(struct peak_time_ref));
-@@ -708,7 +708,7 @@ static const struct net_device_ops peak_usb_netdev_ops = {
-  * create one device which is attached to CAN controller #ctrl_idx of the
-  * usb adapter.
-  */
--static int peak_usb_create_dev(struct peak_usb_adapter *peak_usb_adapter,
-+static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
- 			       struct usb_interface *intf, int ctrl_idx)
- {
- 	struct usb_device *usb_dev = interface_to_usbdev(intf);
-@@ -856,7 +856,7 @@ static int peak_usb_probe(struct usb_interface *intf,
- {
- 	struct usb_device *usb_dev = interface_to_usbdev(intf);
- 	const u16 usb_id_product = le16_to_cpu(usb_dev->descriptor.idProduct);
--	struct peak_usb_adapter *peak_usb_adapter = NULL;
-+	const struct peak_usb_adapter *peak_usb_adapter = NULL;
- 	int i, err = -ENOMEM;
- 
- 	usb_dev = interface_to_usbdev(intf);
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 073b47ff8eee..10f2fcac7c13 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -78,15 +78,15 @@ struct peak_usb_adapter {
- 	int sizeof_dev_private;
- };
- 
--extern struct peak_usb_adapter pcan_usb;
--extern struct peak_usb_adapter pcan_usb_pro;
-+extern const struct peak_usb_adapter pcan_usb;
-+extern const struct peak_usb_adapter pcan_usb_pro;
- 
- struct peak_time_ref {
- 	struct timeval tv_host_0, tv_host;
- 	u32 ts_dev_1, ts_dev_2;
- 	u64 ts_total;
- 	u32 tick_count;
--	struct peak_usb_adapter *adapter;
-+	const struct peak_usb_adapter *adapter;
- };
- 
- struct peak_tx_urb_context {
-@@ -102,7 +102,7 @@ struct peak_tx_urb_context {
- /* PEAK-System USB device */
- struct peak_usb_device {
- 	struct can_priv can;
--	struct peak_usb_adapter *adapter;
-+	const struct peak_usb_adapter *adapter;
- 	unsigned int ctrl_idx;
- 	u32 state;
- 
-@@ -134,7 +134,7 @@ void pcan_dump_mem(char *prompt, void *p, int l);
- 
- /* common timestamp management */
- void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
--			    struct peak_usb_adapter *adapter);
-+			    const struct peak_usb_adapter *adapter);
- void peak_usb_update_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
- void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
- void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 145fa87c31b9..56855b2b1fa1 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -1012,7 +1012,7 @@ static int pcan_usb_pro_probe(struct usb_interface *intf)
- /*
-  * describe the PCAN-USB Pro adapter
-  */
--struct peak_usb_adapter pcan_usb_pro = {
-+const struct peak_usb_adapter pcan_usb_pro = {
- 	.name = "PCAN-USB Pro",
- 	.device_id = PCAN_USBPRO_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPRO_CHANNEL_COUNT,
+  * CAN device statistics
 -- 
 2.1.4
 
