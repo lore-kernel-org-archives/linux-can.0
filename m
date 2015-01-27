@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v11 05/10] can: peak_usb: add adapter BEC callback definition
-Date: Tue, 27 Jan 2015 19:30:33 +0100
-Message-ID: <1422383438-7432-6-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v11 07/10] can: peak_usb: upgrade core to new struct canfd_frame
+Date: Tue, 27 Jan 2015 19:30:35 +0100
+Message-ID: <1422383438-7432-8-git-send-email-mkl@pengutronix.de>
 References: <1422383438-7432-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44682 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44681 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759308AbbA0Sat (ORCPT
+	with ESMTP id S1759306AbbA0Sat (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 13:30:49 -0500
 In-Reply-To: <1422383438-7432-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -16,44 +16,63 @@ Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
 From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Add the definition of a new callback that enable any PEAK-System CAN USB
-adapter to grant read access to its Bus Error Counters value. This ability is
-not supported by all the PEAK-System adapters, thus, for those, the callback
-pointer will be initiaized to NULL, which is correct regarding the linux-can
-device driver specs.
+Upgrade PEAK-System USB adapters core to the new data structures (names) and
+callbacks added for the support of the CANFD extension. This specific patch
+includes changes that deal with the new struct canfd_frame.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 1 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 8 +++++---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 2768399a52fa..38634323ec51 100644
+index 10553ffc453f..ae8c448fd4d0 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -750,6 +750,7 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
- 	dev->can.bittiming_const = &peak_usb_adapter->bittiming_const;
- 	dev->can.do_set_bittiming = peak_usb_set_bittiming;
- 	dev->can.do_set_mode = peak_usb_set_mode;
-+	dev->can.do_get_berr_counter = peak_usb_adapter->do_get_berr_counter;
- 	dev->can.ctrlmode_supported = peak_usb_adapter->ctrlmode_supported;
+@@ -252,7 +252,7 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
+ 	case 0:
+ 		/* transmission complete */
+ 		netdev->stats.tx_packets++;
+-		netdev->stats.tx_bytes += context->dlc;
++		netdev->stats.tx_bytes += context->data_len;
  
- 	netdev->netdev_ops = &peak_usb_netdev_ops;
+ 		/* prevent tx timeout */
+ 		netdev->trans_start = jiffies;
+@@ -288,7 +288,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	struct peak_usb_device *dev = netdev_priv(netdev);
+ 	struct peak_tx_urb_context *context = NULL;
+ 	struct net_device_stats *stats = &netdev->stats;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct urb *urb;
+ 	u8 *obuf;
+ 	int i, err;
+@@ -321,7 +321,9 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+ 	}
+ 
+ 	context->echo_index = i;
+-	context->dlc = cf->can_dlc;
++
++	/* Note: this works with CANFD frames too */
++	context->data_len = cfd->len;
+ 
+ 	usb_anchor_urb(urb, &dev->tx_submitted);
+ 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 54fdb5978a05..739a344427a2 100644
+index c0e8dfaef526..e8038b30bab5 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -67,6 +67,8 @@ struct peak_usb_adapter {
- 	int (*dev_stop)(struct peak_usb_device *dev);
- 	int (*dev_restart_async)(struct peak_usb_device *dev, struct urb *urb,
- 					u8 *buf);
-+	int (*do_get_berr_counter)(const struct net_device *netdev,
-+				   struct can_berr_counter *bec);
- 	u8 ep_msg_in;
- 	u8 ep_msg_out[PCAN_USB_MAX_CHANNEL];
- 	u8 ts_used_bits;
+@@ -98,7 +98,7 @@ struct peak_time_ref {
+ struct peak_tx_urb_context {
+ 	struct peak_usb_device *dev;
+ 	u32 echo_index;
+-	u8 dlc;
++	u8 data_len;
+ 	struct urb *urb;
+ };
+ 
 -- 
 2.1.4
 
