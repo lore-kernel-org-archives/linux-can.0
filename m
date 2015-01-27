@@ -1,73 +1,65 @@
-From: =?ISO-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v10 1/9] can: peak_usb: use ARRAY_SIZE instead off NULL
  termination for peak_usb_adapters_list
-Date: Tue, 27 Jan 2015 22:02:01 +0100
-Message-ID: <1422392516406850652@MailServerPEAK>
+Date: Tue, 27 Jan 2015 22:02:46 +0100
+Message-ID: <54C7FCF6.7050006@pengutronix.de>
+References: <1422392516406850652@MailServerPEAK>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="===axigen=55320611415365718748=axigen==="
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="wBmwWvAhxUXwxXenqemulOaXTqCORGbft"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:46643 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932859AbbA0VCF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 16:02:05 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34778 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932981AbbA0VCz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 16:02:55 -0500
+In-Reply-To: <1422392516406850652@MailServerPEAK>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
 Cc: linux-can@vger.kernel.org
 
-This is a MIME message. You may need a MIME compliant mail user agent.
---===axigen=55320611415365718748=axigen===
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wBmwWvAhxUXwxXenqemulOaXTqCORGbft
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-
-SGkgTWFyaywKCllvdSd2ZSBnb3QgbXkgQWNrIGZvciB0aGlzIHBhdGNoLgoKVGhhbmtzLAoKU3TD
-qXBoYW5lLkxlIDI3IGphbnYuIDIwMTUgMTc6NDEsIE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVu
-Z3V0cm9uaXguZGU+IGEgw6ljcml0IDoKPgo+IFRoaXMgcGF0Y2ggY29udmVydHMgdGhlIGxpc3Qg
-InN0YXRpYyBzdHJ1Y3QgcGVha191c2JfYWRhcHRlciAKPiAqcGVha191c2JfYWRhcHRlcnNfbGlz
-dFtdIiB0byBiZSB1c2VkIHdpdGggQVJSQVlfU0laRSBub3Qgd2l0aCBhIE5VTEwgCj4gdGVybWlu
-YXRpb24sIGFzIHRoZSBzaXplIGlzIGtub3duIGR1cmluZyBjb21waWxlIHRpbWUuIAo+Cj4gU2ln
-bmVkLW9mZi1ieTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4gCj4gLS0t
-IAo+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIHwgMTAgKysr
-KystLS0tLSAKPiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygt
-KSAKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNi
-X2NvcmUuYyBiL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIAo+
-IGluZGV4IGM2MmY0OGExMTYxZC4uMjZjMGNjM2NlM2IyIDEwMDY0NCAKPiAtLS0gYS9kcml2ZXJz
-L25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYyAKPiArKysgYi9kcml2ZXJzL25l
-dC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYyAKPiBAQCAtNDYsNyArNDYsNiBAQCBN
-T0RVTEVfREVWSUNFX1RBQkxFKHVzYiwgcGVha191c2JfdGFibGUpOyAKPiBzdGF0aWMgc3RydWN0
-IHBlYWtfdXNiX2FkYXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXJzX2xpc3RbXSA9IHsgCj4gJnBjYW5f
-dXNiLCAKPiAmcGNhbl91c2JfcHJvLCAKPiAtIE5VTEwsIAo+IH07IAo+Cj4gLyogCj4gQEAgLTg1
-NywxNyArODU2LDE4IEBAIHN0YXRpYyBpbnQgcGVha191c2JfcHJvYmUoc3RydWN0IHVzYl9pbnRl
-cmZhY2UgKmludGYsIAo+IHsgCj4gc3RydWN0IHVzYl9kZXZpY2UgKnVzYl9kZXYgPSBpbnRlcmZh
-Y2VfdG9fdXNiZGV2KGludGYpOyAKPiBjb25zdCB1MTYgdXNiX2lkX3Byb2R1Y3QgPSBsZTE2X3Rv
-X2NwdSh1c2JfZGV2LT5kZXNjcmlwdG9yLmlkUHJvZHVjdCk7IAo+IC0gc3RydWN0IHBlYWtfdXNi
-X2FkYXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXIsICoqcHA7IAo+ICsgc3RydWN0IHBlYWtfdXNiX2Fk
-YXB0ZXIgKnBlYWtfdXNiX2FkYXB0ZXIgPSBOVUxMOyAKPiBpbnQgaSwgZXJyID0gLUVOT01FTTsg
-Cj4KPiB1c2JfZGV2ID0gaW50ZXJmYWNlX3RvX3VzYmRldihpbnRmKTsgCj4KPiAvKiBnZXQgY29y
-cmVzcG9uZGluZyBQQ0FOLVVTQiBhZGFwdGVyICovIAo+IC0gZm9yIChwcCA9IHBlYWtfdXNiX2Fk
-YXB0ZXJzX2xpc3Q7ICpwcDsgcHArKykgCj4gLSBpZiAoKCpwcCktPmRldmljZV9pZCA9PSB1c2Jf
-aWRfcHJvZHVjdCkgCj4gKyBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShwZWFrX3VzYl9hZGFw
-dGVyc19saXN0KTsgaSsrKSAKPiArIGlmIChwZWFrX3VzYl9hZGFwdGVyc19saXN0W2ldLT5kZXZp
-Y2VfaWQgPT0gdXNiX2lkX3Byb2R1Y3QpIHsgCj4gKyBwZWFrX3VzYl9hZGFwdGVyID0gcGVha191
-c2JfYWRhcHRlcnNfbGlzdFtpXTsgCj4gYnJlYWs7IAo+ICsgfSAKPgo+IC0gcGVha191c2JfYWRh
-cHRlciA9ICpwcDsgCj4gaWYgKCFwZWFrX3VzYl9hZGFwdGVyKSB7IAo+IC8qIHNob3VsZCBuZXZl
-ciBjb21lIGV4Y2VwdCBkZXZpY2VfaWQgYmFkIHVzYWdlIGluIHRoaXMgZmlsZSAqLyAKPiBwcl9l
-cnIoIiVzOiBkaWRuJ3QgZmluZCBkZXZpY2UgaWQuIDB4JXggaW4gZGV2aWNlcyBsaXN0XG4iLCAK
-PiAtLSAKPiAyLjEuNCAKPgo=
-
-
---===axigen=55320611415365718748=axigen===
-Content-Type: text/plain;
-	name="Signature.txt"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
-	filename="Signature.txt"
 
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
---===axigen=55320611415365718748=axigen===--
+On 01/27/2015 10:02 PM, St=C3=A9phane Grosjean wrote:
+> Hi Mark,
+>=20
+> You've got my Ack for this patch.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--wBmwWvAhxUXwxXenqemulOaXTqCORGbft
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJUx/z9AAoJECte4hHFiupUPh4P/jCsIeQkV5ZdF2x4tC9jvJHf
+fgO+6/Dko8duBxwP2QOEtzGt9ru/A5cNgzjYPa+b+vxZ0ZTLyQVRrSsQ8G+njdlZ
+v/4f6Rw42PHi4aualw9mbjMuoUlB2VrDOlYDJujraOxq2kqq7siHVzjzl8MSz32L
+6f4KZRbBn8f0HZ0UVkzScoY/J7iattVSDu0sd6nshV8nMQUA8WXw4wIoiO5Zfsrd
+Nxv9YilDOLo5PAn790GEKA3Z6a1eCruWGs/YTJEbZnHJSDDZQ2d60HBjwsWu1083
+GqfKAB0hvSFjHu2flsfJjyKYgZ7EYCfyzdjGHqCae4g+fkJUoQsNkBhyDyz+XC7O
+IAijOa5eV7U8dAb3rtsZq8S+eY6l7vXH/cS9rXb1PM6Vs3JZou8GIiVJUaNzcZUR
+wQNvAzZSRrzdTPb/JrVdXLAXYu5HvIifVjQNmwjeuuuk9HkskPmh8wS9uznF6SWE
+LIMVJ3PWo9kWkW5YTZYkAAuXDx2FF4Plujb8Hg/vtHX2bBLte4f2g21+wjxFciox
+aFlnmAAWwfKBNa6AYXoS2CCLUXH9XDvEd/WxnvDLRcaVKl09IoHKFwncHlzwMNM2
+xfjy5C5mzH7OVQZ+fFxKYj410IH0kEKw3n9vAP1YHQr59C5wHLkcdmkprhVL0+m4
+RPKp7PI0t3VzpMDW8o2h
+=/rE9
+-----END PGP SIGNATURE-----
+
+--wBmwWvAhxUXwxXenqemulOaXTqCORGbft--
