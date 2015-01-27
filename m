@@ -1,61 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/4] can: kvaser_usb: Fix state handling upon BUS_ERROR events
-Date: Tue, 27 Jan 2015 09:01:27 +0100
-Message-ID: <1422345687-12839-5-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 2/4] can: kvaser_usb: Send correct context to URB completion
+Date: Tue, 27 Jan 2015 09:01:25 +0100
+Message-ID: <1422345687-12839-3-git-send-email-mkl@pengutronix.de>
 References: <1422345687-12839-1-git-send-email-mkl@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58352 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757666AbbA0IBg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 03:01:36 -0500
 In-Reply-To: <1422345687-12839-1-git-send-email-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, "Ahmed S. Darwish" <ahmed.darwish@valeo.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
 
 From: "Ahmed S. Darwish" <ahmed.darwish@valeo.com>
 
-While being in an ERROR_WARNING state, and receiving further
-bus error events with error counters still in the ERROR_WARNING
-range of 97-127 inclusive, the state handling code erroneously
-reverts back to ERROR_ACTIVE.
+Send expected argument to the URB completion hander: a CAN
+netdevice instead of the network interface private context
+`kvaser_usb_net_priv'.
 
-Per the CAN standard, only revert to ERROR_ACTIVE when the
-error counters are less than 96.
-
-Moreover, in certain Kvaser models, the BUS_ERROR flag is
-always set along with undefined bits in the M16C status
-register. Thus use bitwise operators instead of full equality
-for checking that register against bus errors.
+This was discovered by having some garbage in the kernel
+log in place of the netdevice names: can0 and can1.
 
 Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/kvaser_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 55407b9663a6..7af379ca861b 100644
+index 978a25e9cd3c..f0c62075df0a 100644
 --- a/drivers/net/can/usb/kvaser_usb.c
 +++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -698,9 +698,7 @@ static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
- 		}
+@@ -587,7 +587,7 @@ static int kvaser_usb_simple_msg_async(struct kvaser_usb_net_priv *priv,
+ 			  usb_sndbulkpipe(dev->udev,
+ 					  dev->bulk_out->bEndpointAddress),
+ 			  buf, msg->len,
+-			  kvaser_usb_simple_msg_callback, priv);
++			  kvaser_usb_simple_msg_callback, netdev);
+ 	usb_anchor_urb(urb, &priv->tx_submitted);
  
- 		new_state = CAN_STATE_ERROR_PASSIVE;
--	}
--
--	if (status == M16C_STATE_BUS_ERROR) {
-+	} else if (status & M16C_STATE_BUS_ERROR) {
- 		if ((priv->can.state < CAN_STATE_ERROR_WARNING) &&
- 		    ((txerr >= 96) || (rxerr >= 96))) {
- 			cf->can_id |= CAN_ERR_CRTL;
-@@ -710,7 +708,8 @@ static void kvaser_usb_rx_error(const struct kvaser_usb *dev,
- 
- 			priv->can.can_stats.error_warning++;
- 			new_state = CAN_STATE_ERROR_WARNING;
--		} else if (priv->can.state > CAN_STATE_ERROR_ACTIVE) {
-+		} else if ((priv->can.state > CAN_STATE_ERROR_ACTIVE) &&
-+			   ((txerr < 96) && (rxerr < 96))) {
- 			cf->can_id |= CAN_ERR_PROT;
- 			cf->data[2] = CAN_ERR_PROT_ACTIVE;
- 
+ 	err = usb_submit_urb(urb, GFP_ATOMIC);
 -- 
 2.1.4
+
