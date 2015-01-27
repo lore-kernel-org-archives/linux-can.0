@@ -1,50 +1,47 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 7/7 v9] can/peak_usb: add support for PEAK new CANFD USB
- adapters
-Date: Tue, 27 Jan 2015 09:00:09 +0100
-Message-ID: <54C74589.9050603@hartkopp.net>
-References: <1422009085-11858-1-git-send-email-s.grosjean@peak-system.com> <1422009085-11858-8-git-send-email-s.grosjean@peak-system.com> <54C64633.9080204@pengutronix.de> <54C65912.5020309@peak-system.com> <54C659C0.4040207@pengutronix.de> <54C66063.9050500@peak-system.com> <54C6628D.7010902@pengutronix.de> <54C6ABE1.8000504@hartkopp.net> <54C6ACBD.2020806@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:45415 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752560AbbA0IAW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 03:00:22 -0500
-In-Reply-To: <54C6ACBD.2020806@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2015-01-27
+Date: Tue, 27 Jan 2015 09:01:23 +0100
+Message-ID: <1422345687-12839-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
->> I assume it is better to set the ctrlmode directly in the struct can_priv
->> element in  pcan_usb_fd_init() after retrieving the firmware version.
->
-> Even better.
->
->> IMO it doesn't make sense to transport this info through the mechanic above
->> which mostly initialized quasi constant settings for the adapter.
->
-> If we check the firmware version, it doesn't make sende to put the
-> information into that struct (IMHO)
->
+Hello David,
 
-Just to be sure: We stated to have the same opinion here, right?
+this is another pull request for net/master which consists of 4 patches.
 
->> +/* describes the PCAN-USB Pro FD adapter */
->> +struct peak_usb_adapter pcan_usb_pro_fd = {
->>
->> be
->>
->> +/* describes the PCAN-USB Pro FD adapter */
->> +const struct peak_usb_adapter pcan_usb_pro_fd = {
->
-> Yes, but it probably needs some more modifications in the driver.
+All 4 patches are contributed by Ahmed S. Darwish, he fixes more problems in
+the kvaser_usb driver.
 
-I don't know if this struct is "read-only" all the time.
-If so it is easy to change.
+David, please merge net/master to net-next/master, as we have more kvaser_usb
+patches in the queue, that target net-next.
 
-I pity you, Stephane - but we will make it :-))
+regards,
+Marc
 
-Thanks,
-Oliver
+The following changes since commit 600ddd6825543962fb807884169e57b580dba208:
+
+  net: sctp: fix slab corruption from use after free on INIT collisions (2015-01-26 17:02:05 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-3.19-20150127
+
+for you to fetch changes up to e638642b08c170d2021b706f0b1c4f4ae93d8cbd:
+
+  can: kvaser_usb: Fix state handling upon BUS_ERROR events (2015-01-27 08:55:09 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-3.19-20150127
+
+----------------------------------------------------------------
+Ahmed S. Darwish (4):
+      can: kvaser_usb: Do not sleep in atomic context
+      can: kvaser_usb: Send correct context to URB completion
+      can: kvaser_usb: Retry the first bulk transfer on -ETIMEDOUT
+      can: kvaser_usb: Fix state handling upon BUS_ERROR events
+
+ drivers/net/can/usb/kvaser_usb.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
