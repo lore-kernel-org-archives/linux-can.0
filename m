@@ -1,100 +1,63 @@
-From: =?ISO-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: Re: [PATCH v10 3/9] can/peak_usb: export ctrlmode_supported to
- adapter specific
-Date: Tue, 27 Jan 2015 22:10:03 +0100
-Message-ID: <1422392998656465987@MailServerPEAK>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v10 3/9] can/peak_usb: export ctrlmode_supported to adapter
+ specific
+Date: Tue, 27 Jan 2015 22:10:43 +0100
+Message-ID: <54C7FED3.8090703@pengutronix.de>
+References: <1422392998656465987@MailServerPEAK>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="===axigen=27749784413047937291=axigen==="
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="B8erXBdb4TCfTsU1o25RAj4wjwlp1Ls83"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:56461 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759780AbbA0VKG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 16:10:06 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36026 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754526AbbA0VKp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 27 Jan 2015 16:10:45 -0500
+In-Reply-To: <1422392998656465987@MailServerPEAK>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
 Cc: linux-can@vger.kernel.org
 
-This is a MIME message. You may need a MIME compliant mail user agent.
---===axigen=27749784413047937291=axigen===
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--B8erXBdb4TCfTsU1o25RAj4wjwlp1Ls83
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-
-SHVt4oCmIGZvcmdldCBhYm91dCBteSBsYXN0IGVtYWlsIGFja2luZyBzb21ldGhpbmcgSSBzaWdu
-ZWQtb2Zm4oCmIFNvcnJ5IGZvciB0aGUgbm9pc2XigKYgCgpTdMOpcGhhbmVMZSAyNyBqYW52LiAy
-MDE1IDIyOjA1LCBTdMOpcGhhbmUgR3Jvc2plYW4gPHMuZ3Jvc2plYW5AcGVhay1zeXN0ZW0uY29t
-PiBhIMOpY3JpdCA6Cj4KPiBIaSBNYXJrLAo+Cj4gWW91J3ZlIGdvdCBteSBBY2sgZm9yIHRoaXMg
-cGF0Y2ggKHRvbykoYWdhaW4pLgo+Cj4gU3TDqXBoYW5lLkxlIDI3IGphbnYuIDIwMTUgMTc6NDEs
-IE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+IGEgw6ljcml0IDoKPiA+Cj4g
-PiBGcm9tOiBTdGVwaGFuZSBHcm9zamVhbiA8cy5ncm9zamVhbkBwZWFrLXN5c3RlbS5jb20+IAo+
-ID4KPiA+IEV4cG9ydCB0aGUgY3RybG1vZGVfc3VwcG9ydGVkIHZhbHVlIGZyb20gdGhlIGNvcmUg
-ZmlsZSB0byBlYWNoIGFkYXB0ZXIgc3BlY2lmaWMgCj4gPiBmaWxlLiBUaGlzIGhhcyBiZWVuIG1h
-bmRhdG9yeSBmb3Igc3VwcG9ydGluZyB0aGUgbmV3IENBTkZEIGV4dGVuc2lvbi4gCj4gPgo+ID4g
-U2lnbmVkLW9mZi1ieTogU3RlcGhhbmUgR3Jvc2plYW4gPHMuZ3Jvc2plYW5AcGVhay1zeXN0ZW0u
-Y29tPiAKPiA+IFNpZ25lZC1vZmYtYnk6IE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9u
-aXguZGU+IAo+ID4gLS0tIAo+ID4gZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3Vz
-Yi5jwqDCoMKgwqDCoCB8IDEgKyAKPiA+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNh
-bl91c2JfY29yZS5jIHwgMyArLS0gCj4gPiBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3Bj
-YW5fdXNiX2NvcmUuaCB8IDEgKyAKPiA+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNh
-bl91c2JfcHJvLmPCoCB8IDEgKyAKPiA+IDQgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKSAKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3Vz
-Yi9wZWFrX3VzYi9wY2FuX3VzYi5jIGIvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2Fu
-X3VzYi5jIAo+ID4gaW5kZXggZDU3ZDNmNjRhNWJmLi43MjQyN2YyMWVkZmYgMTAwNjQ0IAo+ID4g
-LS0tIGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYi5jIAo+ID4gKysrIGIv
-ZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYi5jIAo+ID4gQEAgLTg1OSw2ICs4
-NTksNyBAQCBjb25zdCBzdHJ1Y3QgcGVha191c2JfYWRhcHRlciBwY2FuX3VzYiA9IHsgCj4gPiAu
-bmFtZSA9ICJQQ0FOLVVTQiIsIAo+ID4gLmRldmljZV9pZCA9IFBDQU5fVVNCX1BST0RVQ1RfSUQs
-IAo+ID4gLmN0cmxfY291bnQgPSAxLCAKPiA+ICsgLmN0cmxtb2RlX3N1cHBvcnRlZCA9IENBTl9D
-VFJMTU9ERV8zX1NBTVBMRVMgfCBDQU5fQ1RSTE1PREVfTElTVEVOT05MWSwgCj4gPiAuY2xvY2sg
-PSB7IAo+ID4gLmZyZXEgPSBQQ0FOX1VTQl9DUllTVEFMX0haIC8gMiAsIAo+ID4gfSwgCj4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmMg
-Yi9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYyAKPiA+IGluZGV4
-IDcyOWI4MGQ3ODMyMi4uMjc2ODM5OWE1MmZhIDEwMDY0NCAKPiA+IC0tLSBhL2RyaXZlcnMvbmV0
-L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIAo+ID4gKysrIGIvZHJpdmVycy9uZXQv
-Y2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmMgCj4gPiBAQCAtNzUwLDggKzc1MCw3IEBA
-IHN0YXRpYyBpbnQgcGVha191c2JfY3JlYXRlX2Rldihjb25zdCBzdHJ1Y3QgcGVha191c2JfYWRh
-cHRlciAqcGVha191c2JfYWRhcHRlciwgCj4gPiBkZXYtPmNhbi5iaXR0aW1pbmdfY29uc3QgPSAm
-cGVha191c2JfYWRhcHRlci0+Yml0dGltaW5nX2NvbnN0OyAKPiA+IGRldi0+Y2FuLmRvX3NldF9i
-aXR0aW1pbmcgPSBwZWFrX3VzYl9zZXRfYml0dGltaW5nOyAKPiA+IGRldi0+Y2FuLmRvX3NldF9t
-b2RlID0gcGVha191c2Jfc2V0X21vZGU7IAo+ID4gLSBkZXYtPmNhbi5jdHJsbW9kZV9zdXBwb3J0
-ZWQgPSBDQU5fQ1RSTE1PREVfM19TQU1QTEVTIHwgCj4gPiAtIMKgwqDCoMKgwqAgQ0FOX0NUUkxN
-T0RFX0xJU1RFTk9OTFk7IAo+ID4gKyBkZXYtPmNhbi5jdHJsbW9kZV9zdXBwb3J0ZWQgPSBwZWFr
-X3VzYl9hZGFwdGVyLT5jdHJsbW9kZV9zdXBwb3J0ZWQ7IAo+ID4KPiA+IG5ldGRldi0+bmV0ZGV2
-X29wcyA9ICZwZWFrX3VzYl9uZXRkZXZfb3BzOyAKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmggYi9kcml2ZXJzL25ldC9jYW4v
-dXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuaCAKPiA+IGluZGV4IDEwZjJmY2FjN2MxMy4uNTRm
-ZGI1OTc4YTA1IDEwMDY0NCAKPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2Iv
-cGNhbl91c2JfY29yZS5oIAo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9w
-Y2FuX3VzYl9jb3JlLmggCj4gPiBAQCAtNDQsNiArNDQsNyBAQCBzdHJ1Y3QgcGVha191c2JfZGV2
-aWNlOyAKPiA+IHN0cnVjdCBwZWFrX3VzYl9hZGFwdGVyIHsgCj4gPiBjaGFyICpuYW1lOyAKPiA+
-IHUzMiBkZXZpY2VfaWQ7IAo+ID4gKyB1MzIgY3RybG1vZGVfc3VwcG9ydGVkOyAKPiA+IHN0cnVj
-dCBjYW5fY2xvY2sgY2xvY2s7IAo+ID4gY29uc3Qgc3RydWN0IGNhbl9iaXR0aW1pbmdfY29uc3Qg
-Yml0dGltaW5nX2NvbnN0OyAKPiA+IHVuc2lnbmVkIGludCBjdHJsX2NvdW50OyAKPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX3Byby5jIGIvZHJp
-dmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9wcm8uYyAKPiA+IGluZGV4IDU2ODU1
-YjJiMWZhMS4uMDNmNTE3MTYwYTY3IDEwMDY0NCAKPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi91
-c2IvcGVha191c2IvcGNhbl91c2JfcHJvLmMgCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4vdXNi
-L3BlYWtfdXNiL3BjYW5fdXNiX3Byby5jIAo+ID4gQEAgLTEwMTYsNiArMTAxNiw3IEBAIGNvbnN0
-IHN0cnVjdCBwZWFrX3VzYl9hZGFwdGVyIHBjYW5fdXNiX3BybyA9IHsgCj4gPiAubmFtZSA9ICJQ
-Q0FOLVVTQiBQcm8iLCAKPiA+IC5kZXZpY2VfaWQgPSBQQ0FOX1VTQlBST19QUk9EVUNUX0lELCAK
-PiA+IC5jdHJsX2NvdW50ID0gUENBTl9VU0JQUk9fQ0hBTk5FTF9DT1VOVCwgCj4gPiArIC5jdHJs
-bW9kZV9zdXBwb3J0ZWQgPSBDQU5fQ1RSTE1PREVfM19TQU1QTEVTIHwgQ0FOX0NUUkxNT0RFX0xJ
-U1RFTk9OTFksIAo+ID4gLmNsb2NrID0geyAKPiA+IC5mcmVxID0gUENBTl9VU0JQUk9fQ1JZU1RB
-TF9IWiwgCj4gPiB9LCAKPiA+IC0tIAo+ID4gMi4xLjQgCj4gPgo=
-
-
---===axigen=27749784413047937291=axigen===
-Content-Type: text/plain;
-	name="Signature.txt"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
-	filename="Signature.txt"
 
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
---===axigen=27749784413047937291=axigen===--
+On 01/27/2015 10:10 PM, St=C3=A9phane Grosjean wrote:
+> Hum=E2=80=A6 forget about my last email acking something I signed-off=E2=
+=80=A6 Sorry for the noise=E2=80=A6=20
+
+:D
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--B8erXBdb4TCfTsU1o25RAj4wjwlp1Ls83
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJUx/7TAAoJECte4hHFiupUkV8P/0A7QYxun+NOFnI3tNmTp4+o
+J6C/PqoPm90MvLCpwFacfAPLwQ2Ajpoi0pd0zQ1fRvgu2ZErc8ao7Vm8LnhRVGWO
+RBmNO98PWcl+bsrEtCXuAGbavgcL05XxqujuPq/EW4LM52j81+7Jr1IZU0Q0unJH
+aKh1BNqAwXmhdIEj1Rw3ZpswZWU5+ZGkLTqQxLg41+eYE8jiKp6IdBZmH/ePw7j5
+toT1UstYeVvOUp0UoxBfv3QM3uRknB3MlgfSZfa/PAEf2uJ6QPNgtmeuo2sDX9kq
+o1tmwhpJ2GlYXfTKfHQjip4gCOAU300rFkfuveTjZo8qeF46mUlE6s2YWx48YoKF
+e/JVUjJP8ituLi8e1UU5gYuSR5Ti+wzdsJim/gzn8vomYFC3pOWw3eNuOHzglo8a
+JTHNa9F6CNgdiDvnX4pvP1R4FpodD7eOXoTcmsKaGJHgJ3jb4zAYMjkLvqub8iE5
+drjiQ4o9h6B2D/J2weqV1cj/CaqXczKdCPbCDdA1dddOdP8M8aQxN5ulOGtqpla5
+hQGYZNCSSdXrbY0y3dwQ96IRmY77epZsBki99jadvLKGUbXGqvUnopieDyIi5Msm
+W+W3sOV0Dp9LzbtcwMkDb+pw1iVFZXzdoOLed0+0MnsRQge660GBbd3GJ1n7VWzJ
+FMF929CRggRwIQ5cY4lR
+=7kXL
+-----END PGP SIGNATURE-----
+
+--B8erXBdb4TCfTsU1o25RAj4wjwlp1Ls83--
