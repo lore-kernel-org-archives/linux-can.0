@@ -1,75 +1,82 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v5] can: Convert to runtime_pm
-Date: Wed, 28 Jan 2015 15:19:24 +0000
-Message-ID: <1ae6a3ca4fad4104a673b9a6c7e44998@BY2FFO11FD036.protection.gbl>
-References: <baf987c11c0242c2bf87b81f9396b09d@BN1BFFO11FD018.protection.gbl>
- <54C8F62D.6090909@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 7/7 v9] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Wed, 28 Jan 2015 14:59:01 +0100
+Message-ID: <54C8EB25.8000208@pengutronix.de>
+References: <1422009085-11858-1-git-send-email-s.grosjean@peak-system.com> <1422009085-11858-8-git-send-email-s.grosjean@peak-system.com> <54C64633.9080204@pengutronix.de> <54C65912.5020309@peak-system.com> <54C659C0.4040207@pengutronix.de> <54C66063.9050500@peak-system.com> <54C6628D.7010902@pengutronix.de> <54C6ABE1.8000504@hartkopp.net> <54C6ACBD.2020806@pengutronix.de> <54C74589.9050603@hartkopp.net> <54C746AE.60801@pengutronix.de> <54C78C6E.3070705@peak-system.com> <54C78E4D.9060601@hartkopp.net> <54C791DA.3060708@peak-system.com> <54C7A037.6080100@hartkopp.net> <54C8E168.1040501@pengutronix.de> <54C8E811.3050806@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <54C8F62D.6090909@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="7X8pK2nqdkl9jm2LXmNbjIt2eHGOo2G3D"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48454 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755335AbbA1UQr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Jan 2015 15:16:47 -0500
+In-Reply-To: <54C8E811.3050806@peak-system.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7X8pK2nqdkl9jm2LXmNbjIt2eHGOo2G3D
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
-> Sent: Wednesday, January 28, 2015 8:16 PM
-> To: Appana Durga Kedareswara Rao; wg@grandegger.com; Michal Simek;
-> Soren Brinkmann; grant.likely@linaro.org; robh+dt@kernel.org
-> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org; Appana Durga Kedareswara Rao
-> Subject: Re: [PATCH v5] can: Convert to runtime_pm
->
-> On 01/12/2015 04:04 PM, Kedareswara rao Appana wrote:
-> > Instead of enabling/disabling clocks at several locations in the
-> > driver, Use the runtime_pm framework. This consolidates the actions
-> > for runtime PM In the appropriate callbacks and makes the driver more
-> readable and mantainable.
-> >
-> > Signed-off-by: Soren Brinkmann <soren.brinkmann@xilinx.com>
-> > Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
-> > ---
-> > Changes for v5:
-> >  - Updated with the review comments.
-> >    Updated the remove fuction to use runtime_pm.
-> > Chnages for v4:
-> >  - Updated with the review comments.
-> > Changes for v3:
-> >   - Converted the driver to use runtime_pm.
-> > Changes for v2:
-> >   - Removed the struct platform_device* from suspend/resume
-> >     as suggest by Lothar.
->
-> Any plans to submit a v6?
+On 01/28/2015 02:45 PM, Stephane Grosjean wrote:
+>=20
+> Le 28/01/2015 14:17, Marc Kleine-Budde a =C3=A9crit :
+>> On 01/27/2015 03:27 PM, Oliver Hartkopp wrote:
+>>> As there is no firmware version to check against right now:
+>>>
+>>> In pcan_usb_fd_init() just set
+>>>
+>>> pdev->dev.can.ctrlmode =3D CAN_CTRLMODE_FD_NON_ISO;
+>> St=C3=A9phane, are going to add a firmware version check or should I t=
+ake the
+>> series as it is?
+>>
+>> Marc
+>>
+> No firmware check is supposed to be added, for the moment! Once again, =
 
-I was on vacation till yesterday just came to office today only. Will look into it and will send v6 at the earliest.
+> the ISO/non-ISO feature is always under test and AFAIK, no official=20
+> delivery is planned!
+>=20
+> You can take the serie as it is.
 
-Regards,
-Kedar.
+done
 
->
-> Marc
-> --
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--7X8pK2nqdkl9jm2LXmNbjIt2eHGOo2G3D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJUyOslAAoJECte4hHFiupUInYQAIDdl5ZGUAATKBEWB8+PaETC
+a8oTPJUhW/R9e+MsJuEH1Bqc0aKaUxp8vyOr4bQXrZtgLS88OB7Kq5jswXj4gVH5
+m+DoqFQOm50eWKaBx3P+Zg/sTRfV1MweWlIF4MEy6BpY+U8V9s0qqR1bz25fNqud
+O05KmxWr7LxO9Wo02OfjpfmtLidP03KkL/w/w2wIg1lxh7ABSO+zi4P0VkYblPqZ
+Yy4/UKQsJl5Y+vST4SYz+p79kh9ZYSjry3IOSzoZmmwl8ChKGXHQzJ1N6eoyzdBT
+uhsZx29cqPgbPIKgtjVxMH5elBg0wms0zY+OdkHIJ7VEAqPYxmsDS+qbAEoT2jD2
+tgkHgG0XpclR9R3W0jR7BuphxINONUgkXZef8C26CnsdXUr2mo/MEhuBjsW2xSfb
+qDGfvLiRDOAd2ITJFE85AwgvU+LkGXoSPPjrO9S849y/fQ+7kpAQAbiPB4rDypQu
+ypYiiID9DFg2D5hEU4Ct7HOUomUw5Cc6C6rnANv6dtzJfR/mKktbSsmL2bYonU2r
+m/u82mOltCN2vPKrqIFQPiflrkGIO6Y5lR2OHrYM+OUcXDDQeyly6XyK+Bd0B43B
+v7541Dz2negz1UuNag7ad3hTquM4R1XR52hzYewq17rxlEoHWqspL3OLyqChrbHW
+KhXRDY+lyzZ0kM0RqWvG
+=uFnZ
+-----END PGP SIGNATURE-----
+
+--7X8pK2nqdkl9jm2LXmNbjIt2eHGOo2G3D--
