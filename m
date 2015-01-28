@@ -1,93 +1,40 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-28-01
-Date: Wed, 28 Jan 2015 14:58:42 +0100
-Message-ID: <54C8EB12.9030100@pengutronix.de>
+Subject: Re: [PATCH 7/7 v9] can/peak_usb: add support for PEAK new CANFD USB
+ adapters
+Date: Wed, 28 Jan 2015 14:17:28 +0100
+Message-ID: <54C8E168.1040501@pengutronix.de>
+References: <1422009085-11858-1-git-send-email-s.grosjean@peak-system.com> <1422009085-11858-8-git-send-email-s.grosjean@peak-system.com> <54C64633.9080204@pengutronix.de> <54C65912.5020309@peak-system.com> <54C659C0.4040207@pengutronix.de> <54C66063.9050500@peak-system.com> <54C6628D.7010902@pengutronix.de> <54C6ABE1.8000504@hartkopp.net> <54C6ACBD.2020806@pengutronix.de> <54C74589.9050603@hartkopp.net> <54C746AE.60801@pengutronix.de> <54C78C6E.3070705@peak-system.com> <54C78E4D.9060601@hartkopp.net> <54C791DA.3060708@peak-system.com> <54C7A037.6080100@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="dd98LWTGFEupCSnvCK6qMXdo5fCkx0jVf"
+ boundary="WwJS7hXRWxeBE2B11sx2RrKUD7ElPkX0j"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48472 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48462 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932232AbbA1URL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Jan 2015 15:17:11 -0500
+	with ESMTP id S1755376AbbA1URC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 28 Jan 2015 15:17:02 -0500
+In-Reply-To: <54C7A037.6080100@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dd98LWTGFEupCSnvCK6qMXdo5fCkx0jVf
+--WwJS7hXRWxeBE2B11sx2RrKUD7ElPkX0j
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello David,
+On 01/27/2015 03:27 PM, Oliver Hartkopp wrote:
+> As there is no firmware version to check against right now:
+>=20
+> In pcan_usb_fd_init() just set
+>=20
+> pdev->dev.can.ctrlmode =3D CAN_CTRLMODE_FD_NON_ISO;
 
-this is a pull request of 12 patches for net-next/master.
-
-There are 3 patches by Ahmed S. Darwish, which update the kvaser_usb
-driver and add support for the USBcan-II based adapters. St=C3=A9phane
-Grosjean contributes 7 patches for the peak_usb driver, which add
-support for the CANFD USB adapters. I contribute 2 patches which clean
-up the peak_usb driver structure a bit.
+St=C3=A9phane, are going to add a firmware version check or should I take=
+ the
+series as it is?
 
 Marc
-
----
-
-The following changes since commit ff660f75be36e6db75d45dc742a4a468c5a9c2=
-0d:
-
-  Merge branch 'stmmac-pci' (2015-01-27 21:08:13 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-3.20-20150128
-
-for you to fetch changes up to 0a25e1f4f18566b750ebd3ae995af64e23111e63:
-
-  can: peak_usb: add support for PEAK new CANFD USB adapters (2015-01-28 =
-14:47:06 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-3.20-20150128
-
-----------------------------------------------------------------
-Ahmed S. Darwish (3):
-      can: kvaser_usb: Update interface state before exiting on OOM
-      can: kvaser_usb: Consolidate and unify state change handling
-      can: kvaser_usb: Add support for the USBcan-II family
-
-Marc Kleine-Budde (2):
-      can: peak_usb: use ARRAY_SIZE instead of NULL termination for peak_=
-usb_adapters_list
-      can: peak_usb: constify struct peak_usb_adapter
-
-Stephane Grosjean (7):
-      can: peak_usb: export ctrlmode_supported to adapter specific defini=
-tion
-      can: peak_usb: add adapter BEC callback definition
-      can: peak_usb: upgrade core to data bittiming specs
-      can: peak_usb: upgrade core to new struct canfd_frame
-      can: peak_usb: export pcan_usb_pro functions
-      can: peak_usb: add peak_usb_netif_rx() new function
-      can: peak_usb: add support for PEAK new CANFD USB adapters
-
- drivers/net/can/usb/Kconfig                  |   22 +-
- drivers/net/can/usb/kvaser_usb.c             |  722 ++++++++++++-----
- drivers/net/can/usb/peak_usb/Makefile        |    2 +-
- drivers/net/can/usb/peak_usb/pcan_ucan.h     |  222 ++++++
- drivers/net/can/usb/peak_usb/pcan_usb.c      |    3 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |   83 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |   26 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 1095 ++++++++++++++++++++=
-++++++
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |   19 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |   13 +
- 10 files changed, 1981 insertions(+), 226 deletions(-)
- create mode 100644 drivers/net/can/usb/peak_usb/pcan_ucan.h
- create mode 100644 drivers/net/can/usb/peak_usb/pcan_usb_fd.c
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -96,29 +43,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---dd98LWTGFEupCSnvCK6qMXdo5fCkx0jVf
+--WwJS7hXRWxeBE2B11sx2RrKUD7ElPkX0j
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -126,19 +51,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJUyOsVAAoJECte4hHFiupUzToP/05IGBtduHOPM+JEyEmGgbf/
-QseZmQJ1LEA0IYGyXB+e+sQdEs9/43KVIwXoXaVZz8OI37MtMmOuv4hYqFeBDqLV
-rJlpKWXcwKLFzVBLkqCP/+gPDHTV9eODM6zoiolqWRt7j5SPDqhK0UeTEq3yjZuP
-bug/tLK6kfENVzF6EiTPBp/rRNgadRPB7TM3HvPuTCVqkWtcY6MjeDc+HFrEgjix
-Rt9IpWTp5+82Ovt/oAMfOUOdToA8WHpdUXzHil6pZoS3ScXCSfMZXGSEPKro3c+N
-UGC2pba+OhoDMPLAlR0yx/J/2/xoh4rSHm+e1g4CxW7RNqr7dcQja64oxmQDxle1
-P/DewTrugbIIluAXkHpywJd/eZs3u+5VqD8TIBleFdV+AkWu3LaGxZntqTPoylRj
-NLxkvANDdjTTf+BtZ9SZbzfnXyYkVntbZ477mYAEanqKu0gIj+z2jIg495SU0D2m
-/2J/w0bnToZU78RuuR0Iahuq77Xr0qodTpcksVkR1hz8FiXMWnkb8ZhFl/IkA6t2
-b0f6sAJuFIh6s0k6fe8BY+zKrAhA5UyookYh/iNFd1KkHbZRV2h2G1voqR3fPJqn
-xG+C8ZrzXagvwCFbjZw6gsDFdARKUsAo10EOH8cfRyQP5HDfFc/bt8Wfw/h44pl7
-EV0ibOtEHJHNYBctsZxC
-=581V
+iQIcBAEBCgAGBQJUyOFrAAoJECte4hHFiupUBzwP/iUqTC8NhzJV2oTooXfeSSQu
++Z+Q0+dl+OP6b6SwlnNjB/qZ79fZGXfdOiKXv39MNsTzilCSXIO4y+/q+WEu1DSm
+o9LLIfNd+93bcRPO+aH97gJaCLZtCeWE5D8a7Nry+Rl2II7FaYtxJscr8rKeMXQ1
+6IHWcsz10dn3fasOCSnYjpOPoZRQ74BHUn8FN7d4SsB8Zrm5pNUZGlBGkKHpUgiA
+6sUhz9hAiAxbPiT1a84LUdxlC2j9p53LWgMRlgt1MV2v/8ETlvdHdClBXJXJ3wuD
+ectaLQRe34YsppDNKtFX95KLw1f7JO0RDi2g3zQ74zV60KeD4ErxKR/5eUy1yCab
+QPB9HCZHLT20Z+06zkVlq99UaHEsSI0zceVs5lbk9WK0XafKDJhzQKK+npkFdIxJ
+/e8A33nQxiqpjJbK6TTLEp8LgCrZxn6J4zHqESsmizE4G3ghOEuKeQbNrOl12e8H
+AOj/IEXRzQWQoxhaAOrS2outaAjWCAiAVugoHf4LJWVBaaxs+Hbq0zSfOwIaBfZH
+F3Uh83ejX2ojbT/XKNJZ5B1fayhcudGfQmv2+eakYfKKXe9NYgP3o89Pri3K8ydN
+1CaxfZwxdMz/PaSUBsiEJwcaZi/FkPVJDK3mI/Z03CbQSmjC/MyUkZ30W+9rC27y
+dKFQPHPctDPohuZKVeW9
+=XJm5
 -----END PGP SIGNATURE-----
 
---dd98LWTGFEupCSnvCK6qMXdo5fCkx0jVf--
+--WwJS7hXRWxeBE2B11sx2RrKUD7ElPkX0j--
