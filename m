@@ -1,106 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: usb_8dev: firmware and windows library
-Date: Sat, 31 Jan 2015 11:09:43 +0100
-Message-ID: <54CCA9E7.4040303@hartkopp.net>
-References: <f5902be125a3dd5ead00d75e01a45fa5.squirrel@webmail.universalnet.at> <52DE5EEF.6080100@hartkopp.net> <52DE60C7.3050906@8devices.com> <52DFC08C.2040400@universalnet.at> <52DFD9B7.40300@pengutronix.de> <52E36208.3020100@universalnet.at> <54CBFE09.9000700@hartkopp.net> <54CC0103.2070507@universalnet.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH] can: janz-ican3: fix type missmatch in assignment
+Date: Sun,  1 Feb 2015 03:34:34 -0500
+Message-ID: <1422779674-27823-1-git-send-email-hofrat@osadl.org>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:47513 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751189AbbAaKJx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 31 Jan 2015 05:09:53 -0500
-In-Reply-To: <54CC0103.2070507@universalnet.at>
+Received: from www.osadl.org ([62.245.132.105]:35386 "EHLO www.osadl.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751974AbbBAIiy (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sun, 1 Feb 2015 03:38:54 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Bernd Krumboeck <krumboeck@universalnet.at>
-Cc: Gediminas Simanskis <gediminas@8devices.com>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
 
-Hi Bernd,
+From: Nicholas Mc Guire <der.herr@hofr.at>
 
-On 30.01.2015 23:09, Bernd Krumboeck wrote:
+return type of wait_for_completion_timeout is unsigned long not int, this
+patch removes the type missmatch by moving the call into the condition.
 
-> dfu-util 0.8 should be able to patch the adapter:
-> http://dfu-util.sourceforge.net/releases/dfu-util-0.8.tar.gz
+Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+---
 
-ok.
+The return type of wait_for_completion_timeout is unsigned long not
+int. This patch resolves the type missmatch by moving the call to 
+wait_for_completion_timeout into the condition. 
 
->
-> At least when 8devices corrected the device identifier in the provided
-> firmware image.
+Patch was compile tested only for x86_64_defconfig + CONFIG_CAN=m
+CONFIG_COMPILE_TEST=y, CONFIG_MFD_CS5535=m, CONFIG_OLPC=y
+CONFIG_MFD_JANZ_CMODIO=m, CONFIG_CAN_JANZ_ICAN3=m
 
-At least for the 1.4 version the way below worked.
-If there is another 1.4 I can try the dfu-util 0.8 first.
+Patch is against 3.19.0-rc6 -next-20150130
 
-> Sadly I have no time to test it myself.  :-(
-> Maybe in a month.
+ drivers/net/can/janz-ican3.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-I also have some open projects for 'maybe in a month' ;-))
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 0eb4d18..4dd183a 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1679,8 +1679,7 @@ static int ican3_get_berr_counter(const struct net_device *ndev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = wait_for_completion_timeout(&mod->buserror_comp, HZ);
+-	if (ret == 0) {
++	if (!wait_for_completion_timeout(&mod->buserror_comp, HZ)) {
+ 		netdev_info(mod->ndev, "%s timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+@@ -1705,8 +1704,7 @@ static ssize_t ican3_sysfs_show_term(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = wait_for_completion_timeout(&mod->termination_comp, HZ);
+-	if (ret == 0) {
++	if (!wait_for_completion_timeout(&mod->termination_comp, HZ)) {
+ 		netdev_info(mod->ndev, "%s timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+-- 
+1.7.10.4
 
-Thanks,
-Oliver
-
->
-> Am 2015-01-30 um 22:56 schrieb Oliver Hartkopp:
->> Hi Bernd,
->>
->> I had an adapter with a firmware < v1.5 here and tried to follow the
->> documentation at
->>
->> https://github.com/krumboeck/usb2can_firmware#flash-the-device-linux-experimental
->>
->>
->> Unfortunately the referenced patch at
->> http://lists.gnumonks.org/pipermail/dfu-util/attachments/20140124/1abbc049/attachment.bin
->>
->> disappeared ...
->>
->> I had this patch somewhere on my former laptop and attached it for the records.
->>
->> As dfu-util moved to to gitorious I cloned the dfu-util master into
->>
->> https://gitorious.org/dfu-util/8devices-usb2can-dfu-util
->>
->> an applied the two patches so that this version is able to flash the
->> 8devices USB2CAN adapter again.
->>
->> Regards,
->> Oliver
->>
->> On 25.01.2014 08:04, Bernd Krumboeck wrote:
->>> Hi!
->>>
->>>
->>> Source code from firmware v1.5: https://github.com/krumboeck/usb2can_firmware
->>>
->>>
->>> After some experiments I was able to flash the firmware with dfu-util under
->>> linux:
->>> https://github.com/krumboeck/usb2can_firmware#flash-the-device-linux-experimental
->>>
->>>
->>>
->>> Sadly I don't know the way how to build the firmware with a free tools chain.
->>>
->>>
->>> regards,
->>> Bernd
->>>
->>>
->>> Am 2014-01-22 15:46, schrieb Marc Kleine-Budde:
->>>> On 01/22/2014 01:58 PM, Bernd Krumboeck wrote:
->>>>> May I kindly ask you to send me a diff/patch about the changes, so I can
->>>>> update the firmware sources on github.
->>>>
->>>> A complete new set of sources will do, too. Git will create the diff for
->>>> you. :)
->>>>
->>>> Marc
->>>>
->>>
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
