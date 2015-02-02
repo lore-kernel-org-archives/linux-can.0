@@ -1,107 +1,70 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [jtkirshe-net-next:core-queue 1002/1025]
- drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false
- due to limited range of data type
-Date: Sun, 1 Feb 2015 08:00:25 -0500
-Message-ID: <20150201130025.GC27932@linux>
-References: <20150130112625.25243.36818@shannon>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: janz-ican3: fix type missmatch in assignment
+Date: Mon, 02 Feb 2015 10:25:08 +0100
+Message-ID: <54CF4274.1040600@pengutronix.de>
+References: <1422779674-27823-1-git-send-email-hofrat@osadl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="S1Xjeh9jebSpqPcPKhTKcQdPR1r5b24sv"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f50.google.com ([74.125.82.50]:39628 "EHLO
-	mail-wg0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752840AbbBANA3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 1 Feb 2015 08:00:29 -0500
-Received: by mail-wg0-f50.google.com with SMTP id b13so34171566wgh.9
-        for <linux-can@vger.kernel.org>; Sun, 01 Feb 2015 05:00:28 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20150130112625.25243.36818@shannon>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56370 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932812AbbBBJZU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 2 Feb 2015 04:25:20 -0500
+In-Reply-To: <1422779674-27823-1-git-send-email-hofrat@osadl.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org, "Ahmed S. Darwish" <ahmed.darwish@valeo.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Nicholas Mc Guire <hofrat@osadl.org>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
 
-Hi!
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--S1Xjeh9jebSpqPcPKhTKcQdPR1r5b24sv
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Andri wrote:
-> >    drivers/net/can/usb/kvaser_usb.c: In function 'kvaser_usb_rx_error_update_can_state':
-> > >> drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false due to limited range of data type
-> > >> drivers/net/can/usb/kvaser_usb.c:639: warning: comparison is always false due to limited range of data type
-> > 
-> > vim +639 drivers/net/can/usb/kvaser_usb.c
-> > 
-> >    623    const struct kvaser_usb_error_summary *es,
-> >    624    struct can_frame *cf)
-> >    625    {
-> >    626        struct net_device_stats *stats;
-> >    627        enum can_state cur_state, new_state, tx_state, rx_state;
-> >    628    
-> >    629        netdev_dbg(priv->netdev, "Error status: 0x%02x\n", es->status);
-> >    630    
-> >    631        stats = &priv->netdev->stats;
-> >    632        new_state = cur_state = priv->can.state;
-> >    633    
-> >    634        if (es->status & (M16C_STATE_BUS_OFF | M16C_STATE_BUS_RESET))
-> >    635            new_state = CAN_STATE_BUS_OFF;
-> >    636        else if (es->status & M16C_STATE_BUS_PASSIVE)
-> >    637            new_state = CAN_STATE_ERROR_PASSIVE;
-> >    638        else if (es->status & M16C_STATE_BUS_ERROR) {
-> >  > 639            if ((es->txerr >= 256) || (es->rxerr >= 256))
-> >    640                new_state = CAN_STATE_BUS_OFF;
-> >    641            else if ((es->txerr >= 128) || (es->rxerr >= 128))
-> >    642                new_state = CAN_STATE_ERROR_PASSIVE;
-> >    643            else if ((es->txerr >= 96) || (es->rxerr >= 96))
-> >    644                new_state = CAN_STATE_ERROR_WARNING;
-> >    645            else if (cur_state > CAN_STATE_ERROR_ACTIVE)
-> >    646                new_state = CAN_STATE_ERROR_ACTIVE;
-> >    647        }
-> > 
->
-> Isn't this redundant anyway? This is always handled by a different
-> interrupt, right?
-> 
+On 02/01/2015 09:34 AM, Nicholas Mc Guire wrote:
+> From: Nicholas Mc Guire <der.herr@hofr.at>
+>=20
+> return type of wait_for_completion_timeout is unsigned long not int, th=
+is
+> patch removes the type missmatch by moving the call into the condition.=
 
-The BUS_ERROR check might have been a bit pedantic indeed, but
-I've faced a number of cases where the firmware reported error
-counters > 128 without having any M16C_STATE_BUS_PASSIVE flags
-checked either in the status flag of the current message or any
-previous messages.
+>=20
+> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
 
-That's why I've added such elaborate checks.
+Thanks, applied to can-next.
 
-But since on bus error, good state was always reported and the
-driver did indeed transition to bus error state as expected,
-and since also the checks the compiler warns about doesn't work
-anyway, I'll just remove the two lines:
+Marc
 
- 639            if ((es->txerr >= 256) || (es->rxerr >= 256))
- 640                new_state = CAN_STATE_BUS_OFF;
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-And test the state changes again.
 
-> In case it isn't you could probably do something like this:
-> if ((es->txerr >= 128) || (es->rxerr >= 128)) {
->         if(cur_state == CAN_STATE_ERROR_PASSIVE)
->                 new_state = CAN_STATE_BUS_OFF;
->         else
->                 new_state = CAN_STATE_ERROR_PASSIVE;
+--S1Xjeh9jebSpqPcPKhTKcQdPR1r5b24sv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-That unfortunately won't work. As can be seen by candump traces
-I've sent on submission v6 here:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-	http://article.gmane.org/gmane.linux.can/7485
+iQIcBAEBCgAGBQJUz0J4AAoJECte4hHFiupUgIkQAJ+Eiupy7xI7fwmMo0YfFOwu
+OOYwpJo5+JZ1BayZ6LHHwiiGz0+o5Q4OYlw4XYdQJ7AnWTdP7ECEbCPUmX3Fm5eR
+NtYenJtXripb/Eogt6/W75Bo9G8N/S+uT1WvkW9hy3NtFBhjxhldoyVRnLHlJN/X
+ABIWB/Kw/6gAmkKDQMWj+BhUGg2P5T8tWugkHnbnasy9TN/fX6/1HvdPPYZ29Psm
+uESrPvfDDA2IfUtpxuDBOxpowqBWdlWouzsZ+9qRV7t32VAVC9Xq1YV+BsQMw8uU
+m8Hvx8LZcKoZNc08u0m1bT5JOm5mE+3SOnFucPnVzX0EtR1ekJbqsPGWqK50mkB7
+NTToMWu3xIKsINZhy1rVB28syn6yzHIG7dkNyYwXLblEgt1Q4v1m6GufSbcKbiSC
+WWDm0GxHNdpEkuJ1gywFtY+FbJXqUbNjNVaVb6BMdNtVXDGbWi/fIImQTGzMoGyS
+DCEXOBugkKNEbi0kkYnb0WrBGv7YE1kZsnVFHaYc2Arwjrz19jKmZS/lDVJuyOun
+Xx3j2IUtVoT5z0uXztuxxbhBcihGw+mbmV/BoMvO0NkEn/c9WF2QYC6O1aMFfoPX
+3C80vMD78LeBnoMuYlSYVUlwhg58RkPI2a1C8pSkMmoWlkBTg7UpFoGZpzRQaPh9
+mBOoM3WRBBUNuxXT/bYR
+=v4Aj
+-----END PGP SIGNATURE-----
 
-The firmware can report error counters, in an increasing fashion
-but in the same state range several times. So unless I'm missing
-something, I'll just remove the useless checks and see what
-happens.
-
-> } else if ((es->txerr >= 96) || (es->rxerr >= 96)) {
->         new_state = CAN_STATE_ERROR_WARNING;
-> } else if (cur_state > CAN_STATE_ERROR_ACTIVE) {
->         new_state = CAN_STATE_ERROR_ACTIVE;
-> }
-> 
-
-Thanks,
-Darwish
+--S1Xjeh9jebSpqPcPKhTKcQdPR1r5b24sv--
