@@ -1,48 +1,67 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: kvaser_usb: Ignore spurious error events after a
- busoff
-Date: Wed, 04 Feb 2015 14:04:35 +0100
-Message-ID: <54D218E3.3050204@pengutronix.de>
-References: <20150202201555.GA29327@linux>
+Subject: pull-request: can-next 2015-02-04
+Date: Wed, 04 Feb 2015 14:09:29 +0100
+Message-ID: <54D21A09.70101@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="ioMe1EK8x0hOJnf9RjpoKeWmo475PeKCv"
+ boundary="bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60917 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39687 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965485AbbBDNEr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 08:04:47 -0500
-In-Reply-To: <20150202201555.GA29327@linux>
+	with ESMTP id S932530AbbBDNJg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 08:09:36 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ioMe1EK8x0hOJnf9RjpoKeWmo475PeKCv
+--bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/02/2015 09:15 PM, Ahmed S. Darwish wrote:
-> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
->=20
-> Sending data in high speed then introducing a busoff results
-> in spurious BUS_ERROR events from the USBCan-II firmware directly
-> _after_ the triggered BUS_OFF event.
->=20
-> In the current CAN state handling code, this will lead to an
-> invalid can state of ACTIVE, ERROR, or PASSIVE even though the
-> CAN controller has been already shut down due to the busoff.
->=20
-> Guard the state handling code from such invalid events.
->=20
-> Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+Hello David,
 
-Applied to can-next.
+this is a pull request of 2 patches for net-next/master.
 
-Thanks,
+Nicholas Mc Guire contributes a patch for the janz-ican3 driver to fix
+a mismatch in an assignment. Ahmed S. Darwish contributes a patch for
+the kvaser_usb driver, to make the driver more robust during the
+bus-off handling.
+
 Marc
+
+---
+
+The following changes since commit 7e8acbb69ee2b855288afc61e3794a30e35829=
+77:
+
+  Merge branch 'netlabel-next' (2015-02-03 16:22:20 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-3.20-20150204
+
+for you to fetch changes up to a9ca6e13d66042b3ac18d1352b88b7cd0da8fc21:
+
+  can: kvaser_usb: Ignore spurious error events after a busoff (2015-02-0=
+4 14:07:03 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-3.20-20150204
+
+----------------------------------------------------------------
+Ahmed S. Darwish (1):
+      can: kvaser_usb: Ignore spurious error events after a busoff
+
+Nicholas Mc Guire (1):
+      can: janz-ican3: fix type mismatch in assignment
+
+ drivers/net/can/janz-ican3.c     |  6 ++----
+ drivers/net/can/usb/kvaser_usb.c | 19 ++++++++++---------
+ 2 files changed, 12 insertions(+), 13 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -51,7 +70,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---ioMe1EK8x0hOJnf9RjpoKeWmo475PeKCv
+--bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -59,19 +78,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU0hjmAAoJECte4hHFiupU+X4P/2TvFxLIyG5LORJEZ0KSLPza
-cBiP88OK14uNlM/WW5JkggfLislHBCfc1fdIH7wQfuEBtabO6xPL33KSkymjT/F1
-R7yo8sjMoK3YAl1KPG1xmFoXTt8lX1/oivjKiBYF5e61LsPcjWA7q6d13dduMhMC
-FY+fbD78AO940rNHNjensIW6m1GWDI9Jvb9n3g5O4VRRjZsgigDXaPdxKwcsM93t
-LD41IHtcIpn7qE8q+x8OkWDlbItLuVZfKLhJjLUcoJurFy0TRkb2NdvVy04WHF7n
-upN9g1KZOHRONuqw3RALYRoh77eU1JSLQBojXjZzJEaN28yl5/yZ7Q0KMa7cgUwl
-oJiiKv3RHxG9ZvZbZoplSZscMOZfGPZCyIVvV+OfNylHXfaXu8VUfafiy7EBW9uT
-sNyn1UB4ZLbvRY8an8GGkRyhPjat/91109jwxyvL5tbRR081FVKlq8NIXItUATQ5
-voEQaSJ4ApfGOhv/rE7Ozdbi0V5Wr15q35OHegSmQ7LCnXaOEvKLT/ZojaOBbL09
-j1ZU559+1W9Z32+pYeBDIHeRhZ7TphDxrNB6kYNuASNpVer18MPrWq+cMXoQvfix
-cPeYKxjP2lX9pYtQi4oa1d3K/UIGjRxIZmpz6WFvJmcOTnH+D+aw2vF54sdT8zLj
-8CoyBmpzfVHe4vuJEJVd
-=sGtY
+iQIcBAEBCgAGBQJU0hoNAAoJECte4hHFiupUhY0P/1ulpEdgqnA/i38pY6wpUQXo
+m89B0KyoyQdjbjziqGMzZljWyHqoF9LAmCBZTB8UHQZXTeAHCaZTy39pBXfEopE6
++Ks4vhgLugmPPj3Q2v11WMj0mKprGltCPizCbDzajWwwLdrB/8ziYkCYOjhBVhZI
+QJWk9FE9AJtnHKbeMofG4cW0i9AsCsYRD+XsgRwNueJLKJ2HirA2yE6Z23IB93kT
+fbWcPYmwE2G3L2iDHuzMG5PgkATpEs+f/Mn+DtiR11JH1XjaAG/Ws1d7LUEiAHgT
+cY+f60HSNhbOIggrqk49g/Ippy5cajrxA7VgIc6wXspu0OtGNDW4HRdiavA/rmfN
++bdI8VPGS4PAvtnE2UmA12yB5rybtWQLLrVLVigCQcTJNFKLudu7h+BfmGXCzFbX
+CEByxRQuXUWcoOsED29E5Y6TpktFDDIVCk7d/LRgQ4ZJmooQ/Wn7cj0bgvNFOjbi
++eqMdNaRx5xIip8veTQ3u0PCC3qyMLMkgXtBOrPWAvKHUXWW75DLmdqboMduL45S
+XQ/b8gWa+OP399FqXL/xV8MO3v5LbOSM6djGo0wWBgiv0HtVc3IpvQ0Mgpj1EKAk
+XqOyuNBx216Xr+im/wZM8bWq4urfr512+XdAZbcMekZG7XdwVQ3bfFRPcvrD3Z/Y
+vOp71fL++tHoTaOzzTvR
+=i/hP
 -----END PGP SIGNATURE-----
 
---ioMe1EK8x0hOJnf9RjpoKeWmo475PeKCv--
+--bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M--
