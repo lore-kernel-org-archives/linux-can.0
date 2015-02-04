@@ -1,42 +1,31 @@
-From: Mike Purvis <mpurvis@clearpathrobotics.com>
-Subject: Standard CAN over IP
-Date: Wed, 4 Feb 2015 15:27:19 -0500
-Message-ID: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
+From: Armin Burchardt <armin@uni-bremen.de>
+Subject: Re: Standard CAN over IP
+Date: Wed, 04 Feb 2015 21:44:36 +0100
+Message-ID: <54D284B4.5050501@uni-bremen.de>
+References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ig0-f178.google.com ([209.85.213.178]:57879 "EHLO
-	mail-ig0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1161337AbbBDU1k convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 15:27:40 -0500
-Received: by mail-ig0-f178.google.com with SMTP id hl2so6827255igb.5
-        for <linux-can@vger.kernel.org>; Wed, 04 Feb 2015 12:27:39 -0800 (PST)
+Received: from gabriel-3.zfn.uni-bremen.de ([134.102.50.3]:36488 "EHLO
+	smtp.uni-bremen.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S964917AbbBDVOM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 16:14:12 -0500
+In-Reply-To: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Mike Purvis <mpurvis@clearpathrobotics.com>, linux-can@vger.kernel.org
 
-Hi all,
+Hi Mike,
 
-I'm interested in providing low-cost CAN connectivity to a standard
-Mini-ITX PC=E2=80=94 so USB, Ethernet, RS232, PCIe connectivity is avai=
-lable,
-but not I2C or SPI (at least easily).
+On 04.02.2015 21:27, Mike Purvis wrote:
+> system as a socketcan can0 device. Is there some standard component
+> which already does this, or at least some tooling around serializing
+> CAN messages to a bytestream?
 
-I'm interested in any proposals for how to achieve this, though the
-idea I have in mind is basically a simple microcontroller which
-provides a CAN-over-UDP bridge. But I'd like to stay away from writing
-a kernel module to actually present the UDP traffic to the linux
-system as a socketcan can0 device. Is there some standard component
-which already does this, or at least some tooling around serializing
-CAN messages to a bytestream?
+there is slcand (UART to socketcan from the can-utils package) to use
+serial CAN adapters with socketcan. Implementing the (line based)
+protocol in the mcu should not be too hard.
 
-I noticed an interesting past discussion on this topic:
-http://socket-can.996257.n3.nabble.com/Socketcan-over-ethernet-td1203.h=
-tml
+Armin (switching back to read-only mode)
 
-Have anything changed significantly on this front since 2009?
-
-Thanks,
-
-Mike
