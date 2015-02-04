@@ -1,96 +1,42 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-02-04
-Date: Wed, 04 Feb 2015 14:09:29 +0100
-Message-ID: <54D21A09.70101@pengutronix.de>
+From: Mike Purvis <mpurvis@clearpathrobotics.com>
+Subject: Standard CAN over IP
+Date: Wed, 4 Feb 2015 15:27:19 -0500
+Message-ID: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39687 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932530AbbBDNJg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 08:09:36 -0500
+Received: from mail-ig0-f178.google.com ([209.85.213.178]:57879 "EHLO
+	mail-ig0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1161337AbbBDU1k convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 15:27:40 -0500
+Received: by mail-ig0-f178.google.com with SMTP id hl2so6827255igb.5
+        for <linux-can@vger.kernel.org>; Wed, 04 Feb 2015 12:27:39 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-Hello David,
+I'm interested in providing low-cost CAN connectivity to a standard
+Mini-ITX PC=E2=80=94 so USB, Ethernet, RS232, PCIe connectivity is avai=
+lable,
+but not I2C or SPI (at least easily).
 
-this is a pull request of 2 patches for net-next/master.
+I'm interested in any proposals for how to achieve this, though the
+idea I have in mind is basically a simple microcontroller which
+provides a CAN-over-UDP bridge. But I'd like to stay away from writing
+a kernel module to actually present the UDP traffic to the linux
+system as a socketcan can0 device. Is there some standard component
+which already does this, or at least some tooling around serializing
+CAN messages to a bytestream?
 
-Nicholas Mc Guire contributes a patch for the janz-ican3 driver to fix
-a mismatch in an assignment. Ahmed S. Darwish contributes a patch for
-the kvaser_usb driver, to make the driver more robust during the
-bus-off handling.
+I noticed an interesting past discussion on this topic:
+http://socket-can.996257.n3.nabble.com/Socketcan-over-ethernet-td1203.h=
+tml
 
-Marc
+Have anything changed significantly on this front since 2009?
 
----
+Thanks,
 
-The following changes since commit 7e8acbb69ee2b855288afc61e3794a30e35829=
-77:
-
-  Merge branch 'netlabel-next' (2015-02-03 16:22:20 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-3.20-20150204
-
-for you to fetch changes up to a9ca6e13d66042b3ac18d1352b88b7cd0da8fc21:
-
-  can: kvaser_usb: Ignore spurious error events after a busoff (2015-02-0=
-4 14:07:03 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-3.20-20150204
-
-----------------------------------------------------------------
-Ahmed S. Darwish (1):
-      can: kvaser_usb: Ignore spurious error events after a busoff
-
-Nicholas Mc Guire (1):
-      can: janz-ican3: fix type mismatch in assignment
-
- drivers/net/can/janz-ican3.c     |  6 ++----
- drivers/net/can/usb/kvaser_usb.c | 19 ++++++++++---------
- 2 files changed, 12 insertions(+), 13 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJU0hoNAAoJECte4hHFiupUhY0P/1ulpEdgqnA/i38pY6wpUQXo
-m89B0KyoyQdjbjziqGMzZljWyHqoF9LAmCBZTB8UHQZXTeAHCaZTy39pBXfEopE6
-+Ks4vhgLugmPPj3Q2v11WMj0mKprGltCPizCbDzajWwwLdrB/8ziYkCYOjhBVhZI
-QJWk9FE9AJtnHKbeMofG4cW0i9AsCsYRD+XsgRwNueJLKJ2HirA2yE6Z23IB93kT
-fbWcPYmwE2G3L2iDHuzMG5PgkATpEs+f/Mn+DtiR11JH1XjaAG/Ws1d7LUEiAHgT
-cY+f60HSNhbOIggrqk49g/Ippy5cajrxA7VgIc6wXspu0OtGNDW4HRdiavA/rmfN
-+bdI8VPGS4PAvtnE2UmA12yB5rybtWQLLrVLVigCQcTJNFKLudu7h+BfmGXCzFbX
-CEByxRQuXUWcoOsED29E5Y6TpktFDDIVCk7d/LRgQ4ZJmooQ/Wn7cj0bgvNFOjbi
-+eqMdNaRx5xIip8veTQ3u0PCC3qyMLMkgXtBOrPWAvKHUXWW75DLmdqboMduL45S
-XQ/b8gWa+OP399FqXL/xV8MO3v5LbOSM6djGo0wWBgiv0HtVc3IpvQ0Mgpj1EKAk
-XqOyuNBx216Xr+im/wZM8bWq4urfr512+XdAZbcMekZG7XdwVQ3bfFRPcvrD3Z/Y
-vOp71fL++tHoTaOzzTvR
-=i/hP
------END PGP SIGNATURE-----
-
---bOBHrLTILhdApsJUfWlqHPC2jcUXEhn7M--
+Mike
