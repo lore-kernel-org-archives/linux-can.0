@@ -1,76 +1,89 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: can: kvaser_usb: Consolidate and unify state change handling
-Date: Thu, 05 Feb 2015 09:30:45 +0100
-Message-ID: <54D32A35.9060308@pengutronix.de>
-References: <20150205081239.GA30683@mwanda> <54D32731.2070106@pengutronix.de>
+From: Aaron Wu <Aaron.wu@analog.com>
+Subject: [PATCH V4 2/2] bfin_can: rewrite the driver into common style with MMU
+Date: Thu, 5 Feb 2015 16:28:50 +0800
+Message-ID: <1423124930-12871-2-git-send-email-Aaron.wu@analog.com>
+References: <y> <1423124930-12871-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="kXvVp2QgUm1iwpMh87WWPqqtHQ1B7IgBL"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49191 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751721AbbBEIax (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 03:30:53 -0500
-In-Reply-To: <54D32731.2070106@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>, ahmed.darwish@valeo.com
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1423124930-12871-1-git-send-email-Aaron.wu@analog.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
+Cc: Aaron Wu <Aaron.wu@analog.com>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kXvVp2QgUm1iwpMh87WWPqqtHQ1B7IgBL
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Rewrite the blackfin CAN driver into common style
+V4 changes: remove unused variable in patch 2/2
+V3 changes: remove redundant cast in patch 2/2
+V2 changes: split patch into two parts
+V1 changes: rewrite code into common style
 
-On 02/05/2015 09:17 AM, Marc Kleine-Budde wrote:
-> Hey Dan,
->=20
-> On 02/05/2015 09:12 AM, Dan Carpenter wrote:
->> The patch 96d7f10634e6: "can: kvaser_usb: Consolidate and unify state
->> change handling" from Jan 26, 2015, leads to the following Smatch
->> warning:
->>
->> 	drivers/net/can/usb/kvaser_usb.c:827 kvaser_usb_rx_error_update_can_s=
-tate()
->> 	warn: impossible condition '(es->txerr >=3D 256) =3D> (0-255 >=3D 256=
-)'
->=20
-> A patch that implicitly fixes this warning, along with other
-> things, is in my latest pull request to David Miller.
+Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+---
+ drivers/net/can/bfin_can.c |   22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-=2E..which has just been merged.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---kXvVp2QgUm1iwpMh87WWPqqtHQ1B7IgBL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJU0yo4AAoJECte4hHFiupUNLYP/0u3Xg1OCWOLXndOmZfVUEpb
-4Yl2SpWuMmv2PQ9KlvTaSxWPqO3qvJm1skLDQb/aAEQN+0PpLFlkhTElGNFJWBg1
-X4XECly6pWTdNxy6UhUYQhF/zPLNykvgj5aeoA3y86L1GtX61Fq2pMtIooaqw3z6
-gT+9tNNCHpSXwo0wkwPR57gj1mKKaHcgdcneP/shy7hBWOMnQ+ebnIvmM7ou6l4a
-FSOISM7yKpfCagDJhJfePxlVotO6FI6wV2Hnc0NXe8wGNwFRPIw7BkNVEtxMAWTk
-lJRsf0WGZEbGQzDXtuC+L1cgM6KM78g1PrVOSUIQ9tq40EuSKHVo9XrRa5vacaFd
-aEmf9zOUfyMTtV8pDAcpTyoQinlmzPjQ6ALM1ZNg7Rut6fnTdq8yFb/UjyMX8tHu
-jqog2bi9dsc2vu5JtLIBYE0Anlzp3ggy8FZVrfdYtuaD+4cTW+F24tTQ83pXMSkQ
-O9VbeLS8roci7wWYrUeN63Hw3KU/Qf4rxYEUirbYzC3kUKuunjcWaljQbdvkORSc
-+zFCoqui1W8K+7oE21LuSt6IqLUWVcO2z22mZYBZlzJYruue58MWEzEzb/vKMDre
-Pc6N37UvCMIpRL2PbGd4zQqH2V/izhc7/TcOnMv/mvgWjbErEmKwKlpCL9g8dHt6
-hkiKUP1yF3flul6Hyt9C
-=TPDc
------END PGP SIGNATURE-----
-
---kXvVp2QgUm1iwpMh87WWPqqtHQ1B7IgBL--
+diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
+index 0a5eff4..0209c14 100644
+--- a/drivers/net/can/bfin_can.c
++++ b/drivers/net/can/bfin_can.c
+@@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 		goto exit;
+ 	}
+ 
+-	if (!request_mem_region(res_mem->start, resource_size(res_mem),
+-				dev_name(&pdev->dev))) {
+-		err = -EBUSY;
+-		goto exit;
+-	}
+-
+ 	/* request peripheral pins */
+ 	err = peripheral_request_list(pdata, dev_name(&pdev->dev));
+ 	if (err)
+-		goto exit_mem_release;
++		goto exit;
+ 
+ 	dev = alloc_bfin_candev();
+ 	if (!dev) {
+@@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv = netdev_priv(dev);
+-	priv->membase = (void __iomem *)res_mem->start;
++
++	priv->membase = devm_ioremap_resource(&pdev->dev, res_mem);
++	if (IS_ERR(priv->membase)) {
++		dev_err(&pdev->dev, "Cannot map IO\n");
++		return PTR_ERR(priv->membase);
++	}
++
+ 	priv->rx_irq = rx_irq->start;
+ 	priv->tx_irq = tx_irq->start;
+ 	priv->err_irq = err_irq->start;
+@@ -601,8 +601,6 @@ exit_candev_free:
+ 	free_candev(dev);
+ exit_peri_pin_free:
+ 	peripheral_free_list(pdata);
+-exit_mem_release:
+-	release_mem_region(res_mem->start, resource_size(res_mem));
+ exit:
+ 	return err;
+ }
+@@ -611,15 +609,11 @@ static int bfin_can_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct bfin_can_priv *priv = netdev_priv(dev);
+-	struct resource *res;
+ 
+ 	bfin_can_set_reset_mode(dev);
+ 
+ 	unregister_candev(dev);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(res->start, resource_size(res));
+-
+ 	peripheral_free_list(priv->pin_list);
+ 
+ 	free_candev(dev);
+-- 
+1.7.9.5
