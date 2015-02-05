@@ -1,37 +1,40 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V4 2/2] bfin_can: rewrite the driver into common style
- with MMU
-Date: Thu, 05 Feb 2015 09:50:20 +0100
-Message-ID: <54D32ECC.7070809@pengutronix.de>
-References: <y> <1423124930-12871-1-git-send-email-Aaron.wu@analog.com> <1423124930-12871-2-git-send-email-Aaron.wu@analog.com>
+Subject: Re: [PATCH] bfin_can: rewrite the blackfin CAN driver into arch independent
+ style
+Date: Thu, 05 Feb 2015 09:51:42 +0100
+Message-ID: <54D32F1E.1090407@pengutronix.de>
+References: <1419391828-21105-1-git-send-email-Aaron.wu@analog.com> <54AD4461.1040203@pengutronix.de> <649EF91064D35D40B9C93A225BF41674613109AC@NWD2MBX7.ad.analog.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="IOxbXRkMrOTwKRKVILma7gRl2kJdRm5nv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423124930-12871-2-git-send-email-Aaron.wu@analog.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
-List-Id: linux-can.vger.kernel.org
+ boundary="i6dmCR3kgaDpBSkAgw5Wv275EbucoONgw"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48859 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755746AbbBEIvw (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 03:51:52 -0500
+In-Reply-To: <649EF91064D35D40B9C93A225BF41674613109AC@NWD2MBX7.ad.analog.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "Wu, Aaron" <Aaron.Wu@analog.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "Zhang, Sonic" <Sonic.Zhang@analog.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IOxbXRkMrOTwKRKVILma7gRl2kJdRm5nv
+--i6dmCR3kgaDpBSkAgw5Wv275EbucoONgw
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/05/2015 09:28 AM, Aaron Wu wrote:
-> Rewrite the blackfin CAN driver into common style
-> V4 changes: remove unused variable in patch 2/2
-> V3 changes: remove redundant cast in patch 2/2
-> V2 changes: split patch into two parts
-> V1 changes: rewrite code into common style
->=20
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+On 02/05/2015 09:42 AM, Wu, Aaron wrote:
+> Thanks for the comments from you and other guys in the list, I've
+> updated the patch accordingly to V4, do you happen to have a look at
+> it? Next I will merge the used contents of bfin_can.h into the
 
-The code looks good, the patch description can be improved though.
-Please replace the change history by a description what this patch does
-and why. For this kind of patch a single sentence would be enough, but
-rewrite into common style is to generic. (Same applies to 1/2)
+Yes, see reply :)
+
+> bfin_can.c directly as you suggested earlier.
+
+Fine - this would be a good improvement. You add that patch to the
+series when posting a v5.
 
 Marc
 
@@ -42,7 +45,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---IOxbXRkMrOTwKRKVILma7gRl2kJdRm5nv
+--i6dmCR3kgaDpBSkAgw5Wv275EbucoONgw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -50,19 +53,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU0y7PAAoJECte4hHFiupUNrcP/RIuZUa0NKTKlM6vBoKhJ0fc
-Q+EuTYkUyrBYmWDFqwBXL5ecWz8RXyYUk/2akHjeuxM7r8BKIW01cihcKIV08XFq
-6sdDEhGB5l4pVs1t3u2TJ8D7QqS9jjRCqIObeGbEvtdXjrjilGX9Okd9xzl+aIQJ
-Of4tXOySUsRxnaWbflONnuTJAYb1SGRp7DzZYTz1lTkIZ2RoPX+4rMDZ2MQ2hlpH
-19fvBRHqEJEpkej6mqeLiIpVyLvtmDOFi44sBX056fw1VZS6cwM6Hukb/OBwXNWd
-dnc/PVop+2t+PHtkSx+tAYydLqoMml4o3Ud3JQ4nWS9WhyyItMsKcwe3Ov/XJEZV
-FNraYsVPJtBbZnpv6XeXF+KbZ7WV52cDfi9sK1g8hDfMVse5/CvWvnH2ka5cstDl
-7tqppBhMYSV5QF2gar9Ev1s7VUezQFrqhvHJjlAa7d9dZBbT59DWzski4RIv+Jzc
-fzjV41YWfqEkebhi59ysEhtTpxjdbRmKhEb0Plrcq+3iew3p6OQmbD8qqE7flQsv
-DV8MXwgFfALnG70C08aHCvGe3Iua94TEIIV8Oehzulp3uYeDSSaq991Sa191DbPc
-l5SN7fWqq9KY7D7ZJ2TAsoO/6IKdM2yVED3RTN40LQvABgvSgltxDD4FhrCWhq1t
-YPznB48G68WPYODqzPX8
-=G5Bc
+iQIcBAEBCgAGBQJU0y8hAAoJECte4hHFiupUwHkP/i6hoCaNZBJ7O17m0bswqbXq
+xqBE9AZT84p88AjPafG2+dYGxZlCEbfgSxeG4ruAMkInmh0s1dEzombwTS9X+uMl
+wCz7t8xZvpMgAQZOtMub30RGdVyBleQaiNsFTm+QJEXAVUiDqlM9H8sn8ynQgoUH
+ssdOiWMQmtCnxC297k4Yf9qyzAH3+Q20R/f5AybTYZjkEw/ztIHOg0kU9zgjjvz5
+PEI7yHIwjU+LTFS+EHPhDv1vSsdGnrzmgbQKTPe0B9KbIEYdNMpDIm5cj6KD9ENF
+ht+E1WP2g001bE+lHh+U16iE7AzCgjja/RwvHsKBRU7xbQ+WKGiYoUKAeLZTjnNp
+/SbsyNNuCEAbPgtCKlnV9TRztXYDMde0893j7oZaYZLDS6b84OP0TzZpqaAv19Ih
+EJpCB02MHe/NY950q5KPMq/MUwoz0C1x4FlFS7fau65+EvogZmzeE42NS/qpSngd
+cvFki1Xpc5hcoCVeAsnTG7USqS/nbAVzWM2CG8oBJGNZcC7urSfXZfr/m/uApx/D
+CRIheZljxGoKvZouelaCvM+NGadtFMiZ0+JNBlCdNbJPGx5C/3aWZLxHWus99Ytx
+ckg9PWMixDUAJR5fh4jjiGsLdJOjctM9hEAMSQ5xa5A4yGW9Hhzo2uwcor2OgMDO
+KjzuF8GWQjEzD+IwzBkD
+=KrzA
 -----END PGP SIGNATURE-----
 
---IOxbXRkMrOTwKRKVILma7gRl2kJdRm5nv--
+--i6dmCR3kgaDpBSkAgw5Wv275EbucoONgw--
