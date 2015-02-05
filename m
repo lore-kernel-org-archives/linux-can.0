@@ -1,116 +1,81 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: usb_8dev: Initialisation issue with powered USB 2.0 hub
-Date: Thu, 05 Feb 2015 19:03:29 +0100
-Message-ID: <54D3B071.4040705@hartkopp.net>
+Subject: new M_CAN IP rev 3.2.x documentation available - was: Re: M_CAN message
+ RAM initialization AppNote
+Date: Thu, 05 Feb 2015 20:04:55 +0100
+Message-ID: <54D3BED7.1050503@hartkopp.net>
+References: <1415193393-30023-1-git-send-email-b29396@freescale.com> <1415193393-30023-3-git-send-email-b29396@freescale.com> <545A3451.2090302@pengutronix.de> <545A692E.40002@hartkopp.net> <20141106015716.GB7642@shlinux1.ap.freescale.net> <545B1D71.4000408@hartkopp.net> <20141106080940.GA22964@shlinux1.ap.freescale.net> <545B6AB4.70003@hartkopp.net> <545B6DD8.6010906@pengutronix.de> <545BA039.7080108@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:57029 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:54989 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753176AbbBESDr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 13:03:47 -0500
+	with ESMTP id S1751220AbbBETFB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 14:05:01 -0500
+In-Reply-To: <545BA039.7080108@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Bernd Krumboeck <krumboeck@universalnet.at>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Dong Aisheng <b29396@freescale.com>, linux-can@vger.kernel.org
 
-Hi Bernd,
+Hi all,
 
-i got an error report from a colleague today who is using the USB2CAN from
-8devices behind a self powered USB2.0 hub.
+the new M_CAN IP rev 3.2.x documentation is available:
 
-The way to get into the problem:
+http://www.bosch-semiconductors.de/en/ubk_semiconductors/ip_modules_3/produkttabelle_ip_modules/m_can_1/m_can.html
 
-1. Connect a self powered USB hub with attached USB2CAN to the host:
+http://www.bosch-semiconductors.de/media/pdf_1/ipmodules_1/m_can_m_ttcan/mcan_users_manual_v320.pdf
 
-
-[  502.464008] usb 3-2: new high-speed USB device number 8 using xhci_hcd
-[  502.593336] usb 3-2: New USB device found, idVendor=05e3, idProduct=0608
-[  502.593339] usb 3-2: New USB device strings: Mfr=0, Product=1, SerialNumber=0
-[  502.593341] usb 3-2: Product: USB2.0 Hub
-[  502.593863] hub 3-2:1.0: USB hub found
-[  502.594124] hub 3-2:1.0: 4 ports detected
-[  502.864710] usb 3-2.1: new full-speed USB device number 9 using xhci_hcd
-[  502.955087] usb 3-2.1: New USB device found, idVendor=0483, idProduct=1234
-[  502.955097] usb 3-2.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  502.955102] usb 3-2.1: Product: USB2CAN converter
-[  502.955106] usb 3-2.1: Manufacturer: edevices
-[  502.955110] usb 3-2.1: SerialNumber: ED000215
-[  502.956739] usb_8dev 3-2.1:1.0 can0: firmware: 1.5, hardware: 255.255
-
-(everything is fine - USB2CAN LED is RED)
-
-# ip -det link show can0
-21: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0 
-    can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0 
-	  usb_8dev: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
-	  clock 32000000
-# ip link set can0 type can bitrate 500000
-# ifconfig can0 up
-
-(still everything is fine - USB2CAN LED is GREEN)
-
-Adapter works as expected. It can send and receive CAN frames.
-
-2. Now unplug the powered hub from the PC:
-
-[  680.841130] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.841212] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.841252] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.841308] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.841352] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.841377] usb 3-2: USB disconnect, device number 8
-[  680.841385] usb 3-2.1: USB disconnect, device number 9
-[  680.841388] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
-[  680.843607] usb_8dev 3-2.1:1.0 can0: device disconnected
-[  680.843634] usb_8dev 3-2.1:1.0 can0: sending command message failed
-[  680.843639] usb_8dev 3-2.1:1.0 can0: couldn't stop device
-
-The USB2CAN LED remains GREEN - as the adapter is still powered.
-
-3. Now plug the powered hub into the PC again:
-
-[  705.799101] usb 3-2: new high-speed USB device number 10 using xhci_hcd
-[  705.928881] usb 3-2: New USB device found, idVendor=05e3, idProduct=0608
-[  705.928891] usb 3-2: New USB device strings: Mfr=0, Product=1, SerialNumber=0
-[  705.928895] usb 3-2: Product: USB2.0 Hub
-[  705.929871] hub 3-2:1.0: USB hub found
-[  705.930191] hub 3-2:1.0: 4 ports detected
-[  706.203831] usb 3-2.1: new full-speed USB device number 11 using xhci_hcd
-[  706.294249] usb 3-2.1: New USB device found, idVendor=0483, idProduct=1234
-[  706.294259] usb 3-2.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  706.294264] usb 3-2.1: Product: USB2CAN converter
-[  706.294268] usb 3-2.1: Manufacturer: edevices
-[  706.294271] usb 3-2.1: SerialNumber: ED000215
-[  706.296097] usb_8dev 3-2.1:1.0 can0: firmware: 1.5, hardware: 255.255
-
-The USB2CAN LED remains GREEN - as the adapter is still powered.
-But the CAN netdevice is not configured:
-
-# ip -det link show can0
-21: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0 
-    can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0 
-	  usb_8dev: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
-	  clock 32000000
-
-After setting the bitrate again & putting the interface up:
-
-# ip link set can0 type can bitrate 500000
-# ifconfig can0 up
-
-The USB2CAN LED remains GREEN.
-
-But from this point the USB2CAN adapter can only *send* CAN frames but it can not
-receive any frames. Btw. the CAN controller inside the USB2CAN properly acknowledges
-the CAN frames on the bus (without making them visible on the host).
-
-Any idea how to fix the initialization in this warm start scenario?
-
-My colleague also reported kernel crashes which I wasn't able to reproduce.
-I used a 3.19.0-rc7 here - don't know what my colleague was using.
+One of the changes is the fact that the new Tx Buffer Element (see page 49) has a FDF and BRS bit.
+So the switching between CAN and CAN FD is done per message without fiddling the configuration registers each time.
 
 Best regards,
 Oliver
+
+
+On 06.11.2014 17:22, Oliver Hartkopp wrote:
+> Hello all, (reduced the CC list a bit)
+> 
+> thankfully Mr. Hartwich from Bosch followed the mail threads I forwarded to
+> him. It turns out that there's only ONE message RAM containing TX Buffers, RX
+> Buffers and all the acceptance filter elements.
+> 
+> Due to our discussion the next M_CAN user manual will contain the attached
+> application note (see marked lines in attached PDF).
+> 
+> Mr Hartwich wrote:
+> 
+> ---8<--- snip!
+> 
+> The RAM initialization issue is not limited to Tx Buffers, all RAM words need
+> an initialization before they are read. If e.g. the CPU reads an uninitialized
+> Rx Buffer before the M_CAN has stored a message into the buffer, that may
+> trigger a RAM access error.
+> 
+> There is only one single Message RAM attached to the M_CAN,  which buffers
+> are found where is configured via the registers SIDFC.FLSSA, XIDFC.FLESA,
+> RXF0C.F0SA, RXF1C.F1SA, TXBC.TBSA, TXEFC.EFSA. The size of the area needed
+> e.g. for the Tx Buffers depends on the number of Buffers and on the size of
+> the buffers. Larger buffers are needed for the longer FD frames.
+> 
+> The M_CAN does not check whether the RAM areas overlap, so this check needs to
+> be done in software. It is also possible that several M_CANs share one single
+> RAM, so the overlap-check needs to consider also that case.
+> 
+> RAMs usually do not have a hardware-reset, so the RAM-cells, including the
+> parity/ECC-bits (if exist) may be at invalid values. Any write to a RAM word
+> will set the parity/ECC-bits to valid values. Therefore the entire RAM should
+> be initialized by software after power-on, e.g. (simplistic):
+> 
+> for (i=RAM_start; i<=RAM_end; i++) RAM[i] = 0x00000000;
+> 
+> The size of the RAM may differ in different M_CAN implementations, the
+> RAM is not part of the M_CAN IP module. There may be RAMs with parity,
+> with ECC, or without protection. There may even be RAMs with hardware-reset.
+> 
+> ---8<--- snip!
+> 
+> So the recommendation is to initialize the entire message RAM (see PDF).
+> 
+> Regards,
+> Oliver
+> 
