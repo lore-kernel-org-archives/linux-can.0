@@ -1,102 +1,81 @@
-From: Aaron Wu <Aaron.wu@analog.com>
-Subject: [PATCH V5 2/3] bfin_can: rewrite the driver into common style with MMU
-Date: Thu, 5 Feb 2015 18:44:26 +0800
-Message-ID: <1423133067-17289-2-git-send-email-Aaron.wu@analog.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH V5 1/3] bfin_can: rewrite the blackfin style of read/write
+ to common ones
+Date: Thu, 05 Feb 2015 12:03:53 +0100
+Message-ID: <54D34E19.9070902@pengutronix.de>
 References: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="lrkXFRiv52nPBiSIXCCNhbE3Ovacn3L5J"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1on0077.outbound.protection.outlook.com ([157.56.110.77]:21241
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1757086AbbBEKxm (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 5 Feb 2015 05:53:42 -0500
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39737 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756648AbbBELED (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 06:04:03 -0500
 In-Reply-To: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
-Cc: Aaron Wu <Aaron.wu@analog.com>
+To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
 
-Rewrite the blackfin CAN driver into more common style in three ways:
-part 1/3: rewrite blackfin style of read/write into common readw/writew
-part 2/3: introduce ioremap to be compitable with MMU enabled arch
-part 3/3: merge the header file from the blackfin arch dependent
-location to driver code directly, note the original copy of more completed
-bfin_can.h in arch depentdent location is reserved for reg test purpose
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lrkXFRiv52nPBiSIXCCNhbE3Ovacn3L5J
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-V5 changes: merge contents of header file into drivere code in patch 3/3
-V4 changes: remove unused variable in patch 2/3
-V3 changes: remove redundant cast in patch 2/3
-V2 changes: split patch into two parts
-V1 changes: rewrite code into common style
+On 02/05/2015 11:44 AM, Aaron Wu wrote:
+> Rewrite the blackfin CAN driver into more common style in three ways:
+> part 1/3: rewrite blackfin style of read/write into common readw/writew=
 
-Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
----
- drivers/net/can/bfin_can.c |   22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+> part 2/3: introduce ioremap to be compitable with MMU enabled arch
+> part 3/3: merge the header file from the blackfin arch dependent
+> location to driver code directly, note the original copy of more comple=
+ted
+> bfin_can.h in arch depentdent location is reserved for reg test purpose=
+=20
+>=20
+> V5 changes: merge contents of header file into drivere code in patch 3/=
+3
+> V4 changes: remove unused variable in patch 2/3
+> V3 changes: remove redundant cast in patch 2/3
+> V2 changes: split patch into two parts
+> V1 changes: rewrite code into common style
+>=20
+> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
 
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 0a5eff4..0209c14 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device *pdev)
- 		goto exit;
- 	}
- 
--	if (!request_mem_region(res_mem->start, resource_size(res_mem),
--				dev_name(&pdev->dev))) {
--		err = -EBUSY;
--		goto exit;
--	}
--
- 	/* request peripheral pins */
- 	err = peripheral_request_list(pdata, dev_name(&pdev->dev));
- 	if (err)
--		goto exit_mem_release;
-+		goto exit;
- 
- 	dev = alloc_bfin_candev();
- 	if (!dev) {
-@@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *pdev)
- 	}
- 
- 	priv = netdev_priv(dev);
--	priv->membase = (void __iomem *)res_mem->start;
-+
-+	priv->membase = devm_ioremap_resource(&pdev->dev, res_mem);
-+	if (IS_ERR(priv->membase)) {
-+		dev_err(&pdev->dev, "Cannot map IO\n");
-+		return PTR_ERR(priv->membase);
-+	}
-+
- 	priv->rx_irq = rx_irq->start;
- 	priv->tx_irq = tx_irq->start;
- 	priv->err_irq = err_irq->start;
-@@ -601,8 +601,6 @@ exit_candev_free:
- 	free_candev(dev);
- exit_peri_pin_free:
- 	peripheral_free_list(pdata);
--exit_mem_release:
--	release_mem_region(res_mem->start, resource_size(res_mem));
- exit:
- 	return err;
- }
-@@ -611,15 +609,11 @@ static int bfin_can_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
- 	struct bfin_can_priv *priv = netdev_priv(dev);
--	struct resource *res;
- 
- 	bfin_can_set_reset_mode(dev);
- 
- 	unregister_candev(dev);
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
- 	peripheral_free_list(priv->pin_list);
- 
- 	free_candev(dev);
--- 
-1.7.9.5
+Please remove the patch history changes from the description, instead
+add a description to each patch describing that patch only.
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--lrkXFRiv52nPBiSIXCCNhbE3Ovacn3L5J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJU004cAAoJECte4hHFiupUTYUQAJxA2+C1DwE63bHVOqFP4Zk/
+YRpJ6r1k5sq/j53oAuI+r2sT7oCFeIu54P/RRbfDqS63rNP89NYg79s+3wvrrTHT
+0NGPBoJ617wZLqJNBp1DfjS+wDo7d2u25jWZUB76wnZHeAt2N/ExVXsaZveHglp8
+cj9ep3JkkLSsA39yNWXfj6o6axcBdUKWQ7ycHTO98sK4YbZh++ncEYeVk3WZUEIm
+otfMxAz2DD3Pa4AtU5fWWuNvNvF9v4CQFc9O8/Oscw1VbUQVndUbMZcpBMmL7tAI
+TNLf6SVekfNrtkB4QzF2gqTaYVNnFN/RZi8pk7ZWTmZ96Jn+qPP4TtlI3xj3E8vA
+TYkmO+M/HQrF1M+vZux9h3RlnGoh4Q9thpCsgu10DyvWw+j/iM1bhgvzoYQPR9YV
+qcIEsLjyOY6bV3vymXaseZwg/fFD+LQzlFnXWq+6LWVFqddNTXnf7ms7Cw817jh5
+1l29NLyvUU6z1TugyeFl3xeYTAp7lgLNC1ECHKAqfq02FVrq4VY3MbB5s9LcL1rX
+fmhelo5FGqy58kha/jLp0VjFrAVmRap8qXK+xjAgRLfID7ahyfAWPBRkhBjVW1sU
+Rg7LFVrY7QPKr/lWM+OOLRxXaJnKwzDtCRTv+rBym5zqIUrkCRhdCY2MiTXDf7J5
+/iCwWlCMXl+aK3jzeCCZ
+=81sF
+-----END PGP SIGNATURE-----
+
+--lrkXFRiv52nPBiSIXCCNhbE3Ovacn3L5J--
