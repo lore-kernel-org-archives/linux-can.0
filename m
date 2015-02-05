@@ -1,56 +1,43 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: Standard CAN over IP
-Date: Thu, 05 Feb 2015 11:50:22 +1100
-Message-ID: <54D2BE4E.7090202@optusnet.com.au>
-References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com> <54D284B4.5050501@uni-bremen.de> <CACsJT9NuErtQOxTXffx=WYS5j6u8A-mv1XuA6Jxusn+tcDSRrw@mail.gmail.com>
-Reply-To: tom_usenet@optusnet.com.au
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: re: can: kvaser_usb: Consolidate and unify state change handling
+Date: Thu, 5 Feb 2015 11:12:39 +0300
+Message-ID: <20150205081239.GA30683@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:53588 "EHLO
-	mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S966372AbbBEAuZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Feb 2015 19:50:25 -0500
-In-Reply-To: <CACsJT9NuErtQOxTXffx=WYS5j6u8A-mv1XuA6Jxusn+tcDSRrw@mail.gmail.com>
+Received: from userp1040.oracle.com ([156.151.31.81]:41308 "EHLO
+	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751402AbbBEINI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Feb 2015 03:13:08 -0500
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mike Purvis <mpurvis@clearpathrobotics.com>, Armin Burchardt <armin@uni-bremen.de>
+To: ahmed.darwish@valeo.com
 Cc: linux-can@vger.kernel.org
 
-On 05/02/15 08:38, Mike Purvis wrote:
-> Armin=E2=80=94
->
-> Fantastic, thanks for the pointer, this is just what I was looking
-> for. I've given it a quick try, and the binary in Ubuntu 14.04's
-> can-utils package appears to do what I want in terms of creating a ne=
-t
-> device.
->
-> For future travellers, the protocol is documented in the slcan.c
-> source file, from the kernel tree:
+Hello Ahmed S. Darwish,
 
-That Kconfig in drivers/net/can also has the following in it:
+The patch 96d7f10634e6: "can: kvaser_usb: Consolidate and unify state
+change handling" from Jan 26, 2015, leads to the following Smatch
+warning:
 
-       config CAN_SLCAN
-       As only the sending and receiving of CAN frames is implemented,
-       this driver should work with the (serial/USB) CAN hardware from:
-       www.canusb.com / www.can232.com / www.mictronics.de /
-       www.canhack.de
+	drivers/net/can/usb/kvaser_usb.c:827 kvaser_usb_rx_error_update_can_state()
+	warn: impossible condition '(es->txerr >= 256) => (0-255 >= 256)'
 
-If your PC has spare serial ports, or if you want to buy some reliable=20
-USB-to-serial converters, then you might want to consider the above-men=
-tioned=20
-serial-to-can devices:
+drivers/net/can/usb/kvaser_usb.c
+   824          else if (es->status & M16C_STATE_BUS_PASSIVE)
+   825                  new_state = CAN_STATE_ERROR_PASSIVE;
+   826          else if (es->status & M16C_STATE_BUS_ERROR) {
+   827                  if ((es->txerr >= 256) || (es->rxerr >= 256))
+   828                          new_state = CAN_STATE_BUS_OFF;
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Dead code.  We normally ignore these "impossible condition" warnings if
+it feels like the condition makes the code more readable.  But in this
+case, I wonder if the code works as intended.  It's not clear to me.
 
-http://www.can232.com/?page_id=3D14
+   829                  else if ((es->txerr >= 128) || (es->rxerr >= 128))
+   830                          new_state = CAN_STATE_ERROR_PASSIVE;
+   831                  else if ((es->txerr >= 96) || (es->rxerr >= 96))
 
-Or the normal USB ones on the above site. They might be cheap enough fo=
-r you.=20
-Or you could start here:
-
-http://www.mictronics.de/projects/usb-can-bus/
-
-Tom
-
+regards,
+dan carpenter
