@@ -1,16 +1,21 @@
 From: Aaron Wu <Aaron.wu@analog.com>
-Subject: [PATCH V5 3/3] bfin_can: move/merge the contents of header file into driver code
-Date: Thu, 5 Feb 2015 18:44:27 +0800
-Message-ID: <1423133067-17289-3-git-send-email-Aaron.wu@analog.com>
+Subject: [PATCH V5 2/3] bfin_can: rewrite the driver into common style with MMU
+Date: Thu, 5 Feb 2015 18:44:26 +0800
+Message-ID: <1423133067-17289-2-git-send-email-Aaron.wu@analog.com>
 References: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bn1on0077.outbound.protection.outlook.com ([157.56.110.77]:21241
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1757086AbbBEKxm (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 5 Feb 2015 05:53:42 -0500
 In-Reply-To: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
 Cc: Aaron Wu <Aaron.wu@analog.com>
-List-Id: linux-can.vger.kernel.org
 
 Rewrite the blackfin CAN driver into more common style in three ways:
 part 1/3: rewrite blackfin style of read/write into common readw/writew
@@ -27,145 +32,71 @@ V1 changes: rewrite code into common style
 
 Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
 ---
- drivers/net/can/bfin_can.c |  119 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 118 insertions(+), 1 deletion(-)
+ drivers/net/can/bfin_can.c |   22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 0209c14..a676624 100644
+index 0a5eff4..0209c14 100644
 --- a/drivers/net/can/bfin_can.c
 +++ b/drivers/net/can/bfin_can.c
-@@ -20,7 +20,6 @@
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
+@@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 		goto exit;
+ 	}
  
--#include <asm/bfin_can.h>
- #include <asm/portmux.h>
+-	if (!request_mem_region(res_mem->start, resource_size(res_mem),
+-				dev_name(&pdev->dev))) {
+-		err = -EBUSY;
+-		goto exit;
+-	}
+-
+ 	/* request peripheral pins */
+ 	err = peripheral_request_list(pdata, dev_name(&pdev->dev));
+ 	if (err)
+-		goto exit_mem_release;
++		goto exit;
  
- #define DRV_NAME "bfin_can"
-@@ -28,6 +27,124 @@
- #define TX_ECHO_SKB_MAX  1
+ 	dev = alloc_bfin_candev();
+ 	if (!dev) {
+@@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 	}
  
- /*
-+ * transmit and receive channels
-+ */
-+#define TRANSMIT_CHL	    24
-+#define RECEIVE_STD_CHL	 0
-+#define RECEIVE_EXT_CHL	 4
-+#define RECEIVE_RTR_CHL	 8
-+#define RECEIVE_EXT_RTR_CHL     12
-+#define MAX_CHL_NUMBER	  32
+ 	priv = netdev_priv(dev);
+-	priv->membase = (void __iomem *)res_mem->start;
 +
-+/*
-+ * All Blackfin system MMRs are padded to 32bits even if the register
-+ * itself is only 16bits.  So use a helper macro to streamline this.
-+ */
-+#define __BFP(m) u16 m; u16 __pad_##m
++	priv->membase = devm_ioremap_resource(&pdev->dev, res_mem);
++	if (IS_ERR(priv->membase)) {
++		dev_err(&pdev->dev, "Cannot map IO\n");
++		return PTR_ERR(priv->membase);
++	}
 +
-+/*
-+ * bfin can registers layout
-+ */
-+struct bfin_can_mask_regs {
-+	 __BFP(aml);
-+	__BFP(amh);
-+};
-+
-+struct bfin_can_channel_regs {
-+	/* data[0,2,4,6] -> data{0,1,2,3} while data[1,3,5,7] is padding */
-+	u16 data[8];
-+	__BFP(dlc);
-+	__BFP(tsv);
-+	__BFP(id0);
-+	__BFP(id1);
-+};
-+
-+struct bfin_can_regs {
-+	/*
-+	 * global control and status registers
-+	 */
-+	__BFP(mc1);           /* offset 0x00 */
-+	__BFP(md1);           /* offset 0x04 */
-+	__BFP(trs1);          /* offset 0x08 */
-+	__BFP(trr1);          /* offset 0x0c */
-+	__BFP(ta1);           /* offset 0x10 */
-+	__BFP(aa1);           /* offset 0x14 */
-+	__BFP(rmp1);          /* offset 0x18 */
-+	__BFP(rml1);          /* offset 0x1c */
-+	__BFP(mbtif1);        /* offset 0x20 */
-+	__BFP(mbrif1);        /* offset 0x24 */
-+	__BFP(mbim1);         /* offset 0x28 */
-+	__BFP(rfh1);          /* offset 0x2c */
-+	__BFP(opss1);         /* offset 0x30 */
-+	u32 __pad1[3];
-+	__BFP(mc2);           /* offset 0x40 */
-+	__BFP(md2);           /* offset 0x44 */
-+	__BFP(trs2);          /* offset 0x48 */
-+	__BFP(trr2);          /* offset 0x4c */
-+	__BFP(ta2);           /* offset 0x50 */
-+	__BFP(aa2);           /* offset 0x54 */
-+	__BFP(rmp2);          /* offset 0x58 */
-+	__BFP(rml2);          /* offset 0x5c */
-+	__BFP(mbtif2);        /* offset 0x60 */
-+	__BFP(mbrif2);        /* offset 0x64 */
-+	__BFP(mbim2);         /* offset 0x68 */
-+	__BFP(rfh2);          /* offset 0x6c */
-+	__BFP(opss2);         /* offset 0x70 */
-+	u32 __pad2[3];
-+	__BFP(clock);         /* offset 0x80 */
-+	__BFP(timing);        /* offset 0x84 */
-+	__BFP(debug);         /* offset 0x88 */
-+	__BFP(status);        /* offset 0x8c */
-+	__BFP(cec);           /* offset 0x90 */
-+	__BFP(gis);           /* offset 0x94 */
-+	__BFP(gim);           /* offset 0x98 */
-+	__BFP(gif);           /* offset 0x9c */
-+	__BFP(control);       /* offset 0xa0 */
-+	__BFP(intr);          /* offset 0xa4 */
-+	__BFP(version);       /* offset 0xa8 */
-+	__BFP(mbtd);          /* offset 0xac */
-+	__BFP(ewr);           /* offset 0xb0 */
-+	__BFP(esr);           /* offset 0xb4 */
-+	u32 __pad3[2];
-+	__BFP(ucreg);         /* offset 0xc0 */
-+	__BFP(uccnt);         /* offset 0xc4 */
-+	__BFP(ucrc);          /* offset 0xc8 */
-+	__BFP(uccnf);         /* offset 0xcc */
-+	u32 __pad4[1];
-+	__BFP(version2);      /* offset 0xd4 */
-+	u32 __pad5[10];
-+
-+	/*
-+	 * channel(mailbox) mask and message registers
-+	 */
-+	struct bfin_can_mask_regs msk[MAX_CHL_NUMBER];    /* offset 0x100 */
-+	struct bfin_can_channel_regs chl[MAX_CHL_NUMBER]; /* offset 0x200 */
-+};
-+
-+#undef __BFP
-+
-+#define SRS	             0x0001  /* Software Reset */
-+#define SER	             0x0008  /* Stuff Error */
-+#define BOIM	            0x0008  /* Enable Bus Off Interrupt */
-+#define CCR	             0x0080  /* CAN Configuration Mode Request */
-+#define CCA	             0x0080  /* Configuration Mode Acknowledge */
-+#define SAM	             0x0080  /* Sampling */
-+#define AME	             0x8000  /* Acceptance Mask Enable */
-+#define RMLIM	           0x0080  /* Enable RX Message Lost Interrupt */
-+#define RMLIS	           0x0080  /* RX Message Lost IRQ Status */
-+#define RTR	             0x4000  /* Remote Frame Transmission Request */
-+#define BOIS	            0x0008  /* Bus Off IRQ Status */
-+#define IDE	             0x2000  /* Identifier Extension */
-+#define EPIS	            0x0004  /* Error-Passive Mode IRQ Status */
-+#define EPIM	            0x0004  /* Enable Error-Passive Mode Interrupt */
-+#define EWTIS	           0x0001  /* TX Error Count IRQ Status */
-+#define EWRIS	           0x0002  /* RX Error Count IRQ Status */
-+#define BEF	             0x0040  /* Bit Error Flag */
-+#define FER	             0x0080  /* Form Error Flag */
-+#define SMR		   0x0020	/* Sleep Mode Request */
-+#define SMACK		   0x0008	/* Sleep Mode Acknowledge */
-+
-+/*
-  * bfin can private data
-  */
- struct bfin_can_priv {
+ 	priv->rx_irq = rx_irq->start;
+ 	priv->tx_irq = tx_irq->start;
+ 	priv->err_irq = err_irq->start;
+@@ -601,8 +601,6 @@ exit_candev_free:
+ 	free_candev(dev);
+ exit_peri_pin_free:
+ 	peripheral_free_list(pdata);
+-exit_mem_release:
+-	release_mem_region(res_mem->start, resource_size(res_mem));
+ exit:
+ 	return err;
+ }
+@@ -611,15 +609,11 @@ static int bfin_can_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct bfin_can_priv *priv = netdev_priv(dev);
+-	struct resource *res;
+ 
+ 	bfin_can_set_reset_mode(dev);
+ 
+ 	unregister_candev(dev);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(res->start, resource_size(res));
+-
+ 	peripheral_free_list(priv->pin_list);
+ 
+ 	free_candev(dev);
 -- 
 1.7.9.5
+
