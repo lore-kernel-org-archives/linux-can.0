@@ -1,75 +1,66 @@
-From: "Wu, Aaron" <Aaron.Wu@analog.com>
-Subject: RE: [PATCH V5 2/3] bfin_can: rewrite the driver into common style
- with MMU
-Date: Fri, 6 Feb 2015 06:54:52 +0000
-Message-ID: <649EF91064D35D40B9C93A225BF4167461310F9D@NWD2MBX7.ad.analog.com>
-References: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
- <1423133067-17289-2-git-send-email-Aaron.wu@analog.com>
- <54D34E7B.9060001@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH V6 1/3] bfin_can: rewrite the blackfin style of read/write
+ to common ones
+Date: Fri, 06 Feb 2015 08:53:23 +0100
+Message-ID: <54D472F3.8010508@pengutronix.de>
+References: <1423203952-23004-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="MLniLINRrAUEa4Bj4HxGqliTMfTd25gF9"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1bon0054.outbound.protection.outlook.com ([157.56.111.54]:4656
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751386AbbBFGzr (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 6 Feb 2015 01:55:47 -0500
-In-Reply-To: <54D34E7B.9060001@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48286 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751555AbbBFHyL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Feb 2015 02:54:11 -0500
+In-Reply-To: <1423203952-23004-1-git-send-email-Aaron.wu@analog.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-devel <linux-devel@analog.com>
+To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
 
-SGkgTWFyYywNCg0KVGhhbmtzIGZvciB5b3VyIHF1aWNrIHJldmlldyBhbmQgY29tbWVudHMsIEkn
-dmUgbWFkZSAzIGNoYW5nZXMgYWNjb3JkaW5nbHkgaW4gVjYuIFBhdGNoZXMgaGF2ZSBwYXNzZWQg
-ZnVuY3Rpb24gdmVyaWZpY2F0aW9uIG9uIGJsYWNrZmluIGJvYXJkIGFuZCBzY3JpcHRzL2NoZWNr
-cGFjaC5wbCB3aXRoIDAgZXJyb3Ivd2FybmluZy4gDQoNCkJlc3QgcmVnYXJkcywNCkFhcm9uICAN
-Cg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRk
-ZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogMjAxNeW5tDLmnIg15pelIDE5
-OjA2DQo+IFRvOiBXdSwgQWFyb247IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC1jYW5Admdlci5r
-ZXJuZWwub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtZGV2ZWwN
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSCBWNSAyLzNdIGJmaW5fY2FuOiByZXdyaXRlIHRoZSBkcml2
-ZXIgaW50byBjb21tb24gc3R5bGUgd2l0aA0KPiBNTVUNCj4gDQo+IE9uIDAyLzA1LzIwMTUgMTE6
-NDQgQU0sIEFhcm9uIFd1IHdyb3RlOg0KPiA+IFJld3JpdGUgdGhlIGJsYWNrZmluIENBTiBkcml2
-ZXIgaW50byBtb3JlIGNvbW1vbiBzdHlsZSBpbiB0aHJlZSB3YXlzOg0KPiA+IHBhcnQgMS8zOiBy
-ZXdyaXRlIGJsYWNrZmluIHN0eWxlIG9mIHJlYWQvd3JpdGUgaW50byBjb21tb24NCj4gPiByZWFk
-dy93cml0ZXcgcGFydCAyLzM6IGludHJvZHVjZSBpb3JlbWFwIHRvIGJlIGNvbXBpdGFibGUgd2l0
-aCBNTVUNCj4gPiBlbmFibGVkIGFyY2ggcGFydCAzLzM6IG1lcmdlIHRoZSBoZWFkZXIgZmlsZSBm
-cm9tIHRoZSBibGFja2ZpbiBhcmNoDQo+ID4gZGVwZW5kZW50IGxvY2F0aW9uIHRvIGRyaXZlciBj
-b2RlIGRpcmVjdGx5LCBub3RlIHRoZSBvcmlnaW5hbCBjb3B5IG9mDQo+ID4gbW9yZSBjb21wbGV0
-ZWQgYmZpbl9jYW4uaCBpbiBhcmNoIGRlcGVudGRlbnQgbG9jYXRpb24gaXMgcmVzZXJ2ZWQgZm9y
-DQo+ID4gcmVnIHRlc3QgcHVycG9zZQ0KPiA+DQo+ID4gVjUgY2hhbmdlczogbWVyZ2UgY29udGVu
-dHMgb2YgaGVhZGVyIGZpbGUgaW50byBkcml2ZXJlIGNvZGUgaW4gcGF0Y2gNCj4gPiAzLzMNCj4g
-PiBWNCBjaGFuZ2VzOiByZW1vdmUgdW51c2VkIHZhcmlhYmxlIGluIHBhdGNoIDIvMw0KPiA+IFYz
-IGNoYW5nZXM6IHJlbW92ZSByZWR1bmRhbnQgY2FzdCBpbiBwYXRjaCAyLzMNCj4gPiBWMiBjaGFu
-Z2VzOiBzcGxpdCBwYXRjaCBpbnRvIHR3byBwYXJ0cw0KPiA+IFYxIGNoYW5nZXM6IHJld3JpdGUg
-Y29kZSBpbnRvIGNvbW1vbiBzdHlsZQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWFyb24gV3Ug
-PEFhcm9uLnd1QGFuYWxvZy5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9iZmlu
-X2Nhbi5jIHwgICAyMiArKysrKysrKy0tLS0tLS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCA4IGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbmV0L2Nhbi9iZmluX2Nhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2JmaW5fY2FuLmMN
-Cj4gPiBpbmRleCAwYTVlZmY0Li4wMjA5YzE0IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0
-L2Nhbi9iZmluX2Nhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2JmaW5fY2FuLmMNCj4g
-PiBAQCAtNTUxLDE2ICs1NTEsMTAgQEAgc3RhdGljIGludCBiZmluX2Nhbl9wcm9iZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiA+ICAJCWdvdG8gZXhpdDsNCj4gPiAgCX0NCj4g
-Pg0KPiA+IC0JaWYgKCFyZXF1ZXN0X21lbV9yZWdpb24ocmVzX21lbS0+c3RhcnQsIHJlc291cmNl
-X3NpemUocmVzX21lbSksDQo+ID4gLQkJCQlkZXZfbmFtZSgmcGRldi0+ZGV2KSkpIHsNCj4gPiAt
-CQllcnIgPSAtRUJVU1k7DQo+ID4gLQkJZ290byBleGl0Ow0KPiA+IC0JfQ0KPiA+IC0NCj4gPiAg
-CS8qIHJlcXVlc3QgcGVyaXBoZXJhbCBwaW5zICovDQo+ID4gIAllcnIgPSBwZXJpcGhlcmFsX3Jl
-cXVlc3RfbGlzdChwZGF0YSwgZGV2X25hbWUoJnBkZXYtPmRldikpOw0KPiA+ICAJaWYgKGVycikN
-Cj4gPiAtCQlnb3RvIGV4aXRfbWVtX3JlbGVhc2U7DQo+ID4gKwkJZ290byBleGl0Ow0KPiA+DQo+
-ID4gIAlkZXYgPSBhbGxvY19iZmluX2NhbmRldigpOw0KPiA+ICAJaWYgKCFkZXYpIHsNCj4gPiBA
-QCAtNTY5LDcgKzU2MywxMyBAQCBzdGF0aWMgaW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAl9DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZf
-cHJpdihkZXYpOw0KPiA+IC0JcHJpdi0+bWVtYmFzZSA9ICh2b2lkIF9faW9tZW0gKilyZXNfbWVt
-LT5zdGFydDsNCj4gPiArDQo+ID4gKwlwcml2LT5tZW1iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291
-cmNlKCZwZGV2LT5kZXYsIHJlc19tZW0pOw0KPiA+ICsJaWYgKElTX0VSUihwcml2LT5tZW1iYXNl
-KSkgew0KPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkNhbm5vdCBtYXAgSU9cbiIpOw0KPiAN
-Cj4gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCkgYWxyZWFkeSBwcmludHMgYW4gZXJyb3IgbWVzc2Fn
-ZS4NCj4gDQo+IE1hcmMNCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAg
-IHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1
-dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVu
-ZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwN
-Cj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRy
-b25peC5kZSAgIHwNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MLniLINRrAUEa4Bj4HxGqliTMfTd25gF9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 02/06/2015 07:25 AM, Aaron Wu wrote:
+> Replace the blackfin arch dependent style of bfin_read/bfin_write with
+> common readw/writew
+
+Patch 1 & 2 are fine, 3 needs some whitespace improvements (see my reply
+for more details).
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--MLniLINRrAUEa4Bj4HxGqliTMfTd25gF9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJU1HL6AAoJECte4hHFiupUywMP/iWMKxDki0cH23i3oIbp1pMm
+b9UBDuf5HrIJqWM9J39pH+nQtn3Z4Vi3w3GiI5p/y5lOEIsNaM4DLgRER3F+g+VS
+kfir6QcOhFg3UwMEUlziTpaUTmqulcgjXlcaV7D5zSkZmNrryFMnYtE/e38XS+K8
+nYo4m+6OeXnuc78uFhsQJ2vlBOwDtCF+zkIo85FtM/pm3CC8+lny2xwI+Mh56Q76
+4SwReOQ6MosdRq9rZBKxEdCycPEhyQYLuz9HU3BijjGkG0MnE24jFehLw8q+POPW
+649xRVUaqZOWv1+JIbsb+ODbECypJ51nI7SoaBUYBB9MdfnumiRUFEAl7v33gzHJ
+OIQ016npYXndvGnBTYtMukJazz2CjEPnukYYhMACVQobweRAw9RVDjTSq1nWtad2
+S9hyQvu3ywqBq6pkOndjktUFAJ2FUHYNnGTs31fFoioekzsB5h4XeBdF5Ri89/oh
+DahA9ynSkOMh/ADy5YqEdyatzhCwBREKFpjd38lKYBKxGm7fGgJ1U3OfHbg+yCfE
+xRWCnqMUKev+FRqOvD9vNAJ/11KWTLVgcofAInp/62XA0ShBBc2PwC7f6NTuKKUn
+EldCnYOi0SaAFgVHA0wnYJR11nlD4ixnlqIWO/Yt+6VQIqKwAj/9Tq84WbXgcMcE
+6g0AEnmUvx8VXT9k667P
+=mEJe
+-----END PGP SIGNATURE-----
+
+--MLniLINRrAUEa4Bj4HxGqliTMfTd25gF9--
