@@ -1,157 +1,75 @@
-From: Aaron Wu <Aaron.wu@analog.com>
-Subject: [PATCH V6 3/3] bfin_can: move and merge the content of header file into driver body
-Date: Fri, 6 Feb 2015 14:25:52 +0800
-Message-ID: <1423203952-23004-3-git-send-email-Aaron.wu@analog.com>
-References: <1423203952-23004-1-git-send-email-Aaron.wu@analog.com>
+From: "Wu, Aaron" <Aaron.Wu@analog.com>
+Subject: RE: [PATCH V5 2/3] bfin_can: rewrite the driver into common style
+ with MMU
+Date: Fri, 6 Feb 2015 06:54:52 +0000
+Message-ID: <649EF91064D35D40B9C93A225BF4167461310F9D@NWD2MBX7.ad.analog.com>
+References: <1423133067-17289-1-git-send-email-Aaron.wu@analog.com>
+ <1423133067-17289-2-git-send-email-Aaron.wu@analog.com>
+ <54D34E7B.9060001@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423203952-23004-1-git-send-email-Aaron.wu@analog.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
-Cc: Aaron Wu <Aaron.wu@analog.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bn1bon0054.outbound.protection.outlook.com ([157.56.111.54]:4656
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751386AbbBFGzr (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 6 Feb 2015 01:55:47 -0500
+In-Reply-To: <54D34E7B.9060001@pengutronix.de>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-devel <linux-devel@analog.com>
 
-Header file was in arch dependent location arch/blackfin/include/asm/bfin_can.h,
-Now move and merge the useful contents of header file into driver code, note
-the original header file is reserved for full register sets access test by other
-code so it survives.   
-
-Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
----
- drivers/net/can/bfin_can.c |  114 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 113 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 259d09a..63fab5c 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -20,13 +20,125 @@
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
- 
--#include <asm/bfin_can.h>
- #include <asm/portmux.h>
- 
- #define DRV_NAME "bfin_can"
- #define BFIN_CAN_TIMEOUT 100
- #define TX_ECHO_SKB_MAX  1
- 
-+/* transmit and receive channels */
-+
-+#define TRANSMIT_CHL    24
-+#define RECEIVE_STD_CHL    0
-+#define RECEIVE_EXT_CHL    4
-+#define RECEIVE_RTR_CHL    8
-+#define RECEIVE_EXT_RTR_CHL    12
-+#define MAX_CHL_NUMBER    32
-+
-+/* All Blackfin system MMRs are padded to 32bits even if the register
-+ * itself is only 16bits.  So use a helper macro to streamline this
-+*/
-+#define __BFP(m) u16 m; u16 __pad_##m
-+
-+ /* bfin can registers layout
-+ */
-+struct bfin_can_mask_regs {
-+	__BFP(aml);
-+	__BFP(amh);
-+};
-+
-+struct bfin_can_channel_regs {
-+	/* data[0,2,4,6] -> data{0,1,2,3} while data[1,3,5,7] is padding */
-+	u16 data[8];
-+	 __BFP(dlc);
-+	__BFP(tsv);
-+	__BFP(id0);
-+	__BFP(id1);
-+};
-+
-+struct bfin_can_regs {
-+	/* global control and status registers
-+	 */
-+	__BFP(mc1);           /* offset 0x00 */
-+	__BFP(md1);           /* offset 0x04 */
-+	__BFP(trs1);          /* offset 0x08 */
-+	__BFP(trr1);          /* offset 0x0c */
-+	__BFP(ta1);           /* offset 0x10 */
-+	__BFP(aa1);           /* offset 0x14 */
-+	__BFP(rmp1);          /* offset 0x18 */
-+	__BFP(rml1);          /* offset 0x1c */
-+	__BFP(mbtif1);        /* offset 0x20 */
-+	__BFP(mbrif1);        /* offset 0x24 */
-+	__BFP(mbim1);         /* offset 0x28 */
-+	__BFP(rfh1);          /* offset 0x2c */
-+	__BFP(opss1);         /* offset 0x30 */
-+	u32 __pad1[3];
-+	 __BFP(mc2);           /* offset 0x40 */
-+	__BFP(md2);           /* offset 0x44 */
-+	__BFP(trs2);          /* offset 0x48 */
-+	__BFP(trr2);          /* offset 0x4c */
-+	__BFP(ta2);           /* offset 0x50 */
-+	__BFP(aa2);           /* offset 0x54 */
-+	__BFP(rmp2);          /* offset 0x58 */
-+	__BFP(rml2);          /* offset 0x5c */
-+	__BFP(mbtif2);        /* offset 0x60 */
-+	__BFP(mbrif2);        /* offset 0x64 */
-+	__BFP(mbim2);         /* offset 0x68 */
-+	__BFP(rfh2);          /* offset 0x6c */
-+	__BFP(opss2);         /* offset 0x70 */
-+	u32 __pad2[3];
-+	 __BFP(clock);         /* offset 0x80 */
-+	__BFP(timing);        /* offset 0x84 */
-+	__BFP(debug);         /* offset 0x88 */
-+	__BFP(status);        /* offset 0x8c */
-+	__BFP(cec);           /* offset 0x90 */
-+	__BFP(gis);           /* offset 0x94 */
-+	__BFP(gim);           /* offset 0x98 */
-+	__BFP(gif);           /* offset 0x9c */
-+	__BFP(control);       /* offset 0xa0 */
-+	__BFP(intr);          /* offset 0xa4 */
-+	__BFP(version);       /* offset 0xa8 */
-+	__BFP(mbtd);          /* offset 0xac */
-+	__BFP(ewr);           /* offset 0xb0 */
-+	__BFP(esr);           /* offset 0xb4 */
-+	u32 __pad3[2];
-+	 __BFP(ucreg);         /* offset 0xc0 */
-+	__BFP(uccnt);         /* offset 0xc4 */
-+	__BFP(ucrc);          /* offset 0xc8 */
-+	__BFP(uccnf);         /* offset 0xcc */
-+	u32 __pad4[1];
-+	 __BFP(version2);      /* offset 0xd4 */
-+	u32 __pad5[10];
-+
-+	/* channel(mailbox) mask and message registers
-+	 */
-+	struct bfin_can_mask_regs msk[MAX_CHL_NUMBER];    /* offset 0x100 */
-+	struct bfin_can_channel_regs chl[MAX_CHL_NUMBER]; /* offset 0x200 */
-+};
-+
-+#undef __BFP
-+
-+#define SRS	             0x0001  /* Software Reset */
-+#define SER	             0x0008  /* Stuff Error */
-+#define BOIM	            0x0008  /* Enable Bus Off Interrupt */
-+#define CCR	             0x0080  /* CAN Configuration Mode Request */
-+#define CCA	             0x0080  /* Configuration Mode Acknowledge */
-+#define SAM	             0x0080  /* Sampling */
-+#define AME	             0x8000  /* Acceptance Mask Enable */
-+#define RMLIM	           0x0080  /* Enable RX Message Lost Interrupt */
-+#define RMLIS	           0x0080  /* RX Message Lost IRQ Status */
-+#define RTR	             0x4000  /* Remote Frame Transmission Request */
-+#define BOIS	            0x0008  /* Bus Off IRQ Status */
-+#define IDE	             0x2000  /* Identifier Extension */
-+#define EPIS	            0x0004  /* Error-Passive Mode IRQ Status */
-+#define EPIM	            0x0004  /* Enable Error-Passive Mode Interrupt */
-+#define EWTIS	           0x0001  /* TX Error Count IRQ Status */
-+#define EWRIS	           0x0002  /* RX Error Count IRQ Status */
-+#define BEF	             0x0040  /* Bit Error Flag */
-+#define FER	             0x0080  /* Form Error Flag */
-+#define SMR		   0x0020	/* Sleep Mode Request */
-+#define SMACK		   0x0008	/* Sleep Mode Acknowledge */
-+
- /*
-  * bfin can private data
-  */
--- 
-1.7.9.5
+SGkgTWFyYywNCg0KVGhhbmtzIGZvciB5b3VyIHF1aWNrIHJldmlldyBhbmQgY29tbWVudHMsIEkn
+dmUgbWFkZSAzIGNoYW5nZXMgYWNjb3JkaW5nbHkgaW4gVjYuIFBhdGNoZXMgaGF2ZSBwYXNzZWQg
+ZnVuY3Rpb24gdmVyaWZpY2F0aW9uIG9uIGJsYWNrZmluIGJvYXJkIGFuZCBzY3JpcHRzL2NoZWNr
+cGFjaC5wbCB3aXRoIDAgZXJyb3Ivd2FybmluZy4gDQoNCkJlc3QgcmVnYXJkcywNCkFhcm9uICAN
+Cg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRk
+ZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogMjAxNeW5tDLmnIg15pelIDE5
+OjA2DQo+IFRvOiBXdSwgQWFyb247IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC1jYW5Admdlci5r
+ZXJuZWwub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtZGV2ZWwN
+Cj4gU3ViamVjdDogUmU6IFtQQVRDSCBWNSAyLzNdIGJmaW5fY2FuOiByZXdyaXRlIHRoZSBkcml2
+ZXIgaW50byBjb21tb24gc3R5bGUgd2l0aA0KPiBNTVUNCj4gDQo+IE9uIDAyLzA1LzIwMTUgMTE6
+NDQgQU0sIEFhcm9uIFd1IHdyb3RlOg0KPiA+IFJld3JpdGUgdGhlIGJsYWNrZmluIENBTiBkcml2
+ZXIgaW50byBtb3JlIGNvbW1vbiBzdHlsZSBpbiB0aHJlZSB3YXlzOg0KPiA+IHBhcnQgMS8zOiBy
+ZXdyaXRlIGJsYWNrZmluIHN0eWxlIG9mIHJlYWQvd3JpdGUgaW50byBjb21tb24NCj4gPiByZWFk
+dy93cml0ZXcgcGFydCAyLzM6IGludHJvZHVjZSBpb3JlbWFwIHRvIGJlIGNvbXBpdGFibGUgd2l0
+aCBNTVUNCj4gPiBlbmFibGVkIGFyY2ggcGFydCAzLzM6IG1lcmdlIHRoZSBoZWFkZXIgZmlsZSBm
+cm9tIHRoZSBibGFja2ZpbiBhcmNoDQo+ID4gZGVwZW5kZW50IGxvY2F0aW9uIHRvIGRyaXZlciBj
+b2RlIGRpcmVjdGx5LCBub3RlIHRoZSBvcmlnaW5hbCBjb3B5IG9mDQo+ID4gbW9yZSBjb21wbGV0
+ZWQgYmZpbl9jYW4uaCBpbiBhcmNoIGRlcGVudGRlbnQgbG9jYXRpb24gaXMgcmVzZXJ2ZWQgZm9y
+DQo+ID4gcmVnIHRlc3QgcHVycG9zZQ0KPiA+DQo+ID4gVjUgY2hhbmdlczogbWVyZ2UgY29udGVu
+dHMgb2YgaGVhZGVyIGZpbGUgaW50byBkcml2ZXJlIGNvZGUgaW4gcGF0Y2gNCj4gPiAzLzMNCj4g
+PiBWNCBjaGFuZ2VzOiByZW1vdmUgdW51c2VkIHZhcmlhYmxlIGluIHBhdGNoIDIvMw0KPiA+IFYz
+IGNoYW5nZXM6IHJlbW92ZSByZWR1bmRhbnQgY2FzdCBpbiBwYXRjaCAyLzMNCj4gPiBWMiBjaGFu
+Z2VzOiBzcGxpdCBwYXRjaCBpbnRvIHR3byBwYXJ0cw0KPiA+IFYxIGNoYW5nZXM6IHJld3JpdGUg
+Y29kZSBpbnRvIGNvbW1vbiBzdHlsZQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWFyb24gV3Ug
+PEFhcm9uLnd1QGFuYWxvZy5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9iZmlu
+X2Nhbi5jIHwgICAyMiArKysrKysrKy0tLS0tLS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCA4IGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbmV0L2Nhbi9iZmluX2Nhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2JmaW5fY2FuLmMN
+Cj4gPiBpbmRleCAwYTVlZmY0Li4wMjA5YzE0IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0
+L2Nhbi9iZmluX2Nhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2JmaW5fY2FuLmMNCj4g
+PiBAQCAtNTUxLDE2ICs1NTEsMTAgQEAgc3RhdGljIGludCBiZmluX2Nhbl9wcm9iZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiA+ICAJCWdvdG8gZXhpdDsNCj4gPiAgCX0NCj4g
+Pg0KPiA+IC0JaWYgKCFyZXF1ZXN0X21lbV9yZWdpb24ocmVzX21lbS0+c3RhcnQsIHJlc291cmNl
+X3NpemUocmVzX21lbSksDQo+ID4gLQkJCQlkZXZfbmFtZSgmcGRldi0+ZGV2KSkpIHsNCj4gPiAt
+CQllcnIgPSAtRUJVU1k7DQo+ID4gLQkJZ290byBleGl0Ow0KPiA+IC0JfQ0KPiA+IC0NCj4gPiAg
+CS8qIHJlcXVlc3QgcGVyaXBoZXJhbCBwaW5zICovDQo+ID4gIAllcnIgPSBwZXJpcGhlcmFsX3Jl
+cXVlc3RfbGlzdChwZGF0YSwgZGV2X25hbWUoJnBkZXYtPmRldikpOw0KPiA+ICAJaWYgKGVycikN
+Cj4gPiAtCQlnb3RvIGV4aXRfbWVtX3JlbGVhc2U7DQo+ID4gKwkJZ290byBleGl0Ow0KPiA+DQo+
+ID4gIAlkZXYgPSBhbGxvY19iZmluX2NhbmRldigpOw0KPiA+ICAJaWYgKCFkZXYpIHsNCj4gPiBA
+QCAtNTY5LDcgKzU2MywxMyBAQCBzdGF0aWMgaW50IGJmaW5fY2FuX3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAl9DQo+ID4NCj4gPiAgCXByaXYgPSBuZXRkZXZf
+cHJpdihkZXYpOw0KPiA+IC0JcHJpdi0+bWVtYmFzZSA9ICh2b2lkIF9faW9tZW0gKilyZXNfbWVt
+LT5zdGFydDsNCj4gPiArDQo+ID4gKwlwcml2LT5tZW1iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291
+cmNlKCZwZGV2LT5kZXYsIHJlc19tZW0pOw0KPiA+ICsJaWYgKElTX0VSUihwcml2LT5tZW1iYXNl
+KSkgew0KPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkNhbm5vdCBtYXAgSU9cbiIpOw0KPiAN
+Cj4gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCkgYWxyZWFkeSBwcmludHMgYW4gZXJyb3IgbWVzc2Fn
+ZS4NCj4gDQo+IE1hcmMNCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAg
+IHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1
+dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVu
+ZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwN
+Cj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRy
+b25peC5kZSAgIHwNCg0K
