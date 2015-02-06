@@ -1,58 +1,93 @@
-From: Michal Sojka <sojkam1@fel.cvut.cz>
-Subject: Re: Standard CAN over IP
-Date: Fri, 06 Feb 2015 09:33:36 +0100
-Message-ID: <87a90r782n.fsf@steelpick.2x.cz>
-References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com> <54D284B4.5050501@uni-bremen.de> <CACsJT9NuErtQOxTXffx=WYS5j6u8A-mv1XuA6Jxusn+tcDSRrw@mail.gmail.com> <54D2BE4E.7090202@optusnet.com.au> <CACsJT9NQGFKMBNjqh+C7pAAt=bcM4U4PL72sQYphAEPyeAxj8g@mail.gmail.com>
+From: Aaron Wu <Aaron.wu@analog.com>
+Subject: [PATCH V7 2/3] bfin_can: introduce ioremap to comply to archs with MMU
+Date: Fri, 6 Feb 2015 18:14:18 +0800
+Message-ID: <1423217659-27820-2-git-send-email-Aaron.wu@analog.com>
+References: <1423217659-27820-1-git-send-email-Aaron.wu@analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from max.feld.cvut.cz ([147.32.192.36]:54848 "EHLO max.feld.cvut.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751568AbbBFIll convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Feb 2015 03:41:41 -0500
-In-Reply-To: <CACsJT9NQGFKMBNjqh+C7pAAt=bcM4U4PL72sQYphAEPyeAxj8g@mail.gmail.com>
+Received: from mail-bn1bon0099.outbound.protection.outlook.com ([157.56.111.99]:42448
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750973AbbBFKXL (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 6 Feb 2015 05:23:11 -0500
+In-Reply-To: <1423217659-27820-1-git-send-email-Aaron.wu@analog.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mike Purvis <mpurvis@clearpathrobotics.com>, tom_usenet@optusnet.com.au
-Cc: Armin Burchardt <armin@uni-bremen.de>, linux-can@vger.kernel.org, 'Pavel =?utf-8?B?UMOtxaFhJw==?= <pisa@cmp.felk.cvut.cz>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
+Cc: Aaron Wu <Aaron.wu@analog.com>
 
-Hi Mike,
+Blackfin was built without MMU, old driver code access the IO space by
+physical address, introduce the ioremap approach to be compitable with
+the common style supporting MMU enabled arch.
 
-On Thu, Feb 05 2015, Mike Purvis wrote:
-> Hi Tom,
->
-> Yes, thanks=E2=80=94 in the short term, I'm going to prototype using =
-an off
-> the shelf USB-based device. In the fullness of time, I'll probably
-> either implement the protocol myself as part of a larger MCU also
-> doing some other stuff, or bring a BSD-licensed implementation of the
-> protocol, if such a thing exists.
->
-> Looks like you might be able to get CAN over TCP/UDP in two steps, by
-> using socat to link a pty to the network socket, and then running
-> slcand (or the guts of it) against the pty. Does anyone know what the
-> efficiency story is with socat? Does it copy back and forth between
-> between userspace and kernelspace, or is it able to operate fully in
-> kernel-land the way slcand does?
+Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+---
+ drivers/net/can/bfin_can.c |   22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-Socat definitely copies everything over the user space.
+diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
+index 0a5eff4..259d09a 100644
+--- a/drivers/net/can/bfin_can.c
++++ b/drivers/net/can/bfin_can.c
+@@ -551,16 +551,10 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 		goto exit;
+ 	}
+ 
+-	if (!request_mem_region(res_mem->start, resource_size(res_mem),
+-				dev_name(&pdev->dev))) {
+-		err = -EBUSY;
+-		goto exit;
+-	}
+-
+ 	/* request peripheral pins */
+ 	err = peripheral_request_list(pdata, dev_name(&pdev->dev));
+ 	if (err)
+-		goto exit_mem_release;
++		goto exit;
+ 
+ 	dev = alloc_bfin_candev();
+ 	if (!dev) {
+@@ -569,7 +563,13 @@ static int bfin_can_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv = netdev_priv(dev);
+-	priv->membase = (void __iomem *)res_mem->start;
++
++	priv->membase = devm_ioremap_resource(&pdev->dev, res_mem);
++	if (IS_ERR(priv->membase)) {
++		err = PTR_ERR(priv->membase);
++		goto exit_peri_pin_free;
++	}
++
+ 	priv->rx_irq = rx_irq->start;
+ 	priv->tx_irq = tx_irq->start;
+ 	priv->err_irq = err_irq->start;
+@@ -601,8 +601,6 @@ exit_candev_free:
+ 	free_candev(dev);
+ exit_peri_pin_free:
+ 	peripheral_free_list(pdata);
+-exit_mem_release:
+-	release_mem_region(res_mem->start, resource_size(res_mem));
+ exit:
+ 	return err;
+ }
+@@ -611,15 +609,11 @@ static int bfin_can_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct bfin_can_priv *priv = netdev_priv(dev);
+-	struct resource *res;
+ 
+ 	bfin_can_set_reset_mode(dev);
+ 
+ 	unregister_candev(dev);
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(res->start, resource_size(res));
+-
+ 	peripheral_free_list(priv->pin_list);
+ 
+ 	free_candev(dev);
+-- 
+1.7.9.5
 
-In the past, we developed a kernel-based CAN-to-Ethernet gateway. See
-http://rtime.felk.cvut.cz/can/can-eth-gw.pdf (the documentation is not
-perfect). The kernel part is at
-https://rtime.felk.cvut.cz/gitweb/can-eth-gw-linux.git/blob/HEAD:/net/c=
-an/canethgw.c.
-It would probably need minor updates for current kernels. The user spac=
-e
-part, which just configures the kernel to do its job, is at
-https://rtime.felk.cvut.cz/gitweb/can-utils.git/blob/refs/heads/cegw:/c=
-egw.c.
-
-The kernel part was measured to be about 10% faster (on x86), but this
-number depends on the architecture. System calls on modern x86 have les=
-s
-overhead than, for example, on PPC32.
-
-Cheers,
--Michal
