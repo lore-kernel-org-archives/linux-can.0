@@ -1,181 +1,80 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V7 3/3] bfin_can: Merge header file from arch dependent
- location
-Date: Fri, 06 Feb 2015 11:26:47 +0100
-Message-ID: <54D496E7.2000307@pengutronix.de>
-References: <1423217659-27820-1-git-send-email-Aaron.wu@analog.com> <1423217659-27820-3-git-send-email-Aaron.wu@analog.com>
+From: Mike Purvis <mpurvis@clearpathrobotics.com>
+Subject: Re: Standard CAN over IP
+Date: Mon, 9 Feb 2015 11:00:46 -0500
+Message-ID: <CACsJT9P5w0J7a2htZLqd1EboET3FMYJ=_Hr86TChPBF-Y2rSvQ@mail.gmail.com>
+References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
+ <54D284B4.5050501@uni-bremen.de> <CACsJT9NuErtQOxTXffx=WYS5j6u8A-mv1XuA6Jxusn+tcDSRrw@mail.gmail.com>
+ <54D2BE4E.7090202@optusnet.com.au> <CACsJT9NQGFKMBNjqh+C7pAAt=bcM4U4PL72sQYphAEPyeAxj8g@mail.gmail.com>
+ <87a90r782n.fsf@steelpick.2x.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="gwEmSjnWAnPcQpBfaedkGchIdpvpbNDkT"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52735 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751205AbbBFK06 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Feb 2015 05:26:58 -0500
-In-Reply-To: <1423217659-27820-3-git-send-email-Aaron.wu@analog.com>
+Received: from mail-ig0-f181.google.com ([209.85.213.181]:35882 "EHLO
+	mail-ig0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933484AbbBIQBH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Feb 2015 11:01:07 -0500
+Received: by mail-ig0-f181.google.com with SMTP id hn18so17184076igb.2
+        for <linux-can@vger.kernel.org>; Mon, 09 Feb 2015 08:01:07 -0800 (PST)
+In-Reply-To: <87a90r782n.fsf@steelpick.2x.cz>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-devel@analog.com
+To: Michal Sojka <sojkam1@fel.cvut.cz>
+Cc: tom_usenet@optusnet.com.au, Armin Burchardt <armin@uni-bremen.de>, linux-can@vger.kernel.org, =?UTF-8?B?UGF2ZWwgUMOtxaFh?= <pisa@cmp.felk.cvut.cz>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gwEmSjnWAnPcQpBfaedkGchIdpvpbNDkT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+It's a bummer that N_SLCAN has no checksumming or validation built in
+at all. Definitely suggests that SLCAN devices are meant more for
+diagnostic/observational use than actual control. (And perhaps another
+argument for wrapping the SLCAN tty stream in TCP or UDP).
 
-On 02/06/2015 11:14 AM, Aaron Wu wrote:
-> Header file was in arch dependent location arch/blackfin/include/asm/bf=
-in_can.h,
-> Now move and merge the useful contents of header file into driver code,=
- note
-> the original header file is reserved for full registers set access test=
- by other
-> code so it survives.
->=20
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
-> ---
->  drivers/net/can/bfin_can.c |  110 ++++++++++++++++++++++++++++++++++++=
-+++++++-
->  1 file changed, 109 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-> index 259d09a..bb1d480 100644
-> --- a/drivers/net/can/bfin_can.c
-> +++ b/drivers/net/can/bfin_can.c
-> @@ -20,13 +20,121 @@
->  #include <linux/can/dev.h>
->  #include <linux/can/error.h>
-> =20
-> -#include <asm/bfin_can.h>
->  #include <asm/portmux.h>
-> =20
->  #define DRV_NAME "bfin_can"
->  #define BFIN_CAN_TIMEOUT 100
->  #define TX_ECHO_SKB_MAX  1
-> =20
-> +/* transmit and receive channels */
-> +#define TRANSMIT_CHL 24
-> +#define RECEIVE_STD_CHL 0
-> +#define RECEIVE_EXT_CHL 4
-> +#define RECEIVE_RTR_CHL 8
-> +#define RECEIVE_EXT_RTR_CHL 12
-> +#define MAX_CHL_NUMBER 32
-> +
-> +/* All Blackfin system MMRs are padded to 32bits even if the register
-> + * itself is only 16bits.  So use a helper macro to streamline this
-> +*/
-> +#define __BFP(m) u16 m; u16 __pad_##m
-> +
-> +/* bfin can registers layout */
-> +struct bfin_can_mask_regs {
-> +	__BFP(aml);
-> +	__BFP(amh);
-> +};
-> +
-> +struct bfin_can_channel_regs {
-> +	/* data[0,2,4,6] -> data{0,1,2,3} while data[1,3,5,7] is padding */
-> +	u16 data[8];
-> +	__BFP(dlc);
-> +	__BFP(tsv);
-> +	__BFP(id0);
-> +	__BFP(id1);
-> +};
-> +
-> +struct bfin_can_regs {
-> +	/* global control and status registers */
-> +	__BFP(mc1);		/* offset 0x00 */
-> +	__BFP(md1);		/* offset 0x04 */
-> +	__BFP(trs1);		/* offset 0x08 */
-> +	__BFP(trr1);		/* offset 0x0c */
-> +	__BFP(ta1);		/* offset 0x10 */
-> +	__BFP(aa1);		/* offset 0x14 */
-> +	__BFP(rmp1);		/* offset 0x18 */
-> +	__BFP(rml1);		/* offset 0x1c */
-> +	__BFP(mbtif1);		/* offset 0x20 */
-> +	__BFP(mbrif1);		/* offset 0x24 */
-> +	__BFP(mbim1);		/* offset 0x28 */
-> +	__BFP(rfh1);		/* offset 0x2c */
-> +	__BFP(opss1);		/* offset 0x30 */
-> +	u32 __pad1[3];
-> +	__BFP(mc2);		/* offset 0x40 */
-> +	__BFP(md2);		/* offset 0x44 */
-> +	__BFP(trs2);		/* offset 0x48 */
-> +	__BFP(trr2);		/* offset 0x4c */
-> +	__BFP(ta2);		/* offset 0x50 */
-> +	__BFP(aa2);		/* offset 0x54 */
-> +	__BFP(rmp2);		/* offset 0x58 */
-> +	__BFP(rml2);		/* offset 0x5c */
-> +	__BFP(mbtif2);		/* offset 0x60 */
-> +	__BFP(mbrif2);		/* offset 0x64 */
-> +	__BFP(mbim2);		/* offset 0x68 */
-> +	__BFP(rfh2);		/* offset 0x6c */
-> +	__BFP(opss2);		/* offset 0x70 */
-> +	u32 __pad2[3];
-> +	__BFP(clock);		/* offset 0x80 */
-> +	__BFP(timing);		/* offset 0x84 */
-> +	__BFP(debug);		/* offset 0x88 */
-> +	__BFP(status);		/* offset 0x8c */
-> +	__BFP(cec);		/* offset 0x90 */
-> +	__BFP(gis);		/* offset 0x94 */
-> +	__BFP(gim);		/* offset 0x98 */
-> +	__BFP(gif);		/* offset 0x9c */
-> +	__BFP(control);		/* offset 0xa0 */
-> +	__BFP(intr);		/* offset 0xa4 */
-> +	__BFP(version);		/* offset 0xa8 */
-> +	__BFP(mbtd);		/* offset 0xac */
-> +	__BFP(ewr);		/* offset 0xb0 */
-> +	__BFP(esr);		/* offset 0xb4 */
-> +	u32 __pad3[2];
-> +	__BFP(ucreg);		/* offset 0xc0 */
-> +	__BFP(uccnt);		/* offset 0xc4 */
-> +	__BFP(ucrc);		/* offset 0xc8 */
-> +	__BFP(uccnf);		/* offset 0xcc */
-> +	u32 __pad4[1];
-> +	__BFP(version2);	/* offset 0xd4 */
-> +	u32 __pad5[10];
-> +
-> +	/* channel(mailbox) mask and message registers */
-> +	struct bfin_can_mask_regs msk[MAX_CHL_NUMBER];    /* offset 0x100 */
-> +	struct bfin_can_channel_regs chl[MAX_CHL_NUMBER]; /* offset 0x200 */
-> +};
-> +
-> +#undef __BFP
-> +
-> +#define SRS	0x0001  /* Software Reset */
-              ^^
+Michal=E2=80=94 this work looks interesting. However, I'm probably not
+interested in taking on an abandonware project. Was this ever
+maintained/deployed anywhere, or was it purely an academic exercise?
 
-please use a single space here (and below), as in the rest of the file.
+Mike
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---gwEmSjnWAnPcQpBfaedkGchIdpvpbNDkT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJU1JbqAAoJECte4hHFiupU5p0QAKc7sr827kYDotzNLIEkgWD5
-SlYnZTH+yuBOp4SbjeylZmYo+V7Jw4LmLgZ60TAR8bFmR0tmN4BHzhY0yxQazMK9
-TAzjcecT91o/QQqEk7qQLhPOXXOlVhPCqo46Tb9VK56KaiQftKVbJ59YtWemBUyP
-3mpOlIj03g+ci7dxpbwYm+lefijGAKfrXpb3k9TJ1mRaYFpsitCQh4DOYpiT5zZK
-GuZIybggx8+fCbce1E1q+GaJDkX+pnTdMKPHAGehDxl9u4z8L/K6b2qOaZ7fpM4Y
-wUMrJdvqxk3571bgyu6yW1ParUz1PKXNnx3R5AIPnCklvWYVTUcuEYAJIbRnjcr8
-kclUoZD60pHZR5DIVj9ELiawjygaaUwUGoI1h+trBnwLCJ45rrO2XWpZ8AuZDkU6
-SErQ5USt7s9XCwzPfREelCaIKMhmFU9cMsCG4EK3CEQukl+a2gG60FljphGCN9D/
-h3Ovb4gaLyyfS0/Ci9vNmWAnBXrh1voKShC6gOl5NZB+/XHc5IBumITxZZjRl1CW
-rtKZFYEkXCCORezi7tT4pa/fDmprlR8hJcXvO0gzhZiQfYv2IjgTMWoEL63wsucO
-eF8qyQtdonLfS9fpWn2IbbgJgKiwlH6wdYr5Ot3EaJUlPTuVNjc5mWmvlbbXwd1P
-o8X1cYvgHBedhtf1iYjh
-=tJGK
------END PGP SIGNATURE-----
-
---gwEmSjnWAnPcQpBfaedkGchIdpvpbNDkT--
+On 6 February 2015 at 03:33, Michal Sojka <sojkam1@fel.cvut.cz> wrote:
+> Hi Mike,
+>
+> On Thu, Feb 05 2015, Mike Purvis wrote:
+>> Hi Tom,
+>>
+>> Yes, thanks=E2=80=94 in the short term, I'm going to prototype using=
+ an off
+>> the shelf USB-based device. In the fullness of time, I'll probably
+>> either implement the protocol myself as part of a larger MCU also
+>> doing some other stuff, or bring a BSD-licensed implementation of th=
+e
+>> protocol, if such a thing exists.
+>>
+>> Looks like you might be able to get CAN over TCP/UDP in two steps, b=
+y
+>> using socat to link a pty to the network socket, and then running
+>> slcand (or the guts of it) against the pty. Does anyone know what th=
+e
+>> efficiency story is with socat? Does it copy back and forth between
+>> between userspace and kernelspace, or is it able to operate fully in
+>> kernel-land the way slcand does?
+>
+> Socat definitely copies everything over the user space.
+>
+> In the past, we developed a kernel-based CAN-to-Ethernet gateway. See
+> http://rtime.felk.cvut.cz/can/can-eth-gw.pdf (the documentation is no=
+t
+> perfect). The kernel part is at
+> https://rtime.felk.cvut.cz/gitweb/can-eth-gw-linux.git/blob/HEAD:/net=
+/can/canethgw.c.
+> It would probably need minor updates for current kernels. The user sp=
+ace
+> part, which just configures the kernel to do its job, is at
+> https://rtime.felk.cvut.cz/gitweb/can-utils.git/blob/refs/heads/cegw:=
+/cegw.c.
+>
+> The kernel part was measured to be about 10% faster (on x86), but thi=
+s
+> number depends on the architecture. System calls on modern x86 have l=
+ess
+> overhead than, for example, on PPC32.
+>
+> Cheers,
+> -Michal
