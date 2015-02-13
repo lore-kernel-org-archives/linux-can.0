@@ -1,65 +1,393 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V8 1/3] bfin_can: rewrite the blackfin style of read/write
- to common ones
-Date: Tue, 10 Feb 2015 11:05:24 +0100
-Message-ID: <54D9D7E4.2010203@pengutronix.de>
-References: <1423561237-11043-1-git-send-email-Aaron.wu@analog.com>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
+Subject: Re: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
+Date: Fri, 13 Feb 2015 20:07:07 +0100
+Message-ID: <54DE4B5B.8040702@universalnet.at>
+References: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA2@VB-SRVSBS.archimede.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="nqqSe7kbnP6p3TE6Cgxqn7uRu43XLU80N"
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60148 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932367AbbBJKFx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Feb 2015 05:05:53 -0500
-In-Reply-To: <1423561237-11043-1-git-send-email-Aaron.wu@analog.com>
+Received: from smtp.xy24.at ([85.126.109.136]:38796 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752800AbbBMTIO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 13 Feb 2015 14:08:14 -0500
+In-Reply-To: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA2@VB-SRVSBS.archimede.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Aaron Wu <Aaron.wu@analog.com>, wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net
+To: Manuele Conti <manuele.conti@archimede-energia.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---nqqSe7kbnP6p3TE6Cgxqn7uRu43XLU80N
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 02/10/2015 10:40 AM, Aaron Wu wrote:
-> Replace the blackfin arch dependent style of bfin_read/bfin_write with
-> common readw/writew
-
-Applied to can-next.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Dear Manuele!
 
 
---nqqSe7kbnP6p3TE6Cgxqn7uRu43XLU80N
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Sorry, but I can't follow:
+CAN_ERR_FLAG is set by alloc_can_err_skb function in can.c.
+The driver uses this function when receiving an error (usb_8dev_rx_err_=
+msg function) from device.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU2dfqAAoJECte4hHFiupUsGAP/RQPL1sOcSKuZ5/B8UhG51uJ
-S8EJmYOutxQgxQlHdepk/0MwR8C+M1RWwN0FeJJnx3Y7Cfr3GSaTGU4MwxHnEMpO
-xsaXcv2yc8uBSlb4fVqy+u5CwIXAsbjnTaXOZhS9Z+gcicXCG+nDLzZEpB8UCIM5
-5scuALaI1MIB+Xy84knEANbuKJ3kH9475cuBpnxlTduP7Eql5nvAFBF7RqFu5WNh
-3mtOZtvjodXicdqt6QFQOdLnYcNiYhg/FFgiuULDEXuj/tjFArtgED+NvvAWzKWv
-H+cmnI9BpM9hou7d3TLZclF7B6Z4+pmMz3/mahL355Zcp1MzrMQRxDTOnmqOOtgd
-zgqjdUa/fYIM5r0d9bhvEiGWyfnRhvB2oc/VdOKokadXe0xmZAP75B7YTJxohELB
-glFa7VJjoiGX1tGNkP+qVhyfvtrR7oti9wVdTwtGT7+kYy47CN4pkH/CAc8Als55
-uYWM+S1yQfdOVs1J0eB4M0Qq6XqxqZ3kgZ5THp3RvpY+GlUer6aKh3YgYt6/e2T0
-Wdmv6u5tj3WYnCNhfnrGgHOuU29GPuJpWxoauLgpCkrOhEfYntBIA5yIZrI5NoC/
-jJ3kBtixiKXj3JM8jPz0/jcEnFKuFiIk3vYVnp1oOh9LXWRsdNNLkKBa1dp/mZpT
-FpjmLTsQ0CiRWWmk7uxj
-=1SSL
------END PGP SIGNATURE-----
+Please provide following informations for further investigations:
+1. Firmware version
+2. Schematic, connected devices, ...
+3. Exact description under which circumstances this problem occurs
 
---nqqSe7kbnP6p3TE6Cgxqn7uRu43XLU80N--
+
+regards,
+Bernd
+
+
+
+
+Am 2015-02-13 um 17:36 schrieb Manuele Conti:
+> [1.] usb_8dev doesn't set CAN_ERR_FLAG when a bus error occurs.
+> [2.] It is not possible to get any error from an application because =
+driver doesn't set CAN_ERR_FLAG when a canbus error occurs.
+> [3.] modules, kernel, driver
+> [4.] Linux version 3.11.0-26-generic (buildd@comet) (gcc version 4.8.=
+1 (Ubuntu/Linaro 4.8.1-10ubuntu8) ) #45-Ubuntu SMP Tue Jul 15 04:02:06 =
+UTC 2014
+> [7]
+> [7.1]
+> If some fields are empty or look unusual you may have an old version.
+> Compare to the current minimal requirements in Documentation/Changes.
+>
+> DISTRIB_ID=3DUbuntu
+> DISTRIB_RELEASE=3D13.10
+> DISTRIB_CODENAME=3Dsaucy
+> DISTRIB_DESCRIPTION=3D"Ubuntu 13.10"
+> NAME=3D"Ubuntu"
+> VERSION=3D"13.10, Saucy Salamander"
+> ID=3Dubuntu
+> ID_LIKE=3Ddebian
+> PRETTY_NAME=3D"Ubuntu 13.10"
+> VERSION_ID=3D"13.10"
+> HOME_URL=3D"http://www.ubuntu.com/"
+> SUPPORT_URL=3D"http://help.ubuntu.com/"
+> BUG_REPORT_URL=3D"http://bugs.launchpad.net/ubuntu/"
+> Linux ThinkPad-Edge-E531 3.11.0-26-generic #45-Ubuntu SMP Tue Jul 15 =
+04:02:06 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+>
+> Gnu C                  gcc (Ubuntu/Linaro 4.8.1-10ubuntu9) 4.8.1
+> Gnu make               3.81
+> util-linux             linux 2.20.1
+> mount                  linux 2.20.1 (with libblkid and selinux suppor=
+t)
+> modutils               9
+> e2fsprogs              1.42.8
+> PPP                    2.4.5
+> Linux C Library        > libc.2.17
+> Dynamic linker (ldd)   2.17
+> Procps                 3.3.3
+> Net-tools              1.60
+> iproute2              iproute2-ss130716
+> Kbd                    1.15.5
+> Sh-utils               8.20
+> Modules Loaded         ftdi_sio usbserial michael_mic arc4 pci_stub v=
+boxpci vboxnetadp vboxnetflt vboxdrv parport_pc ppdev rfcomm bnep binfm=
+t_misc nfsd auth_rpcgss nfs_acl nfs lockd sunrpc fscache snd_hda_codec_=
+hdmi snd_hda_codec_conexant joydev x86_pkg_temp_thermal intel_powerclam=
+p coretemp kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_in=
+tel aesni_intel aes_x86_64 lrw gf128mul glue_helper ablk_helper cryptd =
+uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_core btusb videod=
+ev bluetooth snd_hda_intel snd_hda_codec snd_hwdep lib80211_crypt_tkip =
+microcode wl lib80211 psmouse cfg80211 i915 serio_raw snd_pcm rtsx_pci_=
+ms memstick lpc_ich snd_page_alloc drm_kms_helper mei_me mei drm i2c_al=
+go_bit thinkpad_acpi nvram snd_seq_midi snd_seq_midi_event snd_rawmidi =
+snd_seq snd_seq_device snd_timer snd wmi soundcore mac_hid video lp par=
+port hid_generic usbhid hid rtsx_pci_sdmmc r8169 ahci rtsx_pci mii liba=
+hci
+>
+> free reports:
+>               total       used       free     shared    buffers     c=
+ached
+> Mem:       7738552    7424740     313812          0    1023148    307=
+6448
+> -/+ buffers/cache:    3325144    4413408
+> Swap:      8388604          0    8388604
+>
+> /proc/cpuinfo
+> processor       : 0
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 0
+> cpu cores       : 4
+> apicid          : 0
+> initial apicid  : 0
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 1
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 0
+> cpu cores       : 4
+> apicid          : 1
+> initial apicid  : 1
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 2
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 1
+> cpu cores       : 4
+> apicid          : 2
+> initial apicid  : 2
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 3
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 1
+> cpu cores       : 4
+> apicid          : 3
+> initial apicid  : 3
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 4
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 2
+> cpu cores       : 4
+> apicid          : 4
+> initial apicid  : 4
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 5
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 2
+> cpu cores       : 4
+> apicid          : 5
+> initial apicid  : 5
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 6
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 3
+> cpu cores       : 4
+> apicid          : 6
+> initial apicid  : 6
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 7
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 3
+> cpu cores       : 4
+> apicid          : 7
+> initial apicid  : 7
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> [7.2]
+>
+> IMPORTANTE: il contenuto di questa e-mail e degli eventuali allegati,=
+ =C3=A8 strettamente confidenziale e destinato alla/e persona/e a cui =C3=
+=A8 indirizzato.
+> Se avete ricevuto per errore questa e-mail, Vi preghiamo di segnalarc=
+elo immediatamente e di cancellarla dal vostro computer. E' fatto divie=
+to di copiare e divulgare il contenuto di questa e-mail. Ogni utilizzo =
+abusivo delle informazioni qui contenute da parte di persone terze o co=
+munque non indicate nella presente e-mail, potr=C3=A0 essere perseguito=
+ ai sensi di legge.
+>
+> IMPORTANT: The contents of this email, and any attachments, are CONFI=
+DENTIAL and intended only for the person(s) to whom they are addressed.
+> If you have received the email in error please notify the sender imme=
+diately and delete it from your computer system. Do not copy or distrib=
+ute it or disclose its contents to any person. Any improper use of the =
+contents of this email will be prosecuted by law.
+>
+
