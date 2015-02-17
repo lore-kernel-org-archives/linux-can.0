@@ -1,294 +1,439 @@
-From: Gediminas Simanskis <gediminas@8devices.com>
-Subject: Re: usb_8dev: Initialisation issue with powered USB 2.0 hub
-Date: Tue, 17 Feb 2015 12:51:00 +0200
-Message-ID: <54E31D14.4040006@8devices.com>
-References: <54D3B071.4040705@hartkopp.net> <54D90ADB.8020700@universalnet.at> <54D90CA7.50302@hartkopp.net> <54DF04A3.1010602@universalnet.at> <54E1900A.4050702@hartkopp.net> <54E22518.6050007@8devices.com> <54E2DD71.1050800@hartkopp.net>
+From: Manuele Conti <manuele.conti@archimede-energia.com>
+Subject: RE: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
+Date: Tue, 17 Feb 2015 11:53:54 +0100
+Message-ID: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA4@VB-SRVSBS.archimede.local>
+References: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA2@VB-SRVSBS.archimede.local>,<54DE4B5B.8040702@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f47.google.com ([74.125.82.47]:64150 "EHLO
-	mail-wg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755146AbbBQKvE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Feb 2015 05:51:04 -0500
-Received: by mail-wg0-f47.google.com with SMTP id x12so20779003wgg.6
-        for <linux-can@vger.kernel.org>; Tue, 17 Feb 2015 02:51:02 -0800 (PST)
-In-Reply-To: <54E2DD71.1050800@hartkopp.net>
+Received: from authsmtp20.register.it ([81.88.48.43]:21774 "EHLO
+	authsmtp.register.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1755174AbbBQLCd convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Feb 2015 06:02:33 -0500
+In-Reply-To: <54DE4B5B.8040702@universalnet.at>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Bernd Krumboeck <krumboeck@universalnet.at>
+To: Bernd Krumboeck <krumboeck@universalnet.at>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-The latest firmware version is 1.5.
+Hi Bernd,
 
-> Are you able to provide an updated USB2CAN firmware (v1.6?) for testing?
->
-> You can send it to Bernd and me as personal mail (preferably as zip 
-> with md5sum) as the mailing list has an attachment size limit.
->
-> Thanks,
-> Oliver
->
->
->>
->>
->>> Hello Bernd,
->>>
->>> On 14.02.2015 09:17, Bernd Krumboeck wrote:
->>>> I was able to reconstruct, but I think it is not a driver problem 
->>>> (at least
->>>> not only).
->>>
->>> I assume it's easier to fix this in the firmware for the end-user.
->>> I'll last a long time until the patches will get into Linux 3.9+ - 
->>> some are
->>> not even supported anymore.
->>>
->>> @Gediminas: Can you confirm this issue with the Windows driver too?
->>>
->>> @Bernd: When resetting the device is an usual handling e.g. by other 
->>> USB
->>> drivers it makes sens to add this functionality too. If not we 
->>> should just
->>> wait for the firmware fix.
->>>
->>> Best regards,
->>> Oliver
->>>
->>>>
->>>> Tested hard- and software:
->>>> Wiregate (ALIX 1E Board) with Conrad selfpowered USB hub.
->>>> Kernel 3.5.1 with latest driver from pre-3.3 branch.
->>>>
->>>> Links for Details:
->>>> http://www.pcengines.ch/alix1e.htm
->>>> http://www.conrad.at/ce/de/product/971592/7-Port-USB-20-Hub-Metallgehaeuse-zur-Wandmontage-CE-Schwarz?ref=searchDetail 
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> Steps of my test:
->>>> 1) Disconnnect USB hub from System:
->>>>     System removed the network interface (expected behavior)
->>>>
->>>> 2) Reconnect USB Hub to System:
->>>>     LED is still green. Startup device again. Everything looks 
->>>> normal, except
->>>> we don't receive CAN messages.
->>>>     Sending messages was not tested, because of missing test 
->>>> environment.
->>>>
->>>> 3) Rebooted the System:
->>>>     LED is still green. Everything looks normal, except we don't 
->>>> receive CAN
->>>> messages.
->>>>
->>>> 4) Unbind USB device (echo "1-4.1.2" > 
->>>> /sys/bus/usb/drivers/usb/unbind):
->>>>     Unbind worked as expected: LED becomes red.
->>>>     Following message appears in the kernel log:
->>>>     [  356.897524] usb_8dev 1-4.1.2:1.0: can0: device disconnected
->>>>
->>>> 5) Bind USB device (echo "1-4.1.2" > /sys/bus/usb/drivers/usb/bind):
->>>>     LED stays red. This is not an expected behavior.
->>>>     Following message appears in the kernel log:
->>>>     [  392.584273] usb_8dev 1-4.1.2:1.0: can0: no command message 
->>>> answer
->>>>     [  392.584427] usb_8dev 1-4.1.2:1.0: can0: can't get firmware 
->>>> version
->>>>     [  392.585276] usb_8dev: probe of 1-4.1.2:1.0 failed with error 
->>>> -110
->>>>
->>>>     I often use this rebind procedure for hanging (unresponsive) 
->>>> Huawai 3G
->>>> sticks. First time this does not work.
->>>>
->>>> 6) Disconnect USB2CAN adapter from hub. Reconnect the adapter:
->>>>     LED becomes green. Everything works as expected.
->>>>
->>>>
->>>> Conclusion:
->>>> At this time I assume it is a firmware issue. At least the rebind 
->>>> procedure
->>>> should work, if everything else didn't.
->>>>
->>>>
->>>> Not tested workaround:
->>>> Probably it helps to send a reset command in the driver before 
->>>> startup, but I
->>>> didn't test.
->>>>
->>>>
->>>> PS: I had some kernel crashes with "Intel Corporation 82801I (ICH9 
->>>> Family)"
->>>> usb controller.
->>>>
->>>>
->>>> regards,
->>>> Bernd
->>>>
->>>>
->>>>
->>>>
->>>> Am 2015-02-09 um 20:38 schrieb Oliver Hartkopp:
->>>>> Hi Bernd,
->>>>>
->>>>> On 09.02.2015 20:30, Bernd Krumboeck wrote:
->>>>>
->>>>>> I will try to test, when I have some time (in about two weeks).
->>>>>
->>>>> I'm looking forward to it ...
->>>>>
->>>>>> The kernel crash should not happen with newer kernel/driver 
->>>>>> versions.
->>>>>> So I'll ignore until I get an exact version number.
->>>>>
->>>>> Ok. I'll ask the colleague and check the patch status of his kernel.
->>>>>
->>>>> Thanks,
->>>>> Oliver
->>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> Am 2015-02-05 um 19:03 schrieb Oliver Hartkopp:
->>>>>>> Hi Bernd,
->>>>>>>
->>>>>>> i got an error report from a colleague today who is using the 
->>>>>>> USB2CAN from
->>>>>>> 8devices behind a self powered USB2.0 hub.
->>>>>>>
->>>>>>> The way to get into the problem:
->>>>>>>
->>>>>>> 1. Connect a self powered USB hub with attached USB2CAN to the 
->>>>>>> host:
->>>>>>>
->>>>>>>
->>>>>>> [  502.464008] usb 3-2: new high-speed USB device number 8 using 
->>>>>>> xhci_hcd
->>>>>>> [  502.593336] usb 3-2: New USB device found, idVendor=05e3, 
->>>>>>> idProduct=0608
->>>>>>> [  502.593339] usb 3-2: New USB device strings: Mfr=0, Product=1,
->>>>>>> SerialNumber=0
->>>>>>> [  502.593341] usb 3-2: Product: USB2.0 Hub
->>>>>>> [  502.593863] hub 3-2:1.0: USB hub found
->>>>>>> [  502.594124] hub 3-2:1.0: 4 ports detected
->>>>>>> [  502.864710] usb 3-2.1: new full-speed USB device number 9 
->>>>>>> using xhci_hcd
->>>>>>> [  502.955087] usb 3-2.1: New USB device found, idVendor=0483,
->>>>>>> idProduct=1234
->>>>>>> [  502.955097] usb 3-2.1: New USB device strings: Mfr=1, Product=2,
->>>>>>> SerialNumber=3
->>>>>>> [  502.955102] usb 3-2.1: Product: USB2CAN converter
->>>>>>> [  502.955106] usb 3-2.1: Manufacturer: edevices
->>>>>>> [  502.955110] usb 3-2.1: SerialNumber: ED000215
->>>>>>> [  502.956739] usb_8dev 3-2.1:1.0 can0: firmware: 1.5, hardware: 
->>>>>>> 255.255
->>>>>>>
->>>>>>> (everything is fine - USB2CAN LED is RED)
->>>>>>>
->>>>>>> # ip -det link show can0
->>>>>>> 21: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT 
->>>>>>> group
->>>>>>> default qlen 10
->>>>>>>      link/can  promiscuity 0
->>>>>>>      can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
->>>>>>>       usb_8dev: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 
->>>>>>> brp-inc 1
->>>>>>>       clock 32000000
->>>>>>> # ip link set can0 type can bitrate 500000
->>>>>>> # ifconfig can0 up
->>>>>>>
->>>>>>> (still everything is fine - USB2CAN LED is GREEN)
->>>>>>>
->>>>>>> Adapter works as expected. It can send and receive CAN frames.
->>>>>>>
->>>>>>> 2. Now unplug the powered hub from the PC:
->>>>>>>
->>>>>>> [  680.841130] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.841212] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.841252] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.841308] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.841352] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.841377] usb 3-2: USB disconnect, device number 8
->>>>>>> [  680.841385] usb 3-2.1: USB disconnect, device number 9
->>>>>>> [  680.841388] usb_8dev 3-2.1:1.0 can0: Rx URB aborted (-71)
->>>>>>> [  680.843607] usb_8dev 3-2.1:1.0 can0: device disconnected
->>>>>>> [  680.843634] usb_8dev 3-2.1:1.0 can0: sending command message 
->>>>>>> failed
->>>>>>> [  680.843639] usb_8dev 3-2.1:1.0 can0: couldn't stop device
->>>>>>>
->>>>>>> The USB2CAN LED remains GREEN - as the adapter is still powered.
->>>>>>>
->>>>>>> 3. Now plug the powered hub into the PC again:
->>>>>>>
->>>>>>> [  705.799101] usb 3-2: new high-speed USB device number 10 
->>>>>>> using xhci_hcd
->>>>>>> [  705.928881] usb 3-2: New USB device found, idVendor=05e3, 
->>>>>>> idProduct=0608
->>>>>>> [  705.928891] usb 3-2: New USB device strings: Mfr=0, Product=1,
->>>>>>> SerialNumber=0
->>>>>>> [  705.928895] usb 3-2: Product: USB2.0 Hub
->>>>>>> [  705.929871] hub 3-2:1.0: USB hub found
->>>>>>> [  705.930191] hub 3-2:1.0: 4 ports detected
->>>>>>> [  706.203831] usb 3-2.1: new full-speed USB device number 11 using
->>>>>>> xhci_hcd
->>>>>>> [  706.294249] usb 3-2.1: New USB device found, idVendor=0483,
->>>>>>> idProduct=1234
->>>>>>> [  706.294259] usb 3-2.1: New USB device strings: Mfr=1, Product=2,
->>>>>>> SerialNumber=3
->>>>>>> [  706.294264] usb 3-2.1: Product: USB2CAN converter
->>>>>>> [  706.294268] usb 3-2.1: Manufacturer: edevices
->>>>>>> [  706.294271] usb 3-2.1: SerialNumber: ED000215
->>>>>>> [  706.296097] usb_8dev 3-2.1:1.0 can0: firmware: 1.5, hardware: 
->>>>>>> 255.255
->>>>>>>
->>>>>>> The USB2CAN LED remains GREEN - as the adapter is still powered.
->>>>>>> But the CAN netdevice is not configured:
->>>>>>>
->>>>>>> # ip -det link show can0
->>>>>>> 21: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT 
->>>>>>> group
->>>>>>> default qlen 10
->>>>>>>      link/can  promiscuity 0
->>>>>>>      can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
->>>>>>>       usb_8dev: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..1024 
->>>>>>> brp-inc 1
->>>>>>>       clock 32000000
->>>>>>>
->>>>>>> After setting the bitrate again & putting the interface up:
->>>>>>>
->>>>>>> # ip link set can0 type can bitrate 500000
->>>>>>> # ifconfig can0 up
->>>>>>>
->>>>>>> The USB2CAN LED remains GREEN.
->>>>>>>
->>>>>>> But from this point the USB2CAN adapter can only *send* CAN 
->>>>>>> frames but it
->>>>>>> can not
->>>>>>> receive any frames. Btw. the CAN controller inside the USB2CAN 
->>>>>>> properly
->>>>>>> acknowledges
->>>>>>> the CAN frames on the bus (without making them visible on the 
->>>>>>> host).
->>>>>>>
->>>>>>> Any idea how to fix the initialization in this warm start scenario?
->>>>>>>
->>>>>>> My colleague also reported kernel crashes which I wasn't able to 
->>>>>>> reproduce.
->>>>>>> I used a 3.19.0-rc7 here - don't know what my colleague was using.
->>>>>>>
->>>>>>> Best regards,
->>>>>>> Oliver
->>>>>>>
->>>>>>
->>>>
->>>> -- 
->>>> To unsubscribe from this list: send the line "unsubscribe 
->>>> linux-can" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>
+1. Firmware version
+[ 5017.267797] usb_8dev 3-1:1.0 can0: firmware: 1.5, hardware: 1.0
 
+2. Schematic, connected devices, ...
+I connect device with a our BMS (Battery management system)
+
+3. Exact description under which circumstances this problem occurs
+In our configuration the terminator resistor is handled by a device by =
+a mos-fet.
+So there are some devices that start to communicate on the bus before n=
+et is terminated and bus errors occurs.
+On USB2Dev MS Windows driver gets frame errors but on Linux version thi=
+s doesn't happen.
+
+
+Cheers,
+Manuele
+
+
+________________________________________
+=46rom: Bernd Krumboeck [krumboeck@universalnet.at]
+Sent: Friday, February 13, 2015 8:07 PM
+To: Manuele Conti
+Cc: linux-can@vger.kernel.org
+Subject: Re: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
+
+Dear Manuele!
+
+
+Sorry, but I can't follow:
+CAN_ERR_FLAG is set by alloc_can_err_skb function in can.c.
+The driver uses this function when receiving an error (usb_8dev_rx_err_=
+msg function) from device.
+
+
+Please provide following informations for further investigations:
+1. Firmware version
+2. Schematic, connected devices, ...
+3. Exact description under which circumstances this problem occurs
+
+
+
+regards,
+Bernd
+
+
+
+
+Am 2015-02-13 um 17:36 schrieb Manuele Conti:
+> [1.] usb_8dev doesn't set CAN_ERR_FLAG when a bus error occurs.
+> [2.] It is not possible to get any error from an application because =
+driver doesn't set CAN_ERR_FLAG when a canbus error occurs.
+> [3.] modules, kernel, driver
+> [4.] Linux version 3.11.0-26-generic (buildd@comet) (gcc version 4.8.=
+1 (Ubuntu/Linaro 4.8.1-10ubuntu8) ) #45-Ubuntu SMP Tue Jul 15 04:02:06 =
+UTC 2014
+> [7]
+> [7.1]
+> If some fields are empty or look unusual you may have an old version.
+> Compare to the current minimal requirements in Documentation/Changes.
+>
+> DISTRIB_ID=3DUbuntu
+> DISTRIB_RELEASE=3D13.10
+> DISTRIB_CODENAME=3Dsaucy
+> DISTRIB_DESCRIPTION=3D"Ubuntu 13.10"
+> NAME=3D"Ubuntu"
+> VERSION=3D"13.10, Saucy Salamander"
+> ID=3Dubuntu
+> ID_LIKE=3Ddebian
+> PRETTY_NAME=3D"Ubuntu 13.10"
+> VERSION_ID=3D"13.10"
+> HOME_URL=3D"http://www.ubuntu.com/"
+> SUPPORT_URL=3D"http://help.ubuntu.com/"
+> BUG_REPORT_URL=3D"http://bugs.launchpad.net/ubuntu/"
+> Linux ThinkPad-Edge-E531 3.11.0-26-generic #45-Ubuntu SMP Tue Jul 15 =
+04:02:06 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+>
+> Gnu C                  gcc (Ubuntu/Linaro 4.8.1-10ubuntu9) 4.8.1
+> Gnu make               3.81
+> util-linux             linux 2.20.1
+> mount                  linux 2.20.1 (with libblkid and selinux suppor=
+t)
+> modutils               9
+> e2fsprogs              1.42.8
+> PPP                    2.4.5
+> Linux C Library        > libc.2.17
+> Dynamic linker (ldd)   2.17
+> Procps                 3.3.3
+> Net-tools              1.60
+> iproute2              iproute2-ss130716
+> Kbd                    1.15.5
+> Sh-utils               8.20
+> Modules Loaded         ftdi_sio usbserial michael_mic arc4 pci_stub v=
+boxpci vboxnetadp vboxnetflt vboxdrv parport_pc ppdev rfcomm bnep binfm=
+t_misc nfsd auth_rpcgss nfs_acl nfs lockd sunrpc fscache snd_hda_codec_=
+hdmi snd_hda_codec_conexant joydev x86_pkg_temp_thermal intel_powerclam=
+p coretemp kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_in=
+tel aesni_intel aes_x86_64 lrw gf128mul glue_helper ablk_helper cryptd =
+uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_core btusb videod=
+ev bluetooth snd_hda_intel snd_hda_codec snd_hwdep lib80211_crypt_tkip =
+microcode wl lib80211 psmouse cfg80211 i915 serio_raw snd_pcm rtsx_pci_=
+ms memstick lpc_ich snd_page_alloc drm_kms_helper mei_me mei drm i2c_al=
+go_bit thinkpad_acpi nvram snd_seq_midi snd_seq_midi_event snd_rawmidi =
+snd_seq snd_seq_device snd_timer snd wmi soundcore mac_hid video lp par=
+port hid_generic usbhid hid rtsx_pci_sdmmc r8169 ahci rtsx_pci mii liba=
+hci
+>
+> free reports:
+>               total       used       free     shared    buffers     c=
+ached
+> Mem:       7738552    7424740     313812          0    1023148    307=
+6448
+> -/+ buffers/cache:    3325144    4413408
+> Swap:      8388604          0    8388604
+>
+> /proc/cpuinfo
+> processor       : 0
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 0
+> cpu cores       : 4
+> apicid          : 0
+> initial apicid  : 0
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 1
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 0
+> cpu cores       : 4
+> apicid          : 1
+> initial apicid  : 1
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 2
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 1
+> cpu cores       : 4
+> apicid          : 2
+> initial apicid  : 2
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 3
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 1
+> cpu cores       : 4
+> apicid          : 3
+> initial apicid  : 3
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 4
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 2
+> cpu cores       : 4
+> apicid          : 4
+> initial apicid  : 4
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 5
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 2
+> cpu cores       : 4
+> apicid          : 5
+> initial apicid  : 5
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 6
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 3
+> cpu cores       : 4
+> apicid          : 6
+> initial apicid  : 6
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> processor       : 7
+> vendor_id       : GenuineIntel
+> cpu family      : 6
+> model           : 58
+> model name      : Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz
+> stepping        : 9
+> microcode       : 0x15
+> cpu MHz         : 1200.000
+> cache size      : 6144 KB
+> physical id     : 0
+> siblings        : 8
+> core id         : 3
+> cpu cores       : 4
+> apicid          : 7
+> initial apicid  : 7
+> fpu             : yes
+> fpu_exception   : yes
+> cpuid level     : 13
+> wp              : yes
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe sy=
+scall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xto=
+pology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_=
+cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt t=
+sc_deadline_timer aes xsave avx f16c rdrand lahf_lm ida arat epb xsaveo=
+pt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase smep e=
+rms
+> bogomips        : 4390.12
+> clflush size    : 64
+> cache_alignment : 64
+> address sizes   : 36 bits physical, 48 bits virtual
+> power management:
+>
+> [7.2]
+>
+> IMPORTANTE: il contenuto di questa e-mail e degli eventuali allegati,=
+ =E8 strettamente confidenziale e destinato alla/e persona/e a cui =E8 =
+indirizzato.
+> Se avete ricevuto per errore questa e-mail, Vi preghiamo di segnalarc=
+elo immediatamente e di cancellarla dal vostro computer. E' fatto divie=
+to di copiare e divulgare il contenuto di questa e-mail. Ogni utilizzo =
+abusivo delle informazioni qui contenute da parte di persone terze o co=
+munque non indicate nella presente e-mail, potr=E0 essere perseguito ai=
+ sensi di legge.
+>
+> IMPORTANT: The contents of this email, and any attachments, are CONFI=
+DENTIAL and intended only for the person(s) to whom they are addressed.
+> If you have received the email in error please notify the sender imme=
+diately and delete it from your computer system. Do not copy or distrib=
+ute it or disclose its contents to any person. Any improper use of the =
+contents of this email will be prosecuted by law.
+>
+
+
+IMPORTANTE: il contenuto di questa e-mail e degli eventuali allegati, =E8=
+ strettamente confidenziale e destinato alla/e persona/e a cui =E8 indi=
+rizzato.
+Se avete ricevuto per errore questa e-mail, Vi preghiamo di segnalarcel=
+o immediatamente e di cancellarla dal vostro computer. E' fatto divieto=
+ di copiare e divulgare il contenuto di questa e-mail. Ogni utilizzo ab=
+usivo delle informazioni qui contenute da parte di persone terze o comu=
+nque non indicate nella presente e-mail, potr=E0 essere perseguito ai s=
+ensi di legge.
+
+IMPORTANT: The contents of this email, and any attachments, are CONFIDE=
+NTIAL and intended only for the person(s) to whom they are addressed.
+If you have received the email in error please notify the sender immedi=
+ately and delete it from your computer system. Do not copy or distribut=
+e it or disclose its contents to any person. Any improper use of the co=
+ntents of this email will be prosecuted by law.
