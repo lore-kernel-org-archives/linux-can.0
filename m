@@ -1,22 +1,35 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
-Subject: Re: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
-Date: Tue, 17 Feb 2015 19:35:29 +0100
-Message-ID: <54E389F1.8020803@universalnet.at>
-References: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA2@VB-SRVSBS.archimede.local>,<54DE4B5B.8040702@universalnet.at> <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA4@VB-SRVSBS.archimede.local>
+From: Manuele Conti <manuele.conti@archimede-energia.com>
+Subject: RE: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
+Date: Wed, 18 Feb 2015 08:53:39 +0100
+Message-ID: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA8@VB-SRVSBS.archimede.local>
+References: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA2@VB-SRVSBS.archimede.local>,<54DE4B5B.8040702@universalnet.at>
+ <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA4@VB-SRVSBS.archimede.local>,<54E389F1.8020803@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:52032 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751596AbbBQSgi (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 17 Feb 2015 13:36:38 -0500
-In-Reply-To: <3DBC6D34FF74DF48B9284D7A6A05A6750270AD384CA4@VB-SRVSBS.archimede.local>
+Received: from authsmtp20.register.it ([81.88.48.43]:50938 "EHLO
+	authsmtp.register.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1751552AbbBRHzN convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Feb 2015 02:55:13 -0500
+In-Reply-To: <54E389F1.8020803@universalnet.at>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Manuele Conti <manuele.conti@archimede-energia.com>
+To: Bernd Krumboeck <krumboeck@universalnet.at>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+Hi Bernd,
+I'm very sorry it work exactly as kernel documentation.
+
+Cheers,
+Manuele
+________________________________________
+=46rom: Bernd Krumboeck [krumboeck@universalnet.at]
+Sent: Tuesday, February 17, 2015 7:35 PM
+To: Manuele Conti
+Cc: linux-can@vger.kernel.org
+Subject: Re: PROBLEM: usb_8dev driver can't get CAN_ERR_FLAG
 
 Hi Manuele!
 
@@ -462,3 +475,20 @@ ute it or disclose its contents to any person. Any improper use of the =
 contents of this email will be prosecuted by law.
 >
 
+
+IMPORTANTE: il contenuto di questa e-mail e degli eventuali allegati, =E8=
+ strettamente confidenziale e destinato alla/e persona/e a cui =E8 indi=
+rizzato.
+Se avete ricevuto per errore questa e-mail, Vi preghiamo di segnalarcel=
+o immediatamente e di cancellarla dal vostro computer. E' fatto divieto=
+ di copiare e divulgare il contenuto di questa e-mail. Ogni utilizzo ab=
+usivo delle informazioni qui contenute da parte di persone terze o comu=
+nque non indicate nella presente e-mail, potr=E0 essere perseguito ai s=
+ensi di legge.
+
+IMPORTANT: The contents of this email, and any attachments, are CONFIDE=
+NTIAL and intended only for the person(s) to whom they are addressed.
+If you have received the email in error please notify the sender immedi=
+ately and delete it from your computer system. Do not copy or distribut=
+e it or disclose its contents to any person. Any improper use of the co=
+ntents of this email will be prosecuted by law.
