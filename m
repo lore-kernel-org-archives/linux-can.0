@@ -1,59 +1,33 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Bug on configure ... where to report?
-Date: Thu, 26 Feb 2015 09:47:02 +0100
-Message-ID: <54EEDD86.4020004@pengutronix.de>
-References: <54EE63C5.3040307@allcaps.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: usb_8dev: Initialisation issue with powered USB 2.0 hub
+Date: Thu, 26 Feb 2015 10:41:32 +0100
+Message-ID: <54EEEA4C.80009@hartkopp.net>
+References: <54D3B071.4040705@hartkopp.net> <54D90ADB.8020700@universalnet.at> <54D90CA7.50302@hartkopp.net> <54DF04A3.1010602@universalnet.at> <54E1900A.4050702@hartkopp.net> <54E22518.6050007@8devices.com> <54E2DD71.1050800@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="SV8WkDUUvJ4UPjSvNaI6VPMxCrHii83QF"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33244 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751344AbbBZIrE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Feb 2015 03:47:04 -0500
-In-Reply-To: <54EE63C5.3040307@allcaps.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:17785 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932153AbbBZJls (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Feb 2015 04:41:48 -0500
+In-Reply-To: <54E2DD71.1050800@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andrew Lentvorski <bsder@allcaps.org>, linux-can@vger.kernel.org
+To: Gediminas Simanskis <gediminas@8devices.com>, Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SV8WkDUUvJ4UPjSvNaI6VPMxCrHii83QF
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello Gediminas,
 
-BTW: where can I download you gpg public key?
+> On 16.02.2015 18:12, Gediminas Simanskis wrote:
+>
+>> IMHO in main firmware cycle need to check lower USB protocol library states.
+>> Currently firmware after descriptor initialization goes to infinite loop and
+>> don't check lower USB layer states anymore.
 
-Marc
+As you already named the potential issue: When do you plan to release a new 
+firmware that fixes this warmstart problem?
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Regards,
+Oliver
 
-
---SV8WkDUUvJ4UPjSvNaI6VPMxCrHii83QF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJU7t2GAAoJECte4hHFiupUk68P/RHL7SmbWbAG1lQSPC2Hq+Xc
-7zKnyiw27j0MWy8P/01J9hgxsAEzr2EmyJzd0mbMgqOnvt9EM7D4EgGlygSSK2pb
-CjlJH48SuSeiTlsAPzhcDFLyCHWSgMPyax0Wj6VJQ5gJQ73tuYCMcIdo2kLHLIpr
-p6p/C7uc1hzz4oEwbIzcewsoPp3NkdR8ojtQnQu9R+z4Avjv2K1vQzEkIJWgb/uS
-iZ0lAPHDbZY8QvslnYbATT4LBpSUZX0cmDWXuRS5m9KbYoB5VrX++fJ1DlzzJlfJ
-75IMOfOoUJxf+eUGguSkZ5ASU2Ph8lquhQEKSDxCmRfxdMQKpWbIYDgZQY/EqvDw
-qcm/us+ghOrUWDNFp1vyPqRjBO+aguxHdLOPAz9wG8KHNVB+890dWj8efD+WwAaC
-tCdgq8HQG8bIAdFcNLkuhbjskrZRGe8/koFSGPrQhbliB3VBs5DXDDLvL/MlU6ht
-CRh203KsakpUbez919xuwzgI44o0+CS3yA0P744D1n3DheuCu99mTfVSJD7Mji/K
-VBC3j71ERw7oqWcBm/QK3S/ynoTXwszZYmOn1HOI2TsYw1WTii8qHxoAUCOShyi4
-efAK8WDeFERvO2kVABOpSikr+KeRO31Jb7qSw5qtv0CB9nsoD7GB6F7Vt57DYmVw
-WBCucwR/GDI9gppA4jgU
-=tFYM
------END PGP SIGNATURE-----
-
---SV8WkDUUvJ4UPjSvNaI6VPMxCrHii83QF--
