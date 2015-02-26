@@ -1,72 +1,136 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: add missing initialisations in CAN related skbuffs
-Date: Tue, 24 Feb 2015 09:31:34 +0100
-Message-ID: <54EC36E6.10502@pengutronix.de>
-References: <1424720274-3831-1-git-send-email-socketcan@hartkopp.net>
+From: Andrew Lentvorski <bsder@allcaps.org>
+Subject: Bug on configure ... where to report?
+Date: Wed, 25 Feb 2015 16:07:33 -0800
+Message-ID: <54EE63C5.3040307@allcaps.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
+Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="hmqWSn7eD8nKnT91IM8NJAdvvHDv5KmfC"
+ boundary="A7CnccnjGhfU9rH6roGmWRT7w9wbnvSQU"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38452 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751603AbbBXIbk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Feb 2015 03:31:40 -0500
-In-Reply-To: <1424720274-3831-1-git-send-email-socketcan@hartkopp.net>
+Received: from 64-73-229-46.static-ip.telepacific.net ([64.73.229.46]:53074
+	"EHLO s0-postfix.allcaps.org" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752617AbbBZAO5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Feb 2015 19:14:57 -0500
+Received: from Andrews-MacBook-Pro.local (cpe-50-113-85-197.san.res.rr.com [50.113.85.197])
+	by s0-postfix.allcaps.org (Postfix) with ESMTPSA id F1BD61C64074
+	for <linux-can@vger.kernel.org>; Wed, 25 Feb 2015 15:55:57 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hmqWSn7eD8nKnT91IM8NJAdvvHDv5KmfC
-Content-Type: text/plain; charset=utf-8
+--A7CnccnjGhfU9rH6roGmWRT7w9wbnvSQU
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On 02/23/2015 08:37 PM, Oliver Hartkopp wrote:
-> When accessing CAN network interfaces with AF_PACKET sockets e.g. by dh=
-client
-> this can lead to a skb_under_panic due to missing skb initialisations.
->=20
-> Add the missing initialisations at the CAN skbuff creation times on dri=
-ver
-> level (rx path) and in the network layer (tx path).
->=20
-> Reported-by: Austin Schuh <austin@peloton-tech.com>
-> Reported-by: Daniel Steer <daniel.steer@mclaren.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+I pulled the can-utils from gitorious and am trying to build them up on
+a Beaglebone Black Debian but am getting errors when I try to run
+configure.  autogen.sh is also producing warnings.
 
-Thanks, applied to can/master, added stable on Cc.
+Where do I file a bug report?
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Thanks,
+-a
 
 
---hmqWSn7eD8nKnT91IM8NJAdvvHDv5KmfC
+
+root@beaglebone:~/can-utils# uname -a
+Linux beaglebone 3.8.13-bone50 #1 SMP Tue May 13 13:24:52 UTC 2014
+armv7l GNU/Linux
+
+
+
+root@beaglebone:~/can-utils# ./configure
+<...lots deleted...>
+checking dependency style of gcc... gcc3
+=2E/configure: line 11668: syntax error near unexpected token `)'
+=2E/configure: line 11668: `)'
+
+
+
+
+root@beaglebone:~/can-utils# ./autogen.sh
+
+----------
+autoreconf
+----------
+
+configure.ac:22: warning: The macro `AC_LIBTOOL_WIN32_DLL' is obsolete.
+configure.ac:22: You should run autoupdate.
+aclocal.m4:8118: AC_LIBTOOL_WIN32_DLL is expanded from...
+configure.ac:22: the top level
+configure.ac:22: warning: AC_LIBTOOL_WIN32_DLL: Remove this warning and
+the call to _LT_SET_OPTION when you
+configure.ac:22: put the `win32-dll' option into LT_INIT's first paramete=
+r.
+aclocal.m4:8118: AC_LIBTOOL_WIN32_DLL is expanded from...
+configure.ac:22: the top level
+configure.ac:24: warning: The macro `AC_PROG_LIBTOOL' is obsolete.
+configure.ac:24: You should run autoupdate.
+aclocal.m4:120: AC_PROG_LIBTOOL is expanded from...
+configure.ac:24: the top level
+configure.ac:28: warning: The macro `AC_FOREACH' is obsolete.
+configure.ac:28: You should run autoupdate.
+=2E./../lib/autoconf/general.m4:194: AC_FOREACH is expanded from...
+aclocal.m4:9254: _AM_SET_OPTIONS is expanded from...
+aclocal.m4:8956: AM_INIT_AUTOMAKE is expanded from...
+configure.ac:28: the top level
+libtoolize: putting auxiliary files in AC_CONFIG_AUX_DIR, `config/autocon=
+f'.
+libtoolize: copying file `config/autoconf/ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `config/m4'.
+libtoolize: copying file `config/m4/libtool.m4'
+libtoolize: copying file `config/m4/ltoptions.m4'
+libtoolize: copying file `config/m4/ltsugar.m4'
+libtoolize: copying file `config/m4/ltversion.m4'
+libtoolize: copying file `config/m4/lt~obsolete.m4'
+libtoolize: Consider adding `-I config/m4' to ACLOCAL_AMFLAGS in
+Makefile.am.
+configure.ac:22: warning: The macro `AC_LIBTOOL_WIN32_DLL' is obsolete.
+configure.ac:22: You should run autoupdate.
+aclocal.m4:8118: AC_LIBTOOL_WIN32_DLL is expanded from...
+configure.ac:22: the top level
+configure.ac:22: warning: AC_LIBTOOL_WIN32_DLL: Remove this warning and
+the call to _LT_SET_OPTION when you
+configure.ac:22: put the `win32-dll' option into LT_INIT's first paramete=
+r.
+aclocal.m4:8118: AC_LIBTOOL_WIN32_DLL is expanded from...
+configure.ac:22: the top level
+configure.ac:24: warning: The macro `AC_PROG_LIBTOOL' is obsolete.
+configure.ac:24: You should run autoupdate.
+aclocal.m4:120: AC_PROG_LIBTOOL is expanded from...
+configure.ac:24: the top level
+configure.ac:28: warning: The macro `AC_FOREACH' is obsolete.
+configure.ac:28: You should run autoupdate.
+=2E./../lib/autoconf/general.m4:194: AC_FOREACH is expanded from...
+aclocal.m4:9254: _AM_SET_OPTIONS is expanded from...
+aclocal.m4:8956: AM_INIT_AUTOMAKE is expanded from...
+configure.ac:28: the top level
+Useless use of /d modifier in transliteration operator at
+/usr/share/automake-1.9/Automake/Wrap.pm line 60.
+
+--------
+Finished
+--------
+
+
+
+
+--A7CnccnjGhfU9rH6roGmWRT7w9wbnvSQU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQIcBAEBCgAGBQJU7DbpAAoJECte4hHFiupUxWEQAJm7u+lTF4K+QO/GtVm4SNrQ
-HZrkfTqJkoAAZnrGdXnk60hNkf8/QGz/pLm7kut1TbtnUdWze23evSqRbPNVa2ug
-po6Nv8AkcO/wCbz1aY9kpbQRRGWF/fmy1he+xM7KHGq/T17Bi9ox47SGHzgQWSi6
-vr+/2sdvit8/GtRvqAAyzrnZzvMeyQM611eJ8HcalxajIOwt7XJKFchTewd4C6ra
-flLjmzBV3823/UhKJN+37kdmEstGSKfHt1u5f9p8HVrrEjvW+OpvY57qTIbs+hoY
-NsY8KX3GLffS+4V32imtQKDU03OKZqzN7ZZ1GIgwncgo2fxFS4omEIRcuukUfqj8
-y2u6OwVDIQvGYaZuQnrEC0YZDJ1uWb33Nb+CwyJgFT74x6KKBRtT5q9JckupiB9K
-lT2I4bwphEDmDIS9eglRFjOe1nvr2k7Vb2n+prYMNxOLu36TBFc8LiloXUumyXLR
-Eefyq5ismarW5OW8O1eENxcO+s4OexZBc11ycQ/gvIlZsHDvEhhAuLGnTIhZ5Rss
-Z9gI6IG2Ctw1Ty4/8058aLXeH2aS6w3ZKarp4jGqWrYDZbEQkZEW3D9j+HfK0XvC
-4bQhzBrPKC4PV6Ic0JlypiOVcN14vrgOjiLfnIeYvP2XEk7FXxCqc4k6+a1GgVVV
-BKBxN8+tDqdG5huqaJ/4
-=Butv
+iQEcBAEBAgAGBQJU7mPFAAoJEJ9wo+TcbAAXjCoH/1XTiMqsgzeblWGP1TkqcSKD
+kkX9x7/lWbqnT6K8ker/dUFv1FlTgBM4Aj1zJuhaXjFC4y7JR941BKyBOojtSP5Y
+7gMy/qkcKPc7pyA4IF8gfCE+ZznNpcLbDnlwRbU0ASbY5XPT1mpzo4XEkpEcId+6
+lVclD/Qoa2wOdMY1iu45LDaDl1hg4uxws2w+qOUYV4kXmJCl/AuJbgfXSI5C0/Yt
+2KYB7+DKUaM4siibLLZ5u3dj7kVuq0TjEPZ6xnH1mRU3LRIM/xNnKWDfYKVpdMpo
+y5BLtVR3s1ieQ8X1PbobPsbkp4KFXt5MWEGaZqUlV4CdoyaHs9Bsx27Vd6Pw4qA=
+=ldW+
 -----END PGP SIGNATURE-----
 
---hmqWSn7eD8nKnT91IM8NJAdvvHDv5KmfC--
+--A7CnccnjGhfU9rH6roGmWRT7w9wbnvSQU--
