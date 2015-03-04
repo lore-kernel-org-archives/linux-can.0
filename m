@@ -1,44 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can/peak_usb: fix missing ctrlmode_ init for every dev
-Date: Wed, 04 Mar 2015 10:19:11 +0100
-Message-ID: <54F6CE0F.50503@pengutronix.de>
-References: <1425293678-22217-1-git-send-email-s.grosjean@peak-system.com>
+Subject: pull-request: can-next 2015-03-04
+Date: Wed, 04 Mar 2015 10:42:13 +0100
+Message-ID: <54F6D375.8060301@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD"
+ boundary="aC26j3HE9xnO07G6SQCgV02DOsxJJxpqA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:43440 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58319 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759671AbbCDJT0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Mar 2015 04:19:26 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1YT5Se-000410-MY
-	for linux-can@vger.kernel.org; Wed, 04 Mar 2015 10:19:24 +0100
-In-Reply-To: <1425293678-22217-1-git-send-email-s.grosjean@peak-system.com>
+	with ESMTP id S1755916AbbCDJmZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Mar 2015 04:42:25 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD
+--aC26j3HE9xnO07G6SQCgV02DOsxJJxpqA
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/02/2015 11:54 AM, Stephane Grosjean wrote:
-> Fixes a missing initialization of ctrlmode and ctrlmode_supported field=
-s,
-> for all other CAN devices than the first one. This fix only concerns
-> the PCAN-USB Pro FD dual-channels CAN-FD device made by PEAK-System.
->=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Hello David,
 
-Applied to can.
+this is a pull request of 3 patches for net-next/master.
 
-Thanks,
+Aaron Wu contributes three patches for the blackfin can driver, which
+cleans up the driver and makes use of more platform independent code.
+
 Marc
+
+---
+
+The following changes since commit 2f56f6be47dbc6883e28107edfe2f9f98f4d5a=
+24:
+
+  bridge: fix bridge netlink RCU usage (2015-03-04 00:20:22 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.1-20150304
+
+for you to fetch changes up to 400aff5da5f2c202e8ff2679005981583234df54:
+
+  bfin_can: Merge header file from arch dependent location (2015-03-04 09=
+:52:49 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.1-20150304
+
+----------------------------------------------------------------
+Aaron Wu (3):
+      bfin_can: rewrite the blackfin style of read/write to common ones
+      bfin_can: introduce ioremap to comply to archs with MMU
+      bfin_can: Merge header file from arch dependent location
+
+ drivers/net/can/bfin_can.c | 258 +++++++++++++++++++++++++++++++--------=
+------
+ 1 file changed, 177 insertions(+), 81 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -47,7 +67,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD
+--aC26j3HE9xnO07G6SQCgV02DOsxJJxpqA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -55,19 +75,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU9s4PAAoJECte4hHFiupU5u0P/26oPzzSVUQ/DJibooAi382f
-HVfHEaXhRtPJj5t2tyC7cF3YC24I++S+mt0ESSYmXVgdnr634ONAZ0sg9M5vatN8
-sNwipEKKeKaksx07/1RFiFcFTBhfoF/s5mgvOkgPAMXNEtx1/qm3LE7RYcTxB4bW
-q2XAbwcj7p1xemqgy8+1De0MVNs/RawzD4oYtLcHtpa6nz03pWf8/I1D56yASrpM
-w0a9U3xVDAamBzYN1HNHgnLrgPdcNL+JJLWtj1gEQbsywEMTk4PV6374SMrtMLLk
-umm1BicLWb4Gk7N/WmNCfHnsKv4Z3Fsz00K0Wq1onAf7WFDbxKkm8Min1aHynt6n
-fvsfgxz50U5ZUPqLKSNpc/dm3hEMxe2VZwZ4Q4mlw6IFoHlrVe/8UIfQ8oDNvDVe
-wuonFh9HQWOhHPpVX6rV2j5/x4oOufh5/Eo2rJkRiUt8378unwkDuna2erO6e4KI
-3R7vgnM/ugUeGvYVbjboOEfhe99GmtZYFbNvdZZigIhy4DNIhN9EUrjHJJ1ix4Tk
-qhLag81dfKZ+GrKB+GWPpXGJeXTUey0xEoi8Hqk3s1I76vZNuUNVsYvW6rhGzmy3
-zDGIoduol1UbRqmK6vhCOi3PUrEd7uUh1eqsz8LFsCcSqEuKt2r2tZsPAyrWl4Pk
-KyQLiT9g+f1qMr9BFggJ
-=27do
+iQIcBAEBCgAGBQJU9tN8AAoJECte4hHFiupU2e8QAKtWLoaw/wxcYoNCg5IB0N9T
+R9a6qpiM3oFYV0im+EojYO56Qu9D7P13VA0GXfOGwsNvTW+3HXy7WE2P4Byc1/q5
+mlxFY2di42pVMO5KSDe0Gj7DpNpnH2XYxvWRgaTB6jkusPFHCus+yiF14Fyk7J++
+UnwLdN9y4vzYtZUP0Ma4U4TRabJrN0E2PB/hIi/XTpTmiDiB/c3n9cq9CuryGlTP
+6h0Ja75wgtzAohvYcEMzSbdcW5LjfyQoAnkA0roYU8u94j2GH5darYtrISQ2535z
+XwoJyhgx3c0Ig+bDnqK027yI/gL9uSwkXdda+pOAYKzLIBNm6cqp9XU+0rtCl+ug
+qWahVj8/iHM0MDtRQpEiYCbqM7bcwS6olkxnZMKtNTg7KokKeWh4LMvg3N9+WkHB
+j/82wLswzQdgXbXLjx8o42kD6hQrbMr95bU58si3R2BdinpzRLWJHp8ST/GC3LQI
+tmsZh1CTOdYQQzIPb/doLSJ5GnD9NG8Numm3snA91op597vnAfDGwL7zeP+X9B23
+o7J/0BlJ3Dq12aNwZrQfhfAodY7fnc+bsSMAd9MVOogbzq2wKycPlFLgoBMVuUvT
+SZhnj/zqSrwdMEPNhgDIXEIpNghB4y2pXX93JSRYFCG9qZ1gETZDbgkgEywhm+HQ
+3aekitvcOTZ+HRbpwifA
+=GAPp
 -----END PGP SIGNATURE-----
 
---fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD--
+--aC26j3HE9xnO07G6SQCgV02DOsxJJxpqA--
