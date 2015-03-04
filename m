@@ -1,47 +1,43 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/5] can: kvaser_usb: Avoid double free on URB
- submission failures
-Date: Wed, 04 Mar 2015 10:15:45 +0100
-Message-ID: <54F6CD41.8050703@pengutronix.de>
-References: <20150226152011.GA6075@linux>
+Subject: Re: [PATCH] can/peak_usb: fix missing ctrlmode_ init for every dev
+Date: Wed, 04 Mar 2015 10:19:11 +0100
+Message-ID: <54F6CE0F.50503@pengutronix.de>
+References: <1425293678-22217-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="0JnsRrmCoa0E1x7bXgoIknreGNmTWWArB"
+ boundary="fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36692 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:43440 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932704AbbCDJP6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Mar 2015 04:15:58 -0500
-In-Reply-To: <20150226152011.GA6075@linux>
+	with ESMTP id S1759671AbbCDJT0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 4 Mar 2015 04:19:26 -0500
+Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1YT5Se-000410-MY
+	for linux-can@vger.kernel.org; Wed, 04 Mar 2015 10:19:24 +0100
+In-Reply-To: <1425293678-22217-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0JnsRrmCoa0E1x7bXgoIknreGNmTWWArB
+--fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/26/2015 04:20 PM, Ahmed S. Darwish wrote:
-> From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+On 03/02/2015 11:54 AM, Stephane Grosjean wrote:
+> Fixes a missing initialization of ctrlmode and ctrlmode_supported field=
+s,
+> for all other CAN devices than the first one. This fix only concerns
+> the PCAN-USB Pro FD dual-channels CAN-FD device made by PEAK-System.
 >=20
-> Upon a URB submission failure, the driver calls usb_free_urb()
-> but then manually frees the URB buffer by itself.  Meanwhile
-> usb_free_urb() has alredy freed out that transfer buffer since
-> we're the only code path holding a reference to this URB.
->=20
-> Remove two of such invalid manual free().
->=20
-> Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Applied 1+2 and added stable on Cc. Can you please shuffle the remaining
-patches, so that patch 5 comes first, then 4 and 3 as the last patch. As
-5 is a bugfix it should go into stable, while 3 isn't.
+Applied to can.
 
-You can base your series on the can/testing branch.
-
+Thanks,
 Marc
 
 --=20
@@ -51,7 +47,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---0JnsRrmCoa0E1x7bXgoIknreGNmTWWArB
+--fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -59,19 +55,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU9s1EAAoJECte4hHFiupUk5cQAIJ2cBy/aeCFLNjSaPFgjlMG
-TRhc1OETgSKKjfJMxJeY5WX+hplC8td6kuPXS+hdm8hPRmIR93LYMy43wXzFMTDp
-+E6salF8KJOWmfBMOFH6ohr9E18BybICVRqtq5YuWVJqlJySha17GZIWI7x2af1o
-f/prrOPScE2e7t4oAxEkUWfiZi2T0X/FAHwi9yikJIDy+u9bbUc1Wly5pFnieUVL
-pnikhVwGpvsVTUzxU9ivUiZKVBRac0KKTQv0bW+gmEppVl+Y26jJJX9Vi/NeFupp
-rWyIamhhAjgXcPSx0LEwPe2p+rDhPdc5G78ukGg+0Ugn/ddxBrIeeoLPDQcR5a/S
-HUv2y9QIKJ7VYdh4NDza7FE9FGPD9HbJGARiGY4aNe9qVxs4kYW8xd6VnsqMZD9i
-srTz1DWqVeVUm1i/tt6O2rPcoAaYE8Jk4L3EFic7bHGTWAGScMJjSkZ3AiCHGTJI
-FAVDc+EWSFqxMupMPxaLyeKHYq3lWn5EQVnpyYeOdWS7L7okDyZBOmtqNKMtJvzR
-dJGMbSi2VEN0beeAk3KWf0LdGAcPE0Ht+bRGv5CezHNRq3wUc4TXHIT/+8SLl/pe
-fncxW5ThauSgWFWuj8kInqcXIome1A47XItCk461PSebUPOdoblD0syIMKzWbtxS
-okgSV/uJ1cwU3TZXU/r8
-=Hk7l
+iQIcBAEBCgAGBQJU9s4PAAoJECte4hHFiupU5u0P/26oPzzSVUQ/DJibooAi382f
+HVfHEaXhRtPJj5t2tyC7cF3YC24I++S+mt0ESSYmXVgdnr634ONAZ0sg9M5vatN8
+sNwipEKKeKaksx07/1RFiFcFTBhfoF/s5mgvOkgPAMXNEtx1/qm3LE7RYcTxB4bW
+q2XAbwcj7p1xemqgy8+1De0MVNs/RawzD4oYtLcHtpa6nz03pWf8/I1D56yASrpM
+w0a9U3xVDAamBzYN1HNHgnLrgPdcNL+JJLWtj1gEQbsywEMTk4PV6374SMrtMLLk
+umm1BicLWb4Gk7N/WmNCfHnsKv4Z3Fsz00K0Wq1onAf7WFDbxKkm8Min1aHynt6n
+fvsfgxz50U5ZUPqLKSNpc/dm3hEMxe2VZwZ4Q4mlw6IFoHlrVe/8UIfQ8oDNvDVe
+wuonFh9HQWOhHPpVX6rV2j5/x4oOufh5/Eo2rJkRiUt8378unwkDuna2erO6e4KI
+3R7vgnM/ugUeGvYVbjboOEfhe99GmtZYFbNvdZZigIhy4DNIhN9EUrjHJJ1ix4Tk
+qhLag81dfKZ+GrKB+GWPpXGJeXTUey0xEoi8Hqk3s1I76vZNuUNVsYvW6rhGzmy3
+zDGIoduol1UbRqmK6vhCOi3PUrEd7uUh1eqsz8LFsCcSqEuKt2r2tZsPAyrWl4Pk
+KyQLiT9g+f1qMr9BFggJ
+=27do
 -----END PGP SIGNATURE-----
 
---0JnsRrmCoa0E1x7bXgoIknreGNmTWWArB--
+--fb5CBcs0XKIpJLJOENhI6rdPwHXQM9KWD--
