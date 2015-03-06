@@ -1,24 +1,24 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: MOVED TO GITHUB: Linux-CAN user space source repositories
-Date: Fri, 06 Mar 2015 08:56:15 +0100
-Message-ID: <54F95D9F.2080203@pengutronix.de>
+Date: Fri, 06 Mar 2015 09:03:00 +0100
+Message-ID: <54F95F34.7090708@pengutronix.de>
 References: <CAGm1_ksdokuRQ8kAfX+EsjYAzZj3UXn5XH2duS2TMX_NjaYnUg@mail.gmail.com> <54F8A933.1040309@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="Qm59alF59TE1sCv7iE36IQibO1L6b0nC8"
+ boundary="VQAxwADeUhDFd8CU7ncM5j3rUFkENSUp7"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:58151 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58671 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753005AbbCFH4X (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Mar 2015 02:56:23 -0500
+	with ESMTP id S1753150AbbCFIDI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Mar 2015 03:03:08 -0500
 In-Reply-To: <54F8A933.1040309@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Qm59alF59TE1sCv7iE36IQibO1L6b0nC8
+--VQAxwADeUhDFd8CU7ncM5j3rUFkENSUp7
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
@@ -37,8 +37,9 @@ wing=20
 >=20
 > 	https://github.com/linux-can/
 
-Thanks Oliver for the work of setting up the linux-can Repo, it works
-out of the box for me! \o/
+I'll prepare a patch for MAINTAINERS. While there I want to add myself
+as a maintainer for the networking layer aswell, so that I'll be on Cc
+when get_maintainer.pl is used. Objections?
 
 Marc
 
@@ -49,7 +50,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Qm59alF59TE1sCv7iE36IQibO1L6b0nC8
+--VQAxwADeUhDFd8CU7ncM5j3rUFkENSUp7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -57,19 +58,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJU+V2iAAoJECte4hHFiupUlaUP/jPVy+VqKcNy3b7TyCBC9sbn
-3+UbGrun5nEEUdbo4+bomzqCg3lTeXERGdbbv4Z3KfKuAW9WkBMFQTJTllOA3hSV
-TeBqZ5t1FKHrb9KT9nuL6VbSj6SacBhFgFtDlzlZ+an7nccTsUcVbY5Z/1PxsE0G
-sY3ktpVHHqIwqJZxCZY0hF7yiwwKQpPJWzSIxo0VjogbShtc6Hq8h6OkV7HfQMI2
-33R9UOMPwzPoBmY9c6W9qRmQKcwqhRdXmeGJyT0pF7Ze4YogwV4ofRYJTE5yuTns
-DUfd0TFxuY4SAZHmXw+QGNL3iXuikUUNdl80Ea35dA7SgDmlMKdkiX62o+ypmhbK
-2mvegDp11p0oTJzJcQajcfJIi4xh6UWYGuWCdqadlnLjaqXmVh4iK37unPeBjvJi
-dpbJD1TUP5WwmO446tmQmD0MFnDiPIh4wXv/5ncgU/KPlCHWJcXEnpfyNMbd1QX8
-tovTk5WVqehKOu+CD/gwNkYE2GyzKW+j84WKhQjZhhA1nu/MCvnlZgfUHcW/ftvc
-2AliNXygCc7S/bd9WGQsOFlBjfwPqHq9k0SeHcQ7hSlICs4zOf3s05fuXH2Y1Ae4
-74khz3F6DrrrW8A4XSzn8AsgycThAJxC9bSTMTcaRXH9zEjnGacc2pt3FQjl+WwS
-fUlc6EGYDEH/bmBGUPGb
-=4lP8
+iQIcBAEBCgAGBQJU+V83AAoJECte4hHFiupU8esP/3UOQZc1+RyYgepQ/pzdpa8h
+8j2cqc/7O0jdaxIpkpX2+6nEO25X7xVCbhTBnzUuUZNTOUVfMRCUhE/qJHWf0ht8
+yAEe1EFwKScqDEYqLHbiBdqm8TRHg05/nuHVLptxzzRa/LWaAH/oIaXeUGu3QrbI
+EFH9EzVN64FqbIb9OfXUxYgAX85RJzO7ENPfUuV+2JC9LqmoWOUfgRtsgDta5Uaw
+OE9FRTK4tWAZLHf3woQmYZwSdqkYdvX4c5tVhiFhKyIExb0SGMEK7rTBX8Erl+Yg
+MAu9ogs8iGOIfqdO3ukogs2xH08M1LTTPaqVLl/mZPXOw7WIR06UIl37X6zU7A0o
+xkE5U1P5Jo77AfgW5MHyuPNzU647TLxzkUg5G9W220HBSgPC0Xt9mB7i0/qXYtS4
+iX4iC1WVUnMdZpHAtKrYtpIcxEGzEBkygP1wEHK3O/CZM769o+xaEfzBbo8rL0JN
+dtCL5bb3QpGP2stZWY09XPR3e99Ou+HdNP+Jd0Hl99AeJRp7e5j280HFE/igHClE
+kS9k/bOa7UlWhSRPVS03x8JPuqESYiXu261cSv2UFhR3VEU56xoqjijJicbZUH39
+VGMGha50HGu7zKZ6oKh7VCw8LZIhKiTWtBG6ODbOJG0NaUmXmJZEbHnQ25K9X4mm
+PxtxAYe7t2qA0BLx2qXs
+=qY1e
 -----END PGP SIGNATURE-----
 
---Qm59alF59TE1sCv7iE36IQibO1L6b0nC8--
+--VQAxwADeUhDFd8CU7ncM5j3rUFkENSUp7--
