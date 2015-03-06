@@ -1,79 +1,40 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: MOVED TO GITHUB: Linux-CAN user space source repositories
-Date: Thu, 05 Mar 2015 20:06:27 +0100
-Message-ID: <54F8A933.1040309@hartkopp.net>
+From: Robert Schwebel <r.schwebel@pengutronix.de>
+Subject: Re: MOVED TO GITHUB: Linux-CAN user space source repositories
+Date: Fri, 6 Mar 2015 08:41:57 +0100
+Message-ID: <20150306074157.GX12721@pengutronix.de>
 References: <CAGm1_ksdokuRQ8kAfX+EsjYAzZj3UXn5XH2duS2TMX_NjaYnUg@mail.gmail.com>
+ <54F8A933.1040309@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:15237 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756589AbbCETGe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 5 Mar 2015 14:06:34 -0500
-Received: from [192.168.1.194] (p5B0B1A58.dip0.t-ipconnect.de [91.11.26.88])
-	by smtp.strato.de (RZmta 37.3 DYNA|AUTH)
-	with ESMTPSA id w03fe0r25J6WN0X
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	for <linux-can@vger.kernel.org>;
-	Thu, 5 Mar 2015 20:06:32 +0100 (CET)
-In-Reply-To: <CAGm1_ksdokuRQ8kAfX+EsjYAzZj3UXn5XH2duS2TMX_NjaYnUg@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41580 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751773AbbCFHl7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 Mar 2015 02:41:59 -0500
+Content-Disposition: inline
+In-Reply-To: <54F8A933.1040309@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-As Gitorious is to be acquired by GitLab and gitorious.org will shut down at 
-end of May the Linux-CAN / SocketCAN git repositories have to be moved away 
-from https://gitorious.org/linux-can/
+On Thu, Mar 05, 2015 at 08:06:27PM +0100, Oliver Hartkopp wrote:
+> You can now find the Linux-CAN repositories at:
+> 
+> 	https://github.com/linux-can/
 
-As many of you already have a GitHub account Marc and I agreed on following 
-Yegors suggestion to move the Linux-CAN / SocketCAN repos to GitHub.
+This is a good move.
+ 
+> 	Firmware for supported CAN adapters
+> 	https://github.com/linux-can/can-firmware/
 
-You can now find the Linux-CAN repositories at:
+The softing firmware in this package is lacking a license. Is it even
+allowed to distribute it? If yes, the linux-firmware repository would be
+a good place for it.
 
-	https://github.com/linux-can/
-
-The repositories are moved & rearranged from gitorious.org as shown below:
-
-	Linux-CAN / SocketCAN user space applications
-	https://github.com/linux-can/can-utils/
-
-	Linux-CAN / SocketCAN testing applications
-	https://github.com/linux-can/can-tests/
-
-	Firmware for supported CAN adapters
-	https://github.com/linux-can/can-firmware/
-
-	Linux-CAN / SocketCAN logos
-	https://github.com/linux-can/can-logos/
-
-	Linux-CAN / SocketCAN miscellaneous stuff
-	https://github.com/linux-can/can-misc/
-
-The can-modules repository was not moved as this network layer stuff mostly 
-puzzled people who built the sources without success on recent systems. As 
-most of the network layer CAN protocols are already in Linux mainline, I moved 
-can-modules to a 'private' repository to continue my ISO 15765-2:2015 protocol 
-development:
-
-Obsolete CAN network layer modules *ONLY* used for ISO 15765-2 development now
-https://github.com/hartkopp/can-isotp-modules/
-
-This repo will stay there but it is now separated from user space resources.
-
-If you have forked repos or other code on gitorious which relies on the former 
-repository setup make sure not to lose your work when gitorious shuts down in 
-May. From now on the development will only continue on GitHub.
-
-Have fun!
-
-Oliver
-
-On 03.03.2015 22:35, Yegor Yefremov wrote:
-> Does it effect us? Should can-utils move to github?
->
-> http://lwn.net/Articles/635358/rss
->
-> Yegor
-
+rsc
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
