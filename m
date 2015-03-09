@@ -1,146 +1,67 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH] net: can: Enable xilinx driver for all ARCHs
-Date: Mon, 9 Mar 2015 15:04:28 +0100
-Message-ID: <BY2FFO11FD023D29C02DAF9CCBDC40386E21B0@BY2FFO11FD023.protection.gbl>
-References: <4096fa4ceae72817d8e64d9a1da738038a5c864a.1425890926.git.michal.simek@xilinx.com>
-	 <54FD5EE1.6050402@pengutronix.de>
-	 <BY2FFO11FD001BD9CFD92C94214501BB8E21B0@BY2FFO11FD001.protection.gbl>
-	 <54FD641C.7090607@pengutronix.de>
-	 <BY2FFO11FD0060B11FE9C9305D5DFD12BE21B0@BY2FFO11FD006.protection.gbl>
-	 <54FD6E42.6070206@pengutronix.de> <1425909239.23920.60.camel@chaos.site>
- <54FDA662.8020801@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2] net: can: Enable xilinx driver for ARM64
+Date: Mon, 09 Mar 2015 15:28:33 +0100
+Message-ID: <54FDAE11.2020203@pengutronix.de>
+References: <2dd8c07857416d5253296e7254dabc565d0060ef.1425909806.git.michal.simek@xilinx.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="ml7amHhGtKRbcvpTtE4tHBhepfULFVHF4"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54FDA662.8020801@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Jean Delvare <jdelvare@suse.de>
-Cc: Michal Simek <michal.simek@xilinx.com>, linux-kernel@vger.kernel.org, monstr@monstr.eu, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="8hlVPppo1OQlS8EoUPbL3JOVTAWFlgKh6"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46379 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753541AbbCIO2m (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Mar 2015 10:28:42 -0400
+In-Reply-To: <2dd8c07857416d5253296e7254dabc565d0060ef.1425909806.git.michal.simek@xilinx.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Michal Simek <michal.simek@xilinx.com>, linux-kernel@vger.kernel.org, monstr@monstr.eu
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
---ml7amHhGtKRbcvpTtE4tHBhepfULFVHF4
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--8hlVPppo1OQlS8EoUPbL3JOVTAWFlgKh6
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/09/2015 02:55 PM, Marc Kleine-Budde wrote:
-> On 03/09/2015 02:53 PM, Jean Delvare wrote:
->> Le Monday 09 March 2015 =C3=A0 10:56 +0100, Marc Kleine-Budde a =C3=A9=
-crit :
->>> On 03/09/2015 10:52 AM, Michal Simek wrote:
->>>> On 03/09/2015 10:13 AM, Marc Kleine-Budde wrote:
->>>>> On 03/09/2015 09:58 AM, Michal Simek wrote:
->>>>>> On 03/09/2015 09:50 AM, Marc Kleine-Budde wrote:
->>>>>>> On 03/09/2015 09:48 AM, Michal Simek wrote:
->>>>>>>> Remove Kconfig dependency and enable driver for
->>>>>>>> all ARCHs.
->>>>>>>>
->>>>>>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->>>>>>>> Acked-by: S=C3=B6ren Brinkmann <soren.brinkmann@xilinx.com>
->>>>>>>> ---
->>>>>>>>
->>>>>>>> Test for all archs done by Kbuild test robot without any problem=
-=2E
->>>>>>>> ---
->>>>>>>>  drivers/net/can/Kconfig | 1 -
->>>>>>>>  1 file changed, 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
->>>>>>>> index 98d73aab52fe..f690c3fb3088 100644
->>>>>>>> --- a/drivers/net/can/Kconfig
->>>>>>>> +++ b/drivers/net/can/Kconfig
->>>>>>>> @@ -131,7 +131,6 @@ config CAN_RCAR
->>>>>>>> =20
->>>>>>>>  config CAN_XILINXCAN
->>>>>>>>  	tristate "Xilinx CAN"
->>>>>>>> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
->>>>>>>
->>>>>>> I think that's what COMPILE_TEST ist for?
->>>>>>
->>>>>> For compilation yes but not for enabling. Currently this driver
->>>>>> can be also used on ARM64 that's why people suggesting directly
->>>>>> to remove dependency on arch and then COMPILE_TEST can be removed
->>>>>> too.
->>>>>
->>>>> In the past (May 2014) I had people complaining that certain ARM So=
-C
->>>>> specific drivers are enabled on ARM in general, not just on that So=
-C. As
->>>>> I'm not following arm64 in detail, has the notion of using depends =
-on
->>>>> ARCH changes since then?
->>>>>
->>>>>> Or do you want me to change description to mention that this is fo=
-r
->>>>>> ARM64 enabling?
->>>>>
->>>>> Given this is consensus, a remark to ARM64 would be appreciated. :)=
-
->>>>
->>>> David has applied this patch which is in general just the same as th=
-is one.
->>>>
->>>> (linux-next) Remove architecture dependency
->>>> 28811a8c00fe0d899b8a544421f3b4947425d5e8
->>>>
->>>> Mark Brown has suggested to do so for spi and don't check architectu=
-re at
->>>> all.
->>>> I have also sent similar patch for watchdog driver too.
->>>>
->>>> I think it is up to you if you want to add ARM64 to Kconfig or just =
-remove
->>>> that arch dependencies.
->>>> To be honest my goal is to enable this driver for ARM64.
->>>> Please tell me what way you prefer.
->>>
->>> I like the idea of removing the depends on ARCH completely. Jean, wha=
-t
->>> do you think?
->>
->> Removing the dependency completely will let the option be displayed on=
-
->> systems where the driver is useless. I am in favor of having hardware
->> dependencies on as many drivers as possible to avoid bothering the use=
-r
->> with irrelevant questions. The list of Kconfig entries has grown a lot=
-
->> over time!
->>
->> If the current dependency is too strict then I would suggest to extend=
-
->> it or to make it broader (depends on ARM || ARM64 || COMPILE_TEST woul=
-d
->> be acceptable IMHO.) Dropping it completely only makes sense if the pa=
-rt
->> is used on so many systems that the dependency becomes too long or is =
-a
->> pain to maintain.
+On 03/09/2015 03:03 PM, Michal Simek wrote:
+> Enable the xilinx driver for ARM64.
 >=20
-> Sounds reasonable. Michael, make it so.
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Acked-by: S=C3=B6ren Brinkmann <soren.brinkmann@xilinx.com>
 
-I have sent v2 which add arm64 to Kconfig and I am keeping just dependenc=
-y on
-ARCH_ZYNQ not all ARM platforms.
+Added to can-next.
 
 Thanks,
-Michal
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-
-
---ml7amHhGtKRbcvpTtE4tHBhepfULFVHF4
+--8hlVPppo1OQlS8EoUPbL3JOVTAWFlgKh6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v2
 
-iEYEARECAAYFAlT9qGwACgkQykllyylKDCEECgCeNi3FnTyCXT7pxbIdbgp6lP4P
-UbYAnjVdMJ9DP0jYF3mjhsaFph4UaVgT
-=ydb1
+iQIcBAEBCgAGBQJU/a4WAAoJECte4hHFiupUQ2QP/3JKABGOetMwFwEZXH5tEV5z
+rWozacfEz49+6b4Ke+Yn9Fz0dY/Qfda22C5gq/xcl/jLx0vsMydKwnhio0mdItM7
+q1lONHAeDGGV7Kl5svQUMfiI/oP3blJpFZe+bq5ZZaquBPTdmCOvtsuAuym9QEBc
+iI2nFWv9QTMqixEdIYJR4QN/RdL/hS2aon8XVqi5dFW3kVTMCSCKRxkxRIfwqYav
+fL4bwygZr0BG+4ZAeVGixhCt3EucmTjUOhpnLgrZjiMiur4JtL0mWVvGmG9NLkK5
+F2rGfU8f5QWxZCXWBBE3+jbdgp/ZxBL76H/Rm+Eppp1VAAVX9quMKF99ZDytadKq
+pWCJIKPZg/2yI1ZhleIY/haiIlK2R4H2J0zNrvjdEu4c9S5u26Tc/NxPwbZtFLgy
+VHpkaQm/7oyQwfgA2st3Cvhu8+KX7eLM1ReCVIRVM+XxmrHiMyhsqDUMpJAckLd7
+GMHul8jMfQdqt6ncbbfV3o/xEWr0bSuiUB/7XBqViSwOD7amVSB+5su5EMBw8RE4
+bt4eZgD5qsOg8uCy+kvXy3Io4iNlQthf1LAc64TrEUi1kN2/RUeXnV7Dge/Q+toe
+ibX5WcLxBVgxmtaINjLRlImjHcWKiLrcadXPSS4JCQkgxzFtK6dW/B3Er9jwhBI1
+Yz10BhlvENJr1SjbjI/O
+=l9km
 -----END PGP SIGNATURE-----
 
---ml7amHhGtKRbcvpTtE4tHBhepfULFVHF4--
+--8hlVPppo1OQlS8EoUPbL3JOVTAWFlgKh6--
