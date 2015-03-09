@@ -1,55 +1,46 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] autotools: define N_SLCAN, if not already declared
-Date: Sun, 08 Mar 2015 15:57:56 +0100
-Message-ID: <54FC6374.2060002@hartkopp.net>
-References: <1425823253-27821-1-git-send-email-yegorslists@googlemail.com>
+From: Michal Simek <michal.simek@xilinx.com>
+Subject: [PATCH] net: can: Enable xilinx driver for all ARCHs
+Date: Mon,  9 Mar 2015 09:48:51 +0100
+Message-ID: <4096fa4ceae72817d8e64d9a1da738038a5c864a.1425890926.git.michal.simek@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:56601 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751824AbbCHO6D (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 8 Mar 2015 10:58:03 -0400
-In-Reply-To: <1425823253-27821-1-git-send-email-yegorslists@googlemail.com>
+Received: from mail-qg0-f53.google.com ([209.85.192.53]:34439 "EHLO
+	mail-qg0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753019AbbCIIs4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Mar 2015 04:48:56 -0400
+Received: by qgdz60 with SMTP id z60so26664274qgd.1
+        for <linux-can@vger.kernel.org>; Mon, 09 Mar 2015 01:48:55 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yegor Yefremov <yegorslists@googlemail.com>, linux-can@vger.kernel.org
+To: linux-kernel@vger.kernel.org, monstr@monstr.eu
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Good idea!
+Remove Kconfig dependency and enable driver for
+all ARCHs.
 
-Actually a colleague recently had the problem that N_SLCAN was not defined on 
-some older Redhat 6.x machine with 2.6.32 Kernel and 'even older' includes.
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Acked-by: S=C3=B6ren Brinkmann <soren.brinkmann@xilinx.com>
+---
 
-The patch from Jeremiah which was removing this private define
+Test for all archs done by Kbuild test robot without any problem.
+---
+ drivers/net/can/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-https://github.com/linux-can/can-utils/commit/ca7990919717b8e2c841552139ad221e58e8bb69
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 98d73aab52fe..f690c3fb3088 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -131,7 +131,6 @@ config CAN_RCAR
+=20
+ config CAN_XILINXCAN
+ 	tristate "Xilinx CAN"
+-	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+ 	depends on COMMON_CLK && HAS_IOMEM
+ 	---help---
+ 	  Xilinx CAN driver. This driver supports both soft AXI CAN IP and
+--=20
+1.8.2.3
 
-created the compile issue. So your patch fixes this problem in the correct way :-)
-
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-Thanks,
-Oliver
-
-On 08.03.2015 15:00, Yegor Yefremov wrote:
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->   configure.ac | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/configure.ac b/configure.ac
-> index 3b695d3..633ba81 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -83,6 +83,9 @@ AC_CHECK_DECL(PF_CAN,,
->   AC_CHECK_DECL(AF_CAN,,
->       [AC_DEFINE([AF_CAN], [PF_CAN], [AF_CAN])]
->   )
-> +AC_CHECK_DECL(N_SLCAN,,
-> +    [AC_DEFINE([N_SLCAN], [17], [N_SLCAN])]
-> +)
->
->
->   #
->
