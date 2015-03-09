@@ -1,137 +1,73 @@
-From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] net: can: Enable xilinx driver for all ARCHs
-Date: Mon, 9 Mar 2015 08:51:47 -0700
-Message-ID: <BY2FFO11FD0539B08FEA25A4338C347898C1B0@BY2FFO11FD053.protection.gbl>
-References: <4096fa4ceae72817d8e64d9a1da738038a5c864a.1425890926.git.michal.simek@xilinx.com>
- <54FD5EE1.6050402@pengutronix.de>
- <BY2FFO11FD001BD9CFD92C94214501BB8E21B0@BY2FFO11FD001.protection.gbl>
- <54FD641C.7090607@pengutronix.de>
- <BY2FFO11FD0060B11FE9C9305D5DFD12BE21B0@BY2FFO11FD006.protection.gbl>
- <54FD6E42.6070206@pengutronix.de> <1425909239.23920.60.camel@chaos.site>
- <54FDA662.8020801@pengutronix.de>
- <BY2FFO11FD023D29C02DAF9CCBDC40386E21B0@BY2FFO11FD023.protection.gbl>
+Date: Mon, 09 Mar 2015 16:56:24 +0100
+Message-ID: <54FDC2A8.2010301@pengutronix.de>
+References: <4096fa4ceae72817d8e64d9a1da738038a5c864a.1425890926.git.michal.simek@xilinx.com> <54FD5EE1.6050402@pengutronix.de> <BY2FFO11FD001BD9CFD92C94214501BB8E21B0@BY2FFO11FD001.protection.gbl> <54FD641C.7090607@pengutronix.de> <BY2FFO11FD0060B11FE9C9305D5DFD12BE21B0@BY2FFO11FD006.protection.gbl> <54FD6E42.6070206@pengutronix.de> <1425909239.23920.60.camel@chaos.site> <54FDA662.8020801@pengutronix.de> <BY2FFO11FD023D29C02DAF9CCBDC40386E21B0@BY2FFO11FD023.protection.gbl> <BY2FFO11FD0539B08FEA25A4338C347898C1B0@BY2FFO11FD053.protection.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="q3jhJwn44h2amAQONvpGN1C1EnFjTAdDB"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <BY2FFO11FD023D29C02DAF9CCBDC40386E21B0@BY2FFO11FD023.protection.gbl>
+In-Reply-To: <BY2FFO11FD0539B08FEA25A4338C347898C1B0@BY2FFO11FD053.protection.gbl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Michal Simek <michal.simek@xilinx.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Jean Delvare <jdelvare@suse.de>, linux-kernel@vger.kernel.org, monstr@monstr.eu, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: =?UTF-8?Q?S=c3=b6ren_Brinkmann?= <soren.brinkmann@xilinx.com>, Michal Simek <michal.simek@xilinx.com>
+Cc: Jean Delvare <jdelvare@suse.de>, linux-kernel@vger.kernel.org, monstr@monstr.eu, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Mon, 2015-03-09 at 03:04PM +0100, Michal Simek wrote:
-> On 03/09/2015 02:55 PM, Marc Kleine-Budde wrote:
-> > On 03/09/2015 02:53 PM, Jean Delvare wrote:
-> >> Le Monday 09 March 2015 =C3=A0 10:56 +0100, Marc Kleine-Budde a =C3=
-=A9crit :
-> >>> On 03/09/2015 10:52 AM, Michal Simek wrote:
-> >>>> On 03/09/2015 10:13 AM, Marc Kleine-Budde wrote:
-> >>>>> On 03/09/2015 09:58 AM, Michal Simek wrote:
-> >>>>>> On 03/09/2015 09:50 AM, Marc Kleine-Budde wrote:
-> >>>>>>> On 03/09/2015 09:48 AM, Michal Simek wrote:
-> >>>>>>>> Remove Kconfig dependency and enable driver for
-> >>>>>>>> all ARCHs.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >>>>>>>> Acked-by: S=C3=B6ren Brinkmann <soren.brinkmann@xilinx.com>
-> >>>>>>>> ---
-> >>>>>>>>
-> >>>>>>>> Test for all archs done by Kbuild test robot without any pro=
-blem.
-> >>>>>>>> ---
-> >>>>>>>>  drivers/net/can/Kconfig | 1 -
-> >>>>>>>>  1 file changed, 1 deletion(-)
-> >>>>>>>>
-> >>>>>>>> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconf=
-ig
-> >>>>>>>> index 98d73aab52fe..f690c3fb3088 100644
-> >>>>>>>> --- a/drivers/net/can/Kconfig
-> >>>>>>>> +++ b/drivers/net/can/Kconfig
-> >>>>>>>> @@ -131,7 +131,6 @@ config CAN_RCAR
-> >>>>>>>> =20
-> >>>>>>>>  config CAN_XILINXCAN
-> >>>>>>>>  	tristate "Xilinx CAN"
-> >>>>>>>> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
-> >>>>>>>
-> >>>>>>> I think that's what COMPILE_TEST ist for?
-> >>>>>>
-> >>>>>> For compilation yes but not for enabling. Currently this drive=
-r
-> >>>>>> can be also used on ARM64 that's why people suggesting directl=
-y
-> >>>>>> to remove dependency on arch and then COMPILE_TEST can be remo=
-ved
-> >>>>>> too.
-> >>>>>
-> >>>>> In the past (May 2014) I had people complaining that certain AR=
-M SoC
-> >>>>> specific drivers are enabled on ARM in general, not just on tha=
-t SoC. As
-> >>>>> I'm not following arm64 in detail, has the notion of using depe=
-nds on
-> >>>>> ARCH changes since then?
-> >>>>>
-> >>>>>> Or do you want me to change description to mention that this i=
-s for
-> >>>>>> ARM64 enabling?
-> >>>>>
-> >>>>> Given this is consensus, a remark to ARM64 would be appreciated=
-=2E :)
-> >>>>
-> >>>> David has applied this patch which is in general just the same a=
-s this one.
-> >>>>
-> >>>> (linux-next) Remove architecture dependency
-> >>>> 28811a8c00fe0d899b8a544421f3b4947425d5e8
-> >>>>
-> >>>> Mark Brown has suggested to do so for spi and don't check archit=
-ecture at
-> >>>> all.
-> >>>> I have also sent similar patch for watchdog driver too.
-> >>>>
-> >>>> I think it is up to you if you want to add ARM64 to Kconfig or j=
-ust remove
-> >>>> that arch dependencies.
-> >>>> To be honest my goal is to enable this driver for ARM64.
-> >>>> Please tell me what way you prefer.
-> >>>
-> >>> I like the idea of removing the depends on ARCH completely. Jean,=
- what
-> >>> do you think?
-> >>
-> >> Removing the dependency completely will let the option be displaye=
-d on
-> >> systems where the driver is useless. I am in favor of having hardw=
-are
-> >> dependencies on as many drivers as possible to avoid bothering the=
- user
-> >> with irrelevant questions. The list of Kconfig entries has grown a=
- lot
-> >> over time!
-> >>
-> >> If the current dependency is too strict then I would suggest to ex=
-tend
-> >> it or to make it broader (depends on ARM || ARM64 || COMPILE_TEST =
-would
-> >> be acceptable IMHO.) Dropping it completely only makes sense if th=
-e part
-> >> is used on so many systems that the dependency becomes too long or=
- is a
-> >> pain to maintain.
-> >=20
-> > Sounds reasonable. Michael, make it so.
->=20
-> I have sent v2 which add arm64 to Kconfig and I am keeping just depen=
-dency on
-> ARCH_ZYNQ not all ARM platforms.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--q3jhJwn44h2amAQONvpGN1C1EnFjTAdDB
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-You could (and some people do that with some devices) use these devices
-from x86(_64) if you plug your FPGA/Zynq platform into a PCIe slot
-(FWIW, this should work for any platform that supports PCIe). I think w=
+On 03/09/2015 04:51 PM, S=C3=B6ren Brinkmann wrote:
+>>> Sounds reasonable. Michael, make it so.
+>>
+>> I have sent v2 which add arm64 to Kconfig and I am keeping just depend=
+ency on
+>> ARCH_ZYNQ not all ARM platforms.
+>=20
+> You could (and some people do that with some devices) use these devices=
+
+> from x86(_64) if you plug your FPGA/Zynq platform into a PCIe slot
+> (FWIW, this should work for any platform that supports PCIe). I think w=
 e
-just had somebody sending patches to enable the Zynq UART, IIRC, for x8=
+> just had somebody sending patches to enable the Zynq UART, IIRC, for x8=
 6.
 
-	S=C3=B6ren
+Nice :)
+
+The "depends on" can easily be changed with once there's PCIe glue code
+for the driver.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--q3jhJwn44h2amAQONvpGN1C1EnFjTAdDB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJU/cKuAAoJECte4hHFiupUFGcQAILvkTRI6pdrZYq/ea/cE8N4
+gLyTqXxTKR+5Lx3WClV54X9YW509LxWc6b+V9Sw6xL/QvbG2kvJKBnfGLvsLSThl
+wPMyB3YfYll1VNEy5YKAhZijHqBrPUQ0xTGG7MGdt2euXubdrKt3VMEB4PW8wXxo
+Ypt1+5NJDhhF8uO9yzYA3KeWUhmd4bnH6x8w/4HIvnPYjsM/TmmD5PGjdYxlO2Hv
+XvWvCIlz6fnU6U9YtjcEpAeradIVTNwE1sxSGg7lFxO6B5ofT2KbtpRlRT5poJkb
+zz8qdcES2Dn/e5TMwxYE5LjPTthc8Jx1EbqeJdr3KZcV+BNGZk7mE4O3NaZNACu3
+aKMwN6PoIllZDVhedtwyXY69ZcYi31CW6bSrEn+eSxWhK9mQBWwg3vRC5Q73waWN
+HBh0BrQI+kAgaH+kU1I73hhtHoUiP080gl2BqSaywv9Wh34p85AcpVCy85ocomCI
+PinCN0rRfDG9naQMihHK04AlOP8LG4Ypk0mVzdaKThRS2GkWNudhaRGBYqWvXUML
+JWCtD1igMYp1n40xcg6aEuz6MkM8AOpxYkJge31mNP4v2lK4ulOYW+3i7sUPmP7P
+MeBsMvr7k7nJGHT4luatk8M+K5j5eD1oT1RhWwb4Xyf8UzHohBgKeaV1fqaV/SGV
+G3lQVYw8kk1VJOm8hACr
+=JftJ
+-----END PGP SIGNATURE-----
+
+--q3jhJwn44h2amAQONvpGN1C1EnFjTAdDB--
