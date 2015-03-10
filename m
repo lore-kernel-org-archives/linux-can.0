@@ -1,72 +1,95 @@
-From: Alexander Duyck <alexander.h.duyck@redhat.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] net: add comment for sock_efree() usage
-Date: Tue, 10 Mar 2015 10:50:52 -0700
-Message-ID: <54FF2EFC.8070102@redhat.com>
-References: <1426007997-6219-1-git-send-email-socketcan@hartkopp.net> <54FF29F6.6080403@redhat.com> <54FF2C40.8070904@hartkopp.net>
+Date: Tue, 10 Mar 2015 20:55:23 +0100
+Message-ID: <54FF4C2B.5000607@pengutronix.de>
+References: <1426007997-6219-1-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:32924 "EHLO mx1.redhat.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751882AbbCJRu7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 10 Mar 2015 13:50:59 -0400
-In-Reply-To: <54FF2C40.8070904@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49478 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752449AbbCJTzh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Mar 2015 15:55:37 -0400
+In-Reply-To: <1426007997-6219-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: eric.dumazet@gmail.com
+Cc: eric.dumazet@gmail.com, alexander.h.duyck@redhat.com
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 03/10/2015 06:19 PM, Oliver Hartkopp wrote:
+> In opposite to sock_rfree() and sock_wfree() the function sock_efree() =
+does
+> not need to change the sk_[rw]_mem_alloc length. Add the comment to poi=
+nt out
+> the idea for using sock_efree() in the _e_rror handler or e.g. timestam=
+p path.
+>=20
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  net/core/sock.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 93c8b20..7a1eac8 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1655,6 +1655,10 @@ void sock_rfree(struct sk_buff *skb)
+>  }
+>  EXPORT_SYMBOL(sock_rfree);
+> =20
+> +/*
+> + * Buffer destructor for skbs that don't have sk_[rw]_mem_alloc accoun=
+ting.
+> + * E.g. error handler / timestamp path. Automatically called from kfre=
+e_skb.
+> + */
+
+/* multiline comments in net
+ * work this
+ * way
+ */
+
+>  void sock_efree(struct sk_buff *skb)
+>  {
+>  	sock_put(skb->sk);
+>=20
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-On 03/10/2015 10:39 AM, Oliver Hartkopp wrote:
-> On 03/10/2015 06:29 PM, Alexander Duyck wrote:
->> On 03/10/2015 10:19 AM, Oliver Hartkopp wrote:
->>> In opposite to sock_rfree() and sock_wfree() the function sock_efree() does
->>> not need to change the sk_[rw]_mem_alloc length. Add the comment to point out
->>> the idea for using sock_efree() in the _e_rror handler or e.g. timestamp path.
->>>
->>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
->>> ---
->>>    net/core/sock.c | 4 ++++
->>>    1 file changed, 4 insertions(+)
->>>
->>> diff --git a/net/core/sock.c b/net/core/sock.c
->>> index 93c8b20..7a1eac8 100644
->>> --- a/net/core/sock.c
->>> +++ b/net/core/sock.c
->>> @@ -1655,6 +1655,10 @@ void sock_rfree(struct sk_buff *skb)
->>>    }
->>>    EXPORT_SYMBOL(sock_rfree);
->>>    +/*
->>> + * Buffer destructor for skbs that don't have sk_[rw]_mem_alloc accounting.
->>> + * E.g. error handler / timestamp path. Automatically called from kfree_skb.
->>> + */
->>>    void sock_efree(struct sk_buff *skb)
->>>    {
->>>        sock_put(skb->sk);
->> This should probably be pushed out to the netdev list since this effects all
->> sockets.
-> Yes. That was my default. Will put netdev in --to next time.
->
->> Technically speaking there is a 1 byte sk_wmem_alloc that this is accounting
->> for to keep the socket from being closed.  It is shared between all instances
->> that are using sock_efree as their destructor, and will drop that 1 byte when
->> sk_refcnt has reached 0.
-> Ok. What would be your suggestion then?
->
-> 'destructor that doesn't fiddle with sk_[rw]_mem_alloc length' ??? :-)))
->
-> Best regards,
-> Oliver
+--9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I'd suggest keeping it simple.  You are trying to define it as something 
-it isn't.  It still does accounting, your description makes it sound 
-like it doesn't.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-For example sock_rfree doesn't tell you where it is supposed to be used 
-and what it is accounting for.  It just is described as a read buffer 
-descructor called from kfree_skb.  I'd suggest something similar, maybe 
-just describe it as a desctructor used to free buffers that are not used 
-directly in read or write.
+iQIcBAEBCgAGBQJU/0wyAAoJECte4hHFiupUkbsQAJansCB06X4Xc7XC6e6Xj7Jv
+YApqgu2bs/RLJJxnNNCaq6bb4efLIGBsciRS3LMQLG+XKepwZCjHx2pUiqSX7HNi
+4jomB12EhiLBfp1wD4l8qAUW1woIaVKZZlIAgff5zixGeYzI4a+/qKjXVco08fgy
+nQHVAlok5vtrp+r9LM6+YvgW0BP0Kngs3MT7151dQFnbYsPv6lCoVd3SWlIFxdHC
+WxB/f5Hz9tLsu0Oz3t87hRbg1XS1grT5+lapPF3HNAfR4GEmMmY42mTmbIwP7L84
+RrpPOU8k9RiF08nhJKDlG3kH/hg7Y0pZvNpJFUQ8oehI8xU1a5OOVkFlBztvUtwZ
+eLwITR8d4lSmX8PvvZmCo21fe+nuQKklaEJKZyCITy0Veog2WRYrHxQrZ4n7boQj
+BuHR2eHllwLXL3FxKJ+CBhwKn3k+6ONYRGI6B2u4J+oSca07X1GN9aXCzGUkQOHa
+bu2n3Y+SEuabkpo49uyNE5k19epiLrH4MNyz4uXZNJFcbcxoEcbXADuHc3dimwFn
+QmBfE/jtztA70I+9M6fhVxe5ppEthMW0e0B3PThDswZQ7KHSvU+1zzCsDicO0smw
+bOX5ON++f+IdLtL8aAGrd9Aja2eTNnwyucLBNZ94x54XPm6om4ZaFXc9yptpiQjF
+ooK+Zcw5tbPUYZ5BKB07
+=jpEJ
+-----END PGP SIGNATURE-----
 
-- Alex
+--9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h--
