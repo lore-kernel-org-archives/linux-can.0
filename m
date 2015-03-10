@@ -1,29 +1,66 @@
-From: David Miller <davem@redhat.com>
-Subject: Re: pull-request: can 2015-03-09
-Date: Mon, 09 Mar 2015 15:41:22 -0400 (EDT)
-Message-ID: <20150309.154122.193616220434701160.davem@redhat.com>
-References: <1425893781-10867-1-git-send-email-mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: use sock_efree instead of own destructor
+Date: Tue, 10 Mar 2015 07:14:08 +0100
+Message-ID: <54FE8BB0.9050508@hartkopp.net>
+References: <1425959300-27132-1-git-send-email-fw@strlen.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1425893781-10867-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:9672 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751016AbbCJGOW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Mar 2015 02:14:22 -0400
+In-Reply-To: <1425959300-27132-1-git-send-email-fw@strlen.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netdev@vger.kernel.org, mkl@pengutronix.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon,  9 Mar 2015 10:36:15 +0100
+On 10.03.2015 04:48, Florian Westphal wrote:
+> It is identical to the can destructor.
+>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 
-> this is a pull request for net/master for the 4.0 release cycle, it consists of
-> 6 patches:
-> 
-> A patch by Oliver Hartkopp fixes a long outstanding bug in the infrastructure,
-> which leads to skb_under_panics when CAN interfaces are used by AF_PACKET
-> sockets e.g. by dhclient. Stephane Grosjean contributes a patch for the
-> peak_usb driver which adds a missing initialization. Two patches by Ahmed S.
-> Darwish fix problems in the kvaser_usb driver. Followed by two patches by
-> myself, updating the MAINTAINERS file.
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Applied, thanks Marc.
+Hello Florian,
+
+the other callers use it in the same way so it's a good simplification.
+Btw. the name of sock_efree() is a bit misleading - nothing is free'd here.
+
+Won't it be better to rename sock_efree(skb) with sock_put_skb(skb) or 
+something like that? sock_efree() has no comment why it's named like this.
+
+Regards,
+Oliver
+
+ps. changed from linux ML to netdev and linux-can ML in CC
+
+> ---
+>   include/linux/can/skb.h | 7 +------
+>   1 file changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+> index cc00d15..b6a52a4 100644
+> --- a/include/linux/can/skb.h
+> +++ b/include/linux/can/skb.h
+> @@ -44,16 +44,11 @@ static inline void can_skb_reserve(struct sk_buff *skb)
+>   	skb_reserve(skb, sizeof(struct can_skb_priv));
+>   }
+>
+> -static inline void can_skb_destructor(struct sk_buff *skb)
+> -{
+> -	sock_put(skb->sk);
+> -}
+> -
+>   static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+>   {
+>   	if (sk) {
+>   		sock_hold(sk);
+> -		skb->destructor = can_skb_destructor;
+> +		skb->destructor = sock_efree;
+>   		skb->sk = sk;
+>   	}
+>   }
+>
