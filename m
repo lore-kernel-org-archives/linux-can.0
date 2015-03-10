@@ -1,54 +1,55 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Eric Dumazet <eric.dumazet@gmail.com>
 Subject: Re: [PATCH] can: use sock_efree instead of own destructor
-Date: Tue, 10 Mar 2015 14:36:21 +0100
-Message-ID: <54FEF355.305@hartkopp.net>
-References: <1425959300-27132-1-git-send-email-fw@strlen.de>	 <54FE8BB0.9050508@hartkopp.net> <1425990143.8261.28.camel@edumazet-glaptop2.roam.corp.google.com>
+Date: Tue, 10 Mar 2015 07:36:25 -0700
+Message-ID: <1425998185.8261.51.camel@edumazet-glaptop2.roam.corp.google.com>
+References: <1425959300-27132-1-git-send-email-fw@strlen.de>
+	 <54FE8BB0.9050508@hartkopp.net>
+	 <1425990143.8261.28.camel@edumazet-glaptop2.roam.corp.google.com>
+	 <54FEF355.305@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1425990143.8261.28.camel@edumazet-glaptop2.roam.corp.google.com>
-Sender: netdev-owner@vger.kernel.org
-To: Eric Dumazet <eric.dumazet@gmail.com>, Alexander Duyck <alexander.h.duyck@intel.com>
-Cc: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org, mkl@pengutronix.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ig0-f176.google.com ([209.85.213.176]:43618 "EHLO
+	mail-ig0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750989AbbCJOg2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Mar 2015 10:36:28 -0400
+In-Reply-To: <54FEF355.305@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Alexander Duyck <alexander.h.duyck@intel.com>, Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org, mkl@pengutronix.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Yes - in connection with sock_rfree() for the read buffer destructur and
-sock_wfree() for the write buffer it can make sense to name a function
-sock_efree() as an unassigned destructor - which does not fiddle with rmem nor
-wmen.
+On Tue, 2015-03-10 at 14:36 +0100, Oliver Hartkopp wrote:
+> Yes - in connection with sock_rfree() for the read buffer destructur and
+> sock_wfree() for the write buffer it can make sense to name a function
+> sock_efree() as an unassigned destructor - which does not fiddle with rmem nor
+> wmen.
+> 
+> But both sock_efree() and sock_edemux() lack some comment - especially when it
+> makes sense to use them from non-INET contexts which Florian suggested.
+> 
+> Maybe Alexander can send a patch which adds a comment, as I don't know if I
+> would find the best words for it.
 
-But both sock_efree() and sock_edemux() lack some comment - especially when it
-makes sense to use them from non-INET contexts which Florian suggested.
+Please do not top post on netdev.
 
-Maybe Alexander can send a patch which adds a comment, as I don't know if I
-would find the best words for it.
+If you cannot find best words for it, maybe a comment would not be
+useful : Very often, best comments are added by people that had problems
+to understand the code ;)
 
-Regards,
-Oliver
+I do not trust comments, I prefer using "git grep" or tools like that to
+check call sites.
 
-On 03/10/2015 01:22 PM, Eric Dumazet wrote:
-> On Tue, 2015-03-10 at 07:14 +0100, Oliver Hartkopp wrote:
-> 
->> the other callers use it in the same way so it's a good simplification.
->> Btw. the name of sock_efree() is a bit misleading - nothing is free'd here.
->>
->> Won't it be better to rename sock_efree(skb) with sock_put_skb(skb) or 
->> something like that? sock_efree() has no comment why it's named like this.
-> 
-> I would prefer name stays as is. It eases searches in changelogs to not
-> change function names unless really needed, for backports and code
-> maintenance.
-> 
-> 
-> # git log | grep sock_efree
->     net: merge cases where sock_efree and sock_edemux are the same function
->     Since sock_efree and sock_demux are essentially the same code for non-TCP
->     In addition I have added a destructor named sock_efree which is meant to
-> 
-> sock_efree was added in commit 62bccb8cdb69051b95a55ab0c489e3cab261c8ef
-> 
-> I guess Alexander chose the name close to sock_edemux() and sock_rfree() ones.
-> 
-> This makes sense to me at least.
-> 
+In this particular case this becomes clear, while being concise.
+
+# git grep -n sock_efree
+include/net/sock.h:1526:void sock_efree(struct sk_buff *skb);
+include/net/sock.h:1530:#define sock_edemux(skb) sock_efree(skb)
+net/core/skbuff.c:3625: clone->destructor = sock_efree;
+net/core/sock.c:1658:void sock_efree(struct sk_buff *skb)
+net/core/sock.c:1662:EXPORT_SYMBOL(sock_efree);
+net/ipv4/udp.c:1992:    skb->destructor = sock_efree;
+
+
+
