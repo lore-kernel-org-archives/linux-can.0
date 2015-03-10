@@ -1,65 +1,39 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Eric Dumazet <eric.dumazet@gmail.com>
 Subject: Re: [PATCH] can: use sock_efree instead of own destructor
-Date: Tue, 10 Mar 2015 08:50:29 +0100
-Message-ID: <54FEA245.4010001@pengutronix.de>
+Date: Tue, 10 Mar 2015 05:22:23 -0700
+Message-ID: <1425990143.8261.28.camel@edumazet-glaptop2.roam.corp.google.com>
 References: <1425959300-27132-1-git-send-email-fw@strlen.de>
+	 <54FE8BB0.9050508@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="MnqoIq38uqOVASaP5eOCl70WJKEB8SDVg"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49949 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750773AbbCJHui (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Mar 2015 03:50:38 -0400
-In-Reply-To: <1425959300-27132-1-git-send-email-fw@strlen.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org
-Cc: socketcan@hartkopp.net, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <54FE8BB0.9050508@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org, mkl@pengutronix.de, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MnqoIq38uqOVASaP5eOCl70WJKEB8SDVg
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2015-03-10 at 07:14 +0100, Oliver Hartkopp wrote:
 
-On 03/10/2015 04:48 AM, Florian Westphal wrote:
-> It is identical to the can destructor.
->=20
-> Signed-off-by: Florian Westphal <fw@strlen.de>
+> the other callers use it in the same way so it's a good simplification.
+> Btw. the name of sock_efree() is a bit misleading - nothing is free'd here.
+> 
+> Won't it be better to rename sock_efree(skb) with sock_put_skb(skb) or 
+> something like that? sock_efree() has no comment why it's named like this.
 
-Thanks, applied to can-next.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+I would prefer name stays as is. It eases searches in changelogs to not
+change function names unless really needed, for backports and code
+maintenance.
 
 
---MnqoIq38uqOVASaP5eOCl70WJKEB8SDVg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+# git log | grep sock_efree
+    net: merge cases where sock_efree and sock_edemux are the same function
+    Since sock_efree and sock_demux are essentially the same code for non-TCP
+    In addition I have added a destructor named sock_efree which is meant to
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+sock_efree was added in commit 62bccb8cdb69051b95a55ab0c489e3cab261c8ef
 
-iQIcBAEBCgAGBQJU/qJJAAoJECte4hHFiupU0ZUP/1Xv8DnmyUTC4VjoiqyFzFft
-qeyo4wIcrPBuvrb9+4ZCLZKwdyiaW2I/xvu00cMqy81bDSPeByswsHU4fqm+ybE/
-kvQXnV1GSgHnK1pzD0MOmQQHHQYSyV6KwE/yVLcoLJkUBiOqof+LPBj7OhXAB4Xo
-j8dbmv8PzfeBg80AlcCBhiAyU5yq4O6yGshRGbBIFFto0Kt34g9c3VQE5XYkAI1B
-W8n86XMd6bpnSmJjnrnqKaJXRcYWPirMpvzm7bC+pTRsIY9fl54y51eSSwexZny9
-mdEgePQ0phJwXo+/HjMqI6GET5YMp4xvB1whmlZGMZeT3f/fhdk00xVl65hbRyWH
-W8K78GPziB2kwR7xMajSp4y8PXOHFsHn4j8BFUMIVJB9EtTIQ//fmJBS7LkIvnp4
-gLdlQWMU/1u3yTJGDBNZLyX3Imex6c3aLBixHDXGJUL8r97f56S0bJNtfljA0nUz
-2Ougp194/xnb5vfug6J84QWnx0+lXz8Do+uf5AMzWZCAW4Pj1jeSAisHm+IpwaB2
-3ylHeF6zyKGbDw5q45FnxKlWJq2IhkQNtQkfBM0eWhABa5T1ANBBLjsFzDvUJXON
-MLKUeWB2mm0xGosEe+z3ZbJHrfdhfuZFUuZxw4vRpnnv6xw5CcBFr7pg+aTIxMcD
-L+PreDQ/4DQ28oFSCnRF
-=kjgG
------END PGP SIGNATURE-----
+I guess Alexander chose the name close to sock_edemux() and sock_rfree() ones.
 
---MnqoIq38uqOVASaP5eOCl70WJKEB8SDVg--
+This makes sense to me at least.
