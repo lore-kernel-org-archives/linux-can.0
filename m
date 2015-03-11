@@ -1,62 +1,250 @@
 From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH v2 1/3] can: kvaser_usb: Fix tx queue start/stop race
+Subject: [PATCH v3 1/3] can: kvaser_usb: Fix tx queue start/stop race
  conditions
-Date: Wed, 11 Mar 2015 11:57:36 -0400
-Message-ID: <20150311155736.GA12396@linux>
+Date: Wed, 11 Mar 2015 13:37:44 -0400
+Message-ID: <20150311173744.GA13095@linux>
 References: <20150226152011.GA6075@linux>
- <20150311152353.GA12260@linux>
- <55006114.8030702@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f42.google.com ([74.125.82.42]:33387 "EHLO
-	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751019AbbCKP5k (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Mar 2015 11:57:40 -0400
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <55006114.8030702@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20150226152011.GA6075@linux>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>
+Cc: Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-On Wed, Mar 11, 2015 at 04:36:52PM +0100, Marc Kleine-Budde wrote:
-> On 03/11/2015 04:23 PM, Ahmed S. Darwish wrote:
-> > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
-> > 
-> > A number of tx queue wake-up events went missing due to the
-> > outlined scenario below. Start state is a pool of 16 tx URBs,
-> > active tx_urbs count = 15, with the netdev tx queue open.
-> > 
-> > start_xmit()                             tx_acknowledge()
-> > ............                             ................
-> > atomic_inc(&tx_urbs);
-> > if (atomic_read(&tx_urbs) >= 16) {
-> >                         URB completion IRQ!
-> >                         -->
-> >                                          atomic_dec(&tx_urbs);
-> >                                          netif_wake_queue();
-> >                                          return;
-> >                         <--
-> >                         end of IRQ!
-> >     netif_stop_queue();
-> > }
-> > 
-> > At the end, the correct state expected is a 15 tx_urbs count
-> > value with the tx queue state _open_. Due to the race, we get
-> > the same tx_urbs value but with the tx queue state _stopped_.
-> > The wake-up event is completely lost.
-> > 
-> > Thus avoid hand-rolled concurrency mechanisms and use a proper
-> > lock for contexts protection.
-> 
-> I'm missing a spin_lock_init(), right? Please compile and test your code
-> with everything switch on in Kernel hacking -> Lock Debugging.
-> 
+From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 
-Ouch... that passed through it seems since __ARCH_SPIN_LOCK_UNLOCKED
-is always zero on x86. Recompiling the kernel and re-iterating another
-patch series.
+A number of tx queue wake-up events went missing due to the
+outlined scenario below. Start state is a pool of 16 tx URBs,
+active tx_urbs count = 15, with the netdev tx queue open.
 
-Thanks,
-Darwish
+start_xmit()                             tx_acknowledge()
+............                             ................
+atomic_inc(&tx_urbs);
+if (atomic_read(&tx_urbs) >= 16) {
+                        URB completion IRQ!
+                        -->
+                                         atomic_dec(&tx_urbs);
+                                         netif_wake_queue();
+                                         return;
+                        <--
+                        end of IRQ!
+    netif_stop_queue();
+}
+
+At the end, the correct state expected is a 15 tx_urbs count
+value with the tx queue state _open_. Due to the race, we get
+the same tx_urbs value but with the tx queue state _stopped_.
+The wake-up event is completely lost.
+
+Thus avoid hand-rolled concurrency mechanisms and use a proper
+lock for contexts protection.
+
+Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+---
+ drivers/net/can/usb/kvaser_usb.c | 83 ++++++++++++++++++++++++----------------
+ 1 file changed, 51 insertions(+), 32 deletions(-)
+
+changelog-v3: Added missing spin_lock_init(). With all kernel
+lock debugging options set, I've been running my test suite
+for an hour now without apparent problems in dmesg so far.
+
+changelog-v2: Put bugfix patch at the start of the series.
+
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index a316fa4..e97a08c 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -14,6 +14,7 @@
+  * Copyright (C) 2015 Valeo S.A.
+  */
+ 
++#include <linux/spinlock.h>
+ #include <linux/kernel.h>
+ #include <linux/completion.h>
+ #include <linux/module.h>
+@@ -467,10 +468,11 @@ struct kvaser_usb {
+ struct kvaser_usb_net_priv {
+ 	struct can_priv can;
+ 
+-	atomic_t active_tx_urbs;
+-	struct usb_anchor tx_submitted;
++	spinlock_t tx_contexts_lock;
++	int active_tx_contexts;
+ 	struct kvaser_usb_tx_urb_context tx_contexts[MAX_TX_URBS];
+ 
++	struct usb_anchor tx_submitted;
+ 	struct completion start_comp, stop_comp;
+ 
+ 	struct kvaser_usb *dev;
+@@ -694,6 +696,7 @@ static void kvaser_usb_tx_acknowledge(const struct kvaser_usb *dev,
+ 	struct kvaser_usb_net_priv *priv;
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
++	unsigned long flags;
+ 	u8 channel, tid;
+ 
+ 	channel = msg->u.tx_acknowledge_header.channel;
+@@ -737,12 +740,15 @@ static void kvaser_usb_tx_acknowledge(const struct kvaser_usb *dev,
+ 
+ 	stats->tx_packets++;
+ 	stats->tx_bytes += context->dlc;
+-	can_get_echo_skb(priv->netdev, context->echo_index);
+ 
+-	context->echo_index = MAX_TX_URBS;
+-	atomic_dec(&priv->active_tx_urbs);
++	spin_lock_irqsave(&priv->tx_contexts_lock, flags);
+ 
++	can_get_echo_skb(priv->netdev, context->echo_index);
++	context->echo_index = MAX_TX_URBS;
++	--priv->active_tx_contexts;
+ 	netif_wake_queue(priv->netdev);
++
++	spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ }
+ 
+ static void kvaser_usb_simple_msg_callback(struct urb *urb)
+@@ -803,17 +809,6 @@ static int kvaser_usb_simple_msg_async(struct kvaser_usb_net_priv *priv,
+ 	return 0;
+ }
+ 
+-static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
+-{
+-	int i;
+-
+-	usb_kill_anchored_urbs(&priv->tx_submitted);
+-	atomic_set(&priv->active_tx_urbs, 0);
+-
+-	for (i = 0; i < MAX_TX_URBS; i++)
+-		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+-}
+-
+ static void kvaser_usb_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
+ 						 const struct kvaser_usb_error_summary *es,
+ 						 struct can_frame *cf)
+@@ -1515,6 +1510,24 @@ error:
+ 	return err;
+ }
+ 
++static void kvaser_usb_reset_tx_urb_contexts(struct kvaser_usb_net_priv *priv)
++{
++	int i;
++
++	priv->active_tx_contexts = 0;
++	for (i = 0; i < MAX_TX_URBS; i++)
++		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
++}
++
++/* This method might sleep. Do not call it in the atomic context
++ * of URB completions.
++ */
++static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
++{
++	usb_kill_anchored_urbs(&priv->tx_submitted);
++	kvaser_usb_reset_tx_urb_contexts(priv);
++}
++
+ static void kvaser_usb_unlink_all_urbs(struct kvaser_usb *dev)
+ {
+ 	int i;
+@@ -1634,6 +1647,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	struct kvaser_msg *msg;
+ 	int i, err, ret = NETDEV_TX_OK;
+ 	u8 *msg_tx_can_flags = NULL;		/* GCC */
++	unsigned long flags;
+ 
+ 	if (can_dropped_invalid_skb(netdev, skb))
+ 		return NETDEV_TX_OK;
+@@ -1687,12 +1701,21 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		*msg_tx_can_flags |= MSG_FLAG_REMOTE_FRAME;
+ 
++	spin_lock_irqsave(&priv->tx_contexts_lock, flags);
+ 	for (i = 0; i < ARRAY_SIZE(priv->tx_contexts); i++) {
+ 		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+ 			context = &priv->tx_contexts[i];
++
++			context->echo_index = i;
++			can_put_echo_skb(skb, netdev, context->echo_index);
++			++priv->active_tx_contexts;
++			if (priv->active_tx_contexts >= MAX_TX_URBS)
++				netif_stop_queue(netdev);
++
+ 			break;
+ 		}
+ 	}
++	spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ 
+ 	/* This should never happen; it implies a flow control bug */
+ 	if (!context) {
+@@ -1704,7 +1727,6 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	}
+ 
+ 	context->priv = priv;
+-	context->echo_index = i;
+ 	context->dlc = cf->can_dlc;
+ 
+ 	msg->u.tx_can.tid = context->echo_index;
+@@ -1716,18 +1738,17 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 			  kvaser_usb_write_bulk_callback, context);
+ 	usb_anchor_urb(urb, &priv->tx_submitted);
+ 
+-	can_put_echo_skb(skb, netdev, context->echo_index);
+-
+-	atomic_inc(&priv->active_tx_urbs);
+-
+-	if (atomic_read(&priv->active_tx_urbs) >= MAX_TX_URBS)
+-		netif_stop_queue(netdev);
+-
+ 	err = usb_submit_urb(urb, GFP_ATOMIC);
+ 	if (unlikely(err)) {
++		spin_lock_irqsave(&priv->tx_contexts_lock, flags);
++
+ 		can_free_echo_skb(netdev, context->echo_index);
++		context->echo_index = MAX_TX_URBS;
++		--priv->active_tx_contexts;
++		netif_wake_queue(netdev);
++
++		spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ 
+-		atomic_dec(&priv->active_tx_urbs);
+ 		usb_unanchor_urb(urb);
+ 
+ 		stats->tx_dropped++;
+@@ -1854,7 +1875,7 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
+ 	struct kvaser_usb *dev = usb_get_intfdata(intf);
+ 	struct net_device *netdev;
+ 	struct kvaser_usb_net_priv *priv;
+-	int i, err;
++	int err;
+ 
+ 	err = kvaser_usb_send_simple_msg(dev, CMD_RESET_CHIP, channel);
+ 	if (err)
+@@ -1868,19 +1889,17 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
+ 
+ 	priv = netdev_priv(netdev);
+ 
++	init_usb_anchor(&priv->tx_submitted);
+ 	init_completion(&priv->start_comp);
+ 	init_completion(&priv->stop_comp);
+ 
+-	init_usb_anchor(&priv->tx_submitted);
+-	atomic_set(&priv->active_tx_urbs, 0);
+-
+-	for (i = 0; i < ARRAY_SIZE(priv->tx_contexts); i++)
+-		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+-
+ 	priv->dev = dev;
+ 	priv->netdev = netdev;
+ 	priv->channel = channel;
+ 
++	spin_lock_init(&priv->tx_contexts_lock);
++	kvaser_usb_reset_tx_urb_contexts(priv);
++
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 	priv->can.clock.freq = CAN_USB_CLOCK;
+ 	priv->can.bittiming_const = &kvaser_usb_bittiming_const;
+-- 
+1.9.1
