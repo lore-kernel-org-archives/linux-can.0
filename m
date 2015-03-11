@@ -1,95 +1,252 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] net: add comment for sock_efree() usage
-Date: Tue, 10 Mar 2015 20:55:23 +0100
-Message-ID: <54FF4C2B.5000607@pengutronix.de>
-References: <1426007997-6219-1-git-send-email-socketcan@hartkopp.net>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: [PATCH v2 1/3] can: kvaser_usb: Fix tx queue start/stop race
+ conditions
+Date: Wed, 11 Mar 2015 11:23:53 -0400
+Message-ID: <20150311152353.GA12260@linux>
+References: <20150226152011.GA6075@linux>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:49478 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752449AbbCJTzh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Mar 2015 15:55:37 -0400
-In-Reply-To: <1426007997-6219-1-git-send-email-socketcan@hartkopp.net>
+Received: from mail-wi0-f174.google.com ([209.85.212.174]:34867 "EHLO
+	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751124AbbCKPX6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Mar 2015 11:23:58 -0400
+Content-Disposition: inline
+In-Reply-To: <20150226152011.GA6075@linux>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: eric.dumazet@gmail.com, alexander.h.duyck@redhat.com
+To: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>
+Cc: Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
 
-On 03/10/2015 06:19 PM, Oliver Hartkopp wrote:
-> In opposite to sock_rfree() and sock_wfree() the function sock_efree() =
-does
-> not need to change the sk_[rw]_mem_alloc length. Add the comment to poi=
-nt out
-> the idea for using sock_efree() in the _e_rror handler or e.g. timestam=
-p path.
->=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  net/core/sock.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 93c8b20..7a1eac8 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1655,6 +1655,10 @@ void sock_rfree(struct sk_buff *skb)
->  }
->  EXPORT_SYMBOL(sock_rfree);
-> =20
-> +/*
-> + * Buffer destructor for skbs that don't have sk_[rw]_mem_alloc accoun=
-ting.
-> + * E.g. error handler / timestamp path. Automatically called from kfre=
-e_skb.
-> + */
+A number of tx queue wake-up events went missing due to the
+outlined scenario below. Start state is a pool of 16 tx URBs,
+active tx_urbs count = 15, with the netdev tx queue open.
 
-/* multiline comments in net
- * work this
- * way
- */
+start_xmit()                             tx_acknowledge()
+............                             ................
+atomic_inc(&tx_urbs);
+if (atomic_read(&tx_urbs) >= 16) {
+                        URB completion IRQ!
+                        -->
+                                         atomic_dec(&tx_urbs);
+                                         netif_wake_queue();
+                                         return;
+                        <--
+                        end of IRQ!
+    netif_stop_queue();
+}
 
->  void sock_efree(struct sk_buff *skb)
->  {
->  	sock_put(skb->sk);
->=20
+At the end, the correct state expected is a 15 tx_urbs count
+value with the tx queue state _open_. Due to the race, we get
+the same tx_urbs value but with the tx queue state _stopped_.
+The wake-up event is completely lost.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Thus avoid hand-rolled concurrency mechanisms and use a proper
+lock for contexts protection.
 
+Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+---
+ drivers/net/can/usb/kvaser_usb.c | 82 ++++++++++++++++++++++++----------------
+ 1 file changed, 50 insertions(+), 32 deletions(-)
 
---9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This new series is just like v1, with the exception of moving
+bugfix #5 to the top as suggested earlier.  The patches are
+based over linux-can-fixes-for-4.0-20150309. Thanks!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index a316fa4..0aea8e2 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -14,6 +14,7 @@
+  * Copyright (C) 2015 Valeo S.A.
+  */
+ 
++#include <linux/spinlock.h>
+ #include <linux/kernel.h>
+ #include <linux/completion.h>
+ #include <linux/module.h>
+@@ -467,10 +468,11 @@ struct kvaser_usb {
+ struct kvaser_usb_net_priv {
+ 	struct can_priv can;
+ 
+-	atomic_t active_tx_urbs;
+-	struct usb_anchor tx_submitted;
++	spinlock_t tx_contexts_lock;
++	int active_tx_contexts;
+ 	struct kvaser_usb_tx_urb_context tx_contexts[MAX_TX_URBS];
+ 
++	struct usb_anchor tx_submitted;
+ 	struct completion start_comp, stop_comp;
+ 
+ 	struct kvaser_usb *dev;
+@@ -694,6 +696,7 @@ static void kvaser_usb_tx_acknowledge(const struct kvaser_usb *dev,
+ 	struct kvaser_usb_net_priv *priv;
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
++	unsigned long flags;
+ 	u8 channel, tid;
+ 
+ 	channel = msg->u.tx_acknowledge_header.channel;
+@@ -737,12 +740,15 @@ static void kvaser_usb_tx_acknowledge(const struct kvaser_usb *dev,
+ 
+ 	stats->tx_packets++;
+ 	stats->tx_bytes += context->dlc;
+-	can_get_echo_skb(priv->netdev, context->echo_index);
+ 
+-	context->echo_index = MAX_TX_URBS;
+-	atomic_dec(&priv->active_tx_urbs);
++	spin_lock_irqsave(&priv->tx_contexts_lock, flags);
+ 
++	can_get_echo_skb(priv->netdev, context->echo_index);
++	context->echo_index = MAX_TX_URBS;
++	--priv->active_tx_contexts;
+ 	netif_wake_queue(priv->netdev);
++
++	spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ }
+ 
+ static void kvaser_usb_simple_msg_callback(struct urb *urb)
+@@ -803,17 +809,6 @@ static int kvaser_usb_simple_msg_async(struct kvaser_usb_net_priv *priv,
+ 	return 0;
+ }
+ 
+-static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
+-{
+-	int i;
+-
+-	usb_kill_anchored_urbs(&priv->tx_submitted);
+-	atomic_set(&priv->active_tx_urbs, 0);
+-
+-	for (i = 0; i < MAX_TX_URBS; i++)
+-		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+-}
+-
+ static void kvaser_usb_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
+ 						 const struct kvaser_usb_error_summary *es,
+ 						 struct can_frame *cf)
+@@ -1515,6 +1510,24 @@ error:
+ 	return err;
+ }
+ 
++static void kvaser_usb_reset_tx_urb_contexts(struct kvaser_usb_net_priv *priv)
++{
++	int i;
++
++	priv->active_tx_contexts = 0;
++	for (i = 0; i < MAX_TX_URBS; i++)
++		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
++}
++
++/* This method might sleep. Do not call it in the atomic context
++ * of URB completions.
++ */
++static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
++{
++	usb_kill_anchored_urbs(&priv->tx_submitted);
++	kvaser_usb_reset_tx_urb_contexts(priv);
++}
++
+ static void kvaser_usb_unlink_all_urbs(struct kvaser_usb *dev)
+ {
+ 	int i;
+@@ -1634,6 +1647,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	struct kvaser_msg *msg;
+ 	int i, err, ret = NETDEV_TX_OK;
+ 	u8 *msg_tx_can_flags = NULL;		/* GCC */
++	unsigned long flags;
+ 
+ 	if (can_dropped_invalid_skb(netdev, skb))
+ 		return NETDEV_TX_OK;
+@@ -1687,12 +1701,21 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		*msg_tx_can_flags |= MSG_FLAG_REMOTE_FRAME;
+ 
++	spin_lock_irqsave(&priv->tx_contexts_lock, flags);
+ 	for (i = 0; i < ARRAY_SIZE(priv->tx_contexts); i++) {
+ 		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+ 			context = &priv->tx_contexts[i];
++
++			context->echo_index = i;
++			can_put_echo_skb(skb, netdev, context->echo_index);
++			++priv->active_tx_contexts;
++			if (priv->active_tx_contexts >= MAX_TX_URBS)
++				netif_stop_queue(netdev);
++
+ 			break;
+ 		}
+ 	}
++	spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ 
+ 	/* This should never happen; it implies a flow control bug */
+ 	if (!context) {
+@@ -1704,7 +1727,6 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	}
+ 
+ 	context->priv = priv;
+-	context->echo_index = i;
+ 	context->dlc = cf->can_dlc;
+ 
+ 	msg->u.tx_can.tid = context->echo_index;
+@@ -1716,18 +1738,17 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 			  kvaser_usb_write_bulk_callback, context);
+ 	usb_anchor_urb(urb, &priv->tx_submitted);
+ 
+-	can_put_echo_skb(skb, netdev, context->echo_index);
+-
+-	atomic_inc(&priv->active_tx_urbs);
+-
+-	if (atomic_read(&priv->active_tx_urbs) >= MAX_TX_URBS)
+-		netif_stop_queue(netdev);
+-
+ 	err = usb_submit_urb(urb, GFP_ATOMIC);
+ 	if (unlikely(err)) {
++		spin_lock_irqsave(&priv->tx_contexts_lock, flags);
++
+ 		can_free_echo_skb(netdev, context->echo_index);
++		context->echo_index = MAX_TX_URBS;
++		--priv->active_tx_contexts;
++		netif_wake_queue(netdev);
++
++		spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ 
+-		atomic_dec(&priv->active_tx_urbs);
+ 		usb_unanchor_urb(urb);
+ 
+ 		stats->tx_dropped++;
+@@ -1854,7 +1875,7 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
+ 	struct kvaser_usb *dev = usb_get_intfdata(intf);
+ 	struct net_device *netdev;
+ 	struct kvaser_usb_net_priv *priv;
+-	int i, err;
++	int err;
+ 
+ 	err = kvaser_usb_send_simple_msg(dev, CMD_RESET_CHIP, channel);
+ 	if (err)
+@@ -1868,19 +1889,16 @@ static int kvaser_usb_init_one(struct usb_interface *intf,
+ 
+ 	priv = netdev_priv(netdev);
+ 
++	init_usb_anchor(&priv->tx_submitted);
+ 	init_completion(&priv->start_comp);
+ 	init_completion(&priv->stop_comp);
+ 
+-	init_usb_anchor(&priv->tx_submitted);
+-	atomic_set(&priv->active_tx_urbs, 0);
+-
+-	for (i = 0; i < ARRAY_SIZE(priv->tx_contexts); i++)
+-		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+-
+ 	priv->dev = dev;
+ 	priv->netdev = netdev;
+ 	priv->channel = channel;
+ 
++	kvaser_usb_reset_tx_urb_contexts(priv);
++
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 	priv->can.clock.freq = CAN_USB_CLOCK;
+ 	priv->can.bittiming_const = &kvaser_usb_bittiming_const;
+-- 
+1.9.1
 
-iQIcBAEBCgAGBQJU/0wyAAoJECte4hHFiupUkbsQAJansCB06X4Xc7XC6e6Xj7Jv
-YApqgu2bs/RLJJxnNNCaq6bb4efLIGBsciRS3LMQLG+XKepwZCjHx2pUiqSX7HNi
-4jomB12EhiLBfp1wD4l8qAUW1woIaVKZZlIAgff5zixGeYzI4a+/qKjXVco08fgy
-nQHVAlok5vtrp+r9LM6+YvgW0BP0Kngs3MT7151dQFnbYsPv6lCoVd3SWlIFxdHC
-WxB/f5Hz9tLsu0Oz3t87hRbg1XS1grT5+lapPF3HNAfR4GEmMmY42mTmbIwP7L84
-RrpPOU8k9RiF08nhJKDlG3kH/hg7Y0pZvNpJFUQ8oehI8xU1a5OOVkFlBztvUtwZ
-eLwITR8d4lSmX8PvvZmCo21fe+nuQKklaEJKZyCITy0Veog2WRYrHxQrZ4n7boQj
-BuHR2eHllwLXL3FxKJ+CBhwKn3k+6ONYRGI6B2u4J+oSca07X1GN9aXCzGUkQOHa
-bu2n3Y+SEuabkpo49uyNE5k19epiLrH4MNyz4uXZNJFcbcxoEcbXADuHc3dimwFn
-QmBfE/jtztA70I+9M6fhVxe5ppEthMW0e0B3PThDswZQ7KHSvU+1zzCsDicO0smw
-bOX5ON++f+IdLtL8aAGrd9Aja2eTNnwyucLBNZ94x54XPm6om4ZaFXc9yptpiQjF
-ooK+Zcw5tbPUYZ5BKB07
-=jpEJ
------END PGP SIGNATURE-----
-
---9fTs02OIOHUHiqu35pbTqjjn7ICFU1H1h--
