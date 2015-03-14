@@ -1,71 +1,94 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: esd_usb2: endianess warning
-Date: Sat, 14 Mar 2015 15:33:09 +0100
-Message-ID: <550446A5.80702@pengutronix.de>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v4 1/3] can: kvaser_usb: Fix tx queue start/stop race
+ conditions
+Date: Sat, 14 Mar 2015 10:38:20 -0400
+Message-ID: <20150314143820.GA22071@linux>
+References: <20150226152011.GA6075@linux>
+ <20150314130249.GA20796@linux>
+ <55043A7E.7040001@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50783 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752773AbbCNOdM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Mar 2015 10:33:12 -0400
+Received: from mail-we0-f170.google.com ([74.125.82.170]:36342 "EHLO
+	mail-we0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932072AbbCNOiZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Mar 2015 10:38:25 -0400
+Content-Disposition: inline
+In-Reply-To: <55043A7E.7040001@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Matthias Fuchs <matthias.fuchs@esd.eu>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-Hello,
+On Sat, Mar 14, 2015 at 02:41:18PM +0100, Marc Kleine-Budde wrote:
+> On 03/14/2015 02:02 PM, Ahmed S. Darwish wrote:
+> > From: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> > 
+> > A number of tx queue wake-up events went missing due to the
+> > outlined scenario below. Start state is a pool of 16 tx URBs,
+> > active tx_urbs count = 15, with the netdev tx queue open.
+> > 
+> > CPU #1 [softirq]                         CPU #2 [softirq]
+> > start_xmit()                             tx_acknowledge()
+> > ................                         ................
+> > 
+> > atomic_inc(&tx_urbs);
+> > if (atomic_read(&tx_urbs) >= 16) {
+> >                         -->
+> >                                          atomic_dec(&tx_urbs);
+> >                                          netif_wake_queue();
+> >                                          return;
+> >                         <--
+> >     netif_stop_queue();
+> > }
+> > 
+> > At the end, the correct state expected is a 15 tx_urbs count
+> > value with the tx queue state _open_. Due to the race, we get
+> > the same tx_urbs value but with the tx queue state _stopped_.
+> > The wake-up event is completely lost.
+> > 
+> > Thus avoid hand-rolled concurrency mechanisms and use a proper
+> > lock for contexts and tx queue protection.
+> > 
+> > Signed-off-by: Ahmed S. Darwish <ahmed.darwish@valeo.com>
+> 
+> Applied to can. This will go into David's net tree and finally into
+> net-next. Then I'll apply patches 2+3. Nag me, if I forget about them ;)
+> 
 
-when compiling with sparse (make C=3D2), the esd driver throws the
-following warning, can someone, preferred the driver author :), take
-care of fixing them?
+Thanks! :-)
 
-> drivers/net/can/usb/esd_usb2.c:369:53: warning: restricted __le32 degra=
-des to integer
-> drivers/net/can/usb/esd_usb2.c:791:25: warning: incorrect type in assig=
-nment (different base types)
-> drivers/net/can/usb/esd_usb2.c:791:25:    expected restricted __le32 [u=
-sertype] hnd
-> drivers/net/can/usb/esd_usb2.c:791:25:    got unsigned int
+So if I've understood correctly, this patch will go to -rc5 and
+the rest will go into net-next?
 
-regards,
-Marc
+If so, IMHO patch #2 should also go to -rc5. I know it's usually
+frowned up on to add further patches at this late -rc stage, but
+here's my logic:
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The original driver code just _arbitrarily_ assumed a MAX_TX_URB
+value of 16 parallel transmissions. This value was chosen, it seems,
+because the driver was heavily based on esd_usb2.c and the esd code
+just did so :-(
 
+Meanwhile, in the Kvaser hardware at hand, if I've increased the
+driver's max parallel transmissions little above the recommended
+limit reported by firmware, the firmware breaks up badly, reports a
+massive list of internal errors, and the candump traces becomes
+sort of an internal mess hardly related to the actual frames sent
+and received.
 
---fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+In my case, I was lucky that the brand we own here (*) had a higher
+max outstanding transmissions value than 16. But if there is hardware
+out there with a max oustanding tx support < 16 (#), such hardware
+will break badly under a heavy transmission load :-(
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+(*) http://www.kvaser.com/products/kvaser-usb-hs-ii-hsls/
 
-iQIcBAEBCgAGBQJVBEalAAoJECte4hHFiupUjUkQAKVwtfLqk/nOhM0PA4aa6/1M
-0ry+rsEby5VLgMxydhm3BgDYuzMjFZAbkd7MWe8EMEKGJ6SQ9Vhu1SV3Pf47IrMG
-W5vzguMFmpfpnuz21clWjFCqK39A9P1zWJLkDzIHA2i0hSZln1lS+igAA9bLx4Uk
-2hQPxV09dqEJJzKjtRi3yapmxMtOmPk4VnsSbVTK+ED5A5IwI+Myon43KilDjaGw
-ca4AB3SCKJtoHCdTh3kmZYVVmBFO2SgmNSvnfYIHB0X25Bs0bV4+f68Uo6p7I5Dj
-NvOe61icz3OQ6wBhII6XjBtqsvfNu+sv2fTLlf6aQrTLyGmMUbJyOtStNBH6jBkP
-KCo8J7vuCOm7Sy/0v3MXfKrifCPR4YEQpjadduoAPeB0APVnUGVqSYX0MnSXnSF4
-HLwczIBMiEudxLv5txfzgkWhfwJkvoxGDYKuA2Nj2k/poL5lekl7rZdU62E+ujtc
-/9TFAId7KNuC2WBaQfzsqUX5OslIqS7iOWNW4rJ1nvzPwtMn0noN/VCx8Gz9eE6F
-FqCD2JlGdMNDIesl9wA7oXOQtQ1Cv9PBqjxzjXE1hw5DwfHD68kllKaWq/cqkVD8
-K1fweGMt8jpcC+/CznTLXDQI+PUO1vM2qDN9sL4tmOO4oEdxi020w8Bol4wjapgh
-qpIc/PIPuw4dQHmws18Q
-=hk22
------END PGP SIGNATURE-----
+(#) There are a huge list of Kvaser products having the same controller
+    but with different performance metrics, so this is quite a
+    possiblity.
 
---fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7--
+Thanks,
+Darwish
