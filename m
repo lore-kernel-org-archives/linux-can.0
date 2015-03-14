@@ -1,40 +1,39 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: ems_usb: endianess warning
-Date: Sat, 14 Mar 2015 15:30:56 +0100
-Message-ID: <55044620.60903@pengutronix.de>
+Subject: esd_usb2: endianess warning
+Date: Sat, 14 Mar 2015 15:33:09 +0100
+Message-ID: <550446A5.80702@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="lRAWIlU7iUsmuxknRRnQVwTNPUL9n3XfK"
+ boundary="fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50766 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50783 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754367AbbCNObA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Mar 2015 10:31:00 -0400
+	with ESMTP id S1752773AbbCNOdM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 14 Mar 2015 10:33:12 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Sebastian Haas <haas@ems-wuensche.com>, Sebastian Haas <dev@sebastianhaas.info>
+Cc: Matthias Fuchs <matthias.fuchs@esd.eu>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lRAWIlU7iUsmuxknRRnQVwTNPUL9n3XfK
+--fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-when compiling with sparse (make C=3D2), the ems driver throws the
+when compiling with sparse (make C=3D2), the esd driver throws the
 following warning, can someone, preferred the driver author :), take
 care of fixing them?
 
-> drivers/net/can/usb/ems_usb.c:312:22: warning: cast to restricted __le3=
-2
-> drivers/net/can/usb/ems_usb.c:787:29: warning: incorrect type in assign=
-ment (different base types)
-> drivers/net/can/usb/ems_usb.c:787:29:    expected unsigned int [unsigne=
-d] [usertype] id
-> drivers/net/can/usb/ems_usb.c:787:29:    got restricted __le32 [usertyp=
-e] <noident>
+> drivers/net/can/usb/esd_usb2.c:369:53: warning: restricted __le32 degra=
+des to integer
+> drivers/net/can/usb/esd_usb2.c:791:25: warning: incorrect type in assig=
+nment (different base types)
+> drivers/net/can/usb/esd_usb2.c:791:25:    expected restricted __le32 [u=
+sertype] hnd
+> drivers/net/can/usb/esd_usb2.c:791:25:    got unsigned int
 
 regards,
 Marc
@@ -46,7 +45,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---lRAWIlU7iUsmuxknRRnQVwTNPUL9n3XfK
+--fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -54,19 +53,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVBEYgAAoJECte4hHFiupU6JsP/1/GVY7x3vnP7eZlVuI84c7T
-m2KWQZcOSeXuF8XOEwxRsHYMmzkSILQ76MpszWqPzEMYveMUVEch5BUka4av2J/d
-G4u8xDi6R0b4VBukkK9waJGFgfadgiochIpCoLNepF1jBtOTBoOJKjxZDLj81k/p
-dz/ZOqxXpDhTf0L9F1sB7BGDj8Oav5B8ZUiFl6AmBs5tN/4cDGak3b3JxWuxMQCw
-TxkpZyV5fiduvaJ9BI27Am9Qjk40Rg/2lpO+3zIt45TIxcuzyAS3tT4HTiALnkeU
-Kj6IWUti5PkOH4EXN8WuTw6c9QywonRHDafbNhHtSKkZY5gDorofFiAhVmjwBBjC
-d+eCnUtG2mhylp9Tf0UFNGQhts7ob2VpiGuzgec/md09aHfHN40Ml3CTXmIpKmmy
-MqbirxYYCtlFQHdFAHR3GiR2zZxd37RRNRrs2gGg66UcsxTic/OICbDjGwbGQgOt
-GADHhCckwZC/p6rVGdE+M46DqEfR2Pc28ujN+i/RzuIZ7N8EgrX3BqfYEOt+9/vb
-oSEcRnJ+xHsjcs0bh56/pqBEpm/Bow6KgYaXA2wC/BSo6oNF34/wd5rJsyUqhrQA
-ivO3QXweF6GAoaK4NpNK+uFr6HzQ0gkR+PHRv6mcy+l7ptpiloxmdxbGYrc4RPh0
-TvDzqr5HU0YR/sxajp/W
-=JMvQ
+iQIcBAEBCgAGBQJVBEalAAoJECte4hHFiupUjUkQAKVwtfLqk/nOhM0PA4aa6/1M
+0ry+rsEby5VLgMxydhm3BgDYuzMjFZAbkd7MWe8EMEKGJ6SQ9Vhu1SV3Pf47IrMG
+W5vzguMFmpfpnuz21clWjFCqK39A9P1zWJLkDzIHA2i0hSZln1lS+igAA9bLx4Uk
+2hQPxV09dqEJJzKjtRi3yapmxMtOmPk4VnsSbVTK+ED5A5IwI+Myon43KilDjaGw
+ca4AB3SCKJtoHCdTh3kmZYVVmBFO2SgmNSvnfYIHB0X25Bs0bV4+f68Uo6p7I5Dj
+NvOe61icz3OQ6wBhII6XjBtqsvfNu+sv2fTLlf6aQrTLyGmMUbJyOtStNBH6jBkP
+KCo8J7vuCOm7Sy/0v3MXfKrifCPR4YEQpjadduoAPeB0APVnUGVqSYX0MnSXnSF4
+HLwczIBMiEudxLv5txfzgkWhfwJkvoxGDYKuA2Nj2k/poL5lekl7rZdU62E+ujtc
+/9TFAId7KNuC2WBaQfzsqUX5OslIqS7iOWNW4rJ1nvzPwtMn0noN/VCx8Gz9eE6F
+FqCD2JlGdMNDIesl9wA7oXOQtQ1Cv9PBqjxzjXE1hw5DwfHD68kllKaWq/cqkVD8
+K1fweGMt8jpcC+/CznTLXDQI+PUO1vM2qDN9sL4tmOO4oEdxi020w8Bol4wjapgh
+qpIc/PIPuw4dQHmws18Q
+=hk22
 -----END PGP SIGNATURE-----
 
---lRAWIlU7iUsmuxknRRnQVwTNPUL9n3XfK--
+--fMJ8iNHkEvRMTrhRgeeHDDU9MP1fHV0Q7--
