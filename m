@@ -1,109 +1,142 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Methods for testing CAN drivers tx/rx paths
-Date: Mon, 16 Mar 2015 09:37:08 +0100
-Message-ID: <55069634.3020400@hartkopp.net>
-References: <20150314181520.GA19643@vivalin-002>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: yegorslists@googlemail.com
+Subject: [PATCH v3] can: add combined rx/tx LED trigger support
+Date: Mon, 16 Mar 2015 09:38:13 +0100
+Message-ID: <1426495093-25272-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:13117 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752166AbbCPIhR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 04:37:17 -0400
-In-Reply-To: <20150314181520.GA19643@vivalin-002>
+Received: from mail.visionsystems.de ([213.209.99.202]:36216 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750822AbbCPIit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 04:38:49 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, socketcan@hartkopp.net, fabio.baltieri@gmail.com, Yegor Yefremov <yegorslists@googlemail.com>
 
-Hi Ahmed,
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-I'm taking care of the network layer packet flow with this test script:
+Add <ifname>-rxtx trigger, that will be activated both for tx
+as rx events. This trigger mimics "activity" LED for Ethernet
+devices.
 
-https://github.com/linux-can/can-tests/blob/master/test_netlayer.sh
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+---
+Changes:
+	v3: add missing calls like release for rxtx-trigger
+	v2: rework comment for CAN_LED_NAME_SZ (Marc Kleine-Budde)
 
-The script checks whether CAN specific information inside the skbuff survives
-the networking stack which is always in move.
+ drivers/net/can/led.c   |   22 +++++++++++++++++++---
+ include/linux/can/dev.h |    2 ++
+ include/linux/can/led.h |    6 ++++--
+ 3 files changed, 25 insertions(+), 5 deletions(-)
 
-For driver testing I use this CAN hardware
-http://www.peak-system.com/PCAN-MicroMod-Evaluation.221.0.html
-with a special firmware that's able to generate 100% busload.
+diff --git a/drivers/net/can/led.c b/drivers/net/can/led.c
+index ab7f1b0..c1b6676 100644
+--- a/drivers/net/can/led.c
++++ b/drivers/net/can/led.c
+@@ -30,20 +30,28 @@ void can_led_event(struct net_device *netdev, enum can_led_event event)
+ 	case CAN_LED_EVENT_OPEN:
+ 		led_trigger_event(priv->tx_led_trig, LED_FULL);
+ 		led_trigger_event(priv->rx_led_trig, LED_FULL);
++		led_trigger_event(priv->rxtx_led_trig, LED_FULL);
+ 		break;
+ 	case CAN_LED_EVENT_STOP:
+ 		led_trigger_event(priv->tx_led_trig, LED_OFF);
+ 		led_trigger_event(priv->rx_led_trig, LED_OFF);
++		led_trigger_event(priv->rxtx_led_trig, LED_OFF);
+ 		break;
+ 	case CAN_LED_EVENT_TX:
+-		if (led_delay)
++		if (led_delay) {
+ 			led_trigger_blink_oneshot(priv->tx_led_trig,
+ 						  &led_delay, &led_delay, 1);
++			led_trigger_blink_oneshot(priv->rxtx_led_trig,
++						  &led_delay, &led_delay, 1);
++		}
+ 		break;
+ 	case CAN_LED_EVENT_RX:
+-		if (led_delay)
++		if (led_delay) {
+ 			led_trigger_blink_oneshot(priv->rx_led_trig,
+ 						  &led_delay, &led_delay, 1);
++			led_trigger_blink_oneshot(priv->rxtx_led_trig,
++						  &led_delay, &led_delay, 1);
++		}
+ 		break;
+ 	}
+ }
+@@ -55,6 +63,7 @@ static void can_led_release(struct device *gendev, void *res)
+ 
+ 	led_trigger_unregister_simple(priv->tx_led_trig);
+ 	led_trigger_unregister_simple(priv->rx_led_trig);
++	led_trigger_unregister_simple(priv->rxtx_led_trig);
+ }
+ 
+ /* Register CAN LED triggers for a CAN device
+@@ -76,11 +85,15 @@ void devm_can_led_init(struct net_device *netdev)
+ 		 "%s-tx", netdev->name);
+ 	snprintf(priv->rx_led_trig_name, sizeof(priv->rx_led_trig_name),
+ 		 "%s-rx", netdev->name);
++	snprintf(priv->rxtx_led_trig_name, sizeof(priv->rxtx_led_trig_name),
++		 "%s-rxtx", netdev->name);
+ 
+ 	led_trigger_register_simple(priv->tx_led_trig_name,
+ 				    &priv->tx_led_trig);
+ 	led_trigger_register_simple(priv->rx_led_trig_name,
+ 				    &priv->rx_led_trig);
++	led_trigger_register_simple(priv->rxtx_led_trig_name,
++				    &priv->rxtx_led_trig);
+ 
+ 	devres_add(&netdev->dev, res);
+ }
+@@ -97,7 +110,7 @@ static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
+ 	if (!priv)
+ 		return NOTIFY_DONE;
+ 
+-	if (!priv->tx_led_trig || !priv->rx_led_trig)
++	if (!priv->tx_led_trig || !priv->rx_led_trig || !priv->rxtx_led_trig)
+ 		return NOTIFY_DONE;
+ 
+ 	if (msg == NETDEV_CHANGENAME) {
+@@ -106,6 +119,9 @@ static int can_led_notifier(struct notifier_block *nb, unsigned long msg,
+ 
+ 		snprintf(name, sizeof(name), "%s-rx", netdev->name);
+ 		led_trigger_rename_static(name, priv->rx_led_trig);
++
++		snprintf(name, sizeof(name), "%s-rxtx", netdev->name);
++		led_trigger_rename_static(name, priv->rxtx_led_trig);
+ 	}
+ 
+ 	return NOTIFY_DONE;
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index c05ff0f..c3a9c8f 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -61,6 +61,8 @@ struct can_priv {
+ 	char tx_led_trig_name[CAN_LED_NAME_SZ];
+ 	struct led_trigger *rx_led_trig;
+ 	char rx_led_trig_name[CAN_LED_NAME_SZ];
++	struct led_trigger *rxtx_led_trig;
++	char rxtx_led_trig_name[CAN_LED_NAME_SZ];
+ #endif
+ };
+ 
+diff --git a/include/linux/can/led.h b/include/linux/can/led.h
+index e0475c5..146de45 100644
+--- a/include/linux/can/led.h
++++ b/include/linux/can/led.h
+@@ -21,8 +21,10 @@ enum can_led_event {
+ 
+ #ifdef CONFIG_CAN_LEDS
+ 
+-/* keep space for interface name + "-tx"/"-rx" suffix and null terminator */
+-#define CAN_LED_NAME_SZ (IFNAMSIZ + 4)
++/* keep space for interface name + "-tx"/"-rx"/"-rxtx"
++ * suffix and null terminator
++ */
++#define CAN_LED_NAME_SZ (IFNAMSIZ + 6)
+ 
+ void can_led_event(struct net_device *netdev, enum can_led_event event);
+ void devm_can_led_init(struct net_device *netdev);
+-- 
+1.7.7
 
-Putting this load to a CAN bus I additionally try to send frames on the bus
-with that interface or do unfriendly unplugging (e.g. for USB / PCMCIA).
-
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=a7762b10c12a70c5dbf2253142764b728ac88c3a
-
-So when doing some test I'm mainly checking for stability under load.
-
-There's a CAN full duplex test application at the can-utils:
-https://github.com/linux-can/can-utils/blob/master/canfdtest.c
-which goes into your proposed direction (and which should probably go into
-can-tests repository).
-
-Your described test is pretty interesting too! When I find some time I will
-try your test too. Can you also post your Phython scripts here?
-
-Best regards,
-Oliver
-
-On 03/14/2015 07:15 PM, Ahmed S. Darwish wrote:
-> Hi Marc, everyone,
-> 
-> Do you have any comments on how to heavily test a CAN driver tx/rx
-> code paths?
-> 
-> Below is the approach I use, which was succesful in triggering many
-> issues in the kvaser_usb driver. I wonder though if you guys have
-> any different tricks you use for your own daily CAN driver
-> development tx/rx testing?
-> 
-> 
-> Testing method:
-> ---------------
-> 
-> On tx:
-> 
-> 	$ cangen -g1 -I111 -Di -L4 can0 &
-> 	$ cangen -g1 -I222 -Di -L4 can0 &
-> 	$ cangen -g1 -I333 -Di -L4 can0 &
-> 	$ cangen -g1 -I444 -Di -L4 can0 &
-> 
-> On the other end of the CAN bus, to test rx:
-> 
-> 	$ cangen -g0 -I555 -Di -L4 can0 &
-> 	$ cangen -g1 -I666 -Di -L4 can0 &
-> 	$ cangen -g1 -I777 -Di -L4 can0 &
-> 
-> Echo is enabled in the driver. Now doing a basic
-> 
-> 	$ candump -d -e can0,0:0,#FFFFFFFF > output.txt
-> 
-> produces too many dropped packets after around 10 minutes of use. [1]
-> 
-> Using in-kernel CAN ID filtering solves the issue nicely:
-> 
-> 	for i in {1..7}; do
-> 	    candump -e -d can0,$i$i$i:7FF > output-$i$i$i.txt &
-> 	done
-> 
-> Then the machine is left for a day or two. Afterwards, using simple
-> Python scripts, I analyze each output-XXX.txt file to ensure that
-> no packets got dropped for each `cangen' path above, and that the
-> sequential order of data generated by `cangen -Di' is still
-> maintained.
-> 
-> 
-> Thanks a lot,
-> Darwish
-> 
-> 
-> [1] As reported by SO_RCVQ_OFL, skb-attached, ancilliary messages.
->     Thanks Oliver, candump `-d' was a life-saving feature!
->     http://article.gmane.org/gmane.network.socketcan.user/179
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
