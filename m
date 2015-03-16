@@ -1,58 +1,64 @@
-From: =?utf-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v3 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Mon, 16 Mar 2015 12:45:46 +0100
-Message-ID: <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD3963@esd-s3.esd.local>
-References: <1415080039-38327-1-git-send-email-thomas.koerper@esd.eu>
- <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local>
+Date: Mon, 16 Mar 2015 12:53:53 +0100
+Message-ID: <5506C451.9010004@pengutronix.de>
+References: <1415080039-38327-1-git-send-email-thomas.koerper@esd.eu> <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local> <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD3963@esd-s3.esd.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="JmBHamk74cqp7rSK60t2robMmWQKsaE22"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mxu02.htp-tel.de ([81.14.242.9]:55514 "EHLO mxuout02.htp-tel.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752845AbbCPLp6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 16 Mar 2015 07:45:58 -0400
-In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local>
-Content-Language: de-DE
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:44938 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750736AbbCPLyA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 07:54:00 -0400
+In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD3963@esd-s3.esd.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?Thomas_K=c3=b6rper?= <Thomas.Koerper@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-SGksDQoNCmp1c3Qgbm90aWNlZCBteSBwYXRjaCB2NCBmcm9tIG5vdmVtYmVyIHdhcyBuZWl0aGVy
-IGFwcGxpZWQgbm9yDQpjb21tZW50ZWQgeWV0Li4uIHNvLCBhbnl0aGluZyBtb3JlIHRvIGJlIGRv
-bmUgaGVyZT8gOikNCg0KDQpSZWdhcmRzLA0KICAgIFRob21hcw0KDQoNCi0tLS0tVXJzcHLDvG5n
-bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogbGludXgtY2FuLW93bmVyQHZnZXIua2VybmVsLm9y
-ZyBbbWFpbHRvOmxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmddIEltIEF1ZnRyYWcgdm9u
-IFRob21hcyBLw7ZycGVyDQpHZXNlbmRldDogTWl0dHdvY2gsIDUuIE5vdmVtYmVyIDIwMTQgMDU6
-MjINCkFuOiBNYXJjIEtsZWluZS1CdWRkZTsgT2xpdmVyIEhhcnRrb3BwDQpDYzogbGludXgtY2Fu
-QHZnZXIua2VybmVsLm9yZw0KQmV0cmVmZjogQVc6IFtQQVRDSCB2MyAxLzFdIGNhbjogQWRkIHN1
-cHBvcnQgZm9yIGVzZCBDQU4gUENJZS80MDIgY2FyZA0KDQpIaSwNCg0KYWxyZWFkeSB3YXMgYWZy
-YWlkIHRoZSBtb2R1bGUgcGFyYW0gc2hvdWxkIGJlIHJlbW92ZWQgOikNCk1heSBJIHByaW50IGFs
-bCB0aGVzZSBpbmZvcyB1bmNvbmRpdGlvbmFsbHk/ICAuLi5JZiBzb21lb25lIGhhcw0KdHJvdWJs
-ZSB3aXRoIHRoZSBjYXJkIHdlIHJlYWxseSBsaWtlIHRvIHNlZSB0aGF0IHN0dWZmIGZpcnN0Lg0K
-DQpBbmQgYWJvdXQgdGhlIGNvbW1pdCBtZXNzYWdlOiBtYXliZQ0KIlRoaXMgcGF0Y2ggYWRkcyBz
-dXBwb3J0IGZvciB0aGUgQ0FOIFBDSWUvNDAyIGNhcmQgZnJvbSBlc2QgZWxlY3Ryb25pYw0Kc3lz
-dGVtIGRlc2lnbiBnbWJoLiBGUEdBIGJhc2VkIENBTiBjb250cm9sbGVyLCBzdXBwb3J0aW5nIHVw
-IHRvIDQNCm5ldHMsIE1TSSBhbmQgYnVzIG1hc3RlcmluZywgc2VlIGh0dHA6Ly9lc2QuZXUvZW4v
-cHJvZHVjdHMvY2FuLXBjaWU0MDINCmZvciBkZXRhaWxzLiI/LCBvciBzb21ldGhpbmcgc3BlY2lm
-aWMgeW91J3JlIG1pc3Npbmc/DQoNClJlZ2FyZHMsDQogICAgVGhvbWFzDQoNCg0KLS0tLS1VcnNw
-csO8bmdsaWNoZSBOYWNocmljaHQtLS0tLQ0KVm9uOiBNYXJjIEtsZWluZS1CdWRkZSBbbWFpbHRv
-Om1rbEBwZW5ndXRyb25peC5kZV0gDQpHZXNlbmRldDogRGllbnN0YWcsIDQuIE5vdmVtYmVyIDIw
-MTQgMTQ6MjYNCkFuOiBPbGl2ZXIgSGFydGtvcHA7IFRob21hcyBLw7ZycGVyDQpDYzogbGludXgt
-Y2FuQHZnZXIua2VybmVsLm9yZw0KQmV0cmVmZjogUmU6IFtQQVRDSCB2MyAxLzFdIGNhbjogQWRk
-IHN1cHBvcnQgZm9yIGVzZCBDQU4gUENJZS80MDIgY2FyZA0KDQpPbiAxMS8wNC8yMDE0IDAyOjI0
-IFBNLCBPbGl2ZXIgSGFydGtvcHAgd3JvdGU6DQo+IEhlbGxvIFRob21hcywNCj4gDQo+IGxvb2tz
-IGZhciBiZXR0ZXIgdG8gbWUgbm93LiBUaGFua3MuDQo+IA0KPiBATWFyYzogVGhlIG9ubHkgdHdv
-IHF1ZXN0aW9ucyBJIHdvdWxkIGhhdmUgaXMgdGhpcyBwcmV0dHkgc2hvcnQgY29tbWl0IA0KPiBt
-ZXNzYWdlIGFuZCB0aGUgbW9kdWxlIHBhcmFtZXRlci4NCj4gV2hhdCBkbyB5b3UgdGhpbmsgYWJv
-dXQgaXQgKGFuZCB0aGUgcmVzdCk/DQoNClllcywgdGhlIGNvbW1pdCBtZXNzYWdlIHNob3VsZCBi
-ZSBhIGJpdCBtb3JlIHZlcmJvc2UuIEFuZCB0aGUgbW9kdWxlIHBhcmFtZXRlciBzaG91bGQgcHJv
-YmFibHkgYmUgcmVtb3ZlZC4NCg0KSSdtIGN1cnJlbnRseSByZXZpZXdpbmcgU3RlZmFubyBCYWJp
-YydzIFNQSSBkcml2ZXIsIHdoaWNoIGhhcyBiZWVuIHdhaXRpbmcgZm9yIHJldmlldyBhIGJpdCBs
-b25nZXIuDQoNCk1hcmMNCg0KLS0gDQpQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAg
-fCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlv
-bnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2Vz
-dC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRz
-Z2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRl
-ICAgfA0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JmBHamk74cqp7rSK60t2robMmWQKsaE22
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 03/16/2015 12:45 PM, Thomas K=C3=B6rper wrote:
+> just noticed my patch v4 from november was neither applied nor
+> commented yet... so, anything more to be done here? :)
+
+Sorry - please remove the module parameters and resend.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--JmBHamk74cqp7rSK60t2robMmWQKsaE22
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVBsRUAAoJECte4hHFiupUuHUQAKfv2Z60KeOMk9hmobk85w4z
+LhiS9FdPKwOC5MTpzo4P26/jQof/ySlF9gEg0L5GEo9W/h4Zb9IYWUN5n5dM4Tdf
+F8dgBm+BtQYOKwH9L+IpdCcpbJag48rOj7g+VeL2LHlQ3CjoOW+m39e+a6BOpkl2
+aYoAWHs/AoH7TJLDX+xbQTYrlpDoHf2lpEAWH2PcfrwCQE9vXKk0JJ2FWL8RIVV8
+ivp+gWlAeEUOiH8EmfiAqwf+8de1gdv8CQhKRZVRE65yQ4THdCWgm+3BVoSEbDax
+L/KnfSm7+m/AWCmWnOk88ZMWYkIuDscKiDIjh03jX8gef5Q/bIGse4YCjxN8lNEP
+xvxez2RnZgOcDfj+KaqD04JUBA7oOYqV+cUWaOwZ2/rSymDIkYJj9maSHGftdnKh
+9H490IOazD6uP7ABJe0g5bDX/4xsSw2HnVv2jw4CIqahJfkcM04pTg6EV/hOZA16
+YuqoyY4mmV3ZpAUPioPNASq6lcSbBrPUzplqsEyxsEcudrPePfDidKi+TIOgWEMr
+oX5xwJ75/fnhamlIeYhysHT4P+8GM9Mni0zXgh8s//US0tHgEY9prnVCuhbZiEYY
+LRqviZm3Hr/xbYtGPFUMd+gFJ/5x2d2lys/tU3382CtiASZNp7KY+yC5gYBKor3r
+/VYQkeOfLTK8fU+y0ygQ
+=+zgB
+-----END PGP SIGNATURE-----
+
+--JmBHamk74cqp7rSK60t2robMmWQKsaE22--
