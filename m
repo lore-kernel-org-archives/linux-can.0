@@ -1,165 +1,58 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 1/2] peak_usb: rename usb option cmds definition and structs
-Date: Mon, 16 Mar 2015 12:21:06 +0100
-Message-ID: <5506BCA2.5000302@hartkopp.net>
-References: <1426503473-7403-1-git-send-email-s.grosjean@peak-system.com>
+From: =?utf-8?B?VGhvbWFzIEvDtnJwZXI=?= <Thomas.Koerper@esd.eu>
+Subject: Re: [PATCH v3 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Mon, 16 Mar 2015 12:45:46 +0100
+Message-ID: <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD3963@esd-s3.esd.local>
+References: <1415080039-38327-1-git-send-email-thomas.koerper@esd.eu>
+ <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:36069 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750972AbbCPLVS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 07:21:18 -0400
-In-Reply-To: <1426503473-7403-1-git-send-email-s.grosjean@peak-system.com>
+Received: from mxu02.htp-tel.de ([81.14.242.9]:55514 "EHLO mxuout02.htp-tel.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752845AbbCPLp6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 16 Mar 2015 07:45:58 -0400
+In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E02BB65D1BB24@esd-s3.esd.local>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Both patches tested on Linux 4.0.0-rc4.
-
-Thanks Stephane!
-
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-
-
-On 03/16/2015 11:57 AM, Stephane Grosjean wrote:
-> The PUCAN_CMD_RX_FRAME_(ENABLE|DISABLE) command has extended its purpose
-> and was therefore renamed to PUCAN_CMD_SET_(EN|DIS)_OPTION.
-> 
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/usb/peak_usb/pcan_ucan.h   | 14 +++++-----
->  drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 42 +++++++++++++++---------------
->  2 files changed, 28 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_ucan.h b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-> index 1ba7c25..1fb3330 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_ucan.h
-> +++ b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-> @@ -26,8 +26,8 @@
->  #define PUCAN_CMD_FILTER_STD		0x008
->  #define PUCAN_CMD_TX_ABORT		0x009
->  #define PUCAN_CMD_WR_ERR_CNT		0x00a
-> -#define PUCAN_CMD_RX_FRAME_ENABLE	0x00b
-> -#define PUCAN_CMD_RX_FRAME_DISABLE	0x00c
-> +#define PUCAN_CMD_SET_EN_OPTION		0x00b
-> +#define PUCAN_CMD_CLR_DIS_OPTION	0x00c
->  #define PUCAN_CMD_END_OF_COLLECTION	0x3ff
->  
->  /* uCAN received messages list */
-> @@ -101,14 +101,14 @@ struct __packed pucan_wr_err_cnt {
->  	u16	unused;
->  };
->  
-> -/* uCAN RX_FRAME_ENABLE command fields */
-> -#define PUCAN_FLTEXT_ERROR		0x0001
-> -#define PUCAN_FLTEXT_BUSLOAD		0x0002
-> +/* uCAN SET_EN/CLR_DIS _OPTION command fields */
-> +#define PUCAN_OPTION_ERROR		0x0001
-> +#define PUCAN_OPTION_BUSLOAD		0x0002
->  
-> -struct __packed pucan_filter_ext {
-> +struct __packed pucan_options {
->  	__le16	opcode_channel;
->  
-> -	__le16	ext_mask;
-> +	__le16	options;
->  	u32	unused;
->  };
->  
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> index 0bac0f1..7506a83 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> @@ -110,13 +110,13 @@ struct __packed pcan_ufd_led {
->  	u8	unused[5];
->  };
->  
-> -/* Extended usage of uCAN commands CMD_RX_FRAME_xxxABLE for PCAN-USB Pro FD */
-> +/* Extended usage of uCAN commands CMD_xxx_xx_OPTION for PCAN-USB Pro FD */
->  #define PCAN_UFD_FLTEXT_CALIBRATION	0x8000
->  
-> -struct __packed pcan_ufd_filter_ext {
-> +struct __packed pcan_ufd_options {
->  	__le16	opcode_channel;
->  
-> -	__le16	ext_mask;
-> +	__le16	ucan_mask;
->  	u16	unused;
->  	__le16	usb_mask;
->  };
-> @@ -321,21 +321,21 @@ static int pcan_usb_fd_set_filter_std(struct peak_usb_device *dev, int idx,
->  	return pcan_usb_fd_send_cmd(dev, cmd);
->  }
->  
-> -/* set/unset notifications filter:
-> +/* set/unset options
->   *
-> - *	onoff	sets(1)/unset(0) notifications
-> - *	mask	each bit defines a kind of notification to set/unset
-> + *	onoff	set(1)/unset(0) options
-> + *	mask	each bit defines a kind of options to set/unset
->   */
-> -static int pcan_usb_fd_set_filter_ext(struct peak_usb_device *dev,
-> -				      bool onoff, u16 ext_mask, u16 usb_mask)
-> +static int pcan_usb_fd_set_options(struct peak_usb_device *dev,
-> +				   bool onoff, u16 ucan_mask, u16 usb_mask)
->  {
-> -	struct pcan_ufd_filter_ext *cmd = pcan_usb_fd_cmd_buffer(dev);
-> +	struct pcan_ufd_options *cmd = pcan_usb_fd_cmd_buffer(dev);
->  
->  	cmd->opcode_channel = pucan_cmd_opcode_channel(dev,
-> -					(onoff) ? PUCAN_CMD_RX_FRAME_ENABLE :
-> -						  PUCAN_CMD_RX_FRAME_DISABLE);
-> +					(onoff) ? PUCAN_CMD_SET_EN_OPTION :
-> +						  PUCAN_CMD_CLR_DIS_OPTION);
->  
-> -	cmd->ext_mask = cpu_to_le16(ext_mask);
-> +	cmd->ucan_mask = cpu_to_le16(ucan_mask);
->  	cmd->usb_mask = cpu_to_le16(usb_mask);
->  
->  	/* send the command */
-> @@ -770,9 +770,9 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
->  				       &pcan_usb_pro_fd);
->  
->  		/* enable USB calibration messages */
-> -		err = pcan_usb_fd_set_filter_ext(dev, 1,
-> -						 PUCAN_FLTEXT_ERROR,
-> -						 PCAN_UFD_FLTEXT_CALIBRATION);
-> +		err = pcan_usb_fd_set_options(dev, 1,
-> +					      PUCAN_OPTION_ERROR,
-> +					      PCAN_UFD_FLTEXT_CALIBRATION);
->  	}
->  
->  	pdev->usb_if->dev_opened_count++;
-> @@ -806,9 +806,9 @@ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
->  
->  	/* turn off special msgs for that interface if no other dev opened */
->  	if (pdev->usb_if->dev_opened_count == 1)
-> -		pcan_usb_fd_set_filter_ext(dev, 0,
-> -					   PUCAN_FLTEXT_ERROR,
-> -					   PCAN_UFD_FLTEXT_CALIBRATION);
-> +		pcan_usb_fd_set_options(dev, 0,
-> +					PUCAN_OPTION_ERROR,
-> +					PCAN_UFD_FLTEXT_CALIBRATION);
->  	pdev->usb_if->dev_opened_count--;
->  
->  	return 0;
-> @@ -937,9 +937,9 @@ static void pcan_usb_fd_exit(struct peak_usb_device *dev)
->  	if (dev->ctrl_idx == 0) {
->  		/* turn off calibration message if any device were opened */
->  		if (pdev->usb_if->dev_opened_count > 0)
-> -			pcan_usb_fd_set_filter_ext(dev, 0,
-> -						   PUCAN_FLTEXT_ERROR,
-> -						   PCAN_UFD_FLTEXT_CALIBRATION);
-> +			pcan_usb_fd_set_options(dev, 0,
-> +						PUCAN_OPTION_ERROR,
-> +						PCAN_UFD_FLTEXT_CALIBRATION);
->  
->  		/* tell USB adapter that the driver is being unloaded */
->  		pcan_usb_fd_drv_loaded(dev, 0);
-> 
+SGksDQoNCmp1c3Qgbm90aWNlZCBteSBwYXRjaCB2NCBmcm9tIG5vdmVtYmVyIHdhcyBuZWl0aGVy
+IGFwcGxpZWQgbm9yDQpjb21tZW50ZWQgeWV0Li4uIHNvLCBhbnl0aGluZyBtb3JlIHRvIGJlIGRv
+bmUgaGVyZT8gOikNCg0KDQpSZWdhcmRzLA0KICAgIFRob21hcw0KDQoNCi0tLS0tVXJzcHLDvG5n
+bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogbGludXgtY2FuLW93bmVyQHZnZXIua2VybmVsLm9y
+ZyBbbWFpbHRvOmxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmddIEltIEF1ZnRyYWcgdm9u
+IFRob21hcyBLw7ZycGVyDQpHZXNlbmRldDogTWl0dHdvY2gsIDUuIE5vdmVtYmVyIDIwMTQgMDU6
+MjINCkFuOiBNYXJjIEtsZWluZS1CdWRkZTsgT2xpdmVyIEhhcnRrb3BwDQpDYzogbGludXgtY2Fu
+QHZnZXIua2VybmVsLm9yZw0KQmV0cmVmZjogQVc6IFtQQVRDSCB2MyAxLzFdIGNhbjogQWRkIHN1
+cHBvcnQgZm9yIGVzZCBDQU4gUENJZS80MDIgY2FyZA0KDQpIaSwNCg0KYWxyZWFkeSB3YXMgYWZy
+YWlkIHRoZSBtb2R1bGUgcGFyYW0gc2hvdWxkIGJlIHJlbW92ZWQgOikNCk1heSBJIHByaW50IGFs
+bCB0aGVzZSBpbmZvcyB1bmNvbmRpdGlvbmFsbHk/ICAuLi5JZiBzb21lb25lIGhhcw0KdHJvdWJs
+ZSB3aXRoIHRoZSBjYXJkIHdlIHJlYWxseSBsaWtlIHRvIHNlZSB0aGF0IHN0dWZmIGZpcnN0Lg0K
+DQpBbmQgYWJvdXQgdGhlIGNvbW1pdCBtZXNzYWdlOiBtYXliZQ0KIlRoaXMgcGF0Y2ggYWRkcyBz
+dXBwb3J0IGZvciB0aGUgQ0FOIFBDSWUvNDAyIGNhcmQgZnJvbSBlc2QgZWxlY3Ryb25pYw0Kc3lz
+dGVtIGRlc2lnbiBnbWJoLiBGUEdBIGJhc2VkIENBTiBjb250cm9sbGVyLCBzdXBwb3J0aW5nIHVw
+IHRvIDQNCm5ldHMsIE1TSSBhbmQgYnVzIG1hc3RlcmluZywgc2VlIGh0dHA6Ly9lc2QuZXUvZW4v
+cHJvZHVjdHMvY2FuLXBjaWU0MDINCmZvciBkZXRhaWxzLiI/LCBvciBzb21ldGhpbmcgc3BlY2lm
+aWMgeW91J3JlIG1pc3Npbmc/DQoNClJlZ2FyZHMsDQogICAgVGhvbWFzDQoNCg0KLS0tLS1VcnNw
+csO8bmdsaWNoZSBOYWNocmljaHQtLS0tLQ0KVm9uOiBNYXJjIEtsZWluZS1CdWRkZSBbbWFpbHRv
+Om1rbEBwZW5ndXRyb25peC5kZV0gDQpHZXNlbmRldDogRGllbnN0YWcsIDQuIE5vdmVtYmVyIDIw
+MTQgMTQ6MjYNCkFuOiBPbGl2ZXIgSGFydGtvcHA7IFRob21hcyBLw7ZycGVyDQpDYzogbGludXgt
+Y2FuQHZnZXIua2VybmVsLm9yZw0KQmV0cmVmZjogUmU6IFtQQVRDSCB2MyAxLzFdIGNhbjogQWRk
+IHN1cHBvcnQgZm9yIGVzZCBDQU4gUENJZS80MDIgY2FyZA0KDQpPbiAxMS8wNC8yMDE0IDAyOjI0
+IFBNLCBPbGl2ZXIgSGFydGtvcHAgd3JvdGU6DQo+IEhlbGxvIFRob21hcywNCj4gDQo+IGxvb2tz
+IGZhciBiZXR0ZXIgdG8gbWUgbm93LiBUaGFua3MuDQo+IA0KPiBATWFyYzogVGhlIG9ubHkgdHdv
+IHF1ZXN0aW9ucyBJIHdvdWxkIGhhdmUgaXMgdGhpcyBwcmV0dHkgc2hvcnQgY29tbWl0IA0KPiBt
+ZXNzYWdlIGFuZCB0aGUgbW9kdWxlIHBhcmFtZXRlci4NCj4gV2hhdCBkbyB5b3UgdGhpbmsgYWJv
+dXQgaXQgKGFuZCB0aGUgcmVzdCk/DQoNClllcywgdGhlIGNvbW1pdCBtZXNzYWdlIHNob3VsZCBi
+ZSBhIGJpdCBtb3JlIHZlcmJvc2UuIEFuZCB0aGUgbW9kdWxlIHBhcmFtZXRlciBzaG91bGQgcHJv
+YmFibHkgYmUgcmVtb3ZlZC4NCg0KSSdtIGN1cnJlbnRseSByZXZpZXdpbmcgU3RlZmFubyBCYWJp
+YydzIFNQSSBkcml2ZXIsIHdoaWNoIGhhcyBiZWVuIHdhaXRpbmcgZm9yIHJldmlldyBhIGJpdCBs
+b25nZXIuDQoNCk1hcmMNCg0KLS0gDQpQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAg
+fCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlv
+bnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2Vz
+dC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRz
+Z2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRl
+ICAgfA0K
