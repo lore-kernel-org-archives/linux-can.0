@@ -1,36 +1,37 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/1] can: esd_usb2: Fix sparse warnings
-Date: Mon, 16 Mar 2015 14:24:41 +0100
-Message-ID: <5506D999.8000609@pengutronix.de>
-References: <1426495709-10810-1-git-send-email-thomas.koerper@esd.eu>
+Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Mon, 16 Mar 2015 14:35:03 +0100
+Message-ID: <5506DC07.90700@pengutronix.de>
+References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu> <20150316124621.14895.31220@shannon>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="99fieoOsxt2uIEsDKntjxufLlMQohWAL2"
+ boundary="2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54944 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48362 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750936AbbCPNYv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:24:51 -0400
-In-Reply-To: <1426495709-10810-1-git-send-email-thomas.koerper@esd.eu>
+	with ESMTP id S1751793AbbCPNfQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:35:16 -0400
+In-Reply-To: <20150316124621.14895.31220@shannon>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Thomas_K=c3=b6rper?= <thomas.koerper@esd.eu>, linux-can@vger.kernel.org
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+Cc: =?UTF-8?Q?Thomas_K=c3=b6rper?= <thomas.koerper@esd.eu>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---99fieoOsxt2uIEsDKntjxufLlMQohWAL2
+--2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/16/2015 09:48 AM, Thomas K=C3=B6rper wrote:
-> The hnd field of the structs does not need to be __le32: the
-> device just returns the value without using it itself.
->=20
-> Signed-off-by: Thomas K=C3=B6rper <thomas.koerper@esd.eu>
+On 03/16/2015 01:46 PM, Andri Yngvason wrote:
+> can_change_state() is now used in mscan, flexcan, sja1000, kvaser and p=
+eak.
+> Those drivers should provide sufficent examples for you to learn how to=
+ use the
+> function.
 
-Applied to can-next.
+Thanks for keeping an eye on the CAN error handling, Andri.
 
-Thanks,
 Marc
 
 --=20
@@ -40,7 +41,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---99fieoOsxt2uIEsDKntjxufLlMQohWAL2
+--2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -48,19 +49,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVBtmgAAoJECte4hHFiupUId4P/ROIUdpHQ5W7PJYNWiuBhnls
-Qz3aXg8HjIPr1PUWewTyCGLKuHCPTNir20PPXppdJrZp2A3zZdJlcQCL88yx4xTN
-D/otCtmwQhR20gw3p12X7prZTC2CVnKIwpt7baGolGGKvyAipAMKJKkLEGUBG9e+
-zWmYoIuwUSXLqPcm6lcZBR8BKlPjqkCTbf9/GfuXP1dJbPZtiJs/wWzUNNl/fVC7
-IFGoZ/zwMKtrxXDgVh6jvr7r4KFWEPnVhyKpuBVFIdz0ZsS0XzkaHgD2VvY/QF+I
-LKcaaSkmWGweF6B8q3dZVSCwbLkfTUvi127tvNoItysQ3N9efzEyOCATxS8oFNA+
-BxrcD6w8dQ2etRliJE2dO54hI0sz6nCQ5BNIJAzKdhs9us+l7VjSs5u4wa6g27Zu
-BiNDfNbne/cGbRCwm7DII9NrOSrx93Y2xut05MttL8eWdc6jCPgPp+6aLxw4F7hY
-hTZzFq6VrEWlb2MLyO9tc6AUgYvNg8x8CVSNSzIufkOkZsc6aEjeZAmqo8Zc+AZz
-ebqhf+VWs0oQEPY23IksAd0XdsQJ60hC5jPUx8uAgAUnpxo9oZOPKsqMtWHM12MQ
-smW4IzTD3uLV4cb3Itrwwj+pG0ZJRFk2XuOSTcfAfc0SsszTy4W8FHbJcDPqZQqy
-I7sGxkct0ZdVkTIqXPdC
-=0e5t
+iQIcBAEBCgAGBQJVBtwRAAoJECte4hHFiupU110P/1Vshy6R57IVs4zexFTKdQO1
+ljnPahT8UElhtNri0XgBiwHp5B9DzjWi2Cv+Pf023srl0/J/3WhqHWHd7Wz9sTQE
+RHXQpbQvVfQW6/nn4i0wQyhOJ+GTsiOJygugw6l7trjBFmq6vdo1V1s5wwlj8ZGm
+tiVWBjga9kkhtd5Euw9g7QlLm2Fgvgmsu9yLPy87TSDKzUwXwS9n52Lx2zhaqqoa
+w9+FACp1/9E6dsme8hjHOdJ6E0DV+JmHk7/tnJub6iTvMGCUiacbLy7ELx5xyuN9
+AmptjaBWOVBBXor8OpP+cSPUTdUPJeWxbdaAcXWHQXDSovq9raT+aUMrAjMvCsm7
+wl1kioLZwwOI1sxcQCImiMesA/ZcJixmLUjLIrf5OejCQNZOx/ZhrGoWl4DgR+fT
+KAFoxFP+ob1TnAcCiSzjzfXeEe93pcdAk01icbltnT9+63eiGpfmpkiI3OAPofcI
+jeWMNEZKY0QzOuAUY3WOgpWgpQeCJ5/oSZFzpHm4RgsdTjRBTbGIMbvU/sEk0jJW
+Hbw6/+ipNnVRkpICiDMXlO+NdtU0Vj+PPhRcAek04mFNoXjEXY20E67iw8nBP1Yg
+iI1m5JPNqsuTc/i6gKkxTnsRAY4NjzTjpOk+EQmyeCpRqhdAZ11zt0mKxZGr5fWj
+x02JTbcqLEXJsqqEq7rr
+=HOeE
 -----END PGP SIGNATURE-----
 
---99fieoOsxt2uIEsDKntjxufLlMQohWAL2--
+--2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B--
