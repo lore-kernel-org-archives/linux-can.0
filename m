@@ -1,40 +1,109 @@
-From: Matthias Fuchs <matthias.fuchs@esd.eu>
-Subject: Re: esd_usb2: endianess warning
-Date: Mon, 16 Mar 2015 08:14:44 +0100
-Message-ID: <550682E4.8090901@esd.eu>
-References: <550446A5.80702@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Methods for testing CAN drivers tx/rx paths
+Date: Mon, 16 Mar 2015 09:37:08 +0100
+Message-ID: <55069634.3020400@hartkopp.net>
+References: <20150314181520.GA19643@vivalin-002>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mxu02.htp-tel.de ([81.14.242.9]:50518 "EHLO mxuout02.htp-tel.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750950AbbCPHhh (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 16 Mar 2015 03:37:37 -0400
-In-Reply-To: <550446A5.80702@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:13117 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752166AbbCPIhR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 04:37:17 -0400
+In-Reply-To: <20150314181520.GA19643@vivalin-002>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?UTF-8?B?VGhvbWFzIEvDtnJwZXI=?= <thomas.koerper@esd.eu>
+To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>
 
-Marc,
+Hi Ahmed,
 
-Thomas will care about maintainership of this driver from now on.
-He will post a patch soon.
+I'm taking care of the network layer packet flow with this test script:
 
-Matthias
+https://github.com/linux-can/can-tests/blob/master/test_netlayer.sh
 
-On 14.03.2015 15:33, Marc Kleine-Budde wrote:
-> Hello,
->
-> when compiling with sparse (make C=2), the esd driver throws the
-> following warning, can someone, preferred the driver author :), take
-> care of fixing them?
->
->> drivers/net/can/usb/esd_usb2.c:369:53: warning: restricted __le32 degrades to integer
->> drivers/net/can/usb/esd_usb2.c:791:25: warning: incorrect type in assignment (different base types)
->> drivers/net/can/usb/esd_usb2.c:791:25:    expected restricted __le32 [usertype] hnd
->> drivers/net/can/usb/esd_usb2.c:791:25:    got unsigned int
->
-> regards,
-> Marc
->
+The script checks whether CAN specific information inside the skbuff survives
+the networking stack which is always in move.
+
+For driver testing I use this CAN hardware
+http://www.peak-system.com/PCAN-MicroMod-Evaluation.221.0.html
+with a special firmware that's able to generate 100% busload.
+
+Putting this load to a CAN bus I additionally try to send frames on the bus
+with that interface or do unfriendly unplugging (e.g. for USB / PCMCIA).
+
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=a7762b10c12a70c5dbf2253142764b728ac88c3a
+
+So when doing some test I'm mainly checking for stability under load.
+
+There's a CAN full duplex test application at the can-utils:
+https://github.com/linux-can/can-utils/blob/master/canfdtest.c
+which goes into your proposed direction (and which should probably go into
+can-tests repository).
+
+Your described test is pretty interesting too! When I find some time I will
+try your test too. Can you also post your Phython scripts here?
+
+Best regards,
+Oliver
+
+On 03/14/2015 07:15 PM, Ahmed S. Darwish wrote:
+> Hi Marc, everyone,
+> 
+> Do you have any comments on how to heavily test a CAN driver tx/rx
+> code paths?
+> 
+> Below is the approach I use, which was succesful in triggering many
+> issues in the kvaser_usb driver. I wonder though if you guys have
+> any different tricks you use for your own daily CAN driver
+> development tx/rx testing?
+> 
+> 
+> Testing method:
+> ---------------
+> 
+> On tx:
+> 
+> 	$ cangen -g1 -I111 -Di -L4 can0 &
+> 	$ cangen -g1 -I222 -Di -L4 can0 &
+> 	$ cangen -g1 -I333 -Di -L4 can0 &
+> 	$ cangen -g1 -I444 -Di -L4 can0 &
+> 
+> On the other end of the CAN bus, to test rx:
+> 
+> 	$ cangen -g0 -I555 -Di -L4 can0 &
+> 	$ cangen -g1 -I666 -Di -L4 can0 &
+> 	$ cangen -g1 -I777 -Di -L4 can0 &
+> 
+> Echo is enabled in the driver. Now doing a basic
+> 
+> 	$ candump -d -e can0,0:0,#FFFFFFFF > output.txt
+> 
+> produces too many dropped packets after around 10 minutes of use. [1]
+> 
+> Using in-kernel CAN ID filtering solves the issue nicely:
+> 
+> 	for i in {1..7}; do
+> 	    candump -e -d can0,$i$i$i:7FF > output-$i$i$i.txt &
+> 	done
+> 
+> Then the machine is left for a day or two. Afterwards, using simple
+> Python scripts, I analyze each output-XXX.txt file to ensure that
+> no packets got dropped for each `cangen' path above, and that the
+> sequential order of data generated by `cangen -Di' is still
+> maintained.
+> 
+> 
+> Thanks a lot,
+> Darwish
+> 
+> 
+> [1] As reported by SO_RCVQ_OFL, skb-attached, ancilliary messages.
+>     Thanks Oliver, candump `-d' was a life-saving feature!
+>     http://article.gmane.org/gmane.network.socketcan.user/179
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
