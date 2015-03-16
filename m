@@ -1,73 +1,104 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 1/2] can: kvaser_usb: Comply with firmware max
- tx URBs value
-Date: Mon, 16 Mar 2015 13:56:39 +0100
-Message-ID: <5506D307.7030703@pengutronix.de>
-References: <20150226152011.GA6075@linux> <20150315150338.GA4492@linux> <5505CA97.6020503@pengutronix.de> <20150316121636.GA14280@linux>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Mon, 16 Mar 2015 12:46:21 +0000
+Message-ID: <20150316124621.14895.31220@shannon>
+References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="JdxreEjaR9FkHd5nuwWRQA3V41ki2xi0T"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150316121636.GA14280@linux>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc: Olivier Sobrie <olivier@sobrie.be>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JdxreEjaR9FkHd5nuwWRQA3V41ki2xi0T
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-db3on0099.outbound.protection.outlook.com ([157.55.234.99]:15552
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751732AbbCPNCK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:02:10 -0400
+In-Reply-To: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: =?utf-8?q?Thomas_K=C3=B6rper?= <thomas.koerper@esd.eu>
 
-On 03/16/2015 01:16 PM, Ahmed S. Darwish wrote:
->>> -	netdev_dbg(netdev, "device registered\n");
->>> +	netdev_info(netdev, "device registered\n");
->>
->> This makes the driver more noisy, I'd like to drop that hunk, okay? No=
+Quoting Thomas K=C3=B6rper (2015-03-16 12:15:13)
+[...]
+> +static void
+> +handle_core_msg_errstatechange(struct acc_core *core,
+> +                              const struct acc_bmmsg_errstatechange =
+*msg)
+> +{
+> +       struct acc_net_priv *priv =3D netdev_priv(core->net_dev);
+> +       struct net_device_stats *stats =3D &core->net_dev->stats;
+> +       struct can_frame *cf;
+> +       struct sk_buff *skb;
+> +       int is_busoff;
+> +       int is_passive;
+> +       int is_warning;
+> +       u8 txerr;
+> +       u8 rxerr;
+> +
+> +       txerr =3D (u8)(msg->reg_status >> 8);
+> +       rxerr =3D (u8)msg->reg_status;
+> +       is_warning =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_=
+ES) !=3D 0;
+> +       is_passive =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_=
+EP) !=3D 0;
+> +       is_busoff =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_B=
+S) !=3D 0;
+> +
+> +       skb =3D alloc_can_err_skb(core->net_dev, &cf);
+> +       if (skb) {
+> +               if (is_busoff) {
+> +                       priv->can.state =3D CAN_STATE_BUS_OFF;
+> +                       /* bus-offs counted by can_bus_off() */
+> +                       cf->can_id |=3D CAN_ERR_BUSOFF;
+> +               } else if (is_passive) {
+> +                       priv->can.state =3D CAN_STATE_ERROR_PASSIVE;
+> +                       priv->can.can_stats.error_passive++;
+> +                       cf->data[1] =3D (txerr > rxerr) ?
+> +                                       CAN_ERR_CRTL_TX_PASSIVE :
+> +                                       CAN_ERR_CRTL_RX_PASSIVE;
+> +                       cf->can_id |=3D CAN_ERR_CRTL;
+> +                       cf->data[6] =3D txerr;
+> +                       cf->data[7] =3D rxerr;
+> +               } else if (is_warning) {
+> +                       priv->can.state =3D CAN_STATE_ERROR_WARNING;
+> +                       priv->can.can_stats.error_warning++;
+> +                       cf->data[1] =3D (txerr > rxerr) ?
+> +                                       CAN_ERR_CRTL_TX_WARNING :
+> +                                       CAN_ERR_CRTL_RX_WARNING;
+> +                       cf->can_id |=3D CAN_ERR_CRTL;
+> +                       cf->data[6] =3D txerr;
+> +                       cf->data[7] =3D rxerr;
+> +               } else {
+> +                       priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+> +                       /* restarts counted in dev.c */
+>
+There is now a back-to-error-active message available for use, so you c=
+an do
+    cf->can_id =3D CAN_ERR_CRTL;
+    cf->data[1] =3D CAN_ERROR_CRTL_ACTIVE.
+However, you could shave off a few lines in this code by using
+can_change_state().
+>
+> +               }
+> +
+> +               netif_rx(skb);
+> +               stats->rx_packets++;
+> +               stats->rx_bytes +=3D cf->can_dlc;
+> +       }
+> +
+> +       if (is_busoff) {
+> +               acc_write32(core, ACC_CORE_OF_TX_ABORT_MASK, 0xffff);
+> +               can_bus_off(core->net_dev);
+> +       }
+> +}
+> +
+[...]
 
->> need to resend.
+can_change_state() is now used in mscan, flexcan, sja1000, kvaser and p=
+eak.
+Those drivers should provide sufficent examples for you to learn how to=
+ use the
+function.
 
-> Sure, go ahead.
-
-Thanks.
-
-> I have my reasons for that hunk above, but we can always discuss
-> this in another separate patch ;-)
-
-Don't try to sneak in unrelated changes :) I'd like to have the drivers
-more quiet these days, even when doing ifup, ifdown.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---JdxreEjaR9FkHd5nuwWRQA3V41ki2xi0T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVBtMKAAoJECte4hHFiupUg+sP/jpxhqMFLE6t4gL2eWmALfAF
-uOGTLt7rLGSDRh/1HjOE1jQmo9EwbD/hvL/gbPRVxupudZFxff7OhvzLAiWkKwmm
-kRQRM0K7PtE+mtcArT5Hh/rOCzqaKRTWhrbLmOi8rJZJyQOQ2qi8aLd7znRbjCYs
-HDOy2dR0UIDu2PRGvc/DS5anltaNjYjt00EbGGqDkWfwmD9mYy3xoh0hcJY4HyDI
-e5Y8z5OaNy3eEC2jBTe43Zx67ASCxos7BWzQA1ubhhUbz7VR+BzSQpWFoBpcdf3G
-p5w/1Vr48CieOWvLQlpviwA0YktWWC41VxTOhOuqxa1A5yERaILreR8kwk8d5HX0
-IRU8K3FdFOWJyT2hJim9beIte2KAvRFFOUr8nMhjeYPzI9CCY3HlB+/eiYRJTPse
-tzV34APBLe1WdeeiwzN4Lw3nnmfGiHQWLLNLsDv0730m2OM/pzeUPU75g7BSeMII
-CubjfWy5SyCWIh9q0o8LE0E2fPz2he9Nzdq8AMory0IvnZPjz2GtbLMP3lWpDloT
-bgdkUHKRI7DxCxmpW8Qa0q17n9yg3gB4plrSrV3RPd8ctoOZX/IUz0sii0sgnBWt
-xdqf8AqkIaI6K++6HhJ/gWmgywM8QpBDptr61tdCwP0cPZv2wrQpPVbWpH4rnqzY
-JTQm1v6I2wr2l2beXaPj
-=5xmP
------END PGP SIGNATURE-----
-
---JdxreEjaR9FkHd5nuwWRQA3V41ki2xi0T--
+Best regards,
+Andri Yngvason
