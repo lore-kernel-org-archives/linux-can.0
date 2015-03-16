@@ -1,104 +1,66 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Mon, 16 Mar 2015 12:46:21 +0000
-Message-ID: <20150316124621.14895.31220@shannon>
-References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/1] can: esd_usb2: Fix sparse warnings
+Date: Mon, 16 Mar 2015 14:24:41 +0100
+Message-ID: <5506D999.8000609@pengutronix.de>
+References: <1426495709-10810-1-git-send-email-thomas.koerper@esd.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="99fieoOsxt2uIEsDKntjxufLlMQohWAL2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0099.outbound.protection.outlook.com ([157.55.234.99]:15552
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751732AbbCPNCK convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:02:10 -0400
-In-Reply-To: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:54944 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750936AbbCPNYv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:24:51 -0400
+In-Reply-To: <1426495709-10810-1-git-send-email-thomas.koerper@esd.eu>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: =?utf-8?q?Thomas_K=C3=B6rper?= <thomas.koerper@esd.eu>
+To: =?UTF-8?Q?Thomas_K=c3=b6rper?= <thomas.koerper@esd.eu>, linux-can@vger.kernel.org
 
-Quoting Thomas K=C3=B6rper (2015-03-16 12:15:13)
-[...]
-> +static void
-> +handle_core_msg_errstatechange(struct acc_core *core,
-> +                              const struct acc_bmmsg_errstatechange =
-*msg)
-> +{
-> +       struct acc_net_priv *priv =3D netdev_priv(core->net_dev);
-> +       struct net_device_stats *stats =3D &core->net_dev->stats;
-> +       struct can_frame *cf;
-> +       struct sk_buff *skb;
-> +       int is_busoff;
-> +       int is_passive;
-> +       int is_warning;
-> +       u8 txerr;
-> +       u8 rxerr;
-> +
-> +       txerr =3D (u8)(msg->reg_status >> 8);
-> +       rxerr =3D (u8)msg->reg_status;
-> +       is_warning =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_=
-ES) !=3D 0;
-> +       is_passive =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_=
-EP) !=3D 0;
-> +       is_busoff =3D (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_B=
-S) !=3D 0;
-> +
-> +       skb =3D alloc_can_err_skb(core->net_dev, &cf);
-> +       if (skb) {
-> +               if (is_busoff) {
-> +                       priv->can.state =3D CAN_STATE_BUS_OFF;
-> +                       /* bus-offs counted by can_bus_off() */
-> +                       cf->can_id |=3D CAN_ERR_BUSOFF;
-> +               } else if (is_passive) {
-> +                       priv->can.state =3D CAN_STATE_ERROR_PASSIVE;
-> +                       priv->can.can_stats.error_passive++;
-> +                       cf->data[1] =3D (txerr > rxerr) ?
-> +                                       CAN_ERR_CRTL_TX_PASSIVE :
-> +                                       CAN_ERR_CRTL_RX_PASSIVE;
-> +                       cf->can_id |=3D CAN_ERR_CRTL;
-> +                       cf->data[6] =3D txerr;
-> +                       cf->data[7] =3D rxerr;
-> +               } else if (is_warning) {
-> +                       priv->can.state =3D CAN_STATE_ERROR_WARNING;
-> +                       priv->can.can_stats.error_warning++;
-> +                       cf->data[1] =3D (txerr > rxerr) ?
-> +                                       CAN_ERR_CRTL_TX_WARNING :
-> +                                       CAN_ERR_CRTL_RX_WARNING;
-> +                       cf->can_id |=3D CAN_ERR_CRTL;
-> +                       cf->data[6] =3D txerr;
-> +                       cf->data[7] =3D rxerr;
-> +               } else {
-> +                       priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-> +                       /* restarts counted in dev.c */
->
-There is now a back-to-error-active message available for use, so you c=
-an do
-    cf->can_id =3D CAN_ERR_CRTL;
-    cf->data[1] =3D CAN_ERROR_CRTL_ACTIVE.
-However, you could shave off a few lines in this code by using
-can_change_state().
->
-> +               }
-> +
-> +               netif_rx(skb);
-> +               stats->rx_packets++;
-> +               stats->rx_bytes +=3D cf->can_dlc;
-> +       }
-> +
-> +       if (is_busoff) {
-> +               acc_write32(core, ACC_CORE_OF_TX_ABORT_MASK, 0xffff);
-> +               can_bus_off(core->net_dev);
-> +       }
-> +}
-> +
-[...]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--99fieoOsxt2uIEsDKntjxufLlMQohWAL2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-can_change_state() is now used in mscan, flexcan, sja1000, kvaser and p=
-eak.
-Those drivers should provide sufficent examples for you to learn how to=
- use the
-function.
+On 03/16/2015 09:48 AM, Thomas K=C3=B6rper wrote:
+> The hnd field of the structs does not need to be __le32: the
+> device just returns the value without using it itself.
+>=20
+> Signed-off-by: Thomas K=C3=B6rper <thomas.koerper@esd.eu>
 
-Best regards,
-Andri Yngvason
+Applied to can-next.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--99fieoOsxt2uIEsDKntjxufLlMQohWAL2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVBtmgAAoJECte4hHFiupUId4P/ROIUdpHQ5W7PJYNWiuBhnls
+Qz3aXg8HjIPr1PUWewTyCGLKuHCPTNir20PPXppdJrZp2A3zZdJlcQCL88yx4xTN
+D/otCtmwQhR20gw3p12X7prZTC2CVnKIwpt7baGolGGKvyAipAMKJKkLEGUBG9e+
+zWmYoIuwUSXLqPcm6lcZBR8BKlPjqkCTbf9/GfuXP1dJbPZtiJs/wWzUNNl/fVC7
+IFGoZ/zwMKtrxXDgVh6jvr7r4KFWEPnVhyKpuBVFIdz0ZsS0XzkaHgD2VvY/QF+I
+LKcaaSkmWGweF6B8q3dZVSCwbLkfTUvi127tvNoItysQ3N9efzEyOCATxS8oFNA+
+BxrcD6w8dQ2etRliJE2dO54hI0sz6nCQ5BNIJAzKdhs9us+l7VjSs5u4wa6g27Zu
+BiNDfNbne/cGbRCwm7DII9NrOSrx93Y2xut05MttL8eWdc6jCPgPp+6aLxw4F7hY
+hTZzFq6VrEWlb2MLyO9tc6AUgYvNg8x8CVSNSzIufkOkZsc6aEjeZAmqo8Zc+AZz
+ebqhf+VWs0oQEPY23IksAd0XdsQJ60hC5jPUx8uAgAUnpxo9oZOPKsqMtWHM12MQ
+smW4IzTD3uLV4cb3Itrwwj+pG0ZJRFk2XuOSTcfAfc0SsszTy4W8FHbJcDPqZQqy
+I7sGxkct0ZdVkTIqXPdC
+=0e5t
+-----END PGP SIGNATURE-----
+
+--99fieoOsxt2uIEsDKntjxufLlMQohWAL2--
