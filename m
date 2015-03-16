@@ -1,67 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Mon, 16 Mar 2015 14:35:03 +0100
-Message-ID: <5506DC07.90700@pengutronix.de>
-References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu> <20150316124621.14895.31220@shannon>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B"
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] can: gs_usb: check for kzalloc allocation failure
+Date: Mon, 16 Mar 2015 22:42:24 +0000
+Message-ID: <1426545744-3317-1-git-send-email-colin.king@canonical.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48362 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751793AbbCPNfQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 09:35:16 -0400
-In-Reply-To: <20150316124621.14895.31220@shannon>
+Received: from youngberry.canonical.com ([91.189.89.112]:54121 "EHLO
+	youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753118AbbCPWoI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 16 Mar 2015 18:44:08 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
-Cc: =?UTF-8?Q?Thomas_K=c3=b6rper?= <thomas.koerper@esd.eu>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: Colin Ian King <colin.king@canonical.com>
 
-On 03/16/2015 01:46 PM, Andri Yngvason wrote:
-> can_change_state() is now used in mscan, flexcan, sja1000, kvaser and p=
-eak.
-> Those drivers should provide sufficent examples for you to learn how to=
- use the
-> function.
+smatch detected the following issue:
+drivers/net/can/usb/gs_usb.c:904 gs_usb_probe() error:
+   potential null dereference 'dev'.  (kzalloc returns null)
 
-Thanks for keeping an eye on the CAN error handling, Andri.
+Add a check for null return from kzalloc and return -ENOMEM
 
-Marc
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/can/usb/gs_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 009acc8..8b4d3e6 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -901,6 +901,8 @@ static int gs_usb_probe(struct usb_interface *intf, const struct usb_device_id *
+ 	}
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
+ 	init_usb_anchor(&dev->rx_submitted);
+ 
+ 	atomic_set(&dev->active_channels, 0);
+-- 
+2.1.4
 
-
---2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVBtwRAAoJECte4hHFiupU110P/1Vshy6R57IVs4zexFTKdQO1
-ljnPahT8UElhtNri0XgBiwHp5B9DzjWi2Cv+Pf023srl0/J/3WhqHWHd7Wz9sTQE
-RHXQpbQvVfQW6/nn4i0wQyhOJ+GTsiOJygugw6l7trjBFmq6vdo1V1s5wwlj8ZGm
-tiVWBjga9kkhtd5Euw9g7QlLm2Fgvgmsu9yLPy87TSDKzUwXwS9n52Lx2zhaqqoa
-w9+FACp1/9E6dsme8hjHOdJ6E0DV+JmHk7/tnJub6iTvMGCUiacbLy7ELx5xyuN9
-AmptjaBWOVBBXor8OpP+cSPUTdUPJeWxbdaAcXWHQXDSovq9raT+aUMrAjMvCsm7
-wl1kioLZwwOI1sxcQCImiMesA/ZcJixmLUjLIrf5OejCQNZOx/ZhrGoWl4DgR+fT
-KAFoxFP+ob1TnAcCiSzjzfXeEe93pcdAk01icbltnT9+63eiGpfmpkiI3OAPofcI
-jeWMNEZKY0QzOuAUY3WOgpWgpQeCJ5/oSZFzpHm4RgsdTjRBTbGIMbvU/sEk0jJW
-Hbw6/+ipNnVRkpICiDMXlO+NdtU0Vj+PPhRcAek04mFNoXjEXY20E67iw8nBP1Yg
-iI1m5JPNqsuTc/i6gKkxTnsRAY4NjzTjpOk+EQmyeCpRqhdAZ11zt0mKxZGr5fWj
-x02JTbcqLEXJsqqEq7rr
-=HOeE
------END PGP SIGNATURE-----
-
---2Wni6RaSr3XT5kO0mHlmrTpXa1h6DrK8B--
