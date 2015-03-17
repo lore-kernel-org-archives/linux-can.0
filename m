@@ -1,55 +1,71 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Tue, 17 Mar 2015 09:26:39 +0200
-Message-ID: <20150317072639.GA2802@Darwish.PC>
-References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
- <20150316124621.14895.31220@shannon>
- <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD39B3@esd-s3.esd.local>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: gs_usb: check for kzalloc allocation failure
+Date: Tue, 17 Mar 2015 09:04:52 +0100
+Message-ID: <5507E024.9090801@pengutronix.de>
+References: <1426545744-3317-1-git-send-email-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f179.google.com ([209.85.212.179]:36943 "EHLO
-	mail-wi0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750958AbbCQH0o (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 03:26:44 -0400
-Received: by wixw10 with SMTP id w10so3258622wix.0
-        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 00:26:43 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD39B3@esd-s3.esd.local>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:45718 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752073AbbCQIFK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 04:05:10 -0400
+In-Reply-To: <1426545744-3317-1-git-send-email-colin.king@canonical.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas =?iso-8859-1?Q?K=F6rper?= <Thomas.Koerper@esd.eu>
-Cc: Andri Yngvason <andri.yngvason@marel.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 17, 2015 at 07:30:02AM +0100, Thomas K=F6rper wrote:
-> Hi Andri,
+On 03/16/2015 11:42 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 >=20
-> I've looked at the sources you mentioned, but I'm a little bit unsure=
- now /
-> the handling seems not perfectly consistent to me. (flexcan calls
-> can_change_state() with tx/rx_state of 0 in the bus off path.
->
+> smatch detected the following issue:
+> drivers/net/can/usb/gs_usb.c:904 gs_usb_probe() error:
+>    potential null dereference 'dev'.  (kzalloc returns null)
+>=20
+> Add a check for null return from kzalloc and return -ENOMEM
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-There're discrpeancies indeed on the BUSOFF path:
+Thanks, applied to can.
 
-1) flexcan calls can_change_state(dev, cf, 0, 0). kvaser and others
-   do can_change_state(dev, cf, tx, rx) where either tx or rx =3D
-   CAN_STATE_BUS_OFF. In this case, kvaser and the other drivers
-   are the _correct_ behavior. This is validated by can-dev
-   can_chage_state() code:
+Marc
 
-	if (unlikely(new_state =3D=3D CAN_STATE_BUS_OFF)) {
-		cf->can_id |=3D CAN_ERR_BUSOFF;
-		return;
-	}
-
-2) flexcan calls can_bus_off(dev), while kvaser goes a layer deeper
-   and directly calls netif_carrier_off(netdev). In this case,
-   flexcan is the more correct behavior.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Thanks,
-Darwish
+--s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVB+AnAAoJECte4hHFiupUzeQP/RVvTe265T4pUOQBTlO1zPFA
+p4rm1kG8dMl77A2LGNb5gCz6f6XtPiQNNqs/0aEpz0zpVEPby/KA+WdwrUmUllKM
+BYpu6SQeCRg6y8w3Y+zZEMz5KJti9re3+8RRKQudcrBisNdMOTiFZ/+O0AKZBAiS
+tcH8/GNCL93y1BgMA84oNmaUi3tdUiRutsEskeuHdgSA7Sk0RxcscBaI24doajTu
+CsfwMogEc76G3/wIddSv8tRr46gBmi1tafG7t/xgvezbQukX+4FpdhbIKgLVtawv
+EkyNm4KdXqEN2ec6OhCFKtag8ldbechtB5wHK9FBZI96paIfur72ZoxqBDcw0vQp
+XGw4n0/8UsuDH+5tjmkEgRuo9FScW5mDaNgBrZkP6LJIJ5H6esIWFZVe4nKukH2o
+Xfn4FVSYPctF1O3fXUeDJKv4EcPdg1zNAvG5X+my0NbtQ/EiNSwI+4cE/F1k7YbN
+io/51uTbTX3T7GUm1U1SJgzfQTLPBDm9rCXxF3YX2CbKnoYhoiPwpoZjrXWOEdeJ
+cnRtmLSvBl8hbybkYvMcf8C+RWJI7N5ldJe/IaAl0Rb74e2p/WS38yWhsNBdLT0E
+PMVsUEcQqiRHDhnYRf/izk7tnW+t6ZbJ7Nt5Q64oSugxQ7XVYPeNPFwufW263wbd
+7YgxIKktXJ1/ebzYBtfN
+=G0L8
+-----END PGP SIGNATURE-----
+
+--s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx--
