@@ -1,124 +1,69 @@
 From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: Methods for testing CAN drivers tx/rx paths
-Date: Tue, 17 Mar 2015 10:38:18 -0400
-Message-ID: <20150317143818.GB30168@linux>
-References: <20150314181520.GA19643@vivalin-002>
- <55069634.3020400@hartkopp.net>
+Subject: Re: [PATCH V6 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Tue, 17 Mar 2015 10:51:52 -0400
+Message-ID: <20150317145152.GC30168@linux>
+References: <1426592308-23817-1-git-send-email-thomas.koerper@esd.eu>
+ <20150317133309.GA30168@linux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f46.google.com ([74.125.82.46]:35141 "EHLO
-	mail-wg0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752916AbbCQOiW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 10:38:22 -0400
-Received: by wgdm6 with SMTP id m6so10237255wgd.2
-        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 07:38:21 -0700 (PDT)
+Received: from mail-wg0-f45.google.com ([74.125.82.45]:35523 "EHLO
+	mail-wg0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752686AbbCQOv4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 10:51:56 -0400
+Received: by wgdm6 with SMTP id m6so10572305wgd.2
+        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 07:51:55 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <55069634.3020400@hartkopp.net>
+In-Reply-To: <20150317133309.GA30168@linux>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>
+To: Thomas =?iso-8859-1?Q?K=F6rper?= <thomas.koerper@esd.eu>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>
 
-Hi,
+On Tue, Mar 17, 2015 at 09:33:09AM -0400, Ahmed S. Darwish wrote:
+> Hi,
+>=20
+> [ Adding Marc to the CC list. Kindly add him in future submissions.. =
+]
+>=20
+> On Tue, Mar 17, 2015 at 12:38:28PM +0100, Thomas K=F6rper wrote:
+> ...
+> > +netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device =
+*netdev)
+> > +{
+> > +	struct acc_net_priv *priv =3D netdev_priv(netdev);
+> > +	struct acc_core *core =3D priv->core;
+> > +	struct can_frame *cf =3D (struct can_frame *)skb->data;
+> > +	u8 new_fifo_head =3D (core->tx_fifo_head + 1) % core->tx_fifo_siz=
+e;
+> > +	u32 esd_id;
+> > +	u8 esd_len;
+> > +
+> > +	if ((new_fifo_head =3D=3D core->tx_fifo_tail) || !acc_txq_isready=
+(core)) {
+> > +		netif_stop_queue(netdev);
+> > +		return NETDEV_TX_BUSY;
+> > +	}
+> > +
+>=20
+> In that case, an error or warning message is in order. Quoting from
+> Documentation/networking/{driver.txt,netdevices.txt}:
+>=20
+>   When this happens, it usually means start/stop flow control
+>   is broken in the driver. This is a hard error that should be logged=
+:
+>   netdev_err("BUG: Tx ring full when queue awake!\n");
+>=20
+> [ Actually it would be nice to print such message and _heavily_ test
+>   the driver tx/rx pathes afterwards, making sure no practical race
+>   conditions exist regarding the netif tx queue .. ]
+>=20
+> On another topic, I've searched the code for the part where it stops
+> the queue because "we've taken the last slot in the ring, and we will
+> not be able to handle further transmissions" but couldn't find it at
+> all. AFAIK, that part calls netif_stop_queue(), but _always_ return
+> with NETDEV_TX_OK. Am I missing something obvious?
+>=20
 
-On Mon, Mar 16, 2015 at 09:37:08AM +0100, Oliver Hartkopp wrote:
-> Hi Ahmed,
-> 
-> I'm taking care of the network layer packet flow with this test script:
-> 
-> https://github.com/linux-can/can-tests/blob/master/test_netlayer.sh
-> 
-> The script checks whether CAN specific information inside the skbuff survives
-> the networking stack which is always in move.
-> 
-> For driver testing I use this CAN hardware
-> http://www.peak-system.com/PCAN-MicroMod-Evaluation.221.0.html
-> with a special firmware that's able to generate 100% busload.
-> 
-> Putting this load to a CAN bus I additionally try to send frames on the bus
-> with that interface or do unfriendly unplugging (e.g. for USB / PCMCIA).
-> 
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=a7762b10c12a70c5dbf2253142764b728ac88c3a
-> 
-> So when doing some test I'm mainly checking for stability under load.
-> 
-> There's a CAN full duplex test application at the can-utils:
-> https://github.com/linux-can/can-utils/blob/master/canfdtest.c
-> which goes into your proposed direction (and which should probably go into
-> can-tests repository).
-> 
-
-Aha, thanks a lot for sharing. I'll definitely begin incorporating
-those, especially `canfdtest', which I did not know of its existence
-before.
-
-> Your described test is pretty interesting too! When I find some time I will
-> try your test too. Can you also post your Phython scripts here?
-> 
-
-They're a quick-n-dirty collection of python+bash scripts. I'll see
-if I can port them to a basic C utility and post the results back to
-can-utils :-)
-
-Thanks,
-Darwish
-
-> Best regards,
-> Oliver
-> 
-> On 03/14/2015 07:15 PM, Ahmed S. Darwish wrote:
-> > Hi Marc, everyone,
-> > 
-> > Do you have any comments on how to heavily test a CAN driver tx/rx
-> > code paths?
-> > 
-> > Below is the approach I use, which was succesful in triggering many
-> > issues in the kvaser_usb driver. I wonder though if you guys have
-> > any different tricks you use for your own daily CAN driver
-> > development tx/rx testing?
-> > 
-> > 
-> > Testing method:
-> > ---------------
-> > 
-> > On tx:
-> > 
-> > 	$ cangen -g1 -I111 -Di -L4 can0 &
-> > 	$ cangen -g1 -I222 -Di -L4 can0 &
-> > 	$ cangen -g1 -I333 -Di -L4 can0 &
-> > 	$ cangen -g1 -I444 -Di -L4 can0 &
-> > 
-> > On the other end of the CAN bus, to test rx:
-> > 
-> > 	$ cangen -g0 -I555 -Di -L4 can0 &
-> > 	$ cangen -g1 -I666 -Di -L4 can0 &
-> > 	$ cangen -g1 -I777 -Di -L4 can0 &
-> > 
-> > Echo is enabled in the driver. Now doing a basic
-> > 
-> > 	$ candump -d -e can0,0:0,#FFFFFFFF > output.txt
-> > 
-> > produces too many dropped packets after around 10 minutes of use. [1]
-> > 
-> > Using in-kernel CAN ID filtering solves the issue nicely:
-> > 
-> > 	for i in {1..7}; do
-> > 	    candump -e -d can0,$i$i$i:7FF > output-$i$i$i.txt &
-> > 	done
-> > 
-> > Then the machine is left for a day or two. Afterwards, using simple
-> > Python scripts, I analyze each output-XXX.txt file to ensure that
-> > no packets got dropped for each `cangen' path above, and that the
-> > sequential order of data generated by `cangen -Di' is still
-> > maintained.
-> > 
-> > 
-> > Thanks a lot,
-> > Darwish
-> > 
-> > 
-> > [1] As reported by SO_RCVQ_OFL, skb-attached, ancilliary messages.
-> >     Thanks Oliver, candump `-d' was a life-saving feature!
-> >     http://article.gmane.org/gmane.network.socketcan.user/179
-> >
+s/_always_/should always
