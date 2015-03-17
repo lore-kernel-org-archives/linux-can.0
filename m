@@ -1,79 +1,124 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: RFC: (optional) software filtering in candump
-Date: Tue, 17 Mar 2015 14:33:49 +0100
-Message-ID: <55082D3D.3070502@pengutronix.de>
-References: <51A66B55.6080506@sebastianhaas.info> <51A6DC6A.7020609@hartkopp.net> <51A70F0E.1010902@sebastianhaas.info> <51A71298.1070202@volkswagen.de> <51A71696.8030609@sebastianhaas.info> <20130530101719.GB427@vandijck-laurijssen.be> <51A740E7.3020400@volkswagen.de> <20130530123526.GC427@vandijck-laurijssen.be> <51A77250.8070907@sebastianhaas.info> <51AA01F0.8020308@hartkopp.net> <5508112A.4000808@pengutronix.de> <55081834.9040509@hartkopp.net> <550825D7.6070802@hartkopp.net>
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: Methods for testing CAN drivers tx/rx paths
+Date: Tue, 17 Mar 2015 10:38:18 -0400
+Message-ID: <20150317143818.GB30168@linux>
+References: <20150314181520.GA19643@vivalin-002>
+ <55069634.3020400@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="AsHgH7IA7gdtmS8uHkDPB3w99Dv3gFR0N"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46480 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932098AbbCQNd4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 09:33:56 -0400
-In-Reply-To: <550825D7.6070802@hartkopp.net>
+Received: from mail-wg0-f46.google.com ([74.125.82.46]:35141 "EHLO
+	mail-wg0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752916AbbCQOiW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 10:38:22 -0400
+Received: by wgdm6 with SMTP id m6so10237255wgd.2
+        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 07:38:21 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <55069634.3020400@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, Linux-CAN <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AsHgH7IA7gdtmS8uHkDPB3w99Dv3gFR0N
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 03/17/2015 02:02 PM, Oliver Hartkopp wrote:
-> On 17.03.2015 13:04, Oliver Hartkopp wrote:
->> On 17.03.2015 12:34, Marc Kleine-Budde wrote:
->>> On 06/01/2013 04:15 PM, Oliver Hartkopp wrote:
->>>> I hope this fit your needs ?! :-)
->>>
->>> Can I have your S-o-b for this patch?
->>
->> Oh. I've just seen, that I already provided a patch that time.
->>
->> I'll check it once more and will give you feedback soon.
->>
->=20
-> I rebased the patch, added a comment, a ktime_set(0,0) initialization a=
-nd=20
-> wrote a proper commit message.
->=20
-> Does it fit your expectations?
+On Mon, Mar 16, 2015 at 09:37:08AM +0100, Oliver Hartkopp wrote:
+> Hi Ahmed,
+> 
+> I'm taking care of the network layer packet flow with this test script:
+> 
+> https://github.com/linux-can/can-tests/blob/master/test_netlayer.sh
+> 
+> The script checks whether CAN specific information inside the skbuff survives
+> the networking stack which is always in move.
+> 
+> For driver testing I use this CAN hardware
+> http://www.peak-system.com/PCAN-MicroMod-Evaluation.221.0.html
+> with a special firmware that's able to generate 100% busload.
+> 
+> Putting this load to a CAN bus I additionally try to send frames on the bus
+> with that interface or do unfriendly unplugging (e.g. for USB / PCMCIA).
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=a7762b10c12a70c5dbf2253142764b728ac88c3a
+> 
+> So when doing some test I'm mainly checking for stability under load.
+> 
+> There's a CAN full duplex test application at the can-utils:
+> https://github.com/linux-can/can-utils/blob/master/canfdtest.c
+> which goes into your proposed direction (and which should probably go into
+> can-tests repository).
+> 
 
-Thanks a lot, I hope so :)
+Aha, thanks a lot for sharing. I'll definitely begin incorporating
+those, especially `canfdtest', which I did not know of its existence
+before.
 
-Marc
+> Your described test is pretty interesting too! When I find some time I will
+> try your test too. Can you also post your Phython scripts here?
+> 
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+They're a quick-n-dirty collection of python+bash scripts. I'll see
+if I can port them to a basic C utility and post the results back to
+can-utils :-)
 
+Thanks,
+Darwish
 
---AsHgH7IA7gdtmS8uHkDPB3w99Dv3gFR0N
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVCC1AAAoJECte4hHFiupUYW4QAItnrh9kbiIPwb91nlVu/pwv
-v8EOMvMd0uKrPOw3RHiJzsqMgbHA+3j5I9A+3DntG91ulPIf14FXgqLyOZicB53i
-0CyH5HsJnx4kb5yCvnuB1stuVfsKE5DyH5DNdy3pJYRbj+gfk2iBkqMCleJZsJaF
-dGVtIuAU/ywDS25bXkxXf3qs4Cw5v1hs6cnQocjzzQIN4zuB+I49FwAd1MQXNofp
-yHukHReRIIOiMyJikL8+IULudmgZu1BfPn4DCBmMewbWrOQdW6lIciXWZG/oilLZ
-VIIM/+4QEgAovHxIycVhvSf+CnaXXu8aowN4kzMnP8XUAMMAc2oTXJj7saKrio6d
-+NrOBf7lOM8mghXnyY3g+HiMseWpN5WykhK7hfnZGEfjQyICI1TYwhhtdUaAwJEx
-fVel8RZ/MJ1HfzTDyqpT3C5j1yo0RGYbqCU3MKHs/TvRCus6RR3PrUaKfGWis3zd
-8M32UNDTVGzbWY0Fl4dCEU9Xcae2sAaQ+nOLNR2OgDd8zJYH+6H8H6ib/xIFl1YY
-+2tYpdT4nZ2S6TqRzfNN47N2s0YPpuloYIqc4/EBo9P35qU2KmD234ZVWwBhOOZg
-IQkbr37SJo2EzYNGEAzzmzpTY/fxzac9nwW6GV8R3nMCdd6gscA9j41sEcTNw+6V
-+Z9NeG4nmLKkkEEHi1dw
-=12BU
------END PGP SIGNATURE-----
-
---AsHgH7IA7gdtmS8uHkDPB3w99Dv3gFR0N--
+> Best regards,
+> Oliver
+> 
+> On 03/14/2015 07:15 PM, Ahmed S. Darwish wrote:
+> > Hi Marc, everyone,
+> > 
+> > Do you have any comments on how to heavily test a CAN driver tx/rx
+> > code paths?
+> > 
+> > Below is the approach I use, which was succesful in triggering many
+> > issues in the kvaser_usb driver. I wonder though if you guys have
+> > any different tricks you use for your own daily CAN driver
+> > development tx/rx testing?
+> > 
+> > 
+> > Testing method:
+> > ---------------
+> > 
+> > On tx:
+> > 
+> > 	$ cangen -g1 -I111 -Di -L4 can0 &
+> > 	$ cangen -g1 -I222 -Di -L4 can0 &
+> > 	$ cangen -g1 -I333 -Di -L4 can0 &
+> > 	$ cangen -g1 -I444 -Di -L4 can0 &
+> > 
+> > On the other end of the CAN bus, to test rx:
+> > 
+> > 	$ cangen -g0 -I555 -Di -L4 can0 &
+> > 	$ cangen -g1 -I666 -Di -L4 can0 &
+> > 	$ cangen -g1 -I777 -Di -L4 can0 &
+> > 
+> > Echo is enabled in the driver. Now doing a basic
+> > 
+> > 	$ candump -d -e can0,0:0,#FFFFFFFF > output.txt
+> > 
+> > produces too many dropped packets after around 10 minutes of use. [1]
+> > 
+> > Using in-kernel CAN ID filtering solves the issue nicely:
+> > 
+> > 	for i in {1..7}; do
+> > 	    candump -e -d can0,$i$i$i:7FF > output-$i$i$i.txt &
+> > 	done
+> > 
+> > Then the machine is left for a day or two. Afterwards, using simple
+> > Python scripts, I analyze each output-XXX.txt file to ensure that
+> > no packets got dropped for each `cangen' path above, and that the
+> > sequential order of data generated by `cangen -Di' is still
+> > maintained.
+> > 
+> > 
+> > Thanks a lot,
+> > Darwish
+> > 
+> > 
+> > [1] As reported by SO_RCVQ_OFL, skb-attached, ancilliary messages.
+> >     Thanks Oliver, candump `-d' was a life-saving feature!
+> >     http://article.gmane.org/gmane.network.socketcan.user/179
+> >
