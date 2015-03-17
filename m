@@ -1,83 +1,84 @@
-From: Andre Naujoks <nautsch2@gmail.com>
-Subject: Re: [PATCH] can: add new socket option CAN_RAW_FILTER_UNIQUE
- to eliminate duplicate matches
-Date: Tue, 17 Mar 2015 16:58:42 +0100
-Message-ID: <55084F32.50500@gmail.com>
-References: <1426597107-7590-1-git-send-email-socketcan@hartkopp.net> <550849E6.7040104@gmail.com> <55084D1F.3080001@hartkopp.net>
+From: Fabian Frederick <fabf@skynet.be>
+Subject: [PATCH 00/16 linux-next] drivers/net: constify of_device_id array
+Date: Tue, 17 Mar 2015 19:37:31 +0100
+Message-ID: <1426617469-781-1-git-send-email-fabf@skynet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f41.google.com ([74.125.82.41]:33318 "EHLO
-	mail-wg0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753487AbbCQP6p (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 11:58:45 -0400
-Received: by wgbcc7 with SMTP id cc7so12235688wgb.0
-        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 08:58:44 -0700 (PDT)
-In-Reply-To: <55084D1F.3080001@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-can@vger.kernel.org, Fabian Frederick <fabf@skynet.be>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net, linux-arm-kernel@lists.infradead.org
+List-Id: linux-can.vger.kernel.org
 
-On 17.03.2015 16:49, Oliver Hartkopp wrote:
-> On 17.03.2015 16:36, Andre Naujoks wrote:
->> On 17.03.2015 13:58, Oliver Hartkopp wrote:
->>> The CAN_RAW socket can set multiple CAN identifier specific filters
->>> that lead
->>> to multiple filters in the af_can.c filter processing. These filters are
->>> indenpendent from each other which leads to logical OR'ed filters
->>> when applied.
->>>
->>> Especially when the filter is intended to notch single CAN IDs or CAN
->>> ID ranges
->>> a problem emerges when using more than just one filter: The notched
->>> CAN IDs
->>> will be delivered once while the other CAN IDs will be delivered twice.
->>>
->>> This patch implements a new option to make sure that every CAN frame
->>> which is
->>> filtered for a specific socket is only delivered once to the user space.
->>> This is independent from the number of matching CAN filters of this
->>> socket.
->>
->> Hi Oliver.
->>
->> I don't think this should be an option. A CAN-frame should never be
->> delivered more than once even if multiple filters match.
->>
->> In my eyes this is a long standing bug ;-), which would get an
->> off-switch this way.
-> 
-> https://www.youtube.com/watch?v=4JgxDxwf7RU
-> 
-> :-))
-> 
-> So you think the 'unifying option' should be enabled by default!?!
-
-Yes!
-
-> Would you assume this to break any user space apps?
-
-I don't see how. In fact I had to work around the "duplpicate frame
-issue" on occasion. If nobody sees a reason against this, I am strongly
-in favour of making this the default behaviour.
-
-> 
-> Btw. what's your opinion about
-> 
-> http://marc.info/?l=linux-can&m=142660595731528&w=2
-
-http://marc.info/?l=linux-can&m=142660682531909&w=2 ;-)
-
-I'd like that as a socket option. Effectively choosing if the set
-filters should be OR'd or AND'd.
-
-Regards
-  Andre
-
-> 
-> ??
-> 
-> Regards,
-> Oliver
-
+VGhpcyBzbWFsbCBwYXRjaHNldCBhZGRzIGNvbnN0IHRvIG9mX2RldmljZV9pZCBhcnJheXMgaW4K
+ZHJpdmVycy9uZXQgYnJhbmNoLgoKRmFiaWFuIEZyZWRlcmljayAoMTYpOgogIG5ldDogbmV0Y3A6
+IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIEFsdGVyYSBUU0U6IGNvbnN0aWZ5IG9mX2Rl
+dmljZV9pZCBhcnJheQogIG5ldC9mc2w6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIG5l
+dDogZXRob2M6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIGRyaXZlcnM6IG5ldDogeGdl
+bmU6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIG5ldDogZXRoZXJuZXQ6IGFwcGxlOiBj
+b25zdGlmeSBvZl9kZXZpY2VfaWQgYXJyYXkKICBuZXRkZXY6IG9jdGVvbl9tZ210OiBjb25zdGlm
+eSBvZl9kZXZpY2VfaWQgYXJyYXkKICBuZXQ6IGdyZXRoOiBjb25zdGlmeSBvZl9kZXZpY2VfaWQg
+YXJyYXkKICBuZXQ6IHhpbGlueDogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgb3Jpbm9j
+bzogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgbmV0OiBwaHk6IGNvbnN0aWZ5IG9mX2Rl
+dmljZV9pZCBhcnJheQogIGNhbjogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgSUJNLUVN
+QUM6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIGVoZWE6IGNvbnN0aWZ5IG9mX2Rldmlj
+ZV9pZCBhcnJheQogIG5ldDogdmlhLXJoaW5lOiBjb25zdGlmeSBvZl9kZXZpY2VfaWQgYXJyYXkK
+ICB2aWEtdmVsb2NpdHk6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQoKIGRyaXZlcnMvbmV0
+L2Nhbi9jYzc3MC9jYzc3MF9wbGF0Zm9ybS5jICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVy
+cy9uZXQvY2FuL2dyY2FuLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyICstCiBk
+cml2ZXJzL25ldC9jYW4vbXNjYW4vbXBjNXh4eF9jYW4uYyAgICAgICAgICAgICAgICAgICB8IDIg
+Ky0KIGRyaXZlcnMvbmV0L2Nhbi9zamExMDAwL3NqYTEwMDBfcGxhdGZvcm0uYyAgICAgICAgICAg
+IHwgMiArLQogZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9hZXJvZmxleC9ncmV0aC5jICAgICAg
+ICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2FsdGVyYS9hbHRlcmFfdHNl
+X21haW4uYyAgICAgICAgIHwgNCArKy0tCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9hcG0veGdlbmUv
+eGdlbmVfZW5ldF9tYWluLmMgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2FwcGxl
+L2JtYWMuYyAgICAgICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQv
+YXBwbGUvbWFjZS5jICAgICAgICAgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhl
+cm5ldC9ldGhvYy5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0
+L2V0aGVybmV0L2ZyZWVzY2FsZS9mZWNfbXBjNTJ4eC5jICAgICAgICAgIHwgMiArLQogZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlY19tcGM1Mnh4X3BoeS5jICAgICAgfCAyICstCiBk
+cml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZnNfZW5ldC9mc19lbmV0LW1haW4uYyB8IDQg
+KystLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZzX2VuZXQvbWlpLWJpdGJhbmcu
+YyAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZnNfZW5ldC9taWktZmVj
+LmMgICAgICB8IDQgKystLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZzbF9wcV9t
+ZGlvLmMgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZ2lh
+bmZhci5jICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2Fs
+ZS9naWFuZmFyX3B0cC5jICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJl
+ZXNjYWxlL3VjY19nZXRoLmMgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5l
+dC9mcmVlc2NhbGUveGdtYWNfbWRpby5jICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0
+aGVybmV0L2libS9laGVhL2VoZWFfbWFpbi5jICAgICAgICAgICAgIHwgNCArKy0tCiBkcml2ZXJz
+L25ldC9ldGhlcm5ldC9pYm0vZW1hYy9jb3JlLmMgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRy
+aXZlcnMvbmV0L2V0aGVybmV0L2libS9lbWFjL21hbC5jICAgICAgICAgICAgICAgICAgIHwgMiAr
+LQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaWJtL2VtYWMvcmdtaWkuYyAgICAgICAgICAgICAgICAg
+fCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pYm0vZW1hYy90YWguYyAgICAgICAgICAgICAg
+ICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2libS9lbWFjL3ptaWkuYyAgICAgICAg
+ICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvb2N0ZW9uL29jdGVvbl9tZ210
+LmMgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9uZXRjcF9jb3Jl
+LmMgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L3ZpYS92aWEt
+cmhpbmUuYyAgICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvdmlh
+L3ZpYS12ZWxvY2l0eS5jICAgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5l
+dC94aWxpbngvbGxfdGVtYWNfbWFpbi5jICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0
+aGVybmV0L3hpbGlueC94aWxpbnhfYXhpZW5ldF9tYWluLmMgICAgIHwgMiArLQogZHJpdmVycy9u
+ZXQvZXRoZXJuZXQveGlsaW54L3hpbGlueF9lbWFjbGl0ZS5jICAgICAgICAgfCAyICstCiBkcml2
+ZXJzL25ldC9waHkvbWRpby1iY20tdW5pbWFjLmMgICAgICAgICAgICAgICAgICAgICB8IDIgKy0K
+IGRyaXZlcnMvbmV0L3BoeS9tZGlvLWdwaW8uYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+MiArLQogZHJpdmVycy9uZXQvcGh5L21kaW8tbXV4LWdwaW8uYyAgICAgICAgICAgICAgICAgICAg
+ICAgfCAyICstCiBkcml2ZXJzL25ldC9waHkvbWRpby1tdXgtbW1pb3JlZy5jICAgICAgICAgICAg
+ICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L3BoeS9tZGlvLW9jdGVvbi5jICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvd2lyZWxlc3Mvb3Jpbm9jby9haXJwb3J0
+LmMgICAgICAgICAgICAgICAgfCAyICstCiA0MCBmaWxlcyBjaGFuZ2VkLCA0NCBpbnNlcnRpb25z
+KCspLCA0NCBkZWxldGlvbnMoLSkKCi0tIAoyLjEuMAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBw
+Yy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8v
+bGludXhwcGMtZGV2
