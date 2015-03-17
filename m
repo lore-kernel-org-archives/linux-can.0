@@ -1,39 +1,48 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: RFC: (optional) software filtering in candump
-Date: Tue, 17 Mar 2015 14:02:15 +0100
-Message-ID: <550825D7.6070802@hartkopp.net>
-References: <51A66B55.6080506@sebastianhaas.info> <51A6DC6A.7020609@hartkopp.net> <51A70F0E.1010902@sebastianhaas.info> <51A71298.1070202@volkswagen.de> <51A71696.8030609@sebastianhaas.info> <20130530101719.GB427@vandijck-laurijssen.be> <51A740E7.3020400@volkswagen.de> <20130530123526.GC427@vandijck-laurijssen.be> <51A77250.8070907@sebastianhaas.info> <51AA01F0.8020308@hartkopp.net> <5508112A.4000808@pengutronix.de> <55081834.9040509@hartkopp.net>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: [PATCH] can: flexcan: fix bus-off error state handling.
+Date: Tue, 17 Mar 2015 13:03:09 +0000
+Message-ID: <40e1c77d-546d-48b6-b4bd-fe76f7692e90@GRBSR0089.marel.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:61587 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753618AbbCQNCT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 09:02:19 -0400
-In-Reply-To: <55081834.9040509@hartkopp.net>
+Received: from mail-db3on0095.outbound.protection.outlook.com ([157.55.234.95]:55852
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753645AbbCQNDN (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 17 Mar 2015 09:03:13 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com
 
-On 17.03.2015 13:04, Oliver Hartkopp wrote:
-> On 17.03.2015 12:34, Marc Kleine-Budde wrote:
->> On 06/01/2013 04:15 PM, Oliver Hartkopp wrote:
->>> I hope this fit your needs ?! :-)
->>
->> Can I have your S-o-b for this patch?
->
-> Oh. I've just seen, that I already provided a patch that time.
->
-> I'll check it once more and will give you feedback soon.
->
+Making sure that the bus-off state gets passed to can_change_state().
 
-I rebased the patch, added a comment, a ktime_set(0,0) initialization and 
-wrote a proper commit message.
+Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+---
+ drivers/net/can/flexcan.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Does it fit your expectations?
-
-Regards,
-Oliver
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 80c46ad..ee944ae 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -592,13 +592,12 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+ 		rx_state = unlikely(reg_esr & FLEXCAN_ESR_RX_WRN) ?
+ 			   CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIVE;
+ 		new_state = max(tx_state, rx_state);
+-	} else if (unlikely(flt == FLEXCAN_ESR_FLT_CONF_PASSIVE)) {
++	} else {
+ 		__flexcan_get_berr_counter(dev, &bec);
+-		new_state = CAN_STATE_ERROR_PASSIVE;
++		new_state = flt == FLEXCAN_ESR_FLT_CONF_PASSIVE ?
++			    CAN_STATE_ERROR_PASSIVE : CAN_STATE_BUS_OFF;
+ 		rx_state = bec.rxerr >= bec.txerr ? new_state : 0;
+ 		tx_state = bec.rxerr <= bec.txerr ? new_state : 0;
+-	} else {
+-		new_state = CAN_STATE_BUS_OFF;
+ 	}
+ 
+ 	/* state hasn't changed */
+-- 
+1.9.1
 
