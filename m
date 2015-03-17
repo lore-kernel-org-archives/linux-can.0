@@ -1,84 +1,97 @@
 From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 00/16 linux-next] drivers/net: constify of_device_id array
-Date: Tue, 17 Mar 2015 19:37:31 +0100
-Message-ID: <1426617469-781-1-git-send-email-fabf@skynet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Subject: [PATCH 12/16 linux-next] can: constify of_device_id array
+Date: Tue, 17 Mar 2015 19:40:24 +0100
+Message-ID: <1426617628-937-3-git-send-email-fabf@skynet.be>
+References: <1426617469-781-1-git-send-email-fabf@skynet.be>
+ <1426617628-937-1-git-send-email-fabf@skynet.be>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mailrelay119.isp.belgacom.be ([195.238.20.146]:47624 "EHLO
+	mailrelay119.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932546AbbCQSkl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 14:40:41 -0400
+In-Reply-To: <1426617628-937-1-git-send-email-fabf@skynet.be>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-can@vger.kernel.org, Fabian Frederick <fabf@skynet.be>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+Cc: davem@davemloft.net, Fabian Frederick <fabf@skynet.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michal Simek <michal.simek@xilinx.com>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-VGhpcyBzbWFsbCBwYXRjaHNldCBhZGRzIGNvbnN0IHRvIG9mX2RldmljZV9pZCBhcnJheXMgaW4K
-ZHJpdmVycy9uZXQgYnJhbmNoLgoKRmFiaWFuIEZyZWRlcmljayAoMTYpOgogIG5ldDogbmV0Y3A6
-IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIEFsdGVyYSBUU0U6IGNvbnN0aWZ5IG9mX2Rl
-dmljZV9pZCBhcnJheQogIG5ldC9mc2w6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIG5l
-dDogZXRob2M6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIGRyaXZlcnM6IG5ldDogeGdl
-bmU6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIG5ldDogZXRoZXJuZXQ6IGFwcGxlOiBj
-b25zdGlmeSBvZl9kZXZpY2VfaWQgYXJyYXkKICBuZXRkZXY6IG9jdGVvbl9tZ210OiBjb25zdGlm
-eSBvZl9kZXZpY2VfaWQgYXJyYXkKICBuZXQ6IGdyZXRoOiBjb25zdGlmeSBvZl9kZXZpY2VfaWQg
-YXJyYXkKICBuZXQ6IHhpbGlueDogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgb3Jpbm9j
-bzogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgbmV0OiBwaHk6IGNvbnN0aWZ5IG9mX2Rl
-dmljZV9pZCBhcnJheQogIGNhbjogY29uc3RpZnkgb2ZfZGV2aWNlX2lkIGFycmF5CiAgSUJNLUVN
-QUM6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQogIGVoZWE6IGNvbnN0aWZ5IG9mX2Rldmlj
-ZV9pZCBhcnJheQogIG5ldDogdmlhLXJoaW5lOiBjb25zdGlmeSBvZl9kZXZpY2VfaWQgYXJyYXkK
-ICB2aWEtdmVsb2NpdHk6IGNvbnN0aWZ5IG9mX2RldmljZV9pZCBhcnJheQoKIGRyaXZlcnMvbmV0
-L2Nhbi9jYzc3MC9jYzc3MF9wbGF0Zm9ybS5jICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVy
-cy9uZXQvY2FuL2dyY2FuLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyICstCiBk
-cml2ZXJzL25ldC9jYW4vbXNjYW4vbXBjNXh4eF9jYW4uYyAgICAgICAgICAgICAgICAgICB8IDIg
-Ky0KIGRyaXZlcnMvbmV0L2Nhbi9zamExMDAwL3NqYTEwMDBfcGxhdGZvcm0uYyAgICAgICAgICAg
-IHwgMiArLQogZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9hZXJvZmxleC9ncmV0aC5jICAgICAg
-ICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2FsdGVyYS9hbHRlcmFfdHNl
-X21haW4uYyAgICAgICAgIHwgNCArKy0tCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9hcG0veGdlbmUv
-eGdlbmVfZW5ldF9tYWluLmMgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2FwcGxl
-L2JtYWMuYyAgICAgICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQv
-YXBwbGUvbWFjZS5jICAgICAgICAgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhl
-cm5ldC9ldGhvYy5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0
-L2V0aGVybmV0L2ZyZWVzY2FsZS9mZWNfbXBjNTJ4eC5jICAgICAgICAgIHwgMiArLQogZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlY19tcGM1Mnh4X3BoeS5jICAgICAgfCAyICstCiBk
-cml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZnNfZW5ldC9mc19lbmV0LW1haW4uYyB8IDQg
-KystLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZzX2VuZXQvbWlpLWJpdGJhbmcu
-YyAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZnNfZW5ldC9taWktZmVj
-LmMgICAgICB8IDQgKystLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZzbF9wcV9t
-ZGlvLmMgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZ2lh
-bmZhci5jICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2Fs
-ZS9naWFuZmFyX3B0cC5jICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJl
-ZXNjYWxlL3VjY19nZXRoLmMgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5l
-dC9mcmVlc2NhbGUveGdtYWNfbWRpby5jICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0
-aGVybmV0L2libS9laGVhL2VoZWFfbWFpbi5jICAgICAgICAgICAgIHwgNCArKy0tCiBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9pYm0vZW1hYy9jb3JlLmMgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRy
-aXZlcnMvbmV0L2V0aGVybmV0L2libS9lbWFjL21hbC5jICAgICAgICAgICAgICAgICAgIHwgMiAr
-LQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaWJtL2VtYWMvcmdtaWkuYyAgICAgICAgICAgICAgICAg
-fCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pYm0vZW1hYy90YWguYyAgICAgICAgICAgICAg
-ICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2libS9lbWFjL3ptaWkuYyAgICAgICAg
-ICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvb2N0ZW9uL29jdGVvbl9tZ210
-LmMgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9uZXRjcF9jb3Jl
-LmMgICAgICAgICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L3ZpYS92aWEt
-cmhpbmUuYyAgICAgICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvdmlh
-L3ZpYS12ZWxvY2l0eS5jICAgICAgICAgICAgICAgfCAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5l
-dC94aWxpbngvbGxfdGVtYWNfbWFpbi5jICAgICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L2V0
-aGVybmV0L3hpbGlueC94aWxpbnhfYXhpZW5ldF9tYWluLmMgICAgIHwgMiArLQogZHJpdmVycy9u
-ZXQvZXRoZXJuZXQveGlsaW54L3hpbGlueF9lbWFjbGl0ZS5jICAgICAgICAgfCAyICstCiBkcml2
-ZXJzL25ldC9waHkvbWRpby1iY20tdW5pbWFjLmMgICAgICAgICAgICAgICAgICAgICB8IDIgKy0K
-IGRyaXZlcnMvbmV0L3BoeS9tZGlvLWdwaW8uYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-MiArLQogZHJpdmVycy9uZXQvcGh5L21kaW8tbXV4LWdwaW8uYyAgICAgICAgICAgICAgICAgICAg
-ICAgfCAyICstCiBkcml2ZXJzL25ldC9waHkvbWRpby1tdXgtbW1pb3JlZy5jICAgICAgICAgICAg
-ICAgICAgICB8IDIgKy0KIGRyaXZlcnMvbmV0L3BoeS9tZGlvLW9jdGVvbi5jICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgMiArLQogZHJpdmVycy9uZXQvd2lyZWxlc3Mvb3Jpbm9jby9haXJwb3J0
-LmMgICAgICAgICAgICAgICAgfCAyICstCiA0MCBmaWxlcyBjaGFuZ2VkLCA0NCBpbnNlcnRpb25z
-KCspLCA0NCBkZWxldGlvbnMoLSkKCi0tIAoyLjEuMAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBw
-Yy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8v
-bGludXhwcGMtZGV2
+of_device_id is always used as const.
+(See driver.of_match_table and open firmware functions)
+
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ drivers/net/can/cc770/cc770_platform.c     | 2 +-
+ drivers/net/can/grcan.c                    | 2 +-
+ drivers/net/can/mscan/mpc5xxx_can.c        | 2 +-
+ drivers/net/can/sja1000/sja1000_platform.c | 2 +-
+ drivers/net/can/xilinx_can.c               | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index b1e8851..866e5e1 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -254,7 +254,7 @@ static int cc770_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct of_device_id cc770_platform_table[] = {
++static const struct of_device_id cc770_platform_table[] = {
+ 	{.compatible = "bosch,cc770"}, /* CC770 from Bosch */
+ 	{.compatible = "intc,82527"},  /* AN82527 from Intel CP */
+ 	{},
+diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
+index fed1bbd..e3d7e22 100644
+--- a/drivers/net/can/grcan.c
++++ b/drivers/net/can/grcan.c
+@@ -1725,7 +1725,7 @@ static int grcan_remove(struct platform_device *ofdev)
+ 	return 0;
+ }
+ 
+-static struct of_device_id grcan_match[] = {
++static const struct of_device_id grcan_match[] = {
+ 	{.name = "GAISLER_GRCAN"},
+ 	{.name = "01_03d"},
+ 	{.name = "GAISLER_GRHCAN"},
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index ad024e6..c7427bd 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -43,7 +43,7 @@ struct mpc5xxx_can_data {
+ };
+ 
+ #ifdef CONFIG_PPC_MPC52xx
+-static struct of_device_id mpc52xx_cdm_ids[] = {
++static const struct of_device_id mpc52xx_cdm_ids[] = {
+ 	{ .compatible = "fsl,mpc5200-cdm", },
+ 	{}
+ };
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 9311525..0552ed4 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -242,7 +242,7 @@ static int sp_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct of_device_id sp_of_table[] = {
++static const struct of_device_id sp_of_table[] = {
+ 	{.compatible = "nxp,sja1000"},
+ 	{},
+ };
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 6c67643..6bddfe0 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1185,7 +1185,7 @@ static int xcan_remove(struct platform_device *pdev)
+ }
+ 
+ /* Match table for OF platform binding */
+-static struct of_device_id xcan_of_match[] = {
++static const struct of_device_id xcan_of_match[] = {
+ 	{ .compatible = "xlnx,zynq-can-1.0", },
+ 	{ .compatible = "xlnx,axi-can-1.00.a", },
+ 	{ /* end of list */ },
+-- 
+2.1.0
+
