@@ -1,69 +1,136 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH V6 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Tue, 17 Mar 2015 10:51:52 -0400
-Message-ID: <20150317145152.GC30168@linux>
-References: <1426592308-23817-1-git-send-email-thomas.koerper@esd.eu>
- <20150317133309.GA30168@linux>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: add new socket option CAN_RAW_FILTER_UNIQUE to eliminate
+ duplicate matches
+Date: Tue, 17 Mar 2015 16:25:51 +0100
+Message-ID: <5508477F.80303@hartkopp.net>
+References: <1426597107-7590-1-git-send-email-socketcan@hartkopp.net> <55082ADE.4050602@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f45.google.com ([74.125.82.45]:35523 "EHLO
-	mail-wg0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752686AbbCQOv4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 10:51:56 -0400
-Received: by wgdm6 with SMTP id m6so10572305wgd.2
-        for <linux-can@vger.kernel.org>; Tue, 17 Mar 2015 07:51:55 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150317133309.GA30168@linux>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:58830 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753618AbbCQPZ4 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 11:25:56 -0400
+In-Reply-To: <55082ADE.4050602@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas =?iso-8859-1?Q?K=F6rper?= <thomas.koerper@esd.eu>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Andre Naujoks <nautsch@gmail.com>
 
-On Tue, Mar 17, 2015 at 09:33:09AM -0400, Ahmed S. Darwish wrote:
-> Hi,
->=20
-> [ Adding Marc to the CC list. Kindly add him in future submissions.. =
-]
->=20
-> On Tue, Mar 17, 2015 at 12:38:28PM +0100, Thomas K=F6rper wrote:
-> ...
-> > +netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device =
-*netdev)
-> > +{
-> > +	struct acc_net_priv *priv =3D netdev_priv(netdev);
-> > +	struct acc_core *core =3D priv->core;
-> > +	struct can_frame *cf =3D (struct can_frame *)skb->data;
-> > +	u8 new_fifo_head =3D (core->tx_fifo_head + 1) % core->tx_fifo_siz=
-e;
-> > +	u32 esd_id;
-> > +	u8 esd_len;
-> > +
-> > +	if ((new_fifo_head =3D=3D core->tx_fifo_tail) || !acc_txq_isready=
-(core)) {
-> > +		netif_stop_queue(netdev);
-> > +		return NETDEV_TX_BUSY;
-> > +	}
-> > +
->=20
-> In that case, an error or warning message is in order. Quoting from
-> Documentation/networking/{driver.txt,netdevices.txt}:
->=20
->   When this happens, it usually means start/stop flow control
->   is broken in the driver. This is a hard error that should be logged=
-:
->   netdev_err("BUG: Tx ring full when queue awake!\n");
->=20
-> [ Actually it would be nice to print such message and _heavily_ test
->   the driver tx/rx pathes afterwards, making sure no practical race
->   conditions exist regarding the netif tx queue .. ]
->=20
-> On another topic, I've searched the code for the part where it stops
-> the queue because "we've taken the last slot in the ring, and we will
-> not be able to handle further transmissions" but couldn't find it at
-> all. AFAIK, that part calls netif_stop_queue(), but _always_ return
-> with NETDEV_TX_OK. Am I missing something obvious?
->=20
+Hi Marc,
 
-s/_always_/should always
+I know why I thought it will get messy ...
+
+E.g. when you notch three CAN IDs like this:
+
+candump can0,100~7FF,200~7FF,400~7FF
+
+You will get *without* the unify option:
+
+cansend can0 100#	-> two times CAN frame with 0x100
+cansend can0 200#	-> two times CAN frame with 0x200
+cansend can0 400#	-> two times CAN frame with 0x400
+cansend can0 333#	-> three times CAN frame with 0x333
+
+You will get *with* the unify option from the posted patch:
+
+cansend can0 100#	-> one time CAN frame with 0x100
+cansend can0 200#	-> one time CAN frame with 0x200
+cansend can0 400#	-> one time CAN frame with 0x400
+cansend can0 333#	-> one time CAN frame with 0x333
+
+... the same as 'candump can0' %-(
+
+So what you probably *want* to have is:
+
+cansend can0 100#	-> no CAN frame
+cansend can0 200#	-> no CAN frame
+cansend can0 400#	-> no CAN frame
+cansend can0 333#	-> one CAN frame with 0x333
+
+Right?
+
+An approach to solve exactly this use case could be to check whether *all* 
+configured filters have passed the CAN frame.
+
+This could be done by counting the receptions of the identical frames:
+
+diff --git a/net/can/raw.c b/net/can/raw.c
+index e593dc7..3022c25 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -78,6 +78,7 @@ MODULE_ALIAS("can-proto-1");
+  struct unique_can_frame {
+  	struct sk_buff *skb;
+  	ktime_t tstamp;
++	int rx_count;
+  };
+
+  struct raw_sock {
+@@ -130,11 +131,15 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+  	/* eliminate multiple filter matches for the same skb */
+  	if (ro->filter_unique) {
+  		if (ro->uniq_cf.skb == oskb &&
+-		    ktime_equal(ro->uniq_cf.tstamp, oskb->tstamp))
+-			return;
+-
+-		ro->uniq_cf.skb = oskb;
+-		ro->uniq_cf.tstamp = oskb->tstamp;
++		    ktime_equal(ro->uniq_cf.tstamp, oskb->tstamp)){
++			ro->uniq_cf.rx_count++;
++			if (ro->uniq_cf.rx_count < ro->count)
++				return;
++		} else {
++			ro->uniq_cf.skb = oskb;
++			ro->uniq_cf.tstamp = oskb->tstamp;
++			ro->uniq_cf.rx_count = 1;
++		}
+  	}
+
+  	/* do not pass non-CAN2.0 frames to a legacy socket */
+
+(based on the patch before)
+
+But does it really make sense to put such a tricky thing into the raw socket?
+
+It flips the OR sematic to an AND semantic over the provided filters.
+And then the name of the socket option should be adapted too.
+Something like "all filters must match"
+
+Regards,
+Oliver
+
+
+
+On 17.03.2015 14:23, Oliver Hartkopp wrote:
+> Hi Marc,
+>
+> On 17.03.2015 13:58, Oliver Hartkopp wrote:
+>> The CAN_RAW socket can set multiple CAN identifier specific filters that lead
+>> to multiple filters in the af_can.c filter processing. These filters are
+>> indenpendent from each other which leads to logical OR'ed filters when applied.
+>>
+>> Especially when the filter is intended to notch single CAN IDs or CAN ID ranges
+>> a problem emerges when using more than just one filter: The notched CAN IDs
+>> will be delivered once while the other CAN IDs will be delivered twice.
+>>
+>> This patch implements a new option to make sure that every CAN frame which is
+>> filtered for a specific socket is only delivered once to the user space.
+>> This is independent from the number of matching CAN filters of this socket.
+>
+> Just to make sure, this patch really helps:
+>
+> With the example above all CAN frames are delivered just once. The OR'ed
+> filters still match. So you won't have the solution that you can have
+> different notched areas of CAN IDs ...
+>
+> I hope I expressed myself clearly.
+>
+> Regards,
+> Oliver
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
