@@ -1,71 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: gs_usb: check for kzalloc allocation failure
-Date: Tue, 17 Mar 2015 09:04:52 +0100
-Message-ID: <5507E024.9090801@pengutronix.de>
-References: <1426545744-3317-1-git-send-email-colin.king@canonical.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
+Date: Tue, 17 Mar 2015 10:10:18 +0000
+Message-ID: <20150317101018.11690.58372@shannon>
+References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
+ <20150316124621.14895.31220@shannon>
+ <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD39B3@esd-s3.esd.local>
+ <20150317072639.GA2802@Darwish.PC>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45718 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752073AbbCQIFK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 04:05:10 -0400
-In-Reply-To: <1426545744-3317-1-git-send-email-colin.king@canonical.com>
+Received: from mail-db3on0091.outbound.protection.outlook.com ([157.55.234.91]:62816
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753236AbbCQKKW convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 06:10:22 -0400
+In-Reply-To: <20150317072639.GA2802@Darwish.PC>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+To: "Ahmed S.Darwish" <darwish.07@gmail.com>, =?utf-8?b?IlRob21hcyBLw7ZycGVy?= <Thomas.Koerper@esd.eu>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 03/16/2015 11:42 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+Quoting Ahmed S. Darwish (2015-03-17 07:26:39)
+> Hi Thomas,
 >=20
-> smatch detected the following issue:
-> drivers/net/can/usb/gs_usb.c:904 gs_usb_probe() error:
->    potential null dereference 'dev'.  (kzalloc returns null)
+> On Tue, Mar 17, 2015 at 07:30:02AM +0100, Thomas K=C3=B6rper wrote:
+> > Hi Andri,
+> >=20
+> > I've looked at the sources you mentioned, but I'm a little bit unsu=
+re now /
+> > the handling seems not perfectly consistent to me. (flexcan calls
+> > can_change_state() with tx/rx_state of 0 in the bus off path.
+> >
 >=20
-> Add a check for null return from kzalloc and return -ENOMEM
+> There're discrpeancies indeed on the BUSOFF path:
 >=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 1) flexcan calls can_change_state(dev, cf, 0, 0). kvaser and others
+>    do can_change_state(dev, cf, tx, rx) where either tx or rx =3D
+>    CAN_STATE_BUS_OFF. In this case, kvaser and the other drivers
+>    are the _correct_ behavior. This is validated by can-dev
+>    can_chage_state() code:
+>=20
+>         if (unlikely(new_state =3D=3D CAN_STATE_BUS_OFF)) {
+>                 cf->can_id |=3D CAN_ERR_BUSOFF;
+>                 return;
+>         }
+Indeed, I'll have to fix that. Well spotted Thomas!
+>=20
+> 2) flexcan calls can_bus_off(dev), while kvaser goes a layer deeper
+>    and directly calls netif_carrier_off(netdev). In this case,
+>    flexcan is the more correct behavior.
+>=20
+IMO, that's fine as long as it doesn't add to inconsistency between out=
+wards
+behaviour of the system; which it doesn't.
 
-Thanks, applied to can.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVB+AnAAoJECte4hHFiupUzeQP/RVvTe265T4pUOQBTlO1zPFA
-p4rm1kG8dMl77A2LGNb5gCz6f6XtPiQNNqs/0aEpz0zpVEPby/KA+WdwrUmUllKM
-BYpu6SQeCRg6y8w3Y+zZEMz5KJti9re3+8RRKQudcrBisNdMOTiFZ/+O0AKZBAiS
-tcH8/GNCL93y1BgMA84oNmaUi3tdUiRutsEskeuHdgSA7Sk0RxcscBaI24doajTu
-CsfwMogEc76G3/wIddSv8tRr46gBmi1tafG7t/xgvezbQukX+4FpdhbIKgLVtawv
-EkyNm4KdXqEN2ec6OhCFKtag8ldbechtB5wHK9FBZI96paIfur72ZoxqBDcw0vQp
-XGw4n0/8UsuDH+5tjmkEgRuo9FScW5mDaNgBrZkP6LJIJ5H6esIWFZVe4nKukH2o
-Xfn4FVSYPctF1O3fXUeDJKv4EcPdg1zNAvG5X+my0NbtQ/EiNSwI+4cE/F1k7YbN
-io/51uTbTX3T7GUm1U1SJgzfQTLPBDm9rCXxF3YX2CbKnoYhoiPwpoZjrXWOEdeJ
-cnRtmLSvBl8hbybkYvMcf8C+RWJI7N5ldJe/IaAl0Rb74e2p/WS38yWhsNBdLT0E
-PMVsUEcQqiRHDhnYRf/izk7tnW+t6ZbJ7Nt5Q64oSugxQ7XVYPeNPFwufW263wbd
-7YgxIKktXJ1/ebzYBtfN
-=G0L8
------END PGP SIGNATURE-----
-
---s3MnaLfVwgssoBh5Uf46kMQWD1mtOAXBx--
+Best regards,
+Andri
