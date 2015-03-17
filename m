@@ -1,108 +1,68 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: AW: [PATCH V5 1/1] can: Add support for esd CAN PCIe/402 card
-Date: Tue, 17 Mar 2015 10:33:59 +0000
-Message-ID: <20150317103359.11690.3930@shannon>
-References: <1426508113-14904-1-git-send-email-thomas.koerper@esd.eu>
- <20150316124621.14895.31220@shannon>
- <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD39B3@esd-s3.esd.local>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/2] peak_usb: rename usb option cmds definition and structs
+Date: Tue, 17 Mar 2015 12:27:18 +0100
+Message-ID: <55080F96.9010402@pengutronix.de>
+References: <1426503473-7403-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="iIOndud04MeCW8IF1Sopbe0vUBLNEfu62"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0085.outbound.protection.outlook.com ([157.55.234.85]:45856
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932143AbbCQKty convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 06:49:54 -0400
-In-Reply-To: <8CE1D0B9BFD2404DA079DDE1814A6F2E03294EFD39B3@esd-s3.esd.local>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60138 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932536AbbCQL1Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 17 Mar 2015 07:27:25 -0400
+In-Reply-To: <1426503473-7403-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?q?Thomas_K=C3=B6rper?= <Thomas.Koerper@esd.eu>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Hi Thomas,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iIOndud04MeCW8IF1Sopbe0vUBLNEfu62
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Quoting Thomas K=C3=B6rper (2015-03-17 06:30:02)
-> Hi Andri,
+On 03/16/2015 11:57 AM, Stephane Grosjean wrote:
+> The PUCAN_CMD_RX_FRAME_(ENABLE|DISABLE) command has extended its purpos=
+e
+> and was therefore renamed to PUCAN_CMD_SET_(EN|DIS)_OPTION.
 >=20
-> I've looked at the sources you mentioned, but I'm a little bit unsure=
- now /
-> the handling seems not perfectly consistent to me. (flexcan calls
-> can_change_state() with tx/rx_state of 0 in the bus off path. Only
-That's an oversight on my part.
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-> kvaser_usb counts rx_dropped++ if skb alloc failed, and setting=20
-Yes, Darwish is very diligent in handling OOM.
+applied both to can/master.
 
-> cf->data[6]/cf->data[7] to the counter values seems also rarely used)
-Some chips don't expose the error counters.
+Marc
 
->=20
-> ...so let me show the reworked function first before I post a new pat=
-ch:
->=20
-> static void
-> handle_core_msg_errstatechange(struct acc_core *core,
->                                const struct acc_bmmsg_errstatechange =
-*msg)
-> {
->         struct acc_net_priv *priv =3D netdev_priv(core->net_dev);
->         struct net_device_stats *stats =3D &core->net_dev->stats;
->         struct can_frame *cf;
->         struct sk_buff *skb;
->=20
->         skb =3D alloc_can_err_skb(core->net_dev, &cf);
->         if (skb) {
->                 enum can_state new_state;
->                 u8 txerr;
->                 u8 rxerr;
->=20
->                 txerr =3D (u8)(msg->reg_status >> 8);
->                 rxerr =3D (u8)msg->reg_status;
->=20
->                 cf->data[6] =3D txerr;
->                 cf->data[7] =3D rxerr;
->=20
->                 if (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_BS) =
-{
->                         new_state =3D CAN_STATE_BUS_OFF;
->                 } else if (msg->reg_status & ACC_REG_STATUS_MASK_STAT=
-US_EP) {
->                         new_state =3D CAN_STATE_ERROR_PASSIVE;
->                 } else if (msg->reg_status & ACC_REG_STATUS_MASK_STAT=
-US_ES) {
->                         new_state =3D CAN_STATE_ERROR_WARNING;
->                 } else {
->                         new_state =3D CAN_STATE_ERROR_ACTIVE;
->                 }
->=20
->                 if (new_state !=3D priv->can.state) {
->                         enum can_state tx_state, rx_state;
->=20
->                         tx_state =3D (txerr >=3D rxerr) ? new_state :=
- 0;
->                         rx_state =3D (rxerr >=3D txerr) ? new_state :=
- 0;
->=20
->                         can_change_state(core->net_dev, cf, tx_state,=
- rx_state);
->                 }
->=20
->                 netif_rx(skb);
->                 stats->rx_packets++;
->                 stats->rx_bytes +=3D cf->can_dlc;
->         } else {
->                 stats->rx_dropped++;
->         }
->=20
->         if (msg->reg_status & ACC_REG_STATUS_MASK_STATUS_BS) {
->                 acc_write32(core, ACC_CORE_OF_TX_ABORT_MASK, 0xffff);
->                 can_bus_off(core->net_dev);
->         }
-> }
->=20
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Looks good!
 
-Best regards,
-Andri
+--iIOndud04MeCW8IF1Sopbe0vUBLNEfu62
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVCA+ZAAoJECte4hHFiupU6bkP/j+JytQK3GeuWd/RgiDsiVP/
+MT4Mxqsj1pJ7IPI7YSRoBf9vQgoggD2NoXEU3qOppIHnscbvgmHKrQfk/vz0bd94
+79ut0J8PZuncvQXEISqd0DLfEZtfBB4s1azkXMf6Y1c/yrQ7Ey+mq+h+Bp2jEW18
+uc696GOA+rLpbYWrjVS/RvRFzDH6/bPeIYmBexhAli4NzUxW9iUeX81D47Ur7fjw
+ofZqYiflXRp1AvYJB8BF0gVyi+a/vuCwH7qAUBnziZMVfDPeAgTXPFajH6b+hR+U
+qXywIEW99sZWs6BxePRsldtECUjgLhRXeb5HPpqlyaNxq45w0zhMD7Ubqs7pE+5D
+P+N8pYTu4MH7hA17V+Z2gvTD5zw8eXo8+AbVTVdcSA3rA9W6AWSAQo60fi4SWrGx
+dB8t6ccEt4ZhOxoQNCfQqKYIO1dPGi9eSP5TDLEdZoyF0KF0N98qdFis9efZ+Wkh
+p5I14SadqQsKwVEi9Kg5oKOwfoLcD2VwwIeaN6CN/xIsXmjAMOMjKwcNd1d8wE0r
+RgCoupvSdy/UF8bGgLRO0Zf9Y4v63K+CPey2OHCwIELg07IF27iJvxqzkorHMK0L
+ek0b+bakf1lurt5EILjFv2fNcG+lBnU3XNsiSTWUlZFmuOa45tIyMyYthkbvMmTs
+ZQj1MCDozd1ylybkmi69
+=dNAo
+-----END PGP SIGNATURE-----
+
+--iIOndud04MeCW8IF1Sopbe0vUBLNEfu62--
