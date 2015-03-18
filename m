@@ -1,79 +1,48 @@
-From: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
-Subject: RE: [RFC] Join CAN filters with CAN_RAW_JOIN_FILTERS sockopt is ready
- for testing
-Date: Wed, 18 Mar 2015 07:48:03 +0000
-Message-ID: <95290d0cea49482e96eab6513a556c69@SGPMBX1011.APAC.bosch.com>
-References: <550883AF.7080703@hartkopp.net> <550925B3.6010801@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from imta21.fe.bosch.de ([139.15.243.226]:63213 "EHLO
-	imta21.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755144AbbCRHzR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 03:55:17 -0400
-Received: from smtp6-v.fe.bosch.de (imta23.fe.bosch.de [139.15.243.227])
-	by imta21.fe.bosch.de (Postfix) with ESMTP id C0A20C0542
-	for <linux-can@vger.kernel.org>; Wed, 18 Mar 2015 08:48:08 +0100 (CET)
-In-Reply-To: <550925B3.6010801@hartkopp.net>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH 11/13] can: at91_can: use endian agnostic IO accessors
+Date: Wed, 18 Mar 2015 15:53:10 +0000
+Message-ID: <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
+References: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk>
+Sender: netdev-owner@vger.kernel.org
+To: linux-kernel@lists.codethink.co.uk, linux-arm-kernel@lists.infradead.org
+Cc: Ben Dooks <ben.dooks@codethink.co.uk>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+List-Id: linux-can.vger.kernel.org
 
-SGVsbG8gT2xpdmVyLA0KDQpJIGhhdmUgYSBxdWVzdGlvbiBoZXJlLg0KDQpUaGUgZmlsdGVyIHVz
-ZWQgd2l0aCBjYW5kdW1wIGFyZSBzb2Z0d2FyZSBmaWx0ZXJzIG9yIGFjdHVhbCBjYW4gZGV2aWNl
-IGZpbHRlciByZWdpc3RlcnMgYXJlIHVwZGF0ZWQgPw0KDQpCZXN0IFJlZ2FyZHMsDQpQYW5rYWoN
-Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IGxpbnV4LWNhbi1vd25lckB2Z2Vy
-Lmtlcm5lbC5vcmcgW21haWx0bzpsaW51eC1jYW4tb3duZXJAdmdlci5rZXJuZWwub3JnXSBPbiBC
-ZWhhbGYgT2YgT2xpdmVyIEhhcnRrb3BwDQpTZW50OiBXZWRuZXNkYXksIE1hcmNoIDE4LCAyMDE1
-IDEyOjQ0IFBNDQpUbzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFtS
-RkNdIEpvaW4gQ0FOIGZpbHRlcnMgd2l0aCBDQU5fUkFXX0pPSU5fRklMVEVSUyBzb2Nrb3B0IGlz
-IHJlYWR5IGZvciB0ZXN0aW5nDQoNCkhlcmUgc29tZSB0ZXN0cyB3aXRoIHRoZSBWMiB2ZXJzaW9u
-Og0KDQpDdXJyZW50IG1haW5saW5lIChubyBtb2RpZmljYXRpb25zKQ0KDQokIGNhbmR1bXAgdmNh
-bjAsMDowLDA6MA0KICAgdmNhbjAgIDFDOCAgIFs4XSAgNUMgRkUgQ0MgNEMgRTkgNEYgNEEgMjEN
-CiAgIHZjYW4wICAxQzggICBbOF0gIDVDIEZFIENDIDRDIEU5IDRGIDRBIDIxDQogICB2Y2FuMCAg
-NjBEICAgWzhdICBCQSAzQiA2RiA1MyAwNSA3OSBCRSA0Rg0KICAgdmNhbjAgIDYwRCAgIFs4XSAg
-QkEgM0IgNkYgNTMgMDUgNzkgQkUgNEYNCiAgIHZjYW4wICA0QkUgICBbOF0gIEJGIEFBIDZEIDcy
-IDMxIEUwIEUyIDFDDQogICB2Y2FuMCAgNEJFICAgWzhdICBCRiBBQSA2RCA3MiAzMSBFMCBFMiAx
-Qw0KICAgdmNhbjAgIDdERSAgIFs3XSAgNEEgRTAgOEIgNjggQUMgNkUgMEYNCiAgIHZjYW4wICA3
-REUgICBbN10gIDRBIEUwIDhCIDY4IEFDIDZFIDBGDQoNCnR3byBmaWx0ZXJzIGZvciAnYWxsJyBs
-ZWFkIHRvIHR3byBmcmFtZXMgZWFjaC4NCihjYW5nZW4gdmNhbjAgaW4gc2VwYXJhdGUgdGVybWlu
-YWwpDQoNCldpdGggcGF0Y2gxIChjYW46IGZpeCBtdWx0aXBsZSBkZWxpdmVyeSAuLi4pDQoNCiQg
-Y2FuZHVtcCB2Y2FuMCwwOjAsMDowDQogICB2Y2FuMCAgNzhEICAgWzhdICBDMCA3MSA2NSA1NiAy
-MyAxNiA5NSA2Qg0KICAgdmNhbjAgIDcwRSAgIFszXSAgMDEgRDQgQ0MNCiAgIHZjYW4wICA3NDkg
-ICBbN10gIEE3IDhEIEIzIDQzIDc1IEMxIDIyDQogICB2Y2FuMCAgMjM4ICAgWzJdICAxNyAwNg0K
-ICAgdmNhbjAgIDEwOCAgIFs0XSAgOEMgRjcgNzkgMDMNCiAgIHZjYW4wICAxOTAgICBbMF0NCiAg
-IHZjYW4wICAyNUQgICBbMV0gIEMyDQogICB2Y2FuMCAgNENFICAgWzRdICA2RiAxQSA1MCAzOA0K
-DQplbGltaW5hdGVzIHRoZSBkb3VibGUgcmVjZXB0aW9uLg0KDQpOb3cgdGVzdGluZyBwYXRjaDIg
-KGNhbjogaW50cm9kdWNlIG5ldyByYXcgc29ja2V0IG9wdGlvbiAuLi4pDQpVc2luZyAnY2FuZ2Vu
-IHZjYW4wIC1JIGkgLW4gNiAtTCAwJyBpbiBzZXBhcmF0ZSB0ZXJtaW5hbC4NCg0KQ3VycmVudCBt
-YWlubGluZSAobm8gbW9kaWZpY2F0aW9ucykNCg0KJCBjYW5kdW1wIHZjYW4wLDAwMX43RkYsMDAz
-fjdGRiwwMDR+N0ZGDQogICB2Y2FuMCAgMDAwICAgWzBdDQogICB2Y2FuMCAgMDAwICAgWzBdDQog
-ICB2Y2FuMCAgMDAwICAgWzBdDQogICB2Y2FuMCAgMDAxICAgWzBdDQogICB2Y2FuMCAgMDAxICAg
-WzBdDQogICB2Y2FuMCAgMDAyICAgWzBdDQogICB2Y2FuMCAgMDAyICAgWzBdDQogICB2Y2FuMCAg
-MDAyICAgWzBdDQogICB2Y2FuMCAgMDAzICAgWzBdDQogICB2Y2FuMCAgMDAzICAgWzBdDQogICB2
-Y2FuMCAgMDA0ICAgWzBdDQogICB2Y2FuMCAgMDA0ICAgWzBdDQogICB2Y2FuMCAgMDA1ICAgWzBd
-DQogICB2Y2FuMCAgMDA1ICAgWzBdDQogICB2Y2FuMCAgMDA1ICAgWzBdDQoNCldpdGggcGF0Y2gx
-IGFuZCBwYXRjaDIgYnV0IG5vIGpvaW5lZCBmaWx0ZXJzOg0KDQokIGNhbmR1bXAgdmNhbjAsMDAx
-fjdGRiwwMDN+N0ZGLDAwNH43RkYNCiAgIHZjYW4wICAwMDAgICBbMF0NCiAgIHZjYW4wICAwMDEg
-ICBbMF0NCiAgIHZjYW4wICAwMDIgICBbMF0NCiAgIHZjYW4wICAwMDMgICBbMF0NCiAgIHZjYW4w
-ICAwMDQgICBbMF0NCiAgIHZjYW4wICAwMDUgICBbMF0NCg0KV2l0aCBwYXRjaDEgYW5kIHBhdGNo
-MiB3aXRoIGpvaW5lZCBmaWx0ZXJzOg0KDQokIGNhbmR1bXAgdmNhbjAsMDAxfjdGRiwwMDN+N0ZG
-LDAwNH43RkYsSg0KICAgdmNhbjAgIDAwMCAgIFswXQ0KICAgdmNhbjAgIDAwMiAgIFswXQ0KICAg
-dmNhbjAgIDAwNSAgIFswXQ0KDQoNCkhleSAtIHRoYXQgcm9ja3MhDQoNCg0KT24gMTcuMDMuMjAx
-NSAyMDo0MiwgT2xpdmVyIEhhcnRrb3BwIHdyb3RlOg0KPiBIaSBhbGwsDQo+DQo+IGFzIGRpc2N1
-c3NlZCB0b2RheSBJIHBvc3RlZCB0aGUgcGF0Y2hlcyB0byAiZml4IHRoZSBsb25nIHN0YW5kaW5n
-IGJ1ZyIgb2YNCj4gZ2V0dGluZyBkdXBsaWNhdGUgQ0FOIGZyYW1lcyB3aGVuIGhhdmluZyBvdmVy
-bGFwcGluZyBmaWx0ZXJzLg0KPg0KPiBUaGUgc2Vjb25kIHBhdGNoIChhbmQgdGhlIGNhbmR1bXAg
-cGF0Y2gpIGlzIHRvIHRlc3QgdGhlIGZ1bmN0aW9uYWxpdHkgdG8NCj4gaW1wbGVtZW50IGpvaW5l
-ZCBmaWx0ZXJzIHdoaWNoIHByb3ZpZGVzIGEgbG9naWNhbCBBTkQgZm9yIHRoZSBnaXZlbiBmaWx0
-ZXJzLg0KPg0KPiBIYXBweSB0ZXN0aW5nIC0gZmVlZGJhY2sgaXMgd2VsY29tZSENCj4NCj4gUmVn
-YXJkcywNCj4gT2xpdmVyDQo+IC0tDQo+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBz
-ZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBsaW51eC1jYW4iIGluDQo+IHRoZSBib2R5IG9mIGEg
-bWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+IE1vcmUgbWFqb3Jkb21vIGlu
-Zm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0KLS0NClRv
-IHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBs
-aW51eC1jYW4iIGluDQp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2Vy
-bmVsLm9yZw0KTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9t
-YWpvcmRvbW8taW5mby5odG1sDQo=
+Change __raw accesors to  endian agnostic versions to allow the driver
+to work properly on big endian systems.
+
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+--
+CC: Wolfgang Grandegger <wg@grandegger.com>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: linux-can@vger.kernel.org
+CC: netdev@vger.kernel.org
+CC: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ drivers/net/can/at91_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index eeb4b8b..f4e40aa 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -291,13 +291,13 @@ static inline unsigned int get_tx_echo_mb(const struct at91_priv *priv)
+ 
+ static inline u32 at91_read(const struct at91_priv *priv, enum at91_reg reg)
+ {
+-	return __raw_readl(priv->reg_base + reg);
++	return readl_relaxed(priv->reg_base + reg);
+ }
+ 
+ static inline void at91_write(const struct at91_priv *priv, enum at91_reg reg,
+ 		u32 value)
+ {
+-	__raw_writel(value, priv->reg_base + reg);
++	writel_relaxed(value, priv->reg_base + reg);
+ }
+ 
+ static inline void set_mb_mode_prio(const struct at91_priv *priv,
+-- 
+2.1.4
