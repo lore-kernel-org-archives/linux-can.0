@@ -1,12 +1,14 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v2 1/2] can: fix multiple delivery of a single CAN frame for overlapping CAN filters
-Date: Wed, 18 Mar 2015 07:10:34 +0100
-Message-ID: <1426659036-4628-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v2 2/2] can: introduce new raw socket option to join the given CAN filters
+Date: Wed, 18 Mar 2015 07:10:35 +0100
+Message-ID: <1426659036-4628-2-git-send-email-socketcan@hartkopp.net>
+References: <1426659036-4628-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:33059 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:20656 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754852AbbCRGKq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 02:10:46 -0400
+	with ESMTP id S1754848AbbCRGKt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 02:10:49 -0400
+In-Reply-To: <1426659036-4628-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
@@ -16,56 +18,147 @@ The CAN_RAW socket can set multiple CAN identifier specific filters that lead
 to multiple filters in the af_can.c filter processing. These filters are
 indenpendent from each other which leads to logical OR'ed filters when applied.
 
-This patch makes sure that every CAN frame which is filtered for a specific
-socket is only delivered once to the user space. This is independent from the
-number of matching CAN filters of this socket.
+This socket option joines the given CAN filters in the way that only CAN frames
+are passed to user space that matched *all* given CAN filters. The semantic for
+the applied filters is therefore changed to a logical AND.
+
+This is useful especially when the filterset is a combination of filters where
+the CAN_INV_FILTER flag is set in order to notch single CAN IDs or CAN ID
+ranges from the incoming traffic.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
 
-v2: move simple check to be processed first
+v2: fix first reception of joint filter CAN frame
 
- net/can/raw.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ Documentation/networking/can.txt | 20 ++++++++++++++++++--
+ include/uapi/linux/can/raw.h     |  1 +
+ net/can/raw.c                    | 31 ++++++++++++++++++++++++++++++-
+ 3 files changed, 49 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 00c13ef..0a6abf1 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -86,6 +86,8 @@ struct raw_sock {
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
- 	can_err_mask_t err_mask;
-+	struct sk_buff *uniq_skb;
-+	ktime_t uniq_tstamp;
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index 0a2859a..5abad1e 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -22,7 +22,8 @@ This file contains
+       4.1.3 RAW socket option CAN_RAW_LOOPBACK
+       4.1.4 RAW socket option CAN_RAW_RECV_OWN_MSGS
+       4.1.5 RAW socket option CAN_RAW_FD_FRAMES
+-      4.1.6 RAW socket returned message flags
++      4.1.6 RAW socket option CAN_RAW_JOIN_FILTERS
++      4.1.7 RAW socket returned message flags
+     4.2 Broadcast Manager protocol sockets (SOCK_DGRAM)
+       4.2.1 Broadcast Manager operations
+       4.2.2 Broadcast Manager message flags
+@@ -601,7 +602,22 @@ solution for a couple of reasons:
+   CAN FD frames by checking if the device maximum transfer unit is CANFD_MTU.
+   The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.
+ 
+-  4.1.6 RAW socket returned message flags
++  4.1.6 RAW socket option CAN_RAW_JOIN_FILTERS
++
++  The CAN_RAW socket can set multiple CAN identifier specific filters that
++  lead to multiple filters in the af_can.c filter processing. These filters
++  are indenpendent from each other which leads to logical OR'ed filters when
++  applied (see 4.1.1).
++
++  This socket option joines the given CAN filters in the way that only CAN
++  frames are passed to user space that matched *all* given CAN filters. The
++  semantic for the applied filters is therefore changed to a logical AND.
++
++  This is useful especially when the filterset is a combination of filters
++  where the CAN_INV_FILTER flag is set in order to notch single CAN IDs or
++  CAN ID ranges from the incoming traffic.
++
++  4.1.7 RAW socket returned message flags
+ 
+   When using recvmsg() call, the msg->msg_flags may contain following flags:
+ 
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index 78ec76f..8735f108 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -57,6 +57,7 @@ enum {
+ 	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
+ 	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
+ 	CAN_RAW_FD_FRAMES,	/* allow CAN FD frames (default:off) */
++	CAN_RAW_JOIN_FILTERS,	/* all filters must match to trigger */
  };
  
- /*
-@@ -123,6 +125,15 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (!ro->fd_frames && oskb->len != CAN_MTU)
- 		return;
+ #endif /* !_UAPI_CAN_RAW_H */
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 0a6abf1..0f8908e 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -82,6 +82,8 @@ struct raw_sock {
+ 	int loopback;
+ 	int recv_own_msgs;
+ 	int fd_frames;
++	int join_filters;
++	int join_rx_count;
+ 	int count;                 /* number of active filters */
+ 	struct can_filter dfilter; /* default/single filter */
+ 	struct can_filter *filter; /* pointer to filter(s) */
+@@ -128,10 +130,20 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 	/* eliminate multiple filter matches for the same skb */
+ 	if (ro->uniq_skb == oskb &&
+ 	    ktime_equal(ro->uniq_tstamp, oskb->tstamp)){
+-		return;
++		if (ro->join_filters) {
++			ro->join_rx_count++;
++			/* drop frame until all enabled filters matched */
++			if (ro->join_rx_count < ro->count)
++				return;
++		} else
++			return;
+ 	} else {
+ 		ro->uniq_skb = oskb;
+ 		ro->uniq_tstamp = oskb->tstamp;
++		ro->join_rx_count = 1;
++		/* drop first frame to check all enabled filters? */
++		if (ro->join_filters && ro->count > 1)
++			return;
+ 	}
  
-+	/* eliminate multiple filter matches for the same skb */
-+	if (ro->uniq_skb == oskb &&
-+	    ktime_equal(ro->uniq_tstamp, oskb->tstamp)){
-+		return;
-+	} else {
-+		ro->uniq_skb = oskb;
-+		ro->uniq_tstamp = oskb->tstamp;
-+	}
-+
  	/* clone the given skb to be able to enqueue it into the rcv queue */
- 	skb = skb_clone(oskb, GFP_ATOMIC);
- 	if (!skb)
-@@ -296,6 +307,8 @@ static int raw_init(struct sock *sk)
+@@ -307,6 +319,8 @@ static int raw_init(struct sock *sk)
  	ro->loopback         = 1;
  	ro->recv_own_msgs    = 0;
  	ro->fd_frames        = 0;
-+	ro->uniq_skb         = NULL;
-+	ro->uniq_tstamp      = ktime_set(0, 0);
++	ro->join_filters     = 0;
++	ro->join_rx_count    = 0;
+ 	ro->uniq_skb         = NULL;
+ 	ro->uniq_tstamp      = ktime_set(0, 0);
  
- 	/* set notifier */
- 	ro->notifier.notifier_call = raw_notifier;
+@@ -596,6 +610,15 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 
+ 		break;
+ 
++	case CAN_RAW_JOIN_FILTERS:
++		if (optlen != sizeof(ro->join_filters))
++			return -EINVAL;
++
++		if (copy_from_user(&ro->join_filters, optval, optlen))
++			return -EFAULT;
++
++		break;
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
+@@ -660,6 +683,12 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 		val = &ro->fd_frames;
+ 		break;
+ 
++	case CAN_RAW_JOIN_FILTERS:
++		if (len > sizeof(int))
++			len = sizeof(int);
++		val = &ro->join_filters;
++		break;
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
 -- 
 2.1.4
 
