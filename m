@@ -1,12 +1,12 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] candump: support new raw socket option to join the given CAN filters
-Date: Wed, 18 Mar 2015 08:24:00 +0100
-Message-ID: <1426663440-10794-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v2] candump: support new raw socket option to join the given CAN filters
+Date: Wed, 18 Mar 2015 08:25:26 +0100
+Message-ID: <1426663526-10847-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:56410 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:13424 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751336AbbCRHYK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 03:24:10 -0400
+	with ESMTP id S1754959AbbCRHZg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 03:25:36 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
