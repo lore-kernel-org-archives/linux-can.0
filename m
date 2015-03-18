@@ -1,48 +1,113 @@
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH 11/13] can: at91_can: use endian agnostic IO accessors
-Date: Wed, 18 Mar 2015 15:53:10 +0000
-Message-ID: <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
-References: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk>
-Sender: netdev-owner@vger.kernel.org
-To: linux-kernel@lists.codethink.co.uk, linux-arm-kernel@lists.infradead.org
-Cc: Ben Dooks <ben.dooks@codethink.co.uk>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
-List-Id: linux-can.vger.kernel.org
+From: "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v2 2/2] can: introduce new raw socket option to join the
+ given CAN filters
+Date: Wed, 18 Mar 2015 23:47:15 +0200
+Message-ID: <20150318214715.GA2602@Darwish.PC>
+References: <1426659036-4628-1-git-send-email-socketcan@hartkopp.net>
+ <1426659036-4628-2-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-we0-f179.google.com ([74.125.82.179]:34954 "EHLO
+	mail-we0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933237AbbCRVrU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 18 Mar 2015 17:47:20 -0400
+Received: by webcq43 with SMTP id cq43so42817764web.2
+        for <linux-can@vger.kernel.org>; Wed, 18 Mar 2015 14:47:19 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1426659036-4628-2-git-send-email-socketcan@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-Change __raw accesors to  endian agnostic versions to allow the driver
-to work properly on big endian systems.
+Hi Oliver,
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
---
-CC: Wolfgang Grandegger <wg@grandegger.com>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>
-CC: linux-can@vger.kernel.org
-CC: netdev@vger.kernel.org
-CC: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/net/can/at91_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Mar 18, 2015 at 07:10:35AM +0100, Oliver Hartkopp wrote:
+> The CAN_RAW socket can set multiple CAN identifier specific filters that lead
+> to multiple filters in the af_can.c filter processing. These filters are
+> indenpendent from each other which leads to logical OR'ed filters when applied.
+> 
+> This socket option joines the given CAN filters in the way that only CAN frames
+> are passed to user space that matched *all* given CAN filters. The semantic for
+> the applied filters is therefore changed to a logical AND.
+> 
+> This is useful especially when the filterset is a combination of filters where
+> the CAN_INV_FILTER flag is set in order to notch single CAN IDs or CAN ID
+> ranges from the incoming traffic.
+> 
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+> 
+> v2: fix first reception of joint filter CAN frame
+> 
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index eeb4b8b..f4e40aa 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -291,13 +291,13 @@ static inline unsigned int get_tx_echo_mb(const struct at91_priv *priv)
- 
- static inline u32 at91_read(const struct at91_priv *priv, enum at91_reg reg)
- {
--	return __raw_readl(priv->reg_base + reg);
-+	return readl_relaxed(priv->reg_base + reg);
- }
- 
- static inline void at91_write(const struct at91_priv *priv, enum at91_reg reg,
- 		u32 value)
- {
--	__raw_writel(value, priv->reg_base + reg);
-+	writel_relaxed(value, priv->reg_base + reg);
- }
- 
- static inline void set_mb_mode_prio(const struct at91_priv *priv,
--- 
-2.1.4
+I've done some very basic smoke tests on 4.0.0-rc4+, and
+everything seems to work just as it says on the tin :-)
+
+Before applying the two kernel patches:
+
+$ cangen vcan0 -Di -Ii -L4 &
+
+$ candump vcan0,0:0,0:0,0:0
+
+  /* 3 filters, 3 times repeat for each frame */
+  vcan0  000   [4]  00 00 00 00
+  vcan0  000   [4]  00 00 00 00
+  vcan0  000   [4]  00 00 00 00
+  vcan0  001   [4]  01 00 00 00
+  vcan0  001   [4]  01 00 00 00
+  vcan0  001   [4]  01 00 00 00
+  vcan0  002   [4]  02 00 00 00
+  vcan0  002   [4]  02 00 00 00
+  vcan0  002   [4]  02 00 00 00
+  vcan0  003   [4]  03 00 00 00
+  vcan0  003   [4]  03 00 00 00
+  vcan0  003   [4]  03 00 00 00
+
+$ candump vcan0,0:0,0:0,0:0,J
+
+  setsockopt CAN_RAW_JOIN_FILTERS not supported by your
+  Linux Kernel: Protocol not available
+
+##########################################
+
+After applying the two kernel patches:
+
+$ cangen vcan0 -Di -Ii -L4 &
+
+$ candump vcan0,0:0,0:0,0:0
+
+  /* 3 filters, no repeat for each frame (great!) */
+  vcan0  000   [4]  00 00 00 00
+  vcan0  001   [4]  01 00 00 00
+  vcan0  002   [4]  02 00 00 00
+  vcan0  003   [4]  03 00 00 00
+  vcan0  004   [4]  04 00 00 00
+  vcan0  005   [4]  05 00 00 00
+  vcan0  006   [4]  06 00 00 00
+
+$ cangen vcan0 -Di -I 123 -L 4
+
+$ candump vcan0,123~7FF
+
+  /* Basic case: no output as all CAN IDs matches 123 */
+
+$ candump vcan0,123~7FF,111~7FF
+
+  /* OR operator working as expected */
+  vcan0  123   [4]  00 00 00 00
+  vcan0  123   [4]  01 00 00 00
+  vcan0  123   [4]  02 00 00 00
+  vcan0  123   [4]  03 00 00 00
+  vcan0  123   [4]  04 00 00 00
+  vcan0  123   [4]  05 00 00 00
+  vcan0  123   [4]  06 00 00 00
+
+$ candump vcan0,123~7FF,111~7FF,J
+
+  /* No output; AND operator working as expected */
+
+
+Regards,
+Darwish
