@@ -1,57 +1,70 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: Kvaser leaf light
-Date: Thu, 19 Mar 2015 11:31:52 -0400
-Message-ID: <20150319153152.GA2121@linux>
-References: <22529898.19.1426775220044.JavaMail.RPO@mac-rpo.local>
- <2201387.22.1426775565285.JavaMail.RPO@mac-rpo.local>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 11/13] can: at91_can: use endian agnostic IO accessors
+Date: Thu, 19 Mar 2015 17:47:26 +0100
+Message-ID: <550AFD9E.60801@atmel.com>
+References: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk> <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f170.google.com ([209.85.212.170]:38665 "EHLO
-	mail-wi0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751464AbbCSPb5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Mar 2015 11:31:57 -0400
-Received: by wifj2 with SMTP id j2so72482917wif.1
-        for <linux-can@vger.kernel.org>; Thu, 19 Mar 2015 08:31:55 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <2201387.22.1426775565285.JavaMail.RPO@mac-rpo.local>
+Received: from eusmtp01.atmel.com ([212.144.249.242]:20588 "EHLO
+	eusmtp01.atmel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751332AbbCSQra (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Mar 2015 12:47:30 -0400
+In-Reply-To: <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ralph Potztal <ralph.potztal@espros.com>
-Cc: linux-can@vger.kernel.org
+To: Ben Dooks <ben.dooks@codethink.co.uk>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: linux-kernel@lists.codethink.co.uk, linux-arm-kernel@lists.infradead.org, Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org
 
-Hi Ralph,
+Le 18/03/2015 16:53, Ben Dooks a =E9crit :
+> Change __raw accesors to  endian agnostic versions to allow the drive=
+r
+> to work properly on big endian systems.
+>=20
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> --
+> CC: Wolfgang Grandegger <wg@grandegger.com>
+> CC: Marc Kleine-Budde <mkl@pengutronix.de>
+> CC: linux-can@vger.kernel.org
+> CC: netdev@vger.kernel.org
+> CC: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-On Thu, Mar 19, 2015 at 03:32:48PM +0100, Ralph Potztal wrote:
-> 
-> Hi there, 
-> 
-> I'm trying hard to setup the Kvaser Leaf Light HS v2 with SocketCan on a Ubuntu 14.04.2 workstation. Unfortunately I failed so far and therefor wanted to ask you, if you can give me some help.
-> 
-> My goal is to use the leaf together with wireshark to spy a can bus in one of our automated test systems.
-> 
-> How I'm trying to set it up:
-> - loading kernel modules:
-> # modprobe can
-> # modprobe can_raw
-> # modprobe can_bcm
-> # modprobe kvaser_usb
-> # modprobe vcan
-> 
-> - plug the leaf
-> 
-> - check if the leaf is there:
-> # lsusb
-> Bus 001 Device 002: ID 0bfd:0120 Kvaser AB
-> 
+Sure!
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Great, this USB device ID (288/0x120) is indeed supported by the
-kvaser_usb module. It was added only in linux-3.16 though:
+Thanks, bye.
 
-    https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=b4f20130a
 
-So, what is version of your kernel? A `uname -a' would be
-quite helpful.
+> ---
+>  drivers/net/can/at91_can.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+> index eeb4b8b..f4e40aa 100644
+> --- a/drivers/net/can/at91_can.c
+> +++ b/drivers/net/can/at91_can.c
+> @@ -291,13 +291,13 @@ static inline unsigned int get_tx_echo_mb(const=
+ struct at91_priv *priv)
+> =20
+>  static inline u32 at91_read(const struct at91_priv *priv, enum at91_=
+reg reg)
+>  {
+> -	return __raw_readl(priv->reg_base + reg);
+> +	return readl_relaxed(priv->reg_base + reg);
+>  }
+> =20
+>  static inline void at91_write(const struct at91_priv *priv, enum at9=
+1_reg reg,
+>  		u32 value)
+>  {
+> -	__raw_writel(value, priv->reg_base + reg);
+> +	writel_relaxed(value, priv->reg_base + reg);
+>  }
+> =20
+>  static inline void set_mb_mode_prio(const struct at91_priv *priv,
+>=20
 
-Thanks,
-Darwish
+
+--=20
+Nicolas Ferre
