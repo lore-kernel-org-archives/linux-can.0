@@ -1,126 +1,68 @@
-From: "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: Kvaser leaf light
-Date: Fri, 20 Mar 2015 09:52:38 +0200
-Message-ID: <20150320075238.GA2387@Darwish.PC>
-References: <20150319153152.GA2121@linux>
- <5474697.32.1426825696753.JavaMail.RPO@dhcp32-209.ch.epc>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 11/13] can: at91_can: use endian agnostic IO accessors
+Date: Fri, 20 Mar 2015 10:06:58 +0100
+Message-ID: <550BE332.1030901@pengutronix.de>
+References: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk> <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="u2psDh2VnkxmM78EaS95HQwkv7GbuasmT"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f43.google.com ([74.125.82.43]:33588 "EHLO
-	mail-wg0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750801AbbCTHwn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Mar 2015 03:52:43 -0400
-Received: by wgbcc7 with SMTP id cc7so82304465wgb.0
-        for <linux-can@vger.kernel.org>; Fri, 20 Mar 2015 00:52:42 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <5474697.32.1426825696753.JavaMail.RPO@dhcp32-209.ch.epc>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59350 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751128AbbCTJII (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Mar 2015 05:08:08 -0400
+In-Reply-To: <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ralph Potztal <ralph.potztal@espros.com>
-Cc: linux-can@vger.kernel.org
+To: Ben Dooks <ben.dooks@codethink.co.uk>, linux-kernel@lists.codethink.co.uk, linux-arm-kernel@lists.infradead.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Hi Ralph,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--u2psDh2VnkxmM78EaS95HQwkv7GbuasmT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-[ Please do not top-post; it heavily breaks our ability to follow
-  the logical sequence of a discussion thread. More details here:
-  http://catb.org/jargon/html/T/top-post.html
-  https://lkml.org/lkml/2005/1/11/111 ]
-
-On Fri, Mar 20, 2015 at 05:28:21AM +0100, Ralph Potztal wrote:
+On 03/18/2015 04:53 PM, Ben Dooks wrote:
+> Change __raw accesors to  endian agnostic versions to allow the driver
+> to work properly on big endian systems.
 >=20
-> Hi Ahmed,=20
->=20
-> thanks for this. I think that could be the problem, because:
->=20
-> # uname -a
-> Linux cli-48 3.13.0-46-generic #79-Ubuntu SMP Tue Mar 10 20:06:50 UTC=
- 2015 x86_64 x86_64 x86_64 GNU/Linux
->=20
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 
-Great we've found the culprit. Now you have multiple possible
-solutions:
+applied to can-next.
 
-1) Latest Ubuntu 14.04 LTS seems to offer a 3.16 kernel in a nicely
-   packaged "sudo apt-get install" format:
-   http://askubuntu.com/questions/506956/how-can-i-install-3-16-kernel-=
-on-ubuntu-14-04
+Thanks,
+Marc
 
-2) Manually install the latest 3.19.2 stable kernel, which includes
-   support for your Kvaser model.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Keep in mind though that the kvaser_usb module has recently received
-a large amount of fixes that's not yet included in the latest stable
-kernels. So if you will use the device for continuous hours or plan
-to have a heavy tx/rx traffic, you will definitely have to do one of
-the following instead:
 
-1) Temporarily use the 3.19.2 kernel, and quickly switch to v4.0
-   once it is released. Better yet, directly use kernel v4.0-rc4
-   where most of the necessary fixes are included:
 
-   https://lkml.org/lkml/2015/3/15/180
+--u2psDh2VnkxmM78EaS95HQwkv7GbuasmT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-2) I have a version of the driver at work, __with all the fixes__,
-   ported for old Ubuntu and CentOS kernels.=20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-   I can upload this version on a public website and send you the
-   link on Sunday. But kindly note that this will be providied "AS IS",
-   without any kind of support (you can *not* bother this mailing list
-   about it), or any warranty of merchantability, implied or express.
+iQIcBAEBCgAGBQJVC+MyAAoJECte4hHFiupU0/IP/0s8Js3RvaJiZQ099A8xbU05
+o9Iv7nieK39575X4g3fPXVrACk/TMYkg+rhoW+PaMgDMWaLRA4BR7cP2DrE55UkB
+AzLHOnjY+7jGgdhxgg3Nj14JNQLXo7pL1Nq4z0wfAZfiSxdGszSRZS/glzQcO0AE
+NhTl7CxAgFu8WUBWCtLa5AiVU6SrnmDNr6PHQlUnPT/y6FqgkkAjTPdmEf3VFmcI
+xqze6ZCSU15D3ULhhGfJ0GUR732T8ALwZE726v3xNY9TrEjhquP7KPgkOdazr+fE
+5lJ/cqZSm5oMGSlVuXaKtqKFmA0E8j1yXsi3nyRRojW00YuaJvRL0H3fV+Qmm6CY
+p9bEmKeReJnGzvoZ17FZeNsvWFbFoSrxdHk1he7Gw9I0utUlVj/baXADf61ydJqB
+EZdoOLUAq4Wsvmr0L9uMFgC58JCcKmWObqVqi1EEV7O06JQg+91OO4/0C3RCAdJC
+sB0qH4vxgmWCQaZBtibHVq7UBmOGDZMo9bdTb0dF03ggAfgRqQBLSAaxSybt8nKW
+fVnHI9ThgEDVGyDxk3+QFBwDEjj0nu6knAFpVlCsNfIEKzz1dKfCb7K7snTNoTfj
+VLWPBSqVPKFIbrobHt0IHDxld61+RNo83wwxoILneEGxyFwXCKZn9KJ4qbN5F96e
+Xmej6pncgwiLa8S1efB5
+=MNQO
+-----END PGP SIGNATURE-----
 
-3) At least port this single patche to your 3.19.2 kernel:
-
-   [a] can: kvaser_usb: Read all messages in a bulk-in URB buffer
-   http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commi=
-t/?id=3D2fec5104f9c
-
-Regards,
-Darwish
-
->=20
-> ----- Urspr=FCngliche Mail -----
-> Von: "Ahmed S. Darwish" <darwish.07@gmail.com>
-> An: "Ralph Potztal" <ralph.potztal@espros.com>
->=20
-> Hi Ralph,
->=20
-> On Thu, Mar 19, 2015 at 03:32:48PM +0100, Ralph Potztal wrote:
-> >=20
-> > Hi there,=20
-> >=20
-> > I'm trying hard to setup the Kvaser Leaf Light HS v2 with SocketCan=
- on a Ubuntu 14.04.2 workstation. Unfortunately I failed so far and the=
-refor wanted to ask you, if you can give me some help.
-> >=20
-> > My goal is to use the leaf together with wireshark to spy a can bus=
- in one of our automated test systems.
-> >=20
-> > How I'm trying to set it up:
-> > - loading kernel modules:
-> > # modprobe can
-> > # modprobe can_raw
-> > # modprobe can_bcm
-> > # modprobe kvaser_usb
-> > # modprobe vcan
-> >=20
-> > - plug the leaf
-> >=20
-> > - check if the leaf is there:
-> > # lsusb
-> > Bus 001 Device 002: ID 0bfd:0120 Kvaser AB
-> >=20
->=20
-> Great, this USB device ID (288/0x120) is indeed supported by the
-> kvaser_usb module. It was added only in linux-3.16 though:
->=20
->     https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/c=
-ommit/?id=3Db4f20130a
->=20
-> So, what is version of your kernel? A `uname -a' would be
-> quite helpful.
->=20
-> Thanks,
-> Darwish
->=20
+--u2psDh2VnkxmM78EaS95HQwkv7GbuasmT--
