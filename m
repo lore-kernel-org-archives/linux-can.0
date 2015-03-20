@@ -1,35 +1,65 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 11/13] can: at91_can: use endian agnostic IO accessors
-Date: Fri, 20 Mar 2015 10:06:58 +0100
-Message-ID: <550BE332.1030901@pengutronix.de>
-References: <1426693992-31163-1-git-send-email-ben.dooks@codethink.co.uk> <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH] can: flexcan: fix bus-off error state handling.
+Date: Fri, 20 Mar 2015 10:11:59 +0100
+Message-ID: <550BE45F.8040100@pengutronix.de>
+References: <40e1c77d-546d-48b6-b4bd-fe76f7692e90@GRBSR0089.marel.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="u2psDh2VnkxmM78EaS95HQwkv7GbuasmT"
+ boundary="LklksKKo9NXuFhrrifBnCFAHWwaCqxxXw"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59350 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59406 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751128AbbCTJII (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Mar 2015 05:08:08 -0400
-In-Reply-To: <1426693992-31163-12-git-send-email-ben.dooks@codethink.co.uk>
+	with ESMTP id S1750913AbbCTJMa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 20 Mar 2015 05:12:30 -0400
+In-Reply-To: <40e1c77d-546d-48b6-b4bd-fe76f7692e90@GRBSR0089.marel.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ben Dooks <ben.dooks@codethink.co.uk>, linux-kernel@lists.codethink.co.uk, linux-arm-kernel@lists.infradead.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
+Cc: wg@grandegger.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---u2psDh2VnkxmM78EaS95HQwkv7GbuasmT
+--LklksKKo9NXuFhrrifBnCFAHWwaCqxxXw
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/18/2015 04:53 PM, Ben Dooks wrote:
-> Change __raw accesors to  endian agnostic versions to allow the driver
-> to work properly on big endian systems.
+On 03/17/2015 02:03 PM, Andri Yngvason wrote:
+> Making sure that the bus-off state gets passed to can_change_state().
 >=20
-> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
 
-applied to can-next.
+Applied to can with a minor change.
+
+> ---
+>  drivers/net/can/flexcan.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 80c46ad..ee944ae 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -592,13 +592,12 @@ static int flexcan_poll_state(struct net_device *=
+dev, u32 reg_esr)
+>  		rx_state =3D unlikely(reg_esr & FLEXCAN_ESR_RX_WRN) ?
+>  			   CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIVE;
+>  		new_state =3D max(tx_state, rx_state);
+> -	} else if (unlikely(flt =3D=3D FLEXCAN_ESR_FLT_CONF_PASSIVE)) {
+> +	} else {
+>  		__flexcan_get_berr_counter(dev, &bec);
+> -		new_state =3D CAN_STATE_ERROR_PASSIVE;
+> +		new_state =3D flt =3D=3D FLEXCAN_ESR_FLT_CONF_PASSIVE ?
+> +			    CAN_STATE_ERROR_PASSIVE : CAN_STATE_BUS_OFF;
+
+converted this into a if...else
+
+>  		rx_state =3D bec.rxerr >=3D bec.txerr ? new_state : 0;
+>  		tx_state =3D bec.rxerr <=3D bec.txerr ? new_state : 0;
+> -	} else {
+> -		new_state =3D CAN_STATE_BUS_OFF;
+>  	}
+> =20
+>  	/* state hasn't changed */
+>=20
 
 Thanks,
 Marc
@@ -41,8 +71,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-
---u2psDh2VnkxmM78EaS95HQwkv7GbuasmT
+--LklksKKo9NXuFhrrifBnCFAHWwaCqxxXw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -50,19 +79,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVC+MyAAoJECte4hHFiupU0/IP/0s8Js3RvaJiZQ099A8xbU05
-o9Iv7nieK39575X4g3fPXVrACk/TMYkg+rhoW+PaMgDMWaLRA4BR7cP2DrE55UkB
-AzLHOnjY+7jGgdhxgg3Nj14JNQLXo7pL1Nq4z0wfAZfiSxdGszSRZS/glzQcO0AE
-NhTl7CxAgFu8WUBWCtLa5AiVU6SrnmDNr6PHQlUnPT/y6FqgkkAjTPdmEf3VFmcI
-xqze6ZCSU15D3ULhhGfJ0GUR732T8ALwZE726v3xNY9TrEjhquP7KPgkOdazr+fE
-5lJ/cqZSm5oMGSlVuXaKtqKFmA0E8j1yXsi3nyRRojW00YuaJvRL0H3fV+Qmm6CY
-p9bEmKeReJnGzvoZ17FZeNsvWFbFoSrxdHk1he7Gw9I0utUlVj/baXADf61ydJqB
-EZdoOLUAq4Wsvmr0L9uMFgC58JCcKmWObqVqi1EEV7O06JQg+91OO4/0C3RCAdJC
-sB0qH4vxgmWCQaZBtibHVq7UBmOGDZMo9bdTb0dF03ggAfgRqQBLSAaxSybt8nKW
-fVnHI9ThgEDVGyDxk3+QFBwDEjj0nu6knAFpVlCsNfIEKzz1dKfCb7K7snTNoTfj
-VLWPBSqVPKFIbrobHt0IHDxld61+RNo83wwxoILneEGxyFwXCKZn9KJ4qbN5F96e
-Xmej6pncgwiLa8S1efB5
-=MNQO
+iQIcBAEBCgAGBQJVC+RfAAoJECte4hHFiupUspoQAIZs7Nq4D4xugfQbRc65J6Re
+t1XoTR+XCpa+hAjm7qYxcWNLCqO+MDspcbbyWMvtCZ2xX7u+63hgHpwYK2WgkbDh
+JYduRyWNrbqBh4yKXgsTc3xf4vYJIhQZFUGTX3Mmz6/bKKkcMLv0gPzZwVfzy1Hp
+uvkiXHjM8PVaUtkFmJhaz0EU2sRuJbXGlxGcQ6MduS0+x5wwP9+QUHXiwb7vB0lj
+CPt+c8BFqaAiOxyIw+rPLcu0e4peM/pbBFyHeLEBbnwVwIVFMwc6BmFlmG14K3KL
+xCMREnQlfSBufFghisJltyZgSRhaY0ePopWSSufv52wdVSduNMNQWw4H/fGzRdGP
+8zcaLYXXB0MKklTTAxc02HFapKltZ4gkfIEByKeihvlGcUYalVi1sGMFbgUNo4oW
+bhtLUrcvd7AVBV80aW5UAPWPyM8ggOnQ+4LWb4urRP+BqaZzvZOsYJVKLRNJmjFT
+p0PapK/Zae1KNgi1wY+iS9AzaJ/GQuuHcyVGGzVaiWSjoVBCAOFe1k0lcoYYQGJv
+RKyw/abuJWPeMTeNbfJyIfErKe9E87Dwav3WQ+a1dxyP9/Mvh2funhlsy+J3v4ms
+xwZNWhKDUMLnJ71zVmxhNR7LOldpLMGwGtvQSPEPTlfIQ0wzbxsvnfUDMzKYh7k8
+8BoUsjK839fMLMNCWAJU
+=TN2n
 -----END PGP SIGNATURE-----
 
---u2psDh2VnkxmM78EaS95HQwkv7GbuasmT--
+--LklksKKo9NXuFhrrifBnCFAHWwaCqxxXw--
