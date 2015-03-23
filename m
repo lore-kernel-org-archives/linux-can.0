@@ -1,121 +1,94 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-03-23
-Date: Mon, 23 Mar 2015 14:01:28 +0100
-Message-ID: <55100EA8.5010505@pengutronix.de>
+From: =?UTF-8?Q?Maximilian_G=C3=BCntner?= <maximilian.guentner@gmail.com>
+Subject: Re: Standard CAN over IP
+Date: Mon, 23 Mar 2015 14:15:05 +0100
+Message-ID: <CAKSnaaf5b6Bf6GUeH22Yq2D_zTcDFhU61huRXUxpTrXAtQyS_w@mail.gmail.com>
+References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
+	<CAKSnaaeezGJzR_ZHq4e1Ow1fnQzOwbEw7feM7v_2f3snNddA0g@mail.gmail.com>
+	<CAKSnaacWdnH7srpFXNnHX7Yhobgxc-LMnEP-rOSEq0YA=pmv9A@mail.gmail.com>
+	<5e76bc45fac64ba8a1e1b223d9839297@SGPMBX1011.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Ra2hoE5BFECvIJ9690wAilSbeOohKPldA"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42112 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753018AbbCWNBf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2015 09:01:35 -0400
+Received: from mail-lb0-f181.google.com ([209.85.217.181]:34645 "EHLO
+	mail-lb0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752144AbbCWNPH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2015 09:15:07 -0400
+Received: by lbbsy1 with SMTP id sy1so117998445lbb.1
+        for <linux-can@vger.kernel.org>; Mon, 23 Mar 2015 06:15:06 -0700 (PDT)
+In-Reply-To: <5e76bc45fac64ba8a1e1b223d9839297@SGPMBX1011.APAC.bosch.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ra2hoE5BFECvIJ9690wAilSbeOohKPldA
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Pankaj,
 
-Hello David,
+2015-03-23 11:28 GMT+01:00 Pankajkumar Misra (RBEI/EEA2)
+<Pankaj.Kumar@in.bosch.com>:
+> Hi Max,
+>
+> I am trying to compile cannelloni, but getting errors.
+>
+> First:
+>         The compiler was fixed to /usr/bin/c++.
+>         In case of doing cross compilation this will not work. Please=
+ provide option to choose compiler.
 
-this is a pull request of 6 patches for net-next/master.
+This is possible with CMake. Have a look here:
 
-A patch by Florian Westphal, converts the skb->destructor to use
-sock_efree() instead of own destructor. Ahmed S. Darwish's patch
-converts the kvaser_usb driver to use unregister_candev(). A patch by
-me removes a return from a void function in the m_can driver. Yegor
-Yefremov contributes a patch for combined rx/tx LED trigger support. A
-sparse warning in the esd_usb2 driver was fixes by Thomas K=C3=B6rper. Be=
-n
-Dooks converts the at91_can driver to use endian agnostic IO accessors.
+http://www.cmake.org/Wiki/CMake_FAQ#How_do_I_use_a_different_compiler.3=
+=46
 
-Marc
+Since you are cross compiling, this might also help:
 
----
+http://www.cmake.org/Wiki/CMake_Cross_Compiling
 
-The following changes since commit 8f2ddaac302a8ca364cb04efb19cd3b5cd0589=
-10:
+> Second:
+>         Once above issue fixed I got error saying :
+>                 root@xxxVM:/CANonIP/cannelloni# make
 
-  netlink: Remove netlink_compare_arg.trailer (2015-03-21 00:16:39 -0400)=
+>                 /usr/arm-linux-gnueabihf/include/c++/4.6.3/bits/c++0x=
+_warning.h:32:2: error: #error This file requires compiler and library =
+support for the upcoming ISO C++ standard, C++0x. This                 =
+     support is currently experimental, and must be enabled with the -s=
+td=3Dc++0x or -std=3Dgnu++0x compiler options.
+>                 To fix this I changed the option in CMakeLists.txt
+>                         ADD_DEFINITIONS(
+>                         #    -std=3Dc++11
+>                             -std=3Dc++0x
+>                         )
 
+Your compiler was released in 2012 and c++11/c++0x was very new
+back then.
+If you can, try to upgrade to something newer, like GCC 4.9.x.
+Linaro also has current releases of GCC for gnueabihf target platforms.=
+ [1]
 
-are available in the git repository at:
+> Third:  error: =E2=80=98canfd_frame=E2=80=99 has not been declared
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.1-20150323
+This is most likely due to the fact that your kernel is pretty old.
+struct canfd_frame was introduced with kernel commit 7c9416365c
+and the first kernel release to support it was v3.6 [2], released in 20=
+12.
+I am guessing that your kernel version is < v3.6, if so update it to v3=
+=2E6+.
 
-for you to fetch changes up to af9bfbdab8f1c5a4b51a45aaab4cfbcc318b8ae2:
+Another solution would be to define canfd_frame inside the application =
+if
+LINUX_VERSION_CODE < KERNEL_VERSION(3,6,0).
+I have created an issue for that [3].
 
-  can: at91_can: use endian agnostic IO accessors (2015-03-22 23:50:12 +0=
-100)
+>
+> Please correct if something wrong in my approach.
+>
+> Best Regards,
+> Pankaj
 
-----------------------------------------------------------------
-linux-can-next-for-4.1-20150323
+Regards,
 
-----------------------------------------------------------------
-Ahmed S. Darwish (1):
-      can: kvaser_usb: Use can-dev unregistration mechanism
+Max
 
-Ben Dooks (1):
-      can: at91_can: use endian agnostic IO accessors
-
-Florian Westphal (1):
-      can: use sock_efree instead of own destructor
-
-Marc Kleine-Budde (1):
-      can: m_cam: m_can_fifo_write(): remove return from void function
-
-Thomas K=C3=B6rper (1):
-      can: esd_usb2: Fix sparse warnings
-
-Yegor Yefremov (1):
-      can: add combined rx/tx LED trigger support
-
- drivers/net/can/at91_can.c       |  4 ++--
- drivers/net/can/led.c            | 22 +++++++++++++++++++---
- drivers/net/can/m_can/m_can.c    |  4 ++--
- drivers/net/can/usb/esd_usb2.c   |  4 ++--
- drivers/net/can/usb/kvaser_usb.c |  2 +-
- include/linux/can/dev.h          |  2 ++
- include/linux/can/led.h          |  6 ++++--
- include/linux/can/skb.h          |  7 +------
- 8 files changed, 33 insertions(+), 18 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
-
---Ra2hoE5BFECvIJ9690wAilSbeOohKPldA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVEA6rAAoJECte4hHFiupUyIMP+wWJUn6jsP5o/6Y8T8g4Hthz
-r9l/O/59nPq60t6dalS7s0kV3Gl/oMBAw5Ftx0AQMrigQ7fpRhfi+g5TryG8DOfm
-66Cw5pI94bwlNhlKGd3VneU6Mn6UBLaGRtLC+tOsEYDzVfK5OsH9q93tU2+RwC04
-hM5a125DoE2QjA5svzsJR0wC/5DZdGe0jQCs4ICKJzKTMmPKU/aQ9aaZf+dhvhGr
-wgumnCIbsEQT4RTXIDHNtjkjE+GpHPyweieeemLX3QvpkQ+k20ee0EJF2SFp78jR
-rimuTXNWkOex/lKNU+ip9snVcVT3FAsE+Af+VSV5O88CuUHYKq2cAFF2CiuUnRXm
-spaXLl7PZtLmnIIarL3mSax56P18x0NoLLcmcvFZrpejiOJceGdWG/jzFzEY3QGK
-nGfqBKzS+otajjmn2FjSxMdN7zmzCm9x603r8w0ZjlwHvQM8TGNvIdGpzOiH1DhV
-RfQOxunRjl63YAst2JffdPB3rP+iav7X94z5zyXdYNqM49JxqdSKkvALDaPDs9V2
-o+I90hcvw2NAZoHSP3ehNwOSzxwKtZ5gJjGs6M2XWf7dCZ/1IvyZoX0dV3j+Fdh4
-eXphCaXhTSiuBRnd9xaiE78nWEM6DfHzB7qpfiNLJHJn4pVCaQAghMlgTH5i6g1X
-SxxWDMY4k71jngx7+AV1
-=y1zl
------END PGP SIGNATURE-----
-
---Ra2hoE5BFECvIJ9690wAilSbeOohKPldA--
+[1] git tag --contains 7c9416365c60f150ef8961a2855fafbc7394ad6b
+[2] https://wiki.linaro.org/WorkingGroups/ToolChain
+[3] https://github.com/mguentner/cannelloni/issues/2
