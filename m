@@ -1,71 +1,32 @@
-From: "Pankajkumar Misra (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
-Subject: RE: Standard CAN over IP
-Date: Mon, 23 Mar 2015 16:57:01 +0000
-Message-ID: <90dff4510f1e4415a14baa809ef2ebbb@SGPMBX1011.APAC.bosch.com>
-References: <CACsJT9Nxv2Vuq92nnOw4eN6j-RycpqGRErsjp5R_LiMwdS13aQ@mail.gmail.com>
-	<CAKSnaaeezGJzR_ZHq4e1Ow1fnQzOwbEw7feM7v_2f3snNddA0g@mail.gmail.com>
-	<CAKSnaacWdnH7srpFXNnHX7Yhobgxc-LMnEP-rOSEq0YA=pmv9A@mail.gmail.com>
-	<5e76bc45fac64ba8a1e1b223d9839297@SGPMBX1011.APAC.bosch.com>
- <CAKSnaaf5b6Bf6GUeH22Yq2D_zTcDFhU61huRXUxpTrXAtQyS_w@mail.gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2015-03-23
+Date: Mon, 23 Mar 2015 22:04:07 -0400 (EDT)
+Message-ID: <20150323.220407.2182995151527470865.davem@davemloft.net>
+References: <55100EA8.5010505@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:30614 "EHLO
-	smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752314AbbCWQ5H (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2015 12:57:07 -0400
-In-Reply-To: <CAKSnaaf5b6Bf6GUeH22Yq2D_zTcDFhU61huRXUxpTrXAtQyS_w@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?B?TWF4aW1pbGlhbiBHw7xudG5lcg==?= <maximilian.guentner@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <55100EA8.5010505@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-SGkgTWF4LA0KDQpUaGFua3MgZm9yIHF1aWNrIHJlc3BvbnNlLg0KDQpZZXMsIHRoZSBrZXJuZWwg
-JiBjb21waWxlciBhcmUgb2xkLCBJIHdpbGwgdXBkYXRlLCBhcyBzdWdnZXN0ZWQuDQoNClRoYW5r
-cyAmIEJlc3QgUmVnYXJkcywNClBhbmthag0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-RnJvbTogTWF4aW1pbGlhbiBHw7xudG5lciBbbWFpbHRvOm1heGltaWxpYW4uZ3VlbnRuZXJAZ21h
-aWwuY29tXSANClNlbnQ6IE1vbmRheSwgTWFyY2ggMjMsIDIwMTUgNjo0NSBQTQ0KVG86IFBhbmth
-amt1bWFyIE1pc3JhIChSQkVJL0VFQTIpDQpDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0K
-U3ViamVjdDogUmU6IFN0YW5kYXJkIENBTiBvdmVyIElQDQoNCkhpIFBhbmthaiwNCg0KMjAxNS0w
-My0yMyAxMToyOCBHTVQrMDE6MDAgUGFua2Fqa3VtYXIgTWlzcmEgKFJCRUkvRUVBMikNCjxQYW5r
-YWouS3VtYXJAaW4uYm9zY2guY29tPjoNCj4gSGkgTWF4LA0KPg0KPiBJIGFtIHRyeWluZyB0byBj
-b21waWxlIGNhbm5lbGxvbmksIGJ1dCBnZXR0aW5nIGVycm9ycy4NCj4NCj4gRmlyc3Q6DQo+ICAg
-ICAgICAgVGhlIGNvbXBpbGVyIHdhcyBmaXhlZCB0byAvdXNyL2Jpbi9jKysuDQo+ICAgICAgICAg
-SW4gY2FzZSBvZiBkb2luZyBjcm9zcyBjb21waWxhdGlvbiB0aGlzIHdpbGwgbm90IHdvcmsuIFBs
-ZWFzZSBwcm92aWRlIG9wdGlvbiB0byBjaG9vc2UgY29tcGlsZXIuDQoNClRoaXMgaXMgcG9zc2li
-bGUgd2l0aCBDTWFrZS4gSGF2ZSBhIGxvb2sgaGVyZToNCg0KaHR0cDovL3d3dy5jbWFrZS5vcmcv
-V2lraS9DTWFrZV9GQVEjSG93X2RvX0lfdXNlX2FfZGlmZmVyZW50X2NvbXBpbGVyLjNGDQoNClNp
-bmNlIHlvdSBhcmUgY3Jvc3MgY29tcGlsaW5nLCB0aGlzIG1pZ2h0IGFsc28gaGVscDoNCg0KaHR0
-cDovL3d3dy5jbWFrZS5vcmcvV2lraS9DTWFrZV9Dcm9zc19Db21waWxpbmcNCg0KPiBTZWNvbmQ6
-DQo+ICAgICAgICAgT25jZSBhYm92ZSBpc3N1ZSBmaXhlZCBJIGdvdCBlcnJvciBzYXlpbmcgOg0K
-PiAgICAgICAgICAgICAgICAgcm9vdEB4eHhWTTovQ0FOb25JUC9jYW5uZWxsb25pIyBtYWtlDQoN
-Cj4gICAgICAgICAgICAgICAgIC91c3IvYXJtLWxpbnV4LWdudWVhYmloZi9pbmNsdWRlL2MrKy80
-LjYuMy9iaXRzL2MrKzB4X3dhcm5pbmcuaDozMjoyOiBlcnJvcjogI2Vycm9yIFRoaXMgZmlsZSBy
-ZXF1aXJlcyBjb21waWxlciBhbmQgbGlicmFyeSBzdXBwb3J0IGZvciB0aGUgdXBjb21pbmcgSVNP
-IEMrKyBzdGFuZGFyZCwgQysrMHguIFRoaXMgICAgICAgICAgICAgICAgICAgICAgc3VwcG9ydCBp
-cyBjdXJyZW50bHkgZXhwZXJpbWVudGFsLCBhbmQgbXVzdCBiZSBlbmFibGVkIHdpdGggdGhlIC1z
-dGQ9YysrMHggb3IgLXN0ZD1nbnUrKzB4IGNvbXBpbGVyIG9wdGlvbnMuDQo+ICAgICAgICAgICAg
-ICAgICBUbyBmaXggdGhpcyBJIGNoYW5nZWQgdGhlIG9wdGlvbiBpbiBDTWFrZUxpc3RzLnR4dA0K
-PiAgICAgICAgICAgICAgICAgICAgICAgICBBRERfREVGSU5JVElPTlMoDQo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICMgICAgLXN0ZD1jKysxMQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgLXN0ZD1jKysweA0KPiAgICAgICAgICAgICAgICAgICAgICAgICApDQoNCllvdXIgY29tcGls
-ZXIgd2FzIHJlbGVhc2VkIGluIDIwMTIgYW5kIGMrKzExL2MrKzB4IHdhcyB2ZXJ5IG5ldw0KYmFj
-ayB0aGVuLg0KSWYgeW91IGNhbiwgdHJ5IHRvIHVwZ3JhZGUgdG8gc29tZXRoaW5nIG5ld2VyLCBs
-aWtlIEdDQyA0LjkueC4NCkxpbmFybyBhbHNvIGhhcyBjdXJyZW50IHJlbGVhc2VzIG9mIEdDQyBm
-b3IgZ251ZWFiaWhmIHRhcmdldCBwbGF0Zm9ybXMuIFsxXQ0KDQo+IFRoaXJkOiAgZXJyb3I6IOKA
-mGNhbmZkX2ZyYW1l4oCZIGhhcyBub3QgYmVlbiBkZWNsYXJlZA0KDQpUaGlzIGlzIG1vc3QgbGlr
-ZWx5IGR1ZSB0byB0aGUgZmFjdCB0aGF0IHlvdXIga2VybmVsIGlzIHByZXR0eSBvbGQuDQpzdHJ1
-Y3QgY2FuZmRfZnJhbWUgd2FzIGludHJvZHVjZWQgd2l0aCBrZXJuZWwgY29tbWl0IDdjOTQxNjM2
-NWMNCmFuZCB0aGUgZmlyc3Qga2VybmVsIHJlbGVhc2UgdG8gc3VwcG9ydCBpdCB3YXMgdjMuNiBb
-Ml0sIHJlbGVhc2VkIGluIDIwMTIuDQpJIGFtIGd1ZXNzaW5nIHRoYXQgeW91ciBrZXJuZWwgdmVy
-c2lvbiBpcyA8IHYzLjYsIGlmIHNvIHVwZGF0ZSBpdCB0byB2My42Ky4NCg0KQW5vdGhlciBzb2x1
-dGlvbiB3b3VsZCBiZSB0byBkZWZpbmUgY2FuZmRfZnJhbWUgaW5zaWRlIHRoZSBhcHBsaWNhdGlv
-biBpZg0KTElOVVhfVkVSU0lPTl9DT0RFIDwgS0VSTkVMX1ZFUlNJT04oMyw2LDApLg0KSSBoYXZl
-IGNyZWF0ZWQgYW4gaXNzdWUgZm9yIHRoYXQgWzNdLg0KDQo+DQo+IFBsZWFzZSBjb3JyZWN0IGlm
-IHNvbWV0aGluZyB3cm9uZyBpbiBteSBhcHByb2FjaC4NCj4NCj4gQmVzdCBSZWdhcmRzLA0KPiBQ
-YW5rYWoNCg0KUmVnYXJkcywNCg0KTWF4DQoNClsxXSBnaXQgdGFnIC0tY29udGFpbnMgN2M5NDE2
-MzY1YzYwZjE1MGVmODk2MWEyODU1ZmFmYmM3Mzk0YWQ2Yg0KWzJdIGh0dHBzOi8vd2lraS5saW5h
-cm8ub3JnL1dvcmtpbmdHcm91cHMvVG9vbENoYWluDQpbM10gaHR0cHM6Ly9naXRodWIuY29tL21n
-dWVudG5lci9jYW5uZWxsb25pL2lzc3Vlcy8yDQo=
+=46rom: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 23 Mar 2015 14:01:28 +0100
+
+> this is a pull request of 6 patches for net-next/master.
+>=20
+> A patch by Florian Westphal, converts the skb->destructor to use
+> sock_efree() instead of own destructor. Ahmed S. Darwish's patch
+> converts the kvaser_usb driver to use unregister_candev(). A patch by
+> me removes a return from a void function in the m_can driver. Yegor
+> Yefremov contributes a patch for combined rx/tx LED trigger support. =
+A
+> sparse warning in the esd_usb2 driver was fixes by Thomas K=F6rper. B=
+en
+> Dooks converts the at91_can driver to use endian agnostic IO accessor=
+s.
+
+Pulled, thanks Marc.
