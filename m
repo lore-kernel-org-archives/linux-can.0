@@ -1,81 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH -stable 0/3] Bugfixes for the kvaser_usb module
-Date: Thu, 26 Mar 2015 08:46:00 +0100
-Message-ID: <5513B938.9010701@pengutronix.de>
-References: <1426903404-22925-1-git-send-email-ahmed.darwish@valeo.com>
+From: vklein <vk4514@arcor.de>
+Subject: newbi Question: NMEA2000 and BeagleBone
+Date: Thu, 26 Mar 2015 14:36:39 +0100
+Message-ID: <55140B67.9060207@arcor.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="9gDS8biu1HfDApcLbxlx2iX0qK5nmveg5"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53295 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751825AbbCZHqP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Mar 2015 03:46:15 -0400
-In-Reply-To: <1426903404-22925-1-git-send-email-ahmed.darwish@valeo.com>
+Received: from mail-in-02.arcor-online.net ([151.189.21.42]:55393 "EHLO
+	mail-in-02.arcor-online.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751596AbbCZNgu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 26 Mar 2015 09:36:50 -0400
+Received: from mail-in-14-z2.arcor-online.net (mail-in-14-z2.arcor-online.net [151.189.8.31])
+	by mx.arcor.de (Postfix) with ESMTP id 3lCS5q6VGlz1TdW
+	for <linux-can@vger.kernel.org>; Thu, 26 Mar 2015 14:36:47 +0100 (CET)
+Received: from mail-in-16.arcor-online.net (mail-in-16.arcor-online.net [151.189.21.56])
+	by mail-in-14-z2.arcor-online.net (Postfix) with ESMTP id DCE6120937E
+	for <linux-can@vger.kernel.org>; Thu, 26 Mar 2015 14:36:47 +0100 (CET)
+Received: from [192.168.2.110] (dslb-088-076-128-173.088.076.pools.vodafone-ip.de [88.76.128.173])
+	(Authenticated sender: vk4514@arcor.de)
+	by mail-in-16.arcor-online.net (Postfix) with ESMTPA id 3lCS5q4nW9zFr5
+	for <linux-can@vger.kernel.org>; Thu, 26 Mar 2015 14:36:47 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Ahmed S. Darwish" <darwish.07@gmail.com>, Olivier Sobrie <olivier@sobrie.be>
-Cc: Linux-CAN <linux-can@vger.kernel.org>, "Ahmed S. Darwish" <ahmed.darwish@valeo.com>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9gDS8biu1HfDApcLbxlx2iX0qK5nmveg5
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On 03/21/2015 03:03 AM, Ahmed S. Darwish wrote:
-> This is a series of kvaser_usb bugfixes, backported for -stable
-> and generated against v3.19. It should apply cleanly on most
-> of the -stable kernel trees out there.
->=20
-> The patches needed simple backporting since `kvaser_usb' in all
-> earlier kernels does not have the can_change_state() changes or
-> the extra code for USBCan-II hardware models.
->=20
-> Each patch contains a reference in its log to the corresponding
-> upstream commit.
->=20
-> I've verified that each patch matches exactly, _hunk for hunk_,
-> its corresponding upstream commit. Nonetheless, I don't have a
-> pure Kvaser Leaf hardware at hand; someone with a Leaf-based
-> model should give them a quick smoke test (Olivier Sobrie?)
+I searched the list about using NMEA2000 ( a subclass of J1939) and a 
+BeageBone-black.
 
-After Greg has taken many patches into stable in the last days, I think
-it's time to send this series to -stable and ask to apply them.
+Are there some newer infos how to install J1939 support on the BBB?
 
-There is one hunk in patch 1 that you might remove, see my reply for
-more details.
+Are there preferred transceiver boards? I Think I need only one interface.
 
-Marc
+At the moment I use a Actisense NTG-1 USB and a Raspberry pi with the 
+canboat software.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+http://wiki.openseamap.org/wiki/OpenSeaMap-dev:HW-logger/raspberry
 
+Regards
 
---9gDS8biu1HfDApcLbxlx2iX0qK5nmveg5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVE7lCAAoJECte4hHFiupUJpwP/3lDXphW0SV9WLsbj1GdVpZN
-NvZJjGgbHLl+OAcbQV7S/AkdakpONZmRZOleP+fFtL7hohlk0jpZa3ioKRmpPxaG
-bigjWFXy9qwzDlgCHMGYQoP+DdUncqEhKy3gEUEW5JJJyRULM22Ja5kYvBSKihRy
-SfJzz/Dzy5U6LAgYtOu485a/dsIOdr7ibvRHUwBeVquIaCd2D9/bg3SFoJmH7R8O
-xH2SZCyk6fZblOz3Jqao8+rbFxayNJcf+jIWeb371N0w2d8rMpLV+KcDbFxp54+B
-g/JRDUBpol2CKpmdfA3gRZq1rqi9aUii7JlDfZF/UgEXZ/gCbsyvSe0bmEYoOicu
-GZCt9QrgPyz4VFagoamnUJnRgAgP0cyR/2OZ3KdaT7fHFHwjStteqXkp7nCRdwu+
-YvWLbTCQCndXpmtMgZc0Xhl3C25bCr6+01pMJh3hcw2ywFRqCnokpXXuvDCrOAlM
-oNRoVsqhbCGzyrokv/9SskIRDPrJ9qU1/3Ksc4dAg+QFSNRVNMEYhweVNCBwmklF
-YUBsRayDFaHXM/eFmvLmtgRQ2FKx0gO8fDKJvnbDXlz2+j+NAsoV/63JOHkbhVX3
-oe/GV8/DnVEJWwIq1aaU4CYP2LCptikxzqdzT69im1NhcnteGo7L+rCuDiTjJm4f
-9HJ/xdRMwPe424y1sTOy
-=E0xC
------END PGP SIGNATURE-----
-
---9gDS8biu1HfDApcLbxlx2iX0qK5nmveg5--
+Victor
