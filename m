@@ -1,79 +1,70 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH RFC v2 1/2] can: fix multiple delivery of a single
- CAN frame for overlapping CAN filters
-Date: Mon, 30 Mar 2015 12:36:47 +0200
-Message-ID: <5519273F.6080209@pengutronix.de>
-References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-2-git-send-email-socketcan@hartkopp.net> <55191C57.7060906@pengutronix.de> <5519257A.2070907@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH RFC v2 1/2] can: fix multiple delivery of a single CAN
+ frame for overlapping CAN filters
+Date: Mon, 30 Mar 2015 12:41:54 +0200
+Message-ID: <55192872.7000108@hartkopp.net>
+References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-2-git-send-email-socketcan@hartkopp.net> <5519210E.40005@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="r3heNlpVLocB11ToMmGWbxSoWpGAqhcIK"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51133 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751398AbbC3Kg4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 06:36:56 -0400
-In-Reply-To: <5519257A.2070907@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:24556 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751586AbbC3Kl6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 06:41:58 -0400
+In-Reply-To: <5519210E.40005@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 Cc: netdev@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---r3heNlpVLocB11ToMmGWbxSoWpGAqhcIK
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 30.03.2015 12:10, Marc Kleine-Budde wrote:
 
-On 03/30/2015 12:29 PM, Oliver Hartkopp wrote:
-> On 30.03.2015 11:50, Marc Kleine-Budde wrote:
->=20
->>>   	can_err_mask_t err_mask;
->>> +	struct sk_buff __percpu **uniq_skb;
->>> +	ktime_t __percpu *uniq_tstamp;
 >>
->> What about creating a struct to hold the ktime_t and the skb? BTW: the=
+>> +	/* eliminate multiple filter matches for the same skb */
+>> +	if (*this_cpu_ptr(ro->uniq_skb) == oskb &&
+>> +	    ktime_equal(*this_cpu_ptr(ro->uniq_tstamp), oskb->tstamp)) {
+>> +			return;
+>> +	} else {
+>> +		*this_cpu_ptr(ro->uniq_skb) = oskb;
+>> +		*this_cpu_ptr(ro->uniq_tstamp) = oskb->tstamp;
+>> +	}
+>> +
+>
+> What happens if you're preempted somewhere in this code, it's not
+> atomic? I think, if we only have to take care about the skb, an atomic
+> compare exchange would work. But we have two variables....If you use a
+> struct (see previous mail), I think the usage of get_cpu_ptr(),
+> git_cpu_ptr() ensures that we're not preempted.
+>
 
->> pointer to the skb can be marked as const.
->=20
-> Don't think so.
->=20
-> The pointer points to some allocated memory.
+Please check out
 
-Yes, but the allocated memory points to a skb which is not modified, so
-it's a:
+https://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/
 
-struct sk_buff __percpu * const *uniq_skb;
+And especially 
+https://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/x173.html#LOCK-SOFTIRQS-SAME
 
-Marc
+When a softirq processes an incoming skb this remains on that selected CPU.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The mutithread-test from Andre just lead to the problem that the (former 
+single instance) variables ro->uniq_skb and ro->uniq_tstamp have been used by 
+different CPUs which made the checks unreliable.
+
+So following the documentation and other examples in kernel source you can
+
+- use spinlocks in can_receive() in af_can.c (instead of rcu_read_lock())
+- use per-CPU variables to allow the softirq to run in parallel
+
+Just make the variables atomic (as you suggested) is as bad as introduce 
+spinlocks in can_receive() as you reduce the skb processing to just one 
+thread. So at least percpu is the best for performance but needs to create a 
+vector of variables (percpu).
+
+Putting a struct into these percpu handling can be done - but does it increase 
+the readability in this case?
+
+Regards,
+Oliver
 
 
---r3heNlpVLocB11ToMmGWbxSoWpGAqhcIK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVGSdGAAoJECte4hHFiupUgdEP/Al+viNN1yIbkGgwmjmz/ZYf
-y+Pcqv8MiexTCHeX/caow5U7WLgGGL4jaFfts4PE5DAWJ1IoO74pfFgFXhoQ0uls
-O3MIePjfyIhpLUolFeNYw5jx15/WK0o+YU3tt0r9YVwR7UC8b82Ls7kNGlKlApli
-s30a/ssANxMgqWhP5akuqe5C0xBtQt5SEjW3URuEWAVTfOoaHvKgcdT6w8waOQ7R
-SsyNdC7zVmint2TZAvmbb6ANt+6hG0rdGoSuRiMTk8wfmGciWFgdcKyxJramh004
-xpOB4L6++7Nl6HZGFQGemwF1c2buTECDFOy3tMesObdy1YEJ3ZzP8Q6msPfWMuYU
-TQt0KbNiVwR7XwAmmcyrh/XpshgJDFUr7yc4SwAK86ml8SqQne+5KxbQOf0aZ57Z
-HGdulc9ABEZzSrNKBeXP4ruqDfj1jWtnPzyQXr6CBcfBDuin5eJVNNsoCvSPEInL
-dYTW/LNJIAjVMdHcskzbxS0uAb7T+5Z1T2nKiKuM8ToK72UCEaBFHtH7OkMCGQda
-7+I5LNeWyNIVpEKRaJsbeHofu0AKPXF01EkknFYXtbD4lzR27ouvzVPtbwv5+FJr
-3QgcxmND55MeejLX32onAsL3ZCy1RFjXpXJEzN6TOdFbixRB3XD7vmD35KJc/Tw3
-rG0zlL6Sqocc3MtmQb+2
-=YTIg
------END PGP SIGNATURE-----
-
---r3heNlpVLocB11ToMmGWbxSoWpGAqhcIK--
