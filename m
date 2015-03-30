@@ -1,13 +1,13 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH RFC v2 1/2] can: fix multiple delivery of a single
  CAN frame for overlapping CAN filters
-Date: Mon, 30 Mar 2015 11:50:15 +0200
-Message-ID: <55191C57.7060906@pengutronix.de>
+Date: Mon, 30 Mar 2015 12:10:22 +0200
+Message-ID: <5519210E.40005@pengutronix.de>
 References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-2-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="C346D0uG5VBuDK9X45fVuMikDnoVL6WIl"
+ boundary="8VlT4Jt1lmIOoutuv9348XjNbaCfEjqQn"
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1427652564-32181-2-git-send-email-socketcan@hartkopp.net>
 Sender: netdev-owner@vger.kernel.org
@@ -16,7 +16,7 @@ Cc: netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---C346D0uG5VBuDK9X45fVuMikDnoVL6WIl
+--8VlT4Jt1lmIOoutuv9348XjNbaCfEjqQn
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
@@ -55,11 +55,32 @@ ng at
 >  	can_err_mask_t err_mask;
 > +	struct sk_buff __percpu **uniq_skb;
 > +	ktime_t __percpu *uniq_tstamp;
+>  };
+> =20
+>  /*
+> @@ -123,6 +125,15 @@ static void raw_rcv(struct sk_buff *oskb, void *da=
+ta)
+>  	if (!ro->fd_frames && oskb->len !=3D CAN_MTU)
+>  		return;
+> =20
+> +	/* eliminate multiple filter matches for the same skb */
+> +	if (*this_cpu_ptr(ro->uniq_skb) =3D=3D oskb &&
+> +	    ktime_equal(*this_cpu_ptr(ro->uniq_tstamp), oskb->tstamp)) {
+> +			return;
+> +	} else {
+> +		*this_cpu_ptr(ro->uniq_skb) =3D oskb;
+> +		*this_cpu_ptr(ro->uniq_tstamp) =3D oskb->tstamp;
+> +	}
+> +
 
-What about creating a struct to hold the ktime_t and the skb? BTW: the
-pointer to the skb can be marked as const.
+What happens if you're preempted somewhere in this code, it's not
+atomic? I think, if we only have to take care about the skb, an atomic
+compare exchange would work. But we have two variables....If you use a
+struct (see previous mail), I think the usage of get_cpu_ptr(),
+git_cpu_ptr() ensures that we're not preempted.
 
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -67,7 +88,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---C346D0uG5VBuDK9X45fVuMikDnoVL6WIl
+--8VlT4Jt1lmIOoutuv9348XjNbaCfEjqQn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -75,19 +96,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVGRxaAAoJECte4hHFiupUqxkP/3bKuvcRsBuCSZd/FMghf+/a
-XjNNJZ+ROpNPErS6CnvtSNeT1BQNfgnbSIR8TK5CpIUQyU6X+t1E25vtAlyFv7VO
-ch/ZIrHabkwb57rZeEAZpTk/wNaCKD5BHFQ6cUNUkLCbXStVZNZt1Vqbc1e8mcyT
-8x7E/C4GxvO6fXhxj/Fgb/298gdoEkLw03ctm8fIblEO1H0z7wE0XBnwKBoQfhnS
-qOU+Ssj9HJylTNwh5dsS14jMkHDjxFh+pcTmbXMhAplmv4zzvlGrfx/eA+NuvKDC
-DeYMOek5wdlueyUfJK9X+AdT+H18pKDdxzDArHPIeQDDtgbMT4EQA/ysSqVIeVoX
-ghRZIUOz/OBjDZtrOIaEKlEQBXb4C9Elp/uFA5GMdFYb6SXNE60ePfDpqPP+8fuU
-nRiPKCwDxgI/YXIBdx7M/CluPPjHh8YHIucD8KeKefs2+IDAyygu0H6ahbQjiTsB
-CefCinmyxcJRVgIxLC5suXUzJpP35KWfVocIIWfRINpIrxYlkFUXMAZCFoOEEeGy
-Itoq204Dcu3x5fopyNbD4T2CZSMFHhcZGrrhwpWk87OPmPduzpsVy3eoaCx1fiSy
-7s/5vyBcabCtln+umSvs80vEtT8X0ORJB9M7S4F9wKmZxb9iCowPzqcjlsZVFc0Q
-tIxQjRb01945UQBv+/pU
-=Z9tj
+iQIcBAEBCgAGBQJVGSESAAoJECte4hHFiupU1xEP/10s5TbZMvcx7ZUpKS8BvOzX
+0VVgYeLSoqyOgHxq+BRISUFuNmdEkWZ+HLmbjS7daMo38P7MKxQjhS/Q5I6Lb6b2
+N5HWpJocTiw9R3kJupSG8EO/JXlLVUmkXxMH9uiuogrWB0MzUwUP1iJCPXdmFvx0
+ZZkFGXE0sl7hgrSy5J9QMm6JstItcjZlp/LuE3xoKmwrJZ3gRhDfHp7lgRmfSvh6
+uA73ktiDGskWJweYOcKH797EOS2QCVyG1ixj4uLz2wp72ypGB855Qsqz2pIPDDwu
+9IROHUeR6k6f0ayobWE0TbL3qorr/yexMmLI6Xw+W0bUGIUPmZCKsevId/imwiKZ
+5MWzLlI2P7KQinHxJfTqGKUhIdWjGpc7ovluV3Fhz4pUTLMIHejwZ3z+8GH2RLoF
+al8tJxHY40ltiUQWd7a0gQorhsOXYpcYiuZV9gdwnqB5aYdsjoMPnKgKz9HWXiMq
+owyWYmKe2qsY6zVWUXkXZzISGoWPHTCo59NFHr8cBaqOzqZ3LulCD5StSeL4iZcG
+EkukuHr/SYICgh8l8f/t3g4XGJbUyQzSOFD1P4W2Uh5DHWjq1wli19Au/kpu8dQu
+qfyrOUPrkYKcGDACcOdob2NG32WDBlYeo39Ogw6dIyeo/TW8flFfwdrOmzZpDh1+
+SfKiqxNH+DF/NxAoWdCI
+=4MXn
 -----END PGP SIGNATURE-----
 
---C346D0uG5VBuDK9X45fVuMikDnoVL6WIl--
+--8VlT4Jt1lmIOoutuv9348XjNbaCfEjqQn--
