@@ -1,70 +1,87 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 Subject: Re: [PATCH RFC v2 1/2] can: fix multiple delivery of a single CAN
  frame for overlapping CAN filters
-Date: Mon, 30 Mar 2015 12:41:54 +0200
-Message-ID: <55192872.7000108@hartkopp.net>
-References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-2-git-send-email-socketcan@hartkopp.net> <5519210E.40005@pengutronix.de>
+Date: Mon, 30 Mar 2015 15:33:30 +0300
+Message-ID: <5519429A.8050000@cogentembedded.com>
+References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-2-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:24556 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751586AbbC3Kl6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 06:41:58 -0400
-In-Reply-To: <5519210E.40005@pengutronix.de>
+Received: from mail-wg0-f47.google.com ([74.125.82.47]:35043 "EHLO
+	mail-wg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752684AbbC3Mdc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 08:33:32 -0400
+Received: by wgdm6 with SMTP id m6so173012748wgd.2
+        for <linux-can@vger.kernel.org>; Mon, 30 Mar 2015 05:33:31 -0700 (PDT)
+In-Reply-To: <1427652564-32181-2-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 Cc: netdev@vger.kernel.org
 
-On 30.03.2015 12:10, Marc Kleine-Budde wrote:
+Hello.
 
->>
->> +	/* eliminate multiple filter matches for the same skb */
->> +	if (*this_cpu_ptr(ro->uniq_skb) == oskb &&
->> +	    ktime_equal(*this_cpu_ptr(ro->uniq_tstamp), oskb->tstamp)) {
->> +			return;
->> +	} else {
->> +		*this_cpu_ptr(ro->uniq_skb) = oskb;
->> +		*this_cpu_ptr(ro->uniq_tstamp) = oskb->tstamp;
->> +	}
->> +
+On 3/29/2015 9:09 PM, Oliver Hartkopp wrote:
+
+> The CAN_RAW socket can set multiple CAN identifier specific filters that lead
+> to multiple filters in the af_can.c filter processing. These filters are
+> indenpendent from each other which leads to logical OR'ed filters when applied.
+
+> This patch makes sure that every CAN frame which is filtered for a specific
+> socket is only delivered once to the user space. This is independent from the
+> number of matching CAN filters of this socket.
+
+> As the can_raw() function is executed from NET_RX softirq the introduced
+> variables are implemented as per-CPU variables to avoid extensive locking at
+> CAN frame reception time.
+
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>   net/can/raw.c | 28 ++++++++++++++++++++++++++++
+>   1 file changed, 28 insertions(+)
+
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index 00c13ef..866a9b3 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+[...]
+> @@ -123,6 +125,15 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+>   	if (!ro->fd_frames && oskb->len != CAN_MTU)
+>   		return;
 >
-> What happens if you're preempted somewhere in this code, it's not
-> atomic? I think, if we only have to take care about the skb, an atomic
-> compare exchange would work. But we have two variables....If you use a
-> struct (see previous mail), I think the usage of get_cpu_ptr(),
-> git_cpu_ptr() ensures that we're not preempted.
+> +	/* eliminate multiple filter matches for the same skb */
+> +	if (*this_cpu_ptr(ro->uniq_skb) == oskb &&
+> +	    ktime_equal(*this_cpu_ptr(ro->uniq_tstamp), oskb->tstamp)) {
+> +			return;
+
+    Over-indented.
+
+> +	} else {
+> +		*this_cpu_ptr(ro->uniq_skb) = oskb;
+> +		*this_cpu_ptr(ro->uniq_tstamp) = oskb->tstamp;
+> +	}
+> +
+>   	/* clone the given skb to be able to enqueue it into the rcv queue */
+>   	skb = skb_clone(oskb, GFP_ATOMIC);
+>   	if (!skb)
+[...]
+> @@ -297,6 +309,20 @@ static int raw_init(struct sock *sk)
+>   	ro->recv_own_msgs    = 0;
+>   	ro->fd_frames        = 0;
 >
+> +	ro->uniq_skb = alloc_percpu(struct sk_buff *);
+> +	if (unlikely(ro->uniq_skb == NULL))
+> +		return -ENOMEM;
+> +	for_each_possible_cpu(cpu)
+> +		*per_cpu_ptr(ro->uniq_skb, cpu) = NULL;
+> +
+> +	ro->uniq_tstamp = alloc_percpu(ktime_t);
+> +	if (unlikely(ro->uniq_tstamp == NULL)) {
 
-Please check out
+    !ro->uniq_tstamp is preferred in the networking code.
 
-https://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/
+[...]
 
-And especially 
-https://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/x173.html#LOCK-SOFTIRQS-SAME
-
-When a softirq processes an incoming skb this remains on that selected CPU.
-
-The mutithread-test from Andre just lead to the problem that the (former 
-single instance) variables ro->uniq_skb and ro->uniq_tstamp have been used by 
-different CPUs which made the checks unreliable.
-
-So following the documentation and other examples in kernel source you can
-
-- use spinlocks in can_receive() in af_can.c (instead of rcu_read_lock())
-- use per-CPU variables to allow the softirq to run in parallel
-
-Just make the variables atomic (as you suggested) is as bad as introduce 
-spinlocks in can_receive() as you reduce the skb processing to just one 
-thread. So at least percpu is the best for performance but needs to create a 
-vector of variables (percpu).
-
-Putting a struct into these percpu handling can be done - but does it increase 
-the readability in this case?
-
-Regards,
-Oliver
-
+WBR, Sergei
 
