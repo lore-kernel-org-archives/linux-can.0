@@ -1,20 +1,22 @@
 From: Paarvai Naai <opensource3141@gmail.com>
 Subject: Re: Fwd: Querying current tx_queue usage of a SocketCAN interface
-Date: Mon, 30 Mar 2015 14:55:07 -0700
-Message-ID: <CAE+ymrsiE39R2ssXeorAoHuSVFdkLeV7oS-ajTLWDs46iADsYw@mail.gmail.com>
+Date: Mon, 30 Mar 2015 17:26:24 -0700
+Message-ID: <CAE+ymrvvqL_o3ZTWdq96kQmMe6c3OzqM+SQN3qPpyH1dLMjmrw@mail.gmail.com>
 References: <CAE+ymru296P+LjkT7_ONVc2OGMP9mtXW46Nq5aSnm1etauj9Aw@mail.gmail.com>
 	<CAE+ymrt-rsXgteuDCvp27BSsQRE5APGDsgsSPhg31Qz3_qZEdQ@mail.gmail.com>
 	<55187FF1.7020701@optusnet.com.au>
+	<CAE+ymrsiE39R2ssXeorAoHuSVFdkLeV7oS-ajTLWDs46iADsYw@mail.gmail.com>
+	<5519E5A9.7080104@optusnet.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ob0-f176.google.com ([209.85.214.176]:34797 "EHLO
-	mail-ob0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752945AbbC3VzH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 17:55:07 -0400
-Received: by obbgh1 with SMTP id gh1so77828784obb.1
-        for <linux-can@vger.kernel.org>; Mon, 30 Mar 2015 14:55:07 -0700 (PDT)
-In-Reply-To: <55187FF1.7020701@optusnet.com.au>
+Received: from mail-ob0-f178.google.com ([209.85.214.178]:34608 "EHLO
+	mail-ob0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753416AbbCaA0Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 Mar 2015 20:26:25 -0400
+Received: by obbgh1 with SMTP id gh1so2820959obb.1
+        for <linux-can@vger.kernel.org>; Mon, 30 Mar 2015 17:26:24 -0700 (PDT)
+In-Reply-To: <5519E5A9.7080104@optusnet.com.au>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: tom_usenet@optusnet.com.au
@@ -22,68 +24,70 @@ Cc: linux-can@vger.kernel.org
 
 Hi Tom,
 
-Thanks for that pointer regarding ENOBUFS.  I will look into it for my
-application.
+Right, my understanding is that if there is only one client for the
+SocketCAN interface, a simple wrapping of the SocketCAN tx_queue with
+a qdisc might(?) work.  Need to understand the complexities of qdisc
+first though.
 
-Regarding, the qdisc reference, that does look like an interesting
-whitepaper -- I had mentioned it in my original post in this thread as
-well.
+If there are multiple clients, there is idneed the priority inversion
+problem you mention.  Even if one has a single process designated to
+read/write to the interface, managing priority is not fool proof.  A
+low priority message could get submitted to the underlying SocketCAN
+interface and be unable to go out onto the bus because of other
+third-party nodes on the bus sending higher priority traffic at high
+frequency.  This would block further messages from going out on the
+SocketCAN interfaces, even though they have higher priority, no?
 
-If anyone has pointers regarding querying the number of available
-buffers on the TX side, that would be much appreciated.
-
-Best regards,
 Paarvai
 
 
-On Sun, Mar 29, 2015 at 3:42 PM, Tom Evans <tom_usenet@optusnet.com.au> wrote:
-> On 29/03/15 07:26, Paarvai Naai wrote:
->>
->> Hi,
->>
->> I have been looking into how to query the SocketCAN interface for its
->> current tx_queue usage.
+> The whitepaper is "promising". All you have to do is to implement it in your
+> drivers to gain the functionality. I don't expect anyone else will any time
+> soon.
 >
+> Otherwise, this looks "promising", but I can't get it to show anything other
+> than zero:
 >
-> Just letting you know of a (what was for me) unexpected behaviour of the
-> queue.
+>   # cat /sys/class/net/can0/queues/tx-0/byte_queue_limits/inflight
+>   0
 >
-> Sockets can block or return ENOBUFS. Ethernet blocks before it returns
-> ENOBUFS like you'd expect. With CAN it does the opposite "out of the box"
-> and needs to be fixed.
+> Maybe I need to configure something else in the kernel or make some other
+> configuration change to use it. I don't need this, but as you do I'd suggest
+> you look at it.
 >
-> http://socket-can.996257.n3.nabble.com/Solving-ENOBUFS-returned-by-write-td2886.html
+> The code that allows access to "inflight" is in:
 >
->     With Ethernet, the transmit queue length is 1000 (which would
->     return ENOBUF) but before that happens it hits SO_SNDBUF,
->     which may be 108544, which is the total Data plus SKB, and
->     with an SKB size of about 200 that means it blocks at about
->     500 before it ENOBUFs at 1000.
+>     drivers/net/core/net-sysfs.c
 >
->     With CAN, it would block at 500, but it ENOBUFs at 10 first with
->     the default queue depth!
+> The definition of "inflight" in that file is:
 >
-> I do the following to get a 256-deep queue that blocks before it overflows:
+> static ssize_t bql_show_inflight(struct netdev_queue *queue,
+>                  struct netdev_queue_attribute *attr,
+>                  char *buf)
+> {
+>     struct dql *dql = &queue->dql;
 >
->     /bin/echo 256 > /sys/class/net/can0/tx_queue_len
->     /bin/echo 256 > /sys/class/net/can1/tx_queue_len
+>     return sprintf(buf, "%u\n", dql->num_queued - dql->num_completed);
+> }
 >
->     int sndbuf = (250 + 8) * 256;
->     socklen_t socklen = sizeof(sndbuf);
->     /* Minimum socket buffer to try and get it blocking */
->     rc = setsockopt(pSkt->skt, SOL_SOCKET, SO_SNDBUF,
->                     &sndbuf, sizeof(sndbuf));
+> If you dig around enough through the linux source code you may be able to
+> get the queueing to work and be able to use that sysfs variable. The code is
+> in /lib/dynamic_queue_limits.c. It seems to be used by
+> include/linux/netdevice.h.
 >
-> You might also like to read:
+> That still isn't going to solve your real problem, which (I'm assuming) is
+> to try and get multiple senders through the CAN interface to "play nice"
+> with each other in an attempt to establish normal ID-based transmission
+> priority. That's what the whitepaper is all about.
 >
-> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
->
->     SocketCAN and queueing disciplines:
->     Final Report
->     M. Sojka, R. Lisov y, P. P   sa
->     Czech Technical University in Prague
->     July 20, 2012
->     Version 1.2
+> If you can read the queue depth I'm guessing all of your programs will have
+> to queue internally and "promise" not to fill the queue if a higher priority
+> ID message (from another thread/process) might need the slot. That's quite a
+> change to the interface. If you're going to do that I'd suggest instead that
+> you designate one process (or thread as appropriate) that is the only one
+> allowed to open the CAN driver for transmission. It implements multiple
+> internal priority queues. Have it provide a socket interface for the other
+> programs that wish to send and have them all transmit via that process.
 >
 > Tom
 >
