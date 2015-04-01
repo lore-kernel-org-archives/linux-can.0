@@ -1,57 +1,96 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH RFC v2 2/2] can: introduce new raw socket option to join
- the given CAN filters
-Date: Tue, 31 Mar 2015 22:30:09 +0200
-Message-ID: <551B03D1.2020801@hartkopp.net>
-References: <1427652564-32181-1-git-send-email-socketcan@hartkopp.net> <1427652564-32181-3-git-send-email-socketcan@hartkopp.net> <551A94D0.1010608@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [RFC PATCH v3 1/2] can: fix multiple delivery of a single CAN frame for overlapping CAN filters
+Date: Wed,  1 Apr 2015 07:50:28 +0200
+Message-ID: <1427867429-3909-2-git-send-email-socketcan@hartkopp.net>
+References: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:42780 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:31672 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932560AbbCaUaM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 Mar 2015 16:30:12 -0400
-In-Reply-To: <551A94D0.1010608@pengutronix.de>
+	with ESMTP id S1751134AbbDAFum (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Apr 2015 01:50:42 -0400
+In-Reply-To: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, sergei.shtylyov@cogentembedded.com, Oliver Hartkopp <socketcan@hartkopp.net>
 
-On 31.03.2015 14:36, Marc Kleine-Budde wrote:
-> On 03/29/2015 08:09 PM, Oliver Hartkopp wrote:
+The CAN_RAW socket can set multiple CAN identifier specific filters that lead
+to multiple filters in the af_can.c filter processing. These filters are
+indenpendent from each other which leads to logical OR'ed filters when applied.
 
+This patch makes sure that every CAN frame which is filtered for a specific
+socket is only delivered once to the user space. This is independent from the
+number of matching CAN filters of this socket.
 
->> @@ -128,10 +130,20 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
->>   	/* eliminate multiple filter matches for the same skb */
->>   	if (*this_cpu_ptr(ro->uniq_skb) == oskb &&
->>   	    ktime_equal(*this_cpu_ptr(ro->uniq_tstamp), oskb->tstamp)) {
->> +		if (ro->join_filters) {
->> +			this_cpu_inc(*ro->join_rx_count);
->> +			/* drop frame until all enabled filters matched */
->> +			if (*this_cpu_ptr(ro->join_rx_count) < ro->count)
->
-> Can we be sure, that all skbs are processed on the same CPU? So that
-> it's sufficient to just compare the "ro->join_rx_count" of this CPU with
-> "ro->count" (or do we have to use join_rx_count of all CPUs?)
->
+As the raw_rcv() function is executed from NET_RX softirq the introduced
+variables are implemented as per-CPU variables to avoid extensive locking at
+CAN frame reception time.
 
-No, that's exactly the point that the single CAN frame skb is processed inside 
-the softirq by one CPU. And we count only for this specific skb here.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/raw.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-The next frame which is processed in raw_rcv() might use another CPU while 
-executing the NET_RX softirq.
-
->> +				return;
->> +		} else
->>   			return;
->
-> nitpick: please use { } on both sides of the else.
->
-
-fixed in v3
-
-Regards,
-Oliver
-
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 00c13ef..8c75446 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -74,6 +74,11 @@ MODULE_ALIAS("can-proto-1");
+  * storing the single filter in dfilter, to avoid using dynamic memory.
+  */
+ 
++struct uniqframe {
++	const struct sk_buff *skb;
++	ktime_t tstamp;
++};
++
+ struct raw_sock {
+ 	struct sock sk;
+ 	int bound;
+@@ -86,6 +91,7 @@ struct raw_sock {
+ 	struct can_filter dfilter; /* default/single filter */
+ 	struct can_filter *filter; /* pointer to filter(s) */
+ 	can_err_mask_t err_mask;
++	struct uniqframe __percpu *uniq;
+ };
+ 
+ /*
+@@ -123,6 +129,15 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 	if (!ro->fd_frames && oskb->len != CAN_MTU)
+ 		return;
+ 
++	/* eliminate multiple filter matches for the same skb */
++	if (this_cpu_ptr(ro->uniq)->skb == oskb &&
++	    ktime_equal(this_cpu_ptr(ro->uniq)->tstamp, oskb->tstamp)) {
++		return;
++	} else {
++		this_cpu_ptr(ro->uniq)->skb = oskb;
++		this_cpu_ptr(ro->uniq)->tstamp = oskb->tstamp;
++	}
++
+ 	/* clone the given skb to be able to enqueue it into the rcv queue */
+ 	skb = skb_clone(oskb, GFP_ATOMIC);
+ 	if (!skb)
+@@ -297,6 +312,11 @@ static int raw_init(struct sock *sk)
+ 	ro->recv_own_msgs    = 0;
+ 	ro->fd_frames        = 0;
+ 
++	/* alloc_percpu provides zero'ed memory */
++	ro->uniq = alloc_percpu(struct uniqframe);
++	if (unlikely(!ro->uniq))
++		return -ENOMEM;
++
+ 	/* set notifier */
+ 	ro->notifier.notifier_call = raw_notifier;
+ 
+@@ -339,6 +359,7 @@ static int raw_release(struct socket *sock)
+ 	ro->ifindex = 0;
+ 	ro->bound   = 0;
+ 	ro->count   = 0;
++	free_percpu(ro->uniq);
+ 
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+-- 
+2.1.4
 
