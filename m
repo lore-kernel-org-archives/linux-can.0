@@ -1,167 +1,103 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [RFC PATCH v3 2/2] can: introduce new raw socket option to join the given CAN filters
-Date: Wed,  1 Apr 2015 07:50:29 +0200
-Message-ID: <1427867429-3909-3-git-send-email-socketcan@hartkopp.net>
-References: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, sergei.shtylyov@cogentembedded.com, Oliver Hartkopp <socketcan@hartkopp.net>
-List-Id: linux-can.vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [RFC PATCH v3 1/2] can: fix multiple delivery of a single
+ CAN frame for overlapping CAN filters
+Date: Wed, 01 Apr 2015 11:07:33 +0200
+Message-ID: <551BB555.7030808@pengutronix.de>
+References: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net> <1427867429-3909-2-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="nQK8KglDtWRQ0OOgCdTXCQEKl0GgiSvLJ"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:41104 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752237AbbDAJHk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Apr 2015 05:07:40 -0400
+In-Reply-To: <1427867429-3909-2-git-send-email-socketcan@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, sergei.shtylyov@cogentembedded.com
 
-The CAN_RAW socket can set multiple CAN identifier specific filters that lead
-to multiple filters in the af_can.c filter processing. These filters are
-indenpendent from each other which leads to logical OR'ed filters when applied.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nQK8KglDtWRQ0OOgCdTXCQEKl0GgiSvLJ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-This socket option joines the given CAN filters in the way that only CAN frames
-are passed to user space that matched *all* given CAN filters. The semantic for
-the applied filters is therefore changed to a logical AND.
+On 04/01/2015 07:50 AM, Oliver Hartkopp wrote:
+> The CAN_RAW socket can set multiple CAN identifier specific filters tha=
+t lead
+> to multiple filters in the af_can.c filter processing. These filters ar=
+e
+> indenpendent from each other which leads to logical OR'ed filters when =
+applied.
+>=20
+> This patch makes sure that every CAN frame which is filtered for a spec=
+ific
+> socket is only delivered once to the user space. This is independent fr=
+om the
+> number of matching CAN filters of this socket.
+>=20
+> As the raw_rcv() function is executed from NET_RX softirq the introduce=
+d
+> variables are implemented as per-CPU variables to avoid extensive locki=
+ng at
+> CAN frame reception time.
+>=20
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  net/can/raw.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>=20
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index 00c13ef..8c75446 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -74,6 +74,11 @@ MODULE_ALIAS("can-proto-1");
+>   * storing the single filter in dfilter, to avoid using dynamic memory=
+=2E
+>   */
+> =20
+> +struct uniqframe {
+> +	const struct sk_buff *skb;
+> +	ktime_t tstamp;
+> +};
 
-This is useful especially when the filterset is a combination of filters where
-the CAN_INV_FILTER flag is set in order to notch single CAN IDs or CAN ID
-ranges from the incoming traffic.
+Nitpick: as ktime_t is always a 64 bit value, I think putting it first
+might provide better alignment.
 
-As the raw_rcv() function is executed from NET_RX softirq the introduced
-variables are implemented as per-CPU variables to avoid extensive locking at
-CAN frame reception time.
+No need to repost, I'll change this while applying, if you're okay with
+this.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- Documentation/networking/can.txt | 20 ++++++++++++++++++--
- include/uapi/linux/can/raw.h     |  1 +
- net/can/raw.c                    | 31 ++++++++++++++++++++++++++++++-
- 3 files changed, 49 insertions(+), 3 deletions(-)
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
-index 0a2859a..5abad1e 100644
---- a/Documentation/networking/can.txt
-+++ b/Documentation/networking/can.txt
-@@ -22,7 +22,8 @@ This file contains
-       4.1.3 RAW socket option CAN_RAW_LOOPBACK
-       4.1.4 RAW socket option CAN_RAW_RECV_OWN_MSGS
-       4.1.5 RAW socket option CAN_RAW_FD_FRAMES
--      4.1.6 RAW socket returned message flags
-+      4.1.6 RAW socket option CAN_RAW_JOIN_FILTERS
-+      4.1.7 RAW socket returned message flags
-     4.2 Broadcast Manager protocol sockets (SOCK_DGRAM)
-       4.2.1 Broadcast Manager operations
-       4.2.2 Broadcast Manager message flags
-@@ -601,7 +602,22 @@ solution for a couple of reasons:
-   CAN FD frames by checking if the device maximum transfer unit is CANFD_MTU.
-   The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.
- 
--  4.1.6 RAW socket returned message flags
-+  4.1.6 RAW socket option CAN_RAW_JOIN_FILTERS
-+
-+  The CAN_RAW socket can set multiple CAN identifier specific filters that
-+  lead to multiple filters in the af_can.c filter processing. These filters
-+  are indenpendent from each other which leads to logical OR'ed filters when
-+  applied (see 4.1.1).
-+
-+  This socket option joines the given CAN filters in the way that only CAN
-+  frames are passed to user space that matched *all* given CAN filters. The
-+  semantic for the applied filters is therefore changed to a logical AND.
-+
-+  This is useful especially when the filterset is a combination of filters
-+  where the CAN_INV_FILTER flag is set in order to notch single CAN IDs or
-+  CAN ID ranges from the incoming traffic.
-+
-+  4.1.7 RAW socket returned message flags
- 
-   When using recvmsg() call, the msg->msg_flags may contain following flags:
- 
-diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
-index 78ec76f..8735f108 100644
---- a/include/uapi/linux/can/raw.h
-+++ b/include/uapi/linux/can/raw.h
-@@ -57,6 +57,7 @@ enum {
- 	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
- 	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
- 	CAN_RAW_FD_FRAMES,	/* allow CAN FD frames (default:off) */
-+	CAN_RAW_JOIN_FILTERS,	/* all filters must match to trigger */
- };
- 
- #endif /* !_UAPI_CAN_RAW_H */
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 8c75446..7b94554 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -77,6 +77,7 @@ MODULE_ALIAS("can-proto-1");
- struct uniqframe {
- 	const struct sk_buff *skb;
- 	ktime_t tstamp;
-+	unsigned int join_rx_count;
- };
- 
- struct raw_sock {
-@@ -87,6 +88,7 @@ struct raw_sock {
- 	int loopback;
- 	int recv_own_msgs;
- 	int fd_frames;
-+	int join_filters;
- 	int count;                 /* number of active filters */
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
-@@ -132,10 +134,21 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	/* eliminate multiple filter matches for the same skb */
- 	if (this_cpu_ptr(ro->uniq)->skb == oskb &&
- 	    ktime_equal(this_cpu_ptr(ro->uniq)->tstamp, oskb->tstamp)) {
--		return;
-+		if (ro->join_filters) {
-+			this_cpu_inc(ro->uniq->join_rx_count);
-+			/* drop frame until all enabled filters matched */
-+			if (this_cpu_ptr(ro->uniq)->join_rx_count < ro->count)
-+				return;
-+		} else {
-+			return;
-+		}
- 	} else {
- 		this_cpu_ptr(ro->uniq)->skb = oskb;
- 		this_cpu_ptr(ro->uniq)->tstamp = oskb->tstamp;
-+		this_cpu_ptr(ro->uniq)->join_rx_count = 1;
-+		/* drop first frame to check all enabled filters? */
-+		if (ro->join_filters && ro->count > 1)
-+			return;
- 	}
- 
- 	/* clone the given skb to be able to enqueue it into the rcv queue */
-@@ -311,6 +324,7 @@ static int raw_init(struct sock *sk)
- 	ro->loopback         = 1;
- 	ro->recv_own_msgs    = 0;
- 	ro->fd_frames        = 0;
-+	ro->join_filters     = 0;
- 
- 	/* alloc_percpu provides zero'ed memory */
- 	ro->uniq = alloc_percpu(struct uniqframe);
-@@ -604,6 +618,15 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		break;
- 
-+	case CAN_RAW_JOIN_FILTERS:
-+		if (optlen != sizeof(ro->join_filters))
-+			return -EINVAL;
-+
-+		if (copy_from_user(&ro->join_filters, optval, optlen))
-+			return -EFAULT;
-+
-+		break;
-+
- 	default:
- 		return -ENOPROTOOPT;
- 	}
-@@ -668,6 +691,12 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
- 		val = &ro->fd_frames;
- 		break;
- 
-+	case CAN_RAW_JOIN_FILTERS:
-+		if (len > sizeof(int))
-+			len = sizeof(int);
-+		val = &ro->join_filters;
-+		break;
-+
- 	default:
- 		return -ENOPROTOOPT;
- 	}
--- 
-2.1.4
+
+--nQK8KglDtWRQ0OOgCdTXCQEKl0GgiSvLJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVG7VYAAoJECte4hHFiupUj1sQAIPG2+4EieP0RYpgl++BnHNb
+26rV07VldX0mxngwg67gob+9OOVNEHjrKfdDiBb4fdv/sIs5UujSSQt8qwm9dfdC
+3wX/aI2DIehjOpE3eZd8a4tN3cgXBLo0avKpZF/zOXlaqdDbqxuFKPI8PSkq1ANw
+IqwdB/qyfLR7FT8Qu78cEbHt/KGrNrsEoZyZ8wYhQ2vZhY0vibEP/z0SPpJ4lH1J
+ugAcgF3Thi6I/f0s/TNMmaHLceSzJkXPnLWHpRQDrVNOQl8WxTZ366z/2XXJg8yj
+/1V5Xdg+2EIsoyO7z+GsFJFIaErMmqo0mD44vwxnVr3fjbn0jDjznvRM/ApN8b6I
+yTELuOsiI4Jyr78d1V+S0hMN3dbgUsBxitF3TsVn9qF0FQXI1gzgk7C2OZlHvf1m
+QyX6xbiXvi9qp9glVLS6U+ZJg12ber/rYaF3i729x1EcI3FKQv60LpjGAEUp11xy
+WO3ssN1WsJalxM4QxaE4QQGv/9wAPNx6bDHfKGODjVJ+0hrk9ezbY7Zyy7LI189v
+6aOOZkGlDh5qY/3ug83PWVV2nBKDv4Mniasp879J7IteWW7+VarvBYgclkm4fO2E
+Qu+xLyuDkj039FcAwbXYvUWpHssra/OPehNLl/icm93+suKvHrpXdyh8AU92JPti
+yQBK3DdnDFFDJJAZ1K+n
+=UebI
+-----END PGP SIGNATURE-----
+
+--nQK8KglDtWRQ0OOgCdTXCQEKl0GgiSvLJ--
