@@ -1,53 +1,79 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC PATCH v3 1/2] can: fix multiple delivery of a single
- CAN frame for overlapping CAN filters
-Date: Wed, 01 Apr 2015 11:46:51 +0200
-Message-ID: <551BBE8B.6060707@pengutronix.de>
-References: <1427867429-3909-1-git-send-email-socketcan@hartkopp.net> <1427867429-3909-2-git-send-email-socketcan@hartkopp.net> <551BB555.7030808@pengutronix.de> <551BBDF1.6070208@hartkopp.net>
+Subject: pull-request: can-next 2015-04-01
+Date: Wed, 01 Apr 2015 12:04:48 +0200
+Message-ID: <551BC2C0.5000408@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="CNuaLsoI3pL6LRSko3HfpXEL2xnq7DS9o"
+ boundary="AnJEjDAQfeHkare0CO32VAudSG0hM1sQc"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57267 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46665 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751141AbbDAJq5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Apr 2015 05:46:57 -0400
-In-Reply-To: <551BBDF1.6070208@hartkopp.net>
+	with ESMTP id S1751256AbbDAKEz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Apr 2015 06:04:55 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, sergei.shtylyov@cogentembedded.com
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CNuaLsoI3pL6LRSko3HfpXEL2xnq7DS9o
+--AnJEjDAQfeHkare0CO32VAudSG0hM1sQc
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/01/2015 11:44 AM, Oliver Hartkopp wrote:
->> On 04/01/2015 07:50 AM, Oliver Hartkopp wrote:
->   >> +struct uniqframe {
->>> +	const struct sk_buff *skb;
->>> +	ktime_t tstamp;
->>> +};
->>
->> Nitpick: as ktime_t is always a 64 bit value, I think putting it first=
+Hello David,
 
->> might provide better alignment.
->=20
-> No objections. Good idea.
+this is a pull request of 5 patches for net-next/master.
 
-Thanks.
+There are two patches for the ems_usb driver by Gerhard Uttenthaler and
+me, which fix sparse endianess warnings. Oliver Hartkopp adds two
+patches to improve and extend the CAN-ID filter handling on RAW CAN
+sockets. The last patch is by me, it silences an uninitialized variable
+warning in the peak_usb driver.
 
->> No need to repost, I'll change this while applying, if you're okay wit=
-h
->> this.
->=20
-> I would suggest to take both patches into can-next (for 4.1).
+Marc
 
-I'll create a pull-request asap.
+---
 
-Marc.
+The following changes since commit 9911674fcf1f239ff3c87e56177c4826e33dfd=
+95:
+
+  Merge branch 'ptp-ns_to_timespec64' (2015-03-31 17:19:19 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.1-20150401
+
+for you to fetch changes up to 79d5eeddd7d23bd4588e370072977928b7075911:
+
+  can: pcan_usb: pcan_usb_fd_send_cmd(): silence compiler warning about u=
+ninitialized var (2015-04-01 11:49:59 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.1-20150401
+
+----------------------------------------------------------------
+Gerhard Uttenthaler (1):
+      can: ems_usb: fix endianess of CAN ID
+
+Marc Kleine-Budde (2):
+      can: ems_usb: mark timestamp as little endian
+      can: pcan_usb: pcan_usb_fd_send_cmd(): silence compiler warning abo=
+ut uninitialized var
+
+Oliver Hartkopp (2):
+      can: fix multiple delivery of a single CAN frame for overlapping CA=
+N filters
+      can: introduce new raw socket option to join the given CAN filters
+
+ Documentation/networking/can.txt           | 20 ++++++++++--
+ drivers/net/can/usb/ems_usb.c              | 11 +++----
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c |  2 +-
+ include/uapi/linux/can/raw.h               |  1 +
+ net/can/raw.c                              | 50 ++++++++++++++++++++++++=
+++++++
+ 5 files changed, 74 insertions(+), 10 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -56,7 +82,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---CNuaLsoI3pL6LRSko3HfpXEL2xnq7DS9o
+--AnJEjDAQfeHkare0CO32VAudSG0hM1sQc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -64,19 +90,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVG76OAAoJECte4hHFiupUuA0P/A/3LLDPgMwZ/iqYAw5ts6du
-zySn9nxqiHEzJLrAhDpbppa4we4ztkhtadwoOlZYyqbxC5zy7papZDmHzatiJyRL
-NlRdL5dl7UChKMzV0y2wVoG3Y/CUJ8lsHlAbTW1ND7QmmfsPrxaqzEQ4TTOeEo24
-SOzUoXqOnIwe3x3vEAn6lmvY4umA/7dvc7slgrHLnVlRtPOYu9gYc/DeqQg+mUva
-2+sTfklb+n613eGC4aHW/eVNHGoy/xUHHfP3avm5FnmiQKaH7eW1pEI80iYtSZo5
-LO0+j/KRv1F1ib14NeMyoJLsaCQhjc2gNGHer+5Uw+IdOPMronYqBrEYM67pPjCF
-cNyJsAPrggKrHP//ZJL5O9Nc9D8vbqlHuRmsdPZoJWenMDT+xfYY5gcpwNX6oIk6
-lUMNv6B9f+U9C47t+8CS8orlkyjpUjhAcPl++hhoDBvg2LJMdFJnIsuLQXSt5DvW
-6uC9wACwRjtPEKbUdpq/p4l31lLbKTTXDoWiZZi0QNa6DBIqTWaR2XsDjTWN+Q2u
-y1H25H7tbtVT0O/IOQKoviVNHIWd9KIIOW4DRVCfknLSQS9oGZzEWgI7Tr54JlTg
-OsLOzidfJv8uT+9diw++XHM5hPnLQ9FMTAbnev7Cm8qg0j/8l7RYT8GZ5O17ZFio
-tAU6k66QXi/+g1C9Xtz7
-=89Ac
+iQIcBAEBCgAGBQJVG8LEAAoJECte4hHFiupU6wMP+wUNP9dbMYBdjxgfH1UeDW5x
+dtCF8W5s43JEywuZsa8xvNQsvPLlNun893G7ckJe0JdCTx2uae1gFNEda3AD3u22
+vTDy0xYR0tjLUdVOyWQZUeUuOoryaHohO74PbL9fkhDSOHelHgqpAQAS6ZRn1nG7
+vFbJgXUVzp/VEJtxb13PdpTG9F8fR0gH3YtiEuEVWLc7Tt44uPhieXM/J/Gsjpes
+yF2KPNLvYz1JARKfebo/QbkzNXOECagsonEgyoIGyeZlt5XWlkKob90E+SLVHlOf
+bgwRCUIBwsuW7KX5q7BBYQknLz0Rfdan+l/TfzNHarvCY5OdioxrxFjUx+GUeXij
+Q9e7M8xkEidd4vLV6b9YISUCi8yasPSl36HJego8Ixgzvul/rob5ntL0Y44ar75A
+GXutLzxXg8bbJb4vpwgfTP/ZNtcGoSrBEG9RQpQDcB0gWx7Ja/T2EmgXoamLV2xt
+xrL37ZUYLiCqn/nTaQ3+xVsUiaEAY8MRXoPXmjKHnGpjmo+2OyG6LHPgWt6Vcgdu
+vJlI7EniIhpV23JOBkRzrQ1JzWFU5Ry6vNxFLTn0WgoJV/G+RS+x4K81RE+gFuSs
+ZqkQZ5r4JBtBvBx2YEGLcTqExlxkqoCHwSBfu4/6qbqRB3MX7ks1UWG6Q8nZWVrL
+hChouBiBUPKfzalT9qLi
+=oHvJ
 -----END PGP SIGNATURE-----
 
---CNuaLsoI3pL6LRSko3HfpXEL2xnq7DS9o--
+--AnJEjDAQfeHkare0CO32VAudSG0hM1sQc--
