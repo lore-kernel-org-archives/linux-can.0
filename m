@@ -1,40 +1,59 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Flexcan (was: Re: Fwd: Querying current tx_queue usage of a
- SocketCAN interface)
-Date: Thu, 02 Apr 2015 08:28:04 +0200
-Message-ID: <551CE174.2030303@pengutronix.de>
-References: <CAE+ymru296P+LjkT7_ONVc2OGMP9mtXW46Nq5aSnm1etauj9Aw@mail.gmail.com>	<CAE+ymrt-rsXgteuDCvp27BSsQRE5APGDsgsSPhg31Qz3_qZEdQ@mail.gmail.com>	<55187FF1.7020701@optusnet.com.au>	<CAE+ymrsiE39R2ssXeorAoHuSVFdkLeV7oS-ajTLWDs46iADsYw@mail.gmail.com>	<5519E5A9.7080104@optusnet.com.au>	<CAE+ymrvvqL_o3ZTWdq96kQmMe6c3OzqM+SQN3qPpyH1dLMjmrw@mail.gmail.com>	<551A0FF3.4070400@optusnet.com.au> <CAE+ymrt9gfCDEyNNz-b2gOS0NJt=pupm=t3HqbGosbKBC5wa7A@mail.gmail.com> <551C7D79.50906@optusnet.com.au> <loom.20150402T022922-646@post.gmane.org> <551CA777.8070208@optusnet.com.au>
+Subject: Re: Fwd: Querying current tx_queue usage of a SocketCAN interface
+Date: Thu, 02 Apr 2015 08:46:33 +0200
+Message-ID: <551CE5C9.6020600@pengutronix.de>
+References: <CAE+ymru296P+LjkT7_ONVc2OGMP9mtXW46Nq5aSnm1etauj9Aw@mail.gmail.com>	<CAE+ymrt-rsXgteuDCvp27BSsQRE5APGDsgsSPhg31Qz3_qZEdQ@mail.gmail.com>	<55187FF1.7020701@optusnet.com.au>	<CAE+ymrsiE39R2ssXeorAoHuSVFdkLeV7oS-ajTLWDs46iADsYw@mail.gmail.com>	<5519E5A9.7080104@optusnet.com.au>	<CAE+ymrvvqL_o3ZTWdq96kQmMe6c3OzqM+SQN3qPpyH1dLMjmrw@mail.gmail.com>	<551A0FF3.4070400@optusnet.com.au> <CAE+ymrt9gfCDEyNNz-b2gOS0NJt=pupm=t3HqbGosbKBC5wa7A@mail.gmail.com> <551C7D79.50906@optusnet.com.au> <loom.20150402T022922-646@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="oEaplHMBL3eM52wEqARXs3AITBqG0Aaib"
+ boundary="t7jcoagA5Q7FbPEfnadlHrN1tJrmU9RNx"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35236 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48317 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751297AbbDBG2S (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Apr 2015 02:28:18 -0400
-In-Reply-To: <551CA777.8070208@optusnet.com.au>
+	with ESMTP id S1751477AbbDBGqk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Apr 2015 02:46:40 -0400
+In-Reply-To: <loom.20150402T022922-646@post.gmane.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: tom_usenet@optusnet.com.au, Dan Egnor <dan.egnor@gmail.com>, linux-can@vger.kernel.org
+To: Dan Egnor <dan.egnor@gmail.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oEaplHMBL3eM52wEqARXs3AITBqG0Aaib
+--t7jcoagA5Q7FbPEfnadlHrN1tJrmU9RNx
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/02/2015 04:20 AM, Tom Evans wrote:
-> I had to seriously rewrite the FlexCAN drivers for our i.MX53 because t=
-he=20
-> Ethernet driver blocked the CAN driver for so long the CAN hardware rec=
-eive=20
-> FIFO overflowed. Linux doesn't even support setting different interrupt=
-=20
-> priorities on ARM (but my problem was with NAPI).
+On 04/02/2015 02:33 AM, Dan Egnor wrote:
+> That seems surprisingly awful for something that's an established gener=
+ic=20
+> interface for all CAN hardware on this operating system! No matter how =
+many=20
+> mailboxes the controller might support, the operating system simply doe=
+s not=20
+> support prioritized transmission.
 
-Can you share your changes? I'll have some days to hack on a better
-generic RX-FIFO implementation for the at91 and flexcan.
+You have access to all queueing disc in linux, to prioritize your CAN
+frames until they are send via the CAN driver into the hardware. This is
+currently done in all drivers via a single TX queue. In default
+configuration (without a special queueing discipline), you have multiple
+FIFO from the userspace (the sockets) that are combined into a single
+FIFO (queueing disc + TX routine in driver +  hardward).
 
+However, if you need more control, fist make use of a queueing disc.
+Then, if you still suffer from prio inversion, we can have a look at
+your hardware. For now, all drivers, even those with multiple TX
+buffers, configure them into one large TX-FIFO. We can define and
+implement a new per interface option (or options, if needed) that
+switches the hardware between FIFO and priority based sending. This
+however is still a problem, if all your HW buffers are filled with low
+prio CAN frames before a high prio one has the change to be transferred
+into the hardware. This leads us to the implementation of multiple TX
+queues from the linux stack into the driver. This is manly used on big
+server Ethernet card, so that more than one processor can send packages.
+We have to check if a) we can attach a queueing disc to a TX queue and
+b) if these multiple TX queues are properly used on a single processor
+system.
+
+regards,
 Marc
 
 --=20
@@ -44,7 +63,7 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---oEaplHMBL3eM52wEqARXs3AITBqG0Aaib
+--t7jcoagA5Q7FbPEfnadlHrN1tJrmU9RNx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -52,19 +71,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCgAGBQJVHOF3AAoJECte4hHFiupUCO0P/ia3lwOIwQR6LAivYOfGnpWu
-0bJPGfQBnV/i0Ywm8jUmP/rtYUPWCXoVJA2BnIwxaSshSKdbaafbqAI/cwRz4JBf
-LZozrmWmBVqnbHjKcQbu7d8BNIkmsIUrtYFJMq3XrbEIlM75w5HnD+Fu2u7VhfnD
-jp/0bkEqG2jUXj+W1ki1PbZYcRZJkkIRV+PQjNhnUHhVuZfNUO4NqVpN20V+MPHB
-zWxiqA6J46wWlnC55QKWSFJL+IxtKz2z4KjXwn6KA/YCwUFcLautG2+AUGnOmZA5
-j2hyBqy/kRN/p+nz8COg2WRyg3q24BoEpZ0sDNG/tAool0OO5o9yK5Zgt/kMVy5m
-V+lnr5oVgBfzo0Gv/KPIBJ4XRsmGfDlEGKK5EHDMN1KsXtgkP1gtlGtyhrX7+w6A
-YPV3kel0E6rRgnXUNoy7c9A9fC9mc2wHttfrsAYq+km6qfo+Z+vJSA8vA4Poa1B7
-nr2ofLjEwtMnFwfxqpZY4WdwVYfEmzly6i58DkBTkkW2sOJ2iACtFDMWKKrCtohE
-kyMsDCpEjgTW/ca2ApWniN48fBLJ9UvLymak730vf0pfCgCRqkwBtvJtFVFrkukE
-eR1SjcH4vfSEVzY9mTHtkksOKMifL2P3u9ud3SPtbw83WyY/4gle98IO5d4e0wJu
-WfmeEIMde01q9IZup2Ag
-=3kKp
+iQIcBAEBCgAGBQJVHOXNAAoJECte4hHFiupUliYP/j7xa1f3tggfcBMDuqQcsG85
+Vjki7IL9hYlWXqFMgtuJgRj0Q2G9eDXjO3XnVPbXPua2KCDXKgGohJBIbL8E4V8a
+kZJ9KL8vZgwGNQOHEYWlBU+m9V3tqik6RoEvKQqPtpT4K6q/Gq1cAb+6em+SPoD2
+lqdTRWs3TC+QUdTONL4GQZne6ouHsF3cNL8MaAG0ZQBxD9e0fTzCDJ8x9uXdBSuT
+qecW22txysrjGJtFyRXMAC/cYgRANel4DoLhzZGmDptYEAxD+B75bJYKupw3mpLh
+9UdbSbF5RB+ZraCzUYXp4EBQFgVITUHUFGpqFUJHfFP9MESXKfxXzJVIiBNWmwxT
+7OXPLYIHPS+bQF4dC92YqW5nIckrxum8xU7iv+e1BBwnr4xeg5MVmHg13q/sjQdK
+zWeWJfa192tsjYvvX0la4s0DTAY8TynHGR8t6mqLfvtJN0aIYhYX61GNhvBSe0qM
+UReB1b60M8bacTOti9EAh1yJTrTUHd/VSv2JUaxk0sea9INVPtd6+AHNPFXRvU9x
+fV/u6lcUCJi37AUAKnp1duXH4ZyQe7a8DT+Qe/Drz02iITovztJfojmCYrJOuSLZ
+1dvZFLfxY1gZ0M8MnE6e34JXJXLGwJT15B8NwdItfgPn5niVUBrXZ7UmKAVjXhXj
+fRNQ6y24LensTCe5ccgZ
+=g3yb
 -----END PGP SIGNATURE-----
 
---oEaplHMBL3eM52wEqARXs3AITBqG0Aaib--
+--t7jcoagA5Q7FbPEfnadlHrN1tJrmU9RNx--
