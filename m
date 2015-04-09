@@ -1,96 +1,556 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO
- mode and ERRATA ERR005829
-Date: Thu, 09 Apr 2015 18:33:27 +0200
-Message-ID: <5526A9D7.8000205@pengutronix.de>
-References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com> <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com> <55269D84.1070606@pengutronix.de> <BY1PR0301MB1303A2C667A89188E2E9383B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com> <55269EDC.7040802@pengutronix.de> <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com> <5526A4EE.8040401@pengutronix.de> <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+From: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+Subject: [PATCH 2/3] net: can: Remodel FlexCAN register read/write APIs for BE instances
+Date: Thu, 9 Apr 2015 20:54:15 +0530
+Message-ID: <1428593056-13701-2-git-send-email-bhupesh.sharma@freescale.com>
+References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="g8BaVdPi99P92EwBjoLt40obBXJkWbxL4"
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46799 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755737AbbDIQdl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Apr 2015 12:33:41 -0400
-In-Reply-To: <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+Received: from mail-bl2on0105.outbound.protection.outlook.com ([65.55.169.105]:8096
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752863AbbDIQ7m (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 9 Apr 2015 12:59:42 -0400
+In-Reply-To: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "arnd@arndb.de" <arnd@arndb.de>, "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "Sakar.Arora@freescale.com" <Sakar.Arora@freescale.com>
+To: linux-can@vger.kernel.org, mkl@pengutronix.de
+Cc: arnd@arndb.de, bhupesh.linux@gmail.com, bhupesh.sharma@freescale.com, Sakar.Arora@freescale.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---g8BaVdPi99P92EwBjoLt40obBXJkWbxL4
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: Sakar Arora <Sakar.Arora@freescale.com>
 
-On 04/09/2015 06:17 PM, bhupesh.sharma@freescale.com wrote:
->> -----Original Message-----
->> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->> On 04/09/2015 05:53 PM, bhupesh.sharma@freescale.com wrote:
->>>> Please look at the mainline commit:
->>>>
->>>> 25e924450fcb can: flexcan: implement workaround for errata ERR005829=
+The FlexCAN IP on certain SoCs like (Freescale's LS1021A) is modelled
+in a big-endian fashion, i.e. the registers and the message buffers are
+organized in a BE way.
 
->>>
->>> Hmm.. This looks like a fairly simple ERRATA to be handled w/o Kconfi=
-g.
->>> But with the legacy mode support ERRATA, we have completely different=
+More details about the LS1021A SoC can be seen here:
+http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=LS1021A&nodeId=018rH325E4017B#
 
->>> RX setups for the legacy and FIFO mode.
->>
->> Can you give me link to the "ERRATA ERR005829 (A-008965)" description?=
+This patch ensures that the register read/write APIs are remodelled to
+address such cases, while ensuring that existing platforms (where the
+FlexCAN IP was modelled in LE way) do not break.
 
->>
->> The errata ERR005829 is described here
->> http://cache.freescale.com/files/32bit/doc/errata/IMX6DQCE.pdf and it'=
-s
->> fixed by mainline commit:
->>
->>     25e924450fcb can: flexcan: implement workaround for errata ERR0058=
-29
->>
->> Is your "ERRATA ERR005829 (A-008965)" something different?
->=20
-> Yes. I mixed up the errata numbers in the git log by mistake.
->=20
-> Its number A-008965 and is related to LS1021A FlexCAN not being
-> able to support RX-FIFO mode.
+Tested on LS1021A-QDS board.
 
-Do you have a link to the errata? Where's the corresponding kconfig
-patch? Why do you have to switch on/off the errata by kconfig? Is there
-a LS1021A without the bug?
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
+---
+ drivers/net/can/flexcan.c |  208 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 119 insertions(+), 89 deletions(-)
 
-Marc
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 437d6bd..3d91549 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -258,6 +258,10 @@ struct flexcan_priv {
+ 	struct flexcan_platform_data *pdata;
+ 	const struct flexcan_devtype_data *devtype_data;
+ 	struct regulator *reg_xceiver;
++
++	/* Read and Write APIs */
++	u32 (*read)(void __iomem *addr);
++	void (*write)(u32 val, void __iomem *addr);
+ };
+ 
+ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+@@ -289,32 +293,38 @@ static const struct can_bittiming_const flexcan_bittiming_const = {
+ };
+ 
+ /*
+- * Abstract off the read/write for arm versus ppc. This
+- * assumes that PPC uses big-endian registers and everything
+- * else uses little-endian registers, independent of CPU
+- * endianess.
++ * FlexCAN module is essentially modelled as a little-endian IP in most
++ * SoCs, i.e the registers as well as the message buffer areas are
++ * implemented in a little-endian fashion.
++ *
++ * However there are some SoCs (e.g. LS1021A) which implement the FlexCAN
++ * module in a big-endian fashion (i.e the registers as well as the
++ * message buffer areas are implemented in a big-endian way).
++ *
++ * In addition, the FlexCAN module can be found on SoCs having ARM or
++ * PPC cores. So, we need to abstract off the register read/write
++ * functions, ensuring that these cater to all the combinations of module
++ * endianness and underlying CPU endianness.
+  */
+-#if defined(CONFIG_PPC)
+-static inline u32 flexcan_read(void __iomem *addr)
++static inline u32 flexcan_read_le(void __iomem *addr)
+ {
+-	return in_be32(addr);
++	return ioread32(addr);
+ }
+ 
+-static inline void flexcan_write(u32 val, void __iomem *addr)
++static inline void flexcan_write_le(u32 val, void __iomem *addr)
+ {
+-	out_be32(addr, val);
++	iowrite32(val, addr);
+ }
+-#else
+-static inline u32 flexcan_read(void __iomem *addr)
++
++static inline u32 flexcan_read_be(void __iomem *addr)
+ {
+-	return readl(addr);
++	return ioread32be(addr);
+ }
+ 
+-static inline void flexcan_write(u32 val, void __iomem *addr)
++static inline void flexcan_write_be(u32 val, void __iomem *addr)
+ {
+-	writel(val, addr);
++	iowrite32be(val, addr);
+ }
+-#endif
+ 
+ static inline int flexcan_transceiver_enable(const struct flexcan_priv *priv)
+ {
+@@ -345,14 +355,14 @@ static int flexcan_chip_enable(struct flexcan_priv *priv)
+ 	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
+ 	u32 reg;
+ 
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	reg &= ~FLEXCAN_MCR_MDIS;
+-	flexcan_write(reg, &regs->mcr);
++	priv->write(reg, &regs->mcr);
+ 
+-	while (timeout-- && (flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+ 		udelay(10);
+ 
+-	if (flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
++	if (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
+ 		return -ETIMEDOUT;
+ 
+ 	return 0;
+@@ -364,14 +374,14 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
+ 	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
+ 	u32 reg;
+ 
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	reg |= FLEXCAN_MCR_MDIS;
+-	flexcan_write(reg, &regs->mcr);
++	priv->write(reg, &regs->mcr);
+ 
+-	while (timeout-- && !(flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+ 		udelay(10);
+ 
+-	if (!(flexcan_read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+ 		return -ETIMEDOUT;
+ 
+ 	return 0;
+@@ -383,14 +393,14 @@ static int flexcan_chip_freeze(struct flexcan_priv *priv)
+ 	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
+ 	u32 reg;
+ 
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	reg |= FLEXCAN_MCR_HALT;
+-	flexcan_write(reg, &regs->mcr);
++	priv->write(reg, &regs->mcr);
+ 
+-	while (timeout-- && !(flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
++	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
+ 		udelay(100);
+ 
+-	if (!(flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
++	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
+ 		return -ETIMEDOUT;
+ 
+ 	return 0;
+@@ -402,14 +412,14 @@ static int flexcan_chip_unfreeze(struct flexcan_priv *priv)
+ 	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
+ 	u32 reg;
+ 
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	reg &= ~FLEXCAN_MCR_HALT;
+-	flexcan_write(reg, &regs->mcr);
++	priv->write(reg, &regs->mcr);
+ 
+-	while (timeout-- && (flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
++	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
+ 		udelay(10);
+ 
+-	if (flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK)
++	if (priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK)
+ 		return -ETIMEDOUT;
+ 
+ 	return 0;
+@@ -420,23 +430,22 @@ static int flexcan_chip_softreset(struct flexcan_priv *priv)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	unsigned int timeout = FLEXCAN_TIMEOUT_US / 10;
+ 
+-	flexcan_write(FLEXCAN_MCR_SOFTRST, &regs->mcr);
+-	while (timeout-- && (flexcan_read(&regs->mcr) & FLEXCAN_MCR_SOFTRST))
++	priv->write(FLEXCAN_MCR_SOFTRST, &regs->mcr);
++	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_SOFTRST))
+ 		udelay(10);
+ 
+-	if (flexcan_read(&regs->mcr) & FLEXCAN_MCR_SOFTRST)
++	if (priv->read(&regs->mcr) & FLEXCAN_MCR_SOFTRST)
+ 		return -ETIMEDOUT;
+ 
+ 	return 0;
+ }
+ 
+-
+ static int __flexcan_get_berr_counter(const struct net_device *dev,
+ 				      struct can_berr_counter *bec)
+ {
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->base;
+-	u32 reg = flexcan_read(&regs->ecr);
++	u32 reg = priv->read(&regs->ecr);
+ 
+ 	bec->txerr = (reg >> 0) & 0xff;
+ 	bec->rxerr = (reg >> 8) & 0xff;
+@@ -492,24 +501,24 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	if (cf->can_dlc > 0) {
+ 		u32 data = be32_to_cpup((__be32 *)&cf->data[0]);
+-		flexcan_write(data, &regs->cantxfg[FLEXCAN_TX_BUF_ID].data[0]);
++		priv->write(data, &regs->cantxfg[FLEXCAN_TX_BUF_ID].data[0]);
+ 	}
+ 	if (cf->can_dlc > 3) {
+ 		u32 data = be32_to_cpup((__be32 *)&cf->data[4]);
+-		flexcan_write(data, &regs->cantxfg[FLEXCAN_TX_BUF_ID].data[1]);
++		priv->write(data, &regs->cantxfg[FLEXCAN_TX_BUF_ID].data[1]);
+ 	}
+ 
+ 	can_put_echo_skb(skb, dev, 0);
+ 
+-	flexcan_write(can_id, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_id);
+-	flexcan_write(ctrl, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
++	priv->write(can_id, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_id);
++	priv->write(ctrl, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+ 
+ 	/* Errata ERR005829 step8:
+ 	 * Write twice INACTIVE(0x8) code to first MB.
+ 	 */
+-	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
++	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
+-	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
++	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
+ 
+ 	return NETDEV_TX_OK;
+@@ -635,8 +644,8 @@ static void flexcan_read_fifo(const struct net_device *dev,
+ 	struct flexcan_mb __iomem *mb = &regs->cantxfg[0];
+ 	u32 reg_ctrl, reg_id;
+ 
+-	reg_ctrl = flexcan_read(&mb->can_ctrl);
+-	reg_id = flexcan_read(&mb->can_id);
++	reg_ctrl = priv->read(&mb->can_ctrl);
++	reg_id = priv->read(&mb->can_id);
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
+ 		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 	else
+@@ -646,12 +655,12 @@ static void flexcan_read_fifo(const struct net_device *dev,
+ 		cf->can_id |= CAN_RTR_FLAG;
+ 	cf->can_dlc = get_can_dlc((reg_ctrl >> 16) & 0xf);
+ 
+-	*(__be32 *)(cf->data + 0) = cpu_to_be32(flexcan_read(&mb->data[0]));
+-	*(__be32 *)(cf->data + 4) = cpu_to_be32(flexcan_read(&mb->data[1]));
++	*(__be32 *)(cf->data + 0) = cpu_to_be32(priv->read(&mb->data[0]));
++	*(__be32 *)(cf->data + 4) = cpu_to_be32(priv->read(&mb->data[1]));
+ 
+ 	/* mark as read */
+-	flexcan_write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
+-	flexcan_read(&regs->timer);
++	priv->write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
++	priv->read(&regs->timer);
+ }
+ 
+ static int flexcan_read_frame(struct net_device *dev)
+@@ -689,17 +698,17 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 	 * The error bits are cleared on read,
+ 	 * use saved value from irq handler.
+ 	 */
+-	reg_esr = flexcan_read(&regs->esr) | priv->reg_esr;
++	reg_esr = priv->read(&regs->esr) | priv->reg_esr;
+ 
+ 	/* handle state changes */
+ 	work_done += flexcan_poll_state(dev, reg_esr);
+ 
+ 	/* handle RX-FIFO */
+-	reg_iflag1 = flexcan_read(&regs->iflag1);
++	reg_iflag1 = priv->read(&regs->iflag1);
+ 	while (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE &&
+ 	       work_done < quota) {
+ 		work_done += flexcan_read_frame(dev);
+-		reg_iflag1 = flexcan_read(&regs->iflag1);
++		reg_iflag1 = priv->read(&regs->iflag1);
+ 	}
+ 
+ 	/* report bus errors */
+@@ -709,8 +718,8 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 	if (work_done < quota) {
+ 		napi_complete(napi);
+ 		/* enable IRQs */
+-		flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
+-		flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
++		priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
++		priv->write(priv->reg_ctrl_default, &regs->ctrl);
+ 	}
+ 
+ 	return work_done;
+@@ -724,11 +733,11 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	u32 reg_iflag1, reg_esr;
+ 
+-	reg_iflag1 = flexcan_read(&regs->iflag1);
+-	reg_esr = flexcan_read(&regs->esr);
++	reg_iflag1 = priv->read(&regs->iflag1);
++	reg_esr = priv->read(&regs->esr);
+ 	/* ACK all bus error and state change IRQ sources */
+ 	if (reg_esr & FLEXCAN_ESR_ALL_INT)
+-		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
++		priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+ 
+ 	/*
+ 	 * schedule NAPI in case of:
+@@ -744,16 +753,16 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		 * save them for later use.
+ 		 */
+ 		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
+-		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
++		priv->write(FLEXCAN_IFLAG_DEFAULT &
+ 			~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
+-		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
++		priv->write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+ 		       &regs->ctrl);
+ 		napi_schedule(&priv->napi);
+ 	}
+ 
+ 	/* FIFO overflow */
+ 	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
+-		flexcan_write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
++		priv->write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
+ 		dev->stats.rx_over_errors++;
+ 		dev->stats.rx_errors++;
+ 	}
+@@ -764,9 +773,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		stats->tx_packets++;
+ 		can_led_event(dev, CAN_LED_EVENT_TX);
+ 		/* after sending a RTR frame mailbox is in RX mode */
+-		flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
++		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 			      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+-		flexcan_write((1 << FLEXCAN_TX_BUF_ID), &regs->iflag1);
++		priv->write((1 << FLEXCAN_TX_BUF_ID), &regs->iflag1);
+ 		netif_wake_queue(dev);
+ 	}
+ 
+@@ -780,7 +789,7 @@ static void flexcan_set_bittiming(struct net_device *dev)
+ 	struct flexcan_regs __iomem *regs = priv->base;
+ 	u32 reg;
+ 
+-	reg = flexcan_read(&regs->ctrl);
++	reg = priv->read(&regs->ctrl);
+ 	reg &= ~(FLEXCAN_CTRL_PRESDIV(0xff) |
+ 		 FLEXCAN_CTRL_RJW(0x3) |
+ 		 FLEXCAN_CTRL_PSEG1(0x7) |
+@@ -804,11 +813,11 @@ static void flexcan_set_bittiming(struct net_device *dev)
+ 		reg |= FLEXCAN_CTRL_SMP;
+ 
+ 	netdev_info(dev, "writing ctrl=0x%08x\n", reg);
+-	flexcan_write(reg, &regs->ctrl);
++	priv->write(reg, &regs->ctrl);
+ 
+ 	/* print chip status */
+ 	netdev_dbg(dev, "%s: mcr=0x%08x ctrl=0x%08x\n", __func__,
+-		   flexcan_read(&regs->mcr), flexcan_read(&regs->ctrl));
++		   priv->read(&regs->mcr), priv->read(&regs->ctrl));
+ }
+ 
+ /*
+@@ -848,14 +857,14 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	 * disable local echo
+ 	 *
+ 	 */
+-	reg_mcr = flexcan_read(&regs->mcr);
++	reg_mcr = priv->read(&regs->mcr);
+ 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
+ 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
+ 		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN |
+ 		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_SRX_DIS |
+ 		FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
+ 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
+-	flexcan_write(reg_mcr, &regs->mcr);
++	priv->write(reg_mcr, &regs->mcr);
+ 
+ 	/*
+ 	 * CTRL
+@@ -869,7 +878,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	 * enable bus off interrupt
+ 	 * (== FLEXCAN_CTRL_ERR_STATE)
+ 	 */
+-	reg_ctrl = flexcan_read(&regs->ctrl);
++	reg_ctrl = priv->read(&regs->ctrl);
+ 	reg_ctrl &= ~FLEXCAN_CTRL_TSYN;
+ 	reg_ctrl |= FLEXCAN_CTRL_BOFF_REC | FLEXCAN_CTRL_LBUF |
+ 		FLEXCAN_CTRL_ERR_STATE;
+@@ -887,29 +896,29 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	/* save for later use */
+ 	priv->reg_ctrl_default = reg_ctrl;
+ 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
+-	flexcan_write(reg_ctrl, &regs->ctrl);
++	priv->write(reg_ctrl, &regs->ctrl);
+ 
+ 	/* clear and invalidate all mailboxes first */
+ 	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg); i++) {
+-		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE,
++		priv->write(FLEXCAN_MB_CODE_RX_INACTIVE,
+ 			      &regs->cantxfg[i].can_ctrl);
+ 	}
+ 
+ 	/* Errata ERR005829: mark first TX mailbox as INACTIVE */
+-	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
++	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
+ 
+ 	/* mark TX mailbox as INACTIVE */
+-	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
++	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
+ 
+ 	/* acceptance mask/acceptance code (accept everything) */
+-	flexcan_write(0x0, &regs->rxgmask);
+-	flexcan_write(0x0, &regs->rx14mask);
+-	flexcan_write(0x0, &regs->rx15mask);
++	priv->write(0x0, &regs->rxgmask);
++	priv->write(0x0, &regs->rx14mask);
++	priv->write(0x0, &regs->rx15mask);
+ 
+ 	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
+-		flexcan_write(0x0, &regs->rxfgmask);
++		priv->write(0x0, &regs->rxfgmask);
+ 
+ 	/*
+ 	 * On Vybrid, disable memory error detection interrupts
+@@ -924,16 +933,16 @@ static int flexcan_chip_start(struct net_device *dev)
+ 		 * and Correction of Memory Errors" to write to
+ 		 * MECR register
+ 		 */
+-		reg_crl2 = flexcan_read(&regs->crl2);
++		reg_crl2 = priv->read(&regs->crl2);
+ 		reg_crl2 |= FLEXCAN_CRL2_ECRWRE;
+-		flexcan_write(reg_crl2, &regs->crl2);
++		priv->write(reg_crl2, &regs->crl2);
+ 
+-		reg_mecr = flexcan_read(&regs->mecr);
++		reg_mecr = priv->read(&regs->mecr);
+ 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
+-		flexcan_write(reg_mecr, &regs->mecr);
++		priv->write(reg_mecr, &regs->mecr);
+ 		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
+ 				FLEXCAN_MECR_FANCEI_MSK);
+-		flexcan_write(reg_mecr, &regs->mecr);
++		priv->write(reg_mecr, &regs->mecr);
+ 	}
+ 
+ 	err = flexcan_transceiver_enable(priv);
+@@ -948,11 +957,11 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* enable FIFO interrupts */
+-	flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
++	priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
+ 
+ 	/* print chip status */
+ 	netdev_dbg(dev, "%s: reading mcr=0x%08x ctrl=0x%08x\n", __func__,
+-		   flexcan_read(&regs->mcr), flexcan_read(&regs->ctrl));
++		   priv->read(&regs->mcr), priv->read(&regs->ctrl));
+ 
+ 	return 0;
+ 
+@@ -979,8 +988,8 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 	flexcan_chip_disable(priv);
+ 
+ 	/* Disable all interrupts */
+-	flexcan_write(0, &regs->imask1);
+-	flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
++	priv->write(0, &regs->imask1);
++	priv->write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+ 		      &regs->ctrl);
+ 
+ 	flexcan_transceiver_disable(priv);
+@@ -1098,26 +1107,26 @@ static int register_flexcandev(struct net_device *dev)
+ 	err = flexcan_chip_disable(priv);
+ 	if (err)
+ 		goto out_disable_per;
+-	reg = flexcan_read(&regs->ctrl);
++	reg = priv->read(&regs->ctrl);
+ 	reg |= FLEXCAN_CTRL_CLK_SRC;
+-	flexcan_write(reg, &regs->ctrl);
++	priv->write(reg, &regs->ctrl);
+ 
+ 	err = flexcan_chip_enable(priv);
+ 	if (err)
+ 		goto out_chip_disable;
+ 
+ 	/* set freeze, halt and activate FIFO, restrict register access */
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
+ 		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
+-	flexcan_write(reg, &regs->mcr);
++	priv->write(reg, &regs->mcr);
+ 
+ 	/*
+ 	 * Currently we only support newer versions of this core
+ 	 * featuring a RX FIFO. Older cores found on some Coldfire
+ 	 * derivates are not yet supported.
+ 	 */
+-	reg = flexcan_read(&regs->mcr);
++	reg = priv->read(&regs->mcr);
+ 	if (!(reg & FLEXCAN_MCR_FEN)) {
+ 		netdev_err(dev, "Could not enable RX FIFO, unsupported core\n");
+ 		err = -ENODEV;
+@@ -1170,6 +1179,8 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	void __iomem *base;
+ 	int err, irq;
+ 	u32 clock_freq = 0;
++	/* Default case for most ARM based FSL SoC having BE FlexCAN IP */
++	bool core_is_little = true, module_is_little = false;
+ 
+ 	if (pdev->dev.of_node)
+ 		of_property_read_u32(pdev->dev.of_node,
+@@ -1218,6 +1229,25 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	dev->flags |= IFF_ECHO;
+ 
+ 	priv = netdev_priv(dev);
++
++	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
++		core_is_little = false;
++
++	if (of_property_read_bool(dev->dev.of_node, "little-endian"))
++		module_is_little = true;
++
++	if ((core_is_little && module_is_little) ||
++	    (!core_is_little && !module_is_little)) {
++		priv->read = flexcan_read_le;
++		priv->write = flexcan_write_le;
++	}
++
++	if ((!core_is_little && module_is_little) ||
++	    (core_is_little && !module_is_little)) {
++		priv->read = flexcan_read_be;
++		priv->write = flexcan_write_be;
++	}
++
+ 	priv->can.clock.freq = clock_freq;
+ 	priv->can.bittiming_const = &flexcan_bittiming_const;
+ 	priv->can.do_set_mode = flexcan_set_mode;
+-- 
+1.7.9.5
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-
---g8BaVdPi99P92EwBjoLt40obBXJkWbxL4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVJqnaAAoJECte4hHFiupUBOIP/0eq5oUQJZs6AvT7aatKGsSZ
-g6dY2CZLkK4iPChG7hVSh8bKKtsyiSqbkc7PSwd95c1GNjL0m3jOkzjKN7APeP7a
-FUQRWl8ck3f3NBJAAGBMBmS9AGfJt7sr3seWiULgatR9poD7e9kaFDzK/no75mkW
-BsizQNDsT9zHf6WiKMJ6pLR4gyAOB03kJ5fKgRJTeFrdxW9PzDOv2+k00LlNHpmM
-JANpPjijuavBQrRUKVYfmE8q3fn3O/lvvxGsrSb8zkP6cgro7rTI29IDbREzmFjH
-sM4QuVa7+UjuC0rcN3N8nC/w1xPZudS7o5iPnvvV7zwFNvI9Fe86OGoDyG113zg3
-bYOaoxjc6LoAn/lMRd1qkSZiNlcjDsATLKb4Vt0LKFvDielqkMq4G4HKEtAJzJmc
-m+mWS9t3gVrsBszlz8fhD5nT1qYbuwSYAWEnZcLgcXsxK9mbBY0+fPaBvN4kLQf+
-aBuNyxwbq5veWWpmqYapfqVUX+g6qBXWhRKuihLr7jo2O17UycXjyncxIBVFiubF
-jt0sEJSvL+tP6RtDu1y4I6oz78IPhMUw7UWVGwjpkxX4NxBgzLasdJWj6thEOz73
-YpjUDdSvxdegFdc93jOk/F3wl/GMBeyJNWzMywaPsua117Wb+/XYIyDH63qvTauy
-qzmT6VfSuqgZAtswpb4Q
-=YdDe
------END PGP SIGNATURE-----
-
---g8BaVdPi99P92EwBjoLt40obBXJkWbxL4--
