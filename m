@@ -1,446 +1,68 @@
-From: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Subject: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO mode and ERRATA ERR005829
-Date: Thu, 9 Apr 2015 20:54:16 +0530
-Message-ID: <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com>
-References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
+From: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>
+Subject: RE: [PATCH 2/2] arm/dts: Add nodes for flexcan devices present on
+ LS1021A SoC
+Date: Thu, 9 Apr 2015 15:31:39 +0000
+Message-ID: <BY1PR0301MB130321631BC01630EA87441282FB0__40241.3596901626$1428593853$gmane$org@BY1PR0301MB1303.namprd03.prod.outlook.com>
+References: <1428591087-12831-1-git-send-email-bhupesh.sharma@freescale.com>
+ <1428591087-12831-2-git-send-email-bhupesh.sharma@freescale.com>
+ <55269444.7050707@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1bbn0104.outbound.protection.outlook.com ([157.56.111.104]:50592
-	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755268AbbDIPYl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Apr 2015 11:24:41 -0400
-In-Reply-To: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60125 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755688AbbDIPhR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Apr 2015 11:37:17 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=bjornoya.do.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1YgEW3-0001HX-QY
+	for linux-can@vger.kernel.org; Thu, 09 Apr 2015 17:37:15 +0200
+Received: from [172.17.34.170] (unknown [172.17.34.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	(Authenticated sender: frogger)
+	by bjornoya.do.blackshift.org (Postfix) with ESMTPSA id 7F012E61D
+	for <linux-can@vger.kernel.org>; Thu,  9 Apr 2015 15:37:15 +0000 (UTC)
+In-Reply-To: <55269444.7050707@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org, mkl@pengutronix.de
-Cc: arnd@arndb.de, bhupesh.linux@gmail.com, bhupesh.sharma@freescale.com, Sakar.Arora@freescale.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "arnd@arndb.de" <arnd@arndb.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "olof@lixom.net" <olof@lixom.net>, "Sakar.Arora@freescale.com" <Sakar.Arora@freescale.com>
 
-This patch adds support for non RX-FIFO (legacy) mode and ERRATA
-ERR005829 handling in flexcan driver.
-
-Both these features are now selectable via Kconfig entries and hence can
-be turned-on/off as per a SoC feature set availability.
-
-ERRATA ERR005829 (A-008965) description:
----------------------------------------
-FlexCAN RxFIFO feature is not supported
-
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
----
- drivers/net/can/flexcan.c |  252 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 203 insertions(+), 49 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 3d91549..4bb7fc6 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -59,6 +59,7 @@
- #define FLEXCAN_MCR_WAK_SRC		BIT(19)
- #define FLEXCAN_MCR_DOZE		BIT(18)
- #define FLEXCAN_MCR_SRX_DIS		BIT(17)
-+#define FLEXCAN_MCR_SRX_EN		~(BIT(17))
- #define FLEXCAN_MCR_BCC			BIT(16)
- #define FLEXCAN_MCR_LPRIO_EN		BIT(13)
- #define FLEXCAN_MCR_AEN			BIT(12)
-@@ -146,16 +147,26 @@
- 	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
- 
- /* FLEXCAN interrupt flag register (IFLAG) bits */
-+#ifdef CONFIG_CAN_FLEXCAN_ERRATA_ERR005829
- /* Errata ERR005829 step7: Reserve first valid MB */
- #define FLEXCAN_TX_BUF_RESERVED		8
- #define FLEXCAN_TX_BUF_ID		9
-+#else
-+#define FLEXCAN_TX_BUF_ID		8
-+#endif
- #define FLEXCAN_IFLAG_BUF(x)		BIT(x)
- #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
- #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
- #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
-+#ifdef CONFIG_CAN_FLEXCAN_RX_FIFO_EN
- #define FLEXCAN_IFLAG_DEFAULT \
- 	(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW | FLEXCAN_IFLAG_RX_FIFO_AVAILABLE | \
- 	 FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID))
-+#else
-+#define FLEXCAN_IFLAG_DEFAULT \
-+	(FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID))
-+#define FLEXCAN_IFLAG_RXMASK	((1 << FLEXCAN_TX_BUF_ID) - 1)
-+#endif
- 
- /* FLEXCAN message buffers */
- #define FLEXCAN_MB_CNT_CODE(x)		(((x) & 0xf) << 24)
-@@ -198,6 +209,7 @@
- #define FLEXCAN_HAS_V10_FEATURES	BIT(1) /* For core version >= 10 */
- #define FLEXCAN_HAS_BROKEN_ERR_STATE	BIT(2) /* [TR]WRN_INT not connected */
- #define FLEXCAN_HAS_MECR_FEATURES	BIT(3) /* Memory error detection */
-+#define FLEXCAN_USES_RX_MB		BIT(4) /* Use msg-buf to rx frames */
- 
- /* Structure of the message buffer */
- struct flexcan_mb {
-@@ -277,7 +289,11 @@ static struct flexcan_devtype_data fsl_vf610_devtype_data = {
- };
- 
- static struct flexcan_devtype_data fsl_ls1021a_devtype_data = {
--	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES,
-+	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES
-+#ifdef CONFIG_CAN_FLEXCAN_ERRATA_ERR008965
-+	| FLEXCAN_USES_RX_MB
-+#endif
-+	,
- };
- 
- static const struct can_bittiming_const flexcan_bittiming_const = {
-@@ -414,6 +430,7 @@ static int flexcan_chip_unfreeze(struct flexcan_priv *priv)
- 
- 	reg = priv->read(&regs->mcr);
- 	reg &= ~FLEXCAN_MCR_HALT;
-+	reg &= ~FLEXCAN_MCR_FRZ;
- 	priv->write(reg, &regs->mcr);
- 
- 	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
-@@ -512,7 +529,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	priv->write(can_id, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_id);
- 	priv->write(ctrl, &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
--
-+#ifdef CONFIG_CAN_FLEXCAN_ERRATA_ERR005829
- 	/* Errata ERR005829 step8:
- 	 * Write twice INACTIVE(0x8) code to first MB.
- 	 */
-@@ -520,6 +537,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
- 	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
- 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+#endif
- 
- 	return NETDEV_TX_OK;
- }
-@@ -663,7 +681,34 @@ static void flexcan_read_fifo(const struct net_device *dev,
- 	priv->read(&regs->timer);
- }
- 
--static int flexcan_read_frame(struct net_device *dev)
-+static void flexcan_read_mailbox(const struct net_device *dev,
-+				 struct can_frame *cf, u32 mailbox)
-+{
-+	const struct flexcan_priv *priv = netdev_priv(dev);
-+	struct flexcan_regs __iomem *regs = priv->base;
-+	struct flexcan_mb __iomem *mb = &regs->cantxfg[mailbox];
-+	u32 reg_ctrl, reg_id;
-+
-+	reg_ctrl = priv->read(&mb->can_ctrl);
-+	reg_id = priv->read(&mb->can_id);
-+	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
-+		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+	else
-+		cf->can_id = (reg_id >> 18) & CAN_SFF_MASK;
-+
-+	if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
-+		cf->can_id |= CAN_RTR_FLAG;
-+	cf->can_dlc = get_can_dlc((reg_ctrl >> 16) & 0xf);
-+
-+	*(__be32 *)(cf->data + 0) = cpu_to_be32(priv->read(&mb->data[0]));
-+	*(__be32 *)(cf->data + 4) = cpu_to_be32(priv->read(&mb->data[1]));
-+
-+	/* mark as read */
-+	priv->write(BIT(mailbox), &regs->iflag1);
-+	priv->read(&regs->timer);
-+}
-+
-+static int flexcan_read_frame_fifo_mode(struct net_device *dev)
- {
- 	struct net_device_stats *stats = &dev->stats;
- 	struct can_frame *cf;
-@@ -676,6 +721,31 @@ static int flexcan_read_frame(struct net_device *dev)
- 	}
- 
- 	flexcan_read_fifo(dev, cf);
-+
-+	netif_receive_skb(skb);
-+
-+	stats->rx_packets++;
-+	stats->rx_bytes += cf->can_dlc;
-+
-+	can_led_event(dev, CAN_LED_EVENT_RX);
-+
-+	return 1;
-+}
-+
-+static int flexcan_read_frame_legacy_mode(struct net_device *dev, u32 mailbox)
-+{
-+	struct net_device_stats *stats = &dev->stats;
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+
-+	skb = alloc_can_skb(dev, &cf);
-+	if (unlikely(!skb)) {
-+		stats->rx_dropped++;
-+		return 0;
-+	}
-+
-+	flexcan_read_mailbox(dev, cf, mailbox);
-+
- 	netif_receive_skb(skb);
- 
- 	stats->rx_packets++;
-@@ -703,12 +773,29 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
- 	/* handle state changes */
- 	work_done += flexcan_poll_state(dev, reg_esr);
- 
--	/* handle RX-FIFO */
--	reg_iflag1 = priv->read(&regs->iflag1);
--	while (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE &&
--	       work_done < quota) {
--		work_done += flexcan_read_frame(dev);
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB)) {
-+		/* handle RX-FIFO */
- 		reg_iflag1 = priv->read(&regs->iflag1);
-+		while (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE &&
-+		       work_done < quota) {
-+			work_done += flexcan_read_frame_fifo_mode(dev);
-+			reg_iflag1 = priv->read(&regs->iflag1);
-+		}
-+	} else {
-+		unsigned long iflag1;
-+		u32 mailbox;
-+
-+		/* handle RX-Buffers */
-+		reg_iflag1 = priv->read(&regs->iflag1);
-+		iflag1 = reg_iflag1 & FLEXCAN_IFLAG_RXMASK;
-+		while ((reg_iflag1 & FLEXCAN_IFLAG_RXMASK) &&
-+		       work_done < quota) {
-+			mailbox = find_first_bit(&iflag1,
-+						 (FLEXCAN_TX_BUF_ID - 1));
-+			work_done += flexcan_read_frame_legacy_mode(dev,
-+								    mailbox);
-+			reg_iflag1 = priv->read(&regs->iflag1);
-+		}
- 	}
- 
- 	/* report bus errors */
-@@ -718,7 +805,12 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
- 	if (work_done < quota) {
- 		napi_complete(napi);
- 		/* enable IRQs */
--		priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+		if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB))
-+			priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+		else
-+			priv->write(FLEXCAN_IFLAG_DEFAULT |
-+				    FLEXCAN_IFLAG_RXMASK, &regs->imask1);
-+
- 		priv->write(priv->reg_ctrl_default, &regs->ctrl);
- 	}
- 
-@@ -745,26 +837,43 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 	 * - state change IRQ
- 	 * - bus error IRQ and bus error reporting is activated
- 	 */
--	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
--	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
--	    flexcan_has_and_handle_berr(priv, reg_esr)) {
--		/*
--		 * The error bits are cleared on read,
--		 * save them for later use.
--		 */
--		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
--		priv->write(FLEXCAN_IFLAG_DEFAULT &
--			~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
--		priv->write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
--		       &regs->ctrl);
--		napi_schedule(&priv->napi);
--	}
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB)) {
-+		if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
-+		    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
-+		    flexcan_has_and_handle_berr(priv, reg_esr)) {
-+			/* The error bits are cleared on read,
-+			 * save them for later use.
-+			 */
-+			priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
-+			priv->write(FLEXCAN_IFLAG_DEFAULT &
-+				    ~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE,
-+				    &regs->imask1);
-+			priv->write(priv->reg_ctrl_default &
-+				    ~FLEXCAN_CTRL_ERR_ALL, &regs->ctrl);
-+			napi_schedule(&priv->napi);
-+		}
- 
--	/* FIFO overflow */
--	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
--		priv->write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
--		dev->stats.rx_over_errors++;
--		dev->stats.rx_errors++;
-+		/* FIFO overflow */
-+		if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
-+			priv->write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW,
-+				    &regs->iflag1);
-+			dev->stats.rx_over_errors++;
-+			dev->stats.rx_errors++;
-+		}
-+	} else {
-+		if ((reg_iflag1 & FLEXCAN_IFLAG_RXMASK) ||
-+		    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
-+		    flexcan_has_and_handle_berr(priv, reg_esr)) {
-+			/* The error bits are cleared on read,
-+			 * save them for later use.
-+			 */
-+			priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
-+			priv->write(priv->reg_ctrl_default &
-+				    ~FLEXCAN_CTRL_ERR_ALL, &regs->ctrl);
-+			priv->write(FLEXCAN_IFLAG_DEFAULT &
-+				    ~FLEXCAN_IFLAG_RXMASK, &regs->imask1);
-+			napi_schedule(&priv->napi);
-+		}
- 	}
- 
- 	/* transmission complete interrupt */
-@@ -772,9 +881,12 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 		stats->tx_bytes += can_get_echo_skb(dev, 0);
- 		stats->tx_packets++;
- 		can_led_event(dev, CAN_LED_EVENT_TX);
--		/* after sending a RTR frame mailbox is in RX mode */
--		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
--			      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
-+
-+		if (priv->devtype_data->features & FLEXCAN_USES_RX_MB)
-+			/* after sending a RTR frame mailbox is in RX mode */
-+			priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
-+				    &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
-+
- 		priv->write((1 << FLEXCAN_TX_BUF_ID), &regs->iflag1);
- 		netif_wake_queue(dev);
- 	}
-@@ -859,10 +971,19 @@ static int flexcan_chip_start(struct net_device *dev)
- 	 */
- 	reg_mcr = priv->read(&regs->mcr);
- 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
--	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
--		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN |
--		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_SRX_DIS |
--		FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB)) {
-+		reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN |
-+			   FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
-+			   FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_IDAM_C |
-+			   FLEXCAN_MCR_SRX_DIS |
-+			   FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
-+	} else {
-+		reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
-+			   FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN |
-+			   FLEXCAN_MCR_IDAM_A |
-+			   FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
-+		reg_mcr &= FLEXCAN_MCR_SRX_EN;
-+	}
- 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
- 	priv->write(reg_mcr, &regs->mcr);
- 
-@@ -899,26 +1020,45 @@ static int flexcan_chip_start(struct net_device *dev)
- 	priv->write(reg_ctrl, &regs->ctrl);
- 
- 	/* clear and invalidate all mailboxes first */
--	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg); i++) {
--		priv->write(FLEXCAN_MB_CODE_RX_INACTIVE,
--			      &regs->cantxfg[i].can_ctrl);
-+	if (priv->devtype_data->features & FLEXCAN_USES_RX_MB) {
-+		for (i = 0; i < ARRAY_SIZE(regs->cantxfg); i++) {
-+			priv->write(0, &regs->cantxfg[i].can_ctrl);
-+			priv->write(0, &regs->cantxfg[i].can_id);
-+			priv->write(0, &regs->cantxfg[i].data[0]);
-+			priv->write(0, &regs->cantxfg[i].data[1]);
-+
-+			/* put MB into rx queue */
-+			priv->write(FLEXCAN_MB_CNT_CODE(0x4),
-+				    &regs->cantxfg[i].can_ctrl);
-+		}
-+	} else {
-+		for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->cantxfg); i++)
-+			priv->write(FLEXCAN_MB_CODE_RX_INACTIVE,
-+				    &regs->cantxfg[i].can_ctrl);
- 	}
- 
-+#ifdef CONFIG_CAN_FLEXCAN_ERRATA_ERR005829
- 	/* Errata ERR005829: mark first TX mailbox as INACTIVE */
- 	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
- 		      &regs->cantxfg[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+#endif
- 
--	/* mark TX mailbox as INACTIVE */
--	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		      &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB))
-+		/* mark TX mailbox as INACTIVE */
-+		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
-+			    &regs->cantxfg[FLEXCAN_TX_BUF_ID].can_ctrl);
- 
- 	/* acceptance mask/acceptance code (accept everything) */
- 	priv->write(0x0, &regs->rxgmask);
- 	priv->write(0x0, &regs->rx14mask);
- 	priv->write(0x0, &regs->rx15mask);
- 
--	if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB)) {
-+		if (priv->devtype_data->features & FLEXCAN_HAS_V10_FEATURES)
-+			priv->write(0x0, &regs->rxfgmask);
-+	} else {
- 		priv->write(0x0, &regs->rxfgmask);
-+	}
- 
- 	/*
- 	 * On Vybrid, disable memory error detection interrupts
-@@ -957,7 +1097,11 @@ static int flexcan_chip_start(struct net_device *dev)
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	/* enable FIFO interrupts */
--	priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB))
-+		priv->write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+	else
-+		priv->write(FLEXCAN_IFLAG_DEFAULT | FLEXCAN_IFLAG_RXMASK,
-+			    &regs->imask1);
- 
- 	/* print chip status */
- 	netdev_dbg(dev, "%s: reading mcr=0x%08x ctrl=0x%08x\n", __func__,
-@@ -1117,8 +1261,12 @@ static int register_flexcandev(struct net_device *dev)
- 
- 	/* set freeze, halt and activate FIFO, restrict register access */
- 	reg = priv->read(&regs->mcr);
--	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
--		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB))
-+		reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
-+			FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
-+	else
-+		reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV;
-+
- 	priv->write(reg, &regs->mcr);
- 
- 	/*
-@@ -1127,10 +1275,16 @@ static int register_flexcandev(struct net_device *dev)
- 	 * derivates are not yet supported.
- 	 */
- 	reg = priv->read(&regs->mcr);
--	if (!(reg & FLEXCAN_MCR_FEN)) {
--		netdev_err(dev, "Could not enable RX FIFO, unsupported core\n");
--		err = -ENODEV;
--		goto out_chip_disable;
-+
-+	if (!(priv->devtype_data->features & FLEXCAN_USES_RX_MB)) {
-+		if (!(reg & FLEXCAN_MCR_FEN)) {
-+			netdev_err(dev, "Could not enable RX FIFO, unsupported core\n");
-+			err = -ENODEV;
-+			goto out_chip_disable;
-+		}
-+	} else {
-+		if (!(reg & FLEXCAN_MCR_FEN))
-+			netdev_info(dev, "Legacy mode (non-RX FIFO) enabled\n");
- 	}
- 
- 	err = register_candev(dev);
--- 
-1.7.9.5
-
+SGkgTWFyYywNCg0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRy
+b25peC5kZV0NCj4gDQo+IE9uIDA0LzA5LzIwMTUgMDQ6NTEgUE0sIEJodXBlc2ggU2hhcm1hIHdy
+b3RlOg0KPiA+IEZyb206IFNha2FyIEFyb3JhIDxTYWthci5Bcm9yYUBmcmVlc2NhbGUuY29tPg0K
+PiA+DQo+ID4gVGhpcyBwYXRjaCBhZGRzIHRoZSBkZXZpY2Ugbm9kZXMgZm9yIGZsZXhjYW4gY29u
+dHJvbGxlcihzKSBwcmVzZW50IG9uDQo+ID4gTFMxMDIxQSBTb0MuDQo+ID4NCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBCaHVwZXNoIFNoYXJtYSA8Ymh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbT4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBTYWthciBBcm9yYSA8U2FrYXIuQXJvcmFAZnJlZXNjYWxlLmNvbT4N
+Cj4gPiAtLS0NCj4gPiAgYXJjaC9hcm0vYm9vdC9kdHMvbHMxMDIxYS1xZHMuZHRzIHwgICAgOCAr
+KysrKysrKw0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9sczEwMjFhLmR0c2kgICAgfCAgIDIwICsr
+KysrKysrKysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjggaW5zZXJ0aW9ucygr
+KQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2xzMTAyMWEtcWRzLmR0
+cw0KPiA+IGIvYXJjaC9hcm0vYm9vdC9kdHMvbHMxMDIxYS1xZHMuZHRzDQo+ID4gaW5kZXggOWM1
+ZTE2Yi4uMTY0MWEwNCAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybS9ib290L2R0cy9sczEwMjFh
+LXFkcy5kdHMNCj4gPiArKysgYi9hcmNoL2FybS9ib290L2R0cy9sczEwMjFhLXFkcy5kdHMNCj4g
+PiBAQCAtMjM4LDMgKzIzOCwxMSBAQA0KPiA+ICAmdWFydDEgew0KPiA+ICAJc3RhdHVzID0gIm9r
+YXkiOw0KPiA+ICB9Ow0KPiA+ICsNCj4gPiArJmNhbjAgew0KPiA+ICsJc3RhdHVzID0gIm9rYXki
+Ow0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArJmNhbjEgew0KPiA+ICsJc3RhdHVzID0gIm9rYXkiOw0K
+PiA+ICt9Ow0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9sczEwMjFhLmR0c2kN
+Cj4gPiBiL2FyY2gvYXJtL2Jvb3QvZHRzL2xzMTAyMWEuZHRzaSBpbmRleCBjNzBiYjI3Li5jNDQ2
+NjFiIDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2xzMTAyMWEuZHRzaQ0KPiA+
+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2xzMTAyMWEuZHRzaQ0KPiA+IEBAIC0zMzIsNiArMzMy
+LDI2IEBADQo+ID4gIAkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+ID4gIAkJfTsNCj4gPg0KPiA+
+ICsJCWNhbjA6IGNhbkAyYTcwMDAwIHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJmc2wsbHMxMDIx
+YS1mbGV4Y2FuIjsNCj4gPiArCQkJcmVnID0gPDB4MCAweDJhNzAwMDAgMHgwIDB4MTAwMD47DQo+
+ID4gKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxMjYgSVJRX1RZUEVfTEVWRUxfSElHSD47DQo+
+ID4gKwkJCWNsb2NrcyA9IDwmcGxhdGZvcm1fY2xrIDE+Ow0KPiA+ICsJCQljbG9jay1mcmVxdWVu
+Y3kgPSA8MTUwMDAwMDAwPjsNCj4gDQo+IFBsZWFzZSBkb24ndCB1c2UgY2xvY2stZnJlcXVlbmN5
+LCBpdCdzIG9ubHkgbmVlZGVkIGZvciBwb3dlcnBjcyB3aXRob3V0DQo+IHByb3BlciBjbG9jayBz
+dXBwb3J0Lg0KDQpPay4gV2lsbCBmaXggaW4gdjIuDQoNCj4gDQo+ID4gKwkJCWNsb2NrLW5hbWVz
+ID0gInBlciI7DQo+IA0KPiBQbGVhc2UgcHJvdmlkZSBhIHBlciBhbmQgaXBnIGNsb2NrLCBvdGhl
+cndpc2UgdGhlIGRyaXZlciB3aWxsIG5vdCB3b3JrDQo+IHByb3Blcmx5Lg0KDQpPay4gV2lsbCBm
+aXggaW4gdjIuDQoNCj4gPiArCQkJbGl0dGxlLWVuZGlhbjsNCj4gPiArCQl9Ow0KPiANCg0KUmVn
+YXJkcywNCkJodXBlc2gNCg==
 
