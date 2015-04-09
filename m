@@ -1,54 +1,96 @@
-From: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>
-Subject: RE: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO mode and
- ERRATA ERR005829
-Date: Thu, 9 Apr 2015 16:17:41 +0000
-Message-ID: <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
-References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
- <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com>
- <55269D84.1070606@pengutronix.de>
- <BY1PR0301MB1303A2C667A89188E2E9383B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <55269EDC.7040802@pengutronix.de>
- <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <5526A4EE.8040401@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO
+ mode and ERRATA ERR005829
+Date: Thu, 09 Apr 2015 18:33:27 +0200
+Message-ID: <5526A9D7.8000205@pengutronix.de>
+References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com> <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com> <55269D84.1070606@pengutronix.de> <BY1PR0301MB1303A2C667A89188E2E9383B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com> <55269EDC.7040802@pengutronix.de> <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com> <5526A4EE.8040401@pengutronix.de> <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="g8BaVdPi99P92EwBjoLt40obBXJkWbxL4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0117.outbound.protection.outlook.com ([65.55.169.117]:21312
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1755477AbbDIQRo (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Apr 2015 12:17:44 -0400
-In-Reply-To: <5526A4EE.8040401@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46799 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755737AbbDIQdl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Apr 2015 12:33:41 -0400
+In-Reply-To: <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "arnd@arndb.de" <arnd@arndb.de>, "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "Sakar.Arora@freescale.com" <Sakar.Arora@freescale.com>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
-bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gT24gMDQvMDkvMjAxNSAwNTo1MyBQTSwgYmh1
-cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbSB3cm90ZToNCj4gPj4gUGxlYXNlIGxvb2sgYXQgdGhl
-IG1haW5saW5lIGNvbW1pdDoNCj4gPj4NCj4gPj4gMjVlOTI0NDUwZmNiIGNhbjogZmxleGNhbjog
-aW1wbGVtZW50IHdvcmthcm91bmQgZm9yIGVycmF0YSBFUlIwMDU4MjkNCj4gPg0KPiA+IEhtbS4u
-IFRoaXMgbG9va3MgbGlrZSBhIGZhaXJseSBzaW1wbGUgRVJSQVRBIHRvIGJlIGhhbmRsZWQgdy9v
-IEtjb25maWcuDQo+ID4gQnV0IHdpdGggdGhlIGxlZ2FjeSBtb2RlIHN1cHBvcnQgRVJSQVRBLCB3
-ZSBoYXZlIGNvbXBsZXRlbHkgZGlmZmVyZW50DQo+ID4gUlggc2V0dXBzIGZvciB0aGUgbGVnYWN5
-IGFuZCBGSUZPIG1vZGUuDQo+IA0KPiBDYW4geW91IGdpdmUgbWUgbGluayB0byB0aGUgIkVSUkFU
-QSBFUlIwMDU4MjkgKEEtMDA4OTY1KSIgZGVzY3JpcHRpb24/DQo+IA0KPiBUaGUgZXJyYXRhIEVS
-UjAwNTgyOSBpcyBkZXNjcmliZWQgaGVyZQ0KPiBodHRwOi8vY2FjaGUuZnJlZXNjYWxlLmNvbS9m
-aWxlcy8zMmJpdC9kb2MvZXJyYXRhL0lNWDZEUUNFLnBkZiBhbmQgaXQncw0KPiBmaXhlZCBieSBt
-YWlubGluZSBjb21taXQ6DQo+IA0KPiAgICAgMjVlOTI0NDUwZmNiIGNhbjogZmxleGNhbjogaW1w
-bGVtZW50IHdvcmthcm91bmQgZm9yIGVycmF0YSBFUlIwMDU4MjkNCj4gDQo+IElzIHlvdXIgIkVS
-UkFUQSBFUlIwMDU4MjkgKEEtMDA4OTY1KSIgc29tZXRoaW5nIGRpZmZlcmVudD8NCg0KWWVzLiBJ
-IG1peGVkIHVwIHRoZSBlcnJhdGEgbnVtYmVycyBpbiB0aGUgZ2l0IGxvZyBieSBtaXN0YWtlLg0K
-DQpJdHMgbnVtYmVyIEEtMDA4OTY1IGFuZCBpcyByZWxhdGVkIHRvIExTMTAyMUEgRmxleENBTiBu
-b3QgYmVpbmcNCmFibGUgdG8gc3VwcG9ydCBSWC1GSUZPIG1vZGUuDQoNClJlZ2FyZHMsDQpCaHVw
-ZXNoDQoNCj4gDQo+ID4gRXJyYXRhIGhhbmRsaW5nIHZpYSBLY29uZmlnIHNlZW1zIHByZXR0eSBj
-b21tb24gaW4gdGhlIGtlcm5lbCAoc2VlDQo+ID4gWzFdKQ0KPiANCj4gWWVzLCBmb3IgdGhlIEFS
-TSBDb3JlIGl0c2VsZi4NCj4gDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4g
-ICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVz
-dHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAg
-ICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEy
-MS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0
-dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--g8BaVdPi99P92EwBjoLt40obBXJkWbxL4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 04/09/2015 06:17 PM, bhupesh.sharma@freescale.com wrote:
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> On 04/09/2015 05:53 PM, bhupesh.sharma@freescale.com wrote:
+>>>> Please look at the mainline commit:
+>>>>
+>>>> 25e924450fcb can: flexcan: implement workaround for errata ERR005829=
+
+>>>
+>>> Hmm.. This looks like a fairly simple ERRATA to be handled w/o Kconfi=
+g.
+>>> But with the legacy mode support ERRATA, we have completely different=
+
+>>> RX setups for the legacy and FIFO mode.
+>>
+>> Can you give me link to the "ERRATA ERR005829 (A-008965)" description?=
+
+>>
+>> The errata ERR005829 is described here
+>> http://cache.freescale.com/files/32bit/doc/errata/IMX6DQCE.pdf and it'=
+s
+>> fixed by mainline commit:
+>>
+>>     25e924450fcb can: flexcan: implement workaround for errata ERR0058=
+29
+>>
+>> Is your "ERRATA ERR005829 (A-008965)" something different?
+>=20
+> Yes. I mixed up the errata numbers in the git log by mistake.
+>=20
+> Its number A-008965 and is related to LS1021A FlexCAN not being
+> able to support RX-FIFO mode.
+
+Do you have a link to the errata? Where's the corresponding kconfig
+patch? Why do you have to switch on/off the errata by kconfig? Is there
+a LS1021A without the bug?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--g8BaVdPi99P92EwBjoLt40obBXJkWbxL4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVJqnaAAoJECte4hHFiupUBOIP/0eq5oUQJZs6AvT7aatKGsSZ
+g6dY2CZLkK4iPChG7hVSh8bKKtsyiSqbkc7PSwd95c1GNjL0m3jOkzjKN7APeP7a
+FUQRWl8ck3f3NBJAAGBMBmS9AGfJt7sr3seWiULgatR9poD7e9kaFDzK/no75mkW
+BsizQNDsT9zHf6WiKMJ6pLR4gyAOB03kJ5fKgRJTeFrdxW9PzDOv2+k00LlNHpmM
+JANpPjijuavBQrRUKVYfmE8q3fn3O/lvvxGsrSb8zkP6cgro7rTI29IDbREzmFjH
+sM4QuVa7+UjuC0rcN3N8nC/w1xPZudS7o5iPnvvV7zwFNvI9Fe86OGoDyG113zg3
+bYOaoxjc6LoAn/lMRd1qkSZiNlcjDsATLKb4Vt0LKFvDielqkMq4G4HKEtAJzJmc
+m+mWS9t3gVrsBszlz8fhD5nT1qYbuwSYAWEnZcLgcXsxK9mbBY0+fPaBvN4kLQf+
+aBuNyxwbq5veWWpmqYapfqVUX+g6qBXWhRKuihLr7jo2O17UycXjyncxIBVFiubF
+jt0sEJSvL+tP6RtDu1y4I6oz78IPhMUw7UWVGwjpkxX4NxBgzLasdJWj6thEOz73
+YpjUDdSvxdegFdc93jOk/F3wl/GMBeyJNWzMywaPsua117Wb+/XYIyDH63qvTauy
+qzmT6VfSuqgZAtswpb4Q
+=YdDe
+-----END PGP SIGNATURE-----
+
+--g8BaVdPi99P92EwBjoLt40obBXJkWbxL4--
