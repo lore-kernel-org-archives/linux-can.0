@@ -1,85 +1,54 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO
- mode and ERRATA ERR005829
-Date: Thu, 09 Apr 2015 18:12:30 +0200
-Message-ID: <5526A4EE.8040401@pengutronix.de>
-References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com> <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com> <55269D84.1070606@pengutronix.de> <BY1PR0301MB1303A2C667A89188E2E9383B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com> <55269EDC.7040802@pengutronix.de> <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+From: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>
+Subject: RE: [PATCH 3/3] can: flexcan: Add support for non RX-FIFO mode and
+ ERRATA ERR005829
+Date: Thu, 9 Apr 2015 16:17:41 +0000
+Message-ID: <BY1PR0301MB1303410A178296C5EC58560B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+References: <1428593056-13701-1-git-send-email-bhupesh.sharma@freescale.com>
+ <1428593056-13701-3-git-send-email-bhupesh.sharma@freescale.com>
+ <55269D84.1070606@pengutronix.de>
+ <BY1PR0301MB1303A2C667A89188E2E9383B82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+ <55269EDC.7040802@pengutronix.de>
+ <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+ <5526A4EE.8040401@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="GBVpWKxO8TxF1i4vhDTRSnvhcTRllv7m7"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51614 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932991AbbDIQMm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Apr 2015 12:12:42 -0400
-In-Reply-To: <BY1PR0301MB1303BCBCB7BBC7A10409D52E82FB0@BY1PR0301MB1303.namprd03.prod.outlook.com>
+Received: from mail-bl2on0117.outbound.protection.outlook.com ([65.55.169.117]:21312
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1755477AbbDIQRo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 9 Apr 2015 12:17:44 -0400
+In-Reply-To: <5526A4EE.8040401@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "bhupesh.sharma@freescale.com" <bhupesh.sharma@freescale.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "arnd@arndb.de" <arnd@arndb.de>, "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "Sakar.Arora@freescale.com" <Sakar.Arora@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GBVpWKxO8TxF1i4vhDTRSnvhcTRllv7m7
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 04/09/2015 05:53 PM, bhupesh.sharma@freescale.com wrote:
->> Please look at the mainline commit:
->>
->> 25e924450fcb can: flexcan: implement workaround for errata ERR005829
->=20
-> Hmm.. This looks like a fairly simple ERRATA to be handled w/o Kconfig.=
-
-> But with the legacy mode support ERRATA, we have completely different R=
-X setups for
-> the legacy and FIFO mode.
-
-Can you give me link to the "ERRATA ERR005829 (A-008965)" description?
-
-The errata ERR005829 is described here
-http://cache.freescale.com/files/32bit/doc/errata/IMX6DQCE.pdf and it's
-fixed by mainline commit:
-
-    25e924450fcb can: flexcan: implement workaround for errata ERR005829
-
-Is your "ERRATA ERR005829 (A-008965)" something different?
-
-> Errata handling via Kconfig seems pretty common in the kernel (see [1])=
-
-
-Yes, for the ARM Core itself.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---GBVpWKxO8TxF1i4vhDTRSnvhcTRllv7m7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVJqTyAAoJECte4hHFiupUbN4P/iwJXH0pgv5gb2MGVV0JhEVo
-0wDxrCrmuWzYZgZ2E6G2Nv94woNnXM6rA8GRTFUzIEG7J0Jg4M0d5AQrYyUyUINa
-Zqf+vTH0pCAyIHA4kZnTytN6fqCZ9ius3S3BaWkN8UnAAaY/5MeUQyyRX+QSxL1K
-KutQsdXXbtwNIQrZlM0h7RI74FE0ovhf4AizJiQyfpJ6MK0vaS3aiNzBFMN1x/kc
-0ypzDD8wnE49oWSn24JaVvwrzhepFns9viXS4ddP1RtICs+fSiGixTgkXfvFzCmU
-KYyW0EMaElpDMQMGXoYMOZabjJdltpjPV6w5ta5Q2ia56ii71QIIJWMlK/hbA/yj
-iLikLV2hFYdseamVzTtmRyeBmEHiojODEAjVeIKI7DVwaqRXaTzP2s+FZBREMSGB
-0WxJ0t8qWZLyclfqq+OiPRIGRqh/9LST+Mt1KmaZWzCFyDkZmb29bdYiU48zYmUa
-OURecwjuNjDwuEjfNzafy5igyjxM7J8dvKYTH5JskKbVY8/l3zhupqFhh+UOyTyA
-iVm8gMgc9svh3fwtGHw42af718Lc6vzV1qYi3S+Dlr3Kq135M07nF0ahUjb/ndIF
-k/c+waugifcZ3vH1sZU1QPliYhNLo08wbgzdab1Z9AcIII7s4L7f6jeXw2rvqhrd
-FDPIz4ops7sZgh3VjzH3
-=o042
------END PGP SIGNATURE-----
-
---GBVpWKxO8TxF1i4vhDTRSnvhcTRllv7m7--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
+bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gT24gMDQvMDkvMjAxNSAwNTo1MyBQTSwgYmh1
+cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbSB3cm90ZToNCj4gPj4gUGxlYXNlIGxvb2sgYXQgdGhl
+IG1haW5saW5lIGNvbW1pdDoNCj4gPj4NCj4gPj4gMjVlOTI0NDUwZmNiIGNhbjogZmxleGNhbjog
+aW1wbGVtZW50IHdvcmthcm91bmQgZm9yIGVycmF0YSBFUlIwMDU4MjkNCj4gPg0KPiA+IEhtbS4u
+IFRoaXMgbG9va3MgbGlrZSBhIGZhaXJseSBzaW1wbGUgRVJSQVRBIHRvIGJlIGhhbmRsZWQgdy9v
+IEtjb25maWcuDQo+ID4gQnV0IHdpdGggdGhlIGxlZ2FjeSBtb2RlIHN1cHBvcnQgRVJSQVRBLCB3
+ZSBoYXZlIGNvbXBsZXRlbHkgZGlmZmVyZW50DQo+ID4gUlggc2V0dXBzIGZvciB0aGUgbGVnYWN5
+IGFuZCBGSUZPIG1vZGUuDQo+IA0KPiBDYW4geW91IGdpdmUgbWUgbGluayB0byB0aGUgIkVSUkFU
+QSBFUlIwMDU4MjkgKEEtMDA4OTY1KSIgZGVzY3JpcHRpb24/DQo+IA0KPiBUaGUgZXJyYXRhIEVS
+UjAwNTgyOSBpcyBkZXNjcmliZWQgaGVyZQ0KPiBodHRwOi8vY2FjaGUuZnJlZXNjYWxlLmNvbS9m
+aWxlcy8zMmJpdC9kb2MvZXJyYXRhL0lNWDZEUUNFLnBkZiBhbmQgaXQncw0KPiBmaXhlZCBieSBt
+YWlubGluZSBjb21taXQ6DQo+IA0KPiAgICAgMjVlOTI0NDUwZmNiIGNhbjogZmxleGNhbjogaW1w
+bGVtZW50IHdvcmthcm91bmQgZm9yIGVycmF0YSBFUlIwMDU4MjkNCj4gDQo+IElzIHlvdXIgIkVS
+UkFUQSBFUlIwMDU4MjkgKEEtMDA4OTY1KSIgc29tZXRoaW5nIGRpZmZlcmVudD8NCg0KWWVzLiBJ
+IG1peGVkIHVwIHRoZSBlcnJhdGEgbnVtYmVycyBpbiB0aGUgZ2l0IGxvZyBieSBtaXN0YWtlLg0K
+DQpJdHMgbnVtYmVyIEEtMDA4OTY1IGFuZCBpcyByZWxhdGVkIHRvIExTMTAyMUEgRmxleENBTiBu
+b3QgYmVpbmcNCmFibGUgdG8gc3VwcG9ydCBSWC1GSUZPIG1vZGUuDQoNClJlZ2FyZHMsDQpCaHVw
+ZXNoDQoNCj4gDQo+ID4gRXJyYXRhIGhhbmRsaW5nIHZpYSBLY29uZmlnIHNlZW1zIHByZXR0eSBj
+b21tb24gaW4gdGhlIGtlcm5lbCAoc2VlDQo+ID4gWzFdKQ0KPiANCj4gWWVzLCBmb3IgdGhlIEFS
+TSBDb3JlIGl0c2VsZi4NCj4gDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4g
+ICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVz
+dHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAg
+ICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEy
+MS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0
+dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg==
