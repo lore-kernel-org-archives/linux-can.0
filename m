@@ -1,76 +1,76 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Vector .blf file format
-Date: Tue, 21 Apr 2015 14:44:05 +0200
-Message-ID: <20150421124405.GE27504@vandijck-laurijssen.be>
-References: <20150421102419.GC27504@vandijck-laurijssen.be>
- <55363EE1.9010100@hartkopp.net>
+From: max <max.jacob@alternalab.it>
+Subject: kvaser leaf and SocketCAN
+Date: Wed, 22 Apr 2015 07:31:22 +0000 (UTC)
+Message-ID: <loom.20150422T090300-352@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:6675 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750937AbbDUMop (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Apr 2015 08:44:45 -0400
-Content-Disposition: inline
-In-Reply-To: <55363EE1.9010100@hartkopp.net>
+Received: from plane.gmane.org ([80.91.229.3]:46857 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S934150AbbDVHfL (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 22 Apr 2015 03:35:11 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1YkpBY-0004JT-4b
+	for linux-can@vger.kernel.org; Wed, 22 Apr 2015 09:35:04 +0200
+Received: from adsl-ull-249-9.41-151.net24.it ([151.41.9.249])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 22 Apr 2015 09:35:04 +0200
+Received: from max.jacob by adsl-ull-249-9.41-151.net24.it with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 22 Apr 2015 09:35:04 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Hi Oliver,
+Hello,
 
-> https://vector.com/vi_downloadcenter_en.html?product=canalyzer&busprot=CANBUS&formular_treffer_submit=1
+I'm trying to connect to a Kvaser Leaf Light V2 (product_id=15) adapter on 
+linux from python3.4, and for that purpose I've planned to use SocketCAN. 
 
-Cool. I wasn't aware of the "demo" canalyzer. I'll give it a try.
-I hope it installs in Wine.
+I have downloaded and compiled the kvaser drivers v.5.9, my kernel is a 
+3.13.0-49-generic, and according to the information I've fund so far, the 
+system requirements should all be met. 
 
-Kurt
+And in fact, when I connect the adapter, the leaf kernel module is 
+correctly loaded (I see it in lsmod) and the /usr/sbin/leaf.sh is started 
+(I desume this from the fact that if I try to start it manually it tells me 
+it has already been started), and also the /dev/leaf0 device is created. 
 
---- Original message ---
-> Date:	Tue, 21 Apr 2015 14:13:21 +0200
-> From: Oliver Hartkopp <socketcan@hartkopp.net>
-> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> CC: linux-can@vger.kernel.org
-> Subject: Re: Vector .blf file format
-> List-ID: <linux-can.vger.kernel.org>
-> 
-> Hi Kurt,
-> 
-> I'm usually using CANalyser to convert the BLF Logfiles to create
-> some .asc output to feed it into asc2log.
-> 
-> I just took a look on the Vector website:
-> Obviously you can download some CANalyser demo version which is
-> *not* able to access real CAN hardware. But you don't need real
-> hardware :-)
-> 
-> So you might have luck to be able to use the logfile conversion functionality.
-> 
-> https://vector.com/vi_downloadcenter_en.html?product=canalyzer&busprot=CANBUS&formular_treffer_submit=1
-> 
-> Regards,
-> Oliver
-> 
-> 
-> On 21.04.2015 12:24, Kurt Van Dijck wrote:
-> >Hi all,
-> >
-> >This is strictly speaking not a linux-can question.
-> >
-> >I received, from a customer, CAN logs
-> >as Vector's binary .blf (binary log file?) format.
-> >
-> >Does anyone know how to parse, besides buying the CANalyzer software?
-> >
-> >Kind regards,
-> >Kurt
-> >--
-> >To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> >the body of a message to majordomo@vger.kernel.org
-> >More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+So far so good. But what's next? What I have understood is that at this 
+point there should be the kvaser_usb module that comes into play for 
+mapping the device to a network interface that can be brought up and used 
+by SocketCAN. 
+
+But the kvaser_usb module is not loaded automatically, and if I modprobe it 
+manually, nothing seems to happen.
+
+Here is what goes on in the kernel log when connecting the adapter:
+
+[46464.671385] usb 3-2: new high-speed USB device number 4 using xhci_hcd
+[46464.689616] usb 3-2: New USB device found, idVendor=0bfd, idProduct=0120
+[46464.689627] usb 3-2: New USB device strings: Mfr=0, Product=2, 
+SerialNumber=0
+[46464.689633] usb 3-2: Product: Kvaser Leaf Light v2
+[46467.738639] usbcore: registered new interface driver leaf
+
+And this when I modprobe the kvaser_usb module:
+
+[46545.271520] usbcore: registered new interface driver kvaser_usb
+
+If I invert the order of the two operations, it is exactly the same. I've 
+also tryed with and without an actual can device connected to the other end 
+of the adapter, but this doesn't change anything either.
+
+So, it looks I am still missing something... Can anyone tell me what 
+further steps are necessary to finally get a can0 interface to show up?
+
+Thank's a lot for any hint pointing me to the right direction...
+
+Max
+
+
+
+
