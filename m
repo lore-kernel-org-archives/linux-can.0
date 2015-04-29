@@ -1,105 +1,140 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 message length
-Date: Mon, 27 Apr 2015 09:22:17 +0000
-Message-ID: <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
+From: Leo Stan <leo.stanislas@qut.edu.au>
+Subject: Re: kvaser leaf and SocketCAN
+Date: Wed, 29 Apr 2015 02:01:16 +0000 (UTC)
+Message-ID: <loom.20150429T040002-878@post.gmane.org>
+References: <loom.20150422T090300-352@post.gmane.org> <553755E8.20704@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias91.francetelecom.com ([193.251.215.91]:23986 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932417AbbD0Jbn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Apr 2015 05:31:43 -0400
-In-Reply-To: <20141215093136.GA646@vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from plane.gmane.org ([80.91.229.3]:59485 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S966150AbbD2DaI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 28 Apr 2015 23:30:08 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1YnIhJ-00034r-6y
+	for linux-can@vger.kernel.org; Wed, 29 Apr 2015 05:30:05 +0200
+Received: from nocproxy03-b.net.qut.edu.au ([131.181.251.20])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 29 Apr 2015 05:30:05 +0200
+Received: from leo.stanislas by nocproxy03-b.net.qut.edu.au with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 29 Apr 2015 05:30:05 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-SGkgS3VydCwNCg0KSSBoYXZlIGFuIGlzc3VlIG9uIGFkZHJlc3MgY2xhaW0uDQoNCldoZW4gSSBj
-YWxsIHRoZSBiaW5kIHRoZSBjbGFpbSBhZGRyZXNzIGlzIHNlbmQgd2l0aCBhIERMQyBvZiA4IGFu
-ZCA4IGJ5dGVzIHNlbnQgb24gdGhlIENBTi4NCkJ1dCwgYWNjb3JkaW5nIHRvIHRoZSBJU08xMTc4
-MywgSSBuZWVkIHRvIHNlbmQgYW5kIGFkZHJlc3MgQ0xBSU0gYnkgYSAzIGJ5dGVzIGZyYW1lLg0K
-DQpIb3cgY2FuLCBJIGRvIHRoYXQgd2l0aCBleGlzdGluZyBrZXJuZWwgSjE5Mzkgc3RhY2sgb3Ig
-d2hlcmUgSSBjYW4gbW9kaWZ5IHRoaXM/DQoNClRoYW5rcyBhIGxvdC4NCkJlc3QgcmVnYXJkcywN
-Cg0KUGFzY2FsDQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERp
-amNrIFttYWlsdG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6
-IGx1bmRpIDE1IGTDqWNlbWJyZSAyMDE0IDEwOjMyDQrDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJ
-RlJFIFAgZXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpl
-dMKgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCg0KSGV5LA0KDQpPbiBNb24sIERlYyAxNSwg
-MjAxNCBhdCAwODo1ODoxNEFNICswMDAwLCBwZmlmcmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6DQo+
-IEhpIEt1cnQsDQo+IA0KPiBJIHJlc29sdmVkIHRoZSBpc3N1ZS4gVGhlIHByb2JsZW0gYXBwZWFy
-cyB3aXRoIGxvbmcgbWVzc2FnZSBiZWNhdXNlLCBhY2NvcmRpbmcgdG8gdGhlIGoxOTM5IHNwZWNp
-ZmljYXRpb25zLCB0aGUgZW5kIG9mIG1lc3NhZ2UgaGFzIHRvIGJlIGZ1bGZpbGxlZCB3aXRoIDB4
-RkYgaWYgdGhlIG1lc3NhZ2UgaXMgbm90IG1vZHVsbyA4Lg0KPiBBcHBhcmVudGx5LCB0aGUgajE5
-MzkgIGRyaXZlcnMgZG9uJ3QgbWFrZSB0aGUgcGFkZGluZyB3aXRoIDB4RkYuDQoNCllvdSdyZSBu
-b3QgdGhlIGZpcnN0IHRvIGZpbmQgYW4gYWN0dWFsIEVDVSBjb21wbGFpbmluZyBvbiB0aGlzLg0K
-SSBhc3NlbWJsZWQgYSBwYXRjaCBlYXJsaWVyIHRoaXMgeWVhciwgc2VlIGh0dHA6Ly9saXN0cy5r
-ZGUub3JnLz9sPWxpbnV4LWNhbiZtPTEzOTgyNTU3MjIwNzQ0OCZ3PTINCg0KPiBUaGVuIEkgZG8g
-dGhhdCBpbiBteSBzb2Z0d2FyZSBhbmQgaXQgd29ya3MgZmluZSBrbm93Lg0KDQpJIGFkdmlzZSB0
-byBhcHBseSB0aGF0IHBhdGNoLCBhbmQgYXZvaWQgdG8gY2FsY3VsYXRlIHBhY2tldCBzaXplcyBp
-biB1c2Vyc3BhY2UuDQoNCldoaWNoIGlzIHRoZSByZW1vdGUgRUNVIHRoYXQgZG9lcyBub3QgYWNj
-ZXB0IHRoZSBwYWNrZXRzPw0KDQo+IA0KPiBQZXJoYXBzLCBJdCB3aWxsIGJlIGEgZ29vZCBpZGVh
-IHRvIGFkZCB0aGlzIGluIHRoZSBkcml2ZXJzLg0KDQpZZXAsIEknbGwgZG8uDQoNCktpbmQgcmVn
-YXJkcywNCkt1cnQNCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gDQo+IFBhc2NhbA0KPiANCj4gLS0t
-LS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQo+IERlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86
-ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0NCj4gRW52b3nDqcKgOiB2ZW5kcmVkaSAx
-MiBkw6ljZW1icmUgMjAxNCAxMjowOCDDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgDQo+
-IGV4dCBJTVQvT0xQUyBDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnIE9iamV0wqA6IFJl
-OiBKMTkzOSBtZXNzYWdlIA0KPiBsZW5ndGgNCj4gDQo+IEhleSBQYXNjYWwsDQo+IA0KPiBPbiBU
-aHUsIERlYyAxMSwgMjAxNCBhdCAxMDo0NDozOUFNICswMDAwLCBwYXNjYWwgd3JvdGU6DQo+ID4g
-SGksDQo+ID4gDQo+ID4gSSd2ZSBpbnN0YWxsZWQgdGhlIHBhdGNoIGZvciB1c2luZyBqMTkzOSBz
-b2NrZXQgQ0FOIHVuZGVyIGxpbnV4IA0KPiA+IChiZWFnbGVCb25lIGJsYWNrKS4NCj4gPiANCj4g
-PiBJdCB3b3JrcyBmaW5lIGZvciByZWNlaXZpbmcgajE5MzkgbWVzc2FnZSBhbmQgc2VuZGluZyBz
-aG9ydCBtZXNzYWdlIA0KPiA+ICg4IGJ5dGVzIG1heCkuDQo+ID4gDQo+ID4gQnV0IHdoZW4gSSB0
-cnkgdG8gc2VuZCBsb25nIG1lc3NhZ2UgKD44IGJ5dGVzIGxvbmcpLCBidXQgdGhlIG1lc3NhZ2Ug
-DQo+ID4gaGFzIG5vdCBiZWVuIHNlbnQuDQo+IA0KPiBPay4NCj4gWW91IHByb3ZpZGUgbGl0dGxl
-IGluZm8gaG93IHlvdSBkZXRlY3QgdGhhdCA8PTggYnl0ZXMgd29yaywgYW5kID44IGJ5dGVzIGRv
-IG5vdCB3b3JrLg0KPiANCj4gV2hhdCBkbyB5b3Ugc2VlIG9uIHRoZSAocmF3KSBDQU4gYnVzPw0K
-PiANCj4gQXJlIHlvdSBhd2FyZSBvZiB0aGUgVHJhbnNwb3J0IFByb3RvY29sIG9uIEoxOTM5IHRo
-YXQgZGVsaXZlcnMgbWVzc2FnZXMgPjggYnl0ZXM/DQo+IA0KPiBLdXJ0DQo+ID4gDQo+ID4gSSB1
-c2UgdGhlIHNlbmRUbyBtZXRob2QgdG8gc2VuZCBmcmFtZS4NCj4gPiANCj4gPiBEbyBJIGhhdmUg
-dG8gZG8gc29tZXRoaW5nIHNwZWNpYWwgdG8gc2VuZCBsb25nIG1lc3NhZ2U/DQo+IA0KPiBubywg
-bm90IG5lY2Vzc2FyaWx5Lg0KPiANCj4gPiBJJ20gd29ya2luZyB3aXRoIGEgMy44LjEzIGtlcm5l
-bCBvbiBiZWFnbGVib25lIGJsYWNrLg0KPiANCj4gS2luZCByZWdhcmRzLA0KPiBLdXJ0DQo+IA0K
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KPiANCj4gQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1
-dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIA0KPiBjb25maWRlbnRpZWxsZXMgb3UgcHJp
-dmlsZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYyBwYXMgZXRyZSBkaWZmdXNlcywgDQo+IGV4cGxv
-aXRlcyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1l
-c3NhZ2UgDQo+IHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyIGEgbCdleHBlZGl0ZXVy
-IGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdl
-cyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sIE9yYW5nZSBk
-ZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBk
-ZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4NCj4gDQo+IFRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0
-dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciANCj4gcHJpdmlsZWdlZCBpbmZv
-cm1hdGlvbiB0aGF0IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3OyB0aGV5IHNob3VsZCBub3QgYmUg
-ZGlzdHJpYnV0ZWQsIHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4NCj4gSWYg
-eW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUg
-c2VuZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuDQo+IEFz
-IGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2Vz
-IHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4NCj4gVGhhbmsg
-eW91Lg0KPiANCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCgpDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2
-ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVn
-aWVlcyBldCBuZSBkb2l2ZW50IGRvbmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBj
-b3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3NhZ2UgcGFy
-IGVycmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIgZXQgbGUgZGV0cnVp
-cmUgYWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1
-ZXMgZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRlY2xpbmUgdG91dGUg
-cmVzcG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgb3UgZmFs
-c2lmaWUuIE1lcmNpLgoKVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRh
-aW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJv
-dGVjdGVkIGJ5IGxhdzsKdGhleSBzaG91bGQgbm90IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNv
-cGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uCklmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZW1h
-aWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVsZXRlIHRoaXMgbWVz
-c2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFsdGVyZWQsIE9yYW5n
-ZSBpcyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBtb2RpZmllZCwgY2hh
-bmdlZCBvciBmYWxzaWZpZWQuClRoYW5rIHlvdS4KCg==
+Marc Kleine-Budde <mkl <at> pengutronix.de> writes:
+
+> 
+> On 04/22/2015 09:31 AM, max wrote:
+> > I'm trying to connect to a Kvaser Leaf Light V2 (product_id=15) adapter 
+on 
+> > linux from python3.4, and for that purpose I've planned to use 
+SocketCAN. 
+> > 
+> > I have downloaded and compiled the kvaser drivers v.5.9, my kernel is a 
+> > 3.13.0-49-generic, and according to the information I've fund so far, 
+the 
+> > system requirements should all be met. 
+> 
+> Where do you download the driver from? I suggest to use a recent
+> mainline kernel. Support for the Kvaser Leaf v2 was added in v3.16 and a
+> _lot_ of bugfixes were added in later versions. Switching to a recent
+> ubuntu kernel (v3.19) is probably a good idea.
+> 
+> > And in fact, when I connect the adapter, the leaf kernel module is 
+> > correctly loaded (I see it in lsmod) and the /usr/sbin/leaf.sh is 
+started 
+> > (I desume this from the fact that if I try to start it manually it 
+tells me 
+> > it has already been started), and also the /dev/leaf0 device is 
+created. 
+> 
+> A /dev/leaf0 is not created by the mainline driver...
+> 
+> > So far so good. But what's next? What I have understood is that at this 
+> > point there should be the kvaser_usb module that comes into play for 
+> > mapping the device to a network interface that can be brought up and 
+used 
+> > by SocketCAN. 
+> > 
+> > But the kvaser_usb module is not loaded automatically, and if I 
+modprobe it 
+> > manually, nothing seems to happen.
+> > 
+> > Here is what goes on in the kernel log when connecting the adapter:
+> > 
+> > [46464.671385] usb 3-2: new high-speed USB device number 4 using 
+xhci_hcd
+> > [46464.689616] usb 3-2: New USB device found, idVendor=0bfd, 
+idProduct=0120
+> > [46464.689627] usb 3-2: New USB device strings: Mfr=0, Product=2, 
+> > SerialNumber=0
+> > [46464.689633] usb 3-2: Product: Kvaser Leaf Light v2
+> > [46467.738639] usbcore: registered new interface driver leaf
+> > 
+> > And this when I modprobe the kvaser_usb module:
+> > 
+> > [46545.271520] usbcore: registered new interface driver kvaser_usb
+> > 
+> > If I invert the order of the two operations, it is exactly the same. 
+I've 
+> > also tryed with and without an actual can device connected to the other 
+end 
+> > of the adapter, but this doesn't change anything either.
+> > 
+> > So, it looks I am still missing something... Can anyone tell me what 
+> > further steps are necessary to finally get a can0 interface to show up?
+> > 
+> > Thank's a lot for any hint pointing me to the right direction...
+> 
+> Use a recent mainline kernel, then everything should work out of the
+> box, without any external drivers and manual module loading.
+> 
+> Marc
+
+
+
+
+Hi Marc and Max,
+
+I am also trying to use this device on Ubuntu 14.04 with Linux kernel 
+3.19.0-031900-generic. 
+
+When I connect the device I have the kernel log as follow 
+
+[ 3506.638843] usb 1-3: USB disconnect, device number 6
+[ 3508.818400] usb 1-3: new high-speed USB device number 7 using xhci_hcd
+[ 3508.949596] usb 1-3: New USB device found, idVendor=0bfd, idProduct=0120
+[ 3508.949603] usb 1-3: New USB device strings: Mfr=0, Product=2, 
+SerialNumber=0
+[ 3508.949607] usb 1-3: Product: Kvaser Leaf Light HS
+
+I have installed the drivers from Kvaser for linux therefore I have the 
+modules :
+
+kvaser_usb             22385  0 
+can_dev                21659  1 kvaser_usb
+
+However nothing appears in /dev folder
+
+I tried the SocketCan example code from this wiki page : 
+
+http://en.wikipedia.org/wiki/SocketCAN
+
+But I get this error :
+ 
+vcan0 at index -571419056
+Error in socket bind: No such device
+
+
+
+Thanks in advance for any help.
+
+Leo
+
+
+
