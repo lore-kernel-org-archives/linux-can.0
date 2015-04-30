@@ -1,75 +1,68 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: kvaser leaf and SocketCAN
-Date: Thu, 30 Apr 2015 09:27:30 +0200
-Message-ID: <5541D962.5040103@hartkopp.net>
-References: <loom.20150422T090300-352@post.gmane.org> <553755E8.20704@pengutronix.de> <loom.20150429T040002-878@post.gmane.org> <CANGgnMbtZz2M=-7ydV6iSFtCskTeXnKsWVB9rqnwX1M+SE1AAg@mail.gmail.com> <loom.20150429T063429-693@post.gmane.org> <55406A03.9060105@pengutronix.de> <20150429104528.GA5712@linux> <loom.20150430T051006-395@post.gmane.org> <loom.20150430T080326-120@post.gmane.org> <5541D057.2020003@pengutronix.de>
+Subject: Re: linux-can moderated?
+Date: Thu, 30 Apr 2015 15:21:01 +0200
+Message-ID: <55422C3D.3070309@hartkopp.net>
+References: <5541E79A.2050508@gomspace.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:44773 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:9037 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751140AbbD3H2Q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 30 Apr 2015 03:28:16 -0400
-In-Reply-To: <5541D057.2020003@pengutronix.de>
+	with ESMTP id S1750934AbbD3NVO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 30 Apr 2015 09:21:14 -0400
+In-Reply-To: <5541E79A.2050508@gomspace.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Leo Stan <leo.stanislas@qut.edu.au>, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Jeppe Ledet-Pedersen <jlp@gomspace.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 30.04.2015 08:48, Marc Kleine-Budde wrote:
-> On 04/30/2015 08:14 AM, Leo Stan wrote:
+Hi Jeppe
 
+On 30.04.2015 10:28, Jeppe Ledet-Pedersen wrote:
 
->>          close(s);
->> 	
->>          return 0;
->> }
->>
->> I get this flag :
->>
->> can0 at index 3
->> can raw socket read: Network is down
->                         ^^^^^^^^^^^^^^^
-> You have to configure your CAN network device first, then bring it into
-> an operational state, this means the network is "up".
+> I just sent in my first kernel patch yesterday. It successfully found
+> its way to the linux-kernel and netdev mailing lists:
 >
->      ip link set can0 type can bitrate 500000
->      ip link set can0 up
+> http://www.spinics.net/lists/kernel/msg1977865.html
+> http://www.spinics.net/lists/netdev/msg326785.html
 >
-> See section "6.5.1 Netlink interface to set/get devices properties"
-> http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L990
->
+> It should also have been cc'ed to linux-can@vger.kernel.org, but as far
+> as I can see, it hasn't showed up in the linux-can list archives.
 
 Yes.
 
-Stan: please download
+And it showed up there automatically:
 
-	https://github.com/linux-can/can-utils
+http://marc.info/?l=linux-can&m=143032208916337&w=2
 
-compile and install them (make && make install) or with autotools.
+> I
+> believe the patch has to go in through the linux-can tree?
 
-And use 'cansend' and 'candump' to check whether its working.
+Yes.
 
-On recent Debian / Ubuntu you can try
+Marc (see CC) will pick it up and commit it to the linux-can git tree at:
 
-	apt-get install can-utils
+http://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can.git/
 
-Programming your own stuff makes sense when you have a working CAN setup.
-But when you are fighting on the basic driver side *and* the userspace apps it 
-becomes very hard.
+where David Miller (net maintainer) will pull it from for upstream and stable 
+trees.
 
-There are also code examples in
+So for CAN drivers linux-can ML is perfect.
+No need for cross posting on Kernel/Netdev for CAN driver stuff.
 
-	https://github.com/linux-can/can-tests
 
-which will help you more than the Wikipedia code sniplet.
+> Is the list moderated for non-subscribers?
 
-And read
+No.
 
-	https://www.kernel.org/doc/Documentation/networking/can.txt
+> At the time I sent the patch,
+> I wasn't subscribed to linux-can. Or did I do something else wrong?
 
-which Marc already suggested.
+No everything went fine :-)
+
+Thanks for your contribution.
 
 Best regards,
 Oliver
+
