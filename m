@@ -1,56 +1,68 @@
-From: vklein <vk4514@arcor.de>
-Subject: how to check if can0 is up
-Date: Mon, 04 May 2015 21:10:06 +0200
-Message-ID: <5547C40E.9050107@arcor.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Shawn Landden <shawn@churchofgit.com>
+Subject: [PATCH] can.h: make padding given by gcc explicit
+Date: Tue,  5 May 2015 00:03:01 -0700
+Message-ID: <1430809381-3497-1-git-send-email-shawn@churchofgit.com>
+References: <554797BA.6080506@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-in-17.arcor-online.net ([151.189.21.57]:41976 "EHLO
-	mail-in-17.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751316AbbEDTKJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 4 May 2015 15:10:09 -0400
-Received: from mail-in-15-z2.arcor-online.net (mail-in-15-z2.arcor-online.net [151.189.8.32])
-	by mx.arcor.de (Postfix) with ESMTP id 3lgYfR0b65z6Gt5
-	for <linux-can@vger.kernel.org>; Mon,  4 May 2015 21:10:07 +0200 (CEST)
-Received: from mail-in-14.arcor-online.net (mail-in-14.arcor-online.net [151.189.21.54])
-	by mail-in-15-z2.arcor-online.net (Postfix) with ESMTP id 02C4F112541
-	for <linux-can@vger.kernel.org>; Mon,  4 May 2015 21:10:07 +0200 (CEST)
-Received: from [192.168.2.110] (dslb-088-076-134-159.088.076.pools.vodafone-ip.de [88.76.134.159])
-	(Authenticated sender: vk4514@arcor.de)
-	by mail-in-14.arcor-online.net (Postfix) with ESMTPA id 3lgYfQ6SqCz4nSX
-	for <linux-can@vger.kernel.org>; Mon,  4 May 2015 21:10:06 +0200 (CEST)
+Received: from mail-pa0-f54.google.com ([209.85.220.54]:34598 "EHLO
+	mail-pa0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752616AbbEEHDK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 5 May 2015 03:03:10 -0400
+Received: by pacyx8 with SMTP id yx8so183441824pac.1
+        for <linux-can@vger.kernel.org>; Tue, 05 May 2015 00:03:10 -0700 (PDT)
+In-Reply-To: <554797BA.6080506@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Shawn Landden <shawn@churchofgit.com>
 
-Hi
-I want to test the status of can0 on a BeagleBoneBlack with serial-can 
-cape from Logic Supply.
+The current definition of struct can_frame has a 16-byte size, with 8-byte
+alignment, but the 3 bytes of padding are not explicit like the similar 2 bytes
+of padding of struct canfd_frame. Make it explicit so it is easier to read.
 
-The interface is initialized with
-ip link set can0 type can bitrate 250000
-ifconfig can0 up
+v2: match analogous padding fields in canfd_frame
+    update Documentation
+---
+ Documentation/networking/can.txt | 3 +++
+ include/uapi/linux/can.h         | 6 ++++++
+ 2 files changed, 9 insertions(+)
 
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index 5abad1e..b48d4a1 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -268,6 +268,9 @@ solution for a couple of reasons:
+     struct can_frame {
+             canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+             __u8    can_dlc; /* frame payload length in byte (0 .. 8) */
++            __u8    __pad;   /* padding */
++            __u8    __res0;  /* reserved / padding */
++            __u8    __res1;  /* reserved / padding */
+             __u8    data[8] __attribute__((aligned(8)));
+     };
+ 
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index 41892f7..9692cda 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -95,11 +95,17 @@ typedef __u32 can_err_mask_t;
+  * @can_dlc: frame payload length in byte (0 .. 8) aka data length code
+  *           N.B. the DLC field from ISO 11898-1 Chapter 8.4.2.3 has a 1:1
+  *           mapping of the 'data length code' to the real payload length
++ * @__pad:   padding
++ * @__res0:  reserved / padding
++ * @__res1:  reserved / padding
+  * @data:    CAN frame payload (up to 8 byte)
+  */
+ struct can_frame {
+ 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+ 	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
++	__u8    __pad;   /* padding */
++	__u8    __res0;  /* reserved / padding */
++	__u8    __res1;  /* reserved / padding */
+ 	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
+ };
+ 
+-- 
+2.2.1.209.g41e5f3a
 
-I have tried
-cat /sys/class/net/can0/operstate
-but this does not work correctly
-
-if can0 is down,  I get "down"
-
-if can0 is up , I get "unknown"
-ifconfig says:
-can0      Link encap:UNSPEC  HWaddr 
-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
-           UP RUNNING NOARP  MTU:16  Metric:1
-           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:10
-           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
-           Interrupt:55
-
-
-help appreciated
-
-Victor
