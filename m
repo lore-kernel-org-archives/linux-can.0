@@ -1,43 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can.h: make padding given by gcc explicit
-Date: Tue, 5 May 2015 21:25:25 +0200
-Message-ID: <55491925.1060803@pengutronix.de>
-References: <554797BA.6080506@hartkopp.net>
- <1430842036-21509-1-git-send-email-shawn@churchofgit.com>
+Subject: Re: [PATCH] can: janz-ican3: add support for CAL/CANopen firmware
+Date: Wed, 6 May 2015 08:01:48 +0200
+Message-ID: <5549AE4C.5000606@pengutronix.de>
+References: <5543C69C.5060508@gmail.com> <5543E065.6060000@pengutronix.de>
+ <20150502164049.GB31242@gmail.com> <5544FE8C.9020100@pengutronix.de>
+ <55490722.3090802@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="foAa3hfMhkbvCIWSvslEuvIlE3aXrohwr"
+ boundary="76vGPDGv6Ma8JbqvTTCi8HFDxuWnsiLtO"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47778 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:53746 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753331AbbEETZe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 5 May 2015 15:25:34 -0400
-in-reply-to: <1430842036-21509-1-git-send-email-shawn@churchofgit.com>
+	with ESMTP id S1755170AbbEFGCI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 6 May 2015 02:02:08 -0400
+in-reply-to: <55490722.3090802@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Shawn Landden <shawn@churchofgit.com>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: =?UTF-8?Q?Andreas_Gr=c3=b6ger?= <andreas24groeger@gmail.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---foAa3hfMhkbvCIWSvslEuvIlE3aXrohwr
+--76vGPDGv6Ma8JbqvTTCi8HFDxuWnsiLtO
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 05/05/2015 06:07 PM, Shawn Landden wrote:
-> The current definition of struct can_frame has a 16-byte size, with 8-b=
-yte
-> alignment, but the 3 bytes of padding are not explicit like the similar=
- 2 bytes
-> of padding of struct canfd_frame. Make it explicit so it is easier to r=
-ead.
+On 05/05/2015 08:08 PM, Andreas Gr=C3=B6ger wrote:
+> sorry, my S-o-b was invalid.
+> ---
+> Hi Marc, Hi Ira,
 >=20
-> v2: match analogous padding fields in canfd_frame
->     update Documentation
+> thank you very much for the positive and constructive responses,
+> seems to be the right way.
+>=20
+> String comparison for firmware identification: there is another way
+> to retrieve the id and version (IDVERS-request), but it is more
+> complicated. You have to await the response and the result is a
+> longer string about 200 bytes. Janz recommends this firmware stamp
+> for module identification.
+>=20
+> Bittiming in ican3_set_bus_state: this affects the driver with
+> ICANOS-firmware. So I asked Janz for the ICANOS-firmware to be able
+> to test. I tested both firmware-variants with different baudrates:
+> went as expected. Hope I met your needs.
+>=20
+> Kind regards, Andreas
+>=20
+> Signed-off-by: Andreas Gr=C3=B6ger <andreas24groeger@gmail.com>
 
-Applied to can-next.
+Applied to can-next. I've split the patch, first the existing sysfs
+entries are documented, the second one updates the driver.
 
-Thanks,
+cheers,
 Marc
 
 --=20
@@ -47,26 +60,26 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---foAa3hfMhkbvCIWSvslEuvIlE3aXrohwr
+--76vGPDGv6Ma8JbqvTTCi8HFDxuWnsiLtO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCgAGBQJVSRklAAoJECte4hHFiupUrLQP/3GGNsf0b5zf2lgCv0/ZXJU3
-ojQDJcBqVROL2jBWF03mrsBMSNTY1iJM/VWrEYaD2TcIn8AJfb+DyyIFbLcNEYB8
-5LrlCbl0Ub7JwctZWD4eqwMIlmtO04Ws5/H0Fe7F5yPS220ms3kP3x7SdUtylq4H
-/U8bh4O8doiHoMwALf7yl7o4zF1fvjzoKI7P6IAvjpt9VBsIm5tNrSv51Y/YbNrk
-kmZM/cDl3idyOmkaLq2D+m2YiwD2lXM2JJS3pkKOrGRVXgWMcfCD+NTsVMLoT5cO
-zrev/KppCsRhoUF/PSHb+V8DEpIykq1rSL3EsAC5BBpl7Gn5zorwhTgNIYvnFi8o
-c1sMjwlWUkb5Z6p+9lcz9nRv6lucCVC6akqnqZ6sQhyL5bJwzzoWDKxLnSC3ch/u
-ozeiWlitjF296GmviDP8Ecd1ozOzciOx3gLNLCyRzcBqZvR5VePnzU+iNq+ICX4F
-4nAs4niq7DPgBem+tO8XQlyGTZDbxv8ReXwQivc8JMrtEQV+Sz5pBmfDlyFnqruz
-ewHxGNwwOOLtVw990+MMkBK7iT+2dL5NmP5bM1xGeP0qWYMDGrcqtmQkCk4JuTo+
-FN4bCAi4mTuo+qS3KmbgsjhMeh9YKPv5MloqbgnOVpEaEA8Y1kzySDc6Vb9TxPSg
-KV6fn/kth/3baJClargl
-=QbwA
+iQIcBAEBCgAGBQJVSa5MAAoJECte4hHFiupUcEQP/jiCwYTAe6UdUnAmPQx6W2Wh
+p0YXb3sHXuCdEgqjwJHOapgqN3G+qq8FBZ/vJLDduhAeLqsY7BCftqeOdLP9xYPz
+9NGJFIAGyJlRKKOwQPxUfSPKe28B4Fb5mY1NGoBbDtKuroIWpdmuGkKZy2dmC4s4
+U89lfwla54OT3B1+r7zcziN/7QBfHrdM5KaWusI1lbg6mYSObGTH4XgBfGZlfhZ4
+TUhhUcQeYsk0Dk0k2I7fTixh+mZ5vdpIkgrrQeqphzP90lpBHJDLcWCpKMiO7ItW
+3nbNBYAOlhmE++rlVX6JgBnj+rdzAnfT//55IJCKKKtNFIn1U+mO3M6DXU+HKotG
+9ZE3sY8LLmAfFiOO6ueo9hHe58j32EhjnEE8Q3w34BFf5ZM7IDEezZZ2tUzNVDHR
+Ds2PSYpcRQ2y5zbe87V/DwdqBfbOyQC3MaeeDPFwQYKTK7p1rA8Lp5QK3BTUxk/a
+jmRfrRxIqYU2UpPiPJtgNaOdFNDsyamokLeJ4q4PVrI5STgnGScBSUDqtn0lJ6yA
+EDv3S6JAQK46HRhzDQHnr6/MjTPVI75gnxMozmT08VjWVVcYJVxEvRbVByo4qRUR
+O/rJScUSqAVoCUSvpAlhqH6s4fqTdp7BHME687jegMEuX7hF8Yc8hETMCmcaLsHI
+s+gFT8XOTGQiK8gRLwg3
+=s16G
 -----END PGP SIGNATURE-----
 
---foAa3hfMhkbvCIWSvslEuvIlE3aXrohwr--
+--76vGPDGv6Ma8JbqvTTCi8HFDxuWnsiLtO--
