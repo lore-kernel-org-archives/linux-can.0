@@ -1,84 +1,80 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH] add 'v' command response
-Date: Thu, 7 May 2015 16:24:33 +0200
-Message-ID: <554B75A1.8030407@pengutronix.de>
-References: <1431008428-22567-1-git-send-email-mkl@pengutronix.de>
+Date: Thu, 07 May 2015 22:57:22 +0200
+Message-ID: <554BD1B2.8070200@hartkopp.net>
+References: <1431008428-22567-1-git-send-email-mkl@pengutronix.de> <554B75A1.8030407@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Cu8cv56cX8pVG4dTjTew6eiAP5xTEs8iB"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:50302 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751377AbbEGOYh (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 May 2015 10:24:37 -0400
-in-reply-to: <1431008428-22567-1-git-send-email-mkl@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:54108 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751253AbbEGU5c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 May 2015 16:57:32 -0400
+In-Reply-To: <554B75A1.8030407@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: bombilee <chenglung@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, bombilee <chenglung@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Cu8cv56cX8pVG4dTjTew6eiAP5xTEs8iB
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi all
 
-Hello bombilee,
+On 05/07/2015 04:24 PM, Marc Kleine-Budde wrote:
+> Hello bombilee,
+> 
+> On 05/07/2015 04:20 PM, Marc Kleine-Budde wrote:
+>> diff --git a/slcanpty.c b/slcanpty.c
+>> index c062a027da41..f485ac775a53 100644
+>> --- a/slcanpty.c
+>> +++ b/slcanpty.c
+>> @@ -185,6 +185,13 @@ rx_restart:
+>>  		ptr = 1;
+>>  		goto rx_out;
+>>  	}
+>> +	/* check for 'v'ersion command */
+>> +	if (cmd == 'v') {
+>> +		sprintf(replybuf, "v1014\r");
+> 
+> Is there a special meaning behing "v1014"? Where does the string come from?
 
-On 05/07/2015 04:20 PM, Marc Kleine-Budde wrote:
-> diff --git a/slcanpty.c b/slcanpty.c
-> index c062a027da41..f485ac775a53 100644
-> --- a/slcanpty.c
-> +++ b/slcanpty.c
-> @@ -185,6 +185,13 @@ rx_restart:
->  		ptr =3D 1;
->  		goto rx_out;
->  	}
-> +	/* check for 'v'ersion command */
-> +	if (cmd =3D=3D 'v') {
-> +		sprintf(replybuf, "v1014\r");
+We *already* check for the version command!
 
-Is there a special meaning behing "v1014"? Where does the string come fro=
-m?
+But it has to be 'V' with upper case:
 
-> +		tmp =3D strlen(replybuf);
-> +		ptr =3D 1;
-> +		goto rx_out;
-> +	}
-> =20
->  	/* check for serial 'N'umber command */
->  	if (cmd =3D=3D 'N') {
->=20
+See http://www.can232.com/docs/can232_v3.pdf page 12:
 
-Marc
+Get Version number of both CAN232 hardware and software
+This command is only active always.
+Example: V[CR]
+Get Version numbers
+Returns: V and a 2 bytes BCD value for hardware version and
+a 2 byte BCD value for software version plus
+CR (Ascii 13) for OK. E.g. V1013[CR]
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The SLCAN/Lawicel protocol is case sensitive!!
 
+See T/t R/r S/s M/m commands.
 
---Cu8cv56cX8pVG4dTjTew6eiAP5xTEs8iB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+A hunk could be to support lower case for the version information check too.
 
------BEGIN PGP SIGNATURE-----
+But IMO that's the wrong approach.
 
-iQIcBAEBCgAGBQJVS3WhAAoJECte4hHFiupUniQP/23xxP78kaSKn5XOPwf6DC2y
-FX9RU5HrbK3PHiwY1dHsndMQmHkQ4NYF9yZPIYgOzZXNCQoM4Y4/PcZBOJ2BCZWE
-04bAlMayjVh0nolU/lQLRMh5uMbuQYVuGVn1plvIxEv4npTaPtjQm9n8rJId3F6V
-O325XPNiDziJCLNnDNViwPP4BfqlspFpi7CN/Or35v/nhE6FPy6UkSGgekXykERh
-3fmDfmp3dwiAbqlJShL8xxDfOJAlpOI+bhgmdMAtjSEt7j92w+/CYyG10ETKldQo
-EdIMwunw6RuJB55stsm999RTJDa9vUldSFV6LtbReCSZr1Wv3vG9YqKj4/RKGVm8
-CyhdETAAcVp4wwDnKgi5PqVjW0fD7EpL63VZdgsQGCkk0wWm3+VXTz1FiGMWLxk6
-7hOj3Mb8yONx8US14RAEuxAuocNhTxGIwe5tYQKgJCZp4A75ri614jmRKsyPHrCq
-LoEYwH85nLAut6cNdj8W4phTGqNjf5bEmkyG8yXRtlMCPH6e/cWe4DZK0VS07u/z
-t4uqq0YoKC0WGLRfpw3Rnofoyg6WhCC+KbyWQSWTkIVWbXjfdF5wiYI+pkDNAG1b
-Y/o/KQWKZ3fKKlnqDvBbgXLEn0zncuZxXt2MDEOeBavCLYE7G2qrTMhQmC/QBaMK
-LW3tuJnQTuPfLeFjkVGL
-=5t9S
------END PGP SIGNATURE-----
+The application should send 'V' and not 'v' - and this should be fixed there.
 
---Cu8cv56cX8pVG4dTjTew6eiAP5xTEs8iB--
+What kind of application sends 'v' to get the version information?
+
+Regards,
+Oliver
+
+> 
+>> +		tmp = strlen(replybuf);
+>> +		ptr = 1;
+>> +		goto rx_out;
+>> +	}
+>>  
+>>  	/* check for serial 'N'umber command */
+>>  	if (cmd == 'N') {
+>>
+> 
+> Marc
+> 
