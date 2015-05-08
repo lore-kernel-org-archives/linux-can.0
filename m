@@ -1,52 +1,77 @@
-From: John Ernberg <john.ernberg@actia.se>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: Raw CAN socket support in LXC?
-Date: Fri, 8 May 2015 12:24:10 +0000
-Message-ID: <554CAAF1.3040707@actia.se>
+Date: Fri, 8 May 2015 14:31:41 +0200
+Message-ID: <554CACAD.9070604@pengutronix.de>
 References: <554C6FDE.6080706@actia.se> <554C73C8.5070705@pengutronix.de>
  <554C7790.1000302@actia.se> <554C79D4.8000901@pengutronix.de>
  <554C9B67.1030201@actia.se> <554CA3FB.6070307@pengutronix.de>
+ <554CAAF1.3040707@actia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="eQLjFrLkg1aW51rRUBtOa8qs39MDtRfGT"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.actia.se ([193.41.119.134]:26478 "EHLO mail.actia.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750995AbbEHMYN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 8 May 2015 08:24:13 -0400
-In-Reply-To: <554CA3FB.6070307@pengutronix.de>
-Content-Language: en-US
-Content-ID: <3B2071A2996D194DB457CE692F85100B@actia.se>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35656 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752679AbbEHMbu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 08:31:50 -0400
+in-reply-to: <554CAAF1.3040707@actia.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: John Ernberg <john.ernberg@actia.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Adam_Engstr=c3=b6m?= <adam.engstrom@actia.se>
 
-T24gMjAxNS0wNS0wOCAxMzo1NCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDA1LzA4
-LzIwMTUgMDE6MTcgUE0sIEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+IE9uIDIwMTUtMDUtMDggMTA6
-NTQsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPj4+IE9uIDA1LzA4LzIwMTUgMTA6NDUgQU0s
-IEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+Pj4gT3VyIG1haW4gdXNlLWNhc2UgaXMgdG8gcHJldmVu
-dCBhIHBvc3NpYmxlIG1pc2JlaGF2aW5nIGFwcGxpY2F0aW9uIHRvDQo+Pj4+IGJyaW5nIGRvd24g
-dGhlIGVudGlyZSBzeXN0ZW0gdGhyb3VnaCBtZW1vcnkgbGVha3MsIGNyYXNoZXMgZXRjLg0KPj4+
-PiBBdCB0aGlzIHRpbWUgd2UgaGF2ZSBub3QgY29uc2lkZXJlZCBhbnkgZmlsdGVyaW5nIG9yIGJs
-b2NraW5nIG9mIGRpcmVjdGlvbnMuDQo+Pj4gQ2FuIHlvdSBzZWUgdGhlIHlvdXIgQ0FOIGludGVy
-ZmFjZSBpbnNpZGUgb2YgdGhlIExYQyBjb250YWluZXI/IE9yIGFyZQ0KPj4+IHRoZSBSQVcgc29j
-a2V0cyB0aGUgcHJvYmxlbT8NCj4+Pg0KPj4+IE1hcmMNCj4+Pg0KPj4+IGJ0dzogeW91IGNhbiB1
-c2Ugc3lzdGVtZCB0byBkbyBtZW1vcnkgbGltaXRpbmcsIHRvby4gSXQgbWFrZXMgdXNlIG9mIHRo
-ZQ0KPj4+IHNhbWUgZmVhdHVyZSBpbiB0aGUga2VybmVsIChjZ3JvdXBzKS4NCj4+Pg0KPj4gSGkN
-Cj4+DQo+PiBXaXRoIHRoZSBleHBlcmltZW50aW5nIEkgaGF2ZSBiZWVuIGFibGUgdG8gZG8gb24g
-YW4gVWJ1bnR1IDE0LjA0IExUUw0KPj4gY29tcHV0ZXIsIEkgY2Fubm90IGZpbmQgYW55IENBTiBv
-ciB2aXJ0dWFsIENBTiBpbnRlcmZhY2VzIGluc2lkZSB0aGUNCj4+IGNvbnRhaW5lci4NCj4+IFdo
-ZW4gSSBjaGFuZ2UgdGhlIGNvbmZpZyB0byBzcGVjaWZpY2FsbHkgZm9yd2FyZCBDQU4gaW50ZXJm
-YWNlcywgbGlrZSB0aGlzOg0KPj4gbHhjLm5ldHdvcmsudHlwZSA9IGNhbg0KPj4gbHhjLm5ldHdv
-cmsubGluayA9IGx4Y2JyMA0KPj4gbHhjLm5ldHdvcmsuZmxhZ3MgPSB1cA0KPj4gbHhjLm5ldHdv
-cmsuaHdhZGRyID0gMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAt
-MDANCj4gWW91J3JlIHByb2JhYmx5IGZvbGxvd2luZyBhbiBldGhlcm5ldCBleGFtcGxlIGhlcmUs
-IHJpZ2h0PyBTbyBsZXQncw0KPiBmaXJzdCBmaWd1cmUgb3V0LCB0aGF0IGx4YyBkb2VzIGluIHRo
-ZSBiYWNrZ3JvdW5kIGFuZCBzZWUgaG93IHRoaXMNCj4gdHJhbnNsYXRlcyBpbnRvIHRoZSBDQU4g
-d29ybGQuDQo+DQo+IE1hcmMNCj4NCkhpDQoNCkkgZmlyc3QgdHJpZWQgdG8gZmlndXJlIG91dCB3
-aGF0IGtpbmQgb2Ygc2V0dGluZ3MgdGhhdCB3b3VsZCBiZSB0aGUgbW9zdCANCmFwcHJvcHJpYXRl
-IHRvIHRpbmtlciB3aXRoLCBidXQgSSBjb3VsZCBub3QgZmluZCBhbnl0aGluZyBtb3JlIHJlbGV2
-YW50IA0Kc28gSSBjb3BpZWQgdGhlIGV0aGVybmV0IGV4YW1wbGUgaW4gdGhlIGVuZC4NCkkgd2ls
-bCBkaWcgaW50byB0aGUgTFhDIGNvZGUgYW5kIHNlZSB3aGF0IGNhbiBiZSBkb25lIGluIHRlcm1z
-IG9mIA0KZ2V0dGluZyB0aGUgQ0FOIG5ldHdvcmsgaW50ZXJmYWNlcyB0aHJvdWdoLg0KDQpCZXN0
-IHJlZ2FyZHMgLy8gSm9obiBFcm5iZXJn
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--eQLjFrLkg1aW51rRUBtOa8qs39MDtRfGT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 05/08/2015 02:24 PM, John Ernberg wrote:
+> I first tried to figure out what kind of settings that would be the mos=
+t=20
+> appropriate to tinker with, but I could not find anything more relevant=
+=20
+> so I copied the ethernet example in the end.
+> I will dig into the LXC code and see what can be done in terms of=20
+> getting the CAN network interfaces through.
+
+It probably sets up an etherner bridge and some kind of virtual ethernet
+device between the container and the host.
+
+Can you start a container with a working ethernet setup and post the
+output of:
+
+    brctl show
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--eQLjFrLkg1aW51rRUBtOa8qs39MDtRfGT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCgAGBQJVTKywAAoJECte4hHFiupUxy4P/AoizAEjCXd+2fsy794ALZs+
+Oq7+k2TV1lLk4ddfuC8CKG8hT+8YECLfyOiVmscbvRlZ8hVDddYFnZ6XyORsKDzO
+fvr+gK+tTz5jw3zcYKJAKmG886bJjNiVHZ+OrbHTZUpqC73ETpFU6YxrUo/51jx4
+8TZBRLkhQzKkqwg9Z1TZ+LcQf1q5+vWLX16gPXBcgNhR4nepmNmoHvOKE1zOVU/n
+roSPFCMTVZwwPWwDe8mZSOhhFb4nHRlG6q1tAtnFoO+AveJ81Kw4pPh8g9djk5LT
+tgbjMP6l8By8u99Kd3J+Quk88C4fWkPwncPVTaJ1KoFCc4WBvTL/Mk792DDbcHsb
+KVEBa0STSUYHyie3MfDC18xi+iU5sXbYf63KErxmwbJotwNYVE5ANqmwTKDidKI6
+F2yibYv4LHADxa+VI87TlVxNGQNyxIh8O9Tc0BR8TLcU2MIifr56deTllg+lLDrT
+t/jgq5zjMOu6DOy4DNheeNB+8KmboJULo+OP9fcLx3pMrYGcXoVs96QeXvYK8egV
+AiJR3cFZ/amYAKCtTc7mJTPbvw5Euh4Ik4lup8RJ/yGv1iV9TUkyIK9lP3QYi3ol
+VdIR9xFo9J62Fcrjszbjm332RhB/KLaR4JweCQhU/TD/fQ8ZPwwaFKjXvi4+QyMd
+J2iZOsSww97Ebn7En6qL
+=KVJQ
+-----END PGP SIGNATURE-----
+
+--eQLjFrLkg1aW51rRUBtOa8qs39MDtRfGT--
