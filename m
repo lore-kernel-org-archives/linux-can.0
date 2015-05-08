@@ -1,42 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Raw CAN socket support in LXC?
-Date: Fri, 8 May 2015 10:54:44 +0200
-Message-ID: <554C79D4.8000901@pengutronix.de>
-References: <554C6FDE.6080706@actia.se> <554C73C8.5070705@pengutronix.de>
- <554C7790.1000302@actia.se>
+Subject: Re: [can-utils] add 'v' command response (#2)
+Date: Fri, 8 May 2015 12:46:06 +0200
+Message-ID: <554C93EE.5010800@pengutronix.de>
+References: <linux-can/can-utils/pull/2@github.com>
+ <linux-can/can-utils/pull/2/issue_event/300127103@github.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG"
+ boundary="V41sco13O4G3grHmEhTIC6KJuk5rmuvkS"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:60999 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34180 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750905AbbEHIyx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 04:54:53 -0400
-in-reply-to: <554C7790.1000302@actia.se>
+	with ESMTP id S1751378AbbEHKqO (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 06:46:14 -0400
+in-reply-to: <linux-can/can-utils/pull/2/issue_event/300127103@github.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: John Ernberg <john.ernberg@actia.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?UTF-8?Q?Adam_Engstr=c3=b6m?= <adam.engstrom@actia.se>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG
+--V41sco13O4G3grHmEhTIC6KJuk5rmuvkS
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 05/08/2015 10:45 AM, John Ernberg wrote:
-> Our main use-case is to prevent a possible misbehaving application to=20
-> bring down the entire system through memory leaks, crashes etc.
-> At this time we have not considered any filtering or blocking of direct=
-ions.
+On 05/08/2015 12:41 PM, Oliver Hartkopp wrote:
+> Merged #2 <https://github.com/linux-can/can-utils/pull/2>.
 
-Can you see the your CAN interface inside of the LXC container? Or are
-the RAW sockets the problem?
+Do you mind, if I rebase the patch and force push it to master
+to get rid of the two merges?
+
+> 2015-05-08 12:41 Oliver Hartkopp     M=E2=94=80=E2=94=90 {origin/master=
+} Merge pull request #2 from bombilee/master
+> 2015-05-07 10:13 bombilee            =E2=94=82 M=E2=94=80=E2=94=90 Merg=
+e pull request #1 from bombilee/bombilee-patch-1
+> 2015-05-07 10:11 bombilee            =E2=94=82 =E2=94=82 o add 'v' comm=
+and response
+> 2015-04-09 22:55 Yegor Yefremov      o=E2=94=80=E2=94=B4=E2=94=80=E2=94=
+=98 canplayer: convert skipgap to unsigned long
 
 Marc
-
-btw: you can use systemd to do memory limiting, too. It makes use of the
-same feature in the kernel (cgroups).
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -45,26 +47,26 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG
+--V41sco13O4G3grHmEhTIC6KJuk5rmuvkS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCgAGBQJVTHnUAAoJECte4hHFiupU3+wP/RC31K/tNEdIcnoz7AInLIXA
-fYID5a5D+lpx/WLXjjWOa20zPdVFAwd0kwE7PniDQeNixcUOW2sd0xanlKXU7p+u
-ZBWEOsgtfwtO2tEgxtgSRuGdjO/99KWSNwx4SjrXauKZFiPp4E0Cg93o7kV2TxYC
-ZQ2VjpmiXBi6UUfY4Aiia3PIijJG8QM3GdiYKYyYmrxinKyW7Qhb/ZGPhX4Ac+8V
-cl1ydjMu0VaxBFNN4eevwsPR9UmSOq6ZVMTchE+1Jt0jftpw9nuVPzBWEpFUcye4
-fveUaODq1EJHuLQl9S04QYC7ybQ79TilddGPZh0eVmxwOCTCpc+lkd4UjhdM+9G5
-7KMYMMNLWpAOfKvuH3LoXw2gMYfN1Ldrq1BtFdR05lMmtfqsqqMez+8hutE+nHD2
-xoVWTMPybpCaxpwqMTX2AKt1ZCJ7dJ0A0hkzSgxd9kos+94TE1JVpe+fKx6mQYI7
-tUbTMfwdBGgb1nGFzFHD5EAPy9vspK7R4uaB2PYkagx4YM0SiwhBGUYZBDkR9oHA
-1igNHkAYQm5WmN1O5nWs9rbUKPdBdqFq/p7gV1D+nVxRa9lEWtdRZrJ6/6ywWuyu
-Ydud78fPySP4tnd1/U7j7hRqUHRAa/t48RSva9+YA9RIgAH1uGvEi535OR3l6ILe
-IIoBC8ks0ZcgPDOFZX/I
-=EWGA
+iQIcBAEBCgAGBQJVTJPuAAoJECte4hHFiupUszcP/3+HliPvjsOWE5MbIzsxlS6b
+oI57dkNjFycGiQHphPAtF4gOfketnk9UnFmK1RsSatijxQ7/AMUl5mdWjZgycWvo
+Njyyd6hHygMH9dYKTAkbB4IQpUtFLHLzPhIA3FmxYxasNHfp7X9xdxD7tLaGPMGe
+WVn8uJedzi5czwnt+odR8ZX+jRUbeR6K9h+4USbWF4j7Rn/FthZBeE8xerQyV59U
+u4uvfdVKFDydcoKaab2SVJzOoqjq2tRuMkuyzNHIh4U/DtyzjDz9+O3R3UfMBcmC
+/QVIDmuRz8yTzjYMyNhsDPqR40g4Ak+W3/s0a8OSSoJjalZc0lqZtMQIKLiJ8LK7
+CaoH5JrvpWO1xt62oGcS5/Ur63j0L3grfIfrW2cH1OjT6z6K+shnvUm0dxw3wRHi
+I4gqv8vovtbWdYrSt1CG26QrJ+xpsp1MVS4hTheLGABUgUIGMzwyEm0emUm7tV5J
+1Oe39WvttYZPiEe9TEeVMp+OKD7DQrs42Nkq7mFSASBbpyUxoxlAMSIuItc0pRWI
+VPO+fPJIdfk230U0jwIJXxbMlV2qh/AC2fqkAkdq//pRSYGdL6iv81O3aATlUgfi
+kLAiwbuvonAWihI4g7H4COcxDgoo5lZJQQjfbs1ncmkeS9bZn47s2n85bpRVzpGs
+OHGo/S9tXpZipEMw5MUe
+=vKSd
 -----END PGP SIGNATURE-----
 
---NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG--
+--V41sco13O4G3grHmEhTIC6KJuk5rmuvkS--
