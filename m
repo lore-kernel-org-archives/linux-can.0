@@ -1,45 +1,93 @@
-From: John Ernberg <john.ernberg@actia.se>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: Raw CAN socket support in LXC?
-Date: Fri, 8 May 2015 11:17:52 +0000
-Message-ID: <554C9B67.1030201@actia.se>
+Date: Fri, 8 May 2015 13:54:35 +0200
+Message-ID: <554CA3FB.6070307@pengutronix.de>
 References: <554C6FDE.6080706@actia.se> <554C73C8.5070705@pengutronix.de>
  <554C7790.1000302@actia.se> <554C79D4.8000901@pengutronix.de>
+ <554C9B67.1030201@actia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="OV4IBuLejqH4mI2w7X2iE2hOvuuLd7E96"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.actia.se ([193.41.119.134]:63794 "EHLO mail.actia.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752026AbbEHLRz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 8 May 2015 07:17:55 -0400
-In-Reply-To: <554C79D4.8000901@pengutronix.de>
-Content-Language: en-US
-Content-ID: <CD6193C22806504F9EE537DCD5D13F3B@actia.se>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35136 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752117AbbEHLyr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 07:54:47 -0400
+in-reply-to: <554C9B67.1030201@actia.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: John Ernberg <john.ernberg@actia.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Adam_Engstr=c3=b6m?= <adam.engstrom@actia.se>
 
-T24gMjAxNS0wNS0wOCAxMDo1NCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDA1LzA4
-LzIwMTUgMTA6NDUgQU0sIEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+IE91ciBtYWluIHVzZS1jYXNl
-IGlzIHRvIHByZXZlbnQgYSBwb3NzaWJsZSBtaXNiZWhhdmluZyBhcHBsaWNhdGlvbiB0bw0KPj4g
-YnJpbmcgZG93biB0aGUgZW50aXJlIHN5c3RlbSB0aHJvdWdoIG1lbW9yeSBsZWFrcywgY3Jhc2hl
-cyBldGMuDQo+PiBBdCB0aGlzIHRpbWUgd2UgaGF2ZSBub3QgY29uc2lkZXJlZCBhbnkgZmlsdGVy
-aW5nIG9yIGJsb2NraW5nIG9mIGRpcmVjdGlvbnMuDQo+IENhbiB5b3Ugc2VlIHRoZSB5b3VyIENB
-TiBpbnRlcmZhY2UgaW5zaWRlIG9mIHRoZSBMWEMgY29udGFpbmVyPyBPciBhcmUNCj4gdGhlIFJB
-VyBzb2NrZXRzIHRoZSBwcm9ibGVtPw0KPg0KPiBNYXJjDQo+DQo+IGJ0dzogeW91IGNhbiB1c2Ug
-c3lzdGVtZCB0byBkbyBtZW1vcnkgbGltaXRpbmcsIHRvby4gSXQgbWFrZXMgdXNlIG9mIHRoZQ0K
-PiBzYW1lIGZlYXR1cmUgaW4gdGhlIGtlcm5lbCAoY2dyb3VwcykuDQo+DQpIaQ0KDQpXaXRoIHRo
-ZSBleHBlcmltZW50aW5nIEkgaGF2ZSBiZWVuIGFibGUgdG8gZG8gb24gYW4gVWJ1bnR1IDE0LjA0
-IExUUyANCmNvbXB1dGVyLCBJIGNhbm5vdCBmaW5kIGFueSBDQU4gb3IgdmlydHVhbCBDQU4gaW50
-ZXJmYWNlcyBpbnNpZGUgdGhlIA0KY29udGFpbmVyLg0KV2hlbiBJIGNoYW5nZSB0aGUgY29uZmln
-IHRvIHNwZWNpZmljYWxseSBmb3J3YXJkIENBTiBpbnRlcmZhY2VzLCBsaWtlIHRoaXM6DQpseGMu
-bmV0d29yay50eXBlID0gY2FuDQpseGMubmV0d29yay5saW5rID0gbHhjYnIwDQpseGMubmV0d29y
-ay5mbGFncyA9IHVwDQpseGMubmV0d29yay5od2FkZHIgPSAwMC0wMC0wMC0wMC0wMC0wMC0wMC0w
-MC0wMC0wMC0wMC0wMC0wMC0wMC0wMC0wMA0KSSBnZXQgYSBzZXJpZXMgb2YgcGFyc2luZyBlcnJv
-cnMgZnJvbSBMWEMgYW5kIHRoZSBjb250YWluZXIgY2Fubm90IGJlIA0KY3JlYXRlZC4NCg0KQ3Jl
-YXRpbmcgYSBwcml2aWxlZ2VkIGNvbnRhaW5lciBkaWQgbm90IGNoYW5nZSBhbnl0aGluZy4NCg0K
-V2Ugd2lsbCBhbHNvIHRha2UgdGhlIHN5c3RlbWQgYWx0ZXJuYXRpdmUgaW50byBjb25zaWRlcmF0
-aW9uLCBidXQgdGhlIA0KY3VycmVudCBzdGF0ZSBpcyB0aGF0IHdlJ2QgbGlrZSB0byBydW4gd2l0
-aCBMWEMsIGFzIHRoZXkgcHJvdmlkZSB1cyB3aXRoIA0KbW9yZSBvcHRpb25zIGZvciBmdXR1cmUg
-Y2hhbmdlcyB0byBvdXIgdXNlLWNhc2VzLg0KDQpCZXN0IHJlZ2FyZHMgLy8gSm9obiBFcm5iZXJn
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OV4IBuLejqH4mI2w7X2iE2hOvuuLd7E96
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 05/08/2015 01:17 PM, John Ernberg wrote:
+> On 2015-05-08 10:54, Marc Kleine-Budde wrote:
+>> On 05/08/2015 10:45 AM, John Ernberg wrote:
+>>> Our main use-case is to prevent a possible misbehaving application to=
+
+>>> bring down the entire system through memory leaks, crashes etc.
+>>> At this time we have not considered any filtering or blocking of dire=
+ctions.
+>> Can you see the your CAN interface inside of the LXC container? Or are=
+
+>> the RAW sockets the problem?
+>>
+>> Marc
+>>
+>> btw: you can use systemd to do memory limiting, too. It makes use of t=
+he
+>> same feature in the kernel (cgroups).
+>>
+> Hi
+>=20
+> With the experimenting I have been able to do on an Ubuntu 14.04 LTS=20
+> computer, I cannot find any CAN or virtual CAN interfaces inside the=20
+> container.
+> When I change the config to specifically forward CAN interfaces, like t=
+his:
+> lxc.network.type =3D can
+> lxc.network.link =3D lxcbr0
+> lxc.network.flags =3D up
+> lxc.network.hwaddr =3D 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+
+You're probably following an ethernet example here, right? So let's
+first figure out, that lxc does in the background and see how this
+translates into the CAN world.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--OV4IBuLejqH4mI2w7X2iE2hOvuuLd7E96
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCgAGBQJVTKP7AAoJECte4hHFiupUNAoP/jh46X5rq/iOEuEvgvKIpduW
+f5vVp04udEEhxeNqZkhawYDPsAZZ6OM38C+Il3FnujbGdlDasvAJ5TBKLohYOGNv
+Uz0hetL1cPgb8ATcttDf6+8AGRbmWmsr3eiic8yRuzd/MQFH7JKuJDMe4Ctblmdk
+3mrVhAG9nr/DtwWpIbCnMVtu8tzZx+QZGnrUykNOaicun3vLpEOfHYYkdz1ihmSX
+oYSQCouItr3nwfewOiOxBYc+4QoP8QIcqaCzG/U97l0k1lx5bDg9jKDYoQtCSygZ
+RBrOfmYwwfOeAKQEEHnG8LDL+30SLIL8YljfpERu6HSmJe21yfizNXOn6f9LkNb6
+Ba3ESmzH1f5usGRF3L6yBRCuroFqYQyjsoz36maRt8yO+dj9hZ+kHocPdpIFaxI2
+omlH4qDNQR5WbdfBOnCJJW3pswU4o0QPi9G479PpueKGhCVJvAtKNqBydT0b1Kd2
+Qv2rnHdJUY12acFEVAioQjK6YzuuGGW2OPpoZ5DAyP+bKzp0szNxNGCfsGCkc+ZH
+cIWpHkMGFdeKXpmt2BcUYATgKdXDIeBcDXSi4R86yHDB8qxuvZ+1jQR1RBS6BA/U
+F1ngATTN4BvFxaDnsaJcni6slqrztvJTpHhpfS5Gnq90cD0DMcaSmgRhgartATR6
+QNEhj+kEC1tjf2WJhWZx
+=Y8Kg
+-----END PGP SIGNATURE-----
+
+--OV4IBuLejqH4mI2w7X2iE2hOvuuLd7E96--
