@@ -1,45 +1,70 @@
-From: John Ernberg <john.ernberg@actia.se>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: Raw CAN socket support in LXC?
-Date: Fri, 8 May 2015 08:45:02 +0000
-Message-ID: <554C7790.1000302@actia.se>
+Date: Fri, 8 May 2015 10:54:44 +0200
+Message-ID: <554C79D4.8000901@pengutronix.de>
 References: <554C6FDE.6080706@actia.se> <554C73C8.5070705@pengutronix.de>
+ <554C7790.1000302@actia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.actia.se ([193.41.119.134]:16374 "EHLO mail.actia.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750959AbbEHIpH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 8 May 2015 04:45:07 -0400
-In-Reply-To: <554C73C8.5070705@pengutronix.de>
-Content-Language: en-US
-Content-ID: <7A3EA4B5A7A353478BC2A8BAA1000A30@actia.se>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:60999 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750905AbbEHIyx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 04:54:53 -0400
+in-reply-to: <554C7790.1000302@actia.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: John Ernberg <john.ernberg@actia.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Adam_Engstr=c3=b6m?= <adam.engstrom@actia.se>
 
-T24gMjAxNS0wNS0wOCAxMDoyOCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDA1LzA4
-LzIwMTUgMTA6MTIgQU0sIEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+IFdlJ3JlIHdvcmtpbmcgb24g
-YW4gZW1iZWRkZWQgc3lzdGVtIHdoZXJlIHdlJ3JlIHBsYW5uaW5nIG9uIHdyYXBwaW5nIG91cg0K
-Pj4gYXBwbGljYXRpb25zIGluIGNvbnRhaW5lcnMgYXMgYSByZXNvdXJjZSBjb250cm9sIHNhZmV0
-eSBtZWFzdXJlbWVudC4NCj4+ICAgRnJvbSBvdXIgdW5kZXJzdGFuZGluZyBSYXcgQ0FOIHNvY2tl
-dHMgYXJlIG5vdCB5ZXQgc3VwcG9ydGVkIGluIExYQywNCj4+IGFuZCBub3cgd2UncmUgd29uZGVy
-aW5nIHdoeS4NCj4gSSBkb24ndCBrbm93IC0gSSd2ZSBuZXZlciB0cmllZCB0byBkbyBzby4gTFhD
-IG1ha2UgaGVhdnkgdXNlIG9mIG5ldHdvcmsNCj4gbmFtZXNwYWNlcywgSSB0aGluayBuZXRmaWx0
-ZXIgKE5BVCwgZmlsdGVyKSBpcyB1c2VkIHRvIGdyYW50IGFjY2VzcyB0bw0KPiB0aGUgY29udGFp
-bmVycy4NCj4NCj4gQ2FuIHlvdSBlbGFib3JhdGUgeW91ciB1c2UgY2FzZSBpbiBtb3JlIGRldGFp
-bC4gRG8geW91IHdhbnQgdG8gbGltaXQgdGhlDQo+IHNlbmRpbmcgb2YgQ0FOIGZyYW1lcyBmcm9t
-IHRoZSBjb250YWluZXJzIHRvIHRoZSBvdXRzaWRlPyBEbyB5b3Ugd2FudCB0bw0KPiBmaWx0ZXIg
-b24gQ0FOLWlkIG9yIGV2ZW4gdGhlIGNvbnRlbnRzPyBXaGF0IGFib3V0IHRoZSByZWNlaXZpbmcg
-c2lkZT8gRG8NCj4geW91IHdhbnQgdG8gbGltaXQgdGhlIHJlY2VwdGlvbiB0byBjZXJ0YWluIENB
-Ti1pZHMsIHRvbz8NCj4NCj4+IElzIHRoZXJlIGFueSByZWFzb25pbmcgd2Ugc2hvdWxkIGJlIGF3
-YXJlIG9mIGFzIHRvIHdoeSBzdXBwb3J0IGhhcyBub3QNCj4+IGJlZW4gYWRkZWQ/IEV4Y2VwdCBw
-b3NzaWJseSAiV2UgaGF2ZSBub3Qgc2VlbiB0aGUgbmVlZCIgb3IgIk5vIG9uZSBoYXMNCj4+IHRh
-a2VuIHRoZSB0aW1lIHRvIi4NCj4gSSB0aGluayBhbGwgb2YgdGhlIGFib3ZlLg0KPg0KPiByZWdh
-cmRzLA0KPiBNYXJjDQo+DQpIaSBNYXJjDQoNClRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4NCg0K
-T3VyIG1haW4gdXNlLWNhc2UgaXMgdG8gcHJldmVudCBhIHBvc3NpYmxlIG1pc2JlaGF2aW5nIGFw
-cGxpY2F0aW9uIHRvIA0KYnJpbmcgZG93biB0aGUgZW50aXJlIHN5c3RlbSB0aHJvdWdoIG1lbW9y
-eSBsZWFrcywgY3Jhc2hlcyBldGMuDQpBdCB0aGlzIHRpbWUgd2UgaGF2ZSBub3QgY29uc2lkZXJl
-ZCBhbnkgZmlsdGVyaW5nIG9yIGJsb2NraW5nIG9mIGRpcmVjdGlvbnMuDQoNCkJlc3QgcmVnYXJk
-cyAvLyBKb2huIEVybmJlcmc=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 05/08/2015 10:45 AM, John Ernberg wrote:
+> Our main use-case is to prevent a possible misbehaving application to=20
+> bring down the entire system through memory leaks, crashes etc.
+> At this time we have not considered any filtering or blocking of direct=
+ions.
+
+Can you see the your CAN interface inside of the LXC container? Or are
+the RAW sockets the problem?
+
+Marc
+
+btw: you can use systemd to do memory limiting, too. It makes use of the
+same feature in the kernel (cgroups).
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCgAGBQJVTHnUAAoJECte4hHFiupU3+wP/RC31K/tNEdIcnoz7AInLIXA
+fYID5a5D+lpx/WLXjjWOa20zPdVFAwd0kwE7PniDQeNixcUOW2sd0xanlKXU7p+u
+ZBWEOsgtfwtO2tEgxtgSRuGdjO/99KWSNwx4SjrXauKZFiPp4E0Cg93o7kV2TxYC
+ZQ2VjpmiXBi6UUfY4Aiia3PIijJG8QM3GdiYKYyYmrxinKyW7Qhb/ZGPhX4Ac+8V
+cl1ydjMu0VaxBFNN4eevwsPR9UmSOq6ZVMTchE+1Jt0jftpw9nuVPzBWEpFUcye4
+fveUaODq1EJHuLQl9S04QYC7ybQ79TilddGPZh0eVmxwOCTCpc+lkd4UjhdM+9G5
+7KMYMMNLWpAOfKvuH3LoXw2gMYfN1Ldrq1BtFdR05lMmtfqsqqMez+8hutE+nHD2
+xoVWTMPybpCaxpwqMTX2AKt1ZCJ7dJ0A0hkzSgxd9kos+94TE1JVpe+fKx6mQYI7
+tUbTMfwdBGgb1nGFzFHD5EAPy9vspK7R4uaB2PYkagx4YM0SiwhBGUYZBDkR9oHA
+1igNHkAYQm5WmN1O5nWs9rbUKPdBdqFq/p7gV1D+nVxRa9lEWtdRZrJ6/6ywWuyu
+Ydud78fPySP4tnd1/U7j7hRqUHRAa/t48RSva9+YA9RIgAH1uGvEi535OR3l6ILe
+IIoBC8ks0ZcgPDOFZX/I
+=EWGA
+-----END PGP SIGNATURE-----
+
+--NmqtnRDfNOhmrC4puDlpFBmrwr2WlD8vG--
