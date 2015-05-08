@@ -1,72 +1,113 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [can-utils] add 'v' command response (#2)
-Date: Fri, 8 May 2015 12:46:06 +0200
-Message-ID: <554C93EE.5010800@pengutronix.de>
-References: <linux-can/can-utils/pull/2@github.com>
- <linux-can/can-utils/pull/2/issue_event/300127103@github.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] add 'v' command response
+Date: Fri, 08 May 2015 12:52:46 +0200
+Message-ID: <554C957E.8020709@hartkopp.net>
+References: <1431008428-22567-1-git-send-email-mkl@pengutronix.de>	<554B75A1.8030407@pengutronix.de>	<554BD1B2.8070200@hartkopp.net> <CAH=KbUsshrrQjBSkWzC6sgnXkfhnzUJfS8DcxrNx5-NBk9mysg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="V41sco13O4G3grHmEhTIC6KJuk5rmuvkS"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:34180 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751378AbbEHKqO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 06:46:14 -0400
-in-reply-to: <linux-can/can-utils/pull/2/issue_event/300127103@github.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:50730 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752608AbbEHKww (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 May 2015 06:52:52 -0400
+In-Reply-To: <CAH=KbUsshrrQjBSkWzC6sgnXkfhnzUJfS8DcxrNx5-NBk9mysg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Cheng-Lung Lee <chenglung@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---V41sco13O4G3grHmEhTIC6KJuk5rmuvkS
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 05/08/2015 04:18 AM, Cheng-Lung Lee wrote:
 
-On 05/08/2015 12:41 PM, Oliver Hartkopp wrote:
-> Merged #2 <https://github.com/linux-can/can-utils/pull/2>.
+> I am using USBtin device software(http://www.fischl.de/usbtin/ ) which like
+> some SLCAN based serial CAN protocol using "v" as Major/Minor version number.
+> Please check the pdf file for more detial.
+> http://www.mirrorservice.org/sites/downloads.sourceforge.net/s/so/socketcan.berlios/SLCAN-API.pdf
 
-Do you mind, if I rebase the patch and force push it to master
-to get rid of the two merges?
+Whoa!
 
-> 2015-05-08 12:41 Oliver Hartkopp     M=E2=94=80=E2=94=90 {origin/master=
-} Merge pull request #2 from bombilee/master
-> 2015-05-07 10:13 bombilee            =E2=94=82 M=E2=94=80=E2=94=90 Merg=
-e pull request #1 from bombilee/bombilee-patch-1
-> 2015-05-07 10:11 bombilee            =E2=94=82 =E2=94=82 o add 'v' comm=
-and response
-> 2015-04-09 22:55 Yegor Yefremov      o=E2=94=80=E2=94=B4=E2=94=80=E2=94=
-=98 canplayer: convert skipgap to unsigned long
+That's pretty hard to be pointed at my *own* created documentation after seven
+years m)
 
-Marc
+Indeed you are right. To emulate the SLCAN adapter with the slcanpty emulation
+this patch makes perfectly sense.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+I pulled your changes into can-utils:master.
 
+Best regards,
+Oliver
 
---V41sco13O4G3grHmEhTIC6KJuk5rmuvkS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ps. The pointer to http://www.fischl.de/usbtin/ was interesting.
 
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCgAGBQJVTJPuAAoJECte4hHFiupUszcP/3+HliPvjsOWE5MbIzsxlS6b
-oI57dkNjFycGiQHphPAtF4gOfketnk9UnFmK1RsSatijxQ7/AMUl5mdWjZgycWvo
-Njyyd6hHygMH9dYKTAkbB4IQpUtFLHLzPhIA3FmxYxasNHfp7X9xdxD7tLaGPMGe
-WVn8uJedzi5czwnt+odR8ZX+jRUbeR6K9h+4USbWF4j7Rn/FthZBeE8xerQyV59U
-u4uvfdVKFDydcoKaab2SVJzOoqjq2tRuMkuyzNHIh4U/DtyzjDz9+O3R3UfMBcmC
-/QVIDmuRz8yTzjYMyNhsDPqR40g4Ak+W3/s0a8OSSoJjalZc0lqZtMQIKLiJ8LK7
-CaoH5JrvpWO1xt62oGcS5/Ur63j0L3grfIfrW2cH1OjT6z6K+shnvUm0dxw3wRHi
-I4gqv8vovtbWdYrSt1CG26QrJ+xpsp1MVS4hTheLGABUgUIGMzwyEm0emUm7tV5J
-1Oe39WvttYZPiEe9TEeVMp+OKD7DQrs42Nkq7mFSASBbpyUxoxlAMSIuItc0pRWI
-VPO+fPJIdfk230U0jwIJXxbMlV2qh/AC2fqkAkdq//pRSYGdL6iv81O3aATlUgfi
-kLAiwbuvonAWihI4g7H4COcxDgoo5lZJQQjfbs1ncmkeS9bZn47s2n85bpRVzpGs
-OHGo/S9tXpZipEMw5MUe
-=vKSd
------END PGP SIGNATURE-----
-
---V41sco13O4G3grHmEhTIC6KJuk5rmuvkS--
+> The software I am testing is USBtinViewer, which sends "V" and "v" on startup.
+> If slcanpty sends NACK . The program quits.
+> 
+> Best,
+> Steven
+> 
+> On Thu, May 7, 2015 at 4:57 PM, Oliver Hartkopp <socketcan@hartkopp.net
+> <mailto:socketcan@hartkopp.net>> wrote:
+> 
+>     Hi all
+> 
+>     On 05/07/2015 04:24 PM, Marc Kleine-Budde wrote:
+>     > Hello bombilee,
+>     >
+>     > On 05/07/2015 04:20 PM, Marc Kleine-Budde wrote:
+>     >> diff --git a/slcanpty.c b/slcanpty.c
+>     >> index c062a027da41..f485ac775a53 100644
+>     >> --- a/slcanpty.c
+>     >> +++ b/slcanpty.c
+>     >> @@ -185,6 +185,13 @@ rx_restart:
+>     >>              ptr = 1;
+>     >>              goto rx_out;
+>     >>      }
+>     >> +    /* check for 'v'ersion command */
+>     >> +    if (cmd == 'v') {
+>     >> +            sprintf(replybuf, "v1014\r");
+>     >
+>     > Is there a special meaning behing "v1014"? Where does the string come from?
+> 
+>     We *already* check for the version command!
+> 
+>     But it has to be 'V' with upper case:
+> 
+>     See http://www.can232.com/docs/can232_v3.pdf page 12:
+> 
+>     Get Version number of both CAN232 hardware and software
+>     This command is only active always.
+>     Example: V[CR]
+>     Get Version numbers
+>     Returns: V and a 2 bytes BCD value for hardware version and
+>     a 2 byte BCD value for software version plus
+>     CR (Ascii 13) for OK. E.g. V1013[CR]
+> 
+>     The SLCAN/Lawicel protocol is case sensitive!!
+> 
+>     See T/t R/r S/s M/m commands.
+> 
+>     A hunk could be to support lower case for the version information check too.
+> 
+>     But IMO that's the wrong approach.
+> 
+>     The application should send 'V' and not 'v' - and this should be fixed there.
+> 
+>     What kind of application sends 'v' to get the version information?
+> 
+>     Regards,
+>     Oliver
+> 
+>     >
+>     >> +            tmp = strlen(replybuf);
+>     >> +            ptr = 1;
+>     >> +            goto rx_out;
+>     >> +    }
+>     >>
+>     >>      /* check for serial 'N'umber command */
+>     >>      if (cmd == 'N') {
+>     >>
+>     >
+>     > Marc
+>     >
+> 
+> 
