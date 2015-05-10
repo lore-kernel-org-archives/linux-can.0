@@ -1,71 +1,34 @@
-From: John Ernberg <john.ernberg@actia.se>
-Subject: Re: Raw CAN socket support in LXC?
-Date: Fri, 8 May 2015 12:40:14 +0000
-Message-ID: <554CAEB0.8000302@actia.se>
-References: <554C6FDE.6080706@actia.se> <554C73C8.5070705@pengutronix.de>
- <554C7790.1000302@actia.se> <554C79D4.8000901@pengutronix.de>
- <554C9B67.1030201@actia.se> <554CA3FB.6070307@pengutronix.de>
- <554CAAF1.3040707@actia.se> <554CACAD.9070604@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2015-05-06
+Date: Sat, 09 May 2015 22:13:05 -0400 (EDT)
+Message-ID: <20150509.221305.276159515012607255.davem@davemloft.net>
+References: <554A85C2.1020700@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.actia.se ([193.41.119.134]:64026 "EHLO mail.actia.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751570AbbEHMkR (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Fri, 8 May 2015 08:40:17 -0400
-In-Reply-To: <554CACAD.9070604@pengutronix.de>
-Content-Language: en-US
-Content-ID: <0786D81372D29F42A4E2A80000215378@actia.se>
+Received: from shards.monkeyblade.net ([149.20.54.216]:47430 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752054AbbEJCNJ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 9 May 2015 22:13:09 -0400
+In-Reply-To: <554A85C2.1020700@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org, david@protonic.nl
 
-T24gMjAxNS0wNS0wOCAxNDozMSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDA1LzA4
-LzIwMTUgMDI6MjQgUE0sIEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+IEkgZmlyc3QgdHJpZWQgdG8g
-ZmlndXJlIG91dCB3aGF0IGtpbmQgb2Ygc2V0dGluZ3MgdGhhdCB3b3VsZCBiZSB0aGUgbW9zdA0K
-Pj4gYXBwcm9wcmlhdGUgdG8gdGlua2VyIHdpdGgsIGJ1dCBJIGNvdWxkIG5vdCBmaW5kIGFueXRo
-aW5nIG1vcmUgcmVsZXZhbnQNCj4+IHNvIEkgY29waWVkIHRoZSBldGhlcm5ldCBleGFtcGxlIGlu
-IHRoZSBlbmQuDQo+PiBJIHdpbGwgZGlnIGludG8gdGhlIExYQyBjb2RlIGFuZCBzZWUgd2hhdCBj
-YW4gYmUgZG9uZSBpbiB0ZXJtcyBvZg0KPj4gZ2V0dGluZyB0aGUgQ0FOIG5ldHdvcmsgaW50ZXJm
-YWNlcyB0aHJvdWdoLg0KPiBJdCBwcm9iYWJseSBzZXRzIHVwIGFuIGV0aGVybmVyIGJyaWRnZSBh
-bmQgc29tZSBraW5kIG9mIHZpcnR1YWwgZXRoZXJuZXQNCj4gZGV2aWNlIGJldHdlZW4gdGhlIGNv
-bnRhaW5lciBhbmQgdGhlIGhvc3QuDQo+DQo+IENhbiB5b3Ugc3RhcnQgYSBjb250YWluZXIgd2l0
-aCBhIHdvcmtpbmcgZXRoZXJuZXQgc2V0dXAgYW5kIHBvc3QgdGhlDQo+IG91dHB1dCBvZjoNCj4N
-Cj4gICAgICBicmN0bCBzaG93DQo+DQo+IE1hcmMNCj4NCkhlcmUncyB3aGF0IG15IGlmY29uZmln
-IGFuZCBicmN0bCBsb29rcyBsaWtlIHdoZW4gSSBhbSBydW5uaW5nIGEgDQpjb250YWluZXIgd2l0
-aCB3b3JraW5nIGV0aGVybmV0IGJyaWRnaW5nLg0KDQokIGlmY29uZmlnDQpsbyAgICAgICAgTGlu
-ayBlbmNhcDpMb2NhbCBMb29wYmFjaw0KICAgICAgICAgICBpbmV0IGFkZHI6MTI3LjAuMC4xICBN
-YXNrOjI1NS4wLjAuMA0KICAgICAgICAgICBpbmV0NiBhZGRyOiA6OjEvMTI4IFNjb3BlOkhvc3QN
-CiAgICAgICAgICAgVVAgTE9PUEJBQ0sgUlVOTklORyAgTVRVOjY1NTM2ICBNZXRyaWM6MQ0KICAg
-ICAgICAgICBSWCBwYWNrZXRzOjYyNzA4IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZy
-YW1lOjANCiAgICAgICAgICAgVFggcGFja2V0czo2MjcwOCBlcnJvcnM6MCBkcm9wcGVkOjAgb3Zl
-cnJ1bnM6MCBjYXJyaWVyOjANCiAgICAgICAgICAgY29sbGlzaW9uczowIHR4cXVldWVsZW46MA0K
-ICAgICAgICAgICBSWCBieXRlczoyNjE3NDI3OSAoMjYuMSBNQikgIFRYIGJ5dGVzOjI2MTc0Mjc5
-ICgyNi4xIE1CKQ0KDQpseGNicjAgICAgTGluayBlbmNhcDpFdGhlcm5ldCAgSFdhZGRyIGZlOjhl
-OmVjOjhmOjEzOjI0DQogICAgICAgICAgIGluZXQgYWRkcjoxMC4wLjEuMSAgQmNhc3Q6MTAuMC4x
-LjI1NSAgTWFzazoyNTUuMjU1LjI1NS4wDQogICAgICAgICAgIGluZXQ2IGFkZHI6IGZlODA6Ojgw
-MWI6ZDVmZjpmZTczOjM0NjQvNjQgU2NvcGU6TGluaw0KICAgICAgICAgICBVUCBCUk9BRENBU1Qg
-UlVOTklORyBNVUxUSUNBU1QgIE1UVToxNTAwICBNZXRyaWM6MQ0KICAgICAgICAgICBSWCBwYWNr
-ZXRzOjEyMSBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBmcmFtZTowDQogICAgICAgICAg
-IFRYIHBhY2tldHM6MTUzIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGNhcnJpZXI6MA0K
-ICAgICAgICAgICBjb2xsaXNpb25zOjAgdHhxdWV1ZWxlbjowDQogICAgICAgICAgIFJYIGJ5dGVz
-Ojk4NDUgKDkuOCBLQikgIFRYIGJ5dGVzOjIwNTYwICgyMC41IEtCKQ0KDQp2Y2FuMCAgICAgTGlu
-ayBlbmNhcDpVTlNQRUMgIEhXYWRkciANCjAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAw
-LTAwLTAwLTAwLTAwLTAwDQogICAgICAgICAgIFVQIFJVTk5JTkcgTk9BUlAgIE1UVToxNiAgTWV0
-cmljOjENCiAgICAgICAgICAgUlggcGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVu
-czowIGZyYW1lOjANCiAgICAgICAgICAgVFggcGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBv
-dmVycnVuczowIGNhcnJpZXI6MA0KICAgICAgICAgICBjb2xsaXNpb25zOjAgdHhxdWV1ZWxlbjow
-DQogICAgICAgICAgIFJYIGJ5dGVzOjAgKDAuMCBCKSAgVFggYnl0ZXM6MCAoMC4wIEIpDQoNCnZl
-dGhUUkdPNlcgTGluayBlbmNhcDpFdGhlcm5ldCAgSFdhZGRyIGZlOjhlOmVjOjhmOjEzOjI0DQog
-ICAgICAgICAgIGluZXQ2IGFkZHI6IGZlODA6OmZjOGU6ZWNmZjpmZThmOjEzMjQvNjQgU2NvcGU6
-TGluaw0KICAgICAgICAgICBVUCBCUk9BRENBU1QgUlVOTklORyBNVUxUSUNBU1QgIE1UVToxNTAw
-ICBNZXRyaWM6MQ0KICAgICAgICAgICBSWCBwYWNrZXRzOjM5IGVycm9yczowIGRyb3BwZWQ6MCBv
-dmVycnVuczowIGZyYW1lOjANCiAgICAgICAgICAgVFggcGFja2V0czo1NiBlcnJvcnM6MCBkcm9w
-cGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjANCiAgICAgICAgICAgY29sbGlzaW9uczowIHR4cXVl
-dWVsZW46MTAwMA0KICAgICAgICAgICBSWCBieXRlczozNzg3ICgzLjcgS0IpICBUWCBieXRlczo4
-MDA1ICg4LjAgS0IpDQoNCg0KJCBicmN0bCBzaG93DQpicmlkZ2UgbmFtZSAgICBicmlkZ2UgaWQg
-ICAgICBTVFAgZW5hYmxlZCAgICBpbnRlcmZhY2VzDQpseGNicjAgICAgICAgICA4MDAwLmZlOGVl
-YzhmMTMyNCAgIG5vICAgICAgICB2ZXRoVFJHTzZXDQoNCkJlc3QgcmVnYXJkcyAvLyBKb2huIEVy
-bmJlcmc=
+=46rom: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 6 May 2015 23:21:06 +0200
+
+> this is a pull request of a seven patches for net-next/master.
+>=20
+> Andreas Gr=F6ger contributes two patches for the janz-ican3 driver. I=
+n
+> the first patch, the documentation for already existing sysfs entries
+> is added, the second patch adds support for another module/firmware
+> variant. A patch by Shawn Landden makes the padding in the struct
+> can_frame explicit. The next 4 patches target the flexcan driver, the
+> first one is by David Jander adding some documentation, the reaming
+> three by me add more documentation and two small code cleanups.
+
+Pulled, thanks Marc.
