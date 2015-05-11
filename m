@@ -1,71 +1,72 @@
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+From: John Ernberg <john.ernberg@actia.se>
 Subject: Re: Raw CAN socket support in LXC?
-Date: Mon, 11 May 2015 13:45:51 +0200
-Message-ID: <201505111345.51998.pisa@cmp.felk.cvut.cz>
-References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de> <554C9B67.1030201@actia.se>
+Date: Mon, 11 May 2015 13:06:26 +0000
+Message-ID: <5550A95B.1000605@actia.se>
+References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de>
+ <554C9B67.1030201@actia.se> <201505111345.51998.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay.felk.cvut.cz ([147.32.80.7]:63319 "EHLO
-	relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751290AbbEKMVC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 11 May 2015 08:21:02 -0400
-In-Reply-To: <554C9B67.1030201@actia.se>
-Content-Disposition: inline
+Received: from mail.actia.se ([193.41.119.134]:6588 "EHLO mail.actia.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754006AbbEKNGb (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 11 May 2015 09:06:31 -0400
+In-Reply-To: <201505111345.51998.pisa@cmp.felk.cvut.cz>
+Content-Language: en-US
+Content-ID: <BDD1116C645F6A45B56A329634F50EE6@actia.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: John Ernberg <john.ernberg@actia.se>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Adam =?utf-8?q?Engstr=C3=B6m?= <adam.engstrom@actia.se>
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
 
-Hello John,
-
-On Friday 08 of May 2015 13:17:52 John Ernberg wrote:
-> Hi
->
-> With the experimenting I have been able to do on an Ubuntu 14.04 LTS
-> computer, I cannot find any CAN or virtual CAN interfaces inside the
-> container.
-> When I change the config to specifically forward CAN interfaces, like this:
-> lxc.network.type = can
-> lxc.network.link = lxcbr0
-> lxc.network.flags = up
-> lxc.network.hwaddr = 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
-> I get a series of parsing errors from LXC and the container cannot be
-> created.
->
-> Creating a privileged container did not change anything.
->
-> We will also take the systemd alternative into consideration, but the
-> current state is that we'd like to run with LXC, as they provide us with
-> more options for future changes to our use-cases.
-
-you cannot use Ethernet bridging. This cannot work.
-But you should be able to forward whole interface
-to the container
-
-lxc.network.type = phys
-
-I have not tried this for CAN, but it works with Ethernet
-and I expect that in this case there is no significant difference
-to CAN. But you lose (at least for Ethernet) access to the interface
-from the outer system.
-
-If you want to filter frames then you should be able to setup
-virtual CAN interface in the outer/host system, then setup CANGW
-to route messages in the interrest and the start container
-which hides virtual can interface from the outer system
-but CANGW setup should continue to work after this move of
-interface to other namespace.
-
-I am out of time with teaching now so I do not expect to find
-time to test that soon but I hope that hint is in the right
-direction. If there is some need to do code adaptations somebody
-of my colleagues could have interrest to look at it if we
-are sucesfull with gaining one of our partially related grant
-or we find other funding.
-
-Best wishes,
-
-               Pavel
+T24gMjAxNS0wNS0xMSAxMzo0NSwgUGF2ZWwgUGlzYSB3cm90ZToNCj4gSGVsbG8gSm9obiwNCj4N
+Cj4gT24gRnJpZGF5IDA4IG9mIE1heSAyMDE1IDEzOjE3OjUyIEpvaG4gRXJuYmVyZyB3cm90ZToN
+Cj4+IEhpDQo+Pg0KPj4gV2l0aCB0aGUgZXhwZXJpbWVudGluZyBJIGhhdmUgYmVlbiBhYmxlIHRv
+IGRvIG9uIGFuIFVidW50dSAxNC4wNCBMVFMNCj4+IGNvbXB1dGVyLCBJIGNhbm5vdCBmaW5kIGFu
+eSBDQU4gb3IgdmlydHVhbCBDQU4gaW50ZXJmYWNlcyBpbnNpZGUgdGhlDQo+PiBjb250YWluZXIu
+DQo+PiBXaGVuIEkgY2hhbmdlIHRoZSBjb25maWcgdG8gc3BlY2lmaWNhbGx5IGZvcndhcmQgQ0FO
+IGludGVyZmFjZXMsIGxpa2UgdGhpczoNCj4+IGx4Yy5uZXR3b3JrLnR5cGUgPSBjYW4NCj4+IGx4
+Yy5uZXR3b3JrLmxpbmsgPSBseGNicjANCj4+IGx4Yy5uZXR3b3JrLmZsYWdzID0gdXANCj4+IGx4
+Yy5uZXR3b3JrLmh3YWRkciA9IDAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAw
+LTAwLTAwLTAwDQo+PiBJIGdldCBhIHNlcmllcyBvZiBwYXJzaW5nIGVycm9ycyBmcm9tIExYQyBh
+bmQgdGhlIGNvbnRhaW5lciBjYW5ub3QgYmUNCj4+IGNyZWF0ZWQuDQo+Pg0KPj4gQ3JlYXRpbmcg
+YSBwcml2aWxlZ2VkIGNvbnRhaW5lciBkaWQgbm90IGNoYW5nZSBhbnl0aGluZy4NCj4+DQo+PiBX
+ZSB3aWxsIGFsc28gdGFrZSB0aGUgc3lzdGVtZCBhbHRlcm5hdGl2ZSBpbnRvIGNvbnNpZGVyYXRp
+b24sIGJ1dCB0aGUNCj4+IGN1cnJlbnQgc3RhdGUgaXMgdGhhdCB3ZSdkIGxpa2UgdG8gcnVuIHdp
+dGggTFhDLCBhcyB0aGV5IHByb3ZpZGUgdXMgd2l0aA0KPj4gbW9yZSBvcHRpb25zIGZvciBmdXR1
+cmUgY2hhbmdlcyB0byBvdXIgdXNlLWNhc2VzLg0KPiB5b3UgY2Fubm90IHVzZSBFdGhlcm5ldCBi
+cmlkZ2luZy4gVGhpcyBjYW5ub3Qgd29yay4NCj4gQnV0IHlvdSBzaG91bGQgYmUgYWJsZSB0byBm
+b3J3YXJkIHdob2xlIGludGVyZmFjZQ0KPiB0byB0aGUgY29udGFpbmVyDQo+DQo+IGx4Yy5uZXR3
+b3JrLnR5cGUgPSBwaHlzDQo+DQo+IEkgaGF2ZSBub3QgdHJpZWQgdGhpcyBmb3IgQ0FOLCBidXQg
+aXQgd29ya3Mgd2l0aCBFdGhlcm5ldA0KPiBhbmQgSSBleHBlY3QgdGhhdCBpbiB0aGlzIGNhc2Ug
+dGhlcmUgaXMgbm8gc2lnbmlmaWNhbnQgZGlmZmVyZW5jZQ0KPiB0byBDQU4uIEJ1dCB5b3UgbG9z
+ZSAoYXQgbGVhc3QgZm9yIEV0aGVybmV0KSBhY2Nlc3MgdG8gdGhlIGludGVyZmFjZQ0KPiBmcm9t
+IHRoZSBvdXRlciBzeXN0ZW0uDQo+DQo+IElmIHlvdSB3YW50IHRvIGZpbHRlciBmcmFtZXMgdGhl
+biB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gc2V0dXANCj4gdmlydHVhbCBDQU4gaW50ZXJmYWNlIGlu
+IHRoZSBvdXRlci9ob3N0IHN5c3RlbSwgdGhlbiBzZXR1cCBDQU5HVw0KPiB0byByb3V0ZSBtZXNz
+YWdlcyBpbiB0aGUgaW50ZXJyZXN0IGFuZCB0aGUgc3RhcnQgY29udGFpbmVyDQo+IHdoaWNoIGhp
+ZGVzIHZpcnR1YWwgY2FuIGludGVyZmFjZSBmcm9tIHRoZSBvdXRlciBzeXN0ZW0NCj4gYnV0IENB
+TkdXIHNldHVwIHNob3VsZCBjb250aW51ZSB0byB3b3JrIGFmdGVyIHRoaXMgbW92ZSBvZg0KPiBp
+bnRlcmZhY2UgdG8gb3RoZXIgbmFtZXNwYWNlLg0KPg0KPiBJIGFtIG91dCBvZiB0aW1lIHdpdGgg
+dGVhY2hpbmcgbm93IHNvIEkgZG8gbm90IGV4cGVjdCB0byBmaW5kDQo+IHRpbWUgdG8gdGVzdCB0
+aGF0IHNvb24gYnV0IEkgaG9wZSB0aGF0IGhpbnQgaXMgaW4gdGhlIHJpZ2h0DQo+IGRpcmVjdGlv
+bi4gSWYgdGhlcmUgaXMgc29tZSBuZWVkIHRvIGRvIGNvZGUgYWRhcHRhdGlvbnMgc29tZWJvZHkN
+Cj4gb2YgbXkgY29sbGVhZ3VlcyBjb3VsZCBoYXZlIGludGVycmVzdCB0byBsb29rIGF0IGl0IGlm
+IHdlDQo+IGFyZSBzdWNlc2Z1bGwgd2l0aCBnYWluaW5nIG9uZSBvZiBvdXIgcGFydGlhbGx5IHJl
+bGF0ZWQgZ3JhbnQNCj4gb3Igd2UgZmluZCBvdGhlciBmdW5kaW5nLg0KPg0KPiBCZXN0IHdpc2hl
+cywNCj4NCj4gICAgICAgICAgICAgICAgIFBhdmVsDQpIaSBQYXZlbCwNCg0KSSBzdWNjZWVkZWQg
+aW4gZm9yd2FyZGluZyB0aGUgY2FuIGludGVyZmFjZSBpbnRvIHRoZSBjb250YWluZXIuDQpXaGVu
+IEkgdHJpZWQgdG8gb3BlbiBhIHNvY2tldCwgYW5kIGJpbmQgaXQgdG8gdGhlIGludGVyZmFjZSB0
+byBtYWtlIGEgDQp0ZXN0IGZvciByZWNlaXZpbmcgZnJhbWVzIEkgZ290IGFuIGVycm9yIHNheWlu
+ZyAic29ja2V0OiBBZGRyZXNzIGZhbWlseSANCm5vdCBzdXBwb3J0ZWQgYnkgcHJvdG9jb2wiLg0K
+TG9va2luZyBhcm91bmQgaW4gTFhDLCBhbmQgdGhlbiB0aGUga2VybmVsLCBJIGRpc2NvdmVyZWQg
+dGhhdCB0aGUgQUZfQ0FOIA0KaW1wbGVtZW50YXRpb24gZG9lcyBub3Qgc3VwcG9ydCBuZXRfbmFt
+ZXNwYWNlcyB5ZXQsIGFuZCBuZXRfbmFtZXNwYWNlcyANCmRvZXMgbm90IGltcGxlbWVudCBhbnkg
+aGFuZGxpbmcgZm9yIENBTiwgc28gd2UgY2Fubm90IG9wZW4gYW55IGtpbmQgb2YgDQpzb2NrZXQg
+dG8gYWN0dWFsbHkgcmVhZCBmcm9tIHRoZSBpbnRlcmZhY2UuDQoNCklzIHRoZXJlIGFueXRoaW5n
+IHF1aWNrIGFuZCBkaXJ0eSBJIGNvdWxkIHRyeSB0byBzZWUgaWYgc29ja2V0IHRyYWZmaWMgDQpj
+YW4gYmUgZm9yd2FyZGVkIGludG8gdGhlIGNvbnRhaW5lciBvbiBhIHBoeXMtZm9yd2FyZGVkIENB
+TiBpbnRlcmZhY2U/IA0KT3Igd291bGQgYSBwcm9wZXIgbmV0X25hbWVzcGFjZXMgaW1wbGVtZW50
+YXRpb24gZm9yIENBTiBiZSBuZWNlc3Nhcnk/DQoNCkJlc3QgcmVnYXJkcyAvLyBKb2huIEVybmJl
+cmc=
