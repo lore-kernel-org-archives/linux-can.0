@@ -1,34 +1,71 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2015-05-06
-Date: Sat, 09 May 2015 22:13:05 -0400 (EDT)
-Message-ID: <20150509.221305.276159515012607255.davem@davemloft.net>
-References: <554A85C2.1020700@pengutronix.de>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: Raw CAN socket support in LXC?
+Date: Mon, 11 May 2015 13:45:51 +0200
+Message-ID: <201505111345.51998.pisa@cmp.felk.cvut.cz>
+References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de> <554C9B67.1030201@actia.se>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:47430 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752054AbbEJCNJ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 9 May 2015 22:13:09 -0400
-In-Reply-To: <554A85C2.1020700@pengutronix.de>
+Received: from relay.felk.cvut.cz ([147.32.80.7]:63319 "EHLO
+	relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751290AbbEKMVC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 11 May 2015 08:21:02 -0400
+In-Reply-To: <554C9B67.1030201@actia.se>
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org, david@protonic.nl
+To: John Ernberg <john.ernberg@actia.se>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Adam =?utf-8?q?Engstr=C3=B6m?= <adam.engstrom@actia.se>
 
-=46rom: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 6 May 2015 23:21:06 +0200
+Hello John,
 
-> this is a pull request of a seven patches for net-next/master.
->=20
-> Andreas Gr=F6ger contributes two patches for the janz-ican3 driver. I=
-n
-> the first patch, the documentation for already existing sysfs entries
-> is added, the second patch adds support for another module/firmware
-> variant. A patch by Shawn Landden makes the padding in the struct
-> can_frame explicit. The next 4 patches target the flexcan driver, the
-> first one is by David Jander adding some documentation, the reaming
-> three by me add more documentation and two small code cleanups.
+On Friday 08 of May 2015 13:17:52 John Ernberg wrote:
+> Hi
+>
+> With the experimenting I have been able to do on an Ubuntu 14.04 LTS
+> computer, I cannot find any CAN or virtual CAN interfaces inside the
+> container.
+> When I change the config to specifically forward CAN interfaces, like this:
+> lxc.network.type = can
+> lxc.network.link = lxcbr0
+> lxc.network.flags = up
+> lxc.network.hwaddr = 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+> I get a series of parsing errors from LXC and the container cannot be
+> created.
+>
+> Creating a privileged container did not change anything.
+>
+> We will also take the systemd alternative into consideration, but the
+> current state is that we'd like to run with LXC, as they provide us with
+> more options for future changes to our use-cases.
 
-Pulled, thanks Marc.
+you cannot use Ethernet bridging. This cannot work.
+But you should be able to forward whole interface
+to the container
+
+lxc.network.type = phys
+
+I have not tried this for CAN, but it works with Ethernet
+and I expect that in this case there is no significant difference
+to CAN. But you lose (at least for Ethernet) access to the interface
+from the outer system.
+
+If you want to filter frames then you should be able to setup
+virtual CAN interface in the outer/host system, then setup CANGW
+to route messages in the interrest and the start container
+which hides virtual can interface from the outer system
+but CANGW setup should continue to work after this move of
+interface to other namespace.
+
+I am out of time with teaching now so I do not expect to find
+time to test that soon but I hope that hint is in the right
+direction. If there is some need to do code adaptations somebody
+of my colleagues could have interrest to look at it if we
+are sucesfull with gaining one of our partially related grant
+or we find other funding.
+
+Best wishes,
+
+               Pavel
