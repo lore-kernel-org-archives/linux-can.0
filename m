@@ -1,72 +1,46 @@
-From: John Ernberg <john.ernberg@actia.se>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: Raw CAN socket support in LXC?
-Date: Mon, 11 May 2015 13:06:26 +0000
-Message-ID: <5550A95B.1000605@actia.se>
-References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de>
- <554C9B67.1030201@actia.se> <201505111345.51998.pisa@cmp.felk.cvut.cz>
+Date: Tue, 12 May 2015 20:09:28 +0200
+Message-ID: <555241D8.6050503@hartkopp.net>
+References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de> <554C9B67.1030201@actia.se> <201505111345.51998.pisa@cmp.felk.cvut.cz> <5550A95B.1000605@actia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.actia.se ([193.41.119.134]:6588 "EHLO mail.actia.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754006AbbEKNGb (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 11 May 2015 09:06:31 -0400
-In-Reply-To: <201505111345.51998.pisa@cmp.felk.cvut.cz>
-Content-Language: en-US
-Content-ID: <BDD1116C645F6A45B56A329634F50EE6@actia.se>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:57271 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932809AbbELSJe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 May 2015 14:09:34 -0400
+In-Reply-To: <5550A95B.1000605@actia.se>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?utf-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: John Ernberg <john.ernberg@actia.se>, Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?UTF-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
 
-T24gMjAxNS0wNS0xMSAxMzo0NSwgUGF2ZWwgUGlzYSB3cm90ZToNCj4gSGVsbG8gSm9obiwNCj4N
-Cj4gT24gRnJpZGF5IDA4IG9mIE1heSAyMDE1IDEzOjE3OjUyIEpvaG4gRXJuYmVyZyB3cm90ZToN
-Cj4+IEhpDQo+Pg0KPj4gV2l0aCB0aGUgZXhwZXJpbWVudGluZyBJIGhhdmUgYmVlbiBhYmxlIHRv
-IGRvIG9uIGFuIFVidW50dSAxNC4wNCBMVFMNCj4+IGNvbXB1dGVyLCBJIGNhbm5vdCBmaW5kIGFu
-eSBDQU4gb3IgdmlydHVhbCBDQU4gaW50ZXJmYWNlcyBpbnNpZGUgdGhlDQo+PiBjb250YWluZXIu
-DQo+PiBXaGVuIEkgY2hhbmdlIHRoZSBjb25maWcgdG8gc3BlY2lmaWNhbGx5IGZvcndhcmQgQ0FO
-IGludGVyZmFjZXMsIGxpa2UgdGhpczoNCj4+IGx4Yy5uZXR3b3JrLnR5cGUgPSBjYW4NCj4+IGx4
-Yy5uZXR3b3JrLmxpbmsgPSBseGNicjANCj4+IGx4Yy5uZXR3b3JrLmZsYWdzID0gdXANCj4+IGx4
-Yy5uZXR3b3JrLmh3YWRkciA9IDAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAw
-LTAwLTAwLTAwDQo+PiBJIGdldCBhIHNlcmllcyBvZiBwYXJzaW5nIGVycm9ycyBmcm9tIExYQyBh
-bmQgdGhlIGNvbnRhaW5lciBjYW5ub3QgYmUNCj4+IGNyZWF0ZWQuDQo+Pg0KPj4gQ3JlYXRpbmcg
-YSBwcml2aWxlZ2VkIGNvbnRhaW5lciBkaWQgbm90IGNoYW5nZSBhbnl0aGluZy4NCj4+DQo+PiBX
-ZSB3aWxsIGFsc28gdGFrZSB0aGUgc3lzdGVtZCBhbHRlcm5hdGl2ZSBpbnRvIGNvbnNpZGVyYXRp
-b24sIGJ1dCB0aGUNCj4+IGN1cnJlbnQgc3RhdGUgaXMgdGhhdCB3ZSdkIGxpa2UgdG8gcnVuIHdp
-dGggTFhDLCBhcyB0aGV5IHByb3ZpZGUgdXMgd2l0aA0KPj4gbW9yZSBvcHRpb25zIGZvciBmdXR1
-cmUgY2hhbmdlcyB0byBvdXIgdXNlLWNhc2VzLg0KPiB5b3UgY2Fubm90IHVzZSBFdGhlcm5ldCBi
-cmlkZ2luZy4gVGhpcyBjYW5ub3Qgd29yay4NCj4gQnV0IHlvdSBzaG91bGQgYmUgYWJsZSB0byBm
-b3J3YXJkIHdob2xlIGludGVyZmFjZQ0KPiB0byB0aGUgY29udGFpbmVyDQo+DQo+IGx4Yy5uZXR3
-b3JrLnR5cGUgPSBwaHlzDQo+DQo+IEkgaGF2ZSBub3QgdHJpZWQgdGhpcyBmb3IgQ0FOLCBidXQg
-aXQgd29ya3Mgd2l0aCBFdGhlcm5ldA0KPiBhbmQgSSBleHBlY3QgdGhhdCBpbiB0aGlzIGNhc2Ug
-dGhlcmUgaXMgbm8gc2lnbmlmaWNhbnQgZGlmZmVyZW5jZQ0KPiB0byBDQU4uIEJ1dCB5b3UgbG9z
-ZSAoYXQgbGVhc3QgZm9yIEV0aGVybmV0KSBhY2Nlc3MgdG8gdGhlIGludGVyZmFjZQ0KPiBmcm9t
-IHRoZSBvdXRlciBzeXN0ZW0uDQo+DQo+IElmIHlvdSB3YW50IHRvIGZpbHRlciBmcmFtZXMgdGhl
-biB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gc2V0dXANCj4gdmlydHVhbCBDQU4gaW50ZXJmYWNlIGlu
-IHRoZSBvdXRlci9ob3N0IHN5c3RlbSwgdGhlbiBzZXR1cCBDQU5HVw0KPiB0byByb3V0ZSBtZXNz
-YWdlcyBpbiB0aGUgaW50ZXJyZXN0IGFuZCB0aGUgc3RhcnQgY29udGFpbmVyDQo+IHdoaWNoIGhp
-ZGVzIHZpcnR1YWwgY2FuIGludGVyZmFjZSBmcm9tIHRoZSBvdXRlciBzeXN0ZW0NCj4gYnV0IENB
-TkdXIHNldHVwIHNob3VsZCBjb250aW51ZSB0byB3b3JrIGFmdGVyIHRoaXMgbW92ZSBvZg0KPiBp
-bnRlcmZhY2UgdG8gb3RoZXIgbmFtZXNwYWNlLg0KPg0KPiBJIGFtIG91dCBvZiB0aW1lIHdpdGgg
-dGVhY2hpbmcgbm93IHNvIEkgZG8gbm90IGV4cGVjdCB0byBmaW5kDQo+IHRpbWUgdG8gdGVzdCB0
-aGF0IHNvb24gYnV0IEkgaG9wZSB0aGF0IGhpbnQgaXMgaW4gdGhlIHJpZ2h0DQo+IGRpcmVjdGlv
-bi4gSWYgdGhlcmUgaXMgc29tZSBuZWVkIHRvIGRvIGNvZGUgYWRhcHRhdGlvbnMgc29tZWJvZHkN
-Cj4gb2YgbXkgY29sbGVhZ3VlcyBjb3VsZCBoYXZlIGludGVycmVzdCB0byBsb29rIGF0IGl0IGlm
-IHdlDQo+IGFyZSBzdWNlc2Z1bGwgd2l0aCBnYWluaW5nIG9uZSBvZiBvdXIgcGFydGlhbGx5IHJl
-bGF0ZWQgZ3JhbnQNCj4gb3Igd2UgZmluZCBvdGhlciBmdW5kaW5nLg0KPg0KPiBCZXN0IHdpc2hl
-cywNCj4NCj4gICAgICAgICAgICAgICAgIFBhdmVsDQpIaSBQYXZlbCwNCg0KSSBzdWNjZWVkZWQg
-aW4gZm9yd2FyZGluZyB0aGUgY2FuIGludGVyZmFjZSBpbnRvIHRoZSBjb250YWluZXIuDQpXaGVu
-IEkgdHJpZWQgdG8gb3BlbiBhIHNvY2tldCwgYW5kIGJpbmQgaXQgdG8gdGhlIGludGVyZmFjZSB0
-byBtYWtlIGEgDQp0ZXN0IGZvciByZWNlaXZpbmcgZnJhbWVzIEkgZ290IGFuIGVycm9yIHNheWlu
-ZyAic29ja2V0OiBBZGRyZXNzIGZhbWlseSANCm5vdCBzdXBwb3J0ZWQgYnkgcHJvdG9jb2wiLg0K
-TG9va2luZyBhcm91bmQgaW4gTFhDLCBhbmQgdGhlbiB0aGUga2VybmVsLCBJIGRpc2NvdmVyZWQg
-dGhhdCB0aGUgQUZfQ0FOIA0KaW1wbGVtZW50YXRpb24gZG9lcyBub3Qgc3VwcG9ydCBuZXRfbmFt
-ZXNwYWNlcyB5ZXQsIGFuZCBuZXRfbmFtZXNwYWNlcyANCmRvZXMgbm90IGltcGxlbWVudCBhbnkg
-aGFuZGxpbmcgZm9yIENBTiwgc28gd2UgY2Fubm90IG9wZW4gYW55IGtpbmQgb2YgDQpzb2NrZXQg
-dG8gYWN0dWFsbHkgcmVhZCBmcm9tIHRoZSBpbnRlcmZhY2UuDQoNCklzIHRoZXJlIGFueXRoaW5n
-IHF1aWNrIGFuZCBkaXJ0eSBJIGNvdWxkIHRyeSB0byBzZWUgaWYgc29ja2V0IHRyYWZmaWMgDQpj
-YW4gYmUgZm9yd2FyZGVkIGludG8gdGhlIGNvbnRhaW5lciBvbiBhIHBoeXMtZm9yd2FyZGVkIENB
-TiBpbnRlcmZhY2U/IA0KT3Igd291bGQgYSBwcm9wZXIgbmV0X25hbWVzcGFjZXMgaW1wbGVtZW50
-YXRpb24gZm9yIENBTiBiZSBuZWNlc3Nhcnk/DQoNCkJlc3QgcmVnYXJkcyAvLyBKb2huIEVybmJl
-cmc=
+On 05/11/2015 03:06 PM, John Ernberg wrote:
+
+> I succeeded in forwarding the can interface into the container.
+> When I tried to open a socket, and bind it to the interface to make a 
+> test for receiving frames I got an error saying "socket: Address family 
+> not supported by protocol".
+> Looking around in LXC, and then the kernel, I discovered that the AF_CAN 
+> implementation does not support net_namespaces yet, and net_namespaces 
+> does not implement any handling for CAN, so we cannot open any kind of 
+> socket to actually read from the interface.
+> 
+> Is there anything quick and dirty I could try to see if socket traffic 
+> can be forwarded into the container on a phys-forwarded CAN interface? 
+
+You can try to read CAN frames from the CAN netdev via AF_PACKET socket:
+
+https://github.com/linux-can/can-tests/blob/master/tst-packet.c
+
+Or use wireshark which has CAN support too.
+
+> Or would a proper net_namespaces implementation for CAN be necessary?
+
+When you use AF_PACKET you bypass the CAN network layer stuff.
+
+Best regards,
+Oliver
+
