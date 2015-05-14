@@ -1,46 +1,45 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Raw CAN socket support in LXC?
-Date: Tue, 12 May 2015 20:09:28 +0200
-Message-ID: <555241D8.6050503@hartkopp.net>
-References: <554C6FDE.6080706@actia.se> <554C79D4.8000901@pengutronix.de> <554C9B67.1030201@actia.se> <201505111345.51998.pisa@cmp.felk.cvut.cz> <5550A95B.1000605@actia.se>
+From: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+Subject: [PATCH v2 0/5] Add flexcan support for LS1021A SoCs
+Date: Thu, 14 May 2015 17:03:30 +0530
+Message-ID: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:57271 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932809AbbELSJe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 May 2015 14:09:34 -0400
-In-Reply-To: <5550A95B.1000605@actia.se>
+Received: from mail-bn1bon0110.outbound.protection.outlook.com ([157.56.111.110]:62751
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751563AbbENLeI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 14 May 2015 07:34:08 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: John Ernberg <john.ernberg@actia.se>, Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, =?UTF-8?B?QWRhbSBFbmdzdHLDtm0=?= <adam.engstrom@actia.se>
+To: arnd@arndb.de, linux-can@vger.kernel.org, mkl@pengutronix.de
+Cc: bhupesh.linux@gmail.com, bhupesh.sharma@freescale.com, Sakar.Arora@freescale.com, linux-arm-kernel@lists.infradead.org
 
-On 05/11/2015 03:06 PM, John Ernberg wrote:
+This patchset add the support for FlexCAN module present
+on LS1021A SoCs.
 
-> I succeeded in forwarding the can interface into the container.
-> When I tried to open a socket, and bind it to the interface to make a 
-> test for receiving frames I got an error saying "socket: Address family 
-> not supported by protocol".
-> Looking around in LXC, and then the kernel, I discovered that the AF_CAN 
-> implementation does not support net_namespaces yet, and net_namespaces 
-> does not implement any handling for CAN, so we cannot open any kind of 
-> socket to actually read from the interface.
-> 
-> Is there anything quick and dirty I could try to see if socket traffic 
-> can be forwarded into the container on a phys-forwarded CAN interface? 
+LS1021A-Rev1 SoC has a broken RX FIFO mode, thereby mandating
+the use of message buffers for frame reception.
 
-You can try to read CAN frames from the CAN netdev via AF_PACKET socket:
+LS1021A-Rev2 SoC has this issue fixed.
 
-https://github.com/linux-can/can-tests/blob/master/tst-packet.c
+Bhupesh Sharma (3):
+  doc/bindings: Add 'endianess' optional-property for FlexCAN
+    controller
+  can: flexcan: Add ls1021a flexcan device entry
+  can: flexcan: Add support for non RX-FIFO mode
 
-Or use wireshark which has CAN support too.
+Sakar Arora (2):
+  arm/dts: Add nodes for flexcan devices present on LS1021A SoC
+  can: flexcan: Remodel FlexCAN register r/w APIs for BE instances
 
-> Or would a proper net_namespaces implementation for CAN be necessary?
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |    4 +
+ arch/arm/boot/dts/ls1021a-qds.dts                  |    8 +
+ arch/arm/boot/dts/ls1021a.dtsi                     |   18 +
+ drivers/net/can/flexcan.c                          |  400 +++++++++++++-------
+ 4 files changed, 299 insertions(+), 131 deletions(-)
 
-When you use AF_PACKET you bypass the CAN network layer stuff.
+-- 
+1.7.9.5
 
-Best regards,
-Oliver
 
