@@ -1,73 +1,46 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO mode
-Date: Thu, 14 May 2015 17:41:56 +0200
-Message-ID: <5554C244.80809@pengutronix.de>
+From: Sharma Bhupesh <bhupesh.sharma@freescale.com>
+Subject: RE: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO mode
+Date: Thu, 14 May 2015 15:44:19 +0000
+Message-ID: <BY1PR0301MB130358076C3A5969406DE69182D80@BY1PR0301MB1303.namprd03.prod.outlook.com>
 References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
  <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com>
+ <5554C244.80809@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="88SNRHfiFFWlTgbQDaRhF68jF6r4RXBAg"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38379 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933221AbbENPmG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 May 2015 11:42:06 -0400
-in-reply-to: <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com>
+Received: from mail-bl2on0135.outbound.protection.outlook.com ([65.55.169.135]:59760
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S934261AbbENPoW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 14 May 2015 11:44:22 -0400
+In-Reply-To: <5554C244.80809@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Bhupesh Sharma <bhupesh.sharma@freescale.com>, arnd@arndb.de, linux-can@vger.kernel.org
-Cc: bhupesh.linux@gmail.com, Sakar.Arora@freescale.com, linux-arm-kernel@lists.infradead.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "arnd@arndb.de" <arnd@arndb.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, Arora Sakar <Sakar.Arora@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---88SNRHfiFFWlTgbQDaRhF68jF6r4RXBAg
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 05/14/2015 01:33 PM, Bhupesh Sharma wrote:
-> This patch adds support for non RX-FIFO (legacy) mode in
-> the flexcan driver.
->=20
-> On certain SoCs, the RX-FIFO support might be broken, as
-> a result we need to fall-back on the legacy (non RX-FIFO)
-> mode to receive CAN frames.
->=20
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-> Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
-
-The non FIFO mode doesn't guarantee the order of the incoming frames,
-not does not even try to...this is not acceptable. I'm currently working
-on a patch by David Jander that brings in non FIFO mode, but tries to
-keep the order of the frames.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---88SNRHfiFFWlTgbQDaRhF68jF6r4RXBAg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCgAGBQJVVMJEAAoJECte4hHFiupUxREP/RspO+rLu9FyImYFGw7N5p65
-bRIJdwP6P1I7Bm2HaQLf57KZERQFyAX/fAw9ePEGPbN8Ww2TooqHMn0lQDf6r9uh
-j79Flc73r3CPeLnNDlLvVGSt6YJJ2+G8Pdm2HBVA/IOEzAxFtPYpDl6nS7RrnM13
-3LHw0vvNn1Oe6V0FLFpVM3PUmb/XsB96NZxJl7w19MeUOUcoxEcKiFV/v69ksGsv
-iBNXUWdelDGy1AQ92/ioRtCFkmPOuUuGkSYDj9k6lbWxurS75Anw/7z/4ncYlaPx
-/bpLD16DV3nqOhKCfv6nEIG2r1wm4gH0hPcJTrddwlHSpWY8Jvhvi8PwWJT1eU2c
-H8DS8eJd9PE/gGH6dhx3uScqv31IX+4sQuvsTsJtLQNtAlb4dK1pcTogOfYdCweH
-CppcHKzOeqEeINzeEfpgmn1L/4UvhHn0PoAaHWkuBhRHru40bqLErkL+RAyKpSGp
-GcoY+IyOUXhrLKDO15Roag68xpWBEErGZ3P1zVegAQhXRbkKhoiZb6cMTbYML1/v
-if3M+AucftOACq2YzTZdlZB9NceZcYdDkLQT8JpHJfIvXJ+vpupZ4jxUlfLYeBOc
-DDCHZ8hbU1qN3c3AbHDRaM3P0UPHoadqZh8vCSBMZhj6VnNruGcM1w+8DhYUkvFd
-nMpyfe5ZxTsyWw7QAFff
-=KAPG
------END PGP SIGNATURE-----
-
---88SNRHfiFFWlTgbQDaRhF68jF6r4RXBAg--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
+bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNkYXksIE1heSAxNCwgMjAx
+NSA5OjEyIFBNDQo+IFRvOiBTaGFybWEgQmh1cGVzaC1CNDUzNzA7IGFybmRAYXJuZGIuZGU7IGxp
+bnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGJodXBlc2gubGludXhAZ21haWwuY29tOyBB
+cm9yYSBTYWthci1CNDUyMDU7IGxpbnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiA1LzVdIGNhbjogZmxleGNhbjogQWRkIHN1cHBv
+cnQgZm9yIG5vbiBSWC1GSUZPDQo+IG1vZGUNCj4gDQo+IE9uIDA1LzE0LzIwMTUgMDE6MzMgUE0s
+IEJodXBlc2ggU2hhcm1hIHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggYWRkcyBzdXBwb3J0IGZvciBu
+b24gUlgtRklGTyAobGVnYWN5KSBtb2RlIGluIHRoZSBmbGV4Y2FuDQo+ID4gZHJpdmVyLg0KPiA+
+DQo+ID4gT24gY2VydGFpbiBTb0NzLCB0aGUgUlgtRklGTyBzdXBwb3J0IG1pZ2h0IGJlIGJyb2tl
+biwgYXMgYSByZXN1bHQgd2UNCj4gPiBuZWVkIHRvIGZhbGwtYmFjayBvbiB0aGUgbGVnYWN5IChu
+b24gUlgtRklGTykgbW9kZSB0byByZWNlaXZlIENBTg0KPiA+IGZyYW1lcy4NCj4gPg0KPiA+IFNp
+Z25lZC1vZmYtYnk6IEJodXBlc2ggU2hhcm1hIDxiaHVwZXNoLnNoYXJtYUBmcmVlc2NhbGUuY29t
+Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNha2FyIEFyb3JhIDxTYWthci5Bcm9yYUBmcmVlc2NhbGUu
+Y29tPg0KPiANCj4gVGhlIG5vbiBGSUZPIG1vZGUgZG9lc24ndCBndWFyYW50ZWUgdGhlIG9yZGVy
+IG9mIHRoZSBpbmNvbWluZyBmcmFtZXMsIG5vdA0KPiBkb2VzIG5vdCBldmVuIHRyeSB0by4uLnRo
+aXMgaXMgbm90IGFjY2VwdGFibGUuIEknbSBjdXJyZW50bHkgd29ya2luZyBvbiBhDQo+IHBhdGNo
+IGJ5IERhdmlkIEphbmRlciB0aGF0IGJyaW5ncyBpbiBub24gRklGTyBtb2RlLCBidXQgdHJpZXMg
+dG8ga2VlcCB0aGUNCj4gb3JkZXIgb2YgdGhlIGZyYW1lcy4NCg0KVGhhdCBpcyBhbHJlYWR5IFdJ
+UCBhdCBvdXIgZW5kLiBWMyB3aWxsIGNvbnRhaW4gdGhlIHNhbWUgY2hhbmdlLg0KSWYgeW91IGFy
+ZSBhbHJlYWR5IHdvcmtpbmcgb24gaXQsIEkgZG9uJ3Qga25vdyBob3cgdG8gcHJvY2VlZCBmdXJ0
+aGVyDQphcyB3ZSBoYWQgYWxyZWFkeSB2MSBvZiB0aGlzIHBhdGNoc2V0IHdpdGggdGhlIG5vbiBG
+SUZPIG1vZGUgb3V0DQpzaW5jZSBhIG1vbnRoIG9yIHNvLg0KDQpSZWdhcmRzLA0KQmh1cGVzaA0K
