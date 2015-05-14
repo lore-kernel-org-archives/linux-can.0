@@ -1,79 +1,71 @@
 From: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Subject: [PATCH v2 2/5] arm/dts: Add nodes for flexcan devices present on LS1021A SoC
-Date: Thu, 14 May 2015 17:03:32 +0530
-Message-ID: <1431603215-25546-3-git-send-email-bhupesh.sharma@freescale.com>
+Subject: [PATCH v2 3/5] can: flexcan: Add ls1021a flexcan device entry
+Date: Thu, 14 May 2015 17:03:33 +0530
+Message-ID: <1431603215-25546-4-git-send-email-bhupesh.sharma@freescale.com>
 References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0114.outbound.protection.outlook.com ([207.46.100.114]:46004
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
+Received: from mail-bn1bon0146.outbound.protection.outlook.com ([157.56.111.146]:24672
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751830AbbENLeQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 14 May 2015 07:34:16 -0400
+	id S1752673AbbENLeX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 14 May 2015 07:34:23 -0400
 In-Reply-To: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: arnd@arndb.de, linux-can@vger.kernel.org, mkl@pengutronix.de
 Cc: bhupesh.linux@gmail.com, bhupesh.sharma@freescale.com, Sakar.Arora@freescale.com, linux-arm-kernel@lists.infradead.org
 
-From: Sakar Arora <Sakar.Arora@freescale.com>
-
-This patch adds the device nodes for flexcan controller(s) present
-on LS1021A SoC.
+This patch adds ls1021a flexcan device entry to the flexcan driver code.
 
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
 ---
- arch/arm/boot/dts/ls1021a-qds.dts |    8 ++++++++
- arch/arm/boot/dts/ls1021a.dtsi    |   18 ++++++++++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/net/can/flexcan.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 9c5e16b..1641a04 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -238,3 +238,11 @@
- &uart1 {
- 	status = "okay";
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index ad0a7e8..deaa24e 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -267,10 +267,26 @@ static struct flexcan_devtype_data fsl_imx28_devtype_data;
+ static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 	.features = FLEXCAN_HAS_V10_FEATURES,
  };
 +
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index c70bb27..3fb7b52 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -332,6 +332,24 @@
- 			status = "disabled";
- 		};
+ static struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES,
+ };
  
-+		can0: can@2a70000 {
-+			compatible = "fsl,ls1021a-flexcan";
-+			reg = <0x0 0x2a70000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&platform_clk 1>, <&platform_clk 1>;;
-+			clock-names = "ipg", "per";
-+			little-endian;
-+		};
++/* LS1021A-Rev1 has a broken RX-FIFO support. So only legacy RX message-buffers
++ * work here.
++ */
++static struct flexcan_devtype_data fsl_ls1021a_devtype_data = {
++	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES |
++		    FLEXCAN_HAS_ONLY_LEGACY_RX_SUPPORT,
++};
 +
-+		can1: can@2a80000 {
-+			compatible = "fsl,ls1021a-flexcan";
-+			reg = <0x0 0x2a80000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&platform_clk 1>, <&platform_clk 1>;;
-+			clock-names = "ipg", "per";
-+			little-endian;
-+		};
++/* LS1021A-Rev2 has functional RX-FIFO mode, so no need to fall back to
++ * the legacy mode.
++ */
++static struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
++	.features = FLEXCAN_HAS_V10_FEATURES | FLEXCAN_HAS_MECR_FEATURES,
++};
 +
- 		wdog0: watchdog@2ad0000 {
- 			compatible = "fsl,imx21-wdt";
- 			reg = <0x0 0x2ad0000 0x0 0x10000>;
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	.name = DRV_NAME,
+ 	.tseg1_min = 4,
+@@ -1139,6 +1155,10 @@ static void unregister_flexcandev(struct net_device *dev)
+ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
++	{ .compatible = "fsl,ls1021a-flexcan",
++	  .data = &fsl_ls1021a_devtype_data, },
++	{ .compatible = "fsl,ls1021ar2-flexcan",
++	  .data = &fsl_ls1021a_r2_devtype_data, },
+ 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
+ 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
+ 	{ /* sentinel */ },
 -- 
 1.7.9.5
 
