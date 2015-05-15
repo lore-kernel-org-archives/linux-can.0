@@ -1,53 +1,68 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO mode
-Date: Fri, 15 May 2015 10:09:52 +1000
-Message-ID: <55553950.3050709@optusnet.com.au>
-References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com> <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com> <5554C244.80809@pengutronix.de>
-Reply-To: tom_usenet@optusnet.com.au
+From: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>
+Subject: Linux board with 10 CANs
+Date: Fri, 15 May 2015 09:56:19 +0200
+Message-ID: <5555A6A3.7090206@orange.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:44726 "EHLO
-	mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1423054AbbEOAKD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 May 2015 20:10:03 -0400
-In-Reply-To: <5554C244.80809@pengutronix.de>
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:24831 "EHLO
+	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933435AbbEOIDx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 May 2015 04:03:53 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, arnd@arndb.de, linux-can@vger.kernel.org
-Cc: bhupesh.linux@gmail.com, Sakar.Arora@freescale.com, linux-arm-kernel@lists.infradead.org
+To: linux-can@vger.kernel.org
 
-On 15/05/15 01:41, Marc Kleine-Budde wrote:
-> On 05/14/2015 01:33 PM, Bhupesh Sharma wrote:
->> This patch adds support for non RX-FIFO (legacy) mode in
->> the flexcan driver.
->>
->> On certain SoCs, the RX-FIFO support might be broken, as
->> a result we need to fall-back on the legacy (non RX-FIFO)
->> mode to receive CAN frames.
->>
->> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
->> Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
->
-> The non FIFO mode doesn't guarantee the order of the incoming frames,
-> not does not even try to...this is not acceptable. I'm currently working
-> on a patch by David Jander that brings in non FIFO mode, but tries to
-> keep the order of the frames.
->
-> Marc
+Hi,
 
-In case it is of any help as a reference, here's a thread on the problems of 
-receiving messages in order on another non-FIFO chip. This applies to the 
-normal Microchip CAN controllers, in this case the very-hard-to-program 
-on-the-end-of-an-SPI-bus MCP2515:
+I'm starting the design of a CPU board, based on a computer on module 
+with a very common SOC like i.mx6 or am335x.
+I need to fit my board with at least 10 CAN ports, may be more. (The SOC 
+have 2 CANs so i need 8 more)
+The board will run with Linux and of course i want a socketcan interface 
+for each bus !
+CAN bitrate needed is quite low (50kbps) and latency is not critical but 
+bus load may reach 100% sometimes.
+As far as possible i want to avoid driver development, or just doing 
+slight modifications on an existing driver.
+I don't want to use MCP2515, i had trouble with it on a previous design 
+because of the lack of buffer in the chip.
+I can't imagine putting 8 MCP2515 and not missing any frame, but may be 
+i'm wrong ?
 
-http://www.microchip.com/forums/tm.aspx?m=620741
+Here are the options i have considered, they involve using external MCUs 
+to provide enough CAN interfaces :
 
-It has two receive buffers, and a "rollover" setting. This does not make the 
-registers operate as a FIFO and it needs a state machine to keep track of 
-which buffer holds which sequence message.
+- MCUs with SLCAN : SLCAN have the advantage of simplicity and it should 
+offer enough performance at low data rate. Problem is that it would 
+require 8 UARTS. I could modify SLCAN driver to allow multiple CAN 
+channels on the same UART, and so use MCUs with multiple CANs, does it 
+sounds reasonable ?
 
-Tom
+- MCUs with SPI 1 : adapt MCP2515 driver in a way to make the SPI 
+protocol manageable on the MCU side (SPI slave). The MCU will be able to 
+provide the buffer for CAN frames that the MCP does not have. This 
+option is just a way of trying to go fast, it is not very elegant, and 
+have the limitation of one CAN channel per SPI connection / driver instance.
 
+- MCUs with SPI 2 : use the Stefano Babic SPI driver posted on this 
+list. This is probably the best choice for a long term and more generic 
+solution. But i'm afraid it may require too much work to complete. What 
+is the status of this driver right now ? Does anyone have an idea of the 
+remaining work to do to make it ready for mainline ? Stefano are you 
+available to spend more time on it ? I'm also wondering whether multiple 
+instances of the driver can run concurently if i put more than one MCU ?
 
+Concerning the MCU software i could release it as an open-source 
+project, anyone interested in participating ?
+I'm very familiar with STM32 MCUs so i will probably use an STM32F072 
+(low cost cortex M0 with one CAN).
+
+Any idea or advice is welcome, thank you for reading this much too long 
+post.
+
+Regards
+
+Francois Beaulier
+www.ingelibre.fr
