@@ -1,66 +1,71 @@
-From: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>
-Subject: Re: AW: [BULK]Re: Linux board with 10 CANs
-Date: Fri, 15 May 2015 16:18:44 +0200
-Message-ID: <55560044.4060907@orange.fr>
-References: <5555A6A3.7090206@orange.fr> <CAGm1_ktyE_CjFwEfi1M48hDxM58HMJNAhQgYC3-8ivJ6AgE1WQ@mail.gmail.com> <5555B82B.2010204@pengutronix.de> <5555BD6A.60204@orange.fr> <20150515102450.24212.89893@shannon> <5555E93A.7080507@orange.fr> <5555EAC6.8010901@pengutronix.de> <005401d08f0f$a3b9f960$eb2dec20$@peak-system.com>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: Linux board with 10 CANs
+Date: Sat, 16 May 2015 01:24:20 +1000
+Message-ID: <55560FA4.4090300@optusnet.com.au>
+References: <5555A6A3.7090206@orange.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:39623 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752629AbbEOOSs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 15 May 2015 10:18:48 -0400
-In-Reply-To: <005401d08f0f$a3b9f960$eb2dec20$@peak-system.com>
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:58958 "EHLO
+	mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S933865AbbEOPYf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 May 2015 11:24:35 -0400
+In-Reply-To: <5555A6A3.7090206@orange.fr>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Uwe Wilhelm (PEAK-System)" <u.wilhelm@peak-system.com>, 'Marc Kleine-Budde' <mkl@pengutronix.de>, 'Andri Yngvason' <andri.yngvason@marel.com>, 'Yegor Yefremov' <yegorslists@googlemail.com>
-Cc: linux-can@vger.kernel.org
+To: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>, linux-can@vger.kernel.org
 
-Le 15/05/2015 15:04, Uwe Wilhelm (PEAK-System) a =C3=A9crit :
+On 15/05/2015 5:56 PM, Fran=C3=A7ois Beaulier wrote:
+> Hi,
 >
->> -----Urspr=C3=BCngliche Nachricht-----
->> Von: linux-can-owner@vger.kernel.org [mailto:linux-can-
->> owner@vger.kernel.org] Im Auftrag von Marc Kleine-Budde
->> Gesendet: Freitag, 15. Mai 2015 14:47
->> An: Fran=C3=A7ois Beaulier; Andri Yngvason; Yegor Yefremov
->> Cc: linux-can@vger.kernel.org
->> Betreff: [BULK]Re: Linux board with 10 CANs
->>
->> On 05/15/2015 02:40 PM, Fran=C3=A7ois Beaulier wrote:
->>>> Have you considered FPGA?
->>>>
->>>> Andri
->>> I don't know much about FPGA, i can see in the kernel that there ar=
-e
->>> c_can and m_can drivers, i guess i have to add something like a PCI=
-e
->> c_can and m_can are IP cores by bosch, they are used in various SoCs=
-=2E
->>
->>> bridge to connect the CAN controllers with the SOC ?
->>> Is there a way to use FPGA that would not lead to driver developmen=
-t ?
->>> Do you have any link where i can learn more about Linux + FPGA + CA=
-N ?
->> You have to use an IP core that is already supported by the kernel.
->>
->> Marc
->> --
-> PEAK offer a 2 and a 4 CAN Channel FPGA Solution which support Socket=
- CAN.
-> A 12 Channel CAN card build with this Core is running under a Militar=
-y Label
-> without any problem with nearly 100% Busload per Channel / 1 Mbit
-> But you need 3 free PCIe 1x Lanes. Cost are cheap, because you only p=
-ay License,
-> no Hardware - that=E2=80=99s up to you (you get the schematic).
-> You are 100% compatible to the PEAK PCIe based boards -- see WEB Page=
- or google
-Interesting but i.mx6 have only one PCIe lane and other low cost SOCs=20
-often have no PCIe at all.
-I will think twice about it because having a fully ready and supported=20
-driver is a huge plus !
+> I'm starting the design of a CPU board, based on a computer on module
+> with a very common SOC like i.mx6 or am335x.
 
-=46rancois
+There are SOCs with 8 CAN ports built in, like the Freescale MPC574X=20
+chips. That should be a lot easier to work with, and should be supporte=
+d=20
+without any extra drivers.
+
+The following Selector Guide tells me the Vybrid SVFxxxR has *FIFTY* CA=
+N=20
+ports. That may have multiple typos, as Freescale's web site doesn't=20
+admit to that part.
+
+http://cache.freescale.com/files/microcontrollers/doc/roadmap/BRAUTOPRD=
+CTMAP.pdf
+
+> CAN bitrate needed is quite low (50kbps)
+
+So at about 110 bits for a minimum sized Standard ID packet, that gives=
+=20
+you 450 messages/second max. That gives you a maximum service latency o=
+f=20
+2.2ms for as many buffers as the chip has. If your data has 8=20
+bytes/packet then that drops to 3.5ms/buffer (7ms for a chip with 2).
+
+That wouldn't be impossible with MCP2515s, just inadvisable. Especially=
+=20
+with Linux as it isn't good at any service guarantees.
+
+But I've successfully run three MCP2515's on a Coldfire part. The QSPI=20
+helps a lot. There are a lot of parts with multiple QSPI ports, and tha=
+t=20
+makes it less onerous (or DSPI or ECSPI). The i.MX6D has 5 on it. So tw=
+o=20
+"real" CAN ports and two MCP2515's on each of the SPI ports, with a=20
+spare SPI port. Or three per port.
+
+> I don't want to use MCP2515, i had trouble with it on a previous
+ > design because of the lack of buffer in the chip.
+> I can't imagine putting 8 MCP2515 and not missing any frame, but may =
+be
+> i'm wrong ?
+
+Did you turn the BUKT bit on? If you spread them across lots of SPI=20
+interfaces it should get easier as they should all be accessed in paral=
+lel.
+
+Tom
+
