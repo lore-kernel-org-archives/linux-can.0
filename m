@@ -1,88 +1,141 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
 Subject: Re: Linux board with 10 CANs
-Date: Mon, 18 May 2015 22:56:32 +1000
-Message-ID: <5559E180.9020105@optusnet.com.au>
-References: <5555A6A3.7090206@orange.fr> <55560FA4.4090300@optusnet.com.au>    <5559AFF6.3040509@orange.fr> <45240.212.149.48.43.1431942011.squirrel@webmail.rdts.de>
+Date: Mon, 18 May 2015 15:31:00 +0200
+Message-ID: <5559E994.4000103@universalnet.at>
+References: <5555A6A3.7090206@orange.fr> <5555FAAB.4090306@universalnet.at> <5559ABE6.5030206@orange.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:42395 "EHLO
-	mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750883AbbERM4i (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 May 2015 08:56:38 -0400
-In-Reply-To: <45240.212.149.48.43.1431942011.squirrel@webmail.rdts.de>
+Received: from smtp.xy24.at ([85.126.109.136]:59075 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753791AbbERNbU (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 18 May 2015 09:31:20 -0400
+In-Reply-To: <5559ABE6.5030206@orange.fr>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@gerhard-bertelsmann.de, =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>
-Cc: linux-can@vger.kernel.org
+To: Gediminas Simanskis <gediminas@8devices.com>
+Cc: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>, linux-can@vger.kernel.org
 
-On 18/05/2015 7:40 PM, Gerhard Bertelsmann wrote:
-> Hi Francois,
-> Am Mo, 18.05.2015, 11:25, schrieb Fran=C3=A7ois Beaulier:
->> I know the MCP2515 may work in some situation but it depends on kern=
-el
->> latency and that is very unpredictable.
+Hi Gediminas!
 
-You can always try running RT or Xenomai. I wouldn't recommend that.
 
-We had trouble with Linux kernel latency, until I found our supplier ha=
-d=20
-shipped Linux with a whole bunch of debugging turned on. We got rid of=20
-CONFIG_DEBUG_PAGEALLOC, SPIN, MUTEX, and SLUB debugging and it got a lo=
-t=20
-more responsive. I had to trace the kernel to find out where it was=20
-spending all its time (in SLUB debugging mainly).
+Can you tell us the license of the source code from usb2can firmware?
 
-We're running two FlexCAN ports, each with a 6-deep FIFO at 1MHz each.=20
-We're not having any problems now [1]. You're wanting to run at 1/20 of=
-=20
-that data rate with 1/3 of the FIFO depth. That should work, even with=20
-10 of them running.
 
-Note 1: The CAN driver deferred reading data to NAPI, the debugs were o=
-n=20
-and the (old non-NAPI) Ethernet driver happily kept pulling hundreds of=
-=20
-Ethernet packets in during one interrupt, so I was getting CAN overruns=
-=2E=20
-I rewrote the CAN driver to read message data during Interrupts,=20
-throttled Ethernet and added interrupt priority and turned the debugs=20
-off. Now it is fine.
+regards,
+Bernd
 
->> What is helping in QSPI ?
 
-Instead of your GHZ CPU having to wait for a 10MHz SPI bus to send a=20
-byte, or be interrupted once per byte, it can load up 16 multi-byte=20
-transactions and be interrupted when the whole thing is complete. I=20
-don't know how good the SPI drivers are and how well the Linux MCP2515=20
-driver supports this (if it supports the hardware queue). It looks like=
-=20
-it reads a whole CAN message in a single SPI transaction though.
-
->> the main problem beeing latency between
- >> MCP irq and effective SPI transfer ?
-
-Go Multicore and spread the load, or keep long latency stuff of the CAN=
-=20
-core.
-
-> The only concern that I have is the latency/overhead of the SocketCAN
-> API with 10 CANs at high packet rates on 1 GHz ARM ...
-
-The interrupts, NAPI and SocketCAN switches and code all add about the=20
-same overhead to each message processed. Multiple interrupts, a NAPI ru=
-n=20
-and SocketCAN context switch for 8 bytes of user data (or maybe even on=
-e=20
-or no bytes) is a pain. CAN and Linux really weren't mean to get on and=
-=20
-it shows.
-
-Or you could run 5 complete CPUs, networked via Ethernet.
-
-The USB solution looks good, as long as the USB is reliable.
-
-Tom
+Am 2015-05-18 um 11:07 schrieb Fran=C3=A7ois Beaulier:
+> Le 15/05/2015 15:54, Bernd Krumboeck a =C3=A9crit :
+>> Hi!
+>>
+>>
+>> I don't know much about this things, but what do you think about fol=
+lowing:
+>>
+>> Use two 4 port usb hub (MICROCHIP USB4624I-1080HN) with 8 x STM32F07=
+2 or STR750FV2.
+>>
+>> You can flash the MCUs under linux with dfu-util (http://dfu-util.so=
+urceforge.net/).
+>>
+>> A firmware for STR750FV2 is available here (please check license):
+>> https://github.com/krumboeck/usb2can_firmware
+>>
+>> I don't know if it works, but there is also a gcc version available:
+>> https://github.com/krumboeck/usb2can_firmware/tree/gcc-test
+>>
+>>
+>> If you use this firmware or at least the same procotol, then the
+>> hardware will be compatible with usb_8dev can driver.
+>>
+>>
+>> regards,
+>> Bernd
+>>
+>>
+>
+> Hi Bernd,
+>
+> Thank you for pointed out this USB solution. I didn't know such firmw=
+are existed.
+> I looked in the gcc-test repository, and apart from ST files the lice=
+nse is not specified.
+> Can you tell us more about license ?
+>
+> Francois
+>
+>
+>>
+>>
+>> Am 2015-05-15 um 09:56 schrieb Fran=C3=A7ois Beaulier:
+>>> Hi,
+>>>
+>>> I'm starting the design of a CPU board, based on a computer on modu=
+le with a very common SOC like i.mx6 or am335x.
+>>> I need to fit my board with at least 10 CAN ports, may be more. (Th=
+e SOC have 2 CANs so i need 8 more)
+>>> The board will run with Linux and of course i want a socketcan inte=
+rface for each bus !
+>>> CAN bitrate needed is quite low (50kbps) and latency is not critica=
+l but bus load may reach 100% sometimes.
+>>> As far as possible i want to avoid driver development, or just doin=
+g slight modifications on an existing driver.
+>>> I don't want to use MCP2515, i had trouble with it on a previous de=
+sign because of the lack of buffer in the chip.
+>>> I can't imagine putting 8 MCP2515 and not missing any frame, but ma=
+y be i'm wrong ?
+>>>
+>>> Here are the options i have considered, they involve using external=
+ MCUs to provide enough CAN interfaces :
+>>>
+>>> - MCUs with SLCAN : SLCAN have the advantage of simplicity and it s=
+hould offer enough performance at low data rate. Problem is that it wou=
+ld require 8 UARTS. I could modify SLCAN driver to allow multiple CAN c=
+hannels on the same UART, and so use MCUs with multiple CANs, does it s=
+ounds reasonable ?
+>>>
+>>> - MCUs with SPI 1 : adapt MCP2515 driver in a way to make the SPI p=
+rotocol manageable on the MCU side (SPI slave). The MCU will be able to=
+ provide the buffer for CAN frames that the MCP does not have. This opt=
+ion is just a way of trying to go fast, it is not very elegant, and hav=
+e the limitation of one CAN channel per SPI connection / driver instanc=
+e.
+>>>
+>>> - MCUs with SPI 2 : use the Stefano Babic SPI driver posted on this=
+ list. This is probably the best choice for a long term and more generi=
+c solution. But i'm afraid it may require too much work to complete. Wh=
+at is the status of this driver right now ? Does anyone have an idea of=
+ the remaining work to do to make it ready for mainline ? Stefano are y=
+ou available to spend more time on it ? I'm also wondering whether mult=
+iple instances of the driver can run concurently if i put more than one=
+ MCU ?
+>>>
+>>> Concerning the MCU software i could release it as an open-source pr=
+oject, anyone interested in participating ?
+>>> I'm very familiar with STM32 MCUs so i will probably use an STM32F0=
+72 (low cost cortex M0 with one CAN).
+>>>
+>>> Any idea or advice is welcome, thank you for reading this much too =
+long post.
+>>>
+>>> Regards
+>>>
+>>> Francois Beaulier
+>>> www.ingelibre.fr
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe linux-can=
+" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at http://vger.kernel.org/majordomo-info.html
+>>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
