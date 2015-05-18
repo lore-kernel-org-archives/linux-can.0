@@ -1,69 +1,88 @@
-From: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>
+From: Tom Evans <tom_usenet@optusnet.com.au>
 Subject: Re: Linux board with 10 CANs
-Date: Mon, 18 May 2015 13:13:21 +0200
-Message-ID: <5559C951.60705@orange.fr>
+Date: Mon, 18 May 2015 22:56:32 +1000
+Message-ID: <5559E180.9020105@optusnet.com.au>
 References: <5555A6A3.7090206@orange.fr> <55560FA4.4090300@optusnet.com.au>    <5559AFF6.3040509@orange.fr> <45240.212.149.48.43.1431942011.squirrel@webmail.rdts.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:18470 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753851AbbERLNZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 May 2015 07:13:25 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:42395 "EHLO
+	mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750883AbbERM4i (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 18 May 2015 08:56:38 -0400
 In-Reply-To: <45240.212.149.48.43.1431942011.squirrel@webmail.rdts.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: info@gerhard-bertelsmann.de
-Cc: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org
+To: info@gerhard-bertelsmann.de, =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>
+Cc: linux-can@vger.kernel.org
 
-Le 18/05/2015 11:40, Gerhard Bertelsmann a =C3=A9crit :
+On 18/05/2015 7:40 PM, Gerhard Bertelsmann wrote:
 > Hi Francois,
 > Am Mo, 18.05.2015, 11:25, schrieb Fran=C3=A7ois Beaulier:
->> Hi Tom,
->>
->> Freescale MPC574X chips are MCUs, you can't run Linux on them.
->> Vybrid SOCs have 2 CANs max.
 >> I know the MCP2515 may work in some situation but it depends on kern=
 el
 >> latency and that is very unpredictable.
->> What is helping in QSPI ? the main problem beeing latency between MC=
-P
->> irq and effective SPI transfer ?
-> Yes, latency is the main problem with the MCP2515 connected via SPI.
-> But I have no doubt that it would be possible using a BeagleBone Blac=
-k
-> with it's two integrated PRUs (2x200 MHz MCUs). If you connect 4 MCP2=
-515
-> to each PRU they could be served even at 1MBit @ full speed. With
-> the already 2 integrated CAN controller you can easily have 10 CANs.
->
+
+You can always try running RT or Xenomai. I wouldn't recommend that.
+
+We had trouble with Linux kernel latency, until I found our supplier ha=
+d=20
+shipped Linux with a whole bunch of debugging turned on. We got rid of=20
+CONFIG_DEBUG_PAGEALLOC, SPIN, MUTEX, and SLUB debugging and it got a lo=
+t=20
+more responsive. I had to trace the kernel to find out where it was=20
+spending all its time (in SLUB debugging mainly).
+
+We're running two FlexCAN ports, each with a 6-deep FIFO at 1MHz each.=20
+We're not having any problems now [1]. You're wanting to run at 1/20 of=
+=20
+that data rate with 1/3 of the FIFO depth. That should work, even with=20
+10 of them running.
+
+Note 1: The CAN driver deferred reading data to NAPI, the debugs were o=
+n=20
+and the (old non-NAPI) Ethernet driver happily kept pulling hundreds of=
+=20
+Ethernet packets in during one interrupt, so I was getting CAN overruns=
+=2E=20
+I rewrote the CAN driver to read message data during Interrupts,=20
+throttled Ethernet and added interrupt priority and turned the debugs=20
+off. Now it is fine.
+
+>> What is helping in QSPI ?
+
+Instead of your GHZ CPU having to wait for a 10MHz SPI bus to send a=20
+byte, or be interrupted once per byte, it can load up 16 multi-byte=20
+transactions and be interrupted when the whole thing is complete. I=20
+don't know how good the SPI drivers are and how well the Linux MCP2515=20
+driver supports this (if it supports the hardware queue). It looks like=
+=20
+it reads a whole CAN message in a single SPI transaction though.
+
+>> the main problem beeing latency between
+ >> MCP irq and effective SPI transfer ?
+
+Go Multicore and spread the load, or keep long latency stuff of the CAN=
+=20
+core.
+
 > The only concern that I have is the latency/overhead of the SocketCAN
 > API with 10 CANs at high packet rates on 1 GHz ARM ...
->
-> Regards
->
-> Gerd
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Hi Gerhard,
 
-Yes i agree it should work with AM335x PRUs.
-MCP2515 can easily be well managed with any MCU, whether it is a PRU or=
+The interrupts, NAPI and SocketCAN switches and code all add about the=20
+same overhead to each message processed. Multiple interrupts, a NAPI ru=
+n=20
+and SocketCAN context switch for 8 bytes of user data (or maybe even on=
+e=20
+or no bytes) is a pain. CAN and Linux really weren't mean to get on and=
 =20
-a Cortex-M like those inside the Vybrid or the iMX6 soloX.
-The problem is the associated socketcan Linux driver.
-It is probably simpler to write the driver when the MCU is inside the=20
-SOC than it is when the MCU is connected with SPI because we can=20
-directly read / write values through shared memory (+ use of semaphores=
-).
-But still, there is a new driver to write !
+it shows.
 
-Regards,
+Or you could run 5 complete CPUs, networked via Ethernet.
 
-=46rancois
+The USB solution looks good, as long as the USB is reliable.
+
+Tom
+
