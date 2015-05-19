@@ -1,235 +1,79 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: Re: Flexcan error on suspend
-Date: Tue, 19 May 2015 11:13:33 +0200
-Message-ID: <CAJ=nTssvd3SfvBDygk1O6M-XFd=aERxMqgph3X5RRc=hvAWbZw@mail.gmail.com>
-References: <CAJ=nTsu_879bhwzsVe1xCYUHfZmjPqFyGRsRDJs+ujnb9=Chtg@mail.gmail.com>
-	<5555E727.1050506@pengutronix.de>
-	<a8518e25187e6933b2be68698a76e93c@agner.ch>
-	<5555F189.10801@pengutronix.de>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 message length
+Date: Tue, 19 May 2015 13:27:04 +0000
+Message-ID: <26458_1432042025_555B3A29_26458_297_2_F1366246CF364C42B98553900CE0C5CB08028AE4@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+References: <loom.20141211T112702-791@post.gmane.org>
+ <20141212110743.GC10796@vandijck-laurijssen.be>
+ <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f51.google.com ([209.85.215.51]:34894 "EHLO
-	mail-la0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755077AbbESJNf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 May 2015 05:13:35 -0400
-Received: by labbd9 with SMTP id bd9so13516625lab.2
-        for <linux-can@vger.kernel.org>; Tue, 19 May 2015 02:13:33 -0700 (PDT)
-In-Reply-To: <5555F189.10801@pengutronix.de>
+Received: from relais-ias245.francetelecom.com ([80.12.204.245]:55156 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755413AbbESNen (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 May 2015 09:34:43 -0400
+In-Reply-To: <20150519084626.GC1088@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Stefan Agner <stefan@agner.ch>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-2015-05-15 15:15 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
-> On 05/15/2015 03:00 PM, Stefan Agner wrote:
->> On 2015-05-15 14:31, Marc Kleine-Budde wrote:
->>> On 05/15/2015 02:15 PM, Mirza Krak wrote:
->>>> Hi.
->>>>
->>>> I am running a 4.0.2 kernel on a Colibri VF61 SOM.
->>>>
->>>> I wanted to test the "suspend to RAM" functionality when I got
->>>> following error during suspend:
->>>>
->>>> root@mx4-v61-1000000:~# echo standby > /sys/power/state
->>>> [   40.390281] PM: Syncing filesystems ... done.
->>>> [   40.407716] Freezing user space processes ... (elapsed 0.001 se=
-conds) done.
->>>> [   40.416040] Freezing remaining freezable tasks ... (elapsed 0.0=
-01
->>>> seconds) done.
->>>> [   40.429099] mx4_io_spi spi1.0: Entering suspend state.
->>>> [   40.434692] mx4_io_spi spi1.0: Suspend succeeded after 0 retrie=
-s
->>>> [   40.441408] Unhandled fault: external abort on non-linefetch
->>>> (0x1008) at 0x909a0000
->>>> [   40.449100] pgd =3D 8e200000
->>>> [   40.451825] [909a0000] *pgd=3D8e805811, *pte=3D400d4653, *ppte=3D=
-400d4453
->>>> [   40.458173] Internal error: : 1008 [#1] ARM
->>>> [   40.462373] Modules linked in: mx4_pic(O)
->>>> [   40.466445] CPU: 0 PID: 278 Comm: sh Tainted: G           O
->>>> 4.0.2-01554-g73efc16 #30
->>>> [   40.474473] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device=
- Tree)
->>>> [   40.480945] task: 8d832640 ti: 8e076000 task.ti: 8e076000
->>>> [   40.486383] PC is at flexcan_chip_disable+0x10/0xa8
->>>> [   40.491288] LR is at flexcan_suspend+0x18/0x88
->>>> [   40.495757] pc : [<802f4648>]    lr : [<802f4750>]    psr: a00f=
-0013
->>>> [   40.495757] sp : 8e077d60  ip : 8e077d80  fp : 8e077d7c
->>>> [   40.507279] r10: 8061d86c  r9 : 00000000  r8 : 8e8b6a44
->>>> [   40.512530] r7 : 00000002  r6 : 8065dfe4  r5 : 8029c0dc  r4 : 9=
-09a0000
->>>> [   40.519086] r3 : 802f4738  r2 : 80498c04  r1 : 8e8b6a10  r0 : 8=
-e943ca0
->>>> [   40.525641] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM=
-  Segment user
->>>> [   40.532800] Control: 10c5387d  Table: 8e200059  DAC: 00000015
->>>> [   40.538567] Process sh (pid: 278, stack limit =3D 0x8e076208)
->>>> [   40.544164] Stack: (0x8e077d60 to 0x8e078000)
->>>> [   40.548556] 7d60: 802f4738 8e943800 8029c0dc 8065dfe4 8e077d94
->>>> 8e077d80 802f4750 802f4644
->>>> [   40.556774] 7d80: 8e8b6a10 8029c0dc 8e077da4 8e077d98 8029c110
->>>> 802f4744 8e077dc4 8e077da8
->>>> [   40.565025] 7da0: 802a3ae0 8029c0e8 8046c3b0 8046af84 8e8b6a10
->>>> 00000000 8e077dfc 8e077dc8
->>>> [   40.573294] 7dc0: 802a450c 802a3ac8 69e37ae7 00000009 8046afbc
->>>> 0046af04 8e8b6a68 8e8b6a10
->>>> [   40.581564] 7de0: 8062907c 8065dfe4 806290a8 8061d86c 8e077e44
->>>> 8e077e00 802a5718 802a43f4
->>>> [   40.589834] 7e00: 68f6c591 00000009 802a5ac8 00000002 68f6c591
->>>> 00000009 00000000 00000002
->>>> [   40.598096] 7e20: 80640f30 00000002 00000007 8e24ad00 00000000
->>>> 00000008 8e077e5c 8e077e48
->>>> [   40.606358] 7e40: 802a5b90 802a56c8 00000000 80640f30 8e077ea4
->>>> 8e077e60 800449f4 802a5b3c
->>>> [   40.614628] 7e60: 80467b04 80047eec 00000002 8e077e84 8e077ea4
->>>> 8e077e90 80044734 00000000
->>>> [   40.622890] 7e80: 00000002 80640f3c 00000007 8e24ad00 00000000
->>>> 00000008 8e077ebc 8e077ea8
->>>> [   40.631152] 7ea0: 80044e88 80044974 00000002 80569a2c 8e077ee4
->>>> 8e077ec0 80043adc 80044d24
->>>> [   40.639423] 7ec0: 8e834b90 8e24ad00 00000008 8e077f78 00000000
->>>> 8e24a040 8e077ef4 8e077ee8
->>>> [   40.647693] 7ee0: 8023a520 80043a74 8e077f0c 8e077ef8 80113d9c
->>>> 8023a510 8e24ad00 8e24a04c
->>>> [   40.655963] 7f00: 8e077f44 8e077f10 801133f4 80113d5c 00000000
->>>> 00000000 00000000 8e0ef9c0
->>>> [   40.664234] 7f20: 00000008 00e41408 8e077f78 00000008 8e076000
->>>> 00e41408 8e077f74 8e077f48
->>>> [   40.672505] 7f40: 800b807c 80113340 800d0174 800d00f4 00000000
->>>> 00000000 8e0ef9c0 8e0ef9c0
->>>> [   40.680775] 7f60: 00000008 00e41408 8e077fa4 8e077f78 800b83b4
->>>> 800b7fe0 00000000 00000000
->>>> [   40.689045] 7f80: 00000008 00e41408 76ef0a78 00000004 8000ea44
->>>> 00000000 00000000 8e077fa8
->>>> [   40.697316] 7fa0: 8000e8a0 800b837c 00000008 00e41408 00000001
->>>> 00e41408 00000008 00000000
->>>> [   40.705586] 7fc0: 00000008 00e41408 76ef0a78 00000004 00000008
->>>> 00000008 00e41408 00000000
->>>> [   40.713848] 7fe0: 00000000 7ef52984 76e2e9a0 76e80a5c 600f0010
->>>> 00000001 02131c06 1b18018f
->>>> [   40.722103] Backtrace:
->>>> [   40.724612] [<802f4638>] (flexcan_chip_disable) from [<802f4750=
->]
->>>> (flexcan_suspend+0x18/0x88)
->>>> [   40.733216]  r6:8065dfe4 r5:8029c0dc r4:8e943800 r3:802f4738
->>>> [   40.739002] [<802f4738>] (flexcan_suspend) from [<8029c110>]
->>>> (platform_pm_suspend+0x34/0x5c)
->>>> [   40.747517]  r5:8029c0dc r4:8e8b6a10
->>>> [   40.751192] [<8029c0dc>] (platform_pm_suspend) from [<802a3ae0>=
-]
->>>> (dpm_run_callback.isra.10+0x24/0x50)
->>>> [   40.760513] [<802a3abc>] (dpm_run_callback.isra.10) from
->>>> [<802a450c>] (__device_suspend+0x124/0x2c4)
->>>> [   40.769726]  r5:00000000 r4:8e8b6a10
->>>> [   40.773392] [<802a43e8>] (__device_suspend) from [<802a5718>]
->>>> (dpm_suspend+0x5c/0x218)
->>>> [   40.781387]  r10:8061d86c r8:806290a8 r7:8065dfe4 r6:8062907c
->>>> r5:8e8b6a10 r4:8e8b6a68
->>>> [   40.789387] [<802a56bc>] (dpm_suspend) from [<802a5b90>]
->>>> (dpm_suspend_start+0x60/0x68)
->>>> [   40.797381]  r10:00000008 r9:00000000 r8:8e24ad00 r7:00000007
->>>> r6:00000002 r5:80640f30
->>>> [   40.805363]  r4:00000002
->>>> [   40.807958] [<802a5b30>] (dpm_suspend_start) from [<800449f4>]
->>>> (suspend_devices_and_enter+0x8c/0x3b0)
->>>> [   40.817258]  r5:80640f30 r4:00000000
->>>> [   40.820918] [<80044968>] (suspend_devices_and_enter) from
->>>> [<80044e88>] (pm_suspend+0x170/0x210)
->>>> [   40.829692]  r10:00000008 r9:00000000 r8:8e24ad00 r7:00000007
->>>> r6:80640f3c r5:00000002
->>>> [   40.837672]  r4:00000000
->>>> [   40.840272] [<80044d18>] (pm_suspend) from [<80043adc>]
->>>> (state_store+0x74/0xc4)
->>>> [   40.847653]  r5:80569a2c r4:00000002
->>>> [   40.851321] [<80043a68>] (state_store) from [<8023a520>]
->>>> (kobj_attr_store+0x1c/0x28)
->>>> [   40.859136]  r10:8e24a040 r8:00000000 r7:8e077f78 r6:00000008
->>>> r5:8e24ad00 r4:8e834b90
->>>> [   40.867146] [<8023a504>] (kobj_attr_store) from [<80113d9c>]
->>>> (sysfs_kf_write+0x4c/0x50)
->>>> [   40.875245] [<80113d50>] (sysfs_kf_write) from [<801133f4>]
->>>> (kernfs_fop_write+0xc0/0x19c)
->>>> [   40.883497]  r5:8e24a04c r4:8e24ad00
->>>> [   40.887166] [<80113334>] (kernfs_fop_write) from [<800b807c>]
->>>> (vfs_write+0xa8/0x1b0)
->>>> [   40.894986]  r10:00e41408 r9:8e076000 r8:00000008 r7:8e077f78
->>>> r6:00e41408 r5:00000008
->>>> [   40.902969]  r4:8e0ef9c0
->>>> [   40.905558] [<800b7fd4>] (vfs_write) from [<800b83b4>] (SyS_wri=
-te+0x44/0x90)
->>>> [   40.912654]  r10:00e41408 r8:00000008 r7:8e0ef9c0 r6:8e0ef9c0
->>>> r5:00000000 r4:00000000
->>>> [   40.920652] [<800b8370>] (SyS_write) from [<8000e8a0>]
->>>> (ret_fast_syscall+0x0/0x34)
->>>> [   40.928293]  r10:00000000 r8:8000ea44 r7:00000004 r6:76ef0a78
->>>> r5:00e41408 r4:00000008
->>>> [   40.936280] Code: e1a0c00d e92dd878 e24cb004 e5904120 (e5945000=
-)
->>>> [   40.942427] ---[ end trace a4e15b05423e6882 ]---
->>>>
->>>> I suspected that the clocks are disabled when flexcan_suspend is
->>>> called. When I explicitly enabled the clocks in flexcan_suspend it
->>>> worked fine.
->>>>
->>>> Before sending a patch I wanted to check for your thoughts?
->>>
->>> Sounds reasonable. I think we have to convert the flexcan driver to
->>> proper runtime_pm.
->>
->> Hm, but we don't have runtime PM, so the question is why are they
->
-> This is why I asked to convert the driver to runtime_pm. There is the
-> same problem for the xilinx driver, see discussion on this list some
-> month ago.....the final xilinx patch was not sent, though.
->
->> actually disabled at that time? I guess its because the device has n=
-ot
->> been opened or has already been closed at that point, in any case,
->> afaik, flexcan_chip_disable should not be required. Not sure how to
->> detect whether the chip is opened or not, but maybe just move the
->> flexcan_chip_disable within the netif_running if block?
->
-> Make use of runtime_pm, then you don't have to worry about
-> netif_runningm etc....
-
-While it would probably be great fun to convert flexcan driver to use
-runtime_pm, but since my knowledge is limited when it comes to
-runtime_pm this would be time consuming for me, time which I do not
-have at the moment.
-
-So will probably use Stefans suggestion, to move forward in current
-project and maybe do the conversion to runtime_pm later (when everyone
-else is on vacation :))
-
->
-> Marc
->
-> --
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
->
-
-
-
---=20
-Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
-
-*******************************************************************
-Mirza Krak
-Host Mobility AB
-mirza.krak@hostmobility.com
-Anders Personsgatan 12, 416 64 G=C3=B6teborg
-Sweden
-http://www.hostmobility.com
-Direct: +46 31 31 32 704
-Phone: +46 31 31 32 700
-=46ax: +46 31 80 67 51
-Mobile: +46 730 28 06 22
-*******************************************************************
+VGhhbmtzIGZvciB5b3VyIGFuc3dlciBLdXJ0Lg0KDQpZZXMsIEkgcmVmZXIgdG8gIlJlcXVlc3Qg
+Zm9yIGFkZHJlc3MgY2xhaW1lZCIgUEdOLCB3aWNoIGlzIG5vcm1hbGx5IDMgYnl0ZXMuDQpXaGVu
+IEkgc2VuZCBpdCB3aXRoIGEgbGVuZ3RoIG9mIDMsIGxpa2UgamFjZCBkbywgdGhlIHJlcXVlc3Qg
+aXMgc2VudCB3aXRoIDggYnl0ZXMgKHRoZSBvdGhlcnMgYXJlIHBhZGRlZCB3aXRoIDB4RkYpLg0K
+V2hlbiBJIHRyeSB3aXRoIGphY2QsIGl0IHNlbmRzIHRoZSBzYW1lIGZyYW1lLg0KDQpJIHRoaW5r
+IGl0J3MgYSBidWcsIEknbSByaWdodD8NCkkgdGhpbmssIHRoYXQgdGhlIGRyaXZlciBkb2Vzbid0
+IGFuYWx5c2UgdGhlIFBHTiBhbmQgcGFkIHRoZSBmcmFtZSBzeXN0ZW1pY2FsbHkuDQoNCkkgY2Fu
+J3QgdXNlIHRoZSBzZW5kIGZ1bmN0aW9uIHRvIHNlbmQgdGhlIGZyYW1lLCBiZWNhdXNlIEkgbmVl
+ZCB0byBzcGVjaWZ5IHRoZSBQR04gaW4gdGhlIGFkZHJlc3MuDQoNClRoZW4gb25lIG9mIGRldmlj
+ZXMgb24gdGhlIGJ1cyBkb2Vzbid0IGFuc3dlciB0byB0aGUgcmVxdWVzdC4NCg0KUmVnYXJkcywN
+Cg0KUGFzY2FsDQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogS3VydCBWYW4g
+RGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXSANCkVudm95w6nC
+oDogbWFyZGkgMTkgbWFpIDIwMTUgMTA6NDYNCsOAwqA6IHp6ZS1PcGVuIHRoZSBib3ggRklGUkUg
+UCBleHQgSU1UL09MUFMNCkNjwqA6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCk9iamV0wqA6
+IFJlOiBKMTkzOSBtZXNzYWdlIGxlbmd0aA0KDQpIaSBQYXNjYWwsDQoNCkkgYXBvbG9naXNlIGZv
+ciB0aGUgbGF0ZSBhbnN3ZXIuDQpZb3VyIGVtYWlsIGhhcyBzbGlwcGVkIGluIHdpdGhvdXQgZHJh
+d2luZyBteSBhdHRlbnRpb24uDQoNClBsZWFzZSBmaW5kIG15IGFuc3dlciBiZWxvdy4NCg0KLS0t
+IE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+IERhdGU6IE1vbiwgMjcgQXByIDIwMTUgMDk6MjI6MTcg
+KzAwMDANCj4gRnJvbTogcGZpZnJlLmV4dEBvcmFuZ2UuY29tDQo+IFRvOiBLdXJ0IFZhbiBEaWpj
+ayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4gQ0M6ICJsaW51eC1jYW5Admdl
+ci5rZXJuZWwub3JnIiA8bGludXgtY2FuQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUkU6
+IEoxOTM5IG1lc3NhZ2UgbGVuZ3RoDQo+IA0KPiBIaSBLdXJ0LA0KPiANCj4gSSBoYXZlIGFuIGlz
+c3VlIG9uIGFkZHJlc3MgY2xhaW0uDQo+IA0KPiBXaGVuIEkgY2FsbCB0aGUgYmluZCB0aGUgY2xh
+aW0gYWRkcmVzcyBpcyBzZW5kIHdpdGggYSBETEMgb2YgOCBhbmQgOCBieXRlcyBzZW50IG9uIHRo
+ZSBDQU4uDQo+IEJ1dCwgYWNjb3JkaW5nIHRvIHRoZSBJU08xMTc4MywgSSBuZWVkIHRvIHNlbmQg
+YW5kIGFkZHJlc3MgQ0xBSU0gYnkgYSAzIGJ5dGVzIGZyYW1lLg0KDQpUaGUgIkFkZHJlc3MgQ2xh
+aW0iIFBHTiAoMHgwZWUwMCkgaXMgOCBieXRlcywgZXZlbiBpbiBpc28xMTc4My4NCkkgdGhpbmsg
+eW91IHJlZmVyIHRvIHRoZSAiUmVxdWVzdCBmb3IgYWRkcmVzcyBjbGFpbWVkIiBQR04sIHdoaWNo
+IGlzIDMgYnl0ZXMsIHdpdGggUEdOIDB4MGVhMDAsIGFuZCBwYXlsb2FkIDAwZWUwMC4NCg0KPiAN
+Cj4gSG93IGNhbiwgSSBkbyB0aGF0IHdpdGggZXhpc3Rpbmcga2VybmVsIEoxOTM5IHN0YWNrIG9y
+IHdoZXJlIEkgY2FuIG1vZGlmeSB0aGlzPw0KWW91IGNhbiBqdXN0IHNlbmQgYSAzIGJ5dGUgbWVz
+c2FnZSB3aXRoIHNlbmQoU09DSywgPERBVEE+LCAzLCAwKQ0KDQpJZiB5b3Ugd2FudCB0byBkbyB0
+aGUgYWRkcmVzcyBjbGFpbWluZywNCnRoZW4geW91IG1heSB0YWtlIGEgbG9vayBhdCBqYWNkLCBh
+IGoxOTM5IGFkZGRyZXNzIGNsYWltIGRhZW1vbi4NCkl0IGRvZXMgYWxsIHRoZSB1c2Vyc3BhY2Ug
+aGFuZGxpbmcgbmVjZXNzYXJ5IGZvciBhZGRyZXNzIGNsYWltaW5nLg0KWW91IGNhbiBmaW5kIGl0
+IGF0IGh0dHBzOi8vZ2l0aHViLmNvbS9rdXJ0LXZkL2Nhbi11dGlscy5naXQsIGluIGoxOTM5LXY2
+IGJyYW5jaC4NCg0KS2luZCByZWdhcmRzLA0KS3VydA0KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQg
+c2VzIHBpZWNlcyBqb2ludGVzIHBldXZlbnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25m
+aWRlbnRpZWxsZXMgb3UgcHJpdmlsZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBk
+aWZmdXNlcywgZXhwbG9pdGVzIG91IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBh
+dmV6IHJlY3UgY2UgbWVzc2FnZSBwYXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwn
+ZXhwZWRpdGV1ciBldCBsZSBkZXRydWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBM
+ZXMgbWVzc2FnZXMgZWxlY3Ryb25pcXVlcyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9u
+LApPcmFuZ2UgZGVjbGluZSB0b3V0ZSByZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRl
+IGFsdGVyZSwgZGVmb3JtZSBvdSBmYWxzaWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0
+cyBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZv
+cm1hdGlvbiB0aGF0IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUg
+ZGlzdHJpYnV0ZWQsIHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91
+IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2Vu
+ZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWls
+cyBtYXkgYmUgYWx0ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQg
+aGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
