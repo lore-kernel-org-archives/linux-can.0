@@ -1,150 +1,155 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 message length
-Date: Wed, 20 May 2015 06:27:25 +0000
-Message-ID: <16513_1432103246_555C294E_16513_14041_1_F1366246CF364C42B98553900CE0C5CB08028B46@PEXCVZYM11.corporate.adroot.infra.ftgroup>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <20150519084626.GC1088@vandijck-laurijssen.be>
- <26458_1432042025_555B3A29_26458_297_2_F1366246CF364C42B98553900CE0C5CB08028AE4@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <CAA7hF3y7+j_TZ4nTak8t5Y4ejmE2fOFWxRBKJbrHLiFts_+8eg@mail.gmail.com>
- <20150519210131.GC29137@vandijck-laurijssen.be>
+From: Gediminas Simanskis <gediminas@8devices.com>
+Subject: Re: Linux board with 10 CANs
+Date: Wed, 20 May 2015 14:35:06 +0300
+Message-ID: <555C716A.3090509@8devices.com>
+References: <5555A6A3.7090206@orange.fr> <5555FAAB.4090306@universalnet.at> <5559ABE6.5030206@orange.fr> <5559E994.4000103@universalnet.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias91.francetelecom.com ([193.251.215.91]:54483 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751182AbbETG13 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 20 May 2015 02:27:29 -0400
-In-Reply-To: <20150519210131.GC29137@vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from mail-wi0-f171.google.com ([209.85.212.171]:34002 "EHLO
+	mail-wi0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750734AbbETLfL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 May 2015 07:35:11 -0400
+Received: by wicmc15 with SMTP id mc15so146734389wic.1
+        for <linux-can@vger.kernel.org>; Wed, 20 May 2015 04:35:10 -0700 (PDT)
+In-Reply-To: <5559E994.4000103@universalnet.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Bernd Krumboeck <krumboeck@universalnet.at>
+Cc: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>, linux-can@vger.kernel.org
 
-VGhhbmtzIGEgbG90IEt1cnQNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBL
-dXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdIA0K
-RW52b3nDqcKgOiBtYXJkaSAxOSBtYWkgMjAxNSAyMzowMg0Kw4DCoDogbGF1cmVudCB2YXVkb2l0
-DQpDY8KgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgZXh0IElNVC9PTFBTOyBsaW51eC1jYW5A
-dmdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCg0KSGV5
-LA0KDQotLS0gT3JpZ2luYWwgbWVzc2FnZSAtLS0NCj4gRGF0ZTogVHVlLCAxOSBNYXkgMjAxNSAx
-NTo0MDozOCArMDIwMA0KPiBGcm9tOiBsYXVyZW50IHZhdWRvaXQgPGxhdXJlbnQudmF1ZG9pdEBn
-bWFpbC5jb20+DQo+IFRvOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gQ2M6IEt1cnQgVmFuIERp
-amNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlPiwNCj4gCSJsaW51eC1jYW5Admdl
-ci5rZXJuZWwub3JnIiA8bGludXgtY2FuQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6
-IEoxOTM5IG1lc3NhZ2UgbGVuZ3RoDQo+IA0KPiBIaSBQYXNjYWwsDQo+IA0KPiBpIHRoaW5rIHlv
-dSdyZSBtZW50aW9ubmluZyB0aGUgYnVnIGkgaGF2ZSBzZWVuIGEgZmV3IHRpbWUgYWdvLg0KPiB0
-aGUgcGduIHJlcXVlc3QgaXMgYWxsd2F5cyBzZW50IHdpdGggOCBieXRlcyBpbnN0ZWFkIG9mIG9u
-bHkgMyBieXRlcy4NCg0KSSB0aGluayB0aGF0IG5vdyB0b28uDQoNCj4gaSB0aGluayB0aGUgcGFk
-ZGluZyBzaG91bGQgYmUgZG9uZSBpbiB0aGUgdHJhbnNwb3J0IGxheWVyIGluc3RlYWQgb2YgDQo+
-IGluIHRoZSBtYWluLmMgZmlsZS4NCj4geW91IGNhbiBoYXZlIGEgbG9vayBhdCB0aGUgYmVnaW5u
-aW5nIG9mIHRoaXMgbWFpbCB0aHJlYWQuDQoNCllvdSBjb3VsZCBjaGFuZ2UgdGhlIHBhdGNoIG1l
-bnRpb25lZCBlYXJsaWVyIGFzOg0KDQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS9tYWluLmMg
-Yi9uZXQvY2FuL2oxOTM5L21haW4uYyBpbmRleCA3ZWRmODQzLi4xNDc5ZGU0IDEwMDY0NA0KLS0t
-IGEvbmV0L2Nhbi9qMTkzOS9tYWluLmMNCisrKyBiL25ldC9jYW4vajE5MzkvbWFpbi5jDQpAQCAt
-MTU2LDcgKzE1Niw5IEBAIHN0YXRpYyBpbnQgajE5Mzlfc2VuZF9jYW4oc3RydWN0IHNrX2J1ZmYg
-KnNrYikNCiAJCWNhbmlkIHw9ICgoc2tfYWRkci0+cGduICYgMHgzZmZmZikgPDwgOCk7DQogDQog
-CW1zZy0+Y2FuX2lkID0gY2FuaWQ7DQorCWlmICgoZGxjIDwgOCkgJiYgc2tfYWRkci0+cGduICE9
-IDB4MGVhMDApKSB7DQorCQltZW1zZXQobXNnLT5kYXRhK2RsYywgMHhmZiwgOCAtIGRsYyk7DQor
-CQlkbGMgPSA4Ow0KKwl9DQogCW1zZy0+Y2FuX2RsYyA9IGRsYzsNCiAgDQogCS8qIHNldCBuZXRf
-ZGV2aWNlICovDQogCXJldCA9IC1FTk9ERVY7DQoJDQoNCi0tDQpUaGlzIHNob3VsZCBmaXggdGhl
-IHJlcXVlc3QgUEdOIGJ1Zy4NCg0KRHVlIHRvIHRoZSBpbnRlcmVzdCwgSSBqdXN0IHdvcmtlZCBv
-dXQgYSBkaWZmZXJlbnQgcGF0Y2ggdGhhdCBfb25seV8gcGFkcyB0cmFuc3BvcnQgcHJvdG9jb2wg
-ZGF0YSBmcmFtZXMuDQpUaGlzIG9ubHkgc29sdmVzIHByb2JsZW1zIHdoZW4gdGhlIHJlY2VpdmVy
-IGlzIGludG9sZXJhbnQgZm9yIHRyYW5zcG9ydCBwcm90b2NvbCBmcmFtZXMsIGFuZCBub3QgZm9y
-IHJlZ3VsYXIgZnJhbWVzLg0KDQpOb3RlIHRoYXQgaXQgbWFrZXMgbm90IHJlYWwgc2Vuc2UgdG8g
-YXBwbHkgYm90aCBwYXRjaGVzLg0KDQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS90cmFuc3Bv
-cnQuYyBiL25ldC9jYW4vajE5MzkvdHJhbnNwb3J0LmMgaW5kZXggMmI1MDkwMi4uMTg3YWFhZCAx
-MDA2NDQNCi0tLSBhL25ldC9jYW4vajE5MzkvdHJhbnNwb3J0LmMNCisrKyBiL25ldC9jYW4vajE5
-MzkvdHJhbnNwb3J0LmMNCkBAIC0zNjksOCArMzY5LDkgQEAgc3RhdGljIGludCBqMTkzOXRwX3R4
-X2RhdChzdHJ1Y3Qgc2Vzc2lvbiAqcmVsYXRlZCwNCiAJLyogZml4IHBnbiAqLw0KIAlza2JfY2It
-PnBnbiA9IHJlbGF0ZWQtPmV4dGQgPyBldHBfcGduX2RhdCA6IHRwX3Bnbl9kYXQ7DQogDQotCXNr
-ZGF0ID0gc2tiX3B1dChza2IsIGxlbik7DQorCXNrZGF0ID0gc2tiX3B1dChza2IsIDgpOw0KIAlt
-ZW1jcHkoc2tkYXQsIGRhdCwgbGVuKTsNCisJbWVtc2V0KHNrZGF0K2xlbiwgMHhmZiwgOC1sZW4p
-Ow0KIAlyZXQgPSBqMTkzOV9zZW5kX25vcm1hbGl6ZWRfcGt0KHNrYik7DQogCWlmIChyZXQgPCAw
-KQ0KIAkJa2ZyZWVfc2tiKHNrYik7DQoNCg0KS2luZCByZWdhcmRzLA0KS3VydA0KDQo+IA0KPiBS
-ZWdhcmRzDQo+IA0KPiBMYXVyZW50DQo+IA0KPiBPbiBUdWUsIE1heSAxOSwgMjAxNSBhdCAzOjI3
-IFBNLCA8cGZpZnJlLmV4dEBvcmFuZ2UuY29tPiB3cm90ZToNCj4gDQo+ID4gVGhhbmtzIGZvciB5
-b3VyIGFuc3dlciBLdXJ0Lg0KPiA+DQo+ID4gWWVzLCBJIHJlZmVyIHRvICJSZXF1ZXN0IGZvciBh
-ZGRyZXNzIGNsYWltZWQiIFBHTiwgd2ljaCBpcyBub3JtYWxseSANCj4gPiAzIGJ5dGVzLg0KPiA+
-IFdoZW4gSSBzZW5kIGl0IHdpdGggYSBsZW5ndGggb2YgMywgbGlrZSBqYWNkIGRvLCB0aGUgcmVx
-dWVzdCBpcyBzZW50IA0KPiA+IHdpdGgNCj4gPiA4IGJ5dGVzICh0aGUgb3RoZXJzIGFyZSBwYWRk
-ZWQgd2l0aCAweEZGKS4NCj4gPiBXaGVuIEkgdHJ5IHdpdGggamFjZCwgaXQgc2VuZHMgdGhlIHNh
-bWUgZnJhbWUuDQo+ID4NCj4gPiBJIHRoaW5rIGl0J3MgYSBidWcsIEknbSByaWdodD8NCj4gPiBJ
-IHRoaW5rLCB0aGF0IHRoZSBkcml2ZXIgZG9lc24ndCBhbmFseXNlIHRoZSBQR04gYW5kIHBhZCB0
-aGUgZnJhbWUgDQo+ID4gc3lzdGVtaWNhbGx5Lg0KPiA+DQo+ID4gSSBjYW4ndCB1c2UgdGhlIHNl
-bmQgZnVuY3Rpb24gdG8gc2VuZCB0aGUgZnJhbWUsIGJlY2F1c2UgSSBuZWVkIHRvIA0KPiA+IHNw
-ZWNpZnkgdGhlIFBHTiBpbiB0aGUgYWRkcmVzcy4NCj4gPg0KPiA+IFRoZW4gb25lIG9mIGRldmlj
-ZXMgb24gdGhlIGJ1cyBkb2Vzbid0IGFuc3dlciB0byB0aGUgcmVxdWVzdC4NCj4gPg0KPiA+IFJl
-Z2FyZHMsDQo+ID4NCj4gPiBQYXNjYWwNCj4gPg0KPiA+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUt
-LS0tLQ0KPiA+IERlIDogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1s
-YXVyaWpzc2VuLmJlXQ0KPiA+IEVudm95w6kgOiBtYXJkaSAxOSBtYWkgMjAxNSAxMDo0Ng0KPiA+
-IMOAIDogenplLU9wZW4gdGhlIGJveCBGSUZSRSBQIGV4dCBJTVQvT0xQUyBDYyA6IA0KPiA+IGxp
-bnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcgT2JqZXQgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgN
-Cj4gPg0KPiA+IEhpIFBhc2NhbCwNCj4gPg0KPiA+IEkgYXBvbG9naXNlIGZvciB0aGUgbGF0ZSBh
-bnN3ZXIuDQo+ID4gWW91ciBlbWFpbCBoYXMgc2xpcHBlZCBpbiB3aXRob3V0IGRyYXdpbmcgbXkg
-YXR0ZW50aW9uLg0KPiA+DQo+ID4gUGxlYXNlIGZpbmQgbXkgYW5zd2VyIGJlbG93Lg0KPiA+DQo+
-ID4gLS0tIE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+ID4gPiBEYXRlOiBNb24sIDI3IEFwciAyMDE1
-IDA5OjIyOjE3ICswMDAwDQo+ID4gPiBGcm9tOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gPiA+
-IFRvOiBLdXJ0IFZhbiBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4g
-PiA+IENDOiAibGludXgtY2FuQHZnZXIua2VybmVsLm9yZyIgPGxpbnV4LWNhbkB2Z2VyLmtlcm5l
-bC5vcmc+DQo+ID4gPiBTdWJqZWN0OiBSRTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCj4gPiA+DQo+
-ID4gPiBIaSBLdXJ0LA0KPiA+ID4NCj4gPiA+IEkgaGF2ZSBhbiBpc3N1ZSBvbiBhZGRyZXNzIGNs
-YWltLg0KPiA+ID4NCj4gPiA+IFdoZW4gSSBjYWxsIHRoZSBiaW5kIHRoZSBjbGFpbSBhZGRyZXNz
-IGlzIHNlbmQgd2l0aCBhIERMQyBvZiA4IGFuZCANCj4gPiA+IDgNCj4gPiBieXRlcyBzZW50IG9u
-IHRoZSBDQU4uDQo+ID4gPiBCdXQsIGFjY29yZGluZyB0byB0aGUgSVNPMTE3ODMsIEkgbmVlZCB0
-byBzZW5kIGFuZCBhZGRyZXNzIENMQUlNIA0KPiA+ID4gYnkgYSAzDQo+ID4gYnl0ZXMgZnJhbWUu
-DQo+ID4NCj4gPiBUaGUgIkFkZHJlc3MgQ2xhaW0iIFBHTiAoMHgwZWUwMCkgaXMgOCBieXRlcywg
-ZXZlbiBpbiBpc28xMTc4My4NCj4gPiBJIHRoaW5rIHlvdSByZWZlciB0byB0aGUgIlJlcXVlc3Qg
-Zm9yIGFkZHJlc3MgY2xhaW1lZCIgUEdOLCB3aGljaCBpcyANCj4gPiAzIGJ5dGVzLCB3aXRoIFBH
-TiAweDBlYTAwLCBhbmQgcGF5bG9hZCAwMGVlMDAuDQo+ID4NCj4gPiA+DQo+ID4gPiBIb3cgY2Fu
-LCBJIGRvIHRoYXQgd2l0aCBleGlzdGluZyBrZXJuZWwgSjE5Mzkgc3RhY2sgb3Igd2hlcmUgSSBj
-YW4NCj4gPiBtb2RpZnkgdGhpcz8NCj4gPiBZb3UgY2FuIGp1c3Qgc2VuZCBhIDMgYnl0ZSBtZXNz
-YWdlIHdpdGggc2VuZChTT0NLLCA8REFUQT4sIDMsIDApDQo+ID4NCj4gPiBJZiB5b3Ugd2FudCB0
-byBkbyB0aGUgYWRkcmVzcyBjbGFpbWluZywgdGhlbiB5b3UgbWF5IHRha2UgYSBsb29rIGF0IA0K
-PiA+IGphY2QsIGEgajE5MzkgYWRkZHJlc3MgY2xhaW0gZGFlbW9uLg0KPiA+IEl0IGRvZXMgYWxs
-IHRoZSB1c2Vyc3BhY2UgaGFuZGxpbmcgbmVjZXNzYXJ5IGZvciBhZGRyZXNzIGNsYWltaW5nLg0K
-PiA+IFlvdSBjYW4gZmluZCBpdCBhdCBodHRwczovL2dpdGh1Yi5jb20va3VydC12ZC9jYW4tdXRp
-bHMuZ2l0LCBpbiANCj4gPiBqMTkzOS12NiBicmFuY2guDQo+ID4NCj4gPiBLaW5kIHJlZ2FyZHMs
-DQo+ID4gS3VydA0KPiA+DQo+ID4NCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4NCj4gPiBDZSBtZXNz
-YWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlv
-bnMgDQo+ID4gY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRv
-bmMgcGFzIGV0cmUgDQo+ID4gZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRv
-cmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IA0KPiA+IGNlIG1lc3NhZ2UgcGFyIGVycmV1ciwg
-dmV1aWxsZXogbGUgc2lnbmFsZXIgYSBsJ2V4cGVkaXRldXIgZXQgbGUgDQo+ID4gZGV0cnVpcmUg
-YWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMg
-DQo+ID4gZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwgT3JhbmdlIGRlY2xpbmUgdG91
-dGUgcmVzcG9uc2FiaWxpdGUgDQo+ID4gc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9y
-bWUgb3UgZmFsc2lmaWUuIE1lcmNpLg0KPiA+DQo+ID4gVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0
-YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIA0KPiA+IHByaXZpbGVnZWQgaW5m
-b3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsgdGhleSBzaG91bGQgbm90IA0K
-PiA+IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24u
-DQo+ID4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5v
-dGlmeSB0aGUgc2VuZGVyIA0KPiA+IGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0
-YWNobWVudHMuDQo+ID4gQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxp
-YWJsZSBmb3IgbWVzc2FnZXMgdGhhdCANCj4gPiBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQg
-b3IgZmFsc2lmaWVkLg0KPiA+IFRoYW5rIHlvdS4NCj4gPg0KPiA+DQoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVz
-c2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRp
-b25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBh
-cyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBT
-aSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25h
-bGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpv
-aW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2Fs
-dGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3Nh
-Z2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2Fn
-ZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxl
-Z2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxk
-IG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9u
-LgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5
-IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4K
-QXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2Fn
-ZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5
-b3UuCgo=
+Hi,
+GPL2
+Gediminas
+
+On 2015-05-18 16:31, Bernd Krumboeck wrote:
+> Hi Gediminas!
+>
+>
+> Can you tell us the license of the source code from usb2can firmware?
+>
+>
+> regards,
+> Bernd
+>
+>
+> Am 2015-05-18 um 11:07 schrieb Fran=C3=A7ois Beaulier:
+>> Le 15/05/2015 15:54, Bernd Krumboeck a =C3=A9crit :
+>>> Hi!
+>>>
+>>>
+>>> I don't know much about this things, but what do you think about=20
+>>> following:
+>>>
+>>> Use two 4 port usb hub (MICROCHIP USB4624I-1080HN) with 8 x=20
+>>> STM32F072 or STR750FV2.
+>>>
+>>> You can flash the MCUs under linux with dfu-util=20
+>>> (http://dfu-util.sourceforge.net/).
+>>>
+>>> A firmware for STR750FV2 is available here (please check license):
+>>> https://github.com/krumboeck/usb2can_firmware
+>>>
+>>> I don't know if it works, but there is also a gcc version available=
+:
+>>> https://github.com/krumboeck/usb2can_firmware/tree/gcc-test
+>>>
+>>>
+>>> If you use this firmware or at least the same procotol, then the
+>>> hardware will be compatible with usb_8dev can driver.
+>>>
+>>>
+>>> regards,
+>>> Bernd
+>>>
+>>>
+>>
+>> Hi Bernd,
+>>
+>> Thank you for pointed out this USB solution. I didn't know such=20
+>> firmware existed.
+>> I looked in the gcc-test repository, and apart from ST files the=20
+>> license is not specified.
+>> Can you tell us more about license ?
+>>
+>> Francois
+>>
+>>
+>>>
+>>>
+>>> Am 2015-05-15 um 09:56 schrieb Fran=C3=A7ois Beaulier:
+>>>> Hi,
+>>>>
+>>>> I'm starting the design of a CPU board, based on a computer on=20
+>>>> module with a very common SOC like i.mx6 or am335x.
+>>>> I need to fit my board with at least 10 CAN ports, may be more.=20
+>>>> (The SOC have 2 CANs so i need 8 more)
+>>>> The board will run with Linux and of course i want a socketcan=20
+>>>> interface for each bus !
+>>>> CAN bitrate needed is quite low (50kbps) and latency is not=20
+>>>> critical but bus load may reach 100% sometimes.
+>>>> As far as possible i want to avoid driver development, or just=20
+>>>> doing slight modifications on an existing driver.
+>>>> I don't want to use MCP2515, i had trouble with it on a previous=20
+>>>> design because of the lack of buffer in the chip.
+>>>> I can't imagine putting 8 MCP2515 and not missing any frame, but=20
+>>>> may be i'm wrong ?
+>>>>
+>>>> Here are the options i have considered, they involve using externa=
+l=20
+>>>> MCUs to provide enough CAN interfaces :
+>>>>
+>>>> - MCUs with SLCAN : SLCAN have the advantage of simplicity and it=20
+>>>> should offer enough performance at low data rate. Problem is that=20
+>>>> it would require 8 UARTS. I could modify SLCAN driver to allow=20
+>>>> multiple CAN channels on the same UART, and so use MCUs with=20
+>>>> multiple CANs, does it sounds reasonable ?
+>>>>
+>>>> - MCUs with SPI 1 : adapt MCP2515 driver in a way to make the SPI=20
+>>>> protocol manageable on the MCU side (SPI slave). The MCU will be=20
+>>>> able to provide the buffer for CAN frames that the MCP does not=20
+>>>> have. This option is just a way of trying to go fast, it is not=20
+>>>> very elegant, and have the limitation of one CAN channel per SPI=20
+>>>> connection / driver instance.
+>>>>
+>>>> - MCUs with SPI 2 : use the Stefano Babic SPI driver posted on thi=
+s=20
+>>>> list. This is probably the best choice for a long term and more=20
+>>>> generic solution. But i'm afraid it may require too much work to=20
+>>>> complete. What is the status of this driver right now ? Does anyon=
+e=20
+>>>> have an idea of the remaining work to do to make it ready for=20
+>>>> mainline ? Stefano are you available to spend more time on it ? I'=
+m=20
+>>>> also wondering whether multiple instances of the driver can run=20
+>>>> concurently if i put more than one MCU ?
+>>>>
+>>>> Concerning the MCU software i could release it as an open-source=20
+>>>> project, anyone interested in participating ?
+>>>> I'm very familiar with STM32 MCUs so i will probably use an=20
+>>>> STM32F072 (low cost cortex M0 with one CAN).
+>>>>
+>>>> Any idea or advice is welcome, thank you for reading this much too=
+=20
+>>>> long post.
+>>>>
+>>>> Regards
+>>>>
+>>>> Francois Beaulier
+>>>> www.ingelibre.fr
+>>>> --=20
+>>>> To unsubscribe from this list: send the line "unsubscribe=20
+>>>> linux-can" in
+>>>> the body of a message to majordomo@vger.kernel.org
+>>>> More majordomo info at http://vger.kernel.org/majordomo-info.html
+>>>
+>>
+>> --=20
+>> To unsubscribe from this list: send the line "unsubscribe linux-can"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at http://vger.kernel.org/majordomo-info.html
+>
+
