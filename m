@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 message length
-Date: Tue, 19 May 2015 23:01:31 +0200
-Message-ID: <20150519210131.GC29137@vandijck-laurijssen.be>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 message length
+Date: Wed, 20 May 2015 06:27:25 +0000
+Message-ID: <16513_1432103246_555C294E_16513_14041_1_F1366246CF364C42B98553900CE0C5CB08028B46@PEXCVZYM11.corporate.adroot.infra.ftgroup>
 References: <loom.20141211T112702-791@post.gmane.org>
  <20141212110743.GC10796@vandijck-laurijssen.be>
  <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
@@ -10,204 +10,141 @@ References: <loom.20141211T112702-791@post.gmane.org>
  <20150519084626.GC1088@vandijck-laurijssen.be>
  <26458_1432042025_555B3A29_26458_297_2_F1366246CF364C42B98553900CE0C5CB08028AE4@PEXCVZYM11.corporate.adroot.infra.ftgroup>
  <CAA7hF3y7+j_TZ4nTak8t5Y4ejmE2fOFWxRBKJbrHLiFts_+8eg@mail.gmail.com>
+ <20150519210131.GC29137@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:21407 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751811AbbESWwg convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 May 2015 18:52:36 -0400
-Content-Disposition: inline
-In-Reply-To: <CAA7hF3y7+j_TZ4nTak8t5Y4ejmE2fOFWxRBKJbrHLiFts_+8eg@mail.gmail.com>
+Received: from relais-ias91.francetelecom.com ([193.251.215.91]:54483 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751182AbbETG13 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 May 2015 02:27:29 -0400
+In-Reply-To: <20150519210131.GC29137@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: pfifre.ext@orange.com, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hey,
-
---- Original message ---
-> Date: Tue, 19 May 2015 15:40:38 +0200
-> From: laurent vaudoit <laurent.vaudoit@gmail.com>
-> To: pfifre.ext@orange.com
-> Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
-> 	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> Subject: Re: J1939 message length
->=20
-> Hi Pascal,
->=20
-> i think you're mentionning the bug i have seen a few time ago.
-> the pgn request is allways sent with 8 bytes instead of only 3 bytes.
-
-I think that now too.
-
-> i think the padding should be done in the transport layer instead of =
-in the
-> main.c file.
-> you can have a look at the beginning of this mail thread.
-
-You could change the patch mentioned earlier as:
-
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 7edf843..1479de4 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -156,7 +156,9 @@ static int j1939_send_can(struct sk_buff *skb)
- 		canid |=3D ((sk_addr->pgn & 0x3ffff) << 8);
-=20
- 	msg->can_id =3D canid;
-+	if ((dlc < 8) && sk_addr->pgn !=3D 0x0ea00)) {
-+		memset(msg->data+dlc, 0xff, 8 - dlc);
-+		dlc =3D 8;
-+	}
- 	msg->can_dlc =3D dlc;
- =20
- 	/* set net_device */
- 	ret =3D -ENODEV;
-=09
-
---
-This should fix the request PGN bug.
-
-Due to the interest, I just worked out a different patch
-that _only_ pads transport protocol data frames.
-This only solves problems when the receiver is intolerant
-for transport protocol frames, and not for regular frames.
-
-Note that it makes not real sense to apply both patches.
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 2b50902..187aaad 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -369,8 +369,9 @@ static int j1939tp_tx_dat(struct session *related,
- 	/* fix pgn */
- 	skb_cb->pgn =3D related->extd ? etp_pgn_dat : tp_pgn_dat;
-=20
--	skdat =3D skb_put(skb, len);
-+	skdat =3D skb_put(skb, 8);
- 	memcpy(skdat, dat, len);
-+	memset(skdat+len, 0xff, 8-len);
- 	ret =3D j1939_send_normalized_pkt(skb);
- 	if (ret < 0)
- 		kfree_skb(skb);
-
-
-Kind regards,
-Kurt
-
->=20
-> Regards
->=20
-> Laurent
->=20
-> On Tue, May 19, 2015 at 3:27 PM, <pfifre.ext@orange.com> wrote:
->=20
-> > Thanks for your answer Kurt.
-> >
-> > Yes, I refer to "Request for address claimed" PGN, wich is normally=
- 3
-> > bytes.
-> > When I send it with a length of 3, like jacd do, the request is sen=
-t with
-> > 8 bytes (the others are padded with 0xFF).
-> > When I try with jacd, it sends the same frame.
-> >
-> > I think it's a bug, I'm right?
-> > I think, that the driver doesn't analyse the PGN and pad the frame
-> > systemically.
-> >
-> > I can't use the send function to send the frame, because I need to =
-specify
-> > the PGN in the address.
-> >
-> > Then one of devices on the bus doesn't answer to the request.
-> >
-> > Regards,
-> >
-> > Pascal
-> >
-> > -----Message d'origine-----
-> > De : Kurt Van Dijck [mailto:dev.kurt@vandijck-laurijssen.be]
-> > Envoy=C3=A9 : mardi 19 mai 2015 10:46
-> > =C3=80 : zze-Open the box FIFRE P ext IMT/OLPS
-> > Cc : linux-can@vger.kernel.org
-> > Objet : Re: J1939 message length
-> >
-> > Hi Pascal,
-> >
-> > I apologise for the late answer.
-> > Your email has slipped in without drawing my attention.
-> >
-> > Please find my answer below.
-> >
-> > --- Original message ---
-> > > Date: Mon, 27 Apr 2015 09:22:17 +0000
-> > > From: pfifre.ext@orange.com
-> > > To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> > > CC: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> > > Subject: RE: J1939 message length
-> > >
-> > > Hi Kurt,
-> > >
-> > > I have an issue on address claim.
-> > >
-> > > When I call the bind the claim address is send with a DLC of 8 an=
-d 8
-> > bytes sent on the CAN.
-> > > But, according to the ISO11783, I need to send and address CLAIM =
-by a 3
-> > bytes frame.
-> >
-> > The "Address Claim" PGN (0x0ee00) is 8 bytes, even in iso11783.
-> > I think you refer to the "Request for address claimed" PGN, which i=
-s 3
-> > bytes, with PGN 0x0ea00, and payload 00ee00.
-> >
-> > >
-> > > How can, I do that with existing kernel J1939 stack or where I ca=
-n
-> > modify this?
-> > You can just send a 3 byte message with send(SOCK, <DATA>, 3, 0)
-> >
-> > If you want to do the address claiming,
-> > then you may take a look at jacd, a j1939 adddress claim daemon.
-> > It does all the userspace handling necessary for address claiming.
-> > You can find it at https://github.com/kurt-vd/can-utils.git, in j19=
-39-v6
-> > branch.
-> >
-> > Kind regards,
-> > Kurt
-> >
-> >
-> > ___________________________________________________________________=
-______________________________________________________
-> >
-> > Ce message et ses pieces jointes peuvent contenir des informations
-> > confidentielles ou privilegiees et ne doivent donc
-> > pas etre diffuses, exploites ou copies sans autorisation. Si vous a=
-vez
-> > recu ce message par erreur, veuillez le signaler
-> > a l'expediteur et le detruire ainsi que les pieces jointes. Les mes=
-sages
-> > electroniques etant susceptibles d'alteration,
-> > Orange decline toute responsabilite si ce message a ete altere, def=
-orme ou
-> > falsifie. Merci.
-> >
-> > This message and its attachments may contain confidential or privil=
-eged
-> > information that may be protected by law;
-> > they should not be distributed, used or copied without authorisatio=
-n.
-> > If you have received this email in error, please notify the sender =
-and
-> > delete this message and its attachments.
-> > As emails may be altered, Orange is not liable for messages that ha=
-ve been
-> > modified, changed or falsified.
-> > Thank you.
-> >
-> >
+VGhhbmtzIGEgbG90IEt1cnQNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBL
+dXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdIA0K
+RW52b3nDqcKgOiBtYXJkaSAxOSBtYWkgMjAxNSAyMzowMg0Kw4DCoDogbGF1cmVudCB2YXVkb2l0
+DQpDY8KgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgZXh0IElNVC9PTFBTOyBsaW51eC1jYW5A
+dmdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCg0KSGV5
+LA0KDQotLS0gT3JpZ2luYWwgbWVzc2FnZSAtLS0NCj4gRGF0ZTogVHVlLCAxOSBNYXkgMjAxNSAx
+NTo0MDozOCArMDIwMA0KPiBGcm9tOiBsYXVyZW50IHZhdWRvaXQgPGxhdXJlbnQudmF1ZG9pdEBn
+bWFpbC5jb20+DQo+IFRvOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gQ2M6IEt1cnQgVmFuIERp
+amNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlPiwNCj4gCSJsaW51eC1jYW5Admdl
+ci5rZXJuZWwub3JnIiA8bGludXgtY2FuQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6
+IEoxOTM5IG1lc3NhZ2UgbGVuZ3RoDQo+IA0KPiBIaSBQYXNjYWwsDQo+IA0KPiBpIHRoaW5rIHlv
+dSdyZSBtZW50aW9ubmluZyB0aGUgYnVnIGkgaGF2ZSBzZWVuIGEgZmV3IHRpbWUgYWdvLg0KPiB0
+aGUgcGduIHJlcXVlc3QgaXMgYWxsd2F5cyBzZW50IHdpdGggOCBieXRlcyBpbnN0ZWFkIG9mIG9u
+bHkgMyBieXRlcy4NCg0KSSB0aGluayB0aGF0IG5vdyB0b28uDQoNCj4gaSB0aGluayB0aGUgcGFk
+ZGluZyBzaG91bGQgYmUgZG9uZSBpbiB0aGUgdHJhbnNwb3J0IGxheWVyIGluc3RlYWQgb2YgDQo+
+IGluIHRoZSBtYWluLmMgZmlsZS4NCj4geW91IGNhbiBoYXZlIGEgbG9vayBhdCB0aGUgYmVnaW5u
+aW5nIG9mIHRoaXMgbWFpbCB0aHJlYWQuDQoNCllvdSBjb3VsZCBjaGFuZ2UgdGhlIHBhdGNoIG1l
+bnRpb25lZCBlYXJsaWVyIGFzOg0KDQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS9tYWluLmMg
+Yi9uZXQvY2FuL2oxOTM5L21haW4uYyBpbmRleCA3ZWRmODQzLi4xNDc5ZGU0IDEwMDY0NA0KLS0t
+IGEvbmV0L2Nhbi9qMTkzOS9tYWluLmMNCisrKyBiL25ldC9jYW4vajE5MzkvbWFpbi5jDQpAQCAt
+MTU2LDcgKzE1Niw5IEBAIHN0YXRpYyBpbnQgajE5Mzlfc2VuZF9jYW4oc3RydWN0IHNrX2J1ZmYg
+KnNrYikNCiAJCWNhbmlkIHw9ICgoc2tfYWRkci0+cGduICYgMHgzZmZmZikgPDwgOCk7DQogDQog
+CW1zZy0+Y2FuX2lkID0gY2FuaWQ7DQorCWlmICgoZGxjIDwgOCkgJiYgc2tfYWRkci0+cGduICE9
+IDB4MGVhMDApKSB7DQorCQltZW1zZXQobXNnLT5kYXRhK2RsYywgMHhmZiwgOCAtIGRsYyk7DQor
+CQlkbGMgPSA4Ow0KKwl9DQogCW1zZy0+Y2FuX2RsYyA9IGRsYzsNCiAgDQogCS8qIHNldCBuZXRf
+ZGV2aWNlICovDQogCXJldCA9IC1FTk9ERVY7DQoJDQoNCi0tDQpUaGlzIHNob3VsZCBmaXggdGhl
+IHJlcXVlc3QgUEdOIGJ1Zy4NCg0KRHVlIHRvIHRoZSBpbnRlcmVzdCwgSSBqdXN0IHdvcmtlZCBv
+dXQgYSBkaWZmZXJlbnQgcGF0Y2ggdGhhdCBfb25seV8gcGFkcyB0cmFuc3BvcnQgcHJvdG9jb2wg
+ZGF0YSBmcmFtZXMuDQpUaGlzIG9ubHkgc29sdmVzIHByb2JsZW1zIHdoZW4gdGhlIHJlY2VpdmVy
+IGlzIGludG9sZXJhbnQgZm9yIHRyYW5zcG9ydCBwcm90b2NvbCBmcmFtZXMsIGFuZCBub3QgZm9y
+IHJlZ3VsYXIgZnJhbWVzLg0KDQpOb3RlIHRoYXQgaXQgbWFrZXMgbm90IHJlYWwgc2Vuc2UgdG8g
+YXBwbHkgYm90aCBwYXRjaGVzLg0KDQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS90cmFuc3Bv
+cnQuYyBiL25ldC9jYW4vajE5MzkvdHJhbnNwb3J0LmMgaW5kZXggMmI1MDkwMi4uMTg3YWFhZCAx
+MDA2NDQNCi0tLSBhL25ldC9jYW4vajE5MzkvdHJhbnNwb3J0LmMNCisrKyBiL25ldC9jYW4vajE5
+MzkvdHJhbnNwb3J0LmMNCkBAIC0zNjksOCArMzY5LDkgQEAgc3RhdGljIGludCBqMTkzOXRwX3R4
+X2RhdChzdHJ1Y3Qgc2Vzc2lvbiAqcmVsYXRlZCwNCiAJLyogZml4IHBnbiAqLw0KIAlza2JfY2It
+PnBnbiA9IHJlbGF0ZWQtPmV4dGQgPyBldHBfcGduX2RhdCA6IHRwX3Bnbl9kYXQ7DQogDQotCXNr
+ZGF0ID0gc2tiX3B1dChza2IsIGxlbik7DQorCXNrZGF0ID0gc2tiX3B1dChza2IsIDgpOw0KIAlt
+ZW1jcHkoc2tkYXQsIGRhdCwgbGVuKTsNCisJbWVtc2V0KHNrZGF0K2xlbiwgMHhmZiwgOC1sZW4p
+Ow0KIAlyZXQgPSBqMTkzOV9zZW5kX25vcm1hbGl6ZWRfcGt0KHNrYik7DQogCWlmIChyZXQgPCAw
+KQ0KIAkJa2ZyZWVfc2tiKHNrYik7DQoNCg0KS2luZCByZWdhcmRzLA0KS3VydA0KDQo+IA0KPiBS
+ZWdhcmRzDQo+IA0KPiBMYXVyZW50DQo+IA0KPiBPbiBUdWUsIE1heSAxOSwgMjAxNSBhdCAzOjI3
+IFBNLCA8cGZpZnJlLmV4dEBvcmFuZ2UuY29tPiB3cm90ZToNCj4gDQo+ID4gVGhhbmtzIGZvciB5
+b3VyIGFuc3dlciBLdXJ0Lg0KPiA+DQo+ID4gWWVzLCBJIHJlZmVyIHRvICJSZXF1ZXN0IGZvciBh
+ZGRyZXNzIGNsYWltZWQiIFBHTiwgd2ljaCBpcyBub3JtYWxseSANCj4gPiAzIGJ5dGVzLg0KPiA+
+IFdoZW4gSSBzZW5kIGl0IHdpdGggYSBsZW5ndGggb2YgMywgbGlrZSBqYWNkIGRvLCB0aGUgcmVx
+dWVzdCBpcyBzZW50IA0KPiA+IHdpdGgNCj4gPiA4IGJ5dGVzICh0aGUgb3RoZXJzIGFyZSBwYWRk
+ZWQgd2l0aCAweEZGKS4NCj4gPiBXaGVuIEkgdHJ5IHdpdGggamFjZCwgaXQgc2VuZHMgdGhlIHNh
+bWUgZnJhbWUuDQo+ID4NCj4gPiBJIHRoaW5rIGl0J3MgYSBidWcsIEknbSByaWdodD8NCj4gPiBJ
+IHRoaW5rLCB0aGF0IHRoZSBkcml2ZXIgZG9lc24ndCBhbmFseXNlIHRoZSBQR04gYW5kIHBhZCB0
+aGUgZnJhbWUgDQo+ID4gc3lzdGVtaWNhbGx5Lg0KPiA+DQo+ID4gSSBjYW4ndCB1c2UgdGhlIHNl
+bmQgZnVuY3Rpb24gdG8gc2VuZCB0aGUgZnJhbWUsIGJlY2F1c2UgSSBuZWVkIHRvIA0KPiA+IHNw
+ZWNpZnkgdGhlIFBHTiBpbiB0aGUgYWRkcmVzcy4NCj4gPg0KPiA+IFRoZW4gb25lIG9mIGRldmlj
+ZXMgb24gdGhlIGJ1cyBkb2Vzbid0IGFuc3dlciB0byB0aGUgcmVxdWVzdC4NCj4gPg0KPiA+IFJl
+Z2FyZHMsDQo+ID4NCj4gPiBQYXNjYWwNCj4gPg0KPiA+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUt
+LS0tLQ0KPiA+IERlIDogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1s
+YXVyaWpzc2VuLmJlXQ0KPiA+IEVudm95w6kgOiBtYXJkaSAxOSBtYWkgMjAxNSAxMDo0Ng0KPiA+
+IMOAIDogenplLU9wZW4gdGhlIGJveCBGSUZSRSBQIGV4dCBJTVQvT0xQUyBDYyA6IA0KPiA+IGxp
+bnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcgT2JqZXQgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgN
+Cj4gPg0KPiA+IEhpIFBhc2NhbCwNCj4gPg0KPiA+IEkgYXBvbG9naXNlIGZvciB0aGUgbGF0ZSBh
+bnN3ZXIuDQo+ID4gWW91ciBlbWFpbCBoYXMgc2xpcHBlZCBpbiB3aXRob3V0IGRyYXdpbmcgbXkg
+YXR0ZW50aW9uLg0KPiA+DQo+ID4gUGxlYXNlIGZpbmQgbXkgYW5zd2VyIGJlbG93Lg0KPiA+DQo+
+ID4gLS0tIE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+ID4gPiBEYXRlOiBNb24sIDI3IEFwciAyMDE1
+IDA5OjIyOjE3ICswMDAwDQo+ID4gPiBGcm9tOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gPiA+
+IFRvOiBLdXJ0IFZhbiBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4g
+PiA+IENDOiAibGludXgtY2FuQHZnZXIua2VybmVsLm9yZyIgPGxpbnV4LWNhbkB2Z2VyLmtlcm5l
+bC5vcmc+DQo+ID4gPiBTdWJqZWN0OiBSRTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCj4gPiA+DQo+
+ID4gPiBIaSBLdXJ0LA0KPiA+ID4NCj4gPiA+IEkgaGF2ZSBhbiBpc3N1ZSBvbiBhZGRyZXNzIGNs
+YWltLg0KPiA+ID4NCj4gPiA+IFdoZW4gSSBjYWxsIHRoZSBiaW5kIHRoZSBjbGFpbSBhZGRyZXNz
+IGlzIHNlbmQgd2l0aCBhIERMQyBvZiA4IGFuZCANCj4gPiA+IDgNCj4gPiBieXRlcyBzZW50IG9u
+IHRoZSBDQU4uDQo+ID4gPiBCdXQsIGFjY29yZGluZyB0byB0aGUgSVNPMTE3ODMsIEkgbmVlZCB0
+byBzZW5kIGFuZCBhZGRyZXNzIENMQUlNIA0KPiA+ID4gYnkgYSAzDQo+ID4gYnl0ZXMgZnJhbWUu
+DQo+ID4NCj4gPiBUaGUgIkFkZHJlc3MgQ2xhaW0iIFBHTiAoMHgwZWUwMCkgaXMgOCBieXRlcywg
+ZXZlbiBpbiBpc28xMTc4My4NCj4gPiBJIHRoaW5rIHlvdSByZWZlciB0byB0aGUgIlJlcXVlc3Qg
+Zm9yIGFkZHJlc3MgY2xhaW1lZCIgUEdOLCB3aGljaCBpcyANCj4gPiAzIGJ5dGVzLCB3aXRoIFBH
+TiAweDBlYTAwLCBhbmQgcGF5bG9hZCAwMGVlMDAuDQo+ID4NCj4gPiA+DQo+ID4gPiBIb3cgY2Fu
+LCBJIGRvIHRoYXQgd2l0aCBleGlzdGluZyBrZXJuZWwgSjE5Mzkgc3RhY2sgb3Igd2hlcmUgSSBj
+YW4NCj4gPiBtb2RpZnkgdGhpcz8NCj4gPiBZb3UgY2FuIGp1c3Qgc2VuZCBhIDMgYnl0ZSBtZXNz
+YWdlIHdpdGggc2VuZChTT0NLLCA8REFUQT4sIDMsIDApDQo+ID4NCj4gPiBJZiB5b3Ugd2FudCB0
+byBkbyB0aGUgYWRkcmVzcyBjbGFpbWluZywgdGhlbiB5b3UgbWF5IHRha2UgYSBsb29rIGF0IA0K
+PiA+IGphY2QsIGEgajE5MzkgYWRkZHJlc3MgY2xhaW0gZGFlbW9uLg0KPiA+IEl0IGRvZXMgYWxs
+IHRoZSB1c2Vyc3BhY2UgaGFuZGxpbmcgbmVjZXNzYXJ5IGZvciBhZGRyZXNzIGNsYWltaW5nLg0K
+PiA+IFlvdSBjYW4gZmluZCBpdCBhdCBodHRwczovL2dpdGh1Yi5jb20va3VydC12ZC9jYW4tdXRp
+bHMuZ2l0LCBpbiANCj4gPiBqMTkzOS12NiBicmFuY2guDQo+ID4NCj4gPiBLaW5kIHJlZ2FyZHMs
+DQo+ID4gS3VydA0KPiA+DQo+ID4NCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4NCj4gPiBDZSBtZXNz
+YWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlv
+bnMgDQo+ID4gY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRv
+bmMgcGFzIGV0cmUgDQo+ID4gZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRv
+cmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IA0KPiA+IGNlIG1lc3NhZ2UgcGFyIGVycmV1ciwg
+dmV1aWxsZXogbGUgc2lnbmFsZXIgYSBsJ2V4cGVkaXRldXIgZXQgbGUgDQo+ID4gZGV0cnVpcmUg
+YWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMg
+DQo+ID4gZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwgT3JhbmdlIGRlY2xpbmUgdG91
+dGUgcmVzcG9uc2FiaWxpdGUgDQo+ID4gc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9y
+bWUgb3UgZmFsc2lmaWUuIE1lcmNpLg0KPiA+DQo+ID4gVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0
+YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIA0KPiA+IHByaXZpbGVnZWQgaW5m
+b3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsgdGhleSBzaG91bGQgbm90IA0K
+PiA+IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24u
+DQo+ID4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5v
+dGlmeSB0aGUgc2VuZGVyIA0KPiA+IGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0
+YWNobWVudHMuDQo+ID4gQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxp
+YWJsZSBmb3IgbWVzc2FnZXMgdGhhdCANCj4gPiBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQg
+b3IgZmFsc2lmaWVkLg0KPiA+IFRoYW5rIHlvdS4NCj4gPg0KPiA+DQoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVz
+c2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRp
+b25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBh
+cyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBT
+aSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25h
+bGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpv
+aW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2Fs
+dGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3Nh
+Z2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2Fn
+ZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxl
+Z2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxk
+IG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9u
+LgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5
+IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4K
+QXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2Fn
+ZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5
+b3UuCgo=
