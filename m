@@ -1,164 +1,157 @@
-From: Bernd Krumboeck <krumboeck@universalnet.at>
-Subject: Re: Linux board with 10 CANs
-Date: Thu, 21 May 2015 05:19:35 +0200
-Message-ID: <555D4EC7.60900@universalnet.at>
-References: <5555A6A3.7090206@orange.fr> <5555FAAB.4090306@universalnet.at> <5559ABE6.5030206@orange.fr> <5559E994.4000103@universalnet.at> <555C716A.3090509@8devices.com>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 message length
+Date: Thu, 21 May 2015 15:16:34 +0000
+Message-ID: <15657_1432221395_555DF6D3_15657_7688_1_F1366246CF364C42B98553900CE0C5CB08028C85@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+References: <loom.20141211T112702-791@post.gmane.org>
+ <20141212110743.GC10796@vandijck-laurijssen.be>
+ <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
+ <26458_1432042025_555B3A29_26458_297_2_F1366246CF364C42B98553900CE0C5CB08028AE4@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <CAA7hF3y7+j_TZ4nTak8t5Y4ejmE2fOFWxRBKJbrHLiFts_+8eg@mail.gmail.com>
+ <20150519210131.GC29137@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp.xy24.at ([85.126.109.136]:35446 "EHLO renate.xy24.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752357AbbEUDUX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 20 May 2015 23:20:23 -0400
-In-Reply-To: <555C716A.3090509@8devices.com>
+Received: from relais-ias91.francetelecom.com ([193.251.215.91]:43097 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755950AbbEUPQi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 21 May 2015 11:16:38 -0400
+In-Reply-To: <20150519210131.GC29137@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gediminas Simanskis <gediminas@8devices.com>
-Cc: =?UTF-8?B?RnJhbsOnb2lzIEJlYXVsaWVy?= <fbeaulier@orange.fr>, linux-can@vger.kernel.org
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Thank you for the fast response.
-I'll update the notes on github (asap).
-
-
-regards,
-Bernd
-
-
-Am 2015-05-20 um 13:35 schrieb Gediminas Simanskis:
-> Hi,
-> GPL2
-> Gediminas
->
-> On 2015-05-18 16:31, Bernd Krumboeck wrote:
->> Hi Gediminas!
->>
->>
->> Can you tell us the license of the source code from usb2can firmware=
-?
->>
->>
->> regards,
->> Bernd
->>
->>
->> Am 2015-05-18 um 11:07 schrieb Fran=C3=A7ois Beaulier:
->>> Le 15/05/2015 15:54, Bernd Krumboeck a =C3=A9crit :
->>>> Hi!
->>>>
->>>>
->>>> I don't know much about this things, but what do you think about f=
-ollowing:
->>>>
->>>> Use two 4 port usb hub (MICROCHIP USB4624I-1080HN) with 8 x STM32F=
-072 or STR750FV2.
->>>>
->>>> You can flash the MCUs under linux with dfu-util (http://dfu-util.=
-sourceforge.net/).
->>>>
->>>> A firmware for STR750FV2 is available here (please check license):
->>>> https://github.com/krumboeck/usb2can_firmware
->>>>
->>>> I don't know if it works, but there is also a gcc version availabl=
-e:
->>>> https://github.com/krumboeck/usb2can_firmware/tree/gcc-test
->>>>
->>>>
->>>> If you use this firmware or at least the same procotol, then the
->>>> hardware will be compatible with usb_8dev can driver.
->>>>
->>>>
->>>> regards,
->>>> Bernd
->>>>
->>>>
->>>
->>> Hi Bernd,
->>>
->>> Thank you for pointed out this USB solution. I didn't know such fir=
-mware existed.
->>> I looked in the gcc-test repository, and apart from ST files the li=
-cense is not specified.
->>> Can you tell us more about license ?
->>>
->>> Francois
->>>
->>>
->>>>
->>>>
->>>> Am 2015-05-15 um 09:56 schrieb Fran=C3=A7ois Beaulier:
->>>>> Hi,
->>>>>
->>>>> I'm starting the design of a CPU board, based on a computer on mo=
-dule with a very common SOC like i.mx6 or am335x.
->>>>> I need to fit my board with at least 10 CAN ports, may be more. (=
-The SOC have 2 CANs so i need 8 more)
->>>>> The board will run with Linux and of course i want a socketcan in=
-terface for each bus !
->>>>> CAN bitrate needed is quite low (50kbps) and latency is not criti=
-cal but bus load may reach 100% sometimes.
->>>>> As far as possible i want to avoid driver development, or just do=
-ing slight modifications on an existing driver.
->>>>> I don't want to use MCP2515, i had trouble with it on a previous =
-design because of the lack of buffer in the chip.
->>>>> I can't imagine putting 8 MCP2515 and not missing any frame, but =
-may be i'm wrong ?
->>>>>
->>>>> Here are the options i have considered, they involve using extern=
-al MCUs to provide enough CAN interfaces :
->>>>>
->>>>> - MCUs with SLCAN : SLCAN have the advantage of simplicity and it=
- should offer enough performance at low data rate. Problem is that it w=
-ould require 8 UARTS. I could modify SLCAN driver to allow multiple CAN=
- channels on the same UART, and so use MCUs with multiple CANs, does it=
- sounds reasonable ?
->>>>>
->>>>> - MCUs with SPI 1 : adapt MCP2515 driver in a way to make the SPI=
- protocol manageable on the MCU side (SPI slave). The MCU will be able =
-to provide the buffer for CAN frames that the MCP does not have. This o=
-ption is just a way of trying to go fast, it is not very elegant, and h=
-ave the limitation of one CAN channel per SPI connection / driver insta=
-nce.
->>>>>
->>>>> - MCUs with SPI 2 : use the Stefano Babic SPI driver posted on th=
-is list. This is probably the best choice for a long term and more gene=
-ric solution. But i'm afraid it may require too much work to complete. =
-What is the status of this driver right now ? Does anyone have an idea =
-of the remaining work to do to make it ready for mainline ? Stefano are=
- you available to spend more time on it ? I'm also wondering whether mu=
-ltiple instances of the driver can run concurently if i put more than o=
-ne MCU ?
->>>>>
->>>>> Concerning the MCU software i could release it as an open-source =
-project, anyone interested in participating ?
->>>>> I'm very familiar with STM32 MCUs so i will probably use an STM32=
-=46072 (low cost cortex M0 with one CAN).
->>>>>
->>>>> Any idea or advice is welcome, thank you for reading this much to=
-o long post.
->>>>>
->>>>> Regards
->>>>>
->>>>> Francois Beaulier
->>>>> www.ingelibre.fr
->>>>> --
->>>>> To unsubscribe from this list: send the line "unsubscribe linux-c=
-an" in
->>>>> the body of a message to majordomo@vger.kernel.org
->>>>> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>>>
->>>
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-can=
-" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+SGkgQWxsLA0KDQpNeSBqMTkzOSB3b3JrcyBmaW5lISBUaGFua3MgYSBsb3QuDQoNCk5vdywgSSBu
+ZWVkIHRvIGltcGxlbWVudCBkaWFnbm9zdGljIElTT1RQIHByb3RvY29sIG9uIHRoZSBzYW1lIGxp
+bmsuDQpJIHRyaWVkIGlzb3Rwc2VuZCB0b29sIHRvIG1ha2UgYSBzaW1wbGUgdGVzdCBmaXJzdCBi
+dXQgdGhpcyB0b29sIHRvbGQgbWUgdGhhdCB0aGUgcHJvdG9jb2wgaXMgbm90IHN1cHBvcnRlZC4N
+CkRvZXMgaXQgbWVhbiB0aGF0IEkgbmVlZCB0byBzZWxlY3QgaW4gdGhlIGtlcm5lbD8NCg0KSSBs
+b29rZWQgZm9yIGlzb3RwLmMgaW4gdGhlIGtlcm5lbCAobmV0L2Nhbi9pc290cC5jKSBidXQgbm90
+aGluZyBsaWtlIGhlcmUuDQoNCkRvIHlvdSBrbm93IGlmIEkgbmVlZCB0byB1cGdyYWRlIHRoZSBr
+ZXJuZWwgb3IgYWRkIHVzZXIgbW9kZSBtb2R1bGVzPw0KDQpUaGFua3MNCg0KUGFzY2FsDQoNCg0K
+LS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRv
+OmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdIA0KRW52b3nDqcKgOiBtYXJkaSAxOSBt
+YWkgMjAxNSAyMzowMg0Kw4DCoDogbGF1cmVudCB2YXVkb2l0DQpDY8KgOiB6emUtT3BlbiB0aGUg
+Ym94IEZJRlJFIFAgZXh0IElNVC9PTFBTOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpl
+dMKgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCg0KSGV5LA0KDQotLS0gT3JpZ2luYWwgbWVz
+c2FnZSAtLS0NCj4gRGF0ZTogVHVlLCAxOSBNYXkgMjAxNSAxNTo0MDozOCArMDIwMA0KPiBGcm9t
+OiBsYXVyZW50IHZhdWRvaXQgPGxhdXJlbnQudmF1ZG9pdEBnbWFpbC5jb20+DQo+IFRvOiBwZmlm
+cmUuZXh0QG9yYW5nZS5jb20NCj4gQ2M6IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2YW5kaWpj
+ay1sYXVyaWpzc2VuLmJlPiwNCj4gCSJsaW51eC1jYW5Admdlci5rZXJuZWwub3JnIiA8bGludXgt
+Y2FuQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IEoxOTM5IG1lc3NhZ2UgbGVuZ3Ro
+DQo+IA0KPiBIaSBQYXNjYWwsDQo+IA0KPiBpIHRoaW5rIHlvdSdyZSBtZW50aW9ubmluZyB0aGUg
+YnVnIGkgaGF2ZSBzZWVuIGEgZmV3IHRpbWUgYWdvLg0KPiB0aGUgcGduIHJlcXVlc3QgaXMgYWxs
+d2F5cyBzZW50IHdpdGggOCBieXRlcyBpbnN0ZWFkIG9mIG9ubHkgMyBieXRlcy4NCg0KSSB0aGlu
+ayB0aGF0IG5vdyB0b28uDQoNCj4gaSB0aGluayB0aGUgcGFkZGluZyBzaG91bGQgYmUgZG9uZSBp
+biB0aGUgdHJhbnNwb3J0IGxheWVyIGluc3RlYWQgb2YgDQo+IGluIHRoZSBtYWluLmMgZmlsZS4N
+Cj4geW91IGNhbiBoYXZlIGEgbG9vayBhdCB0aGUgYmVnaW5uaW5nIG9mIHRoaXMgbWFpbCB0aHJl
+YWQuDQoNCllvdSBjb3VsZCBjaGFuZ2UgdGhlIHBhdGNoIG1lbnRpb25lZCBlYXJsaWVyIGFzOg0K
+DQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS9tYWluLmMgYi9uZXQvY2FuL2oxOTM5L21haW4u
+YyBpbmRleCA3ZWRmODQzLi4xNDc5ZGU0IDEwMDY0NA0KLS0tIGEvbmV0L2Nhbi9qMTkzOS9tYWlu
+LmMNCisrKyBiL25ldC9jYW4vajE5MzkvbWFpbi5jDQpAQCAtMTU2LDcgKzE1Niw5IEBAIHN0YXRp
+YyBpbnQgajE5Mzlfc2VuZF9jYW4oc3RydWN0IHNrX2J1ZmYgKnNrYikNCiAJCWNhbmlkIHw9ICgo
+c2tfYWRkci0+cGduICYgMHgzZmZmZikgPDwgOCk7DQogDQogCW1zZy0+Y2FuX2lkID0gY2FuaWQ7
+DQorCWlmICgoZGxjIDwgOCkgJiYgc2tfYWRkci0+cGduICE9IDB4MGVhMDApKSB7DQorCQltZW1z
+ZXQobXNnLT5kYXRhK2RsYywgMHhmZiwgOCAtIGRsYyk7DQorCQlkbGMgPSA4Ow0KKwl9DQogCW1z
+Zy0+Y2FuX2RsYyA9IGRsYzsNCiAgDQogCS8qIHNldCBuZXRfZGV2aWNlICovDQogCXJldCA9IC1F
+Tk9ERVY7DQoJDQoNCi0tDQpUaGlzIHNob3VsZCBmaXggdGhlIHJlcXVlc3QgUEdOIGJ1Zy4NCg0K
+RHVlIHRvIHRoZSBpbnRlcmVzdCwgSSBqdXN0IHdvcmtlZCBvdXQgYSBkaWZmZXJlbnQgcGF0Y2gg
+dGhhdCBfb25seV8gcGFkcyB0cmFuc3BvcnQgcHJvdG9jb2wgZGF0YSBmcmFtZXMuDQpUaGlzIG9u
+bHkgc29sdmVzIHByb2JsZW1zIHdoZW4gdGhlIHJlY2VpdmVyIGlzIGludG9sZXJhbnQgZm9yIHRy
+YW5zcG9ydCBwcm90b2NvbCBmcmFtZXMsIGFuZCBub3QgZm9yIHJlZ3VsYXIgZnJhbWVzLg0KDQpO
+b3RlIHRoYXQgaXQgbWFrZXMgbm90IHJlYWwgc2Vuc2UgdG8gYXBwbHkgYm90aCBwYXRjaGVzLg0K
+DQpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9qMTkzOS90cmFuc3BvcnQuYyBiL25ldC9jYW4vajE5Mzkv
+dHJhbnNwb3J0LmMgaW5kZXggMmI1MDkwMi4uMTg3YWFhZCAxMDA2NDQNCi0tLSBhL25ldC9jYW4v
+ajE5MzkvdHJhbnNwb3J0LmMNCisrKyBiL25ldC9jYW4vajE5MzkvdHJhbnNwb3J0LmMNCkBAIC0z
+NjksOCArMzY5LDkgQEAgc3RhdGljIGludCBqMTkzOXRwX3R4X2RhdChzdHJ1Y3Qgc2Vzc2lvbiAq
+cmVsYXRlZCwNCiAJLyogZml4IHBnbiAqLw0KIAlza2JfY2ItPnBnbiA9IHJlbGF0ZWQtPmV4dGQg
+PyBldHBfcGduX2RhdCA6IHRwX3Bnbl9kYXQ7DQogDQotCXNrZGF0ID0gc2tiX3B1dChza2IsIGxl
+bik7DQorCXNrZGF0ID0gc2tiX3B1dChza2IsIDgpOw0KIAltZW1jcHkoc2tkYXQsIGRhdCwgbGVu
+KTsNCisJbWVtc2V0KHNrZGF0K2xlbiwgMHhmZiwgOC1sZW4pOw0KIAlyZXQgPSBqMTkzOV9zZW5k
+X25vcm1hbGl6ZWRfcGt0KHNrYik7DQogCWlmIChyZXQgPCAwKQ0KIAkJa2ZyZWVfc2tiKHNrYik7
+DQoNCg0KS2luZCByZWdhcmRzLA0KS3VydA0KDQo+IA0KPiBSZWdhcmRzDQo+IA0KPiBMYXVyZW50
+DQo+IA0KPiBPbiBUdWUsIE1heSAxOSwgMjAxNSBhdCAzOjI3IFBNLCA8cGZpZnJlLmV4dEBvcmFu
+Z2UuY29tPiB3cm90ZToNCj4gDQo+ID4gVGhhbmtzIGZvciB5b3VyIGFuc3dlciBLdXJ0Lg0KPiA+
+DQo+ID4gWWVzLCBJIHJlZmVyIHRvICJSZXF1ZXN0IGZvciBhZGRyZXNzIGNsYWltZWQiIFBHTiwg
+d2ljaCBpcyBub3JtYWxseSANCj4gPiAzIGJ5dGVzLg0KPiA+IFdoZW4gSSBzZW5kIGl0IHdpdGgg
+YSBsZW5ndGggb2YgMywgbGlrZSBqYWNkIGRvLCB0aGUgcmVxdWVzdCBpcyBzZW50IA0KPiA+IHdp
+dGgNCj4gPiA4IGJ5dGVzICh0aGUgb3RoZXJzIGFyZSBwYWRkZWQgd2l0aCAweEZGKS4NCj4gPiBX
+aGVuIEkgdHJ5IHdpdGggamFjZCwgaXQgc2VuZHMgdGhlIHNhbWUgZnJhbWUuDQo+ID4NCj4gPiBJ
+IHRoaW5rIGl0J3MgYSBidWcsIEknbSByaWdodD8NCj4gPiBJIHRoaW5rLCB0aGF0IHRoZSBkcml2
+ZXIgZG9lc24ndCBhbmFseXNlIHRoZSBQR04gYW5kIHBhZCB0aGUgZnJhbWUgDQo+ID4gc3lzdGVt
+aWNhbGx5Lg0KPiA+DQo+ID4gSSBjYW4ndCB1c2UgdGhlIHNlbmQgZnVuY3Rpb24gdG8gc2VuZCB0
+aGUgZnJhbWUsIGJlY2F1c2UgSSBuZWVkIHRvIA0KPiA+IHNwZWNpZnkgdGhlIFBHTiBpbiB0aGUg
+YWRkcmVzcy4NCj4gPg0KPiA+IFRoZW4gb25lIG9mIGRldmljZXMgb24gdGhlIGJ1cyBkb2Vzbid0
+IGFuc3dlciB0byB0aGUgcmVxdWVzdC4NCj4gPg0KPiA+IFJlZ2FyZHMsDQo+ID4NCj4gPiBQYXNj
+YWwNCj4gPg0KPiA+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KPiA+IERlIDogS3VydCBW
+YW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXQ0KPiA+IEVu
+dm95w6kgOiBtYXJkaSAxOSBtYWkgMjAxNSAxMDo0Ng0KPiA+IMOAIDogenplLU9wZW4gdGhlIGJv
+eCBGSUZSRSBQIGV4dCBJTVQvT0xQUyBDYyA6IA0KPiA+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5v
+cmcgT2JqZXQgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCj4gPg0KPiA+IEhpIFBhc2NhbCwN
+Cj4gPg0KPiA+IEkgYXBvbG9naXNlIGZvciB0aGUgbGF0ZSBhbnN3ZXIuDQo+ID4gWW91ciBlbWFp
+bCBoYXMgc2xpcHBlZCBpbiB3aXRob3V0IGRyYXdpbmcgbXkgYXR0ZW50aW9uLg0KPiA+DQo+ID4g
+UGxlYXNlIGZpbmQgbXkgYW5zd2VyIGJlbG93Lg0KPiA+DQo+ID4gLS0tIE9yaWdpbmFsIG1lc3Nh
+Z2UgLS0tDQo+ID4gPiBEYXRlOiBNb24sIDI3IEFwciAyMDE1IDA5OjIyOjE3ICswMDAwDQo+ID4g
+PiBGcm9tOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gPiA+IFRvOiBLdXJ0IFZhbiBEaWpjayA8
+ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4gPiA+IENDOiAibGludXgtY2FuQHZn
+ZXIua2VybmVsLm9yZyIgPGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc+DQo+ID4gPiBTdWJqZWN0
+OiBSRTogSjE5MzkgbWVzc2FnZSBsZW5ndGgNCj4gPiA+DQo+ID4gPiBIaSBLdXJ0LA0KPiA+ID4N
+Cj4gPiA+IEkgaGF2ZSBhbiBpc3N1ZSBvbiBhZGRyZXNzIGNsYWltLg0KPiA+ID4NCj4gPiA+IFdo
+ZW4gSSBjYWxsIHRoZSBiaW5kIHRoZSBjbGFpbSBhZGRyZXNzIGlzIHNlbmQgd2l0aCBhIERMQyBv
+ZiA4IGFuZCANCj4gPiA+IDgNCj4gPiBieXRlcyBzZW50IG9uIHRoZSBDQU4uDQo+ID4gPiBCdXQs
+IGFjY29yZGluZyB0byB0aGUgSVNPMTE3ODMsIEkgbmVlZCB0byBzZW5kIGFuZCBhZGRyZXNzIENM
+QUlNIA0KPiA+ID4gYnkgYSAzDQo+ID4gYnl0ZXMgZnJhbWUuDQo+ID4NCj4gPiBUaGUgIkFkZHJl
+c3MgQ2xhaW0iIFBHTiAoMHgwZWUwMCkgaXMgOCBieXRlcywgZXZlbiBpbiBpc28xMTc4My4NCj4g
+PiBJIHRoaW5rIHlvdSByZWZlciB0byB0aGUgIlJlcXVlc3QgZm9yIGFkZHJlc3MgY2xhaW1lZCIg
+UEdOLCB3aGljaCBpcyANCj4gPiAzIGJ5dGVzLCB3aXRoIFBHTiAweDBlYTAwLCBhbmQgcGF5bG9h
+ZCAwMGVlMDAuDQo+ID4NCj4gPiA+DQo+ID4gPiBIb3cgY2FuLCBJIGRvIHRoYXQgd2l0aCBleGlz
+dGluZyBrZXJuZWwgSjE5Mzkgc3RhY2sgb3Igd2hlcmUgSSBjYW4NCj4gPiBtb2RpZnkgdGhpcz8N
+Cj4gPiBZb3UgY2FuIGp1c3Qgc2VuZCBhIDMgYnl0ZSBtZXNzYWdlIHdpdGggc2VuZChTT0NLLCA8
+REFUQT4sIDMsIDApDQo+ID4NCj4gPiBJZiB5b3Ugd2FudCB0byBkbyB0aGUgYWRkcmVzcyBjbGFp
+bWluZywgdGhlbiB5b3UgbWF5IHRha2UgYSBsb29rIGF0IA0KPiA+IGphY2QsIGEgajE5MzkgYWRk
+ZHJlc3MgY2xhaW0gZGFlbW9uLg0KPiA+IEl0IGRvZXMgYWxsIHRoZSB1c2Vyc3BhY2UgaGFuZGxp
+bmcgbmVjZXNzYXJ5IGZvciBhZGRyZXNzIGNsYWltaW5nLg0KPiA+IFlvdSBjYW4gZmluZCBpdCBh
+dCBodHRwczovL2dpdGh1Yi5jb20va3VydC12ZC9jYW4tdXRpbHMuZ2l0LCBpbiANCj4gPiBqMTkz
+OS12NiBicmFuY2guDQo+ID4NCj4gPiBLaW5kIHJlZ2FyZHMsDQo+ID4gS3VydA0KPiA+DQo+ID4N
+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXw0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQo+ID4NCj4gPiBDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9p
+bnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgDQo+ID4gY29uZmlkZW50aWVs
+bGVzIG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRvbmMgcGFzIGV0cmUgDQo+ID4gZGlm
+ZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZl
+eiByZWN1IA0KPiA+IGNlIG1lc3NhZ2UgcGFyIGVycmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIg
+YSBsJ2V4cGVkaXRldXIgZXQgbGUgDQo+ID4gZGV0cnVpcmUgYWluc2kgcXVlIGxlcyBwaWVjZXMg
+am9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMgDQo+ID4gZXRhbnQgc3VzY2VwdGli
+bGVzIGQnYWx0ZXJhdGlvbiwgT3JhbmdlIGRlY2xpbmUgdG91dGUgcmVzcG9uc2FiaWxpdGUgDQo+
+ID4gc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgb3UgZmFsc2lmaWUuIE1lcmNp
+Lg0KPiA+DQo+ID4gVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4g
+Y29uZmlkZW50aWFsIG9yIA0KPiA+IHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUg
+cHJvdGVjdGVkIGJ5IGxhdzsgdGhleSBzaG91bGQgbm90IA0KPiA+IGJlIGRpc3RyaWJ1dGVkLCB1
+c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uDQo+ID4gSWYgeW91IGhhdmUgcmVj
+ZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIA0KPiA+
+IGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuDQo+ID4gQXMgZW1h
+aWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhh
+dCANCj4gPiBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLg0KPiA+IFRo
+YW5rIHlvdS4NCj4gPg0KPiA+DQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpv
+aW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBv
+dSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBleHBs
+b2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBjZSBt
+ZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVyIGV0
+IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBl
+bGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBkZWNs
+aW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZv
+cm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRz
+IG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRoYXQg
+bWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwg
+dXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNlaXZl
+ZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0
+ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBhbHRl
+cmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4gbW9k
+aWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
