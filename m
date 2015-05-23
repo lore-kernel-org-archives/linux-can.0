@@ -1,76 +1,91 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 message length
-Date: Fri, 22 May 2015 06:08:46 +0000
-Message-ID: <6685_1432274928_555EC7F0_6685_6330_1_F1366246CF364C42B98553900CE0C5CB08028CB1@PEXCVZYM11.corporate.adroot.infra.ftgroup>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <20150519084626.GC1088@vandijck-laurijssen.be>
- <26458_1432042025_555B3A29_26458_297_2_F1366246CF364C42B98553900CE0C5CB08028AE4@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <CAA7hF3y7+j_TZ4nTak8t5Y4ejmE2fOFWxRBKJbrHLiFts_+8eg@mail.gmail.com>
- <20150519210131.GC29137@vandijck-laurijssen.be>
- <15657_1432221395_555DF6D3_15657_7688_1_F1366246CF364C42B98553900CE0C5CB08028C85@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <555E3E6C.2020407@hartkopp.net>
+From: Bernd Krumboeck <krumboeck@universalnet.at>
+Subject: Re: Flashing USB2CAN devices under Linux and change the serial number
+Date: Sat, 23 May 2015 10:06:28 +0200
+Message-ID: <55603504.7030405@universalnet.at>
+References: <0AD3D310E3BB3A45B6040EDF5C9897723F6A7188@VWAGWOXB0401.vw.vwg> <550D31DD.5090206@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias91.francetelecom.com ([193.251.215.91]:55726 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752080AbbEVGIv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 22 May 2015 02:08:51 -0400
-In-Reply-To: <555E3E6C.2020407@hartkopp.net>
-Content-Language: fr-FR
+Received: from smtp.xy24.at ([85.126.109.136]:35686 "EHLO renate.xy24.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1757176AbbEWIGt (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 23 May 2015 04:06:49 -0400
+In-Reply-To: <550D31DD.5090206@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Gediminas Simanskis <gediminas@8devices.com>
 
-VGhhbmtzIGEgbG90IE9saXZlci4NCg0KSSB3aWxsIHRyeSB0aGlzIHRvZGF5IGFuZCBnaXZlIHlv
-dSBiYWNrIG15IHJlc3VsdHMuDQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDog
-T2xpdmVyIEhhcnRrb3BwIFttYWlsdG86c29ja2V0Y2FuQGhhcnRrb3BwLm5ldF0gDQpFbnZvecOp
-wqA6IGpldWRpIDIxIG1haSAyMDE1IDIyOjIyDQrDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJF
-IFAgZXh0IElNVC9PTFBTOyBLdXJ0IFZhbiBEaWpjazsgbGF1cmVudCB2YXVkb2l0DQpDY8KgOiBs
-aW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSZTogSjE5MzkgbWVzc2FnZSBsZW5n
-dGgNCg0KDQoNCk9uIDA1LzIxLzIwMTUgMDU6MTYgUE0sIHBmaWZyZS5leHRAb3JhbmdlLmNvbSB3
-cm90ZToNCj4gSGkgQWxsLA0KPiANCj4gTXkgajE5Mzkgd29ya3MgZmluZSEgVGhhbmtzIGEgbG90
-Lg0KPiANCj4gTm93LCBJIG5lZWQgdG8gaW1wbGVtZW50IGRpYWdub3N0aWMgSVNPVFAgcHJvdG9j
-b2wgb24gdGhlIHNhbWUgbGluay4NCj4gSSB0cmllZCBpc290cHNlbmQgdG9vbCB0byBtYWtlIGEg
-c2ltcGxlIHRlc3QgZmlyc3QgYnV0IHRoaXMgdG9vbCB0b2xkIG1lIHRoYXQgdGhlIHByb3RvY29s
-IGlzIG5vdCBzdXBwb3J0ZWQuDQo+IERvZXMgaXQgbWVhbiB0aGF0IEkgbmVlZCB0byBzZWxlY3Qg
-aW4gdGhlIGtlcm5lbD8NCj4gDQo+IEkgbG9va2VkIGZvciBpc290cC5jIGluIHRoZSBrZXJuZWwg
-KG5ldC9jYW4vaXNvdHAuYykgYnV0IG5vdGhpbmcgbGlrZSBoZXJlLg0KPiANCj4gRG8geW91IGtu
-b3cgaWYgSSBuZWVkIHRvIHVwZ3JhZGUgdGhlIGtlcm5lbCBvciBhZGQgdXNlciBtb2RlIG1vZHVs
-ZXM/DQoNCg0KSGkgUGFzY2FsLA0KDQp0aGUgSVNPVFAgc3R1ZmYgaXMgY3VycmVudGx5IG91dHNp
-ZGUgdGhlIG1haW5saW5lIHRyZWUgdG9vLg0KVGhlcmUgYXJlIHNvbWUgbWlub3IgdGhpbmdzIHRv
-IGNsYXJpZnkgZm9yIHRoZSBibG9ja2luZyBvZiBiaWcgUERVIGNodW5rcyBpbiB0aGUgc29ja2V0
-IGludGVyZmFjZS4NCg0KQnR3LiB5b3UgY2FuIGNsb25lIHRoZSBpc290cCBkZXZlbG9wbWVudCBy
-ZXBvc2l0b3J5IGZyb20gaGVyZToNCg0KaHR0cHM6Ly9naXRodWIuY29tL2hhcnRrb3BwL2Nhbi1p
-c290cC1tb2R1bGVzDQoNCmdpdCBjbG9uZSBodHRwczovL2dpdGh1Yi5jb20vaGFydGtvcHAvY2Fu
-LWlzb3RwLW1vZHVsZXMuZ2l0DQoNClRoZW4gZG8NCg0KY2QgY2FuLWlzb3RwLW1vZHVsZXMvbmV0
-L2Nhbg0KLi9tYWtlX2lzb3RwLnNoDQoNCndoaWNoIHNob3VsZCBjcmVhdGUgYSBjYW4taXNvdHAu
-a28gbW9kdWxlIGZpbGUgeW91IGNhbiBsb2FkIGludG8geW91ciBrZXJuZWw6DQoNCmluc21vZCAu
-L2Nhbi1pc290cC5rbw0KDQpUaGF0IHNob3VsZCBtYWtlIGl0IDotKQ0KDQpQbGVhc2UgcmVhZCB0
-aGUgUkVBRE1FLmlzb3RwIGZpbGUgZnJvbQ0KDQpodHRwczovL2dpdGh1Yi5jb20vaGFydGtvcHAv
-Y2FuLWlzb3RwLW1vZHVsZXMNCg0KZXNwZWNpYWxseSBmb3IgdGhlIHR4LXF1ZXVlLWxlbiBjb25m
-aWd1cmF0aW9uIGZvciB5b3UgQ0FOIG5ldGRldmljZS4NCg0KUmVnYXJkcywNCk9saXZlcg0KDQoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5p
-ciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUg
-ZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMg
-YXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZl
-dWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1
-ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1
-c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmls
-aXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJj
-aS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVu
-dGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBs
-YXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91
-dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9y
-LCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0
-cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxp
-YWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFs
-c2lmaWVkLgpUaGFuayB5b3UuCgo=
+Sorry for the long delay.
+
+I've updated the README.md file.
+
+regards,
+Bernd
+
+
+Am 2015-03-21 um 09:54 schrieb Oliver Hartkopp:
+> Hello Bernd,
+>
+> my colleague Eike wanted to change the USB2CAN serial numbers of his =
+devices
+> to have a proper differentiation between them.
+>
+> For that reason Gediminas provided on the 8device download section
+>
+>      http://www.8devices.com/usb2can#downloads
+>
+> This file:
+>
+> http://www.8devices.com/media/files/usb2can_eeproms_dfu_ED000100-ED00=
+0226.zip
+> (EEPROM images for devices with serial numbers ED000100-ED000226)
+>
+> The zip contains 37 dfu files named ED000xxx_1_0.dfu (xxx =3D differe=
+nt numbers)
+>
+> As I was successful on my setup with flashing the firmware 1.5
+>
+>      http://www.8devices.com/media/files/usb2can_flash_1_5.zip
+>
+> Eike tried to flash the serial number dfu's in the same way which did=
+n't work.
+>
+> The adapter was stuck in the bootloader and he wasn't able to flash i=
+t.
+> It turned out that this was a timing issue on his specific hardware a=
+nd
+> Gediminas suggested to *put an USB hub between the PC and the CAN ada=
+pter*
+> as some new high speed USB ports create problems with the timing.
+>
+> That made it work!
+>
+> So here are the command line options from Eike to flash the adapters.
+>
+> Firmware: dfu-util =96d 0483:df11 =96a 0 =96D usb2can_1_5.dfu
+> SerialNo: dfu-util =96d 0483:df11 =96a 1 =96D E000xxx_1_0.dfu
+>
+> Together with the two attached patches applied on the dfu-util 0.8 at
+>
+>      http://sourceforge.net/p/dfu-util/dfu-util/ci/master/tree/
+>
+> we now have a working solution to flash firmware and serial numbers w=
+ith Linux.
+>
+> Maybe you can update the README.md at
+>
+>      https://github.com/krumboeck/usb2can_firmware
+>
+> to add these infos.
+>
+> (Especially link to the attachments in this post e.g. on
+> http://marc.info/?l=3Dlinux-can and change the URL to the dfu-util wh=
+ich has
+> moved from gitorious to sourceforge due to gitorious shutdown)
+>
+> Best regards,
+> Oliver
+
