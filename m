@@ -1,95 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: ip -details link fails
-Date: Wed, 27 May 2015 19:24:53 +0200
-Message-ID: <5565FDE5.1040908@hartkopp.net>
-References: <BAY176-W131B8CC6A9756B64828C77D3CB0@phx.gbl>,<5565F98E.5010101@hartkopp.net> <BAY176-W119C53753111D23AE6FA39D3CB0@phx.gbl>
+Date: Wed, 27 May 2015 21:16:32 +0200
+Message-ID: <55661810.3050407@pengutronix.de>
+References: <BAY176-W131B8CC6A9756B64828C77D3CB0@phx.gbl>,<5565F98E.5010101@hartkopp.net>
+ <BAY176-W119C53753111D23AE6FA39D3CB0@phx.gbl> <5565FDE5.1040908@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="REu5TK1JQu9WDulqdA6k9da1TRnStHE8s"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:45224 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752768AbbE0RbN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 May 2015 13:31:13 -0400
-In-Reply-To: <BAY176-W119C53753111D23AE6FA39D3CB0@phx.gbl>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51304 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753729AbbE0TQt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 May 2015 15:16:49 -0400
+In-Reply-To: <5565FDE5.1040908@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 05/27/2015 07:11 PM, Ssagarr Patil wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--REu5TK1JQu9WDulqdA6k9da1TRnStHE8s
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Your backports from 3.14 are looking to work properly ..
+On 05/27/2015 07:24 PM, Oliver Hartkopp wrote:
+>> # ip -details link show wlan0
+>> RTNETLINK answers: Invalid argument
+>> Cannot send link get request: Invalid argument
+>=20
+> The fact that your 'ip' tool doesn't work with wlan0 too your problem i=
+s
+> probably not CAN related.
 
-E.g. the output from
-# cat /proc/net/dev
-and
-# dmesg | grep -C 5 can0
+BTW: the busybox version of ip doesn't talk can.
 
-look sane.
+Marc
 
-BUT:
-
-> # ip -details link show wlan0
-> RTNETLINK answers: Invalid argument
-> Cannot send link get request: Invalid argument
-
-The fact that your 'ip' tool doesn't work with wlan0 too your problem is
-probably not CAN related.
-
-Can you update the 'ip' tool to a recent version from iproute2:
-
-http://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/
-
-What does your
-
-	ip -V
-
-tells your about the ip version?
-
-Regards,
-Oliver
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> # cat /proc/net/dev
-> Inter-|   Receive                                                |  Transmit
->  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
->     lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->  teql0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->   eth0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->   can0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->   can1:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->  wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
->   sit0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
-> #  uname -a
-> Linux evm 2.6.37 #1 Wed May 6 10:43:07 BST 2015 armv7l ARMv7 Processor rev 2 (v7l) ti8148evm GNU/Linux
-> # dmesg | grep -C 5 can0
-> [    8.320000] CAN device driver interface
-> [    8.380000] <30>systemd[1]: Started Trigger Flushing of Journal to Persistent Storage.
-> [    8.410000] <30>systemd[1]: Found device /dev/ttyO0.
-> [    8.420000] <30>systemd[1]: Started Recreate Volatile Files and Directories.
-> [    8.420000] <30>systemd[1]: Starting System Initialization.
-> [    8.440000] PM: Adding info for No Bus:can0
-> [    8.440000] c_can_platform d_can.0: c_can_platform device registered (regs=fa1cc000, irq=52)
-> [    8.440000] PM: Adding info for No Bus:can1
-> [    8.440000] c_can_platform d_can.1: c_can_platform device registered (regs=fa1d0000, irq=55)
-> [    8.440000] <30>systemd[1]: Reached target System Initialization.
-> [    8.440000] <30>systemd[1]: Starting OpenSSH Socket.
-> --
-> [   38.570000] can: raw protocol (rev 20120528)
-> [   38.570000] hci0: type 1 len 36
-> [   38.580000] hci0: type 1 len 245
-> [   38.590000] hci0: type 1 len 7
-> [   38.600000] hci0: type 1 len 5
-> [   38.620000] c_can_platform d_can.0: can0: setting BTR=0504 BRPE=0000
-> [   38.630000] c_can_platform d_can.1: can1: setting BTR=0504 BRPE=0000
-> [ 1953.040000] sit: Unknown symbol xfrm4_tunnel_register (err 0)
-> [ 1953.050000] sit: Unknown symbol xfrm4_tunnel_deregister (err 0)
-> [ 1980.800000] ipcomp: Unknown symbol ipcomp_input (err 0)
-> 
-> Note: The Linux version is 2.6.37 but the network stack & CAN drivers are from 3.14 kernel backports.
-> 
-> Thanks,
-> -Sagar
-> 
->  		 	   		  
-> 
+--REu5TK1JQu9WDulqdA6k9da1TRnStHE8s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJVZhgQAAoJEP5prqPJtc/HJ3QIAJtQvdlk4oCekDsmDx+V2zAK
+CCc1Fd6bouxI1NCdyaFhy6d2NUVT2EdTXSolBb3wZfB2teyEyvw2aauxUHyRfcb7
+J+XpR7rlT3lK1/6t8x0/kgV7dFYu55mokCQTIaKCY+YeLITkh9bicXYn9nxmsmC0
+gRs0FbdxbnQc3NI+rkVH9uIdq4ohIAQL6bPvVC1UKwJUYLQNYkcmpGHZVEogyIsR
+22pnarqcOb76vfJzmg20xVXvTProM9dvW6pelJXDev1tqe5dnE48p6tHoV+clYiC
+ma0/4Il47aubHY+DbGjkfRuc7amLuEqXeMVMCDGSIrQkDopv0wiErk3dg8KL4F4=
+=o/K0
+-----END PGP SIGNATURE-----
+
+--REu5TK1JQu9WDulqdA6k9da1TRnStHE8s--
