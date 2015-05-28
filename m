@@ -1,47 +1,51 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: ip -details link fails
-Date: Thu, 28 May 2015 10:46:09 +1000
-Message-ID: <55666551.1040102@optusnet.com.au>
-References: <BAY176-W131B8CC6A9756B64828C77D3CB0@phx.gbl>
-Reply-To: tom_usenet@optusnet.com.au
+From: "Rost, Martin" <Martin.Rost@tonfunk.de>
+Subject: RE: SocketCAN on Intel Edison with MCP 2515
+Date: Thu, 28 May 2015 05:22:27 +0000
+Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA8A211EAB@mailserver>
+References: <CAKa_yg_Lrpw7J70UzJf5x2EeB6mrmbFarxgbYCf+xHyD8Nb2eQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:33616 "EHLO
-	mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750812AbbE1AqN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 May 2015 20:46:13 -0400
-In-Reply-To: <BAY176-W131B8CC6A9756B64828C77D3CB0@phx.gbl>
+Received: from fw.tonfunk.biz ([145.253.128.114]:46996 "EHLO mail.tonfunk.biz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751010AbbE1F2B (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 28 May 2015 01:28:01 -0400
+Received: from [129.84.3.7] (port=42245 helo=tonfunk.biz)
+	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.82_1-5b7a7c0-XX)
+	(envelope-from <Martin.Rost@tonfunk.de>)
+	id 1YxqH2-00055x-27
+	for linux-can@vger.kernel.org; Thu, 28 May 2015 07:22:32 +0200
+In-Reply-To: <CAKa_yg_Lrpw7J70UzJf5x2EeB6mrmbFarxgbYCf+xHyD8Nb2eQ@mail.gmail.com>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ssagarr Patil <hugarsagar@outlook.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 28/05/15 02:38, Ssagarr Patil wrote:
-> Hi,
->
-> I am currently using the following version of can driver
-> # cat /proc/net/can/version
-> rev 20120528 abi 9
->
-> But when I do the following it fails,
->
-> # ip -details link show can0
-> RTNETLINK answers: Invalid argument
-> Cannot send link get request: Invalid argument
-
-There's also "canutils" and "can-utils" (they're different). We use one of 
-these to configure our CAN ports. If you want to stick with Busybox then one 
-of these may be your best option.
-
-Best detailed here:
-
-http://thread.gmane.org/gmane.linux.can/7164/focus=7221
-
-From:
-
- > https://gitorious.org/linux-can/can-utils/
- > http://www.pengutronix.de/software/socket-can/download/canutils/v4.0/
-
-Tom
-
+SGksDQoJDQo+IEhvd2V2ZXIsIGNhbjAgaXMgbm90IHJlY29nbml6ZWQ6DQo+IA0KPiBjYW4wOiBF
+UlJPUiB3aGlsZSBnZXR0aW5nIGludGVyZmFjZSBmbGFnczogTm8gc3VjaCBkZXZpY2UNCj4gDQo+
+IE9uZSB0aGluZyBJIGFtIGNvbmZ1c2VkIGFib3V0IGlzIGhvdyB0aGUgc29ja2V0Q0FOIGRyaXZl
+cnMga25vdyB3aGljaA0KPiBTUEkgYnVzIHRvIHVzZT8gSSBzZWUgdGhhdCB0aGlzIGluZm9ybWF0
+aW9uIGlzIHByb3ZpZGVkIGluIHRoZQ0KPiBiY20yNzA4LmMgc291cmNlIGZpbGUgZm9yIHRoZSBS
+UElfQ0FOQlVTDQo+IChodHRwOi8vd3d3LmVsaW51eC5vcmcvUlBpX0NBTkJ1cykgcHJvamVjdCBp
+biB0aGUgY29uZmlnX3NwaSBmdW5jdGlvbi4NCj4gSXMgdGhlcmUgc29tZXRoaW5nIHNpbWlsYXIg
+SSB3b3VsZCBuZWVkIHRvIGRvPw0KPiANCldlbGwsIEkgZG9uJ3Qga25vdyBhYm91dCBZb2N0byBv
+ciB0aGUgUlBJLCBidXQgb24gb3VyIFRlZ3JhIHQzMCB3ZSBoYXZlIGEgDQpib2FyZCBmaWxlIGFy
+Y2gvYXJtL21hY2hfdGVncmEvYm9hcmQtY29saWJyaV90MzAuYyB3aGljaCBjb250YWluczoNCg0K
+c3RhdGljIHN0cnVjdCBtY3AyNTF4X3BsYXRmb3JtX2RhdGEgbWNwMjUxeF9wZGF0YSA9IHsNCgku
+Ym9hcmRfc3BlY2lmaWNfc2V0dXAJPSBjb2xpYnJpX3QyMF9tY3AyNTE1X3NldHVwLA0KCS5vc2Np
+bGxhdG9yX2ZyZXF1ZW5jeQk9IDE2MDAwMDAwLA0KCS5wb3dlcl9lbmFibGUJCT0gTlVMTCwNCgku
+dHJhbnNjZWl2ZXJfZW5hYmxlCT0gTlVMTA0KfTsNCg0Kc3RhdGljIHN0cnVjdCBzcGlfYm9hcmRf
+aW5mbyBtY3AyNTF4X2JvYXJkX2luZm9bXSA9IHsNCgl7DQoJCS5idXNfbnVtCQk9IDAsDQoJCS5j
+aGlwX3NlbGVjdAkJPSAwLA0KCQkubWF4X3NwZWVkX2h6CQk9IDEwMDAwMDAwLA0KCQkubW9kYWxp
+YXMJCT0gIm1jcDI1MTUiLA0KCQkucGxhdGZvcm1fZGF0YQkJPSAmbWNwMjUxeF9wZGF0YSwNCgl9
+LA0KfTsNCg0KWW91IHByb2JhYmx5IHdhbnQgdG8gdXNlIC5idXNfbnVtPTQgb3IgNS4NCg0KPiAj
+U1NQNV9SWEQNCj4gI1NTUDVfQ0xLDQo+ICNTU1A1X1RYRA0KPiAjU1NQNV9DUw0KDQpGb3IgdXMs
+IHRoZXNlIGFyZSBjb25maWd1cmVkIGluIGFyY2gvYXJtL21hY2hfdGVncmEvYm9hcmQtY29saWJy
+aV90MzAtcGlubXV4LmMNCg0KPiBTbyBpbiBzaG9ydCBJIHRoaW5rIHNvbWV0aGluZyBpcyBicmVh
+a2luZyBpbiBteSBTUEkgY29tbXVuaWNhdGlvbg0KPiBjb25maWd1cmF0aW9uIGJ1dCBJJ20gbm90
+IHN1cmUgZXhhY3RseSB3aGVyZSB0byBzdGFydC4gQW55dGhpbmcgeW91DQo+IGNvdWxkIGRvIHRv
+IHBvaW50IG1lIGluIHRoZSByaWdodCBkaXJlY3Rpb24gdG93YXJkcyB0aGUgYXBwcm9wcmlhdGUN
+Cj4gZG9jdW1lbnRhdGlvbiB3b3VsZCBiZSBhcHByZWNpYXRlZC4NCg0KTWF5YmUgdGhhdCdzIGhv
+dyBpdCB3b3JrcyBpbiBZb2N0bywgdG9vPw0KDQpSZWdhcmRzLA0KTS4NCg==
