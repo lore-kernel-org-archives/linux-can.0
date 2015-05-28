@@ -1,51 +1,42 @@
-From: "Rost, Martin" <Martin.Rost@tonfunk.de>
-Subject: RE: SocketCAN on Intel Edison with MCP 2515
-Date: Thu, 28 May 2015 05:22:27 +0000
-Message-ID: <2E9F00CBB66AB544A1ACDC59627518BA8A211EAB@mailserver>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: SocketCAN on Intel Edison with MCP 2515
+Date: Thu, 28 May 2015 18:19:40 +1000
+Message-ID: <5566CF9C.4040302@optusnet.com.au>
 References: <CAKa_yg_Lrpw7J70UzJf5x2EeB6mrmbFarxgbYCf+xHyD8Nb2eQ@mail.gmail.com>
+Reply-To: tom_usenet@optusnet.com.au
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fw.tonfunk.biz ([145.253.128.114]:46996 "EHLO mail.tonfunk.biz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751010AbbE1F2B (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 28 May 2015 01:28:01 -0400
-Received: from [129.84.3.7] (port=42245 helo=tonfunk.biz)
-	by mail.tonfunk.biz with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.82_1-5b7a7c0-XX)
-	(envelope-from <Martin.Rost@tonfunk.de>)
-	id 1YxqH2-00055x-27
-	for linux-can@vger.kernel.org; Thu, 28 May 2015 07:22:32 +0200
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:35485 "EHLO
+	mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751548AbbE1ITn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 28 May 2015 04:19:43 -0400
 In-Reply-To: <CAKa_yg_Lrpw7J70UzJf5x2EeB6mrmbFarxgbYCf+xHyD8Nb2eQ@mail.gmail.com>
-Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Michael Gallagher <mjg@isomorphdevelopment.com>, linux-can@vger.kernel.org
 
-SGksDQoJDQo+IEhvd2V2ZXIsIGNhbjAgaXMgbm90IHJlY29nbml6ZWQ6DQo+IA0KPiBjYW4wOiBF
-UlJPUiB3aGlsZSBnZXR0aW5nIGludGVyZmFjZSBmbGFnczogTm8gc3VjaCBkZXZpY2UNCj4gDQo+
-IE9uZSB0aGluZyBJIGFtIGNvbmZ1c2VkIGFib3V0IGlzIGhvdyB0aGUgc29ja2V0Q0FOIGRyaXZl
-cnMga25vdyB3aGljaA0KPiBTUEkgYnVzIHRvIHVzZT8gSSBzZWUgdGhhdCB0aGlzIGluZm9ybWF0
-aW9uIGlzIHByb3ZpZGVkIGluIHRoZQ0KPiBiY20yNzA4LmMgc291cmNlIGZpbGUgZm9yIHRoZSBS
-UElfQ0FOQlVTDQo+IChodHRwOi8vd3d3LmVsaW51eC5vcmcvUlBpX0NBTkJ1cykgcHJvamVjdCBp
-biB0aGUgY29uZmlnX3NwaSBmdW5jdGlvbi4NCj4gSXMgdGhlcmUgc29tZXRoaW5nIHNpbWlsYXIg
-SSB3b3VsZCBuZWVkIHRvIGRvPw0KPiANCldlbGwsIEkgZG9uJ3Qga25vdyBhYm91dCBZb2N0byBv
-ciB0aGUgUlBJLCBidXQgb24gb3VyIFRlZ3JhIHQzMCB3ZSBoYXZlIGEgDQpib2FyZCBmaWxlIGFy
-Y2gvYXJtL21hY2hfdGVncmEvYm9hcmQtY29saWJyaV90MzAuYyB3aGljaCBjb250YWluczoNCg0K
-c3RhdGljIHN0cnVjdCBtY3AyNTF4X3BsYXRmb3JtX2RhdGEgbWNwMjUxeF9wZGF0YSA9IHsNCgku
-Ym9hcmRfc3BlY2lmaWNfc2V0dXAJPSBjb2xpYnJpX3QyMF9tY3AyNTE1X3NldHVwLA0KCS5vc2Np
-bGxhdG9yX2ZyZXF1ZW5jeQk9IDE2MDAwMDAwLA0KCS5wb3dlcl9lbmFibGUJCT0gTlVMTCwNCgku
-dHJhbnNjZWl2ZXJfZW5hYmxlCT0gTlVMTA0KfTsNCg0Kc3RhdGljIHN0cnVjdCBzcGlfYm9hcmRf
-aW5mbyBtY3AyNTF4X2JvYXJkX2luZm9bXSA9IHsNCgl7DQoJCS5idXNfbnVtCQk9IDAsDQoJCS5j
-aGlwX3NlbGVjdAkJPSAwLA0KCQkubWF4X3NwZWVkX2h6CQk9IDEwMDAwMDAwLA0KCQkubW9kYWxp
-YXMJCT0gIm1jcDI1MTUiLA0KCQkucGxhdGZvcm1fZGF0YQkJPSAmbWNwMjUxeF9wZGF0YSwNCgl9
-LA0KfTsNCg0KWW91IHByb2JhYmx5IHdhbnQgdG8gdXNlIC5idXNfbnVtPTQgb3IgNS4NCg0KPiAj
-U1NQNV9SWEQNCj4gI1NTUDVfQ0xLDQo+ICNTU1A1X1RYRA0KPiAjU1NQNV9DUw0KDQpGb3IgdXMs
-IHRoZXNlIGFyZSBjb25maWd1cmVkIGluIGFyY2gvYXJtL21hY2hfdGVncmEvYm9hcmQtY29saWJy
-aV90MzAtcGlubXV4LmMNCg0KPiBTbyBpbiBzaG9ydCBJIHRoaW5rIHNvbWV0aGluZyBpcyBicmVh
-a2luZyBpbiBteSBTUEkgY29tbXVuaWNhdGlvbg0KPiBjb25maWd1cmF0aW9uIGJ1dCBJJ20gbm90
-IHN1cmUgZXhhY3RseSB3aGVyZSB0byBzdGFydC4gQW55dGhpbmcgeW91DQo+IGNvdWxkIGRvIHRv
-IHBvaW50IG1lIGluIHRoZSByaWdodCBkaXJlY3Rpb24gdG93YXJkcyB0aGUgYXBwcm9wcmlhdGUN
-Cj4gZG9jdW1lbnRhdGlvbiB3b3VsZCBiZSBhcHByZWNpYXRlZC4NCg0KTWF5YmUgdGhhdCdzIGhv
-dyBpdCB3b3JrcyBpbiBZb2N0bywgdG9vPw0KDQpSZWdhcmRzLA0KTS4NCg==
+On 28/05/15 01:18, Michael Gallagher wrote:
+> Hello,
+>
+> I am new to SocketCAN and have some basic questions, I'm hoping that
+> someone might be able to point me in the right direction.
+>
+> I have recompiled Yocto (uname - r returns 3.10.17-yocoto standard)
+
+That's pretty new. Newer linux versions rely more and more on the Device Tree. 
+If the devices aren't enumerated in the Device Tree (meaning that you have an 
+MCP2515 and it is at a specific address/chip-select on a particular SPI bus) 
+then it won't enable it.
+
+Linux used to be "Plug and Play", but they've fixed that bug...
+
+Device Tree problems are really hard. The "language" and its "keywords" depend 
+on every driver and every driver-writer, and they make different choices, and 
+then change them when a new kernel comes out.
+
+Check in the Documentation/devicetree/Bindings to see if it says what to do.
+
+Tom
+
