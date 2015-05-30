@@ -1,50 +1,50 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: ip -details link fails
-Date: Thu, 28 May 2015 19:19:43 +0200
-Message-ID: <55674E2F.7020801@hartkopp.net>
-References: <BAY176-W131B8CC6A9756B64828C77D3CB0@phx.gbl>,<5565F98E.5010101@hartkopp.net>,<BAY176-W119C53753111D23AE6FA39D3CB0@phx.gbl> <5565FDE5.1040908@hartkopp.net>,<55661810.3050407@pengutronix.de> <BAY176-W52B59690F5605C23AA3A3D3CA0@phx.gbl>,<5567375A.404@hartkopp.net> <BAY176-W13739EF0032A532E31F9F8D3CA0@phx.gbl>
+From: Jakub Kicinski <moorray3@wp.pl>
+Subject: Re: [PATCH] can: mcp251x: not correct register address
+Date: Sat, 30 May 2015 09:41:06 +0200
+Message-ID: <20150530094106.72862564@north>
+References: <CAAJk-V21bpKN8vX86uQLA0Uo-NTjry+CtfE+1wNK9yJmaVSTVw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:24855 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753357AbbE1RTv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 28 May 2015 13:19:51 -0400
-In-Reply-To: <BAY176-W13739EF0032A532E31F9F8D3CA0@phx.gbl>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ssagarr Patil <hugarsagar@outlook.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <CAAJk-V21bpKN8vX86uQLA0Uo-NTjry+CtfE+1wNK9yJmaVSTVw@mail.gmail.com>
+Sender: netdev-owner@vger.kernel.org
+To: Tomas Krcka <tomas.krcka@nkgroup.cz>
+Cc: linux-can@vger.kernel.org, andri.yngvason@marel.com, mkl@pengutronix.de, himangi774@gmail.com, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On 28.05.2015 18:28, Ssagarr Patil wrote:
->
-> write(1, "    can <TRIPLE-SAMPLING> state "..., 84    can <TRIPLE-SAMPLING> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-> ) = 84
-> write(1, "\t  bitrate 500000 sample-point 0"..., 38       bitrate 500000 sample-point 0.875
-> ) = 38
-> write(1, "\t  tq 250 prop-seg 3 phase-seg1 "..., 53       tq 250 prop-seg 3 phase-seg1 3 phase-seg2 1 sjw 1
-> ) = 53
-> write(1, "\t  c_can: tseg1 2..16 tseg2 1..8"..., 64       c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
-> ) = 64
-> write(1, "\t  clock 20000000\n", 18       clock 20000000
-> )    = 18
-> exit_group(0)                           = ?
-> +++ exited with 0 +++
-> #
+On Mon, 25 May 2015 08:57:48 +0200, Tomas Krcka wrote:
+> This patch corrects addresses of acceptance filters.
+> These registers are not in use, but values should be correct.
+> Tested with MCP2515 and am3352 and also checked datasheets for MCP2515
+> and MCP2510.
+> 
+> Signed-off-by: Tomas Krcka <tomas.krcka@nkgroup.cz>
+> 
+> ---
+>   drivers/net/can/spi/mcp251x.c |    9 +++++----
+>   1 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+> index bf63fee..c1a95a3 100644
+> --- a/drivers/net/can/spi/mcp251x.c
+> +++ b/drivers/net/can/spi/mcp251x.c
+> @@ -190,10 +190,11 @@
+>   #define RXBEID0_OFF 4
+>   #define RXBDLC_OFF  5
+>   #define RXBDAT_OFF  6
+> -#define RXFSIDH(n) ((n) * 4)
+> -#define RXFSIDL(n) ((n) * 4 + 1)
+> -#define RXFEID8(n) ((n) * 4 + 2)
+> -#define RXFEID0(n) ((n) * 4 + 3)
+> +#define RXFSID(n) ((n < 3) ? 0 : 4)
+> +#define RXFSIDH(n) ((n) * 4 + RXFSID(n))
+> +#define RXFSIDL(n) ((n) * 4 + 1 + RXFSID(n))
+> +#define RXFEID8(n) ((n) * 4 + 2 + RXFSID(n))
+> +#define RXFEID0(n) ((n) * 4 + 3 + RXFSID(n))
+>   #define RXMSIDH(n) ((n) * 4 + 0x20)
+>   #define RXMSIDL(n) ((n) * 4 + 0x21)
+>   #define RXMEID8(n) ((n) * 4 + 0x22)
 
-Ah, it works :-)
-
-> But I got it working with iproute2 release 3.15.0 (ip utility, iproute2-ss140610) from [1]
-> Not sure Why it fails with 4.0.0.
-
-Ok.
-
-Don't know either. But good to see you have a working environment now.
-
-Regards,
-Oliver
-
->
-> [1] https://www.kernel.org/pub/linux/utils/net/iproute2/
->
-
+I think your patch was corrupted.  It doesn't apply because you have
+extra space before each surviving #define.
