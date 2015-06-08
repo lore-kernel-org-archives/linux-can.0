@@ -1,140 +1,57 @@
-From: Armin Burchardt <armin@uni-bremen.de>
-Subject: [PATCH 3/3] slcand: add option -u to set interface up/down state.
-Date: Mon,  8 Jun 2015 13:55:40 +0200
-Message-ID: <1433764540-24917-3-git-send-email-armin@uni-bremen.de>
-References: <1433764540-24917-1-git-send-email-armin@uni-bremen.de>
+From: "Enrico Weigelt, metux IT consult" <weigelt@melag.de>
+Subject: Re: slcand in init.d-scripts
+Date: Mon, 8 Jun 2015 14:16:35 +0200
+Message-ID: <557587A3.6050209@melag.de>
+References: <20150608101412.Horde.cpWZ5_FJEM-ciNcxvoY5Nkf@webmail.uni-bremen.de> <55757150.7020008@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gabriel-3.zfn.uni-bremen.de ([134.102.50.3]:44921 "EHLO
-	smtp.uni-bremen.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1751387AbbFHLzp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Jun 2015 07:55:45 -0400
-In-Reply-To: <1433764540-24917-1-git-send-email-armin@uni-bremen.de>
+Received: from mail.melag.de ([217.6.74.107]:64218 "EHLO mail.melag.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752601AbbFHMQl convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Jun 2015 08:16:41 -0400
+In-Reply-To: <55757150.7020008@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Armin Burchardt <armin@uni-bremen.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Armin Burchardt <armin@uni-bremen.de>, linux-can@vger.kernel.org
 
-Signed-off-by: Armin Burchardt <armin@uni-bremen.de>
----
- slcand.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 62 insertions(+), 1 deletion(-)
+Am 08.06.2015 um 12:41 schrieb Oliver Hartkopp:
 
-diff --git a/slcand.c b/slcand.c
-index 8fd1418..aa1c79b 100644
---- a/slcand.c
-+++ b/slcand.c
-@@ -65,6 +65,7 @@ void print_usage(char *prg)
- 	fprintf(stderr, "         -b <btr>   (set bit time register value)\n");
- 	fprintf(stderr, "         -F         (stay in foreground; no daemonize)\n");
- 	fprintf(stderr, "         -p <file>  (write PID of daemon to file)\n");
-+	fprintf(stderr, "         -u         (control interface state ('UP' and 'DOWN')\n");
- 	fprintf(stderr, "         -h         (show this help page)\n");
- 	fprintf(stderr, "\nExamples:\n");
- 	fprintf(stderr, "slcand -o -c -f -s6 ttyUSB0\n");
-@@ -159,6 +160,43 @@ static int look_up_uart_speed(long int s)
- 	}
- }
- 
-+/* set selected interface flags */
-+static int candev_setflags(const char* name, __u32 flags, __u32 mask)
-+{
-+	int err = 0;
-+	struct ifreq ifr;
-+	int fd;
-+
-+	if (strlen(name) >= IFNAMSIZ) {
-+		return -1;
-+	}
-+	fd = socket(PF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0) {
-+		perror("socket()");
-+		return -1;
-+	}
-+	/* copy interface name to ioctl data */
-+	strncpy(ifr.ifr_name, name, IFNAMSIZ);
-+	/* get flags for interface with that name */
-+	err = ioctl(fd, SIOCGIFFLAGS, &ifr);
-+	if (err == -1) {
-+		perror("SIOCGIFFLAGS");
-+	} else {
-+		/* clear all flags which are selected in mask */
-+		ifr.ifr_flags &= ~mask;
-+		/* set requested flags which are selected in mask,
-+		 * keep values of flags which are not selected. */
-+		ifr.ifr_flags |= mask&flags;
-+		/* write flags back to interface */
-+		err = ioctl(fd, SIOCSIFFLAGS, &ifr);
-+		if (err == -1) {
-+			perror("SIOSSIFFLAGS");
-+		}
-+	}
-+	close(fd);
-+	return err;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	char *tty = NULL;
-@@ -173,6 +211,7 @@ int main(int argc, char *argv[])
- 	int send_open = 0;
- 	int send_close = 0;
- 	int send_read_status_flags = 0;
-+	int control_ifstate = 0;
- 	char *speed = NULL;
- 	char *uart_speed_str = NULL;
- 	long int uart_speed = 0;
-@@ -186,7 +225,7 @@ int main(int argc, char *argv[])
- 
- 	ttypath[0] = '\0';
- 
--	while ((opt = getopt(argc, argv, "ocfs:S:t:b:p:?hF")) != -1) {
-+	while ((opt = getopt(argc, argv, "ocfs:S:t:b:p:u?hF")) != -1) {
- 		switch (opt) {
- 		case 'o':
- 			send_open = 1;
-@@ -234,6 +273,9 @@ int main(int argc, char *argv[])
- 		case 'p':
- 			pidfile = optarg;
- 			break;
-+		case 'u':
-+			control_ifstate = 1;
-+			break;
- 		case 'h':
- 		case '?':
- 		default:
-@@ -355,6 +397,18 @@ int main(int argc, char *argv[])
- 		}	
- 	}
- 
-+	/* set interface state to 'UP' */
-+	if (control_ifstate) {
-+		if (candev_setflags(name ? name : buf, IFF_UP, IFF_UP) == -1) {
-+			syslog(LOG_ERR, "could not set %s state to 'UP'", buf);
-+			exit(EXIT_FAILURE);
-+		} else {
-+			syslog(LOG_NOTICE, "%s: set flag 'UP'", buf);
-+		}
-+	} else {
-+		syslog(LOG_NOTICE, "please remember to set %s to 'UP'", buf);
-+	}
-+
- 	/* Daemonize (_after_ interface is up to avoid race-conditions,
- 	 * ie. between init.d-scripts). */
- 	if (run_as_daemon) {
-@@ -397,6 +451,13 @@ int main(int argc, char *argv[])
- 	while (slcand_running)
- 		sleep(1); /* wait 1 second */
- 
-+	/* set interface state to 'DOWN' */
-+	if (control_ifstate) {
-+		/* clear 'IFF_UP' flag */
-+		candev_setflags(name ? name : buf, ~IFF_UP, IFF_UP);
-+		syslog(LOG_ERR, "could not set %s state to 'DOWN'", name);
-+	}
-+
- 	/* Reset line discipline */
- 	syslog(LOG_INFO, "stopping on TTY device %s", ttypath);
- 	ldisc = N_TTY;
--- 
-1.9.1
+Hi,
 
+<snip>
+
+maybe you could also add an compile-time option to opt-out from
+this code, so we can save a few bits in embedded environments
+if we dont need it.
+
+I, personally, prefer starting such services via some service
+monitor (sometimes even an simply inittab entry is enought).
+
+
+cu
+--
+Enrico Weigelt, metux IT consult
++49-151-27565287
+MELAG Medizintechnik oHG Sitz Berlin Registergericht AG Charlottenburg =
+HRA 21333 B
+
+Wichtiger Hinweis: Diese Nachricht kann vertrauliche oder nur f=C3=BCr =
+einen begrenzten Personenkreis bestimmte Informationen enthalten. Sie i=
+st ausschlie=C3=9Flich f=C3=BCr denjenigen bestimmt, an den sie gericht=
+et worden ist. Wenn Sie nicht der Adressat dieser E-Mail sind, d=C3=BCr=
+fen Sie diese nicht kopieren, weiterleiten, weitergeben oder sie ganz o=
+der teilweise in irgendeiner Weise nutzen. Sollten Sie diese E-Mail irr=
+t=C3=BCmlich erhalten haben, so benachrichtigen Sie bitte den Absender,=
+ indem Sie auf diese Nachricht antworten. Bitte l=C3=B6schen Sie in die=
+sem Fall diese Nachricht und alle Anh=C3=A4nge, ohne eine Kopie zu beha=
+lten.
+Important Notice: This message may contain confidential or privileged i=
+nformation. It is intended only for the person it was addressed to. If =
+you are not the intended recipient of this email you may not copy, forw=
+ard, disclose or otherwise use it or any part of it in any form whatsoe=
+ver. If you received this email in error please notify the sender by re=
+plying and delete this message and any attachments without retaining a =
+copy.
