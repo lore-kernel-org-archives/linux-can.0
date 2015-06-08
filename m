@@ -1,45 +1,78 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: slcand in init.d-scripts
-Date: Mon, 08 Jun 2015 12:41:20 +0200
-Message-ID: <55757150.7020008@hartkopp.net>
-References: <20150608101412.Horde.cpWZ5_FJEM-ciNcxvoY5Nkf@webmail.uni-bremen.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Armin Burchardt <armin@uni-bremen.de>
+Subject: [PATCH 1/3] slcand: daemonize _after_ interface is created, renamed and up.
+Date: Mon,  8 Jun 2015 13:55:38 +0200
+Message-ID: <1433764540-24917-1-git-send-email-armin@uni-bremen.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:44990 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753024AbbFHKld (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Jun 2015 06:41:33 -0400
-In-Reply-To: <20150608101412.Horde.cpWZ5_FJEM-ciNcxvoY5Nkf@webmail.uni-bremen.de>
+Received: from gabriel-3.zfn.uni-bremen.de ([134.102.50.3]:44918 "EHLO
+	smtp.uni-bremen.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1752013AbbFHLzp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 8 Jun 2015 07:55:45 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Armin Burchardt <armin@uni-bremen.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Armin Burchardt <armin@uni-bremen.de>
 
-Hi Armin,
+Create interface, then daemonize to avoid race-conditions,
+ie. in init.d-scripts.
 
-thanks for your contributions which are definitely useful!
+Signed-off-by: Armin Burchardt <armin@uni-bremen.de>
+---
+ slcand.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-Can you please sent 3 separate mails with the patch content in-line?
+diff --git a/slcand.c b/slcand.c
+index e5e4752..af7ca98 100644
+--- a/slcand.c
++++ b/slcand.c
+@@ -255,23 +255,7 @@ int main(int argc, char *argv[])
+ 
+ 	syslog(LOG_INFO, "starting on TTY device %s", ttypath);
+ 
+-	/* Daemonize */
+-	if (run_as_daemon) {
+-		if (daemon(0, 0)) {
+-			syslog(LOG_ERR, "failed to daemonize");
+-			exit(EXIT_FAILURE);
+-		}
+-	}
+-	else {
+-		/* Trap signals that we expect to receive */
+-		signal(SIGINT, child_handler);
+-		signal(SIGTERM, child_handler);
+-	}
+-
+-	/* */
+-	slcand_running = 1;
+-
+-	/* Now we are a daemon -- do the work for which we were paid */
++	/* Create file handle for tty device. */
+ 	fd = open(ttypath, O_RDWR | O_NONBLOCK | O_NOCTTY);
+ 	if (fd < 0) {
+ 		syslog(LOG_NOTICE, "failed to open TTY device %s\n", ttypath);
+@@ -365,6 +349,23 @@ int main(int argc, char *argv[])
+ 		}	
+ 	}
+ 
++	/* Daemonize (_after_ interface is up to avoid race-conditions,
++	 * ie. between init.d-scripts). */
++	if (run_as_daemon) {
++		if (daemon(0, 0)) {
++			syslog(LOG_ERR, "failed to daemonize");
++			exit(EXIT_FAILURE);
++		}
++	}
++	else {
++		/* Trap signals that we expect to receive */
++		signal(SIGINT, child_handler);
++		signal(SIGTERM, child_handler);
++	}
++
++	/* */
++	slcand_running = 1;
++
+ 	/* The Big Loop */
+ 	while (slcand_running)
+ 		sleep(1); /* wait 1 second */
+-- 
+1.9.1
 
-Usually 'git send-email' does this in a perfect manner.
-
-Patches inside attachments can not be commented and discussed.
-
-Please add some comments to patch 2 too.
-
-Thanks & best regards,
-Oliver
-
-
-On 08.06.2015 12:14, Armin Burchardt wrote:
->
-> Hello,
->
-> to make init.d-scripts easier to write, I propose some changes to slcand:
-> * write pidfile
-> * set up-flag
-> * do not daemonize too early
->
-> Regards
-> Armin
