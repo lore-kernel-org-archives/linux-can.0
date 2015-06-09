@@ -1,47 +1,72 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-next] cangw: introduce optional uid to reference
- created routing jobs
-Date: Tue, 9 Jun 2015 09:19:00 +0200
-Message-ID: <55769364.80708@pengutronix.de>
-References: <1433829910-7872-1-git-send-email-socketcan@hartkopp.net>
+Subject: pull-request: can-next 2015-05-06
+Date: Tue, 9 Jun 2015 09:45:29 +0200
+Message-ID: <55769999.5060902@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2"
+ boundary="MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57568 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57671 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932646AbbFIHeN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 03:34:13 -0400
-In-Reply-To: <1433829910-7872-1-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1753171AbbFIHpl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 03:45:41 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: David Jander <david@protonic.nl>, davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2
+--MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/09/2015 08:05 AM, Oliver Hartkopp wrote:
-> Similar to referencing iptables rules by their line number this UID all=
-ows to
-> reference created routing jobs, e.g. to alter configured data modificat=
-ions.
->=20
-> The UID is an optional non-zero value which can be provided at routing =
-job
-> creation time. When the UID is set the UID replaces the data modificati=
-on
-> configuration as job identification attribute e.g. at job removal time.=
+Hello David,
 
->=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+this is a pull request of a two patches for net-next.
 
-Applied to can-next.
+The first patch is by Tomas Krcka, he fixes the (currently unused)
+register address for acceptance filters. Oliver Hartkopp contributes a
+patch for the cangw, where an optional UID is added to reference
+routing jobs.
 
-thanks,
+regards,
 Marc
+
+---
+
+The following changes since commit 941742f49762ba4c908510f036b09a46c1b145=
+13:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2015-06-=
+08 20:06:56 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.2-20150609
+
+for you to fetch changes up to dd895d7f21b244e7fd4c7477697e274de7e44ecb:
+
+  can: cangw: introduce optional uid to reference created routing jobs (2=
+015-06-09 09:39:49 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.2-20150609
+
+----------------------------------------------------------------
+Oliver Hartkopp (1):
+      can: cangw: introduce optional uid to reference created routing job=
+s
+
+Tomas Krcka (1):
+      can: mcp251x: use correct register address for acceptance filters
+
+ drivers/net/can/spi/mcp251x.c |  9 +++---
+ include/uapi/linux/can/gw.h   |  5 ++++
+ net/can/gw.c                  | 68 +++++++++++++++++++++++++++++++++++--=
+------
+ 3 files changed, 66 insertions(+), 16 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -50,20 +75,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2
+--MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJVdpNkAAoJEP5prqPJtc/HjwsIAJJm4Vqfb8T9/SRYYsWc/SkB
-GcHQDn7gqH/x3zSMet7MGS4lWk4wCd4ufE1Ba5bd2Wk3/ny/AYK2fQDatiPWOO1M
-9/yDXhlvsVZQoa7H4EjrG5w7ktcAXahXXqfYVcTbxv9y76XBjDYgcS0zvsIW7OuL
-+9t8cTp6eR9NS1StzLXmCXQv0uaFqIPlWGPycSvu+gZESxwJX5UvyvsvzJwICYFW
-QySe1TnAh5Y9WRUIEwIuI/HSMvWKoPFtAHRkm8/bw7EvL1fL2x7aeahu0gNbtILE
-viLOU5rej3Ub7Quzt3B49kIdj4WgUdlT6rzwhHAVbw8U8ielYCIHHI4D9pGu+ZM=
-=dJ2Z
+iQEcBAEBCgAGBQJVdpmZAAoJEP5prqPJtc/H8PkH/0k7lwGWmzVvdHUOJOiaoYkr
+9UlsYpjS0Dbk/yjfcnoxSzm+/I5pK/ED1q9bztMRVXOw8o0hs2rh9Re5822vcxe/
+fu8PYw2jUdJrXmh07y7Whyd8USoYnp2xfW56WtyUZdVbfUmrP9WTkI1XLdcTVdBs
+VAu66o/+QxILq3i0+FxtrD3PGgMV+87JVfThdQ6TKJziPcL0OYgAH6yVmkRUjmgd
+x/Y8EXp+P8pbUk5cQ58Y6YXzTXRPWkPJz1c2XHpGUEqAtILo0neJAIVyH23BcVC8
+84Ch28U814jldQyQTEDbqKlG5A/bkuwSCTa9srb4HEAauKFvhxXiYZb8b1PPzRE=
+=n2cp
 -----END PGP SIGNATURE-----
 
---tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2--
+--MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC--
