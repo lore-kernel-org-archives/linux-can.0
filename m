@@ -1,94 +1,33 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-05-06
-Date: Tue, 9 Jun 2015 09:45:29 +0200
-Message-ID: <55769999.5060902@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC"
+From: Armin Burchardt <armin@uni-bremen.de>
+Subject: [PATCH v2 0/3] slcand: improved patches
+Date: Tue,  9 Jun 2015 11:15:25 +0200
+Message-ID: <1433841328-15581-1-git-send-email-armin@uni-bremen.de>
+References: <1433764540-24917-1-git-send-email-armin@uni-bremen.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57671 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753171AbbFIHpl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 03:45:41 -0400
+Received: from gabriel-3.zfn.uni-bremen.de ([134.102.50.3]:54225 "EHLO
+	smtp.uni-bremen.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1753637AbbFIJPf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 05:15:35 -0400
+Received: from schlemihl.intranet.nordsys.de (dmz.nordsys.de [85.220.134.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.uni-bremen.de (Postfix) with ESMTPSA id CD126120EEC
+	for <linux-can@vger.kernel.org>; Tue,  9 Jun 2015 11:15:32 +0200 (CEST)
+In-Reply-To: <1433764540-24917-1-git-send-email-armin@uni-bremen.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Jander <david@protonic.nl>, davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+These patches contain changes requested on the list.
+- coding style ( "} else {" ).
+- default pidfile name "/run/slcand.pid". Generating a pidfile
+  name based on the tty device name would require more effort, this
+  could be done in a follow-up patch.
+- name change of stream variable from pidfd to stream.
 
-Hello David,
+In addition:
+- candev_setflags(): 'short' is used instead of '__u32'. This
+  type is also used in the ioctl struct definition.
 
-this is a pull request of a two patches for net-next.
+Armin (second time running 'git send-email' ever)
 
-The first patch is by Tomas Krcka, he fixes the (currently unused)
-register address for acceptance filters. Oliver Hartkopp contributes a
-patch for the cangw, where an optional UID is added to reference
-routing jobs.
-
-regards,
-Marc
-
----
-
-The following changes since commit 941742f49762ba4c908510f036b09a46c1b145=
-13:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2015-06-=
-08 20:06:56 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.2-20150609
-
-for you to fetch changes up to dd895d7f21b244e7fd4c7477697e274de7e44ecb:
-
-  can: cangw: introduce optional uid to reference created routing jobs (2=
-015-06-09 09:39:49 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-4.2-20150609
-
-----------------------------------------------------------------
-Oliver Hartkopp (1):
-      can: cangw: introduce optional uid to reference created routing job=
-s
-
-Tomas Krcka (1):
-      can: mcp251x: use correct register address for acceptance filters
-
- drivers/net/can/spi/mcp251x.c |  9 +++---
- include/uapi/linux/can/gw.h   |  5 ++++
- net/can/gw.c                  | 68 +++++++++++++++++++++++++++++++++++--=
-------
- 3 files changed, 66 insertions(+), 16 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVdpmZAAoJEP5prqPJtc/H8PkH/0k7lwGWmzVvdHUOJOiaoYkr
-9UlsYpjS0Dbk/yjfcnoxSzm+/I5pK/ED1q9bztMRVXOw8o0hs2rh9Re5822vcxe/
-fu8PYw2jUdJrXmh07y7Whyd8USoYnp2xfW56WtyUZdVbfUmrP9WTkI1XLdcTVdBs
-VAu66o/+QxILq3i0+FxtrD3PGgMV+87JVfThdQ6TKJziPcL0OYgAH6yVmkRUjmgd
-x/Y8EXp+P8pbUk5cQ58Y6YXzTXRPWkPJz1c2XHpGUEqAtILo0neJAIVyH23BcVC8
-84Ch28U814jldQyQTEDbqKlG5A/bkuwSCTa9srb4HEAauKFvhxXiYZb8b1PPzRE=
-=n2cp
------END PGP SIGNATURE-----
-
---MOr5r8ePN97ih4AaljeaR8flL9eKbD5nC--
