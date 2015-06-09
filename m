@@ -1,41 +1,46 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: mcp251x: not correct register address
-Date: Tue, 9 Jun 2015 09:18:52 +0200
-Message-ID: <5576935C.7010905@pengutronix.de>
-References: <55698621.7070309@nkgroup.cz>
+Subject: Re: [PATCH can-next] cangw: introduce optional uid to reference
+ created routing jobs
+Date: Tue, 9 Jun 2015 09:19:00 +0200
+Message-ID: <55769364.80708@pengutronix.de>
+References: <1433829910-7872-1-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="lpVWHXV36Lsbp1MjGRmEoa1xGIvc35GT5"
+ boundary="tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:57571 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:57568 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753629AbbFIHeP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 03:34:15 -0400
-In-Reply-To: <55698621.7070309@nkgroup.cz>
+	with ESMTP id S932646AbbFIHeN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Jun 2015 03:34:13 -0400
+In-Reply-To: <1433829910-7872-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tomas Krcka <tomas.krcka@nkgroup.cz>, linux-can@vger.kernel.org
-Cc: moorray3@wp.pl, himangi774@gmail.com, netdev@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lpVWHXV36Lsbp1MjGRmEoa1xGIvc35GT5
+--tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 05/30/2015 11:42 AM, Tomas Krcka wrote:
-> v2: fix of corrupted patch
+On 06/09/2015 08:05 AM, Oliver Hartkopp wrote:
+> Similar to referencing iptables rules by their line number this UID all=
+ows to
+> reference created routing jobs, e.g. to alter configured data modificat=
+ions.
 >=20
-> This patch corrects addresses of acceptance filters.
-> These registers are not in use, but values should be correct.
-> Tested with MCP2515 and am3352 and also checked datasheets for MCP2515
-> and MCP2510.
+> The UID is an optional non-zero value which can be provided at routing =
+job
+> creation time. When the UID is set the UID replaces the data modificati=
+on
+> configuration as job identification attribute e.g. at job removal time.=
+
 >=20
-> Signed-off-by: Tomas Krcka <tomas.krcka@nkgroup.cz>=20
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
 Applied to can-next.
 
-Thanks,
+thanks,
 Marc
 
 --=20
@@ -45,20 +50,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---lpVWHXV36Lsbp1MjGRmEoa1xGIvc35GT5
+--tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJVdpNcAAoJEP5prqPJtc/HKXwIAKhgSa5bDG5dzULw0msJjyte
-ydikEx9dm2qA+o2taIT2o9NYaMn81pGPI83A/sTUCIvviU/CepioGiJSr/now5lh
-BLBDjyLFl85wmOn7N76/9NUmpInJRtW02euXORNDfKHQKW+trdCyVQvcYpbAeoL1
-YUZpn8aI3Hd9VmYKb9WAYgWLrXXtaMfiPxfl2AxT0iDboGuzFWsX610Ixcf1Go9F
-gDY8xjwmKY7pd9UNe8KaN1vEKlqfJHpa6p1mbUV9/4SRqHAgz2FXTS9rmQFdtf/H
-e6JzqONC4Q+QWmbHz/VFeIwKkswLQDpW+Eu2Ayyw8w74Z/cesdsm2fL5SWQCjGY=
-=Z0Tg
+iQEcBAEBCgAGBQJVdpNkAAoJEP5prqPJtc/HjwsIAJJm4Vqfb8T9/SRYYsWc/SkB
+GcHQDn7gqH/x3zSMet7MGS4lWk4wCd4ufE1Ba5bd2Wk3/ny/AYK2fQDatiPWOO1M
+9/yDXhlvsVZQoa7H4EjrG5w7ktcAXahXXqfYVcTbxv9y76XBjDYgcS0zvsIW7OuL
++9t8cTp6eR9NS1StzLXmCXQv0uaFqIPlWGPycSvu+gZESxwJX5UvyvsvzJwICYFW
+QySe1TnAh5Y9WRUIEwIuI/HSMvWKoPFtAHRkm8/bw7EvL1fL2x7aeahu0gNbtILE
+viLOU5rej3Ub7Quzt3B49kIdj4WgUdlT6rzwhHAVbw8U8ielYCIHHI4D9pGu+ZM=
+=dJ2Z
 -----END PGP SIGNATURE-----
 
---lpVWHXV36Lsbp1MjGRmEoa1xGIvc35GT5--
+--tWAvboLovFP9qdP5fpxuCqgnAFeFesiK2--
