@@ -1,26 +1,30 @@
-From: "Klientskie bazi tel +79133913837 Yznaite podrobnee!!!"
-	<linux-can@vger.kernel.org>
-Subject: Klientskie bazi tel +79133913837 Yznaite podrobnee!!!
-Date: Wed, 10 Jun 2015 16:53:45 +0400
-Message-ID: <06FCBFF7FE2A04B76B6E279AEEEBC5DC@vger.kernel.org>
-Reply-To: "Klientskie bazi tel +79133913837 Yznaite podrobnee!!!"
-	  <lidiaaksenov@gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2015-05-06
+Date: Wed, 10 Jun 2015 21:56:41 -0700 (PDT)
+Message-ID: <20150610.215641.1370705741654347356.davem@davemloft.net>
+References: <55769999.5060902@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="utf-8";
-	reply-type=original
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from [5.196.219.74] ([5.196.219.74]:57044 "EHLO
-	localhost.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751398AbbFJOnu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 10 Jun 2015 10:43:50 -0400
-Received: from 5.196.219.74 (localhost [IPv6:::1])
-	by localhost.localdomain (Postfix) with SMTP id C5A3B1EC409
-	for <linux-can@vger.kernel.org>; Sat, 30 May 2015 23:57:01 -0400 (EDT)
+Received: from shards.monkeyblade.net ([149.20.54.216]:57803 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750809AbbFKE4m (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Jun 2015 00:56:42 -0400
+In-Reply-To: <55769999.5060902@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, david@protonic.nl, kernel@pengutronix.de, linux-can@vger.kernel.org
 
-Klientskie bazi tel +79133913837 Yznaite podrobnee!!!
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Tue, 9 Jun 2015 09:45:29 +0200
+
+> this is a pull request of a two patches for net-next.
+> 
+> The first patch is by Tomas Krcka, he fixes the (currently unused)
+> register address for acceptance filters. Oliver Hartkopp contributes a
+> patch for the cangw, where an optional UID is added to reference
+> routing jobs.
+
+Pulled, thanks Marc.
