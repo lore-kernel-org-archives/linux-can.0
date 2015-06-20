@@ -1,41 +1,56 @@
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 1/2] rcar_can: print request_irq() error code
-Date: Sat, 20 Jun 2015 03:50:35 +0300
-Message-ID: <1636106.QZXWqHuxCQ@wasted.cogentembedded.com>
+Subject: [PATCH 2/2] rcar_can: unify error messages
+Date: Sat, 20 Jun 2015 03:51:34 +0300
+Message-ID: <2511974.9a3ucLkyEa@wasted.cogentembedded.com>
 References: <1593397.kKIHxKLe5s@wasted.cogentembedded.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
-Return-path: <linux-sh-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lb0-f173.google.com ([209.85.217.173]:35699 "EHLO
+	mail-lb0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754122AbbFTAvi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Jun 2015 20:51:38 -0400
+Received: by lbbwc1 with SMTP id wc1so81222815lbb.2
+        for <linux-can@vger.kernel.org>; Fri, 19 Jun 2015 17:51:37 -0700 (PDT)
 In-Reply-To: <1593397.kKIHxKLe5s@wasted.cogentembedded.com>
-Sender: linux-sh-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: linux-sh@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
-Also print the error code when the request_irq() call fails in rcar_can_open(),
-rewording  the error message...
+All the error messages in the driver but  the ones from devm_clk_get() failures
+use similar format.  Make those  two messages consitent with others.
 
 Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
 ---
- drivers/net/can/rcar_can.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/rcar_can.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 Index: linux-can/drivers/net/can/rcar_can.c
 ===================================================================
 --- linux-can.orig/drivers/net/can/rcar_can.c
 +++ linux-can/drivers/net/can/rcar_can.c
-@@ -527,7 +527,8 @@ static int rcar_can_open(struct net_devi
- 	napi_enable(&priv->napi);
- 	err = request_irq(ndev->irq, rcar_can_interrupt, 0, ndev->name, ndev);
- 	if (err) {
--		netdev_err(ndev, "error requesting interrupt %d\n", ndev->irq);
-+		netdev_err(ndev, "request_irq(%d) failed, error %d\n",
-+			   ndev->irq, err);
- 		goto out_close;
+@@ -785,7 +785,8 @@ static int rcar_can_probe(struct platfor
+ 	priv->clk = devm_clk_get(&pdev->dev, "clkp1");
+ 	if (IS_ERR(priv->clk)) {
+ 		err = PTR_ERR(priv->clk);
+-		dev_err(&pdev->dev, "cannot get peripheral clock: %d\n", err);
++		dev_err(&pdev->dev, "cannot get peripheral clock, error %d\n",
++			err);
+ 		goto fail_clk;
  	}
- 	can_led_event(ndev, CAN_LED_EVENT_OPEN);
+ 
+@@ -797,7 +798,7 @@ static int rcar_can_probe(struct platfor
+ 	priv->can_clk = devm_clk_get(&pdev->dev, clock_names[clock_select]);
+ 	if (IS_ERR(priv->can_clk)) {
+ 		err = PTR_ERR(priv->can_clk);
+-		dev_err(&pdev->dev, "cannot get CAN clock: %d\n", err);
++		dev_err(&pdev->dev, "cannot get CAN clock, error %d\n", err);
+ 		goto fail_clk;
+ 	}
+ 
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-sh" in
+To unsubscribe from this list: send the line "unsubscribe linux-can" in
