@@ -1,26 +1,32 @@
-From: "Klientskie bazi tel +79133913837 Email: nonen22pp@gmail.com Yznaite
-	podrobnee!!!" <linux-can@vger.kernel.org>
-Subject: Klientskie bazi tel +79133913837 Email: nonen22pp@gmail.com Yznaite podrobnee!!!
-Date: Mon, 15 Jun 2015 09:06:29 +0400
-Message-ID: <58A29FB28B5F71C21E1B52EF9B6CC9CA@vger.kernel.org>
-Reply-To: "Klientskie bazi tel +79133913837 Email: nonen22pp@gmail.com Yznaite
-	  podrobnee!!!" <nonen22pp@gmail.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: [PATCH 0/3] Small fixes for Renesas R-Car CAN driver
+Date: Sat, 20 Jun 2015 03:30:51 +0300
+Message-ID: <2010452.WyFito6egU@wasted.cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="utf-8";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from [37.221.210.97] ([37.221.210.97]:56032 "EHLO idroid"
-	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753374AbbFOKZF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 15 Jun 2015 06:25:05 -0400
-Received: from 37.221.210.97 (unknown [IPv6:::1])
-	by idroid (Postfix) with SMTP id BDED8B29A51
-	for <linux-can@vger.kernel.org>; Mon, 15 Jun 2015 05:10:07 +0200 (CEST)
+Received: from mail-la0-f44.google.com ([209.85.215.44]:35797 "EHLO
+	mail-la0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752990AbbFTAaz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Jun 2015 20:30:55 -0400
+Received: by labko7 with SMTP id ko7so83088030lab.2
+        for <linux-can@vger.kernel.org>; Fri, 19 Jun 2015 17:30:54 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
 
-Klientskie bazi tel +79133913837 Email: nonen22pp@gmail.com Yznaite podrobnee!!!
+Hello.
+
+   Here's the set of 3 patches against Marc Kleine-Budde's 'linux-can.git'
+repo; they are small fixes for the Renesas R-Car CAN driver.
+
+rcar_can: fix IRQ check
+rcar_can: print signed IRQ #
+rcar_can: fix typo in error message
+
+WBR, Sergei
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-can" in
