@@ -1,32 +1,58 @@
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 0/3] Small fixes for Renesas R-Car CAN driver
-Date: Sat, 20 Jun 2015 03:30:51 +0300
-Message-ID: <2010452.WyFito6egU@wasted.cogentembedded.com>
+Subject: [PATCH 1/3] rcar_can: fix IRQ check
+Date: Sat, 20 Jun 2015 03:32:46 +0300
+Message-ID: <1788456.ArSzxG6No3@wasted.cogentembedded.com>
+References: <2010452.WyFito6egU@wasted.cogentembedded.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f44.google.com ([209.85.215.44]:35797 "EHLO
-	mail-la0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752990AbbFTAaz (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Jun 2015 20:30:55 -0400
-Received: by labko7 with SMTP id ko7so83088030lab.2
-        for <linux-can@vger.kernel.org>; Fri, 19 Jun 2015 17:30:54 -0700 (PDT)
+Received: from mail-lb0-f169.google.com ([209.85.217.169]:33810 "EHLO
+	mail-lb0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754122AbbFTAcu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Jun 2015 20:32:50 -0400
+Received: by lbbti3 with SMTP id ti3so80900322lbb.1
+        for <linux-can@vger.kernel.org>; Fri, 19 Jun 2015 17:32:48 -0700 (PDT)
+In-Reply-To: <2010452.WyFito6egU@wasted.cogentembedded.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: linux-sh@vger.kernel.org
 
-Hello.
+rcar_can_probe() regards 0 as a wrong IRQ #, despite platform_get_irq() that it
+calls returns negative error code in that case. This leads to the following
+being printed to the console when attempting to open the device:
 
-   Here's the set of 3 patches against Marc Kleine-Budde's 'linux-can.git'
-repo; they are small fixes for the Renesas R-Car CAN driver.
+error requesting interrupt fffffffa
 
-rcar_can: fix IRQ check
-rcar_can: print signed IRQ #
-rcar_can: fix typo in error message
+because  rcar_can_open() calls request_irq() with a negative IRQ #, and that
+function naturally fails with -EINVAL.
 
-WBR, Sergei
+Check for the negative error codes instead and propagate them upstream instead
+of just returning -ENODEV.
+
+Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+---
+ drivers/net/can/rcar_can.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+Index: linux-can/drivers/net/can/rcar_can.c
+===================================================================
+--- linux-can.orig/drivers/net/can/rcar_can.c
++++ linux-can/drivers/net/can/rcar_can.c
+@@ -758,8 +758,9 @@ static int rcar_can_probe(struct platfor
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
++	if (irq < 0) {
+ 		dev_err(&pdev->dev, "No IRQ resource\n");
++		err = irq;
+ 		goto fail;
+ 	}
+ 
 
 --
 To unsubscribe from this list: send the line "unsubscribe linux-can" in
