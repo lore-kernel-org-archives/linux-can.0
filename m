@@ -1,47 +1,78 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH 2/3] rcar_can: print signed IRQ #
-Date: Sat, 20 Jun 2015 17:38:11 +0300
-Message-ID: <55857AD3.4040000@cogentembedded.com>
-References: <2010452.WyFito6egU@wasted.cogentembedded.com>	<2390389.thI8mIvbv5@wasted.cogentembedded.com> <CAMuHMdWZFKR04NJc7xtnPUosYuosX9FPDJopG3wovu_GqGxSOw@mail.gmail.com>
+Date: Sat, 20 Jun 2015 18:02:19 +0200
+Message-ID: <55858E8B.9000801@pengutronix.de>
+References: <2010452.WyFito6egU@wasted.cogentembedded.com>
+ <2390389.thI8mIvbv5@wasted.cogentembedded.com>
+ <CAMuHMdWZFKR04NJc7xtnPUosYuosX9FPDJopG3wovu_GqGxSOw@mail.gmail.com>
+ <55857AD3.4040000@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="lQpXtkO3WU2FppTVeAi6IeK2808SouQuX"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f172.google.com ([209.85.217.172]:35890 "EHLO
-	mail-lb0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754125AbbFTOiP (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 20 Jun 2015 10:38:15 -0400
-Received: by lbbqq2 with SMTP id qq2so86683523lbb.3
-        for <linux-can@vger.kernel.org>; Sat, 20 Jun 2015 07:38:14 -0700 (PDT)
-In-Reply-To: <CAMuHMdWZFKR04NJc7xtnPUosYuosX9FPDJopG3wovu_GqGxSOw@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:51514 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751529AbbFTQCe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 20 Jun 2015 12:02:34 -0400
+In-Reply-To: <55857AD3.4040000@cogentembedded.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>
 
-Hello.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lQpXtkO3WU2FppTVeAi6IeK2808SouQuX
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/20/2015 3:03 PM, Geert Uytterhoeven wrote:
+On 06/20/2015 04:38 PM, Sergei Shtylyov wrote:
+> Hello.
+>=20
+> On 6/20/2015 3:03 PM, Geert Uytterhoeven wrote:
+>=20
+>>> Printing IRQ # using "%x" and "%u" unsigned formats isn't quite corre=
+ct as
+>>> 'ndev->irq' is of  type *int*, so  the "%d" format  needs to be used =
+instead.
+>=20
+>>> While fixing this, beautify the dev_info() message in rcar_can_probe(=
+) a bit.
+>=20
+>> If you change the message, why don't you make it consistent
+>> ("interrupt" vs. "IRQ")?
+>=20
+>     I decided to change the message in a follow-up patch (posted afterw=
+ards).
 
->> Printing IRQ # using "%x" and "%u" unsigned formats isn't quite correct as
->> 'ndev->irq' is of  type *int*, so  the "%d" format  needs to be used instead.
+Please squash you patches, so that you don't modify code (or error
+messages) that you've added in a previous patch.
 
->> While fixing this, beautify the dev_info() message in rcar_can_probe() a bit.
+Marc
 
-> If you change the message, why don't you make it consistent
-> ("interrupt" vs. "IRQ")?
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-    I decided to change the message in a follow-up patch (posted afterwards).
 
->> Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
->> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+--lQpXtkO3WU2FppTVeAi6IeK2808SouQuX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-[...]
+-----BEGIN PGP SIGNATURE-----
 
-> Gr{oetje,eeting}s,
->                          Geert
+iQEcBAEBCgAGBQJVhY6PAAoJEP5prqPJtc/H9s8IAIPp0G3jxJIrU7MEi+GRwMmV
+sSzDSHYyYHysx/CE3LGD3P/3seXNTH9uJNK/U8SmVcFR2TqORz1KipygR6j/tthw
+gAE86eWUZUc1wRx9anauM4i8LLMPrPUa/r8dlE7zyFg+MExwwOi+8KrBK+MP8nzb
+i2gDKAlbcHLuNax8lK4NG2mtcXfMOQJPhjARqF9rZFDyAa4CPHWx1EV+s2BISsNq
+8/1GDZgumRVFOR8cP5eCkdMZn9lCO6hAdpLty77WR+TAJywkcmUMYlh02R0txNtp
+kfO0HOkzr4hlO7O6355SbKTEdkOCDNMiZ4nxoL74U7eiYjHLecrIdhkZqwjGRu0=
+=xl8/
+-----END PGP SIGNATURE-----
 
-WBR, Sergei
-
+--lQpXtkO3WU2FppTVeAi6IeK2808SouQuX--
 --
 To unsubscribe from this list: send the line "unsubscribe linux-can" in
