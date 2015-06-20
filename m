@@ -1,56 +1,65 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 2/2] rcar_can: unify error messages
-Date: Sat, 20 Jun 2015 03:51:34 +0300
-Message-ID: <2511974.9a3ucLkyEa@wasted.cogentembedded.com>
-References: <1593397.kKIHxKLe5s@wasted.cogentembedded.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/3] rcar_can: print signed IRQ #
+Date: Sat, 20 Jun 2015 14:03:04 +0200
+Message-ID: <CAMuHMdWZFKR04NJc7xtnPUosYuosX9FPDJopG3wovu_GqGxSOw@mail.gmail.com>
+References: <2010452.WyFito6egU@wasted.cogentembedded.com>
+	<2390389.thI8mIvbv5@wasted.cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f173.google.com ([209.85.217.173]:35699 "EHLO
-	mail-lb0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754122AbbFTAvi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 19 Jun 2015 20:51:38 -0400
-Received: by lbbwc1 with SMTP id wc1so81222815lbb.2
-        for <linux-can@vger.kernel.org>; Fri, 19 Jun 2015 17:51:37 -0700 (PDT)
-In-Reply-To: <1593397.kKIHxKLe5s@wasted.cogentembedded.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <2390389.thI8mIvbv5@wasted.cogentembedded.com>
+Sender: netdev-owner@vger.kernel.org
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, wg@grandegger.com, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-All the error messages in the driver but  the ones from devm_clk_get() failures
-use similar format.  Make those  two messages consitent with others.
+Hi Sergei,
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+On Sat, Jun 20, 2015 at 2:33 AM, Sergei Shtylyov
+<sergei.shtylyov@cogentembedded.com> wrote:
+> Printing IRQ # using "%x" and "%u" unsigned formats isn't quite correct as
+> 'ndev->irq' is of  type *int*, so  the "%d" format  needs to be used instead.
+>
+> While fixing this, beautify the dev_info() message in rcar_can_probe() a bit.
 
----
- drivers/net/can/rcar_can.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+If you change the message, why don't you make it consistent
+("interrupt" vs. "IRQ")?
 
-Index: linux-can/drivers/net/can/rcar_can.c
-===================================================================
---- linux-can.orig/drivers/net/can/rcar_can.c
-+++ linux-can/drivers/net/can/rcar_can.c
-@@ -785,7 +785,8 @@ static int rcar_can_probe(struct platfor
- 	priv->clk = devm_clk_get(&pdev->dev, "clkp1");
- 	if (IS_ERR(priv->clk)) {
- 		err = PTR_ERR(priv->clk);
--		dev_err(&pdev->dev, "cannot get peripheral clock: %d\n", err);
-+		dev_err(&pdev->dev, "cannot get peripheral clock, error %d\n",
-+			err);
- 		goto fail_clk;
- 	}
- 
-@@ -797,7 +798,7 @@ static int rcar_can_probe(struct platfor
- 	priv->can_clk = devm_clk_get(&pdev->dev, clock_names[clock_select]);
- 	if (IS_ERR(priv->can_clk)) {
- 		err = PTR_ERR(priv->can_clk);
--		dev_err(&pdev->dev, "cannot get CAN clock: %d\n", err);
-+		dev_err(&pdev->dev, "cannot get CAN clock, error %d\n", err);
- 		goto fail_clk;
- 	}
- 
+> Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
+> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>
+> ---
+>  drivers/net/can/rcar_can.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> Index: linux-can/drivers/net/can/rcar_can.c
+> ===================================================================
+> --- linux-can.orig/drivers/net/can/rcar_can.c
+> +++ linux-can/drivers/net/can/rcar_can.c
+> @@ -526,7 +526,7 @@ static int rcar_can_open(struct net_devi
+>         napi_enable(&priv->napi);
+>         err = request_irq(ndev->irq, rcar_can_interrupt, 0, ndev->name, ndev);
+>         if (err) {
+> -               netdev_err(ndev, "error requesting interrupt %x\n", ndev->irq);
+> +               netdev_err(ndev, "error requesting interrupt %d\n", ndev->irq);
+>                 goto out_close;
+>         }
+>         can_led_event(ndev, CAN_LED_EVENT_OPEN);
+> @@ -824,7 +824,7 @@ static int rcar_can_probe(struct platfor
+>
+>         devm_can_led_init(ndev);
+>
+> -       dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%u)\n",
+> +       dev_info(&pdev->dev, "device registered (regs @ %p, IRQ%d)\n",
+>                  priv->regs, ndev->irq);
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-can" in
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
