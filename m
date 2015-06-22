@@ -1,118 +1,80 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: fix loss of CAN frames in raw_rcv
-Date: Sun, 21 Jun 2015 19:04:59 +0200
-Message-ID: <1434906299-19452-2-git-send-email-mkl@pengutronix.de>
-References: <1434906299-19452-1-git-send-email-mkl@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1434906299-19452-1-git-send-email-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+From: Manfred Schlaegl <manfred.schlaegl@gmx.at>
+Subject: Re: [PATCH] can: fix loss of frames due to wrong assumption in raw_rcv
+Date: Mon, 22 Jun 2015 11:48:10 +0200
+Message-ID: <5587D9DA.6000102@gmx.at>
+References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.gmx.net ([212.227.17.22]:62207 "EHLO mout.gmx.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754581AbbFVJs3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 22 Jun 2015 05:48:29 -0400
+In-Reply-To: <5585EC4D.40103@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Manfred Schlaegl <manfred.schlaegl@ginzinger.com>, "David S. Miller" <davem@davemloft.net>
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Hello Oliver,
 
-As reported by Manfred Schlaegl here
+On 2015-06-21 00:42, Oliver Hartkopp wrote:
 
-   http://marc.info/?l=linux-netdev&m=143482089824232&w=2
+>> 514ac99c64b22d83b52dfee3b8becaa69a92bc4a introduces a frame equality
+>> check. Since the sk_buff pointer is not sufficient to do this (buffers
+>> are reused), the check also compares time stamps.
+>> In short: pointer+time stamp was assumed as unique key to a specific
+>> frame.
+>> The problem with this is, that the time stamp is an optional property
+>> and not set per default.
+>> In our case (flexcan) the time stamp is always zero, so the equality
+>> check is reduced to equality of buffer pointers, resulting in a lot of
+>> dropped frames.
+> 
+> The question is why your system did not generate a timestamp at the time of
+> skb reception.
+> 
+> Usually when netif_rx(), netif_rx_ni() is invoked the timestamp is set in the
+> following reception process.
+> 
+> flexcan.c only uses netif_receive_skb() - but all theses functions set the
+> timestamp
+> 
+> 	net_timestamp_check(netdev_tstamp_prequeue, skb);
+> 
+> depending on netdev_tstamp_prequeue which is configured by
+> 
+> /proc/sys/net/core/netdev_tstamp_prequeue
+> 
+> See the idea of netdev_tstamp_prequeue here:
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/net/core/sysctl_net_core.c?id=3b098e2d7c693796cc4dffb07caa249fc0f70771
+> 
+Thank you for the background information!
+I've also noticed your patch [PATCH - regression 4.1-rc8] can: fix loss of CAN frames in raw_rcv
 
-commit 514ac99c64b "can: fix multiple delivery of a single CAN frame for
-overlapping CAN filters" requires the skb->tstamp to be set to check for
-identical CAN skbs.
+> Can you tell me the output of /proc/sys/net/core/netdev_tstamp_prequeue on
+> your machine?
 
-As net timestamping is influenced by several players (netstamp_needed and
-netdev_tstamp_prequeue) Manfred missed a proper timestamp which leads to
-CAN frame loss.
+/proc/sys/net/core/netdev_tstamp_prequeue is set to 1 (unmodified, default)
 
-As skb timestamping became now mandatory for CAN related skbs this patch
-makes sure that received CAN skbs always have a proper timestamp set.
-Maybe there's a better solution in the future but this patch fixes the
-CAN frame loss so far.
+I tried to dig a little deeper in timestamping:
+ 1. (net/core/dev.c) I found that static_key_false(&netstamp_needed) is always 0, resulting that the timestamp is never set by net_timestamp_check in netif_receive_skb_internal.
+ 2. (net/core/dev.c) static_key_false(&netstamp_needed) is 0 because net_enable_timestamp is never called.
+ 3. (net/core/sock.c) net_enable_timestamp is never called because SK_FLAGS_TIMESTAMP is not set
+ 4. (net/core/sock.c) SK_FLAGS_TIMESTAMP is not set because neither of SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is set 
+ 5. (net/core/sock.c) SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is not set because timestamping is an optional feature (according to http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/timestamping.txt?id=b953c0d234bc72e8489d3bf51a276c5c4ec85345) not enabled in my use case (even if netdev_tstamp_prequeue is set to 1)
 
-Reported-by: Manfred Schlaegl <manfred.schlaegl@gmx.at>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev.c   | 5 +++++
- drivers/net/can/slcan.c | 1 +
- drivers/net/can/vcan.c  | 3 +++
- net/can/af_can.c        | 6 +++++-
- 4 files changed, 14 insertions(+), 1 deletion(-)
+So the original assumption for the was correct: The correctness of the skb equality check depends on a feature that is not enabled by default (respectively user configurable).
+Do you agree with this?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index b0f69248cb71..e9b1810d319f 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -440,6 +440,9 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 		struct can_frame *cf = (struct can_frame *)skb->data;
- 		u8 dlc = cf->can_dlc;
- 
-+		if (!(skb->tstamp.tv64))
-+			__net_timestamp(skb);
-+
- 		netif_rx(priv->echo_skb[idx]);
- 		priv->echo_skb[idx] = NULL;
- 
-@@ -575,6 +578,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
- 	if (unlikely(!skb))
- 		return NULL;
- 
-+	__net_timestamp(skb);
- 	skb->protocol = htons(ETH_P_CAN);
- 	skb->pkt_type = PACKET_BROADCAST;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
-@@ -603,6 +607,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 	if (unlikely(!skb))
- 		return NULL;
- 
-+	__net_timestamp(skb);
- 	skb->protocol = htons(ETH_P_CANFD);
- 	skb->pkt_type = PACKET_BROADCAST;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index c837eb91d43e..f64f5290d6f8 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -207,6 +207,7 @@ static void slc_bump(struct slcan *sl)
- 	if (!skb)
- 		return;
- 
-+	__net_timestamp(skb);
- 	skb->dev = sl->dev;
- 	skb->protocol = htons(ETH_P_CAN);
- 	skb->pkt_type = PACKET_BROADCAST;
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index 674f367087c5..0ce868de855d 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -78,6 +78,9 @@ static void vcan_rx(struct sk_buff *skb, struct net_device *dev)
- 	skb->dev       = dev;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
- 
-+	if (!(skb->tstamp.tv64))
-+		__net_timestamp(skb);
-+
- 	netif_rx_ni(skb);
- }
- 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 32d710eaf1fc..689c818ed007 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -310,8 +310,12 @@ int can_send(struct sk_buff *skb, int loop)
- 		return err;
- 	}
- 
--	if (newskb)
-+	if (newskb) {
-+		if (!(newskb->tstamp.tv64))
-+			__net_timestamp(newskb);
-+
- 		netif_rx_ni(newskb);
-+	}
- 
- 	/* update statistics */
- 	can_stats.tx_frames++;
--- 
-2.1.4
+> 
+> Thanks again for your investigation!
+Sure!
+
+Best regards,
+Manfred
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-can" in
