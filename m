@@ -1,80 +1,57 @@
-From: Manfred Schlaegl <manfred.schlaegl@gmx.at>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH] can: fix loss of frames due to wrong assumption in raw_rcv
-Date: Mon, 22 Jun 2015 11:48:10 +0200
-Message-ID: <5587D9DA.6000102@gmx.at>
-References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net>
+Date: Mon, 22 Jun 2015 12:24:42 +0200
+Message-ID: <5587E26A.1070000@hartkopp.net>
+References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net> <5587D9DA.6000102@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.17.22]:62207 "EHLO mout.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754581AbbFVJs3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 22 Jun 2015 05:48:29 -0400
-In-Reply-To: <5585EC4D.40103@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:58414 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756255AbbFVKYz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Jun 2015 06:24:55 -0400
+In-Reply-To: <5587D9DA.6000102@gmx.at>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Manfred Schlaegl <manfred.schlaegl@gmx.at>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Manfred Schlaegl <manfred.schlaegl@ginzinger.com>, "David S. Miller" <davem@davemloft.net>
 
-Hello Oliver,
+Hello Manfred,
 
-On 2015-06-21 00:42, Oliver Hartkopp wrote:
+On 22.06.2015 11:48, Manfred Schlaegl wrote:
 
->> 514ac99c64b22d83b52dfee3b8becaa69a92bc4a introduces a frame equality
->> check. Since the sk_buff pointer is not sufficient to do this (buffers
->> are reused), the check also compares time stamps.
->> In short: pointer+time stamp was assumed as unique key to a specific
->> frame.
->> The problem with this is, that the time stamp is an optional property
->> and not set per default.
->> In our case (flexcan) the time stamp is always zero, so the equality
->> check is reduced to equality of buffer pointers, resulting in a lot of
->> dropped frames.
-> 
-> The question is why your system did not generate a timestamp at the time of
-> skb reception.
-> 
-> Usually when netif_rx(), netif_rx_ni() is invoked the timestamp is set in the
-> following reception process.
-> 
-> flexcan.c only uses netif_receive_skb() - but all theses functions set the
-> timestamp
-> 
-> 	net_timestamp_check(netdev_tstamp_prequeue, skb);
-> 
-> depending on netdev_tstamp_prequeue which is configured by
-> 
-> /proc/sys/net/core/netdev_tstamp_prequeue
-> 
-> See the idea of netdev_tstamp_prequeue here:
-> 
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/net/core/sysctl_net_core.c?id=3b098e2d7c693796cc4dffb07caa249fc0f70771
-> 
-Thank you for the background information!
-I've also noticed your patch [PATCH - regression 4.1-rc8] can: fix loss of CAN frames in raw_rcv
+>> Can you tell me the output of /proc/sys/net/core/netdev_tstamp_prequeue on
+>> your machine?
+>
+> /proc/sys/net/core/netdev_tstamp_prequeue is set to 1 (unmodified, default)
+>
+> I tried to dig a little deeper in timestamping:
+>   1. (net/core/dev.c) I found that static_key_false(&netstamp_needed) is always 0, resulting that the timestamp is never set by net_timestamp_check in netif_receive_skb_internal.
+>   2. (net/core/dev.c) static_key_false(&netstamp_needed) is 0 because net_enable_timestamp is never called.
+>   3. (net/core/sock.c) net_enable_timestamp is never called because SK_FLAGS_TIMESTAMP is not set
+>   4. (net/core/sock.c) SK_FLAGS_TIMESTAMP is not set because neither of SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is set
+>   5. (net/core/sock.c) SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is not set because timestamping is an optional feature (according to http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/timestamping.txt?id=b953c0d234bc72e8489d3bf51a276c5c4ec85345) not enabled in my use case (even if netdev_tstamp_prequeue is set to 1)
+>
+> So the original assumption for the was correct: The correctness of the skb equality check depends on a feature that is not enabled by default (respectively user configurable).
+> Do you agree with this?
 
-> Can you tell me the output of /proc/sys/net/core/netdev_tstamp_prequeue on
-> your machine?
+Yes.
 
-/proc/sys/net/core/netdev_tstamp_prequeue is set to 1 (unmodified, default)
+But the point becomes an issue when there's no userspace application that 
+requires timestamps.
 
-I tried to dig a little deeper in timestamping:
- 1. (net/core/dev.c) I found that static_key_false(&netstamp_needed) is always 0, resulting that the timestamp is never set by net_timestamp_check in netif_receive_skb_internal.
- 2. (net/core/dev.c) static_key_false(&netstamp_needed) is 0 because net_enable_timestamp is never called.
- 3. (net/core/sock.c) net_enable_timestamp is never called because SK_FLAGS_TIMESTAMP is not set
- 4. (net/core/sock.c) SK_FLAGS_TIMESTAMP is not set because neither of SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is set 
- 5. (net/core/sock.c) SOCK_TIMESTAMP or SOCK_TIMESTAMPING_RX_SOFTWARE is not set because timestamping is an optional feature (according to http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/timestamping.txt?id=b953c0d234bc72e8489d3bf51a276c5c4ec85345) not enabled in my use case (even if netdev_tstamp_prequeue is set to 1)
+I did my testing wile having at least one "candump" instances running, which 
+enables timestamping. So when there's no one requesting timestamps the check 
+in can_rcv does not perform properly.
 
-So the original assumption for the was correct: The correctness of the skb equality check depends on a feature that is not enabled by default (respectively user configurable).
-Do you agree with this?
+Therefor my patch grabs your idea to set the timestamps for CAN skbs 
+unconditionally. But there were some more places in the code where we need to 
+take care about that.
 
-> 
-> Thanks again for your investigation!
-Sure!
+Regards,
+Oliver
 
-Best regards,
-Manfred
 
 --
 To unsubscribe from this list: send the line "unsubscribe linux-can" in
