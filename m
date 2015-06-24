@@ -1,79 +1,67 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: [PATCH] can: fix loss of frames due to wrong assumption in raw_rcv
-Date: Wed, 24 Jun 2015 12:13:24 +1000
-Message-ID: <558A1244.3010908@optusnet.com.au>
-References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net> <5587D9DA.6000102@gmx.at> <5587E26A.1070000@hartkopp.net> <5588E6FB.5040903@optusnet.com.au> <55891263.3050704@hartkopp.net>
-Reply-To: tom_usenet@optusnet.com.au
+From: Holger Schurig <holgerschurig@gmail.com>
+Subject: Re: CAN question: how to trace frame errors?
+Date: Wed, 24 Jun 2015 16:29:12 +0200
+Message-ID: <CAOpc7mHta0KMM-psYtXD-1OrBXpQwo39KSkPL7nf2Bcgp6V5+Q@mail.gmail.com>
+References: <CAOpc7mFv6ePXqkCZxRkCOC+BuY-PC14nAopZyFpEKHvj5gN_tw@mail.gmail.com>
+	<557AA7BE.6040004@pengutronix.de>
+	<CAOpc7mH-xD+eesJNjhpFwUSeMwGCdsRK8Q9AZSjmE2uw=cBgsw@mail.gmail.com>
+	<557AD18D.8010807@optusnet.com.au>
+	<CAOpc7mG5nD1daKSkGdqoR84=W_A11s+oQfzc_i4pUsHoVd42Tw@mail.gmail.com>
+	<557C4C83.3020501@optusnet.com.au>
+	<CAOpc7mHYiX3SAJSEHM32PA1gRFA+BQ0DxCC3U6Aux15Swy06sQ@mail.gmail.com>
+	<557CEA2E.5060904@optusnet.com.au>
+	<CAOpc7mGxpjUoV1iMcU0CAfaPYf0z-9ZjHgenH+ocSdBykfnutA@mail.gmail.com>
+	<55880A8A.7010903@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36635 "EHLO
-	mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752213AbbFXCN2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Jun 2015 22:13:28 -0400
-In-Reply-To: <55891263.3050704@hartkopp.net>
+Received: from mail-wi0-f180.google.com ([209.85.212.180]:37913 "EHLO
+	mail-wi0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752983AbbFXO3O (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Jun 2015 10:29:14 -0400
+Received: by wibdq8 with SMTP id dq8so48471610wib.1
+        for <linux-can@vger.kernel.org>; Wed, 24 Jun 2015 07:29:12 -0700 (PDT)
+In-Reply-To: <55880A8A.7010903@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org
 
-On 23/06/15 18:01, Oliver Hartkopp wrote:
-> Hi Tom,
->
-> On 23.06.2015 06:56, Tom Evans wrote:
->> On 22/06/15 20:24, Oliver Hartkopp wrote:
->>> But the point becomes an issue when there's no userspace application that
->>> requires timestamps.
->>>
->>> I did my testing wile having at least one "candump" instances running, which
->>> enables timestamping. So when there's no one requesting timestamps the check
->>> in can_rcv does not perform properly.
->>>
->>> Therefor my patch grabs your idea to set the timestamps for CAN skbs
->>> unconditionally. But there were some more places in the code where we need to
->>> take care about that.
->>
->> The original patch contains:
->>
->> +    /* eliminate multiple filter matches for the same skb */
->> +    if (this_cpu_ptr(ro->uniq)->skb == oskb &&
->> +        ktime_equal(this_cpu_ptr(ro->uniq)->tstamp, oskb->tstamp)) {
->> +        return;
->> +    } else {
->> +        this_cpu_ptr(ro->uniq)->skb = oskb;
->> +        this_cpu_ptr(ro->uniq)->tstamp = oskb->tstamp;
->> +    }
->> +
->>
->> Mightn't it be more robust if the above check didn't filter out a packet if
->> either of the timestamps weren't set (were zero)? Assuming the structures are
->> zeroed before this gets set.
->
-> Yes. But the source just moved on with the introduction of joined filters.
-> And when you don't have a unique skb detection the joint filter mechanic fails
-> totally.
->
-> An alternative to force the timestamp to be set would be to add another
-> 'counter' to struct can_skb_priv which is just increased by the driver with
-> every received CAN frame.
->
-> But I wonder if its worth the effort in opposite to just enable timestamping
-> in every skb. What do you think?
+Okay, I'm now switched to Linux to 4.0.6, applied CONFIG_PREEMPT_RT
+4.0.5-rt4 on top of it and enabled PREEMPT_RT_FULL. I had to disable
+CPU_FREQ, otherwise I had weird errors (despite using the performance
+governor). The system booted, but systemd said that a call to loadkeys
+failed. I got the idea to remove CPU_FREQ from the Xinomai project :-)
 
- From a programming standpoint, using a "timestamp" as a "unique identifier" 
-is opaque and a poor design. If the SKB requires a "unique identifier" then it 
-should be provided with something that has that description and purpose.
+Unfortuantely, removing CPU_FREQ also took IMX_THERMAL with it. So I
+can't see the die temperature anymore in /sys/.
 
-The timestamp may be optional for a reason. Maybe some platforms simply don't 
-provide a high resolution timestamp, and/or the timestamp comes with a high 
-overhead. Can you guarantee that all current, future and past platforms 
-support a low overhead and high resolution timestamp?
+This time the system seems to behave more stable. I had however once a
+hard lock when I started X11. Keyboard didn't work anymore, mouse
+neither. Unfortunately I had not redirected output to the serial port.
+And it only happened once so far. Still not convincing.
 
-A new "feature" probably shouldn't change something that was optional to being 
-compulsory. Would all existing CAN drivers need to be rewritten to add this 
-timestamping, or is the timestamp added in higher (and more generic) layers, 
-and in the one place?
+With that, I still had CAN frame losses until I applied the
+flexcan-kfifo patch that I posted. I think that with a pristine
+flexcan.c, the the latency [IRQ, flexcan_irq(), flexcan_poll()] is
+still to long.
 
-Tom
 
+
+I'm not really fond of adding a 771 kB long patch (CONFIG_PREEMPT_RT)
+to my system that worked stable since at least half a year. So I
+pondered about using the FIQ. There's no other driver using a FIQ on
+my system (e.g. I don't use sound/soc/imx-fiq-pcm.c for sound over
+SSI). I think writing a ringbuffer in ARM assembly is doable. The FIQ
+ISR would then read the FlexCAN registers and write them into the
+ringbuffer. And in case of data in the RxFIFO, it would empty it and
+write it to the ringbuffer as well. Emptying this ringbuffer could
+then again happen in flexcan_poll(). One building block that I'm still
+missing for this would be how the FIQ-ISR could signal from
+FIQ-context back to the normal Linux context that there is now data in
+the ringbuffer.
+
+This sound like lots of hoops, but such a change would make FlexCAN be
+able to receive CAN packets even with 100% busload and very small
+package sizes. And I wouldn't have to deal with the complexity of the
+realtime kernel. They are frankly over my head ...
