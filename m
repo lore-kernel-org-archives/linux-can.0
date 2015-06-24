@@ -1,83 +1,65 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] treewide: use if_nametoindex to avoid overflows
-Date: Wed, 24 Jun 2015 20:25:36 +0200
-Message-ID: <558AF620.5070800@pengutronix.de>
-References: <1435170124-18081-1-git-send-email-mkl@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: fix loss of frames due to wrong assumption in raw_rcv
+Date: Wed, 24 Jun 2015 21:56:31 +0200
+Message-ID: <558B0B6F.6010304@hartkopp.net>
+References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net> <5587D9DA.6000102@gmx.at> <5587E26A.1070000@hartkopp.net> <5588E6FB.5040903@optusnet.com.au> <55891263.3050704@hartkopp.net> <558A1244.3010908@optusnet.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="S8BgDstXqrIM8QO6vBT5xJqBKvAc9oLI5"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45468 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752412AbbFXSZ7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Jun 2015 14:25:59 -0400
-In-Reply-To: <1435170124-18081-1-git-send-email-mkl@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:62280 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752695AbbFXT4o (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Jun 2015 15:56:44 -0400
+In-Reply-To: <558A1244.3010908@optusnet.com.au>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Sven Schmitt <sven.schmitt@volkswagen.de>
+To: tom_usenet@optusnet.com.au
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---S8BgDstXqrIM8QO6vBT5xJqBKvAc9oLI5
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 24.06.2015 04:13, Tom Evans wrote:
+> On 23/06/15 18:01, Oliver Hartkopp wrote:
+>> An alternative to force the timestamp to be set would be to add another
+>> 'counter' to struct can_skb_priv which is just increased by the driver with
+>> every received CAN frame.
+>>
+>> But I wonder if its worth the effort in opposite to just enable timestamping
+>> in every skb. What do you think?
+>
+>  From a programming standpoint, using a "timestamp" as a "unique identifier"
+> is opaque and a poor design. If the SKB requires a "unique identifier" then it
+> should be provided with something that has that description and purpose.
 
-Hey Sven,
+Hey Tom,
 
-Thanks for your contribution. I forwarded your patch to the linux-can
-mailinglist.
+> The timestamp may be optional for a reason. Maybe some platforms simply don't
+> provide a high resolution timestamp, and/or the timestamp comes with a high
+> overhead. Can you guarantee that all current, future and past platforms
+> support a low overhead and high resolution timestamp?
 
-On 06/24/2015 08:22 PM, Marc Kleine-Budde wrote:
-> From: Sven Schmitt <sven.schmitt@volkswagen.de>
->=20
-> replaced strcpy(if_name, argv[x]) by if_name=3Dif_nametoindex(argv[x]) =
-to avoid
-> overflows caused by long user input.
->=20
-> Waiting for Sob: Sven Schmitt <sven.schmitt@volkswagen.de>
-> Not-yet-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+I have used the CAN stuff on two PowerPC, one ARM and several x86 platforms - 
+always with enabled timestamping - without any problems in performance.
 
-Can I add your S-o-B here? What S-o-B means is explained here [1].
+> A new "feature" probably shouldn't change something that was optional to being
+> compulsory. Would all existing CAN drivers need to be rewritten to add this
+> timestamping, or is the timestamp added in higher (and more generic) layers,
+> and in the one place?
 
-Patch looks good, but the compiler throws a warning here:
+The point is that out-of-tree drivers (like the PEAK-System driver) would need 
+to set the timestamp too to take advantage of the joint filter feature.
+The mainline drivers are adapted for now with the stable patch
 
-> cc -O2 -Wall -Wno-parentheses -fno-strict-aliasing -Iinclude -D_FILE_OF=
-FSET_BITS=3D64 -DSO_RXQ_OVFL=3D40 -DPF_CAN=3D29 -DAF_CAN=3DPF_CAN   isotp=
-server.c   -o isotpserver
-> isotpserver.c: In function =E2=80=98main=E2=80=99:
-> isotpserver.c:140:15: warning: unused variable =E2=80=98ifr=E2=80=99 [-=
-Wunused-variable]
->   struct ifreq ifr;
->                ^
+http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=36c01245eb8046c16eee6431e7dbfbb302635fa8
 
-Marc
+But I felt not very comfortable with this fix. The point is that I have to 
+take care that the processing of an incoming skb in can_receive() in af_can.c 
+is done in 'one step' with an unique skb. So marking the skb for the joint 
+filter feature in raw_rcv() can probably be done in can_receive().
 
-[1]
-http://lxr.free-electrons.com/source/Documentation/SubmittingPatches#L407=
+I'm looking for a SMP save solution for this - to finally revert the fix 
+above. So thanks for the 'wake-up call' by naming the timestamping solution  a 
+'poor design'  ;-)
 
+Best regards,
+Oliver
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---S8BgDstXqrIM8QO6vBT5xJqBKvAc9oLI5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVivYgAAoJEP5prqPJtc/HQHsH/RKY34sP452e/rHpxvNL/UXa
-XxFGUtpZpkS8+A1afZd6Y1OIo/dcyGGFlaK/Zcf7KXVLcd+Nkcmf1DPnAuei+UKZ
-//nDdb7yiFWZXmFG0ywYhnvwk8Bhlxhkcz4EoaOblGLGZWY5JOXujxQvHh/aTJd9
-3zHIyu7v4xuaE5J4bHIIO8xPnwz/c+nJX1YVTTflk005FZ/Lc/7ig6u2HBlfcNpH
-skua4njso6tdaNStLQZQafL1Q83m9WM7hhTmbBI8r+RM7i7jBBFD1DyPNhC26dcV
-fDkKmHb79xuBwo1Upa9yVXpTRR1CiwOSplABLo0eyU7ZVFlPL9Z3HJdaZxks9MQ=
-=YOmt
------END PGP SIGNATURE-----
-
---S8BgDstXqrIM8QO6vBT5xJqBKvAc9oLI5--
