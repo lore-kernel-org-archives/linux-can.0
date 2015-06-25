@@ -1,44 +1,152 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: CAN question: how to trace frame errors?
-Date: Thu, 25 Jun 2015 18:37:26 +1000
-Message-ID: <558BBDC6.90107@optusnet.com.au>
-References: <CAOpc7mFv6ePXqkCZxRkCOC+BuY-PC14nAopZyFpEKHvj5gN_tw@mail.gmail.com>	<557AA7BE.6040004@pengutronix.de>	<CAOpc7mH-xD+eesJNjhpFwUSeMwGCdsRK8Q9AZSjmE2uw=cBgsw@mail.gmail.com>	<557AD18D.8010807@optusnet.com.au>	<CAOpc7mG5nD1daKSkGdqoR84=W_A11s+oQfzc_i4pUsHoVd42Tw@mail.gmail.com>	<557C4C83.3020501@optusnet.com.au>	<CAOpc7mHYiX3SAJSEHM32PA1gRFA+BQ0DxCC3U6Aux15Swy06sQ@mail.gmail.com>	<557CEA2E.5060904@optusnet.com.au>	<CAOpc7mGxpjUoV1iMcU0CAfaPYf0z-9ZjHgenH+ocSdBykfnutA@mail.gmail.com>	<55880A8A.7010903@pengutronix.de> <CAOpc7mHta0KMM-psYtXD-1OrBXpQwo39KSkPL7nf2Bcgp6V5+Q@mail.gmail.com>
-Reply-To: tom_usenet@optusnet.com.au
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [BULK]Re: [PATCH] can: fix loss of frames due to wrong assumption
+ in raw_rcv
+Date: Thu, 25 Jun 2015 10:32:18 +0200
+Message-ID: <558BBC92.6040906@peak-system.com>
+References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net>
+ <5587D9DA.6000102@gmx.at> <5587E26A.1070000@hartkopp.net>
+ <5588E6FB.5040903@optusnet.com.au> <55891263.3050704@hartkopp.net>
+ <558A1244.3010908@optusnet.com.au> <558B0B6F.6010304@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:35860 "EHLO
-	mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751207AbbFYIha (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 25 Jun 2015 04:37:30 -0400
-In-Reply-To: <CAOpc7mHta0KMM-psYtXD-1OrBXpQwo39KSkPL7nf2Bcgp6V5+Q@mail.gmail.com>
+Received: from mail.peak-system.com ([213.157.13.214]:37592 "EHLO
+	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750993AbbFYIlZ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 25 Jun 2015 04:41:25 -0400
+In-Reply-To: <558B0B6F.6010304@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Holger Schurig <holgerschurig@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: tom_usenet@optusnet.com.au, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 25/06/15 00:29, Holger Schurig wrote:
-> Okay, I'm now switched to Linux to 4.0.6, applied CONFIG_PREEMPT_RT
-> 4.0.5-rt4 on top of it and enabled PREEMPT_RT_FULL. I had to disable
-> CPU_FREQ, otherwise I had weird errors (despite using the performance
-> governor). The system booted, but systemd said that a call to loadkeys
-> failed. I got the idea to remove CPU_FREQ from the Xinomai project :-)
+Hi everyone,
 
-Huge amount of work to make it less stable.
+I follow this thread carefully and, with your permission, I'd like to=20
+speak in.
 
-I would strongly suggest you put some more time on on FTRACE.
+As we always help our customers in using the mainline drivers products=20
+line too, I just wanted to inform you that I currently have one who=20
+tells that he's facing some loss of frames with the PEAK-System PCAN-US=
+B=20
+adapter, in case of "relatively"  high bus load... He's running two=20
+Kernels (3.19 and the last 4.1 patched with this recent "fix"). At the=20
+moment, he says he always notes some frame leakage, especially when he=20
+(for example) "resizes windows on his desktop"...
 
-Linux really isn't meant to be locking interrupts out for that long. It isn't 
-meant to be locking NAPI out for that long either.
+The curious things are:
 
-There's a broken or at least severely inconsiderate driver or something 
-locking out interrupts for a very long time. It would be very well worth 
-finding this, and not just for the sake of CAN. It should be affecting other 
-things too.
+0 - frames are lost when running his socket-can application over the=20
+mainline peak-usb driver
+1 - frames are lost when running his socket-can application over our=20
+"pcan" driver (built in so-called "netdev" mode, that is, rx frames are=
+=20
+forwarded to socket-can using netif_rx())
+2 - *but* no frame are lost when running the "ioctl()" test application=
+s=20
+above our "pcan" driver (built in so-called "chardev" mode, that is, rx=
+=20
+frames are stored into internal fifos before being given to application=
+s)
+3 - in both cases #0 and #1, "can0" network stats don't show any=20
+rx_dropped nor rx_fifo_errors errors at all (even if sometimes, he says=
+=20
+he notes some "real" rx_over_errors  raised up by the peak-usb driver).
 
-The trick is enabling the right tracer. Or just enable more of them than you 
-have already. Then getting the trigger right (CAN saying it has overflowed).
+I don't succeed to reproduce this issue with my "old" 3.16 Kernel at th=
+e=20
+moment. Before going on with installing the 3.19 Kernel, could the abov=
+e=20
+"leakage" be explained by the last changes made in linux-can?
 
-Tom
+Many thanks for your help,
 
+Regards,
+
+St=C3=A9phane
+
+Le 24/06/2015 21:56, Oliver Hartkopp a =C3=A9crit :
+> On 24.06.2015 04:13, Tom Evans wrote:
+>> On 23/06/15 18:01, Oliver Hartkopp wrote:
+>>> An alternative to force the timestamp to be set would be to add ano=
+ther
+>>> 'counter' to struct can_skb_priv which is just increased by the=20
+>>> driver with
+>>> every received CAN frame.
+>>>
+>>> But I wonder if its worth the effort in opposite to just enable=20
+>>> timestamping
+>>> in every skb. What do you think?
+>>
+>>  From a programming standpoint, using a "timestamp" as a "unique=20
+>> identifier"
+>> is opaque and a poor design. If the SKB requires a "unique=20
+>> identifier" then it
+>> should be provided with something that has that description and purp=
+ose.
+>
+> Hey Tom,
+>
+>> The timestamp may be optional for a reason. Maybe some platforms=20
+>> simply don't
+>> provide a high resolution timestamp, and/or the timestamp comes with=
+=20
+>> a high
+>> overhead. Can you guarantee that all current, future and past platfo=
+rms
+>> support a low overhead and high resolution timestamp?
+>
+> I have used the CAN stuff on two PowerPC, one ARM and several x86=20
+> platforms - always with enabled timestamping - without any problems i=
+n=20
+> performance.
+>
+>> A new "feature" probably shouldn't change something that was optiona=
+l=20
+>> to being
+>> compulsory. Would all existing CAN drivers need to be rewritten to=20
+>> add this
+>> timestamping, or is the timestamp added in higher (and more generic)=
+=20
+>> layers,
+>> and in the one place?
+>
+> The point is that out-of-tree drivers (like the PEAK-System driver)=20
+> would need to set the timestamp too to take advantage of the joint=20
+> filter feature.
+> The mainline drivers are adapted for now with the stable patch
+>
+> http://git.kernel.org/cgit/linux/kernel/git/davem/net.git/commit/?id=3D=
+36c01245eb8046c16eee6431e7dbfbb302635fa8=20
+>
+>
+> But I felt not very comfortable with this fix. The point is that I=20
+> have to take care that the processing of an incoming skb in=20
+> can_receive() in af_can.c is done in 'one step' with an unique skb. S=
+o=20
+> marking the skb for the joint filter feature in raw_rcv() can probabl=
+y=20
+> be done in can_receive().
+>
+> I'm looking for a SMP save solution for this - to finally revert the=20
+> fix above. So thanks for the 'wake-up call' by naming the timestampin=
+g=20
+> solution  a 'poor design'  ;-)
+>
+> Best regards,
+> Oliver
+>
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt
+Handelsregister Darmstadt HRB 9183=20
+Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
+--
