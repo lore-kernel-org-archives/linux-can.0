@@ -1,69 +1,44 @@
-From: Nik Nyby <nikolas@gnu.org>
-Subject: [PATCH] can: gs_usb: Fix typo in function name
-Date: Mon, 29 Jun 2015 19:09:57 -0400
-Message-ID: <1435619397-9333-1-git-send-email-nikolas@gnu.org>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from eggs.gnu.org ([208.118.235.92]:46498 "EHLO eggs.gnu.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751080AbbF2XK0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 29 Jun 2015 19:10:26 -0400
-Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
-	(envelope-from <nikolas@gnu.org>)
-	id 1Z9iBv-0002fP-Iz
-	for linux-can@vger.kernel.org; Mon, 29 Jun 2015 19:10:25 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, trivial@kernel.org
-Cc: Nik Nyby <nikolas@gnu.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: missing in stable 4.1.1 - was Re: pull-request: can 2015-06-21
+Date: Tue, 30 Jun 2015 21:31:36 +0200
+Message-ID: <5592EE98.8030705@hartkopp.net>
+References: <1434906299-19452-1-git-send-email-mkl@pengutronix.de> <20150623.064338.1193972764545855895.davem@davemloft.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20150623.064338.1193972764545855895.davem@davemloft.net>
+Sender: stable-owner@vger.kernel.org
+To: stable@vger.kernel.org, gregkh@linuxfoundation.org
+Cc: David Miller <davem@davemloft.net>, mkl@pengutronix.de, netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-This fixes typos in gs_usb.c where 'receive' is misspelled
-as 'recieve'.
+Hello Greg,
 
-Signed-off-by: Nik Nyby <nikolas@gnu.org>
----
- drivers/net/can/usb/gs_usb.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 23.06.2015 15:43, David Miller wrote:
+> From: Marc Kleine-Budde <mkl@pengutronix.de>
+> Date: Sun, 21 Jun 2015 19:04:58 +0200
+>
+>> this is a, probably too late, pull request for v4.1.
+>>
+>> Oliver Hartkopp fixed a bug in the generic CAN frame handling code, which may
+>> lead to loss of CAN frames. It was introduced during v4.1 development.
+>>
+>> Please queue via net/master if possible, net-next/master otherwise. I've added
+>> stable on Cc, just in case.
+>
+> Pulled, thanks.
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 8b4d3e6..5eee62b 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -162,7 +162,7 @@ struct gs_can {
- 	struct can_bittiming_const bt_const;
- 	unsigned int channel;	/* channel number */
- 
--	/* This lock prevents a race condition between xmit and recieve. */
-+	/* This lock prevents a race condition between xmit and receive. */
- 	spinlock_t tx_ctx_lock;
- 	struct gs_tx_context tx_context[GS_MAX_TX_URBS];
- 
-@@ -274,7 +274,7 @@ static void gs_update_state(struct gs_can *dev, struct can_frame *cf)
- 	}
- }
- 
--static void gs_usb_recieve_bulk_callback(struct urb *urb)
-+static void gs_usb_receive_bulk_callback(struct urb *urb)
- {
- 	struct gs_usb *usbcan = urb->context;
- 	struct gs_can *dev;
-@@ -376,7 +376,7 @@ static void gs_usb_recieve_bulk_callback(struct urb *urb)
- 			  usb_rcvbulkpipe(usbcan->udev, GSUSB_ENDPOINT_IN),
- 			  hf,
- 			  sizeof(struct gs_host_frame),
--			  gs_usb_recieve_bulk_callback,
-+			  gs_usb_receive_bulk_callback,
- 			  usbcan
- 			  );
- 
-@@ -605,7 +605,7 @@ static int gs_can_open(struct net_device *netdev)
- 							  GSUSB_ENDPOINT_IN),
- 					  buf,
- 					  sizeof(struct gs_host_frame),
--					  gs_usb_recieve_bulk_callback,
-+					  gs_usb_receive_bulk_callback,
- 					  parent);
- 			urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
- 
--- 
-2.1.4
+the patch "can: fix loss of CAN frames in raw_rcv" was sent to stable on 
+2015-06-21 but unfortunately did not find its way into 4.1.1 :-(
 
+The upstream commit is:
+
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=36c01245eb8046c16eee6431e7dbfbb302635fa8
+
+which slipped into 4.2 at merge window opening time.
+
+So it just got lost in the stable queue somehow.
+
+Best regards,
+Oliver
