@@ -1,89 +1,59 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [BULK]Re: [PATCH] can: fix loss of frames due to wrong assumption
- in raw_rcv
-Date: Sat, 04 Jul 2015 18:54:38 +0200
-Message-ID: <55980FCE.4030304@hartkopp.net>
-References: <5585A104.1090201@gmx.at> <5585EC4D.40103@hartkopp.net> <5587D9DA.6000102@gmx.at> <5587E26A.1070000@hartkopp.net> <5588E6FB.5040903@optusnet.com.au> <55891263.3050704@hartkopp.net> <558A1244.3010908@optusnet.com.au> <558B0B6F.6010304@hartkopp.net> <558BBC92.6040906@peak-system.com> <840510251.4781629.1435224977567.JavaMail.open-xchange@patina.store> <55916EBC.2010807@hartkopp.net>
-Reply-To: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH RFC] can: replace timestamp as unique skb attribute
+Date: Sat, 04 Jul 2015 18:00:28 +0200
+Message-ID: <5598031C.1020505@hartkopp.net>
+References: <1435312699-25999-1-git-send-email-socketcan@hartkopp.net> <55939E4E.8050908@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:47560 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:36553 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752611AbbGEIy5 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jul 2015 04:54:57 -0400
-In-Reply-To: <55916EBC.2010807@hartkopp.net>
+	with ESMTP id S1755440AbbGEJAs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jul 2015 05:00:48 -0400
+In-Reply-To: <55939E4E.8050908@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, tom_usenet@optusnet.com.au, Manfred Schlaegl <manfred.schlaegl@gmx.at>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: manfred.schlaegl@gmx.at, tom_usenet@optusnet.com.au, s.grosjean@peak-system.com
 
-Hi Stephane,
-
-On 29.06.2015 18:13, Oliver Hartkopp wrote:
-> Hi Stephane,
+On 01.07.2015 10:01, Marc Kleine-Budde wrote:
+> On 06/26/2015 11:58 AM, Oliver Hartkopp wrote:
+>> Commit 514ac99c64b "can: fix multiple delivery of a single CAN frame for
+>> overlapping CAN filters" requires the skb->tstamp to be set to check for
+>> identical CAN skbs.
+>>
+>> Without timestamping to be required by user space applications this timestamp
+>> was not generated which lead to commit 36c01245eb8 "can: fix loss of CAN
+>> frames in raw_rcv" - which forces the timestamp to be set in all CAN related
+>> skbuffs by introducing several __net_timestamp() calls.
+>>
+>> This forces e.g. out of tree drivers to add __net_timestamp() after skbuff
+>> creation to prevent the frame loss fixed in mainline Linux.
+>>
+>> This patch removes the timestamp dependency and uses an atomic counter to
+>> create an unique identifier together with the skbuff pointer.
+>>
+>> Btw. the new skbcnt element introduced in struct can_skb_priv has to be
+>> initialized with zero in out-of-tree drivers too.
 >
-> On 25.06.2015 11:36, Oliver Hartkopp wrote:
->>> Stephane Grosjean <s.grosjean@peak-system.com>
->>> (..)
->>> tells that he's facing some loss of frames with the PEAK-System PCAN-USB
->>> adapter, in case of "relatively"  high bus load... He's running two
->>> Kernels (3.19 and the last 4.1 patched with this recent "fix"). At the
->>> moment, he says he always notes some frame leakage, especially when he
->>> (for example) "resizes windows on his desktop"...
+> ...but only if they don't use alloc_can{,fd}_skb().	
 
-Is $COSTUMERs problem fixed now?
+Right. Is it possible to add this fact to the commit message?
 
-While testing the patches
+>
+> Looks much better than the timestamp approach. I'll apply it to
+> can/master if there aren't any objections. What about stable?
 
-can: fix loss of CAN frames in raw_rcv
-http://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can.git/commit/?h=testing&id=36c01245eb8046c16eee6431e7dbfbb302635fa8
+Yes. I definitely would like to have it in 4.1.x.
 
-and
+Currently GregKH has commit 514ac99c64b queued up for 4.1.2:
 
-can: replace timestamp as unique skb attribute
-http://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can.git/commit/?h=testing&id=a6ffebda241e513f6e839662d769b60b084d0957
+http://git.kernel.org/cgit/linux/kernel/git/stable/stable-queue.git/commit/?id=d722d86cbddfbe6442cbb548a548344d1e3e441a
 
-I discovered an increase of out-of-order CAN frame receptions.
-My setup is a core i7 with a PCAN USB and a PCAN USB pro connected to my full 
-busload CAN source (1MBit/s, ~8008 frames/s).
+So my favourite would be to have it in 4.1.2 too to have only 4.1.0 and 4.1.1 
+dysfunctional and a proper requirement with can_skb_prv(skb)->skbcnt to be set 
+in 4.1.2+
 
-With 3.16 the out-of-order CAN frame reception is 'relatively' seldom.
-It's more with the PCAN USB and very few with PCAN USB pro.
-
-With the latest 4.2-merge the effect is reproducible after some time (~10min).
-
-Examples:
-
-  drop detected: expected 204 received 212
-  drop detected: expected 237 received 204
-  drop detected: expected 212 received 237
-  drop detected: expected 68 received 69
-  drop detected: expected 70 received 68
-  drop detected: expected 69 received 70
-
-Obviously the frames do not get lost BUT are reordered.
-
-newcounter = frame.data[0];
-if (((counter + 1) & 0xFF) != newcounter) {
-  printf(" drop detected: expected %u received %u\n", counter + 1, newcounter);
-}
-counter = newcounter;
-
-I'm a bit confused as this effect seems to increase with Linux kernel version 
-numbers. I removed all the changes for 4.1 in the 4.2-merge kernel to have a 
-4.0 CAN subsystem (which was stable for a long time) - but even this patch 
-removal did not fix the out of order reception.
-
-Good thing: The latest changes in 4.1 (which patches) do not drop CAN frames 
-by accident.
-
-Bad thing: Why is the out-of-order reception increasing in Linux?
-
-I /assume/ some changes with RPS (receive packet steering) in the network 
-layer ...
-
-
-Regards,
+Best regards,
 Oliver
