@@ -1,72 +1,66 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Setting up flexcan mailboxes in Linux
-Date: Tue, 7 Jul 2015 12:04:20 +0200
-Message-ID: <559BA424.5010106@pengutronix.de>
-References: <81C1BF6140F61847A49020308B539A57128B21@MBX01.hosting.local>
+From: Roger Quadros <rogerq@ti.com>
+Subject: [PATCH 1/2] net: can: c_can: Fix default pinmux glitch at init
+Date: Tue, 7 Jul 2015 17:27:56 +0300
+Message-ID: <1436279277-3386-2-git-send-email-rogerq@ti.com>
+References: <1436279277-3386-1-git-send-email-rogerq@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="SLlpH6Dhp7Goc8hNEQFTFPsmjF9i3xNw0"
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38055 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753364AbbGGKE0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 7 Jul 2015 06:04:26 -0400
-In-Reply-To: <81C1BF6140F61847A49020308B539A57128B21@MBX01.hosting.local>
+Received: from comal.ext.ti.com ([198.47.26.152]:34812 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751757AbbGGO2S (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 7 Jul 2015 10:28:18 -0400
+In-Reply-To: <1436279277-3386-1-git-send-email-rogerq@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Emil Fors <emil@koenigsegg.se>, linux-can <linux-can@vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, tony@atomide.com
+Cc: jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, Roger Quadros <rogerq@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SLlpH6Dhp7Goc8hNEQFTFPsmjF9i3xNw0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: "J.D. Schroeder" <jay.schroeder@garmin.com>
 
-Hey Emil,
+The previous change 3973c526ae9c (net: can: c_can: Disable pins when CAN interface
+is down) causes a slight glitch on the pinctrl settings when used. Since
+commit ab78029 (drivers/pinctrl: grab default handles from device core),
+the device core will automatically set the default pins. This causes
+the pins to be momentarily set to the default and then to the sleep
+state in register_c_can_dev(). By adding an optional "enable" state,
+boards can set the default pin state to be disabled and avoid the
+glitch when the switch from default to sleep first occurs. If the
+"enable" state is not available c_can_pinctrl_select_state() falls
+back to using the "default" pinctrl state.
 
-please use the linux-can mailinglst for CAN related questions.
+[Roger Q] - Forward port to v4.2
 
-On 07/07/2015 11:59 AM, Emil Fors wrote:
-> my name is Emil and I am trying to configure a Toradex Apalis iMX6q
-> module. I need to set up the flexcan mailboxes in order to filter out
-> messages I'm not interested in. I have CAN communication working using
-> the libsocketcan library written by one Luotao Fu, who seems to be a
-> colleague of yours? However, that library doesn't seem to provide me
-> with control over mailbox configuration. Could you please advise as to
-> how I'd best proceed? I noted that the library is (C) 2009, perhaps it
-> is outdated? Do you know of a more recent and perhaps better solution?
+Signed-off-by: J.D. Schroeder <jay.schroeder@garmin.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ drivers/net/can/c_can/c_can.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Hardware filtering is not supported on an driver so far. But we have an
-idea how to implement this.
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 041525d..66e98e7 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -605,7 +605,18 @@ static int c_can_start(struct net_device *dev)
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* activate pins */
+-	pinctrl_pm_select_default_state(dev->dev.parent);
++#ifdef CONFIG_PINCTRL
++	if (priv->device->pins) {
++		struct pinctrl_state *s;
++
++		/* Attempt to use "active" if available else use "default" */
++		s = pinctrl_lookup_state(priv->device->pins->p, "active");
++		if (!IS_ERR(s))
++			pinctrl_select_state(priv->device->pins->p, s);
++		else
++			pinctrl_pm_select_default_state(dev->dev.parent);
++	}
++#endif
+ 	return 0;
+ }
+ 
+-- 
+2.1.4
 
-However you can make use of the software filtering via CAN_RAW_FILTER.
-See
-http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L43=
-3
-for more information.
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---SLlpH6Dhp7Goc8hNEQFTFPsmjF9i3xNw0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVm6QkAAoJEP5prqPJtc/HJyQIALJvtCKO/HZRlzkEWD9zM+zE
-TxNwMP2B7MjT7BmK/LWbvZxYBgMJ+agyUVzPaZuQlUi4oz9ZNzB5mKCNM1VPotJb
-zyHTR9WmSklcjqfa83Csb9dZmuYEDNk4kCSkd0BZ9gfUL6Nt7PQdOq75KHsYN7P2
-WHNRcI8SFq0gjiST8ubV9rPxgYEyRzFmXH3FKz4tpCvl2ekECXLK3OWzRYoXIAHD
-Iv45HKbLJMVKrynFVAtf9E4cV5209pY/sXUr+OpCy2mxlYPvpOydQc+qfcUyeuml
-hHnRaGzvGa51vmgGRZS9indP46kBgcOhEaSmue7pAKXYb9Z4anXa9f4DL2Rvrf0=
-=L4O2
------END PGP SIGNATURE-----
-
---SLlpH6Dhp7Goc8hNEQFTFPsmjF9i3xNw0--
