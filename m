@@ -1,54 +1,45 @@
 From: Holger Schurig <holgerschurig@gmail.com>
 Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
  code by David Jander)
-Date: Thu, 9 Jul 2015 09:59:26 +0200
-Message-ID: <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
+Date: Thu, 9 Jul 2015 10:06:01 +0200
+Message-ID: <CAOpc7mHJY58mYWum5KLWDzfYyABWAGf8pieZJRSzYhUm85uwUA@mail.gmail.com>
 References: <559D35CA.2050402@uweschneider.de>
-	<2576741.YrBIndJIHB@ws-stein>
-	<CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>
-	<3634451.aFQ5B85Yzk@ws-stein>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f174.google.com ([209.85.212.174]:34763 "EHLO
+Received: from mail-wi0-f174.google.com ([209.85.212.174]:36805 "EHLO
 	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752020AbbGIH72 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 03:59:28 -0400
-Received: by wifm2 with SMTP id m2so10483124wif.1
-        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 00:59:26 -0700 (PDT)
-In-Reply-To: <3634451.aFQ5B85Yzk@ws-stein>
+	with ESMTP id S1750891AbbGIIGD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 04:06:03 -0400
+Received: by widjy10 with SMTP id jy10so237462866wid.1
+        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 01:06:02 -0700 (PDT)
+In-Reply-To: <559D35CA.2050402@uweschneider.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Torsten Lang <torsten.lang@uweschneider.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Torsten Lang <torsten.lang@uweschneider.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-> The early parts (ColdFire) have 16 buffers, didn't have "Message Queueing" or the FIFO, so aren't supported by Linux at all.
+2015-07-08 16:38 GMT+02:00 Torsten Lang <torsten.lang@uweschneider.de>:
+> P. S. As mentioned I have some trouble getting the kernel to work on the hardware I use.
+> The main remaining problem is that my application no longer receives the CAN messages
+> correctly with kernel 4.1 - neither with the original FlexCAN driver nor with mine. As long
+> as y Qt application uses the CAN bus alone it only receives single messages about
+> every 30..60s (actually the test messages are transmitted every 250ms). As soon
+> as I start a candump in parallel my application also receives the test messages. I
+> currently have no explanation for this behaviour.
 
-Fine, so we can ignore them :-)
+I'm on stable Linux 3.18.17 and do not observe this behavior.
 
-> Is it "normal" to have interrupts locked out for more than 300us (six 50us CAN messages at 1MHz)?
+4.1.x migth be whacky, because I once had the serial port hang in some
+DMA related code. I "fixed" this with a
 
-Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
-load, and CAN messages with 3 bytes of data. My guess this was mostly
-due to the sucky SDHCI (eMMC) driver code in Linux. I fixed that, but
-occassionally ftrace still shows large times with irqsoff, I need to
-dig into them as well. Still /me thinks that an RxFIFO of just 6 CAN
-messages isn't swell for an OS that is known to not guarantee response
-times, like Linux. Especially not for CAN, people use it after all
-because of it's reliability guarantees.
++#if 0
++       if (is_imx6q_uart(sport) && !uart_console(port) &&
++           !sport->dma_is_inited)
++               imx_uart_dma_init(sport);
++#endif
 
-BTW, with the current in-tree FlexCAN drivers we have two things were
-IRQ or scheduling latency can cause lost frames:
-
-* the time from the hardware IRQ until flexcan_isr() is actually
-called, e.g. because for spin_lock_irqsave
-* the time when the ISR does a napi_schedule() until NAPI get's
-scheduled and calls flexcan_poll()
-
-For the first latency, only FTRACE and fixing the other kernel parts
-helps. Unfortunately, some kernel parts are so complex that it is
-over-the-head of many people (ok, I confess: over my head).
-
-I killed the second latency with my kfifo patch that I posted the
-other day. Getting rid of NAPI completely would also be a method, I'm
-not sure NAPI wins us anything, compared to Ethernet CAN is slow.
+... but that was certainly a hack. My $CUSTOMER promply reported my
+other things like a stopping touchscreen, GUI app not accepting input
+anymore. I was flooded with other work, I want back to savety of
+3.18.x :-)
