@@ -1,80 +1,78 @@
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: Re: [PATCH v2 1/2] net: can: c_can: Fix default pinmux glitch at
- init
-Date: Thu, 9 Jul 2015 14:19:49 +0300
-Message-ID: <559E58D5.6090007@ti.com>
-References: <1436279277-3386-1-git-send-email-rogerq@ti.com> <1436279277-3386-2-git-send-email-rogerq@ti.com> <559D0BA4.9000000@ti.com> <559E53CD.5080302@ti.com> <559E5412.5090604@pengutronix.de>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Fri, 10 Jul 2015 01:36:41 +1000
+Message-ID: <559E9509.1080406@optusnet.com.au>
+References: <559D35CA.2050402@uweschneider.de> <559E25FD.6030904@optusnet.com.au> <559E437E.308@uweschneider.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:59580 "EHLO bear.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751775AbbGILUI (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Jul 2015 07:20:08 -0400
-In-Reply-To: <559E5412.5090604@pengutronix.de>
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:36737 "EHLO
+	mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751818AbbGIPgs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 11:36:48 -0400
+In-Reply-To: <559E437E.308@uweschneider.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Roger Quadros <rogerq@ti.com>, wg@grandegger.com, tony@atomide.com
-Cc: jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Torsten Lang <torsten.lang@uweschneider.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 07/09/2015 01:59 PM, Marc Kleine-Budde wrote:
-> On 07/09/2015 12:58 PM, Grygorii Strashko wrote:
->> On 07/08/2015 02:38 PM, Roger Quadros wrote:
->>> From: "J.D. Schroeder" <jay.schroeder@garmin.com>
->>>
->>> The previous change 3973c526ae9c (net: can: c_can: Disable pins when CAN interface
->>> is down) causes a slight glitch on the pinctrl settings when used. Since
->>> commit ab78029 (drivers/pinctrl: grab default handles from device core),
->>> the device core will automatically set the default pins. This causes
->>> the pins to be momentarily set to the default and then to the sleep
->>> state in register_c_can_dev(). By adding an optional "enable" state,
->>> boards can set the default pin state to be disabled and avoid the
->>> glitch when the switch from default to sleep first occurs. If the
->>> "enable" state is not available c_can_pinctrl_select_state() falls
->>> back to using the "default" pinctrl state.
->>>
->>> [Roger Q] - Forward port to v4.2 and use pinctrl_get_select().
->>>
->>> Signed-off-by: J.D. Schroeder <jay.schroeder@garmin.com>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> ---
->>>    drivers/net/can/c_can/c_can.c | 10 ++++++++--
->>>    1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
->>> index 041525d..5d214d1 100644
->>> --- a/drivers/net/can/c_can/c_can.c
->>> +++ b/drivers/net/can/c_can/c_can.c
->>> @@ -592,6 +592,7 @@ static int c_can_start(struct net_device *dev)
->>>    {
->>>    	struct c_can_priv *priv = netdev_priv(dev);
->>>    	int err;
->>> +	struct pinctrl *p;
->>>
->>>    	/* basic c_can configuration */
->>>    	err = c_can_chip_config(dev);
->>> @@ -604,8 +605,13 @@ static int c_can_start(struct net_device *dev)
->>>
->>>    	priv->can.state = CAN_STATE_ERROR_ACTIVE;
->>>
->>> -	/* activate pins */
->>> -	pinctrl_pm_select_default_state(dev->dev.parent);
->>> +	/* Attempt to use "active" if available else use "default" */
->>> +	p = pinctrl_get_select(priv->device, "active");
->>> +	if (!IS_ERR(p))
->>> +		pinctrl_put(p);
->>> +	else
->>> +		pinctrl_pm_select_default_state(priv->device);
->>> +
->>
->> Thanks. This part looks good to me now.
+On 9/07/2015 7:48 PM, Torsten Lang wrote:
+> Am 09.07.2015 um 09:42 schrieb Tom Evans:
+>> On 09/07/15 00:38, Torsten Lang wrote:
+>>> It is based on the rework done by David Jander which disables
+>>> the only six messages deep hardware FIFO of the FlexCAN core
+>>> and instead uses all available mailboxes for reception.
+
+That's such a big change to the driver (and given Holger's comments) I 
+would suggest submitting it as a separate driver - "flexcan2.c", 
+"flexcan-ng.c" or some such. Leave the old one alone, or fix it with 
+Holger's unload-during-interrupts version or equivalent.
+
+>> I'd be interested in reasons why the above isn't a
+ >> good solution to this problem.
 >
-> Is this an Acked-by?
+> I did tests with reading out the mailboxes directly in the interrupt
+ > handler but still had problems.
 
-Not sure I can ack overall patch - is up to can driver maintainer
-for this part Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Time to run FTRACE and see what's broken or set wrong. Holger seems to 
+have been hit with a broken SD driver. I found our kernel supplier had 
+left all the semaphore/mutex/slub debugging on and that was making the 
+kernel about 5 times slower than it should have been. Easily fixed once 
+found.
 
--- 
-regards,
--grygorii
+ > From what I found during my search in the net the interrupt
+ > handling implementation in Linux for the Freescale range of
+ > SoCs seems to suck because it does not configure any interrupt
+ > priorization and the interrupt handler "prefers" to handle
+ > interrupts just by the bit order in the interrupt controller
+ > could lead to very high latencies in case of FlexCAN interrupts.
+
+Yes, I fixed that too. A simple mod that created a TZIC version of 
+"avic_irq_set_priority()", and calls to that from the platform setup. 
+But I really miss having SIX different levels (that can happily 
+interrupt each other) in M68k/ColdFire.
+
+> On which i.MX did you test your change with success?
+
+i.MX53.
+
+Holger has said:
+ > The thing about the prioritization is true .. but it's not the
+ > reason. Because even when you give the IRQs for the FlexCAN
+ > the highest priority (I have a patch for this), then this
+ > will only trigger if two interrupts arrive at the same
+ > time. This is almost never.
+
+I don't think so. It only requires one interrupt to arrive when the 
+previous one is still running. If the previous one is the FEC (Ethernet) 
+AND I'm flood-pinging the thing hard AND the 3.4 FEC driver doesn't use 
+NAPI then the CPU is spending a huge amount of time in the FEC ISR, 
+followed by another run in the FEC ISR, and again; not letting CAN run. 
+Elevating CAN't priority does help in this case.
+
+When you're playing whack-a-mole you have to whack all the moles...
+
+Tom
+
