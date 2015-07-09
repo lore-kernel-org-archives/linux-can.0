@@ -1,62 +1,79 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Fighting out-of-order reception with RPS?
-Date: Thu, 09 Jul 2015 07:55:43 +0200
-Message-ID: <559E0CDF.7080309@hartkopp.net>
-References: <559D628C.5020100@hartkopp.net> <CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>
+From: Holger Schurig <holgerschurig@gmail.com>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Thu, 9 Jul 2015 08:33:08 +0200
+Message-ID: <CAOpc7mGxD7PF97jA3qfcty5P14=JHd4KS7Ks0HUPF8foTavMLQ@mail.gmail.com>
+References: <559D35CA.2050402@uweschneider.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:33144 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751855AbbGIFzw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 01:55:52 -0400
-In-Reply-To: <CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>
+Received: from mail-wg0-f46.google.com ([74.125.82.46]:36441 "EHLO
+	mail-wg0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750721AbbGIGdM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 02:33:12 -0400
+Received: by wgxm20 with SMTP id m20so30901896wgx.3
+        for <linux-can@vger.kernel.org>; Wed, 08 Jul 2015 23:33:08 -0700 (PDT)
+In-Reply-To: <559D35CA.2050402@uweschneider.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tom Herbert <tom@herbertland.com>
-Cc: Linux Kernel Network Developers <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, sunil.kovvuri@gmail.com, jonathon.reinhart@gmail.com
+To: Torsten Lang <torsten.lang@uweschneider.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+
+Wow, I'm very interested into your work because I too had RxFIFO overruns.
+
+So, have here some first "review" remarks:
+
+* But for a review it's much better to send patches in-line (i.E. not
+as an attachment)
+* And because your "Signed-off:" is missing, we don't know what the
+release status is. As is, the patch cannot added ever to the kernel!
+* try to fix the things that scripts/checkpatch.pl
+patches/flexcan_kernel_4.1-rc8.patch say, e.g. it found
+** CHECK: Alignment should match open parenthesis
+** CHECK: Blank lines aren't necessary before a close brace '}'
+** CHECK: if this code is redundant consider removing it
+** CHECK: Logical continuations should be on the previous line
+** CHECK: spaces preferred around that '&' (ctx:ExO)
+** CHECK: spaces preferred around that '+' (ctx:VxV)
+** WARNING: line over 80 characters
+** WARNING: Missing a blank line after declarations
+** WARNING: networking block comments don't use an empty /* line, use
+/* Comment...
+** WARNING: please, no space before tabs
+** WARNING: please, no spaces at the start of a line
+** ERROR: code indent should use tabs where possible
+** ERROR: Missing Signed-off-by: line(s)
+** ERROR: space prohibited after that open parenthesis '('
+** ERROR: space prohibited before that close parenthesis ')'
+** ERROR: spaces required around that '&&' (ctx:ExO)
+** ERROR: spaces required around that '||' (ctx:ExV)
+** ERROR: spaces required around that '&&' (ctx:ExV)
+** ERROR: that open brace { should be on the previous line
+** ERROR: trailing whitespace
+* All of this is written in Documentation/SubmittingPatches and
+Documentation/CodingStyle
+
+Other remarks:
+* after your patch, FLEXCAN_CTRL2_EACEN is defined twice.
+* You change crl2 to ctrl2, but in Linux git this is already done
+(commit 6f75fce1ea81b1d91f6f1a8e3dd00b0ce8e83982). So your patch
+doesn't apply to Linux git. I have such problem also from time to
+time, because I tend to run stable Linux kernel (and not linux-git) on
+my customers hardware. But then I look at what happened to this driver
+in linux-git and backport the patches into my local
+quilt-stack-of-patches. This essentially brings this one driver to
+linux-git level, and any patch I do would also apply to linux-git.
+* I like your descriptive comments!  I just don't know why you
+describe the FIFO-Modes after cantxfg and before _reserved4?
+* you add a "struct net_device *dev". I doubt that this is really
+needed, the old flexcan could do without ...
+* please remove debugging code, e.g. "#if 0"  sections. I personally
+do this by having them in a second quilt patch, e.g.
+"flexcan-debug.patch". So I can roll them in fast when I need them,
+but keep the to-be-submitted patch clean.
 
 
-On 08.07.2015 23:17, Tom Herbert wrote:
-> On Wed, Jul 8, 2015 at 10:49 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-(..)
->> When receiving CAN frames from a specific CAN network interface (e.g. can0)
->> the frames are sporadically out-of-order on SMP systems like my Core i7 laptop
->> with 4 CPUs. This out-of-order reception kills reliable communication e.g. for
->> CAN transport protocols.
->>
->> First approach was to set the smp_affinity for the USB adapter on irq 28 with:
-(..)
->> Next idea was to use RPS after reading Documentation/networking/scaling.txt
-(..)
->>
->> My two questions:
->>
->> 1. Is there any better solution to meet the described requirements?
->
-> I would suggest that you look into how there are OOO packets in the
-> first place. Even if the interrupts is allowed to happen on different
-> CPUs by sm_affinity, NAPI execution should be serialized for the
-> device so that OOO shouldn't happen. The result of your RPS setting
-> should be all packets go to the same queue, this shouldn't normally
-> affect the ordering. Looking at drivers/net/can there are apparently
-> several variants of the driver. Do you know which one you're running?
 
-I have two CAN hardware interfaces I can test together with a SMP system:
-
-1. PCAN-USB using the driver at drivers/net/can/usb/peak_usb/
-2. PCAN Compact PCIe using drivers/net/can/sja1000/(peak_pci.c / sja1000.c)
-
-Both drivers do not use NAPI. The just follow the way
-
-interrupt -> alloc_skb() -> fill skb -> netif_rx(skb)
-
-I'm usually testing with the USB adapters as the PCIe setup is not very handy.
-
-Best regards,
-Oliver
-
->
->> 2. If not: How can enable this RPS solution by default for CAN interfaces?
-
+BTW, you can remove a good amount of latency in an i.MX6 kernel if you
+remove CONFIG_MMC_CLKGATE. That introduces a latency of 1 ms every
+second ... urgh.
