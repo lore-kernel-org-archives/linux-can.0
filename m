@@ -1,49 +1,79 @@
-From: Holger Schurig <holgerschurig@gmail.com>
-Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
- code by David Jander)
-Date: Thu, 9 Jul 2015 12:05:45 +0200
-Message-ID: <CAOpc7mEASyHXnCWGCAgTcagb_CdgT3ksrtv-cmWpiVLL2E336A@mail.gmail.com>
-References: <559D35CA.2050402@uweschneider.de>
-	<559E25FD.6030904@optusnet.com.au>
-	<559E437E.308@uweschneider.de>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: Re: [PATCH v2 1/2] net: can: c_can: Fix default pinmux glitch at
+ init
+Date: Thu, 9 Jul 2015 13:58:21 +0300
+Message-ID: <559E53CD.5080302@ti.com>
+References: <1436279277-3386-1-git-send-email-rogerq@ti.com> <1436279277-3386-2-git-send-email-rogerq@ti.com> <559D0BA4.9000000@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f169.google.com ([209.85.212.169]:33004 "EHLO
-	mail-wi0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751912AbbGIKFr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 06:05:47 -0400
-Received: by wiwl6 with SMTP id l6so13731905wiw.0
-        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 03:05:46 -0700 (PDT)
-In-Reply-To: <559E437E.308@uweschneider.de>
+Received: from comal.ext.ti.com ([198.47.26.152]:49402 "EHLO comal.ext.ti.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750728AbbGIK6o (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 9 Jul 2015 06:58:44 -0400
+In-Reply-To: <559D0BA4.9000000@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Torsten Lang <torsten.lang@uweschneider.de>
-Cc: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, mkl@pengutronix.de, tony@atomide.com
+Cc: jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
 
-2015-07-09 11:48 GMT+02:00 Torsten Lang <torsten.lang@uweschneider.de>:
+On 07/08/2015 02:38 PM, Roger Quadros wrote:
+> From: "J.D. Schroeder" <jay.schroeder@garmin.com>
+>
+> The previous change 3973c526ae9c (net: can: c_can: Disable pins when CAN interface
+> is down) causes a slight glitch on the pinctrl settings when used. Since
+> commit ab78029 (drivers/pinctrl: grab default handles from device core),
+> the device core will automatically set the default pins. This causes
+> the pins to be momentarily set to the default and then to the sleep
+> state in register_c_can_dev(). By adding an optional "enable" state,
+> boards can set the default pin state to be disabled and avoid the
+> glitch when the switch from default to sleep first occurs. If the
+> "enable" state is not available c_can_pinctrl_select_state() falls
+> back to using the "default" pinctrl state.
+>
+> [Roger Q] - Forward port to v4.2 and use pinctrl_get_select().
+>
+> Signed-off-by: J.D. Schroeder <jay.schroeder@garmin.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>   drivers/net/can/c_can/c_can.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+> index 041525d..5d214d1 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -592,6 +592,7 @@ static int c_can_start(struct net_device *dev)
+>   {
+>   	struct c_can_priv *priv = netdev_priv(dev);
+>   	int err;
+> +	struct pinctrl *p;
+>
+>   	/* basic c_can configuration */
+>   	err = c_can_chip_config(dev);
+> @@ -604,8 +605,13 @@ static int c_can_start(struct net_device *dev)
+>
+>   	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>
+> -	/* activate pins */
+> -	pinctrl_pm_select_default_state(dev->dev.parent);
+> +	/* Attempt to use "active" if available else use "default" */
+> +	p = pinctrl_get_select(priv->device, "active");
+> +	if (!IS_ERR(p))
+> +		pinctrl_put(p);
+> +	else
+> +		pinctrl_pm_select_default_state(priv->device);
+> +
 
-> From what I found during my search in the net the interrupt handling
-> implementation in Linux for the Freescale range of SoCs seems to
-> suck because it does not configure any interrupt priorization and
-> the interrupt handler "prefers" to handle interrupts just by the bit
-> order in the interrupt controller could lead to very high latencies
-> in case of FlexCAN interrupts.
+Thanks. This part looks good to me now.
 
-The thing about the prioritization is true .. but it's not the reason.
-Because even when you give the IRQs for the FlexCAN the highest
-priority (I have a patch for this), then this will only trigger if two
-interrupts arrive at the same time. This is almost never.
-
-The main reason is that on ARM, IRQs are not preemptible. When an ISR
-is running, no other ISR (higher priority or not) can interrupt the
-first one. On the other side, this pretty much guarantees that the
-stack won't overflow :-)
-
-I wonder how SJA CAN drivers do it, their RxFIFO equivalent is much smaller.
+>   	return 0;
+>   }
+>
+>
 
 
-PS: Patch for IRQ prioritization in the GIC:
-https://drive.google.com/file/d/0B-OEhM3f0eCtZjhueTdKdXYzMjg/view?usp=sharing
- Deliberately no Signed-off-there, because a) it doesn't help and b)
-it still contains debug output :-)
+-- 
+regards,
+-grygorii
