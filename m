@@ -1,46 +1,54 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on code by David Jander)
-Date: Thu, 09 Jul 2015 09:48:38 +0200
-Message-ID: <3634451.aFQ5B85Yzk@ws-stein>
-References: <559D35CA.2050402@uweschneider.de> <2576741.YrBIndJIHB@ws-stein> <CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>
+From: Holger Schurig <holgerschurig@gmail.com>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Thu, 9 Jul 2015 09:59:26 +0200
+Message-ID: <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
+References: <559D35CA.2050402@uweschneider.de>
+	<2576741.YrBIndJIHB@ws-stein>
+	<CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>
+	<3634451.aFQ5B85Yzk@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:59426 "EHLO
-	webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750816AbbGIHsr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 03:48:47 -0400
-In-Reply-To: <CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>
+Received: from mail-wi0-f174.google.com ([209.85.212.174]:34763 "EHLO
+	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752020AbbGIH72 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 03:59:28 -0400
+Received: by wifm2 with SMTP id m2so10483124wif.1
+        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 00:59:26 -0700 (PDT)
+In-Reply-To: <3634451.aFQ5B85Yzk@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Holger Schurig <holgerschurig@gmail.com>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
 Cc: Torsten Lang <torsten.lang@uweschneider.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+> The early parts (ColdFire) have 16 buffers, didn't have "Message Queueing" or the FIFO, so aren't supported by Linux at all.
 
-On Thursday 09 July 2015 09:27:57, Holger Schurig wrote:
-> 2015-07-09 8:58 GMT+02:00 Alexander Stein
-> <alexander.stein@systec-electronic.com>:
-> > This needs to be handled.
-> 
-> Do you have any suggestion how to handle this?
+Fine, so we can ignore them :-)
 
-Well, up to now I haven't seen any CAN frame loss on several i.MX35 boards while using FIFO mode. So I suggest to extend the compatible to keep the FIFO mode on i.MX3 hardware.
+> Is it "normal" to have interrupts locked out for more than 300us (six 50us CAN messages at 1MHz)?
 
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
+Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
+load, and CAN messages with 3 bytes of data. My guess this was mostly
+due to the sucky SDHCI (eMMC) driver code in Linux. I fixed that, but
+occassionally ftrace still shows large times with irqsoff, I need to
+dig into them as well. Still /me thinks that an RxFIFO of just 6 CAN
+messages isn't swell for an OS that is known to not guarantee response
+times, like Linux. Especially not for CAN, people use it after all
+because of it's reliability guarantees.
 
-SYS TEC electronic GmbH
-Am Windrad 2
-08468 Heinsdorfergrund
-Tel.: 03765 38600-1156
-Fax: 03765 38600-4100
-Email: alexander.stein@systec-electronic.com
-Website: www.systec-electronic.com
- 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Chemnitz, HRB 28082
+BTW, with the current in-tree FlexCAN drivers we have two things were
+IRQ or scheduling latency can cause lost frames:
 
+* the time from the hardware IRQ until flexcan_isr() is actually
+called, e.g. because for spin_lock_irqsave
+* the time when the ISR does a napi_schedule() until NAPI get's
+scheduled and calls flexcan_poll()
+
+For the first latency, only FTRACE and fixing the other kernel parts
+helps. Unfortunately, some kernel parts are so complex that it is
+over-the-head of many people (ok, I confess: over my head).
+
+I killed the second latency with my kfifo patch that I posted the
+other day. Getting rid of NAPI completely would also be a method, I'm
+not sure NAPI wins us anything, compared to Ethernet CAN is slow.
