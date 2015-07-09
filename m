@@ -1,22 +1,32 @@
 From: Holger Schurig <holgerschurig@gmail.com>
-Subject: Re: Fighting out-of-order reception with RPS?
-Date: Thu, 9 Jul 2015 08:34:23 +0200
-Message-ID: <CAOpc7mEEOHr=QWazthRuWuoOvr_C_4O1hO8bP-N36tLT+RBifw@mail.gmail.com>
-References: <559D628C.5020100@hartkopp.net>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Thu, 9 Jul 2015 08:38:42 +0200
+Message-ID: <CAOpc7mGVRLW=ktoBhttgCAZnr7uYiSkS4H4Uk5b9kNVcB5-BOA@mail.gmail.com>
+References: <559D35CA.2050402@uweschneider.de>
+	<CAOpc7mGxD7PF97jA3qfcty5P14=JHd4KS7Ks0HUPF8foTavMLQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f41.google.com ([74.125.82.41]:34071 "EHLO
-	mail-wg0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751081AbbGIGeZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 02:34:25 -0400
-In-Reply-To: <559D628C.5020100@hartkopp.net>
+Received: from mail-wg0-f44.google.com ([74.125.82.44]:36376 "EHLO
+	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751125AbbGIGin (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 02:38:43 -0400
+Received: by wgxm20 with SMTP id m20so31004811wgx.3
+        for <linux-can@vger.kernel.org>; Wed, 08 Jul 2015 23:38:42 -0700 (PDT)
+In-Reply-To: <CAOpc7mGxD7PF97jA3qfcty5P14=JHd4KS7Ks0HUPF8foTavMLQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "list@hauke-m.de:NETWORKING DRIVERS" <netdev@vger.kernel.org>, therbert.google.com@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, sunil.kovvuri@gmail.com, jonathon.reinhart@gmail.com
+To: Torsten Lang <torsten.lang@uweschneider.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-> and has to be done by hand depending on where the CAN interfaces
-> are attached to the system.
+One more idea, and this is gonna make more work: is it possible to
+split the patch into two?  The first one would receive via the
+mailboxes.
 
-No ...  udev rules rock!   :-)
+And the second patch adds the sorting on this.
+
+My vague idea is that the sorting can be done differently, e.g. here
+in the mailing people talk currently about timestamping skbd, or about
+RPS. Maybe it's possible to use an existing solution/framework and not
+invent an own solution here.
