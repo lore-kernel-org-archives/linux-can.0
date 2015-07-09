@@ -1,50 +1,49 @@
-From: Torsten Lang <torsten.lang@uweschneider.de>
+From: Holger Schurig <holgerschurig@gmail.com>
 Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
  code by David Jander)
-Date: Thu, 09 Jul 2015 12:03:44 +0200
-Message-ID: <559E4700.2080109@uweschneider.de>
-References: <559D35CA.2050402@uweschneider.de>	<2576741.YrBIndJIHB@ws-stein>	<CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>	<3634451.aFQ5B85Yzk@ws-stein> <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
+Date: Thu, 9 Jul 2015 12:05:45 +0200
+Message-ID: <CAOpc7mEASyHXnCWGCAgTcagb_CdgT3ksrtv-cmWpiVLL2E336A@mail.gmail.com>
+References: <559D35CA.2050402@uweschneider.de>
+	<559E25FD.6030904@optusnet.com.au>
+	<559E437E.308@uweschneider.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from groat.dascon.de ([195.225.198.185]:52892 "EHLO groat.dascon.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750893AbbGIKEF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Jul 2015 06:04:05 -0400
-In-Reply-To: <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
+Received: from mail-wi0-f169.google.com ([209.85.212.169]:33004 "EHLO
+	mail-wi0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751912AbbGIKFr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 06:05:47 -0400
+Received: by wiwl6 with SMTP id l6so13731905wiw.0
+        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 03:05:46 -0700 (PDT)
+In-Reply-To: <559E437E.308@uweschneider.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Holger Schurig <holgerschurig@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Torsten Lang <torsten.lang@uweschneider.de>
+Cc: Tom Evans <tom_usenet@optusnet.com.au>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Am 09.07.2015 um 09:59 schrieb Holger Schurig:
->> The early parts (ColdFire) have 16 buffers, didn't have "Message Queueing" or the FIFO, so aren't supported by Linux at all.
-> Fine, so we can ignore them :-)
->
->> Is it "normal" to have interrupts locked out for more than 300us (six 50us CAN messages at 1MHz)?
-> Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
-> load, and CAN messages with 3 bytes of data. My guess this was mostly
-> due to the sucky SDHCI (eMMC) driver code in Linux. I fixed that, but
-> occassionally ftrace still shows large times with irqsoff, I need to
-> dig into them as well. Still /me thinks that an RxFIFO of just 6 CAN
-> messages isn't swell for an OS that is known to not guarantee response
-> times, like Linux. Especially not for CAN, people use it after all
-> because of it's reliability guarantees.
-Same for our customer's project. I first noticed when data was missing in the logs our application writes.
-> BTW, with the current in-tree FlexCAN drivers we have two things were
-> IRQ or scheduling latency can cause lost frames:
->
-> * the time from the hardware IRQ until flexcan_isr() is actually
-> called, e.g. because for spin_lock_irqsave
-> * the time when the ISR does a napi_schedule() until NAPI get's
-> scheduled and calls flexcan_poll()
-I'm not sure yet which latencies allocating and feeding the SKBs introduces, but I think NAPI could help when splitting up the mailbox handling where in the interrupt just the mailboxes are pushed into an internal queue of the driver and then fed into the network stack in the NAPI.
-> For the first latency, only FTRACE and fixing the other kernel parts
-> helps. Unfortunately, some kernel parts are so complex that it is
-> over-the-head of many people (ok, I confess: over my head).
-Same for me. I'm not the one to fix the basics of the TZIC code.
-> I killed the second latency with my kfifo patch that I posted the
-> other day. Getting rid of NAPI completely would also be a method, I'm
-> not sure NAPI wins us anything, compared to Ethernet CAN is slow.
+2015-07-09 11:48 GMT+02:00 Torsten Lang <torsten.lang@uweschneider.de>:
 
+> From what I found during my search in the net the interrupt handling
+> implementation in Linux for the Freescale range of SoCs seems to
+> suck because it does not configure any interrupt priorization and
+> the interrupt handler "prefers" to handle interrupts just by the bit
+> order in the interrupt controller could lead to very high latencies
+> in case of FlexCAN interrupts.
+
+The thing about the prioritization is true .. but it's not the reason.
+Because even when you give the IRQs for the FlexCAN the highest
+priority (I have a patch for this), then this will only trigger if two
+interrupts arrive at the same time. This is almost never.
+
+The main reason is that on ARM, IRQs are not preemptible. When an ISR
+is running, no other ISR (higher priority or not) can interrupt the
+first one. On the other side, this pretty much guarantees that the
+stack won't overflow :-)
+
+I wonder how SJA CAN drivers do it, their RxFIFO equivalent is much smaller.
+
+
+PS: Patch for IRQ prioritization in the GIC:
+https://drive.google.com/file/d/0B-OEhM3f0eCtZjhueTdKdXYzMjg/view?usp=sharing
+ Deliberately no Signed-off-there, because a) it doesn't help and b)
+it still contains debug output :-)
