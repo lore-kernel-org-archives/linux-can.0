@@ -1,45 +1,67 @@
-From: Holger Schurig <holgerschurig@gmail.com>
-Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
- code by David Jander)
-Date: Thu, 9 Jul 2015 10:06:01 +0200
-Message-ID: <CAOpc7mHJY58mYWum5KLWDzfYyABWAGf8pieZJRSzYhUm85uwUA@mail.gmail.com>
-References: <559D35CA.2050402@uweschneider.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: SV: Setting up flexcan mailboxes in Linux
+Date: Thu, 9 Jul 2015 10:38:04 +0200
+Message-ID: <559E32EC.5060006@pengutronix.de>
+References: <81C1BF6140F61847A49020308B539A57128B21@MBX01.hosting.local>
+ <559BA424.5010106@pengutronix.de>
+ <81C1BF6140F61847A49020308B539A57128EFA@MBX01.hosting.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="8v5EJULMcmm2txhOoOmmLhAC7tjcGdV8J"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wi0-f174.google.com ([209.85.212.174]:36805 "EHLO
-	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750891AbbGIIGD (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 04:06:03 -0400
-Received: by widjy10 with SMTP id jy10so237462866wid.1
-        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2015 01:06:02 -0700 (PDT)
-In-Reply-To: <559D35CA.2050402@uweschneider.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:58237 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750985AbbGIIiK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jul 2015 04:38:10 -0400
+In-Reply-To: <81C1BF6140F61847A49020308B539A57128EFA@MBX01.hosting.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Torsten Lang <torsten.lang@uweschneider.de>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Emil Fors <emil@koenigsegg.se>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-2015-07-08 16:38 GMT+02:00 Torsten Lang <torsten.lang@uweschneider.de>:
-> P. S. As mentioned I have some trouble getting the kernel to work on the hardware I use.
-> The main remaining problem is that my application no longer receives the CAN messages
-> correctly with kernel 4.1 - neither with the original FlexCAN driver nor with mine. As long
-> as y Qt application uses the CAN bus alone it only receives single messages about
-> every 30..60s (actually the test messages are transmitted every 250ms). As soon
-> as I start a candump in parallel my application also receives the test messages. I
-> currently have no explanation for this behaviour.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--8v5EJULMcmm2txhOoOmmLhAC7tjcGdV8J
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I'm on stable Linux 3.18.17 and do not observe this behavior.
+Hey Emil,
 
-4.1.x migth be whacky, because I once had the serial port hang in some
-DMA related code. I "fixed" this with a
+please just use the mailinglist (CC'ed).
 
-+#if 0
-+       if (is_imx6q_uart(sport) && !uart_console(port) &&
-+           !sport->dma_is_inited)
-+               imx_uart_dma_init(sport);
-+#endif
+On 07/09/2015 10:33 AM, Emil Fors wrote:
+> thank you. I am trying out the software filtering now. It doesn't
+> work (lets everything throuh regardless of what filters I set), but I
+> won't bother you with that. Going to check out that mailing list you
+> mentioned, see if anyone knows what the problem might be.
 
-... but that was certainly a hack. My $CUSTOMER promply reported my
-other things like a stopping touchscreen, GUI app not accepting input
-anymore. I was flooded with other work, I want back to savety of
-3.18.x :-)
+Please share your filter setup code. The software filters are working in
+general. Older version have the limitation that you might get a CAN
+frame twice, if you've set up multiple filters that match.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--8v5EJULMcmm2txhOoOmmLhAC7tjcGdV8J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJVnjLsAAoJEP5prqPJtc/H8egH/ArCSWslmyFXKNQhZKF6xzl1
+pTB/BbO9HTrZrRK/lYMyS/d3bjO3nP6zKKv6RNaThJISycUGRycxsDo6eIdiBMGq
+BievbGjO/Adek/kKlxhsjJUBxhKkRSHS4R85tt/iJBQkf+woJSC1TnrHLMcLgzF6
+2cLql8V7sVzDUfcVdA7MnAjWxck29JrCdGjx3sXT2chNOMrOT5vhe7Ee8fYlwBjh
+h8+ABVD6k8RYwRoZfMR+WmFfXENJgTnKgobP5vt9/sBFx4YMF/RRGFBWjf0T4bpY
+eoC4A+O4iTB/NqU/nofuUpv4Argg8+ooFehbyIVYeHCE2x1Ko9+qvYKRdyefjF0=
+=csHL
+-----END PGP SIGNATURE-----
+
+--8v5EJULMcmm2txhOoOmmLhAC7tjcGdV8J--
