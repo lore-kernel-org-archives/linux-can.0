@@ -1,77 +1,34 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: Fighting out-of-order reception with RPS?
-Date: Sat, 11 Jul 2015 06:35:45 +0200
-Message-ID: <1436589345.24939.56.camel@edumazet-glaptop2.roam.corp.google.com>
-References: <559D628C.5020100@hartkopp.net>
-		<CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>
-		<559E0CDF.7080309@hartkopp.net>
-	 <CALx6S37JjusJ=+L3mXT0Dzf8XuU0+dgJQ7_Xn4U0nBtkf0gCHQ@mail.gmail.com>
-	 <55A02CDB.6000302@hartkopp.net>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Sat, 11 Jul 2015 16:42:12 +1000
+Message-ID: <55A0BAC4.7010301@optusnet.com.au>
+References: <559D35CA.2050402@uweschneider.de> <559E25FD.6030904@optusnet.com.au> <559E437E.308@uweschneider.de> <559E9509.1080406@optusnet.com.au> <559F8DC2.2050002@uweschneider.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f48.google.com ([74.125.82.48]:34753 "EHLO
-	mail-wg0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750892AbbGKG2U (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 11 Jul 2015 02:28:20 -0400
-In-Reply-To: <55A02CDB.6000302@hartkopp.net>
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:41846 "EHLO
+	mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751840AbbGKGmU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 11 Jul 2015 02:42:20 -0400
+In-Reply-To: <559F8DC2.2050002@uweschneider.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Tom Herbert <tom@herbertland.com>, Linux Kernel Network Developers <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Sunil Kovvuri <sunil.kovvuri@gmail.com>, Jonathon Reinhart <jonathon.reinhart@gmail.com>
+To: Torsten Lang <torsten.lang@uweschneider.de>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On Fri, 2015-07-10 at 22:36 +0200, Oliver Hartkopp wrote:
-> On 07/10/2015 04:48 AM, Tom Herbert wrote:
-> > On Wed, Jul 8, 2015 at 10:55 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> >> Both drivers do not use NAPI. The just follow the way
-> >>
-> >> interrupt -> alloc_skb() -> fill skb -> netif_rx(skb)
-> >>
-> >> I'm usually testing with the USB adapters as the PCIe setup is not very
-> >> handy.
-> >>
-> > Okay, I see what is happening. In netif_rx when RPS is not enabled
-> > that packet is queued to the backlog queue for the local CPU. Since
-> > you're doing round robin on the interrupts then OOO packets can be a
-> > result. Unfortunately, this is the expected behavior. The correct
-> > kernel fix would be to move to these drivers to use NAPI.
-> 
-> Hm. Doesn't sound like a good solution when there's a difference between NAPI
-> and non-NAPI drivers in matters of OOO, right?
+On 10/07/2015 7:17 PM, Torsten Lang wrote:
+> Hi Tom,
+> it would be nice if you could mail me the patches you applied
+ > to the flexcan driver and kernel interrupt handling by mail
 
-Isn't OOO a problem for you ? Then you either have to :
+Done.
 
-1) Use a single CPU to handle IRQ from the device
-2) Use NAPI
+> so that I could try out if this solves the problems I still
+ > had with the "NO-NAPI" version I made of the 3.16 flexcan driver.
 
-> 
-> > RPS
-> > eliminates the OOO, but if there is no ability to derive a flow hash
-> > from packets everything will wind up one queue without load balancing.
-> 
-> Correct.
-> 
-> That's why I added
-> 
-> 	skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2);
-> 
-> in my driver, because the only relevant flow identifiction is the number of
-> the incoming CAN interface.
-> 
-> > Besides that, automatically setting RPS in drivers is a difficult
-> > proposition since there is no definitively "correct" way to do that in
-> > an arbitrary configuration.
-> 
-> What about checking in netif_rx() if the non-NAPI driver has set a hash (aka
-> the driver is OOO sensitive)?
-> And if so we could automatically set rps_cpus for this interface in a way that
-> all CPUs are enabled to take skbs following the hash.
+Can you give us a summary of your problems?
 
-Wow, netif_rx() is packet processing fast path, certainly not the place
-to add controlling path decisions.
-
-Please convert your driver to NAPI. You might then even benefit from
-GRO.
-
+Tom
 
