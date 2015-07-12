@@ -1,58 +1,69 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/12] can: bfin_can: don't touch skb after netif_rx()
-Date: Sun, 12 Jul 2015 21:54:04 +0200
-Message-ID: <1436730853-6593-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 02/12] can: flexcan: don't touch skb after netif_receive_skb()
+Date: Sun, 12 Jul 2015 21:54:03 +0200
+Message-ID: <1436730853-6593-3-git-send-email-mkl@pengutronix.de>
 References: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:53125 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:59968 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751161AbbGLTyS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:18 -0400
+	with ESMTP id S1751183AbbGLTyR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:17 -0400
 In-Reply-To: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Aaron Wu <Aaron.wu@analog.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
-Cc: Aaron Wu <Aaron.wu@analog.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/bfin_can.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 27ad312e7abf..57dadd52b428 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -424,10 +424,9 @@ static void bfin_can_rx(struct net_device *dev, u16 isrc)
- 		cf->data[6 - i] = (6 - i) < cf->can_dlc ? (val >> 8) : 0;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 6201c5a1a884..b1e8d729851c 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -577,10 +577,10 @@ static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
+ 		return 0;
+ 
+ 	do_bus_err(dev, cf, reg_esr);
+-	netif_receive_skb(skb);
+ 
+ 	dev->stats.rx_packets++;
+ 	dev->stats.rx_bytes += cf->can_dlc;
++	netif_receive_skb(skb);
+ 
+ 	return 1;
+ }
+@@ -622,10 +622,9 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+ 	if (unlikely(new_state == CAN_STATE_BUS_OFF))
+ 		can_bus_off(dev);
+ 
+-	netif_receive_skb(skb);
+-
+ 	dev->stats.rx_packets++;
+ 	dev->stats.rx_bytes += cf->can_dlc;
++	netif_receive_skb(skb);
+ 
+ 	return 1;
+ }
+@@ -670,10 +669,10 @@ static int flexcan_read_frame(struct net_device *dev)
  	}
  
--	netif_rx(skb);
--
+ 	flexcan_read_fifo(dev, cf);
+-	netif_receive_skb(skb);
+ 
  	stats->rx_packets++;
  	stats->rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
- }
++	netif_receive_skb(skb);
  
- static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
-@@ -508,10 +507,9 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
+ 	can_led_event(dev, CAN_LED_EVENT_RX);
  
- 	priv->can.state = state;
- 
--	netif_rx(skb);
--
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
- 
- 	return 0;
- }
 -- 
 2.1.4
 
