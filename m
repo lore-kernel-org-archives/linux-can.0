@@ -1,69 +1,23 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] ARM: dts: dra7x-evm: Prevent glitch on DCAN1 pinmux
-Date: Sun, 12 Jul 2015 21:18:47 +0200
-Message-ID: <55A2BD97.8080006@pengutronix.de>
-References: <1436279277-3386-1-git-send-email-rogerq@ti.com>
- <1436279277-3386-3-git-send-email-rogerq@ti.com>
- <559EBEC8.1070609@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Q8btbFFxjd27kUtdRAj6DPtoNqWAbxiDQ"
+Subject: [PATCH 00/12] can: don't touch skb after netif_receive_skb()/netif_rx()
+Date: Sun, 12 Jul 2015 21:54:01 +0200
+Message-ID: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:51151 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55418 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751522AbbGLTTg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:19:36 -0400
-In-Reply-To: <559EBEC8.1070609@pengutronix.de>
+	with ESMTP id S1751160AbbGLTyQ (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:16 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=hardanger.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.80)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1ZELSR-0006ka-I2
+	for linux-can@vger.kernel.org; Sun, 12 Jul 2015 19:54:31 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, tony@atomide.com
-Cc: jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Q8btbFFxjd27kUtdRAj6DPtoNqWAbxiDQ
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 07/09/2015 08:34 PM, Marc Kleine-Budde wrote:
-> On 07/07/2015 04:27 PM, Roger Quadros wrote:
->> Driver core sets "default" pinmux on on probe and CAN driver
->> sets "sleep" pinmux during register. This causes a small window
->> where the CAN pins are in "default" state with the DCAN module
->> being disabled.
->>
->> Change the "default" state to be like sleep so this glitch is
->> avoided. Add a new "active" state that is used by the driver
->> when CAN is actually active.
->=20
-> Who is taking care of this patch? I'm applying 1/2 (v2) to linux-can,
-> should I take this patch, too?
-
-I've included this patch in my pull request.
+This series fixes the usage of the skb after netif_receive_skb()/netif_rx().
+I'll send a pull reqeust to David in a few days.
 
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Q8btbFFxjd27kUtdRAj6DPtoNqWAbxiDQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVor2XAAoJEP5prqPJtc/HB5wIAKPXm976UHlLXkYnaMNQJThy
-ZZmpqTBQwYaoCIUkPVe96P963lGYbjfFrZkiaQpQvWrp7zKVWtQE0h401FqqQ95B
-FSAql+DAIlez8/i8gHK/00uuG3kD2Sgu/HTRfSeQyBLbyiUlcrFKzmlrMZpb/09m
-wb9c9WR3Z3o/MSXtFYmJ8kanBYKb7yb/X7+jU4xbO0JAgghq/VTJz5SAR19eCE/A
-nxFfPU8fhgBi8C8Nut1LvBoaDukr6zYCHJJJLgojgiy42MqRdbjXcLlIJvsaRuGX
-E6nk04ebq2+vB8or60KoJNl8hY22l6ACRbFH4YxvKOrUAibaIc56zUi5m15Hf90=
-=VGTK
------END PGP SIGNATURE-----
-
---Q8btbFFxjd27kUtdRAj6DPtoNqWAbxiDQ--
