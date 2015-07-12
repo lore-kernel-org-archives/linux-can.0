@@ -1,48 +1,46 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 04/12] can: grcan: don't touch skb after netif_rx()
-Date: Sun, 12 Jul 2015 21:54:05 +0200
-Message-ID: <1436730853-6593-5-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 05/12] can: slcan: don't touch skb after netif_rx_ni()
+Date: Sun, 12 Jul 2015 21:54:06 +0200
+Message-ID: <1436730853-6593-6-git-send-email-mkl@pengutronix.de>
 References: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45729 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:38161 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751183AbbGLTyS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:18 -0400
+	with ESMTP id S1751161AbbGLTyT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:19 -0400
 In-Reply-To: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Andreas Larsson <andreas@gaisler.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
-Cc: Andreas Larsson <andreas@gaisler.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/grcan.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index e3d7e22a4fa0..db9538d4b358 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1216,11 +1216,12 @@ static int grcan_receive(struct net_device *dev, int budget)
- 				cf->data[i] = (u8)(slot[j] >> shift);
- 			}
- 		}
--		netif_receive_skb(skb);
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index f64f5290d6f8..a4ae775f168c 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -218,10 +218,10 @@ static void slc_bump(struct slcan *sl)
  
- 		/* Update statistics and read pointer */
- 		stats->rx_packets++;
- 		stats->rx_bytes += cf->can_dlc;
-+		netif_receive_skb(skb);
-+
- 		rd = grcan_ring_add(rd, GRCAN_MSG_SIZE, dma->rx.size);
- 	}
+ 	memcpy(skb_put(skb, sizeof(struct can_frame)),
+ 	       &cf, sizeof(struct can_frame));
+-	netif_rx_ni(skb);
  
+ 	sl->dev->stats.rx_packets++;
+ 	sl->dev->stats.rx_bytes += cf.can_dlc;
++	netif_rx_ni(skb);
+ }
+ 
+ /* parse tty input stream */
 -- 
 2.1.4
 
