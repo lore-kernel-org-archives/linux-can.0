@@ -1,81 +1,58 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/12] can: at91_can: don't touch skb after netif_receive_skb()/netif_rx()
-Date: Sun, 12 Jul 2015 21:54:02 +0200
-Message-ID: <1436730853-6593-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 10/12] can: ems_usb: don't touch skb after netif_rx()
+Date: Sun, 12 Jul 2015 21:54:11 +0200
+Message-ID: <1436730853-6593-11-git-send-email-mkl@pengutronix.de>
 References: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45515 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35195 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751161AbbGLTyQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:16 -0400
+	with ESMTP id S1751183AbbGLTyV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:21 -0400
 In-Reply-To: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
+Cc: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/ems_usb.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index f4e40aa4d2a2..945c0955a967 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -577,10 +577,10 @@ static void at91_rx_overflow_err(struct net_device *dev)
- 
- 	cf->can_id |= CAN_ERR_CRTL;
- 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
--	netif_receive_skb(skb);
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
- }
- 
- /**
-@@ -642,10 +642,10 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 866bac0ae7e9..2d390384ef3b 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -324,10 +324,9 @@ static void ems_usb_rx_can_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 			cf->data[i] = msg->msg.can_msg.msg[i];
  	}
  
- 	at91_read_mb(dev, mb, cf);
--	netif_receive_skb(skb);
- 
+-	netif_rx(skb);
+-
  	stats->rx_packets++;
  	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
- 
- 	can_led_event(dev, CAN_LED_EVENT_RX);
- }
-@@ -802,10 +802,10 @@ static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
- 		return 0;
- 
- 	at91_poll_err_frame(dev, cf, reg_sr);
--	netif_receive_skb(skb);
- 
- 	dev->stats.rx_packets++;
- 	dev->stats.rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
- 
- 	return 1;
- }
-@@ -1067,10 +1067,10 @@ static void at91_irq_err(struct net_device *dev)
- 		return;
- 
- 	at91_irq_err_state(dev, cf, new_state);
--	netif_rx(skb);
- 
- 	dev->stats.rx_packets++;
- 	dev->stats.rx_bytes += cf->can_dlc;
 +	netif_rx(skb);
- 
- 	priv->can.state = new_state;
  }
+ 
+ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+@@ -400,10 +399,9 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 		stats->rx_errors++;
+ 	}
+ 
+-	netif_rx(skb);
+-
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
++	netif_rx(skb);
+ }
+ 
+ /*
 -- 
 2.1.4
 
