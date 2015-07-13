@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/12] can: at91_can: don't touch skb after netif_receive_skb()/netif_rx()
-Date: Mon, 13 Jul 2015 09:22:17 +0200
-Message-ID: <1436772148-9805-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 02/12] can: flexcan: don't touch skb after netif_receive_skb()
+Date: Mon, 13 Jul 2015 09:22:18 +0200
+Message-ID: <1436772148-9805-3-git-send-email-mkl@pengutronix.de>
 References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:33795 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39893 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751207AbbGMHWb (ORCPT
+	with ESMTP id S1751421AbbGMHWb (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:31 -0400
 In-Reply-To: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -21,41 +21,17 @@ which catch a use after free.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index f4e40aa4d2a2..945c0955a967 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -577,10 +577,10 @@ static void at91_rx_overflow_err(struct net_device *dev)
- 
- 	cf->can_id |= CAN_ERR_CRTL;
- 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
--	netif_receive_skb(skb);
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
- }
- 
- /**
-@@ -642,10 +642,10 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
- 	}
- 
- 	at91_read_mb(dev, mb, cf);
--	netif_receive_skb(skb);
- 
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
- 
- 	can_led_event(dev, CAN_LED_EVENT_RX);
- }
-@@ -802,10 +802,10 @@ static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 6201c5a1a884..b1e8d729851c 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -577,10 +577,10 @@ static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
  		return 0;
  
- 	at91_poll_err_frame(dev, cf, reg_sr);
+ 	do_bus_err(dev, cf, reg_esr);
 -	netif_receive_skb(skb);
  
  	dev->stats.rx_packets++;
@@ -64,18 +40,30 @@ index f4e40aa4d2a2..945c0955a967 100644
  
  	return 1;
  }
-@@ -1067,10 +1067,10 @@ static void at91_irq_err(struct net_device *dev)
- 		return;
+@@ -622,10 +622,9 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+ 	if (unlikely(new_state == CAN_STATE_BUS_OFF))
+ 		can_bus_off(dev);
  
- 	at91_irq_err_state(dev, cf, new_state);
--	netif_rx(skb);
- 
+-	netif_receive_skb(skb);
+-
  	dev->stats.rx_packets++;
  	dev->stats.rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
++	netif_receive_skb(skb);
  
- 	priv->can.state = new_state;
+ 	return 1;
  }
+@@ -670,10 +669,10 @@ static int flexcan_read_frame(struct net_device *dev)
+ 	}
+ 
+ 	flexcan_read_fifo(dev, cf);
+-	netif_receive_skb(skb);
+ 
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
++	netif_receive_skb(skb);
+ 
+ 	can_led_event(dev, CAN_LED_EVENT_RX);
+ 
 -- 
 2.1.4
 
