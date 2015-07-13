@@ -1,46 +1,87 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/12] can: slcan: don't touch skb after netif_rx_ni()
-Date: Mon, 13 Jul 2015 09:22:21 +0200
-Message-ID: <1436772148-9805-6-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 12/12] can: pcan_usb: don't touch skb after netif_rx()
+Date: Mon, 13 Jul 2015 09:22:28 +0200
+Message-ID: <1436772148-9805-13-git-send-email-mkl@pengutronix.de>
 References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:52269 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55836 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751421AbbGMHWd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:33 -0400
+	with ESMTP id S1751667AbbGMHWg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:36 -0400
 In-Reply-To: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c     | 7 +++----
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 4 ++--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index a23a7af8eb9a..9a3f15cb7ef4 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -218,10 +218,10 @@ static void slc_bump(struct slcan *sl)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 72427f21edff..6b94007ae052 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -526,9 +526,9 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 		hwts->hwtstamp = timeval_to_ktime(tv);
+ 	}
  
- 	memcpy(skb_put(skb, sizeof(struct can_frame)),
- 	       &cf, sizeof(struct can_frame));
--	netif_rx_ni(skb);
+-	netif_rx(skb);
+ 	mc->netdev->stats.rx_packets++;
+ 	mc->netdev->stats.rx_bytes += cf->can_dlc;
++	netif_rx(skb);
  
- 	sl->dev->stats.rx_packets++;
- 	sl->dev->stats.rx_bytes += cf.can_dlc;
-+	netif_rx_ni(skb);
+ 	return 0;
  }
+@@ -659,12 +659,11 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 	hwts = skb_hwtstamps(skb);
+ 	hwts->hwtstamp = timeval_to_ktime(tv);
  
- /* parse tty input stream */
+-	/* push the skb */
+-	netif_rx(skb);
+-
+ 	/* update statistics */
+ 	mc->netdev->stats.rx_packets++;
+ 	mc->netdev->stats.rx_bytes += cf->can_dlc;
++	/* push the skb */
++	netif_rx(skb);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index dec51717635e..7d61b3279798 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -553,9 +553,9 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
+ 	hwts = skb_hwtstamps(skb);
+ 	hwts->hwtstamp = timeval_to_ktime(tv);
+ 
+-	netif_rx(skb);
+ 	netdev->stats.rx_packets++;
+ 	netdev->stats.rx_bytes += can_frame->can_dlc;
++	netif_rx(skb);
+ 
+ 	return 0;
+ }
+@@ -670,9 +670,9 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
+ 	peak_usb_get_ts_tv(&usb_if->time_ref, le32_to_cpu(er->ts32), &tv);
+ 	hwts = skb_hwtstamps(skb);
+ 	hwts->hwtstamp = timeval_to_ktime(tv);
+-	netif_rx(skb);
+ 	netdev->stats.rx_packets++;
+ 	netdev->stats.rx_bytes += can_frame->can_dlc;
++	netif_rx(skb);
+ 
+ 	return 0;
+ }
 -- 
 2.1.4
 
