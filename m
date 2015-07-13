@@ -1,52 +1,39 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/12] can: bfin_can: don't touch skb after netif_rx()
-Date: Mon, 13 Jul 2015 09:22:19 +0200
-Message-ID: <1436772148-9805-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 06/12] can: ti_heccn: don't touch skb after netif_rx()
+Date: Mon, 13 Jul 2015 09:22:22 +0200
+Message-ID: <1436772148-9805-7-git-send-email-mkl@pengutronix.de>
 References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:48843 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:49012 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751448AbbGMHWc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:32 -0400
+	with ESMTP id S1751448AbbGMHWd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:33 -0400
 In-Reply-To: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Aaron Wu <Aaron.wu@analog.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Anant Gole <anantgole@ti.com>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
-Cc: Aaron Wu <Aaron.wu@analog.com>
+Cc: Anant Gole <anantgole@ti.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/bfin_can.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/ti_hecc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-index 27ad312e7abf..57dadd52b428 100644
---- a/drivers/net/can/bfin_can.c
-+++ b/drivers/net/can/bfin_can.c
-@@ -424,10 +424,9 @@ static void bfin_can_rx(struct net_device *dev, u16 isrc)
- 		cf->data[6 - i] = (6 - i) < cf->can_dlc ? (val >> 8) : 0;
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index e95a9e1a889f..cf345cbfe819 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -747,9 +747,9 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
+ 		}
  	}
  
 -	netif_rx(skb);
--
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
- }
- 
- static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
-@@ -508,10 +507,9 @@ static int bfin_can_err(struct net_device *dev, u16 isrc, u16 status)
- 
- 	priv->can.state = state;
- 
--	netif_rx(skb);
--
  	stats->rx_packets++;
  	stats->rx_bytes += cf->can_dlc;
 +	netif_rx(skb);
