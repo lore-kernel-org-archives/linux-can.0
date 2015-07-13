@@ -1,31 +1,47 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2015-07-12
-Date: Sun, 12 Jul 2015 22:24:29 -0700 (PDT)
-Message-ID: <20150712.222429.1727959876058548308.davem@davemloft.net>
-References: <1436728691-1145-1-git-send-email-mkl@pengutronix.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 2/2] ARM: dts: dra7x-evm: Prevent glitch on DCAN1 pinmux
+Date: Sun, 12 Jul 2015 23:29:06 -0700
+Message-ID: <20150713062906.GA26485@atomide.com>
+References: <1436279277-3386-1-git-send-email-rogerq@ti.com>
+ <1436279277-3386-3-git-send-email-rogerq@ti.com>
+ <559EBEC8.1070609@pengutronix.de>
+ <55A2BD97.8080006@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:39288 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750792AbbGMFYc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 01:24:32 -0400
-In-Reply-To: <1436728691-1145-1-git-send-email-mkl@pengutronix.de>
+Received: from muru.com ([72.249.23.125]:34579 "EHLO muru.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751028AbbGMG3K (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 13 Jul 2015 02:29:10 -0400
+Content-Disposition: inline
+In-Reply-To: <55A2BD97.8080006@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Sun, 12 Jul 2015 21:18:03 +0200
-
-> this is a pull request of 8 patchs for net/master.
+* Marc Kleine-Budde <mkl@pengutronix.de> [150712 12:22]:
+> On 07/09/2015 08:34 PM, Marc Kleine-Budde wrote:
+> > On 07/07/2015 04:27 PM, Roger Quadros wrote:
+> >> Driver core sets "default" pinmux on on probe and CAN driver
+> >> sets "sleep" pinmux during register. This causes a small window
+> >> where the CAN pins are in "default" state with the DCAN module
+> >> being disabled.
+> >>
+> >> Change the "default" state to be like sleep so this glitch is
+> >> avoided. Add a new "active" state that is used by the driver
+> >> when CAN is actually active.
+> > 
+> > Who is taking care of this patch? I'm applying 1/2 (v2) to linux-can,
+> > should I take this patch, too?
 > 
-> Sergei Shtylyov contributes 5 patches for the rcar_can driver, fixing the IRQ
-> check and several info and error messages. There are two patches by J.D.
-> Schroeder and Roger Quadros for the c_can driver and dra7x-evm device tree,
-> which precent a glitch in the DCAN1 pinmux. Oliver Hartkopp provides a better
-> approach to make the CAN skbs unique, the timestamp is replaced by a counter.
+> I've included this patch in my pull request.
 
-Pulled, thanks Marc.
+That's fine thanks there should not be any merge conflicts.
+
+For things going in during the merge windows we need to worry
+about the dts merge conflicts. Usually not a problem for fixes.
+
+Regards,
+
+Tony
