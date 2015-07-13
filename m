@@ -1,47 +1,73 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 2/2] ARM: dts: dra7x-evm: Prevent glitch on DCAN1 pinmux
-Date: Sun, 12 Jul 2015 23:29:06 -0700
-Message-ID: <20150713062906.GA26485@atomide.com>
-References: <1436279277-3386-1-git-send-email-rogerq@ti.com>
- <1436279277-3386-3-git-send-email-rogerq@ti.com>
- <559EBEC8.1070609@pengutronix.de>
- <55A2BD97.8080006@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2015-07-13
+Date: Mon, 13 Jul 2015 09:22:16 +0200
+Message-ID: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from muru.com ([72.249.23.125]:34579 "EHLO muru.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751028AbbGMG3K (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 13 Jul 2015 02:29:10 -0400
-Content-Disposition: inline
-In-Reply-To: <55A2BD97.8080006@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34986 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751096AbbGMHWb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:31 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=hardanger.blackshift.org)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.80)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1ZEWCV-0007cb-0m
+	for linux-can@vger.kernel.org; Mon, 13 Jul 2015 07:22:47 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Roger Quadros <rogerq@ti.com>, wg@grandegger.com, jay.schroeder@garmin.com, linux-can@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-* Marc Kleine-Budde <mkl@pengutronix.de> [150712 12:22]:
-> On 07/09/2015 08:34 PM, Marc Kleine-Budde wrote:
-> > On 07/07/2015 04:27 PM, Roger Quadros wrote:
-> >> Driver core sets "default" pinmux on on probe and CAN driver
-> >> sets "sleep" pinmux during register. This causes a small window
-> >> where the CAN pins are in "default" state with the DCAN module
-> >> being disabled.
-> >>
-> >> Change the "default" state to be like sleep so this glitch is
-> >> avoided. Add a new "active" state that is used by the driver
-> >> when CAN is actually active.
-> > 
-> > Who is taking care of this patch? I'm applying 1/2 (v2) to linux-can,
-> > should I take this patch, too?
-> 
-> I've included this patch in my pull request.
+Hello David,
 
-That's fine thanks there should not be any merge conflicts.
+this is a pull request of 12 patches by me.
 
-For things going in during the merge windows we need to worry
-about the dts merge conflicts. Usually not a problem for fixes.
+This series fixes the use of the skb after netif_receive_skb() / netif_rx()
+which exists in several driver.
 
-Regards,
+Marc
+---
 
-Tony
+The following changes since commit cee9f6d0186a586c8023bc91c8a4cf8a088855e5:
+
+  Merge tag 'linux-can-fixes-for-4.2-20150712' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can (2015-07-12 22:24:01 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.2-20150713
+
+for you to fetch changes up to 95935983f875ac91c43eef04bc56199cc39face6:
+
+  can: pcan_usb: don't touch skb after netif_rx() (2015-07-13 08:56:04 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.2-20150713
+
+----------------------------------------------------------------
+Marc Kleine-Budde (12):
+      can: at91_can: don't touch skb after netif_receive_skb()/netif_rx()
+      can: flexcan: don't touch skb after netif_receive_skb()
+      can: bfin_can: don't touch skb after netif_rx()
+      can: grcan: don't touch skb after netif_rx()
+      can: slcan: don't touch skb after netif_rx_ni()
+      can: ti_heccn: don't touch skb after netif_rx()
+      can: cc770: don't touch skb after netif_rx()
+      can: sja1000: don't touch skb after netif_rx()
+      can: esd_usb2: don't touch skb after netif_rx()
+      can: ems_usb: don't touch skb after netif_rx()
+      can: usb_8dev: don't touch skb after netif_rx()
+      can: pcan_usb: don't touch skb after netif_rx()
+
+ drivers/net/can/at91_can.c                  | 8 ++++----
+ drivers/net/can/bfin_can.c                  | 6 ++----
+ drivers/net/can/cc770/cc770.c               | 4 ++--
+ drivers/net/can/flexcan.c                   | 7 +++----
+ drivers/net/can/grcan.c                     | 3 ++-
+ drivers/net/can/sja1000/sja1000.c           | 6 ++----
+ drivers/net/can/slcan.c                     | 2 +-
+ drivers/net/can/ti_hecc.c                   | 2 +-
+ drivers/net/can/usb/ems_usb.c               | 6 ++----
+ drivers/net/can/usb/esd_usb2.c              | 6 ++----
+ drivers/net/can/usb/peak_usb/pcan_usb.c     | 7 +++----
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 4 ++--
+ drivers/net/can/usb/usb_8dev.c              | 6 ++----
+ 13 files changed, 28 insertions(+), 39 deletions(-)
+
