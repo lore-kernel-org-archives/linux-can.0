@@ -1,39 +1,31 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: Fighting out-of-order reception with RPS?
-Date: Mon, 13 Jul 2015 06:57:50 +0200
-Message-ID: <1436763470.24939.66.camel@edumazet-glaptop2.roam.corp.google.com>
-References: <559D628C.5020100@hartkopp.net>
-	 <CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>
-	 <559E0CDF.7080309@hartkopp.net>
-	 <CALx6S37JjusJ=+L3mXT0Dzf8XuU0+dgJQ7_Xn4U0nBtkf0gCHQ@mail.gmail.com>
-	 <55A02CDB.6000302@hartkopp.net>
-	 <1436589345.24939.56.camel@edumazet-glaptop2.roam.corp.google.com>
-	 <55A2BCD8.4020303@hartkopp.net>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2015-07-12
+Date: Sun, 12 Jul 2015 22:24:29 -0700 (PDT)
+Message-ID: <20150712.222429.1727959876058548308.davem@davemloft.net>
+References: <1436728691-1145-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <55A2BCD8.4020303@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Tom Herbert <tom@herbertland.com>, Linux Kernel Network Developers <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Sunil Kovvuri <sunil.kovvuri@gmail.com>, Jonathon Reinhart <jonathon.reinhart@gmail.com>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:39288 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750792AbbGMFYc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 01:24:32 -0400
+In-Reply-To: <1436728691-1145-1-git-send-email-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-On Sun, 2015-07-12 at 21:15 +0200, Oliver Hartkopp wrote:
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Sun, 12 Jul 2015 21:18:03 +0200
 
-> E.g. with
+> this is a pull request of 8 patchs for net/master.
 > 
-> 	skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2);
-> 
-> and
-> 
-> 	echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
-> 
-> I get properly ordered CAN frames - even with netif_rx() processed skbs. I
-> just want to have this stuff to be enabled by default for CAN interfaces to
-> kill the OOO frame issue.
+> Sergei Shtylyov contributes 5 patches for the rcar_can driver, fixing the IRQ
+> check and several info and error messages. There are two patches by J.D.
+> Schroeder and Roger Quadros for the c_can driver and dra7x-evm device tree,
+> which precent a glitch in the DCAN1 pinmux. Oliver Hartkopp provides a better
+> approach to make the CAN skbs unique, the timestamp is replaced by a counter.
 
-I doubt your skb_set_hash() makes any difference.
-
-RPS prefers a L4 hash anyway (skb_get_hash()), so flow dissection
-happens.
+Pulled, thanks Marc.
