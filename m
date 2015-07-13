@@ -1,58 +1,30 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/12] can: usb_8dev: don't touch skb after netif_rx()
-Date: Sun, 12 Jul 2015 21:54:12 +0200
-Message-ID: <1436730853-6593-12-git-send-email-mkl@pengutronix.de>
-References: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56137 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751161AbbGLTyV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jul 2015 15:54:21 -0400
-In-Reply-To: <1436730853-6593-1-git-send-email-mkl@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Bernd Krumboeck <b.krumboeck@gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: Fighting out-of-order reception with RPS?
+Date: Sun, 12 Jul 2015 20:22:41 -0700 (PDT)
+Message-ID: <20150712.202241.2051134175805521232.davem@davemloft.net>
+References: <55A02CDB.6000302@hartkopp.net>
+	<1436589345.24939.56.camel@edumazet-glaptop2.roam.corp.google.com>
+	<55A2BCD8.4020303@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <55A2BCD8.4020303@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: socketcan@hartkopp.net
+Cc: eric.dumazet@gmail.com, tom@herbertland.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, sunil.kovvuri@gmail.com, jonathon.reinhart@gmail.com
+List-Id: linux-can.vger.kernel.org
 
-There is no guarantee that the skb is in the same state after calling
-net_receive_skb() or netif_rx(). It might be freed or reused. Not really
-harmful as its a read access, except you turn on the proper debugging options
-which catch a use after free.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Sun, 12 Jul 2015 21:15:36 +0200
 
-Cc: Bernd Krumboeck <b.krumboeck@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/usb_8dev.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> Just some remarks about CAN and CAN frames as you suggest GRO which is
+> completely pointless for CAN.
 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index dd52c7a4c80d..de95b1ccba3e 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -461,10 +461,9 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
- 	priv->bec.txerr = txerr;
- 	priv->bec.rxerr = rxerr;
- 
--	netif_rx(skb);
--
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
- }
- 
- /* Read data and status frames */
-@@ -494,10 +493,9 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
- 		else
- 			memcpy(cf->data, msg->data, cf->can_dlc);
- 
--		netif_rx(skb);
--
- 		stats->rx_packets++;
- 		stats->rx_bytes += cf->can_dlc;
-+		netif_rx(skb);
- 
- 		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
- 	} else {
--- 
-2.1.4
+GRO may be pointless for CAN, but NAPI _definitely_ is useful for every
+single network device, period.
 
+So you should do NAPI for reasons outside of packet receive ordering,
+and in return you'll have your packet ordering problem solved as well.
+
+I really am stumped as to why you are avoiding NAPI so vehemently.
