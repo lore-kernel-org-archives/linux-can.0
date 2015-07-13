@@ -1,50 +1,95 @@
-From: Rama kiran kumar Indrakanti <ramakirankumar.i@hcl.com>
-Subject: RE: CAN Bus Cable
-Date: Mon, 13 Jul 2015 11:15:08 +0000
-Message-ID: <FF0E019DD74E2349AE9109F955A784D00EFC8194@chn-hclt-mbs06.HCLT.CORP.HCL.IN>
-References: <20150713110817.GE25291@bamboo.electronicsoup>
+From: Tom Herbert <tom@herbertland.com>
+Subject: Re: Fighting out-of-order reception with RPS?
+Date: Mon, 13 Jul 2015 12:08:26 -0700
+Message-ID: <CALx6S36G1hkS+Fg5joSiMHNo+UvJ2DBsTp91kyr3eqm2vuLq0Q@mail.gmail.com>
+References: <559D628C.5020100@hartkopp.net>
+	<CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>
+	<559E0CDF.7080309@hartkopp.net>
+	<CALx6S37JjusJ=+L3mXT0Dzf8XuU0+dgJQ7_Xn4U0nBtkf0gCHQ@mail.gmail.com>
+	<55A02CDB.6000302@hartkopp.net>
+	<1436589345.24939.56.camel@edumazet-glaptop2.roam.corp.google.com>
+	<55A2BCD8.4020303@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gws07.hcl.com ([192.8.186.130]:42879 "EHLO GWS07.hcl.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750777AbbGMLZP convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 07:25:15 -0400
-In-Reply-To: <20150713110817.GE25291@bamboo.electronicsoup>
-Content-Language: en-US
+Received: from mail-ie0-f170.google.com ([209.85.223.170]:34536 "EHLO
+	mail-ie0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752577AbbGMTI1 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 15:08:27 -0400
+Received: by iebmu5 with SMTP id mu5so241078722ieb.1
+        for <linux-can@vger.kernel.org>; Mon, 13 Jul 2015 12:08:27 -0700 (PDT)
+In-Reply-To: <55A2BCD8.4020303@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: John Whitmore <arigead@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, Linux Kernel Network Developers <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Sunil Kovvuri <sunil.kovvuri@gmail.com>, Jonathon Reinhart <jonathon.reinhart@gmail.com>
 
-From: linux-can-owner@vger.kernel.org [mailto:linux-can-owner@vger.kernel.org] On Behalf Of John Whitmore
-Sent: Monday, July 13, 2015 4:38 PM
-To: linux-can@vger.kernel.org
-Subject: CAN Bus Cable 
+On Sun, Jul 12, 2015 at 12:15 PM, Oliver Hartkopp
+<socketcan@hartkopp.net> wrote:
+> Hello Eric,
+>
+> On 07/11/2015 06:35 AM, Eric Dumazet wrote:
+>> On Fri, 2015-07-10 at 22:36 +0200, Oliver Hartkopp wrote:
+>
+>>> Hm. Doesn't sound like a good solution when there's a difference between NAPI
+>>> and non-NAPI drivers in matters of OOO, right?
+>>
+>> Isn't OOO a problem for you ? Then you either have to :
+>>
+>> 1) Use a single CPU to handle IRQ from the device
+>> 2) Use NAPI
+>>
+>
+> See below ...
+>
+>>> What about checking in netif_rx() if the non-NAPI driver has set a hash (aka
+>>> the driver is OOO sensitive)?
+>>> And if so we could automatically set rps_cpus for this interface in a way that
+>>> all CPUs are enabled to take skbs following the hash.
+>>
+>> Wow, netif_rx() is packet processing fast path, certainly not the place
+>> to add controlling path decisions.
+>
+> My only requirement is to be able to pick CAN frames (contained in skbs) from
+> the socket in the same order they have been received.
+>
+>> Please convert your driver to NAPI. You might then even benefit from
+>> GRO.
+>
+> Just some remarks about CAN and CAN frames as you suggest GRO which is
+> completely pointless for CAN.
+>
+> CAN frames have a 11 or 29 bit CAN Identifier (no MAC but content addressing)
+> and 0 to 64 bytes of payload. Therefore the MTU for CAN interfaces is 16 or 72
+> byte (see struct can(fd)_frame). Each skbuff contains a single CAN frame.
+>
+> There are CAN controllers which have a FIFO for up to 32 CAN frames, e.g.
+> flexcan.c which also implements NAPI. Others (e.g. sja1000.c) don't have any
+> FIFO and the reading of the CAN frame from the memory mapped registers needs
+> to be processed in the irq context instantly. So 'fast path' netif_rx() is
+> reasonable, right?
+>
+> So why is it not possible to pass netif_rx() skbs from a specific CAN network
+> interface to whatever queue where they are processed in order?
+>
+> E.g. with
+>
+>         skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2);
+>
+> and
+>
+>         echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
+>
+> I get properly ordered CAN frames - even with netif_rx() processed skbs. I
+> just want to have this stuff to be enabled by default for CAN interfaces to
+> kill the OOO frame issue.
+>
+If you really must process the CAN FIFO in the hard interrupt then
+create a private sk_buf queue. In the interrupt, dequeue from FIFO and
+enqueue on the sk_buf queue. Then schedule NAPI, and when that runs
+process the sk_buf queue calling call netif_receive_skb for each
+enqueued skb. Pretty simple actually :-)
 
->OK it's not Linux-can specific, although I am using RPi's on the BUS but I can't think of anywhere better to ask this question. Possibly a lack of imagination on my part.
-
->I'm working on a project on a tractor and am looking for cable to use. I'd like to use a four core cable with two thin wires for the serial CAN Data and then two thicker wires for 12V Power. That is a hard thing to >communicate to Google so if somebody had any ideas I'd be really grateful
-
-Is this the J1939 connector you are talking about.
-
-John
---
-To unsubscribe from this list: send the line "unsubscribe linux-can" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-::DISCLAIMER::
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
-E-mail transmission is not guaranteed to be secure or error-free as information could be intercepted, corrupted,
-lost, destroyed, arrive late or incomplete, or may contain viruses in transmission. The e mail and its contents
-(with or without referred errors) shall therefore not attach any liability on the originator or HCL or its affiliates.
-Views or opinions, if any, presented in this email are solely those of the author and may not necessarily reflect the
-views or opinions of HCL or its affiliates. Any form of reproduction, dissemination, copying, disclosure, modification,
-distribution and / or publication of this message without the prior written consent of authorized representative of
-HCL is strictly prohibited. If you have received this email in error please delete it and notify the sender immediately.
-Before opening any email and/or attachments, please check them for viruses and other defects.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
+> Regards,
+> Oliver
+>
