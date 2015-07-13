@@ -1,87 +1,58 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/12] can: pcan_usb: don't touch skb after netif_rx()
-Date: Mon, 13 Jul 2015 09:22:28 +0200
-Message-ID: <1436772148-9805-13-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 11/12] can: usb_8dev: don't touch skb after netif_rx()
+Date: Mon, 13 Jul 2015 09:22:27 +0200
+Message-ID: <1436772148-9805-12-git-send-email-mkl@pengutronix.de>
 References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:55836 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:47958 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751667AbbGMHWg (ORCPT
+	with ESMTP id S1751207AbbGMHWg (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 13 Jul 2015 03:22:36 -0400
 In-Reply-To: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Bernd Krumboeck <b.krumboeck@gmail.com>
 
 There is no guarantee that the skb is in the same state after calling
 net_receive_skb() or netif_rx(). It might be freed or reused. Not really
 harmful as its a read access, except you turn on the proper debugging options
 which catch a use after free.
 
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Bernd Krumboeck <b.krumboeck@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c     | 7 +++----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 4 ++--
- 2 files changed, 5 insertions(+), 6 deletions(-)
+ drivers/net/can/usb/usb_8dev.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 72427f21edff..6b94007ae052 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -526,9 +526,9 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
- 		hwts->hwtstamp = timeval_to_ktime(tv);
- 	}
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index dd52c7a4c80d..de95b1ccba3e 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -461,10 +461,9 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
+ 	priv->bec.txerr = txerr;
+ 	priv->bec.rxerr = rxerr;
  
--	netif_rx(skb);
- 	mc->netdev->stats.rx_packets++;
- 	mc->netdev->stats.rx_bytes += cf->can_dlc;
-+	netif_rx(skb);
- 
- 	return 0;
- }
-@@ -659,12 +659,11 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
- 	hwts = skb_hwtstamps(skb);
- 	hwts->hwtstamp = timeval_to_ktime(tv);
- 
--	/* push the skb */
 -	netif_rx(skb);
 -
- 	/* update statistics */
- 	mc->netdev->stats.rx_packets++;
- 	mc->netdev->stats.rx_bytes += cf->can_dlc;
-+	/* push the skb */
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->can_dlc;
 +	netif_rx(skb);
- 
- 	return 0;
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index dec51717635e..7d61b3279798 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -553,9 +553,9 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
- 	hwts = skb_hwtstamps(skb);
- 	hwts->hwtstamp = timeval_to_ktime(tv);
- 
--	netif_rx(skb);
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += can_frame->can_dlc;
-+	netif_rx(skb);
- 
- 	return 0;
  }
-@@ -670,9 +670,9 @@ static int pcan_usb_pro_handle_error(struct pcan_usb_pro_interface *usb_if,
- 	peak_usb_get_ts_tv(&usb_if->time_ref, le32_to_cpu(er->ts32), &tv);
- 	hwts = skb_hwtstamps(skb);
- 	hwts->hwtstamp = timeval_to_ktime(tv);
--	netif_rx(skb);
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += can_frame->can_dlc;
-+	netif_rx(skb);
  
- 	return 0;
- }
+ /* Read data and status frames */
+@@ -494,10 +493,9 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
+ 		else
+ 			memcpy(cf->data, msg->data, cf->can_dlc);
+ 
+-		netif_rx(skb);
+-
+ 		stats->rx_packets++;
+ 		stats->rx_bytes += cf->can_dlc;
++		netif_rx(skb);
+ 
+ 		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
+ 	} else {
 -- 
 2.1.4
 
