@@ -1,93 +1,62 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: pull-request: can 2015-07-13
-Date: Tue, 14 Jul 2015 18:41:19 +0200
-Message-ID: <55A53BAF.5070401@hartkopp.net>
-References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: Fighting out-of-order reception with RPS?
+Date: Tue, 14 Jul 2015 19:09:31 +0200
+Message-ID: <55A5424B.2000803@hartkopp.net>
+References: <559D628C.5020100@hartkopp.net>	 <CALx6S35OJHyr6iwfdtYW6P-ke2pmsmQ9BjO-D=qjgCHxwF7oew@mail.gmail.com>	 <559E0CDF.7080309@hartkopp.net>	 <CALx6S37JjusJ=+L3mXT0Dzf8XuU0+dgJQ7_Xn4U0nBtkf0gCHQ@mail.gmail.com>	 <55A02CDB.6000302@hartkopp.net>	 <1436589345.24939.56.camel@edumazet-glaptop2.roam.corp.google.com>	 <55A2BCD8.4020303@hartkopp.net> <1436763470.24939.66.camel@edumazet-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:39283 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751892AbbGNQl1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jul 2015 12:41:27 -0400
-In-Reply-To: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1436763470.24939.66.camel@edumazet-glaptop2.roam.corp.google.com>
+Sender: netdev-owner@vger.kernel.org
+To: Eric Dumazet <eric.dumazet@gmail.com>, Tom Herbert <tom@herbertland.com>
+Cc: Linux Kernel Network Developers <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Sunil Kovvuri <sunil.kovvuri@gmail.com>, Jonathon Reinhart <jonathon.reinhart@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+On 13.07.2015 06:57, Eric Dumazet wrote:
+> On Sun, 2015-07-12 at 21:15 +0200, Oliver Hartkopp wrote:
+>
+>> E.g. with
+>>
+>> 	skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2);
+>>
+>> and
+>>
+>> 	echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
+>>
+>> I get properly ordered CAN frames - even with netif_rx() processed skbs. I
+>> just want to have this stuff to be enabled by default for CAN interfaces to
+>> kill the OOO frame issue.
+>
+> I doubt your skb_set_hash() makes any difference.
+>
+> RPS prefers a L4 hash anyway (skb_get_hash()), so flow dissection
+> happens.
+>
 
-you did not sent this mail to Dave but only to linux-can ML.
+Please take a look into netif_rx_internal() in net/core/dev.c
 
-Btw. why didn't you create a single patch with a single commit msg?
+http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/net/core/dev.c?id=v4.2-rc1#n3486
 
-IMO you fix a single issue ... whether it is about 
-netif_receive_skb()/netif_rx()/netif_rx() is not really relevant.
+with CONFIG_RPS netif_rx() takes care about the rps cpu and puts the skb into 
+the correct hash specific queue.
+
+As we usually have several PF_CAN sockets which get CAN frames from a specific 
+CAN interface it makes no sense to enqueue packets into queues sorted by 
+receiving sockets or L4 hash (we don't have L4 addressing on CAN).
+
+The skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2) makes sure that the skbs 
+from a specific CAN netdev are always processed in the same queue.
+
+When this is not wanted in 'fastpath netif_rx()' why is the CONFIG_RPS section 
+in there?
+
+What is the advantage of implementing NAPI and a 'private sk_buf queue' 
+suggested by Tom in http://marc.info/?l=linux-can&m=143681458003381&w=2 to set 
+the hash as shown and enable rps_cpus?
+
+The latter just looks just like a complexity boost to have a functionality 
+that already exists in netif_rx(). I just want to understand it.
 
 Regards,
 Oliver
-
-
-On 13.07.2015 09:22, Marc Kleine-Budde wrote:
-> Hello David,
->
-> this is a pull request of 12 patches by me.
->
-> This series fixes the use of the skb after netif_receive_skb() / netif_rx()
-> which exists in several driver.
->
-> Marc
-> ---
->
-> The following changes since commit cee9f6d0186a586c8023bc91c8a4cf8a088855e5:
->
->    Merge tag 'linux-can-fixes-for-4.2-20150712' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can (2015-07-12 22:24:01 -0700)
->
-> are available in the git repository at:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.2-20150713
->
-> for you to fetch changes up to 95935983f875ac91c43eef04bc56199cc39face6:
->
->    can: pcan_usb: don't touch skb after netif_rx() (2015-07-13 08:56:04 +0200)
->
-> ----------------------------------------------------------------
-> linux-can-fixes-for-4.2-20150713
->
-> ----------------------------------------------------------------
-> Marc Kleine-Budde (12):
->        can: at91_can: don't touch skb after netif_receive_skb()/netif_rx()
->        can: flexcan: don't touch skb after netif_receive_skb()
->        can: bfin_can: don't touch skb after netif_rx()
->        can: grcan: don't touch skb after netif_rx()
->        can: slcan: don't touch skb after netif_rx_ni()
->        can: ti_heccn: don't touch skb after netif_rx()
->        can: cc770: don't touch skb after netif_rx()
->        can: sja1000: don't touch skb after netif_rx()
->        can: esd_usb2: don't touch skb after netif_rx()
->        can: ems_usb: don't touch skb after netif_rx()
->        can: usb_8dev: don't touch skb after netif_rx()
->        can: pcan_usb: don't touch skb after netif_rx()
->
->   drivers/net/can/at91_can.c                  | 8 ++++----
->   drivers/net/can/bfin_can.c                  | 6 ++----
->   drivers/net/can/cc770/cc770.c               | 4 ++--
->   drivers/net/can/flexcan.c                   | 7 +++----
->   drivers/net/can/grcan.c                     | 3 ++-
->   drivers/net/can/sja1000/sja1000.c           | 6 ++----
->   drivers/net/can/slcan.c                     | 2 +-
->   drivers/net/can/ti_hecc.c                   | 2 +-
->   drivers/net/can/usb/ems_usb.c               | 6 ++----
->   drivers/net/can/usb/esd_usb2.c              | 6 ++----
->   drivers/net/can/usb/peak_usb/pcan_usb.c     | 7 +++----
->   drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 4 ++--
->   drivers/net/can/usb/usb_8dev.c              | 6 ++----
->   13 files changed, 28 insertions(+), 39 deletions(-)
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
