@@ -1,39 +1,60 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: [PATCH] log2asc: include sys/time.h
-Date: Tue, 14 Jul 2015 21:38:36 +0200
-Message-ID: <1436902716-31065-1-git-send-email-yegorslists@googlemail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: pull-request: can 2015-07-13
+Date: Tue, 14 Jul 2015 22:10:55 +0200
+Message-ID: <55A56CCF.2020707@pengutronix.de>
+References: <1436772148-9805-1-git-send-email-mkl@pengutronix.de>
+ <55A53BAF.5070401@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="612hmQKu2G7tKPr83MvdTx3jn0bgJP0Wq"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wg0-f42.google.com ([74.125.82.42]:34968 "EHLO
-	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752084AbbGNTiw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jul 2015 15:38:52 -0400
-Received: by wgjx7 with SMTP id x7so16679903wgj.2
-        for <linux-can@vger.kernel.org>; Tue, 14 Jul 2015 12:38:51 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:55244 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753817AbbGNULD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 14 Jul 2015 16:11:03 -0400
+In-Reply-To: <55A53BAF.5070401@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: socketcan@hartkopp.net, Yegor Yefremov <yegorslists@googlemail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-Without this patch compilation against musl C library
-breaks, because struct timeval cannot be found.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--612hmQKu2G7tKPr83MvdTx3jn0bgJP0Wq
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
----
- log2asc.c | 1 +
- 1 file changed, 1 insertion(+)
+On 07/14/2015 06:41 PM, Oliver Hartkopp wrote:
+> you did not sent this mail to Dave but only to linux-can ML.
 
-diff --git a/log2asc.c b/log2asc.c
-index 29d13e8..8fb88a9 100644
---- a/log2asc.c
-+++ b/log2asc.c
-@@ -48,6 +48,7 @@
- #include <unistd.h>
- 
- #include <net/if.h>
-+#include <sys/time.h>
- #include <linux/can.h>
- 
- #include "lib.h"
--- 
-2.1.4
+Doh - I'll resend it tomorrow.
 
+> Btw. why didn't you create a single patch with a single commit msg?
+
+I'm not really sure why. I usually separate patches...
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--612hmQKu2G7tKPr83MvdTx3jn0bgJP0Wq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJVpWzQAAoJEP5prqPJtc/HGDAIAKEfJ/aOMMkTQAccA1PRjzgD
+Lo199ltfhMyn9gm1jOZb5Q+mIQOc7Hw5L4YAVH7V8fJ/dlig7IiVQ1Vge11nsahT
+mD5CnEnDsomgc+pe+pNAIahacBpJSD8qjjpzNAR7+SzD6PTsv9J9u0vczyJqakqb
+w1eNkieGJ6GW5THCq6lvZRVir4fYaKDcWt3RDXjq9A6nyr4adTZGeMPzvpmXGH3Z
+o0tobnxH1mATqgYxGQaLYNf/AFDKHcXgDGAiDA2eHrLIXj0YsKRQnyV+wK5eyXm+
+CYSFPXJ6x3rc1QWtuZCWpuPutqWD6GdXpnvsvSeR/MEezxT+5SgSmmIRw4HqrNk=
+=5aEE
+-----END PGP SIGNATURE-----
+
+--612hmQKu2G7tKPr83MvdTx3jn0bgJP0Wq--
