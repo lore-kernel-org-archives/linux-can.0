@@ -1,61 +1,37 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Stefan Agner <stefan@agner.ch>
 Subject: Re: [PATCH 1/2] can: mcp251x: fix resume when device is down
-Date: Wed, 15 Jul 2015 15:15:01 +0200
-Message-ID: <55A65CD5.20300@pengutronix.de>
+Date: Wed, 15 Jul 2015 15:17:47 +0200
+Message-ID: <5f785ad6dbb16e7abe084a1d82e29efb@agner.ch>
 References: <1431966808-26213-1-git-send-email-stefan@agner.ch>
- <a52e25bc10d3d669b41f19faedf82d57@agner.ch>
+ <a52e25bc10d3d669b41f19faedf82d57@agner.ch> <55A65CD5.20300@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ta4lgplOx05dcDUVXb7GqPv4QSpDwtmWP"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59928 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751598AbbGONPJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 15 Jul 2015 09:15:09 -0400
-In-Reply-To: <a52e25bc10d3d669b41f19faedf82d57@agner.ch>
+Received: from mail.kmu-office.ch ([178.209.48.109]:56891 "EHLO
+	mail.kmu-office.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751666AbbGONUn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 15 Jul 2015 09:20:43 -0400
+In-Reply-To: <55A65CD5.20300@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stefan Agner <stefan@agner.ch>, wg@grandegger.com
-Cc: chripell@fsfe.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: wg@grandegger.com, chripell@fsfe.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ta4lgplOx05dcDUVXb7GqPv4QSpDwtmWP
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 2015-07-15 15:15, Marc Kleine-Budde wrote:
+> On 07/15/2015 03:05 PM, Stefan Agner wrote:
+>> Hi Marc, hi Wolfgang,
+>>
+>> Any comment on this two patches? I don't think these have made it in any
+>> tree...
+> 
+> Sorry - Should I add stable in Cc for 1/2 or even both?
 
-On 07/15/2015 03:05 PM, Stefan Agner wrote:
-> Hi Marc, hi Wolfgang,
->=20
-> Any comment on this two patches? I don't think these have made it in an=
-y
-> tree...
+2/2 does not fix an actual issue, it only prevents dummy regulators
+being created. It even has a slight potential of a regression, in case
+the absence of a dummy regulator could not be handled properly...
 
-Sorry - Should I add stable in Cc for 1/2 or even both?
+But 1/2 is definitely stable material.
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---ta4lgplOx05dcDUVXb7GqPv4QSpDwtmWP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVplzVAAoJEP5prqPJtc/HszIH/3zVZTCDu1ewMvRYTIoOWAbX
-u/RO1kkMbqXwjhvCpF1/qlT0X34lHtQmf9T0rfewWw1WJDmQflPo/tRVa5XKydVA
-iLJJxKkU0Im5JoZ2skdTfN2OtKlbqQV/Kha17pp5X02YYEgvHYfgYDq9NIWqbK5z
-1DXtn2yngJgyCzMWd9sWncpO9MU19buEPRGLtsxhmb/tH+jeAG33FPgaeVl4EgU3
-Z0J6hLsoBz5TW+3fIJ+eiUWOABWw4eKCNu13ksaAF/4KZpNjzejUl32fNAz0NSFK
-BbVBu+9t311LCko9tAFLczW6KDPoZvf4TbHXOiS0y3txlardr6VQhWyId8npgXo=
-=OI8Z
------END PGP SIGNATURE-----
-
---ta4lgplOx05dcDUVXb7GqPv4QSpDwtmWP--
+--
+Stefan
