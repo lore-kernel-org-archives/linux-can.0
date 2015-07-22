@@ -1,51 +1,42 @@
-From: Torsten Lang <torsten.lang@uweschneider.de>
-Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
- code by David Jander)
-Date: Wed, 22 Jul 2015 10:00:29 +0200
-Message-ID: <55AF4D9D.8040904@uweschneider.de>
-References: <559D35CA.2050402@uweschneider.de>	<2576741.YrBIndJIHB@ws-stein>	<CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>	<3634451.aFQ5B85Yzk@ws-stein> <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
-Mime-Version: 1.0
+From: Tim Hotfilter <thotfilter@osdr.org>
+Subject: Problem using Linux CAN
+Date: Wed, 22 Jul 2015 12:49:20 +0200
+Message-ID: <CD02850D-3BF4-4AE3-B1A3-72E34D09C061@osdr.org>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from groat.dascon.de ([195.225.198.185]:51425 "EHLO groat.dascon.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S933092AbbGVIBI (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 22 Jul 2015 04:01:08 -0400
-In-Reply-To: <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
+Received: from dd20724.kasserver.com ([85.13.140.203]:48649 "EHLO
+	dd20724.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932481AbbGVI4o convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 22 Jul 2015 04:56:44 -0400
+Received: from [192.168.1.114] (capt-portal-intranet.scc.kit.edu [141.3.208.9])
+	by dd20724.kasserver.com (Postfix) with ESMTPSA id AA8241A0774
+	for <linux-can@vger.kernel.org>; Wed, 22 Jul 2015 10:49:23 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-Cc: Holger Schurig <holgerschurig@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can@vger.kernel.org
 
-Am 09.07.2015 um 09:59 schrieb Holger Schurig:
->> The early parts (ColdFire) have 16 buffers, didn't have "Message Queueing" or the FIFO, so aren't supported by Linux at all.
-> Fine, so we can ignore them :-)
-That would be one more reason to at least have an option for working without the hardware FIFO.
->
->> Is it "normal" to have interrupts locked out for more than 300us (six 50us CAN messages at 1MHz)?
-> Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
-> load, and CAN messages with 3 bytes of data. My guess this was mostly
-> due to the sucky SDHCI (eMMC) driver code in Linux. I fixed that, but
-> occassionally ftrace still shows large times with irqsoff, I need to
-> dig into them as well. Still /me thinks that an RxFIFO of just 6 CAN
-> messages isn't swell for an OS that is known to not guarantee response
-> times, like Linux. Especially not for CAN, people use it after all
-> because of it's reliability guarantees.
-I've done some tests with FTRACE, same result. The trace results show that the SDHCI driver executes long sequences of code under spinlock_irqsave. As far as I can see from the trace, sdhci_do_set_ios first locks the interrupts, then activates the clock, does the operation and deactivates the clock again. The actual busy looping appears in the IMX SD/MMC driver which is waiting after every clock change. Turning off CONFIG_MMC_CLKGATE doesn't help here. Even when these busy waits would be avoided there still would be ~100us of operations under spinlock_irqsave.
->
-> BTW, with the current in-tree FlexCAN drivers we have two things were
-> IRQ or scheduling latency can cause lost frames:
->
-> * the time from the hardware IRQ until flexcan_isr() is actually
-> called, e.g. because for spin_lock_irqsave
-> * the time when the ISR does a napi_schedule() until NAPI get's
-> scheduled and calls flexcan_poll()
->
-> For the first latency, only FTRACE and fixing the other kernel parts
-> helps. Unfortunately, some kernel parts are so complex that it is
-> over-the-head of many people (ok, I confess: over my head).
->
-> I killed the second latency with my kfifo patch that I posted the
-> other day. Getting rid of NAPI completely would also be a method, I'm
-> not sure NAPI wins us anything, compared to Ethernet CAN is slow.
+Hi,
+
+I am developing a control unit using four CAN Controllers based on the =
+Xilinx Zynq 7000. Two CAN Controllers (based on the sja1000) are implem=
+ented in the Zynq=E2=80=99s FPGA and two are already integrated. The co=
+ntrol unit runs Linux 3.19 with socket can.=20
+Under higher CAN busload (30% or more) socket CAN returns Error 105: No=
+ buffer space available. The problem is independent from the hardware, =
+it occurs on both sja1000 and xilinx can. Restarting the network device=
+ by bringing it down and up enables to send again. But since there are =
+other ECUs using watchdogs this solution is not suitable.=20
+After some kernel debugging it exposes that somehow a transmit interrup=
+t gets lost. This results in a stopped tx queue and the transmit buffer=
+ overflows.
+
+Is there a possibility to handle with the lost interrupt, like waking u=
+p the queue after a short timeout?
+
+Thank you in advance!
+
+Best regards=20
+Tim Hotfilter
 
