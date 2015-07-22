@@ -1,87 +1,52 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
- code by David Jander)
-Date: Wed, 22 Jul 2015 10:57:22 +0200
-Message-ID: <55AF5AF2.6050905@pengutronix.de>
-References: <559D35CA.2050402@uweschneider.de> <2576741.YrBIndJIHB@ws-stein>
- <CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com>
- <3634451.aFQ5B85Yzk@ws-stein>
- <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com>
- <55AF4D9D.8040904@uweschneider.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="4m0Tgq820dFgKAoBbsAEsVoatLrMqSS5D"
+From: Tobias Schmitt <tobias.schmitt@codm.de>
+Subject: State of ISO-TP in SocketCAN?
+Date: Wed, 22 Jul 2015 11:45:35 +0200
+Message-ID: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:38368 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756063AbbGVI5a (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 22 Jul 2015 04:57:30 -0400
-In-Reply-To: <55AF4D9D.8040904@uweschneider.de>
+Received: from mail.codm.de ([213.178.9.190]:37698 "EHLO aria.codm.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932429AbbGVJyK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 22 Jul 2015 05:54:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by aria.codm.de (Postfix) with ESMTP id 2D36D3460B6
+	for <linux-can@vger.kernel.org>; Wed, 22 Jul 2015 11:45:37 +0200 (CEST)
+Received: from aria.codm.de ([127.0.0.1])
+	by localhost (aria.codm.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id dm2bPJSVMrpw for <linux-can@vger.kernel.org>;
+	Wed, 22 Jul 2015 11:45:35 +0200 (CEST)
+Received: from [192.168.40.100] (toni.codm.de [87.139.45.202])
+	(Authenticated sender: tobias.schmitt@codm.de)
+	by aria.codm.de (Postfix) with ESMTPSA id BEF203460B5
+	for <linux-can@vger.kernel.org>; Wed, 22 Jul 2015 11:45:35 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Torsten Lang <torsten.lang@uweschneider.de>
-Cc: Holger Schurig <holgerschurig@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4m0Tgq820dFgKAoBbsAEsVoatLrMqSS5D
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi
 
-On 07/22/2015 10:00 AM, Torsten Lang wrote:
-> Am 09.07.2015 um 09:59 schrieb Holger Schurig:
->>> The early parts (ColdFire) have 16 buffers, didn't have "Message Queu=
-eing" or the FIFO, so aren't supported by Linux at all.
->> Fine, so we can ignore them :-)
-> That would be one more reason to at least have an option for working wi=
-thout the hardware FIFO.
->>
->>> Is it "normal" to have interrupts locked out for more than 300us (six=
- 50us CAN messages at 1MHz)?
->> Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
->> load, and CAN messages with 3 bytes of data. My guess this was mostly
->> due to the sucky SDHCI (eMMC) driver code in Linux. I fixed that, but
->> occassionally ftrace still shows large times with irqsoff, I need to
->> dig into them as well. Still /me thinks that an RxFIFO of just 6 CAN
->> messages isn't swell for an OS that is known to not guarantee response=
+I work on a project using a beaglebone black and it's CAN interface via SocketCAN. At first I want to thank you all for this, it's working incredibly stable! Since our payload of data will be much higher soon (about 50-100 bytes in one package) we want to use ISO-TP. The thing is, that the information about the state of the ISO-TP implementation of SocketCAN is very rare and provides some contrary information. I hope this mailinglist can bring some clarity to my confused mind.
 
->> times, like Linux. Especially not for CAN, people use it after all
->> because of it's reliability guarantees.
-> I've done some tests with FTRACE, same result. The trace results show t=
-hat the SDHCI driver executes long sequences of code under spinlock_irqsa=
-ve. As far as I can see from the trace, sdhci_do_set_ios first locks the =
-interrupts, then activates the clock, does the operation and deactivates =
-the clock again. The actual busy looping appears in the IMX SD/MMC driver=
- which is waiting after every clock change. Turning off CONFIG_MMC_CLKGAT=
-E doesn't help here. Even when these busy waits would be avoided there st=
-ill would be ~100us of operations under spinlock_irqsave.
+At first my target device where I try to run can-isotp:
+Beaglebone Black Rev B / C
+Beaglebone Ubuntu 14.04.02 image from http://elinux.org/BeagleBoardUbuntu
+uname: Linux bone 3.8.13-bone63 #1 SMP Mon Aug 11 23:03:02 UTC 2014 armv7l armv7l armv7l GNU/Linux
 
-IIRC you can insert a SD/MMC/eMMC and mark it as non removable in the DT
-to work around the problem - connecting the Card Detection pin might
-also work.
+What I have done:
+0: lots of internet searches
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+1: read Documentation/networking/can.txt:
+It says that one just has to use the ISOTP protocol when initializing the socket.
+I downloaded the can-utils repo and tried to use isotpsend for testing purposes. the isotp programs exit with "socket: protocol not supported".
 
+2: Then I found an old post by Oliver Hartkopp on this mailinglist (http://comments.gmane.org/gmane.linux.can/2135) which says that one has to use kernelmodule can-isotp instead of can-raw. I also cannot find any option for compiling a can-isotp module on the 3.8 kernel in 'make menuconfig'. Then I found the can-isotp-modules repo in Oliver Hartkopps github account (http://github.com/hartkopp/can-isotp-modules) which I cannot build because of missing definitions (NETIF_F_NO_CSUM in net/can/slcan.c). Since the repos description says that this Repo is obsolete and there's a Alpha-Warning in the README.isotp file, i assume this is not the right repository to use anyway.
 
---4m0Tgq820dFgKAoBbsAEsVoatLrMqSS5D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+And now I'm very confused and maybe on a complete wrong track. Is there a official and stable way to use ISOTP as a protocol in SocketCAN, and where can I find it? Is it still in development and can I help with it somehow?
 
------BEGIN PGP SIGNATURE-----
+Best regards
+Tobias
 
-iQEcBAEBCgAGBQJVr1rzAAoJEP5prqPJtc/H74EIAL/uXUIO73CfCkURdq2glfE2
-GmrtEzb/m4jjpuvRFrYM9kgWP46TN7v4jNnK9pANG5oHOSyWbfFKBpzSdvQwOEkl
-POPhc+UK48QeK0si/mS4NaGDpIF6ehPEL9Q9EDOvPzwRY1TH6sTK5X5P9f8CF2vF
-kUrND7iTJPvoYQEZma7jgeV/myo1l3Ihx7MSbzejeLR7upspB0qE5jCsBJ1+6LJT
-5kIb5sbISUG7aM5pOQDjH6n+/Wk3IaY5d1kydQAJYYRUwdkgWqZjNY6JjXI2rKhd
-C7cWKD1GuoqygqJqYe3ZA3gRKmc0u6m+o9828tlArrZOTVK960q6udbsYCANy70=
-=89Ny
------END PGP SIGNATURE-----
+PS: I hope this mail provides enough information and is not too text heavy, since it's my first question on a official mailinglist. If not, I apologize!
 
---4m0Tgq820dFgKAoBbsAEsVoatLrMqSS5D--
