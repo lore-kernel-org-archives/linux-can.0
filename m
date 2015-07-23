@@ -1,70 +1,47 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Problem using Linux CAN
-Date: Thu, 23 Jul 2015 19:26:17 +0200
-Message-ID: <55B123B9.1090306@hartkopp.net>
-References: <CD02850D-3BF4-4AE3-B1A3-72E34D09C061@osdr.org> <55AFD5DA.7010601@hartkopp.net> <A0E5883A-3FBB-4060-8A38-A32DA743B16B@osdr.org> <55AFE356.9070906@hartkopp.net> <0948A186-060F-4A31-8359-755DE78647A0@osdr.org> <928F9D91-F184-4CEF-850E-899A84D444A1@osdr.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Tobias Schmitt <tobias.schmitt@codm.de>
+Subject: Re: State of ISO-TP in SocketCAN?
+Date: Thu, 23 Jul 2015 20:02:01 +0200
+Message-ID: <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
+References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:37952 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754197AbbGWR0V (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 13:26:21 -0400
-In-Reply-To: <928F9D91-F184-4CEF-850E-899A84D444A1@osdr.org>
+Received: from mail.codm.de ([213.178.9.190]:35861 "EHLO aria.codm.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753721AbbGWSCF convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 14:02:05 -0400
+In-Reply-To: <55AFE01E.1080700@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tim Hotfilter <thotfilter@osdr.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-Hi Tim,
 
-On 23.07.2015 15:13, Tim Hotfilter wrote:
-> Kernel version is 3.19.
+> After clonig the above git repo just do
+> 
+> [...]
 
-ok
+I completely missed the additional makefiles in subfolders. Thank you! Everything works fine now!
 
-> Here is the output of ip link show:
-> [root@mcu15 ~]# ip -s -d link show can1
-> 3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 128
->      link/can  promiscuity 0
->      can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->            bitrate 1000000 sample-point 0.700
->            tq 100 prop-seg 3 phase-seg1 3 phase-seg2 3 sjw 1
->            sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
->            clock 50000000
->            re-started bus-errors arbit-lost error-warn error-pass bus-off
->            0          0          0          0          0          0
->      RX: bytes  packets  errors  dropped overrun mcast
->      54816      12451    0       0       0       0
->      TX: bytes  packets  errors  dropped carrier collsns
->      5279       108392   0       0       0       0
->
-> The Inferface does not really go offline. This interface is also not in an error state. Receive still works: I can see incoming can frames via candump.
+> 
+> [...]
+> The ISO-TP (segmentation) protocol itself is working properly.
 
-ok.
+Perfect. ISO-TP itself is the main point for us since we do not use CAN FD.
 
-> Only the transmit path stops working.
+But I have one more question: I tested a lot with socketcand and the isotp utilities in can-utils today. In all of the programs you have to define the source and destination IDs on the can bus very static.
+In our application we use extended adressing, the master device on CAN has a specific id (0x00) and has to listen to the slave devices (which need to have different IDs for adressing).
 
-Hm :-(
+So I either need to open a socket for every slave device, or in case of possible wildcards the program call could be:
 
-> My hardware configuration is quite simple: The control unit is directly connected to a vector can case with termination resistors.
- > I can see incoming frames in CanOe and can also transmit frames.
+./isotprecv -s * -d 0 -x 0:**
 
-Ah - you are using CANoe with CANcase ...
+Is there any possibility to use the SocketCAN isotp protocol the "wildcard"-way I intend? I could also pass the information about the sender device into the payload of the isotp message. But why is there extended adressing then?
 
-So here are some ideas.
+> So if you have ideas about how to solve these final issues I definitely would appreciate to discuss them here :-)
 
-1. Try it with 500kbit/s with a sampling-point of 80% on both sides.
+I have to add that I'm just a cs student in my bachelor internship and might be not the right person to discuss this topics. At the moment I'm studying the Linux Device Drivers 4th Edition book and also the whole SocketCAN project. But maybe in a few weeks I might have an opinion about it :-).
 
-2. I had a similar CANoe problem in the past. Please try to add *another* CAN 
-node which can ACK your sent frames. E.g. connect one of the other CAN 
-interfaces of your Xilinx board to the existing bus.
-
-3. The error state handling has changed in 3.19. For a test you might revert 
-this commit: 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=215db1856e8313ef8a1d9b64346dc261570012a6
-
-Regards,
-Oliver
-
+Best regards
+Tobias
