@@ -1,47 +1,56 @@
-From: Tobias Schmitt <tobias.schmitt@codm.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: State of ISO-TP in SocketCAN?
-Date: Thu, 23 Jul 2015 20:02:01 +0200
-Message-ID: <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
-References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8BIT
+Date: Thu, 23 Jul 2015 20:29:17 +0200
+Message-ID: <55B1327D.10507@hartkopp.net>
+References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net> <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.codm.de ([213.178.9.190]:35861 "EHLO aria.codm.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753721AbbGWSCF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 14:02:05 -0400
-In-Reply-To: <55AFE01E.1080700@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:42780 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753385AbbGWS3W (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 14:29:22 -0400
+In-Reply-To: <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Tobias Schmitt <tobias.schmitt@codm.de>
 Cc: linux-can@vger.kernel.org
 
+Hi Tobias,
 
-> After clonig the above git repo just do
-> 
-> [...]
+On 23.07.2015 20:02, Tobias Schmitt wrote:
 
-I completely missed the additional makefiles in subfolders. Thank you! Everything works fine now!
+> But I have one more question: I tested a lot with socketcand and the isotp utilities in can-utils today. In all of the programs you have to define the source and destination IDs on the can bus very static.
+> In our application we use extended adressing, the master device on CAN has a specific id (0x00) and has to listen to the slave devices (which need to have different IDs for adressing).
+>
+> So I either need to open a socket for every slave device, or in case of possible wildcards the program call could be:
+>
+> ./isotprecv -s * -d 0 -x 0:**
+>
+> Is there any possibility to use the SocketCAN isotp protocol the "wildcard"-way I intend? I could also pass the information about the sender device into the payload of the isotp message. But why is there extended adressing then?
 
-> 
-> [...]
-> The ISO-TP (segmentation) protocol itself is working properly.
+No, intentionally not.
 
-Perfect. ISO-TP itself is the main point for us since we do not use CAN FD.
+Whenever you have a transport protocol channel for segmented PDUs you have to 
+provide two CAN-IDs to match FF/CF and FC messages on the 'virtual channel' on 
+the bus.
 
-But I have one more question: I tested a lot with socketcand and the isotp utilities in can-utils today. In all of the programs you have to define the source and destination IDs on the can bus very static.
-In our application we use extended adressing, the master device on CAN has a specific id (0x00) and has to listen to the slave devices (which need to have different IDs for adressing).
+The extended addressing is just some kind of 'extension for the CAN-ID'.
 
-So I either need to open a socket for every slave device, or in case of possible wildcards the program call could be:
+E.g. If you would have a wildcard, to what address should you send the FC 
+then? You would need to implement some connection tracking - even when you are 
+communicating simultaneously to different nodes.
 
-./isotprecv -s * -d 0 -x 0:**
+The functional addressing does not need segmentation, so you can create and 
+send functional PDUs by 'handmade' ISO-TP CAN frames via CAN_RAW sockets.
 
-Is there any possibility to use the SocketCAN isotp protocol the "wildcard"-way I intend? I could also pass the information about the sender device into the payload of the isotp message. But why is there extended adressing then?
+When your application needs to 'listen' on several transport channels you may 
+create as much sockets as you need and read from them simultaneously e.g. with 
+the select() syscall.
 
-> So if you have ideas about how to solve these final issues I definitely would appreciate to discuss them here :-)
+Does that help for your use-case? Can you tell about your use-case?
 
-I have to add that I'm just a cs student in my bachelor internship and might be not the right person to discuss this topics. At the moment I'm studying the Linux Device Drivers 4th Edition book and also the whole SocketCAN project. But maybe in a few weeks I might have an opinion about it :-).
+Regards,
+Oliver
 
-Best regards
-Tobias
