@@ -1,56 +1,86 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: State of ISO-TP in SocketCAN?
-Date: Thu, 23 Jul 2015 20:29:17 +0200
-Message-ID: <55B1327D.10507@hartkopp.net>
-References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net> <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: can: flexcan: implement workaround for FIFO overruns (based on
+ code by David Jander)
+Date: Fri, 24 Jul 2015 13:53:13 +1000
+Message-ID: <55B1B6A9.1000702@optusnet.com.au>
+References: <559D35CA.2050402@uweschneider.de> <2576741.YrBIndJIHB@ws-stein> <CAOpc7mEc+kr=Es34772fcTnsQpJsaCaoVOx67AhfRjxucPhAhw@mail.gmail.com> <3634451.aFQ5B85Yzk@ws-stein> <CAOpc7mG52ni5ESuijv1qVLpMznZXSxxU8gmkhjGqtKZfXuxUNQ@mail.gmail.com> <55AF4D9D.8040904@uweschneider.de> <55AF5AF2.6050905@pengutronix.de>
+Reply-To: tom_usenet@optusnet.com.au
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:42780 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753385AbbGWS3W (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 14:29:22 -0400
-In-Reply-To: <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de>
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45073 "EHLO
+	mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752894AbbGXDxR (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2015 23:53:17 -0400
+In-Reply-To: <55AF5AF2.6050905@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tobias Schmitt <tobias.schmitt@codm.de>
-Cc: linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Torsten Lang <torsten.lang@uweschneider.de>
+Cc: Holger Schurig <holgerschurig@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
 
-Hi Tobias,
+On 22/07/15 18:57, Marc Kleine-Budde wrote:
+> On 07/22/2015 10:00 AM, Torsten Lang wrote:
+>> Am 09.07.2015 um 09:59 schrieb Holger Schurig:
+>>>> Is it "normal" to have interrupts locked out for more than 300us
+ >>>> (six 50us CAN messages at 1MHz)?
+>>> Unfortunately yes.  My $CUSTOMER had overruns with 500 kB/s, 80% bus
+>>> load, and CAN messages with 3 bytes of data. My guess this was mostly
+>>> due to the sucky SDHCI (eMMC) driver code in Linux.
 
-On 23.07.2015 20:02, Tobias Schmitt wrote:
+There's been some off-list email on this. It looks like the MMC driver isn't 
+well written.
 
-> But I have one more question: I tested a lot with socketcand and the isotp utilities in can-utils today. In all of the programs you have to define the source and destination IDs on the can bus very static.
-> In our application we use extended adressing, the master device on CAN has a specific id (0x00) and has to listen to the slave devices (which need to have different IDs for adressing).
->
-> So I either need to open a socket for every slave device, or in case of possible wildcards the program call could be:
->
-> ./isotprecv -s * -d 0 -x 0:**
->
-> Is there any possibility to use the SocketCAN isotp protocol the "wildcard"-way I intend? I could also pass the information about the sender device into the payload of the isotp message. But why is there extended adressing then?
+I think I've found the "Official Freescale" workaround for the CAN problems 
+under Linux:
 
-No, intentionally not.
+http://cache.freescale.com/files/32bit/doc/app_note/AN4815.pdf
 
-Whenever you have a transport protocol channel for segmented PDUs you have to 
-provide two CAN-IDs to match FF/CF and FC messages on the 'virtual channel' on 
-the bus.
+The above App Note documents migration to the i.MX 6SoloX chip. It contains 
+one each of Cortex-A9 and Cortex-M4 CPU cores.
 
-The extended addressing is just some kind of 'extension for the CAN-ID'.
+The purpose of the M4 core is listed to be:
 
-E.g. If you would have a wildcard, to what address should you send the FC 
-then? You would need to implement some connection tracking - even when you are 
-communicating simultaneously to different nodes.
+               Secondary processor for fast boot, low power
+               processing, and robust CAN message handling.
 
-The functional addressing does not need segmentation, so you can create and 
-send functional PDUs by 'handmade' ISO-TP CAN frames via CAN_RAW sockets.
+So that's your only fix. Use a totally separate CPU for CAN.
 
-When your application needs to 'listen' on several transport channels you may 
-create as much sockets as you need and read from them simultaneously e.g. with 
-the select() syscall.
+Or don't design hardware that uses chips that the software doesn't support 
+(well enough to work with your other hardware). So don't design with eMMC on 
+this platform. Use something simpler and faster, like NAND or NOR Flash.
 
-Does that help for your use-case? Can you tell about your use-case?
+On a slightly better note, who's responsible for the MMC driver?
 
-Regards,
-Oliver
+Which one are you using? This one (from Freescale 2.6.35):
+
+/*
+  *  linux/drivers/mmc/host/mxc_mmc.c - Freescale MXC/i.MX MMC driver
+  *
+  *  based on imxmmc.c
+  *  Copyright (C) 2004 Sascha Hauer, Pengutronix <sascha@saschahauer.de>
+  *
+  *  derived from pxamci.c by Russell King
+
+This one from the Mainline:
+
+http://lxr.free-electrons.com/source/drivers/mmc/host/mxcmmc.c
+
+   9  *  Copyright (C) 2008 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+  10  *  Copyright (C) 2006 Pavel Pisa, PiKRON <ppisa@pikron.com>
+  11  *
+  12  *  derived from pxamci.c by Russell King
+
+Is there a mailing list where these apparent MMC driver problems can be 
+reported? Probably "gmane.linux.kernel.mmc".
+
+It might be worth posting some FTRACE results to there.
+
+> IIRC you can insert a SD/MMC/eMMC and mark it as non removable
+ > in the DT to work around the problem - connecting the Card
+ > Detection pin might also work.
+
+Has anyone tested that to see if it helps or helps enough?
+
+Tom
 
