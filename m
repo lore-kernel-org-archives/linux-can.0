@@ -1,87 +1,80 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH] can: xilinx: fix RX FIFO overflow error handling
-Date: Fri, 24 Jul 2015 06:15:38 +0200
-Message-ID: <55B1BBEA.7020506@xilinx.com>
-References: <1437685986-25824-1-git-send-email-andrea.scian@dave.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1437685986-25824-1-git-send-email-andrea.scian@dave.eu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrea Scian <andrea.scian@dave.eu>, michal.simek@xilinx.com
-Cc: mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-List-Id: linux-can.vger.kernel.org
+From: Tim Hotfilter <thotfilter@osdr.org>
+Subject: Re: Problem using Linux CAN
+Date: Fri, 24 Jul 2015 09:53:30 +0200
+Message-ID: <839E49C8-4EA6-4DE5-8901-3AAECD1435CA@osdr.org>
+References: <CD02850D-3BF4-4AE3-B1A3-72E34D09C061@osdr.org> <55AFD5DA.7010601@hartkopp.net> <A0E5883A-3FBB-4060-8A38-A32DA743B16B@osdr.org> <55AFE356.9070906@hartkopp.net> <0948A186-060F-4A31-8359-755DE78647A0@osdr.org> <928F9D91-F184-4CEF-850E-899A84D444A1@osdr.org> <55B123B9.1090306@hartkopp.net>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from dd20724.kasserver.com ([85.13.140.203]:44985 "EHLO
+	dd20724.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751653AbbGXHxe convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 24 Jul 2015 03:53:34 -0400
+In-Reply-To: <55B123B9.1090306@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-+ Kedar
+Hi Oliver,
 
-On 07/23/2015 11:13 PM, Andrea Scian wrote:
-> Simply resetting the peripheral on RX FIFO overflow in not enough,
-> because we also need to re-initialize the whole device.
-> Also always enable RX FIFO overflow interrupt otherwise we may hang
-> until another interrupt arrives (this happens if FIFO overrun and just
-> read from CAN bus with candump)
+Thanks for your ideas. 
+1. 500kBaud results in the same problem. 
+2. The problem also occurs with the final configuration (about 5 can nodes). As i mentioned in the first mail, one node has a can-frame watchdog and turns off. 
+3. I had kernel 3.17. before. For testing I upgraded to 3.19
+
+I think the problem is the stopped tx queue. Is there any chance to implement something like a timeout function, which wakes the queue if the buffer fill level is over a threshold.
+
+Regards 
+Tim
+
+> On 23 Jul 2015, at 19:26, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 > 
-> Signed-off-by: Andrea Scian <andrea.scian@dave.eu>
-> ---
+> Hi Tim,
 > 
-> You can reproduce the problem with the following test-bed
-> * connect a Zynq based board to a PC with a CAN bus adapter (e.g. PCAN USB)
-> * start sending lots of CAN messages to Zynq system
-> * configure and start xilinx CAN driver
-> ** canconfig can0 bitrate 1000000
-> ** canconfig can0 start
-> * try to send/receive messages (cansend/candump)
-> * if you send a CAN message you'll get the RX FIFO error and additional messages
-> will not be received
-> * if you try to get messages you simple don't receive them (no interrupt triggered)
-> * with canconfig stop/start the hang goes away (if the others peers stop sending
-> send lots of messages ;-) )
+> On 23.07.2015 15:13, Tim Hotfilter wrote:
+>> Kernel version is 3.19.
 > 
-> I tested the patch over xilinx-2014.04 kernel, but the patch applies cleanly to
-> mainline too.
+> ok
 > 
-> If someone has a better understanding of Xilinx CAN driver, please let me know if
-> it's better to handle the error in a different manner.
+>> Here is the output of ip link show:
+>> [root@mcu15 ~]# ip -s -d link show can1
+>> 3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 128
+>>     link/can  promiscuity 0
+>>     can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+>>           bitrate 1000000 sample-point 0.700
+>>           tq 100 prop-seg 3 phase-seg1 3 phase-seg2 3 sjw 1
+>>           sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+>>           clock 50000000
+>>           re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>           0          0          0          0          0          0
+>>     RX: bytes  packets  errors  dropped overrun mcast
+>>     54816      12451    0       0       0       0
+>>     TX: bytes  packets  errors  dropped carrier collsns
+>>     5279       108392   0       0       0       0
+>> 
+>> The Inferface does not really go offline. This interface is also not in an error state. Receive still works: I can see incoming can frames via candump.
 > 
-> Maybe the bus off handler need the same threadment too.
+> ok.
 > 
-> TIA,
+>> Only the transmit path stops working.
 > 
-> Andrea Scian
+> Hm :-(
 > 
-> ---
->  drivers/net/can/xilinx_can.c |    5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>> My hardware configuration is quite simple: The control unit is directly connected to a vector can case with termination resistors.
+> > I can see incoming frames in CanOe and can also transmit frames.
 > 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index 5e8b560..c278177 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -100,6 +100,7 @@ enum xcan_reg {
->  #define XCAN_INTR_ALL		(XCAN_IXR_TXOK_MASK | XCAN_IXR_BSOFF_MASK |\
->  				 XCAN_IXR_WKUP_MASK | XCAN_IXR_SLP_MASK | \
->  				 XCAN_IXR_RXNEMP_MASK | XCAN_IXR_ERROR_MASK | \
-> +				 XCAN_IXR_RXOFLW_MASK | \
->  				 XCAN_IXR_ARBLST_MASK | XCAN_IXR_RXOK_MASK)
->  
->  /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
-> @@ -526,6 +527,7 @@ static int xcan_rx(struct net_device *ndev)
->  	return 1;
->  }
->  
-> +static void xcan_chip_stop(struct net_device *ndev);
->  /**
->   * xcan_err_interrupt - error frame Isr
->   * @ndev:	net_device pointer
-> @@ -597,7 +599,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
->  	if (isr & XCAN_IXR_RXOFLW_MASK) {
->  		stats->rx_over_errors++;
->  		stats->rx_errors++;
-> -		priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
-> +		xcan_chip_stop(ndev);
-> +		xcan_chip_start(ndev);
->  		if (skb) {
->  			cf->can_id |= CAN_ERR_CRTL;
->  			cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
+> Ah - you are using CANoe with CANcase ...
 > 
+> So here are some ideas.
+> 
+> 1. Try it with 500kbit/s with a sampling-point of 80% on both sides.
+> 
+> 2. I had a similar CANoe problem in the past. Please try to add *another* CAN node which can ACK your sent frames. E.g. connect one of the other CAN interfaces of your Xilinx board to the existing bus.
+> 
+> 3. The error state handling has changed in 3.19. For a test you might revert this commit: http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=215db1856e8313ef8a1d9b64346dc261570012a6
+> 
+> Regards,
+> Oliver
+
