@@ -1,69 +1,75 @@
-From: Tobias Schmitt <tobias.schmitt@codm.de>
-Subject: Re: State of ISO-TP in SocketCAN?
-Date: Sat, 25 Jul 2015 17:11:53 +0200
-Message-ID: <138744C7-2312-4A95-9479-6D465F184F92@codm.de>
-References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net> <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de> <55B1327D.10507@hartkopp.net>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8BIT
+From: John Whitmore <arigead@gmail.com>
+Subject: Re: SocketCAN on Intel Edison with MCP 2515
+Date: Sun, 26 Jul 2015 11:05:44 +0100
+Message-ID: <20150726100542.GC11080@bamboo.electronicsoup>
+References: <CAKa_yg_Lrpw7J70UzJf5x2EeB6mrmbFarxgbYCf+xHyD8Nb2eQ@mail.gmail.com>
+ <5566CF9C.4040302@optusnet.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.codm.de ([213.178.9.190]:52198 "EHLO aria.codm.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754871AbbGYPL6 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 25 Jul 2015 11:11:58 -0400
-In-Reply-To: <55B1327D.10507@hartkopp.net>
+Received: from mail-wi0-f171.google.com ([209.85.212.171]:36867 "EHLO
+	mail-wi0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753074AbbGZKFu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 26 Jul 2015 06:05:50 -0400
+Received: by wibud3 with SMTP id ud3so80600769wib.0
+        for <linux-can@vger.kernel.org>; Sun, 26 Jul 2015 03:05:49 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5566CF9C.4040302@optusnet.com.au>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Tom Evans <tom_usenet@optusnet.com.au>
+Cc: Michael Gallagher <mjg@isomorphdevelopment.com>, linux-can@vger.kernel.org
 
-Hi Oliver
-
-> No, intentionally not.
+On Thu, May 28, 2015 at 06:19:40PM +1000, Tom Evans wrote:
+> On 28/05/15 01:18, Michael Gallagher wrote:
+> >Hello,
+> >
+> >I am new to SocketCAN and have some basic questions, I'm hoping that
+> >someone might be able to point me in the right direction.
+> >
+> >I have recompiled Yocto (uname - r returns 3.10.17-yocoto standard)
 > 
-> Whenever you have a transport protocol channel for segmented PDUs you have to provide two CAN-IDs to match FF/CF and FC messages on the 'virtual channel' on the bus.
+> That's pretty new. Newer linux versions rely more and more on the
+> Device Tree. If the devices aren't enumerated in the Device Tree
+> (meaning that you have an MCP2515 and it is at a specific
+> address/chip-select on a particular SPI bus) then it won't enable
+> it.
 > 
-> The extended addressing is just some kind of 'extension for the CAN-ID'
-
-Okay, I thought it's purpose is to use it like sender and receiver adresses.
-
-> E.g. If you would have a wildcard, to what address should you send the FC then? You would need to implement some connection tracking - even when you are communicating simultaneously to different nodes.
-
-Yes, especially when communication simultaneously. I will try to explain how I implement the ISO-TP extended adressing in our project at the moment (Application Level with can_raw on the Beaglebone Black and AVR-C implementation on AT90CAN). I have to add that we don't use CAN for diagnostics, but for real device-to-device communication on the bus. 
-
-We assume there are 3 Clients on the Bus, 1 Master (Beaglebone) and 2 Slaves (AT90CAN). Every device has one unique ID (Master 0, Slaves 0-245, the rest for special purpose).
-can_id = sender_id
-data[0] = receiver_id (extended adressing)
-data[1] ... ISOTP and Data.
-
-For example (I'm not at home so maybe there are a few mistakes with data lengths or IDs, but I think the main point is clear):
-Master (0x00) sends to slave (0x14)
-syntax -> canid - data[0] data[1] ....
-
-Singleframe master to slave:
-0x00 - 0x01 0x04 0xDE 0xAD 0xBE 0xEF
-
-ISOTP with FF, CF and FC
-<master: send FF to 0x01 with length 12 byte>
-0x00 - 0x14 0x10 0x0B 0xDE 0xAD 0xBE 0xEF 0xDE
-<slave: FC frame from slave to master>
-0x14 - 0x00 0x30 0x09 0x00
-<master: CFs... >
-0x00 - 0x14 0x21 0xAD 0xBE 0xEF 0xDE 0xAD 0xBE
-0x00 - 0x14 0x22 0xEF
-
-This is how I understood extended adressing. On the Linux side I'm implementing a daemon which acts similar to the socketcand and processes isotp on appilcation level and puts the content of the isotp messages on a TCP Port. I have to add, that this "mechanism" of forwarding on a TCP port evolved in my head while I was developing. I didn't know about socketcand at this time.
-
-I think I will finish this daemon in the following week and upload it to github (since it's not critical to our product, my boss is absolutely willing to commit it into OSS community under a free licence - as well as the relevant librarys for at90can devices I wrote).
-
-
-> The functional addressing does not need segmentation, so you can create and send functional PDUs by 'handmade' ISO-TP CAN frames via CAN_RAW sockets.
+> Linux used to be "Plug and Play", but they've fixed that bug...
 > 
-> When your application needs to 'listen' on several transport channels you may create as much sockets as you need and read from them simultaneously e.g. with the select() syscall.
+> Device Tree problems are really hard. The "language" and its
+> "keywords" depend on every driver and every driver-writer, and they
+> make different choices, and then change them when a new kernel comes
+> out.
+>
+
+I'm certainly no expert but have to say that the Device Tree stuff is great,
+from my point of view. I'm using RPi so previously had to edit a "C" board
+file for my hardware and create structures to explain to the kernel what SPI
+interface the MCP2515 was connected to, What SPI Clock Freq to use, and what
+Chip Select pin to use. Then rebuild the kernel with that board file. Not
+really Plug and Play.
+
+With the later RPi kernels all I have to do is make sure MCP2515 driver is
+included in the build and edit NO C files at all. Basically I then have a
+device tree file that tells the RPi kernel you've got an MCP2515 connected on
+Chip Select 1 and a RTC on Chip select 2. It does the rest. 
+
+One point on the original question is that when you executed "dmesg | grep
+can" there was no mention of "can0" at all. It looked like the kernel didn't
+recognise the chip was there. I'll try to check this for you but I think when
+my system boots it recognises the device and instantiates can0 device.
+
+I might be wrong but I'll check.
+
+John
+
+
+> Check in the Documentation/devicetree/Bindings to see if it says what to do.
 > 
-> Does that help for your use-case? Can you tell about your use-case?
-
-I must admit that I'm not really sure if I understood everything you wrote. So using the socket-level iso-tp implementation with our project (as I explained above) is not possible? The exact usecase is a system for door accesscontrol with iButtons which is expendable over the CAN bus. This bus exists only inside the fusebox / cabinet and handles the communication between the master server and the slave extensions. Since I'm developing with SHA1 iButtons for higher security a raw can message is not enough anymore and we need a more complex protocol, so my first idea was iso-tp.
-
-best regards,
-Tobias
+> Tom
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
