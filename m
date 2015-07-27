@@ -1,112 +1,275 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: State of ISO-TP in SocketCAN?
-Date: Mon, 27 Jul 2015 19:40:35 +0200
-Message-ID: <55B66D13.2090605@hartkopp.net>
-References: <C0D0FD46-6144-4CFF-9730-FC6920E35766@codm.de> <55AFE01E.1080700@hartkopp.net> <1689D99C-35FD-4CC4-ADDB-375F1B6F7ACC@codm.de> <55B1327D.10507@hartkopp.net> <138744C7-2312-4A95-9479-6D465F184F92@codm.de>
+Subject: Re: [PATCH 8/8] can: replace timestamp as unique skb attribute
+Date: Mon, 27 Jul 2015 20:34:32 +0200
+Message-ID: <55B679B8.30705@hartkopp.net>
+References: <1436728691-1145-1-git-send-email-mkl@pengutronix.de> <1436728691-1145-9-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:45329 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:62731 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753029AbbG0Rkk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jul 2015 13:40:40 -0400
-In-Reply-To: <138744C7-2312-4A95-9479-6D465F184F92@codm.de>
+	with ESMTP id S1754382AbbG0Sen (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jul 2015 14:34:43 -0400
+In-Reply-To: <1436728691-1145-9-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tobias Schmitt <tobias.schmitt@codm.de>
-Cc: linux-can@vger.kernel.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, linux-stable <stable@vger.kernel.org>
 
-On 25.07.2015 17:11, Tobias Schmitt wrote:
+Hello Greg,
 
->> Whenever you have a transport protocol channel for segmented PDUs you have to provide two CAN-IDs to match FF/CF and FC messages on the 'virtual channel' on the bus.
->>
->> The extended addressing is just some kind of 'extension for the CAN-ID'
+On 12.07.2015 21:18, Marc Kleine-Budde wrote:
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
 >
-> Okay, I thought it's purpose is to use it like sender and receiver adresses.
+> Commit 514ac99c64b "can: fix multiple delivery of a single CAN frame for
+> overlapping CAN filters" requires the skb->tstamp to be set to check for
+> identical CAN skbs.
 >
-
-Probably if you compare it to sender/receiver addresses inside a VPN tunnel 
-(which is defined by the two CAN-IDs).
-
->> E.g. If you would have a wildcard, to what address should you send the FC then? You would need to implement some connection tracking - even when you are communicating simultaneously to different nodes.
+> Without timestamping to be required by user space applications this timestamp
+> was not generated which lead to commit 36c01245eb8 "can: fix loss of CAN frames
+> in raw_rcv" - which forces the timestamp to be set in all CAN related skbuffs
+> by introducing several __net_timestamp() calls.
 >
-> Yes, especially when communication simultaneously. I will try to explain how I implement the ISO-TP extended adressing in our project at the moment (Application Level with can_raw on the Beaglebone Black and AVR-C implementation on AT90CAN). I have to add that we don't use CAN for diagnostics, but for real device-to-device communication on the bus.
+> This forces e.g. out of tree drivers which are not using alloc_can{,fd}_skb()
+> to add __net_timestamp() after skbuff creation to prevent the frame loss fixed
+> in mainline Linux.
 >
-> We assume there are 3 Clients on the Bus, 1 Master (Beaglebone) and 2 Slaves (AT90CAN). Every device has one unique ID (Master 0, Slaves 0-245, the rest for special purpose).
-> can_id = sender_id
-> data[0] = receiver_id (extended adressing)
-> data[1] ... ISOTP and Data.
+> This patch removes the timestamp dependency and uses an atomic counter to
+> create an unique identifier together with the skbuff pointer.
 >
-> For example (I'm not at home so maybe there are a few mistakes with data lengths or IDs, but I think the main point is clear):
-> Master (0x00) sends to slave (0x14)
-> syntax -> canid - data[0] data[1] ....
+> Btw: the new skbcnt element introduced in struct can_skb_priv has to be
+> initialized with zero in out-of-tree drivers which are not using
+> alloc_can{,fd}_skb() too.
 >
-> Singleframe master to slave:
-> 0x00 - 0x01 0x04 0xDE 0xAD 0xBE 0xEF
->
-> ISOTP with FF, CF and FC
-> <master: send FF to 0x01 with length 12 byte>
-> 0x00 - 0x14 0x10 0x0B 0xDE 0xAD 0xBE 0xEF 0xDE
-> <slave: FC frame from slave to master>
-> 0x14 - 0x00 0x30 0x09 0x00
-> <master: CFs... >
-> 0x00 - 0x14 0x21 0xAD 0xBE 0xEF 0xDE 0xAD 0xBE
-> 0x00 - 0x14 0x22 0xEF
->
-> This is how I understood extended adressing.
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: linux-stable <stable@vger.kernel.org>
 
-No this not extended addressing. You are mixing the addressing defined by the 
-(outer) CAN-IDs with the (inner) extended addressing (which needs two fixed 
-CAN-IDs).
+Can you please queue up this missing/lost patch for the long term 4.1.x ?
 
-Your addressing scheme is interesting - but unfortunately it has nothing to do 
-with ISO-TP addressing ;-)
+It fixes the mess with commits
 
-> On the Linux side I'm implementing a daemon which acts similar to the socketcand and processes isotp on appilcation level and puts the content of the isotp messages on a TCP Port. I have to add, that this "mechanism" of forwarding on a TCP port evolved in my head while I was developing. I didn't know about socketcand at this time.
->
-> I think I will finish this daemon in the following week and upload it to github (since it's not critical to our product, my boss is absolutely willing to commit it into OSS community under a free licence - as well as the relevant librarys for at90can devices I wrote).
+514ac99c64b "can: fix multiple delivery of a single CAN frame for overlapping 
+CAN filters"
 
-Very good attitude - you should spend him a beer for that :-)
+which originally fixed
 
->> The functional addressing does not need segmentation, so you can create and send functional PDUs by 'handmade' ISO-TP CAN frames via CAN_RAW sockets.
->>
->> When your application needs to 'listen' on several transport channels you may create as much sockets as you need and read from them simultaneously e.g. with the select() syscall.
->>
->> Does that help for your use-case? Can you tell about your use-case?
->
-> I must admit that I'm not really sure if I understood everything you wrote.
+36c01245eb8 "can: fix loss of CAN frames in raw_rcv"
 
-Forget about it - now that I know your idea it has no value for you.
+So finally this missing patch would bring 4.1.x into the proper state we now 
+have in 4.2-rc4.
 
-> So using the socket-level iso-tp implementation with our project (as I explained above) is not possible?
+Upstream commit of this patch is:
 
-No - unfortunately not.
-
-Even if you would do some hacking to implement your special addressing scheme 
-you would need to have n different sockets (== state machines) on each host to 
-talk to the n different nodes with segmented PDUs.
-
-And if you have created n sockets anyway you might think about 29bit CAN-IDs 
-where you can encode the master/slave IDs into the CAN-IDs, e.g.
-
-0x00001400 tx_id
-0x00000014 rx_id
-
-This would work with the iso-tp implementation then.
-
-> The exact usecase is a system for door accesscontrol with iButtons which is expendable over the CAN bus. This bus exists only inside the fusebox / cabinet and handles the communication between the master server and the slave extensions. Since I'm developing with SHA1 iButtons for higher security a raw can message is not enough anymore and we need a more complex protocol, so my first idea was iso-tp.
-
-If you just need an authentication method for your CAN messages there's the 
-MaCAN (Message authenticated CAN) project probably something for you:
-
-https://github.com/CTU-IIG/macan
-
-The idea behind MaCAN is some exchange of session keys between the nodes at 
-system startup and then communicate in single CAN frames with a 32/24/16 bit MAC.
-
-https://github.com/CTU-IIG/macan/blob/master/doc/macan.pdf
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=d3b58c47d330de8c29898fe9746f7530408f8a59
 
 Best regards,
 Oliver
 
+
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>   drivers/net/can/dev.c   |  7 ++-----
+>   drivers/net/can/slcan.c |  2 +-
+>   drivers/net/can/vcan.c  |  3 ---
+>   include/linux/can/skb.h |  2 ++
+>   net/can/af_can.c        | 12 +++++++-----
+>   net/can/bcm.c           |  2 ++
+>   net/can/raw.c           |  7 ++++---
+>   7 files changed, 18 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index e9b1810d319f..aede704605c6 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -440,9 +440,6 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+>   		struct can_frame *cf = (struct can_frame *)skb->data;
+>   		u8 dlc = cf->can_dlc;
+>
+> -		if (!(skb->tstamp.tv64))
+> -			__net_timestamp(skb);
+> -
+>   		netif_rx(priv->echo_skb[idx]);
+>   		priv->echo_skb[idx] = NULL;
+>
+> @@ -578,7 +575,6 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+>   	if (unlikely(!skb))
+>   		return NULL;
+>
+> -	__net_timestamp(skb);
+>   	skb->protocol = htons(ETH_P_CAN);
+>   	skb->pkt_type = PACKET_BROADCAST;
+>   	skb->ip_summed = CHECKSUM_UNNECESSARY;
+> @@ -589,6 +585,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+>
+>   	can_skb_reserve(skb);
+>   	can_skb_prv(skb)->ifindex = dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>
+>   	*cf = (struct can_frame *)skb_put(skb, sizeof(struct can_frame));
+>   	memset(*cf, 0, sizeof(struct can_frame));
+> @@ -607,7 +604,6 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+>   	if (unlikely(!skb))
+>   		return NULL;
+>
+> -	__net_timestamp(skb);
+>   	skb->protocol = htons(ETH_P_CANFD);
+>   	skb->pkt_type = PACKET_BROADCAST;
+>   	skb->ip_summed = CHECKSUM_UNNECESSARY;
+> @@ -618,6 +614,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+>
+>   	can_skb_reserve(skb);
+>   	can_skb_prv(skb)->ifindex = dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>
+>   	*cfd = (struct canfd_frame *)skb_put(skb, sizeof(struct canfd_frame));
+>   	memset(*cfd, 0, sizeof(struct canfd_frame));
+> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+> index f64f5290d6f8..a23a7af8eb9a 100644
+> --- a/drivers/net/can/slcan.c
+> +++ b/drivers/net/can/slcan.c
+> @@ -207,7 +207,6 @@ static void slc_bump(struct slcan *sl)
+>   	if (!skb)
+>   		return;
+>
+> -	__net_timestamp(skb);
+>   	skb->dev = sl->dev;
+>   	skb->protocol = htons(ETH_P_CAN);
+>   	skb->pkt_type = PACKET_BROADCAST;
+> @@ -215,6 +214,7 @@ static void slc_bump(struct slcan *sl)
+>
+>   	can_skb_reserve(skb);
+>   	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>
+>   	memcpy(skb_put(skb, sizeof(struct can_frame)),
+>   	       &cf, sizeof(struct can_frame));
+> diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+> index 0ce868de855d..674f367087c5 100644
+> --- a/drivers/net/can/vcan.c
+> +++ b/drivers/net/can/vcan.c
+> @@ -78,9 +78,6 @@ static void vcan_rx(struct sk_buff *skb, struct net_device *dev)
+>   	skb->dev       = dev;
+>   	skb->ip_summed = CHECKSUM_UNNECESSARY;
+>
+> -	if (!(skb->tstamp.tv64))
+> -		__net_timestamp(skb);
+> -
+>   	netif_rx_ni(skb);
+>   }
+>
+> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+> index b6a52a4b457a..51bb6532785c 100644
+> --- a/include/linux/can/skb.h
+> +++ b/include/linux/can/skb.h
+> @@ -27,10 +27,12 @@
+>   /**
+>    * struct can_skb_priv - private additional data inside CAN sk_buffs
+>    * @ifindex:	ifindex of the first interface the CAN frame appeared on
+> + * @skbcnt:	atomic counter to have an unique id together with skb pointer
+>    * @cf:		align to the following CAN frame at skb->data
+>    */
+>   struct can_skb_priv {
+>   	int ifindex;
+> +	int skbcnt;
+>   	struct can_frame cf[0];
+>   };
+>
+> diff --git a/net/can/af_can.c b/net/can/af_can.c
+> index 7933e62a7318..166d436196c1 100644
+> --- a/net/can/af_can.c
+> +++ b/net/can/af_can.c
+> @@ -89,6 +89,8 @@ struct timer_list can_stattimer;   /* timer for statistics update */
+>   struct s_stats    can_stats;       /* packet statistics */
+>   struct s_pstats   can_pstats;      /* receive list statistics */
+>
+> +static atomic_t skbcounter = ATOMIC_INIT(0);
+> +
+>   /*
+>    * af_can socket functions
+>    */
+> @@ -310,12 +312,8 @@ int can_send(struct sk_buff *skb, int loop)
+>   		return err;
+>   	}
+>
+> -	if (newskb) {
+> -		if (!(newskb->tstamp.tv64))
+> -			__net_timestamp(newskb);
+> -
+> +	if (newskb)
+>   		netif_rx_ni(newskb);
+> -	}
+>
+>   	/* update statistics */
+>   	can_stats.tx_frames++;
+> @@ -683,6 +681,10 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
+>   	can_stats.rx_frames++;
+>   	can_stats.rx_frames_delta++;
+>
+> +	/* create non-zero unique skb identifier together with *skb */
+> +	while (!(can_skb_prv(skb)->skbcnt))
+> +		can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
+> +
+>   	rcu_read_lock();
+>
+>   	/* deliver the packet to sockets listening on all devices */
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index b523453585be..a1ba6875c2a2 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -261,6 +261,7 @@ static void bcm_can_tx(struct bcm_op *op)
+>
+>   	can_skb_reserve(skb);
+>   	can_skb_prv(skb)->ifindex = dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>
+>   	memcpy(skb_put(skb, CFSIZ), cf, CFSIZ);
+>
+> @@ -1217,6 +1218,7 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
+>   	}
+>
+>   	can_skb_prv(skb)->ifindex = dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>   	skb->dev = dev;
+>   	can_skb_set_owner(skb, sk);
+>   	err = can_send(skb, 1); /* send with loopback */
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index 31b9748cbb4e..2e67b1423cd3 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -75,7 +75,7 @@ MODULE_ALIAS("can-proto-1");
+>    */
+>
+>   struct uniqframe {
+> -	ktime_t tstamp;
+> +	int skbcnt;
+>   	const struct sk_buff *skb;
+>   	unsigned int join_rx_count;
+>   };
+> @@ -133,7 +133,7 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+>
+>   	/* eliminate multiple filter matches for the same skb */
+>   	if (this_cpu_ptr(ro->uniq)->skb == oskb &&
+> -	    ktime_equal(this_cpu_ptr(ro->uniq)->tstamp, oskb->tstamp)) {
+> +	    this_cpu_ptr(ro->uniq)->skbcnt == can_skb_prv(oskb)->skbcnt) {
+>   		if (ro->join_filters) {
+>   			this_cpu_inc(ro->uniq->join_rx_count);
+>   			/* drop frame until all enabled filters matched */
+> @@ -144,7 +144,7 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+>   		}
+>   	} else {
+>   		this_cpu_ptr(ro->uniq)->skb = oskb;
+> -		this_cpu_ptr(ro->uniq)->tstamp = oskb->tstamp;
+> +		this_cpu_ptr(ro->uniq)->skbcnt = can_skb_prv(oskb)->skbcnt;
+>   		this_cpu_ptr(ro->uniq)->join_rx_count = 1;
+>   		/* drop first frame to check all enabled filters? */
+>   		if (ro->join_filters && ro->count > 1)
+> @@ -749,6 +749,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+>
+>   	can_skb_reserve(skb);
+>   	can_skb_prv(skb)->ifindex = dev->ifindex;
+> +	can_skb_prv(skb)->skbcnt = 0;
+>
+>   	err = memcpy_from_msg(skb_put(skb, size), msg, size);
+>   	if (err < 0)
+>
