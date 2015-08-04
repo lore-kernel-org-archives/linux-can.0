@@ -1,108 +1,72 @@
-From: =?ISO-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: Re: [PATCH] can: pcan_usb: don't provide CAN FD bittimings by non-FD
- adapters
-Date: Sun, 02 Aug 2015 13:16:06 +0200
-Message-ID: <dac45249-ae41-4359-878b-da5d41a8f13e@email.android.com>
-References: <1438293228-20185-1-git-send-email-socketcan@hartkopp.net>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 8/8] can: replace timestamp as unique skb attribute
+Date: Tue, 4 Aug 2015 12:18:48 -0700
+Message-ID: <20150804191848.GA29709@kroah.com>
+References: <1436728691-1145-1-git-send-email-mkl@pengutronix.de>
+ <1436728691-1145-9-git-send-email-mkl@pengutronix.de>
+ <55B679B8.30705@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="===axigen=04538729456110825068=axigen==="
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:47442 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751091AbbHBLQQ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 2 Aug 2015 07:16:16 -0400
-In-Reply-To: <1438293228-20185-1-git-send-email-socketcan@hartkopp.net>
+Received: from mail.linuxfoundation.org ([140.211.169.12]:53446 "EHLO
+	mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752215AbbHDTSt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 4 Aug 2015 15:18:49 -0400
+Content-Disposition: inline
+In-Reply-To: <55B679B8.30705@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, linux-stable <stable@vger.kernel.org>
 
-This is a MIME message. You may need a MIME compliant mail user agent.
---===axigen=04538729456110825068=axigen===
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+On Mon, Jul 27, 2015 at 08:34:32PM +0200, Oliver Hartkopp wrote:
+> Hello Greg,
+> 
+> On 12.07.2015 21:18, Marc Kleine-Budde wrote:
+> >From: Oliver Hartkopp <socketcan@hartkopp.net>
+> >
+> >Commit 514ac99c64b "can: fix multiple delivery of a single CAN frame for
+> >overlapping CAN filters" requires the skb->tstamp to be set to check for
+> >identical CAN skbs.
+> >
+> >Without timestamping to be required by user space applications this timestamp
+> >was not generated which lead to commit 36c01245eb8 "can: fix loss of CAN frames
+> >in raw_rcv" - which forces the timestamp to be set in all CAN related skbuffs
+> >by introducing several __net_timestamp() calls.
+> >
+> >This forces e.g. out of tree drivers which are not using alloc_can{,fd}_skb()
+> >to add __net_timestamp() after skbuff creation to prevent the frame loss fixed
+> >in mainline Linux.
+> >
+> >This patch removes the timestamp dependency and uses an atomic counter to
+> >create an unique identifier together with the skbuff pointer.
+> >
+> >Btw: the new skbcnt element introduced in struct can_skb_priv has to be
+> >initialized with zero in out-of-tree drivers which are not using
+> >alloc_can{,fd}_skb() too.
+> >
+> >Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> >Cc: linux-stable <stable@vger.kernel.org>
+> 
+> Can you please queue up this missing/lost patch for the long term 4.1.x ?
+> 
+> It fixes the mess with commits
+> 
+> 514ac99c64b "can: fix multiple delivery of a single CAN frame for
+> overlapping CAN filters"
+> 
+> which originally fixed
+> 
+> 36c01245eb8 "can: fix loss of CAN frames in raw_rcv"
+> 
+> So finally this missing patch would bring 4.1.x into the proper state we now
+> have in 4.2-rc4.
+> 
+> Upstream commit of this patch is:
+> 
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=d3b58c47d330de8c29898fe9746f7530408f8a59
 
-T2sgT2xpdmVyLCB5b3UndmUgZ290IG15IEFja2VkLWJ5IQoKVGh4IGFuZCByZWdhcmRzLAoKU3TD
-qXBoYW5lCgpMZcKgMzAganVpbC4gMjAxNSAyMzo1MywgT2xpdmVyIEhhcnRrb3BwIDxzb2NrZXRj
-YW5AaGFydGtvcHAubmV0PiBhIMOpY3JpdMKgOgo+Cj4gVGhlIENBTiBGRCBkYXRhIGJpdHRpbWlu
-ZyBjb25zdGFudHMgYXJlIHByb3ZpZGVkIHZpYSBuZXRsaW5rIG9ubHkgd2hlbiB0aGVyZSAKPiBh
-cmUgdmFsaWQgQ0FOIEZEIGNvbnN0YW50cyBhdmFpbGFibGUgaW4gcHJpdi0+ZGF0YV9iaXR0aW1p
-bmdfY29uc3QuIAo+Cj4gRHVlIHRvIHRoZSBpbmRpcmVjdGlvbiBvZiBwb2ludGVyIGFzc2lnbm1l
-bnRzIGluIHRoZSBwZWFrX3VzYiBkcml2ZXIgdGhlIAo+IHByaXYtPmRhdGFfYml0dGltaW5nX2Nv
-bnN0IG5ldmVyIGJlY29tZXMgTlVMTCAtIG5vdCBldmVuIGZvciBub24tRkQgYWRhcHRlcnMuIAo+
-Cj4gVGhlIGRhdGFfYml0dGltaW5nX2NvbnN0IHBvaW50cyB0byB6ZXJvJ2VkIGRhdGEgd2hpY2gg
-bGVhZHMgdG8gdGhpcyByZXN1bHQgCj4gd2hlbiBydW5uaW5nICdpcCAtZGV0YWlscyBsaW5rIHNo
-b3cgY2FuMCc6IAo+Cj4gMzU6IGNhbjA6IDxOT0FSUCxFQ0hPPiBtdHUgMTYgcWRpc2Mgbm9vcCBz
-dGF0ZSBET1dOIG1vZGUgREVGQVVMVCBncm91cCBkZWZhdWx0IHFsZW4gMTAgCj4gwqDCoMKgIGxp
-bmsvY2FuwqAgcHJvbWlzY3VpdHkgMCAKPiDCoMKgwqAgY2FuIHN0YXRlIFNUT1BQRUQgcmVzdGFy
-dC1tcyAwIAo+IMKgIHBjYW5fdXNiOiB0c2VnMSAxLi4xNiB0c2VnMiAxLi44IHNqdyAxLi40IGJy
-cCAxLi42NCBicnAtaW5jIDEgCj4gwqAgOiBkdHNlZzEgMC4uMCBkdHNlZzIgMC4uMCBkc2p3IDEu
-LjAgZGJycCAwLi4wIGRicnAtaW5jIDDCoCA8PT0gQlJPS0VOISAKPiDCoCBjbG9jayA4MDAwMDAw
-IAo+Cj4gVGhpcyBwYXRjaCBzZXRzIHRoZSBkZXZfc2V0X2RhdGFfYml0dGltaW5nIGluIHN0cnVj
-dCBwZWFrX2FkYXB0ZXIgdG8gTlVMTCB0byAKPiBiZSBhYmxlIHRvIGRpc2FibGUgdGhlIENBTiBG
-RCBzcGVjaWZpYyBpbmZvcm1hdGlvbiBvbiBub24tRkQgYWRhcHRlcnMuIAo+Cj4gUmVsZXZhbnQg
-Zm9yIHN0YWJsZSBrZXJuZWxzIDQuMCsgCj4KPiBTaWduZWQtb2ZmLWJ5OiBPbGl2ZXIgSGFydGtv
-cHAgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+IAo+IC0tLSAKPiBkcml2ZXJzL25ldC9jYW4vdXNi
-L3BlYWtfdXNiL3BjYW5fdXNiLmPCoMKgwqDCoMKgIHwgMSArIAo+IGRyaXZlcnMvbmV0L2Nhbi91
-c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIHwgOSArKysrKysrLS0gCj4gZHJpdmVycy9uZXQv
-Y2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9wcm8uY8KgIHwgMSArIAo+IDMgZmlsZXMgY2hhbmdl
-ZCwgOSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKSAKPgo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmMgYi9kcml2ZXJzL25ldC9jYW4vdXNi
-L3BlYWtfdXNiL3BjYW5fdXNiLmMgCj4gaW5kZXggNmI5NDAwNy4uNWM0YjI3MCAxMDA2NDQgCj4g
-LS0tIGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYi5jIAo+ICsrKyBiL2Ry
-aXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYyAKPiBAQCAtODk2LDYgKzg5Niw3
-IEBAIGNvbnN0IHN0cnVjdCBwZWFrX3VzYl9hZGFwdGVyIHBjYW5fdXNiID0geyAKPiAuZGV2X2lu
-aXQgPSBwY2FuX3VzYl9pbml0LCAKPiAuZGV2X3NldF9idXMgPSBwY2FuX3VzYl93cml0ZV9tb2Rl
-LCAKPiAuZGV2X3NldF9iaXR0aW1pbmcgPSBwY2FuX3VzYl9zZXRfYml0dGltaW5nLCAKPiArIC5k
-ZXZfc2V0X2RhdGFfYml0dGltaW5nID0gTlVMTCwgCj4gLmRldl9nZXRfZGV2aWNlX2lkID0gcGNh
-bl91c2JfZ2V0X2RldmljZV9pZCwgCj4gLmRldl9kZWNvZGVfYnVmID0gcGNhbl91c2JfZGVjb2Rl
-X2J1ZiwgCj4gLmRldl9lbmNvZGVfbXNnID0gcGNhbl91c2JfZW5jb2RlX21zZywgCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jIGIvZHJp
-dmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmMgCj4gaW5kZXggNzkyMWNm
-Zi4uNzZjMDYyNCAxMDA2NDQgCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9w
-Y2FuX3VzYl9jb3JlLmMgCj4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2Fu
-X3VzYl9jb3JlLmMgCj4gQEAgLTc5NCw4ICs3OTQsMTMgQEAgc3RhdGljIGludCBwZWFrX3VzYl9j
-cmVhdGVfZGV2KGNvbnN0IHN0cnVjdCBwZWFrX3VzYl9hZGFwdGVyICpwZWFrX3VzYl9hZGFwdGVy
-LCAKPiBkZXYtPmNhbi5jbG9jayA9IHBlYWtfdXNiX2FkYXB0ZXItPmNsb2NrOyAKPiBkZXYtPmNh
-bi5iaXR0aW1pbmdfY29uc3QgPSAmcGVha191c2JfYWRhcHRlci0+Yml0dGltaW5nX2NvbnN0OyAK
-PiBkZXYtPmNhbi5kb19zZXRfYml0dGltaW5nID0gcGVha191c2Jfc2V0X2JpdHRpbWluZzsgCj4g
-LSBkZXYtPmNhbi5kYXRhX2JpdHRpbWluZ19jb25zdCA9ICZwZWFrX3VzYl9hZGFwdGVyLT5kYXRh
-X2JpdHRpbWluZ19jb25zdDsgCj4gLSBkZXYtPmNhbi5kb19zZXRfZGF0YV9iaXR0aW1pbmcgPSBw
-ZWFrX3VzYl9zZXRfZGF0YV9iaXR0aW1pbmc7IAo+ICsgaWYgKHBlYWtfdXNiX2FkYXB0ZXItPmRl
-dl9zZXRfZGF0YV9iaXR0aW1pbmcpIHsgCj4gKyBkZXYtPmNhbi5kYXRhX2JpdHRpbWluZ19jb25z
-dCA9ICZwZWFrX3VzYl9hZGFwdGVyLT5kYXRhX2JpdHRpbWluZ19jb25zdDsgCj4gKyBkZXYtPmNh
-bi5kb19zZXRfZGF0YV9iaXR0aW1pbmcgPSBwZWFrX3VzYl9zZXRfZGF0YV9iaXR0aW1pbmc7IAo+
-ICsgfSBlbHNlIHsgCj4gKyBkZXYtPmNhbi5kYXRhX2JpdHRpbWluZ19jb25zdCA9IE5VTEw7IAo+
-ICsgZGV2LT5jYW4uZG9fc2V0X2RhdGFfYml0dGltaW5nID0gTlVMTDsgCj4gKyB9IAo+IGRldi0+
-Y2FuLmRvX3NldF9tb2RlID0gcGVha191c2Jfc2V0X21vZGU7IAo+IGRldi0+Y2FuLmRvX2dldF9i
-ZXJyX2NvdW50ZXIgPSBwZWFrX3VzYl9hZGFwdGVyLT5kb19nZXRfYmVycl9jb3VudGVyOyAKPiBk
-ZXYtPmNhbi5jdHJsbW9kZV9zdXBwb3J0ZWQgPSBwZWFrX3VzYl9hZGFwdGVyLT5jdHJsbW9kZV9z
-dXBwb3J0ZWQ7IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3Bj
-YW5fdXNiX3Byby5jIGIvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9wcm8u
-YyAKPiBpbmRleCA3ZDYxYjMyLi45MTExYTU0IDEwMDY0NCAKPiAtLS0gYS9kcml2ZXJzL25ldC9j
-YW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX3Byby5jIAo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi91
-c2IvcGVha191c2IvcGNhbl91c2JfcHJvLmMgCj4gQEAgLTEwNDgsNiArMTA0OCw3IEBAIGNvbnN0
-IHN0cnVjdCBwZWFrX3VzYl9hZGFwdGVyIHBjYW5fdXNiX3BybyA9IHsgCj4gLmRldl9mcmVlID0g
-cGNhbl91c2JfcHJvX2ZyZWUsIAo+IC5kZXZfc2V0X2J1cyA9IHBjYW5fdXNiX3Byb19zZXRfYnVz
-LCAKPiAuZGV2X3NldF9iaXR0aW1pbmcgPSBwY2FuX3VzYl9wcm9fc2V0X2JpdHRpbWluZywgCj4g
-KyAuZGV2X3NldF9kYXRhX2JpdHRpbWluZyA9IE5VTEwsIAo+IC5kZXZfZ2V0X2RldmljZV9pZCA9
-IHBjYW5fdXNiX3Byb19nZXRfZGV2aWNlX2lkLCAKPiAuZGV2X2RlY29kZV9idWYgPSBwY2FuX3Vz
-Yl9wcm9fZGVjb2RlX2J1ZiwgCj4gLmRldl9lbmNvZGVfbXNnID0gcGNhbl91c2JfcHJvX2VuY29k
-ZV9tc2csIAo+IC0tIAo+IDIuMS40IAo+Cg==
+It's in my queue, I still have way over 200 commits to get through for
+4.1.x, your patches are in good company.
 
-
---===axigen=04538729456110825068=axigen===
-Content-Type: text/plain;
-	name="Signature.txt"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
-	filename="Signature.txt"
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
---===axigen=04538729456110825068=axigen===--
+greg k-h
