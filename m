@@ -1,153 +1,303 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: pcan_usb: don't provide CAN FD bittimings by non-FD
- adapters
-Date: Thu, 6 Aug 2015 09:54:03 +0200
-Message-ID: <55C3129B.80702@pengutronix.de>
-References: <1438293228-20185-1-git-send-email-socketcan@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="wIq8JDKlcVvPl3cLAL0FGf2b81gqAJxSs"
+Subject: [PATCH v2] can: pcan_usb: don't provide CAN FD bittimings by non-FD adapters
+Date: Thu,  6 Aug 2015 10:07:59 +0200
+Message-ID: <1438848491-16234-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:44662 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:37133 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752822AbbHFHyU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Aug 2015 03:54:20 -0400
-In-Reply-To: <1438293228-20185-1-git-send-email-socketcan@hartkopp.net>
+	with ESMTP id S1754873AbbHFIIc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 6 Aug 2015 04:08:32 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: s.grosjean@peak-system.com
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wIq8JDKlcVvPl3cLAL0FGf2b81gqAJxSs
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+The CAN FD data bittiming constants are provided via netlink only when there
+are valid CAN FD constants available in priv->data_bittiming_const.
 
-On 07/30/2015 11:53 PM, Oliver Hartkopp wrote:
-> The CAN FD data bittiming constants are provided via netlink only when =
-there
-> are valid CAN FD constants available in priv->data_bittiming_const.
->=20
-> Due to the indirection of pointer assignments in the peak_usb driver th=
-e
-> priv->data_bittiming_const never becomes NULL - not even for non-FD ada=
-pters.
->=20
-> The data_bittiming_const points to zero'ed data which leads to this res=
-ult
-> when running 'ip -details link show can0':
->=20
-> 35: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group =
-default qlen 10
->     link/can  promiscuity 0
->     can state STOPPED restart-ms 0
-> 	  pcan_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-> 	  : dtseg1 0..0 dtseg2 0..0 dsjw 1..0 dbrp 0..0 dbrp-inc 0  <=3D=3D BR=
-OKEN!
-> 	  clock 8000000
->=20
-> This patch sets the dev_set_data_bittiming in struct peak_adapter to NU=
-LL to
-> be able to disable the CAN FD specific information on non-FD adapters.
->=20
-> Relevant for stable kernels 4.0+
->=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/usb/peak_usb/pcan_usb.c      | 1 +
->  drivers/net/can/usb/peak_usb/pcan_usb_core.c | 9 +++++++--
->  drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 1 +
->  3 files changed, 9 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/=
-usb/peak_usb/pcan_usb.c
-> index 6b94007..5c4b270 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> @@ -896,6 +896,7 @@ const struct peak_usb_adapter pcan_usb =3D {
->  	.dev_init =3D pcan_usb_init,
->  	.dev_set_bus =3D pcan_usb_write_mode,
->  	.dev_set_bittiming =3D pcan_usb_set_bittiming,
-> +	.dev_set_data_bittiming =3D NULL,
+Due to the indirection of pointer assignments in the peak_usb driver the
+priv->data_bittiming_const never becomes NULL - not even for non-FD adapters.
 
-Due to C99 initializers this is not needed, as unset elements are
-automatically set to 0.
+The data_bittiming_const points to zero'ed data which leads to this result
+when running 'ip -details link show can0':
 
->  	.dev_get_device_id =3D pcan_usb_get_device_id,
->  	.dev_decode_buf =3D pcan_usb_decode_buf,
->  	.dev_encode_msg =3D pcan_usb_encode_msg,
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net=
-/can/usb/peak_usb/pcan_usb_core.c
-> index 7921cff..76c0624 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -794,8 +794,13 @@ static int peak_usb_create_dev(const struct peak_u=
-sb_adapter *peak_usb_adapter,
->  	dev->can.clock =3D peak_usb_adapter->clock;
->  	dev->can.bittiming_const =3D &peak_usb_adapter->bittiming_const;
->  	dev->can.do_set_bittiming =3D peak_usb_set_bittiming;
-> -	dev->can.data_bittiming_const =3D &peak_usb_adapter->data_bittiming_c=
-onst;
-> -	dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
+35: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
+    link/can  promiscuity 0
+    can state STOPPED restart-ms 0
+	  pcan_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+	  : dtseg1 0..0 dtseg2 0..0 dsjw 1..0 dbrp 0..0 dbrp-inc 0  <== BROKEN!
+	  clock 8000000
 
-Set bittiming can be assigned unconditionally. We just have to take care
-about data_bittiming_const.
+This patch sets the dev_set_data_bittiming in struct peak_adapter to NULL to
+be able to disable the CAN FD specific information on non-FD adapters.
 
-> +	if (peak_usb_adapter->dev_set_data_bittiming) {
-> +		dev->can.data_bittiming_const =3D &peak_usb_adapter->data_bittiming_=
-const;
-> +		dev->can.do_set_data_bittiming =3D peak_usb_set_data_bittiming;
-> +	} else {
-> +		dev->can.data_bittiming_const =3D NULL;
-> +		dev->can.do_set_data_bittiming =3D NULL;
-> +	}
->  	dev->can.do_set_mode =3D peak_usb_set_mode;
->  	dev->can.do_get_berr_counter =3D peak_usb_adapter->do_get_berr_counte=
-r;
->  	dev->can.ctrlmode_supported =3D peak_usb_adapter->ctrlmode_supported;=
+This patch changes the struct peak_usb_adapter::bittiming_const and struct
+peak_usb_adapter::data_bittiming_const to pointers to fix the assignemnt
+problems.
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/=
-can/usb/peak_usb/pcan_usb_pro.c
-> index 7d61b32..9111a54 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> @@ -1048,6 +1048,7 @@ const struct peak_usb_adapter pcan_usb_pro =3D {
->  	.dev_free =3D pcan_usb_pro_free,
->  	.dev_set_bus =3D pcan_usb_pro_set_bus,
->  	.dev_set_bittiming =3D pcan_usb_pro_set_bittiming,
-> +	.dev_set_data_bittiming =3D NULL,
+Cc: linux-stable <stable@vger.kernel.org> # > 4.0
+Reported-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
 
-not needed, C99.
+picking up Olvier's work. Alternate approach, I've made the
+peak_usb_adapter::bittiming_const and struct
+peak_usb_adapter::data_bittiming_const a pointer.
 
->  	.dev_get_device_id =3D pcan_usb_pro_get_device_id,
->  	.dev_decode_buf =3D pcan_usb_pro_decode_buf,
->  	.dev_encode_msg =3D pcan_usb_pro_encode_msg,
->=20
-
+Please test,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ drivers/net/can/usb/peak_usb/pcan_usb.c      | 24 +++----
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  4 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |  4 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 96 +++++++++++++++-------------
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 24 +++----
+ 5 files changed, 82 insertions(+), 70 deletions(-)
 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 6b94007ae052..838545ce468d 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -854,6 +854,18 @@ static int pcan_usb_probe(struct usb_interface *intf)
+ /*
+  * describe the PCAN-USB adapter
+  */
++static const struct can_bittiming_const pcan_usb_const = {
++	.name = "pcan_usb",
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 64,
++	.brp_inc = 1,
++};
++
+ const struct peak_usb_adapter pcan_usb = {
+ 	.name = "PCAN-USB",
+ 	.device_id = PCAN_USB_PRODUCT_ID,
+@@ -862,17 +874,7 @@ const struct peak_usb_adapter pcan_usb = {
+ 	.clock = {
+ 		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
+ 	},
+-	.bittiming_const = {
+-		.name = "pcan_usb",
+-		.tseg1_min = 1,
+-		.tseg1_max = 16,
+-		.tseg2_min = 1,
+-		.tseg2_max = 8,
+-		.sjw_max = 4,
+-		.brp_min = 1,
+-		.brp_max = 64,
+-		.brp_inc = 1,
+-	},
++	.bittiming_const = &pcan_usb_const,
+ 
+ 	/* size of device private data */
+ 	.sizeof_dev_private = sizeof(struct pcan_usb),
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 7921cff93a63..5a2e341a6d1e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -792,9 +792,9 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+ 	dev->ep_msg_out = peak_usb_adapter->ep_msg_out[ctrl_idx];
+ 
+ 	dev->can.clock = peak_usb_adapter->clock;
+-	dev->can.bittiming_const = &peak_usb_adapter->bittiming_const;
++	dev->can.bittiming_const = peak_usb_adapter->bittiming_const;
+ 	dev->can.do_set_bittiming = peak_usb_set_bittiming;
+-	dev->can.data_bittiming_const = &peak_usb_adapter->data_bittiming_const;
++	dev->can.data_bittiming_const = peak_usb_adapter->data_bittiming_const;
+ 	dev->can.do_set_data_bittiming = peak_usb_set_data_bittiming;
+ 	dev->can.do_set_mode = peak_usb_set_mode;
+ 	dev->can.do_get_berr_counter = peak_usb_adapter->do_get_berr_counter;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index 9e624f05ad4d..506fe506c9d3 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -48,8 +48,8 @@ struct peak_usb_adapter {
+ 	u32 device_id;
+ 	u32 ctrlmode_supported;
+ 	struct can_clock clock;
+-	const struct can_bittiming_const bittiming_const;
+-	const struct can_bittiming_const data_bittiming_const;
++	const struct can_bittiming_const * const bittiming_const;
++	const struct can_bittiming_const * const data_bittiming_const;
+ 	unsigned int ctrl_count;
+ 
+ 	int (*intf_probe)(struct usb_interface *intf);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 09d14e70abd7..ce44a033f63b 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -990,6 +990,30 @@ static void pcan_usb_fd_free(struct peak_usb_device *dev)
+ }
+ 
+ /* describes the PCAN-USB FD adapter */
++static const struct can_bittiming_const pcan_usb_fd_const = {
++	.name = "pcan_usb_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 64,
++	.tseg2_min = 1,
++	.tseg2_max = 16,
++	.sjw_max = 16,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
++};
++
++static const struct can_bittiming_const pcan_usb_fd_data_const = {
++	.name = "pcan_usb_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
++};
++
+ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.name = "PCAN-USB FD",
+ 	.device_id = PCAN_USBFD_PRODUCT_ID,
+@@ -999,28 +1023,8 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+-	.bittiming_const = {
+-		.name = "pcan_usb_fd",
+-		.tseg1_min = 1,
+-		.tseg1_max = 64,
+-		.tseg2_min = 1,
+-		.tseg2_max = 16,
+-		.sjw_max = 16,
+-		.brp_min = 1,
+-		.brp_max = 1024,
+-		.brp_inc = 1,
+-	},
+-	.data_bittiming_const = {
+-		.name = "pcan_usb_fd",
+-		.tseg1_min = 1,
+-		.tseg1_max = 16,
+-		.tseg2_min = 1,
+-		.tseg2_max = 8,
+-		.sjw_max = 4,
+-		.brp_min = 1,
+-		.brp_max = 1024,
+-		.brp_inc = 1,
+-	},
++	.bittiming_const = &pcan_usb_fd_const,
++	.data_bittiming_const = &pcan_usb_fd_data_const,
+ 
+ 	/* size of device private data */
+ 	.sizeof_dev_private = sizeof(struct pcan_usb_fd_device),
+@@ -1058,6 +1062,30 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ };
+ 
+ /* describes the PCAN-USB Pro FD adapter */
++static const struct can_bittiming_const pcan_usb_pro_fd_const = {
++	.name = "pcan_usb_pro_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 64,
++	.tseg2_min = 1,
++	.tseg2_max = 16,
++	.sjw_max = 16,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
++};
++
++static const struct can_bittiming_const pcan_usb_pro_fd_data_const = {
++	.name = "pcan_usb_pro_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
++};
++
+ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.name = "PCAN-USB Pro FD",
+ 	.device_id = PCAN_USBPROFD_PRODUCT_ID,
+@@ -1067,28 +1095,8 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+-	.bittiming_const = {
+-		.name = "pcan_usb_pro_fd",
+-		.tseg1_min = 1,
+-		.tseg1_max = 64,
+-		.tseg2_min = 1,
+-		.tseg2_max = 16,
+-		.sjw_max = 16,
+-		.brp_min = 1,
+-		.brp_max = 1024,
+-		.brp_inc = 1,
+-	},
+-	.data_bittiming_const = {
+-		.name = "pcan_usb_pro_fd",
+-		.tseg1_min = 1,
+-		.tseg1_max = 16,
+-		.tseg2_min = 1,
+-		.tseg2_max = 8,
+-		.sjw_max = 4,
+-		.brp_min = 1,
+-		.brp_max = 1024,
+-		.brp_inc = 1,
+-	},
++	.bittiming_const = &pcan_usb_pro_fd_const,
++	.data_bittiming_const = &pcan_usb_pro_fd_data_const,
+ 
+ 	/* size of device private data */
+ 	.sizeof_dev_private = sizeof(struct pcan_usb_fd_device),
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index 7d61b3279798..bbdd6058cd2f 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -1004,6 +1004,18 @@ int pcan_usb_pro_probe(struct usb_interface *intf)
+ /*
+  * describe the PCAN-USB Pro adapter
+  */
++static const struct can_bittiming_const pcan_usb_pro_const = {
++	.name = "pcan_usb_pro",
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
++};
++
+ const struct peak_usb_adapter pcan_usb_pro = {
+ 	.name = "PCAN-USB Pro",
+ 	.device_id = PCAN_USBPRO_PRODUCT_ID,
+@@ -1012,17 +1024,7 @@ const struct peak_usb_adapter pcan_usb_pro = {
+ 	.clock = {
+ 		.freq = PCAN_USBPRO_CRYSTAL_HZ,
+ 	},
+-	.bittiming_const = {
+-		.name = "pcan_usb_pro",
+-		.tseg1_min = 1,
+-		.tseg1_max = 16,
+-		.tseg2_min = 1,
+-		.tseg2_max = 8,
+-		.sjw_max = 4,
+-		.brp_min = 1,
+-		.brp_max = 1024,
+-		.brp_inc = 1,
+-	},
++	.bittiming_const = &pcan_usb_pro_const,
+ 
+ 	/* size of device private data */
+ 	.sizeof_dev_private = sizeof(struct pcan_usb_pro_device),
+-- 
+2.4.6
 
---wIq8JDKlcVvPl3cLAL0FGf2b81gqAJxSs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJVwxKbAAoJEP5prqPJtc/HsNcH/0y+jSFMjK8JYnhYxfb8lMY6
-f5eatCsYiF8CZkT9VCruWRkBbvlBHVvjso1UQGi+TTJswJe8E0yffi7lcwE+H9LZ
-2X4TrX5qJsJuZuukymVcU9DJjp6Pwe6X2BksIMVYaLSD2MwH55rMXa50Yca0IIo2
-ehpSA5Pf8zdK7uC7+X21iXoOLhqjQsD4AgRzmpYtt52zKHNJHgoPdYqp+hSzuMYJ
-Aly2IHGSUnSkur2HyMQ8h4qUEeBFqPSXy/tsyyebmMrBs0e7Q9KIZZ104VmLQfi5
-ZpbbxhmJFN2IGJ7J3exYZCtMM7ttIotFhkGsMRQxBVWZxM9Y/n+w83PwdWjVEY0=
-=RYyJ
------END PGP SIGNATURE-----
-
---wIq8JDKlcVvPl3cLAL0FGf2b81gqAJxSs--
