@@ -1,39 +1,37 @@
-From: Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH] can: flexcan: demote register output to debug level
-Date: Fri,  7 Aug 2015 17:16:03 +0200
-Message-ID: <1438960563-17905-1-git-send-email-l.stach@pengutronix.de>
+From: yegorslists@googlemail.com
+Subject: [PATCH] autotools: fix syntax error
+Date: Fri,  7 Aug 2015 18:05:26 +0200
+Message-ID: <1438963526-31603-1-git-send-email-yegorslists@googlemail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:36625 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753570AbbHGPQG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Aug 2015 11:16:06 -0400
+Received: from mail.visionsystems.de ([213.209.99.202]:50299 "EHLO
+	mail.visionsystems.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932459AbbHGQgq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 7 Aug 2015 12:36:46 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, patchwork-lst@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: socketcan@hartkopp.net, Yegor Yefremov <yegorslists@googlemail.com>
 
-This message isn't really helpful for the general reader of the kernel
-logs, so should not be printed with info level. All other register
-programming outputs in the flexcan driver already use the debug level.
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
 ---
- drivers/net/can/flexcan.c | 2 +-
+ configure.ac | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index ad0a7e8c2c2b..95abd395cb0d 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -797,7 +797,7 @@ static void flexcan_set_bittiming(struct net_device *dev)
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
- 		reg |= FLEXCAN_CTRL_SMP;
+diff --git a/configure.ac b/configure.ac
+index 633ba81..8b50fb7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -20,7 +20,7 @@ AC_PROG_CC
+ LT_INIT(win32-dll)
  
--	netdev_info(dev, "writing ctrl=0x%08x\n", reg);
-+	netdev_dbg(dev, "writing ctrl=0x%08x\n", reg);
- 	flexcan_write(reg, &regs->ctrl);
+ AM_INIT_AUTOMAKE([foreign no-exeext dist-bzip2])
+-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes]]))
++m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
  
- 	/* print chip status */
+ #
+ # Checks for header files.
 -- 
-2.4.6
+2.1.4
 
