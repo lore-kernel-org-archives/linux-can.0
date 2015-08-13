@@ -1,65 +1,61 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: [PATCH] can: at91: move at91_can_data to at91_can.c
-Date: Mon, 10 Aug 2015 16:44:54 +0200
-Message-ID: <1439217894-15230-1-git-send-email-alexandre.belloni@free-electrons.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: at91: move at91_can_data to at91_can.c
+Date: Thu, 13 Aug 2015 12:11:18 +0200
+Message-ID: <55CC6D46.8020202@pengutronix.de>
+References: <1439217894-15230-1-git-send-email-alexandre.belloni@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="iUhPcOCab7L0QKPO9FtTjxQAaVTOIojWN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from down.free-electrons.com ([37.187.137.238]:37567 "EHLO
-	mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1752341AbbHJOo6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 10 Aug 2015 10:44:58 -0400
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34536 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751141AbbHMKLa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 13 Aug 2015 06:11:30 -0400
+In-Reply-To: <1439217894-15230-1-git-send-email-alexandre.belloni@free-electrons.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
-struct at91_can_data is now only used inside the driver, move it to
-its c file.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iUhPcOCab7L0QKPO9FtTjxQAaVTOIojWN
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
----
- drivers/net/can/at91_can.c          | 5 ++++-
- include/linux/platform_data/atmel.h | 5 -----
- 2 files changed, 4 insertions(+), 6 deletions(-)
+On 08/10/2015 04:44 PM, Alexandre Belloni wrote:
+> struct at91_can_data is now only used inside the driver, move it to
+> its c file.
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 945c0955a967..83ddf4f46f0d 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -33,7 +33,6 @@
- #include <linux/spinlock.h>
- #include <linux/string.h>
- #include <linux/types.h>
--#include <linux/platform_data/atmel.h>
- 
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
-@@ -136,6 +135,10 @@ struct at91_devtype_data {
- 	enum at91_devtype type;
- };
- 
-+struct at91_can_data {
-+	void (*transceiver_switch)(int on);
-+};
-+
- struct at91_priv {
- 	struct can_priv can;		/* must be the first member! */
- 	struct napi_struct napi;
-diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
-index 4b452c6a2f7b..b99d85f56a7d 100644
---- a/include/linux/platform_data/atmel.h
-+++ b/include/linux/platform_data/atmel.h
-@@ -86,11 +86,6 @@ struct atmel_uart_data {
- 	struct serial_rs485	rs485;		/* rs485 settings */
- };
- 
--/* CAN */
--struct at91_can_data {
--	void (*transceiver_switch)(int on);
--};
--
- /* FIXME: this needs a better location, but gets stuff building again */
- extern int at91_suspend_entering_slow_clock(void);
- 
--- 
-2.1.4
+It was supposed to be the interface between the board and the CAN
+driver. In commit 4403ac46edcdb51e92d36ad9f00ea3bbb766342e the
+at91sam9263 board was removed. As the driver has no support for DT
+transceiver switch, this functionality was lost. We should either remove
+the transceiver support or add a DT regulator for this.
 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--iUhPcOCab7L0QKPO9FtTjxQAaVTOIojWN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJVzG1GAAoJEP5prqPJtc/HFXwH/1zXiT4iMVD99GbQvNy/hMZ7
+Twyvkdon5SCtHFYXQQO9LeOz0LpXBopjn1OjvWib2dP/ygcihBAvhwQ5UWgUe0+Q
+yQT3+SeKWlQ5wsiV+Z9vHeB4kqT34hOvD54YpnBAZW+/uN7KoIETx+WqcDPjjzVH
+DBVnRnAurABPhsBio39yjlsqNvqE1u94C7T8PcoMV3MG4Gmas+Mew8U4v+P8WReb
+f5TUSko0JRtcvJg6s17X4/knWW6wlpR9M3RgeH357a/4IBuO4/FskiRIJohyrVyQ
+6R906D/yF1ofM90tBHqaOPJuS3xhuaRdoZIDcoTODdXNhSkS5FihH3mEN/SXgRM=
+=OXC7
+-----END PGP SIGNATURE-----
+
+--iUhPcOCab7L0QKPO9FtTjxQAaVTOIojWN--
