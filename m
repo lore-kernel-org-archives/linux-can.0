@@ -1,57 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: demote register output to debug level
-Date: Thu, 20 Aug 2015 14:15:30 +0200
-Message-ID: <55D5C4E2.2000903@pengutronix.de>
-References: <1438960563-17905-1-git-send-email-l.stach@pengutronix.de>
+From: Financial <emailsendero@jmfinancialltd.onmicrosoft.com>
+Subject: Re: Do you need a loan?
+Date: Sat, 22 Aug 2015 20:09:21 +0530
+Message-ID: <SG2PR03MB0811CFC99550B2E66DCC8E55F4640@SG2PR03MB0811.apcprd03.prod.outlook.com>
+Reply-To: <jmfinancialserviceltd@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="EeXftRUttQGuSQbfxOl1fhBCX8N1RekHT"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1438960563-17905-1-git-send-email-l.stach@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Lucas Stach <l.stach@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, patchwork-lst@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-hk2apc01hn0229.outbound.protection.outlook.com ([104.47.124.229]:20944
+	"EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752674AbbHVPKK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 22 Aug 2015 11:10:10 -0400
+Content-Description: Mail message body
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Recipients <emailsendero@jmfinancialltd.onmicrosoft.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EeXftRUttQGuSQbfxOl1fhBCX8N1RekHT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+We offer private, commercial and personal loans with very low annualinterest rates as low as 2% in one year to 50 years repayment period anywhere in the world. We offer loans ranging from $5000 to $100 million. Our loans are well insured for maximum security is our priority. Are you losing sleep at night worrying how to get a legitimate loan lender? You bite your nails that fast? Instead of beating you, contact JM Financial Services Ltd now, specialists who help stop loans bad credit history to find a solution that victory is our mission. Applicants must fill out a loan application form below:
 
-On 08/07/2015 05:16 PM, Lucas Stach wrote:
-> This message isn't really helpful for the general reader of the kernel
-> logs, so should not be printed with info level. All other register
-> programming outputs in the flexcan driver already use the debug level.
->=20
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+FORM credit application
 
-Added to can-next.
+loan applications
+Your full name *
+Your e-mail *
+Your phone *
+Your address *
+Your city *
+State / Province *
+Country *
+Fax*
+Date of birth *
+Do you have an account? *
+Have you applied before? *
+The loan amount is needed *
+The life expectancy *
+The purpose of the loan *
+Send me a scanned copy of your passport: *
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---EeXftRUttQGuSQbfxOl1fhBCX8N1RekHT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJV1cTiAAoJEP5prqPJtc/HGYQIAK+f4uGKlxMWrxNHM6MTtFew
-RrzoEN/RJjGDPrpZscLB51XpIa7By+vn8rk0qKP83FnIT+q8rJo0UGpAb+tX6hPh
-/zPD85twLW3hGkVHYsNSHcZBNjBuPj+TmUfSoukO7ND93MmN+0sZTIn5jr6C5Pdi
-nocR2ug6V7Pza7v+rdyNFx8y8irnC3ihAB3FTHoEhy+iKHXgFV7oMTActWUH+XFS
-tSA3rQr9YDwvHkoWeOUtJFmBj83QcZAdhTVBHVGZCynwW7JFwv+L+TTYX8FkIoss
-gpWSXKJGJFPC3uhc4Op4vFmn6IKzqo4UtqhmZuO9RJvxa2kGseDPn/LGhWKdE3g=
-=oxzr
------END PGP SIGNATURE-----
-
---EeXftRUttQGuSQbfxOl1fhBCX8N1RekHT--
+Creditor: Mr. Prakash Lass Dickson.
+Company: JM Financial Services Ltd.
+Copyright JM Financial Ltd. All rights reserved.
