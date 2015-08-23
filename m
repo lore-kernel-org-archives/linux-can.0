@@ -1,43 +1,28 @@
-From: Financial <emailsendero@jmfinancialltd.onmicrosoft.com>
-Subject: Re: Do you need a loan?
-Date: Sat, 22 Aug 2015 20:09:21 +0530
-Message-ID: <SG2PR03MB0811CFC99550B2E66DCC8E55F4640@SG2PR03MB0811.apcprd03.prod.outlook.com>
-Reply-To: <jmfinancialserviceltd@gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2015-05-06
+Date: Sun, 23 Aug 2015 16:29:01 -0700 (PDT)
+Message-ID: <20150823.162901.103058802759255902.davem@davemloft.net>
+References: <55D5C481.5050200@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-hk2apc01hn0229.outbound.protection.outlook.com ([104.47.124.229]:20944
-	"EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752674AbbHVPKK convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 22 Aug 2015 11:10:10 -0400
-Content-Description: Mail message body
+Received: from shards.monkeyblade.net ([149.20.54.216]:47136 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932136AbbHWX3C (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 23 Aug 2015 19:29:02 -0400
+In-Reply-To: <55D5C481.5050200@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <emailsendero@jmfinancialltd.onmicrosoft.com>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de, david@protonic.nl
 
-We offer private, commercial and personal loans with very low annualinterest rates as low as 2% in one year to 50 years repayment period anywhere in the world. We offer loans ranging from $5000 to $100 million. Our loans are well insured for maximum security is our priority. Are you losing sleep at night worrying how to get a legitimate loan lender? You bite your nails that fast? Instead of beating you, contact JM Financial Services Ltd now, specialists who help stop loans bad credit history to find a solution that victory is our mission. Applicants must fill out a loan application form below:
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu, 20 Aug 2015 14:13:53 +0200
 
-FORM credit application
+> this is a pull request of a two patches for net-next.
+> 
+> The first patch is by Nik Nyby and fixes a typo in a function name. The
+> second patch by Lucas Stach demotes register output to debug level.
 
-loan applications
-Your full name *
-Your e-mail *
-Your phone *
-Your address *
-Your city *
-State / Province *
-Country *
-Fax*
-Date of birth *
-Do you have an account? *
-Have you applied before? *
-The loan amount is needed *
-The life expectancy *
-The purpose of the loan *
-Send me a scanned copy of your passport: *
-
-Creditor: Mr. Prakash Lass Dickson.
-Company: JM Financial Services Ltd.
-Copyright JM Financial Ltd. All rights reserved.
+Pulled, thanks Marc.
