@@ -1,45 +1,60 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2015-08-24
-Date: Mon, 24 Aug 2015 11:20:02 +0200
-Message-ID: <1440408003-13085-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Subject: Re: [PATCH v2] can: pcan_usb: don't provide CAN FD bittimings by
+ non-FD adapters
+Date: Mon, 24 Aug 2015 11:22:53 +0200
+Message-ID: <55DAE26D.50101@pengutronix.de>
+References: <1438848491-16234-1-git-send-email-mkl@pengutronix.de>
+ <55C327C4.7010807@hartkopp.net> <55C32B9D.80704@pengutronix.de>
+ <55D08DDC.9010207@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:39617 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932805AbbHXJXF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Aug 2015 05:23:05 -0400
+In-Reply-To: <55D08DDC.9010207@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Hello David,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-this is a pull request of one patch by me for the peak_usb driver. It fixes the
-driver, so that non FD adapters don't provide CAN FD bittimings.
+On 08/16/2015 03:19 PM, Oliver Hartkopp wrote:
+> Did you just miss to send a pull request to Dave or did I miss it?
 
-regards,
+Thanks, I probably forgot to send the pull request. I just posed a new on=
+e.
+
 Marc
 
-----
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-The following changes since commit b6df7d61c8776a882dd47ba4714d1445dd7ef2d9:
 
-  net: bcmgenet: fix uncleaned dma flags (2015-08-23 23:00:41 -0700)
+--K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-are available in the git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.2-20150824
+iQEcBAEBCgAGBQJV2uJvAAoJEP5prqPJtc/Hk1oIAKopc8Au5O9KeXxSvITf36IO
+R4Rj7vRFuC7we544UMKWR4AaNaBzX4lSr4W6Vd6LpkqpSnuyTgCre95WxOi2Ex25
+78MtCz5/CWqN21J/r0zmOyzJPPBV0lf5pthndLSVUx+Qk3aujD2HmahKWqWKazl7
+EX3I/feMWc+x7w02Ijb/g4W4zVGyxX4EDZGdsZO+lKz3/GGmB/TL1WpY/8Y9ukHC
+Mpfslf1H8uFzPZaE1/s6cJoQRFdAq58c3T8ERkMG0aK4EwL6DDtIy8Gw92ntpfdc
+YsTHs7hN3V+IgANV/HhX1r94+p1tEieaguclX2IEq9dMi9q9U+SJlzApghMUfJ0=
+=0f4h
+-----END PGP SIGNATURE-----
 
-for you to fetch changes up to ffa115d30dec793f37ca661d2d3f8e35c14559e9:
-
-  can: pcan_usb: don't provide CAN FD bittimings by non-FD adapters (2015-08-24 11:15:10 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.2-20150824
-
-----------------------------------------------------------------
-Marc Kleine-Budde (1):
-      can: pcan_usb: don't provide CAN FD bittimings by non-FD adapters
-
- drivers/net/can/usb/peak_usb/pcan_usb.c      | 24 +++----
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |  4 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  4 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 96 +++++++++++++++-------------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 24 +++----
- 5 files changed, 82 insertions(+), 70 deletions(-)
+--K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka--
