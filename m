@@ -1,39 +1,40 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: pcan_usb: don't provide CAN FD bittimings by
- non-FD adapters
-Date: Mon, 24 Aug 2015 11:22:53 +0200
-Message-ID: <55DAE26D.50101@pengutronix.de>
-References: <1438848491-16234-1-git-send-email-mkl@pengutronix.de>
- <55C327C4.7010807@hartkopp.net> <55C32B9D.80704@pengutronix.de>
- <55D08DDC.9010207@hartkopp.net>
+Subject: Re: pull-request: can 2015-08-24
+Date: Tue, 25 Aug 2015 08:49:15 +0200
+Message-ID: <55DC0FEB.2040403@pengutronix.de>
+References: <1440408003-13085-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka"
+ boundary="KwJPf4aCWDnVN63mW6vWkxpcMbAI0GAB5"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:39617 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34302 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932805AbbHXJXF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 24 Aug 2015 05:23:05 -0400
-In-Reply-To: <55D08DDC.9010207@hartkopp.net>
+	with ESMTP id S1751195AbbHYGt0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 25 Aug 2015 02:49:26 -0400
+In-Reply-To: <1440408003-13085-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka
+--KwJPf4aCWDnVN63mW6vWkxpcMbAI0GAB5
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 08/16/2015 03:19 PM, Oliver Hartkopp wrote:
-> Did you just miss to send a pull request to Dave or did I miss it?
+On 08/24/2015 11:20 AM, Marc Kleine-Budde wrote:
+> Hello David,
+>=20
+> this is a pull request of one patch by me for the peak_usb driver. It f=
+ixes the
+> driver, so that non FD adapters don't provide CAN FD bittimings.
 
-Thanks, I probably forgot to send the pull request. I just posed a new on=
-e.
+As there are some typos in the commit message I'll send an updated pull
+request. David, please don't pull this one.
 
+thanks,
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -41,20 +42,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka
+--KwJPf4aCWDnVN63mW6vWkxpcMbAI0GAB5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJV2uJvAAoJEP5prqPJtc/Hk1oIAKopc8Au5O9KeXxSvITf36IO
-R4Rj7vRFuC7we544UMKWR4AaNaBzX4lSr4W6Vd6LpkqpSnuyTgCre95WxOi2Ex25
-78MtCz5/CWqN21J/r0zmOyzJPPBV0lf5pthndLSVUx+Qk3aujD2HmahKWqWKazl7
-EX3I/feMWc+x7w02Ijb/g4W4zVGyxX4EDZGdsZO+lKz3/GGmB/TL1WpY/8Y9ukHC
-Mpfslf1H8uFzPZaE1/s6cJoQRFdAq58c3T8ERkMG0aK4EwL6DDtIy8Gw92ntpfdc
-YsTHs7hN3V+IgANV/HhX1r94+p1tEieaguclX2IEq9dMi9q9U+SJlzApghMUfJ0=
-=0f4h
+iQEcBAEBCgAGBQJV3A/rAAoJEP5prqPJtc/HFtQH/iWIzn7i01SUeSCFI0o4qR7X
+wcDY0kJe/Fi8wgob6A88fPIkxqON57BA7sqyQ6HNnQxoATNYaq3sRb+zPA3qC6M5
+Gm7FNKtNBfn15dpuuPBFjm0OHRqz7svHPQxsji7j1yEY9ArXQjBI0Qm9K2HFijNp
+okj9IKk3ofmunq/dkOpWZGThx60nJUpV2BLkZLGEEToMSFdg9GzD0VdHgD8/K/k7
+mJeSdjAg+B6fW273daM9yYL5x7CtYnpidUkek5pK/B/qF2+HMO4RQIxNuF57rTMR
+yP7I6cOQdCeCYKEqoWG14WYiW67J1N1tiYsBq/EvgEBo7u+xCaWM4zn2qbppo9E=
+=nQt+
 -----END PGP SIGNATURE-----
 
---K47MRP3WWn2l53JjSNIrfwHQFwgk7qoka--
+--KwJPf4aCWDnVN63mW6vWkxpcMbAI0GAB5--
