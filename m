@@ -1,147 +1,91 @@
-From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
-Subject: AW: SocketCAN on Intel Edison with MCP 2515
-Date: Wed, 26 Aug 2015 12:31:27 +0200
-Message-ID: <zarafa.55dd957f.34be.077c29991e8b8903@euve35974.vserver.de>
+From: Rosemarie Sheehy <rsheehy@dairymaster.com>
+Subject: RE: SocketCAN on Intel Edison with MCP 2515
+Date: Wed, 26 Aug 2015 10:36:44 +0000
+Message-ID: <HE1PR04MB1322C28E968ACC91F5EDE907B6600@HE1PR04MB1322.eurprd04.prod.outlook.com>
+References: <zarafa.55dd957f.34be.077c29991e8b8903@euve35974.vserver.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="=_+lpTOcowvu4PVuxsLaTsFYzr+O9Zp-HngndtNGkwTFGjxGmC"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from euve35974.vserver.de ([62.75.213.146]:43390 "EHLO
-	euve35974.vserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756394AbbHZKhH (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 26 Aug 2015 06:37:07 -0400
+Received: from mail-am1on0079.outbound.protection.outlook.com ([157.56.112.79]:26847
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1756038AbbHZKu5 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 26 Aug 2015 06:50:57 -0400
+In-Reply-To: <zarafa.55dd957f.34be.077c29991e8b8903@euve35974.vserver.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>, =?utf-8?Q?Rosemarie_Sheehy?= <rsheehy@dairymaster.ie>, =?utf-8?Q?tom=5Fusenet=40optusnet=2Ecom=2Eau?= <tom_usenet@optusnet.com.au>
+To: Michael Luxen <mluxen@gmx.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "tom_usenet@optusnet.com.au" <tom_usenet@optusnet.com.au>
 
-This is a multi-part message in MIME format. Your mail reader does not
-understand MIME message format.
---=_+lpTOcowvu4PVuxsLaTsFYzr+O9Zp-HngndtNGkwTFGjxGmC
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi,=20
-
-attached you can find a working DeviceTree examples which is working fine for me with 2x MCP2515 CAN devices via socketcan.
-The ODROID-W is an BCM2835 SoC based (Raspi like) system running kernel 3.18.x.
-Hint: My MCP2515 SPI is running wth 12MHz instead of 16MHz.
-
-On another embedded system (Raspi B) I've some days ago used a fresh Rapbmc installation with kernel 3.18.x!
-I've adapted the original DeviceTree from...
-https://github.com/raspberrypi/linux/blob/rpi-3.18.y/arch/arm/boot/dts/overlays/mcp2515-can0-overlay.dts
-...to my needs (16MHz to 12MHz MCP2515 SPI-clock)
-
-Maybe you can use these background informations to adapt to the Edison platform.
-
-Regards
-Michael
-
------Urspr=C3=BCngliche Nachricht-----
-Von:=09Tom Evans <tom_usenet@optusnet.com.au>
-Gesendet:=09Mi 26.08.2015 06:56
-Betreff:=09Re: SocketCAN on Intel Edison with MCP 2515
-An:=09Rosemarie Sheehy <rsheehy@dairymaster.ie>; linux-can@vger.kernel.org;=20
-> On 26/08/15 00:49, Rosemarie Sheehy wrote:
-> > Michael Gallagher <mjg <at> isomorphdevelopment.com> writes:
->=20
-> Actually:
->=20
-> On 28/05/15 01:18, Michael Gallagher wrote:
->  > ...
->=20
-> He may not be monitoring this list after 3 months.
->=20
-> > I am trying to trying to set the can bus on the Edison.
-> > I have the expansion board and the can-bus shield
-> > (https://www.sparkfun.com/products/10039)
->=20
-> That's an Arduino Shield board on an adaptor on an Intel Edison running (I'm=20
-> guessing) Yocto Linux. Good luck with that, you may be the first in the world=20
-> to try that combination.
->=20
-> Did you read all the other posts in this thread=3F You may get some clues from=20
-> them
->=20
-> Apparently the RPi Linux will automatically detect the CAN chips, but you'll=20
-> have to consult the Yocto/Edison documentation to see if it has been set up by=20
-> someone to do that.
->=20
-> Michael didn't say which hardware he was using.
->=20
-> As I said in another post "Linux used t be plug-and-play, but they fixed that=20
-> bug". Devices on an I2C bus can sometimes be automatically identified, but the=20
-> MCP2515 is on an SPI bus, and it can't autodetect chips. You have to add=20
-> descriptions in the Device Tree File for your board (or add information to the=20
-> Bootstrap Configuration so it can edit the Device Tree - more complications=20
-> and more languages to learn to get a simple job done).
->=20
-> Check your Linux Source Tree "Documentation/devicetree/bindings/net/can"=20
-> directory. Mine has documentation for cc770, flexcan, mscan, sj1000 but no=20
-> mcp251x.
->=20
-> A more modern version of Linux has this:
->=20
-> http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/net/can/m
-> icrochip,mcp251x.txt
->=20
-> That doesn't tell you where in the tree to add that section. I assume it has=20
-> to be under/inside or reference an SPI controller somehow.
->=20
-> So to try and find a worked example, google for <compatible =3D=20
-> "microchip,mcp2515">
->=20
-> http://www.microchip.com/forums/m828830.aspx
->=20
-> Also check "Documentation/devicetree/bindings/spi-bus.txt".
->=20
-> Remember the device doesn't show up as "/dev/can0", but shows up as a network=20
-> device when you run "/sbin/ifconfig". It might also show up under /sys=20
-> somewhere too. You then have to control it (to enable and set the baud rate)=20
-> with "canconfig". If you don't have that software installed you may have to=20
-> find/configure/build/install it as well.
->=20
-> Tom
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
---=_+lpTOcowvu4PVuxsLaTsFYzr+O9Zp-HngndtNGkwTFGjxGmC
-Content-Type: application/x-zip-compressed;
- name=ODROID-W_mcp2515-can-overlay.zip
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename=ODROID-W_mcp2515-can-overlay.zip
-
-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
---=_+lpTOcowvu4PVuxsLaTsFYzr+O9Zp-HngndtNGkwTFGjxGmC--
-
+SGkNCg0KVGhhbmtzIFRvbSBhbmQgTWljaGFlbCBmb3IgdGhlIGNvbW1lbnRzLg0KVGhleSBhcmUg
+aGVscGZ1bCwgSSBhbSBjdXJyZW50bHkgdHJ5aW5nIHRvIHdvcmsgbXkgd2F5IHRocm91Z2ggaXQu
+DQoNClJvc2VtYXJpZQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWljaGFl
+bCBMdXhlbiBbbWFpbHRvOm1sdXhlbkBnbXgubmV0XSANClNlbnQ6IDI2IEF1Z3VzdCAyMDE1IDEx
+OjMxDQpUbzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgUm9zZW1hcmllIFNoZWVoeSA8cnNo
+ZWVoeUBkYWlyeW1hc3Rlci5jb20+OyB0b21fdXNlbmV0QG9wdHVzbmV0LmNvbS5hdQ0KU3ViamVj
+dDogQVc6IFNvY2tldENBTiBvbiBJbnRlbCBFZGlzb24gd2l0aCBNQ1AgMjUxNQ0KDQpIaSwgDQoN
+CmF0dGFjaGVkIHlvdSBjYW4gZmluZCBhIHdvcmtpbmcgRGV2aWNlVHJlZSBleGFtcGxlcyB3aGlj
+aCBpcyB3b3JraW5nIGZpbmUgZm9yIG1lIHdpdGggMnggTUNQMjUxNSBDQU4gZGV2aWNlcyB2aWEg
+c29ja2V0Y2FuLg0KVGhlIE9EUk9JRC1XIGlzIGFuIEJDTTI4MzUgU29DIGJhc2VkIChSYXNwaSBs
+aWtlKSBzeXN0ZW0gcnVubmluZyBrZXJuZWwgMy4xOC54Lg0KSGludDogTXkgTUNQMjUxNSBTUEkg
+aXMgcnVubmluZyB3dGggMTJNSHogaW5zdGVhZCBvZiAxNk1Iei4NCg0KT24gYW5vdGhlciBlbWJl
+ZGRlZCBzeXN0ZW0gKFJhc3BpIEIpIEkndmUgc29tZSBkYXlzIGFnbyB1c2VkIGEgZnJlc2ggUmFw
+Ym1jIGluc3RhbGxhdGlvbiB3aXRoIGtlcm5lbCAzLjE4LnghDQpJJ3ZlIGFkYXB0ZWQgdGhlIG9y
+aWdpbmFsIERldmljZVRyZWUgZnJvbS4uLg0KaHR0cHM6Ly9naXRodWIuY29tL3Jhc3BiZXJyeXBp
+L2xpbnV4L2Jsb2IvcnBpLTMuMTgueS9hcmNoL2FybS9ib290L2R0cy9vdmVybGF5cy9tY3AyNTE1
+LWNhbjAtb3ZlcmxheS5kdHMNCi4uLnRvIG15IG5lZWRzICgxNk1IeiB0byAxMk1IeiBNQ1AyNTE1
+IFNQSS1jbG9jaykNCg0KTWF5YmUgeW91IGNhbiB1c2UgdGhlc2UgYmFja2dyb3VuZCBpbmZvcm1h
+dGlvbnMgdG8gYWRhcHQgdG8gdGhlIEVkaXNvbiBwbGF0Zm9ybS4NCg0KUmVnYXJkcw0KTWljaGFl
+bA0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQpWb246CVRvbSBFdmFucyA8
+dG9tX3VzZW5ldEBvcHR1c25ldC5jb20uYXU+DQpHZXNlbmRldDoJTWkgMjYuMDguMjAxNSAwNjo1
+Ng0KQmV0cmVmZjoJUmU6IFNvY2tldENBTiBvbiBJbnRlbCBFZGlzb24gd2l0aCBNQ1AgMjUxNQ0K
+QW46CVJvc2VtYXJpZSBTaGVlaHkgPHJzaGVlaHlAZGFpcnltYXN0ZXIuaWU+OyBsaW51eC1jYW5A
+dmdlci5rZXJuZWwub3JnOyANCj4gT24gMjYvMDgvMTUgMDA6NDksIFJvc2VtYXJpZSBTaGVlaHkg
+d3JvdGU6DQo+ID4gTWljaGFlbCBHYWxsYWdoZXIgPG1qZyA8YXQ+IGlzb21vcnBoZGV2ZWxvcG1l
+bnQuY29tPiB3cml0ZXM6DQo+IA0KPiBBY3R1YWxseToNCj4gDQo+IE9uIDI4LzA1LzE1IDAxOjE4
+LCBNaWNoYWVsIEdhbGxhZ2hlciB3cm90ZToNCj4gID4gLi4uDQo+IA0KPiBIZSBtYXkgbm90IGJl
+IG1vbml0b3JpbmcgdGhpcyBsaXN0IGFmdGVyIDMgbW9udGhzLg0KPiANCj4gPiBJIGFtIHRyeWlu
+ZyB0byB0cnlpbmcgdG8gc2V0IHRoZSBjYW4gYnVzIG9uIHRoZSBFZGlzb24uDQo+ID4gSSBoYXZl
+IHRoZSBleHBhbnNpb24gYm9hcmQgYW5kIHRoZSBjYW4tYnVzIHNoaWVsZA0KPiA+IChodHRwczov
+L3d3dy5zcGFya2Z1bi5jb20vcHJvZHVjdHMvMTAwMzkpDQo+IA0KPiBUaGF0J3MgYW4gQXJkdWlu
+byBTaGllbGQgYm9hcmQgb24gYW4gYWRhcHRvciBvbiBhbiBJbnRlbCBFZGlzb24gDQo+IHJ1bm5p
+bmcgKEknbQ0KPiBndWVzc2luZykgWW9jdG8gTGludXguIEdvb2QgbHVjayB3aXRoIHRoYXQsIHlv
+dSBtYXkgYmUgdGhlIGZpcnN0IGluIA0KPiB0aGUgd29ybGQgdG8gdHJ5IHRoYXQgY29tYmluYXRp
+b24uDQo+IA0KPiBEaWQgeW91IHJlYWQgYWxsIHRoZSBvdGhlciBwb3N0cyBpbiB0aGlzIHRocmVh
+ZD8gWW91IG1heSBnZXQgc29tZSANCj4gY2x1ZXMgZnJvbSB0aGVtDQo+IA0KPiBBcHBhcmVudGx5
+IHRoZSBSUGkgTGludXggd2lsbCBhdXRvbWF0aWNhbGx5IGRldGVjdCB0aGUgQ0FOIGNoaXBzLCBi
+dXQgDQo+IHlvdSdsbCBoYXZlIHRvIGNvbnN1bHQgdGhlIFlvY3RvL0VkaXNvbiBkb2N1bWVudGF0
+aW9uIHRvIHNlZSBpZiBpdCBoYXMgDQo+IGJlZW4gc2V0IHVwIGJ5IHNvbWVvbmUgdG8gZG8gdGhh
+dC4NCj4gDQo+IE1pY2hhZWwgZGlkbid0IHNheSB3aGljaCBoYXJkd2FyZSBoZSB3YXMgdXNpbmcu
+DQo+IA0KPiBBcyBJIHNhaWQgaW4gYW5vdGhlciBwb3N0ICJMaW51eCB1c2VkIHQgYmUgcGx1Zy1h
+bmQtcGxheSwgYnV0IHRoZXkgDQo+IGZpeGVkIHRoYXQgYnVnIi4gRGV2aWNlcyBvbiBhbiBJMkMg
+YnVzIGNhbiBzb21ldGltZXMgYmUgYXV0b21hdGljYWxseSANCj4gaWRlbnRpZmllZCwgYnV0IHRo
+ZQ0KPiBNQ1AyNTE1IGlzIG9uIGFuIFNQSSBidXMsIGFuZCBpdCBjYW4ndCBhdXRvZGV0ZWN0IGNo
+aXBzLiBZb3UgaGF2ZSB0byANCj4gYWRkIGRlc2NyaXB0aW9ucyBpbiB0aGUgRGV2aWNlIFRyZWUg
+RmlsZSBmb3IgeW91ciBib2FyZCAob3IgYWRkIA0KPiBpbmZvcm1hdGlvbiB0byB0aGUgQm9vdHN0
+cmFwIENvbmZpZ3VyYXRpb24gc28gaXQgY2FuIGVkaXQgdGhlIERldmljZSANCj4gVHJlZSAtIG1v
+cmUgY29tcGxpY2F0aW9ucyBhbmQgbW9yZSBsYW5ndWFnZXMgdG8gbGVhcm4gdG8gZ2V0IGEgc2lt
+cGxlIGpvYiBkb25lKS4NCj4gDQo+IENoZWNrIHlvdXIgTGludXggU291cmNlIFRyZWUgIkRvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuIiANCj4gZGlyZWN0b3J5LiBNaW5l
+IGhhcyBkb2N1bWVudGF0aW9uIGZvciBjYzc3MCwgZmxleGNhbiwgbXNjYW4sIHNqMTAwMCANCj4g
+YnV0IG5vIG1jcDI1MXguDQo+IA0KPiBBIG1vcmUgbW9kZXJuIHZlcnNpb24gb2YgTGludXggaGFz
+IHRoaXM6DQo+IA0KPiBodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNvbS9zb3VyY2UvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzDQo+IC9uZXQvY2FuL20NCj4gaWNyb2NoaXAsbWNw
+MjUxeC50eHQNCj4gDQo+IFRoYXQgZG9lc24ndCB0ZWxsIHlvdSB3aGVyZSBpbiB0aGUgdHJlZSB0
+byBhZGQgdGhhdCBzZWN0aW9uLiBJIGFzc3VtZSANCj4gaXQgaGFzIHRvIGJlIHVuZGVyL2luc2lk
+ZSBvciByZWZlcmVuY2UgYW4gU1BJIGNvbnRyb2xsZXIgc29tZWhvdy4NCj4gDQo+IFNvIHRvIHRy
+eSBhbmQgZmluZCBhIHdvcmtlZCBleGFtcGxlLCBnb29nbGUgZm9yIDxjb21wYXRpYmxlID0gDQo+
+ICJtaWNyb2NoaXAsbWNwMjUxNSI+DQo+IA0KPiBodHRwOi8vd3d3Lm1pY3JvY2hpcC5jb20vZm9y
+dW1zL204Mjg4MzAuYXNweA0KPiANCj4gQWxzbyBjaGVjayAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3NwaS1idXMudHh0Ii4NCj4gDQo+IFJlbWVtYmVyIHRoZSBkZXZpY2UgZG9l
+c24ndCBzaG93IHVwIGFzICIvZGV2L2NhbjAiLCBidXQgc2hvd3MgdXAgYXMgYSANCj4gbmV0d29y
+ayBkZXZpY2Ugd2hlbiB5b3UgcnVuICIvc2Jpbi9pZmNvbmZpZyIuIEl0IG1pZ2h0IGFsc28gc2hv
+dyB1cCANCj4gdW5kZXIgL3N5cyBzb21ld2hlcmUgdG9vLiBZb3UgdGhlbiBoYXZlIHRvIGNvbnRy
+b2wgaXQgKHRvIGVuYWJsZSBhbmQgDQo+IHNldCB0aGUgYmF1ZCByYXRlKSB3aXRoICJjYW5jb25m
+aWciLiBJZiB5b3UgZG9uJ3QgaGF2ZSB0aGF0IHNvZnR3YXJlIA0KPiBpbnN0YWxsZWQgeW91IG1h
+eSBoYXZlIHRvIGZpbmQvY29uZmlndXJlL2J1aWxkL2luc3RhbGwgaXQgYXMgd2VsbC4NCj4gDQo+
+IFRvbQ0KPiANCj4gLS0NCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhl
+IGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiIgDQo+IGluIHRoZSBib2R5IG9mIGEgbWVzc2Fn
+ZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIA0KPiBpbmZvIGF0
+ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwNCj4NCg==
