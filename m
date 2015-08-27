@@ -1,91 +1,56 @@
-From: Rosemarie Sheehy <rsheehy@dairymaster.com>
-Subject: RE: SocketCAN on Intel Edison with MCP 2515
-Date: Wed, 26 Aug 2015 10:36:44 +0000
-Message-ID: <HE1PR04MB1322C28E968ACC91F5EDE907B6600@HE1PR04MB1322.eurprd04.prod.outlook.com>
-References: <zarafa.55dd957f.34be.077c29991e8b8903@euve35974.vserver.de>
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Subject: Re: CAN implementation on A20 Allwinner
+Date: Thu, 27 Aug 2015 15:04:17 +0200
+Message-ID: <a3cdd6d97480f7b31a53e94169f8a1eb@mail.rdts.de>
+References: <2d24e34ceb8e4fe4b0b7c74b9a36da44@SGPMBX1006.APAC.bosch.com>
+ <54770F0F.7050904@hartkopp.net>
+ <369acf6bdf8b4ae3840b69bef10b5082@SGPMBX1004.APAC.bosch.com>
+ <21623.28007.620480.114111@gargle.gargle.HOWL>
+ <58243.88.153.236.115.1417116776.squirrel@webmail.rdts.de>
+ <58560.88.153.236.115.1417118037.squirrel@webmail.rdts.de>
+ <547DB29B.4070601@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0079.outbound.protection.outlook.com ([157.56.112.79]:26847
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1756038AbbHZKu5 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 26 Aug 2015 06:50:57 -0400
-In-Reply-To: <zarafa.55dd957f.34be.077c29991e8b8903@euve35974.vserver.de>
-Content-Language: en-US
+Received: from mail.rdts.de ([195.243.153.28]:37324 "EHLO mail.rdts.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753422AbbH0NLe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 27 Aug 2015 09:11:34 -0400
+In-Reply-To: <547DB29B.4070601@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Luxen <mluxen@gmx.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "tom_usenet@optusnet.com.au" <tom_usenet@optusnet.com.au>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, Pankajkumar Misra <pankaj.kumar@in.bosch.com>, linux-can@vger.kernel.org
 
-SGkNCg0KVGhhbmtzIFRvbSBhbmQgTWljaGFlbCBmb3IgdGhlIGNvbW1lbnRzLg0KVGhleSBhcmUg
-aGVscGZ1bCwgSSBhbSBjdXJyZW50bHkgdHJ5aW5nIHRvIHdvcmsgbXkgd2F5IHRocm91Z2ggaXQu
-DQoNClJvc2VtYXJpZQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWljaGFl
-bCBMdXhlbiBbbWFpbHRvOm1sdXhlbkBnbXgubmV0XSANClNlbnQ6IDI2IEF1Z3VzdCAyMDE1IDEx
-OjMxDQpUbzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgUm9zZW1hcmllIFNoZWVoeSA8cnNo
-ZWVoeUBkYWlyeW1hc3Rlci5jb20+OyB0b21fdXNlbmV0QG9wdHVzbmV0LmNvbS5hdQ0KU3ViamVj
-dDogQVc6IFNvY2tldENBTiBvbiBJbnRlbCBFZGlzb24gd2l0aCBNQ1AgMjUxNQ0KDQpIaSwgDQoN
-CmF0dGFjaGVkIHlvdSBjYW4gZmluZCBhIHdvcmtpbmcgRGV2aWNlVHJlZSBleGFtcGxlcyB3aGlj
-aCBpcyB3b3JraW5nIGZpbmUgZm9yIG1lIHdpdGggMnggTUNQMjUxNSBDQU4gZGV2aWNlcyB2aWEg
-c29ja2V0Y2FuLg0KVGhlIE9EUk9JRC1XIGlzIGFuIEJDTTI4MzUgU29DIGJhc2VkIChSYXNwaSBs
-aWtlKSBzeXN0ZW0gcnVubmluZyBrZXJuZWwgMy4xOC54Lg0KSGludDogTXkgTUNQMjUxNSBTUEkg
-aXMgcnVubmluZyB3dGggMTJNSHogaW5zdGVhZCBvZiAxNk1Iei4NCg0KT24gYW5vdGhlciBlbWJl
-ZGRlZCBzeXN0ZW0gKFJhc3BpIEIpIEkndmUgc29tZSBkYXlzIGFnbyB1c2VkIGEgZnJlc2ggUmFw
-Ym1jIGluc3RhbGxhdGlvbiB3aXRoIGtlcm5lbCAzLjE4LnghDQpJJ3ZlIGFkYXB0ZWQgdGhlIG9y
-aWdpbmFsIERldmljZVRyZWUgZnJvbS4uLg0KaHR0cHM6Ly9naXRodWIuY29tL3Jhc3BiZXJyeXBp
-L2xpbnV4L2Jsb2IvcnBpLTMuMTgueS9hcmNoL2FybS9ib290L2R0cy9vdmVybGF5cy9tY3AyNTE1
-LWNhbjAtb3ZlcmxheS5kdHMNCi4uLnRvIG15IG5lZWRzICgxNk1IeiB0byAxMk1IeiBNQ1AyNTE1
-IFNQSS1jbG9jaykNCg0KTWF5YmUgeW91IGNhbiB1c2UgdGhlc2UgYmFja2dyb3VuZCBpbmZvcm1h
-dGlvbnMgdG8gYWRhcHQgdG8gdGhlIEVkaXNvbiBwbGF0Zm9ybS4NCg0KUmVnYXJkcw0KTWljaGFl
-bA0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQpWb246CVRvbSBFdmFucyA8
-dG9tX3VzZW5ldEBvcHR1c25ldC5jb20uYXU+DQpHZXNlbmRldDoJTWkgMjYuMDguMjAxNSAwNjo1
-Ng0KQmV0cmVmZjoJUmU6IFNvY2tldENBTiBvbiBJbnRlbCBFZGlzb24gd2l0aCBNQ1AgMjUxNQ0K
-QW46CVJvc2VtYXJpZSBTaGVlaHkgPHJzaGVlaHlAZGFpcnltYXN0ZXIuaWU+OyBsaW51eC1jYW5A
-dmdlci5rZXJuZWwub3JnOyANCj4gT24gMjYvMDgvMTUgMDA6NDksIFJvc2VtYXJpZSBTaGVlaHkg
-d3JvdGU6DQo+ID4gTWljaGFlbCBHYWxsYWdoZXIgPG1qZyA8YXQ+IGlzb21vcnBoZGV2ZWxvcG1l
-bnQuY29tPiB3cml0ZXM6DQo+IA0KPiBBY3R1YWxseToNCj4gDQo+IE9uIDI4LzA1LzE1IDAxOjE4
-LCBNaWNoYWVsIEdhbGxhZ2hlciB3cm90ZToNCj4gID4gLi4uDQo+IA0KPiBIZSBtYXkgbm90IGJl
-IG1vbml0b3JpbmcgdGhpcyBsaXN0IGFmdGVyIDMgbW9udGhzLg0KPiANCj4gPiBJIGFtIHRyeWlu
-ZyB0byB0cnlpbmcgdG8gc2V0IHRoZSBjYW4gYnVzIG9uIHRoZSBFZGlzb24uDQo+ID4gSSBoYXZl
-IHRoZSBleHBhbnNpb24gYm9hcmQgYW5kIHRoZSBjYW4tYnVzIHNoaWVsZA0KPiA+IChodHRwczov
-L3d3dy5zcGFya2Z1bi5jb20vcHJvZHVjdHMvMTAwMzkpDQo+IA0KPiBUaGF0J3MgYW4gQXJkdWlu
-byBTaGllbGQgYm9hcmQgb24gYW4gYWRhcHRvciBvbiBhbiBJbnRlbCBFZGlzb24gDQo+IHJ1bm5p
-bmcgKEknbQ0KPiBndWVzc2luZykgWW9jdG8gTGludXguIEdvb2QgbHVjayB3aXRoIHRoYXQsIHlv
-dSBtYXkgYmUgdGhlIGZpcnN0IGluIA0KPiB0aGUgd29ybGQgdG8gdHJ5IHRoYXQgY29tYmluYXRp
-b24uDQo+IA0KPiBEaWQgeW91IHJlYWQgYWxsIHRoZSBvdGhlciBwb3N0cyBpbiB0aGlzIHRocmVh
-ZD8gWW91IG1heSBnZXQgc29tZSANCj4gY2x1ZXMgZnJvbSB0aGVtDQo+IA0KPiBBcHBhcmVudGx5
-IHRoZSBSUGkgTGludXggd2lsbCBhdXRvbWF0aWNhbGx5IGRldGVjdCB0aGUgQ0FOIGNoaXBzLCBi
-dXQgDQo+IHlvdSdsbCBoYXZlIHRvIGNvbnN1bHQgdGhlIFlvY3RvL0VkaXNvbiBkb2N1bWVudGF0
-aW9uIHRvIHNlZSBpZiBpdCBoYXMgDQo+IGJlZW4gc2V0IHVwIGJ5IHNvbWVvbmUgdG8gZG8gdGhh
-dC4NCj4gDQo+IE1pY2hhZWwgZGlkbid0IHNheSB3aGljaCBoYXJkd2FyZSBoZSB3YXMgdXNpbmcu
-DQo+IA0KPiBBcyBJIHNhaWQgaW4gYW5vdGhlciBwb3N0ICJMaW51eCB1c2VkIHQgYmUgcGx1Zy1h
-bmQtcGxheSwgYnV0IHRoZXkgDQo+IGZpeGVkIHRoYXQgYnVnIi4gRGV2aWNlcyBvbiBhbiBJMkMg
-YnVzIGNhbiBzb21ldGltZXMgYmUgYXV0b21hdGljYWxseSANCj4gaWRlbnRpZmllZCwgYnV0IHRo
-ZQ0KPiBNQ1AyNTE1IGlzIG9uIGFuIFNQSSBidXMsIGFuZCBpdCBjYW4ndCBhdXRvZGV0ZWN0IGNo
-aXBzLiBZb3UgaGF2ZSB0byANCj4gYWRkIGRlc2NyaXB0aW9ucyBpbiB0aGUgRGV2aWNlIFRyZWUg
-RmlsZSBmb3IgeW91ciBib2FyZCAob3IgYWRkIA0KPiBpbmZvcm1hdGlvbiB0byB0aGUgQm9vdHN0
-cmFwIENvbmZpZ3VyYXRpb24gc28gaXQgY2FuIGVkaXQgdGhlIERldmljZSANCj4gVHJlZSAtIG1v
-cmUgY29tcGxpY2F0aW9ucyBhbmQgbW9yZSBsYW5ndWFnZXMgdG8gbGVhcm4gdG8gZ2V0IGEgc2lt
-cGxlIGpvYiBkb25lKS4NCj4gDQo+IENoZWNrIHlvdXIgTGludXggU291cmNlIFRyZWUgIkRvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuIiANCj4gZGlyZWN0b3J5LiBNaW5l
-IGhhcyBkb2N1bWVudGF0aW9uIGZvciBjYzc3MCwgZmxleGNhbiwgbXNjYW4sIHNqMTAwMCANCj4g
-YnV0IG5vIG1jcDI1MXguDQo+IA0KPiBBIG1vcmUgbW9kZXJuIHZlcnNpb24gb2YgTGludXggaGFz
-IHRoaXM6DQo+IA0KPiBodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNvbS9zb3VyY2UvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzDQo+IC9uZXQvY2FuL20NCj4gaWNyb2NoaXAsbWNw
-MjUxeC50eHQNCj4gDQo+IFRoYXQgZG9lc24ndCB0ZWxsIHlvdSB3aGVyZSBpbiB0aGUgdHJlZSB0
-byBhZGQgdGhhdCBzZWN0aW9uLiBJIGFzc3VtZSANCj4gaXQgaGFzIHRvIGJlIHVuZGVyL2luc2lk
-ZSBvciByZWZlcmVuY2UgYW4gU1BJIGNvbnRyb2xsZXIgc29tZWhvdy4NCj4gDQo+IFNvIHRvIHRy
-eSBhbmQgZmluZCBhIHdvcmtlZCBleGFtcGxlLCBnb29nbGUgZm9yIDxjb21wYXRpYmxlID0gDQo+
-ICJtaWNyb2NoaXAsbWNwMjUxNSI+DQo+IA0KPiBodHRwOi8vd3d3Lm1pY3JvY2hpcC5jb20vZm9y
-dW1zL204Mjg4MzAuYXNweA0KPiANCj4gQWxzbyBjaGVjayAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NwaS1idXMudHh0Ii4NCj4gDQo+IFJlbWVtYmVyIHRoZSBkZXZpY2UgZG9l
-c24ndCBzaG93IHVwIGFzICIvZGV2L2NhbjAiLCBidXQgc2hvd3MgdXAgYXMgYSANCj4gbmV0d29y
-ayBkZXZpY2Ugd2hlbiB5b3UgcnVuICIvc2Jpbi9pZmNvbmZpZyIuIEl0IG1pZ2h0IGFsc28gc2hv
-dyB1cCANCj4gdW5kZXIgL3N5cyBzb21ld2hlcmUgdG9vLiBZb3UgdGhlbiBoYXZlIHRvIGNvbnRy
-b2wgaXQgKHRvIGVuYWJsZSBhbmQgDQo+IHNldCB0aGUgYmF1ZCByYXRlKSB3aXRoICJjYW5jb25m
-aWciLiBJZiB5b3UgZG9uJ3QgaGF2ZSB0aGF0IHNvZnR3YXJlIA0KPiBpbnN0YWxsZWQgeW91IG1h
-eSBoYXZlIHRvIGZpbmQvY29uZmlndXJlL2J1aWxkL2luc3RhbGwgaXQgYXMgd2VsbC4NCj4gDQo+
-IFRvbQ0KPiANCj4gLS0NCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhl
-IGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiIgDQo+IGluIHRoZSBib2R5IG9mIGEgbWVzc2Fn
-ZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIA0KPiBpbmZvIGF0
-ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwNCj4NCg==
+Hi
+
+Am 2014-12-02 13:37, schrieb Marc Kleine-Budde:
+> On 11/27/2014 08:53 PM, Gerhard Bertelsmann wrote:
+>> Hi again,
+>> 
+>> here are some updates:
+>> 
+>> https://github.com/btolfa/sunxi-can-driver
+> 
+> It it's sja1000 compatible, it should work out of the box with the
+> existing sja1000 device tree binding.
+
+the Allwinner CAN IP is very similar but not exactly a SJA1000, e g. the
+registers differ and some are 32 bit wide and not 8 bit.
+So the question is: change the sja1000 and the platform file for 
+"quirks"
+or write a new independent one ?
+Which way do you prefer or better: which driver will be accepted for 
+mainline ?
+
+> 
+> Marc
+
+Regards
+
+Gerd
+
+P.S.: Allwinner A20 Manual - CAN beginning at page 811
+https://github.com/allwinner-zh/documents/raw/master/A20/A20_User_Manual_v1.4_20150510.pdf
