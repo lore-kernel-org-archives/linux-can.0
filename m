@@ -1,7 +1,7 @@
-From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: CAN implementation on A20 Allwinner
-Date: Thu, 27 Aug 2015 15:34:24 +0200
-Message-ID: <c05ac4c76aad5f8e94cb98960ccfbc43@mail.rdts.de>
+Date: Thu, 27 Aug 2015 15:49:52 +0200
+Message-ID: <55DF1580.3070806@pengutronix.de>
 References: <2d24e34ceb8e4fe4b0b7c74b9a36da44@SGPMBX1006.APAC.bosch.com>
  <54770F0F.7050904@hartkopp.net>
  <369acf6bdf8b4ae3840b69bef10b5082@SGPMBX1004.APAC.bosch.com>
@@ -11,57 +11,63 @@ References: <2d24e34ceb8e4fe4b0b7c74b9a36da44@SGPMBX1006.APAC.bosch.com>
  <547DB29B.4070601@pengutronix.de>
  <a3cdd6d97480f7b31a53e94169f8a1eb@mail.rdts.de>
  <55DF0F39.10507@pengutronix.de>
+ <c05ac4c76aad5f8e94cb98960ccfbc43@mail.rdts.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="5sKtlMCQ1TQENrir9g7613XjgwJoFfw0s"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rdts.de ([195.243.153.28]:37453 "EHLO mail.rdts.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751938AbbH0Ne1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 27 Aug 2015 09:34:27 -0400
-In-Reply-To: <55DF0F39.10507@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:56605 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752689AbbH0Nt7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 27 Aug 2015 09:49:59 -0400
+In-Reply-To: <c05ac4c76aad5f8e94cb98960ccfbc43@mail.rdts.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 Cc: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, Pankajkumar Misra <pankaj.kumar@in.bosch.com>, linux-can@vger.kernel.org, linux-can-owner@vger.kernel.org
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5sKtlMCQ1TQENrir9g7613XjgwJoFfw0s
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-many thx for your fast answer.
+On 08/27/2015 03:34 PM, Gerhard Bertelsmann wrote:
+>> Which are the registers that have the upper 24 bit used?
+>=20
+> CAN_STA_REG  status register
+> CAN_BUS_TIME bus timing
+> CAN_REC_REG  errot counter
 
-Am 2015-08-27 15:23, schrieb Marc Kleine-Budde:
-> On 08/27/2015 03:04 PM, Gerhard Bertelsmann wrote:
->>> It it's sja1000 compatible, it should work out of the box with the
->>> existing sja1000 device tree binding.
->> 
->> the Allwinner CAN IP is very similar but not exactly a SJA1000, e g. 
->> the
->> registers differ and some are 32 bit wide and not 8 bit.
-> 
-> Which are the registers that have the upper 24 bit used?
+That's ok.
 
-CAN_STA_REG  status register
-CAN_BUS_TIME bus timing
-CAN_REC_REG  errot counter
+> Some regs also have a different address
 
-Some regs also have a different address
+Which one? How may?
 
-> 
->> So the question is: change the sja1000 and the platform file for
->> "quirks" or write a new independent one ?
-> 
-> Depends on the actual differences, but I'd go for quirks first.
-> 
->> Which way do you prefer or better: which driver will be accepted for
->> mainline ?
-> 
-> The github driver lacks a proper driver model binding, so that's not
-> mainline ready.
+Marc
 
-That would be not a huge problem IMHO ...
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-> 
-> Marc
 
-Gerd
+--5sKtlMCQ1TQENrir9g7613XjgwJoFfw0s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJV3xWAAAoJEP5prqPJtc/HFMIH/3eNHRNY7h73zntOy3dbqd9w
+krSTH+5Z0gpjyw7LS5KfdjZDa8nXD8q4DsPmsEoYm9t0dl6Q25NWFS3Yp+dl8JTh
+IQdVAKRpA4cIZOW7LKpnoumLO/r11Je/J4w79KrYW10AsQ9TcHsUsmL4/yNaNCTp
+ZwSQmdzum4WflzRwpk7Y7grwMe3/YgxiJuS9YJpWWm5e1VF5IqQmYiFXhST6/L8E
+DB7z0OJBD8Jgh00UPDcP2vRX4Rxj3gPVqEq8dAZrGd6RU+lCy0M02TOXngd38xcc
+yoEEMIhcnf90p+tWjECY2BooNLapd3FO0Unjw/1rZnY+y5Q8Sr/0xewEMaiBKgI=
+=HB22
+-----END PGP SIGNATURE-----
+
+--5sKtlMCQ1TQENrir9g7613XjgwJoFfw0s--
