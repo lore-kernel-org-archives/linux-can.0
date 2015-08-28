@@ -1,7 +1,7 @@
-From: "Misra Pankaj Kumar (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
-Subject: RE: CAN implementation on A20 Allwinner
-Date: Fri, 28 Aug 2015 05:41:14 +0000
-Message-ID: <4c51a680055342d2a37b3459c9cb74ed@SGPMBX1011.APAC.bosch.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: CAN implementation on A20 Allwinner
+Date: Fri, 28 Aug 2015 08:21:20 +0200
+Message-ID: <55DFFDE0.1060907@pengutronix.de>
 References: <2d24e34ceb8e4fe4b0b7c74b9a36da44@SGPMBX1006.APAC.bosch.com>
  <54770F0F.7050904@hartkopp.net>
  <369acf6bdf8b4ae3840b69bef10b5082@SGPMBX1004.APAC.bosch.com>
@@ -15,64 +15,58 @@ References: <2d24e34ceb8e4fe4b0b7c74b9a36da44@SGPMBX1006.APAC.bosch.com>
  <55DF1580.3070806@pengutronix.de>
  <8a0d66b660360693b2b9b4ae7da78cd4@mail.rdts.de>
  <55DF2098.4020105@pengutronix.de>
+ <4c51a680055342d2a37b3459c9cb74ed@SGPMBX1011.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="hcbnQ4UwsRfnWtf0btbv1Rq3plRkCwTgu"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:21558 "EHLO
-	smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750989AbbH1FlU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Aug 2015 01:41:20 -0400
-In-Reply-To: <55DF2098.4020105@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35539 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751991AbbH1GVb (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 28 Aug 2015 02:21:31 -0400
+In-Reply-To: <4c51a680055342d2a37b3459c9cb74ed@SGPMBX1011.APAC.bosch.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Misra Pankaj Kumar (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
 Cc: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can-owner@vger.kernel.org" <linux-can-owner@vger.kernel.org>, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGVsbG8gTWFyYywNCg0KSSBoYXZlIHVzZWQgQ0FONExpbnV4IHBhY2thZ2Ugd2l0aCBBMjAgQWxs
-d2lubmVyLiBJdHMgd29ya2luZyBmaW5lIGZvciBtZS4NCkl0cyBjaGFyIGRldmljZSBpbXBsZW1l
-bnRhdGlvbi4NCg0KQmVzdCByZWdhcmRzDQpQYW5rYWoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCkZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRl
-XSANClNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMjcsIDIwMTUgODowNyBQTQ0KVG86IEdlcmhhcmQg
-QmVydGVsc21hbm4gPGluZm9AZ2VyaGFyZC1iZXJ0ZWxzbWFubi5kZT4NCkNjOiBVd2UgQm9ubmVz
-IDxib25AZWxla3Ryb24uaWtwLnBoeXNpay50dS1kYXJtc3RhZHQuZGU+OyBNaXNyYSBQYW5rYWog
-S3VtYXIgKFJCRUkvRUVBMikgPFBhbmthai5LdW1hckBpbi5ib3NjaC5jb20+OyBsaW51eC1jYW5A
-dmdlci5rZXJuZWwub3JnOyBsaW51eC1jYW4tb3duZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0
-OiBSZTogQ0FOIGltcGxlbWVudGF0aW9uIG9uIEEyMCBBbGx3aW5uZXINCg0KT24gMDgvMjcvMjAx
-NSAwNDoyOSBQTSwgR2VyaGFyZCBCZXJ0ZWxzbWFubiB3cm90ZToNCj4+PiBTb21lIHJlZ3MgYWxz
-byBoYXZlIGEgZGlmZmVyZW50IGFkZHJlc3MNCj4+DQo+PiBXaGljaCBvbmU/IEhvdyBtYXk/DQo+
-IA0KPiBoZXJlIGEgcXVpY2sgb3ZlcnZpZXcgKG5vdCBhIGNvbXBsZXRlIGxpc3QpOg0KPiANCj4g
-ICAgb3JpZ2luYWwgICAgYWRkcmVzcyAgICBBbGx3aW5uZXINCj4gU0pBMTAwMF9NT0QgICAgMHgw
-MCAgIENBTl9NT0RfU0VMICAgIE9LDQo+IFNKQTEwMDBfQ01SICAgIDB4MDEgICBDQU5fQ01EX1JF
-RyAgICBPSw0KPiBTSkExMDAwX1NSICAgICAweDAyICAgQ0FOX1NUQV9SRUcgICAgT0sgYnV0IDI0
-IGJpdCAobW9yZSB2YWx1ZXMpDQo+IFNKQTEwMDBfSVIgICAgIDB4MDMgICBDQU5fSU5UX1JFRyAg
-ICBPSw0KPiBTSkExMDAwX0lFUiAgICAweDA0ICAgQ0FOX0lOVEVfUkVHICAgT0sNCj4gICAgICAg
-ICAgICAgICAgIDB4MDUgICBDQU5fQlVTX1RJTUUgICBOT0sgYWxzbyAyNCBiaXQNCj4gU0pBMTAw
-MF9CVFIwICAgMHgwNiAgIENBTl9URVdMICAgICAgIE5PSyBDQU4gVFggZXJyb3Igd2FybiBsaW1p
-dCByZWcNCj4gU0pBMTAwMF9CVFIxICAgMHgwNyAgIENBTl9FUlJDICAgICAgIE5PSyBDQU4gZXJy
-b3IgY291bnRlciByZWdpc3Rlcg0KPiBTSkExMDAwX09DUiAgICAweDA4ICAgQ0FOX1JNQ05UICAg
-ICAgTk9LIENBTiByZWNlaXZlIG1lc3NhZ2UgY291bnQgcmVnDQo+IA0KPiBTSkExMDAwX0FMQyAg
-ICAweDBCICAgICAgICAgICAgICAgICAgTk9LDQo+IFNKQTEwMDBfRUNDICAgIDB4MEMgICAgICAg
-ICAgICAgICAgICBOT0sNCj4gU0pBMTAwMF9FV0wgICAgMHgwRCAgICAgICAgICAgICAgICAgIE5P
-Sw0KPiBTSkExMDAwX1JYRVJSICAweDBFICAgICAgICAgICAgICAgICAgTk9LDQo+IFNKQTEwMDBf
-VFhFUlIgIDB4MEYgICAgICAgICAgICAgICAgICBOT0sNCj4gU0pBMTAwMF9BQ0NDMCAgMHgxMCAg
-IENBTl9BQzAgICAgICAgIE9LICBSZXNldCBtb2RlOiBDQU5fQUNQX0NPREUgYnV0IDMyIA0KPiBi
-aXQNCj4gU0pBMTAwMF9BQ0NDMSAgMHgxMSAgIENBTl9BTTAgICAgICAgIE5PSyBSZXNldCBtb2Rl
-OiBDQU5fQUNQX0NPREUgMzIgYml0DQo+IFNKQTEwMDBfQUNDQzIgIDB4MTIgICBDQU5fVFJCVUYy
-ICAgICBOT0sgQ0FOIFRYL1JYIG1idWZmZXIgMiByZWcNCj4gU0pBMTAwMF9BQ0NDMyAgMHgxMyAg
-IENBTl9UUkJVRjMgICAgIE5PSyBDQU4gVFgvUlggbWJ1ZmZlciAzIHJlZw0KPiBTSkExMDAwX0FD
-Q00wICAweDE0ICAgQ0FOX1RSQlVGNCAgICAgTk9LIENBTiBUWC9SWCBtYnVmZmVyIDQgcmVnDQo+
-IFNKQTEwMDBfQUNDTTEgIDB4MTUgICBDQU5fVFJCVUY1ICAgICBOT0sgQ0FOIFRYL1JYIG1idWZm
-ZXIgNSByZWcNCj4gU0pBMTAwMF9BQ0NNMiAgMHgxNiAgIENBTl9UUkJVRjYgICAgIE5PSyBDQU4g
-VFgvUlggbWJ1ZmZlciA2IHJlZw0KPiBTSkExMDAwX0FDQ00zICAweDE3ICAgQ0FOX1RSQlVGNyAg
-ICAgTk9LIENBTiBUWC9SWCBtYnVmZmVyIDcgcmVnDQo+IFNKQTEwMDBfUk1DICAgIDB4MUQgICBD
-QU5fVFJCVUY4ICAgICBOT0sgQ0FOIFRYL1JYIG1idWZmZXIgOCByZWcNCj4gU0pBMTAwMF9SQlNB
-ICAgMHgxRSAgIENBTl9UUkJVRjkgICAgIE5PSyBDQU4gVFgvUlggbWJ1ZmZlciA5IHJlZw0KPiAN
-Cj4gbW9yZSBkaWZmZXJlbmNlcyB0aGFuIHNpbWlsYXJpdGllcyAuLi4gQSBzamExMDAwIG1vZHVs
-ZSB3aXRoICJxdWlya3MiIA0KPiBtYWtlcw0KPiBubyBzZW5zZSB0byBtZS4NCg0KQUNLDQoNCk1h
-cmMNCg0KLS0gDQpQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWlu
-ZS1CdWRkZSAgICAgICAgICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwg
-UGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAg
-ICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRzZ2VyaWNodCBIaWxk
-ZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--hcbnQ4UwsRfnWtf0btbv1Rq3plRkCwTgu
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 08/28/2015 07:41 AM, Misra Pankaj Kumar (RBEI/EEA2) wrote:
+> I have used CAN4Linux package with A20 Allwinner. Its working fine for =
+me.
+> Its char device implementation.
+
+Good. Is the A20 supported bt a generic CAN4Linux SJA1000 driver or is
+there a separate driver for it?
+
+regards,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--hcbnQ4UwsRfnWtf0btbv1Rq3plRkCwTgu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJV3/3hAAoJEP5prqPJtc/HR50H/1JxkZNbvL3AZy1+DuYE8qEw
+COJdkmp+jk0IRNUgcnxGIN+ACXjz9wxePBB9pCouxCWkz3MNRj8yFwZdrwIzL5E+
+mt5fK5rJNWRMmDElcoWeRbZWhgNU2iQ3jGVnRnwpKBLPkn1zb9MF4bRbziupWU8+
+CxZ+UN1Y0Oq9zyhCoxy+vYECz82bzGvobvDrEwMTHa90zWbqo826DQm3R0A0Yb2K
+J/W0qnQcTp5BjtYA21UcT46d5U4k63K3LUbDkjiLCiR0zzvk0EjME/eU+Izq7bGc
+zAo7zmHhcxhPfJyk3L45Hg38468l7HOe3ew/OR1YzBclyF6KodGom3lgdqRf2Qw=
+=D4Jc
+-----END PGP SIGNATURE-----
+
+--hcbnQ4UwsRfnWtf0btbv1Rq3plRkCwTgu--
