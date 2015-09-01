@@ -1,55 +1,42 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/12] can: headers: make header files self contained
-Date: Tue,  1 Sep 2015 11:29:04 +0200
-Message-ID: <1441099755-8601-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 03/12] can: flexcan: remove unused header files
+Date: Tue,  1 Sep 2015 11:29:06 +0200
+Message-ID: <1441099755-8601-4-git-send-email-mkl@pengutronix.de>
 References: <1441099755-8601-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:59762 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46469 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755271AbbIAJ3T (ORCPT
+	with ESMTP id S1755324AbbIAJ3T (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Sep 2015 05:29:19 -0400
 In-Reply-To: <1441099755-8601-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch adds the missing #include-s to the dev.h and led.h, so that they can
-be used without including further header files.
+This patch removes unused header files from the flexcan driver.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/dev.h | 3 ++-
- include/linux/can/led.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index c3a9c8fc60fa..56dcadd83716 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -14,9 +14,10 @@
- #define _CAN_DEV_H
- 
- #include <linux/can.h>
--#include <linux/can/netlink.h>
- #include <linux/can/error.h>
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index e9e8f095461c..83ea6f4f7164 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -26,12 +26,8 @@
  #include <linux/can/led.h>
-+#include <linux/can/netlink.h>
-+#include <linux/netdevice.h>
- 
- /*
-  * CAN mode
-diff --git a/include/linux/can/led.h b/include/linux/can/led.h
-index 146de4506d21..2746f7c2f87d 100644
---- a/include/linux/can/led.h
-+++ b/include/linux/can/led.h
-@@ -11,6 +11,7 @@
- 
- #include <linux/if.h>
- #include <linux/leds.h>
-+#include <linux/netdevice.h>
- 
- enum can_led_event {
- 	CAN_LED_EVENT_OPEN,
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+-#include <linux/if_arp.h>
+-#include <linux/if_ether.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+-#include <linux/kernel.h>
+-#include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
 -- 
 2.5.0
 
