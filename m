@@ -1,298 +1,296 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/12] can: rx-fifo: Add support for simple irq offloading
-Date: Tue,  1 Sep 2015 11:29:14 +0200
-Message-ID: <1441099755-8601-12-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 12/12] can: flexcan: make use of rx-fifos's irq_offload_simple
+Date: Tue,  1 Sep 2015 11:29:15 +0200
+Message-ID: <1441099755-8601-13-git-send-email-mkl@pengutronix.de>
 References: <1441099755-8601-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46269 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:42421 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755384AbbIAJ3T (ORCPT
+	with ESMTP id S1755391AbbIAJ3T (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Sep 2015 05:29:19 -0400
 In-Reply-To: <1441099755-8601-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: David Jander <david@protonic.nl>
+This patch converts the flexcan driver to make use of the rx-fifo
+can_rx_fifo_irq_offload_simple() helper function. The idea is to read the CAN
+frames already in the interrupt context, as the depth of the flexcan HW FIFO is
+too shallow, resulting in too many missed frames. During a normal NAPI poll the
+frames are the pushed into the upper layers.
 
-Some CAN controllers have a usable FIFO already but can still benefit from
-off-loading the CAN controller FIFO. The mailboxes of the FIFO  are copied to a
-ring buffer during the interrupt and then transmitted in a NAPI context.
-
-Signed-off-by: David Jander <david@protonic.nl>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Makefile    |   3 +-
- drivers/net/can/rx-fifo.c   | 180 ++++++++++++++++++++++++++++++++++++++++++++
- include/linux/can/rx-fifo.h |  58 ++++++++++++++
- 3 files changed, 240 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/can/rx-fifo.c
- create mode 100644 include/linux/can/rx-fifo.h
+ drivers/net/can/flexcan.c | 134 +++++++++++++++++++---------------------------
+ 1 file changed, 56 insertions(+), 78 deletions(-)
 
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index c533c62b0f5e..8b3f6e96e4ba 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -6,7 +6,8 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
- 
- obj-$(CONFIG_CAN_DEV)		+= can-dev.o
--can-dev-y			:= dev.o
-+can-dev-y			+= dev.o
-+can-dev-y			+= rx-fifo.o
- 
- can-dev-$(CONFIG_CAN_LEDS)	+= led.o
- 
-diff --git a/drivers/net/can/rx-fifo.c b/drivers/net/can/rx-fifo.c
-new file mode 100644
-index 000000000000..2a0fb37f1bbb
---- /dev/null
-+++ b/drivers/net/can/rx-fifo.c
-@@ -0,0 +1,180 @@
-+/*
-+ * Copyright (c) 2014 David Jander, Protonic Holland
-+ * Copyright (C) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the version 2 of the GNU General Public License
-+ * as published by the Free Software Foundation
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/circ_buf.h>
-+#include <linux/can/dev.h>
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index a62bc43807c8..57eb6537799f 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -24,6 +24,7 @@
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+ #include <linux/can/led.h>
 +#include <linux/can/rx-fifo.h>
-+
-+static int can_rx_fifo_napi_read_frame(struct can_rx_fifo *fifo, int index)
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+@@ -246,13 +247,14 @@ struct flexcan_devtype_data {
+ 
+ struct flexcan_priv {
+ 	struct can_priv can;
+-	struct napi_struct napi;
++	struct can_rx_fifo fifo;
+ 
+ 	struct flexcan_regs __iomem *regs;
+ 	struct flexcan_mb __iomem *tx_mb;
+ 	struct flexcan_mb __iomem *tx_mb_reserved;
+ 	u8 tx_mb_idx;
+ 	u32 reg_esr;
++	u32 poll_esr;			/* used in flexcan_poll_bus_err */
+ 	u32 reg_ctrl_default;
+ 	u32 reg_imask1_default;
+ 
+@@ -514,6 +516,11 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
+ 
++static inline struct flexcan_priv *rx_fifo_to_priv(struct can_rx_fifo *fifo)
 +{
++	return container_of(fifo, struct flexcan_priv, fifo);
++}
++
+ static void do_bus_err(struct net_device *dev,
+ 		       struct can_frame *cf, u32 reg_esr)
+ {
+@@ -562,16 +569,21 @@ static void do_bus_err(struct net_device *dev,
+ 		dev->stats.tx_errors++;
+ }
+ 
+-static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
++static unsigned int flexcan_poll_bus_err(struct can_rx_fifo *fifo)
+ {
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
 +	struct net_device *dev = fifo->dev;
-+	struct net_device_stats *stats = &dev->stats;
-+	struct sk_buff *skb;
-+	struct can_frame *cf;
-+
-+	skb = alloc_can_skb(dev, &cf);
-+	if (unlikely(!skb)) {
-+		stats->rx_dropped++;
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
+ 
++	if (!flexcan_has_and_handle_berr(priv, priv->poll_esr))
 +		return 0;
-+	}
 +
-+	memcpy(cf, &fifo->ring[index], sizeof(*cf));
-+	memset(&fifo->ring[index], 0x0, sizeof(*cf));
+ 	skb = alloc_can_err_skb(dev, &cf);
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+-	do_bus_err(dev, cf, reg_esr);
++	do_bus_err(dev, cf, priv->poll_esr);
+ 
+ 	dev->stats.rx_packets++;
+ 	dev->stats.rx_bytes += cf->can_dlc;
+@@ -580,14 +592,21 @@ static int flexcan_poll_bus_err(struct net_device *dev, u32 reg_esr)
+ 	return 1;
+ }
+ 
+-static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
++static unsigned int flexcan_poll_state(struct can_rx_fifo *fifo)
+ {
+-	struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
++	struct net_device *dev = fifo->dev;
++	struct flexcan_regs __iomem *regs = priv->regs;
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
+ 	enum can_state new_state = 0, rx_state = 0, tx_state = 0;
+ 	int flt;
+ 	struct can_berr_counter bec;
++	u32 reg_esr;
 +
-+	stats->rx_packets++;
-+	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
++	/* esr bits are clear-on-read, so save them for flexcan_poll_bus_err() */
++	priv->poll_esr = priv->reg_esr | flexcan_read(&regs->esr);
++	reg_esr = priv->poll_esr;
+ 
+ 	flt = reg_esr & FLEXCAN_ESR_FLT_CONF_MASK;
+ 	if (likely(flt == FLEXCAN_ESR_FLT_CONF_ACTIVE)) {
+@@ -624,13 +643,17 @@ static int flexcan_poll_state(struct net_device *dev, u32 reg_esr)
+ 	return 1;
+ }
+ 
+-static void flexcan_read_fifo(const struct net_device *dev,
+-			      struct can_frame *cf)
++static unsigned int flexcan_mailbox_read(struct can_rx_fifo *fifo,
++					 struct can_frame *cf, unsigned int n)
+ {
+-	const struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+-	struct flexcan_mb __iomem *mb = &regs->mb[0];
+-	u32 reg_ctrl, reg_id;
++	struct flexcan_mb __iomem *mb = &regs->mb[n];
++	u32 reg_ctrl, reg_id, reg_iflag1;
 +
-+	return 1;
-+}
++	reg_iflag1 = flexcan_read(&regs->iflag1);
++	if (!(reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE))
++		return 0;
+ 
+ 	reg_ctrl = flexcan_read(&mb->can_ctrl);
+ 	reg_id = flexcan_read(&mb->can_id);
+@@ -649,67 +672,16 @@ static void flexcan_read_fifo(const struct net_device *dev,
+ 	/* mark as read */
+ 	flexcan_write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
+ 	flexcan_read(&regs->timer);
+-}
+-
+-static int flexcan_read_frame(struct net_device *dev)
+-{
+-	struct net_device_stats *stats = &dev->stats;
+-	struct can_frame *cf;
+-	struct sk_buff *skb;
+-
+-	skb = alloc_can_skb(dev, &cf);
+-	if (unlikely(!skb)) {
+-		stats->rx_dropped++;
+-		return 0;
+-	}
+-
+-	flexcan_read_fifo(dev, cf);
+-
+-	stats->rx_packets++;
+-	stats->rx_bytes += cf->can_dlc;
+-	netif_receive_skb(skb);
+-
+-	can_led_event(dev, CAN_LED_EVENT_RX);
+ 
+ 	return 1;
+ }
+ 
+-static int flexcan_poll(struct napi_struct *napi, int quota)
++static void flexcan_poll_error_interrupts_enable(struct can_rx_fifo *fifo)
+ {
+-	struct net_device *dev = napi->dev;
+-	const struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+-	u32 reg_iflag1, reg_esr;
+-	int work_done = 0;
+-
+-	/* The error bits are cleared on read,
+-	 * use saved value from irq handler.
+-	 */
+-	reg_esr = flexcan_read(&regs->esr) | priv->reg_esr;
+ 
+-	/* handle state changes */
+-	work_done += flexcan_poll_state(dev, reg_esr);
+-
+-	/* handle RX-FIFO */
+-	reg_iflag1 = flexcan_read(&regs->iflag1);
+-	while (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE &&
+-	       work_done < quota) {
+-		work_done += flexcan_read_frame(dev);
+-		reg_iflag1 = flexcan_read(&regs->iflag1);
+-	}
+-
+-	/* report bus errors */
+-	if (flexcan_has_and_handle_berr(priv, reg_esr) && work_done < quota)
+-		work_done += flexcan_poll_bus_err(dev, reg_esr);
+-
+-	if (work_done < quota) {
+-		napi_complete(napi);
+-		/* enable IRQs */
+-		flexcan_write(priv->reg_imask1_default, &regs->imask1);
+-		flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+-	}
+-
+-	return work_done;
++	flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+ }
+ 
+ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+@@ -727,25 +699,22 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	if (reg_esr & FLEXCAN_ESR_ALL_INT)
+ 		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+ 
+-	/* schedule NAPI in case of:
+-	 * - rx IRQ
+-	 * - state change IRQ
+-	 * - bus error IRQ and bus error reporting is activated
+-	 */
+-	if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+-	    (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
++	/* bus error IRQ and bus error reporting is activated */
++	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+ 	    flexcan_has_and_handle_berr(priv, reg_esr)) {
+ 		/* The error bits are cleared on read,
+ 		 * save them for later use.
+ 		 */
+ 		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
+-		flexcan_write(priv->reg_imask1_default &
+-			      ~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
+ 		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+ 			      &regs->ctrl);
+-		napi_schedule(&priv->napi);
++		can_rx_fifo_irq_error(&priv->fifo);
+ 	}
+ 
++	/* reception interrupt */
++	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE)
++		can_rx_fifo_irq_offload_simple(&priv->fifo);
 +
-+static int can_rx_fifo_napi_poll(struct napi_struct *napi, int quota)
-+{
-+	struct can_rx_fifo *fifo = container_of(napi, struct can_rx_fifo, napi);
-+	unsigned int tail;
-+	int work_done = 0;
+ 	/* FIFO overflow */
+ 	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
+ 		flexcan_write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
+@@ -1008,7 +977,7 @@ static int flexcan_open(struct net_device *dev)
+ 
+ 	can_led_event(dev, CAN_LED_EVENT_OPEN);
+ 
+-	napi_enable(&priv->napi);
++	can_rx_fifo_enable(&priv->fifo);
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+@@ -1030,7 +999,7 @@ static int flexcan_close(struct net_device *dev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 
+ 	netif_stop_queue(dev);
+-	napi_disable(&priv->napi);
++	can_rx_fifo_disable(&priv->fifo);
+ 	flexcan_chip_stop(dev);
+ 
+ 	free_irq(dev->irq, dev);
+@@ -1235,7 +1204,15 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		FLEXCAN_IFLAG_RX_FIFO_AVAILABLE |
+ 		FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
+ 
+-	netif_napi_add(dev, &priv->napi, flexcan_poll, FLEXCAN_NAPI_WEIGHT);
++	priv->fifo.poll_pre_read = flexcan_poll_state;
++	priv->fifo.poll_post_read = flexcan_poll_bus_err;
++	priv->fifo.poll_error_interrupts_enable =
++		flexcan_poll_error_interrupts_enable;
++	priv->fifo.mailbox_read = flexcan_mailbox_read;
 +
-+	if (fifo->poll_pre_read && work_done < quota)
-+		work_done += fifo->poll_pre_read(fifo);
-+
-+	/* handle mailboxes */
-+	tail = fifo->ring_tail;
-+	while ((CIRC_CNT(smp_load_acquire(&fifo->ring_head), tail, fifo->ring_size)) &&
-+	       (work_done < quota)) {
-+		work_done += can_rx_fifo_napi_read_frame(fifo, tail);
-+		tail++;
-+		tail &= fifo->ring_size -1;
-+		smp_store_release(&fifo->ring_tail, tail);
-+	}
-+
-+	if (fifo->poll_post_read && work_done < quota)
-+		work_done += fifo->poll_post_read(fifo);
-+
-+	if (work_done < quota) {
-+		unsigned int head;
-+
-+		napi_complete(napi);
-+
-+		/* Check if there was another interrupt */
-+		head = smp_load_acquire(&fifo->ring_head);
-+		if (((CIRC_CNT(head, tail, fifo->ring_size)) || fifo->poll_errors) &&
-+		    napi_reschedule(&fifo->napi)) {
-+			fifo->poll_errors = false;
-+		}
-+
-+		if (fifo->poll_error_interrupts_enable)
-+			fifo->poll_error_interrupts_enable(fifo);
-+	}
-+
-+	can_led_event(fifo->dev, CAN_LED_EVENT_RX);
-+
-+	return work_done;
-+}
-+
-+static unsigned int can_rx_fifo_offload_one(struct can_rx_fifo *fifo, unsigned int n)
-+{
-+	unsigned int head, tail;
-+	unsigned int ret;
-+
-+	head = fifo->ring_head;
-+	tail = ACCESS_ONCE(fifo->ring_tail);
-+	if (CIRC_SPACE(head, tail, fifo->ring_size)) {
-+		ret = fifo->mailbox_read(fifo, &fifo->ring[head], n);
-+		if (ret) {
-+			head++;
-+			head &= fifo->ring_size - 1;
-+			smp_store_release(&fifo->ring_head, head);
-+		}
-+	} else {
-+		/* Circular buffer is fill, read to discard mailbox */
-+		ret = fifo->mailbox_read(fifo, &fifo->overflow, n);
-+		if (ret)
-+			fifo->dev->stats.rx_dropped++;
-+	}
-+
-+	return ret;
-+}
-+
-+int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
-+{
-+	unsigned int received = 0;
-+	unsigned int ret;
-+
-+	do {
-+		ret = can_rx_fifo_offload_one(fifo, 0);
-+		received += ret;
-+	} while (ret);
-+
-+	if (received)
-+		can_rx_fifo_schedule(fifo);
-+
-+	return received;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload_simple);
-+
-+static int can_rx_fifo_init_ring(struct net_device *dev,
-+				 struct can_rx_fifo *fifo, unsigned int weight)
-+{
-+	fifo->dev = dev;
-+
-+	/* Make ring-buffer a sensible size that is a power of 2 */
-+	fifo->ring_size = 2 << fls(weight);
-+	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
-+			     GFP_KERNEL);
-+	if (!fifo->ring)
-+		return -ENOMEM;
-+
-+	fifo->ring_head = fifo->ring_tail = 0;
-+	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
-+
-+	return 0;
-+}
-+
-+int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight)
-+{
-+	int ret;
-+
-+	if (!fifo->mailbox_read)
-+		return -EINVAL;
-+
-+	ret = can_rx_fifo_init_ring(dev, fifo, weight);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_add_simple);
-+
-+void can_rx_fifo_enable(struct can_rx_fifo *fifo)
-+{
-+	napi_enable(&fifo->napi);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_enable);
-+
-+void can_rx_fifo_irq_error(struct can_rx_fifo *fifo)
-+{
-+	fifo->poll_errors = true;
-+	can_rx_fifo_schedule(fifo);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_error);
-+
-+void can_rx_fifo_del(struct can_rx_fifo *fifo)
-+{
-+	netif_napi_del(&fifo->napi);
-+	kfree(fifo->ring);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_del);
-diff --git a/include/linux/can/rx-fifo.h b/include/linux/can/rx-fifo.h
-new file mode 100644
-index 000000000000..fc157f23722c
---- /dev/null
-+++ b/include/linux/can/rx-fifo.h
-@@ -0,0 +1,58 @@
-+/*
-+ * linux/can/rx-fifo.h
-+ *
-+ * Copyright (c) 2014 David Jander, Protonic Holland
-+ * Copyright (c) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the version 2 of the GNU General Public License
-+ * as published by the Free Software Foundation
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#ifndef _CAN_RX_FIFO_H
-+#define _CAN_RX_FIFO_H
-+
-+#include <linux/netdevice.h>
-+#include <linux/can.h>
-+
-+struct can_rx_fifo {
-+	struct net_device *dev;
-+
-+	void (*poll_error_interrupts_enable)(struct can_rx_fifo *fifo);
-+	unsigned int (*mailbox_read)(struct can_rx_fifo *fifo, struct can_frame *cf, unsigned int mb);
-+	unsigned int (*poll_pre_read)(struct can_rx_fifo *fifo);
-+	unsigned int (*poll_post_read)(struct can_rx_fifo *fifo);
-+
-+	unsigned int ring_size;
-+	unsigned int ring_head;
-+	unsigned int ring_tail;
-+
-+	struct can_frame *ring;
-+	struct can_frame overflow;
-+	struct napi_struct napi;
-+
-+	bool poll_errors;
-+};
-+
-+int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight);
-+int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo);
-+void can_rx_fifo_irq_error(struct can_rx_fifo *fifo);
-+void can_rx_fifo_del(struct can_rx_fifo *fifo);
-+void can_rx_fifo_enable(struct can_rx_fifo *fifo);
-+
-+static inline void can_rx_fifo_schedule(struct can_rx_fifo *fifo)
-+{
-+	napi_schedule(&fifo->napi);
-+}
-+
-+static inline void can_rx_fifo_disable(struct can_rx_fifo *fifo)
-+{
-+	napi_disable(&fifo->napi);
-+}
-+
-+#endif /* !_CAN_RX_FIFO_H */
++	err = can_rx_fifo_add_simple(dev, &priv->fifo, FLEXCAN_NAPI_WEIGHT);
++	if (err)
++		goto failed_fifo;
+ 
+ 	platform_set_drvdata(pdev, dev);
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+@@ -1253,6 +1230,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++ failed_fifo:
+  failed_register:
+ 	free_candev(dev);
+ 	return err;
+@@ -1264,7 +1242,7 @@ static int flexcan_remove(struct platform_device *pdev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 
+ 	unregister_flexcandev(dev);
+-	netif_napi_del(&priv->napi);
++	can_rx_fifo_del(&priv->fifo);
+ 	free_candev(dev);
+ 
+ 	return 0;
 -- 
 2.5.0
 
