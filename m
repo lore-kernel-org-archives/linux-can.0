@@ -1,69 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/8] can: flexcan: add quirk FLEXCAN_QUIRK_ENABLE_EACEN_RRS
-Date: Tue,  1 Sep 2015 12:31:57 +0200
-Message-ID: <1441103522-15593-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 1/8] can: flexcan: add missing register definitions
+Date: Tue,  1 Sep 2015 12:31:55 +0200
+Message-ID: <1441103522-15593-2-git-send-email-mkl@pengutronix.de>
 References: <1441103522-15593-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46370 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:34002 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755756AbbIAKcK (ORCPT
+	with ESMTP id S1755302AbbIAKcK (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Sep 2015 06:32:10 -0400
 In-Reply-To: <1441103522-15593-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-In order to receive RTR frames in the non HW FIFO mode the RSS and EACEN bits
-of the reg_ctrl2 have to be activated. As this has no side effect in the FIFO
-mode, we do this unconditionally on cores with the reg_ctrl2.
+This patch adds some missing register definitions, which are needed in an
+upcoming patch.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/net/can/flexcan.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4c65a6795c77..1e213fd24e63 100644
+index 57eb6537799f..457688f2929e 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -187,7 +187,8 @@
-  */
- #define FLEXCAN_QUIRK_BROKEN_ERR_STATE	BIT(1) /* [TR]WRN_INT not connected */
- #define FLEXCAN_QUIRK_DISABLE_RXFG	BIT(2) /* Disable RX FIFO Global mask */
--#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(3) /* Disble Memory error detection */
-+#define FLEXCAN_QUIRK_ENABLE_EACEN_RRS	BIT(3) /* Enable EACEN and RRS bit in ctrl2 */
-+#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disble Memory error detection */
- 
- /* Structure of the message buffer */
- struct flexcan_mb {
-@@ -279,11 +280,12 @@ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
- static struct flexcan_devtype_data fsl_imx28_devtype_data;
- 
- static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
--	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG,
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS,
- };
- 
- static struct flexcan_devtype_data fsl_vf610_devtype_data = {
--	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_DISABLE_MECR,
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_DISABLE_MECR,
- };
- 
- static const struct can_bittiming_const flexcan_bittiming_const = {
-@@ -861,6 +863,12 @@ static int flexcan_chip_start(struct net_device *dev)
- 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
- 	flexcan_write(reg_ctrl, &regs->ctrl);
- 
-+	if ((priv->devtype_data->quirks & FLEXCAN_QUIRK_ENABLE_EACEN_RRS)) {
-+		reg_ctrl2 = flexcan_read(&regs->ctrl2);
-+		reg_ctrl2 |= FLEXCAN_CTRL2_EACEN | FLEXCAN_CTRL2_RRS;
-+		flexcan_write(reg_ctrl2, &regs->ctrl2);
-+	}
-+
- 	/* clear and invalidate all mailboxes first */
- 	for (i = priv->tx_mb_idx; i < ARRAY_SIZE(regs->mb); i++) {
- 		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE,
+@@ -56,7 +56,7 @@
+ #define FLEXCAN_MCR_WAK_SRC		BIT(19)
+ #define FLEXCAN_MCR_DOZE		BIT(18)
+ #define FLEXCAN_MCR_SRX_DIS		BIT(17)
+-#define FLEXCAN_MCR_BCC			BIT(16)
++#define FLEXCAN_MCR_IRMQ		BIT(16)
+ #define FLEXCAN_MCR_LPRIO_EN		BIT(13)
+ #define FLEXCAN_MCR_AEN			BIT(12)
+ #define FLEXCAN_MCR_MAXMB(x)		((x) & 0x7f)
+@@ -211,7 +211,10 @@ struct flexcan_regs {
+ 	u32 imask1;		/* 0x28 */
+ 	u32 iflag2;		/* 0x2c */
+ 	u32 iflag1;		/* 0x30 */
+-	u32 ctrl2;		/* 0x34 */
++	union {			/* 0x34 */
++		u32 gfwr_mx28;	/* MX28, MX53 */
++		u32 ctrl2;	/* MX6, VF610 */
++	};
+ 	u32 esr2;		/* 0x38 */
+ 	u32 imeur;		/* 0x3c */
+ 	u32 lrfr;		/* 0x40 */
+@@ -230,7 +233,11 @@ struct flexcan_regs {
+ 	 *				size conf'ed via ctrl2::RFFN
+ 	 *				(mx6, vf610)
+ 	 */
+-	u32 _reserved4[408];
++	u32 _reserved4[256];	/* 0x480 */
++	u32 rximr[64];		/* 0x880 */
++	u32 _reserved5[24];	/* 0x980 */
++	u32 gfwr_mx6;		/* 0x9e0 - MX6 */
++	u32 _reserved6[63];	/* 0x9e4 */
+ 	u32 mecr;		/* 0xae0 */
+ 	u32 erriar;		/* 0xae4 */
+ 	u32 erridpr;		/* 0xae8 */
 -- 
 2.5.0
 
