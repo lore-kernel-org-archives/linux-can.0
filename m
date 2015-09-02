@@ -1,69 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/8] can: flexcan: activate individual RX masking and initialize reg_rximr
-Date: Tue,  1 Sep 2015 12:31:56 +0200
-Message-ID: <1441103522-15593-3-git-send-email-mkl@pengutronix.de>
-References: <1441103522-15593-1-git-send-email-mkl@pengutronix.de>
+From: Guillaume Picquet <guillaume@picquet.fr>
+Subject: SocketCAN stops read after RX overflow, is it normal?
+Date: Wed, 2 Sep 2015 12:17:44 +0200
+Message-ID: <55E6CCC8.7010908@picquet.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:42879 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755413AbbIAKcK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Sep 2015 06:32:10 -0400
-In-Reply-To: <1441103522-15593-1-git-send-email-mkl@pengutronix.de>
+Received: from bounce-1.online.net ([62.210.16.43]:49989 "EHLO
+	bounce-dc2-1.online.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1750717AbbIBK4z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Sep 2015 06:56:55 -0400
+Received: from [62.210.16.40] (helo=smtpauth-dc2-1.online.net)
+	by bounce-dc2-1.mutu.online.net with esmtpa (Exim 4.82)
+	(envelope-from <guillaume@picquet.fr>)
+	id 1ZX56x-00025S-RD
+	for linux-can@vger.kernel.org; Wed, 02 Sep 2015 12:17:47 +0200
+Received: from [78.224.49.244] (helo=[0.0.0.0])
+	by smtpauth-dc2-1.online.net with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
+	(Exim 4.82)
+	(envelope-from <guillaume@picquet.fr>)
+	id 1ZX56O-0006fH-RP
+	for linux-can@vger.kernel.org; Wed, 02 Sep 2015 12:17:13 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can@vger.kernel.org
 
-Modern flexcan IP cores support two RX modes. One is using the 6 fames deep
-hardware FIFO, the other is using up to 64 mailboxes (in non FIFO mode). For
-now only the HW FIFO mode is activated.
+Hi every one.
 
-In order to make use of the RX mailboxes the individual RX masking feature has
-to be activated, otherwise matching mailboxes are overwritten during the
-reception process. This however switches on the individual RX masking, which
-uses reg_rximr registers for masking.
+I=E2=80=99m not sure to post to the correct list, if so please correct =
+me.
 
-This patch activates the individual RX masking feature unconditionally and
-initializes the mask registers (reg_rximr) with 0x0 == "don't care", which
-switches off any filtering.
+I=E2=80=99m doing tests on embedded hardware with integrated CAN bus in=
+terface=20
+(based on AT91). The driver provides Linux Socket API and I try to see=20
+the limits:
+I have one transmitter that writes CAN frames (CAN_RAW) as fast as=20
+possible and a receiver that reads continuously.
+After a moment the receiver gets an error frame signalling RX overflow.=
+=20
+I have no problem with that, it's normal and expected.
+But question is why at this point no more frame is received ?
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+read() do not return, I've tested also with select() which return timeo=
+ut.
+(The restart-ms option is set)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 457688f2929e..4c65a6795c77 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -815,6 +815,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 	 * only supervisor access
- 	 * enable warning int
- 	 * disable local echo
-+	 * enable individual RX masking
- 	 * choose format C
- 	 * set max mailbox number
- 	 */
-@@ -822,7 +823,8 @@ static int flexcan_chip_start(struct net_device *dev)
- 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
- 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
- 		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS |
--		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
-+		FLEXCAN_MCR_IRMQ | FLEXCAN_MCR_IDAM_C |
-+		FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
- 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
- 	flexcan_write(reg_mcr, &regs->mcr);
- 
-@@ -881,6 +883,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_DISABLE_RXFG)
- 		flexcan_write(0x0, &regs->rxfgmask);
- 
-+	/* clear acceptance filters */
-+	for (i = 0; i < ARRAY_SIZE(regs->mb); i++)
-+		flexcan_write(0, &regs->rximr[i]);
-+
- 	/* On Vybrid, disable memory error detection interrupts
- 	 * and freeze mode.
- 	 * This also works around errata e5295 which generates
--- 
-2.5.0
+I expected some dropped frames and others RX buffer errors but not the=20
+end of reception.
 
+The only way to recover the interface is to set it down and up again.
+
+Thanks in advance.
+
+Regards.
