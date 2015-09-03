@@ -1,49 +1,46 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v2 2/2] Allwinner SoC CAN controller Support
-Date: Thu, 3 Sep 2015 11:13:11 +0000
-Message-ID: <20150903111311.13443.48412@shannon>
-References: <1441274970-5632-1-git-send-email-info@gerhard-bertelsmann.de>
- <1441274970-5632-3-git-send-email-info@gerhard-bertelsmann.de>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH] autotools: fix syntax error
+Date: Thu, 3 Sep 2015 13:53:12 +0200
+Message-ID: <CAGm1_kvHUgo3gs9vHkp8SqwwM2Z1Yc=CPF8tLWxMgLk0iViD7w@mail.gmail.com>
+References: <1438963526-31603-1-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0060.outbound.protection.outlook.com ([157.55.234.60]:21383
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752010AbbICLqY convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 07:46:24 -0400
-In-Reply-To: <1441274970-5632-3-git-send-email-info@gerhard-bertelsmann.de>
+Received: from mail-vk0-f42.google.com ([209.85.213.42]:34745 "EHLO
+	mail-vk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752010AbbICL7X (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 07:59:23 -0400
+Received: by vkhf67 with SMTP id f67so22864367vkh.1
+        for <linux-can@vger.kernel.org>; Thu, 03 Sep 2015 04:59:22 -0700 (PDT)
+In-Reply-To: <1438963526-31603-1-git-send-email-yegorslists@googlemail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Yegor Yefremov <yegorslists@googlemail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Quoting Gerhard Bertelsmann (2015-09-03 10:09:30)
-> Second try:
->  Allwinner A10/A20 CAN Controller support
-> 
-> 
-> Signed-off-by: Gerhard Bertelsmann < info@gerhard-bertelsmann.de >
-> Tested-by; Gerhard Bertelsmann < info@gerhard-bertelsmann.de >
-> 
-> 
->  drivers/net/can/Kconfig                            |  10 +
->  drivers/net/can/Makefile                           |   1 +
->  drivers/net/can/sunxi_can.c                        | 832 +++++++++++++++++++++
->  3 files changed, 843 insertions(+)
-> 
-[...]
+On Fri, Aug 7, 2015 at 6:05 PM,  <yegorslists@googlemail.com> wrote:
+> From: Yegor Yefremov <yegorslists@googlemail.com>
+>
+> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+> ---
+>  configure.ac | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/configure.ac b/configure.ac
+> index 633ba81..8b50fb7 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -20,7 +20,7 @@ AC_PROG_CC
+>  LT_INIT(win32-dll)
+>
+>  AM_INIT_AUTOMAKE([foreign no-exeext dist-bzip2])
+> -m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes]]))
+> +m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+>
+>  #
+>  # Checks for header files.
+> --
+> 2.1.4
+>
 
-Hi Gerhard,
-
-Have you looked at changes made to sja1000 since 2013? It might be prudent to
-apply those changes. ;)
-
-See:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/log/drivers/net/can/sja1000/sja1000.c
-
-In particular, I noticed that this one is not applied:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=215db1856e8313ef8a1d9b64346dc261570012a6
-
-Cheers,
-Andri
+Ping?
