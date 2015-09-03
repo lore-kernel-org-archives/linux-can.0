@@ -1,46 +1,49 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: [PATCH] autotools: fix syntax error
-Date: Thu, 3 Sep 2015 13:53:12 +0200
-Message-ID: <CAGm1_kvHUgo3gs9vHkp8SqwwM2Z1Yc=CPF8tLWxMgLk0iViD7w@mail.gmail.com>
-References: <1438963526-31603-1-git-send-email-yegorslists@googlemail.com>
+From: Guillaume Picquet <guillaume@picquet.fr>
+Subject: Re: [PATCH 0/4] can: rx-fifo for at91 only
+Date: Thu, 3 Sep 2015 14:10:48 +0200
+Message-ID: <55E838C8.9030800@picquet.fr>
+References: <1441270643-11352-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vk0-f42.google.com ([209.85.213.42]:34745 "EHLO
-	mail-vk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752010AbbICL7X (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 07:59:23 -0400
-Received: by vkhf67 with SMTP id f67so22864367vkh.1
-        for <linux-can@vger.kernel.org>; Thu, 03 Sep 2015 04:59:22 -0700 (PDT)
-In-Reply-To: <1438963526-31603-1-git-send-email-yegorslists@googlemail.com>
+Received: from smtpauth.online.net ([62.210.16.40]:51031 "EHLO
+	smtpauth-dc2-1.online.net" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1754501AbbICMKz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 08:10:55 -0400
+In-Reply-To: <1441270643-11352-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Yegor Yefremov <yegorslists@googlemail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, guillaume@picquet.fr
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
 
-On Fri, Aug 7, 2015 at 6:05 PM,  <yegorslists@googlemail.com> wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
+Hello Marc,
+
+I don't build kernel/module but I'll ask our hardware provider to try=20
+your patches.
+
+I'll keep you updated as soon as possible.
+
+Thanks
+
+regards.
+
+Le 03/09/2015 10:57, Marc Kleine-Budde a =E9crit :
+> Hello Guillaume,
 >
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-> ---
->  configure.ac | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> please try the following patches if they fix your problem on the at91=
+=2E They are
+> available at my git repot:
 >
-> diff --git a/configure.ac b/configure.ac
-> index 633ba81..8b50fb7 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -20,7 +20,7 @@ AC_PROG_CC
->  LT_INIT(win32-dll)
+> https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/l=
+og/?h=3Dat91-next
 >
->  AM_INIT_AUTOMAKE([foreign no-exeext dist-bzip2])
-> -m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes]]))
-> +m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+> regards,
+> Marc
 >
->  #
->  # Checks for header files.
 > --
-> 2.1.4
->
-
-Ping?
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
