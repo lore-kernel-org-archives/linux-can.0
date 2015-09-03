@@ -1,293 +1,87 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/4] can: rx-fifo: Add support for simple irq offloading
-Date: Thu,  3 Sep 2015 10:57:21 +0200
-Message-ID: <1441270643-11352-3-git-send-email-mkl@pengutronix.de>
-References: <1441270643-11352-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: SocketCAN stops read after RX overflow, is it normal?
+Date: Thu, 3 Sep 2015 11:01:40 +0200
+Message-ID: <55E80C74.8060600@pengutronix.de>
+References: <55E6CCC8.7010908@picquet.fr>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Qn5jNUt7cFRC9eWTuE69akqHKKsv2EIrk"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:56439 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:48185 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751972AbbICI51 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 04:57:27 -0400
-In-Reply-To: <1441270643-11352-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751894AbbICJBr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 05:01:47 -0400
+In-Reply-To: <55E6CCC8.7010908@picquet.fr>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: guillaume@picquet.fr
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, David Jander <david@protonic.nl>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Guillaume Picquet <guillaume@picquet.fr>, linux-can@vger.kernel.org
 
-From: David Jander <david@protonic.nl>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Qn5jNUt7cFRC9eWTuE69akqHKKsv2EIrk
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Some CAN controllers have a usable FIFO already but can still benefit from
-off-loading the CAN controller FIFO. The mailboxes of the FIFO  are copied to a
-ring buffer during the interrupt and then transmitted in a NAPI context.
+On 09/02/2015 12:17 PM, Guillaume Picquet wrote:
+> Hi every one.
+>=20
+> I=E2=80=99m not sure to post to the correct list, if so please correct =
+me.
 
-Signed-off-by: David Jander <david@protonic.nl>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/Makefile    |   3 +-
- drivers/net/can/rx-fifo.c   | 174 ++++++++++++++++++++++++++++++++++++++++++++
- include/linux/can/rx-fifo.h |  58 +++++++++++++++
- 3 files changed, 234 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/can/rx-fifo.c
- create mode 100644 include/linux/can/rx-fifo.h
+100% correct.
 
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index c533c62b0f5e..8b3f6e96e4ba 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -6,7 +6,8 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
- 
- obj-$(CONFIG_CAN_DEV)		+= can-dev.o
--can-dev-y			:= dev.o
-+can-dev-y			+= dev.o
-+can-dev-y			+= rx-fifo.o
- 
- can-dev-$(CONFIG_CAN_LEDS)	+= led.o
- 
-diff --git a/drivers/net/can/rx-fifo.c b/drivers/net/can/rx-fifo.c
-new file mode 100644
-index 000000000000..7896a1034588
---- /dev/null
-+++ b/drivers/net/can/rx-fifo.c
-@@ -0,0 +1,174 @@
-+/*
-+ * Copyright (c) 2014 David Jander, Protonic Holland
-+ * Copyright (C) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the version 2 of the GNU General Public License
-+ * as published by the Free Software Foundation
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/circ_buf.h>
-+#include <linux/can/dev.h>
-+#include <linux/can/rx-fifo.h>
-+
-+static int can_rx_fifo_napi_read_frame(struct can_rx_fifo *fifo, int index)
-+{
-+	struct net_device *dev = fifo->dev;
-+	struct net_device_stats *stats = &dev->stats;
-+	struct sk_buff *skb;
-+	struct can_frame *cf;
-+
-+	skb = alloc_can_skb(dev, &cf);
-+	if (unlikely(!skb)) {
-+		stats->rx_dropped++;
-+		return 0;
-+	}
-+
-+	memcpy(cf, &fifo->ring[index], sizeof(*cf));
-+	memset(&fifo->ring[index], 0x0, sizeof(*cf));
-+
-+	stats->rx_packets++;
-+	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
-+
-+	return 1;
-+}
-+
-+static int can_rx_fifo_napi_poll(struct napi_struct *napi, int quota)
-+{
-+	struct can_rx_fifo *fifo = container_of(napi, struct can_rx_fifo, napi);
-+	unsigned int tail;
-+	int work_done = 0;
-+
-+	if (fifo->poll_pre_read && work_done < quota)
-+		work_done += fifo->poll_pre_read(fifo);
-+
-+	/* handle mailboxes */
-+	tail = fifo->ring_tail;
-+	while ((CIRC_CNT(smp_load_acquire(&fifo->ring_head), tail, fifo->ring_size)) &&
-+	       (work_done < quota)) {
-+		work_done += can_rx_fifo_napi_read_frame(fifo, tail);
-+		tail++;
-+		tail &= fifo->ring_size -1;
-+		smp_store_release(&fifo->ring_tail, tail);
-+	}
-+
-+	if (fifo->poll_post_read && work_done < quota)
-+		work_done += fifo->poll_post_read(fifo);
-+
-+	if (work_done < quota) {
-+		unsigned int head;
-+
-+		napi_complete(napi);
-+
-+		/* Check if there was another interrupt */
-+		head = smp_load_acquire(&fifo->ring_head);
-+		if (((CIRC_CNT(head, tail, fifo->ring_size)) || fifo->poll_errors) &&
-+		    napi_reschedule(&fifo->napi)) {
-+			fifo->poll_errors = false;
-+		}
-+
-+		if (fifo->poll_error_interrupts_enable)
-+			fifo->poll_error_interrupts_enable(fifo);
-+	}
-+
-+	can_led_event(fifo->dev, CAN_LED_EVENT_RX);
-+
-+	return work_done;
-+}
-+
-+static unsigned int can_rx_fifo_offload_one(struct can_rx_fifo *fifo, unsigned int n)
-+{
-+	unsigned int head, tail;
-+	unsigned int ret;
-+
-+	head = fifo->ring_head;
-+	tail = ACCESS_ONCE(fifo->ring_tail);
-+	if (CIRC_SPACE(head, tail, fifo->ring_size)) {
-+		ret = fifo->mailbox_read(fifo, &fifo->ring[head], n);
-+		if (ret) {
-+			head++;
-+			head &= fifo->ring_size - 1;
-+			smp_store_release(&fifo->ring_head, head);
-+		}
-+	} else {
-+		/* Circular buffer is fill, read to discard mailbox */
-+		ret = fifo->mailbox_read(fifo, &fifo->overflow, n);
-+		if (ret)
-+			fifo->dev->stats.rx_dropped++;
-+	}
-+
-+	return ret;
-+}
-+
-+int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
-+{
-+	unsigned int received = 0;
-+	unsigned int ret;
-+
-+	do {
-+		ret = can_rx_fifo_offload_one(fifo, 0);
-+		received += ret;
-+	} while (ret);
-+
-+	if (received)
-+		can_rx_fifo_schedule(fifo);
-+
-+	return received;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload_simple);
-+
-+static int can_rx_fifo_init_ring(struct net_device *dev,
-+				 struct can_rx_fifo *fifo, unsigned int weight)
-+{
-+	fifo->dev = dev;
-+
-+	/* Make ring-buffer a sensible size that is a power of 2 */
-+	fifo->ring_size = 2 << fls(weight);
-+	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
-+			     GFP_KERNEL);
-+	if (!fifo->ring)
-+		return -ENOMEM;
-+
-+	fifo->ring_head = fifo->ring_tail = 0;
-+	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
-+
-+	return 0;
-+}
-+
-+int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight)
-+{
-+	if (!fifo->mailbox_read)
-+		return -EINVAL;
-+
-+	return can_rx_fifo_init_ring(dev, fifo, weight);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_add_simple);
-+
-+void can_rx_fifo_enable(struct can_rx_fifo *fifo)
-+{
-+	napi_enable(&fifo->napi);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_enable);
-+
-+void can_rx_fifo_irq_error(struct can_rx_fifo *fifo)
-+{
-+	fifo->poll_errors = true;
-+	can_rx_fifo_schedule(fifo);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_error);
-+
-+void can_rx_fifo_del(struct can_rx_fifo *fifo)
-+{
-+	netif_napi_del(&fifo->napi);
-+	kfree(fifo->ring);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_del);
-diff --git a/include/linux/can/rx-fifo.h b/include/linux/can/rx-fifo.h
-new file mode 100644
-index 000000000000..fc157f23722c
---- /dev/null
-+++ b/include/linux/can/rx-fifo.h
-@@ -0,0 +1,58 @@
-+/*
-+ * linux/can/rx-fifo.h
-+ *
-+ * Copyright (c) 2014 David Jander, Protonic Holland
-+ * Copyright (c) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the version 2 of the GNU General Public License
-+ * as published by the Free Software Foundation
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#ifndef _CAN_RX_FIFO_H
-+#define _CAN_RX_FIFO_H
-+
-+#include <linux/netdevice.h>
-+#include <linux/can.h>
-+
-+struct can_rx_fifo {
-+	struct net_device *dev;
-+
-+	void (*poll_error_interrupts_enable)(struct can_rx_fifo *fifo);
-+	unsigned int (*mailbox_read)(struct can_rx_fifo *fifo, struct can_frame *cf, unsigned int mb);
-+	unsigned int (*poll_pre_read)(struct can_rx_fifo *fifo);
-+	unsigned int (*poll_post_read)(struct can_rx_fifo *fifo);
-+
-+	unsigned int ring_size;
-+	unsigned int ring_head;
-+	unsigned int ring_tail;
-+
-+	struct can_frame *ring;
-+	struct can_frame overflow;
-+	struct napi_struct napi;
-+
-+	bool poll_errors;
-+};
-+
-+int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight);
-+int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo);
-+void can_rx_fifo_irq_error(struct can_rx_fifo *fifo);
-+void can_rx_fifo_del(struct can_rx_fifo *fifo);
-+void can_rx_fifo_enable(struct can_rx_fifo *fifo);
-+
-+static inline void can_rx_fifo_schedule(struct can_rx_fifo *fifo)
-+{
-+	napi_schedule(&fifo->napi);
-+}
-+
-+static inline void can_rx_fifo_disable(struct can_rx_fifo *fifo)
-+{
-+	napi_disable(&fifo->napi);
-+}
-+
-+#endif /* !_CAN_RX_FIFO_H */
--- 
-2.5.0
+> I=E2=80=99m doing tests on embedded hardware with integrated CAN bus in=
+terface=20
+> (based on AT91). The driver provides Linux Socket API and I try to see =
 
+> the limits:
+> I have one transmitter that writes CAN frames (CAN_RAW) as fast as=20
+> possible and a receiver that reads continuously.
+> After a moment the receiver gets an error frame signalling RX overflow.=
+=20
+> I have no problem with that, it's normal and expected.
+> But question is why at this point no more frame is received ?
+
+It's probably a bug in the driver.
+
+> read() do not return, I've tested also with select() which return timeo=
+ut.
+> (The restart-ms option is set)
+>=20
+> I expected some dropped frames and others RX buffer errors but not the =
+
+> end of reception.
+>=20
+> The only way to recover the interface is to set it down and up again.
+
+Try the patches I send you in the other mail. They switch the at91 to
+the new infrastructure. Some generic testing show good results, but it
+seems you have a harder/better test case.
+
+Hope that helps, please keep us informed,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Qn5jNUt7cFRC9eWTuE69akqHKKsv2EIrk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJV6Ax0AAoJEP5prqPJtc/HeIkH/i9IGx0bTnOEHAc9J6yWN1Gv
+vi8QFueclp+uX+VrrSoO1hgGKiLN9YsFIUJBW25pMGytH7pvYdypKVIIVVe/uBZ6
+nx/u5BetSgczdj6FJwUgnBeU7n/0syj+X60JgdvAgNEVE2mPuQFuWcwUwb/U7O0G
+j5TKPBEWPUCnOTU6Der0WzeMi4dkEmdpbgSLUOYxadmqy1rzVAuWbdJB46/0nGdd
+kgQNdBc5DQuCmPhdqXxqd0SK0zVp94KZOgYENZh9w5E+wV8kbPqh7YPMncaspR01
+djpjJ4ktUJ/EhYyxoh0/6jAdi6wk6nwgtkuFM5k35N5nrcMT/b6rVtWaNNbp6zA=
+=hxrK
+-----END PGP SIGNATURE-----
+
+--Qn5jNUt7cFRC9eWTuE69akqHKKsv2EIrk--
