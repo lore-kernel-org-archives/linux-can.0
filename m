@@ -1,53 +1,81 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: [PATCH 0/8] RFC: more flexcan cleanups and SW FIFO IRQ offloading
-Date: Fri, 4 Sep 2015 13:19:22 +1000
-Message-ID: <55E90DBA.2000003@optusnet.com.au>
-References: <1441103522-15593-1-git-send-email-mkl@pengutronix.de>
- <55E78D42.1060109@optusnet.com.au> <20150903083208.29333e01@archvile>
- <55E7EF8D.306@pengutronix.de> <55E80231.30808@optusnet.com.au>
- <20150903103827.5d08e957@archvile>
-Reply-To: tom_usenet@optusnet.com.au
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 message length
+Date: Fri, 4 Sep 2015 12:24:15 +0000
+Message-ID: <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+References: <loom.20141211T112702-791@post.gmane.org>
+ <20141212110743.GC10796@vandijck-laurijssen.be>
+ <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:51111 "EHLO
-	mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756392AbbIDDTZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Sep 2015 23:19:25 -0400
-In-Reply-To: <20150903103827.5d08e957@archvile>
+Received: from relais-ias243.francetelecom.com ([80.12.204.243]:40683 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751543AbbIDMbN (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Sep 2015 08:31:13 -0400
+In-Reply-To: <20150519084626.GC1088@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 03/09/15 18:38, David Jander wrote:
-> On Thu, 3 Sep 2015 18:17:53 +1000
-> Tom Evans <tom_usenet@optusnet.com.au> wrote:
->
->> On 03/09/15 16:58, Marc Kleine-Budde wrote:
->>> On 09/03/2015 08:32 AM, David Jander wrote:
->>>>>> this series adds a software FIFO implementation and switches
->>
->> Thank you both for explaining that.
-
-And the further explanations and background in the followup email.
-
-Could some of this be added to a documentation file somewhere, or added as a 
-paragraph above the QUIRKS table? The existing code definitions and commments 
-may be sufficient for people who have been fighting these chips for years, but 
-not for someone relatively new to these chips.
-
->> In an old generation kernel this might be optionally enabled
->
-> Why would you want to do that?
-
-For when a new driver is released, and doesn't work for some users.
-
-> It should be known to either work or not for specific hardware (-version),
-
-It should, but sometimes something goes wrong and someone may need to easily 
-back out of a new feature to be able to use a new kernel version.
-
-Tom
-
+SGkgS3VydCwNCg0KSSBjb250aW51ZSBteSB3b3JrcyBvbiBKMTkzOSBvbiBhbm90aGVyIHBsYXRm
+b3JtIChiYXNlZCBvbiBJTVg2IGFuZCBZb2N0bykuDQoNCkkgdHJ5IG5vdyB0byBwYXRjaCB0aGUg
+WW9jdG8gS2VybmVsIHRvIGVtYmVkIHlvdXIgSjE5Mzkgc3RhY2suDQpCdXQsIHRoaXMgeW9jdG8g
+a2VybmVsIGlzIGJhc2VkIG9uIDMuMTAtcjAgYW5kIHRoZSBuZWFyZXN0IHZlcnNpb24gb2YgeW91
+ciBnaXQgaXMgZm9yIDMuOCBvciBmb3IgMy4xMi1yYzEga2VybmVscy4NCg0KSSB0cmllZCB0byBw
+YXRjaCB3aXRoIHRoZSBnaXQgSjE5MzktdjMuOCBhbmQgbG90IG9mIGNvbmZsaWN0cyBhcHBlYXJz
+IGR1cmluZyBtZXJnZS4NCkkgdGhpbmsgSSB3aWxsIGhhdmUgdGhlIHNhbWUgaXNzdWVzIHdpdGgg
+My4xMi1yYzEuDQoNCkkgc3VwcG9zZSB0aGF0IG1vZGlmaWNhdGlvbnMgb2YgdGhlIGtlcm5lbCBh
+cmUgbGltaXRlZCB0byBjYW4gc3RhY2sgYW5kIGNhbiBkcml2ZXJzLiBJJ20gcmlnaHQ/DQpDYW4g
+SSBwYXRjaCBteSBrZXJuZWwgbWFudWFseSB3aXRoIHRoZSBzcGVjaWZpYyBKMTkzOSBzb3VyY2Vz
+IGFuZCBhZGFwdCB0aGVpciBzdHJ1Y3R1cmVzIHRvIG15IGtlcm5lbCB2ZXJzaW9uPw0KDQpXaGF0
+IGRvIHlvdSB0aGluayBhYm91dCB0aGF0Pw0KDQpCZXN0IHJlZ2FyZHMsDQoNClBhc2NhbA0KDQog
+DQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWls
+dG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6IG1hcmRpIDE5
+IG1haSAyMDE1IDEwOjQ2DQrDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgZXh0IElNVC9P
+TFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSZTogSjE5Mzkg
+bWVzc2FnZSBsZW5ndGgNCg0KSGkgUGFzY2FsLA0KDQpJIGFwb2xvZ2lzZSBmb3IgdGhlIGxhdGUg
+YW5zd2VyLg0KWW91ciBlbWFpbCBoYXMgc2xpcHBlZCBpbiB3aXRob3V0IGRyYXdpbmcgbXkgYXR0
+ZW50aW9uLg0KDQpQbGVhc2UgZmluZCBteSBhbnN3ZXIgYmVsb3cuDQoNCi0tLSBPcmlnaW5hbCBt
+ZXNzYWdlIC0tLQ0KPiBEYXRlOiBNb24sIDI3IEFwciAyMDE1IDA5OjIyOjE3ICswMDAwDQo+IEZy
+b206IHBmaWZyZS5leHRAb3JhbmdlLmNvbQ0KPiBUbzogS3VydCBWYW4gRGlqY2sgPGRldi5rdXJ0
+QHZhbmRpamNrLWxhdXJpanNzZW4uYmU+DQo+IENDOiAibGludXgtY2FuQHZnZXIua2VybmVsLm9y
+ZyIgPGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc+DQo+IFN1YmplY3Q6IFJFOiBKMTkzOSBtZXNz
+YWdlIGxlbmd0aA0KPiANCj4gSGkgS3VydCwNCj4gDQo+IEkgaGF2ZSBhbiBpc3N1ZSBvbiBhZGRy
+ZXNzIGNsYWltLg0KPiANCj4gV2hlbiBJIGNhbGwgdGhlIGJpbmQgdGhlIGNsYWltIGFkZHJlc3Mg
+aXMgc2VuZCB3aXRoIGEgRExDIG9mIDggYW5kIDggYnl0ZXMgc2VudCBvbiB0aGUgQ0FOLg0KPiBC
+dXQsIGFjY29yZGluZyB0byB0aGUgSVNPMTE3ODMsIEkgbmVlZCB0byBzZW5kIGFuZCBhZGRyZXNz
+IENMQUlNIGJ5IGEgMyBieXRlcyBmcmFtZS4NCg0KVGhlICJBZGRyZXNzIENsYWltIiBQR04gKDB4
+MGVlMDApIGlzIDggYnl0ZXMsIGV2ZW4gaW4gaXNvMTE3ODMuDQpJIHRoaW5rIHlvdSByZWZlciB0
+byB0aGUgIlJlcXVlc3QgZm9yIGFkZHJlc3MgY2xhaW1lZCIgUEdOLCB3aGljaCBpcyAzIGJ5dGVz
+LCB3aXRoIFBHTiAweDBlYTAwLCBhbmQgcGF5bG9hZCAwMGVlMDAuDQoNCj4gDQo+IEhvdyBjYW4s
+IEkgZG8gdGhhdCB3aXRoIGV4aXN0aW5nIGtlcm5lbCBKMTkzOSBzdGFjayBvciB3aGVyZSBJIGNh
+biBtb2RpZnkgdGhpcz8NCllvdSBjYW4ganVzdCBzZW5kIGEgMyBieXRlIG1lc3NhZ2Ugd2l0aCBz
+ZW5kKFNPQ0ssIDxEQVRBPiwgMywgMCkNCg0KSWYgeW91IHdhbnQgdG8gZG8gdGhlIGFkZHJlc3Mg
+Y2xhaW1pbmcsDQp0aGVuIHlvdSBtYXkgdGFrZSBhIGxvb2sgYXQgamFjZCwgYSBqMTkzOSBhZGRk
+cmVzcyBjbGFpbSBkYWVtb24uDQpJdCBkb2VzIGFsbCB0aGUgdXNlcnNwYWNlIGhhbmRsaW5nIG5l
+Y2Vzc2FyeSBmb3IgYWRkcmVzcyBjbGFpbWluZy4NCllvdSBjYW4gZmluZCBpdCBhdCBodHRwczov
+L2dpdGh1Yi5jb20va3VydC12ZC9jYW4tdXRpbHMuZ2l0LCBpbiBqMTkzOS12NiBicmFuY2guDQoN
+CktpbmQgcmVnYXJkcywNCkt1cnQNCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMg
+am9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVz
+IG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRvbmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4
+cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNl
+IG1lc3NhZ2UgcGFyIGVycmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIg
+ZXQgbGUgZGV0cnVpcmUgYWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2Vz
+IGVsZWN0cm9uaXF1ZXMgZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRl
+Y2xpbmUgdG91dGUgcmVzcG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRl
+Zm9ybWUgb3UgZmFsc2lmaWUuIE1lcmNpLgoKVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVu
+dHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhh
+dCBtYXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsKdGhleSBzaG91bGQgbm90IGJlIGRpc3RyaWJ1dGVk
+LCB1c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uCklmIHlvdSBoYXZlIHJlY2Vp
+dmVkIHRoaXMgZW1haWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVs
+ZXRlIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFs
+dGVyZWQsIE9yYW5nZSBpcyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBt
+b2RpZmllZCwgY2hhbmdlZCBvciBmYWxzaWZpZWQuClRoYW5rIHlvdS4KCg==
