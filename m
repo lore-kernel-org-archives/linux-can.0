@@ -1,81 +1,71 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 message length
-Date: Fri, 4 Sep 2015 12:24:15 +0000
-Message-ID: <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
-References: <loom.20141211T112702-791@post.gmane.org>
- <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <20150519084626.GC1088@vandijck-laurijssen.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Subject: [PATCH v3 1/2] Allwinner A10/A20 CAN Controller support
+Date: Fri,  4 Sep 2015 16:29:47 +0200
+Message-ID: <1441376988-2384-2-git-send-email-info@gerhard-bertelsmann.de>
+References: <1441376988-2384-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias243.francetelecom.com ([80.12.204.243]:40683 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751543AbbIDMbN (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Sep 2015 08:31:13 -0400
-In-Reply-To: <20150519084626.GC1088@vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from mail.rdts.de ([195.243.153.28]:45263 "EHLO mail.rdts.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932836AbbIDO3y (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 4 Sep 2015 10:29:54 -0400
+In-Reply-To: <1441376988-2384-1-git-send-email-info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-SGkgS3VydCwNCg0KSSBjb250aW51ZSBteSB3b3JrcyBvbiBKMTkzOSBvbiBhbm90aGVyIHBsYXRm
-b3JtIChiYXNlZCBvbiBJTVg2IGFuZCBZb2N0bykuDQoNCkkgdHJ5IG5vdyB0byBwYXRjaCB0aGUg
-WW9jdG8gS2VybmVsIHRvIGVtYmVkIHlvdXIgSjE5Mzkgc3RhY2suDQpCdXQsIHRoaXMgeW9jdG8g
-a2VybmVsIGlzIGJhc2VkIG9uIDMuMTAtcjAgYW5kIHRoZSBuZWFyZXN0IHZlcnNpb24gb2YgeW91
-ciBnaXQgaXMgZm9yIDMuOCBvciBmb3IgMy4xMi1yYzEga2VybmVscy4NCg0KSSB0cmllZCB0byBw
-YXRjaCB3aXRoIHRoZSBnaXQgSjE5MzktdjMuOCBhbmQgbG90IG9mIGNvbmZsaWN0cyBhcHBlYXJz
-IGR1cmluZyBtZXJnZS4NCkkgdGhpbmsgSSB3aWxsIGhhdmUgdGhlIHNhbWUgaXNzdWVzIHdpdGgg
-My4xMi1yYzEuDQoNCkkgc3VwcG9zZSB0aGF0IG1vZGlmaWNhdGlvbnMgb2YgdGhlIGtlcm5lbCBh
-cmUgbGltaXRlZCB0byBjYW4gc3RhY2sgYW5kIGNhbiBkcml2ZXJzLiBJJ20gcmlnaHQ/DQpDYW4g
-SSBwYXRjaCBteSBrZXJuZWwgbWFudWFseSB3aXRoIHRoZSBzcGVjaWZpYyBKMTkzOSBzb3VyY2Vz
-IGFuZCBhZGFwdCB0aGVpciBzdHJ1Y3R1cmVzIHRvIG15IGtlcm5lbCB2ZXJzaW9uPw0KDQpXaGF0
-IGRvIHlvdSB0aGluayBhYm91dCB0aGF0Pw0KDQpCZXN0IHJlZ2FyZHMsDQoNClBhc2NhbA0KDQog
-DQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWls
-dG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6IG1hcmRpIDE5
-IG1haSAyMDE1IDEwOjQ2DQrDgMKgOiB6emUtT3BlbiB0aGUgYm94IEZJRlJFIFAgZXh0IElNVC9P
-TFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSZTogSjE5Mzkg
-bWVzc2FnZSBsZW5ndGgNCg0KSGkgUGFzY2FsLA0KDQpJIGFwb2xvZ2lzZSBmb3IgdGhlIGxhdGUg
-YW5zd2VyLg0KWW91ciBlbWFpbCBoYXMgc2xpcHBlZCBpbiB3aXRob3V0IGRyYXdpbmcgbXkgYXR0
-ZW50aW9uLg0KDQpQbGVhc2UgZmluZCBteSBhbnN3ZXIgYmVsb3cuDQoNCi0tLSBPcmlnaW5hbCBt
-ZXNzYWdlIC0tLQ0KPiBEYXRlOiBNb24sIDI3IEFwciAyMDE1IDA5OjIyOjE3ICswMDAwDQo+IEZy
-b206IHBmaWZyZS5leHRAb3JhbmdlLmNvbQ0KPiBUbzogS3VydCBWYW4gRGlqY2sgPGRldi5rdXJ0
-QHZhbmRpamNrLWxhdXJpanNzZW4uYmU+DQo+IENDOiAibGludXgtY2FuQHZnZXIua2VybmVsLm9y
-ZyIgPGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc+DQo+IFN1YmplY3Q6IFJFOiBKMTkzOSBtZXNz
-YWdlIGxlbmd0aA0KPiANCj4gSGkgS3VydCwNCj4gDQo+IEkgaGF2ZSBhbiBpc3N1ZSBvbiBhZGRy
-ZXNzIGNsYWltLg0KPiANCj4gV2hlbiBJIGNhbGwgdGhlIGJpbmQgdGhlIGNsYWltIGFkZHJlc3Mg
-aXMgc2VuZCB3aXRoIGEgRExDIG9mIDggYW5kIDggYnl0ZXMgc2VudCBvbiB0aGUgQ0FOLg0KPiBC
-dXQsIGFjY29yZGluZyB0byB0aGUgSVNPMTE3ODMsIEkgbmVlZCB0byBzZW5kIGFuZCBhZGRyZXNz
-IENMQUlNIGJ5IGEgMyBieXRlcyBmcmFtZS4NCg0KVGhlICJBZGRyZXNzIENsYWltIiBQR04gKDB4
-MGVlMDApIGlzIDggYnl0ZXMsIGV2ZW4gaW4gaXNvMTE3ODMuDQpJIHRoaW5rIHlvdSByZWZlciB0
-byB0aGUgIlJlcXVlc3QgZm9yIGFkZHJlc3MgY2xhaW1lZCIgUEdOLCB3aGljaCBpcyAzIGJ5dGVz
-LCB3aXRoIFBHTiAweDBlYTAwLCBhbmQgcGF5bG9hZCAwMGVlMDAuDQoNCj4gDQo+IEhvdyBjYW4s
-IEkgZG8gdGhhdCB3aXRoIGV4aXN0aW5nIGtlcm5lbCBKMTkzOSBzdGFjayBvciB3aGVyZSBJIGNh
-biBtb2RpZnkgdGhpcz8NCllvdSBjYW4ganVzdCBzZW5kIGEgMyBieXRlIG1lc3NhZ2Ugd2l0aCBz
-ZW5kKFNPQ0ssIDxEQVRBPiwgMywgMCkNCg0KSWYgeW91IHdhbnQgdG8gZG8gdGhlIGFkZHJlc3Mg
-Y2xhaW1pbmcsDQp0aGVuIHlvdSBtYXkgdGFrZSBhIGxvb2sgYXQgamFjZCwgYSBqMTkzOSBhZGRk
-cmVzcyBjbGFpbSBkYWVtb24uDQpJdCBkb2VzIGFsbCB0aGUgdXNlcnNwYWNlIGhhbmRsaW5nIG5l
-Y2Vzc2FyeSBmb3IgYWRkcmVzcyBjbGFpbWluZy4NCllvdSBjYW4gZmluZCBpdCBhdCBodHRwczov
-L2dpdGh1Yi5jb20va3VydC12ZC9jYW4tdXRpbHMuZ2l0LCBpbiBqMTkzOS12NiBicmFuY2guDQoN
-CktpbmQgcmVnYXJkcywNCkt1cnQNCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMg
-am9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVz
-IG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRvbmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4
-cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNl
-IG1lc3NhZ2UgcGFyIGVycmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIg
-ZXQgbGUgZGV0cnVpcmUgYWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2Vz
-IGVsZWN0cm9uaXF1ZXMgZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRl
-Y2xpbmUgdG91dGUgcmVzcG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRl
-Zm9ybWUgb3UgZmFsc2lmaWUuIE1lcmNpLgoKVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVu
-dHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhh
-dCBtYXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsKdGhleSBzaG91bGQgbm90IGJlIGRpc3RyaWJ1dGVk
-LCB1c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uCklmIHlvdSBoYXZlIHJlY2Vp
-dmVkIHRoaXMgZW1haWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVs
-ZXRlIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFs
-dGVyZWQsIE9yYW5nZSBpcyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBt
-b2RpZmllZCwgY2hhbmdlZCBvciBmYWxzaWZpZWQuClRoYW5rIHlvdS4KCg==
+This patch adds the Device Tree Binding Documentation for SUNXI CAN
+
+Signed-off-by: Gerhard Bertelsmann < info@gerhard-bertelsmann.de >
+---
+ .../devicetree/bindings/net/can/sunxi_can.txt       |  42 ++
+ 1 files changed, 42 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/sunxi_can.txt b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+new file mode 100644
+index 0000000..0dabbb5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+@@ -0,0 +1,42 @@
++Allwinner A10/A20 CAN controller Device Tree Bindings
++-----------------------------------------------------
++
++Required properties:
++- compatible: "allwinner,sunxican"
++- reg: physical base address and size of the Allwinner A10/A20 CAN register map.
++- interrupts: interrupt specifier for the sole interrupt.
++- clocks: phandle and clock specifier.
++- pinctrl-0: pin control group to be used for this controller.
++- pinctrl-names: must be "default".
++
++
++Example
++-------
++
++SoC common .dtsi file:
++
++	can0_pins_a: can0 <at> 0 {
++		allwinner,pins = "PH20","PH21";
++		allwinner,function = "can";
++		allwinner,drive = <0>;
++		allwinner,pull = <0>;
++	};
++
++	can0: can <at> 01c2bc00 {
++		compatible = "allwinner,sunxican";
++		reg = <0x01c2bc00 0x400>;
++		interrupts = <0 26 4>;
++		clocks = <&apb1_gates 4>;
++		status = "disabled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++	};
++
++Board specific .dts file:
++
++	can0: can <at> 01c2bc00 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&can0_pins_a>;
++		status = "okay";
++	};
++
