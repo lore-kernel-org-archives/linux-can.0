@@ -1,73 +1,89 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: Re: [PATCH v3 2/2] Allwinner A10/A20 CAN Controller support
-Date: Mon, 7 Sep 2015 19:18:00 +0200
-Message-ID: <CAJ=nTstMVfVByht2-dFCVrv+giaQAmQAsPQrvAppnaJMzf1ayQ@mail.gmail.com>
-References: <1441376988-2384-1-git-send-email-info@gerhard-bertelsmann.de>
-	<1441376988-2384-3-git-send-email-info@gerhard-bertelsmann.de>
-	<CAJ=nTsuYHPv5OjzowBXy0ss02f7PHKxWV-csxV+u1CZP6dOnYQ@mail.gmail.com>
-	<c0271c81cf9dd9ea16b32375c6dc6449@mail.rdts.de>
+From: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
+Subject: PCI CAN interface emulation updated for QEMU 2.4
+Date: Tue, 8 Sep 2015 01:51:38 +0200
+Message-ID: <201509080151.38392.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-la0-f45.google.com ([209.85.215.45]:35006 "EHLO
-	mail-la0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753812AbbIGRSD convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Sep 2015 13:18:03 -0400
-Received: by lagj9 with SMTP id j9so55789967lag.2
-        for <linux-can@vger.kernel.org>; Mon, 07 Sep 2015 10:18:00 -0700 (PDT)
-In-Reply-To: <c0271c81cf9dd9ea16b32375c6dc6449@mail.rdts.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.rtems.org/mailman/options/devel>,
+ <mailto:devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.rtems.org/pipermail/devel/>
+List-Post: <mailto:devel-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org>
+List-Help: <mailto:devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.rtems.org/mailman/listinfo/devel>,
+ <mailto:devel-request-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org?subject=subscribe>
+Errors-To: devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org
+Sender: "devel" <devel-bounces-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org>
+To: devel-WKV1R6NGPIzYtjvyW6yDsg@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Oliver Hartkopp <oliver.hartkopp-l29pVbxQd1IUtdQbppsyvg@public.gmane.org>, qemu-devel-qX2TKyscuCcdnm+yROfE0A@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-2015-09-07 18:25 GMT+02:00 Gerhard Bertelsmann <info@gerhard-bertelsman=
-n.de>:
-> Hi Mirza,
->
->
-> thx for your hint. Do you think that's really needed ? The scope of t=
-he
-> defines are limited to this file. There is no other hardware dependan=
-t
-> code involved.
+Hello everybody,
 
-Well if we look at the files that you are including, chances are that
-they might define something and produce "redefinition" errors. Which
-was the case for the SJA1000 driver as well.
+the project implements simple CAN SJA1000 interface emulation
+with option to connect emulated CAN buses to host system
+SocketCAN bus. Project has been started by Jin Yang in frame
+of RTEMS provided GSoC 2013 slot.
 
-I am mostly reacting to defines like END, ACK, WAKEUP.
+Code has been cleaned and is maintained to be up-to
+date with actual QEMU releases. I would be happy to
+follow suggestions and review for its possible
+mainlining if there is interrest. If preferred,
+I send patches inline to QEMU list.
 
->
-> IMHO the SJA1000 is a different story. The SJA1000 could be connected=
- via
-> different busses where other registers are involved.
+Code is available from
 
-The fact that the SJA1000 driver has a different structure had nothing
-to do with the conflict. Since the conflict was in
-arch/sh/include/asm/ptrace_32.h
+https://github.com/CTU-IIG/qemu/tree/can-pci
 
->
-> Nevertheles if the gurus here say I have to change this I'm going to =
-add
-> a prefix to the defines.
+The "can-pci" branch has been updated for QEMU-2.4 now.
+The previous 2.3 support moved on "can-pci-2.3" branch.
+Older support and support for PCI MF624 data acquisition
+card can be found on merged branches merged-2.1,
+merged-2.3 and merged-2.4.
 
-Agreed :). This might be a no- issue but I am putting it out there.
+https://github.com/CTU-IIG/qemu
+
+Documentation
+
+https://rtime.felk.cvut.cz/can/can-qemu/
+https://devel.rtems.org/wiki/Developer/Simulators/QEMU/CANEmulation
+
+Relevant commits
+
+commit 2d873a9ed3bcb8301a247f36b77227b1cd9211c0
+Author: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
+Date:   Mon Sep 7 15:24:56 2015 +0200
+
+    CAN bus simple SJA1000 PCI card emulation for QEMU
+
+    The work is based on Jin Yang GSoC 2013 work funded
+    by Google and mentored in frame of RTEMS project GSoC
+    slot donated to QEMU.
+
+    Rewritten for QEMU-2.0+ versions and architecture cleanup
+    by Pavel Pisa (Czech Technical University in Prague).
+
+    The core SJA1000 support is independent of provided
+    PCI board. The simple core CAN bus infrastructure
+    is independent as well.
+
+    Connection to the real host CAN bus network through
+    SocketCAN network interface is available for Linux
+    host system as well.
+
+    Signed-off-by: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
+
+commit 3eda61e54b947f1508a05f8b67277dd717a8c963
+Author: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
+Date:   Mon Sep 7 15:27:08 2015 +0200
+
+    CAN bus Kvaser PCI CAN-S (single SJA1000 channel) emulation added.
+
+    Signed-off-by: Pavel Pisa <pisa-/N2ztlQkxE7Ub/6JBqosbQ@public.gmane.org>
 
 
---=20
-Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
+Best wishes,
 
-*******************************************************************
-Mirza Krak
-Host Mobility AB
-mirza.krak@hostmobility.com
-Anders Personsgatan 12, 416 64 G=C3=B6teborg
-Sweden
-http://www.hostmobility.com
-Direct: +46 31 31 32 704
-Phone: +46 31 31 32 700
-=46ax: +46 31 80 67 51
-Mobile: +46 730 28 06 22
-*******************************************************************
+             Pavel Pisa
