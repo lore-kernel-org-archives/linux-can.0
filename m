@@ -1,63 +1,76 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: <pfifre.ext@orange.com>
 Subject: RE: J1939 + iMX6 + yocto
-Date: Mon, 07 Sep 2015 02:40:21 +0200
-Message-ID: <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
-References: <loom.20141211T112702-791@post.gmane.org> <20141212110743.GC10796@vandijck-laurijssen.be> <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup> <20141215093136.GA646@vandijck-laurijssen.be> <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup> <20150519084626.GC1088@vandijck-laurijssen.be> <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+Date: Mon, 7 Sep 2015 06:31:47 +0000
+Message-ID: <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+References: <loom.20141211T112702-791@post.gmane.org>
+ <20141212110743.GC10796@vandijck-laurijssen.be>
+ <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
+ <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:33239 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752915AbbIGAuR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 6 Sep 2015 20:50:17 -0400
-In-Reply-To: <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+Received: from relais-ias243.francetelecom.com ([80.12.204.243]:35427 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751062AbbIGGby (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Sep 2015 02:31:54 -0400
+In-Reply-To: <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi,
-
-
-On 4 September 2015 14:24:15 CEST, pfifre.ext@orange.com wrote:
->Hi Kurt,
->
->I continue my works on J1939 on another platform (based on IMX6 and
->Yocto).
-
-I'm currently using the same iMX6 with yocto. 
-
->
->I try now to patch the Yocto Kernel to embed your J1939 stack.
->But, this yocto kernel is based on 3.10-r0 and the nearest version of
->your git is for 3.8 or for 3.12-rc1 kernels.
->
->I tried to patch with the git J1939-v3.8 and lot of conflicts appears
->during merge.
->I think I will have the same issues with 3.12-rc1.
->
-You need first to rebase the j1939 branch onto 3.10, or else you merge everything including 3.12.
-
->I suppose that modifications of the kernel are limited to can stack and
->can drivers. I'm right?
-
-Can stack only, no drivers.
-
->Can I patch my kernel manualy with the specific J1939 sources and adapt
->their structures to my kernel version?
-
-You should merge using git and resolve merge conflicts on the way.
-I cannot tell from my current position which branch to start best with.
-Or you could wait until Tuesday, then I can push a my 3.10 branch. I've gone through the merge conflicts already...
-
->
->What do you think about that?
->
->Best regards,
->
->Pascal
->
-
-Sent from a small mobile device
+SGkgS3VydCwNCg0KR2xhZCB0byBrbm93IHRoYXQgeW91IGFscmVhZHkgd29yayBvbiB0aGUgc2Ft
+ZSBmZWF0dXJlLg0KDQpXaGljaCBwbGF0Zm9ybSBkbyB5b3UgdXNlPw0KSSdtIHdvcmtpbmcgbm93
+IG9uIHRoZSBEaWdpIENvbm5lY3RDb3JlIDYuDQoNCkknbSB3YXRpbmcgb24gVHVlc2RheSB0byBn
+ZXQgeW91ciAzLjEwIGJyYW5jaCBhbmQgdGVzdCBpdCBvbiBteSBzaWRlLg0KDQpUaGFua3MgYSBs
+b3QgZm9yIHlvdXIgaGVscCENCg0KUGFzY2FsDQoNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0t
+LS0tDQpEZcKgOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJp
+anNzZW4uYmVdIA0KRW52b3nDqcKgOiBsdW5kaSA3IHNlcHRlbWJyZSAyMDE1IDAyOjQwDQrDgMKg
+OiBGSUZSRSBQYXNjYWwgRXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwu
+b3JnDQpPYmpldMKgOiBSRTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KSGksDQoNCg0KT24gNCBT
+ZXB0ZW1iZXIgMjAxNSAxNDoyNDoxNSBDRVNULCBwZmlmcmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6
+DQo+SGkgS3VydCwNCj4NCj5JIGNvbnRpbnVlIG15IHdvcmtzIG9uIEoxOTM5IG9uIGFub3RoZXIg
+cGxhdGZvcm0gKGJhc2VkIG9uIElNWDYgYW5kIA0KPllvY3RvKS4NCg0KSSdtIGN1cnJlbnRseSB1
+c2luZyB0aGUgc2FtZSBpTVg2IHdpdGggeW9jdG8uIA0KDQo+DQo+SSB0cnkgbm93IHRvIHBhdGNo
+IHRoZSBZb2N0byBLZXJuZWwgdG8gZW1iZWQgeW91ciBKMTkzOSBzdGFjay4NCj5CdXQsIHRoaXMg
+eW9jdG8ga2VybmVsIGlzIGJhc2VkIG9uIDMuMTAtcjAgYW5kIHRoZSBuZWFyZXN0IHZlcnNpb24g
+b2YgDQo+eW91ciBnaXQgaXMgZm9yIDMuOCBvciBmb3IgMy4xMi1yYzEga2VybmVscy4NCj4NCj5J
+IHRyaWVkIHRvIHBhdGNoIHdpdGggdGhlIGdpdCBKMTkzOS12My44IGFuZCBsb3Qgb2YgY29uZmxp
+Y3RzIGFwcGVhcnMgDQo+ZHVyaW5nIG1lcmdlLg0KPkkgdGhpbmsgSSB3aWxsIGhhdmUgdGhlIHNh
+bWUgaXNzdWVzIHdpdGggMy4xMi1yYzEuDQo+DQpZb3UgbmVlZCBmaXJzdCB0byByZWJhc2UgdGhl
+IGoxOTM5IGJyYW5jaCBvbnRvIDMuMTAsIG9yIGVsc2UgeW91IG1lcmdlIGV2ZXJ5dGhpbmcgaW5j
+bHVkaW5nIDMuMTIuDQoNCj5JIHN1cHBvc2UgdGhhdCBtb2RpZmljYXRpb25zIG9mIHRoZSBrZXJu
+ZWwgYXJlIGxpbWl0ZWQgdG8gY2FuIHN0YWNrIGFuZCANCj5jYW4gZHJpdmVycy4gSSdtIHJpZ2h0
+Pw0KDQpDYW4gc3RhY2sgb25seSwgbm8gZHJpdmVycy4NCg0KPkNhbiBJIHBhdGNoIG15IGtlcm5l
+bCBtYW51YWx5IHdpdGggdGhlIHNwZWNpZmljIEoxOTM5IHNvdXJjZXMgYW5kIGFkYXB0IA0KPnRo
+ZWlyIHN0cnVjdHVyZXMgdG8gbXkga2VybmVsIHZlcnNpb24/DQoNCllvdSBzaG91bGQgbWVyZ2Ug
+dXNpbmcgZ2l0IGFuZCByZXNvbHZlIG1lcmdlIGNvbmZsaWN0cyBvbiB0aGUgd2F5Lg0KSSBjYW5u
+b3QgdGVsbCBmcm9tIG15IGN1cnJlbnQgcG9zaXRpb24gd2hpY2ggYnJhbmNoIHRvIHN0YXJ0IGJl
+c3Qgd2l0aC4NCk9yIHlvdSBjb3VsZCB3YWl0IHVudGlsIFR1ZXNkYXksIHRoZW4gSSBjYW4gcHVz
+aCBhIG15IDMuMTAgYnJhbmNoLiBJJ3ZlIGdvbmUgdGhyb3VnaCB0aGUgbWVyZ2UgY29uZmxpY3Rz
+IGFscmVhZHkuLi4NCg0KPg0KPldoYXQgZG8geW91IHRoaW5rIGFib3V0IHRoYXQ/DQo+DQo+QmVz
+dCByZWdhcmRzLA0KPg0KPlBhc2NhbA0KPg0KDQpTZW50IGZyb20gYSBzbWFsbCBtb2JpbGUgZGV2
+aWNlDQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBj
+b250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2aWxlZ2llZXMg
+ZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMgb3UgY29waWVz
+IHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdlIHBhciBlcnJl
+dXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRldHJ1aXJlIGFp
+bnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJvbmlxdWVzIGV0
+YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3Bv
+bnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91IGZhbHNpZmll
+LiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNv
+bmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJlIHByb3RlY3Rl
+ZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBvciBjb3BpZWQg
+d2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGlu
+IGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlzIG1lc3NhZ2Ug
+YW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBPcmFuZ2UgaXMg
+bm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQsIGNoYW5nZWQg
+b3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
