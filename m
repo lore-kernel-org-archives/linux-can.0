@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 + iMX6 + yocto
-Date: Tue, 8 Sep 2015 14:32:49 +0200
-Message-ID: <20150908123249.GC25796@airbook.eia.lan>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 + iMX6 + yocto
+Date: Tue, 8 Sep 2015 12:45:34 +0000
+Message-ID: <12089_1441716335_55EED86F_12089_131_1_F1366246CF364C42B98553900CE0C5CB089DBD59@OPEXCLILM23.corporate.adroot.infra.ftgroup>
 References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
  <20141215093136.GA646@vandijck-laurijssen.be>
@@ -12,73 +12,58 @@ References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
  <20150908075800.GA864@airbook.eia.lan>
  <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908123249.GC25796@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Bu8it7iiRSEf40bY"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:29233 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754346AbbIHMdC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 08:33:02 -0400
-Content-Disposition: inline
-In-Reply-To: <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+Received: from relais-ias244.francetelecom.com ([80.12.204.244]:47249 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754496AbbIHMpi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 08:45:38 -0400
+In-Reply-To: <20150908123249.GC25796@airbook.eia.lan>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-
---Bu8it7iiRSEf40bY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
---- Original message ---
-> Date: Tue, 8 Sep 2015 09:33:35 +0000
-> From: pfifre.ext@orange.com
-> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> CC: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> Subject: RE: J1939 + iMX6 + yocto
-> 
-> > I also updated iproute2-j1939, to a version that is equal to what yocto is using now.
-> What do you mean? Do you patch iproute2 for using j1939? In that case how can I retrieve this iproute2-j1939 stack to use it in yocto?
-
-See http://elinux.org/J1939#Sources
-
-You need a patched iproute2 ip program to activate j1939 on a CAN
-device. Altough I had an iproute2 ready, I could not get it easily
-in yocto to compile. So I created iproute2-j1939 v3.16 branch,
-which equals the iproute2 version that (my) yocto uses.
-I then added the bitbake recipe (see attachment) which reuses
-all patches applied to the stock iproute2 program.
-
-
---Bu8it7iiRSEf40bY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="iproute2-j1939_3.16.bb"
-
-FILESEXTRAPATHS_prepend := "${THISDIR}/../../../poky/meta/recipes-connectivity/iproute2/iproute2:"
-require ../../../poky/meta/recipes-connectivity/iproute2/iproute2.inc
-
-SRC_URI = "git://github.com/kurt-vd/iproute2.git;protocol=git;branch=j1939-v3.16 \
-           file://configure-cross.patch \
-           file://0001-iproute2-de-bash-scripts.patch \
-           file://0001-ip-link-Remove-unnecessary-device-checking.patch \
-	   "
-
-
-SRCREV = "be0377ecb5a2129fc7f2f8eabeae7f68d9f44e99"
-S = "${WORKDIR}/git"
-
-# CFLAGS are computed in Makefile and reference CCOPTS
-#
-EXTRA_OEMAKE_append = " CCOPTS='${CFLAGS}'"
-ALTERNATIVE_PRIORITY = "120"
-ALTERNATIVE_TARGET[ip] = "${base_sbindir}/ip.iproute2-j1939"
-
-# install: only install the 'ip' tool itself, not the complete package.
-# If the complete package is required, just install the regular iproute2 tool.
-# PS: you are free to install the exact same iproute2 version.
-do_install () {
-	install -D ${S}/ip/ip ${D}${base_sbindir}/ip.iproute2-j1939
-}
-
---Bu8it7iiRSEf40bY--
+VGhhbmtzIEt1cnQuDQoNCkkgd2lsbCB0ZXN0IGl0IG9uIHRodXJzZGF5IGFuZCBiYWNrIHRvIHlv
+dS4NCg0KQmVzdCByZWdhcmRzLA0KDQpQYXNjYWwNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0t
+LS0tDQpEZcKgOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJp
+anNzZW4uYmVdIA0KRW52b3nDqcKgOiBtYXJkaSA4IHNlcHRlbWJyZSAyMDE1IDE0OjMzDQrDgMKg
+OiBGSUZSRSBQYXNjYWwgRXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwu
+b3JnDQpPYmpldMKgOiBSZTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KLS0tIE9yaWdpbmFsIG1l
+c3NhZ2UgLS0tDQo+IERhdGU6IFR1ZSwgOCBTZXAgMjAxNSAwOTozMzozNSArMDAwMA0KPiBGcm9t
+OiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gVG86IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2
+YW5kaWpjay1sYXVyaWpzc2VuLmJlPg0KPiBDQzogImxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmci
+IDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSRTogSjE5MzkgKyBpTVg2
+ICsgeW9jdG8NCj4gDQo+ID4gSSBhbHNvIHVwZGF0ZWQgaXByb3V0ZTItajE5MzksIHRvIGEgdmVy
+c2lvbiB0aGF0IGlzIGVxdWFsIHRvIHdoYXQgeW9jdG8gaXMgdXNpbmcgbm93Lg0KPiBXaGF0IGRv
+IHlvdSBtZWFuPyBEbyB5b3UgcGF0Y2ggaXByb3V0ZTIgZm9yIHVzaW5nIGoxOTM5PyBJbiB0aGF0
+IGNhc2UgaG93IGNhbiBJIHJldHJpZXZlIHRoaXMgaXByb3V0ZTItajE5Mzkgc3RhY2sgdG8gdXNl
+IGl0IGluIHlvY3RvPw0KDQpTZWUgaHR0cDovL2VsaW51eC5vcmcvSjE5MzkjU291cmNlcw0KDQpZ
+b3UgbmVlZCBhIHBhdGNoZWQgaXByb3V0ZTIgaXAgcHJvZ3JhbSB0byBhY3RpdmF0ZSBqMTkzOSBv
+biBhIENBTiBkZXZpY2UuIEFsdG91Z2ggSSBoYWQgYW4gaXByb3V0ZTIgcmVhZHksIEkgY291bGQg
+bm90IGdldCBpdCBlYXNpbHkgaW4geW9jdG8gdG8gY29tcGlsZS4gU28gSSBjcmVhdGVkIGlwcm91
+dGUyLWoxOTM5IHYzLjE2IGJyYW5jaCwgd2hpY2ggZXF1YWxzIHRoZSBpcHJvdXRlMiB2ZXJzaW9u
+IHRoYXQgKG15KSB5b2N0byB1c2VzLg0KSSB0aGVuIGFkZGVkIHRoZSBiaXRiYWtlIHJlY2lwZSAo
+c2VlIGF0dGFjaG1lbnQpIHdoaWNoIHJldXNlcyBhbGwgcGF0Y2hlcyBhcHBsaWVkIHRvIHRoZSBz
+dG9jayBpcHJvdXRlMiBwcm9ncmFtLg0KDQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGll
+Y2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGll
+bGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2Vz
+LCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVj
+dSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0
+ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNz
+YWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5n
+ZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJl
+LCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFj
+aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9u
+IHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmli
+dXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSBy
+ZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5k
+IGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBi
+ZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJl
+ZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
