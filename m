@@ -1,200 +1,89 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 2/2] Allwinner A10/A20 CAN Controller support
-Date: Tue, 8 Sep 2015 13:00:52 +0200
-Message-ID: <55EEBFE4.8@pengutronix.de>
-References: <1441376988-2384-1-git-send-email-info@gerhard-bertelsmann.de>
- <1441376988-2384-3-git-send-email-info@gerhard-bertelsmann.de>
+Subject: Re: socket can receive order
+Date: Tue, 8 Sep 2015 13:13:01 +0200
+Message-ID: <55EEC2BD.6010302@pengutronix.de>
+References: <55EEAD8D.3070603@engineeredarts.co.uk>
+ <55EEB217.3080706@pengutronix.de> <55EEBB4E.6080104@engineeredarts.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="Bj9p44OtqkhSIglWBQvQ4tQjAarJhvQrr"
+ boundary="DXpaNU2xoh6HakpdNq7xgHWIOIrdjd5hB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:45749 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:36789 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753254AbbIHLA7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 07:00:59 -0400
-In-Reply-To: <1441376988-2384-3-git-send-email-info@gerhard-bertelsmann.de>
+	with ESMTP id S1754003AbbIHLNL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 07:13:11 -0400
+In-Reply-To: <55EEBB4E.6080104@engineeredarts.co.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
+To: Daniel Squires <dan@engineeredarts.co.uk>, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Bj9p44OtqkhSIglWBQvQ4tQjAarJhvQrr
+--DXpaNU2xoh6HakpdNq7xgHWIOIrdjd5hB
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 09/04/2015 04:29 PM, Gerhard Bertelsmann wrote:
-> This patch adds the Allwinner A10/A20 Kernel module
+On 09/08/2015 12:41 PM, Daniel Squires wrote:
+> On my laptop and Desktop PC I have not seen it happen.
+
+> Both the application PC (NUC) and the Laptop are running Ubuntu kernel =
+
+> 3.19.0-26-generic
 >=20
-> Signed-off-by: Gerhard Bertelsmann < info@gerhard-bertelsmann.de >
-                                      ^                           ^
-Please remove the space.
+> The NUC has the kernel rebuilt without xhci due to problems it causes=20
+> with another USB peripheral.
+>=20
+> I am not entirely sure what you mean by which can core I am using but i=
+f=20
+> it helps i am opening the socket as follows :
 
-> Tested-by: Gerhard Bertelsmann < info@gerhard-bertelsmann.de >
+I mean what kind of CAN adapter...
 
-Submitting a patch includes testing it :) You can remove that tag.
+>=20
+>      sock =3D socket(PF_CAN,SOCK_RAW,CAN_RAW);
+>=20
+> in a small standalone test application which I wrote after having=20
+> difficulty with our main application.
+>=20
+> I am using custom hardware/firmware and am using the kernel module foun=
+d=20
+> here : https://github.com/fabiobaltieri/open-usb-can
+> though it has a small change to stop the net queue at the top of=20
+> open_usb_can_start_xmit as otherwise its prone to loosing TX packets=20
+> when loaded.
 
-> +static int sunxican_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res;
-> +	struct clk *clk;
-> +	void __iomem *addr;
-> +	int err, irq;
-> +	u32 temp_irqen;
-> +	struct net_device *dev;
-> +	struct sunxican_priv *priv;
-> +
-> +	clk =3D clk_get(&pdev->dev, "apb1_can");
-> +	if (IS_ERR(clk)) {
-> +		dev_err(&pdev->dev, "no clock defined\n");
-> +		err =3D -ENODEV;
-> +		goto exit;
-> +	}
-> +	/* turn on clocking for CAN peripheral block */
-> +	err =3D clk_prepare_enable(clk);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "could not enable clocking (apb1_can)\n");
-> +		goto exit;
-> +	}
-> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	irq =3D platform_get_irq(pdev, 0);
-> +
-> +	if (!res || irq <=3D 0) {
-> +		dev_err(&pdev->dev, "could not get a valid irq\n");
-> +		err =3D -ENODEV;
-> +		goto exit_put;
-> +	}
-> +	if (!request_mem_region(res->start, resource_size(res), pdev->name)) =
-{
-> +		dev_err(&pdev->dev, "could not get io memory resource\n");
-> +		err =3D -EBUSY;
-> +		goto exit_put;
-> +	}
-> +	addr =3D ioremap_nocache(res->start, resource_size(res));
-> +	if (!addr) {
-> +		dev_err(&pdev->dev, "could not map io memory\n");
-> +		err =3D -ENOMEM;
-> +		goto exit_release;
-> +	}
-> +	dev =3D alloc_candev(sizeof(struct sunxican_priv), 1);
-> +
-> +	if (!dev) {
-> +		dev_err(&pdev->dev,
-> +			"could not allocate memory for CAN device\n");
-> +		err =3D -ENOMEM;
-> +		goto exit_iounmap;
-> +	}
-> +
-> +	dev->netdev_ops =3D &sunxican_netdev_ops;
-> +	dev->irq =3D irq;
-> +	dev->flags |=3D IFF_ECHO;
-> +
-> +	priv =3D netdev_priv(dev);
-> +	priv->can.clock.freq =3D clk_get_rate(clk);
-> +	priv->can.bittiming_const =3D &sunxican_bittiming_const;
-> +	priv->can.do_set_bittiming =3D sunxican_set_bittiming;
+Yes, this looks racy - You should ask then to mainline working the driver=
+=2E
 
-Please don't do this, call set_bittiming during open();
+> I can see the packets coming in the correct order in wireshark and it i=
+s=20
+> not immediately obvious to me how the kernel module could mix up the=20
+> order, so it seems that it must be something that happens at the socket=
+=20
+> level?
 
-> +	priv->can.do_set_mode =3D sunxican_set_mode;
-> +	priv->can.do_get_berr_counter =3D sunxican_get_berr_counter;
-> +	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_BERR_REPORTING |
-> +				       CAN_CTRLMODE_LISTENONLY |
-> +				       CAN_CTRLMODE_LOOPBACK |
-> +				       CAN_CTRLMODE_3_SAMPLES;
-> +	priv->base =3D addr;
-> +	priv->clk =3D clk;
-> +	spin_lock_init(&priv->cmdreg_lock);
-> +
-> +	/* enable CAN specific interrupts */
-> +	set_reset_mode(dev);
-> +	temp_irqen =3D BERR_IRQ_EN | ERR_PASSIVE_IRQ_EN | OR_IRQ_EN | RX_IRQ_=
-EN;
-> +	writel(readl(priv->base + CAN_INTEN_ADDR) | temp_irqen,
-> +	       priv->base + CAN_INTEN_ADDR);
-> +
-> +	platform_set_drvdata(pdev, dev);
-> +	SET_NETDEV_DEV(dev, &pdev->dev);
-> +
-> +	err =3D register_candev(dev);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "registering %s failed (err=3D%d)\n",
-> +			DRV_NAME, err);
-> +		goto exit_free;
-> +	}
-> +	devm_can_led_init(dev);
-> +
-> +	dev_info(&pdev->dev, "device registered (base=3D%p, irq=3D%d)\n",
-> +		 priv->base, dev->irq);
-> +
-> +	return 0;
-> +
-> +exit_free:
-> +	free_candev(dev);
-> +exit_iounmap:
-> +	iounmap(addr);
-> +exit_release:
-> +	release_mem_region(res->start, resource_size(res));
-> +exit_put:
-> +	clk_put(clk);
-> +exit:
-> +	return err;
-> +}
-> +
-> +static int __maybe_unused sunxi_can_suspend(struct device *device)
-> +{
-> +	struct net_device *dev =3D dev_get_drvdata(device);
-> +	struct sunxican_priv *priv =3D netdev_priv(dev);
-> +
-> +	if (netif_running(dev)) {
-> +		netif_stop_queue(dev);
-> +		netif_device_detach(dev);
-> +	}
-> +	priv->can.state =3D CAN_STATE_SLEEPING;
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused sunxi_can_resume(struct device *device)
-> +{
-> +	struct net_device *dev =3D dev_get_drvdata(device);
-> +	struct sunxican_priv *priv =3D netdev_priv(dev);
-> +
-> +	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-> +	if (netif_running(dev)) {
-> +		netif_device_attach(dev);
-> +		netif_start_queue(dev);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static SIMPLE_DEV_PM_OPS(sunxi_can_pm_ops, sunxi_can_suspend, sunxi_ca=
-n_resume);
-> +
-> +static struct platform_driver sunxi_can_driver =3D {
-> +	.driver =3D {
-> +		   .name =3D DRV_NAME,
-> +		   .owner =3D THIS_MODULE,
-> +		   .pm =3D &sunxi_can_pm_ops,
-> +		   .of_match_table =3D sunxican_of_match,
-> +		   },
-> +	.probe =3D sunxican_probe,
-> +	.remove =3D sunxican_remove,
-> +	.id_table =3D sunxican_id_table,
-> +};
-> +
-> +module_platform_driver(sunxi_can_driver);
-> +
-> +MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
-> +MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
-> +MODULE_LICENSE("Dual BSD/GPL");
-> +MODULE_DESCRIPTION(DRV_NAME "CAN driver for Allwinner SoCs (A10/A20)")=
-;
-> +MODULE_VERSION(DRV_MODULE_VERSION);
-> +
+The kernel module "produces" the CAN frames, so if you see them in the
+correct order in wireshark, they have left the module in the right order.=
+
+
+> candump can3 -tz
+> <snip>
+>   (003.088648)  can3  043   [8]  F7 2D 00 00 00 00 00 00
+>   (003.089149)  can3  045   [8]  F9 2D 00 00 00 00 00 00
+>   (003.088897)  can3  044   [8]  F8 2D 00 00 00 00 00 00
+
+The timestamps are in the correct order. Maybe Oliver can help here,
+he's an expert when it comes to strange reordering :)
+
+> On the top level I am using CANFestival for CANOpen implementation, so =
+
+> it has occurred to me I could implement a CANFestival "driver" using=20
+> libusb and completely bypass the kernel module and socket can layers,=20
+> but I hope not to have to do this.
+
+Na, you don't want to do this.
 
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -202,20 +91,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Bj9p44OtqkhSIglWBQvQ4tQjAarJhvQrr
+--DXpaNU2xoh6HakpdNq7xgHWIOIrdjd5hB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJV7r/kAAoJEP5prqPJtc/HpaYH/jxIMrBr4YbntglEL3A4xiC4
-a6yV6NdwG7PSskkeUAr/CJ+28sGXsSgauVEkAYzAZeCItrq+UWaTwOfn69GWBsfn
-qzIfzDeLXGHrsGAqMovVKmuZ4+GBy5vUu1Razzd1ubSalZvbX9uFUljpTG1Zidlf
-kUGOQJiLTaHGCR12EBQErtF+UNcnS8EhLg1iGYkB+/H+QOYpW5Lm+WY2GFT3Z9Sy
-CWdJsuQapv9QsZr3Xlq7+D9jXnMt08oMu2txIg77cAegCKqBM9pR102PXgPKzW0n
-x3xmuAX8TjAnngwgAdQGwtamIWY89kwdep1i2yWxS6eqnX+BXUeK6H40Ewu3ypE=
-=coQd
+iQEcBAEBCgAGBQJV7sK9AAoJEP5prqPJtc/H4bcIAKMP2Uy5hKUrZXfoT5HA1GRU
+HeWJ2K+S3KKcnNQc87P/djrGRpvXtqqX53iy2pv5P8c7yeae7WR7XJc6HyIA7yIR
+HfdUDDIGalLKYVlQRT00zpilB0n+dABhmpxrZt+1vepSULZAa7ie1JYpRjaqMkcK
+I+dyKszZWQUK0SNgv/ufF+ZtoUrTuwDAKU5RFlGpihr1H60ujrB/rt4fb6morlLE
+zAcJ2aBieZ9/OUWIvePffNoZogh2/NtqVjTzuHX9tBwreK7tJOL2JjBb8b+NUIUF
+j4wb6PVgoEIDgRj3tEfRIYrpUGx4kCPs0/xiUiO9jOuiWWsLOx02m8rw8gSY7KY=
+=z5yF
 -----END PGP SIGNATURE-----
 
---Bj9p44OtqkhSIglWBQvQ4tQjAarJhvQrr--
+--DXpaNU2xoh6HakpdNq7xgHWIOIrdjd5hB--
