@@ -1,69 +1,94 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Tue, 8 Sep 2015 12:45:34 +0000
-Message-ID: <12089_1441716335_55EED86F_12089_131_1_F1366246CF364C42B98553900CE0C5CB089DBD59@OPEXCLILM23.corporate.adroot.infra.ftgroup>
-References: <20141212110743.GC10796@vandijck-laurijssen.be>
- <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <20150519084626.GC1088@vandijck-laurijssen.be>
- <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
- <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908075800.GA864@airbook.eia.lan>
- <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908123249.GC25796@airbook.eia.lan>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: socket can receive order
+Date: Tue, 08 Sep 2015 18:56:30 +0200
+Message-ID: <55EF133E.8070105@hartkopp.net>
+References: <55EEAD8D.3070603@engineeredarts.co.uk> <55EEB217.3080706@pengutronix.de> <55EEBB4E.6080104@engineeredarts.co.uk> <55EEC2BD.6010302@pengutronix.de> <55EEC3C0.1010002@engineeredarts.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias244.francetelecom.com ([80.12.204.244]:47249 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754496AbbIHMpi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 08:45:38 -0400
-In-Reply-To: <20150908123249.GC25796@airbook.eia.lan>
-Content-Language: fr-FR
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:44962 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754905AbbIHQ4j (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 12:56:39 -0400
+In-Reply-To: <55EEC3C0.1010002@engineeredarts.co.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Daniel Squires <dan@engineeredarts.co.uk>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-VGhhbmtzIEt1cnQuDQoNCkkgd2lsbCB0ZXN0IGl0IG9uIHRodXJzZGF5IGFuZCBiYWNrIHRvIHlv
-dS4NCg0KQmVzdCByZWdhcmRzLA0KDQpQYXNjYWwNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0t
-LS0tDQpEZcKgOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJp
-anNzZW4uYmVdIA0KRW52b3nDqcKgOiBtYXJkaSA4IHNlcHRlbWJyZSAyMDE1IDE0OjMzDQrDgMKg
-OiBGSUZSRSBQYXNjYWwgRXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwu
-b3JnDQpPYmpldMKgOiBSZTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KLS0tIE9yaWdpbmFsIG1l
-c3NhZ2UgLS0tDQo+IERhdGU6IFR1ZSwgOCBTZXAgMjAxNSAwOTozMzozNSArMDAwMA0KPiBGcm9t
-OiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gVG86IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2
-YW5kaWpjay1sYXVyaWpzc2VuLmJlPg0KPiBDQzogImxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmci
-IDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSRTogSjE5MzkgKyBpTVg2
-ICsgeW9jdG8NCj4gDQo+ID4gSSBhbHNvIHVwZGF0ZWQgaXByb3V0ZTItajE5MzksIHRvIGEgdmVy
-c2lvbiB0aGF0IGlzIGVxdWFsIHRvIHdoYXQgeW9jdG8gaXMgdXNpbmcgbm93Lg0KPiBXaGF0IGRv
-IHlvdSBtZWFuPyBEbyB5b3UgcGF0Y2ggaXByb3V0ZTIgZm9yIHVzaW5nIGoxOTM5PyBJbiB0aGF0
-IGNhc2UgaG93IGNhbiBJIHJldHJpZXZlIHRoaXMgaXByb3V0ZTItajE5Mzkgc3RhY2sgdG8gdXNl
-IGl0IGluIHlvY3RvPw0KDQpTZWUgaHR0cDovL2VsaW51eC5vcmcvSjE5MzkjU291cmNlcw0KDQpZ
-b3UgbmVlZCBhIHBhdGNoZWQgaXByb3V0ZTIgaXAgcHJvZ3JhbSB0byBhY3RpdmF0ZSBqMTkzOSBv
-biBhIENBTiBkZXZpY2UuIEFsdG91Z2ggSSBoYWQgYW4gaXByb3V0ZTIgcmVhZHksIEkgY291bGQg
-bm90IGdldCBpdCBlYXNpbHkgaW4geW9jdG8gdG8gY29tcGlsZS4gU28gSSBjcmVhdGVkIGlwcm91
-dGUyLWoxOTM5IHYzLjE2IGJyYW5jaCwgd2hpY2ggZXF1YWxzIHRoZSBpcHJvdXRlMiB2ZXJzaW9u
-IHRoYXQgKG15KSB5b2N0byB1c2VzLg0KSSB0aGVuIGFkZGVkIHRoZSBiaXRiYWtlIHJlY2lwZSAo
-c2VlIGF0dGFjaG1lbnQpIHdoaWNoIHJldXNlcyBhbGwgcGF0Y2hlcyBhcHBsaWVkIHRvIHRoZSBz
-dG9jayBpcHJvdXRlMiBwcm9ncmFtLg0KDQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGll
-Y2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGll
-bGxlcyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2Vz
-LCBleHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVj
-dSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0
-ZXVyIGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNz
-YWdlcyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5n
-ZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJl
-LCBkZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFj
-aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9u
-IHRoYXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmli
-dXRlZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSBy
-ZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5k
-IGRlbGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBi
-ZSBhbHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJl
-ZW4gbW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
+Hi all,
+
+On 08.09.2015 13:17, Daniel Squires wrote:
+> On 08/09/15 12:13, Marc Kleine-Budde wrote:
+
+>>> I can see the packets coming in the correct order in wireshark and it is
+>>> not immediately obvious to me how the kernel module could mix up the
+>>> order, so it seems that it must be something that happens at the socket
+>>> level?
+>> The kernel module "produces" the CAN frames, so if you see them in the
+>> correct order in wireshark, they have left the module in the right order.
+
+Yes. This is trivial.
+
+But Daniel is right to ask about the frame reordering on socket level - better 
+say - reordering outside the driver level.
+
+>
+> Sorry , I should have been clearer here, in wireshark was looking at the USB
+> frames not the CAN frames. however I think what you say still stands due to
+> the time stamps being in the correct order.
+>>
+>>> candump can3 -tz
+>>> <snip>
+>>>    (003.088648)  can3  043   [8]  F7 2D 00 00 00 00 00 00
+>>>    (003.089149)  can3  045   [8]  F9 2D 00 00 00 00 00 00
+>>>    (003.088897)  can3  044   [8]  F8 2D 00 00 00 00 00 00
+>> The timestamps are in the correct order. Maybe Oliver can help here,
+>> he's an expert when it comes to strange reordering :)
+
+Will try - see below.
+
+>>
+>>> On the top level I am using CANFestival for CANOpen implementation, so
+>>> it has occurred to me I could implement a CANFestival "driver" using
+>>> libusb and completely bypass the kernel module and socket can layers,
+>>> but I hope not to have to do this.
+>> Na, you don't want to do this.
+
+The point this that it would not help either - even if you are using the 
+PF_PACKET socket (which wireshark does) - bypassing the CAN network layer 
+modules (can, can_raw) doesn't fix the problem.
+
+I discussed the problem on netdev ML as I discovered a out-of-order issue when 
+fixing the CAN_RAW join feature.
+
+When you have a multicore SMP processor the interrupt can be processed by 
+different CPUs, which can lead to packet reordering when using netif_ix() on 
+driver level.
+
+The discussion ended with the networking guys pointing me to use NAPI which 
+does not really help, e.g. there's only one USB network adapter in 
+linux/drivers/net which is a complete mess.
+
+My suggestion was to set a hash value into the socket buffer (skb) at driver 
+level, which is used for generating a 'flow' for IP traffic too. You can 
+generate flows by hashes to put all traffic from a specific IP into the same 
+per-cpu input queue to help TCP assembling the packets in the softirq for this 
+IP address in correct order (aha!).
+
+See http://marc.info/?l=linux-netdev&m=143689694125450&w=2
+
+I assume the networking guys interpreted my suggestion as hack as they are not 
+aware how 'addressing' is done in CAN. They only know about IP ...
+
+NAPI is not really a valid solution for CAN USB adapters and I think I'll have 
+to restart the discussion as out-of-order frames are a no-go for CAN as it 
+kills ISO15765-2 and (obviously) CANopen segmentation.
+
+I assume Daniel uses a multicore system, right?
+
+If so, please try the 'hack' I suggested on the netdev ML if it fixes your 
+problem. It might help for the discussion too.
+
+Regards,
+Oliver
