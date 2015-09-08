@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 + iMX6 + yocto
-Date: Tue, 8 Sep 2015 09:58:00 +0200
-Message-ID: <20150908075800.GA864@airbook.eia.lan>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 + iMX6 + yocto
+Date: Tue, 8 Sep 2015 09:33:35 +0000
+Message-ID: <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
 References: <loom.20141211T112702-791@post.gmane.org>
  <20141212110743.GC10796@vandijck-laurijssen.be>
  <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
@@ -11,137 +11,114 @@ References: <loom.20141211T112702-791@post.gmane.org>
  <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
  <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
  <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908075800.GA864@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway01.edpnet.net ([212.71.1.210]:46916 "EHLO
-	relaygateway01.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753765AbbIHH6J convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 03:58:09 -0400
-Content-Disposition: inline
-In-Reply-To: <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+Received: from relais-ias244.francetelecom.com ([80.12.204.244]:31220 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754029AbbIHJdm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Sep 2015 05:33:42 -0400
+In-Reply-To: <20150908075800.GA864@airbook.eia.lan>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Pascal,
-
-I got back to my PC now.
-I see how the j1939-v3.10 branch dissapeared. I had pushed it
-to gitorious.org, which is obsolete now, thinking that I had pushed it
-to github. I set that right just now.
-
-> Which platform do you use?
-We have a custom iMX6 platform (in-house developed), with the core
-similar to sabre-lite from Boundary Devices (They have renamed that
-board now). Our board has 2 SJA1000 chips added.
-
-I also updated iproute2-j1939, to a version that is equal to what yocto
-is using now. This was less effort than choosing a different version
-of iproute2 in yocto (to me).
-
-Kind regards,
-Kurt
-
---- Original message ---
-> Date:	Mon, 7 Sep 2015 06:31:47 +0000
-> From: pfifre.ext@orange.com
-> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> CC: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-> Subject: RE: J1939 + iMX6 + yocto
->=20
-> Hi Kurt,
->=20
-> Glad to know that you already work on the same feature.
->=20
-> Which platform do you use?
-> I'm working now on the Digi ConnectCore 6.
->=20
-> I'm wating on Tuesday to get your 3.10 branch and test it on my side.
->=20
-> Thanks a lot for your help!
->=20
-> Pascal
->=20
->=20
-> -----Message d'origine-----
-> De=C2=A0: Kurt Van Dijck [mailto:dev.kurt@vandijck-laurijssen.be]=20
-> Envoy=C3=A9=C2=A0: lundi 7 septembre 2015 02:40
-> =C3=80=C2=A0: FIFRE Pascal Ext IMT/OLPS
-> Cc=C2=A0: linux-can@vger.kernel.org
-> Objet=C2=A0: RE: J1939 + iMX6 + yocto
->=20
-> Hi,
->=20
->=20
-> On 4 September 2015 14:24:15 CEST, pfifre.ext@orange.com wrote:
-> >Hi Kurt,
-> >
-> >I continue my works on J1939 on another platform (based on IMX6 and=20
-> >Yocto).
->=20
-> I'm currently using the same iMX6 with yocto.=20
->=20
-> >
-> >I try now to patch the Yocto Kernel to embed your J1939 stack.
-> >But, this yocto kernel is based on 3.10-r0 and the nearest version o=
-f=20
-> >your git is for 3.8 or for 3.12-rc1 kernels.
-> >
-> >I tried to patch with the git J1939-v3.8 and lot of conflicts appear=
-s=20
-> >during merge.
-> >I think I will have the same issues with 3.12-rc1.
-> >
-> You need first to rebase the j1939 branch onto 3.10, or else you merg=
-e everything including 3.12.
->=20
-> >I suppose that modifications of the kernel are limited to can stack =
-and=20
-> >can drivers. I'm right?
->=20
-> Can stack only, no drivers.
->=20
-> >Can I patch my kernel manualy with the specific J1939 sources and ad=
-apt=20
-> >their structures to my kernel version?
->=20
-> You should merge using git and resolve merge conflicts on the way.
-> I cannot tell from my current position which branch to start best wit=
-h.
-> Or you could wait until Tuesday, then I can push a my 3.10 branch. I'=
-ve gone through the merge conflicts already...
->=20
-> >
-> >What do you think about that?
-> >
-> >Best regards,
-> >
-> >Pascal
-> >
->=20
-> Sent from a small mobile device
->=20
-> _____________________________________________________________________=
-____________________________________________________
->=20
-> Ce message et ses pieces jointes peuvent contenir des informations co=
-nfidentielles ou privilegiees et ne doivent donc
-> pas etre diffuses, exploites ou copies sans autorisation. Si vous ave=
-z recu ce message par erreur, veuillez le signaler
-> a l'expediteur et le detruire ainsi que les pieces jointes. Les messa=
-ges electroniques etant susceptibles d'alteration,
-> Orange decline toute responsabilite si ce message a ete altere, defor=
-me ou falsifie. Merci.
->=20
-> This message and its attachments may contain confidential or privileg=
-ed information that may be protected by law;
-> they should not be distributed, used or copied without authorisation.
-> If you have received this email in error, please notify the sender an=
-d delete this message and its attachments.
-> As emails may be altered, Orange is not liable for messages that have=
- been modified, changed or falsified.
-> Thank you.
->=20
+SGkgS3VydCwNCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIHVwZGF0ZS4NCkkgZ2V0IHRoZSAzLjEw
+IHRvZGF5IGZyb20gZ2l0aHViLg0KDQoiSSBhbHNvIHVwZGF0ZWQgaXByb3V0ZTItajE5MzksIHRv
+IGEgdmVyc2lvbiB0aGF0IGlzIGVxdWFsIHRvIHdoYXQgeW9jdG8gaXMgdXNpbmcgbm93LiAiDQpX
+aGF0IGRvIHlvdSBtZWFuPyBEbyB5b3UgcGF0Y2ggaXByb3V0ZTIgZm9yIHVzaW5nIGoxOTM5PyBJ
+biB0aGF0IGNhc2UgaG93IGNhbiBJIHJldHJpZXZlIHRoaXMgaXByb3V0ZTItajE5Mzkgc3RhY2sg
+dG8gdXNlIGl0IGluIHlvY3RvPw0KDQpCZXN0IHJlZ2FyZHMsDQoNClBhc2NhbA0KDQotLS0tLU1l
+c3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86ZGV2Lmt1
+cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6IG1hcmRpIDggc2VwdGVtYnJl
+IDIwMTUgMDk6NTgNCsOAwqA6IEZJRlJFIFBhc2NhbCBFeHQgSU1UL09MUFMNCkNjwqA6IGxpbnV4
+LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCk9iamV0wqA6IFJlOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0K
+DQpIaSBQYXNjYWwsDQoNCkkgZ290IGJhY2sgdG8gbXkgUEMgbm93Lg0KSSBzZWUgaG93IHRoZSBq
+MTkzOS12My4xMCBicmFuY2ggZGlzc2FwZWFyZWQuIEkgaGFkIHB1c2hlZCBpdCB0byBnaXRvcmlv
+dXMub3JnLCB3aGljaCBpcyBvYnNvbGV0ZSBub3csIHRoaW5raW5nIHRoYXQgSSBoYWQgcHVzaGVk
+IGl0IHRvIGdpdGh1Yi4gSSBzZXQgdGhhdCByaWdodCBqdXN0IG5vdy4NCg0KPiBXaGljaCBwbGF0
+Zm9ybSBkbyB5b3UgdXNlPw0KV2UgaGF2ZSBhIGN1c3RvbSBpTVg2IHBsYXRmb3JtIChpbi1ob3Vz
+ZSBkZXZlbG9wZWQpLCB3aXRoIHRoZSBjb3JlIHNpbWlsYXIgdG8gc2FicmUtbGl0ZSBmcm9tIEJv
+dW5kYXJ5IERldmljZXMgKFRoZXkgaGF2ZSByZW5hbWVkIHRoYXQgYm9hcmQgbm93KS4gT3VyIGJv
+YXJkIGhhcyAyIFNKQTEwMDAgY2hpcHMgYWRkZWQuDQoNCkkgYWxzbyB1cGRhdGVkIGlwcm91dGUy
+LWoxOTM5LCB0byBhIHZlcnNpb24gdGhhdCBpcyBlcXVhbCB0byB3aGF0IHlvY3RvIGlzIHVzaW5n
+IG5vdy4gVGhpcyB3YXMgbGVzcyBlZmZvcnQgdGhhbiBjaG9vc2luZyBhIGRpZmZlcmVudCB2ZXJz
+aW9uIG9mIGlwcm91dGUyIGluIHlvY3RvICh0byBtZSkuDQoNCktpbmQgcmVnYXJkcywNCkt1cnQN
+Cg0KLS0tIE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+IERhdGU6CU1vbiwgNyBTZXAgMjAxNSAwNjoz
+MTo0NyArMDAwMA0KPiBGcm9tOiBwZmlmcmUuZXh0QG9yYW5nZS5jb20NCj4gVG86IEt1cnQgVmFu
+IERpamNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlPg0KPiBDQzogImxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmciIDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0
+OiBSRTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCj4gDQo+IEhpIEt1cnQsDQo+IA0KPiBHbGFkIHRv
+IGtub3cgdGhhdCB5b3UgYWxyZWFkeSB3b3JrIG9uIHRoZSBzYW1lIGZlYXR1cmUuDQo+IA0KPiBX
+aGljaCBwbGF0Zm9ybSBkbyB5b3UgdXNlPw0KPiBJJ20gd29ya2luZyBub3cgb24gdGhlIERpZ2kg
+Q29ubmVjdENvcmUgNi4NCj4gDQo+IEknbSB3YXRpbmcgb24gVHVlc2RheSB0byBnZXQgeW91ciAz
+LjEwIGJyYW5jaCBhbmQgdGVzdCBpdCBvbiBteSBzaWRlLg0KPiANCj4gVGhhbmtzIGEgbG90IGZv
+ciB5b3VyIGhlbHAhDQo+IA0KPiBQYXNjYWwNCj4gDQo+IA0KPiAtLS0tLU1lc3NhZ2UgZCdvcmln
+aW5lLS0tLS0NCj4gRGXCoDogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpj
+ay1sYXVyaWpzc2VuLmJlXQ0KPiBFbnZvecOpwqA6IGx1bmRpIDcgc2VwdGVtYnJlIDIwMTUgMDI6
+NDANCj4gw4DCoDogRklGUkUgUGFzY2FsIEV4dCBJTVQvT0xQUw0KPiBDY8KgOiBsaW51eC1jYW5A
+dmdlci5rZXJuZWwub3JnDQo+IE9iamV0wqA6IFJFOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0KPiAN
+Cj4gSGksDQo+IA0KPiANCj4gT24gNCBTZXB0ZW1iZXIgMjAxNSAxNDoyNDoxNSBDRVNULCBwZmlm
+cmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6DQo+ID5IaSBLdXJ0LA0KPiA+DQo+ID5JIGNvbnRpbnVl
+IG15IHdvcmtzIG9uIEoxOTM5IG9uIGFub3RoZXIgcGxhdGZvcm0gKGJhc2VkIG9uIElNWDYgYW5k
+IA0KPiA+WW9jdG8pLg0KPiANCj4gSSdtIGN1cnJlbnRseSB1c2luZyB0aGUgc2FtZSBpTVg2IHdp
+dGggeW9jdG8uIA0KPiANCj4gPg0KPiA+SSB0cnkgbm93IHRvIHBhdGNoIHRoZSBZb2N0byBLZXJu
+ZWwgdG8gZW1iZWQgeW91ciBKMTkzOSBzdGFjay4NCj4gPkJ1dCwgdGhpcyB5b2N0byBrZXJuZWwg
+aXMgYmFzZWQgb24gMy4xMC1yMCBhbmQgdGhlIG5lYXJlc3QgdmVyc2lvbiBvZiANCj4gPnlvdXIg
+Z2l0IGlzIGZvciAzLjggb3IgZm9yIDMuMTItcmMxIGtlcm5lbHMuDQo+ID4NCj4gPkkgdHJpZWQg
+dG8gcGF0Y2ggd2l0aCB0aGUgZ2l0IEoxOTM5LXYzLjggYW5kIGxvdCBvZiBjb25mbGljdHMgYXBw
+ZWFycyANCj4gPmR1cmluZyBtZXJnZS4NCj4gPkkgdGhpbmsgSSB3aWxsIGhhdmUgdGhlIHNhbWUg
+aXNzdWVzIHdpdGggMy4xMi1yYzEuDQo+ID4NCj4gWW91IG5lZWQgZmlyc3QgdG8gcmViYXNlIHRo
+ZSBqMTkzOSBicmFuY2ggb250byAzLjEwLCBvciBlbHNlIHlvdSBtZXJnZSBldmVyeXRoaW5nIGlu
+Y2x1ZGluZyAzLjEyLg0KPiANCj4gPkkgc3VwcG9zZSB0aGF0IG1vZGlmaWNhdGlvbnMgb2YgdGhl
+IGtlcm5lbCBhcmUgbGltaXRlZCB0byBjYW4gc3RhY2sgDQo+ID5hbmQgY2FuIGRyaXZlcnMuIEkn
+bSByaWdodD8NCj4gDQo+IENhbiBzdGFjayBvbmx5LCBubyBkcml2ZXJzLg0KPiANCj4gPkNhbiBJ
+IHBhdGNoIG15IGtlcm5lbCBtYW51YWx5IHdpdGggdGhlIHNwZWNpZmljIEoxOTM5IHNvdXJjZXMg
+YW5kIA0KPiA+YWRhcHQgdGhlaXIgc3RydWN0dXJlcyB0byBteSBrZXJuZWwgdmVyc2lvbj8NCj4g
+DQo+IFlvdSBzaG91bGQgbWVyZ2UgdXNpbmcgZ2l0IGFuZCByZXNvbHZlIG1lcmdlIGNvbmZsaWN0
+cyBvbiB0aGUgd2F5Lg0KPiBJIGNhbm5vdCB0ZWxsIGZyb20gbXkgY3VycmVudCBwb3NpdGlvbiB3
+aGljaCBicmFuY2ggdG8gc3RhcnQgYmVzdCB3aXRoLg0KPiBPciB5b3UgY291bGQgd2FpdCB1bnRp
+bCBUdWVzZGF5LCB0aGVuIEkgY2FuIHB1c2ggYSBteSAzLjEwIGJyYW5jaC4gSSd2ZSBnb25lIHRo
+cm91Z2ggdGhlIG1lcmdlIGNvbmZsaWN0cyBhbHJlYWR5Li4uDQo+IA0KPiA+DQo+ID5XaGF0IGRv
+IHlvdSB0aGluayBhYm91dCB0aGF0Pw0KPiA+DQo+ID5CZXN0IHJlZ2FyZHMsDQo+ID4NCj4gPlBh
+c2NhbA0KPiA+DQo+IA0KPiBTZW50IGZyb20gYSBzbWFsbCBtb2JpbGUgZGV2aWNlDQo+IA0KPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXw0KPiANCj4gQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVu
+dCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIA0KPiBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmls
+ZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYyBwYXMgZXRyZSBkaWZmdXNlcywgDQo+IGV4cGxvaXRl
+cyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3Nh
+Z2UgDQo+IHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyIGEgbCdleHBlZGl0ZXVyIGV0
+IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBl
+bGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sIE9yYW5nZSBkZWNs
+aW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZv
+cm1lIG91IGZhbHNpZmllLiBNZXJjaS4NCj4gDQo+IFRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFj
+aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciANCj4gcHJpdmlsZWdlZCBpbmZvcm1h
+dGlvbiB0aGF0IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3OyB0aGV5IHNob3VsZCBub3QgYmUgZGlz
+dHJpYnV0ZWQsIHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4NCj4gSWYgeW91
+IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2Vu
+ZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuDQo+IEFzIGVt
+YWlscyBtYXkgYmUgYWx0ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRo
+YXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4NCj4gVGhhbmsgeW91
+Lg0KPiANCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCgpDZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50
+IGNvbnRlbmlyIGRlcyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVl
+cyBldCBuZSBkb2l2ZW50IGRvbmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3Bp
+ZXMgc2FucyBhdXRvcmlzYXRpb24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3NhZ2UgcGFyIGVy
+cmV1ciwgdmV1aWxsZXogbGUgc2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIgZXQgbGUgZGV0cnVpcmUg
+YWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMg
+ZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRlY2xpbmUgdG91dGUgcmVz
+cG9uc2FiaWxpdGUgc2kgY2UgbWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgb3UgZmFsc2lm
+aWUuIE1lcmNpLgoKVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4g
+Y29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvdGVj
+dGVkIGJ5IGxhdzsKdGhleSBzaG91bGQgbm90IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNvcGll
+ZCB3aXRob3V0IGF1dGhvcmlzYXRpb24uCklmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZW1haWwg
+aW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVsZXRlIHRoaXMgbWVzc2Fn
+ZSBhbmQgaXRzIGF0dGFjaG1lbnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFsdGVyZWQsIE9yYW5nZSBp
+cyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBtb2RpZmllZCwgY2hhbmdl
+ZCBvciBmYWxzaWZpZWQuClRoYW5rIHlvdS4KCg==
