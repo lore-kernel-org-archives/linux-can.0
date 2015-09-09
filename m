@@ -1,22 +1,23 @@
 From: Daniel Squires <dan@engineeredarts.co.uk>
 Subject: Re: socket can receive order
-Date: Wed, 09 Sep 2015 13:05:03 +0100
-Message-ID: <55F0206F.7050606@engineeredarts.co.uk>
+Date: Wed, 09 Sep 2015 17:14:54 +0100
+Message-ID: <55F05AFE.8070203@engineeredarts.co.uk>
 References: <55EEAD8D.3070603@engineeredarts.co.uk> <55EEB217.3080706@pengutronix.de> <55EEBB4E.6080104@engineeredarts.co.uk> <55EEC2BD.6010302@pengutronix.de> <55EEC3C0.1010002@engineeredarts.co.uk> <55EF133E.8070105@hartkopp.net> <CANGgnMZMRMtpugbN4x9Dh0v3i7zaAXRYfk+C1qhx1Nre=6WtEg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from engineeredarts.co.uk ([162.13.42.246]:39829 "EHLO
+Received: from engineeredarts.co.uk ([162.13.42.246]:41791 "EHLO
 	mail.engineeredarts.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752879AbbIIMFG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Sep 2015 08:05:06 -0400
+	with ESMTP id S1754753AbbIIQO7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Sep 2015 12:14:59 -0400
 In-Reply-To: <CANGgnMZMRMtpugbN4x9Dh0v3i7zaAXRYfk+C1qhx1Nre=6WtEg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-
+The Hack seems to work, its been a short test of a half hour so far, but 
+before it happened reliably after a few seconds.
 
 On 09/09/15 03:30, Austin Schuh wrote:
 > On Tue, Sep 8, 2015 at 9:56 AM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
@@ -55,18 +56,7 @@ On 09/09/15 03:30, Austin Schuh wrote:
 >> The point this that it would not help either - even if you are using the
 >> PF_PACKET socket (which wireshark does) - bypassing the CAN network layer
 >> modules (can, can_raw) doesn't fix the problem.
-I meant to bypass ALL the kernel CAN / sock layers and go direct from 
-usb frames to application, which I think would avoid the problem, tho 
-also renders useless tools such as wireshark and can-utils and i would 
-rather avoid.
-
-The USB frames appear to arrive in order as the  timestamps (as shown by 
-candump) are in order, though the packets come out of recv() OOO, and 
-further testing reveals some of them are significantly delayed at the 
-application level, by 10s of mS, in that in that time many newer pkts 
-are received promptly (<mS).
-
-
+>>
 >> I discussed the problem on netdev ML as I discovered a out-of-order issue when
 >> fixing the CAN_RAW join feature.
 >>
@@ -94,8 +84,6 @@ are received promptly (<mS).
 >> kills ISO15765-2 and (obviously) CANopen segmentation.
 >>
 >> I assume Daniel uses a multicore system, right?
-
-Correct, a core I5 in this case.
 >>
 >> If so, please try the 'hack' I suggested on the netdev ML if it fixes your
 >> problem. It might help for the discussion too.
