@@ -1,109 +1,66 @@
-From: Daniel Squires <dan@engineeredarts.co.uk>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: socket can receive order
-Date: Wed, 09 Sep 2015 17:14:54 +0100
-Message-ID: <55F05AFE.8070203@engineeredarts.co.uk>
-References: <55EEAD8D.3070603@engineeredarts.co.uk> <55EEB217.3080706@pengutronix.de> <55EEBB4E.6080104@engineeredarts.co.uk> <55EEC2BD.6010302@pengutronix.de> <55EEC3C0.1010002@engineeredarts.co.uk> <55EF133E.8070105@hartkopp.net> <CANGgnMZMRMtpugbN4x9Dh0v3i7zaAXRYfk+C1qhx1Nre=6WtEg@mail.gmail.com>
+Date: Wed, 09 Sep 2015 18:23:32 +0200
+Message-ID: <55F05D04.6090908@hartkopp.net>
+References: <55EEAD8D.3070603@engineeredarts.co.uk> <55EEB217.3080706@pengutronix.de> <55EEBB4E.6080104@engineeredarts.co.uk> <55EEC2BD.6010302@pengutronix.de> <55EEC3C0.1010002@engineeredarts.co.uk> <55EF133E.8070105@hartkopp.net> <CANGgnMZMRMtpugbN4x9Dh0v3i7zaAXRYfk+C1qhx1Nre=6WtEg@mail.gmail.com> <CAGt3f4nRhtx=W_2NWErmoS=o4x0qu89VzkfgLvsJ1=+WLYyJTw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from engineeredarts.co.uk ([162.13.42.246]:41791 "EHLO
-	mail.engineeredarts.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754753AbbIIQO7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Sep 2015 12:14:59 -0400
-In-Reply-To: <CANGgnMZMRMtpugbN4x9Dh0v3i7zaAXRYfk+C1qhx1Nre=6WtEg@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:39642 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751443AbbIIQXl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Sep 2015 12:23:41 -0400
+In-Reply-To: <CAGt3f4nRhtx=W_2NWErmoS=o4x0qu89VzkfgLvsJ1=+WLYyJTw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Brian Silverman <brian@peloton-tech.com>, Austin Schuh <austin@peloton-tech.com>, Daniel Squires <dan@engineeredarts.co.uk>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-The Hack seems to work, its been a short test of a half hour so far, but 
-before it happened reliably after a few seconds.
-
-On 09/09/15 03:30, Austin Schuh wrote:
-> On Tue, Sep 8, 2015 at 9:56 AM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->> Hi all,
->>
->> On 08.09.2015 13:17, Daniel Squires wrote:
->>> On 08/09/15 12:13, Marc Kleine-Budde wrote:
->>>>> I can see the packets coming in the correct order in wireshark and it is
->>>>> not immediately obvious to me how the kernel module could mix up the
->>>>> order, so it seems that it must be something that happens at the socket
->>>>> level?
->>>> The kernel module "produces" the CAN frames, so if you see them in the
->>>> correct order in wireshark, they have left the module in the right order.
->> Yes. This is trivial.
->>
->> But Daniel is right to ask about the frame reordering on socket level - better
->> say - reordering outside the driver level.
->>
->>> Sorry , I should have been clearer here, in wireshark was looking at the USB
->>> frames not the CAN frames. however I think what you say still stands due to
->>> the time stamps being in the correct order.
->>>>> candump can3 -tz
->>>>> <snip>
->>>>>     (003.088648)  can3  043   [8]  F7 2D 00 00 00 00 00 00
->>>>>     (003.089149)  can3  045   [8]  F9 2D 00 00 00 00 00 00
->>>>>     (003.088897)  can3  044   [8]  F8 2D 00 00 00 00 00 00
->>>> The timestamps are in the correct order. Maybe Oliver can help here,
->>>> he's an expert when it comes to strange reordering :)
->> Will try - see below.
->>
->>>>> On the top level I am using CANFestival for CANOpen implementation, so
->>>>> it has occurred to me I could implement a CANFestival "driver" using
->>>>> libusb and completely bypass the kernel module and socket can layers,
->>>>> but I hope not to have to do this.
->>>> Na, you don't want to do this.
->> The point this that it would not help either - even if you are using the
->> PF_PACKET socket (which wireshark does) - bypassing the CAN network layer
->> modules (can, can_raw) doesn't fix the problem.
->>
->> I discussed the problem on netdev ML as I discovered a out-of-order issue when
->> fixing the CAN_RAW join feature.
->>
->> When you have a multicore SMP processor the interrupt can be processed by
->> different CPUs, which can lead to packet reordering when using netif_ix() on
->> driver level.
->>
->> The discussion ended with the networking guys pointing me to use NAPI which
->> does not really help, e.g. there's only one USB network adapter in
->> linux/drivers/net which is a complete mess.
->>
->> My suggestion was to set a hash value into the socket buffer (skb) at driver
->> level, which is used for generating a 'flow' for IP traffic too. You can
->> generate flows by hashes to put all traffic from a specific IP into the same
->> per-cpu input queue to help TCP assembling the packets in the softirq for this
->> IP address in correct order (aha!).
->>
->> See http://marc.info/?l=linux-netdev&m=143689694125450&w=2
->>
->> I assume the networking guys interpreted my suggestion as hack as they are not
->> aware how 'addressing' is done in CAN. They only know about IP ...
->>
->> NAPI is not really a valid solution for CAN USB adapters and I think I'll have
->> to restart the discussion as out-of-order frames are a no-go for CAN as it
->> kills ISO15765-2 and (obviously) CANopen segmentation.
->>
->> I assume Daniel uses a multicore system, right?
->>
->> If so, please try the 'hack' I suggested on the netdev ML if it fixes your
->> problem. It might help for the discussion too.
->>
->> Regards,
->> Oliver
-> On our boxes, I've been setting the affinity for both the IRQ thread
-> (we are running a RT kernel), and the interrupt to the same single
-> core.  Would that help here?
+On 09.09.2015 05:10, Brian Silverman wrote:
+> Another thing Austin and I do is set up RPS (receive packet steering)
+> for the Ethernet interfaces so the hardware sends the physical
+> Ethernet interrupts to that same core which isn't involved in
+> servicing the CAN interfaces at all.
 >
-> We've seen CAN packets get significantly delayed causing overruns due
-> to Ethernet load and both CAN and ethernet sharing the same softirq.
-> Our solution has been to set the affinity for each of those to
-> different cores to keep them isolated.
->
-> Austin
->
+> On Tue, Sep 8, 2015 at 10:30 PM, Austin Schuh <austin@peloton-tech.com> wrote:
+>>
+>> On our boxes, I've been setting the affinity for both the IRQ thread
+>> (we are running a RT kernel), and the interrupt to the same single
+>> core.  Would that help here?
 
--- 
-Dan Squires
+Yes it does.
 
-Engineered Arts Ltd.
+Nailing the interrupts from ethernet and CAN interfaces to different CPUs by 
+setting irq_affinity is a valid but pretty hard solution.
 
+Therefore I was trying to use hash based RPS to fix the out-of-order problem 
+and let the kernel networking do the (hopefully optimal) rest.
+
+>> We've seen CAN packets get significantly delayed causing overruns due
+>> to Ethernet load and both CAN and ethernet sharing the same softirq.
+>> Our solution has been to set the affinity for each of those to
+>> different cores to keep them isolated.
+
+Yes. That's a good point. Due to the fact that you split up ethernet and CAN 
+on different CPUs the softirq is also running on different CPUs.
+
+This could also be the solution for Daniels problem!
+
+My suggested solution (aka 'hack' 
+http://marc.info/?l=linux-netdev&m=143689694125450&w=2 ) with the hash based 
+RPS does not split the ethernet/CAN traffic among CPUs as - depending on the 
+IP hashes - some of the ethernet traffic can be pushed into the same CPU we 
+use for the CAN interface.
+
+So it's a softer solution which at least fixes out-of-order for CAN interfaces.
+
+Regards,
+Oliver
+
+ps. There were some performance tests (vanilla and RT kernel) from the 
+University of Prague where you can see the impact of additional ethernet load:
+
+http://rtime.felk.cvut.cz/can/
+
+http://rtime.felk.cvut.cz/can/benchmark/3.0/
