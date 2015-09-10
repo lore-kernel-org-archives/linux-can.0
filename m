@@ -1,7 +1,7 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: J1939 + iMX6 + yocto
-Date: Thu, 10 Sep 2015 15:30:39 +0200
-Message-ID: <55F185FF.3030400@pengutronix.de>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 + iMX6 + yocto
+Date: Thu, 10 Sep 2015 15:32:04 +0000
+Message-ID: <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
 References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <20141215093136.GA646@vandijck-laurijssen.be>
  <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
@@ -13,60 +13,59 @@ References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
  <20150910113419.GA13189@airbook.eia.lan>
  <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
+ <55F185FF.3030400@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="t0e5UNoLK08pOBcMuh6bTcrr1JxOBCfDD"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:54849 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752558AbbIJNau (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 09:30:50 -0400
-In-Reply-To: <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
+Received: from relais-ias92.francetelecom.com ([193.251.215.92]:45945 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751323AbbIJPcM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 11:32:12 -0400
+In-Reply-To: <55F185FF.3030400@pengutronix.de>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---t0e5UNoLK08pOBcMuh6bTcrr1JxOBCfDD
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 09/10/2015 03:18 PM, pfifre.ext@orange.com wrote:
-> "Did you follow the steps that I explained on http://elinux.org#J1939?"=
-
-> Yes, I follow your explanations on http://elinux.org#J1939
-> I'm on a v3.10r0, but I don't think that's the r0 change the kernel a l=
-ot.
-> I will try it again.
-
-What's a v3.10r0? There is no official "r0" Kernel release. Your kernel
-vendor may probably help you with this.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---t0e5UNoLK08pOBcMuh6bTcrr1JxOBCfDD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJV8YX/AAoJEP5prqPJtc/Hcs8H/3l8hrRThPfHiL/phKwHpiON
-MsdwfFHGglP2OEy0p5VK4WyX1MTsuBcAbSbT2+S2ySiizguSQuAcArFkKT3K7kxF
-wB0DUlalBLPlVLBQedtcFsmq/i1/3yQyJ+U3Wb2vze27Om7iGNfs1rMIfw6dUezD
-fhcQxucToqxXkmvunrjpokjLEWSdNruFoW6jL5iN7lzwC53f0kOqYWqwe4oSnC4i
-DKTH9Q3KKgv8pKFkkRstT01Hbfs8JQInZd+uEXsTbRNBxYNMYRTu+udewg8CLDbK
-R3w5xKhEsuouhLdkXK6XGR3ogBE0/TrQI5YUx0SFZCiuS/KmeQKEjiqy2qSoYSg=
-=waIY
------END PGP SIGNATURE-----
-
---t0e5UNoLK08pOBcMuh6bTcrr1JxOBCfDD--
+SW4gZmFjdCBpcyBhIDMuMTAtcjAgYW5kIG5vdCAzLjEwcjAuDQpCdXQgeW91IGFyZSByaWdodCA6
+IGl0J3Mgbm90IGFuIG9mZmljaWFsIHJlbGVhc2UuDQoNClllcywgSSB0aGluayBzbyA6IEkgd2ls
+bCB0YWxrIHdpdGggbXkgcHJvdmlkZXIuDQoNCkkgdHJ5IGFsc28gYW5vdGhlciB3YXkgOiANCjEp
+IGdldCBhbiBvZmZpY2lhbCByZWxlYXNlIG9mIDMuMTANCjIpIG1ha2UgYSBwYXRjaCB3aXRoICB0
+aGUgajE5MzkgcmVsZWFzZQ0KMykgdHJ5IHRvIGFwcGx5IHRoZSBwYXRjaCB0byBteSBrZXJuZWwg
+YW5kIHNlZQ0KDQoNClJlZ2FyZHMsDQoNClBhc2NhbA0KDQogDQoNCi0tLS0tTWVzc2FnZSBkJ29y
+aWdpbmUtLS0tLQ0KRGXCoDogTWFyYyBLbGVpbmUtQnVkZGUgW21haWx0bzpta2xAcGVuZ3V0cm9u
+aXguZGVdIA0KRW52b3nDqcKgOiBqZXVkaSAxMCBzZXB0ZW1icmUgMjAxNSAxNTozMQ0Kw4DCoDog
+RklGUkUgUGFzY2FsIEV4dCBJTVQvT0xQUzsgS3VydCBWYW4gRGlqY2sNCkNjwqA6IGxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmcNCk9iamV0wqA6IFJlOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0KDQpP
+biAwOS8xMC8yMDE1IDAzOjE4IFBNLCBwZmlmcmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6DQo+ICJE
+aWQgeW91IGZvbGxvdyB0aGUgc3RlcHMgdGhhdCBJIGV4cGxhaW5lZCBvbiBodHRwOi8vZWxpbnV4
+Lm9yZyNKMTkzOT8iDQo+IFllcywgSSBmb2xsb3cgeW91ciBleHBsYW5hdGlvbnMgb24gaHR0cDov
+L2VsaW51eC5vcmcjSjE5MzkgSSdtIG9uIGEgDQo+IHYzLjEwcjAsIGJ1dCBJIGRvbid0IHRoaW5r
+IHRoYXQncyB0aGUgcjAgY2hhbmdlIHRoZSBrZXJuZWwgYSBsb3QuDQo+IEkgd2lsbCB0cnkgaXQg
+YWdhaW4uDQoNCldoYXQncyBhIHYzLjEwcjA/IFRoZXJlIGlzIG5vIG9mZmljaWFsICJyMCIgS2Vy
+bmVsIHJlbGVhc2UuIFlvdXIga2VybmVsIHZlbmRvciBtYXkgcHJvYmFibHkgaGVscCB5b3Ugd2l0
+aCB0aGlzLg0KDQpNYXJjDQoNCi0tIA0KUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAg
+IHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVzdHJpYWwgTGludXggU29sdXRp
+b25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQpWZXJ0cmV0dW5nIFdl
+c3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KQW10
+c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5k
+ZSAgIHwNCg0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBqb2ludGVzIHBldXZl
+bnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmlsZWdp
+ZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVzIG91IGNv
+cGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2FnZSBwYXIg
+ZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwnZXhwZWRpdGV1ciBldCBsZSBkZXRydWly
+ZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgbWVzc2FnZXMgZWxlY3Ryb25pcXVl
+cyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVjbGluZSB0b3V0ZSBy
+ZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVmb3JtZSBvdSBmYWxz
+aWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cyBtYXkgY29udGFp
+biBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0IG1heSBiZSBwcm90
+ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQgb3IgY29w
+aWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFp
+bCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNz
+YWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwgT3Jhbmdl
+IGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFu
+Z2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
