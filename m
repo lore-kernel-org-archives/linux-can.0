@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 + iMX6 + yocto
-Date: Thu, 10 Sep 2015 13:34:19 +0200
-Message-ID: <20150910113419.GA13189@airbook.eia.lan>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 + iMX6 + yocto
+Date: Thu, 10 Sep 2015 13:18:01 +0000
+Message-ID: <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
 References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
  <20141215093136.GA646@vandijck-laurijssen.be>
@@ -12,50 +12,75 @@ References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
  <20150908075800.GA864@airbook.eia.lan>
  <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
+ <20150910113419.GA13189@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:21607 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750928AbbIJLei (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 07:34:38 -0400
-Content-Disposition: inline
-In-Reply-To: <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
+Received: from relais-ias243.francetelecom.com ([80.12.204.243]:22438 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751217AbbIJNSM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 09:18:12 -0400
+In-Reply-To: <20150910113419.GA13189@airbook.eia.lan>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-
-> Date: Thu, 10 Sep 2015 09:56:06 +0000
-> 
-> Hi Kurt,
-> 
-> I tried to patch my Kernel (3.10r0) with the j1939-v3.10 and lot of conflicts appears again.
-
-Did you follow the steps that I explained on http://elinux.org#J1939?
-It should work, unless you are not on a v3.10 branch of your repository.
-
-> I noticed that I have also conflicts with the documentation repository in kernel. It seems to be strange, no?
-> 
-> If I just want to add j1939 stack, can I try this:
-> 1) Add j1939 repository from your git sources in <linux kernel>/net/can/j1939
-> 2) Mofidy Kconfig and Makefile in net/can to add j1939
-> 3) Put the can.h from your from your git sources in <linux kernel>/include/linux/can.h
-> 4) Modifiying af_can.c to :
-> 	a) add these functions : can_rtl_doit, can_rtnl_dumpit, can_rtln_dump_addr, can_get_link_af_size, can_fill_link_af, can_validate_link_af, can_set_link_af
-> 	b) add these structure : can_rtnl-af_ops
-> 	c) Modify init_can to call rtl functions
-> 5) Make a patch for Yocto with these
-
-You can use git to show the diff between v3.10 and j1939-v3.10.
-
-> 
-> What do you think about this?
-> 
-> BTW, for another target, I try to get iproute2-j1939 from your github to compile for a 3.8 kernel, and the branches j1939-vX.X disappear. I found only the master branch. Is it normal?
-No.
-I see all branches, but that are not as many as branches in the kernel.
-The iproute2 of a newer version is usable on older versions.
-
-Kurt
+SGkgS3VydCwNCg0KIkRpZCB5b3UgZm9sbG93IHRoZSBzdGVwcyB0aGF0IEkgZXhwbGFpbmVkIG9u
+IGh0dHA6Ly9lbGludXgub3JnI0oxOTM5PyINClllcywgSSBmb2xsb3cgeW91ciBleHBsYW5hdGlv
+bnMgb24gaHR0cDovL2VsaW51eC5vcmcjSjE5MzkNCkknbSBvbiBhIHYzLjEwcjAsIGJ1dCBJIGRv
+bid0IHRoaW5rIHRoYXQncyB0aGUgcjAgY2hhbmdlIHRoZSBrZXJuZWwgYSBsb3QuDQpJIHdpbGwg
+dHJ5IGl0IGFnYWluLg0KDQoiWW91IGNhbiB1c2UgZ2l0IHRvIHNob3cgdGhlIGRpZmYgYmV0d2Vl
+biB2My4xMCBhbmQgajE5MzktdjMuMTAiDQpPSy4NCg0KIkkgc2VlIGFsbCBicmFuY2hlcywgYnV0
+IHRoYXQgYXJlIG5vdCBhcyBtYW55IGFzIGJyYW5jaGVzIGluIHRoZSBrZXJuZWwuIg0KT0ssIEkg
+d2lsbCB0cnkgaXQgYWdhaW4uDQoNClJlZ2FyZHMsDQoNClBhc2NhbA0KDQoNCi0tLS0tTWVzc2Fn
+ZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2
+YW5kaWpjay1sYXVyaWpzc2VuLmJlXSANCkVudm95w6nCoDogamV1ZGkgMTAgc2VwdGVtYnJlIDIw
+MTUgMTM6MzQNCsOAwqA6IEZJRlJFIFBhc2NhbCBFeHQgSU1UL09MUFMNCkNjwqA6IGxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmcNCk9iamV0wqA6IFJlOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0KDQoN
+Cj4gRGF0ZTogVGh1LCAxMCBTZXAgMjAxNSAwOTo1NjowNiArMDAwMA0KPiANCj4gSGkgS3VydCwN
+Cj4gDQo+IEkgdHJpZWQgdG8gcGF0Y2ggbXkgS2VybmVsICgzLjEwcjApIHdpdGggdGhlIGoxOTM5
+LXYzLjEwIGFuZCBsb3Qgb2YgY29uZmxpY3RzIGFwcGVhcnMgYWdhaW4uDQoNCkRpZCB5b3UgZm9s
+bG93IHRoZSBzdGVwcyB0aGF0IEkgZXhwbGFpbmVkIG9uIGh0dHA6Ly9lbGludXgub3JnI0oxOTM5
+Pw0KSXQgc2hvdWxkIHdvcmssIHVubGVzcyB5b3UgYXJlIG5vdCBvbiBhIHYzLjEwIGJyYW5jaCBv
+ZiB5b3VyIHJlcG9zaXRvcnkuDQoNCj4gSSBub3RpY2VkIHRoYXQgSSBoYXZlIGFsc28gY29uZmxp
+Y3RzIHdpdGggdGhlIGRvY3VtZW50YXRpb24gcmVwb3NpdG9yeSBpbiBrZXJuZWwuIEl0IHNlZW1z
+IHRvIGJlIHN0cmFuZ2UsIG5vPw0KPiANCj4gSWYgSSBqdXN0IHdhbnQgdG8gYWRkIGoxOTM5IHN0
+YWNrLCBjYW4gSSB0cnkgdGhpczoNCj4gMSkgQWRkIGoxOTM5IHJlcG9zaXRvcnkgZnJvbSB5b3Vy
+IGdpdCBzb3VyY2VzIGluIDxsaW51eCBrZXJuZWw+L25ldC9jYW4vajE5MzkNCj4gMikgTW9maWR5
+IEtjb25maWcgYW5kIE1ha2VmaWxlIGluIG5ldC9jYW4gdG8gYWRkIGoxOTM5DQo+IDMpIFB1dCB0
+aGUgY2FuLmggZnJvbSB5b3VyIGZyb20geW91ciBnaXQgc291cmNlcyBpbiA8bGludXgga2VybmVs
+Pi9pbmNsdWRlL2xpbnV4L2Nhbi5oDQo+IDQpIE1vZGlmaXlpbmcgYWZfY2FuLmMgdG8gOg0KPiAJ
+YSkgYWRkIHRoZXNlIGZ1bmN0aW9ucyA6IGNhbl9ydGxfZG9pdCwgY2FuX3J0bmxfZHVtcGl0LCBj
+YW5fcnRsbl9kdW1wX2FkZHIsIGNhbl9nZXRfbGlua19hZl9zaXplLCBjYW5fZmlsbF9saW5rX2Fm
+LCBjYW5fdmFsaWRhdGVfbGlua19hZiwgY2FuX3NldF9saW5rX2FmDQo+IAliKSBhZGQgdGhlc2Ug
+c3RydWN0dXJlIDogY2FuX3J0bmwtYWZfb3BzDQo+IAljKSBNb2RpZnkgaW5pdF9jYW4gdG8gY2Fs
+bCBydGwgZnVuY3Rpb25zDQo+IDUpIE1ha2UgYSBwYXRjaCBmb3IgWW9jdG8gd2l0aCB0aGVzZQ0K
+DQpZb3UgY2FuIHVzZSBnaXQgdG8gc2hvdyB0aGUgZGlmZiBiZXR3ZWVuIHYzLjEwIGFuZCBqMTkz
+OS12My4xMC4NCg0KPiANCj4gV2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgdGhpcz8NCj4gDQo+IEJU
+VywgZm9yIGFub3RoZXIgdGFyZ2V0LCBJIHRyeSB0byBnZXQgaXByb3V0ZTItajE5MzkgZnJvbSB5
+b3VyIGdpdGh1YiB0byBjb21waWxlIGZvciBhIDMuOCBrZXJuZWwsIGFuZCB0aGUgYnJhbmNoZXMg
+ajE5MzktdlguWCBkaXNhcHBlYXIuIEkgZm91bmQgb25seSB0aGUgbWFzdGVyIGJyYW5jaC4gSXMg
+aXQgbm9ybWFsPw0KTm8uDQpJIHNlZSBhbGwgYnJhbmNoZXMsIGJ1dCB0aGF0IGFyZSBub3QgYXMg
+bWFueSBhcyBicmFuY2hlcyBpbiB0aGUga2VybmVsLg0KVGhlIGlwcm91dGUyIG9mIGEgbmV3ZXIg
+dmVyc2lvbiBpcyB1c2FibGUgb24gb2xkZXIgdmVyc2lvbnMuDQoNCkt1cnQNCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCgpD
+ZSBtZXNzYWdlIGV0IHNlcyBwaWVjZXMgam9pbnRlcyBwZXV2ZW50IGNvbnRlbmlyIGRlcyBpbmZv
+cm1hdGlvbnMgY29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50IGRv
+bmMKcGFzIGV0cmUgZGlmZnVzZXMsIGV4cGxvaXRlcyBvdSBjb3BpZXMgc2FucyBhdXRvcmlzYXRp
+b24uIFNpIHZvdXMgYXZleiByZWN1IGNlIG1lc3NhZ2UgcGFyIGVycmV1ciwgdmV1aWxsZXogbGUg
+c2lnbmFsZXIKYSBsJ2V4cGVkaXRldXIgZXQgbGUgZGV0cnVpcmUgYWluc2kgcXVlIGxlcyBwaWVj
+ZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0cm9uaXF1ZXMgZXRhbnQgc3VzY2VwdGlibGVz
+IGQnYWx0ZXJhdGlvbiwKT3JhbmdlIGRlY2xpbmUgdG91dGUgcmVzcG9uc2FiaWxpdGUgc2kgY2Ug
+bWVzc2FnZSBhIGV0ZSBhbHRlcmUsIGRlZm9ybWUgb3UgZmFsc2lmaWUuIE1lcmNpLgoKVGhpcyBt
+ZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHBy
+aXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsKdGhleSBz
+aG91bGQgbm90IGJlIGRpc3RyaWJ1dGVkLCB1c2VkIG9yIGNvcGllZCB3aXRob3V0IGF1dGhvcmlz
+YXRpb24uCklmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZW1haWwgaW4gZXJyb3IsIHBsZWFzZSBu
+b3RpZnkgdGhlIHNlbmRlciBhbmQgZGVsZXRlIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1l
+bnRzLgpBcyBlbWFpbHMgbWF5IGJlIGFsdGVyZWQsIE9yYW5nZSBpcyBub3QgbGlhYmxlIGZvciBt
+ZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBtb2RpZmllZCwgY2hhbmdlZCBvciBmYWxzaWZpZWQuClRo
+YW5rIHlvdS4KCg==
