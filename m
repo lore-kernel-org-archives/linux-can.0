@@ -1,11 +1,8 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Thu, 10 Sep 2015 15:32:04 +0000
-Message-ID: <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
-References: <20141212110743.GC10796@vandijck-laurijssen.be>
- <20141215093136.GA646@vandijck-laurijssen.be>
- <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
- <20150519084626.GC1088@vandijck-laurijssen.be>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 + iMX6 + yocto
+Date: Fri, 11 Sep 2015 05:49:36 +0200
+Message-ID: <20150911034936.GA23393@airbook.vandijck-laurijssen.be>
+References: <20150519084626.GC1088@vandijck-laurijssen.be>
  <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
  <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
  <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
@@ -14,58 +11,62 @@ References: <20141212110743.GC10796@vandijck-laurijssen.be>
  <20150910113419.GA13189@airbook.eia.lan>
  <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
  <55F185FF.3030400@pengutronix.de>
+ <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias92.francetelecom.com ([193.251.215.92]:45945 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751323AbbIJPcM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 11:32:12 -0400
-In-Reply-To: <55F185FF.3030400@pengutronix.de>
-Content-Language: fr-FR
+Received: from relaygateway02.edpnet.net ([212.71.1.211]:53048 "EHLO
+	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751007AbbIKDtm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2015 23:49:42 -0400
+Content-Disposition: inline
+In-Reply-To: <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: pfifre.ext@orange.com
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SW4gZmFjdCBpcyBhIDMuMTAtcjAgYW5kIG5vdCAzLjEwcjAuDQpCdXQgeW91IGFyZSByaWdodCA6
-IGl0J3Mgbm90IGFuIG9mZmljaWFsIHJlbGVhc2UuDQoNClllcywgSSB0aGluayBzbyA6IEkgd2ls
-bCB0YWxrIHdpdGggbXkgcHJvdmlkZXIuDQoNCkkgdHJ5IGFsc28gYW5vdGhlciB3YXkgOiANCjEp
-IGdldCBhbiBvZmZpY2lhbCByZWxlYXNlIG9mIDMuMTANCjIpIG1ha2UgYSBwYXRjaCB3aXRoICB0
-aGUgajE5MzkgcmVsZWFzZQ0KMykgdHJ5IHRvIGFwcGx5IHRoZSBwYXRjaCB0byBteSBrZXJuZWwg
-YW5kIHNlZQ0KDQoNClJlZ2FyZHMsDQoNClBhc2NhbA0KDQogDQoNCi0tLS0tTWVzc2FnZSBkJ29y
-aWdpbmUtLS0tLQ0KRGXCoDogTWFyYyBLbGVpbmUtQnVkZGUgW21haWx0bzpta2xAcGVuZ3V0cm9u
-aXguZGVdIA0KRW52b3nDqcKgOiBqZXVkaSAxMCBzZXB0ZW1icmUgMjAxNSAxNTozMQ0Kw4DCoDog
-RklGUkUgUGFzY2FsIEV4dCBJTVQvT0xQUzsgS3VydCBWYW4gRGlqY2sNCkNjwqA6IGxpbnV4LWNh
-bkB2Z2VyLmtlcm5lbC5vcmcNCk9iamV0wqA6IFJlOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0KDQpP
-biAwOS8xMC8yMDE1IDAzOjE4IFBNLCBwZmlmcmUuZXh0QG9yYW5nZS5jb20gd3JvdGU6DQo+ICJE
-aWQgeW91IGZvbGxvdyB0aGUgc3RlcHMgdGhhdCBJIGV4cGxhaW5lZCBvbiBodHRwOi8vZWxpbnV4
-Lm9yZyNKMTkzOT8iDQo+IFllcywgSSBmb2xsb3cgeW91ciBleHBsYW5hdGlvbnMgb24gaHR0cDov
-L2VsaW51eC5vcmcjSjE5MzkgSSdtIG9uIGEgDQo+IHYzLjEwcjAsIGJ1dCBJIGRvbid0IHRoaW5r
-IHRoYXQncyB0aGUgcjAgY2hhbmdlIHRoZSBrZXJuZWwgYSBsb3QuDQo+IEkgd2lsbCB0cnkgaXQg
-YWdhaW4uDQoNCldoYXQncyBhIHYzLjEwcjA/IFRoZXJlIGlzIG5vIG9mZmljaWFsICJyMCIgS2Vy
-bmVsIHJlbGVhc2UuIFlvdXIga2VybmVsIHZlbmRvciBtYXkgcHJvYmFibHkgaGVscCB5b3Ugd2l0
-aCB0aGlzLg0KDQpNYXJjDQoNCi0tIA0KUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAg
-IHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVzdHJpYWwgTGludXggU29sdXRp
-b25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQpWZXJ0cmV0dW5nIFdl
-c3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KQW10
-c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5k
-ZSAgIHwNCg0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBqb2ludGVzIHBldXZl
-bnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmlsZWdp
-ZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVzIG91IGNv
-cGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2FnZSBwYXIg
-ZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwnZXhwZWRpdGV1ciBldCBsZSBkZXRydWly
-ZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgbWVzc2FnZXMgZWxlY3Ryb25pcXVl
-cyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVjbGluZSB0b3V0ZSBy
-ZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVmb3JtZSBvdSBmYWxz
-aWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cyBtYXkgY29udGFp
-biBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0IG1heSBiZSBwcm90
-ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQgb3IgY29w
-aWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFp
-bCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNz
-YWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwgT3Jhbmdl
-IGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFu
-Z2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
+> In fact is a 3.10-r0 and not 3.10r0.
+> But you are right : it's not an official release.
+> 
+
+git diff v3.10.. --stat -- net/can/ include/linux/can include/uapi/linux/can.h include/uapi/linux/can
+
+yielded this to my side, after applying j1939 and everything.
+
+ include/linux/can/core.h       |   31 +
+ include/linux/can/dev.h        |    2 +
+ include/uapi/linux/can.h       |   20 +-
+ include/uapi/linux/can/Kbuild  |    1 +
+ include/uapi/linux/can/j1939.h |   99 +++
+ net/can/Kconfig                |    2 +
+ net/can/Makefile               |    2 +
+ net/can/af_can.c               |  213 +++++-
+ net/can/bcm.c                  |    4 +-
+ net/can/j1939/Kconfig          |   22 +
+ net/can/j1939/Makefile         |   14 +
+ net/can/j1939/address-claim.c  |  227 +++++++
+ net/can/j1939/bus.c            |  516 ++++++++++++++
+ net/can/j1939/filter.c         |   76 +++
+ net/can/j1939/j1939-priv.h     |  314 +++++++++
+ net/can/j1939/main.c           |  463 +++++++++++++
+ net/can/j1939/proc.c           |   81 +++
+ net/can/j1939/promisc.c        |   43 ++
+ net/can/j1939/rtnl.c           |  306 +++++++++
+ net/can/j1939/socket.c         |  984 +++++++++++++++++++++++++++
+ net/can/j1939/transport.c      | 1449 ++++++++++++++++++++++++++++++++++++++++
+ net/can/raw.c                  |    4 +-
+ 22 files changed, 4867 insertions(+), 6 deletions(-)
+
+What does your v3.10-r0, before applying j1939?
+
+> Yes, I think so : I will talk with my provider.
+> 
+> I try also another way : 
+> 1) get an official release of 3.10
+> 2) make a patch with  the j1939 release
+> 3) try to apply the patch to my kernel and see
+
+Sounds like a good plan to try!
+
+Kurt
