@@ -1,89 +1,51 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Fri, 11 Sep 2015 06:46:14 +0000
-Message-ID: <18444_1441953980_55F278BC_18444_4440_1_834eb28f-a47f-4f8b-9033-cc97f68e2f45@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
-References: <20150519084626.GC1088@vandijck-laurijssen.be>
- <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
- <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908075800.GA864@airbook.eia.lan>
- <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
- <20150910113419.GA13189@airbook.eia.lan>
- <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
- <55F185FF.3030400@pengutronix.de>
- <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
- <20150911034936.GA23393@airbook.vandijck-laurijssen.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Subject: [PATCH v4 0/2] can: Allwinner A10/A20 CAN Controller support - summary
+Date: Fri, 11 Sep 2015 11:26:08 +0200
+Message-ID: <1441963570-17930-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias244.francetelecom.com ([80.12.204.244]:52457 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751454AbbIKGqW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Sep 2015 02:46:22 -0400
-In-Reply-To: <20150911034936.GA23393@airbook.vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from mail.rdts.de ([195.243.153.28]:36603 "EHLO mail.rdts.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751986AbbIKJ0Y (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 11 Sep 2015 05:26:24 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-SGkgS3VydCwNCg0KTXkga2VybmVsIGlzIGEgcGFydCBvZiB0aGUgWW9jdG8gZ2VuZXJhdGlvbi4N
-CkluIGZhY3QsIEkgdHJpZWQgdG8gcGF0Y2ggdGhlIDx5b2N0bz4vdG1wL3dvcmsvZ2l0LyByZXBv
-c2l0b3J5IGJlY2F1c2UgdGhlIGtlcm5lbCBpcyBoZXJlLg0KUGVyaGFwcywgaXQgd2FzIGEgYmFk
-IGlkZWEuIFdoYXQgZG8geW91IHRoaW5rIGFib3V0IHRoYXQ/DQoNClllc3RlcmRheSwgSSBkb3du
-bG9hZGVkIGEgdmVyc2lvbiBhbiBvZmZpY2lhbCBrZXJuZWwgcmVsZWFzZSBhbmQgYXBwbGllZCB0
-aGUgajE5MzkgcGF0Y2guDQpJIGhhZCB0aGUgc2FtZSByZXN1bHRzIGFzIHlvdSAoYmVsb3cpLg0K
-SSB0aGluayBJJ20gb24gdGhlIGdvb2Qgcm9hZC4NCg0KVGhhbmtzIEt1cnQgIQ0KDQpSZWdhcmRz
-LA0KDQpQYXNjYWwNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBLdXJ0IFZh
-biBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdIA0KRW52b3nD
-qcKgOiB2ZW5kcmVkaSAxMSBzZXB0ZW1icmUgMjAxNSAwNTo1MA0Kw4DCoDogRklGUkUgUGFzY2Fs
-IEV4dCBJTVQvT0xQUw0KQ2PCoDogTWFyYyBLbGVpbmUtQnVkZGU7IGxpbnV4LWNhbkB2Z2VyLmtl
-cm5lbC5vcmcNCk9iamV0wqA6IFJlOiBKMTkzOSArIGlNWDYgKyB5b2N0bw0KDQo+IEluIGZhY3Qg
-aXMgYSAzLjEwLXIwIGFuZCBub3QgMy4xMHIwLg0KPiBCdXQgeW91IGFyZSByaWdodCA6IGl0J3Mg
-bm90IGFuIG9mZmljaWFsIHJlbGVhc2UuDQo+IA0KDQpnaXQgZGlmZiB2My4xMC4uIC0tc3RhdCAt
-LSBuZXQvY2FuLyBpbmNsdWRlL2xpbnV4L2NhbiBpbmNsdWRlL3VhcGkvbGludXgvY2FuLmggaW5j
-bHVkZS91YXBpL2xpbnV4L2Nhbg0KDQp5aWVsZGVkIHRoaXMgdG8gbXkgc2lkZSwgYWZ0ZXIgYXBw
-bHlpbmcgajE5MzkgYW5kIGV2ZXJ5dGhpbmcuDQoNCiBpbmNsdWRlL2xpbnV4L2Nhbi9jb3JlLmgg
-ICAgICAgfCAgIDMxICsNCiBpbmNsdWRlL2xpbnV4L2Nhbi9kZXYuaCAgICAgICAgfCAgICAyICsN
-CiBpbmNsdWRlL3VhcGkvbGludXgvY2FuLmggICAgICAgfCAgIDIwICstDQogaW5jbHVkZS91YXBp
-L2xpbnV4L2Nhbi9LYnVpbGQgIHwgICAgMSArDQogaW5jbHVkZS91YXBpL2xpbnV4L2Nhbi9qMTkz
-OS5oIHwgICA5OSArKysNCiBuZXQvY2FuL0tjb25maWcgICAgICAgICAgICAgICAgfCAgICAyICsN
-CiBuZXQvY2FuL01ha2VmaWxlICAgICAgICAgICAgICAgfCAgICAyICsNCiBuZXQvY2FuL2FmX2Nh
-bi5jICAgICAgICAgICAgICAgfCAgMjEzICsrKysrLQ0KIG5ldC9jYW4vYmNtLmMgICAgICAgICAg
-ICAgICAgICB8ICAgIDQgKy0NCiBuZXQvY2FuL2oxOTM5L0tjb25maWcgICAgICAgICAgfCAgIDIy
-ICsNCiBuZXQvY2FuL2oxOTM5L01ha2VmaWxlICAgICAgICAgfCAgIDE0ICsNCiBuZXQvY2FuL2ox
-OTM5L2FkZHJlc3MtY2xhaW0uYyAgfCAgMjI3ICsrKysrKysNCiBuZXQvY2FuL2oxOTM5L2J1cy5j
-ICAgICAgICAgICAgfCAgNTE2ICsrKysrKysrKysrKysrDQogbmV0L2Nhbi9qMTkzOS9maWx0ZXIu
-YyAgICAgICAgIHwgICA3NiArKysNCiBuZXQvY2FuL2oxOTM5L2oxOTM5LXByaXYuaCAgICAgfCAg
-MzE0ICsrKysrKysrKw0KIG5ldC9jYW4vajE5MzkvbWFpbi5jICAgICAgICAgICB8ICA0NjMgKysr
-KysrKysrKysrKw0KIG5ldC9jYW4vajE5MzkvcHJvYy5jICAgICAgICAgICB8ICAgODEgKysrDQog
-bmV0L2Nhbi9qMTkzOS9wcm9taXNjLmMgICAgICAgIHwgICA0MyArKw0KIG5ldC9jYW4vajE5Mzkv
-cnRubC5jICAgICAgICAgICB8ICAzMDYgKysrKysrKysrDQogbmV0L2Nhbi9qMTkzOS9zb2NrZXQu
-YyAgICAgICAgIHwgIDk4NCArKysrKysrKysrKysrKysrKysrKysrKysrKysNCiBuZXQvY2FuL2ox
-OTM5L3RyYW5zcG9ydC5jICAgICAgfCAxNDQ5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysNCiBuZXQvY2FuL3Jhdy5jICAgICAgICAgICAgICAgICAgfCAgICA0ICstDQog
-MjIgZmlsZXMgY2hhbmdlZCwgNDg2NyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KDQpX
-aGF0IGRvZXMgeW91ciB2My4xMC1yMCwgYmVmb3JlIGFwcGx5aW5nIGoxOTM5Pw0KDQo+IFllcywg
-SSB0aGluayBzbyA6IEkgd2lsbCB0YWxrIHdpdGggbXkgcHJvdmlkZXIuDQo+IA0KPiBJIHRyeSBh
-bHNvIGFub3RoZXIgd2F5IDogDQo+IDEpIGdldCBhbiBvZmZpY2lhbCByZWxlYXNlIG9mIDMuMTAN
-Cj4gMikgbWFrZSBhIHBhdGNoIHdpdGggIHRoZSBqMTkzOSByZWxlYXNlDQo+IDMpIHRyeSB0byBh
-cHBseSB0aGUgcGF0Y2ggdG8gbXkga2VybmVsIGFuZCBzZWUNCg0KU291bmRzIGxpa2UgYSBnb29k
-IHBsYW4gdG8gdHJ5IQ0KDQpLdXJ0DQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2Vz
-IGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxl
-cyBvdSBwcml2aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBl
-eHBsb2l0ZXMgb3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBj
-ZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVy
-IGV0IGxlIGRldHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdl
-cyBlbGVjdHJvbmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBk
-ZWNsaW5lIHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBk
-ZWZvcm1lIG91IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1l
-bnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRo
-YXQgbWF5IGJlIHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRl
-ZCwgdXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNl
-aXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRl
-bGV0ZSB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBh
-bHRlcmVkLCBPcmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4g
-bW9kaWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
+Hi,
+
+please find attached the next try. Thanks to Marc; AFAICR I have
+worked on all mentioned issues.
+
+[PATCH v4 1/2] Device Tree Binding Documentation
+[PATCH v4 2/2] Kernel Module
+
+History:
+    v4: defines prefixed with SUNXI_
+        sunxi_can_write_cmdreg tweaked
+	loops in set_xxx_mode reworked
+	add return value to set_xxx_mode
+	sunxican_start_xmit reworked
+	struct platform_driver stripped
+	moved set_bittiming into open
+	moved clock start into open
+	add clock stop to close
+        suspend reworked
+        resume reworked
+        fixed double counting bug
+
+    v3: changed error state change handling (thx Andri for the hint)
+        use bittiming function correct (no need to call it)
+        strip down priv (suggested by Marc)
+        scripts/checkpatch.pl-> no matches anymore
+        sparse -> no errors or warnings anymore
+    v2: cleaning
+    v1: initial
+
+Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+---
+ .../devicetree/bindings/net/can/sunx_can.txt       |  40 +
+ drivers/net/can/Kconfig                            |  10 +
+ drivers/net/can/Makefile                           |   1 +
+ drivers/net/can/sunxi_can.c                        | 867 +++++++++++++++++++++
+ 4 files changed, 918 insertions(+)
