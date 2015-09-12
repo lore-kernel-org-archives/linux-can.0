@@ -1,70 +1,131 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Fri, 11 Sep 2015 09:53:37 +0000
-Message-ID: <5404_1441965221_55F2A4A4_5404_2_1_400d8d5c-479e-421c-bbdb-1c16f5da7674@OPEXCLILM24.corporate.adroot.infra.ftgroup>
-References: <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
- <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908075800.GA864@airbook.eia.lan>
- <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
- <20150910113419.GA13189@airbook.eia.lan>
- <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
- <55F185FF.3030400@pengutronix.de>
- <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
- <20150911034936.GA23393@airbook.vandijck-laurijssen.be>
- <18444_1441953980_55F278BC_18444_4440_1_834eb28f-a47f-4f8b-9033-cc97f68e2f45@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
- <20150911094815.GB24037@airbook.eia.lan>
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: Testing CAN on Allwinner A20 / Banana Pi
+Date: Sat, 12 Sep 2015 10:51:44 +0200
+Message-ID: <55F3E7A0.9020309@posteo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050604080807060401040208"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias91.francetelecom.com ([193.251.215.91]:23099 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751296AbbIKJxn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Sep 2015 05:53:43 -0400
-In-Reply-To: <20150911094815.GB24037@airbook.eia.lan>
-Content-Language: fr-FR
+Received: from mout01.posteo.de ([185.67.36.65]:36684 "EHLO mout01.posteo.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751478AbbILIvs (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 12 Sep 2015 04:51:48 -0400
+Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
+	by mout01.posteo.de (Postfix) with ESMTPS id 0BD4520AEB
+	for <linux-can@vger.kernel.org>; Sat, 12 Sep 2015 10:51:44 +0200 (CEST)
+Received: from mail.posteo.de (localhost [127.0.0.1])
+	by dovecot03.posteo.de (Postfix) with ESMTPSA id 3nCnkS5ZS7z5vNK
+	for <linux-can@vger.kernel.org>; Sat, 12 Sep 2015 10:51:44 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-SGkgS3VydCwNCg0KSSBoYXZlIHNvbWUgZ29vZCBuZXdzOiANCkkndmUgY3JlYXRlZCBhIHBhdGNo
-IGZvciBqMTkzOS50eHQgYW5kIGFwcGx5IHRvIG15IHlvY3RvIGtlcm5lbCAodGhlbiBhIG1lcmdl
-IHdpdGggeW91ciBtb2RpZmljYXRpb25zKS4NCkkgdHJ5LCBub3csIHRvIG1ha2UgYSBiYmFwcGVu
-ZCBhbmQgYSByZWNpcGUgdG8gcGF0Y2ggdGhlIGtlcm5lbCB3aXRoIHlvY3RvLg0KDQpJIHdpbGwg
-a2VlcCB5b3UgaW5mb3JtZWQgdG8gb2YgbXkgcHJvZ3Jlc3MNCg0KUmVnYXJkcywNCg0KUGFzY2Fs
-DQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDogS3VydCBWYW4gRGlqY2sgW21h
-aWx0bzpkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXSANCkVudm95w6nCoDogdmVuZHJl
-ZGkgMTEgc2VwdGVtYnJlIDIwMTUgMTE6NDgNCsOAwqA6IEZJRlJFIFBhc2NhbCBFeHQgSU1UL09M
-UFMNCkNjwqA6IE1hcmMgS2xlaW5lLUJ1ZGRlOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpP
-YmpldMKgOiBSZTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KPiBNeSBrZXJuZWwgaXMgYSBwYXJ0
-IG9mIHRoZSBZb2N0byBnZW5lcmF0aW9uLg0KDQpCZWNhdXNlIHdlIGhhdmUgb3VyIG93biBib2Fy
-ZCwgd2UgbmV2ZXIgYWN0dWFsbHkgdXNlZCB0aGUga2VybmVsIGZyb20gWW9jdG8sIGluc3RlYWQg
-d2UgdG9sZCB5b2N0byB0byB1c2Ugb3VyIG93biBrZXJuZWwuDQpJJ3ZlIG5ldmVyIGFjdHVhbGx5
-IHBlcmZvcm1lZCB0aGUgb3BlcmF0aW9uIG9uIHlvY3RvJ3Mga2VybmVsLg0KDQpDYW4geW91IHBy
-b3ZpZGUgdGhlIGdpdCB1cmwgb2YgdGhlIGtlcm5lbCB5b3Ugd2VyZSB1c2luZyAodGhhdCB2My4x
-MC1yMCk/DQpJIGNvdWxkIGdpdmUgaXQgYSB0cnkgdG8gbWVyZ2UgY2FuLWoxOTM5IGludG8gaXQu
-DQoNCj4gSW4gZmFjdCwgSSB0cmllZCB0byBwYXRjaCB0aGUgPHlvY3RvPi90bXAvd29yay9naXQv
-IHJlcG9zaXRvcnkgYmVjYXVzZSB0aGUga2VybmVsIGlzIGhlcmUuDQo+IFBlcmhhcHMsIGl0IHdh
-cyBhIGJhZCBpZGVhLiBXaGF0IGRvIHlvdSB0aGluayBhYm91dCB0aGF0Pw0KDQpBcyB0b2xkIGFi
-b3ZlLCB3ZSB0ZWxsIHlvY3RvIHRvIHVzZSBhIGRpZmZlcmVudCBrZXJuZWwsIGJlY2F1c2UgSSB0
-aGluayB0aGF0IGlzIGVhc2llci4NCg0KT2YgY291cnNlLCBvdXIga2VybmVsIGFsc28gaGFzIGEg
-YnVuY2ggb2YgZnJlZXNjYWxlIGNvbW1pdHMgYXBwbGllZC4NCg0KS3VydA0KCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KCkNl
-IG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBqb2ludGVzIHBldXZlbnQgY29udGVuaXIgZGVzIGluZm9y
-bWF0aW9ucyBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmlsZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9u
-YwpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVzIG91IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlv
-bi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2FnZSBwYXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBz
-aWduYWxlcgphIGwnZXhwZWRpdGV1ciBldCBsZSBkZXRydWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNl
-cyBqb2ludGVzLiBMZXMgbWVzc2FnZXMgZWxlY3Ryb25pcXVlcyBldGFudCBzdXNjZXB0aWJsZXMg
-ZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVjbGluZSB0b3V0ZSByZXNwb25zYWJpbGl0ZSBzaSBjZSBt
-ZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVmb3JtZSBvdSBmYWxzaWZpZS4gTWVyY2kuCgpUaGlzIG1l
-c3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgb3IgcHJp
-dmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3Owp0aGV5IHNo
-b3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNh
-dGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5v
-dGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVu
-dHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1l
-c3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4KVGhh
-bmsgeW91LgoK
+This is a cryptographically signed message in MIME format.
+
+--------------ms050604080807060401040208
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I'm new to socketcan and like to test the recent driver for the
+Allwinner A20 on a BPi.
+
+I've got a BPi running CAN4Linux and like to setup a second BPi running
+socketcan.
+
+I have some basic questions prior to get started with the project:
+
+1.
+Which kernel version is necessary for the current socketcan?
+I use the standard linux-sunxi kernel from the repos as this worked well
+with CAN4Linux.
+https://github.com/linux-sunxi/linux-sunxi.git
+
+2.
+I haven't been able to locate the recent driver on the repos.
+https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/
+https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can.git/
+
+Did I miss something, because none of the related commits I see in the
+mailing list are present in the repo?
+
+Thanks and Best Regards,
+Patrick Menschel
+
+
+--------------ms050604080807060401040208
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
+CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
+dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
+MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
+TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
+TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
++FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
+ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
+vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
+ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
+4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
+BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
+Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
+ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
+4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
+26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
+9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
+tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAgXWYtApfLyFhHovG0eoOwTANBgkq
+hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
+cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
+BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
+YWlsIENBMB4XDTE1MDYwNjAwMDAwMFoXDTE2MDYwNTIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
+ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQCmXKd7KFXQ5Y1lT+HtgiumuCHTLdaZJEmv9CVr2CuRZYieupiipE7kyqjfmrml8GqqZ8aN
+jT416/fN4OGolBcNQAk6qah/yesqdhMMKi4VcgY9Npyy86NQU5mXYpu2UTnQw4pSCgUR4Co4
+zXHFDwZ3gHcwoVG+osRmEe9IrjYWGQaCWhjEe+wtipPy6UxuqbKhTYPUUnFYuCLxgibGFb2e
+vShPK636V+EIgAug0IzmlLXxFoA4Mh/80NXzaNQA4zAP0sZ84/JKwEUE34a9rSHB1CoHH9fZ
+QeuxCsa9BVG/jaZmlv/RsDLjlTxoYki5Xvskbmzbm1rTWqyMOJwJH7jxAgMBAAGjggHyMIIB
+7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUePDBZrYdfsBv
+BjAwsKanMPGoUpEwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
+KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
+DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
+L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
+SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
+BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
+U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
+BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
+cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQA33XFpLPRq8YL327tL4WY5ln2z8hjYTdgz
+uVGTtUU7fLcLVWlCwHU/ki29PjbVja73aXmgJU1d7ISnXcxXa1BRLgcFs8MjZzf8zqPzYXwb
+VM5Z7J04deNlqz4CoGY2KSLIAArFbPIyX+Ry6t31xpo215D9IZNaloewSpYuj9g1qrH0LafH
+YG88MeCF3Ilf8Ca7t16AtyVAd96kDuWET61QpIxfBJasv5IspDw9QXD8ajWgimQI+QTjGDMI
+IV8Jj+1XbrW0EPKJpfrBuHHYAtVMrdJ7N6Ykjokam2F6oYhZNbG8YflootIHC/WV7o5OAllx
+9IaJwAZaj9PBugpENM9SMYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
+YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJYIZIAWUD
+BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE1
+MDkxMjA4NTE0NFowLwYJKoZIhvcNAQkEMSIEIFC+pvhSPeN2S3ItuPeQjqEXOActpjThX8X2
+zAu4XEH1MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
+hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
+EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
+IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
+dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAgXWYtApfLyFhHovG0eoOwTCBxAYLKoZIhvcN
+AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
+ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
+VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJKoZIhvcNAQEBBQAEggEAiMKe+2lKcb4m
+v4VkETQcUzSso8B86EsKOIF0Hh97gYUzuNqX3DdtOOrrmurBDBf0VRWVI7aKuFkk2yMgJ7n4
+CtQHuq2OTZ+PHGPanpg+EdqER06KoCAkWo12VKsuUEuDh4vKQrIFu2Fj14lO3Y4RL9wYjTBe
+jFLKHYLMAy5u+ELb0a+91Mzly+I+hFbGyxmQKo5uXE5TN+gpn5FuhVOsvgOslfKGhjaZ7Ylh
+7j1IeDp/hf2xTbUIxuz1cT8bVbANf9hLxGSMi5IkLFSQky7gIUOpAvop4zcwoDhBmoRobrf2
+WxRPgjjSt1wCVX1gGf+FuC7R13iVtAeM9coI9FGcgQAAAAAAAA==
+--------------ms050604080807060401040208--
