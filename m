@@ -1,16 +1,17 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v5 0/2] can: Allwinner A10/A20 CAN
- Controller support - summary
-Date: Sun, 13 Sep 2015 14:22:27 +0200
-Message-ID: <20150913122227.GQ9885@lukather>
+Subject: Re: [PATCH v5 1/2] can: Allwinner A10/A20 CAN
+ Controller support - Devicetree bindings
+Date: Sun, 13 Sep 2015 14:25:51 +0200
+Message-ID: <20150913122551.GR9885@lukather>
 References: <1442144632-4541-1-git-send-email-info@gerhard-bertelsmann.de>
+ <1442144632-4541-2-git-send-email-info@gerhard-bertelsmann.de>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L0TNCHh3fkwjpuuE"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBD6V2WXQKGQEE2EP2FY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="JB7KW7Ey7eB5HOHs"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBXGW2WXQKGQEPNXPKFA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1442144632-4541-1-git-send-email-info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>
+In-Reply-To: <1442144632-4541-2-git-send-email-info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>
 List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <http://groups.google.com/group/linux-sunxi
@@ -22,74 +23,50 @@ To: Gerhard Bertelsmann <info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>
 Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
---L0TNCHh3fkwjpuuE
+--JB7KW7Ey7eB5HOHs
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 
-Hi Gerhard,
+Hi,
 
-Thanks for working on this!
+On Sun, Sep 13, 2015 at 01:43:51PM +0200, Gerhard Bertelsmann wrote:
+> Signed-off-by: Gerhard Bertelsmann <info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>
 
-A few questions / remarks though:
+A commit log would be nice.
 
-On Sun, Sep 13, 2015 at 01:43:50PM +0200, Gerhard Bertelsmann wrote:
-> Hi,
+> ---
+>  .../devicetree/bindings/net/can/sunxi_can.txt      |  40 +
+>  1 files changed, 49 insertions(+)
 > 
-> please find attached the next try. Thanks to Marc. I've worked on
-> all mentioned issues except one: I don't add clk_disable_unprepare
-> in sunxi_can_start. Makes no sense to me (driver fails).
-> 
-> For testers:
-> the patch will only apply wihtout modification to kernels 3.19+.
+> diff --git a/Documentation/devicetree/bindings/net/can/sunxi_can.txt b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+> new file mode 100644
+> index 0000000..5db9abc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+> @@ -0,0 +1,40 @@
+> +Allwinner A10/A20 CAN controller Device Tree Bindings
+> +-----------------------------------------------------
+> +
+> +Required properties:
+> +- compatible: "allwinner,sunxican"
 
-Please always make sure to send a patch that have been tested and
-applies at least on top of the latest rc. This would be 4.3-rc1 now.
+The compatible should be made using the earliest SoC using this IP. In
+our case, that would be the A10.
 
-> I've tested the driver (receipt, sending and basic errors). IMHO
-> everything is fine. The performance seems to be good - high rates
-> (>5000 packets/second) working fine.
-> 
-> Please test and report bugs if exists.
-> 
-> 
-> [PATCH v5 1/2] Device Tree Binding Documentation
-> [PATCH v5 2/2] Kernel Module
-> 
-> History:
->     V5: fix license
->         modify prefix to mode select defines
->         enable and disable clock in sunxican_get_berr_counter
-> 	delete set_normal_mode at the end of sunxi_can_start
-> 	removed sunxican_id_table
-> 	use devm_clk_get instead of clk_get
-> 	use devm_ioremap_resource to simplify probe and remove
-> 	make set-normal-mode and set-reset-mode more readable
->         
->     v4: defines prefixed with SUNXI_
->         sunxi_can_write_cmdreg tweaked
-> 	loops in set_xxx_mode reworked
-> 	add return value to set_xxx_mode
-> 	sunxican_start_xmit reworked
-> 	struct platform_driver stripped
-> 	moved set_bittiming into open
-> 	moved clock start into open
-> 	add clock stop to close
->         suspend reworked
->         resume reworked
->         fixed double counting bug
-> 
->     v3: changed error state change handling (thx Andri for the hint)
->         use bittiming function correct (no need to call it)
->         strip down priv (suggested by Marc)
->         scripts/checkpatch.pl-> no matches anymore
->         sparse -> no errors or warnings anymore
->     v2: cleaning
->     v1: initial
+The format we use is sun4i-a10-<ip>, which would make it sun4i-a10-can
+in this case.
 
-Where were those versions posted ?
+> +- reg: physical base address and size of the Allwinner A10/A20 CAN register map.
+> +- interrupts: interrupt specifier for the sole interrupt.
+> +- clocks: phandle and clock specifier
 
-Make sure to run get_maintainer before sending your patches to mail
-them to the right recipients.
+Which clock?
+
+> +- pinctrl-0: pin control group to be used for this controller.
+> +- pinctrl-names: must be "default".
+
+Those are generic standalone properties. There's no really need to
+mention them.
 
 Thanks!
 Maxime
@@ -98,4 +75,4 @@ Maxime
 Maxime Ripard, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
---L0TNCHh3fkwjpuuE--
+--JB7KW7Ey7eB5HOHs--
