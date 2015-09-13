@@ -1,70 +1,67 @@
 From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-Subject: [PATCH v5 0/2] can: Allwinner A10/A20 CAN Controller support - summary
-Date: Sun, 13 Sep 2015 13:43:50 +0200
-Message-ID: <1442144632-4541-1-git-send-email-info@gerhard-bertelsmann.de>
+Subject: [PATCH v5 1/2] can: Allwinner A10/A20 CAN Controller support - Devicetree bindings
+Date: Sun, 13 Sep 2015 13:43:51 +0200
+Message-ID: <1442144632-4541-2-git-send-email-info@gerhard-bertelsmann.de>
+References: <1442144632-4541-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rdts.de ([195.243.153.28]:49068 "EHLO mail.rdts.de"
+Received: from mail.rdts.de ([195.243.153.28]:49069 "EHLO mail.rdts.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751655AbbIMLoA (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	id S1751516AbbIMLoA (ORCPT <rfc822;linux-can@vger.kernel.org>);
 	Sun, 13 Sep 2015 07:44:00 -0400
+In-Reply-To: <1442144632-4541-1-git-send-email-info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: linux-sunxi@googlegroups.com, mkl@pengutronix.de, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-Hi,
-
-please find attached the next try. Thanks to Marc. I've worked on all mentioned
-issues except one: I don't add clk_disable_unprepare in sunxi_can_start. Makes no
-sense to me (driver fails).
-
-For testers:
-the patch will only apply wihtout modification to kernels 3.19+.
-I've tested the driver (receipt, sending and basic errors). IMHO
-everything is fine. The performance seems to be good - high rates
-(>5000 packets/second) working fine.
-
-Please test and report bugs if exists.
-
-
-[PATCH v5 1/2] Device Tree Binding Documentation
-[PATCH v5 2/2] Kernel Module
-
-History:
-    V5: fix license
-        modify prefix to mode select defines
-        enable and disable clock in sunxican_get_berr_counter
-	delete set_normal_mode at the end of sunxi_can_start
-	removed sunxican_id_table
-	use devm_clk_get instead of clk_get
-	use devm_ioremap_resource to simplify probe and remove
-	make set-normal-mode and set-reset-mode more readable
-        
-    v4: defines prefixed with SUNXI_
-        sunxi_can_write_cmdreg tweaked
-	loops in set_xxx_mode reworked
-	add return value to set_xxx_mode
-	sunxican_start_xmit reworked
-	struct platform_driver stripped
-	moved set_bittiming into open
-	moved clock start into open
-	add clock stop to close
-        suspend reworked
-        resume reworked
-        fixed double counting bug
-
-    v3: changed error state change handling (thx Andri for the hint)
-        use bittiming function correct (no need to call it)
-        strip down priv (suggested by Marc)
-        scripts/checkpatch.pl-> no matches anymore
-        sparse -> no errors or warnings anymore
-    v2: cleaning
-    v1: initial
-
 Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 ---
  .../devicetree/bindings/net/can/sunxi_can.txt      |  40 +
- drivers/net/can/Kconfig                            |  10 +
- drivers/net/can/Makefile                           |   1 +
- drivers/net/can/sunxi_can.c                        | 879 +++++++++++++++++++++
- 4 files changed, 930 insertions(+)
+ 1 files changed, 49 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/sunxi_can.txt b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+new file mode 100644
+index 0000000..5db9abc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/sunxi_can.txt
+@@ -0,0 +1,40 @@
++Allwinner A10/A20 CAN controller Device Tree Bindings
++-----------------------------------------------------
++
++Required properties:
++- compatible: "allwinner,sunxican"
++- reg: physical base address and size of the Allwinner A10/A20 CAN register map.
++- interrupts: interrupt specifier for the sole interrupt.
++- clocks: phandle and clock specifier.
++- pinctrl-0: pin control group to be used for this controller.
++- pinctrl-names: must be "default".
++
++
++Example
++-------
++
++SoC common .dtsi file:
++
++	can0_pins_a: can0@0 {
++		allwinner,pins = "PH20","PH21";
++		allwinner,function = "can";
++		allwinner,drive = <0>;
++		allwinner,pull = <0>;
++	};
++...
++	can0: can@01c2bc00 {
++		compatible = "allwinner,sunxican";
++		reg = <0x01c2bc00 0x400>;
++		interrupts = <0 26 4>;
++		clocks = <&apb1_gates 4>;
++		status = "disabled";
++	};
++
++Board specific .dts file:
++
++	can0: can@01c2bc00 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&can0_pins_a>;
++		status = "okay";
++	};
++
