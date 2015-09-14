@@ -1,15 +1,18 @@
-From: Julian Calaby <julian.calaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 Subject: Re: [PATCH v5 2/2] can: Allwinner A10/A20 CAN
  Controller support - controller code
-Date: Mon, 14 Sep 2015 09:51:57 +1000
-Message-ID: <CAGRGNgU-j2E40Q7PzTfEmhCi8gaRawWvaE6f--+B5V45UXR6nQ@mail.gmail.com>
+Date: Mon, 14 Sep 2015 10:17:03 +0200
+Message-ID: <20150914081703.GB9885@lukather>
 References: <1442144632-4541-1-git-send-email-info@gerhard-bertelsmann.de>
  <1442144632-4541-3-git-send-email-info@gerhard-bertelsmann.de>
- <20150913124501.GS9885@lukather> <f8eea0f544eb6367142bbc1c2ab35964@mail.rdts.de>
-Reply-To: julian.calaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+ <20150913124501.GS9885@lukather>
+ <f8eea0f544eb6367142bbc1c2ab35964@mail.rdts.de>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQIP76OUQLBBMMY3CXQKGQE77WW7GA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EH85xkKza2NXtwkF"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBAMF3KXQKGQE7HPTK6Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
 In-Reply-To: <f8eea0f544eb6367142bbc1c2ab35964-6XUBc1GShDsOIzVOb1FTxg@public.gmane.org>
 List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -18,79 +21,237 @@ Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <http://groups.google.com/group/linux-sunxi/subscribe>
-To: info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Gerhard Bertelsmann <info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Gerd,
+--EH85xkKza2NXtwkF
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-On Sun, Sep 13, 2015 at 11:42 PM, Gerhard Bertelsmann
-<info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org> wrote:
+Hi,
+
+On Sun, Sep 13, 2015 at 03:42:41PM +0200, Gerhard Bertelsmann wrote:
+> >> drivers/net/can/Kconfig                            |  10 +
+> >> drivers/net/can/Makefile                           |   1 +
+> >> drivers/net/can/sunxi_can.c                        | 879
+> >>+++++++++++++++++++++
+> >> 3 files changed, 890 insertions(+)
+> >>
+> >>diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> >>index e8c96b8..439f67c 100644
+> >>--- a/drivers/net/can/Kconfig
+> >>+++ b/drivers/net/can/Kconfig
+> >>@@ -129,6 +129,16 @@ config CAN_RCAR
+> >> 	  To compile this driver as a module, choose M here: the module will
+> >> 	  be called rcar_can.
+> >>
+> >>+config CAN_SUNXI
+> >>+	tristate "Allwinner SUNXI CAN controller"
+> >
+> >It would be better if we could mention that it's a driver for the
+> >sun4i family and derived.
+> 
+> I'm using it on Bpi with A20. AFAIK a SUN7I. Anyway I'm not aware
+> of all Allwinner SoCs. I will change it to any text you want.
+
+CAN_SUN4I and Allwinner A10 CAN controller will do just fine.
+
+Now that I'm thinking of it, can you also enable this driver in the
+sunxi and multi_v7 defconfigs please (in separate patches)?
+
+> >We have no guarantee that there won't be any IP on other sunxi SoCs
+> >incompatible with this one that would need a new driver.
+> 
+> Right. IMHO A10 and A20 are working - maybe Fxx(?).
+
+I was more thinking of the A31, A23, A80 and alike, but yeah, it might
+be true for the F20 too.
+
+> >>+static int sunxican_open(struct net_device *dev)
+> >>+{
+> >>+	int err;
+> >>+
+> >>+	/* common open */
+> >>+	err = open_candev(dev);
+> >>+	if (err)
+> >>+		return err;
+> >>+
+> >>+	/* register interrupt handler */
+> >>+	err = request_irq(dev->irq, sunxi_can_interrupt, IRQF_SHARED,
+> >>+			  dev->name, dev);
+> >>+	if (err) {
+> >>+		netdev_err(dev, "request_irq err: %d\n", err);
+> >>+		close_candev(dev);
+> >>+		return -EAGAIN;
+> >>+	}
+> >>+
+> >>+	sunxi_can_start(dev);
+> >>+
+> >>+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+> >>+
+> >>+	netif_start_queue(dev);
+> >>+
+> >>+	return 0;
+> >>+}
+> >>+
+> >>+static int sunxican_close(struct net_device *dev)
+> >>+{
+> >>+	struct sunxican_priv *priv = netdev_priv(dev);
+> >>+
+> >>+	netif_stop_queue(dev);
+> >>+	set_reset_mode(dev);
+> >>+	clk_disable_unprepare(priv->clk);
+> >
+> >Are you sure you have the right use count on that clock? You're
+> >calling sunxi_can_start from several places, but you call
+> >clk_disable_unprepare only from here.
+> 
+> I will check this (again).
+> 
+> >Even if it does start, it is really confusing. Please move the
+> >clk_prepare_enable in the open function.
+> 
+> That was my first approach. IMHO it's useful to enable/disable
+> according to the state of the CAN interface to save power.
+
+Yes, it makes sense to have the clock enabled/disabled in open/close.
+
+I was just saying that these calls should be balanced, and having the
+clk_prepare_enable in the sunxi_can_start doesn't help that.
+
+> >>+static int __maybe_unused sunxi_can_suspend(struct device *device)
+> >>+{
+> >>+	struct net_device *dev = dev_get_drvdata(device);
+> >>+	struct sunxican_priv *priv = netdev_priv(dev);
+> >>+	u32 mode;
+> >>+	int err;
+> >>+
+> >>+	if (netif_running(dev)) {
+> >>+		netif_stop_queue(dev);
+> >>+		netif_device_detach(dev);
+> >>+	}
+> >>+
+> >>+	err = set_reset_mode(dev);
+> >>+	if (err)
+> >>+		return err;
+> >>+
+> >>+	mode = readl(priv->base + SUNXI_REG_MSEL_ADDR);
+> >>+	writel(mode | SUNXI_MSEL_SLEEP_MODE, priv->base +
+> >>SUNXI_REG_MSEL_ADDR);
+> >>+
+> >>+	priv->can.state = CAN_STATE_SLEEPING;
+> >>+
+> >>+	clk_disable(priv->clk);
+> >>+	return 0;
+> >>+}
+> >>+
+> >>+static int __maybe_unused sunxi_can_resume(struct device *device)
+> >>+{
+> >>+	struct net_device *dev = dev_get_drvdata(device);
+> >>+	struct sunxican_priv *priv = netdev_priv(dev);
+> >>+	u32 mode;
+> >>+	int err;
+> >>+
+> >>+	err = clk_enable(priv->clk);
+> >>+	if (err) {
+> >>+		netdev_err(dev, "clk_enable() failed, error %d\n", err);
+> >>+		return err;
+> >>+	}
+> >>+
+> >>+	err = set_reset_mode(dev);
+> >>+	if (err)
+> >>+		return err;
+> >>+
+> >>+	mode = readl(priv->base + SUNXI_REG_MSEL_ADDR);
+> >>+	writel(mode & ~(SUNXI_MSEL_SLEEP_MODE),
+> >>+	       priv->base + SUNXI_REG_MSEL_ADDR);
+> >>+	err = set_normal_mode(dev);
+> >>+	if (err)
+> >>+		return err;
+> >>+
+> >>+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+> >>+	if (netif_running(dev)) {
+> >>+		netif_device_attach(dev);
+> >>+		netif_start_queue(dev);
+> >>+	}
+> >>+	return 0;
+> >>+}
+> >>+
+> >>+static SIMPLE_DEV_PM_OPS(sunxi_can_pm_ops, sunxi_can_suspend,
+> >>sunxi_can_resume);
+> >
+> >How did you test those hooks? There's no suspend support yet.
+> 
+> I didn't test them.
+
+Then remove them.
+
+> >>+static struct platform_driver sunxi_can_driver = {
+> >>+	.driver = {
+> >>+		.name = DRV_NAME,
+> >>+		.pm = &sunxi_can_pm_ops,
+> >>+		.of_match_table = sunxican_of_match,
+> >>+	},
+> >>+	.probe = sunxican_probe,
+> >>+	.remove = sunxican_remove,
+> >>+};
+> >>+
+> >>+module_platform_driver(sunxi_can_driver);
+> >>+
+> >>+MODULE_AUTHOR("Peter Chen <xingkongcp-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>");
+> >>+MODULE_AUTHOR("Gerhard Bertelsmann <info-La43T0Mi4bH5xCKuJOYmCvaTkwRoYoCU@public.gmane.org>");
+> >>+MODULE_LICENSE("Dual BSD/GPL");
+> >>+MODULE_DESCRIPTION(DRV_NAME "CAN driver for Allwinner SoCs (A10/A20)");
+> >>+MODULE_VERSION(DRV_MODULE_VERSION);
+> >
+> >Is this going to be useful?
+> >
+> >The module version is already redundant with the kernel version, and
+> >there's a good chance it will never reach 1.0.
+> 
+> Will remove the version number.
+> 
 > General remark:
->
-> Somebody asked me to add linux-sunxi dev list. Seems to be not a good idea
-> before the driver was ready. Seems to be hard to fulfill the differentness.
->
+> 
+> Somebody asked me to add linux-sunxi dev list. Seems to be not a
+> good idea before the driver was ready. Seems to be hard to fulfill
+> the differentness.
+> 
 > I will remove linux-sunxi for the next patch set. I will try to get
-> linux-can
-> people satisfied and then I'm done with it. I'm doing this in my spare time,
-> but it seems to get an endless story. I'm not offended in any kind, my spare
-> time is just limited.
->
+> linux-can people satisfied and then I'm done with it. I'm doing this
+> in my spare time, but it seems to get an endless story. I'm not
+> offended in any kind, my spare time is just limited.
+> 
 > The driver is working so far and the patches also apply to 4.3.
 
-You misunderstand, the sunxi people (who's mailing list I follow) are
-the experts on the hardware platform you're writing this driver for.
-If you don't include them and don't solicit their advice, your driver
-may end up doing things which aren't correct for the platform (e.g. it
-might work for you but break something else) and this will seriously
-impact it's chances of getting included in the kernel at some point.
-You also can't get the driver "ready" before asking for their comments
-as what might have been small tweaks to get stuff "right" at the start
-may end up being big changes at the end. (Stitch in time and all
-that.)
+Cc'ing linux-sunxi is great, but it's an orthogonal issue.
 
-Including the linux-sunxi mailing list also means that there's more
-visibility to your efforts, more people looking over the code,
-(potentially) more testers and less duplicated effort as all sunxi
-related stuff is referred to in one place. (Thankfully in your case
-nobody else was working on a CAN bus driver, but there have been cases
-of multiple people independently working on drivers for the same
-hardware and only discovering this late in the development process.)
+Whenever you post a patch, you're supposed to Cc all the maintainers
+listed for the MAINTAINERS file, and the get_maintainers.pl script
+helps you with that.
 
-As an occasional Linux developer, I don't see Maxime's questions as
-being "hard": he makes some good points about your clock handling -
-which is important for power management - and asks a couple of other
-good questions. Those questions and issues are stuff that has to be
-answered to get this driver into the kernel. In particular, the
-question about the interrupt handling was an "explain why you're doing
-this" question not a "this is broken and needs changing" question. And
-as for the changing things only to change them back issue, this is
-likely to be the last time that happens.
+If you use that script on your driver, you'll get:
 
-My reading of his comments indicates that you should check over what
-and how stuff is handled over the "lifetime" of the device /
-connection / socket. I.e. are all your resources "freed" after they're
-no-longer needed? Are you switching off everything you turn on? etc.
-This is the sort of analysis that I'm sure you've done already, but it
-never hurts to do it again. I find issues like this all the time in
-the development I do.
+./scripts/get_maintainer.pl -f drivers/net/can/sunxi_can.c
+Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org> (maintainer:CAN NETWORK DRIVERS)
+Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org> (maintainer:CAN NETWORK DRIVERS)
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> (maintainer:ARM/Allwinner A1X SoC support)
+linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org (open list:CAN NETWORK DRIVERS)
+netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org (open list:NETWORKING DRIVERS)
+linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org (moderated list:ARM/Allwinner A1X SoC support)
+linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org (open list)
 
-Finally, I strongly urge you to stick with the driver at least until
-it's merged. The fact that Maxime only had a few comments indicates
-that you've written a good driver which is a few tweaks away from
-being merged - which is something you should be very proud of. I see
-drivers being submitted that have much more serious issues and that
-prompt much more debate than yours has. (For instance I've seen some
-changes on another mailing list go through 6 full rewrites without
-everyone being happy.)
+All these people are supposed to be reviewing your driver, and while
+Marc will have a look at how your driver interact with the CAN
+framework, I'll have a look at how your driver interact with the rest
+of the code we did for the Allwinner SoCs. We look at different
+aspects, we have different kind of comments.
 
-Excellent work, keep it up.
-
-Thanks,
+Maxime
 
 -- 
-Julian Calaby
-
-Email: julian.calaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Profile: http://www.google.com/profiles/julian.calaby/
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--EH85xkKza2NXtwkF--
