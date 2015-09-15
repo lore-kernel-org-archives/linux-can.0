@@ -1,76 +1,85 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Tue, 15 Sep 2015 06:54:38 +0000
-Message-ID: <24113_1442300079_55F7C0AF_24113_5795_1_97439648-2c3f-45a4-8607-5c7c72ed7c88@OPEXCLILMA1.corporate.adroot.infra.ftgroup>
-References: <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
- <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908075800.GA864@airbook.eia.lan>
- <10825_1441878970_55F153BA_10825_1523_1_e2938c8e-30db-4942-96df-1d6a7628d355@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
- <20150910113419.GA13189@airbook.eia.lan>
- <2144_1441891087_55F1830F_2144_9033_1_72e71e6a-832b-4f03-b5a6-47ea4e7bb890@OPEXCLILMA3.corporate.adroot.infra.ftgroup>
- <55F185FF.3030400@pengutronix.de>
- <17840_1441899129_55F1A279_17840_5145_1_32faddc5-c842-4de6-9f1a-8ca0e47ed042@OPEXCLILMA4.corporate.adroot.infra.ftgroup>
- <20150911034936.GA23393@airbook.vandijck-laurijssen.be>
- <18444_1441953980_55F278BC_18444_4440_1_834eb28f-a47f-4f8b-9033-cc97f68e2f45@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
- <20150911094815.GB24037@airbook.eia.lan>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v7 1/3] can: Allwinner A10/A20 CAN Controller support -
+ Devicetree bindings
+Date: Tue, 15 Sep 2015 09:54:00 +0200
+Message-ID: <20150915075400.GK4684@lukather>
+References: <1442272632-20251-1-git-send-email-info@gerhard-bertelsmann.de>
+ <1442272632-20251-2-git-send-email-info@gerhard-bertelsmann.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="j3zO+32zXj6UcJCE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias243.francetelecom.com ([80.12.204.243]:28485 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752369AbbIOGyq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2015 02:54:46 -0400
-Content-Language: fr-FR
+Received: from down.free-electrons.com ([37.187.137.238]:42089 "EHLO
+	mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1752371AbbIOHyM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2015 03:54:12 -0400
+Content-Disposition: inline
+In-Reply-To: <1442272632-20251-2-git-send-email-info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
-SGkgS3VydCwNCg0KSSBtYWRlIHRoZSBwYXRjaCBmb3IgWW9jdG8gYW5kIG5vdyBteSBZb2N0byBL
-ZXJuZWwgZW1iZWRzIGoxOTM5ISENCk5vdywgSSBuZWVkIHRvIGFkZCBpcHJvdXRlMiBhbmQgbXkg
-YXBwbGljYXRpb24uDQoNClRoYW5rcyBhIGxvdCBmb3IgeW91ciBncmVhdCBzdXBwb3J0DQoNClBh
-c2NhbA0KDQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEZJRlJFIFBhc2NhbCBF
-eHQgSU1UL09MUFMgDQpFbnZvecOpwqA6IHZlbmRyZWRpIDExIHNlcHRlbWJyZSAyMDE1IDExOjU0
-DQrDgMKgOiAnS3VydCBWYW4gRGlqY2snOyBGSUZSRSBQYXNjYWwgRXh0IElNVC9PTFBTDQpDY8Kg
-OiBNYXJjIEtsZWluZS1CdWRkZTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KT2JqZXTCoDog
-UkU6IEoxOTM5ICsgaU1YNiArIHlvY3RvDQoNCkhpIEt1cnQsDQoNCkkgaGF2ZSBzb21lIGdvb2Qg
-bmV3czogDQpJJ3ZlIGNyZWF0ZWQgYSBwYXRjaCBmb3IgajE5MzkudHh0IGFuZCBhcHBseSB0byBt
-eSB5b2N0byBrZXJuZWwgKHRoZW4gYSBtZXJnZSB3aXRoIHlvdXIgbW9kaWZpY2F0aW9ucykuDQpJ
-IHRyeSwgbm93LCB0byBtYWtlIGEgYmJhcHBlbmQgYW5kIGEgcmVjaXBlIHRvIHBhdGNoIHRoZSBr
-ZXJuZWwgd2l0aCB5b2N0by4NCg0KSSB3aWxsIGtlZXAgeW91IGluZm9ybWVkIHRvIG9mIG15IHBy
-b2dyZXNzDQoNClJlZ2FyZHMsDQoNClBhc2NhbA0KDQotLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0t
-LS0NCkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlq
-c3Nlbi5iZV0NCkVudm95w6nCoDogdmVuZHJlZGkgMTEgc2VwdGVtYnJlIDIwMTUgMTE6NDggw4DC
-oDogRklGUkUgUGFzY2FsIEV4dCBJTVQvT0xQUyBDY8KgOiBNYXJjIEtsZWluZS1CdWRkZTsgbGlu
-dXgtY2FuQHZnZXIua2VybmVsLm9yZyBPYmpldMKgOiBSZTogSjE5MzkgKyBpTVg2ICsgeW9jdG8N
-Cg0KPiBNeSBrZXJuZWwgaXMgYSBwYXJ0IG9mIHRoZSBZb2N0byBnZW5lcmF0aW9uLg0KDQpCZWNh
-dXNlIHdlIGhhdmUgb3VyIG93biBib2FyZCwgd2UgbmV2ZXIgYWN0dWFsbHkgdXNlZCB0aGUga2Vy
-bmVsIGZyb20gWW9jdG8sIGluc3RlYWQgd2UgdG9sZCB5b2N0byB0byB1c2Ugb3VyIG93biBrZXJu
-ZWwuDQpJJ3ZlIG5ldmVyIGFjdHVhbGx5IHBlcmZvcm1lZCB0aGUgb3BlcmF0aW9uIG9uIHlvY3Rv
-J3Mga2VybmVsLg0KDQpDYW4geW91IHByb3ZpZGUgdGhlIGdpdCB1cmwgb2YgdGhlIGtlcm5lbCB5
-b3Ugd2VyZSB1c2luZyAodGhhdCB2My4xMC1yMCk/DQpJIGNvdWxkIGdpdmUgaXQgYSB0cnkgdG8g
-bWVyZ2UgY2FuLWoxOTM5IGludG8gaXQuDQoNCj4gSW4gZmFjdCwgSSB0cmllZCB0byBwYXRjaCB0
-aGUgPHlvY3RvPi90bXAvd29yay9naXQvIHJlcG9zaXRvcnkgYmVjYXVzZSB0aGUga2VybmVsIGlz
-IGhlcmUuDQo+IFBlcmhhcHMsIGl0IHdhcyBhIGJhZCBpZGVhLiBXaGF0IGRvIHlvdSB0aGluayBh
-Ym91dCB0aGF0Pw0KDQpBcyB0b2xkIGFib3ZlLCB3ZSB0ZWxsIHlvY3RvIHRvIHVzZSBhIGRpZmZl
-cmVudCBrZXJuZWwsIGJlY2F1c2UgSSB0aGluayB0aGF0IGlzIGVhc2llci4NCg0KT2YgY291cnNl
-LCBvdXIga2VybmVsIGFsc28gaGFzIGEgYnVuY2ggb2YgZnJlZXNjYWxlIGNvbW1pdHMgYXBwbGll
-ZC4NCg0KS3VydA0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBqb2ludGVzIHBl
-dXZlbnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25maWRlbnRpZWxsZXMgb3UgcHJpdmls
-ZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVzIG91
-IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2FnZSBw
-YXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwnZXhwZWRpdGV1ciBldCBsZSBkZXRy
-dWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgbWVzc2FnZXMgZWxlY3Ryb25p
-cXVlcyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVjbGluZSB0b3V0
-ZSByZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVmb3JtZSBvdSBm
-YWxzaWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cyBtYXkgY29u
-dGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0IG1heSBiZSBw
-cm90ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQgb3Ig
-Y29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBl
-bWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhpcyBt
-ZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwgT3Jh
-bmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVkLCBj
-aGFuZ2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
+
+--j3zO+32zXj6UcJCE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Tue, Sep 15, 2015 at 01:17:10AM +0200, Gerhard Bertelsmann wrote:
+> Devicetree bindings for Allwinner A10/A20 CAN
+>=20
+> Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+> ---
+>=20
+>  .../devicetree/bindings/net/can/sun4i_can.txt      |  38 +
+>  1 file changed, 38 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/sun4i_can.txt b/Do=
+cumentation/devicetree/bindings/net/can/sun4i_can.txt
+> new file mode 100644
+> index 0000000..5819043
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/sun4i_can.txt
+> @@ -0,0 +1,38 @@
+> +Allwinner A10/A20 CAN controller Device Tree Bindings
+> +-----------------------------------------------------
+> +
+> +Required properties:
+> +- compatible: "allwinner,sun4ican"
+
+A bit better, but still not the one I told you to use.
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--j3zO+32zXj6UcJCE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJV986YAAoJEBx+YmzsjxAgNI4P/RnoJjpcHECs2Z4R6zIx+2Jd
+1rmMVUeHsgYDajvic35jMKLj68kYptpTeu05JKA4YINHbBb4kkZEVikfF+urSv5p
+D56R8T19z6aLVi+myYaHjhJ3zhBemEBEyxHqrw4dEPBaZt+Y401YN42DB+gdcXce
+oWAh83whlhwDv/RpAtxRS5piBTIW5UMojSe7LmseWyLupGUfFY61QR4njK93gm1T
+oaxpWWlJ6mETR+oAwpiRfVYbF1an0lH51rfJg589eE+slYcBwVw+QS9QG3cS2rmm
+m+k4OW2KTtAtb2KW1qynNkelQCDP0XnwSauHq3x2uYVfcP+urMADH8mpMi0PtWye
+uerrmU3YlX1f0TOfzwcBi7BVjrsi9rONzX5h7bW6O3Aaenwo/Ubjx5l7dyIW2Skf
+IjBnxe5Ks8kljf5wgZCYNmwgbnDwkbiqP8DWQZr3RHvTdYUYQJxQdPtnxrHobZ7R
+g6VAYFuAsHdaiHm3skoLkxb54ijKcUEnQ5g125/xPszlBWuOFBQwlZ5jxEPaXtpB
+wKhwGYMI2FwGEwBtKAtAa/JsW8d1gkj/g3UY7t4f/GqqO5jcHcVc+HmFoq0tQlkA
+3ZI1EcXUI8fl86oETD884Lri33lNMGNbTb259Ru2tprHp1Z+YYYsZi+sYXsZ7KsP
+K0biO2AoCuBvQJ0gTbRV
+=uobk
+-----END PGP SIGNATURE-----
+
+--j3zO+32zXj6UcJCE--
