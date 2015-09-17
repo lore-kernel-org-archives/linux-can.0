@@ -1,87 +1,37 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v8 1/3] can: Allwinner A10/A20 CAN Controller support -
- Devicetree bindings
-Date: Thu, 17 Sep 2015 12:06:17 +0200
-Message-ID: <20150917100617.GB4684@lukather>
+Subject: Re: [PATCH v8 4/4] can: Allwinner A10/A20 CAN Controller support -
+ Kernel module
+Date: Thu, 17 Sep 2015 19:52:34 +0200
+Message-ID: <20150917175234.GI4684@lukather>
 References: <1442402482-7118-1-git-send-email-info@gerhard-bertelsmann.de>
- <1442402482-7118-2-git-send-email-info@gerhard-bertelsmann.de>
- <55FA7428.4030801@pengutronix.de>
+ <1442402482-7118-5-git-send-email-info@gerhard-bertelsmann.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nM4qzG6nHdnn/sXd"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="T5F8Mpu1Sg8jtYtl"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from down.free-electrons.com ([37.187.137.238]:38270 "EHLO
+	mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1751915AbbIQRwh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Sep 2015 13:52:37 -0400
 Content-Disposition: inline
-In-Reply-To: <55FA7428.4030801@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+In-Reply-To: <1442402482-7118-5-git-send-email-info@gerhard-bertelsmann.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
 
---nM4qzG6nHdnn/sXd
+--T5F8Mpu1Sg8jtYtl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 17, 2015 at 10:04:56AM +0200, Marc Kleine-Budde wrote:
-> On 09/16/2015 01:21 PM, Gerhard Bertelsmann wrote:
-> > Devicetree bindings for Allwinner A10/A20 CAN
-> >=20
-> > Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-> > ---
-> >=20
-> >  .../devicetree/bindings/net/can/sun4i_can.txt      |  38 +
-> >  1 files changed, 389 insertions(+)
-> >=20
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/net/can/sun4i_can.txt b/=
-Documentation/devicetree/bindings/net/can/sun4i_can.txt
-> > new file mode 100644
-> > index 0000000..cd0f50c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/can/sun4i_can.txt
-> > @@ -0,0 +1,38 @@
-> > +Allwinner A10/A20 CAN controller Device Tree Bindings
-> > +-----------------------------------------------------
-> > +
-> > +Required properties:
-> > +- compatible: "allwinner,sun4i-a10-can"
-> > +- reg: physical base address and size of the Allwinner A10/A20 CAN reg=
-ister map.
-> > +- interrupts: interrupt specifier for the sole interrupt.
-> > +- clock: phandle and clock specifier.
-> > +
-> > +
-> > +Example
-> > +-------
-> > +
-> > +SoC common .dtsi file:
-> > +
-> > +	can0_pins_a: can0@0 {
-> > +		allwinner,pins =3D "PH20","PH21";
-> > +		allwinner,function =3D "can";
-> > +		allwinner,drive =3D <0>;
-> > +		allwinner,pull =3D <0>;
-> > +	};
-> > +...
-> > +	can0: can@01c2bc00 {
-> > +		compatible =3D "allwinner,sun4i-a10-can";
-> > +		reg =3D <0x01c2bc00 0x400>;
-> > +		interrupts =3D <0 26 4>;
-> > +		clocks =3D <&apb1_gates 4>;
-> > +		status =3D "disabled";
-> > +	};
+On Wed, Sep 16, 2015 at 01:21:22PM +0200, Gerhard Bertelsmann wrote:
+> Kernel module for Allwinner A10/A20 CAN
 >=20
-> What about adding this snippet to SoC where the CAN core is available?
-> Maxime, what's the policy on sinxi?
+> Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-It would be great, but it can come as a second step.
-
-> If you give me an Ack I'd like to take the series via linux-can-next
-> (and to net-next) upstream.
-
-I just did so for this patch, I'll review the driver when I'll have a
-bit of time.
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 
 Thanks!
 Maxime
@@ -91,26 +41,26 @@ Maxime Ripard, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
 
---nM4qzG6nHdnn/sXd
+--T5F8Mpu1Sg8jtYtl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJV+pCZAAoJEBx+YmzsjxAg5F0P/0bQ+EG0MwVEP0RiMFFlg+Zj
-odfmDTGAalQQoHUZYZ6yV2ZvluTXnKGWmKdH0xlRE2vVC4BuiLp9geJrfRhqYxQO
-HFQ5rFvsslilrWdI8nIBIjRzZ5zCB5l+Zi8O6j7L/V2JeYuBJ4/GwFwloVaPMf0G
-zmab+KUD4ejs+U3QMaX2rZ69XPqLnOW3+ABqkwstT3VnBAXy0BHbhl2+pEVCLghU
-st02DiQmBKnr2GGFGV359H9+/UrLjSqPYoHtthXkWlijWQCGZgMYvtz3IRfYbbCr
-1kvf2Jiwx+9riYkMqtsZPJc1Ue8unlAxo6YiDNpq1ZQOHw6ZS06cPwMJ1NQaDL4A
-NF4I9nuORlhm4pZs5g1fK5UxCE2oDJluRQvIPfW+mhmPN3ght7Vbnh4JpS0p1cNy
-G323Wg+lSATQLYrPS0tYSqoR7QZZoGIiiRu4KRyI7kUAkgpBoJbXz3UHGhOOPH/n
-29NLGLgngegx+H7a2FlGwzDjqD2gK4eiZDF4D1kiPBt+tyJ0wovUAFiZ2P1+TeqB
-J8271uDNPZp0ri8CDEB6VV7c07OzIxq8X//DkvXOkkZbpwdprWEkq7YskzL59Rim
-O0Ya21A3u6/F4XalKSgfa0uWtIzmSZLp5Zuss4u6QpaUMmCXPm9sUE7rohHOfiPs
-DXJhDwvf1CXw7n91WZpC
-=2pKe
+iQIcBAEBAgAGBQJV+v3iAAoJEBx+YmzsjxAgCFgQAIyitMWfHGTwBl2Pgt+kCVQW
+BnUz1BpWc7NvU0NzOQ26diKEAlwc6vfOz5iN2o5gHHd71fQgrtst+OWdSP7yKRd5
+GHfu4gebAvUxlLrCOOxoEqdkaxhFOr6KAnVmYvmI3OE+XVZQbSNhXoZbytV1LmHS
+NAUyo8r1IsfRabeyS4UjPuKagNaEBhMjqaaxEQZSTUOgPoBitB1UZOXHUDeiyQwB
+HT/qRVVEnPHIuOe8Nxsbx3F9WP0u89bOFE0K7ltDrubVOTd0iP1OPXFKOcR03Ixi
+DZAIu9xz+zjPecYT1gG8bEEiWDuEySpSkgGXdgKWq0jfHcoPVH79mlgXuBP3Vw8k
+SDYICaROYIrzjv5ULFptGHUedD1nLvW4MFQdsK/ExdcsaJmWt7nUKm6T55mhB1fa
+tTSBed0ZDxQ+H5bLtLJAx42IdAAxNmA1kDodDu0CstzV8kZKev0dtPkCuTYoaHTZ
+1zAW9Ytb+tVZClAI0D30gGn7F2uf3v6EncFXOtAvzTmGS+tk+WzsC/VQoEl9S/+3
+Lrgav0vnEeaGhwQA3u/jyUPidHznC3pFhB2cK4GkH9XZ8RfYCBcpDSyYEaqZFBrl
+G5Hx6vdNu71Mna6cfF66mWnk/dwUlxd1xbBOfKo4Rik2nHqZQg+gn6eAPj0iZkz9
+TQRl3dlNQsFlZRX2YznG
+=B7od
 -----END PGP SIGNATURE-----
 
---nM4qzG6nHdnn/sXd--
+--T5F8Mpu1Sg8jtYtl--
