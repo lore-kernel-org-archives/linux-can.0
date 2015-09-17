@@ -1,47 +1,71 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v8 0/4] can: Allwinner A10/A20 CAN Controller support -
- Summary
-Date: Thu, 17 Sep 2015 22:57:21 +0200
-Message-ID: <55FB2931.5090309@pengutronix.de>
-References: <1442402482-7118-1-git-send-email-info@gerhard-bertelsmann.de>
+Subject: pull-request: can-next 2015-09-17
+Date: Thu, 17 Sep 2015 23:07:44 +0200
+Message-ID: <55FB2BA0.6070300@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="kHB90vwN9fUSJsw6n1pIq4slgu625POgT"
+ boundary="gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:47730 "EHLO
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:35611 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751190AbbIQU53 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Sep 2015 16:57:29 -0400
-In-Reply-To: <1442402482-7118-1-git-send-email-info@gerhard-bertelsmann.de>
+	with ESMTP id S1752121AbbIQVHx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Sep 2015 17:07:53 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, wg@grandegger.com, maxime.ripard@free-electrons.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kHB90vwN9fUSJsw6n1pIq4slgu625POgT
+--gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 09/16/2015 01:21 PM, Gerhard Bertelsmann wrote:
-> Hi,
->=20
-> please find attached the next version of my patch set. I have=20
-> taken all remarks from Maxime Ripard into the new version
->=20
-> Please review, test and report bugs if exists.
->=20
-> The patchset applies to all recent Kernel versions (4.x, next etc.).
->=20
-> [PATCH v8 1/4] Device Tree Binding Documentation
-> [PATCH v8 2/4] Defconfig multi_v7
-> [PATCH v8 3/4] Defconfig sunxi
-> [PATCH v8 4/4] Kernel Module
+Hello David,
 
-Applies 1 and 4 with maxime's Ack to linux-can-next.
+this is a pull request of two patches for net-next/master.
 
-Thanks,
+Gerhard Bertelsmann adds support for the CAN controller found on the
+Allwinner A10/A20 SoC.
+
 Marc
+
+---
+
+The following changes since commit 37d2dbcdcca88e392009d7cbe8617d5af0ebcb=
+32:
+
+  net: fix cdc-phonet.c dependency and build error (2015-09-16 11:51:19 -=
+0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.4-20150917
+
+for you to fetch changes up to 0738eff14d817a02ab082c392c96a1613006f158:
+
+  can: Allwinner A10/A20 CAN Controller support - Kernel module (2015-09-=
+17 22:39:08 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.4-20150917
+
+----------------------------------------------------------------
+Gerhard Bertelsmann (2):
+      can: Allwinner A10/A20 CAN Controller support - Devicetree bindings=
+
+      can: Allwinner A10/A20 CAN Controller support - Kernel module
+
+ .../devicetree/bindings/net/can/sun4i_can.txt      |  36 +
+ drivers/net/can/Kconfig                            |  10 +
+ drivers/net/can/Makefile                           |   1 +
+ drivers/net/can/sun4i_can.c                        | 857 +++++++++++++++=
+++++++
+ 4 files changed, 904 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/sun4i_can.t=
+xt
+ create mode 100644 drivers/net/can/sun4i_can.c
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -50,20 +74,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---kHB90vwN9fUSJsw6n1pIq4slgu625POgT
+--gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJV+ykxAAoJEP5prqPJtc/H8tUIAJMViU7O78lB2NdQDrgLbDVB
-mzSFSjwh3AkF2zvYRCqwMbsBdO7rkCEVpE7RyZ68mXxOi0QLAtejRfcfaduoN29A
-JpJbFyXz1zA61XgNp15j0LdU/N3FWOvxmasKcynQa6TZoHXUUAqgKl3ZeD0tQvtZ
-/DeFnoHbbkyXMmb3w4iYMxknY/r64hvhF3qAZu0fQK2ZiBkTWXsEz/Ffp6Qb1MhR
-4beN3G2jxDY8KjzQ7GglEpidd/+LvtkDnERbR/QfGdAa2Gt5qmETaEQtpz1uCLBs
-6VKPtRSeO2H65To0e5UrjL230XKxyIYYrXy8KR7DHx0h5l6XY0e/JXPwNwoyx2U=
-=F3Aq
+iQEcBAEBCgAGBQJV+yugAAoJEP5prqPJtc/H250H/A2nXI87wCqU3XU7egKXFze5
+Gk9pX8jIHoN5K4CAURVrYvdny2E3wKilDDhkVusGdaEz2Bpc+7fvvduD+UVL2pkm
+fOK3xEr9LgZT6HFhD3s5CrWlnn4yyRNrAALmM9eKD+zarCyDn4TnYWjGq8syUfFh
+y0Snnx3SYzP8sK2D5NGUl++N/G2/qG7iM7R4QF+BbaN7T4T0gnzsJ/4B1sveyb9a
+QFWyKRZlXeZO26Epi5/zbMm2tZJGTomiEhQ6/9MmFoZZnFY8Icu/7wztEP7TBBeJ
+C5alp4V6tLFmekcWzsOIXLgJk3XhLDA8K4JhPlXmGY6KZ6ISwM6fqy2A7o0RokM=
+=ZsFB
 -----END PGP SIGNATURE-----
 
---kHB90vwN9fUSJsw6n1pIq4slgu625POgT--
+--gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4--
