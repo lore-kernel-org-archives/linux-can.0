@@ -1,56 +1,80 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: <pfifre.ext@orange.com>
 Subject: RE: J1939 + iMX6 + yocto
-Date: Fri, 18 Sep 2015 14:10:33 +0200
-Message-ID: <C1AAF45F-6C7C-4AB1-93E3-3FEE36B5CF83@vandijck-laurijssen.be>
-References: <20141212110743.GC10796@vandijck-laurijssen.be> <20141215093136.GA646@vandijck-laurijssen.be> <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup> <20150519084626.GC1088@vandijck-laurijssen.be> <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup> <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be> <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup> <20150908075800.GA864@airbook.eia.lan> <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup> <20150908123249.GC25796@airbook.eia.lan> <19625_14425
- 67071_55FBD39E_19625_433_1_a28ef7d8-1702-43c1-afda-ae52611932b1@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
+Date: Fri, 18 Sep 2015 12:29:40 +0000
+Message-ID: <31941_1442579383_55FC03B7_31941_497_6_3c5ee703-7ff1-4f6c-8da3-b02d7f2c1939@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
+References: <20141212110743.GC10796@vandijck-laurijssen.be>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
+ <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
+ <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908075800.GA864@airbook.eia.lan>
+ <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908123249.GC25796@airbook.eia.lan>
+ <19625_1442567071_55FBD39E_19625_433_1_a28ef7d8-1702-43c1-afda-ae52611932b1@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
+ <C1AAF45F-6C7C-4AB1-93E3-3FEE36B5CF83@vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:43029 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751786AbbIRMLL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Sep 2015 08:11:11 -0400
-In-Reply-To: <19625_1442567071_55FBD39E_19625_433_1_a28ef7d8-1702-43c1-afda-ae52611932b1@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
+Received: from relais-ias92.francetelecom.com ([193.251.215.92]:59865 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751009AbbIRM3p (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Sep 2015 08:29:45 -0400
+In-Reply-To: <C1AAF45F-6C7C-4AB1-93E3-3FEE36B5CF83@vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: pfifre.ext@orange.com
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-
-
-On 18 September 2015 11:04:29 CEST, pfifre.ext@orange.com wrote:
->Hi Kurt,
->
->I add the Yocto patch yesterday in my distribution.
->It's very strange, because it seems to be applied on build (it appears
->on the Build without errors) but not on the distribution: I can't add
->any j1939 link (either "dev" is duplicate, or "j1939" is a garbage).
-
-The warning comes from iproute2. Did you patch that already?
-
->Apparently, bitbake finds the necessary files.
->I have just one warning at build : the file
->file://0001-ip-link-Remove-unnecessary-device-checking.patch doesn't be
->found by the build (not present on poky, then I removed this line in
->the bb).
->
->In fact, I notice that the git command in the bb doesn't work. I have
->made a voluntary error in the path and the build ran with no errors.
->Then, your patch is no applied to the distribution.
->
->Do you have any idea?
->
->It's the last task I have to do to run all the features of my
->application.
->
->Thanks for your support.
->
->Best regards,
->
->Pascal
->
-
-Sent from a small mobile device
+SGkgS3VydCwNCg0KVGhhdCdzIHRoZSBxdWVzdGlvbjogdGhlIHBhdGNoIHNlZW1zIHRvIGJlIGJ1
+aWxkLCBidXQsIHRoaXMgd2FybmluZyA6ICJlaXRoZXIgImRldiIgaXMgZHVwbGljYXRlLCBvciAi
+ajE5MzkiIGlzIGEgZ2FyYmFnZSIgc2VlbXMgdGhhdCBubyBwYXRjaCBoYXMgYmVlbiBkb25lIG9u
+IHRoZSBmaW5hbCBkaXN0cmlidXRpb24sIG5vPw0KSSByZW1lbWJlciB0aGF0IHRoaXMgd2Fybmlu
+ZyBjb21lcyB3aXRoIHRoZSBhYnNlbmNlIG9mIGlwcm91dGUyLWoxOTM5IHBhdGNoLiBJdCBpcyBy
+aWdodD8NCg0KSSB2ZXJpZmllZCB0aGUgaXByb3V0ZTItajE5MzkgcmVjaXBlIGFsb25lIGFuZCBp
+dCB3b3JrcyBmaW5lLg0KSSB0aGluayB0aGUgcGF0Y2ggd29uJ3QgYmUgY29ycmVjdGx5IGRvbmUg
+d2l0aCB0aGUgZ2xvYmFsIHJlY2lwZS4NCg0KQmVzdCByZWdhcmRzLA0KDQpQYXNjYWwNCg0KDQot
+LS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86
+ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0gDQpFbnZvecOpwqA6IHZlbmRyZWRpIDE4
+IHNlcHRlbWJyZSAyMDE1IDE0OjExDQrDgMKgOiBGSUZSRSBQYXNjYWwgRXh0IElNVC9PTFBTDQpD
+Y8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKgOiBSRTogSjE5MzkgKyBpTVg2
+ICsgeW9jdG8NCg0KDQoNCk9uIDE4IFNlcHRlbWJlciAyMDE1IDExOjA0OjI5IENFU1QsIHBmaWZy
+ZS5leHRAb3JhbmdlLmNvbSB3cm90ZToNCj5IaSBLdXJ0LA0KPg0KPkkgYWRkIHRoZSBZb2N0byBw
+YXRjaCB5ZXN0ZXJkYXkgaW4gbXkgZGlzdHJpYnV0aW9uLg0KPkl0J3MgdmVyeSBzdHJhbmdlLCBi
+ZWNhdXNlIGl0IHNlZW1zIHRvIGJlIGFwcGxpZWQgb24gYnVpbGQgKGl0IGFwcGVhcnMgDQo+b24g
+dGhlIEJ1aWxkIHdpdGhvdXQgZXJyb3JzKSBidXQgbm90IG9uIHRoZSBkaXN0cmlidXRpb246IEkg
+Y2FuJ3QgYWRkIA0KPmFueSBqMTkzOSBsaW5rIChlaXRoZXIgImRldiIgaXMgZHVwbGljYXRlLCBv
+ciAiajE5MzkiIGlzIGEgZ2FyYmFnZSkuDQoNClRoZSB3YXJuaW5nIGNvbWVzIGZyb20gaXByb3V0
+ZTIuIERpZCB5b3UgcGF0Y2ggdGhhdCBhbHJlYWR5Pw0KDQo+QXBwYXJlbnRseSwgYml0YmFrZSBm
+aW5kcyB0aGUgbmVjZXNzYXJ5IGZpbGVzLg0KPkkgaGF2ZSBqdXN0IG9uZSB3YXJuaW5nIGF0IGJ1
+aWxkIDogdGhlIGZpbGUgDQo+ZmlsZTovLzAwMDEtaXAtbGluay1SZW1vdmUtdW5uZWNlc3Nhcnkt
+ZGV2aWNlLWNoZWNraW5nLnBhdGNoIGRvZXNuJ3QgYmUgDQo+Zm91bmQgYnkgdGhlIGJ1aWxkIChu
+b3QgcHJlc2VudCBvbiBwb2t5LCB0aGVuIEkgcmVtb3ZlZCB0aGlzIGxpbmUgaW4gDQo+dGhlIGJi
+KS4NCj4NCj5JbiBmYWN0LCBJIG5vdGljZSB0aGF0IHRoZSBnaXQgY29tbWFuZCBpbiB0aGUgYmIg
+ZG9lc24ndCB3b3JrLiBJIGhhdmUgDQo+bWFkZSBhIHZvbHVudGFyeSBlcnJvciBpbiB0aGUgcGF0
+aCBhbmQgdGhlIGJ1aWxkIHJhbiB3aXRoIG5vIGVycm9ycy4NCj5UaGVuLCB5b3VyIHBhdGNoIGlz
+IG5vIGFwcGxpZWQgdG8gdGhlIGRpc3RyaWJ1dGlvbi4NCj4NCj5EbyB5b3UgaGF2ZSBhbnkgaWRl
+YT8NCj4NCj5JdCdzIHRoZSBsYXN0IHRhc2sgSSBoYXZlIHRvIGRvIHRvIHJ1biBhbGwgdGhlIGZl
+YXR1cmVzIG9mIG15IA0KPmFwcGxpY2F0aW9uLg0KPg0KPlRoYW5rcyBmb3IgeW91ciBzdXBwb3J0
+Lg0KPg0KPkJlc3QgcmVnYXJkcywNCj4NCj5QYXNjYWwNCj4NCg0KU2VudCBmcm9tIGEgc21hbGwg
+bW9iaWxlIGRldmljZQ0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBqb2ludGVz
+IHBldXZlbnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25maWRlbnRpZWxsZXMgb3UgcHJp
+dmlsZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVz
+IG91IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2Fn
+ZSBwYXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwnZXhwZWRpdGV1ciBldCBsZSBk
+ZXRydWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgbWVzc2FnZXMgZWxlY3Ry
+b25pcXVlcyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVjbGluZSB0
+b3V0ZSByZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVmb3JtZSBv
+dSBmYWxzaWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cyBtYXkg
+Y29udGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0IG1heSBi
+ZSBwcm90ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQg
+b3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhp
+cyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhp
+cyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJlZCwg
+T3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1vZGlmaWVk
+LCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
