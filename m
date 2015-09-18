@@ -1,93 +1,83 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-09-17
-Date: Thu, 17 Sep 2015 23:07:44 +0200
-Message-ID: <55FB2BA0.6070300@pengutronix.de>
+From: <pfifre.ext@orange.com>
+Subject: RE: J1939 + iMX6 + yocto
+Date: Fri, 18 Sep 2015 09:04:29 +0000
+Message-ID: <19625_1442567071_55FBD39E_19625_433_1_a28ef7d8-1702-43c1-afda-ae52611932b1@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
+References: <20141212110743.GC10796@vandijck-laurijssen.be>
+ <6726_1418633895_548EA2A7_6726_15776_1_F1366246CF364C42B98553900CE0C5CB07FE75B7@PEXCVZYM13.corporate.adroot.infra.ftgroup>
+ <20141215093136.GA646@vandijck-laurijssen.be>
+ <306_1430126538_553DFFCA_306_19026_1_F1366246CF364C42B98553900CE0C5CB0801EF73@PEXCVZYM11.corporate.adroot.infra.ftgroup>
+ <20150519084626.GC1088@vandijck-laurijssen.be>
+ <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
+ <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908075800.GA864@airbook.eia.lan>
+ <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
+ <20150908123249.GC25796@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:35611 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752121AbbIQVHx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Sep 2015 17:07:53 -0400
+Received: from relais-ias91.francetelecom.com ([193.251.215.91]:16497 "EHLO
+	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752033AbbIRJEd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Sep 2015 05:04:33 -0400
+In-Reply-To: <20150908123249.GC25796@airbook.eia.lan>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, FIFRE Pascal Ext IMT/OLPS <pfifre.ext@orange.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hello David,
-
-this is a pull request of two patches for net-next/master.
-
-Gerhard Bertelsmann adds support for the CAN controller found on the
-Allwinner A10/A20 SoC.
-
-Marc
-
----
-
-The following changes since commit 37d2dbcdcca88e392009d7cbe8617d5af0ebcb=
-32:
-
-  net: fix cdc-phonet.c dependency and build error (2015-09-16 11:51:19 -=
-0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.4-20150917
-
-for you to fetch changes up to 0738eff14d817a02ab082c392c96a1613006f158:
-
-  can: Allwinner A10/A20 CAN Controller support - Kernel module (2015-09-=
-17 22:39:08 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-4.4-20150917
-
-----------------------------------------------------------------
-Gerhard Bertelsmann (2):
-      can: Allwinner A10/A20 CAN Controller support - Devicetree bindings=
-
-      can: Allwinner A10/A20 CAN Controller support - Kernel module
-
- .../devicetree/bindings/net/can/sun4i_can.txt      |  36 +
- drivers/net/can/Kconfig                            |  10 +
- drivers/net/can/Makefile                           |   1 +
- drivers/net/can/sun4i_can.c                        | 857 +++++++++++++++=
-++++++
- 4 files changed, 904 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/sun4i_can.t=
-xt
- create mode 100644 drivers/net/can/sun4i_can.c
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJV+yugAAoJEP5prqPJtc/H250H/A2nXI87wCqU3XU7egKXFze5
-Gk9pX8jIHoN5K4CAURVrYvdny2E3wKilDDhkVusGdaEz2Bpc+7fvvduD+UVL2pkm
-fOK3xEr9LgZT6HFhD3s5CrWlnn4yyRNrAALmM9eKD+zarCyDn4TnYWjGq8syUfFh
-y0Snnx3SYzP8sK2D5NGUl++N/G2/qG7iM7R4QF+BbaN7T4T0gnzsJ/4B1sveyb9a
-QFWyKRZlXeZO26Epi5/zbMm2tZJGTomiEhQ6/9MmFoZZnFY8Icu/7wztEP7TBBeJ
-C5alp4V6tLFmekcWzsOIXLgJk3XhLDA8K4JhPlXmGY6KZ6ISwM6fqy2A7o0RokM=
-=ZsFB
------END PGP SIGNATURE-----
-
---gf2o5fIoGjAqg1QoRBoLqIGqJVWIhB7S4--
+SGkgS3VydCwNCg0KSSBhZGQgdGhlIFlvY3RvIHBhdGNoIHllc3RlcmRheSBpbiBteSBkaXN0cmli
+dXRpb24uDQpJdCdzIHZlcnkgc3RyYW5nZSwgYmVjYXVzZSBpdCBzZWVtcyB0byBiZSBhcHBsaWVk
+IG9uIGJ1aWxkIChpdCBhcHBlYXJzIG9uIHRoZSBCdWlsZCB3aXRob3V0IGVycm9ycykgYnV0IG5v
+dCBvbiB0aGUgZGlzdHJpYnV0aW9uOiBJIGNhbid0IGFkZCBhbnkgajE5MzkgbGluayAoZWl0aGVy
+ICJkZXYiIGlzIGR1cGxpY2F0ZSwgb3IgImoxOTM5IiBpcyBhIGdhcmJhZ2UpLg0KQXBwYXJlbnRs
+eSwgYml0YmFrZSBmaW5kcyB0aGUgbmVjZXNzYXJ5IGZpbGVzLg0KSSBoYXZlIGp1c3Qgb25lIHdh
+cm5pbmcgYXQgYnVpbGQgOiB0aGUgZmlsZSBmaWxlOi8vMDAwMS1pcC1saW5rLVJlbW92ZS11bm5l
+Y2Vzc2FyeS1kZXZpY2UtY2hlY2tpbmcucGF0Y2ggZG9lc24ndCBiZSBmb3VuZCBieSB0aGUgYnVp
+bGQgKG5vdCBwcmVzZW50IG9uIHBva3ksIHRoZW4gSSByZW1vdmVkIHRoaXMgbGluZSBpbiB0aGUg
+YmIpLg0KDQpJbiBmYWN0LCBJIG5vdGljZSB0aGF0IHRoZSBnaXQgY29tbWFuZCBpbiB0aGUgYmIg
+ZG9lc24ndCB3b3JrLiBJIGhhdmUgbWFkZSBhIHZvbHVudGFyeSBlcnJvciBpbiB0aGUgcGF0aCBh
+bmQgdGhlIGJ1aWxkIHJhbiB3aXRoIG5vIGVycm9ycy4NClRoZW4sIHlvdXIgcGF0Y2ggaXMgbm8g
+YXBwbGllZCB0byB0aGUgZGlzdHJpYnV0aW9uLg0KDQpEbyB5b3UgaGF2ZSBhbnkgaWRlYT8NCg0K
+SXQncyB0aGUgbGFzdCB0YXNrIEkgaGF2ZSB0byBkbyB0byBydW4gYWxsIHRoZSBmZWF0dXJlcyBv
+ZiBteSBhcHBsaWNhdGlvbi4NCg0KVGhhbmtzIGZvciB5b3VyIHN1cHBvcnQuDQoNCkJlc3QgcmVn
+YXJkcywNCg0KUGFzY2FsDQoNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tDQpEZcKgOiBL
+dXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdIA0K
+RW52b3nDqcKgOiBtYXJkaSA4IHNlcHRlbWJyZSAyMDE1IDE0OjMzDQrDgMKgOiBGSUZSRSBQYXNj
+YWwgRXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpldMKg
+OiBSZTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KLS0tIE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+
+IERhdGU6IFR1ZSwgOCBTZXAgMjAxNSAwOTozMzozNSArMDAwMA0KPiBGcm9tOiBwZmlmcmUuZXh0
+QG9yYW5nZS5jb20NCj4gVG86IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVy
+aWpzc2VuLmJlPg0KPiBDQzogImxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmciIDxsaW51eC1jYW5A
+dmdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSRTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCj4g
+DQo+ID4gSSBhbHNvIHVwZGF0ZWQgaXByb3V0ZTItajE5MzksIHRvIGEgdmVyc2lvbiB0aGF0IGlz
+IGVxdWFsIHRvIHdoYXQgeW9jdG8gaXMgdXNpbmcgbm93Lg0KPiBXaGF0IGRvIHlvdSBtZWFuPyBE
+byB5b3UgcGF0Y2ggaXByb3V0ZTIgZm9yIHVzaW5nIGoxOTM5PyBJbiB0aGF0IGNhc2UgaG93IGNh
+biBJIHJldHJpZXZlIHRoaXMgaXByb3V0ZTItajE5Mzkgc3RhY2sgdG8gdXNlIGl0IGluIHlvY3Rv
+Pw0KDQpTZWUgaHR0cDovL2VsaW51eC5vcmcvSjE5MzkjU291cmNlcw0KDQpZb3UgbmVlZCBhIHBh
+dGNoZWQgaXByb3V0ZTIgaXAgcHJvZ3JhbSB0byBhY3RpdmF0ZSBqMTkzOSBvbiBhIENBTiBkZXZp
+Y2UuIEFsdG91Z2ggSSBoYWQgYW4gaXByb3V0ZTIgcmVhZHksIEkgY291bGQgbm90IGdldCBpdCBl
+YXNpbHkgaW4geW9jdG8gdG8gY29tcGlsZS4gU28gSSBjcmVhdGVkIGlwcm91dGUyLWoxOTM5IHYz
+LjE2IGJyYW5jaCwgd2hpY2ggZXF1YWxzIHRoZSBpcHJvdXRlMiB2ZXJzaW9uIHRoYXQgKG15KSB5
+b2N0byB1c2VzLg0KSSB0aGVuIGFkZGVkIHRoZSBiaXRiYWtlIHJlY2lwZSAoc2VlIGF0dGFjaG1l
+bnQpIHdoaWNoIHJldXNlcyBhbGwgcGF0Y2hlcyBhcHBsaWVkIHRvIHRoZSBzdG9jayBpcHJvdXRl
+MiBwcm9ncmFtLg0KDQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwoKQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMg
+cGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2
+aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jCnBhcyBldHJlIGRpZmZ1c2VzLCBleHBsb2l0ZXMg
+b3UgY29waWVzIHNhbnMgYXV0b3Jpc2F0aW9uLiBTaSB2b3VzIGF2ZXogcmVjdSBjZSBtZXNzYWdl
+IHBhciBlcnJldXIsIHZldWlsbGV6IGxlIHNpZ25hbGVyCmEgbCdleHBlZGl0ZXVyIGV0IGxlIGRl
+dHJ1aXJlIGFpbnNpIHF1ZSBsZXMgcGllY2VzIGpvaW50ZXMuIExlcyBtZXNzYWdlcyBlbGVjdHJv
+bmlxdWVzIGV0YW50IHN1c2NlcHRpYmxlcyBkJ2FsdGVyYXRpb24sCk9yYW5nZSBkZWNsaW5lIHRv
+dXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lIG91
+IGZhbHNpZmllLiBNZXJjaS4KClRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBj
+b250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIHRoYXQgbWF5IGJl
+IHByb3RlY3RlZCBieSBsYXc7CnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwgdXNlZCBv
+ciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLgpJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
+IGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSB0aGlz
+IG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50cy4KQXMgZW1haWxzIG1heSBiZSBhbHRlcmVkLCBP
+cmFuZ2UgaXMgbm90IGxpYWJsZSBmb3IgbWVzc2FnZXMgdGhhdCBoYXZlIGJlZW4gbW9kaWZpZWQs
+IGNoYW5nZWQgb3IgZmFsc2lmaWVkLgpUaGFuayB5b3UuCgo=
