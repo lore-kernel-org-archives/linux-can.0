@@ -1,109 +1,96 @@
-From: <pfifre.ext@orange.com>
-Subject: RE: J1939 + iMX6 + yocto
-Date: Mon, 21 Sep 2015 07:27:48 +0000
-Message-ID: <11093_1442820469_55FFB175_11093_9725_1_F1366246CF364C42B98553900CE0C5CB089DC603@OPEXCLILM23.corporate.adroot.infra.ftgroup>
-References: <20141212110743.GC10796@vandijck-laurijssen.be>
- <20150519084626.GC1088@vandijck-laurijssen.be>
- <18596_1441369456_55E98D70_18596_3092_1_F1366246CF364C42B98553900CE0C5CB089DBAF9@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <36853685-8336-4C81-88CE-AE3CB1A36AFA@vandijck-laurijssen.be>
- <12979_1441607513_55ED2F59_12979_6_1_F1366246CF364C42B98553900CE0C5CB089DBBE6@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908075800.GA864@airbook.eia.lan>
- <22033_1441704817_55EEAB71_22033_5373_1_F1366246CF364C42B98553900CE0C5CB089DBCCA@OPEXCLILM23.corporate.adroot.infra.ftgroup>
- <20150908123249.GC25796@airbook.eia.lan>
- <19625_1442567071_55FBD39E_19625_433_1_a28ef7d8-1702-43c1-afda-ae52611932b1@OPEXCLILM7E.corporate.adroot.infra.ftgroup>
- <C1AAF45F-6C7C-4AB1-93E3-3FEE36B5CF83@vandijck-laurijssen.be>
- <31941_1442579383_55FC03B7_31941_497_6_3c5ee703-7ff1-4f6c-8da3-b02d7f2c1939@OPEXCLILM7D.corporate.adroot.infra.ftgroup>
- <5E00F3EF-2CEB-4BCE-9D73-BB4EE40ED851@vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2015-09-17
+Date: Mon, 21 Sep 2015 09:20:21 +0200
+Message-ID: <55FFAFB5.7040707@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Jpn42Lw0vuvLXqvr7BtuvsuCvKV9hmJCQ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relais-ias243.francetelecom.com ([80.12.204.243]:40861 "EHLO
-	relais-inet.francetelecom.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752688AbbIUH1y (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2015 03:27:54 -0400
-In-Reply-To: <5E00F3EF-2CEB-4BCE-9D73-BB4EE40ED851@vandijck-laurijssen.be>
-Content-Language: fr-FR
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:50815 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754427AbbIUICa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2015 04:02:30 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGkgS3VydCwNCg0KSSBmb3VuZCBteSBtaXN0YWtlLg0KDQpJdCB3b3JrcyBub3cuDQoNClRoYW5r
-cyBhIGxvdCwNCg0KUGFzY2FsDQoNCi0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQ0KRGXCoDog
-S3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXSAN
-CkVudm95w6nCoDogc2FtZWRpIDE5IHNlcHRlbWJyZSAyMDE1IDA4OjM1DQrDgMKgOiBGSUZSRSBQ
-YXNjYWwgRXh0IElNVC9PTFBTDQpDY8KgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQpPYmpl
-dMKgOiBSRTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCg0KDQoNCk9uIDE4IFNlcHRlbWJlciAyMDE1
-IDE0OjI5OjQwIENFU1QsIHBmaWZyZS5leHRAb3JhbmdlLmNvbSB3cm90ZToNCj5IaSBLdXJ0LA0K
-Pg0KPlRoYXQncyB0aGUgcXVlc3Rpb246IHRoZSBwYXRjaCBzZWVtcyB0byBiZSBidWlsZCwgYnV0
-LCB0aGlzIHdhcm5pbmcgOg0KPiJlaXRoZXIgImRldiIgaXMgZHVwbGljYXRlLCBvciAiajE5Mzki
-IGlzIGEgZ2FyYmFnZSIgc2VlbXMgdGhhdCBubyANCj5wYXRjaCBoYXMgYmVlbiBkb25lIG9uIHRo
-ZSBmaW5hbCBkaXN0cmlidXRpb24sIG5vPw0KPkkgcmVtZW1iZXIgdGhhdCB0aGlzIHdhcm5pbmcg
-Y29tZXMgd2l0aCB0aGUgYWJzZW5jZSBvZiBpcHJvdXRlMi1qMTkzOSANCj5wYXRjaC4gSXQgaXMg
-cmlnaHQ/DQo+DQoNClllcywgeW91J3JlIHJpZ2h0DQoNCj5JIHZlcmlmaWVkIHRoZSBpcHJvdXRl
-Mi1qMTkzOSByZWNpcGUgYWxvbmUgYW5kIGl0IHdvcmtzIGZpbmUuDQo+SSB0aGluayB0aGUgcGF0
-Y2ggd29uJ3QgYmUgY29ycmVjdGx5IGRvbmUgd2l0aCB0aGUgZ2xvYmFsIHJlY2lwZS4NCj4NCg0K
-U28gdGhpcyBiZWNvbWVzIGEgcHVyZSB5b2N0byBpc3N1ZS4NCkFyZSB5b3Ugc3VyZSB0aGF0ICdp
-cCcgdG9vbCBvbiB0aGUgcm9vdGZzIGlzIGZyb20gYnVzeWJveCBvciBpcHJvdXRlMj8NCg0KS3Vy
-dA0KDQo+QmVzdCByZWdhcmRzLA0KPg0KPlBhc2NhbA0KPg0KPg0KPi0tLS0tTWVzc2FnZSBkJ29y
-aWdpbmUtLS0tLQ0KPkRlwqA6IEt1cnQgVmFuIERpamNrIFttYWlsdG86ZGV2Lmt1cnRAdmFuZGlq
-Y2stbGF1cmlqc3Nlbi5iZV0NCj5FbnZvecOpwqA6IHZlbmRyZWRpIDE4IHNlcHRlbWJyZSAyMDE1
-IDE0OjExIMOAwqA6IEZJRlJFIFBhc2NhbCBFeHQgSU1UL09MUFMgDQo+Q2PCoDogbGludXgtY2Fu
-QHZnZXIua2VybmVsLm9yZyBPYmpldMKgOiBSRTogSjE5MzkgKyBpTVg2ICsgeW9jdG8NCj4NCj4N
-Cj4NCj5PbiAxOCBTZXB0ZW1iZXIgMjAxNSAxMTowNDoyOSBDRVNULCBwZmlmcmUuZXh0QG9yYW5n
-ZS5jb20gd3JvdGU6DQo+PkhpIEt1cnQsDQo+Pg0KPj5JIGFkZCB0aGUgWW9jdG8gcGF0Y2ggeWVz
-dGVyZGF5IGluIG15IGRpc3RyaWJ1dGlvbi4NCj4+SXQncyB2ZXJ5IHN0cmFuZ2UsIGJlY2F1c2Ug
-aXQgc2VlbXMgdG8gYmUgYXBwbGllZCBvbiBidWlsZCAoaXQgYXBwZWFycw0KPg0KPj5vbiB0aGUg
-QnVpbGQgd2l0aG91dCBlcnJvcnMpIGJ1dCBub3Qgb24gdGhlIGRpc3RyaWJ1dGlvbjogSSBjYW4n
-dCBhZGQgDQo+PmFueSBqMTkzOSBsaW5rIChlaXRoZXIgImRldiIgaXMgZHVwbGljYXRlLCBvciAi
-ajE5MzkiIGlzIGEgZ2FyYmFnZSkuDQo+DQo+VGhlIHdhcm5pbmcgY29tZXMgZnJvbSBpcHJvdXRl
-Mi4gRGlkIHlvdSBwYXRjaCB0aGF0IGFscmVhZHk/DQo+DQo+PkFwcGFyZW50bHksIGJpdGJha2Ug
-ZmluZHMgdGhlIG5lY2Vzc2FyeSBmaWxlcy4NCj4+SSBoYXZlIGp1c3Qgb25lIHdhcm5pbmcgYXQg
-YnVpbGQgOiB0aGUgZmlsZSANCj4+ZmlsZTovLzAwMDEtaXAtbGluay1SZW1vdmUtdW5uZWNlc3Nh
-cnktZGV2aWNlLWNoZWNraW5nLnBhdGNoIGRvZXNuJ3QNCj5iZSANCj4+Zm91bmQgYnkgdGhlIGJ1
-aWxkIChub3QgcHJlc2VudCBvbiBwb2t5LCB0aGVuIEkgcmVtb3ZlZCB0aGlzIGxpbmUgaW4gDQo+
-PnRoZSBiYikuDQo+Pg0KPj5JbiBmYWN0LCBJIG5vdGljZSB0aGF0IHRoZSBnaXQgY29tbWFuZCBp
-biB0aGUgYmIgZG9lc24ndCB3b3JrLiBJIGhhdmUgDQo+Pm1hZGUgYSB2b2x1bnRhcnkgZXJyb3Ig
-aW4gdGhlIHBhdGggYW5kIHRoZSBidWlsZCByYW4gd2l0aCBubyBlcnJvcnMuDQo+PlRoZW4sIHlv
-dXIgcGF0Y2ggaXMgbm8gYXBwbGllZCB0byB0aGUgZGlzdHJpYnV0aW9uLg0KPj4NCj4+RG8geW91
-IGhhdmUgYW55IGlkZWE/DQo+Pg0KPj5JdCdzIHRoZSBsYXN0IHRhc2sgSSBoYXZlIHRvIGRvIHRv
-IHJ1biBhbGwgdGhlIGZlYXR1cmVzIG9mIG15IA0KPj5hcHBsaWNhdGlvbi4NCj4+DQo+PlRoYW5r
-cyBmb3IgeW91ciBzdXBwb3J0Lg0KPj4NCj4+QmVzdCByZWdhcmRzLA0KPj4NCj4+UGFzY2FsDQo+
-Pg0KPg0KPlNlbnQgZnJvbSBhIHNtYWxsIG1vYmlsZSBkZXZpY2UNCj4NCj5fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+DQo+
-Q2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMgcGV1dmVudCBjb250ZW5pciBkZXMgaW5m
-b3JtYXRpb25zDQo+Y29uZmlkZW50aWVsbGVzIG91IHByaXZpbGVnaWVlcyBldCBuZSBkb2l2ZW50
-IGRvbmMNCj5wYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVzIG91IGNvcGllcyBzYW5zIGF1dG9y
-aXNhdGlvbi4gU2kgdm91cyBhdmV6DQo+cmVjdSBjZSBtZXNzYWdlIHBhciBlcnJldXIsIHZldWls
-bGV6IGxlIHNpZ25hbGVyDQo+YSBsJ2V4cGVkaXRldXIgZXQgbGUgZGV0cnVpcmUgYWluc2kgcXVl
-IGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzDQo+bWVzc2FnZXMgZWxlY3Ryb25pcXVlcyBldGFudCBz
-dXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLA0KPk9yYW5nZSBkZWNsaW5lIHRvdXRlIHJlc3BvbnNh
-YmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1lDQo+b3UgZmFsc2lmaWUu
-IE1lcmNpLg0KPg0KPlRoaXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzIG1heSBjb250YWlu
-IGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkDQo+aW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgcHJv
-dGVjdGVkIGJ5IGxhdzsNCj50aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQsIHVzZWQgb3Ig
-Y29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4NCj5JZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
-IGVtYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgYW5kDQo+ZGVsZXRlIHRo
-aXMgbWVzc2FnZSBhbmQgaXRzIGF0dGFjaG1lbnRzLg0KPkFzIGVtYWlscyBtYXkgYmUgYWx0ZXJl
-ZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZQ0KPmJlZW4gbW9k
-aWZpZWQsIGNoYW5nZWQgb3IgZmFsc2lmaWVkLg0KPlRoYW5rIHlvdS4NCg0KU2VudCBmcm9tIGEg
-c21hbGwgbW9iaWxlIGRldmljZQ0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KCkNlIG1lc3NhZ2UgZXQgc2VzIHBpZWNlcyBq
-b2ludGVzIHBldXZlbnQgY29udGVuaXIgZGVzIGluZm9ybWF0aW9ucyBjb25maWRlbnRpZWxsZXMg
-b3UgcHJpdmlsZWdpZWVzIGV0IG5lIGRvaXZlbnQgZG9uYwpwYXMgZXRyZSBkaWZmdXNlcywgZXhw
-bG9pdGVzIG91IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2Ug
-bWVzc2FnZSBwYXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcgphIGwnZXhwZWRpdGV1ciBl
-dCBsZSBkZXRydWlyZSBhaW5zaSBxdWUgbGVzIHBpZWNlcyBqb2ludGVzLiBMZXMgbWVzc2FnZXMg
-ZWxlY3Ryb25pcXVlcyBldGFudCBzdXNjZXB0aWJsZXMgZCdhbHRlcmF0aW9uLApPcmFuZ2UgZGVj
-bGluZSB0b3V0ZSByZXNwb25zYWJpbGl0ZSBzaSBjZSBtZXNzYWdlIGEgZXRlIGFsdGVyZSwgZGVm
-b3JtZSBvdSBmYWxzaWZpZS4gTWVyY2kuCgpUaGlzIG1lc3NhZ2UgYW5kIGl0cyBhdHRhY2htZW50
-cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiB0aGF0
-IG1heSBiZSBwcm90ZWN0ZWQgYnkgbGF3Owp0aGV5IHNob3VsZCBub3QgYmUgZGlzdHJpYnV0ZWQs
-IHVzZWQgb3IgY29waWVkIHdpdGhvdXQgYXV0aG9yaXNhdGlvbi4KSWYgeW91IGhhdmUgcmVjZWl2
-ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxl
-dGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuCkFzIGVtYWlscyBtYXkgYmUgYWx0
-ZXJlZCwgT3JhbmdlIGlzIG5vdCBsaWFibGUgZm9yIG1lc3NhZ2VzIHRoYXQgaGF2ZSBiZWVuIG1v
-ZGlmaWVkLCBjaGFuZ2VkIG9yIGZhbHNpZmllZC4KVGhhbmsgeW91LgoK
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Jpn42Lw0vuvLXqvr7BtuvsuCvKV9hmJCQ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello David,
+
+this is a pull request of 8 patches for net-next/master.
+
+All 8 patches are by me and cleanup the flexcan driver.
+
+Marc
+
+---
+
+The following changes since commit a1ef48e1e8843e2f6be631b8cf1c21b24579b9=
+d6:
+
+  Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/=
+jkirsher/next-queue (2015-09-20 22:26:58 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.4-20150921
+
+for you to fetch changes up to 6fa7da249269a6146ce456c43098901c81c8afdf:
+
+  can: flexcan: enable interrupts atomically at the end of flexcan_chip_s=
+tart() (2015-09-21 08:38:23 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.4-20150921
+
+----------------------------------------------------------------
+Marc Kleine-Budde (8):
+      can: flexcan: cleanup coding style and fix typos
+      can: headers: make header files self contained
+      can: flexcan: remove unused header files
+      can: flexcan: flexcan_chip_start(): cleanup writing of reg_mcr
+      can: flexcan: rename feature into quirks
+      can: flexcan: use pointer to struct regs instead of void pointer fo=
+r mmio address space
+      can: flexcan: give member of flexcan_priv holding mailboxes a sensi=
+ble name
+      can: flexcan: enable interrupts atomically at the end of flexcan_ch=
+ip_start()
+
+ drivers/net/can/flexcan.c | 197 ++++++++++++++++++++++------------------=
+------
+ include/linux/can/dev.h   |   3 +-
+ include/linux/can/led.h   |   1 +
+ 3 files changed, 95 insertions(+), 106 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Jpn42Lw0vuvLXqvr7BtuvsuCvKV9hmJCQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJV/6+4AAoJEP5prqPJtc/HK1cIAI9qPodkNyah73H2FxtABoJE
+hAtUvocRLX+CWVWYaUJ8ZQrEQ9ewVVtCiieXa4rGchTfF/2KLGSW7ObjrURVLObU
+lRv9V7u0zY9OLPK0zpB2FXPOX6VOIYc5IPWiea0k9nDJKvoJowGh5FRQiZfSOhPs
+aVxWuY7PwovLDWQWKvZrzxSVaSAmniTper/RD03+2BjsZlXM0yNSx7WisIcjCgFT
+enMhcR6ToPUlyRXqx8OflSsjG+87Vx4nWUN9Ksno7FDpw/G762X7qepmAcV53mXN
+pyHLrfLGh/BoB8GiA82vm/UhfP1w+zhaEW4DSOK3tg+zmWg8mKUO5FyH8Hhnvc8=
+=W9Nb
+-----END PGP SIGNATURE-----
+
+--Jpn42Lw0vuvLXqvr7BtuvsuCvKV9hmJCQ--
