@@ -1,59 +1,45 @@
 From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-Subject: re: can: Allwinner A10/A20 CAN Controller support - Kernel module
-Date: Wed, 23 Sep 2015 09:51:28 +0200
-Message-ID: <34a8301812e4b25545b9c0f13d1cd80f@mail.rdts.de>
-References: <20150923071944.GA28834@mwanda>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH 1/1] can: Allwinner A10/A20 CAN Controller
+Date: Thu, 24 Sep 2015 07:54:08 +0200
+Message-ID: <1443074048-31307-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rdts.de ([195.243.153.28]:43292 "EHLO mail.rdts.de"
+Received: from mail.rdts.de ([195.243.153.28]:50289 "EHLO mail.rdts.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752595AbbIWHvb (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 23 Sep 2015 03:51:31 -0400
-In-Reply-To: <20150923071944.GA28834@mwanda>
+	id S1751168AbbIXFyO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 24 Sep 2015 01:54:14 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: linux-can@vger.kernel.org, linux-can-owner@vger.kernel.org
+To: mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-Hi Dan,
+This patch set (linux-next) fixes a bug in arbitration error reporting found by
+Dan Carpenter and the modinfo name (thx to Peter Koorsgard) of the module.
 
-Am 2015-09-23 09:19, schrieb Dan Carpenter:
-> Hello Gerhard Bertelsmann,
-> 
-> The patch 0738eff14d81: "can: Allwinner A10/A20 CAN Controller
-> support - Kernel module" from Sep 16, 2015, leads to the following
-> static checker warning:
-> 
-> 	drivers/net/can/sun4i_can.c:604 sun4i_can_err()
-> 	warn: mask and shift to zero
-> 
-> drivers/net/can/sun4i_can.c
->    596          if (isrc & SUN4I_INT_ARB_LOST) {
->    597                  /* arbitration lost interrupt */
->    598                  netdev_dbg(dev, "arbitration lost 
-> interrupt\n");
->    599                  alc = readl(priv->base + SUN4I_REG_STA_ADDR);
->    600                  priv->can.can_stats.arbitration_lost++;
->    601                  stats->tx_errors++;
->    602                  if (likely(skb)) {
->    603                          cf->can_id |= CAN_ERR_LOSTARB;
->    604                          cf->data[0] = (alc & 0x1f) >> 8;
->                                               ^^^^^^^^^^^^^^^^^^
-> This is zero.  No idea what was intended.
+ef9bd57 general: fix driver info
+e9d2d74 sun4i_can_err: fix arbitration lost error reporting
 
-indeed, that's wrong - mask should be 0x1f00.
-I will send an update. Thanks for your hint.
+Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+---
 
-> 
->    605                  }
->    606          }
-> 
-> regards,
-> dan carpenter
+ drivers/net/can/sun4i_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Regards,
-
-Gerd
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 10d8497..d9a42c6 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -601,7 +601,7 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 		stats->tx_errors++;
+ 		if (likely(skb)) {
+ 			cf->can_id |= CAN_ERR_LOSTARB;
+-			cf->data[0] = (alc & 0x1f) >> 8;
++			cf->data[0] = (alc >> 8) & 0x1f;
+ 		}
+ 	}
+ 
+@@ -854,4 +854,4 @@ module_platform_driver(sun4i_can_driver);
+ MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+ MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION(DRV_NAME "CAN driver for Allwinner SoCs (A10/A20)");
++MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
