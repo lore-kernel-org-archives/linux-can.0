@@ -1,52 +1,38 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: j1939: recv >8 bytes
-Date: Fri, 25 Sep 2015 10:28:46 +0200
-Message-ID: <20150925082846.GA7002@airbook>
-References: <CAKoHjFzLoME76fmon+O7oS5_pKQk2j7QujnMsOfL7aLrr8xDWg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Subject: [PATCH 1/2] can: sunxi: Allwinner A10/A20 CAN Controller
+Date: Fri, 25 Sep 2015 18:58:38 +0200
+Message-ID: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway01.edpnet.net ([212.71.1.210]:5566 "EHLO
-	relaygateway01.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754630AbbIYI3U (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 25 Sep 2015 04:29:20 -0400
-Content-Disposition: inline
-In-Reply-To: <CAKoHjFzLoME76fmon+O7oS5_pKQk2j7QujnMsOfL7aLrr8xDWg@mail.gmail.com>
+Received: from mail.rdts.de ([195.243.153.28]:33534 "EHLO mail.rdts.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932234AbbIYQ6q (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 25 Sep 2015 12:58:46 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mark Santacesaria <mark@keeptruckin.com>
-Cc: linux-can@vger.kernel.org
+To: mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-Hi Mark,
+fixes a bug in arbitration error reporting
 
-I added linux-can mailing list in CC, and altered the subject.
-See my answer to your question below.
+e9d2d74 sun4i_can_err: fix arbitration lost error reporting
 
---- Original message ---
-> Date: Thu, 24 Sep 2015 11:21:48 -0400
-> From: Mark Santacesaria <mark@keeptruckin.com>
-> To: kurt.van.dijck@eia.be
-> Subject: j1939 linux kernel...
-> 
->    hey kurt.... thanks for the effort that you put in to the j1939
->    code.... i was trying to receive a VIN request which is a multi-packet
->    message, and while i found examples of sending more that 8 bytes but i
->    am not sure how to receive.....
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+---
 
-A "multi-packet message" is treated as a single j1939 packet.
-You receive it like any other j1939 packet:
-	
-	uint8_t buf[1024];
-	int ret;
+ drivers/net/can/sun4i_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	ret = recv(sock, buf, sizeof(buf), 0);
-
-will receive up to 1024 bytes from the next j1939 packet.
-You may use any buffer size you like here.
-
-see also
-
-	man recv
-
-Kind regards,
-Kurt
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 10d8497..d9a42c6 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -601,7 +601,7 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 		stats->tx_errors++;
+ 		if (likely(skb)) {
+ 			cf->can_id |= CAN_ERR_LOSTARB;
+-			cf->data[0] = (alc & 0x1f) >> 8;
++			cf->data[0] = (alc >> 8) & 0x1f;
+ 		}
+ 	}
+ 
