@@ -1,22 +1,23 @@
 From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-Subject: [PATCH 1/2] can: sunxi: Allwinner A10/A20 CAN Controller
-Date: Fri, 25 Sep 2015 18:58:38 +0200
-Message-ID: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
+Subject: [PATCH 2/2] can: sunxi: Allwinner A10/A20 CAN Controller
+Date: Fri, 25 Sep 2015 18:58:39 +0200
+Message-ID: <1443200319-16655-2-git-send-email-info@gerhard-bertelsmann.de>
+References: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rdts.de ([195.243.153.28]:33534 "EHLO mail.rdts.de"
+Received: from mail.rdts.de ([195.243.153.28]:33535 "EHLO mail.rdts.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932234AbbIYQ6q (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	id S932558AbbIYQ6q (ORCPT <rfc822;linux-can@vger.kernel.org>);
 	Fri, 25 Sep 2015 12:58:46 -0400
+In-Reply-To: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-fixes a bug in arbitration error reporting
+change description of the module.
 
-e9d2d74 sun4i_can_err: fix arbitration lost error reporting
+ef9bd57 general: fix driver info
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 ---
 
@@ -24,15 +25,12 @@ Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 10d8497..d9a42c6 100644
+index 67bdf6d..d9a42c6 100644
 --- a/drivers/net/can/sun4i_can.c
 +++ b/drivers/net/can/sun4i_can.c
-@@ -601,7 +601,7 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 		stats->tx_errors++;
- 		if (likely(skb)) {
- 			cf->can_id |= CAN_ERR_LOSTARB;
--			cf->data[0] = (alc & 0x1f) >> 8;
-+			cf->data[0] = (alc >> 8) & 0x1f;
- 		}
- 	}
- 
+@@ -854,4 +854,4 @@ module_platform_driver(sun4i_can_driver);
+ MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+ MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION(DRV_NAME "CAN driver for Allwinner SoCs (A10/A20)");
++MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
