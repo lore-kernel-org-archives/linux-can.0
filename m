@@ -1,42 +1,49 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: sunxi: Allwinner A10/A20 CAN Controller
-Date: Mon, 28 Sep 2015 08:47:37 +0200
-Message-ID: <5608E289.1080507@pengutronix.de>
-References: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
+Subject: Re: [can-utils] J1939 v6 (#7)
+Date: Mon, 28 Sep 2015 08:53:31 +0200
+Message-ID: <5608E3EB.5090308@pengutronix.de>
+References: <linux-can/can-utils/pull/7@github.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD"
+ boundary="dQW7sJIjok8MWarSgok7aJ21cUU0AuKVN"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40866 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:45513 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755690AbbI1Grs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Sep 2015 02:47:48 -0400
-In-Reply-To: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
+	with ESMTP id S1756513AbbI1Gxq (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Sep 2015 02:53:46 -0400
+In-Reply-To: <linux-can/can-utils/pull/7@github.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
+To: reply+001c342fd7b1455c991eb49342cd421d7317d7ea6ef9754c92cf00000001121c121c92a169ce0672fa57@reply.github.com, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: linux-can <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD
+--dQW7sJIjok8MWarSgok7aJ21cUU0AuKVN
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 09/25/2015 06:58 PM, Gerhard Bertelsmann wrote:
-> fixes a bug in arbitration error reporting
->=20
-> e9d2d74 sun4i_can_err: fix arbitration lost error reporting
->=20
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Hello Mikey and Kurt,
 
-Both applied to can-next. For the next patches, please don't include the
-git commit id in the patch, as it will change anyway. Please format the
-subject of the patch like this: "can: sun4i: <short description>" and in
-the patch itself, please provide a longer description. I've changed this
-while applying the patches.
+On 09/24/2015 09:33 PM, mikey32905 wrote:
+>         You can view, comment on, or merge this pull request online at:=
 
-Thanks,
+>=20
+>   https://github.com/linux-can/can-utils/pull/7
+>=20
+>=20
+>         Commit Summary
+>=20
+>   * can-j1939: add libj1939.a
+>   * can-j1939: add jspy 'sniffer' program
+>   * can-j1939: add jsr program
+>   * can-j1939: update headers with j1939
+>   * can-j1939: add jacd address claim daemon
+
+Kurt, I got this pull request of the j1939 tools from Mikey. What's the
+status of the j1939, can we add it to the can-utils? Is the userspace
+API stable?
+
 Marc
 
 --=20
@@ -46,20 +53,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD
+--dQW7sJIjok8MWarSgok7aJ21cUU0AuKVN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWCOKJAAoJEP5prqPJtc/Hs6EIALWlnpEaJB9lZG6JwS5qTIdk
-IlyVoEJfiu25JFwCjAm2LSVWexXtdMvPec+siyRnj2fiMS/Xaih05rLrQECZQd5f
-8cyU+ChqYH4UqoUVVvkCxPAR0YIzAh7uvPY/3hIoE7oYgdC+iOvpDaHXH157P2kg
-NsyiSZ4e7egp5JJKb0e3HqbUE9AJDCOkj1l4xMhXPAMR8jsmRM+b58t2aaxY7meI
-Uy7wb9eKzGD6G2Jo7IZZSIhDhwUYhOaFfJ7V7qblOWnFVuexA+ZkOpk26AcxXpBB
-cFdLaCwcUgS1zAMvtwwevU6VpkLtyY8DqJG8a/tf1PLWCo1uog+nZh8idAcv4po=
-=aoaE
+iQEcBAEBCgAGBQJWCOPrAAoJEP5prqPJtc/H/vwH/096p7KYtkKKjNof47C1X0Lv
+EPd40PcQ8yEokQNVY70MSFN3relAHdqhFGZnJxcPeH8mdxQZcWhaF4N2+Ll+xgif
+AwzfhfWNQc3L/VuWcuG6XZ5FXjfqi8ZEITZKQdZcePsplKNfqpyEW+yRiPfCO20s
+fXGLJFo0DXEirn3RzyNA+cY3su5ElJBBItHj8p95MQKmYDIIZkF4DmPVima/GmF8
+yYBkGcWqE25XFqh975cdtlXfk60YnptNVgFQnkGzzV1tAl87pqZBnlaCNamlRsjf
+OnwbJS2CLs+jT4G5mJwaH77N6hJ/HsS3Y3h+QSPplLg2v8VIVaEMAOr5KYi/7mw=
+=h+RK
 -----END PGP SIGNATURE-----
 
---6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD--
+--dQW7sJIjok8MWarSgok7aJ21cUU0AuKVN--
