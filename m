@@ -1,97 +1,65 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [RFC PATCH 4/4] net: can: remove net namespace restrictions
-Date: Sun, 27 Sep 2015 18:22:45 +0000
-Message-ID: <DB4PR05MB0927878900A3AA31F941BE7F89400@DB4PR05MB0927.eurprd05.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: sunxi: Allwinner A10/A20 CAN Controller
+Date: Mon, 28 Sep 2015 08:47:37 +0200
+Message-ID: <5608E289.1080507@pengutronix.de>
+References: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0095.outbound.protection.outlook.com ([157.56.112.95]:16209
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751894AbbI0Sh4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sun, 27 Sep 2015 14:37:56 -0400
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40866 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755690AbbI1Grs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 28 Sep 2015 02:47:48 -0400
+In-Reply-To: <1443200319-16655-1-git-send-email-info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, John Ernberg <john.ernberg@actia.se>
+To: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
 
----
- net/can/af_can.c | 12 ------------
- net/can/gw.c     |  2 --
- net/can/raw.c    |  3 ---
- 3 files changed, 17 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index aaeb93a..309270d 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -140,9 +140,6 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
- 	if (protocol < 0 || protocol >= CAN_NPROTO)
- 		return -EINVAL;
- 
--	if (!net_eq(net, &init_net))
--		return -EAFNOSUPPORT;
--
- 	cp = can_get_proto(protocol);
- 
- #ifdef CONFIG_MODULES
-@@ -710,9 +707,6 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 
--	if (unlikely(!net_eq(dev_net(dev), &init_net)))
--		goto drop;
--
- 	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
- 		      skb->len != CAN_MTU ||
- 		      cfd->len > CAN_MAX_DLEN,
-@@ -734,9 +728,6 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 
--	if (unlikely(!net_eq(dev_net(dev), &init_net)))
--		goto drop;
--
- 	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
- 		      skb->len != CANFD_MTU ||
- 		      cfd->len > CANFD_MAX_DLEN,
-@@ -826,9 +817,6 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 	struct can_dev_rcv_lists *d;
- 
--	if (!net_eq(dev_net(dev), &init_net))
--		return NOTIFY_DONE;
--
- 	if (dev->type != ARPHRD_CAN)
- 		return NOTIFY_DONE;
- 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 082a144..f5a52ad 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -458,8 +458,6 @@ static int cgw_notifier(struct notifier_block *nb,
- {
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 
--	if (!net_eq(dev_net(dev), &init_net))
--		return NOTIFY_DONE;
- 	if (dev->type != ARPHRD_CAN)
- 		return NOTIFY_DONE;
- 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index c5c0cb9..8b60d87 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -272,9 +272,6 @@ static int raw_notifier(struct notifier_block *nb,
- 	struct raw_sock *ro = container_of(nb, struct raw_sock, notifier);
- 	struct sock *sk = &ro->sk;
- 
--	if (!net_eq(dev_net(dev), &init_net))
--		return NOTIFY_DONE;
--
- 	if (dev->type != ARPHRD_CAN)
- 		return NOTIFY_DONE;
- 
--- 
-2.5.3
+On 09/25/2015 06:58 PM, Gerhard Bertelsmann wrote:
+> fixes a bug in arbitration error reporting
+>=20
+> e9d2d74 sun4i_can_err: fix arbitration lost error reporting
+>=20
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
+Both applied to can-next. For the next patches, please don't include the
+git commit id in the patch, as it will change anyway. Please format the
+subject of the patch like this: "can: sun4i: <short description>" and in
+the patch itself, please provide a longer description. I've changed this
+while applying the patches.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWCOKJAAoJEP5prqPJtc/Hs6EIALWlnpEaJB9lZG6JwS5qTIdk
+IlyVoEJfiu25JFwCjAm2LSVWexXtdMvPec+siyRnj2fiMS/Xaih05rLrQECZQd5f
+8cyU+ChqYH4UqoUVVvkCxPAR0YIzAh7uvPY/3hIoE7oYgdC+iOvpDaHXH157P2kg
+NsyiSZ4e7egp5JJKb0e3HqbUE9AJDCOkj1l4xMhXPAMR8jsmRM+b58t2aaxY7meI
+Uy7wb9eKzGD6G2Jo7IZZSIhDhwUYhOaFfJ7V7qblOWnFVuexA+ZkOpk26AcxXpBB
+cFdLaCwcUgS1zAMvtwwevU6VpkLtyY8DqJG8a/tf1PLWCo1uog+nZh8idAcv4po=
+=aoaE
+-----END PGP SIGNATURE-----
+
+--6PmrHvh5GIhmFCr1IXhCUGmdlpk5vvrSD--
