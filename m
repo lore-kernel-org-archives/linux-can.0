@@ -1,120 +1,68 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: can-j1939 API
-Date: Tue, 29 Sep 2015 21:49:20 +0200
-Message-ID: <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
-References: <linux-can/can-utils/pull/7@github.com>
- <linux-can/can-utils/pull/7/c144149208@github.com>
- <560ADC91.1090408@pengutronix.de>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: can-j1939 API
+Date: Tue, 29 Sep 2015 13:10:22 -0700
+Message-ID: <CANGgnMZWZF7fs9HiAZMChN5RmFiAnFYZW3iiUaBE9Bjt5=tXVw@mail.gmail.com>
+References: <linux-can/can-utils/pull/7@github.com> <linux-can/can-utils/pull/7/c144149208@github.com>
+ <560ADC91.1090408@pengutronix.de> <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:14145 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751412AbbI2Ttg (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2015 15:49:36 -0400
-Content-Disposition: inline
-In-Reply-To: <560ADC91.1090408@pengutronix.de>
+Received: from mail-qk0-f169.google.com ([209.85.220.169]:36530 "EHLO
+	mail-qk0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751387AbbI2UKm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2015 16:10:42 -0400
+Received: by qkcf65 with SMTP id f65so8476736qkc.3
+        for <linux-can@vger.kernel.org>; Tue, 29 Sep 2015 13:10:41 -0700 (PDT)
+In-Reply-To: <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-> Can we switch to the mailinglist for the discussion.
-Yes
+On Tue, Sep 29, 2015 at 12:49 PM Kurt Van Dijck
+<dev.kurt@vandijck-laurijssen.be> wrote:
+> I would like to challenge other j1939 (not necessarily socketcan+can-j1939)
+> users to share their opinions.
+>
+> > > If you look at http://elinux.org/J1939
+>
+> > > $ modprobe can-j1939
+>
+> This is a systemwide action, as opposed to
+>
+> > > $ ip link set can0 j1939 on
+>
+> which is an interface-wide action.
+>
+> Due to the nature of CAN, the kernel should not/cannot decide if CAN
+> traffic is J1939 or not.
+> Unlike other CAN protocols (RAW, BCM, ISOTP), J1939 allocates the whole
+> CAN id range for its use, and using CAN ids incompatible with j1939
+> is regarded illegal.
+>
+> So this must become a switch.
+>
+> The modprobe is necessary for the same reason that the sequence
+>
+> $ modprobe vcan
+> $ ip link add vcan0 type vcan
+>
+> requires a modprobe too.
+> I do see the weirdness of it, although this is not new.
 
-> On 09/29/2015 08:34 PM, Oliver Hartkopp wrote:
-> > Hi Kurt,
-> > 
-> > I'm sorry but I still think that your implementation and configuration
-> > is way to complex and not intuitive.
+I've been implementing J1939 in userspace with socketcan, and have
+worked with a number of different vehicle types, each with their
+quirks.  I haven't looked at Kurt's implementation, so take my
+thoughts with a grain of salt.
 
-Marc,
-This means that the API is not yet agreed on :-)
+J1939 allocates _most_ of the 29 bit can IDs.  The EDP bit in the
+can_id signals that the message should be ignored, and any 11 bit CAN
+IDs should also be ignored.  I've seen vehicles with both types of
+messages on the J1939 CAN bus that I've had to work around (formats A
+and B).  11 bit message IDs tend to be when system diagnostics are
+happening (debugging brake ECUs, etc), though not always.  In the real
+world, you won't find CAN busses which only have J1939 traffic on
+them.  For the most part, you will be able to ignore the other
+traffic, but not always.  The standard specifies (I can't quote
+sections for you right now) that other traffic should be ignored.
 
-I believe this is the point where a userbase should decide
-what is feasible and what not.
-Up to now, the discussion was between Oliver & I, and Oliver
-was/is not familiar with j1939 use.
-
-Since Oliver listed his mains concerns here, I'll address them
-with my arguments so noone needs to read old discussions.
-
-I would like to challenge other j1939 (not necessarily socketcan+can-j1939)
-users to share their opinions.
-
-> > If you look at http://elinux.org/J1939
-
-> > $ modprobe can-j1939
-
-This is a systemwide action, as opposed to
-
-> > $ ip link set can0 j1939 on
-
-which is an interface-wide action.
-
-Due to the nature of CAN, the kernel should not/cannot decide if CAN
-traffic is J1939 or not.
-Unlike other CAN protocols (RAW, BCM, ISOTP), J1939 allocates the whole
-CAN id range for its use, and using CAN ids incompatible with j1939
-is regarded illegal.
-
-So this must become a switch.
-
-The modprobe is necessary for the same reason that the sequence
-
-$ modprobe vcan
-$ ip link add vcan0 type vcan
-
-requires a modprobe too.
-I do see the weirdness of it, although this is not new.
-
-> > still looks weird. Adding addresses to CAN interfaces is not common -
-
-Adding addressing to j1939 networks is one of the core principles of
-j1939, whether we like it or not.
-Unlike raw CAN or CANopen where each datagram gets a unique id in the
-network, J1939 implements a hierarchy where 8 bits indicate the source,
-and another 18bits indicate the datagrams unique id.
-
-I don't claim that this is good design.
-I do claim that this design fits real close to the addressing
-used in BSD sockets, and therefore any alternative is useless new API.
-
-As stated above, this is not the case for most other CAN protocols.
-
-> > and if you think about this kind of assignment, it should be implemented
-> > inside the j1939 stuff and not in af_can.c. The can-gw routing netlink
-
-j1939 touches af_can because address configuration via netlink is
-absent in af_can. j1939 adds (with seperate patches) the ability to add
-addressess for CAN sockets, but only for those CAN protocols that
-support it.
-I see no decent way to bypass af_can, except for creating af_j1939.
-
-> > API was integrated in gw.c too. IMO the sockaddr_can extension would be
-> > ok - but the other implementation should be made without af_can.[ch]
-> > changes.
-
-because j1939 lives on top of af_can, the sockaddr_can extension affects
-the ABI of other can protocols too. The minimal change to support the
-old ABI is essential.
-
-> > 
-> > I remember our discussion about the address claiming but I wonder if we
-> > really follow the requirement to only put functionality into the kernel
-> > that really has to be implemented there.
-
-The kernel tracks and validates J1939 traffic. Any userspace application
-can track, but none can validate & reject without duplicating effort.
-
-> > 
-> > Did you take a look at https://github.com/ISOBlue/isoblue-software -
-> > which is far simpler - whether it can fulfill the basic functionalities
-> > (segmentation, etc.) to enable j1939 for Linux?
-
-I took a quick look. It appears that they only put the address claiming
-in the kernel. I understand that this is exactly your concern in my
-implementation :-).
-
-Kind regards,
-Kurt
+Austin
