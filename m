@@ -1,82 +1,136 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [can-utils] J1939 v6 (#7)
-Date: Tue, 29 Sep 2015 20:46:41 +0200
-Message-ID: <560ADC91.1090408@pengutronix.de>
-References: <linux-can/can-utils/pull/7@github.com>
- <linux-can/can-utils/pull/7/c144149208@github.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [RFC PATCH 0/4] Net namespaces for SocketCAN
+Date: Tue, 29 Sep 2015 19:07:41 +0000
+Message-ID: <20150929190741.15756.70022@maxwell.marel.net>
+References: <DB3PR05MB09246A6393EF43427D2CC17689400@DB3PR05MB0924.eurprd05.prod.outlook.com>
+ <56097EDB.9050607@hartkopp.net> <20150929103032.1141.50295@maxwell.marel.net>
+ <560AD0BD.6040803@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="qIOBhFQ4eQ9ql2m2nrMW4BjIeDbt1ka4w"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:50916 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S935252AbbI2Sqy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2015 14:46:54 -0400
-In-Reply-To: <linux-can/can-utils/pull/7/c144149208@github.com>
+Received: from mail-db3on0056.outbound.protection.outlook.com ([157.55.234.56]:9088
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S964820AbbI2TIE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2015 15:08:04 -0400
+In-Reply-To: <560AD0BD.6040803@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can/can-utils <reply+001c342f19a5bb0b961514b7b0770b27aa4808e234c8be2992cf0000000112229b9d92a169ce0672fa57@reply.github.com>, linux-can/can-utils <can-utils@noreply.github.com>, linux-can <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qIOBhFQ4eQ9ql2m2nrMW4BjIeDbt1ka4w
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Oliver,
 
-On 09/29/2015 08:34 PM, Oliver Hartkopp wrote:
-> Hi Kurt,
->=20
-> I'm sorry but I still think that your implementation and configuration
-> is way to complex and not intuitive.
-> If you look at http://elinux.org/J1939
-> $ modprobe can-j1939
-> $ ip link set can0 j1939 on
-> still looks weird. Adding addresses to CAN interfaces is not common -
-> and if you think about this kind of assignment, it should be implemente=
-d
-> inside the j1939 stuff and not in af_can.c. The can-gw routing netlink
-> API was integrated in gw.c too. IMO the sockaddr_can extension would be=
+Quoting Oliver Hartkopp (2015-09-29 17:56:13)
+> Hi Andri,
+> 
+> On 29.09.2015 12:30, Andri Yngvason wrote:
+> > Quoting Oliver Hartkopp (2015-09-28 17:54:35)
+> >> On 27.09.2015 20:22, Andri Yngvason wrote:
+> >>
+> >>> I've added net namespace support for raw and gw sockets. BCM needs work.
+> 
+> Do you think about the procfs stuff?
+>
+I've handled the procfs stuff in af_can, but BCM has a lot of that too. I've not
+changed to proc stuff in BCM to use namespaces.
+> 
+> >>> I've done some preliminary testing and everything seems to work, but I would
+> >>> like to have some input from you guys before continuing.
+> 
+> I'm not a namespace specialist though. But at least it looks consistent.
+>
+Neither am I! ;)
+> 
+> >>> In particular I'm worried that I might have missed something with regard to
+> >>> receive lists. Devices still share the same "rcv_cache" across namespaces.
+> 
+> AFAIK the rcv_cache is just a better API to handle small data structures like 
+> the can_receiver. As the devices are separated and inside their specific 
+> namespace (right?) the ml_priv is per interface anyway.
+> 
+> So why not use a common rcv_cache ?
+>
+That's what I though, but I don't feel like I have the whole picture, so I'm
+afraid of side-effects and race-conditions.
 
-> ok - but the other implementation should be made without af_can.[ch]
-> changes.
->=20
-> I remember our discussion about the address claiming but I wonder if we=
+I've been experiencing some unstability on my workstation while using CAN under
+LXC. Things don't crash under the same conditions in a non-SMP qemu machine so I
+reckon there might be something racy going on. It might also be that the patches
+didn't apply properly to the kernel I'm running because it's a different
+version. I haven't had time to test these theories yet, but we'll see.
+> 
+> >>
+> >> What I know from net namespaces is that you can create virtual interfaces
+> >> (veth) which are 'peered' to another veth and can be 'bridged' to a real
+> >> interface.
+> >>
+> > Yes. I'm not actually interested in that though. I just want to be able to run
+> > vcan on LXC.
+> 
+> Ok - and when you create a vcan inside a namespace with
+> 
+> ip netns add myns
+> 
+> ip link add dev vcan0 type vcan
+> 
+> ip link set vcan0 netns myns
+> 
+> This just works inside the namespace 'myns' ??
+> 
+Yep, that's about right. A convenient way to test this without LXC is to add a
+namespace and then run a screen/tmux session within the namespace. Something
+like this:
 
-> really follow the requirement to only put functionality into the kernel=
+# ip netns add myns
+# ip netns exec myns tmux
 
-> that really has to be implemented there.
->=20
-> Did you take a look at https://github.com/ISOBlue/isoblue-software -
-> which is far simpler - whether it can fulfill the basic functionalities=
+Then you can add a vcan interface within the session and check that it appears
+in "ip link show". Other things to try: candump any, candump vcan0, cangen vcan,
+cat /proc/net/can/stats, cat /proc/net/can/rcvlists_*, ...
 
-> (segmentation, etc.) to enable j1939 for Linux?
+It's also good to run these in another namespace or the default namespace at the
+same time to verify that nothing bleeds through.
+> ---
+> 
+> Generally I appreciate your work after trying to understand it ;-)
+> So hopefully it doesn't break things we've overlooked.
+> 
+> How do you bridge two vcans over TCP?
+> 
+> Do you have an example for that?
+> 
+I don't have any code to show you at the moment. What I have is a part of a
+larger project that is not ready for release. I'll tell you how it works
+instead.
 
-Can we switch to the mailinglist for the discussion.
+TCP server:
+ * Open can/vcan.
+ * Listen on socket.
+ * On connection:
+   - Set up a callback to forward data from the bus to the client.
+   - Set up a callback to forward data from the client to the bus.
 
-Marc
+TCP client:
+ * Open can/vcan.
+ * Connect to server.
+ * On success:
+   - Set up a callback to forward data from the bus to the server.
+   - Set up a callback to forward data from the server to the bus.
 
+The data is sent over as packets of "struct can_frame" with "can_id" in network
+byte-order.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+My LXC instance is already bridged to the network, so getting the TCP through is
+no problem.
 
+This sort of thing is probably not very nice with regard to real-time
+performance but it's good enough when you're developing a CAN application on a
+linux container.
 
---qIOBhFQ4eQ9ql2m2nrMW4BjIeDbt1ka4w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Now, you might ask why I'm developing applications in an LXC instance, but
+that's a whole different story. ;)
 
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWCtyRAAoJEP5prqPJtc/H0P4H/iEnf5hMQ3YLCebFex9EJ9Uo
-79ZUD83ORcf9U52GspLs0gmYLTdLBMYqdSjOAVBVanVx1odQ17VvC3THWCPGLfo8
-kJCgygbBs35MrL269DV3xfEbsw6nBAKLDAopXPiL5KJ2VX6crWdNwqMDO/L0ZLMY
-LvQW49lH9/havFHWVax8Sa512puRdeJgdF/hStBbU0dH3ijD/XhCLEjQ7TsdXdeO
-4SU5KscbhCnTnHv1ji0dznoVSFKSJSZxZS1JmiELeOOHp8W5UVV5hhOwe7OnDfmf
-uzehryYaU/OQp36A+0Jcq6+Tq5MqOdW4BMtsljat/l3xcFdxGvu3xGiTPAEoT+8=
-=EyNW
------END PGP SIGNATURE-----
-
---qIOBhFQ4eQ9ql2m2nrMW4BjIeDbt1ka4w--
+Cheers,
+Andri
