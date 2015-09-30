@@ -1,106 +1,56 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 12/12] [RFC] can: avoid using timeval for uapi
-Date: Wed, 30 Sep 2015 13:26:42 +0200
-Message-ID: <1443612402-3000775-13-git-send-email-arnd@arndb.de>
-References: <1443612402-3000775-1-git-send-email-arnd@arndb.de>
+From: Aaron Clarke <ac@aaronclarke.com>
+Subject: Re: [can-utils] J1939 v6 (#7)
+Date: Wed, 30 Sep 2015 15:26:40 +0000 (UTC)
+Message-ID: <loom.20150930T171203-985@post.gmane.org>
+References: <linux-can/can-utils/pull/7@github.com> <5608E3EB.5090308@pengutronix.de> <20150929121530.GB14618@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <y2038-bounces@lists.linaro.org>
-In-Reply-To: <1443612402-3000775-1-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/y2038/>
-List-Post: <mailto:y2038@lists.linaro.org>
-List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
-List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=subscribe>
-Errors-To: y2038-bounces@lists.linaro.org
-Sender: "Y2038" <y2038-bounces@lists.linaro.org>
-To: netdev@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-api@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:47083 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752300AbbI3PaH (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 30 Sep 2015 11:30:07 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1ZhJKW-0005pb-3x
+	for linux-can@vger.kernel.org; Wed, 30 Sep 2015 17:30:04 +0200
+Received: from cpe-104-228-191-198.buffalo.res.rr.com ([104.228.191.198])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2015 17:30:04 +0200
+Received: from ac by cpe-104-228-191-198.buffalo.res.rr.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2015 17:30:04 +0200
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-VGhlIGNhbiBzdWJzeXN0ZW0gY29tbXVuaWNhdGVzIHdpdGggdXNlciBzcGFjZSB1c2luZyBhIGJj
-bV9tc2dfaGVhZApoZWFkZXIsIHdoaWNoIGNvbnRhaW5zIHR3byB0aW1lc3RhbXBzLiBUaGlzIGlz
-IHByb2JsZW1hdGljIGZvcgptdWx0aXBsZSByZWFzb25zOgoKYSkgVGhlIHN0cnVjdHVyZSBsYXlv
-dXQgaXMgY3VycmVudGx5IGluY29tcGF0aWJsZSBiZXR3ZWVuIDY0LWJpdAogICB1c2VyIHNwYWNl
-IGFuZCAzMi1iaXQgdXNlciBzcGFjZSwgYW5kIGNhbm5vdCB3b3JrIGluIGNvbXBhdAogICBtb2Rl
-IChvdGhlciB0aGFuIHgzMikuCgpiKSBUaGUgdGltZXZhbCBzdHJ1Y3R1cmUgbGF5b3V0IHdpbGwg
-Y2hhbmdlIGluIDMyLWJpdCB1c2VyCiAgIHNwYWNlIHdoZW4gd2UgZml4IHRoZSB5MjAzOCBvdmVy
-ZmxvdyBwcm9ibGVtIGJ5IHJlZGVmaW5pbmcKICAgdGltZV90IHRvIDY0LWJpdCwgbWFraW5nIG5l
-dyAzMi1iaXQgdXNlciBzcGFjZSBpbmNvbXBhdGlibGUKICAgd2l0aCB0aGUgY3VycmVudCBrZXJu
-ZWwgaW50ZXJmYWNlLgogICBDYXJzIGxhc3QgYSBsb25nIHRpbWUgYW5kIG9mdGVuIHVzZSBvbGQg
-a2VybmVscywgc28gdGhlIGFjdHVhbAogICB1c2VycyBvZiB0aGlzIGNvZGUgYXJlIHRoZSBtb3N0
-IGxpa2VseSBvbmVzIHRvIG1pZ3JhdGUgdG8geTIwMzgKICAgc2FmZSB1c2VyIHNwYWNlLgoKVGhp
-cyB0cmllcyB0byB3b3JrIGFyb3VuZCBwYXJ0IG9mIHRoZSBwcm9ibGVtIGJ5IGNoYW5naW5nIHRo
-ZQpwdWJsaWNseSB2aXNpYmxlIHVzZXIgaW50ZXJmYWNlIGluIHRoZSBoZWFkZXIsIGJ1dCBub3Qg
-dGhlIGJpbmFyeQppbnRlcmZhY2UuIEZvcnR1bmF0ZWx5LCB0aGUgdmFsdWVzIHBhc3NlZCBhcm91
-bmQgaW4gdGhlIHN0cnVjdHVyZQphcmUgcmVsYXRpdmUgdGltZXMgYW5kIGRvIG5vdCBhY3R1YWxs
-eSBzdWZmZXIgZnJvbSB0aGUgeTIwMzgKb3ZlcmZsb3csIHNvIDMyLWJpdCBpcyBlbm91Z2ggaGVy
-ZS4KCldlIHJlcGxhY2UgdGhlIHVzZSBvZiAnc3RydWN0IHRpbWV2YWwnIHdpdGggYSBuZXdseSBk
-ZWZpbmVkCidzdHJ1Y3QgYmNtX3RpbWV2YWwnIHRoYXQgdXNlcyB0aGUgZXhhY3Qgc2FtZSBiaW5h
-cnkgbGF5b3V0CmFzIGJlZm9yZSBhbmQgdGhhdCBzdGlsbCBzdWZmZXJzIGZyb20gcHJvYmxlbSBh
-KSBidXQgbm90IHByb2JsZW0KYikuCgpUaGUgZG93bnNpZGUgb2YgdGhpcyBhcHByb2FjaCBpcyB0
-aGF0IGFueSB1c2VyIHNwYWNlIHByb2dyYW0KdGhhdCBjdXJyZW50bHkgYXNzaWducyBhIHRpbWV2
-YWwgc3RydWN0dXJlIHRvIHRoZXNlIG1lbWJlcnMKcmF0aGVyIHRoYW4gd3JpdGluZyB0aGUgdHZf
-c2VjL3R2X3VzZWMgcG9ydGlvbnMgaW5kaXZpZHVhbGx5CndpbGwgc3VmZmVyIGEgY29tcGlsZS10
-aW1lIGVycm9yIHdoZW4gYnVpbHQgd2l0aCBhbiB1cGRhdGVkCmtlcm5lbCBoZWFkZXIuIEZpeGlu
-ZyB0aGlzIGVycm9yIG1ha2VzIGl0IHdvcmsgZmluZSB3aXRoIG9sZAphbmQgbmV3IGhlYWRlcnMg
-dGhvdWdoLgoKV2UgY291bGQgYWRkcmVzcyBwcm9ibGVtIGEpIGJ5IHVzaW5nICdfX3UzMicgb3Ig
-J2ludCcgbWVtYmVycwpyYXRoZXIgdGhhbiAnbG9uZycsIGJ1dCB0aGF0IHdvdWxkIGhhdmUgYSBt
-b3JlIHNpZ25pZmljYW50CmRvd25zaWRlIGluIGFsc28gYnJlYWtpbmcgc3VwcG9ydCBmb3IgYWxs
-IGV4aXN0aW5nIDY0LWJpdCB1c2VyCmJpbmFyaWVzIHRoYXQgbWlnaHQgYmUgdXNpbmcgdGhpcyBp
-bnRlcmZhY2UsIHdoaWNoIGlzIGxpa2VseQpub3QgYWNjZXB0YWJsZS4KClNpZ25lZC1vZmYtYnk6
-IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+CkNjOiBPbGl2ZXIgSGFydGtvcHAgPHNvY2tl
-dGNhbkBoYXJ0a29wcC5uZXQ+CkNjOiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4
-LmRlPgpDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgtYXBpQHZnZXIua2Vy
-bmVsLm9yZwotLS0KIGluY2x1ZGUvdWFwaS9saW51eC9jYW4vYmNtLmggfCAgNyArKysrKystCiBu
-ZXQvY2FuL2JjbS5jICAgICAgICAgICAgICAgIHwgMTUgKysrKysrKysrKy0tLS0tCiAyIGZpbGVz
-IGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
-aW5jbHVkZS91YXBpL2xpbnV4L2Nhbi9iY20uaCBiL2luY2x1ZGUvdWFwaS9saW51eC9jYW4vYmNt
-LmgKaW5kZXggODlkZGI5ZGM5YmRmLi43YTI5MWRjMWZmMTUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUv
-dWFwaS9saW51eC9jYW4vYmNtLmgKKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L2Nhbi9iY20uaApA
-QCAtNDcsNiArNDcsMTEgQEAKICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgogI2luY2x1ZGUgPGxp
-bnV4L2Nhbi5oPgogCitzdHJ1Y3QgYmNtX3RpbWV2YWwgeworCWxvbmcgdHZfc2VjOworCWxvbmcg
-dHZfdXNlYzsKK307CisKIC8qKgogICogc3RydWN0IGJjbV9tc2dfaGVhZCAtIGhlYWQgb2YgbWVz
-c2FnZXMgdG8vZnJvbSB0aGUgYnJvYWRjYXN0IG1hbmFnZXIKICAqIEBvcGNvZGU6ICAgIG9wY29k
-ZSwgc2VlIGVudW0gYmVsb3cuCkBAIC02Miw3ICs2Nyw3IEBAIHN0cnVjdCBiY21fbXNnX2hlYWQg
-ewogCV9fdTMyIG9wY29kZTsKIAlfX3UzMiBmbGFnczsKIAlfX3UzMiBjb3VudDsKLQlzdHJ1Y3Qg
-dGltZXZhbCBpdmFsMSwgaXZhbDI7CisJc3RydWN0IGJjbV90aW1ldmFsIGl2YWwxLCBpdmFsMjsK
-IAljYW5pZF90IGNhbl9pZDsKIAlfX3UzMiBuZnJhbWVzOwogCXN0cnVjdCBjYW5fZnJhbWUgZnJh
-bWVzWzBdOwpkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9iY20uYyBiL25ldC9jYW4vYmNtLmMKaW5kZXgg
-YTFiYTY4NzVjMmEyLi42ODYzMzEwZDY5NzMgMTAwNjQ0Ci0tLSBhL25ldC9jYW4vYmNtLmMKKysr
-IGIvbmV0L2Nhbi9iY20uYwpAQCAtOTYsNyArOTYsNyBAQCBzdHJ1Y3QgYmNtX29wIHsKIAljYW5p
-ZF90IGNhbl9pZDsKIAl1MzIgZmxhZ3M7CiAJdW5zaWduZWQgbG9uZyBmcmFtZXNfYWJzLCBmcmFt
-ZXNfZmlsdGVyZWQ7Ci0Jc3RydWN0IHRpbWV2YWwgaXZhbDEsIGl2YWwyOworCXN0cnVjdCBiY21f
-dGltZXZhbCBpdmFsMSwgaXZhbDI7CiAJc3RydWN0IGhydGltZXIgdGltZXIsIHRocnRpbWVyOwog
-CXN0cnVjdCB0YXNrbGV0X3N0cnVjdCB0c2tsZXQsIHRocnRza2xldDsKIAlrdGltZV90IHJ4X3N0
-YW1wLCBrdF9pdmFsMSwga3RfaXZhbDIsIGt0X2xhc3Rtc2c7CkBAIC0xMzEsNiArMTMxLDExIEBA
-IHN0YXRpYyBpbmxpbmUgc3RydWN0IGJjbV9zb2NrICpiY21fc2soY29uc3Qgc3RydWN0IHNvY2sg
-KnNrKQogCXJldHVybiAoc3RydWN0IGJjbV9zb2NrICopc2s7CiB9CiAKK3N0YXRpYyBpbmxpbmUg
-a3RpbWVfdCBiY21fdGltZXZhbF90b19rdGltZShzdHJ1Y3QgYmNtX3RpbWV2YWwgdHYpCit7CisJ
-cmV0dXJuIGt0aW1lX3NldCh0di50dl9zZWMsIHR2LnR2X3VzZWMgKiBOU0VDX1BFUl9VU0VDKTsK
-K30KKwogI2RlZmluZSBDRlNJWiBzaXplb2Yoc3RydWN0IGNhbl9mcmFtZSkKICNkZWZpbmUgT1BT
-SVogc2l6ZW9mKHN0cnVjdCBiY21fb3ApCiAjZGVmaW5lIE1IU0laIHNpemVvZihzdHJ1Y3QgYmNt
-X21zZ19oZWFkKQpAQCAtOTUzLDggKzk1OCw4IEBAIHN0YXRpYyBpbnQgYmNtX3R4X3NldHVwKHN0
-cnVjdCBiY21fbXNnX2hlYWQgKm1zZ19oZWFkLCBzdHJ1Y3QgbXNnaGRyICptc2csCiAJCW9wLT5j
-b3VudCA9IG1zZ19oZWFkLT5jb3VudDsKIAkJb3AtPml2YWwxID0gbXNnX2hlYWQtPml2YWwxOwog
-CQlvcC0+aXZhbDIgPSBtc2dfaGVhZC0+aXZhbDI7Ci0JCW9wLT5rdF9pdmFsMSA9IHRpbWV2YWxf
-dG9fa3RpbWUobXNnX2hlYWQtPml2YWwxKTsKLQkJb3AtPmt0X2l2YWwyID0gdGltZXZhbF90b19r
-dGltZShtc2dfaGVhZC0+aXZhbDIpOworCQlvcC0+a3RfaXZhbDEgPSBiY21fdGltZXZhbF90b19r
-dGltZShtc2dfaGVhZC0+aXZhbDEpOworCQlvcC0+a3RfaXZhbDIgPSBiY21fdGltZXZhbF90b19r
-dGltZShtc2dfaGVhZC0+aXZhbDIpOwogCiAJCS8qIGRpc2FibGUgYW4gYWN0aXZlIHRpbWVyIGR1
-ZSB0byB6ZXJvIHZhbHVlcz8gKi8KIAkJaWYgKCFvcC0+a3RfaXZhbDEudHY2NCAmJiAhb3AtPmt0
-X2l2YWwyLnR2NjQpCkBAIC0xMTM0LDggKzExMzksOCBAQCBzdGF0aWMgaW50IGJjbV9yeF9zZXR1
-cChzdHJ1Y3QgYmNtX21zZ19oZWFkICptc2dfaGVhZCwgc3RydWN0IG1zZ2hkciAqbXNnLAogCQkJ
-Lyogc2V0IHRpbWVyIHZhbHVlICovCiAJCQlvcC0+aXZhbDEgPSBtc2dfaGVhZC0+aXZhbDE7CiAJ
-CQlvcC0+aXZhbDIgPSBtc2dfaGVhZC0+aXZhbDI7Ci0JCQlvcC0+a3RfaXZhbDEgPSB0aW1ldmFs
-X3RvX2t0aW1lKG1zZ19oZWFkLT5pdmFsMSk7Ci0JCQlvcC0+a3RfaXZhbDIgPSB0aW1ldmFsX3Rv
-X2t0aW1lKG1zZ19oZWFkLT5pdmFsMik7CisJCQlvcC0+a3RfaXZhbDEgPSBiY21fdGltZXZhbF90
-b19rdGltZShtc2dfaGVhZC0+aXZhbDEpOworCQkJb3AtPmt0X2l2YWwyID0gYmNtX3RpbWV2YWxf
-dG9fa3RpbWUobXNnX2hlYWQtPml2YWwyKTsKIAogCQkJLyogZGlzYWJsZSBhbiBhY3RpdmUgdGlt
-ZXIgZHVlIHRvIHplcm8gdmFsdWU/ICovCiAJCQlpZiAoIW9wLT5rdF9pdmFsMS50djY0KQotLSAK
-Mi4xLjAucmMyCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpZMjAzOCBtYWlsaW5nIGxpc3QKWTIwMzhAbGlzdHMubGluYXJvLm9yZwpodHRwczovL2xpc3Rz
-LmxpbmFyby5vcmcvbWFpbG1hbi9saXN0aW5mby95MjAzOAo=
+Kurt Van Dijck <dev.kurt <at> vandijck-laurijssen.be> writes:
+
+
+> The lack of extensive userbase made all arguments void.
+> In between, the userbase may have grown?
+> Given that the pull request is coming from Mikey, the need is growing
+> and this may be a proper time to decide on this 
+
+I am working on a j1939 project that could use this and appreciate any
+development.  We need a stable solution as soon as possible.
+
+> Any decision implies that some porting to 4.2 kernel needs to be done
+> anyway. The latest patches I have for 3.15 are not stable yet. j1939 is
+> stable up to 3.12 only.
+
+I ported the 3.15 branch to a 4.1 kernel (patched for beaglebone black) but
+it crashes on multi-packet sends.  Is this a know issue with the 3.15
+branch?  In any case, I will try the 3.12 kernel branch instead if that is
+more stable.
+
+Best regards,
+
+Aaron
+
+
+
+
+
