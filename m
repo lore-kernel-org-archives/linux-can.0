@@ -1,57 +1,110 @@
-From: Arnd Bergmann <arnd@arndb.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH 12/12] [RFC] can: avoid using timeval for uapi
-Date: Tue, 06 Oct 2015 10:32:58 +0200
-Message-ID: <7548522.iLToS4O3HD@wuerfel>
+Date: Tue, 6 Oct 2015 11:05:32 +0200
+Message-ID: <56138EDC.8080501@pengutronix.de>
 References: <1443612402-3000775-1-git-send-email-arnd@arndb.de>
  <1443612402-3000775-13-git-send-email-arnd@arndb.de>
- <5612C69C.7020803@hartkopp.net>
+ <5612C69C.7020803@hartkopp.net> <7548522.iLToS4O3HD@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <y2038-bounces@lists.linaro.org>
-In-Reply-To: <5612C69C.7020803@hartkopp.net>
-List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/y2038/>
-List-Post: <mailto:y2038@lists.linaro.org>
-List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
-List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=subscribe>
-Errors-To: y2038-bounces@lists.linaro.org
-Sender: "Y2038" <y2038-bounces@lists.linaro.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: y2038@lists.linaro.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-api@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="dT3ARBDVtrIOv6XH9JCL5S2JmBsMlXwCJ"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48394 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752100AbbJFJFv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2015 05:05:51 -0400
+In-Reply-To: <7548522.iLToS4O3HD@wuerfel>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: netdev@vger.kernel.org, y2038@lists.linaro.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, linux-api@vger.kernel.org
 
-T24gTW9uZGF5IDA1IE9jdG9iZXIgMjAxNSAyMDo1MTowOCBPbGl2ZXIgSGFydGtvcHAgd3JvdGU6
-Cj4gCj4gSSBkb3VibGUgY2hlY2tlZCBzb21lIChtb3JlKSBCQ00gYXBwbGljYXRpb25zIEkgaGF2
-ZSBhY2Nlc3MgdG8uCj4gCj4gRS5nLiBodHRwczovL2dpdGh1Yi5jb20vbGludXgtY2FuL2Nhbi10
-ZXN0cwo+IAo+IFdoZW4geW91IGRvIGEgJ2dpdCBncmVwIGl2YWwxJyB0aGVyZSB5b3UgZ2V0IHNv
-bWV0aGluZyBsaWtlCj4gCj4gdHN0LWJjbS1jeWNsZS5jOiAgICAgICAgbXNnLm1zZ19oZWFkLml2
-YWwxLnR2X3NlYyA9IDE7Cj4gdHN0LWJjbS1jeWNsZS5jOiAgICAgICAgbXNnLm1zZ19oZWFkLml2
-YWwxLnR2X3VzZWMgPSAwOwo+IHRzdC1iY20tY3ljbGUuYzogICAgICAgIG1zZy5tc2dfaGVhZC5p
-dmFsMS50dl9zZWMgPSAwOwo+IHRzdC1iY20tY3ljbGUuYzogICAgICAgIG1zZy5tc2dfaGVhZC5p
-dmFsMS50dl91c2VjID0gMDsKPiB0c3QtYmNtLWR1bXAuYzogbXNnLm1zZ19oZWFkLml2YWwxLnR2
-X3NlYyAgICAgICA9IHRpbWVvdXQgLyAxMDAwMDAwOwo+IHRzdC1iY20tZHVtcC5jOiBtc2cubXNn
-X2hlYWQuaXZhbDEudHZfdXNlYyAgICAgID0gdGltZW91dCAlIDEwMDAwMDA7Cj4gKC4uKQo+IAo+
-IFNvIHRoZSB1c3VhbCB3YXkgdG8gYXNzaWduIHZhbHVlcyB0byBpdmFsMSBhbmQgaXZhbDIgaXMg
-Tk9UIHRvIGFzc2lnbiBhbgo+IGV4aXN0aW5nIHN0cnVjdCB0aW1ldmFsIGJ1dCB0byBkaXJlY3Rs
-eSBhc3NpZ24gaXRzIHR2X1t1XXNlYyBlbGVtZW50cy4KCk9rLCB2ZXJ5IGdvb2QuCgo+IEkgYXBw
-bGllZCB5b3VyIGJjbS5oIGNoYW5nZXMgdG8gbXkgbG9jYWwgY2FuLXRlc3RzIHRyZWUgYW5kIGl0
-IGNvbXBpbGVzCj4gd2l0aG91dCBhbnkgcHJvYmxlbXMgLSBhcyBleHBlY3RlZC4gSSBkb24ndCBz
-ZWUgYW55IHNlcmlvdXMgZHJhd2JhY2sgd2l0aCB5b3VyCj4gaWRlYS4gSSB3b25kZXIgd2hldGhl
-ciBkZXZlbG9wZXJzIHdvdWxkIGV2ZXIgbm90aWNlIHRoaXMgY2hhbmdlIC4uLgo+IAo+ID4gV2Ug
-Y291bGQgYWRkcmVzcyBwcm9ibGVtIGEpIGJ5IHVzaW5nICdfX3UzMicgb3IgJ2ludCcgbWVtYmVy
-cwo+ID4gcmF0aGVyIHRoYW4gJ2xvbmcnLCBidXQgdGhhdCB3b3VsZCBoYXZlIGEgbW9yZSBzaWdu
-aWZpY2FudAo+ID4gZG93bnNpZGUgaW4gYWxzbyBicmVha2luZyBzdXBwb3J0IGZvciBhbGwgZXhp
-c3RpbmcgNjQtYml0IHVzZXIKPiA+IGJpbmFyaWVzIHRoYXQgbWlnaHQgYmUgdXNpbmcgdGhpcyBp
-bnRlcmZhY2UsIHdoaWNoIGlzIGxpa2VseQo+ID4gbm90IGFjY2VwdGFibGUuCj4gCj4gSW5kZWVk
-Lgo+IAo+ID4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4KPiA+
-IENjOiBPbGl2ZXIgSGFydGtvcHAgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+Cj4gCj4gVGhhbmtz
-IGZvciB5b3VyIGdvb2Qgc3VnZ2VzdGlvbiB0byBtYWtlIHRoZSBCQ00gQVBJIHkyMDM4IHByb29m
-IQo+IAo+IEFja2VkLWJ5OiBPbGl2ZXIgSGFydGtvcHAgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+
-CgpUaGFua3MuCgpXaGF0IGlzIHRoZSBub3JtYWwgcGF0aCBmb3IgQ0FOIHBhdGNoZXM/IFNob3Vs
-ZCBJIHJlc2VuZCB3aXRoIHlvdXIKQWNrIGFuZCB3aXRob3V0IHRoZSBSRkMgZm9yIE1hcmMgdG8g
-cGljayBpdCB1cD8KCglBcm5kCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fClkyMDM4IG1haWxpbmcgbGlzdApZMjAzOEBsaXN0cy5saW5hcm8ub3JnCmh0dHBz
-Oi8vbGlzdHMubGluYXJvLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3kyMDM4Cg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dT3ARBDVtrIOv6XH9JCL5S2JmBsMlXwCJ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 10/06/2015 10:32 AM, Arnd Bergmann wrote:
+> On Monday 05 October 2015 20:51:08 Oliver Hartkopp wrote:
+>>
+>> I double checked some (more) BCM applications I have access to.
+>>
+>> E.g. https://github.com/linux-can/can-tests
+>>
+>> When you do a 'git grep ival1' there you get something like
+>>
+>> tst-bcm-cycle.c:        msg.msg_head.ival1.tv_sec =3D 1;
+>> tst-bcm-cycle.c:        msg.msg_head.ival1.tv_usec =3D 0;
+>> tst-bcm-cycle.c:        msg.msg_head.ival1.tv_sec =3D 0;
+>> tst-bcm-cycle.c:        msg.msg_head.ival1.tv_usec =3D 0;
+>> tst-bcm-dump.c: msg.msg_head.ival1.tv_sec       =3D timeout / 1000000;=
+
+>> tst-bcm-dump.c: msg.msg_head.ival1.tv_usec      =3D timeout % 1000000;=
+
+>> (..)
+>>
+>> So the usual way to assign values to ival1 and ival2 is NOT to assign =
+an
+>> existing struct timeval but to directly assign its tv_[u]sec elements.=
+
+>=20
+> Ok, very good.
+>=20
+>> I applied your bcm.h changes to my local can-tests tree and it compile=
+s
+>> without any problems - as expected. I don't see any serious drawback w=
+ith your
+>> idea. I wonder whether developers would ever notice this change ...
+>>
+>>> We could address problem a) by using '__u32' or 'int' members
+>>> rather than 'long', but that would have a more significant
+>>> downside in also breaking support for all existing 64-bit user
+>>> binaries that might be using this interface, which is likely
+>>> not acceptable.
+>>
+>> Indeed.
+>>
+>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+>>
+>> Thanks for your good suggestion to make the BCM API y2038 proof!
+>>
+>> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>=20
+> Thanks.
+>=20
+> What is the normal path for CAN patches? Should I resend with your
+> Ack and without the RFC for Marc to pick it up?
+
+You can add my:
+
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+add upstream the 2038 fixes as a block.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--dT3ARBDVtrIOv6XH9JCL5S2JmBsMlXwCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWE47cAAoJEP5prqPJtc/HW8wH/1IU8lkWlJLAROnEZ+QzBEdK
+DoKx9NPYnyNueTCYdFpMmsVg183Zr2RN2z4vn4YjCSbqgEzHPka1reP6MamvksGV
+aQ6n7d0XNtvfCTXIqnpZgYrT3xCQWOmOxN7KcYzIHSQsPFYUg9brPTfmxdpky9+4
+TTHzhHlIFtm+YGKbdDKJFOprnlDnvyrMZm9tvCzLnELRU1ywlLb8EJmHHRGZWoHT
+/hJvB4ORhKWI22piByPMWFoNyH18CD3UWv0ZI2f0HE4vwcQ2YnlPebZxUfTF2lL2
+X3b9FwyKPsotLrOxWP9zoexVwJ2AgDjKt19fjWFS/CphPR6jLmv2zzJOFFr/oZw=
+=I4y3
+-----END PGP SIGNATURE-----
+
+--dT3ARBDVtrIOv6XH9JCL5S2JmBsMlXwCJ--
