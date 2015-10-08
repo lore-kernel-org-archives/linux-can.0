@@ -1,61 +1,98 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH 12/12] [RFC] can: avoid using timeval for uapi
-Date: Tue, 6 Oct 2015 11:37:01 +0200
-Message-ID: <5613963D.9000800@pengutronix.de>
-References: <1443612402-3000775-1-git-send-email-arnd@arndb.de>
- <7548522.iLToS4O3HD@wuerfel> <56138EDC.8080501@pengutronix.de>
- <6130832.516TFPqmA3@wuerfel>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="IM5srnSLincitssfHWFxwh8p6sa94CoMV"
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <6130832.516TFPqmA3@wuerfel>
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Cc: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, y2038-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH] can: at91: remove at91_can_data
+Date: Thu,  8 Oct 2015 16:56:07 +0200
+Message-ID: <1444316167-25940-1-git-send-email-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IM5srnSLincitssfHWFxwh8p6sa94CoMV
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+struct at91_can_data was used to pass a callback to the driver, allowing it
+to switch the transceiver on and off. As all at91 boards are now using DT,
+this is not used anymore, remove that structure.
 
-On 10/06/2015 11:18 AM, Arnd Bergmann wrote:
->> Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
->>
->> add upstream the 2038 fixes as a block.
->=20
-> Davem already picked up the first 10 of the series. If you don't
-> mind, I'd prefer if you could take this one into your tree so I
-> have it off my list.
-> I have 200 other patches in various states and more getting added.
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
+ drivers/net/can/at91_can.c          | 21 ---------------------
+ include/linux/platform_data/atmel.h |  5 -----
+ 2 files changed, 26 deletions(-)
 
-Ok. Consider it done.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---IM5srnSLincitssfHWFxwh8p6sa94CoMV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWE5Y9AAoJEP5prqPJtc/HDycH/1tYIXegpWLYJKZhmlWG7gZg
-LSzMH5XvIRU20bWbEkcuY1oq60+49W5C5gbKb47oCRAYDOj0kY0IIuXtceAad7SZ
-d2cVzX5GUkDTIkKroTaSeIOda9y+0uklbVNBleUpq9ZZMD++wTRZ2MATFW3Y24un
-tO5xQHpe6Zg/rmmk0wy3jfbh3Eqllbe8BdFj761sezLh5L16taa5W0X8J+I3uAPA
-oJIEItM+nMrQeAcx1cX6B8wGuf0/WmUQ78i5gfqknMZboHLNalhOtRQY1HsMKfKb
-zIdY7qMxT3oTrFhUlpMlU/NlgoZMcye/Jj6LoAztxHM24JtwkSztJ3s0UD3p9bI=
-=vjai
------END PGP SIGNATURE-----
-
---IM5srnSLincitssfHWFxwh8p6sa94CoMV--
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 945c0955a967..8b3275d7792a 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -8,15 +8,6 @@
+  * Public License ("GPL") version 2 as distributed in the 'COPYING'
+  * file from the main directory of the linux kernel source.
+  *
+- *
+- * Your platform definition file should specify something like:
+- *
+- * static struct at91_can_data ek_can_data = {
+- *	transceiver_switch = sam9263ek_transceiver_switch,
+- * };
+- *
+- * at91_add_device_can(&ek_can_data);
+- *
+  */
+ 
+ #include <linux/clk.h>
+@@ -33,7 +24,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
+-#include <linux/platform_data/atmel.h>
+ 
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+@@ -324,15 +314,6 @@ static inline u32 at91_can_id_to_reg_mid(canid_t can_id)
+ 	return reg_mid;
+ }
+ 
+-/*
+- * Swtich transceiver on or off
+- */
+-static void at91_transceiver_switch(const struct at91_priv *priv, int on)
+-{
+-	if (priv->pdata && priv->pdata->transceiver_switch)
+-		priv->pdata->transceiver_switch(on);
+-}
+-
+ static void at91_setup_mailboxes(struct net_device *dev)
+ {
+ 	struct at91_priv *priv = netdev_priv(dev);
+@@ -416,7 +397,6 @@ static void at91_chip_start(struct net_device *dev)
+ 
+ 	at91_set_bittiming(dev);
+ 	at91_setup_mailboxes(dev);
+-	at91_transceiver_switch(priv, 1);
+ 
+ 	/* enable chip */
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+@@ -444,7 +424,6 @@ static void at91_chip_stop(struct net_device *dev, enum can_state state)
+ 	reg_mr = at91_read(priv, AT91_MR);
+ 	at91_write(priv, AT91_MR, reg_mr & ~AT91_MR_CANEN);
+ 
+-	at91_transceiver_switch(priv, 0);
+ 	priv->can.state = state;
+ }
+ 
+diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
+index 527a85c61924..c121ddf74f7f 100644
+--- a/include/linux/platform_data/atmel.h
++++ b/include/linux/platform_data/atmel.h
+@@ -74,11 +74,6 @@ struct atmel_uart_data {
+ 	struct serial_rs485	rs485;		/* rs485 settings */
+ };
+ 
+-/* CAN */
+-struct at91_can_data {
+-	void (*transceiver_switch)(int on);
+-};
+-
+ /* FIXME: this needs a better location, but gets stuff building again */
+ extern int at91_suspend_entering_slow_clock(void);
+ 
+-- 
+2.1.4
