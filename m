@@ -1,67 +1,111 @@
-From: Guillaume Picquet <guillaume@picquet.fr>
-Subject: Re: SocketCAN stops read after RX overflow, is it normal?
-Date: Mon, 12 Oct 2015 11:46:55 +0200
-Message-ID: <561B818F.8060100@picquet.fr>
-References: <55E6CCC8.7010908@picquet.fr> <55E80C74.8060600@pengutronix.de>
- <561B69B2.9010804@picquet.fr> <561B7556.3050206@pengutronix.de>
- <561B7781.4040906@picquet.fr> <561B7A3C.20500@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 2/3] can: ti_hecc: Add TI HECC DT binding documentation
+Date: Mon, 12 Oct 2015 11:50:02 +0200
+Message-ID: <561B824A.3080003@pengutronix.de>
+References: <1443988779-19935-1-git-send-email-anton.a.glukhov@gmail.com>
+ <1443988779-19935-2-git-send-email-anton.a.glukhov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Uhc2HdEdfWWABGB0tUB6PMj6asUbPfbAS"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtpauth.online.net ([62.210.16.40]:48458 "EHLO
-	smtpauth-dc2-1.online.net" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751178AbbJLJq6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Oct 2015 05:46:58 -0400
-In-Reply-To: <561B7A3C.20500@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:57992 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751308AbbJLJuK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 12 Oct 2015 05:50:10 -0400
+In-Reply-To: <1443988779-19935-2-git-send-email-anton.a.glukhov@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: Anton Glukhov <anton.a.glukhov@gmail.com>, linux-can@vger.kernel.org, bcousson@baylibre.com
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Uhc2HdEdfWWABGB0tUB6PMj6asUbPfbAS
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 10/04/2015 09:59 PM, Anton Glukhov wrote:
+> DT binding documentation for TI High End CAN Controller
+
+Please add the device tree binding discussion mailing list on Cc.
+>=20
+> Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
+> ---
+>  .../devicetree/bindings/net/can/ti_hecc.txt        | 31 ++++++++++++++=
+++++++++
+>  1 file changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.t=
+xt
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/Do=
+cumentation/devicetree/bindings/net/can/ti_hecc.txt
+> new file mode 100644
+> index 0000000..e29b0ec
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> @@ -0,0 +1,31 @@
+> +* Texas Instruments High End CAN Controller
+> +
+> +This file provides information, what the device node
+> +for the hecc interface contains.
+> +
+> +Required properties:
+> +- compatible: "ti,am35x-hecc"
+> +- reg: offset and length of the register set for the device
+> +- interrupts: interrupt mapping for the hecc interrupts sources
+> +- clocks: clock phandles (see clock bindings for details)
+> +- ti,scc-ram-offset: offset to scc module ram
+> +- ti,hecc-ram-offset: offset to hecc module ram
+> +- ti,mbx-offset: offset to mailbox ram
+
+Are the offsets a per SoC parameter? I'm not sure if it's better to put
+the offsets into the driver.
+
+> +
+> +Optional properties:
+> +- ti,int-line: interrupt line
+
+Better make it a bool and describe it better.
+
+> +
+> +Example:
+> +
+> +For am3517evm board:
+> +	hecc: can@0x5c050000 {
+> +		compatible =3D "ti,am35x-hecc";
+> +		status =3D "disabled";
+> +		reg =3D <0x5c050000 0x4000>;
+> +		interrupts =3D <24>;
+> +		clocks =3D <&hecc_ck>;
+> +		ti,scc-ram-offset =3D <0x3000>;
+> +		ti,hecc-ram-offset =3D <0x3000>;
+> +		ti,mbx-offset =3D <0x2000>;
+> +		ti,int-line =3D <0>;
+> +	};
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--Uhc2HdEdfWWABGB0tUB6PMj6asUbPfbAS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Le 12/10/2015 11:15, Marc Kleine-Budde a =C3=A9crit :
-> On 10/12/2015 11:04 AM, Guillaume Picquet wrote:
->> Le 12/10/2015 10:54, Marc Kleine-Budde a =C3=A9crit :
->>> On 10/12/2015 10:05 AM, Guillaume Picquet wrote:
->>>> I've received a patched firmware from my provider, tested it and s=
-o far
->>>> so good.
->>> Good to hear that. Can you send the patches or at91_can.c to the li=
-st?
->> It's your patch I gave my provider.
->>
->> https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/=
-commit/?h=3Dat91-next&id=3D7234e9dee7d0df75de7ae14443a2306435750594
-> Ah, good to hear that this works for your usecase aswell. Can I add y=
-our
-> Tested-by Tag to the patch?
-Yes why not, But I can not guarantee that my provider did not modify th=
-e=20
-patch.
->
->>>> I've connected 2 devices (AT91 based) at 1Mb/s.
->>>> So far more than 470000000 frames received so far.
->>>>    From the user-space point of view it's much better.
->>>> Now the only way to know if rx overflow occur is to set SO_RXQ_OVF=
-L
->>>> flag, use recvmsg and check ancillary data.
->>> No, that's not correct. With SO_RXQ_OVFL you'll detect overflows of=
- the
->>> socket. When there are overflows in the hardware the rx overrun in =
-per
->>> device statistics will be increased (see ifconfig) output.
->> Ok good to know.
->> So your saying that if I receive nothing on a socket with CAN_ERR_MA=
-SK
->> set 0x1FFFFFFFU it means that the hardware is handling CAN traffic w=
-ell !
-> Yes.
-Good.
->
-> Marc
->
-Thanks
+-----BEGIN PGP SIGNATURE-----
 
-Guillaume
+iQEcBAEBCgAGBQJWG4JKAAoJEP5prqPJtc/HqH8H/igOYyfTHYWoRYPIIKrqvcrS
+PQCsf7kTTjC7dcPEhxHLb0H8eFUGLEHY8Rfh0fH6BTa708csP2fqEJOYfPyXsAvH
+SrOW2qwZAzy7JD3Ay4kH8atHZSvU9sSWhgoQ/opsJQxBc5ID3m/qwOlg30QBK737
+EZWXVSPfl7A6xfZFazMf8pnckCLuAxPu5ijBby4SHZqSDRxFdHrM3bbJkiI3SK8B
+uNpwtYNn2/Ouqd+Sf70mownu/EUVJ/tm5Dpobmzpd4dAcbaQdAnW5ldtvGWS1XBG
+Clv12IYqeoLEaW3KZKgAGFswsdpxPwcJ+zwn9iPIXHjoSks5xsWuLdwFIk1IqmU=
+=xHcn
+-----END PGP SIGNATURE-----
+
+--Uhc2HdEdfWWABGB0tUB6PMj6asUbPfbAS--
