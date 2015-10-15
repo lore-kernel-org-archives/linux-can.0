@@ -1,111 +1,92 @@
-From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Subject: [PATCH] can: xilinx: Fix suspend/resume crash due to wrong reference
-Date: Thu, 15 Oct 2015 23:13:07 +0530
-Message-ID: <1444930987-5838-1-git-send-email-shubhraj@xilinx.com>
+From: Alex Layton <alex@layton.in>
+Subject: Re: can-j1939 API
+Date: Thu, 15 Oct 2015 18:04:58 -0400
+Message-ID: <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com>
+References: <linux-can/can-utils/pull/7@github.com> <linux-can/can-utils/pull/7/c144149208@github.com>
+ <560ADC91.1090408@pengutronix.de> <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0058.outbound.protection.outlook.com ([65.55.169.58]:12509
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751730AbbJOR7O (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 15 Oct 2015 13:59:14 -0400
-Received: from unknown-38-66.xilinx.com ([149.199.38.66] helo=xsj-pvapsmtp01)
-	by xsj-pvapsmtpgw01 with esmtp (Exim 4.63)
-	(envelope-from <shubhrajyoti.datta@xilinx.com>)
-	id 1ZmmYg-0003vP-QG
-	for linux-can@vger.kernel.org; Thu, 15 Oct 2015 10:43:18 -0700
-Received: from [127.0.0.1] (helo=localhost)
-	by xsj-pvapsmtp01 with smtp (Exim 4.63)
-	(envelope-from <shubhrajyoti.datta@xilinx.com>)
-	id 1ZmmYg-0004Ea-Lr
-	for linux-can@vger.kernel.org; Thu, 15 Oct 2015 10:43:18 -0700
+Received: from mail-ob0-f178.google.com ([209.85.214.178]:34094 "EHLO
+	mail-ob0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751302AbbJOWFi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 15 Oct 2015 18:05:38 -0400
+Received: by obbda8 with SMTP id da8so76861199obb.1
+        for <linux-can@vger.kernel.org>; Thu, 15 Oct 2015 15:05:38 -0700 (PDT)
+In-Reply-To: <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Shubhrajyoti Datta <shubhraj@xilinx.com>
+To: linux-can <linux-can@vger.kernel.org>
 
-Fix a crash due to wrong dereferencing.
-Also in the suspend path we were accessing registers without
-enabling clocks. Fix it by enabling the clocks.
+On Tue, Sep 29, 2015 at 3:49 PM, Kurt Van Dijck
+<dev.kurt@vandijck-laurijssen.be> wrote:
+> I would like to challenge other j1939 (not necessarily socketcan+can-j1939)
+> users to share their opinions.
 
-In the resume disable of the clocks were missing fix the same.
+Hello, I am the author of https://github.com/ISOBlue/isoblue-software,
+finally getting around to participating in this list.
 
-Signed-off-by: Shubhrajyoti Datta <shubhraj@xilinx.com>
----
- drivers/net/can/xilinx_can.c |   28 ++++++++++++++++++++--------
- 1 files changed, 20 insertions(+), 8 deletions(-)
+> > > If you look at http://elinux.org/J1939
+>
+> > > $ modprobe can-j1939
+>
+> This is a systemwide action, as opposed to
+>
+> > > $ ip link set can0 j1939 on
+>
+> which is an interface-wide action.
+>
+> Due to the nature of CAN, the kernel should not/cannot decide if CAN
+> traffic is J1939 or not.
+> Unlike other CAN protocols (RAW, BCM, ISOTP), J1939 allocates the whole
+> CAN id range for its use, and using CAN ids incompatible with j1939
+> is regarded illegal.
+>
+> So this must become a switch.
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 0a62c2a..01d272f 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -967,20 +967,31 @@ static const struct net_device_ops xcan_netdev_ops = {
-  */
- static int __maybe_unused xcan_suspend(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
--	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
-+	int ret;
- 
- 	if (netif_running(ndev)) {
- 		netif_stop_queue(ndev);
- 		netif_device_detach(ndev);
- 	}
-+	ret = clk_prepare_enable(priv->bus_clk);
-+	if (ret) {
-+		dev_err(dev, "Cannot enable clock.\n");
-+		return ret;
-+	}
-+	ret = clk_prepare_enable(priv->can_clk);
-+	if (ret) {
-+		dev_err(dev, "Cannot enable clock.\n");
-+		clk_disable_unprepare(priv->bus_clk);
-+		return ret;
-+	}
- 
- 	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
--	clk_disable(priv->bus_clk);
--	clk_disable(priv->can_clk);
-+	clk_disable_unprepare(priv->bus_clk);
-+	clk_disable_unprepare(priv->can_clk);
- 
- 	return 0;
- }
-@@ -994,17 +1005,16 @@ static int __maybe_unused xcan_suspend(struct device *dev)
-  */
- static int __maybe_unused xcan_resume(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
--	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
- 
--	ret = clk_enable(priv->bus_clk);
-+	ret = clk_prepare_enable(priv->bus_clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable clock.\n");
- 		return ret;
- 	}
--	ret = clk_enable(priv->can_clk);
-+	ret = clk_prepare_enable(priv->can_clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable clock.\n");
- 		clk_disable_unprepare(priv->bus_clk);
-@@ -1020,6 +1030,8 @@ static int __maybe_unused xcan_resume(struct device *dev)
- 		netif_start_queue(ndev);
- 	}
- 
-+	clk_disable_unprepare(priv->bus_clk);
-+	clk_disable_unprepare(priv->can_clk);
- 	return 0;
- }
- 
--- 
-1.7.1
+I disagree with this, like Austin Schuh did. In my experience there is
+almost always other non-J1939 CAN traffic present and it must be
+possible to use both. The module should just ignore any CAN that does
+not look right to it, and there needs to still be a way to get at the
+other CAN on the bus through a CAN_RAW socket or something.
 
+> > > and if you think about this kind of assignment, it should be implemented
+> > > inside the j1939 stuff and not in af_can.c. The can-gw routing netlink
+>
+> j1939 touches af_can because address configuration via netlink is
+> absent in af_can. j1939 adds (with seperate patches) the ability to add
+> addressess for CAN sockets, but only for those CAN protocols that
+> support it.
+> I see no decent way to bypass af_can, except for creating af_j1939.
+
+Sorry if this is a stupid question, but what is the point of adding
+addresses to a CAN interface with ip? Doesn't the code creating the
+socket set what its address and/or NAME is? My implementation does not
+modify af_can, though it is admittedly much more simplistic than
+Kurt's.
+
+> > > I remember our discussion about the address claiming but I wonder if we
+> > > really follow the requirement to only put functionality into the kernel
+> > > that really has to be implemented there.
+>
+> The kernel tracks and validates J1939 traffic. Any userspace application
+> can track, but none can validate & reject without duplicating effort.
+
+I too think at least part of the address handling needs to be in the
+kernel module.
+
+> > > Did you take a look at https://github.com/ISOBlue/isoblue-software -
+> > > which is far simpler - whether it can fulfill the basic functionalities
+> > > (segmentation, etc.) to enable j1939 for Linux?
+>
+> I took a quick look. It appears that they only put the address claiming
+> in the kernel. I understand that this is exactly your concern in my
+> implementation :-).
+
+Yes, my implementation does address claiming in the module. From what
+I understand, mine does even more of the process than Kurt's does (my
+module actually sends the address claim messages). However, my module
+does not deal with NAMEs, only the addresses.
+
+
+Alex
