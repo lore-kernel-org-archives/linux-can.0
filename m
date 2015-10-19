@@ -1,194 +1,219 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: can-j1939 API
-Date: Mon, 19 Oct 2015 22:44:42 +0200
-Message-ID: <20151019204442.GA16852@airbook.vandijck-laurijssen.be>
-References: <linux-can/can-utils/pull/7@github.com>
- <linux-can/can-utils/pull/7/c144149208@github.com>
+Date: Mon, 19 Oct 2015 22:57:49 +0200
+Message-ID: <20151019205749.GB16852@airbook.vandijck-laurijssen.be>
+References: <linux-can/can-utils/pull/7/c144149208@github.com>
  <560ADC91.1090408@pengutronix.de>
  <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
  <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com>
- <20151018023225.GA29078@airbook.vandijck-laurijssen.be>
- <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com>
+ <562151D4.3060902@posteo.de>
+ <20151018024250.GB29078@airbook.vandijck-laurijssen.be>
+ <5624667E.3080809@posteo.de>
+ <562488A3.2010204@hartkopp.net>
+ <20151019095241.GB3406@airbook.eia.lan>
+ <CAFUozzGXan5h5Q46crZoGJjMZyHjLOBz-KiRKyYRi1yHjq+wqA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:9467 "EHLO
+Received: from relaygateway02.edpnet.net ([212.71.1.211]:54764 "EHLO
 	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753119AbbJSUoy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2015 16:44:54 -0400
+	with ESMTP id S1753434AbbJSU56 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2015 16:57:58 -0400
 Content-Disposition: inline
-In-Reply-To: <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com>
+In-Reply-To: <CAFUozzGXan5h5Q46crZoGJjMZyHjLOBz-KiRKyYRi1yHjq+wqA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Alex Layton <alex@layton.in>
-Cc: linux-can <linux-can@vger.kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Patrick Menschel <menschel.p@posteo.de>, linux-can <linux-can@vger.kernel.org>
 
 
 --- Original message ---
-> Date:	Mon, 19 Oct 2015 12:53:50 -0400
+> Date:	Mon, 19 Oct 2015 12:53:54 -0400
 > From: Alex Layton <alex@layton.in>
-> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can
->  <linux-can@vger.kernel.org>
+> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Oliver Hartkopp
+>  <socketcan@hartkopp.net>, Patrick Menschel <menschel.p@posteo.de>,
+>  linux-can <linux-can@vger.kernel.org>
 > Subject: Re: can-j1939 API
 > 
-> On Sat, Oct 17, 2015 at 10:32 PM, Kurt Van Dijck
+> On Mon, Oct 19, 2015 at 5:52 AM, Kurt Van Dijck
 > <dev.kurt@vandijck-laurijssen.be> wrote:
+> > I feel it's time to explain some things
 > >
 > > --- Original message ---
-> >> Date: Thu, 15 Oct 2015 18:04:58 -0400
-> >> From: Alex Layton <alex@layton.in>
-> >> To: linux-can <linux-can@vger.kernel.org>
+> >> Date: Mon, 19 Oct 2015 08:07:31 +0200
+> >> From: Oliver Hartkopp <socketcan@hartkopp.net>
+> >> To: Patrick Menschel <menschel.p@posteo.de>, linux-can
+> >>  <linux-can@vger.kernel.org>, Alex Layton <alex@layton.in>, Kurt Van Dijck
+> >>  <dev.kurt@vandijck-laurijssen.be>
 > >> Subject: Re: can-j1939 API
+> >> User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101
+> >>  Icedove/31.8.0
 > >>
-> >> On Tue, Sep 29, 2015 at 3:49 PM, Kurt Van Dijck
-> >> <dev.kurt@vandijck-laurijssen.be> wrote:
-> >> > I would like to challenge other j1939 (not necessarily socketcan+can-j1939)
-> >> > users to share their opinions.
+> >> Hi all,
 > >>
-> >> Hello, I am the author of https://github.com/ISOBlue/isoblue-software,
-> >> finally getting around to participating in this list.
-> >>
-> >> > > > If you look at http://elinux.org/J1939
+> >> On 19.10.2015 05:41, Patrick Menschel wrote:
+> >> >Am 18.10.2015 um 04:42 schrieb Kurt Van Dijck:
+> >> >>>
+> >> >>>1. concerning J1939, I think it would be best to implement it is a
+> >> >>>"view" on can0 without changing can0 itself.
+> >> >>
+> >> >>What exactly do you mean with 'view'?
+> >> >>
+> >> >Basically leave the can0 functionality as it is and add another
+> >> >interface such as J1939_0 or whatever. That way other applications may
+> >> >still use normal can0. But maybe I just misunderstood your concept,
+> >> >sorry if that's the case.
 > >> >
-> >> > > > $ modprobe can-j1939
-> >> >
-> >> > This is a systemwide action, as opposed to
-> >> >
-> >> > > > $ ip link set can0 j1939 on
-> >> >
-> >> > which is an interface-wide action.
-> >> >
-> >> > Due to the nature of CAN, the kernel should not/cannot decide if CAN
-> >> > traffic is J1939 or not.
-> >> > Unlike other CAN protocols (RAW, BCM, ISOTP), J1939 allocates the whole
-> >> > CAN id range for its use, and using CAN ids incompatible with j1939
-> >> > is regarded illegal.
-> >> >
-> >> > So this must become a switch.
-> >>
-> >> I disagree with this, like Austin Schuh did. In my experience there is
-> >> almost always other non-J1939 CAN traffic present and it must be
-> >> possible to use both. The module should just ignore any CAN that does
-> >> not look right to it, and there needs to still be a way to get at the
-> >> other CAN on the bus through a CAN_RAW socket or something.
 > >
-> > The 'switch' is to turn can-j1939 on/off on a specific interface.
-> > The condition that I'd like to solve is where you end up having a
-> > j1939 bus can0, obviously with 29bit CAN id's, and another bus, can1,
-> > that is NOT j1939 compliant while using 29bit identifiers.
+> > while using can-j1939, can0 (or any other iface) is still available for
+> > can_raw etc. I would not even think of touching that.
 > >
-> > I'd prefer to disable can-j1939 processing on can1 in that case, before
-> > reporting any obvious protocol violations in the log.
-> 
-> I can understand that. Can you not have you module only listen on
-> interfaces where J1939 sockets have been opened?
-
-That sounds like a fine idea!
-It would behave slightly different during booting, but given the critics
-on the switch, this will probably the best thing to do.
-This implies that a non-root user decides to turn on can-j1939
-processing on an interface, which I found a hard nut to crack.
-
-> 
-> >> > > > and if you think about this kind of assignment, it should be implemented
-> >> > > > inside the j1939 stuff and not in af_can.c. The can-gw routing netlink
-> >> >
-> >> > j1939 touches af_can because address configuration via netlink is
-> >> > absent in af_can. j1939 adds (with seperate patches) the ability to add
-> >> > addressess for CAN sockets, but only for those CAN protocols that
-> >> > support it.
-> >> > I see no decent way to bypass af_can, except for creating af_j1939.
 > >>
-> >> Sorry if this is a stupid question, but what is the point of adding
-> >> addresses to a CAN interface with ip? Doesn't the code creating the
-> >> socket set what its address and/or NAME is? My implementation does not
-> >> modify af_can, though it is admittedly much more simplistic than
-> >> Kurt's.
+> >> I also have problems to understand the concept for a while now.
+> >>
+> >> >>>As it's already been mentioned, j1939 may share the physical layer with
+> >> >>>other protocols, i.e. CanOpen on diesel powered railway equipment or
+> >> >>>proprietary protocols of some OEMs for construction machinery.
+> >> >>>If there is tester or application equipment installed, CCP is usually
+> >> >>>also present.
+> >> >>
+> >> >>Thanks for the example.
+> >> >>IMHO, CanOpen uses only 11bit CANids, so theres no collision in the CAN
+> >> >>id space. Does anyone ever encountered CAN protrocols that have
+> >> >>collisions in the CANid space with can-j1939?
+> >> >>
+> >> >>>
+> >> >>>2. concerning address claiming and address collision handling via the
+> >> >>>NAME property, I think it should be handled in user space, not within
+> >> >>>the module as you may have multiple source addresses on the same device.
+> >> >>>For example Engine ECU SA 0x00 and Emission Controller SA 0x3D usually
+> >> >>>are one and the same physical device.
+> >> >>
+> >> >>I think I partly share your conclusion,
+> >> >>I do not understand how multiple addresses on an ECU are an argument
+> >> >>for handling address claiming in userspace.
+> >> >>
+> >> >If the device running socketcan+j1939 can only have one SA, it would not
+> >> >allow such multi-role implementations.
 > >
-> > I offloaded the (static) addressing onto the kernel, so I needs to know
-> > its address, much like any other address-capable protocol like e.g. ipv4.
-> > Its obviously that not every ipv4 capable application needs to know it
-> > local ip address. I made can-j1939 likewise multi-user ready.
-> 
-> I don't really think of there being a "localhost" type thing in J1939.
-> The address go with specific function, not devices, Often one physical
-> device claims multiple addresses on the network, one for each thing
-> that device does. For my module, when the program opening the socket
-> does not know or care about which address to use, I simply claim an
-> address for it that is unused and in the self-configurable range.
-
-This sounds like a usage policy enforced by the kernel API semantics.
-At least, I understand the background a bit more.
-More on this below.
-
-> 
-> >> > > > I remember our discussion about the address claiming but I wonder if we
-> >> > > > really follow the requirement to only put functionality into the kernel
-> >> > > > that really has to be implemented there.
-> >> >
-> >> > The kernel tracks and validates J1939 traffic. Any userspace application
-> >> > can track, but none can validate & reject without duplicating effort.
-> >>
-> >> I too think at least part of the address handling needs to be in the
-> >> kernel module.
-> >>
-> >> > > > Did you take a look at https://github.com/ISOBlue/isoblue-software -
-> >> > > > which is far simpler - whether it can fulfill the basic functionalities
-> >> > > > (segmentation, etc.) to enable j1939 for Linux?
-> >> >
-> >> > I took a quick look. It appears that they only put the address claiming
-> >> > in the kernel. I understand that this is exactly your concern in my
-> >> > implementation :-).
-> >>
-> >> Yes, my implementation does address claiming in the module. From what
-> >> I understand, mine does even more of the process than Kurt's does (my
-> >> module actually sends the address claim messages). However, my module
-> >> does not deal with NAMEs, only the addresses.
+> > can-j1939 allows for multiple SA, and allows multi-role implementations.
+> > Moreover, the system adminstrator has control over the SA's used by the
+> > box.
 > >
-> > I'd like to know your idea:
-> > Is it possible with isoblue to have multiple sockets using the same
-> > source address?
-> > How does an application needs to deal with address changes? Does every
-> > application just receives the address claims without asking?
+> > This is independant from the address claiming in userspace vs. kernel
+> > space.
+> >
+> >>
+> >> I would definitely demand multi-role implementations as this is one of the
+> >> main SocketCAN goals to have the entire networking setup running on one host
+> >> or on different hosts without changing the application.
+> >
+> > I see 2 distinct requirements for multi-role implementations:
+> > a) 1 can-interface may have different addresses
+> > b) different applications/sockets may use the same address
 > 
-> No, my module does not allow multiple sockets with the same address.
-> My module takes the view that address go to functions, not devices,
-> and assumes one socket per function.
-
-So a single application deals with the entire source address.
-It seems that quite a lot of code gets duplicated, especially the
-diagnostics interfaces.
-I tend to look at a linux box as having different functions/addresses,
-and moreover, I look to a single address as being handled by different
-processes, of which most are generic processes with different
-parameters.
-
-Things like ECU version information (I lost the precise PGN now), DM1,
-DM2 & DM3 handling, ... all seem very generic processes to me that all process
-a well-defined distinct set of PGN's, and can be reused easily.
-The easier each single application becomes, the quicker it can become
-stable, so I avoided the all-in-one approach.
-
+> I definitely have encountered needing requirement a), but as far as I
+> know b) is not so important. However, I could be mistaken on that.
 > 
-> If a socket loses its address, that socket returns -EADDRINUSE the
-> next time a function is called on it (e.g., recvmesg). When that
-> happens, the program must use bind again to get a new address. I had
-> hoped to one day implement transparently claiming another address if
-> the socket was set as self-configurable.
+> >> See:
+> >>
+> >> https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/networking/can.txt?h=linux-4.2.y#n185
+> >>
+> >> If I understood the concepts correctly:
+> >
+> > I believe you didn't understood all the concepts correctly.
+> > Your excused by not being an everyday j1939 user :-)
+> >
+> >>
+> >> Kurts implementation:
+> >> - grabs the entire interface (the entire Linux box?!)
+> >
+> > I don't grab the entire interface.
+> > I process _all_ 29bit CAN frames because J1939, as already mentioned
+> > before, allocates the entire 29bit CANid space.
+> >
+> > I know you have a problem with the administrator needing to switch
+> > can-j1939 'on', but can-j1939 is very different from CANopen on CANid
+> > allocation.
+> >
+> >> - binds node addresses to the interface (Linux box?!)
+> >> - socket addressing matches the function
+> >>
+> >> Alexs implementation:
+> >> - socket addressing matches the node address
+> >>
+> >> Both implement address claiming (AC) in Kernel space - which would only fit
+> >
+> > I need to correct you.
+> > My can-j1939 kernel space honor the AC in kernel space, as it is part of
+> > the protocol, but it leaves all decisions (the actual claiming) to userspace.
+> >
+> >> the SocketCAN idea of multi-role implementations, when the AC is per-socket
+> >> in Alexs concept.
+> >
+> > You need to explain a bit more in-depth what exactly it is you meant
+> > here.
+> >
+> >> We should try to move as much functionality as possible out of the kernel.
+> >
+> > I agree
+> >
+> >> When address claiming makes sense there it should stay there.
+> >>
+> >> IMO Alexs concept is not only much smaller in code size ...
+> >
+> > The smaller code size is due to the transport protocol not being
+> > handled.
 > 
-> My module has support for filtering which PGNs a socket actually
-> receives. If the filters on the socket allow address claim messages
-> through, the socket will see them.
+> This is correct. My module does not implement any of the transport
+> protocols, though I had hoped to add them one day.
+> 
+> > J1939 wants to eliminate the edge of 8 byte per CAN frame by
+> > transparently using transport protocol.
+> >
+> > Leaving this to userspace compromises real multi-role
+> > functionality, as it becomes hard when 2 applications share an address
+> > and both receive transport protocol sessions.
+> >
+> > This is where problems arise.
+> > So I'm very interested in how Alex solved this and what the impact on
+> > userspace is.
+> >
+> > Oliver, for your information, on J1939, reserved J1939 "PGN"s are used
+> > to deliver any other PGN when it exceeds 8bytes.
+> > So if 2 distinct applications (sharing the address) both want to send
+> > distinct PGNs >8bytes, they will both use those reserved J1939 PGNs
+> > instead of using the actual PGN. The actual PGN information is then packed
+> > inside the databytes, rather than the CANid.
+> 
+> This is how some (most?) of the J1939 family transport protocols work.
+> However, this is also NMEA 200 Fast Packet, where the original PGN is
+> still used as the PGN instead including it in the transported data.
 
-Given my major remark above, I can understand these API choices :-)
+I'm aware of the NMEA2000 Fast Packet, and concluded that it is not
+strictly necessary to add support in the kernel.
+It's very similar to ISOTP, where the major reason reason for kernel
+support is (I think) to allow stricter timing.
 
-One of the differences between our approaches is that you implicitely assign
-addresses to the interface on kernel level by opening sockets.
-As with your proposal above, this allows a non-root user to add
-addresses.
-I'm considering such approach. Would it make the difference?
-I would then drop the netlink interface, and add some summary
-in /proc for diagnose of the actual used source addresses.
+> This one is used frequently on the ISOBUS networks of agricultural
+> equipment (my primary use case for SocketCAN).
+
+ISOBUS is also my primary goal.
+
+> I wanted to support
+> this one in my module as well as the more typical ones (.e.g., TP,
+> ETP), but there is no good way to detect when a PGN is using it.
+
+Well, I claim I solved this :-).
+I left the fixed packet size semantics of CAN, in favor of
+variable size packet semantics of J1939. Together with the addressing,
+the semantics fit very well onto BSD sockets API.
+Depending on the size you provide with sendto(), can-j1939 will switch
+to TP or even ETP.
+
+FastPacket is an application-level decision, and results in 8byte
+packets that go out as single frames anyway.
+I think this sticks to how J1939 meant to use it.
 
 Kind regards,
 Kurt
