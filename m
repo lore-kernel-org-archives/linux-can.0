@@ -1,134 +1,99 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] net, can, ti_hecc: fix a run time warn_on.
-Date: Tue, 20 Oct 2015 16:46:37 +0200
-Message-ID: <562653CD.5040101@pengutronix.de>
-References: <1445351968-18956-1-git-send-email-anton.a.glukhov@gmail.com>
+From: "Anton.Glukhov" <anton.a.glukhov@gmail.com>
+Subject: Re: [PATCH] net, can, ti_hecc: add DT support for the ti,hecc
+ controller
+Date: Tue, 20 Oct 2015 17:57:37 +0300
+Message-ID: <56265661.7000509@gmail.com>
+References: <1445236757-29019-1-git-send-email-hs@denx.de>
+ <56249491.4020009@pengutronix.de> <56249B58.6090100@denx.de>
+ <56249C3F.3080000@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="cw15kantm8NdNV84hnhbiqAQxq5cWcd7I"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42374 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750905AbbJTOqo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2015 10:46:44 -0400
-In-Reply-To: <1445351968-18956-1-git-send-email-anton.a.glukhov@gmail.com>
+Received: from mail-lb0-f196.google.com ([209.85.217.196]:34611 "EHLO
+	mail-lb0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751273AbbJTO5l (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2015 10:57:41 -0400
+In-Reply-To: <56249C3F.3080000@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Anton Glukhov <anton.a.glukhov@gmail.com>, linux-can@vger.kernel.org
-Cc: hs@denx.de, netdev@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, hs@denx.de
+Cc: linux-kernel@vger.kernel.org, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>, Anant Gole <anantgole@ti.com>, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-omap@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cw15kantm8NdNV84hnhbiqAQxq5cWcd7I
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello Marc, Heiko!
+I'm sorry for the delay!
 
-On 10/20/2015 04:39 PM, Anton Glukhov wrote:
-> This patch fixes a warning in clk_enable by calling
-> clk_prepare_enable instead.
->=20
-> Signed-off-by: Heiko Schocher <hs@denx.de>
-> Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
-> ---
->  drivers/net/can/ti_hecc.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-> index cf345cb..77dd170 100644
-> --- a/drivers/net/can/ti_hecc.c
-> +++ b/drivers/net/can/ti_hecc.c
-> @@ -951,7 +951,7 @@ static int ti_hecc_probe(struct platform_device *pd=
-ev)
->  	netif_napi_add(ndev, &priv->napi, ti_hecc_rx_poll,
->  		HECC_DEF_NAPI_WEIGHT);
-> =20
-> -	clk_enable(priv->clk);
-> +	clk_prepare_enable(priv->clk);
+On 19.10.2015 10:31, Marc Kleine-Budde wrote:
+> On 10/19/2015 09:27 AM, Heiko Schocher wrote:
+>>>>   .../devicetree/bindings/net/can/ti_hecc-can.txt    | 20 ++++++++++
+>>>>   arch/arm/boot/dts/am3517.dtsi                      | 13 +++++++
+>>>>   drivers/net/can/ti_hecc.c                          | 45 +++++++++++++++++++++-
+>>>>   3 files changed, 76 insertions(+), 2 deletions(-)
+>>>>   create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc-can.txt
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc-can.txt b/Documentation/devicetree/bindings/net/can/ti_hecc-can.txt
+>>>> new file mode 100644
+>>>> index 0000000..09fab59
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc-can.txt
+>>>> @@ -0,0 +1,20 @@
+>>>> +* TI HECC CAN *
+>>>> +
+>>>> +Required properties:
+>>>> +  - compatible: Should be "ti,hecc"
+>>>
+>>> We usually put the name of the first SoC this IP core appears in to the
+>>> compatible.
+>>
+>> Ok, so "ti,am335xx-hecc" would be OK?
+>> @Anton: you used "am35x" ... it should be "am35xx"
+> 
+> The "xx" is not okay. Give precisely the first SoC Version this IP core
+> was implemented in.
+> 
 
-please add error checking
+It's OMAP3 based arch, but HECC is implemented only in AM3505 and AM3517 SoCs.
+So, I'm confused about what's "name" should I use.
 
->  	err =3D register_candev(ndev);
->  	if (err) {
->  		dev_err(&pdev->dev, "register_candev() failed\n");
-> @@ -966,7 +966,8 @@ static int ti_hecc_probe(struct platform_device *pd=
-ev)
->  	return 0;
-> =20
->  probe_exit_clk:
-> -	clk_put(priv->clk);
+>>
+>>>> +  - reg: Should contain CAN controller registers location and length
+>>>> +  - interrupts: Should contain IRQ line for the CAN controller
+>>>
+>>> I'm missing the description of the ti,* properties. I think they are
+>>> required, too. Although the code doesn't enforce it.
+>>
+>> Ok.
+>>
+>>>> +
+>>>> +Example:
+>>>> +
+>>>> +	can0: hecc@5c050000 {
+>>>> +		compatible = "ti,hecc";
+>>>> +		reg = <0x5c050000 0x4000>;
+>>>> +		interrupts = <24>;
+>>>> +		ti,hecc_scc_offset = <0>;
+>>>> +		ti,hecc_scc_ram_offset = <0x3000>;
+>>>> +		ti,hecc_ram_offset = <0x3000>;
+>>>> +		ti,hecc_mbx_offset = <0x2000>;
+>>>> +		ti,hecc_int_line = <0>;
+>>>> +		ti,hecc_version = <1>;
+>>>
+>>> Versioning in the OF world is done via the compatible. Are the offsets a
+>>> per SoC parameter? I'm not sure if it's better to put
+>>> the offsets into the driver.
+>>
+>> I am unsure here too..
+> 
+> The devicetree people will hopefully help here.
+> 
 
-Why do you remove the clk_put()?
+I added offsets here just make it consistent with platform data in machine file.
+Actually it seems that it's not necessary to put offsets in DT file and I can move it to driver.
+But again, it was added to keep consistency.
 
-> +	clk_disable_unprepare(priv->clk);
-> +	priv->clk =3D NULL;
+> regards,
+> Marc
+> 
 
-The NULLing of priv->clk is not needed.
-
->  probe_exit_candev:
->  	free_candev(ndev);
->  probe_exit_iounmap:
-> @@ -984,8 +985,8 @@ static int ti_hecc_remove(struct platform_device *p=
-dev)
->  	struct ti_hecc_priv *priv =3D netdev_priv(ndev);
-> =20
->  	unregister_candev(ndev);
-> -	clk_disable(priv->clk);
-> -	clk_put(priv->clk);
-
-Why do you remoe the clk_put()?
-
-> +	clk_disable_unprepare(priv->clk);
-> +	priv->clk =3D NULL;
->  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	iounmap(priv->base);
->  	release_mem_region(res->start, resource_size(res));
-> @@ -1009,7 +1010,7 @@ static int ti_hecc_suspend(struct platform_device=
- *pdev, pm_message_t state)
->  	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_PDR);
->  	priv->can.state =3D CAN_STATE_SLEEPING;
-> =20
-> -	clk_disable(priv->clk);
-> +	clk_disable_unprepare(priv->clk);
-> =20
->  	return 0;
->  }
-> @@ -1019,7 +1020,7 @@ static int ti_hecc_resume(struct platform_device =
-*pdev)
->  	struct net_device *dev =3D platform_get_drvdata(pdev);
->  	struct ti_hecc_priv *priv =3D netdev_priv(dev);
-> =20
-> -	clk_enable(priv->clk);
-> +	clk_prepare_enable(priv->clk);
-
-please add error checking.
-
-> =20
->  	hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_PDR);
->  	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
->=20
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---cw15kantm8NdNV84hnhbiqAQxq5cWcd7I
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWJlPNAAoJEP5prqPJtc/H1e0H/RljxRTb1Bkphpe+CrVw33gf
-VvN6SsgFuslESrJjFUiqsiBi28Q/mdxMCwixD6yzYd6virc+o8QYzzMFNei5cZPh
-5bKdiSweBVzOGQszCdlTDIk2KxCHZZ/oj1drvHAm/tfSnLRfn+7gzc/DwCPoi+uf
-ENul+4vOS3O9BGANpL+oaW/g8DhJuYNUg+t7u+HbXd0qZgJGKms3qrdKOyT+XRwj
-vmUUiQ2479vUztkZlj+OqY1T5JoU2SaHQ+d+Dx7Hdw39EJJwWwc82YrmKsM6QbrF
-0Gz/nihL07erl/+Jdm65xJz5h6/LiQVOmCmcqHrGD3ec5UkOdhixDSCCbP6uTl4=
-=1IiJ
------END PGP SIGNATURE-----
-
---cw15kantm8NdNV84hnhbiqAQxq5cWcd7I--
+regards,
+Anton
