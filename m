@@ -1,71 +1,78 @@
-From: Robert Schwebel <r.schwebel@pengutronix.de>
-Subject: Re: [Rfi] Cyclone V CAN errors when application pinned to CPU1
-Date: Tue, 20 Oct 2015 09:18:07 +0200
-Message-ID: <20151020071807.GH20879@pengutronix.de>
-References: <562155B7.7020504@vsis.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Anton Glukhov <anton.a.glukhov@gmail.com>
+Subject: [PATCH v2] net, can, ti_hecc: fix a run time warn_on.
+Date: Tue, 20 Oct 2015 17:39:28 +0300
+Message-ID: <1445351968-18956-1-git-send-email-anton.a.glukhov@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42300 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752335AbbJTHlI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2015 03:41:08 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-	by metis.ext.pengutronix.de with esmtps (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-	(Exim 4.80)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1ZoRXf-0001yc-Eh
-	for linux-can@vger.kernel.org; Tue, 20 Oct 2015 09:41:07 +0200
-Received: from [IPv6:2001:6f8:105b:1122:29c9:2eb6:516b:527e] (dyn-2001-06f8-105b-1122-29c9-2eb6-516b-527e.pool.blackshift.org [IPv6:2001:6f8:105b:1122:29c9:2eb6:516b:527e])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: mkl@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3DF23AF6B1
-	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2015 07:41:05 +0000 (UTC)
-Content-Disposition: inline
-In-Reply-To: <562155B7.7020504@vsis.cz>
+Received: from mail-lb0-f172.google.com ([209.85.217.172]:35466 "EHLO
+	mail-lb0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751299AbbJTOjj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2015 10:39:39 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Vlastimil Setka <setka@vsis.cz>
-Cc: rfi@lists.rocketboards.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, hs@denx.de, netdev@vger.kernel.org, Anton Glukhov <anton.a.glukhov@gmail.com>
 
-Hi,
+This patch fixes a warning in clk_enable by calling
+clk_prepare_enable instead.
 
+Signed-off-by: Heiko Schocher <hs@denx.de>
+Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
+---
+ drivers/net/can/ti_hecc.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Adding Marc to Cc:.
-
-On Fri, Oct 16, 2015 at 09:53:27PM +0200, Vlastimil Setka wrote:
-> We discovered very weird behaviour of CAN controller in Cyclone V SoC
-> with Linux socketcan stack. The problem was first seen on 3.10-ltsi a
-> few months ago, and now again on 3.18 from altera github (with rt
-> preempt patch applied).
-
-Could you try if the issue happens with a recent mainline kernel as
-well? RT is available for 4.1, so that would be a good choice.
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index cf345cb..77dd170 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -951,7 +951,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	netif_napi_add(ndev, &priv->napi, ti_hecc_rx_poll,
+ 		HECC_DEF_NAPI_WEIGHT);
  
-> We have a linux application which sends data periodically (1 to 20 ms
-> period) out over the can0 socketcan interface. Sometimes the first
-> data byte in the CAN frame is zero on the wire, but non-zero in the
-> data sent! When running with this period, this happens at random
-> times, but during a few minutes it can be allways replicated.
-> 
-> The problem only appears when the application is pinned to CPU1 by
-> linux process afinity mechanism. When pinned to default CPU0, there is
-> no problem.
-> 
-> Anyone seen this issue? Any idea how to debug it and what can be a
-> reason? What version (git repo / tag) of Linux should I use?
-> 
-> We plan to do some in-deep evaluation and testing, but I want to share
-> the experience now.
-
-Is your test program available somewhere?
-
-Regards,
-Robert Schwebel
+-	clk_enable(priv->clk);
++	clk_prepare_enable(priv->clk);
+ 	err = register_candev(ndev);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "register_candev() failed\n");
+@@ -966,7 +966,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ probe_exit_clk:
+-	clk_put(priv->clk);
++	clk_disable_unprepare(priv->clk);
++	priv->clk = NULL;
+ probe_exit_candev:
+ 	free_candev(ndev);
+ probe_exit_iounmap:
+@@ -984,8 +985,8 @@ static int ti_hecc_remove(struct platform_device *pdev)
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
+ 
+ 	unregister_candev(ndev);
+-	clk_disable(priv->clk);
+-	clk_put(priv->clk);
++	clk_disable_unprepare(priv->clk);
++	priv->clk = NULL;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	iounmap(priv->base);
+ 	release_mem_region(res->start, resource_size(res));
+@@ -1009,7 +1010,7 @@ static int ti_hecc_suspend(struct platform_device *pdev, pm_message_t state)
+ 	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_PDR);
+ 	priv->can.state = CAN_STATE_SLEEPING;
+ 
+-	clk_disable(priv->clk);
++	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
+ }
+@@ -1019,7 +1020,7 @@ static int ti_hecc_resume(struct platform_device *pdev)
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct ti_hecc_priv *priv = netdev_priv(dev);
+ 
+-	clk_enable(priv->clk);
++	clk_prepare_enable(priv->clk);
+ 
+ 	hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_PDR);
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.9.1
 
