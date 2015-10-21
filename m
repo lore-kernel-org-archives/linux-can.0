@@ -1,83 +1,48 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] net, can, ti_hecc: fix a run time warn_on.
-Date: Tue, 20 Oct 2015 21:11:19 +0200
-Message-ID: <562691D7.30602@pengutronix.de>
-References: <1445351968-18956-1-git-send-email-anton.a.glukhov@gmail.com>
- <562653CD.5040101@pengutronix.de> <56266C0B.1040006@gmail.com>
+From: wouter van herpen <wouter.van.herpen@prodrive-technologies.com>
+Subject: Re: =?utf-8?b?Y19jYW46?= wrong frame order reception
+Date: Wed, 21 Oct 2015 09:19:38 +0000 (UTC)
+Message-ID: <loom.20151021T111146-165@post.gmane.org>
+References: <2323199.vffRdFDsB5@ws-stein> <7234338.9RqiOdiLOY@ws-stein> <533B067A.3030609@hartkopp.net> <1451869.V7QBi99RiY@ws-stein> <cdaa71c3255e192a2dea2e4f3f26e49a@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="c288c2gQfuAXuBbpIA9sxW3ITIwavfeDL"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <56266C0B.1040006@gmail.com>
-Sender: netdev-owner@vger.kernel.org
-To: "Anton.Glukhov" <anton.a.glukhov@gmail.com>, linux-can@vger.kernel.org
-Cc: hs@denx.de, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:44481 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754243AbbJUJZQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 21 Oct 2015 05:25:16 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1Zopdp-0007P1-5p
+	for linux-can@vger.kernel.org; Wed, 21 Oct 2015 11:25:05 +0200
+Received: from prodrive.fiberspeed.claranet.nl ([prodrive.fiberspeed.claranet.nl])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 21 Oct 2015 11:25:05 +0200
+Received: from wouter.van.herpen by prodrive.fiberspeed.claranet.nl with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Wed, 21 Oct 2015 11:25:05 +0200
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---c288c2gQfuAXuBbpIA9sxW3ITIwavfeDL
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On 10/20/2015 06:30 PM, Anton.Glukhov wrote:
->>> +	clk_disable_unprepare(priv->clk);
->>> +	priv->clk =3D NULL;
->>>  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>>  	iounmap(priv->base);
->>>  	release_mem_region(res->start, resource_size(res));
->>> @@ -1009,7 +1010,7 @@ static int ti_hecc_suspend(struct platform_devi=
-ce *pdev, pm_message_t state)
->>>  	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_PDR);
->>>  	priv->can.state =3D CAN_STATE_SLEEPING;
->>> =20
->>> -	clk_disable(priv->clk);
->>> +	clk_disable_unprepare(priv->clk);
->>> =20
->>>  	return 0;
->>>  }
->>> @@ -1019,7 +1020,7 @@ static int ti_hecc_resume(struct platform_devic=
-e *pdev)
->>>  	struct net_device *dev =3D platform_get_drvdata(pdev);
->>>  	struct ti_hecc_priv *priv =3D netdev_priv(dev);
->>> =20
->>> -	clk_enable(priv->clk);
->>> +	clk_prepare_enable(priv->clk);
->>
->> please add error checking.
->>
->=20
-> Why it wasn't added with clk_enable? Is it bug? I'm confused here, beca=
-use in so many drivers
-> there is no checking err after clk_enable or clk_prepare_enable. Maybe =
-I missed something...
-> Could you clarify this part please?
+I am currently working on the Intel atom platform with EG20T.
 
-I wouldn't call it a bug in the original driver, it probably slipped
-through the review or I didn't know better.
+Using the c_can driver from the main line 4.1.10 kernel sources, I still see
+frames received in a swapped order.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+It looks like all the patches mentioned in the list above are already
+applied in this main line c_can driver.
+
+Is the frame order swapping still a known issue? Are there any additional
+patches regarding this issue that I'm not aware off?
 
 
---c288c2gQfuAXuBbpIA9sxW3ITIwavfeDL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWJpHXAAoJEP5prqPJtc/HZXgH/0nG4Ba0nCHUN6oMG4W4Sb/p
-72TS/EjeOiMmZsp33R2tyq0qm5i557cBkIcM3QG9i3MXC9Vf7zneIYfkbYi8dBTo
-PB7DghpG7qjNq+g99ouDCpDzxwZrHq5pbYqiQH0CuJXInMdGHTvwfrwPdufttsZh
-x1CMCGudEI0BZaGpTcX5WKaMA64XApBt0s3ftNIk+VuD71pvBLVkesO9QecldjyH
-M8HJYuXZj2n4XfZECv2cBgUJ9K7pcFB3rlUb4Pwf4Yr6vQ3XOIe4jNNHaoiPA6S2
-XZfUUY46gLx+V8sIz4OQaZfDsyOQ+nE6m84ewnKSKMJdQCijR8x/xRuqEgvxpR4=
-=7AqL
------END PGP SIGNATURE-----
 
---c288c2gQfuAXuBbpIA9sxW3ITIwavfeDL--
+
+
+
