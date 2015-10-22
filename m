@@ -1,54 +1,42 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 1/2] can: xilinx: use readl/writel instead of
- ioread/iowrite
-Date: Thu, 22 Oct 2015 11:49:53 +0200
-Message-ID: <5628B141.1010307@xilinx.com>
+From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+Subject: Re: [PATCH 2/2] can: xilinx: fix bug in bus error handling
+Date: Thu, 22 Oct 2015 09:33:15 -0700
+Message-ID: <20151022163315.GI5257@xsjsorenbubuntu>
 References: <1445489163-11045-1-git-send-email-appanad@xilinx.com>
- <4061693.oBld7AKBIp@wuerfel>
- <C246CAC1457055469EF09E3A7AC4E11A4A4F2CDB@XAP-PVEXMBX01.xlnx.xilinx.com>
- <3847286.pUBWjpC1TL@wuerfel>
+ <1445489163-11045-2-git-send-email-appanad@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <3847286.pUBWjpC1TL@wuerfel>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
-Cc: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>, Soren Brinkmann <sorenb@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1445489163-11045-2-git-send-email-appanad@xilinx.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: anirudh@xilinx.com, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, appanad@xilinx.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 10/22/2015 11:02 AM, Arnd Bergmann wrote:
-> On Thursday 22 October 2015 08:34:53 Appana Durga Kedareswara Rao wrote:
->>> On Thursday 22 October 2015 10:16:02 Kedareswara rao Appana wrote:
->>>> The driver only supports memory-mapped I/O [by ioremap()], so
->>>> readl/writel is actually the right thing to do, IMO.
->>>> During the validation of this driver or IP on ARM 64-bit processor
->>>> while sending lot of packets observed that the tx packet drop with
->>>> iowrite Putting the barriers for each tx fifo register write fixes
->>>> this issue Instead of barriers using writel also fixed this issue.
->>>>
->>>> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
->>>
->>> The two should really do the same thing: iowrite32() is just a static inline calling
->>> writel() on both ARM32 and ARM64. On which kernel version did you observe the
->>> difference? It's possible that an older version used CONFIG_GENERIC_IOMAP,
->>> which made this slightly more expensive.
->>
->> I observed this issue with the 4.0.0 kernel version
-> 
-> Is it possible that you have nonstandard patches on your kernel? If so, can
-> you send a diff against the mainline version?
+On Thu, 2015-10-22 at 10:16AM +0530, Kedareswara rao Appana wrote:
+> Simply resetting the peripheral on bus off condition is not enough,
+> Because we also need to re-initialize the whole device.
+> This patch fixes this issue.
+>=20
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+> ---
+>  drivers/net/can/xilinx_can.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_ca=
+n.c
+> index 055d6f3..9aeb85f 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -529,6 +529,8 @@ static int xcan_rx(struct net_device *ndev)
+>  	return 1;
+>  }
+> =20
+> +static void xcan_chip_stop(struct net_device *ndev);
 
-Kedar: Can you please retest this on mainline kernel?
-We shouldn't have any patches which should influence this.
+Isn't it possible to move the function and avoid the forward
+declaration?
 
-Thanks,
-Michal
+	S=C3=B6ren
