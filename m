@@ -1,56 +1,55 @@
-From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Subject: [PATCH 2/2] can: xilinx: fix bug in bus error handling
-Date: Thu, 22 Oct 2015 10:16:03 +0530
-Message-ID: <1445489163-11045-2-git-send-email-appanad__32848.1829994873$1445490178$gmane$org@xilinx.com>
-References: <1445489163-11045-1-git-send-email-appanad@xilinx.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: c_can: wrong frame order reception
+Date: Thu, 22 Oct 2015 07:05:35 +0200
+Message-ID: <56286E9F.7040909@hartkopp.net>
+References: <2323199.vffRdFDsB5@ws-stein> <7234338.9RqiOdiLOY@ws-stein> <533B067A.3030609@hartkopp.net> <1451869.V7QBi99RiY@ws-stein> <cdaa71c3255e192a2dea2e4f3f26e49a@grandegger.com> <loom.20151021T111146-165@post.gmane.org> <5627A245.50401@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0096.outbound.protection.outlook.com ([207.46.100.96]:2528
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750732AbbJVFCY (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 22 Oct 2015 01:02:24 -0400
-In-Reply-To: <1445489163-11045-1-git-send-email-appanad@xilinx.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:30338 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751161AbbJVFFn (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Oct 2015 01:05:43 -0400
+In-Reply-To: <5627A245.50401@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: anirudh@xilinx.com, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, appanad@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wouter van herpen <wouter.van.herpen@prodrive-technologies.com>, linux-can@vger.kernel.org
 
-Simply resetting the peripheral on bus off condition is not enough,
-Because we also need to re-initialize the whole device.
-This patch fixes this issue.
+Hi Wouter,
 
-Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+On 21.10.2015 16:33, Marc Kleine-Budde wrote:
+> On 10/21/2015 11:19 AM, wouter van herpen wrote:
+>> I am currently working on the Intel atom platform with EG20T.
+>>
+>> Using the c_can driver from the main line 4.1.10 kernel sources, I still see
+>> frames received in a swapped order.
+>>
+>> It looks like all the patches mentioned in the list above are already
+>> applied in this main line c_can driver.
+>>
+>> Is the frame order swapping still a known issue? Are there any additional
+>> patches regarding this issue that I'm not aware off?
+>
+> Maybe Oliver can help. What's needed on a v4.1.10 SMP system to fix the
+> RX order?
+>
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 055d6f3..9aeb85f 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -529,6 +529,8 @@ static int xcan_rx(struct net_device *ndev)
- 	return 1;
- }
- 
-+static void xcan_chip_stop(struct net_device *ndev);
-+
- /**
-  * xcan_err_interrupt - error frame Isr
-  * @ndev:	net_device pointer
-@@ -558,8 +560,9 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 	if (isr & XCAN_IXR_BSOFF_MASK) {
- 		priv->can.state = CAN_STATE_BUS_OFF;
- 		priv->can.can_stats.bus_off++;
--		/* Leave device in Config Mode in bus-off state */
--		priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
-+		/* Re-initialize the whole device in bus-off state */
-+		xcan_chip_stop(ndev);
-+		xcan_chip_start(ndev);
- 		can_bus_off(ndev);
- 		if (skb)
- 			cf->can_id |= CAN_ERR_BUSOFF;
--- 
-2.1.2
+you can try to use the SMP-affinity to pin the innterrupt to a specific CPU:
 
+	https://www.kernel.org/doc/Documentation/IRQ-affinity.txt
+
+But we're currently also checking the usability of receive packet steering 
+(RPS) on SMP systems. Please check
+
+	http://marc.info/?l=linux-can&m=144251788500555&w=2
+
+whether just using
+
+	echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
+
+helps in you case or whether you need to set the skb hash which is suggested 
+there too.
+
+Best regards,
+Oliver
