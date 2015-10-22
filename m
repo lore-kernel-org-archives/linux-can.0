@@ -1,50 +1,66 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] can: xilinx: use readl/writel instead of ioread/iowrite
-Date: Thu, 22 Oct 2015 11:02:38 +0200
-Message-ID: <3847286.pUBWjpC1TL@wuerfel>
-References: <1445489163-11045-1-git-send-email-appanad@xilinx.com> <4061693.oBld7AKBIp@wuerfel> <C246CAC1457055469EF09E3A7AC4E11A4A4F2CDB@XAP-PVEXMBX01.xlnx.xilinx.com>
+From: wouter van herpen <wouter.van.herpen@prodrive-technologies.com>
+Subject: Re: =?utf-8?b?Y19jYW46?= wrong frame order reception
+Date: Thu, 22 Oct 2015 09:50:59 +0000 (UTC)
+Message-ID: <loom.20151022T114518-579@post.gmane.org>
+References: <2323199.vffRdFDsB5@ws-stein> <7234338.9RqiOdiLOY@ws-stein> <533B067A.3030609@hartkopp.net> <1451869.V7QBi99RiY@ws-stein> <cdaa71c3255e192a2dea2e4f3f26e49a@grandegger.com> <loom.20151021T111146-165@post.gmane.org> <5627A245.50401@pengutronix.de> <56286E9F.7040909@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <C246CAC1457055469EF09E3A7AC4E11A4A4F2CDB@XAP-PVEXMBX01.xlnx.xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:45935 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1756468AbbJVJvP (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Oct 2015 05:51:15 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1ZpCWf-0006Hg-9u
+	for linux-can@vger.kernel.org; Thu, 22 Oct 2015 11:51:13 +0200
+Received: from prodrive.fiberspeed.claranet.nl ([prodrive.fiberspeed.claranet.nl])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 22 Oct 2015 11:51:13 +0200
+Received: from wouter.van.herpen by prodrive.fiberspeed.claranet.nl with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Thu, 22 Oct 2015 11:51:13 +0200
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On Thursday 22 October 2015 08:34:53 Appana Durga Kedareswara Rao wrote:
-> > On Thursday 22 October 2015 10:16:02 Kedareswara rao Appana wrote:
-> > > The driver only supports memory-mapped I/O [by ioremap()], so
-> > > readl/writel is actually the right thing to do, IMO.
-> > > During the validation of this driver or IP on ARM 64-bit processor
-> > > while sending lot of packets observed that the tx packet drop with
-> > > iowrite Putting the barriers for each tx fifo register write fixes
-> > > this issue Instead of barriers using writel also fixed this issue.
-> > >
-> > > Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
-> > 
-> > The two should really do the same thing: iowrite32() is just a static inline calling
-> > writel() on both ARM32 and ARM64. On which kernel version did you observe the
-> > difference? It's possible that an older version used CONFIG_GENERIC_IOMAP,
-> > which made this slightly more expensive.
+> you can try to use the SMP-affinity to pin the innterrupt to a specific CPU:
 > 
-> I observed this issue with the 4.0.0 kernel version
-
-Is it possible that you have nonstandard patches on your kernel? If so, can
-you send a diff against the mainline version?
-
-I don't see CONFIG_GENERIC_IOMAP in 4.0.0, and writel() definitely has the
-necessary barriers on arm64, the same way that iowrite() does.
-
-> > If there are barriers that you want to get rid of for performance reasons, you
-> > should use writel_relaxed(), but be careful to synchronize them correctly with
-> > regard to DMA. It should be fine in this driver, as it does not perform any DMA,
-> > but be aware that there is no big-endian version of
-> > writel_relaxed() at the moment.
+> 	https://www.kernel.org/doc/Documentation/IRQ-affinity.txt
 > 
-> There is no DMA in CAN for this IP.
+> But we're currently also checking the usability of receive packet steering 
+> (RPS) on SMP systems. Please check
+> 
+> 	http://marc.info/?l=linux-can&m=144251788500555&w=2
+> 
+> whether just using
+> 
+> 	echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
+> 
+> helps in you case or whether you need to set the skb hash which is suggested 
+> there too.
+> 
+> 
 
-Ok, good.
+Hi Oliver,
 
-	Arnd
+I have tried SMP affinity, in combination with adjusting
+/sys/class/net/can0/queues/rx-0/rps_cpus. These changes did not solve the
+out of order reception.
+Also adding skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2); did not make
+a difference.
+
+Do you have any other suggestions?
+
+I have also done some testing with the pch_can driver. I noticed there the
+out of order receptions are less frequent. Using the pch_can driver, OOO
+reception only occurs if we stress the CPU over e.g. UART.
+Using c_can driver, the OOO replies occur more often.
+
+
+
+
+
+
