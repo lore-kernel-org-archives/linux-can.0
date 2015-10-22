@@ -1,71 +1,139 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: c_can: wrong frame order reception
-Date: Thu, 22 Oct 2015 19:01:45 +0200
-Message-ID: <56291679.8060407@hartkopp.net>
-References: <2323199.vffRdFDsB5@ws-stein> <7234338.9RqiOdiLOY@ws-stein> <533B067A.3030609@hartkopp.net> <1451869.V7QBi99RiY@ws-stein> <cdaa71c3255e192a2dea2e4f3f26e49a@grandegger.com> <loom.20151021T111146-165@post.gmane.org> <5627A245.50401@pengutronix.de> <56286E9F.7040909@hartkopp.net> <loom.20151022T114518-579@post.gmane.org>
+From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+Subject: Re: [PATCH v6] can: xilinx: Convert to runtime_pm
+Date: Thu, 22 Oct 2015 15:13:20 -0700
+Message-ID: <20151022221320.GQ5257@xsjsorenbubuntu>
+References: <1445489120-10933-1-git-send-email-appanad@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:27627 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757280AbbJVRBu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 22 Oct 2015 13:01:50 -0400
-In-Reply-To: <loom.20151022T114518-579@post.gmane.org>
+Received: from mail-bn1bon0066.outbound.protection.outlook.com ([157.56.111.66]:55648
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1756487AbbJVWNk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 22 Oct 2015 18:13:40 -0400
+Content-Disposition: inline
+In-Reply-To: <1445489120-10933-1-git-send-email-appanad@xilinx.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wouter van herpen <wouter.van.herpen@prodrive-technologies.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
+Cc: anirudh@xilinx.com, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-Hi Wouter,
+Hi Kedar,
 
+On Thu, 2015-10-22 at 10:15AM +0530, Kedareswara rao Appana wrote:
+> Instead of enabling/disabling clocks at several locations in the driv=
+er,
+> Use the runtime_pm framework. This consolidates the actions for runti=
+me PM
+> In the appropriate callbacks and makes the driver more readable and m=
+antainable.
+>=20
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
+[...]
+>  /**
+>   * xcan_probe - Platform registration call
+> @@ -1072,7 +1103,7 @@ static int xcan_probe(struct platform_device *p=
+dev)
+>  		return -ENOMEM;
+> =20
+>  	priv =3D netdev_priv(ndev);
+> -	priv->dev =3D ndev;
+> +	priv->dev =3D &pdev->dev;
+>  	priv->can.bittiming_const =3D &xcan_bittiming_const;
+>  	priv->can.do_set_mode =3D xcan_do_set_mode;
+>  	priv->can.do_get_berr_counter =3D xcan_get_berr_counter;
+> @@ -1114,21 +1145,30 @@ static int xcan_probe(struct platform_device =
+*pdev)
+>  		}
+>  	}
+> =20
+> -	ret =3D clk_prepare_enable(priv->can_clk);
+> +	ret =3D clk_prepare(priv->can_clk);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "unable to enable device clock\n");
+>  		goto err_free;
+>  	}
+> =20
+> -	ret =3D clk_prepare_enable(priv->bus_clk);
+> +	ret =3D clk_prepare(priv->bus_clk);
 
+Are these clk_prepare calls needed here? The runtime PM calls do
+clk_prepare_enable and clk_disable_unprepare.
 
-On 10/22/2015 11:50 AM, wouter van herpen wrote:
->> you can try to use the SMP-affinity to pin the innterrupt to a specific CPU:
->>
->> 	https://www.kernel.org/doc/Documentation/IRQ-affinity.txt
->>
->> But we're currently also checking the usability of receive packet steering 
->> (RPS) on SMP systems. Please check
->>
->> 	http://marc.info/?l=linux-can&m=144251788500555&w=2
->>
->> whether just using
->>
->> 	echo f > /sys/class/net/can0/queues/rx-0/rps_cpus
->>
->> helps in you case or whether you need to set the skb hash which is suggested 
->> there too.
->>
->>
-> 
-> Hi Oliver,
-> 
-> I have tried SMP affinity, in combination with adjusting
-> /sys/class/net/can0/queues/rx-0/rps_cpus. These changes did not solve the
-> out of order reception.
-> Also adding skb_set_hash(skb, dev->ifindex, PKT_HASH_TYPE_L2); did not make
-> a difference.
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "unable to enable bus clock\n");
+> -		goto err_unprepare_disable_dev;
+> +		goto err_unprepare_dev;
+>  	}
+> =20
+>  	priv->write_reg =3D xcan_write_reg_le;
+>  	priv->read_reg =3D xcan_read_reg_le;
+> =20
+> +	pm_runtime_irq_safe(&pdev->dev);
+> +	pm_runtime_enable(&pdev->dev);
+> +	ret =3D pm_runtime_get_sync(&pdev->dev);
+> +	if (ret < 0) {
+> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
+> +			__func__, ret);
+> +		goto err_unprepare_busclk;
+> +	}
+> +
+>  	if (priv->read_reg(priv, XCAN_SR_OFFSET) !=3D XCAN_SR_CONFIG_MASK) =
+{
+>  		priv->write_reg =3D xcan_write_reg_be;
+>  		priv->read_reg =3D xcan_read_reg_be;
+> @@ -1141,22 +1181,26 @@ static int xcan_probe(struct platform_device =
+*pdev)
+>  	ret =3D register_candev(ndev);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "fail to register failed (err=3D%d)\n", ret);
+> -		goto err_unprepare_disable_busclk;
+> +		goto err_disableclks;
+>  	}
+> =20
+>  	devm_can_led_init(ndev);
+> -	clk_disable_unprepare(priv->bus_clk);
+> -	clk_disable_unprepare(priv->can_clk);
+> +
+> +	pm_runtime_put(&pdev->dev);
+> +
+>  	netdev_dbg(ndev, "reg_base=3D0x%p irq=3D%d clock=3D%d, tx fifo dept=
+h:%d\n",
+>  			priv->reg_base, ndev->irq, priv->can.clock.freq,
+>  			priv->tx_max);
+> =20
+>  	return 0;
+> =20
+> -err_unprepare_disable_busclk:
+> -	clk_disable_unprepare(priv->bus_clk);
+> -err_unprepare_disable_dev:
+> -	clk_disable_unprepare(priv->can_clk);
+> +err_disableclks:
+> +	pm_runtime_put(priv->dev);
+> +err_unprepare_busclk:
+> +	pm_runtime_disable(&pdev->dev);
+> +	clk_unprepare(priv->bus_clk);
+> +err_unprepare_dev:
+> +	clk_unprepare(priv->can_clk);
+>  err_free:
+>  	free_candev(ndev);
+>  err:
+> @@ -1175,11 +1219,11 @@ static int xcan_remove(struct platform_device=
+ *pdev)
+>  	struct net_device *ndev =3D platform_get_drvdata(pdev);
+>  	struct xcan_priv *priv =3D netdev_priv(ndev);
+> =20
+> -	if (set_reset_mode(ndev) < 0)
+> -		netdev_err(ndev, "mode resetting failed!\n");
+> -
+>  	unregister_candev(ndev);
+> +	pm_runtime_disable(&pdev->dev);
+>  	netif_napi_del(&priv->napi);
+> +	clk_unprepare(priv->bus_clk);
+> +	clk_unprepare(priv->can_clk);
 
-That's pretty bad!
+I think this can go away when the prepare calls in probe go away.
 
-> 
-> Do you have any other suggestions?
-
-No. Indeed setting an interrupt with SMP affinity to a single CPU is already
-the 'strongest' tool I know.
-
-Did you also try SMP affinity without changing the RPS settings?
-
-> 
-> I have also done some testing with the pch_can driver. I noticed there the
-> out of order receptions are less frequent. Using the pch_can driver, OOO
-> reception only occurs if we stress the CPU over e.g. UART.
-> Using c_can driver, the OOO replies occur more often.
-
-@Marc: Both drivers (c_can/pch_can) use NAPI. Would it make sense to convert
-e.g. the c_can driver to non-NAPI for a test?
-
-Regards,
-Oliver
+	Thanks,
+	S=C3=B6ren
