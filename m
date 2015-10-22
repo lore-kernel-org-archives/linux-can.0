@@ -1,13 +1,13 @@
 From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
 Subject: [PATCH 2/2] can: xilinx: fix bug in bus error handling
 Date: Thu, 22 Oct 2015 10:16:03 +0530
-Message-ID: <1445489163-11045-2-git-send-email-appanad__49468.8057843179$1445490170$gmane$org@xilinx.com>
+Message-ID: <1445489163-11045-2-git-send-email-appanad__586.218506987457$1445490176$gmane$org@xilinx.com>
 References: <1445489163-11045-1-git-send-email-appanad@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1445489163-11045-1-git-send-email-appanad@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: anirudh@xilinx.com, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, appanad@xilinx.com
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
