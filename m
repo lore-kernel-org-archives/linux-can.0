@@ -1,393 +1,202 @@
-From: Kedareswara rao Appana <appana.durga.rao@xilinx.com>
-Subject: [PATCH v7] can: xilinx: Convert to runtime_pm
-Date: Fri, 23 Oct 2015 10:53:38 +0530
-Message-ID: <1445577818-26165-1-git-send-email-appanad@xilinx.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: can-j1939 API
+Date: Fri, 23 Oct 2015 13:14:31 +0200
+Message-ID: <20151023111430.GB22388@airbook.eia.lan>
+References: <linux-can/can-utils/pull/7@github.com>
+ <linux-can/can-utils/pull/7/c144149208@github.com>
+ <560ADC91.1090408@pengutronix.de>
+ <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
+ <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com>
+ <20151018023225.GA29078@airbook.vandijck-laurijssen.be>
+ <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com>
+ <20151019204442.GA16852@airbook.vandijck-laurijssen.be>
+ <CAFUozzFqDtOdkgFye4M3jU-g+9uF=XH8SmU44j5qK4PTEXp8qQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: anirudh@xilinx.com, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, soren.brinkmann@xilinx.com
-Cc: netdev@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relaygateway01.edpnet.net ([212.71.1.210]:25920 "EHLO
+	relaygateway01.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751092AbbJWLPH (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2015 07:15:07 -0400
+Content-Disposition: inline
+In-Reply-To: <CAFUozzFqDtOdkgFye4M3jU-g+9uF=XH8SmU44j5qK4PTEXp8qQ@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Alex Layton <alex@layton.in>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Instead of enabling/disabling clocks at several locations in the driver,
-Use the runtime_pm framework. This consolidates the actions for runtime PM
-In the appropriate callbacks and makes the driver more readable and mantainable.
+> >> ...
+> >> Can you not have you module only listen on
+> >> interfaces where J1939 sockets have been opened?
+> >
+> > That sounds like a fine idea!
+> > It would behave slightly different during booting, but given the critics
+> > on the switch, this will probably the best thing to do.
+> > This implies that a non-root user decides to turn on can-j1939
+> > processing on an interface, which I found a hard nut to crack.
+> 
+> I had not really considered the user permissions ramifications of
+> things. You raise a good point here.
+> 
+> Doesn't SocketCAN automatically load the protocol module when you try
+> to open a socket? That means non-root users can already decide to turn
+> on processing on an interface for ISOTP etc. I am good with non-root
+> users being able to enable J1939 like this, especially if the
+> precedent is already set by other protocols.
 
-Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
----
-Changes for v7:
-  - Removed the unnecessary clk_prepare/clk_unprepare calls
-    From  the probe and remove as suggested by Soren.
-Changes for v6:
- - Updated the driver with review comments as suggested by Marc.
-Changes for v5:
- - Updated with the review comments.
-   Updated the remove fuction to use runtime_pm.
-Chnages for v4:
- - Updated with the review comments.
-Changes for v3:
-  - Converted the driver to use runtime_pm.
-Changes for v2:
-  - Removed the struct platform_device* from suspend/resume
-    as suggest by Lothar.
+Yep, I can follow that argument.
+When I get to it, I'll change that.
+It also implies I can drop iproute2-j1939 branches completely.
 
- drivers/net/can/xilinx_can.c | 177 +++++++++++++++++++++++++------------------
- 1 file changed, 102 insertions(+), 75 deletions(-)
+> 
+> >> >> > > > and if you think about this kind of assignment, it should be implemented
+> >> >> > > > inside the j1939 stuff and not in af_can.c. The can-gw routing netlink
+> >> >> >
+> >> >> > j1939 touches af_can because address configuration via netlink is
+> >> >> > absent in af_can. j1939 adds (with seperate patches) the ability to add
+> >> >> > addressess for CAN sockets, but only for those CAN protocols that
+> >> >> > support it.
+> >> >> > I see no decent way to bypass af_can, except for creating af_j1939.
+> >> >>
+> >> >> Sorry if this is a stupid question, but what is the point of adding
+> >> >> addresses to a CAN interface with ip? Doesn't the code creating the
+> >> >> socket set what its address and/or NAME is? My implementation does not
+> >> >> modify af_can, though it is admittedly much more simplistic than
+> >> >> Kurt's.
+> >> >
+> >> > I offloaded the (static) addressing onto the kernel, so I needs to know
+> >> > its address, much like any other address-capable protocol like e.g. ipv4.
+> >> > Its obviously that not every ipv4 capable application needs to know it
+> >> > local ip address. I made can-j1939 likewise multi-user ready.
+> >>
+> >> I don't really think of there being a "localhost" type thing in J1939.
+> >> The address go with specific function, not devices, Often one physical
+> >> device claims multiple addresses on the network, one for each thing
+> >> that device does. For my module, when the program opening the socket
+> >> does not know or care about which address to use, I simply claim an
+> >> address for it that is unused and in the self-configurable range.
+> >
+> > This sounds like a usage policy enforced by the kernel API semantics.
+> > At least, I understand the background a bit more.
+> > More on this below.
+> >
+> >>
+> >> >> > > > I remember our discussion about the address claiming but I wonder if we
+> >> >> > > > really follow the requirement to only put functionality into the kernel
+> >> >> > > > that really has to be implemented there.
+> >> >> >
+> >> >> > The kernel tracks and validates J1939 traffic. Any userspace application
+> >> >> > can track, but none can validate & reject without duplicating effort.
+> >> >>
+> >> >> I too think at least part of the address handling needs to be in the
+> >> >> kernel module.
+> >> >>
+> >> >> > > > Did you take a look at https://github.com/ISOBlue/isoblue-software -
+> >> >> > > > which is far simpler - whether it can fulfill the basic functionalities
+> >> >> > > > (segmentation, etc.) to enable j1939 for Linux?
+> >> >> >
+> >> >> > I took a quick look. It appears that they only put the address claiming
+> >> >> > in the kernel. I understand that this is exactly your concern in my
+> >> >> > implementation :-).
+> >> >>
+> >> >> Yes, my implementation does address claiming in the module. From what
+> >> >> I understand, mine does even more of the process than Kurt's does (my
+> >> >> module actually sends the address claim messages). However, my module
+> >> >> does not deal with NAMEs, only the addresses.
+> >> >
+> >> > I'd like to know your idea:
+> >> > Is it possible with isoblue to have multiple sockets using the same
+> >> > source address?
+> >> > How does an application needs to deal with address changes? Does every
+> >> > application just receives the address claims without asking?
+> >>
+> >> No, my module does not allow multiple sockets with the same address.
+> >> My module takes the view that address go to functions, not devices,
+> >> and assumes one socket per function.
+> >
+> > So a single application deals with the entire source address.
+> > It seems that quite a lot of code gets duplicated, especially the
+> > diagnostics interfaces.
+> > I tend to look at a linux box as having different functions/addresses,
+> > and moreover, I look to a single address as being handled by different
+> > processes, of which most are generic processes with different
+> > parameters.
+> >
+> > Things like ECU version information (I lost the precise PGN now), DM1,
+> > DM2 & DM3 handling, ... all seem very generic processes to me that all process
+> > a well-defined distinct set of PGN's, and can be reused easily.
+> > The easier each single application becomes, the quicker it can become
+> > stable, so I avoided the all-in-one approach.
+> 
+> Now I see the value of this use case.
+> 
+> I like the address claiming being in the kernel module. It does have
+> timing requirements to be met, and it's code every application would
+> have to repeat otherwise. Perhaps there could be a socket option
+> telling the kernel module to allow assigning an address already in use
+> by another socket?
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index fc55e8e..fcb584f 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -32,6 +32,7 @@
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
- #include <linux/can/led.h>
-+#include <linux/pm_runtime.h>
- 
- #define DRIVER_NAME	"xilinx_can"
- 
-@@ -138,7 +139,7 @@ struct xcan_priv {
- 	u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg);
- 	void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg,
- 			u32 val);
--	struct net_device *dev;
-+	struct device *dev;
- 	void __iomem *reg_base;
- 	unsigned long irq_flags;
- 	struct clk *bus_clk;
-@@ -843,6 +844,13 @@ static int xcan_open(struct net_device *ndev)
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
- 
-+	ret = pm_runtime_get_sync(priv->dev);
-+	if (ret < 0) {
-+		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+				__func__, ret);
-+		return ret;
-+	}
-+
- 	ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
- 			ndev->name, ndev);
- 	if (ret < 0) {
-@@ -850,29 +858,17 @@ static int xcan_open(struct net_device *ndev)
- 		goto err;
- 	}
- 
--	ret = clk_prepare_enable(priv->can_clk);
--	if (ret) {
--		netdev_err(ndev, "unable to enable device clock\n");
--		goto err_irq;
--	}
--
--	ret = clk_prepare_enable(priv->bus_clk);
--	if (ret) {
--		netdev_err(ndev, "unable to enable bus clock\n");
--		goto err_can_clk;
--	}
--
- 	/* Set chip into reset mode */
- 	ret = set_reset_mode(ndev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "mode resetting failed!\n");
--		goto err_bus_clk;
-+		goto err_irq;
- 	}
- 
- 	/* Common open */
- 	ret = open_candev(ndev);
- 	if (ret)
--		goto err_bus_clk;
-+		goto err_irq;
- 
- 	ret = xcan_chip_start(ndev);
- 	if (ret < 0) {
-@@ -888,13 +884,11 @@ static int xcan_open(struct net_device *ndev)
- 
- err_candev:
- 	close_candev(ndev);
--err_bus_clk:
--	clk_disable_unprepare(priv->bus_clk);
--err_can_clk:
--	clk_disable_unprepare(priv->can_clk);
- err_irq:
- 	free_irq(ndev->irq, ndev);
- err:
-+	pm_runtime_put(priv->dev);
-+
- 	return ret;
- }
- 
-@@ -911,12 +905,11 @@ static int xcan_close(struct net_device *ndev)
- 	netif_stop_queue(ndev);
- 	napi_disable(&priv->napi);
- 	xcan_chip_stop(ndev);
--	clk_disable_unprepare(priv->bus_clk);
--	clk_disable_unprepare(priv->can_clk);
- 	free_irq(ndev->irq, ndev);
- 	close_candev(ndev);
- 
- 	can_led_event(ndev, CAN_LED_EVENT_STOP);
-+	pm_runtime_put(priv->dev);
- 
- 	return 0;
- }
-@@ -935,27 +928,20 @@ static int xcan_get_berr_counter(const struct net_device *ndev,
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
- 
--	ret = clk_prepare_enable(priv->can_clk);
--	if (ret)
--		goto err;
--
--	ret = clk_prepare_enable(priv->bus_clk);
--	if (ret)
--		goto err_clk;
-+	ret = pm_runtime_get_sync(priv->dev);
-+	if (ret < 0) {
-+		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+				__func__, ret);
-+		return ret;
-+	}
- 
- 	bec->txerr = priv->read_reg(priv, XCAN_ECR_OFFSET) & XCAN_ECR_TEC_MASK;
- 	bec->rxerr = ((priv->read_reg(priv, XCAN_ECR_OFFSET) &
- 			XCAN_ECR_REC_MASK) >> XCAN_ESR_REC_SHIFT);
- 
--	clk_disable_unprepare(priv->bus_clk);
--	clk_disable_unprepare(priv->can_clk);
-+	pm_runtime_put(priv->dev);
- 
- 	return 0;
--
--err_clk:
--	clk_disable_unprepare(priv->can_clk);
--err:
--	return ret;
- }
- 
- 
-@@ -968,15 +954,45 @@ static const struct net_device_ops xcan_netdev_ops = {
- 
- /**
-  * xcan_suspend - Suspend method for the driver
-- * @dev:	Address of the platform_device structure
-+ * @dev:	Address of the device structure
-  *
-  * Put the driver into low power mode.
-- * Return: 0 always
-+ * Return: 0 on success and failure value on error
-  */
- static int __maybe_unused xcan_suspend(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
--	struct net_device *ndev = platform_get_drvdata(pdev);
-+	if (!device_may_wakeup(dev))
-+		return pm_runtime_force_suspend(dev);
-+
-+	return 0;
-+}
-+
-+/**
-+ * xcan_resume - Resume from suspend
-+ * @dev:	Address of the device structure
-+ *
-+ * Resume operation after suspend.
-+ * Return: 0 on success and failure value on error
-+ */
-+static int __maybe_unused xcan_resume(struct device *dev)
-+{
-+	if (!device_may_wakeup(dev))
-+		return pm_runtime_force_resume(dev);
-+
-+	return 0;
-+
-+}
-+
-+/**
-+ * xcan_runtime_suspend - Runtime suspend method for the driver
-+ * @dev:	Address of the device structure
-+ *
-+ * Put the driver into low power mode.
-+ * Return: 0 always
-+ */
-+static int __maybe_unused xcan_runtime_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 
- 	if (netif_running(ndev)) {
-@@ -987,43 +1003,55 @@ static int __maybe_unused xcan_suspend(struct device *dev)
- 	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
--	clk_disable(priv->bus_clk);
--	clk_disable(priv->can_clk);
-+	clk_disable_unprepare(priv->bus_clk);
-+	clk_disable_unprepare(priv->can_clk);
- 
- 	return 0;
- }
- 
- /**
-- * xcan_resume - Resume from suspend
-- * @dev:	Address of the platformdevice structure
-+ * xcan_runtime_resume - Runtime resume from suspend
-+ * @dev:	Address of the device structure
-  *
-  * Resume operation after suspend.
-  * Return: 0 on success and failure value on error
-  */
--static int __maybe_unused xcan_resume(struct device *dev)
-+static int __maybe_unused xcan_runtime_resume(struct device *dev)
- {
--	struct platform_device *pdev = dev_get_drvdata(dev);
--	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
-+	u32 isr, status;
- 
--	ret = clk_enable(priv->bus_clk);
-+	ret = clk_prepare_enable(priv->bus_clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable clock.\n");
- 		return ret;
- 	}
--	ret = clk_enable(priv->can_clk);
-+	ret = clk_prepare_enable(priv->can_clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable clock.\n");
- 		clk_disable_unprepare(priv->bus_clk);
- 		return ret;
- 	}
- 
--	priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
--	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
--	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
-+	isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
-+	status = priv->read_reg(priv, XCAN_SR_OFFSET);
- 
- 	if (netif_running(ndev)) {
-+		if (isr & XCAN_IXR_BSOFF_MASK) {
-+			priv->can.state = CAN_STATE_BUS_OFF;
-+			priv->write_reg(priv, XCAN_SRR_OFFSET,
-+					XCAN_SRR_RESET_MASK);
-+		} else if ((status & XCAN_SR_ESTAT_MASK) ==
-+					XCAN_SR_ESTAT_MASK) {
-+			priv->can.state = CAN_STATE_ERROR_PASSIVE;
-+		} else if (status & XCAN_SR_ERRWRN_MASK) {
-+			priv->can.state = CAN_STATE_ERROR_WARNING;
-+		} else {
-+			priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		}
- 		netif_device_attach(ndev);
- 		netif_start_queue(ndev);
- 	}
-@@ -1031,7 +1059,10 @@ static int __maybe_unused xcan_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(xcan_dev_pm_ops, xcan_suspend, xcan_resume);
-+static const struct dev_pm_ops xcan_dev_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(xcan_suspend, xcan_resume)
-+	SET_RUNTIME_PM_OPS(xcan_runtime_suspend, xcan_runtime_resume, NULL)
-+};
- 
- /**
-  * xcan_probe - Platform registration call
-@@ -1072,7 +1103,7 @@ static int xcan_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv = netdev_priv(ndev);
--	priv->dev = ndev;
-+	priv->dev = &pdev->dev;
- 	priv->can.bittiming_const = &xcan_bittiming_const;
- 	priv->can.do_set_mode = xcan_do_set_mode;
- 	priv->can.do_get_berr_counter = xcan_get_berr_counter;
-@@ -1114,21 +1145,18 @@ static int xcan_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = clk_prepare_enable(priv->can_clk);
--	if (ret) {
--		dev_err(&pdev->dev, "unable to enable device clock\n");
--		goto err_free;
--	}
--
--	ret = clk_prepare_enable(priv->bus_clk);
--	if (ret) {
--		dev_err(&pdev->dev, "unable to enable bus clock\n");
--		goto err_unprepare_disable_dev;
--	}
--
- 	priv->write_reg = xcan_write_reg_le;
- 	priv->read_reg = xcan_read_reg_le;
- 
-+	pm_runtime_irq_safe(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0) {
-+		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+			__func__, ret);
-+		goto err_pmdisable;
-+	}
-+
- 	if (priv->read_reg(priv, XCAN_SR_OFFSET) != XCAN_SR_CONFIG_MASK) {
- 		priv->write_reg = xcan_write_reg_be;
- 		priv->read_reg = xcan_read_reg_be;
-@@ -1141,22 +1169,23 @@ static int xcan_probe(struct platform_device *pdev)
- 	ret = register_candev(ndev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "fail to register failed (err=%d)\n", ret);
--		goto err_unprepare_disable_busclk;
-+		goto err_disableclks;
- 	}
- 
- 	devm_can_led_init(ndev);
--	clk_disable_unprepare(priv->bus_clk);
--	clk_disable_unprepare(priv->can_clk);
-+
-+	pm_runtime_put(&pdev->dev);
-+
- 	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx fifo depth:%d\n",
- 			priv->reg_base, ndev->irq, priv->can.clock.freq,
- 			priv->tx_max);
- 
- 	return 0;
- 
--err_unprepare_disable_busclk:
--	clk_disable_unprepare(priv->bus_clk);
--err_unprepare_disable_dev:
--	clk_disable_unprepare(priv->can_clk);
-+err_disableclks:
-+	pm_runtime_put(priv->dev);
-+err_pmdisable:
-+	pm_runtime_disable(&pdev->dev);
- err_free:
- 	free_candev(ndev);
- err:
-@@ -1175,10 +1204,8 @@ static int xcan_remove(struct platform_device *pdev)
- 	struct net_device *ndev = platform_get_drvdata(pdev);
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 
--	if (set_reset_mode(ndev) < 0)
--		netdev_err(ndev, "mode resetting failed!\n");
--
- 	unregister_candev(ndev);
-+	pm_runtime_disable(&pdev->dev);
- 	netif_napi_del(&priv->napi);
- 	free_candev(ndev);
- 
--- 
-2.1.2
+Due to re-using addresses (or NAMES in this case) across different
+sockets, I simply offloaded the actual address claiming, including all
+decision policies, into another process.
+"jacd" does the job.
+So, no code repetition is required, but if you like, you can write
+another program that does the job differently.
+
+This illustrates my view on a J1939 node on linux: a set of different
+programs, each doing their part of the node.
+This approach should protect applications from requiring complexity.
+
+> 
+> That being said, if everyone else wants less (or no) address claiming
+> in the kernel module than my implementation has, I could live with
+> that.
+> 
+> >> If a socket loses its address, that socket returns -EADDRINUSE the
+> >> next time a function is called on it (e.g., recvmesg). When that
+> >> happens, the program must use bind again to get a new address. I had
+> >> hoped to one day implement transparently claiming another address if
+> >> the socket was set as self-configurable.
+> >>
+> >> My module has support for filtering which PGNs a socket actually
+> >> receives. If the filters on the socket allow address claim messages
+> >> through, the socket will see them.
+> >
+> > Given my major remark above, I can understand these API choices :-)
+> >
+> > One of the differences between our approaches is that you implicitely assign
+> > addresses to the interface on kernel level by opening sockets.
+> > As with your proposal above, this allows a non-root user to add
+> > addresses.
+> > I'm considering such approach. Would it make the difference?
+> > I would then drop the netlink interface, and add some summary
+> > in /proc for diagnose of the actual used source addresses.
+> 
+> I see J1939 addresses as being closer to TCP/IP ports rather than
+> addresses (the go with functions/applications rather than devices),
+> and non-root users can open new TCP/IP ports. In my opinion this
+> aligns with how existing socket types work and so not an issue, but it
+> is an opinion.
+
+Since J1939 is a datagram network, I compare with UDP.
+UDP port numbers are very equivalent to PGN numbers, while addresses
+IMHO compare to IP addresses.
+
+This view of mine does not imply wether or not non-root users can
+manipulate this. Altough, on IP networks, non-root users cannot
+manipulate things, I now doubt the benefit of this restriction,
+especially on J1939.
+As mentioned above, I'll address this too.
+
+> 
+> Perhaps we should get opinions on this from Oliver and anyone else who
+> has one?
+> Personally, I think if you take that approach your
+> implementation would be pretty darn close to what I envisions mine
+> being one day.
+
+I'll do the necessary modifications.
+This has become a rather low-priority task nowadays, although I think
+there is a momentum to make progress now.
+
+Kurt
