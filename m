@@ -1,44 +1,58 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: Re: CAN operstate
-Date: Thu, 29 Oct 2015 11:02:07 +0100
-Message-ID: <CAJ=nTssMM1V6Spmaks-KJ6-Z2d-LJB8d3pfNQXMRAn=4Og=2uA@mail.gmail.com>
-References: <CAJ=nTssBePCQnObNRWVKr=rx-y6DzVGg_Zp8nuHyiEFagdRqHg@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: can-j1939 API
+Date: Thu, 29 Oct 2015 20:33:38 +0100
+Message-ID: <56327492.9030405@hartkopp.net>
+References: <linux-can/can-utils/pull/7@github.com> <linux-can/can-utils/pull/7/c144149208@github.com> <560ADC91.1090408@pengutronix.de> <20150929194920.GA11430@airbook.vandijck-laurijssen.be> <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com> <20151018023225.GA29078@airbook.vandijck-laurijssen.be> <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com> <20151019204442.GA16852@airbook.vandijck-laurijssen.be> <CAFUozzFqDtOdkgFye4M3jU-g+9uF=XH8SmU44j5qK4PTEXp8qQ@mail.gmail.com> <20151023111430.GB22388@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f179.google.com ([209.85.217.179]:33039 "EHLO
-	mail-lb0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751447AbbJ2KCJ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Oct 2015 06:02:09 -0400
-Received: by lbbec13 with SMTP id ec13so24929759lbb.0
-        for <linux-can@vger.kernel.org>; Thu, 29 Oct 2015 03:02:08 -0700 (PDT)
-In-Reply-To: <CAJ=nTssBePCQnObNRWVKr=rx-y6DzVGg_Zp8nuHyiEFagdRqHg@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:39102 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757544AbbJ2Tdt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 29 Oct 2015 15:33:49 -0400
+In-Reply-To: <20151023111430.GB22388@airbook.eia.lan>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Alex Layton <alex@layton.in>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-2015-10-29 11:00 GMT+01:00 Mirza Krak <mirza.krak@hostmobility.com>:
-> I also found this [1] thread which touches this issue as well, but he
-> was happy doing "ip -det link show can0 | grep UP", I am not :).
-> operstate should be should be displaying a correct value?
+Hi Kurt,
 
-=46orgot to add the link to [1].
+On 10/23/2015 01:14 PM, Kurt Van Dijck wrote:
+>>>> ...
+>>>> Can you not have you module only listen on
+>>>> interfaces where J1939 sockets have been opened?
+>>>
+>>> That sounds like a fine idea!
+>>> It would behave slightly different during booting, but given the critics
+>>> on the switch, this will probably the best thing to do.
+>>> This implies that a non-root user decides to turn on can-j1939
+>>> processing on an interface, which I found a hard nut to crack.
+>>
+>> I had not really considered the user permissions ramifications of
+>> things. You raise a good point here.
+>>
+>> Doesn't SocketCAN automatically load the protocol module when you try
+>> to open a socket? That means non-root users can already decide to turn
+>> on processing on an interface for ISOTP etc. I am good with non-root
+>> users being able to enable J1939 like this, especially if the
+>> precedent is already set by other protocols.
+> 
+> Yep, I can follow that argument.
+> When I get to it, I'll change that.
+> It also implies I can drop iproute2-j1939 branches completely.
+> 
 
-1. http://comments.gmane.org/gmane.linux.can/8031
+Just to be sure I understood it correctly:
 
---=20
-Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
+No iproute2-j1939 branch -> no address support for j1939 in iproute
+-> no address support in af_can.c ?? \o/
 
-*******************************************************************
-Mirza Krak
-Host Mobility AB
-mirza.krak@hostmobility.com
-Anders Personsgatan 12, 416 64 G=C3=B6teborg
-Sweden
-http://www.hostmobility.com
-Direct: +46 31 31 32 704
-Phone: +46 31 31 32 700
-=46ax: +46 31 80 67 51
-Mobile: +46 730 28 06 22
-*******************************************************************
+So you would automatically take care of SA/Name when a j1939 socket is created
+with the according address information (== per-socket), right?
+
+Regards,
+Oliver
+
+
