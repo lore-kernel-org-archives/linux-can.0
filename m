@@ -1,43 +1,43 @@
-From: Marek Vasut <marex@denx.de>
-Subject: [PATCH] can: Use correct type in sizeof() in nla_put()
-Date: Fri, 30 Oct 2015 13:48:19 +0100
-Message-ID: <1446209299-6250-1-git-send-email-marex@denx.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:56857 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758368AbbJ3Ms1 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2015 08:48:27 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marek Vasut <marex@denx.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2015-10-30
+Date: Fri, 30 Oct 2015 14:39:58 +0100
+Message-ID: <1446212399-31546-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-The sizeof() is invoked on an incorrect variable, likely due to some
-copy-paste error, and this might result in memory corruption. Fix this.
+Hello David,
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org
+this is a pull request for the upcoming v4.3 release.
+
+Marek Vasut provides a patch to use the correct attrlen in the nla_put() in the
+can_fill_info() function.
+
+regards,
+Marc
+
 ---
+
+The following changes since commit 89bc7848a91bc99532f5c21b2885472ba710f249:
+
+  ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues (2015-10-29 07:01:50 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.3-20151030
+
+for you to fetch changes up to 562b103a21974c2f9cd67514d110f918bb3e1796:
+
+  can: Use correct type in sizeof() in nla_put() (2015-10-30 14:33:26 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.3-20151030
+
+----------------------------------------------------------------
+Marek Vasut (1):
+      can: Use correct type in sizeof() in nla_put()
+
  drivers/net/can/dev.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
-
-NOTE: I only compile-tested this.
-
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index aede704..141c2a4 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -915,7 +915,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
- 		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
- 
--	    nla_put(skb, IFLA_CAN_CLOCK, sizeof(cm), &priv->clock) ||
-+	    nla_put(skb, IFLA_CAN_CLOCK, sizeof(priv->clock), &priv->clock) ||
- 	    nla_put_u32(skb, IFLA_CAN_STATE, state) ||
- 	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
- 	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
--- 
-2.1.4
-
