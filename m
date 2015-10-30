@@ -1,50 +1,65 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: CAN firewall
-Date: Fri, 30 Oct 2015 15:38:54 +0100
-Message-ID: <563380FE.9090207@hartkopp.net>
-References: <5633659E.3010008@probestar.net>
+Subject: Re: [PATCH] can: Use correct type in sizeof() in nla_put()
+Date: Fri, 30 Oct 2015 15:53:31 +0100
+Message-ID: <5633846B.30107@hartkopp.net>
+References: <1446209299-6250-1-git-send-email-marex@denx.de> <201510301501.28536.marex@denx.de> <56337C08.40001@pengutronix.de> <201510301524.58411.marex@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:17012 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:35260 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752197AbbJ3Oi6 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2015 10:38:58 -0400
-In-Reply-To: <5633659E.3010008@probestar.net>
+	with ESMTP id S1752333AbbJ3Oxg (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2015 10:53:36 -0400
+In-Reply-To: <201510301524.58411.marex@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Neal Probert <nprobert@probestar.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org
 
-Hi Neal,
 
-long time no see :-)
 
-On 10/30/2015 01:42 PM, Neal Probert wrote:
-> Is there any sort of CAN firewall/gateway capability like
-> ipfilter/iptables available?
+On 10/30/2015 03:24 PM, Marek Vasut wrote:
+> On Friday, October 30, 2015 at 03:17:44 PM, Marc Kleine-Budde wrote:
+>> On 10/30/2015 03:01 PM, Marek Vasut wrote:
 
-First thing is to use the CAN filters provided by CAN_RAW sockets:
+>>> Are you absolutelly positive this doesn't break kernel ABI please ?
+>>>
+>>> I am a little worried there, since the size of can_clock and can_ctrlmode
+>>> structures differ.
+>>
+>> struct can_clock is a u32, see [1]
+>> struct can_ctrlmode is 2 x u32.
+>>
+>> in libsocketcan[2] it's accessed like this:
+>>> 	memcpy(res,
+>>> 	
+>>> 		RTA_DATA(can_attr[IFLA_CAN_CLOCK]),
+>>> 		sizeof(struct can_clock));
+>>
+>> I think it should be ok.
+> 
+> In that case, yes, it's good. Hopefully, noone wrote his own thing.
+> 
 
-https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/networking/can.txt?h=linux-4.2.y#n436
+Fortunately ip from iproute2 does it similary:
 
-which provides a 'private' view to the CAN interface for each socket.
-These filters are provided by the candump commandline options too.
+https://git.kernel.org/cgit/linux/kernel/git/shemminger/iproute2.git/tree/ip/iplink_can.c#n338
 
-In the case you don't trust the CAN application(??), you might try to limit
-your untrusted application to use a virtual CAN (e.g. vcan0) and forward the
-traffic from/to the 'real' can0 via can-gw rules.
 
-Try 'cangw -?' from the can-utils package for a full feature description.
-You can route and modify CAN frames from one CAN interface to another.
+	if (tb[IFLA_CAN_CLOCK]) {
+		struct can_clock *clock = RTA_DATA(tb[IFLA_CAN_CLOCK]);
 
-(But don't forget to modprobe can-gw before as it doesn't autoload)
+		fprintf(f, "\n	  clock %d", clock->freq);
+	}
 
-The can-gw is a netlink configuration based routing an modifying functionality
-for CAN frames.
+As the clock is a read-only value kernel->userspace and nla_put creates its
+own small ID/length information each time we are REALLY LUCKY that this fix
+doesn't break the ABI in this case.
 
-Hope that helps so far - can you tell more about your use-case?
+When can_clock would have been greater then can_ctrlmode we really had a
+problem ...
 
-Regards,
+Thanks for caching this!
+
 Oliver
