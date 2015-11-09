@@ -1,40 +1,73 @@
-From: Benedikt Spranger <b.spranger@linutronix.de>
-Subject: Re: API to support hardware priorities
-Date: Mon, 9 Nov 2015 17:36:36 +0100
-Message-ID: <20151109173636.1f98f861@mitra>
-References: <20151109123618.41ad1bae@mitra>
-	<5640A065.2000401@pengutronix.de>
-	<5640A4E4.6020005@pengutronix.de>
-	<20151109162703.3fd6d4fc@mitra>
-	<5640BDE1.7060508@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can-doc: Add missing semicolon to example
+Date: Mon, 09 Nov 2015 19:01:03 +0100
+Message-ID: <5640DF5F.8070008@hartkopp.net>
+References: <1447075029-22711-1-git-send-email-rumpelsepp@sevenbyte.org> <56409DB3.6040803@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:40401 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752391AbbKIQgk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2015 11:36:40 -0500
-In-Reply-To: <5640BDE1.7060508@pengutronix.de>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:60321 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751589AbbKISBM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2015 13:01:12 -0500
+In-Reply-To: <56409DB3.6040803@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, linux-can <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Stefan Tatschner <rumpelsepp@sevenbyte.org>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Am Mon, 9 Nov 2015 16:38:09 +0100
-schrieb Marc Kleine-Budde <mkl@pengutronix.de>:
 
-> OK, I was not aware of that feature. I'll have a look to the
-> datasheets. What's the benefit of associating a mailbox to a specific
-> ID in the hardware?
-A "stop all engines. NOW!"-message would not blocked by 1001 bulk
-messages telling about air pressure, temperature and sunshine.
-Look at it from a "classic" microcontroller POV.
 
-> ...one serving the bulk hardware FIFO and one serving the high prio HW
-"tree/net/sched/em_canid.c" and multiple queues look promising.
+On 09.11.2015 14:20, Marc Kleine-Budde wrote:
+> On 11/09/2015 02:17 PM, Stefan Tatschner wrote:
+>> The example code for CAN_BCM,
+>>
+>> 	connect(s, (struct sockaddr *)&addr, sizeof(addr))
+>>
+>> lacks a semicolon at the end of the line. This patch adds that
+>> missing semicolon to ensure that the given code snippet actually
+>> compiles.
+>>
+>> Signed-off-by: Stefan Tatschner <rumpelsepp@sevenbyte.org>
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>
+> Jonathan, feel free to take the patch via your tree.
+>
+> regards,
+> Marc
+>
 
-Will have a deeper look at it.
+Hi Marc,
 
-Regards
-    Bene
+I was pretty disappointed that my last patch needed more than six weeks to 
+emerge in Linus' merge window tree, where it needs additional three month 
+until release. When this happens again, we'll have this doc fix in Linux 4.5 - 
+for what reason?
+
+I would suggest to send these kinds of doc fixes and enhancements together 
+with other CAN fixes via Daves net tree without this needless delay.
+
+Regards,
+Oliver
+
+>> ---
+>>   Documentation/networking/can.txt | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+>> index 4636b94..05fd83b 100644
+>> --- a/Documentation/networking/can.txt
+>> +++ b/Documentation/networking/can.txt
+>> @@ -681,7 +681,7 @@ solution for a couple of reasons:
+>>       addr.can_family = AF_CAN;
+>>       addr.can_ifindex = ifr.ifr_ifindex;
+>>
+>> -    connect(s, (struct sockaddr *)&addr, sizeof(addr))
+>> +    connect(s, (struct sockaddr *)&addr, sizeof(addr));
+>>
+>>       (..)
+>>
+>>
+>
+>
