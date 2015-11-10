@@ -1,49 +1,36 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: [PATCH 1/1] can: sja1000: clear interrupts on start
-Date: Tue, 10 Nov 2015 14:59:34 +0100
-Message-ID: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: andri.yngvason@marel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Mirza Krak <mirza.krak@hostmobility.com>
-List-Id: linux-can.vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v8] can: xilinx: Convert to runtime_pm
+Date: Tue, 10 Nov 2015 21:36:35 +0100
+Message-ID: <56425553.3080909@pengutronix.de>
+References: <1445839914-26249-1-git-send-email-appanad@xilinx.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41670 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750749AbbKJUgm (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Nov 2015 15:36:42 -0500
+In-Reply-To: <1445839914-26249-1-git-send-email-appanad@xilinx.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Kedareswara rao Appana <appana.durga.rao@xilinx.com>, anirudh@xilinx.com, wg@grandegger.com, michal.simek@xilinx.com, soren.brinkmann@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>
 
-From: Mirza Krak <mirza.krak@hostmobility.com>
+On 10/26/2015 07:11 AM, Kedareswara rao Appana wrote:
+> Instead of enabling/disabling clocks at several locations in the driver,
+> Use the runtime_pm framework. This consolidates the actions for runtime PM
+> In the appropriate callbacks and makes the driver more readable and mantainable.
+> 
+> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
 
-According to SJA1000 data sheet error-warning (EI) interrupt is not
-cleared by setting the controller in to reset-mode.
+Applied to can-next.
 
-Then if we have the following case:
-- system is suspended (echo mem > /sys/power/state) and SJA1000 is left
-in operating state
-- A bus error condition occurs which activates EI interrupt, system is
-still suspended which means EI interrupt will be not be handled nor
-cleared.
+thanks,
+Marc
 
-If the above two events occur, on resume there is no way to return the
-SJA1000 to operating state, except to cycle power to it.
-
-By simply reading the IR register on start we will clear any previous
-conditions that could be present.
-
-Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
----
- drivers/net/can/sja1000/sja1000.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 7b92e911a616..f10834be48a5 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -218,6 +218,9 @@ static void sja1000_start(struct net_device *dev)
- 	priv->write_reg(priv, SJA1000_RXERR, 0x0);
- 	priv->read_reg(priv, SJA1000_ECC);
- 
-+	/* clear interrupt flags */
-+	priv->read_reg(priv, SJA1000_IR);
-+
- 	/* leave reset mode */
- 	set_normal_mode(dev);
- }
 -- 
-2.1.0
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
