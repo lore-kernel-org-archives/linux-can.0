@@ -1,421 +1,98 @@
-From: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
-Subject: RE: [PATCH v8] can: xilinx: Convert to runtime_pm
-Date: Tue, 10 Nov 2015 08:33:12 +0000
-Message-ID: <C246CAC1457055469EF09E3A7AC4E11A4A4FA2C2@XAP-PVEXMBX01.xlnx.xilinx.com>
-References: <1445839914-26249-1-git-send-email-appanad@xilinx.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: j1939 (Higher Layer Protocols)
+Date: Tue, 10 Nov 2015 11:52:57 +0100
+Message-ID: <20151110105257.GA10664@airbook.eia.lan>
+References: <20151105180831.GA24951@bamboo.electronicsoup>
+ <563BAC5A.8060604@posteo.de>
+ <20151109194823.GA6539@bamboo.electronicsoup>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0066.outbound.protection.outlook.com ([65.55.169.66]:33248
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751113AbbKJIdT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Nov 2015 03:33:19 -0500
-In-Reply-To: <1445839914-26249-1-git-send-email-appanad@xilinx.com>
-Content-Language: en-US
+Received: from relaygateway02.edpnet.net ([212.71.1.211]:39248 "EHLO
+	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751462AbbKJKxr convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Nov 2015 05:53:47 -0500
+Content-Disposition: inline
+In-Reply-To: <20151109194823.GA6539@bamboo.electronicsoup>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Appana Durga Kedareswara Rao <appanad@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: John Whitmore <arigead@gmail.com>
+Cc: "Menschel.P" <menschel.p@posteo.de>, linux-can@vger.kernel.org
 
-Ping!!
+My contribution inline ...
 
-> -----Original Message-----
-> From: Kedareswara rao Appana [mailto:appana.durga.rao@xilinx.com]
-> Sent: Monday, October 26, 2015 11:42 AM
-> To: Anirudha Sarangi; wg@grandegger.com; mkl@pengutronix.de; Michal
-> Simek; Soren Brinkmann
-> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Appana Durga
-> Kedareswara Rao
-> Subject: [PATCH v8] can: xilinx: Convert to runtime_pm
+> > 
+> > 1.SAE J1939 is on top. Truck and Construction Equipment usage, although
+> > US Trucks are mainly J1587 (RS485) with J1708 protocol.
+> > 1.1 SAEJ1939 defines its own transport protocol to transmit a PGN longer
+> > than 8Bytes.
+> > 1.2 Additionally ISO15765 aka "KWP2000 over CAN" defines another
+> > transport protocol closely linked to KWP2000(ISO 14230) or the newer
+> > UDS(ISO14229).
+> > It is basically a wrapper for half-duplex serial communication over CAN.
 > 
-> Instead of enabling/disabling clocks at several locations in the driver,
-> Use the runtime_pm framework. This consolidates the actions for runtime PM
-> In the appropriate callbacks and makes the driver more readable and
-> mantainable.
+> "Half duplex serial" you could say is all anything built on CAN. Either way
+> it's not related to j1939 so it doesn't confuse me. I have my own
+> implementation and it's not interfering with anything.
 > 
-> Signed-off-by: Kedareswara rao Appana <appanad@xilinx.com>
-> ---
-> Changes for v8:
->   - Remove pm_runtime_irq_safe() API call from the probe as
-> clk_prepare_enable
->     Call canbe called from the atomic context as suggested by Marc.
-> Changes for v7:
->   - Removed the unnecessary clk_prepare/clk_unprepare calls
->     From  the probe and remove as suggested by Soren.
-> Changes for v6:
->  - Updated the driver with review comments as suggested by Marc.
-> Changes for v5:
->  - Updated with the review comments.
->    Updated the remove fuction to use runtime_pm.
-> Chnages for v4:
->  - Updated with the review comments.
-> Changes for v3:
->   - Converted the driver to use runtime_pm.
-> Changes for v2:
->   - Removed the struct platform_device* from suspend/resume
->     as suggest by Lothar
-> 
->  drivers/net/can/xilinx_can.c | 176 +++++++++++++++++++++++++-----------------
-> -
->  1 file changed, 101 insertions(+), 75 deletions(-)
-> 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index fc55e8e..ad38065 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -32,6 +32,7 @@
->  #include <linux/can/dev.h>
->  #include <linux/can/error.h>
->  #include <linux/can/led.h>
-> +#include <linux/pm_runtime.h>
-> 
->  #define DRIVER_NAME	"xilinx_can"
-> 
-> @@ -138,7 +139,7 @@ struct xcan_priv {
->  	u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg);
->  	void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg,
->  			u32 val);
-> -	struct net_device *dev;
-> +	struct device *dev;
->  	void __iomem *reg_base;
->  	unsigned long irq_flags;
->  	struct clk *bus_clk;
-> @@ -843,6 +844,13 @@ static int xcan_open(struct net_device *ndev)
->  	struct xcan_priv *priv = netdev_priv(ndev);
->  	int ret;
-> 
-> +	ret = pm_runtime_get_sync(priv->dev);
-> +	if (ret < 0) {
-> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-> +				__func__, ret);
-> +		return ret;
-> +	}
-> +
->  	ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
->  			ndev->name, ndev);
->  	if (ret < 0) {
-> @@ -850,29 +858,17 @@ static int xcan_open(struct net_device *ndev)
->  		goto err;
->  	}
-> 
-> -	ret = clk_prepare_enable(priv->can_clk);
-> -	if (ret) {
-> -		netdev_err(ndev, "unable to enable device clock\n");
-> -		goto err_irq;
-> -	}
-> -
-> -	ret = clk_prepare_enable(priv->bus_clk);
-> -	if (ret) {
-> -		netdev_err(ndev, "unable to enable bus clock\n");
-> -		goto err_can_clk;
-> -	}
-> -
->  	/* Set chip into reset mode */
->  	ret = set_reset_mode(ndev);
->  	if (ret < 0) {
->  		netdev_err(ndev, "mode resetting failed!\n");
-> -		goto err_bus_clk;
-> +		goto err_irq;
->  	}
-> 
->  	/* Common open */
->  	ret = open_candev(ndev);
->  	if (ret)
-> -		goto err_bus_clk;
-> +		goto err_irq;
-> 
->  	ret = xcan_chip_start(ndev);
->  	if (ret < 0) {
-> @@ -888,13 +884,11 @@ static int xcan_open(struct net_device *ndev)
-> 
->  err_candev:
->  	close_candev(ndev);
-> -err_bus_clk:
-> -	clk_disable_unprepare(priv->bus_clk);
-> -err_can_clk:
-> -	clk_disable_unprepare(priv->can_clk);
->  err_irq:
->  	free_irq(ndev->irq, ndev);
->  err:
-> +	pm_runtime_put(priv->dev);
-> +
->  	return ret;
->  }
-> 
-> @@ -911,12 +905,11 @@ static int xcan_close(struct net_device *ndev)
->  	netif_stop_queue(ndev);
->  	napi_disable(&priv->napi);
->  	xcan_chip_stop(ndev);
-> -	clk_disable_unprepare(priv->bus_clk);
-> -	clk_disable_unprepare(priv->can_clk);
->  	free_irq(ndev->irq, ndev);
->  	close_candev(ndev);
-> 
->  	can_led_event(ndev, CAN_LED_EVENT_STOP);
-> +	pm_runtime_put(priv->dev);
-> 
->  	return 0;
->  }
-> @@ -935,27 +928,20 @@ static int xcan_get_berr_counter(const struct
-> net_device *ndev,
->  	struct xcan_priv *priv = netdev_priv(ndev);
->  	int ret;
-> 
-> -	ret = clk_prepare_enable(priv->can_clk);
-> -	if (ret)
-> -		goto err;
-> -
-> -	ret = clk_prepare_enable(priv->bus_clk);
-> -	if (ret)
-> -		goto err_clk;
-> +	ret = pm_runtime_get_sync(priv->dev);
-> +	if (ret < 0) {
-> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-> +				__func__, ret);
-> +		return ret;
-> +	}
-> 
->  	bec->txerr = priv->read_reg(priv, XCAN_ECR_OFFSET) &
-> XCAN_ECR_TEC_MASK;
->  	bec->rxerr = ((priv->read_reg(priv, XCAN_ECR_OFFSET) &
->  			XCAN_ECR_REC_MASK) >> XCAN_ESR_REC_SHIFT);
-> 
-> -	clk_disable_unprepare(priv->bus_clk);
-> -	clk_disable_unprepare(priv->can_clk);
-> +	pm_runtime_put(priv->dev);
-> 
->  	return 0;
-> -
-> -err_clk:
-> -	clk_disable_unprepare(priv->can_clk);
-> -err:
-> -	return ret;
->  }
-> 
-> 
-> @@ -968,15 +954,45 @@ static const struct net_device_ops xcan_netdev_ops
-> = {
-> 
->  /**
->   * xcan_suspend - Suspend method for the driver
-> - * @dev:	Address of the platform_device structure
-> + * @dev:	Address of the device structure
->   *
->   * Put the driver into low power mode.
-> - * Return: 0 always
-> + * Return: 0 on success and failure value on error
->   */
->  static int __maybe_unused xcan_suspend(struct device *dev)
->  {
-> -	struct platform_device *pdev = dev_get_drvdata(dev);
-> -	struct net_device *ndev = platform_get_drvdata(pdev);
-> +	if (!device_may_wakeup(dev))
-> +		return pm_runtime_force_suspend(dev);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * xcan_resume - Resume from suspend
-> + * @dev:	Address of the device structure
-> + *
-> + * Resume operation after suspend.
-> + * Return: 0 on success and failure value on error
-> + */
-> +static int __maybe_unused xcan_resume(struct device *dev)
-> +{
-> +	if (!device_may_wakeup(dev))
-> +		return pm_runtime_force_resume(dev);
-> +
-> +	return 0;
-> +
-> +}
-> +
-> +/**
-> + * xcan_runtime_suspend - Runtime suspend method for the driver
-> + * @dev:	Address of the device structure
-> + *
-> + * Put the driver into low power mode.
-> + * Return: 0 always
-> + */
-> +static int __maybe_unused xcan_runtime_suspend(struct device *dev)
-> +{
-> +	struct net_device *ndev = dev_get_drvdata(dev);
->  	struct xcan_priv *priv = netdev_priv(ndev);
-> 
->  	if (netif_running(ndev)) {
-> @@ -987,43 +1003,55 @@ static int __maybe_unused xcan_suspend(struct
-> device *dev)
->  	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
->  	priv->can.state = CAN_STATE_SLEEPING;
-> 
-> -	clk_disable(priv->bus_clk);
-> -	clk_disable(priv->can_clk);
-> +	clk_disable_unprepare(priv->bus_clk);
-> +	clk_disable_unprepare(priv->can_clk);
-> 
->  	return 0;
->  }
-> 
->  /**
-> - * xcan_resume - Resume from suspend
-> - * @dev:	Address of the platformdevice structure
-> + * xcan_runtime_resume - Runtime resume from suspend
-> + * @dev:	Address of the device structure
->   *
->   * Resume operation after suspend.
->   * Return: 0 on success and failure value on error
->   */
-> -static int __maybe_unused xcan_resume(struct device *dev)
-> +static int __maybe_unused xcan_runtime_resume(struct device *dev)
->  {
-> -	struct platform_device *pdev = dev_get_drvdata(dev);
-> -	struct net_device *ndev = platform_get_drvdata(pdev);
-> +	struct net_device *ndev = dev_get_drvdata(dev);
->  	struct xcan_priv *priv = netdev_priv(ndev);
->  	int ret;
-> +	u32 isr, status;
-> 
-> -	ret = clk_enable(priv->bus_clk);
-> +	ret = clk_prepare_enable(priv->bus_clk);
->  	if (ret) {
->  		dev_err(dev, "Cannot enable clock.\n");
->  		return ret;
->  	}
-> -	ret = clk_enable(priv->can_clk);
-> +	ret = clk_prepare_enable(priv->can_clk);
->  	if (ret) {
->  		dev_err(dev, "Cannot enable clock.\n");
->  		clk_disable_unprepare(priv->bus_clk);
->  		return ret;
->  	}
-> 
-> -	priv->write_reg(priv, XCAN_MSR_OFFSET, 0);
-> -	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_CEN_MASK);
-> -	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-> +	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
-> +	isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
-> +	status = priv->read_reg(priv, XCAN_SR_OFFSET);
-> 
->  	if (netif_running(ndev)) {
-> +		if (isr & XCAN_IXR_BSOFF_MASK) {
-> +			priv->can.state = CAN_STATE_BUS_OFF;
-> +			priv->write_reg(priv, XCAN_SRR_OFFSET,
-> +					XCAN_SRR_RESET_MASK);
-> +		} else if ((status & XCAN_SR_ESTAT_MASK) ==
-> +					XCAN_SR_ESTAT_MASK) {
-> +			priv->can.state = CAN_STATE_ERROR_PASSIVE;
-> +		} else if (status & XCAN_SR_ERRWRN_MASK) {
-> +			priv->can.state = CAN_STATE_ERROR_WARNING;
-> +		} else {
-> +			priv->can.state = CAN_STATE_ERROR_ACTIVE;
-> +		}
->  		netif_device_attach(ndev);
->  		netif_start_queue(ndev);
->  	}
-> @@ -1031,7 +1059,10 @@ static int __maybe_unused xcan_resume(struct
-> device *dev)
->  	return 0;
->  }
-> 
-> -static SIMPLE_DEV_PM_OPS(xcan_dev_pm_ops, xcan_suspend, xcan_resume);
-> +static const struct dev_pm_ops xcan_dev_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(xcan_suspend, xcan_resume)
-> +	SET_RUNTIME_PM_OPS(xcan_runtime_suspend, xcan_runtime_resume,
-> NULL)
-> +};
-> 
->  /**
->   * xcan_probe - Platform registration call
-> @@ -1072,7 +1103,7 @@ static int xcan_probe(struct platform_device *pdev)
->  		return -ENOMEM;
-> 
->  	priv = netdev_priv(ndev);
-> -	priv->dev = ndev;
-> +	priv->dev = &pdev->dev;
->  	priv->can.bittiming_const = &xcan_bittiming_const;
->  	priv->can.do_set_mode = xcan_do_set_mode;
->  	priv->can.do_get_berr_counter = xcan_get_berr_counter;
-> @@ -1114,21 +1145,17 @@ static int xcan_probe(struct platform_device
-> *pdev)
->  		}
->  	}
-> 
-> -	ret = clk_prepare_enable(priv->can_clk);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "unable to enable device clock\n");
-> -		goto err_free;
-> -	}
-> -
-> -	ret = clk_prepare_enable(priv->bus_clk);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "unable to enable bus clock\n");
-> -		goto err_unprepare_disable_dev;
-> -	}
-> -
->  	priv->write_reg = xcan_write_reg_le;
->  	priv->read_reg = xcan_read_reg_le;
-> 
-> +	pm_runtime_enable(&pdev->dev);
-> +	ret = pm_runtime_get_sync(&pdev->dev);
-> +	if (ret < 0) {
-> +		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-> +			__func__, ret);
-> +		goto err_pmdisable;
-> +	}
-> +
->  	if (priv->read_reg(priv, XCAN_SR_OFFSET) != XCAN_SR_CONFIG_MASK) {
->  		priv->write_reg = xcan_write_reg_be;
->  		priv->read_reg = xcan_read_reg_be;
-> @@ -1141,22 +1168,23 @@ static int xcan_probe(struct platform_device
-> *pdev)
->  	ret = register_candev(ndev);
->  	if (ret) {
->  		dev_err(&pdev->dev, "fail to register failed (err=%d)\n", ret);
-> -		goto err_unprepare_disable_busclk;
-> +		goto err_disableclks;
->  	}
-> 
->  	devm_can_led_init(ndev);
-> -	clk_disable_unprepare(priv->bus_clk);
-> -	clk_disable_unprepare(priv->can_clk);
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +
->  	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx fifo
-> depth:%d\n",
->  			priv->reg_base, ndev->irq, priv->can.clock.freq,
->  			priv->tx_max);
-> 
->  	return 0;
-> 
-> -err_unprepare_disable_busclk:
-> -	clk_disable_unprepare(priv->bus_clk);
-> -err_unprepare_disable_dev:
-> -	clk_disable_unprepare(priv->can_clk);
-> +err_disableclks:
-> +	pm_runtime_put(priv->dev);
-> +err_pmdisable:
-> +	pm_runtime_disable(&pdev->dev);
->  err_free:
->  	free_candev(ndev);
->  err:
-> @@ -1175,10 +1203,8 @@ static int xcan_remove(struct platform_device
-> *pdev)
->  	struct net_device *ndev = platform_get_drvdata(pdev);
->  	struct xcan_priv *priv = netdev_priv(ndev);
-> 
-> -	if (set_reset_mode(ndev) < 0)
-> -		netdev_err(ndev, "mode resetting failed!\n");
-> -
->  	unregister_candev(ndev);
-> +	pm_runtime_disable(&pdev->dev);
->  	netif_napi_del(&priv->napi);
->  	free_candev(ndev);
-> 
-> --
-> 2.1.2
+> > 
+> > 2.NMEA2000 is the marine adaption of J1939, agriculture equipment often
+> > uses NMEA2000 GPS devices.
+> > 2.1 NMEA2000 FAST Packet is another transport protocol for >8Byte
+> > messages. I believe that's what you encountered on the boat. I don't
+> > know the details.
+> > 
+> > 3.ISOBUS(ISO 11783) is the agriculture adaption of J1939
+> > 3.1 Since the devices of the agriculture equipment can be used in
+> > multiple combinations, ISOBUS has mechanisms to register new devices to
+> > the CAN bus and so on. AFAIK there is no additional transport protocol.
+> > 
 
+SAE-J1939's transport protocol has been extended by ISO 11783 to support
+even bigger packets. This is (both) supported by can-j1939.
+
+SAE-j1939-81 defined dynamic addressing, which is heavily used in
+ISO-11783 busses, and I image NMEA2000 will use the same thing when
+needed. This is supported by can-j1939.
+
+NMEA2000's fast-packet, as wel as the KWP2000-over-CAN transport are
+transport mechanisms that are defined on a per-PGN basis.  can-j1939 has
+_no_ support for this, i.e. as long as you deliver 8byte pieces to the
+kernel, it will work as expected. This means that these transport
+mechanisms must be implemented (as for now) in userspace.
+As long as the same PGN/SA is not sent from different sockets, no
+multiuser problems would occur.
+
+You may already have guessed that I never needed to sent the same PGN/SA
+from different sockets yet.
+
+> 
+> So leaving ISO15765 to one side the other 3 are closely related. Does this
+> mean that a Linux implementation of j1939 could be used for my NEMA2000
+> requirements? 
+
+I guess so.
+
+> 
+> To be honest I think it's easier for me to look at the ISO-11783 spec and
+> reverse engineer the NEMA2000 bits I need. I looked at buying the NEMA2000
+> specs but you have to buy them all in a job lot for a lot of money. Can't
+> really afford that unfortunately.
+
+The fast-packet thing is really simple, works without flow control.
+No worth buying that spec for the transport layers.
+
+You may still need the application level parts, as this is clearly
+userspace stuff.
+
+> 
+> Maybe I could jsut Linux J1939 but that might depend on subtle differences in
+> Transport protocol.
+
+
+Which subtle differences you refer to?
+I read SAE-J1939 and ISO11783, and I found no differences.
+Can you give an example?
+
+Kurt
