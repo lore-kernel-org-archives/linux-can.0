@@ -1,98 +1,49 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: j1939 (Higher Layer Protocols)
-Date: Tue, 10 Nov 2015 11:52:57 +0100
-Message-ID: <20151110105257.GA10664@airbook.eia.lan>
-References: <20151105180831.GA24951@bamboo.electronicsoup>
- <563BAC5A.8060604@posteo.de>
- <20151109194823.GA6539@bamboo.electronicsoup>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:39248 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751462AbbKJKxr convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Nov 2015 05:53:47 -0500
-Content-Disposition: inline
-In-Reply-To: <20151109194823.GA6539@bamboo.electronicsoup>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: John Whitmore <arigead@gmail.com>
-Cc: "Menschel.P" <menschel.p@posteo.de>, linux-can@vger.kernel.org
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Subject: [PATCH 1/1] can: sja1000: clear interrupts on start
+Date: Tue, 10 Nov 2015 14:59:34 +0100
+Message-ID: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: andri.yngvason@marel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Mirza Krak <mirza.krak@hostmobility.com>
+List-Id: linux-can.vger.kernel.org
 
-My contribution inline ...
+From: Mirza Krak <mirza.krak@hostmobility.com>
 
-> > 
-> > 1.SAE J1939 is on top. Truck and Construction Equipment usage, although
-> > US Trucks are mainly J1587 (RS485) with J1708 protocol.
-> > 1.1 SAEJ1939 defines its own transport protocol to transmit a PGN longer
-> > than 8Bytes.
-> > 1.2 Additionally ISO15765 aka "KWP2000 over CAN" defines another
-> > transport protocol closely linked to KWP2000(ISO 14230) or the newer
-> > UDS(ISO14229).
-> > It is basically a wrapper for half-duplex serial communication over CAN.
-> 
-> "Half duplex serial" you could say is all anything built on CAN. Either way
-> it's not related to j1939 so it doesn't confuse me. I have my own
-> implementation and it's not interfering with anything.
-> 
-> > 
-> > 2.NMEA2000 is the marine adaption of J1939, agriculture equipment often
-> > uses NMEA2000 GPS devices.
-> > 2.1 NMEA2000 FAST Packet is another transport protocol for >8Byte
-> > messages. I believe that's what you encountered on the boat. I don't
-> > know the details.
-> > 
-> > 3.ISOBUS(ISO 11783) is the agriculture adaption of J1939
-> > 3.1 Since the devices of the agriculture equipment can be used in
-> > multiple combinations, ISOBUS has mechanisms to register new devices to
-> > the CAN bus and so on. AFAIK there is no additional transport protocol.
-> > 
+According to SJA1000 data sheet error-warning (EI) interrupt is not
+cleared by setting the controller in to reset-mode.
 
-SAE-J1939's transport protocol has been extended by ISO 11783 to support
-even bigger packets. This is (both) supported by can-j1939.
+Then if we have the following case:
+- system is suspended (echo mem > /sys/power/state) and SJA1000 is left
+in operating state
+- A bus error condition occurs which activates EI interrupt, system is
+still suspended which means EI interrupt will be not be handled nor
+cleared.
 
-SAE-j1939-81 defined dynamic addressing, which is heavily used in
-ISO-11783 busses, and I image NMEA2000 will use the same thing when
-needed. This is supported by can-j1939.
+If the above two events occur, on resume there is no way to return the
+SJA1000 to operating state, except to cycle power to it.
 
-NMEA2000's fast-packet, as wel as the KWP2000-over-CAN transport are
-transport mechanisms that are defined on a per-PGN basis.  can-j1939 has
-_no_ support for this, i.e. as long as you deliver 8byte pieces to the
-kernel, it will work as expected. This means that these transport
-mechanisms must be implemented (as for now) in userspace.
-As long as the same PGN/SA is not sent from different sockets, no
-multiuser problems would occur.
+By simply reading the IR register on start we will clear any previous
+conditions that could be present.
 
-You may already have guessed that I never needed to sent the same PGN/SA
-from different sockets yet.
+Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
+---
+ drivers/net/can/sja1000/sja1000.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
-> So leaving ISO15765 to one side the other 3 are closely related. Does this
-> mean that a Linux implementation of j1939 could be used for my NEMA2000
-> requirements? 
-
-I guess so.
-
-> 
-> To be honest I think it's easier for me to look at the ISO-11783 spec and
-> reverse engineer the NEMA2000 bits I need. I looked at buying the NEMA2000
-> specs but you have to buy them all in a job lot for a lot of money. Can't
-> really afford that unfortunately.
-
-The fast-packet thing is really simple, works without flow control.
-No worth buying that spec for the transport layers.
-
-You may still need the application level parts, as this is clearly
-userspace stuff.
-
-> 
-> Maybe I could jsut Linux J1939 but that might depend on subtle differences in
-> Transport protocol.
-
-
-Which subtle differences you refer to?
-I read SAE-J1939 and ISO11783, and I found no differences.
-Can you give an example?
-
-Kurt
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 7b92e911a616..f10834be48a5 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -218,6 +218,9 @@ static void sja1000_start(struct net_device *dev)
+ 	priv->write_reg(priv, SJA1000_RXERR, 0x0);
+ 	priv->read_reg(priv, SJA1000_ECC);
+ 
++	/* clear interrupt flags */
++	priv->read_reg(priv, SJA1000_IR);
++
+ 	/* leave reset mode */
+ 	set_normal_mode(dev);
+ }
+-- 
+2.1.0
