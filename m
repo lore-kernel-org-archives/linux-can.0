@@ -1,72 +1,45 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/1] can: sja1000: clear interrupts on start
-Date: Wed, 11 Nov 2015 13:48:58 +0100
-Message-ID: <5643393A.3040004@pengutronix.de>
+From: Christian Magnusson <Christian.Magnusson@semcon.com>
+Subject: RE: [PATCH 1/1] can: sja1000: clear interrupts on start
+Date: Wed, 11 Nov 2015 12:49:19 +0000
+Message-ID: <43dd06fc9e734f5e9f7832bc472869a8@SE-GOT-MB03.semcon.se>
 References: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
- <5642F6A5.5070301@pengutronix.de>
- <CAJ=nTssqwtYAos67GRr8fOzsm63v_Bx+GKEWriOjbTALuzv-0g@mail.gmail.com>
- <5643132A.7080504@pengutronix.de>
- <CAJ=nTstPCev0TGjZCYkzf4qX+6NUUv8+-6PeVEKL9bcOwBKc0A@mail.gmail.com>
- <56433678.1090104@pengutronix.de>
+	<5642F6A5.5070301@pengutronix.de>
+	<CAJ=nTssqwtYAos67GRr8fOzsm63v_Bx+GKEWriOjbTALuzv-0g@mail.gmail.com>
+	<5643132A.7080504@pengutronix.de>
+	<CAJ=nTstPCev0TGjZCYkzf4qX+6NUUv8+-6PeVEKL9bcOwBKc0A@mail.gmail.com>
+	<56433678.1090104@pengutronix.de>
  <CAJ=nTstmat5gmtpGmvn5nCpuFAfKzYC2zfZA-08UZ_FCfBXVcg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="BSEmoTtMCFDobsncLCUCtlqV38PPUPJxx"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:50015 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752435AbbKKMtF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 07:49:05 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <CAJ=nTstmat5gmtpGmvn5nCpuFAfKzYC2zfZA-08UZ_FCfBXVcg@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@hostmobility.com>
-Cc: wg@grandegger.com, andri.yngvason@marel.com, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>, Christian Magnusson <Christian.Magnusson@semcon.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mirza Krak <mirza.krak@hostmobility.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "andri.yngvason@marel.com" <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BSEmoTtMCFDobsncLCUCtlqV38PPUPJxx
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 11/11/2015 01:46 PM, Mirza Krak wrote:
-> 2015-11-11 13:37 GMT+01:00 Marc Kleine-Budde <mkl@pengutronix.de>:
->>> Some cred should go to Christian (added him to CC) for finding this
->>> problem and reporting it to me.
->>
->> I'll add a
->>
->> Reported-by: Christian Magnusson <Christian.Magnusson@semcon.com>
->>
->> to the patch.
->=20
-> Can we just get an ACK that it is OK from Christian before we do it.
-
-Sure.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---BSEmoTtMCFDobsncLCUCtlqV38PPUPJxx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWQzk6AAoJEP5prqPJtc/H2dgH/R9wqw6jM2KxYHJpVI+uhalH
-vEOyZfgULCQzqfc4i8aOYTGd1lQWeJR9C8yk0IfeQDp8UWVr4GA9P98Sd7hM6UWj
-EpbAFsbVvAGAEtA/7Mj6+gj3MsTfI4D9XTn5d0080V7J1YICRGIbfnyKJlcWcCFl
-5wNowKPmtlP5R6G5G+x4DXJb3cPmWmvI8AgxFuqtivR+JuU62SxI69lKima/AEtT
-sfJJU7FTzaQk3+/DbcWv9Csxu7ljoJsGlhs4khfWGmyhhbz3mMQMRxz8WS2t/Rnb
-4gJTMWnXuks2/vupOBS5e2DnphrHJVEk+TnXXDXkohV4r9fVbRcHTr9Qix5NWZc=
-=B5RD
------END PGP SIGNATURE-----
-
---BSEmoTtMCFDobsncLCUCtlqV38PPUPJxx--
+VGhhbmtzLi4gSXQncyBvayBmb3IgbWUuIEdvb2QgdGhhdCB3ZSBmaW5hbGx5IGZvdW5kIHRoZSBw
+cm9ibGVtIHdpdGggdGhlIGhhbmdpbmcgY2FuLWludGVyZmFjZXMuIDopDQoNCi9DaHJpc3RpYW4N
+Cg0KDQpDaHJpc3RpYW4gTWFnbnVzc29uDQpjaHJpc3RpYW4ubWFnbnVzc29uQHNlbWNvbi5jb20N
+Cg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWlyemEgS3JhayBbbWFpbHRv
+Om1pcnphLmtyYWtAaG9zdG1vYmlsaXR5LmNvbV0gDQpTZW50OiBkZW4gMTEgbm92ZW1iZXIgMjAx
+NSAxMzo0Ng0KVG86IE1hcmMgS2xlaW5lLUJ1ZGRlDQpDYzogd2dAZ3JhbmRlZ2dlci5jb207IGFu
+ZHJpLnluZ3Zhc29uQG1hcmVsLmNvbTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2
+QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsOyBDaHJpc3RpYW4gTWFnbnVzc29uDQpTdWJq
+ZWN0OiBSZTogW1BBVENIIDEvMV0gY2FuOiBzamExMDAwOiBjbGVhciBpbnRlcnJ1cHRzIG9uIHN0
+YXJ0DQoNCjIwMTUtMTEtMTEgMTM6MzcgR01UKzAxOjAwIE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xA
+cGVuZ3V0cm9uaXguZGU+Og0KPj4gU29tZSBjcmVkIHNob3VsZCBnbyB0byBDaHJpc3RpYW4gKGFk
+ZGVkIGhpbSB0byBDQykgZm9yIGZpbmRpbmcgdGhpcyANCj4+IHByb2JsZW0gYW5kIHJlcG9ydGlu
+ZyBpdCB0byBtZS4NCj4NCj4gSSdsbCBhZGQgYQ0KPg0KPiBSZXBvcnRlZC1ieTogQ2hyaXN0aWFu
+IE1hZ251c3NvbiA8Q2hyaXN0aWFuLk1hZ251c3NvbkBzZW1jb24uY29tPg0KPg0KPiB0byB0aGUg
+cGF0Y2guDQo+DQoNCkNhbiB3ZSBqdXN0IGdldCBhbiBBQ0sgdGhhdCBpdCBpcyBPSyBmcm9tIENo
+cmlzdGlhbiBiZWZvcmUgd2UgZG8gaXQuDQoNCg0KDQotLQ0KTWVkIFbDpG5saWdhIEjDpGxzbmlu
+Z2FyIC8gQmVzdCBSZWdhcmRzDQoNCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioNCk1pcnphIEtyYWsNCkhvc3QgTW9iaWxp
+dHkgQUINCm1pcnphLmtyYWtAaG9zdG1vYmlsaXR5LmNvbQ0KQW5kZXJzIFBlcnNvbnNnYXRhbiAx
+MiwgNDE2IDY0IEfDtnRlYm9yZw0KU3dlZGVuDQpodHRwOi8vd3d3Lmhvc3Rtb2JpbGl0eS5jb20N
+CkRpcmVjdDogKzQ2IDMxIDMxIDMyIDcwNA0KUGhvbmU6ICs0NiAzMSAzMSAzMiA3MDANCkZheDog
+KzQ2IDMxIDgwIDY3IDUxDQpNb2JpbGU6ICs0NiA3MzAgMjggMDYgMjINCioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioNCg==
