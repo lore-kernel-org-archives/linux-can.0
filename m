@@ -1,45 +1,106 @@
-From: Yang <wang701@purdue.edu>
-Subject: Re: Re: can-j1939 API
-Date: Tue, 10 Nov 2015 16:58:07 -0500
-Message-ID: <5642686F.5020708@purdue.edu>
-References: <linux-can/can-utils/pull/7@github.com>
- <linux-can/can-utils/pull/7/c144149208@github.com>
- <560ADC91.1090408@pengutronix.de>
- <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
- <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com>
- <20151018023225.GA29078@airbook.vandijck-laurijssen.be>
- <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com>
- <20151019204442.GA16852@airbook.vandijck-laurijssen.be>
- <CAFUozzFqDtOdkgFye4M3jU-g+9uF=XH8SmU44j5qK4PTEXp8qQ@mail.gmail.com>
- <20151023111430.GB22388@airbook.eia.lan>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/1] can: sja1000: clear interrupts on start
+Date: Wed, 11 Nov 2015 09:04:53 +0100
+Message-ID: <5642F6A5.5070301@pengutronix.de>
+References: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailhub131.itcs.purdue.edu ([128.210.5.131]:51490 "EHLO
-	mailhub131.itcs.purdue.edu" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752125AbbKJWFB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 10 Nov 2015 17:05:01 -0500
-In-Reply-To: <20151023111430.GB22388@airbook.eia.lan>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46551 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751897AbbKKIFF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 03:05:05 -0500
+In-Reply-To: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alex Layton <alex@layton.in>, linux-can <linux-can@vger.kernel.org>
+To: Mirza Krak <mirza.krak@hostmobility.com>, wg@grandegger.com
+Cc: andri.yngvason@marel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 10/23/2015 07:14 AM, Kurt Van Dijck wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> I'll do the necessary modifications.
-> This has become a rather low-priority task nowadays, although I think
-> there is a momentum to make progress now.
+On 11/10/2015 02:59 PM, Mirza Krak wrote:
+> From: Mirza Krak <mirza.krak@hostmobility.com>
+>=20
+> According to SJA1000 data sheet error-warning (EI) interrupt is not
+> cleared by setting the controller in to reset-mode.
+>=20
+> Then if we have the following case:
+> - system is suspended (echo mem > /sys/power/state) and SJA1000 is left=
 
-I am working with Alex, the author of 
-https://github.com/ISOBlue/isoblue-software on a project that uses 
-j1939. With Alex's module, we wrote another program to receive messages 
-and get the PGN out of each message.
+> in operating state
 
-After looking through this thread, it seems like your module could do 
-the same thing and it looks promising that your module will be added 
-into the main linux kernel. You mentioned that there are things you need 
-to fix and change. I'm currently looking into writing a JNI wrapper for 
-the j1939 module you have. My question is: as you make modifications to 
-the API, how much will change? I can't/don't want to write the JNI 
-wrapper if the code will keep changing significantly.
+This problem occurs only an hardware, where the SJA1000 is powered
+during system suspend?
+
+> - A bus error condition occurs which activates EI interrupt, system is
+> still suspended which means EI interrupt will be not be handled nor
+> cleared.
+>=20
+> If the above two events occur, on resume there is no way to return the
+> SJA1000 to operating state, except to cycle power to it.
+>=20
+> By simply reading the IR register on start we will clear any previous
+> conditions that could be present.
+
+Doesn't the SJA1000 trigger an interrupt that is detected after
+resuming? You add the fix to the open() function, which is triggered
+during $(ifconfig up), how is related to suspend/resume? Does the
+network layer call $(ifconfig down) during shutdown?
+
+There isn't any suspend/resume code in the sja1000 driver, for me it
+seems that we should add resume code that handles this problem.
+
+>=20
+> Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
+> ---
+>  drivers/net/can/sja1000/sja1000.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja100=
+0/sja1000.c
+> index 7b92e911a616..f10834be48a5 100644
+> --- a/drivers/net/can/sja1000/sja1000.c
+> +++ b/drivers/net/can/sja1000/sja1000.c
+> @@ -218,6 +218,9 @@ static void sja1000_start(struct net_device *dev)
+>  	priv->write_reg(priv, SJA1000_RXERR, 0x0);
+>  	priv->read_reg(priv, SJA1000_ECC);
+> =20
+> +	/* clear interrupt flags */
+> +	priv->read_reg(priv, SJA1000_IR);
+> +
+>  	/* leave reset mode */
+>  	set_normal_mode(dev);
+>  }
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWQvamAAoJEP5prqPJtc/HnmwH/2KKU0NdmoAaGYN4EEgfXPd7
+UXQzPVijRO0tYhJ6Yt8j21Zi9kQ+GE2dTw3ax1clLAkJ9R/HjwqZwKSb0/wKk5n5
+a7oGDKJkzhRiVCwPf7/LbNakW8XLC6yrrKIn4Svy4+Dj1Ufv02/8wBVHHXPKQ2Zt
+1guWmREojZJte6TPR5b7Xw+DzjCkEAjuOwgVPDzpMH8I2BEvcELQrjwipycwUUMI
+KEWUXvt5GZFGyIYyFegRYrOtNW7ZsCa0xADhiirFKib13PaAllKqGrGC7OcMvso9
+cz7J9olfSE16sC8vBHwiZW/vEm5J7px1uywAmwquMICWGrc6GGDQ10aZl+cSStk=
+=vUt4
+-----END PGP SIGNATURE-----
+
+--ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F--
