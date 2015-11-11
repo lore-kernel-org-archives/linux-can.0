@@ -1,106 +1,74 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Mirza Krak <mirza.krak@hostmobility.com>
 Subject: Re: [PATCH 1/1] can: sja1000: clear interrupts on start
-Date: Wed, 11 Nov 2015 09:04:53 +0100
-Message-ID: <5642F6A5.5070301@pengutronix.de>
+Date: Wed, 11 Nov 2015 10:54:26 +0100
+Message-ID: <CAJ=nTssqwtYAos67GRr8fOzsm63v_Bx+GKEWriOjbTALuzv-0g@mail.gmail.com>
 References: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
+	<5642F6A5.5070301@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46551 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751897AbbKKIFF (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 03:05:05 -0500
-In-Reply-To: <1447163974-24514-1-git-send-email-mirza.krak@hostmobility.com>
+Received: from mail-lb0-f181.google.com ([209.85.217.181]:36448 "EHLO
+	mail-lb0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751386AbbKKJy2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 04:54:28 -0500
+Received: by lbblt2 with SMTP id lt2so13904188lbb.3
+        for <linux-can@vger.kernel.org>; Wed, 11 Nov 2015 01:54:26 -0800 (PST)
+In-Reply-To: <5642F6A5.5070301@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@hostmobility.com>, wg@grandegger.com
-Cc: andri.yngvason@marel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: wg@grandegger.com, andri.yngvason@marel.com, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+2015-11-11 9:04 GMT+01:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+> This problem occurs only an hardware, where the SJA1000 is powered
+> during system suspend?
 
-On 11/10/2015 02:59 PM, Mirza Krak wrote:
-> From: Mirza Krak <mirza.krak@hostmobility.com>
->=20
-> According to SJA1000 data sheet error-warning (EI) interrupt is not
-> cleared by setting the controller in to reset-mode.
->=20
-> Then if we have the following case:
-> - system is suspended (echo mem > /sys/power/state) and SJA1000 is left=
+Correct, and the controller is in UP state.
 
-> in operating state
 
-This problem occurs only an hardware, where the SJA1000 is powered
-during system suspend?
+> Doesn't the SJA1000 trigger an interrupt that is detected after
+> resuming? You add the fix to the open() function, which is triggered
+> during $(ifconfig up), how is related to suspend/resume? Does the
+> network layer call $(ifconfig down) during shutdown?
 
-> - A bus error condition occurs which activates EI interrupt, system is
-> still suspended which means EI interrupt will be not be handled nor
-> cleared.
->=20
-> If the above two events occur, on resume there is no way to return the
-> SJA1000 to operating state, except to cycle power to it.
->=20
-> By simply reading the IR register on start we will clear any previous
-> conditions that could be present.
+It does not trigger another interrupt.
 
-Doesn't the SJA1000 trigger an interrupt that is detected after
-resuming? You add the fix to the open() function, which is triggered
-during $(ifconfig up), how is related to suspend/resume? Does the
-network layer call $(ifconfig down) during shutdown?
+In our tests we have seen that IE and EPI flags are set in the IR
+registered when we resume the system. If we do not clear these two
+flags it does not produce any other interrupts. Setting the controller
+in to reset mode does not clear the IE and EPI flags, I can understand
+that IE flag is not cleared as this is stated in the data-sheet, can
+not explain why EPI flag is not cleared though as data-sheet states 0
+(reset) for both hardware reset and SETTING MOD.0 BY SOFTWARE (which
+is the reset-mode)
 
-There isn't any suspend/resume code in the sja1000 driver, for me it
-seems that we should add resume code that handles this problem.
+Reason I put it in open() is so at least a DOWN/UP procedure returns
+the controller to an operating state. Also if we do an UP we should
+clear any earlier states that might exist in the registers like we do
+with error counters and error code capture.
 
->=20
-> Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
-> ---
->  drivers/net/can/sja1000/sja1000.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja100=
-0/sja1000.c
-> index 7b92e911a616..f10834be48a5 100644
-> --- a/drivers/net/can/sja1000/sja1000.c
-> +++ b/drivers/net/can/sja1000/sja1000.c
-> @@ -218,6 +218,9 @@ static void sja1000_start(struct net_device *dev)
->  	priv->write_reg(priv, SJA1000_RXERR, 0x0);
->  	priv->read_reg(priv, SJA1000_ECC);
-> =20
-> +	/* clear interrupt flags */
-> +	priv->read_reg(priv, SJA1000_IR);
-> +
->  	/* leave reset mode */
->  	set_normal_mode(dev);
->  }
->=20
+Network layer does not call $(ifconfig down) during shutdown.
 
-Marc
+> There isn't any suspend/resume code in the sja1000 driver, for me it
+> seems that we should add resume code that handles this problem.
+
+Yes, resume code should be implemented to handle this and other
+problems (receive data). But still a DOWN/UP procedure should clear
+any previous state that could exist in the controller registers.
 
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
 
-
---ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWQvamAAoJEP5prqPJtc/HnmwH/2KKU0NdmoAaGYN4EEgfXPd7
-UXQzPVijRO0tYhJ6Yt8j21Zi9kQ+GE2dTw3ax1clLAkJ9R/HjwqZwKSb0/wKk5n5
-a7oGDKJkzhRiVCwPf7/LbNakW8XLC6yrrKIn4Svy4+Dj1Ufv02/8wBVHHXPKQ2Zt
-1guWmREojZJte6TPR5b7Xw+DzjCkEAjuOwgVPDzpMH8I2BEvcELQrjwipycwUUMI
-KEWUXvt5GZFGyIYyFegRYrOtNW7ZsCa0xADhiirFKib13PaAllKqGrGC7OcMvso9
-cz7J9olfSE16sC8vBHwiZW/vEm5J7px1uywAmwquMICWGrc6GGDQ10aZl+cSStk=
-=vUt4
------END PGP SIGNATURE-----
-
---ULHt5o2hAqNJOUKwPdN0E7TFP1g9p5H2F--
+*******************************************************************
+Mirza Krak
+Host Mobility AB
+mirza.krak@hostmobility.com
+Anders Personsgatan 12, 416 64 G=C3=B6teborg
+Sweden
+http://www.hostmobility.com
+Direct: +46 31 31 32 704
+Phone: +46 31 31 32 700
+=46ax: +46 31 80 67 51
+Mobile: +46 730 28 06 22
+*******************************************************************
