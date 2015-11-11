@@ -1,65 +1,81 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Re: can-j1939 API
-Date: Wed, 11 Nov 2015 19:49:47 +0100
-Message-ID: <20151111184947.GA6182@airbook.vandijck-laurijssen.be>
-References: <linux-can/can-utils/pull/7/c144149208@github.com>
- <560ADC91.1090408@pengutronix.de>
- <20150929194920.GA11430@airbook.vandijck-laurijssen.be>
- <CAFUozzFQTOASSR94vKQnMGajUSvHGgL7BMuJSvuXKd3=n6aiog@mail.gmail.com>
- <20151018023225.GA29078@airbook.vandijck-laurijssen.be>
+Subject: Re: can-j1939 API
+Date: Wed, 11 Nov 2015 20:48:01 +0100
+Message-ID: <20151111194801.GA23275@airbook.vandijck-laurijssen.be>
+References: <20151018023225.GA29078@airbook.vandijck-laurijssen.be>
  <CAFUozzGy0UZhKaeLfJiySkJfrK-XuOD7cwz01=hsO48hAk+mow@mail.gmail.com>
  <20151019204442.GA16852@airbook.vandijck-laurijssen.be>
  <CAFUozzFqDtOdkgFye4M3jU-g+9uF=XH8SmU44j5qK4PTEXp8qQ@mail.gmail.com>
  <20151023111430.GB22388@airbook.eia.lan>
- <5642686F.5020708@purdue.edu>
+ <56327492.9030405@hartkopp.net>
+ <20151029233806.GA12740@airbook.vandijck-laurijssen.be>
+ <563753C2.3030109@hartkopp.net>
+ <20151102122913.GA25072@airbook.eia.lan>
+ <563762A1.7020601@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway01.edpnet.net ([212.71.1.210]:27484 "EHLO
-	relaygateway01.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752569AbbKKSut (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 13:50:49 -0500
+Received: from relaygateway02.edpnet.net ([212.71.1.211]:45849 "EHLO
+	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752146AbbKKTsx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2015 14:48:53 -0500
 Content-Disposition: inline
-In-Reply-To: <5642686F.5020708@purdue.edu>
+In-Reply-To: <563762A1.7020601@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yang <wang701@purdue.edu>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Alex Layton <alex@layton.in>, linux-can <linux-can@vger.kernel.org>
 
+Oliver,
+
+I must have lost this email ...
 
 --- Original message ---
-> Date:	Tue, 10 Nov 2015 16:58:07 -0500
-> From: Yang <wang701@purdue.edu>
+> Date:	Mon, 02 Nov 2015 14:18:25 +0100
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
 > To: Alex Layton <alex@layton.in>, linux-can <linux-can@vger.kernel.org>
-> Subject: Re: Re: can-j1939 API
-> User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101
->  Thunderbird/38.3.0
+> Subject: Re: can-j1939 API
+> User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101
+>  Icedove/31.8.0
 > 
-> On 10/23/2015 07:14 AM, Kurt Van Dijck wrote:
+> On 02.11.2015 13:29, Kurt Van Dijck wrote:
+> >>From: Oliver Hartkopp <socketcan@hartkopp.net>
+> >>To: Alex Layton <alex@layton.in>, linux-can <linux-can@vger.kernel.org>,
 > 
-> >I'll do the necessary modifications.
-> >This has become a rather low-priority task nowadays, although I think
-> >there is a momentum to make progress now.
+> >>>'per socket' is a bit dubious. In contrast to Alex, I would not restrict
+> >>>a specific SA or Name to a single socket for reasons I gave earlier.
+> >>
+> >>If I understand you correctly the first socket which is giving his address
+> >>information enables the j1939 address (claiming) handling inside the Kernel,
+> >>right?
+> >
+> >That's the plan.
+> >I would keep the address claiming itself as today in userspace.
 > 
-> I am working with Alex, the author of
-> https://github.com/ISOBlue/isoblue-software on a project that uses j1939.
-> With Alex's module, we wrote another program to receive messages and get the
-> PGN out of each message.
-> 
-> After looking through this thread, it seems like your module could do the
-> same thing and it looks promising that your module will be added into the
-> main linux kernel. You mentioned that there are things you need to fix and
-> change. I'm currently looking into writing a JNI wrapper for the j1939
-> module you have. My question is: as you make modifications to the API, how
-> much will change? I can't/don't want to write the JNI wrapper if the code
-> will keep changing significantly.
+> Oh - but what is net/can/j1939/address-claim.c then?
+> Did it become obsolete?
 
-The fixes I need to do don't affect the API.
-The upcoming changes to can-j1939 do not yet affect the socket API,
-they rather affect how iproute2 is needed (I plan to drop the need for it).
+No, can-j1939 tracks address claims in kernel, or in development terms,
+it receives address claims on the bus so the kernel can build a
+address<->name table for later use.
 
-I'm not so familiar with JNI etc. I assume that the whole iproute2 thing
-would stay out of it alltogether?
+The 'active' part of address claiming, or sending address claims, is
+for userspace.
 
-Kind regards,
-Kurt
+> 
+> >>Btw. is it possible to create two processes on the same Linux box which
+> >>implement two different j1939 nodes (e.g. engine and trailer) that can
+> >>communicate with each other both using the *same* CAN interface (can0 or
+> >>vcan0)??
+> >
+> >Yes.
+> >This kind of transparency was one of my goals.
+> 
+> Great.
+> 
+> Regards,
+> Oliver
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
