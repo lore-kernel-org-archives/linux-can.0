@@ -1,50 +1,53 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can-doc: Add missing semicolon to example
-Date: Fri, 13 Nov 2015 21:00:38 +0100
-Message-ID: <56464166.5060507@hartkopp.net>
-References: <1447075029-22711-1-git-send-email-rumpelsepp@sevenbyte.org> <56409DB3.6040803@pengutronix.de> <5640DF5F.8070008@hartkopp.net>
+Subject: [SOLVED] Re: usb_8dev: Initialisation issue with powered USB 2.0
+ hub
+Date: Fri, 13 Nov 2015 21:20:36 +0100
+Message-ID: <56464614.9000201@hartkopp.net>
+References: <54D3B071.4040705@hartkopp.net> <54D90ADB.8020700@universalnet.at> <54D90CA7.50302@hartkopp.net> <54DF04A3.1010602@universalnet.at> <54E1900A.4050702@hartkopp.net> <54E22518.6050007@8devices.com> <54E2DD71.1050800@hartkopp.net> <54EEEA4C.80009@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:34102 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:47008 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754225AbbKMUAt (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Nov 2015 15:00:49 -0500
-In-Reply-To: <5640DF5F.8070008@hartkopp.net>
+	with ESMTP id S1754707AbbKMUUl (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Nov 2015 15:20:41 -0500
+In-Reply-To: <54EEEA4C.80009@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Stefan Tatschner <rumpelsepp@sevenbyte.org>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Gediminas Simanskis <gediminas@8devices.com>, Bernd Krumboeck <krumboeck@universalnet.at>
 
-On 09.11.2015 19:01, Oliver Hartkopp wrote:
+Hi all,
 
->> Jonathan, feel free to take the patch via your tree.
->>
->> regards,
->> Marc
->>
->
-> Hi Marc,
->
-> I was pretty disappointed that my last patch needed more than six weeks to
-> emerge in Linus' merge window tree, where it needs additional three month
-> until release. When this happens again, we'll have this doc fix in Linux 4.5 -
-> for what reason?
+the issue discussed in this thread has been fixed by Gediminas.
 
-Ok - this time we were lucky:
+The new firmware can be found at
+http://www.8devices.com/usb2can
 
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=4aeabc6b5ca3b9d025f287978096e138bdfbdd35
+http://www.8devices.com/media/files/usb2can_1_7.zip
 
-> I would suggest to send these kinds of doc fixes and enhancements together
-> with other CAN fixes via Daves net tree without this needless delay.
+The firmware sources have been updated too:
+https://github.com/krumboeck/usb2can_firmware
 
-But I still suggest this process ...
-
-Regards,
+Many thanks,
 Oliver
 
 
-
+On 26.02.2015 10:41, Oliver Hartkopp wrote:
+> Hello Gediminas,
+>
+>> On 16.02.2015 18:12, Gediminas Simanskis wrote:
+>>
+>>> IMHO in main firmware cycle need to check lower USB protocol library states.
+>>> Currently firmware after descriptor initialization goes to infinite loop and
+>>> don't check lower USB layer states anymore.
+>
+> As you already named the potential issue: When do you plan to release a new
+> firmware that fixes this warmstart problem?
+>
+> Regards,
+> Oliver
+>
 
 
