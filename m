@@ -1,55 +1,50 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: can-j1939: semantics question
-Date: Thu, 12 Nov 2015 09:39:45 +0100
-Message-ID: <20151112083945.GA30235@airbook.vandijck-laurijssen.be>
-References: <20151111195255.GB23275@airbook.vandijck-laurijssen.be>
- <5643A9CA.8060509@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can-doc: Add missing semicolon to example
+Date: Fri, 13 Nov 2015 21:00:38 +0100
+Message-ID: <56464166.5060507@hartkopp.net>
+References: <1447075029-22711-1-git-send-email-rumpelsepp@sevenbyte.org> <56409DB3.6040803@pengutronix.de> <5640DF5F.8070008@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relaygateway02.edpnet.net ([212.71.1.211]:17654 "EHLO
-	relaygateway02.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750765AbbKLIke (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 12 Nov 2015 03:40:34 -0500
-Content-Disposition: inline
-In-Reply-To: <5643A9CA.8060509@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:34102 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754225AbbKMUAt (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Nov 2015 15:00:49 -0500
+In-Reply-To: <5640DF5F.8070008@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Alex Layton <alex@layton.in>, linux-can <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Stefan Tatschner <rumpelsepp@sevenbyte.org>
+Cc: linux-can <linux-can@vger.kernel.org>
+
+On 09.11.2015 19:01, Oliver Hartkopp wrote:
+
+>> Jonathan, feel free to take the patch via your tree.
+>>
+>> regards,
+>> Marc
+>>
+>
+> Hi Marc,
+>
+> I was pretty disappointed that my last patch needed more than six weeks to
+> emerge in Linus' merge window tree, where it needs additional three month
+> until release. When this happens again, we'll have this doc fix in Linux 4.5 -
+> for what reason?
+
+Ok - this time we were lucky:
+
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=4aeabc6b5ca3b9d025f287978096e138bdfbdd35
+
+> I would suggest to send these kinds of doc fixes and enhancements together
+> with other CAN fixes via Daves net tree without this needless delay.
+
+But I still suggest this process ...
+
+Regards,
+Oliver
 
 
-> On 11.11.2015 20:52, Kurt Van Dijck wrote:
-> 
-> >I eventually got into investigating the necessary changes to drop
-> >iproute2 from can-j1939.
-> >We somewhat agreed that opening a can-j1939 socket and binding
-> >to a CAN interface should activate can-j1939 processing for that
-> >interface.
-> >But how about deactivation?
-> >Should the last can-j1939 socket on a CAN iface deactivate can-j1939 for
-> >that iface when that socket closes?
-> 
-> At least this sounds like some kind of natural behaviour.
-> 
-> What would be the other option?
 
-A special tool, intentionally not called 'ip' :-), that turns off
-j1939 processing. Looks bad.
 
-I'll stick to the 'natural behaviour'.
 
-> 
-> Would you still monitor address claiming inside the kernel without doing
-> anything else?
-
-no. And noone needs it anyway.
-
-> 
-> Or is the address claiming in user space the last application that closes
-> the last socket anyway??
-
-indeed, address claiming requires an open socket.
-
-Thanks,
-Kurt
