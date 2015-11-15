@@ -1,53 +1,109 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [SOLVED] Re: usb_8dev: Initialisation issue with powered USB 2.0
- hub
-Date: Fri, 13 Nov 2015 21:20:36 +0100
-Message-ID: <56464614.9000201@hartkopp.net>
-References: <54D3B071.4040705@hartkopp.net> <54D90ADB.8020700@universalnet.at> <54D90CA7.50302@hartkopp.net> <54DF04A3.1010602@universalnet.at> <54E1900A.4050702@hartkopp.net> <54E22518.6050007@8devices.com> <54E2DD71.1050800@hartkopp.net> <54EEEA4C.80009@hartkopp.net>
+From: John Whitmore <arigead@gmail.com>
+Subject: Re: j1939 (Higher Layer Protocols)
+Date: Sun, 15 Nov 2015 21:59:20 +0000
+Message-ID: <20151115215919.GA8018@BSA-cub>
+References: <20151105180831.GA24951@bamboo.electronicsoup>
+ <563BAC5A.8060604@posteo.de>
+ <20151109194823.GA6539@bamboo.electronicsoup>
+ <20151110105257.GA10664@airbook.eia.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:47008 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754707AbbKMUUl (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 Nov 2015 15:20:41 -0500
-In-Reply-To: <54EEEA4C.80009@hartkopp.net>
+Received: from mail-wm0-f44.google.com ([74.125.82.44]:34321 "EHLO
+	mail-wm0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751184AbbKOV7X (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2015 16:59:23 -0500
+Received: by wmvv187 with SMTP id v187so150335473wmv.1
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2015 13:59:22 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20151110105257.GA10664@airbook.eia.lan>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Gediminas Simanskis <gediminas@8devices.com>, Bernd Krumboeck <krumboeck@universalnet.at>
+To: "Menschel.P" <menschel.p@posteo.de>, linux-can@vger.kernel.org
 
-Hi all,
+Again inline ...
 
-the issue discussed in this thread has been fixed by Gediminas.
+On Tue, Nov 10, 2015 at 11:52:57AM +0100, Kurt Van Dijck wrote:
+> My contribution inline ...
+> 
+> > > 
+> > > 1.SAE J1939 is on top. Truck and Construction Equipment usage, although
+> > > US Trucks are mainly J1587 (RS485) with J1708 protocol.
+> > > 1.1 SAEJ1939 defines its own transport protocol to transmit a PGN longer
+> > > than 8Bytes.
+> > > 1.2 Additionally ISO15765 aka "KWP2000 over CAN" defines another
+> > > transport protocol closely linked to KWP2000(ISO 14230) or the newer
+> > > UDS(ISO14229).
+> > > It is basically a wrapper for half-duplex serial communication over CAN.
+> > 
+> > "Half duplex serial" you could say is all anything built on CAN. Either way
+> > it's not related to j1939 so it doesn't confuse me. I have my own
+> > implementation and it's not interfering with anything.
+> > 
+> > > 
+> > > 2.NMEA2000 is the marine adaption of J1939, agriculture equipment often
+> > > uses NMEA2000 GPS devices.
+> > > 2.1 NMEA2000 FAST Packet is another transport protocol for >8Byte
+> > > messages. I believe that's what you encountered on the boat. I don't
+> > > know the details.
+> > > 
+> > > 3.ISOBUS(ISO 11783) is the agriculture adaption of J1939
+> > > 3.1 Since the devices of the agriculture equipment can be used in
+> > > multiple combinations, ISOBUS has mechanisms to register new devices to
+> > > the CAN bus and so on. AFAIK there is no additional transport protocol.
+> > > 
+> 
+> SAE-J1939's transport protocol has been extended by ISO 11783 to support
+> even bigger packets. This is (both) supported by can-j1939.
+> 
+> SAE-j1939-81 defined dynamic addressing, which is heavily used in
+> ISO-11783 busses, and I image NMEA2000 will use the same thing when
+> needed. This is supported by can-j1939.
+> 
+> NMEA2000's fast-packet, as wel as the KWP2000-over-CAN transport are
+> transport mechanisms that are defined on a per-PGN basis.  can-j1939 has
+> _no_ support for this, i.e. as long as you deliver 8byte pieces to the
+> kernel, it will work as expected. This means that these transport
+> mechanisms must be implemented (as for now) in userspace.
+> As long as the same PGN/SA is not sent from different sockets, no
+> multiuser problems would occur.
+> 
+> You may already have guessed that I never needed to sent the same PGN/SA
+> from different sockets yet.
+> 
+> > 
+> > So leaving ISO15765 to one side the other 3 are closely related. Does this
+> > mean that a Linux implementation of j1939 could be used for my NEMA2000
+> > requirements? 
+> 
+> I guess so.
+> 
+> > 
+> > To be honest I think it's easier for me to look at the ISO-11783 spec and
+> > reverse engineer the NEMA2000 bits I need. I looked at buying the NEMA2000
+> > specs but you have to buy them all in a job lot for a lot of money. Can't
+> > really afford that unfortunately.
+> 
+> The fast-packet thing is really simple, works without flow control.
+> No worth buying that spec for the transport layers.
+> 
+> You may still need the application level parts, as this is clearly
+> userspace stuff.
+> 
+> > 
+> > Maybe I could jsut Linux J1939 but that might depend on subtle differences in
+> > Transport protocol.
+> 
+> 
+> Which subtle differences you refer to?
+> I read SAE-J1939 and ISO11783, and I found no differences.
+> Can you give an example?
+> 
+> Kurt
 
-The new firmware can be found at
-http://www.8devices.com/usb2can
+Sorry for the delay in responding been distracted. I've never read SAE-J1939
+but only ISO11783 I should have made it clearer when I said "might". I 
+was meaning that there might be differences between the two I don't know.
 
-http://www.8devices.com/media/files/usb2can_1_7.zip
-
-The firmware sources have been updated too:
-https://github.com/krumboeck/usb2can_firmware
-
-Many thanks,
-Oliver
-
-
-On 26.02.2015 10:41, Oliver Hartkopp wrote:
-> Hello Gediminas,
->
->> On 16.02.2015 18:12, Gediminas Simanskis wrote:
->>
->>> IMHO in main firmware cycle need to check lower USB protocol library states.
->>> Currently firmware after descriptor initialization goes to infinite loop and
->>> don't check lower USB layer states anymore.
->
-> As you already named the potential issue: When do you plan to release a new
-> firmware that fixes this warmstart problem?
->
-> Regards,
-> Oliver
->
-
-
+I sort of assumed when they took SAE-J1939 to create ISO11783 that they had a
+good reason (Apart from selling another standard) for creating a new standard.
