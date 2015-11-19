@@ -1,59 +1,65 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: peak_pci: TX Frame Loss
-Date: Thu, 19 Nov 2015 10:12:49 +0000
-Message-ID: <20151119101249.17903.72690@maxwell.marel.net>
-References: <20151118145121.32487.38169@maxwell.marel.net>
- <564D8A79.7090605@peak-system.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: re: can: kvaser_usb: Add support for Kvaser CAN/USB devices
+Date: Thu, 19 Nov 2015 15:42:19 +0300
+Message-ID: <20151119124219.GC2638@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am1on0056.outbound.protection.outlook.com ([157.56.112.56]:51424
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1756210AbbKSK3z convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2015 05:29:55 -0500
-In-Reply-To: <564D8A79.7090605@peak-system.com>
+Received: from userp1040.oracle.com ([156.151.31.81]:20302 "EHLO
+	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757174AbbKSMmh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2015 07:42:37 -0500
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
-Cc: wg@grandegger.com, mkl@pengutronix.de
+To: olivier@sobrie.be
+Cc: linux-can@vger.kernel.org
 
-Hi Stephane,
+Hello Olivier Sobrie,
 
-Quoting Stephane Grosjean (2015-11-19 08:38:17)
-> Hi Andri,
-> 
-> Could you first give me the result of sudo lspci -d 1c: -vvv please?
-root@sensorx:~# ./lspci -d 1c: -vvv
-03:00.0 Class 0280: Device 001c:0008 (rev 02)
-        Subsystem: Device 001c:0005
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-        Interrupt: pin A routed to IRQ 19
-        Region 0: Memory at f7d10000 (32-bit, non-prefetchable) [size=64K]
-        Region 1: Memory at f7d00000 (32-bit, non-prefetchable) [size=64K]
-        Capabilities: [50] Power Management version 0
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [70] MSI: Enable- Count=1/2 Maskable- 64bit+
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [90] Express (v1) Endpoint, MSI 00
-                DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1 <1us
-                        ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
-                DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
-                        RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
-                        MaxPayload 128 bytes, MaxReadReq 512 bytes
-                DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr- TransPend-
-                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s, Exit Latency L0s unlimited, L1 <1us
-                        ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-                LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- CommClk-
-                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-                LnkSta: Speed 2.5GT/s, Width x1, TrErr- Train- SlotClk- DLActive- BWMgmt- ABWMgmt-
-        Capabilities: [100 v1] Vendor Specific Information: ID=0000 Rev=0 Len=00c <?>
-        Kernel driver in use: peak_pci
->
-[...]
+The patch 080f40a6fa28: "can: kvaser_usb: Add support for Kvaser
+CAN/USB devices" from Nov 21, 2012, leads to the following static
+checker warning:
 
-Thanks,
-Andri
+	drivers/net/can/usb/kvaser_usb.c:949 kvaser_usb_rx_error()
+	0x08 | 0x18 has 0x08 set on both sides
+
+drivers/net/can/usb/kvaser_usb.c
+   941          switch (dev->family) {
+   942          case KVASER_LEAF:
+   943                  if (es->leaf.error_factor) {
+   944                          cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
+   945  
+   946                          if (es->leaf.error_factor & M16C_EF_ACKE)
+   947                                  cf->data[3] |= (CAN_ERR_PROT_LOC_ACK);
+   948                          if (es->leaf.error_factor & M16C_EF_CRCE)
+   949                                  cf->data[3] |= (CAN_ERR_PROT_LOC_CRC_SEQ |
+   950                                                  CAN_ERR_PROT_LOC_CRC_DEL);
+
+CAN_ERR_PROT_LOC_CRC_SEQ is 0x08
+CAN_ERR_PROT_LOC_CRC_DEL is 0x18
+
+It's weird that the bits overlap.  Was that intentional?  Why isn't it
+enough to just say?:
+					cf->data[3] |= CAN_ERR_PROT_LOC_CRC_DEL;
+
+The static checker complains about most places where
+CAN_ERR_PROT_LOC_CRC_SEQ is used.  I see us setting the flag but not I
+don't see where we test for this so I'm not sure.
+
+   951                          if (es->leaf.error_factor & M16C_EF_FORME)
+   952                                  cf->data[2] |= CAN_ERR_PROT_FORM;
+   953                          if (es->leaf.error_factor & M16C_EF_STFE)
+   954                                  cf->data[2] |= CAN_ERR_PROT_STUFF;
+   955                          if (es->leaf.error_factor & M16C_EF_BITE0)
+   956                                  cf->data[2] |= CAN_ERR_PROT_BIT0;
+   957                          if (es->leaf.error_factor & M16C_EF_BITE1)
+   958                                  cf->data[2] |= CAN_ERR_PROT_BIT1;
+   959                          if (es->leaf.error_factor & M16C_EF_TRE)
+   960                                  cf->data[2] |= CAN_ERR_PROT_TX;
+   961                  }
+   962                  break;
+   963          case KVASER_USBCAN:
+
+regards,
+dan carpenter
