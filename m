@@ -1,54 +1,71 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/3] can: sja1000: clear interrupts on start
-Date: Mon, 23 Nov 2015 09:46:52 +0100
-Message-ID: <1448268414-18583-2-git-send-email-mkl@pengutronix.de>
-References: <1448268414-18583-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1448268414-18583-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Mirza Krak <mirza.krak@hostmobility.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Subject: Re: [PATCH 1/2] can: fix assignment of error location in CAN error
+ messages
+Date: Mon, 23 Nov 2015 09:47:32 +0100
+Message-ID: <5652D2A4.6070508@pengutronix.de>
+References: <1448127681-8533-1-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="VibqHEwOLCU2uX7XPopmwJ1xBIJtGwaDD"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:57346 "EHLO
+	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753899AbbKWIrp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Nov 2015 03:47:45 -0500
+In-Reply-To: <1448127681-8533-1-git-send-email-socketcan@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: dan.carpenter@oracle.com
 
-From: Mirza Krak <mirza.krak@hostmobility.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VibqHEwOLCU2uX7XPopmwJ1xBIJtGwaDD
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-According to SJA1000 data sheet error-warning (EI) interrupt is not
-cleared by setting the controller in to reset-mode.
+On 11/21/2015 06:41 PM, Oliver Hartkopp wrote:
+> As Dan Carpenter reported in http://marc.info/?l=3Dlinux-can&m=3D144793=
+696016187
+> the assignment of the error location in CAN error messages had some bit=
+ wise
+> overlaps. Indeed the value to be assigned in data[3] is no bitfield but=
+ defines
+> a single value which points to a location inside the CAN frame on the w=
+ire.
+>=20
+> This patch fixes the assignments for the error locations in error messa=
+ges.
+>=20
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Then if we have the following case:
-- system is suspended (echo mem > /sys/power/state) and SJA1000 is left
-  in operating state
-- A bus error condition occurs which activates EI interrupt, system is
-  still suspended which means EI interrupt will be not be handled nor
-  cleared.
+Applied both to the can tree.
 
-If the above two events occur, on resume there is no way to return the
-SJA1000 to operating state, except to cycle power to it.
+Thanks,
+Marc
 
-By simply reading the IR register on start we will clear any previous
-conditions that could be present.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Signed-off-by: Mirza Krak <mirza.krak@hostmobility.com>
-Reported-by: Christian Magnusson <Christian.Magnusson@semcon.com>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/sja1000/sja1000.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 7b92e911a616..f10834be48a5 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -218,6 +218,9 @@ static void sja1000_start(struct net_device *dev)
- 	priv->write_reg(priv, SJA1000_RXERR, 0x0);
- 	priv->read_reg(priv, SJA1000_ECC);
- 
-+	/* clear interrupt flags */
-+	priv->read_reg(priv, SJA1000_IR);
-+
- 	/* leave reset mode */
- 	set_normal_mode(dev);
- }
--- 
-2.6.2
+--VibqHEwOLCU2uX7XPopmwJ1xBIJtGwaDD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWUtKnAAoJEP5prqPJtc/HqjgH/3ow/pFX3Buh0k8f9Z433bfQ
+CYYhB4HizGHlW5TlR56gXdEOqn3AyA6pW47csfdDI1QXhTxG/qCxahg3bAKCQb3I
+5IT/7DtXSWsgNXI+BwVaWUoF9NjHG4IcU3RldJs5GM4Gd/iV/xSvEt8aBrGoKoCH
+QVKE15Zj7Tu6cnVvWf4IXDgivRNKhQ5LV8mzaoUDPb0iE6Z/V3Qej2lR+GefTbVG
+7wwRRNJNw/QyQm0DI9yJIZzxSvexFEm7MXH794axwRdkksrGPkEwxt0NmoNfVoOL
+8acFMCYTbrX3iPW7yQSepTetrDBeOSpNexlW3P+QELtudastS/fJ8Fi+66maYMw=
+=/5iF
+-----END PGP SIGNATURE-----
+
+--VibqHEwOLCU2uX7XPopmwJ1xBIJtGwaDD--
