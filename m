@@ -1,79 +1,69 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2015-11-23
-Date: Mon, 23 Nov 2015 09:54:22 +0100
-Message-ID: <5652D43E.2010607@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 crash after receiving BAM frame and no DT frame
+Date: Mon, 23 Nov 2015 13:51:37 +0100
+Message-ID: <20151123125137.GB25107@airbook.eia.lan>
+References: <loom.20151120T162359-379@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="H7AFi14s8dkWC3nJf4F76rkmscOMTuSXf"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---H7AFi14s8dkWC3nJf4F76rkmscOMTuSXf
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hello David,
-
-this is a pull request of a single patch for net-next/master.
-
-The patch by Kedareswara rao Appana converts the xilinx CAN driver to
-runtime_pm.
-
-Marc
-
----
-
-The following changes since commit 3f8c0f7efb4fcac11f31afa97584d06118c614=
-bb:
-
-  gianfar: use of_property_read_bool() (2015-11-22 20:47:14 -0500)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.5-20151123
-
-for you to fetch changes up to 4716620d1b6291ce45522d1346c086f76b995d1c:
-
-  can: xilinx: Convert to runtime_pm (2015-11-23 09:51:34 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-4.5-20151123
-
-----------------------------------------------------------------
-Kedareswara rao Appana (1):
-      can: xilinx: Convert to runtime_pm
-
- drivers/net/can/xilinx_can.c | 176 +++++++++++++++++++++++++------------=
-------
- 1 file changed, 101 insertions(+), 75 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relaygateway01.edpnet.net ([212.71.1.210]:5275 "EHLO
+	relaygateway01.edpnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750853AbbKWMwA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 23 Nov 2015 07:52:00 -0500
+Content-Disposition: inline
+In-Reply-To: <loom.20151120T162359-379@post.gmane.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: linux-can@vger.kernel.org
 
 
---H7AFi14s8dkWC3nJf4F76rkmscOMTuSXf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--- Original message ---
+> Date:	Fri, 20 Nov 2015 15:24:57 +0000 (UTC)
+> From: laurent vaudoit <laurent.vaudoit@gmail.com>
+> To: linux-can@vger.kernel.org
+> Subject: J1939 crash after receiving BAM frame and no DT frame
+> User-Agent: Loom/3.14 (http://gmane.org/)
+> 
+> Hi all,
+> i'm facing some issue on my imx6 board, with j1939 patch.
+> 
+> i setup my can interface with ip link command
+> and then i setup this interface in j1939
+> 
+> ip link set can0 up type can bitrate 250000
+> ip link set can0 j1939 on
+> 
+> and after i launch a candump on can0 
+> 
+> On can0, i play an can bus trace (logged from a vehicule).
+> at the end of the trace, i have a bam frame without the DT frame associated
+> 
+> on the console, i see the log
+> 1939tprx_task timeout on 2 (it seems normal)
+> and after, i have a rando crash of my system (not in can stuffs, sometimes 
+> a reset, sometimes nand driver...)
+> 
+> if i remove the BAM frame, problem does not appear.
+> if i do not set can0 j1939 on, problem does not appear
+> so it seems the problem is related to j1939 timeout
+> 
+> Is someone yet encountered this problem?
 
------BEGIN PGP SIGNATURE-----
+I think I never tried this (sending only the BAM without the DATA).
+I will take a look one of these days.
 
-iQEcBAEBCgAGBQJWUtQ+AAoJEP5prqPJtc/H9tsIAJFRTytgIuzgdPvCavAvM51x
-VgKEMgGCtphhLTGSKUBZvJoKdwP9T+O587YxoMo/UXBdv/nTOFAlAiZ6XCRCDmGz
-NTJX9ldEtT9zAa46C5VbpJfPssTBGOnO8w4476BF56JSXzHijuadnQxSUnVlpps0
-QRm+gKvSqgG8uuBAhCraAgbMSxGXaSnWmjoeOR5lLpk8AFNWsLhZrqGpGGMC52rF
-Dl1rETEiDQy8sXmN0plcaZl1Ta9KqVkfWgLOuUBB93GBpslPdSTiWWyT71TMtOf5
-eUF+czgVerrz1qAuZhAN+BPFt8wzntRHupAY9rBo6gje46nPkDwNOE/wW6RVHmA=
-=ANU4
------END PGP SIGNATURE-----
+Kurt
 
---H7AFi14s8dkWC3nJf4F76rkmscOMTuSXf--
+> 
+> my kernel is a 3.10 kernel, with j1939 patch
+> 
+> Thanks in advance
+> Best regards
+> 
+> Laurent
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
