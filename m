@@ -1,64 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: SocketCAN timestamps
-Date: Tue, 24 Nov 2015 14:42:44 +0100
-Message-ID: <56546954.1070005@pengutronix.de>
-References: <565460FE.7060401@sevenbyte.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="LsXSJKJ8mD8smOXKemK2pwdPraJNkU0FR"
+From: Stefan Tatschner <rumpelsepp@sevenbyte.org>
+Subject: [PATCH] can-doc: Add hint about getting timestamps
+Date: Tue, 24 Nov 2015 15:06:29 +0100
+Message-ID: <1448373989-7241-1-git-send-email-rumpelsepp@sevenbyte.org>
+References: <56546954.1070005@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:51348 "EHLO
-	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754196AbbKXNmw (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 24 Nov 2015 08:42:52 -0500
-In-Reply-To: <565460FE.7060401@sevenbyte.org>
+Received: from mail.sevenbyte.org ([5.9.90.188]:33142 "EHLO mail.sevenbyte.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752739AbbKXOGi (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 24 Nov 2015 09:06:38 -0500
+In-Reply-To: <56546954.1070005@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stefan Tatschner <rumpelsepp@sevenbyte.org>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-can@vger.kernel.org, Stefan Tatschner <rumpelsepp@sevenbyte.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LsXSJKJ8mD8smOXKemK2pwdPraJNkU0FR
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This patch adds a hint about how to get timestamps of received
+CAN frames with ioctl(2). This hint has been applied to the
+former SocketCAN Documentation, but it got lost during mainlining
+the first bits and pieces to linux kernel.
 
-On 11/24/2015 02:07 PM, Stefan Tatschner wrote:
-> I did some google work to find out how to retrieve timestamps of
-> received messages. I have found this:
->=20
-> http://socket-can.996257.n3.nabble.com/PATCH-Add-timestamps-description=
--to-can-txt-td1430.html
->=20
-> It seems that this patch has never been applied to the kernel tree. Are=
+Signed-off-by: Stefan Tatschner <rumpelsepp@sevenbyte.org>
+---
+ Documentation/networking/can.txt | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> there any reasons (besides being forgotten) for this?
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index 05fd83b..6ab619f 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -372,6 +372,15 @@ solution for a couple of reasons:
+     nbytes = sendto(s, &frame, sizeof(struct can_frame),
+                     0, (struct sockaddr*)&addr, sizeof(addr));
+ 
++  An accurate timestamp can be obtained with an ioctl(2) call after reading
++  a message from the socket:
++
++    struct timeval tv;
++    ioctl(s, SIOCGSTAMP, &tv);
++
++  The timestamp has a resolution of one microsecond and is set automatically
++  at the reception of a CAN frame.
++
+   Remark about CAN FD (flexible data rate) support:
+ 
+   Generally the handling of CAN FD is very similar to the formerly described
+-- 
+2.6.2
 
-Maybe it was the time when mainlining the first bits and pieces to linux
-kernel. Can you port this patch against a current linux kernel?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---LsXSJKJ8mD8smOXKemK2pwdPraJNkU0FR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWVGlUAAoJEP5prqPJtc/HkhoH/RkOEuXIB9h8GM5VQkwB9c0m
-VuRS4+wiezucZCUZP3KIwRIFa0d0vpbrmsDaMQXBpBma9yPcgxva4pqTTGAIsqt/
-j9oS0CA7Ggp4dQt5bNVySCxJ+W4D8hPRyyifR9mFnk2LzEFIs/9IMJzFsCTHtWfX
-d0u5kk896pOIkcx/nEaTMTPSIocLVdv0gr8vpSDb+Dd7sp2GTC9jeyoui1UHVUgI
-2+3tyz7Eh/Q8suxXjde/Eq0F+qkC2IIwY2WG3wQfcbsZYMvDKQ8shkPjFizF54NJ
-Y72KPg2B5IENZJ9EvK+FUfo0EKHx2TDs92DTiojfgeKmNDWd5h/xSCSqzeLGyZk=
-=0WPI
------END PGP SIGNATURE-----
-
---LsXSJKJ8mD8smOXKemK2pwdPraJNkU0FR--
