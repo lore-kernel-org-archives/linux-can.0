@@ -1,45 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Setting bitrate from user-space application
-Date: Wed, 25 Nov 2015 15:58:21 +0100
-Message-ID: <5655CC8D.70508@pengutronix.de>
-References: <5655BF6D.3000701@picquet.fr>
+Subject: Re: J1939 crash after receiving BAM frame and no DT frame
+Date: Wed, 25 Nov 2015 15:59:42 +0100
+Message-ID: <5655CCDE.2090701@pengutronix.de>
+References: <loom.20151120T162359-379@post.gmane.org>
+ <20151123200923.GA4556@airbook.vandijck-laurijssen.be>
+ <CAA7hF3zr0jcJNRn6EYVuFfhg-xCab5MR=B4budC1Pzce0xL7zg@mail.gmail.com>
+ <20151125132633.GE764@airbook.vandijck-laurijssen.be>
+ <CAA7hF3zSyPFDEzuPWmwwBhTf3005U_g8fEV3ses5_i+Gi=_ecw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="xdokT2Avu2WjlGXeGxjN2RkSs63xbRNvN"
+ boundary="AUP4cDXsVi4a8LdAj2lbOTKBgpoRrfae4"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:57114 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:47760 "EHLO
 	metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751262AbbKYO62 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Nov 2015 09:58:28 -0500
-In-Reply-To: <5655BF6D.3000701@picquet.fr>
+	with ESMTP id S1751651AbbKYO7w (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 25 Nov 2015 09:59:52 -0500
+In-Reply-To: <CAA7hF3zSyPFDEzuPWmwwBhTf3005U_g8fEV3ses5_i+Gi=_ecw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Guillaume Picquet <guillaume@picquet.fr>, linux-can@vger.kernel.org
+To: laurent vaudoit <laurent.vaudoit@gmail.com>, linux-can@vger.kernel.org, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xdokT2Avu2WjlGXeGxjN2RkSs63xbRNvN
+--AUP4cDXsVi4a8LdAj2lbOTKBgpoRrfae4
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/25/2015 03:02 PM, Guillaume Picquet wrote:
-> Hi all,
+On 11/25/2015 02:39 PM, laurent vaudoit wrote:
+>>> i have found a workaround, working with rtpatch, but not sure if this=
+
+>>> can be considered as a bug fix or not.
+>>> in function j1939tp_rxtask, there is a call to j1939session_cancel,
+>>> who call put_session
+>>> and at the end of j1939tp_rxtask, we call put_session.
+>>> if i comment this "second call" to put_session, the problem disappear=
+=2E
+>>
+>> It seems that you added a memory leak because put_session if a ref
+>> counter. You keep the session installed ... forever, or until a next
+>> similar session is about to be created.
+>>
+>> I'm not sure either that this is the correct way to proceed.
 >=20
-> I prefer to ask first to those who know.
->=20
-> What is the 'normal' way of setting CAN bitrate from user-space=20
-> application ?
-> Is there a library for that ?
+> i'm not sure i understand well.
+> this seems weird for me to have one get_session and 2 put_session
+> should'nt we have one get_session and one put_session only? (this is
+> what i tried)?
 
-Yes -
-http://www.pengutronix.de/software/libsocketcan/download/libsocketcan-0.0=
-=2E10.tar.bz2
-
-> If no shall I use netlink ?
-
-No - netlink parsing makes your brain hurt :D
+Maybe copy/pasting your patch here make the discussion easier :)
 
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -47,20 +58,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---xdokT2Avu2WjlGXeGxjN2RkSs63xbRNvN
+--AUP4cDXsVi4a8LdAj2lbOTKBgpoRrfae4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWVcyOAAoJEP5prqPJtc/H6PYIAKhskrbeC/UkhXAC5haAE9SZ
-79TGKYsYKEVZf4mlowj2Frp4jCRRGAR3xgRygb8/j34pqOiHh/y+x0MfFKdf+a6A
-KerKTcN8qp208z7/cP2+mGtsHPxBJmHT4vyGiK9QK+LEwFeVMwBeDb3lye78hkzx
-kGic8DpgNhxNIcUuybXKWu6asPMrQ7T+uBgxcLgIqZS8fxC6wUpKDW1sgOcG/YIc
-4/n4G0qIUpQO1Z6ZveRyzhfEzSz9UVkVkD0MLIGDPnJaF/cCIveL+iIbO+xXcahB
-4kmOP/4mJbUUsnsr/nUGhVx1daBvXhW4CZe62JuGVv9uhGifLe94IAXu9b3Outo=
-=4g9u
+iQEcBAEBCgAGBQJWVczeAAoJEP5prqPJtc/HgksIALy6c2CBnSd7x7TzrvrxeWUu
+BAEKUirbJ6Tf35tbyyPml5E9fxBp1KqtUT51smC1yj3Xx1xWs+K9BTpdrPaa+WDX
+wMxyqpc9ovyN8RAkhLFV3Jx16wKiba2vC8TYzVyUc3tZ0eCIT9j5BuIL3o9dxUr2
+h5TbldnFBFdo1X0QcwgWVek1cbfFb66gfgKoKumqzH5+kai9CP1LcIX9pO6N0m5C
+vpEMtq47RHQPdtbOt0sY+dw7iztiz9Qae+3ElWBf+Ba1rj/yBYfN3XTH2//311tj
+H/NVeTYC9mggHJVFuOMwpbPs7XW+fCkLeh/a3bjs1y+6F+wIYo9YybZvAklu8Ng=
+=k97c
 -----END PGP SIGNATURE-----
 
---xdokT2Avu2WjlGXeGxjN2RkSs63xbRNvN--
+--AUP4cDXsVi4a8LdAj2lbOTKBgpoRrfae4--
