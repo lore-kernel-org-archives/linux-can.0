@@ -1,134 +1,56 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: peak_pci: TX Frame Loss
-Date: Thu, 3 Dec 2015 17:37:26 +0100
-Message-ID: <56606FC6.8030804@peak-system.com>
-References: <20151118145121.32487.38169@maxwell.marel.net>
- <20151202180937.19023.96078@maxwell.marel.net>
- <565F4439.3050309@hartkopp.net> <565FE31D.8060606@hartkopp.net>
- <20151203112319.GA5230@maxwell.marel.net>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 crash after receiving BAM frame and no DT frame
+Date: Fri, 4 Dec 2015 15:04:14 +0100
+Message-ID: <20151204140414.GA24723@airbook.eia.lan>
+References: <loom.20151120T162359-379@post.gmane.org>
+ <20151123200923.GA4556@airbook.vandijck-laurijssen.be>
+ <CAA7hF3zr0jcJNRn6EYVuFfhg-xCab5MR=B4budC1Pzce0xL7zg@mail.gmail.com>
+ <20151125132633.GE764@airbook.vandijck-laurijssen.be>
+ <CAA7hF3zSyPFDEzuPWmwwBhTf3005U_g8fEV3ses5_i+Gi=_ecw@mail.gmail.com>
+ <5655CCDE.2090701@pengutronix.de>
+ <CAA7hF3xDeRRg3LXyfzWtY_DxmMUM8bL=sxvRcAEwHr_G4GsZ=A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:53479 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752039AbbLCQhr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Dec 2015 11:37:47 -0500
-In-Reply-To: <20151203112319.GA5230@maxwell.marel.net>
+Received: from relay-b01.edpnet.be ([212.71.1.221]:57653 "EHLO
+	relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751027AbbLDOFC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Dec 2015 09:05:02 -0500
+Content-Disposition: inline
+In-Reply-To: <CAA7hF3xDeRRg3LXyfzWtY_DxmMUM8bL=sxvRcAEwHr_G4GsZ=A@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, hrafnkell.eiriksson@marel.com, haukur.hafsteinsson@marel.com
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-Hi,
+> On Wed, Nov 25, 2015 at 3:59 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > On 11/25/2015 02:39 PM, laurent vaudoit wrote:
+> >>>> i have found a workaround, working with rtpatch, but not sure if this
+> >>>> can be considered as a bug fix or not.
+> >>>> in function j1939tp_rxtask, there is a call to j1939session_cancel,
+> >>>> who call put_session
+> >>>> and at the end of j1939tp_rxtask, we call put_session.
+> >>>> if i comment this "second call" to put_session, the problem disappear.
+> >>>
+> >>> It seems that you added a memory leak because put_session if a ref
+> >>> counter. You keep the session installed ... forever, or until a next
+> >>> similar session is about to be created.
+> >>>
+> >>> I'm not sure either that this is the correct way to proceed.
+> >>
+> >> i'm not sure i understand well.
+> >> this seems weird for me to have one get_session and 2 put_session
+> >> should'nt we have one get_session and one put_session only? (this is
+> >> what i tried)?
 
-The question has been forwarded to our hw engineers.
-I will give you any feedback I'll have about that.
+When you come to the point where you want to get rid of the session,
+you need decrement the refcounter to become zero.
+This extra put_session compensates the initial 1 in the refcounter.
 
-Regards,
+I still don't see where it goes wrong. Can you experiment with disabling
+individual lines in j1939session_destroy()? Since problems occur only
+later, I suspect that the call to skb_free is causing the issue, but I'm
+not sure.
 
-St=E9phane
+Kurt
 
-Le 03/12/2015 12:23, Andri Yngvason a =E9crit :
-> On Thu, Dec 03, 2015 at 07:37:17AM +0100, Oliver Hartkopp wrote:
->> Some more details:
->>
->> On 12/02/2015 08:19 PM, Oliver Hartkopp wrote:
->>> On 12/02/2015 07:09 PM, Andri Yngvason wrote:
->>>> Quoting Andri Yngvason (2015-11-18 14:51:21)
->>>> [...]
->>>>> We've been experiencing frame loss on transmission in the peak_pc=
-i netdev
->>>>> driver.
->>>> [...]
->>
->>>>   I tried adding a delay to test my theory:
->>>> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/s=
-ja1000/sja1000.c
->>>> index f968d1e..b5115c2 100644
->>>> --- a/drivers/net/can/sja1000/sja1000.c
->>>> +++ b/drivers/net/can/sja1000/sja1000.c
->>>> @@ -93,6 +93,7 @@ static void sja1000_write_cmdreg(struct sja1000_=
-priv *priv, u8 val)
->>>>   	spin_lock_irqsave(&priv->cmdreg_lock, flags);
->>>>   	priv->write_reg(priv, SJA1000_CMR, val);
->>>>   	priv->read_reg(priv, SJA1000_SR);
->>>> +	udelay(10);
->>>>   	spin_unlock_irqrestore(&priv->cmdreg_lock, flags);
->>>>   }
->>> Hi Andri,
->>>
->>> looking at the code above I wonder whether the
->>>
->>> 	priv->read_reg(priv, SJA1000_SR);
->>>
->>> is a bad hack anyway.
->>>
->>> The read_reg() becomes readb(priv->reg_base + (port << 2)) in peak_=
-pci.c and
->>> the result is never used.
->>>
->>> What if the entire operation gets 'optimized' at some point?
-> Hi Oliver,
->
-> According to ftrace it takes at least 1us to execute.
->
->>> Can you check what happens if you just replace the priv->read_reg()=
- with your
->>> udelay(10) call?
->>>
->> In fact I contributed the first SJA1000 SMP fix myself.
->>
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/comm=
-it?id=3D57c8a456640fa3ca777652f11f2db4179a3e66b6
->>
->> As we only picked the code suggestion from Klaus the delay was intro=
-duced by
->> priv->read_reg() - which is obviously not the proper way.
->>
->> The data sheet says:
->>
->> "Between two commands at least one internal clock cycle is needed in=
- order to
->> proceed. The internal clock is half of the external oscillator frequ=
-ency."
-> The upper bound would have been more useful information here. ;)
->
->> The SJA1000 accepts external clocks from 0 to 24 MHz - all our drive=
-rs have an
->> external clock of 16 MHz which leads to an internal clock of 8 MHz.
->>
->> If we need an additional internal clock cycle we can calculate this =
-with
->> 4 MHz and 1/4.000.000 =3D 0.000,000,25 =3D> 250ns =3D 0.25us
->>
->> Even if someone would use an external clock of 8 MHz a udelay(1) sho=
-uld be enough.
->>
->> Can you please make a test where you replace the priv->read_reg() ju=
-st with
->> udelay(1)?
-> I tried it and it's not enough. The sja1000 on the peak pci is an FPG=
-A
-> implementation that claims to be sja1000 compatible. Is it possible t=
-hat peak's
-> FPGA implementation is slower than the original sja1000?
->
-> St=E9phane, what do you think?
->
->> If it works I would like to contribute a patch to fix my former atte=
-mpt with a
->> Reported-by: and Tested-by: tag from you.
->>
-> Sure, whatever gets this fixed is fine by me. ;)
->
-> Thanks,
-> Andri
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
