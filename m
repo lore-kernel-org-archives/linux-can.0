@@ -1,56 +1,118 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 crash after receiving BAM frame and no DT frame
-Date: Fri, 4 Dec 2015 15:04:14 +0100
-Message-ID: <20151204140414.GA24723@airbook.eia.lan>
-References: <loom.20151120T162359-379@post.gmane.org>
- <20151123200923.GA4556@airbook.vandijck-laurijssen.be>
- <CAA7hF3zr0jcJNRn6EYVuFfhg-xCab5MR=B4budC1Pzce0xL7zg@mail.gmail.com>
- <20151125132633.GE764@airbook.vandijck-laurijssen.be>
- <CAA7hF3zSyPFDEzuPWmwwBhTf3005U_g8fEV3ses5_i+Gi=_ecw@mail.gmail.com>
- <5655CCDE.2090701@pengutronix.de>
- <CAA7hF3xDeRRg3LXyfzWtY_DxmMUM8bL=sxvRcAEwHr_G4GsZ=A@mail.gmail.com>
+From: Yang Wang <wang701@purdue.edu>
+Subject: J1939 send causes call trace dump
+Date: Mon, 7 Dec 2015 01:07:33 -0500
+Message-ID: <CAEE8DsL73FVDMdVCVC0Z=X5KKiaE=KnTwPNp3gJS37nd7oq9dA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:57653 "EHLO
-	relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751027AbbLDOFC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Dec 2015 09:05:02 -0500
-Content-Disposition: inline
-In-Reply-To: <CAA7hF3xDeRRg3LXyfzWtY_DxmMUM8bL=sxvRcAEwHr_G4GsZ=A@mail.gmail.com>
+Received: from mailhub246.itcs.purdue.edu ([128.210.5.246]:44365 "EHLO
+	mailhub246.itcs.purdue.edu" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755575AbbLGGHf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Dec 2015 01:07:35 -0500
+Received: from mail-yk0-f174.google.com (mail-yk0-f174.google.com [209.85.160.174])
+	(authenticated bits=0)
+	by mailhub246.itcs.purdue.edu (8.14.4/8.14.4/mta-auth.smtp.purdue.edu) with ESMTP id tB767YP9018093
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+	for <linux-can@vger.kernel.org>; Mon, 7 Dec 2015 01:07:34 -0500
+Received: by ykfs79 with SMTP id s79so185134310ykf.1
+        for <linux-can@vger.kernel.org>; Sun, 06 Dec 2015 22:07:33 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: laurent vaudoit <laurent.vaudoit@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+To: linux-can <linux-can@vger.kernel.org>
 
-> On Wed, Nov 25, 2015 at 3:59 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > On 11/25/2015 02:39 PM, laurent vaudoit wrote:
-> >>>> i have found a workaround, working with rtpatch, but not sure if this
-> >>>> can be considered as a bug fix or not.
-> >>>> in function j1939tp_rxtask, there is a call to j1939session_cancel,
-> >>>> who call put_session
-> >>>> and at the end of j1939tp_rxtask, we call put_session.
-> >>>> if i comment this "second call" to put_session, the problem disappear.
-> >>>
-> >>> It seems that you added a memory leak because put_session if a ref
-> >>> counter. You keep the session installed ... forever, or until a next
-> >>> similar session is about to be created.
-> >>>
-> >>> I'm not sure either that this is the correct way to proceed.
-> >>
-> >> i'm not sure i understand well.
-> >> this seems weird for me to have one get_session and 2 put_session
-> >> should'nt we have one get_session and one put_session only? (this is
-> >> what i tried)?
+Hi all,
 
-When you come to the point where you want to get rid of the session,
-you need decrement the refcounter to become zero.
-This extra put_session compensates the initial 1 in the refcounter.
+I have an issue when sending J1939 messages from a src to dest address
+using static addressing.
 
-I still don't see where it goes wrong. Can you experiment with disabling
-individual lines in j1939session_destroy()? Since problems occur only
-later, I suspect that the call to skb_free is causing the issue, but I'm
-not sure.
+My setup:
 
-Kurt
+Virtualbox, Ubuntu 14.04, running kernel version 3.15 (compiled using
+Kurt's j1939-3.15x branch)
+iproute2, Kurt's j1939-v3.0 branch
+can-utils, Kurt's j1939-v6 branch
 
+Setting up the CAN interface:
+
+$ modprobe vcan
+$ ip link add can0 type vcan
+$ ip link set can0 up
+$ modprobe can-j1939
+$ ip link set can0 j1939 on
+$ ip addr add j1939 0x45 dev can0
+
+For my program, for binding:
+
+addr.can_addr.j1939.addr = 0x45;
+addr.can_addr.j1939.name = J1939_NO_NAME;
+addr.can_addr.j1939.pgn = 0xF00A;
+
+and for sending, I change j1939.addr to 0x30, allocate a buffer of
+data and send the message using sendto().
+
+Using jspy, I could catch the message being sent. However, my program
+doesn't exit gracefully. The terminal spits out "Killed" right after
+my program sends out the message.
+
+In addition, a reproducible call trace is observed:
+
+[ 1279.698179] BUG: unable to handle kernel NULL pointer dereference
+at 000000000000006c
+[ 1279.699105] IP: [<ffffffffa017a49d>] j1939_send+0xdd/0x230 [can_j1939]
+[ 1279.699940] PGD 2df3d067 PUD 6cd55067 PMD 0
+[ 1279.700458] Oops: 0002 [#1] SMP
+[ 1279.705655] CPU: 1 PID: 1666 Comm: jsend Not tainted 3.15.0+ #1
+[ 1279.706415] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
+VirtualBox 12/01/2006
+[ 1279.707372] task: ffff88007c371d40 ti: ffff88006cd20000 task.ti:
+ffff88006cd20000
+[ 1279.708462] RIP: 0010:[<ffffffffa017a49d>]  [<ffffffffa017a49d>]
+j1939_send+0xdd/0x230 [can_j1939]
+[ 1279.709420] RSP: 0018:ffff88006cd23ca8  EFLAGS: 00010286
+[ 1279.709999] RAX: 0000000000406000 RBX: ffff88007c3e0500 RCX: ffff88007c371d40
+[ 1279.710987] RDX: 0000000000406000 RSI: 0000000000000000 RDI: 0000000000000000
+[ 1279.712061] RBP: ffff88006cd23cc8 R08: 0000000000017120 R09: 0000000000000101
+[ 1279.714081] R10: ffffffff81609047 R11: ffffea0001f0f800 R12: ffff88007b848000
+[ 1279.716688] R13: 0000000000000000 R14: ffff88007b848010 R15: ffff88006cd23e80
+[ 1279.718419] FS:  00007f6a223f9740(0000) GS:ffff88007fc80000(0000)
+knlGS:0000000000000000
+[ 1279.720975] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1279.722103] CR2: 000000000000006c CR3: 000000007c381000 CR4: 00000000000406e0
+[ 1279.723302] Stack:
+[ 1279.724270]  0000000000000008 ffff88007c3e0500 ffff88006cc20ee8
+ffff88006cc20c00
+[ 1279.726141]  ffff88006cd23d48 ffffffffa017d4f5 ffff88007ffecf00
+ffff88006cd23e70
+[ 1279.727723]  ffff88006cc4b000 0000000000000000 ffff88007c371d40
+ffff88006cd23d48
+[ 1279.729309] Call Trace:
+[ 1279.730000]  [<ffffffffa017d4f5>] j1939sk_sendmsg+0x3c5/0x540 [can_j1939]
+[ 1279.730988]  [<ffffffff8160227b>] sock_sendmsg+0x8b/0xc0
+[ 1279.731850]  [<ffffffff8161ae49>] ? dev_get_by_name_rcu+0x69/0x90
+[ 1279.732833]  [<ffffffff816321ae>] ? dev_ioctl+0x1ce/0x590
+[ 1279.733734]  [<ffffffff811d2f33>] ? __fdget+0x13/0x20
+[ 1279.734590]  [<ffffffff816027f1>] SYSC_sendto+0x121/0x1c0
+[ 1279.736282]  [<ffffffff811b7ecc>] ? alloc_file+0x1c/0x80
+[ 1279.737136]  [<ffffffff811d359e>] ? __fd_install+0x4e/0x60
+[ 1279.737989]  [<ffffffff816031ee>] SyS_sendto+0xe/0x10
+[ 1279.738808]  [<ffffffff8172ad2d>] system_call_fastpath+0x1a/0x1f
+[ 1279.739681] Code: 00 00 0f b6 43 2d 3c fd 76 44 3c fe 0f 84 ec 00
+00 00 c7 43 40 00 00 00 00 41 bd 9d ff ff ff 4c 89 f7 e8 57 74 5a e1
+48 8b 7b 18 <f0> ff 4f 6c 0f 84 99 00 00 00 4c 89 e7 e8 f1 04 00 00 44
+89 e8
+[ 1279.742900] RIP  [<ffffffffa017a49d>] j1939_send+0xdd/0x230 [can_j1939]
+[ 1279.743779]  RSP <ffff88006cd23ca8>
+[ 1279.744460] CR2: 000000000000006c
+[ 1279.746096] ---[ end trace b6e1fe37af842f42 ]---
+
+I tried to deciper the call trace by looking up instructor pointer
+address and look into j1939 module code but not very fruitful.
+
+I also tried using v3.6, v3.16 branch of iproute2 and they produced
+the same call trace.
+
+Have anybody else encountered this type of issue? I am not certain
+where I should go look into. Any pointer will be appreciated.
+
+Regards,
+Yang
