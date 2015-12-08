@@ -1,81 +1,78 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
 Subject: Re: peak_pci: TX Frame Loss
-Date: Tue, 8 Dec 2015 11:21:26 +0100
-Message-ID: <5666AF26.2080806@peak-system.com>
+Date: Tue, 8 Dec 2015 10:50:26 +0000
+Message-ID: <20151208105026.GA13146@maxwell.marel.net>
 References: <20151118145121.32487.38169@maxwell.marel.net>
  <20151202180937.19023.96078@maxwell.marel.net>
- <565F4439.3050309@hartkopp.net> <565FE31D.8060606@hartkopp.net>
- <20151203112319.GA5230@maxwell.marel.net> <56602B1D.90601@pengutronix.de>
+ <565F4439.3050309@hartkopp.net>
+ <565FE31D.8060606@hartkopp.net>
+ <20151203112319.GA5230@maxwell.marel.net>
+ <56602B1D.90601@pengutronix.de>
+ <5666AF26.2080806@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:57708 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755549AbbLHKVs (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Dec 2015 05:21:48 -0500
-In-Reply-To: <56602B1D.90601@pengutronix.de>
+Received: from mail-am1on0073.outbound.protection.outlook.com ([157.56.112.73]:38572
+	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S932537AbbLHKwZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 8 Dec 2015 05:52:25 -0500
+Content-Disposition: inline
+In-Reply-To: <5666AF26.2080806@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, wg@grandegger.com, hrafnkell.eiriksson@marel.com, haukur.hafsteinsson@marel.com
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, wg@grandegger.com, hrafnkell.eiriksson@marel.com, haukur.hafsteinsson@marel.com
 
-Hi!
+Hi Stephane,
 
-Don't know atm what is buggier, but:
+On Tue, Dec 08, 2015 at 11:21:26AM +0100, Stephane Grosjean wrote:
+> Hi!
+>=20
+> Don't know atm what is buggier, but:
+>=20
+> - the issue isn't reproducible with our Windows drivers,
+> - the issue isn't reproducible with the pcan driver,
+You have spin locks sprinkled around the pcan driver even where there i=
+sn't a
+specific shared resource that's being protected.
 
-- the issue isn't reproducible with our Windows drivers,
-- the issue isn't reproducible with the pcan driver,
+However, a nice side-effect of that is that the interrupt routine is no=
+t allowed
+to run concurrently with the xmit function, so the command register is =
+never
+written to so frequently as in the linux-can driver.
+>=20
+[...]
+> FYI, I have surrounded the _xmit() function as well as the ISR with c=
+ouples
+> of spin_lock/spin_unlock instructions, rebuild everything and have ra=
+n
+> Andri's testbed... and guess what?
+I don't know. I'm not sure if you hinted at the answer to this question=
+=2E Did the
+problem go away? I guess it did due to the reasons that I mentioned abo=
+ve.
 
-IMHO, and after having read and compared the sja1000 and the pcan code,=
-=20
-I would like clarification on:
-
-- the sja1000_start_xmit() function: what about two (or more) tasks=20
-running this function on a SMP system, and, of course, writing to the=20
-same SJA1000? Especially, running the (non-protected) sequence of=20
-several consecutive "priv->write_reg()" ?
-
-- in the same vein, what happens when an IRQ occurs in the middle of th=
-e=20
-_xmit()  (non-protected) write_reg() sequence?
-
-=46YI, I have surrounded the _xmit() function as well as the ISR with=20
-couples of spin_lock/spin_unlock instructions, rebuild everything and=20
-have ran Andri's testbed... and guess what?
-
-So, my question is: I'm far from getting the whole knowledge of how the=
-=20
-net/can core handles multiple access to the same hardware (maybe=20
-concurrent access is managed somewhere else in the network stack, never=
-=20
-know), but I don't explain how things can run correctly without=20
-guaranteeing at least the writing sequences to the SJA1000 registers...
-
-Once again, maybe I'm wrong. ATM, the testbed always runs as it should.=
-=2E.
+This does not strike at the core of the issue. A targeted solution is t=
+o add a
+delay.
+>=20
+[...]
+>=20
+> Le 03/12/2015 12:44, Marc Kleine-Budde a =E9crit :
+> >On 12/03/2015 12:23 PM, Andri Yngvason wrote:
+> >>I tried it and it's not enough. The sja1000 on the peak pci is an F=
+PGA
+> >>implementation that claims to be sja1000 compatible. Is it possible=
+ that peak's
+> >>FPGA implementation is slower than the original sja1000?
+> >Maybe buggier :)
+> >
+> >Marc
+> >
+>=20
 
 Regards,
-
-St=C3=A9phane
-
-
-Le 03/12/2015 12:44, Marc Kleine-Budde a =C3=A9crit :
-> On 12/03/2015 12:23 PM, Andri Yngvason wrote:
->> I tried it and it's not enough. The sja1000 on the peak pci is an FP=
-GA
->> implementation that claims to be sja1000 compatible. Is it possible =
-that peak's
->> FPGA implementation is slower than the original sja1000?
-> Maybe buggier :)
->
-> Marc
->
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt
-Handelsregister Darmstadt HRB 9183=20
-Geschaeftsfuehrung: Alexander Gach, Uwe Wilhelm
---
+Andri
