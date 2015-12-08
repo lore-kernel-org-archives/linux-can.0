@@ -1,40 +1,32 @@
-From: Yang Wang <wang701@purdue.edu>
-Subject: Re: J1939 send causes call trace dump
-Date: Mon, 7 Dec 2015 11:08:25 -0500
-Message-ID: <CAEE8DsLHxJqT62m3AFSrg6DJEqe6VVW0UpFsnWzm8bLQm1hMxQ@mail.gmail.com>
-References: <CAEE8DsL73FVDMdVCVC0Z=X5KKiaE=KnTwPNp3gJS37nd7oq9dA@mail.gmail.com>
+From: Stefan Tatschner <rumpelsepp@sevenbyte.org>
+Subject: Re: [PATCH] can-doc: Add hint about getting timestamps
+Date: Tue, 8 Dec 2015 11:07:03 +0100
+Message-ID: <5666ABC7.6000805@sevenbyte.org>
+References: <56546954.1070005@pengutronix.de>
+ <1448373989-7241-1-git-send-email-rumpelsepp@sevenbyte.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailhub248.itcs.purdue.edu ([128.210.5.248]:35226 "EHLO
-	mailhub248.itcs.purdue.edu" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756001AbbLGQI0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Dec 2015 11:08:26 -0500
-Received: from mail-yk0-f172.google.com (mail-yk0-f172.google.com [209.85.160.172])
-	(authenticated bits=0)
-	by mailhub248.itcs.purdue.edu (8.14.4/8.14.4/mta-auth.smtp.purdue.edu) with ESMTP id tB7G8Pto026819
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
-	for <linux-can@vger.kernel.org>; Mon, 7 Dec 2015 11:08:25 -0500
-Received: by ykdv3 with SMTP id v3so199513318ykd.0
-        for <linux-can@vger.kernel.org>; Mon, 07 Dec 2015 08:08:25 -0800 (PST)
-In-Reply-To: <CAEE8DsL73FVDMdVCVC0Z=X5KKiaE=KnTwPNp3gJS37nd7oq9dA@mail.gmail.com>
+Received: from mail.sevenbyte.org ([5.9.90.188]:54564 "EHLO mail.sevenbyte.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S933374AbbLHKHI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 8 Dec 2015 05:07:08 -0500
+In-Reply-To: <1448373989-7241-1-git-send-email-rumpelsepp@sevenbyte.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-can@vger.kernel.org
 
-Hi all,
+On 24.11.2015 15:06, Stefan Tatschner wrote:
+> This patch adds a hint about how to get timestamps of received
+> CAN frames with ioctl(2). This hint has been applied to the
+> former SocketCAN Documentation, but it got lost during mainlining
+> the first bits and pieces to linux kernel.
+> 
+> Signed-off-by: Stefan Tatschner <rumpelsepp@sevenbyte.org>
 
-I created a gist of the program that caused the problem:
+Any comments on this patch?
 
-https://gist.github.com/wang701/7f67dc280f4c323d8c1c
+Stefan
 
-On Mon, Dec 7, 2015 at 1:07 AM, Yang Wang <wang701@purdue.edu> wrote:
-> For my program, for binding:
->
-> addr.can_addr.j1939.addr = 0x45;
-> addr.can_addr.j1939.name = J1939_NO_NAME;
-> addr.can_addr.j1939.pgn = 0xF00A;
->
-> and for sending, I change j1939.addr to 0x30, allocate a buffer of
-> data and send the message using sendto().
->
