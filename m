@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 01/11] can: flexcan: calculate default value for imask1 during runtime
-Date: Thu, 10 Dec 2015 13:33:47 +0100
-Message-ID: <1449750837-11376-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 07/11] can: flexcan: add quirk FLEXCAN_QUIRK_ENABLE_EACEN_RRS
+Date: Thu, 10 Dec 2015 13:33:53 +0100
+Message-ID: <1449750837-11376-8-git-send-email-mkl@pengutronix.de>
 References: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:36535 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38159 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753286AbbLJMdp (ORCPT
+	by vger.kernel.org with ESMTP id S1753301AbbLJMdp (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:45 -0500
 In-Reply-To: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,75 +14,57 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: kernel@pengutronix.de, bhupesh.sharma@freescale.com, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch converts the define FLEXCAN_IFLAG_DEFAULT into the runtime
-calculated value priv->reg_imask1_default. This is a preparation patch to make
-the TX mailbox selectable during runtime, too.
+In order to receive RTR frames in the non HW FIFO mode the RSS and EACEN bits
+of the reg_ctrl2 have to be activated. As this has no side effect in the FIFO
+mode, we do this unconditionally on cores with the reg_ctrl2.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/can/flexcan.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 41c0fc9f3b14..b377e1069bf8 100644
+index f4c2bc4935a2..b1135012ced3 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -149,9 +149,6 @@
- #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
- #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
- #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
--#define FLEXCAN_IFLAG_DEFAULT \
--	(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW | FLEXCAN_IFLAG_RX_FIFO_AVAILABLE | \
--	 FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID))
+@@ -187,7 +187,8 @@
+  */
+ #define FLEXCAN_QUIRK_BROKEN_ERR_STATE	BIT(1) /* [TR]WRN_INT not connected */
+ #define FLEXCAN_QUIRK_DISABLE_RXFG	BIT(2) /* Disable RX FIFO Global mask */
+-#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(3) /* Disble Memory error detection */
++#define FLEXCAN_QUIRK_ENABLE_EACEN_RRS	BIT(3) /* Enable EACEN and RRS bit in ctrl2 */
++#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disble Memory error detection */
  
- /* FLEXCAN message buffers */
- #define FLEXCAN_MB_CODE_RX_INACTIVE	(0x0 << 24)
-@@ -254,6 +251,7 @@ struct flexcan_priv {
- 	struct flexcan_regs __iomem *regs;
- 	u32 reg_esr;
- 	u32 reg_ctrl_default;
-+	u32 reg_imask1_default;
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -279,11 +280,12 @@ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+ static struct flexcan_devtype_data fsl_imx28_devtype_data;
  
- 	struct clk *clk_ipg;
- 	struct clk *clk_per;
-@@ -705,7 +703,7 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
- 	if (work_done < quota) {
- 		napi_complete(napi);
- 		/* enable IRQs */
--		flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+		flexcan_write(priv->reg_imask1_default, &regs->imask1);
- 		flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
- 	}
+ static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+-	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG,
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS,
+ };
  
-@@ -739,7 +737,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 		 * save them for later use.
- 		 */
- 		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
--		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
-+		flexcan_write(priv->reg_imask1_default &
- 			      ~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
- 		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
- 			      &regs->ctrl);
-@@ -942,7 +940,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 	/* enable interrupts atomically */
- 	disable_irq(dev->irq);
- 	flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
--	flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
-+	flexcan_write(priv->reg_imask1_default, &regs->imask1);
- 	enable_irq(dev->irq);
+ static struct flexcan_devtype_data fsl_vf610_devtype_data = {
+-	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_DISABLE_MECR,
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_DISABLE_MECR,
+ };
  
- 	/* print chip status */
-@@ -1227,6 +1225,10 @@ static int flexcan_probe(struct platform_device *pdev)
- 	priv->devtype_data = devtype_data;
- 	priv->reg_xceiver = reg_xceiver;
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+@@ -861,6 +863,12 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	netdev_dbg(dev, "%s: writing ctrl=0x%08x", __func__, reg_ctrl);
+ 	flexcan_write(reg_ctrl, &regs->ctrl);
  
-+	priv->reg_imask1_default = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
-+		FLEXCAN_IFLAG_RX_FIFO_AVAILABLE |
-+		FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID);
++	if ((priv->devtype_data->quirks & FLEXCAN_QUIRK_ENABLE_EACEN_RRS)) {
++		reg_ctrl2 = flexcan_read(&regs->ctrl2);
++		reg_ctrl2 |= FLEXCAN_CTRL2_EACEN | FLEXCAN_CTRL2_RRS;
++		flexcan_write(reg_ctrl2, &regs->ctrl2);
++	}
 +
- 	netif_napi_add(dev, &priv->napi, flexcan_poll, FLEXCAN_NAPI_WEIGHT);
- 
- 	platform_set_drvdata(pdev, dev);
+ 	/* clear and invalidate all mailboxes first */
+ 	for (i = priv->tx_mb_idx; i < ARRAY_SIZE(regs->mb); i++) {
+ 		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE,
 -- 
 2.6.2
 
