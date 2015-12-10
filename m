@@ -1,160 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 02/11] can: flexcan: make TX mailbox selectable during runtime
-Date: Thu, 10 Dec 2015 13:33:48 +0100
-Message-ID: <1449750837-11376-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 11/11] can: flexcan: switch imx6 and vf610 to software based fifo
+Date: Thu, 10 Dec 2015 13:33:57 +0100
+Message-ID: <1449750837-11376-12-git-send-email-mkl@pengutronix.de>
 References: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39218 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46611 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753368AbbLJMdq (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:46 -0500
+	by vger.kernel.org with ESMTP id S1753558AbbLJMdu (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:50 -0500
 In-Reply-To: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: kernel@pengutronix.de, bhupesh.sharma@freescale.com, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch makes the TX mailbox selectable duing runtime. This is a preparation
-patch to use of the hardware FIFO selectable via runtime. As the TX mailbox
-number is different in HW FIFO and normal mode.
-
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 42 ++++++++++++++++++++++++------------------
- 1 file changed, 24 insertions(+), 18 deletions(-)
+ drivers/net/can/flexcan.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index b377e1069bf8..52065f2f92e0 100644
+index 1482d10917a5..116b8aee9712 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -143,9 +143,9 @@
+@@ -291,12 +291,13 @@ static struct flexcan_devtype_data fsl_p1010_devtype_data = {
+ static struct flexcan_devtype_data fsl_imx28_devtype_data;
  
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- /* Errata ERR005829 step7: Reserve first valid MB */
--#define FLEXCAN_TX_BUF_RESERVED		8
--#define FLEXCAN_TX_BUF_ID		9
--#define FLEXCAN_IFLAG_BUF(x)		BIT(x)
-+#define FLEXCAN_TX_MB_RESERVED_HW_FIFO	8
-+#define FLEXCAN_TX_MB_HW_FIFO		9
-+#define FLEXCAN_IFLAG_MB(x)		BIT(x)
- #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
- #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
- #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
-@@ -249,6 +249,9 @@ struct flexcan_priv {
- 	struct napi_struct napi;
+ static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+-	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS,
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_USE_SW_FIFO,
+ };
  
- 	struct flexcan_regs __iomem *regs;
-+	struct flexcan_mb __iomem *tx_mb;
-+	struct flexcan_mb __iomem *tx_mb_reserved;
-+	u8 tx_mb_idx;
- 	u32 reg_esr;
- 	u32 reg_ctrl_default;
- 	u32 reg_imask1_default;
-@@ -466,7 +469,6 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
--	struct flexcan_regs __iomem *regs = priv->regs;
- 	struct can_frame *cf = (struct can_frame *)skb->data;
- 	u32 can_id;
- 	u32 data;
-@@ -489,25 +491,25 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ static struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+-		FLEXCAN_QUIRK_DISABLE_MECR,
++		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_SW_FIFO,
+ };
  
- 	if (cf->can_dlc > 0) {
- 		data = be32_to_cpup((__be32 *)&cf->data[0]);
--		flexcan_write(data, &regs->mb[FLEXCAN_TX_BUF_ID].data[0]);
-+		flexcan_write(data, &priv->tx_mb->data[0]);
- 	}
- 	if (cf->can_dlc > 3) {
- 		data = be32_to_cpup((__be32 *)&cf->data[4]);
--		flexcan_write(data, &regs->mb[FLEXCAN_TX_BUF_ID].data[1]);
-+		flexcan_write(data, &priv->tx_mb->data[1]);
- 	}
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
--	flexcan_write(can_id, &regs->mb[FLEXCAN_TX_BUF_ID].can_id);
--	flexcan_write(ctrl, &regs->mb[FLEXCAN_TX_BUF_ID].can_ctrl);
-+	flexcan_write(can_id, &priv->tx_mb->can_id);
-+	flexcan_write(ctrl, &priv->tx_mb->can_ctrl);
- 
- 	/* Errata ERR005829 step8:
- 	 * Write twice INACTIVE(0x8) code to first MB.
- 	 */
- 	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		      &regs->mb[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+		      &priv->tx_mb_reserved->can_ctrl);
- 	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		      &regs->mb[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+		      &priv->tx_mb_reserved->can_ctrl);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -752,15 +754,15 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 	}
- 
- 	/* transmission complete interrupt */
--	if (reg_iflag1 & (1 << FLEXCAN_TX_BUF_ID)) {
-+	if (reg_iflag1 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
- 		stats->tx_bytes += can_get_echo_skb(dev, 0);
- 		stats->tx_packets++;
- 		can_led_event(dev, CAN_LED_EVENT_TX);
- 
- 		/* after sending a RTR frame MB is in RX mode */
- 		flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
--			      &regs->mb[FLEXCAN_TX_BUF_ID].can_ctrl);
--		flexcan_write((1 << FLEXCAN_TX_BUF_ID), &regs->iflag1);
-+			      &priv->tx_mb->can_ctrl);
-+		flexcan_write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag1);
- 		netif_wake_queue(dev);
- 	}
- 
-@@ -844,7 +846,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
- 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
- 		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS |
--		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(FLEXCAN_TX_BUF_ID);
-+		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
- 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
- 	flexcan_write(reg_mcr, &regs->mcr);
- 
-@@ -882,18 +884,18 @@ static int flexcan_chip_start(struct net_device *dev)
- 	flexcan_write(reg_ctrl, &regs->ctrl);
- 
- 	/* clear and invalidate all mailboxes first */
--	for (i = FLEXCAN_TX_BUF_ID; i < ARRAY_SIZE(regs->mb); i++) {
-+	for (i = priv->tx_mb_idx; i < ARRAY_SIZE(regs->mb); i++) {
- 		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE,
- 			      &regs->mb[i].can_ctrl);
- 	}
- 
- 	/* Errata ERR005829: mark first TX mailbox as INACTIVE */
- 	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		      &regs->mb[FLEXCAN_TX_BUF_RESERVED].can_ctrl);
-+		      &priv->tx_mb_reserved->can_ctrl);
- 
- 	/* mark TX mailbox as INACTIVE */
- 	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		      &regs->mb[FLEXCAN_TX_BUF_ID].can_ctrl);
-+		      &priv->tx_mb->can_ctrl);
- 
- 	/* acceptance mask/acceptance code (accept everything) */
- 	flexcan_write(0x0, &regs->rxgmask);
-@@ -1225,9 +1227,13 @@ static int flexcan_probe(struct platform_device *pdev)
- 	priv->devtype_data = devtype_data;
- 	priv->reg_xceiver = reg_xceiver;
- 
-+	priv->tx_mb_idx = FLEXCAN_TX_MB_HW_FIFO;
-+	priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_HW_FIFO];
-+	priv->tx_mb = &regs->mb[priv->tx_mb_idx];
-+
- 	priv->reg_imask1_default = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
- 		FLEXCAN_IFLAG_RX_FIFO_AVAILABLE |
--		FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID);
-+		FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
- 
- 	netif_napi_add(dev, &priv->napi, flexcan_poll, FLEXCAN_NAPI_WEIGHT);
- 
+ static const struct can_bittiming_const flexcan_bittiming_const = {
 -- 
 2.6.2
 
