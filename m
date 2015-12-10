@@ -1,297 +1,293 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 09/11] can: rx-fifo: introduce software rx-fifo implementation
-Date: Thu, 10 Dec 2015 13:33:55 +0100
-Message-ID: <1449750837-11376-10-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 03/11] can: rx-fifo: Add support for simple irq offloading
+Date: Thu, 10 Dec 2015 13:33:49 +0100
+Message-ID: <1449750837-11376-4-git-send-email-mkl@pengutronix.de>
 References: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33958 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:47460 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753349AbbLJMdu (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:50 -0500
+	by vger.kernel.org with ESMTP id S1753328AbbLJMdp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:45 -0500
 In-Reply-To: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, bhupesh.sharma@freescale.com, Marc Kleine-Budde <mkl@pengutronix.de>, David Jander <david@protonic.nl>
+Cc: kernel@pengutronix.de, bhupesh.sharma@freescale.com, David Jander <david@protonic.nl>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch adds a software rx-fifo implementation for CAN controllers which
-offer only a number of mailboxes, where the incoming message is stored int othe
-first free one. Both controllers which start with the lowest or highest free
-mailbox are supported.
+From: David Jander <david@protonic.nl>
 
-The mailboxes are copied to a ring buffer during the interrupt and then
-transmitted in a NAPI context.
+Some CAN controllers have a usable FIFO already but can still benefit from
+off-loading the CAN controller FIFO. The mailboxes of the FIFO  are copied to a
+ring buffer during the interrupt and then transmitted in a NAPI context.
 
 Signed-off-by: David Jander <david@protonic.nl>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-fifo.c   | 178 ++++++++++++++++++++++++++++++++++++++++++++
- include/linux/can/rx-fifo.h |  14 ++++
- 2 files changed, 192 insertions(+)
+ drivers/net/can/Makefile    |   3 +-
+ drivers/net/can/rx-fifo.c   | 174 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/rx-fifo.h |  58 +++++++++++++++
+ 3 files changed, 234 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/net/can/rx-fifo.c
+ create mode 100644 include/linux/can/rx-fifo.h
 
+diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
+index 1f21cef1d458..4b279d3ae0ab 100644
+--- a/drivers/net/can/Makefile
++++ b/drivers/net/can/Makefile
+@@ -6,7 +6,8 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
+ obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
+ 
+ obj-$(CONFIG_CAN_DEV)		+= can-dev.o
+-can-dev-y			:= dev.o
++can-dev-y			+= dev.o
++can-dev-y			+= rx-fifo.o
+ 
+ can-dev-$(CONFIG_CAN_LEDS)	+= led.o
+ 
 diff --git a/drivers/net/can/rx-fifo.c b/drivers/net/can/rx-fifo.c
-index 7896a1034588..53c01d3cd157 100644
---- a/drivers/net/can/rx-fifo.c
+new file mode 100644
+index 000000000000..7896a1034588
+--- /dev/null
 +++ b/drivers/net/can/rx-fifo.c
-@@ -19,6 +19,50 @@
- #include <linux/can/dev.h>
- #include <linux/can/rx-fifo.h>
- 
-+static bool can_rx_fifo_ge(struct can_rx_fifo *fifo, unsigned int a, unsigned int b)
+@@ -0,0 +1,174 @@
++/*
++ * Copyright (c) 2014 David Jander, Protonic Holland
++ * Copyright (C) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the version 2 of the GNU General Public License
++ * as published by the Free Software Foundation
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <linux/circ_buf.h>
++#include <linux/can/dev.h>
++#include <linux/can/rx-fifo.h>
++
++static int can_rx_fifo_napi_read_frame(struct can_rx_fifo *fifo, int index)
 +{
-+	if (fifo->inc)
-+		return a >= b;
-+	else
-+		return a <= b;
++	struct net_device *dev = fifo->dev;
++	struct net_device_stats *stats = &dev->stats;
++	struct sk_buff *skb;
++	struct can_frame *cf;
++
++	skb = alloc_can_skb(dev, &cf);
++	if (unlikely(!skb)) {
++		stats->rx_dropped++;
++		return 0;
++	}
++
++	memcpy(cf, &fifo->ring[index], sizeof(*cf));
++	memset(&fifo->ring[index], 0x0, sizeof(*cf));
++
++	stats->rx_packets++;
++	stats->rx_bytes += cf->can_dlc;
++	netif_receive_skb(skb);
++
++	return 1;
 +}
 +
-+static bool can_rx_fifo_le(struct can_rx_fifo *fifo, unsigned int a, unsigned int b)
++static int can_rx_fifo_napi_poll(struct napi_struct *napi, int quota)
 +{
-+	if (fifo->inc)
-+		return a <= b;
-+	else
-+		return a >= b;
-+}
++	struct can_rx_fifo *fifo = container_of(napi, struct can_rx_fifo, napi);
++	unsigned int tail;
++	int work_done = 0;
 +
-+static unsigned int can_rx_fifo_inc(struct can_rx_fifo *fifo, unsigned int *val)
-+{
-+	if (fifo->inc)
-+		return (*val)++;
-+	else
-+		return (*val)--;
-+}
++	if (fifo->poll_pre_read && work_done < quota)
++		work_done += fifo->poll_pre_read(fifo);
 +
-+static u64 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
-+{
-+	if (fifo->inc)
-+		return ~0LLU >> (64 + fifo->low_first - fifo->high_first)
-+			     << fifo->low_first;
-+	else
-+		return ~0LLU >> (64 - fifo->low_first + fifo->high_first)
-+			     << (fifo->high_first + 1);
-+}
++	/* handle mailboxes */
++	tail = fifo->ring_tail;
++	while ((CIRC_CNT(smp_load_acquire(&fifo->ring_head), tail, fifo->ring_size)) &&
++	       (work_done < quota)) {
++		work_done += can_rx_fifo_napi_read_frame(fifo, tail);
++		tail++;
++		tail &= fifo->ring_size -1;
++		smp_store_release(&fifo->ring_tail, tail);
++	}
 +
-+static u64 can_rx_fifo_mask_high(struct can_rx_fifo *fifo)
-+{
-+	if (fifo->inc)
-+		return ~0LLU >> (64 + fifo->high_first - fifo->high_last - 1)
-+			     << fifo->high_first;
-+	else
-+		return ~0LLU >> (64 - fifo->high_first + fifo->high_last - 1)
-+			     << fifo->high_last;
-+}
++	if (fifo->poll_post_read && work_done < quota)
++		work_done += fifo->poll_post_read(fifo);
 +
- static int can_rx_fifo_napi_read_frame(struct can_rx_fifo *fifo, int index)
- {
- 	struct net_device *dev = fifo->dev;
-@@ -109,6 +153,68 @@ static unsigned int can_rx_fifo_offload_one(struct can_rx_fifo *fifo, unsigned i
- 	return ret;
- }
- 
-+int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo)
-+{
-+	unsigned int i;
-+	unsigned int ret;
-+	unsigned int received = 0;
++	if (work_done < quota) {
++		unsigned int head;
 +
-+	if (fifo->scan_high_first) {
-+		fifo->scan_high_first = false;
-+		for (i = fifo->high_first;
-+		     can_rx_fifo_le(fifo, i, fifo->high_last);
-+		     can_rx_fifo_inc(fifo, &i)) {
-+			received += can_rx_fifo_offload_one(fifo, i);
-+			fifo->active |= BIT_ULL(i);
-+			fifo->mailbox_enable(fifo, i);
++		napi_complete(napi);
++
++		/* Check if there was another interrupt */
++		head = smp_load_acquire(&fifo->ring_head);
++		if (((CIRC_CNT(head, tail, fifo->ring_size)) || fifo->poll_errors) &&
++		    napi_reschedule(&fifo->napi)) {
++			fifo->poll_errors = false;
 +		}
++
++		if (fifo->poll_error_interrupts_enable)
++			fifo->poll_error_interrupts_enable(fifo);
 +	}
 +
-+	/* Copy and disable FULL MBs */
-+	for (i = fifo->low_first;
-+	     can_rx_fifo_le(fifo, i, fifo->high_last);
-+	     can_rx_fifo_inc(fifo, &i)) {
-+		if (!(fifo->active & BIT_ULL(i)))
-+			continue;
++	can_led_event(fifo->dev, CAN_LED_EVENT_RX);
 +
-+		ret = can_rx_fifo_offload_one(fifo, i);
-+		if (!ret)
-+			break;
++	return work_done;
++}
 +
-+		received += ret;
-+		fifo->active &= ~BIT_ULL(i);
-+	}
++static unsigned int can_rx_fifo_offload_one(struct can_rx_fifo *fifo, unsigned int n)
++{
++	unsigned int head, tail;
++	unsigned int ret;
 +
-+	if (can_rx_fifo_ge(fifo, i, fifo->high_first) && fifo->scan_high_first)
-+		netdev_warn(fifo->dev, "%s: RX order cannot be guaranteed. (count=%d)\n",
-+			    __func__, i);
-+
-+	/* No EMPTY MB in first half? */
-+	if (can_rx_fifo_ge(fifo, i, fifo->high_first)) {
-+		/* Re-enable all disabled MBs */
-+		fifo->active = fifo->mask_low | fifo->mask_high;
-+		fifo->mailbox_enable_mask(fifo, fifo->active);
-+
-+		/* Next time we need to check the second half first */
-+		fifo->scan_high_first = true;
-+	}
-+
-+	if (WARN(!received, "%s: No messages found, RX-FIFO out of sync?\n",
-+		 __func__)) {
-+		/* This should only happen if the CAN conroller was
-+		 * reset, but can_rx_fifo_reset() was not
-+		 * called. WARN() the user and try to recover. This
-+		 * may fail and the system may hang though.
-+		 */
-+		can_rx_fifo_reset(fifo);
++	head = fifo->ring_head;
++	tail = ACCESS_ONCE(fifo->ring_tail);
++	if (CIRC_SPACE(head, tail, fifo->ring_size)) {
++		ret = fifo->mailbox_read(fifo, &fifo->ring[head], n);
++		if (ret) {
++			head++;
++			head &= fifo->ring_size - 1;
++			smp_store_release(&fifo->ring_head, head);
++		}
 +	} else {
-+		can_rx_fifo_schedule(fifo);
++		/* Circular buffer is fill, read to discard mailbox */
++		ret = fifo->mailbox_read(fifo, &fifo->overflow, n);
++		if (ret)
++			fifo->dev->stats.rx_dropped++;
 +	}
++
++	return ret;
++}
++
++int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
++{
++	unsigned int received = 0;
++	unsigned int ret;
++
++	do {
++		ret = can_rx_fifo_offload_one(fifo, 0);
++		received += ret;
++	} while (ret);
++
++	if (received)
++		can_rx_fifo_schedule(fifo);
 +
 +	return received;
 +}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload);
++EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload_simple);
 +
- int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
- {
- 	unsigned int received = 0;
-@@ -139,11 +245,72 @@ static int can_rx_fifo_init_ring(struct net_device *dev,
- 		return -ENOMEM;
- 
- 	fifo->ring_head = fifo->ring_tail = 0;
-+	can_rx_fifo_reset(fifo);
- 	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
- 
- 	return 0;
- }
- 
-+static void rx_fifo_enable_mask_default(struct can_rx_fifo *fifo, u64 mask)
++static int can_rx_fifo_init_ring(struct net_device *dev,
++				 struct can_rx_fifo *fifo, unsigned int weight)
 +{
-+	unsigned int i;
++	fifo->dev = dev;
 +
-+	for (i = fifo->low_first;
-+	     can_rx_fifo_le(fifo, i, fifo->high_last);
-+	     can_rx_fifo_inc(fifo, &i)) {
-+		if (mask & BIT_ULL(i))
-+			fifo->mailbox_enable(fifo, i);
-+	}
-+}
++	/* Make ring-buffer a sensible size that is a power of 2 */
++	fifo->ring_size = 2 << fls(weight);
++	fifo->ring = kzalloc(sizeof(struct can_frame) * fifo->ring_size,
++			     GFP_KERNEL);
++	if (!fifo->ring)
++		return -ENOMEM;
 +
-+static void rx_fifo_enable_default(struct can_rx_fifo *fifo, unsigned int mb)
-+{
-+	fifo->mailbox_enable_mask(fifo, BIT_ULL(mb));
-+}
-+
-+int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
-+{
-+	unsigned int weight;
-+	int ret;
-+
-+	if ((fifo->low_first < fifo->high_first) &&
-+	    (fifo->high_first < fifo->high_last)) {
-+		fifo->inc = true;
-+		weight = fifo->high_last - fifo->low_first;
-+	} else if ((fifo->low_first > fifo->high_first) &&
-+		   (fifo->high_first > fifo->high_last)) {
-+		fifo->inc = false;
-+		weight = fifo->low_first - fifo->high_last;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	if ((!fifo->mailbox_enable_mask && !fifo->mailbox_enable) ||
-+	    !fifo->mailbox_read)
-+		return -EINVAL;
-+
-+	if (!fifo->mailbox_enable_mask)
-+		fifo->mailbox_enable_mask = rx_fifo_enable_mask_default;
-+	if (!fifo->mailbox_enable)
-+		fifo->mailbox_enable = rx_fifo_enable_default;
-+
-+	/* init variables */
-+	fifo->mask_low = can_rx_fifo_mask_low(fifo);
-+	fifo->mask_high = can_rx_fifo_mask_high(fifo);
-+
-+	ret = can_rx_fifo_init_ring(dev, fifo, weight);
-+	if (ret)
-+		return ret;
-+
-+	netdev_dbg(dev, "%s: low_first=%d, high_first=%d, high_last=%d\n", __func__,
-+		   fifo->low_first, fifo->high_first, fifo->high_last);
-+	netdev_dbg(dev, "%s: mask_low=0x%016llx mask_high=0x%016llx\n", __func__,
-+		   fifo->mask_low, fifo->mask_high);
++	fifo->ring_head = fifo->ring_tail = 0;
++	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_add);
 +
- int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight)
- {
- 	if (!fifo->mailbox_read)
-@@ -155,6 +322,9 @@ EXPORT_SYMBOL_GPL(can_rx_fifo_add_simple);
- 
- void can_rx_fifo_enable(struct can_rx_fifo *fifo)
- {
-+	can_rx_fifo_reset(fifo);
-+	if (fifo->mailbox_enable_mask)
-+		fifo->mailbox_enable_mask(fifo, fifo->active);
- 	napi_enable(&fifo->napi);
- }
- EXPORT_SYMBOL_GPL(can_rx_fifo_enable);
-@@ -172,3 +342,11 @@ void can_rx_fifo_del(struct can_rx_fifo *fifo)
- 	kfree(fifo->ring);
- }
- EXPORT_SYMBOL_GPL(can_rx_fifo_del);
-+
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo)
++int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight)
 +{
-+	fifo->scan_high_first = false;
-+	fifo->poll_errors = false;
-+	fifo->active = fifo->mask_low | fifo->mask_high;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_reset);
-diff --git a/include/linux/can/rx-fifo.h b/include/linux/can/rx-fifo.h
-index fc157f23722c..cd1614118b33 100644
---- a/include/linux/can/rx-fifo.h
-+++ b/include/linux/can/rx-fifo.h
-@@ -23,25 +23,39 @@
- struct can_rx_fifo {
- 	struct net_device *dev;
- 
-+	void (*mailbox_enable_mask)(struct can_rx_fifo *fifo, u64 mask);
-+	void (*mailbox_enable)(struct can_rx_fifo *fifo, unsigned int mb);
- 	void (*poll_error_interrupts_enable)(struct can_rx_fifo *fifo);
- 	unsigned int (*mailbox_read)(struct can_rx_fifo *fifo, struct can_frame *cf, unsigned int mb);
- 	unsigned int (*poll_pre_read)(struct can_rx_fifo *fifo);
- 	unsigned int (*poll_post_read)(struct can_rx_fifo *fifo);
- 
-+	u64 mask_low;
-+	u64 mask_high;
-+	u64 active;
++	if (!fifo->mailbox_read)
++		return -EINVAL;
 +
- 	unsigned int ring_size;
- 	unsigned int ring_head;
- 	unsigned int ring_tail;
-+	unsigned int low_first;
-+	unsigned int high_first;
-+	unsigned int high_last;
- 
- 	struct can_frame *ring;
- 	struct can_frame overflow;
- 	struct napi_struct napi;
- 
-+	bool inc;
-+	bool scan_high_first;
- 	bool poll_errors;
- };
- 
-+int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo);
- int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight);
-+int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo);
- int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo);
- void can_rx_fifo_irq_error(struct can_rx_fifo *fifo);
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo);
- void can_rx_fifo_del(struct can_rx_fifo *fifo);
- void can_rx_fifo_enable(struct can_rx_fifo *fifo);
- 
++	return can_rx_fifo_init_ring(dev, fifo, weight);
++}
++EXPORT_SYMBOL_GPL(can_rx_fifo_add_simple);
++
++void can_rx_fifo_enable(struct can_rx_fifo *fifo)
++{
++	napi_enable(&fifo->napi);
++}
++EXPORT_SYMBOL_GPL(can_rx_fifo_enable);
++
++void can_rx_fifo_irq_error(struct can_rx_fifo *fifo)
++{
++	fifo->poll_errors = true;
++	can_rx_fifo_schedule(fifo);
++}
++EXPORT_SYMBOL_GPL(can_rx_fifo_irq_error);
++
++void can_rx_fifo_del(struct can_rx_fifo *fifo)
++{
++	netif_napi_del(&fifo->napi);
++	kfree(fifo->ring);
++}
++EXPORT_SYMBOL_GPL(can_rx_fifo_del);
+diff --git a/include/linux/can/rx-fifo.h b/include/linux/can/rx-fifo.h
+new file mode 100644
+index 000000000000..fc157f23722c
+--- /dev/null
++++ b/include/linux/can/rx-fifo.h
+@@ -0,0 +1,58 @@
++/*
++ * linux/can/rx-fifo.h
++ *
++ * Copyright (c) 2014 David Jander, Protonic Holland
++ * Copyright (c) 2014, 2015 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the version 2 of the GNU General Public License
++ * as published by the Free Software Foundation
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _CAN_RX_FIFO_H
++#define _CAN_RX_FIFO_H
++
++#include <linux/netdevice.h>
++#include <linux/can.h>
++
++struct can_rx_fifo {
++	struct net_device *dev;
++
++	void (*poll_error_interrupts_enable)(struct can_rx_fifo *fifo);
++	unsigned int (*mailbox_read)(struct can_rx_fifo *fifo, struct can_frame *cf, unsigned int mb);
++	unsigned int (*poll_pre_read)(struct can_rx_fifo *fifo);
++	unsigned int (*poll_post_read)(struct can_rx_fifo *fifo);
++
++	unsigned int ring_size;
++	unsigned int ring_head;
++	unsigned int ring_tail;
++
++	struct can_frame *ring;
++	struct can_frame overflow;
++	struct napi_struct napi;
++
++	bool poll_errors;
++};
++
++int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight);
++int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo);
++void can_rx_fifo_irq_error(struct can_rx_fifo *fifo);
++void can_rx_fifo_del(struct can_rx_fifo *fifo);
++void can_rx_fifo_enable(struct can_rx_fifo *fifo);
++
++static inline void can_rx_fifo_schedule(struct can_rx_fifo *fifo)
++{
++	napi_schedule(&fifo->napi);
++}
++
++static inline void can_rx_fifo_disable(struct can_rx_fifo *fifo)
++{
++	napi_disable(&fifo->napi);
++}
++
++#endif /* !_CAN_RX_FIFO_H */
 -- 
 2.6.2
 
