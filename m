@@ -1,96 +1,115 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: can: flexcan: Ancient Freescale Reference FlexCAN Driver and bug
- fixes so it works.
-Date: Thu, 10 Dec 2015 22:44:02 +1100
-Message-ID: <56696582.7020503@optusnet.com.au>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO mode
+Date: Thu, 10 Dec 2015 13:19:20 +0100
+Message-ID: <56696DC8.8020708@pengutronix.de>
 References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
  <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com>
  <5554C244.80809@pengutronix.de>
  <BY1PR0301MB130358076C3A5969406DE69182D80@BY1PR0301MB1303.namprd03.prod.outlook.com>
  <BY1PR0301MB130384E91308C49A850DEC4782E90@BY1PR0301MB1303.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="GnKnExSCuspSC3PEBEWWpQ8LSFk9rmrj2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:53075 "EHLO
-	mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751157AbbLJLoM (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 06:44:12 -0500
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33590 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750814AbbLJMTj (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:19:39 -0500
 In-Reply-To: <BY1PR0301MB130384E91308C49A850DEC4782E90@BY1PR0301MB1303.namprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sharma Bhupesh <bhupesh.sharma@freescale.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "arnd@arndb.de" <arnd@arndb.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Sharma Bhupesh <bhupesh.sharma@freescale.com>, "arnd@arndb.de" <arnd@arndb.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Arora Sakar <Sakar.Arora@freescale.com>
 
-On 10/12/2015 10:05 PM, Sharma Bhupesh wrote:
-> Hi Mark,
->>> Subject: Re: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GnKnExSCuspSC3PEBEWWpQ8LSFk9rmrj2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 12/10/2015 12:05 PM, Sharma Bhupesh wrote:
+>>> -----Original Message-----
+>>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>>> Sent: Thursday, May 14, 2015 9:12 PM
+>>> To: Sharma Bhupesh-B45370; arnd@arndb.de; linux-can@vger.kernel.org
+>>> Cc: bhupesh.linux@gmail.com; Arora Sakar-B45205; linux-arm-
+>>> kernel@lists.infradead.org
+>>> Subject: Re: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO=
+
 >>> mode
+>>>
+>>> On 05/14/2015 01:33 PM, Bhupesh Sharma wrote:
+>>>> This patch adds support for non RX-FIFO (legacy) mode in the flexcan=
 
-I've just had to delve back into the deep murky past and try to get 
-Freescale's Kernel 2.6.35 FlexCAN driver working. That's because the 
-only code base that supports Freescale's Video Hardware is that one and 
-we need working video.
+>>>> driver.
+>>>>
+>>>> On certain SoCs, the RX-FIFO support might be broken, as a result we=
 
-I'm suggesting this code as an "historical reference" that might be 
-useful for anyone looking for simple/simplistic ways to handle a FlexCAN 
-port. It isn't like the driver actually works fully. It can't have ever 
-been tested very much. Which is why I've had to fix it.
+>>>> need to fall-back on the legacy (non RX-FIFO) mode to receive CAN
+>>>> frames.
+>>>>
+>>>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+>>>> Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
+>>>
+>>> The non FIFO mode doesn't guarantee the order of the incoming frames,=
 
-It has the Driver, Register handling and Message Buffer handling split 
-into three separate source files, which is a useful simplification.
+>>> not does not even try to...this is not acceptable. I'm currently
+>>> working on a patch by David Jander that brings in non FIFO mode, but
+>>> tries to keep the order of the frames.
+>>
+>> That is already WIP at our end. V3 will contain the same change.
+>> If you are already working on it, I don't know how to proceed further =
+as
+>> we had already v1 of this patchset with the non FIFO mode out since a
+>> month or so.
+>=20
+> I don't remember seeing a patch from you which supports non-FIFO mode f=
+or flexcan IP.
+> Since we now have Freescale LS1021A chip out in the field on which the =
+FIFO mode broken,
+> we cannot use the upstream flexcan driver for enabling flexcan IP on th=
+ese chips.
+>=20
+> Do you still have plans to work on this? Or should I submit my v3 with =
+in-order reception
+> supported for rx frames.
 
-It can't be configured with "canconfig", but exposes a huge number of 
-variables in the sysfs which is actually quite powerful and extendable.
+The problem is, that the current code triggers a ordering issue (at
+least on the imx6) in non FIFO mode. The frames are not received as the
+documentation states. If you have access, take a look at "SR#
+1-4074792564 : CAN Ordering Issues". It seems the freescale support
+doesn't have much interest in confirming the issue, nor bringing us in
+touch with the people who have access to the IP core source to see
+what's going on.
 
-Freescale's "2.6.35_maintain" kernel consists of 2.6.35 plus about 1200 
-Freescale patches which basically replace all the hardware drivers.
+If we have to rely on the timestamps the next logical step is to add
+sorting by timestamp to the rx-fifo implementation. I'll send a patch
+series of the current state.
 
-The source for this driver in this tree (until someone renames it to NXP):
+regards,
+Marc
 
-http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/log/?h=imx_2.6.35_maintain
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-The Driver is in the expected place:
 
-http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/drivers/net/can/flexcan?h=imx_2.6.35_maintain
+--GnKnExSCuspSC3PEBEWWpQ8LSFk9rmrj2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-1 - It defaults to 32 receive and 32 transmit MBs, but that can be changed.
+-----BEGIN PGP SIGNATURE-----
 
-2 - It can't receive in order, but you'd only need to sort on the 
-timestamps to fix that (or use the FIFO).
+iQEcBAEBCgAGBQJWaW3KAAoJEP5prqPJtc/HEWwH/1avfMrKRh89HdLXYK43uUcK
+4/DmI5XpqOO0yE5Y2R1nn2VWWXX3yKCYeFikYpUow2E7/xoYIR4psgYJ5ftFzkVS
+lfkw/GjxoyJrKg/zmtkh2c266Es5iA4tuMM7QCCCzB9eHwLW7ULvlkPkfsRNJonv
+TwRNbTVZ4kUrxSaoeCIo6hSzQtZ1+iYoR8z5GkF63JKNma3AFug7yKqMB1T9362w
+sl4XMcup5VN7zTIYDauRfLusz17U5+/POsM3Gb2SR3PTnKMNvZJ9NXIRCySjBECk
+G2MkkjxQvXYwFDpICz5gCUZC6+Jt5J2RDjBrgyYx4zdaLb//66HHDsZ+FjKuHdk=
+=kM3n
+-----END PGP SIGNATURE-----
 
-3 - It can't transmit in order either (unless you drop it to one 
-transmit MB), but a simple change to the Transmit MB assignment would 
-fix that.
-
-4 - It supports FIFO mode, but it doesn't work at all. The FIFO hardware 
-gets so badly screwed by the driver that it has to be power-cycled to 
-get it working again.
-
-5 - Transmit doesn't work either. If you push it it'll start sending ONE 
-Message per SECOND. That's an easy fix by changing the code to actually 
-unblock the netif queue instead of what it does.
-
-6 - The sysfs variable that reserves receive message buffers is named to 
-reserve transmit buffers, it messes up if the DLC is over 8 (because it 
-doesn't call get_can_dlc()), the Dump routines don't work properly, 
-off-by-one bug, comparison-reversal bug and so on.
-
-7 - The only good thing about it is that it doesn't use NAPI, so when 
-fixed it doesn't drop messages when you try to use MMC/eMMC/ESDHC.
-
-FIFO bug documented and fixed here:
-
-https://community.freescale.com/thread/381075
-
-Transmit bug documented and fixed here (and the other ones listed), also 
-MMC/eMMC problem:
-
-https://community.freescale.com/message/595897
-
-Patches to fix all of it on the end of this thread:
-
-https://community.freescale.com/thread/303271
-
-Tom
-
+--GnKnExSCuspSC3PEBEWWpQ8LSFk9rmrj2--
