@@ -1,76 +1,36 @@
-From: Sharma Bhupesh <bhupesh.sharma@freescale.com>
-Subject: RE: [PATCH v2 5/5] can: flexcan: Add support for non RX-FIFO mode
-Date: Thu, 10 Dec 2015 12:22:55 +0000
-Message-ID: <BY1PR0301MB1303A87AF2B3FFBB6CDA90EE82E90@BY1PR0301MB1303.namprd03.prod.outlook.com>
-References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
- <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com>
- <5554C244.80809@pengutronix.de>
- <BY1PR0301MB130358076C3A5969406DE69182D80@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <BY1PR0301MB130384E91308C49A850DEC4782E90@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <56696DC8.8020708@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v2 00/11] RFC: cleanup flexcan driver, introduce and make use of IRQ offloading
+Date: Thu, 10 Dec 2015 13:33:46 +0100
+Message-ID: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2on0114.outbound.protection.outlook.com ([207.46.100.114]:54248
-	"EHLO na01-by2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751162AbbLJMW4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 10 Dec 2015 07:22:56 -0500
-In-Reply-To: <56696DC8.8020708@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:47984 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753095AbbLJMdp (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2015 07:33:45 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "arnd@arndb.de" <arnd@arndb.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Arora Sakar <Sakar.Arora@freescale.com>
+To: linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de, bhupesh.sharma@freescale.com
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
-bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNkYXksIERlY2VtYmVyIDEw
-LCAyMDE1IDU6NDkgUE0NCj4gDQo+IE9uIDEyLzEwLzIwMTUgMTI6MDUgUE0sIFNoYXJtYSBCaHVw
-ZXNoIHdyb3RlOg0KPiA+Pj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4+IEZyb206
-IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiA+Pj4gU2Vu
-dDogVGh1cnNkYXksIE1heSAxNCwgMjAxNSA5OjEyIFBNDQo+ID4+PiBUbzogU2hhcm1hIEJodXBl
-c2gtQjQ1MzcwOyBhcm5kQGFybmRiLmRlOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+ID4+
-PiBDYzogYmh1cGVzaC5saW51eEBnbWFpbC5jb207IEFyb3JhIFNha2FyLUI0NTIwNTsgbGludXgt
-YXJtLQ0KPiA+Pj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPj4+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggdjIgNS81XSBjYW46IGZsZXhjYW46IEFkZCBzdXBwb3J0IGZvciBub24NCj4gPj4+
-IFJYLUZJRk8gbW9kZQ0KPiA+Pj4NCj4gPj4+IE9uIDA1LzE0LzIwMTUgMDE6MzMgUE0sIEJodXBl
-c2ggU2hhcm1hIHdyb3RlOg0KPiA+Pj4+IFRoaXMgcGF0Y2ggYWRkcyBzdXBwb3J0IGZvciBub24g
-UlgtRklGTyAobGVnYWN5KSBtb2RlIGluIHRoZQ0KPiA+Pj4+IGZsZXhjYW4gZHJpdmVyLg0KPiA+
-Pj4+DQo+ID4+Pj4gT24gY2VydGFpbiBTb0NzLCB0aGUgUlgtRklGTyBzdXBwb3J0IG1pZ2h0IGJl
-IGJyb2tlbiwgYXMgYSByZXN1bHQNCj4gPj4+PiB3ZSBuZWVkIHRvIGZhbGwtYmFjayBvbiB0aGUg
-bGVnYWN5IChub24gUlgtRklGTykgbW9kZSB0byByZWNlaXZlDQo+ID4+Pj4gQ0FOIGZyYW1lcy4N
-Cj4gPj4+Pg0KPiA+Pj4+IFNpZ25lZC1vZmYtYnk6IEJodXBlc2ggU2hhcm1hIDxiaHVwZXNoLnNo
-YXJtYUBmcmVlc2NhbGUuY29tPg0KPiA+Pj4+IFNpZ25lZC1vZmYtYnk6IFNha2FyIEFyb3JhIDxT
-YWthci5Bcm9yYUBmcmVlc2NhbGUuY29tPg0KPiA+Pj4NCj4gPj4+IFRoZSBub24gRklGTyBtb2Rl
-IGRvZXNuJ3QgZ3VhcmFudGVlIHRoZSBvcmRlciBvZiB0aGUgaW5jb21pbmcNCj4gPj4+IGZyYW1l
-cywgbm90IGRvZXMgbm90IGV2ZW4gdHJ5IHRvLi4udGhpcyBpcyBub3QgYWNjZXB0YWJsZS4gSSdt
-DQo+ID4+PiBjdXJyZW50bHkgd29ya2luZyBvbiBhIHBhdGNoIGJ5IERhdmlkIEphbmRlciB0aGF0
-IGJyaW5ncyBpbiBub24gRklGTw0KPiA+Pj4gbW9kZSwgYnV0IHRyaWVzIHRvIGtlZXAgdGhlIG9y
-ZGVyIG9mIHRoZSBmcmFtZXMuDQo+ID4+DQo+ID4+IFRoYXQgaXMgYWxyZWFkeSBXSVAgYXQgb3Vy
-IGVuZC4gVjMgd2lsbCBjb250YWluIHRoZSBzYW1lIGNoYW5nZS4NCj4gPj4gSWYgeW91IGFyZSBh
-bHJlYWR5IHdvcmtpbmcgb24gaXQsIEkgZG9uJ3Qga25vdyBob3cgdG8gcHJvY2VlZCBmdXJ0aGVy
-DQo+ID4+IGFzIHdlIGhhZCBhbHJlYWR5IHYxIG9mIHRoaXMgcGF0Y2hzZXQgd2l0aCB0aGUgbm9u
-IEZJRk8gbW9kZSBvdXQNCj4gPj4gc2luY2UgYSBtb250aCBvciBzby4NCj4gPg0KPiA+IEkgZG9u
-J3QgcmVtZW1iZXIgc2VlaW5nIGEgcGF0Y2ggZnJvbSB5b3Ugd2hpY2ggc3VwcG9ydHMgbm9uLUZJ
-Rk8gbW9kZQ0KPiBmb3IgZmxleGNhbiBJUC4NCj4gPiBTaW5jZSB3ZSBub3cgaGF2ZSBGcmVlc2Nh
-bGUgTFMxMDIxQSBjaGlwIG91dCBpbiB0aGUgZmllbGQgb24gd2hpY2ggdGhlDQo+ID4gRklGTyBt
-b2RlIGJyb2tlbiwgd2UgY2Fubm90IHVzZSB0aGUgdXBzdHJlYW0gZmxleGNhbiBkcml2ZXIgZm9y
-DQo+IGVuYWJsaW5nIGZsZXhjYW4gSVAgb24gdGhlc2UgY2hpcHMuDQo+ID4NCj4gPiBEbyB5b3Ug
-c3RpbGwgaGF2ZSBwbGFucyB0byB3b3JrIG9uIHRoaXM/IE9yIHNob3VsZCBJIHN1Ym1pdCBteSB2
-MyB3aXRoDQo+ID4gaW4tb3JkZXIgcmVjZXB0aW9uIHN1cHBvcnRlZCBmb3IgcnggZnJhbWVzLg0K
-PiANCj4gVGhlIHByb2JsZW0gaXMsIHRoYXQgdGhlIGN1cnJlbnQgY29kZSB0cmlnZ2VycyBhIG9y
-ZGVyaW5nIGlzc3VlIChhdCBsZWFzdA0KPiBvbiB0aGUgaW14NikgaW4gbm9uIEZJRk8gbW9kZS4g
-VGhlIGZyYW1lcyBhcmUgbm90IHJlY2VpdmVkIGFzIHRoZQ0KPiBkb2N1bWVudGF0aW9uIHN0YXRl
-cy4gSWYgeW91IGhhdmUgYWNjZXNzLCB0YWtlIGEgbG9vayBhdCAiU1IjDQo+IDEtNDA3NDc5MjU2
-NCA6IENBTiBPcmRlcmluZyBJc3N1ZXMiLiBJdCBzZWVtcyB0aGUgZnJlZXNjYWxlIHN1cHBvcnQN
-Cj4gZG9lc24ndCBoYXZlIG11Y2ggaW50ZXJlc3QgaW4gY29uZmlybWluZyB0aGUgaXNzdWUsIG5v
-ciBicmluZ2luZyB1cyBpbg0KPiB0b3VjaCB3aXRoIHRoZSBwZW9wbGUgd2hvIGhhdmUgYWNjZXNz
-IHRvIHRoZSBJUCBjb3JlIHNvdXJjZSB0byBzZWUgd2hhdCdzDQo+IGdvaW5nIG9uLg0KPiANCj4g
-SWYgd2UgaGF2ZSB0byByZWx5IG9uIHRoZSB0aW1lc3RhbXBzIHRoZSBuZXh0IGxvZ2ljYWwgc3Rl
-cCBpcyB0byBhZGQNCj4gc29ydGluZyBieSB0aW1lc3RhbXAgdG8gdGhlIHJ4LWZpZm8gaW1wbGVt
-ZW50YXRpb24uIEknbGwgc2VuZCBhIHBhdGNoDQo+IHNlcmllcyBvZiB0aGUgY3VycmVudCBzdGF0
-ZS4NCg0KV2l0aCBteSBjdXJyZW50IHYzLCBJIHNlZSBubyByeC1mcmFtZSBvcmRlcmluZyBpc3N1
-ZXMgYXRsZWFzdCBvbiBMUzEwMjFBLg0KDQpJIGNhbiBhc2sgaW50ZXJuYWxseSBhYm91dCBtb3Jl
-IGRldGFpbHMgb24gdGhlICJTUiMgMS00MDc0NzkyNTY0IDogQ0FOIE9yZGVyaW5nIElzc3VlcyIu
-DQoNClJlZ2FyZHMsDQpCaHVwZXNoDQo=
+Hello,
+
+this series picks up David Jander's idea to introduce a simple IRQ offloading
+mechanism. The idea is to offer a mechanism for  hardware FIFO (or single RX
+buffer) based CAN cores to read the CAN frames in the interrupt handler but
+defer sending into normal NAPI context.
+
+This series first cleans up the flexcan driver, then adds the generic IRQ
+offloading code and finally switches the flexcan driver to use it.
+
+Testing and feedback welcome.
+
+Known issues:
+- on mx6 the flexcan IP core receives CAN frames in wrong order.
+  "SR# 1-4074792564 : CAN Ordering Issues"
+
+Proposed solution:
+- Add support for timestamps to rx-fifo
+
+regards,
+Marc
+
