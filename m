@@ -1,65 +1,92 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Hardware Loopback on RT-Socket-CAN Needed
-Date: Thu, 17 Dec 2015 16:34:26 +0100
-Message-ID: <5672D602.8070609@grandegger.com>
+From: Stephen Marshall <Stephen_Marshall@infosys.com>
+Subject: RE: Hardware Loopback on RT-Socket-CAN Needed
+Date: Thu, 17 Dec 2015 17:25:34 +0000
+Message-ID: <54DCF20AC6227B4FABAC7D71A5A1208F78E90747@BLRKECMBX13.ad.infosys.com>
 References: <54DCF20AC6227B4FABAC7D71A5A1208F78E9068B@BLRKECMBX13.ad.infosys.com>
- <5672CA09.2050503@pengutronix.de>
+ <5672CA09.2050503@pengutronix.de> <5672D602.8070609@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy02.manitu.net ([217.11.48.150]:43094 "EHLO
-	mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755726AbbLQPnB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Dec 2015 10:43:01 -0500
-In-Reply-To: <5672CA09.2050503@pengutronix.de>
+Received: from kecgate08.infosys.com ([122.98.10.33]:52056 "EHLO
+	KECGATE08.INFOSYS.COM" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750900AbbLQRZx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Dec 2015 12:25:53 -0500
+In-Reply-To: <5672D602.8070609@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephen Marshall <Stephen_Marshall@infosys.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hello,
+VGhhbmtzIGZvciB0aGUgcXVpY2sgcmVzcG9uc2UgTWFyYyBhbmQgV29sZmdhbmcuDQoNCldoYXQg
+d2UgYmFzaWNhbGx5IG5lZWQgaXMgYSBsb29wYmFjayBtZXNzYWdlIG9uIHRoZSBzYW1lIHNvY2tl
+dCBhZnRlciBzdWNjZXNzZnVsIFRYIERvbmUuIFdlIGFyZSBub3QgZ29pbmcgd2l0aCBDQU5fUkFX
+X0xPT1BCQUNLIGJlY2F1c2Ugd2UgaGF2ZSBvbmx5IG9uZSBzb2NrZXQuDQoNCldvbGZnYW5nLA0K
+Q291bGQgeW91IGNvbmZpcm0gaWYgSSBuZWVkIHRvIHJlbW92ZSB0aGUgImlmIiBhdCBodHRwczov
+L2dpdC54ZW5vbWFpLm9yZy94ZW5vbWFpLTIuNi5naXQvdHJlZS9rc3JjL2RyaXZlcnMvY2FuL3J0
+Y2FuX3Jhdy5jI24xOTYgZm9yIHdoYXQgSSBhbSBsb29raW5nIGZvcj8gDQoNCklzIHRoaXMgaG93
+IHRoZSBjb2RlIHNob3VsZCBsb29rIGxpa2U/IA0KDQp3aGlsZSAocmVjdl9saXN0ZW5lciAhPSBO
+VUxMKSB7DQoJZGV2LT5yeF9jb3VudCsrOw0KCWlmIChydGNhbl9hY2NlcHRfbXNnKGZyYW1lLT5j
+YW5faWQsICZyZWN2X2xpc3RlbmVyLT5jYW5fZmlsdGVyKSkgLy8gcmVtb3ZlZCAoZGV2LT50eF9z
+b2NrZXQgIT0gcmVjdl9saXN0ZW5lci0+c29jayBjaGVjaykNCiAgICAgICAgICAgICB7DQoJICAg
+IHJlY3ZfbGlzdGVuZXItPm1hdGNoX2NvdW50Kys7DQoJICAgIHJ0Y2FuX3Jjdl9kZWxpdmVyKHJl
+Y3ZfbGlzdGVuZXIsICZkZXYtPnR4X3NrYik7DQoJfQ0KCXJlY3ZfbGlzdGVuZXIgPSByZWN2X2xp
+c3RlbmVyLT5uZXh0Ow0KICAgIH0NCg0KQWxzbywgaWYgSSBkbyB0aGUgbW9kaWZpY2F0aW9uLCBz
+aG91bGQgd2UgY29udGludWUgdG8gdXNlIENBTl9DVFJMTU9ERV9MT09QQkFDSz8NCg0KQ291bGQg
+eW91IGdpdmUgdXMgc29tZSByZWZlcmVuY2Ugb24gaG93IHRvIG1ha2UgdGhlIGFib3ZlIG1vZGlm
+aWNhdGlvbiBhdCBydGNhbl9yYXcuYyBmaWxlIGFuZCBidWlsZCBpdD8gU29ycnksIGEgbmV3Ymll
+IGhlcmUgOikgDQoNClRoYW5rcywgDQpTdGVwaGVuIE1hcnNoYWxsDQoNCg0KLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCkZyb206IFdvbGZnYW5nIEdyYW5kZWdnZXIgW21haWx0bzp3Z0BncmFu
+ZGVnZ2VyLmNvbV0gDQpTZW50OiBUaHVyc2RheSwgRGVjZW1iZXIgMTcsIDIwMTUgOTowNCBQTQ0K
+VG86IFN0ZXBoZW4gTWFyc2hhbGw7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCkNjOiBNYXJj
+IEtsZWluZS1CdWRkZQ0KU3ViamVjdDogUmU6IEhhcmR3YXJlIExvb3BiYWNrIG9uIFJULVNvY2tl
+dC1DQU4gTmVlZGVkDQoNCkhlbGxvLA0KDQpmb3IgUlQtQ0FOIHJlbGF0ZWQgcXVlc3Rpb25zIHRo
+ZSBYZW5vbWFpIE1MIGlzIG1heWJlIG1vcmUgYXBwcm9wcmlhdGUuDQoNCkFtIDE3LjEyLjIwMTUg
+dW0gMTU6NDMgc2NocmllYiBNYXJjIEtsZWluZS1CdWRkZToNCj4gT24gMTIvMTcvMjAxNSAwMzox
+MyBQTSwgU3RlcGhlbiBNYXJzaGFsbCB3cm90ZToNCj4+IEkgYW0gbG9va2luZyBmb3Igc29tZSBp
+bmZvcm1hdGlvbiBvbiBMb29wYmFjayBmdW5jdGlvbmFsaXR5IGZvciB0aGUgDQo+PiBSVC1Tb2Nr
+ZXQtQ0FOLg0KPg0KPiBZb3UgbWVhbiBSVC1Tb2NrZXQtQ0FOIGFzIGluIFhlbm9tYWk/IFRoaXMg
+aXMsIGFzIGZhciBhcyBpIGtub3cgZGVhZC4NCg0KSXQncyBub3QgZGVhZCEgSnVzdCBsaXR0bGUg
+Y29udHJpYnV0aW9ucy4NCg0KPj4gSW4gU29ja2V0LUNBTiwgd2UgdXNlZCB0byB0ZXN0IHRoZSBs
+b29wYmFjayBmdW5jdGlvbmFsaXR5IG9uIG93biANCj4+IHNvY2tldCB1c2luZyB0aGUgZmxhZyAq
+Q0FOX1JBV19SRUNWX09XTl9NU0dTICp1c2luZyAqTVNHLkNPTkZJUk0qIA0KPj4gZmxhZy4gSG93
+ZXZlciBpbiBSVC1Tb2NrZXQgQ0FOIHdlIHNlZSB0aGF0IHRoaXMgb3B0aW9uIGhhcyBiZWVuIGRp
+c2FibGVkIHB1cnBvc2VmdWxseS4NCg0KQ2FuJ3QgcmVtZW1iZXIgd2h5IGl0IHdhcyBub3QgaW1w
+bGVtZW50ZWQuIEkgdGhpbmsgdGhlcmUgd2FzIGp1c3Qgbm8gdXNlLWNhc2UsDQoNCltzbmlwXQ0K
+DQo+PiBXZSB1c2UgdGhlIFNKQTEwMDAgQ0FOIENvbnRyb2xsZXIgYW5kIFhlbm9tYWkgMi42LiBX
+ZSB0cmllZCBzZXR0aW5nIA0KPj4gdGhlIFNSUiAoU2VsZiBSZWNlcHRpb24gUmVxdWVzdCkgYml0
+IGF0IGRyaXZlciB1c2luZyANCj4+ICpDQU5fQ1RSTE1PREVfTE9PUEJBQ0sqIA0KPj4gPGh0dHA6
+Ly93d3cueGVub21haS5vcmcvZG9jdW1lbnRhdGlvbi94ZW5vbWFpLTIuNC9odG1sL2FwaS9ncm91
+cF9fcnRjDQo+PiBhbi5odG1sI2dhMTllYzBjYzQzNzllODBjMzJjYmQzMzNjZjdjMTQ1ZTk+KiwN
+Cg0KQXJlIHlvdSBzdGlsbCB1c2luZyBYZW5vbW1haSAyLjQ/DQoNCj4+ICpob3dldmVyIGl0IHdh
+cyBkb2luZyBhIHNvZnR3YXJlIGxvb3BiYWNrIHdoZXJlIHRoZSBsb29wZWQgYmFjayANCj4+IG1l
+c3NhZ2Ugd291bGQgbm90IGhhdmUgYWN0dWFsbHkgZ29uZSBpbiB0aGUgYnVzLiBXZSBuZWVkZWQg
+dGhlIA0KPj4gQ0FOX1JBV19SRUNWX09XTl9NU0dTIGZpeCBhdCBSVC1Tb2NrZXQtQ0FOLCBjb3Vs
+ZCBzb21lb25lIGhlbHA/DQoNCklJUkMsIG9uIHRoZSBTSkExMDAwIHRoZSBodyBsb29wYmFjayBp
+cyByZWRpcmVjdGluZyB0eCBtZXNzYWdlcyB0byB0aGUgcnggdW5pdCAoaW4gaGFyZHdhcmUpIHdp
+dGhvdXQgc2VuZGluZyBzb21ldGhpbmcgb3V0IHRvIHRoZSBidXMsDQoNCkhhdmUgYSBsb29rIHRv
+Og0KDQogDQpodHRwczovL2dpdC54ZW5vbWFpLm9yZy94ZW5vbWFpLTIuNi5naXQvdHJlZS9rc3Jj
+L2RyaXZlcnMvY2FuL3J0Y2FuX3Jhdy5jI24xOTYNCg0KSWYgeW91IHJlbW92ZSB0aGUgImlmIiBz
+dGF0ZW1lbnQgSSB0aGluayBpdCBhbHJlYWR5IGRvZXMgd2hhdCB5b3Ugd2FudC4gDQpCdXQgbWF5
+YmUgSSBoYXZlIG1pc3NlZCBzb21ldGhpbmcuLi4gaXQncyBhIGxvbmcgdGltZSB0aGF0IEkgbG9v
+a2VkIHRvIHRoYXQgY29kZS4NCg0KV29sZmdhbmcuDQoNCioqKioqKioqKioqKioqKiogQ0FVVElP
+TiAtIERpc2NsYWltZXIgKioqKioqKioqKioqKioqKioNClRoaXMgZS1tYWlsIGNvbnRhaW5zIFBS
+SVZJTEVHRUQgQU5EIENPTkZJREVOVElBTCBJTkZPUk1BVElPTiBpbnRlbmRlZCBzb2xlbHkgDQpm
+b3IgdGhlIHVzZSBvZiB0aGUgYWRkcmVzc2VlKHMpLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5k
+ZWQgcmVjaXBpZW50LCBwbGVhc2UgDQpub3RpZnkgdGhlIHNlbmRlciBieSBlLW1haWwgYW5kIGRl
+bGV0ZSB0aGUgb3JpZ2luYWwgbWVzc2FnZS4gRnVydGhlciwgeW91IGFyZSBub3QgDQp0byBjb3B5
+LCBkaXNjbG9zZSwgb3IgZGlzdHJpYnV0ZSB0aGlzIGUtbWFpbCBvciBpdHMgY29udGVudHMgdG8g
+YW55IG90aGVyIHBlcnNvbiBhbmQgDQphbnkgc3VjaCBhY3Rpb25zIGFyZSB1bmxhd2Z1bC4gVGhp
+cyBlLW1haWwgbWF5IGNvbnRhaW4gdmlydXNlcy4gSW5mb3N5cyBoYXMgdGFrZW4gDQpldmVyeSBy
+ZWFzb25hYmxlIHByZWNhdXRpb24gdG8gbWluaW1pemUgdGhpcyByaXNrLCBidXQgaXMgbm90IGxp
+YWJsZSBmb3IgYW55IGRhbWFnZSANCnlvdSBtYXkgc3VzdGFpbiBhcyBhIHJlc3VsdCBvZiBhbnkg
+dmlydXMgaW4gdGhpcyBlLW1haWwuIFlvdSBzaG91bGQgY2Fycnkgb3V0IHlvdXIgDQpvd24gdmly
+dXMgY2hlY2tzIGJlZm9yZSBvcGVuaW5nIHRoZSBlLW1haWwgb3IgYXR0YWNobWVudC4gSW5mb3N5
+cyByZXNlcnZlcyB0aGUgDQpyaWdodCB0byBtb25pdG9yIGFuZCByZXZpZXcgdGhlIGNvbnRlbnQg
+b2YgYWxsIG1lc3NhZ2VzIHNlbnQgdG8gb3IgZnJvbSB0aGlzIGUtbWFpbCANCmFkZHJlc3MuIE1l
+c3NhZ2VzIHNlbnQgdG8gb3IgZnJvbSB0aGlzIGUtbWFpbCBhZGRyZXNzIG1heSBiZSBzdG9yZWQg
+b24gdGhlIA0KSW5mb3N5cyBlLW1haWwgc3lzdGVtLg0KKioqSU5GT1NZUyoqKioqKioqIEVuZCBv
+ZiBEaXNjbGFpbWVyICoqKioqKioqSU5GT1NZUyoqKg==
 
-for RT-CAN related questions the Xenomai ML is maybe more appropriate.
-
-Am 17.12.2015 um 15:43 schrieb Marc Kleine-Budde:
-> On 12/17/2015 03:13 PM, Stephen Marshall wrote:
->> I am looking for some information on Loopback functionality for the
->> RT-Socket-CAN.
->
-> You mean RT-Socket-CAN as in Xenomai? This is, as far as i know dead.
-
-It's not dead! Just little contributions.
-
->> In Socket-CAN, we used to test the loopback functionality on own socket
->> using the flag *CAN_RAW_RECV_OWN_MSGS *using *MSG.CONFIRM* flag. However
->> in RT-Socket CAN we see that this option has been disabled purposefully.
-
-Can't remember why it was not implemented. I think there was just no 
-use-case,
-
-[snip]
-
->> We use the SJA1000 CAN Controller and Xenomai 2.6. We tried setting the
->> SRR (Self Reception Request) bit at driver using *CAN_CTRLMODE_LOOPBACK*
->> <http://www.xenomai.org/documentation/xenomai-2.4/html/api/group__rtcan.html#ga19ec0cc4379e80c32cbd333cf7c145e9>*,
-
-Are you still using Xenommai 2.4?
-
->> *however it was doing a software loopback where the looped back message
->> would not have actually gone in the bus. We needed the
->> CAN_RAW_RECV_OWN_MSGS fix at RT-Socket-CAN, could someone help?
-
-IIRC, on the SJA1000 the hw loopback is redirecting tx messages to the 
-rx unit (in hardware) without sending something out to the bus,
-
-Have a look to:
-
- 
-https://git.xenomai.org/xenomai-2.6.git/tree/ksrc/drivers/can/rtcan_raw.c#n196
-
-If you remove the "if" statement I think it already does what you want. 
-But maybe I have missed something... it's a long time that I looked to 
-that code.
-
-Wolfgang.
