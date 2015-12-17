@@ -1,63 +1,65 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: Hardware Loopback on RT-Socket-CAN Needed
-Date: Thu, 17 Dec 2015 16:36:27 +0100
-Message-ID: <5672D67B.4070403@pengutronix.de>
+Date: Thu, 17 Dec 2015 16:34:26 +0100
+Message-ID: <5672D602.8070609@grandegger.com>
 References: <54DCF20AC6227B4FABAC7D71A5A1208F78E9068B@BLRKECMBX13.ad.infosys.com>
- <5672CA09.2050503@pengutronix.de> <5672D602.8070609@grandegger.com>
+ <5672CA09.2050503@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="RKqtF2bFHf1ldo0eRop8M9fIOqp01cX4f"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33255 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755761AbbLQPge (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Dec 2015 10:36:34 -0500
-In-Reply-To: <5672D602.8070609@grandegger.com>
+Received: from mailproxy02.manitu.net ([217.11.48.150]:43094 "EHLO
+	mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755726AbbLQPnB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Dec 2015 10:43:01 -0500
+In-Reply-To: <5672CA09.2050503@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Stephen Marshall <Stephen_Marshall@infosys.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stephen Marshall <Stephen_Marshall@infosys.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RKqtF2bFHf1ldo0eRop8M9fIOqp01cX4f
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On 12/17/2015 04:34 PM, Wolfgang Grandegger wrote:
-> Am 17.12.2015 um 15:43 schrieb Marc Kleine-Budde:
->> On 12/17/2015 03:13 PM, Stephen Marshall wrote:
->>> I am looking for some information on Loopback functionality for the
->>> RT-Socket-CAN.
->>
->> You mean RT-Socket-CAN as in Xenomai? This is, as far as i know dead.
->=20
-> It's not dead! Just little contributions.
+for RT-CAN related questions the Xenomai ML is maybe more appropriate.
 
-Ok. Sorry :D
+Am 17.12.2015 um 15:43 schrieb Marc Kleine-Budde:
+> On 12/17/2015 03:13 PM, Stephen Marshall wrote:
+>> I am looking for some information on Loopback functionality for the
+>> RT-Socket-CAN.
+>
+> You mean RT-Socket-CAN as in Xenomai? This is, as far as i know dead.
 
-Marc
+It's not dead! Just little contributions.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>> In Socket-CAN, we used to test the loopback functionality on own socket
+>> using the flag *CAN_RAW_RECV_OWN_MSGS *using *MSG.CONFIRM* flag. However
+>> in RT-Socket CAN we see that this option has been disabled purposefully.
 
+Can't remember why it was not implemented. I think there was just no 
+use-case,
 
---RKqtF2bFHf1ldo0eRop8M9fIOqp01cX4f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+[snip]
 
------BEGIN PGP SIGNATURE-----
+>> We use the SJA1000 CAN Controller and Xenomai 2.6. We tried setting the
+>> SRR (Self Reception Request) bit at driver using *CAN_CTRLMODE_LOOPBACK*
+>> <http://www.xenomai.org/documentation/xenomai-2.4/html/api/group__rtcan.html#ga19ec0cc4379e80c32cbd333cf7c145e9>*,
 
-iQEcBAEBCgAGBQJWctZ7AAoJEP5prqPJtc/HK5sH/j7osiaz1yc9c53hB1AEodi6
-TtIK6IQ5bAe7+PIV1x/Hmhpis5l3487mUPZzD/l8bEmfir2ixDuFn9tL5nY5CJkd
-Y8SQeQdqNKHBUVXuRfkShszSo6IKJ8lw8lmsguiyPeDxuoyLuVJVxhXGI/rVEdBO
-C3u7UXaWCEs/PInja646oOf63LQBFg0+us3KpPxua1XQZqqAXrHU8TOFqcNQG2Ke
-RiciqavBxUj75DIu2iYc8GSXuFlCxoOW3qHq8tzsFRPhiyLJ5k9ux2xU7anhl21A
-CM4RfaJGInTeXYo8mjYdGnV6Lv3ElL6G1pcJZMGBb3uLQ4BmLRlioCKlPfOD5Zg=
-=REWR
------END PGP SIGNATURE-----
+Are you still using Xenommai 2.4?
 
---RKqtF2bFHf1ldo0eRop8M9fIOqp01cX4f--
+>> *however it was doing a software loopback where the looped back message
+>> would not have actually gone in the bus. We needed the
+>> CAN_RAW_RECV_OWN_MSGS fix at RT-Socket-CAN, could someone help?
+
+IIRC, on the SJA1000 the hw loopback is redirecting tx messages to the 
+rx unit (in hardware) without sending something out to the bus,
+
+Have a look to:
+
+ 
+https://git.xenomai.org/xenomai-2.6.git/tree/ksrc/drivers/can/rtcan_raw.c#n196
+
+If you remove the "if" statement I think it already does what you want. 
+But maybe I have missed something... it's a long time that I looked to 
+that code.
+
+Wolfgang.
