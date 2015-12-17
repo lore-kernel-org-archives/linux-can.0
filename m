@@ -1,76 +1,109 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: can: flexcan: Ancient Freescale Reference FlexCAN Driver and bug
- fixes so it works.
-Date: Thu, 17 Dec 2015 15:22:01 +1100
-Message-ID: <56723869.5060900@optusnet.com.au>
-References: <1431603215-25546-1-git-send-email-bhupesh.sharma@freescale.com>
- <1431603215-25546-6-git-send-email-bhupesh.sharma@freescale.com>
- <5554C244.80809@pengutronix.de>
- <BY1PR0301MB130358076C3A5969406DE69182D80@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <BY1PR0301MB130384E91308C49A850DEC4782E90@BY1PR0301MB1303.namprd03.prod.outlook.com>
- <56696582.7020503@optusnet.com.au> <566973A4.5000703@pengutronix.de>
- <566A0267.2080809@optusnet.com.au>
-Reply-To: tom_usenet@optusnet.com.au
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Hardware Loopback on RT-Socket-CAN Needed
+Date: Thu, 17 Dec 2015 15:43:21 +0100
+Message-ID: <5672CA09.2050503@pengutronix.de>
+References: <54DCF20AC6227B4FABAC7D71A5A1208F78E9068B@BLRKECMBX13.ad.infosys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="7rKfsrW1ERTBJeUw8IodqCb0VXHWsei5h"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:39355 "EHLO
-	mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751242AbbLQEWO (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 16 Dec 2015 23:22:14 -0500
-In-Reply-To: <566A0267.2080809@optusnet.com.au>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:58840 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752079AbbLQOnc (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Dec 2015 09:43:32 -0500
+In-Reply-To: <54DCF20AC6227B4FABAC7D71A5A1208F78E9068B@BLRKECMBX13.ad.infosys.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Sharma Bhupesh <bhupesh.sharma@freescale.com>, "arnd@arndb.de" <arnd@arndb.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "bhupesh.linux@gmail.com" <bhupesh.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Arora Sakar <Sakar.Arora@freescale.com>
+To: Stephen Marshall <Stephen_Marshall@infosys.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/12/15 09:53, Tom Evans wrote:
-> On 10/12/2015 11:44 PM, Marc Kleine-Budde wrote:
->> On 12/10/2015 12:44 PM, Tom Evans wrote:
->>> I've just had to delve back into the deep murky past and try to get
->>> Freescale's Kernel 2.6.35 FlexCAN driver working...
->
-> On an i.MX53. That's the last supported kernel Freescale ever released for
-> that series of parts.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7rKfsrW1ERTBJeUw8IodqCb0VXHWsei5h
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> The simplest path was to fix the
-> simple and stupidly obvious bugs in the existing driver rather
- > than add new complicated bugs.
+On 12/17/2015 03:13 PM, Stephen Marshall wrote:
+> I am looking for some information on Loopback functionality for the
+> RT-Socket-CAN.
 
-There seems to be no end of bugs in this driver. It is a lesson in something.
+You mean RT-Socket-CAN as in Xenomai? This is, as far as i know dead.
 
-What's the dumbest driver bug ever? Interrupt hazard. Yes, this one has that too.
+> In Socket-CAN, we used to test the loopback functionality on own socket=
 
-The mainline sends a Message Buffer (or tries to) and DISABLES the netif queue 
-if it can't send [1]. The transmit interrupt service routine ENABLES the netif 
-queue. And when the interrupt routine happens in the middle of the mainline 
-transmit routine? It locks forever. You have to power-cycle to get it back. 
-Normally taking the interface "down" and "up" should fix it, as the "start" 
-and "stop" functions normally stop and start the netif queue. Not these ones. 
-They do now.
+> using the flag *CAN_RAW_RECV_OWN_MSGS *using *MSG.CONFIRM* flag. Howeve=
+r
+> in RT-Socket CAN we see that this option has been disabled purposefully=
+=2E
+>=20
+> Could someone please clarify us on the below questions?
+>=20
+> 1)      How we can do a hardware loopback (i.e., message from the
+> transmit socket has to reach the same socket through the bus) on
+> RT-Socket CAN?
 
-Note 1: This is in the case where the transmit queues and MBs are full. The 
-transmit function is always called twice. The first time it is called it sends 
-the MB, leaves the queue running and return "OK". The second time it finds out 
-it is full, stops the queue and returns "BUSY". Even better, with the default 
-32 transmit MBs it has to scan through all 32 MBs to find out it is full, and 
-it may have also had to scan the same 32 to find an empty one. The FlexCAN 
-registers are on a slow bus and take 180ns to read or write. So it can take 
-the driver up to 12us to send one buffer. Or proportionally longer if you have 
-more Transmit MBs (you might have 56).
+Some CAN controllers have a bit to enable HW Loopback, e.g. flexcan has:
 
-If you never send enough data to flow-control the driver this won't happen. If 
-you have more than one Transmit MB (and can handle out of order transmissions) 
-then the subsequent transmit interrupts will repair the damage and you won't 
-see it either. That's probably why it passed whatever testing it had.
+/* FLEXCAN module configuration register (CANMCR) bits */
+#define FLEXCAN_MCR_SRX_DIS             BIT(17)
 
-Bug detailed here:
+for this.
 
-https://community.freescale.com/message/597952
+> 2)      If receive own messages is not supported, how is address claim
+> handled in J1939 applications for other RT-Socket-CAN programs?
 
-Patch to fix here:
+I don't know anyone using j1939 on RT-Socket-CAN. However there are some
+companies, especially in the last 3 month interested in bringing j1939
+to mainline linux-can.
 
-https://community.freescale.com/message/597951#597951
-Tom
+> 3)      How do we patch the RT-Socket-CAN with the CAN_RAW_RECV_OWN_MSG=
+S
+> fix at kernel level? Any details on fix that should be taken and GIT
+> repo details would be helpful. Would patching have any impact on the
+> real-time capability?
 
+Don't know. Sorry, I'm interested in mainline linux-can only.
+
+> We use the SJA1000 CAN Controller and Xenomai 2.6. We tried setting the=
+
+> SRR (Self Reception Request) bit at driver using *CAN_CTRLMODE_LOOPBACK=
+*
+> <http://www.xenomai.org/documentation/xenomai-2.4/html/api/group__rtcan=
+=2Ehtml#ga19ec0cc4379e80c32cbd333cf7c145e9>*,
+> *however it was doing a software loopback where the looped back message=
+
+> would not have actually gone in the bus. We needed the
+> CAN_RAW_RECV_OWN_MSGS fix at RT-Socket-CAN, could someone help?
+
+We do a software loopback in linux-can, too. But we do the actual
+loopback-send in the TX-completion handler. This means no sent frame, no
+loopback. You can do this in the Xenomai driver probably, too. However,
+an increase of interrupts might have slight impact on the overall RT
+performance, but I this this is unelectable.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--7rKfsrW1ERTBJeUw8IodqCb0VXHWsei5h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWcsoJAAoJEP5prqPJtc/HDmUH+gImnTWVq0LZYLCrnepwpNek
+DQ4+bsEIxwboavFuuKIAEUMpktIemx4nxrM1LQ8lFA0SU1Z7zuNauPfebtKusIae
+6H8ijF39FXCUUPgk0c4PPQuDc6c0hTQsEk2Vuc63YutV6WlxJqHUs/miPWR1ei+y
+hSXnRTw6rDQOsE+sRzswSp7YcUbAo/2x03l+s91zBOoLqPLbZnM/cwr6SqvvcPWi
+D6UQD3jJe1VWJV5wMDPFaZY+YA0Vd/92lU0afcegSK1t8+CqOsljqpGIzBLe3+YM
+wNuRxgOi8dtRM1qckfBT5herf921cATbGfxcytNjB85mUlIKcwzqfW8HQp68cAs=
+=xvV+
+-----END PGP SIGNATURE-----
+
+--7rKfsrW1ERTBJeUw8IodqCb0VXHWsei5h--
