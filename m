@@ -1,98 +1,58 @@
-From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 1/1]can:ems_usb:Fix possible tx overflow
-Date: Tue, 22 Dec 2015 17:29:16 +0100
-Message-ID: <1450801756-21426-1-git-send-email-uttenthaler@ems-wuensche.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.ems-wuensche.com ([85.214.92.62]:48566 "EHLO
-	mail.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932079AbbLVQhR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 22 Dec 2015 11:37:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by h559305.serverkompetenz.net (Postfix) with ESMTP id 138AD30803E
-	for <linux-can@vger.kernel.org>; Tue, 22 Dec 2015 17:28:52 +0100 (CET)
-Received: from mail.ems-wuensche.com ([127.0.0.1])
-	by localhost (h559305.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id HZE-2F93UuF4 for <linux-can@vger.kernel.org>;
-	Tue, 22 Dec 2015 17:28:47 +0100 (CET)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] can: sja1000: add documentation for Technologic
+ Systems version
+Date: Tue, 22 Dec 2015 12:28:52 -0600
+Message-ID: <CAL_JsqJ3MM7DLFndhKA3GVrb-OtYJJDcCck_i4RZh-+V_RGynQ@mail.gmail.com>
+References: <1450469845-12900-1-git-send-email-damien.riegel@savoirfairelinux.com>
+ <20151220033742.GA9883@rob-hp-laptop> <20151221150953.GA6434@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20151221150953.GA6434@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@savoirfairelinux.com
+List-Id: linux-can.vger.kernel.org
 
-This patch fixes the problem that more CAN messages could besent to 
-the interface as could be send on the CAN bus. This was more likely
-for slow baud rates. The sleeping _start_xmit was woken up in the
-_write_bulk_callback. Under heavy TX load this produced another 
-bulk transfer without checking the free_slots variable and hence
-caused the overflow in the interface.
+On Mon, Dec 21, 2015 at 9:09 AM, Damien Riegel
+<damien.riegel@savoirfairelinux.com> wrote:
+> On Sat, Dec 19, 2015 at 09:37:42PM -0600, Rob Herring wrote:
+>> On Fri, Dec 18, 2015 at 03:17:24PM -0500, Damien Riegel wrote:
+>> > This commit adds documentation for the Technologic Systems version of
+>> > SJA1000. The difference with the NXP version is in the way the registers
+>> > are accessed.
+>> >
+>> > Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+>> > ---
+>> >  Documentation/devicetree/bindings/net/can/sja1000.txt | 3 ++-
+>> >  1 file changed, 2 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/Documentation/devicetree/bindings/net/can/sja1000.txt b/Documentation/devicetree/bindings/net/can/sja1000.txt
+>> > index b4a6d53..7a158d5 100644
+>> > --- a/Documentation/devicetree/bindings/net/can/sja1000.txt
+>> > +++ b/Documentation/devicetree/bindings/net/can/sja1000.txt
+>> > @@ -2,7 +2,7 @@ Memory mapped SJA1000 CAN controller from NXP (formerly Philips)
+>> >
+>> >  Required properties:
+>> >
+>> > -- compatible : should be "nxp,sja1000".
+>> > +- compatible : should be one of "nxp,sja1000", "technologic,sja1000".
+>> >
+>> >  - reg : should specify the chip select, address offset and size required
+>> >     to map the registers of the SJA1000. The size is usually 0x80.
+>> > @@ -14,6 +14,7 @@ Optional properties:
+>> >
+>> >  - reg-io-width : Specify the size (in bytes) of the IO accesses that
+>> >     should be performed on the device.  Valid value is 1, 2 or 4.
+>> > +   Must be set to 2 for technologic version.
+>> >     Default to 1 (8 bits).
+>>
+>> Really, this should default to 2 for technologic version and not be
+>> required.
+>
+> Would something along the line of "This property is <not used|ignored>
+> for technologic version." be more appropriate?
 
-Signed-off-by: Gerhard uttenthaler <uttenthaler@ems-wuensche.com>
----
- drivers/net/can/usb/ems_usb.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Yes, exactly.
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index fc5b756..eb7192f 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -117,6 +117,9 @@ MODULE_LICENSE("GPL v2");
-  */
- #define EMS_USB_ARM7_CLOCK 8000000
- 
-+#define CPC_TX_QUEUE_TRIGGER_LOW	25
-+#define CPC_TX_QUEUE_TRIGGER_HIGH	35
-+
- /*
-  * CAN-Message representation in a CPC_MSG. Message object type is
-  * CPC_MSG_TYPE_CAN_FRAME or CPC_MSG_TYPE_RTR_FRAME or
-@@ -278,6 +281,11 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
- 	switch (urb->status) {
- 	case 0:
- 		dev->free_slots = dev->intr_in_buffer[1];
-+		if(dev->free_slots > CPC_TX_QUEUE_TRIGGER_HIGH){
-+			if (netif_queue_stopped(netdev)){
-+				netif_wake_queue(netdev);
-+			}
-+		}
- 		break;
- 
- 	case -ECONNRESET: /* unlink */
-@@ -526,8 +534,6 @@ static void ems_usb_write_bulk_callback(struct urb *urb)
- 	/* Release context */
- 	context->echo_index = MAX_TX_URBS;
- 
--	if (netif_queue_stopped(netdev))
--		netif_wake_queue(netdev);
- }
- 
- /*
-@@ -587,7 +593,7 @@ static int ems_usb_start(struct ems_usb *dev)
- 	int err, i;
- 
- 	dev->intr_in_buffer[0] = 0;
--	dev->free_slots = 15; /* initial size */
-+	dev->free_slots = 50; /* initial size */
- 
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
-@@ -835,7 +841,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
- 
- 		/* Slow down tx path */
- 		if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ||
--		    dev->free_slots < 5) {
-+		    dev->free_slots < CPC_TX_QUEUE_TRIGGER_LOW) {
- 			netif_stop_queue(netdev);
- 		}
- 	}
--- 
-1.8.4.5
-
--- 
-EMS Dr. Thomas Wuensche e.K.
-Sonnenhang 3
-85304 Ilmmuenster
-HRA Neuburg a.d. Donau, HR-Nr. 70.106
-
-Phone: +49-8441-490260
-Fax  : +49-8441-81860
-http://www.ems-wuensche.com
+Rob
