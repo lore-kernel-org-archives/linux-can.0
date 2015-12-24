@@ -1,72 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Setting bitrate from user-space application
-Date: Wed, 23 Dec 2015 15:10:55 +0100
-Message-ID: <567AAB6F.4040609@pengutronix.de>
-References: <5655BF6D.3000701@picquet.fr> <5655CC8D.70508@pengutronix.de>
- <5655DC22.4000302@hartkopp.net> <5655DF32.5090505@picquet.fr>
- <567AA9AB.9010500@picquet.fr>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="n5FkVcCSNCKvdTHQLO8RA7B8uCChAK1Of"
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: [PATCH v2 0/3] can: sja1000: support for technologic version
+Date: Thu, 24 Dec 2015 12:42:50 -0500
+Message-ID: <1450978973-30417-1-git-send-email-damien.riegel@savoirfairelinux.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46338 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757211AbbLWOLE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Dec 2015 09:11:04 -0500
-In-Reply-To: <567AA9AB.9010500@picquet.fr>
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:44673 "EHLO
+	mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753748AbbLXRnF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 24 Dec 2015 12:43:05 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Guillaume Picquet <guillaume@picquet.fr>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---n5FkVcCSNCKvdTHQLO8RA7B8uCChAK1Of
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This patchset introduces support for the technologic version of the
+SJA1000. Access to IP's registers are proxied through a window,
+requiring two bus accesses to read or write a register. These accesses
+must be protected by a spinlock to prevent race conditions. Currently,
+there is no easy way to allocate and initialize this spinlock.
 
-On 12/23/2015 03:03 PM, Guillaume Picquet wrote:
-> A status update, thanks to libsocketcan I am able to get and set bitrat=
-e.
+SJA1000 already provides a way to allocate private data, but
+sja1000_platform.c makes no use of it.
 
-\o/
+Patch 1 adds the capability to allocate and initialize private data on a
+per-compatible basis in sja1000_platform.c.
 
-> remarks:
-> Before setting bitrate a stop must be performed.
+Patch 2 updates device tree documentation to add the technologic
+version.
 
-Yes - this way you can be sure that the new frames are send with the new
-bitrate. Also think of a multi application CAN environment.
+Patch 3 updates the driver to implement the technologic version
 
-> I use poll() on CAN socket and it returns and set errno to ENETDOWN=20
-> during the stop but sockets stay valid. (no need to close and reopen).
-> I Suppose it is normal behaviour, right ?
+Changes in v2:
+ - added a patch to allocate and initialize private data
+ - changed device tree documentation
+ - added a spinlock to protect bus accesses
+ - changed sp_{read,write}_reg16 to io{read,write}16
 
-ENETDOWN is expected behaviour. That you don't need to close and reopen
-the socket is.....nice, isn't it :) Let's say it's implementation
-defined behaviour. Better close and reopen the socket.
+Damien Riegel (3):
+  can: sja1000: of: add per-compatible init hook
+  can: sja1000: add documentation for Technologic Systems version
+  can: sja1000: of: add compatibility with Technologic Systems version
 
-Marc
+ .../devicetree/bindings/net/can/sja1000.txt        |  3 +-
+ drivers/net/can/sja1000/sja1000_platform.c         | 86 +++++++++++++++++++++-
+ 2 files changed, 86 insertions(+), 3 deletions(-)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+-- 
+2.5.0
 
-
---n5FkVcCSNCKvdTHQLO8RA7B8uCChAK1Of
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWeqtvAAoJEP5prqPJtc/HEMsH+weGuCDrJc01GTtFBO2hB3yh
-jCI8Oc0ofCd6Bl9gcUSnC/DWz631k7CqsjKb7cG3mi4vO+y4f71X9sT49noJGuI3
-GFf1xb6mwugCdcsQEAN6Em09rUJdnnzRTkjZnDo+16bYzy2747Yjpx7HDoTln2IV
-x0N2mP698Qe8fMtsQMKOZrpQvFBts8zpv88XDWejpal4Do+NtDbI4Bzy5pBPOSA5
-pY2xU5G7deocuLyHf7OPe1WqfkTiU0pOgR6wD4gq8/DMGZCUc8DTC8ZApStCjwy5
-W/1y10fabcyE3Kb3hLzmowKxNDLZZJVo3SlWgacmdEyo5jNlwd006FxxPdyHJmM=
-=Yu2v
------END PGP SIGNATURE-----
-
---n5FkVcCSNCKvdTHQLO8RA7B8uCChAK1Of--
