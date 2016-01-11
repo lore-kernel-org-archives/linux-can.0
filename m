@@ -1,42 +1,25 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: Re: [PATCH v2 0/3] can: sja1000: support for technologic version
-Date: Mon, 11 Jan 2016 11:58:08 -0500
-Message-ID: <20160111165807.GA7116@localhost>
-References: <1450978973-30417-1-git-send-email-damien.riegel@savoirfairelinux.com>
+From: "Donna Kwok" <iti.chopda@dvet.maharashtra.gov.in>
+Subject: Please get back
+Date: Mon, 11 Jan 2016 14:32:07 -0500
+Message-ID: <20160111193124.C210A3FE1983@mail.ccms.maharashtra.gov.in>
+Reply-To: kwokdonna@qq.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1450978973-30417-1-git-send-email-damien.riegel@savoirfairelinux.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@savoirfairelinux.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.udd.maharashtra.gov.in ([103.23.150.150]:38125 "EHLO
+	mail.ccms.maharashtra.gov.in" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S933284AbcAKThl convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 11 Jan 2016 14:37:41 -0500
+Content-Description: Mail message body
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Recipients <iti.chopda@dvet.maharashtra.gov.in>
 
-Hi Marc,
+Hello
 
-On Thu, Dec 24, 2015 at 12:42:50PM -0500, Damien Riegel wrote:
-> This patchset introduces support for the technologic version of the
-> SJA1000. Access to IP's registers are proxied through a window,
-> requiring two bus accesses to read or write a register. These accesses
-> must be protected by a spinlock to prevent race conditions. Currently,
-> there is no easy way to allocate and initialize this spinlock.
-> 
-> SJA1000 already provides a way to allocate private data, but
-> sja1000_platform.c makes no use of it.
-> 
-> Patch 1 adds the capability to allocate and initialize private data on a
-> per-compatible basis in sja1000_platform.c.
-> 
-> Patch 2 updates device tree documentation to add the technologic
-> version.
-> 
-> Patch 3 updates the driver to implement the technologic version
-> 
+I am getting in touch with you regarding an extremely important and urgent matter. If you would oblige me the opportunity, I shall provide you with details upon your response.
 
-Did you have a chance to take a look at this patchset? I would
-appreciate your feedback, especially on the first patch.
-
-
-Thanks,
-Damien
+Thanks
+Donna Kwok
