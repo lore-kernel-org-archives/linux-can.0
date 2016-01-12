@@ -1,78 +1,38 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/3] can: sja1000: support for technologic version
-Date: Tue, 12 Jan 2016 08:56:48 +0100
-Message-ID: <5694B1C0.2070702@pengutronix.de>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: Re: [PATCH v2 3/3] can: sja1000: of: add compatibility with
+ Technologic Systems version
+Date: Tue, 12 Jan 2016 10:51:15 -0500
+Message-ID: <20160112155115.GA6050@localhost>
 References: <1450978973-30417-1-git-send-email-damien.riegel@savoirfairelinux.com>
- <20160111165807.GA7116@localhost>
+ <1450978973-30417-4-git-send-email-damien.riegel@savoirfairelinux.com>
+ <5694B17A.10406@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="qd0fq63gn5xcxB9058qVO509IiqGwR9GG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160111165807.GA7116@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, kernel@savoirfairelinux.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:40986 "EHLO
+	mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752044AbcALPvY (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2016 10:51:24 -0500
+Content-Disposition: inline
+In-Reply-To: <5694B17A.10406@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, kernel@savoirfairelinux.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qd0fq63gn5xcxB9058qVO509IiqGwR9GG
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 12, 2016 at 08:55:38AM +0100, Marc Kleine-Budde wrote:
+> On 12/24/2015 06:42 PM, Damien Riegel wrote:
+> > Technologic Systems provides an IP compatible with the SJA1000,
+> > instantiated in an FPGA. Because of some bus widths issue, access to
+> > registers is made through a "window" that works like this:
+> > 
+> >     base + 0x0: address to read/write
+> >     base + 0x2: 8-bit register value
+> 
+> Why do you use io{read,write}16 if it's a 8 bit register?
 
-On 01/11/2016 05:58 PM, Damien Riegel wrote:
-> Hi Marc,
->=20
-> On Thu, Dec 24, 2015 at 12:42:50PM -0500, Damien Riegel wrote:
->> This patchset introduces support for the technologic version of the
->> SJA1000. Access to IP's registers are proxied through a window,
->> requiring two bus accesses to read or write a register. These accesses=
+8-bit is at the IP level, but the bus between the SoC and the FPGA only
+supports 16-bit wide access. The point of the window is to convert
+between 16-bit and 8-bit access.
 
->> must be protected by a spinlock to prevent race conditions. Currently,=
-
->> there is no easy way to allocate and initialize this spinlock.
->>
->> SJA1000 already provides a way to allocate private data, but
->> sja1000_platform.c makes no use of it.
->>
->> Patch 1 adds the capability to allocate and initialize private data on=
- a
->> per-compatible basis in sja1000_platform.c.
->>
->> Patch 2 updates device tree documentation to add the technologic
->> version.
->>
->> Patch 3 updates the driver to implement the technologic version
->>
->=20
-> Did you have a chance to take a look at this patchset? I would
-> appreciate your feedback, especially on the first patch.
-
-Done. 2/3 is ok. For the others see my comments.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---qd0fq63gn5xcxB9058qVO509IiqGwR9GG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWlLHAAAoJEP5prqPJtc/HbOYH/jfrArHf4UByYAnjGptfKNGH
-L8+7GuFQGbBxWenor0jN53BbfypqHRzReDeyP17BElJnXkmHg6iOL6MXKmR6RSBp
-CNOqpAHjrIH0t2VWUgeQvC6LS5ZgUBpfrQBV0hI9e+ZW18qdnWT79awMzOH3bbrk
-1/llwHKLkzYNFmmPWsI6dZfEvZmw7AE6LA4+CbRKM3QZYZ9gSklf7JoqmxoJA+pw
-6vn2qF+cjMvpC/bDAOTvdxlDdlp6jBBiSoOj12GTgA7v3bBlhzboBHTcBhoWNVny
-2GSUJxYG20TM6c56CJSfQftY9uClSB7/0yBEgqZXfstoOQt3ZtWTGWjXJe/zo6U=
-=ISa7
------END PGP SIGNATURE-----
-
---qd0fq63gn5xcxB9058qVO509IiqGwR9GG--
+Damien
