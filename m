@@ -1,38 +1,119 @@
 From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: Re: [PATCH v2 3/3] can: sja1000: of: add compatibility with
- Technologic Systems version
-Date: Tue, 12 Jan 2016 10:51:15 -0500
-Message-ID: <20160112155115.GA6050@localhost>
+Subject: Re: [PATCH v2 1/3] can: sja1000: of: add per-compatible init hook
+Date: Tue, 12 Jan 2016 10:53:30 -0500
+Message-ID: <20160112155329.GB6050@localhost>
 References: <1450978973-30417-1-git-send-email-damien.riegel@savoirfairelinux.com>
- <1450978973-30417-4-git-send-email-damien.riegel@savoirfairelinux.com>
- <5694B17A.10406@pengutronix.de>
+ <1450978973-30417-2-git-send-email-damien.riegel@savoirfairelinux.com>
+ <5694B0A6.8070200@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:40986 "EHLO
-	mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752044AbcALPvY (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2016 10:51:24 -0500
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5694B17A.10406@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+In-Reply-To: <5694B0A6.8070200@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, kernel@savoirfairelinux.com
+List-Id: linux-can.vger.kernel.org
 
-On Tue, Jan 12, 2016 at 08:55:38AM +0100, Marc Kleine-Budde wrote:
+On Tue, Jan 12, 2016 at 08:52:06AM +0100, Marc Kleine-Budde wrote:
 > On 12/24/2015 06:42 PM, Damien Riegel wrote:
-> > Technologic Systems provides an IP compatible with the SJA1000,
-> > instantiated in an FPGA. Because of some bus widths issue, access to
-> > registers is made through a "window" that works like this:
+> > This commit adds the capability to allocate and init private data
+> > embedded in the sja1000_priv structure on a per-compatible basis. The
+> > device node is passed as a parameter of the init callback to allow
+> > parsing of custom device tree properties.
 > > 
-> >     base + 0x0: address to read/write
-> >     base + 0x2: 8-bit register value
+> > Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+> > ---
+> >  drivers/net/can/sja1000/sja1000_platform.c | 39 ++++++++++++++++++++++++++++--
+> >  1 file changed, 37 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+> > index 0552ed4..e0572d0 100644
+> > --- a/drivers/net/can/sja1000/sja1000_platform.c
+> > +++ b/drivers/net/can/sja1000/sja1000_platform.c
+> > @@ -40,6 +40,11 @@ MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
+> >  MODULE_ALIAS("platform:" DRV_NAME);
+> >  MODULE_LICENSE("GPL v2");
+> >  
+> > +struct sja1000_of_data {
+> > +	size_t  priv_sz;
+> > +	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
+> > +};
+> > +
+> >  static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
+> >  {
+> >  	return ioread8(priv->reg_base + reg);
+> > @@ -154,7 +159,8 @@ static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+> >  		priv->cdr |= CDR_CBP; /* default */
+> >  }
+> >  
+> > -static int sp_probe(struct platform_device *pdev)
+> > +static int __sp_probe(struct platform_device *pdev,
+> > +		      const struct sja1000_of_data *of_data)
+> >  {
+> >  	int err, irq = 0;
+> >  	void __iomem *addr;
+> > @@ -163,6 +169,7 @@ static int sp_probe(struct platform_device *pdev)
+> >  	struct resource *res_mem, *res_irq = NULL;
+> >  	struct sja1000_platform_data *pdata;
+> >  	struct device_node *of = pdev->dev.of_node;
+> > +	size_t priv_sz = of_data ? of_data->priv_sz : 0;
+> >  
+> >  	pdata = dev_get_platdata(&pdev->dev);
+> >  	if (!pdata && !of) {
+> > @@ -191,7 +198,7 @@ static int sp_probe(struct platform_device *pdev)
+> >  	if (!irq && !res_irq)
+> >  		return -ENODEV;
+> >  
+> > -	dev = alloc_sja1000dev(0);
+> > +	dev = alloc_sja1000dev(priv_sz);
+> >  	if (!dev)
+> >  		return -ENOMEM;
+> >  	priv = netdev_priv(dev);
+> > @@ -213,6 +220,12 @@ static int sp_probe(struct platform_device *pdev)
+> >  	else
+> >  		sp_populate(priv, pdata, res_mem->flags);
+> >  
+> > +	if (of_data && of_data->init) {
+> > +		err = of_data->init(priv, of);
+> > +		if (err)
+> > +			goto exit_free;
+> > +	}
+> > +
+> >  	platform_set_drvdata(pdev, dev);
+> >  	SET_NETDEV_DEV(dev, &pdev->dev);
+> >  
+> > @@ -248,6 +261,28 @@ static const struct of_device_id sp_of_table[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(of, sp_of_table);
+> >  
+> > +static const struct sja1000_of_data *sp_get_of_data(struct device_node *of)
+> > +{
+> > +	const struct of_device_id *id;
+> > +
+> > +	if (!of)
+> > +		return NULL;
+> > +
+> > +	id = of_match_node(sp_of_table, of);
+> > +	if (!id)
+> > +		return NULL;
+> > +
+> > +	return id->data;
+> > +}
+> > +
+> > +static int sp_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device_node *of = pdev->dev.of_node;
+> > +	const struct sja1000_of_data *of_data = sp_get_of_data(of);
+> > +
+> > +	return __sp_probe(pdev, of_data);
+> > +}
 > 
-> Why do you use io{read,write}16 if it's a 8 bit register?
+> Please merge these two into the original sp_probe function, as there
+> already is a test for pdev->dev.of_node.
 
-8-bit is at the IP level, but the bus between the SoC and the FPGA only
-supports 16-bit wide access. The point of the window is to convert
-between 16-bit and 8-bit access.
+Ok. sp_get_of_data makes use of sp_of_table, so either I move sp_probe
+below sp_of_table, or I use a forward declaration. Which one do you
+prefer?
 
 Damien
