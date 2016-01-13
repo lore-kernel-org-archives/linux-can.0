@@ -1,111 +1,129 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 1/3] can: sja1000: of: add per-compatible init hook
-Date: Wed, 13 Jan 2016 12:21:14 +0100
-Message-ID: <5696332A.7000806@pengutronix.de>
-References: <1452637880-9922-1-git-send-email-damien.riegel@savoirfairelinux.com>
- <1452637880-9922-2-git-send-email-damien.riegel@savoirfairelinux.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="cu1WxPemPHpn1d3XokeNNgEICuPQOV6P9"
+Subject: [PATCH v4 1/3] can: sja1000: of: add per-compatible init hook
+Date: Wed, 13 Jan 2016 12:46:04 +0100
+Message-ID: <1452685566-27431-2-git-send-email-mkl@pengutronix.de>
+References: <1452685566-27431-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53440 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:43040 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753383AbcAMLVe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Jan 2016 06:21:34 -0500
-In-Reply-To: <1452637880-9922-2-git-send-email-damien.riegel@savoirfairelinux.com>
+	by vger.kernel.org with ESMTP id S933890AbcAMLqK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Jan 2016 06:46:10 -0500
+In-Reply-To: <1452685566-27431-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Wolfgang Grandegger <wg@grandegger.com>, kernel@savoirfairelinux.com
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Damien Riegel <damien.riegel@savoirfairelinux.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cu1WxPemPHpn1d3XokeNNgEICuPQOV6P9
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
 
-On 01/12/2016 11:31 PM, Damien Riegel wrote:
-> This commit adds the capability to allocate and init private data
-> embedded in the sja1000_priv structure on a per-compatible basis. The
-> device node is passed as a parameter of the init callback to allow
-> parsing of custom device tree properties.
->=20
-> Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-> ---
->  drivers/net/can/sja1000/sja1000_platform.c | 28 +++++++++++++++++++++-=
-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/c=
-an/sja1000/sja1000_platform.c
-> index 0552ed4..ea4e18b 100644
-> --- a/drivers/net/can/sja1000/sja1000_platform.c
-> +++ b/drivers/net/can/sja1000/sja1000_platform.c
-> @@ -40,6 +40,11 @@ MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on=
- the platform bus");
->  MODULE_ALIAS("platform:" DRV_NAME);
->  MODULE_LICENSE("GPL v2");
-> =20
-> +struct sja1000_of_data {
-> +	size_t  priv_sz;
-> +	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
-> +};
-> +
->  static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
->  {
->  	return ioread8(priv->reg_base + reg);
-> @@ -154,6 +159,12 @@ static void sp_populate_of(struct sja1000_priv *pr=
-iv, struct device_node *of)
->  		priv->cdr |=3D CDR_CBP; /* default */
->  }
-> =20
-> +static const struct of_device_id sp_of_table[] =3D {
-> +	{.compatible =3D "nxp,sja1000"},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, sp_of_table);
-> +
->  static int sp_probe(struct platform_device *pdev)
->  {
->  	int err, irq =3D 0;
-> @@ -163,6 +174,9 @@ static int sp_probe(struct platform_device *pdev)
->  	struct resource *res_mem, *res_irq =3D NULL;
->  	struct sja1000_platform_data *pdata;
->  	struct device_node *of =3D pdev->dev.of_node;
-> +	const struct of_device_id *id =3D of_match_node(sp_of_table, of);
+This commit adds the capability to allocate and init private data
+embedded in the sja1000_priv structure on a per-compatible basis. The
+device node is passed as a parameter of the init callback to allow
+parsing of custom device tree properties.
 
-Have you tested this with of =3D=3D NULL? I think it should work as
-__of_find_property returns NULL if np is NULL.
+Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/sja1000/sja1000_platform.c | 42 +++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
-> +	const struct sja1000_of_data *of_data =3D id ? id->data : NULL;=20
-> +	size_t priv_sz =3D of_data ? of_data->priv_sz : 0;=20
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 0552ed46a206..46378c9dbb29 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -27,6 +27,7 @@
+ #include <linux/can/platform/sja1000.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ 
+ #include "sja1000.h"
+@@ -40,6 +41,11 @@ MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
+ MODULE_ALIAS("platform:" DRV_NAME);
+ MODULE_LICENSE("GPL v2");
+ 
++struct sja1000_of_data {
++	size_t  priv_sz;
++	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
++};
++
+ static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
+ {
+ 	return ioread8(priv->reg_base + reg);
+@@ -154,6 +160,14 @@ static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+ 		priv->cdr |= CDR_CBP; /* default */
+ }
+ 
++static struct sja1000_of_data nxp_data;
++
++static const struct of_device_id sp_of_table[] = {
++	{ .compatible = "nxp,sja1000", .data = &nxp_data },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, sp_of_table);
++
+ static int sp_probe(struct platform_device *pdev)
+ {
+ 	int err, irq = 0;
+@@ -163,6 +177,9 @@ static int sp_probe(struct platform_device *pdev)
+ 	struct resource *res_mem, *res_irq = NULL;
+ 	struct sja1000_platform_data *pdata;
+ 	struct device_node *of = pdev->dev.of_node;
++	const struct of_device_id *of_id;
++	const struct sja1000_of_data *of_data = NULL;
++	size_t priv_sz = 0;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+ 	if (!pdata && !of) {
+@@ -191,7 +208,13 @@ static int sp_probe(struct platform_device *pdev)
+ 	if (!irq && !res_irq)
+ 		return -ENODEV;
+ 
+-	dev = alloc_sja1000dev(0);
++	of_id = of_match_device(sp_of_table, &pdev->dev);
++	if (of_id) {
++		of_data = of_id->data;
++		priv_sz = of_data->priv_sz;
++	}
++
++	dev = alloc_sja1000dev(priv_sz);
+ 	if (!dev)
+ 		return -ENOMEM;
+ 	priv = netdev_priv(dev);
+@@ -208,10 +231,17 @@ static int sp_probe(struct platform_device *pdev)
+ 	dev->irq = irq;
+ 	priv->reg_base = addr;
+ 
+-	if (of)
++	if (of) {
+ 		sp_populate_of(priv, of);
+-	else
++
++		if (of_data->init) {
++			err = of_data->init(priv, of);
++			if (err)
++				goto exit_free;
++		}
++	} else {
+ 		sp_populate(priv, pdata, res_mem->flags);
++	}
+ 
+ 	platform_set_drvdata(pdev, dev);
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+@@ -242,12 +272,6 @@ static int sp_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id sp_of_table[] = {
+-	{.compatible = "nxp,sja1000"},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, sp_of_table);
+-
+ static struct platform_driver sp_driver = {
+ 	.probe = sp_probe,
+ 	.remove = sp_remove,
+-- 
+2.6.4
 
-I've move the code a bit around to get rid of the ? operator. I'll send
-a new series.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---cu1WxPemPHpn1d3XokeNNgEICuPQOV6P9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWljMqAAoJEP5prqPJtc/HEZAH/3i6awwRyDUPx2om9kPDWzJq
-yFz6jvMVEYJutFEW/QGunn/U/P8C7XLw76BL70C5pk0FiEN6LkFW6MEA/7n+w/Y4
-oC5WiXi7JNmtj+qaw/rSVnt3Fb9UPFRmuljoByFYYP7+2zV6f60v95CNbfuv7kQC
-44KMzzvC7GheO31+MYTleWN4o1rfv/kCqclrwVzQU1XQ+oSXEOSNocan2WWqcU5a
-wc/uOZUBhMuAX3ZH4QyHkM/XBrUJI+z9+pUClyteeIw6dhVhQeFJUVpKsdaNtYj3
-4XCNBWPjVX31H6eYVzLl6ldbi86dM62ZVcRwyR0dRM3e/QdpIO7W6+mRBX8oPTA=
-=sKDN
------END PGP SIGNATURE-----
-
---cu1WxPemPHpn1d3XokeNNgEICuPQOV6P9--
