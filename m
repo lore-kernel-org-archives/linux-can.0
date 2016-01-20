@@ -1,112 +1,108 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
-Date: Wed, 20 Jan 2016 12:15:32 +0100
-Message-ID: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH] can: c_can: add xceiver enable/disable support
+Date: Wed, 20 Jan 2016 12:55:30 +0100
+Message-ID: <1453290930-19136-1-git-send-email-m.grzeschik@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:17141 "EHLO
-	smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934160AbcATLQp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 06:16:45 -0500
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54164 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932590AbcATMBi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 07:01:38 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+To: mkl@pengutronix.de, wg@grandegger.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
 
-This patch installs a workaround when the driver detects one of the
-following PEAK-System CAN interfaces, running a firmware < v1.3.0:
+This patch adds support to enable and disable the xceiver
+in case it's switchable by the regulator framework.
 
-PCAN-PCI Express 1/2/4 CAN; DeviceID 0x0003
-PCAN-PCI/104 Express 1/2/4 CAN; DeviceID 0x0007
-PCAN-miniPCIe 1/2 CAN; DeviceID 0x0008
-PCAN-PCI Express OEM 1/2/4 CAN; DeviceID 0x0009
-PCAN-ExpressCard 34 1 CAN; DeviceID 0x000A
-
-This fixes potential loss of one tx frame in Linux SMP when some other
-task does another Command Register write (e.g. Release Receive Buffer)
-in between the triggering Tx Request and the next Sample Point.
-
-This workaround is useless thus *NOT* installed when the firmware
-has been upgraded to v1.3.0 or higher, nor if the CAN interface is equipped
-with true SJA1000 controller(s).
-
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 ---
- drivers/net/can/sja1000/peak_pci.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ drivers/net/can/c_can/c_can.c | 31 +++++++++++++++++++++++++++++++
+ drivers/net/can/c_can/c_can.h |  1 +
+ 2 files changed, 32 insertions(+)
 
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 131026f..84f7d3a 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -30,6 +30,15 @@
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index f91b094..ca42044 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -36,6 +36,7 @@
+ #include <linux/io.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pinctrl/consumer.h>
++#include <linux/regulator/consumer.h>
  
- #include "sja1000.h"
- 
-+#define VERSION_REG1		0x40
-+#define VERSION_REG2		0x44
-+
-+#define VERSION_REG2_MASK	0xfff0
-+#define PCAN_PCI_FW(x, y, z)	((((u16 )(x) & 0xf) << 12) | \
-+				 (((u16 )(y) & 0xf) << 8)  | \
-+				 ((      (z) & 0xf) << 4))
-+#define PCAN_PCI_FW_VER(v)	((v) & VERSION_REG2_MASK)
-+
- MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
- MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
- MODULE_SUPPORTED_DEVICE("PEAK PCAN PCI/PCIe/PCIeC miniPCI CAN cards");
-@@ -540,6 +549,19 @@ static void peak_pci_write_reg(const struct sja1000_priv *priv,
- 	writeb(val, priv->reg_base + (port << 2));
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+@@ -588,6 +589,22 @@ static int c_can_chip_config(struct net_device *dev)
+ 	return c_can_set_bittiming(dev);
  }
  
-+/* This function adds a delay after each access to CMR to workaround potential
-+ * loss of frame in SMP Linux for FPGA based boards not upgraded to FW >= 1.3.0.
-+ */
-+static void peak_pci_write_reg_1_2_x(const struct sja1000_priv *priv,
-+				     int port, u8 val)
++static inline int c_can_transceiver_enable(const struct c_can_priv *priv)
 +{
-+	peak_pci_write_reg(priv, port, val);
++	if (!priv->reg_xceiver)
++		return 0;
 +
-+	/* add a bigger delay */
-+	if (port == SJA1000_CMR)
-+		udelay(10);
++	return regulator_enable(priv->reg_xceiver);
 +}
 +
- static void peak_pci_post_irq(const struct sja1000_priv *priv)
++static inline int c_can_transceiver_disable(const struct c_can_priv *priv)
++{
++	if (!priv->reg_xceiver)
++		return 0;
++
++	return regulator_disable(priv->reg_xceiver);
++}
++
+ static int c_can_start(struct net_device *dev)
  {
- 	struct peak_pci_chan *chan = priv->priv;
-@@ -559,6 +581,7 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	void __iomem *cfg_base, *reg_base;
- 	u16 sub_sys_id, icr;
- 	int i, err, channels;
-+	u32 v1, v2 = 0;
+ 	struct c_can_priv *priv = netdev_priv(dev);
+@@ -612,6 +629,10 @@ static int c_can_start(struct net_device *dev)
+ 	else
+ 		pinctrl_pm_select_default_state(priv->device);
  
- 	err = pci_enable_device(pdev);
- 	if (err)
-@@ -612,6 +635,12 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	/* Leave parport mux mode */
- 	writeb(0x04, cfg_base + PITA_MISC + 3);
++	err = c_can_transceiver_enable(priv);
++	if (err)
++		return err;
++
+ 	return 0;
+ }
  
-+	v1 = readl(cfg_base + VERSION_REG1);
-+	if (v1) {
-+		/* FPGA card */
-+		v2 = readl(cfg_base + VERSION_REG2);
+@@ -626,6 +647,9 @@ static void c_can_stop(struct net_device *dev)
+ 
+ 	/* deactivate pins */
+ 	pinctrl_pm_select_sleep_state(dev->dev.parent);
++
++	c_can_transceiver_disable(priv);
++
+ 	priv->can.state = CAN_STATE_STOPPED;
+ }
+ 
+@@ -1263,6 +1287,13 @@ int register_c_can_dev(struct net_device *dev)
+ 	 */
+ 	pinctrl_pm_select_sleep_state(dev->dev.parent);
+ 
++	priv->reg_xceiver = devm_regulator_get(priv->device, "xceiver");
++	if (IS_ERR(priv->reg_xceiver)) {
++		if (PTR_ERR(priv->reg_xceiver) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		priv->reg_xceiver = NULL;
 +	}
 +
- 	icr = readw(cfg_base + PITA_ICR + 2);
+ 	c_can_pm_runtime_enable(priv);
  
- 	for (i = 0; i < channels; i++) {
-@@ -628,7 +657,10 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		priv->reg_base = reg_base + i * PEAK_PCI_CHAN_SIZE;
+ 	dev->flags |= IFF_ECHO;	/* we support local echo */
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 8acdc7f..59246e3 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -213,6 +213,7 @@ struct c_can_priv {
+ 	u32 comm_rcv_high;
+ 	u32 rxmasked;
+ 	u32 dlc[C_CAN_MSG_OBJ_TX_NUM];
++	struct regulator *reg_xceiver;
+ };
  
- 		priv->read_reg = peak_pci_read_reg;
--		priv->write_reg = peak_pci_write_reg;
-+		if (v1 && (PCAN_PCI_FW_VER(v2) < PCAN_PCI_FW(1, 3, 0)))
-+			priv->write_reg = peak_pci_write_reg_1_2_x;
-+		else
-+			priv->write_reg = peak_pci_write_reg;
- 		priv->post_irq = peak_pci_post_irq;
- 
- 		priv->can.clock.freq = PEAK_PCI_CAN_CLOCK;
+ struct net_device *alloc_c_can_dev(void);
 -- 
-1.9.1
+2.7.0.rc3
 
