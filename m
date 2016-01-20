@@ -1,68 +1,64 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 1/3] can: sja1000: of: add per-compatible init hook
-Date: Wed, 20 Jan 2016 16:34:28 +0100
-Message-ID: <569FA904.4010705@pengutronix.de>
-References: <1453285431-32498-1-git-send-email-mkl@pengutronix.de>
- <1453285431-32498-2-git-send-email-mkl@pengutronix.de>
- <20160120153041.GA6117@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="vJkJIDaK19TSbqnKUruFlJeAeXU5BV1wo"
+Subject: [PATCH v6 0/3] can: sja1000: support for technologic version
+Date: Wed, 20 Jan 2016 16:43:28 +0100
+Message-ID: <1453304611-31207-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44152 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:59163 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S933215AbcATPee (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 10:34:34 -0500
-In-Reply-To: <20160120153041.GA6117@localhost>
+	by vger.kernel.org with ESMTP id S1751583AbcATPne (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 10:43:34 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vJkJIDaK19TSbqnKUruFlJeAeXU5BV1wo
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This is Damien Riegel's series with minor changes.
 
-On 01/20/2016 04:30 PM, Damien Riegel wrote:
->> +static const struct of_device_id sp_of_table[] =3D {
->> +	{ /* sentinel */ },
->> +};
->> +MODULE_DEVICE_TABLE(of, sp_of_table);
->> +
->=20
-> I will give a try to this serie but it seems that
->=20
-> 	{.compatible =3D "nxp,sja1000"},
->=20
-> has disappeared of sp_of_table in v5.
-
-Doh! This is of course broken. Wait for v6, please.
-
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
+
+This patchset introduces support for the technologic version of the
+SJA1000. Access to IP's registers are proxied through a window,
+requiring two bus accesses to read or write a register. These accesses
+must be protected by a spinlock to prevent race conditions. Currently,
+there is no easy way to allocate and initialize this spinlock.
+
+SJA1000 already provides a way to allocate private data, but
+sja1000_platform.c makes no use of it.
+
+Patch 1 adds the capability to allocate and initialize private data on a
+per-compatible basis in sja1000_platform.c.
+
+Patch 2 updates device tree documentation to add the technologic
+version.
+
+Patch 3 updates the driver to implement the technologic version
+
+Changes in v6:
+ - fix static const struct of_device_id sp_of_table
+
+Changes in v5:
+ - remove empty "static struct sja1000_of_data nxp_data", again
+ - add additional check for of_id->data
+
+Changes in v4:
+ - add sp_ prefix to technologic functions
+ - add empty "static struct sja1000_of_data nxp_data"
+ - make "struct sja1000_of_data technologic_data" static
+ - get rid of "?" operator in sp_probe()
+
+Changes in v3:
+ - moved sp_of_table above sp_probe as it is used in this function
+ - removed functions added in v2 and do everyting in sp_probe
+
+Changes in v2:
+ - added a patch to allocate and initialize private data
+ - changed device tree documentation
+ - added a spinlock to protect bus accesses
+ - changed sp_{read,write}_reg16 to io{read,write}16
 
 
---vJkJIDaK19TSbqnKUruFlJeAeXU5BV1wo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWn6kEAAoJEP5prqPJtc/HDOUH/0bTtEm85j7v0BtxydMEOjiA
-B8HX7pY9d1EEbN6l0lqp7Nubig32aqiyyBXRfFXa8K/ueIRCZjFSl1Hkw+KHcM9s
-2A++wWZZ4nloWcP4jTiH+64zkvznwWGthpSRX5Ef/cz44TJtQHtJ4ygp65LKTr1j
-rhyg19+HKJjKPEsM03PJ6Tvl5QYL422j26x4VeMThdBC8JXARi2DuYhw9RBUzEmG
-jqaVVBoy1U069M7hCoS5aUq+UY9IlaFdmFz56naSJRER4cAF+yAufq/0tzWeMEtN
-IG8jPMEWMWgPxbbL9vm05uOgAFRy0NQokGsKo6k7+VHMaZxCf6TzsGiM7/wlOfE=
-=J9Qu
------END PGP SIGNATURE-----
-
---vJkJIDaK19TSbqnKUruFlJeAeXU5BV1wo--
