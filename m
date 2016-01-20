@@ -1,12 +1,12 @@
 From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: [PATCH] can: c_can: add xceiver enable/disable support
-Date: Wed, 20 Jan 2016 12:55:30 +0100
-Message-ID: <1453290930-19136-1-git-send-email-m.grzeschik@pengutronix.de>
+Subject: [PATCH v2] can: c_can: add xceiver enable/disable support
+Date: Wed, 20 Jan 2016 14:44:03 +0100
+Message-ID: <1453297443-23279-1-git-send-email-m.grzeschik@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54164 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:52783 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932590AbcATMBi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 07:01:38 -0500
+	by vger.kernel.org with ESMTP id S932839AbcATNo3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 08:44:29 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de, wg@grandegger.com
@@ -17,12 +17,16 @@ in case it's switchable by the regulator framework.
 
 Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 31 +++++++++++++++++++++++++++++++
+v1 -> v2:
+ - always returning PTR_ERR in case devm_regulator_get fails
+ - removed inline wrapper functions with checks for xceiver == NULL
+
+ drivers/net/can/c_can/c_can.c | 12 ++++++++++++
  drivers/net/can/c_can/c_can.h |  1 +
- 2 files changed, 32 insertions(+)
+ 2 files changed, 13 insertions(+)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index f91b094..ca42044 100644
+index f91b094..0723aeb 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
 @@ -36,6 +36,7 @@
@@ -33,60 +37,34 @@ index f91b094..ca42044 100644
  
  #include <linux/can.h>
  #include <linux/can/dev.h>
-@@ -588,6 +589,22 @@ static int c_can_chip_config(struct net_device *dev)
- 	return c_can_set_bittiming(dev);
- }
- 
-+static inline int c_can_transceiver_enable(const struct c_can_priv *priv)
-+{
-+	if (!priv->reg_xceiver)
-+		return 0;
-+
-+	return regulator_enable(priv->reg_xceiver);
-+}
-+
-+static inline int c_can_transceiver_disable(const struct c_can_priv *priv)
-+{
-+	if (!priv->reg_xceiver)
-+		return 0;
-+
-+	return regulator_disable(priv->reg_xceiver);
-+}
-+
- static int c_can_start(struct net_device *dev)
- {
- 	struct c_can_priv *priv = netdev_priv(dev);
-@@ -612,6 +629,10 @@ static int c_can_start(struct net_device *dev)
+@@ -612,6 +613,10 @@ static int c_can_start(struct net_device *dev)
  	else
  		pinctrl_pm_select_default_state(priv->device);
  
-+	err = c_can_transceiver_enable(priv);
++	err = regulator_enable(priv->reg_xceiver);
 +	if (err)
 +		return err;
 +
  	return 0;
  }
  
-@@ -626,6 +647,9 @@ static void c_can_stop(struct net_device *dev)
+@@ -626,6 +631,9 @@ static void c_can_stop(struct net_device *dev)
  
  	/* deactivate pins */
  	pinctrl_pm_select_sleep_state(dev->dev.parent);
 +
-+	c_can_transceiver_disable(priv);
++	regulator_disable(priv->reg_xceiver);
 +
  	priv->can.state = CAN_STATE_STOPPED;
  }
  
-@@ -1263,6 +1287,13 @@ int register_c_can_dev(struct net_device *dev)
+@@ -1263,6 +1271,10 @@ int register_c_can_dev(struct net_device *dev)
  	 */
  	pinctrl_pm_select_sleep_state(dev->dev.parent);
  
 +	priv->reg_xceiver = devm_regulator_get(priv->device, "xceiver");
-+	if (IS_ERR(priv->reg_xceiver)) {
-+		if (PTR_ERR(priv->reg_xceiver) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		priv->reg_xceiver = NULL;
-+	}
++	if (IS_ERR(priv->reg_xceiver))
++		return PTR_ERR(priv->reg_xceiver);
 +
  	c_can_pm_runtime_enable(priv);
  
