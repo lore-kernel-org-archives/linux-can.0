@@ -1,91 +1,144 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
-Date: Wed, 20 Jan 2016 14:51:11 +0000
-Message-ID: <20160120145111.GA1044@maxwell.marel.net>
-References: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: Re: [PATCH v5 1/3] can: sja1000: of: add per-compatible init hook
+Date: Wed, 20 Jan 2016 10:30:42 -0500
+Message-ID: <20160120153041.GA6117@localhost>
+References: <1453285431-32498-1-git-send-email-mkl@pengutronix.de>
+ <1453285431-32498-2-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0085.outbound.protection.outlook.com ([157.55.234.85]:48878
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751367AbcATPY7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 20 Jan 2016 10:24:59 -0500
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:57559 "EHLO
+	mail.savoirfairelinux.com" rhost-flags-OK-FAIL-OK-FAIL)
+	by vger.kernel.org with ESMTP id S933889AbcATPbW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 10:31:22 -0500
 Content-Disposition: inline
-In-Reply-To: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
+In-Reply-To: <1453285431-32498-2-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Hi,
+Hi Marc,
 
-I wouldn't say it's a "potential" frame loss issue. It's a confirmed TX frame
-loss issue.
 
-On Wed, Jan 20, 2016 at 12:15:32PM +0100, Stephane Grosjean wrote:
-> This patch installs a workaround when the driver detects one of the
-> following PEAK-System CAN interfaces, running a firmware < v1.3.0:
+On Wed, Jan 20, 2016 at 11:23:49AM +0100, Marc Kleine-Budde wrote:
+> From: Damien Riegel <damien.riegel@savoirfairelinux.com>
 > 
-> PCAN-PCI Express 1/2/4 CAN; DeviceID 0x0003
-> PCAN-PCI/104 Express 1/2/4 CAN; DeviceID 0x0007
-> PCAN-miniPCIe 1/2 CAN; DeviceID 0x0008
-> PCAN-PCI Express OEM 1/2/4 CAN; DeviceID 0x0009
-> PCAN-ExpressCard 34 1 CAN; DeviceID 0x000A
+> This commit adds the capability to allocate and init private data
+> embedded in the sja1000_priv structure on a per-compatible basis. The
+> device node is passed as a parameter of the init callback to allow
+> parsing of custom device tree properties.
 > 
-> This fixes potential loss of one tx frame in Linux SMP when some other
-> task does another Command Register write (e.g. Release Receive Buffer)
-> in between the triggering Tx Request and the next Sample Point.
-> 
-> This workaround is useless thus *NOT* installed when the firmware
-Nitpick: I don't think that you mean to say that the patch you're posting is
-useless. Perhaps you want to rephrase. ;)
-
-> has been upgraded to v1.3.0 or higher, nor if the CAN interface is equipped
-> with true SJA1000 controller(s).
-> 
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-
-Reported-by: Andri Yngvason <andri.yngvason@marel.com>
-
+> Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 > ---
->  drivers/net/can/sja1000/peak_pci.c | 34 +++++++++++++++++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
+>  drivers/net/can/sja1000/sja1000_platform.c | 39 +++++++++++++++++++++++-------
+>  1 file changed, 30 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-> index 131026f..84f7d3a 100644
-> --- a/drivers/net/can/sja1000/peak_pci.c
-> +++ b/drivers/net/can/sja1000/peak_pci.c
-> @@ -30,6 +30,15 @@
-[...]
->  static void peak_pci_post_irq(const struct sja1000_priv *priv)
+> diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+> index 0552ed46a206..d398561b48ae 100644
+> --- a/drivers/net/can/sja1000/sja1000_platform.c
+> +++ b/drivers/net/can/sja1000/sja1000_platform.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/can/platform/sja1000.h>
+>  #include <linux/io.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_irq.h>
+>  
+>  #include "sja1000.h"
+> @@ -40,6 +41,11 @@ MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
+>  MODULE_ALIAS("platform:" DRV_NAME);
+>  MODULE_LICENSE("GPL v2");
+>  
+> +struct sja1000_of_data {
+> +	size_t  priv_sz;
+> +	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
+> +};
+> +
+>  static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
 >  {
->  	struct peak_pci_chan *chan = priv->priv;
-> @@ -559,6 +581,7 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	void __iomem *cfg_base, *reg_base;
->  	u16 sub_sys_id, icr;
->  	int i, err, channels;
-> +	u32 v1, v2 = 0;
+>  	return ioread8(priv->reg_base + reg);
+> @@ -154,6 +160,11 @@ static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+>  		priv->cdr |= CDR_CBP; /* default */
+>  }
 >  
->  	err = pci_enable_device(pdev);
->  	if (err)
-> @@ -612,6 +635,12 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	/* Leave parport mux mode */
->  	writeb(0x04, cfg_base + PITA_MISC + 3);
+> +static const struct of_device_id sp_of_table[] = {
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, sp_of_table);
+> +
+
+I will give a try to this serie but it seems that
+
+	{.compatible = "nxp,sja1000"},
+
+has disappeared of sp_of_table in v5.
+
+
+Damien
+
+>  static int sp_probe(struct platform_device *pdev)
+>  {
+>  	int err, irq = 0;
+> @@ -163,6 +174,9 @@ static int sp_probe(struct platform_device *pdev)
+>  	struct resource *res_mem, *res_irq = NULL;
+>  	struct sja1000_platform_data *pdata;
+>  	struct device_node *of = pdev->dev.of_node;
+> +	const struct of_device_id *of_id;
+> +	const struct sja1000_of_data *of_data = NULL;
+> +	size_t priv_sz = 0;
 >  
-> +	v1 = readl(cfg_base + VERSION_REG1);
-Nitpick: It's easier on my internal parser if you make this
-	is_fpga = !!readl(cfg_base + VERSION_REG1);
-
-> +	if (v1) {
-> +		/* FPGA card */
-> +		v2 = readl(cfg_base + VERSION_REG2);
-... and this
-		fpga_version = readl(cfg_base + VERSION_REG2);
-
+>  	pdata = dev_get_platdata(&pdev->dev);
+>  	if (!pdata && !of) {
+> @@ -191,7 +205,13 @@ static int sp_probe(struct platform_device *pdev)
+>  	if (!irq && !res_irq)
+>  		return -ENODEV;
+>  
+> -	dev = alloc_sja1000dev(0);
+> +	of_id = of_match_device(sp_of_table, &pdev->dev);
+> +	if (of_id && of_id->data) {
+> +		of_data = of_id->data;
+> +		priv_sz = of_data->priv_sz;
 > +	}
 > +
-[...]
-
-Thanks,
-Andri
+> +	dev = alloc_sja1000dev(priv_sz);
+>  	if (!dev)
+>  		return -ENOMEM;
+>  	priv = netdev_priv(dev);
+> @@ -208,10 +228,17 @@ static int sp_probe(struct platform_device *pdev)
+>  	dev->irq = irq;
+>  	priv->reg_base = addr;
+>  
+> -	if (of)
+> +	if (of) {
+>  		sp_populate_of(priv, of);
+> -	else
+> +
+> +		if (of_data && of_data->init) {
+> +			err = of_data->init(priv, of);
+> +			if (err)
+> +				goto exit_free;
+> +		}
+> +	} else {
+>  		sp_populate(priv, pdata, res_mem->flags);
+> +	}
+>  
+>  	platform_set_drvdata(pdev, dev);
+>  	SET_NETDEV_DEV(dev, &pdev->dev);
+> @@ -242,12 +269,6 @@ static int sp_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static const struct of_device_id sp_of_table[] = {
+> -	{.compatible = "nxp,sja1000"},
+> -	{},
+> -};
+> -MODULE_DEVICE_TABLE(of, sp_of_table);
+> -
+>  static struct platform_driver sp_driver = {
+>  	.probe = sp_probe,
+>  	.remove = sp_remove,
+> -- 
+> 2.7.0.rc3
+> 
