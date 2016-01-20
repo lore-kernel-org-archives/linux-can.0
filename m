@@ -1,38 +1,86 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v4 1/3] can: sja1000: of: add per-compatible init hook
-Date: Tue, 19 Jan 2016 15:08:39 -0500
-Message-ID: <20160119200839.GA12067@localhost>
+Date: Wed, 20 Jan 2016 11:22:21 +0100
+Message-ID: <569F5FDD.7050703@pengutronix.de>
 References: <1452685566-27431-1-git-send-email-mkl@pengutronix.de>
  <1452685566-27431-2-git-send-email-mkl@pengutronix.de>
+ <20160113155749.GB6219@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="qxtgDDaehR4EEiXkFSJC57HEsCjR4EtN1"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:58095 "EHLO
-	mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756018AbcASUIo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jan 2016 15:08:44 -0500
-Content-Disposition: inline
-In-Reply-To: <1452685566-27431-2-git-send-email-mkl@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41494 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S934471AbcATKW3 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2016 05:22:29 -0500
+In-Reply-To: <20160113155749.GB6219@localhost>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qxtgDDaehR4EEiXkFSJC57HEsCjR4EtN1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 13, 2016 at 12:46:04PM +0100, Marc Kleine-Budde wrote:
-> From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-> 
-> This commit adds the capability to allocate and init private data
-> embedded in the sja1000_priv structure on a per-compatible basis. The
-> device node is passed as a parameter of the init callback to allow
-> parsing of custom device tree properties.
-> 
-> Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+On 01/13/2016 04:57 PM, Damien Riegel wrote:
+>>  static int sp_probe(struct platform_device *pdev)
+>>  {
+>>  	int err, irq =3D 0;
+>> @@ -163,6 +177,9 @@ static int sp_probe(struct platform_device *pdev)
+>>  	struct resource *res_mem, *res_irq =3D NULL;
+>>  	struct sja1000_platform_data *pdata;
+>>  	struct device_node *of =3D pdev->dev.of_node;
+>> +	const struct of_device_id *of_id;
+>> +	const struct sja1000_of_data *of_data =3D NULL;
+>> +	size_t priv_sz =3D 0;
+>> =20
+>>  	pdata =3D dev_get_platdata(&pdev->dev);
+>>  	if (!pdata && !of) {
+>> @@ -191,7 +208,13 @@ static int sp_probe(struct platform_device *pdev)=
 
-I see that you haven't taken this serie in your tree. What is its
-status? Are there still some issues that need to be addressed?
+>>  	if (!irq && !res_irq)
+>>  		return -ENODEV;
+>> =20
+>> -	dev =3D alloc_sja1000dev(0);
+>> +	of_id =3D of_match_device(sp_of_table, &pdev->dev);
+>> +	if (of_id) {
+>=20
+> My personal preference here would be to test of_id && of_id->data. That=
 
-Thanks,
-Damien
+> way, we could avoid the declaration of nxp_data. It would also be a bit=
+
+> less error prone if someone adds a new compatible in the of device
+> table.
+
+Ok - please test v5.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--qxtgDDaehR4EEiXkFSJC57HEsCjR4EtN1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWn1/dAAoJEP5prqPJtc/HdUUH/A6ItfhdwMRL0/umVU2ZqlyA
+dnzuhMYaAZO7pphXPpaHaKopXwSturS8JMiw1/2zAUT+iToh2eKa+wuvunQXqbiu
+6hOSSRhpg/fqL9DKQqPyTSpYBu4I7AVYgpun1I1mT/7rhD/ORqlSorfqZXOLzP+p
+DdxYgB8NepPhe2a7JJlgLEoS7F/pFDNe1IhMmaryRzr37ciujU2c7smQSDTkpcYi
+lO7uGcPU3RKuTbmImhqBejf/NZyPN2JDnnoD08Oyj8cxW6lbyOXNsY7S0NPEDhQ9
+EcLDdGQS/a/X7T/9/fdzJMOJYjeslp9zEuzFiJ/SdgyMNnAOj1zuCPiYCOPPuTY=
+=n1PH
+-----END PGP SIGNATURE-----
+
+--qxtgDDaehR4EEiXkFSJC57HEsCjR4EtN1--
