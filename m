@@ -1,41 +1,63 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v6 3/3] can: sja1000: of: add compatibility with
  Technologic Systems version
-Date: Thu, 21 Jan 2016 10:28:21 -0500
-Message-ID: <20160121152820.GA6523@localhost>
+Date: Thu, 21 Jan 2016 17:15:08 +0100
+Message-ID: <56A1040C.4070800@pengutronix.de>
 References: <1453304611-31207-1-git-send-email-mkl@pengutronix.de>
  <1453304611-31207-4-git-send-email-mkl@pengutronix.de>
+ <20160121152820.GA6523@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1453304611-31207-4-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="6D26Lu9UdPnJQF0NJa3vSo5hE62Lcxgco"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37498 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S965246AbcAUQPP (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 21 Jan 2016 11:15:15 -0500
+In-Reply-To: <20160121152820.GA6523@localhost>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6D26Lu9UdPnJQF0NJa3vSo5hE62Lcxgco
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 01/21/2016 04:28 PM, Damien Riegel wrote:
+> I tested the new technologic version and it works as expected.
+
+Thanks.
+
+> Would be nice if someone could test the nxp version to ensure no
+> regressions has been introduced (I don't have such hardware here).
+
+I don't have the hardware, either.
+
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-I tested the new technologic version and it works as expected. Would be
-nice if someone could test the nxp version to ensure no regressions has
-been introduced (I don't have such hardware here).
+--6D26Lu9UdPnJQF0NJa3vSo5hE62Lcxgco
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-On Wed, Jan 20, 2016 at 04:43:31PM +0100, Marc Kleine-Budde wrote:
-> From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-> 
-> Technologic Systems provides an IP compatible with the SJA1000,
-> instantiated in an FPGA. Because of some bus widths issue, access to
-> registers is made through a "window" that works like this:
-> 
->     base + 0x0: address to read/write
->     base + 0x2: 8-bit register value
-> 
-> This commit adds a new compatible device, "technologic,sja1000", with
-> read and write functions using the window mechanism.
-> 
-> Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+-----BEGIN PGP SIGNATURE-----
 
-Tested-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+iQEcBAEBCgAGBQJWoQQMAAoJEP5prqPJtc/HfRIH/2QgzqYxE1LIPUlAiitOsBch
+Eaq74lHajuDGLM3CdRsPpWo1CEmsqwi23HULVm8clhHrr5EcY3E00U1htplSMK+K
+DVkGxO8bswASsfIouQpA540YNSYe7JNpJ/hMZsLGbCFldbE7hL29egWMX2BPAaY0
+nsGuW84eRX0Xxo7oGV1xN5Pv6mm0seeBG0v7GWICaT4R2hrdamPHX2wCpBDdRtah
+bL/6oDOQ5z2LZ33DWpc2iNw0m6AKRrp49mPfhlaC8FvlDyXlkAL5IvaK78mAVVCR
+FmcugYrDIs7NDhDIF62LiH+03wRBumRT+U+b/hqBmPbRjCj0bqPjBHIYhxIHx1o=
+=JXPR
+-----END PGP SIGNATURE-----
+
+--6D26Lu9UdPnJQF0NJa3vSo5hE62Lcxgco--
