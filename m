@@ -1,53 +1,93 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: Expose filtered CAN interface to processes
-Date: Mon, 1 Feb 2016 10:13:05 +0000
-Message-ID: <20160201101305.GA3878@maxwell.marel.net>
-References: <EB7F4954055D8D47BE2774BFC0597392301E1285@MTK-SMS-XCH02.digi.com>
- <56ABC5EE.8070100@hartkopp.net>
- <EB7F4954055D8D47BE2774BFC0597392301E144B@MTK-SMS-XCH02.digi.com>
+From: Vlastimil Setka <setka@vstk.cz>
+Subject: Re: [Rfi] Cyclone V CAN errors when application pinned to CPU1
+Date: Sat, 6 Feb 2016 18:59:45 +0100
+Message-ID: <56B63491.9020500@vstk.cz>
+References: <562155B7.7020504@vsis.cz> <20151020071807.GH20879@pengutronix.de>
+ <5625EF45.2000807@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0075.outbound.protection.outlook.com ([157.55.234.75]:24422
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753219AbcBAK36 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 1 Feb 2016 05:29:58 -0500
-Content-Disposition: inline
-In-Reply-To: <EB7F4954055D8D47BE2774BFC0597392301E144B@MTK-SMS-XCH02.digi.com>
+Received: from mail.spsostrov.cz ([85.13.101.195]:41080 "EHLO
+	mail.spsostrov.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751891AbcBFSQB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 6 Feb 2016 13:16:01 -0500
+In-Reply-To: <5625EF45.2000807@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Osborne, Paul" <Paul.Osborne@digi.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Robert Schwebel <r.schwebel@pengutronix.de>
+Cc: rfi@lists.rocketboards.org, linux-can <linux-can@vger.kernel.org>
 
-On Fri, Jan 29, 2016 at 09:53:01PM +0000, Osborne, Paul wrote:
-> 
-> Hello Oliver/Andri,
-> 
-> >> I am new to network namespaces; Am I missing something?  Is this a
-> >> real use case for network namespace support?  It sounded like there
-> >> was uncertainty on this point with the RFC that was posted back in
-> >> September by Andri: http://comments.gmane.org/gmane.linux.can/8589.
-> >
-> > Yes. I think this would be the right way to go.
-> >
-> > My current idea regarding namespace aware virtual CAN interfaces is to create
-> > virtual CAN interfaces inside a network namespace. These 'vcan with namespace'
-> > interfaces could then be connected via cangw in the initial (real world)
-> > namespace to other can/vcan interfaces (with/without namespace) with cangw rules.
-> >
-> > The good thing about this approach is that you can use the filter and
-> > modification capabilities from cangw at the same time.
-> 
-> Alright, good to know I am not barking up the wrong tree.  As I am
-> needing this functionality in the not-too-distant future, I may take a
-> shot at putting something together based on the work Andri has done
-> and your comments.
->
-That would be much appreciated. My patch set crashes on my SMP system but not on
-a non-SMP qemu VM.
+Hi, I was just able to get back to this issue after some time.
 
-Feel free to ask me questions. I'll try to answer to the best of my knowledge.
+20.10.2015 9:37 Marc Kleine-Budde:
+>> On Fri, Oct 16, 2015 at 09:53:27PM +0200, Vlastimil Setka wrote:
+>>> We discovered very weird behaviour of CAN controller in Cyclone V SoC
+>>> with Linux socketcan stack. The problem was first seen on 3.10-ltsi a
+>>> few months ago, and now again on 3.18 from altera github (with rt
+>>> preempt patch applied).
+>> Could you try if the issue happens with a recent mainline kernel as
+>> well? RT is available for 4.1, so that would be a good choice.
+Now the tests were done on 4.3 kernel with a few Altera patches, without RT patch - build from: https://github.com/altera-opensource/linux-socfpga/tree/rel_socfpga-4.3_16.02.01_pr
+> Which CAN driver are you using?
+CAN controller of the affected system is embedded in the Altera Cyclone V SoC chip, it's implementation of a standard D_CAN core. It use mainline c_can driver: https://github.com/altera-opensource/linux-socfpga/tree/rel_socfpga-4.3_16.02.01_pr/drivers/net/can/c_can
+>>> We have a linux application which sends data periodically (1 to 20 ms
+>>> period) out over the can0 socketcan interface. Sometimes the first
+>>> data byte in the CAN frame is zero on the wire, but non-zero in the
+>>> data sent! When running with this period, this happens at random
+>>> times, but during a few minutes it can be allways replicated.
+> How do you measure the CAN frames on the wire?
+Using another linux system by:
+    candump can0,0:0,#FFFFFFFF | grep -v "11 22 33 44 55 66 77 88"
+We also verified the results concurrently using USB P-CAN adapter on another system with some proprietary monitoring application, and also using oscilloscope with logic analyzer.
+>>> The problem only appears when the application is pinned to CPU1 by
+>>> linux process afinity mechanism. When pinned to default CPU0, there is
+>>> no problem.
+>>>
+>>> Anyone seen this issue? Any idea how to debug it and what can be a
+>>> reason? What version (git repo / tag) of Linux should I use?
+>>>
+>>> We plan to do some in-deep evaluation and testing, but I want to share
+>>> the experience now.
+> The TX functions is usually pretty straight forward. Copy all data bytes
+> into the hardware, write ID and DLC, then hit the send bit (or whatever
+> triggers the hardware to send the frame). Maybe there's some barrier
+> missing in this sequence? Where can I find your driver?
+The driver is c_can from mainline (see above).
+>> Is your test program available somewhere?
+Test program is very simple C code which cyclically writes to CAN socket, available here: https://gist.github.com/vstk/f9e4b7c5646bedfedd42
 
-Thanks,
-Andri
+We now discovered that the problem is not triggered by CPU pinning which was our initial idea. It can be reproducibly triggered by a high network load on ethernet generated by iperf for example. Other load on CPU or data flash does not affect this. Everything is OK only in case when the test program is executed with a high (80) RT priority on RT-patched kernel, and the whole system is limited to a single CPU by isolcpus=1 kernel option (this case initially pointed us to some SMP-related problem). Errors are most common when the test program is pinned to CPU1 by taskset and rest of the system is limited to CPU0.
+
+Steps to reproduce:
+
+- monitoring linux system connected to CAN bus: configure can0 interface, run:
+
+root@monitor:~# ip link set can0 type can bitrate 1000000 restart-ms 100
+root@monitor:~# ip link set can0 up
+root@monitor:~# candump can0,0:0,#FFFFFFFF | grep -v "11 22 33 44 55 66 77 88"
+
+- system under test: configure can0 interface, build test program (https://gist.github.com/vstk/f9e4b7c5646bedfedd42), run it:
+
+root@cyclone-soc:~# ./canbench
+# canbench [ <rt-prio> [ <interval-us> ] ]
+iface can0 at index 2 OK
+interval: 1.000000 ms
+
+- do some network load at system under test:
+
+root@cyclone-soc:~# iperf -c 192.168.1.1
+
+- data errors can be seen in a few seconds at monitoring system (the "11 22 33 44 55 66 77 88" is a test pattern generated by the test program):
+
+root@monitor:~# candump can0,0:0,#FFFFFFFF | grep -v "11 22 33 44 55 66 77 88"
+  can0  266   [8]  11 22 33 44 00 00 77 88
+  can0  266   [8]  11 22 33 44 01 00 77 88
+  can0  266   [8]  11 22 33 44 01 00 77 88
+  can0  266   [8]  0E 00 33 44 55 66 77 88
+  can0  266   [8]  11 22 33 44 01 00 77 88
+
+As a next step, I plan to check data inside the driver just before it writes into the hardware to verify if the error is not in network stack above the driver. Any other idea?
+
+Vlastimil Setka
+
