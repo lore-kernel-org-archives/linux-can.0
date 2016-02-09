@@ -1,57 +1,72 @@
-From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Subject: Can utils for CANFD
-Date: Tue, 9 Feb 2016 10:18:02 +0000
-Message-ID: <DA6901612C71B84D91459DE817C418AE26D8B38E@XAP-PVEXMBX01.xlnx.xilinx.com>
+From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
+Subject: AW: Can utils for CANFD
+Date: Tue, 9 Feb 2016 13:12:07 +0100
+Message-ID: <zarafa.56b9d797.4efd.4bf396903baafa90@euve35974.vserver.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-cys01nam02on0057.outbound.protection.outlook.com ([104.47.37.57]:63408
-	"EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1756294AbcBILuv convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Feb 2016 06:50:51 -0500
-Received: from unknown-38-66.xilinx.com ([149.199.38.66] helo=xsj-pvapsmtp01)
-	by xsj-pvapsmtpgw01 with esmtp (Exim 4.63)
-	(envelope-from <naga.sureshkumar.relli@xilinx.com>)
-	id 1aT5Mz-0000xT-1i
-	for linux-can@vger.kernel.org; Tue, 09 Feb 2016 02:18:05 -0800
-Received: from [127.0.0.1] (helo=xsj-smtp-dlp2.xlnx.xilinx.com)
-	by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-	(envelope-from <naga.sureshkumar.relli@xilinx.com>)
-	id 1aT5My-00068f-Tk
-	for linux-can@vger.kernel.org; Tue, 09 Feb 2016 02:18:04 -0800
-Received: from xsj-pvapsmtp01 (smtp3.xilinx.com [149.199.38.66])
-	by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id u19AI4BL027797
-	for <linux-can@vger.kernel.org>; Tue, 9 Feb 2016 02:18:04 -0800
-Received: from [172.22.159.25] (helo=XAP-PVEXCAS01.xlnx.xilinx.com)
-	by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-	(envelope-from <nagasure@xilinx.com>)
-	id 1aT5My-000680-0V
-	for linux-can@vger.kernel.org; Tue, 09 Feb 2016 02:18:04 -0800
-Content-Language: en-US
+Received: from euve35974.vserver.de ([62.75.213.146]:52104 "EHLO
+	euve35974.vserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755932AbcBIMVW convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Feb 2016 07:21:22 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>, =?utf-8?Q?Naga_Sureshkumar_Relli?= <naga.sureshkumar.relli@xilinx.com>
+Cc: =?utf-8?Q?Appana_Durga_Kedareswara_Rao?= <appanad@xilinx.com>
 
-Hi Marc,
+Hello Naga,
 
-I am adding Xilinx_canfd driver for Xilinx CANFD IP.
-So to test that, I have downloaded https://github.com/linux-can/can-utils.
+last time I've used CAN-FD with a Peak USB-FD connected to my BeagleBon=
+e Black I'm using these sources:
 
-But it doesn't have canconfig option, to configure CANFD Controller. Like bitrate, mode etc...
+https://github.com/hartkopp/can-utils
 
-It has only ip command support, but this ip utility doesn't have support to change can mode (Normal operation Mode).
-It has only loopback mode support.
+Regards
+Michael
 
-So, the can-utils, which I am using are the correct utils or not?
-
-Suggest me, which one to use, to test CANFD.
-
-Thanks,
-Naga Sureshkumar Relli.
-
-
-This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-
+-----Urspr=C3=BCngliche Nachricht-----
+Von:	Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Gesendet:	Di 09.02.2016 12:58
+Betreff:	Can utils for CANFD
+An:	linux-can@vger.kernel.org;=20
+CC:	Appana Durga Kedareswara Rao <appanad@xilinx.com>;=20
+> Hi Marc,
+>=20
+> I am adding Xilinx_canfd driver for Xilinx CANFD IP.
+> So to test that, I have downloaded https://github.com/linux-can/can-u=
+tils.
+>=20
+> But it doesn't have canconfig option, to configure CANFD Controller. =
+Like=20
+> bitrate, mode etc...
+>=20
+> It has only ip command support, but this ip utility doesn't have supp=
+ort to=20
+> change can mode (Normal operation Mode).
+> It has only loopback mode support.
+>=20
+> So, the can-utils, which I am using are the correct utils or not?
+>=20
+> Suggest me, which one to use, to test CANFD.
+>=20
+> Thanks,
+> Naga Sureshkumar Relli.
+>=20
+>=20
+> This email and any attachments are intended for the sole use of the n=
+amed=20
+> recipient(s) and contain(s) confidential information that may be prop=
+rietary,=20
+> privileged or copyrighted under applicable law. If you are not the in=
+tended=20
+> recipient, do not read, copy, or forward this email message or any at=
+tachments.=20
+> Delete this email message and any attachments immediately.
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
