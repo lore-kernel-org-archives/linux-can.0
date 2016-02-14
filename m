@@ -1,81 +1,44 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Can utils for CANFD
-Date: Tue, 9 Feb 2016 20:59:02 +0100
-Message-ID: <56BA4506.30204@hartkopp.net>
-References: <DA6901612C71B84D91459DE817C418AE26D8B38E@XAP-PVEXMBX01.xlnx.xilinx.com>
+From: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: =?utf-8?Q?=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0?=
+	=?utf-8?Q?=9A=D0=98=D0=95_=D0=91=D0=90=D0=97=D0=AB!_=D0?=
+	=?utf-8?Q?=A2=D0=B5=D0=BB=5CViber=5CWhatsapp=3A_+79133913?=
+	=?utf-8?Q?837_Email=3A_vfalatov=40gmail=2Ecom_Skype=3A_pr?=
+	=?utf-8?Q?odawez389?=
+Date: Sun, 14 Feb 2016 09:28:06 +0600
+Message-ID: <8E75C11E16C2ED2EF2F7BE01F59EB18E@vger.kernel.org>
+Reply-To: "linux-can@vger.kernel.org" <vfalatov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:60476 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753799AbcBIT7G (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Feb 2016 14:59:06 -0500
-In-Reply-To: <DA6901612C71B84D91459DE817C418AE26D8B38E@XAP-PVEXMBX01.xlnx.xilinx.com>
+Received: from [37.208.41.118] ([37.208.41.118]:45408 "EHLO proxy.localdomain"
+	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751312AbcBNDel (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 13 Feb 2016 22:34:41 -0500
+Received: from 37.208.41.118 (localhost [IPv6:::1])
+	by proxy.localdomain (Postfix) with SMTP id A6F501A4745
+	for <linux-can@vger.kernel.org>; Sun, 14 Feb 2016 09:28:56 +0600 (ALMT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+To: linux-can@vger.kernel.org
 
-Hi,
+=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0=9A=D0=98=D0=95 =D0=91=D0=90=
+=D0=97=D0=AB!
 
-the can-utils you downloaded from https://github.com/linux-can/can-utils
-support CAN-FD since 2012 (and Linux 3.6):
-
-http://can-newsletter.org/engineering/standardization/nr_stand_can-fd_linux3.6_120703
-
-And since Linux 3.15 the CAN driver infrastructure is part of Linux mainline
-kernel:
-
-http://can-newsletter.org/engineering/standardization/140513_can-fd-linux-tools-and-driver-infrastructure_peak_vw
-
-The ip tool from the iproute2 package provides the configuration of CAN FD
-hardware too. See documentation at:
-
-https://www.kernel.org/doc/Documentation/networking/can.txt
-
-See chapters 6.5 & 6.6 there.
-
-An example how a real world CAN FD interface is configured:
-http://www.peak-system.com/forum/viewtopic.php?f=177&t=1296
-
-Just if you refer to the CAN tools hosted by Pengutronix ...
-
-	http://git.pengutronix.de/?p=tools/canutils.git
-
-... the canconfig tool provided there does NOT support CAN FD for now.
-
-Same applies to
-
-	http://git.pengutronix.de/?p=tools/libsocketcan.git
-
-Regards,
-Oliver
-
-
-On 02/09/2016 11:18 AM, Naga Sureshkumar Relli wrote:
-> Hi Marc,
-> 
-> I am adding Xilinx_canfd driver for Xilinx CANFD IP.
-> So to test that, I have downloaded https://github.com/linux-can/can-utils.
-> 
-> But it doesn't have canconfig option, to configure CANFD Controller. Like bitrate, mode etc...
-> 
-> It has only ip command support, but this ip utility doesn't have support to change can mode (Normal operation Mode).
-> It has only loopback mode support.
-> 
-> So, the can-utils, which I am using are the correct utils or not?
-> 
-> Suggest me, which one to use, to test CANFD.
-> 
-> Thanks,
-> Naga Sureshkumar Relli.
-> 
-> 
-> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC =D0=B4=D0=BB=D1=8F =D0=92=D0=
+=B0=D1=81 =D0=BF=D0=BE =D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=BD=D0=B5=D1=82=
+ =D0=B1=D0=B0=D0=B7=D1=83 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85 =D0=BF=D0=
+=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD=D1=8B=D1=85 =D0=
+=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2=20
+=D0=B4=D0=BB=D1=8F =D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE =D0=91=D0=B8=D0=
+=B7=D0=BD=D0=B5=D1=81=D0=B0!
+=D0=9C=D0=BD=D0=BE=D0=B3=D0=BE! =D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE! =D0=
+=9D=D0=B5=D0=B4=D0=BE=D1=80=D0=BE=D0=B3=D0=BE!=20
+=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=82=D0=B5 =D0=BE=D0=B1 =D1=8D=D1=82=D0=
+=BE=D0=BC =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5=D0=B5 =D0=BF=
+=D0=BE=20
+=D0=A2=D0=B5=D0=BB: +79133913837
+Viber: +79133913837
+Whatsapp: +79133913837
+Skype: prodawez389
+Email: vfalatov@gmail.com
