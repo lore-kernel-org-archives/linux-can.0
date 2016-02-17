@@ -1,44 +1,34 @@
-From: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: =?utf-8?Q?=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0?=
-	=?utf-8?Q?=9A=D0=98=D0=95_=D0=91=D0=90=D0=97=D0=AB!_=D0?=
-	=?utf-8?Q?=A2=D0=B5=D0=BB=5CViber=5CWhatsapp=3A_+79133913?=
-	=?utf-8?Q?837_Email=3A_vfalatov=40gmail=2Ecom_Skype=3A_pr?=
-	=?utf-8?Q?odawez389?=
-Date: Sun, 14 Feb 2016 09:28:06 +0600
-Message-ID: <8E75C11E16C2ED2EF2F7BE01F59EB18E@vger.kernel.org>
-Reply-To: "linux-can@vger.kernel.org" <vfalatov@gmail.com>
+From: "Fischer, Claudio" <Claudio.Fischer@weinig.com>
+Subject: question about time stamp for writing can messages
+Date: Wed, 17 Feb 2016 13:40:22 +0000
+Message-ID: <56C4785C.1070900@dimter-weinig.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from [37.208.41.118] ([37.208.41.118]:45408 "EHLO proxy.localdomain"
-	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751312AbcBNDel (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Sat, 13 Feb 2016 22:34:41 -0500
-Received: from 37.208.41.118 (localhost [IPv6:::1])
-	by proxy.localdomain (Postfix) with SMTP id A6F501A4745
-	for <linux-can@vger.kernel.org>; Sun, 14 Feb 2016 09:28:56 +0600 (ALMT)
+Received: from mail1.weinig.de ([80.148.10.30]:49374 "EHLO mail1.weinig.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1423008AbcBQNsG (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 17 Feb 2016 08:48:06 -0500
+Received: from detau1s0404.wgrp.net ([10.14.150.210]:39506 helo=mailgateway.weinig.com)
+	by mail1.weinig.de with esmtp (Exim 4.82_1-5b7a7c0-XX)
+	(envelope-from <Claudio.Fischer@weinig.com>)
+	id 1aW2L9-00054t-0s
+	for linux-can@vger.kernel.org; Wed, 17 Feb 2016 14:40:23 +0100
+Received: from DETAU1S0610.wgrp.net (exchange.wgrp.net [10.14.110.60])
+	by mailgateway.weinig.com (Postfix) with ESMTP id 4B59F3759
+	for <linux-can@vger.kernel.org>; Wed, 17 Feb 2016 14:40:18 +0100 (CET)
+Content-Language: en-US
+Content-ID: <C0A0C3E250D339468C99E80B8130B5C4@weinig.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0=9A=D0=98=D0=95 =D0=91=D0=90=
-=D0=97=D0=AB!
-
-=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC =D0=B4=D0=BB=D1=8F =D0=92=D0=
-=B0=D1=81 =D0=BF=D0=BE =D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=BD=D0=B5=D1=82=
- =D0=B1=D0=B0=D0=B7=D1=83 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85 =D0=BF=D0=
-=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD=D1=8B=D1=85 =D0=
-=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2=20
-=D0=B4=D0=BB=D1=8F =D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE =D0=91=D0=B8=D0=
-=B7=D0=BD=D0=B5=D1=81=D0=B0!
-=D0=9C=D0=BD=D0=BE=D0=B3=D0=BE! =D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE! =D0=
-=9D=D0=B5=D0=B4=D0=BE=D1=80=D0=BE=D0=B3=D0=BE!=20
-=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=82=D0=B5 =D0=BE=D0=B1 =D1=8D=D1=82=D0=
-=BE=D0=BC =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5=D0=B5 =D0=BF=
-=D0=BE=20
-=D0=A2=D0=B5=D0=BB: +79133913837
-Viber: +79133913837
-Whatsapp: +79133913837
-Skype: prodawez389
-Email: vfalatov@gmail.com
+SGksDQoNCkkgaGF2ZSBhIHF1ZXN0aW9uIGFib3V0IHRoZSB0aW1lIHN0YW1wIGZvciB3cml0aW5n
+IGNhbiBtZXNzYWdlczoNCg0KSSdtIHVzaW5nIHRoZSB0aW1lIHN0YW1wIGZlYXR1cmUgd2hlbiBy
+ZWFkaW5nIGNhbiBtZXNzYWdlcyB3aXRoIA0Kc29ja2V0Y2FuIG9uIGxpbnV4Lg0KSXMgdGhlcmUg
+YSBwb3NzaWJpbGl0eSB0byB1c2UgdGhlIHNhbWUgY2xvY2sgcmVmZXJlbmNlIC8gdGltZSBzdGFt
+cCANCmZlYXR1cmUgZm9yIHdyaXRpbmcNCmNhbiBtZXNzYWdlcz8NCg0KSSdtIGFza2luZyB0aGlz
+LCBiZWNhdXNlIEkgd2FudCB0byByZWNvcmQgYWxsIHdyaXR0ZW4gYW5kIHJlYWQgY2FuIA0KbWVz
+c2FnZXMgaW4NCmNocm9ub2xvZ2ljIHNlcXVlbmNlIHdpdGhvdXQgYnVpbGRpbmcgbXkgb3duIHRp
+bWVzdGFtcCBmb3Igd3JpdHRlbiBtZXNzYWdlcy4NCg0KUmVnYXJkcywNCkNsYXVkaW8=
