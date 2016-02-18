@@ -1,62 +1,47 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: question about time stamp for writing can messages
-Date: Wed, 17 Feb 2016 18:45:16 +0100
-Message-ID: <56C4B1AC.5040400@hartkopp.net>
-References: <56C4785C.1070900@dimter-weinig.de>
+From: Stefan Tatschner <rumpelsepp@sevenbyte.org>
+Subject: PCAN USB Pro FD one-shot
+Date: Thu, 18 Feb 2016 13:56:19 +0100
+Message-ID: <56C5BF73.9040402@sevenbyte.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:60198 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965220AbcBQRpV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 17 Feb 2016 12:45:21 -0500
-In-Reply-To: <56C4785C.1070900@dimter-weinig.de>
+Received: from mail.sevenbyte.org ([5.9.90.188]:55464 "EHLO mail.sevenbyte.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1946077AbcBRNRy (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 18 Feb 2016 08:17:54 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.sevenbyte.org (Postfix) with ESMTP id 9ED9F1260713
+	for <linux-can@vger.kernel.org>; Thu, 18 Feb 2016 13:56:20 +0100 (CET)
+Received: from mail.sevenbyte.org ([127.0.0.1])
+	by localhost (mail.sevenbyte.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id JH0xrMjOU2Wg for <linux-can@vger.kernel.org>;
+	Thu, 18 Feb 2016 13:56:20 +0100 (CET)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Fischer, Claudio" <Claudio.Fischer@weinig.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>
 
-Hi Claudio,
+Hey list,
 
-On 02/17/2016 02:40 PM, Fischer, Claudio wrote:
+I am currently working with the PCAN USB Pro FD device. I wanted to
+experiment with the "one-shot" mode, which is proposed by "ip":
 
-> I have a question about the time stamp for writing can messages:
-> 
-> I'm using the time stamp feature when reading can messages with 
-> socketcan on linux.
-> Is there a possibility to use the same clock reference / time stamp 
-> feature for writing
-> can messages?
-> 
-> I'm asking this, because I want to record all written and read can 
-> messages in
-> chronologic sequence without building my own timestamp for written messages.
+    $ ip link set can0 type can help
+    Usage: ip link set DEVICE type can
+    (...)
+        [ loopback { on | off } ]
+        [ listen-only { on | off } ]
+        [ triple-sampling { on | off } ]
+        [ one-shot { on | off } ]
+        [ berr-reporting { on | off } ]
+        [ fd { on | off } ]
+        [ fd-non-iso { on | off } ]
+        [ presume-ack { on | off } ]
+    (...)
 
-When you run e.g. 'candump -ta <interface>' on a terminal you would see, that
-even your sent CAN frames appear with a correct in-order timestamp.
+Unfortunately this seems currently not supported by the SocketCAN
+driver. Do you have any more information on this topic?
 
-When you send a CAN frame this CAN frame is 'echoed' back to the system to
-allow all applications on your system (multi-user) to get the correct
-representation of what happened on the wire.
+Thanks in advance!
 
-The timestamp is usually set when the TX-ok interrupt occurred after the frame
-has been successfully send on the CAN bus. Then the stamped frame is
-'received' by the system again - so you already have a correct timestamp of
-your outgoing CAN frames.
-
-See http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L184
-
-When you have a CAN driver that does not support the ECHO functionality (e.g.
-slcan devices) the timestamp is generated on network layer as fallback - which
-is not that precise and may be out of order then.
-
-Usually you do not see the sent frame on your CAN_RAW socket, as it is
-(historically) unusual to receive your own traffic.
-
-If you want to receive the traffic on the same socket where it was sent you'll
-have to set the CAN_RAW_RECV_OWN_MSGS socket option:
-
-http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L537
-
-Best regards,
-Oliver
+Stefan
