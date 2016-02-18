@@ -1,47 +1,73 @@
-From: Stefan Tatschner <rumpelsepp@sevenbyte.org>
-Subject: PCAN USB Pro FD one-shot
-Date: Thu, 18 Feb 2016 13:56:19 +0100
-Message-ID: <56C5BF73.9040402@sevenbyte.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: PCAN USB Pro FD one-shot
+Date: Thu, 18 Feb 2016 14:29:33 +0100
+Message-ID: <56C5C73D.5080304@pengutronix.de>
+References: <56C5BF73.9040402@sevenbyte.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="PBBWxhSorEJ9PdtHPvkLp2DeVDlaGV5OI"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.sevenbyte.org ([5.9.90.188]:55464 "EHLO mail.sevenbyte.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1946077AbcBRNRy (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 18 Feb 2016 08:17:54 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.sevenbyte.org (Postfix) with ESMTP id 9ED9F1260713
-	for <linux-can@vger.kernel.org>; Thu, 18 Feb 2016 13:56:20 +0100 (CET)
-Received: from mail.sevenbyte.org ([127.0.0.1])
-	by localhost (mail.sevenbyte.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id JH0xrMjOU2Wg for <linux-can@vger.kernel.org>;
-	Thu, 18 Feb 2016 13:56:20 +0100 (CET)
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44031 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1946126AbcBRN3n (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 18 Feb 2016 08:29:43 -0500
+In-Reply-To: <56C5BF73.9040402@sevenbyte.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
+To: Stefan Tatschner <rumpelsepp@sevenbyte.org>, linux-can <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-Hey list,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PBBWxhSorEJ9PdtHPvkLp2DeVDlaGV5OI
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I am currently working with the PCAN USB Pro FD device. I wanted to
-experiment with the "one-shot" mode, which is proposed by "ip":
+On 02/18/2016 01:56 PM, Stefan Tatschner wrote:
+> I am currently working with the PCAN USB Pro FD device. I wanted to
+> experiment with the "one-shot" mode, which is proposed by "ip":
+>=20
+>     $ ip link set can0 type can help
+>     Usage: ip link set DEVICE type can
+>     (...)
+>         [ loopback { on | off } ]
+>         [ listen-only { on | off } ]
+>         [ triple-sampling { on | off } ]
+>         [ one-shot { on | off } ]
+>         [ berr-reporting { on | off } ]
+>         [ fd { on | off } ]
+>         [ fd-non-iso { on | off } ]
+>         [ presume-ack { on | off } ]
+>     (...)
+>=20
+> Unfortunately this seems currently not supported by the SocketCAN
+> driver. Do you have any more information on this topic?
 
-    $ ip link set can0 type can help
-    Usage: ip link set DEVICE type can
-    (...)
-        [ loopback { on | off } ]
-        [ listen-only { on | off } ]
-        [ triple-sampling { on | off } ]
-        [ one-shot { on | off } ]
-        [ berr-reporting { on | off } ]
-        [ fd { on | off } ]
-        [ fd-non-iso { on | off } ]
-        [ presume-ack { on | off } ]
-    (...)
+Indeed it's not supported by the driver. Maybe Stephane can tell, if at
+least the hardware supports this feature.
 
-Unfortunately this seems currently not supported by the SocketCAN
-driver. Do you have any more information on this topic?
+Marc
 
-Thanks in advance!
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Stefan
+
+--PBBWxhSorEJ9PdtHPvkLp2DeVDlaGV5OI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWxcc+AAoJED07qiWsqSVq/cAH/2wXGPyMzBEUhRkgbieB2+P6
+nLkzFhKTKqod2cKKxzN6SzLj3AgUYtT1ixMZtSN1E46n1kbeNdwvbpcGTkpiOfUE
++1Q6Q+s0Mrt/whiqRjfjuFuH5AhXw6sh3QGezf2eO2F052IolKmYBwcoV8MudFY6
+EoYaao4dlpNcDFGhWCb6SFpT0bO6GocbssEGqoLbh33iJwu5Fy9aTcmJpf6Tdigg
+jl+nGqNO5pp/DQUpClAXZ+gMoVxKu1/WFCsFrarM9ljzHRPLbvJuh8vix8+stOcJ
+0qqeftU+oGXFxdkOU8PvzqU7QIHqvByGQiOJ3uM9hAIdeeet4MQzj3UN5EEavkA=
+=r0Ge
+-----END PGP SIGNATURE-----
+
+--PBBWxhSorEJ9PdtHPvkLp2DeVDlaGV5OI--
