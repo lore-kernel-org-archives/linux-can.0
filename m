@@ -1,109 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: ems_usb: Fix possible tx overflow
-Date: Mon, 22 Feb 2016 13:18:38 +0100
-Message-ID: <56CAFC9E.7050306@pengutronix.de>
-References: <1456068458-14271-1-git-send-email-mkl@pengutronix.de>
- <1456068458-14271-2-git-send-email-mkl@pengutronix.de>
- <56CAFAEE.2020602@cogentembedded.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH can-next 2/2] CAN: rcar: add device tree support for r8a779[234]
+Date: Mon, 22 Feb 2016 14:48:39 +0100
+Message-ID: <CAMuHMdU5zMG=Sha5MfotbKmdBDgzJucve483oZbmseLvLR-2sA@mail.gmail.com>
+References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
+	<1456107350-12100-3-git-send-email-horms+renesas@verge.net.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="7qx7wNMqf6IboxkQHeQ2irPeGMBAb4WHr"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46066 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754220AbcBVMSv (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 07:18:51 -0500
-In-Reply-To: <56CAFAEE.2020602@cogentembedded.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>, linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1456107350-12100-3-git-send-email-horms+renesas@verge.net.au>
+Sender: netdev-owner@vger.kernel.org
+To: Simon Horman <horms+renesas@verge.net.au>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-renesas-soc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7qx7wNMqf6IboxkQHeQ2irPeGMBAb4WHr
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 22, 2016 at 3:15 AM, Simon Horman
+<horms+renesas@verge.net.au> wrote:
+> Simply document new compatibility string.
+> As a previous patch adds a generic R-Car Gen2 compatibility string
+> there appears to be no need for a driver updates.
+> By documenting this compat sting it may be used in DTSs shipped, for
 
-On 02/22/2016 01:11 PM, Sergei Shtylyov wrote:
-> Hello.
->=20
-> On 2/21/2016 6:27 PM, Marc Kleine-Budde wrote:
->=20
->> From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
->>
->> This patch fixes the problem that more CAN messages could be sent to t=
-he
->> interface as could be send on the CAN bus. This was more likely for sl=
-ow baud
->> rates. The sleeping _start_xmit was woken up in the _write_bulk_callba=
-ck. Under
->> heavy TX load this produced another bulk transfer without checking the=
+string
 
->> free_slots variable and hence caused the overflow in the interface.
->>
->> Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
->> Cc: linux-stable <stable@vger.kernel.org>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
->> ---
->>   drivers/net/can/usb/ems_usb.c | 14 ++++++++++----
->>   1 file changed, 10 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_u=
-sb.c
->> index fc5b75675cd8..eb7192fab593 100644
->> --- a/drivers/net/can/usb/ems_usb.c
->> +++ b/drivers/net/can/usb/ems_usb.c
->> @@ -117,6 +117,9 @@ MODULE_LICENSE("GPL v2");
->>    */
->>   #define EMS_USB_ARM7_CLOCK 8000000
->>
->> +#define CPC_TX_QUEUE_TRIGGER_LOW	25
->> +#define CPC_TX_QUEUE_TRIGGER_HIGH	35
->> +
->>   /*
->>    * CAN-Message representation in a CPC_MSG. Message object type is
->>    * CPC_MSG_TYPE_CAN_FRAME or CPC_MSG_TYPE_RTR_FRAME or
->> @@ -278,6 +281,11 @@ static void ems_usb_read_interrupt_callback(struc=
-t urb *urb)
->>   	switch (urb->status) {
->>   	case 0:
->>   		dev->free_slots =3D dev->intr_in_buffer[1];
->> +		if(dev->free_slots > CPC_TX_QUEUE_TRIGGER_HIGH){
->> +			if (netif_queue_stopped(netdev)){
->> +				netif_wake_queue(netdev);
->> +			}
->> +		}
->=20
->     Hm, did anyone run scripts/checkpatch.pl on this patch?
+> example as part of ROMs. It must be used in conjunction with the Gen2
+> fallback compat string. At this time there are no known differences between
+> the r8a779[234] IP blocks and that implemented by the driver for the Gen2
+> fallback compat string. Thus there is no need to update the driver as the
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> use of the Gen2 fallback compat string will activate the correct code in
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Obviously not. :(
+> the current driver while leaving the option for r8a779[234]-specific driver
+> code to be activated in an updated driver should the need arise.
+>
+> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
+> ---
+>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 3 +++
+>  drivers/net/can/rcar_can.c                             | 3 +++
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+> index 036786e1f70d..c6fb74d7c809 100644
+> --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
+> +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+> @@ -6,6 +6,9 @@ Required properties:
+>               "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
+>               "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
+>               "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
+> +             "renesas,can-r8a7792" if CAN controller is a part of R8A7792 SoC.
+> +             "renesas,can-r8a7793" if CAN controller is a part of R8A7793 SoC.
+> +             "renesas,can-r8a7794" if CAN controller is a part of R8A7794 SoC.
+>               "renesas,can-gen1" for a generic R-Car Gen1 compatible device.
+>               "renesas,can-gen2" for a generic R-Car Gen2 compatible device.
+>  - reg: physical base address and size of the R-Car CAN register map.
+> diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
+> index c70a1f795933..73761a4dd1bf 100644
+> --- a/drivers/net/can/rcar_can.c
+> +++ b/drivers/net/can/rcar_can.c
+> @@ -904,6 +904,9 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
+>         { .compatible = "renesas,can-r8a7779" },
+>         { .compatible = "renesas,can-r8a7790" },
+>         { .compatible = "renesas,can-r8a7791" },
+> +       { .compatible = "renesas,can-r8a7792" },
+> +       { .compatible = "renesas,can-r8a7793" },
+> +       { .compatible = "renesas,can-r8a7794" },
 
-David, I can send a patch to clean up the coding style. Do you want it
-for net or via net-next?
+So why do you update the driver?
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+There's no upstream DTS using "renesas,can-r8a779[234]", so
+"renesas,can-gen2" should be fine.
 
+>         { .compatible = "renesas,can-gen1" },
+>         { .compatible = "renesas,can-gen2" },
+>         { }
 
---7qx7wNMqf6IboxkQHeQ2irPeGMBAb4WHr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWyvyeAAoJED07qiWsqSVq2ZkH/i56zQP0NKTQ0Ixjx0JT9gMW
-1cMsnK8P0A3G+C7A5Q19OHtyDmdqSFW983MKZUxz7oqM3dKb6CwAyDlugkew/U3v
-m2pZ55Y/kInS451RyR7RuBgH6dT3J/wi1iYxKsg9x+B1XxdMFKkTpyiINDI3sreb
-pzunciLPTHPrS/TnTb+AqVp6fZ7Qdq0YVVS4yNDdZoSRKyaQx+Q37Bv21nbmPlDy
-NJYGiXYksCVhaT9bSqVe4nJuhvW+M+HHG+FPCc1okslGL02MLFBHVrwO7MHeu2BM
-ips7if8MJv+HuMcy8X0ZrqlVN63QXdHWzQEv3CwvtncgNm09TFcq7Ygvp4aJkzY=
-=Wpix
------END PGP SIGNATURE-----
-
---7qx7wNMqf6IboxkQHeQ2irPeGMBAb4WHr--
+                        Geert
