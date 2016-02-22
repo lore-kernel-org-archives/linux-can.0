@@ -1,64 +1,79 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: RFC: can-j1939
-Date: Mon, 22 Feb 2016 06:22:31 +0100
-Message-ID: <20160222052231.GA2022@airbook.vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH can-next 1/2] CAN: rcar: add gen[12] fallback
+ compatibility strings
+Date: Mon, 22 Feb 2016 10:40:37 +0100
+Message-ID: <56CAD795.1090509@pengutronix.de>
+References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
+ <1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
+ <20160222033720.GA27711@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:47189 "EHLO
-	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750975AbcBVFXI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 00:23:08 -0500
-Content-Disposition: inline
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60025 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754173AbcBVKek (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 05:34:40 -0500
+In-Reply-To: <20160222033720.GA27711@rob-hp-laptop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Yang Wang <wang701@purdue.edu>, Alex Layton <alex@layton.in>, David Jander <david@protonic.nl>, laurent vaudoit <laurent.vaudoit@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: Rob Herring <robh@kernel.org>, Simon Horman <horms+renesas@verge.net.au>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
 
-Hey,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Last November, we had some discussion on how to improve the can-j1939
-API in order to suit more users.
-I had some delays for finding stupid bugs (@Laurent, I backporte to an iMX6
-with v3.10 kernel with can-j1939 for finding some of them), now it's
-ready to share.
+On 02/22/2016 04:37 AM, Rob Herring wrote:
+> On Mon, Feb 22, 2016 at 11:15:49AM +0900, Simon Horman wrote:
+>> Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
+>> This is in keeping with the fallback scheme being adopted wherever
+>> appropriate for drivers for Renesas SoCs.
+>>
+>> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
+>> ---
+>>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
+>>  drivers/net/can/rcar_can.c                             | 2 ++
+>>  2 files changed, 5 insertions(+), 1 deletion(-)
+>=20
+> Acked-by: Rob Herring <robh@kernel.org>
 
-I had assembled a quick starter guide long time ago already in markdown.
-I didn't feel like translating it to elinux.org's mediawiki, so I put it
-https://github.com/kurt-vd/test-can-j1939/blob/master/can-j1939-kickstart.md
+I'm not following the latest DT discussions, is there a (new) decision
+to add such "generic" compatibles? AFAIK you add the oldest device
+that's compatible with your driver to your SoC dtsi at rightmost
+compatible. You can add one that identifies your SoC's IP core in front
+of it. So there's no need to modify the driver until an IP core needs
+different handling.
 
-During my development, I tested can-j1939 on 3 linux kernel versions:
-v3.10, v3.15 and v4.3. I later found that the small changes for v4.3
-actually were introduced in v4.1, so I backported j1939d-v4.3 to
-j1939d-v4.1.
+In your case you'd identify the oldest SoC that implements the Gen1 IP
+core and use this instead of "renesas,can-gen1. Same for Gen2 IP core.
 
-On https://github.com/kurt-vd/linux, you will find 4 additional
-branches: j1939d-v3.10, j1939d-v3.15, ...
-The 'd' suffix as distinction, means 'direct', however that is less important.
+regards,
+Marc
 
-I will in short highlight some aspects of the new stack, most of which
-were raised in past discussions on this list:
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-* it is stable, works with the latest kernels.
-* does not need or use netlink. You don't need a modified iproute2 anymore
-* when a can-j1939 socket binds to an interface, can-j1939 starts
-  processing on this interface: address claim tracking + transport
-  protocol assembly.
-  when the last such socket closes, can-j1939 stops for that interface.
-  This also means that a transport protocol session that _started_ before
-  the first socket opens will not be seen by can-j1939. This conforms to
-  datagram communication.
-* when a socket binds to an address or name, the kernel starts treating
-  that address/name as a local one.
-* The new stack takes less measures to detect address collisions
-  for static addresses, and keeps more responsibility to the user.
-* non-root users can start can-j1939 on an interface, add addresses, ...
-* a list of current local addresses is available in /proc
-* add transport protocol parameter, to control outgoing inter-packet delays.
-* add parameter to pad all packets to 8 bytes.
 
-I hope you will find time to take a look at it.
-We could possibly agree on the API?
+--TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Kind regards,
-Kurt
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWyteWAAoJED07qiWsqSVqobgH/iTIGnWrCF1Bxcp9CJQ+/7NT
+u3E0NCDK+TcePKtUT1gknSRjGslaTmIuUqw/6zdLL76WkD8paM5p07vPIMCrkKSv
+QMprS6QHpgd18seJxqMl7/Zy66As+RtOw+sGnaeIS/TBHItok+D7MQ8ecPpRm+xL
+8yxZ8hBcnr/umGDXW+cpOTEBW7wYfabiGUA/a+/vOMbBaAHbFdf+8lvsvRwufkRJ
+hSUhCUrk8a7893z/KkjTgECVr37WUM5H1apEcibPcbpoTyN4K2iPhB4EVoTLej9c
+M/7YuBywOul0kC/Frd+M6j4+236bf82BO+OXLzw0ULVS5+Z+w6PMj3jEWuJhSrI=
+=crVv
+-----END PGP SIGNATURE-----
+
+--TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr--
