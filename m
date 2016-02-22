@@ -1,79 +1,76 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH can-next 2/2] CAN: rcar: add device tree support for r8a779[234]
-Date: Mon, 22 Feb 2016 14:48:39 +0100
-Message-ID: <CAMuHMdU5zMG=Sha5MfotbKmdBDgzJucve483oZbmseLvLR-2sA@mail.gmail.com>
-References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
-	<1456107350-12100-3-git-send-email-horms+renesas@verge.net.au>
+From: Mirza Krak <mirza.krak@hostmobility.com>
+Subject: Re: [PATCH v2 00/11] RFC: cleanup flexcan driver, introduce and make
+ use of IRQ offloading
+Date: Mon, 22 Feb 2016 16:16:15 +0100
+Message-ID: <CAJ=nTsv39BL85Tbgp86CzMS-fUhGx0627POVKTXaRMETNoAnDA@mail.gmail.com>
+References: <1449750837-11376-1-git-send-email-mkl@pengutronix.de>
+	<87egdf5eca.fsf@gmail.com>
+	<569D6180.8030906@pengutronix.de>
+	<569D82BE.1000007@optusnet.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1456107350-12100-3-git-send-email-horms+renesas@verge.net.au>
-Sender: netdev-owner@vger.kernel.org
-To: Simon Horman <horms+renesas@verge.net.au>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-renesas-soc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lf0-f49.google.com ([209.85.215.49]:33992 "EHLO
+	mail-lf0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751616AbcBVPQQ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 10:16:16 -0500
+Received: by mail-lf0-f49.google.com with SMTP id j78so95660455lfb.1
+        for <linux-can@vger.kernel.org>; Mon, 22 Feb 2016 07:16:16 -0800 (PST)
+In-Reply-To: <569D82BE.1000007@optusnet.com.au>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: tom_usenet@optusnet.com.au
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Holger Schurig <holgerschurig@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, kernel@pengutronix.de, bhupesh.sharma@freescale.com
 
-On Mon, Feb 22, 2016 at 3:15 AM, Simon Horman
-<horms+renesas@verge.net.au> wrote:
-> Simply document new compatibility string.
-> As a previous patch adds a generic R-Car Gen2 compatibility string
-> there appears to be no need for a driver updates.
-> By documenting this compat sting it may be used in DTSs shipped, for
+2016-01-19 1:26 GMT+01:00 Tom Evans <tom_usenet@optusnet.com.au>:
+> On 19/01/16 09:04, Marc Kleine-Budde wrote:
+>>
+>> On 01/18/2016 12:14 PM, Holger Schurig wrote:
+>>>
+>>> Marc Kleine-Budde <mkl@pengutronix.de> writes:
+>>>
+>>>> Testing and feedback welcome.
+>>>
+>>>
+>>> And here it is, albeit a bit late:
+>>>
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 0 PID: 0 at
+>>> /home/schurig/d/mkarm/linux-4.4/drivers/net/can/rx-fifo.c:203
+>>> can_rx_fifo_irq_offload+0x214/0x264()
+>>> can_rx_fifo_irq_offload: No messages found, RX-FIFO out of sync?
+>>> Modules linked in: bnep btusb btrtl btbcm btintel bluetooth smsc95x=
+x
+>>> usbnet mii imx_sdma flexcan dlog(O)
+>>> CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O    4.4.0 #1
+>>> Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
 
-string
+Applied this patch series to my 4.1.5 kernel and for what it is worth
+I get the same error on VF610 after approximately 500 k frames.
 
-> example as part of ROMs. It must be used in conjunction with the Gen2
-> fallback compat string. At this time there are no known differences between
-> the r8a779[234] IP blocks and that implemented by the driver for the Gen2
-> fallback compat string. Thus there is no need to update the driver as the
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> use of the Gen2 fallback compat string will activate the correct code in
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[  118.751463] WARNING: CPU: 0 PID: 0 at drivers/net/can/rx-fifo.c:205
+can_rx_fifo_irq_offload+0x2dc/0x30c()         [  118.761065]
+can_rx_fifo_irq_offload: No messages found, RX-FIFO out of sync?
+                                              [  118.768137] Modules
+linked in: mx4_pic(O) mcp251x [last unloaded: mx4_pic]
+                                        [  118.775108] CPU: 0 PID: 0
+Comm: swapper Tainted: G           O
+4.1.15-00058-gd84a5e156db7-dirty #1               [  118.784355]
+Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
 
-> the current driver while leaving the option for r8a779[234]-specific driver
-> code to be activated in an updated driver should the need arise.
->
-> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_can.txt | 3 +++
->  drivers/net/can/rcar_can.c                             | 3 +++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> index 036786e1f70d..c6fb74d7c809 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> @@ -6,6 +6,9 @@ Required properties:
->               "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
->               "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
->               "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
-> +             "renesas,can-r8a7792" if CAN controller is a part of R8A7792 SoC.
-> +             "renesas,can-r8a7793" if CAN controller is a part of R8A7793 SoC.
-> +             "renesas,can-r8a7794" if CAN controller is a part of R8A7794 SoC.
->               "renesas,can-gen1" for a generic R-Car Gen1 compatible device.
->               "renesas,can-gen2" for a generic R-Car Gen2 compatible device.
->  - reg: physical base address and size of the R-Car CAN register map.
-> diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-> index c70a1f795933..73761a4dd1bf 100644
-> --- a/drivers/net/can/rcar_can.c
-> +++ b/drivers/net/can/rcar_can.c
-> @@ -904,6 +904,9 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
->         { .compatible = "renesas,can-r8a7779" },
->         { .compatible = "renesas,can-r8a7790" },
->         { .compatible = "renesas,can-r8a7791" },
-> +       { .compatible = "renesas,can-r8a7792" },
-> +       { .compatible = "renesas,can-r8a7793" },
-> +       { .compatible = "renesas,can-r8a7794" },
+--=20
+Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
 
-So why do you update the driver?
-
-There's no upstream DTS using "renesas,can-r8a779[234]", so
-"renesas,can-gen2" should be fine.
-
->         { .compatible = "renesas,can-gen1" },
->         { .compatible = "renesas,can-gen2" },
->         { }
-
-Gr{oetje,eeting}s,
-
-                        Geert
+*******************************************************************
+Mirza Krak
+Host Mobility AB
+mirza.krak@hostmobility.com
+Anders Personsgatan 12, 416 64 G=C3=B6teborg
+Sweden
+http://www.hostmobility.com
+Direct: +46 31 31 32 704
+Phone: +46 31 31 32 700
+=46ax: +46 31 80 67 51
+Mobile: +46 730 28 06 22
+*******************************************************************
