@@ -1,82 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: ems_usb: Fix possible tx overflow
-Date: Sun, 21 Feb 2016 16:27:38 +0100
-Message-ID: <1456068458-14271-2-git-send-email-mkl@pengutronix.de>
-References: <1456068458-14271-1-git-send-email-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1456068458-14271-1-git-send-email-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+From: Simon Horman <horms+renesas@verge.net.au>
+Subject: [PATCH can-next 1/2] CAN: rcar: add gen[12] fallback compatibility strings
+Date: Mon, 22 Feb 2016 11:15:49 +0900
+Message-ID: <1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
+References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, Simon Horman <horms+renesas@verge.net.au>
 List-Id: linux-can.vger.kernel.org
 
-From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
+This is in keeping with the fallback scheme being adopted wherever
+appropriate for drivers for Renesas SoCs.
 
-This patch fixes the problem that more CAN messages could be sent to the
-interface as could be send on the CAN bus. This was more likely for slow baud
-rates. The sleeping _start_xmit was woken up in the _write_bulk_callback. Under
-heavy TX load this produced another bulk transfer without checking the
-free_slots variable and hence caused the overflow in the interface.
-
-Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
 ---
- drivers/net/can/usb/ems_usb.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
+ drivers/net/can/rcar_can.c                             | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index fc5b75675cd8..eb7192fab593 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -117,6 +117,9 @@ MODULE_LICENSE("GPL v2");
-  */
- #define EMS_USB_ARM7_CLOCK 8000000
+diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+index 002d8440bf66..036786e1f70d 100644
+--- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
++++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+@@ -6,6 +6,8 @@ Required properties:
+ 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
+ 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
+ 	      "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
++	      "renesas,can-gen1" for a generic R-Car Gen1 compatible device.
++	      "renesas,can-gen2" for a generic R-Car Gen2 compatible device.
+ - reg: physical base address and size of the R-Car CAN register map.
+ - interrupts: interrupt specifier for the sole interrupt.
+ - clocks: phandles and clock specifiers for 3 CAN clock inputs.
+@@ -25,7 +27,7 @@ Example
+ SoC common .dtsi file:
  
-+#define CPC_TX_QUEUE_TRIGGER_LOW	25
-+#define CPC_TX_QUEUE_TRIGGER_HIGH	35
-+
- /*
-  * CAN-Message representation in a CPC_MSG. Message object type is
-  * CPC_MSG_TYPE_CAN_FRAME or CPC_MSG_TYPE_RTR_FRAME or
-@@ -278,6 +281,11 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
- 	switch (urb->status) {
- 	case 0:
- 		dev->free_slots = dev->intr_in_buffer[1];
-+		if(dev->free_slots > CPC_TX_QUEUE_TRIGGER_HIGH){
-+			if (netif_queue_stopped(netdev)){
-+				netif_wake_queue(netdev);
-+			}
-+		}
- 		break;
- 
- 	case -ECONNRESET: /* unlink */
-@@ -526,8 +534,6 @@ static void ems_usb_write_bulk_callback(struct urb *urb)
- 	/* Release context */
- 	context->echo_index = MAX_TX_URBS;
- 
--	if (netif_queue_stopped(netdev))
--		netif_wake_queue(netdev);
- }
- 
- /*
-@@ -587,7 +593,7 @@ static int ems_usb_start(struct ems_usb *dev)
- 	int err, i;
- 
- 	dev->intr_in_buffer[0] = 0;
--	dev->free_slots = 15; /* initial size */
-+	dev->free_slots = 50; /* initial size */
- 
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
-@@ -835,7 +841,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
- 
- 		/* Slow down tx path */
- 		if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ||
--		    dev->free_slots < 5) {
-+		    dev->free_slots < CPC_TX_QUEUE_TRIGGER_LOW) {
- 			netif_stop_queue(netdev);
- 		}
- 	}
+ 	can0: can@e6e80000 {
+-		compatible = "renesas,can-r8a7791";
++		compatible = "renesas,can-r8a7791", "renesas,can-gen2";
+ 		reg = <0 0xe6e80000 0 0x1000>;
+ 		interrupts = <0 186 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&mstp9_clks R8A7791_CLK_RCAN0>,
+diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
+index bc46be39549d..c70a1f795933 100644
+--- a/drivers/net/can/rcar_can.c
++++ b/drivers/net/can/rcar_can.c
+@@ -904,6 +904,8 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
+ 	{ .compatible = "renesas,can-r8a7779" },
+ 	{ .compatible = "renesas,can-r8a7790" },
+ 	{ .compatible = "renesas,can-r8a7791" },
++	{ .compatible = "renesas,can-gen1" },
++	{ .compatible = "renesas,can-gen2" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, rcar_can_of_table);
 -- 
-2.7.0
+2.1.4
