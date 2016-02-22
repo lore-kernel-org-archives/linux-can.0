@@ -1,79 +1,64 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-next 1/2] CAN: rcar: add gen[12] fallback
- compatibility strings
-Date: Mon, 22 Feb 2016 10:40:37 +0100
-Message-ID: <56CAD795.1090509@pengutronix.de>
-References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
- <1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
- <20160222033720.GA27711@rob-hp-laptop>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH] can: ems_usb: Fix possible tx overflow
+Date: Mon, 22 Feb 2016 15:11:26 +0300
+Message-ID: <56CAFAEE.2020602@cogentembedded.com>
+References: <1456068458-14271-1-git-send-email-mkl@pengutronix.de>
+ <1456068458-14271-2-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60025 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754173AbcBVKek (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 05:34:40 -0500
-In-Reply-To: <20160222033720.GA27711@rob-hp-laptop>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Rob Herring <robh@kernel.org>, Simon Horman <horms+renesas@verge.net.au>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1456068458-14271-2-git-send-email-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>, linux-stable <stable@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello.
 
-On 02/22/2016 04:37 AM, Rob Herring wrote:
-> On Mon, Feb 22, 2016 at 11:15:49AM +0900, Simon Horman wrote:
->> Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
->> This is in keeping with the fallback scheme being adopted wherever
->> appropriate for drivers for Renesas SoCs.
->>
->> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
->> ---
->>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
->>  drivers/net/can/rcar_can.c                             | 2 ++
->>  2 files changed, 5 insertions(+), 1 deletion(-)
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
+On 2/21/2016 6:27 PM, Marc Kleine-Budde wrote:
 
-I'm not following the latest DT discussions, is there a (new) decision
-to add such "generic" compatibles? AFAIK you add the oldest device
-that's compatible with your driver to your SoC dtsi at rightmost
-compatible. You can add one that identifies your SoC's IP core in front
-of it. So there's no need to modify the driver until an IP core needs
-different handling.
+> From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+>
+> This patch fixes the problem that more CAN messages could be sent to the
+> interface as could be send on the CAN bus. This was more likely for slow baud
+> rates. The sleeping _start_xmit was woken up in the _write_bulk_callback. Under
+> heavy TX load this produced another bulk transfer without checking the
+> free_slots variable and hence caused the overflow in the interface.
+>
+> Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+> Cc: linux-stable <stable@vger.kernel.org>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>   drivers/net/can/usb/ems_usb.c | 14 ++++++++++----
+>   1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+> index fc5b75675cd8..eb7192fab593 100644
+> --- a/drivers/net/can/usb/ems_usb.c
+> +++ b/drivers/net/can/usb/ems_usb.c
+> @@ -117,6 +117,9 @@ MODULE_LICENSE("GPL v2");
+>    */
+>   #define EMS_USB_ARM7_CLOCK 8000000
+>
+> +#define CPC_TX_QUEUE_TRIGGER_LOW	25
+> +#define CPC_TX_QUEUE_TRIGGER_HIGH	35
+> +
+>   /*
+>    * CAN-Message representation in a CPC_MSG. Message object type is
+>    * CPC_MSG_TYPE_CAN_FRAME or CPC_MSG_TYPE_RTR_FRAME or
+> @@ -278,6 +281,11 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
+>   	switch (urb->status) {
+>   	case 0:
+>   		dev->free_slots = dev->intr_in_buffer[1];
+> +		if(dev->free_slots > CPC_TX_QUEUE_TRIGGER_HIGH){
+> +			if (netif_queue_stopped(netdev)){
+> +				netif_wake_queue(netdev);
+> +			}
+> +		}
 
-In your case you'd identify the oldest SoC that implements the Gen1 IP
-core and use this instead of "renesas,can-gen1. Same for Gen2 IP core.
+    Hm, did anyone run scripts/checkpatch.pl on this patch?
 
-regards,
-Marc
+[...]
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJWyteWAAoJED07qiWsqSVqobgH/iTIGnWrCF1Bxcp9CJQ+/7NT
-u3E0NCDK+TcePKtUT1gknSRjGslaTmIuUqw/6zdLL76WkD8paM5p07vPIMCrkKSv
-QMprS6QHpgd18seJxqMl7/Zy66As+RtOw+sGnaeIS/TBHItok+D7MQ8ecPpRm+xL
-8yxZ8hBcnr/umGDXW+cpOTEBW7wYfabiGUA/a+/vOMbBaAHbFdf+8lvsvRwufkRJ
-hSUhCUrk8a7893z/KkjTgECVr37WUM5H1apEcibPcbpoTyN4K2iPhB4EVoTLej9c
-M/7YuBywOul0kC/Frd+M6j4+236bf82BO+OXLzw0ULVS5+Z+w6PMj3jEWuJhSrI=
-=crVv
------END PGP SIGNATURE-----
-
---TFsQp3vfDkNDOVfnr997vimPE2SxC5Rmr--
+MBR, Sergei
