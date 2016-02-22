@@ -1,84 +1,54 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH can-next 1/2] CAN: rcar: add gen[12] fallback
- compatibility strings
-Date: Mon, 22 Feb 2016 16:40:39 +0100
-Message-ID: <CAMuHMdX3VjAZzhNxuucBn3hSS3YMmhJPVxpA2VKM+X-Qs3gxLg@mail.gmail.com>
-References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
-	<1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
+From: Yang Wang <wang701@purdue.edu>
+Subject: Re: RFC: can-j1939
+Date: Mon, 22 Feb 2016 13:24:14 -0500
+Message-ID: <CAEE8DsL+LyhRKJQ7qq0QfNhKR21qEDYog+vAS8cFcr8d9ZxQ6A@mail.gmail.com>
+References: <20160222052231.GA2022@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Simon Horman <horms+renesas@verge.net.au>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-renesas-soc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mailhub248.itcs.purdue.edu ([128.210.5.248]:54803 "EHLO
+	mailhub248.itcs.purdue.edu" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751589AbcBVSlE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2016 13:41:04 -0500
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com [209.85.218.41])
+	(authenticated bits=0)
+	by mailhub248.itcs.purdue.edu (8.14.4/8.14.4/mta-auth.smtp.purdue.edu) with ESMTP id u1MIOEvv006593
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+	for <linux-can@vger.kernel.org>; Mon, 22 Feb 2016 13:24:15 -0500
+Received: by mail-oi0-f41.google.com with SMTP id m82so60929070oif.1
+        for <linux-can@vger.kernel.org>; Mon, 22 Feb 2016 10:24:15 -0800 (PST)
+In-Reply-To: <20160222052231.GA2022@airbook.vandijck-laurijssen.be>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: dev.kurt@vandijck-laurijssen.be, Alex Layton <alex@layton.in>, David Jander <david@protonic.nl>, laurent vaudoit <laurent.vaudoit@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
 
-On Mon, Feb 22, 2016 at 3:15 AM, Simon Horman
-<horms+renesas@verge.net.au> wrote:
-> Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
-> This is in keeping with the fallback scheme being adopted wherever
-> appropriate for drivers for Renesas SoCs.
->
-> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
->  drivers/net/can/rcar_can.c                             | 2 ++
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> index 002d8440bf66..036786e1f70d 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> @@ -6,6 +6,8 @@ Required properties:
->               "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
->               "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
->               "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
-> +             "renesas,can-gen1" for a generic R-Car Gen1 compatible device.
-> +             "renesas,can-gen2" for a generic R-Car Gen2 compatible device.
+On Mon, Feb 22, 2016 at 12:22 AM, Kurt Van Dijck
+<dev.kurt@vandijck-laurijssen.be> wrote:
 
-"renesas,rcar-gen1-can", "renesas,rcar-gen2-can"?
+> * it is stable, works with the latest kernels.
+> * does not need or use netlink. You don't need a modified iproute2 anymore
+> * when a can-j1939 socket binds to an interface, can-j1939 starts
+>   processing on this interface: address claim tracking + transport
+>   protocol assembly.
+>   when the last such socket closes, can-j1939 stops for that interface.
+>   This also means that a transport protocol session that _started_ before
+>   the first socket opens will not be seen by can-j1939. This conforms to
+>   datagram communication.
+> * when a socket binds to an address or name, the kernel starts treating
+>   that address/name as a local one.
+> * The new stack takes less measures to detect address collisions
+>   for static addresses, and keeps more responsibility to the user.
+> * non-root users can start can-j1939 on an interface, add addresses, ...
+> * a list of current local addresses is available in /proc
+> * add transport protocol parameter, to control outgoing inter-packet delays.
+> * add parameter to pad all packets to 8 bytes.
 
-(Yeah, "can" looks a lot like "rcar" ;-)
+Kurt,
 
-Nothing further to say about SoC-specific vs. generic compatible values?
+It looks great. Dropping the usage of iproute2 simplifies a lot of
+things for me. I'll test the v3.15 branch since I've been using it.
 
->  - reg: physical base address and size of the R-Car CAN register map.
->  - interrupts: interrupt specifier for the sole interrupt.
->  - clocks: phandles and clock specifiers for 3 CAN clock inputs.
-> @@ -25,7 +27,7 @@ Example
->  SoC common .dtsi file:
->
->         can0: can@e6e80000 {
-> -               compatible = "renesas,can-r8a7791";
-> +               compatible = "renesas,can-r8a7791", "renesas,can-gen2";
+Thank you for the work.
 
-"renesas,rcar-gen2-can".
-
->                 reg = <0 0xe6e80000 0 0x1000>;
->                 interrupts = <0 186 IRQ_TYPE_LEVEL_HIGH>;
->                 clocks = <&mstp9_clks R8A7791_CLK_RCAN0>,
-> diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-> index bc46be39549d..c70a1f795933 100644
-> --- a/drivers/net/can/rcar_can.c
-> +++ b/drivers/net/can/rcar_can.c
-> @@ -904,6 +904,8 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
->         { .compatible = "renesas,can-r8a7779" },
->         { .compatible = "renesas,can-r8a7790" },
->         { .compatible = "renesas,can-r8a7791" },
-> +       { .compatible = "renesas,can-gen1" },
-> +       { .compatible = "renesas,can-gen2" },
-
-"renesas,rcar-gen1-can"
-"renesas,rcar-gen2-can".
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Yang
