@@ -1,91 +1,49 @@
 From: Simon Horman <horms@verge.net.au>
 Subject: Re: [PATCH can-next 1/2] CAN: rcar: add gen[12] fallback
  compatibility strings
-Date: Tue, 23 Feb 2016 09:03:47 +0900
-Message-ID: <20160223000346.GE1853@verge.net.au>
+Date: Tue, 23 Feb 2016 09:08:22 +0900
+Message-ID: <20160223000822.GF1853@verge.net.au>
 References: <1456107350-12100-1-git-send-email-horms+renesas@verge.net.au>
  <1456107350-12100-2-git-send-email-horms+renesas@verge.net.au>
- <CAMuHMdX3VjAZzhNxuucBn3hSS3YMmhJPVxpA2VKM+X-Qs3gxLg@mail.gmail.com>
+ <20160222033720.GA27711@rob-hp-laptop>
+ <56CAD795.1090509@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdX3VjAZzhNxuucBn3hSS3YMmhJPVxpA2VKM+X-Qs3gxLg@mail.gmail.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-renesas-soc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+In-Reply-To: <56CAD795.1090509@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Mon, Feb 22, 2016 at 04:40:39PM +0100, Geert Uytterhoeven wrote:
-> On Mon, Feb 22, 2016 at 3:15 AM, Simon Horman
-> <horms+renesas@verge.net.au> wrote:
-> > Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
-> > This is in keeping with the fallback scheme being adopted wherever
-> > appropriate for drivers for Renesas SoCs.
-> >
-> > Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
-> > ---
-> >  Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
-> >  drivers/net/can/rcar_can.c                             | 2 ++
-> >  2 files changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > index 002d8440bf66..036786e1f70d 100644
-> > --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > @@ -6,6 +6,8 @@ Required properties:
-> >               "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
-> >               "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
-> >               "renesas,can-r8a7791" if CAN controller is a part of R8A7791 SoC.
-> > +             "renesas,can-gen1" for a generic R-Car Gen1 compatible device.
-> > +             "renesas,can-gen2" for a generic R-Car Gen2 compatible device.
+On Mon, Feb 22, 2016 at 10:40:37AM +0100, Marc Kleine-Budde wrote:
+> On 02/22/2016 04:37 AM, Rob Herring wrote:
+> > On Mon, Feb 22, 2016 at 11:15:49AM +0900, Simon Horman wrote:
+> >> Add fallback compatibility string for R-Car Gen 1 and Gen2 families.
+> >> This is in keeping with the fallback scheme being adopted wherever
+> >> appropriate for drivers for Renesas SoCs.
+> >>
+> >> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
+> >> ---
+> >>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 4 +++-
+> >>  drivers/net/can/rcar_can.c                             | 2 ++
+> >>  2 files changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
 > 
-> "renesas,rcar-gen1-can", "renesas,rcar-gen2-can"?
+> I'm not following the latest DT discussions, is there a (new) decision
+> to add such "generic" compatibles? AFAIK you add the oldest device
+> that's compatible with your driver to your SoC dtsi at rightmost
+> compatible. You can add one that identifies your SoC's IP core in front
+> of it. So there's no need to modify the driver until an IP core needs
+> different handling.
 > 
-> (Yeah, "can" looks a lot like "rcar" ;-)
+> In your case you'd identify the oldest SoC that implements the Gen1 IP
+> core and use this instead of "renesas,can-gen1. Same for Gen2 IP core.
 
-Sure, I'll update that as you suggest.
-
-> Nothing further to say about SoC-specific vs. generic compatible values?
-
-Sure, I'll add some text about that.
-
-> >  - reg: physical base address and size of the R-Car CAN register map.
-> >  - interrupts: interrupt specifier for the sole interrupt.
-> >  - clocks: phandles and clock specifiers for 3 CAN clock inputs.
-> > @@ -25,7 +27,7 @@ Example
-> >  SoC common .dtsi file:
-> >
-> >         can0: can@e6e80000 {
-> > -               compatible = "renesas,can-r8a7791";
-> > +               compatible = "renesas,can-r8a7791", "renesas,can-gen2";
-> 
-> "renesas,rcar-gen2-can".
-> 
-> >                 reg = <0 0xe6e80000 0 0x1000>;
-> >                 interrupts = <0 186 IRQ_TYPE_LEVEL_HIGH>;
-> >                 clocks = <&mstp9_clks R8A7791_CLK_RCAN0>,
-> > diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-> > index bc46be39549d..c70a1f795933 100644
-> > --- a/drivers/net/can/rcar_can.c
-> > +++ b/drivers/net/can/rcar_can.c
-> > @@ -904,6 +904,8 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
-> >         { .compatible = "renesas,can-r8a7779" },
-> >         { .compatible = "renesas,can-r8a7790" },
-> >         { .compatible = "renesas,can-r8a7791" },
-> > +       { .compatible = "renesas,can-gen1" },
-> > +       { .compatible = "renesas,can-gen2" },
-> 
-> "renesas,rcar-gen1-can"
-> "renesas,rcar-gen2-can".
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+In the case of Renesas R-Car hardware we know that there are generations of
+SoCs, e.g. Gen 1 and Gen 2, but beyond that its not clear what the
+relationship between IP blocks might be. For example, I believe that
+r8a7779 is older than r8a7778 but that doesn't imply that the
+latter is a descendant of the former or vice versa.
