@@ -1,50 +1,58 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: RFC can-j1939
-Date: Tue, 23 Feb 2016 11:06:43 +0100
-Message-ID: <20160223100643.GA17694@airbook.eia.lan>
-References: <006b01d16db9$1b9e94d0$52dbbe70$@slingshot.co.nz>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
+Date: Tue, 23 Feb 2016 16:53:09 +0000
+Message-ID: <20160223165309.GA14154@maxwell.marel.net>
+References: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:47671 "EHLO
-	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751268AbcBWKHi (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2016 05:07:38 -0500
+Received: from mail-db3on0064.outbound.protection.outlook.com ([157.55.234.64]:38752
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753551AbcBWR3R (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 23 Feb 2016 12:29:17 -0500
 Content-Disposition: inline
-In-Reply-To: <006b01d16db9$1b9e94d0$52dbbe70$@slingshot.co.nz>
+In-Reply-To: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: R U Local <roystonvasey@slingshot.co.nz>
-Cc: 'linux-can' <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-> 
-> Dear Kurt,
-> Thanks for your great work.
-> I'm just bringing up the J1939 stack on a TI OMAP4 based system.
-> I'm locked to a custom kernel 3.19 due to media drivers and codecs.
-> I followed your guide and pulled code from 4.1 and 3.15 branches.
+On Wed, Jan 20, 2016 at 12:15:32PM +0100, Stephane Grosjean wrote:
+> This patch installs a workaround when the driver detects one of the
+> following PEAK-System CAN interfaces, running a firmware < v1.3.0:
+>=20
+> PCAN-PCI Express 1/2/4 CAN; DeviceID 0x0003
+> PCAN-PCI/104 Express 1/2/4 CAN; DeviceID 0x0007
+> PCAN-miniPCIe 1/2 CAN; DeviceID 0x0008
+> PCAN-PCI Express OEM 1/2/4 CAN; DeviceID 0x0009
+> PCAN-ExpressCard 34 1 CAN; DeviceID 0x000A
+>=20
+> This fixes potential loss of one tx frame in Linux SMP when some othe=
+r
+> task does another Command Register write (e.g. Release Receive Buffer=
+)
+> in between the triggering Tx Request and the next Sample Point.
+>=20
+> This workaround is useless thus *NOT* installed when the firmware
+> has been upgraded to v1.3.0 or higher, nor if the CAN interface is eq=
+uipped
+> with true SJA1000 controller(s).
+>=20
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> ---
+>  drivers/net/can/sja1000/peak_pci.c | 34 ++++++++++++++++++++++++++++=
++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+>=20
+[...]
 
-I guessed you just merge the j1939d-3.15 branch, noth the 4.1.
+Hi St=E9phane,
 
-> I also patched and built can-utils and iproute2.
+Is this still being worked on?
 
-iproute2 must not be patched anymore.
+I can test this if you like. I just need to have the firmware upgrade.
 
-> I can't get the Transport Protocol to work send only sends the first packet and receive hangs on reception of the first packet.
-
-I walked through my quick starter guide and i realised I had not updated
-it for dealing with the j1939 socket closing before the transport
-protocol is ready.
-
-I just now updated my quick start guide. Can you try that, and tell
-where exactly it goes wrong in your opinion.
-
-> As far as your RFC your implementation looks to be ideal for our applications.
-> For user space applications where should the headers (<linux/can/can.h> & <linux/can/j1939/j1939.h>) be taken from or provided by?
-
-Ideally, this becomes mainline and then you will sooner or later find
-the header in linux/can/j1939.h. Up to then, you will need to fix your
-toolchain manually by copying j1939.h there yourself.
-Do not forget that linux/can.h needs patching too.
-
-Kurt
+Regards,
+Andri
