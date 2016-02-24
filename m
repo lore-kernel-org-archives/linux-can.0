@@ -1,41 +1,42 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-next v2 0/2] CAN: rcar: add fallback and r8a779[234]
- bindings
-Date: Wed, 24 Feb 2016 09:25:20 +0100
-Message-ID: <56CD68F0.8090208@pengutronix.de>
-References: <1456278993-9899-1-git-send-email-horms+renesas@verge.net.au>
+Subject: Re: [PATCH 1/1] Fixed disconnect bug by removing erroneous use of
+ kfree()
+Date: Wed, 24 Feb 2016 09:27:13 +0100
+Message-ID: <56CD6961.8040604@pengutronix.de>
+References: <1456190248.10201.2.camel@schneidersoft.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="cHH7uxQ2p7IJchfsXxoPfi3pGVvGs02ke"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1456278993-9899-1-git-send-email-horms+renesas@verge.net.au>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Simon Horman <horms+renesas@verge.net.au>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+ boundary="wIEi9dKNlCj6Bdb89de9om4HS2sIdEXHv"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:43809 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752147AbcBXI1T (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 24 Feb 2016 03:27:19 -0500
+In-Reply-To: <1456190248.10201.2.camel@schneidersoft.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Maximilain Schneider <max@schneidersoft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cHH7uxQ2p7IJchfsXxoPfi3pGVvGs02ke
+--wIEi9dKNlCj6Bdb89de9om4HS2sIdEXHv
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/24/2016 02:56 AM, Simon Horman wrote:
-> this series adds fallback bindings for R-Car Gen 1 and Gen 2 SoCs and
-> SoC-specific bindings for the r8a779[234] SoCs which are R-Car Gen 2 So=
-Cs.
->=20
-> The aim is to provide consistent bindings for R-Car Gen 1 and Gen 2
-> SoCs in a maner consistent with that progressively being used
-> for drivers for other IP blocks used by Renesas SoCs.
->=20
-> For changes since v1 see individial patch changelogs.
->=20
-> Based on linux-can-next/master
+On 02/23/2016 02:17 AM, Maximilain Schneider wrote:
+> From b0a5029680d544faf07bcf636084b3fcafe59953 Mon Sep 17 00:00:00 2001
+> From: Maximilian Schneider <max@schneidersoft.net>
+> Date: Tue, 23 Feb 2016 01:03:53 +0000
+> Subject: [PATCH 1/1] Fixed disconnect bug by removing erroneous use of =
+kfree()
+>  and revised disconnect routine.
 
-Applied to can-next.
 
-Thanks,
+Can you please probive a patch description, too. No need to resend the
+patch, I'll add it while applying the patch.
+
+> Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
+
 Marc
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -44,20 +45,20 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---cHH7uxQ2p7IJchfsXxoPfi3pGVvGs02ke
+--wIEi9dKNlCj6Bdb89de9om4HS2sIdEXHv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWzWjwAAoJED07qiWsqSVqR5EH/Axot9+x7v0qUUpwf6nXmeTY
-XmhF8yRKWzTauH7F3Ck6vxNmsChnnLwLn6GUuPzw1q3vE9zfWhtr2rEm5idxgOyA
-FgJkU7nGwNJU7LX4cDKuGom/3OByC7KIl3r8N/yKOW5cxjyZR4NsxZrcQJkGz1no
-9156598ieWNg76aVcj82yK09tscEM3BvJZEamfzU/0QzZ/vXlIcGpPuBT6NIBjm8
-YYMUxxgw5Y4oibm0nRt2Uhh0BhPoXprcMPJtX/b/yI9KSV9c+Y1MlaVB0D8KcbA/
-HlkGjzjgEFaUxfuVsBy1Zi8wNAsB53+npSYYMTh8Zo7mUtjT9O29OHINeQ17sB8=
-=9bbx
+iQEcBAEBCgAGBQJWzWlhAAoJED07qiWsqSVqBkUIAI/NKRzQKRl1LTk8+Gm3Aamg
+fLC0PDKQiqJkBj2DfzUAauiwiLFPQn3E1BymwE/I8zbTt08yVhZgzEN+WkTuLymX
+pi74MbQ/lQ2cY6aBHq4/eNd2c6ky8EZm5M/DNp+swNpiHZ7xsfKNsvE/RdQOyN8I
+6OBOgjZAcQTc5uRcn0HR5N4+SW+3ZKSS0ssTK9SJmRyV41MsAVo509eAZHocULuO
+qnXm6X9uWZouMWvx3flMay2cco7OMrOkhth7MaC4uN90+bQwM5vV6MJqLdax335w
+gnKBjc5Rv4DFGCnU4xLopyHFqJq2+wThjEk1zNMf7rR7g481mCKMsWxt4F8uOHg=
+=EMi6
 -----END PGP SIGNATURE-----
 
---cHH7uxQ2p7IJchfsXxoPfi3pGVvGs02ke--
+--wIEi9dKNlCj6Bdb89de9om4HS2sIdEXHv--
