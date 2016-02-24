@@ -1,58 +1,33 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
-Date: Tue, 23 Feb 2016 16:53:09 +0000
-Message-ID: <20160223165309.GA14154@maxwell.marel.net>
-References: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db3on0064.outbound.protection.outlook.com ([157.55.234.64]:38752
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753551AbcBWR3R (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 23 Feb 2016 12:29:17 -0500
-Content-Disposition: inline
-In-Reply-To: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+From: Simon Horman <horms+renesas@verge.net.au>
+Subject: [PATCH can-next v2 0/2] CAN: rcar: add fallback and r8a779[234] bindings
+Date: Wed, 24 Feb 2016 10:56:31 +0900
+Message-ID: <1456278993-9899-1-git-send-email-horms+renesas@verge.net.au>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Simon Horman <horms+renesas@verge.net.au>
+List-Id: linux-can.vger.kernel.org
 
-On Wed, Jan 20, 2016 at 12:15:32PM +0100, Stephane Grosjean wrote:
-> This patch installs a workaround when the driver detects one of the
-> following PEAK-System CAN interfaces, running a firmware < v1.3.0:
->=20
-> PCAN-PCI Express 1/2/4 CAN; DeviceID 0x0003
-> PCAN-PCI/104 Express 1/2/4 CAN; DeviceID 0x0007
-> PCAN-miniPCIe 1/2 CAN; DeviceID 0x0008
-> PCAN-PCI Express OEM 1/2/4 CAN; DeviceID 0x0009
-> PCAN-ExpressCard 34 1 CAN; DeviceID 0x000A
->=20
-> This fixes potential loss of one tx frame in Linux SMP when some othe=
-r
-> task does another Command Register write (e.g. Release Receive Buffer=
-)
-> in between the triggering Tx Request and the next Sample Point.
->=20
-> This workaround is useless thus *NOT* installed when the firmware
-> has been upgraded to v1.3.0 or higher, nor if the CAN interface is eq=
-uipped
-> with true SJA1000 controller(s).
->=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> ---
->  drivers/net/can/sja1000/peak_pci.c | 34 ++++++++++++++++++++++++++++=
-+++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
->=20
-[...]
+Hi,
 
-Hi St=E9phane,
+this series adds fallback bindings for R-Car Gen 1 and Gen 2 SoCs and
+SoC-specific bindings for the r8a779[234] SoCs which are R-Car Gen 2 SoCs.
 
-Is this still being worked on?
+The aim is to provide consistent bindings for R-Car Gen 1 and Gen 2
+SoCs in a maner consistent with that progressively being used
+for drivers for other IP blocks used by Renesas SoCs.
 
-I can test this if you like. I just need to have the firmware upgrade.
+For changes since v1 see individial patch changelogs.
 
-Regards,
-Andri
+Based on linux-can-next/master
+
+Simon Horman (2):
+  CAN: rcar: add gen[12] fallback compatibility strings
+  CAN: rcar: add device tree support for r8a779[234]
+
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 11 ++++++++++-
+ drivers/net/can/rcar_can.c                             |  2 ++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+-- 
+2.1.4
