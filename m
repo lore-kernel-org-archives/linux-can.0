@@ -1,93 +1,91 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: gs_usb: fixed disconnect bug by removing erroneous use of kfree()
-Date: Fri, 26 Feb 2016 08:42:58 +0100
-Message-ID: <1456472578-16272-2-git-send-email-mkl@pengutronix.de>
-References: <1456472578-16272-1-git-send-email-mkl@pengutronix.de>
+Subject: pull-request: can-next 2016-02-26
+Date: Fri, 26 Feb 2016 08:50:50 +0100
+Message-ID: <56D003DA.1090005@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="466KiUU2NdRb9fQiT8qQcS2fpj8CQXLx0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56995 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40264 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753462AbcBZHnH (ORCPT
-	<rfc822;linux-can@vger.kernel.Org>); Fri, 26 Feb 2016 02:43:07 -0500
-In-Reply-To: <1456472578-16272-1-git-send-email-mkl@pengutronix.de>
+	by vger.kernel.org with ESMTP id S1753463AbcBZHu5 (ORCPT
+	<rfc822;linux-can@vger.kernel.Org>); Fri, 26 Feb 2016 02:50:57 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Maximilain Schneider <max@schneidersoft.net>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Maximilain Schneider <max@schneidersoft.net>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--466KiUU2NdRb9fQiT8qQcS2fpj8CQXLx0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-gs_destroy_candev() erroneously calls kfree() on a struct gs_can *, which is
-allocated through alloc_candev() and should instead be freed using
-free_candev() alone.
+Hello David,
 
-The inappropriate use of kfree() causes the kernel to hang when
-gs_destroy_candev() is called.
+this is a pull request of 3 patch for net-next/master.
 
-Only the struct gs_usb * which is allocated through kzalloc() should be freed
-using kfree() when the device is disconnected.
+There are two patches by Simon Horman, in which the device tree support
+for the rcar_can driver is improved. One patch by me fixes the bad
+coding style of the ems_usb driver which was introduced recently.
 
-Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+regards,
+Marc
+
 ---
- drivers/net/can/usb/gs_usb.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 5eee62badf45..cbc99d5649af 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -826,9 +826,8 @@ static struct gs_can *gs_make_candev(unsigned int channel, struct usb_interface
- static void gs_destroy_candev(struct gs_can *dev)
- {
- 	unregister_candev(dev->netdev);
--	free_candev(dev->netdev);
- 	usb_kill_anchored_urbs(&dev->tx_submitted);
--	kfree(dev);
-+	free_candev(dev->netdev);
- }
- 
- static int gs_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
-@@ -913,12 +912,15 @@ static int gs_usb_probe(struct usb_interface *intf, const struct usb_device_id *
- 	for (i = 0; i < icount; i++) {
- 		dev->canch[i] = gs_make_candev(i, intf);
- 		if (IS_ERR_OR_NULL(dev->canch[i])) {
-+			/* save error code to return later */
-+			rc = PTR_ERR(dev->canch[i]);
-+
- 			/* on failure destroy previously created candevs */
- 			icount = i;
--			for (i = 0; i < icount; i++) {
-+			for (i = 0; i < icount; i++)
- 				gs_destroy_candev(dev->canch[i]);
--				dev->canch[i] = NULL;
--			}
-+
-+			usb_kill_anchored_urbs(&dev->rx_submitted);
- 			kfree(dev);
- 			return rc;
- 		}
-@@ -939,16 +941,12 @@ static void gs_usb_disconnect(struct usb_interface *intf)
- 		return;
- 	}
- 
--	for (i = 0; i < GS_MAX_INTF; i++) {
--		struct gs_can *can = dev->canch[i];
--
--		if (!can)
--			continue;
--
--		gs_destroy_candev(can);
--	}
-+	for (i = 0; i < GS_MAX_INTF; i++)
-+		if (dev->canch[i])
-+			gs_destroy_candev(dev->canch[i]);
- 
- 	usb_kill_anchored_urbs(&dev->rx_submitted);
-+	kfree(dev);
- }
- 
- static const struct usb_device_id gs_usb_table[] = {
--- 
-2.7.0
+The following changes since commit 8d3f2806f8fbd9b222b3504580b5eaa9ba2964=
+b8:
 
+  Merge branch 'ethtool-ksettings' (2016-02-25 22:07:00 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.6-20160226
+
+for you to fetch changes up to f71096dfd129e4ad1ae80cd10d5ac050e5730f8a:
+
+  can: rcar: add device tree support for r8a779[234] (2016-02-26 08:43:34=
+ +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.6-20160226
+
+----------------------------------------------------------------
+Marc Kleine-Budde (1):
+      can: ems_usb: fix coding style
+
+Simon Horman (2):
+      can: rcar: add gen[12] fallback compatibility strings
+      can: rcar: add device tree support for r8a779[234]
+
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 11 ++++++++++-
+ drivers/net/can/rcar_can.c                             |  2 ++
+ drivers/net/can/usb/ems_usb.c                          |  8 +++-----
+ 3 files changed, 15 insertions(+), 6 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--466KiUU2NdRb9fQiT8qQcS2fpj8CQXLx0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJW0APbAAoJED07qiWsqSVqiIoIAJTOzd4WyNeGCyatXGUT26AF
+pi3QKsABz0A3gMIYlEaJfSYEyQkVjP9+rbWX5UCZi/CTz44BE+bSXyvd4yYWggfJ
+josIvU1Af9cQ++Lpti6jogRoFvLxmPF/VKj2xjGNsZqhERzn3T8+czsdcLgzK66P
+PiABN3y7ra5b2lMOO7rIFzf2ZmxJ9TZ3dPh2+z5nrWKFZMjP5wh9Ghht8fJZhfoJ
+4s5DOpRwgzWuBrgccCxqzSFxVZ7bFmR6yiZClEx57HOJWDBA0ZGhjyiHTZUPS+qM
+s/iRlvBnjlHiu8HGQOW+L+qwUnOeuO4n/j/NkIsf4Sia6RqT+78Y2Ny12LqUNUs=
+=vTYh
+-----END PGP SIGNATURE-----
+
+--466KiUU2NdRb9fQiT8qQcS2fpj8CQXLx0--
