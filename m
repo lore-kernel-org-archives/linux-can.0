@@ -1,28 +1,48 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] can: ems_usb: Fix possible tx overflow
-Date: Thu, 25 Feb 2016 15:06:21 -0500 (EST)
-Message-ID: <20160225.150621.702895604868235717.davem@davemloft.net>
-References: <1456068458-14271-2-git-send-email-mkl@pengutronix.de>
-	<56CAFAEE.2020602@cogentembedded.com>
-	<56CAFC9E.7050306@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2016-02-26
+Date: Fri, 26 Feb 2016 08:42:57 +0100
+Message-ID: <1456472578-16272-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:45213 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933573AbcBYUG3 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 25 Feb 2016 15:06:29 -0500
-In-Reply-To: <56CAFC9E.7050306@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:50623 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753462AbcBZHnE (ORCPT
+	<rfc822;linux-can@vger.kernel.Org>); Fri, 26 Feb 2016 02:43:04 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: sergei.shtylyov@cogentembedded.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de, uttenthaler@ems-wuensche.com, stable@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 22 Feb 2016 13:18:38 +0100
+Hello David,
 
-> David, I can send a patch to clean up the coding style. Do you want it
-> for net or via net-next?
+this is a pull request of one patch for net.
 
-net-next is fine.
+The patch by Maximilain Schneider fixes a kfree() problem during disconnect in
+the gs_usb driver.
+
+regrds,
+Marc
+---
+
+The following changes since commit 4c0b6eaf373a5323f03a3a20c42fc435715b073d:
+
+  net: thunderx: Fix for Qset error due to CQ full (2016-02-25 16:25:34 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.5-20160226
+
+for you to fetch changes up to e9a2d81b1761093386a0bb8a4f51642ac785ef63:
+
+  can: gs_usb: fixed disconnect bug by removing erroneous use of kfree() (2016-02-26 08:36:33 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.5-20160226
+
+----------------------------------------------------------------
+Maximilain Schneider (1):
+      can: gs_usb: fixed disconnect bug by removing erroneous use of kfree()
+
+ drivers/net/can/usb/gs_usb.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
+
+
