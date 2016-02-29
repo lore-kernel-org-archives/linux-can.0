@@ -1,33 +1,75 @@
-From: "Alecssandro" <contactalecssandrokonart65@live.com>
-Subject: =?utf-8?q?INFORMA=C3=87=C3=83O_IMPORTANTE__RE=3A_Consultoria_de_Investime?=
- =?utf-8?q?nto_em_sua_Localidade=2E?=
-Date: Sun, 28 Feb 2016 04:41:53 -0800
-Message-ID: <20160228134053.9D7D98FAFE9@webmail.cefet-rj.br>
-Reply-To: contactalecssandrokonart@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webmail.cefet-rj.br ([200.9.149.52]:38803 "EHLO
-	webmail.cefet-rj.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750772AbcB2OQL convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 09:16:11 -0500
-Content-Description: Mail message body
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Recipients <contactalecssandrokonart65@live.com>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: [PATCH] arm64: dts: r8a7795: Add CAN support
+Date: Mon, 29 Feb 2016 14:22:39 +0000
+Message-ID: <1456755759-51288-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: mkl@pengutronix.de, wg@grandegger.com, horms@verge.net.au, magnus.damm@gmail.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, chris.paterson2@renesas.com, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+List-Id: linux-can.vger.kernel.org
 
+Adds CAN controller nodes for r8a7795.
 
-Oi Amigo,
+Note: CAN channel register base address mentioned in R-Car Gen3 Hardware
+User Manual v0.5E is incorrect. The corrected base addresses are:
 
-INFORMA=C7=C3O IMPORTANTE
+CAN Channel 0 - 0xe6c30000
+CAN Channel 1 - 0xe6c38000
 
-Nossa fam=EDlia est=E1 interessada em investir fundos em sua localidade=
-=2E
+Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+---
+Hi All,
 
-Mais informa=E7=F5es para voc=EA se interessou.
+   This patch is based on linux-next (tag:next-20160225) with following patch
+   applied on top
 
-Sauda=E7=F5es,
-Sir Henry Neville Lindley Keswick
-Presidente da Jardine Matheson Holdings Ltd
-https://en.wikipedia.org/wiki/Keswick_family
+   [PATCH v2] arm64: dts: r8a7795: Add CAN external clock support
+
+   The respective CAN subsystem changes are submitted separately here (http://marc.info/?l=linux-can&m=145674974416086&w=2)
+
+ arch/arm64/boot/dts/renesas/r8a7795.dtsi | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+index 4049182..a88f8d8 100644
+--- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+@@ -523,6 +523,36 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		can0: can@e6c30000 {
++			compatible = "renesas,can-r8a7795",
++				     "renesas,rcar-gen3-can";
++			reg = <0 0xe6c30000 0 0x1000>;
++			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 916>,
++			       <&cpg CPG_CORE R8A7795_CLK_CANFD>,
++			       <&can_clk>;
++			clock-names = "clkp1", "clkp2", "can_clk";
++			assigned-clocks = <&cpg CPG_CORE R8A7795_CLK_CANFD>;
++			assigned-clock-rates = <40000000>;
++			power-domains = <&cpg>;
++			status = "disabled";
++		};
++
++		can1: can@e6c38000 {
++			compatible = "renesas,can-r8a7795",
++				     "renesas,rcar-gen3-can";
++			reg = <0 0xe6c38000 0 0x1000>;
++			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 915>,
++			       <&cpg CPG_CORE R8A7795_CLK_CANFD>,
++			       <&can_clk>;
++			clock-names = "clkp1", "clkp2", "can_clk";
++			assigned-clocks = <&cpg CPG_CORE R8A7795_CLK_CANFD>;
++			assigned-clock-rates = <40000000>;
++			power-domains = <&cpg>;
++			status = "disabled";
++		};
++
+ 		hscif0: serial@e6540000 {
+ 			compatible = "renesas,hscif-r8a7795",
+ 				     "renesas,rcar-gen3-hscif",
+-- 
+1.9.1
