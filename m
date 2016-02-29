@@ -1,43 +1,55 @@
-From: "Mr. DOUGLAS" <douglascontact6048@live.com>
-Subject: =?utf-8?q?INFORMA=C3=87=C3=83O_IMPORTANTE__RE=3A_Consultoria_de_Investime?=
- =?utf-8?q?nto_em_sua_Localidade=2E?=
-Date: Sun, 28 Feb 2016 04:38:02 -0800
-Message-ID: <20160228133700.E44F38FAF4A@webmail.cefet-rj.br>
-Reply-To: johnsondouglas8738@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Marek Vasut <marex@denx.de>
+Subject: [PATCH 2/4] net: can: ifi: Fix TX DLC configuration
+Date: Mon, 29 Feb 2016 20:59:29 +0100
+Message-ID: <1456775971-4946-3-git-send-email-marex@denx.de>
+References: <1456775971-4946-1-git-send-email-marex@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webmail.cefet-rj.br ([200.9.149.52]:53206 "EHLO
-	webmail.cefet-rj.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752162AbcB2Osi convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 09:48:38 -0500
-Content-Description: Mail message body
+Received: from mail-out.m-online.net ([212.18.0.10]:46587 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751565AbcB2T7o (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 14:59:44 -0500
+In-Reply-To: <1456775971-4946-1-git-send-email-marex@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <douglascontact6048@live.com>
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-Oi,
+The TX DLC, the transmission length information, was not written
+into the transmit configuration register. When using the CAN core
+with different CAN controller, the receiving CAN controller will
+receive only the ID part of the CAN frame, but no data at all.
 
-Temos planejado investir alguns fundos no seu pa=EDs.
+This patch adds the TX DLC into the register to fix this issue.
 
-Responder se voc=EA estiver interessado.
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+---
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Sauda=E7=F5es,
-Sir Henry Neville Lindley Keswick
-Presidente da Jardine Matheson Holdings Ltd
-https://en.wikipedia.org/wiki/Keswick_family
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 72f5205..82a33bd 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -774,10 +774,15 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
+ 
+ 	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO)) {
+ 		if (can_is_canfd_skb(skb)) {
++			txdlc |= can_len2dlc(cf->len);
+ 			txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
+ 			if (cf->flags & CANFD_BRS)
+ 				txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
++		} else {
++			txdlc |= cf->len;
+ 		}
++	} else {
++		txdlc |= cf->len;
+ 	}
+ 
+ 	if (cf->can_id & CAN_RTR_FLAG)
+-- 
+2.7.0
 
-Hi friend,
-
-Our family is interested in investing funds in your locality.
-
-More information for you interest .
-
-Greetings,
-Sir Henry Neville Lindley Keswick
-Chairman of Jardine Matheson Holdings Ltd
-https://en.wikipedia.org/wiki/Keswick_family
