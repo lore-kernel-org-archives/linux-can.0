@@ -1,61 +1,84 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: rcar_can: Add r8a7795 support
-Date: Mon, 29 Feb 2016 11:02:22 +0100
-Message-ID: <56D4172E.4050407@pengutronix.de>
-References: <1456737661-20538-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1456737661-20538-2-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56D411A5.9070706@pengutronix.de>
- <SG2PR06MB10380FC567E038EA92D5401EC3BA0@SG2PR06MB1038.apcprd06.prod.outlook.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="91c4EuRkOnW0mIoP9axSHeADILd2MUGcP"
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: [PATCH] can-calc-bit-timing: add support for rcar_can
+Date: Mon, 29 Feb 2016 10:18:45 +0000
+Message-ID: <1456741125-50017-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:47943 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752622AbcB2KCx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 05:02:53 -0500
-In-Reply-To: <SG2PR06MB10380FC567E038EA92D5401EC3BA0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Received: from relmlor4.renesas.com ([210.160.252.174]:30592 "EHLO
+	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752304AbcB2KX2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 05:23:28 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "wg@grandegger.com" <wg@grandegger.com>, "horms@verge.net.au" <horms@verge.net.au>, "magnus.damm@gmail.com" <magnus.damm@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>
+To: mkl@pengutronix.de, wg@grandegger.com
+Cc: linux-can@vger.kernel.org, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---91c4EuRkOnW0mIoP9axSHeADILd2MUGcP
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+---
+Hi Mark,
 
-On 02/29/2016 10:56 AM, Ramesh Shanmugasundaram wrote:
-> root@salvator-x:~# can-calc-bit-timing -c 39999998 rcar_can =20
+   This patch is generated on top of can-utils master
 
-Can you send me the patches to support the rcar_can. On the linux-can ML
-or github pull request.
+   commit:
+   cda6117 can: avoid using timeval for uapi
 
-Thanks,
-Marc
+   in response to https://www.mail-archive.com/netdev@vger.kernel.org/msg99549.html
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ can-calc-bit-timing.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
+diff --git a/can-calc-bit-timing.c b/can-calc-bit-timing.c
+index 9031a78..b6236f0 100644
+--- a/can-calc-bit-timing.c
++++ b/can-calc-bit-timing.c
+@@ -219,6 +219,26 @@ static void printf_btr_ti_hecc(struct can_bittiming *bt, int hdr)
+ 	}
+ }
+ 
++static void printf_btr_rcar_can(struct can_bittiming *bt, int hdr)
++{
++	if (hdr) {
++		printf("%10s", "CiBCR");
++	} else {
++		uint32_t bcr;
++#define RCAR_CAN_BCR_TSEG1(x)   (((x) & 0x0f) << 20)
++#define RCAR_CAN_BCR_BPR(x)     (((x) & 0x3ff) << 8)
++#define RCAR_CAN_BCR_SJW(x)     (((x) & 0x3) << 4)
++#define RCAR_CAN_BCR_TSEG2(x)   ((x) & 0x07)
++
++		bcr = RCAR_CAN_BCR_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
++			RCAR_CAN_BCR_BPR(bt->brp - 1) |
++			RCAR_CAN_BCR_SJW(bt->sjw - 1) |
++			RCAR_CAN_BCR_TSEG2(bt->phase_seg2 - 1);
++
++		printf("0x%08x", bcr<<8);
++	}
++}
++
+ static struct can_bittiming_const can_calc_consts[] = {
+ 	{
+ 		.name = "sja1000",
+@@ -472,6 +492,21 @@ static struct can_bittiming_const can_calc_consts[] = {
+ 
+ 		.ref_clk = 13000000,
+ 		.printf_btr = printf_btr_ti_hecc,
++	},
++	{
++		.name = "rcar_can",
++		.tseg1_min = 4,
++		.tseg1_max = 16,
++		.tseg2_min = 2,
++		.tseg2_max = 8,
++		.sjw_max = 4,
++		.brp_min = 1,
++		.brp_max = 1024,
++		.brp_inc = 1,
++
++		.ref_clk = 65000000,
++		.printf_btr = printf_btr_rcar_can,
++	},
+ 	}
+ };
+ 
+-- 
+1.9.1
 
---91c4EuRkOnW0mIoP9axSHeADILd2MUGcP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJW1BcuAAoJED07qiWsqSVqZLoH/0b812uFBjQenKKxA6LeTN20
-z7pev5rXBYS8uBd1/RJ5aAZRqnEmEIoVKxSOa1PPRYLTqoUog5Ev9QlS+UQdVdBr
-tw5jPlI7btvT7NraWA7ZaOFIVCp6lvpPC7dfY4JX5oXvcLmRLEOUP0KAP9rSgupw
-RjKxTSuAPk5uRuv8nI9ua85cCMhLu+ojjx4SGY2hWVP/6VkGiMc/agBfhfzHDX6G
-S822ZTTKwRSpCHx8jimyhHAz6aLDYVdbKWwaV+M/V9K6Cpo4y1bp2c6GSmgZr52R
-mycX8naTomBCsMG7pvTyQp3uGuAzdy4h1VTErXH/yKxwzAwAsgg25Mb9K9jXM7o=
-=ahJr
------END PGP SIGNATURE-----
-
---91c4EuRkOnW0mIoP9axSHeADILd2MUGcP--
