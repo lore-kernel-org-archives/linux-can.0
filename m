@@ -1,52 +1,85 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Tue, 1 Mar 2016 22:07:18 +0100
-Message-ID: <56D60486.1000102@hartkopp.net>
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 3/4] net: can: ifi: Fix RX and TX ID mask
+Date: Tue, 01 Mar 2016 22:23:28 +0100
+Message-ID: <56D60850.8080103@denx.de>
+References: <1456775971-4946-1-git-send-email-marex@denx.de> <1456775971-4946-4-git-send-email-marex@denx.de> <56D5D635.1050005@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, mkl@pengutronix.de, wg@grandegger.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, corbet@lwn.net
-Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org, geert+renesas@glider.be, chris.paterson2@renesas.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-out.m-online.net ([212.18.0.10]:50267 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751062AbcCAWL6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Mar 2016 17:11:58 -0500
+In-Reply-To: <56D5D635.1050005@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>
+
+On 03/01/2016 06:49 PM, Oliver Hartkopp wrote:
+> Hi Marek,
+
+Hi Oliver,
+
+> On 02/29/2016 08:59 PM, Marek Vasut wrote:
+>> The RX and TX ID mask for CAN2.0 is 11 bits wide. This patch fixes
+>> the incorrect mask, which caused the CAN IDs to miss the MSBit both
+>> on receive and transmit.
+>>
+>> Signed-off-by: Marek Vasut <marex@denx.de>
+>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+>> Cc: Wolfgang Grandegger <wg@grandegger.com>
+>> ---
+>>  drivers/net/can/ifi_canfd/ifi_canfd.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+>> index 82a33bd..6704098 100644
+>> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
+>> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+>> @@ -135,7 +135,7 @@
+>>  
+>>  #define IFI_CANFD_RXFIFO_ID			0x6c
+>>  #define IFI_CANFD_RXFIFO_ID_ID_OFFSET		0
+>> -#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x3ff
+>> +#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x7ff
+>>  #define IFI_CANFD_RXFIFO_ID_ID_XTD_MASK		0x1fffffff
+> 
+> You should use the CAN_SFF_MASK and CAN_EFF_MASK in your code instead of
+> defining you private IFI_CANFD_RXFIFO_ID_ID_?TD_MASK definitions.
+> 
+> You won't have trapped into this problem then :-)
+
+These are register bitfield definitions, so should I really ?
+
+My OCD kicks in and tells me it'd be odd and inconsistent with the rest
+of the bitfields, but if you prefer it that way, I'll just send an
+updated patch.
+
+>>  #define IFI_CANFD_RXFIFO_ID_IDE			BIT(29)
+>>  
+>> @@ -156,7 +156,7 @@
+>>  
+>>  #define IFI_CANFD_TXFIFO_ID			0xbc
+>>  #define IFI_CANFD_TXFIFO_ID_ID_OFFSET		0
+>> -#define IFI_CANFD_TXFIFO_ID_ID_STD_MASK		0x3ff
+>> +#define IFI_CANFD_TXFIFO_ID_ID_STD_MASK		0x7ff
+>>  #define IFI_CANFD_TXFIFO_ID_ID_XTD_MASK		0x1fffffff
+> 
+> dito.
+> 
+> 
+> Regards,
+> Oliver
+> 
+>>  #define IFI_CANFD_TXFIFO_ID_IDE			BIT(29)
+>>  
+>>
 
 
-
-On 03/01/2016 10:34 AM, Ramesh Shanmugasundaram wrote:
-> This patch adds support for the CAN FD controller found in Renesas R-Car
-> SoCs. The controller operates in CAN FD mode by default. Two test modes
-> are available and can be enabled by the "rcar_canfd.testmode" module
-> parameter. Refer to Documentation/kernel-parameters.txt.
-
-(..)
-
-> +#ifdef CONFIG_DEBUG_FS
-> +#include <linux/debugfs.h>
-> +
-> +static int rcar_canfd_showregs(struct seq_file *s, void *data)
-> +{
-> +	struct rcar_canfd_channel *priv = s->private;
-> +	u32 ch = priv->channel;
-> +	u32 rf = ch + RCANFD_RFFIFO_IDX;
-> +	u32 cf = RCANFD_CFFIFO_IDX;
-> +	u32 val, offset, i;
-> +
-> +	if (testmode)
-> +		seq_printf(s, "RCANFD : testmode = %d\n", testmode);
-> +	seq_printf(s, "RCANFD register dump: channel %u\n", ch);
-> +	seq_printf(s, "%-40s: %x\n", "g: cfg",
-> +		   rcar_canfd_read(priv, RCANFD_GCFG));
-
-Why do you think you would need this kind of register dumps in debugfs?
-
-This could be interesting for development purposes - but in production drivers
-this is pretty unusual and needless.
-
-I would sugest to remove either the testmode (already suggested by Marc) and
-this register dump stuff.
-
-Regards,
-Oliver
+-- 
+Best regards,
+Marek Vasut
