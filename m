@@ -1,54 +1,40 @@
-From: Marek Vasut <marex@denx.de>
-Subject: [PATCH 3/4] net: can: ifi: Fix RX and TX ID mask
-Date: Mon, 29 Feb 2016 20:59:30 +0100
-Message-ID: <1456775971-4946-4-git-send-email-marex@denx.de>
-References: <1456775971-4946-1-git-send-email-marex@denx.de>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH] can-calc-bit-timing: better bitrate calculcation
+Date: Tue, 1 Mar 2016 07:17:42 +0000
+Message-ID: <SG2PR06MB1038C9E5B0AB918E5F080500C3BB0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <1456755188-28938-1-git-send-email-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:42617 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753209AbcB2T7p (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 29 Feb 2016 14:59:45 -0500
-In-Reply-To: <1456775971-4946-1-git-send-email-marex@denx.de>
+Received: from relmlor2.renesas.com ([210.160.252.172]:59985 "EHLO
+	relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1750823AbcCAHRs convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 1 Mar 2016 02:17:48 -0500
+In-Reply-To: <1456755188-28938-1-git-send-email-mkl@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-The RX and TX ID mask for CAN2.0 is 11 bits wide. This patch fixes
-the incorrect mask, which caused the CAN IDs to miss the MSBit both
-on receive and transmit.
+Hi Marc,
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/net/can/ifi_canfd/ifi_canfd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+> Sent: 29 February 2016 14:13
+> To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+> Cc: linux-can@vger.kernel.org; Marc Kleine-Budde <mkl@pengutronix.de>
+> Subject: [PATCH] can-calc-bit-timing: better bitrate calculcation
+> 
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> 
+> This is work-in-progress. I've to port the current algorithm from the
+> kernel here, than rebase the algorithm ontop, than port the algorithm to
+> the kernel.
 
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 82a33bd..6704098 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -135,7 +135,7 @@
- 
- #define IFI_CANFD_RXFIFO_ID			0x6c
- #define IFI_CANFD_RXFIFO_ID_ID_OFFSET		0
--#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x3ff
-+#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x7ff
- #define IFI_CANFD_RXFIFO_ID_ID_XTD_MASK		0x1fffffff
- #define IFI_CANFD_RXFIFO_ID_IDE			BIT(29)
- 
-@@ -156,7 +156,7 @@
- 
- #define IFI_CANFD_TXFIFO_ID			0xbc
- #define IFI_CANFD_TXFIFO_ID_ID_OFFSET		0
--#define IFI_CANFD_TXFIFO_ID_ID_STD_MASK		0x3ff
-+#define IFI_CANFD_TXFIFO_ID_ID_STD_MASK		0x7ff
- #define IFI_CANFD_TXFIFO_ID_ID_XTD_MASK		0x1fffffff
- #define IFI_CANFD_TXFIFO_ID_IDE			BIT(29)
- 
--- 
-2.7.0
+I tried this on kernel and it seems to work fine. Tried 1Mbps bitrate (as that's the one with different BRP between 39.999998/9 & 40MHz clock) and it's OK
 
+Thanks,
+Ramesh 
