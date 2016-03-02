@@ -1,98 +1,76 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 2/4] net: can: ifi: Fix TX DLC configuration
-Date: Wed, 2 Mar 2016 07:12:58 +0100
-Message-ID: <56D6846A.9020808@hartkopp.net>
-References: <1456775971-4946-1-git-send-email-marex@denx.de>
- <1456775971-4946-3-git-send-email-marex@denx.de>
- <56D5DB54.6000600@hartkopp.net> <56D60938.6060903@denx.de>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH] arm64: dts: r8a7795: Add CAN FD support
+Date: Wed, 2 Mar 2016 07:29:04 +0000
+Message-ID: <SG2PR06MB1038FBA247777C89F70E2633C3BC0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <1456826640-23237-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <56D59538.2060100@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:56546 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750797AbcCBGNC (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Mar 2016 01:13:02 -0500
-In-Reply-To: <56D60938.6060903@denx.de>
+Received: from relmlor4.renesas.com ([210.160.252.174]:55517 "EHLO
+	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1750797AbcCBH3M convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 2 Mar 2016 02:29:12 -0500
+In-Reply-To: <56D59538.2060100@cogentembedded.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "horms@verge.net.au" <horms@verge.net.au>, "magnus.damm@gmail.com" <magnus.damm@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>
+Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Paterson <Chris.Paterson2@renesas.com>
 
+Hi Sergei,
 
-
-On 03/01/2016 10:27 PM, Marek Vasut wrote:
-> On 03/01/2016 07:11 PM, Oliver Hartkopp wrote:
+> On 3/1/2016 1:04 PM, Ramesh Shanmugasundaram wrote:
 > 
-> Hi!
+> > Adds CAN FD controller node for r8a7795.
+> >
+> > Note: CAN FD controller register base address specified in R-Car Gen3
+> > Hardware User Manual v0.5E is incorrect. The correct address is:
+> >
+> > CAN FD - 0xe66c0000
+> >
+> > Signed-off-by: Ramesh Shanmugasundaram
+> > <ramesh.shanmugasundaram@bp.renesas.com>
+> > ---
+> > Hi All,
+> >
+> >     This patch is based on linux-next (tag:next-20160225) with the
+> following
+> >     patches applied on top.
+> >
+> >     [PATCH v2] arm64: dts: r8a7795: Add CAN external clock support
+> >     [PATCH] arm64: dts: r8a7795: Add CAN support
+> >
+> >     The respective CAN subsystem changes are submitted separately here
+> > (https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg013
+> > 88.html)
+> >
+> > Thanks,
+> > Ramesh
+> > ---
+> >   arch/arm64/boot/dts/renesas/r8a7795.dtsi | 24 ++++++++++++++++++++++++
+> >   1 file changed, 24 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+> > b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+> > index a88f8d8..5049ba6 100644
+> > --- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+> > @@ -553,6 +553,30 @@
+> >   			status = "disabled";
+> >   		};
+> >
+> > +		canfd: canfd@e66c0000 {
 > 
->> On 02/29/2016 08:59 PM, Marek Vasut wrote:
->>> The TX DLC, the transmission length information, was not written
->>> into the transmit configuration register. When using the CAN core
->>> with different CAN controller, the receiving CAN controller will
->>> receive only the ID part of the CAN frame, but no data at all.
->>>
->>> This patch adds the TX DLC into the register to fix this issue.
->>>
->>> Signed-off-by: Marek Vasut <marex@denx.de>
->>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
->>> Cc: Wolfgang Grandegger <wg@grandegger.com>
->>> ---
->>>  drivers/net/can/ifi_canfd/ifi_canfd.c | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>>
->>> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
->>> index 72f5205..82a33bd 100644
->>> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
->>> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
->>> @@ -774,10 +774,15 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
->>>  
->>>  	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO)) {
->>>  		if (can_is_canfd_skb(skb)) {
->>> +			txdlc |= can_len2dlc(cf->len);
->>>  			txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
->>>  			if (cf->flags & CANFD_BRS)
->>>  				txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
->>> +		} else {
->>> +			txdlc |= cf->len;
->>>  		}
->>> +	} else {
->>> +		txdlc |= cf->len;
->>>  	}
->>
->> Please use
->>
->> 	txdlc |= can_len2dlc(cf->len);
->>
->> by default (it works for CAN and CAN FD).
->>
->> So that it looks more like:
->>
->> 	txdlc |= can_len2dlc(cf->len);
-> 
-> Roger.
-> 
->> 	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
->> 		txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
->> 		if (cf->flags & CANFD_BRS)
->> 			txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
->> 	}
->>
->> Testing against CAN_CTRLMODE_FD_NON_ISO is wrong!
->> This configuration bit is just for the protocol on the wire and is no
->> distinction for CAN / CAN FD.
-> 
-> So CAN_CTRLMODE_FD is always set if the system operates in CAN/FD mode.
+>     The node name should still be "can@e66c0000", I think.
 
-Not the 'system' but this specific CAN netdevice.
+Thanks for the review.
 
-> And in addition to that, if the system operates in CAN/FD BOSCH mode,
-> the CAN_CTRLMODE_FD_NON_ISO is set. Do I understand it correctly ?
+The SoC has CAN controller too and hence I chose this node name to differentiate. A grep of canfd on sysfs would tell if the controller is enabled. The channels on "net" would still be named "canx".
 
-Yep! ('the CAN netdev')
+I'll change it if you still feel "can@e66c0000" is more appropriate.
 
-Regards,
-Oliver
-
+Thanks,
+Ramesh
