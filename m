@@ -1,92 +1,30 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 2/4] net: can: ifi: Fix TX DLC configuration
-Date: Tue, 01 Mar 2016 22:27:20 +0100
-Message-ID: <56D60938.6060903@denx.de>
-References: <1456775971-4946-1-git-send-email-marex@denx.de> <1456775971-4946-3-git-send-email-marex@denx.de> <56D5DB54.6000600@hartkopp.net>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 2/2] arm64: dts: r8a7795: Add CAN support
+Date: Wed, 2 Mar 2016 09:25:27 +0900
+Message-ID: <20160302002527.GG17986@verge.net.au>
+References: <1456737661-20538-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1456737661-20538-3-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <56D5DB54.6000600@hartkopp.net>
+Content-Disposition: inline
+In-Reply-To: <1456737661-20538-3-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Cc: mkl@pengutronix.de, wg@grandegger.com, magnus.damm@gmail.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, chris.paterson2@renesas.com
 List-Id: linux-can.vger.kernel.org
 
-On 03/01/2016 07:11 PM, Oliver Hartkopp wrote:
-
-Hi!
-
-> On 02/29/2016 08:59 PM, Marek Vasut wrote:
->> The TX DLC, the transmission length information, was not written
->> into the transmit configuration register. When using the CAN core
->> with different CAN controller, the receiving CAN controller will
->> receive only the ID part of the CAN frame, but no data at all.
->>
->> This patch adds the TX DLC into the register to fix this issue.
->>
->> Signed-off-by: Marek Vasut <marex@denx.de>
->> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
->> Cc: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/net/can/ifi_canfd/ifi_canfd.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
->> index 72f5205..82a33bd 100644
->> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
->> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
->> @@ -774,10 +774,15 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
->>  
->>  	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO)) {
->>  		if (can_is_canfd_skb(skb)) {
->> +			txdlc |= can_len2dlc(cf->len);
->>  			txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
->>  			if (cf->flags & CANFD_BRS)
->>  				txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
->> +		} else {
->> +			txdlc |= cf->len;
->>  		}
->> +	} else {
->> +		txdlc |= cf->len;
->>  	}
+On Mon, Feb 29, 2016 at 09:21:01AM +0000, Ramesh Shanmugasundaram wrote:
+> Adds CAN controller nodes for r8a7795.
 > 
-> Please use
+> Note: CAN channel register base address mentioned in R-Car Gen3 Hardware
+> User Manual v0.5E is incorrect. The corrected base addresses are:
 > 
-> 	txdlc |= can_len2dlc(cf->len);
+> CAN Channel 0 - 0xe6c30000
+> CAN Channel 1 - 0xe6c38000
 > 
-> by default (it works for CAN and CAN FD).
-> 
-> So that it looks more like:
-> 
-> 	txdlc |= can_len2dlc(cf->len);
+> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
 
-Roger.
-
-> 	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
-> 		txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
-> 		if (cf->flags & CANFD_BRS)
-> 			txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
-> 	}
-> 
-> Testing against CAN_CTRLMODE_FD_NON_ISO is wrong!
-> This configuration bit is just for the protocol on the wire and is no
-> distinction for CAN / CAN FD.
-
-So CAN_CTRLMODE_FD is always set if the system operates in CAN/FD mode.
-And in addition to that, if the system operates in CAN/FD BOSCH mode,
-the CAN_CTRLMODE_FD_NON_ISO is set. Do I understand it correctly ?
-
-> Best regards,
-> Oliver
-> 
->>  
->>  	if (cf->can_id & CAN_RTR_FLAG)
->>
-
-
--- 
-Best regards,
-Marek Vasut
+I have deferred this patch pending acceptance of the bindings
+(basically patch 1/2). Please repost this patch or ping me once
+that has happened.
