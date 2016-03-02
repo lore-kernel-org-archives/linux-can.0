@@ -1,65 +1,33 @@
 From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH V2 2/4] net: can: ifi: Fix TX DLC configuration
-Date: Wed, 02 Mar 2016 21:14:13 +0100
-Message-ID: <56D74995.8010907@denx.de>
-References: <1456915359-6775-1-git-send-email-marex@denx.de> <1456915359-6775-3-git-send-email-marex@denx.de> <56D7351B.1060403@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH V3 0/4] Synchronise IFI CANFD driver with real world
+Date: Wed,  2 Mar 2016 21:23:17 +0100
+Message-ID: <1456950201-4812-1-git-send-email-marex@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:48094 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.10]:58835 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753004AbcCBUWS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Mar 2016 15:22:18 -0500
-In-Reply-To: <56D7351B.1060403@hartkopp.net>
+	with ESMTP id S1752718AbcCBUXd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 2 Mar 2016 15:23:33 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Marek Vasut <marex@denx.de>
 
-On 03/02/2016 07:46 PM, Oliver Hartkopp wrote:
-> Hi Marek,
+Thus far, this driver was only tested on a hardware synthesised in
+the warm and safe insides of an FPGA, only against another IFI CANFD
+core. The real hardware arrived now and I tested the IFI CANFD driver
+against different, harsh, real-world CAN controller.
 
-Hi!
+This uncovered a few bugs, so here are the fixes for those.
 
-> sorry for picking this patch up again.
+Marek Vasut (4):
+  net: can: ifi: Fix clock generator configuration
+  net: can: ifi: Fix TX DLC configuration
+  net: can: ifi: Fix RX and TX ID mask
+  net: can: ifi: Add obscure bit swap for EFF frame IDs
 
-nothing to be sorry about, thanks for the input :)
-
-> After looking around in the original source I have one more comment:
-> 
-> On 03/02/2016 11:42 AM, Marek Vasut wrote:
-> 
->> -	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO)) {
->> -		if (can_is_canfd_skb(skb)) {
->> -			txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
->> -			if (cf->flags & CANFD_BRS)
->> -				txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
->> -		}
->> +	txdlc |= can_len2dlc(cf->len);
-> 
-> At the top of the function you defined
-> 
-> 	u32 txst, txid;
-> 	u32 txdlc = 0;
-> 
-> and here you use 'txdlc |= ...'.
-> 
-> That's weird style IMO.
-> 
-> Please change it to
-> 
-> 	u32 txst, txid, txdlc;
-> 
-> and
-> 
-> 	txdlc = can_len2dlc(cf->len);
-
-I'll send a V3 shortly.
-
-btw. I forgot to add V2 to the 3/4 and 4/4 patches, sigh.
-
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 96 ++++++++++++++++++++++-------------
+ 1 file changed, 61 insertions(+), 35 deletions(-)
 
 -- 
-Best regards,
-Marek Vasut
+2.7.0
+
