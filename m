@@ -1,53 +1,52 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] arm64: dts: r8a7795: Add CAN support
-Date: Wed, 2 Mar 2016 09:28:06 +0900
-Message-ID: <20160302002806.GH17986@verge.net.au>
-References: <1456755759-51288-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56D54EFA.6020105@pengutronix.de>
- <SG2PR06MB103895394DED2A849E2A801BC3BB0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/4] net: can: ifi: Fix RX and TX ID mask
+Date: Wed, 2 Mar 2016 07:10:10 +0100
+Message-ID: <56D683C2.5080402@hartkopp.net>
+References: <1456775971-4946-1-git-send-email-marex@denx.de>
+ <1456775971-4946-4-git-send-email-marex@denx.de>
+ <56D5D635.1050005@hartkopp.net> <56D60850.8080103@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from kirsty.vergenet.net ([202.4.237.240]:52209 "EHLO
-	kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932364AbcCBA2K (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 1 Mar 2016 19:28:10 -0500
-Content-Disposition: inline
-In-Reply-To: <SG2PR06MB103895394DED2A849E2A801BC3BB0@SG2PR06MB1038.apcprd06.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "magnus.damm@gmail.com" <magnus.damm@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <56D60850.8080103@denx.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>
+List-Id: linux-can.vger.kernel.org
 
-On Tue, Mar 01, 2016 at 08:20:25AM +0000, Ramesh Shanmugasundaram wrote:
-> Hi Marc,
+Hi Marek,
+
+On 03/01/2016 10:23 PM, Marek Vasut wrote:
+> On 03/01/2016 06:49 PM, Oliver Hartkopp wrote:
+
+
+>>> -#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x3ff
+>>> +#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		0x7ff
+>>>  #define IFI_CANFD_RXFIFO_ID_ID_XTD_MASK		0x1fffffff
+>>
+>> You should use the CAN_SFF_MASK and CAN_EFF_MASK in your code instead of
+>> defining you private IFI_CANFD_RXFIFO_ID_ID_?TD_MASK definitions.
+>>
+>> You won't have trapped into this problem then :-)
 > 
-> > On 02/29/2016 03:22 PM, Ramesh Shanmugasundaram wrote:
-> > > Adds CAN controller nodes for r8a7795.
-> > >
-> > > Note: CAN channel register base address mentioned in R-Car Gen3
-> > > Hardware User Manual v0.5E is incorrect. The corrected base addresses
-> > are:
-> > >
-> > > CAN Channel 0 - 0xe6c30000
-> > > CAN Channel 1 - 0xe6c38000
-> > >
-> > > Signed-off-by: Ramesh Shanmugasundaram
-> > > <ramesh.shanmugasundaram@bp.renesas.com>
-> > > ---
-> > > Hi All,
-> > >
-> > >    This patch is based on linux-next (tag:next-20160225) with following
-> > patch
-> > >    applied on top
-> > 
-> > Who should take this patch?
+> These are register bitfield definitions, so should I really ?
 > 
-> If acked, I think it is Simon (who consolidates all Renesas ARM64 DT changes and make one pull request). Copied Geert too.
+> My OCD kicks in and tells me it'd be odd and inconsistent with the rest
+> of the bitfields, but if you prefer it that way, I'll just send an
+> updated patch.
+> 
 
-I believe it is appropriate for me to take this patch the renesas tree.
-I would be glad of any review and Acks, though I don't think an Ack
-from the driver maintainer is strictly necessary.
+Your bit mask is masking the CAN ID out of a given variable.
+That's what CAN_SFF_MASK and CAN_EFF_MASK is made for.
 
-Assuming there are no objections I plan to queue up this patch
-once the bindings been queued up.
+So at least it should be:
+
+#define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		CAN_SFF_MASK
+#define IFI_CANFD_RXFIFO_ID_ID_XTD_MASK		CAN_EFF_MASK
+
+Btw. These defines are _never_ referenced in ifi_canfd.c so they should be
+removed anyway.
+
+Regards,
+Oliver
