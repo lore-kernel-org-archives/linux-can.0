@@ -1,73 +1,48 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-Subject: [PATCH v2] arm64: dts: r8a7795: Add CAN FD support
-Date: Wed,  2 Mar 2016 08:15:50 +0000
-Message-ID: <1456906550-4849-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-References: <1456826640-23237-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1456826640-23237-1-git-send-email-ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org, magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-Cc: linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Wed, 2 Mar 2016 08:41:40 +0000
+Message-ID: <SG2PR06MB1038AC389CDB35916408A5D6C3BC0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <56D5FE8E.1090400@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <56D5FE8E.1090400@pengutronix.de>
+Content-Language: en-US
+Sender: linux-doc-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
+Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
 List-Id: linux-can.vger.kernel.org
 
-Adds CAN FD controller node for r8a7795.
-
-Note: CAN FD controller register base address specified in R-Car Gen3
-Hardware User Manual v0.5E is incorrect. The correct address is:
-
-CAN FD - 0xe66c0000
-
-Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
----
-Thanks Sergei, Simon for the comments.
-
-	Changes since v1:
-	As suggested by Sergei, Simon
-	* Changed node name from canfd@ to can@
-
----
- arch/arm64/boot/dts/renesas/r8a7795.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-index a88f8d8..9185688 100644
---- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-@@ -553,6 +553,30 @@
- 			status = "disabled";
- 		};
- 
-+		canfd: can@e66c0000 {
-+			compatible = "renesas,r8a7795-canfd",
-+				     "renesas,rcar-gen3-canfd";
-+			reg = <0 0xe66c0000 0 0x8000>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-+				   <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 914>,
-+			       <&cpg CPG_CORE R8A7795_CLK_CANFD>,
-+			       <&can_clk>;
-+			clock-names = "fck", "canfd", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R8A7795_CLK_CANFD>;
-+			assigned-clock-rates = <40000000>;
-+			power-domains = <&cpg>;
-+			status = "disabled";
-+
-+			channel0 {
-+				status = "disabled";
-+			};
-+
-+			channel1 {
-+				status = "disabled";
-+			};
-+		};
-+
- 		hscif0: serial@e6540000 {
- 			compatible = "renesas,hscif-r8a7795",
- 				     "renesas,rcar-gen3-hscif",
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGkgTWFyYywNCg0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQo+IE9uIDAzLzAxLzIwMTYgMTA6
+MzQgQU0sIFJhbWVzaCBTaGFubXVnYXN1bmRhcmFtIHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggYWRk
+cyBzdXBwb3J0IGZvciB0aGUgQ0FOIEZEIGNvbnRyb2xsZXIgZm91bmQgaW4gUmVuZXNhcw0KPiA+
+IFItQ2FyIFNvQ3MuIFRoZSBjb250cm9sbGVyIG9wZXJhdGVzIGluIENBTiBGRCBtb2RlIGJ5IGRl
+ZmF1bHQuIFR3bw0KPiA+IHRlc3QgbW9kZXMgYXJlIGF2YWlsYWJsZSBhbmQgY2FuIGJlIGVuYWJs
+ZWQgYnkgdGhlDQo+ID4gInJjYXJfY2FuZmQudGVzdG1vZGUiIG1vZHVsZSBwYXJhbWV0ZXIuIFJl
+ZmVyIHRvIERvY3VtZW50YXRpb24va2VybmVsLQ0KPiBwYXJhbWV0ZXJzLnR4dC4NCj4gDQo+IElz
+IHRoZSBjaGFubmVsIGxvb3BiYWNrIG1vZGUgY29uZmlndXJhYmxlIHBlciBjaGFubmVsPyBJZiBz
+bywgcGxlYXNlDQo+IHJlbW92ZSB0aGUgbW9kdWxlIHBhcmFtZXRlciBhbmQgbWFrZSB1c2Ugb2Yg
+Q0FOX0NUUkxNT0RFX0xPT1BCQUNLIHRvDQo+IGNvbmZpZ3VyZSBpdC4NCg0KVGhlIGxvb3BiYWNr
+IHNldHRpbmcgaXMgbm90IHRydWx5IGEgcGVyIGNoYW5uZWwgYXR0cmlidXRlLiBJdCByZXF1aXJl
+cyB0b3VjaGluZyBSeCBydWxlcyB3aGljaCBjYW4gYmUgZG9uZSBvbmx5IHdoZW4gdGhlIGNvbnRy
+b2xsZXIncyBnbG9iYWwgc3RhdGUgaXMgcmVzZXQgKGR1cmluZyBwcm9iZSkuIENBTl9DVFJMTU9E
+RV9MT09QQkFDSyBjb25maWcgb3B0aW9uIGlzIHBvc3NpYmxlIG9ubHkgdGhyb3VnaCAubmRvX29w
+ZW4gb2YgdGhhdCBjaGFubmVsIGJ1dCB0aGUgZ2xvYmFsIGNvbnRyb2xsZXIgc3RhdGUgbmVlZHMg
+dG8gYmUgb3BlcmF0aW9uYWwgYnkgdGhpcyB0aW1lLiBBcyBpdCBpcyBhIGdsb2JhbCBhdHRyaWJ1
+dGUgJiBmb3IgdGhlIGFib3ZlIHJlYXNvbiwgSSBjaG9vc2UgdGhlIG1vZHVsZSBvcHRpb24uDQoN
+Cj4gDQo+ID4gQ0FOIEZEIG1vZGUgc3VwcG9ydHMgYm90aCBDbGFzc2ljYWwgQ0FOICYgQ0FOIEZE
+IGZyYW1lIGZvcm1hdHMuIFRoZQ0KPiA+IGNvbnRyb2xsZXIgc3VwcG9ydHMgSVNPIDExODk4LTE6
+MjAxNSBDQU4gRkQgZm9ybWF0IG9ubHkuDQo+ID4NCj4gPiBUaGlzIGNvbnRyb2xsZXIgc3VwcG9y
+dHMgdHdvIGNoYW5uZWxzIGFuZCB0aGUgZHJpdmVyIGNhbiBlbmFibGUgZWl0aGVyDQo+ID4gb3Ig
+Ym90aCBvZiB0aGUgY2hhbm5lbHMuDQo+ID4NCj4gPiBEcml2ZXIgdXNlcyBSeCBGSUZPcyAob25l
+IHBlciBjaGFubmVsKSBmb3IgcmVjZXB0aW9uICYgQ29tbW9uIEZJRk9zDQo+ID4gKG9uZSBwZXIg
+Y2hhbm5lbCkgZm9yIHRyYW5zbWlzc2lvbi4gUnggZmlsdGVyIHJ1bGVzIGFyZSBjb25maWd1cmVk
+IHRvDQo+ID4gdGhlIG1pbmltdW0gKG9uZSBwZXIgY2hhbm5lbCkgYW5kIGl0IGFjY2VwdHMgU3Rh
+bmRhcmQsIEV4dGVuZGVkLCBEYXRhDQo+ID4gJiBSZW1vdGUgRnJhbWUgY29tYmluYXRpb25zLg0K
+PiANCj4gSSBzZWUgbm8gbG9ja2luZyBmb3IgdGhlIHR4LXBhdGguDQogDQpJIGFtIG5vdCBzdXJl
+IHdoeSBsb2NraW5nIGlzIG5lZWRlZCBpbiB0eC1wYXRoPyANCkhvd2V2ZXIsIGxvb2tpbmcgYXQg
+aXQgYWdhaW4sIEkgc2hvdWxkIG1vdmUgdGhlIGluY3JlbWVudGluZyBvZiBoZWFkIGFmdGVyIHRo
+ZSAic3RzIiBoYW5kaW5nIHRvIGJlIGFwdC4gV2hhdCBkbyB5b3UgdGhpbms/DQoNClRoYW5rcywN
+ClJhbWVzaA0K
