@@ -1,144 +1,33 @@
 From: Marek Vasut <marex@denx.de>
-Subject: [PATCH V4 1/4] net: can: ifi: Fix clock generator configuration
-Date: Thu,  3 Mar 2016 20:45:55 +0100
-Message-ID: <1457034358-5515-2-git-send-email-marex@denx.de>
-References: <1457034358-5515-1-git-send-email-marex@denx.de>
+Subject: [PATCH V4 0/4] Synchronise IFI CANFD driver with real world
+Date: Thu,  3 Mar 2016 20:45:54 +0100
+Message-ID: <1457034358-5515-1-git-send-email-marex@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:47442 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.10]:56386 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753136AbcCCTqJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Mar 2016 14:46:09 -0500
-In-Reply-To: <1457034358-5515-1-git-send-email-marex@denx.de>
+	with ESMTP id S1751435AbcCCTqI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Mar 2016 14:46:08 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marek Vasut <marex@denx.de>
 
-The clock generation does not match reality when using the CAN IP
-core outside of the FPGA design. This patch fixes the computation
-of values which are programmed into the clock generator registers.
+Thus far, this driver was only tested on a hardware synthesised in
+the warm and safe insides of an FPGA, only against another IFI CANFD
+core. The real hardware arrived now and I tested the IFI CANFD driver
+against different, harsh, real-world CAN controller.
 
-First, there are some off-by-one errors which manifest themselves
-only when communicating with different controller, so those are
-fixed.
+This uncovered a few bugs, so here are the fixes for those.
 
-Second, the bits in the clock generator registers have different
-meaning depending on whether the core is in ISO CANFD mode or any
-of the other modes (BOSCH CANFD or CAN2.0). Detect the ISO CANFD
-mode and fix handling of this special case of clock configuration.
+Marek Vasut (4):
+  net: can: ifi: Fix clock generator configuration
+  net: can: ifi: Fix TX DLC configuration
+  net: can: ifi: Fix RX and TX ID mask
+  net: can: ifi: Add obscure bit swap for EFF frame IDs
 
-Finally, the CAN clock speed is in CANCLOCK register, not SYSCLOCK
-register, so fix this as well.
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 97 ++++++++++++++++++++++-------------
+ 1 file changed, 62 insertions(+), 35 deletions(-)
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
----
-V2: none
-V3: none
-V4: Only use the CANFD-ISO configuration of the timing register
-    for CANFD-ISO mode. Make sure this configuration is not used
-    for CANFD-BOSCH mode.
----
- drivers/net/can/ifi_canfd/ifi_canfd.c | 44 ++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 639868b..86287a3 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -514,25 +514,25 @@ static irqreturn_t ifi_canfd_isr(int irq, void *dev_id)
- 
- static const struct can_bittiming_const ifi_canfd_bittiming_const = {
- 	.name		= KBUILD_MODNAME,
--	.tseg1_min	= 2,	/* Time segment 1 = prop_seg + phase_seg1 */
-+	.tseg1_min	= 1,	/* Time segment 1 = prop_seg + phase_seg1 */
- 	.tseg1_max	= 64,
--	.tseg2_min	= 1,	/* Time segment 2 = phase_seg2 */
--	.tseg2_max	= 16,
-+	.tseg2_min	= 2,	/* Time segment 2 = phase_seg2 */
-+	.tseg2_max	= 64,
- 	.sjw_max	= 16,
--	.brp_min	= 1,
--	.brp_max	= 1024,
-+	.brp_min	= 2,
-+	.brp_max	= 256,
- 	.brp_inc	= 1,
- };
- 
- static const struct can_bittiming_const ifi_canfd_data_bittiming_const = {
- 	.name		= KBUILD_MODNAME,
--	.tseg1_min	= 2,	/* Time segment 1 = prop_seg + phase_seg1 */
--	.tseg1_max	= 16,
--	.tseg2_min	= 1,	/* Time segment 2 = phase_seg2 */
--	.tseg2_max	= 8,
--	.sjw_max	= 4,
--	.brp_min	= 1,
--	.brp_max	= 32,
-+	.tseg1_min	= 1,	/* Time segment 1 = prop_seg + phase_seg1 */
-+	.tseg1_max	= 64,
-+	.tseg2_min	= 2,	/* Time segment 2 = phase_seg2 */
-+	.tseg2_max	= 64,
-+	.sjw_max	= 16,
-+	.brp_min	= 2,
-+	.brp_max	= 256,
- 	.brp_inc	= 1,
- };
- 
-@@ -545,32 +545,34 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
- 	u32 noniso_arg = 0;
- 	u32 time_off;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO) {
-+	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) &&
-+	    !(priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)) {
-+		time_off = IFI_CANFD_TIME_SJW_OFF_ISO;
-+	} else {
- 		noniso_arg = IFI_CANFD_TIME_SET_TIMEB_BOSCH |
- 			     IFI_CANFD_TIME_SET_TIMEA_BOSCH |
- 			     IFI_CANFD_TIME_SET_PRESC_BOSCH |
- 			     IFI_CANFD_TIME_SET_SJW_BOSCH;
- 		time_off = IFI_CANFD_TIME_SJW_OFF_BOSCH;
--	} else {
--		time_off = IFI_CANFD_TIME_SJW_OFF_ISO;
- 	}
- 
- 	/* Configure bit timing */
--	brp = bt->brp - 1;
-+	brp = bt->brp - 2;
- 	sjw = bt->sjw - 1;
- 	tseg1 = bt->prop_seg + bt->phase_seg1 - 1;
--	tseg2 = bt->phase_seg2 - 1;
-+	tseg2 = bt->phase_seg2 - 2;
- 	writel((tseg2 << IFI_CANFD_TIME_TIMEB_OFF) |
- 	       (tseg1 << IFI_CANFD_TIME_TIMEA_OFF) |
- 	       (brp << IFI_CANFD_TIME_PRESCALE_OFF) |
--	       (sjw << time_off),
-+	       (sjw << time_off) |
-+	       noniso_arg,
- 	       priv->base + IFI_CANFD_TIME);
- 
- 	/* Configure data bit timing */
--	brp = dbt->brp - 1;
-+	brp = dbt->brp - 2;
- 	sjw = dbt->sjw - 1;
- 	tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
--	tseg2 = dbt->phase_seg2 - 1;
-+	tseg2 = dbt->phase_seg2 - 2;
- 	writel((tseg2 << IFI_CANFD_TIME_TIMEB_OFF) |
- 	       (tseg1 << IFI_CANFD_TIME_TIMEA_OFF) |
- 	       (brp << IFI_CANFD_TIME_PRESCALE_OFF) |
-@@ -847,7 +849,7 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
- 
- 	priv->can.state = CAN_STATE_STOPPED;
- 
--	priv->can.clock.freq = readl(addr + IFI_CANFD_SYSCLOCK);
-+	priv->can.clock.freq = readl(addr + IFI_CANFD_CANCLOCK);
- 
- 	priv->can.bittiming_const	= &ifi_canfd_bittiming_const;
- 	priv->can.data_bittiming_const	= &ifi_canfd_data_bittiming_const;
 -- 
 2.7.0
 
