@@ -1,12 +1,12 @@
 From: Marek Vasut <marex@denx.de>
-Subject: [PATCH V4 2/4] net: can: ifi: Fix TX DLC configuration
-Date: Thu,  3 Mar 2016 20:45:56 +0100
-Message-ID: <1457034358-5515-3-git-send-email-marex@denx.de>
+Subject: [PATCH V4 4/4] net: can: ifi: Add obscure bit swap for EFF frame IDs
+Date: Thu,  3 Mar 2016 20:45:58 +0100
+Message-ID: <1457034358-5515-5-git-send-email-marex@denx.de>
 References: <1457034358-5515-1-git-send-email-marex@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:38333 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.10]:56662 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753008AbcCCTqI (ORCPT
+	with ESMTP id S1753089AbcCCTqI (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Thu, 3 Mar 2016 14:46:08 -0500
 In-Reply-To: <1457034358-5515-1-git-send-email-marex@denx.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,12 +14,19 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-The TX DLC, the transmission length information, was not written
-into the transmit configuration register. When using the CAN core
-with different CAN controller, the receiving CAN controller will
-receive only the ID part of the CAN frame, but no data at all.
+In case of CAN2.0 EFF frame, the controller handles frame IDs in a
+rather bizzare way. The ID is split into an extended part, IDX[28:11]
+and standard part, ID[10:0]. In the TX path, the core first sends the
+top 11 bits of the IDX, followed by ID and finally the rest of IDX.
+In the RX path, the core stores the ID the LSbit part of IDX field,
+followed by the LSbit parts of real IDX. The MSbit parts of IDX are
+stored in ID field of the register.
 
-This patch adds the TX DLC into the register to fix this issue.
+This patch implements the necessary bit shuffling to mitigate this
+obscure behavior. In case two of these controllers are connected
+together, the RX and TX bit swapping nullifies itself and the issue
+does not manifest. The issue only manifests when talking to another
+different CAN controller.
 
 Signed-off-by: Marek Vasut <marex@denx.de>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>
@@ -27,49 +34,80 @@ Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Wolfgang Grandegger <wg@grandegger.com>
 ---
-V2: - Use can_len2dlc() unconditionally to sanitize DLC in the TX path
-    - The CAN_CTRLMODE_CANFD_NON_ISO can only ever be set if the
-      CANFD_CTRLMODE_CANFD is set. Use only the later for checking
-      if the core transmits in CANFD mode.
-V3: Drop u32 txdlc = 0;, make it just u32 txdlc; and init txdlc in place
-    with txdlc = can_len2dlc(); instead of doing txdlc |= can_len2dlc();
+V2: Rebase on top of patch 3/4, no change to the patch
+V3: none
 V4: none
 ---
- drivers/net/can/ifi_canfd/ifi_canfd.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 86287a3..c905bfa 100644
+index 9f527ca..b36374d 100644
 --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
 +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -749,8 +749,7 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
- {
- 	struct ifi_canfd_priv *priv = netdev_priv(ndev);
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--	u32 txst, txid;
--	u32 txdlc = 0;
-+	u32 txst, txid, txdlc;
- 	int i;
+@@ -136,7 +136,11 @@
+ #define IFI_CANFD_RXFIFO_ID			0x6c
+ #define IFI_CANFD_RXFIFO_ID_ID_OFFSET		0
+ #define IFI_CANFD_RXFIFO_ID_ID_STD_MASK		CAN_SFF_MASK
++#define IFI_CANFD_RXFIFO_ID_ID_STD_OFFSET	0
++#define IFI_CANFD_RXFIFO_ID_ID_STD_WIDTH	10
+ #define IFI_CANFD_RXFIFO_ID_ID_XTD_MASK		CAN_EFF_MASK
++#define IFI_CANFD_RXFIFO_ID_ID_XTD_OFFSET	11
++#define IFI_CANFD_RXFIFO_ID_ID_XTD_WIDTH	18
+ #define IFI_CANFD_RXFIFO_ID_IDE			BIT(29)
  
- 	if (can_dropped_invalid_skb(ndev, skb))
-@@ -773,12 +772,11 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
+ #define IFI_CANFD_RXFIFO_DATA			0x70	/* 0x70..0xac */
+@@ -157,7 +161,11 @@
+ #define IFI_CANFD_TXFIFO_ID			0xbc
+ #define IFI_CANFD_TXFIFO_ID_ID_OFFSET		0
+ #define IFI_CANFD_TXFIFO_ID_ID_STD_MASK		CAN_SFF_MASK
++#define IFI_CANFD_TXFIFO_ID_ID_STD_OFFSET	0
++#define IFI_CANFD_TXFIFO_ID_ID_STD_WIDTH	10
+ #define IFI_CANFD_TXFIFO_ID_ID_XTD_MASK		CAN_EFF_MASK
++#define IFI_CANFD_TXFIFO_ID_ID_XTD_OFFSET	11
++#define IFI_CANFD_TXFIFO_ID_ID_XTD_WIDTH	18
+ #define IFI_CANFD_TXFIFO_ID_IDE			BIT(29)
+ 
+ #define IFI_CANFD_TXFIFO_DATA			0xc0	/* 0xb0..0xfc */
+@@ -229,10 +237,20 @@ static void ifi_canfd_read_fifo(struct net_device *ndev)
+ 
+ 	rxid = readl(priv->base + IFI_CANFD_RXFIFO_ID);
+ 	id = (rxid >> IFI_CANFD_RXFIFO_ID_ID_OFFSET);
+-	if (id & IFI_CANFD_RXFIFO_ID_IDE)
++	if (id & IFI_CANFD_RXFIFO_ID_IDE) {
+ 		id &= IFI_CANFD_RXFIFO_ID_ID_XTD_MASK;
+-	else
++		/*
++		 * In case the Extended ID frame is received, the standard
++		 * and extended part of the ID are swapped in the register,
++		 * so swap them back to obtain the correct ID.
++		 */
++		id = (id >> IFI_CANFD_RXFIFO_ID_ID_XTD_OFFSET) |
++		     ((id & IFI_CANFD_RXFIFO_ID_ID_STD_MASK) <<
++		       IFI_CANFD_RXFIFO_ID_ID_XTD_WIDTH);
++		id |= CAN_EFF_FLAG;
++	} else {
+ 		id &= IFI_CANFD_RXFIFO_ID_ID_STD_MASK;
++	}
+ 	cf->can_id = id;
+ 
+ 	if (rxdlc & IFI_CANFD_RXFIFO_DLC_ESI) {
+@@ -767,6 +785,15 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
+ 
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+ 		txid = cf->can_id & CAN_EFF_MASK;
++		/*
++		 * In case the Extended ID frame is transmitted, the
++		 * standard and extended part of the ID are swapped
++		 * in the register, so swap them back to send the
++		 * correct ID.
++		 */
++		txid = (txid >> IFI_CANFD_TXFIFO_ID_ID_XTD_WIDTH) |
++		       ((txid & IFI_CANFD_TXFIFO_ID_ID_XTD_MASK) <<
++		         IFI_CANFD_TXFIFO_ID_ID_XTD_OFFSET);
+ 		txid |= IFI_CANFD_TXFIFO_ID_IDE;
+ 	} else {
  		txid = cf->can_id & CAN_SFF_MASK;
- 	}
- 
--	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO)) {
--		if (can_is_canfd_skb(skb)) {
--			txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
--			if (cf->flags & CANFD_BRS)
--				txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
--		}
-+	txdlc = can_len2dlc(cf->len);
-+	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
-+		txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
-+		if (cf->flags & CANFD_BRS)
-+			txdlc |= IFI_CANFD_TXFIFO_DLC_BRS;
- 	}
- 
- 	if (cf->can_id & CAN_RTR_FLAG)
 -- 
 2.7.0
 
