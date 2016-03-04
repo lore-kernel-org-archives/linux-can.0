@@ -1,41 +1,39 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] can: rcar_can: Add r8a7795 support
-Date: Thu, 3 Mar 2016 16:22:57 -0600
-Message-ID: <20160303222257.GA5346@rob-hp-laptop>
-References: <1456749445-50766-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1456749445-50766-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: netdev-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Cc: mkl@pengutronix.de, wg@grandegger.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, geert+renesas@glider.be, horms+renesas@verge.net.au, chris.paterson2@renesas.com
-List-Id: linux-can.vger.kernel.org
+From: Ed Spiridonov <edo.rus@gmail.com>
+Subject: [PATCH] can: mcp251x: avoid write to error flag register if it's unnecessary
+Date: Fri,  4 Mar 2016 09:07:27 +0300
+Message-ID: <1457071647-17098-1-git-send-email-edo.rus@gmail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lb0-f173.google.com ([209.85.217.173]:33340 "EHLO
+	mail-lb0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750903AbcCDGIW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 4 Mar 2016 01:08:22 -0500
+Received: by mail-lb0-f173.google.com with SMTP id k15so49516586lbg.0
+        for <linux-can@vger.kernel.org>; Thu, 03 Mar 2016 22:08:22 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, celston@katalix.com, chripell@evolware.org, sbabic@denx.de, Ed Spiridonov <edo.rus@gmail.com>
 
-On Mon, Feb 29, 2016 at 12:37:25PM +0000, Ramesh Shanmugasundaram wrote:
-> Added r8a7795 SoC support.
-> 
-> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-> ---
-> Hi All,
-> 
->    This patch is based on linux-can-next (tag:linux-can-next-for-4.6-20160226)
-> 
->    Pinctrl & Clock related to the controller are already submitted as below:
-> 
->    https://lkml.org/lkml/2016/2/25/546
->    https://lkml.org/lkml/2016/2/26/452
->    http://www.spinics.net/lists/arm-kernel/msg487238.html
-> 
->    Changes since v1:
->    * Rebased from linux-next to linux-can-next
->    * Removed clock rounding hack (http://www.spinics.net/lists/netdev/msg366611.html)
->    * CAN dtsi changes will be submitted separately based on linux-next (http://marc.info/?l=linux-can&m=145674764815430&w=2)
-> 
->  Documentation/devicetree/bindings/net/can/rcar_can.txt | 11 +++++++++++
->  drivers/net/can/Kconfig                                |  2 +-
->  drivers/net/can/rcar_can.c                             |  1 +
->  3 files changed, 13 insertions(+), 1 deletion(-)
+Only two bits (RX0OVR and RX1OVR) are writable in EFLG, write is useless if these bits aren't set.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Ed Spiridonov <edo.rus@gmail.com>
+---
+ drivers/net/can/spi/mcp251x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 575790e..74a7dfe 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -843,7 +843,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 		if (clear_intf)
+ 			mcp251x_write_bits(spi, CANINTF, clear_intf, 0x00);
+ 
+-		if (eflag)
++		if (eflag & (EFLG_RX0OVR | EFLG_RX1OVR))
+ 			mcp251x_write_bits(spi, EFLG, eflag, 0x00);
+ 
+ 		/* Update can state */
+-- 
+2.7.0
+
