@@ -1,165 +1,99 @@
-From: Rob Herring <robh@kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Fri, 4 Mar 2016 22:30:10 -0600
-Message-ID: <20160305043010.GC13525@rob-hp-laptop>
+Date: Sun, 6 Mar 2016 12:32:49 +0100
+Message-ID: <56DC1561.9060306@hartkopp.net>
 References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:16697 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751230AbcCFLdS (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 6 Mar 2016 06:33:18 -0500
 In-Reply-To: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Cc: mkl@pengutronix.de, wg@grandegger.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, corbet@lwn.net, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org, geert+renesas@glider.be, chris.paterson2@renesas.com
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, mkl@pengutronix.de, wg@grandegger.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, corbet@lwn.net
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org, geert+renesas@glider.be, chris.paterson2@renesas.com
 
-On Thu, Mar 03, 2016 at 03:38:35PM +0000, Ramesh Shanmugasundaram wrote:
-> This patch adds support for the CAN FD controller found in Renesas R-Car
-> SoCs. The controller operates in CAN FD mode by default.
-> 
-> CAN FD mode supports both Classical CAN & CAN FD frame formats. The
-> controller supports ISO 11898-1:2015 CAN FD format only.
-> 
-> This controller supports two channels and the driver can enable either
-> or both of the channels.
-> 
-> Driver uses Rx FIFOs (one per channel) for reception & Common FIFOs (one
-> per channel) for transmission. Rx filter rules are configured to the
-> minimum (one per channel) and it accepts Standard, Extended, Data &
-> Remote Frame combinations.
-> 
-> Note: There are few documentation errors in R-Car Gen3 Hardware User
-> Manual v0.5E with respect to CAN FD controller. They are listed below:
-> 
-> 1. CAN FD interrupt numbers 29 & 30 are listed as per channel
-> interrupts. However, they are common to both channels (i.e.) they are
-> global and channel interrupts respectively.
-> 
-> 2. CANFD clock is derived from PLL1. This is not documented.
-> 
-> 3. CANFD clock is further divided by (1/2) within the CAN FD controller.
-> This is not documented.
-> 
-> 4. The minimum value of NTSEG1 in RSCFDnCFDCmNCFG register is 2 Tq. It
-> is mentioned 4 Tq in the manual.
-> 
-> 5. The maximum number of message RAM area the controller can use is 3584
-> bytes. It is specified 10752 bytes in the manual.
-> 
-> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-> ---
+On 03/03/2016 04:38 PM, Ramesh Shanmugasundaram wrote:
+
 > Changes since v1:
 > 	* Removed testmodes & debugfs code (suggested by Oliver H)
 > 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
 > 	* Removed __maybe_unused attribute of rcar_canfd_of_table
 > 
-> Thanks,
-> Ramesh
-> ---
->  .../devicetree/bindings/net/can/rcar_canfd.txt     |   86 ++
->  drivers/net/can/Kconfig                            |   10 +
->  drivers/net/can/Makefile                           |    1 +
->  drivers/net/can/rcar_canfd.c                       | 1624 ++++++++++++++++++++
->  4 files changed, 1721 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
->  create mode 100644 drivers/net/can/rcar_canfd.c
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> new file mode 100644
-> index 0000000..4299bd8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -0,0 +1,86 @@
-> +Renesas R-Car CAN FD controller Device Tree Bindings
-> +----------------------------------------------------
-> +
-> +Required properties:
-> +- compatible: Must contain one or more of the following:
-> +  - "renesas,rcar-gen3-canfd" for R-Car Gen3 compatible controller.
-> +  - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
-> +
-> +  When compatible with the generic version, nodes must list the
-> +  SoC-specific version corresponding to the platform first, followed by the
-> +  family-specific and/or generic versions.
-> +
-> +- reg: physical base address and size of the R-Car CAN FD register map.
-> +- interrupts: interrupt specifier for the Global & Channel interrupts
-> +- clocks: phandles and clock specifiers for 3 clock inputs.
-> +- clock-names: 3 clock input name strings: "fck", "canfd", "can_clk".
-> +- pinctrl-0: pin control group to be used for this controller.
-> +- pinctrl-names: must be "default".
-> +
-> +Required properties for "renesas,r8a7795-canfd" compatible:
-> +In R8A7795 SoC, canfd clock is a div6 clock and can be used by both CAN
-> +and CAN FD controller at the same time. It needs to be scaled to maximum
-> +frequency if any of these controllers use it. This is done using the
-> +below properties.
-> +
-> +- assigned-clocks: phandle of canfd clock.
-> +- assigned-clock-rates: maximum frequency of this clock.
-> +
-> +Each channel is represented as a child node. They can be enabled/disabled
-> +using "status" property.
 
-How many channels? Required or optional?
 
-> +
-> +Example
-> +-------
-> +
-> +SoC common .dtsi file:
-> +
-> +		canfd: canfd@e66c0000 {
+>  obj-$(CONFIG_CAN_M_CAN)		+= m_can/
+>  obj-$(CONFIG_CAN_RCAR)		+= rcar_can.o
+> +obj-$(CONFIG_CANFD_RCAR)	+= rcar_canfd.o
 
-can@e66c0000
+Just for the sake of an ordered directory structure:
 
-> +			compatible = "renesas,r8a7795-canfd",
-> +				     "renesas,rcar-gen3-canfd";
-> +			reg = <0 0xe66c0000 0 0x8000>;
-> +			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-> +				   <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&cpg CPG_MOD 914>,
-> +			       <&cpg CPG_CORE R8A7795_CLK_CANFD>,
-> +			       <&can_clk>;
-> +			clock-names = "fck", "canfd", "can_clk";
-> +			assigned-clocks = <&cpg CPG_CORE R8A7795_CLK_CANFD>;
-> +			assigned-clock-rates = <40000000>;
-> +			power-domains = <&cpg>;
-> +			status = "disabled";
-> +
-> +			channel0 {
-> +				status = "disabled";
-> +			};
-> +
-> +			channel1 {
-> +				status = "disabled";
-> +			};
-> +		};
-> +
-> +Board specific .dts file:
-> +
-> +E.g. below enables Channel 1 alone in the board.
-> +
-> +&canfd {
-> +        pinctrl-0 = <&canfd1_pins>;
-> +        pinctrl-names = "default";
-> +        status = "okay";
-> +
-> +	channel1 {
-> +		status = "okay";
-> +	};
+Would it make sense to create a rcar directory where rcar_can.c and
+rcar_canfd.c are placed?
+
+Additionally (besides of one accident with the obsolete PCH_CAN) all CAN
+drivers start with CONFIG_CAN_...
+
+Following that scheme the config option should be named
+
+	CONFIG_CAN_RCAR_CANFD
+
+as we had in CONFIG_CAN_IFI_CANFD.
+
+
+>  obj-$(CONFIG_CAN_SJA1000)	+= sja1000/
+>  obj-$(CONFIG_CAN_SUN4I)		+= sun4i_can.o
+>  obj-$(CONFIG_CAN_TI_HECC)	+= ti_hecc.o
+> diff --git a/drivers/net/can/rcar_canfd.c b/drivers/net/can/rcar_canfd.c
+
+(..)
+
+> +/* Channel priv data */
+> +struct rcar_canfd_channel {
+> +	struct can_priv can;			/* Must be the first member */
+> +	struct net_device *ndev;
+> +	struct rcar_canfd_global *gpriv;	/* Controller reference */
+> +	void __iomem *base;			/* Register base address */
+> +#ifdef CONFIG_DEBUG_FS
+> +	struct dentry *dev_root;
+> +#endif /* CONFIG_DEBUG_FS */
+
+Some missed stuff from debugfs removal?
+
+> +	struct napi_struct napi;
+> +	u8  tx_len[RCANFD_FIFO_DEPTH];		/* For net stats */
+> +	u32 tx_head;				/* Incremented on xmit */
+> +	u32 tx_tail;				/* Incremented on xmit done */
+> +	u32 channel;				/* Channel number */
+> +	spinlock_t tx_lock;			/* To protect tx path */
 > +};
+
+(..)
+
+> +static int rcar_canfd_start(struct net_device *ndev)
+> +{
+> +	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+> +	int err = -EOPNOTSUPP;
+> +	u32 sts, ch = priv->channel;
+> +	u32 ridx = ch + RCANFD_RFFIFO_IDX;
 > +
-> +E.g. below enables Channel 0 alone in the board using External clock
-> +as fCAN clock.
-> +
-> +&canfd {
-> +        pinctrl-0 = <&canfd0_pins &can_clk_pins>;
-> +        pinctrl-names = "default";
-> +        status = "okay";
-> +
-> +	channel0 {
-> +		status = "okay";
-> +	};
-> +};
+> +	/* Ensure channel starts in FD mode */
+> +	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD)) {
+> +		netdev_err(ndev, "enable can fd mode for channel %d\n", ch);
+> +		goto fail_mode;
+> +	}
+
+What's the reason behind this check?
+
+A CAN FD capable CAN controller can be either configured to run as CAN 2.0
+(Classic CAN) or as CAN FD controller.
+
+So why are to throwing an error here and produce an initialization failure?
+
+Regards,
+Oliver
