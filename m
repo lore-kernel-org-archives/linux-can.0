@@ -1,98 +1,140 @@
 From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
 Subject: RE: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Mon, 7 Mar 2016 08:32:19 +0000
-Message-ID: <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Date: Mon, 7 Mar 2016 09:33:28 +0000
+Message-ID: <SG2PR06MB10389F82D83C6D4B89F75BC1C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
 References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56DC1561.9060306@hartkopp.net>
- <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DD36F5.2000308@pengutronix.de>
+ <20160305043010.GC13525@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <56DD36F5.2000308@pengutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20160305043010.GC13525@rob-hp-laptop>
 Content-Language: en-US
-Sender: linux-doc-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
 List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KPiBPbiAwMy8wNy8yMDE2IDA5OjAyIEFNLCBSYW1lc2ggU2hhbm11Z2FzdW5k
-YXJhbSB3cm90ZToNCj4gPiBIaSBPbGl2ZXIsDQo+ID4NCj4gPiBUaGFua3MgZm9yIHRoZSByZXZp
-ZXcgY29tbWVudHMuDQo+ID4NCj4gPj4gT24gMDMvMDMvMjAxNiAwNDozOCBQTSwgUmFtZXNoIFNo
-YW5tdWdhc3VuZGFyYW0gd3JvdGU6DQo+ID4+DQo+ID4+PiBDaGFuZ2VzIHNpbmNlIHYxOg0KPiA+
-Pj4gCSogUmVtb3ZlZCB0ZXN0bW9kZXMgJiBkZWJ1Z2ZzIGNvZGUgKHN1Z2dlc3RlZCBieSBPbGl2
-ZXIgSCkNCj4gPj4+IAkqIEZpeGVkIHR4IHBhdGggcmFjZSBpc3N1ZSBieSBpbnRyb2R1Y2luZyBs
-b2NrIChzdWdnZXN0ZWQgYnkgTWFyYyBLKQ0KPiA+Pj4gCSogUmVtb3ZlZCBfX21heWJlX3VudXNl
-ZCBhdHRyaWJ1dGUgb2YgcmNhcl9jYW5mZF9vZl90YWJsZQ0KPiA+Pj4NCj4gPj4NCj4gPj4NCj4g
-Pj4+ICBvYmotJChDT05GSUdfQ0FOX01fQ0FOKQkJKz0gbV9jYW4vDQo+ID4+PiAgb2JqLSQoQ09O
-RklHX0NBTl9SQ0FSKQkJKz0gcmNhcl9jYW4ubw0KPiA+Pj4gK29iai0kKENPTkZJR19DQU5GRF9S
-Q0FSKQkrPSByY2FyX2NhbmZkLm8NCj4gPj4NCj4gPj4gSnVzdCBmb3IgdGhlIHNha2Ugb2YgYW4g
-b3JkZXJlZCBkaXJlY3Rvcnkgc3RydWN0dXJlOg0KPiA+Pg0KPiA+PiBXb3VsZCBpdCBtYWtlIHNl
-bnNlIHRvIGNyZWF0ZSBhIHJjYXIgZGlyZWN0b3J5IHdoZXJlIHJjYXJfY2FuLmMgYW5kDQo+ID4+
-IHJjYXJfY2FuZmQuYyBhcmUgcGxhY2VkPw0KPiA+Pg0KPiA+IFllcy4gSSdsbCBwbGFjZSB0aGVt
-IGluIHJjYXIgZGlyLg0KPiA+DQo+ID4+IEFkZGl0aW9uYWxseSAoYmVzaWRlcyBvZiBvbmUgYWNj
-aWRlbnQgd2l0aCB0aGUgb2Jzb2xldGUgUENIX0NBTikgYWxsDQo+ID4+IENBTiBkcml2ZXJzIHN0
-YXJ0IHdpdGggQ09ORklHX0NBTl8uLi4NCj4gPj4NCj4gPj4gRm9sbG93aW5nIHRoYXQgc2NoZW1l
-IHRoZSBjb25maWcgb3B0aW9uIHNob3VsZCBiZSBuYW1lZA0KPiA+Pg0KPiA+PiAJQ09ORklHX0NB
-Tl9SQ0FSX0NBTkZEDQo+ID4+DQo+ID4+IGFzIHdlIGhhZCBpbiBDT05GSUdfQ0FOX0lGSV9DQU5G
-RC4NCj4gPg0KPiA+IEFncmVlZC4NCj4gPg0KPiA+Pg0KPiA+Pj4gIG9iai0kKENPTkZJR19DQU5f
-U0pBMTAwMCkJKz0gc2phMTAwMC8NCj4gPj4+ICBvYmotJChDT05GSUdfQ0FOX1NVTjRJKQkJKz0g
-c3VuNGlfY2FuLm8NCj4gPj4+ICBvYmotJChDT05GSUdfQ0FOX1RJX0hFQ0MpCSs9IHRpX2hlY2Mu
-bw0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9yY2FyX2NhbmZkLmMNCj4gPj4+
-IGIvZHJpdmVycy9uZXQvY2FuL3JjYXJfY2FuZmQuYw0KPiA+Pg0KPiA+PiAoLi4pDQo+ID4+DQo+
-ID4+PiArLyogQ2hhbm5lbCBwcml2IGRhdGEgKi8NCj4gPj4+ICtzdHJ1Y3QgcmNhcl9jYW5mZF9j
-aGFubmVsIHsNCj4gPj4+ICsJc3RydWN0IGNhbl9wcml2IGNhbjsJCQkvKiBNdXN0IGJlIHRoZSBm
-aXJzdCBtZW1iZXIgKi8NCj4gPj4+ICsJc3RydWN0IG5ldF9kZXZpY2UgKm5kZXY7DQo+ID4+PiAr
-CXN0cnVjdCByY2FyX2NhbmZkX2dsb2JhbCAqZ3ByaXY7CS8qIENvbnRyb2xsZXIgcmVmZXJlbmNl
-ICovDQo+ID4+PiArCXZvaWQgX19pb21lbSAqYmFzZTsJCQkvKiBSZWdpc3RlciBiYXNlIGFkZHJl
-c3MgKi8NCj4gPj4+ICsjaWZkZWYgQ09ORklHX0RFQlVHX0ZTDQo+ID4+PiArCXN0cnVjdCBkZW50
-cnkgKmRldl9yb290Ow0KPiA+Pj4gKyNlbmRpZiAvKiBDT05GSUdfREVCVUdfRlMgKi8NCj4gPj4N
-Cj4gPj4gU29tZSBtaXNzZWQgc3R1ZmYgZnJvbSBkZWJ1Z2ZzIHJlbW92YWw/DQo+ID4NCj4gPiA6
-LSguIFNvcnJ5LiBXaWxsIGNsZWFuIHVwLg0KPiA+DQo+ID4+DQo+ID4+PiArCXN0cnVjdCBuYXBp
-X3N0cnVjdCBuYXBpOw0KPiA+Pj4gKwl1OCAgdHhfbGVuW1JDQU5GRF9GSUZPX0RFUFRIXTsJCS8q
-IEZvciBuZXQgc3RhdHMgKi8NCj4gPj4+ICsJdTMyIHR4X2hlYWQ7CQkJCS8qIEluY3JlbWVudGVk
-IG9uIHhtaXQgKi8NCj4gPj4+ICsJdTMyIHR4X3RhaWw7CQkJCS8qIEluY3JlbWVudGVkIG9uIHht
-aXQgZG9uZSAqLw0KPiA+Pj4gKwl1MzIgY2hhbm5lbDsJCQkJLyogQ2hhbm5lbCBudW1iZXIgKi8N
-Cj4gPj4+ICsJc3BpbmxvY2tfdCB0eF9sb2NrOwkJCS8qIFRvIHByb3RlY3QgdHggcGF0aCAqLw0K
-PiA+Pj4gK307DQo+ID4+DQo+ID4+ICguLikNCj4gPj4NCj4gPj4+ICtzdGF0aWMgaW50IHJjYXJf
-Y2FuZmRfc3RhcnQoc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYpIHsNCj4gPj4+ICsJc3RydWN0IHJj
-YXJfY2FuZmRfY2hhbm5lbCAqcHJpdiA9IG5ldGRldl9wcml2KG5kZXYpOw0KPiA+Pj4gKwlpbnQg
-ZXJyID0gLUVPUE5PVFNVUFA7DQo+ID4+PiArCXUzMiBzdHMsIGNoID0gcHJpdi0+Y2hhbm5lbDsN
-Cj4gPj4+ICsJdTMyIHJpZHggPSBjaCArIFJDQU5GRF9SRkZJRk9fSURYOw0KPiA+Pj4gKw0KPiA+
-Pj4gKwkvKiBFbnN1cmUgY2hhbm5lbCBzdGFydHMgaW4gRkQgbW9kZSAqLw0KPiA+Pj4gKwlpZiAo
-IShwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfRkQpKSB7DQo+ID4+PiArCQluZXRk
-ZXZfZXJyKG5kZXYsICJlbmFibGUgY2FuIGZkIG1vZGUgZm9yIGNoYW5uZWwgJWRcbiIsIGNoKTsN
-Cj4gPj4+ICsJCWdvdG8gZmFpbF9tb2RlOw0KPiA+Pj4gKwl9DQo+ID4+DQo+ID4+IFdoYXQncyB0
-aGUgcmVhc29uIGJlaGluZCB0aGlzIGNoZWNrPw0KPiA+Pg0KPiA+PiBBIENBTiBGRCBjYXBhYmxl
-IENBTiBjb250cm9sbGVyIGNhbiBiZSBlaXRoZXIgY29uZmlndXJlZCB0byBydW4gYXMNCj4gPj4g
-Q0FOIDIuMCAoQ2xhc3NpYyBDQU4pIG9yIGFzIENBTiBGRCBjb250cm9sbGVyLg0KPiA+Pg0KPiA+
-PiBTbyB3aHkgYXJlIHRvIHRocm93aW5nIGFuIGVycm9yIGhlcmUgYW5kIHByb2R1Y2UgYW4gaW5p
-dGlhbGl6YXRpb24NCj4gPj4gZmFpbHVyZT8NCj4gPg0KPiA+IFdoZW4gdGhpcyBjb250cm9sbGVy
-IGlzIGNvbmZpZ3VyZWQgaW4gRkQgbW9kZSBhbmQgdXNlZCBvbmx5IHdpdGggQ0FODQo+ID4gMi4w
-IG5vZGVzLCBpdCBzdGlsbCBleHBlY3RzIGEgRFRTRUcgKGRhdGEgYml0cmF0ZSkgY29uZmlndXJh
-dGlvbiBzYW1lDQo+ID4gYXMgTlRTRUcgKG5vbWluYWwgYml0cmF0ZSkuIFRoaXMgY2hlY2ssIHNw
-ZWNpZmljYWxseSBpbiBuZG9fb3BlbiwNCj4gPiBlbnN1cmVzIGJvdGggYXJlIGNvbmZpZ3VyZWQg
-YW5kIHdpbGwgd29yayBmaW5lIHdpdGggQ0FOIDIuMCBub2Rlcw0KPiA+IChlLmcuKQ0KPiA+DQo+
-ID4gImlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMDAwMDAwIGRiaXRyYXRl
-IDEwMDAwMDAgZmQgb24iDQo+ID4NCj4gPiBJZiBJIGRvbid0IGhhdmUgdGhpcyBjaGVjaywgYSBj
-b25maWd1cmF0aW9uIGxpa2UgdGhpcw0KPiA+DQo+ID4gImlwIGxpbmsgc2V0IGNhbjAgdXAgdHlw
-ZSBjYW4gYml0cmF0ZSAxMDAwMDAwIg0KPiA+DQo+ID4gd2lsbCBicmluZyB1cCB0aGUgY29udHJv
-bGxlciB3aXRob3V0IERUU0VHIGNvbmZpZ3VyZWQuDQo+IA0KPiBUaGF0IHNob3VsZCBicmluZyB1
-cCB0aGUgY29udHJvbGxlciBpbiBDQU4gMi4wIG1vZGUuDQoNClllcywgdGhhdCdzIHRoZSB1c2Vy
-J3MgaW50ZW50aW9uIGJ1dCB0aGUgbWFudWFsIHN0YXRlcyBEVFNFRyBzdGlsbCBuZWVkIHRvIGJl
-IGNvbmZpZ3VyZWQuIEluIHRoZSBhYm92ZSBjb25maWd1cmF0aW9uLCBpdCB3aWxsIG5vdCBiZS4N
-CkJlc2lkZXMsIHRoaXMgd2lsbCBub3QgYmUgYSAicHVyZSIgQ0FOIDIuMCBub2RlIChpLmUuKSBp
-ZiBhIGZyYW1lIHdpdGggbGVuZ3RoID4gOCBieXRlcyBpcyByZWNlaXZlZCB0aGUgY29udHJvbGxl
-ciB3aWxsICJBQ0siIGJlY2F1c2UgaW4gRkQgbW9kZSBpdCBjYW4gcmVjZWl2ZSB1cCB0byA2NCBi
-eXRlcyBmcmFtZS4NCg0KVGhlIGNvbnRyb2xsZXIgZG9lcyBzdXBwb3J0IGEgInB1cmUiIGNsYXNz
-aWNhbCBDQU4gbW9kZSB3aXRoIGEgZGlmZmVyZW50IHNldCBvZiByZWdpc3RlciBtYXAgaXRzZWxm
-LiBEbyB5b3UgdGhpbmsgYSBwdXJlIENBTiAyLjAgbW9kZSBzdXBwb3J0IHdvdWxkIGJlIGJlbmVm
-aWNpYWw/IEkgY2FuIHN1Ym1pdCB0aGlzIGluIGNvbWluZyBkYXlzIG9uIHRvcCBvZiBjdXJyZW50
-IHN1Ym1pc3Npb24uDQoNClRoZSBjdXJyZW50IHN1Ym1pc3Npb24gc3RhdHVzIGlzOg0KIC0gQ29u
-dHJvbGxlciBvcGVyYXRlcyBpbiBDQU4gRkQgbW9kZSBvbmx5Lg0KIC0gSWYgbmVlZGVkIHRvIGlu
-dGVyb3BlcmF0ZSB3aXRoIENBTiAyLjAgbm9kZXMsIGRhdGEgYml0cmF0ZSBzdGlsbCBuZWVkIHRv
-IGJlIGNvbmZpZ3VyZWQgYW5kIGl0IHdpbGwgd29yayBwZXJmZWN0bHkuIEhvd2V2ZXIsIGl0IGlz
-IG5vdCBhICJwdXJlIiBDQU4gMi4wIG5vZGUgYXMgbWVudGlvbmVkIGFib3ZlLg0KDQpUaGFua3Ms
-DQpSYW1lc2gNCg==
+Hi Rob,
+
+Thanks for the review comments.
+
+> On Thu, Mar 03, 2016 at 03:38:35PM +0000, Ramesh Shanmugasundaram wrote:
+> > This patch adds support for the CAN FD controller found in Renesas
+> > R-Car SoCs. The controller operates in CAN FD mode by default.
+> >
+> > CAN FD mode supports both Classical CAN & CAN FD frame formats. The
+> > controller supports ISO 11898-1:2015 CAN FD format only.
+> >
+> > This controller supports two channels and the driver can enable either
+> > or both of the channels.
+> >
+> > Driver uses Rx FIFOs (one per channel) for reception & Common FIFOs
+> > (one per channel) for transmission. Rx filter rules are configured to
+> > the minimum (one per channel) and it accepts Standard, Extended, Data
+> > & Remote Frame combinations.
+> >
+> > Note: There are few documentation errors in R-Car Gen3 Hardware User
+> > Manual v0.5E with respect to CAN FD controller. They are listed below:
+> >
+> > 1. CAN FD interrupt numbers 29 & 30 are listed as per channel
+> > interrupts. However, they are common to both channels (i.e.) they are
+> > global and channel interrupts respectively.
+> >
+> > 2. CANFD clock is derived from PLL1. This is not documented.
+> >
+> > 3. CANFD clock is further divided by (1/2) within the CAN FD controller.
+> > This is not documented.
+> >
+> > 4. The minimum value of NTSEG1 in RSCFDnCFDCmNCFG register is 2 Tq. It
+> > is mentioned 4 Tq in the manual.
+> >
+> > 5. The maximum number of message RAM area the controller can use is
+> > 3584 bytes. It is specified 10752 bytes in the manual.
+> >
+> > Signed-off-by: Ramesh Shanmugasundaram
+> > <ramesh.shanmugasundaram@bp.renesas.com>
+> > ---
+> > Changes since v1:
+> > 	* Removed testmodes & debugfs code (suggested by Oliver H)
+> > 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
+> > 	* Removed __maybe_unused attribute of rcar_canfd_of_table
+> >
+> > Thanks,
+> > Ramesh
+> > ---
+> >  .../devicetree/bindings/net/can/rcar_canfd.txt     |   86 ++
+> >  drivers/net/can/Kconfig                            |   10 +
+> >  drivers/net/can/Makefile                           |    1 +
+> >  drivers/net/can/rcar_canfd.c                       | 1624
+> ++++++++++++++++++++
+> >  4 files changed, 1721 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> >  create mode 100644 drivers/net/can/rcar_canfd.c
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> > b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> > new file mode 100644
+> > index 0000000..4299bd8
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> > @@ -0,0 +1,86 @@
+> > +Renesas R-Car CAN FD controller Device Tree Bindings
+> > +----------------------------------------------------
+> > +
+> > +Required properties:
+> > +- compatible: Must contain one or more of the following:
+> > +  - "renesas,rcar-gen3-canfd" for R-Car Gen3 compatible controller.
+> > +  - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible
+> controller.
+> > +
+> > +  When compatible with the generic version, nodes must list the
+> > + SoC-specific version corresponding to the platform first, followed
+> > + by the  family-specific and/or generic versions.
+> > +
+> > +- reg: physical base address and size of the R-Car CAN FD register map.
+> > +- interrupts: interrupt specifier for the Global & Channel interrupts
+> > +- clocks: phandles and clock specifiers for 3 clock inputs.
+> > +- clock-names: 3 clock input name strings: "fck", "canfd", "can_clk".
+> > +- pinctrl-0: pin control group to be used for this controller.
+> > +- pinctrl-names: must be "default".
+> > +
+> > +Required properties for "renesas,r8a7795-canfd" compatible:
+> > +In R8A7795 SoC, canfd clock is a div6 clock and can be used by both
+> > +CAN and CAN FD controller at the same time. It needs to be scaled to
+> > +maximum frequency if any of these controllers use it. This is done
+> > +using the below properties.
+> > +
+> > +- assigned-clocks: phandle of canfd clock.
+> > +- assigned-clock-rates: maximum frequency of this clock.
+> > +
+> > +Each channel is represented as a child node. They can be
+> > +enabled/disabled using "status" property.
+> 
+> How many channels? Required or optional?
+
+Two channels and it is a required property. I will update as below in the next revision.
+
+Required child node:
+The controller supports two channels and each is represented as a child
+node. The names of the child nodes are "channel0" and "channel1" respectively.
+Each child node supports the "status" property only, which is used to
+enable/disable the respective channel.
+
+> 
+> > +
+> > +Example
+> > +-------
+> > +
+> > +SoC common .dtsi file:
+> > +
+> > +		canfd: canfd@e66c0000 {
+> 
+> can@e66c0000
+
+Thanks. I will update.
+
+Thanks,
+Ramesh
