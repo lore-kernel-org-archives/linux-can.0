@@ -1,191 +1,98 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Mon, 7 Mar 2016 09:08:21 +0100
-Message-ID: <56DD36F5.2000308@pengutronix.de>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Mon, 7 Mar 2016 08:32:19 +0000
+Message-ID: <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
 References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <56DC1561.9060306@hartkopp.net>
  <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56DD36F5.2000308@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="DiPGUdcEabqT1Q94haPPxF80Lo3ThWM4J"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60523 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752006AbcCGIIp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 7 Mar 2016 03:08:45 -0500
-In-Reply-To: <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <56DD36F5.2000308@pengutronix.de>
+Content-Language: en-US
+Sender: linux-doc-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
 Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DiPGUdcEabqT1Q94haPPxF80Lo3ThWM4J
-Content-Type: multipart/mixed; boundary="qxKHJv4xXsPHVksRX028wLFepJ2VPePO6"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "galak@codeaurora.org" <galak@codeaurora.org>,
- "corbet@lwn.net" <corbet@lwn.net>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- Chris Paterson <Chris.Paterson2@renesas.com>
-Message-ID: <56DD36F5.2000308@pengutronix.de>
-Subject: Re: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56DC1561.9060306@hartkopp.net>
- <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
-In-Reply-To: <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
-
---qxKHJv4xXsPHVksRX028wLFepJ2VPePO6
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 03/07/2016 09:02 AM, Ramesh Shanmugasundaram wrote:
-> Hi Oliver,
->=20
-> Thanks for the review comments.
->=20
->> On 03/03/2016 04:38 PM, Ramesh Shanmugasundaram wrote:
->>
->>> Changes since v1:
->>> 	* Removed testmodes & debugfs code (suggested by Oliver H)
->>> 	* Fixed tx path race issue by introducing lock (suggested by Marc K)=
-
->>> 	* Removed __maybe_unused attribute of rcar_canfd_of_table
->>>
->>
->>
->>>  obj-$(CONFIG_CAN_M_CAN)		+=3D m_can/
->>>  obj-$(CONFIG_CAN_RCAR)		+=3D rcar_can.o
->>> +obj-$(CONFIG_CANFD_RCAR)	+=3D rcar_canfd.o
->>
->> Just for the sake of an ordered directory structure:
->>
->> Would it make sense to create a rcar directory where rcar_can.c and
->> rcar_canfd.c are placed?
->>
-> Yes. I'll place them in rcar dir.
->=20
->> Additionally (besides of one accident with the obsolete PCH_CAN) all C=
-AN
->> drivers start with CONFIG_CAN_...
->>
->> Following that scheme the config option should be named
->>
->> 	CONFIG_CAN_RCAR_CANFD
->>
->> as we had in CONFIG_CAN_IFI_CANFD.
->=20
-> Agreed.
->=20
->>
->>>  obj-$(CONFIG_CAN_SJA1000)	+=3D sja1000/
->>>  obj-$(CONFIG_CAN_SUN4I)		+=3D sun4i_can.o
->>>  obj-$(CONFIG_CAN_TI_HECC)	+=3D ti_hecc.o
->>> diff --git a/drivers/net/can/rcar_canfd.c
->>> b/drivers/net/can/rcar_canfd.c
->>
->> (..)
->>
->>> +/* Channel priv data */
->>> +struct rcar_canfd_channel {
->>> +	struct can_priv can;			/* Must be the first member */
->>> +	struct net_device *ndev;
->>> +	struct rcar_canfd_global *gpriv;	/* Controller reference */
->>> +	void __iomem *base;			/* Register base address */
->>> +#ifdef CONFIG_DEBUG_FS
->>> +	struct dentry *dev_root;
->>> +#endif /* CONFIG_DEBUG_FS */
->>
->> Some missed stuff from debugfs removal?
->=20
-> :-(. Sorry. Will clean up.
->=20
->>
->>> +	struct napi_struct napi;
->>> +	u8  tx_len[RCANFD_FIFO_DEPTH];		/* For net stats */
->>> +	u32 tx_head;				/* Incremented on xmit */
->>> +	u32 tx_tail;				/* Incremented on xmit done */
->>> +	u32 channel;				/* Channel number */
->>> +	spinlock_t tx_lock;			/* To protect tx path */
->>> +};
->>
->> (..)
->>
->>> +static int rcar_canfd_start(struct net_device *ndev) {
->>> +	struct rcar_canfd_channel *priv =3D netdev_priv(ndev);
->>> +	int err =3D -EOPNOTSUPP;
->>> +	u32 sts, ch =3D priv->channel;
->>> +	u32 ridx =3D ch + RCANFD_RFFIFO_IDX;
->>> +
->>> +	/* Ensure channel starts in FD mode */
->>> +	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD)) {
->>> +		netdev_err(ndev, "enable can fd mode for channel %d\n", ch);
->>> +		goto fail_mode;
->>> +	}
->>
->> What's the reason behind this check?
->>
->> A CAN FD capable CAN controller can be either configured to run as CAN=
- 2.0
->> (Classic CAN) or as CAN FD controller.
->>
->> So why are to throwing an error here and produce an initialization
->> failure?
->=20
-> When this controller is configured in FD mode and used only with CAN 2.=
-0 nodes, it still expects a DTSEG (data bitrate) configuration same as NT=
-SEG (nominal bitrate). This check, specifically in ndo_open, ensures both=
- are configured and will work fine with CAN 2.0 nodes (e.g.)
->=20
-> "ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on"
->=20
-> If I don't have this check, a configuration like this
->=20
-> "ip link set can0 up type can bitrate 1000000"
->=20
-> will bring up the controller without DTSEG configured.=20
-
-That should bring up the controller in CAN 2.0 mode.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---qxKHJv4xXsPHVksRX028wLFepJ2VPePO6--
-
---DiPGUdcEabqT1Q94haPPxF80Lo3ThWM4J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJW3Tb1AAoJED07qiWsqSVq6IQH/iJ6g7txb5Du+MWa0Hl3YqOm
-TcdO2b4PDaMN3RfzpmX385LZcwJetSIHeZDEI2hfMb2zykY4Gg992wluKUErvROR
-+fYI6SBe2ifRMskqyoZ82+rrIr6ZdhWKaAP/i9REcLs1APFCh4BQHxPp47BEwfLW
-hpZ+7R8lTX8NaQeS6MY6JZG5Ct2HqpQAupgFncqMpR2kGVNbHohtL3BtthXNG63i
-jQGeF9rDhlyi9W+LVD8MolyIc3llqwEjM0z5pygTmpum8dibwb1ARLVuaGxlC1ll
-8liSH3vVXRKe7vYrxPw02WxFN93iH/DC6zwwPxSNDStMkFwVidH0gSaa2TljfaM=
-=Xb2s
------END PGP SIGNATURE-----
-
---DiPGUdcEabqT1Q94haPPxF80Lo3ThWM4J--
+SGkgTWFyYywNCg0KPiBPbiAwMy8wNy8yMDE2IDA5OjAyIEFNLCBSYW1lc2ggU2hhbm11Z2FzdW5k
+YXJhbSB3cm90ZToNCj4gPiBIaSBPbGl2ZXIsDQo+ID4NCj4gPiBUaGFua3MgZm9yIHRoZSByZXZp
+ZXcgY29tbWVudHMuDQo+ID4NCj4gPj4gT24gMDMvMDMvMjAxNiAwNDozOCBQTSwgUmFtZXNoIFNo
+YW5tdWdhc3VuZGFyYW0gd3JvdGU6DQo+ID4+DQo+ID4+PiBDaGFuZ2VzIHNpbmNlIHYxOg0KPiA+
+Pj4gCSogUmVtb3ZlZCB0ZXN0bW9kZXMgJiBkZWJ1Z2ZzIGNvZGUgKHN1Z2dlc3RlZCBieSBPbGl2
+ZXIgSCkNCj4gPj4+IAkqIEZpeGVkIHR4IHBhdGggcmFjZSBpc3N1ZSBieSBpbnRyb2R1Y2luZyBs
+b2NrIChzdWdnZXN0ZWQgYnkgTWFyYyBLKQ0KPiA+Pj4gCSogUmVtb3ZlZCBfX21heWJlX3VudXNl
+ZCBhdHRyaWJ1dGUgb2YgcmNhcl9jYW5mZF9vZl90YWJsZQ0KPiA+Pj4NCj4gPj4NCj4gPj4NCj4g
+Pj4+ICBvYmotJChDT05GSUdfQ0FOX01fQ0FOKQkJKz0gbV9jYW4vDQo+ID4+PiAgb2JqLSQoQ09O
+RklHX0NBTl9SQ0FSKQkJKz0gcmNhcl9jYW4ubw0KPiA+Pj4gK29iai0kKENPTkZJR19DQU5GRF9S
+Q0FSKQkrPSByY2FyX2NhbmZkLm8NCj4gPj4NCj4gPj4gSnVzdCBmb3IgdGhlIHNha2Ugb2YgYW4g
+b3JkZXJlZCBkaXJlY3Rvcnkgc3RydWN0dXJlOg0KPiA+Pg0KPiA+PiBXb3VsZCBpdCBtYWtlIHNl
+bnNlIHRvIGNyZWF0ZSBhIHJjYXIgZGlyZWN0b3J5IHdoZXJlIHJjYXJfY2FuLmMgYW5kDQo+ID4+
+IHJjYXJfY2FuZmQuYyBhcmUgcGxhY2VkPw0KPiA+Pg0KPiA+IFllcy4gSSdsbCBwbGFjZSB0aGVt
+IGluIHJjYXIgZGlyLg0KPiA+DQo+ID4+IEFkZGl0aW9uYWxseSAoYmVzaWRlcyBvZiBvbmUgYWNj
+aWRlbnQgd2l0aCB0aGUgb2Jzb2xldGUgUENIX0NBTikgYWxsDQo+ID4+IENBTiBkcml2ZXJzIHN0
+YXJ0IHdpdGggQ09ORklHX0NBTl8uLi4NCj4gPj4NCj4gPj4gRm9sbG93aW5nIHRoYXQgc2NoZW1l
+IHRoZSBjb25maWcgb3B0aW9uIHNob3VsZCBiZSBuYW1lZA0KPiA+Pg0KPiA+PiAJQ09ORklHX0NB
+Tl9SQ0FSX0NBTkZEDQo+ID4+DQo+ID4+IGFzIHdlIGhhZCBpbiBDT05GSUdfQ0FOX0lGSV9DQU5G
+RC4NCj4gPg0KPiA+IEFncmVlZC4NCj4gPg0KPiA+Pg0KPiA+Pj4gIG9iai0kKENPTkZJR19DQU5f
+U0pBMTAwMCkJKz0gc2phMTAwMC8NCj4gPj4+ICBvYmotJChDT05GSUdfQ0FOX1NVTjRJKQkJKz0g
+c3VuNGlfY2FuLm8NCj4gPj4+ICBvYmotJChDT05GSUdfQ0FOX1RJX0hFQ0MpCSs9IHRpX2hlY2Mu
+bw0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9yY2FyX2NhbmZkLmMNCj4gPj4+
+IGIvZHJpdmVycy9uZXQvY2FuL3JjYXJfY2FuZmQuYw0KPiA+Pg0KPiA+PiAoLi4pDQo+ID4+DQo+
+ID4+PiArLyogQ2hhbm5lbCBwcml2IGRhdGEgKi8NCj4gPj4+ICtzdHJ1Y3QgcmNhcl9jYW5mZF9j
+aGFubmVsIHsNCj4gPj4+ICsJc3RydWN0IGNhbl9wcml2IGNhbjsJCQkvKiBNdXN0IGJlIHRoZSBm
+aXJzdCBtZW1iZXIgKi8NCj4gPj4+ICsJc3RydWN0IG5ldF9kZXZpY2UgKm5kZXY7DQo+ID4+PiAr
+CXN0cnVjdCByY2FyX2NhbmZkX2dsb2JhbCAqZ3ByaXY7CS8qIENvbnRyb2xsZXIgcmVmZXJlbmNl
+ICovDQo+ID4+PiArCXZvaWQgX19pb21lbSAqYmFzZTsJCQkvKiBSZWdpc3RlciBiYXNlIGFkZHJl
+c3MgKi8NCj4gPj4+ICsjaWZkZWYgQ09ORklHX0RFQlVHX0ZTDQo+ID4+PiArCXN0cnVjdCBkZW50
+cnkgKmRldl9yb290Ow0KPiA+Pj4gKyNlbmRpZiAvKiBDT05GSUdfREVCVUdfRlMgKi8NCj4gPj4N
+Cj4gPj4gU29tZSBtaXNzZWQgc3R1ZmYgZnJvbSBkZWJ1Z2ZzIHJlbW92YWw/DQo+ID4NCj4gPiA6
+LSguIFNvcnJ5LiBXaWxsIGNsZWFuIHVwLg0KPiA+DQo+ID4+DQo+ID4+PiArCXN0cnVjdCBuYXBp
+X3N0cnVjdCBuYXBpOw0KPiA+Pj4gKwl1OCAgdHhfbGVuW1JDQU5GRF9GSUZPX0RFUFRIXTsJCS8q
+IEZvciBuZXQgc3RhdHMgKi8NCj4gPj4+ICsJdTMyIHR4X2hlYWQ7CQkJCS8qIEluY3JlbWVudGVk
+IG9uIHhtaXQgKi8NCj4gPj4+ICsJdTMyIHR4X3RhaWw7CQkJCS8qIEluY3JlbWVudGVkIG9uIHht
+aXQgZG9uZSAqLw0KPiA+Pj4gKwl1MzIgY2hhbm5lbDsJCQkJLyogQ2hhbm5lbCBudW1iZXIgKi8N
+Cj4gPj4+ICsJc3BpbmxvY2tfdCB0eF9sb2NrOwkJCS8qIFRvIHByb3RlY3QgdHggcGF0aCAqLw0K
+PiA+Pj4gK307DQo+ID4+DQo+ID4+ICguLikNCj4gPj4NCj4gPj4+ICtzdGF0aWMgaW50IHJjYXJf
+Y2FuZmRfc3RhcnQoc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYpIHsNCj4gPj4+ICsJc3RydWN0IHJj
+YXJfY2FuZmRfY2hhbm5lbCAqcHJpdiA9IG5ldGRldl9wcml2KG5kZXYpOw0KPiA+Pj4gKwlpbnQg
+ZXJyID0gLUVPUE5PVFNVUFA7DQo+ID4+PiArCXUzMiBzdHMsIGNoID0gcHJpdi0+Y2hhbm5lbDsN
+Cj4gPj4+ICsJdTMyIHJpZHggPSBjaCArIFJDQU5GRF9SRkZJRk9fSURYOw0KPiA+Pj4gKw0KPiA+
+Pj4gKwkvKiBFbnN1cmUgY2hhbm5lbCBzdGFydHMgaW4gRkQgbW9kZSAqLw0KPiA+Pj4gKwlpZiAo
+IShwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfRkQpKSB7DQo+ID4+PiArCQluZXRk
+ZXZfZXJyKG5kZXYsICJlbmFibGUgY2FuIGZkIG1vZGUgZm9yIGNoYW5uZWwgJWRcbiIsIGNoKTsN
+Cj4gPj4+ICsJCWdvdG8gZmFpbF9tb2RlOw0KPiA+Pj4gKwl9DQo+ID4+DQo+ID4+IFdoYXQncyB0
+aGUgcmVhc29uIGJlaGluZCB0aGlzIGNoZWNrPw0KPiA+Pg0KPiA+PiBBIENBTiBGRCBjYXBhYmxl
+IENBTiBjb250cm9sbGVyIGNhbiBiZSBlaXRoZXIgY29uZmlndXJlZCB0byBydW4gYXMNCj4gPj4g
+Q0FOIDIuMCAoQ2xhc3NpYyBDQU4pIG9yIGFzIENBTiBGRCBjb250cm9sbGVyLg0KPiA+Pg0KPiA+
+PiBTbyB3aHkgYXJlIHRvIHRocm93aW5nIGFuIGVycm9yIGhlcmUgYW5kIHByb2R1Y2UgYW4gaW5p
+dGlhbGl6YXRpb24NCj4gPj4gZmFpbHVyZT8NCj4gPg0KPiA+IFdoZW4gdGhpcyBjb250cm9sbGVy
+IGlzIGNvbmZpZ3VyZWQgaW4gRkQgbW9kZSBhbmQgdXNlZCBvbmx5IHdpdGggQ0FODQo+ID4gMi4w
+IG5vZGVzLCBpdCBzdGlsbCBleHBlY3RzIGEgRFRTRUcgKGRhdGEgYml0cmF0ZSkgY29uZmlndXJh
+dGlvbiBzYW1lDQo+ID4gYXMgTlRTRUcgKG5vbWluYWwgYml0cmF0ZSkuIFRoaXMgY2hlY2ssIHNw
+ZWNpZmljYWxseSBpbiBuZG9fb3BlbiwNCj4gPiBlbnN1cmVzIGJvdGggYXJlIGNvbmZpZ3VyZWQg
+YW5kIHdpbGwgd29yayBmaW5lIHdpdGggQ0FOIDIuMCBub2Rlcw0KPiA+IChlLmcuKQ0KPiA+DQo+
+ID4gImlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMDAwMDAwIGRiaXRyYXRl
+IDEwMDAwMDAgZmQgb24iDQo+ID4NCj4gPiBJZiBJIGRvbid0IGhhdmUgdGhpcyBjaGVjaywgYSBj
+b25maWd1cmF0aW9uIGxpa2UgdGhpcw0KPiA+DQo+ID4gImlwIGxpbmsgc2V0IGNhbjAgdXAgdHlw
+ZSBjYW4gYml0cmF0ZSAxMDAwMDAwIg0KPiA+DQo+ID4gd2lsbCBicmluZyB1cCB0aGUgY29udHJv
+bGxlciB3aXRob3V0IERUU0VHIGNvbmZpZ3VyZWQuDQo+IA0KPiBUaGF0IHNob3VsZCBicmluZyB1
+cCB0aGUgY29udHJvbGxlciBpbiBDQU4gMi4wIG1vZGUuDQoNClllcywgdGhhdCdzIHRoZSB1c2Vy
+J3MgaW50ZW50aW9uIGJ1dCB0aGUgbWFudWFsIHN0YXRlcyBEVFNFRyBzdGlsbCBuZWVkIHRvIGJl
+IGNvbmZpZ3VyZWQuIEluIHRoZSBhYm92ZSBjb25maWd1cmF0aW9uLCBpdCB3aWxsIG5vdCBiZS4N
+CkJlc2lkZXMsIHRoaXMgd2lsbCBub3QgYmUgYSAicHVyZSIgQ0FOIDIuMCBub2RlIChpLmUuKSBp
+ZiBhIGZyYW1lIHdpdGggbGVuZ3RoID4gOCBieXRlcyBpcyByZWNlaXZlZCB0aGUgY29udHJvbGxl
+ciB3aWxsICJBQ0siIGJlY2F1c2UgaW4gRkQgbW9kZSBpdCBjYW4gcmVjZWl2ZSB1cCB0byA2NCBi
+eXRlcyBmcmFtZS4NCg0KVGhlIGNvbnRyb2xsZXIgZG9lcyBzdXBwb3J0IGEgInB1cmUiIGNsYXNz
+aWNhbCBDQU4gbW9kZSB3aXRoIGEgZGlmZmVyZW50IHNldCBvZiByZWdpc3RlciBtYXAgaXRzZWxm
+LiBEbyB5b3UgdGhpbmsgYSBwdXJlIENBTiAyLjAgbW9kZSBzdXBwb3J0IHdvdWxkIGJlIGJlbmVm
+aWNpYWw/IEkgY2FuIHN1Ym1pdCB0aGlzIGluIGNvbWluZyBkYXlzIG9uIHRvcCBvZiBjdXJyZW50
+IHN1Ym1pc3Npb24uDQoNClRoZSBjdXJyZW50IHN1Ym1pc3Npb24gc3RhdHVzIGlzOg0KIC0gQ29u
+dHJvbGxlciBvcGVyYXRlcyBpbiBDQU4gRkQgbW9kZSBvbmx5Lg0KIC0gSWYgbmVlZGVkIHRvIGlu
+dGVyb3BlcmF0ZSB3aXRoIENBTiAyLjAgbm9kZXMsIGRhdGEgYml0cmF0ZSBzdGlsbCBuZWVkIHRv
+IGJlIGNvbmZpZ3VyZWQgYW5kIGl0IHdpbGwgd29yayBwZXJmZWN0bHkuIEhvd2V2ZXIsIGl0IGlz
+IG5vdCBhICJwdXJlIiBDQU4gMi4wIG5vZGUgYXMgbWVudGlvbmVkIGFib3ZlLg0KDQpUaGFua3Ms
+DQpSYW1lc2gNCg==
