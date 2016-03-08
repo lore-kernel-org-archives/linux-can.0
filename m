@@ -1,117 +1,118 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Tue, 8 Mar 2016 08:46:13 +0100
-Message-ID: <56DE8345.50901@hartkopp.net>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Tue, 8 Mar 2016 08:57:50 +0000
+Message-ID: <SG2PR06MB1038B71C7921984611F72CF5C3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
 References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <56DC1561.9060306@hartkopp.net>
  <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
  <56DD36F5.2000308@pengutronix.de>
  <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56DE8345.50901@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:23279 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753677AbcCHHqn (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Mar 2016 02:46:43 -0500
-In-Reply-To: <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Received: from relmlor4.renesas.com ([210.160.252.174]:33682 "EHLO
+	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1753829AbcCHI54 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Mar 2016 03:57:56 -0500
+In-Reply-To: <56DE8345.50901@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
 Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
 
-
-
-On 03/07/2016 09:32 AM, Ramesh Shanmugasundaram wrote:
-
->>>>> +	/* Ensure channel starts in FD mode */
->>>>> +	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD)) {
->>>>> +		netdev_err(ndev, "enable can fd mode for channel %d\n", ch);
->>>>> +		goto fail_mode;
->>>>> +	}
->>>>
->>>> What's the reason behind this check?
->>>>
->>>> A CAN FD capable CAN controller can be either configured to run as
->>>> CAN 2.0 (Classic CAN) or as CAN FD controller.
->>>>
->>>> So why are to throwing an error here and produce an initialization
->>>> failure?
->>>
->>> When this controller is configured in FD mode and used only with CAN
->>> 2.0 nodes, it still expects a DTSEG (data bitrate) configuration same
->>> as NTSEG (nominal bitrate). This check, specifically in ndo_open,
->>> ensures both are configured and will work fine with CAN 2.0 nodes
->>> (e.g.)
->>>
->>> "ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on"
->>>
->>> If I don't have this check, a configuration like this
->>>
->>> "ip link set can0 up type can bitrate 1000000"
->>>
->>> will bring up the controller without DTSEG configured.
-
-What about spending some status flag or setting the data bitrate equal to the
-nominal bitrate unless a data bitrate is provided?
-
->>
->> That should bring up the controller in CAN 2.0 mode.
-> 
-> Yes, that's the user's intention but the manual states DTSEG still need to be configured. In the above configuration, it will not be.
-> Besides, this will not be a "pure" CAN 2.0 node (i.e.) if a frame with length > 8 bytes is received the controller will "ACK" because in FD mode it can receive up to 64 bytes frame.
-
-Oh. We probably mix something up here (CAN frame formats & bitrates).
-
-A CAN2.0 frame and a CAN FD frame have very different representations on the
-wire! So if you see a FDF (former EDL) bit this is a CAN FD frame, which
-requires two bitrates (nominal/data bitrate) where the data bitrate has to be
-greater or equal the nominal bitrate.
-
-The fact that the data bitrate is equal the nominal/arbitration bitrate has
-nothing to do with CAN2.0 then. Regarding your answer this is not even "a pure
-CAN2.0" node - it still looks like a CAN FD node with equal data/nominal bitrates.
-
-The fact that a CAN FD frame has a size of 8 bytes doesn't make it a CAN2.0
-frame :-)
-
-> 
-> The controller does support a "pure" classical CAN mode with a different set of register map itself.
-
-Is this a can_rcar controller register mapping then?
-
-> Do you think a pure CAN 2.0 mode support would be beneficial? I can submit this in coming days on top of current submission.
-> 
-> The current submission status is:
->  - Controller operates in CAN FD mode only.
->  - If needed to interoperate with CAN 2.0 nodes, data bitrate still need to be configured and it will work perfectly. However, it is not a "pure" CAN 2.0 node as mentioned above.
-
-When you have a CAN FD /capable/ controller the idea is:
-
-"ip link set can0 up type can bitrate 1000000"
-
-The controller is in CAN2.0 mode:
-
-1. It can send and receive CAN2.0 frames @1MBit/s.
-2. The MTU is set to 16 (sizeof(struct can_frame)) ; CAN_CTRLMODE_FD is unset.
-3. The CAN controller is not CAN FD tolerant (will produce error frames)
-
-"ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on"
-
-1. It can send and receive CAN2.0 frames @1MBit/s.
-2. It can send and receive CAN FD frames @1MBit/s (arbitration&data bitrate).
-3. The MTU is set to 72 (sizeof(struct canfd_frame)) ; CAN_CTRLMODE_FD is set.
-
-For CAN FD frames the data bitrate can be increased like:
-"ip link set can0 up type can bitrate 1000000 dbitrate 4000000 fd on"
-
-So when CAN_CTRLMODE_FD is unset the controller should act like a "pure
-CAN2.0" node. When people configure a CAN FD controller with "fd on" and use
-CAN2.0 frames all the time this is ok either - but the controller is able to
-process CAN FD frames with the correct bitrate too.
-
-Regards,
-Oliver
-
+SGkgT2xpdmVyLA0KDQpUaGFua3MgZm9yIHRoZSBjb21tZW50cy4NCg0KPiBPbiAwMy8wNy8yMDE2
+IDA5OjMyIEFNLCBSYW1lc2ggU2hhbm11Z2FzdW5kYXJhbSB3cm90ZToNCj4gDQo+ID4+Pj4+ICsJ
+LyogRW5zdXJlIGNoYW5uZWwgc3RhcnRzIGluIEZEIG1vZGUgKi8NCj4gPj4+Pj4gKwlpZiAoIShw
+cml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfRkQpKSB7DQo+ID4+Pj4+ICsJCW5ldGRl
+dl9lcnIobmRldiwgImVuYWJsZSBjYW4gZmQgbW9kZSBmb3IgY2hhbm5lbCAlZFxuIiwNCj4gY2gp
+Ow0KPiA+Pj4+PiArCQlnb3RvIGZhaWxfbW9kZTsNCj4gPj4+Pj4gKwl9DQo+ID4+Pj4NCj4gPj4+
+PiBXaGF0J3MgdGhlIHJlYXNvbiBiZWhpbmQgdGhpcyBjaGVjaz8NCj4gPj4+Pg0KPiA+Pj4+IEEg
+Q0FOIEZEIGNhcGFibGUgQ0FOIGNvbnRyb2xsZXIgY2FuIGJlIGVpdGhlciBjb25maWd1cmVkIHRv
+IHJ1biBhcw0KPiA+Pj4+IENBTiAyLjAgKENsYXNzaWMgQ0FOKSBvciBhcyBDQU4gRkQgY29udHJv
+bGxlci4NCj4gPj4+Pg0KPiA+Pj4+IFNvIHdoeSBhcmUgdG8gdGhyb3dpbmcgYW4gZXJyb3IgaGVy
+ZSBhbmQgcHJvZHVjZSBhbiBpbml0aWFsaXphdGlvbg0KPiA+Pj4+IGZhaWx1cmU/DQo+ID4+Pg0K
+PiA+Pj4gV2hlbiB0aGlzIGNvbnRyb2xsZXIgaXMgY29uZmlndXJlZCBpbiBGRCBtb2RlIGFuZCB1
+c2VkIG9ubHkgd2l0aCBDQU4NCj4gPj4+IDIuMCBub2RlcywgaXQgc3RpbGwgZXhwZWN0cyBhIERU
+U0VHIChkYXRhIGJpdHJhdGUpIGNvbmZpZ3VyYXRpb24NCj4gPj4+IHNhbWUgYXMgTlRTRUcgKG5v
+bWluYWwgYml0cmF0ZSkuIFRoaXMgY2hlY2ssIHNwZWNpZmljYWxseSBpbg0KPiA+Pj4gbmRvX29w
+ZW4sIGVuc3VyZXMgYm90aCBhcmUgY29uZmlndXJlZCBhbmQgd2lsbCB3b3JrIGZpbmUgd2l0aCBD
+QU4NCj4gPj4+IDIuMCBub2Rlcw0KPiA+Pj4gKGUuZy4pDQo+ID4+Pg0KPiA+Pj4gImlwIGxpbmsg
+c2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMDAwMDAwIGRiaXRyYXRlIDEwMDAwMDAgZmQg
+b24iDQo+ID4+Pg0KPiA+Pj4gSWYgSSBkb24ndCBoYXZlIHRoaXMgY2hlY2ssIGEgY29uZmlndXJh
+dGlvbiBsaWtlIHRoaXMNCj4gPj4+DQo+ID4+PiAiaXAgbGluayBzZXQgY2FuMCB1cCB0eXBlIGNh
+biBiaXRyYXRlIDEwMDAwMDAiDQo+ID4+Pg0KPiA+Pj4gd2lsbCBicmluZyB1cCB0aGUgY29udHJv
+bGxlciB3aXRob3V0IERUU0VHIGNvbmZpZ3VyZWQuDQo+IA0KPiBXaGF0IGFib3V0IHNwZW5kaW5n
+IHNvbWUgc3RhdHVzIGZsYWcgb3Igc2V0dGluZyB0aGUgZGF0YSBiaXRyYXRlIGVxdWFsIHRvDQo+
+IHRoZSBub21pbmFsIGJpdHJhdGUgdW5sZXNzIGEgZGF0YSBiaXRyYXRlIGlzIHByb3ZpZGVkPw0K
+DQpBcyB5b3UgbWVudGlvbmVkIGZ1cnRoZXIgZG93biwgd2hlbiBhIHVzZXIgZG9lcyB0aGlzIA0K
+DQoiaXAgbGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAiDQoNCnRoZSBp
+bnRlbnRpb24gaXMgdG8gcHV0IHRoZSBjb250cm9sbGVyIGluIENBTiAyLjAgbW9kZS4gRXZlbiBp
+ZiB3ZSB1c2UgYSBzdGF0dXMgZmxhZyBvciBjb3B5IHRoZSBkYXRhIGJpdHJhdGUgZXF1YWwgdG8g
+dGhlIG5vbWluYWwgYml0cmF0ZSwgd2hhdCB3b3VsZCBpdCBhY2hpZXZlPyBJdCBzdGlsbCBjYW5u
+b3QgYmUgYSBDQU4gMi4wIG5vZGUgLSBpdCBpcyBhIENBTiBGRCBub2RlIGNvbmZpZ3VyZWQgd2l0
+aCBzYW1lIG5vbWluYWwgJiBkYXRhIGJpdHJhdGUuDQoNClRoaXMgaXMgd2h5IEkgaGF2ZSB0aGlz
+IGNoZWNrIGluIG5kb19vcGVuLCBzbyB0aGF0IHRoZSB1c2VyIGlzIGF3YXJlIGl0IGlzIGEgQ0FO
+IEZEIG5vZGUgYWx3YXlzIGFuZCBhdm9pZCBtaXNjb25maWd1cmF0aW9uIGxpa2UgYWJvdmUgd2l0
+aCBFT1BOT1RTVVBQLiANCg0KPiANCj4gPj4NCj4gPj4gVGhhdCBzaG91bGQgYnJpbmcgdXAgdGhl
+IGNvbnRyb2xsZXIgaW4gQ0FOIDIuMCBtb2RlLg0KPiA+DQo+ID4gWWVzLCB0aGF0J3MgdGhlIHVz
+ZXIncyBpbnRlbnRpb24gYnV0IHRoZSBtYW51YWwgc3RhdGVzIERUU0VHIHN0aWxsIG5lZWQNCj4g
+dG8gYmUgY29uZmlndXJlZC4gSW4gdGhlIGFib3ZlIGNvbmZpZ3VyYXRpb24sIGl0IHdpbGwgbm90
+IGJlLg0KPiA+IEJlc2lkZXMsIHRoaXMgd2lsbCBub3QgYmUgYSAicHVyZSIgQ0FOIDIuMCBub2Rl
+IChpLmUuKSBpZiBhIGZyYW1lIHdpdGgNCj4gbGVuZ3RoID4gOCBieXRlcyBpcyByZWNlaXZlZCB0
+aGUgY29udHJvbGxlciB3aWxsICJBQ0siIGJlY2F1c2UgaW4gRkQgbW9kZQ0KPiBpdCBjYW4gcmVj
+ZWl2ZSB1cCB0byA2NCBieXRlcyBmcmFtZS4NCj4gDQo+IE9oLiBXZSBwcm9iYWJseSBtaXggc29t
+ZXRoaW5nIHVwIGhlcmUgKENBTiBmcmFtZSBmb3JtYXRzICYgYml0cmF0ZXMpLg0KPiANCj4gQSBD
+QU4yLjAgZnJhbWUgYW5kIGEgQ0FOIEZEIGZyYW1lIGhhdmUgdmVyeSBkaWZmZXJlbnQgcmVwcmVz
+ZW50YXRpb25zIG9uDQo+IHRoZSB3aXJlISBTbyBpZiB5b3Ugc2VlIGEgRkRGIChmb3JtZXIgRURM
+KSBiaXQgdGhpcyBpcyBhIENBTiBGRCBmcmFtZSwNCj4gd2hpY2ggcmVxdWlyZXMgdHdvIGJpdHJh
+dGVzIChub21pbmFsL2RhdGEgYml0cmF0ZSkgd2hlcmUgdGhlIGRhdGEgYml0cmF0ZQ0KPiBoYXMg
+dG8gYmUgZ3JlYXRlciBvciBlcXVhbCB0aGUgbm9taW5hbCBiaXRyYXRlLg0KPiANCj4gVGhlIGZh
+Y3QgdGhhdCB0aGUgZGF0YSBiaXRyYXRlIGlzIGVxdWFsIHRoZSBub21pbmFsL2FyYml0cmF0aW9u
+IGJpdHJhdGUNCj4gaGFzIG5vdGhpbmcgdG8gZG8gd2l0aCBDQU4yLjAgdGhlbi4gUmVnYXJkaW5n
+IHlvdXIgYW5zd2VyIHRoaXMgaXMgbm90IGV2ZW4NCj4gImEgcHVyZSBDQU4yLjAiIG5vZGUgLSBp
+dCBzdGlsbCBsb29rcyBsaWtlIGEgQ0FOIEZEIG5vZGUgd2l0aCBlcXVhbA0KPiBkYXRhL25vbWlu
+YWwgYml0cmF0ZXMuDQoNCkkgYWdyZWUuIE1heSBiZSBJIG1peGVkIHVwIG15IHdvcmRpbmdzIGJ1
+dCBteSBpbnRlbnRpb24gaXMgc2FtZSAtIHRoZSBjb250cm9sbGVyIGlzIHN0aWxsIGFuIEZEIG5v
+ZGUgJiBub3QgcHVyZSBDQU4gMi4wIG5vZGUuIFRoaXMgaXMgd2h5IEkgaGF2ZSB0aGUgY2hlY2su
+DQoNCj4gDQo+IFRoZSBmYWN0IHRoYXQgYSBDQU4gRkQgZnJhbWUgaGFzIGEgc2l6ZSBvZiA4IGJ5
+dGVzIGRvZXNuJ3QgbWFrZSBpdCBhDQo+IENBTjIuMCBmcmFtZSA6LSkNCj4gDQo+ID4NCj4gPiBU
+aGUgY29udHJvbGxlciBkb2VzIHN1cHBvcnQgYSAicHVyZSIgY2xhc3NpY2FsIENBTiBtb2RlIHdp
+dGggYSBkaWZmZXJlbnQNCj4gc2V0IG9mIHJlZ2lzdGVyIG1hcCBpdHNlbGYuDQo+IA0KPiBJcyB0
+aGlzIGEgY2FuX3JjYXIgY29udHJvbGxlciByZWdpc3RlciBtYXBwaW5nIHRoZW4/DQoNCk5vcGUu
+IFRoaXMgaXMgYSBkaWZmZXJlbnQgSVAgY29tcGFyZWQgdG8gY2FuX3JjYXIuIEl0IGhhcyBhIGRp
+ZmZlcmVudCBzZXQgb2YgcmVnaXN0ZXIgbWFwIHdpdGhpbiB0aGUgSVAgdG8gYWN0IGFzIGEgcHVy
+ZSBjbGFzc2ljYWwgQ0FOIDIuMCBub2RlLiBXaGVuIEkgc2F5ICJwdXJlIiwgaXQgd2lsbCBwYXNz
+IENBTiAyLjAgY29uZm9ybWFuY2UgdGVzdHMgOi0pLiBJdCBpcyB3b3J0aCBhZGRpbmcgdGhpcyBz
+dXBwb3J0PyBEbyB5b3UgdGhpbmsgb2YgYSBzdHJvbmcgdXNlIGNhc2U/DQogDQo+IA0KPiA+IERv
+IHlvdSB0aGluayBhIHB1cmUgQ0FOIDIuMCBtb2RlIHN1cHBvcnQgd291bGQgYmUgYmVuZWZpY2lh
+bD8gSSBjYW4NCj4gc3VibWl0IHRoaXMgaW4gY29taW5nIGRheXMgb24gdG9wIG9mIGN1cnJlbnQg
+c3VibWlzc2lvbi4NCj4gPg0KPiA+IFRoZSBjdXJyZW50IHN1Ym1pc3Npb24gc3RhdHVzIGlzOg0K
+PiA+ICAtIENvbnRyb2xsZXIgb3BlcmF0ZXMgaW4gQ0FOIEZEIG1vZGUgb25seS4NCj4gPiAgLSBJ
+ZiBuZWVkZWQgdG8gaW50ZXJvcGVyYXRlIHdpdGggQ0FOIDIuMCBub2RlcywgZGF0YSBiaXRyYXRl
+IHN0aWxsIG5lZWQNCj4gdG8gYmUgY29uZmlndXJlZCBhbmQgaXQgd2lsbCB3b3JrIHBlcmZlY3Rs
+eS4gSG93ZXZlciwgaXQgaXMgbm90IGEgInB1cmUiDQo+IENBTiAyLjAgbm9kZSBhcyBtZW50aW9u
+ZWQgYWJvdmUuDQo+IA0KPiBXaGVuIHlvdSBoYXZlIGEgQ0FOIEZEIC9jYXBhYmxlLyBjb250cm9s
+bGVyIHRoZSBpZGVhIGlzOg0KPiANCj4gImlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0
+cmF0ZSAxMDAwMDAwIg0KPiANCj4gVGhlIGNvbnRyb2xsZXIgaXMgaW4gQ0FOMi4wIG1vZGU6DQo+
+IA0KPiAxLiBJdCBjYW4gc2VuZCBhbmQgcmVjZWl2ZSBDQU4yLjAgZnJhbWVzIEAxTUJpdC9zLg0K
+PiAyLiBUaGUgTVRVIGlzIHNldCB0byAxNiAoc2l6ZW9mKHN0cnVjdCBjYW5fZnJhbWUpKSA7IENB
+Tl9DVFJMTU9ERV9GRCBpcw0KPiB1bnNldC4NCj4gMy4gVGhlIENBTiBjb250cm9sbGVyIGlzIG5v
+dCBDQU4gRkQgdG9sZXJhbnQgKHdpbGwgcHJvZHVjZSBlcnJvciBmcmFtZXMpDQo+IA0KPiAiaXAg
+bGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAgZGJpdHJhdGUgMTAwMDAw
+MCBmZCBvbiINCj4gDQo+IDEuIEl0IGNhbiBzZW5kIGFuZCByZWNlaXZlIENBTjIuMCBmcmFtZXMg
+QDFNQml0L3MuDQo+IDIuIEl0IGNhbiBzZW5kIGFuZCByZWNlaXZlIENBTiBGRCBmcmFtZXMgQDFN
+Qml0L3MgKGFyYml0cmF0aW9uJmRhdGENCj4gYml0cmF0ZSkuDQo+IDMuIFRoZSBNVFUgaXMgc2V0
+IHRvIDcyIChzaXplb2Yoc3RydWN0IGNhbmZkX2ZyYW1lKSkgOyBDQU5fQ1RSTE1PREVfRkQgaXMN
+Cj4gc2V0Lg0KPiANCj4gRm9yIENBTiBGRCBmcmFtZXMgdGhlIGRhdGEgYml0cmF0ZSBjYW4gYmUg
+aW5jcmVhc2VkIGxpa2U6DQo+ICJpcCBsaW5rIHNldCBjYW4wIHVwIHR5cGUgY2FuIGJpdHJhdGUg
+MTAwMDAwMCBkYml0cmF0ZSA0MDAwMDAwIGZkIG9uIg0KPiANCj4gU28gd2hlbiBDQU5fQ1RSTE1P
+REVfRkQgaXMgdW5zZXQgdGhlIGNvbnRyb2xsZXIgc2hvdWxkIGFjdCBsaWtlIGEgInB1cmUNCj4g
+Q0FOMi4wIiBub2RlLg0KDQpZZXMgJiBJIGFtIGdsYWQgeW91IGNsYXJpZmllZCB0aGlzIGV4cGVj
+dGF0aW9uLiBJIHRoaW5rIHdlIGJvdGggYWdyZWUgb24gdGhpcy4gV2l0aCBteSBjdXJyZW50IHN1
+Ym1pc3Npb24gc3RhdHVzLCB0aGUgY29udHJvbGxlciBjYW4gYWN0IGFzIGEgQ0FOIEZEIG5vZGUg
+b25seS4gRG8geW91IGFncmVlIHRoYXQgdGhlIGNoZWNrIEkgaGFkIGluIG5kb19vcGVuIG1ha2Vz
+IHNlbnNlIG5vdz8NCg0KVGhhbmtzLA0KUmFtZXNoDQo=
