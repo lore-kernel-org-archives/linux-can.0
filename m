@@ -1,71 +1,93 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Tue, 8 Mar 2016 18:16:48 +0100
-Message-ID: <56DF0900.6090906@hartkopp.net>
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56DC1561.9060306@hartkopp.net>
- <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DD36F5.2000308@pengutronix.de>
- <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DE8345.50901@hartkopp.net>
- <SG2PR06MB1038B71C7921984611F72CF5C3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DEC49D.4@hartkopp.net>
- <SG2PR06MB10388F87746A1191E51B199FC3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Subject: Re: [RFC] [PATCH] can: fix handling of unmodifiable configuration
+ options
+Date: Tue, 8 Mar 2016 19:22:20 +0100
+Message-ID: <56DF185C.7060300@hartkopp.net>
+References: <1457457221-25068-1-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <SG2PR06MB10388F87746A1191E51B199FC3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:41155 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750787AbcCHS2X (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 8 Mar 2016 13:28:23 -0500
+In-Reply-To: <1457457221-25068-1-git-send-email-socketcan@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: ramesh.shanmugasundaram@bp.renesas.com, "linux-stable 3 . 16+" <stable@vger.kernel.org>
 
-On 03/08/2016 01:48 PM, Ramesh Shanmugasundaram wrote:
 
->> In fact you provided a CAN driver which is "CAN-FD-only".
-> 
-> Yes. That's the status of current submission.
-> 
->> We did not had that before but there's a solution for this kind of setup.
->>
->> There is a similar case with CAN_CTRLMODE_FD_NON_ISO we had on the M_CAN
->> driver which only provides non-ISO configuration for the supported IP core
->> and _no_ option to _change_ this value:
->>
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id
->> =6cfda7fbebe8a4fd33ea5722fa0212f98f643c35
->>
->> If you would do it similar in rcar_canfd.c with
->>
->> /* CAN_CTRLMODE_FD is fixed with R-Car CAN FD */
->> priv->can.ctrlmode = CAN_CTRLMODE_FD;
->>
->> and remove CAN_CTRLMODE_FD from the priv->can.ctrlmode_supported
->> assignment then it should do the entire configuration process correctly
->> for you.
->> Including the proper tests for the two bitrates.
->> (see open_candev() in linux/drivers/net/can/dev.c)
->>
->> Right?
-> 
-> I did try this option earlier but there are two problems with this method.
-> 
-> 1) Below configuration is not possible
-> 
-> ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd on
-> 
-> "fd on" -> This is not allowed because CAN_CTRLMODE_FD bit is not set in ctrlmode_supported.
-> 
-> 2) If I ignore "fd on", my interface MTU stays as CAN_MTU only. If I have to change the MTU alone to CANFD_MTU using another netlink message, it again checks ctrlmode_supported where it would fail. I have the option of providing my own change_mtu function & ignore this check but two configuration messages are required for my driver alone :-(.
-> 
-> Both these anomalies are addressed with the current check I have. 
 
-Oh - you are right with complaining about this inconsistency.
+On 03/08/2016 06:13 PM, Oliver Hartkopp wrote:
+> As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
+> (6cfda7fbebe) it is possible to define fixed configuration options by
+> setting the according bit in 'ctrlmode' and clear it in 'ctrlmode_supported'.
+> This leads to the incovenience that the fixed configuration can not be passed
+> by netlink (ip tool) even when it has the correct value (e.g. non-ISO, FD).
+> 
+> This patch fixes that issue and allows fixed set bit values to be set again
+> which does not change the unmodifiable content.
+> 
+> Additionally it fixes the inconsitency that was prohibiting the support of
+> 'CANFD-only' controller drivers.
+> 
+> Reported-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: linux-stable <stable@vger.kernel.org> 3.16+
+> ---
+>  drivers/net/can/dev.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 141c2a4..b084cfd 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -696,11 +696,18 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+>  	/* allow change of MTU according to the CANFD ability of the device */
+>  	switch (new_mtu) {
+>  	case CAN_MTU:
+> +		/* take care of 'CANFD-only' controllers */
+> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
+> +		    (priv->ctrlmode & CAN_CTRLMODE_FD))
+> +			return -EINVAL;
+> +
+>  		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
+>  		break;
+>  
+>  	case CANFD_MTU:
+> -		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
+> +		/* check for CANFD capability */
+> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
+> +		    !(priv->ctrlmode & CAN_CTRLMODE_FD))
+>  			return -EINVAL;
+>  
+>  		priv->ctrlmode |= CAN_CTRLMODE_FD;
+> @@ -819,10 +826,13 @@ static int can_changelink(struct net_device *dev,
+>  			return -EBUSY;
+>  		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+>  
+> -		/* check whether changed bits are allowed to be modified */
+> -		if (cm->mask & ~priv->ctrlmode_supported)
+> +		/* check whether provided bits are allowed to be passed */
+> +		if (cm->mask & ~(priv->ctrlmode_supported | priv->ctrlmode))
+>  			return -EOPNOTSUPP;
+>  
+> +		/* reduce to bits that are allowed to be modified */
+> +		cm->mask &= priv->ctrlmode_supported;
+> +
 
-Can you check my RFC patch for Linux stable I just sent on the mailing list?
-http://marc.info/?l=linux-can&m=145745724917976&w=2
+I just realized that I'm updating a provided netlink attribute here.
+Does anyone know, whether this is feasible OR if I need to spend an extra
+variable to perform the '&=' operation?
 
-Many thanks,
+Are netlink attributes to be treated as constants?
+
+Thanks,
 Oliver
+
+>  		/* clear bits to be modified and copy the flag values */
+>  		priv->ctrlmode &= ~cm->mask;
+>  		priv->ctrlmode |= (cm->flags & cm->mask);
+> 
