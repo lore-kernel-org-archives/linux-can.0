@@ -1,119 +1,106 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC] [PATCH] can: fix handling of unmodifiable configuration
- options
-Date: Wed, 9 Mar 2016 15:28:20 +0100
-Message-ID: <56E03304.6020904@hartkopp.net>
-References: <1457457221-25068-1-git-send-email-socketcan@hartkopp.net>
- <SG2PR06MB1038C1DC8B2319A22ED7CDB6C3B30@SG2PR06MB1038.apcprd06.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2016-03-10
+Date: Thu, 10 Mar 2016 10:33:28 +0100
+Message-ID: <56E13F68.900@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="WbiXQ0Mv69rR9DidxBdaEc6hSmxOmq1D0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:54178 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932692AbcCIO22 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2016 09:28:28 -0500
-In-Reply-To: <SG2PR06MB1038C1DC8B2319A22ED7CDB6C3B30@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:50880 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752894AbcCJJdi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2016 04:33:38 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WbiXQ0Mv69rR9DidxBdaEc6hSmxOmq1D0
+Content-Type: multipart/mixed; boundary="rCNeAkd5EcLri0qU1Kbo7NgSIR4HagQpP"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <56E13F68.900@pengutronix.de>
+Subject: pull-request: can-next 2016-03-10
+
+--rCNeAkd5EcLri0qU1Kbo7NgSIR4HagQpP
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello David,
+
+this is a pull request of 5 patch for net-next/master.
+
+Marek Vasut contributes 4 patches for the ifi CAN driver, which makes
+it work on real hardware. There is one patch by Ramesh Shanmugasundaram
+for the rcar_can driver that adds support for the 3rd generation IP
+core.
+
+Marc
+
+---
+
+The following changes since commit 3b8377dca1fd1974d245b2a04a708fc434761c=
+65:
+
+  Merge branch 'variable-length-ll-headers' (2016-03-09 22:13:01 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.6-20160310
+
+for you to fetch changes up to e481ab23c57b37c989fa27e0a6b3e941a908775a:
+
+  can: rcar_can: Add r8a7795 support (2016-03-10 10:30:21 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.6-20160310
+
+----------------------------------------------------------------
+Marek Vasut (4):
+      can: ifi: Fix clock generator configuration
+      can: ifi: Fix TX DLC configuration
+      can: ifi: Fix RX and TX ID mask
+      can: ifi: Add obscure bit swap for EFF frame IDs
+
+Ramesh Shanmugasundaram (1):
+      can: rcar_can: Add r8a7795 support
+
+ .../devicetree/bindings/net/can/rcar_can.txt       | 11 +++
+ drivers/net/can/Kconfig                            |  2 +-
+ drivers/net/can/ifi_canfd/ifi_canfd.c              | 97 ++++++++++++++--=
+------
+ drivers/net/can/rcar_can.c                         |  1 +
+ 4 files changed, 75 insertions(+), 36 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--rCNeAkd5EcLri0qU1Kbo7NgSIR4HagQpP--
 
-On 03/09/2016 10:27 AM, Ramesh Shanmugasundaram wrote:
-> Hi Oliver,
-> 
-> Thanks for the patch.
-> 
->> -----Original Message-----
->> From: Oliver Hartkopp [mailto:socketcan@hartkopp.net]
->> Sent: 08 March 2016 17:14
->> To: linux-can@vger.kernel.org
->> Cc: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>;
->> Oliver Hartkopp <socketcan@hartkopp.net>; linux-stable 3 . 16+
->> <stable@vger.kernel.org>
->> Subject: [RFC] [PATCH] can: fix handling of unmodifiable configuration
->> options
->>
->> As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
->> (6cfda7fbebe) it is possible to define fixed configuration options by
->> setting the according bit in 'ctrlmode' and clear it in
->> 'ctrlmode_supported'.
-> 
-> Shouldn't we document this? A comment to these variable definitions perhaps?
+--WbiXQ0Mv69rR9DidxBdaEc6hSmxOmq1D0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Yes. Good idea. Will do this in the updated patch.
+-----BEGIN PGP SIGNATURE-----
 
-> 
->> This leads to the incovenience that the fixed configuration can not be
->> passed by netlink (ip tool) even when it has the correct value (e.g. non-
->> ISO, FD).
->>
->> This patch fixes that issue and allows fixed set bit values to be set
->> again which does not change the unmodifiable content.
->>
->> Additionally it fixes the inconsitency that was prohibiting the support of
->> 'CANFD-only' controller drivers.
->>
->> Reported-by: Ramesh Shanmugasundaram
->> <ramesh.shanmugasundaram@bp.renesas.com>
->> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
->> Cc: linux-stable <stable@vger.kernel.org> 3.16+
->> ---
->>  drivers/net/can/dev.c | 16 +++++++++++++---
->>  1 file changed, 13 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c index
->> 141c2a4..b084cfd 100644
->> --- a/drivers/net/can/dev.c
->> +++ b/drivers/net/can/dev.c
->> @@ -696,11 +696,18 @@ int can_change_mtu(struct net_device *dev, int
->> new_mtu)
->>  	/* allow change of MTU according to the CANFD ability of the device
->> */
->>  	switch (new_mtu) {
->>  	case CAN_MTU:
->> +		/* take care of 'CANFD-only' controllers */
->> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
->> +		    (priv->ctrlmode & CAN_CTRLMODE_FD))
->> +			return -EINVAL;
->> +
->>  		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
->>  		break;
->>
->>  	case CANFD_MTU:
->> -		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
->> +		/* check for CANFD capability */
->> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
->> +		    !(priv->ctrlmode & CAN_CTRLMODE_FD))
->>  			return -EINVAL;
->>
->>  		priv->ctrlmode |= CAN_CTRLMODE_FD;
->> @@ -819,10 +826,13 @@ static int can_changelink(struct net_device *dev,
->>  			return -EBUSY;
->>  		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
->>
->> -		/* check whether changed bits are allowed to be modified */
->> -		if (cm->mask & ~priv->ctrlmode_supported)
->> +		/* check whether provided bits are allowed to be passed */
->> +		if (cm->mask & ~(priv->ctrlmode_supported | priv->ctrlmode))
->>  			return -EOPNOTSUPP;
-> 
-> I think we need to separate this check into two. Otherwise, it will still return success for "fd off" config even though the configuration is not really applied.
+iQEcBAEBCgAGBQJW4T9oAAoJED07qiWsqSVqsFMH/i+VKG8wetSxI8snz7dR7glj
+V0JVSmVM0mhq+249v56lRwZ2pEIb8Rk2gRj8wOEJAA1v4L3bJ09RGNDNVGlSAfF3
+ZHi7i26w3H7EaxHjliTrl+yC9ftGC7vl+4qb8R4wLvg2E1RmMfva2TvyIV9ofYKL
+0Ji6vUPP4hGskiPzEKQ4xES0Mb6mGzPamn6CJvzTInHwYsBKDLXzku0uzbsJMhS8
+S+ip8bQ37s2VNBkF3S4QlMNUnZl4ZaAMCaQLrfiyL/hBW5E2465Dt+eHn+p4dxyA
+GHW6yMhXk/3XVHhxejDi9hjvIpB4ZqFdvTml5IziQja2Lu+DTdLwvRWc50+uJis=
+=pEdz
+-----END PGP SIGNATURE-----
 
-Yes. I'll re-think this check. Your "fd off" use-case is a good case to take
-care about.
-
-> 
->>
->> +		/* reduce to bits that are allowed to be modified */
->> +		cm->mask &= priv->ctrlmode_supported;
-> 
-> If we separate the above check, I think we don't have to do this.
-
-At least I'll make it a separate variable, so that the netlink data remains
-read-only.
-
-Thanks,
-Oliver
-
+--WbiXQ0Mv69rR9DidxBdaEc6hSmxOmq1D0--
