@@ -1,56 +1,124 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [PATCH v2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Fri, 11 Mar 2016 07:14:43 +0000
-Message-ID: <KL1PR06MB10315B45ADA2037A5AA85A56C3B50@KL1PR06MB1031.apcprd06.prod.outlook.com>
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56DC1561.9060306@hartkopp.net>
- <SG2PR06MB10386D712BC8C345DF726523C3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DD36F5.2000308@pengutronix.de>
- <SG2PR06MB1038DD47FAFF354C99AF2E4FC3B10@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DE8345.50901@hartkopp.net>
- <SG2PR06MB1038B71C7921984611F72CF5C3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DEC49D.4@hartkopp.net>
- <SG2PR06MB10388F87746A1191E51B199FC3B20@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56DF0900.6090906@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC] [PATCH v2] can: fix handling of unmodifiable configuration options
+Date: Sat, 12 Mar 2016 19:31:27 +0100
+Message-ID: <1457807487-14691-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor1.renesas.com ([210.160.252.171]:65272 "EHLO
-	relmlie4.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S932075AbcCKHTy (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 11 Mar 2016 02:19:54 -0500
-In-Reply-To: <56DF0900.6090906@hartkopp.net>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:37469 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751575AbcCLScA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 12 Mar 2016 13:32:00 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "corbet@lwn.net" <corbet@lwn.net>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "geert+renesas@glider.be" <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>
+To: linux-can@vger.kernel.org
+Cc: ramesh.shanmugasundaram@bp.renesas.com, Oliver Hartkopp <socketcan@hartkopp.net>
 
-SGkgT2xpdmVyLCBNYXJjLA0KDQo+IE9uIDAzLzA4LzIwMTYgMDE6NDggUE0sIFJhbWVzaCBTaGFu
-bXVnYXN1bmRhcmFtIHdyb3RlOg0KPiANCj4gPj4gSW4gZmFjdCB5b3UgcHJvdmlkZWQgYSBDQU4g
-ZHJpdmVyIHdoaWNoIGlzICJDQU4tRkQtb25seSIuDQo+ID4NCj4gPiBZZXMuIFRoYXQncyB0aGUg
-c3RhdHVzIG9mIGN1cnJlbnQgc3VibWlzc2lvbi4NCg0KKC4uLikNCg0KPiA+DQo+ID4gSSBkaWQg
-dHJ5IHRoaXMgb3B0aW9uIGVhcmxpZXIgYnV0IHRoZXJlIGFyZSB0d28gcHJvYmxlbXMgd2l0aCB0
-aGlzDQo+IG1ldGhvZC4NCj4gPg0KPiA+IDEpIEJlbG93IGNvbmZpZ3VyYXRpb24gaXMgbm90IHBv
-c3NpYmxlDQo+ID4NCj4gPiBpcCBsaW5rIHNldCBjYW4wIHVwIHR5cGUgY2FuIGJpdHJhdGUgMTAw
-MDAwMCBkYml0cmF0ZSAxMDAwMDAwIGZkIG9uDQo+ID4NCj4gPiAiZmQgb24iIC0+IFRoaXMgaXMg
-bm90IGFsbG93ZWQgYmVjYXVzZSBDQU5fQ1RSTE1PREVfRkQgYml0IGlzIG5vdCBzZXQgaW4NCj4g
-Y3RybG1vZGVfc3VwcG9ydGVkLg0KPiA+DQo+ID4gMikgSWYgSSBpZ25vcmUgImZkIG9uIiwgbXkg
-aW50ZXJmYWNlIE1UVSBzdGF5cyBhcyBDQU5fTVRVIG9ubHkuIElmIEkNCj4gaGF2ZSB0byBjaGFu
-Z2UgdGhlIE1UVSBhbG9uZSB0byBDQU5GRF9NVFUgdXNpbmcgYW5vdGhlciBuZXRsaW5rIG1lc3Nh
-Z2UsDQo+IGl0IGFnYWluIGNoZWNrcyBjdHJsbW9kZV9zdXBwb3J0ZWQgd2hlcmUgaXQgd291bGQg
-ZmFpbC4gSSBoYXZlIHRoZSBvcHRpb24NCj4gb2YgcHJvdmlkaW5nIG15IG93biBjaGFuZ2VfbXR1
-IGZ1bmN0aW9uICYgaWdub3JlIHRoaXMgY2hlY2sgYnV0IHR3bw0KPiBjb25maWd1cmF0aW9uIG1l
-c3NhZ2VzIGFyZSByZXF1aXJlZCBmb3IgbXkgZHJpdmVyIGFsb25lIDotKC4NCj4gPg0KPiA+IEJv
-dGggdGhlc2UgYW5vbWFsaWVzIGFyZSBhZGRyZXNzZWQgd2l0aCB0aGUgY3VycmVudCBjaGVjayBJ
-IGhhdmUuDQo+IA0KPiBPaCAtIHlvdSBhcmUgcmlnaHQgd2l0aCBjb21wbGFpbmluZyBhYm91dCB0
-aGlzIGluY29uc2lzdGVuY3kuDQo+IA0KPiBDYW4geW91IGNoZWNrIG15IFJGQyBwYXRjaCBmb3Ig
-TGludXggc3RhYmxlIEkganVzdCBzZW50IG9uIHRoZSBtYWlsaW5nDQo+IGxpc3Q/DQo+IGh0dHA6
-Ly9tYXJjLmluZm8vP2w9bGludXgtY2FuJm09MTQ1NzQ1NzI0OTE3OTc2Jnc9Mg0KDQpBcyB3ZSBh
-cmUgZml4aW5nIHRoaXMgaXNzdWUgaW4gQ0FOIGRldi5jLCBJJ2xsIHJlbW92ZSB0aGlzIGNoZWNr
-IGluIG5kb19vcGVuIGFuZCBzZXQgQ0FOX0NUUkxNT0RFX0ZEIGZsYWcgaW4gY3RybG1vZGUgJiBy
-ZW1vdmUgdGhlIGZsYWcgaW4gY3RybG1vZGVfc3VwcG9ydGVkIGluIHRoZSBuZXh0IHYzIHZlcnNp
-b24gb2YgdGhlIHBhdGNoLg0KDQpBcmUgdGhlcmUgYW55IGZ1cnRoZXIgY29tbWVudHMgb24gdjIg
-cGF0Y2ggcGxlYXNlPw0KDQpUaGFua3MsDQpSYW1lc2gNCg==
+As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
+(6cfda7fbebe) it is possible to define fixed configuration options by
+setting the according bit in 'ctrlmode' and clear it in 'ctrlmode_supported'.
+This leads to the incovenience that the fixed configuration can not be passed
+by netlink (ip tool) even when it has the correct value (e.g. non-ISO, FD).
+
+This patch fixes that issue and allows fixed set bit values to be set again
+which does not change the unmodifiable content. For this reason a new helper
+can_set_static_ctrlmode() has been introduced to provide a proper interface to
+handle static enabled CAN controller options.
+
+Additionally it fixes the inconsitency that was prohibiting the support of
+'CANFD-only' controller drivers.
+
+Reported-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/dev.c         | 18 +++++++++++++++---
+ drivers/net/can/m_can/m_can.c |  2 +-
+ include/linux/can/dev.h       | 14 ++++++++++++--
+ 3 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 141c2a4..88599f4 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -696,11 +696,17 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+ 	/* allow change of MTU according to the CANFD ability of the device */
+ 	switch (new_mtu) {
+ 	case CAN_MTU:
++		/* 'CANFD-only' controllers can not switch to CAN_MTU */
++		if (priv->ctrlmode_static & CAN_CTRLMODE_FD)
++			return -EINVAL;
++
+ 		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
+ 		break;
+ 
+ 	case CANFD_MTU:
+-		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
++		/* check for CANFD capability */
++		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
++		    !(priv->ctrlmode_static & CAN_CTRLMODE_FD))
+ 			return -EINVAL;
+ 
+ 		priv->ctrlmode |= CAN_CTRLMODE_FD;
+@@ -819,8 +825,14 @@ static int can_changelink(struct net_device *dev,
+ 			return -EBUSY;
+ 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 
+-		/* check whether changed bits are allowed to be modified */
+-		if (cm->mask & ~priv->ctrlmode_supported)
++		/* check whether provided bits are allowed to be passed */
++		if (cm->mask &
++		    ~(priv->ctrlmode_supported | priv->ctrlmode_static))
++			return -EOPNOTSUPP;
++
++		/* make sure static options are not accidently cleared */
++		if ((cm->mask & priv->ctrlmode_static & cm->flags) !=
++		    (cm->mask & priv->ctrlmode_static))
+ 			return -EOPNOTSUPP;
+ 
+ 		/* clear bits to be modified and copy the flag values */
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 39cf911..6952321 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -955,7 +955,7 @@ static struct net_device *alloc_m_can_dev(void)
+ 	priv->can.do_get_berr_counter = m_can_get_berr_counter;
+ 
+ 	/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.1 */
+-	priv->can.ctrlmode = CAN_CTRLMODE_FD_NON_ISO;
++	can_set_static_ctrlmode(&priv->can, CAN_CTRLMODE_FD_NON_ISO);
+ 
+ 	/* CAN_CTRLMODE_FD_NON_ISO can not be changed with M_CAN IP v3.0.1 */
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 735f9f8..afd23c2 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -40,8 +40,11 @@ struct can_priv {
+ 	struct can_clock clock;
+ 
+ 	enum can_state state;
+-	u32 ctrlmode;
+-	u32 ctrlmode_supported;
++
++	/* CAN controller feature bitfield see include/uapi/linux/can/netlink.h */
++	u32 ctrlmode;		/* current setting */
++	u32 ctrlmode_static;	/* fixed enabled options required by driver/hardware */
++	u32 ctrlmode_supported;	/* options that can be modified by netlink command */
+ 
+ 	int restart_ms;
+ 	struct timer_list restart_timer;
+@@ -108,6 +111,13 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ 	return skb->len == CANFD_MTU;
+ }
+ 
++static inline void can_set_static_ctrlmode(struct can_priv *priv,
++					   const u32 static_mode)
++{
++	priv->ctrlmode = static_mode;
++	priv->ctrlmode_static = static_mode;
++}
++
+ /* get data length from can_dlc with sanitized can_dlc */
+ u8 can_dlc2len(u8 can_dlc);
+ 
+-- 
+2.7.0
+
