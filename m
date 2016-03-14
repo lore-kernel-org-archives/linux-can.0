@@ -1,77 +1,58 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [RFC] [PATCH v2] can: fix handling of unmodifiable configuration
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [RFC] [PATCH v2] can: fix handling of unmodifiable configuration
  options
-Date: Mon, 14 Mar 2016 10:15:38 +0000
-Message-ID: <SG2PR06MB1038D9B53602CECA8E34C4D4C3880@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Date: Mon, 14 Mar 2016 19:09:35 +0100
+Message-ID: <56E6FE5F.2000500@hartkopp.net>
 References: <1457807487-14691-1-git-send-email-socketcan@hartkopp.net>
+ <SG2PR06MB1038D9B53602CECA8E34C4D4C3880@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor2.renesas.com ([210.160.252.172]:39029 "EHLO
-	relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1752020AbcCNKPm convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 14 Mar 2016 06:15:42 -0400
-In-Reply-To: <1457807487-14691-1-git-send-email-socketcan@hartkopp.net>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:14693 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754261AbcCNSJs (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 14 Mar 2016 14:09:48 -0400
+In-Reply-To: <SG2PR06MB1038D9B53602CECA8E34C4D4C3880@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Oliver,
+On 03/14/2016 11:15 AM, Ramesh Shanmugasundaram wrote:
 
-Thanks for the patch.
+>> Oliver Hartkopp <socketcan@hartkopp.net>
+>> Subject: [RFC] [PATCH v2] can: fix handling of unmodifiable configuration
+>> options
+>
+> (...)
+>
+>>
+>> +static inline void can_set_static_ctrlmode(struct can_priv *priv,
+>> +					   const u32 static_mode)
+>> +{
+>> +	priv->ctrlmode = static_mode;
+>> +	priv->ctrlmode_static = static_mode;
+>> +}
+>
+> Is it worth taking the ndev as arg and change the MTU as well in this function? This way mode & MTU would be consistent and would reflect the same in a configuration like this
+>
+> "ip link set can0 up type can bitrate 1000000 dbitrate 1000000"
+>
+> Would this be an overkill?
 
-> Oliver Hartkopp <socketcan@hartkopp.net>
-> Subject: [RFC] [PATCH v2] can: fix handling of unmodifiable configuration
-> options
-> 
-> As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
-> (6cfda7fbebe) it is possible to define fixed configuration options by
-> setting the according bit in 'ctrlmode' and clear it in
-> 'ctrlmode_supported'.
-> This leads to the incovenience that the fixed configuration can not be
-> passed by netlink (ip tool) even when it has the correct value (e.g. non-
-> ISO, FD).
-> 
-> This patch fixes that issue and allows fixed set bit values to be set
-> again which does not change the unmodifiable content. For this reason a
-> new helper
-> can_set_static_ctrlmode() has been introduced to provide a proper
-> interface to handle static enabled CAN controller options.
+My first thought was that setting the MTU in this function smells fishy.
 
-Thanks. This looks cleaner. I'll use this function in my driver.
+But as can_set_static_ctrlmode() is intended to be used at CAN device 
+setup time only it makes sense to override the MTU which is set in 
+can_setup() to CAN_MTU by default.
 
-> 
-> Additionally it fixes the inconsitency that was prohibiting the support of
-> 'CANFD-only' controller drivers.
-> 
-> Reported-by: Ramesh Shanmugasundaram
-> <ramesh.shanmugasundaram@bp.renesas.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/dev.c         | 18 +++++++++++++++---
->  drivers/net/can/m_can/m_can.c |  2 +-
->  include/linux/can/dev.h       | 14 ++++++++++++--
->  3 files changed, 28 insertions(+), 6 deletions(-)
-> 
+It doesn't make sense to pass the MTU to alloc_candev() as setting the 
+MTU to CAN_MTU is always to correct default (even for configurable CAN 
+FD devices).
 
-(...)
+I'll sed an updated patch which overrides the MTU in 
+can_set_static_ctrlmode() when CAN_CTRLMODE_FD is set in ctrlmode_static.
 
-> 
-> +static inline void can_set_static_ctrlmode(struct can_priv *priv,
-> +					   const u32 static_mode)
-> +{
-> +	priv->ctrlmode = static_mode;
-> +	priv->ctrlmode_static = static_mode;
-> +}
+Regards,
+Oliver
 
-Is it worth taking the ndev as arg and change the MTU as well in this function? This way mode & MTU would be consistent and would reflect the same in a configuration like this
-
-"ip link set can0 up type can bitrate 1000000 dbitrate 1000000"
-
-Would this be an overkill?
-
-Thanks,
-Ramesh
