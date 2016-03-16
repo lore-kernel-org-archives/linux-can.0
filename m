@@ -1,186 +1,183 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Wed, 16 Mar 2016 10:50:36 +0000
-Message-ID: <SG2PR06MB1038489F8A5E87BCAFC62C5AC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
-References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56E80422.9000902@hartkopp.net>
- <SG2PR06MB1038CF8299F3DC3E823BEC8AC3890@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56E864AC.2040605@hartkopp.net>
- <SG2PR06MB1038BE32574EF8C5830C6A6FC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56E92BCF.1080508@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/3] can: ti_hecc: Add DT support for TI HECC module
+Date: Wed, 16 Mar 2016 11:53:22 +0100
+Message-ID: <56E93B22.8010602@pengutronix.de>
+References: <1443988779-19935-1-git-send-email-anton.a.glukhov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="KR4LchiPjSEUUe0tMvrmiUvnaPIWXarHR"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor4.renesas.com ([210.160.252.174]:19468 "EHLO
-	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S966205AbcCPKuk convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 16 Mar 2016 06:50:40 -0400
-In-Reply-To: <56E92BCF.1080508@hartkopp.net>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54622 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753642AbcCPKxa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2016 06:53:30 -0400
+In-Reply-To: <1443988779-19935-1-git-send-email-anton.a.glukhov@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "mkl@pengutronix.de" <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Anton Glukhov <anton.a.glukhov@gmail.com>, linux-can@vger.kernel.org, bcousson@baylibre.com
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KR4LchiPjSEUUe0tMvrmiUvnaPIWXarHR
+Content-Type: multipart/mixed; boundary="JN5iIfS8aNqstrDkCtcfHpt1L07mL3BvE"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Anton Glukhov <anton.a.glukhov@gmail.com>, linux-can@vger.kernel.org,
+ bcousson@baylibre.com
+Message-ID: <56E93B22.8010602@pengutronix.de>
+Subject: Re: [PATCH 1/3] can: ti_hecc: Add DT support for TI HECC module
+References: <1443988779-19935-1-git-send-email-anton.a.glukhov@gmail.com>
+In-Reply-To: <1443988779-19935-1-git-send-email-anton.a.glukhov@gmail.com>
 
-> >>>>
-> >>>> What happens if the user only defines:
-> >>>>
-> >>>> 	"ip link set can0 up type can bitrate 1000000"
-> >>>>
-> >>>> instead of
-> >>>>
-> >>>> 	"ip link set can0 up type can bitrate 1000000 dbitrate 1000000"
-> >>>>
-> >>>> ??
-> >>>
-> >>> This is not possible isn't it? netlink already does a sanity check
-> >>> on
-> >> dbitrate before bring up of a FD node.
-> >>
-> >> No. It's not netlink but the open_candev() function which does the
-> >> sanity check - the function you call in rcar_canfd_open():
-> >
-> > Yes, my intention is to mention that this config is not possible but I
-> misused netlink instead of the exact function name.
-> >
-> >>
-> >>   > +
-> >>   > +static int rcar_canfd_open(struct net_device *ndev)  > +{
-> >>   > +	struct rcar_canfd_channel *priv = netdev_priv(ndev);
-> >>   > +	struct rcar_canfd_global *gpriv = priv->gpriv;
-> >>   > +	int err;
-> >>   > +
-> >>   > +	/* Peripheral clock is already enabled in probe */
-> >>   > +	err = clk_prepare_enable(gpriv->can_clk);
-> >>   > +	if (err) {
-> >>   > +		netdev_err(ndev, "failed to enable CAN clock, error
-> %d\n",
-> >> err);
-> >>   > +		goto out_clock;
-> >>   > +	}
-> >>
-> >> I wonder if it makes sense to add
-> >>
-> >> if (!priv->data_bittiming.bitrate) {
-> >>
-> >> 	/* copy arbitration bitrate to data bitrate registers */
-> >>
-> >> }
-> >>
-> >> here instead of urging the user to provide an identical data bitrate
-> >> to configure a working CAN2.0 setup.
-> >>
-> >>   > +
-> >>   > + err = open_candev(ndev);
-> >>   > + if (err) {
-> >>   > + netdev_err(ndev, "open_candev() failed, error %d\n", err);  > +
-> >> goto out_can_clock;  > + }  > +
-> >>
-> >> As we omitted to force the user to provide 'fd on' at configuration
-> >> time
-> >> - why should we force users to provide a second bitrate for a CAN2.0
-> >> operation??
-> >
-> > We are not forcing "fd on" because it is still a consistent
-> configuration w.r.t mode, mtu & bitrates.
-> 
-> But the default value is "fd off" - even if no one provides this
-> configuration option all the time.
-> 
-> So it's some kind of 'silent' knowledge to take a look at the MTU?
-> That's bad too.
+--JN5iIfS8aNqstrDkCtcfHpt1L07mL3BvE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-We could argue M_CAN supporting non-iso mode only as silent knowledge because we are not explicitly configuring it? The user should know what they are doing and driver should provide sanity checks for a consistent configuration IMO.
+Hello,
 
-> >>
-> >> This looks more straight forward to me and hides the fact of handling
-> >> a CANFD-only controller differently to a CAN2.0 or CAN2.0/CANFD
-> >> controller setup.
-> >
-> > I think we are going back to the original discussion. To quote you
-> > from earlier thread
-> >
-> > ---
-> > When you have a CAN FD /capable/ controller the idea is:
-> >
-> > "ip link set can0 up type can bitrate 1000000"
-> >
-> > The controller is in CAN2.0 mode:
-> >
-> > 1. It can send and receive CAN2.0 frames @1MBit/s.
-> > 2. The MTU is set to 16 (sizeof(struct can_frame)) ; CAN_CTRLMODE_FD is
-> unset.
-> > 3. The CAN controller is not CAN FD tolerant (will produce error
-> > frames)
-> > ---
-> >
-> > This is the normal config setup for a CAN 2.0 controller too. Assuming
-> we are hiding the CAN FD only mode, points 2 & 3 are broken isn't it? Not
-> sure why we want to hide CAN FD only mode? It adds more ambiguity only.
-> What do you think?
-> 
-> Yes. You are right. Up to that statement I was not really aware of a
-> CANFD-only CAN controller setup and how to handle it best.
-> 
-> But now that we have one - and after our discussions - I would suggest to
-> have a similar user experience for CAN2.0-only / CAN2.0/CANFD / CANFD-only
-> CAN controllers.
-> 
-> E.g. when I set "ip link set can0 up type can bitrate 1000000" on a PEAK
-> PCAN USB FD adapter it acts like a CAN2.0 adapter and I can send and
-> receive CAN2.0 frames.
+just stumbled over these patches.
 
-Will it generate error on CAN FD frame reception? What's the MTU?
-What's the behaviour for these configurations?
+On 10/04/2015 09:59 PM, Anton Glukhov wrote:
+> These patch set adds device tree support for TI HECC module.
 
-ip link set can0 up type can bitrate 1000000 dbitrate 1000000 
-ip link set can0 up type can bitrate 1000000 dbitrate 1000000 fd off
 
-Again, will it generate error on CAN FD frame reception? What's the MTU?
+> Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
+> ---
+>  drivers/net/can/ti_hecc.c | 56 +++++++++++++++++++++++++++++++++++++++=
+++++----
+>  1 file changed, 52 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+> index cf345cb..c1a89fd 100644
+> --- a/drivers/net/can/ti_hecc.c
+> +++ b/drivers/net/can/ti_hecc.c
+> @@ -46,6 +46,8 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/clk.h>
+>  #include <linux/io.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> =20
+>  #include <linux/can/dev.h>
+>  #include <linux/can/error.h>
+> @@ -875,19 +877,64 @@ static const struct net_device_ops ti_hecc_netdev=
+_ops =3D {
+>  	.ndo_change_mtu		=3D can_change_mtu,
+>  };
+> =20
+> +#if defined(CONFIG_OF)
 
-> 
-> When a user wants to setup CAN2.0 communication with the RCar CAN FD
-> controller he has to provide a second bitrate but not necessarily 'fd on'
-> (which is inconsistent).
-> 
-> Assume the user wants to have a simple CAN2.0 setup with the RCar CAN FD.
-> The steps would be
- 
-When I submit the "can-only" mode patch next, the user have the option of configuring a pure CAN 2.0 node. This would be a like a DT option "renesas,can-nofd". Of course the user has to read the manual/doc/bindings to know such capability exists. 
+please remove the ifdef
 
-If the user wants CAN FD only mode and still want to interoperate with CAN 2.0 node, making this differentiation explicitly in doc/configuration would be cleaner IMO.
+> +static const struct of_device_id ti_hecc_dt_ids[] =3D {
+> +	{
+> +		.compatible =3D "ti,am35x-hecc",
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ti_hecc_dt_ids);
+> +#endif
+> +
+> +static struct ti_hecc_platform_data *hecc_parse_dt(struct device *dev)=
 
-> 1. ip link set can0 up type can bitrate 1000000 2. Use the CAN_RAW socket
-> without (== default) CAN_RAW_FD_FRAMES sockopt
-> 
-> At least this looks more elegant and fulfills the user needs and
-> functionality than providing an extra 'fd on' or an extra bitrate.
-> 
-> The only difference 'under the hood' would be that the RCar CAN FD
-> controller would accept CAN FD frames - that are not visible on this
-> CAN_RAW socket.
+> +{
+> +	struct ti_hecc_platform_data *pdata;
+> +	struct device_node *np =3D dev->of_node;
+> +
+> +	pdata =3D devm_kzalloc(dev, sizeof(struct ti_hecc_platform_data), GFP=
+_KERNEL);
 
-That would affect stats and internal counters. Still it would be a hack isn't it?
+Please don't allocate pdata - better create two functions, one parsing
+the pdata and one parse the dt.
 
-> 
-> IMO we would get much less problems and user disorientation when you copy
-> the bitrate into the unset data bitrate registers.
-> 
-> Making everything 'really correct' would mean that the user must set 'fd
-> on'
-> every time and we would need to check whether the static ctrlmode bits are
-> always set by the user.
+> +	if (!pdata)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	if (of_property_read_u32(np, "ti,scc-ram-offset", &pdata->scc_ram_off=
+set)) {
+> +		dev_err(dev, "Missing scc-ram-offset property in the DT.\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (of_property_read_u32(np, "ti,hecc-ram-offset", &pdata->hecc_ram_o=
+ffset)) {
+> +		dev_err(dev, "Missing hecc-ram-offset property in the DT.\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +	if (of_property_read_u32(np, "ti,mbx-offset", &pdata->mbx_offset)) {
+> +		dev_err(dev, "Missing mbx-offset property in the DT.\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +	if (of_property_read_u32(dev->of_node, "ti,int-line", &pdata->int_lin=
+e)) {
+> +		pdata->int_line =3D 0;
+> +	}
+> +
+> +	return pdata;
+> +}
+> +
+>  static int ti_hecc_probe(struct platform_device *pdev)
+>  {
+>  	struct net_device *ndev =3D (struct net_device *)0;
+>  	struct ti_hecc_priv *priv;
+> -	struct ti_hecc_platform_data *pdata;
+> +	struct ti_hecc_platform_data *pdata =3D dev_get_platdata(&pdev->dev);=
 
-Hmm... then M_CAN has to set
+> +	struct device_node *np =3D pdev->dev.of_node;
+>  	struct resource *mem, *irq;
+>  	void __iomem *addr;
+>  	int err =3D -ENODEV;
+> =20
+> -	pdata =3D dev_get_platdata(&pdev->dev);
+> +	if (!pdata && np) {
+> +		pdata =3D hecc_parse_dt(&pdev->dev);
+> +		if (IS_ERR(pdata))
+> +			return PTR_ERR(pdata);
+> +	}
+> +
+>  	if (!pdata) {
+> -		dev_err(&pdev->dev, "No platform data\n");
+> -		goto probe_exit;
+> +		dev_err(&pdev->dev, "Platform data missing\n");
+> +		return -EINVAL;
+>  	}
+> =20
+>  	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -1040,6 +1087,7 @@ static int ti_hecc_resume(struct platform_device =
+*pdev)
+>  static struct platform_driver ti_hecc_driver =3D {
+>  	.driver =3D {
+>  		.name    =3D DRV_NAME,
+> +		.of_match_table =3D ti_hecc_dt_ids,
+>  	},
+>  	.probe =3D ti_hecc_probe,
+>  	.remove =3D ti_hecc_remove,
+>=20
 
-ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on fd-non-iso on
+Marc
 
-Not sure if we really want this? It's nice we are having a good discussion on this topic.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Thanks,
-Ramesh
+
+--JN5iIfS8aNqstrDkCtcfHpt1L07mL3BvE--
+
+--KR4LchiPjSEUUe0tMvrmiUvnaPIWXarHR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJW6TsiAAoJED07qiWsqSVqxasH/0K51W7xg9iu0wJ31WwCJ2+q
+sJqb0Ae7qcSfvuUq8P6i5aRRkCFFQZaGcfYYcfoQEz8TYoAgmJ/xbHvtBq6O6EfR
+W0btQzoggyzdtpFRqEJuzKVuzjydkdOzfh8ksYCobHvudLmRPE7Qr53P0ZqwcBEa
+mTr89wtmpwE/WEYJjN9uEVTEL2nFX+u4fUUZ0CLR8aZ+LFpruV1V3K5E1rV+aFdV
+wfa0/Q9dZx3cEUtKgXzlXAYYtIzghlYdpa2lC85CYpZksRx5NcdOXGdyILRWyBa+
+aTCiZece6Jg/1rV4DRkDnnw3qJR/e9ZbV3dUk0YlhpumFBU/yupomN1vroMQhcc=
+=Uceq
+-----END PGP SIGNATURE-----
+
+--KR4LchiPjSEUUe0tMvrmiUvnaPIWXarHR--
