@@ -1,7 +1,7 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Thu, 17 Mar 2016 12:03:41 +0000
-Message-ID: <SG2PR06MB103804EF4D818384C4F24DF5C38B0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Thu, 17 Mar 2016 21:46:51 +0100
+Message-ID: <56EB17BB.9030308@hartkopp.net>
 References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <56E80422.9000902@hartkopp.net>
@@ -11,149 +11,137 @@ References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesa
  <56E92BCF.1080508@hartkopp.net>
  <SG2PR06MB1038489F8A5E87BCAFC62C5AC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
  <56E9CE32.6050504@hartkopp.net>
+ <SG2PR06MB103804EF4D818384C4F24DF5C38B0@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor4.renesas.com ([210.160.252.174]:57428 "EHLO
-	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1753700AbcCQMDp convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 17 Mar 2016 08:03:45 -0400
-In-Reply-To: <56E9CE32.6050504@hartkopp.net>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:55685 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932832AbcCQUrF (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 17 Mar 2016 16:47:05 -0400
+In-Reply-To: <SG2PR06MB103804EF4D818384C4F24DF5C38B0@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Oliver,
+On 03/17/2016 01:03 PM, Ramesh Shanmugasundaram wrote:
 
-> >>> We are not forcing "fd on" because it is still a consistent
-> >> configuration w.r.t mode, mtu & bitrates.
-(...)
-> >
-> > Will it generate error on CAN FD frame reception? What's the MTU?
-> > What's the behaviour for these configurations?
-> >
-> > ip link set can0 up type can bitrate 1000000 dbitrate 1000000 ip link
-> > set can0 up type can bitrate 1000000 dbitrate 1000000 fd off
-> >
-> > Again, will it generate error on CAN FD frame reception? What's the MTU?
-> >
-> 
-> # ip -det link show can0
-> 5: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN
-> mode DEFAULT group default qlen 10
->      link/can  promiscuity 0
->      can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-> 	  bitrate 1000000 sample-point 0.750
-> 	  tq 25 prop-seg 14 phase-seg1 15 phase-seg2 10 sjw 1
-> 	  pcan_usb_fd: tseg1 1..64 tseg2 1..16 sjw 1..16 brp 1..1024 brp-inc
-> 1
-> 	  dbitrate 1000000 dsample-point 0.750
-> 	  dtq 50 dprop-seg 7 dphase-seg1 7 dphase-seg2 5 dsjw 1
-> 	  pcan_usb_fd: dtseg1 1..16 dtseg2 1..8 dsjw 1..4 dbrp 1..1024 dbrp-
-> inc 1
-> 	  clock 80000000
-> 
-> It boils down to be a CAN2.0 interface in both cases.
+>> I do not have real objections to change the behaviour in the way that the
+>> user is forced to define ALL configuration options correctly.
+>>
+>> It's harder but doesn't seem to have real pitfalls.
+>
+> I kind of agree but I think we need to think further on the user interface design. For e.g. on IFI, PCAN where capabilities can be toggled by link change
+>
+> - ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on -> CAN FD ISO mode
+> - ip link set can0 down; ip link set can0 up type can bitrate 500000 - user wants to change CAN FD nom rate only or user wants CAN 2.0 mode switch?
 
-Thanks. Good to know
+When the interface is down, setting bitrate(s), ctrlmodes and e.g. 
+restart-ms are independent of each other.
 
-> 
-> >>
-> >> When a user wants to setup CAN2.0 communication with the RCar CAN FD
-> >> controller he has to provide a second bitrate but not necessarily 'fd
-> on'
-> >> (which is inconsistent).
-> >>
-> >> Assume the user wants to have a simple CAN2.0 setup with the RCar CAN
-> FD.
-> >> The steps would be
-> >
-> > When I submit the "can-only" mode patch next, the user have the option
-> of configuring a pure CAN 2.0 node. This would be a like a DT option
-> "renesas,can-nofd". Of course the user has to read the manual/doc/bindings
-> to know such capability exists.
-> 
-> So it's a pretty hard switch at configuration time ...
+> 	- As of today, it will still be CAN FD ISO mode with different nominal bitrate
 
-Yes. It is a global setting for the controller (applied to both channels) and switches the register map itself. Toggling CAN-only/CAN FD-only mode involves a board reset.
+Yes - as no setting was provided to change ctrlmode settings.
 
-I have to correct one of my earlier statements. The manual says, in CAN FD only mode the controller still needs a "valid" DTSEG (data bitrate) config to interoperate with CAN 2.0 only nodes. I wrongly mentioned it MUST be "same" as nominal. Sorry about that :-( 
+> 	- To get into CAN 2.0 mode, user should see current state from "ip -d link show can0" and disable fd using "fd off".
 
-> 
-> > If the user wants CAN FD only mode and still want to interoperate with
-> CAN 2.0 node, making this differentiation explicitly in doc/configuration
-> would be cleaner IMO.
-> >
-> >> 1. ip link set can0 up type can bitrate 1000000 2. Use the CAN_RAW
-> >> socket without (== default) CAN_RAW_FD_FRAMES sockopt
-> >>
-> >> At least this looks more elegant and fulfills the user needs and
-> >> functionality than providing an extra 'fd on' or an extra bitrate.
-(...)
-> > Hmm... then M_CAN has to set
-> >
-> > ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on
-> > fd-non-iso on
-> 
-> Exactly!
-> 
-> > Not sure if we really want this? It's nice we are having a good
-> discussion on this topic.
-> 
-> /me too.
-> 
-> At least this will turn the
-> 
-> 	"can: fix handling of unmodifiable configuration options"
-> 
-> patch upside down.
-> 
-> I do not have real objections to change the behaviour in the way that the
-> user is forced to define ALL configuration options correctly.
-> 
-> It's harder but doesn't seem to have real pitfalls.
+Yes. This would change ctrlmode settings.
 
-I kind of agree but I think we need to think further on the user interface design. For e.g. on IFI, PCAN where capabilities can be toggled by link change
+> Is this OK?
 
-- ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on -> CAN FD ISO mode
-- ip link set can0 down; ip link set can0 up type can bitrate 500000 - user wants to change CAN FD nom rate only or user wants CAN 2.0 mode switch?
-	- As of today, it will still be CAN FD ISO mode with different nominal bitrate
-	- To get into CAN 2.0 mode, user should see current state from "ip -d link show can0" and disable fd using "fd off".
+Don't know if it's clear to the user which netlink options can be 
+changed independently from each other :-(
 
-Is this OK?
+> To summarize, there are controllers that can do (capabilities)
+>
+> - CAN 2.0 only
+> - CAN 2.0 & CAN FD (iso, non-iso) -> all combo switchable with link toggling (up/down) -> IFI, PCAN
+> - CAN 2.0 & CAN FD (non-iso only) -> CAN 2.0 & CAN FD switchable with link toggling (up/down) -> M_CAN
+> - CAN 2.0 only (or) CAN FD only (iso only) -> not switchable with link toggling - R-Car CAN FD
+> (R-Car CAN FD can be categorized as two virtual controllers - CAN 2.0 only (or) CAN FD only (iso only) decided during power on)
+> - CAN FD only (iso, non-iso) -> some unknown controller?
+>
+> Would the following rules be enough to have a consistent configuration?
+> -------------
+> CAN FD (identified by "fd on" flag passed)
+> - MTU 72
+> - Dbitrate MUST be provided always with "fd on"
+> - Subtypes with "fd on" depending on controller capability (below args can be passed only with "fd on" passed)
+> 	- ISO only supporting (some current & future controllers) - default
+> 	- ISO & non-ISO (most current controllers) - identified by "fd-non-iso on/off" flag passed
+> 		- unless "fd-non-iso on" is passed explicitly, it is off
+> 	- non-ISO only (past & some current controllers) - identified by "fd-non-iso on" flag passed
+>
+> CAN 2.0 (identified with "fd off" (or) no "fd on")
+> - MTU 16 (set automatically)
+> - Not tolerant to FD frames
+> - If FD capable, passed with "fd off" (or) "fd on" is not passed -> I think we should reset dbitrate to zero & clear all subtype bits of "fd on"
+> - If FD capable, passed with dbitrate & but no "fd on" -> I think we should reject this? It is acting as CAN 2.0, why accept a dbitrate even it is not doing any harm? Just to be consistent.
+> -------------
 
-To summarize, there are controllers that can do (capabilities)
+Boah - I was just wondering whether I would have to drink a beer before 
+or after trying to understand all this ;-)
 
-- CAN 2.0 only
-- CAN 2.0 & CAN FD (iso, non-iso) -> all combo switchable with link toggling (up/down) -> IFI, PCAN
-- CAN 2.0 & CAN FD (non-iso only) -> CAN 2.0 & CAN FD switchable with link toggling (up/down) -> M_CAN
-- CAN 2.0 only (or) CAN FD only (iso only) -> not switchable with link toggling - R-Car CAN FD
-(R-Car CAN FD can be categorized as two virtual controllers - CAN 2.0 only (or) CAN FD only (iso only) decided during power on)
-- CAN FD only (iso, non-iso) -> some unknown controller?
+> I thought of resetting caps to original value when link goes down. But it may not be needed if we strictly implement the above?
 
-Would the following rules be enough to have a consistent configuration?
--------------
-CAN FD (identified by "fd on" flag passed)
-- MTU 72
-- Dbitrate MUST be provided always with "fd on"
-- Subtypes with "fd on" depending on controller capability (below args can be passed only with "fd on" passed)
-	- ISO only supporting (some current & future controllers) - default
-	- ISO & non-ISO (most current controllers) - identified by "fd-non-iso on/off" flag passed
-		- unless "fd-non-iso on" is passed explicitly, it is off
-	- non-ISO only (past & some current controllers) - identified by "fd-non-iso on" flag passed
+I think setting a link down and up again should not change the settings.
 
-CAN 2.0 (identified with "fd off" (or) no "fd on")
-- MTU 16 (set automatically)
-- Not tolerant to FD frames
-- If FD capable, passed with "fd off" (or) "fd on" is not passed -> I think we should reset dbitrate to zero & clear all subtype bits of "fd on"
-- If FD capable, passed with dbitrate & but no "fd on" -> I think we should reject this? It is acting as CAN 2.0, why accept a dbitrate even it is not doing any harm? Just to be consistent.
--------------
+But I wonder if we should allow the configuration in several steps:
 
-I thought of resetting caps to original value when link goes down. But it may not be needed if we strictly implement the above?
+ip link set can0 type can bitrate 1000000
+ip link set can0 type can dbitrate 2000000
+ip link set can0 type can fd on
+ip link set can0 up
 
-Thanks,
-Ramesh
+Today the can_changelink() function is not designed to process only a 
+complete block of settings. It can only check the single netlink options 
+for consistency.
+
+1. ctrlmode is checked in can_changelink()
+2. The (data) bitrate dependencies are checked in can_open()
+
+Does it make sense to create some kind of 'configuration block' 
+consisting of the two bitrates and the ctrlmode? So that when the 
+(nominal) bitrate is provided the data bitrate and the ctrlmode is 
+cleared (aka set to initial values).
+
+My intention would be that the user is forced to provide all these 
+settings in one step which has to reflect the static ctrlmode too.
+
+E.g.
+
+ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on
+
+would be the ONLY correct way to configure the R-Car CAN FD then.
+
+ip link set can0 down; ip link set can0 up type can bitrate 500000
+
+would fail due to missing 'fd on' from static_ctrlmode and the missing 
+data bitrate.
+
+I found a currently unused ops->validate option in the netlink ops, 
+which may help us to define this kind of 'configuration block' mechanism.
+
+By adding can_validate() here
+
+static struct rtnl_link_ops can_link_ops __read_mostly = {
+         .kind           = "can",
+         .maxtype        = IFLA_CAN_MAX,
+         .policy         = can_policy,
+         .setup          = can_setup,
+         .newlink        = can_newlink,
+         .changelink     = can_changelink,
+         .validate       = can_validate,
+(..)
+
+we can possibly clear the bitrates and ctrlmode when we see just one of 
+them in the netlink message ... or something like this.
+
+I have to take a look into ops->validate if it fits into our needs but I 
+first wanted your feedback what you think about this 'configuration 
+block' idea?
+
+Best regards,
+Oliver
