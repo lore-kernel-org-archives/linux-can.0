@@ -1,182 +1,94 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Fri, 18 Mar 2016 20:44:48 +0100
-Message-ID: <56EC5AB0.1080107@hartkopp.net>
+Date: Fri, 18 Mar 2016 16:07:29 -0500
+Message-ID: <20160318210729.GA30163@rob-hp-laptop>
 References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
  <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <56E80422.9000902@hartkopp.net>
- <SG2PR06MB1038CF8299F3DC3E823BEC8AC3890@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56E864AC.2040605@hartkopp.net>
- <SG2PR06MB1038BE32574EF8C5830C6A6FC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56E92BCF.1080508@hartkopp.net>
- <SG2PR06MB1038489F8A5E87BCAFC62C5AC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56E9CE32.6050504@hartkopp.net>
- <SG2PR06MB103804EF4D818384C4F24DF5C38B0@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56EB17BB.9030308@hartkopp.net>
- <SG2PR06MB1038AD3F5496E8B833098229C38C0@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:54144 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755235AbcCRTpG (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 18 Mar 2016 15:45:06 -0400
-In-Reply-To: <SG2PR06MB1038AD3F5496E8B833098229C38C0@SG2PR06MB1038.apcprd06.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Cc: mkl@pengutronix.de, wg@grandegger.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, corbet@lwn.net, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org, geert+renesas@glider.be, chris.paterson2@renesas.com
+List-Id: linux-can.vger.kernel.org
 
-On 03/18/2016 02:23 PM, Ramesh Shanmugasundaram wrote:
+On Tue, Mar 15, 2016 at 09:48:14AM +0000, Ramesh Shanmugasundaram wrote:
+> This patch adds support for the CAN FD controller found in Renesas R-Car
+> SoCs. The controller operates in CAN FD only mode by default.
+> 
+> CAN FD mode supports both Classical CAN & CAN FD frame formats. The
+> controller supports ISO 11898-1:2015 CAN FD format only.
+> 
+> This controller supports two channels and the driver can enable either
+> or both of the channels.
+> 
+> Driver uses Rx FIFOs (one per channel) for reception & Common FIFOs (one
+> per channel) for transmission. Rx filter rules are configured to the
+> minimum (one per channel) and it accepts Standard, Extended, Data &
+> Remote Frame combinations.
+> 
+> Note: There are few documentation errors in R-Car Gen3 Hardware User
+> Manual v0.5E with respect to CAN FD controller. They are listed below:
+> 
+> 1. CAN FD interrupt numbers 29 & 30 are listed as per channel
+> interrupts. However, they are common to both channels (i.e.) they are
+> global and channel interrupts respectively.
+> 
+> 2. CANFD clock is derived from PLL1. This is not documented.
+> 
+> 3. CANFD clock is further divided by (1/2) within the CAN FD controller.
+> This is not documented.
+> 
+> 4. The minimum value of NTSEG1 in RSCFDnCFDCmNCFG register is 2 Tq. It
+> is specified 4 Tq in the manual.
+> 
+> 5. The maximum number of message RAM area the controller can use is 3584
+> bytes. It is specified 10752 bytes in the manual.
+> 
+> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+> ---
+> Hi All,
+> 
+>    Thanks for the review comments.
+> 
+>    This updated patch is based on linux-can-next tag (linux-can-next-for-4.6-20160310).
+> 
+>    This patch depends on
+> 
+>    [RFC] [PATCH v3] can: fix handling of unmodifiable configuration options
+>    (http://comments.gmane.org/gmane.linux.can/9126)
+> 
+> Changes since v2:
+> 	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
+> 	* Cleaned up leftover debugfs code (Thanks Oliver H)
+> 	* Revised devicetree documentation text (as suggested by Rob H)
+> 	  (https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01597.html)
+> 	* Used new can subsystem api to set static configuration & removed check in rcar_canfd_start (as suggested by Oliver H)
+> 	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
+> 	   https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01867.html)
+> 	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as suggested by Oliver H)
+> 	* Updated commit message
+> 
+> Changes since v1:
+> 	* Removed testmodes & debugfs code (suggested by Oliver H)
+> 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
+> 	* Removed __maybe_unused attribute of rcar_canfd_of_table
+> ---
+>  .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 ++
 
->> Does it make sense to create some kind of 'configuration block'
->> consisting of the two bitrates and the ctrlmode? So that when the
->> (nominal) bitrate is provided the data bitrate and the ctrlmode is cleared
->> (aka set to initial values).
->
-> "configuration block" would provide better clarity but I wonder if we need to enforce this as "can" may be the only link type forcing this.
+Acked-by: Rob Herring <robh@kernel.org>
 
-But only CAN has these strange dependencies.
-
-> Will it impact CAN 2.0 only controllers?
->
-> ip link set can0 type can bitrate 1000000
-> ip link set can0 up
-
-I can't see why.
-
-This example is still valid as up/down has nothing to do with bitrate & 
-ctrlmode settings.
-
-> Are other CAN FD controllers that are out in the market OK with it?
-
-Why not? I don't see a direct impact on controllers - it's only the 
-configuration interface to talk about.
-
-> I mean if they have userland apis/gui/docs for their controller would they need an update?
-
-The effect would be that the bitrate(s) and the ctrlmode would have to 
-be provided in one netlink message - instead of up to three.
-
-Today the only known alternative to the 'ip' tool from iproute2 is 
-'libsocketcan'
-
-http://git.pengutronix.de/?p=tools/libsocketcan.git;a=summary
-
-But libsocketcan is not CAN FD aware by now.
-
-> The rules I proposed yesterday would also break existing documentation and we should drop that :-(.
-
-ACK.
-
->
-> Hmm... user interface is a complicated topic ;-)
->
->>
->> My intention would be that the user is forced to provide all these
->> settings in one step which has to reflect the static ctrlmode too.
->>
->> E.g.
->>
->> ip link set can0 up type can bitrate 1000000 dbitrate 2000000 fd on
->>
->> would be the ONLY correct way to configure the R-Car CAN FD then.
->>
->> ip link set can0 down; ip link set can0 up type can bitrate 500000
->>
->> would fail due to missing 'fd on' from static_ctrlmode and the missing
->> data bitrate.
->
-> Even today it would fail with your static_ctrlmode patch.
-
-Yes, I know - that's why I wrote it would turn that patch upside down.
-
-> Only thing is static_ctrlmode is not explicit and would allow
->
-> ip link set can0 up type can bitrate 1000000 dbitrate 1000000
->
-> on PCAN -> this resolves to CAN 2.0
-> on R-Car CAN FD -> this resolves to CAN FD mode
-
-Exactly! That's why I would like to force all ctrlmode_static options to 
-be passed.
-
-In the case of R-Car CAN FD the above example would lead to an error as 
-'fd on' is missing.
-
->
-> unless the user does "ip -d link show can0" -> they would not know the mode configured.
->
->>
->> I found a currently unused ops->validate option in the netlink ops, which
->> may help us to define this kind of 'configuration block' mechanism.
->>
->
-> I looked at ops->validate now. It does not seem to take an ndev arg and maybe its scope is limited to sanitize the user option only against given link type/protocol?
-
-Oh. Without a link to the netdevice we won't be able to check the CAN FD 
-capabilities - but we could check the following:
-
-1. If we have a ctrlmode attribute and it has CAN_CTRLMODE_FD set we 
-need to have bitrate and data bitrate attributes.
-
-2. If we have a data bitrate attribute we need to have a bitrate 
-attribute and a ctrlmode attribute with CAN_CTRLMODE_FD set.
-
-> If we agree on "configuration block", we could resolve dependencies in ops->changelink at the end of the function.
-
-That won't work as ops->changelink has no context and is executed for 
-every netlink attribute separately when netlink parses the message.
-
-> Anyways that's implementation detail as you mentioned.
->
-> I am wondering if we are complicating things for ourselves. Can we say
->
-> - if "nbitrate" alone is provided, configure CAN 2.0. If controller not capable, it will fail - fine.
-> - if "dbitrate" is provided & FD capable, set fd mode automatically with ISO (default) or non-iso (if that's only supported). Since dbitrate is FD property, it is logical to set fd mode. Same way if "fd-non-iso on" alone is provided without "fd on", can't we take fd mode is implied? Of course explicit setting of these options are also fine (already supported today)
-> - if link brought down and some options changed when it is brought up, we logical OR that with existing config and apply if valid (like all netdev & current behaviour)
-
-The problem is that there's no defined sequence of attributes and no 
-context to check this.
-
-> This looks simpler & may not break existing documentation/expectation like
->
-
-With my suggestion above ...
-
-> ip link set can0 type can bitrate 1000000
--> would work
-
-> ip link set can0 type can dbitrate 2000000
--> would fail (bitrate & 'fd on' missing)
-
-> ip link set can0 type can fd on
--> would fail (bitrates missing)
-
-> ip link set can0 up
--> would work as-is
-
-> We are only improving consistency in abnormal or accidental configs this way. Yes things like "fd only or fd but non-iso only" caps are not explicit.
-I think making things more explicit is a good idea.
-
-> May be we could improve "ip -d link show can0" output to show ctrlmode -> "supported, fixed" like we print bitrate constant ranges today?
-Oh - an interesting idea. Don't know whether we can extend the existing 
-data structure in a backward compatible way ...
-
->
-> However,
->
-> "ip link set can0 up type can bitrate 1000000 dbitrate 1000000"
->
-> will configure PCAN (may be IFI & M_CAN) to FD mode than CAN2.0 as it is today.
-
-Ugh.
-
-> But why would one document such a case with dbitrate if CAN 2.0 is the intention isn't? It may not break existing expectations I believe.
->
-> I think we need Marc & others to comment so that we do changes once and update conclusions in Documentation/networking/can.txt
-
-Best regards,
-Oliver
-
+>  drivers/net/can/Kconfig                            |   11 +-
+>  drivers/net/can/Makefile                           |    2 +-
+>  drivers/net/can/rcar/Kconfig                       |   19 +
+>  drivers/net/can/rcar/Makefile                      |    6 +
+>  drivers/net/can/{ => rcar}/rcar_can.c              |    0
+>  drivers/net/can/rcar/rcar_canfd.c                  | 1614 ++++++++++++++++++++
+>  7 files changed, 1730 insertions(+), 11 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+>  create mode 100644 drivers/net/can/rcar/Kconfig
+>  create mode 100644 drivers/net/can/rcar/Makefile
+>  rename drivers/net/can/{ => rcar}/rcar_can.c (100%)
+>  create mode 100644 drivers/net/can/rcar/rcar_canfd.c
