@@ -1,94 +1,180 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
-Date: Fri, 18 Mar 2016 16:07:29 -0500
-Message-ID: <20160318210729.GA30163@rob-hp-laptop>
-References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Cc: mkl@pengutronix.de, wg@grandegger.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, corbet@lwn.net, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org, geert+renesas@glider.be, chris.paterson2@renesas.com
-List-Id: linux-can.vger.kernel.org
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC] [PATCH v4] can: fix handling of unmodifiable configuration options
+Date: Sat, 19 Mar 2016 09:07:50 +0100
+Message-ID: <1458374870-5380-1-git-send-email-socketcan@hartkopp.net>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:16503 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751244AbcCSIIL (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 19 Mar 2016 04:08:11 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: ramesh.shanmugasundaram@bp.renesas.com, Oliver Hartkopp <socketcan@hartkopp.net>
 
-On Tue, Mar 15, 2016 at 09:48:14AM +0000, Ramesh Shanmugasundaram wrote:
-> This patch adds support for the CAN FD controller found in Renesas R-Car
-> SoCs. The controller operates in CAN FD only mode by default.
-> 
-> CAN FD mode supports both Classical CAN & CAN FD frame formats. The
-> controller supports ISO 11898-1:2015 CAN FD format only.
-> 
-> This controller supports two channels and the driver can enable either
-> or both of the channels.
-> 
-> Driver uses Rx FIFOs (one per channel) for reception & Common FIFOs (one
-> per channel) for transmission. Rx filter rules are configured to the
-> minimum (one per channel) and it accepts Standard, Extended, Data &
-> Remote Frame combinations.
-> 
-> Note: There are few documentation errors in R-Car Gen3 Hardware User
-> Manual v0.5E with respect to CAN FD controller. They are listed below:
-> 
-> 1. CAN FD interrupt numbers 29 & 30 are listed as per channel
-> interrupts. However, they are common to both channels (i.e.) they are
-> global and channel interrupts respectively.
-> 
-> 2. CANFD clock is derived from PLL1. This is not documented.
-> 
-> 3. CANFD clock is further divided by (1/2) within the CAN FD controller.
-> This is not documented.
-> 
-> 4. The minimum value of NTSEG1 in RSCFDnCFDCmNCFG register is 2 Tq. It
-> is specified 4 Tq in the manual.
-> 
-> 5. The maximum number of message RAM area the controller can use is 3584
-> bytes. It is specified 10752 bytes in the manual.
-> 
-> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-> ---
-> Hi All,
-> 
->    Thanks for the review comments.
-> 
->    This updated patch is based on linux-can-next tag (linux-can-next-for-4.6-20160310).
-> 
->    This patch depends on
-> 
->    [RFC] [PATCH v3] can: fix handling of unmodifiable configuration options
->    (http://comments.gmane.org/gmane.linux.can/9126)
-> 
-> Changes since v2:
-> 	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
-> 	* Cleaned up leftover debugfs code (Thanks Oliver H)
-> 	* Revised devicetree documentation text (as suggested by Rob H)
-> 	  (https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01597.html)
-> 	* Used new can subsystem api to set static configuration & removed check in rcar_canfd_start (as suggested by Oliver H)
-> 	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
-> 	   https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01867.html)
-> 	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as suggested by Oliver H)
-> 	* Updated commit message
-> 
-> Changes since v1:
-> 	* Removed testmodes & debugfs code (suggested by Oliver H)
-> 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
-> 	* Removed __maybe_unused attribute of rcar_canfd_of_table
-> ---
->  .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 ++
+As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
+(6cfda7fbebe) it is possible to define fixed configuration options by
+setting the according bit in 'ctrlmode' and clear it in 'ctrlmode_supported'.
+This leads to the incovenience that the fixed configuration bits can not be
+passed by netlink even when they have the correct values (e.g. non-ISO, FD).
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch fixes that issue and not only allows fixed set bit values to be set
+again but now requires(!) to provide these fixed values at configuration time.
+A valid CAN FD configuration consists of a nominal/arbitration bittiming, a
+data bittiming and a control mode with CAN_CTRLMODE_FD set - which is now
+enforced by a new can_validate() function. This fix additionally removed the
+inconsistency that was prohibiting the support of 'CANFD-only' controller
+drivers, like the RCar CAN FD.
 
->  drivers/net/can/Kconfig                            |   11 +-
->  drivers/net/can/Makefile                           |    2 +-
->  drivers/net/can/rcar/Kconfig                       |   19 +
->  drivers/net/can/rcar/Makefile                      |    6 +
->  drivers/net/can/{ => rcar}/rcar_can.c              |    0
->  drivers/net/can/rcar/rcar_canfd.c                  | 1614 ++++++++++++++++++++
->  7 files changed, 1730 insertions(+), 11 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
->  create mode 100644 drivers/net/can/rcar/Kconfig
->  create mode 100644 drivers/net/can/rcar/Makefile
->  rename drivers/net/can/{ => rcar}/rcar_can.c (100%)
->  create mode 100644 drivers/net/can/rcar/rcar_canfd.c
+For this reason a new helper can_set_static_ctrlmode() has been introduced to
+provide a proper interface to handle static enabled CAN controller options.
+
+Reported-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/dev.c         | 49 ++++++++++++++++++++++++++++++++++++++++---
+ drivers/net/can/m_can/m_can.c |  2 +-
+ include/linux/can/dev.h       | 22 +++++++++++++++++--
+ 3 files changed, 67 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 141c2a4..854ace78 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -696,11 +696,17 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+ 	/* allow change of MTU according to the CANFD ability of the device */
+ 	switch (new_mtu) {
+ 	case CAN_MTU:
++		/* 'CANFD-only' controllers can not switch to CAN_MTU */
++		if (priv->ctrlmode_static & CAN_CTRLMODE_FD)
++			return -EINVAL;
++
+ 		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
+ 		break;
+ 
+ 	case CANFD_MTU:
+-		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
++		/* check for potential CANFD ability */
++		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
++		    !(priv->ctrlmode_static & CAN_CTRLMODE_FD))
+ 			return -EINVAL;
+ 
+ 		priv->ctrlmode |= CAN_CTRLMODE_FD;
+@@ -782,6 +788,36 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+ 				= { .len = sizeof(struct can_bittiming_const) },
+ };
+ 
++static int can_validate(struct nlattr *tb[], struct nlattr *data[])
++{
++	u32 is_can_fd = 0;
++
++	/*
++	 * Make sure that valid CAN FD configurations always consist of
++	 * - nominal/arbitration bittiming
++	 * - data bittiming
++	 * - control mode with CAN_CTRLMODE_FD set
++	 */
++
++	if (data[IFLA_CAN_CTRLMODE]) {
++		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
++
++		is_can_fd = cm->flags & cm->mask & CAN_CTRLMODE_FD;
++	}
++
++	if (is_can_fd) {
++		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
++			return -EOPNOTSUPP;
++	}
++
++	if (data[IFLA_CAN_DATA_BITTIMING]) {
++		if (!is_can_fd || !data[IFLA_CAN_BITTIMING])
++			return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
+ static int can_changelink(struct net_device *dev,
+ 			  struct nlattr *tb[], struct nlattr *data[])
+ {
+@@ -819,8 +855,14 @@ static int can_changelink(struct net_device *dev,
+ 			return -EBUSY;
+ 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 
+-		/* check whether changed bits are allowed to be modified */
+-		if (cm->mask & ~priv->ctrlmode_supported)
++		/* check whether provided bits are allowed to be passed */
++		if (cm->mask &
++		    ~(priv->ctrlmode_supported | priv->ctrlmode_static))
++			return -EOPNOTSUPP;
++
++		/* make sure static options are provided by configuration */
++		if ((cm->flags & cm->mask & priv->ctrlmode_static) !=
++		    priv->ctrlmode_static)
+ 			return -EOPNOTSUPP;
+ 
+ 		/* clear bits to be modified and copy the flag values */
+@@ -966,6 +1008,7 @@ static struct rtnl_link_ops can_link_ops __read_mostly = {
+ 	.maxtype	= IFLA_CAN_MAX,
+ 	.policy		= can_policy,
+ 	.setup		= can_setup,
++	.validate	= can_validate,
+ 	.newlink	= can_newlink,
+ 	.changelink	= can_changelink,
+ 	.get_size	= can_get_size,
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 39cf911..195f15e 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -955,7 +955,7 @@ static struct net_device *alloc_m_can_dev(void)
+ 	priv->can.do_get_berr_counter = m_can_get_berr_counter;
+ 
+ 	/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.1 */
+-	priv->can.ctrlmode = CAN_CTRLMODE_FD_NON_ISO;
++	can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+ 
+ 	/* CAN_CTRLMODE_FD_NON_ISO can not be changed with M_CAN IP v3.0.1 */
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 735f9f8..098243b 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -40,8 +40,11 @@ struct can_priv {
+ 	struct can_clock clock;
+ 
+ 	enum can_state state;
+-	u32 ctrlmode;
+-	u32 ctrlmode_supported;
++
++	/* CAN controller features - see include/uapi/linux/can/netlink.h */
++	u32 ctrlmode;		/* current options setting */
++	u32 ctrlmode_supported;	/* options that can be modified by netlink */
++	u32 ctrlmode_static;	/* static enabled options for driver/hardware */
+ 
+ 	int restart_ms;
+ 	struct timer_list restart_timer;
+@@ -108,6 +111,21 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ 	return skb->len == CANFD_MTU;
+ }
+ 
++/* helper to define static CAN controller features at device creation time */
++static inline void can_set_static_ctrlmode(struct net_device *dev,
++					   const u32 static_mode)
++{
++	struct can_priv *priv = netdev_priv(dev);
++
++	/* alloc_candev() succeeded => netdev_priv() is valid at this point */
++	priv->ctrlmode = static_mode;
++	priv->ctrlmode_static = static_mode;
++
++	/* override MTU which was set by default in can_setup()? */
++	if (static_mode & CAN_CTRLMODE_FD)
++		dev->mtu = CANFD_MTU;
++}
++
+ /* get data length from can_dlc with sanitized can_dlc */
+ u8 can_dlc2len(u8 can_dlc);
+ 
+-- 
+2.7.0
+
