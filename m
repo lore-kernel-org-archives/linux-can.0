@@ -1,82 +1,67 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Testing CAN on Allwinner A20 / Banana Pi
-Date: Mon, 21 Mar 2016 17:14:03 +0100
-Message-ID: <56F01DCB.6060902@pengutronix.de>
-References: <55F3E7A0.9020309@posteo.de> <55F3ECAC.7040508@pengutronix.de>
- <56ED45C9.7080803@posteo.de> <56ED4725.8080209@pengutronix.de>
- <56EFBE77.2020408@eurek.it> <56EFF1B2.9050404@posteo.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="eR6W9WkmqmavwjsmV6iBKllwno290ulVx"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39485 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754411AbcCUQOU (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Mar 2016 12:14:20 -0400
-In-Reply-To: <56EFF1B2.9050404@posteo.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Patrick Menschel <menschel.p@posteo.de>, gianluca <gianlucarenzi@eurek.it>
-Cc: linux-can <linux-can@vger.kernel.org>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: [PATCH v4 0/2] Add CAN FD driver support to r8a7795 SoC
+Date: Mon, 21 Mar 2016 16:45:54 +0000
+Message-ID: <1458578756-42898-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+References: <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: mkl@pengutronix.de, wg@grandegger.com, socketcan@hartkopp.net, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, chris.paterson2@renesas.com, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---eR6W9WkmqmavwjsmV6iBKllwno290ulVx
-Content-Type: multipart/mixed; boundary="HhSwp3kS8i8e8jbumvi8uxQJPCQFII2Dn"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Patrick Menschel <menschel.p@posteo.de>, gianluca <gianlucarenzi@eurek.it>
-Cc: linux-can <linux-can@vger.kernel.org>
-Message-ID: <56F01DCB.6060902@pengutronix.de>
-Subject: Re: Testing CAN on Allwinner A20 / Banana Pi
-References: <55F3E7A0.9020309@posteo.de> <55F3ECAC.7040508@pengutronix.de>
- <56ED45C9.7080803@posteo.de> <56ED4725.8080209@pengutronix.de>
- <56EFBE77.2020408@eurek.it> <56EFF1B2.9050404@posteo.de>
-In-Reply-To: <56EFF1B2.9050404@posteo.de>
+Hi All,
 
---HhSwp3kS8i8e8jbumvi8uxQJPCQFII2Dn
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+   Thanks for the review comments.
 
-On 03/21/2016 02:05 PM, Patrick Menschel wrote:
-> Thanks for the advice,
->=20
-> in my case the sunxi_defconfig already had the driver selected, so no
-> change necessary.
-> Apparently only the device tree information is missing in the mainline
-> kernel. If that were to change, it would work out of the box if a
-> transceiver is added.
+   This patch is based on linux-can-next tag (linux-can-next-for-4.6-20160310)
 
-The CAN node should be added with no status attribute to the SoC dtsi,
-so it's disabled. In the board dts you set status =3D "okay". The pinctrl=
+   This patch depends on
 
-goes into the dtsi if there's only one possibility, otherwise into the
-board dts.
+   [RFC] [PATCH v4] can: fix handling of unmodifiable configuration options
+   (http://permalink.gmane.org/gmane.linux.can/9148)
 
-Marc
+Changes since v3:
+	* Split v3 patch into two (Marc K)
+	  (1) Introduce rcar_canfd.c driver in drivers/net/can/rcar dir
+	  (2) Move rcar_can.c driver to new drivers/net/can/rcar dir
+	* Added Acked-by Rob H for the bindings
+	* Added comments on CAN FD only mode in driver & Kconfig (Oliver H)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Changes since v2:
+	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
+	* Cleaned up leftover debugfs code (Thanks Oliver H)
+	* Revised devicetree documentation text (as suggested by Rob H)
+	  (https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01597.html)
+	* Used new can subsystem api to set static configuration & removed check in rcar_canfd_start (as suggested by Oliver H)
+	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
+	   https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01867.html)
+	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as suggested by Oliver H)
+	* Updated commit message
+
+Changes since v1:
+	* Removed testmodes & debugfs code (suggested by Oliver H)
+	* Fixed tx path race issue by introducing lock (suggested by Marc K)
+	* Removed __maybe_unused attribute of rcar_canfd_of_table
 
 
---HhSwp3kS8i8e8jbumvi8uxQJPCQFII2Dn--
+Ramesh Shanmugasundaram (2):
+  can: rcar_canfd: Add Renesas R-Car CAN FD driver
+  can: rcar_can: Move Renesas CAN driver to rcar dir
 
---eR6W9WkmqmavwjsmV6iBKllwno290ulVx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 ++
+ drivers/net/can/Kconfig                            |   11 +-
+ drivers/net/can/Makefile                           |    2 +-
+ drivers/net/can/rcar/Kconfig                       |   21 +
+ drivers/net/can/rcar/Makefile                      |    6 +
+ drivers/net/can/{ => rcar}/rcar_can.c              |    0
+ drivers/net/can/rcar/rcar_canfd.c                  | 1623 ++++++++++++++++++++
+ 7 files changed, 1741 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+ create mode 100644 drivers/net/can/rcar/Kconfig
+ create mode 100644 drivers/net/can/rcar/Makefile
+ rename drivers/net/can/{ => rcar}/rcar_can.c (100%)
+ create mode 100644 drivers/net/can/rcar/rcar_canfd.c
 
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJW8B3LAAoJED07qiWsqSVqt24H/2JgLHwtLWNEojL1TLjFGEi1
-2dqNyD4qHX6yXw9807+fHMjNXONNkjpiJAWZMaE1WJw7kPz+x2uOJhTPLkxtY2fe
-qtC9daxVjTKLMY2l0X7bBncuqhilkUZ7f4S6mc42/FHC3gL6T1rNtLBr9oHPvHIF
-zQFtFJ6ffGd8jDU3z4ZL5Oim3NiTNhvgpLB1OqBb5nCp1jxTL63sUMCYyCBvv7VV
-K5O2tnTzfYGEXNjqRZaDTS06AuiUqHLYJTeZxz2ghyc31DVK/26LDzSJ+YdqUIVc
-6ejgPlK6OrIU2Ggz8qZXkxU0Aj28V3C5qLQdkeCpFx6sbnAwiwkVYnVkad/DL4g=
-=rszQ
------END PGP SIGNATURE-----
-
---eR6W9WkmqmavwjsmV6iBKllwno290ulVx--
+-- 
+1.9.1
