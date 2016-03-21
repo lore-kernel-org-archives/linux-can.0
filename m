@@ -1,111 +1,62 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [RFC] [PATCH v4] can: fix handling of unmodifiable configuration
- options
-Date: Mon, 21 Mar 2016 08:37:07 +0000
-Message-ID: <SG2PR06MB10388D08005F04DAD837A02DC38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
-References: <1458374870-5380-1-git-send-email-socketcan@hartkopp.net>
+From: gianluca <gianlucarenzi@eurek.it>
+Subject: Re: Testing CAN on Allwinner A20 / Banana Pi
+Date: Mon, 21 Mar 2016 10:27:19 +0100
+Message-ID: <56EFBE77.2020408@eurek.it>
+References: <55F3E7A0.9020309@posteo.de> <55F3ECAC.7040508@pengutronix.de>
+ <56ED45C9.7080803@posteo.de> <56ED4725.8080209@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor3.renesas.com ([210.160.252.173]:34813 "EHLO
-	relmlie2.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751371AbcCUIhO convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 21 Mar 2016 04:37:14 -0400
-In-Reply-To: <1458374870-5380-1-git-send-email-socketcan@hartkopp.net>
-Content-Language: en-US
+Received: from qmail.e-mind.com ([188.94.192.39]:58741 "HELO qmail.e-mind.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+	id S1751730AbcCUJdz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 21 Mar 2016 05:33:55 -0400
+In-Reply-To: <56ED4725.8080209@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Patrick Menschel <menschel.p@posteo.de>, linux-can <linux-can@vger.kernel.org>
 
-Hi Oliver,
+On 03/19/2016 01:33 PM, Marc Kleine-Budde wrote:
+>>
+>> Compiling to dtb and back to dts now resolves to
+>>
+>> 		can@01c2bc00 {
+>> 			compatible = "allwinner,sun4i-a10-can";
+>> 			reg = <0x1c2bc00 0x400>;
+>> 			interrupts = <0x0 0x1a 0x4>;
+>> 			clocks = <0x31 0x4>;
+>> 			status = "okay";
+>> 			pinctrl-names = "default";
+>> 			pinctrl-0 = <0x32>;
+>> 		};
+>>
+>> That does look plausible from my perspective.
+>>
+>> Unfortunately I'm still missing /dev/can0 and have no clue why.
+>
+> CAN devices are network devices and will not show up in "/dev". Have a
+> look at:
+>
+>      ifconfig -a
+>
+>> If your Bpi works with legacy u-boot, I would try that next.
 
-Thanks for the patch.
+It is not enough having the can-core controller in dtsi only. The kernel 
+has to be compiled with a network/can/socketcan enabled and the specific 
+SoC can controller enabled in the same subarch structure.
+i.e.: you will need to have:
 
-> -----Original Message-----
-> From: Oliver Hartkopp [mailto:socketcan@hartkopp.net]
-> Sent: 19 March 2016 08:08
-> To: linux-can@vger.kernel.org
-> Cc: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>;
-> Oliver Hartkopp <socketcan@hartkopp.net>
-> Subject: [RFC] [PATCH v4] can: fix handling of unmodifiable configuration
-> options
-> 
-> As described in 'can: m_can: tag current CAN FD controllers as non-ISO'
-> (6cfda7fbebe) it is possible to define fixed configuration options by
-> setting the according bit in 'ctrlmode' and clear it in
-> 'ctrlmode_supported'.
-> This leads to the incovenience that the fixed configuration bits can not
-> be passed by netlink even when they have the correct values (e.g. non-ISO,
-> FD).
-> 
-> This patch fixes that issue and not only allows fixed set bit values to be
-> set again but now requires(!) to provide these fixed values at
-> configuration time.
-> A valid CAN FD configuration consists of a nominal/arbitration bittiming,
-> a data bittiming and a control mode with CAN_CTRLMODE_FD set - which is
-> now enforced by a new can_validate() function. This fix additionally
-> removed the inconsistency that was prohibiting the support of 'CANFD-only'
-> controller drivers, like the RCar CAN FD.
-> 
-> For this reason a new helper can_set_static_ctrlmode() has been introduced
-> to provide a proper interface to handle static enabled CAN controller
-> options.
-> 
-> Reported-by: Ramesh Shanmugasundaram
-> <ramesh.shanmugasundaram@bp.renesas.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/dev.c         | 49
-> ++++++++++++++++++++++++++++++++++++++++---
->  drivers/net/can/m_can/m_can.c |  2 +-
->  include/linux/can/dev.h       | 22 +++++++++++++++++--
->  3 files changed, 67 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c index
-> 141c2a4..854ace78 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -696,11 +696,17 @@ int can_change_mtu(struct net_device *dev, int
-> new_mtu)
->  	/* allow change of MTU according to the CANFD ability of the device
-> */
->  	switch (new_mtu) {
->  	case CAN_MTU:
-> +		/* 'CANFD-only' controllers can not switch to CAN_MTU */
-> +		if (priv->ctrlmode_static & CAN_CTRLMODE_FD)
-> +			return -EINVAL;
-> +
->  		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
->  		break;
-> 
->  	case CANFD_MTU:
-> -		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
-> +		/* check for potential CANFD ability */
-> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
-> +		    !(priv->ctrlmode_static & CAN_CTRLMODE_FD))
->  			return -EINVAL;
-> 
->  		priv->ctrlmode |= CAN_CTRLMODE_FD;
-> @@ -782,6 +788,36 @@ static const struct nla_policy
-> can_policy[IFLA_CAN_MAX + 1] = {
->  				= { .len = sizeof(struct can_bittiming_const) },
-> };
-> 
-> +static int can_validate(struct nlattr *tb[], struct nlattr *data[]) {
-> +	u32 is_can_fd = 0;
-> +
-> +	/*
-> +	 * Make sure that valid CAN FD configurations always consist of
-> +	 * - nominal/arbitration bittiming
-> +	 * - data bittiming
-> +	 * - control mode with CAN_CTRLMODE_FD set
-> +	 */
+in sunxi_defconfig:
 
-This comment style prompts WARNING in latest checkpatch.pl in case you plan to submit in linux-can-next. Otherwise
+CONFIG_CAN=y
+CONFIG_CAN_SUN4I=y
 
-Reviewed-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Just my $0.2...
 
-Thanks,
-Ramesh
+Hope this helps!
+-- 
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
