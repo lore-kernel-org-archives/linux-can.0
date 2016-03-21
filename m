@@ -1,54 +1,61 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC] [PATCH v4] can: fix handling of unmodifiable configuration
- options
-Date: Mon, 21 Mar 2016 16:25:01 +0100
-Message-ID: <56F0124D.9040008@hartkopp.net>
-References: <1458374870-5380-1-git-send-email-socketcan@hartkopp.net>
- <SG2PR06MB10388D08005F04DAD837A02DC38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <56F00B1E.5080909@hartkopp.net>
- <SG2PR06MB10384D5560A346BFF451F61DC38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [PATCH v3] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Mon, 21 Mar 2016 15:43:13 +0000
+Message-ID: <SG2PR06MB1038E51956A27CD72F472441C38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <1457019515-21158-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1458035294-8150-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <56E80422.9000902@hartkopp.net>
+ <SG2PR06MB1038CF8299F3DC3E823BEC8AC3890@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56E864AC.2040605@hartkopp.net>
+ <SG2PR06MB1038BE32574EF8C5830C6A6FC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56E92BCF.1080508@hartkopp.net>
+ <SG2PR06MB1038489F8A5E87BCAFC62C5AC38A0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56E9CE32.6050504@hartkopp.net>
+ <SG2PR06MB103804EF4D818384C4F24DF5C38B0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56EB17BB.9030308@hartkopp.net>
+ <SG2PR06MB1038AD3F5496E8B833098229C38C0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56EC5AB0.1080107@hartkopp.net>
+ <SG2PR06MB10387C76C0A3289A00D8AE69C38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <56F013B3.6050301@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:54450 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755999AbcCUPbX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 21 Mar 2016 11:31:23 -0400
-In-Reply-To: <SG2PR06MB10384D5560A346BFF451F61DC38F0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Received: from relmlor2.renesas.com ([210.160.252.172]:63111 "EHLO
+	relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1755999AbcCUPnT convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 21 Mar 2016 11:43:19 -0400
+In-Reply-To: <56F013B3.6050301@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 03/21/2016 04:19 PM, Ramesh Shanmugasundaram wrote:
+Hi Oliver.
 
->> The only thing I was not sure about when forcing static ctrlmodes to be
->> set was the fact that you would need to set fd-non-iso for the MCAN
->> controller setup - even when you only configure it for CAN2.0 traffic:
->>
->> ip link set can0 type can bitrate 100000 -> ok
->>
->> ip link set can0 type can bitrate 100000 one-shot on -> fail
->
-> Oh! I checked for M_CAN but only the config above this. Good that you spotted.
->
->>
->> ip link set can0 type can bitrate 100000 one-shot on fd-non-iso on -> ok
->>
->> To be consistent with 'static ctrlmodes have to be provided' it looks ok.
->> But from a CAN2.0 perspective it looks confusing.
->
-> Definitely.
->
->>
->> I wonder if it makes sense to handle this *special* case not to force fd-
->> non-iso when the controller won't get into FD mode. What do you think?
->
-> Yes, I agree. Non-ISO only mode will eventually phase out and having a "special" case for this sounds logical.
->
+> > /* The R-Car CAN FD controller can operate in either one of the below
+> two modes
+> >   *  - CAN FD only mode
+> >   *  - Classical CAN (CAN 2.0) only mode
+> >   *
+> >   * This driver puts the controller in CAN FD only mode by default. In
+> > this
+> 
+> This driver does not support the Classical CAN (CAN 2.0) mode of the
+> controller which is handled by a different register set and therefore puts
+> the controller in CAN FD only mode by default. In this
 
-Ok. I'll put this special handling into can_changelink() and will post 
-an update (v5).
+With a slight re-wording if I may
+
+"This driver puts the controller in CAN FD only mode by default. In this mode, the 
+controller acts as a CAN FD node that can also interoperate with CAN 2.0 nodes.
+
+As of now, this driver does not support the classical CAN (CAN 2.0) mode, which
+is handled by a different register map compared to CAN FD only mode"
+
+It kind of implies "can only" mode patch will come next & we consciously submitted CAN FD only first to keep it simple :-)
 
 Thanks,
-Oliver
+Ramesh
