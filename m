@@ -1,34 +1,38 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: CAN message timestamping
-Date: Tue, 22 Mar 2016 22:12:13 -0700
-Message-ID: <CANGgnMbLhYDdiK_tff0cEW+umuMOPN0h9x7t7cMK-xjMAMNBmQ@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: CAN message timestamping
+Date: Wed, 23 Mar 2016 08:00:47 +0100
+Message-ID: <56F23F1F.6040101@hartkopp.net>
+References: <CANGgnMbLhYDdiK_tff0cEW+umuMOPN0h9x7t7cMK-xjMAMNBmQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f180.google.com ([209.85.161.180]:36452 "EHLO
-	mail-yw0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751234AbcCWFMd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Mar 2016 01:12:33 -0400
-Received: by mail-yw0-f180.google.com with SMTP id g3so6041069ywa.3
-        for <linux-can@vger.kernel.org>; Tue, 22 Mar 2016 22:12:33 -0700 (PDT)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:46420 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752820AbcCWHA6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 23 Mar 2016 03:00:58 -0400
+In-Reply-To: <CANGgnMbLhYDdiK_tff0cEW+umuMOPN0h9x7t7cMK-xjMAMNBmQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>, Philipp Schrader <philipp@peloton-tech.com>
+To: Austin Schuh <austin@peloton-tech.com>, linux-can <linux-can@vger.kernel.org>, Philipp Schrader <philipp@peloton-tech.com>
 
-Hi,
+Hi Austin,
 
-We recently tried doing CAN timestamping with the ioctl(s, SIOCGSTAMP,
-&tv) call.  It worked well, but all our timestamps internally are
-based off the monotonic clock (since the realtime clock can jump and
-go backwards in time.)  The conversion to the monotonic clock has been
-tricky.  We already caught one bug today where it looks like our
-simplistic sample both clocks and use that to compute the offset
-algorithm was interrupted in the middle and resulted in the monotonic
-time going backwards (which is wrong by definition).
+On 23.03.2016 06:12, Austin Schuh wrote:
+> We recently tried doing CAN timestamping with the ioctl(s, SIOCGSTAMP,
+> &tv) call.
 
-Is there any way to get CAN timestamping with both clocks, or at least
-with just the monotonic clock?  Or otherwise reliably get monotonic
-time?
+Did you ever try to use the recvmsg() call with enabled SO_TIMESTAMPING socket 
+option?
 
-Thanks,
-  Austin
+See:
+
+https://www.kernel.org/doc/Documentation/networking/timestamping.txt
+https://www.kernel.org/doc/Documentation/networking/timestamping/
+
+The candump tool also uses recvmsg() - but only with SO_TIMESTAMP so far which 
+does not provide the other RX timestamps (link HW TS).
+
+Regards,
+Oliver
+
