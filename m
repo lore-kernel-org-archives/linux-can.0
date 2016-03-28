@@ -1,283 +1,172 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5] can: fix handling of unmodifiable configuration
- options
-Date: Sun, 27 Mar 2016 17:54:25 +0200
-Message-ID: <56F80231.1010005@pengutronix.de>
-References: <1458587901-7565-1-git-send-email-socketcan@hartkopp.net>
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: Re: can-isotp-modules
+Date: Mon, 28 Mar 2016 11:43:02 +0200
+Message-ID: <56F8FCA6.4060007@posteo.de>
+References: <zarafa.563c41ac.05a0.6a1e301242cec580@euve35974.vserver.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="b3RrXnSuJVeHCib0laS232KCshcgqcGF8"
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010401070002000700010003"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60000 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751377AbcC0PzL (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 27 Mar 2016 11:55:11 -0400
-In-Reply-To: <1458587901-7565-1-git-send-email-socketcan@hartkopp.net>
+Received: from mout01.posteo.de ([185.67.36.65]:54032 "EHLO mout01.posteo.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753017AbcC1JnI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 28 Mar 2016 05:43:08 -0400
+Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
+	by mout01.posteo.de (Postfix) with ESMTPS id E2CA6208CA
+	for <linux-can@vger.kernel.org>; Mon, 28 Mar 2016 11:43:03 +0200 (CEST)
+In-Reply-To: <zarafa.563c41ac.05a0.6a1e301242cec580@euve35974.vserver.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: ramesh.shanmugasundaram@bp.renesas.com
+To: Michael Luxen <mluxen@gmx.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---b3RrXnSuJVeHCib0laS232KCshcgqcGF8
-Content-Type: multipart/mixed; boundary="bvVv5vvve6pVWV3bAUIbDRkakpgPgeGf7"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: ramesh.shanmugasundaram@bp.renesas.com
-Message-ID: <56F80231.1010005@pengutronix.de>
-Subject: Re: [PATCH v5] can: fix handling of unmodifiable configuration
- options
-References: <1458587901-7565-1-git-send-email-socketcan@hartkopp.net>
-In-Reply-To: <1458587901-7565-1-git-send-email-socketcan@hartkopp.net>
+This is a cryptographically signed message in MIME format.
 
---bvVv5vvve6pVWV3bAUIbDRkakpgPgeGf7
+--------------ms010401070002000700010003
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/21/2016 08:18 PM, Oliver Hartkopp wrote:
-> As described in 'can: m_can: tag current CAN FD controllers as non-ISO'=
+Hello Michael,
 
-> (6cfda7fbebe) it is possible to define fixed configuration options by
-> setting the according bit in 'ctrlmode' and clear it in 'ctrlmode_suppo=
-rted'.
-> This leads to the incovenience that the fixed configuration bits can no=
-t be
-> passed by netlink even when they have the correct values (e.g. non-ISO,=
- FD).
+I'd like to ask if there are other preconditions about compiling isotp
+on the bbb.
+
+I recently purchased a bbb and I'm currently trying to compile modules fo=
+r
+
+4.1.15-ti-rt-r43
+
+which is their latest debian 8 image.
+
+All I get out of the compilation process are warnings and errors about
+
+macro expensions and so on.
+
+It is my first experience with the bbb though.
+
+Thanks and Best Regards,
+Patrick
+
+
+Am 06.11.2015 um 06:59 schrieb Michael Luxen:
+> Hello Oliver,
 >=20
-> This patch fixes that issue and not only allows fixed set bit values to=
- be set
-> again but now requires(!) to provide these fixed values at configuratio=
-n time.
-> A valid CAN FD configuration consists of a nominal/arbitration bittimin=
-g, a
-> data bittiming and a control mode with CAN_CTRLMODE_FD set - which is n=
-ow
-> enforced by a new can_validate() function. This fix additionally remove=
-d the
-> inconsistency that was prohibiting the support of 'CANFD-only' controll=
-er
-> drivers, like the RCar CAN FD.
+> one additional remark.
+> Not all preconditions are mentioned in your updated installation proces=
+s.
+> On a fresh BBB Debian console image I've to install...
 >=20
-> For this reason a new helper can_set_static_ctrlmode() has been introdu=
-ced to
-> provide a proper interface to handle static enabled CAN controller opti=
-ons.
+> sudo apt-get install linux-headers-$(uname -r)
 >=20
-> Reported-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesa=
-s.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/dev.c         | 56 +++++++++++++++++++++++++++++++++++=
-++++----
->  drivers/net/can/m_can/m_can.c |  2 +-
->  include/linux/can/dev.h       | 22 +++++++++++++++--
->  3 files changed, 73 insertions(+), 7 deletions(-)
+> ...before.
 >=20
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 141c2a4..9bec2cd 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -696,11 +696,17 @@ int can_change_mtu(struct net_device *dev, int ne=
-w_mtu)
->  	/* allow change of MTU according to the CANFD ability of the device *=
-/
->  	switch (new_mtu) {
->  	case CAN_MTU:
-> +		/* 'CANFD-only' controllers can not switch to CAN_MTU */
-> +		if (priv->ctrlmode_static & CAN_CTRLMODE_FD)
-> +			return -EINVAL;
-> +
->  		priv->ctrlmode &=3D ~CAN_CTRLMODE_FD;
->  		break;
-> =20
->  	case CANFD_MTU:
-> -		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD))
-> +		/* check for potential CANFD ability */
-> +		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
-> +		    !(priv->ctrlmode_static & CAN_CTRLMODE_FD))
->  			return -EINVAL;
-> =20
->  		priv->ctrlmode |=3D CAN_CTRLMODE_FD;
-> @@ -782,6 +788,35 @@ static const struct nla_policy can_policy[IFLA_CAN=
-_MAX + 1] =3D {
->  				=3D { .len =3D sizeof(struct can_bittiming_const) },
->  };
-> =20
-> +static int can_validate(struct nlattr *tb[], struct nlattr *data[])
-> +{
-> +	u32 is_can_fd =3D 0;
-        ^^^
-I've made this bool.
+> Regards
+> Michael
+>=20
+> -----Urspr=C3=BCngliche Nachricht-----
+> Von:	Oliver Hartkopp <socketcan@hartkopp.net>
+> Gesendet:	Mi 04.11.2015 19:33
+> Betreff:	Re: AW: can-isotp-modules
+> An:	Michael Luxen <mluxen@gmx.net>; Oliver Pajonk <oliver@pjnk.de>;=20
+> CC:	linux-can-owner@vger.kernel.org; linux-can@vger.kernel.org;=20
+>> On 04.11.2015 13:02, Michael Luxen wrote:
+>>
+>>> @Oliver H.:
+>>> One proposal from myside, can you please add a can-isotp-module insta=
+llation=20
+>> process (like it is below) on the GITHUB webside.
+>>> It would be easier for some people (like me) to get the source code r=
+unning=20
+>> without asking. :-)
+>>
+>> Done.
+>>
+>> Don't know why I did not had that idea before m)
+>>
+>> Thanks,
+>> Oliver
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in=
 
-> +
-> +	/* Make sure that valid CAN FD configurations always consist of
-> +	 * - nominal/arbitration bittiming
-> +	 * - data bittiming
-> +	 * - control mode with CAN_CTRLMODE_FD set
-> +	 */
-> +
-> +	if (data[IFLA_CAN_CTRLMODE]) {
-> +		struct can_ctrlmode *cm =3D nla_data(data[IFLA_CAN_CTRLMODE]);
-> +
-> +		is_can_fd =3D cm->flags & cm->mask & CAN_CTRLMODE_FD;
-> +	}
-> +
-> +	if (is_can_fd) {
-> +		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
-> +			return -EOPNOTSUPP;
-> +	}
-> +
-> +	if (data[IFLA_CAN_DATA_BITTIMING]) {
-> +		if (!is_can_fd || !data[IFLA_CAN_BITTIMING])
-> +			return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int can_changelink(struct net_device *dev,
->  			  struct nlattr *tb[], struct nlattr *data[])
->  {
-> @@ -813,19 +848,31 @@ static int can_changelink(struct net_device *dev,=
-
-> =20
->  	if (data[IFLA_CAN_CTRLMODE]) {
->  		struct can_ctrlmode *cm;
-> +		u32 ctrlstatic;
-> +		u32 maskedflags;
-> =20
->  		/* Do not allow changing controller mode while running */
->  		if (dev->flags & IFF_UP)
->  			return -EBUSY;
->  		cm =3D nla_data(data[IFLA_CAN_CTRLMODE]);
-> +		ctrlstatic =3D priv->ctrlmode_static;
-> +		maskedflags =3D cm->flags & cm->mask;
-> +
-> +		/* check whether provided bits are allowed to be passed */
-> +		if (cm->mask & ~(priv->ctrlmode_supported | ctrlstatic))
-> +			return -EOPNOTSUPP;
-> +
-> +		/* do not check for static fd-non-iso if 'fd' is disabled */
-> +		if (!(maskedflags & CAN_CTRLMODE_FD))
-> +			ctrlstatic &=3D ~CAN_CTRLMODE_FD_NON_ISO;
-> =20
-> -		/* check whether changed bits are allowed to be modified */
-> -		if (cm->mask & ~priv->ctrlmode_supported)
-> +		/* make sure static options are provided by configuration */
-> +		if ((maskedflags & ctrlstatic) !=3D ctrlstatic)
->  			return -EOPNOTSUPP;
-> =20
->  		/* clear bits to be modified and copy the flag values */
->  		priv->ctrlmode &=3D ~cm->mask;
-> -		priv->ctrlmode |=3D (cm->flags & cm->mask);
-> +		priv->ctrlmode |=3D maskedflags;
-> =20
->  		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
->  		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-> @@ -966,6 +1013,7 @@ static struct rtnl_link_ops can_link_ops __read_mo=
-stly =3D {
->  	.maxtype	=3D IFLA_CAN_MAX,
->  	.policy		=3D can_policy,
->  	.setup		=3D can_setup,
-> +	.validate	=3D can_validate,
->  	.newlink	=3D can_newlink,
->  	.changelink	=3D can_changelink,
->  	.get_size	=3D can_get_size,
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_ca=
-n.c
-> index 39cf911..195f15e 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -955,7 +955,7 @@ static struct net_device *alloc_m_can_dev(void)
->  	priv->can.do_get_berr_counter =3D m_can_get_berr_counter;
-> =20
->  	/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.1 */
-> -	priv->can.ctrlmode =3D CAN_CTRLMODE_FD_NON_ISO;
-> +	can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
-> =20
->  	/* CAN_CTRLMODE_FD_NON_ISO can not be changed with M_CAN IP v3.0.1 */=
-
->  	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_LOOPBACK |
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index 735f9f8..098243b 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-> @@ -40,8 +40,11 @@ struct can_priv {
->  	struct can_clock clock;
-> =20
->  	enum can_state state;
-> -	u32 ctrlmode;
-> -	u32 ctrlmode_supported;
-> +
-> +	/* CAN controller features - see include/uapi/linux/can/netlink.h */
-> +	u32 ctrlmode;		/* current options setting */
-> +	u32 ctrlmode_supported;	/* options that can be modified by netlink */=
-
-> +	u32 ctrlmode_static;	/* static enabled options for driver/hardware */=
-
-> =20
->  	int restart_ms;
->  	struct timer_list restart_timer;
-> @@ -108,6 +111,21 @@ static inline bool can_is_canfd_skb(const struct s=
-k_buff *skb)
->  	return skb->len =3D=3D CANFD_MTU;
->  }
-> =20
-> +/* helper to define static CAN controller features at device creation =
-time */
-> +static inline void can_set_static_ctrlmode(struct net_device *dev,
-> +					   const u32 static_mode)
-                                           ^^^^^
-
-I've removed the const here.
-
-> +{
-> +	struct can_priv *priv =3D netdev_priv(dev);
-> +
-> +	/* alloc_candev() succeeded =3D> netdev_priv() is valid at this point=
- */
-> +	priv->ctrlmode =3D static_mode;
-> +	priv->ctrlmode_static =3D static_mode;
-> +
-> +	/* override MTU which was set by default in can_setup()? */
-> +	if (static_mode & CAN_CTRLMODE_FD)
-> +		dev->mtu =3D CANFD_MTU;
-> +}
-> +
->  /* get data length from can_dlc with sanitized can_dlc */
->  u8 can_dlc2len(u8 can_dlc);
-> =20
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >=20
 
-Applied with these changes to can-next.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---bvVv5vvve6pVWV3bAUIbDRkakpgPgeGf7--
+--------------ms010401070002000700010003
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
---b3RrXnSuJVeHCib0laS232KCshcgqcGF8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJW+AIzAAoJED07qiWsqSVqhEEIAL8h6MvavWJy18id+y0Sb7A9
-YGsPqCabaMByZRUu5Rr23lggqup29FuJNhdDriP+nsVLCHR9hqHbjoi6mpxjlWY+
-4p1awAwVcOV6O1PGF+fkWSyGA7JxoZS6+0LFNLbJlGrt2jbq0hl7+Bc+swrKth8q
-B7SKGUvR962GRD1KhGpJmqNKHzOxHlZ0ql440avXzLvjsc4t3/rp/QXS70sCh1KU
-ZMszgi2yEVTJnTr6tq0BwRJcwkdKyaLM/f9SOOYShKt9zvM6dY2LzZ+PKZv3NfGl
-eZ2yc+gplWvBsv3f0K+sYKNSHwN8Fdgf0WhVWX+we1O8NKWpy/fnAUWQY2R1S00=
-=le3T
------END PGP SIGNATURE-----
-
---b3RrXnSuJVeHCib0laS232KCshcgqcGF8--
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
+CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
+dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
+MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
+TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
+TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
++FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
+ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
+vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
+ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
+4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
+BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
+Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
+ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
+4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
+26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
+9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
+tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAgXWYtApfLyFhHovG0eoOwTANBgkq
+hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
+cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
+BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
+YWlsIENBMB4XDTE1MDYwNjAwMDAwMFoXDTE2MDYwNTIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
+ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQCmXKd7KFXQ5Y1lT+HtgiumuCHTLdaZJEmv9CVr2CuRZYieupiipE7kyqjfmrml8GqqZ8aN
+jT416/fN4OGolBcNQAk6qah/yesqdhMMKi4VcgY9Npyy86NQU5mXYpu2UTnQw4pSCgUR4Co4
+zXHFDwZ3gHcwoVG+osRmEe9IrjYWGQaCWhjEe+wtipPy6UxuqbKhTYPUUnFYuCLxgibGFb2e
+vShPK636V+EIgAug0IzmlLXxFoA4Mh/80NXzaNQA4zAP0sZ84/JKwEUE34a9rSHB1CoHH9fZ
+QeuxCsa9BVG/jaZmlv/RsDLjlTxoYki5Xvskbmzbm1rTWqyMOJwJH7jxAgMBAAGjggHyMIIB
+7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUePDBZrYdfsBv
+BjAwsKanMPGoUpEwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
+KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
+DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
+L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
+SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
+BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
+U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
+BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
+cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQA33XFpLPRq8YL327tL4WY5ln2z8hjYTdgz
+uVGTtUU7fLcLVWlCwHU/ki29PjbVja73aXmgJU1d7ISnXcxXa1BRLgcFs8MjZzf8zqPzYXwb
+VM5Z7J04deNlqz4CoGY2KSLIAArFbPIyX+Ry6t31xpo215D9IZNaloewSpYuj9g1qrH0LafH
+YG88MeCF3Ilf8Ca7t16AtyVAd96kDuWET61QpIxfBJasv5IspDw9QXD8ajWgimQI+QTjGDMI
+IV8Jj+1XbrW0EPKJpfrBuHHYAtVMrdJ7N6Ykjokam2F6oYhZNbG8YflootIHC/WV7o5OAllx
+9IaJwAZaj9PBugpENM9SMYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
+YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJYIZIAWUD
+BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE2
+MDMyODA5NDMwMlowLwYJKoZIhvcNAQkEMSIEIGqIFj8cCR38fFfZju78qeJ75Z+WexMSlJSm
+VWzD6As/MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
+hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
+EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
+IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
+dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAgXWYtApfLyFhHovG0eoOwTCBxAYLKoZIhvcN
+AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
+ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
+VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJKoZIhvcNAQEBBQAEggEAcIrlbKKJf/k3
+3qpK90bbrNJMge63FUFWeOX6UbpgPOFq0pRKggiIFpZKHl9THzb/HLveOVqIH7UupvmOfXaQ
+POgIMYOz1qgk3M4Gd6HQ7trufOfx36Lq199ZJ17RmZDtUqBfpV+fv4y4rfkgTEDnIs+5BB1l
+GIJmfWOUe5GDwONE0tXK1MtVN/xf3iGulhY1s745tSupHAzSEkPO/0SNn+X7ERO/8pdvoe1+
+dTwHln3GgIG7b0E4yclUx2PV/JDZ7eWBT8ptrH1WBeq0ayy1+r95GN68TG/ObBlk5itRwCyT
+G6i3xgwtu4kA3Toa6Bh7DnjENGDY1n3+qPkeRN57DQAAAAAAAA==
+--------------ms010401070002000700010003--
