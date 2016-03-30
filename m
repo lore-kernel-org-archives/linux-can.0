@@ -1,144 +1,141 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: CAN message timestamping
-Date: Mon, 28 Mar 2016 21:28:13 -0700
-Message-ID: <CANGgnMaK0wXwsKJZB0SssPje9r6qCVYUQzbJsqW+BdSDCQ1iPA@mail.gmail.com>
-References: <CANGgnMbLhYDdiK_tff0cEW+umuMOPN0h9x7t7cMK-xjMAMNBmQ@mail.gmail.com>
- <56F23F1F.6040101@hartkopp.net> <CANGgnMaOs03rJByb9KVFFG1p45ZuWZ4qt8-F7y6oqtdDveNs2A@mail.gmail.com>
- <CANGgnMbzfVcK+PgAeFMFHjCZMCSosHE2xfctOfkdFb=+ZHrQaw@mail.gmail.com>
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: bcmserver.c usage and preconditions
+Date: Wed, 30 Mar 2016 08:01:14 +0200
+Message-ID: <56FB6BAA.6080304@posteo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030309010506070504020202"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f171.google.com ([209.85.161.171]:35614 "EHLO
-	mail-yw0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750929AbcC2E2d (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 29 Mar 2016 00:28:33 -0400
-Received: by mail-yw0-f171.google.com with SMTP id g127so4967246ywf.2
-        for <linux-can@vger.kernel.org>; Mon, 28 Mar 2016 21:28:33 -0700 (PDT)
-In-Reply-To: <CANGgnMbzfVcK+PgAeFMFHjCZMCSosHE2xfctOfkdFb=+ZHrQaw@mail.gmail.com>
+Received: from mout01.posteo.de ([185.67.36.65]:60368 "EHLO mout01.posteo.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751027AbcC3GBS (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 30 Mar 2016 02:01:18 -0400
+Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
+	by mout01.posteo.de (Postfix) with ESMTPS id 63BE5208BD
+	for <linux-can@vger.kernel.org>; Wed, 30 Mar 2016 08:01:15 +0200 (CEST)
+Received: from mail.posteo.de (localhost [127.0.0.1])
+	by dovecot03.posteo.de (Postfix) with ESMTPSA id 3qZcTR0b3Rz5vN8
+	for <linux-can@vger.kernel.org>; Wed, 30 Mar 2016 08:01:14 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>, Philipp Schrader <philipp@peloton-tech.com>
+To: linux-can <linux-can@vger.kernel.org>
 
-On Mon, Mar 28, 2016 at 8:42 PM, Austin Schuh <austin@peloton-tech.com> wrote:
-> On Mon, Mar 28, 2016 at 6:51 PM, Austin Schuh <austin@peloton-tech.com> wrote:
->> Hi Oliver,
->>
->> I spent some time trying recvmsg, but it still only gives me
->> timestamps with the real-time clock.  I do like the interface much
->> better.  Thanks!
->>
->> I was able to get
->>   setsockopt(socket_, SOL_SOCKET, SO_TIMESTAMPNS,
->>       &enabled, sizeof(enabled))
->> and
->>   const int stamping_val = SOF_TIMESTAMPING_SOFTWARE |
->>       SOF_TIMESTAMPING_SYS_HARDWARE |
->>       SOF_TIMESTAMPING_RAW_HARDWARE;
->>   setsockopt(socket_, SOL_SOCKET, SO_TIMESTAMPING, &stamping_val,
->>       sizeof(stamping_val))
->> to successfully timestamp values with recvmsg.
->>
->> I0328 18:25:09.927222 12739 can_data_source.cc:144] 0: 1459214709 927191637
->> I0328 18:25:09.927227 12739 can_data_source.cc:146] 1: 0 0
->> I0328 18:25:09.927233 12739 can_data_source.cc:148] 2: 0 0
->> I0328 18:25:09.927240 12739 can_data_source.cc:169] Capture time is
->> 1459214709927191637ns
->>
->> The time-stamp is definitely using the real-time clock.  The hardware
->> timestamps are not filled in.  Maybe I could modify the sja1000-peak
->> driver to abuse one of the hardware timestamps to return the timestamp
->> I am looking for?  I'd really rather not have to run a custom
->> kernel...
->>
->> Austin
->>
->> On Wed, Mar 23, 2016 at 12:00 AM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>>
->>> Hi Austin,
->>>
->>> On 23.03.2016 06:12, Austin Schuh wrote:
->>> > We recently tried doing CAN timestamping with the ioctl(s, SIOCGSTAMP,
->>> > &tv) call.
->>>
->>> Did you ever try to use the recvmsg() call with enabled SO_TIMESTAMPING socket
->>> option?
->>>
->>> See:
->>>
->>> https://www.kernel.org/doc/Documentation/networking/timestamping.txt
->>> https://www.kernel.org/doc/Documentation/networking/timestamping/
->>>
->>> The candump tool also uses recvmsg() - but only with SO_TIMESTAMP so far which
->>> does not provide the other RX timestamps (link HW TS).
->>>
->>> Regards,
->>> Oliver
->>>
->
-> Turns out timestamping in the driver is pretty easy.  The following
-> seems to be working for me.  (comments welcome!)  I don't think this
-> is something that should be up streamed, but I'm including it here in
-> case there is other interest.  I'm reading both clocks in the ISR to
-> reduce the amount of time difference between when they are both read.
->
-> $ git diff
-> diff --git a/drivers/net/can/sja1000/sja1000.c
-> b/drivers/net/can/sja1000/sja1000.c
-> index 76ef900..55d6583 100644
-> --- a/drivers/net/can/sja1000/sja1000.c
-> +++ b/drivers/net/can/sja1000/sja1000.c
-> @@ -370,6 +370,10 @@ static void sja1000_rx(struct net_device *dev)
->         /* release receive buffer */
->         sja1000_write_cmdreg(priv, CMD_RRB);
->
-> +       struct skb_shared_hwtstamps *shhwtstamps =
-> +           skb_hwtstamps(skb);
-> +       shhwtstamps->syststamp = ktime_get();
-> +       skb->tstamp = ktime_get_real();
->         netif_rx(skb);
->
->         stats->rx_packets++;
->
-> Austin
+This is a cryptographically signed message in MIME format.
 
-I missed the TX timestamping.  I didn't see a clean way to get access
-to the echo skb.
+--------------ms030309010506070504020202
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -370,6 +370,12 @@ static void sja1000_rx(struct net_device *dev)
-        /* release receive buffer */
-        sja1000_write_cmdreg(priv, CMD_RRB);
+Hi,
 
-+       {
-+               struct skb_shared_hwtstamps *shhwtstamps =
-+                       skb_hwtstamps(skb);
-+               shhwtstamps->syststamp = ktime_get();
-+               skb->tstamp = ktime_get_real();
-+       }
-        netif_rx(skb);
+I'd like to ask what preconditions are necessary for the bcmserver.c
+example to work.
 
-        stats->rx_packets++;
-@@ -518,10 +524,19 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
-                                stats->tx_errors++;
-                                can_free_echo_skb(dev, 0);
-                        } else {
-+                               struct can_priv *can_priv_struct =
-netdev_priv(dev);
-                                /* transmission complete */
-                                stats->tx_bytes +=
-                                        priv->read_reg(priv, SJA1000_FI) & 0xf;
-                                stats->tx_packets++;
-+                               if (can_priv_struct->echo_skb[0]) {
-+                                       struct sk_buff *skb =
-can_priv_struct->echo_skb[0];
-+                                       struct skb_shared_hwtstamps
-*shhwtstamps =
-+                                               skb_hwtstamps(skb);
-+                                       shhwtstamps->syststamp = ktime_get();
-+                                       skb->tstamp = ktime_get_real();
-+                               }
-+
-                                can_get_echo_skb(dev, 0);
-                        }
-                        netif_wake_queue(dev);
+1. I setup can0
+
+~$ sudo ip link set can0 up type can bitrate 500000
+
+2. then start bcmserver
+
+~$ bcmserver
+
+3. and input the line
+
+~$ can0 A 1 0 123 8 11 22 33 44 55 66 77 88
+
+but unfortunately I don't get any output at all.
+
+I believe it's my fault since this is the result on both BananaPi and
+BeagleBoneBlack. The Bpi has the bcm compiled into the kernel and the
+BBB has the can-bcm.ko properly loaded.
+
+~$ modinfo can-bcm
+filename:       /lib/modules/4.1.15-ti-rt-r43/kernel/net/can/can-bcm.ko
+alias:          can-proto-2
+author:         Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+license:        Dual BSD/GPL
+description:    PF_CAN broadcast manager protocol
+depends:        can
+intree:         Y
+vermagic:       4.1.15-ti-rt-r43 SMP preempt mod_unload modversions
+ARMv7 thumb2 p2v8
+
+Thanks and Best Regards,
+Patrick
+
+
+--------------ms030309010506070504020202
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
+CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
+dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
+MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
+TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
+TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
++FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
+ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
+vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
+ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
+4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
+BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
+Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
+ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
+4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
+26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
+9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
+tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAgXWYtApfLyFhHovG0eoOwTANBgkq
+hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
+cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
+BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
+YWlsIENBMB4XDTE1MDYwNjAwMDAwMFoXDTE2MDYwNTIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
+ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQCmXKd7KFXQ5Y1lT+HtgiumuCHTLdaZJEmv9CVr2CuRZYieupiipE7kyqjfmrml8GqqZ8aN
+jT416/fN4OGolBcNQAk6qah/yesqdhMMKi4VcgY9Npyy86NQU5mXYpu2UTnQw4pSCgUR4Co4
+zXHFDwZ3gHcwoVG+osRmEe9IrjYWGQaCWhjEe+wtipPy6UxuqbKhTYPUUnFYuCLxgibGFb2e
+vShPK636V+EIgAug0IzmlLXxFoA4Mh/80NXzaNQA4zAP0sZ84/JKwEUE34a9rSHB1CoHH9fZ
+QeuxCsa9BVG/jaZmlv/RsDLjlTxoYki5Xvskbmzbm1rTWqyMOJwJH7jxAgMBAAGjggHyMIIB
+7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUePDBZrYdfsBv
+BjAwsKanMPGoUpEwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
+KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
+DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
+L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
+SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
+BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
+U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
+BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
+cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQA33XFpLPRq8YL327tL4WY5ln2z8hjYTdgz
+uVGTtUU7fLcLVWlCwHU/ki29PjbVja73aXmgJU1d7ISnXcxXa1BRLgcFs8MjZzf8zqPzYXwb
+VM5Z7J04deNlqz4CoGY2KSLIAArFbPIyX+Ry6t31xpo215D9IZNaloewSpYuj9g1qrH0LafH
+YG88MeCF3Ilf8Ca7t16AtyVAd96kDuWET61QpIxfBJasv5IspDw9QXD8ajWgimQI+QTjGDMI
+IV8Jj+1XbrW0EPKJpfrBuHHYAtVMrdJ7N6Ykjokam2F6oYhZNbG8YflootIHC/WV7o5OAllx
+9IaJwAZaj9PBugpENM9SMYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
+YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJYIZIAWUD
+BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE2
+MDMzMDA2MDExNFowLwYJKoZIhvcNAQkEMSIEICxHDRTwnO0L1KVXiElqQTevp/2ptDGpU9Hw
+EbGn084AMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
+hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
+EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
+IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
+dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAgXWYtApfLyFhHovG0eoOwTCBxAYLKoZIhvcN
+AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
+ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
+VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJKoZIhvcNAQEBBQAEggEAlXBT5mFU22Kk
+HMg2sPrshg4EZJQPx828LL+7rWCCy12ciu4Qk0F1eTJG5tklysFTJJzhPRCuP7R+aOESK2OP
+LvmS+3EQ1uwlLdhsso37VMfqH99vO0YLrrXE8hQRMGoryP+2xcIwmyo0kiLzXQ86q3GYjT4b
+2v87EHCIzZqY2reuwuDygO1Xyml9uEK2JZ7L0S791ot0KnFz0sFoXHhXPkV1OQvdXGUDqcrk
+BYrYv3PkAyeXtWtb+BS04tJiz2OJ5sTSnxFDYjaAE9T7sucRAQqym688XmTvWZZVyxO230DK
+gnDXnUX6fdsUdWDee3J0E9fvpbpXp7hch5QccxdS9AAAAAAAAA==
+--------------ms030309010506070504020202--
