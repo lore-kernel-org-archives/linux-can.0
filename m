@@ -1,90 +1,82 @@
 From: Patrick Menschel <menschel.p@posteo.de>
-Subject: Re: can-isotp-modules
-Date: Wed, 30 Mar 2016 15:24:10 +0200
-Message-ID: <56FBD37A.2080600@posteo.de>
-References: <zarafa.563c41ac.05a0.6a1e301242cec580@euve35974.vserver.de>
- <56F8FCA6.4060007@posteo.de> <56FBC475.1070703@hartkopp.net>
+Subject: Re: bcmserver.c usage and preconditions
+Date: Wed, 30 Mar 2016 15:49:43 +0200
+Message-ID: <56FBD977.5040100@posteo.de>
+References: <56FB6BAA.6080304@posteo.de>
+ <8fb9bcb24a544baa84b23528f3f239b4@SGPMBX1021.APAC.bosch.com>
+ <56FB8F01.5060802@posteo.de> <56FBBFA3.8000907@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms040905050201060005050207"
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070704000503000705020807"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout01.posteo.de ([185.67.36.65]:42621 "EHLO mout01.posteo.de"
+Received: from mout01.posteo.de ([185.67.36.65]:33017 "EHLO mout01.posteo.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753271AbcC3NYQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 30 Mar 2016 09:24:16 -0400
+	id S1753543AbcC3Ntu (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 30 Mar 2016 09:49:50 -0400
 Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
-	by mout01.posteo.de (Postfix) with ESMTPS id 6C4222098D
-	for <linux-can@vger.kernel.org>; Wed, 30 Mar 2016 15:24:11 +0200 (CEST)
-In-Reply-To: <56FBC475.1070703@hartkopp.net>
+	by mout01.posteo.de (Postfix) with ESMTPS id 8DFA220B45
+	for <linux-can@vger.kernel.org>; Wed, 30 Mar 2016 15:49:44 +0200 (CEST)
+In-Reply-To: <56FBBFA3.8000907@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Michael Luxen <mluxen@gmx.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "Misra Pankaj Kumar (RBEI/EEA2)" <Pankaj.Kumar@in.bosch.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
 This is a cryptographically signed message in MIME format.
 
---------------ms040905050201060005050207
-Content-Type: text/plain; charset=UTF-8
+--------------ms070704000503000705020807
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-Am 30.03.2016 um 14:20 schrieb Oliver Hartkopp:
+Thanks Oliver,
+
+based on the usage examples in the file header I thought it reads from
+stdin ;-P
+
+I have it working now on both BananaPi and BeagleBoneBlack.
+
+Regards,
+Patrick
+
+
+Am 30.03.2016 um 13:59 schrieb Oliver Hartkopp:
+> Hi Patrick,
 >=20
->=20
-> On 03/28/2016 11:43 AM, Patrick Menschel wrote:
->> Hello Michael,
+> On 03/30/2016 10:32 AM, Patrick Menschel wrote:
+>> Hi Pankaj,
 >>
->> I'd like to ask if there are other preconditions about compiling isotp=
-
->> on the bbb.
+>> CAN Bus is functional in both directions, rx and tx .
 >>
->> I recently purchased a bbb and I'm currently trying to compile modules=
-
->> for
+>> 1. cansend works properly
+>> 2. candump also works properly
 >>
->> 4.1.15-ti-rt-r43
+>> I'm just trying to verify if it's just me or the bcm.
 >=20
-> '-rt-' looks like 'real time'
+> It's you :-)
 >=20
-> Can you send the output of the warnings and errors?
-
-About 25000 lines with multiple occurrences of macro and null character
-errors of this kind.
-
-include/linux/export.h:1:1: warning: null character(s) ignored
-
-include/linux/byteorder/generic.h:96:21: note: in expansion of macro
-=E2=80=98__be16_to_cpu=E2=80=99
-#define be16_to_cpu __be16_to_cpu
-
-looks almost the same as what Michael posted on 03.11.2015 23:29
-> root@beaglebone:~/can-isotp-modules# make
-> make -C /lib/modules/4.1.6-ti-r16/build M=3D/root/can-isotp-modules mod=
-ules TOPDIR=3D/root/can-isotp-modules
-> make[1]: Entering directory '/usr/src/linux-headers-4.1.6-ti-r16'
->   CC [M]  /root/can-isotp-modules/drivers/net/can/vcan.o
-> In file included from include/linux/module.h:17:0,
->                  from /root/can-isotp-modules/drivers/net/can/vcan.c:44=
-:
-> /root/can-isotp-modules/drivers/net/can/vcan.c: In function '__check_ec=
-ho':
-> include/linux/moduleparam.h:377:61: warning: return from incompatible p=
-ointer type
->   static inline type __always_unused *__check_##name(void) { return(p);=
- }
->                                                              ^
-> include/linux/moduleparam.h:428:35: note: in expansion of macro '__para=
-m_check'
->  #define param_check_bool(name, p) __param_check(name, p, bool)
->                                    ^
-> include/linux/moduleparam.h:145:2: note: in expansion of macro 'param_c=
-heck_bool'
->   param_check_##type(name, &(value));       \
->   ^
-> include/linux/moduleparam.h:125:2: note: in expansion of macro 'module_=
-param_named'
->   module_param_named(name, name, type, perm)
+>>>
+>>> 2. then start bcmserver
+>>>
+>>> ~$ bcmserver
+>>>
+>>> 3. and input the line
+>>>
+>>> ~$ can0 A 1 0 123 8 11 22 33 44 55 66 77 88
+>>>
+>>> but unfortunately I don't get any output at all.
+>=20
+> The bcmserver creates an IP server listening on port 28600 on localhost=
+=2E
+>=20
+> So you would need to connect this server e.g. with netcat first and the=
+n
+> type the according command (with '<' and '>' tags!!) into the netcat sh=
+ell.
+>=20
+> Regards,
+> Oliver
 
 
---------------ms040905050201060005050207
+--------------ms070704000503000705020807
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -143,8 +135,8 @@ ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
 TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
 YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJYIZIAWUD
 BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE2
-MDMzMDEzMjQxMFowLwYJKoZIhvcNAQkEMSIEIN43JOZyuJ3VybouOKZr3shW969MokZ6Xrw3
-whD7jK4ZMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
+MDMzMDEzNDk0M1owLwYJKoZIhvcNAQkEMSIEICZ5/oQX23mX3ymu2CBJ3rNWEFT+E1mdNyVZ
+0FWsJDg9MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
 hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
 hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
 EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
@@ -153,10 +145,10 @@ dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAgXWYtApfLyFhHovG0eoOwTCBxAYLKoZIhvcN
 AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
 ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
 VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
-bWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJKoZIhvcNAQEBBQAEggEAHUxOC1Q7rWi+
-zEhk+hDBGrktdtjepX3PCtiO2wUEzZTKfQTpDGpSRoGt9Ezr6ZMOa89TMbNrs7XrMtDWTw5r
-lzvF900HszRf6zR54fN7BSaWTRIGj63uJXq/IQ6pUo+BmQXxmotlLrMSIUp9v3c2/H2yjdbi
-cDuABtd43sxjXPRIO4JYXyoz/Kzy/Wf1W0u3MoxhRh/0aBSj6rT44dTfpL1P5M7BuXofkFjv
-syYNdpMgBR75VrwUuZ1sfCbpj2zZEM4Y3M3S5dTGeyvT1pR715yBUUW4ZNep2MR4pCwn9aHs
-GefDtLbj7KNGEiyp5rNwkepwPMd8T3Xg0iJ165pWHgAAAAAAAA==
---------------ms040905050201060005050207--
+bWFpbCBDQQIRAIF1mLQKXy8hYR6LxtHqDsEwDQYJKoZIhvcNAQEBBQAEggEAL3E1ibKrbJQC
+nNysEXq+lsjXK2IsxUDQx1Je4xQfLOAd9kbMc4VuJ8Nvxq17ATWnthYEnFfS3I5BMpuI541M
+ZDUkvEsgGwFl8znv2YRnkPEecbMlJMibtDjO/7QY7++2SKrGDDLLBMCCgZkLaMnj8eHnCGWj
+/efjeo6iw1B/PxrdOrbTrVisvf/OWmqC4x5Uhyk1/bWmod2eJNXSVtlQ0vRAyvAw1wXM+dws
+UNAVLXraQX1XB4brvuAsbQHCWUL7SfADfoygD7aaA+8Gz4JKXil+sA3P0tf35JOFqlZNSOsc
+yGP80ieNYQic8SrYoTx+b4KIrsQ2FLd3OoSpgzSHAgAAAAAAAA==
+--------------ms070704000503000705020807--
