@@ -1,56 +1,40 @@
-From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-Subject: RE: J1939 Linux
-Date: Wed, 6 Apr 2016 14:33:56 +0000
-Message-ID: <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 Linux
+Date: Wed, 6 Apr 2016 21:40:26 +0200
+Message-ID: <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
 References: <loom.20160405T174008-515@post.gmane.org>
  <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout2.ltindia.com ([203.199.60.171]:42399 "EHLO
-	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753868AbcDFOpk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Apr 2016 10:45:40 -0400
-In-Reply-To: <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from relay-b01.edpnet.be ([212.71.1.221]:42307 "EHLO
+	relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751866AbcDFTm7 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 6 Apr 2016 15:42:59 -0400
+Content-Disposition: inline
+In-Reply-To: <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-S3VydCwNClRoYW5rcyBmb3IgdGhlIHJlcGx5Lg0KQWZ0ZXIgSSBwb3N0IHRoaXMgcXVlc3Rpb24g
-SSBnb3QgdGhlIGdpdGh1YiBpbmZvcm1hdGlvbiwgbm93IHRoYXQgSSBhbSBhYmxlIHRvIGNsb25l
-L21lcmdlIGZyb20gZ2l0aHViLg0KDQpJIGFtIGZhY2luZyBsb3Qgb2YgbWVyZ2UgY29uZmxpY3Rz
-Lg0KSSBhbSB0cnlpbmcgdG8gbWVyZ2UgTGludXgtSjE5MzkgdG8gTGludXgga2VybmVsIGZyb20g
-VWJ1bnR1IC0gMy4xOS4wLjU2LWdlbmVyaWMuDQpXaGljaCB2ZXJzaW9uIG9mIGxpbnV4LWoxOTM5
-IHdvdWxkIHlvdSBzdWdnZXN0IGZvciBlYXN5IG1lcmdlPyBJIHRyaWVkIHYzLjEwLCB2LjMuMTUg
-YW5kIHY0LjENCg0KDQoNClJlZ2FyZHMNCkRpbmVzaCBWZWxheXVkaGFtDQpMJlQgVGVjaG5vbG9n
-eSBTZXJ2aWNlcw0KZGluZXNoLnZlbGF5dXRoYW1AbG50dGVjaHNlcnZpY2VzLmNvbQ0KKzEtMzA5
-LTc0MC03NjkxDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLdXJ0IFZhbiBE
-aWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdDQpTZW50OiBXZWRu
-ZXNkYXksIEFwcmlsIDA2LCAyMDE2IDI6NDcgQU0NClRvOiBEaW5lc2ggVmVsYXl1ZGhhbQ0KQ2M6
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBKMTkzOSBMaW51eA0KDQpI
-ZXksDQoNCj4NCj4gSGksDQo+IEkgYW0gdHJ5aW5nIHRvIG1lcmdlIEoxOTM5IHRvIGxpbnV4IGtl
-cm5lbCAzLjE5LjAuNTIuIEkgZG93bmxvYWQgdGhlDQo+IGxpbnV4IGtlcm5lbCBnaXQgcmVwbyBh
-bmQgYWRkZWQgbGludXgtY2FuLWoxOTM5LmdpdCBhcyByZW1vdGUgcmVwby4gSQ0KPiBhbSB0cnlp
-bmcgdG8gZmV0Y2ggYW5kIGZhY2luZyBlcnJvcnMgYXMgImNlcnRpZmljYXRlIHZlcmlmaWNhdGlv
-biBmYWlsZWQiLg0KPg0KPiAxLiBnaXQgY2xvbmUNCj4gZ2l0Oi8va2VybmVsLnVidW50dS5jb20v
-a2VybmVsLXBwYS9taXJyb3IvdWJ1bnR1LXZpdmlkLmdpdA0KPiAyLiBnaXQgcmVtb3RlIGFkZCBq
-MTkzOQ0KPiBodHRwOi8vZ2l0b3Jpb3VzLm9yZzpsaW51eC1jYW4vbGludXgtY2FuLWoxOTM5Lmdp
-dA0KDQpnaXRvcmlvdXMub3JnIGhhcyBzdG9wcGVkLg0KSSBtb3ZlZCBteSBjYW4tajE5MzkgcmVw
-b3NpdG9yaWVzIHRvIGh0dHBzOi8vZ2l0aHViLmNvbS9rdXJ0LXZkL2xpbnV4Lg0KWW91IHdvdWxk
-IGZpbmQgdGhpcyByZWZlcmVuY2Ugb24gaHR0cDovL2VsaW51eC5vcmcvSjE5MzkuDQpXaGVyZSBk
-aWQgeW91IGZpbmQgdGhlIHJlZmVyZW5jZSB0byBnaXRvcmlvdXMub3JnPw0KSSBtYXkgaGF2ZSBm
-b3Jnb3R0ZW4gdG8gdXBkYXRlIGEgbGluay4NCg0KPiAzLiBnaXQgcmVtb3RlIHVwZGF0ZSBqMTkz
-OQ0KPiBGZXRjaGluZyBqMTkzOQ0KPiBmYXRhbDogdW5hYmxlIHRvIGFjY2VzcyAnaHR0cHM6Ly9n
-aXRvcmlvdXMub3JnL2xpbnV4LWNhbi1qMTkzOS5naXQvJzoNCj4gc2VydmVyIGNlcnRpZmljYXRl
-IHZlcmlmaWNhdGlvbiBmYWlsZWQuIENBZmlsZToNCj4gL2V0Yy9zc2wvY2VydHMvY2EtY2VydGlm
-aWNhdGVzLmNydA0KPiBDUkxmaWxlOiBub25lDQo+IGVycm9yOiBDb3VsZCBub3QgZmV0Y2ggajE5
-MzkNCj4NCg0KS2luZCByZWdhcmRzLA0KS3VydA0KTCZUIFRlY2hub2xvZ3kgU2VydmljZXMgTHRk
-DQoNCnd3dy5MbnRUZWNoc2VydmljZXMuY29tPGh0dHA6Ly93d3cubG50dGVjaHNlcnZpY2VzLmNv
-bS8+DQoNClRoaXMgRW1haWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQg
-aW5mb3JtYXRpb24gZm9yIHRoZSBpbnRlbmRlZCByZWNpcGllbnQgKHMpLiBJZiB5b3UgYXJlIG5v
-dCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgZG8gbm90IHVzZSBvciBkaXNzZW1pbmF0
-ZSB0aGUgaW5mb3JtYXRpb24sIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJvbSB5
-b3VyIHN5c3RlbS4NCg==
+> Kurt,
+> Thanks for the reply.
+> After I post this question I got the github information, now that I am able to clone/merge from github.
+
+I see.
+
+> 
+> I am facing lot of merge conflicts.
+> I am trying to merge Linux-J1939 to Linux kernel from Ubuntu - 3.19.0.56-generic.
+> Which version of linux-j1939 would you suggest for easy merge? I tried v3.10, v.3.15 and v4.1
+
+I suggest you merge branch j1939d-v3.15
+
+Feel free to let me know if you experience merge conflicts with that
+branch. It's completely normal that you have merge conflicts with (most) other
+branches.
+
+Kind regards,
+Kurt
