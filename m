@@ -1,89 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH RESEND] can: sja1000: plx_pci: Add support for Marathon
- CAN-bus-PCIe card
-Date: Thu, 7 Apr 2016 13:42:30 +0200
-Message-ID: <570647A6.3030809@pengutronix.de>
-References: <1459943470-11524-1-git-send-email-gq@cs.msu.su>
- <1459947872-23086-1-git-send-email-nebaruzdin@gmail.com>
- <CAEJ7JO3YX3rmYU0b2mVqwUJ16URi9HSp1Tkckikm8T3MBqrr_A@mail.gmail.com>
+From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+Subject: RE: J1939 Linux
+Date: Thu, 7 Apr 2016 22:28:08 +0000
+Message-ID: <03B271BE48E2554EB34508DAB79DBABA87095498@POCITMSEXMB05.LntUniverse.com>
+References: <loom.20160405T174008-515@post.gmane.org>
+ <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
+ <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="oD7d4EcvaMNWWPjPcl36SC6mDRVNubh67"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:50395 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755418AbcDGLml (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Apr 2016 07:42:41 -0400
-In-Reply-To: <CAEJ7JO3YX3rmYU0b2mVqwUJ16URi9HSp1Tkckikm8T3MBqrr_A@mail.gmail.com>
+Received: from mailout2.ltindia.com ([203.199.60.171]:41940 "EHLO
+	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751895AbcDGW2Z (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Apr 2016 18:28:25 -0400
+In-Reply-To: <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Alexander GQ Gerasiov <gq@cs.msu.su>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oD7d4EcvaMNWWPjPcl36SC6mDRVNubh67
-Content-Type: multipart/mixed; boundary="RiFefbkUOs6XRfJ3a43NMeOj3VtvKUEuK"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Alexander GQ Gerasiov <gq@cs.msu.su>
-Message-ID: <570647A6.3030809@pengutronix.de>
-Subject: Re: [PATCH RESEND] can: sja1000: plx_pci: Add support for Marathon
- CAN-bus-PCIe card
-References: <1459943470-11524-1-git-send-email-gq@cs.msu.su>
- <1459947872-23086-1-git-send-email-nebaruzdin@gmail.com>
- <CAEJ7JO3YX3rmYU0b2mVqwUJ16URi9HSp1Tkckikm8T3MBqrr_A@mail.gmail.com>
-In-Reply-To: <CAEJ7JO3YX3rmYU0b2mVqwUJ16URi9HSp1Tkckikm8T3MBqrr_A@mail.gmail.com>
-
---RiFefbkUOs6XRfJ3a43NMeOj3VtvKUEuK
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 04/06/2016 03:59 PM, Nikita Edward Baruzdin wrote:
-> Hi,
->=20
-> To clarify: the first patch is an older one and doesn't really work.
-> The last one was tested to work properly.
-
-Thanks applied. I've changed the commit message to:
-
->     can: sja1000: plx_pci: Add support for Marathon CAN-bus-PCIe card
->    =20
->     This patch adds support for the Marathon CAN-bus-PCIe card to the
->     sja1000 driver. For more information see:
->    =20
->         http://can.marathon.ru/page/devices/can-bus-pcie
->    =20
->     Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
->     Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---RiFefbkUOs6XRfJ3a43NMeOj3VtvKUEuK--
-
---oD7d4EcvaMNWWPjPcl36SC6mDRVNubh67
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXBkemAAoJED07qiWsqSVqKNoH/i0KwE1+T8N75hLQIlQabpYE
-5ZXnHifDf0bIg+kSOXe7rM+po3FgE4mYdRZwE+pWaV6+2NJpyqBNMvHG8jt3zT5D
-GLr+9N1Fp3pVeSxSG7O6jILvzXbw3twLBLpItXaXdmU+k718+jRH6Q6dfFJlQW0F
-HLXQE576Ixg3GgUA7/jODKYcuhui8GhQ8MTdZH+FF5acmesZMe3Fz36B0IgRJD8I
-s8zM3Jm5oag/Is8QCSVFCZlou04ph75MPjYILsEpCJLOQRU7Av0G4fcgRyFxY6S0
-UjfWQsrZk373LZI+ip2XPMwnw0r6dex3azzTfk/JXWMj8tRKG0C5WbQ1845geno=
-=jMSr
------END PGP SIGNATURE-----
-
---oD7d4EcvaMNWWPjPcl36SC6mDRVNubh67--
+S3VydCwNCkkgYW0gZmFjaW5nIGRlYi1wa2cgZXJyb3Igd2hpbGUgYnVpbGRpbmcgdGhlIGtlcm5l
+bC4gTmVlZCB5b3VyIGd1aWRhbmNlIG9uIHRoYXQuDQoNClN0ZXBzIGJlbG93Lg0KMS4gSSBjbG9u
+ZWQgdGhlIGtlcm5lbCBmcm9tICJodHRwOi8va2VybmVsLnVidW50dS5jb20vZ2l0L2tlcm5lbC1w
+cGEvbWlycm9yL3VidW50dS12aXZpZC5naXQvY29tbWl0Lz9pZD0zMmFjNWI0YWFlNTZjZjk0NDZj
+MzA0NjM2NjNjOGFlMjIyNjA2OWRhIiB3aXRoIHRhZyBuYW1lICJVYnVudHUtMy4xOS4wLTU2LjYy
+Ig0KMi4gVGhlbiBJIGFkZGVkICJnaXQgcmVtb3RlIGFkZCBqMTkzOSBnaXQ6Ly9naXRodWIuY29t
+L2t1cnQtdmQvbGludXgiDQozLiBnaXQgcmVtb3RlIHVwZGF0ZSBqMTkzOQ0KNC4gZ2l0IG1lcmdl
+IGoxOTM5L2oxOTM5ZC12My4xNQ0KNS4gTWVyZ2Ugd2FzIHN1Y2Nlc3NmdWwgd2l0aG91dCBhbnkg
+aXNzdWVzLg0KNi4gY3AgL2Jvb3QvY29uZmlnLTMuMTkuMC41Ni1nZW5lcmljIC5jb25maWcNCjcu
+IHllcyAnICcgfCBtYWtlIG9sZGNvbmZpZw0KOC4gbWFrZSBtZW51Y29uZmlnIC0+IGFkZGVkIFNB
+RSBKMTkzOSBzdXBwb3J0IGFuZCBkZWJ1Z2dpbmcgc3VwcG9ydCBmb3IgSjE5MzkgYW5kIENBTiBt
+ZXNzYWdlcw0KOS4gbWFrZSAtaiAzIGRlYi1wa2cgTE9DQUxWRVJTSU9OPS1jdXN0b21lDQoNCkFm
+dGVyIGFuIGhvdXIgb3Igc28gSSBhbSBnZXR0aW5nDQpNYWtlWzFdOiAqKiogW2RlYi1wa2ddIGVy
+cm9yIDINCk1ha2U6ICoqKiBbZGViLXBrZ10gZXJyb3IgMg0KDQpHaXQgbG9nIGZvciB5b3VyIHJl
+ZmVyZW5jZQ0KJCBnaXQgbG9nDQpjb21taXQgYjE5YTI1Njc0MDRjYTgxYzMyMWNiZDIxZjU4NzU0
+MjE3YWNlZTc0MQ0KTWVyZ2U6IDMyYWM1YjQgNGQ5ODdjMQ0KQXV0aG9yOiBEaW5lc2ggVmVsYXl1
+ZGhhbSA8ZGluZXNoLnZlbGF5dXRoYW1AbG50dGVjaHNlcnZpY2VzLmNvbT4NCkRhdGU6ICAgVGh1
+IEFwciA3IDE1OjE1OjM4IDIwMTYgLTA1MDANCiAgICBNZXJnZSByZW1vdGUtdHJhY2tpbmcgYnJh
+bmNoICdqMTkzOS9qMTkzOWQtdjMuMTUnDQoNCmNvbW1pdCAzMmFjNWI0YWFlNTZjZjk0NDZjMzA0
+NjM2NjNjOGFlMjIyNjA2OWRhDQpBdXRob3I6IEJyYWQgRmlnZyA8YnJhZC5maWdnQGNhbm9uaWNh
+bC5jb20+DQpEYXRlOiAgIFRodSBNYXIgMTAgMTQ6MTQ6MzcgMjAxNiAtMDgwMA0KDQogICAgVUJV
+TlRVOiBVYnVudHUtMy4xOS4wLTU2LjYyDQogICAgU2lnbmVkLW9mZi1ieTogQnJhZCBGaWdnIDxi
+cmFkLmZpZ2dAY2Fub25pY2FsLmNvbT4NCg0KY29tbWl0IDQ0MDQ3ZmY3ZTM5ZTY2MmExMmZjZTk3
+YzhmODE3Y2QyMmUwZDgyN2YNCkF1dGhvcjogRmxvcmlhbiBXZXN0cGhhbCA8ZndAc3RybGVuLmRl
+Pg0KRGF0ZTogICBUaHUgTWFyIDEwIDE3OjI2OjM5IDIwMTYgKzAxMDANCiAgICBVQlVOVFU6IFNB
+VUNFOiBbbmYsdjJdIG5ldGZpbHRlcjogeF90YWJsZXM6IGRvbid0IHJlbHkgb24gd2VsbC1iZWhh
+dmluZyB1c2Vyc3ANCiAgICBCdWdMaW5rOiBodHRwOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3Mv
+MTU1NTMzOA0KDQoNClJlZ2FyZHMNCkRpbmVzaCBWZWxheXVkaGFtDQpMJlQgVGVjaG5vbG9neSBT
+ZXJ2aWNlcw0KZGluZXNoLnZlbGF5dXRoYW1AbG50dGVjaHNlcnZpY2VzLmNvbQ0KKzEtMzA5LTc0
+MC03NjkxDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLdXJ0IFZhbiBEaWpj
+ayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdDQpTZW50OiBXZWRuZXNk
+YXksIEFwcmlsIDA2LCAyMDE2IDI6NDAgUE0NClRvOiBEaW5lc2ggVmVsYXl1ZGhhbQ0KQ2M6IGxp
+bnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBKMTkzOSBMaW51eA0KDQo+IEt1
+cnQsDQo+IFRoYW5rcyBmb3IgdGhlIHJlcGx5Lg0KPiBBZnRlciBJIHBvc3QgdGhpcyBxdWVzdGlv
+biBJIGdvdCB0aGUgZ2l0aHViIGluZm9ybWF0aW9uLCBub3cgdGhhdCBJIGFtIGFibGUgdG8gY2xv
+bmUvbWVyZ2UgZnJvbSBnaXRodWIuDQoNCkkgc2VlLg0KDQo+DQo+IEkgYW0gZmFjaW5nIGxvdCBv
+ZiBtZXJnZSBjb25mbGljdHMuDQo+IEkgYW0gdHJ5aW5nIHRvIG1lcmdlIExpbnV4LUoxOTM5IHRv
+IExpbnV4IGtlcm5lbCBmcm9tIFVidW50dSAtIDMuMTkuMC41Ni1nZW5lcmljLg0KPiBXaGljaCB2
+ZXJzaW9uIG9mIGxpbnV4LWoxOTM5IHdvdWxkIHlvdSBzdWdnZXN0IGZvciBlYXN5IG1lcmdlPyBJ
+IHRyaWVkDQo+IHYzLjEwLCB2LjMuMTUgYW5kIHY0LjENCg0KSSBzdWdnZXN0IHlvdSBtZXJnZSBi
+cmFuY2ggajE5MzlkLXYzLjE1DQoNCkZlZWwgZnJlZSB0byBsZXQgbWUga25vdyBpZiB5b3UgZXhw
+ZXJpZW5jZSBtZXJnZSBjb25mbGljdHMgd2l0aCB0aGF0IGJyYW5jaC4gSXQncyBjb21wbGV0ZWx5
+IG5vcm1hbCB0aGF0IHlvdSBoYXZlIG1lcmdlIGNvbmZsaWN0cyB3aXRoIChtb3N0KSBvdGhlciBi
+cmFuY2hlcy4NCg0KS2luZCByZWdhcmRzLA0KS3VydA0KTCZUIFRlY2hub2xvZ3kgU2VydmljZXMg
+THRkDQoNCnd3dy5MbnRUZWNoc2VydmljZXMuY29tPGh0dHA6Ly93d3cubG50dGVjaHNlcnZpY2Vz
+LmNvbS8+DQoNClRoaXMgRW1haWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVn
+ZWQgaW5mb3JtYXRpb24gZm9yIHRoZSBpbnRlbmRlZCByZWNpcGllbnQgKHMpLiBJZiB5b3UgYXJl
+IG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgZG8gbm90IHVzZSBvciBkaXNzZW1p
+bmF0ZSB0aGUgaW5mb3JtYXRpb24sIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJv
+bSB5b3VyIHN5c3RlbS4NCg==
