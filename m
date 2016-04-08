@@ -1,81 +1,205 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
-Date: Fri, 8 Apr 2016 07:36:12 +0200
-Message-ID: <5707434C.2050001@hartkopp.net>
-References: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
- <569F9588.2090809@pengutronix.de> <569F99BE.70001@peak-system.com>
- <569F9AC5.6020706@pengutronix.de> <56A11AB2.5060200@hartkopp.net>
- <56A1F1FC.5070402@peak-system.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
+ receiving any more messages
+Date: Fri, 8 Apr 2016 09:39:47 +0200
+Message-ID: <57076043.1080609@grandegger.com>
+References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:48094 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751371AbcDHFgd (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 01:36:33 -0400
-In-Reply-To: <56A1F1FC.5070402@peak-system.com>
+Received: from mailproxy03.manitu.net ([217.11.48.151]:56932 "EHLO
+	mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757907AbcDHHsT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 03:48:19 -0400
+In-Reply-To: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Amr Bekhit <amrbekhit@gmail.com>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org
 
-Hello Stephane,
+Hello,
 
-anything new to this FPGA topic?
+Am 05.04.2016 um 15:10 schrieb Amr Bekhit:
+> Hello,
+>
+> <Sorry for the re-send. I initially sent this as HTML, but then found
+> out that it was recommended to send all emails as plaintext, hence the
+> resend>
+>
+> I working on a board based on the AT91SAM9X25 SoC and I'm using
+> integrated CAN peripheral. I seem to have run into an issue whereby
+> sending lots of messages very rapidly in quick succession causes the
+> CAN peripheral to then stop receiving any messages at all. The only
+> way to bring it back to a functional state is to bring the network
+> interface down and then back up again.
+>
+> The problem can be replicated as follows:
+>
+> The CAN interface is initialised using:
+>
+> ip link set can0 type can bitrate 100000 restart-ms 100
+> ifconfig can0 up
+>
+> I then start sending CAN messages to the unit using a PCAN-USB adapter
+> that is plugged into a test Linux PC. After bringing up the CAN
+> interface on the test PC, messages can be continuously sent using the
+> following bash script:
+>
+> #!/bin/bash
+>
+> while :
+> do
+> cansend can0 123#DEADBEEFDEADBEEF
+> done
+>
+> After running the script, I check that messages are being received on
+> the AT91 target by running
+>
+> ifconfig can0
+>
+> and checking that the number of received packets is increasing.
+>
+> I then leave the system running for some time (1.5 hours typically,
+> may vary), periodically running ifconfig can0 to check to see if new
+> packets are being received. After a while, the can interface will stop
+> receiving new packets, even though the test PC is still transmitting
+> them. Stopping and restarting the CAN transmissions on the test PC
+> does not solve the problem. The interface does not appear to be in the
+> bus off state, as shown by running the following:
+>
+> # ip -details -statistics link show can0
+> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
+> UNKNOWN mode DEFAULT group default qlen 10
+>      link/can  promiscuity 0
+>      can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 100
+>            bitrate 99950 sample-point 0.739
+>            tq 435 prop-seg 8 phase-seg1 8 phase-seg2 6 sjw 1
+>            at91_can: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 2..128 brp-inc 1
+>            clock 133333333
+>            re-started bus-errors arbit-lost error-warn error-pass bus-off
+>            0          0          0          0          0          0
+>      RX: bytes  packets  errors  dropped overrun mcast
+>      12609768   1576221  5       0       5       0
+>      TX: bytes  packets  errors  dropped carrier collsns
+>      0          0        0       0       0       0
+>
+>
+> # ifconfig can0
+> can0      Link encap:UNSPEC  HWaddr
+> 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+>            UP RUNNING NOARP  MTU:16  Metric:1
+>            RX packets:1576221 errors:5 dropped:0 overruns:0 frame:5
+>            TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>            collisions:0 txqueuelen:10
+>            RX bytes:12609768 (12.0 MiB)  TX bytes:0 (0.0 B)
+>            Interrupt:40
+>
+> Using the devmem command line program and a custom python script, I
+> dumped the contents of the CAN peripheral registers to a file. When
+> the AT91 CAN peripheral is in the failed state, here is what the
+> peripheral memory looks like:
+>
+> Dumping memory from 0xF8004000 to 0xF8004000:
+> 0xF8004000: [00000001] 0000 0000 0000 0000 0000 0000 0000 0001
+> 0xF8004004: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004008: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF800400C: [1F040000] 0001 1111 0000 0100 0000 0000 0000 0000
+> 0xF8004010: [20E000FF] 0010 0000 1110 0000 0000 0000 1111 1111
+> 0xF8004014: [00390775] 0000 0000 0011 1001 0000 0111 0111 0101
+> 0xF8004018: [000090EF] 0000 0000 0000 0000 1001 0000 1110 1111
+> 0xF800401C: [00009C81] 0000 0000 0000 0000 1001 1100 1000 0001
+> 0xF8004020: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004024: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004028: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF80040E4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80040E8: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF8004200: [01000000] 0000 0001 0000 0000 0000 0000 0000 0000
+> 0xF8004204: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004208: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF800420C: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF8004210: [01881273] 0000 0001 1000 1000 0001 0010 0111 0011
+> 0xF8004214: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF8004218: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF800421C: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF8004220: [01000000] 0000 0001 0000 0000 0000 0000 0000 0000
+> 0xF8004224: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004228: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF800422C: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF8004230: [018812E6] 0000 0001 1000 1000 0001 0010 1110 0110
+> 0xF8004234: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF8004238: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF800423C: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF8004240: [01000000] 0000 0001 0000 0000 0000 0000 0000 0000
+> 0xF8004244: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004248: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF800424C: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF8004250: [01881359] 0000 0001 1000 1000 0001 0011 0101 1001
+> 0xF8004254: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF8004258: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF800425C: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF8004260: [01000000] 0000 0001 0000 0000 0000 0000 0000 0000
+> 0xF8004264: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004268: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF800426C: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF8004270: [018813CC] 0000 0001 1000 1000 0001 0011 1100 1100
+> 0xF8004274: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF8004278: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF800427C: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF8004280: [01000000] 0000 0001 0000 0000 0000 0000 0000 0000
+> 0xF8004284: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF8004288: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF800428C: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF8004290: [0188143F] 0000 0001 1000 1000 0001 0100 0011 1111
+> 0xF8004294: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF8004298: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF800429C: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF80042A0: [02000000] 0000 0010 0000 0000 0000 0000 0000 0000
+> 0xF80042A4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042A8: [048C0000] 0000 0100 1000 1100 0000 0000 0000 0000
+> 0xF80042AC: [00000123] 0000 0000 0000 0000 0000 0001 0010 0011
+> 0xF80042B0: [0188E950] 0000 0001 1000 1000 1110 1001 0101 0000
+> 0xF80042B4: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF80042B8: [EFBEADDE] 1110 1111 1011 1110 1010 1101 1101 1110
+> 0xF80042BC: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF80042C0: [03000000] 0000 0011 0000 0000 0000 0000 0000 0000
+> 0xF80042C4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042C8: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042CC: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042D0: [00800000] 0000 0000 1000 0000 0000 0000 0000 0000
+> 0xF80042D4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042D8: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042DC: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> 0xF80042E0: [03000000] 0000 0011 0000 0000 0000 0000 0000 0000
+> 0xF80042E4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042E8: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042EC: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042F0: [00800000] 0000 0000 1000 0000 0000 0000 0000 0000
+> 0xF80042F4: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042F8: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+> 0xF80042FC: [00000000] 0000 0000 0000 0000 0000 0000 0000 0000
+>
+> I noticed that the RBSY flag is set, even though there was nothing
+> transmitted to the CAN bus. All of the message boxes had data inside
+> ready to be retrieved.
+>
+> If there are any other test you would like me to carry out, just let me know.
 
-Best regards,
-Oliver
+Where did your Linux kernel come from and what version are you using? 
+Also interesting is:
 
-ps. I've seen that a ucan-based PCIe card was presented on CAN-CiA News=
-letter.
-Do you already have a plan for a mainline driver for it?
-http://can-newsletter.org/hardware/host-interfaces/160331_fast-canfd-fo=
-r-pci-express_peak/
+- how fast is your CPU (frequency)?
+- the output of "/proc/interrrupts".
+- run "candump any,0:0,#FFFFFFFF" on the AT91 while the test is running
+- use "cangen" or even better "canfdtest" for testing.
 
-On 01/22/2016 10:10 AM, Stephane Grosjean wrote:
-> Hello Oliver,
->=20
-> At the moment,  we think about how best to proceed.
-> We've got one tool that is able to do the update, but we want to redu=
-ce risks
-> at their minimum.
->=20
-> Keep intouch!
->=20
-> Regards,
->=20
-> St=C3=A9phane
->=20
-> Le 21/01/2016 18:51, Oliver Hartkopp a =C3=A9crit :
->> Hi Stephane,
->>
->> On 01/20/2016 03:33 PM, Marc Kleine-Budde wrote:
->>> On 01/20/2016 03:29 PM, Stephane Grosjean wrote:
->>>> [ 2200.129168] peak_pci 0000:05:01.0: Warning: FW v1.2.0 needs a
->>>> workaround; update is available
->>> One per hardware device is enough.
->>> "Warning: FW v1.2.0 workaround active; Please update device Firmewa=
-re."
->>>
->>> ...and a webpage displaying this message, so that you will find it.
->>> Maybe even add a link to the website in the commit message.
->>>
->> searching for a potential firmware update on the PEAK Website
->>
->>     http://www.peak-system.com/Firmware.180.0.html?&L=3D1
->>
->> I did not find anything about the PCIe Hardware.
->>
->> Will there be a Linux tool to apply the firmware update too?
->> I don't have any PCIe slots on Windows machines anymore 8-)
->>
->> Best regards,
->> Oliver
->>
->=20
-> --=20
-> PEAK-System Technik GmbH
-> Sitz der Gesellschaft Darmstadt - HRB 9183 Geschaeftsfuehrung: A.Gach=
-, U.Wilhelm
-> --=20
+Wolfgang.
