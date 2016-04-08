@@ -1,49 +1,32 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] can: mcp251x: Replace create_freezable_workqueue with
- alloc_workqueue
-Date: Fri, 8 Apr 2016 21:02:10 +0530
-Message-ID: <20160408153210.GA15068@amitoj-Inspiron-3542>
+From: AKINWUMI <urr@adminnfo3.website.tk>
+Subject: FROM: MR. OLIVER SENO!!
+Date: Fri, 8 Apr 2016 11:53:02 -0700
+Message-ID: <SN1PR17MB0494E6BA021A81B27561FA75D0910@SN1PR17MB0494.namprd17.prod.outlook.com>
+Reply-To: <officeosenol@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: tj@kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-bl2hn0245.outbound.protection.outlook.com ([65.55.169.245]:33984
+	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753056AbcDHTXr convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 15:23:47 -0400
+Content-Description: Mail message body
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Recipients <urr@adminnfo3.website.tk>
 
-Replace scheduled to be removed create_freezable_workqueue with
-alloc_workqueue.
+Dear Sir.
 
-priv->wq should be explicitly set as freezable to ensure it is frozen
-in the suspend sequence and work items are drained so that no new work
-item starts execution until thawed. Thus, use of WQ_FREEZABLE flag
-here is required.
+I bring you greetings. My name is Mr.Oliver Seno Lim, I am a staff of Abbey National Plc. London and heading our regional office in West Africa. Our late customer named Engr.Ben W.westland, made a fixed deposit amount of US$7Million.He did not declare any next of kin in any of his paper work, I want you as a foreigner to stand as the beneficiary to transfer this funds out of my bank into your account, after the successful transfer, we shall share in the ratio of 30% for you, 70%for me. Should you be interested please send me your information:
 
-WQ_MEM_RECLAIM flag has been set here to ensure forward progress
-regardless of memory pressure.
-
-The order of execution is not important so set @max_active as 0.
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- drivers/net/can/spi/mcp251x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 74a7dfe..cf36d26 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -961,7 +961,8 @@ static int mcp251x_open(struct net_device *net)
- 		goto open_unlock;
- 	}
+1,Full names.
+2,current residential address.
+3,Tele/Fax numbers./your work.
  
--	priv->wq = create_freezable_workqueue("mcp251x_wq");
-+	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
-+				   0);
- 	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
- 	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
- 
--- 
-1.9.1
+   
+All I need from you is your readiness, trustworthiness and edication. Please email me directly on my private email address: officeosenol@yahoo.com) so we can begin arrangements and I would give you more information on how we would handle this venture and once i hear from you i will give you information of the bank for the transferring funds on your name.
+
+Regards,
+Mr.Oliver Seno Lim 
