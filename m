@@ -1,72 +1,49 @@
-From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-Subject: RE: J1939 Linux
-Date: Fri, 8 Apr 2016 14:29:02 +0000
-Message-ID: <03B271BE48E2554EB34508DAB79DBABA87095C7B@POCITMSEXMB05.LntUniverse.com>
-References: <loom.20160405T174008-515@post.gmane.org>
- <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
- <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA87095498@POCITMSEXMB05.LntUniverse.com>
- <20160408090444.GA5485@airbook.vandijck-laurijssen.be>
- <570793F6.7080808@eurek.it>
- <4E8D1C61-042C-4AF2-99AF-410CEEBA6861@vandijck-laurijssen.be>
+From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Subject: [PATCH] can: mcp251x: Replace create_freezable_workqueue with
+ alloc_workqueue
+Date: Fri, 8 Apr 2016 21:02:10 +0530
+Message-ID: <20160408153210.GA15068@amitoj-Inspiron-3542>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout2.ltindia.com ([203.199.60.171]:42289 "EHLO
-	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758104AbcDHO3Z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 10:29:25 -0400
-In-Reply-To: <4E8D1C61-042C-4AF2-99AF-410CEEBA6861@vandijck-laurijssen.be>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: tj@kernel.org
+List-Id: linux-can.vger.kernel.org
 
-S3VydCBhbmQgRXVyZWssDQpJIGRpZCBmb2xsb3cgdGhlIHNhbWUgc3RlcHMgZXhjZXB0IHRoYXQg
-SSBkaWQgbm90IGVuYWJsZSBKMTkzOSBvcHRpb24gaW4gbWVudWNvbmZpZy4NClRoZSBidWlsZCB3
-YXMgc3VjY2Vzc2Z1bCBhbmQgSSBhbSBhYmxlIHRvIGluc3RhbGwgdGhlIG5ldyBjdXN0b20ga2Vy
-bmVsIGFuZCByZWJvb3Qgd2l0aG91dCBhbnkgaXNzdWVzLg0KTG9va3MgbGlrZSBJIGFtIGZhY2lu
-ZyB0aGUgcHJvYmxlbSBvbmx5IHdoZW4gSSBlbmFibGUgSjE5Mzkgb3B0aW9uIHVuZGVyIG1lbnVj
-b25maWcuDQoNCkhvcGUgdGhpcyBoZWxwcyB5b3UgdG8gbmFycm93IGRvd24gdGhlIHByb2JsZW0u
-DQoNCg0KUmVnYXJkcw0KRGluZXNoIFZlbGF5dWRoYW0NCkwmVCBUZWNobm9sb2d5IFNlcnZpY2Vz
-DQpkaW5lc2gudmVsYXl1dGhhbUBsbnR0ZWNoc2VydmljZXMuY29tDQorMS0zMDktNzQwLTc2OTEN
-Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEt1cnQgVmFuIERpamNrIFttYWls
-dG86ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0NClNlbnQ6IEZyaWRheSwgQXByaWwg
-MDgsIDIwMTYgNjo1OSBBTQ0KVG86IGdpYW5sdWNhOyBEaW5lc2ggVmVsYXl1ZGhhbTsgbGludXgt
-Y2FuQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IEoxOTM5IExpbnV4DQoNCg0KDQpPbiA4
-IEFwcmlsIDIwMTYgMTM6MjA6MjIgQ0VTVCwgZ2lhbmx1Y2EgPGdpYW5sdWNhcmVuemlAZXVyZWsu
-aXQ+IHdyb3RlOg0KPk9uIDA0LzA4LzIwMTYgMTE6MDQgQU0sIEt1cnQgVmFuIERpamNrIHdyb3Rl
-Og0KPj4gSGV5LA0KPj4NCj4+PiBLdXJ0LA0KPj4+IEkgYW0gZmFjaW5nIGRlYi1wa2cgZXJyb3Ig
-d2hpbGUgYnVpbGRpbmcgdGhlIGtlcm5lbC4gTmVlZCB5b3VyDQo+Z3VpZGFuY2Ugb24gdGhhdC4N
-Cj4+Pg0KPj4+IFN0ZXBzIGJlbG93Lg0KPj4+IDEuIEkgY2xvbmVkIHRoZSBrZXJuZWwgZnJvbQ0K
-PiJodHRwOi8va2VybmVsLnVidW50dS5jb20vZ2l0L2tlcm5lbC1wcGEvbWlycm9yL3VidW50dS12
-aXZpZC5naXQvY29tbWl0Lz9pZD0zMmFjNWI0YWFlNTZjZjk0NDZjMzA0NjM2NjNjOGFlMjIyNjA2
-OWRhIg0KPndpdGggdGFnIG5hbWUgIlVidW50dS0zLjE5LjAtNTYuNjIiDQo+Pj4gMi4gVGhlbiBJ
-IGFkZGVkICJnaXQgcmVtb3RlIGFkZCBqMTkzOQ0KPmdpdDovL2dpdGh1Yi5jb20va3VydC12ZC9s
-aW51eCINCj4+PiAzLiBnaXQgcmVtb3RlIHVwZGF0ZSBqMTkzOQ0KPj4+IDQuIGdpdCBtZXJnZSBq
-MTkzOS9qMTkzOWQtdjMuMTUNCj4+PiA1LiBNZXJnZSB3YXMgc3VjY2Vzc2Z1bCB3aXRob3V0IGFu
-eSBpc3N1ZXMuDQo+Pj4gNi4gY3AgL2Jvb3QvY29uZmlnLTMuMTkuMC41Ni1nZW5lcmljIC5jb25m
-aWcgNy4geWVzICcgJyB8IG1ha2UNCj4+PiBvbGRjb25maWcgOC4gbWFrZSBtZW51Y29uZmlnIC0+
-IGFkZGVkIFNBRSBKMTkzOSBzdXBwb3J0IGFuZA0KPj4+IGRlYnVnZ2luZyBzdXBwb3J0DQo+Zm9y
-IEoxOTM5IGFuZCBDQU4gbWVzc2FnZXMNCj4+PiA5LiBtYWtlIC1qIDMgZGViLXBrZyBMT0NBTFZF
-UlNJT049LWN1c3RvbWUNCj4+DQo+PiBJIHRoaW5rIHlvdSBkaWQgZXZlcnl0aGluZyB3ZWxsIHVw
-IHRvIHN0ZXAgOS4NCj4+IE15IGtub3dsZWRnZSBvbiBidWlsZGluZyBrZXJuZWxzIHNwZWNpZmlj
-IGZvciBkZWJpYW4vVWJ1bnR1ICBpcw0KPmxpbWl0ZWQuDQo+PiBZZXQsIHRoZSBjb21tYW5kIHlv
-dSBpc3N1ZSBzZWVtcyBzdHJhbmdlLg0KPj4gU2hvdWxkbid0IHlvdSBqdXN0IGRvOg0KPj4NCj4+
-ICAgICAgJCBtYWtlIC1qIDMgTE9DQUxWRVJTSU9OPS1jdXN0b21lDQo+Pg0KPj4gYW5kIHRoZW4N
-Cj4+DQo+PiAgICAgICQgc3VkbyBtYWtlIGluc3RhbGwNCj4+DQo+DQo+Tm9wZS4gRXZlbnR1YWxs
-eSB5b3UgaGF2ZSB0byBjb21waWxlIHRoZSBkcml2ZXJzIHRvbyB3aXRoIGEgbWFrZQ0KPm1vZHVs
-ZXMuDQoNCiQgbWFrZSBtb2R1bGVzX2luc3RhbGwNCndhcyB3aGF0IEkgZm9yZ290Lg0KDQo+DQo+
-bWFrZSBkZWItcGtnIHdpbGw6DQo+DQo+MS4gY29tcGlsZSB0aGUga2VybmVsIGFuZCB0aGUgc3Rh
-dGljIGRyaXZlcnMgMi4gY29tcGlsZSB0aGUgbW9kdWxlcyAzLg0KPmluc3RhbGwgdGhlIG1vZHVs
-ZXMgNC4gaXQgd2lsbCBjcmVhdGUgdGhlIGluaXRyZCBmb3IgbmV4dCBib290Lg0KDQpJIHNlZS4u
-Lg0KSSB3aWxsIHRyeSB0aGlzLCBidXQgd2hhdCBpcyB0aGUgY2hhbmNlIHRoaXMgd29ya3Mgb24g
-YSBTbGFja3dhcmU/DQoNCkt1cnQNClNlbnQgZnJvbSBhIHNtYWxsIG1vYmlsZSBkZXZpY2UNCkwm
-VCBUZWNobm9sb2d5IFNlcnZpY2VzIEx0ZA0KDQp3d3cuTG50VGVjaHNlcnZpY2VzLmNvbTxodHRw
-Oi8vd3d3LmxudHRlY2hzZXJ2aWNlcy5jb20vPg0KDQpUaGlzIEVtYWlsIG1heSBjb250YWluIGNv
-bmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIGZvciB0aGUgaW50ZW5kZWQgcmVj
-aXBpZW50IChzKS4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNl
-IGRvIG5vdCB1c2Ugb3IgZGlzc2VtaW5hdGUgdGhlIGluZm9ybWF0aW9uLCBub3RpZnkgdGhlIHNl
-bmRlciBhbmQgZGVsZXRlIGl0IGZyb20geW91ciBzeXN0ZW0uDQo=
+Replace scheduled to be removed create_freezable_workqueue with
+alloc_workqueue.
+
+priv->wq should be explicitly set as freezable to ensure it is frozen
+in the suspend sequence and work items are drained so that no new work
+item starts execution until thawed. Thus, use of WQ_FREEZABLE flag
+here is required.
+
+WQ_MEM_RECLAIM flag has been set here to ensure forward progress
+regardless of memory pressure.
+
+The order of execution is not important so set @max_active as 0.
+
+Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+---
+ drivers/net/can/spi/mcp251x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 74a7dfe..cf36d26 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -961,7 +961,8 @@ static int mcp251x_open(struct net_device *net)
+ 		goto open_unlock;
+ 	}
+ 
+-	priv->wq = create_freezable_workqueue("mcp251x_wq");
++	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
++				   0);
+ 	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
+ 	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
+ 
+-- 
+1.9.1
