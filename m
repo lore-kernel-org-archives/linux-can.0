@@ -1,73 +1,81 @@
-From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-Subject: RE: J1939 Linux
-Date: Thu, 7 Apr 2016 22:28:08 +0000
-Message-ID: <03B271BE48E2554EB34508DAB79DBABA87095498@POCITMSEXMB05.LntUniverse.com>
-References: <loom.20160405T174008-515@post.gmane.org>
- <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
- <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can/peak_pci: fix FPGA potential frame loss issue
+Date: Fri, 8 Apr 2016 07:36:12 +0200
+Message-ID: <5707434C.2050001@hartkopp.net>
+References: <1453288532-15034-1-git-send-email-s.grosjean@peak-system.com>
+ <569F9588.2090809@pengutronix.de> <569F99BE.70001@peak-system.com>
+ <569F9AC5.6020706@pengutronix.de> <56A11AB2.5060200@hartkopp.net>
+ <56A1F1FC.5070402@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailout2.ltindia.com ([203.199.60.171]:41940 "EHLO
-	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751895AbcDGW2Z (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 7 Apr 2016 18:28:25 -0400
-In-Reply-To: <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:48094 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751371AbcDHFgd (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 01:36:33 -0400
+In-Reply-To: <56A1F1FC.5070402@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-S3VydCwNCkkgYW0gZmFjaW5nIGRlYi1wa2cgZXJyb3Igd2hpbGUgYnVpbGRpbmcgdGhlIGtlcm5l
-bC4gTmVlZCB5b3VyIGd1aWRhbmNlIG9uIHRoYXQuDQoNClN0ZXBzIGJlbG93Lg0KMS4gSSBjbG9u
-ZWQgdGhlIGtlcm5lbCBmcm9tICJodHRwOi8va2VybmVsLnVidW50dS5jb20vZ2l0L2tlcm5lbC1w
-cGEvbWlycm9yL3VidW50dS12aXZpZC5naXQvY29tbWl0Lz9pZD0zMmFjNWI0YWFlNTZjZjk0NDZj
-MzA0NjM2NjNjOGFlMjIyNjA2OWRhIiB3aXRoIHRhZyBuYW1lICJVYnVudHUtMy4xOS4wLTU2LjYy
-Ig0KMi4gVGhlbiBJIGFkZGVkICJnaXQgcmVtb3RlIGFkZCBqMTkzOSBnaXQ6Ly9naXRodWIuY29t
-L2t1cnQtdmQvbGludXgiDQozLiBnaXQgcmVtb3RlIHVwZGF0ZSBqMTkzOQ0KNC4gZ2l0IG1lcmdl
-IGoxOTM5L2oxOTM5ZC12My4xNQ0KNS4gTWVyZ2Ugd2FzIHN1Y2Nlc3NmdWwgd2l0aG91dCBhbnkg
-aXNzdWVzLg0KNi4gY3AgL2Jvb3QvY29uZmlnLTMuMTkuMC41Ni1nZW5lcmljIC5jb25maWcNCjcu
-IHllcyAnICcgfCBtYWtlIG9sZGNvbmZpZw0KOC4gbWFrZSBtZW51Y29uZmlnIC0+IGFkZGVkIFNB
-RSBKMTkzOSBzdXBwb3J0IGFuZCBkZWJ1Z2dpbmcgc3VwcG9ydCBmb3IgSjE5MzkgYW5kIENBTiBt
-ZXNzYWdlcw0KOS4gbWFrZSAtaiAzIGRlYi1wa2cgTE9DQUxWRVJTSU9OPS1jdXN0b21lDQoNCkFm
-dGVyIGFuIGhvdXIgb3Igc28gSSBhbSBnZXR0aW5nDQpNYWtlWzFdOiAqKiogW2RlYi1wa2ddIGVy
-cm9yIDINCk1ha2U6ICoqKiBbZGViLXBrZ10gZXJyb3IgMg0KDQpHaXQgbG9nIGZvciB5b3VyIHJl
-ZmVyZW5jZQ0KJCBnaXQgbG9nDQpjb21taXQgYjE5YTI1Njc0MDRjYTgxYzMyMWNiZDIxZjU4NzU0
-MjE3YWNlZTc0MQ0KTWVyZ2U6IDMyYWM1YjQgNGQ5ODdjMQ0KQXV0aG9yOiBEaW5lc2ggVmVsYXl1
-ZGhhbSA8ZGluZXNoLnZlbGF5dXRoYW1AbG50dGVjaHNlcnZpY2VzLmNvbT4NCkRhdGU6ICAgVGh1
-IEFwciA3IDE1OjE1OjM4IDIwMTYgLTA1MDANCiAgICBNZXJnZSByZW1vdGUtdHJhY2tpbmcgYnJh
-bmNoICdqMTkzOS9qMTkzOWQtdjMuMTUnDQoNCmNvbW1pdCAzMmFjNWI0YWFlNTZjZjk0NDZjMzA0
-NjM2NjNjOGFlMjIyNjA2OWRhDQpBdXRob3I6IEJyYWQgRmlnZyA8YnJhZC5maWdnQGNhbm9uaWNh
-bC5jb20+DQpEYXRlOiAgIFRodSBNYXIgMTAgMTQ6MTQ6MzcgMjAxNiAtMDgwMA0KDQogICAgVUJV
-TlRVOiBVYnVudHUtMy4xOS4wLTU2LjYyDQogICAgU2lnbmVkLW9mZi1ieTogQnJhZCBGaWdnIDxi
-cmFkLmZpZ2dAY2Fub25pY2FsLmNvbT4NCg0KY29tbWl0IDQ0MDQ3ZmY3ZTM5ZTY2MmExMmZjZTk3
-YzhmODE3Y2QyMmUwZDgyN2YNCkF1dGhvcjogRmxvcmlhbiBXZXN0cGhhbCA8ZndAc3RybGVuLmRl
-Pg0KRGF0ZTogICBUaHUgTWFyIDEwIDE3OjI2OjM5IDIwMTYgKzAxMDANCiAgICBVQlVOVFU6IFNB
-VUNFOiBbbmYsdjJdIG5ldGZpbHRlcjogeF90YWJsZXM6IGRvbid0IHJlbHkgb24gd2VsbC1iZWhh
-dmluZyB1c2Vyc3ANCiAgICBCdWdMaW5rOiBodHRwOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3Mv
-MTU1NTMzOA0KDQoNClJlZ2FyZHMNCkRpbmVzaCBWZWxheXVkaGFtDQpMJlQgVGVjaG5vbG9neSBT
-ZXJ2aWNlcw0KZGluZXNoLnZlbGF5dXRoYW1AbG50dGVjaHNlcnZpY2VzLmNvbQ0KKzEtMzA5LTc0
-MC03NjkxDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLdXJ0IFZhbiBEaWpj
-ayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmVdDQpTZW50OiBXZWRuZXNk
-YXksIEFwcmlsIDA2LCAyMDE2IDI6NDAgUE0NClRvOiBEaW5lc2ggVmVsYXl1ZGhhbQ0KQ2M6IGxp
-bnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBKMTkzOSBMaW51eA0KDQo+IEt1
-cnQsDQo+IFRoYW5rcyBmb3IgdGhlIHJlcGx5Lg0KPiBBZnRlciBJIHBvc3QgdGhpcyBxdWVzdGlv
-biBJIGdvdCB0aGUgZ2l0aHViIGluZm9ybWF0aW9uLCBub3cgdGhhdCBJIGFtIGFibGUgdG8gY2xv
-bmUvbWVyZ2UgZnJvbSBnaXRodWIuDQoNCkkgc2VlLg0KDQo+DQo+IEkgYW0gZmFjaW5nIGxvdCBv
-ZiBtZXJnZSBjb25mbGljdHMuDQo+IEkgYW0gdHJ5aW5nIHRvIG1lcmdlIExpbnV4LUoxOTM5IHRv
-IExpbnV4IGtlcm5lbCBmcm9tIFVidW50dSAtIDMuMTkuMC41Ni1nZW5lcmljLg0KPiBXaGljaCB2
-ZXJzaW9uIG9mIGxpbnV4LWoxOTM5IHdvdWxkIHlvdSBzdWdnZXN0IGZvciBlYXN5IG1lcmdlPyBJ
-IHRyaWVkDQo+IHYzLjEwLCB2LjMuMTUgYW5kIHY0LjENCg0KSSBzdWdnZXN0IHlvdSBtZXJnZSBi
-cmFuY2ggajE5MzlkLXYzLjE1DQoNCkZlZWwgZnJlZSB0byBsZXQgbWUga25vdyBpZiB5b3UgZXhw
-ZXJpZW5jZSBtZXJnZSBjb25mbGljdHMgd2l0aCB0aGF0IGJyYW5jaC4gSXQncyBjb21wbGV0ZWx5
-IG5vcm1hbCB0aGF0IHlvdSBoYXZlIG1lcmdlIGNvbmZsaWN0cyB3aXRoIChtb3N0KSBvdGhlciBi
-cmFuY2hlcy4NCg0KS2luZCByZWdhcmRzLA0KS3VydA0KTCZUIFRlY2hub2xvZ3kgU2VydmljZXMg
-THRkDQoNCnd3dy5MbnRUZWNoc2VydmljZXMuY29tPGh0dHA6Ly93d3cubG50dGVjaHNlcnZpY2Vz
-LmNvbS8+DQoNClRoaXMgRW1haWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVn
-ZWQgaW5mb3JtYXRpb24gZm9yIHRoZSBpbnRlbmRlZCByZWNpcGllbnQgKHMpLiBJZiB5b3UgYXJl
-IG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgZG8gbm90IHVzZSBvciBkaXNzZW1p
-bmF0ZSB0aGUgaW5mb3JtYXRpb24sIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJv
-bSB5b3VyIHN5c3RlbS4NCg==
+Hello Stephane,
+
+anything new to this FPGA topic?
+
+Best regards,
+Oliver
+
+ps. I've seen that a ucan-based PCIe card was presented on CAN-CiA News=
+letter.
+Do you already have a plan for a mainline driver for it?
+http://can-newsletter.org/hardware/host-interfaces/160331_fast-canfd-fo=
+r-pci-express_peak/
+
+On 01/22/2016 10:10 AM, Stephane Grosjean wrote:
+> Hello Oliver,
+>=20
+> At the moment,  we think about how best to proceed.
+> We've got one tool that is able to do the update, but we want to redu=
+ce risks
+> at their minimum.
+>=20
+> Keep intouch!
+>=20
+> Regards,
+>=20
+> St=C3=A9phane
+>=20
+> Le 21/01/2016 18:51, Oliver Hartkopp a =C3=A9crit :
+>> Hi Stephane,
+>>
+>> On 01/20/2016 03:33 PM, Marc Kleine-Budde wrote:
+>>> On 01/20/2016 03:29 PM, Stephane Grosjean wrote:
+>>>> [ 2200.129168] peak_pci 0000:05:01.0: Warning: FW v1.2.0 needs a
+>>>> workaround; update is available
+>>> One per hardware device is enough.
+>>> "Warning: FW v1.2.0 workaround active; Please update device Firmewa=
+re."
+>>>
+>>> ...and a webpage displaying this message, so that you will find it.
+>>> Maybe even add a link to the website in the commit message.
+>>>
+>> searching for a potential firmware update on the PEAK Website
+>>
+>>     http://www.peak-system.com/Firmware.180.0.html?&L=3D1
+>>
+>> I did not find anything about the PCIe Hardware.
+>>
+>> Will there be a Linux tool to apply the firmware update too?
+>> I don't have any PCIe slots on Windows machines anymore 8-)
+>>
+>> Best regards,
+>> Oliver
+>>
+>=20
+> --=20
+> PEAK-System Technik GmbH
+> Sitz der Gesellschaft Darmstadt - HRB 9183 Geschaeftsfuehrung: A.Gach=
+, U.Wilhelm
+> --=20
