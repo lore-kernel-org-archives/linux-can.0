@@ -1,32 +1,60 @@
-From: AKINWUMI <urr@adminnfo3.website.tk>
-Subject: FROM: MR. OLIVER SENO!!
-Date: Fri, 8 Apr 2016 11:53:02 -0700
-Message-ID: <SN1PR17MB0494E6BA021A81B27561FA75D0910@SN1PR17MB0494.namprd17.prod.outlook.com>
-Reply-To: <officeosenol@yahoo.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 Linux
+Date: Sat, 9 Apr 2016 13:40:19 +0200
+Message-ID: <20160409114019.GA8567@airbook.vandijck-laurijssen.be>
+References: <loom.20160405T174008-515@post.gmane.org>
+ <20160406074653.GA28692@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87093BDE@POCITMSEXMB05.LntUniverse.com>
+ <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87095498@POCITMSEXMB05.LntUniverse.com>
+ <20160408090444.GA5485@airbook.vandijck-laurijssen.be>
+ <570793F6.7080808@eurek.it>
+ <4E8D1C61-042C-4AF2-99AF-410CEEBA6861@vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87095C7B@POCITMSEXMB05.LntUniverse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2hn0245.outbound.protection.outlook.com ([65.55.169.245]:33984
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753056AbcDHTXr convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2016 15:23:47 -0400
-Content-Description: Mail message body
+Received: from relay-b02.edpnet.be ([212.71.1.222]:49241 "EHLO
+	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752884AbcDILnA (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 9 Apr 2016 07:43:00 -0400
+Content-Disposition: inline
+In-Reply-To: <03B271BE48E2554EB34508DAB79DBABA87095C7B@POCITMSEXMB05.LntUniverse.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <urr@adminnfo3.website.tk>
+To: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+Cc: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Dear Sir.
 
-I bring you greetings. My name is Mr.Oliver Seno Lim, I am a staff of Abbey National Plc. London and heading our regional office in West Africa. Our late customer named Engr.Ben W.westland, made a fixed deposit amount of US$7Million.He did not declare any next of kin in any of his paper work, I want you as a foreigner to stand as the beneficiary to transfer this funds out of my bank into your account, after the successful transfer, we shall share in the ratio of 30% for you, 70%for me. Should you be interested please send me your information:
+--- Original message ---
+> Date: Fri, 8 Apr 2016 14:29:02 +0000
+> From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, gianluca
+>  <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org"
+>  <linux-can@vger.kernel.org>
+> Subject: RE: J1939 Linux
+> 
+> Kurt and Eurek,
+> I did follow the same steps except that I did not enable J1939 option in menuconfig.
+> The build was successful and I am able to install the new custom kernel and reboot without any issues.
+> Looks like I am facing the problem only when I enable J1939 option under menuconfig.
+> 
+> Hope this helps you to narrow down the problem.
 
-1,Full names.
-2,current residential address.
-3,Tele/Fax numbers./your work.
- 
-   
-All I need from you is your readiness, trustworthiness and edication. Please email me directly on my private email address: officeosenol@yahoo.com) so we can begin arrangements and I would give you more information on how we would handle this venture and once i hear from you i will give you information of the bank for the transferring funds on your name.
+On my Slackware, I get as far as:
 
-Regards,
-Mr.Oliver Seno Lim 
+	INSTALL debian/headertmp/usr/include/linux/wimax/ (1 file)
+	INSTALL debian/headertmp/usr/include/linux/ (420 files)
+	INSTALL debian/headertmp/usr/include/asm/ (65 files)
+	Using default distribution of 'unstable' in the changelog
+	Install lsb-release or set $KDEB_CHANGELOG_DIST explicitly
+	./scripts/package/builddeb: line 31: dpkg-gencontrol: command not found
+	make[1]: *** [deb-pkg] Error 127
+	make: *** [deb-pkg] Error 2
+
+This is anyhow beyond my expertise. 
+Since it clearly seems to be caused by my can-j1939, I will help to find
+it. Can you show a bit more output where the build fails?
+Possibly with V=2 commandline parameter?
+
+Kurt
