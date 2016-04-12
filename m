@@ -1,7 +1,7 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 Linux
-Date: Tue, 12 Apr 2016 20:15:40 +0200
-Message-ID: <20160412181540.GE19875@airbook.vandijck-laurijssen.be>
+From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+Subject: RE: J1939 Linux
+Date: Tue, 12 Apr 2016 18:28:03 +0000
+Message-ID: <03B271BE48E2554EB34508DAB79DBABA8709A5A0@POCITMSEXMB05.LntUniverse.com>
 References: <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
  <03B271BE48E2554EB34508DAB79DBABA87095498@POCITMSEXMB05.LntUniverse.com>
  <20160408090444.GA5485@airbook.vandijck-laurijssen.be>
@@ -12,342 +12,252 @@ References: <20160406194026.GD5242@airbook.vandijck-laurijssen.be>
  <03B271BE48E2554EB34508DAB79DBABA8709986A@POCITMSEXMB05.LntUniverse.com>
  <20160412082020.GA19875@airbook.vandijck-laurijssen.be>
  <03B271BE48E2554EB34508DAB79DBABA8709A50F@POCITMSEXMB05.LntUniverse.com>
+ <20160412181540.GE19875@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:54331 "EHLO
-	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933074AbcDLSSe convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Apr 2016 14:18:34 -0400
-Content-Disposition: inline
-In-Reply-To: <03B271BE48E2554EB34508DAB79DBABA8709A50F@POCITMSEXMB05.LntUniverse.com>
+Received: from mailout2.ltindia.com ([203.199.60.171]:2896 "EHLO
+	mailout2.ltindia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932222AbcDLS2a (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 12 Apr 2016 14:28:30 -0400
+In-Reply-To: <20160412181540.GE19875@airbook.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-I apologise, I have given you the wrong commit to cherry-pick.
-I gave the API change commit, and you need the one that adapts
-it for can-j1939.
-So forget the previous email (reset the git HEAD) and do
-
-	git cherry-pick 34bb840
-
-Kind regards,
-Kurt
-
---- Original message ---
-> Date: Tue, 12 Apr 2016 17:57:02 +0000
-> From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-> To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> CC: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org"
->  <linux-can@vger.kernel.org>
-> Subject: RE: J1939 Linux
->=20
-> Kurt,
-> I am still facing build error
-> 1. cherry pick the code
-> 2. make clean
-> 3. make deb-pkg
->=20
-> $ git cherry-pick 7eab8d9e
-> [master bf6fe85] new helper: memcpy_to_msg()
->  Author: Al Viro <viro@zeniv.linux.org.uk>
->  1 file changed, 5 insertions(+)
->=20
-> $ make clean
->   CLEAN   .
->   CLEAN   arch/x86/kernel/cpu
->   CLEAN   arch/x86/kernel
->   CLEAN   arch/x86/purgatory
->   CLEAN   arch/x86/realmode/rm
->   CLEAN   arch/x86/vdso
->   CLEAN   arch/x86/lib
->   CLEAN   crypto/asymmetric_keys
->   CLEAN   drivers/gpu/drm/radeon
->   CLEAN   drivers/net/wan
->   CLEAN   drivers/scsi/aic7xxx
->   CLEAN   drivers/tty/vt
->   CLEAN   firmware
->   CLEAN   kernel/debug/kdb
->   CLEAN   kernel/time
->   CLEAN   kernel
->   CLEAN   lib/raid6
->   CLEAN   lib
->   CLEAN   security/apparmor
->   CLEAN   security/selinux
->   CLEAN   usr
->   CLEAN   arch/x86/boot/compressed
->   CLEAN   arch/x86/boot
->   CLEAN   arch/x86/tools
->   CLEAN   .tmp_versions
->=20
-> $ make -j 4 V=3D2 deb-pkg LOCALVERSION=3D-custom 2>&1 | tee buildlog.=
-txt
->  In file included from include/crypto/algapi.h:18:0,
->                  from include/crypto/internal/hash.h:16,
->                  from arch/x86/crypto/crc32c-intel_glue.c:31:
-> include/linux/skbuff.h:2710:19: error: redefinition of =E2=80=98memcp=
-y_to_msg=E2=80=99
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h:2705:19: note: previous definition of =E2=80=98=
-memcpy_to_msg=E2=80=99 was here
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h: In function =E2=80=98memcpy_to_msg=E2=80=99:
-> include/linux/skbuff.h:2712:2: error: implicit declaration of functio=
-n =E2=80=98memcpy_toiovec=E2=80=99 [-Werror=3Dimplicit-function-declara=
-tion]
->   return memcpy_toiovec(msg->msg_iov, data, len);
->   ^
-> include/linux/skbuff.h:2712:27: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
->   return memcpy_toiovec(msg->msg_iov, data, len);
->                            ^
-> cc1: some warnings being treated as errors
-> make[4]: *** [arch/x86/crypto/crc32c-intel_glue.o] Error 1
-> make[3]: *** [arch/x86/crypto] Error 2
-> make[3]: *** Waiting for unfinished jobs....
->   CC      kernel/exec_domain.o - due to target missing
->   CC      arch/x86/ia32/ia32_signal.o - due to target missing
->   CC      init/do_mounts.o - due to target missing
-> In file included from include/linux/netfilter.h:5:0,
->                  from include/net/netns/netfilter.h:5,
->                  from include/net/net_namespace.h:22,
->                  from include/linux/init_task.h:15,
->                  from kernel/fork.c:534:
-> include/linux/skbuff.h:2710:19: error: redefinition of =E2=80=98memcp=
-y_to_msg=E2=80=99
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h:2705:19: note: previous definition of =E2=80=98=
-memcpy_to_msg=E2=80=99 was here
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h: In function =E2=80=98memcpy_to_msg=E2=80=99:
-> include/linux/skbuff.h:2712:2: error: implicit declaration of functio=
-n =E2=80=98memcpy_toiovec=E2=80=99 [-Werror=3Dimplicit-function-declara=
-tion]
->   return memcpy_toiovec(msg->msg_iov, data, len);
->   ^
-> include/linux/skbuff.h:2712:27: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
->   return memcpy_toiovec(msg->msg_iov, data, len);
->                            ^
-> cc1: some warnings being treated as errors
-> make[3]: *** [kernel/fork.o] Error 1
-> make[2]: *** [kernel] Error 2
-> make[2]: *** Waiting for unfinished jobs....
->   CC      init/do_mounts_rd.o - due to target missing
->   CC      arch/x86/ia32/nosyscall.o - due to target missing
->   CC      arch/x86/ia32/syscall_ia32.o - due to target missing
->   CC      init/do_mounts_initrd.o - due to target missing
->   CC      arch/x86/ia32/audit.o - due to target missing
->   LD      arch/x86/ia32/built-in.o - due to target missing
-> make[2]: *** [arch/x86] Error 2
->   CC      init/do_mounts_md.o - due to target missing
-> In file included from include/linux/icmpv6.h:4:0,
->                  from include/linux/ipv6.h:63,
->                  from include/net/ipv6.h:16,
->                  from include/linux/sunrpc/clnt.h:27,
->                  from include/linux/nfs_fs.h:30,
->                  from init/do_mounts.c:32:
-> include/linux/skbuff.h:2710:19: error: redefinition of =E2=80=98memcp=
-y_to_msg=E2=80=99
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h:2705:19: note: previous definition of =E2=80=98=
-memcpy_to_msg=E2=80=99 was here
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h: In function =E2=80=98memcpy_to_msg=E2=80=99:
-> include/linux/skbuff.h:2712:2: error: implicit declaration of functio=
-n =E2=80=98memcpy_toiovec=E2=80=99 [-Werror=3Dimplicit-function-declara=
-tion]
->   return memcpy_toiovec(msg->msg_iov, data, len);
->   ^
-> include/linux/skbuff.h:2712:27: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
->   return memcpy_toiovec(msg->msg_iov, data, len);
->                            ^
->   CC      init/initramfs.o - due to target missing
->   CC      init/calibrate.o - due to target missing
->   CC      init/init_task.o - due to target missing
->   CC      init/version.o - due to target missing
-> cc1: some warnings being treated as errors
-> make[3]: *** [init/do_mounts.o] Error 1
-> make[3]: *** Waiting for unfinished jobs....
-> In file included from include/linux/netfilter.h:5:0,
->                  from include/net/netns/netfilter.h:5,
->                  from include/net/net_namespace.h:22,
->                  from include/linux/init_task.h:15,
->                  from init/init_task.c:1:
-> include/linux/skbuff.h:2710:19: error: redefinition of =E2=80=98memcp=
-y_to_msg=E2=80=99
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h:2705:19: note: previous definition of =E2=80=98=
-memcpy_to_msg=E2=80=99 was here
->  static inline int memcpy_to_msg(struct msghdr *msg, void *data, int =
-len)
->                    ^
-> include/linux/skbuff.h: In function =E2=80=98memcpy_to_msg=E2=80=99:
-> include/linux/skbuff.h:2712:2: error: implicit declaration of functio=
-n =E2=80=98memcpy_toiovec=E2=80=99 [-Werror=3Dimplicit-function-declara=
-tion]
->   return memcpy_toiovec(msg->msg_iov, data, len);
->   ^
-> include/linux/skbuff.h:2712:27: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
->   return memcpy_toiovec(msg->msg_iov, data, len);
->                            ^
-> cc1: some warnings being treated as errors
-> make[3]: *** [init/init_task.o] Error 1
-> make[2]: *** [init] Error 2
-> make[1]: *** [deb-pkg] Error 2
-> make: *** [deb-pkg] Error 2
->=20
->=20
-> Regards
-> Dinesh Velayudham
-> L&T Technology Services
-> dinesh.velayutham@lnttechservices.com
-> +1-309-740-7691
->=20
-> -----Original Message-----
-> From: Kurt Van Dijck [mailto:dev.kurt@vandijck-laurijssen.be]
-> Sent: Tuesday, April 12, 2016 3:20 AM
-> To: Dinesh Velayudham
-> Cc: gianluca; linux-can@vger.kernel.org
-> Subject: Re: J1939 Linux
->=20
-> Ok, I see.
-> It had nothing to do with "make deb-pkg", it is a problem
-> that I didn't see that commit 7eab8d9e is necessary as of v3.19, wher=
-e I
-> only saw that v4.1 needed it.
->=20
-> Please do:
->=20
->         $ git cherry-pick 7eab8d9e
->=20
-> and the make should succeed.
->=20
-> Sorry for not seeing this. I will try to prepare a j1939d-v3.19 branc=
-h,
-> which will have that commit included.
->=20
-> Kind regards,
-> Kurt
->=20
-> --- Original message ---
-> > Date: Mon, 11 Apr 2016 22:11:11 +0000
-> > From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-> > To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> > CC: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org"
-> >  <linux-can@vger.kernel.org>
-> > Subject: RE: J1939 Linux
-> >
-> > Kurt,
-> > I have attached text file that contains output of make command with=
- V=3D2. Incase if you are not able to see the attached text file. Below=
- is part of make command output
-> > -------------------------------------
-> >   CC      lib/strncpy_from_user.o - due to target missing
-> >   CC [M]  net/can/j1939/socket.o - due to target missing
-> >   CC      lib/strnlen_user.o - due to target missing
-> > net/can/j1939/socket.c: In function =E2=80=98j1939sk_recvmsg=E2=80=99=
-:
-> > net/can/j1939/socket.c:621:2: error: implicit declaration of functi=
-on =E2=80=98memcpy_toiovec=E2=80=99 [-Werror=3Dimplicit-function-declar=
-ation]
-> >   ret =3D memcpy_toiovec(msg->msg_iov, skb->data, size);
-> >   ^
-> > net/can/j1939/socket.c:621:26: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
-> >   ret =3D memcpy_toiovec(msg->msg_iov, skb->data, size);
-> >                           ^
-> > net/can/j1939/socket.c: In function =E2=80=98j1939sk_sendmsg=E2=80=99=
-:
-> > net/can/j1939/socket.c:708:48: error: =E2=80=98struct msghdr=E2=80=99=
- has no member named =E2=80=98msg_iov=E2=80=99
-> >   ret =3D memcpy_fromiovec(skb_put(skb, size), msg->msg_iov, size);
-> >                                                 ^
-> > cc1: some warnings being treated as errors
-> >   CC      lib/net_utils.o - due to target missing
-> > make[5]: *** [net/can/j1939/socket.o] Error 1
-> > make[4]: *** [net/can/j1939] Error 2
-> > make[3]: *** [net/can] Error 2
-> > make[2]: *** [net] Error 2
-> > make[2]: *** Waiting for unfinished jobs....
-> >
-> > ---------------------------------------------------
-> >
-> > Regards
-> > Dinesh Velayudham
-> > L&T Technology Services
-> > dinesh.velayutham@lnttechservices.com
-> > +1-309-740-7691
-> >
-> > -----Original Message-----
-> > From: Kurt Van Dijck [mailto:dev.kurt@vandijck-laurijssen.be]
-> > Sent: Saturday, April 09, 2016 6:40 AM
-> > To: Dinesh Velayudham
-> > Cc: gianluca; linux-can@vger.kernel.org
-> > Subject: Re: J1939 Linux
-> >
-> >
-> > --- Original message ---
-> > > Date: Fri, 8 Apr 2016 14:29:02 +0000
-> > > From: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-> > > To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, gianluca
-> > > <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org"
-> > >  <linux-can@vger.kernel.org>
-> > > Subject: RE: J1939 Linux
-> > >
-> > > Kurt and Eurek,
-> > > I did follow the same steps except that I did not enable J1939 op=
-tion in menuconfig.
-> > > The build was successful and I am able to install the new custom =
-kernel and reboot without any issues.
-> > > Looks like I am facing the problem only when I enable J1939 optio=
-n under menuconfig.
-> > >
-> > > Hope this helps you to narrow down the problem.
-> >
-> > On my Slackware, I get as far as:
-> >
-> >         INSTALL debian/headertmp/usr/include/linux/wimax/ (1 file)
-> >         INSTALL debian/headertmp/usr/include/linux/ (420 files)
-> >         INSTALL debian/headertmp/usr/include/asm/ (65 files)
-> >         Using default distribution of 'unstable' in the changelog
-> >         Install lsb-release or set $KDEB_CHANGELOG_DIST explicitly
-> >         ./scripts/package/builddeb: line 31: dpkg-gencontrol: comma=
-nd not found
-> >         make[1]: *** [deb-pkg] Error 127
-> >         make: *** [deb-pkg] Error 2
-> >
-> > This is anyhow beyond my expertise.
-> > Since it clearly seems to be caused by my can-j1939, I will help to=
- find it. Can you show a bit more output where the build fails?
-> > Possibly with V=3D2 commandline parameter?
-> >
-> > Kurt
-> > L&T Technology Services Ltd
-> >
-> > www.LntTechservices.com<http://www.lnttechservices.com/>
-> >
-> > This Email may contain confidential or privileged information for t=
-he intended recipient (s). If you are not the intended recipient, pleas=
-e do not use or disseminate the information, notify the sender and dele=
-te it from your system.
->=20
+SSBkb27igJl0IHRoaW5rIHRoaXMgd2lsbCB3b3JrIGFzIHRoZSBjaGVycnktcGljayBvbmx5IGNo
+YW5nZXMgdGhlIHNvY2tldC5jIGZpbGUuIFRoZSAiIG1lbWNweV90b2lvdmVjIiBoYXMgYmVlbiB1
+c2VkIGluIGZldyBtb3JlIHBsYWNlcyBlLmcgL2luY2x1ZGUvbGludXgvc2tidWZmLmgsDQoNCg0K
+UmVnYXJkcw0KRGluZXNoIFZlbGF5dWRoYW0NCkwmVCBUZWNobm9sb2d5IFNlcnZpY2VzDQpkaW5l
+c2gudmVsYXl1dGhhbUBsbnR0ZWNoc2VydmljZXMuY29tDQorMS0zMDktNzQwLTc2OTENCg0KLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEt1cnQgVmFuIERpamNrIFttYWlsdG86ZGV2
+Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZV0NClNlbnQ6IFR1ZXNkYXksIEFwcmlsIDEyLCAy
+MDE2IDE6MTYgUE0NClRvOiBEaW5lc2ggVmVsYXl1ZGhhbQ0KQ2M6IGdpYW5sdWNhOyBsaW51eC1j
+YW5Admdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTogSjE5MzkgTGludXgNCg0KSSBhcG9sb2dp
+c2UsIEkgaGF2ZSBnaXZlbiB5b3UgdGhlIHdyb25nIGNvbW1pdCB0byBjaGVycnktcGljay4NCkkg
+Z2F2ZSB0aGUgQVBJIGNoYW5nZSBjb21taXQsIGFuZCB5b3UgbmVlZCB0aGUgb25lIHRoYXQgYWRh
+cHRzIGl0IGZvciBjYW4tajE5MzkuDQpTbyBmb3JnZXQgdGhlIHByZXZpb3VzIGVtYWlsIChyZXNl
+dCB0aGUgZ2l0IEhFQUQpIGFuZCBkbw0KDQogICAgICAgIGdpdCBjaGVycnktcGljayAzNGJiODQw
+DQoNCktpbmQgcmVnYXJkcywNCkt1cnQNCg0KLS0tIE9yaWdpbmFsIG1lc3NhZ2UgLS0tDQo+IERh
+dGU6IFR1ZSwgMTIgQXByIDIwMTYgMTc6NTc6MDIgKzAwMDANCj4gRnJvbTogRGluZXNoIFZlbGF5
+dWRoYW0gPERpbmVzaC5WZWxheXV0aGFtQExuVHRlY2hzZXJ2aWNlcy5jb20+DQo+IFRvOiBLdXJ0
+IFZhbiBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4gQ0M6IGdpYW5s
+dWNhIDxnaWFubHVjYXJlbnppQGV1cmVrLml0PiwgImxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmci
+DQo+ICA8bGludXgtY2FuQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUkU6IEoxOTM5IExp
+bnV4DQo+DQo+IEt1cnQsDQo+IEkgYW0gc3RpbGwgZmFjaW5nIGJ1aWxkIGVycm9yDQo+IDEuIGNo
+ZXJyeSBwaWNrIHRoZSBjb2RlDQo+IDIuIG1ha2UgY2xlYW4NCj4gMy4gbWFrZSBkZWItcGtnDQo+
+DQo+ICQgZ2l0IGNoZXJyeS1waWNrIDdlYWI4ZDllDQo+IFttYXN0ZXIgYmY2ZmU4NV0gbmV3IGhl
+bHBlcjogbWVtY3B5X3RvX21zZygpDQo+ICBBdXRob3I6IEFsIFZpcm8gPHZpcm9AemVuaXYubGlu
+dXgub3JnLnVrPg0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQ0KPg0KPiAkIG1h
+a2UgY2xlYW4NCj4gICBDTEVBTiAgIC4NCj4gICBDTEVBTiAgIGFyY2gveDg2L2tlcm5lbC9jcHUN
+Cj4gICBDTEVBTiAgIGFyY2gveDg2L2tlcm5lbA0KPiAgIENMRUFOICAgYXJjaC94ODYvcHVyZ2F0
+b3J5DQo+ICAgQ0xFQU4gICBhcmNoL3g4Ni9yZWFsbW9kZS9ybQ0KPiAgIENMRUFOICAgYXJjaC94
+ODYvdmRzbw0KPiAgIENMRUFOICAgYXJjaC94ODYvbGliDQo+ICAgQ0xFQU4gICBjcnlwdG8vYXN5
+bW1ldHJpY19rZXlzDQo+ICAgQ0xFQU4gICBkcml2ZXJzL2dwdS9kcm0vcmFkZW9uDQo+ICAgQ0xF
+QU4gICBkcml2ZXJzL25ldC93YW4NCj4gICBDTEVBTiAgIGRyaXZlcnMvc2NzaS9haWM3eHh4DQo+
+ICAgQ0xFQU4gICBkcml2ZXJzL3R0eS92dA0KPiAgIENMRUFOICAgZmlybXdhcmUNCj4gICBDTEVB
+TiAgIGtlcm5lbC9kZWJ1Zy9rZGINCj4gICBDTEVBTiAgIGtlcm5lbC90aW1lDQo+ICAgQ0xFQU4g
+ICBrZXJuZWwNCj4gICBDTEVBTiAgIGxpYi9yYWlkNg0KPiAgIENMRUFOICAgbGliDQo+ICAgQ0xF
+QU4gICBzZWN1cml0eS9hcHBhcm1vcg0KPiAgIENMRUFOICAgc2VjdXJpdHkvc2VsaW51eA0KPiAg
+IENMRUFOICAgdXNyDQo+ICAgQ0xFQU4gICBhcmNoL3g4Ni9ib290L2NvbXByZXNzZWQNCj4gICBD
+TEVBTiAgIGFyY2gveDg2L2Jvb3QNCj4gICBDTEVBTiAgIGFyY2gveDg2L3Rvb2xzDQo+ICAgQ0xF
+QU4gICAudG1wX3ZlcnNpb25zDQo+DQo+ICQgbWFrZSAtaiA0IFY9MiBkZWItcGtnIExPQ0FMVkVS
+U0lPTj0tY3VzdG9tIDI+JjEgfCB0ZWUgYnVpbGRsb2cudHh0DQo+IEluIGZpbGUgaW5jbHVkZWQg
+ZnJvbSBpbmNsdWRlL2NyeXB0by9hbGdhcGkuaDoxODowLA0KPiAgICAgICAgICAgICAgICAgIGZy
+b20gaW5jbHVkZS9jcnlwdG8vaW50ZXJuYWwvaGFzaC5oOjE2LA0KPiAgICAgICAgICAgICAgICAg
+IGZyb20gYXJjaC94ODYvY3J5cHRvL2NyYzMyYy1pbnRlbF9nbHVlLmM6MzE6DQo+IGluY2x1ZGUv
+bGludXgvc2tidWZmLmg6MjcxMDoxOTogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiDigJhtZW1jcHlf
+dG9fbXNn4oCZDQo+ICBzdGF0aWMgaW5saW5lIGludCBtZW1jcHlfdG9fbXNnKHN0cnVjdCBtc2do
+ZHIgKm1zZywgdm9pZCAqZGF0YSwgaW50IGxlbikNCj4gICAgICAgICAgICAgICAgICAgIF4NCj4g
+aW5jbHVkZS9saW51eC9za2J1ZmYuaDoyNzA1OjE5OiBub3RlOiBwcmV2aW91cyBkZWZpbml0aW9u
+IG9mDQo+IOKAmG1lbWNweV90b19tc2figJkgd2FzIGhlcmUgIHN0YXRpYyBpbmxpbmUgaW50IG1l
+bWNweV90b19tc2coc3RydWN0IG1zZ2hkciAqbXNnLCB2b2lkICpkYXRhLCBpbnQgbGVuKQ0KPiAg
+ICAgICAgICAgICAgICAgICAgXg0KPiBpbmNsdWRlL2xpbnV4L3NrYnVmZi5oOiBJbiBmdW5jdGlv
+biDigJhtZW1jcHlfdG9fbXNn4oCZOg0KPiBpbmNsdWRlL2xpbnV4L3NrYnVmZi5oOjI3MTI6Mjog
+ZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmG1lbWNweV90b2lvdmVj
+4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQ0KPiAgIHJldHVybiBt
+ZW1jcHlfdG9pb3ZlYyhtc2ctPm1zZ19pb3YsIGRhdGEsIGxlbik7DQo+ICAgXg0KPiBpbmNsdWRl
+L2xpbnV4L3NrYnVmZi5oOjI3MTI6Mjc6IGVycm9yOiDigJhzdHJ1Y3QgbXNnaGRy4oCZIGhhcyBu
+byBtZW1iZXIgbmFtZWQg4oCYbXNnX2lvduKAmQ0KPiAgIHJldHVybiBtZW1jcHlfdG9pb3ZlYyht
+c2ctPm1zZ19pb3YsIGRhdGEsIGxlbik7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4N
+Cj4gY2MxOiBzb21lIHdhcm5pbmdzIGJlaW5nIHRyZWF0ZWQgYXMgZXJyb3JzDQo+IG1ha2VbNF06
+ICoqKiBbYXJjaC94ODYvY3J5cHRvL2NyYzMyYy1pbnRlbF9nbHVlLm9dIEVycm9yIDENCj4gbWFr
+ZVszXTogKioqIFthcmNoL3g4Ni9jcnlwdG9dIEVycm9yIDINCj4gbWFrZVszXTogKioqIFdhaXRp
+bmcgZm9yIHVuZmluaXNoZWQgam9icy4uLi4NCj4gICBDQyAgICAgIGtlcm5lbC9leGVjX2RvbWFp
+bi5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAgQ0MgICAgICBhcmNoL3g4Ni9pYTMyL2lh
+MzJfc2lnbmFsLm8gLSBkdWUgdG8gdGFyZ2V0IG1pc3NpbmcNCj4gICBDQyAgICAgIGluaXQvZG9f
+bW91bnRzLm8gLSBkdWUgdG8gdGFyZ2V0IG1pc3NpbmcNCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9t
+IGluY2x1ZGUvbGludXgvbmV0ZmlsdGVyLmg6NTowLA0KPiAgICAgICAgICAgICAgICAgIGZyb20g
+aW5jbHVkZS9uZXQvbmV0bnMvbmV0ZmlsdGVyLmg6NSwNCj4gICAgICAgICAgICAgICAgICBmcm9t
+IGluY2x1ZGUvbmV0L25ldF9uYW1lc3BhY2UuaDoyMiwNCj4gICAgICAgICAgICAgICAgICBmcm9t
+IGluY2x1ZGUvbGludXgvaW5pdF90YXNrLmg6MTUsDQo+ICAgICAgICAgICAgICAgICAgZnJvbSBr
+ZXJuZWwvZm9yay5jOjUzNDoNCj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDoyNzEwOjE5OiBlcnJv
+cjogcmVkZWZpbml0aW9uIG9mIOKAmG1lbWNweV90b19tc2figJkNCj4gIHN0YXRpYyBpbmxpbmUg
+aW50IG1lbWNweV90b19tc2coc3RydWN0IG1zZ2hkciAqbXNnLCB2b2lkICpkYXRhLCBpbnQgbGVu
+KQ0KPiAgICAgICAgICAgICAgICAgICAgXg0KPiBpbmNsdWRlL2xpbnV4L3NrYnVmZi5oOjI3MDU6
+MTk6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2YNCj4g4oCYbWVtY3B5X3RvX21zZ+KAmSB3
+YXMgaGVyZSAgc3RhdGljIGlubGluZSBpbnQgbWVtY3B5X3RvX21zZyhzdHJ1Y3QgbXNnaGRyICpt
+c2csIHZvaWQgKmRhdGEsIGludCBsZW4pDQo+ICAgICAgICAgICAgICAgICAgICBeDQo+IGluY2x1
+ZGUvbGludXgvc2tidWZmLmg6IEluIGZ1bmN0aW9uIOKAmG1lbWNweV90b19tc2figJk6DQo+IGlu
+Y2x1ZGUvbGludXgvc2tidWZmLmg6MjcxMjoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24g
+b2YgZnVuY3Rpb24g4oCYbWVtY3B5X3RvaW92ZWPigJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rp
+b24tZGVjbGFyYXRpb25dDQo+ICAgcmV0dXJuIG1lbWNweV90b2lvdmVjKG1zZy0+bXNnX2lvdiwg
+ZGF0YSwgbGVuKTsNCj4gICBeDQo+IGluY2x1ZGUvbGludXgvc2tidWZmLmg6MjcxMjoyNzogZXJy
+b3I6IOKAmHN0cnVjdCBtc2doZHLigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhtc2dfaW924oCZ
+DQo+ICAgcmV0dXJuIG1lbWNweV90b2lvdmVjKG1zZy0+bXNnX2lvdiwgZGF0YSwgbGVuKTsNCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgXg0KPiBjYzE6IHNvbWUgd2FybmluZ3MgYmVpbmcg
+dHJlYXRlZCBhcyBlcnJvcnMNCj4gbWFrZVszXTogKioqIFtrZXJuZWwvZm9yay5vXSBFcnJvciAx
+DQo+IG1ha2VbMl06ICoqKiBba2VybmVsXSBFcnJvciAyDQo+IG1ha2VbMl06ICoqKiBXYWl0aW5n
+IGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uDQo+ICAgQ0MgICAgICBpbml0L2RvX21vdW50c19yZC5v
+IC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAgQ0MgICAgICBhcmNoL3g4Ni9pYTMyL25vc3lz
+Y2FsbC5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAgQ0MgICAgICBhcmNoL3g4Ni9pYTMy
+L3N5c2NhbGxfaWEzMi5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAgQ0MgICAgICBpbml0
+L2RvX21vdW50c19pbml0cmQubyAtIGR1ZSB0byB0YXJnZXQgbWlzc2luZw0KPiAgIENDICAgICAg
+YXJjaC94ODYvaWEzMi9hdWRpdC5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAgTEQgICAg
+ICBhcmNoL3g4Ni9pYTMyL2J1aWx0LWluLm8gLSBkdWUgdG8gdGFyZ2V0IG1pc3NpbmcNCj4gbWFr
+ZVsyXTogKioqIFthcmNoL3g4Nl0gRXJyb3IgMg0KPiAgIENDICAgICAgaW5pdC9kb19tb3VudHNf
+bWQubyAtIGR1ZSB0byB0YXJnZXQgbWlzc2luZw0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW5j
+bHVkZS9saW51eC9pY21wdjYuaDo0OjAsDQo+ICAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRl
+L2xpbnV4L2lwdjYuaDo2MywNCj4gICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbmV0L2lw
+djYuaDoxNiwNCj4gICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbGludXgvc3VucnBjL2Ns
+bnQuaDoyNywNCj4gICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbGludXgvbmZzX2ZzLmg6
+MzAsDQo+ICAgICAgICAgICAgICAgICAgZnJvbSBpbml0L2RvX21vdW50cy5jOjMyOg0KPiBpbmNs
+dWRlL2xpbnV4L3NrYnVmZi5oOjI3MTA6MTk6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCYbWVt
+Y3B5X3RvX21zZ+KAmQ0KPiAgc3RhdGljIGlubGluZSBpbnQgbWVtY3B5X3RvX21zZyhzdHJ1Y3Qg
+bXNnaGRyICptc2csIHZvaWQgKmRhdGEsIGludCBsZW4pDQo+ICAgICAgICAgICAgICAgICAgICBe
+DQo+IGluY2x1ZGUvbGludXgvc2tidWZmLmg6MjcwNToxOTogbm90ZTogcHJldmlvdXMgZGVmaW5p
+dGlvbiBvZg0KPiDigJhtZW1jcHlfdG9fbXNn4oCZIHdhcyBoZXJlICBzdGF0aWMgaW5saW5lIGlu
+dCBtZW1jcHlfdG9fbXNnKHN0cnVjdCBtc2doZHIgKm1zZywgdm9pZCAqZGF0YSwgaW50IGxlbikN
+Cj4gICAgICAgICAgICAgICAgICAgIF4NCj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDogSW4gZnVu
+Y3Rpb24g4oCYbWVtY3B5X3RvX21zZ+KAmToNCj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDoyNzEy
+OjI6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhtZW1jcHlfdG9p
+b3ZlY+KAmSBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0NCj4gICByZXR1
+cm4gbWVtY3B5X3RvaW92ZWMobXNnLT5tc2dfaW92LCBkYXRhLCBsZW4pOw0KPiAgIF4NCj4gaW5j
+bHVkZS9saW51eC9za2J1ZmYuaDoyNzEyOjI3OiBlcnJvcjog4oCYc3RydWN0IG1zZ2hkcuKAmSBo
+YXMgbm8gbWVtYmVyIG5hbWVkIOKAmG1zZ19pb3bigJkNCj4gICByZXR1cm4gbWVtY3B5X3RvaW92
+ZWMobXNnLT5tc2dfaW92LCBkYXRhLCBsZW4pOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBeDQo+ICAgQ0MgICAgICBpbml0L2luaXRyYW1mcy5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5n
+DQo+ICAgQ0MgICAgICBpbml0L2NhbGlicmF0ZS5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+
+ICAgQ0MgICAgICBpbml0L2luaXRfdGFzay5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ICAg
+Q0MgICAgICBpbml0L3ZlcnNpb24ubyAtIGR1ZSB0byB0YXJnZXQgbWlzc2luZw0KPiBjYzE6IHNv
+bWUgd2FybmluZ3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4gbWFrZVszXTogKioqIFtpbml0
+L2RvX21vdW50cy5vXSBFcnJvciAxDQo+IG1ha2VbM106ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlz
+aGVkIGpvYnMuLi4uDQo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBpbmNsdWRlL2xpbnV4L25ldGZp
+bHRlci5oOjU6MCwNCj4gICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbmV0L25ldG5zL25l
+dGZpbHRlci5oOjUsDQo+ICAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL25ldC9uZXRfbmFt
+ZXNwYWNlLmg6MjIsDQo+ICAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L2luaXRf
+dGFzay5oOjE1LA0KPiAgICAgICAgICAgICAgICAgIGZyb20gaW5pdC9pbml0X3Rhc2suYzoxOg0K
+PiBpbmNsdWRlL2xpbnV4L3NrYnVmZi5oOjI3MTA6MTk6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg
+4oCYbWVtY3B5X3RvX21zZ+KAmQ0KPiAgc3RhdGljIGlubGluZSBpbnQgbWVtY3B5X3RvX21zZyhz
+dHJ1Y3QgbXNnaGRyICptc2csIHZvaWQgKmRhdGEsIGludCBsZW4pDQo+ICAgICAgICAgICAgICAg
+ICAgICBeDQo+IGluY2x1ZGUvbGludXgvc2tidWZmLmg6MjcwNToxOTogbm90ZTogcHJldmlvdXMg
+ZGVmaW5pdGlvbiBvZg0KPiDigJhtZW1jcHlfdG9fbXNn4oCZIHdhcyBoZXJlICBzdGF0aWMgaW5s
+aW5lIGludCBtZW1jcHlfdG9fbXNnKHN0cnVjdCBtc2doZHIgKm1zZywgdm9pZCAqZGF0YSwgaW50
+IGxlbikNCj4gICAgICAgICAgICAgICAgICAgIF4NCj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDog
+SW4gZnVuY3Rpb24g4oCYbWVtY3B5X3RvX21zZ+KAmToNCj4gaW5jbHVkZS9saW51eC9za2J1ZmYu
+aDoyNzEyOjI6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhtZW1j
+cHlfdG9pb3ZlY+KAmSBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0NCj4g
+ICByZXR1cm4gbWVtY3B5X3RvaW92ZWMobXNnLT5tc2dfaW92LCBkYXRhLCBsZW4pOw0KPiAgIF4N
+Cj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDoyNzEyOjI3OiBlcnJvcjog4oCYc3RydWN0IG1zZ2hk
+cuKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmG1zZ19pb3bigJkNCj4gICByZXR1cm4gbWVtY3B5
+X3RvaW92ZWMobXNnLT5tc2dfaW92LCBkYXRhLCBsZW4pOw0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBeDQo+IGNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0K
+PiBtYWtlWzNdOiAqKiogW2luaXQvaW5pdF90YXNrLm9dIEVycm9yIDENCj4gbWFrZVsyXTogKioq
+IFtpbml0XSBFcnJvciAyDQo+IG1ha2VbMV06ICoqKiBbZGViLXBrZ10gRXJyb3IgMg0KPiBtYWtl
+OiAqKiogW2RlYi1wa2ddIEVycm9yIDINCj4NCj4NCj4gUmVnYXJkcw0KPiBEaW5lc2ggVmVsYXl1
+ZGhhbQ0KPiBMJlQgVGVjaG5vbG9neSBTZXJ2aWNlcw0KPiBkaW5lc2gudmVsYXl1dGhhbUBsbnR0
+ZWNoc2VydmljZXMuY29tDQo+ICsxLTMwOS03NDAtNzY5MQ0KPg0KPiAtLS0tLU9yaWdpbmFsIE1l
+c3NhZ2UtLS0tLQ0KPiBGcm9tOiBLdXJ0IFZhbiBEaWpjayBbbWFpbHRvOmRldi5rdXJ0QHZhbmRp
+amNrLWxhdXJpanNzZW4uYmVdDQo+IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDEyLCAyMDE2IDM6MjAg
+QU0NCj4gVG86IERpbmVzaCBWZWxheXVkaGFtDQo+IENjOiBnaWFubHVjYTsgbGludXgtY2FuQHZn
+ZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogSjE5MzkgTGludXgNCj4NCj4gT2ssIEkgc2Vl
+Lg0KPiBJdCBoYWQgbm90aGluZyB0byBkbyB3aXRoICJtYWtlIGRlYi1wa2ciLCBpdCBpcyBhIHBy
+b2JsZW0gdGhhdCBJDQo+IGRpZG4ndCBzZWUgdGhhdCBjb21taXQgN2VhYjhkOWUgaXMgbmVjZXNz
+YXJ5IGFzIG9mIHYzLjE5LCB3aGVyZSBJIG9ubHkNCj4gc2F3IHRoYXQgdjQuMSBuZWVkZWQgaXQu
+DQo+DQo+IFBsZWFzZSBkbzoNCj4NCj4gICAgICAgICAkIGdpdCBjaGVycnktcGljayA3ZWFiOGQ5
+ZQ0KPg0KPiBhbmQgdGhlIG1ha2Ugc2hvdWxkIHN1Y2NlZWQuDQo+DQo+IFNvcnJ5IGZvciBub3Qg
+c2VlaW5nIHRoaXMuIEkgd2lsbCB0cnkgdG8gcHJlcGFyZSBhIGoxOTM5ZC12My4xOQ0KPiBicmFu
+Y2gsIHdoaWNoIHdpbGwgaGF2ZSB0aGF0IGNvbW1pdCBpbmNsdWRlZC4NCj4NCj4gS2luZCByZWdh
+cmRzLA0KPiBLdXJ0DQo+DQo+IC0tLSBPcmlnaW5hbCBtZXNzYWdlIC0tLQ0KPiA+IERhdGU6IE1v
+biwgMTEgQXByIDIwMTYgMjI6MTE6MTEgKzAwMDANCj4gPiBGcm9tOiBEaW5lc2ggVmVsYXl1ZGhh
+bSA8RGluZXNoLlZlbGF5dXRoYW1ATG5UdGVjaHNlcnZpY2VzLmNvbT4NCj4gPiBUbzogS3VydCBW
+YW4gRGlqY2sgPGRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4uYmU+DQo+ID4gQ0M6IGdpYW5s
+dWNhIDxnaWFubHVjYXJlbnppQGV1cmVrLml0PiwgImxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmci
+DQo+ID4gIDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiA+IFN1YmplY3Q6IFJFOiBKMTkz
+OSBMaW51eA0KPiA+DQo+ID4gS3VydCwNCj4gPiBJIGhhdmUgYXR0YWNoZWQgdGV4dCBmaWxlIHRo
+YXQgY29udGFpbnMgb3V0cHV0IG9mIG1ha2UgY29tbWFuZCB3aXRoDQo+ID4gVj0yLiBJbmNhc2Ug
+aWYgeW91IGFyZSBub3QgYWJsZSB0byBzZWUgdGhlIGF0dGFjaGVkIHRleHQgZmlsZS4gQmVsb3cN
+Cj4gPiBpcyBwYXJ0IG9mIG1ha2UgY29tbWFuZCBvdXRwdXQNCj4gPiAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4gICBDQyAgICAgIGxpYi9zdHJuY3B5X2Zyb21fdXNl
+ci5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ID4gICBDQyBbTV0gIG5ldC9jYW4vajE5Mzkv
+c29ja2V0Lm8gLSBkdWUgdG8gdGFyZ2V0IG1pc3NpbmcNCj4gPiAgIENDICAgICAgbGliL3N0cm5s
+ZW5fdXNlci5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ID4gbmV0L2Nhbi9qMTkzOS9zb2Nr
+ZXQuYzogSW4gZnVuY3Rpb24g4oCYajE5Mzlza19yZWN2bXNn4oCZOg0KPiA+IG5ldC9jYW4vajE5
+Mzkvc29ja2V0LmM6NjIxOjI6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlv
+biDigJhtZW1jcHlfdG9pb3ZlY+KAmSBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJh
+dGlvbl0NCj4gPiAgIHJldCA9IG1lbWNweV90b2lvdmVjKG1zZy0+bXNnX2lvdiwgc2tiLT5kYXRh
+LCBzaXplKTsNCj4gPiAgIF4NCj4gPiBuZXQvY2FuL2oxOTM5L3NvY2tldC5jOjYyMToyNjogZXJy
+b3I6IOKAmHN0cnVjdCBtc2doZHLigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhtc2dfaW924oCZ
+DQo+ID4gICByZXQgPSBtZW1jcHlfdG9pb3ZlYyhtc2ctPm1zZ19pb3YsIHNrYi0+ZGF0YSwgc2l6
+ZSk7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICBeDQo+ID4gbmV0L2Nhbi9qMTkzOS9z
+b2NrZXQuYzogSW4gZnVuY3Rpb24g4oCYajE5Mzlza19zZW5kbXNn4oCZOg0KPiA+IG5ldC9jYW4v
+ajE5Mzkvc29ja2V0LmM6NzA4OjQ4OiBlcnJvcjog4oCYc3RydWN0IG1zZ2hkcuKAmSBoYXMgbm8g
+bWVtYmVyIG5hbWVkIOKAmG1zZ19pb3bigJkNCj4gPiAgIHJldCA9IG1lbWNweV9mcm9taW92ZWMo
+c2tiX3B1dChza2IsIHNpemUpLCBtc2ctPm1zZ19pb3YsIHNpemUpOw0KPiA+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4NCj4gPiBjYzE6IHNvbWUgd2Fy
+bmluZ3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4gPiAgIENDICAgICAgbGliL25ldF91dGls
+cy5vIC0gZHVlIHRvIHRhcmdldCBtaXNzaW5nDQo+ID4gbWFrZVs1XTogKioqIFtuZXQvY2FuL2ox
+OTM5L3NvY2tldC5vXSBFcnJvciAxDQo+ID4gbWFrZVs0XTogKioqIFtuZXQvY2FuL2oxOTM5XSBF
+cnJvciAyDQo+ID4gbWFrZVszXTogKioqIFtuZXQvY2FuXSBFcnJvciAyDQo+ID4gbWFrZVsyXTog
+KioqIFtuZXRdIEVycm9yIDINCj4gPiBtYWtlWzJdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hl
+ZCBqb2JzLi4uLg0KPiA+DQo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tDQo+ID4NCj4gPiBSZWdhcmRzDQo+ID4gRGluZXNoIFZlbGF5dWRoYW0N
+Cj4gPiBMJlQgVGVjaG5vbG9neSBTZXJ2aWNlcw0KPiA+IGRpbmVzaC52ZWxheXV0aGFtQGxudHRl
+Y2hzZXJ2aWNlcy5jb20NCj4gPiArMS0zMDktNzQwLTc2OTENCj4gPg0KPiA+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3Vy
+dEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlXQ0KPiA+IFNlbnQ6IFNhdHVyZGF5LCBBcHJpbCAwOSwg
+MjAxNiA2OjQwIEFNDQo+ID4gVG86IERpbmVzaCBWZWxheXVkaGFtDQo+ID4gQ2M6IGdpYW5sdWNh
+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+ID4gU3ViamVjdDogUmU6IEoxOTM5IExpbnV4
+DQo+ID4NCj4gPg0KPiA+IC0tLSBPcmlnaW5hbCBtZXNzYWdlIC0tLQ0KPiA+ID4gRGF0ZTogRnJp
+LCA4IEFwciAyMDE2IDE0OjI5OjAyICswMDAwDQo+ID4gPiBGcm9tOiBEaW5lc2ggVmVsYXl1ZGhh
+bSA8RGluZXNoLlZlbGF5dXRoYW1ATG5UdGVjaHNlcnZpY2VzLmNvbT4NCj4gPiA+IFRvOiBLdXJ0
+IFZhbiBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4sIGdpYW5sdWNhDQo+
+ID4gPiA8Z2lhbmx1Y2FyZW56aUBldXJlay5pdD4sICJsaW51eC1jYW5Admdlci5rZXJuZWwub3Jn
+Ig0KPiA+ID4gIDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiA+ID4gU3ViamVjdDogUkU6
+IEoxOTM5IExpbnV4DQo+ID4gPg0KPiA+ID4gS3VydCBhbmQgRXVyZWssDQo+ID4gPiBJIGRpZCBm
+b2xsb3cgdGhlIHNhbWUgc3RlcHMgZXhjZXB0IHRoYXQgSSBkaWQgbm90IGVuYWJsZSBKMTkzOSBv
+cHRpb24gaW4gbWVudWNvbmZpZy4NCj4gPiA+IFRoZSBidWlsZCB3YXMgc3VjY2Vzc2Z1bCBhbmQg
+SSBhbSBhYmxlIHRvIGluc3RhbGwgdGhlIG5ldyBjdXN0b20ga2VybmVsIGFuZCByZWJvb3Qgd2l0
+aG91dCBhbnkgaXNzdWVzLg0KPiA+ID4gTG9va3MgbGlrZSBJIGFtIGZhY2luZyB0aGUgcHJvYmxl
+bSBvbmx5IHdoZW4gSSBlbmFibGUgSjE5Mzkgb3B0aW9uIHVuZGVyIG1lbnVjb25maWcuDQo+ID4g
+Pg0KPiA+ID4gSG9wZSB0aGlzIGhlbHBzIHlvdSB0byBuYXJyb3cgZG93biB0aGUgcHJvYmxlbS4N
+Cj4gPg0KPiA+IE9uIG15IFNsYWNrd2FyZSwgSSBnZXQgYXMgZmFyIGFzOg0KPiA+DQo+ID4gICAg
+ICAgICBJTlNUQUxMIGRlYmlhbi9oZWFkZXJ0bXAvdXNyL2luY2x1ZGUvbGludXgvd2ltYXgvICgx
+IGZpbGUpDQo+ID4gICAgICAgICBJTlNUQUxMIGRlYmlhbi9oZWFkZXJ0bXAvdXNyL2luY2x1ZGUv
+bGludXgvICg0MjAgZmlsZXMpDQo+ID4gICAgICAgICBJTlNUQUxMIGRlYmlhbi9oZWFkZXJ0bXAv
+dXNyL2luY2x1ZGUvYXNtLyAoNjUgZmlsZXMpDQo+ID4gICAgICAgICBVc2luZyBkZWZhdWx0IGRp
+c3RyaWJ1dGlvbiBvZiAndW5zdGFibGUnIGluIHRoZSBjaGFuZ2Vsb2cNCj4gPiAgICAgICAgIElu
+c3RhbGwgbHNiLXJlbGVhc2Ugb3Igc2V0ICRLREVCX0NIQU5HRUxPR19ESVNUIGV4cGxpY2l0bHkN
+Cj4gPiAgICAgICAgIC4vc2NyaXB0cy9wYWNrYWdlL2J1aWxkZGViOiBsaW5lIDMxOiBkcGtnLWdl
+bmNvbnRyb2w6IGNvbW1hbmQgbm90IGZvdW5kDQo+ID4gICAgICAgICBtYWtlWzFdOiAqKiogW2Rl
+Yi1wa2ddIEVycm9yIDEyNw0KPiA+ICAgICAgICAgbWFrZTogKioqIFtkZWItcGtnXSBFcnJvciAy
+DQo+ID4NCj4gPiBUaGlzIGlzIGFueWhvdyBiZXlvbmQgbXkgZXhwZXJ0aXNlLg0KPiA+IFNpbmNl
+IGl0IGNsZWFybHkgc2VlbXMgdG8gYmUgY2F1c2VkIGJ5IG15IGNhbi1qMTkzOSwgSSB3aWxsIGhl
+bHAgdG8gZmluZCBpdC4gQ2FuIHlvdSBzaG93IGEgYml0IG1vcmUgb3V0cHV0IHdoZXJlIHRoZSBi
+dWlsZCBmYWlscz8NCj4gPiBQb3NzaWJseSB3aXRoIFY9MiBjb21tYW5kbGluZSBwYXJhbWV0ZXI/
+DQo+ID4NCj4gPiBLdXJ0DQo+ID4gTCZUIFRlY2hub2xvZ3kgU2VydmljZXMgTHRkDQo+ID4NCj4g
+PiB3d3cuTG50VGVjaHNlcnZpY2VzLmNvbTxodHRwOi8vd3d3LmxudHRlY2hzZXJ2aWNlcy5jb20v
+Pg0KPiA+DQo+ID4gVGhpcyBFbWFpbCBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgb3IgcHJpdmls
+ZWdlZCBpbmZvcm1hdGlvbiBmb3IgdGhlIGludGVuZGVkIHJlY2lwaWVudCAocykuIElmIHlvdSBh
+cmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBkbyBub3QgdXNlIG9yIGRpc3Nl
+bWluYXRlIHRoZSBpbmZvcm1hdGlvbiwgbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBpdCBm
+cm9tIHlvdXIgc3lzdGVtLg0KPg0KTCZUIFRlY2hub2xvZ3kgU2VydmljZXMgTHRkDQoNCnd3dy5M
+bnRUZWNoc2VydmljZXMuY29tPGh0dHA6Ly93d3cubG50dGVjaHNlcnZpY2VzLmNvbS8+DQoNClRo
+aXMgRW1haWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRp
+b24gZm9yIHRoZSBpbnRlbmRlZCByZWNpcGllbnQgKHMpLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50
+ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgZG8gbm90IHVzZSBvciBkaXNzZW1pbmF0ZSB0aGUgaW5m
+b3JtYXRpb24sIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxldGUgaXQgZnJvbSB5b3VyIHN5c3Rl
+bS4NCg==
