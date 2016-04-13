@@ -1,38 +1,37 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: No response from candump
-Date: Wed, 13 Apr 2016 18:48:15 +0200
-Message-ID: <570E784F.10909@hartkopp.net>
-References: <AAA1503F-C574-46B9-A465-9F423DCFA872@gmail.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939 Linux
+Date: Wed, 13 Apr 2016 20:33:25 +0200
+Message-ID: <20160413183325.GA27477@airbook>
+References: <20160408090444.GA5485@airbook.vandijck-laurijssen.be>
+ <570793F6.7080808@eurek.it>
+ <4E8D1C61-042C-4AF2-99AF-410CEEBA6861@vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA87095C7B@POCITMSEXMB05.LntUniverse.com>
+ <20160409114019.GA8567@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA8709986A@POCITMSEXMB05.LntUniverse.com>
+ <20160412082020.GA19875@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA8709A50F@POCITMSEXMB05.LntUniverse.com>
+ <20160412181540.GE19875@airbook.vandijck-laurijssen.be>
+ <03B271BE48E2554EB34508DAB79DBABA8709B02E@POCITMSEXMB05.LntUniverse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:35546 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751131AbcDMQs0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Apr 2016 12:48:26 -0400
-In-Reply-To: <AAA1503F-C574-46B9-A465-9F423DCFA872@gmail.com>
+Received: from relay-b01.edpnet.be ([212.71.1.221]:33090 "EHLO
+	relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754913AbcDMSgX (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 13 Apr 2016 14:36:23 -0400
+Content-Disposition: inline
+In-Reply-To: <03B271BE48E2554EB34508DAB79DBABA8709B02E@POCITMSEXMB05.LntUniverse.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kay Cee <unee0x@gmail.com>, linux-can@vger.kernel.org
+To: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
+Cc: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-What does
+Hi,
 
-	ip -details link show can0
+> Kurt,
+> Do you have v3.19 for me to build and test?
 
-say?
+I did have the intention, but I couldn't find an available timeslot
+today. I'm sure I can do tomorrow.
 
-On 04/13/2016 12:30 PM, kay Cee wrote:
-> I need help getting can signals to show with candump. As of now, when I run candump can0, I get a blank.
->
-> My current setup is a Beaglebone Black and a SN65HVD230 transceiver connected to pins 24 and 26 , for can rx and tx respectively.
->
-> Please, point me in the right direction to get my setup running correctly.
->
->
->
-> Sent from my iPhone--
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+Kurt
