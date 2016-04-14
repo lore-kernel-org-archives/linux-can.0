@@ -1,63 +1,95 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: bit-timing and sample point
-Date: Thu, 14 Apr 2016 12:46:57 +0000
-Message-ID: <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: bit-timing and sample point
+Date: Thu, 14 Apr 2016 14:57:22 +0200
+Message-ID: <570F93B2.1010804@pengutronix.de>
 References: <570E205B.7030900@pengutronix.de>
  <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
  <570F7547.8030805@pengutronix.de>
  <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
  <570F8DCA.4090701@pengutronix.de>
+ <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="LMAMTtD8rgS1k7x7Mgp1aHInLmkoidtMp"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor4.renesas.com ([210.160.252.174]:62564 "EHLO
-	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1752475AbcDNMrK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Apr 2016 08:47:10 -0400
-In-Reply-To: <570F8DCA.4090701@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40118 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755008AbcDNM5e (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Apr 2016 08:57:34 -0400
+In-Reply-To: <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, linux-can <linux-can@vger.kernel.org>
 
-PiA+PiBUaGlzIGV4YW1wbGUgaWxsdXN0cmF0ZXMgdGhlICJzbGlnaHRseSI6DQo+ID4+DQo+ID4+
-Pj4+PiBub21pbmFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVhbCBCaXRydCAg
-IG5vbSAgcmVhbA0KPiBTYW1wUA0KPiA+Pj4+Pj4gQml0cmF0ZSBUUVtuc10gUHJTIFBoUzEgUGhT
-MiBTSlcgQlJQIEJpdHJhdGUgRXJyb3IgU2FtcFAgU2FtcFANCj4gRXJyb3IgQlRSMCBCVFIxDQo+
-ID4+Pj4+PiAgODAwMDAwICAgIDE4MCAgIDIgICAgMiAgICAyICAgMSAgMTIgIDc5MzY1MCAgMC44
-JSA4MC4wJSA3MS40JQ0KPiAxMC44JSAweDBiIDB4MTMNCj4gPj4+Pj4+ICA4MDAwMDAgICAgIDkw
-ICAgNSAgICA1ICAgIDMgICAxICAgNiAgNzkzNjUwICAwLjglIDgwLjAlIDc4LjUlDQo+IDEuOSUg
-MHgwNSAweDI5DQo+ID4+Pj4+PiAgODAwMDAwICAgICA2MCAgIDggICAgOCAgICA0ICAgMSAgIDQg
-IDc5MzY1MCAgMC44JSA4MC4wJSA4MC45JQ0KPiAxLjElIDB4MDMgMHgzZg0KPiA+Pg0KPiA+PiBG
-b3IgODAwa2JpdC9zIHRoZSBub21pbmFsIHNhbXBsZSBwb2ludCBpcyA4MCUuDQo+ID4+IFRoZSBv
-cmlnaW5hbCBhbGdvcml0aG0gY2hvb3NlcyA3MS40JS4NCj4gPj4gVGhlIGltcHJvdmVkIChidXQg
-c3RheXMgYmVsb3cpIGNob29zZXMgNzguNSUgKGVycm9yPTEuOSUpLg0KPiA+PiBCdXQgdGhlcmUg
-ZXhpc3RzIGEgc2FtcGxlIHBvaW50IHdpdGggYSBzbWFsbGVyIGVycm9yOiA4MC45JQ0KPiAoZXJy
-b3I9MS4xJSkuDQo+ID4NCj4gPiBJIHVuZGVyc3Rvb2QgdGhlIGV4YW1wbGUgOi0pDQo+ID4gV2hh
-dCBJIG1lYW50IHdpdGggInNsaWdodGx5IiBiZWluZyBoYXJkIHRvIHF1YW50aWZ5IHdhcyBlc3Bl
-Y2lhbGx5DQo+ID4gd2l0aCByZWdhcmQgdG8gdGhlIGJ1cyBjaGFyYWN0ZXJpc3RpY3MuIFdoYXQg
-aXMgdGhlIG1heGltYWwNCj4gPiBwcm9wYWdhdGlvbiBkZWxheSBvbiB0aGUgYnVzPw0KPiA+IFRo
-ZXJlIGlzIGEgcG9pbnQgd2l0aGluIGEgbm9kZSdzIGJpdC10aW1lIGFmdGVyIHdoaWNoIGl0IGlz
-IG5vdA0KPiA+IGNlcnRhaW4gdGhhdCByZW1vdGVzIG1heSBoYXZlIG1vdmVkIG9uIHRvIHRoZSBu
-ZXh0IGJpdC10aW1lLg0KPiA+IElmIHlvdSBhbGxvdyBzYW1wbGVwb2ludCBkZXZpYXRpb25zIHRv
-IGJvdGggc2lkZXMsIHRoZW4geW91IGFzc3VtZQ0KPiA+IHRoYXQgdGhlIGFkdmVydGlzZWQgc2Ft
-cGxlIHBvaW50IGlzIGluIHRoZSBtaWRkbGUgb2YgdGhlIHRpbWUgZnJhZ21lbnQNCj4gPiB3aGVy
-ZSBzYW1wbGluZyBpcyBpZGVhbC4gSWYgeW91IGFsbG93IHNhbXBsZXBvaW50IGRldmlhdGlvbnMg
-b25seSB0bw0KPiA+IGJlbG93LCB0aGVuIHlvdSBhc3N1bWUgdGhhdCB0aGUgYWR2ZXJ0aXNlZCBz
-YW1wbGUgcG9pbnQgaXMgdGhlIGNvcm5lcg0KPiA+IGNhc2UgYW5kIHJhaXNpbmcgaXQgd291bGQg
-aW50cm9kdWNlIHRyb3VibGVzLg0KPiA+IEJvdGggYXNzdW1wdGlvbnMgYXJlIHdyb25nLCB0aGUg
-dHJ1dGggaXMgaW4gYmV0d2VlbiwgYW5kIHRoZQ0KPiA+IGFkdmVydGlzZWQgc2FtcGxlIHBvaW50
-cyBtb3N0bHkgYXJlICJydWxlcyBvZiB0aHVtYiIuDQo+ID4gSU1ITywgdGhlIGFzc3VtcHRpb24g
-b2YgZ29pbmcgYmVsb3cgb25seSBtYWtlcyBzZW5zZS4NCj4gPiBPZiBjb3Vyc2UsIHlvdSBjYW4g
-KGVhc2lseSkgZmluZCBleGFtcGxlcyB3aGVyZSB0aGUgc2FtcGxlIHBvaW50IG1heQ0KPiA+IGdy
-b3cgb3ZlciBpdC4NCj4gPiBJZiBJIHVuZGVyc3RhbmQgdGhlIGFsZ29yaXRtIGNvcnJlY3RseSwg
-dGhlcmUncyBubyBsaW1pdGF0aW9uIGluIGhvdw0KPiA+IGZhciBiZXlvbmQgdGhlIGFkdmVydGlz
-ZWQgc2FtcGxlIHBvaW50IHlvdSBtYXkgZ2V0LCBhcyBsb25nIGFzIGl0J3MNCj4gPiB0aGUgY2xv
-c2VzdC4gQW5kIHRoZXJlLCBJIHRoaW5rLCB5b3Ugc2hvdWxkIHB1dCBhIGxpbWl0LCBhbmQgdW50
-aWwNCj4gPiBzb21lb25lIGNvbWVzIHVwIHdpdGggYSBiZXR0ZXIgb25lLCBJIGp1c3QgdGFrZSAw
-IGFzIGxpbWl0LCBtZWFuaW5nDQo+ID4geW91IGdvIG9ubHkgYmVsb3cgOi0pDQo+IA0KPiBUaGFu
-a3MgZm9yIHlvdXIgdGhvdWdodHMgSSdsbCB1c2UgYWxnb3JpdGhtIDIgdGhlbi4NCg0KSWYgbm90
-IGRvbmUgYWxyZWFkeSwgaXMgaXQgd29ydGggY29tcGFyaW5nIHRoZSBhbGdvcml0aG0gZm9yIGRi
-aXRyYXRlcyAoZmQgY2FzZSkgdG9vIGFzIHNhbWUgY29kZSBpcyB1c2VkPyANCg0KVGhhbmtzLA0K
-UmFtZXNoDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LMAMTtD8rgS1k7x7Mgp1aHInLmkoidtMp
+Content-Type: multipart/mixed; boundary="5mG89qkchw0dpo5R6D80v8Rl7mOJMeFQT"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <570F93B2.1010804@pengutronix.de>
+Subject: Re: bit-timing and sample point
+References: <570E205B.7030900@pengutronix.de>
+ <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
+ <570F7547.8030805@pengutronix.de>
+ <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
+ <570F8DCA.4090701@pengutronix.de>
+ <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+In-Reply-To: <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+
+--5mG89qkchw0dpo5R6D80v8Rl7mOJMeFQT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 04/14/2016 02:46 PM, Ramesh Shanmugasundaram wrote:
+>> Thanks for your thoughts I'll use algorithm 2 then.
+>=20
+> If not done already, is it worth comparing the algorithm for
+> dbitrates (fd case) too as same code is used?
+
+The reworked algorithm will not pick worse values than the original one.
+However, I'll update the tool for dbitrates. Are there any common
+dbitrates? The array if common bitrates is:
+
+> static unsigned int common_bitrates[] =3D {
+> 	1000000,
+> 	800000,
+> 	500000,
+> 	250000,
+> 	125000,
+> 	100000,
+> 	50000,
+> 	20000,
+> 	10000,
+> };
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--5mG89qkchw0dpo5R6D80v8Rl7mOJMeFQT--
+
+--LMAMTtD8rgS1k7x7Mgp1aHInLmkoidtMp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXD5OyAAoJED07qiWsqSVqP6gIAL7ALic4TfwxXuGxqSxbDL6A
+xzeBNw45RYCL/doLN+4cjWZ42wMyd8ZRlecyZmdUtsbIgYy3FLg9WkoyzPBH4WNp
+mxWtTqF/Rg0tqWi7LniF3k2obNerrcZdE13B7HrvYek0JRjJ6L8y8KgSNrnfcZhQ
+1o3AZEHNOWJ7PIul04+ujHJCBs5L3aSKSm7xLMYbCcjL3QEPJnUnsN3iQS3upSZS
+ZkU8z+17iYGx4F3XkRNg+iMIFaQQTD9RP2D5Ii4ywlgRVnjdtpHQF5GA/YVzRbQd
++8bMBGPHajxB98FfPi/tXFf3QAAiZE03SK9BlW4zH70Hr3j4rLCbFzwgn0xww5Q=
+=eS07
+-----END PGP SIGNATURE-----
+
+--LMAMTtD8rgS1k7x7Mgp1aHInLmkoidtMp--
