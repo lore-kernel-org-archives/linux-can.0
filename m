@@ -1,164 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: bit-timing and sample point
-Date: Thu, 14 Apr 2016 14:32:10 +0200
-Message-ID: <570F8DCA.4090701@pengutronix.de>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: bit-timing and sample point
+Date: Thu, 14 Apr 2016 12:46:57 +0000
+Message-ID: <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
 References: <570E205B.7030900@pengutronix.de>
  <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
  <570F7547.8030805@pengutronix.de>
  <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
+ <570F8DCA.4090701@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="5FnDR17o0PP50ATCisv3QHCPo2167l7iI"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:47990 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754363AbcDNMcR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Apr 2016 08:32:17 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-	by metis.ext.pengutronix.de with esmtps (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-	(Exim 4.80)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1aqgRS-0000S3-Rz
-	for linux-can@vger.kernel.org; Thu, 14 Apr 2016 14:32:15 +0200
-Received: from [IPv6:2001:6f8:105b:1122:eb:1158:b41e:d35] (hardanger [IPv6:2001:6f8:105b:1122:eb:1158:b41e:d35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Primary Intermediate Client CA" (verified OK))
-	(Authenticated sender: mkl@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id B9AE7115604
-	for <linux-can@vger.kernel.org>; Thu, 14 Apr 2016 12:32:13 +0000 (UTC)
-In-Reply-To: <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
+Received: from relmlor4.renesas.com ([210.160.252.174]:62564 "EHLO
+	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752475AbcDNMrK (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Apr 2016 08:47:10 -0400
+In-Reply-To: <570F8DCA.4090701@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5FnDR17o0PP50ATCisv3QHCPo2167l7iI
-Content-Type: multipart/mixed; boundary="QEKnHkfsdns78xxxtHv8stvAsWigKESJS"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: linux-can <linux-can@vger.kernel.org>
-Message-ID: <570F8DCA.4090701@pengutronix.de>
-Subject: Re: bit-timing and sample point
-References: <570E205B.7030900@pengutronix.de>
- <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
- <570F7547.8030805@pengutronix.de>
- <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
-In-Reply-To: <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
-
---QEKnHkfsdns78xxxtHv8stvAsWigKESJS
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 04/14/2016 02:19 PM, Kurt Van Dijck wrote:
->> :D - The original algorithm is a simple bute force algorithm. My
->> improvement is to check all sample points (if the bitrate doesn't matc=
-h
->> 100%).
->>
->>>> I've changed the
->>>> algorithm to minimize first the bit rate error and then the sample p=
-oint
->>>> error within the best bit rate.
->>>>
->>>> The old algorithm always picks a sample point less than the target
->>>> sample point. My question to the CAN exports: Is it better to stay b=
-elow
->>>> the sample point or minimize the error (and pick a sample point slig=
-htly
->>>> above the nominal sample point)?
->>>
->>> I haven't been doing this for a while :-)
->>
->> I've _never_ done this. :D
->>
->>> The sample point is not put to 100% since nodes are not guaranteed to=
- be
->>> completely in sync. This may interfere when "slightly" in your
->>> definition becomes more than expected. I'm not qualified anymore to
->>> quantify "slightly" in terms of bittiming, yet the sample point is
->>> specified to the back as far as possible for the wiring. Going "sligh=
-tly"
->>> above 'eats' the margin you have there, the margin which you may not =
-need
->>> for most wirings out there.
->>
->> This example illustrates the "slightly":
->>
->>>>>> nominal                                 real Bitrt   nom  real Sam=
-pP
->>>>>> Bitrate TQ[ns] PrS PhS1 PhS2 SJW BRP Bitrate Error SampP SampP Err=
-or BTR0 BTR1
->>>>>>  800000    180   2    2    2   1  12  793650  0.8% 80.0% 71.4% 10.=
-8% 0x0b 0x13
->>>>>>  800000     90   5    5    3   1   6  793650  0.8% 80.0% 78.5%  1.=
-9% 0x05 0x29
->>>>>>  800000     60   8    8    4   1   4  793650  0.8% 80.0% 80.9%  1.=
-1% 0x03 0x3f
->>
->> For 800kbit/s the nominal sample point is 80%.
->> The original algorithm chooses 71.4%.
->> The improved (but stays below) chooses 78.5% (error=3D1.9%).
->> But there exists a sample point with a smaller error: 80.9% (error=3D1=
-=2E1%).
->=20
-> I understood the example :-)
-> What I meant with "slightly" being hard to quantify was especially with=
-
-> regard to the bus characteristics. What is the maximal propagation dela=
-y
-> on the bus?
-> There is a point within a node's bit-time after which it is not certain=
-
-> that remotes may have moved on to the next bit-time.
-> If you allow samplepoint deviations to both sides, then you assume that=
-
-> the advertised sample point is in the middle of the time fragment where=
-
-> sampling is ideal. If you allow samplepoint deviations only to below,
-> then you assume that the advertised sample point is the corner case and=
-
-> raising it would introduce troubles.
-> Both assumptions are wrong, the truth is in between, and the advertised=
-
-> sample points mostly are "rules of thumb".
-> IMHO, the assumption of going below only makes sense.
-> Of course, you can (easily) find examples where the sample point may
-> grow over it.
-> If I understand the algoritm correctly, there's no limitation in how fa=
-r
-> beyond the advertised sample point you may get, as long as it's the
-> closest. And there, I think, you should put a limit, and until someone
-> comes up with a better one, I just take 0 as limit, meaning you go only=
-
-> below :-)
-
-Thanks for your thoughts I'll use algorithm 2 then.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---QEKnHkfsdns78xxxtHv8stvAsWigKESJS--
-
---5FnDR17o0PP50ATCisv3QHCPo2167l7iI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXD43KAAoJED07qiWsqSVq6FcH/3AcV31r6jRZEdZ9ONbS1VRi
-K3v3gxYHe3j80eMg4ozU9er7v0VF6oC+RZz2JZ2t/83jeuIeOIDOwJeO0Qgf+Iqe
-PuINI6cmwPIPJG6c0BUYhhSErF/Zj2LeoFOAcHOQvXH8OKjskpT/gUvSYCNofqu9
-Wobe7CZRymTQoE3CnLlF2kE7gLTqLejGZABajfpN3SIjyZ+pq/UIPbVdwFM7Fzgp
-oyZgjRqpyE26KGfFrTwPXMBrx9pQKVx48X3OuR0SAg1yB5qstF9t97a5ladOyr9W
-UhDrOIcLMiHTHil65hqgsT8aes7l4Cij4q++/NRSwxthcvgK21IXae4gzlhJWV0=
-=b+ha
------END PGP SIGNATURE-----
-
---5FnDR17o0PP50ATCisv3QHCPo2167l7iI--
+PiA+PiBUaGlzIGV4YW1wbGUgaWxsdXN0cmF0ZXMgdGhlICJzbGlnaHRseSI6DQo+ID4+DQo+ID4+
+Pj4+PiBub21pbmFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVhbCBCaXRydCAg
+IG5vbSAgcmVhbA0KPiBTYW1wUA0KPiA+Pj4+Pj4gQml0cmF0ZSBUUVtuc10gUHJTIFBoUzEgUGhT
+MiBTSlcgQlJQIEJpdHJhdGUgRXJyb3IgU2FtcFAgU2FtcFANCj4gRXJyb3IgQlRSMCBCVFIxDQo+
+ID4+Pj4+PiAgODAwMDAwICAgIDE4MCAgIDIgICAgMiAgICAyICAgMSAgMTIgIDc5MzY1MCAgMC44
+JSA4MC4wJSA3MS40JQ0KPiAxMC44JSAweDBiIDB4MTMNCj4gPj4+Pj4+ICA4MDAwMDAgICAgIDkw
+ICAgNSAgICA1ICAgIDMgICAxICAgNiAgNzkzNjUwICAwLjglIDgwLjAlIDc4LjUlDQo+IDEuOSUg
+MHgwNSAweDI5DQo+ID4+Pj4+PiAgODAwMDAwICAgICA2MCAgIDggICAgOCAgICA0ICAgMSAgIDQg
+IDc5MzY1MCAgMC44JSA4MC4wJSA4MC45JQ0KPiAxLjElIDB4MDMgMHgzZg0KPiA+Pg0KPiA+PiBG
+b3IgODAwa2JpdC9zIHRoZSBub21pbmFsIHNhbXBsZSBwb2ludCBpcyA4MCUuDQo+ID4+IFRoZSBv
+cmlnaW5hbCBhbGdvcml0aG0gY2hvb3NlcyA3MS40JS4NCj4gPj4gVGhlIGltcHJvdmVkIChidXQg
+c3RheXMgYmVsb3cpIGNob29zZXMgNzguNSUgKGVycm9yPTEuOSUpLg0KPiA+PiBCdXQgdGhlcmUg
+ZXhpc3RzIGEgc2FtcGxlIHBvaW50IHdpdGggYSBzbWFsbGVyIGVycm9yOiA4MC45JQ0KPiAoZXJy
+b3I9MS4xJSkuDQo+ID4NCj4gPiBJIHVuZGVyc3Rvb2QgdGhlIGV4YW1wbGUgOi0pDQo+ID4gV2hh
+dCBJIG1lYW50IHdpdGggInNsaWdodGx5IiBiZWluZyBoYXJkIHRvIHF1YW50aWZ5IHdhcyBlc3Bl
+Y2lhbGx5DQo+ID4gd2l0aCByZWdhcmQgdG8gdGhlIGJ1cyBjaGFyYWN0ZXJpc3RpY3MuIFdoYXQg
+aXMgdGhlIG1heGltYWwNCj4gPiBwcm9wYWdhdGlvbiBkZWxheSBvbiB0aGUgYnVzPw0KPiA+IFRo
+ZXJlIGlzIGEgcG9pbnQgd2l0aGluIGEgbm9kZSdzIGJpdC10aW1lIGFmdGVyIHdoaWNoIGl0IGlz
+IG5vdA0KPiA+IGNlcnRhaW4gdGhhdCByZW1vdGVzIG1heSBoYXZlIG1vdmVkIG9uIHRvIHRoZSBu
+ZXh0IGJpdC10aW1lLg0KPiA+IElmIHlvdSBhbGxvdyBzYW1wbGVwb2ludCBkZXZpYXRpb25zIHRv
+IGJvdGggc2lkZXMsIHRoZW4geW91IGFzc3VtZQ0KPiA+IHRoYXQgdGhlIGFkdmVydGlzZWQgc2Ft
+cGxlIHBvaW50IGlzIGluIHRoZSBtaWRkbGUgb2YgdGhlIHRpbWUgZnJhZ21lbnQNCj4gPiB3aGVy
+ZSBzYW1wbGluZyBpcyBpZGVhbC4gSWYgeW91IGFsbG93IHNhbXBsZXBvaW50IGRldmlhdGlvbnMg
+b25seSB0bw0KPiA+IGJlbG93LCB0aGVuIHlvdSBhc3N1bWUgdGhhdCB0aGUgYWR2ZXJ0aXNlZCBz
+YW1wbGUgcG9pbnQgaXMgdGhlIGNvcm5lcg0KPiA+IGNhc2UgYW5kIHJhaXNpbmcgaXQgd291bGQg
+aW50cm9kdWNlIHRyb3VibGVzLg0KPiA+IEJvdGggYXNzdW1wdGlvbnMgYXJlIHdyb25nLCB0aGUg
+dHJ1dGggaXMgaW4gYmV0d2VlbiwgYW5kIHRoZQ0KPiA+IGFkdmVydGlzZWQgc2FtcGxlIHBvaW50
+cyBtb3N0bHkgYXJlICJydWxlcyBvZiB0aHVtYiIuDQo+ID4gSU1ITywgdGhlIGFzc3VtcHRpb24g
+b2YgZ29pbmcgYmVsb3cgb25seSBtYWtlcyBzZW5zZS4NCj4gPiBPZiBjb3Vyc2UsIHlvdSBjYW4g
+KGVhc2lseSkgZmluZCBleGFtcGxlcyB3aGVyZSB0aGUgc2FtcGxlIHBvaW50IG1heQ0KPiA+IGdy
+b3cgb3ZlciBpdC4NCj4gPiBJZiBJIHVuZGVyc3RhbmQgdGhlIGFsZ29yaXRtIGNvcnJlY3RseSwg
+dGhlcmUncyBubyBsaW1pdGF0aW9uIGluIGhvdw0KPiA+IGZhciBiZXlvbmQgdGhlIGFkdmVydGlz
+ZWQgc2FtcGxlIHBvaW50IHlvdSBtYXkgZ2V0LCBhcyBsb25nIGFzIGl0J3MNCj4gPiB0aGUgY2xv
+c2VzdC4gQW5kIHRoZXJlLCBJIHRoaW5rLCB5b3Ugc2hvdWxkIHB1dCBhIGxpbWl0LCBhbmQgdW50
+aWwNCj4gPiBzb21lb25lIGNvbWVzIHVwIHdpdGggYSBiZXR0ZXIgb25lLCBJIGp1c3QgdGFrZSAw
+IGFzIGxpbWl0LCBtZWFuaW5nDQo+ID4geW91IGdvIG9ubHkgYmVsb3cgOi0pDQo+IA0KPiBUaGFu
+a3MgZm9yIHlvdXIgdGhvdWdodHMgSSdsbCB1c2UgYWxnb3JpdGhtIDIgdGhlbi4NCg0KSWYgbm90
+IGRvbmUgYWxyZWFkeSwgaXMgaXQgd29ydGggY29tcGFyaW5nIHRoZSBhbGdvcml0aG0gZm9yIGRi
+aXRyYXRlcyAoZmQgY2FzZSkgdG9vIGFzIHNhbWUgY29kZSBpcyB1c2VkPyANCg0KVGhhbmtzLA0K
+UmFtZXNoDQo=
