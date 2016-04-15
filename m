@@ -1,71 +1,97 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 Linux
-Date: Fri, 15 Apr 2016 01:10:13 +0200
-Message-ID: <20160414231013.GA5545@airbook.vandijck-laurijssen.be>
-References: <4E8D1C61-042C-4AF2-99AF-410CEEBA6861@vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA87095C7B@POCITMSEXMB05.LntUniverse.com>
- <20160409114019.GA8567@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA8709986A@POCITMSEXMB05.LntUniverse.com>
- <20160412082020.GA19875@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA8709A50F@POCITMSEXMB05.LntUniverse.com>
- <20160412181540.GE19875@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA8709B02E@POCITMSEXMB05.LntUniverse.com>
- <20160414100314.GB16018@airbook.vandijck-laurijssen.be>
- <03B271BE48E2554EB34508DAB79DBABA8709BB05@POCITMSEXMB05.LntUniverse.com>
-Mime-Version: 1.0
+From: Julien Pilet <julien@anemomind.com>
+Subject: Bad reading from mcp2515 with j1939
+Date: Fri, 15 Apr 2016 11:54:40 +0200
+Message-ID: <136B5347-DD98-4021-98C5-2FD18FC925A4@anemomind.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:37772 "EHLO
-	relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751406AbcDNXNT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 14 Apr 2016 19:13:19 -0400
-Content-Disposition: inline
-In-Reply-To: <03B271BE48E2554EB34508DAB79DBABA8709BB05@POCITMSEXMB05.LntUniverse.com>
+Received: from slow1-d.mail.gandi.net ([217.70.178.86]:45739 "EHLO
+	slow1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750716AbcDOJz6 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 15 Apr 2016 05:55:58 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by slow1-d.mail.gandi.net (Postfix) with ESMTP id A493D47E94B
+	for <linux-can@vger.kernel.org>; Fri, 15 Apr 2016 11:55:41 +0200 (CEST)
+Received: from [192.168.1.103] (anemomind1.epfl.ch [128.179.67.52])
+	(Authenticated sender: julien@anemomind.com)
+	by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 69BE5FB8BC
+	for <linux-can@vger.kernel.org>; Fri, 15 Apr 2016 11:54:41 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dinesh Velayudham <Dinesh.Velayutham@LnTtechservices.com>
-Cc: gianluca <gianlucarenzi@eurek.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-> Kurt,
-> Appreciate your time and getting a new branch. Using v3.19 I am able to build, install and reboot to the custom kernel. I am also able to load j1939 kernel module.
-> Now I am facing an new issue. I was trying to compile the "test-can-j1939" test application and "make" gave an error that it is unable to find
-> J1939.h header file under "include/linux/can/j1939.h".
-> So explored both the kernel header file package (*.deb file) and also the source directory and I am unable to locate j1939.h file under "include/linux/can/j1939.h". Rather I can see j1939.h file under the following places
-> 1. "include/config/can"
-> 2. "include/uapi/linux/can"
-> 3. "usr/include/linux/can"
-> I tried to compare this path with installed kernel headers under "/usr/src/linux-headers-3.19.0-custom" and I could find them in
-> 1. "include/uapi/linux/can/j1939.h"
-> 2. "include/config/can/j1939.h"
-> But not in "include/linux/can"
-> Any suggestions?
+Hi,
 
-in the kernel source (j1939d-v3.19), the command
-	$ git ls-files | grep j1939
-yiels
-	include/uapi/linux/can/j1939.h
+I am using a MCP2515 for a nautical application. It turns out that in m=
+y lab, everything goes fine. On two boats, though, I get strange readin=
+gs from can0.
 
-All other files are intermediate copies.
-Unfortunately, I'm not so well qualified in the deb-pkg build process.
-I'm not sure what to think of it.
+I connected the MCP2515 to a sensor reporting a boat speed of 0 m/s.
+  can0  09F50323   [8]  79 00 00 FF FF 00 FF FF
 
-IMO, any header file in include/uapi will be taken unconditionally with
-	$ make headers_install
+The first data byte is the sequence ID, it is incremented in each packe=
+t.
+The two following bytes encode the boat speed.
 
-To fast-forward:
-	cp <repository>/include/uapi/linux/can.h /usr/include/linux/
-	cp <repository>/include/uapi/linux/can/j1939.h /usr/include/linux/can/
+candump gives me the following:
 
-This should make things work.
+  can0  09F50323   [8]  7A 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  7B 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  7C 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  7D 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  7E 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  7F 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  80 80 00 FF FF 00 FF FF
+  can0  09F50323   [8]  81 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  82 80 00 FF FF 00 FF FF
+  can0  09F50323   [8]  83 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  84 80 00 FF FF 00 FF FF
+  can0  09F50323   [8]  85 00 00 FF FF 00 FF FF
+  can0  09F50323   [8]  86 80 00 FF FF 00 FF FF
 
-You should note that the size of struct can_addr increases.
-Both the old & new size are accepted by the new kernel, i.e. you do not
-need to recompile binaries that use can_raw etc. like candump ...
-They work unmodified.
-The new size of struct can_addr is however not accepted by the mainline
-kernel (yet). So, if you replace the can.h header file, and recompile
-can-utils, then candump will not work properly on non-j1939 kernels.
-So, make a copy of the existing can.h header!
+Suddenly, when SID reaches 0x80, the speed is not 0 anymore: it is 0x00=
+80 (encoded little endian 80 00). This is clearly wrong.
+I observed similar problems with sensors of different manufacturers, so=
+ I do not think the sensor is faulty.=20
+The pattern repeats: for seq ID between 00 and 0x79, everything works f=
+ine. For seq ID 0x80 - 0xFA (the last seq ID sent) every packet with an=
+ even sequence ID has a spurious bit set in the 2nd byte.
 
-Kind regards,
-Kurt
+I failed to reproduce the error in the lab, so it is hard for me to plu=
+g a oscilloscope and observe what is going on. I observe no error when =
+transmitting the same data on my test network (which is much shorter an=
+d simpler than a real one).
+
+Did I miss something in the configuration ? How is it possible that bad=
+ packets pass through?
+
+Here=E2=80=99s how my configuration looks like:
+
+# ifconfig can0
+can0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00=
+-00-00-00-00 =20
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:22823 errors:3 dropped:0 overruns:0 frame:3
+          TX packets:7 errors:1 dropped:1 overruns:0 carrier:1
+          collisions:0 txqueuelen:10=20
+          RX bytes:182584 (178.3 KiB)  TX bytes:31 (31.0 B)
+
+# ./bin/ip -details link show can0
+5: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ mode DEFAULT qlen 10
+    link/can=20
+    can <TRIPLE-SAMPLING> state ERROR-PASSIVE restart-ms 0=20
+    bitrate 250000 sample-point 0.875=20
+    tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+    mcp251x: tseg1 3..16 tseg2 2..8 sjw 1..4 brp 1..64 brp-inc 1
+    clock 8000000
+    j1939 on
+
+I=E2=80=99m using a 3.10.17 kernel modified by Intel for their Edison m=
+odule. I patched it with j1939-v3.10.
+
+Any idea or suggestion would be appreciated!
+
+Thanks,
+Julien.
