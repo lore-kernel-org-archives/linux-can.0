@@ -1,42 +1,27 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Bad reading from mcp2515 with j1939
-Date: Mon, 18 Apr 2016 07:48:50 +0200
-Message-ID: <57147542.20208@grandegger.com>
-References: <136B5347-DD98-4021-98C5-2FD18FC925A4@anemomind.com>
- <20160415101957.GA22129@airbook.vandijck-laurijssen.be>
- <4C069C3C-A7B8-4D3D-BA66-0D2140E93996@anemomind.com>
- <57110047.3040305@grandegger.com>
- <86B92DF4-DB93-457E-8BFB-7FA1BBBE2B4D@anemomind.com>
- <5711180D.8090407@grandegger.com>
+From: andreas11@elisaandreas.biz
+Subject: Greetings!!!
+Date: Mon, 18 Apr 2016 18:43:22 +0100
+Message-ID: <148752.90403.qm__43833.5777879276$1461001471$gmane$org@smtp106.biz.mail.gq1.yahoo.com>
+Reply-To: J_ericdaniels111@outlook.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy01.manitu.net ([217.11.48.140]:42934 "EHLO
-	mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751727AbcDRFtB (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 18 Apr 2016 01:49:01 -0400
-In-Reply-To: <5711180D.8090407@grandegger.com>
+Received: from smtp106.biz.mail.gq1.yahoo.com ([98.137.12.181]:29468 "EHLO
+	smtp106.biz.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753226AbcDRRny convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 18 Apr 2016 13:43:54 -0400
+Content-Description: Mail message body
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Julien Pilet <julien@anemomind.com>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "Mr. Eric" <andreas11@elisaandreas.biz>
 
-Am 15.04.2016 um 18:34 schrieb Wolfgang Grandegger:
-> Hello,
->
-> Am 15.04.2016 um 18:25 schrieb Julien Pilet:
->> Hi,
->>
->> Thanks a lot for your help, I found the error. There was a resistor
->> that was not supposed to be there (120ohms between CANH and CANL).
->> Removing it solved the problem.
->
-> Well, the mcp2515 should read wrong data even with improper bus
-> termination.
-
-s/should/should *not*/. of course!
-
-> Anyway, have a nice weekend as well.
->
-> Wolfgang.
+Hi, how are you? My name is J Eric Denials, External Financial Auditor =
+at Lloyds Banking Group plc., London. It is a pleasure to contact you a=
+t this time through this medium. I have a cool and legitimate deal to d=
+o with you as you're a foreigner, it will be mutually beneficial to bot=
+h. If you=E2=80=99re interested, urgently, get back to me for more expl=
+anation about the deal.
+Regards
+Eric
