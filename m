@@ -1,27 +1,41 @@
-From: andreas122@elisaandreas.biz
-Subject: Greetings!!!
-Date: Mon, 18 Apr 2016 21:12:04 +0100
-Message-ID: <777136.35773.qm__4841.25205916843$1461010774$gmane$org@smtp105.biz.mail.ne1.yahoo.com>
-Reply-To: J_ericdaniels111@outlook.com
+From: Rein Appeldoorn <reinappeldoorn@gmail.com>
+Subject: Re: SocketCAN support for a Serial-CAN controller
+Date: Fri, 22 Apr 2016 13:17:19 +0200
+Message-ID: <CAPO0vcvCBixyQn76ywVQ6GbNbHmB7sH7FqYB9t33qL72pdQDcw@mail.gmail.com>
+References: <CAPO0vcvuOaGxcCA-722c60o4-k-6somqCD1nuaaV6tWiPkoiTw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp105.biz.mail.ne1.yahoo.com ([98.138.207.12]:27567 "EHLO
-	smtp105.biz.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752260AbcDRUTJ convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 18 Apr 2016 16:19:09 -0400
-Content-Description: Mail message body
+Received: from mail-lf0-f46.google.com ([209.85.215.46]:34922 "EHLO
+	mail-lf0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753063AbcDVLRv (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 22 Apr 2016 07:17:51 -0400
+Received: by mail-lf0-f46.google.com with SMTP id c126so77408719lfb.2
+        for <linux-can@vger.kernel.org>; Fri, 22 Apr 2016 04:17:50 -0700 (PDT)
+In-Reply-To: <CAPO0vcvuOaGxcCA-722c60o4-k-6somqCD1nuaaV6tWiPkoiTw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Mr. Eric" <andreas122@elisaandreas.biz>
+To: linux-can@vger.kernel.org
 
-Hi, how are you? My name is J Eric Denials, External Financial Auditor =
-at Lloyds Banking Group plc., London. It is a pleasure to contact you a=
-t this time through this medium. I have a cool and legitimate deal to d=
-o with you as you're a foreigner, it will be mutually beneficial to bot=
-h. If you=E2=80=99re interested, urgently, get back to me for more expl=
-anation about the deal.
-Regards
-Eric
+Hi all,
+
+Up until now, I've been working with SocketCAN via CANUSB adapters
+from Lawycel (http://www.can232.com/?page_id=16). However, now we
+received a new platform with another serial-can controller from
+axiomtek (http://www.axiomtek.com/Default.aspx?MenuId=Products&FunctionId=ProductView&ItemId=8270).
+
+I am able to communicate with the CAN controller via serial and
+receive CAN frames. However, using slcand to create a socketcan
+interface does not work. As I see here
+https://github.com/linux-can/can-utils/blob/master/slcand.c , the
+slcand program sends specific commands to the serial bus and then
+creates a bridge between the socket and serial. However, the commands
+are different for my CAN controller.
+
+Can somebody give me some pointers how to get SocketCAN to work with
+an arbitrary serial-can controller?
+
+I'm am very new to these low level Linux things so I really would
+appreciate your help / corrections. Thanks in advance,
+
+-Rein
