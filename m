@@ -1,52 +1,68 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Raw can socket close and disabling filters
-Date: Sat, 23 Apr 2016 15:33:32 +0200
-Message-ID: <571B79AC.8000800@hartkopp.net>
-References: <loom.20160422T133332-34@post.gmane.org>
+Subject: Re: SocketCAN support for a Serial-CAN controller
+Date: Sat, 23 Apr 2016 15:54:37 +0200
+Message-ID: <571B7E9D.7090308@hartkopp.net>
+References: <CAPO0vcvuOaGxcCA-722c60o4-k-6somqCD1nuaaV6tWiPkoiTw@mail.gmail.com>
+ <CAPO0vcvCBixyQn76ywVQ6GbNbHmB7sH7FqYB9t33qL72pdQDcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:63018 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:65512 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751674AbcDWNdp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 23 Apr 2016 09:33:45 -0400
-In-Reply-To: <loom.20160422T133332-34@post.gmane.org>
+	with ESMTP id S1751283AbcDWNyr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 23 Apr 2016 09:54:47 -0400
+In-Reply-To: <CAPO0vcvCBixyQn76ywVQ6GbNbHmB7sH7FqYB9t33qL72pdQDcw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: laurent vaudoit <laurent.vaudoit@gmail.com>, linux-can@vger.kernel.org
+To: Rein Appeldoorn <reinappeldoorn@gmail.com>, linux-can@vger.kernel.org
 
-Hi Laurent,
+Hello Rein,
 
-On 04/22/2016 01:39 PM, laurent vaudoit wrote:
+On 04/22/2016 01:17 PM, Rein Appeldoorn wrote:
 
-> i'm using a 3.10 kernel with rtpatch applied, with raw can features.
-> Running some debug in the release function, i've seen something weird (for
-> me).
+> Up until now, I've been working with SocketCAN via CANUSB adapters
+> from Lawycel (http://www.can232.com/?page_id=16). However, now we
+> received a new platform with another serial-can controller from
+> axiomtek (http://www.axiomtek.com/Default.aspx?MenuId=Products&FunctionId=ProductView&ItemId=8270).
 >
-> In the function, we get the socket informations
-> and then we unregister the notifier.
->
-> After this, we test if the socket is bound and which is the ifindex.
->
-> But when the unregister function is called, there is a call to the notifier
-> with the event NETDEV_UNREGISTER, who leads to clear the socket inforamtions
-> like bound and ifindex.
->
-> So in the release function we can never enter in the code specific to a
-> device.
+> I am able to communicate with the CAN controller via serial and
+> receive CAN frames. However, using slcand to create a socketcan
+> interface does not work. As I see here
+> https://github.com/linux-can/can-utils/blob/master/slcand.c , the
+> slcand program sends specific commands to the serial bus and then
+> creates a bridge between the socket and serial. However, the commands
+> are different for my CAN controller.
 
-The relevant removal is protected by lock_sock().
+Yes. That's pretty bad to reinvent the wheel by creating 'just another' 
+CAN ASCII protocol :-(
 
-So when the notifier runs with NETDEV_UNREGISTER it will remove the 
-filters & bind status.
+> Can somebody give me some pointers how to get SocketCAN to work with
+> an arbitrary serial-can controller?
 
-In this case the block in raw_release() won't have anything to do to 
-release the filters and the bind state, right?
+The slcan driver supports the standard SLCAN protocols as you know from 
+Lawicel:
 
-Looks double work - but I wonder why we can rely on a notifier call when 
-we call unregister_netdevice_notifier() ??
+https://github.com/linux-can/can-misc/blob/master/docs/SLCAN-API.pdf
+
+> I'm am very new to these low level Linux things so I really would
+> appreciate your help / corrections. Thanks in advance,
+
+You would need to extend the slcan.c driver and the slcan tools from the 
+can-utils to cope with the Axiomtek protocol.
+
+Alternatively you can write a user space application that talks to the 
+Axiomtek device and send the CAN frames to a virtual CAN (e.g. vcan0) so 
+that you can use the can-utils on top of that virtual CAN.
+
+Just a different idea: As you obviously have a full-size mini 
+PCI-Express module - why don't you use a proper CAN PCIe interface with 
+a PCI-connected SJA1000 controller which is already supported by Linux?
+
+All this serial line encapsulation stuff does not support the really 
+good (configuration) things and error handling from SocketCAN.
 
 Regards,
 Oliver
 
+ps. Maybe Axiomtek can also provide a SLCAN compatible firmware ...
