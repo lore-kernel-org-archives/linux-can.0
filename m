@@ -1,78 +1,54 @@
-From: laurent vaudoit <laurent.vaudoit@gmail.com>
-Subject: Re: Raw can socket close and disabling filters
-Date: Mon, 25 Apr 2016 09:57:48 +0200
-Message-ID: <CAA7hF3zUvYuPj5By5pFcKZGE2wPx7RBSRqC_NrV9gdoSCsgZzw@mail.gmail.com>
-References: <loom.20160422T133332-34@post.gmane.org>
-	<571B79AC.8000800@hartkopp.net>
-	<CAA7hF3wiPi7ybKnpCcFGkQfED-gsZcn_Wahz2u+8Q01Z8-DN8Q@mail.gmail.com>
-	<571DCD4C.50601@hartkopp.net>
+From: Maximilian Schneider <max@schneidersoft.net>
+Subject: [PATCH] can: gs_usb: Modify the usb device table to use only the
+ first usb interface
+Date: Mon, 25 Apr 2016 08:54:19 +0000
+Message-ID: <1461574459.1383.10.camel@schneidersoft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lb0-f196.google.com ([209.85.217.196]:33897 "EHLO
-	mail-lb0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752231AbcDYH5u convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2016 03:57:50 -0400
-Received: by mail-lb0-f196.google.com with SMTP id w1so8987110lbl.1
-        for <linux-can@vger.kernel.org>; Mon, 25 Apr 2016 00:57:49 -0700 (PDT)
-In-Reply-To: <571DCD4C.50601@hartkopp.net>
+Received: from h2448646.stratoserver.net ([85.214.222.201]:36415 "EHLO
+	h2448646.stratoserver.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753985AbcDYIqz (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2016 04:46:55 -0400
+Received: from blackbox (unknown [179.80.141.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: max@schneidersoft.net)
+	by h2448646.stratoserver.net (Postfix) with ESMTPSA id 1292CD94054C
+	for <linux-can@vger.kernel.org>; Mon, 25 Apr 2016 08:46:51 +0000 (UTC)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-On Mon, Apr 25, 2016 at 9:54 AM, Oliver Hartkopp <socketcan@hartkopp.ne=
-t> wrote:
-> On 04/25/2016 09:19 AM, laurent vaudoit wrote:
->
->>> So when the notifier runs with NETDEV_UNREGISTER it will remove the
->>> filters
->>> & bind status.
->>>
->>> In this case the block in raw_release() won't have anything to do t=
-o
->>> release
->>> the filters and the bind state, right?
->>
->>
->> i agree with this. The fact is that on my setup i need to send an
->> information to another =C2=B5c when releasing a socket on a device, =
-and so
->> my specific code was done in the release function, after the
->> unregister.
->
->
-> I think using raw_release() as trigger is always a good choice.
->
->> This is how i've seen this behaviour.
->
->
-> Interesting information. I didn't know about the notifier running at
-> unregister_netdevice_notifier() time.
->
->>> Looks double work - but I wonder why we can rely on a notifier call=
- when
->>> we
->>> call unregister_netdevice_notifier() ??
->>
->>
->> For me, the disable_all_filter part of code in release can not be
->> called, as the ro->bound will allways be 0.
->
->
-> The question remains whether we can really rely on the notifier call =
-which
-> is obviously invoked by unregister_netdevice_notifier() ...
-> I'll have to dig if this behaviour is intentional and documented.
-> Until then I feel better to leave it as-is.
->
+From 24680c50e6b07292e7ee6ebfec0a826a32d5bcb9 Mon Sep 17 00:00:00 2001
+From: Maximilian Schneider <max@schneidersoft.net>
+Date: Sun, 24 Apr 2016 01:10:01 +0000
+Subject: [PATCH] Modified the USB device table to use only the first USB
+ interface, as is the case with GS USB devices. This allows other GS USB
+ compatible devices to be more flexible with their remaining interfaces.
 
-Ok, i will adapt my specific code, as i know this is not a weird
-behaviour due to rtpatch or to my specificity.
-Thanks
-> Regards,
-> Oliver
+Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
+---
+ drivers/net/can/usb/gs_usb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Regards
-Laurent
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index cbc99d5..4731cb2 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -950,7 +950,8 @@ static void gs_usb_disconnect(struct usb_interface *intf)
+ }
+ 
+ static const struct usb_device_id gs_usb_table[] = {
+-	{USB_DEVICE(USB_GSUSB_1_VENDOR_ID, USB_GSUSB_1_PRODUCT_ID)},
++	{USB_DEVICE_INTERFACE_NUMBER(USB_GSUSB_1_VENDOR_ID,
++		USB_GSUSB_1_PRODUCT_ID, 0)},
+ 	{} /* Terminating entry */
+ };
+ 
+-- 
+2.1.4
+
+
+
