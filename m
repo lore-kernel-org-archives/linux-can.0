@@ -1,113 +1,59 @@
-From: Rein Appeldoorn <reinappeldoorn@gmail.com>
-Subject: Re: SocketCAN support for a Serial-CAN controller
-Date: Mon, 25 Apr 2016 09:43:32 +0200
-Message-ID: <CAPO0vctBtEOoKcf3EX7D1L_zineqh5chE2sqfcnDL5QWOCHTTA@mail.gmail.com>
-References: <CAPO0vcvuOaGxcCA-722c60o4-k-6somqCD1nuaaV6tWiPkoiTw@mail.gmail.com>
- <CAPO0vcvCBixyQn76ywVQ6GbNbHmB7sH7FqYB9t33qL72pdQDcw@mail.gmail.com>
- <571B7E9D.7090308@hartkopp.net> <CAPO0vcsCE1P56MtDw7B3jnp4cFVBd6zCBpmUGHDW30hWmc2Z+w@mail.gmail.com>
- <571DCA6C.8000102@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Raw can socket close and disabling filters
+Date: Mon, 25 Apr 2016 09:54:52 +0200
+Message-ID: <571DCD4C.50601@hartkopp.net>
+References: <loom.20160422T133332-34@post.gmane.org>
+ <571B79AC.8000800@hartkopp.net>
+ <CAA7hF3wiPi7ybKnpCcFGkQfED-gsZcn_Wahz2u+8Q01Z8-DN8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f65.google.com ([209.85.215.65]:36210 "EHLO
-	mail-lf0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752204AbcDYHoE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2016 03:44:04 -0400
-Received: by mail-lf0-f65.google.com with SMTP id y84so5161781lfc.3
-        for <linux-can@vger.kernel.org>; Mon, 25 Apr 2016 00:44:03 -0700 (PDT)
-In-Reply-To: <571DCA6C.8000102@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:17459 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753805AbcDYHy5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2016 03:54:57 -0400
+In-Reply-To: <CAA7hF3wiPi7ybKnpCcFGkQfED-gsZcn_Wahz2u+8Q01Z8-DN8Q@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
 Cc: linux-can@vger.kernel.org
 
-Thanks for the help!
+On 04/25/2016 09:19 AM, laurent vaudoit wrote:
 
--Rein
+>> So when the notifier runs with NETDEV_UNREGISTER it will remove the =
+filters
+>> & bind status.
+>>
+>> In this case the block in raw_release() won't have anything to do to=
+ release
+>> the filters and the bind state, right?
+>
+> i agree with this. The fact is that on my setup i need to send an
+> information to another =C2=B5c when releasing a socket on a device, a=
+nd so
+> my specific code was done in the release function, after the
+> unregister.
 
+I think using raw_release() as trigger is always a good choice.
 
-On Mon, Apr 25, 2016 at 9:42 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 04/25/2016 09:26 AM, Rein Appeldoorn wrote:
+> This is how i've seen this behaviour.
+
+Interesting information. I didn't know about the notifier running at=20
+unregister_netdevice_notifier() time.
+
+>> Looks double work - but I wonder why we can rely on a notifier call =
+when we
+>> call unregister_netdevice_notifier() ??
 >
->> Thanks for the feedback. I think it is best we go for a PCI SJ1000
->> controller then. Do you perhaps have any recommendations on this? I
->> was thinking about the PEAK can pci controller:
->> http://www.peak-system.com/PCAN-miniPCIe.285.0.html
->
->
-> I have some of them running in a Core i7 carpc setup and can confirm that
-> they are working out of the box with Mainline Linux.
->
-> Best regards,
-> Oliver
->
->>
->> On Sat, Apr 23, 2016 at 3:54 PM, Oliver Hartkopp <socketcan@hartkopp.net>
->> wrote:
->>>
->>> Hello Rein,
->>>
->>> On 04/22/2016 01:17 PM, Rein Appeldoorn wrote:
->>>
->>>> Up until now, I've been working with SocketCAN via CANUSB adapters
->>>> from Lawycel (http://www.can232.com/?page_id=16). However, now we
->>>> received a new platform with another serial-can controller from
->>>> axiomtek
->>>>
->>>> (http://www.axiomtek.com/Default.aspx?MenuId=Products&FunctionId=ProductView&ItemId=8270).
->>>>
->>>> I am able to communicate with the CAN controller via serial and
->>>> receive CAN frames. However, using slcand to create a socketcan
->>>> interface does not work. As I see here
->>>> https://github.com/linux-can/can-utils/blob/master/slcand.c , the
->>>> slcand program sends specific commands to the serial bus and then
->>>> creates a bridge between the socket and serial. However, the commands
->>>> are different for my CAN controller.
->>>
->>>
->>>
->>> Yes. That's pretty bad to reinvent the wheel by creating 'just another'
->>> CAN
->>> ASCII protocol :-(
->>>
->>>> Can somebody give me some pointers how to get SocketCAN to work with
->>>> an arbitrary serial-can controller?
->>>
->>>
->>>
->>> The slcan driver supports the standard SLCAN protocols as you know from
->>> Lawicel:
->>>
->>> https://github.com/linux-can/can-misc/blob/master/docs/SLCAN-API.pdf
->>>
->>>> I'm am very new to these low level Linux things so I really would
->>>> appreciate your help / corrections. Thanks in advance,
->>>
->>>
->>>
->>> You would need to extend the slcan.c driver and the slcan tools from the
->>> can-utils to cope with the Axiomtek protocol.
->>>
->>> Alternatively you can write a user space application that talks to the
->>> Axiomtek device and send the CAN frames to a virtual CAN (e.g. vcan0) so
->>> that you can use the can-utils on top of that virtual CAN.
->>>
->>> Just a different idea: As you obviously have a full-size mini PCI-Express
->>> module - why don't you use a proper CAN PCIe interface with a
->>> PCI-connected
->>> SJA1000 controller which is already supported by Linux?
->>>
->>> All this serial line encapsulation stuff does not support the really good
->>> (configuration) things and error handling from SocketCAN.
->>>
->>> Regards,
->>> Oliver
->>>
->>> ps. Maybe Axiomtek can also provide a SLCAN compatible firmware ...
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->
+> For me, the disable_all_filter part of code in release can not be
+> called, as the ro->bound will allways be 0.
+
+The question remains whether we can really rely on the notifier call=20
+which is obviously invoked by unregister_netdevice_notifier() ...
+I'll have to dig if this behaviour is intentional and documented.
+Until then I feel better to leave it as-is.
+
+Regards,
+Oliver
