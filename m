@@ -1,136 +1,107 @@
-From: Austin Hendrix <namniart@gmail.com>
-Subject: [PATCH] sllin: update for kernels > 3.11
-Date: Mon, 25 Apr 2016 15:46:53 -0700
-Message-ID: <571E9E5D.3000806@gmail.com>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: [PATCH] sllin: update for kernels > 3.11
+Date: Tue, 26 Apr 2016 02:34:35 +0200
+Message-ID: <201604260234.35367.pisa@cmp.felk.cvut.cz>
+References: <571E9E5D.3000806@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-io0-f172.google.com ([209.85.223.172]:35291 "EHLO
-	mail-io0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751283AbcDYWq4 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2016 18:46:56 -0400
-Received: by mail-io0-f172.google.com with SMTP id d62so146380iof.2
-        for <linux-can@vger.kernel.org>; Mon, 25 Apr 2016 15:46:55 -0700 (PDT)
-Received: from [172.16.131.128] ([50.233.131.66])
-        by smtp.googlemail.com with ESMTPSA id rn3sm10115236igb.14.2016.04.25.15.46.54
-        for <linux-can@vger.kernel.org>
-        (version=TLSv1/SSLv3 cipher=OTHER);
-        Mon, 25 Apr 2016 15:46:54 -0700 (PDT)
+Received: from smtp7.web4u.cz ([81.91.87.87]:55686 "EHLO mx-8.mail.web4u.cz"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750963AbcDZAlO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 25 Apr 2016 20:41:14 -0400
+In-Reply-To: <571E9E5D.3000806@gmail.com>
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Austin Hendrix <namniart@gmail.com>
+Cc: linux-can@vger.kernel.org
 
-I'm experimenting with sllin ( https://rtime.felk.cvut.cz/can/lin-bus/ 
-), and I've found that it doesn't compile on linux kernels newer than 
-3.11, so I've patched it to compile and (hopefully) run on newer kernels.
+Hello Austin,
 
-I've verified that these changes compile and the resulting module loads 
-on the 4.2.0 kernel on my Ubuntu machine, but I don't have LIN hardware 
-yet and haven't tried attaching the LIN serial line discipline to a 
-serial port.
+On Tuesday 26 of April 2016 00:46:53 Austin Hendrix wrote:
+> I'm experimenting with sllin ( https://rtime.felk.cvut.cz/can/lin-bus/
+> ), and I've found that it doesn't compile on linux kernels newer than
+> 3.11, so I've patched it to compile and (hopefully) run on newer kernels.
 
-In the event that this driver is no longer maintained, I'm also hosting 
-my copy of the source on github: https://github.com/trainman419/linux-lin
+I have pushed your patch to our (CTU) repository.
+The changes looks good and your report that code
+build should be enough evidence that these changes
+are going in the right direction for newer kernels.
 
-Author: Austin Hendrix <namniart@gmail.com>
-Date:   Mon Apr 25 10:41:13 2016 -0700
+We need to find more time to recheck driver functionality
+but we do not have any LIN project running at this moment
+and are too busy with other projects. But next round of testing
+is no my long long TODO list.
 
-     Update for changes in recent linux kernels
+The simple RS-232 to LIN converter hardware is described
+in the RTLWS paper
 
-Signed-off-by: Austin Hendrix <namniart@gmail.com>
-diff --git a/sllin/sllin.c b/sllin/sllin.c
+  https://rtime.felk.cvut.cz/can/sllin-rtlws14-paper.pdf
 
-index 8d7ad69..2db896f 100644
---- a/sllin/sllin.c
-+++ b/sllin/sllin.c
-@@ -210,7 +210,11 @@ static int sltty_change_speed(struct tty_struct 
-*tty, unsigned speed)
-      struct ktermios old_termios, termios;
-      int cflag;
+There are some other related document on our CAN and LIN
+related pages
 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 12, 0)
-      mutex_lock(&tty->termios_mutex);
-+#else
-+    down_write(&tty->termios_rwsem);
-+#endif
+  https://rtime.felk.cvut.cz/can/lin-bus/
 
-  #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 7, 0)
-      old_termios = termios = *(tty->termios);
-@@ -238,7 +242,11 @@ static int sltty_change_speed(struct tty_struct 
-*tty, unsigned speed)
-      if (tty->ops->set_termios)
-          tty->ops->set_termios(tty, &old_termios);
+The proper converter from TTL or RS-232 UART to LIN
+could be build with use of some standard compliant LIN
+transceiver chip.
 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 12, 0)
-      mutex_unlock(&tty->termios_mutex);
-+#else
-+    up_write(&tty->termios_rwsem);
-+#endif
+Generally, code should work with all kinds of UART drivers
+except for the case when slLIN operates as device and is
+asked to send response. In such case there can be problem
+that UART with FIFO usually waits for four character times
+before it reports received characters if FIFO does not reach
+Rx FIFO trigger level. If the other side LIN master is strict
+and response does not start in two character times then
+it reports error. The trigger level can be set to single
+character for many embedded UARTs or Rx FIFO can be disabled
+completely. But there there has been problem in the past
+that Linux termios based serial ports did not expose interface
+to setup trigger level only limited trigger level to one for
+baudrates < 2400.
 
-      return 0;
-  }
-@@ -311,7 +319,12 @@ static void sllin_write_wakeup(struct tty_struct *tty)
-              return;    /* ongoing concurrent processing */
+But when I analyze actual standard PC/8250 based driver code
 
-          clear_bit(SLF_TXBUFF_RQ, &sl->flags);
-+
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 0)
-          smp_mb__after_clear_bit();
-+#else
-+        smp_mb__after_atomic();
-+#endif
-
-          if (sl->lin_state != SLSTATE_BREAK_SENT)
-              remains = sl->tx_lim - sl->tx_cnt;
-@@ -325,7 +338,11 @@ static void sllin_write_wakeup(struct tty_struct *tty)
-              remains -= actual;
-          }
-          clear_bit(SLF_TXBUFF_INPR, &sl->flags);
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 0)
-          smp_mb__after_clear_bit();
-+#else
-+        smp_mb__after_atomic();
-+#endif
-
-      } while (unlikely(test_bit(SLF_TXBUFF_RQ, &sl->flags)));
-
-@@ -838,7 +855,11 @@ static int sllin_send_tx_buff(struct sllin *sl)
-              return 0;    /* ongoing concurrent processing */
-
-          clear_bit(SLF_TXBUFF_RQ, &sl->flags);
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 0)
-          smp_mb__after_clear_bit();
-+#else
-+        smp_mb__after_atomic();
-+#endif
-
-  #ifdef BREAK_BY_BAUD
-          if (sl->lin_state != SLSTATE_BREAK_SENT)
-@@ -872,7 +893,11 @@ static int sllin_send_tx_buff(struct sllin *sl)
-                  sl->tx_cnt, remains);
-
-          clear_bit(SLF_TXBUFF_INPR, &sl->flags);
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 0)
-          smp_mb__after_clear_bit();
-+#else
-+        smp_mb__after_atomic();
-+#endif
-
-      } while (unlikely(test_bit(SLF_TXBUFF_RQ, &sl->flags)));
-
-@@ -1337,7 +1362,12 @@ static struct sllin *sll_alloc(dev_t line)
-          char name[IFNAMSIZ];
-          sprintf(name, "sllin%d", i);
-
-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0))
-          dev = alloc_netdev(sizeof(*sl), name, sll_setup);
-+#else
-+        dev = alloc_netdev(sizeof(*sl), name, NET_NAME_UNKNOWN, sll_setup);
-+#endif
-+
-          if (!dev)
-              return NULL;
-          dev->base_addr  = i;
+  drivers/tty/serial/8250/8250_port.c
 
 
+        if (up->capabilities & UART_CAP_FIFO && port->fifosize > 1) {
+                /* NOTE: If fifo_bug is not set, a user can set RX_trigger. */
+                if ((baud < 2400 && !up->dma) || up->fifo_bug) {
+                        up->fcr &= ~UART_FCR_TRIGGER_MASK;
+                        up->fcr |= UART_FCR_TRIGGER_1;
+                }
+        }
+
+  static int do_set_rxtrig(struct tty_port *port, unsigned char bytes)
+
+  static DEVICE_ATTR(rx_trig_bytes, S_IRUSR | S_IWUSR | S_IRGRP,
+                   serial8250_get_attr_rx_trig_bytes,
+                   serial8250_set_attr_rx_trig_bytes);
+
+There is defined new attribute to select trigger level from userspace,
+so this problem should be easily eliminated by setting trigger level
+to one character
+
+  echo 1 > /sys/class/tty/ttyS0/rx_trig_bytes
+
+We have used hack in the past to modify port trigger level,
+now it is much easier.
+
+There are alternatives for some other hardware. Look for device
+attributes or module parameters with rx_trigr in the name
+or rx_timeout
+
+  MODULE_PARM_DESC(rx_trigger_level, "Rx trigger level, 1-63 bytes");
+
+  MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+
+It would be great if you can report results of your testing.
+
+Best wishes,
+
+              Pavel
