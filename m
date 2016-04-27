@@ -1,42 +1,32 @@
-From: =?UTF-8?Q?Florian_Vall=C3=A9e?= <fvallee@eukrea.fr>
-Subject: Re: [PATCH] can: m_can: fix bitrate setup on latest silicon
-Date: Wed, 27 Apr 2016 18:47:08 +0200
-Message-ID: <CADgCO2_O0EAiV3+HZiobSrM6kaV-QjUHKCtcLjWkjXVZcOXHyQ@mail.gmail.com>
-References: <1461678379-28257-1-git-send-email-fvallee@eukrea.fr>
-	<571FBD5E.9040807@hartkopp.net>
+From: =?utf-8?B?5oiR55qE5Lqk5Y+L5L+h5oGv5Zyo?= <zhengxuan@jbfx.com.cn>
+Subject: =?utf-8?B?5oiR55qE5Lqk5Y+L5L+h5oGv5Zyo?=
+Date: Thu, 28 Apr 2016 07:50:59 +0800
+Message-ID: <20160428075112440367@jbfx.com.cn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f44.google.com ([209.85.215.44]:33836 "EHLO
-	mail-lf0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752368AbcD0QrK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Apr 2016 12:47:10 -0400
-Received: by mail-lf0-f44.google.com with SMTP id j11so63831207lfb.1
-        for <linux-can@vger.kernel.org>; Wed, 27 Apr 2016 09:47:09 -0700 (PDT)
-In-Reply-To: <571FBD5E.9040807@hartkopp.net>
+Received: from [118.244.254.68] ([118.244.254.68]:24210 "EHLO mail.jbfx.com.cn"
+	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752431AbcD1BSk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 27 Apr 2016 21:18:40 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.jbfx.com.cn (Postfix - by extmail.org) with ESMTP id 799A51FD792E
+	for <linux-can@vger.kernel.org>; Thu, 28 Apr 2016 04:39:31 +0800 (CST)
+Received: from mail.jbfx.com.cn ([127.0.0.1])
+	by localhost (mail.jbfx.com.cn [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 2n4MBAx1IFRT for <linux-can@vger.kernel.org>;
+	Thu, 28 Apr 2016 04:39:31 +0800 (CST)
+Received: from pjC.pvaj (unknown [130.1.1.200])
+	by mail.jbfx.com.cn (Postfix - by extmail.org) with ESMTP id B28A41FD7930
+	for <linux-can@vger.kernel.org>; Thu, 28 Apr 2016 04:11:06 +0800 (CST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, =?UTF-8?B?RXJpYyBCw6luYXJk?= <ebenard@eukrea.com>
+To: linux-can@vger.kernel.org
 
-On 26 April 2016 at 21:11, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->
-> I wonder whether this small change covers the updates made between
-> v3.0.1 and v3.1.0.
->
+5L2g55qE5pyL5Y+L57uZ5L2g5YiG5Lqr5LqG5LiA5Liq5pSv5LuY5a6d57qi5YyF5Y+j5Luk77ya
+5Yqg576k5pyJ57qi5YyFICAgIOi1tuW/q+aJk+W8gOaUr+S7mOWunUFQUO+8jOi+k+WFpee6ouWM
+heWPo+S7pO+8jOaKoue6ouWMhe+8jOaJi+aFouaXoOOAgg==
 
-Probably not, I was mainly interested in fixing basic functionality here :)
-(ie: with the default settings we can exchange data frames with
-another controller)
 
->
-> Your patch looks very good so far. I would appreciate if you could update the other register changes too as I don't have a hardware to test. I can provide the ISO/NON_ISO config for the netlink interface updates then :-)
->
-
-Ok, I'll have another look at the changes. Thank you for the spec
-history btw, it seems bosch only keeps the latest one publicly
-available.
-
-Regards,
-
-Florian
