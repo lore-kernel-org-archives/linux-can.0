@@ -1,28 +1,33 @@
 From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
  receiving any more messages
-Date: Fri, 29 Apr 2016 16:27:11 +0200
-Message-ID: <57236F3F.7000608@grandegger.com>
+Date: Sat, 30 Apr 2016 15:34:29 +0200
+Message-ID: <5724B465.50405@grandegger.com>
 References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
  <57076043.1080609@grandegger.com>
  <CAOLz05qjUh0Ovtrs-NK3_RjNWc6X+gAo6=YpXODZU_n5A04eVw@mail.gmail.com>
  <5723430A.50009@grandegger.com>
  <CAOLz05oAfx6jKNmzPjkO0ce8V1g2pCxhrO6rAu7bnLh-SNPxHg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050107050408020700050603"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.151]:54752 "EHLO
+Received: from mailproxy03.manitu.net ([217.11.48.151]:43470 "EHLO
 	mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753480AbcD2O1Q (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 29 Apr 2016 10:27:16 -0400
+	with ESMTP id S1750760AbcD3Nee (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sat, 30 Apr 2016 09:34:34 -0400
 In-Reply-To: <CAOLz05oAfx6jKNmzPjkO0ce8V1g2pCxhrO6rAu7bnLh-SNPxHg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Amr Bekhit <amrbekhit@gmail.com>
 Cc: mkl@pengutronix.de, linux-can@vger.kernel.org
 
-Hello,
+This is a multi-part message in MIME format.
+--------------050107050408020700050603
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hello Amr,
 
 Am 29.04.2016 um 13:29 schrieb Amr Bekhit:
 > Hello Wolfgang,
@@ -31,11 +36,24 @@ Am 29.04.2016 um 13:29 schrieb Amr Bekhit:
 > know what other options you want enabling and I can configure the
 > kernel accordingly.
 
-OK, first another question. How is the CAN interface defined in the DTS 
-files.
+Could you please apply the attached patch first (it's untested). It 
+prints out some variables when the device is closed (via ifconfig down).
 
-Wolfgang.
+ From your two dumps:
 
+  0xF800400C: [1F040000] 0001 1111 0000 0100 0000 0000 0000 0000
+  0xF8004010: [20E000FF] 0010 0000 1110 0000 0000 0000 1111 1111
+
+  0xF800400C: [1F040038] 0001 1111 0000 0100 0000 0000 0011 1000
+  0xF8004010: [006000C7] 0000 0000 0110 0000 0000 0000 1100 0111
+
+There are mailbox events pending but the interrupt sources are not 
+enabled for them... strange!
+
+Wolfgang-
+
+> Amr
+>
 > On 29 April 2016 at 12:18, Wolfgang Grandegger <wg@grandegger.com> wrote:
 >> Hello Amr,
 >>
@@ -429,9 +447,31 @@ Wolfgang.
 >>>
 >>>
 >>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
 >
+
+--------------050107050408020700050603
+Content-Type: text/x-patch;
+ name="at91_can_debug.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="at91_can_debug.patch"
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 945c095..7fb2f09 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1162,6 +1162,11 @@ static int at91_close(struct net_device *dev)
+ {
+ 	struct at91_priv *priv = netdev_priv(dev);
+ 
++	netdev_info(dev, "reg_sr=%d\n", priv->reg_sr)
++	netdev_info(dev, "tx_next=%d\n", priv->tx_next)
++	netdev_info(dev, "tx_echo=%d\n", priv->tx_echo)
++	netdev_info(dev, "rx_next=%d\n", priv->rx_next)
++
+ 	netif_stop_queue(dev);
+ 	napi_disable(&priv->napi);
+ 	at91_chip_stop(dev, CAN_STATE_STOPPED);
+
+--------------050107050408020700050603--
