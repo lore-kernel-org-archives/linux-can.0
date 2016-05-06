@@ -1,209 +1,183 @@
-From: =?UTF-8?Q?Andreas_Gr=c3=b6ger?= <andreas24groeger@gmail.com>
-Subject: [PATCH] can: janz-ican3: error handling for CAL/CANopen firmware
-Date: Fri, 6 May 2016 10:04:37 +0200
-Message-ID: <572C5015.70601@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: can: flexcan: patch
+Date: Fri, 6 May 2016 12:26:17 +0200
+Message-ID: <572C7149.6040307@pengutronix.de>
+References: <14855451462460611@web29h.yandex.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="JsVTTW2eKILnQfxDg96ulibQBcaF7dNF8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wm0-f65.google.com ([74.125.82.65]:35144 "EHLO
-	mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751511AbcEFIEk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 6 May 2016 04:04:40 -0400
-Received: by mail-wm0-f65.google.com with SMTP id e201so7677718wme.2
-        for <linux-can@vger.kernel.org>; Fri, 06 May 2016 01:04:39 -0700 (PDT)
-Received: from [192.168.36.48] (p54A673A4.dip0.t-ipconnect.de. [84.166.115.164])
-        by smtp.googlemail.com with ESMTPSA id q77sm7096771wmd.12.2016.05.06.01.04.37
-        for <linux-can@vger.kernel.org>
-        (version=TLSv1/SSLv3 cipher=OTHER);
-        Fri, 06 May 2016 01:04:37 -0700 (PDT)
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34576 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757987AbcEFK0b (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 6 May 2016 06:26:31 -0400
+In-Reply-To: <14855451462460611@web29h.yandex.ru>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Mikhail Kofanov <c5r@yandex.ru>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JsVTTW2eKILnQfxDg96ulibQBcaF7dNF8
+Content-Type: multipart/mixed; boundary="gdmEMNSn9Ckfr13ehfFBDfNdAWVe4eDoI"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Mikhail Kofanov <c5r@yandex.ru>
+Cc: linux-can <linux-can@vger.kernel.org>
+Message-ID: <572C7149.6040307@pengutronix.de>
+Subject: Re: can: flexcan: patch
+References: <14855451462460611@web29h.yandex.ru>
+In-Reply-To: <14855451462460611@web29h.yandex.ru>
 
-my patch of May 2015 was missing the changed handling of error
-indications. With CAL/CANopen firmware the NMTS-SlaveEventIndication
-must be used instead of CAN-EventIndication. An appropriate slave node
-must be configured to report the errors.
+--gdmEMNSn9Ckfr13ehfFBDfNdAWVe4eDoI
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-In our department (about 15 development systems with Janz ICAN3-
-modules with firmware 1.48, my system also with firmware ICANOS 1.35)
-we use the driver with this patch for about one year: no known problems=
-=2E
+On 05/05/2016 05:03 PM, Mikhail Kofanov wrote:
+> Hello!
+>=20
+> There is small patch for imx flexcan driver.
+> 1. Improve state change handling
+> 2. add tx/rx error counter to state change error frame
+>=20
+> Tested on imx25 based custom board.
 
-Signed-off-by: Andreas Gr=C3=B6ger <andreas24groeger@gmail.com>
----
- janz-ican3.c |  104 ++++++++++++++++++++++++++++++++++++++++++++++++++=
-+++------
- 1 file changed, 95 insertions(+), 9 deletions(-)
+Against which kernel version does this patch apply?
 
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.=
-c
-index 5d04f54..a75e66e 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -84,6 +84,7 @@
- #define MSG_COFFREQ		0x42
- #define MSG_CONREQ		0x43
- #define MSG_CCONFREQ		0x47
-+#define MSG_NMTS		0xb0
- #define MSG_LMTS		0xb4
-=20
- /*
-@@ -130,6 +131,22 @@
-=20
- #define ICAN3_CAN_DLC_MASK	0x0f
-=20
-+/* Janz ICAN3 NMTS subtypes */
-+#define NMTS_CREATE_NODE_REQ	0x0
-+#define NMTS_SLAVE_STATE_IND	0x8
-+#define NMTS_SLAVE_EVENT_IND	0x9
-+
-+/* Janz ICAN3 LMTS subtypes */
-+#define LMTS_BUSON_REQ		0x0
-+#define LMTS_BUSOFF_REQ		0x1
-+#define LMTS_CAN_CONF_REQ	0x2
-+
-+/* Janz ICAN3 NMTS Event indications */
-+#define NE_LOCAL_OCCURRED	0x3
-+#define NE_LOCAL_RESOLVED	0x2
-+#define NE_REMOTE_OCCURRED	0xc
-+#define NE_REMOTE_RESOLVED	0x8
-+
- /*
-  * SJA1000 Status and Error Register Definitions
-  *
-@@ -800,21 +817,41 @@ static int ican3_set_bus_state(struct ican3_dev *=
-mod, bool on)
- 		return ican3_send_msg(mod, &msg);
-=20
- 	} else if (mod->fwtype =3D=3D ICAN3_FWTYPE_CAL_CANOPEN) {
-+		/* bittiming + can-on/off request */
- 		memset(&msg, 0, sizeof(msg));
- 		msg.spec =3D MSG_LMTS;
- 		if (on) {
- 			msg.len =3D cpu_to_le16(4);
--			msg.data[0] =3D 0;
-+			msg.data[0] =3D LMTS_BUSON_REQ;
- 			msg.data[1] =3D 0;
- 			msg.data[2] =3D btr0;
- 			msg.data[3] =3D btr1;
- 		} else {
- 			msg.len =3D cpu_to_le16(2);
--			msg.data[0] =3D 1;
-+			msg.data[0] =3D LMTS_BUSOFF_REQ;
- 			msg.data[1] =3D 0;
- 		}
-+		res =3D ican3_send_msg(mod, &msg);
-+		if (res)
-+			return res;
-=20
--		return ican3_send_msg(mod, &msg);
-+		if (on) {
-+			/* create NMT Slave Node for error processing
-+			 *   class 2 (with error capability, see CiA/DS203-1)
-+			 *   id    1
-+			 *   name  locnod1 (must be exactly 7 bytes)
-+			 */
-+			memset(&msg, 0, sizeof(msg));
-+			msg.spec =3D MSG_NMTS;
-+			msg.len =3D cpu_to_le16(11);
-+			msg.data[0] =3D NMTS_CREATE_NODE_REQ;
-+			msg.data[1] =3D 0;
-+			msg.data[2] =3D 2;                 /* node class */
-+			msg.data[3] =3D 1;                 /* node id */
-+			strcpy(msg.data + 4, "locnod1"); /* node name  */
-+			return ican3_send_msg(mod, &msg);
-+		}
-+		return 0;
- 	}
- 	return -ENOTSUPP;
- }
-@@ -849,12 +886,23 @@ static int ican3_set_buserror(struct ican3_dev *m=
-od, u8 quota)
- {
- 	struct ican3_msg msg;
-=20
--	memset(&msg, 0, sizeof(msg));
--	msg.spec =3D MSG_CCONFREQ;
--	msg.len =3D cpu_to_le16(2);
--	msg.data[0] =3D 0x00;
--	msg.data[1] =3D quota;
--
-+	if (mod->fwtype =3D=3D ICAN3_FWTYPE_ICANOS) {
-+		memset(&msg, 0, sizeof(msg));
-+		msg.spec =3D MSG_CCONFREQ;
-+		msg.len =3D cpu_to_le16(2);
-+		msg.data[0] =3D 0x00;
-+		msg.data[1] =3D quota;
-+	} else if (mod->fwtype =3D=3D ICAN3_FWTYPE_CAL_CANOPEN) {
-+		memset(&msg, 0, sizeof(msg));
-+		msg.spec =3D MSG_LMTS;
-+		msg.len =3D cpu_to_le16(4);
-+		msg.data[0] =3D LMTS_CAN_CONF_REQ;
-+		msg.data[1] =3D 0x00;
-+		msg.data[2] =3D 0x00;
-+		msg.data[3] =3D quota;
-+	} else {
-+		return -ENOTSUPP;
-+	}
- 	return ican3_send_msg(mod, &msg);
- }
-=20
-@@ -1150,6 +1198,41 @@ static void ican3_handle_inquiry(struct ican3_de=
-v *mod, struct ican3_msg *msg)
- 	}
- }
-=20
-+/* Handle NMTS Slave Event Indication Messages from the firmware */
-+static void ican3_handle_nmtsind(struct ican3_dev *mod, struct ican3_m=
-sg *msg)
-+{
-+	u16 subspec;
-+
-+	subspec =3D msg->data[0] + msg->data[1] * 0x100;
-+	if (subspec =3D=3D NMTS_SLAVE_EVENT_IND) {
-+		switch (msg->data[2]) {
-+		case NE_LOCAL_OCCURRED:
-+		case NE_LOCAL_RESOLVED:
-+			/* now follows the same message as Raw ICANOS CEVTIND
-+			 * shift the data at the same place and call this method
-+			 */
-+			msg->len -=3D 3;
-+			memmove(msg->data, msg->data + 3, msg->len);
-+			ican3_handle_cevtind(mod, msg);
-+			break;
-+		case NE_REMOTE_OCCURRED:
-+		case NE_REMOTE_RESOLVED:
-+			/* should not occurre, ignore */
-+			break;
-+		default:
-+			netdev_warn(mod->ndev, "unknown NMTS event indication %x\n",
-+				    msg->data[2]);
-+			break;
-+		}
-+	} else if (subspec =3D=3D NMTS_SLAVE_STATE_IND) {
-+		/* ignore state indications */
-+	} else {
-+		netdev_warn(mod->ndev, "unhandled NMTS indication %x\n",
-+			    subspec);
-+		return;
-+	}
-+}
-+
- static void ican3_handle_unknown_message(struct ican3_dev *mod,
- 					struct ican3_msg *msg)
- {
-@@ -1179,6 +1262,9 @@ static void ican3_handle_message(struct ican3_dev=
- *mod, struct ican3_msg *msg)
- 	case MSG_INQUIRY:
- 		ican3_handle_inquiry(mod, msg);
- 		break;
-+	case MSG_NMTS:
-+		ican3_handle_nmtsind(mod, msg);
-+		break;
- 	default:
- 		ican3_handle_unknown_message(mod, msg);
- 		break;
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index e2d7ded..84d1fd8 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -581,11 +581,14 @@ static int flexcan_poll_state(struct net_device *=
+dev, u32 reg_esr)
+>         struct flexcan_priv *priv =3D netdev_priv(dev);
+>         struct sk_buff *skb;
+>         struct can_frame *cf;
+> +       struct flexcan_regs __iomem *regs =3D priv->regs;
+>         enum can_state new_state =3D 0, rx_state =3D 0, tx_state =3D 0;=
+
+>         int flt;
+>         struct can_berr_counter bec;
+> =20
+>         flt =3D reg_esr & FLEXCAN_ESR_FLT_CONF_MASK;
+> +       /* always send error counters in error frame */
+> +       __flexcan_get_berr_counter(dev, &bec);
+>         if (likely(flt =3D=3D FLEXCAN_ESR_FLT_CONF_ACTIVE)) {
+>                 tx_state =3D unlikely(reg_esr & FLEXCAN_ESR_TX_WRN) ?
+>                         CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIV=
+E;
+> @@ -593,7 +596,6 @@ static int flexcan_poll_state(struct net_device *de=
+v, u32 reg_esr)
+>                         CAN_STATE_ERROR_WARNING : CAN_STATE_ERROR_ACTIV=
+E;
+>                 new_state =3D max(tx_state, rx_state);
+>         } else {
+> -               __flexcan_get_berr_counter(dev, &bec);
+>                 new_state =3D flt =3D=3D FLEXCAN_ESR_FLT_CONF_PASSIVE ?=
+
+>                         CAN_STATE_ERROR_PASSIVE : CAN_STATE_BUS_OFF;
+>                 rx_state =3D bec.rxerr >=3D bec.txerr ? new_state : 0;
+> @@ -603,6 +605,8 @@ static int flexcan_poll_state(struct net_device *de=
+v, u32 reg_esr)
+>         /* state hasn't changed */
+>         if (likely(new_state =3D=3D priv->can.state))
+>                 return 0;
+> +       netdev_dbg(dev, "reg_esr=3D0x%x flt=3D0x%x ctrl=3D0x%08x new_st=
+ate=3D%d\n", reg_esr, flt, flex
+> +                        new_state);
+> =20
+>         skb =3D alloc_can_err_skb(dev, &cf);
+>         if (unlikely(!skb))
+> @@ -613,6 +617,8 @@ static int flexcan_poll_state(struct net_device *de=
+v, u32 reg_esr)
+>         if (unlikely(new_state =3D=3D CAN_STATE_BUS_OFF))
+>                 can_bus_off(dev);
+> =20
+> +       cf->data[6] =3D bec.txerr;
+> +       cf->data[7] =3D bec.rxerr;
+>         dev->stats.rx_packets++;
+>         dev->stats.rx_bytes +=3D cf->can_dlc;
+>         netif_receive_skb(skb);
+> @@ -679,7 +685,7 @@ static int flexcan_poll(struct napi_struct *napi, i=
+nt quota)
+>         /* The error bits are cleared on read,
+>          * use saved value from irq handler.
+>          */
+> -       reg_esr =3D flexcan_read(&regs->esr) | priv->reg_esr;
+> +       reg_esr =3D flexcan_read(&regs->esr) | (priv->reg_esr & FLEXCAN=
+_ESR_ERR_BUS);
+> =20
+>         /* handle state changes */
+>         work_done +=3D flexcan_poll_state(dev, reg_esr);
+> @@ -721,24 +727,29 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
+_id)
+>         if (reg_esr & FLEXCAN_ESR_ALL_INT)
+>                 flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr=
+);
+> =20
+> +
+>         /* schedule NAPI in case of:
+>          * - rx IRQ
+> -        * - state change IRQ
+> +        * - tx/rx warning or bus-off
+> +        * - any state change
+>          * - bus error IRQ and bus error reporting is activated
+>          */
+>         if ((reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) ||
+>             (reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+> +           ((reg_esr & FLEXCAN_ESR_FLT_CONF_MASK) !=3D (priv->reg_esr =
+& FLEXCAN_ESR_FLT_CONF_MAS
+
+There seems to be a problem with this mail, the rest of this line is
+missing.
+
+Marc
+
+>             flexcan_has_and_handle_berr(priv, reg_esr)) {
+>                 /* The error bits are cleared on read,
+>                  * save them for later use.
+>                  */
+> -               priv->reg_esr =3D reg_esr & FLEXCAN_ESR_ERR_BUS;
+> +               priv->reg_esr =3D reg_esr;
+>                 flexcan_write(FLEXCAN_IFLAG_DEFAULT &
+>                               ~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->=
+imask1);
+>                 flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ER=
+R_ALL,
+>                               &regs->ctrl);
+>                 napi_schedule(&priv->napi);
+>         }
+> +       else
+> +               priv->reg_esr =3D reg_esr;
+> =20
+>         /* FIFO overflow */
+>         if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
+>=20
+
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--gdmEMNSn9Ckfr13ehfFBDfNdAWVe4eDoI--
+
+--JsVTTW2eKILnQfxDg96ulibQBcaF7dNF8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXLHFMAAoJED07qiWsqSVq7eIH/3fBPuudufaT2nWxprAGTcRb
+nX6b6FL24psvaR5IFDIBvMJnGyl+NMjduiijLZKWi88Nzpuoz2SCcnkQl7W+Dr/i
+Ltk+6bww+Njg8A35fuvkZ/Yz8rQL4C9pyyAn/0o0QMeqOIBZhswnGd1GGXV4q/ZM
+wjeW8Vua05lp0GTXu+oSc4EtJZ9J+vOVfYHAelBir4ur5LaqBhdlmjKFXzdn/o/I
+Ggun0FS1wDK33fz1jr1pPSDxWcIarA9NndNgwRXOG/L2gzd7XJmIIjGzCtXRLyn8
+WBO0MnLAjVEEmDYpp4Qo9XEOKH0RDWNGWkWrTs2Q/RQnICokMF0RipKW9fBZYsk=
+=b+vb
+-----END PGP SIGNATURE-----
+
+--JsVTTW2eKILnQfxDg96ulibQBcaF7dNF8--
