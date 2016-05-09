@@ -1,299 +1,346 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 02/10] can: rx-fifo: introduce software rx-fifo implementation
-Date: Mon,  9 May 2016 12:52:26 +0200
-Message-ID: <1462791154-13375-3-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 09/10] can: flexcan: add support for rx-fifo based software FIFO implementation
+Date: Mon,  9 May 2016 12:52:33 +0200
+Message-ID: <1462791154-13375-10-git-send-email-mkl@pengutronix.de>
 References: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42191 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53437 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751420AbcEIKwo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 9 May 2016 06:52:44 -0400
+	by vger.kernel.org with ESMTP id S1751420AbcEIKwr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 9 May 2016 06:52:47 -0400
 In-Reply-To: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, David Jander <david@protonic.nl>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch adds a software rx-fifo implementation for CAN controllers which
-offer only a number of mailboxes, where the incoming message is stored into the
-first free one. Both controllers which start with the lowest or highest free
-mailbox are supported.
+The flexcan IP core has 64 mailboxes. For now they are configured for
+RX as a hardware FIFO. This FIFO has a fixed depth of 6 CAN frames. In
+some high load scenarios it turns out thas this buffer is too small.
 
-The mailboxes are copied to a ring buffer during the interrupt and then
-transmitted in a NAPI context.
+In order to have a buffer larger than the 6 frames FIFO, this patch adds
+support for a software based RX-FIFO bases on the generic rx-fifo
+infrastructure.
 
-Signed-off-by: David Jander <david@protonic.nl>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-fifo.c   | 181 ++++++++++++++++++++++++++++++++++++++++++++
- include/linux/can/rx-fifo.h |  14 ++++
- 2 files changed, 195 insertions(+)
+ drivers/net/can/flexcan.c | 189 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 163 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/can/rx-fifo.c b/drivers/net/can/rx-fifo.c
-index 9ec8f99d8e2e..f72159bad7d3 100644
---- a/drivers/net/can/rx-fifo.c
-+++ b/drivers/net/can/rx-fifo.c
-@@ -19,6 +19,50 @@
- #include <linux/can/dev.h>
- #include <linux/can/rx-fifo.h>
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index b1135012ced3..9c7a9ce5b308 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -3,7 +3,8 @@
+  *
+  * Copyright (c) 2005-2006 Varma Electronics Oy
+  * Copyright (c) 2009 Sascha Hauer, Pengutronix
+- * Copyright (c) 2010 Marc Kleine-Budde, Pengutronix
++ * Copyright (c) 2010-2016 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
++ * Copyright (c) 2014 David Jander, Protonic Holland
+  *
+  * Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+  *
+@@ -59,6 +60,7 @@
+ #define FLEXCAN_MCR_IRMQ		BIT(16)
+ #define FLEXCAN_MCR_LPRIO_EN		BIT(13)
+ #define FLEXCAN_MCR_AEN			BIT(12)
++/* MCR_MAXMB: maximum used MBs is MAXMB + 1 */
+ #define FLEXCAN_MCR_MAXMB(x)		((x) & 0x7f)
+ #define FLEXCAN_MCR_IDAM_A		(0x0 << 8)
+ #define FLEXCAN_MCR_IDAM_B		(0x1 << 8)
+@@ -146,12 +148,19 @@
+ /* Errata ERR005829 step7: Reserve first valid MB */
+ #define FLEXCAN_TX_MB_RESERVED_HW_FIFO	8
+ #define FLEXCAN_TX_MB_HW_FIFO		9
++#define FLEXCAN_TX_MB_RESERVED_SW_FIFO	0
++#define FLEXCAN_TX_MB_SW_FIFO		1
++#define FLEXCAN_RX_MB_LOW_FIRST		(FLEXCAN_TX_MB_SW_FIFO + 1)
++#define FLEXCAN_RX_MB_HIGH_FIRST	32
++#define FLEXCAN_RX_MB_HIGH_LAST		63
+ #define FLEXCAN_IFLAG_MB(x)		BIT(x)
+ #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
+ #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
+ #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
  
-+static bool can_rx_fifo_ge(struct can_rx_fifo *fifo, unsigned int a, unsigned int b)
-+{
-+	if (fifo->inc)
-+		return a >= b;
-+	else
-+		return a <= b;
-+}
-+
-+static bool can_rx_fifo_le(struct can_rx_fifo *fifo, unsigned int a, unsigned int b)
-+{
-+	if (fifo->inc)
-+		return a <= b;
-+	else
-+		return a >= b;
-+}
-+
-+static unsigned int can_rx_fifo_inc(struct can_rx_fifo *fifo, unsigned int *val)
-+{
-+	if (fifo->inc)
-+		return (*val)++;
-+	else
-+		return (*val)--;
-+}
-+
-+static u64 can_rx_fifo_mask_low(struct can_rx_fifo *fifo)
-+{
-+	if (fifo->inc)
-+		return ~0LLU >> (64 + fifo->low_first - fifo->high_first)
-+			     << fifo->low_first;
-+	else
-+		return ~0LLU >> (64 - fifo->low_first + fifo->high_first)
-+			     << (fifo->high_first + 1);
-+}
-+
-+static u64 can_rx_fifo_mask_high(struct can_rx_fifo *fifo)
-+{
-+	if (fifo->inc)
-+		return ~0LLU >> (64 + fifo->high_first - fifo->high_last - 1)
-+			     << fifo->high_first;
-+	else
-+		return ~0LLU >> (64 - fifo->high_first + fifo->high_last - 1)
-+			     << fifo->high_last;
-+}
-+
- static int can_rx_fifo_napi_read_frame(struct can_rx_fifo *fifo, int index)
- {
- 	struct net_device *dev = fifo->dev;
-@@ -109,6 +153,71 @@ static unsigned int can_rx_fifo_offload_one(struct can_rx_fifo *fifo, unsigned i
- 	return ret;
+ /* FLEXCAN message buffers */
++#define FLEXCAN_MB_CODE_MASK		(0xf << 24)
++#define FLEXCAN_MB_CODE_RX_BUSY_BIT	(0x1 << 24)
+ #define FLEXCAN_MB_CODE_RX_INACTIVE	(0x0 << 24)
+ #define FLEXCAN_MB_CODE_RX_EMPTY	(0x4 << 24)
+ #define FLEXCAN_MB_CODE_RX_FULL		(0x2 << 24)
+@@ -189,6 +198,7 @@
+ #define FLEXCAN_QUIRK_DISABLE_RXFG	BIT(2) /* Disable RX FIFO Global mask */
+ #define FLEXCAN_QUIRK_ENABLE_EACEN_RRS	BIT(3) /* Enable EACEN and RRS bit in ctrl2 */
+ #define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disble Memory error detection */
++#define FLEXCAN_QUIRK_USE_SW_FIFO	BIT(5) /* Use SW-FIFO */
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -265,6 +275,7 @@ struct flexcan_priv {
+ 	u32 poll_esr;			/* used in flexcan_poll_bus_err */
+ 	u32 reg_ctrl_default;
+ 	u32 reg_imask1_default;
++	u32 reg_imask2_default;
+ 
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+@@ -652,6 +663,49 @@ static unsigned int flexcan_poll_state(struct can_rx_fifo *fifo)
+ 	return 1;
  }
  
-+int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo, u64 pending)
++static void do_mailbox_enable(struct flexcan_mb __iomem *mb)
 +{
-+	unsigned int i;
-+	unsigned int ret;
-+	unsigned int received = 0;
++	u32 reg_ctrl;
++	u32 code;
 +
-+	if (fifo->scan_high_first) {
-+		fifo->scan_high_first = false;
-+		for (i = fifo->high_first;
-+		     can_rx_fifo_le(fifo, i, fifo->high_last);
-+		     can_rx_fifo_inc(fifo, &i)) {
-+			if (pending & BIT_ULL(i)) {
-+				received += can_rx_fifo_offload_one(fifo, i);
++	do {
++		reg_ctrl = flexcan_read(&mb->can_ctrl);
++	} while (reg_ctrl & FLEXCAN_MB_CODE_RX_BUSY_BIT);
 +
-+				fifo->active |= BIT_ULL(i);
-+				fifo->mailbox_enable(fifo, i);
-+			}
-+		}
++	code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
++	if (code == FLEXCAN_MB_CODE_RX_INACTIVE) {
++		flexcan_write(FLEXCAN_MB_CODE_RX_EMPTY, &mb->can_ctrl);
 +	}
++}
 +
-+	/* Copy and disable FULL MBs */
-+	for (i = fifo->low_first;
-+	     can_rx_fifo_le(fifo, i, fifo->high_last);
-+	     can_rx_fifo_inc(fifo, &i)) {
-+		if (!(fifo->active & BIT_ULL(i) & pending))
++static void flexcan_mailbox_enable(struct can_rx_fifo *fifo, unsigned int n)
++{
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
++	struct flexcan_regs __iomem *regs = priv->regs;
++
++	do_mailbox_enable(&regs->mb[n]);
++
++	/* unlock mailbox */
++	flexcan_read(&regs->timer);
++}
++
++static void flexcan_mailbox_enable_mask(struct can_rx_fifo *fifo, u64 mask)
++{
++	struct flexcan_priv *priv = rx_fifo_to_priv(fifo);
++	struct flexcan_regs __iomem *regs = priv->regs;
++	unsigned int i;
++
++	for (i = priv->fifo.low_first; i <= priv->fifo.high_last; i++) {
++		if (!(mask & BIT_ULL(i)))
 +			continue;
 +
-+		ret = can_rx_fifo_offload_one(fifo, i);
-+		if (!ret)
-+			break;
-+
-+		received += ret;
-+		fifo->active &= ~BIT_ULL(i);
++		do_mailbox_enable(&regs->mb[i]);
 +	}
 +
-+	if (can_rx_fifo_ge(fifo, i, fifo->high_first) && fifo->scan_high_first)
-+		netdev_warn(fifo->dev, "%s: RX order cannot be guaranteed. (count=%d)\n",
-+			    __func__, i);
++	/* unlock mailbox */
++	flexcan_read(&regs->timer);
++}
 +
-+	/* No EMPTY MB in first half? */
-+	if (can_rx_fifo_ge(fifo, i, fifo->high_first)) {
-+		/* Re-enable all disabled MBs */
-+		fifo->active = fifo->mask_low | fifo->mask_high;
-+		fifo->mailbox_enable_mask(fifo, fifo->active);
+ static unsigned int flexcan_mailbox_read(struct can_rx_fifo *fifo,
+ 					 struct can_frame *cf, unsigned int n)
+ {
+@@ -660,11 +714,32 @@ static unsigned int flexcan_mailbox_read(struct can_rx_fifo *fifo,
+ 	struct flexcan_mb __iomem *mb = &regs->mb[n];
+ 	u32 reg_ctrl, reg_id, reg_iflag1;
+ 
+-	reg_iflag1 = flexcan_read(&regs->iflag1);
+-	if (!(reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE))
+-		return 0;
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		u32 code;
 +
-+		/* Next time we need to check the second half first */
-+		fifo->scan_high_first = true;
-+	}
++		do {
++			reg_ctrl = flexcan_read(&mb->can_ctrl);
++		} while (reg_ctrl & FLEXCAN_MB_CODE_RX_BUSY_BIT);
 +
-+	if (WARN(!received, "%s: No messages found, RX-FIFO out of sync?\n",
-+		 __func__)) {
-+		/* This should only happen if the CAN conroller was
-+		 * reset, but can_rx_fifo_reset() was not
-+		 * called. WARN() the user and try to recover. This
-+		 * may fail and the system may hang though.
-+		 */
-+		can_rx_fifo_reset(fifo);
++		/* is this MB empty? */
++		code = reg_ctrl & FLEXCAN_MB_CODE_MASK;
++		if ((code != FLEXCAN_MB_CODE_RX_FULL) &&
++		    (code != FLEXCAN_MB_CODE_RX_OVERRUN))
++			return 0;
++
++		if (code == FLEXCAN_MB_CODE_RX_OVERRUN) {
++			/* This MB was overrun, we lost data */
++			fifo->dev->stats.rx_over_errors++;
++			fifo->dev->stats.rx_errors++;
++		}
 +	} else {
-+		can_rx_fifo_schedule(fifo);
++		reg_iflag1 = flexcan_read(&regs->iflag1);
++		if (!(reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE))
++			return 0;
++
++		reg_ctrl = flexcan_read(&mb->can_ctrl);
 +	}
-+
-+	return received;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_irq_offload);
-+
- int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo)
- {
- 	unsigned int received = 0;
-@@ -139,11 +248,72 @@ static int can_rx_fifo_init_ring(struct net_device *dev,
- 		return -ENOMEM;
  
- 	fifo->ring_head = fifo->ring_tail = 0;
-+	can_rx_fifo_reset(fifo);
- 	netif_napi_add(dev, &fifo->napi, can_rx_fifo_napi_poll, weight);
+-	reg_ctrl = flexcan_read(&mb->can_ctrl);
+ 	reg_id = flexcan_read(&mb->can_id);
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
+ 		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+@@ -679,8 +754,18 @@ static unsigned int flexcan_mailbox_read(struct can_rx_fifo *fifo,
+ 	*(__be32 *)(cf->data + 4) = cpu_to_be32(flexcan_read(&mb->data[1]));
  
- 	return 0;
- }
- 
-+static void rx_fifo_enable_mask_default(struct can_rx_fifo *fifo, u64 mask)
-+{
-+	unsigned int i;
+ 	/* mark as read */
+-	flexcan_write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
+-	flexcan_read(&regs->timer);
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		/* Clear IRQ and lock MB */
++		if (n < 32)
++			flexcan_write(BIT(n), &regs->iflag1);
++		else
++			flexcan_write(BIT(n - 32), &regs->iflag2);
 +
-+	for (i = fifo->low_first;
-+	     can_rx_fifo_le(fifo, i, fifo->high_last);
-+	     can_rx_fifo_inc(fifo, &i)) {
-+		if (mask & BIT_ULL(i))
-+			fifo->mailbox_enable(fifo, i);
-+	}
-+}
-+
-+static void rx_fifo_enable_default(struct can_rx_fifo *fifo, unsigned int mb)
-+{
-+	fifo->mailbox_enable_mask(fifo, BIT_ULL(mb));
-+}
-+
-+int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo)
-+{
-+	unsigned int weight;
-+	int ret;
-+
-+	if ((fifo->low_first < fifo->high_first) &&
-+	    (fifo->high_first < fifo->high_last)) {
-+		fifo->inc = true;
-+		weight = fifo->high_last - fifo->low_first;
-+	} else if ((fifo->low_first > fifo->high_first) &&
-+		   (fifo->high_first > fifo->high_last)) {
-+		fifo->inc = false;
-+		weight = fifo->low_first - fifo->high_last;
++		flexcan_write(FLEXCAN_MB_CODE_RX_INACTIVE, &mb->can_ctrl);
 +	} else {
-+		return -EINVAL;
++		flexcan_write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
++		flexcan_read(&regs->timer);
++	}
+ 
+ 	return 1;
+ }
+@@ -721,14 +806,27 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	}
+ 
+ 	/* reception interrupt */
+-	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE)
+-		can_rx_fifo_irq_offload_simple(&priv->fifo);
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		u32 reg_iflag2;
++		u64 reg_iflag;
+ 
+-	/* FIFO overflow */
+-	if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
+-		flexcan_write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
+-		dev->stats.rx_over_errors++;
+-		dev->stats.rx_errors++;
++		reg_iflag2 = flexcan_read(&regs->iflag2);
++		reg_iflag = (reg_iflag1 & (priv->reg_imask1_default &
++					   ~FLEXCAN_IFLAG_MB(priv->tx_mb_idx))) |
++			((u64)(reg_iflag2 & priv->reg_imask2_default) << 32);
++
++		if (reg_iflag)
++			can_rx_fifo_irq_offload(&priv->fifo, reg_iflag);
++	} else {
++		if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE)
++			can_rx_fifo_irq_offload_simple(&priv->fifo);
++
++		/* FIFO overflow */
++		if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_OVERFLOW) {
++			flexcan_write(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW, &regs->iflag1);
++			dev->stats.rx_over_errors++;
++			dev->stats.rx_errors++;
++		}
+ 	}
+ 
+ 	/* transmission complete interrupt */
+@@ -823,10 +921,17 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	 */
+ 	reg_mcr = flexcan_read(&regs->mcr);
+ 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
+-	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
+-		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS |
+-		FLEXCAN_MCR_IRMQ | FLEXCAN_MCR_IDAM_C |
+-		FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
++		FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS | FLEXCAN_MCR_IRMQ |
++		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		reg_mcr &= ~FLEXCAN_MCR_FEN;
++		reg_mcr |= FLEXCAN_MCR_MAXMB(priv->fifo.high_last);
++	} else {
++		reg_mcr |= FLEXCAN_MCR_FEN |
++			FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++	}
+ 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
+ 	flexcan_write(reg_mcr, &regs->mcr);
+ 
+@@ -875,6 +980,12 @@ static int flexcan_chip_start(struct net_device *dev)
+ 			      &regs->mb[i].can_ctrl);
+ 	}
+ 
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		for (i = priv->fifo.low_first; i <= priv->fifo.high_last; i++)
++			flexcan_write(FLEXCAN_MB_CODE_RX_EMPTY,
++				      &regs->mb[i].can_ctrl);
 +	}
 +
-+	if ((!fifo->mailbox_enable_mask && !fifo->mailbox_enable) ||
-+	    !fifo->mailbox_read)
-+		return -EINVAL;
-+
-+	if (!fifo->mailbox_enable_mask)
-+		fifo->mailbox_enable_mask = rx_fifo_enable_mask_default;
-+	if (!fifo->mailbox_enable)
-+		fifo->mailbox_enable = rx_fifo_enable_default;
-+
-+	/* init variables */
-+	fifo->mask_low = can_rx_fifo_mask_low(fifo);
-+	fifo->mask_high = can_rx_fifo_mask_high(fifo);
-+
-+	ret = can_rx_fifo_init_ring(dev, fifo, weight);
-+	if (ret)
-+		return ret;
-+
-+	netdev_dbg(dev, "%s: low_first=%d, high_first=%d, high_last=%d\n", __func__,
-+		   fifo->low_first, fifo->high_first, fifo->high_last);
-+	netdev_dbg(dev, "%s: mask_low=0x%016llx mask_high=0x%016llx\n", __func__,
-+		   fifo->mask_low, fifo->mask_high);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_add);
-+
- int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight)
- {
- 	if (!fifo->mailbox_read)
-@@ -155,6 +325,9 @@ EXPORT_SYMBOL_GPL(can_rx_fifo_add_simple);
+ 	/* Errata ERR005829: mark first TX mailbox as INACTIVE */
+ 	flexcan_write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 		      &priv->tx_mb_reserved->can_ctrl);
+@@ -933,6 +1044,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	disable_irq(dev->irq);
+ 	flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+ 	flexcan_write(priv->reg_imask1_default, &regs->imask1);
++	flexcan_write(priv->reg_imask2_default, &regs->imask2);
+ 	enable_irq(dev->irq);
  
- void can_rx_fifo_enable(struct can_rx_fifo *fifo)
- {
-+	can_rx_fifo_reset(fifo);
-+	if (fifo->mailbox_enable_mask)
-+		fifo->mailbox_enable_mask(fifo, fifo->active);
- 	napi_enable(&fifo->napi);
- }
- EXPORT_SYMBOL_GPL(can_rx_fifo_enable);
-@@ -172,3 +345,11 @@ void can_rx_fifo_del(struct can_rx_fifo *fifo)
- 	kfree(fifo->ring);
- }
- EXPORT_SYMBOL_GPL(can_rx_fifo_del);
+ 	/* print chip status */
+@@ -962,6 +1074,7 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 	flexcan_chip_disable(priv);
+ 
+ 	/* Disable all interrupts */
++	flexcan_write(0, &regs->imask2);
+ 	flexcan_write(0, &regs->imask1);
+ 	flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+ 		      &regs->ctrl);
+@@ -1094,8 +1207,9 @@ static int register_flexcandev(struct net_device *dev)
+ 	flexcan_write(reg, &regs->mcr);
+ 
+ 	/* Currently we only support newer versions of this core
+-	 * featuring a RX FIFO. Older cores found on some Coldfire
+-	 * derivates are not yet supported.
++	 * featuring a RX hardware FIFO (although this driver doesn't
++	 * make use of it on some cores). Older cores, found on some
++	 * Coldfire derivates are not tested.
+ 	 */
+ 	reg = flexcan_read(&regs->mcr);
+ 	if (!(reg & FLEXCAN_MCR_FEN)) {
+@@ -1217,13 +1331,17 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->devtype_data = devtype_data;
+ 	priv->reg_xceiver = reg_xceiver;
+ 
+-	priv->tx_mb_idx = FLEXCAN_TX_MB_HW_FIFO;
+-	priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_HW_FIFO];
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		priv->tx_mb_idx = FLEXCAN_TX_MB_SW_FIFO;
++		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_SW_FIFO];
++	} else {
++		priv->tx_mb_idx = FLEXCAN_TX_MB_HW_FIFO;
++		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_HW_FIFO];
++	}
+ 	priv->tx_mb = &regs->mb[priv->tx_mb_idx];
+ 
+-	priv->reg_imask1_default = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
+-		FLEXCAN_IFLAG_RX_FIFO_AVAILABLE |
+-		FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
++	priv->reg_imask1_default = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
++	priv->reg_imask2_default = 0;
+ 
+ 	priv->fifo.poll_pre_read = flexcan_poll_state;
+ 	priv->fifo.poll_post_read = flexcan_poll_bus_err;
+@@ -1231,7 +1349,26 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		flexcan_poll_error_interrupts_enable;
+ 	priv->fifo.mailbox_read = flexcan_mailbox_read;
+ 
+-	err = can_rx_fifo_add_simple(dev, &priv->fifo, FLEXCAN_NAPI_WEIGHT);
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_SW_FIFO) {
++		u64 imask;
 +
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo)
-+{
-+	fifo->scan_high_first = false;
-+	fifo->poll_errors = false;
-+	fifo->active = fifo->mask_low | fifo->mask_high;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_fifo_reset);
-diff --git a/include/linux/can/rx-fifo.h b/include/linux/can/rx-fifo.h
-index 0582564deaaf..6b19ae1584be 100644
---- a/include/linux/can/rx-fifo.h
-+++ b/include/linux/can/rx-fifo.h
-@@ -23,25 +23,39 @@
- struct can_rx_fifo {
- 	struct net_device *dev;
- 
-+	void (*mailbox_enable_mask)(struct can_rx_fifo *fifo, u64 mask);
-+	void (*mailbox_enable)(struct can_rx_fifo *fifo, unsigned int mb);
- 	void (*poll_error_interrupts_enable)(struct can_rx_fifo *fifo);
- 	unsigned int (*mailbox_read)(struct can_rx_fifo *fifo, struct can_frame *cf, unsigned int mb);
- 	unsigned int (*poll_pre_read)(struct can_rx_fifo *fifo);
- 	unsigned int (*poll_post_read)(struct can_rx_fifo *fifo);
- 
-+	u64 mask_low;
-+	u64 mask_high;
-+	u64 active;
++		priv->fifo.low_first = FLEXCAN_RX_MB_LOW_FIRST;
++		priv->fifo.high_first = FLEXCAN_RX_MB_HIGH_FIRST;
++		priv->fifo.high_last = FLEXCAN_RX_MB_HIGH_LAST;
++		priv->fifo.mailbox_enable_mask = flexcan_mailbox_enable_mask;
++		priv->fifo.mailbox_enable = flexcan_mailbox_enable;
 +
- 	unsigned int ring_size;
- 	unsigned int ring_head;
- 	unsigned int ring_tail;
-+	unsigned int low_first;
-+	unsigned int high_first;
-+	unsigned int high_last;
- 
- 	struct can_frame *ring;
- 	struct can_frame overflow;
- 	struct napi_struct napi;
- 
-+	bool inc;
-+	bool scan_high_first;
- 	bool poll_errors;
- };
- 
-+int can_rx_fifo_add(struct net_device *dev, struct can_rx_fifo *fifo);
- int can_rx_fifo_add_simple(struct net_device *dev, struct can_rx_fifo *fifo, unsigned int weight);
-+int can_rx_fifo_irq_offload(struct can_rx_fifo *fifo, u64 reg);
- int can_rx_fifo_irq_offload_simple(struct can_rx_fifo *fifo);
- void can_rx_fifo_irq_error(struct can_rx_fifo *fifo);
-+void can_rx_fifo_reset(struct can_rx_fifo *fifo);
- void can_rx_fifo_del(struct can_rx_fifo *fifo);
- void can_rx_fifo_enable(struct can_rx_fifo *fifo);
++		imask = ~0LLU >> (64 + priv->fifo.low_first - priv->fifo.high_last - 1)
++			      << priv->fifo.low_first;
++		priv->reg_imask1_default |= imask;
++		priv->reg_imask2_default |= imask >> 32;
++
++		err = can_rx_fifo_add(dev, &priv->fifo);
++	} else {
++		priv->reg_imask1_default |= FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
++			FLEXCAN_IFLAG_RX_FIFO_AVAILABLE;
++		err = can_rx_fifo_add_simple(dev, &priv->fifo, FLEXCAN_NAPI_WEIGHT);
++	}
+ 	if (err)
+ 		goto failed_fifo;
  
 -- 
 2.8.1
