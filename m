@@ -1,233 +1,219 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 6/6] net: can: ifi: Add more detailed error reporting
-Date: Sun, 08 May 2016 21:25:24 +0200
-Message-ID: <572F92A4.80005@denx.de>
-References: <1462660456-6179-1-git-send-email-marex@denx.de> <1462660456-6179-6-git-send-email-marex@denx.de> <572F8C55.5060007@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
+ with helper
+Date: Mon, 9 May 2016 09:12:51 +0200
+Message-ID: <57303873.5000108@pengutronix.de>
+References: <1462285862-30946-1-git-send-email-fw@strlen.de>
+ <1462285994-31983-1-git-send-email-fw@strlen.de>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI"
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI
+Content-Type: multipart/mixed; boundary="GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs"
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+To: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
+ linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
+ linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org,
+ linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org,
+ linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Message-ID: <57303873.5000108-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
+ with helper
+References: <1462285862-30946-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+ <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+In-Reply-To: <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+
+--GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:33398 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750849AbcEHTZ0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 8 May 2016 15:25:26 -0400
-In-Reply-To: <572F8C55.5060007@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 
-On 05/08/2016 08:58 PM, Marc Kleine-Budde wrote:
-> On 05/08/2016 12:34 AM, Marek Vasut wrote:
->> The updated specification for the IFI CANFD core contains descriptio=
-n
->> of more detailed error reporting capability of the core. Implement
->> support for this detailed error reporting.
->>
->> Signed-off-by: Marek Vasut <marex@denx.de>
->> ---
->>  drivers/net/can/ifi_canfd/ifi_canfd.c | 109 +++++++++++++++++++++++=
-+++++++++--
->>  1 file changed, 105 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can=
-/ifi_canfd/ifi_canfd.c
->> index ba6cd43..495879f 100644
->> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
->> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
->> @@ -52,7 +52,8 @@
->>  #define IFI_CANFD_TXSTCMD_OVERFLOW		BIT(13)
->> =20
->>  #define IFI_CANFD_INTERRUPT			0xc
->> -#define IFI_CANFD_INTERRUPT_ERROR_WARNING	((u32)BIT(1))
->> +#define IFI_CANFD_INTERRUPT_ERROR_WARNING	BIT(1)
->> +#define IFI_CANFD_INTERRUPT_ERROR_COUNTER	BIT(10)
->>  #define IFI_CANFD_INTERRUPT_TXFIFO_EMPTY	BIT(16)
->>  #define IFI_CANFD_INTERRUPT_TXFIFO_REMOVE	BIT(22)
->>  #define IFI_CANFD_INTERRUPT_RXFIFO_NEMPTY	BIT(24)
->> @@ -103,7 +104,26 @@
->> =20
->>  #define IFI_CANFD_RES1				0x40
->> =20
->> -#define IFI_CANFD_RES2				0x44
->> +#define IFI_CANFD_ERROR_CTR			0x44
->> +#define IFI_CANFD_ERROR_CTR_UNLOCK_MAGIC	0x21302899
->> +#define IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST	BIT(0)
->> +#define IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST	BIT(1)
->> +#define IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST	BIT(2)
->> +#define IFI_CANFD_ERROR_CTR_BIT1_ERROR_FIRST	BIT(3)
->> +#define IFI_CANFD_ERROR_CTR_STUFF_ERROR_FIRST	BIT(4)
->> +#define IFI_CANFD_ERROR_CTR_CRC_ERROR_FIRST	BIT(5)
->> +#define IFI_CANFD_ERROR_CTR_FORM_ERROR_FIRST	BIT(6)
->> +#define IFI_CANFD_ERROR_CTR_OVERLOAD_ALL	BIT(8)
->> +#define IFI_CANFD_ERROR_CTR_ACK_ERROR_ALL	BIT(9)
->> +#define IFI_CANFD_ERROR_CTR_BIT0_ERROR_ALL	BIT(10)
->> +#define IFI_CANFD_ERROR_CTR_BIT1_ERROR_ALL	BIT(11)
->> +#define IFI_CANFD_ERROR_CTR_STUFF_ERROR_ALL	BIT(12)
->> +#define IFI_CANFD_ERROR_CTR_CRC_ERROR_ALL	BIT(13)
->> +#define IFI_CANFD_ERROR_CTR_FORM_ERROR_ALL	BIT(14)
->> +#define IFI_CANFD_ERROR_CTR_BITPOSITION_OFFSET	16
->> +#define IFI_CANFD_ERROR_CTR_BITPOSITION_MASK	0xff
->> +#define IFI_CANFD_ERROR_CTR_ER_RESET		BIT(30)
->> +#define IFI_CANFD_ERROR_CTR_ER_ENABLE		((u32)BIT(31))
->> =20
->>  #define IFI_CANFD_PAR				0x48
->> =20
->> @@ -197,6 +217,8 @@ static void ifi_canfd_irq_enable(struct net_devi=
-ce *ndev, bool enable)
->>  	if (enable) {
->>  		enirq =3D IFI_CANFD_IRQMASK_TXFIFO_EMPTY |
->>  			IFI_CANFD_IRQMASK_RXFIFO_NEMPTY;
->> +		if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
->> +			enirq |=3D IFI_CANFD_INTERRUPT_ERROR_COUNTER;
->>  	}
->> =20
->>  	writel(IFI_CANFD_IRQMASK_SET_ERR |
->> @@ -335,6 +357,68 @@ static int ifi_canfd_handle_lost_msg(struct net=
-_device *ndev)
->>  	return 1;
->>  }
->> =20
->> +static int ifi_canfd_handle_lec_err(struct net_device *ndev, const =
-u32 errctr)
->> +{
->> +	struct ifi_canfd_priv *priv =3D netdev_priv(ndev);
->> +	struct net_device_stats *stats =3D &ndev->stats;
->> +	struct can_frame *cf;
->> +	struct sk_buff *skb;
->> +	const u32 errmask =3D IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_BIT1_ERROR_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_STUFF_ERROR_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_CRC_ERROR_FIRST |
->> +			    IFI_CANFD_ERROR_CTR_FORM_ERROR_FIRST;
->> +
->> +	if (!(errctr & errmask))	/* No error happened. */
->> +		return 0;
->> +
->> +	priv->can.can_stats.bus_error++;
->> +	stats->rx_errors++;
->> +
->> +	/* Propagate the error condition to the CAN stack. */
->> +	skb =3D alloc_can_err_skb(ndev, &cf);
->> +	if (unlikely(!skb))
->> +		return 0;
->> +
->> +	/* Read the error counter register and check for new errors. */
->> +	cf->can_id |=3D CAN_ERR_PROT | CAN_ERR_BUSERROR;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST)
->> +		cf->data[2] |=3D CAN_ERR_PROT_OVERLOAD;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST)
->> +		cf->data[3] =3D CAN_ERR_PROT_LOC_ACK;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST)
->> +		cf->data[2] |=3D CAN_ERR_PROT_BIT0;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_BIT1_ERROR_FIRST)
->> +		cf->data[2] |=3D CAN_ERR_PROT_BIT1;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_STUFF_ERROR_FIRST)
->> +		cf->data[2] |=3D CAN_ERR_PROT_STUFF;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_CRC_ERROR_FIRST)
->> +		cf->data[3] =3D CAN_ERR_PROT_LOC_CRC_SEQ;
->> +
->> +	if (errctr & IFI_CANFD_ERROR_CTR_FORM_ERROR_FIRST)
->> +		cf->data[2] |=3D CAN_ERR_PROT_FORM;
->> +
->> +	/* Reset the error counter, ack the IRQ and re-enable the counter.=
- */
->> +	writel(IFI_CANFD_ERROR_CTR_ER_RESET, priv->base + IFI_CANFD_ERROR_=
-CTR);
->> +	writel(IFI_CANFD_INTERRUPT_ERROR_COUNTER,
->> +	       priv->base + IFI_CANFD_INTERRUPT);
->> +	writel(IFI_CANFD_ERROR_CTR_ER_ENABLE, priv->base + IFI_CANFD_ERROR=
-_CTR);
->> +
->> +	stats->rx_packets++;
->> +	stats->rx_bytes +=3D cf->can_dlc;
->> +	netif_receive_skb(skb);
->> +
->> +	return 1;
->> +}
->> +
->>  static int ifi_canfd_get_berr_counter(const struct net_device *ndev=
-,
->>  				      struct can_berr_counter *bec)
->>  {
->> @@ -470,6 +554,7 @@ static int ifi_canfd_poll(struct napi_struct *na=
-pi, int quota)
->> =20
->>  	u32 stcmd =3D readl(priv->base + IFI_CANFD_STCMD);
->>  	u32 rxstcmd =3D readl(priv->base + IFI_CANFD_STCMD);
->> +	u32 errctr =3D readl(priv->base + IFI_CANFD_ERROR_CTR);
->> =20
->>  	/* Handle bus state changes */
->>  	if ((stcmd & stcmd_state_mask) ||
->> @@ -480,6 +565,10 @@ static int ifi_canfd_poll(struct napi_struct *n=
-api, int quota)
->>  	if (rxstcmd & IFI_CANFD_RXSTCMD_OVERFLOW)
->>  		work_done +=3D ifi_canfd_handle_lost_msg(ndev);
->> =20
->> +	/* Handle lec errors on the bus */
->> +	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
->> +		work_done +=3D ifi_canfd_handle_lec_err(ndev, errctr);
->> +
->>  	/* Handle normal messages on RX */
->>  	if (!(rxstcmd & IFI_CANFD_RXSTCMD_EMPTY))
->>  		work_done +=3D ifi_canfd_do_rx_poll(ndev, quota - work_done);
->> @@ -499,7 +588,8 @@ static irqreturn_t ifi_canfd_isr(int irq, void *=
-dev_id)
->>  	struct net_device_stats *stats =3D &ndev->stats;
->>  	const u32 rx_irq_mask =3D IFI_CANFD_INTERRUPT_RXFIFO_NEMPTY |
->>  				IFI_CANFD_INTERRUPT_RXFIFO_NEMPTY_PER |
->> -				IFI_CANFD_INTERRUPT_ERROR_WARNING;
->> +				IFI_CANFD_INTERRUPT_ERROR_WARNING |
->> +				IFI_CANFD_INTERRUPT_ERROR_COUNTER;
->>  	const u32 tx_irq_mask =3D IFI_CANFD_INTERRUPT_TXFIFO_EMPTY |
->>  				IFI_CANFD_INTERRUPT_TXFIFO_REMOVE;
->>  	const u32 clr_irq_mask =3D ~(IFI_CANFD_INTERRUPT_SET_IRQ |
+On 05/03/2016 04:33 PM, Florian Westphal wrote:
+> Replace all trans_start updates with netif_trans_update helper.
+> change was done via spatch:
 >=20
-> I'll fold this hunk to get rid of another of this warnings :(
+> struct net_device *d;
+> @@
+> - d->trans_start =3D jiffies
+> + netif_trans_update(d)
 >=20
+> Compile tested only.
 >=20
->>   CC [M]  drivers/net/can/ifi_canfd/ifi_canfd.o
->> drivers/net/can/ifi_canfd/ifi_canfd.c: In function =E2=80=98ifi_canf=
-d_isr=E2=80=99:
->> drivers/net/can/ifi_canfd/ifi_canfd.c:595:27: warning: large integer=
- implicitly truncated to unsigned type [-Woverflow]
->>   const u32 clr_irq_mask =3D ~(IFI_CANFD_INTERRUPT_SET_IRQ |
->>                            ^
+> Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+> Cc: linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org
+> Cc: linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+> Cc: linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org
+> Cc: linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org
+> Cc: b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org
+> Cc: linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Signed-off-by: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+> ---
+>  Checkpatch complains about whitespace damage, but
+>  this extra whitespace already exists before this patch.
+>=20
+>  drivers/net/can/mscan/mscan.c                          | 4 ++--
+>  drivers/net/can/usb/ems_usb.c                          | 4 ++--
+>  drivers/net/can/usb/esd_usb2.c                         | 4 ++--
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c           | 4 ++--
 
-Thanks for spotting and fixing this!
+> diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/msca=
+n.c
+> index e36b740..acb708f 100644
+> --- a/drivers/net/can/mscan/mscan.c
+> +++ b/drivers/net/can/mscan/mscan.c
+> @@ -276,7 +276,7 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff =
+*skb, struct net_device *dev)
+>  	out_8(&regs->cantflg, 1 << buf_id);
+> =20
+>  	if (!test_bit(F_TX_PROGRESS, &priv->flags))
+> -		dev->trans_start =3D jiffies;
+> +		netif_trans_update(dev);
+> =20
+>  	list_add_tail(&priv->tx_queue[buf_id].list, &priv->tx_head);
+> =20
+> @@ -469,7 +469,7 @@ static irqreturn_t mscan_isr(int irq, void *dev_id)=
 
->> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can=
-/ifi_canfd/ifi_canfd.c
->> index 495879f30906..2d1d22eec750 100644
->> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
->> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
->> @@ -592,8 +592,8 @@ static irqreturn_t ifi_canfd_isr(int irq, void *=
-dev_id)
->>                                 IFI_CANFD_INTERRUPT_ERROR_COUNTER;
->>         const u32 tx_irq_mask =3D IFI_CANFD_INTERRUPT_TXFIFO_EMPTY |
->>                                 IFI_CANFD_INTERRUPT_TXFIFO_REMOVE;
->> -       const u32 clr_irq_mask =3D ~(IFI_CANFD_INTERRUPT_SET_IRQ |
->> -                                  IFI_CANFD_INTERRUPT_ERROR_WARNING=
-);
->> +       const u32 clr_irq_mask =3D ~((u32)(IFI_CANFD_INTERRUPT_SET_I=
-RQ |
->> +                                        IFI_CANFD_INTERRUPT_ERROR_W=
-ARNING));
->>         u32 isr;
->> =20
->>         isr =3D readl(priv->base + IFI_CANFD_INTERRUPT);
->=20
-> Marc
->=20
+>  			clear_bit(F_TX_PROGRESS, &priv->flags);
+>  			priv->cur_pri =3D 0;
+>  		} else {
+> -			dev->trans_start =3D jiffies;
+> +			netif_trans_update(dev);
+>  		}
+> =20
+>  		if (!test_bit(F_TX_WAIT_ALL, &priv->flags))
+> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_us=
+b.c
+> index 3400fd1..71f0e79 100644
+> --- a/drivers/net/can/usb/ems_usb.c
+> +++ b/drivers/net/can/usb/ems_usb.c
+> @@ -521,7 +521,7 @@ static void ems_usb_write_bulk_callback(struct urb =
+*urb)
+>  	if (urb->status)
+>  		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+> =20
+> -	netdev->trans_start =3D jiffies;
+> +	netif_trans_update(netdev);
+> =20
+>  	/* transmission complete interrupt */
+>  	netdev->stats.tx_packets++;
+> @@ -835,7 +835,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buf=
+f *skb, struct net_device *ne
+>  			stats->tx_dropped++;
+>  		}
+>  	} else {
+> -		netdev->trans_start =3D jiffies;
+> +		netif_trans_update(netdev);
+> =20
+>  		/* Slow down tx path */
+>  		if (atomic_read(&dev->active_tx_urbs) >=3D MAX_TX_URBS ||
+> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_u=
+sb2.c
+> index 113e64f..784a900 100644
+> --- a/drivers/net/can/usb/esd_usb2.c
+> +++ b/drivers/net/can/usb/esd_usb2.c
+> @@ -480,7 +480,7 @@ static void esd_usb2_write_bulk_callback(struct urb=
+ *urb)
+>  	if (urb->status)
+>  		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+> =20
+> -	netdev->trans_start =3D jiffies;
+> +	netif_trans_update(netdev);
+>  }
+> =20
+>  static ssize_t show_firmware(struct device *d,
+> @@ -820,7 +820,7 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_bu=
+ff *skb,
+>  		goto releasebuf;
+>  	}
+> =20
+> -	netdev->trans_start =3D jiffies;
+> +	netif_trans_update(netdev);
+> =20
+>  	/*
+>  	 * Release our reference to this URB, the USB core will eventually fr=
+ee
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net=
+/can/usb/peak_usb/pcan_usb_core.c
+> index 5a2e341..bfb91d8 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -274,7 +274,7 @@ static void peak_usb_write_bulk_callback(struct urb=
+ *urb)
+>  		netdev->stats.tx_bytes +=3D context->data_len;
+> =20
+>  		/* prevent tx timeout */
+> -		netdev->trans_start =3D jiffies;
+> +		netif_trans_update(netdev);
+>  		break;
+> =20
+>  	default:
+> @@ -373,7 +373,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct s=
+k_buff *skb,
+>  			stats->tx_dropped++;
+>  		}
+>  	} else {
+> -		netdev->trans_start =3D jiffies;
+> +		netif_trans_update(netdev);
+> =20
+>  		/* slow down tx path */
+>  		if (atomic_read(&dev->active_tx_urbs) >=3D PCAN_USB_MAX_TX_URBS)
 
+For the drivers/can part:
 
+Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+
+regards,
+Marc
 --=20
-Best regards,
-Marek Vasut
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs--
+
+--fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXMDhzAAoJED07qiWsqSVqY58H/ix0AbZ+YrFYM2PIOprS2fXE
+aX27+KlnttkKPZwwfFINkn2/zij9PmEHqTEIhWIQW+jkvzw3wk2+4r7S6RgCasja
+uYAWpyo35ikxuaRPe9rzVseGZfULqW5rGxx5I9fp9eC4WFjyU66mwhWI08YY2apl
+W1Lqfgzz2Op2wykMdjjjW9bjnDQLigGgdvjsvg03u0hyPhfWol23c3UexJU13qXJ
+blCUgZ3l3JJeh3FsZlb1wJ08j4imD54l2H+/y3uDNEh9V3k40pTtDxWoRwx3wc1C
+Q6gJ1MowW9/sLy+VOcMrFLy4JG652SUKe1B0pNocQX7QjHvQkt7pTtdx3reGwmM=
+=cJdV
+-----END PGP SIGNATURE-----
+
+--fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
