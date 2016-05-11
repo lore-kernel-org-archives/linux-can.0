@@ -1,111 +1,88 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: CAN libpcap capture endianess
-Date: Wed, 11 May 2016 10:17:13 +0200
-Message-ID: <5732EA89.5060303@hartkopp.net>
-References: <1378920814-sup-4559@pruts.nl> <1462908218-sup-6526@pruts.nl>
- <5732E1F9.1060908@hartkopp.net> <1462952665-sup-1016@pruts.nl>
+Subject: Re: rx-fifo: add implmentation and switch flexcan driver to use it
+Date: Wed, 11 May 2016 11:12:14 +0200
+Message-ID: <5732F76E.6080804@hartkopp.net>
+References: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
+ <CAJ=nTsvE1ZMNC9zmagM=CA+7oE5FWCszeJFsXEO5rc7g=X_B-g@mail.gmail.com>
+ <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:20899 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:36269 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751360AbcEKIRT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2016 04:17:19 -0400
-In-Reply-To: <1462952665-sup-1016@pruts.nl>
+	with ESMTP id S1751917AbcEKJM2 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2016 05:12:28 -0400
+In-Reply-To: <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ico Doornekamp <ico@pruts.nl>
+To: Mirza Krak <mirza.krak@hostmobility.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Ico,
 
-On 05/11/2016 09:48 AM, Ico Doornekamp wrote:
-> * On 2016-05-11 09:40:41 +0200, Oliver Hartkopp wrote:
->
->> usually the CAN subsystem has no problems with host/network byte order:
->> The struct can_frame contains the CAN ID which is set into the CAN
->> controller registers inside the CAN driver.
+
+On 05/10/2016 02:55 PM, Mirza Krak wrote:
+> 2016-05-10 10:27 GMT+02:00 Mirza Krak <mirza.krak@hostmobility.com>:
+>> 2016-05-09 12:52 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+>>> Hello,
+>>>
+>>> this patch add support for a software bases rx-fifo implementation (patches
+>>> 1+2). The remaining patches modify the flexcan driver to make use of it. imx6
+>>> and vf610 SoCs can make use of the 64 mailbox software FIFO, while older SoCs
+>>> still use flexcan's 6 mailbox deep hardware FIFO.
+>>>
+>>> Testing on any flexcan core is highly appreciated.
 >>
->> As wireshark uses the PF_PACKET socket to read the CAN frames it might
->> make assumptions about the byte order of read elements.
+>> Hi Marc.
 >>
->> Can you check the output from tst-packet on vcan0 / slcan0:
+>> Tested your patch series on a vf610 SOC. I ran 2 x CAN @ 1Mbit, 80-90 % busload.
 >>
->>      ./tst-packet -i vcan0
->
-> Yes, this gives the expected result for both vcan and slcan:
->
->    $ sudo ./tst-packet
->    123  [4] 00 00 00 00
->    123  [4] 00 00 00 00
->
-> Still it makes no sense to me that wireshark does seem to make a
-> difference when sniffing on vcan and slcan:
+>> I do no longer get any "overrun" errors, which I got without your
+>> patch series. And it seems to be stable, unlike previous patch series.
+>> Improvement!
+>>
+>> However I ran a simple sequence test and there seems to be some
+>> ordering issues. I have some memory of that similar issues have been
+>> discussed earlier on the mailing list and I am not quite sure if this
+>> is related to your patch series but I get following:
+>>
+>> root@mx4-v61-1000000:~/test/can_test# uname -a
+>> Linux mx4-v61-1000000 4.1.15-00056-ge0b8ccc-dirty #12 Mon May 9
+>> 15:59:54 CEST 2016 armv7l GNU/Linux
+>> root@mx4-v61-1000000:~/test/can_test# ./cansequence -r can1
+>> interface = can1, family = 29, type = 3, proto = 1
+>> received wrong sequence count. expected: 60, got: 61
+>> received wrong sequence count. expected: 62, got: 60
+>> received wrong sequence count. expected: 61, got: 62
+>> received wrong sequence count. expected: 118, got: 119
+>> received wrong sequence count. expected: 120, got: 118
+>> received wrong sequence count. expected: 119, got: 120
+>> received wrong sequence count. expected: 76, got: 77
+>> received wrong sequence count. expected: 78, got: 76
+>> received wrong sequence count. expected: 77, got: 78
+>>
+>> One strange thing is that the sequence errors only occur on can1, can0
+>> does not show any errors.
 
-That's strange indeed.
+Hello Marc,
 
-Both interfaces do not support IFF_ECHO (echo of sent CAN frames on 
-driver level) so both should trigger this shortcut in af_can.c:
+is it possible that the indirection irq -> rx-fifo -> napi can shuffle 
+the CAN frames when the can1 irq is served by different CPUs?
 
-http://lxr.free-electrons.com/source/net/can/af_can.c#L284
+We can probably set the processing CPU number into can_frame.__res0 for 
+a test and print it in cansequence then.
 
-Can you send the output of
-
-ip -details link show vcan0
-ip -details link show slcan0
-
-??
-
->
->   1 0.000000 -> CAN 12 STD: 0x00000123 00 00 00 00
->   1 0.000000 -> CAN 16 ERR: 0x03010000 00 00 00 00
-
-At least the CAN ID is 'AND'ed with CAN_ERR_MASK 0x1FFFFFFF :-)
-That's the reason for the missing '2' due to  CAN_ERR_FLAG.
-
->
-> I'll try to find the time to dig in the kernel and wireshark code to
-> find out what causes the difference.
-
-Btw, can you check if this patch fixes the issue:
-
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 9a3f15c..58ba098 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -202,16 +202,19 @@ static void slc_bump(struct slcan *sl)
-  		}
-  	}
-
--	skb = dev_alloc_skb(sizeof(struct can_frame) +
--			    sizeof(struct can_skb_priv));
--	if (!skb)
-+	skb = netdev_alloc_skb(sl->dev, sizeof(struct can_skb_priv) +
-+			       sizeof(struct can_frame));
-+	if (unlikely(!skb))
-  		return;
-
--	skb->dev = sl->dev;
-  	skb->protocol = htons(ETH_P_CAN);
-  	skb->pkt_type = PACKET_BROADCAST;
-  	skb->ip_summed = CHECKSUM_UNNECESSARY;
-
-+	skb_reset_mac_header(skb);
-+	skb_reset_network_header(skb);
-+	skb_reset_transport_header(skb);
-+
-  	can_skb_reserve(skb);
-  	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
-  	can_skb_prv(skb)->skbcnt = 0;
-
-
-I posted this patch in February 2015
-
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=969439016d2cf61fef53a973d7e6d2061c3793b1
-
-and obviously forgot slcan.c ...
-
-Thanks,
+Regards,
 Oliver
 
+ps. @Mirza: Thanks for testing!
+
+>
+> Some follow-up information.
+>
+> Sequence errors occurs only if I run at 500 kbit/s or faster, which
+> suggests that higher CPU load triggers it.
+>
+> I also ran same tests without your patch series and do not get any
+> sequence errors.
+>
