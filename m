@@ -1,88 +1,54 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: rx-fifo: add implmentation and switch flexcan driver to use it
-Date: Wed, 11 May 2016 11:12:14 +0200
-Message-ID: <5732F76E.6080804@hartkopp.net>
-References: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
- <CAJ=nTsvE1ZMNC9zmagM=CA+7oE5FWCszeJFsXEO5rc7g=X_B-g@mail.gmail.com>
- <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Ico Doornekamp <ico@pruts.nl>
+Subject: Re: CAN libpcap capture endianess
+Date: Wed, 11 May 2016 14:28:56 +0200
+Message-ID: <1462969665-sup-623@pruts.nl>
+References: <1378920814-sup-4559@pruts.nl> <1462908218-sup-6526@pruts.nl> <5732E1F9.1060908@hartkopp.net> <1462952665-sup-1016@pruts.nl> <5732EA89.5060303@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:36269 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751917AbcEKJM2 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2016 05:12:28 -0400
-In-Reply-To: <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
+Received: from pruts.nl ([82.94.235.106]:33734 "EHLO fe2.pruts.nl"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751434AbcEKM30 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 11 May 2016 08:29:26 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by fe2.pruts.nl (Postfix) with ESMTP id 5AD06140065
+	for <linux-can@vger.kernel.org>; Wed, 11 May 2016 14:29:21 +0200 (CEST)
+Received: from fe2.pruts.nl ([IPv6:::ffff:127.0.0.1])
+	by localhost (fe2.local [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 77Yq6e5cBFMC for <linux-can@vger.kernel.org>;
+	Wed, 11 May 2016 14:29:21 +0200 (CEST)
+In-reply-to: <5732EA89.5060303@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@hostmobility.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 
+* On 2016-05-11 10:17:13 +0200, Oliver Hartkopp wrote:
+ 
+> That's strange indeed.
+> 
+> Can you send the output of
+> 
+> ip -details link show vcan0
+> ip -details link show slcan0
 
+$ ip -details link show vcan0
+4: vcan0: <NOARP,UP,LOWER_UP> mtu 16 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1
+    link/can  promiscuity 0 
+    vcan 
 
-On 05/10/2016 02:55 PM, Mirza Krak wrote:
-> 2016-05-10 10:27 GMT+02:00 Mirza Krak <mirza.krak@hostmobility.com>:
->> 2016-05-09 12:52 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
->>> Hello,
->>>
->>> this patch add support for a software bases rx-fifo implementation (patches
->>> 1+2). The remaining patches modify the flexcan driver to make use of it. imx6
->>> and vf610 SoCs can make use of the 64 mailbox software FIFO, while older SoCs
->>> still use flexcan's 6 mailbox deep hardware FIFO.
->>>
->>> Testing on any flexcan core is highly appreciated.
->>
->> Hi Marc.
->>
->> Tested your patch series on a vf610 SOC. I ran 2 x CAN @ 1Mbit, 80-90 % busload.
->>
->> I do no longer get any "overrun" errors, which I got without your
->> patch series. And it seems to be stable, unlike previous patch series.
->> Improvement!
->>
->> However I ran a simple sequence test and there seems to be some
->> ordering issues. I have some memory of that similar issues have been
->> discussed earlier on the mailing list and I am not quite sure if this
->> is related to your patch series but I get following:
->>
->> root@mx4-v61-1000000:~/test/can_test# uname -a
->> Linux mx4-v61-1000000 4.1.15-00056-ge0b8ccc-dirty #12 Mon May 9
->> 15:59:54 CEST 2016 armv7l GNU/Linux
->> root@mx4-v61-1000000:~/test/can_test# ./cansequence -r can1
->> interface = can1, family = 29, type = 3, proto = 1
->> received wrong sequence count. expected: 60, got: 61
->> received wrong sequence count. expected: 62, got: 60
->> received wrong sequence count. expected: 61, got: 62
->> received wrong sequence count. expected: 118, got: 119
->> received wrong sequence count. expected: 120, got: 118
->> received wrong sequence count. expected: 119, got: 120
->> received wrong sequence count. expected: 76, got: 77
->> received wrong sequence count. expected: 78, got: 76
->> received wrong sequence count. expected: 77, got: 78
->>
->> One strange thing is that the sequence errors only occur on can1, can0
->> does not show any errors.
+$ ip -details link show slcan0
+7: slcan0: <NOARP,UP,LOWER_UP> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 10
+    link/can  promiscuity 0 
 
-Hello Marc,
+> At least the CAN ID is 'AND'ed with CAN_ERR_MASK 0x1FFFFFFF :-)
+> That's the reason for the missing '2' due to  CAN_ERR_FLAG.
 
-is it possible that the indirection irq -> rx-fifo -> napi can shuffle 
-the CAN frames when the can1 irq is served by different CPUs?
+Indeed, I figured that much already.
 
-We can probably set the processing CPU number into can_frame.__res0 for 
-a test and print it in cansequence then.
+> Btw, can you check if this patch fixes the issue:
 
-Regards,
-Oliver
+This pach seems to be already in the 4.4.0 kernel, which I'm running.
 
-ps. @Mirza: Thanks for testing!
-
->
-> Some follow-up information.
->
-> Sequence errors occurs only if I run at 500 kbit/s or faster, which
-> suggests that higher CPU load triggers it.
->
-> I also ran same tests without your patch series and do not get any
-> sequence errors.
->
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
