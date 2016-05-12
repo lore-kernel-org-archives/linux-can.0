@@ -1,39 +1,72 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: CAN message timestamping
-Date: Wed, 11 May 2016 19:07:11 -0700
-Message-ID: <CANGgnMak_Rs9cQD4LYgQOObB1vv6mOzweLDFkTgyMM9bDKp9PA@mail.gmail.com>
-References: <CANGgnMbLhYDdiK_tff0cEW+umuMOPN0h9x7t7cMK-xjMAMNBmQ@mail.gmail.com>
- <56F23F1F.6040101@hartkopp.net> <CANGgnMaOs03rJByb9KVFFG1p45ZuWZ4qt8-F7y6oqtdDveNs2A@mail.gmail.com>
- <CANGgnMbzfVcK+PgAeFMFHjCZMCSosHE2xfctOfkdFb=+ZHrQaw@mail.gmail.com>
- <CANGgnMaK0wXwsKJZB0SssPje9r6qCVYUQzbJsqW+BdSDCQ1iPA@mail.gmail.com>
- <56FBC3C4.80400@hartkopp.net> <CANGgnMa3OJxiK=7bQo3MHmWR3+O0-4LwfgXf9CV2oePUY0gtBg@mail.gmail.com>
- <5702C43C.4000506@hartkopp.net> <CANGgnMbPmrCxCXddj_hOhTc6v3uHrtMtmfDZLOYjs+4TLjSdkA@mail.gmail.com>
+From: Richard Andrysek <richard.andrysek@gomtec.de>
+Subject: c_can driver sometimes sends first two bytes filled with zeros
+Date: Thu, 12 May 2016 09:23:11 +0000
+Message-ID: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f178.google.com ([209.85.161.178]:34787 "EHLO
-	mail-yw0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751605AbcELCHc (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2016 22:07:32 -0400
-Received: by mail-yw0-f178.google.com with SMTP id j74so60613417ywg.1
-        for <linux-can@vger.kernel.org>; Wed, 11 May 2016 19:07:31 -0700 (PDT)
-In-Reply-To: <CANGgnMbPmrCxCXddj_hOhTc6v3uHrtMtmfDZLOYjs+4TLjSdkA@mail.gmail.com>
+Received: from apollon.gomtec.de ([80.153.46.48]:53822 "EHLO post.gomtec.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752010AbcELJWf convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 12 May 2016 05:22:35 -0400
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can <linux-can@vger.kernel.org>, Philipp Schrader <philipp@peloton-tech.com>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon, Apr 4, 2016 at 1:32 PM, Austin Schuh <austin@peloton-tech.com> wrote:
-> Ok!  I *think* I have enough to put together a first patch for
-> comments and test it on my SJA1000 and on vcan.  Thanks!  If you have
-> other thoughts, please let me know.
+We can reproduce an issue with the canutils. We send messages in the lo=
+op with non-zero bytes and from time to time we get first two bytes of =
+the message with zero values. The test script looks so:
 
-Turns out  the entire infrastructure has been deprecated in newer
-kernels, and we didn't notice on our old 3.14 kernel (RT patches and
-the validation associated with change have kept us from upgrading).
-We had to roll back the 2 patches which removed support for the
-timestamps from our 4.1 RT kernel in order to make this work there.
+#!/bin/sh
 
-I think that kind of kills the idea, unless you are more clever than us.
+echo "Press [CTRL+C] to stop.."
+while true
+do
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cansend can1 --loop=3D15 -i =
+933 0xde 0xde 0xde 0xde 0xde 0xde
+done
 
-Austin
+With CAN analyzer we see normally the right message, but in cycles ~1mi=
+n we see first two bytes are zero.
+
+If we add some delays between messages, like this:
+
+do
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cansend can1 --loop=3D1 -i 9=
+33 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 usleep 5
+
+done
+
+It works fine.
+
+We use Altera Cyclone V, where the=A0 c_can driver is used. It runs wit=
+h Linux kernel 3.16, but I've checked 4.5 version of a driver and it is=
+ a same one.
+
+Have somebody idea how to find a reason for that?=20
+
+Richard
+
