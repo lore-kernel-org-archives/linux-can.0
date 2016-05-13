@@ -1,95 +1,99 @@
-From: Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
- with helper
-Date: Thu, 12 May 2016 15:40:46 -0400
-Message-ID: <20118955-8739-b79a-e20e-96302e8b41bf@redhat.com>
-References: <1462285862-30946-1-git-send-email-fw@strlen.de>
- <1462285994-31983-1-git-send-email-fw@strlen.de>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: rx-fifo: add implmentation and switch flexcan driver to use it
+Date: Fri, 13 May 2016 21:44:45 +1000
+Message-ID: <5735BE2D.7090807@optusnet.com.au>
+References: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
+ <CAJ=nTsvE1ZMNC9zmagM=CA+7oE5FWCszeJFsXEO5rc7g=X_B-g@mail.gmail.com>
+ <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
+ <5732F76E.6080804@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r"
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1462285994-31983-1-git-send-email-fw@strlen.de>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-xtensa@linux-xtensa.org, linux1394-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, mpt-fusionlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org, linux-can@vger.kernel.org, linux-parisc@vger.kernel.org, linux-omap@vger.kernel.org, linux-hams@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, b.a.t.m.a.n@lists.open-mesh.org, linux-bluetooth@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:47337 "EHLO
+	mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932123AbcEMLox (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2016 07:44:53 -0400
+In-Reply-To: <5732F76E.6080804@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On 11/05/2016 7:12 PM, Oliver Hartkopp wrote:
+>
+>
+> On 05/10/2016 02:55 PM, Mirza Krak wrote:
+>> 2016-05-10 10:27 GMT+02:00 Mirza Krak <mirza.krak@hostmobility.com>:
+>>> 2016-05-09 12:52 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+>>>> Hello,
+>>>>
+>>>> this patch add support for a software bases rx-fifo implementation 
+>>>> (patches
+>>>> 1+2). The remaining patches modify the flexcan driver to make use 
+>>>> of it. imx6
+>>>> and vf610 SoCs can make use of the 64 mailbox software FIFO, while 
+>>>> older SoCs
+>>>> still use flexcan's 6 mailbox deep hardware FIFO.
+>>>>
+>>>> Testing on any flexcan core is highly appreciated.
+>>>
+>>> Hi Marc.
+>>>
+>>> Tested your patch series on a vf610 SOC. I ran 2 x CAN @ 1Mbit, 
+>>> 80-90 % busload.
+>>>
+>>> I do no longer get any "overrun" errors, which I got without your
+>>> patch series. And it seems to be stable, unlike previous patch series.
+>>> Improvement!
+>>>
+>>> However I ran a simple sequence test and there seems to be some
+>>> ordering issues. I have some memory of that similar issues have been
+>>> discussed earlier on the mailing list and I am not quite sure if this
+>>> is related to your patch series but I get following:
+>>>
+>>> root@mx4-v61-1000000:~/test/can_test# uname -a
+>>> Linux mx4-v61-1000000 4.1.15-00056-ge0b8ccc-dirty #12 Mon May 9
+>>> 15:59:54 CEST 2016 armv7l GNU/Linux
+>>> root@mx4-v61-1000000:~/test/can_test# ./cansequence -r can1
+>>> interface = can1, family = 29, type = 3, proto = 1
+>>> received wrong sequence count. expected: 60, got: 61
+>>> received wrong sequence count. expected: 62, got: 60
+>>> received wrong sequence count. expected: 61, got: 62
+>>> received wrong sequence count. expected: 118, got: 119
+>>> received wrong sequence count. expected: 120, got: 118
+>>> received wrong sequence count. expected: 119, got: 120
+>>> received wrong sequence count. expected: 76, got: 77
+>>> received wrong sequence count. expected: 78, got: 76
+>>> received wrong sequence count. expected: 77, got: 78
+>>>
+>>> One strange thing is that the sequence errors only occur on can1, can0
+>>> does not show any errors.
+>
+> Hello Marc,
+>
+> is it possible that the indirection irq -> rx-fifo -> napi can shuffle 
+> the CAN frames when the can1 irq is served by different CPUs?
+>
+> We can probably set the processing CPU number into can_frame.__res0 
+> for a test and print it in cansequence then.
+>
+> Regards,
+> Oliver
+I've read through all the patches and can't work out how the code 
+guarantees in-order reception. Freescale's original recommendation for 
+using the MBs this way has always been to read them all, then SORT then 
+based on the hardware timestamp to get them in order. They didn't do 
+this in their Linux 2.6.35 driver and it certainly received out of order.
 
-On 05/03/2016 10:33 AM, Florian Westphal wrote:
-> Replace all trans_start updates with netif_trans_update helper.
-> change was done via spatch:
->=20
-> struct net_device *d;
-> @@
-> - d->trans_start =3D jiffies
-> + netif_trans_update(d)
->=20
-> Compile tested only.
->=20
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux1394-devel@lists.sourceforge.net
-> Cc: linux-rdma@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: MPT-FusionLinux.pdl@broadcom.com
-> Cc: linux-scsi@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-omap@vger.kernel.org
-> Cc: linux-hams@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: devel@driverdev.osuosl.org
-> Cc: b.a.t.m.a.n@lists.open-mesh.org
-> Cc: linux-bluetooth@vger.kernel.org
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  Checkpatch complains about whitespace damage, but
->  this extra whitespace already exists before this patch.
->=20
->  drivers/infiniband/hw/nes/nes_nic.c                    | 2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_cm.c                | 2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_ib.c                | 2 +-
+I've read through the patches and can't work out from there how 
+reception order is guaranteed, but I have noticed the following can go 
+wrong:
 
-For InfiniBand bits,
+     netdev_warn(fifo->dev, "%s: RX order cannot be guaranteed.
 
-Acked-by: Doug Ledford <dledford@redhat.com>
+Is there any background on the "software fifo" anywhere, or in any 
+previous posts on the list I've missed?
 
---=20
-Doug Ledford <dledford@redhat.com>
-              GPG KeyID: 0E572FDD
+Tom
 
-
-
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBCAAGBQJXNNw+AAoJELgmozMOVy/dVQcP/1RZvmqQVJpZMtptIm8OpoPW
-4QrFlnjv+KorYVaF1Hg7+0X6yfCF53ofTKRAg4zaYiASZw4AJWYzslxA9b0OvpPS
-TzMjJrbWm27+W2pH8ZivFepys9afxW5o/qb7CFYyOPOEml495zReUvTqt/nSh7jG
-8nTdwO4xH5kY4P82bDn18Lyqd/8cS7yFl1OAK88eqq+y9JgveiIsO2PlsrtFENtX
-+RyadCAluEUdfe6CZjMjUptBptIi6hfoMqmXXu4vcFs48mqbVf4QubFp5f+4wJa2
-KScILHNil3156j3TY3lpG1ukf2SfF0UYDYxco5tZlZ3O7nB3Xteif94gvvUiszyO
-IfGn3/wblQs6tRSHjMRNYiTVeYkyh0eXbdbha/7bkBG58mEjYFnrjtRuBMD2Ogmm
-uz6MhyD6Ez7mKKVBc3ooQ6SYpcwb4surHEGm36a2Utnb/vftxyPYpA75neZbSGZO
-X828tsNcxB9K8FUCEcP/Xasc5xE6kPtpwu5TIbJ7itYLs4yRoZbsmcI5UrhjqERp
-YAAiI07vifFHyFLUnfAOefjXxQOFJdQHtMphlnjfYiKXSpJsAhT2LIJpepgbovCc
-/268dPol/ul7WUbLu2P4zlnnIEQgABW6NKFMAg/N/b4XQ08VkeKv82yJ9aLuyG2J
-0QbOFyrXnR/I1OYFeDAU
-=2VMH
------END PGP SIGNATURE-----
-
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r--
