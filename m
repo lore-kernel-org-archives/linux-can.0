@@ -1,99 +1,103 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: rx-fifo: add implmentation and switch flexcan driver to use it
-Date: Fri, 13 May 2016 21:44:45 +1000
-Message-ID: <5735BE2D.7090807@optusnet.com.au>
-References: <1462791154-13375-1-git-send-email-mkl@pengutronix.de>
- <CAJ=nTsvE1ZMNC9zmagM=CA+7oE5FWCszeJFsXEO5rc7g=X_B-g@mail.gmail.com>
- <CAJ=nTsuQgeLpjA6RrL-CKAx+2P9HQhXsad1Y-zk0Cm4b9FNA1g@mail.gmail.com>
- <5732F76E.6080804@hartkopp.net>
+From: Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH v5 0/2] Add CAN FD driver support to r8a7795 SoC
+Date: Mon, 16 May 2016 15:52:40 +0000
+Message-ID: <HK2PR0601MB1329C6D0F81CBF1E5F4640BBB7770@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1461846188-31249-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:47337 "EHLO
-	mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S932123AbcEMLox (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2016 07:44:53 -0400
-In-Reply-To: <5732F76E.6080804@hartkopp.net>
+Received: from relmlor3.renesas.com ([210.160.252.173]:42208 "EHLO
+	relmlie2.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752812AbcEPPwr convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 16 May 2016 11:52:47 -0400
+In-Reply-To: <1461846188-31249-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Rob Herring <robh@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-On 11/05/2016 7:12 PM, Oliver Hartkopp wrote:
->
->
-> On 05/10/2016 02:55 PM, Mirza Krak wrote:
->> 2016-05-10 10:27 GMT+02:00 Mirza Krak <mirza.krak@hostmobility.com>:
->>> 2016-05-09 12:52 GMT+02:00 Marc Kleine-Budde <mkl@pengutronix.de>:
->>>> Hello,
->>>>
->>>> this patch add support for a software bases rx-fifo implementation 
->>>> (patches
->>>> 1+2). The remaining patches modify the flexcan driver to make use 
->>>> of it. imx6
->>>> and vf610 SoCs can make use of the 64 mailbox software FIFO, while 
->>>> older SoCs
->>>> still use flexcan's 6 mailbox deep hardware FIFO.
->>>>
->>>> Testing on any flexcan core is highly appreciated.
->>>
->>> Hi Marc.
->>>
->>> Tested your patch series on a vf610 SOC. I ran 2 x CAN @ 1Mbit, 
->>> 80-90 % busload.
->>>
->>> I do no longer get any "overrun" errors, which I got without your
->>> patch series. And it seems to be stable, unlike previous patch series.
->>> Improvement!
->>>
->>> However I ran a simple sequence test and there seems to be some
->>> ordering issues. I have some memory of that similar issues have been
->>> discussed earlier on the mailing list and I am not quite sure if this
->>> is related to your patch series but I get following:
->>>
->>> root@mx4-v61-1000000:~/test/can_test# uname -a
->>> Linux mx4-v61-1000000 4.1.15-00056-ge0b8ccc-dirty #12 Mon May 9
->>> 15:59:54 CEST 2016 armv7l GNU/Linux
->>> root@mx4-v61-1000000:~/test/can_test# ./cansequence -r can1
->>> interface = can1, family = 29, type = 3, proto = 1
->>> received wrong sequence count. expected: 60, got: 61
->>> received wrong sequence count. expected: 62, got: 60
->>> received wrong sequence count. expected: 61, got: 62
->>> received wrong sequence count. expected: 118, got: 119
->>> received wrong sequence count. expected: 120, got: 118
->>> received wrong sequence count. expected: 119, got: 120
->>> received wrong sequence count. expected: 76, got: 77
->>> received wrong sequence count. expected: 78, got: 76
->>> received wrong sequence count. expected: 77, got: 78
->>>
->>> One strange thing is that the sequence errors only occur on can1, can0
->>> does not show any errors.
->
-> Hello Marc,
->
-> is it possible that the indirection irq -> rx-fifo -> napi can shuffle 
-> the CAN frames when the can1 irq is served by different CPUs?
->
-> We can probably set the processing CPU number into can_frame.__res0 
-> for a test and print it in cansequence then.
->
-> Regards,
-> Oliver
-I've read through all the patches and can't work out how the code 
-guarantees in-order reception. Freescale's original recommendation for 
-using the MBs this way has always been to read them all, then SORT then 
-based on the hardware timestamp to get them in order. They didn't do 
-this in their Linux 2.6.35 driver and it certainly received out of order.
+Hello Marc.
 
-I've read through the patches and can't work out from there how 
-reception order is guaranteed, but I have noticed the following can go 
-wrong:
+This patch series has been waiting for a response for a while now and we are keen to see it included upstream.
 
-     netdev_warn(fifo->dev, "%s: RX order cannot be guaranteed.
+Are there any blocking points to it being accepted?
 
-Is there any background on the "software fifo" anywhere, or in any 
-previous posts on the list I've missed?
 
-Tom
+Kind regards, Chris
+
+
+> -----Original Message-----
+> From: Ramesh Shanmugasundaram
+> [mailto:ramesh.shanmugasundaram@bp.renesas.com]
+> Sent: 28 April 2016 13:23
+> To: mkl@pengutronix.de; wg@grandegger.com; socketcan@hartkopp.net;
+> robh+dt@kernel.org; pawel.moll@arm.com; mark.rutland@arm.com;
+> ijc+devicetree@hellion.org.uk; galak@codeaurora.org
+> Cc: linux-renesas-soc@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> can@vger.kernel.org; netdev@vger.kernel.org; Chris Paterson
+> <Chris.Paterson2@renesas.com>; Ramesh Shanmugasundaram
+> <ramesh.shanmugasundaram@bp.renesas.com>
+> Subject: [PATCH v5 0/2] Add CAN FD driver support to r8a7795 SoC
+> 
+> Hi All,
+> 
+>    This patch is based on commit "885cc17abad6" of can-next/testing branch
+> 
+> Changes since v4:
+> 	* Rebased to latest can-next/testing branch
+> 	* Addressed Marc K review comments on v2 patch
+> 	* Use clk_get_rate() to find ext clock availability. Refer thread
+> 	(https://lkml.org/lkml/2016/4/8/203)
+> 
+> Changes since v3:
+> 	* Split v3 patch into two (Marc K)
+> 	  (1) Introduce rcar_canfd.c driver in drivers/net/can/rcar dir
+> 	  (2) Move rcar_can.c driver to new drivers/net/can/rcar dir
+> 	* Added Acked-by Rob H for the bindings
+> 	* Added comments on CAN FD only mode in driver & Kconfig (Oliver
+> H)
+> 
+> Changes since v2:
+> 	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
+> 	* Cleaned up leftover debugfs code (Thanks Oliver H)
+> 	* Revised devicetree documentation text (as suggested by Rob H)
+> 	  (https://www.mail-archive.com/linux-renesas-
+> soc@vger.kernel.org/msg01597.html)
+> 	* Used new can subsystem api to set static configuration & removed
+> check in rcar_canfd_start (as suggested by Oliver H)
+> 	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
+> 	   https://www.mail-archive.com/linux-renesas-
+> soc@vger.kernel.org/msg01867.html)
+> 	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as
+> suggested by Oliver H)
+> 	* Updated commit message
+> 
+> Changes since v1:
+> 	* Removed testmodes & debugfs code (suggested by Oliver H)
+> 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
+> 	* Removed __maybe_unused attribute of rcar_canfd_of_table
+> 
+> Ramesh Shanmugasundaram (2):
+>   can: rcar_canfd: Add Renesas R-Car CAN FD driver
+>   can: rcar_can: Move Renesas CAN driver to rcar dir
+> 
+>  .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 ++
+>  drivers/net/can/Kconfig                            |   11 +-
+>  drivers/net/can/Makefile                           |    2 +-
+>  drivers/net/can/rcar/Kconfig                       |   21 +
+>  drivers/net/can/rcar/Makefile                      |    6 +
+>  drivers/net/can/{ => rcar}/rcar_can.c              |    0
+>  drivers/net/can/rcar/rcar_canfd.c                  | 1624 ++++++++++++++++++++
+>  7 files changed, 1742 insertions(+), 11 deletions(-)  create mode 100644
+> Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+>  create mode 100644 drivers/net/can/rcar/Kconfig  create mode 100644
+> drivers/net/can/rcar/Makefile  rename drivers/net/can/{ => rcar}/rcar_can.c
+> (100%)  create mode 100644 drivers/net/can/rcar/rcar_canfd.c
+> 
+> --
+> 1.9.1
 
