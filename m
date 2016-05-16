@@ -1,103 +1,86 @@
-From: Chris Paterson <Chris.Paterson2@renesas.com>
-Subject: RE: [PATCH v5 0/2] Add CAN FD driver support to r8a7795 SoC
-Date: Mon, 16 May 2016 15:52:40 +0000
-Message-ID: <HK2PR0601MB1329C6D0F81CBF1E5F4640BBB7770@HK2PR0601MB1329.apcprd06.prod.outlook.com>
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1461846188-31249-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+From: Thor Thayer <tthayer@opensource.altera.com>
+Subject: Re: c_can driver sometimes sends first two bytes filled with zeros
+Date: Mon, 16 May 2016 13:14:32 -0500
+Message-ID: <573A0E08.4010008@opensource.altera.com>
+References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
+Reply-To: <tthayer@opensource.altera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor3.renesas.com ([210.160.252.173]:42208 "EHLO
-	relmlie2.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1752812AbcEPPwr convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 16 May 2016 11:52:47 -0400
-In-Reply-To: <1461846188-31249-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Content-Language: en-US
+Received: from mail-bn1bon0068.outbound.protection.outlook.com ([157.56.111.68]:9428
+	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753856AbcEPSYs (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 16 May 2016 14:24:48 -0400
+In-Reply-To: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Rob Herring <robh@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>
+To: Richard Andrysek <richard.andrysek@gomtec.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Marc.
+Hi Richard,
 
-This patch series has been waiting for a response for a while now and we are keen to see it included upstream.
+On 05/12/2016 04:23 AM, Richard Andrysek wrote:
+> We can reproduce an issue with the canutils. We send messages in the loop with non-zero bytes and from time to time we get first two bytes of the message with zero values. The test script looks so:
+>
+> #!/bin/sh
+>
+> echo "Press [CTRL+C] to stop.."
+> while true
+> do
+>                 cansend can1 --loop=15 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+> done
+>
+> With CAN analyzer we see normally the right message, but in cycles ~1min we see first two bytes are zero.
+>
+> If we add some delays between messages, like this:
+>
+> do
+>                 cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+>
+> done
+>
+> It works fine.
+>
+> We use Altera Cyclone V, where the  c_can driver is used. It runs with Linux kernel 3.16, but I've checked 4.5 version of a driver and it is a same one.
+>
+> Have somebody idea how to find a reason for that?
+>
+> Richard
+>
+How old are your canutils? I had a similar issue on an older version of 
+cansend (4.0.6 from the Pengutronix site - with a copyright date of 2009).
 
-Are there any blocking points to it being accepted?
+There is an old thread (http://comments.gmane.org/gmane.linux.can/2339) 
+that suggests adding a delay in the cansend utility to work around a 
+poll/select bug.
 
+I added a delay for 4.0.6 but you may want to grab the latest from 
+github (https://github.com/linux-can/can-utils).
 
-Kind regards, Chris
-
-
-> -----Original Message-----
-> From: Ramesh Shanmugasundaram
-> [mailto:ramesh.shanmugasundaram@bp.renesas.com]
-> Sent: 28 April 2016 13:23
-> To: mkl@pengutronix.de; wg@grandegger.com; socketcan@hartkopp.net;
-> robh+dt@kernel.org; pawel.moll@arm.com; mark.rutland@arm.com;
-> ijc+devicetree@hellion.org.uk; galak@codeaurora.org
-> Cc: linux-renesas-soc@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> can@vger.kernel.org; netdev@vger.kernel.org; Chris Paterson
-> <Chris.Paterson2@renesas.com>; Ramesh Shanmugasundaram
-> <ramesh.shanmugasundaram@bp.renesas.com>
-> Subject: [PATCH v5 0/2] Add CAN FD driver support to r8a7795 SoC
-> 
-> Hi All,
-> 
->    This patch is based on commit "885cc17abad6" of can-next/testing branch
-> 
-> Changes since v4:
-> 	* Rebased to latest can-next/testing branch
-> 	* Addressed Marc K review comments on v2 patch
-> 	* Use clk_get_rate() to find ext clock availability. Refer thread
-> 	(https://lkml.org/lkml/2016/4/8/203)
-> 
-> Changes since v3:
-> 	* Split v3 patch into two (Marc K)
-> 	  (1) Introduce rcar_canfd.c driver in drivers/net/can/rcar dir
-> 	  (2) Move rcar_can.c driver to new drivers/net/can/rcar dir
-> 	* Added Acked-by Rob H for the bindings
-> 	* Added comments on CAN FD only mode in driver & Kconfig (Oliver
-> H)
-> 
-> Changes since v2:
-> 	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
-> 	* Cleaned up leftover debugfs code (Thanks Oliver H)
-> 	* Revised devicetree documentation text (as suggested by Rob H)
-> 	  (https://www.mail-archive.com/linux-renesas-
-> soc@vger.kernel.org/msg01597.html)
-> 	* Used new can subsystem api to set static configuration & removed
-> check in rcar_canfd_start (as suggested by Oliver H)
-> 	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
-> 	   https://www.mail-archive.com/linux-renesas-
-> soc@vger.kernel.org/msg01867.html)
-> 	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as
-> suggested by Oliver H)
-> 	* Updated commit message
-> 
-> Changes since v1:
-> 	* Removed testmodes & debugfs code (suggested by Oliver H)
-> 	* Fixed tx path race issue by introducing lock (suggested by Marc K)
-> 	* Removed __maybe_unused attribute of rcar_canfd_of_table
-> 
-> Ramesh Shanmugasundaram (2):
->   can: rcar_canfd: Add Renesas R-Car CAN FD driver
->   can: rcar_can: Move Renesas CAN driver to rcar dir
-> 
->  .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 ++
->  drivers/net/can/Kconfig                            |   11 +-
->  drivers/net/can/Makefile                           |    2 +-
->  drivers/net/can/rcar/Kconfig                       |   21 +
->  drivers/net/can/rcar/Makefile                      |    6 +
->  drivers/net/can/{ => rcar}/rcar_can.c              |    0
->  drivers/net/can/rcar/rcar_canfd.c                  | 1624 ++++++++++++++++++++
->  7 files changed, 1742 insertions(+), 11 deletions(-)  create mode 100644
-> Documentation/devicetree/bindings/net/can/rcar_canfd.txt
->  create mode 100644 drivers/net/can/rcar/Kconfig  create mode 100644
-> drivers/net/can/rcar/Makefile  rename drivers/net/can/{ => rcar}/rcar_can.c
-> (100%)  create mode 100644 drivers/net/can/rcar/rcar_canfd.c
-> 
 > --
-> 1.9.1
-
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
