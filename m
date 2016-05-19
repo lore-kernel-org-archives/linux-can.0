@@ -1,147 +1,102 @@
 From: Thor Thayer <tthayer@opensource.altera.com>
-Subject: Re: AW: c_can driver sometimes sends first two bytes filled with
+Subject: Re: AW: AW: c_can driver sometimes sends first two bytes filled with
  zeros
-Date: Wed, 18 May 2016 10:35:06 -0500
-Message-ID: <573C8BAA.5040200@opensource.altera.com>
+Date: Thu, 19 May 2016 18:00:42 -0500
+Message-ID: <573E459A.1000300@opensource.altera.com>
 References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
  <573A0E08.4010008@opensource.altera.com>
  <0120733A154AE74CA608A286CE7FFD2621D9C80F@rg-contact.RG.local>
+ <573C8BAA.5040200@opensource.altera.com>
+ <0120733A154AE74CA608A286CE7FFD2621D9CB60@rg-contact.RG.local>
 Reply-To: <tthayer@opensource.altera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bn1bon0055.outbound.protection.outlook.com ([157.56.111.55]:62275
+Received: from mail-bn1on0083.outbound.protection.outlook.com ([157.56.110.83]:47552
 	"EHLO na01-bn1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932525AbcERQED (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 18 May 2016 12:04:03 -0400
-In-Reply-To: <0120733A154AE74CA608A286CE7FFD2621D9C80F@rg-contact.RG.local>
+	id S1754103AbcESW5T (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Thu, 19 May 2016 18:57:19 -0400
+In-Reply-To: <0120733A154AE74CA608A286CE7FFD2621D9CB60@rg-contact.RG.local>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Richard Andrysek <richard.andrysek@gomtec.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: wg@grandegger.com, mkl@pengutronix.de
 
 Hi Richard,
 
-On 05/17/2016 12:18 PM, Richard Andrysek wrote:
+On 05/19/2016 09:07 AM, Richard Andrysek wrote:
 > Hi Thor,
 >
-> I've made two use cases with can0:
+> I am sending my test program and a makefile. The application accept up to 2 arguments:
+> ## send 8 messages in 2ms cycle
+> # test  8 2000
 >
-> a)	RAW socket can with 200us steps
-> b)	8 CAN messages with 150us step in a broadcast mode
+> ## default 16 messages in 2.6ms (the zip file data)
+> # test
 >
-> Both works perfect, only my PCAN USB has from time to time an overrun=
-=2E I think I need another logger:)
+> In the zip file you can see my logging files (channel 1 and channel 2), on the channel 2 you can find failures
+> in the "Failure_dump.txt".
 >
-> But if I take case b) and reduce steps to 128us I get two frames with=
- wrong two first bytes per 3min.
-> Similar behavior in case a).
->
-I'd like to clarify. When you refer to steps, are you talking about use=
-c=20
-delays between messages using the usleep function as described in your=20
-initial post?
+Yes, I can see the zero bytes in your data.
 
-And to clarify the setup: a) is a RAW socket (is this a custom user=20
-space program?) sending 1 message every 200us and b) uses the older=20
-4.0.6 cansend sending 1 message with 150us between each message repeate=
-d=20
-8 times? Or is b) sending 8 messages back-to-back (no usleep() in=20
-between messages) with 150us between the 8 messages?
+Am I correct that both can0 and can1 are receiving the same data? If I'm 
+understanding, can0 seems to be fine but can1 periodically shows 
+corruption with the first 2 bytes set to 0?
 
-And the problem is that when you reduce the delay between messages to=20
-128us, you start losing the first 2 bytes in 2 frames if you record for=
-=20
-3 minutes.
+Since the attached program uses a write, I'm confused about who is 
+sending the data? Is that the PCAN USB you referred to in an earlier email?
 
-> Questions:
->     Q1) What I still don't understand, if there is a failure I do not=
- get any error value. Why that?
->     Q2) Is there somewhere missing some kind of locking mechanism?
->
+Also, where is the 2.6ms that you refer to and is in the code? From the 
+data, it seems like the spacing between frames is ~.120ms and ~1msec 
+between 16 frame bursts.
 
-> -----Urspr=FCngliche Nachricht-----
-> Von: Thor Thayer [mailto:tthayer@opensource.altera.com]
-> Gesendet: Montag, 16. Mai 2016 20:15
-> An: Richard Andrysek <richard.andrysek@gomtec.de>; linux-can@vger.ker=
-nel.org
-> Betreff: Re: c_can driver sometimes sends first two bytes filled with=
- zeros
+> Initialization of can channels is done from the shell:
 >
-> Hi Richard,
+> # ip link set can0 up type can bitrate 1000000
+> # ip link set can1 up type can bitrate 1000000
 >
-> On 05/12/2016 04:23 AM, Richard Andrysek wrote:
->> We can reproduce an issue with the canutils. We send messages in the=
- loop with non-zero bytes and from time to time we get first two bytes =
-of the message with zero values. The test script looks so:
->>
->> #!/bin/sh
->>
->> echo "Press [CTRL+C] to stop.."
->> while true
->> do
->>                  cansend can1 --loop=3D15 -i 933 0xde 0xde 0xde 0xde=
- 0xde
->> 0xde done
->>
->> With CAN analyzer we see normally the right message, but in cycles ~=
-1min we see first two bytes are zero.
->>
->> If we add some delays between messages, like this:
->>
->> do
->>                  cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde =
-0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->>
->> done
->>
->> It works fine.
->>
->> We use Altera Cyclone V, where the  c_can driver is used. It runs wi=
-th Linux kernel 3.16, but I've checked 4.5 version of a driver and it i=
-s a same one.
->>
->> Have somebody idea how to find a reason for that?
->>
->> Richard
->>
-> How old are your canutils? I had a similar issue on an older version =
-of cansend (4.0.6 from the Pengutronix site - with a copyright date of =
-2009).
+> The cpu load is max 5%.
 >
-> There is an old thread (http://comments.gmane.org/gmane.linux.can/233=
-9)
-> that suggests adding a delay in the cansend utility to work around a =
-poll/select bug.
+> Question1:
+> I've checked a driver it looks good. Except one line in the function :
 >
-> I added a delay for 4.0.6 but you may want to grab the latest from gi=
-thub (https://github.com/linux-can/can-utils).
+> static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+> 				    struct net_device *dev)
+> {
+> 	struct can_frame *frame = (struct can_frame *)skb->data;
+> 	struct c_can_priv *priv = netdev_priv(dev);
+> 	u32 idx, obj;
 >
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can"
->> in the body of a message to majordomo@vger.kernel.org More majordomo
->> info at  http://vger.kernel.org/majordomo-info.html
->>
+> 	if (can_dropped_invalid_skb(dev, skb))
+> 		return NETDEV_TX_OK;
+> 	/*
+> 	 * This is not a FIFO. C/D_CAN sends out the buffers
+> 	 * prioritized. The lowest buffer number wins.
+> 	 */
+> 	idx = fls(atomic_read(&priv->tx_active));  /*!!!!! Why so !!!! */
+> 	...
+> 	...
+> 	/* Update the active bits */
+> 	atomic_add((1 << idx), &priv->tx_active);
+>
+> Are these atomic operations correct? atomic_add I understand, but shall not be atomic_read used like this:
+>
+>               Atomic block start
+>               idx = fls(read(&priv->tx->active))
+>               remove_idx_from(&priv->tx->active, idx)
+>               Atomic block stop	
+>
+I'm not sure about this. I'm including the maintainers in the CC.
+
+> Question2: What can make corrupted CAN messages on the channel 2?
+>
+Hmm. I've only worked with the first CAN so I can't speak for the 2nd 
+can device.
+
+> Ch.
+>
+> Richard
+>
+>
