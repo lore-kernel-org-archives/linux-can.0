@@ -1,74 +1,21 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: c_can driver sometimes sends first two bytes filled with zeros
-Date: Mon, 23 May 2016 20:19:39 +0200
-Message-ID: <574349BB.3010703@grandegger.com>
-References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
+From: program12@uscombat.info
+Subject: Hello
+Date: Sun, 29 May 2016 00:44:02 +0000
+Message-ID: <508569.7733.bm__46047.9626701728$1464483092$gmane$org@smtp113.mail.ne1.yahoo.com>
+Reply-To: cplkristibakar@outlook.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.151]:58248 "EHLO
-	mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751679AbcEWSTo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 23 May 2016 14:19:44 -0400
-In-Reply-To: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
+Received: from nm24-vm4.bullet.mail.ne1.yahoo.com ([98.138.91.184]:44349 "EHLO
+	nm24-vm4.bullet.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752097AbcE2AvN convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Sat, 28 May 2016 20:51:13 -0400
+Content-Description: Mail message body
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Richard Andrysek <richard.andrysek@gomtec.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Recipients <program12@uscombat.info>
 
-Hello,
-
-Am 12.05.2016 um 11:23 schrieb Richard Andrysek:
-> We can reproduce an issue with the canutils. We send messages in the loop with non-zero bytes and from time to time we get first two bytes of the message with zero values. The test script looks so:
->
-> #!/bin/sh
->
-> echo "Press [CTRL+C] to stop.."
-> while true
-> do
->                 cansend can1 --loop=15 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
-> done
->
-> With CAN analyzer we see normally the right message, but in cycles ~1min we see first two bytes are zero.
->
-> If we add some delays between messages, like this:
->
-> do
->                 cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
-> 	cansend can1 --loop=1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->                 usleep 5
->
-> done
->
-> It works fine.
->
-> We use Altera Cyclone V, where the  c_can driver is used. It runs with Linux kernel 3.16, but I've checked 4.5 version of a driver and it is a same one.
->
-> Have somebody idea how to find a reason for that?
-
-The official "cansend" does not support "--loop". The official canutils
-have cangen and canfdtest for more thorough testing. Anyway, does
-"ip -s -d link show" report any errors? And could you run
-"candump any,0:0,#FFFFFFFF" while sending. Does it also list the 
-messages with the wrong data?
-
-Wolfgang.
+Hi,
+I am Kristi and i saw your contact through google page of your country which impress me and i feel we can be friends to share ideals and reason together for good,if not bad then let us know more about each other and i hope there will be no problem for us to be friend with no bad intention.You can also reply me through email(cplkristibakar@outlook.com) so that i can share details about myself, i will be waiting to hear from you soon. 
