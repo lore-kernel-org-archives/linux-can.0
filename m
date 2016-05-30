@@ -1,13 +1,13 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/5] can: bcm: fix indention style
-Date: Mon, 30 May 2016 19:31:00 +0200
-Message-ID: <1464629464-18215-2-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH 5/5] can: bcm: add documentation for CAN FD support
+Date: Mon, 30 May 2016 19:31:04 +0200
+Message-ID: <1464629464-18215-6-git-send-email-socketcan@hartkopp.net>
 References: <1464629464-18215-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:49688 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:49078 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1161249AbcE3Rbj (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 30 May 2016 13:31:39 -0400
+	with ESMTP id S1161685AbcE3Rbk (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 30 May 2016 13:31:40 -0400
 In-Reply-To: <1464629464-18215-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -16,77 +16,41 @@ Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ Documentation/networking/can.txt | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 6863310..1f4ccc3 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -184,42 +184,42 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 			continue;
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index d58ff84..3ec4375 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -852,6 +852,28 @@ solution for a couple of reasons:
  
- 		seq_printf(m, "rx_op: %03X %-5s ",
--				op->can_id, bcm_proc_getifname(ifname, op->ifindex));
-+			   op->can_id, bcm_proc_getifname(ifname, op->ifindex));
- 		seq_printf(m, "[%u]%c ", op->nframes,
--				(op->flags & RX_CHECK_DLC)?'d':' ');
-+			   (op->flags & RX_CHECK_DLC)?'d':' ');
- 		if (op->kt_ival1.tv64)
- 			seq_printf(m, "timeo=%lld ",
--					(long long)
--					ktime_to_us(op->kt_ival1));
-+				   (long long)
-+				   ktime_to_us(op->kt_ival1));
+     write(s, &msg, sizeof(msg));
  
- 		if (op->kt_ival2.tv64)
- 			seq_printf(m, "thr=%lld ",
--					(long long)
--					ktime_to_us(op->kt_ival2));
-+				   (long long)
-+				   ktime_to_us(op->kt_ival2));
- 
- 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
--				op->frames_filtered, op->frames_abs);
-+			   op->frames_filtered, op->frames_abs);
- 
- 		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
- 
- 		seq_printf(m, "%s%ld%%\n",
--				(reduction == 100)?"near ":"", reduction);
-+			   (reduction == 100)?"near ":"", reduction);
- 	}
- 
- 	list_for_each_entry(op, &bo->tx_ops, list) {
- 
- 		seq_printf(m, "tx_op: %03X %s [%u] ",
--				op->can_id,
--				bcm_proc_getifname(ifname, op->ifindex),
--				op->nframes);
-+			   op->can_id,
-+			   bcm_proc_getifname(ifname, op->ifindex),
-+			   op->nframes);
- 
- 		if (op->kt_ival1.tv64)
- 			seq_printf(m, "t1=%lld ",
--					(long long) ktime_to_us(op->kt_ival1));
-+				   (long long) ktime_to_us(op->kt_ival1));
- 
- 		if (op->kt_ival2.tv64)
- 			seq_printf(m, "t2=%lld ",
--					(long long) ktime_to_us(op->kt_ival2));
-+				   (long long) ktime_to_us(op->kt_ival2));
- 
- 		seq_printf(m, "# sent %ld\n", op->frames_abs);
- 	}
-@@ -282,7 +282,7 @@ static void bcm_can_tx(struct bcm_op *op)
- 	/* reached last frame? */
- 	if (op->currframe >= op->nframes)
- 		op->currframe = 0;
-- out:
-+out:
- 	dev_put(dev);
- }
++  4.2.6 Broadcast Manager CAN FD support
++
++  The programming API of the CAN_BCM depends on struct can_frame which is
++  given as array directly behind the bcm_msg_head structure. To follow this
++  schema for the CAN FD frames a new flag 'CAN_FD_FRAME' in the bcm_msg_head
++  flags indicates that the concatenated CAN frame structures behind the
++  bcm_msg_head are defined as struct canfd_frame.
++
++    struct {
++            struct bcm_msg_head msg_head;
++            struct canfd_frame frame[5];
++    } msg;
++
++    msg.msg_head.opcode  = RX_SETUP;
++    msg.msg_head.can_id  = 0x42;
++    msg.msg_head.flags   = CAN_FD_FRAME;
++    msg.msg_head.nframes = 5;
++    (..)
++
++  When using CAN FD frames for multiplex filtering the MUX mask is still
++  expected in the first 64 bit of the struct canfd_frame data section.
++
+   4.3 connected transport protocols (SOCK_SEQPACKET)
+   4.4 unconnected transport protocols (SOCK_DGRAM)
  
 -- 
 2.8.1
