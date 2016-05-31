@@ -1,13 +1,13 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 5/5] can: bcm: add documentation for CAN FD support
-Date: Tue, 31 May 2016 20:23:08 +0200
-Message-ID: <1464718988-9386-6-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v3 3/5] can: bcm: unify bcm_msg_head handling and prepare function parameters
+Date: Tue, 31 May 2016 20:23:06 +0200
+Message-ID: <1464718988-9386-4-git-send-email-socketcan@hartkopp.net>
 References: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:29897 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:46575 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755563AbcEaSXZ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 14:23:25 -0400
+	with ESMTP id S1755567AbcEaSX0 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 14:23:26 -0400
 In-Reply-To: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -16,59 +16,181 @@ Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- Documentation/networking/can.txt | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ net/can/bcm.c | 54 +++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 29 insertions(+), 25 deletions(-)
 
-diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
-index d58ff84..aa15b9e 100644
---- a/Documentation/networking/can.txt
-+++ b/Documentation/networking/can.txt
-@@ -31,6 +31,7 @@ This file contains
-       4.2.4 Broadcast Manager message sequence transmission
-       4.2.5 Broadcast Manager receive filter timers
-       4.2.6 Broadcast Manager multiplex message receive filter
-+      4.2.7 Broadcast Manager CAN FD support
-     4.3 connected transport protocols (SOCK_SEQPACKET)
-     4.4 unconnected transport protocols (SOCK_DGRAM)
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 59553de..640578a 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -695,13 +695,13 @@ rx_starttimer:
+ /*
+  * helpers for bcm_op handling: find & delete bcm [rx|tx] op elements
+  */
+-static struct bcm_op *bcm_find_op(struct list_head *ops, canid_t can_id,
+-				  int ifindex)
++static struct bcm_op *bcm_find_op(struct list_head *ops,
++				  struct bcm_msg_head *mh, int ifindex)
+ {
+ 	struct bcm_op *op;
  
-@@ -799,7 +800,7 @@ solution for a couple of reasons:
-     } mytxmsg;
+ 	list_for_each_entry(op, ops, list) {
+-		if ((op->can_id == can_id) && (op->ifindex == ifindex))
++		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex))
+ 			return op;
+ 	}
  
-     (..)
--    mytxmsg.nframes = 4;
-+    mytxmsg.msg_head.nframes = 4;
-     (..)
+@@ -744,12 +744,13 @@ static void bcm_rx_unreg(struct net_device *dev, struct bcm_op *op)
+ /*
+  * bcm_delete_rx_op - find and remove a rx op (returns number of removed ops)
+  */
+-static int bcm_delete_rx_op(struct list_head *ops, canid_t can_id, int ifindex)
++static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
++			    int ifindex)
+ {
+ 	struct bcm_op *op, *n;
  
-     write(s, &mytxmsg, sizeof(mytxmsg));
-@@ -852,6 +853,28 @@ solution for a couple of reasons:
+ 	list_for_each_entry_safe(op, n, ops, list) {
+-		if ((op->can_id == can_id) && (op->ifindex == ifindex)) {
++		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex)) {
  
-     write(s, &msg, sizeof(msg));
+ 			/*
+ 			 * Don't care if we're bound or not (due to netdev
+@@ -789,12 +790,13 @@ static int bcm_delete_rx_op(struct list_head *ops, canid_t can_id, int ifindex)
+ /*
+  * bcm_delete_tx_op - find and remove a tx op (returns number of removed ops)
+  */
+-static int bcm_delete_tx_op(struct list_head *ops, canid_t can_id, int ifindex)
++static int bcm_delete_tx_op(struct list_head *ops, struct bcm_msg_head *mh,
++			    int ifindex)
+ {
+ 	struct bcm_op *op, *n;
  
-+  4.2.7 Broadcast Manager CAN FD support
+ 	list_for_each_entry_safe(op, n, ops, list) {
+-		if ((op->can_id == can_id) && (op->ifindex == ifindex)) {
++		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex)) {
+ 			list_del(&op->list);
+ 			bcm_remove_op(op);
+ 			return 1; /* done */
+@@ -810,7 +812,7 @@ static int bcm_delete_tx_op(struct list_head *ops, canid_t can_id, int ifindex)
+ static int bcm_read_op(struct list_head *ops, struct bcm_msg_head *msg_head,
+ 		       int ifindex)
+ {
+-	struct bcm_op *op = bcm_find_op(ops, msg_head->can_id, ifindex);
++	struct bcm_op *op = bcm_find_op(ops, msg_head, ifindex);
+ 
+ 	if (!op)
+ 		return -EINVAL;
+@@ -847,8 +849,7 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		return -EINVAL;
+ 
+ 	/* check the given can_id */
+-	op = bcm_find_op(&bo->tx_ops, msg_head->can_id, ifindex);
+-
++	op = bcm_find_op(&bo->tx_ops, msg_head, ifindex);
+ 	if (op) {
+ 		/* update existing BCM operation */
+ 
+@@ -1012,7 +1013,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		return -EINVAL;
+ 
+ 	/* check the given can_id */
+-	op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex);
++	op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
+ 	if (op) {
+ 		/* update existing BCM operation */
+ 
+@@ -1194,7 +1195,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ /*
+  * bcm_tx_send - send a single CAN frame to the CAN interface (for bcm_sendmsg)
+  */
+-static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
++static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
++		       int cfsiz)
+ {
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+@@ -1204,13 +1206,13 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
+ 	if (!ifindex)
+ 		return -ENODEV;
+ 
+-	skb = alloc_skb(CFSIZ + sizeof(struct can_skb_priv), GFP_KERNEL);
++	skb = alloc_skb(cfsiz + sizeof(struct can_skb_priv), GFP_KERNEL);
+ 	if (!skb)
+ 		return -ENOMEM;
+ 
+ 	can_skb_reserve(skb);
+ 
+-	err = memcpy_from_msg(skb_put(skb, CFSIZ), msg, CFSIZ);
++	err = memcpy_from_msg(skb_put(skb, cfsiz), msg, cfsiz);
+ 	if (err < 0) {
+ 		kfree_skb(skb);
+ 		return err;
+@@ -1232,7 +1234,7 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
+ 	if (err)
+ 		return err;
+ 
+-	return CFSIZ + MHSIZ;
++	return cfsiz + MHSIZ;
+ }
+ 
+ /*
+@@ -1250,7 +1252,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		return -ENOTCONN;
+ 
+ 	/* check for valid message length from userspace */
+-	if (size < MHSIZ || (size - MHSIZ) % CFSIZ)
++	if (size < MHSIZ)
++		return -EINVAL;
 +
-+  The programming API of the CAN_BCM depends on struct can_frame which is
-+  given as array directly behind the bcm_msg_head structure. To follow this
-+  schema for the CAN FD frames a new flag 'CAN_FD_FRAME' in the bcm_msg_head
-+  flags indicates that the concatenated CAN frame structures behind the
-+  bcm_msg_head are defined as struct canfd_frame.
++	/* read message head information */
++	ret = memcpy_from_msg((u8 *)&msg_head, msg, MHSIZ);
++	if (ret < 0)
++		return ret;
 +
-+    struct {
-+            struct bcm_msg_head msg_head;
-+            struct canfd_frame frame[5];
-+    } msg;
-+
-+    msg.msg_head.opcode  = RX_SETUP;
-+    msg.msg_head.can_id  = 0x42;
-+    msg.msg_head.flags   = CAN_FD_FRAME;
-+    msg.msg_head.nframes = 5;
-+    (..)
-+
-+  When using CAN FD frames for multiplex filtering the MUX mask is still
-+  expected in the first 64 bit of the struct canfd_frame data section.
-+
-   4.3 connected transport protocols (SOCK_SEQPACKET)
-   4.4 unconnected transport protocols (SOCK_DGRAM)
++	if ((size - MHSIZ) % CFSIZ)
+ 		return -EINVAL;
  
+ 	/* check for alternative ifindex for this bcm_op */
+@@ -1284,12 +1294,6 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		}
+ 	}
+ 
+-	/* read message head information */
+-
+-	ret = memcpy_from_msg((u8 *)&msg_head, msg, MHSIZ);
+-	if (ret < 0)
+-		return ret;
+-
+ 	lock_sock(sk);
+ 
+ 	switch (msg_head.opcode) {
+@@ -1303,14 +1307,14 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		break;
+ 
+ 	case TX_DELETE:
+-		if (bcm_delete_tx_op(&bo->tx_ops, msg_head.can_id, ifindex))
++		if (bcm_delete_tx_op(&bo->tx_ops, &msg_head, ifindex))
+ 			ret = MHSIZ;
+ 		else
+ 			ret = -EINVAL;
+ 		break;
+ 
+ 	case RX_DELETE:
+-		if (bcm_delete_rx_op(&bo->rx_ops, msg_head.can_id, ifindex))
++		if (bcm_delete_rx_op(&bo->rx_ops, &msg_head, ifindex))
+ 			ret = MHSIZ;
+ 		else
+ 			ret = -EINVAL;
+@@ -1333,7 +1337,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		if ((msg_head.nframes != 1) || (size != CFSIZ + MHSIZ))
+ 			ret = -EINVAL;
+ 		else
+-			ret = bcm_tx_send(msg, ifindex, sk);
++			ret = bcm_tx_send(msg, ifindex, sk, CFSIZ);
+ 		break;
+ 
+ 	default:
 -- 
 2.8.1
 
