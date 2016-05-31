@@ -1,42 +1,74 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 0/5] Add support for CAN FD to broadcast manager (CAN_BCM)
-Date: Tue, 31 May 2016 20:23:03 +0200
-Message-ID: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
+Subject: [PATCH v3 5/5] can: bcm: add documentation for CAN FD support
+Date: Tue, 31 May 2016 20:23:08 +0200
+Message-ID: <1464718988-9386-6-git-send-email-socketcan@hartkopp.net>
+References: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:22953 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:29897 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751616AbcEaSXZ (ORCPT
+	with ESMTP id S1755563AbcEaSXZ (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 14:23:25 -0400
+In-Reply-To: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This series adds the capability for the CAN broadcast manager to handle
-CAN FD frames analogue to the CAN frames. It allows sending as well as all
-known data filtering functions (including multiplex filtering).
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ Documentation/networking/can.txt | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-Changes in v2:
-Introduce a helper variable cfsiz to prevent multiple CFSIZ(op) operations
-in bcm_rx_handler() (patch 4/5).
-
-Changes in v3:
-Introduce a helper variable cfsiz into struct bcm_op to minimize CFSIZ(op)
-operations (patch 4/5).
-Fix documentation table of contents and code example (patch 5/5)
-
-Oliver Hartkopp (5):
-  can: bcm: fix indention style
-  can: bcm: use CAN frame instead of can_frame in comments
-  can: bcm: unify bcm_msg_head handling and prepare function parameters
-  can: bcm: add support for CAN FD frames
-  can: bcm: add documentation for CAN FD support
-
- Documentation/networking/can.txt |  25 +++-
- include/uapi/linux/can/bcm.h     |   1 +
- net/can/bcm.c                    | 307 ++++++++++++++++++++++-----------------
- 3 files changed, 202 insertions(+), 131 deletions(-)
-
+diff --git a/Documentation/networking/can.txt b/Documentation/networking/can.txt
+index d58ff84..aa15b9e 100644
+--- a/Documentation/networking/can.txt
++++ b/Documentation/networking/can.txt
+@@ -31,6 +31,7 @@ This file contains
+       4.2.4 Broadcast Manager message sequence transmission
+       4.2.5 Broadcast Manager receive filter timers
+       4.2.6 Broadcast Manager multiplex message receive filter
++      4.2.7 Broadcast Manager CAN FD support
+     4.3 connected transport protocols (SOCK_SEQPACKET)
+     4.4 unconnected transport protocols (SOCK_DGRAM)
+ 
+@@ -799,7 +800,7 @@ solution for a couple of reasons:
+     } mytxmsg;
+ 
+     (..)
+-    mytxmsg.nframes = 4;
++    mytxmsg.msg_head.nframes = 4;
+     (..)
+ 
+     write(s, &mytxmsg, sizeof(mytxmsg));
+@@ -852,6 +853,28 @@ solution for a couple of reasons:
+ 
+     write(s, &msg, sizeof(msg));
+ 
++  4.2.7 Broadcast Manager CAN FD support
++
++  The programming API of the CAN_BCM depends on struct can_frame which is
++  given as array directly behind the bcm_msg_head structure. To follow this
++  schema for the CAN FD frames a new flag 'CAN_FD_FRAME' in the bcm_msg_head
++  flags indicates that the concatenated CAN frame structures behind the
++  bcm_msg_head are defined as struct canfd_frame.
++
++    struct {
++            struct bcm_msg_head msg_head;
++            struct canfd_frame frame[5];
++    } msg;
++
++    msg.msg_head.opcode  = RX_SETUP;
++    msg.msg_head.can_id  = 0x42;
++    msg.msg_head.flags   = CAN_FD_FRAME;
++    msg.msg_head.nframes = 5;
++    (..)
++
++  When using CAN FD frames for multiplex filtering the MUX mask is still
++  expected in the first 64 bit of the struct canfd_frame data section.
++
+   4.3 connected transport protocols (SOCK_SEQPACKET)
+   4.4 unconnected transport protocols (SOCK_DGRAM)
+ 
 -- 
 2.8.1
 
